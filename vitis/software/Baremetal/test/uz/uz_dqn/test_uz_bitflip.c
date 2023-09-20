@@ -280,8 +280,8 @@ void test_dqn_bitflip(void)
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
-    //exportFloatArrayToCSV("test/uz/uz_dqn/reward.csv", reward, EXPERIENCE_BUFFER_LENGTH);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
+    // save param to .txt
     FILE* f = fopen("test/uz/uz_dqn/hyperparam.txt", "w");  // open the file for writing
     if (f != NULL)                       // check for success
     {

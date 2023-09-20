@@ -1,34 +1,128 @@
 clear
 close all;
+ %% prepare for export to tikz
+T = readtable("hyperparam.txt");
+
+ extraaxisoptions = [...
+'y tick label style={/pgf/number format/.cd,scaled y ticks = false,precision=1, use comma,' ...
+,'set thousands separator={},fixed,/tikz/.cd}'...
+,',x tick label style={/pgf/number format/.cd,'...
+'scaled x ticks = false,precision=5,set decimal separator={,},set thousands separator={},'...
+,'fixed,/tikz/.cd}'...
+,',ylabel style={yshift=-0.2cm,font=\small}'...
+,',xlabel style={font=\small}'...
+,',legend style={font=\tiny},'...
+,',legend columns=1,',...
+];
+
+% load("cumreward16.csv");
+% load("loss16.csv");
+% load("dloss16.csv");
+% figure
+% subplot(3,1,1)
+% plot(cumreward16);
+% grid on;% xlabel('Episoden','interpreter','latex');
+% ylabel('Kumulierter Reward pro Episode','interpreter','latex');
+% legend;
+% legend('Location','northeast');
+% 
+% subplot(3,1,2)
+% plot(loss16);
+% grid on;
+% xlabel('Episoden','interpreter','latex');
+% ylabel('Ableitung Loss','interpreter','latex');
+% legend;
+% legend('Location','northeast');
+% subplot(3,1,3)
+% plot(dloss16);
+% grid on;
+% xlabel('Episoden','interpreter','latex');
+% ylabel('Loss','interpreter','latex');
+% legend;
+% legend('Location','northeast');
+% sgtitle("Bitflip Ergebnisse NN 16 Neuronen")
+% 
+
+% load("cumreward256.csv");
+% load("loss256.csv");
+% load("dloss256.csv");
+% load("epsilon256.csv");
+% 
+% figure
+% subplot(4,1,1)
+% plot(cumreward256);
+% grid on;
+% % xlim([0 1000])
+% xlabel('Episoden','interpreter','latex');
+% ylabel('Reward','interpreter','latex');
+% 
+% subplot(4,1,2)
+% plot(dloss256);
+% grid on;
+% % xlim([0 1000])
+% xlabel('Episoden','interpreter','latex');
+% ylabel('dLoss','interpreter','latex');
+% subplot(4,1,3)
+% plot(loss256);
+% grid on;
+% % xlim([0 1000])
+% xlabel('Episoden','interpreter','latex');
+% ylabel('Loss','interpreter','latex');
+% subplot(4,1,4)
+% plot(epsilon256);
+% grid on;
+% % xlim([0 1000])
+% xlabel('Episoden','interpreter','latex');
+% ylabel('epsilon','interpreter','latex');
+% sgtitle("Bitflip Ergebnisse NN 256 Neuronen not clipped")
+% cleanfigure();
+% matlab2tikz('bitflip_dervloss_not_clipped.tikz','showInfo', false,  ...
+%      'width', '0.85\textwidth', 'height', '\fheight', 'extraaxisoptions', extraaxisoptions);
 
 load("cumreward256_clipped.csv");
 load("loss256_clipped.csv");
+%load("dloss256_clipped.csv");
 load("epsilon256_clipped.csv");
 
-figure
-subplot(3,1,1)
+figure('units','normalized','outerposition',[0 0 1 1])
+subplot(4,1,1)
 plot(cumreward256_clipped);
 grid on;
+% xlim([0 1000])
 xlabel('Episoden','interpreter','latex');
 ylabel('Reward','interpreter','latex');
 
-subplot(3,1,2)
-plot(loss256_clipped);
+subplot(4,1,2)
+plot(loss256_clipped);%,'x'
+%ylim([0 1000])
 grid on;
 xlabel('Episoden','interpreter','latex');
 ylabel('Loss','interpreter','latex');
-subplot(3,1,3)
+subplot(4,1,3)
 plot(epsilon256_clipped);
 grid on;
 xlabel('Episoden','interpreter','latex');
 ylabel('epsilon','interpreter','latex');
-sgtitle("Bitflip Ergebnisse NN 256 Neuronen clipped, seed 2, 2.0f beim Loss")
+sgtitle("Bitflip Ergebnisse NN 256 Neuronen clipped, seed 2, -2.0f beim Loss, lr 0.0001 18 09 14:10")
+h = subplot(4,1,4);   
+u = uitable('Data',T{:,:},'Units',h.Units,'Position',h.Position,'ColumnName',T.Properties.VariableNames); 
+set(u,'ColumnWidth',{150})
+h.Visible = 'Off';         
+% subplot(4,1,4)
+% plot(dloss256_clipped);
+% grid on;
+% % xlim([0 1000])
+% xlabel('Episoden','interpreter','latex');
+% ylabel('dLoss','interpreter','latex');
 
-load("cumreward256_nur_action.csv")
-figure
-plot(cumreward256_nur_action);
-grid on;
-xlabel('Anzahl der Testschritte nach dem Training','interpreter','latex');
-ylabel('Reward','interpreter','latex');
-legend;
-legend('Location','northeast');
+% cleanfigure();
+% matlab2tikz('bitflip_dervloss_clipped.tikz','showInfo', false,  ...
+%      'width', '0.85\textwidth', 'height', '\fheight', 'extraaxisoptions', extraaxisoptions);
+% load("cumreward256_nur_action.csv")
+% figure
+% plot(cumreward256_nur_action);
+% grid on;
+% xlabel('Anzahl der Testschritte nach dem Training','interpreter','latex');
+% ylabel('Reward','interpreter','latex');
+% legend;
+% legend('Location','northeast');

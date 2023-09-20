@@ -308,7 +308,7 @@ void test_uz_nn_matlab(void)
       uz_matrix_t* ref=uz_matrix_init(&refvec,reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
       // set all gradients zero before training
       //adam testing
-      float lernrate = 0.001f;
+      float lernrate = 0.01f;
       adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINI_BATCH_SIZE);
       uz_nn_set_gradients_zero(test);
       for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)

@@ -32,6 +32,7 @@ uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void);
  * 
  * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
  * @param ID_config config if ID
+ * @param actual actual values
  * @param global_config ParaID global config
  * @param flags ParaID control flags
  * @param fft_in input from FFT function

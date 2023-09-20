@@ -23,6 +23,7 @@
 #include "rtwtypes.h"
 #include <string.h>
 #include "FOC_slowCTRL_private.h"
+#include <stdbool.h>
 
 /* Exported block signals */
 real_T Udc_scf;                        /* '<S1>/Switch1' */

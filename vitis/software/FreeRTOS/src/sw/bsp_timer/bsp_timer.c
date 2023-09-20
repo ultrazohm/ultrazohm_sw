@@ -44,13 +44,13 @@ typedef struct {
 static XTtcPs TtcPsInst[NUM_TTC_PS_DEVICES];    /* Number of available timer counters */
 
 static TmrCntrSetup SettingsTable[NUM_TTC_PS_DEVICES] = {
-    [TTC_TICK_DEVICE_ID]{
+    [TTC_TICK_DEVICE_ID] = {
         .OutputHz = 1000,
         .Interval = 0,
         .Prescaler = 0,
         .Options = (XTTCPS_OPTION_INTERVAL_MODE | XTTCPS_OPTION_WAVE_DISABLE)
     },
-    [TTC_TIMESTAMP_DEVICE_ID]{
+    [TTC_TIMESTAMP_DEVICE_ID] = {
         // Not necessary for setup! Will be used for time calculations at runtime.
         .OutputHz = (TTC_TIMESTAMP_CLK_IN / (2 << 6)),
         .Interval = 0xFFFF, // Must be any of uint8_max, uint16_max, uint32_max

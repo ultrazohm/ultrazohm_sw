@@ -10,7 +10,7 @@
 #include "uz_sum.h"
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
 #include <time.h>
-
+#include <stdlib.h>
 
 #define NUMBER_OF_INPUTS 13
 #define NUMBER_OF_OUTPUTS 1

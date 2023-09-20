@@ -13,6 +13,7 @@
 #include "uz_environment.h"
 #include <time.h>
 #include <string.h>
+#include <stdlib.h>
 
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 20000

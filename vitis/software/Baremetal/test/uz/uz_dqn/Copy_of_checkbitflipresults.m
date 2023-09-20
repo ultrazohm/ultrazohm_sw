@@ -81,33 +81,39 @@ T = readtable("hyperparam.txt");
 
 load("cumreward256_clipped.csv");
 load("loss256_clipped.csv");
-%load("dloss256_clipped.csv");
+load("globalrewardr.csv");
 load("epsilon256_clipped.csv");
 
 figure('units','normalized','outerposition',[0 0 1 1])
-subplot(4,1,1)
+subplot(5,1,1)
 plot(cumreward256_clipped);
 grid on;
 % xlim([0 1000])
 xlabel('Episoden','interpreter','latex');
 ylabel('Reward','interpreter','latex');
 
-subplot(4,1,2)
+subplot(5,1,2)
 plot(loss256_clipped);%,'x'
 %ylim([0 1000])
 grid on;
 xlabel('Episoden','interpreter','latex');
 ylabel('Loss','interpreter','latex');
-subplot(4,1,3)
+subplot(5,1,3)
+plot(globalrewardr);
+grid on;
+xlabel('Episoden','interpreter','latex');
+ylabel('Rewardmetrik','interpreter','latex');
+grid on;
+h = subplot(5,1,4);   
+u = uitable('Data',T{:,:},'Units',h.Units,'Position',h.Position,'ColumnName',T.Properties.VariableNames); 
+set(u,'ColumnWidth',{120})
+h.Visible = 'Off'; 
+subplot(5,1,5)
 plot(epsilon256_clipped);
 grid on;
 xlabel('Episoden','interpreter','latex');
 ylabel('epsilon','interpreter','latex');
 sgtitle("Bitflip Ergebnisse NN 256 Neuronen clipped, seed 2, -2.0f beim Loss, lr 0.0001 18 09 14:10")
-h = subplot(4,1,4);   
-u = uitable('Data',T{:,:},'Units',h.Units,'Position',h.Position,'ColumnName',T.Properties.VariableNames); 
-set(u,'ColumnWidth',{150})
-h.Visible = 'Off';         
 % subplot(4,1,4)
 % plot(dloss256_clipped);
 % grid on;

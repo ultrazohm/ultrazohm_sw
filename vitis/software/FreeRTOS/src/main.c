@@ -287,9 +287,9 @@ int main_thread()
 
 	print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
 
-	sys_thread_new("echod", application_thread, 0,
-			THREAD_STACKSIZE,
-			DEFAULT_THREAD_PRIO);
+//	sys_thread_new("echod", application_thread, 0,
+//			THREAD_STACKSIZE,
+//			DEFAULT_THREAD_PRIO);
 	sys_thread_new("xcp-if", xcp_interface, 0,
 			THREAD_STACKSIZE,
 			DEFAULT_THREAD_PRIO);

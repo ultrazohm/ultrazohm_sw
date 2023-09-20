@@ -17,7 +17,7 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 20000
 #define MINIBATCHSIZE 32
-#define NUMBER_OF_EPOCHS 25
+#define NUMBER_OF_EPOCHS 10000
 #define TARGET_UPDATE_FREQUENCY 1
 // nn
 #define NUMBEROFBITS 4
@@ -26,9 +26,6 @@
 #define NUMBER_OF_HIDDEN_LAYER 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256
 #define NUMBEROFTESTSTEPS 50
-// adam
-float m[5000] = {0.0f};
-float v[5000] = {0.0f};
 
 float discountfact = 0.99f;
 float lernrate = 0.001f;
@@ -37,6 +34,13 @@ uint32_t array[NUMBEROFBITS] = {0,1,0,0};
 uint32_t tararray[NUMBEROFBITS] = {1,1,1,1};
 float inarray[NUMBER_OF_INPUTS] = {10.0f};
  //conf envrionment
+
+ //adam
+ float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
+ float m2[NUMBER_OF_OUTPUTS + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0.0f};
+ float v1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
+ float v2[NUMBER_OF_OUTPUTS + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0.0f};
+
 struct uz_dqn_environment_config configenv = {
     .bitlength = NUMBEROFBITS,
     .bitarray = array,
@@ -50,6 +54,7 @@ struct uz_dqn_environment_config configenv = {
 // debug stuff
 float loss[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
+float globalrewardr[NUMBER_OF_EPOCHS] = {0.0f};
 float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
 //dqn
@@ -164,6 +169,8 @@ struct uz_nn_layer_config config_critic[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_gradients = UZ_MATRIX_SIZE(g_1),
         .length_of_temporarybackprop = UZ_MATRIX_SIZE(T1),
         .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_1),
+        .m = m1,
+        .v = v1,
         .weights = cw_1,
         .bias = cb_1,
         .output = cy_1,
@@ -190,6 +197,8 @@ struct uz_nn_layer_config config_critic[NUMBER_OF_HIDDEN_LAYER] = {
       .length_of_error = UZ_MATRIX_SIZE(e_2),
       .length_of_temporarybackprop = UZ_MATRIX_SIZE(T2),
       .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_2),
+      .m = m2,
+      .v = v2,
       .weights = cw_2,
       .bias = cb_2,
       .output = cy_2,
@@ -241,7 +250,7 @@ void test_dqn_bitflip(void)
     struct uz_matrix_t getbackobs_matrixpl1 = {0};
     uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
     //adam testing
-    adam_optimizer_t *adam = uz_adam_init(m, v, lernrate/(float)MINIBATCHSIZE);
+    adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);///(float)MINIBATCHSIZE
     // prefill buffer
     do{
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
@@ -254,9 +263,16 @@ void test_dqn_bitflip(void)
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
     uz_dqn_sample_bitenv(testdqn2);
     cumreward[i] = testdqn2->env->cumreward;
+    if (i == 0){
+    globalrewardr[i] = testdqn2->env->cumreward;
+    }
+    else{
+    globalrewardr[i] = 0.99 * globalrewardr[i-1] + 0.01 * testdqn2->env->cumreward;
+    }
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
+    //loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
     loss[i] = uz_dqn_train4(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
     }
     free(adam);
@@ -279,18 +295,19 @@ void test_dqn_bitflip(void)
     // strcat(".csv",s);
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/globalrewardr.csv", globalrewardr, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
     // save param to .txt
     FILE* f = fopen("test/uz/uz_dqn/hyperparam.txt", "w");  // open the file for writing
     if (f != NULL)                       // check for success
     {
-     fprintf(f,"Learnrate, Discount Factor, Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
-     fprintf(f,"%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", lernrate,discountfact,NUMBER_OF_HIDDEN_LAYER,EXPERIENCE_BUFFER_LENGTH,MINIBATCHSIZE,NUMBER_OF_EPOCHS,TARGET_UPDATE_FREQUENCY,NUMBEROFBITS,
+     fprintf(f,"Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
+     fprintf(f,"%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", lernrate,discountfact, configenv.epsilon_start,configenv.epsilon_min,configenv.epsilon_decay,NUMBER_OF_HIDDEN_LAYER,EXPERIENCE_BUFFER_LENGTH,MINIBATCHSIZE,NUMBER_OF_EPOCHS,TARGET_UPDATE_FREQUENCY,NUMBEROFBITS,
      NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
      fclose(f);                       // close the file
      f = NULL;                        // set file handle to null since f is no longer valid
     }
-    //uz_nn_trained_export(testdqn2->critic_target_net);
+    uz_nn_trained_export(testdqn2->critic_target_net);
 }
 #endif // TEST

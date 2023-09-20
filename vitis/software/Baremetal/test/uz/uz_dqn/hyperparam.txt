@@ -1,2 +1,2 @@
-Learnrate, Discount Factor, Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer 
-0.001000,0.990000,2,20000,32,25,1,4,256
+Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer 
+0.010000,0.990000,0.990000,0.010000,0.001000,2,20000,32,10000,10,4,64

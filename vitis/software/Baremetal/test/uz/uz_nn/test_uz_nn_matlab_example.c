@@ -39,7 +39,13 @@ float cacheg_3[NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
 float g_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0};
 float g_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
 float g_3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
-
+// adam
+float m1[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0.0f};
+float v1[NUMBER_OF_NEURONS_IN_FIRST_LAYER + NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_INPUTS] = {0.0f};
+float m2[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0.0f};
+float v2[NUMBER_OF_NEURONS_IN_SECOND_LAYER + NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0.0f};
+float m3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0.0f};
+float v3[NUMBER_OF_OUTPUTS+NUMBER_OF_OUTPUTS * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0.0f};
 // 13 Trainingsvektordaten aus Matlab(1-13)
 float x[NUMBER_OF_INPUTS] = {
 #include "matlab_weights/X_inputvec.csv"
@@ -119,6 +125,8 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
         .length_of_gradients = UZ_MATRIX_SIZE(g_1),
         .length_of_temporarybackprop = UZ_MATRIX_SIZE(T1),
         .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_1),
+        .m = m1,
+        .v = v1,
         .weights = w_1,
         .bias = b_1,
         .output = y_1,
@@ -145,6 +153,8 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
       .length_of_error = UZ_MATRIX_SIZE(e_2),
       .length_of_temporarybackprop = UZ_MATRIX_SIZE(T2),
       .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_2),
+      .m = m2,
+      .v = v2,
       .weights = w_2,
       .bias = b_2,
       .output = y_2,
@@ -170,6 +180,8 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
    .length_of_error = UZ_MATRIX_SIZE(e_3),
    .length_of_temporarybackprop = UZ_MATRIX_SIZE(T3),
    .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg_3),
+    .m = m3,
+    .v = v3,
    .weights = w_3,
    .bias = b_3,
    .output = y_3,
@@ -188,6 +200,7 @@ void setUp(void)
 void tearDown(void)
 {
 }
+
 
 void test_uz_nn_train_minibatch_function(void)
 {
@@ -212,6 +225,46 @@ void test_uz_nn_train_minibatch_function(void)
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, mse_mb_train[i], mse[i]);
     }
 }
+
+ void test_uz_nn_matlab_mini_batch(void)
+  {
+      uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER,true);
+      struct uz_matrix_t refmatrix={0};
+      uz_matrix_t* refout=uz_matrix_init(&refmatrix, reference_mat,UZ_MATRIX_SIZE(reference_mat),MINI_BATCH_SIZE,NUMBER_OF_OUTPUTS);
+      struct uz_matrix_t input_matrix={0};
+      uz_matrix_t* input=uz_matrix_init(&input_matrix, x_mat,UZ_MATRIX_SIZE(x_mat),MINI_BATCH_SIZE,NUMBER_OF_INPUTS);
+      float X_data[NUMBER_OF_INPUTS] = {0.0f};
+      struct uz_matrix_t input_vec= {0};
+      uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
+      struct uz_matrix_t refvec={0};
+      uz_matrix_t* ref=uz_matrix_init(&refvec,reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
+      // set all gradients zero before training
+      uz_nn_set_gradients_zero(test);
+      for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+      {
+      uint32_t mb_size = uz_matrix_get_number_of_rows(input);
+      for(uint32_t j=0; j<mb_size;j++){
+        uz_matrix_get_row_vector_zero_based(input,X,j);
+        uz_nn_ff(test,X);
+        uz_matrix_t* output=uz_nn_get_output_data(test);
+        uz_matrix_get_row_vector_zero_based(refout,ref,j);
+        msetest[j] = uz_nn_mse(output,ref);
+        msederv[j] = uz_nn_mse_derv(output,ref);
+        float *msed = &msederv[j];
+        uz_nn_backward_pass_mini_batch(test,msed,X);        
+        }
+        float lernrate = 0.001f;
+        uz_nn_gradient_descent_mini_batch(test,lernrate,mb_size);
+        uz_matrix_t* output=uz_nn_get_output_data(test);
+        msebatch[i] = uz_nn_mse(output,ref); 
+        //float result=
+        uz_matrix_get_element_zero_based(output,0,0);
+       // printf("output nach minbatch  %d ist = %.8f \n",(int)i, (double)result);
+       // printf("mse nach minibatch %d ist = %.8f \n",(int)i, (double)msebatch[i]);
+        uz_nn_set_gradients_zero(test);
+        }
+}
+
 
 void test_uz_nn_matlab(void)
   {
@@ -241,8 +294,7 @@ void test_uz_nn_matlab(void)
       // float seconds = (float)(end - start) / CLOCKS_PER_SEC;
      //  printf("Zeit des Tests = %.6f \n", (double)seconds);
  }
-
- void test_uz_nn_matlab_mini_batch(void)
+ void test_uz_nn_matlab_mini_batch_adam(void)
   {
       uz_nn_t* test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER,true);
       struct uz_matrix_t refmatrix={0};
@@ -255,6 +307,9 @@ void test_uz_nn_matlab(void)
       struct uz_matrix_t refvec={0};
       uz_matrix_t* ref=uz_matrix_init(&refvec,reference_output,UZ_MATRIX_SIZE(reference_output),1,UZ_MATRIX_SIZE(reference_output));
       // set all gradients zero before training
+      //adam testing
+      float lernrate = 0.001f;
+      adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINI_BATCH_SIZE);
       uz_nn_set_gradients_zero(test);
       for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
       {
@@ -272,16 +327,15 @@ void test_uz_nn_matlab(void)
         // printf("output von minibatch member  %d ist = %.8f \n",(int)j, (double)result);
         // printf("mse von output minibatch member %d ist = %.8f \n",(int)j, (double)msetest[j]);
         }
-        float lernrate = 0.001f;
-        uz_nn_gradient_descent_mini_batch(test,lernrate,mb_size);
+        adam_optimizer_step(adam,test);
+        uz_nn_set_gradients_zero(test);
         uz_matrix_t* output=uz_nn_get_output_data(test);
         msebatch[i] = uz_nn_mse(output,ref); 
-        //float result=
-        uz_matrix_get_element_zero_based(output,0,0);
+        //float result=uz_matrix_get_element_zero_based(output,0,0);
        // printf("output nach minbatch  %d ist = %.8f \n",(int)i, (double)result);
        // printf("mse nach minibatch %d ist = %.8f \n",(int)i, (double)msebatch[i]);
-        uz_nn_set_gradients_zero(test);
         }
+        free(adam);
 }
 
 

@@ -14,6 +14,13 @@
 typedef struct uz_nn_layer_t uz_nn_layer_t;
 typedef struct adam_optimizer_t adam_optimizer_t;
 
+struct adam_optimizer_t{
+    float beta1;
+    float beta2;
+    float epsilon;
+    float learning_rate;
+    uint32_t traincounter;
+};
 /**
  * @brief Enum for passing the type of the activation function to the init function of the layer
  * 
@@ -47,7 +54,8 @@ struct uz_nn_layer_config{
     uint32_t length_of_temporarybackprop;/**< Number of temporarybackprop in the layer, has to be calculated by UZ_MATRIX_SIZE(temporarybackprop) and is equal to the number of neurons in the layer */
     uint32_t length_of_gradients;/**< Number of gradients in the layer, has to be calculated by UZ_MATRIX_SIZE(gradients) and is equal to the number of weights + number of bias */
     uint32_t length_of_cachegradients;/**< Number of cachegradients in the layer, has to be calculated by UZ_MATRIX_SIZE(cachegradients) and is equal to the number of weights or number of outputs */
-
+    float *const m; /** Pointer to an array that holds the biased first moment estimate for Adam */
+    float *const v; /** Pointer to an array that holds the biased second raw moment estimate for Adam */
     float *const weights; /** Pointer to an array that holds the weights */
     float *const bias; /** Pointer to an array that holds the bias */
     float *const output; /** Pointer to an array that holds the output / where the output is written to */
@@ -204,6 +212,6 @@ uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const *const self);
  * @return uz_matrix* 
  */
 uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const *const self);
-adam_optimizer_t *uz_adam_init(float *m, float *v, float learnrate);
+adam_optimizer_t *uz_adam_init(float learnrate);
 void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer);
 #endif // UZ_NN_LAYER_H

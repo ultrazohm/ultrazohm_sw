@@ -42,30 +42,22 @@ struct uz_nn_layer_t
     struct uz_matrix_t temporarybackprop_matrix;
     struct uz_matrix_t gradients_matrix;
     struct uz_matrix_t cachegradients_matrix;
+    float *m;
+    float *v;
     float (*activation_function)(float);
     float (*activation_function_derivative)(float);
     bool is_ready;
 };
 
-struct adam_optimizer_t{
-    float* m;
-    float* v;
-    float beta1;
-    float beta2;
-    float epsilon;
-    float learning_rate;
-};
 
-
-adam_optimizer_t *uz_adam_init(float *m, float *v, float learnrate)
+adam_optimizer_t *uz_adam_init(float learnrate)
 {
     adam_optimizer_t* self = (adam_optimizer_t*)malloc(sizeof(adam_optimizer_t));
-    self->m = m;
-    self->v = v;
     self->beta1 =  0.9f;
     self->beta2 = 0.999f;
     self->epsilon = 1e-8f;
     self->learning_rate = learnrate;
+    self->traincounter = 0U;
 return (self);
 }
 
@@ -100,6 +92,8 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     self->bias = uz_matrix_init(&self->bias_matrix, layer_config.bias, layer_config.length_of_bias, 1, layer_config.number_of_neurons);
     self->output = uz_matrix_init(&self->output_matrix, layer_config.output, layer_config.length_of_output, 1, layer_config.number_of_neurons);
     self->sumout = uz_matrix_init(&self->sumout_matrix, layer_config.sumout, layer_config.length_of_sumout, 1, layer_config.number_of_neurons);
+    self->m = NULL;
+    self->v = NULL;
     self->delta = NULL;
     self->error = NULL;
     self->temporarybackprop = NULL;
@@ -164,6 +158,8 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
     self->temporarybackprop = uz_matrix_init(&self->temporarybackprop_matrix,layer_config.temporarybackprop, layer_config.length_of_temporarybackprop,layer_config.number_of_temporaryrows,layer_config.number_of_temporarycolumns);
     self->gradients = uz_matrix_init(&self->gradients_matrix,layer_config.gradients, layer_config.length_of_gradients,layer_config.length_of_gradients,1);
     self->cachegradients = uz_matrix_init(&self->cachegradients_matrix,layer_config.cachegradients, layer_config.length_of_cachegradients,layer_config.number_of_cachegradrows,layer_config.number_of_cachegradcolumns);
+    self->m = layer_config.m;
+    self->v = layer_config.v;
     switch (layer_config.activation_function)
     {
     case activation_linear:
@@ -325,12 +321,12 @@ uint32_t weight_index = layer->weights->length_of_data;
 // get number of params from layer
 uint32_t params = bias_index+weight_index;
 for (uint32_t i = 0; i < params; i++){
-        optimizer->m[i] = optimizer->beta1 * optimizer->m[i] + (1.0f - optimizer->beta1) * (layer->gradients->data[i]);
-        optimizer->v[i] = optimizer->beta2 * optimizer->v[i] + (1.0f - optimizer->beta2) * (layer->gradients->data[i] * layer->gradients->data[i]);
+        layer->m[i] = optimizer->beta1 * layer->m[i] + (1.0f - optimizer->beta1) * (layer->gradients->data[i]);
+        layer->v[i] = optimizer->beta2 * layer->v[i] + (1.0f - optimizer->beta2) * (layer->gradients->data[i] * layer->gradients->data[i]);
 
         // Bias-corrected moving averages
-        float m_hat = optimizer->m[i] / (1.0f - powf(optimizer->beta1, i + 1));
-        float v_hat = optimizer->v[i] / (1.0f - powf(optimizer->beta2, i + 1));
+        float m_hat = layer->m[i] / (1.0f - powf(optimizer->beta1, (float)optimizer->traincounter));
+        float v_hat = layer->v[i] / (1.0f - powf(optimizer->beta2, (float)optimizer->traincounter));
 
         // Update weights
         if (i<weight_index){

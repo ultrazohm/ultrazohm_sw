@@ -7,7 +7,6 @@
 #include "../uz_HAL.h"
 #include "uz_dqn.h"
 
-
 static uint32_t instance_counterbuf = 0U;
 static uz_dqn_experience_replay_t instancesbuf[UZ_DQN_BUFFER_MAX_INSTANCES] = {0};
 static uz_dqn_experience_replay_t* uz_dqn_experience_replay_allocation(void);
@@ -300,11 +299,10 @@ for(uint32_t j=0; j<mbsize;j++){
     }
     cum_loss = cum_loss/(float)mbsize;
     adam_optimizer_step(adam,self->critic);
-    uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
     uz_nn_set_gradients_zero(self->critic);
     // Targetupdate 
     if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
-    uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
+    uz_nn_target_update(self->critic,self->critic_target_net,smoothing, &targsmoothfact);
     }
 return cum_loss;
 }
@@ -401,7 +399,7 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float reward, float qval, float qv
     else{
         y_j = reward + (self->discount_factor * qvalplus1);
     }
-    float dloss = 2.0f*(y_j - qval);
+    float dloss = 2.0f *(y_j - qval);
 
     if (dloss > 1.0f){
         dloss = 1.0f;

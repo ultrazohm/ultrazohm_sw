@@ -17,18 +17,18 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 20000
 #define MINIBATCHSIZE 32
-#define NUMBER_OF_EPOCHS 10000
+#define NUMBER_OF_EPOCHS 25
 #define TARGET_UPDATE_FREQUENCY 1
 // nn
 #define NUMBEROFBITS 4
-#define NUMBER_OF_INPUTS 2*NUMBEROFBITS
-#define NUMBER_OF_OUTPUTS 8
+#define NUMBER_OF_INPUTS 8
+#define NUMBER_OF_OUTPUTS 4
 #define NUMBER_OF_HIDDEN_LAYER 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256
 #define NUMBEROFTESTSTEPS 50
 // adam
-float m[2500] = {0.0f};
-float v[2500] = {0.0f};
+float m[5000] = {0.0f};
+float v[5000] = {0.0f};
 
 float discountfact = 0.99f;
 float lernrate = 0.001f;
@@ -117,7 +117,7 @@ float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0};
 
 // config random
 struct uz_mtwister_config cfg = {
-  .seed = 132,
+  .seed = 123,
   .distribution = normal_distribution
 };
 //config target
@@ -258,9 +258,6 @@ void test_dqn_bitflip(void)
     genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
     loss[i] = uz_dqn_train4(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
-    if (i == 650){
-    int a = 1;
-    }
     }
     free(adam);
     // Verhalten des Agenten testen, nach dem Training
@@ -283,10 +280,17 @@ void test_dqn_bitflip(void)
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
-    exportFloatArrayToCSV("test/uz/uz_dqn/reward.csv", reward, EXPERIENCE_BUFFER_LENGTH);
+    //exportFloatArrayToCSV("test/uz/uz_dqn/reward.csv", reward, EXPERIENCE_BUFFER_LENGTH);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
-    // parameter export
-    uz_nn_trained_export(testdqn2->critic_target_net);
-
+    FILE* f = fopen("test/uz/uz_dqn/hyperparam.txt", "w");  // open the file for writing
+    if (f != NULL)                       // check for success
+    {
+     fprintf(f,"Learnrate, Discount Factor, Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
+     fprintf(f,"%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", lernrate,discountfact,NUMBER_OF_HIDDEN_LAYER,EXPERIENCE_BUFFER_LENGTH,MINIBATCHSIZE,NUMBER_OF_EPOCHS,TARGET_UPDATE_FREQUENCY,NUMBEROFBITS,
+     NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
+     fclose(f);                       // close the file
+     f = NULL;                        // set file handle to null since f is no longer valid
+    }
+    //uz_nn_trained_export(testdqn2->critic_target_net);
 }
 #endif // TEST

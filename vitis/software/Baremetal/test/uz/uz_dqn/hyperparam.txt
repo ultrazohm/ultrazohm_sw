@@ -1,0 +1,2 @@
+Learnrate, Discount Factor, Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer 
+0.001000,0.990000,2,20000,32,25,1,4,256

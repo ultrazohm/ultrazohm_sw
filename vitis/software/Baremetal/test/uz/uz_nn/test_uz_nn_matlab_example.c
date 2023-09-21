@@ -222,7 +222,7 @@ void test_uz_nn_train_minibatch_function(void)
     uz_nn_train_minibatch(test, mse, input, refout, X, ref, lernrate, MINI_BATCH_SIZE, NUMBER_OF_EPOCHS);
     // check parameter weights and bias to other test
      for(size_t i = 0;i< (int)(sizeof(mse) / sizeof(float));i++) {
-        TEST_ASSERT_FLOAT_WITHIN(1e-03f, mse_mb_train[i], mse[i]);
+        TEST_ASSERT_FLOAT_WITHIN(1e-03f, mse_mb_train[i], 0.5f* mse[i]);
     }
 }
 

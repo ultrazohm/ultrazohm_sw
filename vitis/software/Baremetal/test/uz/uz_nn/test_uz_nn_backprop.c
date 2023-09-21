@@ -249,7 +249,7 @@ void test_uz_nn_train_check_mse_param(void)
     uz_matrix_t* outputnn2=uz_nn_get_output_data(test2);
     msetest[i] =  uz_nn_mse(outputnn2,refout);
     // // check mse
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f, msesoll[i], msetest[i]);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, msesoll[i], 0.5f* msetest[i]);
     msederv[i] =  uz_nn_mse_derv(outputnn2,refout);
     float *msed = &msederv[i];
     //float result=

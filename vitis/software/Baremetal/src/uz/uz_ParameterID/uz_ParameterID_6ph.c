@@ -317,18 +317,10 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz
 	}
 
 	// FluxmapID active and in start state
-	//-----------------
-	//check this updated thing again
-	//----------------
-	/*if(Data->Controller_Parameters.activeState == 400U){
-		uz_ParaID_configure_6ph_controllers(Data, objects);
-	}else if(Data->GlobalConfig.controllers_updated){
-		uz_ParaID_configure_6ph_controllers(Data, objects);
-		Data->GlobalConfig.controllers_updated = false;
-	}*/
-	//-----------------
-	//check this updated thing again
-	//----------------
+	if(Data->Controller_Parameters.activeState == 400U){
+		uz_ParaID_6ph_reset_controllers(objects);
+	}
+
 	return (out);
 }
 

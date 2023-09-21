@@ -204,7 +204,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 	}
 }
 
-static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
+static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data){
 	uz_assert_not_NULL(Data);
 	Data->Controller_Parameters.Ki_id_out = 0.0f;
 	Data->Controller_Parameters.Ki_iq_out = 0.0f;
@@ -222,7 +222,7 @@ static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data) {
 	Data->Controller_Parameters.resetIntegrator = false;
 }
 
-struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_6ph_dq_t v_dq_Volts) {
+struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID_Data_t* Data, uz_6ph_dq_t v_dq_Volts){
 	uz_assert_not_NULL(Data);
 	uz_6ph_abc_t V_abc_Volts = {0};
 	struct uz_DutyCycle_2x3ph_t output_DutyCycle = { 0 };
@@ -270,7 +270,7 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 	return (output_DutyCycle);
 }
 
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects) {
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects){
 	uz_6ph_dq_t out = {0};
 	uz_3ph_dq_t v_dq_Volts = {0};
 	uz_assert_not_NULL(Data);
@@ -298,13 +298,13 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz
 	}
 
 	// reset all integrators and controllers
-	if (Data->Controller_Parameters.resetIntegrator == true) {
+	if(Data->Controller_Parameters.resetIntegrator == true){
 		uz_ParaID_6ph_reset_controllers(objects);
 	}
 
 	// configure fundamental controllers except for FluxMap
-	if (Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 3U) {
-		if (Data->Controller_Parameters.activeState == 148U) {
+	if(Data->ControlFlags->transNr > 0U && Data->ControlFlags->transNr <= 3U){
+		if(Data->Controller_Parameters.activeState == 148U) {
 			uz_CurrentControl_set_decoupling_method(objects.CC_instance_dq, no_decoupling);
 		} else if (Data->Controller_Parameters.activeState == 170U) {
 			uz_CurrentControl_set_decoupling_method(objects.CC_instance_dq, linear_decoupling);
@@ -320,13 +320,11 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz
 	if(Data->Controller_Parameters.activeState == 400U){
 		uz_ParaID_6ph_reset_controllers(objects);
 	}
-
 	return (out);
 }
 
 // multi-phase current control
-static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects)
-{
+static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects){
     // Initialize structs
     uz_6ph_dq_t out = {0};
 	uz_3ph_dq_t cc_out_dq = {0};
@@ -417,7 +415,7 @@ void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_dq_se
 	Data->filter_3 = uz_uz_dq_setpoint_filter_init(config);
 }  
 
-static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
+static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 
@@ -447,7 +445,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	Data->finished_voltage_measurement = uz_get_ElectricalID_6ph_finished_voltage_measurement(self->ElectricalID);
 }
 
-static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
+static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Update Control-State inputs, which are not depended on other states
@@ -457,7 +455,7 @@ static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_Param
 	uz_ControlState_step(self->ControlState);
 }
 
-static void uz_ParaID_6ph_FrictionID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
+static void uz_ParaID_6ph_FrictionID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Update State-Inputs
@@ -474,7 +472,7 @@ static void uz_ParaID_6ph_FrictionID_step(uz_ParameterID_6ph_t* self, uz_Paramet
 	uz_ControlState_set_finishedFrictionID(self->ControlState, uz_FrictionID_get_finishedFrictionID(self->FrictionID));
 }
 
-static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
+static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Update State-Inputs
@@ -491,7 +489,7 @@ static void uz_ParaID_6ph_TwoMassID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	uz_ControlState_set_finishedTwoMassID(self->ControlState, uz_TwoMassID_get_finishedTwoMassID(self->TwoMassID));
 }
 
-static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
+static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Step the function
@@ -502,18 +500,16 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	uz_ControlState_set_finishedFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_finished(self->FluxMapID));
 }
 
-void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter)
-{
+void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter){
 	uz_ParameterID_update_transmit_values(Data, activeState, FluxMapCounter, ArrayCounter);
 }
 
 void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array){
 	uz_assert_not_NULL(self);
-	if(Data->finished_voltage_measurement && Data->Controller_Parameters.activeState==156U)
-        {
+	if(Data->finished_voltage_measurement && Data->Controller_Parameters.activeState==156U){
 			uz_get_ElectricalID_6ph_fft_out(self->ElectricalID, meas_array);
         	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array, Data->GlobalConfig.sampleTimeISR);
-        	Data->ElectricalID_FFT = uz_correct_psi_pms_ElectricalID(uncorrected, Data->GlobalConfig, PARAMETERID6PH_ELECTRICAL_N_ORDER);
+        	Data->ElectricalID_FFT = uz_correct_psi_pms_ElectricalID(uncorrected, Data->GlobalConfig);
         }
 	else{
 		Data->ElectricalID_FFT.finished_flag = false;
@@ -531,7 +527,7 @@ void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data
 	Data->encoder_offset_estimation = uz_encoder_offset_estimation_init(offset_estimation_config);
 }
 
-static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data) {
+static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *self, uz_ParameterID_Data_t *Data){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
 	//Initialize Global-Config
@@ -641,6 +637,5 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 	Data->filter_2 = NULL;
 	Data->filter_3 = NULL;
 }
-
 
 #endif

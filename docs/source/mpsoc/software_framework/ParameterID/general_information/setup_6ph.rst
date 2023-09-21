@@ -1,4 +1,4 @@
-.. _uz_ParaID_setup:
+.. _uz_ParaID_6ph_setup:
 
 ======================================
 Setup and functions of the ParameterID

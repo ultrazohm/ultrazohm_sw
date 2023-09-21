@@ -270,13 +270,13 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
     uz_matrix_transpose(self->sumout);
     uz_matrix_multiply(self->temporarybackprop,locgradprev,self->delta);
 }
-void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float error)
+void uz_nn_backward_last_layer(uz_nn_layer_t *const self,float *error)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     for(size_t i=0;i< self->number_of_neurons;i++)
     {
-    self->error->data[i] = error;
+    self->error->data[i] = error[i];
     }
     uz_matrix_apply_function_to_each_element(self->sumout,self->activation_function_derivative);
     uz_matrix_transpose(self->sumout);
@@ -312,6 +312,14 @@ void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate)
     uz_matrix_transpose(self->delta);
     uz_matrix_add(self->delta,self->bias);
     uz_matrix_transpose(self->delta);
+}
+void uz_nn_update_layer_param_no_bias(uz_nn_layer_t *const self, float lernrate)
+{
+    uz_matrix_multiply_by_scalar(self->cachegradients,lernrate);
+    uz_matrix_multiply_by_scalar(self->cachegradients,-1.0f);
+    uz_matrix_transpose(self->weights);
+    uz_matrix_add(self->cachegradients,self->weights);
+    uz_matrix_transpose(self->weights);
 }
 
 void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer)

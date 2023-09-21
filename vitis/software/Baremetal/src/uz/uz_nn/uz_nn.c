@@ -185,7 +185,16 @@ void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate)
         uz_nn_update_layer_param(self->layer[i], learnrate);
     }
 }
-
+void uz_nn_gradient_descent_no_bias(uz_nn_t *self, float const learnrate)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_update_layer_param_no_bias(self->layer[i], learnrate);
+    }
+}
 void uz_nn_gradient_descent_mini_batch(uz_nn_t *self, float const learnrate, uint32_t minibatchsize)
 {
     uz_assert_not_NULL(self);
@@ -197,6 +206,15 @@ void uz_nn_gradient_descent_mini_batch(uz_nn_t *self, float const learnrate, uin
     }
 }
 
+void uz_nn_mse_derv_mult(uz_matrix_t const *const output, uz_matrix_t const *const expectedoutput, float *error)
+{
+    uz_assert(expectedoutput->length_of_data == output->length_of_data);
+    float z = 0.0f;
+    for (uint32_t i = 0; i < output->length_of_data; i++)
+    {
+        error[i] = - (expectedoutput->data[i] - output->data[i]);
+    }
+}
 float uz_nn_mse_derv(uz_matrix_t const *const output, uz_matrix_t const *const expectedoutput)
 {
     uz_assert(expectedoutput->length_of_data == output->length_of_data);
@@ -217,7 +235,7 @@ float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t const *const expectedoutp
     {
         y += (expectedoutput->data[i] - output->data[i]) * (expectedoutput->data[i] - output->data[i]);
     }
-    y = (0.5f / ((float)output->length_of_data)) * y;
+    y = 1.0f/(float)output->length_of_data * y;
 
     return y;
 }
@@ -227,7 +245,7 @@ void uz_nn_backward_pass(uz_nn_t *self, const float *const error, uz_matrix_t *c
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_assert(self->is_trainable);
-    uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], *error);
+    uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], error);
     for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
     {
         uz_nn_layer_back(self->layer[i - 1], uz_nn_get_delta_data(self, i + 1), uz_nn_get_weight_matrix(self, i + 1));
@@ -244,7 +262,7 @@ void uz_nn_backward_pass_mini_batch(uz_nn_t *self, const float *const error, uz_
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_assert(self->is_trainable);
-    uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], *error);
+    uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], error);
     for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
     {
         uz_nn_layer_back(self->layer[i - 1], uz_nn_get_delta_data(self, i + 1), uz_nn_get_weight_matrix(self, i + 1));

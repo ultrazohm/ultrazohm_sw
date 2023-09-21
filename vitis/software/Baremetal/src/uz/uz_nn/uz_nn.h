@@ -66,7 +66,7 @@ void uz_nn_backward_pass_mini_batch(uz_nn_t *self,const float *const error, uz_m
  * @param learnrate float, that determines the step size of the update
  */
 void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate);
-
+void uz_nn_gradient_descent_no_bias(uz_nn_t *self, float const learnrate);
 /**
  * @brief Update whole neural network with gradient descent
  * 

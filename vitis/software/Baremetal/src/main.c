@@ -133,15 +133,15 @@ int main(void)
        .Kp = 1.47f, // nach BO
        .Ki = 830.0f, //nach BO
        .samplingTime_sec = 0.0001f,
- 	   .upper_limit = 15.0f,
-  	   .lower_limit = -15.0f
+ 	   .upper_limit = 10.0f,
+  	   .lower_limit = -10.0f
     };
     struct uz_PI_Controller_config config_iq_1 = {
        .Kp = 8.17f, // nach BO
        .Ki = 830.0f, // nach BO
        .samplingTime_sec = 0.0001f,
-  	   .upper_limit = 15.0f,
-	   .lower_limit = -15.0f
+  	   .upper_limit = 10.0f,
+	   .lower_limit = -10.0f
     };
     struct uz_CurrentControl_config CC_config_1 = {
        .decoupling_select = linear_decoupling,

@@ -104,8 +104,8 @@ struct uz_3ph_dq_t i_dqn_5th_Amps_bp_1 					= {0};
 struct uz_3ph_dq_t i_dqn_7th_Amps_bp_1 					= {0};
 struct uz_3ph_dq_t i_dqn_5th_Amps_1 					= {0};
 struct uz_3ph_dq_t i_dqn_7th_Amps_1 					= {0};
-struct uz_3ph_dq_t i_dqn_5th_ref_Amps_1 				= {0};
-struct uz_3ph_dq_t i_dqn_7th_ref_Amps_1 				= {0};
+struct uz_3ph_dq_t i_dqn_5th_ref_Amps_1 				= {0.23f, -0.19f, 0.0f};
+struct uz_3ph_dq_t i_dqn_7th_ref_Amps_1 				= {0.28f, 0.024f, 0.0f};
 struct uz_3ph_dq_t v_dqn_5th_ref_Volts_1 				= {0};
 struct uz_3ph_dq_t v_dqn_7th_ref_Volts_1 				= {0};
 struct uz_3ph_abc_t v_abc_5th_ref_Volts_1 				= {0};
@@ -115,10 +115,18 @@ struct uz_3ph_dq_t output_FOC_HC_1						= {0};
 // ---------------- Controller Settings ----------------- //
 float Kp_speed_1 								= 0.01f;
 float Ki_speed_1 								= 1.0f;
-float Kp_id_1 									= 0.3f;
-float Ki_id_1 									= 230.0f;
-float Kp_iq_1 									= 0.5f;
-float Ki_iq_1 									= 230.0f;
+float Kp_id_1 									= 0.3f; 	//= 1.47f;
+float Ki_id_1 									= 230.0f; 	//= 830.0f;
+float Kp_iq_1 									= 0.5f; 	//= 8.17f;
+float Ki_iq_1 									= 230.0f; 	//= 830.0f;
+float Kp_id_5th_1								= 2.0f; 	//= 0.3f;
+float Ki_id_5th_1								= 5.0f; 	//= 230.0f;
+float Kp_iq_5th_1								= 2.0f;		//= 0.5f;
+float Ki_iq_5th_1								= 5.0f;	//= 230.0f;
+float Kp_id_7th_1								= 2.0f;
+float Ki_id_7th_1								= 5.0f;
+float Kp_iq_7th_1								= 2.0f;
+float Ki_iq_7th_1								= 5.0f;
 float Gain_RC_6th_1								= 100.0f;
 float Gain_RC_12th_1							= 10.0f;
 float Gain_RC_5th_1								= 100.0f;
@@ -180,6 +188,8 @@ float amplitude_6th_d = 0.0f;
 float amplitude_6th_q = 0.0f;
 float amplitude_5th = 0.0f;
 float amplitude_7th = 0.0f;
+int speed_ripple_comp = 0;
+float M_meas_Nm = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -198,6 +208,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_3(&Global_Data);
+    M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f;
 
     // Tristate Inverters
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
@@ -285,17 +296,41 @@ void ISR_Control(void *data)
 //    	}
 // =============================================== //
 
-    // Field Oriented Control of PMSM 1 and Resonant Controller
-    M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
-    i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
-    v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+    // -------------------- FOC and additional controls of PMSM 1 -------------------- //
+    // Calculate reference Torque
+    //M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
 
+    // Set speed ripple compensation
+    switch (speed_ripple_comp)
+    {
+    default: // No speed ripple compensation
+    	i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
+    	v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+    	break;
+    case 1:
+    	break;
+    }
+
+    // Filter 5th and 7th Harmonics for Harmonic Controllers
+    i_abc_5th_Amps_bp_1.a = uz_signals_IIR_Filter_sample(BP_instance_5th_a_1, i_abc_Amps_1.a);
+    i_abc_5th_Amps_bp_1.b = uz_signals_IIR_Filter_sample(BP_instance_5th_b_1, i_abc_Amps_1.b);
+    i_abc_5th_Amps_bp_1.c = uz_signals_IIR_Filter_sample(BP_instance_5th_c_1, i_abc_Amps_1.c);
+    i_abc_7th_Amps_bp_1.a = uz_signals_IIR_Filter_sample(BP_instance_7th_a_1, i_abc_Amps_1.a);
+    i_abc_7th_Amps_bp_1.b = uz_signals_IIR_Filter_sample(BP_instance_7th_b_1, i_abc_Amps_1.b);
+    i_abc_7th_Amps_bp_1.c = uz_signals_IIR_Filter_sample(BP_instance_7th_c_1, i_abc_Amps_1.c);
+    i_dqn_5th_Amps_bp_1 = uz_transformation_3ph_harmonic_abc_to_dq(i_abc_5th_Amps_bp_1, theta_el_rad_1, -5.0f);
+    i_dqn_7th_Amps_bp_1 = uz_transformation_3ph_harmonic_abc_to_dq(i_abc_7th_Amps_bp_1, theta_el_rad_1, 7.0f);
+    i_dqn_5th_Amps_1.d = uz_signals_IIR_Filter_sample(LP_instance_5th_d_1, i_dqn_5th_Amps_bp_1.d);
+    i_dqn_5th_Amps_1.q = uz_signals_IIR_Filter_sample(LP_instance_5th_q_1, i_dqn_5th_Amps_bp_1.q);
+    i_dqn_7th_Amps_1.d = uz_signals_IIR_Filter_sample(LP_instance_7th_d_1, i_dqn_7th_Amps_bp_1.d);
+    i_dqn_7th_Amps_1.q = uz_signals_IIR_Filter_sample(LP_instance_7th_q_1, i_dqn_7th_Amps_bp_1.q);
+
+    // Control Strategy
     switch (mode_1)
     {
-    default: // No Resonant Controller
+    default: // Only FOC
     	output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
     	break;
-
     case 1: // Resonant Controller for 6th and 12th Harmonic in dq-System
     	i_dq_6th_ref_Amps_1.d = amplitude_6th_d;
     	i_dq_6th_ref_Amps_1.q = amplitude_6th_q;
@@ -305,7 +340,6 @@ void ISR_Control(void *data)
 		output_FOC_RC_1.q = v_dq_ref_Volts_1.q + v_dq_6th_ref_Volts_1.q + v_dq_12th_ref_Volts_1.q;
 		output_1 = uz_Space_Vector_Modulation(output_FOC_RC_1, v_DC_Volts_1, theta_el_rad_1);
     	break;
-
     case 2: // Resonant Controller for 5th and 7th Harmonic in abc-System
     	i_alphabeta_5th_ref_Amps_1.alpha = amplitude_5th;
     	i_alphabeta_5th_ref_Amps_1.beta = amplitude_5th;
@@ -319,20 +353,7 @@ void ISR_Control(void *data)
     	output_FOC_RC_1.q = v_dq_ref_Volts_1.q + v_dq_5th_ref_Volts_1.q + v_dq_7th_ref_Volts_1.q;
     	output_1 = uz_Space_Vector_Modulation(output_FOC_RC_1, v_DC_Volts_1, theta_el_rad_1);
     	break;
-
-    case 3: // Harmonic Controllers for 5th and 7th Harmonic
-    	i_abc_5th_Amps_bp_1.a = uz_signals_IIR_Filter_sample(BP_instance_5th_a_1, i_abc_Amps_1.a);
-    	i_abc_5th_Amps_bp_1.b = uz_signals_IIR_Filter_sample(BP_instance_5th_b_1, i_abc_Amps_1.b);
-    	i_abc_5th_Amps_bp_1.c = uz_signals_IIR_Filter_sample(BP_instance_5th_c_1, i_abc_Amps_1.c);
-    	i_abc_7th_Amps_bp_1.a = uz_signals_IIR_Filter_sample(BP_instance_7th_a_1, i_abc_Amps_1.a);
-    	i_abc_7th_Amps_bp_1.b = uz_signals_IIR_Filter_sample(BP_instance_7th_b_1, i_abc_Amps_1.b);
-    	i_abc_7th_Amps_bp_1.c = uz_signals_IIR_Filter_sample(BP_instance_7th_c_1, i_abc_Amps_1.c);
-    	i_dqn_5th_Amps_bp_1 = uz_transformation_3ph_harmonic_abc_to_dq(i_abc_5th_Amps_bp_1, theta_el_rad_1, -5.0f);
-    	i_dqn_7th_Amps_bp_1 = uz_transformation_3ph_harmonic_abc_to_dq(i_abc_7th_Amps_bp_1, theta_el_rad_1, 7.0f);
-    	i_dqn_5th_Amps_1.d = uz_signals_IIR_Filter_sample(LP_instance_5th_d_1, i_dqn_5th_Amps_bp_1.d);
-    	i_dqn_5th_Amps_1.q = uz_signals_IIR_Filter_sample(LP_instance_5th_q_1, i_dqn_5th_Amps_bp_1.q);
-    	i_dqn_7th_Amps_1.d = uz_signals_IIR_Filter_sample(LP_instance_7th_d_1, i_dqn_7th_Amps_bp_1.d);
-    	i_dqn_7th_Amps_1.q = uz_signals_IIR_Filter_sample(LP_instance_7th_q_1, i_dqn_7th_Amps_bp_1.q);
+    case 3: // Harmonic Controllers for 5th and 7th Harmonic in dq System
     	v_dqn_5th_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_5th_1, i_dqn_5th_ref_Amps_1, i_dqn_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
     	v_dqn_7th_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_7th_1, i_dqn_7th_ref_Amps_1, i_dqn_7th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
     	v_abc_5th_ref_Volts_1 = uz_transformation_3ph_harmonic_dq_to_abc(v_dqn_5th_ref_Volts_1, theta_el_rad_1, -5.0f);
@@ -345,28 +366,24 @@ void ISR_Control(void *data)
     	break;
     }
 
+    // Set DutyCycles of PMSM 1
 	Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
     Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
     Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
 
    	// Field Oriented Control of PMSM 2
-//    if (counter == 10)
-//    	{
-//    	M_ref_Nm_2 = uz_SpeedControl_sample(SC_instance_2, omega_m_rad_per_sec_2, n_ref_rpm_2);
-//    	counter = 1;
-//    	}
-//    else
-//    	{
-//    	counter++;
-//    	}
-//    i_dq_ref_Amps_2 = uz_SetPoint_sample(SP_instance_2, omega_m_rad_per_sec_2, M_ref_Nm_2, v_DC_Volts_2, i_dq_Amps_2);
-//    v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-//    output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-//    dq_resonant_2 = uz_subspace_resonant_control_step_dq(RC_instance_2, dq_resonant_ref_2, i_dq_Amps_2, omega_el_rad_per_sec_2/5.0f*4.0f);
+   	M_ref_Nm_2 = uz_SpeedControl_sample(SC_instance_2, omega_m_rad_per_sec_2, n_ref_rpm_2);
+    i_dq_ref_Amps_2 = uz_SetPoint_sample(SP_instance_2, omega_m_rad_per_sec_2, M_ref_Nm_2, v_DC_Volts_2, i_dq_Amps_2);
+    v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+    output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+
+    //    dq_resonant_2 = uz_subspace_resonant_control_step_dq(RC_instance_2, dq_resonant_ref_2, i_dq_Amps_2, omega_el_rad_per_sec_2/5.0f*4.0f);
 //    output_FOC_RC_2.d = v_dq_ref_Volts_2.d + dq_resonant_2.d;
 //    output_FOC_RC_2.q = v_dq_ref_Volts_2.q + dq_resonant_2.q;
 //    output_2 = uz_Space_Vector_Modulation(output_FOC_RC_2, v_DC_Volts_2, theta_el_rad_2);
 //    output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+
+    // Set DutyCycles of PMSM 2
    	Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
    	Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
    	Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
@@ -381,6 +398,8 @@ void ISR_Control(void *data)
     	// Reset Speed and Current Controllers
     	uz_SpeedControl_reset(SC_instance_1);
     	uz_CurrentControl_reset(CC_instance_1);
+    	uz_CurrentControl_reset(CC_instance_5th_1);
+    	uz_CurrentControl_reset(CC_instance_7th_1);
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
 
@@ -408,6 +427,14 @@ void ISR_Control(void *data)
     uz_CurrentControl_set_Kp_iq(CC_instance_1, Kp_iq_1);
     uz_CurrentControl_set_Ki_id(CC_instance_1, Ki_id_1);
     uz_CurrentControl_set_Ki_iq(CC_instance_1, Ki_iq_1);
+    uz_CurrentControl_set_Kp_id(CC_instance_5th_1, Kp_id_5th_1);
+    uz_CurrentControl_set_Kp_iq(CC_instance_5th_1, Kp_iq_5th_1);
+    uz_CurrentControl_set_Ki_id(CC_instance_5th_1, Ki_id_5th_1);
+    uz_CurrentControl_set_Ki_iq(CC_instance_5th_1, Ki_iq_5th_1);
+    uz_CurrentControl_set_Kp_id(CC_instance_7th_1, Kp_id_7th_1);
+    uz_CurrentControl_set_Kp_iq(CC_instance_7th_1, Kp_iq_7th_1);
+    uz_CurrentControl_set_Ki_id(CC_instance_7th_1, Ki_id_7th_1);
+    uz_CurrentControl_set_Ki_iq(CC_instance_7th_1, Ki_iq_7th_1);
 
     // Set Controllers of PMSM 2
     uz_SpeedControl_set_Kp(SC_instance_2, Kp_speed_2);

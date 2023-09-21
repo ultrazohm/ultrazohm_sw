@@ -61,6 +61,9 @@ extern struct uz_3ph_abc_t i_abc_Amps_2;
 extern struct uz_3ph_dq_t v_dq_ref_Volts_2;
 extern struct uz_3ph_abc_t v_abc_Volts_2;
 
+//Others
+extern float M_meas_Nm;
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -129,6 +132,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id_ref_2] 		= &i_dq_ref_Amps_2.d;
 	js_ch_observable[JSO_n_ref_1]		= &n_ref_rpm_1;
 	js_ch_observable[JSO_n_ref_2]		= &n_ref_rpm_2;
+	js_ch_observable[JSO_M_meas]		= &M_meas_Nm;
 	js_ch_observable[JSO_Theta_el_1] 	= &data->av.theta_elec_1;
 	js_ch_observable[JSO_Theta_el_2] 	= &data->av.theta_elec_2;
 	js_ch_observable[JSO_Theta_el_3] 	= &data->av.theta_elec_3;

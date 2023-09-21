@@ -91,7 +91,7 @@ void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float
 	local_v_XY.alpha = Data->ActualValues.v_dq_6ph.x;
 	local_v_XY.beta = Data->ActualValues.v_dq_6ph.y;
 	Data->ActualValues.v_xy_rotating = uz_transformation_3ph_alphabeta_to_dq(local_v_XY, -1.0f*Data->ActualValues.theta_el);
-	// map individual subsystem structs for xy with rotation
+	// map individual subsystem structs for zero with rotation
 	local_v_ZERO.alpha = u_a1c1/3.0f;
 	local_v_ZERO.beta = u_a2c2/3.0f;
 	local_i_ZERO.alpha = Data->ActualValues.i_abc_6ph.a1;
@@ -106,10 +106,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 	uz_assert(self->is_ready);
 	uz_ParaID_6ph_ControlState_step(self, Data);
 
-
 	if (uz_ControlState_get_ControlFlags(self->ControlState)->finished_all_Offline_states == false) {
-	//if (self->ControlState->output.ControlFlags.finished_all_Offline_states == false) {
-
 		//ElectricalID
 		if (uz_ControlState_get_ControlFlags(self->ControlState)->transNr == 1U || uz_ControlState_get_GlobalConfig(self->ControlState)->Reset == true) {
 			uz_ParaID_6ph_ElectricalID_step(self, Data);
@@ -335,7 +332,6 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz
 	return (out);
 }
 
-
 // multi-phase current control
 static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects)
 {
@@ -399,75 +395,35 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, s
 	out.z2 = cc_out_zero_stationary.beta;
     return out;
 }
-/*
-static void uz_ParaID_configure_6ph_controllers(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects){
-	// current control
-	if(Data->Controller_Parameters.PI_dq == true || Data->Controller_Parameters.PI_xy == true){
-		// cc instance 1 for dq
-		uz_CurrentControl_set_Kp_id(objects.CC_instance_1, objects.controller_configs.config_cc_dq.config_id.Kp);
-		uz_CurrentControl_set_Kp_iq(objects.CC_instance_1, objects.controller_configs.config_cc_dq.config_iq.Kp);
-		uz_CurrentControl_set_Ki_id(objects.CC_instance_1, objects.controller_configs.config_cc_dq.config_id.Ki);
-		uz_CurrentControl_set_Ki_iq(objects.CC_instance_1, objects.controller_configs.config_cc_dq.config_iq.Ki);
-		// cc instance 2 for xy
-		uz_CurrentControl_set_Kp_id(objects.CC_instance_2, objects.controller_configs.config_cc_xy.config_id.Kp);
-		uz_CurrentControl_set_Kp_iq(objects.CC_instance_2, objects.controller_configs.config_cc_xy.config_iq.Kp);
-		uz_CurrentControl_set_Ki_id(objects.CC_instance_2, objects.controller_configs.config_cc_xy.config_id.Ki);
-		uz_CurrentControl_set_Ki_iq(objects.CC_instance_2, objects.controller_configs.config_cc_xy.config_iq.Ki);
-	}else if(Data->Controller_Parameters.PI_zero == true){
-		// cc instance 1 for zero
-		uz_CurrentControl_set_Kp_id(objects.CC_instance_1, objects.controller_configs.config_cc_zero.config_id.Kp);
-		uz_CurrentControl_set_Kp_iq(objects.CC_instance_1, objects.controller_configs.config_cc_zero.config_iq.Kp);
-		uz_CurrentControl_set_Ki_id(objects.CC_instance_1, objects.controller_configs.config_cc_zero.config_id.Ki);
-		uz_CurrentControl_set_Ki_iq(objects.CC_instance_1, objects.controller_configs.config_cc_zero.config_iq.Ki);
-	}
-	// resonant
-	if(Data->Controller_Parameters.resonant_dq){
-		uz_resonantController_set_gain(objects.res_instance_1, objects.controller_configs.config_res_dq.gain);
-		uz_resonantController_set_gain(objects.res_instance_2, objects.controller_configs.config_res_dq.gain);
-		uz_resonantController_set_harmonic_order(objects.res_instance_1, objects.controller_configs.config_res_dq.harmonic_order);
-		uz_resonantController_set_harmonic_order(objects.res_instance_2, objects.controller_configs.config_res_dq.harmonic_order);
-	}else if(Data->Controller_Parameters.resonant_xy){
-		uz_resonantController_set_gain(objects.res_instance_1, objects.controller_configs.config_res_xy.gain);
-		uz_resonantController_set_gain(objects.res_instance_2, objects.controller_configs.config_res_xy.gain);
-		uz_resonantController_set_harmonic_order(objects.res_instance_1, objects.controller_configs.config_res_xy.harmonic_order);
-		uz_resonantController_set_harmonic_order(objects.res_instance_2, objects.controller_configs.config_res_xy.harmonic_order);
-	}else if(Data->Controller_Parameters.resonant_zero){
-		uz_resonantController_set_gain(objects.res_instance_1, objects.controller_configs.config_res_zero.gain);
-		uz_resonantController_set_gain(objects.res_instance_2, objects.controller_configs.config_res_zero.gain);
-		uz_resonantController_set_harmonic_order(objects.res_instance_1, objects.controller_configs.config_res_zero.harmonic_order);
-		uz_resonantController_set_harmonic_order(objects.res_instance_2, objects.controller_configs.config_res_zero.harmonic_order);
-	}
-	uz_ParaID_6ph_reset_controllers(objects);
-}*/
 
 static void uz_ParaID_6ph_reset_controllers(struct uz_ParameterID_controller objects){
 	uz_CurrentControl_reset(objects.CC_instance_dq);
-	uz_CurrentControl_reset(objects.CC_instance_xy);
-	uz_CurrentControl_reset(objects.CC_instance_zero);
-	uz_subspace_resonant_control_reset(objects.res_instance_dq);
-	uz_subspace_resonant_control_reset(objects.res_instance_xy);
-	uz_subspace_resonant_control_reset(objects.res_instance_zero);
 	uz_SpeedControl_reset(objects.SC_instance);
-	// no reset Setpoint available
+	// Para ID can be used without resonant control and xy/zero PI controllers (e.g. Electrical ID)
+	// If one would do that, there is no need to give those pointers to the Para ID
+	if(objects.CC_instance_xy != NULL){
+		uz_CurrentControl_reset(objects.CC_instance_xy);
+	}
+	if(objects.CC_instance_zero != NULL){
+		uz_CurrentControl_reset(objects.CC_instance_zero);
+	}
+	if(objects.res_instance_dq != NULL){
+		uz_subspace_resonant_control_reset(objects.res_instance_dq);
+	}
+	if(objects.res_instance_xy != NULL){
+		uz_subspace_resonant_control_reset(objects.res_instance_xy);
+	}
+	if(objects.res_instance_zero != NULL){
+		uz_subspace_resonant_control_reset(objects.res_instance_zero);
+	}
 }
-/*
-void uz_ParameterID_6ph_init_controllers(struct uz_ParameterID_controller* objects, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config){
-	objects->CC_instance_dq = uz_CurrentControl_init(objects->controller_configs.config_cc_dq);
-	objects->CC_instance_xy = uz_CurrentControl_init(objects->controller_configs.config_cc_xy);
-	objects->CC_instance_zero = uz_CurrentControl_init(objects->controller_configs.config_cc_zero);
-	objects->res_instance_dq = uz_subspace_resonant_control_init(objects->controller_configs.config_res_dq);
-	objects->res_instance_xy = uz_subspace_resonant_control_init(objects->controller_configs.config_res_xy);
-	objects->res_instance_zero = uz_subspace_resonant_control_init(objects->controller_configs.config_res_zero);
-	objects->SP_instance = uz_SetPoint_init(setpoint_config);
-	objects->SC_instance = uz_SpeedControl_init(speed_config);	
-}
-*/
+
 void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_dq_setpoint_filter_config config){
+	uz_assert_not_NULL(Data);
 	Data->filter_1 = uz_uz_dq_setpoint_filter_init(config);
 	Data->filter_2 = uz_uz_dq_setpoint_filter_init(config);
 	Data->filter_3 = uz_uz_dq_setpoint_filter_init(config);
-}
-  
+}  
 
 static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
@@ -566,13 +522,11 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 			uz_get_ElectricalID_6ph_fft_out(self->ElectricalID, meas_array);
         	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array, Data->GlobalConfig.sampleTimeISR);
         	Data->ElectricalID_FFT = uz_correct_psi_pms_ElectricalID(uncorrected, Data->GlobalConfig, PARAMETERID6PH_ELECTRICAL_N_ORDER);
-        	//print_paraID(uncorrected, Data->ElectricalID_FFT, Data->ElectricalID_Output);
         }
 	else{
 		Data->ElectricalID_FFT.finished_flag = false;
 	}
 }
-
 
 void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref){
 	struct uz_encoder_offset_estimation_config offset_estimation_config = {

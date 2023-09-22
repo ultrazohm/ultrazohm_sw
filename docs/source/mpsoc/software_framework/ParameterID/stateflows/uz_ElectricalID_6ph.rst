@@ -89,18 +89,13 @@ ElectricalID object
 .. doxygentypedef:: uz_ParaID_ElectricalID_6ph_t
 
 
-ElectricalID config
-===================
+ElectricalID config and output
+==============================
 
-.. doxygenstruct:: uz_ParaID_ElectricalIDConfig_t
-  :members: 
+The config and output structs are both shared with the 3ph ElectricalID.
 
-
-ElectricalID output
-===================
-
-.. doxygenstruct:: uz_ParaID_ElectricalID_output_t
-  :members: 
+:ref:`uz_ParaID_ElectricalIDConfig`
+:ref:`uz_ParaID_ElectricalIDoutput`
 
 
 ElectricalID additional
@@ -116,7 +111,7 @@ ElectricalID additional
 ElectricalID functions
 ======================
 
-.. doxygenfunction:: uz_ElectricalID_init
+.. doxygenfunction:: uz_ElectricalID_6ph_init
 .. doxygenfunction:: uz_ElectricalID_6ph_step
 .. doxygenfunction:: uz_get_ElectricalID_6ph_fft_out
 .. doxygenfunction:: uz_get_ElectricalID_6ph_finished_voltage_measurement

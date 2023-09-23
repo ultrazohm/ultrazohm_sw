@@ -27,7 +27,7 @@ The user has to make several settings, which are explained in the following tabl
 
 .. csv-table:: User Settings
    :file: uz_ElectricalID_6ph_set.csv
-   :widths: 50 50 50 50
+   :widths: 50 20 20 150
    :header-rows: 1
 
 
@@ -116,23 +116,22 @@ Necessary measurement values
 * theta_el
 
 
-ElectricalID object
-====================
+Function Reference
+==================
+
+Structs
+-------
 
 .. doxygentypedef:: uz_ParaID_ElectricalID_6ph_t
 
 
-ElectricalID config and output
-==============================
-
 The config and output structs are both shared with the 3ph ElectricalID.
 
 :ref:`uz_ParaID_ElectricalIDConfig`
+
 :ref:`uz_ParaID_ElectricalIDoutput`
 
 
-ElectricalID additional
-=======================
 
 .. doxygenstruct:: uz_ParaID_ElectricalID_fft_in_t
   :members: 
@@ -141,8 +140,8 @@ ElectricalID additional
   :members: 
 
 
-ElectricalID functions
-======================
+Functions
+---------
 
 .. doxygenfunction:: uz_ElectricalID_6ph_init
 .. doxygenfunction:: uz_ElectricalID_6ph_step
@@ -154,7 +153,7 @@ ElectricalID functions
 .. doxygenfunction:: uz_get_ElectricalID_6ph_output
 
 Sources
--------
+=======
 
-.. [#hoppe_pab2] place here pdf
 .. [#param_ID_paper_SF] M. Hoerner, V. Hoppe, T. Wilfling, A. Dietz, P. Karamanakos and R. Kennel, "Parameter Identification Methods for Multi-Phase Permanent Magnet Synchronous Machines," 2023 IEEE International Electric Machines & Drives Conference (IEMDC), San Francisco, CA, USA, 2023, pp. 1-7, doi: 10.1109/IEMDC55163.2023.10238936.
+.. [#hoppe_pab2] "Automated Parameter Identification for Asymmetrical Six-Phase PermanentMagnet Synchronous Machines", Valentin Hoppe, TH Nürnberg Institute ELSYS, 2023

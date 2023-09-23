@@ -60,8 +60,29 @@ a good starting point. Use ``Samtec MMSD-15-xxx-x-xx.xx-D-P-LDX`` cables or for 
 
 Implementation with Temperature_Card_Interface IP-Core
 ------------------------------------------------------
-* The following describes the connecting of the adapter board with the respective IP-Core. 
+* The following describes the connecting of the adapter board with the respective IP-Core at the example of digital adapter slot ``D4``. 
 * For further details on the IP-Core, see :ref:`temperature_card_IPcore_v1`.
+
+.. note::
+   | Users who use the adapter card for the first time are recommended to use the following step-by-step instructions for didactic reasons. 
+   | See ``Step by step guide``.
+   | More experienced users that quickly want to implement the IP-Core can use a tcl-script in Vivado and execute it from the tcl-console after opening the block design. 
+   | See ``tcl commands``.
+
+tcl commands
+************
+* cd [ get_property DIRECTORY [current_project] ]
+* source ../../tcl_scripts/ip_uz_user_temp_ip_core.tcl
+
+**Manual steps:**
+
+* delete all input/output ports that refer to ``D4``
+* create proper input/output ports, e.g. ``Dig_03_Ch4`` etc.
+* connect the ports with the proper signals at the ``user`` hierarchy
+* do all the steps for building a bitstream and export it
+
+Step by step guide
+******************
 
 In general, one has to add the ``Temperature_Card_Interface`` IP-Core e.g. to the ``user`` hierarchy in the block design of the Vivado project. 
 This is achieved by right click and ``Add IP...`` and typing in the name of the IP-Core in the search field.

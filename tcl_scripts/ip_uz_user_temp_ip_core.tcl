@@ -68,3 +68,12 @@ connect_bd_intf_net [get_bd_intf_pins uz_user/temp_card_interface/Temperature_Ca
 } else {
 connect_bd_intf_net [get_bd_intf_pins uz_user/temp_card_interface/Temperature_Card_Int_0/s00_axi] [get_bd_intf_pins uz_user/smartconnect_1/M${num}_AXI]
 }
+
+# assign base address
+assign_bd_address -target_address_space /zynq_ultra_ps_e_0/Data [get_bd_addr_segs uz_user/temp_card_interface/Temperature_Card_Int_0/s00_axi/reg0] -force
+
+# disable the packed constraint file for D4
+set_property is_enabled false [get_files  Digital_D4_packed.xdc]
+
+# enable the "unpacked" constraint file for D4
+set_property is_enabled true [get_files  Digital_AdapterBoard_D4.xdc]

@@ -102,7 +102,7 @@ Stateflow Overview
 	\draw[->](state15.south) |- (state14.east);
 	\draw[->]([yshift=-0.5cm]state13.east) -| node[align=center,yshift=-0.7cm]{Extended$\theta$\\==1\\} (state15.north);
 	\draw[->](state14.south) -- (exit.north);
-\end{tikzpicture}
+  \end{tikzpicture}
 
 Necessary measurement values
 ============================
@@ -113,7 +113,7 @@ Necessary measurement values
 * v_dq
 * omega_m
 * omega_el
-* theta_m
+* theta_el
 
 
 ElectricalID object

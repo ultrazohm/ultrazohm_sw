@@ -1,0 +1,9 @@
+Setting,Default,Used States,Description
+sampleTimeISR,50,all,Sampletime of ISR
+n_ref_measurement,400,150,target speed to identify PsiPM
+n_ref_measurement,400,166,target speed for extended offset estimation
+Sinecurrentexcitation,0.5,161,amplitude of sine current
+Sinecurrentexcitation,0.5,166, setpoint amplitude for extended offset estimation
+Frequency of Sinecurrentexcitation,40,161,frequency of sine
+dutyCyc,0.0,120-136,duty cycle for rotor alignement and step responses (auto determine if zero)
+MaxContinousCurrent,12,all,max current of machine and testbench per phase

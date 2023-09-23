@@ -20,56 +20,89 @@ Depending on the parameters to determine, this state may require some sort of sp
 
 This state does require multiple ACCEPT flags to continue since, for the identification of :math:`L_q`, manual operation on the motor is required. 
 
-.. tikz:: Schematic overview of the ElectricalID
+User Options
+============
+
+The user has to make several settings, which are explained in the following table.
+
+.. csv-table:: User Settings
+   :file: uz_ElectricalID_6ph_set.csv
+   :widths: 50 50 50 50
+   :header-rows: 1
+
+
+Furthermore, the user has several path options for the stateflow (see also stateflow overview chart).
+The options are chosen via buttons:
+
+``IdentLq``: If :math:`L_q` should be identified, the user has to lock the rotor during this time. Otherwise (e.g. if no rotor brake is available), :math:`L_q=L_d` will be assumed.
+
+``ExtendedPsi``: If no load machine is connected, the machine will drive itself up to speed, to determine :math:`\psi_{PM,1}`. If the button is active, the ParameterID will ask the user to set the machine to a specific speed for it to make an FFT. With that, :math:`\psi_{PM1,3,5,7,9}` can be determined. Since usually a filtered voltage measurement is used, the filters's details have to be given to the ParameterID at initialization in order to compensate for them.
+
+``ExtendedTheta``: While an initial offset angle will always be determined with simple voltage steps, the user can activate this option to employ the :ref:`uz_encoder_offset_estimation` for a better result.
+
+Stateflow Overview
+==================
+
+.. tikz:: Stateflow overview
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
 
   \begin{tikzpicture}[auto, node distance=2.5cm,>=latex']
-  \tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
-  \node(PID) {\Large{\textbf{ElectricalID}}};
-  \node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state\\\textbf{ACCEPT}};
-  \node[block,fill=yellow!20,name=state1, below right = 0.5cm and 1cm of entry,drop shadow,align=center] {Automatic DutyCycle \\determination\\ \textbf{110}};
-  \node[block,fill=yellow!20,name=state2, below = 2.5cm of entry,drop shadow,align=center] {Align rotor to d-axis \\Identify $\theta_\mathrm{offset}$\\ \textbf{120/121}};
-  \node[block,fill=yellow!20,name=state4, below = 0.5cm of state2,drop shadow,align=center] {Realign rotor to d-axis \\\textbf{125/126}};
-  \node[block,fill=yellow!20,name=state5, below right = 0.5cm and 1cm of state4,drop shadow,align=center] {Automatic DutyCycle \\determination for \\step response\\ \textbf{130/131}};
-  \node[block,fill=yellow!20,name=state6, below = 2.5cm of state4,drop shadow,align=center] {Identify $L_\mathrm d, R_\mathrm S$\\via step response\\ \textbf{140/141}};
-  \node[block,fill=red!20,name=state7, below right = 0.5cm and 1cm of state6,drop shadow,align=center] {Lock rotor\\ in position };
-  \node[block,fill=yellow!20,name=state8, below = 1cm of state7,drop shadow,align=center] {Identify $L_\mathrm q$\\via step response\\ \textbf{142/143}};
-  \node[block,fill=red!20,name=state9, below = 0.5cm of state8,drop shadow,align=center] {Unlock rotor};
-  \node[block,fill=red!20,name=state10, below = 2.7cm of state6,drop shadow,align=center] {Treat $L_\mathrm q = L_\mathrm d$};
-  \node[block,fill=yellow!20,name=state11, below = 2.2cm of state10,drop shadow,align=center] {Calculate FOC-\\parameters\\ \textbf{144}};
-  \node[block,fill=yellow!20,name=state12, below = 0.5cm of state11,drop shadow,align=center] {Identify $\psi_\mathrm {PM}$\\ \textbf{150/151}};
-  \node[block,fill=yellow!20,name=state13, below = 0.5cm of state12,drop shadow,align=center] {Identify $J$ via\\ sine excitation\\ \textbf{160/161}};
-  \node[block,fill=yellow!20,name=state14, below = 0.5cm of state13,drop shadow,align=center] {Recalculate FOC- \\parameters\\ \textbf{170}};
-  \node[block,fill=green!20,name=exit, below = 0.5cm of state14,drop shadow,align=center] {Exit of state};
-  \begin{scope}[on background layer]
-  \node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (exit)(state5)(state4),inner sep=5pt,minimum width=7cm] {};
-  \end{scope}
-  \draw[->](entry.east) -| (state1.north);
-  \path ([xshift=-2.3cm,yshift=1cm]entry.east) -- (state1.north) node[midway, align=center] (DC1){DutyCycle == 0.0};
-  \path ([xshift=-2.3cm,yshift=1cm]state4.east) -- (state5.north) node[midway, align=center] (DC2){DutyCycle == 0.0};
-  \draw[->](state1.south) |- (state2.east);
-  \draw[->](entry.south) -- (state2.north);
-  \path (state2.north) -- (entry.south) node[midway,align=center] (DC1) {DutyCycle \\!= 0.0};
-  \draw[->](state2.south) -- (state4.north);
-  \draw[->](state4.east) -| (state5.north);
-  \draw[->] (state5.south) |- ([yshift=0.35cm] state6.east);
-  \draw[->](state4.south) -- (state6.north);
-  \path (state6.north) -- (state4.south) node[midway,align=center] (DC4) {DutyCycle \\!= 0.0};
-  \draw[->](state6.south) -- (state10.north);
-  \draw[->]([yshift=-0.35cm] state6.east)-| (state7.north);
-  \path([xshift=-2cm, yshift=0.3cm]state6.east) -- (state7.north) node [midway, align=center] (LQ1) {IdentLq == 1};
-  \path(state10.north) -- (state6.south) node [midway, align=center] (LQ0) {IdentLq \\== 0\\\textbf{ACCEPT}};
-  \draw[->](state7.south) -- (state8.north);
-  \path (state7.south) -- (state8.north) node [midway, align=center] (ACPT1){\textbf{ACCEPT}};
-  \draw[->](state8.south) -- (state9.north);
-  \draw[->](state10.south) -- (state11.north);
-  \draw[->](state9.south) |- (state11.east);
-  \path (state9.south) -- ([yshift=-2cm]state9.north) node [midway, align=center] (ACPT2) {\textbf{ACCEPT}}; 
-  \draw[->](state11.south) -- (state12.north);
-  \draw[->](state12.south) -- (state13.north);
-  \draw[->](state13.south) -- (state14.north);
-  \draw[->](state14.south) -- (exit.north);
-  \end{tikzpicture}
+	\tikzstyle{block} = [draw, fill=black!10, rectangle, rounded corners, minimum height=3em, minimum width=3em]
+	\node(PID) {\Large{\textbf{ElectricalID}}};
+	\node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state\\\textbf{ACCEPT}};
+	\node[block,fill=yellow!20,name=state1, below right = 0.5cm and 1cm of entry,drop shadow,align=center] {Automatic DutyCycle \\determination\\ \textbf{110}};
+	\node[block,fill=yellow!20,name=state2, below = 2.5cm of entry,drop shadow,align=center] {Align rotor to d-axis \\Identify $\theta_\mathrm{offset}$\\ \textbf{120/121}};
+	%all step responses
+	\node[block,fill=yellow!20,name=state3, below = 5cm of state2,drop shadow,align=center] {Identify $L_\textrm{d},L_\textrm{X},L_\textrm{Y}$,\\$L_\textrm{Z+}L_\textrm{Z-}$\\ and respective $R$\\via step response\\ \textbf{131/133-136}};
+	%Lock rotor
+	\node[block,fill=red!20,name=state7, below right = 0.5cm and 1cm of state2,drop shadow,align=center] {Lock rotor\\ in position };
+	%ident LQ
+	\node[block,fill=yellow!20,name=state8, below = 1cm of state7,drop shadow,align=center] {Identify $L_\mathrm q$\\via step response\\ \textbf{132}};
+	%calc FOC params
+	\node[block,fill=yellow!20,name=state9, below = 1cm of state3,drop shadow,align=center] {Calculate FOC-\\parameters\\ \textbf{148}};
+	%ident psiPM speedcontrol
+	\node[block,fill=yellow!20,name=state12, below = 1cm of state9,drop shadow,align=center] {Identify $\psi_\mathrm {PM,1}$\\with speedcontroller\\ \textbf{150}};
+	%set external speed
+	\node[block,fill=red!20,name=state10, right = 1cm of state9,drop shadow,align=center] {Set load\\ machine speed \\ \textbf{155}};
+	%ident psiPM external
+	\node[block,fill=yellow!20,name=state11, below = 1cm of state10,drop shadow,align=center] {Identify $\psi_\mathrm {PM,1,3,5,7,9}$\\with prime mover\\ \textbf{156}};	
+	%ident J
+	\node[block,fill=yellow!20,name=state13, below = 1cm of state12,drop shadow,align=center] {Identify $J$ via\\ sine excitation\\ \textbf{160/161}};
+	%extended Theta
+	\node[block,fill=yellow!20,name=state15, below right = 1cm  and 1cm of state13,drop shadow,align=center] {Extended offset\\ estimation\\ \textbf{165/166}};
+	%End
+	\node[block,fill=yellow!20,name=state14, below = 3cm of state13,drop shadow,align=center] {Recalculate FOC- \\parameters\\ \textbf{170}};
+	\node[block,fill=green!20,name=exit, below = 0.5cm of state14,drop shadow,align=center] {Exit of state};
+	\begin{scope}[on background layer]
+		\node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (exit)(state1)(state2),inner sep=5pt,minimum width=7cm] {};
+	\end{scope}
+	\draw[->](entry.east) -| (state1.north);
+	\path ([xshift=-2.3cm,yshift=1cm]entry.east) -- (state1.north) node[midway, align=center] (DC1){DutyCycle == 0.0};
+	%\path ([xshift=-2.3cm,yshift=1cm]state2.east) -- (state5.north) node[midway, align=center] (DC2){DutyCycle == 0.0};
+	\draw[->](state1.south) |- ([yshift=0.5cm]state2.east);
+	\draw[->](entry.south) -- (state2.north);
+	\path (state2.north) -- (entry.south) node[midway,align=center] (DC1) {DutyCycle \\!= 0.0};
+	\draw[->](state8.south) |- (state3.east);
+	\draw[->]([yshift=-0.5cm] state2.east)-| (state7.north);
+	\path([xshift=-2cm, yshift=0.3cm]state2.east) -- (state7.north) node [midway, align=center] (LQ1) {IdentLq == 1};
+	\path(state3.north) -- (state2.south) node [midway, align=center] (LQ0) {IdentLq \\== 0\\};
+	\draw[->] (state2.south) -- (state3.north);
+	\draw[->](state7.south) -- (state8.north);
+	\path (state7.south) -- (state8.north) node [midway, align=center] (ACPT1){\textbf{ACCEPT}};
+	\draw[->](state3.south) -- (state9.north);
+	%around Psi
+	\draw[->](state9.south) -- node[align=center, xshift=-2cm,yshift=-0.2cm]{Extended$\Psi$\\==0\\} (state12.north);
+	\draw[->](state9.east) -- node[align=center,yshift=-2cm]{Extended$\Psi$\\==1\\} (state10.west);
+	\draw[->](state10.south) -- node[]{\textbf{ACCEPT}} (state11.north);
+	\node[name=help1,below = of state10]{};
+	\draw[->](state11.south) |- node[align=center]{free rotor\\\textbf{ACCEPT}} ([yshift=0.5cm]state13.east);
+	\draw[->](state12.south) -- (state13.north);
+	%around J
+	\draw[->](state13.south) --  node[align=center,xshift=-2cm]{Extended$\theta$\\==0\\} (state14.north);
+	\draw[->](state15.south) |- (state14.east);
+	\draw[->]([yshift=-0.5cm]state13.east) -| node[align=center,yshift=-0.7cm]{Extended$\theta$\\==1\\} (state15.north);
+	\draw[->](state14.south) -- (exit.north);
+\end{tikzpicture}
 
 Necessary measurement values
 ============================

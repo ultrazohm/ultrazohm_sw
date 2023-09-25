@@ -1,61 +1,61 @@
 function RTW_Sid2UrlHash() {
 	this.urlHashMap = new Array();
 	/* <S1>/AB-Line-Switch */
-	this.urlHashMap["inc_enc_v26:10276"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:389,390,391,392,393,394,395";
+	this.urlHashMap["inc_enc_v26:10276"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:384,385,386,387,388,389,390";
 	/* <S1>/AND */
-	this.urlHashMap["inc_enc_v26:10265"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1055";
+	this.urlHashMap["inc_enc_v26:10265"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1045";
 	/* <S1>/AND1 */
-	this.urlHashMap["inc_enc_v26:10450"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1097";
+	this.urlHashMap["inc_enc_v26:10450"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1087";
 	/* <S1>/Abs */
-	this.urlHashMap["inc_enc_v26:4013"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:819,820,821";
+	this.urlHashMap["inc_enc_v26:4013"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:809,810,811";
 	/* <S1>/Check d-Axis-Hit */
-	this.urlHashMap["inc_enc_v26:10242"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:490,491,492,493,494,495,496";
+	this.urlHashMap["inc_enc_v26:10242"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:485,486,487,488,489";
 	/* <S1>/Check d-Axis-Hit_WithCompare */
-	this.urlHashMap["inc_enc_v26:10439"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:498,499,500,501,502,503,504,505";
+	this.urlHashMap["inc_enc_v26:10439"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:491,492,493,494,495";
 	/* <S1>/Counter */
-	this.urlHashMap["inc_enc_v26:3596"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:427,428,429,430,431,432,433,434,435";
+	this.urlHashMap["inc_enc_v26:3596"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:422,423,424,425,426,427,428,429,430";
 	/* <S1>/Counter_Theta_el_wOffset */
-	this.urlHashMap["inc_enc_v26:10197"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:437,438,439,440,441,442,443,444,445,446,447";
+	this.urlHashMap["inc_enc_v26:10197"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:432,433,434,435,436,437,438,439,440,441,442";
 	/* <S1>/Counter_position */
-	this.urlHashMap["inc_enc_v26:2109"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:449,450,451,452,453,454,455,456,457,458";
+	this.urlHashMap["inc_enc_v26:2109"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:444,445,446,447,448,449,450,451,452,453";
 	/* <S1>/Counter_position_wOffset */
-	this.urlHashMap["inc_enc_v26:9441"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:470,471,472,473,474,475,476,477,478,479,480";
+	this.urlHashMap["inc_enc_v26:9441"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:465,466,467,468,469,470,471,472,473,474,475";
 	/* <S1>/Data Type Conversion1 */
-	this.urlHashMap["inc_enc_v26:9469"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1025";
+	this.urlHashMap["inc_enc_v26:9469"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1015";
 	/* <S1>/Data Type Conversion3 */
-	this.urlHashMap["inc_enc_v26:4106"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:613";
+	this.urlHashMap["inc_enc_v26:4106"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:603";
 	/* <S1>/Data Type Conversion4 */
-	this.urlHashMap["inc_enc_v26:11034"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1083";
+	this.urlHashMap["inc_enc_v26:11034"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1073";
 	/* <S1>/Data Type Conversion9 */
-	this.urlHashMap["inc_enc_v26:2187"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:798";
+	this.urlHashMap["inc_enc_v26:2187"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:788";
 	/* <S1>/Delay1 */
-	this.urlHashMap["inc_enc_v26:9325"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:547,548,549,550,551,552,553,554,555,556";
+	this.urlHashMap["inc_enc_v26:9325"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:537,538,539,540,541,542,543,544,545,546";
 	/* <S1>/Delay2 */
-	this.urlHashMap["inc_enc_v26:9619"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:685,686,687,688,689,690,691,692,693,694";
+	this.urlHashMap["inc_enc_v26:9619"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:675,676,677,678,679,680,681,682,683,684";
 	/* <S1>/Delay6 */
-	this.urlHashMap["inc_enc_v26:9324"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:523,524,525,526,527,528,529,530,531,532";
+	this.urlHashMap["inc_enc_v26:9324"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:513,514,515,516,517,518,519,520,521,522";
 	/* <S1>/Direction */
-	this.urlHashMap["inc_enc_v26:2052"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:397,398,399,400,401,402,403,404";
+	this.urlHashMap["inc_enc_v26:2052"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:392,393,394,395,396,397,398,399";
 	/* <S1>/Index_Latch */
-	this.urlHashMap["inc_enc_v26:10188"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:482,483,484,485,486,487,488";
+	this.urlHashMap["inc_enc_v26:10188"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:477,478,479,480,481,482,483";
 	/* <S1>/Logical1 */
-	this.urlHashMap["inc_enc_v26:2189"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:659";
+	this.urlHashMap["inc_enc_v26:2189"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:649";
 	/* <S1>/Pipeline1 */
-	this.urlHashMap["inc_enc_v26:11031"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1085,1086,1087,1088,1089,1090,1091,1092,1093,1094";
+	this.urlHashMap["inc_enc_v26:11031"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:1075,1076,1077,1078,1079,1080,1081,1082,1083,1084";
 	/* <S1>/Pipeline7 */
-	this.urlHashMap["inc_enc_v26:4105"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:615,616,617,618,619,620,621,622,623,624";
+	this.urlHashMap["inc_enc_v26:4105"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:605,606,607,608,609,610,611,612,613,614";
 	/* <S1>/Pipeline8 */
-	this.urlHashMap["inc_enc_v26:6912"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:753,754,755,756,757,758,759,760,761,762";
+	this.urlHashMap["inc_enc_v26:6912"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:743,744,745,746,747,748,749,750,751,752";
 	/* <S1>/Pipeline9 */
-	this.urlHashMap["inc_enc_v26:6913"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:727,728,729,730,731,732,733,734,735,736";
+	this.urlHashMap["inc_enc_v26:6913"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:717,718,719,720,721,722,723,724,725,726";
 	/* <S1>/Product_theta_el */
-	this.urlHashMap["inc_enc_v26:2190"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:765,766";
+	this.urlHashMap["inc_enc_v26:2190"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:755,756";
 	/* <S1>/count_lines */
-	this.urlHashMap["inc_enc_v26:3723"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:460,461,462,463,464,465,466,467,468";
+	this.urlHashMap["inc_enc_v26:3723"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:455,456,457,458,459,460,461,462,463";
 	/* <S1>/hold1 */
-	this.urlHashMap["inc_enc_v26:2193"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:573,574,575,576,577,578,579,580,581,582";
+	this.urlHashMap["inc_enc_v26:2193"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:563,564,565,566,567,568,569,570,571,572";
 	/* <S1>/speed1 */
-	this.urlHashMap["inc_enc_v26:10295"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425";
+	this.urlHashMap["inc_enc_v26:10295"] = "Incremental_Encoder_v26_src_IncEnc_V26.vhd:401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420";
 	/* <S5>/Switch */
 	this.urlHashMap["inc_enc_v26:10282"] = "Incremental_Encoder_v26_src_AB_Line_Switch.vhd:46,47";
 	/* <S5>/Switch1 */
@@ -64,12 +64,12 @@ function RTW_Sid2UrlHash() {
 	this.urlHashMap["inc_enc_v26:10252"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:43";
 	/* <S6>/Equal */
 	this.urlHashMap["inc_enc_v26:11036"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:46,47";
-	/* <S6>/Pipeline1 */
-	this.urlHashMap["inc_enc_v26:11037"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:49,50,51,52,53,54,55,56,57,58";
+	/* <S6>/Equal1 */
+	this.urlHashMap["inc_enc_v26:11049"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:52,53";
+	/* <S6>/OR */
+	this.urlHashMap["inc_enc_v26:11051"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd:55";
 	/* <S7>/Equal */
-	this.urlHashMap["inc_enc_v26:10443"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:47,48";
-	/* <S7>/Pipeline1 */
-	this.urlHashMap["inc_enc_v26:11035"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:50,51,52,53,54,55,56,57,58,59";
+	this.urlHashMap["inc_enc_v26:10443"] = "Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd:43,44";
 	/* <S8>/Detec_edge */
 	this.urlHashMap["inc_enc_v26:3606"] = "Incremental_Encoder_v26_src_Counter.vhd:68,69,70";
 	/* <S8>/Reset_flag */
@@ -789,12 +789,16 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["inc_enc_v26:10280"] = {rtwname: "<S5>/B_out"};
 	this.rtwnameHashMap["<S6>/Count_in"] = {sid: "inc_enc_v26:10245"};
 	this.sidHashMap["inc_enc_v26:10245"] = {rtwname: "<S6>/Count_in"};
+	this.rtwnameHashMap["<S6>/IncPerTurn_elek_AXI4"] = {sid: "inc_enc_v26:11048"};
+	this.sidHashMap["inc_enc_v26:11048"] = {rtwname: "<S6>/IncPerTurn_elek_AXI4"};
 	this.rtwnameHashMap["<S6>/Constant"] = {sid: "inc_enc_v26:10252"};
 	this.sidHashMap["inc_enc_v26:10252"] = {rtwname: "<S6>/Constant"};
 	this.rtwnameHashMap["<S6>/Equal"] = {sid: "inc_enc_v26:11036"};
 	this.sidHashMap["inc_enc_v26:11036"] = {rtwname: "<S6>/Equal"};
-	this.rtwnameHashMap["<S6>/Pipeline1"] = {sid: "inc_enc_v26:11037"};
-	this.sidHashMap["inc_enc_v26:11037"] = {rtwname: "<S6>/Pipeline1"};
+	this.rtwnameHashMap["<S6>/Equal1"] = {sid: "inc_enc_v26:11049"};
+	this.sidHashMap["inc_enc_v26:11049"] = {rtwname: "<S6>/Equal1"};
+	this.rtwnameHashMap["<S6>/OR"] = {sid: "inc_enc_v26:11051"};
+	this.sidHashMap["inc_enc_v26:11051"] = {rtwname: "<S6>/OR"};
 	this.rtwnameHashMap["<S6>/d-axis-hit"] = {sid: "inc_enc_v26:10249"};
 	this.sidHashMap["inc_enc_v26:10249"] = {rtwname: "<S6>/d-axis-hit"};
 	this.rtwnameHashMap["<S7>/Count_in"] = {sid: "inc_enc_v26:10440"};
@@ -803,8 +807,6 @@ function RTW_rtwnameSIDMap() {
 	this.sidHashMap["inc_enc_v26:10449"] = {rtwname: "<S7>/Counter_Compare"};
 	this.rtwnameHashMap["<S7>/Equal"] = {sid: "inc_enc_v26:10443"};
 	this.sidHashMap["inc_enc_v26:10443"] = {rtwname: "<S7>/Equal"};
-	this.rtwnameHashMap["<S7>/Pipeline1"] = {sid: "inc_enc_v26:11035"};
-	this.sidHashMap["inc_enc_v26:11035"] = {rtwname: "<S7>/Pipeline1"};
 	this.rtwnameHashMap["<S7>/d-axis-hit"] = {sid: "inc_enc_v26:10448"};
 	this.sidHashMap["inc_enc_v26:10448"] = {rtwname: "<S7>/d-axis-hit"};
 	this.rtwnameHashMap["<S8>/Enable_ctr"] = {sid: "inc_enc_v26:3597"};

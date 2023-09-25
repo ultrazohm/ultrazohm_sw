@@ -107,17 +107,17 @@ void test_uz_ParameterID_6ph_init(void)
     uz_ParameterID_6ph_t* ParameterID_6ph_obj = uz_ParameterID_6ph_init(&Data_struct);
 }
 
-void test_uz_ParameterID_init_NULL(void) {
+void test_uz_ParameterID_6ph_init_NULL(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_init(NULL));
 }
 
 // tests for uz_ParameterID_6ph_step
 
-void test_uz_ParameterID_step_NULL(void){
+void test_uz_ParameterID_6ph_step_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_step(NULL, &ParaID_Data));
 }
 
-void test_uz_ParameterID_step_Data_NULL(void){
+void test_uz_ParameterID_6ph_step_Data_NULL(void){
     uz_ParameterID_t* ParameterID = uz_ParameterID_init(&ParaID_Data);
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_step(ParameterID, NULL));
 }
@@ -142,26 +142,26 @@ void test_uz_ParameterID_6ph_Controller_NULL(void) {
 }
 
 // tests for uz_ParameterID_6ph_update_transmit_values
-void test_uz_ParameterID_update_transmit_values_Data_NULL(void) {
+void test_uz_ParameterID_6ph_update_transmit_values_Data_NULL(void) {
     float activeState = 0.0f;
     float FluxMapCounter = 0.0f;
     float ArrayCounter = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(NULL, &activeState, &FluxMapCounter, &ArrayCounter));
 }
 
-void test_uz_ParameterID_update_transmit_values_activeState_NULL(void) {
+void test_uz_ParameterID_6ph_update_transmit_values_activeState_NULL(void) {
     float FluxMapCounter = 0.0f;
     float ArrayCounter = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(&ParaID_Data, NULL, &FluxMapCounter, &ArrayCounter));
 }
 
-void test_uz_ParameterID_update_transmit_values_FluxCounter_NULL(void) {
+void test_uz_ParameterID_6ph_update_transmit_values_FluxCounter_NULL(void) {
     float activeState = 0.0f;
     float ArrayCounter = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(&ParaID_Data, &activeState, NULL, &ArrayCounter));
 }
 
-void test_uz_ParameterID_update_transmit_values_ArrayCounter_NULL(void) {
+void test_uz_ParameterID_6ph_update_transmit_values_ArrayCounter_NULL(void) {
     float activeState = 0.0f;
     float FluxMapCounter = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(&ParaID_Data, &activeState, &FluxMapCounter, NULL));

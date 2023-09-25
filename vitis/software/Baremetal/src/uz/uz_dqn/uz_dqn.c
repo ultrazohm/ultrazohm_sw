@@ -288,10 +288,9 @@ for(uint32_t j=0; j<mbsize;j++){
             terminal = false;
         }
         loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        // hier andere berechnung einfügen für dloss sollte ein array entstehen
         dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
         cum_loss += loss; 
-        //uz_nn_backward_pass(self->critic,&dloss,self->inputvecnn);
-        //uz_nn_gradient_descent(self->critic,self->lernrate);
         uz_nn_backward_pass_mini_batch(self->critic,&dloss,self->inputvecnn);  
         rew++;
         qval++;

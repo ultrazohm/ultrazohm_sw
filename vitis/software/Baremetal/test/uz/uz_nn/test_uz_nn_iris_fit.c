@@ -103,7 +103,7 @@ float msederv [MINI_BATCH_SIZE] = {0.0f};
 float mse_mb_train [NUMBER_OF_EPOCHS] = {0.0f};
 
 float mse[NUMBER_OF_EPOCHS] = {
-#include  "iris_weights_mse/mse_mean_iris_2000episodes.csv"
+#include  "iris_weights_mse/mse_mean_iris_2000episodes_lr005.csv"
 };
 
 struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
@@ -228,7 +228,7 @@ void tearDown(void)
         uz_nn_mse_derv_mult(output,ref,error);
         uz_nn_backward_pass_mini_batch(test,error,X);        
         }
-        float lernrate = 0.001f;
+        float lernrate = 0.005f;
         uz_nn_gradient_descent_mini_batch(test,lernrate,mb_size);
         mse_mb_train[i] = msetest/(float)mb_size;
         uz_nn_set_gradients_zero(test);
@@ -239,8 +239,5 @@ void tearDown(void)
         TEST_ASSERT_FLOAT_WITHIN(1e-03f, mse[i],mse_mb_train[i]);
         }
 }
-
-
-
 
 #endif // TEST

@@ -145,7 +145,6 @@ for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
   msetest[i] = uz_nn_mse(output,refout);
   float error[NUMBER_OF_OUTPUTS] = {0.0f};
   uz_nn_mse_derv_mult(output,refout,error);
-  uz_matrix_get_element_zero_based(output,0,0);
   uz_nn_backward_pass(backnn,error,input);
   uz_nn_gradient_descent_no_bias(backnn,lernrate);
 }

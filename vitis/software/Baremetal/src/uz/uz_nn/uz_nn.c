@@ -215,6 +215,7 @@ void uz_nn_mse_derv_mult(uz_matrix_t const *const output, uz_matrix_t const *con
         error[i] = - (expectedoutput->data[i] - output->data[i]);
     }
 }
+
 float uz_nn_mse_derv(uz_matrix_t const *const output, uz_matrix_t const *const expectedoutput)
 {
     uz_assert(expectedoutput->length_of_data == output->length_of_data);

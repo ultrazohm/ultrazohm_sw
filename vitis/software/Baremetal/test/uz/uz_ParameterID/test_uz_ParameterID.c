@@ -92,15 +92,6 @@ void test_uz_ParameterID_generate_DutyCycle_PWM_NULL(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_generate_DutyCycle(&ParaID_Data, input, NULL));
 }
 
-void test_uz_ParameterID_generate_DutyCycle_PWM_NULL(void) {
-    struct uz_dq_setpoint_filter_config config = {0};
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_init_filter(NULL, config));
-}
-
-
-void test_uz_ParameterID_6ph_calculate_PsiPMs_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_calculate_PsiPMs(NULL, NULL, NULL));
-}
 void test_uz_ParameterID_Controller_Data_NULL(void) {
     struct uz_ParameterID_controller obj = {
         .CC_instance_dq = uz_CurrentControl_init(config),

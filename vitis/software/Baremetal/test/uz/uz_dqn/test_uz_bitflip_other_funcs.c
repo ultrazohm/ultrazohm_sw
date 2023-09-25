@@ -17,8 +17,8 @@
 
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 20000
-#define MINIBATCHSIZE 16
-#define NUMBER_OF_EPOCHS 10000
+#define MINIBATCHSIZE 32
+#define NUMBER_OF_EPOCHS 5000
 #define TARGET_UPDATE_FREQUENCY 1
 // nn
 #define NUMBEROFBITS 4
@@ -251,7 +251,8 @@ void test_dqn_bitflip(void)
     struct uz_matrix_t getbackobs_matrixpl1 = {0};
     uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
     //adam testing
-    adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);///(float)MINIBATCHSIZE
+    adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // prefill buffer
     // do{
     // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
@@ -262,7 +263,7 @@ void test_dqn_bitflip(void)
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    uz_dqn_sample_bitenv(testdqn2);
+    uz_dqn_sample_bitenv_mult(testdqn2);
     cumreward[i] = testdqn2->env->cumreward;
     if (i == 0){
     globalrewardr[i] = testdqn2->env->cumreward;
@@ -278,7 +279,7 @@ void test_dqn_bitflip(void)
     if (testdqn2->experience_buffer->head > MINIBATCHSIZE){
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
     //loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact); 
+    loss[i] = uz_dqn_train4(testdqn2,error,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
     }
     }
     free(adam);

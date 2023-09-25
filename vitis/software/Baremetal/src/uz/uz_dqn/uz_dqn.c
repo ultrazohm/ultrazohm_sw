@@ -114,6 +114,33 @@ void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self)
     }
 
 }
+void uz_dqn_sample_bitenv_mult(uz_dqn_t *self)
+{
+    uint32_t actionind;
+    self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start,self->env->epsilon_min,self->env->epsilon_decay);
+    for (uint32_t i = 0; i < self->env->max_steps; i++)
+    {
+    uz_nn_ff(self->critic,self->env->inputfornn);
+    uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
+    // randnumber and epsilon comparision
+    if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
+        actionind = genRand_uint32_t(&self->randinstance->seedRand,self->env->bitlength-1);
+    }
+    else{
+    actionind = uz_matrix_get_max_index(outputdqn);
+    }
+    // obs plus1
+    uz_dqn_bitflip_action(self->env,actionind);
+    float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,actionind);
+    float reward = calculate_reward_bit(self->env);
+    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,self->env->inputfornn);
+    self->env->cumreward+= reward;
+    if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
+    // printf("Bitmuster gleich nach %d Schritten.\n",i);
+    return;
+    }
+    } 
+}
 
 void uz_dqn_sample_bitenv(uz_dqn_t *self)
 {
@@ -266,7 +293,7 @@ for(uint32_t j=0; j<mbsize;j++){
 return cum_loss;
 }
 
-float uz_dqn_train4(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train4(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact,adam_optimizer_t *adam)
 {
 float qplus1 = 0.0f;
@@ -290,11 +317,13 @@ for(uint32_t j=0; j<mbsize;j++){
         loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
         // hier andere berechnung einfügen für dloss sollte ein array entstehen
         dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        error[*act] = dloss; 
         cum_loss += loss; 
-        uz_nn_backward_pass_mini_batch(self->critic,&dloss,self->inputvecnn);  
+        uz_nn_backward_pass_mini_batch(self->critic,error,self->inputvecnn);  
         rew++;
         qval++;
         act++;
+        resetFloatArray(error,4);   
     }
     cum_loss = cum_loss/(float)mbsize;
     adam_optimizer_step(adam,self->critic);
@@ -362,6 +391,56 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     }
 }
 
+float calculate_loss_dqn_mult(uz_dqn_t* self, float reward, float *qval, float qvalplus1, bool terminal){
+    uz_assert_not_NULL(self);
+    // berechne y_j
+    float y_j = 0.0f;
+    float loss = 0.0f;
+    if(terminal==true)
+    {
+        y_j = reward;
+    }
+    else{
+        // berechne max_aQ(psi,a',theta)
+        // sollte man sowohl die Aktion, als auch den index speichern? 
+        // im nn object ist nur der index, nicht der Aktionswert,
+        // deshalb bringt ja der reine index hier nichts als aktion, schlauer wäre es
+        // float action und uint action zu speichern, dass man beides hat
+        // und evtl obs+1 und action(obs+1)
+        // uz_matrix_t* output_nn = uz_nn_get_output_data(self->critic);
+		// uint32_t action = uz_matrix_get_max_index(obs); // index
+        y_j = reward + (self->discount_factor * qvalplus1);
+    }
+    for (uint32_t i = 0; i < self->critic->number_of_outputs; i++)
+    {
+     loss += ((y_j - qval[i]) * (y_j - qval[i]));
+    }
+    loss = loss/(float)self->critic->number_of_outputs;
+    return loss;
+}
+
+void calculate_derv_loss_dqn_mult(uz_dqn_t* self, float *dloss, float reward, float *qval, float qvalplus1, bool terminal){
+    uz_assert_not_NULL(self);
+    // berechne y_j
+    float y_j = 0.0f;
+    if(terminal==true)
+    {
+        y_j = reward;
+    }
+    else{
+        y_j = reward + (self->discount_factor * qvalplus1);
+    }
+    for (uint32_t i = 0; i < self->critic->number_of_outputs; i++)
+    {
+    dloss[i] = -2.0f*(y_j - qval[i]);
+    if (dloss[i] > 1.0f){
+        dloss[i] = 1.0f;
+    }
+    if(dloss[i] < -1.0f){
+        dloss[i] = -1.0f;
+    }
+    }
+}
 
 float calculate_loss_dqn(uz_dqn_t* self, float reward, float qval, float qvalplus1, bool terminal){
     uz_assert_not_NULL(self);

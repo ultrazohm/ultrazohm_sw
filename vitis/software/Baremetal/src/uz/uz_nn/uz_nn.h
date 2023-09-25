@@ -3,17 +3,28 @@
 #include "uz_nn_layer.h"
 
 
-enum target_update{
-    smoothing,
-    periodic,
-    periodic_smoothing
-};
+
 /**
  * @brief Arbitrarily defined maximum number of layers for the module. Affect all instances of the module.
  * 
  */
 #define UZ_NN_MAX_LAYER 10U
+enum target_update{
+    smoothing,
+    periodic,
+    periodic_smoothing
+};
 
+struct uz_nn_t
+{
+    bool is_ready;
+    bool is_trainable;
+    bool initialize;
+    uint32_t number_of_layer;
+    uint32_t number_of_inputs;
+    uint32_t number_of_outputs;
+    uz_nn_layer_t *layer[UZ_NN_MAX_LAYER];
+};
 /**
  * @brief Object definition for one neural network
  * 

@@ -22,17 +22,6 @@
 #include "uz_nn.h"
 #include "../uz_matrix/uz_matrix.h"
 
-struct uz_nn_t
-{
-    bool is_ready;
-    bool is_trainable;
-    bool initialize;
-    uint32_t number_of_layer;
-    uint32_t number_of_inputs;
-    uint32_t number_of_outputs;
-    uz_nn_layer_t *layer[UZ_NN_MAX_LAYER];
-};
-
 static uint32_t instance_counter = 0U;
 static uz_nn_t instances[UZ_NN_MAX_INSTANCES] = {0};
 

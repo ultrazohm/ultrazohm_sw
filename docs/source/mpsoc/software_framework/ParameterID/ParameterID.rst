@@ -168,6 +168,7 @@ Listed are the individual states which are part of the ParameterID.
     stateflows/uz_ElectricalID
     stateflows/uz_ElectricalID_6ph
     stateflows/uz_FluxMapID
+    stateflows/uz_FluxMapID_6ph
     stateflows/uz_FrictionID
     stateflows/uz_OnlineID
     stateflows/uz_TwoMassID

@@ -315,11 +315,6 @@ uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz
 		uz_CurrentControl_set_Ki_id(objects.CC_instance_dq, Data->Controller_Parameters.Ki_id_out);
 		uz_CurrentControl_set_Ki_iq(objects.CC_instance_dq, Data->Controller_Parameters.Ki_iq_out);
 	}
-
-	// FluxmapID active and in start state
-	if(Data->Controller_Parameters.activeState == 400U){
-		uz_ParaID_6ph_reset_controllers(objects);
-	}
 	return (out);
 }
 
@@ -506,6 +501,9 @@ void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, floa
 
 void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array){
 	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(Data);
+	uz_assert_not_NULL(meas_array);
+
 	if(Data->finished_voltage_measurement && Data->Controller_Parameters.activeState==156U){
 			uz_get_ElectricalID_6ph_fft_out(self->ElectricalID, meas_array);
         	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array, Data->GlobalConfig.sampleTimeISR);
@@ -517,6 +515,8 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 }
 
 void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref){
+	uz_assert_not_NULL(Data);
+	// other pointers are already asserted by uz_encoder_offset_estimation_init
 	struct uz_encoder_offset_estimation_config offset_estimation_config = {
 		.ptr_measured_rotor_angle = raw_rotor_angle,
 		.ptr_offset_angle = &Data->ElectricalID_Offset_Estimation.offset_angle_rad,

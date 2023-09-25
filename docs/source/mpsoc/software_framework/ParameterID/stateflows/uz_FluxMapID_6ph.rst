@@ -105,7 +105,9 @@ Structs
 .. doxygentypedef:: uz_ParaID_FluxMapID_6ph_t
 
 The config and output structs are shared.
+
 :ref:`uz_ParaID_FluxMapIDConfig`
+
 :ref:`uz_ParaID_FluxMapIDoutput`
 
 Functions

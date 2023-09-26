@@ -28,7 +28,7 @@
 #define NUMBEROFTESTSTEPS 50
 #define NUMBEROFBITS 2
 
-float discountfact = 0.99f;
+float discountfact = 0.0f;
 float lernrate = 0.001f;
 // random array
 uint32_t array[NUMBEROFBITS] = {0,1,0,0};

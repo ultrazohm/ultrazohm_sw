@@ -129,7 +129,7 @@ return y;
 }
 
 uint32_t genRand_uint32_t(MTRand* rand, uint32_t max) {
-  uint32_t y = (uint32_t) (genRand_float(rand)*(max-1));
+  uint32_t y = (uint32_t) (genRand_float(rand)*(max+1));
 return y;
 }
 

@@ -16,9 +16,9 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 20000
-#define MINIBATCHSIZE 16
-#define NUMBER_OF_EPOCHS 10000
+#define EXPERIENCE_BUFFER_LENGTH 2000
+#define MINIBATCHSIZE 32
+#define NUMBER_OF_EPOCHS 5000
 #define TARGET_UPDATE_FREQUENCY 1
 // nn
 #define NUMBEROFBITS 4
@@ -87,13 +87,8 @@ float cacheg_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float g_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0};
 float g_2[NUMBER_OF_OUTPUTS + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0};
 
-float cx[NUMBER_OF_INPUTS] = {
-1.0f,2.0f
-};
-
-float creference_output[NUMBER_OF_OUTPUTS]= {
-2.0f
-};
+float cx[NUMBER_OF_INPUTS] = {0};
+float creference_output[NUMBER_OF_OUTPUTS]= {0};
 
 float cw_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0.0f};
 float cb_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0.0f};
@@ -118,12 +113,14 @@ float reward[EXPERIENCE_BUFFER_LENGTH] = {0};
 uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0};
 float qvalues[EXPERIENCE_BUFFER_LENGTH] = {0};
 float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0};
+float observation1[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
+float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
 float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0};
 
 // config random
 struct uz_mtwister_config cfg = {
-  .seed = 256,
+  .seed = 123,
   .distribution = normal_distribution
 };
 //config target
@@ -217,7 +214,9 @@ struct uz_dqn_experience_replay_config configbuffer = {
         .reward = reward,
         .qvalues = qvalues,
         .observations = observation,
+        .observations1 = observation1,
         .obsvec = vecobs,
+        .obsvec1 = vecobs1,
         .actions = action
 };
 void setUp(void)
@@ -232,7 +231,7 @@ void test_uz_dqn_init(void)
 {
     uz_dqn_t* testdqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,0,configenv); 
     float targsmoothfact = 0.05f;
-    uz_nn_target_update(testdqn->critic,testdqn->critic_target_net,periodic_smoothing,&targsmoothfact);
+    uz_nn_target_update(testdqn->critic,testdqn->critic_target_net,smoothing,&targsmoothfact);
 }
 void test_dqn_bitflip(void)
 {
@@ -247,16 +246,20 @@ void test_dqn_bitflip(void)
     float* rew = getbackrew;
     float* qval = getbackqval;
     uint32_t* act = getbackact;
+    float getbackobs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
+    struct uz_matrix_t getbackobs_matrix = {0};
+    uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobs, UZ_MATRIX_SIZE(getbackobs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
     float getbackobbspl1[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrixpl1 = {0};
     uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
     //adam testing
-    adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);///(float)MINIBATCHSIZE
+    adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // prefill buffer
-    // do{
-    // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    // uz_dqn_sample_bitenv(testdqn2);
-    // } while (!testdqn2->experience_buffer->counterisfull && (testdqn2->experience_buffer->head< (20 * MINIBATCHSIZE)));
+    do{
+    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    uz_dqn_sample_bitenv(testdqn2);
+    } while (!testdqn2->experience_buffer->counterisfull && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
     // epsilon wieder auf startwert setzen
     testdqn2->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
@@ -274,12 +277,12 @@ void test_dqn_bitflip(void)
     if (testdqn2->experience_buffer->counterisfull > 0){
     genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,EXPERIENCE_BUFFER_LENGTH-1);
     }
+    else{
     genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,testdqn2->experience_buffer->head-1);
-    if (testdqn2->experience_buffer->head > MINIBATCHSIZE){
-    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
-    //loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
-    loss[i] = uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact); 
     }
+    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,testdqn2->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
+    //loss[i] = uz_dqn_train(testdqn2,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
+    loss[i] = uz_dqn_train4(testdqn2,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
     }
     free(adam);
     // Verhalten des Agenten testen, nach dem Training
@@ -299,21 +302,21 @@ void test_dqn_bitflip(void)
     //make_directory(s);
     // strcat("test/uz/uz_dqn/loss256_clipped", s);
     // strcat(".csv",s);
-    // exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
-    // exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
-    // exportFloatArrayToCSV("test/uz/uz_dqn/globalrewardr.csv", globalrewardr, NUMBER_OF_EPOCHS);
-    // exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
-    // exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
-    // // save param to .txt
-    // FILE* f = fopen("test/uz/uz_dqn/hyperparam.txt", "w");  // open the file for writing
-    // if (f != NULL)                       // check for success
-    // {
-    //  fprintf(f,"Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
-    //  fprintf(f,"%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", lernrate,discountfact, configenv.epsilon_start,configenv.epsilon_min,configenv.epsilon_decay,NUMBER_OF_HIDDEN_LAYER,EXPERIENCE_BUFFER_LENGTH,MINIBATCHSIZE,NUMBER_OF_EPOCHS,TARGET_UPDATE_FREQUENCY,NUMBEROFBITS,
-    //  NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
-    //  fclose(f);                       // close the file
-    //  f = NULL;                        // set file handle to null since f is no longer valid
-    // }
-    // uz_nn_trained_export(testdqn2->critic_target_net);
+    exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/globalrewardr.csv", globalrewardr, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
+    // save param to .txt
+    FILE* f = fopen("test/uz/uz_dqn/hyperparam.txt", "w");  // open the file for writing
+    if (f != NULL)                       // check for success
+    {
+     fprintf(f,"Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
+     fprintf(f,"%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", lernrate,discountfact, configenv.epsilon_start,configenv.epsilon_min,configenv.epsilon_decay,NUMBER_OF_HIDDEN_LAYER,EXPERIENCE_BUFFER_LENGTH,MINIBATCHSIZE,NUMBER_OF_EPOCHS,TARGET_UPDATE_FREQUENCY,NUMBEROFBITS,
+     NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
+     fclose(f);                       // close the file
+     f = NULL;                        // set file handle to null since f is no longer valid
+    }
+    uz_nn_trained_export(testdqn2->critic_target_net);
 }
 #endif // TEST

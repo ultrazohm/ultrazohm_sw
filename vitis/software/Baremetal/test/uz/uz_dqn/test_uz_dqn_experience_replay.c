@@ -117,26 +117,30 @@ void test_uz_dqn_write_to_buffer(void)
 
 }
 
-// void test_uz_dqn_overwrite_first_values(void){
-//     // float data
-//     float rew[EXPERIENCE_BUFFER_LENGTH] = {-777.7f,-27.7f,300.0f};
-//     uint32_t act[EXPERIENCE_BUFFER_LENGTH] = {777,0,3};
-//     float qval[EXPERIENCE_BUFFER_LENGTH] = {543.3f,6.4f,7.99f};
-//     float obbs[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {7.0f,7.0f,7.0f,7.0f,7.0f,2.0f,2.1f,5.1f,2.1f,0.0f,2.0f,-1.0f,5.1f,2.1f,0.0f};
-
-//     uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(configbuffer,EXPERIENCE_BUFFER_LENGTH,EXPERIENCE_BUFFER_LENGTH);
-//     float RewardData4 = -777.7f;
-//     uint32_t action4 = 777;
-//     float qval4 = 543.3f;
-//     float ObsData[5] = {7.0f,7.0f,7.0f,7.0f,7.0f};
-//     struct uz_matrix_t obs_matrix = {0};
-//     uz_matrix_t *obs = uz_matrix_init(&obs_matrix, ObsData, UZ_MATRIX_SIZE(ObsData), 1, 5);
-//     uz_dqn_push_to_buffer(buffertesting,&RewardData4,&qval4,&action4,obs);
-//     TEST_ASSERT_EQUAL_FLOAT_ARRAY(rew, reward, EXPERIENCE_BUFFER_LENGTH);
-//     TEST_ASSERT_EQUAL_FLOAT_ARRAY(qval, q_value, EXPERIENCE_BUFFER_LENGTH);
-//     TEST_ASSERT_EQUAL_FLOAT_ARRAY(obbs, observation, EXPERIENCE_BUFFER_LENGTH*NUMBEROFOBS);
-//     TEST_ASSERT_EQUAL_INT32_ARRAY(act, action, EXPERIENCE_BUFFER_LENGTH);
-// }
+void test_uz_dqn_overwrite_first_values(void){
+    // float data
+    float rew[EXPERIENCE_BUFFER_LENGTH] = {-777.7f,-27.7f,300.0f};
+    uint32_t act[EXPERIENCE_BUFFER_LENGTH] = {777,0,3};
+    float qval[EXPERIENCE_BUFFER_LENGTH] = {543.3f,6.4f,7.99f};
+    float obbs[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {7.0f,7.0f,7.0f,7.0f,7.0f,1.0f,1.1f,4.1f,1.1f,-1.0f,1.0f,-2.0f,4.1f,1.1f,-1.0f};
+    float obbs1[NUMBEROFOBS*EXPERIENCE_BUFFER_LENGTH] = {7.0f,7.0f,7.0f,7.0f,7.0f,2.0f,2.1f,5.1f,2.1f,0.0f,2.0f,-1.0f,5.1f,2.1f,0.0f};
+    uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(configbuffer,EXPERIENCE_BUFFER_LENGTH,EXPERIENCE_BUFFER_LENGTH);
+    float RewardData4 = -777.7f;
+    uint32_t action4 = 777;
+    float qval4 = 543.3f;
+    float ObsData[5] = {7.0f,7.0f,7.0f,7.0f,7.0f};
+    struct uz_matrix_t obs_matrix = {0};
+    uz_matrix_t *obs = uz_matrix_init(&obs_matrix, ObsData, UZ_MATRIX_SIZE(ObsData), 1, 5);
+    float ObsData1[5] = {7.0f,7.0f,7.0f,7.0f,7.0f};
+    struct uz_matrix_t obs_matrix1 = {0};
+    uz_matrix_t *obs1 = uz_matrix_init(&obs_matrix1, ObsData1, UZ_MATRIX_SIZE(ObsData1), 1, 5);
+    uz_dqn_push_to_buffer(buffertesting,&RewardData4,&qval4,&action4,obs,obs1);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(rew, reward, EXPERIENCE_BUFFER_LENGTH);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(qval, q_value, EXPERIENCE_BUFFER_LENGTH);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(obbs, observation, EXPERIENCE_BUFFER_LENGTH*NUMBEROFOBS);
+    TEST_ASSERT_EQUAL_FLOAT_ARRAY(obbs1, observation1, EXPERIENCE_BUFFER_LENGTH*NUMBEROFOBS);
+    TEST_ASSERT_EQUAL_INT32_ARRAY(act, action, EXPERIENCE_BUFFER_LENGTH);
+}
 // void test_uz_dqn_get_minibatch_from_buffer_logic_testing(void){
 //     uz_dqn_experience_replay_t *buffertesting = uz_dqn_experience_replay_init(configbuffer, EXPERIENCE_BUFFER_LENGTH,9); 
 //     // buffer init, headind=9 => buffer wurde einmal komplett beschrieben, is aber noch nicht überschrieben

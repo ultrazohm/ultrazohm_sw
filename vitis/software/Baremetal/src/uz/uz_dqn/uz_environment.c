@@ -71,7 +71,24 @@ float calculate_reward_bit(uz_dqn_environment_t *self)
     }
     return r;
 }
-
+float calculate_reward_simple(uint32_t actionind)
+{
+    float r;
+    if (actionind == 0)
+    {
+    r = 1.0f;
+    }
+    else if (actionind == 1){
+    r = 2.0f;
+    }
+    else if (actionind == 2){
+    r = 3.0f;
+    }
+    else{
+    return -1;
+    }
+    return r;
+}
 void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action)
 {
     // flip bit

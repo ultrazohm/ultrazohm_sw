@@ -112,4 +112,14 @@ void test_uint_32_t_array(void){
   uint32_t expectedarray [5] = {2,2,2,2,2};
   TEST_ASSERT_UINT32_ARRAY_WITHIN (1, expectedarray, array,UZ_MATRIX_SIZE(array));
 }
+
+void test_uint_32_t(void){
+  MTRand r = seedRand(1);
+  float max_val = 5;
+  uint32_t output[200] = {0};
+  for(uint32_t i=0; i<200; i++) {
+    output[i] = genRand_uint32_t(&r, max_val);
+  }
+  float x = 2.0f;
+}
 #endif // TEST

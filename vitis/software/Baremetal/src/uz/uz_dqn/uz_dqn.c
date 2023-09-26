@@ -116,33 +116,38 @@ void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self)
     }
 
 }
-// void uz_dqn_sample_bitenv_mult(uz_dqn_t *self)
-// {
-//     uint32_t actionind;
-//     self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start,self->env->epsilon_min,self->env->epsilon_decay);
-//     for (uint32_t i = 0; i < self->env->max_steps; i++)
-//     {
-//     uz_nn_ff(self->critic,self->env->inputfornn);
-//     uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
-//     // randnumber and epsilon comparision
-//     if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
-//         actionind = genRand_uint32_t(&self->randinstance->seedRand,self->env->bitlength-1);
-//     }
-//     else{
-//     actionind = uz_matrix_get_max_index(outputdqn);
-//     }
-//     float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,actionind);
-//     // obs plus1
-//     uz_dqn_bitflip_action(self->env,actionind);
-//     float reward = calculate_reward_bit(self->env);
-//     uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&actionind,self->env->inputfornn);
-//     self->env->cumreward+= reward;
-//     if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
-//     // printf("Bitmuster gleich nach %d Schritten.\n",i);
-//     return;
-//     }
-//     } 
-// }
+
+void uz_dqn_simple_reset(uz_dqn_t *self)
+{
+    for (uint32_t i = 0; i < self->critic->number_of_inputs; i++)
+    {
+    self->inputvecnn->data[i] = genRand_float(&self->randinstance->seedRand);
+    }
+}
+
+void uz_dqn_sample_simple(uz_dqn_t *self)
+{
+    uint32_t action;
+    self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start,self->env->epsilon_min,self->env->epsilon_decay);
+    for (uint32_t i = 0; i < self->env->max_steps; i++)
+    {
+    uz_matrix_copy(self->inputvecnn,self->env->inputfornn);
+    uz_nn_ff(self->critic,self->inputvecnn);
+    uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
+    // randnumber and epsilon comparision
+    if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
+        action = genRand_uint32_t(&self->randinstance->seedRand,self->critic->number_of_outputs-1);
+    }
+    else{
+    action = uz_matrix_get_max_index(outputdqn);
+    }
+    float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,action);
+    //uz_dqn_simple_action(self->env,actionind);
+    float reward = calculate_reward_simple(action);
+    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,self->env->inputfornn,self->env->inputfornn);
+    self->env->cumreward= reward;
+    } 
+}
 
 void uz_dqn_sample_bitenv(uz_dqn_t *self)
 {
@@ -185,6 +190,8 @@ for(uint32_t j=0; j<mbsize;j++){
         uz_matrix_get_row_vector_zero_based(obspl1,self->env->inputfornn,j);
         uz_nn_ff(self->critic_target_net,self->env->inputfornn);
         outputtarget = uz_nn_get_output_data(self->critic_target_net);
+        // uz_matrix_get_row_vector_zero_based(obs,self->inputvecnn,j);
+        // uz_nn_ff(self->critic,self->inputvecnn);
         qplus1 = uz_matrix_get_max_value(outputtarget);
         if (*rew==0.0f)
         {
@@ -210,7 +217,7 @@ for(uint32_t j=0; j<mbsize;j++){
     uz_nn_set_gradients_zero(self->critic);
     // Targetupdate 
     if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
-    uz_nn_target_update(self->critic,self->critic_target_net,smoothing, &targsmoothfact);
+    uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
     }
 return cum_loss;
 }
@@ -246,7 +253,7 @@ for(uint32_t j=0; j<mbsize;j++){
         rew++;
         qval++;
         act++;
-        resetFloatArray(error,4);   
+        resetFloatArray(error,self->critic->number_of_outputs);   
     }
     cum_loss = cum_loss/(float)mbsize;
     adam_optimizer_step(adam,self->critic);

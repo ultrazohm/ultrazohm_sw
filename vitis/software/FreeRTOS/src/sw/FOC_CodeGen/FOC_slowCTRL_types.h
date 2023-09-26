@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_slowCTRL'.
  *
- * Model version                  : 1.4
+ * Model version                  : 1.6
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Thu Aug 24 12:54:27 2023
+ * C/C++ source code generated on : Tue Sep 26 09:35:18 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A

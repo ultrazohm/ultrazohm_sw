@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_fastCTRL'.
  *
- * Model version                  : 1.7
+ * Model version                  : 1.8
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Aug 28 08:46:54 2023
+ * C/C++ source code generated on : Tue Sep 26 09:34:38 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -67,6 +67,7 @@ typedef struct {
   real_T DiscreteFIRFilter10thorder_stat[9];
                                      /* '<S9>/Discrete FIR Filter 10th order' */
   real_T UnitDelay1_DSTATE_he;         /* '<S34>/Unit Delay1' */
+  real_T FCF_Cnt_DSTATE;               /* '<S1>/FCF_Cnt' */
   int32_T DiscreteFIRFilter20thorder_circ;
                                     /* '<S39>/Discrete FIR Filter 20th order' */
   int32_T DiscreteFIRFilter20thorder_ci_a;
@@ -100,7 +101,7 @@ typedef struct {
   real_T I_dq_RefA[2];                 /* '<Root>/I_dq_Ref [A]' */
   real_T phi_elrad;                    /* '<Root>/phi_el [rad]' */
   real_T FOC_Mode;                     /* '<Root>/FOC_Mode' */
-  real_T FOC_Enable_b;                 /* '<Root>/FOC_Enable' */
+  real_T FOC_Enable_k;                 /* '<Root>/FOC_Enable' */
 } ExtU_FOC_fastCTRL_T;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -145,6 +146,7 @@ extern real_T Phi_est_error;           /* '<S5>/phi_est_error' */
 extern real_T FOC_AngleEst_Psi_PM_alpha;/* '<S3>/Gain3' */
 extern real_T FOC_AngleEst_Psi_PM_beta;/* '<S3>/Gain4' */
 extern real_T w_el;                    /* '<S5>/dummy_gain' */
+extern real_T FCF_Cnt;                 /* '<S1>/FCF_Cnt' */
 extern real_T Phi_Measured_Raw;        /* '<S5>/dummy_gain3' */
 
 /*

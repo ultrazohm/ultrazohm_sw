@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_slowCTRL'.
  *
- * Model version                  : 1.4
+ * Model version                  : 1.6
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Thu Aug 24 12:54:27 2023
+ * C/C++ source code generated on : Tue Sep 26 09:35:18 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -52,6 +52,7 @@ typedef struct {
   real_T DelayInput2_DSTATE_f;         /* '<S12>/Delay Input2' */
   real_T DelayInput2_DSTATE_e;         /* '<S18>/Delay Input2' */
   real_T UnitDelay_DSTATE_m;           /* '<S9>/UnitDelay' */
+  real_T SCF_Cnt_DSTATE;               /* '<S1>/SCF_Cnt' */
   real_T UnitDelay_DSTATE_b;           /* '<S15>/Unit Delay' */
   real_T DelayInput2_DSTATE_d;         /* '<S29>/Delay Input2' */
   real_T UnitDelay_DSTATE_a;           /* '<S3>/Unit Delay' */
@@ -134,6 +135,7 @@ extern real_T Iq_Ref_raw;              /* '<S6>/Multiport Switch' */
 extern real_T Torq_Ref_PSM;            /* '<S9>/Gain' */
 extern real_T Torq_Ref_IqDiff;         /* '<S9>/FOC_IQ_DIFF_REDUC_GAIN' */
 extern real_T M_est;                   /* '<S4>/TorqEst_Nm' */
+extern real_T SCF_Cnt;                 /* '<S1>/SCF_Cnt' */
 extern real_T FOC_MotTemp_PSM;         /* '<S8>/Gain1' */
 extern boolean_T Temp_Derating_aktiv;  /* '<S25>/Compare' */
 

@@ -81,12 +81,12 @@ typedef struct {
 
 typedef struct {
 	struct {
-		real_T U_DCV;                        /* '<Root>/U_DC [V]' */
-		real_T I_phA[6];                     /* '<Root>/I_ph [A]' */
 		real_T I_dq_RefA[2];                 /* '<Root>/I_dq_Ref [A]' */
+		real_T I_phA[6];                     /* '<Root>/I_ph [A]' */
+		real_T U_DCV;                        /* '<Root>/U_DC [V]' */
 		real_T phi_elrad;                    /* '<Root>/phi_el [rad]' */
 		real_T FOC_Mode;                     /* '<Root>/FOC_Mode' */
-		real_T FOC_Enable_i;                 /* '<Root>/FOC_Enable' */
+		real_T FOC_Enable;                   /* '<Root>/FOC_Enable' */
 	} fcf_in;
 	struct {
 		real_T DutyCycles01[6];              /* '<Root>/DutyCycles [0..1]' */
@@ -249,7 +249,7 @@ static void fast_ctrl_(void)
 		FOC_fastCTRL_MPtr->inputs->I_dq_RefA[1] = ctrl_data.fcf_in.I_dq_RefA[1];
 		FOC_fastCTRL_MPtr->inputs->phi_elrad = ctrl_data.fcf_in.phi_elrad;
 		FOC_fastCTRL_MPtr->inputs->FOC_Mode = ctrl_data.fcf_in.FOC_Mode;
-		FOC_fastCTRL_MPtr->inputs->FOC_Enable_b = ctrl_data.fcf_in.FOC_Enable_i;
+		FOC_fastCTRL_MPtr->inputs->FOC_Enable_k = ctrl_data.fcf_in.FOC_Enable;
 
 		FOC_fastCTRL_step(FOC_fastCTRL_MPtr);
 

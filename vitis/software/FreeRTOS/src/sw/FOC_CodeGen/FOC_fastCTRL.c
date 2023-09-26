@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_fastCTRL'.
  *
- * Model version                  : 1.7
+ * Model version                  : 1.8
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Aug 28 08:46:54 2023
+ * C/C++ source code generated on : Tue Sep 26 09:34:38 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -38,6 +38,7 @@ real_T Phi_est_error;                  /* '<S5>/phi_est_error' */
 real_T FOC_AngleEst_Psi_PM_alpha;      /* '<S3>/Gain3' */
 real_T FOC_AngleEst_Psi_PM_beta;       /* '<S3>/Gain4' */
 real_T w_el;                           /* '<S5>/dummy_gain' */
+real_T FCF_Cnt;                        /* '<S1>/FCF_Cnt' */
 real_T Phi_Measured_Raw;               /* '<S5>/dummy_gain3' */
 
 /* Exported block parameters */
@@ -291,7 +292,7 @@ void FOC_fastCTRL_step(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
    *  Constant: '<S1>/Enable'
    *  Inport: '<Root>/FOC_Enable'
    */
-  rtb_LogicalOperator1 = ((FOC_Enable != 0.0) && (FOC_fastCTRL_U->FOC_Enable_b
+  rtb_LogicalOperator1 = ((FOC_Enable != 0.0) && (FOC_fastCTRL_U->FOC_Enable_k
     != 0.0));
 
   /* Gain: '<S7>/f_2_w_el' incorporates:
@@ -1530,6 +1531,15 @@ void FOC_fastCTRL_step(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
    */
   FOC_fastCTRL_DW->UnitDelay_DSTATE = rtb_Add - rtb_Switch_o;
 
+  /* UnitDelay: '<S1>/FCF_Cnt' */
+  FCF_Cnt = FOC_fastCTRL_DW->FCF_Cnt_DSTATE;
+
+  /* Sum: '<S1>/Sum' incorporates:
+   *  Constant: '<S1>/Counter_Start'
+   *  UnitDelay: '<S1>/FCF_Cnt'
+   */
+  FOC_fastCTRL_DW->FCF_Cnt_DSTATE = FCF_Cnt + 1.0;
+
   /* Gain: '<S5>/dummy_gain3' incorporates:
    *  Inport: '<Root>/phi_el [rad]'
    */
@@ -1674,6 +1684,7 @@ void FOC_fastCTRL_initialize(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
   FOC_AngleEst_Psi_PM_alpha = 0.0;
   FOC_AngleEst_Psi_PM_beta = 0.0;
   w_el = 0.0;
+  FCF_Cnt = 0.0;
   Phi_Measured_Raw = 0.0;
 
   /* states (dwork) */

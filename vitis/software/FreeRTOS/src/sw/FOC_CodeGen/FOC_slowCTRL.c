@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_slowCTRL'.
  *
- * Model version                  : 1.4
+ * Model version                  : 1.6
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Thu Aug 24 12:54:27 2023
+ * C/C++ source code generated on : Tue Sep 26 09:35:18 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -23,7 +23,6 @@
 #include "rtwtypes.h"
 #include <string.h>
 #include "FOC_slowCTRL_private.h"
-#include <stdbool.h>
 
 /* Exported block signals */
 real_T Udc_scf;                        /* '<S1>/Switch1' */
@@ -34,6 +33,7 @@ real_T Iq_Ref_raw;                     /* '<S6>/Multiport Switch' */
 real_T Torq_Ref_PSM;                   /* '<S9>/Gain' */
 real_T Torq_Ref_IqDiff;                /* '<S9>/FOC_IQ_DIFF_REDUC_GAIN' */
 real_T M_est;                          /* '<S4>/TorqEst_Nm' */
+real_T SCF_Cnt;                        /* '<S1>/SCF_Cnt' */
 real_T FOC_MotTemp_PSM;                /* '<S8>/Gain1' */
 boolean_T Temp_Derating_aktiv;         /* '<S25>/Compare' */
 
@@ -1098,6 +1098,15 @@ void FOC_slowCTRL_step(RT_MODEL_FOC_slowCTRL_T *const FOC_slowCTRL_M)
 
   /* End of MultiPortSwitch: '<S4>/Selectphicalc1' */
 
+  /* UnitDelay: '<S1>/SCF_Cnt' */
+  SCF_Cnt = FOC_slowCTRL_DW->SCF_Cnt_DSTATE;
+
+  /* Sum: '<S1>/Sum' incorporates:
+   *  Constant: '<S1>/Counter_Start'
+   *  UnitDelay: '<S1>/SCF_Cnt'
+   */
+  FOC_slowCTRL_DW->SCF_Cnt_DSTATE = SCF_Cnt + 1.0;
+
   /* Gain: '<S8>/Gain1' incorporates:
    *  Inport: '<Root>/MotTemp [degC]'
    */
@@ -1154,6 +1163,7 @@ void FOC_slowCTRL_initialize(RT_MODEL_FOC_slowCTRL_T *const FOC_slowCTRL_M)
   Torq_Ref_PSM = 0.0;
   Torq_Ref_IqDiff = 0.0;
   M_est = 0.0;
+  SCF_Cnt = 0.0;
   FOC_MotTemp_PSM = 0.0;
   Temp_Derating_aktiv = false;
 

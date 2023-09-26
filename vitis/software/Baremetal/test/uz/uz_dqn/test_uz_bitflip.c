@@ -299,21 +299,21 @@ void test_dqn_bitflip(void)
     //make_directory(s);
     // strcat("test/uz/uz_dqn/loss256_clipped", s);
     // strcat(".csv",s);
-    exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
-    exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
-    exportFloatArrayToCSV("test/uz/uz_dqn/globalrewardr.csv", globalrewardr, NUMBER_OF_EPOCHS);
-    exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
-    exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
-    // save param to .txt
-    FILE* f = fopen("test/uz/uz_dqn/hyperparam.txt", "w");  // open the file for writing
-    if (f != NULL)                       // check for success
-    {
-     fprintf(f,"Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
-     fprintf(f,"%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", lernrate,discountfact, configenv.epsilon_start,configenv.epsilon_min,configenv.epsilon_decay,NUMBER_OF_HIDDEN_LAYER,EXPERIENCE_BUFFER_LENGTH,MINIBATCHSIZE,NUMBER_OF_EPOCHS,TARGET_UPDATE_FREQUENCY,NUMBEROFBITS,
-     NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
-     fclose(f);                       // close the file
-     f = NULL;                        // set file handle to null since f is no longer valid
-    }
-    uz_nn_trained_export(testdqn2->critic_target_net);
+    // exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
+    // exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
+    // exportFloatArrayToCSV("test/uz/uz_dqn/globalrewardr.csv", globalrewardr, NUMBER_OF_EPOCHS);
+    // exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
+    // exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
+    // // save param to .txt
+    // FILE* f = fopen("test/uz/uz_dqn/hyperparam.txt", "w");  // open the file for writing
+    // if (f != NULL)                       // check for success
+    // {
+    //  fprintf(f,"Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
+    //  fprintf(f,"%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", lernrate,discountfact, configenv.epsilon_start,configenv.epsilon_min,configenv.epsilon_decay,NUMBER_OF_HIDDEN_LAYER,EXPERIENCE_BUFFER_LENGTH,MINIBATCHSIZE,NUMBER_OF_EPOCHS,TARGET_UPDATE_FREQUENCY,NUMBEROFBITS,
+    //  NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
+    //  fclose(f);                       // close the file
+    //  f = NULL;                        // set file handle to null since f is no longer valid
+    // }
+    // uz_nn_trained_export(testdqn2->critic_target_net);
 }
 #endif // TEST

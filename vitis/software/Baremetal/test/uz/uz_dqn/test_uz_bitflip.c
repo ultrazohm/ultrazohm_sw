@@ -16,10 +16,10 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 2000
-#define MINIBATCHSIZE 32
+#define EXPERIENCE_BUFFER_LENGTH 5000
+#define MINIBATCHSIZE 64
 #define NUMBER_OF_EPOCHS 5000
-#define TARGET_UPDATE_FREQUENCY 1
+#define TARGET_UPDATE_FREQUENCY 100
 // nn
 #define NUMBEROFBITS 4
 #define NUMBER_OF_INPUTS 8
@@ -29,7 +29,7 @@
 #define NUMBEROFTESTSTEPS 50
 
 float discountfact = 0.99f;
-float lernrate = 0.001f;
+float lernrate = 0.0001f;
 // random array
 uint32_t array[NUMBEROFBITS] = {0,1,0,0};
 uint32_t tararray[NUMBEROFBITS] = {1,1,1,1};

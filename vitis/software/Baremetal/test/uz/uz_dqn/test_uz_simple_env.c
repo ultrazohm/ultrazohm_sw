@@ -16,10 +16,10 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 2000
+#define EXPERIENCE_BUFFER_LENGTH 1000
 #define MINIBATCHSIZE 16
-#define NUMBER_OF_EPOCHS 10000
-#define TARGET_UPDATE_FREQUENCY 5
+#define NUMBER_OF_EPOCHS 100000
+#define TARGET_UPDATE_FREQUENCY 500
 // nn
 #define NUMBER_OF_INPUTS 4
 #define NUMBER_OF_OUTPUTS 3
@@ -28,7 +28,7 @@
 #define NUMBEROFTESTSTEPS 50
 #define NUMBEROFBITS 2
 
-float discountfact = 0.0f;
+float discountfact = 0.99f;
 float lernrate = 0.001f;
 // random array
 uint32_t array[NUMBEROFBITS] = {0,1,0,0};
@@ -49,10 +49,12 @@ struct uz_dqn_environment_config configenv = {
     .inarray = inarray,
     .max_steps = 1,
     .epsilon_start = 0.99f, 
-    .epsilon_min = 0.01f, 
-    .epsilon_decay = 0.0007f
+    .epsilon_min = 0.00000001f, 
+    .epsilon_decay = 0.00007f
 };
 // debug stuff
+float Q_Target[NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS] = {0.0f};
+float Q_Critic[NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS] = {0.0f};
 float loss[NUMBER_OF_EPOCHS] = {0.0f};
 float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
 float globalrewardr[NUMBER_OF_EPOCHS] = {0.0f};
@@ -269,11 +271,13 @@ void test_dqn_simple(void)
     genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0,simpledqn->experience_buffer->head-1);
     }
     uz_dqn_get_minibatch_from_buffer(simpledqn->experience_buffer,rew,qval,act,simpledqn->experience_buffer->vectorforobs,simpledqn->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
-    loss[i] = uz_dqn_train4(simpledqn,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
+    loss[i] = uz_dqn_train4(simpledqn,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam);  
+    save_values(Q_Critic,Q_Target,cy_2,ty_2,i);
     }
     free(adam);
-
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/losssimple.csv", loss, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/simple/QTarget.csv", Q_Target, NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS);
+    exportFloatArrayToCSV("test/uz/uz_dqn/simple/QCritic.csv", Q_Critic, NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/cumrewardsimple.csv", cumreward, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/globalrewardrsimple.csv", globalrewardr, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/epsilonsimple.csv", epsilonovertime, NUMBER_OF_EPOCHS);

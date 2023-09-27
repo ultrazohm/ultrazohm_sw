@@ -178,7 +178,7 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
 }
 
 float uz_dqn_train(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
-uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
+uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact)
 {
 float qplus1 = 0.0f;
 bool terminal = false;
@@ -210,20 +210,20 @@ for(uint32_t j=0; j<mbsize;j++){
         rew++;
         qval++;
         act++;
-        resetFloatArray(error,4);   
+        resetFloatArray(error,self->critic->number_of_outputs);   
     }
     cum_loss = cum_loss/(float)mbsize;
     uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
     uz_nn_set_gradients_zero(self->critic);
     // Targetupdate 
-    if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
+    if (epoch % TARGET_UPDATE_FREQUENCY  == 0){
     uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
     }
 return cum_loss;
 }
 
 float uz_dqn_train4(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act,uz_matrix_t *obs,  uz_matrix_t *obspl1, uint32_t mbsize,
-uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact, adam_optimizer_t *adam)
+uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, adam_optimizer_t *adam)
 {
 float qplus1 = 0.0f;
 bool terminal = false;
@@ -259,8 +259,8 @@ for(uint32_t j=0; j<mbsize;j++){
     adam_optimizer_step(adam,self->critic);
     uz_nn_set_gradients_zero(self->critic);
     // Targetupdate 
-    if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
-    uz_nn_target_update(self->critic,self->critic_target_net,smoothing, &targsmoothfact);
+    if (epoch % TARGET_UPDATE_FREQUENCY  == 0){
+    uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
     }
 return cum_loss;
 }

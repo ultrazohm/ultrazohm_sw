@@ -83,6 +83,12 @@ load("cumrewardsimple.csv");
 load("losssimple.csv");
 load("globalrewardrsimple.csv");
 load("epsilonsimple.csv");
+load("QCritic.csv");
+load("QTarget.csv");
+
+%% reshape
+QCritic = reshape(QCritic,3,[]);
+QTarget = reshape(QTarget,3,[]);
 
 figure('units','normalized','outerposition',[0 0 1 1])
 subplot(5,1,1)
@@ -104,16 +110,27 @@ grid on;
 xlabel('Episoden','interpreter','latex');
 ylabel('Rewardmetrik','interpreter','latex');
 grid on;
-h = subplot(5,1,4);   
-u = uitable('Data',T{:,:},'Units',h.Units,'Position',h.Position,'ColumnName',T.Properties.VariableNames); 
-set(u,'ColumnWidth',{120})
-h.Visible = 'Off'; 
-subplot(5,1,5)
-plot(epsilonsimple);
+subplot(5,1,4)
+plot(QCritic(1,:),'DisplayName',"1");
+hold on;
+plot(QCritic(2,:),'DisplayName',"2");
+hold on;
+plot(QCritic(3,:),'DisplayName',"3");
 grid on;
 xlabel('Episoden','interpreter','latex');
-ylabel('epsilon','interpreter','latex');
-sgtitle("Bitflip Ergebnisse NN 256 Neuronen clipped, seed 2, -2.0f beim Loss, lr 0.0001 18 09 14:10")
+ylabel('Critic Values','interpreter','latex');
+legend
+subplot(5,1,5)
+plot(QTarget(1,:),'DisplayName',"1");
+hold on;
+plot(QTarget(2,:),'DisplayName',"2");
+hold on;
+plot(QTarget(3,:),'DisplayName',"3");
+grid on;
+legend
+xlabel('Episoden','interpreter','latex');
+ylabel('Target Values','interpreter','latex');
+sgtitle("Simple env, Buffer 2000")
 % subplot(4,1,4)
 % plot(dloss256_clipped);
 % grid on;

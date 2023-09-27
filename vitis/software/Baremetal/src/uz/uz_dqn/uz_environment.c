@@ -126,4 +126,11 @@ void uz_dqn_environment_action(uz_dqn_environment_t *self)
     self->is_ready = false;
 }
 
+void save_values(float savecritic[], float savetarget[], float critic[], float target[], int step) {
+    // Save values from the current step into the larger arrays
+    for (int i = 0; i < 3; i++) {
+        savecritic[step * 3 + i] = critic[i];
+        savetarget[step * 3 + i] = target[i];
+    }
+}
 #endif

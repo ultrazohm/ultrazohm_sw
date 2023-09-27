@@ -341,7 +341,7 @@ for (uint32_t i = 0; i < params; i++){
         layer->weights->data[i]-= optimizer->learning_rate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);
         }
         else{
-        layer->bias->data[i] -= optimizer->learning_rate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);  
+        layer->bias->data[i-weight_index] -= optimizer->learning_rate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);  
         }
 
 }

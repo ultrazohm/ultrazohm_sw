@@ -272,7 +272,7 @@ void test_dqn_simple(void)
     }
     uz_dqn_get_minibatch_from_buffer(simpledqn->experience_buffer,rew,qval,act,simpledqn->experience_buffer->vectorforobs,simpledqn->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
     loss[i] = uz_dqn_train4(simpledqn,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam);  
-    save_values(Q_Critic,Q_Target,cy_2,ty_2,i);
+    save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
     free(adam);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/losssimple.csv", loss, NUMBER_OF_EPOCHS);

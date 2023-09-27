@@ -40,10 +40,14 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
 
 void uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand){
 for(uint32_t i=0; i<self->bitlength;i++){
-    self->bitinitial[i] = genRand_zero_one(seedRand);
-    self->bittarget[i] = genRand_zero_one(seedRand);
-    self->inputfornn->data[i] = (float)self->bitinitial[i];
-    self->inputfornn->data[self->bitlength+i] = (float)self->bittarget[i];
+    self->bitinitial[i] = 1U;
+    self->bittarget[i] = 0U;
+    self->inputfornn->data[i] = 1.0f;
+    self->inputfornn->data[self->bitlength+i] = 0.0f;
+    // self->bitinitial[i] = genRand_zero_one(seedRand);
+    // self->bittarget[i] = genRand_zero_one(seedRand);
+    // self->inputfornn->data[i] = (float)self->bitinitial[i];
+    // self->inputfornn->data[self->bitlength+i] = (float)self->bittarget[i];
 }
 self->is_ready = true;
 self->cumreward = 0.0f;
@@ -66,7 +70,7 @@ float calculate_reward_bit(uz_dqn_environment_t *self)
     {
     r = 0.0f;
     }
-    else{
+    else if(z==false){
     r = -1.0f;
     }
     return r;
@@ -126,11 +130,11 @@ void uz_dqn_environment_action(uz_dqn_environment_t *self)
     self->is_ready = false;
 }
 
-void save_values(float savecritic[], float savetarget[], float critic[], float target[], int step) {
+void save_values(float savecritic[], float savetarget[], float critic[], float target[], int step, int size) {
     // Save values from the current step into the larger arrays
     for (int i = 0; i < 3; i++) {
-        savecritic[step * 3 + i] = critic[i];
-        savetarget[step * 3 + i] = target[i];
+        savecritic[step * size + i] = critic[i];
+        savetarget[step * size + i] = target[i];
     }
 }
 #endif

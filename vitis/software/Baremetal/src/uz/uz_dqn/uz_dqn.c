@@ -260,7 +260,7 @@ for(uint32_t j=0; j<mbsize;j++){
     uz_nn_set_gradients_zero(self->critic);
     // Targetupdate 
     if (epoch % TARGET_UPDATE_FREQUENCY  == 0){
-    uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
+    uz_nn_target_update(self->critic,self->critic_target_net,smoothing, &targsmoothfact);
     }
 return cum_loss;
 }

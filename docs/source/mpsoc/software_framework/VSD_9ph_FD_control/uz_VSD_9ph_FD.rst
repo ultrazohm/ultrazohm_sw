@@ -7,34 +7,21 @@ Since the VSD transformation can be used for both PMSM and asynchronous machines
 
 The fault detection is based on nine fault indices, one for each phase of the machine.
 The fault indices are calculated based on the measured VSD-currents with the following equations.
-:math:`{R_{1}}, {R_{2}}, {R_{3}}, {R_{4}}, {R_{5}}, {R_{6}}` are the fault indices for the phases 1 to 6 in the order :math:`a_1, b_1, c_1, a_2, b_2, c_2`.
-:math:`i_\alpha, i_\beta, i_x, i_y, i_{0^+}, i_{0^-}` are the VSD-currents calculated from the measured phasecurrent with the :ref:`VSD-Transformation <6ph_abc_to_alphabeta>`.
 
 .. _fault_indices:
 
 .. math::
 
-	{R_{1}} =-\frac{i_x}{i_\alpha+i_{0^+}} 
+	R_\textrm{a1} &=-\frac{i_\textrm{X1} + i_\textrm{X2} + i_\textrm{X3} + i_\textrm{Z}}{i_\alpha}\\
+  R_\textrm{b1} &=-\frac{i_\textrm{X1} -0,5\cdot i_\textrm{X2} -0,8860\cdot i_\textrm{Y2} - 0,5\cdot i_\textrm{X3} + 0,8860\cdot i_\textrm{Y3} + i_\textrm{Z}}{-0,5\cdot i_\alpha+0,8860\cdot i_\beta}\\
+  R_\textrm{c1} &=-\frac{i_\textrm{X1} -0,5\cdot i_\textrm{X2} +0,8860\cdot i_\textrm{Y2} - 0,5\cdot i_\textrm{X3} - 0,8860\cdot i_\textrm{Y3} + i_\textrm{Z}}{-0,5\cdot i_\alpha-0,8860\cdot i_\beta} \\
+  R_\textrm{a2} &=-\frac{0.5\cdot i_\textrm{X1}+0.8660\cdot i_\textrm{Y1}-0.1736\cdot i_\textrm{X2}+0.9848\cdot i_\textrm{Y2}-0.7660\cdot  i_\textrm{X3}+0.6428\cdot i_\textrm{Y3}-i_\textrm{Z}}{0.9397\cdot i_\alpha + 0.3420\cdot i_\beta}\\
+  R_\textrm{b2}&=-\frac{0.5\cdot i_\textrm{X1}+0.8660\cdot i_\textrm{Y1}+0.9397\cdot i_\textrm{X2}-0.3420\cdot i_\textrm{Y2}-0.1736i_\textrm{X3}-0.9848\cdot i_\textrm{Y3}- i_\textrm{Z}}{-0.7660\cdot i_\alpha+ 0.6428\cdot i_\beta}\\
+  R_\textrm{c2}&=-\frac{0.5\cdot i_\textrm{X1}+0.8660\cdot i_\textrm{Y1}-0.7660\cdot i_\textrm{X2}-0.6428\cdot i_\textrm{Y2}+0.9397\cdot i_\textrm{X3}+0.3420\cdot i_\textrm{Y3}-i_\textrm{Z}}{-0.1736\cdot i_\alpha-0.9848\cdot i_\beta}\\
+  R_\textrm{a3}&=-\frac{-0.5\cdot i_\textrm{X1}+0.8660\cdot i_\textrm{Y1}-0.9397\cdot i_\textrm{X2}-0.3420\cdot i_\textrm{Y2}+0.1736\cdot i_\textrm{X3}-0.9848\cdot i_\textrm{Y3}+i_\textrm{Z}}{0.7660\cdot i_\alpha+0.6428\cdot i_\beta}\\
+  R_\textrm{b3}&=-\frac{-0.5\cdot i_\textrm{X1}+0.8660\cdot i_\textrm{Y1}+0.1736\cdot i_\textrm{X2}+   0.9848\cdot i_\textrm{Y2}+0.7660\cdot i_\textrm{X3}+0.6428 \cdot i_\textrm{Y3} + i_\textrm{Z}}{-0.9397\cdot i_\alpha +0.3420\cdot i_\beta}\\
+  R_\textrm{c3}&=-\frac{-0.5\cdot i_\textrm{X1}+0.8660\cdot i_\textrm{Y1}+ 0.7660\cdot i_\textrm{X2}-0.6428\cdot i_\textrm{Y2}-0.9397\cdot i_\textrm{X3}+0.3420\cdot i_\textrm{Y3} + i_\textrm{Z} }{0.1736\cdot i_\alpha-0.9848\cdot i_\beta}
 
-.. math::
-
-	R_{2} =\frac{i_x}{-i_\alpha+\sqrt3\ i_\beta-\sqrt3\ i_y+2\ i_{0^+}}\\
-
-.. math::
-
-	R_{3} =\frac{i_x}{-i_\alpha-\sqrt3\ i_\beta+\sqrt3\ i_y+2\ i_{0^+}}\\
-
-.. math::
-
-	R_{4} =\frac{i_x}{i_\alpha+\frac{1}{\sqrt3}\ i_\beta+\frac{1}{\sqrt3}\ i_y+\frac{2}{\sqrt3}\ i_{0^-}}\\
-
-.. math::
-
-	R_{5} = \frac{i_x}{i_\alpha-\frac{1}{\sqrt3}\ i_\beta-\frac{1}{\sqrt3}\ i_y-\frac{2}{\sqrt3}\ i_{0^-}}\\
-
-.. math::
-
-	R_{6} =-\frac{i_y}{i_\beta-i_{0^+}}\\
 
 The fault indices are in pre-fault operation zero as the torque producing currents are mapped only into the :math:`\alpha\beta`-plane while into the :math:`xy`- and :math:`0^+0^-`-planes only currents because of asymmetries and some harmonics are mapped, which are close to zero, especially if a proper control system is used and if the PMSM contains few harmonic and asymmetric components.
 After a phase failure, the fault indices are no longer zero as now significant current components occur in the :math:`xy`- and :math:`0^+0^-`-system as the three subsystems are no longer uncoupled.
@@ -61,195 +48,147 @@ The obtained results of the evaluated fault indices can be used for an control s
 
 
 
-.. _uz_6phFD_indices:
-
-Fault indices
--------------
-
-.. doxygenstruct:: uz_6phFD_indices
-   :members:
-
-Description
-^^^^^^^^^^^
-
-Struct for 6 fault indices, each indicating if the corresponding phase of the machine is under open phase fault.
+Function references
+===================
 
 
-.. _uz_vsd_opf_6ph_faultdetection:
 
+.. doxygentypedef:: uz_VSD_9ph_FD_t
 
-Fault detection module
-----------------------
-
-.. doxygentypedef:: uz_VSD_6ph_FD_t
-
-.. doxygenstruct:: uz_VSD_6ph_FD_config
+.. doxygenstruct:: uz_VSD_9ph_FD_config
   :members:
 
-.. doxygenfunction:: uz_VSD_6ph_FD_init
+.. doxygenfunction:: uz_VSD_9ph_FD_init
 
+.. doxygenfunction:: uz_vsd_opf_9ph_faultdetection_step
 
-Fault detection
----------------
+.. doxygenfunction:: uz_vsd_opf_9ph_get_n_fault
 
-.. doxygenfunction:: uz_vsd_opf_6ph_faultdetection_step
-
-
-Description
-^^^^^^^^^^^
-
-Function for using the complete open-phase-fault detection.
-This function includes the calculation of the fault indices, filtering with a hysteresis band filter and moving average filter and finally the evaluation of the filtered fault indices.
-The individual substeps of this function are available in the following functions ``_uz_vsd_opf_6ph_fault_indices_calculation``, ``_uz_vsd_fd_hysteresis_filter`` and ``_uz_vsd_fd_evaluation``.
-
-
-.. _uz_vsd_opf_6ph_fault_indices_calculation:
-
-
-Calculation of the fault indices
---------------------------------
-
-.. doxygenfunction:: uz_vsd_opf_6ph_fault_indices_calculation
-
-
-Description
-^^^^^^^^^^^
-
-Function for calculating the raw fault indices from the six VSD-currents of the machine according to the :ref:`equations <fault_indices>`. 
-
-
-.. _uz_vsd_fd_hysteresis_filter:
-
-Hysteresis Filter
------------------
-
-.. doxygenfunction:: uz_vsd_fd_hysteresis_filter
-
-
-Description
-^^^^^^^^^^^
-
-Function for filtering the raw fault indices calculated by ``_uz_vsd_opf_6ph_fault_indices_calculation`` with a hysteresis band specified by the input values. 
-The fault indices are set to zero if they are outside the hysteresis band bounded by the upper and lower limit.
-
-
-.. _uz_vsd_fd_evaluation:
-
-Fault indices evaluation
-------------------------
-
-.. doxygenfunction:: uz_vsd_fd_evaluation
-
-
-
-Description
-^^^^^^^^^^^
-
-Function for evaluating the filtered fault indices with a threshold value, deciding if a fault index indicates an open phase fault or not. 
-A open phase fault is detected when a fault index is above the set threshold value.
 
 Example of complete open phase fault detection
 ----------------------------------------------
+.. code-block:: c
+  :linenos:
+  :caption: Example for using the functions of the module for the fault detection (init_fault_detection.h)
+
+  #include "../uz/uz_VSD_9ph_FD_control/uz_VSD_9ph_FD.h"
+  #include "../uz/uz_global_configuration.h"
+  #include "../uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
+
+  uz_VSD_9ph_FD_t* init_uz_VSD_9ph_FD(void);
 
 .. code-block:: c
   :linenos:
-  :caption: Example for using the functions of the module for the fault detection.
+  :caption: Example for using the functions of the module for the fault detection (init_fault_detection.c)
 
-  int main(void) {
+  #include "../include/init_fault_control.h"
 
-    // config for moving average filter
-    struct uz_movingAverageFilter_config movAvF_config = {
-        .filterLength = 300U
-    };
+  // config for moving average filter
+  const struct uz_movingAverageFilter_config movAvF_config = {
+    .filterLength = 1U
+  };
 
-    // moving average filter for 6 phases
-    uz_movingAverageFilter_t* movAvFilter_R1;
-    uz_movingAverageFilter_t* movAvFilter_R2;
-    uz_movingAverageFilter_t* movAvFilter_R3;
-    uz_movingAverageFilter_t* movAvFilter_R4;
-    uz_movingAverageFilter_t* movAvFilter_R5;
-    uz_movingAverageFilter_t* movAvFilter_R6;
+  #define ARRAYSIZE 100
 
-    // circular Buffers for 6 moving average filters
-    float dataR1 [500] = {0};
-    uz_array_float_t circularBuffer_R1 = {
-      .length = UZ_ARRAY_SIZE(dataR1),
-      .data = &dataR1[0]
-    };
-    float dataR2 [500] = {0};
-    uz_array_float_t circularBuffer_R2 = {
-      .length = UZ_ARRAY_SIZE(dataR2),
-      .data = &dataR2[0]
-    };
-    float dataR3 [500] = {0};
-    uz_array_float_t circularBuffer_R3 = {
-      .length = UZ_ARRAY_SIZE(dataR3),
-      .data = &dataR3[0]
-    };
-    float dataR4 [500] = {0};
-    uz_array_float_t circularBuffer_R4 = {
-      .length = UZ_ARRAY_SIZE(dataR4),
-      .data = &dataR4[0]
-    };
-    float dataR5 [500] = {0};
-    uz_array_float_t circularBuffer_R5 = {
-      .length = UZ_ARRAY_SIZE(dataR5),
-      .data = &dataR5[0]
-    };
-    float dataR6 [500] = {0};
-    uz_array_float_t circularBuffer_R6 = {
-      .length = UZ_ARRAY_SIZE(dataR6),
-      .data = &dataR6[0]
-    };
+  // circular Buffers for 9 moving average filters
+  float dataR1 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R1 = {
+  .length = ARRAYSIZE,
+  .data = &dataR1[0]
+  };
+  float dataR2 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R2 = {
+  .length = ARRAYSIZE,
+  .data = &dataR2[0]
+  };
+  float dataR3 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R3 = {
+  .length = ARRAYSIZE,
+  .data = &dataR3[0]
+  };
+  float dataR4 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R4 = {
+  .length = ARRAYSIZE,
+  .data = &dataR4[0]
+  };
+  float dataR5 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R5 = {
+  .length = ARRAYSIZE,
+  .data = &dataR5[0]
+  };
+  float dataR6 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R6 = {
+  .length = ARRAYSIZE,
+  .data = &dataR6[0]
+  };
+  float dataR7 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R7 = {
+  .length = ARRAYSIZE,
+  .data = &dataR7[0]
+  };
+  float dataR8 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R8 = {
+  .length = ARRAYSIZE,
+  .data = &dataR8[0]
+  };
+  float dataR9 [ARRAYSIZE] = {0};
+  uz_array_float_t circularBuffer_R9 = {
+  .length = ARRAYSIZE,
+  .data = &dataR9[0]
+  };
 
-    // initialize moving average filter
-    movAvFilter_R1 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R1);
-    movAvFilter_R2 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R2);
-    movAvFilter_R3 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R3);
-    movAvFilter_R4 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R4);
-    movAvFilter_R5 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R5);
-    movAvFilter_R6 =  uz_movingAverageFilter_init(movAvF_config, circularBuffer_R6);
 
-    // config for OPF fault detection
-    struct uz_VSD_6ph_FD_config OPF_FD_config = {
-        .upperlimit = 1.1f,
-        .lowerlimit = 0.9f,
-        .threshold = 0.4f,
-        .mov_average_filter_length = 500,
-        .sample_frequency_Hz = 1000,
-        .percent_of_el_period = 0.4f,
-        .movingAverageFilter_R1 = movAvFilter_R1,
-        .movingAverageFilter_R2 = movAvFilter_R2,
-        .movingAverageFilter_R3 = movAvFilter_R3,
-        .movingAverageFilter_R4 = movAvFilter_R4,
-        .movingAverageFilter_R5 = movAvFilter_R5,
-        .movingAverageFilter_R6 = movAvFilter_R6,
-    };
-
-    // fault detection module
-    uz_VSD_6ph_FD_t* OPF_FD = uz_VSD_6ph_FD_init(OPF_FD_config);
-
-    float omega_el_rad_per_sec = 0.0f;
-    uz_6ph_abc_t currents_abc = {0};
-    uz_6ph_alphabeta_t vsdcurrents = {0};
-    uz_6phFD_indices faultindices = {0};
-
-    // open phase fault detection (in ISR) called with sample_frequency_Hz
-    while(1){
-      // current omega el from measurement
-      omega_el_rad_per_sec = 100.0f;
-      // current vsd-currents
-      vsdcurrents = uz_transformation_asym30deg_6ph_abc_to_alphabeta(currents_i_abc);
-      // calculate fault indices
-      faultindices = uz_vsd_opf_6ph_faultdetection_step(OPF_FD, vsdcurrents, omega_el_rad_per_sec);
-    }
-
+  uz_VSD_9ph_FD_t* init_uz_VSD_9ph_FD(void){
+    uz_movingAverageFilter_t* movAvFilter_R1 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R1);
+    uz_movingAverageFilter_t* movAvFilter_R2 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R2);
+    uz_movingAverageFilter_t* movAvFilter_R3 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R3);
+    uz_movingAverageFilter_t* movAvFilter_R4 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R4);
+    uz_movingAverageFilter_t* movAvFilter_R5 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R5);
+    uz_movingAverageFilter_t* movAvFilter_R6 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R6);
+    uz_movingAverageFilter_t* movAvFilter_R7 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R7);
+    uz_movingAverageFilter_t* movAvFilter_R8 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R8);
+    uz_movingAverageFilter_t* movAvFilter_R9 = uz_movingAverageFilter_init(movAvF_config, circularBuffer_R9);
+    struct uz_VSD_9ph_FD_config fault_detection_cfg = {
+      .upperlimit = 1.1f,
+      .lowerlimit = 0.9f,
+      .threshold = 0.5f,
+      .mov_average_filter_length = ARRAYSIZE,
+      .sample_frequency_Hz = UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE,
+      .percent_of_el_period = 0.5f,
+      .movingAverageFilter_R1 = movAvFilter_R1,
+      .movingAverageFilter_R2 = movAvFilter_R2,
+      .movingAverageFilter_R3 = movAvFilter_R3,
+      .movingAverageFilter_R4 = movAvFilter_R4,
+      .movingAverageFilter_R5 = movAvFilter_R5,
+      .movingAverageFilter_R6 = movAvFilter_R6,
+      .movingAverageFilter_R7 = movAvFilter_R7,
+      .movingAverageFilter_R8 = movAvFilter_R8,
+      .movingAverageFilter_R9 = movAvFilter_R9};
+    return uz_VSD_9ph_FD_init(fault_detection_cfg);
   }
 
+.. code-block:: c
+  :linenos:
+  :caption: Example for using the functions of the module for the fault detection (main.c)
 
+  #include "/include/init_fault_control.h"
+  int main(void){
+  //..
+      Global_Data.objects.fault_detection = init_uz_VSD_9ph_FD();
 
+	
+.. code-block:: c
+  :linenos:
+  :caption: Example for using the functions of the module for the fault detection (isr.c)
 
-.. [#DuranGonzalez] M. J. Duran, I. Gonzalez-Prieto, N. Rios-Garcia, and F. Barrero, "A Simple, Fast, and Robust Open-Phase Fault Detection Technique for Six-Phase Induction Motor Drives," IEEE Transaction on Power Electronics, vol. 33, no. 1, pp. 547-557, 2018. 
+  #include "../uz/uz_VSD_9ph_FD_control/uz_VSD_9ph_FD.h"
+  uz_9ph_abc_t fault_single_indices  = {0};
+  int fault_n_OPF = 0;
+  //..
+    fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
+	  fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(fault_single_indices);
+	
+
 
 
 

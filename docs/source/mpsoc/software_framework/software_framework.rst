@@ -38,6 +38,7 @@ Software Framework
     uz_integrator/uz_integrator
     uz_sysmon_ps/uz_sysmon_ps
     VSD_6ph_FD_control/uz_VSD_6ph_FD_control
+    VSD_9ph_FD_control/uz_VSD_9ph_FD_control
     uz_sinus_pwm/uz_sinus_pwm
     encoder_offset_estimation/encoder_offset_estimation
     controller_setpoint_filter/controller_setpoint_filter

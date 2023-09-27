@@ -23,6 +23,3 @@ Components
     :glob:
   
     *
-
-
-.. [#EldeebH] H. Eldeeb, "Modelling, Control and Post-Fault Operation of Dual Three-phase Drives for Airborne Wind Energy," Diss., Technische Universität München, München, 2019

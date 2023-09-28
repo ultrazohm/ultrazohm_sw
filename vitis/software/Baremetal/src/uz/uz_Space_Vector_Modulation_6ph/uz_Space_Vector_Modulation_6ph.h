@@ -2,7 +2,7 @@
 #define UZ_SPACE_VECTOR_MODULATION_6PH_H
 
 #include "../uz_Transformation/uz_Transformation.h"
-#include "../uz_space_vector_modulation/uz_space_vector_modulation.h"
+#include "../uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 struct uz_svm_asym_6ph_CSVPWM24_out{
     struct uz_DutyCycle_2x3ph_t Duty_Cycle;

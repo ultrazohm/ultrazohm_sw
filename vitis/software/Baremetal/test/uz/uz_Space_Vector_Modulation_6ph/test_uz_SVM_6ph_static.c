@@ -64,8 +64,8 @@ void test_uz_svm_6ph_calculate_dwell_times_2N_2nd_sector(void)
 
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0220f, dwell_times[0]);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0116f, dwell_times[1]);
-    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0736f, dwell_times[2]);
-    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0871f, dwell_times[3]);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0846f, dwell_times[2]);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0761f, dwell_times[3]);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.8057f, dwell_times[4]);
 }
 

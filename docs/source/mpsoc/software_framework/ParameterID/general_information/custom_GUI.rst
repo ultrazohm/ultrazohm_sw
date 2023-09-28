@@ -50,8 +50,52 @@ Setup
 
    .. code-block:: C
         :linenos:
-        :caption: Changes to the ``javascope.h`` file
+        :caption: Changes to the ``JS_SlowData`` enum in the ``javascope.h`` file. Only add the new entries at the end.
     
+        // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
+        // Do not change the first (zero) and last (end) entries.
+        enum JS_SlowData {
+            ....
+            JSSD_FLOAT_Rs_Offline,
+            JSSD_FLOAT_Ld_Offline,
+            JSSD_FLOAT_Lq_Offline,
+            JSSD_FLOAT_PsiPM_Offline,
+            JSSD_FLOAT_J,
+            JSSD_FLOAT_activeState,
+            JSSD_FLOAT_ArrayCounter,
+            JSSD_FLOAT_measArraySpeed,
+            JSSD_FLOAT_measArrayTorque,
+            JSSD_FLOAT_ArrayControlCounter,
+            JSSD_FLOAT_Stribtorque,
+            JSSD_FLOAT_Coulombtorque,
+            JSSD_FLOAT_Viscotorque,
+            JSSD_FLOAT_Rs_online_FMID,
+            JSSD_FLOAT_Wtemp_FMID,
+            JSSD_FLOAT_TrainInertia,
+            JSSD_FLOAT_LoadInertia,
+            JSSD_FLOAT_c_est,
+            JSSD_FLOAT_d_est,
+            JSSD_FLOAT_MapCounter,
+            JSSD_FLOAT_psidMap,
+            JSSD_FLOAT_psiqMap,
+            JSSD_FLOAT_FluxTemp,
+            JSSD_FLOAT_MapControl,
+            JSSD_FLOAT_I_rated,
+            JSSD_FLOAT_Ld_Online,
+            JSSD_FLOAT_Lq_Online,
+            JSSD_FLOAT_PsiPM_Online,
+            JSSD_FLOAT_Rs_Online,
+            JSSD_FLOAT_n_FluxPoints,
+            JSSD_FLOAT_totalRotorInertia,
+            JSSD_FLOAT_MapControlCounter,
+            JSSD_FLOAT_polePairs,
+            JSSD_ENDMARKER
+        }
+
+   .. code-block:: C
+        :linenos:
+        :caption: Changes to the ``gui_button_mapping`` enum in the ``javascope.h`` file. Only add the new entries at the end.
+
         // Determination of Button IDs via enum. When a button in the GUI is pressed,
         // the GUI sends an ID and a value. IDs of the buttons are the respective enum
         // numbers in the following enum.
@@ -59,24 +103,7 @@ Setup
         // Do not change names! They are hard coupled within the GUI!
         enum gui_button_mapping {
             GUI_BTN_ZEROVALUE=0,
-            Enable_System,
-            Enable_Control,
-            Stop,
-            Set_Send_Field_1,
-            Set_Send_Field_2,
-            Set_Send_Field_3,
-            Set_Send_Field_4,
-            Set_Send_Field_5,
-            Set_Send_Field_6,
-            My_Button_1,
-            My_Button_2,
-            My_Button_3,
-            My_Button_4,
-            My_Button_5,
-            My_Button_6,
-            My_Button_7,
-            My_Button_8,
-            Error_Reset,
+            ....
             ParaID_Enable_System,
             ParaID_Enable_Control,
             ParaID_Enable_ParameterID,
@@ -149,6 +176,9 @@ Setup
             GUI_BTN_ENDMARKER
         };
 
+   .. code-block:: C
+        :linenos:
+        :caption: Changes to the send fiels in the ``javascope.h`` file. Only replace the first three entries.
 
         /* Visualization Config for GUI*/
         // LEAVE IT COMMENTED OUT AS IT IS, the plain text below is parsed by the GUI!
@@ -161,9 +191,7 @@ Setup
         n_ref,
         i_d_ref,
         i_q_ref,
-        send_field_4,
-        send_field_5,
-        send_field_6,
+        ....
         SND_FLD_ENDMARKER
 
 
@@ -174,11 +202,12 @@ Setup
         RPM,
         A,
         A,
-        A,
-        A,
-        A,
+        ....
         SND_LABELS_ENDMARKER
 
+   .. code-block:: C
+        :linenos:
+        :caption: Changes to the receive fiels in the ``javascope.h`` file. Only replace the first six entries.
 
         // Description (printed text) for the receive_fields top to bottom
         // Do not change the first (zero) and last (end) entries.
@@ -190,6 +219,7 @@ Setup
         i_q,
         u_d,
         u_q,
+        ....
         RCV_FLD_ENDMARKER
 
 
@@ -203,21 +233,9 @@ Setup
         A,
         V,
         V,
+        ....
         RCV_LABELS_ENDMARKER
 
-        // Physical unit label (printed text) for the MyButtons top to bottom
-        // Do not change the first (zero) and last (end) entries.
-
-        MYBUTTONS_LABELS_ZEROVALUE=0,
-        MyButton1,
-        MyButton2,
-        MyButton3,
-        MyButton4,
-        MyButton5,
-        MyButton6,
-        MyButton7,
-        MyButton8,
-        MYBUTTONS_LABELS_ENDMARKER
 
         // Slow Data values that are displayed in the receive_fields top to bottom
         // Do not change the first (zero) and last (end) entries.
@@ -231,6 +249,7 @@ Setup
         JSSD_FLOAT_u_d,
         JSSD_FLOAT_u_q,
         JSSD_FLOAT_Error_Code,
+        ....
         SLOWDAT_DISPLAY_ENDMARKER
         */
 
@@ -257,7 +276,7 @@ Setup
                 switch (msgId)
                 {
                 .... 
-                //Change Send_Filed 1-3
+                //Change Send_Field 1-3
                 case (Set_Send_Field_1):
                     ParaID_Data.GlobalConfig.n_ref = value;
                     break;

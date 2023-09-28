@@ -86,7 +86,7 @@ static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpo
 static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float dwell[5], const int order[6]);
 static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector);
 
-struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24(uz_6ph_alphabeta_t setpoints, const float T_sw){
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24(uz_6ph_alphabeta_t setpoints float V_dc){
     //space vector limitation
 
 

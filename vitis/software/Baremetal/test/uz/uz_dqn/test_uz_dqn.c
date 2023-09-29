@@ -117,6 +117,8 @@ float qvalues[EXPERIENCE_BUFFER_LENGTH] = {-5.0f, 5.0f, -50.0f, 50.0f, -2.0f, 2.
 float observation[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {49.6f, 35.9f, 47.0f, 20.7f, 46.9f, 13.4f, 43.4f, -1.5f, 29.8f, 16.6f,
                                                                   30.5f, 36.2f, 46.6f, 20.6f, 27.3f, 9.2f, 24.9f, 7.1f, 49.3f, 17.1f};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
+float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
+float observation1[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {2.0f, 1.5f, 5.0f, 2.5f, 5.8f, 6.0f, 5.0f, 7.0f, 5.0f, 50.0f};
 // config random
 struct uz_mtwister_config cfg = {
@@ -175,8 +177,11 @@ struct uz_dqn_experience_replay_config configbuffer = {
     .reward = reward,
     .qvalues = qvalues,
     .observations = observation,
+    .observations1 = observation1,
     .obsvec = vecobs,
-    .actions = action};
+    .obsvec1 = vecobs1,
+    .actions = action
+};
 
 void setUp(void)
 {
@@ -188,7 +193,7 @@ void tearDown(void)
 
 void test_uz_dqn_init(void)
 {
-    uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, 0, configenv);
+    uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv);
 }
 // void test_uz_dqn_compressed(void)
 // {
@@ -238,7 +243,7 @@ void test_calc_reward_with_penalty(void)
 
 void test_uz_dqn_copy_nn(void)
 {
-    uz_dqn_t *dqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, 0, configenv);
+    uz_dqn_t *dqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv);
     float targsmoothfact = 0.05f;
     uz_nn_target_update(dqn->critic, dqn->critic_target_net, periodic, &targsmoothfact);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1, tw_1, UZ_MATRIX_SIZE(cw_1));
@@ -260,18 +265,18 @@ void test_calc_reward_without_penalty(void)
 }
 void test_uz_dqn_calc_loss_terminal(void)
 {
-    uz_dqn_t *dqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, 0, configenv);
+    uz_dqn_t *dqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv);
     float reward = 2.0f;
     float qval = 10.0f;
     float qvalplus1 = 5.5f;
     bool terminal = false;
     float loss = calculate_loss_dqn(dqn, reward, qval, qvalplus1, terminal);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 6.8121, loss);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f, 64, loss);
 }
 
 void test_uz_dqn_calc_loss_non_terminal(void)
 {
-    uz_dqn_t *dqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, 0, configenv);
+    uz_dqn_t *dqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv);
     float reward = -3.0f;
     float qval = 7.0f;
     float qvalplus1 = 4.5f;

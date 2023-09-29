@@ -17,8 +17,8 @@
 
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 1000U
-#define MINIBATCHSIZE 16U
-#define NUMBER_OF_EPOCHS 100000U
+#define MINIBATCHSIZE 32U
+#define NUMBER_OF_EPOCHS 1005U // hier 1006U ergibt compile error
 #define TARGET_UPDATE_FREQUENCY 500U
 // nn
 #define NUMBER_OF_INPUTS 4U
@@ -29,10 +29,10 @@
 #define NUMBEROFBITS 2U
 
 float discountfact = 0.99f;
-float lernrate = 0.001f;
+float lernrate = 0.0005f;
 // random array
-uint32_t array[NUMBEROFBITS] = {0,1,0,0};
-uint32_t tararray[NUMBEROFBITS] = {1,1,1,1};
+uint32_t array[NUMBEROFBITS] = {0,1};
+uint32_t tararray[NUMBEROFBITS] = {1,1};
 float inarray[NUMBER_OF_INPUTS] = {1.0f,1.0f,1.0f,1.0f};
  //conf envrionment
 
@@ -233,29 +233,17 @@ void test_dqn_simple(void)
     uz_dqn_t* simpledqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_copy(simpledqn->critic,simpledqn->critic_target_net);
-    uint32_t r[MINIBATCHSIZE] = {0}; 
-    uint32_t *indizes = r;
-    float getbackrew[MINIBATCHSIZE]= {0.0f};
-    float getbackqval[MINIBATCHSIZE]= {0.0f};
-    uint32_t getbackact[MINIBATCHSIZE] = {0};
-    float* rew = getbackrew;
-    float* qval = getbackqval;
-    uint32_t* act = getbackact;
-    float getbackobs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
-    struct uz_matrix_t getbackobs_matrix = {0};
-    uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobs, UZ_MATRIX_SIZE(getbackobs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
-    float getbackobbspl1[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
-    struct uz_matrix_t getbackobs_matrixpl1 = {0};
-    uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
+    uint32_t r[MINIBATCHSIZE] = {0};
     adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
+    // prefill buffer
     do{
     uz_dqn_sample_simple(simpledqn);
-    } while (!simpledqn->experience_buffer->counterisfull && (simpledqn->experience_buffer->head< (3 * MINIBATCHSIZE)));
+    } while ((!simpledqn->experience_buffer->counterisfull) && (simpledqn->experience_buffer->head< (3 * MINIBATCHSIZE)));
     simpledqn->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
-    uz_dqn_sample_simple(simpledqn);
+    loss[i]= uz_dqn_step_adam_simple(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,EXPERIENCE_BUFFER_LENGTH,r,adam); 
     cumreward[i] = simpledqn->env->cumreward;
     if (i == 0){
     globalrewardr[i] = simpledqn->env->cumreward;
@@ -264,14 +252,6 @@ void test_dqn_simple(void)
     globalrewardr[i] = 0.99 * globalrewardr[i-1] + 0.01 * simpledqn->env->cumreward;
     }
     epsilonovertime[i] = simpledqn->env->epsilon_start;
-    if (simpledqn->experience_buffer->counterisfull > 0){
-    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0,EXPERIENCE_BUFFER_LENGTH-1);
-    }
-    else{
-    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0,simpledqn->experience_buffer->head-1);
-    }
-    uz_dqn_get_minibatch_from_buffer(simpledqn->experience_buffer,rew,qval,act,simpledqn->experience_buffer->vectorforobs,simpledqn->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
-    loss[i] = uz_dqn_train4(simpledqn,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam);  
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
     free(adam);

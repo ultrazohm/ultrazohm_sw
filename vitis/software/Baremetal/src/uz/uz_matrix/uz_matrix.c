@@ -479,7 +479,7 @@ void uz_matrix_copy_row_to_matrix(uz_matrix_t const *const source_rowvec, uz_mat
     uz_assert(source_rowvec->length_of_data == destination_matrix->columns);
     uz_assert(source_rowvec->rows == 1);
     for(uint32_t i=0U;i<source_rowvec->length_of_data;i++){
-        destination_matrix->data[rowind*source_rowvec->length_of_data+i]=source_rowvec->data[i];
+        destination_matrix->data[(rowind*source_rowvec->length_of_data)+i]=source_rowvec->data[i];
     }
 }
 
@@ -490,7 +490,7 @@ void uz_matrix_copy_row_from_matrix(uz_matrix_t const *const source_matrix, uz_m
     uz_assert(destination_rowvec->columns == destination_rowvec->length_of_data);
     uz_assert(destination_rowvec->rows == 1);
     for(uint32_t i=0U;i<destination_rowvec->length_of_data;i++){
-        destination_rowvec->data[i] = source_matrix->data[rowind*destination_rowvec->length_of_data+i];
+        destination_rowvec->data[i] = source_matrix->data[(rowind*destination_rowvec->length_of_data)+i];
     }
 }
 

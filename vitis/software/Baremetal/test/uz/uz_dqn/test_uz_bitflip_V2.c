@@ -16,19 +16,20 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 5000U
-#define MINIBATCHSIZE 16U
-#define NUMBER_OF_EPOCHS 100U
-#define TARGET_UPDATE_FREQUENCY 100U
+// bug im code, wenn buffer klein und episoden hoch dann gibts nen assert
+#define EXPERIENCE_BUFFER_LENGTH 500U // bei 200U compile error
+#define MINIBATCHSIZE 32U
+#define NUMBER_OF_EPOCHS 1000U
+#define TARGET_UPDATE_FREQUENCY 5U
 // nn
 #define NUMBEROFBITS 4U
 #define NUMBER_OF_INPUTS 8U
 #define NUMBER_OF_OUTPUTS 4U
 #define NUMBER_OF_HIDDEN_LAYER 2U
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 32U
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64U
 #define NUMBEROFTESTSTEPS 50U
 
-float discountfact = 0.99f;
+float discountfact = 0.95f;
 float lernrate = 0.0005f;
 // random array
 uint32_t array[NUMBEROFBITS] = {0U,0U,0U,0U};
@@ -50,7 +51,7 @@ struct uz_dqn_environment_config configenv = {
     .max_steps = NUMBEROFBITS+3,
     .epsilon_start = 0.99f, 
     .epsilon_min = 0.01f, 
-    .epsilon_decay = 0.001f
+    .epsilon_decay = 0.00014286f
 };
 // debug stuff
 float Q_Target[NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS] = {0.0f};
@@ -240,36 +241,21 @@ void test_dqn_bitflip(void)
     uz_dqn_t* testdqn2 = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_copy(testdqn2->critic,testdqn2->critic_target_net);
-    uint32_t r[MINIBATCHSIZE] = {0}; 
-    uint32_t *indizes = r;
-    float getbackrew[MINIBATCHSIZE]= {0.0f};
-    float getbackqval[MINIBATCHSIZE]= {0.0f};
-    uint32_t getbackact[MINIBATCHSIZE] = {0};
-    float* rew = getbackrew;
-    float* qval = getbackqval;
-    uint32_t* act = getbackact;
-    float getbackobs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
-    struct uz_matrix_t getbackobs_matrix = {0};
-    uz_matrix_t *obs= uz_matrix_init(&getbackobs_matrix, getbackobs, UZ_MATRIX_SIZE(getbackobs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
-    float getbackobbspl1[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
-    struct uz_matrix_t getbackobs_matrixpl1 = {0};
-    uz_matrix_t *obspl1= uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
-    //adam testing
-    //adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
+    uint32_t randomrarray[MINIBATCHSIZE] = {0}; 
+    uint32_t *indizes = randomrarray;
+    //adam
+    adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // prefill buffer
     do{
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
     uz_dqn_sample_bitenv(testdqn2);
-    } while (!testdqn2->experience_buffer->counterisfull && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
-    // epsilon wieder auf startwert setzen
+    } while ((!testdqn2->experience_buffer->counterisfull) && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
     testdqn2->env->epsilon_start = configenv.epsilon_start;
-    // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    // uz_dqn_sample_bitenv(testdqn2);
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    loss[i]= uz_dqn_step(testdqn2,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,EXPERIENCE_BUFFER_LENGTH,r); 
+    loss[i]= uz_dqn_step_adam(testdqn2,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,EXPERIENCE_BUFFER_LENGTH,randomrarray,adam); 
     cumreward[i] = testdqn2->env->cumreward;
     if (i == 0){
     globalrewardr[i] = testdqn2->env->cumreward;
@@ -280,44 +266,13 @@ void test_dqn_bitflip(void)
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
-    //free(adam);
-    // teste Q0000
-    // X_dat[0] = 0.0f;
-    // X_dat[1] = 0.0f;
-    // X_dat[2] = 0.0f;
-    // X_dat[3] = 0.0f;
-    // uz_nn_ff(testdqn2->critic_target_net,testdqn2->inputvecnn);
-    // printf("Q0  ist = %.8f \n", (double)ty_2[0]);
-    // printf("Q1  ist = %.8f \n", (double)ty_2[1]);
-    // printf("Q2  ist = %.8f \n", (double)ty_2[2]);
-    // printf("Q3  ist = %.8f \n", (double)ty_2[3]);
-    //    // printf("mse nach minibatch %d ist = %.8f \n",(int)i, (double)msebatch[i]);
-    // // test Q0001
-    // X_dat[0] = 0.0f;
-    // X_dat[1] = 0.0f;
-    // X_dat[2] = 0.0f;
-    // X_dat[3] = 1.0f;
-    // uz_nn_ff(testdqn2->critic_target_net,testdqn2->inputvecnn);
-    // printf("Q0  ist = %.8f \n", (double)ty_2[0]);
-    // printf("Q1  ist = %.8f \n", (double)ty_2[1]);
-    // printf("Q2  ist = %.8f \n", (double)ty_2[2]);
-    // printf("Q3  ist = %.8f \n", (double)ty_2[3]);
+    free(adam);
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
     uz_dqn_act_bitenv_no_exploration(testdqn2);
     cumreward_noexpl[i] = testdqn2->env->cumreward;
     }
-    // export defines datum etc, neuer ordner um die sachen unterscheiden zu können
-    // save loss and cumreward
-    // time_t t = time(NULL);
-    // struct tm *tm = localtime(&t);
-    // char s[64];
-    // size_t ret = strftime(s, sizeof(s), "%c", tm);
-    // printf("%s\n", s);
-    //make_directory(s);
-    // strcat("test/uz/uz_dqn/loss256_clipped", s);
-    // strcat(".csv",s);
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/QTarget.csv", Q_Target, NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS);
@@ -325,7 +280,6 @@ void test_dqn_bitflip(void)
     exportFloatArrayToCSV("test/uz/uz_dqn/globalrewardr.csv", globalrewardr, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
-    // save param to .txt
     FILE* f = fopen("test/uz/uz_dqn/hyperparam.txt", "w");  // open the file for writing
     if (f != NULL)                       // check for success
     {

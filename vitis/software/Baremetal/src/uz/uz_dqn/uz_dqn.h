@@ -24,7 +24,6 @@ struct uz_dqn_experience_replay_t {
     struct uz_matrix_t vecobs_matrix;
     struct uz_matrix_t observations_matrix;
     struct uz_matrix_t observations_matrix_1;
-
     uint32_t head;
     uint32_t counterisfull;
     uint32_t length;
@@ -57,13 +56,14 @@ struct uz_dqn_experience_replay_config{
     float *const qvalues;
     uint32_t *const actions;
 };
-
+float uz_dqn_step(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act,uz_matrix_t *obs,  uz_matrix_t *obspl1, uint32_t mbsize,
+uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, uint32_t bufferlength, uint32_t *r);
 uz_dqn_t *uz_dqn_init(float *vecdata,float lernrate, float discount_factor,struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
 struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], struct uz_mtwister_config cfg, 
 uint32_t number_of_layer,
  struct uz_dqn_experience_replay_config buffer_config,
-uint32_t length_of_buffer, uint32_t headind, struct uz_dqn_environment_config envconf);
-uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, uint32_t length, uint32_t headind);
+uint32_t length_of_buffer, struct uz_dqn_environment_config envconf);
+uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, uint32_t length);
 void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *input);
 float uz_dqn_train(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact);

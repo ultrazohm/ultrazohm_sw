@@ -39,6 +39,8 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
 }
 
 void uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand){
+uz_assert_not_NULL(self);
+uz_assert_not_NULL(seedRand);
 for(uint32_t i=0; i<self->bitlength;i++){
     self->bitinitial[i] = 1U;
     self->bittarget[i] = 0U;
@@ -53,7 +55,9 @@ self->is_ready = true;
 self->cumreward = 0.0f;
 }
 
-bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size) {
+bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size){
+uz_assert_not_NULL(inarray);
+uz_assert_not_NULL(tararray);
     for (size_t i = 0; i < size; i++) {
         if (inarray[i] != tararray[i]) {
             return false; // Arrays are not equal
@@ -64,6 +68,7 @@ bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size)
 
 float calculate_reward_bit(uz_dqn_environment_t *self)
 {
+    uz_assert_not_NULL(self);
     float r;
     bool z = arraysequal(self->bitinitial,self->bittarget,self->bitlength);
     if (z==true)
@@ -95,6 +100,7 @@ float calculate_reward_simple(uint32_t actionind)
 }
 void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action)
 {
+uz_assert_not_NULL(self);
     // flip bit
     if (self->bitinitial[action] == 1){
     self->bitinitial[action] = 0;

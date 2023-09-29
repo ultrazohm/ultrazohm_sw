@@ -115,7 +115,6 @@ unsigned long genRandLong(MTRand* rand) {
   return y;
 }
 
-
 double genRand(MTRand* rand) {
   return((double)genRandLong(rand) / (unsigned long)0xffffffff);
 }
@@ -124,19 +123,19 @@ return((float)genRandLong(rand) / (float)0xffffffff);
 }
 
 uint32_t genRand_zero_one(MTRand* rand) {
-  uint32_t y = (uint32_t) (genRand_float(rand)*(2));
+  uint32_t y = (uint32_t) (genRand_float(rand)*(2.0f));
 return y;
 }
 
 uint32_t genRand_uint32_t(MTRand* rand, uint32_t max) {
-  uint32_t y = (uint32_t) (genRand_float(rand)*(max+1));
+  uint32_t y = (uint32_t) (genRand_float(rand)*(float)(max+1));
 return y;
 }
-
 
 void genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val)
 {
     for (uint32_t i = 0; i < size; i++) {
+        //array[i] = genRand_uint32_t(rand, (uint32_t)max_val);
         array[i] = (uint32_t) (min_val + (genRand_float(rand)*(max_val - min_val + 1)));
     }  
 }

@@ -182,20 +182,28 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
             Duty_Cycles[1] = 1.0f - Duty_Cycles[1];
             Duty_Cycles[2] = 1.0f - Duty_Cycles[2];
             break;
+        // no shift, but diff both systems DCs with T_sw
+        case  7:
+        case  8:
+        case 15:
+        case 16:
+        case 23:
+        case 24:
+            Duty_Cycles[0] = 1.0f - Duty_Cycles[0];
+            Duty_Cycles[1] = 1.0f - Duty_Cycles[1];
+            Duty_Cycles[2] = 1.0f - Duty_Cycles[2];
+            Duty_Cycles[3] = 1.0f - Duty_Cycles[3];
+            Duty_Cycles[4] = 1.0f - Duty_Cycles[4];
+            Duty_Cycles[5] = 1.0f - Duty_Cycles[5];
+            break;
         // do nothing, no shift
         default:
         case  3:
         case  4:
-        case  7:
-        case  8:
         case 11:
         case 12:
-        case 15:
-        case 16:
         case 19:
         case 20:
-        case 23:
-        case 24:
             break;
     }
     return system_to_shift;

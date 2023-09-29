@@ -28,14 +28,14 @@ General Steps
    :width: 400px
    :align: center
 
-- In the Project Configuration window, locate the field for the project name and update it with "uz_axi_myTestIP".
+- In the Project Configuration window, locate the field for the project name and update it with ``uz_axi_myTestIP``.
 - Next, find the related path field in the Project Configuration window. Update the path to ensure that the project files are stored in the desired location.
 
 .. figure:: tutorial_img/2_project_name.png
    :width: 600px
    :align: center
 
-- Click "Next" to proceed to the Source and test bench file add sections. We will add these files later in the tutorial.
+- Click **Next** to proceed to the Source and test bench file add sections. We will add these files later in the tutorial.
 - In the Solution Configuration section, you have the option to change the clock settings, board specification, and flow target.
 - Adjust the clock settings based on your project requirements. Specify the clock frequency, and any relevant parameters. Select the appropriate flow target for your project, such as generating a bitstream for FPGA programming or producing simulation files for software testing.
 - Keep the Solution Configuration parameters at their default settings, simply leave them unchanged.
@@ -52,14 +52,14 @@ General Steps
    :align: center
 
 - After completing the configuration part, an empty project will be created. Now, the basic test IP, we will implement integer multiplication and write the test bench.
-- To create a source file, simply right-click on the 'Source' folder in your project and choose 'New Source File...' from the menu.
+- To create a source file, simply right-click on the **Source** folder in your project and choose **New Source File...** from the menu.
 
 .. figure:: tutorial_img/5_add_source.png
    :width: 400px
    :align: center
 
 - When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly. 
-- To create the new source file 'uz_axi_myTestIP.cpp', enter the filename in the file window and click 'Save', and write the code to the file.
+- To create the new source file ``uz_axi_myTestIP.cpp``, enter the filename in the file window and click **Save**, and write the code to the file.
 
 .. figure:: tutorial_img/6_create_source.png
    :width: 50px
@@ -79,14 +79,14 @@ General Steps
       *result = a * b;
    }
 
-- To create a header file, simply right-click on the 'Source' folder in your project and choose 'New Source File...' from the menu.
+- To create a header file, simply right-click on the **Source** folder in your project and choose **New Source File...** from the menu.
 
 .. figure:: tutorial_img/7_add_header.png
    :width: 400px
    :align: center
 
 - When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly. 
-- To create the new source file 'uz_axi_myTestIP.h', enter the filename in the file window and click 'Save', and write the code to the file.
+- To create the new source file ``uz_axi_myTestIP.h``, enter the filename in the file window and click **Save**, and write the code to the file.
 
 .. figure:: tutorial_img/8_create_header.png
    :width: 500px
@@ -96,9 +96,10 @@ General Steps
 
 	void uz_axi_myTestIP(int32_t a, int32_t b, int32_t *result);
 
-- To create a test bench file, simply right-click on the 'Test Bench' folder in your project and choose 'New Test Bench File...' from the menu.
-- When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly, and write the code to the file.. 
-- After reviewing the created files, the source file contains a simple function that performs multiplication and returns the result. On the other hand, the test bench ensures that the result from the source file matches the expected result. It generates random values for a specified number of iterations, compares the results, and prints "Correct" if they match, or "Failed" if they differ.
+- To create a test bench file, simply right-click on the **Test Bench** folder in your project and choose **New Test Bench File...** from the menu.
+- When the file window opens, make sure to check the path displayed. If the path is not the same as your project location, you should adjust it accordingly, and write the code to the file.
+- Create a new test bench file ``tb_uz_axi_myTestIP.cpp``.
+- After reviewing the created files, the source file contains a simple function that performs multiplication and returns the result. On the other hand, the test bench ensures that the result from the source file matches the expected result. It generates random values for a specified number of iterations, compares the results, and prints **"Correct"** if they match, or **"Failed"** if they differ.
 
 .. figure:: tutorial_img/11_create_testbench.png
    :width: 500px
@@ -154,7 +155,7 @@ Simulation, Synthesis and Export
    :width: 600px
    :align: center
 
-- Choose 'uz_axi_myTestIP.cpp' as top function.
+- Choose ``uz_axi_myTestIP.cpp`` as top function.
 
 .. figure:: tutorial_img/19_top_select.png
    :width: 600px
@@ -189,13 +190,13 @@ Simulation, Synthesis and Export
    :width: 1200px
    :align: center
 
-- If you have a closer look to inside of the Directive,  This is an additional way to add pragmas to the code. 
+- If you have a closer look to inside of the Directive, this is an additional way to add pragmas to the code. 
 
 .. figure:: tutorial_img/27_insert_directive.png
    :width: 400px
    :align: center
 
-- For instance with right click to 'a' variable, the tab that includes the pragmas as more visualized version.
+- For instance with right click to **a** variable, the tab that includes the pragmas as more visualized version.
 
 .. figure:: tutorial_img/28_directive_editor.png
    :width: 400px
@@ -307,11 +308,12 @@ To use the write and read with set and get functions, place the initialization c
          uz_printf("The result of multiplication is %d\r\n", result);
    }
 
-Note: Using the AXI-write and -read functions is more tricky depending on the desired datatype.
-In the example the AXI-interfaces have a floating point datatype, however the data for the AXI-write functions takes an argument of type ``u32``.
-This means, the driver expects the bits of a floating point value in the storage item of an unsigned int.
-To achieve this, the user can create the really used float variable, here ``REAL_VAR`` and create a pointer of type ``uint32_t`` to this variable and cast it.
-The AXI-set function is called with the dereferenced, casted pointer, which gives the current value of the ``REAL_VAR`` to the driver.
+.. note::
+   Using the AXI-write and -read functions is more tricky depending on the desired datatype.
+   In the example the AXI-interfaces have a floating point datatype, however the data for the AXI-write functions takes an argument of type ``uint32``.
+   This means, the driver expects the bits of a floating point value in the storage item of an unsigned int.
+   To achieve this, the user can create the really used float variable, here ``REAL_VAR`` and create a pointer of type ``uint32_t`` to this variable and cast it.
+   The AXI-set function is called with the dereferenced, casted pointer, which gives the current value of the ``REAL_VAR`` to the driver.
 
 .. code-block:: c
 
@@ -347,132 +349,132 @@ How to create the driver
    :linenos:
    :caption: ``xuz_axi_myTestIP_hw.c``
 
-      #include "xuz_axi_myTestIP_hw.h"
-      #include "xuz_axi_myTestIP_hwAddresses.h"
-      #include "../../uz/uz_AXI.h"
+   #include "xuz_axi_myTestIP_hw.h"
+   #include "xuz_axi_myTestIP_hwAddresses.h"
+   #include "../../uz/uz_AXI.h"
 
-      void uz_myTestIP_write_A(uint32_t base_address,int32_t A){
-         uz_axi_write_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_A_DATA,A);
-      }
+   void uz_myTestIP_write_A(uint32_t base_address,int32_t A){
+      uz_axi_write_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_A_DATA,A);
+   }
 
-      void uz_myTestIP_write_B(uint32_t base_address,int32_t B){
-         uz_axi_write_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_B_DATA,B);
-      }
+   void uz_myTestIP_write_B(uint32_t base_address,int32_t B){
+      uz_axi_write_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_B_DATA,B);
+   }
 
-      int32_t uz_myTestIP_read_result(uint32_t base_address){
-         return (uz_axi_read_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_RESULT_DATA));
-      }
+   int32_t uz_myTestIP_read_result(uint32_t base_address){
+      return (uz_axi_read_int32(base_address+XUZ_AXI_MYTESTIP_CONTROL_ADDR_RESULT_DATA));
+   }
 
 .. code-block:: c
-      :linenos:
-      :caption: ``xuz_axi_myTestIP_hw.h``
+   :linenos:
+   :caption: ``xuz_axi_myTestIP_hw.h``
 
-         #ifndef UZ_MYTESTIP_HW_H
-         #define UZ_MYTESTIP_HW_H
-         #include <stdint.h>
+   #ifndef UZ_MYTESTIP_HW_H
+   #define UZ_MYTESTIP_HW_H
+   #include <stdint.h>
 
-         void uz_myTestIP_write_A(uint32_t base_address,int32_t A);
-         void uz_myTestIP_write_B(uint32_t base_address,int32_t B);
-         int32_t uz_myTestIP_read_result(uint32_t base_address);
+   void uz_myTestIP_write_A(uint32_t base_address,int32_t A);
+   void uz_myTestIP_write_B(uint32_t base_address,int32_t B);
+   int32_t uz_myTestIP_read_result(uint32_t base_address);
 
-         #endif // UZ_MYTESTIP_HW_H
+   #endif // UZ_MYTESTIP_HW_H
 
 .. code-block:: c
    :linenos:
    :caption: ``xuz_axi_myTestIP_hwAddresses.h``
 
-      #define XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA      0x10
-      #define XUZ_AXI_myTestIP_CONTROL_BITS_A_DATA      32
-      #define XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA      0x18
-      #define XUZ_AXI_myTestIP_CONTROL_BITS_B_DATA      32
-      #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA 0x20
-      #define XUZ_AXI_myTestIP_CONTROL_BITS_RESULT_DATA 32
-      #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_CTRL 0x24
+   #define XUZ_AXI_myTestIP_CONTROL_ADDR_A_DATA      0x10
+   #define XUZ_AXI_myTestIP_CONTROL_BITS_A_DATA      32
+   #define XUZ_AXI_myTestIP_CONTROL_ADDR_B_DATA      0x18
+   #define XUZ_AXI_myTestIP_CONTROL_BITS_B_DATA      32
+   #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_DATA 0x20
+   #define XUZ_AXI_myTestIP_CONTROL_BITS_RESULT_DATA 32
+   #define XUZ_AXI_myTestIP_CONTROL_ADDR_RESULT_CTRL 0x24
 
 .. code-block:: c
    :linenos:
    :caption: ``xuz_axi_myTestIP.c``
 
-      #include "../../uz/uz_global_configuration.h"
-      #if UZ_MYTESTIP_MAX_INSTANCES > 0U
-      #include <stdbool.h>
-      #include "../../uz/uz_HAL.h"
-      #include "xuz_axi_myTestIP.h"
+   #include "../../uz/uz_global_configuration.h"
+   #if UZ_MYTESTIP_MAX_INSTANCES > 0U
+   #include <stdbool.h>
+   #include "../../uz/uz_HAL.h"
+   #include "xuz_axi_myTestIP.h"
 
-      struct uz_myTestIP_t {
-         bool is_ready;
-      };
+   struct uz_myTestIP_t {
+      bool is_ready;
+   };
 
-      static uint32_t instance_counter = 0U;
-      static uz_myTestIP_t instances[UZ_MYTESTIP_MAX_INSTANCES] = { 0 };
+   static uint32_t instance_counter = 0U;
+   static uz_myTestIP_t instances[UZ_MYTESTIP_MAX_INSTANCES] = { 0 };
 
-      static uz_myTestIP_t* uz_myTestIP_allocation(void);
+   static uz_myTestIP_t* uz_myTestIP_allocation(void);
 
-      static uz_myTestIP_t* uz_myTestIP_allocation(void){
-         uz_assert(instance_counter < UZ_MYTESTIP_MAX_INSTANCES);
-         uz_myTestIP_t* self = &instances[instance_counter];
-         uz_assert_false(self->is_ready);
-         instance_counter++;
-         self->is_ready = true;
-         return (self);
-      }
+   static uz_myTestIP_t* uz_myTestIP_allocation(void){
+      uz_assert(instance_counter < UZ_MYTESTIP_MAX_INSTANCES);
+      uz_myTestIP_t* self = &instances[instance_counter];
+      uz_assert_false(self->is_ready);
+      instance_counter++;
+      self->is_ready = true;
+      return (self);
+   }
 
-      uz_myTestIP_t* uz_myTestIP_init() {
-         uz_myTestIP_t* self = uz_myTestIP_allocation();
-         return (self);
-      }
+   uz_myTestIP_t* uz_myTestIP_init() {
+      uz_myTestIP_t* self = uz_myTestIP_allocation();
+      return (self);
+   }
 
-      int32_t uz_myTestIP_multiply(uz_myIP_t* self, int32_t A, int32_t B){
-      uz_assert(self->is_ready);
-      uz_myTestIP_write_A(self->config.base_address,A);
-      uz_myTestIP_write_B(self->config.base_address,B);
-      return (uz_myTestIP_read_result(self->config.base_address));
-      }
-      #endif
+   int32_t uz_myTestIP_multiply(uz_myIP_t* self, int32_t A, int32_t B){
+   uz_assert(self->is_ready);
+   uz_myTestIP_write_A(self->config.base_address,A);
+   uz_myTestIP_write_B(self->config.base_address,B);
+   return (uz_myTestIP_read_result(self->config.base_address));
+   }
+   #endif
 
 
 .. code-block:: c
    :linenos:
    :caption: ``xuz_axi_myTestIP.h``
 
-      #ifndef UZ_MYTESTIP_H
-      #define UZ_MYTESTIP_H
-      #include <stdint.h>
+   #ifndef UZ_MYTESTIP_H
+   #define UZ_MYTESTIP_H
+   #include <stdint.h>
 
-      /**
-      * @brief Data type for object myTestIP
-      *
-      */
-      typedef struct uz_myTestIP_t uz_myTestIP_t;
+   /**
+   * @brief Data type for object myTestIP
+   *
+   */
+   typedef struct uz_myTestIP_t uz_myTestIP_t;
 
-      /**
-      * @brief Configuration struct for myTestIP
-      *
-      */
-      struct uz_myTestIP_config_t{
-         uint32_t base_address; /**< Base address of the IP-Core */
-         uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
-      };
+   /**
+   * @brief Configuration struct for myTestIP
+   *
+   */
+   struct uz_myTestIP_config_t{
+      uint32_t base_address; /**< Base address of the IP-Core */
+      uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
+   };
 
-      /**
-      * @brief Initializes an instance of the myTestIP driver
-      *
-      * @param config Configuration values for the IP-Core
-      * @return Pointer to initialized instance
-      */
-      uz_myTestIP_t* uz_myTestIP_init(struct uz_myTestIP_config_t config);
+   /**
+   * @brief Initializes an instance of the myTestIP driver
+   *
+   * @param config Configuration values for the IP-Core
+   * @return Pointer to initialized instance
+   */
+   uz_myTestIP_t* uz_myTestIP_init(struct uz_myTestIP_config_t config);
 
-      /**
-      * @brief Calculates result=A*B
-      *
-      * @param self Pointer to IP-Core instance that was initialized with init function
-      * @param A First factor
-      * @param B Second factor
-      * @return Product of A times B
-      */
-      int32_t uz_myTestIP_multiply(uz_myTestIP_t* self, int32_t A, int32_t B);
+   /**
+   * @brief Calculates result=A*B
+   *
+   * @param self Pointer to IP-Core instance that was initialized with init function
+   * @param A First factor
+   * @param B Second factor
+   * @return Product of A times B
+   */
+   int32_t uz_myTestIP_multiply(uz_myTestIP_t* self, int32_t A, int32_t B);
 
-      #endif // UZ_MYTESTIP_H
+   #endif // UZ_MYTESTIP_H
 
 - Open ``uz_global_configuration.h`` if you already renamed the sample configuration. If not, see :ref:`global_configuration`.
 - Add ``#define UZ_MYTESTIP_MAX_INSTANCES 5U`` to ``uz_global_configuration.h`` inside the test ifdef (at the bottom of the file). We can now use up to 5 instances of the IP-core driver for five different instances of the IP-Core in the tests.
@@ -482,9 +484,9 @@ How to create the driver
    :linenos:
    :caption: ``uz_myTestIP.h``
 
-      #pragma once
+   #pragma once
 
-      void uz_myIP(void);
+   void uz_myIP(void);
 
 - Create the file ``uz_myTestIP.c`` in the ``sw`` folder.
 
@@ -492,31 +494,31 @@ How to create the driver
    :linenos:
    :caption: ``uz_myTestIP.c``
 
-      #include "../include/uz_myTestIP.h"
-      #include "../uz/uz_HAL.h"
-      #include "../IP_Cores/`uz_axi_myTestIP/`uz_axi_myTestIP.h"
-      #include "xparameters.h"
+   #include "../include/uz_myTestIP.h"
+   #include "../uz/uz_HAL.h"
+   #include "../IP_Cores/`uz_axi_myTestIP/`uz_axi_myTestIP.h"
+   #include "xparameters.h"
 
-      void uz_myTestIP(void){
-         struct uz_myTestIP_config_t config={
-               .base_address= XPAR_UZ_USER_UZ_AXI_myTestIP_0_S_AXI_CONTROL_BASEADDR,
-               .ip_clk_frequency_Hz=100000000U
-         };
-         uz_myIP_t *instance = uz_myIP_init(config);
-         int32_t a = 5;
-         int32_t b = 10;
-         int32_t c = uz_myIP_multiply(instance, a, b);
-         uz_printf("Hardware multiply: %i, Software multiply: %i\n", c, a*b);
-         if (c==a*b){
-            uz_printf("Success: hardware and software multiply are equal! \n");
-         }else{
-            uz_printf("Fail: hardware and software multiply are NOT equal! \n");
-         }
-
-         while(1){
-            // do nothing and loop forever
-         }
+   void uz_myTestIP(void){
+      struct uz_myTestIP_config_t config={
+            .base_address= XPAR_UZ_USER_UZ_AXI_myTestIP_0_S_AXI_CONTROL_BASEADDR,
+            .ip_clk_frequency_Hz=100000000U
+      };
+      uz_myIP_t *instance = uz_myIP_init(config);
+      int32_t a = 5;
+      int32_t b = 10;
+      int32_t c = uz_myIP_multiply(instance, a, b);
+      uz_printf("Hardware multiply: %i, Software multiply: %i\n", c, a*b);
+      if (c==a*b){
+         uz_printf("Success: hardware and software multiply are equal! \n");
+      }else{
+         uz_printf("Fail: hardware and software multiply are NOT equal! \n");
       }
+
+      while(1){
+         // do nothing and loop forever
+      }
+   }
 
 - Add ``#define UZ_MYTESTIP_MAX_INSTANCES 1U`` between ``ifndef TEST`` and the first ``#endif`` to use one instance of the module in the software.
 - Build the software.

@@ -341,7 +341,7 @@ How to create the driver
    * xuz_axi_myTestIP.h
    * xuz_axi_myTestIP_hw.c
    * xuz_axi_myTestIP_hw.h
-   * xuz_axi_myTestIP__hwAddresses.h
+   * xuz_axi_myTestIP_hwAddresses.h
 
 - In the file ``uz_myTestIP_hwAddresses.h`` add an include guard to it (``#pragma once`` in first line)
 
@@ -496,7 +496,7 @@ How to create the driver
 
    #include "../include/uz_myTestIP.h"
    #include "../uz/uz_HAL.h"
-   #include "../IP_Cores/`uz_axi_myTestIP/`uz_axi_myTestIP.h"
+   #include "../IP_Cores/uz_axi_myTestIP/uz_axi_myTestIP.h"
    #include "xparameters.h"
 
    void uz_myTestIP(void){

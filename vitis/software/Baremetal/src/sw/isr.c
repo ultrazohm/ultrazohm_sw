@@ -111,7 +111,7 @@ static float angle[10] = {0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f,
 #define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors
 #define USE_RESOVER							0U		// 0u: Incremental Encoder on D5
 #define MAX_CURRENT_ASSERTION				110.0f	// Maximum Current
-#define MAX_SPEED_ASSERTION					2700.0f	// Maximum Speed
+#define MAX_SPEED_ASSERTION					2600.0f	// Maximum Speed
 
 
 //==============================================================================================================================================================
@@ -163,6 +163,9 @@ void ISR_Control(void *data)
     	output.DutyCycle_A = 0.0f;
     	output.DutyCycle_B = 0.0f;
     	output.DutyCycle_C = 0.0f;
+    	Global_Data.rasv.n_ref_rpm = 0.0f;
+    	Global_Data.rasv.i_q_ref = 0.0f;
+		Global_Data.rasv.i_d_ref = 0.0f;
     	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 0);
     	ultrazohm_state_machine_set_stop(true);
     }
@@ -244,6 +247,7 @@ void ISR_Control(void *data)
 		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 
 		        if (Global_Data.av.flg_speed_control){
+		        	Global_Data.av.testsignal = Global_Data.rasv.n_ref_rpm;
 		        	dq_reference_current.q = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
 		        	dq_reference_current.d = fabs(dq_reference_current.q);
 		        	Global_Data.rasv.i_d_ref = dq_reference_current.d;

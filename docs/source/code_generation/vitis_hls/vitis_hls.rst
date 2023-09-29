@@ -62,7 +62,7 @@ General Steps
 - To create the new source file ``uz_axi_myTestIP.cpp``, enter the filename in the file window and click **Save**, and write the code to the file.
 
 .. figure:: tutorial_img/6_create_source.png
-   :width: 50px
+   :width: 500px
    :align: center
 
 .. code-block:: c

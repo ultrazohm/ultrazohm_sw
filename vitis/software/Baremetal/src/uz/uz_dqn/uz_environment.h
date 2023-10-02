@@ -40,4 +40,5 @@ float calculate_reward_bit(uz_dqn_environment_t *self);
 void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action);
 bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size);
 float calculate_reward_simple(uint32_t actionind);
+void save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size);
 #endif // UZ_DQN_H

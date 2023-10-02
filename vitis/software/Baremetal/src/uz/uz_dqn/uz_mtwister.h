@@ -41,6 +41,8 @@ struct uz_mtwister_config{
     uint32_t seed;
     enum rng_type distribution;
 };
+
+uint32_t random_number(int min_num, int max_num);
 uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg);
 float uz_generate_random_number(uz_mtwister_t *self);
 float uz_random_box_mueller(MTRand* seed,float mean, float std);

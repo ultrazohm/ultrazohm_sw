@@ -134,10 +134,13 @@ return y;
 
 void genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val)
 {
-    for (uint32_t i = 0; i < size; i++) {
-        //array[i] = genRand_uint32_t(rand, (uint32_t)max_val);
-        array[i] = (uint32_t) (min_val + (genRand_float(rand)*(max_val - min_val + 1)));
-    }  
+uz_assert_not_NULL(array);
+uz_assert(min_val<max_val);
+for (uint32_t i = 0; i < size; i++) {
+    //array[i] = random_number((int)min_val,(int)max_val); test mit rand funktioniert auch nicht!s
+    array[i] = genRand_uint32_t(rand, (uint32_t)max_val);
+    //array[i] = (uint32_t) (min_val + (genRand_float(rand)*(max_val - min_val + 1)));
+}  
 }
 
 float uz_random_box_mueller(MTRand* seed,float mean, float std){
@@ -175,4 +178,22 @@ for (u_int32_t i = 0; i < size; i++) {
 }
 }
 
+uint32_t random_number(int min_num, int max_num)
+    {
+        int result = 0, low_num = 0, hi_num = 0;
+
+        if (min_num < max_num)
+        {
+            low_num = min_num;
+            hi_num = max_num + 1; // include max_num in output
+        } else {
+            low_num = max_num + 1; // include max_num in output
+            hi_num = min_num;
+        }
+
+        srand(time(NULL));
+        result = (rand() % (hi_num - low_num)) + low_num;
+        uint32_t randnumb = (uint32_t)result;
+        return randnumb;
+    }
 #endif // UZ_MTWISTER_H

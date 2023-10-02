@@ -101,6 +101,20 @@ export_histogram(array,length);
 // check with matlab plot histogram and x,y
 }
 
+void test_uz_twister_floats(void)
+{
+  // use mtwister, calculate double between 0 and 1 and scale it to Randmax
+  //double randmax = 500; seedRand(0) 
+  MTRand r = seedRand(1);
+  uint32_t length = 5;
+  double array[5] = {0.0f};
+  for(uint32_t i=0; i<length; i++) {
+    double rand = genRand(&r);
+    printf("%f\n", rand);
+    array[i]= rand;
+  }
+}
+
 void test_uint_32_t_array(void){
   MTRand r = seedRand(1);
   float min_val = 1.0f;
@@ -131,6 +145,16 @@ void test_uint_32_t_array_high_numbers(void){
 void test_uint_32_t(void){
   MTRand r = seedRand(1);
   float max_val = 5;
+  uint32_t output[200] = {0};
+  for(uint32_t i=0; i<200; i++) {
+    output[i] = genRand_uint32_t(&r, max_val);
+  }
+  float x = 2.0f;
+}
+
+void test_uint_32_t_action(void){
+  MTRand r = seedRand(1);
+  float max_val = 3;
   uint32_t output[200] = {0};
   for(uint32_t i=0; i<200; i++) {
     output[i] = genRand_uint32_t(&r, max_val);

@@ -21,6 +21,7 @@
 #include "../uz_HAL.h"
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 struct uz_nn_layer_t
 {
     uint32_t number_of_neurons;

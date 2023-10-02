@@ -16,17 +16,17 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 1000U
+#define EXPERIENCE_BUFFER_LENGTH 60U
 #define MINIBATCHSIZE 16U
 #define NUMBER_OF_EPOCHS 100000U
 #define TARGET_UPDATE_FREQUENCY 500U
 // nn
-#define NUMBER_OF_INPUTS 4U
+#define NUMBER_OF_INPUTS 8U
 #define NUMBER_OF_OUTPUTS 3U
 #define NUMBER_OF_HIDDEN_LAYER 2U
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 16U
 #define NUMBEROFTESTSTEPS 50U
-#define NUMBEROFBITS 2U
+#define NUMBEROFBITS 4U
 
 float discountfact = 0.99f;
 float lernrate = 0.001f;
@@ -122,7 +122,7 @@ float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0};
 
 // config random
 struct uz_mtwister_config cfg = {
-  .seed = 123,
+  .seed = 1,
   .distribution = normal_distribution
 };
 //config target
@@ -261,14 +261,14 @@ void test_dqn_simple(void)
     globalrewardr[i] = simpledqn->env->cumreward;
     }
     else{
-    globalrewardr[i] = 0.99 * globalrewardr[i-1] + 0.01 * simpledqn->env->cumreward;
+    globalrewardr[i] = 0.99f * globalrewardr[i-1] + 0.01f * simpledqn->env->cumreward;
     }
     epsilonovertime[i] = simpledqn->env->epsilon_start;
-    if (simpledqn->experience_buffer->counterisfull > 0){
-    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0,EXPERIENCE_BUFFER_LENGTH-1);
+    if (simpledqn->experience_buffer->counterisfull > 0U){
+    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0.0f,EXPERIENCE_BUFFER_LENGTH-1U);
     }
     else{
-    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0,simpledqn->experience_buffer->head-1);
+    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0.0f,simpledqn->experience_buffer->head-1U);
     }
     uz_dqn_get_minibatch_from_buffer(simpledqn->experience_buffer,rew,qval,act,simpledqn->experience_buffer->vectorforobs,simpledqn->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
     loss[i] = uz_dqn_train4(simpledqn,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam);  

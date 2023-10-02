@@ -16,21 +16,26 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 1000U
-#define MINIBATCHSIZE 32U
-#define NUMBER_OF_EPOCHS 1005U // hier 1006U ergibt compile error
-#define TARGET_UPDATE_FREQUENCY 500U
+#define EXPERIENCE_BUFFER_LENGTH 60U
+#define MINIBATCHSIZE 16U
+#define NUMBER_OF_EPOCHS 100000U
+#define TARGET_UPDATE_FREQUENCY 50000U
 // nn
-#define NUMBER_OF_INPUTS 4U
+#define NUMBER_OF_INPUTS 8U
 #define NUMBER_OF_OUTPUTS 3U
 #define NUMBER_OF_HIDDEN_LAYER 2U
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 16U
 #define NUMBEROFTESTSTEPS 50U
-#define NUMBEROFBITS 2U
+#define NUMBEROFBITS 4U
+// random array
+uint32_t randomarray[MINIBATCHSIZE] = {0};
+// outputtarget+critic
+float outtarg[NUMBER_OF_OUTPUTS] = {0.0f};
+float outcrit[NUMBER_OF_OUTPUTS] = {0.0f};
 
 float discountfact = 0.99f;
-float lernrate = 0.0005f;
-// random array
+float lernrate = 0.001f;
+// env array
 uint32_t array[NUMBEROFBITS] = {0,1};
 uint32_t tararray[NUMBEROFBITS] = {1,1};
 float inarray[NUMBER_OF_INPUTS] = {1.0f,1.0f,1.0f,1.0f};
@@ -114,8 +119,8 @@ float T2[4] = {0};
 float reward[EXPERIENCE_BUFFER_LENGTH] = {0};
 uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0};
 float qvalues[EXPERIENCE_BUFFER_LENGTH] = {0};
-float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0};
-float observation1[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0};
+float observation[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {0};
+float observation1[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {0};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
 float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0};
@@ -211,7 +216,7 @@ struct uz_nn_layer_config config_critic[NUMBER_OF_HIDDEN_LAYER] = {
 
 //config buffer
 struct uz_dqn_experience_replay_config configbuffer = {
-        .length_of_buffer = UZ_MATRIX_SIZE(reward),
+        .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
         .columns_of_observations = NUMBER_OF_INPUTS,
         .reward = reward,
         .qvalues = qvalues,
@@ -233,27 +238,35 @@ void test_dqn_simple(void)
     uz_dqn_t* simpledqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_copy(simpledqn->critic,simpledqn->critic_target_net);
-    uint32_t r[MINIBATCHSIZE] = {0};
+    // speicher für outputdqn + target
+    struct uz_matrix_t tarmatrix={0};
+    uz_matrix_t* tarout=uz_matrix_init(&tarmatrix, outtarg,NUMBER_OF_OUTPUTS,1,NUMBER_OF_OUTPUTS);
+    struct uz_matrix_t critmatrix={0};
+    uz_matrix_t* critout=uz_matrix_init(&critmatrix, outcrit,NUMBER_OF_OUTPUTS,1,NUMBER_OF_OUTPUTS);
     adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // prefill buffer
     do{
     uz_dqn_sample_simple(simpledqn);
-    } while ((!simpledqn->experience_buffer->counterisfull) && (simpledqn->experience_buffer->head< (3 * MINIBATCHSIZE)));
+    } while ((!simpledqn->experience_buffer->counterisfull) && (simpledqn->experience_buffer->head< (3U * MINIBATCHSIZE)));
     simpledqn->env->epsilon_start = configenv.epsilon_start;
-    for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
+    for (uint32_t i = 0U; i < NUMBER_OF_EPOCHS; i++)
     {
-    loss[i]= uz_dqn_step_adam_simple(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,EXPERIENCE_BUFFER_LENGTH,r,adam); 
+    if (i == 33U){
+        int a = 2;
+    }
+    loss[i]= uz_dqn_step_adam_simple(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,randomarray,adam, tarout, critout); 
     cumreward[i] = simpledqn->env->cumreward;
-    if (i == 0){
+    if (i == 0U){
     globalrewardr[i] = simpledqn->env->cumreward;
     }
     else{
-    globalrewardr[i] = 0.99 * globalrewardr[i-1] + 0.01 * simpledqn->env->cumreward;
+    globalrewardr[i] = 0.99f * globalrewardr[i-1] + 0.01f * simpledqn->env->cumreward;
     }
     epsilonovertime[i] = simpledqn->env->epsilon_start;
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
+
     free(adam);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/losssimple.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/QTarget.csv", Q_Target, NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS);

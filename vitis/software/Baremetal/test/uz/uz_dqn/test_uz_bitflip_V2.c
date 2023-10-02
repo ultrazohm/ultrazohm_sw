@@ -16,8 +16,8 @@
 
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 200U
-#define MINIBATCHSIZE 32U
-#define NUMBER_OF_EPOCHS 10U
+#define MINIBATCHSIZE 2U
+#define NUMBER_OF_EPOCHS 50000U
 #define TARGET_UPDATE_FREQUENCY 100U
 // nn
 #define NUMBEROFBITS 4U
@@ -243,11 +243,11 @@ void test_dqn_bitflip(void)
     adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // prefill buffer
-    do{
-    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    uz_dqn_sample_bitenv(testdqn2);
-    } while ((!testdqn2->experience_buffer->counterisfull) && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
-    testdqn2->env->epsilon_start = configenv.epsilon_start;
+    // do{
+    // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    // uz_dqn_sample_bitenv(testdqn2);
+    // } while ((!testdqn2->experience_buffer->counterisfull) && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
+    // testdqn2->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);

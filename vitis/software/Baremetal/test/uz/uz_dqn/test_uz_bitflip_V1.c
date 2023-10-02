@@ -16,9 +16,9 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 2000U
-#define MINIBATCHSIZE 2U
-#define NUMBER_OF_EPOCHS 100000U
+#define EXPERIENCE_BUFFER_LENGTH 20000U
+#define MINIBATCHSIZE 32U
+#define NUMBER_OF_EPOCHS 10000U
 #define TARGET_UPDATE_FREQUENCY 100U
 // nn
 #define NUMBEROFBITS 4U
@@ -261,9 +261,8 @@ void test_dqn_bitflip(void)
     // do{
     // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
     // uz_dqn_sample_bitenv(testdqn2);
-    // } while (!testdqn2->experience_buffer->counterisfull && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
-    // epsilon wieder auf startwert setzen
-    testdqn2->env->epsilon_start = configenv.epsilon_start;
+    // } while ((!testdqn2->experience_buffer->counterisfull) && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
+    // testdqn2->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
@@ -311,6 +310,6 @@ void test_dqn_bitflip(void)
      fclose(f);
      f = NULL;
     }
-    uz_nn_trained_export(testdqn2->critic_target_net);
+    // uz_nn_trained_export(testdqn2->critic_target_net);
 }
 #endif // TEST

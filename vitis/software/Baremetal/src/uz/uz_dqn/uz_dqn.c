@@ -383,7 +383,7 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
     for (uint32_t t = 0; t < self->env->max_steps; t++)
     {
     self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start,self->env->epsilon_min,self->env->epsilon_decay);
-    uz_matrix_copy(self->env->inputfornn,self->inputvecnn);
+    uz_matrix_copy(self->env->inputfornn,self->experience_buffer->vectorforobs);
     uz_nn_ff(self->critic,self->env->inputfornn);
     outputcritic=uz_nn_get_output_data(self->critic);
     // randnumber and epsilon comparision
@@ -396,7 +396,7 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
     float qvalue = uz_matrix_get_element_zero_based(outputcritic,0,actionind);
     uz_dqn_bitflip_action(self->env,actionind);
     float stepreward = calculate_reward_bit(self->env);
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->inputvecnn,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->experience_buffer->vectorforobs,self->env->inputfornn);
     self->env->cumreward+= stepreward;
     if (self->experience_buffer->counterisfull > 0U){
     genRand_uint32_t_array(r,&self->randinstance->seedRand,mbsize,0.0f,(float)self->experience_buffer->length-1);
@@ -408,8 +408,8 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
     rx = r;
     // uz_dqn_get_minibatch_from_buffer(self->experience_buffer,rew,qval,act,self->experience_buffer->vectorforobs,self->experience_buffer->vectorforobs1,obs,obspl1,mbsize,r);
     for(uint32_t j=0; j<mbsize;j++){
-        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->env->inputfornn,*rx);
-        uz_nn_ff(self->critic_target_net,self->env->inputfornn);
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->experience_buffer->vectorforobs1,*rx);
+        uz_nn_ff(self->critic_target_net,self->experience_buffer->vectorforobs1);
         outputtarget = uz_nn_get_output_data(self->critic_target_net);
         qplus1 = uz_matrix_get_max_value(outputtarget);
         float rewardtrain = self->experience_buffer->reward[*rx];
@@ -426,8 +426,8 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
         dloss = calculate_derv_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         error[actiontrain] = dloss; 
         cum_loss += loss; 
-        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,*rx);
-        uz_nn_backward_pass_mini_batch(self->critic,error,self->inputvecnn);  
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->experience_buffer->vectorforobs,*rx);
+        uz_nn_backward_pass_mini_batch(self->critic,error,self->experience_buffer->vectorforobs);  
         rx++;
         resetFloatArray(error,self->critic->number_of_outputs);   
     }
@@ -456,10 +456,11 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, ui
     float loss = 0.0f;
     float cum_loss = 0.0f;
     float dloss = 0.0f;
+    uint32_t randomindex = 0U;
     self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start,self->env->epsilon_min,self->env->epsilon_decay);
     for (uint32_t t = 0; t < self->env->max_steps; t++)
     {
-    uz_matrix_copy(self->env->inputfornn,self->inputvecnn);
+    uz_matrix_copy(self->env->inputfornn,self->experience_buffer->vectorforobs);
     uz_nn_ff(self->critic,self->env->inputfornn);
     outputcritic=uz_nn_get_output_data(self->critic);
     if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
@@ -471,18 +472,18 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, ui
     float qvalue = uz_matrix_get_element_zero_based(outputcritic,0,actionind);
     uz_dqn_bitflip_action(self->env,actionind);
     float stepreward = calculate_reward_bit(self->env);
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->inputvecnn,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->experience_buffer->vectorforobs,self->env->inputfornn);
     self->env->cumreward+= stepreward;
     for(uint32_t j=0; j<mbsize;j++){
-        uint32_t randomindex = 0U;
+
         if (self->experience_buffer->counterisfull > 0U){
         randomindex = genRand_uint32_t(&self->randinstance->seedRand,self->experience_buffer->length-1);
         }
         else{
         randomindex = genRand_uint32_t(&self->randinstance->seedRand,self->experience_buffer->head-1);
         }
-        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->env->inputfornn,randomindex);
-        uz_nn_ff(self->critic_target_net,self->env->inputfornn);
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->experience_buffer->vectorforobs1,randomindex);
+        uz_nn_ff(self->critic_target_net,self->experience_buffer->vectorforobs1);
         outputtarget = uz_nn_get_output_data(self->critic_target_net);
         qplus1 = uz_matrix_get_max_value(outputtarget);
         float rewardtrain = self->experience_buffer->reward[randomindex];
@@ -499,8 +500,8 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, ui
         dloss = calculate_derv_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         error[actiontrain] = dloss; 
         cum_loss += loss; 
-        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,randomindex);
-        uz_nn_backward_pass_mini_batch(self->critic,error,self->inputvecnn);  
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->experience_buffer->vectorforobs,randomindex);
+        uz_nn_backward_pass_mini_batch(self->critic,error,self->experience_buffer->vectorforobs);  
         resetFloatArray(error,self->critic->number_of_outputs);   
     }
     cum_loss = cum_loss/(float)mbsize;
@@ -533,7 +534,6 @@ float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGE
     uz_matrix_copy(self->env->inputfornn,self->inputvecnn);
     uz_nn_ff(self->critic,self->env->inputfornn);
     uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
-    // randnumber and epsilon comparision
     if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
         actionind = genRand_uint32_t(&self->randinstance->seedRand,self->env->bitlength-1);
     }
@@ -551,7 +551,7 @@ float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGE
     else{
     genRand_uint32_t_array(r,&self->randinstance->seedRand,mbsize,0.0f,(float)self->experience_buffer->head-1);
     }
-       uint32_t *rx;
+    uint32_t *rx;
     rx = r;
     // uz_dqn_get_minibatch_from_buffer(self->experience_buffer,rew,qval,act,self->experience_buffer->vectorforobs,self->experience_buffer->vectorforobs1,obs,obspl1,mbsize,r);
     for(uint32_t j=0; j<mbsize;j++){
@@ -785,30 +785,30 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
     }
 }
 
-float calculate_loss_dqn(uz_dqn_t* self, float reward, float qval, float qvalplus1, bool terminal){
+float calculate_loss_dqn(uz_dqn_t* self, float samplereward, float qval, float qvalplus1, bool terminal){
     uz_assert_not_NULL(self);
     // berechne y_j
     float y_j = 0.0f;
     if(terminal==true)
     {
-        y_j = reward;
+        y_j = samplereward;
     }
     else{
-        y_j = reward + (self->discount_factor * qvalplus1);
+        y_j = samplereward + (self->discount_factor * qvalplus1);
     }
     float loss = ((y_j - qval) * (y_j - qval));
     return loss;
 }
 
-float calculate_derv_loss_dqn(uz_dqn_t* self, float reward, float qval, float qvalplus1, bool terminal){
+float calculate_derv_loss_dqn(uz_dqn_t* self, float samplereward, float qval, float qvalplus1, bool terminal){
     uz_assert_not_NULL(self);
     float y_j = 0.0f;
     if(terminal==true)
     {
-        y_j = reward;
+        y_j = samplereward;
     }
     else{
-        y_j = reward + (self->discount_factor * qvalplus1);
+        y_j = samplereward + (self->discount_factor * qvalplus1);
     }
     float dloss = -2.0f*(y_j - qval);
 

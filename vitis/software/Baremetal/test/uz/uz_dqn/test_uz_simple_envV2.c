@@ -16,17 +16,17 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 60U
+#define EXPERIENCE_BUFFER_LENGTH 200U
 #define MINIBATCHSIZE 16U
 #define NUMBER_OF_EPOCHS 100000U
-#define TARGET_UPDATE_FREQUENCY 50000U
+#define TARGET_UPDATE_FREQUENCY 500U
 // nn
-#define NUMBER_OF_INPUTS 8U
+#define NUMBER_OF_INPUTS 4U
 #define NUMBER_OF_OUTPUTS 3U
 #define NUMBER_OF_HIDDEN_LAYER 2U
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 16U
 #define NUMBEROFTESTSTEPS 50U
-#define NUMBEROFBITS 4U
+#define NUMBEROFBITS 2U
 // random array
 uint32_t randomarray[MINIBATCHSIZE] = {0};
 // outputtarget+critic
@@ -252,7 +252,7 @@ void test_dqn_simple(void)
     simpledqn->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0U; i < NUMBER_OF_EPOCHS; i++)
     {
-    if (i == 33U){
+    if (i == 97U){
         int a = 2;
     }
     loss[i]= uz_dqn_step_adam_simple(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,randomarray,adam, tarout, critout); 

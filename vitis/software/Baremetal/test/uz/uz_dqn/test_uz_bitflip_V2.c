@@ -17,10 +17,10 @@
 
 // buffer
 // bug im code, wenn buffer klein und episoden hoch dann gibts nen assert
-#define EXPERIENCE_BUFFER_LENGTH 500U // bei 200U compile error
+#define EXPERIENCE_BUFFER_LENGTH 200U // bei 200U compile error
 #define MINIBATCHSIZE 32U
-#define NUMBER_OF_EPOCHS 1000U
-#define TARGET_UPDATE_FREQUENCY 5U
+#define NUMBER_OF_EPOCHS 10000U
+#define TARGET_UPDATE_FREQUENCY 50U
 // nn
 #define NUMBEROFBITS 4U
 #define NUMBER_OF_INPUTS 8U
@@ -29,8 +29,8 @@
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64U
 #define NUMBEROFTESTSTEPS 50U
 
-float discountfact = 0.95f;
-float lernrate = 0.0005f;
+float discountfact = 0.99f;
+float lernrate = 0.001f;
 // random array
 uint32_t array[NUMBEROFBITS] = {0U,0U,0U,0U};
 uint32_t tararray[NUMBEROFBITS] = {1U,1U,1U,1U};
@@ -255,7 +255,7 @@ void test_dqn_bitflip(void)
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    loss[i]= uz_dqn_step_adam(testdqn2,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,EXPERIENCE_BUFFER_LENGTH,randomrarray,adam); 
+    loss[i]= uz_dqn_step_adam(testdqn2,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,randomrarray,adam); 
     cumreward[i] = testdqn2->env->cumreward;
     if (i == 0){
     globalrewardr[i] = testdqn2->env->cumreward;

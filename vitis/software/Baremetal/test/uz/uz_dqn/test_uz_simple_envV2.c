@@ -251,9 +251,6 @@ void test_dqn_simple(void)
     simpledqn->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0U; i < NUMBER_OF_EPOCHS; i++)
     {
-    if (i == 97U){
-        int a = 2;
-    }
     loss[i]= uz_dqn_step_adam_simple_no_array(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam, tarout, critout); 
     cumreward[i] = simpledqn->env->cumreward;
     if (i == 0U){

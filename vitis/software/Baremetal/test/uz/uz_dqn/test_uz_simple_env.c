@@ -16,7 +16,7 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 60U
+#define EXPERIENCE_BUFFER_LENGTH 6000U
 #define MINIBATCHSIZE 16U
 #define NUMBER_OF_EPOCHS 100000U
 #define TARGET_UPDATE_FREQUENCY 500U
@@ -265,10 +265,10 @@ void test_dqn_simple(void)
     }
     epsilonovertime[i] = simpledqn->env->epsilon_start;
     if (simpledqn->experience_buffer->counterisfull > 0U){
-    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0.0f,EXPERIENCE_BUFFER_LENGTH-1U);
+    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0.0f,(float)(EXPERIENCE_BUFFER_LENGTH-1U));
     }
     else{
-    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0.0f,simpledqn->experience_buffer->head-1U);
+    genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0.0f,(float)(simpledqn->experience_buffer->head-1U));
     }
     uz_dqn_get_minibatch_from_buffer(simpledqn->experience_buffer,rew,qval,act,simpledqn->experience_buffer->vectorforobs,simpledqn->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
     loss[i] = uz_dqn_train4(simpledqn,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam);  

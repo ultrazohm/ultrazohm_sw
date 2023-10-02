@@ -16,7 +16,7 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 20000U
+#define EXPERIENCE_BUFFER_LENGTH 20U
 #define MINIBATCHSIZE 2U
 #define NUMBER_OF_EPOCHS 100000U
 #define TARGET_UPDATE_FREQUENCY 100U
@@ -25,7 +25,7 @@
 #define NUMBER_OF_INPUTS 8U
 #define NUMBER_OF_OUTPUTS 4U
 #define NUMBER_OF_HIDDEN_LAYER 2U
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64U
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256U
 #define NUMBEROFTESTSTEPS 50U
 
 float discountfact = 0.99f;
@@ -273,14 +273,14 @@ void test_dqn_bitflip(void)
     globalrewardr[i] = testdqn2->env->cumreward;
     }
     else{
-    globalrewardr[i] = 0.99 * globalrewardr[i-1] + 0.01 * testdqn2->env->cumreward;
+    globalrewardr[i] = 0.99f * globalrewardr[i-1] + 0.01f * testdqn2->env->cumreward;
     }
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     if (testdqn2->experience_buffer->counterisfull > 0U){
     genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,EXPERIENCE_BUFFER_LENGTH-1U);
     }
     else{
-    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,testdqn2->experience_buffer->head);
+    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,testdqn2->experience_buffer->head-1U);
     }
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,testdqn2->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
     //loss[i] = uz_dqn_train(testdqn2,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
@@ -288,43 +288,12 @@ void test_dqn_bitflip(void)
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
     free(adam);
-    // teste Q0000
-    X_dat[0] = 0.0f;
-    X_dat[1] = 0.0f;
-    X_dat[2] = 0.0f;
-    X_dat[3] = 0.0f;
-    uz_nn_ff(testdqn2->critic_target_net,testdqn2->inputvecnn);
-    printf("Q0  ist = %.8f \n", (double)ty_2[0]);
-    printf("Q1  ist = %.8f \n", (double)ty_2[1]);
-    printf("Q2  ist = %.8f \n", (double)ty_2[2]);
-    printf("Q3  ist = %.8f \n", (double)ty_2[3]);
-    // test Q0001
-    X_dat[0] = 0.0f;
-    X_dat[1] = 0.0f;
-    X_dat[2] = 0.0f;
-    X_dat[3] = 1.0f;
-    uz_nn_ff(testdqn2->critic_target_net,testdqn2->inputvecnn);
-    printf("Q0  ist = %.8f \n", (double)ty_2[0]);
-    printf("Q1  ist = %.8f \n", (double)ty_2[1]);
-    printf("Q2  ist = %.8f \n", (double)ty_2[2]);
-    printf("Q3  ist = %.8f \n", (double)ty_2[3]);
-    
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
     uz_dqn_act_bitenv_no_exploration(testdqn2);
     cumreward_noexpl[i] = testdqn2->env->cumreward;
     }
-    // export defines datum etc, neuer ordner um die sachen unterscheiden zu können
-    // save loss and cumreward
-    // time_t t = time(NULL);
-    // struct tm *tm = localtime(&t);
-    // char s[64];
-    // size_t ret = strftime(s, sizeof(s), "%c", tm);
-    // printf("%s\n", s);
-    //make_directory(s);
-    // strcat("test/uz/uz_dqn/loss256_clipped", s);
-    // strcat(".csv",s);
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/QTarget.csv", Q_Target, NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS);

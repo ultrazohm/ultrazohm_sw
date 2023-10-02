@@ -16,7 +16,7 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 200U
+#define EXPERIENCE_BUFFER_LENGTH 6000U
 #define MINIBATCHSIZE 16U
 #define NUMBER_OF_EPOCHS 100000U
 #define TARGET_UPDATE_FREQUENCY 500U
@@ -27,8 +27,7 @@
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 16U
 #define NUMBEROFTESTSTEPS 50U
 #define NUMBEROFBITS 2U
-// random array
-uint32_t randomarray[MINIBATCHSIZE] = {0};
+
 // outputtarget+critic
 float outtarg[NUMBER_OF_OUTPUTS] = {0.0f};
 float outcrit[NUMBER_OF_OUTPUTS] = {0.0f};
@@ -255,7 +254,7 @@ void test_dqn_simple(void)
     if (i == 97U){
         int a = 2;
     }
-    loss[i]= uz_dqn_step_adam_simple(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,randomarray,adam, tarout, critout); 
+    loss[i]= uz_dqn_step_adam_simple_no_array(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam, tarout, critout); 
     cumreward[i] = simpledqn->env->cumreward;
     if (i == 0U){
     globalrewardr[i] = simpledqn->env->cumreward;

@@ -8,7 +8,6 @@
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
-#include <stdlib.h>
 #include "uz_mtwister.h"
 #include "uz_environment.h"
 #include <time.h>
@@ -16,11 +15,10 @@
 #include <stdlib.h>
 
 // buffer
-// bug im code, wenn buffer klein und episoden hoch dann gibts nen assert
-#define EXPERIENCE_BUFFER_LENGTH 200U // bei 200U compile error
-#define MINIBATCHSIZE 32U
-#define NUMBER_OF_EPOCHS 10000U
-#define TARGET_UPDATE_FREQUENCY 50U
+#define EXPERIENCE_BUFFER_LENGTH 20U
+#define MINIBATCHSIZE 2U
+#define NUMBER_OF_EPOCHS 100000U
+#define TARGET_UPDATE_FREQUENCY 100U
 // nn
 #define NUMBEROFBITS 4U
 #define NUMBER_OF_INPUTS 8U
@@ -29,8 +27,12 @@
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64U
 #define NUMBEROFTESTSTEPS 50U
 
+// outputtarget+critic
+float outtarg[NUMBER_OF_OUTPUTS] = {0.0f};
+float outcrit[NUMBER_OF_OUTPUTS] = {0.0f};
+
 float discountfact = 0.99f;
-float lernrate = 0.001f;
+float lernrate = 0.0005f;
 // random array
 uint32_t array[NUMBEROFBITS] = {0U,0U,0U,0U};
 uint32_t tararray[NUMBEROFBITS] = {1U,1U,1U,1U};
@@ -51,7 +53,7 @@ struct uz_dqn_environment_config configenv = {
     .max_steps = NUMBEROFBITS+3,
     .epsilon_start = 0.99f, 
     .epsilon_min = 0.01f, 
-    .epsilon_decay = 0.00014286f
+    .epsilon_decay = 0.0001f
 };
 // debug stuff
 float Q_Target[NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS] = {0.0f};
@@ -241,9 +243,11 @@ void test_dqn_bitflip(void)
     uz_dqn_t* testdqn2 = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_copy(testdqn2->critic,testdqn2->critic_target_net);
-    uint32_t randomrarray[MINIBATCHSIZE] = {0}; 
-    uint32_t *indizes = randomrarray;
-    //adam
+    // speicher für outputdqn + target
+    struct uz_matrix_t tarmatrix={0};
+    uz_matrix_t* tarout=uz_matrix_init(&tarmatrix, outtarg,NUMBER_OF_OUTPUTS,1,NUMBER_OF_OUTPUTS);
+    struct uz_matrix_t critmatrix={0};
+    uz_matrix_t* critout=uz_matrix_init(&critmatrix, outcrit,NUMBER_OF_OUTPUTS,1,NUMBER_OF_OUTPUTS);
     adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // prefill buffer
@@ -255,13 +259,13 @@ void test_dqn_bitflip(void)
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    loss[i]= uz_dqn_step_adam(testdqn2,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,randomrarray,adam); 
+    loss[i]= uz_dqn_step_adam_no_array(testdqn2,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam,critout,tarout); 
     cumreward[i] = testdqn2->env->cumreward;
     if (i == 0){
     globalrewardr[i] = testdqn2->env->cumreward;
     }
     else{
-    globalrewardr[i] = 0.99 * globalrewardr[i-1] + 0.01 * testdqn2->env->cumreward;
+    globalrewardr[i] = 0.99f * globalrewardr[i-1] + 0.01f * testdqn2->env->cumreward;
     }
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);

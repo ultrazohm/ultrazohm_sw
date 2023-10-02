@@ -28,12 +28,8 @@
 #define NUMBEROFTESTSTEPS 50U
 #define NUMBEROFBITS 2U
 
-// outputtarget+critic
-float outtarg[NUMBER_OF_OUTPUTS] = {0.0f};
-float outcrit[NUMBER_OF_OUTPUTS] = {0.0f};
-
 float discountfact = 0.99f;
-float lernrate = 0.001f;
+float lernrate = 0.00001f;
 // env array
 uint32_t array[NUMBEROFBITS] = {0,1};
 uint32_t tararray[NUMBEROFBITS] = {1,1};
@@ -237,11 +233,6 @@ void test_dqn_simple(void)
     uz_dqn_t* simpledqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_copy(simpledqn->critic,simpledqn->critic_target_net);
-    // speicher für outputdqn + target
-    struct uz_matrix_t tarmatrix={0};
-    uz_matrix_t* tarout=uz_matrix_init(&tarmatrix, outtarg,NUMBER_OF_OUTPUTS,1,NUMBER_OF_OUTPUTS);
-    struct uz_matrix_t critmatrix={0};
-    uz_matrix_t* critout=uz_matrix_init(&critmatrix, outcrit,NUMBER_OF_OUTPUTS,1,NUMBER_OF_OUTPUTS);
     adam_optimizer_t *adam = uz_adam_init(lernrate/(float)MINIBATCHSIZE);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // prefill buffer
@@ -251,7 +242,7 @@ void test_dqn_simple(void)
     simpledqn->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0U; i < NUMBER_OF_EPOCHS; i++)
     {
-    loss[i]= uz_dqn_step_adam_simple_no_array(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam, tarout, critout); 
+    loss[i]= uz_dqn_step_adam_simple_no_array(simpledqn,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
     cumreward[i] = simpledqn->env->cumreward;
     if (i == 0U){
     globalrewardr[i] = simpledqn->env->cumreward;

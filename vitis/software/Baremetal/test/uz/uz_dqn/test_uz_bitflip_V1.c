@@ -16,7 +16,7 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 20U
+#define EXPERIENCE_BUFFER_LENGTH 2000U
 #define MINIBATCHSIZE 2U
 #define NUMBER_OF_EPOCHS 100000U
 #define TARGET_UPDATE_FREQUENCY 100U
@@ -49,7 +49,7 @@ struct uz_dqn_environment_config configenv = {
     .inarray = inarray,
     .max_steps = NUMBEROFBITS+3,
     .epsilon_start = 0.99f, 
-    .epsilon_min = 0.01f, 
+    .epsilon_min = 0.0000000001f, 
     .epsilon_decay = 0.0001f
 };
 // debug stuff

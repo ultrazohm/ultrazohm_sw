@@ -179,7 +179,7 @@ const uz_6ph_MLMT_kparameter k_3OPF_1N[20] = {
 };
 
 
-uz_6ph_MLMT_kparameter uz_get_k_parameter(uz_6phFD_indices input_faultindices, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization){
+uz_6ph_MLMT_kparameter uz_get_k_parameter(uz_6phFD_indices input_faultindices, neutral_configurations neutral_point_configuration, ML_MT_optimization ML_MT_optimization){
 
 uz_6phFD_opf helpstruct = uz_get_numbers_and_order_of_faulted_phases(input_faultindices);
 

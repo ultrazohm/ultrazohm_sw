@@ -105,7 +105,7 @@ Enums
 
 Enumerations for input parameters of the function ``uz_get_k_parameter``.
 
-  .. doxygenenum:: neutral_point_configuration
+  .. doxygentypedef:: neutral_point_configuration
 
   .. doxygenenum:: ML_MT_optimization
 

@@ -4,6 +4,7 @@
 
 #include "uz_VSD_6ph_ML_MT_Control.h"
 #include "uz_VSD_6ph_ML_MT_Control.c"
+#include "globalData.h"
 
 void setUp(void)
 {

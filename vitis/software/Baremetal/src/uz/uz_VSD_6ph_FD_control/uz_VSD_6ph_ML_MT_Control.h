@@ -2,6 +2,7 @@
 #define UZ_VSD_6PH_ML_MT_CONTROL_H
 
 #include "uz_VSD_6ph_FD.h"
+#include "../../globalData.h"
 
 /*
 header-file for the parameter of ML- and MT-Control strategy for
@@ -23,15 +24,6 @@ struct uz_6ph_MLMT_kparameter{
     float k8;   /**< k8 parameter, for calculating i_z2_ref = k7 * i_alpha_ref + k8 * i_beta_ref*/
     float deratingFaktor;    /**< derating factor*/
 };
-
-/**
- * @brief Enum for the neutral point connection
- * 
- */
-typedef enum neutral_point_configuration {
-    N1 = 1,     /**< single neutral point*/
-    N2 = 2,     /**< two separated neutral points*/
-}neutral_point_configuration;
 
 /**
  * @brief Enum for the optimization strategies
@@ -56,7 +48,7 @@ typedef struct uz_6ph_MLMT_kparameter uz_6ph_MLMT_kparameter;
  * @param ML_MT_optimization enum (MT -> Maximum Torque (MT) optimization, ML -> Minimum Loss (MT) optimization)
  * @return uz_6ph_MLMT_kparameter struct with kparameters and derating factor
  */
-uz_6ph_MLMT_kparameter uz_get_k_parameter(uz_6phFD_indices FD_indices, neutral_point_configuration neutral_point_configuration, ML_MT_optimization ML_MT_optimization);
+uz_6ph_MLMT_kparameter uz_get_k_parameter(uz_6phFD_indices FD_indices, neutral_configurations neutral_point_configuration, ML_MT_optimization ML_MT_optimization);
 
 
 

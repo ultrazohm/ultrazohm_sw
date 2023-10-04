@@ -84,7 +84,6 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
-	neutral_configurations neutral_configuration;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -123,7 +122,7 @@ typedef struct _DS_Data_ {
 
 
 // enum to use for multi-phase applications with different neutral configurations
-typedef enum{
+typedef enum {
     N1 = 1,
     N2 = 2,
     N3 = 3

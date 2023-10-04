@@ -1,0 +1,3 @@
+vlib work
+vcom  uz_sel_currents_src_uz_sel_currents_pkg.vhd
+vcom  uz_sel_currents_src_uz_sel_currents.vhd

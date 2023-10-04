@@ -54,6 +54,14 @@
 
 #include "include/pwm_init.h"
 
+#include "include/resolver.h"
+#include "uz/uz_signals/uz_signals.h"
+
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+
+#include "uz/uz_ParameterID/uz_ParameterID.h"
+#include "uz/uz_math_constants.h"
 
 //----------------------------------------------------
 // FUNCTIONS

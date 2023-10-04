@@ -30,7 +30,22 @@ DS_Data Global_Data = {
 		.halfBridge9DutyCycle = 0.0f,
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
+		.halfBridge12DutyCycle = 0.0f,
+		.torque_ref = 0.0f,
+		.speed_ref_rpm = 0.0f,
+		.i_dq_ref.d = 0.0f,
+		.i_dq_ref.q = 0.0f,
+		.i_dq_ref_currentcontrol.d = 0.0f,
+		.i_dq_ref_currentcontrol.q = 0.0f,
+		.u_abc_ref.a = 0.0f,
+		.u_abc_ref.b = 0.0f,
+		.u_abc_ref.c = 0.0f,
+		.u_dq_ref.d = 0.0f,
+		.u_dq_ref.q = 0.0f,
+		.dutyCycles.DutyCycle_A = 0.0f,
+		.dutyCycles.DutyCycle_B = 0.0f,
+		.dutyCycles.DutyCycle_C = 0.0f,
+		.M_ref_Nm = 0.0f
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
@@ -39,6 +54,10 @@ DS_Data Global_Data = {
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
+
+uz_ParameterID_t* ParameterID = NULL;
+uz_ParameterID_Data_t ParaID_Data = { 0 };
+
 
 enum init_chain
 {
@@ -54,6 +73,13 @@ enum init_chain initialization_chain = init_assertions;
 
 int main(void)
 {
+
+
+
+
+
+
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -70,7 +96,66 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
+
+
+        	ParameterID = uz_ParameterID_init(&ParaID_Data);
+
+        	 struct uz_PI_Controller_config config_id = {
+        	   .Kp = ParaID_Data.GlobalConfig.Kp_id,
+        	   .Ki = ParaID_Data.GlobalConfig.Ki_id,
+        	   .samplingTime_sec = 1/SAMPLE_FREQUENCY,
+        	   .upper_limit = 20.0f,
+        	   .lower_limit = -20.0f
+        	};
+
+        	struct uz_PI_Controller_config config_iq = {
+        	   .Kp = ParaID_Data.GlobalConfig.Kp_iq,
+        	   .Ki = ParaID_Data.GlobalConfig.Ki_iq,
+        	   .samplingTime_sec = 1/SAMPLE_FREQUENCY,
+        	   .upper_limit = 20.0f,
+        	   .lower_limit = -20.0f
+        	};
+
+        	struct uz_CurrentControl_config CC_config = {
+        	   .decoupling_select = linear_decoupling,
+        	   .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+        	   .config_id = config_id,
+        	   .config_iq = config_iq,
+        	   .max_modulation_index = 1.0f / sqrtf(3.0f)
+        	};
+        	struct uz_SpeedControl_config config_speed = {
+        	    .config_controller.Kp = ParaID_Data.GlobalConfig.Kp_n,
+        	    .config_controller.Ki = ParaID_Data.GlobalConfig.Ki_n,
+        	    .config_controller.samplingTime_sec = 1/SAMPLE_FREQUENCY,
+        	    .config_controller.upper_limit = 10.0f,
+        	    .config_controller.lower_limit = -10.0f
+        	};
+
+        	   struct uz_SetPoint_config SP_config = {
+        	      .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
+        		  .control_type = FOC,
+        	      .motor_type = SMPMSM,
+        	      .is_field_weakening_enabled = false,
+        	      .id_ref_Ampere = 0.0f,
+        	      .relative_torque_tolerance = 0.001f
+        	   };
+
+        	struct uz_IIR_Filter_config irr_config = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 200.0f, .sample_frequency_Hz = SAMPLE_FREQUENCY};
+
+            Global_Data.objects.CC_instance = uz_CurrentControl_init(CC_config);
+
+            Global_Data.objects.iir_i_a = uz_signals_IIR_Filter_init(irr_config);
+            Global_Data.objects.iir_i_b = uz_signals_IIR_Filter_init(irr_config);
+            Global_Data.objects.iir_i_c = uz_signals_IIR_Filter_init(irr_config);
+
+            Global_Data.objects.Speed_instance = uz_SpeedControl_init(config_speed);
+
+            Global_Data.objects.SP_instance = uz_SetPoint_init(SP_config);
+
+
+
             JavaScope_initialize(&Global_Data);
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -90,6 +175,11 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+
+
+            Global_Data.objects.resolver_d4 = init_resolver_d4();
+            Global_Data.objects.resolver_pl_interface_d4 = initialize_resolver_pl_d4();
+
             initialization_chain = print_msg;
             break;
 	    case print_msg:
@@ -107,6 +197,14 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            if (ParaID_Data.OnlineID_Output->clean_array || ParaID_Data.OnlineID_reset_was_pressed) {
+                 uz_ParameterID_CleanPsiArray(ParameterID, &ParaID_Data);
+                 ParaID_Data.OnlineID_reset_was_pressed = false;
+            }
+            if (ParaID_Data.calculate_flux_maps) {
+                 uz_ParameterID_CalcFluxMaps(ParameterID, &ParaID_Data);
+                 ParaID_Data.calculate_flux_maps = false;
+            }
             break;
         default:
             break;

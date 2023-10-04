@@ -6,6 +6,14 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_Transformation/uz_Transformation.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -80,10 +88,18 @@ typedef struct _actualValues_ {
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
+	float omega_mech_rad_per_sec;
+	float omega_el_rad_per_sec;
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
+	uz_3ph_dq_t i_dq_act;
+	uz_3ph_abc_t i_abc_act;
+	uz_3ph_abc_t u_abc_act;
+	uz_3ph_dq_t u_dq_act;
+	uz_3ph_abc_t i_abc_act_filtered;
+	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -99,6 +115,15 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	uz_3ph_dq_t i_dq_ref;
+	uz_3ph_dq_t i_dq_ref_currentcontrol;
+	uz_3ph_abc_t u_abc_ref;
+	uz_3ph_dq_t u_dq_ref;
+	struct uz_DutyCycle_t dutyCycles;
+	float torque_ref;
+	float speed_ref_rpm;
+	float M_ref_Nm;
+	uz_3ph_dq_t ParaID_v_dq;
 } referenceAndSetValues;
 
 typedef struct{
@@ -111,6 +136,14 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_resolverIP_t* resolver_d4;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d4;
+	uz_CurrentControl_t* CC_instance;
+	uz_SpeedControl_t* Speed_instance;
+	uz_SetPoint_t* SP_instance;
+	uz_IIR_Filter_t* iir_i_a;
+	uz_IIR_Filter_t* iir_i_b;
+	uz_IIR_Filter_t* iir_i_c;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

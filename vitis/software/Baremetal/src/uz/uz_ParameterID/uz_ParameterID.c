@@ -454,22 +454,22 @@ static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_Pa
 	Data->GlobalConfig.sampleTimeISR = 100.0e-06f;
 
 	//Initialize motor-related parameters inside Global-Config
-	Data->GlobalConfig.Ki_id = 158.8f;
-	Data->GlobalConfig.Ki_iq = 158.8f;
+	Data->GlobalConfig.Ki_id = 10.0f;
+	Data->GlobalConfig.Ki_iq = 10.0f;
 	Data->GlobalConfig.Ki_n = 0.8f;
 	Data->GlobalConfig.Kp_id = 0.25;
 	Data->GlobalConfig.Kp_iq = 0.25f;
 	Data->GlobalConfig.Kp_n = 0.04f;
-	Data->GlobalConfig.PMSM_config.Ld_Henry = 2.90e-04f;
-	Data->GlobalConfig.PMSM_config.Lq_Henry = 3.00e-04f;
-	Data->GlobalConfig.PMSM_config.R_ph_Ohm = 0.105f;
-	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0075f;
-	Data->GlobalConfig.PMSM_config.polePairs = 4.0f;
-	Data->GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;
-	Data->GlobalConfig.PMSM_config.I_max_Ampere = 15.0f;
-	Data->GlobalConfig.ratCurrent = 8.0f;
-	Data->GlobalConfig.ratTorque = 0.29f;
-	Data->GlobalConfig.ratSpeed = 3000.0f;
+	Data->GlobalConfig.PMSM_config.Ld_Henry = 0.556e-3f;	//0
+	Data->GlobalConfig.PMSM_config.Lq_Henry = 0.556e-3f;	//0
+	Data->GlobalConfig.PMSM_config.R_ph_Ohm = 0.1083f;		//0
+	Data->GlobalConfig.PMSM_config.Psi_PM_Vs = 0.0075f;		//0
+	Data->GlobalConfig.PMSM_config.polePairs = 11.0f;
+	Data->GlobalConfig.PMSM_config.J_kg_m_squared = 3.24e-05f;	//0
+	Data->GlobalConfig.PMSM_config.I_max_Ampere = 20.0f;
+	Data->GlobalConfig.ratCurrent = 17.5f;
+	Data->GlobalConfig.ratTorque = 7.6f;
+	Data->GlobalConfig.ratSpeed = 385.0f;
 
 	//Initialize ElectricalID-Config
 	Data->ElectricalID_Config.goertzlFreq = 0.0f;

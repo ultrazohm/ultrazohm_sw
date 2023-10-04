@@ -121,6 +121,8 @@ typedef struct _DS_Data_ {
 	object_pointers_t objects;
 } DS_Data;
 
+
+// enum to use for multi-phase applications with different neutral configurations
 typedef enum{
     1N = 1,
     2N = 2,

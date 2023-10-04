@@ -27,6 +27,7 @@ Software Framework
     SpeedControl/SpeedControl
     SetPoint/SetPoint
     space_vector_modulation/space_vector_modulation
+    space_vector_modulation/space_vector_modulation_6ph
     wavegen/wavegen
     global_configuration/global_configuration
     unit_tests/unit_tests

@@ -36,7 +36,7 @@ uz_mpc_3ph
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.256
+1.259
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2023-10-04 16:04:35
+2023-10-04 17:27:03
 </td>
 
 </tr>
@@ -63,8 +63,8 @@ HDL code generated on
 HDL code generated for
 </td>
 <td align="right" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1080')" name="code2model" class="code2model">
-counter_f_sw_3ph
+<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2857')" name="code2model" class="code2model">
+uz_sel_resolver
 </a>
 
 </td>
@@ -132,7 +132,7 @@ on
 HDLSubsystem
 </td>
 <td align="right" valign="top" style="border-style: none">
-uz_mpc_3ph/counter_f_sw_3ph
+uz_mpc_3ph/uz_sel_resolver
 </td>
 
 </tr>
@@ -141,7 +141,7 @@ uz_mpc_3ph/counter_f_sw_3ph
 ModulePrefix
 </td>
 <td align="right" valign="top" style="border-style: none">
-count_f_sw_src_
+uz_sel_resolver_src_
 </td>
 
 </tr>
@@ -247,8 +247,8 @@ Non-default block properties
 
 </a>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1080')" name="code2model" class="code2model">
-counter_f_sw_3ph
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2857')" name="code2model" class="code2model">
+uz_sel_resolver
 </a>
 
 </b>
@@ -264,11 +264,20 @@ counter_f_sw_3ph
 IPCoreName
 </td>
 <td align="right" valign="top" style="border-style: none">
-count_f_sw
+uz_sel_resolver
 </td>
 
 </tr>
 <tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IPCoreVersion
+</td>
+<td align="right" valign="top" style="border-style: none">
+1.0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 ProcessorFPGASynchronization
 </td>
@@ -280,8 +289,8 @@ Free running
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1081')" name="code2model" class="code2model">
-ss_in_0
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2858')" name="code2model" class="code2model">
+omega_m_left
 </a>
 
 </b>
@@ -304,8 +313,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1082')" name="code2model" class="code2model">
-ss_in_1
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2859')" name="code2model" class="code2model">
+omega_m_right
 </a>
 
 </b>
@@ -328,8 +337,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1083')" name="code2model" class="code2model">
-ss_in_2
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2860')" name="code2model" class="code2model">
+theta_el_left
 </a>
 
 </b>
@@ -352,8 +361,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1084')" name="code2model" class="code2model">
-ss_in_3
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2861')" name="code2model" class="code2model">
+theta_el_right
 </a>
 
 </b>
@@ -376,56 +385,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1085')" name="code2model" class="code2model">
-ss_in_4
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1086')" name="code2model" class="code2model">
-ss_in_5
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture default )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
-<td align="left" valign="top" style="border-style: none">
-IOInterface
-</td>
-<td align="right" valign="top" style="border-style: none">
-External Port
-</td>
-
-</tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1093')" name="code2model" class="code2model">
-bResetAXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2876')" name="code2model" class="code2model">
+right_or_left_AXI
 </a>
 
 </b>
@@ -450,39 +411,24 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"100"
+x"124"
 </td>
 
 </tr>
-
-</table>
-<br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1094')" name="code2model" class="code2model">
-Count_f_sw
-</a>
-
-</b>
-<b>
-<i>
-( Current Architecture MATLAB Function )
-</i>
-
-</b>
-<br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-ConstMultiplierOptimization
+IOInterfaceOptions
 </td>
 <td align="right" valign="top" style="border-style: none">
-auto
+{'RegisterInitialValue','0'}
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1106')" name="code2model" class="code2model">
-switchNumb_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2877')" name="code2model" class="code2model">
+adc_valid_trigger
 </a>
 
 </b>
@@ -498,24 +444,63 @@ switchNumb_AXI
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"104"
+External Port
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:1107')" name="code2model" class="code2model">
-switchNumb
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2917')" name="code2model" class="code2model">
+omega_m
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2918')" name="code2model" class="code2model">
+theta_el
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_3ph:2926')" name="code2model" class="code2model">
+selector_ip_done
 </a>
 
 </b>

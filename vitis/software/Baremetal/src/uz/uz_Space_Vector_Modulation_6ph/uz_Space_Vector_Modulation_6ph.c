@@ -81,24 +81,14 @@ static const int svm_offline_order[24][6] = {
     {4, 1, 2, 5, 0, 3}
 };
 
-// get sector of alphabeta setpoint
 static int uz_svm_6ph_get_sector(float alpha, float beta);
-// calculate dwell times with setpoint and given row (needs to be called 5 times, for each column once)
 static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpoints, const float inverse_T_tv_row[5]);
-// calculate duty cycles from dwell times by using the order
 static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float dwell[5], const int order[6]);
-// shift pwm and adapt duty cycles depending on sector
 static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector);
-// limit alphabeta setpoints to maximum absolute, keeping phase the same
 static uz_6ph_alphabeta_t uz_svm_6ph_alphabeta_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited);
-// limit xy setpoints to relative absolute with alphabeta, keeping phase the same
 static uz_6ph_alphabeta_t uz_svm_6ph_xy_limitation(uz_6ph_alphabeta_t input, bool *limited);
 
-struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(uz_6ph_dq_t setpoints, float theta_el, float V_dc){
-    struct uz_svm_asym_6ph_CSVPWM24_out out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_transformation_asym30deg_6ph_dq_to_alphabeta(setpoints, theta_el), V_dc);
-    return out;
-}
-
+// "main" 6ph svm function
 struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_6ph_alphabeta_t setpoints, float V_dc){
     uz_assert(V_dc >= 0.0f);
     struct uz_svm_asym_6ph_CSVPWM24_out out = {0};
@@ -155,21 +145,30 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
     return out;
 }
 
+// dq wrapped function
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(uz_6ph_dq_t setpoints, float theta_el, float V_dc){
+    struct uz_svm_asym_6ph_CSVPWM24_out out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_transformation_asym30deg_6ph_dq_to_alphabeta(setpoints, theta_el), V_dc);
+    return out;
+}
+
+// get sector of alphabeta setpoint
 static int uz_svm_6ph_get_sector(float alpha, float beta){
-    uz_complex_cartesian_t sv_setpoint_cartesian = {
+    uz_complex_cartesian_t sv_setpoint_cartesian = {                                                // convert setpoint to cartesian
         .real = alpha,
         .imag = beta};
-    uz_complex_polar_t sv_setpoint_polar = uz_complex_cartesian_to_polar(sv_setpoint_cartesian);
-    float phase_wrapped = uz_signals_wrap(sv_setpoint_polar.angle, 2.0f*UZ_PIf);
-    int sector = (int)(floorf(phase_wrapped / SECTOR_ANGLE_RAD)) + 1;
+    uz_complex_polar_t sv_setpoint_polar = uz_complex_cartesian_to_polar(sv_setpoint_cartesian);    // convert setpoint to polar
+    float phase_wrapped = uz_signals_wrap(sv_setpoint_polar.angle, 2.0f*UZ_PIf);                    // warp angle (polar form is -pi to pi and now its 0 to 2pi)
+    int sector = (int)(floorf(phase_wrapped / SECTOR_ANGLE_RAD)) + 1;                               // get how often sector angle matches in phase angle, add one to make 1-based and not 0-based
     return sector;
 }
 
+// calculate dwell times with setpoint and given row (needs to be called 5 times, for each column once), basically just matrix multiplication
 static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpoints, const float inverse_T_tv_row[5]){
     float out = inverse_T_tv_row[0]*setpoints.alpha + inverse_T_tv_row[1]*setpoints.beta + inverse_T_tv_row[2]*setpoints.x + inverse_T_tv_row[3]*setpoints.y + inverse_T_tv_row[4];
     return out;
 }
 
+// calculate duty cycles from dwell times by using the order
 static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float dwell[5], const int order[6]){
     Duty_Cycles[order[0]] = MAKRO_HALFf(dwell[4]) + MAKRO_HALFf(dwell[0]) + dwell[3] + dwell[2] + dwell[1] + MAKRO_HALFf(dwell[0]);
     Duty_Cycles[order[1]] = MAKRO_HALFf(dwell[4]) + MAKRO_HALFf(dwell[0]) + dwell[3] + dwell[2] + dwell[1];
@@ -179,6 +178,7 @@ static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float 
     Duty_Cycles[order[5]] = MAKRO_HALFf(dwell[4]);
 }
 
+// shift pwm and adapt duty cycles depending on sector
 static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector){
     int system_to_shift = 0;
     switch (sector){
@@ -234,6 +234,7 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
     return system_to_shift;
 }
 
+// limit alphabeta setpoints to maximum absolute, keeping phase the same
 static uz_6ph_alphabeta_t uz_svm_6ph_alphabeta_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited){
     // init
     uz_assert(maximum_abs >= 0.0f);                                         // no negative abs allowed
@@ -255,6 +256,7 @@ static uz_6ph_alphabeta_t uz_svm_6ph_alphabeta_limitation(uz_6ph_alphabeta_t inp
     return out;                                                             // return out
 }
 
+// limit xy setpoints to relative absolute with alphabeta, keeping phase the same
 static uz_6ph_alphabeta_t uz_svm_6ph_xy_limitation(uz_6ph_alphabeta_t input, bool *limited){
     // init
     uz_6ph_alphabeta_t out = input;                                             // init output with input

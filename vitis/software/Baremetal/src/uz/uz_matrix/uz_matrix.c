@@ -547,3 +547,16 @@ for (uint32_t column2 = 0; column2 < B->columns; column2++)
 }
 }
 }
+
+void uz_matrix_clipp_values(uz_matrix_t const *const A, float min, float max)
+{
+uz_assert_not_NULL(A);
+uz_assert(A->length_of_data);
+for (uint32_t i = 0; i < A->length_of_data; i++)
+{
+    if (A->data[i] < min)
+    A->data[i] = min;
+    else if (A->data[i]> max)
+    A->data[i] = max;
+}
+}

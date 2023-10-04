@@ -20,6 +20,8 @@
 #include "../uz_signals/uz_signals.h"
 #include "../uz_math_constants.h"
 
+#define SVM_6PH_MAXIMUM_XY_RELATIVE 0.1f
+#define SVM_6PH_MAXIMUM_MODULATION_INDEX 0.62f
 #define SECTOR_ANGLE_RAD (2.0f*UZ_PIf/24.0f)
 #define ANGLE_TOLERANCE 0.01f
 
@@ -85,8 +87,7 @@ static int uz_svm_6ph_get_sector(float alpha, float beta);
 static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpoints, const float inverse_T_tv_row[5]);
 static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float dwell[5], const int order[6]);
 static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector);
-static uz_6ph_alphabeta_t uz_svm_6ph_alphabeta_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited);
-static uz_6ph_alphabeta_t uz_svm_6ph_xy_limitation(uz_6ph_alphabeta_t input, bool *limited);
+static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited_ab, bool *limited_xy);
 
 // "main" 6ph svm function
 struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_6ph_alphabeta_t setpoints, float V_dc){
@@ -94,8 +95,7 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
     struct uz_svm_asym_6ph_CSVPWM24_out out = {0};
 
     //space vector limitation
-    uz_6ph_alphabeta_t setpoints_limited = uz_svm_6ph_alphabeta_limitation(setpoints, V_dc * SVM_6PH_MAXIMUM_MODULATION_INDEX, &out.limited_alphabeta);
-    setpoints_limited = uz_svm_6ph_xy_limitation(setpoints_limited, &out.limited_xy);
+    uz_6ph_alphabeta_t setpoints_limited = uz_svm_6ph_overall_limitation(setpoints, V_dc * SVM_6PH_MAXIMUM_MODULATION_INDEX, &out.limited_alphabeta, &out.limited_xy);
 
     //find sector
     int sector = uz_svm_6ph_get_sector(setpoints_limited.alpha, setpoints_limited.beta);
@@ -234,33 +234,11 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
     return system_to_shift;
 }
 
-// limit alphabeta setpoints to maximum absolute, keeping phase the same
-static uz_6ph_alphabeta_t uz_svm_6ph_alphabeta_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited){
-    // init
-    uz_assert(maximum_abs >= 0.0f);                                         // no negative abs allowed
-    uz_6ph_alphabeta_t out = input;                                         // init output with input
-    *limited = false;                                                       // init limited false
-    uz_complex_cartesian_t cartesian = {                                    // write alphabeta in to complex struct
-        .real = input.alpha,
-        .imag = input.beta};
-    uz_complex_polar_t polar = uz_complex_cartesian_to_polar(cartesian);    // make polar number from complex alphabeta input
-
-    // check limit
-    if(polar.abs > (maximum_abs * (1-SVM_6PH_MAXIMUM_XY_RELATIVE))){        // if absolute setpoints are too large (deduct xy-reserved voltage from maximum modulation voltage)
-        polar.abs = maximum_abs * (1-SVM_6PH_MAXIMUM_XY_RELATIVE);          // reduce setpoint
-        cartesian = uz_complex_polar_to_cartesian(polar);                   // calculate back to cartesian
-        out.alpha = cartesian.real;                                         // assign back to alphabeta struct
-        out.beta = cartesian.imag;
-        *limited = true;                                                    // set limited flag
-    }   
-    return out;                                                             // return out
-}
-
-// limit xy setpoints to relative absolute with alphabeta, keeping phase the same
-static uz_6ph_alphabeta_t uz_svm_6ph_xy_limitation(uz_6ph_alphabeta_t input, bool *limited){
+static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited_ab, bool *limited_xy){
     // init
     uz_6ph_alphabeta_t out = input;                                             // init output with input
-    *limited = false;                                                           // init limited false
+    *limited_ab = false;                                                        // init limited false
+    *limited_xy = false;                                                        // init limited false
     uz_complex_cartesian_t cartesian_ab = {                                     // write alphabeta in to complex struct
         .real = input.alpha,
         .imag = input.beta};
@@ -270,13 +248,25 @@ static uz_6ph_alphabeta_t uz_svm_6ph_xy_limitation(uz_6ph_alphabeta_t input, boo
     uz_complex_polar_t polar_ab = uz_complex_cartesian_to_polar(cartesian_ab);  // make polar number from complex alphabeta input
     uz_complex_polar_t polar_xy = uz_complex_cartesian_to_polar(cartesian_xy);  // make polar number from complex XY input
 
-    // check limit
+    // limit xy relative to alphabeta
     if(polar_xy.abs > SVM_6PH_MAXIMUM_XY_RELATIVE * polar_ab.abs){              // if absolute setpoints are too large compared with alphabeta        
         polar_xy.abs = SVM_6PH_MAXIMUM_XY_RELATIVE * polar_ab.abs;              // reduce setpoint
+        *limited_xy = true;                                                     // set limited flag
+    }
+
+    // check overall limit
+    float factor = (polar_ab.abs + polar_xy.abs) / maximum_abs;                 // calculate sum of absolutes to maximum abs relation
+    if(factor > 1.0f){                                                          // if factor is greater one
+        polar_ab.abs /= factor;                                                 // reduce abs ab by factor
+        polar_xy.abs /= factor;                                                 // reduce abs xy by factor
+        cartesian_ab = uz_complex_polar_to_cartesian(polar_ab);                 // calculate back to cartesian
         cartesian_xy = uz_complex_polar_to_cartesian(polar_xy);                 // calculate back to cartesian
-        out.x = cartesian_xy.real;                                              // assign back to alphabeta struct
+        out.alpha = cartesian_ab.real;                                          // assign back to alphabeta struct
+        out.beta = cartesian_ab.imag;
+        out.x = cartesian_xy.real;
         out.y = cartesian_xy.imag;
-        *limited = true;                                                        // set limited flag
+        *limited_ab = true;                                                     // set limited flag
+        *limited_xy = true;                                                        
     }
     return out;                                                                 // return out
 }

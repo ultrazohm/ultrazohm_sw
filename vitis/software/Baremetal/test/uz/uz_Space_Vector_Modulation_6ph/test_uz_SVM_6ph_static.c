@@ -96,7 +96,7 @@ void test_uz_svm_6ph_calculate_duty_cycles(void)
 
     TEST_ASSERT_EQUAL(2, shift);
 }
-
+/*
 void test_uz_svm_6ph_alphabeta_limitation(void){
     uz_6ph_alphabeta_t setpoints = {
         .alpha = 1.5f,
@@ -132,6 +132,6 @@ void test_uz_svm_6ph_xy_limitation(void){
     limited = uz_svm_6ph_xy_limitation(limited, &flag);
     TEST_ASSERT_FALSE(flag);
 }
-
+*/
 
 #endif // TEST

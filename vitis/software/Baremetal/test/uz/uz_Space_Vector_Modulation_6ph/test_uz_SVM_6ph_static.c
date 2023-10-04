@@ -1,6 +1,8 @@
 #ifdef TEST
 
 #include "unity.h"
+#include "test_assert_with_exception.h"
+
 
 #include "uz_Space_Vector_Modulation_6ph.h"
 #include "uz_Space_Vector_Modulation_6ph.c"
@@ -9,6 +11,7 @@
 #include "uz_signals/uz_signals.h"
 #include "uz_math_constants.h"
 #include "uz_space_vector_modulation.h"
+#include "uz_Transformation.h"
 
 
 void setUp(void)
@@ -93,5 +96,42 @@ void test_uz_svm_6ph_calculate_duty_cycles(void)
 
     TEST_ASSERT_EQUAL(2, shift);
 }
+
+void test_uz_svm_6ph_alphabeta_limitation(void){
+    uz_6ph_alphabeta_t setpoints = {
+        .alpha = 1.5f,
+        .beta = -3.0f,
+        .x = 10.0f,
+        .y = 90.0f,
+        .z1 = 0.0f,
+        .z2 = -20.0f};
+    bool flag = false;
+    uz_6ph_alphabeta_t limited = uz_svm_6ph_alphabeta_limitation(setpoints, 1.0f, &flag);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-SVM_6PH_MAXIMUM_XY_RELATIVE, sqrtf(limited.alpha*limited.alpha+limited.beta*limited.beta));
+    TEST_ASSERT_TRUE(flag);
+    limited.alpha *= 0.99f; // fix numeric/float number error
+    limited = uz_svm_6ph_alphabeta_limitation(limited, 1.0f, &flag);
+    TEST_ASSERT_FALSE(flag);
+    TEST_ASSERT_FAIL_ASSERT(uz_svm_6ph_alphabeta_limitation(setpoints, -1.0f, &flag));
+}
+
+void test_uz_svm_6ph_xy_limitation(void){
+    uz_6ph_alphabeta_t setpoints = {
+        .alpha = 1.0f,
+        .beta = -0.5f,
+        .x = 0.1f,
+        .y = 0.2f,
+        .z1 = 0.0f,
+        .z2 = -20.0f};
+    bool flag = false;
+    uz_6ph_alphabeta_t limited = uz_svm_6ph_xy_limitation(setpoints, &flag);
+    float abs_ab = sqrtf(limited.alpha*limited.alpha+limited.beta*limited.beta);
+    float abs_xy = sqrtf(limited.x*limited.x+limited.y*limited.y);
+    TEST_ASSERT_EQUAL_FLOAT(abs_xy, abs_ab*SVM_6PH_MAXIMUM_XY_RELATIVE);
+    TEST_ASSERT_TRUE(flag);
+    limited = uz_svm_6ph_xy_limitation(limited, &flag);
+    TEST_ASSERT_FALSE(flag);
+}
+
 
 #endif // TEST

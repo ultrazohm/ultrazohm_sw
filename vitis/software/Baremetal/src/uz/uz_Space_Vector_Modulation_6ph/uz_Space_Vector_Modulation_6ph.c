@@ -81,22 +81,39 @@ static const int svm_offline_order[24][6] = {
     {4, 1, 2, 5, 0, 3}
 };
 
+// get sector of alphabeta setpoint
 static int uz_svm_6ph_get_sector(float alpha, float beta);
+// calculate dwell times with setpoint and given row (needs to be called 5 times, for each column once)
 static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpoints, const float inverse_T_tv_row[5]);
+// calculate duty cycles from dwell times by using the order
 static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float dwell[5], const int order[6]);
+// shift pwm and adapt duty cycles depending on sector
 static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector);
+// limit alphabeta setpoints to maximum absolute, keeping phase the same
+static uz_6ph_alphabeta_t uz_svm_6ph_alphabeta_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited);
+// limit xy setpoints to relative absolute with alphabeta, keeping phase the same
+static uz_6ph_alphabeta_t uz_svm_6ph_xy_limitation(uz_6ph_alphabeta_t input, bool *limited);
 
-struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24(uz_6ph_alphabeta_t setpoints, float V_dc){
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(uz_6ph_dq_t setpoints, float theta_el, float V_dc){
+    struct uz_svm_asym_6ph_CSVPWM24_out out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_transformation_asym30deg_6ph_dq_to_alphabeta(setpoints, theta_el), V_dc);
+    return out;
+}
+
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_6ph_alphabeta_t setpoints, float V_dc){
+    uz_assert(V_dc >= 0.0f);
+    struct uz_svm_asym_6ph_CSVPWM24_out out = {0};
+
     //space vector limitation
-
+    uz_6ph_alphabeta_t setpoints_limited = uz_svm_6ph_alphabeta_limitation(setpoints, V_dc * SVM_6PH_MAXIMUM_MODULATION_INDEX, &out.limited_alphabeta);
+    setpoints_limited = uz_svm_6ph_xy_limitation(setpoints_limited, &out.limited_xy);
 
     //find sector
-    int sector = uz_svm_6ph_get_sector(setpoints.alpha, setpoints.beta);
+    int sector = uz_svm_6ph_get_sector(setpoints_limited.alpha, setpoints_limited.beta);
 
     // calculate dwell times
     float dwell_times[5];
     for(int i=0; i<5; i++){
-        dwell_times[i] = uz_svm_6ph_calculate_dwell_times_2N(setpoints, &inverse_T_tv_all[sector-1][i][0]);
+        dwell_times[i] = uz_svm_6ph_calculate_dwell_times_2N(setpoints_limited, &inverse_T_tv_all[sector-1][i][0]);
     }
 
     // calculate duty cycles from dwell times
@@ -106,30 +123,37 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
     // order duty cycles and determine shift
     int shift_system = uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles[0], sector);
 
-    // assign duty cycles
-    struct uz_svm_asym_6ph_CSVPWM24_out out = {
-        .Duty_Cycle.system1.DutyCycle_A = Duty_Cycles[0],
-        .Duty_Cycle.system1.DutyCycle_B = Duty_Cycles[1],
-        .Duty_Cycle.system1.DutyCycle_C = Duty_Cycles[2],
-        .Duty_Cycle.system2.DutyCycle_A = Duty_Cycles[3],
-        .Duty_Cycle.system2.DutyCycle_B = Duty_Cycles[4],
-        .Duty_Cycle.system2.DutyCycle_C = Duty_Cycles[5],
-        .shift_system1 = 0.0f,
-        .shift_system2 = 0.0f};
+    // assign duty cycles AFTER SHIFTING
+        out.Duty_Cycle.system1.DutyCycle_A = Duty_Cycles[0];
+        out.Duty_Cycle.system1.DutyCycle_B = Duty_Cycles[1];
+        out.Duty_Cycle.system1.DutyCycle_C = Duty_Cycles[2];
+        out.Duty_Cycle.system2.DutyCycle_A = Duty_Cycles[3];
+        out.Duty_Cycle.system2.DutyCycle_B = Duty_Cycles[4];
+        out.Duty_Cycle.system2.DutyCycle_C = Duty_Cycles[5];
     
     // shift phase
     switch (shift_system){
-        case 1: out.shift_system1 = 0.5f; break;
-        case 2: out.shift_system2 = 0.5f; break;
-        default: break;
+        case 1: 
+            out.shift_system1 = 0.5f;
+            out.shift_system2 = 0.0f; 
+            break;
+        case 2: 
+            out.shift_system1 = 0.0f;
+            out.shift_system2 = 0.5f; 
+            break;
+        case 3: 
+            out.shift_system1 = 0.5f; 
+            out.shift_system2 = 0.5f; 
+            break;
+        default: 
+            out.shift_system1 = 0.0f;
+            out.shift_system2 = 0.0f; 
+            break;
     }
 
     // return output
     return out;
 }
-
-//array[row][column]
-
 
 static int uz_svm_6ph_get_sector(float alpha, float beta){
     uz_complex_cartesian_t sv_setpoint_cartesian = {
@@ -182,13 +206,14 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
             Duty_Cycles[1] = 1.0f - Duty_Cycles[1];
             Duty_Cycles[2] = 1.0f - Duty_Cycles[2];
             break;
-        // no shift, but diff both systems DCs with T_sw
+        // shift both systems and diff both systems DCs with T_sw
         case  7:
         case  8:
         case 15:
         case 16:
         case 23:
         case 24:
+            system_to_shift = 3;
             Duty_Cycles[0] = 1.0f - Duty_Cycles[0];
             Duty_Cycles[1] = 1.0f - Duty_Cycles[1];
             Duty_Cycles[2] = 1.0f - Duty_Cycles[2];
@@ -207,4 +232,49 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
             break;
     }
     return system_to_shift;
+}
+
+static uz_6ph_alphabeta_t uz_svm_6ph_alphabeta_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited){
+    // init
+    uz_assert(maximum_abs >= 0.0f);                                         // no negative abs allowed
+    uz_6ph_alphabeta_t out = input;                                         // init output with input
+    *limited = false;                                                       // init limited false
+    uz_complex_cartesian_t cartesian = {                                    // write alphabeta in to complex struct
+        .real = input.alpha,
+        .imag = input.beta};
+    uz_complex_polar_t polar = uz_complex_cartesian_to_polar(cartesian);    // make polar number from complex alphabeta input
+
+    // check limit
+    if(polar.abs > (maximum_abs * (1-SVM_6PH_MAXIMUM_XY_RELATIVE))){        // if absolute setpoints are too large (deduct xy-reserved voltage from maximum modulation voltage)
+        polar.abs = maximum_abs * (1-SVM_6PH_MAXIMUM_XY_RELATIVE);          // reduce setpoint
+        cartesian = uz_complex_polar_to_cartesian(polar);                   // calculate back to cartesian
+        out.alpha = cartesian.real;                                         // assign back to alphabeta struct
+        out.beta = cartesian.imag;
+        *limited = true;                                                    // set limited flag
+    }   
+    return out;                                                             // return out
+}
+
+static uz_6ph_alphabeta_t uz_svm_6ph_xy_limitation(uz_6ph_alphabeta_t input, bool *limited){
+    // init
+    uz_6ph_alphabeta_t out = input;                                             // init output with input
+    *limited = false;                                                           // init limited false
+    uz_complex_cartesian_t cartesian_ab = {                                     // write alphabeta in to complex struct
+        .real = input.alpha,
+        .imag = input.beta};
+    uz_complex_cartesian_t cartesian_xy = {                                     // write XY in to complex struct
+        .real = input.x,
+        .imag = input.y};
+    uz_complex_polar_t polar_ab = uz_complex_cartesian_to_polar(cartesian_ab);  // make polar number from complex alphabeta input
+    uz_complex_polar_t polar_xy = uz_complex_cartesian_to_polar(cartesian_xy);  // make polar number from complex XY input
+
+    // check limit
+    if(polar_xy.abs > SVM_6PH_MAXIMUM_XY_RELATIVE * polar_ab.abs){              // if absolute setpoints are too large compared with alphabeta        
+        polar_xy.abs = SVM_6PH_MAXIMUM_XY_RELATIVE * polar_ab.abs;              // reduce setpoint
+        cartesian_xy = uz_complex_polar_to_cartesian(polar_xy);                 // calculate back to cartesian
+        out.x = cartesian_xy.real;                                              // assign back to alphabeta struct
+        out.y = cartesian_xy.imag;
+        *limited = true;                                                        // set limited flag
+    }
+    return out;                                                                 // return out
 }

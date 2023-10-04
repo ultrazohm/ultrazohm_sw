@@ -1,0 +1,31 @@
+function RTW_SidParentMap() {
+    this.sidParentMap = new Array();
+    this.sidParentMap["uz_mpc_3ph:1081"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1082"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1083"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1084"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1085"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1086"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1093"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1094"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1095"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1096"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1097"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1100"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1101"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1102"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1103"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1104"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1105"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1106"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1107"] = "uz_mpc_3ph:1080";
+    this.sidParentMap["uz_mpc_3ph:1094:1"] = "uz_mpc_3ph:1094";
+    this.sidParentMap["uz_mpc_3ph:1094:1:14"] = "uz_mpc_3ph:1094";
+    this.sidParentMap["uz_mpc_3ph:1094:1:15"] = "uz_mpc_3ph:1094";
+    this.sidParentMap["uz_mpc_3ph:1094:1:25"] = "uz_mpc_3ph:1094";
+    this.sidParentMap["uz_mpc_3ph:1094:1:26"] = "uz_mpc_3ph:1094";
+    this.sidParentMap["uz_mpc_3ph:1094:1:27"] = "uz_mpc_3ph:1094";
+    this.sidParentMap["uz_mpc_3ph:1094:1:31"] = "uz_mpc_3ph:1094";
+    this.getParentSid = function(sid) { return this.sidParentMap[sid];}
+}
+    RTW_SidParentMap.instance = new RTW_SidParentMap();

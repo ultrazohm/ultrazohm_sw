@@ -1,0 +1,11 @@
+uz_mpc_3ph/ctrl_state_machine/Detect Rise Positive --> mpc_state_ma_ip_src_Detect_Rise_Positive
+uz_mpc_3ph/ctrl_state_machine/Detect Rise Positive1 --> mpc_state_ma_ip_src_Detect_Rise_Positive1
+uz_mpc_3ph/ctrl_state_machine/Detect Rise Positive2 --> mpc_state_ma_ip_src_Detect_Rise_Positive2
+uz_mpc_3ph/ctrl_state_machine/Detect Rise Positive3 --> mpc_state_ma_ip_src_Detect_Rise_Positive3
+uz_mpc_3ph/ctrl_state_machine/Detect Rise Positive4 --> mpc_state_ma_ip_src_Detect_Rise_Positive4
+uz_mpc_3ph/ctrl_state_machine/Subsystem --> mpc_state_ma_ip_src_Subsystem
+uz_mpc_3ph/ctrl_state_machine/Subsystem2 --> mpc_state_ma_ip_src_Subsystem2
+uz_mpc_3ph/ctrl_state_machine/Subsystem4 --> mpc_state_ma_ip_src_Subsystem4
+uz_mpc_3ph/ctrl_state_machine/Subsystem7 --> mpc_state_ma_ip_src_Subsystem7
+uz_mpc_3ph/ctrl_state_machine/resetable_counter --> mpc_state_ma_ip_src_resetable_counter
+uz_mpc_3ph/ctrl_state_machine --> mpc_state_ma_ip_src_ctrl_state_machine

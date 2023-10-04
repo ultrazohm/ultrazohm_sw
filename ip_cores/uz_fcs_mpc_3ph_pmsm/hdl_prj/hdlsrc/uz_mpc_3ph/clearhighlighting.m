@@ -1,0 +1,17 @@
+SLStudio.Utils.RemoveHighlighting(get_param('uz_mpc_3ph', 'handle'));
+SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_mpc_3ph', 'handle'));
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/Count_f_sw', 1, 4, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/SS_Old', 1, 1, '');
+annotate_port('uz_mpc_3ph/counter_f_sw_3ph/SS_Old', 1, 1, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/delay', 1, 1, '');
+annotate_port('uz_mpc_3ph/counter_f_sw_3ph/delay', 1, 1, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/reset_old2', 0, 1, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/reset_old2', 1, 1, '');
+annotate_port('uz_mpc_3ph/counter_f_sw_3ph/reset_old2', 1, 1, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/Detec_edge', 0, 1, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/dtc', 0, 1, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/Saturation', 0, 1, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/Count_f_sw/Count_f_sw', 1, 4, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/Count_f_sw/Count_f_sw', 1, 1, '');
+annotate_port('gm_uz_mpc_3ph/counter_f_sw_3ph/Count_f_sw/Count_f_sw', 1, 1, '');
+annotate_port('uz_mpc_3ph/counter_f_sw_3ph/Count_f_sw', 1, 1, '');

@@ -124,9 +124,9 @@ typedef struct _DS_Data_ {
 
 // enum to use for multi-phase applications with different neutral configurations
 typedef enum{
-    1N = 1,
-    2N = 2,
-    3N = 3
+    N1 = 1,
+    N2 = 2,
+    N3 = 3
 } neutral_configurations;
 
 #endif

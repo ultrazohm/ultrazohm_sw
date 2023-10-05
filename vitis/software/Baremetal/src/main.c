@@ -150,12 +150,12 @@ int main(void)
             Global_Data.objects.Output_instance = uz_axi_gpio_init(config_output);
 
             // Initialize Global actualValues
-            Global_Data.av.theta_offset = 4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
-            Global_Data.av.polepairs = 2.0f;
-            Global_Data.av.kp_d = 0.0f; //40.0f;
-			Global_Data.av.ki_d = 0.0f; //35.0f;
-            Global_Data.av.kp_q = 0.0f; //40.0f;
-			Global_Data.av.ki_q = 0.0f; //32.0f;
+            Global_Data.av.theta_offset = 0.0f; //TODO;
+            Global_Data.av.polepairs = 11.0f;
+            Global_Data.av.kp_d = 1.0f; //40.0f;
+			Global_Data.av.ki_d = 1.0f; //35.0f;
+            Global_Data.av.kp_q = 1.0f; //40.0f;
+			Global_Data.av.ki_q = 1.0f; //32.0f;
 
             Global_Data.av.flg_speed_control = true;
 
@@ -191,6 +191,11 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+
+            //resolver:
+            Global_Data.objects.resolver_d4 = init_resolver_d4();
+            Global_Data.objects.resolver_pl_interface_d4 = initialize_resolver_pl_d4();
+
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;

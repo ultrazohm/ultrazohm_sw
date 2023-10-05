@@ -30,6 +30,8 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "../IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -92,6 +94,10 @@ static float ieff[3] = {1.0f, 5.0f, 10.0f};
 
 static float angle[10] = {0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f, 80.0f, 90.0f};
 
+
+
+
+
 // Conversion factors for current and voltage
 #define NUMBER_OF_TURNS_CURRENT_MEASURING 	1.0f 	// Number of turns Current Measuring FU
 #define ADC_CURRENT_SCALING_U 				39.89f //80.0f	// Scaling factor for current measurement
@@ -111,7 +117,7 @@ static float angle[10] = {0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f,
 #define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors
 #define USE_RESOVER							0U		// 0u: Incremental Encoder on D5
 #define MAX_CURRENT_ASSERTION				110.0f	// Maximum Current
-#define MAX_SPEED_ASSERTION					2600.0f	// Maximum Speed
+#define MAX_SPEED_ASSERTION					1000.0f	// Maximum Speed
 
 
 //==============================================================================================================================================================
@@ -126,11 +132,24 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    // update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+
+    // read Resolver
+    Global_Data.av.resolver_outputs_d4 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d4);
+
+    // resolver Daten aufteilen
+    Global_Data.av.theta_mech = Global_Data.av.resolver_outputs_d4.position_mech_2pi;
+    Global_Data.av.theta_elec = Global_Data.av.resolver_outputs_d4.position_el_2pi; //rad
+
+    Global_Data.av.omega_mech_rad_per_sec = Global_Data.av.resolver_outputs_d4.omega_mech_rad_s;	// rad/s
+    Global_Data.av.omega_el_rad_per_sec = Global_Data.av.resolver_outputs_d4.omega_mech_rad_s * Global_Data.av.polepairs;	// rad/s
+    Global_Data.av.mechanicalRotorSpeed = Global_Data.av.resolver_outputs_d4.n_mech_rpm;
+
 
     // Calculate theta_elec
-    Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
-    Global_Data.av.theta_mech = 1.0f / Global_Data.av.polepairs * Global_Data.av.theta_elec;
+    //Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+    //Global_Data.av.theta_mech = 1.0f / Global_Data.av.polepairs * Global_Data.av.theta_elec;
     // convert ADC currents
 
     Global_Data.av.I_U = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV_U;
@@ -191,6 +210,7 @@ void ISR_Control(void *data)
     // calculating values needed for current control
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f; // omega_mech
     omega_el_rad_per_sec = omega_m_rad_per_sec * Global_Data.av.polepairs;
+    Global_Data.av.omega_el_rad_per_sec = omega_el_rad_per_sec;
 
     // Value to Scope
 
@@ -217,6 +237,9 @@ void ISR_Control(void *data)
     	    	output.DutyCycle_A = 0.0f;
     	    	output.DutyCycle_B = 0.0f;
     	    	output.DutyCycle_C = 0.0f;
+		        Global_Data.av.duty_cycle_A = output.DutyCycle_A;
+		        Global_Data.av.duty_cycle_B = output.DutyCycle_B;
+		        Global_Data.av.duty_cycle_C = output.DutyCycle_C;
     	    	// Set state of Half-Brides of FU in tristate
     	    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
     			// Disable Half-Bridges of FU
@@ -276,16 +299,21 @@ void ISR_Control(void *data)
 
 		        break;
 			case 2U: // Detect initial Angle
-//		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
-//		       	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
-//		       	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
-//
-//		       	output.DutyCycle_A = 0.1f;
-//		       	output.DutyCycle_B = 0.0f;
-//		       	output.DutyCycle_C = 0.0f;
-//
-//		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
+		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+		       	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
+		       	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 
+		       	output.DutyCycle_A = 0.2f;
+		       	output.DutyCycle_B = 0.0f;
+		       	output.DutyCycle_C = 0.0f;
+
+		        Global_Data.av.duty_cycle_A = output.DutyCycle_A;
+		        Global_Data.av.duty_cycle_B = output.DutyCycle_B;
+		        Global_Data.av.duty_cycle_C = output.DutyCycle_C;
+
+		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
+
+		        Global_Data.av.testsignal = 	Global_Data.av.flg_enable_FU;
 		        break;
 
 			case 3U: // Torque Current Angle

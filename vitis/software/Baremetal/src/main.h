@@ -61,6 +61,9 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "include/resolver.h"
 
 
 //----------------------------------------------------

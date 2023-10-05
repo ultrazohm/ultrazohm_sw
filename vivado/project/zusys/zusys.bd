@@ -6,7 +6,8 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2"
+      "tool_version": "2022.2",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -166,7 +167,8 @@
         "xlslice_18": "",
         "xlslice_19": "",
         "xlslice_20": "",
-        "xlslice_21": ""
+        "xlslice_21": "",
+        "uz_sel_currents_0": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -540,7 +542,13 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          }
+        }
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -578,7 +586,13 @@
         "direction": "O"
       },
       "Dig_10_Ch5": {
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default_prop"
+          }
+        }
       },
       "Dig_11_Ch5": {
         "direction": "O"
@@ -602,7 +616,13 @@
         "direction": "O"
       },
       "Dig_19_Ch5": {
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default_prop"
+          }
+        }
       },
       "Dig_20_Ch5": {
         "direction": "O"
@@ -6134,7 +6154,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "11"
+                "value": "12"
               },
               "NUM_SI": {
                 "value": "1"
@@ -6164,7 +6184,8 @@
                   "M07_AXI",
                   "M08_AXI",
                   "M09_AXI",
-                  "M10_AXI"
+                  "M10_AXI",
+                  "M11_AXI"
                 ]
               },
               "M00_AXI": {
@@ -6478,6 +6499,37 @@
                 }
               },
               "M10_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M11_AXI": {
                 "mode": "Master",
                 "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
@@ -7973,6 +8025,12 @@
                 "value": "216"
               }
             }
+          },
+          "uz_sel_currents_0": {
+            "vlnv": "xilinx.com:ip:uz_sel_currents:1.0",
+            "xci_name": "zusys_uz_sel_currents_0_0",
+            "xci_path": "ip\\zusys_uz_sel_currents_0_0\\zusys_uz_sel_currents_0_0.xci",
+            "inst_hier_path": "uz_user/uz_sel_currents_0"
           }
         },
         "interface_nets": {
@@ -8046,6 +8104,12 @@
             "interface_ports": [
               "smartconnect_1/M10_AXI",
               "uz_sel_resolver_0/AXI4_Lite"
+            ]
+          },
+          "smartconnect_1_M11_AXI": {
+            "interface_ports": [
+              "smartconnect_1/M11_AXI",
+              "uz_sel_currents_0/AXI4_Lite"
             ]
           },
           "uz_inverter_adapter_0_uz_inverter_adapter": {
@@ -8222,6 +8286,12 @@
           "adc_valid_1": {
             "ports": [
               "adc_valid",
+              "uz_sel_currents_0/adc_valid_trigger"
+            ]
+          },
+          "adc_valid_2": {
+            "ports": [
+              "uz_sel_currents_0/selector_ip_done",
               "fcs_mpc_3ph/adc_valid"
             ]
           },
@@ -8234,19 +8304,19 @@
           "ia1_1": {
             "ports": [
               "xlslice_14/Dout",
-              "fcs_mpc_3ph/ia1"
+              "uz_sel_currents_0/ia1_left"
             ]
           },
           "ib1_1": {
             "ports": [
               "xlslice_15/Dout",
-              "fcs_mpc_3ph/ib1"
+              "uz_sel_currents_0/ib1_left"
             ]
           },
           "ic1_1": {
             "ports": [
               "xlslice_16/Dout",
-              "fcs_mpc_3ph/ic1"
+              "uz_sel_currents_0/ic1_left"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -8271,7 +8341,9 @@
               "count_f_sw_1/IPCORE_RESETN",
               "count_f_sw_1/AXI4_Lite_ARESETN",
               "uz_sel_resolver_0/AXI4_Lite_ARESETN",
-              "uz_sel_resolver_0/IPCORE_RESETN"
+              "uz_sel_resolver_0/IPCORE_RESETN",
+              "uz_sel_currents_0/IPCORE_RESETN",
+              "uz_sel_currents_0/AXI4_Lite_ARESETN"
             ]
           },
           "sample_trigger_1": {
@@ -8373,6 +8445,30 @@
               "uz_sel_resolver_0/theta_el_right"
             ]
           },
+          "uz_sel_currents_0_ia1": {
+            "ports": [
+              "uz_sel_currents_0/ia1",
+              "fcs_mpc_3ph/ia1"
+            ]
+          },
+          "uz_sel_currents_0_ib1": {
+            "ports": [
+              "uz_sel_currents_0/ib1",
+              "fcs_mpc_3ph/ib1"
+            ]
+          },
+          "uz_sel_currents_0_ic1": {
+            "ports": [
+              "uz_sel_currents_0/ic1",
+              "fcs_mpc_3ph/ic1"
+            ]
+          },
+          "uz_sel_currents_0_vdc": {
+            "ports": [
+              "uz_sel_currents_0/vdc",
+              "fcs_mpc_3ph/v_dc1"
+            ]
+          },
           "uz_sel_resolver_0_omega_m": {
             "ports": [
               "uz_sel_resolver_0/omega_m",
@@ -8430,13 +8526,37 @@
           "xlslice_17_Dout": {
             "ports": [
               "xlslice_17/Dout",
-              "fcs_mpc_3ph/v_dc1"
+              "uz_sel_currents_0/vdc_left"
+            ]
+          },
+          "xlslice_18_Dout": {
+            "ports": [
+              "xlslice_18/Dout",
+              "uz_sel_currents_0/ia1_right"
+            ]
+          },
+          "xlslice_19_Dout": {
+            "ports": [
+              "xlslice_19/Dout",
+              "uz_sel_currents_0/ib1_right"
             ]
           },
           "xlslice_1_Dout": {
             "ports": [
               "xlslice_1/Dout",
               "uz_inverter_adapter_1/Gates"
+            ]
+          },
+          "xlslice_20_Dout": {
+            "ports": [
+              "xlslice_20/Dout",
+              "uz_sel_currents_0/ic1_right"
+            ]
+          },
+          "xlslice_21_Dout": {
+            "ports": [
+              "xlslice_21/Dout",
+              "uz_sel_currents_0/vdc_right"
             ]
           },
           "xlslice_2_Dout": {
@@ -8509,7 +8629,9 @@
               "count_f_sw_1/IPCORE_CLK",
               "count_f_sw_1/AXI4_Lite_ACLK",
               "uz_sel_resolver_0/AXI4_Lite_ACLK",
-              "uz_sel_resolver_0/IPCORE_CLK"
+              "uz_sel_resolver_0/IPCORE_CLK",
+              "uz_sel_currents_0/IPCORE_CLK",
+              "uz_sel_currents_0/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -12275,6 +12397,11 @@
               "SEG_uz_resolver_pl_inter_1_reg0": {
                 "address_block": "/uz_user/uz_resolver_pl_inter_1/AXI4_Lite/reg0",
                 "offset": "0x0080150000",
+                "range": "64K"
+              },
+              "SEG_uz_sel_currents_0_reg0": {
+                "address_block": "/uz_user/uz_sel_currents_0/AXI4_Lite/reg0",
+                "offset": "0x0080260000",
                 "range": "64K"
               },
               "SEG_uz_sel_resolver_0_reg0": {

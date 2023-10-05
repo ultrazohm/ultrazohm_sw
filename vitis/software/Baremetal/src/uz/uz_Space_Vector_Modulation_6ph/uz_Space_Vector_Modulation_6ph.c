@@ -20,11 +20,12 @@
 #include "../uz_signals/uz_signals.h"
 #include "../uz_math_constants.h"
 
-#define SVM_6PH_MAXIMUM_XY_RELATIVE 0.1f
+#define SVM_6PH_MAXIMUM_XY_RELATIVE 0.05f
 #define SVM_6PH_MAXIMUM_MODULATION_INDEX 0.62f
 #define SECTOR_ANGLE_RAD (2.0f*UZ_PIf/24.0f)
 
 #define MAKRO_HALFf(val) ((val) / 2.0f)
+#define MAKRO_INVERT_DUTYCYCLE(val) (1.0f - (val))
 
 
 
@@ -162,7 +163,7 @@ static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float 
 // shift pwm and adapt duty cycles depending on sector
 static inline void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2){
     switch (sector){
-        // shift system 2 and diff system 2 DCs with T_sw
+        // shift system 2 and invert its DutyCycles
         case  1:
         case  2:
         case  9:
@@ -171,11 +172,11 @@ static inline void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[
         case 18:
             *shift_system_1 = 0.0f;
             *shift_system_2 = 0.5f;
-            Duty_Cycles[3] = 1.0f - Duty_Cycles[3];
-            Duty_Cycles[4] = 1.0f - Duty_Cycles[4];
-            Duty_Cycles[5] = 1.0f - Duty_Cycles[5];
+            Duty_Cycles[3] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[3]);
+            Duty_Cycles[4] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[4]);
+            Duty_Cycles[5] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[5]);
             break;
-        // shift system 2 and diff system 2 DCs with T_sw
+        // shift system 1 and invert its DutyCycles
         case  5:
         case  6:
         case 13:
@@ -184,11 +185,11 @@ static inline void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[
         case 22:
             *shift_system_1 = 0.5f;
             *shift_system_2 = 0.0f;
-            Duty_Cycles[0] = 1.0f - Duty_Cycles[0];
-            Duty_Cycles[1] = 1.0f - Duty_Cycles[1];
-            Duty_Cycles[2] = 1.0f - Duty_Cycles[2];
+            Duty_Cycles[0] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[0]);
+            Duty_Cycles[1] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[1]);
+            Duty_Cycles[2] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[2]);
             break;
-        // shift both systems and diff both systems DCs with T_sw
+        // shift both systems and invert both DutyCycles
         case  7:
         case  8:
         case 15:
@@ -197,12 +198,12 @@ static inline void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[
         case 24:
             *shift_system_1 = 0.5f;
             *shift_system_2 = 0.5f;
-            Duty_Cycles[0] = 1.0f - Duty_Cycles[0];
-            Duty_Cycles[1] = 1.0f - Duty_Cycles[1];
-            Duty_Cycles[2] = 1.0f - Duty_Cycles[2];
-            Duty_Cycles[3] = 1.0f - Duty_Cycles[3];
-            Duty_Cycles[4] = 1.0f - Duty_Cycles[4];
-            Duty_Cycles[5] = 1.0f - Duty_Cycles[5];
+            Duty_Cycles[0] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[0]);
+            Duty_Cycles[1] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[1]);
+            Duty_Cycles[2] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[2]);
+            Duty_Cycles[3] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[3]);
+            Duty_Cycles[4] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[4]);
+            Duty_Cycles[5] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[5]);
             break;
         // do nothing, no shift
         default:

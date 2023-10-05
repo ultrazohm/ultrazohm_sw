@@ -86,7 +86,9 @@ void test_uz_svm_6ph_calculate_duty_cycles(void)
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.5010f, Duty_Cycles[1]);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4028f, Duty_Cycles[2]);
 
-    int shift = uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles[0], sector);
+    float shift_1=0.0f;
+    float shift_2=0.0f;
+    uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles[0], sector, &shift_1, &shift_2);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.5972f, Duty_Cycles[0]);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.5010f, Duty_Cycles[1]);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4028f, Duty_Cycles[2]);
@@ -94,7 +96,8 @@ void test_uz_svm_6ph_calculate_duty_cycles(void)
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4138f, Duty_Cycles[4]);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.4254f, Duty_Cycles[5]);
 
-    TEST_ASSERT_EQUAL(2, shift);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, shift_1);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, shift_2);
 }
 
 void test_uz_svm_6ph_norm_vdc(void){
@@ -151,7 +154,52 @@ void test_uz_svm_6ph_overall_limitation_xy(void){
     float abs_ab = sqrtf(limited.alpha*limited.alpha+limited.beta*limited.beta);
     float abs_xy = sqrtf(limited.x*limited.x+limited.y*limited.y);
     TEST_ASSERT_EQUAL_FLOAT(abs_ab*SVM_6PH_MAXIMUM_XY_RELATIVE, abs_xy);
+}
 
+void test_uz_svm_6ph_calculate_and_shift_duty_cycles(void){
+    float Duty_Cycles[6] = {0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f};
+    float Duty_Cycles_1[6] = {0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f};
+    float Duty_Cycles_2[6] = {0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f};
+    float Duty_Cycles_3[6] = {0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f};
+    float Duty_Cycles_4[6] = {0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f};
+    float shift_system_1 = 0.0f;
+    float shift_system_2 = 0.0f;
+    uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles_1[0], 2, &shift_system_1, &shift_system_2);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, shift_system_1);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, shift_system_2);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[0], Duty_Cycles_1[0]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[1], Duty_Cycles_1[1]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[2], Duty_Cycles_1[2]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[3], Duty_Cycles_1[3]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[4], Duty_Cycles_1[4]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[5], Duty_Cycles_1[5]);
+    uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles_2[0], 22, &shift_system_1, &shift_system_2);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, shift_system_1);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, shift_system_2);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[0], Duty_Cycles_2[0]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[1], Duty_Cycles_2[1]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[2], Duty_Cycles_2[2]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[3], Duty_Cycles_2[3]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[4], Duty_Cycles_2[4]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[5], Duty_Cycles_2[5]);
+    uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles_3[0], 7, &shift_system_1, &shift_system_2);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, shift_system_1);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, shift_system_2);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[0], Duty_Cycles_3[0]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[1], Duty_Cycles_3[1]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[2], Duty_Cycles_3[2]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[3], Duty_Cycles_3[3]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[4], Duty_Cycles_3[4]);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f-Duty_Cycles[5], Duty_Cycles_3[5]);
+    uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles_4[0], 4, &shift_system_1, &shift_system_2);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, shift_system_1);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, shift_system_2);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[0], Duty_Cycles_4[0]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[1], Duty_Cycles_4[1]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[2], Duty_Cycles_4[2]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[3], Duty_Cycles_4[3]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[4], Duty_Cycles_4[4]);
+    TEST_ASSERT_EQUAL_FLOAT(Duty_Cycles[5], Duty_Cycles_4[5]);
 }
 
 #endif // TEST

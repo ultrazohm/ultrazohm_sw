@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xB08471A5DA825FA1",
+      "boundary_crc": "0xFC0839C304214443",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -283,26 +283,6 @@
         "right": "0"
       },
       "D3_OUT_29": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_26": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_27": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_28": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D4_OUT_29": {
         "direction": "O",
         "left": "0",
         "right": "0"
@@ -9745,8 +9725,7 @@
           "uz_system/D1_OUT_28",
           "D1_OUT_28",
           "D2_OUT_28",
-          "D3_OUT_28",
-          "D4_OUT_28"
+          "D3_OUT_28"
         ]
       },
       "Enable_Gates_CPLD_Low_dout": {
@@ -9757,9 +9736,7 @@
           "D2_OUT_26",
           "D2_OUT_27",
           "D3_OUT_26",
-          "D3_OUT_27",
-          "D4_OUT_26",
-          "D4_OUT_27"
+          "D3_OUT_27"
         ]
       },
       "Gates_3L_Interrupt_Center": {
@@ -10063,8 +10040,7 @@
           "uz_system/D1_OUT_29",
           "D1_OUT_29",
           "D2_OUT_29",
-          "D3_OUT_29",
-          "D4_OUT_29"
+          "D3_OUT_29"
         ]
       },
       "xlslice_Enable_Inverter_Dout": {

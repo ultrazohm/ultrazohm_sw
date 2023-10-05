@@ -57,6 +57,7 @@
 #include "include/resolver.h"
 #include "include/pi_foc.h"
 #include "include/inverter.h"
+#include "include/fcs_mpc.h"
 
 
 

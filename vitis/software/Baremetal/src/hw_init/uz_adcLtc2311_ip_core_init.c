@@ -11,6 +11,8 @@
 #define DEFAULT_FRACTIONAL_BITS 4
 #define DEFAULT_OFFSET 0
 
+#define CURRENT_2_SI_CONVERSION_FACTOR 0.000190734f
+
 void uz_adcLtc2311_ip_core_init(void)
 {
     struct uz_adcLtc2311_config_t default_configuration = {

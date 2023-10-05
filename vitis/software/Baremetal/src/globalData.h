@@ -92,6 +92,11 @@ typedef struct _actualValues_ {
 	struct uz_inverter_adapter_outputs_t inverter_right_status;
 	float mean_temp_inv_left;
 	float mean_temp_inv_right;
+	float polepairs_left;
+	float polepairs_right;
+	float lambda_d;
+	float lambda_q;
+	float lambda_u;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

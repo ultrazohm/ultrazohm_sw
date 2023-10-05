@@ -111,10 +111,15 @@ void ISR_Control(void *data)
     	ultrazohm_state_machine_set_stop(true);
     }
 
+    // write measured dc_link voltage to pu_voltages ip
+    fcs_mpc_write_axi_v_dc();
+
     // calculate mean temp values over all measured temps of each inverter
     Global_Data.av.mean_temp_inv_left = (Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L3) * 0.1667;
     Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L3) * 0.1667;
 
+    // write reference values to MPC IP
+    //...to do
 
     // check platform state machine
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -136,6 +141,8 @@ void ISR_Control(void *data)
 		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+		//disable MPC IP
+		//...to do
     }
 
     // if "ENABLE SYSTEM"
@@ -149,6 +156,9 @@ void ISR_Control(void *data)
     // if "ENABLE CONTROL"
     if (current_state==control_state)
     {
+    	//enable MPC
+    	//...to do
+
         // Start: Control algorithm - only if ultrazohm is in control state
     	// park transformation of measured currents
     	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outouts_left.position_el_2pi);
@@ -164,8 +174,8 @@ void ISR_Control(void *data)
     	// get reference currents from Global_Data
     	i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
     	// calculate reference voltages for current control
-    	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outouts_left.omega_mech_rad_s);
-    	v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outouts_right.omega_mech_rad_s);
+    	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outouts_left.omega_mech_rad_s*Global_Data.av.polepairs_left);
+    	v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outouts_right.omega_mech_rad_s*Global_Data.av.polepairs_right);
     	Global_Data.av.v_d_left = v_dq_ref_left.d;
     	Global_Data.av.v_q_left = v_dq_ref_left.q;
     	Global_Data.av.v_d_right = v_dq_ref_right.d;

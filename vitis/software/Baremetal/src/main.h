@@ -54,6 +54,11 @@
 
 #include "include/pwm_init.h"
 
+#include "include/resolver.h"
+#include "include/pi_foc.h"
+#include "include/inverter.h"
+
+
 
 //----------------------------------------------------
 // FUNCTIONS

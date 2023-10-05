@@ -71,6 +71,10 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
+            Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
+            Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+            Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -89,7 +93,14 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+//            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.resolver_left = initialize_resolver_left();
+            Global_Data.objects.resolver_right = initialize_resolver_right();
+            Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();
+            Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
+            Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
+            Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
+
             initialization_chain = print_msg;
             break;
 	    case print_msg:

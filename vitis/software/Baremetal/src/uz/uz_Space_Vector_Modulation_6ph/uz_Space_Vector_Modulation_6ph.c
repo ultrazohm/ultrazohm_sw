@@ -88,6 +88,7 @@ static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpo
 static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float dwell[5], const int order[6]);
 static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector);
 static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited_ab, bool *limited_xy);
+static inline uz_6ph_alphabeta_t uz_svm_6ph_norm_vdc(uz_6ph_alphabeta_t input, float V_dc);
 
 // "main" 6ph svm function
 struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_6ph_alphabeta_t setpoints, float V_dc){
@@ -95,7 +96,8 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
     struct uz_svm_asym_6ph_CSVPWM24_out out = {0};
 
     //space vector limitation
-    uz_6ph_alphabeta_t setpoints_limited = uz_svm_6ph_overall_limitation(setpoints, V_dc * SVM_6PH_MAXIMUM_MODULATION_INDEX, &out.limited_alphabeta, &out.limited_xy);
+    uz_6ph_alphabeta_t setpoints_normed = uz_svm_6ph_norm_vdc(setpoints, V_dc);
+    uz_6ph_alphabeta_t setpoints_limited = uz_svm_6ph_overall_limitation(setpoints_normed, SVM_6PH_MAXIMUM_MODULATION_INDEX, &out.limited_alphabeta, &out.limited_xy);
 
     //find sector
     int sector = uz_svm_6ph_get_sector(setpoints_limited.alpha, setpoints_limited.beta);
@@ -259,14 +261,34 @@ static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input
     if(factor > 1.0f){                                                          // if factor is greater one
         polar_ab.abs /= factor;                                                 // reduce abs ab by factor
         polar_xy.abs /= factor;                                                 // reduce abs xy by factor
-        cartesian_ab = uz_complex_polar_to_cartesian(polar_ab);                 // calculate back to cartesian
-        cartesian_xy = uz_complex_polar_to_cartesian(polar_xy);                 // calculate back to cartesian
-        out.alpha = cartesian_ab.real;                                          // assign back to alphabeta struct
-        out.beta = cartesian_ab.imag;
-        out.x = cartesian_xy.real;
-        out.y = cartesian_xy.imag;
         *limited_ab = true;                                                     // set limited flag
         *limited_xy = true;                                                        
     }
+
+    // calculate back if something was limited
+    if(*limited_ab == true){
+        cartesian_ab = uz_complex_polar_to_cartesian(polar_ab);                 // calculate back to cartesian
+        out.alpha = cartesian_ab.real;                                          // assign back to alphabeta struct
+        out.beta = cartesian_ab.imag;
+    }
+    if(*limited_xy == true){
+        cartesian_xy = uz_complex_polar_to_cartesian(polar_xy);                 // calculate back to cartesian
+        out.x = cartesian_xy.real;                                              // assign back to alphabeta struct
+        out.y = cartesian_xy.imag;
+    }
+
+    // return
     return out;                                                                 // return out
+}
+
+// norm setpoints to Dc voltage
+static inline uz_6ph_alphabeta_t uz_svm_6ph_norm_vdc(uz_6ph_alphabeta_t input, float V_dc){
+    uz_6ph_alphabeta_t out = {
+        .alpha = input.alpha/V_dc,
+        .beta = input.beta/V_dc,
+        .x = input.x/V_dc,
+        .y = input.y/V_dc,
+        .z1 = input.z1/V_dc,
+        .z2 = input.z2/V_dc};
+    return out;
 }

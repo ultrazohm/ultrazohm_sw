@@ -23,7 +23,6 @@
 #define SVM_6PH_MAXIMUM_XY_RELATIVE 0.1f
 #define SVM_6PH_MAXIMUM_MODULATION_INDEX 0.62f
 #define SECTOR_ANGLE_RAD (2.0f*UZ_PIf/24.0f)
-#define ANGLE_TOLERANCE 0.01f
 
 #define MAKRO_HALFf(val) ((val) / 2.0f)
 
@@ -86,7 +85,7 @@ static const int svm_offline_order[24][6] = {
 static int uz_svm_6ph_get_sector(float alpha, float beta);
 static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpoints, const float inverse_T_tv_row[5]);
 static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float dwell[5], const int order[6]);
-static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector);
+static inline void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2);
 static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited_ab, bool *limited_xy);
 static inline uz_6ph_alphabeta_t uz_svm_6ph_norm_vdc(uz_6ph_alphabeta_t input, float V_dc);
 
@@ -95,11 +94,11 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
     uz_assert(V_dc >= 0.0f);
     struct uz_svm_asym_6ph_CSVPWM24_out out = {0};
 
-    //space vector limitation
+    // space vector limitation
     uz_6ph_alphabeta_t setpoints_normed = uz_svm_6ph_norm_vdc(setpoints, V_dc);
     uz_6ph_alphabeta_t setpoints_limited = uz_svm_6ph_overall_limitation(setpoints_normed, SVM_6PH_MAXIMUM_MODULATION_INDEX, &out.limited_alphabeta, &out.limited_xy);
 
-    //find sector
+    // find sector
     int sector = uz_svm_6ph_get_sector(setpoints_limited.alpha, setpoints_limited.beta);
 
     // calculate dwell times
@@ -113,35 +112,15 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
     uz_svm_6ph_calculate_duty_cycles(&Duty_Cycles[0], &dwell_times[0], &svm_offline_order[sector-1][0]);
 
     // order duty cycles and determine shift
-    int shift_system = uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles[0], sector);
+    uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles[0], sector, &out.shift_system1, &out.shift_system2);
 
     // assign duty cycles AFTER SHIFTING
-        out.Duty_Cycle.system1.DutyCycle_A = Duty_Cycles[0];
-        out.Duty_Cycle.system1.DutyCycle_B = Duty_Cycles[1];
-        out.Duty_Cycle.system1.DutyCycle_C = Duty_Cycles[2];
-        out.Duty_Cycle.system2.DutyCycle_A = Duty_Cycles[3];
-        out.Duty_Cycle.system2.DutyCycle_B = Duty_Cycles[4];
-        out.Duty_Cycle.system2.DutyCycle_C = Duty_Cycles[5];
-    
-    // shift phase
-    switch (shift_system){
-        case 1: 
-            out.shift_system1 = 0.5f;
-            out.shift_system2 = 0.0f; 
-            break;
-        case 2: 
-            out.shift_system1 = 0.0f;
-            out.shift_system2 = 0.5f; 
-            break;
-        case 3: 
-            out.shift_system1 = 0.5f; 
-            out.shift_system2 = 0.5f; 
-            break;
-        default: 
-            out.shift_system1 = 0.0f;
-            out.shift_system2 = 0.0f; 
-            break;
-    }
+    out.Duty_Cycle.system1.DutyCycle_A = Duty_Cycles[0];
+    out.Duty_Cycle.system1.DutyCycle_B = Duty_Cycles[1];
+    out.Duty_Cycle.system1.DutyCycle_C = Duty_Cycles[2];
+    out.Duty_Cycle.system2.DutyCycle_A = Duty_Cycles[3];
+    out.Duty_Cycle.system2.DutyCycle_B = Duty_Cycles[4];
+    out.Duty_Cycle.system2.DutyCycle_C = Duty_Cycles[5];
 
     // return output
     return out;
@@ -181,8 +160,7 @@ static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float 
 }
 
 // shift pwm and adapt duty cycles depending on sector
-static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector){
-    int system_to_shift = 0;
+static inline void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2){
     switch (sector){
         // shift system 2 and diff system 2 DCs with T_sw
         case  1:
@@ -191,7 +169,8 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
         case 10:
         case 17:
         case 18:
-            system_to_shift = 2;
+            *shift_system_1 = 0.0f;
+            *shift_system_2 = 0.5f;
             Duty_Cycles[3] = 1.0f - Duty_Cycles[3];
             Duty_Cycles[4] = 1.0f - Duty_Cycles[4];
             Duty_Cycles[5] = 1.0f - Duty_Cycles[5];
@@ -203,7 +182,8 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
         case 14:
         case 21:
         case 22:
-            system_to_shift = 1;
+            *shift_system_1 = 0.5f;
+            *shift_system_2 = 0.0f;
             Duty_Cycles[0] = 1.0f - Duty_Cycles[0];
             Duty_Cycles[1] = 1.0f - Duty_Cycles[1];
             Duty_Cycles[2] = 1.0f - Duty_Cycles[2];
@@ -215,7 +195,8 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
         case 16:
         case 23:
         case 24:
-            system_to_shift = 3;
+            *shift_system_1 = 0.5f;
+            *shift_system_2 = 0.5f;
             Duty_Cycles[0] = 1.0f - Duty_Cycles[0];
             Duty_Cycles[1] = 1.0f - Duty_Cycles[1];
             Duty_Cycles[2] = 1.0f - Duty_Cycles[2];
@@ -231,9 +212,10 @@ static inline int uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6
         case 12:
         case 19:
         case 20:
+            *shift_system_1 = 0.0f;
+            *shift_system_2 = 0.0f;
             break;
     }
-    return system_to_shift;
 }
 
 static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited_ab, bool *limited_xy){

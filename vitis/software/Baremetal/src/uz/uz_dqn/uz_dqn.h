@@ -14,7 +14,6 @@ typedef struct uz_dqn_t uz_dqn_t;
 typedef struct uz_dqn_experience_replay_t uz_dqn_experience_replay_t;
 struct uz_dqn_experience_replay_t {
     float *reward;
-    float *qvalues;
     uint32_t *action;
     uz_matrix_t *observations;
     uz_matrix_t *observations1;
@@ -53,7 +52,6 @@ struct uz_dqn_experience_replay_config{
     float *const observations1;
     float *const obsvec;
     float *const obsvec1;
-    float *const qvalues;
     uint32_t *const actions;
 };
 float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, uint32_t bufferlength, uint32_t *r);
@@ -69,25 +67,23 @@ uint32_t number_of_layer,
 uint32_t length_of_buffer, struct uz_dqn_environment_config envconf);
 uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, uint32_t length);
 void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *input);
-float uz_dqn_train(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train(uz_dqn_t *self,float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact);
-float uz_dqn_train2(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train2(uz_dqn_t *self, float *rew,  uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact);
-float uz_dqn_train3(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train3(uz_dqn_t *self, float *rew,  uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact);
-float uz_dqn_train4(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act,uz_matrix_t *obs,  uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train4(uz_dqn_t *self,float *error, float *rew, uint32_t *act,uz_matrix_t *obs,  uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, adam_optimizer_t *adam);
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *qdata,uint32_t *actionindex, uz_matrix_t *obsdata,uz_matrix_t *obsdata1);
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata,uint32_t actionindex, uz_matrix_t *obsdata,uz_matrix_t *obsdata1);
 void uz_dqn_get_obs_from_buffer(uz_dqn_experience_replay_t* self,uz_matrix_t *obsdata, uint32_t index);
-void uz_dqn_get_q_value_from_buffer(uz_dqn_experience_replay_t* self,float *QValue, uint32_t index);
-void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, uint32_t *actiondata, uz_matrix_t *obsdata,uz_matrix_t *obsdata1, uint32_t index);
+void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,uint32_t *actiondata, uz_matrix_t *obsdata,uz_matrix_t *obsdata1, uint32_t index);
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self);
 float calculate_reward_pendulum (float samplerate, float theta, float position, float velocity, bool penalty);
 float calculate_reward_dqn(float samplerate, uz_matrix_t *observations, bool penalty);
 float calculate_loss_dqn(uz_dqn_t* self, float samplereward, float qval, float qvalplus1, bool terminal);
 float calculate_derv_loss_dqn(uz_dqn_t* self, float samplereward, float qval, float qvalplus1, bool terminal);
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex,uz_matrix_t *obsvec,uz_matrix_t *obsvec1,uz_matrix_t *obs, uz_matrix_t *obspl1,uint32_t minibatchsize, uint32_t *indizes);
-
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,uint32_t *actionindex,uz_matrix_t *obsvec,uz_matrix_t *obsvec1,uz_matrix_t *obs, uz_matrix_t *obspl1,uint32_t minibatchsize, uint32_t *indizes);
 uint32_t uz_dqn_get_action(uz_dqn_t* self,uz_matrix_t * input,float *epsilon_start,float *epsilon_min,float *epsilon_decay, uint32_t number_of_actions);
 void uz_dqn_sample_bitenv(uz_dqn_t *self);
 void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self);
@@ -100,7 +96,6 @@ void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self);
  * @return float
  */
 float calc_epsilon_greedy(float epsilon_start, float epsilon_min, float epsilon_decay);
-
 void exportFloatArrayToCSV(const char *filename, const float *array, int size);
 void resetuintArray(uint32_t *arr, uint32_t size);
 void resetFloatArray(float *arr, uint32_t size);

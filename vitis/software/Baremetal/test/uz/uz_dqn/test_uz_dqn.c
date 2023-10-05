@@ -113,7 +113,6 @@ float T3[4] = {0}; // eigentlich nicht nötig da man cachebackprop im letzten la
 // stuff for buffer
 float reward[EXPERIENCE_BUFFER_LENGTH] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f};
 uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0, 10, 20, 30, 40, 50, 60, 70, 80, 90};
-float qvalues[EXPERIENCE_BUFFER_LENGTH] = {-5.0f, 5.0f, -50.0f, 50.0f, -2.0f, 2.0f, -1.0f, 1.0f, 100.0f, -100.0f};
 float observation[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {49.6f, 35.9f, 47.0f, 20.7f, 46.9f, 13.4f, 43.4f, -1.5f, 29.8f, 16.6f,
                                                                   30.5f, 36.2f, 46.6f, 20.6f, 27.3f, 9.2f, 24.9f, 7.1f, 49.3f, 17.1f};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
@@ -175,7 +174,6 @@ struct uz_dqn_experience_replay_config configbuffer = {
     .length_of_buffer = UZ_MATRIX_SIZE(reward),
     .columns_of_observations = NUMBER_OF_INPUTS,
     .reward = reward,
-    .qvalues = qvalues,
     .observations = observation,
     .observations1 = observation1,
     .obsvec = vecobs,
@@ -195,40 +193,6 @@ void test_uz_dqn_init(void)
 {
     uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv);
 }
-// void test_uz_dqn_compressed(void)
-// {
-//     float targsmoothfact = 0.05f;
-//     // Zuerst alles definieren und anlegen
-//     uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, cfg, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, 0, configenv);
-//     // target und critic netz gleich setzen
-//     // uz_nn_target_update(testdqn2->critic,testdqn2->critic_target_net,periodic,&targsmoothfact);
-//     // random indizes for sample from buffer
-//     uint32_t r[MINIBATCHSIZE] = {1, 5, 0, 5, 6};
-//     uint32_t *indizes = r;
-//     // arrays anlegen für extrahieren aus dem Buffer
-//     float getbackrew[MINIBATCHSIZE] = {0.0f};
-//     float getbackqval[MINIBATCHSIZE] = {0.0f};
-//     uint32_t getbackact[MINIBATCHSIZE] = {0};
-//     float *rew = getbackrew;
-//     float *qval = getbackqval;
-//     uint32_t *act = getbackact;
-//     float getbackobbs[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0.0f};
-//     struct uz_matrix_t getbackobs_matrix = {0};
-//     uz_matrix_t *obs = uz_matrix_init(&getbackobs_matrix, getbackobbs, UZ_MATRIX_SIZE(getbackobbs), MINIBATCHSIZE, NUMBER_OF_INPUTS);
-//     float getbackobbspl1[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0.0f};
-//     struct uz_matrix_t getbackobs_matrixpl1 = {0};
-//     uz_matrix_t *obspl1 = uz_matrix_init(&getbackobs_matrixpl1, getbackobbspl1, UZ_MATRIX_SIZE(getbackobbspl1), MINIBATCHSIZE, NUMBER_OF_INPUTS);
-//     float X_data[NUMBER_OF_INPUTS] = {0.0f};
-//     struct uz_matrix_t input_vec = {0};
-//     uz_matrix_t *X = uz_matrix_init(&input_vec, X_data, UZ_MATRIX_SIZE(X_data), 1, UZ_MATRIX_SIZE(X_data));
-//     for (size_t i = 0; i < NUMBER_OF_EPOCHS; i++)
-//     {
-//     uz_dqn_sample(testdqn2, 1/DQN_FREQUENCY, false,X);
-//     genRand_uint32_t_array(indizes,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,1,EXPERIENCE_BUFFER_LENGTH-1);
-//     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,obspl1,MINIBATCHSIZE,indizes);
-//     uz_dqn_train(testdqn2,rew,qval,act,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,NUMBER_OF_EPOCHS,targsmoothfact);
-//     }
-// }
 
 void test_calc_reward_with_penalty(void)
 {

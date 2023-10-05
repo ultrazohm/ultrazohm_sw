@@ -113,7 +113,6 @@ float T2[4] = {0};
 // stuff for buffer
 float reward[EXPERIENCE_BUFFER_LENGTH] = {0};
 uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0};
-float qvalues[EXPERIENCE_BUFFER_LENGTH] = {0};
 float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0};
 float observation1[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
@@ -214,7 +213,6 @@ struct uz_dqn_experience_replay_config configbuffer = {
         .length_of_buffer = UZ_MATRIX_SIZE(reward),
         .columns_of_observations = NUMBER_OF_INPUTS,
         .reward = reward,
-        .qvalues = qvalues,
         .observations = observation,
         .observations1 = observation1,
         .obsvec = vecobs,
@@ -236,10 +234,8 @@ void test_dqn_simple(void)
     uint32_t r[MINIBATCHSIZE] = {0}; 
     uint32_t *indizes = r;
     float getbackrew[MINIBATCHSIZE]= {0.0f};
-    float getbackqval[MINIBATCHSIZE]= {0.0f};
     uint32_t getbackact[MINIBATCHSIZE] = {0};
     float* rew = getbackrew;
-    float* qval = getbackqval;
     uint32_t* act = getbackact;
     float getbackobs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
@@ -270,8 +266,8 @@ void test_dqn_simple(void)
     else{
     genRand_uint32_t_array(r,&simpledqn->randinstance->seedRand,MINIBATCHSIZE,0.0f,(float)(simpledqn->experience_buffer->head-1U));
     }
-    uz_dqn_get_minibatch_from_buffer(simpledqn->experience_buffer,rew,qval,act,simpledqn->experience_buffer->vectorforobs,simpledqn->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
-    loss[i] = uz_dqn_train4(simpledqn,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam);  
+    uz_dqn_get_minibatch_from_buffer(simpledqn->experience_buffer,rew,act,simpledqn->experience_buffer->vectorforobs,simpledqn->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
+    loss[i] = uz_dqn_train4(simpledqn,error,rew,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam);  
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
     free(adam);

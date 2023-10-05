@@ -37,13 +37,11 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
     uz_assert_not_NULL(buf_config.actions);
     uz_assert_not_NULL(buf_config.observations);
     uz_assert_not_NULL(buf_config.obsvec);
-    uz_assert_not_NULL(buf_config.qvalues);
     uz_assert_not_NULL(buf_config.observations1);
     uz_assert_not_NULL(buf_config.obsvec1);
     uz_dqn_experience_replay_t *self = uz_dqn_experience_replay_allocation();
     self->length = length;
     self->reward = buf_config.reward;
-    self->qvalues = buf_config.qvalues;
     self->action = buf_config.actions;
     self->vectorforobs= uz_matrix_init(&self->vecobs_matrix,buf_config.obsvec,buf_config.columns_of_observations,1,buf_config.columns_of_observations);
     self->vectorforobs1= uz_matrix_init(&self->vecobs_matrix1,buf_config.obsvec1,buf_config.columns_of_observations,1,buf_config.columns_of_observations);
@@ -143,10 +141,9 @@ void uz_dqn_sample_simple(uz_dqn_t *self)
     else{
     action = uz_matrix_get_max_index(outputdqn);
     }
-    float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,action);
     //uz_dqn_simple_action(self->env,actionind);
     float reward = calculate_reward_simple(action);
-    uz_dqn_push_to_buffer(self->experience_buffer,&reward,&qvalue,&action,self->env->inputfornn,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,reward,action,self->env->inputfornn,self->env->inputfornn);
     self->env->cumreward= reward;
     } 
 }
@@ -175,9 +172,8 @@ float uz_dqn_step_adam_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint3
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
     }
-    float qvalue = uz_matrix_get_element_zero_based(outputcritic,0,actionind);
     float stepreward = calculate_reward_simple(actionind);
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->inputvecnn,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,stepreward,actionind,self->inputvecnn,self->env->inputfornn);
     self->env->cumreward= stepreward;
     if (self->experience_buffer->counterisfull > 0U){
     genRand_uint32_t_array(r,&self->randinstance->seedRand,mbsize,0.0f,(float)self->experience_buffer->length-1);
@@ -194,7 +190,6 @@ float uz_dqn_step_adam_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint3
         qplus1 = uz_matrix_get_max_value(outputtarget);
         float rewardtrain = self->experience_buffer->reward[*rx];
         uint32_t actiontrain = self->experience_buffer->action[*rx];
-        float qvaltrain = self->experience_buffer->qvalues[*rx];
         if (rewardtrain==0.0f)
         {
             terminal = true;
@@ -202,11 +197,15 @@ float uz_dqn_step_adam_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint3
         else{
             terminal = false;
         }
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,*rx);
+        uz_nn_ff(self->critic,self->inputvecnn);
+        outputcritic = uz_nn_get_output_data(self->critic);
+        float qvaltrain = uz_matrix_get_element_zero_based(outputcritic,0,actiontrain);
         loss = calculate_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         dloss = calculate_derv_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         error[actiontrain] = dloss; 
         cum_loss += loss; 
-        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,*rx);
+
         uz_nn_backward_pass_mini_batch(self->critic,error,self->inputvecnn);  
         resetFloatArray(error,self->critic->number_of_outputs);  
         rx++; 
@@ -248,9 +247,8 @@ float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self,float *error,uint32_t mbsi
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
     }
-    float qvalue = uz_matrix_get_element_zero_based(outputcritic,0,actionind);
     float stepreward = calculate_reward_simple(actionind);
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->inputvecnn,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,stepreward,actionind,self->inputvecnn,self->env->inputfornn);
     self->env->cumreward= stepreward;
     for(uint32_t j=0; j<mbsize;j++){
         uint32_t randomindex = 0U;
@@ -266,7 +264,6 @@ float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self,float *error,uint32_t mbsi
         qplus1 = uz_matrix_get_max_value(outputtarget);
         float rewardtrain = self->experience_buffer->reward[randomindex];
         uint32_t actiontrain = self->experience_buffer->action[randomindex];
-        float qvaltrain = self->experience_buffer->qvalues[randomindex];
         if (rewardtrain==0.0f)
         {
             terminal = true;
@@ -274,11 +271,15 @@ float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self,float *error,uint32_t mbsi
         else{
             terminal = false;
         }
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,randomindex);
+        uz_nn_ff(self->critic,self->inputvecnn);
+        outputcritic = uz_nn_get_output_data(self->critic);
+        float qvaltrain = uz_matrix_get_element_zero_based(outputcritic,0,actiontrain);
         loss = calculate_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         dloss = calculate_derv_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         error[actiontrain] = dloss; 
         cum_loss += loss; 
-        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,randomindex);
+
         uz_nn_backward_pass_mini_batch(self->critic,error,self->inputvecnn);  
         resetFloatArray(error,self->critic->number_of_outputs);  
     }
@@ -294,6 +295,7 @@ float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self,float *error,uint32_t mbsi
     }
     return cum_loss;
 } 
+
 float uz_dqn_step_gd_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, uint32_t *r){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(error);
@@ -318,10 +320,8 @@ float uz_dqn_step_gd_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint32_
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
     }
-    float qvalue = uz_matrix_get_element_zero_based(outputcritic,0,actionind);
     float stepreward = calculate_reward_simple(actionind);
-
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->env->inputfornn,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,stepreward,actionind,self->env->inputfornn,self->env->inputfornn);
     self->env->cumreward= stepreward;
     if (self->experience_buffer->counterisfull > 0U){
     genRand_uint32_t_array(r,&self->randinstance->seedRand,mbsize,0.0f,(float)self->experience_buffer->length-1);
@@ -338,7 +338,6 @@ float uz_dqn_step_gd_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint32_
         qplus1 = uz_matrix_get_max_value(outputtarget);
         float rewardtrain = self->experience_buffer->reward[*rx];
         uint32_t actiontrain = self->experience_buffer->action[*rx];
-        float qvaltrain = self->experience_buffer->qvalues[*rx];
         if (rewardtrain==0.0f)
         {
             terminal = true;
@@ -346,6 +345,10 @@ float uz_dqn_step_gd_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint32_
         else{
             terminal = false;
         }
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,*rx);
+        uz_nn_ff(self->critic,self->inputvecnn);
+        outputcritic = uz_nn_get_output_data(self->critic);
+        float qvaltrain = uz_matrix_get_element_zero_based(outputcritic,0,actiontrain);
         loss = calculate_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         dloss = calculate_derv_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         error[actiontrain] = dloss; 
@@ -386,17 +389,15 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
     uz_matrix_copy(self->env->inputfornn,self->experience_buffer->vectorforobs);
     uz_nn_ff(self->critic,self->env->inputfornn);
     outputcritic=uz_nn_get_output_data(self->critic);
-    // randnumber and epsilon comparision
     if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
         actionind = genRand_uint32_t(&self->randinstance->seedRand,self->env->bitlength-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
     }
-    float qvalue = uz_matrix_get_element_zero_based(outputcritic,0,actionind);
     uz_dqn_bitflip_action(self->env,actionind);
     float stepreward = calculate_reward_bit(self->env);
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->experience_buffer->vectorforobs,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,stepreward,actionind,self->experience_buffer->vectorforobs,self->env->inputfornn);
     self->env->cumreward+= stepreward;
     if (self->experience_buffer->counterisfull > 0U){
     genRand_uint32_t_array(r,&self->randinstance->seedRand,mbsize,0.0f,(float)self->experience_buffer->length-1);
@@ -406,7 +407,6 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
     }
     uint32_t *rx;
     rx = r;
-    // uz_dqn_get_minibatch_from_buffer(self->experience_buffer,rew,qval,act,self->experience_buffer->vectorforobs,self->experience_buffer->vectorforobs1,obs,obspl1,mbsize,r);
     for(uint32_t j=0; j<mbsize;j++){
         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->experience_buffer->vectorforobs1,*rx);
         uz_nn_ff(self->critic_target_net,self->experience_buffer->vectorforobs1);
@@ -414,7 +414,6 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
         qplus1 = uz_matrix_get_max_value(outputtarget);
         float rewardtrain = self->experience_buffer->reward[*rx];
         uint32_t actiontrain = self->experience_buffer->action[*rx];
-        float qvaltrain = self->experience_buffer->qvalues[*rx];
         if (rewardtrain==0.0f)
         {
             terminal = true;
@@ -422,11 +421,14 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
         else{
             terminal = false;
         }
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->experience_buffer->vectorforobs,*rx);
+        uz_nn_ff(self->critic,self->experience_buffer->vectorforobs);
+        outputcritic = uz_nn_get_output_data(self->critic);
+        float qvaltrain = uz_matrix_get_element_zero_based(outputcritic,0,actiontrain);
         loss = calculate_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         dloss = calculate_derv_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         error[actiontrain] = dloss; 
         cum_loss += loss; 
-        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->experience_buffer->vectorforobs,*rx);
         uz_nn_backward_pass_mini_batch(self->critic,error,self->experience_buffer->vectorforobs);  
         rx++;
         resetFloatArray(error,self->critic->number_of_outputs);   
@@ -469,10 +471,9 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, ui
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
     }
-    float qvalue = uz_matrix_get_element_zero_based(outputcritic,0,actionind);
     uz_dqn_bitflip_action(self->env,actionind);
     float stepreward = calculate_reward_bit(self->env);
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->experience_buffer->vectorforobs,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,stepreward,actionind,self->experience_buffer->vectorforobs,self->env->inputfornn);
     self->env->cumreward+= stepreward;
     for(uint32_t j=0; j<mbsize;j++){
 
@@ -488,7 +489,6 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, ui
         qplus1 = uz_matrix_get_max_value(outputtarget);
         float rewardtrain = self->experience_buffer->reward[randomindex];
         uint32_t actiontrain = self->experience_buffer->action[randomindex];
-        //float qvaltrain = self->experience_buffer->qvalues[randomindex];
         if (rewardtrain==0.0f)
         {
             terminal = true;
@@ -526,6 +526,7 @@ float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGE
     uz_assert_not_NULL(error);
     uint32_t actionind;
     uz_matrix_t* outputtarget;
+    uz_matrix_t* outputcritic;
     float qplus1 = 0.0f;
     bool terminal = false;
     float loss = 0.0f;
@@ -543,10 +544,9 @@ float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGE
     else{
     actionind = uz_matrix_get_max_index(outputdqn);
     }
-    float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,actionind);
     uz_dqn_bitflip_action(self->env,actionind);
     float stepreward = calculate_reward_bit(self->env);
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->inputvecnn,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,stepreward,actionind,self->inputvecnn,self->env->inputfornn);
     self->env->cumreward+= stepreward;
     if (self->experience_buffer->counterisfull > 0U){
     genRand_uint32_t_array(r,&self->randinstance->seedRand,mbsize,0.0f,(float)bufferlength-1);
@@ -556,7 +556,6 @@ float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGE
     }
     uint32_t *rx;
     rx = r;
-    // uz_dqn_get_minibatch_from_buffer(self->experience_buffer,rew,qval,act,self->experience_buffer->vectorforobs,self->experience_buffer->vectorforobs1,obs,obspl1,mbsize,r);
     for(uint32_t j=0; j<mbsize;j++){
         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->env->inputfornn,*rx);
         uz_nn_ff(self->critic_target_net,self->env->inputfornn);
@@ -564,7 +563,6 @@ float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGE
         qplus1 = uz_matrix_get_max_value(outputtarget);
         float rewardtrain = self->experience_buffer->reward[*rx];
         uint32_t actiontrain = self->experience_buffer->action[*rx];
-        float qvaltrain = self->experience_buffer->qvalues[*rx];
         if (rewardtrain==0.0f)
         {
             terminal = true;
@@ -572,11 +570,15 @@ float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGE
         else{
             terminal = false;
         }
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,*rx);
+        uz_nn_ff(self->critic,self->inputvecnn);
+        outputcritic = uz_nn_get_output_data(self->critic);
+        float qvaltrain = uz_matrix_get_element_zero_based(outputcritic,0,actiontrain);
         loss = calculate_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         dloss = calculate_derv_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
         error[actiontrain] = dloss; 
         cum_loss += loss; 
-        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->inputvecnn,*rx);
+
         uz_nn_backward_pass_mini_batch(self->critic,error,self->inputvecnn);  
         rx++;
         resetFloatArray(error,self->critic->number_of_outputs);   
@@ -605,17 +607,15 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
     uz_matrix_copy(self->env->inputfornn,self->inputvecnn);
     uz_nn_ff(self->critic,self->env->inputfornn);
     uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
-    // randnumber and epsilon comparision
     if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
         actionind = genRand_uint32_t(&self->randinstance->seedRand,self->env->bitlength-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputdqn);
     }
-    float qvalue = uz_matrix_get_element_zero_based(outputdqn,0,actionind);
     uz_dqn_bitflip_action(self->env,actionind);
     float stepreward = calculate_reward_bit(self->env);
-    uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->inputvecnn,self->env->inputfornn);
+    uz_dqn_push_to_buffer(self->experience_buffer,stepreward,actionind,self->inputvecnn,self->env->inputfornn);
     self->env->cumreward+= stepreward;
     if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
     // printf("Bitmuster gleich nach %d Schritten.\n",i);
@@ -625,13 +625,12 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
 }
 
 
-float uz_dqn_train(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train(uz_dqn_t *self,float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(error);
     uz_assert_not_NULL(rew);
-    uz_assert_not_NULL(qval);
     uz_assert_not_NULL(obs);
     uz_assert_not_NULL(obspl1);
     float qplus1 = 0.0f;
@@ -640,12 +639,11 @@ uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact)
     float cum_loss = 0.0f;
     float dloss = 0.0f;
     uz_matrix_t* outputtarget;
+    uz_matrix_t* outputcritic;
     for(uint32_t j=0; j<mbsize;j++){
         uz_matrix_get_row_vector_zero_based(obspl1,self->env->inputfornn,j);
         uz_nn_ff(self->critic_target_net,self->env->inputfornn);
         outputtarget = uz_nn_get_output_data(self->critic_target_net);
-        // uz_matrix_get_row_vector_zero_based(obs,self->inputvecnn,j);
-        // uz_nn_ff(self->critic,self->inputvecnn);
         qplus1 = uz_matrix_get_max_value(outputtarget);
         if (*rew==0.0f)
         {
@@ -654,9 +652,11 @@ uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact)
         else{
             terminal = false;
         }
-        loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
-        // hier andere berechnung einfügen für dloss sollte ein array entstehen
-        dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        uz_nn_ff(self->critic,obs);
+        outputcritic = uz_nn_get_output_data(self->critic);
+        float qval = uz_matrix_get_element_zero_based(outputcritic,0,*act);
+        loss = calculate_loss_dqn(self,*rew,qval,qplus1,terminal);
+        dloss = calculate_derv_loss_dqn(self,*rew,qval,qplus1,terminal);
         error[*act] = dloss; 
         cum_loss += loss; 
         uz_matrix_get_row_vector_zero_based(obs,self->inputvecnn,j);
@@ -669,20 +669,18 @@ uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact)
     cum_loss = cum_loss/(float)mbsize;
     uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
     uz_nn_set_gradients_zero(self->critic);
-    // Targetupdate 
     if (epoch % TARGET_UPDATE_FREQUENCY  == 0){
     uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
     }
 return cum_loss;
 }
 
-float uz_dqn_train4(uz_dqn_t *self,float *error, float *rew, float *qval, uint32_t *act,uz_matrix_t *obs,  uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train4(uz_dqn_t *self,float *error, float *rew, uint32_t *act,uz_matrix_t *obs,  uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, adam_optimizer_t *adam)
 {
 uz_assert_not_NULL(self);
 uz_assert_not_NULL(error);
 uz_assert_not_NULL(rew);
-uz_assert_not_NULL(qval);
 uz_assert_not_NULL(obs);
 uz_assert_not_NULL(obspl1);
 float qplus1 = 0.0f;
@@ -691,6 +689,7 @@ float loss = 0.0f;
 float cum_loss = 0.0f;
 float dloss = 0.0f;
 uz_matrix_t* outputtarget;
+uz_matrix_t* outputcritic;
 for(uint32_t j=0; j<mbsize;j++){
         uz_matrix_get_row_vector_zero_based(obspl1,self->env->inputfornn,j);
         uz_nn_ff(self->critic_target_net,self->env->inputfornn);
@@ -703,9 +702,12 @@ for(uint32_t j=0; j<mbsize;j++){
         else{
             terminal = false;
         }
-        loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
-        // hier andere berechnung einfügen für dloss sollte ein array entstehen
-        dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
+        uz_matrix_get_row_vector_zero_based(obs,self->env->inputfornn,j);
+        uz_nn_ff(self->critic,self->env->inputfornn);
+        outputcritic = uz_nn_get_output_data(self->critic);
+        float qval = uz_matrix_get_element_zero_based(outputcritic,0,*act);
+        loss = calculate_loss_dqn(self,*rew,qval,qplus1,terminal);
+        dloss = calculate_derv_loss_dqn(self,*rew,qval,qplus1,terminal);
         error[*act] = dloss; 
         cum_loss += loss; 
         uz_matrix_get_row_vector_zero_based(obs,self->inputvecnn,j);
@@ -718,7 +720,6 @@ for(uint32_t j=0; j<mbsize;j++){
     cum_loss = cum_loss/(float)mbsize;
     adam_optimizer_step(adam,self->critic);
     uz_nn_set_gradients_zero(self->critic);
-    // Targetupdate 
     if (epoch % TARGET_UPDATE_FREQUENCY  == 0){
     uz_nn_target_update(self->critic,self->critic_target_net,smoothing, &targsmoothfact);
     }
@@ -730,7 +731,6 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_assert(self->is_ready);
     self->head = 0U;
     resetFloatArray(self->reward,self->length);
-    resetFloatArray(self->qvalues,self->length);
     resetuintArray(self->action,self->length);
     uz_matrix_set_zero(self->observations);
     uz_matrix_set_zero(self->observations1);
@@ -738,11 +738,8 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t* self){
     uz_matrix_set_zero(self->vectorforobs1);
 }
 
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *qdata,uint32_t *actionindex, uz_matrix_t *obsdata,uz_matrix_t *obsdata1){
+void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float rewarddata,uint32_t actionindex, uz_matrix_t *obsdata,uz_matrix_t *obsdata1){
     uz_assert_not_NULL(self);
-    uz_assert_not_NULL(rewarddata);
-    uz_assert_not_NULL(actionindex);
-    uz_assert_not_NULL(qdata);
     uz_assert_not_NULL(obsdata);
     uz_assert_not_NULL(obsdata1);
     uz_assert(self->is_ready);
@@ -752,15 +749,14 @@ void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,fl
       self->head=0U;
       self->counterisfull++;
     }
-    self->reward[self->head]= *rewarddata;
-    self->action[self->head] = *actionindex;
-    self->qvalues[self->head] = *qdata;
+    self->reward[self->head]= rewarddata;
+    self->action[self->head] = actionindex;
     uz_matrix_copy_row_to_matrix(obsdata,self->observations,self->head);
     uz_matrix_copy_row_to_matrix(obsdata1,self->observations1,self->head);
     self->head++;
 }
 
-void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward,float *qvalue, uint32_t *actionindex,uz_matrix_t *obsvec,uz_matrix_t *obsvec1,uz_matrix_t *obs, uz_matrix_t *obspl1,uint32_t minibatchsize, uint32_t *indizes)
+void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *reward, uint32_t *actionindex,uz_matrix_t *obsvec,uz_matrix_t *obsvec1,uz_matrix_t *obs, uz_matrix_t *obspl1,uint32_t minibatchsize, uint32_t *indizes)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(reward);
@@ -779,12 +775,11 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t* self,float *re
             index = self->head;
         }
     }
-        uz_dqn_get_from_buffer(self,reward,qvalue,actionindex,obsvec,obsvec1,index);
+        uz_dqn_get_from_buffer(self,reward,actionindex,obsvec,obsvec1,index);
         uz_matrix_copy_row_to_matrix(obsvec,obs,i);
         uz_matrix_copy_row_to_matrix(obsvec1,obspl1,i);
         reward++;
         actionindex++;
-        qvalue++;
     }
 }
 
@@ -824,18 +819,14 @@ float calculate_derv_loss_dqn(uz_dqn_t* self, float samplereward, float qval, fl
     return dloss;
 }
 
-void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,float *QValue, uint32_t *actiondata, uz_matrix_t *obsdata,uz_matrix_t *obsdata1, uint32_t index)
+void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t* self,float *rewarddata,uint32_t *actiondata, uz_matrix_t *obsdata,uz_matrix_t *obsdata1, uint32_t index)
 {
     uz_assert_not_NULL(self);
-    uz_assert_not_NULL(rewarddata);
-    uz_assert_not_NULL(QValue);
-    uz_assert_not_NULL(actiondata);
     uz_assert_not_NULL(obsdata);
     uz_assert_not_NULL(obsdata1);
     uz_assert(self->is_ready);
     uz_assert(index<self->length);
     *rewarddata = self->reward[index];
-    *QValue = self->qvalues[index];
     *actiondata = self->action[index];
     uz_matrix_copy_row_from_matrix(self->observations,obsdata,index);
     uz_matrix_copy_row_from_matrix(self->observations1,obsdata1,index);
@@ -849,13 +840,6 @@ void uz_dqn_get_obs_from_buffer(uz_dqn_experience_replay_t* self,uz_matrix_t *ob
     uz_matrix_copy_row_from_matrix(self->observations,obsdata,index);
 }
 
-void uz_dqn_get_q_value_from_buffer(uz_dqn_experience_replay_t* self,float *QValue, uint32_t index){
-    uz_assert_not_NULL(self);
-    uz_assert_not_NULL(QValue);
-    uz_assert(self->is_ready);
-    uz_assert(index<self->length);
-    *QValue = self->qvalues[index];
-}
 float calculate_reward_dqn(float samplerate, uz_matrix_t *observations, bool penalty)
 {
     //hardcoded defines for the reward
@@ -931,169 +915,5 @@ void exportFloatArrayToCSV(const char *filename, const float *array, int size) {
     // Close the file
     fclose(file);
 }
-
-
-
-// float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, adam_optimizer_t *adam){
-//     uz_assert_not_NULL(self);
-//     uz_assert_not_NULL(error);
-//     uint32_t actionind;
-//     uz_matrix_t* outputcritic;
-//     uz_matrix_t* outputtarget;
-//     float qplus1 = 0.0f;
-//     bool terminal = false;
-//     float loss = 0.0f;
-//     float cum_loss = 0.0f;
-//     float dloss = 0.0f;
-//     uint32_t randomindex = 0U;
-//     self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start,self->env->epsilon_min,self->env->epsilon_decay);
-//     for (uint32_t t = 0; t < self->env->max_steps; t++)
-//     {
-//     uz_matrix_copy(self->env->inputfornn,self->experience_buffer->vectorforobs);
-//     uz_nn_ff(self->critic,self->env->inputfornn);
-//     outputcritic=uz_nn_get_output_data(self->critic);
-//     if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
-//         actionind = genRand_uint32_t(&self->randinstance->seedRand,self->env->bitlength-1);
-//     }
-//     else{
-//     actionind = uz_matrix_get_max_index(outputcritic);
-//     }
-//     float qvalue = uz_matrix_get_element_zero_based(outputcritic,0,actionind);
-//     uz_dqn_bitflip_action(self->env,actionind);
-//     float stepreward = calculate_reward_bit(self->env);
-//     uz_dqn_push_to_buffer(self->experience_buffer,&stepreward,&qvalue,&actionind,self->experience_buffer->vectorforobs,self->env->inputfornn);
-//     self->env->cumreward+= stepreward;
-//     for(uint32_t j=0; j<mbsize;j++){
-
-//         if (self->experience_buffer->counterisfull > 0U){
-//         randomindex = genRand_uint32_t(&self->randinstance->seedRand,self->experience_buffer->length-1);
-//         }
-//         else{
-//         randomindex = genRand_uint32_t(&self->randinstance->seedRand,self->experience_buffer->head-1);
-//         }
-//         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->experience_buffer->vectorforobs1,randomindex);
-//         uz_nn_ff(self->critic_target_net,self->experience_buffer->vectorforobs1);
-//         outputtarget = uz_nn_get_output_data(self->critic_target_net);
-//         qplus1 = uz_matrix_get_max_value(outputtarget);
-//         float rewardtrain = self->experience_buffer->reward[randomindex];
-//         uint32_t actiontrain = self->experience_buffer->action[randomindex];
-//         float qvaltrain = self->experience_buffer->qvalues[randomindex];
-//         if (rewardtrain==0.0f)
-//         {
-//             terminal = true;
-//         }
-//         else{
-//             terminal = false;
-//         }
-//         loss = calculate_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
-//         dloss = calculate_derv_loss_dqn(self,rewardtrain,qvaltrain,qplus1,terminal);
-//         error[actiontrain] = dloss; 
-//         cum_loss += loss; 
-//         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations,self->experience_buffer->vectorforobs,randomindex);
-//         uz_nn_backward_pass_mini_batch(self->critic,error,self->experience_buffer->vectorforobs);  
-//         resetFloatArray(error,self->critic->number_of_outputs);   
-//     }
-//     cum_loss = cum_loss/(float)mbsize;
-//     adam_optimizer_step(adam,self->critic);
-//     uz_nn_set_gradients_zero(self->critic);
-//     if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
-//     return cum_loss;
-//     }
-//     }
-//     if (epoch % TARGET_UPDATE_FREQUENCY == 0){
-//     uz_nn_target_update(self->critic,self->critic_target_net,smoothing, &targsmoothfact);
-//     }
-//     return cum_loss;
-// } 
-// void make_directory(const char* name) {
-//    #ifdef __linux__
-//        mkdir(name, 777); 
-//    #else
-//        _mkdir(name);
-//    #endif
-// }
-
-// float uz_dqn_train2(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
-// uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
-// {
-// float qplus1 = 0.0f;
-// bool terminal = false;
-// float loss = 0.0f;
-// float cum_loss = 0.0f;
-// float dloss = 0.0f;
-// uz_matrix_t* outputtarget;
-// for(uint32_t j=0; j<mbsize;j++){
-//         uz_matrix_get_row_vector_zero_based(obspl1,self->inputvecnn,j);
-//         uz_nn_ff(self->critic_target_net,self->inputvecnn);
-//         outputtarget = uz_nn_get_output_data(self->critic_target_net);
-//         qplus1 = uz_matrix_get_max_value(outputtarget);
-//         if (*rew==0.0f)
-//         {
-//             terminal = true;
-//         }
-//         else{
-//             terminal = false;
-//         }
-//         loss = calculate_loss_dqn(self,*rew,*qval,qplus1,terminal);
-//         dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
-//         cum_loss += loss; 
-//         uz_nn_backward_pass(self->critic,&dloss,self->inputvecnn);
-//         uz_nn_gradient_descent(self->critic,self->lernrate);
-//         // uz_nn_backward_pass_mini_batch(self->critic,&dloss,self->inputvecnn);  
-//         rew++;
-//         qval++;
-//         act++;
-//     }
-//     // dloss mitteln
-//     cum_loss = cum_loss/(float)mbsize;
-//     // uz_nn_backward_pass(self->critic,&cum_loss,self->inputvecnn);
-//     // uz_nn_gradient_descent(self->critic,self->lernrate);
-//     // uz_nn_gradient_descent_mini_batch(self->critic,self->lernrate,mbsize);
-//     // uz_nn_set_gradients_zero(self->critic);
-//     // Targetupdate 
-//     if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
-//     uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
-//     }
-// return cum_loss;
-// }
-
-// float uz_dqn_train3(uz_dqn_t *self, float *rew, float *qval, uint32_t *act, uz_matrix_t *obspl1, uint32_t mbsize,
-// uint32_t TARGET_UPDATE_FREQUENCY, uint32_t NUMBER_OF_EPOCHS, float targsmoothfact)
-// {
-// float qplus1 = 0.0f;
-// bool terminal = false;
-// float dloss = 0.0f;
-// float cum_loss = 0.0f;
-// uz_matrix_t* outputtarget;
-// for(uint32_t j=0; j<mbsize;j++){
-//         uz_matrix_get_row_vector_zero_based(obspl1,self->inputvecnn,j);
-//         uz_nn_ff(self->critic_target_net,self->inputvecnn);
-//         outputtarget = uz_nn_get_output_data(self->critic_target_net);
-//         qplus1 = uz_matrix_get_max_value(outputtarget);
-//         if (*rew==0.0f)
-//         {
-//             terminal = true;
-//         }
-//         else{
-//             terminal = false;
-//         }
-//         dloss = calculate_derv_loss_dqn(self,*rew,*qval,qplus1,terminal);
-//         cum_loss += dloss;  
-//         rew++;
-//         qval++;
-//         act++;
-//     }
-//     // dloss mitteln
-//     cum_loss = cum_loss/(float)mbsize;
-//     uz_nn_backward_pass(self->critic,&cum_loss,self->inputvecnn);
-//     uz_nn_gradient_descent(self->critic,self->lernrate);
-//     uz_nn_set_gradients_zero(self->critic);
-//     // Targetupdate 
-//     if (NUMBER_OF_EPOCHS % TARGET_UPDATE_FREQUENCY  == 0){
-//     uz_nn_target_update(self->critic,self->critic_target_net,periodic, &targsmoothfact);
-//     }
-// return cum_loss;
-// }
-
 #endif
 #endif

@@ -15,20 +15,20 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 200U
-#define MINIBATCHSIZE 2U
-#define NUMBER_OF_EPOCHS 50000U
-#define TARGET_UPDATE_FREQUENCY 100U
+#define EXPERIENCE_BUFFER_LENGTH 20000U
+#define MINIBATCHSIZE 32U
+#define NUMBER_OF_EPOCHS 15000U
+#define TARGET_UPDATE_FREQUENCY 10U
 // nn
-#define NUMBEROFBITS 4U
-#define NUMBER_OF_INPUTS 8U
-#define NUMBER_OF_OUTPUTS 4U
+#define NUMBEROFBITS 6U
+#define NUMBER_OF_INPUTS 12U
+#define NUMBER_OF_OUTPUTS 6U
 #define NUMBER_OF_HIDDEN_LAYER 2U
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256U
 #define NUMBEROFTESTSTEPS 50U
 
 float discountfact = 0.99f;
-float lernrate = 0.0005f;
+float lernrate = 0.001f;
 
 // random array
 uint32_t array[NUMBEROFBITS] = {0U,0U,0U,0U};
@@ -50,7 +50,7 @@ struct uz_dqn_environment_config configenv = {
     .max_steps = NUMBEROFBITS+3,
     .epsilon_start = 0.99f, 
     .epsilon_min = 0.0000000001f, 
-    .epsilon_decay = 0.0001f
+    .epsilon_decay = 0.001f
 };
 // debug stuff
 float Q_Target[NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS] = {0.0f};
@@ -113,7 +113,6 @@ float T2[4] = {0};
 // stuff for buffer
 float reward[EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0};
-float qvalues[EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float observation1[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
@@ -214,7 +213,6 @@ struct uz_dqn_experience_replay_config configbuffer = {
         .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
         .columns_of_observations = NUMBER_OF_INPUTS,
         .reward = reward,
-        .qvalues = qvalues,
         .observations = observation,
         .observations1 = observation1,
         .obsvec = vecobs,

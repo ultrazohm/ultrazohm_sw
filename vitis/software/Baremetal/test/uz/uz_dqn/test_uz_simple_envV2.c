@@ -113,7 +113,6 @@ float T2[4] = {0};
 // stuff for buffer
 float reward[EXPERIENCE_BUFFER_LENGTH] = {0};
 uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0};
-float qvalues[EXPERIENCE_BUFFER_LENGTH] = {0};
 float observation[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {0};
 float observation1[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {0};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
@@ -214,7 +213,6 @@ struct uz_dqn_experience_replay_config configbuffer = {
         .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
         .columns_of_observations = NUMBER_OF_INPUTS,
         .reward = reward,
-        .qvalues = qvalues,
         .observations = observation,
         .observations1 = observation1,
         .obsvec = vecobs,

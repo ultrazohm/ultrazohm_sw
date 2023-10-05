@@ -113,12 +113,10 @@ float T2[4] = {0};
 // stuff for buffer
 float reward[EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 uint32_t action[EXPERIENCE_BUFFER_LENGTH] = {0};
-float qvalues[EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float observation1[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
-// float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0.0f};
 
 // config random
 struct uz_mtwister_config cfg = {
@@ -214,7 +212,6 @@ struct uz_dqn_experience_replay_config configbuffer = {
         .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
         .columns_of_observations = NUMBER_OF_INPUTS,
         .reward = reward,
-        .qvalues = qvalues,
         .observations = observation,
         .observations1 = observation1,
         .obsvec = vecobs,
@@ -243,10 +240,8 @@ void test_dqn_bitflip(void)
     uint32_t r[MINIBATCHSIZE] = {0}; 
     uint32_t *indizes = r;
     float getbackrew[MINIBATCHSIZE]= {0.0f};
-    float getbackqval[MINIBATCHSIZE]= {0.0f};
     uint32_t getbackact[MINIBATCHSIZE] = {0};
     float* rew = getbackrew;
-    float* qval = getbackqval;
     uint32_t* act = getbackact;
     float getbackobs[NUMBER_OF_INPUTS*MINIBATCHSIZE] = {0.0f};
     struct uz_matrix_t getbackobs_matrix = {0};
@@ -276,14 +271,14 @@ void test_dqn_bitflip(void)
     }
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     if (testdqn2->experience_buffer->counterisfull > 0U){
-    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,EXPERIENCE_BUFFER_LENGTH-1U);
+    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0.0f,(float)(EXPERIENCE_BUFFER_LENGTH-1U));
     }
     else{
-    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0,testdqn2->experience_buffer->head-1U);
+    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0.0f,(float)(testdqn2->experience_buffer->head-1U));
     }
-    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,qval,act,testdqn2->experience_buffer->vectorforobs,testdqn2->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
-    //loss[i] = uz_dqn_train(testdqn2,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
-    loss[i] = uz_dqn_train4(testdqn2,error,rew,qval,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
+    uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,act,testdqn2->experience_buffer->vectorforobs,testdqn2->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
+    //loss[i] = uz_dqn_train(testdqn2,error,rew,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
+    loss[i] = uz_dqn_train4(testdqn2,error,rew,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
     free(adam);

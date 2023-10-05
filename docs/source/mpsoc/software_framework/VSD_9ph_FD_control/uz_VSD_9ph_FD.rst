@@ -2,13 +2,18 @@
 VSD Open-phase-fault detection
 ==============================
 
-This module provides functions for open phase fault (OPF) detection based on Vector Space Decompositon (VSD) for an asymmetric nine phase machine.
-Since the VSD transformation can be used for both PMSM and asynchronous machines, this module can be used for both machine types.
+General
+=======
 
+This module provides functions for open phase fault (OPF) detection based on Vector Space Decompositon (VSD) for an asymmetric nine-phase machine.
 The fault detection is based on nine fault indices, one for each phase of the machine.
 The fault indices are calculated based on the measured VSD-currents with the following equations.
+More details about the working principal can be found in :ref:`uz_VSD_6ph_FD_control`.
 
-.. _fault_indices:
+Processing
+==========
+
+The equations for the bare fault indices are listed here:
 
 .. math::
 
@@ -22,36 +27,19 @@ The fault indices are calculated based on the measured VSD-currents with the fol
   R_\textrm{b3}&=-\frac{-0.5\cdot i_\textrm{X1}+0.8660\cdot i_\textrm{Y1}+0.1736\cdot i_\textrm{X2}+   0.9848\cdot i_\textrm{Y2}+0.7660\cdot i_\textrm{X3}+0.6428 \cdot i_\textrm{Y3} + i_\textrm{Z}}{-0.9397\cdot i_\alpha +0.3420\cdot i_\beta}\\
   R_\textrm{c3}&=-\frac{-0.5\cdot i_\textrm{X1}+0.8660\cdot i_\textrm{Y1}+ 0.7660\cdot i_\textrm{X2}-0.6428\cdot i_\textrm{Y2}-0.9397\cdot i_\textrm{X3}+0.3420\cdot i_\textrm{Y3} + i_\textrm{Z} }{0.1736\cdot i_\alpha-0.9848\cdot i_\beta}
 
+After the calculation of the indices, filtering, thresholding and hysteresis are applied to each of them.
+At first, a Hystereseband is applied, which eliminates mainly large values that result of divisions by zero or very small :math:`i_\alpha` or :math:`i_\beta`.
+Afterwards, a sliding average filter is applied.
+The filterlength depends on the electric rotor speed and is adapted online.
+To create a boolean value from the result, a threshold is used to determine the detection of an open phase fault.
 
-The fault indices are in pre-fault operation zero as the torque producing currents are mapped only into the :math:`\alpha\beta`-plane while into the :math:`xy`- and :math:`0^+0^-`-planes only currents because of asymmetries and some harmonics are mapped, which are close to zero, especially if a proper control system is used and if the PMSM contains few harmonic and asymmetric components.
-After a phase failure, the fault indices are no longer zero as now significant current components occur in the :math:`xy`- and :math:`0^+0^-`-system as the three subsystems are no longer uncoupled.
-The fault index of the faulted phase is on average one.
-The remaining fault indices follow different non-zero functions depending on the fault scenario.
+.. figure:: filter_indices.jpg
 
-By filtering the fault indices, they can be converted so that only the fault indices of the faulted phases are constant one, while all other fault indices are zero.
-For the filtering an hysteresis band filter followed by an moving average filter is used.
-The hysteresis band filter set the value of a fault index to zero if the value is not in a narrow band around one defined by an upper and lower hysteresis band limit.
-The moving average smoothes the fault indices so that short disturbances do not affect the fault detection.
-The length of the smoothing intervall is defined as a portion of one electrical period of the phase currents.
-The filtered fault indices are evaluated by a threshold value.
-A phase detected as faulted if its fault index exceeds this threshold.
-
-After the filtering the fault indices have two possible states and are either 0 (no fault in the corresponding phase) or 1 (fault in the corresponding phase) and can therefore be used for OPF detection.
-
-
-
-The following module contains functions for calculating the fault indices, applying hysteresis band and moving average filtering and evaluating the filtered fault indices.
-The obtained results of the evaluated fault indices can be used for an control scheme during OPF.
-
-
-
-
+    Signal flow of indices
 
 
 Function references
 ===================
-
-
 
 .. doxygentypedef:: uz_VSD_9ph_FD_t
 
@@ -65,8 +53,9 @@ Function references
 .. doxygenfunction:: uz_vsd_opf_9ph_get_n_fault
 
 
-Example of complete open phase fault detection
-----------------------------------------------
+Code example
+============
+
 .. code-block:: c
   :linenos:
   :caption: Example for using the functions of the module for the fault detection (init_fault_detection.h)
@@ -188,9 +177,3 @@ Example of complete open phase fault detection
     fault_single_indices = uz_vsd_opf_9ph_faultdetection_step(Global_Data.objects.fault_detection, Global_Data.av.currents_alphabeta, Global_Data.av.omega_el);
 	  fault_n_OPF = uz_vsd_opf_9ph_get_n_fault(fault_single_indices);
 	
-
-
-
-
-
-

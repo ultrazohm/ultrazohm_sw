@@ -21,7 +21,7 @@
 #include "../uz_math_constants.h"
 
 #define SVM_6PH_MAXIMUM_XY_RELATIVE 0.05f
-#define SVM_6PH_MAXIMUM_MODULATION_INDEX 0.62f
+#define SVM_6PH_MAXIMUM_MODULATION_INDEX (1.0f/sqrt(3.0f))
 #define SECTOR_ANGLE_RAD (2.0f*UZ_PIf/24.0f)
 
 #define MAKRO_HALFf(val) ((val) / 2.0f)

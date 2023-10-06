@@ -43,7 +43,7 @@ As can be seen from [[#Eldeeb_diss]_] Fig. 3.3, a large :math:`\alpha\beta`-SV r
 Therefore if the :math:`\alpha\beta`-SV is near the maximum, the :math:`xy`-SV can only be small.
 Although a general limitation can not achieve maximum usage in all operating points, with this rule an overall good performance can be expected.
 
-Since the maximum voltage is given by the DC-Bus-Voltage and the modulation index :math:`m_i=0.62` (determined in simulation), the combined length of the space vectors has to be limited.
+Since the maximum voltage is given by the DC-Bus-Voltage and the modulation index :math:`m_i=\frac{1}{\sqrt{3}}` (determined in simulation), the combined length of the space vectors has to be limited.
 Therefore both lengths are added and if the exceed the maximum allowed voltage, they will be shortened in their existing relations.
 Since the :math:`xy`-SV limitation is executed before and the relation of the :math:`\alpha\beta`-SV and :math:`xy`-SV are kept the same, the previous limitation will not be violated.
 
@@ -55,8 +55,29 @@ Instead, the selected sequences of [[#Eldeeb_diss]_] Tab. 3.III are used.
 Please note that the decimal notation of [[#Eldeeb_paper]_] and [[#other_paper]_] are used.
 Therefore, the binary values of [[#Eldeeb_diss]_] must be mirrored, making the switch a1 being represented by the LSB and c2 by the MSB.
 
+.. csv-table:: Space vectors
+   :file: sequences_6ph.csv
+   :widths: 50 50
+   :header-rows: 1
+
+
 Offline calculations
 --------------------
+
+Verification
+============
+
+Limitation
+----------
+
+To test the limitation, a list of :math:`\alpha\beta`-SVs and :math:`xy`-SVs was created with :math:`k \cdot e^{i \cdot \phi}` and :math:`k=0, 0.001, ... 1` und :math:`\phi=0, 0.001, ... 2\pi`.
+Each :math:`\alpha\beta`-SV was combined with each :math:`xy`-SV and applied to the SVM.
+Using no limitation, the SVM threw an error for a Duty Cycle out of range (negative or greater 1).
+Using the limitation, no error occured and the relative limit of :math:`xy`-SV to :math:`\alpha\beta`-SV could even be raised up to 50% without causing an invalid Duty Cycle.
+
+Closed loop simulation
+======================
+
 
 
 .. [#Eldeeb_diss] H. Eldeeb, "Modelling, Control and Post-Fault Operation of Dual Three-phase Drives for Airborne Wind Energy," Diss., Technische Universität München, München, 2019

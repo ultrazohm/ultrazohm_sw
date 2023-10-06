@@ -128,7 +128,7 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
 }
 
 // dq wrapped function
-struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(uz_6ph_dq_t setpoints, float theta_el, float V_dc){
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(uz_6ph_dq_t setpoints, float V_dc, float theta_el){
     struct uz_svm_asym_6ph_CSVPWM24_out out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_transformation_asym30deg_6ph_dq_to_alphabeta(setpoints, theta_el), V_dc);
     return out;
 }

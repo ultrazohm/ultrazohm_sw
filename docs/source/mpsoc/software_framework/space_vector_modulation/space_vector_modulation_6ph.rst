@@ -57,7 +57,7 @@ Therefore, the binary values of [[#Eldeeb_diss]_] must be mirrored, making the s
 
 .. csv-table:: Space vectors
    :file: sequences_6ph.csv
-   :widths: 50 50
+   :widths: 10 50
    :header-rows: 1
 
 
@@ -78,7 +78,40 @@ Using the limitation, no error occured and the relative limit of :math:`xy`-SV t
 Closed loop simulation
 ======================
 
+Closed loop testbench
+=====================
 
+.. code-block:: c
+  :caption: Changes in ``isr.c`` (R5)
+
+  // declarations
+  #include "../uz/uz_Space_Vector_Modulation_6ph/uz_Space_Vector_Modulation_6ph.h"
+  uz_6ph_dq_t u_ref_6ph = {0};
+  uz_3ph_dq_t u_ref_3ph = {0};
+  uz_3ph_dq_t cc_setpoint = {0};
+  struct uz_svm_asym_6ph_CSVPWM24_out svm_out = {0};
+  ...
+  // in isr
+  if (current_state==control_state)
+  {
+    // example current control
+    u_ref_3ph = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, cc_setpoint, Global_Data.av.actual_3ph_dq, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
+    u_ref_6ph.d = u_ref_3ph.d;
+    u_ref_6ph.q = u_ref_3ph.q;
+  }
+
+  // Modulation
+  svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(u_ref_6ph, Global_Data.av.theta_elec, Global_Data.av.v_dc1);
+  // PWM phase shift
+  uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.shift_system1, svm_out.shift_system1, svm_out.shift_system1);
+  uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.shift_system2, svm_out.shift_system2, svm_out.shift_system2);
+  // assign Duty Cycles
+  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.Duty_Cycle.system1.DutyCycle_A, svm_out.Duty_Cycle.system1.DutyCycle_B, svm_out.Duty_Cycle.system1.DutyCycle_C);
+  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.Duty_Cycle.system2.DutyCycle_A, svm_out.Duty_Cycle.system2.DutyCycle_B, svm_out.Duty_Cycle.system2.DutyCycle_C);
+
+
+Literature
+==========
 
 .. [#Eldeeb_diss] H. Eldeeb, "Modelling, Control and Post-Fault Operation of Dual Three-phase Drives for Airborne Wind Energy," Diss., Technische Universität München, München, 2019
 .. [#Eldeeb_paper] H. Eldeeb, C. Hackl, M. Abdelrahem and A. S. Abdel-Khalik, "A unified SVPWM realization for minimizing circulating currents of dual three phase machines," 2017 IEEE 12th International Conference on Power Electronics and Drive Systems (PEDS), Honolulu, HI, USA, 2017, pp. 925-931, doi: 10.1109/PEDS.2017.8289127.

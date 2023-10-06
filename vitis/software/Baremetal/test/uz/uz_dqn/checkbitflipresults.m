@@ -2,7 +2,12 @@ clear
 close all;
  %% prepare for export to tikz
 T = readtable("hyperparam.txt");
-
+dirListing = dir("hyperparam.txt")
+% Get the current time.
+tNow = datestr(now)
+% Create a title
+caption = sprintf('File Date = %s. Right now it is %s',...
+	dirListing.date, tNow);
  extraaxisoptions = [...
 'y tick label style={/pgf/number format/.cd,scaled y ticks = false,precision=1, use comma,' ...
 ,'set thousands separator={},fixed,/tikz/.cd}'...
@@ -113,7 +118,7 @@ plot(epsilon256_clipped);
 grid on;
 xlabel('Episoden','interpreter','latex');
 ylabel('epsilon','interpreter','latex');
-sgtitle("Bitflip Ergebnisse NN 256 Neuronen clipped, seed 2, -2.0f beim Loss, lr 0.0001 18 09 14:10")
+sgtitle(caption)
 % subplot(4,1,4)
 % plot(dloss256_clipped);
 % grid on;
@@ -137,8 +142,8 @@ load("QCritic.csv");
 load("QTarget.csv");
 
 %% reshape
-QCritic = reshape(QCritic,4,[]);
-QTarget = reshape(QTarget,4,[]);
+QCritic = reshape(QCritic,8,[]);
+QTarget = reshape(QTarget,8,[]);
 
 figure
 subplot(2,1,1)

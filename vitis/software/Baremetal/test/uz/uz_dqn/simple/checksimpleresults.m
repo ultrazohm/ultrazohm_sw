@@ -2,6 +2,12 @@ clear
 close all;
  %% prepare for export to tikz
 T = readtable("hyperparam.txt");
+dirListing = dir("hyperparam.txt")
+% Get the current time.
+tNow = datestr(now)
+% Create a title
+caption = sprintf('File Date = %s. Right now it is %s',...
+	dirListing.date, tNow);
 
  extraaxisoptions = [...
 'y tick label style={/pgf/number format/.cd,scaled y ticks = false,precision=1, use comma,' ...
@@ -130,7 +136,7 @@ grid on;
 legend
 xlabel('Episoden','interpreter','latex');
 ylabel('Target Values','interpreter','latex');
-sgtitle("Simple env, Buffer 2000")
+sgtitle(caption)
 % subplot(4,1,4)
 % plot(dloss256_clipped);
 % grid on;

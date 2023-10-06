@@ -251,8 +251,6 @@ void test_dqn_simple(void)
     epsilonovertime[i] = simpledqn->env->epsilon_start;
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
-
-    free(adam);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/losssimple.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/QTarget.csv", Q_Target, NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/QCritic.csv", Q_Critic, NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS);

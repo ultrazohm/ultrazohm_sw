@@ -15,20 +15,20 @@
 #include <stdlib.h>
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 20000U
-#define MINIBATCHSIZE 32U
-#define NUMBER_OF_EPOCHS 15000U
-#define TARGET_UPDATE_FREQUENCY 10U
+#define MINIBATCHSIZE 8U
+#define NUMBER_OF_EPOCHS 10U
+#define EXPERIENCE_BUFFER_LENGTH 50000U
+#define TARGET_UPDATE_FREQUENCY 20U
 // nn
-#define NUMBEROFBITS 6U
-#define NUMBER_OF_INPUTS 12U
-#define NUMBER_OF_OUTPUTS 6U
+#define NUMBEROFBITS 8U
+#define NUMBER_OF_INPUTS NUMBEROFBITS*2U
+#define NUMBER_OF_OUTPUTS NUMBEROFBITS
 #define NUMBER_OF_HIDDEN_LAYER 2U
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256U
 #define NUMBEROFTESTSTEPS 50U
 
 float discountfact = 0.99f;
-float lernrate = 0.001f;
+float lernrate = 2e-3f;
 
 // random array
 uint32_t array[NUMBEROFBITS] = {0U,0U,0U,0U};
@@ -117,7 +117,6 @@ float observation[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float observation1[NUMBER_OF_INPUTS*EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
-// float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0.0f};
 
 // config random
 struct uz_mtwister_config cfg = {
@@ -260,7 +259,6 @@ void test_dqn_bitflip(void)
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
-    free(adam);
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);

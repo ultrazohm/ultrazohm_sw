@@ -18,8 +18,8 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 20000U
 #define MINIBATCHSIZE 32U
-#define NUMBER_OF_EPOCHS 10000U
-#define TARGET_UPDATE_FREQUENCY 100U
+#define NUMBER_OF_EPOCHS 15000U
+#define TARGET_UPDATE_FREQUENCY 10U
 // nn
 #define NUMBEROFBITS 4U
 #define NUMBER_OF_INPUTS 8U
@@ -50,7 +50,7 @@ struct uz_dqn_environment_config configenv = {
     .max_steps = NUMBEROFBITS+3,
     .epsilon_start = 0.99f, 
     .epsilon_min = 0.0000000001f, 
-    .epsilon_decay = 0.0001f
+    .epsilon_decay = 0.001f
 };
 // debug stuff
 float Q_Target[NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS] = {0.0f};
@@ -277,11 +277,9 @@ void test_dqn_bitflip(void)
     genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0.0f,(float)(testdqn2->experience_buffer->head-1U));
     }
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,act,testdqn2->experience_buffer->vectorforobs,testdqn2->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
-    //loss[i] = uz_dqn_train(testdqn2,error,rew,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact);
-    loss[i] = uz_dqn_train4(testdqn2,error,rew,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
+    loss[i] = uz_dqn_train_adam(testdqn2,error,rew,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
     save_values(Q_Critic,Q_Target,cy_2,ty_2,i,NUMBER_OF_OUTPUTS);
     }
-    free(adam);
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
     uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);

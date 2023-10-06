@@ -51,17 +51,6 @@ struct uz_nn_layer_t
 };
 
 
-adam_optimizer_t *uz_adam_init(float learnrate)
-{
-    adam_optimizer_t* self = (adam_optimizer_t*)malloc(sizeof(adam_optimizer_t));
-    self->beta1 =  0.9f;
-    self->beta2 = 0.999f;
-    self->epsilon = 1e-8f;
-    self->learning_rate = learnrate;
-    self->traincounter = 0U;
-return (self);
-}
-
 static uint32_t instance_counter = 0U;
 static uz_nn_layer_t instances[UZ_NN_LAYER_MAX_INSTANCES] = {0};
 
@@ -77,6 +66,31 @@ static uz_nn_layer_t *uz_nn_layer_allocation(void)
     return (self);
 }
 
+
+static uint32_t instance_counter_optimizer = 0U;
+static adam_optimizer_t instancesoptimizer[UZ_NN_LAYER_MAX_INSTANCES] = {0};
+
+static adam_optimizer_t *uz_nn_optimizer_allocation(void);
+
+static adam_optimizer_t *uz_nn_optimizer_allocation(void)
+{
+    uz_assert(instance_counter_optimizer < UZ_NN_OPTIMIZER_MAX_INSTANCES);
+    adam_optimizer_t *self = &instancesoptimizer[instance_counter_optimizer];
+    uz_assert_false(self->is_ready);
+    instance_counter_optimizer++;
+    self->is_ready = true;
+    return (self);
+}
+adam_optimizer_t *uz_adam_init(float learnrate)
+{
+    adam_optimizer_t *self = uz_nn_optimizer_allocation();
+    self->beta1 =  0.9f;
+    self->beta2 = 0.999f;
+    self->epsilon = 1e-8f;
+    self->learnrate = learnrate;
+    self->traincounter = 0U;
+return (self);
+}
 uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
 {
     uz_assert_not_NULL(layer_config.weights);
@@ -86,7 +100,7 @@ uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
     uz_assert((layer_config.number_of_neurons * layer_config.number_of_inputs) == layer_config.length_of_weights);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_output);
     uz_assert(layer_config.number_of_neurons == layer_config.length_of_sumout);
-    uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);;
+    uz_assert(layer_config.number_of_neurons == layer_config.length_of_bias);
     uz_nn_layer_t *self = uz_nn_layer_allocation();
     self->number_of_neurons = layer_config.number_of_neurons;
     self->weights = uz_matrix_init(&self->weight_matrix, layer_config.weights, layer_config.length_of_weights, layer_config.number_of_inputs, layer_config.number_of_neurons);
@@ -339,12 +353,11 @@ for (uint32_t i = 0; i < params; i++){
 
         // Update weights
         if (i<weight_index){
-        layer->weights->data[i]-= optimizer->learning_rate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);
+        layer->weights->data[i]-= optimizer->learnrate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);
         }
         else{
-        layer->bias->data[i-weight_index] -= optimizer->learning_rate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);  
+        layer->bias->data[i-weight_index] -= optimizer->learnrate * m_hat / (sqrtf(v_hat) + optimizer->epsilon);  
         }
-
 }
 }
 

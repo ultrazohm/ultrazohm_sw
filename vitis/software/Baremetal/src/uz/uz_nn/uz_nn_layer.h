@@ -18,9 +18,11 @@ struct adam_optimizer_t{
     float beta1;
     float beta2;
     float epsilon;
-    float learning_rate;
+    float learnrate;
     uint32_t traincounter;
+    bool is_ready;
 };
+
 /**
  * @brief Enum for passing the type of the activation function to the init function of the layer
  * 

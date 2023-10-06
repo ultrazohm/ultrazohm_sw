@@ -68,6 +68,7 @@
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
 #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
+#define UZ_NN_OPTIMIZER_MAX_INSTANCES                   0U
 #define UZ_DQN_MAX_INSTANCES                            0U
 #define UZ_DQN_ENV_MAX_INSTANCES                        0U
 #define UZ_DQN_BUFFER_MAX_INSTANCES                     0U
@@ -118,6 +119,7 @@
     #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           20U
     #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             10U
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
+    #define UZ_NN_OPTIMIZER_MAX_INSTANCES                   10U
     #define UZ_DQN_MAX_INSTANCES                            25U
     #define UZ_DQN_ENV_MAX_INSTANCES                        25U
     #define UZ_DQN_BUFFER_MAX_INSTANCES                     50U

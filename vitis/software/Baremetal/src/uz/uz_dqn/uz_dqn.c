@@ -10,6 +10,7 @@
 static uint32_t instance_counterbuf = 0U;
 static uz_dqn_experience_replay_t instancesbuf[UZ_DQN_BUFFER_MAX_INSTANCES] = {0};
 static uz_dqn_experience_replay_t* uz_dqn_experience_replay_allocation(void);
+
 static uint32_t instance_counter = 0U;
 static uz_dqn_t instances[UZ_DQN_MAX_INSTANCES] = {0};
 static uz_dqn_t* uz_dqn_allocation(void);
@@ -70,49 +71,6 @@ uint32_t length_of_buffer, struct uz_dqn_environment_config envconf)
     self->lernrate = lernrate;
     self->env = uz_dqn_environment_init(envconf);
     return (self);
-}
-
-uint32_t uz_dqn_get_action(uz_dqn_t* self,uz_matrix_t *input,float *epsilon_start,float *epsilon_min,float *epsilon_decay, uint32_t number_of_actions){
-    uz_assert_not_NULL(self);
-    uz_assert_not_NULL(input);
-    uz_assert_not_NULL(epsilon_start);
-    uz_assert_not_NULL(epsilon_min);
-    uz_assert_not_NULL(epsilon_decay);
-    uz_assert(self->is_ready);
-    uint32_t action;
-    //calc epsilon
-    float epsilon = calc_epsilon_greedy(*epsilon_start, *epsilon_min, *epsilon_decay);
-    //generate random number
-    MTRand seed = seedRand(12);
-    float n = (float)genRand(&seed);
-    if (n < epsilon){
-    action = (uint32_t)(genRand(&seed) * number_of_actions);
-    }
-    else{
-    uz_nn_ff(self->critic,input);
-    action = uz_matrix_get_max_index(uz_nn_get_output_data(self->critic));
-    }
-    return action;
-}
-
-void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self)
-{
-    uz_assert_not_NULL(self);
-    uint32_t actionind;
-    for (uint32_t i = 0; i < self->env->max_steps; i++)
-    {
-    uz_nn_ff(self->critic_target_net,self->env->inputfornn);
-    uz_matrix_t* outputaction=uz_nn_get_output_data(self->critic_target_net);
-    actionind = uz_matrix_get_max_index(outputaction);
-    uz_dqn_bitflip_action(self->env,actionind);
-    float reward = calculate_reward_bit(self->env);
-    self->env->cumreward+= reward;
-    if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
-    //printf("Bitmuster gleich nach %d Schritten.\n",i);
-    return;
-    }  
-    }
-
 }
 
 void uz_dqn_simple_reset(uz_dqn_t *self)
@@ -371,6 +329,26 @@ float uz_dqn_step_gd_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint32_
     return cum_loss;
 } 
 
+void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self)
+{
+    uz_assert_not_NULL(self);
+    uint32_t actionind;
+    for (uint32_t i = 0; i < self->env->max_steps; i++)
+    {
+    uz_nn_ff(self->critic_target_net,self->env->inputfornn);
+    uz_matrix_t* outputaction=uz_nn_get_output_data(self->critic_target_net);
+    actionind = uz_matrix_get_max_index(outputaction);
+    uz_dqn_bitflip_action(self->env,actionind);
+    float reward = calculate_reward_bit(self->env);
+    self->env->cumreward+= reward;
+    if (arraysequal(self->env->bitinitial,self->env->bittarget,self->env->bitlength) == true){
+    //printf("Bitmuster gleich nach %d Schritten.\n",i);
+    return;
+    }  
+    }
+
+}
+
 float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, uint32_t *r, adam_optimizer_t *adam){
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(error);
@@ -625,7 +603,7 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
 }
 
 
-float uz_dqn_train(uz_dqn_t *self,float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train_gd(uz_dqn_t *self,float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact)
 {
     uz_assert_not_NULL(self);
@@ -675,7 +653,7 @@ uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact)
 return cum_loss;
 }
 
-float uz_dqn_train4(uz_dqn_t *self,float *error, float *rew, uint32_t *act,uz_matrix_t *obs,  uz_matrix_t *obspl1, uint32_t mbsize,
+float uz_dqn_train_adam(uz_dqn_t *self,float *error, float *rew, uint32_t *act,uz_matrix_t *obs,  uz_matrix_t *obspl1, uint32_t mbsize,
 uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, adam_optimizer_t *adam)
 {
 uz_assert_not_NULL(self);
@@ -855,7 +833,6 @@ float calculate_reward_dqn(float samplerate, uz_matrix_t *observations, bool pen
 }
 
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty){
-    // check, ob penalty nötig
     float z = 0.0f;
     if (penalty == true)
     {

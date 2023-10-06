@@ -92,7 +92,6 @@ int main(void)
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
 
             // für inverter adapter
-            uz_inverter_adapter_t* initialize_uz_inverter_adapter_on_D1(void);
             Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
 
             // Stromgrenze festlegen

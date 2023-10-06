@@ -38,7 +38,7 @@
 
 //für inverter adapter
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
-//#include "include/uz_inverter_adapter_init.h"
+#include "include/uz_inverter_adapter_init.h"
 
 // UltraZohm includes
 #include "globalData.h"

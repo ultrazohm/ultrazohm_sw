@@ -23,10 +23,44 @@ Function references
 
 .. doxygenfunction:: uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq
 
-Example
--------
+Minimum code example
+--------------------
 
-need to copy here!!
+A minimal code example is given in the following.
+The SVM not only calculates Duty Cycles, it also yields phase shifts for the PWM IP-Cores.
+Applying them to the modules is vital.
+Additionally, the output struct contains two flags, indicating that either the :math:`\alpha\beta`- or :math:`xy`-setpoints or both have been limited.
+They can be used for a clamping feature, inhibiting integrators in the control algorithm to overflow.
+In this example, they are not used.
+
+.. code-block:: c
+  :caption: Changes in ``isr.c`` (R5)
+
+  // declarations
+  #include "../uz/uz_Space_Vector_Modulation_6ph/uz_Space_Vector_Modulation_6ph.h"
+  uz_6ph_dq_t u_ref_6ph = {0};
+  uz_3ph_dq_t u_ref_3ph = {0};
+  uz_3ph_dq_t cc_setpoint = {0};
+  struct uz_svm_asym_6ph_CSVPWM24_out svm_out = {0};
+  ...
+  // in isr
+  if (current_state==control_state)
+  {
+    // example current control
+    u_ref_3ph = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, cc_setpoint, Global_Data.av.actual_3ph_dq, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
+    u_ref_6ph.d = u_ref_3ph.d;
+    u_ref_6ph.q = u_ref_3ph.q;
+  }
+
+  // Modulation
+  svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(u_ref_6ph, Global_Data.av.theta_elec, Global_Data.av.v_dc1);
+  // PWM phase shift
+  uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.shift_system1, svm_out.shift_system1, svm_out.shift_system1);
+  uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.shift_system2, svm_out.shift_system2, svm_out.shift_system2);
+  // assign Duty Cycles
+  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.Duty_Cycle.system1.DutyCycle_A, svm_out.Duty_Cycle.system1.DutyCycle_B, svm_out.Duty_Cycle.system1.DutyCycle_C);
+  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.Duty_Cycle.system2.DutyCycle_A, svm_out.Duty_Cycle.system2.DutyCycle_B, svm_out.Duty_Cycle.system2.DutyCycle_C);
+
 
 Theoretical details
 ===================
@@ -76,38 +110,11 @@ Using no limitation, the SVM threw an error for a Duty Cycle out of range (negat
 Using the limitation, no error occured and the relative limit of :math:`xy`-SV to :math:`\alpha\beta`-SV could even be raised up to 50% without causing an invalid Duty Cycle.
 
 Closed loop simulation
-======================
+----------------------
 
 Closed loop testbench
-=====================
+---------------------
 
-.. code-block:: c
-  :caption: Changes in ``isr.c`` (R5)
-
-  // declarations
-  #include "../uz/uz_Space_Vector_Modulation_6ph/uz_Space_Vector_Modulation_6ph.h"
-  uz_6ph_dq_t u_ref_6ph = {0};
-  uz_3ph_dq_t u_ref_3ph = {0};
-  uz_3ph_dq_t cc_setpoint = {0};
-  struct uz_svm_asym_6ph_CSVPWM24_out svm_out = {0};
-  ...
-  // in isr
-  if (current_state==control_state)
-  {
-    // example current control
-    u_ref_3ph = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, cc_setpoint, Global_Data.av.actual_3ph_dq, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
-    u_ref_6ph.d = u_ref_3ph.d;
-    u_ref_6ph.q = u_ref_3ph.q;
-  }
-
-  // Modulation
-  svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(u_ref_6ph, Global_Data.av.theta_elec, Global_Data.av.v_dc1);
-  // PWM phase shift
-  uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.shift_system1, svm_out.shift_system1, svm_out.shift_system1);
-  uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.shift_system2, svm_out.shift_system2, svm_out.shift_system2);
-  // assign Duty Cycles
-  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.Duty_Cycle.system1.DutyCycle_A, svm_out.Duty_Cycle.system1.DutyCycle_B, svm_out.Duty_Cycle.system1.DutyCycle_C);
-  uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.Duty_Cycle.system2.DutyCycle_A, svm_out.Duty_Cycle.system2.DutyCycle_B, svm_out.Duty_Cycle.system2.DutyCycle_C);
 
 
 Literature

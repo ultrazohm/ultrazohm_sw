@@ -112,6 +112,19 @@
 #define  lambda_q_AXI_Data_cost_opt         0x118  //data register for Inport lambda_q_AXI
 #define  lambda_u_AXI_Data_cost_opt         0x124  //data register for Inport lambda_u_AXI
 
+//mpc enable
+#define  IPCore_Reset_mpc_enable       0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_mpc_enable      0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_mpc_enable   0x8  //contains unique IP timestamp (yymmddHHMM): 2310041559
+#define  AXI_mpc_enb_Data_mpc_enable   0x17C  //data register for Inport AXI_mpc_enb
+
+//count switching actions
+#define  IPCore_Reset_count_f_sw          0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_count_f_sw         0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_count_f_sw      0x8  //contains unique IP timestamp (yymmddHHMM): 2310041604
+#define  bResetAXI_Data_count_f_sw        0x100  //data register for Inport bResetAXI
+#define  switchNumb_AXI_Data_count_f_sw   0x104  //data register for Outport switchNumb_AXI
+
 
 void fcs_mpc_select_current_source(bool right_or_left);
 void fcs_mpc_select_resolver_source(bool right_or_left);
@@ -125,3 +138,7 @@ void fcs_mpc_init_delay_comp(void);
 void fcs_mpc_init_prediction_model(void);
 void fcs_mpc_init_cost_function(void);
 void fcs_mpc_write_axi_v_dc(void);
+void fcs_mpc_enable(bool enable);
+void fcs_mpc_write_setpoint(void);
+void fcs_mpc_calc_f_sw_avg(void);
+void fcs_mpc_debug(void);

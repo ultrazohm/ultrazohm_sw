@@ -97,6 +97,13 @@ typedef struct _actualValues_ {
 	float lambda_d;
 	float lambda_q;
 	float lambda_u;
+	float i_max_mpc;
+	float f_sw_avg_Hz;
+	float i_d_ip;
+	float i_q_ip;
+	float i_a_pu;
+	float i_b_pu;
+	float i_c_pu;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

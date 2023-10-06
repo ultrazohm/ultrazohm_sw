@@ -261,18 +261,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_17):
 		data->av.snd_fld[17] = value;
+		data->av.lambda_d = value;
+	    uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + lambda_d_AXI_Data_cost_opt, uz_convert_float_to_unsigned_fixed(data->av.lambda_d, 17U));
 			break;
 
 		case (Set_Send_Field_18):
 		data->av.snd_fld[18] = value;
+		data->av.lambda_q = value;
+		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + lambda_q_AXI_Data_cost_opt, uz_convert_float_to_unsigned_fixed(data->av.lambda_q, 17U));
 			break;
 
 		case (Set_Send_Field_19):
 		data->av.snd_fld[19] = value;
+		data->av.lambda_u = value;
+		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + lambda_u_AXI_Data_cost_opt, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17U));
 			break;
 
 		case (Set_Send_Field_20):
 		data->av.snd_fld[20] = value;
+		data->av.i_max_mpc = value;
+		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + max_current_pu_AXI_Data_cost_opt, uz_convert_float_to_unsigned_fixed(data->av.i_max_mpc, 15U));
 			break;
 
 		case (My_Button_1):

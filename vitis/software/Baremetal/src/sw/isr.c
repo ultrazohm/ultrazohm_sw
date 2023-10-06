@@ -142,7 +142,7 @@ void ISR_Control(void *data)
 		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
 		//disable MPC IP
-		//...to do
+		fcs_mpc_enable(false);
     }
 
     // if "ENABLE SYSTEM"
@@ -157,7 +157,13 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	//enable MPC
-    	//...to do
+    	fcs_mpc_enable(true);
+    	//write setpoint to MPC
+    	fcs_mpc_write_setpoint();
+    	//calc average switching frequency
+    	fcs_mpc_calc_f_sw_avg();
+    	//read axi values from mpc ip for debug
+    	fcs_mpc_debug();
 
         // Start: Control algorithm - only if ultrazohm is in control state
     	// park transformation of measured currents
@@ -187,12 +193,12 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
     	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
     	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
-    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
-    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
-    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+//    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
+//    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
+//    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 

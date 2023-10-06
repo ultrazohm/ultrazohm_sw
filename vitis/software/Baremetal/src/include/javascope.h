@@ -46,6 +46,11 @@ enum JS_OberservableData {
 	JSO_vq_left,
 	JSO_vd_right,
 	JSO_vq_right,
+	JSO_ia_pu_ip,
+	JSO_ib_pu_ip,
+	JSO_ic_pu_ip,
+	JSO_id_pu_ip,
+	JSO_iq_pu_ip,
 	JSO_theta_el_left,
 	JSO_theta_el_right,
 	JSO_theta_mech_left,
@@ -68,6 +73,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_Error_Code,
 	JSSD_FLOAT_temp_inv_left,
 	JSSD_FLOAT_temp_inv_right,
+	JSSD_FLOAT_f_sw_avg_Hz_right,
 	JSSD_FLOAT_vd_left,
 	JSSD_FLOAT_vq_left,
 	JSSD_FLOAT_id_left,
@@ -148,10 +154,10 @@ enum gui_button_mapping {
 	Ki_id_right,
 	Kp_iq_right,
 	Ki_iq_right,
-	send_field_17,
-	send_field_18,
-	send_field_19,
-	send_field_20,
+	lambda_d,
+	lambda_q,
+	lambda_u,
+	i_max_mpc,
 	SND_FLD_ENDMARKER
 
 
@@ -178,7 +184,7 @@ enum gui_button_mapping {
 	-,
 	-,
 	-,
-	-,
+	p.u.,
 	SND_LABELS_ENDMARKER
 
 

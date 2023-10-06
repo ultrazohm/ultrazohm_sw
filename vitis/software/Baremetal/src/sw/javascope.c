@@ -84,6 +84,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_vq_left]			= &data->av.v_q_left;
 	js_ch_observable[JSO_vd_right]			= &data->av.v_d_right;
 	js_ch_observable[JSO_vq_right]			= &data->av.v_q_right;
+	js_ch_observable[JSO_ia_pu_ip]			= &data->av.i_a_pu;
+	js_ch_observable[JSO_ib_pu_ip]			= &data->av.i_b_pu;
+	js_ch_observable[JSO_ic_pu_ip]			= &data->av.i_c_pu;
+	js_ch_observable[JSO_id_pu_ip]			= &data->av.i_d_ip;
+	js_ch_observable[JSO_iq_pu_ip]			= &data->av.i_q_ip;
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;
@@ -100,6 +105,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_v_dc_left]				= &(data->av.v_dc_left);
 	js_slowDataArray[JSSD_FLOAT_temp_inv_left]			= &(data->av.mean_temp_inv_left);
 	js_slowDataArray[JSSD_FLOAT_temp_inv_right]			= &(data->av.mean_temp_inv_right);
+	js_slowDataArray[JSSD_FLOAT_f_sw_avg_Hz_right]		= &(data->av.f_sw_avg_Hz);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

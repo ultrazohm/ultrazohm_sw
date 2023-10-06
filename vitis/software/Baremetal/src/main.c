@@ -77,6 +77,10 @@ int main(void)
             Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
             Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+            Global_Data.av.lambda_d = 1.0f;
+            Global_Data.av.lambda_q = 1.0f;
+            Global_Data.av.lambda_u = 0.0f;
+            Global_Data.av.i_max_mpc = 1.0f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -104,7 +108,7 @@ int main(void)
             Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
             //MPC init
             //uz_debug_ip
-            fcs_mpc_real_or_debug_inputs(false); //false=real, true=debug
+            fcs_mpc_real_or_debug_inputs(true); //false=debug, true=real
             //uz_sel_currents_ip
             fcs_mpc_select_current_source(false); //false=right, true=left
             //uz_sel_resolver_ip

@@ -38,8 +38,8 @@ In this example, they are not used.
 
   // declarations
   #include "../uz/uz_Space_Vector_Modulation_6ph/uz_Space_Vector_Modulation_6ph.h"
-  uz_6ph_dq_t u_ref_6ph = {0};
-  uz_3ph_dq_t u_ref_3ph = {0};
+  uz_6ph_dq_t v_ref_6ph = {0};
+  uz_3ph_dq_t v_ref_3ph = {0};
   uz_3ph_dq_t cc_setpoint = {0};
   struct uz_svm_asym_6ph_CSVPWM24_out svm_out = {0};
   ...
@@ -47,13 +47,13 @@ In this example, they are not used.
   if (current_state==control_state)
   {
     // example current control
-    u_ref_3ph = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, cc_setpoint, Global_Data.av.actual_3ph_dq, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
-    u_ref_6ph.d = u_ref_3ph.d;
-    u_ref_6ph.q = u_ref_3ph.q;
+    v_ref_3ph = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, cc_setpoint, Global_Data.av.actual_3ph_dq, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
+    v_ref_6ph.d = v_ref_3ph.d;
+    v_ref_6ph.q = v_ref_3ph.q;
   }
 
   // Modulation
-  svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(u_ref_6ph, Global_Data.av.theta_elec, Global_Data.av.v_dc1);
+  svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(v_ref_6ph, Global_Data.av.theta_elec, Global_Data.av.v_dc1);
   // PWM phase shift
   uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.shift_system1, svm_out.shift_system1, svm_out.shift_system1);
   uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.shift_system2, svm_out.shift_system2, svm_out.shift_system2);

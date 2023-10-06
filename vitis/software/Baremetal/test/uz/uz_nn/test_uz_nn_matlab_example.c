@@ -335,7 +335,6 @@ void test_uz_nn_matlab(void)
        // printf("output nach minbatch  %d ist = %.8f \n",(int)i, (double)result);
        // printf("mse nach minibatch %d ist = %.8f \n",(int)i, (double)msebatch[i]);
         }
-        free(adam);
 }
 
 

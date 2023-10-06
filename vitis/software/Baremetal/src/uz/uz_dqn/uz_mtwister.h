@@ -29,6 +29,12 @@ struct uz_mtwister_t{
 };
 
 
+struct uz_mtwister_config{
+    uint32_t seed;
+    enum rng_type distribution;
+};
+
+uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg);
 MTRand seedRand(unsigned long seed);
 unsigned long genRandLong(MTRand* rand);
 double genRand(MTRand* rand);
@@ -36,14 +42,6 @@ float genRand_float(MTRand* rand);
 uint32_t genRand_zero_one(MTRand* rand);
 uint32_t genRand_uint32_t(MTRand* rand, uint32_t max) ;
 void genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val);
-
-struct uz_mtwister_config{
-    uint32_t seed;
-    enum rng_type distribution;
-};
-
-uint32_t random_number(int min_num, int max_num);
-uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg);
 float uz_generate_random_number(uz_mtwister_t *self);
 float uz_random_box_mueller(MTRand* seed,float mean, float std);
 void polar_box_muller(float *retval, uint32_t range);

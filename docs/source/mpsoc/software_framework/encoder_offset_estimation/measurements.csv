@@ -1,0 +1,7 @@
+:math:`\theta_\textrm{el}`, :math:`\mu(\theta_\textrm{el})` (rad), :math:`\sigma(\theta_\textrm{el})` (rad)
+Testbench 1,,
+:math:`\theta_\textrm{el;inital}`,5.4823,0.0987
+:math:`\theta_\textrm{el;precise}`,5.4843,0.02394
+Testbench 2,,
+:math:`\theta_\textrm{el;inital}`,5.5447,0.1080
+:math:`\theta_\textrm{el;precise}`,5.5778,0.0045

@@ -18,9 +18,13 @@ Transformations for multiphase systems do exist as well.
 * :ref:`6ph_abc_to_alphabeta`
 * :ref:`6ph_alphabeta_to_abc`
 * :ref:`6ph_alphabeta_to_dq`
+* :ref:`6ph_alphabeta_XY_to_dq_xy`
 * :ref:`6ph_dq_to_alphabeta`
+* :ref:`6ph_dq_xy_to_alphabeta_XY`
 * :ref:`6ph_abc_to_dq`
+* :ref:`6ph_abc_to_dq_xy`
 * :ref:`6ph_dq_to_abc`
+* :ref:`6ph_dq_xy_to_abc`
 * :ref:`9ph_abc_to_alphabeta`
 * :ref:`9ph_alphabeta_to_abc`
 * :ref:`9ph_alphabeta_to_dq`
@@ -272,12 +276,26 @@ The inverse transformation uses the inverse of the before shown matrix.
 
 .. doxygenfunction:: uz_transformation_asym30deg_6ph_alphabeta_to_dq
 
+.. _6ph_alphabeta_XY_to_dq_xy:
+
+6ph-αβγ-XY to 6ph-dq-xy transformation
+--------------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy
+
 .. _6ph_dq_to_alphabeta:
 
 6ph-dq to 6ph-αβγ transformation
 --------------------------------
 
 .. doxygenfunction:: uz_transformation_asym30deg_6ph_dq_to_alphabeta
+
+.. _6ph_dq_xy_to_alphabeta_XY:
+
+6ph-dq-xy to 6ph-αβγ-XY transformation
+--------------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_dq_xy_to_alphabeta_XY
 
 .. _6ph_abc_to_dq:
 
@@ -286,6 +304,13 @@ The inverse transformation uses the inverse of the before shown matrix.
 
 .. doxygenfunction:: uz_transformation_asym30deg_6ph_abc_to_dq
 
+.. _6ph_abc_to_dq_xy:
+
+6ph-abc to 6ph-dq-xy transformation
+-----------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_abc_to_dq_xy
+
 .. _6ph_dq_to_abc:
 
 6ph-dq to 6ph-abc transformation
@@ -293,7 +318,12 @@ The inverse transformation uses the inverse of the before shown matrix.
 
 .. doxygenfunction:: uz_transformation_asym30deg_6ph_dq_to_abc
 
+.. _6ph_dq_xy_to_abc:
 
+6ph-dq-xy to 6ph-abc transformation
+-----------------------------------
+
+.. doxygenfunction:: uz_transformation_asym30deg_6ph_dq_xy_to_abc
 
 structs for ninephase VSD transformation
 ****************************************

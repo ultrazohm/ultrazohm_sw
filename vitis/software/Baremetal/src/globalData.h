@@ -6,6 +6,10 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+
+// für inverter adapter
+ #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -23,7 +27,7 @@ typedef union _ConversionFactors_ {
 	float ADC_array[8];
 } ConversionFactors;
 
-typedef union _Measurements_ {
+typedef union _Measurements_ { // Strom- und Spannungswerte
 	struct{
 		float ADC_A1;
 		float ADC_A2;
@@ -83,7 +87,15 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
-	float snd_fld[21];
+
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+
+	float duty_cycle_A;
+	float duty_cycle_B;
+	float duty_cycle_C;
+
+	float amplitude;
+	float frequency_Hz;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -99,6 +111,23 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+
+	float p;
+	float start_voltage;
+	// Grenzen
+	float assertioncurrent;
+
+	// U/f-Steuerung
+	float m_ft;
+	bool is_three_phase_active;
+
+	float amplitude_test;
+	float Omega_El; //Winkelgeschwindigkeit in rad/s
+	float Theta_El; //Winkel in rad
+	float RPM; //Drehzahl in 1/min
+
+	float m_uf;
+	float setpoint_RPM;
 } referenceAndSetValues;
 
 typedef struct{
@@ -111,6 +140,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+
+	// ergänzung für Umrichterkarte (inverter adapter)
+	uz_inverter_adapter_t* inverter_d1;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

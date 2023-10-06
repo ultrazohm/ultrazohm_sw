@@ -38,6 +38,22 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+// Variablen für U/f-Steuerung
+float amplitude = 0.0f;
+float delta_Omega_El = 0.0f;
+
+
+// gegebenenfalls anpassen
+float voltage_correction_factor = 5.0f/3.5f;
+
+//float cycle_counter = 0.0f;
+
+// Strom- und Spannungsmessung
+struct uz_3ph_abc_t v_abc_Volts = {0};
+struct uz_3ph_abc_t i_abc_Amps = {0};
+float v_DC_Volts = 0.0f;
+float i_DC_Amps = 0.0f;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -52,20 +68,142 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+    // Strom- und Spannungswerte einlesen
+    v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f * voltage_correction_factor;
+    v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f * voltage_correction_factor;
+    v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f * voltage_correction_factor;
+    v_DC_Volts = Global_Data.aa.A1.me.ADC_A1 * 12.0f * voltage_correction_factor;
+    i_abc_Amps.a = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+    i_abc_Amps.b = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+    i_abc_Amps.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+    i_DC_Amps = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+
+    // Werte für Javascope
+    Global_Data.av.U_U = v_abc_Volts.a;
+    Global_Data.av.U_V = v_abc_Volts.b;
+    Global_Data.av.U_W = v_abc_Volts.c;
+    Global_Data.av.U_ZK = v_DC_Volts;
+
+    Global_Data.av.I_U = i_abc_Amps.a;
+    Global_Data.av.I_V = i_abc_Amps.b;
+    Global_Data.av.I_W = i_abc_Amps.c;
+
+
+    if ((i_abc_Amps.a >= Global_Data.rasv.assertioncurrent) ||     	//Ausschalten bei positivem Überstrom
+    	(i_abc_Amps.b >= Global_Data.rasv.assertioncurrent) ||
+		(i_abc_Amps.c >= Global_Data.rasv.assertioncurrent) ||
+		(i_abc_Amps.a <= - Global_Data.rasv.assertioncurrent) ||    // negativen Überstrom
+		(i_abc_Amps.b <= - Global_Data.rasv.assertioncurrent) ||
+		(i_abc_Amps.c <= - Global_Data.rasv.assertioncurrent) ||
+		(v_DC_Volts > 5.5f)  || 									// bei zu großer Zwischenkreisspannung
+		(((Global_Data.rasv.m_uf / v_DC_Volts) * (Global_Data.rasv.setpoint_RPM / 60.0f) * Global_Data.rasv.p) > 1.0f) || //bei Dutycycle bei Soll-Drehzahl > 1
+		(((Global_Data.rasv.m_uf / v_DC_Volts) * (Global_Data.rasv.setpoint_RPM / 60.0f) * Global_Data.rasv.p) < 0.0f) || //bei Dutycycle bei Soll-Drehzahl < 0
+		(Global_Data.rasv.p < 1.0f)||   							// bei Eingabe Polpaarzahl = 0
+		(Global_Data.rasv.setpoint_RPM > 700.0f) ||					// bei Eingabe Solldrehzahl > 700 1/min
+    	(Global_Data.rasv.start_voltage < 0.0f))					// oder bei Eingabe Anfangsspannung < 0
+    {
+        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+
+        Global_Data.rasv.is_three_phase_active = false;
+
+        ultrazohm_state_machine_set_userLED(false);
+
+        ultrazohm_state_machine_set_stop(true);
+    }
+
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	// enable inverter adapter hardware
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+
+    	if(Global_Data.rasv.is_three_phase_active)
+    	{
+    		// Start: Control algorithm - only if ultrazohm is in control state
+
+    		Global_Data.rasv.RPM = (Global_Data.rasv.Omega_El * 60.0f) / (2.0f * M_PI * Global_Data.rasv.p); // Ermittlung der IST-Drehzahl
+
+    		delta_Omega_El = (Global_Data.rasv.m_ft * 2.0f * M_PI) / 10000.0f; // Inkrement bzw. Dekrement für Winkelgeschwindigkeit berechnen
+
+    		if (Global_Data.rasv.RPM < (Global_Data.rasv.setpoint_RPM - delta_Omega_El))  // Wenn Ist-Drehzahl kleiner (Soll-Drehzahl - Toleranz)
+    		{
+    			Global_Data.rasv.Omega_El += delta_Omega_El; // dann Winkelgeschwindigkeit erhöhen
+    		}
+    		else if(Global_Data.rasv.RPM > (Global_Data.rasv.setpoint_RPM + delta_Omega_El)) // Wenn Ist-Drehzahl größer (Soll-Drehzahl + Toleranz)
+    		{
+    			Global_Data.rasv.Omega_El -= delta_Omega_El; // dann Winkelgeschwindigkeit verringern
+    		}
+    		else
+    		{
+    			Global_Data.rasv.Omega_El = (Global_Data.rasv.setpoint_RPM / 60.0f) * (2.0f *  M_PI * Global_Data.rasv.p); // Wenn Ist-Drehzahl innerhalb der Toleranz wird Soll-Winkelgeschwindigkeit zugewiesen
+    		}
+
+    		Global_Data.rasv.Theta_El += Global_Data.rasv.Omega_El/10000.0f; // Winkel Theta_El = integral Winkelgeschwindigkeit Omega_El
+
+    		if (Global_Data.rasv.Theta_El  >= 2.0f * M_PI)
+    		{
+    			Global_Data.rasv.Theta_El -= 2.0f * M_PI; // Winkel wird ab 2*Pi zurückgesetzt, um Überlauf zu vermeiden
+    		}
+
+    		amplitude = (Global_Data.rasv.m_uf * Global_Data.rasv.Omega_El) / (2.0f * M_PI) + Global_Data.rasv.start_voltage; // Amplitude in V aus Frequenz berechnen
+
+    		amplitude = amplitude / (v_DC_Volts * 2.0f); // Amplitude von Spannung in Dutycycle konvertieren
+
+    		if (amplitude > 0.5)
+    		{
+    			amplitude = 0.5f;
+    		}
+
+    		// aktuelle Dutycycle berechnen
+    		Global_Data.av.duty_cycle_A = amplitude * sinf(Global_Data.rasv.Theta_El) + amplitude;
+    		Global_Data.av.duty_cycle_B = amplitude * sinf(Global_Data.rasv.Theta_El - (2.0f * M_PI / 3.0f)) + amplitude;
+    		Global_Data.av.duty_cycle_C = amplitude * sinf(Global_Data.rasv.Theta_El - (4.0f * M_PI / 3.0f)) + amplitude;
+
+    		// Dutycycle den Ausgängen zuweisen
+            Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.duty_cycle_A;
+            Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.duty_cycle_B;
+            Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.duty_cycle_C;
+
+    	}else{
+    		// Ausgänge abschalten
+            Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+            Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+            Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+
+            // Variablen zurücksetzen
+            Global_Data.rasv.Theta_El = 0.0f;
+            Global_Data.rasv.Omega_El = 0.0f;
+            Global_Data.rasv.RPM = 0.0f;
+    	}
+    }else{
+    	// Ausgänge abschalten
+        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+
+        // Umrichterkarte deaktivieren
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+
+        // Variablen zurücksetzen
+        Global_Data.rasv.Theta_El = 0.0f;
+        Global_Data.rasv.Omega_El = 0.0f;
+        Global_Data.rasv.RPM = 0.0f;
     }
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+//    // Set duty cycles for three-level modulator
+//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//                        Global_Data.rasv.halfBridge2DutyCycle,
+//                        Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

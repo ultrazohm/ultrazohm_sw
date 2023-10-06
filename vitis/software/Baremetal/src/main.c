@@ -70,7 +70,7 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            JavaScope_initialize(&Global_Data);
+            JavaScope_initalize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -90,6 +90,23 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+
+            // für inverter adapter
+            uz_inverter_adapter_t* initialize_uz_inverter_adapter_on_D1(void);
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+
+            // Stromgrenze festlegen
+            Global_Data.rasv.is_three_phase_active = false;
+            Global_Data.rasv.assertioncurrent = 0.0f;
+
+            // uf steuerung
+            Global_Data.rasv.m_ft= 0.0f;
+            Global_Data.rasv.m_uf = 0.0f;
+
+            Global_Data.rasv.Omega_El = 0.0f; //Winkelgeschwindigkeit in rad/s
+            Global_Data.rasv.Theta_El = 0.0f; //Winkelgeschwindigkeit in rad
+            Global_Data.rasv.RPM = 0.0f; //Drehzahl in 1/min
+
             initialization_chain = print_msg;
             break;
 	    case print_msg:

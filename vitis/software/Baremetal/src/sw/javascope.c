@@ -37,8 +37,11 @@ uint32_t js_status_BareToRTOS=0;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+// U/f im Javascope
+extern uz_3ph_abc_t Uf_control;
 
-int JavaScope_initialize(DS_Data* data)
+
+int JavaScope_initalize(DS_Data* data)
 {
 	int Status = 0;
 	//Initialize all variables with zero
@@ -66,16 +69,27 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_U_ZK]			= &data->av.U_ZK;
+	js_ch_observable[JSO_duty_cycle_A]  = &data->av.duty_cycle_A;
+	js_ch_observable[JSO_duty_cycle_B]  = &data->av.duty_cycle_B;
+	js_ch_observable[JSO_duty_cycle_C]  = &data->av.duty_cycle_C;
+	js_ch_observable[JSO_Omega_El]  	= &data->rasv.Omega_El;
+	js_ch_observable[JSO_setpoint_RPM]  = &data->rasv.setpoint_RPM;
+	js_ch_observable[JSO_RPM]  			= &data->rasv.RPM;
+	//js_ch_observable[JSO_amplitude]		= &data->av.amplitude;
+	js_ch_observable[JSO_amplitude]		= &data->rasv.amplitude_test;
+	//js_ch_observable[JSO_frequency_Hz]	= &data->av.frequency_Hz;
+	js_ch_observable[JSO_frequency_Hz]	= &data->rasv.m_uf;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
+	//js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
+	js_ch_observable[JSO_Theta_el] 		= &data->rasv.Theta_El;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -91,7 +105,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-
+	js_slowDataArray[JSSD_FLOAT_RPM]					= &(data->rasv.RPM);
+	js_slowDataArray[JSSD_FLOAT_Omega_El]				= &(data->rasv.Omega_El);
 	return Status;
 }
 

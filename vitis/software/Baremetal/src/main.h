@@ -31,6 +31,14 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
 
+// für 3-phasiges Signal
+#include "uz/uz_Transformation/uz_Transformation.h"
+#include "uz/uz_wavegen/uz_wavegen.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+
+//für inverter adapter
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+//#include "include/uz_inverter_adapter_init.h"
 
 // UltraZohm includes
 #include "globalData.h"

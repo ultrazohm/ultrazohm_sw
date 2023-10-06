@@ -73,10 +73,10 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
     // Strom- und Spannungswerte einlesen
-    v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f * voltage_correction_factor;
-    v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f * voltage_correction_factor;
-    v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f * voltage_correction_factor;
-    v_DC_Volts = Global_Data.aa.A1.me.ADC_A1 * 12.0f * voltage_correction_factor;
+    v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f; //* voltage_correction_factor;
+    v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f; //* voltage_correction_factor;
+    v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f; //* voltage_correction_factor;
+    v_DC_Volts = Global_Data.aa.A1.me.ADC_A1 * 12.0f; //* voltage_correction_factor;
     i_abc_Amps.a = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
     i_abc_Amps.b = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
     i_abc_Amps.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
@@ -100,7 +100,7 @@ void ISR_Control(void *data)
 		(i_abc_Amps.b <= - Global_Data.rasv.assertioncurrent) ||
 		(i_abc_Amps.c <= - Global_Data.rasv.assertioncurrent) ||
 		(v_DC_Volts > 5.5f)  || 									// bei zu großer Zwischenkreisspannung
-		(((Global_Data.rasv.m_uf / v_DC_Volts) * (Global_Data.rasv.setpoint_RPM / 60.0f) * Global_Data.rasv.p) > 1.0f) || //bei Dutycycle bei Soll-Drehzahl > 1
+		(((Global_Data.rasv.m_uf / v_DC_Volts) * (Global_Data.rasv.setpoint_RPM / 60.0f) * Global_Data.rasv.p) > 1.15f) || //bei Dutycycle bei Soll-Drehzahl > 1
 		(((Global_Data.rasv.m_uf / v_DC_Volts) * (Global_Data.rasv.setpoint_RPM / 60.0f) * Global_Data.rasv.p) < 0.0f) || //bei Dutycycle bei Soll-Drehzahl < 0
 		(Global_Data.rasv.p < 1.0f)||   							// bei Eingabe Polpaarzahl = 0
 		(Global_Data.rasv.setpoint_RPM > 700.0f) ||					// bei Eingabe Solldrehzahl > 700 1/min

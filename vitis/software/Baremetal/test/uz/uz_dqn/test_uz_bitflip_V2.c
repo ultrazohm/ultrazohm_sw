@@ -16,7 +16,7 @@
 
 // buffer
 #define MINIBATCHSIZE 8U
-#define NUMBER_OF_EPOCHS 10U
+#define NUMBER_OF_EPOCHS 100000U
 #define EXPERIENCE_BUFFER_LENGTH 50000U
 #define TARGET_UPDATE_FREQUENCY 20U
 // nn
@@ -28,7 +28,7 @@
 #define NUMBEROFTESTSTEPS 50U
 
 float discountfact = 0.99f;
-float lernrate = 2e-3f;
+float lernrate = 0.002f;
 
 // random array
 uint32_t array[NUMBEROFBITS] = {0U,0U,0U,0U};
@@ -50,7 +50,7 @@ struct uz_dqn_environment_config configenv = {
     .max_steps = NUMBEROFBITS+3,
     .epsilon_start = 0.99f, 
     .epsilon_min = 0.0000000001f, 
-    .epsilon_decay = 0.001f
+    .epsilon_decay = 5e-5f
 };
 // debug stuff
 float Q_Target[NUMBER_OF_EPOCHS*NUMBER_OF_OUTPUTS] = {0.0f};

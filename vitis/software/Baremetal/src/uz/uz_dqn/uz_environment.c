@@ -98,6 +98,7 @@ float calculate_reward_simple(uint32_t actionind)
     }
     return r;
 }
+
 void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action)
 {
 uz_assert_not_NULL(self);
@@ -110,30 +111,6 @@ uz_assert_not_NULL(self);
     self->bitinitial[action] = 1;
     self->inputfornn->data[action] = 1.0f;
     }
-}
-
-void flipbit(uz_dqn_environment_t *self, MTRand *seedRand)
-{
-    // get random index
-    uint32_t x = genRand_uint32_t(seedRand,self->bitlength);
-    // flip bit
-    if (self->bitinitial[x] == 1){
-    self->bitinitial[x] = 0;
-    self->inputfornn->data[x] = 0.0f;
-    }
-    else{
-    self->bitinitial[x] = 1;
-    self->inputfornn->data[x] = 1.0f;
-    }
-}
-
-void uz_dqn_environment_action(uz_dqn_environment_t *self)
-{
-    if (self->is_ready == true)
-    // flipbit(self,seedRand);
-
-    if(self->bittarget == self->bitinitial)
-    self->is_ready = false;
 }
 
 void save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size) {

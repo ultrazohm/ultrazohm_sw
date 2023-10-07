@@ -277,19 +277,10 @@ void uz_nn_mat_export(uz_nn_t *self)
     char *fname4 = "test/uz/uz_nn/matlab_weights/c_layer2_bias.csv";
     uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname4);
     char *fname5 = "test/uz/uz_nn/matlab_weights/c_layer3_bias.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname5);}
-
-void uz_nn_trained_export(uz_nn_t *self)
-{
-    char *fname = "test/uz/uz_dqn/trained_layer1_weights.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[0]), fname);
-    char *fname1 = "test/uz/uz_dqn/trained_layer2_weights.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[1]), fname);
-    char *fname3 = "test/uz/uz_dqn/trained_layer1_bias.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[0]), fname3);
-    char *fname4 = "test/uz/uz_dqn/trained_layer2_bias.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname4);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname5);
     }
+
+
     
 void uz_nn_set_gradients_zero(uz_nn_t *self)
 {

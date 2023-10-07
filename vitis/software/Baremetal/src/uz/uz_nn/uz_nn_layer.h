@@ -143,14 +143,8 @@ void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernra
  * @param self 
  * @param fname char pointer, that determines the .csv data name, where the weights should be stored
  */
-void uz_nn_layer_matw_export(uz_nn_layer_t *const self, char *fname);
-/**
- * @brief Save bias from c to .csv data for comparison reasons
- * 
- * @param self 
- * @param fname char pointer, that determines the .csv data name, where the bias should be stored
- */
-void uz_nn_layer_matb_export(uz_nn_layer_t *const self, char *fname);
+void uz_nn_layer_matrix_export(uz_matrix_t const *const self, char *fname);
+
 /**
  * @brief Set gradient in layer to a uz_matrix_t instance with the same dimension
  * 

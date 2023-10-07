@@ -117,7 +117,7 @@ void uz_nn_target_update(uz_nn_t *critic, uz_nn_t *target, enum target_update me
         uz_nn_copy_smoothing(critic, target, targetsmoothfact);
         break;
     case periodic:
-        uz_nn_copy(critic,target);
+        uz_nn_copy(critic, target);
         break;
     case periodic_smoothing:
         uz_assert_not_NULL(targetsmoothfact);
@@ -201,7 +201,7 @@ void uz_nn_mse_derv_mult(uz_matrix_t const *const output, uz_matrix_t const *con
     float z = 0.0f;
     for (uint32_t i = 0; i < output->length_of_data; i++)
     {
-        error[i] = - (expectedoutput->data[i] - output->data[i]);
+        error[i] = -(expectedoutput->data[i] - output->data[i]);
     }
 }
 
@@ -225,7 +225,7 @@ float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t const *const expectedoutp
     {
         y += (expectedoutput->data[i] - output->data[i]) * (expectedoutput->data[i] - output->data[i]);
     }
-    y = 1.0f/(float)output->length_of_data * y;
+    y = 1.0f / (float)output->length_of_data * y;
 
     return y;
 }
@@ -267,30 +267,30 @@ void uz_nn_backward_pass_mini_batch(uz_nn_t *self, const float *const error, uz_
 void uz_nn_mat_export(uz_nn_t *self)
 {
     char *fname = "test/uz/uz_nn/matlab_weights/c_layer1_weights.csv";
-    uz_nn_layer_matw_export(self->layer[0], fname);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[0]), fname);
     char *fname1 = "test/uz/uz_nn/matlab_weights/c_layer2_weights.csv";
-    uz_nn_layer_matw_export(self->layer[1], fname1);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[1]), fname1);
     char *fname2 = "test/uz/uz_nn/matlab_weights/c_layer3_weights.csv";
-    uz_nn_layer_matw_export(self->layer[2], fname2);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[2]), fname2);
     char *fname3 = "test/uz/uz_nn/matlab_weights/c_layer1_bias.csv";
-    uz_nn_layer_matb_export(self->layer[0], fname3);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[0]), fname3);
     char *fname4 = "test/uz/uz_nn/matlab_weights/c_layer2_bias.csv";
-    uz_nn_layer_matb_export(self->layer[1], fname4);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname4);
     char *fname5 = "test/uz/uz_nn/matlab_weights/c_layer3_bias.csv";
-    uz_nn_layer_matb_export(self->layer[2], fname5);
-}
+    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname5);}
 
 void uz_nn_trained_export(uz_nn_t *self)
 {
     char *fname = "test/uz/uz_dqn/trained_layer1_weights.csv";
-    uz_nn_layer_matw_export(self->layer[0], fname);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[0]), fname);
     char *fname1 = "test/uz/uz_dqn/trained_layer2_weights.csv";
-    uz_nn_layer_matw_export(self->layer[1], fname1);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[1]), fname);
     char *fname3 = "test/uz/uz_dqn/trained_layer1_bias.csv";
-    uz_nn_layer_matb_export(self->layer[0], fname3);
+    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[0]), fname3);
     char *fname4 = "test/uz/uz_dqn/trained_layer2_bias.csv";
-    uz_nn_layer_matb_export(self->layer[1], fname4);
-}
+    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname4);
+    }
+    
 void uz_nn_set_gradients_zero(uz_nn_t *self)
 {
     uz_assert_not_NULL(self);
@@ -415,11 +415,13 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
     return self->number_of_outputs;
 }
 
-void adam_optimizer_step(adam_optimizer_t* optimizer, uz_nn_t* network) {
-optimizer->traincounter++;
-for (uint32_t i = 0U; i < network->number_of_layer; i++) {
+void adam_optimizer_step(adam_optimizer_t *optimizer, uz_nn_t *network)
+{
+    optimizer->traincounter++;
+    for (uint32_t i = 0U; i < network->number_of_layer; i++)
+    {
         adam_layer_step(optimizer, network->layer[i]);
-}
+    }
 }
 
 #endif

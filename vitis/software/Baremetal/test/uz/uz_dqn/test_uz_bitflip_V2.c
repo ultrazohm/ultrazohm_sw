@@ -14,9 +14,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+void uz_nn_trained_export(uz_nn_t *self);
+
 // buffer
 #define MINIBATCHSIZE 8U
-#define NUMBER_OF_EPOCHS 100000U
+#define NUMBER_OF_EPOCHS 100U
 #define EXPERIENCE_BUFFER_LENGTH 50000U
 #define TARGET_UPDATE_FREQUENCY 20U
 // nn
@@ -283,4 +285,17 @@ void test_dqn_bitflip(void)
     }
     uz_nn_trained_export(testdqn2->critic_target_net);
 }
+
+void uz_nn_trained_export(uz_nn_t *self)
+{
+    char *fname = "test/uz/uz_dqn/trained_layer1_weights.csv";
+    uz_nn_layer_matrix_export(uz_nn_get_weight_matrix(self,1U), fname);
+    char *fname1 = "test/uz/uz_dqn/trained_layer2_weights.csv";
+    uz_nn_layer_matrix_export(uz_nn_get_weight_matrix(self, 2U), fname1);
+    char *fname3 = "test/uz/uz_dqn/trained_layer1_bias.csv";
+    uz_nn_layer_matrix_export(uz_nn_get_bias_matrix(self,1U), fname3);
+    char *fname4 = "test/uz/uz_dqn/trained_layer2_bias.csv";
+    uz_nn_layer_matrix_export(uz_nn_get_bias_matrix(self, 2U), fname4);
+}
+
 #endif // TEST

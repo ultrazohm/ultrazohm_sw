@@ -45,5 +45,4 @@ void genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float 
 float uz_generate_random_number(uz_mtwister_t *self);
 float uz_random_box_mueller(MTRand* seed,float mean, float std);
 void polar_box_muller(float *retval, uint32_t range);
-void export_histogram(float *array,uint32_t size);
 #endif // UZ_DQN_H

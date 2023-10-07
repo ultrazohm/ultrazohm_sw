@@ -7,9 +7,11 @@
 #include "uz_nn_layer.h"
 #include "uz_matrix.h"
 #include "uz_nn_activation_functions.h"
+
+void export_histogram(float *array, uint32_t size);
+
 #define NUMBER_OF_INPUTS 3U
 #define NUMBER_OF_NEURONS_IN_LAYER 4U
-
 
 float x[NUMBER_OF_INPUTS] = {1.0f, 2.0f, 3.0f};
 float w[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_LAYER] = {0.5377f, 1.8339f, -2.2588f, 0.8622f,
@@ -161,4 +163,17 @@ void test_uint_32_t_action(void){
   }
   float x = 2.0f;
 }
+
+void export_histogram(float *array, uint32_t size)
+{
+  FILE *file1 = fopen("test/uz/uz_dqn/matlab/randboxmueller.csv", "w");
+  if (file1 != NULL)
+  {
+    for (u_int32_t i = 0; i < size; i++)
+    {
+      fprintf(file1, "%d,%.4f\n", i, (double)array[i]);
+    }
+  }
+}
+
 #endif // TEST

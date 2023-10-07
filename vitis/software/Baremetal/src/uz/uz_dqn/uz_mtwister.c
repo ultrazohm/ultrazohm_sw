@@ -165,15 +165,6 @@ float uz_random_box_mueller(MTRand* seed,float mean, float std){
 return res;
 }
 
-void export_histogram(float *array,uint32_t size)
-{
-  FILE* file1 = fopen("test/uz/uz_dqn/matlab/randboxmueller.csv", "w");
-  if (file1 != NULL)
-  {
-  for (u_int32_t i = 0; i < size; i++) {
-        fprintf(file1, "%d,%.4f\n", i, (double)array[i]);
-  }
-  }
-}
+
 
 #endif // UZ_MTWISTER_H

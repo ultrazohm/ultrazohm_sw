@@ -78,7 +78,7 @@ Therefore if the :math:`\alpha\beta`-SV is near the maximum, the :math:`XY`-SV c
 Although a general limitation can not achieve maximum usage in all operating points, with this rule an overall good performance can be expected.
 
 Since the maximum voltage is given by the DC-Bus-Voltage and the modulation index :math:`m_i=\frac{1}{\sqrt{3}}` (determined in simulation), the combined length of the space vectors has to be limited.
-Therefore both lengths are added and if the exceed the maximum allowed voltage, they will be shortened in their existing relations.
+Therefore both lengths are added and if they exceed the maximum allowed voltage, they will be shortened in their existing relations.
 Since the :math:`XY`-SV limitation is executed before and the relation of the :math:`\alpha\beta`-SV and :math:`XY`-SV are kept the same, the previous limitation will not be violated.
 
 Space vectors

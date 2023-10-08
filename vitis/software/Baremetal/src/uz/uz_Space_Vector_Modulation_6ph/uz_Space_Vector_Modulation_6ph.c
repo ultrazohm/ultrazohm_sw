@@ -84,28 +84,28 @@ static const int svm_offline_order[24][6] = {
 };
 
 static int uz_svm_6ph_get_sector(float alpha, float beta);
-static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpoints, const float inverse_T_tv_row[5]);
+static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t u_ref_V, const float inverse_T_tv_row[5]);
 static inline void uz_svm_6ph_calculate_duty_cycles(float Duty_Cycles[6], float dwell[5], const int order[6]);
 static inline void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2);
 static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input, float maximum_abs, bool *limited_ab, bool *limited_xy);
 static inline uz_6ph_alphabeta_t uz_svm_6ph_norm_vdc(uz_6ph_alphabeta_t input, float V_dc);
 
 // "main" 6ph svm function
-struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_6ph_alphabeta_t setpoints, float V_dc){
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_6ph_alphabeta_t u_ref_V, float V_dc){
     uz_assert(V_dc >= 0.0f);
     struct uz_svm_asym_6ph_CSVPWM24_out out = {0};
 
     // space vector limitation
-    uz_6ph_alphabeta_t setpoints_normed = uz_svm_6ph_norm_vdc(setpoints, V_dc);
-    uz_6ph_alphabeta_t setpoints_limited = uz_svm_6ph_overall_limitation(setpoints_normed, SVM_6PH_MAXIMUM_MODULATION_INDEX, &out.limited_alphabeta, &out.limited_xy);
+    uz_6ph_alphabeta_t u_ref_V_normed = uz_svm_6ph_norm_vdc(u_ref_V, V_dc);
+    uz_6ph_alphabeta_t u_ref_V_limited = uz_svm_6ph_overall_limitation(u_ref_V_normed, SVM_6PH_MAXIMUM_MODULATION_INDEX, &out.limited_alphabeta, &out.limited_xy);
 
     // find sector
-    int sector = uz_svm_6ph_get_sector(setpoints_limited.alpha, setpoints_limited.beta);
+    int sector = uz_svm_6ph_get_sector(u_ref_V_limited.alpha, u_ref_V_limited.beta);
 
     // calculate dwell times
     float dwell_times[5];
     for(int i=0; i<5; i++){
-        dwell_times[i] = uz_svm_6ph_calculate_dwell_times_2N(setpoints_limited, &inverse_T_tv_all[sector-1][i][0]);
+        dwell_times[i] = uz_svm_6ph_calculate_dwell_times_2N(u_ref_V_limited, &inverse_T_tv_all[sector-1][i][0]);
     }
 
     // calculate duty cycles from dwell times
@@ -128,8 +128,8 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
 }
 
 // dq wrapped function
-struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(uz_6ph_dq_t setpoints, float V_dc, float theta_el){
-    struct uz_svm_asym_6ph_CSVPWM24_out out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_transformation_asym30deg_6ph_dq_to_alphabeta(setpoints, theta_el), V_dc);
+struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(uz_6ph_dq_t u_ref_V, float V_dc, float theta_el){
+    struct uz_svm_asym_6ph_CSVPWM24_out out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_transformation_asym30deg_6ph_dq_to_alphabeta(u_ref_V, theta_el), V_dc);
     return out;
 }
 
@@ -145,8 +145,8 @@ static int uz_svm_6ph_get_sector(float alpha, float beta){
 }
 
 // calculate dwell times with setpoint and given row (needs to be called 5 times, for each column once), basically just matrix multiplication
-static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t setpoints, const float inverse_T_tv_row[5]){
-    float out = inverse_T_tv_row[0]*setpoints.alpha + inverse_T_tv_row[1]*setpoints.beta + inverse_T_tv_row[2]*setpoints.x + inverse_T_tv_row[3]*setpoints.y + inverse_T_tv_row[4];
+static inline float uz_svm_6ph_calculate_dwell_times_2N(uz_6ph_alphabeta_t u_ref_V, const float inverse_T_tv_row[5]){
+    float out = inverse_T_tv_row[0]*u_ref_V.alpha + inverse_T_tv_row[1]*u_ref_V.beta + inverse_T_tv_row[2]*u_ref_V.x + inverse_T_tv_row[3]*u_ref_V.y + inverse_T_tv_row[4];
     return out;
 }
 
@@ -234,7 +234,7 @@ static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input
     uz_complex_polar_t polar_xy = uz_complex_cartesian_to_polar(cartesian_xy);  // make polar number from complex XY input
 
     // limit xy relative to alphabeta
-    if(polar_xy.abs > SVM_6PH_MAXIMUM_XY_RELATIVE * polar_ab.abs){              // if absolute setpoints are too large compared with alphabeta        
+    if(polar_xy.abs > SVM_6PH_MAXIMUM_XY_RELATIVE * polar_ab.abs){              // if absolute u_ref_V are too large compared with alphabeta        
         polar_xy.abs = SVM_6PH_MAXIMUM_XY_RELATIVE * polar_ab.abs;              // reduce setpoint
         *limited_xy = true;                                                     // set limited flag
     }
@@ -264,7 +264,7 @@ static uz_6ph_alphabeta_t uz_svm_6ph_overall_limitation(uz_6ph_alphabeta_t input
     return out;                                                                 // return out
 }
 
-// norm setpoints to Dc voltage
+// norm u_ref_V to Dc voltage
 static inline uz_6ph_alphabeta_t uz_svm_6ph_norm_vdc(uz_6ph_alphabeta_t input, float V_dc){
     uz_6ph_alphabeta_t out = {
         .alpha = input.alpha/V_dc,

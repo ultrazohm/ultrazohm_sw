@@ -227,21 +227,32 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, str
     switch ((layer_config.activation_function))
     {
     case (activation_linear || activation_sigmoid || activation_tanh || activation_sigmoid2):
+    {
         // float fanavg = (float)(layer->number_of_neurons/uz_matrix_get_number_of_rows(layer->output_matrix));
-        self->std = sqrtf(2.0f / (float)((layer->number_of_neurons + layer_config.length_of_output)));
-        self->mean = 0.0f;
+        float std = sqrtf(2.0f / (float)((layer->number_of_neurons + layer_config.length_of_output)));
+        float mean = 0.0f;
+        uz_mtwister_set_standard_deviation(self, std);
+        uz_mtwister_set_mean(self, mean);
         // uz_nn_layer_init_Glorot(layer->bias,self);
         uz_nn_layer_init_Glorot(layer->weights, self);
         break;
+    }
     case activation_ReLU:
-        self->std = sqrtf(2.0f / (float)((layer->number_of_neurons)));
-        self->mean = 0.0f;
+    {
+
+        float std = sqrtf(2.0f / (float)((layer->number_of_neurons)));
+        float mean = 0.0f;
+        uz_mtwister_set_standard_deviation(self, std);
+        uz_mtwister_set_mean(self, mean);
         // float fanin = (float)(layer->number_of_neurons);
         // uz_nn_layer_init_He(layer->bias,self);
         uz_nn_layer_init_He(layer->weights, self);
         break;
+    }
     default:
+    {
         break;
+    }
     }
 }
 
@@ -379,7 +390,7 @@ void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernra
         self->bias->data[i - weight_index] = self->bias->data[i - weight_index] + (lernrate / (float)minibatchsize * (-1.0f * self->gradients->data[i]));
     }
 }
-void uz_nn_layer_matrix_export(uz_matrix_t const*const self, char *fname)
+void uz_nn_layer_matrix_export(uz_matrix_t const *const self, char *fname)
 {
     FILE *f = fopen(fname, "w");
     for (uint32_t i = 0; i < self->length_of_data; i++)

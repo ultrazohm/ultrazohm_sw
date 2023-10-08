@@ -122,7 +122,7 @@ float x_array[NUMBER_OF_INPUTS * MINIBATCHSIZE] = {0};
 // config random
 struct uz_mtwister_config cfg = {
   .seed = 123,
-  .distribution = normal_distribution
+  .distribution = mtwister_normal_distribution
 };
 //config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {

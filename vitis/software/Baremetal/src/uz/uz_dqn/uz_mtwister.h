@@ -3,46 +3,33 @@
 
 #include "../uz_HAL.h"
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 
-#define STATE_VECTOR_LENGTH 624
-#define STATE_VECTOR_M      397 /* changes to STATE_VECTOR_LENGTH also require changes to this */
 
 typedef struct uz_mtwister_t uz_mtwister_t;
-typedef struct tagMTRand {
-  unsigned long mt[STATE_VECTOR_LENGTH];
-  int index;
-} MTRand;
-// Enum to define random number generator types
-enum rng_type{
-    uniform_distribution,
-    normal_distribution
-};
-struct uz_mtwister_t{
-    bool is_ready;
-    uint32_t seed;
-    MTRand seedRand;
-    int limit; // if needed
-    float mean;
-    float std;
-    enum rng_type distribution;
-};
 
+enum mtwister_rng_type
+{
+    mtwister_uniform_distribution,
+    mtwister_normal_distribution
+};
 
 struct uz_mtwister_config{
     uint32_t seed;
-    enum rng_type distribution;
+    enum mtwister_rng_type distribution;
+    float mean;
+    float std;
 };
 
-uz_mtwister_t *init_mtwister(struct uz_mtwister_config cfg);
-MTRand seedRand(unsigned long seed);
-unsigned long genRandLong(MTRand* rand);
-double genRand(MTRand* rand);
-float genRand_float(MTRand* rand);
-uint32_t genRand_zero_one(MTRand* rand);
-uint32_t genRand_uint32_t(MTRand* rand, uint32_t max) ;
-void genRand_uint32_t_array(uint32_t *array, MTRand* rand, uint32_t size, float min_val, float max_val);
+uz_mtwister_t *uz_mtwister_init(struct uz_mtwister_config cfg);
+void uz_mtwister_set_mean(uz_mtwister_t *self, float mean);
+void uz_mtwister_set_standard_deviation(uz_mtwister_t *self,float standard_deviation);
+
+float uz_mtwister_random_float_uniform(uz_mtwister_t *self);
+uint32_t uz_mtwister_generate_random_uint32(uz_mtwister_t *self, uint32_t max);
+
 float uz_generate_random_number(uz_mtwister_t *self);
-float uz_random_box_mueller(MTRand* seed,float mean, float std);
-void polar_box_muller(float *retval, uint32_t range);
+float uz_random_box_mueller(uz_mtwister_t *self, float mean, float std);
+    void polar_box_muller(float *retval, uint32_t range);
 #endif // UZ_DQN_H

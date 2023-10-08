@@ -123,7 +123,7 @@ float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
 // config random
 struct uz_mtwister_config cfg = {
   .seed = 2,
-  .distribution = normal_distribution
+  .distribution = mtwister_normal_distribution
 };
 //config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {

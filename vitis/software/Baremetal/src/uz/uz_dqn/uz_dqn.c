@@ -63,7 +63,7 @@ uint32_t length_of_buffer, struct uz_dqn_environment_config envconf)
     uz_assert_not_NULL(vecdata);
     uz_dqn_t *self = uz_dqn_allocation();
     self->inputvecnn = uz_matrix_init(&self->inputvecnn_matrix, vecdata, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
-    self->randinstance = init_mtwister(cfg); 
+    self->randinstance = uz_mtwister_init(cfg); 
     self->critic = uz_nn_init_with_rand(config_critic, number_of_layer, self->randinstance ,true);
     self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer);
@@ -94,7 +94,7 @@ void uz_dqn_sample_simple(uz_dqn_t *self)
     uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
     // randnumber and epsilon comparision
     if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
-        action = genRand_uint32_t(&self->randinstance->seedRand,self->critic->number_of_outputs-1);
+        action = uz_mtwister_generate_random_uint32(self->randinstance, self->critic->number_of_outputs - 1);
     }
     else{
     action = uz_matrix_get_max_index(outputdqn);
@@ -443,7 +443,8 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, ui
     uz_matrix_copy(self->env->inputfornn,self->experience_buffer->vectorforobs);
     uz_nn_ff(self->critic,self->env->inputfornn);
     outputcritic=uz_nn_get_output_data(self->critic);
-    if(genRand_float(&self->randinstance->seedRand)<self->env->epsilon_start){
+    if (uz_mtwister_random_float_uniform(self->randinstance) < self->env->epsilon_start)
+    {
         actionind = genRand_uint32_t(&self->randinstance->seedRand,self->env->bitlength-1);
     }
     else{

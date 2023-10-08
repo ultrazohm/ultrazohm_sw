@@ -92,7 +92,7 @@ static inline uz_6ph_alphabeta_t uz_svm_6ph_norm_vdc(uz_6ph_alphabeta_t input, f
 
 // "main" 6ph svm function
 struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_alphabeta(uz_6ph_alphabeta_t u_ref_V, float V_dc){
-    uz_assert(V_dc >= 0.0f);
+    uz_assert(V_dc > 0.0f);
     struct uz_svm_asym_6ph_CSVPWM24_out out = {0};
 
     // space vector limitation
@@ -103,13 +103,13 @@ struct uz_svm_asym_6ph_CSVPWM24_out uz_Space_Vector_Modulation_asym_6ph_CSVPWM24
     int sector = uz_svm_6ph_get_sector(u_ref_V_limited.alpha, u_ref_V_limited.beta);
 
     // calculate dwell times
-    float dwell_times[5];
+    float dwell_times[5] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
     for(int i=0; i<5; i++){
         dwell_times[i] = uz_svm_6ph_calculate_dwell_times_2N(u_ref_V_limited, &inverse_T_tv_all[sector-1][i][0]);
     }
 
     // calculate duty cycles from dwell times
-    float Duty_Cycles[6];
+    float Duty_Cycles[6] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
     uz_svm_6ph_calculate_duty_cycles(&Duty_Cycles[0], &dwell_times[0], &svm_offline_order[sector-1][0]);
 
     // order duty cycles and determine shift

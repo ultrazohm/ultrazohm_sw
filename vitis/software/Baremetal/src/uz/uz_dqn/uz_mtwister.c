@@ -34,7 +34,6 @@ struct uz_mtwister_t
   bool is_ready;
   uint32_t seed;
   MTRand seedRand;
-  int limit; // if needed
   float mean;
   float std;
   enum mtwister_rng_type distribution;
@@ -71,7 +70,6 @@ uz_mtwister_t *uz_mtwister_init(struct uz_mtwister_config cfg)
   self->distribution = cfg.distribution;
   self->mean = cfg.mean;
   self->std = cfg.std;
-  self->limit = 1;
   return (self);
 }
 

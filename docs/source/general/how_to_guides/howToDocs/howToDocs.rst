@@ -369,6 +369,70 @@ Add the .tex **and** the .svg to git since this is currently a manual process.
   The most common directives are ``doxygenfunction``, ``doxygenstruct``, ``doxygentypedef``, ``doxygendefine``.
   See `doxygen documentation <https://www.doxygen.nl/manual/docblocks.html>`_ for how to write Doxygen comments.
 
+Graphs with pgfplots
+====================
+
+:: 
+
+  .. tikz:: Example of using pgfplots directly in the docs
+  :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
+
+   \begin{tikzpicture}
+   \begin{axis}[
+       axis lines = left,
+       xlabel = \(x\),
+       ylabel = {\(f(x)\)},
+   ]
+   %Below the red parabola is defined
+   \addplot [
+       domain=-10:10, 
+       samples=100, 
+       color=red,
+   ]
+   {x^2 - 2*x - 1};
+   \addlegendentry{\(x^2 - 2x - 1\)}
+   %Here the blue parabola is defined
+   \addplot [
+       domain=-10:10, 
+       samples=100, 
+       color=blue,
+       ]
+       {x^2 + 2*x + 1};
+   \addlegendentry{\(x^2 + 2x + 1\)}
+   
+   \end{axis}
+   \end{tikzpicture}
+
+.. tikz:: Example of using pgfplots directly in the docs
+  :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
+
+   \begin{tikzpicture}
+   \begin{axis}[
+       axis lines = left,
+       xlabel = \(x\),
+       ylabel = {\(f(x)\)},
+   ]
+   %Below the red parabola is defined
+   \addplot [
+       domain=-10:10, 
+       samples=100, 
+       color=red,
+   ]
+   {x^2 - 2*x - 1};
+   \addlegendentry{\(x^2 - 2x - 1\)}
+   %Here the blue parabola is defined
+   \addplot [
+       domain=-10:10, 
+       samples=100, 
+       color=blue,
+       ]
+       {x^2 + 2*x + 1};
+   \addlegendentry{\(x^2 + 2x + 1\)}
+   
+   \end{axis}
+   \end{tikzpicture}
+
+
 .. _doxygen:
 
 Doxygen

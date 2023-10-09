@@ -15,17 +15,6 @@
           "A1_ADC_LTC2311": "",
           "A1_inv_input": "",
           "A1_iobufds_inst": "",
-          "adc_debug": {
-            "system_ila_0": "",
-            "xlslice_2": "",
-            "xlslice_3": "",
-            "xlslice_4": "",
-            "xlslice_5": "",
-            "xlslice_6": "",
-            "xlslice_7": "",
-            "xlslice_8": "",
-            "xlslice_9": ""
-          },
           "xlconstant_0": ""
         },
         "A2_adapter": {
@@ -145,7 +134,8 @@
           "G_mpc_concat": "",
           "smartcon_mpc": "",
           "xlconstant_0": "",
-          "system_ila_0": ""
+          "system_ila_0": "",
+          "system_ila_1": ""
         },
         "count_f_sw_0": "",
         "count_f_sw_1": "",
@@ -885,315 +875,6 @@
                   }
                 }
               },
-              "adc_debug": {
-                "ports": {
-                  "Din": {
-                    "direction": "I",
-                    "left": "127",
-                    "right": "0"
-                  },
-                  "Din1": {
-                    "direction": "I",
-                    "left": "215",
-                    "right": "0"
-                  },
-                  "clk": {
-                    "type": "clk",
-                    "direction": "I"
-                  },
-                  "probe4": {
-                    "direction": "I",
-                    "left": "0",
-                    "right": "0"
-                  },
-                  "probe5": {
-                    "direction": "I",
-                    "left": "0",
-                    "right": "0"
-                  },
-                  "probe6": {
-                    "direction": "I",
-                    "left": "31",
-                    "right": "0"
-                  },
-                  "probe7": {
-                    "direction": "I",
-                    "left": "0",
-                    "right": "0"
-                  }
-                },
-                "components": {
-                  "system_ila_0": {
-                    "vlnv": "xilinx.com:ip:system_ila:1.1",
-                    "xci_name": "zusys_system_ila_0_0",
-                    "xci_path": "ip\\zusys_system_ila_0_0_2\\zusys_system_ila_0_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/system_ila_0",
-                    "parameters": {
-                      "C_DATA_DEPTH": {
-                        "value": "1024"
-                      },
-                      "C_MON_TYPE": {
-                        "value": "NATIVE"
-                      },
-                      "C_NUM_OF_PROBES": {
-                        "value": "12"
-                      }
-                    }
-                  },
-                  "xlslice_2": {
-                    "vlnv": "xilinx.com:ip:xlslice:1.0",
-                    "xci_name": "zusys_xlslice_2_0",
-                    "xci_path": "ip\\zusys_xlslice_2_0_2\\zusys_xlslice_2_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/xlslice_2",
-                    "parameters": {
-                      "DIN_FROM": {
-                        "value": "15"
-                      },
-                      "DIN_WIDTH": {
-                        "value": "128"
-                      },
-                      "DOUT_WIDTH": {
-                        "value": "16"
-                      }
-                    }
-                  },
-                  "xlslice_3": {
-                    "vlnv": "xilinx.com:ip:xlslice:1.0",
-                    "xci_name": "zusys_xlslice_3_0",
-                    "xci_path": "ip\\zusys_xlslice_3_0_2\\zusys_xlslice_3_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/xlslice_3",
-                    "parameters": {
-                      "DIN_FROM": {
-                        "value": "31"
-                      },
-                      "DIN_TO": {
-                        "value": "16"
-                      },
-                      "DIN_WIDTH": {
-                        "value": "128"
-                      },
-                      "DOUT_WIDTH": {
-                        "value": "16"
-                      }
-                    }
-                  },
-                  "xlslice_4": {
-                    "vlnv": "xilinx.com:ip:xlslice:1.0",
-                    "xci_name": "zusys_xlslice_4_0",
-                    "xci_path": "ip\\zusys_xlslice_4_0_2\\zusys_xlslice_4_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/xlslice_4",
-                    "parameters": {
-                      "DIN_FROM": {
-                        "value": "47"
-                      },
-                      "DIN_TO": {
-                        "value": "32"
-                      },
-                      "DIN_WIDTH": {
-                        "value": "128"
-                      },
-                      "DOUT_WIDTH": {
-                        "value": "16"
-                      }
-                    }
-                  },
-                  "xlslice_5": {
-                    "vlnv": "xilinx.com:ip:xlslice:1.0",
-                    "xci_name": "zusys_xlslice_5_0",
-                    "xci_path": "ip\\zusys_xlslice_5_0_2\\zusys_xlslice_5_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/xlslice_5",
-                    "parameters": {
-                      "DIN_FROM": {
-                        "value": "63"
-                      },
-                      "DIN_TO": {
-                        "value": "48"
-                      },
-                      "DIN_WIDTH": {
-                        "value": "128"
-                      },
-                      "DOUT_WIDTH": {
-                        "value": "16"
-                      }
-                    }
-                  },
-                  "xlslice_6": {
-                    "vlnv": "xilinx.com:ip:xlslice:1.0",
-                    "xci_name": "zusys_xlslice_6_0",
-                    "xci_path": "ip\\zusys_xlslice_6_0_2\\zusys_xlslice_6_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/xlslice_6",
-                    "parameters": {
-                      "DIN_FROM": {
-                        "value": "69"
-                      },
-                      "DIN_TO": {
-                        "value": "35"
-                      },
-                      "DIN_WIDTH": {
-                        "value": "280"
-                      },
-                      "DOUT_WIDTH": {
-                        "value": "35"
-                      }
-                    }
-                  },
-                  "xlslice_7": {
-                    "vlnv": "xilinx.com:ip:xlslice:1.0",
-                    "xci_name": "zusys_xlslice_7_0",
-                    "xci_path": "ip\\zusys_xlslice_7_0_2\\zusys_xlslice_7_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/xlslice_7",
-                    "parameters": {
-                      "DIN_FROM": {
-                        "value": "34"
-                      },
-                      "DIN_WIDTH": {
-                        "value": "280"
-                      },
-                      "DOUT_WIDTH": {
-                        "value": "35"
-                      }
-                    }
-                  },
-                  "xlslice_8": {
-                    "vlnv": "xilinx.com:ip:xlslice:1.0",
-                    "xci_name": "zusys_xlslice_8_0",
-                    "xci_path": "ip\\zusys_xlslice_8_0_2\\zusys_xlslice_8_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/xlslice_8",
-                    "parameters": {
-                      "DIN_FROM": {
-                        "value": "69"
-                      },
-                      "DIN_TO": {
-                        "value": "35"
-                      },
-                      "DIN_WIDTH": {
-                        "value": "280"
-                      },
-                      "DOUT_WIDTH": {
-                        "value": "35"
-                      }
-                    }
-                  },
-                  "xlslice_9": {
-                    "vlnv": "xilinx.com:ip:xlslice:1.0",
-                    "xci_name": "zusys_xlslice_9_0",
-                    "xci_path": "ip\\zusys_xlslice_9_0_2\\zusys_xlslice_9_0.xci",
-                    "inst_hier_path": "uz_analog_adapter/A1_adapter/adc_debug/xlslice_9",
-                    "parameters": {
-                      "DIN_FROM": {
-                        "value": "104"
-                      },
-                      "DIN_TO": {
-                        "value": "70"
-                      },
-                      "DIN_WIDTH": {
-                        "value": "280"
-                      },
-                      "DOUT_WIDTH": {
-                        "value": "35"
-                      }
-                    }
-                  }
-                },
-                "nets": {
-                  "A1_ADC_LTC2311_SAMPLE_COUNTER": {
-                    "ports": [
-                      "probe6",
-                      "system_ila_0/probe6"
-                    ]
-                  },
-                  "A1_ADC_LTC2311_SI_VALID": {
-                    "ports": [
-                      "probe7",
-                      "system_ila_0/probe7"
-                    ]
-                  },
-                  "A1_ADC_LTC2311_SI_VALUE": {
-                    "ports": [
-                      "Din1",
-                      "xlslice_6/Din",
-                      "xlslice_7/Din",
-                      "xlslice_8/Din",
-                      "xlslice_9/Din"
-                    ]
-                  },
-                  "ADC_LTC2311_1_RAW_VALUE": {
-                    "ports": [
-                      "Din",
-                      "xlslice_2/Din",
-                      "xlslice_3/Din",
-                      "xlslice_4/Din",
-                      "xlslice_5/Din"
-                    ]
-                  },
-                  "Current_Valid_0_Dout": {
-                    "ports": [
-                      "probe4",
-                      "system_ila_0/probe4"
-                    ]
-                  },
-                  "Interrupt_muxed": {
-                    "ports": [
-                      "probe5",
-                      "system_ila_0/probe5"
-                    ]
-                  },
-                  "xlslice_2_Dout": {
-                    "ports": [
-                      "xlslice_2/Dout",
-                      "system_ila_0/probe0"
-                    ]
-                  },
-                  "xlslice_3_Dout": {
-                    "ports": [
-                      "xlslice_3/Dout",
-                      "system_ila_0/probe1"
-                    ]
-                  },
-                  "xlslice_4_Dout": {
-                    "ports": [
-                      "xlslice_4/Dout",
-                      "system_ila_0/probe2"
-                    ]
-                  },
-                  "xlslice_5_Dout": {
-                    "ports": [
-                      "xlslice_5/Dout",
-                      "system_ila_0/probe3"
-                    ]
-                  },
-                  "xlslice_6_Dout": {
-                    "ports": [
-                      "xlslice_6/Dout",
-                      "system_ila_0/probe9"
-                    ]
-                  },
-                  "xlslice_7_Dout": {
-                    "ports": [
-                      "xlslice_7/Dout",
-                      "system_ila_0/probe8"
-                    ]
-                  },
-                  "xlslice_8_Dout": {
-                    "ports": [
-                      "xlslice_8/Dout",
-                      "system_ila_0/probe10"
-                    ]
-                  },
-                  "xlslice_9_Dout": {
-                    "ports": [
-                      "xlslice_9/Dout",
-                      "system_ila_0/probe11"
-                    ]
-                  },
-                  "zynq_ultra_ps_e_0_pl_clk1": {
-                    "ports": [
-                      "clk",
-                      "system_ila_0/clk"
-                    ]
-                  }
-                }
-              },
               "xlconstant_0": {
                 "vlnv": "xilinx.com:ip:xlconstant:1.1",
                 "xci_name": "zusys_xlconstant_0_3",
@@ -1218,12 +899,6 @@
               }
             },
             "nets": {
-              "A1_ADC_LTC2311_SAMPLE_COUNTER": {
-                "ports": [
-                  "A1_ADC_LTC2311/SAMPLE_COUNTER",
-                  "adc_debug/probe6"
-                ]
-              },
               "A1_ADC_LTC2311_SCLK": {
                 "ports": [
                   "A1_ADC_LTC2311/SCLK",
@@ -1233,7 +908,6 @@
               "A1_ADC_LTC2311_SI_VALID": {
                 "ports": [
                   "A1_ADC_LTC2311/SI_VALID",
-                  "adc_debug/probe7",
                   "SI_VALID"
                 ]
               },
@@ -1252,8 +926,7 @@
               "ADC_LTC2311_1_RAW_VALUE": {
                 "ports": [
                   "A1_ADC_LTC2311/RAW_VALUE",
-                  "Din",
-                  "adc_debug/Din"
+                  "Din"
                 ]
               },
               "ADC_LTC2311_1_SS_N": {
@@ -1265,15 +938,13 @@
               "Current_Valid_0_Dout": {
                 "ports": [
                   "A1_ADC_LTC2311/RAW_VALID",
-                  "probe4",
-                  "adc_debug/probe4"
+                  "probe4"
                 ]
               },
               "Interrupt_muxed": {
                 "ports": [
                   "probe5",
-                  "A1_ADC_LTC2311/TRIGGER_CNV",
-                  "adc_debug/probe5"
+                  "A1_ADC_LTC2311/TRIGGER_CNV"
                 ]
               },
               "iobufds_inst_0_MISO_OUT": {
@@ -1300,17 +971,10 @@
                   "A1_iobufds_inst/INVERT_OUTPUT"
                 ]
               },
-              "xlconstant_0_dout1": {
-                "ports": [
-                  "xlconstant_0/dout",
-                  "adc_debug/Din1"
-                ]
-              },
               "zynq_ultra_ps_e_0_pl_clk1": {
                 "ports": [
                   "clk",
-                  "A1_ADC_LTC2311/s00_axi_aclk",
-                  "adc_debug/clk"
+                  "A1_ADC_LTC2311/s00_axi_aclk"
                 ]
               }
             }
@@ -7215,7 +6879,21 @@
                     "value": "NATIVE"
                   },
                   "C_NUM_OF_PROBES": {
-                    "value": "8"
+                    "value": "9"
+                  }
+                }
+              },
+              "system_ila_1": {
+                "vlnv": "xilinx.com:ip:system_ila:1.1",
+                "xci_name": "zusys_system_ila_1_0",
+                "xci_path": "ip\\zusys_system_ila_1_0\\zusys_system_ila_1_0.xci",
+                "inst_hier_path": "uz_user/fcs_mpc_3ph/system_ila_1",
+                "parameters": {
+                  "C_MON_TYPE": {
+                    "value": "NATIVE"
+                  },
+                  "C_NUM_OF_PROBES": {
+                    "value": "13"
                   }
                 }
               }
@@ -7300,7 +6978,8 @@
                   "adc_valid",
                   "uz_debug_ip_0/adc_valid_trigger",
                   "mpc_enable_0/adc_valid_trigger",
-                  "system_ila_0/probe1"
+                  "system_ila_0/probe1",
+                  "system_ila_1/probe0"
                 ]
               },
               "clarke_ip_0_alpha": {
@@ -7347,49 +7026,57 @@
                   "mpc_enable_0/IPCORE_CLK",
                   "mpc_enable_0/AXI4_Lite_ACLK",
                   "smartcon_mpc/aclk",
-                  "system_ila_0/clk"
+                  "system_ila_0/clk",
+                  "system_ila_1/clk"
                 ]
               },
               "cost_opt_0_G0": {
                 "ports": [
                   "cost_opt_0/G0",
-                  "mpc_enable_0/G0"
+                  "mpc_enable_0/G0",
+                  "system_ila_1/probe1"
                 ]
               },
               "cost_opt_0_G1": {
                 "ports": [
                   "cost_opt_0/G1",
-                  "mpc_enable_0/G1"
+                  "mpc_enable_0/G1",
+                  "system_ila_1/probe2"
                 ]
               },
               "cost_opt_0_G2": {
                 "ports": [
                   "cost_opt_0/G2",
-                  "mpc_enable_0/G2"
+                  "mpc_enable_0/G2",
+                  "system_ila_1/probe3"
                 ]
               },
               "cost_opt_0_G3": {
                 "ports": [
                   "cost_opt_0/G3",
-                  "mpc_enable_0/G3"
+                  "mpc_enable_0/G3",
+                  "system_ila_1/probe4"
                 ]
               },
               "cost_opt_0_G4": {
                 "ports": [
                   "cost_opt_0/G4",
-                  "mpc_enable_0/G4"
+                  "mpc_enable_0/G4",
+                  "system_ila_1/probe5"
                 ]
               },
               "cost_opt_0_G5": {
                 "ports": [
                   "cost_opt_0/G5",
-                  "mpc_enable_0/G5"
+                  "mpc_enable_0/G5",
+                  "system_ila_1/probe6"
                 ]
               },
               "cost_opt_0_opt_index": {
                 "ports": [
                   "cost_opt_0/opt_index",
-                  "mpc_state_ma_ip_0/last_opt_index"
+                  "mpc_state_ma_ip_0/last_opt_index",
+                  "system_ila_0/probe8"
                 ]
               },
               "cost_opt_0_optimization_done": {
@@ -7450,37 +7137,43 @@
               "mpc_enable_0_out_G0": {
                 "ports": [
                   "mpc_enable_0/out_G0",
-                  "G_mpc_concat/In0"
+                  "G_mpc_concat/In0",
+                  "system_ila_1/probe7"
                 ]
               },
               "mpc_enable_0_out_G1": {
                 "ports": [
                   "mpc_enable_0/out_G1",
-                  "G_mpc_concat/In1"
+                  "G_mpc_concat/In1",
+                  "system_ila_1/probe8"
                 ]
               },
               "mpc_enable_0_out_G2": {
                 "ports": [
                   "mpc_enable_0/out_G2",
-                  "G_mpc_concat/In2"
+                  "G_mpc_concat/In2",
+                  "system_ila_1/probe9"
                 ]
               },
               "mpc_enable_0_out_G3": {
                 "ports": [
                   "mpc_enable_0/out_G3",
-                  "G_mpc_concat/In3"
+                  "G_mpc_concat/In3",
+                  "system_ila_1/probe10"
                 ]
               },
               "mpc_enable_0_out_G4": {
                 "ports": [
                   "mpc_enable_0/out_G4",
-                  "G_mpc_concat/In4"
+                  "G_mpc_concat/In4",
+                  "system_ila_1/probe11"
                 ]
               },
               "mpc_enable_0_out_G5": {
                 "ports": [
                   "mpc_enable_0/out_G5",
-                  "G_mpc_concat/In5"
+                  "G_mpc_concat/In5",
+                  "system_ila_1/probe12"
                 ]
               },
               "mpc_state_ma_ip_0_index": {

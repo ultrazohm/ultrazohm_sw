@@ -25,7 +25,8 @@
             "xlslice_7": "",
             "xlslice_8": "",
             "xlslice_9": ""
-          }
+          },
+          "xlconstant_0": ""
         },
         "A2_adapter": {
           "A2_ADC_LTC2311": "",
@@ -143,7 +144,8 @@
           "mpc_enable_0": "",
           "G_mpc_concat": "",
           "smartcon_mpc": "",
-          "xlconstant_0": ""
+          "xlconstant_0": "",
+          "system_ila_0": ""
         },
         "count_f_sw_0": "",
         "count_f_sw_1": "",
@@ -1191,6 +1193,20 @@
                     ]
                   }
                 }
+              },
+              "xlconstant_0": {
+                "vlnv": "xilinx.com:ip:xlconstant:1.1",
+                "xci_name": "zusys_xlconstant_0_3",
+                "xci_path": "ip\\zusys_xlconstant_0_3\\zusys_xlconstant_0_3.xci",
+                "inst_hier_path": "uz_analog_adapter/A1_adapter/xlconstant_0",
+                "parameters": {
+                  "CONST_VAL": {
+                    "value": "0"
+                  },
+                  "CONST_WIDTH": {
+                    "value": "216"
+                  }
+                }
               }
             },
             "interface_nets": {
@@ -1224,7 +1240,6 @@
               "A1_ADC_LTC2311_SI_VALUE": {
                 "ports": [
                   "A1_ADC_LTC2311/SI_VALUE",
-                  "adc_debug/Din1",
                   "SI_VALUE_A1"
                 ]
               },
@@ -1283,6 +1298,12 @@
                 "ports": [
                   "A1_inv_input/dout",
                   "A1_iobufds_inst/INVERT_OUTPUT"
+                ]
+              },
+              "xlconstant_0_dout1": {
+                "ports": [
+                  "xlconstant_0/dout",
+                  "adc_debug/Din1"
                 ]
               },
               "zynq_ultra_ps_e_0_pl_clk1": {
@@ -6699,6 +6720,11 @@
                 "direction": "I",
                 "left": "26",
                 "right": "0"
+              },
+              "sample_trigger": {
+                "direction": "I",
+                "left": "0",
+                "right": "0"
               }
             },
             "components": {
@@ -7175,6 +7201,23 @@
                     "value": "27"
                   }
                 }
+              },
+              "system_ila_0": {
+                "vlnv": "xilinx.com:ip:system_ila:1.1",
+                "xci_name": "zusys_system_ila_0_5",
+                "xci_path": "ip\\zusys_system_ila_0_5_1\\zusys_system_ila_0_5.xci",
+                "inst_hier_path": "uz_user/fcs_mpc_3ph/system_ila_0",
+                "parameters": {
+                  "C_DATA_DEPTH": {
+                    "value": "4096"
+                  },
+                  "C_MON_TYPE": {
+                    "value": "NATIVE"
+                  },
+                  "C_NUM_OF_PROBES": {
+                    "value": "8"
+                  }
+                }
               }
             },
             "interface_nets": {
@@ -7256,7 +7299,8 @@
                 "ports": [
                   "adc_valid",
                   "uz_debug_ip_0/adc_valid_trigger",
-                  "mpc_enable_0/adc_valid_trigger"
+                  "mpc_enable_0/adc_valid_trigger",
+                  "system_ila_0/probe1"
                 ]
               },
               "clarke_ip_0_alpha": {
@@ -7302,7 +7346,8 @@
                   "cost_opt_0/AXI4_Lite_ACLK",
                   "mpc_enable_0/IPCORE_CLK",
                   "mpc_enable_0/AXI4_Lite_ACLK",
-                  "smartcon_mpc/aclk"
+                  "smartcon_mpc/aclk",
+                  "system_ila_0/clk"
                 ]
               },
               "cost_opt_0_G0": {
@@ -7442,19 +7487,22 @@
                 "ports": [
                   "mpc_state_ma_ip_0/index",
                   "pu_voltages_vsd_0/index",
-                  "cost_opt_0/index"
+                  "cost_opt_0/index",
+                  "system_ila_0/probe7"
                 ]
               },
               "mpc_state_ma_ip_0_trigger_delay_comp": {
                 "ports": [
                   "mpc_state_ma_ip_0/trigger_delay_comp",
-                  "delay_comp_0/trigger_delay_comp"
+                  "delay_comp_0/trigger_delay_comp",
+                  "system_ila_0/probe4"
                 ]
               },
               "mpc_state_ma_ip_0_trigger_optimization": {
                 "ports": [
                   "mpc_state_ma_ip_0/trigger_optimization",
-                  "cost_opt_0/trigger_optimization"
+                  "cost_opt_0/trigger_optimization",
+                  "system_ila_0/probe6"
                 ]
               },
               "mpc_state_ma_ip_0_trigger_park_done_statemachine": {
@@ -7467,13 +7515,15 @@
               "mpc_state_ma_ip_0_trigger_prediction": {
                 "ports": [
                   "mpc_state_ma_ip_0/trigger_prediction",
-                  "prediction_0/trigger_prediction"
+                  "prediction_0/trigger_prediction",
+                  "system_ila_0/probe5"
                 ]
               },
               "mpc_state_ma_ip_0_trigger_voltages": {
                 "ports": [
                   "mpc_state_ma_ip_0/trigger_voltages",
-                  "pu_voltages_vsd_0/trigger_voltages"
+                  "pu_voltages_vsd_0/trigger_voltages",
+                  "system_ila_0/probe3"
                 ]
               },
               "prediction_0_id_pred_pu": {
@@ -7549,6 +7599,12 @@
                   "smartcon_mpc/aresetn"
                 ]
               },
+              "sample_trigger_1": {
+                "ports": [
+                  "sample_trigger",
+                  "system_ila_0/probe0"
+                ]
+              },
               "uz_debug_ip_0_debug_ip_done": {
                 "ports": [
                   "uz_debug_ip_0/debug_ip_done",
@@ -7600,7 +7656,8 @@
               "uz_park_transform_ip_0_park_done": {
                 "ports": [
                   "uz_park_transform_ip_0/park_done",
-                  "mpc_state_ma_ip_0/trigger_start_state_machine"
+                  "mpc_state_ma_ip_0/trigger_start_state_machine",
+                  "system_ila_0/probe2"
                 ]
               },
               "uz_park_transform_ip_0_sin": {
@@ -8301,24 +8358,6 @@
               "G_mpc_out"
             ]
           },
-          "ia1_1": {
-            "ports": [
-              "xlslice_14/Dout",
-              "uz_sel_currents_0/ia1_left"
-            ]
-          },
-          "ib1_1": {
-            "ports": [
-              "xlslice_15/Dout",
-              "uz_sel_currents_0/ib1_left"
-            ]
-          },
-          "ic1_1": {
-            "ports": [
-              "xlslice_16/Dout",
-              "uz_sel_currents_0/ic1_left"
-            ]
-          },
           "proc_sys_reset_1_peripheral_aresetn": {
             "ports": [
               "aresetn",
@@ -8352,7 +8391,8 @@
               "uz_resolver_pl_inter_0/trigger",
               "uz_resolver_pl_inter_1/trigger",
               "Resolver_Interface_v_0/sample_trigger",
-              "Resolver_Interface_v_1/sample_trigger"
+              "Resolver_Interface_v_1/sample_trigger",
+              "fcs_mpc_3ph/sample_trigger"
             ]
           },
           "uz_d_inverter_adapter_0_PWM_EN": {
@@ -8490,13 +8530,7 @@
               "xlslice_6/Din",
               "xlslice_5/Din",
               "xlslice_4/Din",
-              "xlslice_3/Din",
-              "xlslice_13/Din",
-              "xlslice_8/Din",
-              "xlslice_9/Din",
-              "xlslice_10/Din",
-              "xlslice_11/Din",
-              "xlslice_12/Din"
+              "xlslice_3/Din"
             ]
           },
           "xlslice_10_Dout": {
@@ -8523,40 +8557,64 @@
               "count_f_sw_1/ss_in_5"
             ]
           },
+          "xlslice_14_Dout": {
+            "ports": [
+              "xlslice_14/Dout",
+              "uz_sel_currents_0/vdc_left"
+            ]
+          },
+          "xlslice_15_Dout": {
+            "ports": [
+              "xlslice_15/Dout",
+              "uz_sel_currents_0/ic1_left"
+            ]
+          },
+          "xlslice_16_Dout": {
+            "ports": [
+              "xlslice_16/Dout",
+              "uz_sel_currents_0/ib1_left"
+            ]
+          },
           "xlslice_17_Dout": {
             "ports": [
               "xlslice_17/Dout",
-              "uz_sel_currents_0/vdc_left"
+              "uz_sel_currents_0/ia1_left"
             ]
           },
           "xlslice_18_Dout": {
             "ports": [
               "xlslice_18/Dout",
-              "uz_sel_currents_0/ia1_right"
+              "uz_sel_currents_0/vdc_right"
             ]
           },
           "xlslice_19_Dout": {
             "ports": [
               "xlslice_19/Dout",
-              "uz_sel_currents_0/ib1_right"
+              "uz_sel_currents_0/ic1_right"
             ]
           },
           "xlslice_1_Dout": {
             "ports": [
               "xlslice_1/Dout",
-              "uz_inverter_adapter_1/Gates"
+              "uz_inverter_adapter_1/Gates",
+              "xlslice_13/Din",
+              "xlslice_12/Din",
+              "xlslice_11/Din",
+              "xlslice_10/Din",
+              "xlslice_9/Din",
+              "xlslice_8/Din"
             ]
           },
           "xlslice_20_Dout": {
             "ports": [
               "xlslice_20/Dout",
-              "uz_sel_currents_0/ic1_right"
+              "uz_sel_currents_0/ib1_right"
             ]
           },
           "xlslice_21_Dout": {
             "ports": [
               "xlslice_21/Dout",
-              "uz_sel_currents_0/vdc_right"
+              "uz_sel_currents_0/ia1_right"
             ]
           },
           "xlslice_2_Dout": {

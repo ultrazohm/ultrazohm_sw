@@ -38,47 +38,6 @@ void uz_twister_init(void)
 {
   uz_mtwister_init(2U);
 }
-
-void test_uz_twister_init_layer(void)
-{
-  uz_mtwister_t *twister = uz_mtwister_init(2U);
-
-  struct uz_nn_layer_config config = {
-      .activation_function = activation_ReLU,
-      .number_of_neurons = NUMBER_OF_NEURONS_IN_LAYER,
-      .number_of_inputs = NUMBER_OF_INPUTS,
-      .number_of_cachegradrows = NUMBER_OF_INPUTS,
-      .number_of_cachegradcolumns = NUMBER_OF_NEURONS_IN_LAYER,
-      .number_of_temporaryrows = 2,
-      .number_of_temporarycolumns = 2,
-      .length_of_weights = UZ_MATRIX_SIZE(w),
-      .length_of_bias = UZ_MATRIX_SIZE(b),
-      .length_of_output = UZ_MATRIX_SIZE(out),
-      .length_of_sumout = UZ_MATRIX_SIZE(s),
-      .length_of_delta = UZ_MATRIX_SIZE(delta),
-      .length_of_error = UZ_MATRIX_SIZE(e),
-      .length_of_gradients = UZ_MATRIX_SIZE(g),
-      .length_of_temporarybackprop = UZ_MATRIX_SIZE(T),
-      .length_of_cachegradients = UZ_MATRIX_SIZE(cacheg),
-      .weights = w,
-      .bias = b,
-      .output = out,
-      .sumout = s,
-      .delta = delta,
-      .temporarybackprop = T,
-      .gradients = g,
-      .cachegradients = cacheg,
-      .error = e};
-  uz_nn_layer_t *layer = uz_nn_layer_init_trainable(config);
-  uz_nn_layer_param_init(layer, twister, config);
-  // float btest[NUMBER_OF_NEURONS_IN_LAYER] = {1.0f, -2.0f, 3.0f, -4.0f};
-  // float wtest[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_LAYER] = {0.5377f, 1.8339f, -2.2588f, 0.8622f,
-  //                                                     0.3188f, -1.3077f, -0.4336f, 0.3426f,
-  //                                                     3.5784f, 2.7694f, -1.3499f, 3.0349f};
-  // TEST_ASSERT_EQUAL_FLOAT_ARRAY(btest,b,UZ_MATRIX_SIZE(b));
-  // TEST_ASSERT_EQUAL_FLOAT_ARRAY(wtest,w,UZ_MATRIX_SIZE(w));
-}
-
 void test_uz_box_mueller_rand(void)
 {
   // use mtwister, calculate double between 0 and 1 and scale it to Randmax
@@ -171,7 +130,7 @@ void test_uz_box_mueller_rand(void)
 
 void export_histogram(float *array, uint32_t size)
 {
-  FILE *file1 = fopen("test/uz/uz_dqn/matlab/randboxmueller.csv", "w");
+  FILE *file1 = fopen("test/uz/uz_mtwister/randboxmueller.csv", "w");
   if (file1 != NULL)
   {
     for (u_int32_t i = 0; i < size; i++)
@@ -179,6 +138,6 @@ void export_histogram(float *array, uint32_t size)
       fprintf(file1, "%d,%.4f\n", i, (double)array[i]);
     }
   }
- }
+}
 
 #endif // TEST

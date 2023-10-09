@@ -207,6 +207,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+		data->av.idx_AXI = value;
 			break;
 
 		case (Set_Send_Field_7):

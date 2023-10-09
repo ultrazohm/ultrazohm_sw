@@ -11,7 +11,7 @@
 #define DEFAULT_FRACTIONAL_BITS 15//4
 #define DEFAULT_OFFSET 0
 
-#define CURRENT_2_SI_CONVERSION_FACTOR 0.000190734f
+#define CURRENT_2_SI_CONVERSION_FACTOR 0.00190734f // (10*12,5)/(2^16) 10=to volts 12,5= volts to current in ampere
 
 void uz_adcLtc2311_ip_core_init(void)
 {

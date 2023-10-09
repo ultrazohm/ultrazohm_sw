@@ -104,6 +104,11 @@ typedef struct _actualValues_ {
 	float i_a_pu;
 	float i_b_pu;
 	float i_c_pu;
+	float vd_pu;
+	float vq_pu;
+	float id_delay_pu;
+	float iq_delay_pu;
+	uint32_t idx_AXI;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

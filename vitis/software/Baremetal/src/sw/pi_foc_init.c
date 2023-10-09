@@ -8,24 +8,25 @@
       .Lq_Henry = 0.002f,
       .Psi_PM_Vs = 0.042f,
 	  .polePairs = 4.0f,
-	  .I_max_Ampere = 12.0f
+	  .I_max_Ampere = 12.0f,
+	  .J_kg_m_squared = 0.000108
     };//these parameters are only needed if linear decoupling is selected
     const struct uz_PI_Controller_config config_id_left = {
-      .Kp = 4.4f,
-      .Ki = 250.0f,
+      .Kp = 5.0f,
+      .Ki = 255.0f,
       .samplingTime_sec = 0.0001f,
       .upper_limit = 48.0f,
       .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_iq_left = {
-      .Kp = 4.4f,
-      .Ki = 250.0f,
+      .Kp = 5.0f,
+      .Ki = 255.0f,
       .samplingTime_sec = 0.0001f,
       .upper_limit = 48.0f,
       .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_speed_left = {
-		   .Kp = 0.08f,
+		   .Kp = 0.008f,
 		   .Ki = 0.8f,
 		   .samplingTime_sec = 0.0001f,
 		   .upper_limit = 2.4f,
@@ -46,16 +47,16 @@
    };
 
    const struct uz_PI_Controller_config config_id_right = {
-     .Kp = 4.4f,
-     .Ki = 250.0f,
-     .samplingTime_sec = 0.00005f,
+     .Kp = 5.0f,
+     .Ki = 255.0f,
+     .samplingTime_sec = 0.0001f,
      .upper_limit = 48.0f,
      .lower_limit = -48.0f
   };
   const struct uz_PI_Controller_config config_iq_right = {
-     .Kp = 4.4f,
-     .Ki = 250.0f,
-     .samplingTime_sec = 0.00005f,
+     .Kp = 5.0f,
+     .Ki = 255.0f,
+     .samplingTime_sec = 0.0001f,
      .upper_limit = 48.0f,
      .lower_limit = -48.0f
   };
@@ -65,7 +66,7 @@
 	  .config_id = config_id_left,
 	  .config_iq = config_iq_left,
 	  .decoupling_select = no_decoupling,
-	  .max_modulation_index = 1.0f/sqrt(3.0f)
+	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
    };
 
    struct uz_CurrentControl_config config_current_ctrl_right = {
@@ -73,7 +74,7 @@
 	  .config_id = config_id_right,
 	  .config_iq = config_iq_right,
 	  .decoupling_select = no_decoupling,
-	  .max_modulation_index = 1.0f/sqrt(3.0f)
+	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
    };
 
    uz_CurrentControl_t* current_ctrl_left_init(void) {

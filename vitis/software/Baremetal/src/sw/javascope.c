@@ -89,6 +89,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ic_pu_ip]			= &data->av.i_c_pu;
 	js_ch_observable[JSO_id_pu_ip]			= &data->av.i_d_ip;
 	js_ch_observable[JSO_iq_pu_ip]			= &data->av.i_q_ip;
+	js_ch_observable[JSO_vd_pu]				= &data->av.vd_pu;
+	js_ch_observable[JSO_vq_pu]				= &data->av.vq_pu;
+	js_ch_observable[JSO_id_delay_pu]		= &data->av.id_delay_pu;
+	js_ch_observable[JSO_iq_delay_pu]		= &data->av.iq_delay_pu;
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;

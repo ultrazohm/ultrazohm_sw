@@ -10,8 +10,8 @@ t_clock = 1/f_clock;     % IP core sample time in s
 f_ADC =100e3;       % ADC interrupt freq in Hz
 t_ADC = 1/f_ADC;    % ADC sample time in s
 
-resolver_polepairs = 3;
-machine_polepairs = 5;
+resolver_polepairs = 6;
+machine_polepairs = 7;
 f_mech = 500;
 
 % theta_m_offset = -4.261607;

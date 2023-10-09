@@ -15,7 +15,8 @@ const struct uz_PMSM_t AM8141_MPC = {
   .Lq_Henry = 0.002f,
   .Psi_PM_Vs = 0.042f,
   .polePairs = 4.0f,
-  .I_max_Ampere = 12.0f
+  .I_max_Ampere = 12.0f,
+  .J_kg_m_squared = 0.000108
 };//these parameters are only needed if linear decoupling is selected
 
 struct uz_fixedpoint_definition_t delay_comp_fp_def = {
@@ -136,10 +137,10 @@ void fcs_mpc_real_or_debug_inputs(bool debug_or_real) {
 }
 
 void fcs_mpc_init_pu_conversion_ip(){
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in0_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion,  18)); //i_a
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in1_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion,  18)); //i_b
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in2_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion,  18)); //i_c
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in3_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_voltage_conversion,  18)); //v_dc
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in0_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion,  18));
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in1_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion,  18));
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in2_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_current_conversion,  18));
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + AXI_pu_conv_in3_Data_uz_pu_con_ip, uz_convert_float_to_unsigned_fixed(pu_voltage_conversion,  18));
 }
 
 void fcs_mpc_init_park_transform(void){
@@ -209,13 +210,20 @@ void fcs_mpc_calc_f_sw_avg(){
 	static uint32_t isr_cnt = 0U;
 	static uint32_t switchNumb = 0U;
 	static float passed_time_sec = 0.0f;
+
+    if(Global_Data.av.speed_rpm_right > 1.0f) {
+    sw_cnt_avg_time_sec = 1.0f/(Global_Data.av.speed_rpm_right / 60.0f * AM8141_MPC.polePairs) * 20.0f; //calculate averaging time window according to 20x fundamental electric period
+    } else  {
+    	sw_cnt_avg_time_sec = 1.0f;
+    }
+
     // calculate average switching frequency and control the measure flag
     if(passed_time_sec >= sw_cnt_avg_time_sec) {
-        	switchNumb = uz_axi_read_uint32(XPAR_UZ_USER_COUNT_F_SW_0_BASEADDR + switchNumb_AXI_Data_count_f_sw);
-        	uz_axi_write_bool(XPAR_UZ_USER_COUNT_F_SW_0_BASEADDR + bResetAXI_Data_count_f_sw, true);	// reset counter = true
+        	switchNumb = uz_axi_read_uint32(XPAR_UZ_USER_COUNT_F_SW_1_BASEADDR + switchNumb_AXI_Data_count_f_sw);
+        	uz_axi_write_bool(XPAR_UZ_USER_COUNT_F_SW_1_BASEADDR + bResetAXI_Data_count_f_sw, true);	// reset counter = true
         	isr_cnt = 0;
         	Global_Data.av.f_sw_avg_Hz = switchNumb * 0.083333f / passed_time_sec; // 0.083333 = 1/(6*2); 6 switches and each transition is counted (*2)
-        	uz_axi_write_bool(XPAR_UZ_USER_COUNT_F_SW_0_BASEADDR + bResetAXI_Data_count_f_sw, false); // reset counter false
+        	uz_axi_write_bool(XPAR_UZ_USER_COUNT_F_SW_1_BASEADDR + bResetAXI_Data_count_f_sw, false); // reset counter false
 //        	Global_Data.av.f_sw_measure_flag = !Global_Data.av.f_sw_measure_flag; //toggle every time f_sw is measured
 //        	Global_Data.av.f_f_sw_measure_flag = (float)Global_Data.av.f_sw_measure_flag;
 //        	// control the measuring flag
@@ -246,11 +254,22 @@ void fcs_mpc_calc_f_sw_avg(){
 
 void fcs_mpc_debug(void){
     // read park transform ip
-    Global_Data.av.i_d_ip = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y1_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition) * base_val.IB;
-    Global_Data.av.i_q_ip = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y2_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition) * base_val.IB;
+    Global_Data.av.i_d_ip = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y1_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
+    Global_Data.av.i_q_ip = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y2_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
 
     //read pu IP currents
-    Global_Data.av.i_c_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + out0_AXI_Data_uz_pu_con_ip, fixedpoint_definition) * base_val.IB;
-    Global_Data.av.i_b_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + out1_AXI_Data_uz_pu_con_ip, fixedpoint_definition) * base_val.IB;
-    Global_Data.av.i_a_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + out2_AXI_Data_uz_pu_con_ip, fixedpoint_definition) * base_val.IB;
+    Global_Data.av.i_a_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + out0_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+    Global_Data.av.i_b_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + out1_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+    Global_Data.av.i_c_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + out2_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+
+    //read pu voltages
+    Global_Data.av.vd_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + pu_vd_AXI_Data_pu_voltages_vsd, park_fixedpoint_definition);
+    Global_Data.av.vq_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + pu_vq_AXI_Data_pu_voltages_vsd, park_fixedpoint_definition);
+
+    //read delaycomp_currents
+    Global_Data.av.id_delay_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_DELAY_COMP_0_BASEADDR + id_delay_pu_AXI_Data_delay_comp, park_fixedpoint_definition);
+    Global_Data.av.iq_delay_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_DELAY_COMP_0_BASEADDR + iq_delay_pu_AXI_Data_delay_comp, park_fixedpoint_definition);
+
+    //write pu voltage debug values
+//    uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + index_AXI_Data_pu_voltages_vsd, Global_Data.av.idx_AXI);
 }

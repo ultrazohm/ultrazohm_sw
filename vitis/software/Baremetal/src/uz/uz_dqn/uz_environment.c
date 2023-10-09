@@ -38,16 +38,16 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
     return (self);
 }
 
-void uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand){
+void uz_dqn_environment_reset(uz_dqn_environment_t *self,uz_mtwister_t *random_generator){
 uz_assert_not_NULL(self);
-uz_assert_not_NULL(seedRand);
+uz_assert_not_NULL(random_generator);
 for(uint32_t i=0; i<self->bitlength;i++){
     // self->bitinitial[i] = 1U;
     // self->bittarget[i] = 0U;
     // self->inputfornn->data[i] = 1.0f;
     // self->inputfornn->data[self->bitlength+i] = 0.0f;
-    self->bitinitial[i] = genRand_zero_one(seedRand);
-    self->bittarget[i] = genRand_zero_one(seedRand);
+    self->bitinitial[i] = genRand_zero_one(random_generator);
+    self->bittarget[i] = genRand_zero_one(random_generator);
     self->inputfornn->data[i] = (float)self->bitinitial[i];
     self->inputfornn->data[self->bitlength+i] = (float)self->bittarget[i];
 }

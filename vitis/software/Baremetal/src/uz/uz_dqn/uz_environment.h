@@ -34,7 +34,7 @@ struct uz_dqn_environment_config{
 };
 
 uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf);
-void uz_dqn_environment_reset(uz_dqn_environment_t *self,MTRand *seedRand);
+void uz_dqn_environment_reset(uz_dqn_environment_t *self, uz_mtwister_t *random_generator);
 float calculate_reward_bit(uz_dqn_environment_t *self);
 void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action);
 bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size);

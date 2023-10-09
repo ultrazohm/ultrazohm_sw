@@ -44,11 +44,6 @@ MTRand seedRand(unsigned long seed);
 unsigned long genRandLong(MTRand *rand);
 double genRand(MTRand *rand);
 float genRand_float(MTRand *rand);
-uint32_t genRand_zero_one(MTRand *rand);
-uint32_t genRand_uint32_t(MTRand *rand, uint32_t max);
-
-
-void genRand_uint32_t_array(uint32_t *array, MTRand *rand, uint32_t size, float min_val, float max_val);
 
 
 static uint32_t instance_counterrand = 0U;
@@ -170,39 +165,36 @@ float genRand_float(MTRand *rand)
 
 float uz_mtwister_random_float_uniform(uz_mtwister_t *self)
 {
-  return ((float)genRandLong(self->seedRand) / (float)0xffffffff);
+  return ((float)genRandLong(&self->seedRand) / (float)0xffffffff);
 }
 
-uint32_t genRand_zero_one(MTRand *rand)
+uint32_t genRand_zero_one(uz_mtwister_t *self)
 {
-  uint32_t y = (uint32_t)(genRand_float(rand) * (2.0f));
+  uz_assert_not_NULL(self);
+  uint32_t y = (uint32_t)(genRand_float(&self->seedRand) * (2.0f));
   return y;
 }
 
-uint32_t genRand_uint32_t(MTRand *rand, uint32_t max)
+uint32_t genRand_uint32_t(uz_mtwister_t *self, uint32_t max)
 {
-  uint32_t y = (uint32_t)(genRand_float(rand) * (float)(max + 1));
+  uint32_t y = (uint32_t)(genRand_float(&self->seedRand) * (float)(max + 1));
   return y;
 }
 
 uint32_t uz_mtwister_generate_random_uint32(uz_mtwister_t *self, uint32_t max){
   uz_assert_not_NULL(self);
-  return uz_mtwister_generate_random_uint32(&self->seedRand, max);
+  return genRand_uint32_t(self, max);
 }
 
-uint32_t uz_mtwister_generate_random_uint32_array(uz_mtwister_t *self, uint32_t max)
+void uz_mtwister_generate_random_uint32_array(uz_mtwister_t *self,uint32_t* array, uint32_t size, float max_val)
 {
-
-
-  void genRand_uint32_t_array(uint32_t * array, MTRand * rand, uint32_t size, float min_val, float max_val)
+  uz_assert_not_NULL(self);
+  uz_assert_not_NULL(array);
+  for (uint32_t i = 0; i < size; i++)
   {
-    uz_assert_not_NULL(array);
-    uz_assert(min_val < max_val);
-    for (uint32_t i = 0; i < size; i++)
-    {
-      array[i] = genRand_uint32_t(rand, (uint32_t)max_val);
-    }
+    array[i] = genRand_uint32_t(self, (uint32_t)max_val);
   }
+}
 
   float uz_random_box_mueller(uz_mtwister_t * self, float mean, float std)
   {

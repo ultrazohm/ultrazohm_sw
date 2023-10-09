@@ -260,7 +260,7 @@ void test_dqn_bitflip(void)
     // testdqn2->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
-    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    uz_dqn_environment_reset(testdqn2->env,testdqn2->randinstance);
     uz_dqn_sample_bitenv(testdqn2);
     cumreward[i] = testdqn2->env->cumreward;
     if (i == 0){
@@ -271,10 +271,10 @@ void test_dqn_bitflip(void)
     }
     epsilonovertime[i] = testdqn2->env->epsilon_start;
     if (testdqn2->experience_buffer->counterisfull > 0U){
-    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0.0f,(float)(EXPERIENCE_BUFFER_LENGTH-1U));
+        uz_mtwister_generate_random_uint32_array(testdqn2->randinstance,r, MINIBATCHSIZE, (float)(EXPERIENCE_BUFFER_LENGTH - 1U));
     }
     else{
-    genRand_uint32_t_array(r,&testdqn2->randinstance->seedRand,MINIBATCHSIZE,0.0f,(float)(testdqn2->experience_buffer->head-1U));
+        uz_mtwister_generate_random_uint32_array(testdqn2->randinstance,r, MINIBATCHSIZE, (float)(testdqn2->experience_buffer->head - 1U));
     }
     uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer,rew,act,testdqn2->experience_buffer->vectorforobs,testdqn2->experience_buffer->vectorforobs1,obs,obspl1,MINIBATCHSIZE,indizes);
     loss[i] = uz_dqn_train_adam(testdqn2,error,rew,act,obs,obspl1,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
@@ -282,7 +282,7 @@ void test_dqn_bitflip(void)
     }
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
-    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    uz_dqn_environment_reset(testdqn2->env,testdqn2->randinstance);
     uz_dqn_act_bitenv_no_exploration(testdqn2);
     cumreward_noexpl[i] = testdqn2->env->cumreward;
     }

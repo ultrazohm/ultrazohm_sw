@@ -249,7 +249,7 @@ void test_dqn_bitflip(void)
     // testdqn2->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0; i < NUMBER_OF_EPOCHS; i++)
     {
-    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    uz_dqn_environment_reset(testdqn2->env,testdqn2->randinstance);
     loss[i]= uz_dqn_step_adam_no_array(testdqn2,error,MINIBATCHSIZE,TARGET_UPDATE_FREQUENCY,i,targsmoothfact,adam); 
     cumreward[i] = testdqn2->env->cumreward;
     if (i == 0){
@@ -263,7 +263,7 @@ void test_dqn_bitflip(void)
     }
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
-    uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    uz_dqn_environment_reset(testdqn2->env,testdqn2->randinstance);
     uz_dqn_act_bitenv_no_exploration(testdqn2);
     cumreward_noexpl[i] = testdqn2->env->cumreward;
     }

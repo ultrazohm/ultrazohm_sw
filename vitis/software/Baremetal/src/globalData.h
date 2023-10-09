@@ -122,7 +122,6 @@ typedef struct _DS_Data_ {
 
 /**
  * @brief Enum to use for multi-phase applications with different neutral configurations
-
  * 
  */
 typedef enum {

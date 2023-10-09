@@ -15,7 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-
+extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -71,6 +71,16 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.av.polepairs_left = Beckhoff_AM8141.polePairs;
+            Global_Data.av.polepairs_right = Beckhoff_AM8141.polePairs;
+            Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
+            Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
+            Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+            Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+            Global_Data.av.lambda_d = 1.0f;
+            Global_Data.av.lambda_q = 1.0f;
+            Global_Data.av.lambda_u = 0.0f;
+            Global_Data.av.i_max_mpc = 1.0f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -89,7 +99,39 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+//            initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.resolver_left = initialize_resolver_left();
+            Global_Data.objects.resolver_right = initialize_resolver_right();
+            Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();
+            Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
+            Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
+            Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
+            //MPC init
+            //uz_debug_ip
+            fcs_mpc_real_or_debug_inputs(true); //false=debug, true=real
+            //uz_sel_currents_ip
+            fcs_mpc_select_current_source(false); //false=right, true=left
+            //uz_sel_resolver_ip
+            fcs_mpc_select_resolver_source(false); //false=right, true=left
+            //uz_pu_conversion_ip
+            fcs_mpc_init_pu_conversion_ip();
+            //uz_park_transform_ip
+            fcs_mpc_init_park_transform();
+            //uz_mpc_State_machine
+            fcs_mpc_init_state_machine(8U); //state machine shall perform 8 iterations for the 8 switch positions
+            //uz_pu_voltages
+            fcs_mpc_init_pu_voltages(1U,0U,48.0f); //0=index via AXI 1=index via PL | //0=v_dc via AXI 1=v_dc via PL measured
+            //uz_pu_omega_m_conversion
+            fcs_mpc_init_omega_m_pu_conversion();
+            //delay_comp
+            fcs_mpc_init_delay_comp();
+            //prediction model
+            fcs_mpc_init_prediction_model();
+            //cost function
+
+
+
+
             initialization_chain = print_msg;
             break;
 	    case print_msg:

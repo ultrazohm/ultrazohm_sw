@@ -202,23 +202,23 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
     return (self);
 }
 
-void uz_nn_layer_init_Glorot(uz_matrix_t *parameter, uz_mtwister_t *self)
+void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_mtwister_t *self,float mean, float std)
 {
     uz_assert_not_NULL(parameter);
     uz_assert_not_NULL(self);
     for (uint32_t i = 0U; i < parameter->length_of_data; i++)
     {
-        parameter->data[i] = uz_generate_random_number(self);
+        parameter->data[i] = uz_random_box_mueller(self,mean,std);
     }
 }
 
-void uz_nn_layer_init_He(uz_matrix_t *parameter, uz_mtwister_t *self)
+void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_mtwister_t *self, float mean, float std)
 {
     uz_assert_not_NULL(parameter);
     uz_assert_not_NULL(self);
     for (uint32_t i = 0U; i < parameter->length_of_data; i++)
     {
-        parameter->data[i] = uz_generate_random_number(self);
+        parameter->data[i] = uz_random_box_mueller(self, mean, std);
     }
 }
 
@@ -231,10 +231,8 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, str
         // float fanavg = (float)(layer->number_of_neurons/uz_matrix_get_number_of_rows(layer->output_matrix));
         float std = sqrtf(2.0f / (float)((layer->number_of_neurons + layer_config.length_of_output)));
         float mean = 0.0f;
-        uz_mtwister_set_standard_deviation(self, std);
-        uz_mtwister_set_mean(self, mean);
         // uz_nn_layer_init_Glorot(layer->bias,self);
-        uz_nn_layer_init_Glorot(layer->weights, self);
+        uz_nn_layer_init_Glorot_uniform(layer->weights, self, mean,std);
         break;
     }
     case activation_ReLU:
@@ -242,11 +240,9 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, str
 
         float std = sqrtf(2.0f / (float)((layer->number_of_neurons)));
         float mean = 0.0f;
-        uz_mtwister_set_standard_deviation(self, std);
-        uz_mtwister_set_mean(self, mean);
         // float fanin = (float)(layer->number_of_neurons);
         // uz_nn_layer_init_He(layer->bias,self);
-        uz_nn_layer_init_He(layer->weights, self);
+        uz_nn_layer_init_He_uniform(layer->weights, self, mean,std);
         break;
     }
     default:

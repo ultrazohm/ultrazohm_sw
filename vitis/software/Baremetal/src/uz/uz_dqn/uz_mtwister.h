@@ -30,12 +30,11 @@ uint32_t uz_mtwister_generate_random_uint32(uz_mtwister_t *self, uint32_t max);
 
 void uz_mtwister_generate_random_uint32_array(uz_mtwister_t *self, uint32_t *array, uint32_t size, float max_val);
 
-
 uint32_t uz_mtwister_generate_random_zero_or_one_uint32(uz_mtwister_t *self);
 uint32_t uz_mtwister_generate_random_zero_to_max_uint32(uz_mtwister_t *self, uint32_t max);
 
-
-    float uz_generate_random_number(uz_mtwister_t *self);
+float uz_generate_random_number(uz_mtwister_t *self);
 float uz_random_box_mueller(uz_mtwister_t *self, float mean, float std);
-    void polar_box_muller(float *retval, uint32_t range);
+void polar_box_muller(float *retval, uint32_t range);
+
 #endif // UZ_DQN_H

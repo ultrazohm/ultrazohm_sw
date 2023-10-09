@@ -4,27 +4,9 @@
 #include "test_assert_with_exception.h"
 #include <stdlib.h>
 #include "uz_mtwister.h"
-#include "uz_nn_layer.h"
-#include "uz_matrix.h"
-#include "uz_nn_activation_functions.h"
+#include "uz_math.h"
 
 void export_histogram(float *array, uint32_t size);
-
-#define NUMBER_OF_INPUTS 3U
-#define NUMBER_OF_NEURONS_IN_LAYER 4U
-
-float x[NUMBER_OF_INPUTS] = {1.0f, 2.0f, 3.0f};
-float w[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_LAYER] = {0.5377f, 1.8339f, -2.2588f, 0.8622f,
-                                                          0.3188f, -1.3077f, -0.4336f, 0.3426f,
-                                                          3.5784f, 2.7694f, -1.3499f, 3.0349f};
-float b[NUMBER_OF_NEURONS_IN_LAYER] = {1.0f, -2.0f, 3.0f, -4.0f};
-float out[NUMBER_OF_NEURONS_IN_LAYER] = {0};
-float e[NUMBER_OF_NEURONS_IN_LAYER] = {0};
-float T[NUMBER_OF_NEURONS_IN_LAYER] = {0};
-float s[NUMBER_OF_NEURONS_IN_LAYER] = {0};
-float delta[NUMBER_OF_NEURONS_IN_LAYER] = {0};
-float cacheg[NUMBER_OF_NEURONS_IN_LAYER * NUMBER_OF_INPUTS] = {0};
-float g[NUMBER_OF_NEURONS_IN_LAYER + NUMBER_OF_NEURONS_IN_LAYER * NUMBER_OF_INPUTS] = {0};
 
 void setUp(void)
 {
@@ -34,11 +16,15 @@ void tearDown(void)
 {
 }
 
+
 void uz_twister_init(void)
 {
   uz_mtwister_init(2U);
 }
-void test_uz_box_mueller_rand(void)
+
+#define ARRAY_LENGTH_MEAN_TEST 5000U
+
+void test_uz_random_normal_float_distribution_mean50(void)
 {
   // use mtwister, calculate double between 0 and 1 and scale it to Randmax
   // double randmax = 500; seedRand(0)
@@ -46,16 +32,43 @@ void test_uz_box_mueller_rand(void)
   uz_mtwister_t *test_instace = uz_mtwister_init(2U);
   float mean = 50.0f;
   float std = 0.5f;
-  uint32_t length = 10;
-  float array[10] = {0.0f};
-  for (uint32_t i = 0; i < length; i++)
+  float array[ARRAY_LENGTH_MEAN_TEST] = {0.0f};
+  for (uint32_t i = 0; i < ARRAY_LENGTH_MEAN_TEST; i++)
   {
     // uint kann nicht in der Funktion gecastet werden, sonst kann man nichts mehr skalieren, es kommt nur 0 und 1 raus
     float rand = uz_mtwister_random_normal_float(test_instace, mean, std);
     // printf("%f\n", (double)rand);
     array[i] = rand;
   }
-  export_histogram(array, length);
+  export_histogram(array, ARRAY_LENGTH_MEAN_TEST);
+  float mean_sampled = uz_math_mean(array, ARRAY_LENGTH_MEAN_TEST);
+  float std_sampled = uz_math_standard_deviation(array, ARRAY_LENGTH_MEAN_TEST);
+  TEST_ASSERT_FLOAT_WITHIN(0.1f,mean, mean_sampled);
+  TEST_ASSERT_FLOAT_WITHIN(0.01f, std, std_sampled);
+  // check with matlab plot histogram and x,y
+}
+
+void test_uz_random_normal_float_distribution_mean0(void)
+{
+  // use mtwister, calculate double between 0 and 1 and scale it to Randmax
+  // double randmax = 500; seedRand(0)
+
+  uz_mtwister_t *test_instace = uz_mtwister_init(2U);
+  float mean = 0.0f;
+  float std = 5.0f;
+  float array[ARRAY_LENGTH_MEAN_TEST] = {0.0f};
+  for (uint32_t i = 0; i < ARRAY_LENGTH_MEAN_TEST; i++)
+  {
+    // uint kann nicht in der Funktion gecastet werden, sonst kann man nichts mehr skalieren, es kommt nur 0 und 1 raus
+    float rand = uz_mtwister_random_normal_float(test_instace, mean, std);
+    // printf("%f\n", (double)rand);
+    array[i] = rand;
+  }
+  export_histogram(array, ARRAY_LENGTH_MEAN_TEST);
+  float mean_sampled = uz_math_mean(array, ARRAY_LENGTH_MEAN_TEST);
+  float std_sampled = uz_math_standard_deviation(array, ARRAY_LENGTH_MEAN_TEST);
+  TEST_ASSERT_FLOAT_WITHIN(0.1f, mean, mean_sampled);
+  TEST_ASSERT_FLOAT_WITHIN(0.01f, std, std_sampled);
   // check with matlab plot histogram and x,y
 }
 
@@ -139,5 +152,7 @@ void export_histogram(float *array, uint32_t size)
     }
   }
 }
+
+
 
 #endif // TEST

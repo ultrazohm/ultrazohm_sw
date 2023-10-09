@@ -6,6 +6,7 @@
  * January pp.3-30 1998.
  *
  * http://www.sultanik.com/Mersenne_twister
+ * https://github.com/ESultanik/mtwister/tree/master
  */
 #include "../uz_global_configuration.h"
 #if UZ_MTWISTER_MAX_INSTANCES > 0U
@@ -20,30 +21,19 @@
 #include "uz_mtwister.h"
 #include <math.h>
 
-
-typedef struct tagMTRand
-{
-  unsigned long mt[STATE_VECTOR_LENGTH];
-  int index;
-} MTRand;
-
-// Enum to define random number generator types
-
 struct uz_mtwister_t
 {
   bool is_ready;
   uint32_t seed;
-  MTRand seedRand;
-  float mean;
-  float std;
-  enum mtwister_rng_type distribution;
+  uint64_t mt[STATE_VECTOR_LENGTH];
+  int index;
+  uint64_t mag[2U];
+  float box_mueller_cache;
 };
 
-MTRand seedRand(unsigned long seed);
-unsigned long genRandLong(MTRand *rand);
-double genRand(MTRand *rand);
-float genRand_float(MTRand *rand);
-
+static uint64_t genRandLong(uz_mtwister_t *self);
+static double genRand(uz_mtwister_t *rand);
+static float genRand_float(uz_mtwister_t *rand);
 
 static uint32_t instance_counterrand = 0U;
 static uz_mtwister_t instancesrand[UZ_MTWISTER_MAX_INSTANCES] = {0};
@@ -59,92 +49,63 @@ static uz_mtwister_t *uz_mtwister_allocation(void)
   return (self);
 }
 
-inline static void m_seedRand(MTRand *rand, unsigned long seed);
+inline static void m_seedRand(uz_mtwister_t *self, unsigned long seed);
 
 // Function to initialize a random_number instance with a given config
-uz_mtwister_t *uz_mtwister_init(struct uz_mtwister_config cfg)
+uz_mtwister_t *uz_mtwister_init(uint32_t random_seed)
 {
   uz_mtwister_t *self = uz_mtwister_allocation();
-  self->seed = cfg.seed;
-  m_seedRand(&self->seedRand, self->seed);
-  self->distribution = cfg.distribution;
-  self->mean = cfg.mean;
-  self->std = cfg.std;
-  return (self);
+  self->seed = random_seed;
+  m_seedRand(self, self->seed);
+  self->mag[0] = 0x0;
+  self->mag[1] = 0x9908b0df; /* self->mag[x] = x * 0x9908b0df for x = 0,1 */
+  self->box_mueller_cache=0.0f;
+   return (self);
 }
 
-float uz_generate_random_number(uz_mtwister_t *self)
-{
-  uz_assert_not_NULL(self);
-  float randomsample = 0.0f;
-  switch (self->distribution)
-  {
-  case mtwister_uniform_distribution:
-    randomsample = genRand_float(&self->seedRand);
-    break;
-  case mtwister_normal_distribution:
-    randomsample = uz_random_box_mueller(self, self->mean, self->std);
-    break;
-  default:
-    break;
-  }
-  return randomsample;
-}
-
-inline static void m_seedRand(MTRand *rand, unsigned long seed)
+inline static void m_seedRand(uz_mtwister_t *self, unsigned long seed)
 {
   /* set initial seeds to mt[STATE_VECTOR_LENGTH] using the generator
    * from Line 25 of Table 1 in: Donald Knuth, "The Art of Computer
    * Programming," Vol. 2 (2nd Ed.) pp.102.
    */
-  rand->mt[0] = seed & 0xffffffff;
-  for (rand->index = 1; rand->index < STATE_VECTOR_LENGTH; rand->index++)
+  self->mt[0] = seed & 0xffffffff;
+  for (self->index = 1; self->index < STATE_VECTOR_LENGTH; self->index++)
   {
-    rand->mt[rand->index] = (6069 * rand->mt[rand->index - 1]) & 0xffffffff;
+    self->mt[self->index] = (6069 * self->mt[self->index - 1]) & 0xffffffff;
   }
 }
 
-/**
- * Creates a new random number generator from a given seed.
- */
-MTRand seedRand(unsigned long seed)
-{
-  MTRand rand;
-  m_seedRand(&rand, seed);
-  return rand;
-}
 
 /**
  * Generates a pseudo-randomly generated long.
  */
-unsigned long genRandLong(MTRand *rand)
+static uint64_t genRandLong(uz_mtwister_t *self)
 {
-
-  unsigned long y;
-  static unsigned long mag[2] = {0x0, 0x9908b0df}; /* mag[x] = x * 0x9908b0df for x = 0,1 */
-  if (rand->index >= STATE_VECTOR_LENGTH || rand->index < 0)
+  uint64_t y=0;
+  if (self->index >= STATE_VECTOR_LENGTH || self->index < 0)
   {
     /* generate STATE_VECTOR_LENGTH words at a time */
-    int kk;
-    if (rand->index >= STATE_VECTOR_LENGTH + 1 || rand->index < 0)
+    int32_t kk=0;
+    if (self->index >= STATE_VECTOR_LENGTH + 1 || self->index < 0)
     {
-      m_seedRand(rand, 4357);
+      m_seedRand(self, 4357);
     }
     for (kk = 0; kk < STATE_VECTOR_LENGTH - STATE_VECTOR_M; kk++)
     {
-      y = (rand->mt[kk] & UPPER_MASK) | (rand->mt[kk + 1] & LOWER_MASK);
-      rand->mt[kk] = rand->mt[kk + STATE_VECTOR_M] ^ (y >> 1) ^ mag[y & 0x1];
+      y = (self->mt[kk] & UPPER_MASK) | (self->mt[kk + 1] & LOWER_MASK);
+      self->mt[kk] = self->mt[kk + STATE_VECTOR_M] ^ (y >> 1) ^ self->mag[y & 0x1];
     }
     for (; kk < STATE_VECTOR_LENGTH - 1; kk++)
     {
-      y = (rand->mt[kk] & UPPER_MASK) | (rand->mt[kk + 1] & LOWER_MASK);
-      rand->mt[kk] = rand->mt[kk + (STATE_VECTOR_M - STATE_VECTOR_LENGTH)] ^ (y >> 1) ^ mag[y & 0x1];
+      y = (self->mt[kk] & UPPER_MASK) | (self->mt[kk + 1] & LOWER_MASK);
+      self->mt[kk] = self->mt[kk + (STATE_VECTOR_M - STATE_VECTOR_LENGTH)] ^ (y >> 1) ^ self->mag[y & 0x1];
     }
-    y = (rand->mt[STATE_VECTOR_LENGTH - 1] & UPPER_MASK) | (rand->mt[0] & LOWER_MASK);
-    rand->mt[STATE_VECTOR_LENGTH - 1] = rand->mt[STATE_VECTOR_M - 1] ^ (y >> 1) ^ mag[y & 0x1];
-    rand->index = 0;
+    y = (self->mt[STATE_VECTOR_LENGTH - 1] & UPPER_MASK) | (self->mt[0] & LOWER_MASK);
+    self->mt[STATE_VECTOR_LENGTH - 1] = self->mt[STATE_VECTOR_M - 1] ^ (y >> 1) ^ self->mag[y & 0x1];
+    self->index = 0;
   }
-  y = rand->mt[rand->index++];
+  y = self->mt[self->index++];
   y ^= (y >> 11);
   y ^= (y << 7) & TEMPERING_MASK_B;
   y ^= (y << 15) & TEMPERING_MASK_C;
@@ -152,39 +113,41 @@ unsigned long genRandLong(MTRand *rand)
   return y;
 }
 
-double genRand(MTRand *rand)
+static double genRand(uz_mtwister_t *rand)
 {
-  return ((double)genRandLong(rand) / (unsigned long)0xffffffff);
+  return ((double)genRandLong(rand) / (uint64_t)0xffffffff);
 }
-float genRand_float(MTRand *rand)
+
+static float genRand_float(uz_mtwister_t *rand)
 {
   return ((float)genRandLong(rand) / (float)0xffffffff);
 }
 
 float uz_mtwister_random_float_uniform(uz_mtwister_t *self)
 {
-  return ((float)genRandLong(&self->seedRand) / (float)0xffffffff);
+  return ((float)genRandLong(self) / (float)0xffffffff);
 }
 
 uint32_t uz_mtwister_generate_random_zero_or_one_uint32(uz_mtwister_t *self)
 {
   uz_assert_not_NULL(self);
-  uint32_t y = (uint32_t)(genRand_float(&self->seedRand) * (2.0f));
+  uint32_t y = (uint32_t)(genRand_float(self) * (2.0f));
   return y;
 }
 
 uint32_t uz_mtwister_generate_random_zero_to_max_uint32(uz_mtwister_t *self, uint32_t max)
 {
-  uint32_t y = (uint32_t)(genRand_float(&self->seedRand) * (float)(max + 1));
+  uint32_t y = (uint32_t)(genRand_float(self) * (float)(max + 1));
   return y;
 }
 
-uint32_t uz_mtwister_generate_random_uint32(uz_mtwister_t *self, uint32_t max){
+uint32_t uz_mtwister_generate_random_uint32(uz_mtwister_t *self, uint32_t max)
+{
   uz_assert_not_NULL(self);
   return uz_mtwister_generate_random_zero_to_max_uint32(self, max);
 }
 
-void uz_mtwister_generate_random_uint32_array(uz_mtwister_t *self,uint32_t* array, uint32_t size, float max_val)
+void uz_mtwister_generate_random_uint32_array(uz_mtwister_t *self, uint32_t *array, uint32_t size, float max_val)
 {
   uz_assert_not_NULL(self);
   uz_assert_not_NULL(array);
@@ -194,45 +157,34 @@ void uz_mtwister_generate_random_uint32_array(uz_mtwister_t *self,uint32_t* arra
   }
 }
 
-  float uz_random_box_mueller(uz_mtwister_t * self, float mean, float std)
-  {
-    MTRand seed = self->seedRand;
-    static float cached = 0.0f;
-    float x, y, r, res;
+float uz_mtwister_random_float_normal(uz_mtwister_t *self, float mean, float std)
+{
+  float x=0.0f;
+  float y=0.0f;
+  float r=0.0f;
+  float res=0.0f;
 
-    if (cached == 0.0f)
+  if (self->box_mueller_cache == 0.0f)
+  {
+    do
     {
-      do
-      {
-        x = (2.0f * genRand_float(&seed)) - 1.0f;
-        y = (2.0f * genRand_float(&seed)) - 1.0f;
-        r = x * x + y * y;
-      } while (r == 0.0f || r > 1.0f);
+      x = (2.0f * genRand_float(self)) - 1.0f;
+      y = (2.0f * genRand_float(self)) - 1.0f;
+      r = x * x + y * y;
+    } while (r == 0.0f || r > 1.0f);
 
-      float d = sqrtf(-2.0f * logf(r) / r);
-      float n1 = x * d;
-      float n2 = y * d;
-      res = n1 * std + mean;
-      cached = n2;
-    }
-    else
-    {
-      res = cached * std + mean;
-      cached = 0.0f;
-    }
-    return res;
+    float d = sqrtf(-2.0f * logf(r) / r);
+    float n1 = x * d;
+    float n2 = y * d;
+    res = n1 * std + mean;
+    self->box_mueller_cache = n2;
   }
-
-  void uz_mtwister_set_mean(uz_mtwister_t * self, float mean)
+  else
   {
-    uz_assert_not_NULL(self);
-    self->mean = mean;
+    res = self->box_mueller_cache * std + mean;
+    self->box_mueller_cache = 0.0f;
   }
-
-  void uz_mtwister_set_standard_deviation(uz_mtwister_t * self, float standard_deviation)
-  {
-    uz_assert_not_NULL(self);
-    self->std = standard_deviation;
-  }
+  return res;
+}
 
 #endif // UZ_MTWISTER_H

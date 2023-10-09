@@ -55,7 +55,7 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
 
 
 uz_dqn_t *uz_dqn_init(float *vecdata,float lernrate, float discount_factor,struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER],
-struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], struct uz_mtwister_config cfg, 
+struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t seed_number, 
 uint32_t number_of_layer,
  struct uz_dqn_experience_replay_config buffer_config,
 uint32_t length_of_buffer, struct uz_dqn_environment_config envconf)
@@ -63,7 +63,7 @@ uint32_t length_of_buffer, struct uz_dqn_environment_config envconf)
     uz_assert_not_NULL(vecdata);
     uz_dqn_t *self = uz_dqn_allocation();
     self->inputvecnn = uz_matrix_init(&self->inputvecnn_matrix, vecdata, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
-    self->randinstance = uz_mtwister_init(cfg); 
+    self->randinstance = uz_mtwister_init(seed_number); 
     self->critic = uz_nn_init_with_rand(config_critic, number_of_layer, self->randinstance ,true);
     self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config,length_of_buffer);

@@ -119,10 +119,7 @@ float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
 
 // config random
-struct uz_mtwister_config cfg = {
-  .seed = 2,
-  .distribution = mtwister_normal_distribution
-};
+
 //config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
@@ -228,13 +225,13 @@ void tearDown(void)
 
 void test_uz_dqn_init(void)
 {
-    uz_dqn_t* testdqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
+    uz_dqn_t* testdqn = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,2U,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_target_update(testdqn->critic,testdqn->critic_target_net,smoothing,&targsmoothfact);
 }
 void test_dqn_bitflip(void)
 {
-    uz_dqn_t* testdqn2 = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,cfg,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
+    uz_dqn_t* testdqn2 = uz_dqn_init(X_dat,lernrate,discountfact,config_critic,config_target,2U,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH,configenv); 
     float targsmoothfact = 0.05f;
     uz_nn_copy(testdqn2->critic,testdqn2->critic_target_net);
     uint32_t r[MINIBATCHSIZE] = {0}; 

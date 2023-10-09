@@ -208,7 +208,7 @@ void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_mtwister_t *self
     uz_assert_not_NULL(self);
     for (uint32_t i = 0U; i < parameter->length_of_data; i++)
     {
-        parameter->data[i] = uz_random_box_mueller(self,mean,std);
+        parameter->data[i] = uz_mtwister_random_float_normal(self,mean,std);
     }
 }
 
@@ -218,7 +218,7 @@ void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_mtwister_t *self, fl
     uz_assert_not_NULL(self);
     for (uint32_t i = 0U; i < parameter->length_of_data; i++)
     {
-        parameter->data[i] = uz_random_box_mueller(self, mean, std);
+        parameter->data[i] = uz_mtwister_random_float_normal(self, mean, std);
     }
 }
 

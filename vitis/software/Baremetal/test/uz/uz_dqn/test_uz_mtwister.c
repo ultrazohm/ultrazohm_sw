@@ -26,12 +26,6 @@ float delta[NUMBER_OF_NEURONS_IN_LAYER] = {0};
 float cacheg[NUMBER_OF_NEURONS_IN_LAYER * NUMBER_OF_INPUTS] = {0};
 float g[NUMBER_OF_NEURONS_IN_LAYER + NUMBER_OF_NEURONS_IN_LAYER * NUMBER_OF_INPUTS] = {0};
 
-struct uz_mtwister_config cfg = {
-    .seed = 1,
-    .distribution = mtwister_uniform_distribution,
-    .mean = 0.0f,
-    .std = 0.5f};
-
 void setUp(void)
 {
 }
@@ -42,17 +36,12 @@ void tearDown(void)
 
 void uz_twister_init(void)
 {
-  uz_mtwister_init(cfg);
+  uz_mtwister_init(2U);
 }
 
 void test_uz_twister_init_layer(void)
 {
-  struct uz_mtwister_config cfg = {
-      .seed = 1,
-      .distribution = mtwister_uniform_distribution,
-      .mean = 10.0f,
-      .std = 1.0f};
-  uz_mtwister_t *twister = uz_mtwister_init(cfg);
+  uz_mtwister_t *twister = uz_mtwister_init(2U);
 
   struct uz_nn_layer_config config = {
       .activation_function = activation_ReLU,
@@ -94,10 +83,8 @@ void test_uz_box_mueller_rand(void)
 {
   // use mtwister, calculate double between 0 and 1 and scale it to Randmax
   // double randmax = 500; seedRand(0)
-  struct uz_mtwister_config test_config = {
-      .seed = 1,
-      .distribution = mtwister_uniform_distribution};
-  uz_mtwister_t *test_instace = uz_mtwister_init(test_config);
+
+  uz_mtwister_t *test_instace = uz_mtwister_init(2U);
   float mean = 50.0f;
   float std = 0.5f;
   uint32_t length = 10;
@@ -105,7 +92,7 @@ void test_uz_box_mueller_rand(void)
   for (uint32_t i = 0; i < length; i++)
   {
     // uint kann nicht in der Funktion gecastet werden, sonst kann man nichts mehr skalieren, es kommt nur 0 und 1 raus
-    float rand = uz_random_box_mueller(test_instace, mean, std);
+    float rand = uz_mtwister_random_float_normal(test_instace, mean, std);
     // printf("%f\n", (double)rand);
     array[i] = rand;
   }

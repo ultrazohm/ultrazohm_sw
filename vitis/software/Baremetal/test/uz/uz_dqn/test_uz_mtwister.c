@@ -92,7 +92,7 @@ void test_uz_box_mueller_rand(void)
   for (uint32_t i = 0; i < length; i++)
   {
     // uint kann nicht in der Funktion gecastet werden, sonst kann man nichts mehr skalieren, es kommt nur 0 und 1 raus
-    float rand = uz_mtwister_random_float_normal(test_instace, mean, std);
+    float rand = uz_mtwister_random_normal_float(test_instace, mean, std);
     // printf("%f\n", (double)rand);
     array[i] = rand;
   }
@@ -109,7 +109,7 @@ void test_uz_box_mueller_rand(void)
 //   double array[5] = {0.0f};
 //   for (uint32_t i = 0; i < length; i++)
 //   {
-//     double rand = genRand(&r);
+//     double rand = generate_random_uniform_double(&r);
 //     printf("%f\n", rand);
 //     array[i] = rand;
 //   }

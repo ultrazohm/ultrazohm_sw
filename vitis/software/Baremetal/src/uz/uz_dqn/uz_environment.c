@@ -46,8 +46,8 @@ for(uint32_t i=0; i<self->bitlength;i++){
     // self->bittarget[i] = 0U;
     // self->inputfornn->data[i] = 1.0f;
     // self->inputfornn->data[self->bitlength+i] = 0.0f;
-    self->bitinitial[i] = uz_mtwister_generate_random_zero_or_one_uint32(random_generator);
-    self->bittarget[i] = uz_mtwister_generate_random_zero_or_one_uint32(random_generator);
+    self->bitinitial[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
+    self->bittarget[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
     self->inputfornn->data[i] = (float)self->bitinitial[i];
     self->inputfornn->data[self->bitlength+i] = (float)self->bittarget[i];
 }

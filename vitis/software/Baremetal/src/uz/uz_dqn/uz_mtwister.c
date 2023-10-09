@@ -31,9 +31,9 @@ struct uz_mtwister_t
   float box_mueller_cache;
 };
 
-static uint64_t genRandLong(uz_mtwister_t *self);
-static double genRand(uz_mtwister_t *rand);
-static float genRand_float(uz_mtwister_t *rand);
+static uint64_t generate_random_uniform_long(uz_mtwister_t *self);
+static double generate_random_uniform_double(uz_mtwister_t *rand);
+static float generate_random_uniform_float(uz_mtwister_t *rand);
 
 static uint32_t instance_counterrand = 0U;
 static uz_mtwister_t instancesrand[UZ_MTWISTER_MAX_INSTANCES] = {0};
@@ -80,7 +80,7 @@ inline static void m_seedRand(uz_mtwister_t *self, unsigned long seed)
 /**
  * Generates a pseudo-randomly generated long.
  */
-static uint64_t genRandLong(uz_mtwister_t *self)
+static uint64_t generate_random_uniform_long(uz_mtwister_t *self)
 {
   uint64_t y=0;
   if (self->index >= STATE_VECTOR_LENGTH || self->index < 0)
@@ -113,51 +113,51 @@ static uint64_t genRandLong(uz_mtwister_t *self)
   return y;
 }
 
-static double genRand(uz_mtwister_t *rand)
+static double generate_random_uniform_double(uz_mtwister_t *rand)
 {
-  return ((double)genRandLong(rand) / (uint64_t)0xffffffff);
+  return ((double)generate_random_uniform_long(rand) / (uint64_t)0xffffffff);
 }
 
-static float genRand_float(uz_mtwister_t *rand)
+static float generate_random_uniform_float(uz_mtwister_t *rand)
 {
-  return ((float)genRandLong(rand) / (float)0xffffffff);
+  return ((float)generate_random_uniform_long(rand) / (float)0xffffffff);
 }
 
-float uz_mtwister_random_float_uniform(uz_mtwister_t *self)
+float uz_mtwister_random_uniform_float(uz_mtwister_t *self)
 {
-  return ((float)genRandLong(self) / (float)0xffffffff);
+  return ((float)generate_random_uniform_long(self) / (float)0xffffffff);
 }
 
-uint32_t uz_mtwister_generate_random_zero_or_one_uint32(uz_mtwister_t *self)
+uint32_t uz_mtwister_random_zero_or_one_uint32(uz_mtwister_t *self)
 {
   uz_assert_not_NULL(self);
-  uint32_t y = (uint32_t)(genRand_float(self) * (2.0f));
+  uint32_t y = (uint32_t)(generate_random_uniform_float(self) * (2.0f));
   return y;
 }
 
-uint32_t uz_mtwister_generate_random_zero_to_max_uint32(uz_mtwister_t *self, uint32_t max)
+uint32_t uz_mtwister_random_uniform_max_uint32(uz_mtwister_t *self, uint32_t max)
 {
-  uint32_t y = (uint32_t)(genRand_float(self) * (float)(max + 1));
+  uint32_t y = (uint32_t)(generate_random_uniform_float(self) * (float)(max + 1));
   return y;
 }
 
-uint32_t uz_mtwister_generate_random_uint32(uz_mtwister_t *self, uint32_t max)
+uint32_t uz_mtwister_random_uniform_uint32(uz_mtwister_t *self, uint32_t max)
 {
   uz_assert_not_NULL(self);
-  return uz_mtwister_generate_random_zero_to_max_uint32(self, max);
+  return uz_mtwister_random_uniform_max_uint32(self, max);
 }
 
-void uz_mtwister_generate_random_uint32_array(uz_mtwister_t *self, uint32_t *array, uint32_t size, float max_val)
+void uz_mtwister_random_uniform_uint32_array(uz_mtwister_t *self, uint32_t *array, uint32_t size, float max_val)
 {
   uz_assert_not_NULL(self);
   uz_assert_not_NULL(array);
   for (uint32_t i = 0; i < size; i++)
   {
-    array[i] = uz_mtwister_generate_random_zero_to_max_uint32(self, (uint32_t)max_val);
+    array[i] = uz_mtwister_random_uniform_max_uint32(self, (uint32_t)max_val);
   }
 }
 
-float uz_mtwister_random_float_normal(uz_mtwister_t *self, float mean, float std)
+float uz_mtwister_random_normal_float(uz_mtwister_t *self, float mean, float std)
 {
   float x=0.0f;
   float y=0.0f;
@@ -168,8 +168,8 @@ float uz_mtwister_random_float_normal(uz_mtwister_t *self, float mean, float std
   {
     do
     {
-      x = (2.0f * genRand_float(self)) - 1.0f;
-      y = (2.0f * genRand_float(self)) - 1.0f;
+      x = (2.0f * generate_random_uniform_float(self)) - 1.0f;
+      y = (2.0f * generate_random_uniform_float(self)) - 1.0f;
       r = x * x + y * y;
     } while (r == 0.0f || r > 1.0f);
 

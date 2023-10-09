@@ -127,7 +127,7 @@ float uz_dqn_step_adam_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint3
     // randnumber and epsilon comparision
     if (uz_mtwister_random_float_uniform(self->randinstance) < self->env->epsilon_start)
     {
-        actionind = genRand_uint32_t(self->randinstance,self->critic->number_of_outputs-1);
+        actionind = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->critic->number_of_outputs-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
@@ -203,7 +203,7 @@ float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self,float *error,uint32_t mbsi
     // randnumber and epsilon comparision
     if (uz_mtwister_random_float_uniform(self->randinstance) < self->env->epsilon_start)
     {
-        actionind = genRand_uint32_t(self->randinstance,self->critic->number_of_outputs-1);
+        actionind = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->critic->number_of_outputs-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
@@ -214,10 +214,10 @@ float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self,float *error,uint32_t mbsi
     for(uint32_t j=0; j<mbsize;j++){
         uint32_t randomindex = 0U;
         if (self->experience_buffer->counterisfull > 0U){
-        randomindex = genRand_uint32_t(self->randinstance,self->experience_buffer->length-1);
+        randomindex = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->experience_buffer->length-1);
         }
         else{
-        randomindex = genRand_uint32_t(self->randinstance,self->experience_buffer->head-1);
+        randomindex = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->experience_buffer->head-1);
         }
         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->env->inputfornn,randomindex);
         uz_nn_ff(self->critic_target_net,self->env->inputfornn);
@@ -277,7 +277,7 @@ float uz_dqn_step_gd_simple(uz_dqn_t *self,float *error,uint32_t mbsize, uint32_
     // randnumber and epsilon comparision
     if (uz_mtwister_random_float_uniform(self->randinstance) < self->env->epsilon_start)
     {
-        actionind = genRand_uint32_t(self->randinstance,self->critic->number_of_outputs-1);
+        actionind = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->critic->number_of_outputs-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
@@ -373,7 +373,7 @@ float uz_dqn_step_adam(uz_dqn_t *self,float *error, uint32_t mbsize, uint32_t TA
     outputcritic=uz_nn_get_output_data(self->critic);
     if (uz_mtwister_random_float_uniform(self->randinstance) < self->env->epsilon_start)
     {
-        actionind = genRand_uint32_t(self->randinstance,self->env->bitlength-1);
+        actionind = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->env->bitlength-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
@@ -450,7 +450,7 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, ui
     outputcritic=uz_nn_get_output_data(self->critic);
     if (uz_mtwister_random_float_uniform(self->randinstance) < self->env->epsilon_start)
     {
-        actionind = genRand_uint32_t(self->randinstance,self->env->bitlength-1);
+        actionind = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->env->bitlength-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputcritic);
@@ -462,10 +462,10 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self,float *error, uint32_t mbsize, ui
     for(uint32_t j=0; j<mbsize;j++){
 
         if (self->experience_buffer->counterisfull > 0U){
-        randomindex = genRand_uint32_t(self->randinstance,self->experience_buffer->length-1);
+        randomindex = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->experience_buffer->length-1);
         }
         else{
-        randomindex = genRand_uint32_t(self->randinstance,self->experience_buffer->head-1);
+        randomindex = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->experience_buffer->head-1);
         }
         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1,self->experience_buffer->vectorforobs1,randomindex);
         uz_nn_ff(self->critic_target_net,self->experience_buffer->vectorforobs1);
@@ -524,7 +524,7 @@ float uz_dqn_step_gd(uz_dqn_t *self,float *error, uint32_t mbsize,uint32_t TARGE
     uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
     if (uz_mtwister_random_float_uniform(self->randinstance) < self->env->epsilon_start)
     {
-        actionind = genRand_uint32_t(self->randinstance,self->env->bitlength-1);
+        actionind = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->env->bitlength-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputdqn);
@@ -594,7 +594,7 @@ void uz_dqn_sample_bitenv(uz_dqn_t *self)
     uz_matrix_t* outputdqn=uz_nn_get_output_data(self->critic);
     if (uz_mtwister_random_float_uniform(self->randinstance) < self->env->epsilon_start)
     {
-        actionind = genRand_uint32_t(self->randinstance,self->env->bitlength-1);
+        actionind = uz_mtwister_generate_random_zero_to_max_uint32(self->randinstance,self->env->bitlength-1);
     }
     else{
     actionind = uz_matrix_get_max_index(outputdqn);

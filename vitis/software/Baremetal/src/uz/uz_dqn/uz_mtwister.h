@@ -4,7 +4,6 @@
 #include "../uz_HAL.h"
 #include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 
 
 typedef struct uz_mtwister_t uz_mtwister_t;
@@ -32,8 +31,8 @@ uint32_t uz_mtwister_generate_random_uint32(uz_mtwister_t *self, uint32_t max);
 void uz_mtwister_generate_random_uint32_array(uz_mtwister_t *self, uint32_t *array, uint32_t size, float max_val);
 
 
-uint32_t genRand_zero_one(uz_mtwister_t *self);
-uint32_t genRand_uint32_t(uz_mtwister_t *self, uint32_t max);
+uint32_t uz_mtwister_generate_random_zero_or_one_uint32(uz_mtwister_t *self);
+uint32_t uz_mtwister_generate_random_zero_to_max_uint32(uz_mtwister_t *self, uint32_t max);
 
 
     float uz_generate_random_number(uz_mtwister_t *self);

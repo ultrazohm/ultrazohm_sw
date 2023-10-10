@@ -9,10 +9,13 @@ Space vector Modulation 6ph
 General
 =======
 
-This module implements a space vector modulation for asymmetrical six-phase machine with isolated neutral points (2N).
-The implementation is adaptable to 1N and described in the references.
+.. note:: 
 
-SVM for multi-phase works similar to the three-phase equivalent.
+    This module implements a space vector modulation for asymmetrical six-phase machine with isolated neutral points (2N).
+    The implementation is adaptable to 1N and described in the references.
+
+
+SVM for multi-phase works similar to :ref:`uz_spacevectormodulation`.
 However, in a multi-phase network, more switching combinations are available (for six-phase :math:`2^6=64`).
 Furthermore, switching combination has simultaniously one space vector (SV) in the :math:`\alpha\beta`- and one in the :math:`XY`-subspace.
 During the calculations, both have to be taken account of and it has to be noted, that a combination with a large SV (high absolute value) in :math:`\alpha\beta` means usually a small SV in :math:`XY`.
@@ -89,15 +92,15 @@ Limitation
 
 The 6ph SVM uses two setpoint limitations.
 Both of them limit the absolute value (length) of the SV, while leaving the phase angle untouched.
-Th checks for the limitations are executed in the listed order below:
+The checks for the limitations are executed in the listed order below:
 
 The :math:`XY`-SV must not be longer than 10% of the :math:`\alpha\beta`-SV.
 As can be seen from [[#Eldeeb_diss]_] Fig. 3.3, a large :math:`\alpha\beta`-SV represents a small :math:`XY`-SV and vice versa.
-Therefore if the :math:`\alpha\beta`-SV is near the maximum, the :math:`XY`-SV can only be small.
+Therefore, if the :math:`\alpha\beta`-SV is near the maximum, the :math:`XY`-SV can only be small.
 Although a general limitation can not achieve maximum usage in all operating points, with this rule an overall good performance can be expected.
 
 Since the maximum voltage is given by the DC-Bus-Voltage and the modulation index :math:`m_i=\frac{1}{\sqrt{3}}` (determined in simulation), the combined length of the space vectors has to be limited.
-Therefore both lengths are added and if they exceed the maximum allowed voltage, they will be shortened in their existing relations.
+Therefore, both lengths are added and if they exceed the maximum allowed voltage, they will be shortened in their existing relations, meaning :math:`\frac{|SV_{\alpha\beta\textrm{, old}|}{|SV_\textrm{XY, old}|}=\frac{|SV_{\alpha\beta\textrm{, limited}|}{|SV_\textrm{XY, limited}|}`.
 Since the :math:`XY`-SV limitation is executed before and the relation of the :math:`\alpha\beta`-SV and :math:`XY`-SV are kept the same, the previous limitation will not be violated.
 
 
@@ -147,7 +150,7 @@ Solving the equation for the Dwell times yields: [[#Eldeeb_diss]_]
 
 To avoid intensive calculations at runtime, the matrix :math:`[T_\textrm{tv}]^{-1}` can be precalculated for each sector and stored in the ``uz_Space_Vector_Modulation_6ph.c`` file as ``static const float inverse_T_tv_all[24][5][5]``.
 Later in the calculation, Duty Cycles must be computed with the Dwell times, requiring a specific assignment order for each sector to the respective phase.
-In the same way, the are precalculated and stored as ``static const int svm_offline_order[24][6]``.
+In the same way, they are precalculated and stored as ``static const int svm_offline_order[24][6]``.
 
 The calculations were done in Matlab and all necessary scripts are attached in ``svm_multiphase_matlab.zip`` in the directory of this docs page.
 

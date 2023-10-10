@@ -249,9 +249,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
-	MyButton2,
-	MyButton3,
+	PI_FOC_right,
+	FCS-MPC_right,
+	DDPG-CC_right,
 	MyButton4,
 	MyButton5,
 	MyButton6,

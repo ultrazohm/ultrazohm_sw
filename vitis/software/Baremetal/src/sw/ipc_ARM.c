@@ -285,48 +285,31 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-					data->rasv.halfBridge1DutyCycle = 0.05f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+				data->rasv.current_ctrl_select = PI_FOC;
 			break;
 
 		case (My_Button_2):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.05f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
+				data->rasv.current_ctrl_select = FCS_MPC;
 			break;
 
 		case (My_Button_3):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.05f;
+				data->rasv.current_ctrl_select = DDPG_CC;
 			break;
 
 		case (My_Button_4):
-					data->rasv.halfBridge4DutyCycle = 0.05f;
-					data->rasv.halfBridge5DutyCycle = 0.0f;
-					data->rasv.halfBridge6DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_5):
-					data->rasv.halfBridge4DutyCycle = 0.0f;
-					data->rasv.halfBridge5DutyCycle = 0.05f;
-					data->rasv.halfBridge6DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_6):
-					data->rasv.halfBridge4DutyCycle = 0.0f;
-					data->rasv.halfBridge5DutyCycle = 0.0f;
-					data->rasv.halfBridge6DutyCycle = 0.05f;
+
 			break;
 
 		case (My_Button_7):
-					data->rasv.halfBridge1DutyCycle = 0.0f;
-					data->rasv.halfBridge2DutyCycle = 0.0f;
-					data->rasv.halfBridge3DutyCycle = 0.0f;
-					data->rasv.halfBridge4DutyCycle = 0.0f;
-					data->rasv.halfBridge5DutyCycle = 0.0f;
-					data->rasv.halfBridge6DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_8):
@@ -378,17 +361,24 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	 if (data->rasv.current_ctrl_select == PI_FOC) {
+		js_status_BareToRTOS |= (1 << 4);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	 }
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
-
+	 if (data->rasv.current_ctrl_select == FCS_MPC) {
+		js_status_BareToRTOS |= (1 << 5);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	 }
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+	 if (data->rasv.current_ctrl_select == DDPG_CC) {
+		 js_status_BareToRTOS |= (1 << 6);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 6);
+	 }
 
 	/* Bit 7 - My_Button_4 */
 	// js_status_BareToRTOS &= ~(1 << 7);

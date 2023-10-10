@@ -66,13 +66,13 @@ fixdt_type_delta_u_costs = fixdt(0,27,24);
 fixdt_type_vsd = fixdt(1,18,15);
 v_dc = 48.0;
 id_ref = 0.0;
-iq_ref = 3.0;
-n_rpm = 1000.0;
+iq_ref = 2.0;
+n_rpm = 250.0;
 omega_m = n_rpm*pi/30;
 
 lambda_d = 1.0;
 lambda_q = 1.0;
-lambda_u = 0.00000;
+lambda_u = 0.000013;
 
 %simulation control model motor testbench
 RDSon = 0.01;

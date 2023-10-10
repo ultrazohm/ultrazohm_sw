@@ -13,6 +13,12 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 
+enum current_control_select {
+		PI_FOC,
+		FCS_MPC,
+		DDPG_CC
+};
+
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -86,8 +92,8 @@ typedef struct _actualValues_ {
 	float speed_rpm_right;
 	uint32_t  heartbeatframe_content;
 	float snd_fld[21];
-	struct uz_resolver_pl_interface_outputs_t resolver_pl_outouts_left;
-	struct uz_resolver_pl_interface_outputs_t resolver_pl_outouts_right;
+	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
+	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
 	struct uz_inverter_adapter_outputs_t inverter_left_status;
 	struct uz_inverter_adapter_outputs_t inverter_right_status;
 	float mean_temp_inv_left;
@@ -127,6 +133,7 @@ typedef struct _referenceAndSetValues_ {
 	float M_ref_left;
 	float n_ref_left;
 	uz_3ph_dq_t i_dq_ref_right;
+	enum current_control_select current_ctrl_select;
 } referenceAndSetValues;
 
 typedef struct{
@@ -150,6 +157,7 @@ typedef struct{
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
 }object_pointers_t;
+
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;

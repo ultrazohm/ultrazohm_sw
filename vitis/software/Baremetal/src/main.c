@@ -82,6 +82,7 @@ int main(void)
             Global_Data.av.lambda_u = 0.0f;
             Global_Data.av.i_max_mpc = 1.0f;
             Global_Data.av.idx_AXI = 1U;
+            Global_Data.rasv.current_ctrl_select = PI_FOC;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -122,7 +123,6 @@ int main(void)
             fcs_mpc_init_state_machine(8U); //state machine shall perform 8 iterations for the 8 switch positions
             //uz_pu_voltages
             fcs_mpc_init_pu_voltages(1U,0U,48.0f); //0=index via AXI 1=index via PL | //0=v_dc via AXI 1=v_dc via PL measured
-//            fcs_mpc_init_pu_voltages(0U,0U,48.0f); //0=index via AXI 1=index via PL | //0=v_dc via AXI 1=v_dc via PL measured
             //uz_pu_omega_m_conversion
             fcs_mpc_init_omega_m_pu_conversion();
             //delay_comp

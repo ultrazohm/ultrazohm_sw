@@ -76,8 +76,8 @@ void ISR_Control(void *data)
     ReadAllADC();
 //    update_speed_and_position_of_encoder_on_D5(&Global_Data);
     // update speed and position of resolvers
-    Global_Data.av.resolver_pl_outouts_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
-    Global_Data.av.resolver_pl_outouts_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
+    Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
+    Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
     // update status of both inverters
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_left);
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_right);
@@ -118,15 +118,9 @@ void ISR_Control(void *data)
     	ultrazohm_state_machine_set_stop(true);
     }
 
-    // write measured dc_link voltage to pu_voltages ip
-    fcs_mpc_write_axi_v_dc();
-
-    // calculate mean temp values over all measured temps of each inverter
+    // calculate mean temperature values over all measured temperatures of each inverter
     Global_Data.av.mean_temp_inv_left = (Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L3) * 0.1667;
     Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L3) * 0.1667;
-
-    // write reference values to MPC IP
-    //...to do
 
     // check platform state machine
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -163,39 +157,28 @@ void ISR_Control(void *data)
     // if "ENABLE CONTROL"
     if (current_state==control_state)
     {
-    	//enable MPC
-    	fcs_mpc_enable(true);
-    	//write setpoint to MPC
-    	fcs_mpc_write_setpoint();
-    	//calc average switching frequency
-    	fcs_mpc_calc_f_sw_avg();
-    	//read axi values from mpc ip for debug
-    	//fcs_mpc_debug();
+    	// Start: Control algorithm - only if ultrazohm is in control state
 
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	// calculations necessary for all control algorithms
     	// park transformation of measured currents
-    	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outouts_left.position_el_2pi);
-    	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outouts_right.position_el_2pi);
+    	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+    	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
     	Global_Data.av.i_d_left = i_dq_left.d;
     	Global_Data.av.i_q_left = i_dq_left.q;
-    	Global_Data.av.i_d_right = i_dq_left.d;
+    	Global_Data.av.i_d_right = i_dq_right.d;
     	Global_Data.av.i_q_right = i_dq_right.q;
-    	// calculate reference torque from speed ctrl of left motor
-    	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outouts_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
-    	// calculate current setpoints i_dq_ref for left motor
-    	i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outouts_left.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
     	// get reference currents from Global_Data
     	i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
-    	// calculate reference voltages for current control
-    	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outouts_left.omega_mech_rad_s*Global_Data.av.polepairs_left);
-    	v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outouts_right.omega_mech_rad_s*Global_Data.av.polepairs_right);
-    	Global_Data.av.v_d_left = v_dq_ref_left.d;
-    	Global_Data.av.v_q_left = v_dq_ref_left.q;
-    	Global_Data.av.v_d_right = v_dq_ref_right.d;
-    	Global_Data.av.v_q_right = v_dq_ref_right.q;
-    	// calculate duty cycles from reference dq voltages
-    	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outouts_left.position_el_2pi);
-    	dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outouts_right.position_el_2pi);
+    	//calc average switching frequency of right motor
+    	fcs_mpc_calc_f_sw_avg();
+
+
+    	// calculate control (speed and current) of left motor
+    	control_left_motor();
+
+    	// calculate selected control algorithm for right motor
+    	control_right_motor();
+
 
     	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
     	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
@@ -206,13 +189,9 @@ void ISR_Control(void *data)
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
@@ -342,4 +321,59 @@ u32 Rpu_IpiInit(u16 DeviceId)
 static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
+};
+
+void control_left_motor() {
+
+	// calculate reference torque from speed ctrl of left motor
+	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
+	// calculate current setpoints i_dq_ref for left motor
+	i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
+	// calculate reference voltages for current control
+	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s*Global_Data.av.polepairs_left);
+	Global_Data.av.v_d_left = v_dq_ref_left.d;
+	Global_Data.av.v_q_left = v_dq_ref_left.q;
+	// calculate duty cycles from reference dq voltages
+	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+};
+
+void control_right_motor() {
+
+	if(Global_Data.rasv.current_ctrl_select == PI_FOC) {
+    	//disable MPC
+    	fcs_mpc_enable(false);
+    	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
+    	// calculate reference voltages for current control
+    	v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s*Global_Data.av.polepairs_right);
+    	Global_Data.av.v_d_right = v_dq_ref_right.d;
+    	Global_Data.av.v_q_right = v_dq_ref_right.q;
+    	// calculate duty cycles from reference dq voltages
+    	dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+	}
+
+	if(Global_Data.rasv.current_ctrl_select == FCS_MPC) {
+    	//enable MPC
+    	fcs_mpc_enable(true);
+    	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, direct_control_via_FPGA);
+        // write measured dc_link voltage to pu_voltages ip
+        fcs_mpc_write_axi_v_dc();
+    	//write setpoint to MPC
+    	fcs_mpc_write_setpoint();
+
+    	//read axi values from mpc ip for debug
+    	//fcs_mpc_debug();
+	}
+
+	if(Global_Data.rasv.current_ctrl_select == DDPG_CC) {
+    	//disable MPC
+    	fcs_mpc_enable(false);
+    	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
+
+
+		//THIS IS LARA`S PLAYGROUND
+
+    	// calculate duty cycles from reference dq voltages
+    	//dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+	}
+
 };

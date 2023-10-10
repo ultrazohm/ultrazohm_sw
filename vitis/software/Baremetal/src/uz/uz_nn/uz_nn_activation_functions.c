@@ -117,5 +117,3 @@ float uz_nn_activation_function_tanh_derivative(float x)
     float tanh_result = uz_nn_activation_function_tanh(x);
     return (1 - (tanh_result * tanh_result));
 }
-
-

@@ -9,7 +9,8 @@
 #include "uz_mtwister.h"
 
 typedef struct uz_dqn_environment_t uz_dqn_environment_t;
-struct uz_dqn_environment_t {
+struct uz_dqn_environment_t
+{
     bool is_ready;
     uint32_t bitlength;
     uint32_t *bitinitial;
@@ -22,7 +23,8 @@ struct uz_dqn_environment_t {
     float epsilon_decay;
     float cumreward;
 };
-struct uz_dqn_environment_config{
+struct uz_dqn_environment_config
+{
     uint32_t bitlength;
     uint32_t *const bitarray;
     float *const inarray;

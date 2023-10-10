@@ -278,10 +278,8 @@ void uz_nn_mat_export(uz_nn_t *self)
     uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname4);
     char *fname5 = "test/uz/uz_nn/matlab_weights/c_layer3_bias.csv";
     uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname5);
-    }
+}
 
-
-    
 void uz_nn_set_gradients_zero(uz_nn_t *self)
 {
     uz_assert_not_NULL(self);

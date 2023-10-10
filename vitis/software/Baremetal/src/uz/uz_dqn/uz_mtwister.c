@@ -59,8 +59,8 @@ uz_mtwister_t *uz_mtwister_init(uint32_t random_seed)
   m_seedRand(self, self->seed);
   self->mag[0] = 0x0;
   self->mag[1] = 0x9908b0df; /* self->mag[x] = x * 0x9908b0df for x = 0,1 */
-  self->box_mueller_cache=0.0f;
-   return (self);
+  self->box_mueller_cache = 0.0f;
+  return (self);
 }
 
 inline static void m_seedRand(uz_mtwister_t *self, unsigned long seed)
@@ -76,17 +76,16 @@ inline static void m_seedRand(uz_mtwister_t *self, unsigned long seed)
   }
 }
 
-
 /**
  * Generates a pseudo-randomly generated long.
  */
 static uint64_t generate_random_uniform_long(uz_mtwister_t *self)
 {
-  uint64_t y=0;
+  uint64_t y = 0;
   if (self->index >= STATE_VECTOR_LENGTH || self->index < 0)
   {
     /* generate STATE_VECTOR_LENGTH words at a time */
-    int32_t kk=0;
+    int32_t kk = 0;
     if (self->index >= STATE_VECTOR_LENGTH + 1 || self->index < 0)
     {
       m_seedRand(self, 4357);
@@ -160,11 +159,11 @@ void uz_mtwister_random_uniform_uint32_array(uz_mtwister_t *self, uint32_t *arra
 float uz_mtwister_random_normal_float(uz_mtwister_t *self, float mean, float std)
 {
   uz_assert_not_NULL(self);
-  uz_assert(std>=0.0f);
-  float x=0.0f;
-  float y=0.0f;
-  float r=0.0f;
-  float res=0.0f;
+  uz_assert(std >= 0.0f);
+  float x = 0.0f;
+  float y = 0.0f;
+  float r = 0.0f;
+  float res = 0.0f;
 
   if (self->box_mueller_cache == 0.0f)
   {

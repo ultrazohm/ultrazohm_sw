@@ -3,7 +3,8 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "uz_dqn.h"
-#include "uz_dqn.c"
+#include "uz_dqn_expirience_buffer.h"
+
 #include "uz_nn.h"
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
@@ -229,7 +230,7 @@ void test_dqn_bitflip(void)
             globalrewardr[i] = 0.99f * globalrewardr[i - 1] + 0.01f * testdqn2->env->cumreward;
         }
         epsilonovertime[i] = testdqn2->env->epsilon_start;
-        if (testdqn2->experience_buffer->counterisfull > 0U)
+        if (uz_dqn_get_counterisfull(testdqn2) > 0U)
         {
             uz_mtwister_random_uniform_uint32_array(testdqn2->randinstance, r, MINIBATCHSIZE, (float)(EXPERIENCE_BUFFER_LENGTH - 1U));
         }

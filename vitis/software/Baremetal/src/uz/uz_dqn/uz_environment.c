@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_dqn.h"
+
 #include "uz_environment.h"
 
 static uint32_t instance_counterenv = 0U;

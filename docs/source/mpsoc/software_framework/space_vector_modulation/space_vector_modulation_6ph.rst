@@ -121,30 +121,29 @@ Offline calculations
 The computation of the Dwell times is done with the voltage references and the inverse matrix of the subsystem components of each SV, as shown in the following equation: [[#Eldeeb_diss]_]
 
 .. math::
-	\left[\begin{matrix}
-    u_{\alpha\textrm{, ref}} \\ u_{\beta\textrm{, ref}} \\ u_{textrm{X, ref}} \\ u_{\textrm{Y, ref}} \\ 1 \\
-  \end{matrix}}\right] T_\textrm{sw}= 
-  \left[\begin{matrix}
-    u^\alpha_\textrm{V1} & u^\alpha_\textrm{V2} & u^\alpha_\textrm{V3} & u^\alpha_\textrm{V4} & 0 \\
-    u^\beta_\textrm{V1} & u^\beta_\textrm{V2} & u^\beta_\textrm{V3} & u^\beta_\textrm{V4} & 0 \\ 
-    u^\textrm{X}_textrm{V1} & u^\textrm{X}_\textrm{V2} & u^\textrm{X}_\textrm{V3} & u^\textrm{X}_\textrm{V4} & 0 \\ 
-    u^\textrm{Y}_textrm{V1} & u^\textrm{Y}_\textrm{V2} & u^\textrm{Y}_\textrm{V3} & u^\textrm{Y}_\textrm{V4} & 0 \\ 
-    1&1&1&1&1\\
+
+  \left[\begin{matrix} u_{\alpha\textrm{, ref}} \\ u_{\beta\textrm{, ref}} \\ u_{\textrm{X, ref}} \\ u_{\textrm{Y, ref}} \\ 1 \\ 
+  \end{matrix}\right] = \left[\begin{matrix}
+  u^\alpha_\textrm{V1} & u^\alpha_\textrm{V2} & u^\alpha_\textrm{V3} & u^\alpha_\textrm{V4} & 0 \\
+  u^\beta_\textrm{V1} & u^\beta_\textrm{V2} & u^\beta_\textrm{V3} & u^\beta_\textrm{V4} & 0 \\ 
+  u^\textrm{X}_\textrm{V1} & u^\textrm{X}_\textrm{V2} & u^\textrm{X}_\textrm{V3} & u^\textrm{X}_\textrm{V4} & 0 \\ 
+  u^\textrm{Y}_\textrm{V1} & u^\textrm{Y}_\textrm{V2} & u^\textrm{Y}_\textrm{V3} & u^\textrm{Y}_\textrm{V4} & 0 \\ 
+  1&1&1&1&1\\
   \end{matrix}\right] \cdot 
   \left[\begin{matrix}
-    t_\textrm{V1} \\ t_\textrm{V2} \\ t_\textrm{V3} \\ t_\textrm{V4} \\ t_\textrm{V0} \\
+  t_\textrm{V1} \\ t_\textrm{V2} \\ t_\textrm{V3} \\ t_\textrm{V4} \\ t_\textrm{V0} \\
   \end{matrix}\right]
 
 Solving the equation for the Dwell times yields: [[#Eldeeb_diss]_]
 
 .. math::
+
   \left[\begin{matrix}
-		t_\textrm{V1} \\ t_\textrm{V2} \\ t_\textrm{V3} \\ t_\textrm{V4} \\ t_\textrm{V0} 
-	\end{matrix}\right] = 
-  [T_\textrm[tv]]^{-1}
-	\left[\begin{matrix}
-    u_{\alpha\textrm{, ref}} \\ u_{\beta\textrm{, ref}} \\ u_{textrm{X, ref}} \\ u_{\textrm{Y, ref}} \\ 1
-	\end{matrix}}\right]  T_\textrm{sw}
+  t_\textrm{V1} \\ t_\textrm{V2} \\ t_\textrm{V3} \\ t_\textrm{V4} \\ t_\textrm{V0} 
+  \end{matrix}\right] = [T_\textrm{tv}]^{-1}
+  \left[\begin{matrix}
+  u_{\alpha\textrm{, ref}} \\ u_{\beta\textrm{, ref}} \\ u_{\textrm{X, ref}} \\ u_{\textrm{Y, ref}} \\ 1
+  \end{matrix}\right] T_\textrm{sw}
 
 To avoid intensive calculations at runtime, the matrix :math:`[T_\textrm{tv}]^{-1}` can be precalculated for each sector and stored in the ``uz_Space_Vector_Modulation_6ph.c`` file as ``static const float inverse_T_tv_all[24][5][5]``.
 Later in the calculation, Duty Cycles must be computed with the Dwell times, requiring a specific assignment order for each sector to the respective phase.

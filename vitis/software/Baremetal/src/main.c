@@ -147,7 +147,7 @@ int main(void)
 
             struct uz_SetPoint_config SP_config = {
                .config_PMSM.I_max_Ampere = config_PMSM.I_max_Ampere,
-               .config_PMSM.Ld_Henry = config_PMSM.Ld_Henryf,
+               .config_PMSM.Ld_Henry = config_PMSM.Ld_Henry,
                .config_PMSM.Lq_Henry = config_PMSM.Lq_Henry,
                .config_PMSM.R_ph_Ohm = config_PMSM.R_ph_Ohm,
                .config_PMSM.polePairs = config_PMSM.polePairs,

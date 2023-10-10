@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-void export_histogram(float *array, uint32_t size,char* filepath[])
+void export_histogram(float *array, uint32_t size,char filepath[])
 {
     FILE *file1 = fopen(filepath, "w");
     if (file1 != NULL)

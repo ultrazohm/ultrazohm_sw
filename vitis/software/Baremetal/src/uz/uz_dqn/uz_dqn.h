@@ -65,10 +65,8 @@ float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self, float *error, uint32_t mb
 uz_dqn_t *uz_dqn_init(float *vecdata, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t seed_number, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, struct uz_dqn_environment_config envconf);
 uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, uint32_t length);
 void uz_dqn_sample(uz_dqn_t *self, float samplerate, bool penalty, uz_matrix_t *input);
-float uz_dqn_train_gd(uz_dqn_t *self, float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
-                      uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact);
-float uz_dqn_train_adam(uz_dqn_t *self, float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,
-                        uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, adam_optimizer_t *adam);
+float uz_dqn_train_gd(uz_dqn_t *self, float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact);
+float uz_dqn_train_adam(uz_dqn_t *self, float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize,uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, adam_optimizer_t *adam);
 void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t *self, float rewarddata, uint32_t actionindex, uz_matrix_t *obsdata, uz_matrix_t *obsdata1);
 void uz_dqn_get_obs_from_buffer(uz_dqn_experience_replay_t *self, uz_matrix_t *obsdata, uint32_t index);
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t *self, float *rewarddata, uint32_t *actiondata, uz_matrix_t *obsdata, uz_matrix_t *obsdata1, uint32_t index);

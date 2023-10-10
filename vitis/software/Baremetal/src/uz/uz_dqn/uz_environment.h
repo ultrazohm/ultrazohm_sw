@@ -6,7 +6,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include "uz_nn.h"
-#include "uz_mtwister.h"
+#include "../uz_mtwister/uz_mtwister.h"
 
 typedef struct uz_dqn_environment_t uz_dqn_environment_t;
 struct uz_dqn_environment_t

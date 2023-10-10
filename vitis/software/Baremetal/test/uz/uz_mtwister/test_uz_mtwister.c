@@ -88,7 +88,7 @@ static void sample_normal_distribution_test_helper(float *mean_sampled, float *s
   *mean_sampled = uz_math_mean(array, ARRAY_LENGTH_MEAN_TEST);
   *std_sampled = uz_math_standard_deviation(array, ARRAY_LENGTH_MEAN_TEST);
   char filepath[] = "test/uz/uz_mtwister/randboxmueller.csv";
-  export_histogram(array,ARRAY_LENGTH_MEAN_TEST,&filepath);
+  export_histogram(array,ARRAY_LENGTH_MEAN_TEST,filepath);
 }
 
 #endif // TEST

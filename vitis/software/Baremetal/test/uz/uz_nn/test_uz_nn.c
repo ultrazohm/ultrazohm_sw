@@ -6,7 +6,7 @@
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
-#include "../uz_dqn/uz_mtwister.h"
+#include "../uz_mtwister/uz_mtwister.h"
 
 #define NUMBER_OF_INPUTS 2
 #define NUMBER_OF_OUTPUTS 1

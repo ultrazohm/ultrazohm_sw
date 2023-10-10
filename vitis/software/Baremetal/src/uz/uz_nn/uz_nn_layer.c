@@ -17,7 +17,7 @@
 #include "../uz_global_configuration.h"
 #if UZ_NN_LAYER_MAX_INSTANCES > 0U
 #include "uz_nn_layer.h"
-#include "../uz_dqn/uz_mtwister.h"
+#include "../uz_mtwister/uz_mtwister.h"
 #include "../uz_HAL.h"
 #include <stdbool.h>
 #include <stdio.h>

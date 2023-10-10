@@ -4,7 +4,7 @@
 
 #include "uz_nn.h"
 #include "uz_nn_layer.h"
-#include "../uz_dqn/uz_mtwister.h"
+#include "../uz_mtwister/uz_mtwister.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
 #include "uz_sum.h"

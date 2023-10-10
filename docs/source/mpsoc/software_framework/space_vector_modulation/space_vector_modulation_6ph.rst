@@ -171,7 +171,7 @@ Using the limitation, no error occured and the relative limit of :math:`XY`-SV t
 Open loop simulation
 --------------------
 
-To verify the SVM in open loop simulation, setpoint voltages for :math:`\alpha\beta` and :math:`XY` to the SVM.
+To verify the SVM in open loop simulation, setpoint voltages for :math:`\alpha\beta` and :math:`XY` given to the SVM.
 The resulting Duty Cycles were fed into the PWM-IP-Core Simulink model and connected to Simscape VSI-models with :math:`V_\textrm{DC}=1000\textrm{ V}` and a resistive six-phase load with 2N.
 
 Setpoints and measured output voltages are shown in the following figure for both subspaces.

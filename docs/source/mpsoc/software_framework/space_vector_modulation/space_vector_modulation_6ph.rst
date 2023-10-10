@@ -25,7 +25,7 @@ Since an online choosing of SV is not feasible, a preselection from all possible
     :align: center
     :width: 1500px
 
-    Space vectors in :math:`\alpha\beta` (left) and :math:`XY` (right)
+    Space vectors in :math:`\alpha\beta` (left) and :math:`XY` (right) with highlighted active switching combinations for sector 1 [[#Eldeeb_paper]_Fig.~2]
 
 
 .. _uz_svm_6ph_usage:

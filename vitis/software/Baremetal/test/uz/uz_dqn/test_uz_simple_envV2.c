@@ -183,17 +183,17 @@ void tearDown(void)
 }
 void test_dqn_simple(void)
 {
+    adam_optimizer_t *adam = uz_adam_init(lernrate / (float)MINIBATCHSIZE);
     uz_dqn_t *simpledqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, 123U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv);
     float targsmoothfact = 0.05f;
     uz_nn_copy(simpledqn->critic, simpledqn->critic_target_net);
-    adam_optimizer_t *adam = uz_adam_init(lernrate / (float)MINIBATCHSIZE);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
-    // prefill buffer
-    do
-    {
-        uz_dqn_sample_simple(simpledqn);
-    } while ((!simpledqn->experience_buffer->counterisfull) && (simpledqn->experience_buffer->head < (3U * MINIBATCHSIZE)));
-    simpledqn->env->epsilon_start = configenv.epsilon_start;
+    // // prefill buffer
+    // do
+    // {
+    //     uz_dqn_sample_simple(simpledqn);
+    // } while ((!simpledqn->experience_buffer->counterisfull) && (simpledqn->experience_buffer->head < (3U * MINIBATCHSIZE)));
+    // simpledqn->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t i = 0U; i < NUMBER_OF_EPOCHS; i++)
     {
         loss[i] = uz_dqn_step_adam_simple_no_array(simpledqn, error, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, i, targsmoothfact, adam);

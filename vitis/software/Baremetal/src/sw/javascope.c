@@ -103,6 +103,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_uX]			= &data->av.U_X;
 	js_ch_observable[JSO_uY]			= &data->av.U_Y;
+	js_ch_observable[JSO_clamping]			= &data->av.clamping;
+	js_ch_observable[JSO_abs_dq]			= &data->av.abs_dq;
+	js_ch_observable[JSO_vdc]					= &(data->av.v_dc1);
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

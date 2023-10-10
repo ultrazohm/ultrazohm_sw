@@ -150,11 +150,11 @@ uz_6ph_dq_t u_ref_6ph = {0};
 uz_3ph_dq_t u_ref_3ph = {0};
 uz_3ph_dq_t cc_setpoint = {0};
 
-#define MODULATION 0U // 0=SPWM, 1=SVM
+#define MODULATION 1U // 0=SPWM, 1=SVM
 struct uz_DutyCycle_2x3ph_t duty_cycle = {0};
 struct uz_svm_asym_6ph_CSVPWM24_out svm_out = {0};
 
-
+volatile float test = 0x3e6d9ebaP23;
 
 
 //==============================================================================================================================================================
@@ -179,7 +179,7 @@ void ISR_Control(void *data)
 
 
     //Take measurements independent of control_state
-    if(select_Real) {
+
     	//Read out speed&position
         Global_Data.av.theta_elec = Global_Data.av.theta_elec - theta_offset;
         Global_Data.av.omega_mech = (Global_Data.av.mechanicalRotorSpeed / 60.0f) * (2.0f * UZ_PIf);
@@ -218,15 +218,24 @@ void ISR_Control(void *data)
         // check current limit
         if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
         	fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
-        		uz_assert(0);
+        		  uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+			   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+       		uz_assert(0);
+
         }
            // check DC Bus
            if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
+        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
         	   uz_assert(0);
+
            }
            // check inverter temp
            if(fabs(Global_Data.av.temp_VSI_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temp_VSI_2) > MAX_TEMP_DEG) {
+        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
         	   uz_assert(0);
+
            }
 
            //write to structs
@@ -281,8 +290,8 @@ void ISR_Control(void *data)
         	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
         	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
            }
-       }
 
+           Global_Data.av.clamping = (float)(svm_out.limited_alphabeta);//(float)(uz_CurrentControl_get_ext_clamping(Global_Data.objects.CC_dq_instance));
 
    //-----------------------------------------------------------------------------------------------------------------------------//
    //-----------------------------------------------------------------------------------------------------------------------------//
@@ -298,6 +307,8 @@ void ISR_Control(void *data)
     	   u_ref_3ph = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, cc_setpoint, actual_3ph, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
     	   u_ref_6ph.d = u_ref_3ph.d;
     	   u_ref_6ph.q = u_ref_3ph.q;
+
+    	   Global_Data.av.abs_dq = sqrt(u_ref_3ph.d*u_ref_3ph.d + u_ref_3ph.q*u_ref_3ph.q);
        }
 
     if(MODULATION == 0){

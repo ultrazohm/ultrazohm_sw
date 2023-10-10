@@ -108,6 +108,8 @@ typedef struct _actualValues_ {
 	float temp_VSI_2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
+	float clamping;
+	float abs_dq;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

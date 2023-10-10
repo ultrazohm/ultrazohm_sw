@@ -338,23 +338,23 @@ void ISR_Control(void *data)
 	i_dq_ref.d = Global_Data.av.i_d_ref;
 	i_dq_ref.q = Global_Data.av.i_q_ref;
 
+
 	// write reference values to mpc ip
-//    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(Global_Data.av.i_d_ref/base_val.IB, 11));
-//    uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(Global_Data.av.i_q_ref/base_val.IB, 11));
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
-    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
-//    uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, uz_convert_float_to_sfixed(Global_Data.av.i_d_ref_pu, 11));
-//    uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, uz_convert_float_to_sfixed(Global_Data.av.i_q_ref_pu, 11));
-//    uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, uz_convert_float_to_sfixed(Global_Data.av.i_x_ref/base_val.IB, 11));
-//    uz_axi_write_uint32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, uz_convert_float_to_sfixed(Global_Data.av.i_y_ref/base_val.IB, 11));
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==idle_state)
     {
     	uz_FOC_reset(Global_Data.objects.foc_current);
     	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, false);
+
+    	uz_PI_Controller_reset(Global_Data.objects.MPC_setpoint_PI);
+    	Global_Data.av.i_q_ref_PI_out_pu = Global_Data.av.i_q_ref_pu;
     }
 
     if (current_state==control_state)
@@ -366,6 +366,7 @@ void ISR_Control(void *data)
     	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, true);
     	}
 
+    	Global_Data.av.i_q_ref_PI_out_pu = uz_PI_Controller_sample(Global_Data.objects.MPC_setpoint_PI, Global_Data.av.i_q_ref_pu , Global_Data.av.i_q_ip , false);
 
     	//    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
 
@@ -393,6 +394,11 @@ void ISR_Control(void *data)
 //    	    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_V;
 //    	    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_W;
     }
+
+
+
+
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

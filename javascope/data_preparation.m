@@ -6,6 +6,10 @@
 % phase current ia2:                        CH6
 % phase current ib2:                        CH7
 % phase current ic2:                        CH8
+% d-current:                                CH9
+% q-current:                                CH10
+% X-current:                                CH11
+% Y-current:                                CH12
 % measured average switching frequency:     CH19
 % measuring trigger signal:                 CH20
 
@@ -59,6 +63,7 @@ angle_el = zeros(num_of_measured_points,max_num_of_samples_in_this_batch);
 angle_el_norm = zeros(num_of_measured_points,max_num_of_samples_in_this_batch);
 f_sw_avg = zeros(num_of_measured_points,max_num_of_samples_in_this_batch);
 i_ph = zeros(6,max_num_of_samples_in_this_batch,num_of_measured_points);
+i_dqXY = zeros(4,max_num_of_samples_in_this_batch,num_of_measured_points);
 %% Assign data to the prepared structure
 data_point_length = stop-start+1
 
@@ -74,6 +79,10 @@ for i=1:num_of_measured_points
     i_ph(4,1:data_point_length(i),i) = log.CH6(start(i):stop(i))';
     i_ph(5,1:data_point_length(i),i) = log.CH7(start(i):stop(i))';
     i_ph(6,1:data_point_length(i),i) = log.CH8(start(i):stop(i))';
+    i_dqXY(1,1:data_point_length(i),i) = log.CH9(start(i):stop(i))';
+    i_dqXY(2,1:data_point_length(i),i) = log.CH10(start(i):stop(i))';
+    i_dqXY(3,1:data_point_length(i),i) = log.CH11(start(i):stop(i))';
+    i_dqXY(4,1:data_point_length(i),i) = log.CH12(start(i):stop(i))';
 end
 %%
 for i=1:num_of_measured_points

@@ -55,10 +55,11 @@ time_cut = time;
 
 %% FFT-Analyse Teilsignal mit fft (dft), da nur ein Argument
 
+% for i=2:2
 for i=1:num_of_measured_points
     F=i_ph(:,1:data_point_length(i),i)';
 %
-Fs = length(time_cut);
+Fs = length(time_cut(i,:));
 T = 1 / Fs;
 L = Fs;
 d = Fs*(0:(L/2))/L;                                     % Zeitvektor
@@ -72,9 +73,13 @@ freq=d.*1/(time_cut(2)-time_cut(1))/Fs;                 % Rückskalieren, wenn di
 
 % Calculate THD
 [FundamentalCurrent ,VectorNumber] = max(FFT_sig) %Find fundamental in vector (assumed that fundamental equals maximum)
-%
-FFT_sig_withoutFundamental=FFT_sig;             
+FFT_sig_withoutFundamental=FFT_sig;
 FFT_sig_withoutFundamental(VectorNumber,:)=0; %Eliminate fundamental in order to calculate THD
+
+% for k= (VectorNumber-5):(VectorNumber+5)
+%     FundamentalCurrent = FundamentalCurrent + FFT_sig_withoutFundamental(k);
+%     FFT_sig_withoutFundamental(k,:)=0; %Eliminate fundamental in order to calculate THD
+% end
 
 %bsxfun() multipliziert den Vektor in jeder spalte/zeile mit sich selbst,
 %dadurch erreiche ich, das jeder Wert im urpsrünglichen Vektor quadriert
@@ -85,17 +90,19 @@ I_squared_Harmonics = sum(bsxfun(@times, FFT_sig_withoutFundamental, FFT_sig_wit
 for k=1:6
 THD_components(k) = (sqrt(I_squared_Harmonics(k))/FundamentalCurrent(k))*100; %[%] THD in percent -> sqrt((Sum of all the others)^2) / (Fundamental)
 end
-THD_components;
-THD(i) = mean(THD_components);
+THD_components
+mean(THD_components)
+THD(i) = mean(THD_components)
 end
 THD
 %% Plot trade-off curve
 figure
-plot(mean_avg_f_sw_over_trigger_period,THD,'*');
-xlabel('f_s_w in Hz');
+plot(mean_avg_f_sw_over_trigger_period*0.001,THD,'*');
+xlabel('f_s_w in kHz');
 ylabel('THD_i in %');
 title('Trade-Off curve');
-% axis([0 max(mean_avg_f_sw_over_trigger_period) 0 max(THD)]);
+% axis([0 max(mean_avg_f_sw_over_trigger_period*0.001) 0 max(THD)]);
+% axis([15 25 0 max(THD)]);
 %%
 % %% Plot single-sided amplitude spectrum 
 % figure(2)
@@ -153,3 +160,35 @@ title('Trade-Off curve');
 % set(ylab,'FontSize',24);
 % set(gca,'FontSize',24)
 % annotation('textbox',[.8 .4 .1 .5],'String', {['THD: ' num2str(round(THD,2)) ' %'] ['f_{sw}   : xx.x kHz'] ['I_{fun}   : x.x p.u.']},'FitBoxToText', 'on', 'FontSize', 18)
+
+%% plot phase currents, no switching penalization, 'Log_2023-09-15_16-38-27.csv'
+time_tmp = time(1,1586:1886) - time(1,1586);
+figure
+plot(time_tmp,i_ph(1,1586:1886,1),'linewidth',1.5);
+hold on
+plot(time_tmp,i_ph(2,1586:1886,1),'linewidth',1.5);
+plot(time_tmp,i_ph(3,1586:1886,1),'linewidth',1.5);
+plot(time_tmp,i_ph(4,1586:1886,1),'linewidth',1.5);
+plot(time_tmp,i_ph(5,1586:1886,1),'linewidth',1.5);
+plot(time_tmp,i_ph(6,1586:1886,1),'linewidth',1.5);
+title('phase currents');
+grid on
+xlabel('time in s')
+ylabel('current in A')
+axis([0 0.03 -8 8])
+[hleg, hobj, hout, mout] = legend('i_a_1','i_b_1','i_c_1','i_a_2','i_b_2','i_c_2');
+set(hobj,'linewidth',1.5);
+
+figure
+plot(time_tmp,i_dqXY(1,1586:1886,1),'linewidth',1.5);
+hold on
+plot(time_tmp,i_dqXY(2,1586:1886,1),'linewidth',1.5);
+plot(time_tmp,i_dqXY(3,1586:1886,1),'linewidth',1.5);
+plot(time_tmp,i_dqXY(4,1586:1886,1),'linewidth',1.5);
+title('VSD currents');
+grid on
+xlabel('time in s')
+ylabel('current in A')
+axis([0 0.03 -8 8])
+[hleg, hobj, hout, mout] = legend('i_d','i_q','i_X','i_Y');
+set(hobj,'linewidth',1.5);

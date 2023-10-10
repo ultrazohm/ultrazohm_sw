@@ -101,6 +101,14 @@ struct uz_fixedpoint_definition_t del_fp = {
 		.fractional_bits = 15
 };
 
+struct uz_PI_Controller_config MPC_setpoint_config = {
+   .type = parallel,
+   .Kp = 0.0f,
+   .Ki = 4.0f,
+   .samplingTime_sec = 0.0001f,
+   .upper_limit = 10.0f,
+   .lower_limit = -10.0f
+};
 
 extern pre_calc_val_t pre_calc_val;
 extern const base_val_t base_val;
@@ -190,7 +198,7 @@ int main(void)
 
             // parameters for automated trade-off curve measurements
             Global_Data.rasv.lambda_u_start = 0.000;
-            Global_Data.rasv.lambda_u_stop = 0.01;
+            Global_Data.rasv.lambda_u_stop = 0.03;
             Global_Data.rasv.lambda_u_step = 0.001;
             Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
             Global_Data.rasv.cnt_lambda_u_end = (uint32_t)(ceilf((Global_Data.rasv.lambda_u_stop - Global_Data.rasv.lambda_u_start) / Global_Data.rasv.lambda_u_step))+1U;
@@ -198,6 +206,8 @@ int main(void)
             Global_Data.rasv.cnt_lambda_u = 1U;
             Global_Data.rasv.f_cnt_lambda_u = 1.0f;
             Global_Data.av.pause_time_sec = 1.0f;
+
+            Global_Data.objects.MPC_setpoint_PI = uz_PI_Controller_init(MPC_setpoint_config);
 
             initialization_chain = init_ip_cores;
             break;

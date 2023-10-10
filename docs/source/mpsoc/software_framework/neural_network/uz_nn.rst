@@ -212,8 +212,6 @@ Reference
 
 .. doxygenfunction:: uz_nn_gradient_descent_mini_batch
 
-.. doxygenfunction:: uz_nn_mat_export
-
 .. doxygenfunction:: uz_nn_mse
 
 .. doxygenfunction:: uz_nn_mse_derv

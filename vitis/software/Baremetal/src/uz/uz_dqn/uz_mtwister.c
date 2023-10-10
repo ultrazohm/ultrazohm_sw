@@ -159,6 +159,8 @@ void uz_mtwister_random_uniform_uint32_array(uz_mtwister_t *self, uint32_t *arra
 
 float uz_mtwister_random_normal_float(uz_mtwister_t *self, float mean, float std)
 {
+  uz_assert_not_NULL(self);
+  uz_assert(std>=0.0f);
   float x=0.0f;
   float y=0.0f;
   float r=0.0f;

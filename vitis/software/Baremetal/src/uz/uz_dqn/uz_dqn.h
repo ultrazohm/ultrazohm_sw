@@ -5,8 +5,8 @@
 #include "../uz_HAL.h"
 #include <stdbool.h>
 #include <stdio.h>
-#include "uz_nn.h"
-#include "uz_nn_layer.h"
+#include "../uz_nn/uz_nn.h"
+#include "../uz_nn/uz_nn_layer.h"
 #include "uz_environment.h"
 #include "uz_mtwister.h"
 

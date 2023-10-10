@@ -50,10 +50,9 @@ In this example, they are not used.
     v_ref_3ph = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, cc_setpoint, Global_Data.av.actual_3ph_dq, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
     v_ref_6ph.d = v_ref_3ph.d;
     v_ref_6ph.q = v_ref_3ph.q;
+    // Modulation
+    svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(v_ref_6ph, Global_Data.av.theta_elec, Global_Data.av.v_dc1);
   }
-
-  // Modulation
-  svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(v_ref_6ph, Global_Data.av.theta_elec, Global_Data.av.v_dc1);
   // PWM phase shift
   uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.shift_system1, svm_out.shift_system1, svm_out.shift_system1);
   uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.shift_system2, svm_out.shift_system2, svm_out.shift_system2);
@@ -115,6 +114,24 @@ Closed loop simulation
 Closed loop testbench
 ---------------------
 
+On the testbench, a comparison between SPWM and SVM was conducted.
+For this test, the 6ph Brose machine at THN was operated with 2N and :math:`V_\textrm{DC}=\SI{3}{\volt}`.
+The machine is externally driven and the speed, starting at :math:`n_\textrm{mech}=\SI{500}{\per\minute}` was increased in increments of :math:`\SI{10}{\per\minute}`.
+Current controllers in :math:`dq` are set to zero, no other controls are active.
+
+In the resulting figure (see below), a limit flag can be seen.
+For SPWM this flag is the current controllers external clamping flag.
+It occurs at :math:`n_\textrm{mech}=\SI{570}{\per\minute}` and is accompanied by the currents that can no longer be controlled to zero.
+
+For SVM the ``limited_alphabeta`` flag of the output struct is used.
+Since it has a small tolerance (:math:`\SI{2.5}{\percent}`), it is high at :math:`n_\textrm{mech}=\SI{630}{\per\minute}`, whereas the currents are still at zero.
+Only at :math:`n_\textrm{mech}=\SI{660}{\per\minute}` the current controllers cannot keep the currents to zero anymore.
+
+This is also the expected behavior, as the reachable speed with SVM should be :math:`n_\textrm{mech,SVM}=n_\textrm{mech,SPWM}\frac{2}{\sqrt{3}}\approx\SI{660}{\per\minute}`.
+
+.. figure:: svm_spwm_6ph_compare.svg
+    :align: center
+    :width: 1500px
 
 
 Literature

@@ -965,7 +965,7 @@ void exportFloatArrayToCSV(const char *filename, const float *array, int size)
     // Write the array to the file in CSV format
     for (int i = 0; i < size; i++)
     {
-        fprintf(file, "%.2f", (double)array[i]); // Assuming 2 decimal places, adjust as needed
+        fprintf(file, "%.8f", (double)array[i]); // Assuming 2 decimal places, adjust as needed
         if (i < size - 1)
         {
             fprintf(file, ",");

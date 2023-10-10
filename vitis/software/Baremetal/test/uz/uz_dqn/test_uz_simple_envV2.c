@@ -18,8 +18,8 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 6000U
 #define MINIBATCHSIZE 16U
-#define NUMBER_OF_EPOCHS 100000U
-#define TARGET_UPDATE_FREQUENCY 500U
+#define NUMBER_OF_EPOCHS 2000U
+#define TARGET_UPDATE_FREQUENCY 20U
 // nn
 #define NUMBER_OF_INPUTS 4U
 #define NUMBER_OF_OUTPUTS 3U
@@ -28,8 +28,8 @@
 #define NUMBEROFTESTSTEPS 50U
 #define NUMBEROFBITS 2U
 
-float discountfact = 0.99f;
-float lernrate = 0.00001f;
+float discountfact = 0.0f;
+float lernrate = 0.001f;
 // env array
 uint32_t array[NUMBEROFBITS] = {0, 1};
 uint32_t tararray[NUMBEROFBITS] = {1, 1};
@@ -209,6 +209,11 @@ void test_dqn_simple(void)
         epsilonovertime[i] = simpledqn->env->epsilon_start;
         save_values(Q_Critic, Q_Target, cy_2, ty_2, i, NUMBER_OF_OUTPUTS);
     }
+
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f,3.0f, Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS - 1]);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f,2.0f, Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS - 2]);
+    TEST_ASSERT_FLOAT_WITHIN(0.0001f,1.0f, Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS - 3]);
+
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/losssimple.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/QTarget.csv", Q_Target, NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS);
     exportFloatArrayToCSV("test/uz/uz_dqn/simple/QCritic.csv", Q_Critic, NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS);

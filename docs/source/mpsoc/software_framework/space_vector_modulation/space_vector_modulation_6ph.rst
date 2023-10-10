@@ -171,8 +171,8 @@ Using the limitation, no error occured and the relative limit of :math:`XY`-SV t
 Open loop simulation
 --------------------
 
-As first verification, arbitrary setpoints very handed into the SVM.
-The Duty Cycles were fed into the PWM-IP-Core Simulink model and connected to Simscape VSI-models with :math:`V_\textrm{DC}=1000\textrm{ V}` and a resistive six-phase load with 2N.
+To verify the SVM in open loop simulation, setpoint voltages for :math:`\alpha\beta` and :math:`XY` to the SVM.
+The resulting Duty Cycles were fed into the PWM-IP-Core Simulink model and connected to Simscape VSI-models with :math:`V_\textrm{DC}=1000\textrm{ V}` and a resistive six-phase load with 2N.
 
 Setpoints and measured output voltages are shown in the following figure for both subspaces.
 In the last row, the limit flags for both subspaces are shown.
@@ -188,7 +188,7 @@ Closed loop testbench
 ---------------------
 
 On the testbench, a comparison between SPWM and SVM was conducted.
-For this test, the 6ph Brose machine at THN was operated with 2N and :math:`V_\textrm{DC}=3\textrm{ V}`.
+For this test, an asymmetrical six-phase PMSM (:math:`\Psi_\textrm{PM}=0.0047\textrm{ Vs}`) was operated with 2N and :math:`V_\textrm{DC}=3\textrm{ V}`.
 The machine is externally driven and the speed, starting at :math:`n_\textrm{mech}=500 \frac{1}{\textrm{min}}` was increased in increments of :math:`10\frac{1}{\textrm{min}}`.
 Current controllers in :math:`dq` are set to zero, no other controls are active.
 

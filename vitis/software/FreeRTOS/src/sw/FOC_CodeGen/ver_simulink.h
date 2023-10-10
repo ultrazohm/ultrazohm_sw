@@ -1,7 +1,7 @@
 // This is an automatically generated file 
 // Do not edit 
 
-// Creation Date: 26-Sep-2023 09:35:56 
+// Creation Date: 09-Oct-2023 23:28:44 
 
 #ifndef VER_SIMULINK_H_
 #define VER_SIMULINK_H_
@@ -12,8 +12,8 @@
 /******************************** Macros and Definitions **********************************/
 /******************************************************************************************/
 
-unsigned char VER_SimulinkTimestamp[] = "26.09.2023 09:35:56";
-unsigned char VER_SimulinkMDL[] = "General_Motor_Control_Model";
+unsigned char VER_SimulinkTimestamp[] = "09.10.2023 23:28:44";
+unsigned char VER_SimulinkMDL[] = "General_Motor_Control_Model_ParStruct";
 
 /******************************************************************************************/
 /******************************** Variable Declarations ***********************************/

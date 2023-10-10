@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_Statemachine'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.9
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Aug 22 14:13:05 2023
+ * C/C++ source code generated on : Mon Oct  9 23:06:59 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -53,7 +53,7 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
     FOC_Statemachine_DW->is_c1_FOC_Statemachine = FOC_Statemachine_IN_SYS_INIT;
 
     /* Outport: '<Root>/State' */
-    FOC_Statemachine_Y->State = 2.0;
+    FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_SYS_INIT;
 
     /* Outport: '<Root>/FOC_Mode' */
     FOC_Statemachine_Y->FOC_Mode = 1.0;
@@ -64,7 +64,7 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
     switch (FOC_Statemachine_DW->is_c1_FOC_Statemachine) {
      case FOC_Statemachine_IN_CTRL_IDLE:
       /* Outport: '<Root>/State' */
-      FOC_Statemachine_Y->State = 20.0;
+      FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_CTRL_IDLE;
 
       /* Outport: '<Root>/FOC_Mode' */
       FOC_Statemachine_Y->FOC_Mode = 1.0;
@@ -73,8 +73,9 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
           FOC_Statemachine_IN_ERROR_MODE;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 128.0;
-      } else if (FOC_Statemachine_U->StateReq == 40.0) {
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_ERROR_MODE;
+      } else if (FOC_Statemachine_U->StateReq ==
+                 FOC_Statemachine_P.enumState_RUN_MODE) {
         FOC_Statemachine_DW->is_c1_FOC_Statemachine =
           FOC_Statemachine_IN_RUN_MODE;
 
@@ -83,10 +84,10 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
         FOC_Statemachine_DW->is_RUN_MODE = FOC_Statemachine_IN_FOC_IDLE;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 40.0;
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_RUN_MODE;
 
         /* Outport: '<Root>/StateFOC' */
-        FOC_Statemachine_Y->StateFOC = 41.0;
+        FOC_Statemachine_Y->StateFOC = FOC_Statemachine_P.enumState_FOC_IDLE;
 
         /* Outport: '<Root>/FOC_Enable_PWM' */
         FOC_Statemachine_Y->FOC_Enable_PWM = 0.0;
@@ -95,19 +96,20 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
 
      case FOC_Statemachine_IN_CTRL_INIT:
       /* Outport: '<Root>/State' */
-      FOC_Statemachine_Y->State = 10.0;
+      FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_CTRL_INIT;
       if (FOC_Statemachine_U->FastCtrl_Error) {
         FOC_Statemachine_DW->is_c1_FOC_Statemachine =
           FOC_Statemachine_IN_ERROR_MODE;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 128.0;
-      } else if (FOC_Statemachine_U->StateReq == 20.0) {
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_ERROR_MODE;
+      } else if (FOC_Statemachine_U->StateReq ==
+                 FOC_Statemachine_P.enumState_CTRL_IDLE) {
         FOC_Statemachine_DW->is_c1_FOC_Statemachine =
           FOC_Statemachine_IN_CTRL_IDLE;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 20.0;
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_CTRL_IDLE;
 
         /* Outport: '<Root>/FOC_Mode' */
         FOC_Statemachine_Y->FOC_Mode = 1.0;
@@ -116,13 +118,14 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
 
      case FOC_Statemachine_IN_ERROR_MODE:
       /* Outport: '<Root>/State' */
-      FOC_Statemachine_Y->State = 128.0;
-      if (FOC_Statemachine_U->StateReq == 20.0) {
+      FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_ERROR_MODE;
+      if (FOC_Statemachine_U->StateReq == FOC_Statemachine_P.enumState_CTRL_IDLE)
+      {
         FOC_Statemachine_DW->is_c1_FOC_Statemachine =
           FOC_Statemachine_IN_SYS_INIT;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 2.0;
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_SYS_INIT;
 
         /* Outport: '<Root>/FOC_Mode' */
         FOC_Statemachine_Y->FOC_Mode = 1.0;
@@ -145,7 +148,7 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
         }
 
         /* Outport: '<Root>/StateFOC' */
-        FOC_Statemachine_Y->StateFOC = 49.0;
+        FOC_Statemachine_Y->StateFOC = FOC_Statemachine_P.enumState_FOC_OFF;
 
         /* Outport: '<Root>/FOC_Enable_PWM' */
         FOC_Statemachine_Y->FOC_Enable_PWM = 0.0;
@@ -153,8 +156,9 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
           FOC_Statemachine_IN_ERROR_MODE;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 128.0;
-      } else if (FOC_Statemachine_U->StateReq == 20.0) {
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_ERROR_MODE;
+      } else if (FOC_Statemachine_U->StateReq ==
+                 FOC_Statemachine_P.enumState_CTRL_IDLE) {
         if (FOC_Statemachine_DW->is_RUN_MODE == FOC_Statemachine_IN_FOC_SPEED) {
           /* Outport: '<Root>/SPEED_CTRL_Enable' */
           FOC_Statemachine_Y->SPEED_CTRL_Enable = 0.0;
@@ -164,7 +168,7 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
         }
 
         /* Outport: '<Root>/StateFOC' */
-        FOC_Statemachine_Y->StateFOC = 49.0;
+        FOC_Statemachine_Y->StateFOC = FOC_Statemachine_P.enumState_FOC_OFF;
 
         /* Outport: '<Root>/FOC_Enable_PWM' */
         FOC_Statemachine_Y->FOC_Enable_PWM = 0.0;
@@ -172,7 +176,7 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
           FOC_Statemachine_IN_CTRL_IDLE;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 20.0;
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_CTRL_IDLE;
 
         /* Outport: '<Root>/FOC_Mode' */
         FOC_Statemachine_Y->FOC_Mode = 1.0;
@@ -180,13 +184,14 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
         switch (FOC_Statemachine_DW->is_RUN_MODE) {
          case FOC_Statemachine_IN_FOC_IDLE:
           /* Outport: '<Root>/State' */
-          FOC_Statemachine_Y->State = 40.0;
+          FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_RUN_MODE;
           if ((FOC_Statemachine_U->TorqueReq == 0.0) &&
               (FOC_Statemachine_U->SpeedReq == 0.0)) {
             FOC_Statemachine_DW->is_RUN_MODE = FOC_Statemachine_IN_FOC_STANDBY;
 
             /* Outport: '<Root>/StateFOC' */
-            FOC_Statemachine_Y->StateFOC = 42.0;
+            FOC_Statemachine_Y->StateFOC =
+              FOC_Statemachine_P.enumState_FOC_STANDBY;
 
             /* Outport: '<Root>/FOC_Enable_PWM' */
             FOC_Statemachine_Y->FOC_Enable_PWM = 1.0;
@@ -195,26 +200,30 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
 
          case FOC_Statemachine_IN_FOC_SPEED:
           /* Outport: '<Root>/State' */
-          FOC_Statemachine_Y->State = 42.0;
+          FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_SPEED_MODE;
           break;
 
          case FOC_Statemachine_IN_FOC_STANDBY:
-          if (FOC_Statemachine_U->StateReq == 41.0) {
+          if (FOC_Statemachine_U->StateReq ==
+              FOC_Statemachine_P.enumState_TORQUE_MODE) {
             FOC_Statemachine_DW->is_RUN_MODE = FOC_Statemachine_IN_FOC_TORQUE;
 
             /* Outport: '<Root>/State' */
-            FOC_Statemachine_Y->State = 41.0;
+            FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_TORQUE_MODE;
 
             /* Outport: '<Root>/StateFOC' */
-            FOC_Statemachine_Y->StateFOC = 43.0;
-          } else if (FOC_Statemachine_U->StateReq == 42.0) {
+            FOC_Statemachine_Y->StateFOC =
+              FOC_Statemachine_P.enumState_FOC_TORQUE;
+          } else if (FOC_Statemachine_U->StateReq ==
+                     FOC_Statemachine_P.enumState_SPEED_MODE) {
             FOC_Statemachine_DW->is_RUN_MODE = FOC_Statemachine_IN_FOC_SPEED;
 
             /* Outport: '<Root>/State' */
-            FOC_Statemachine_Y->State = 42.0;
+            FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_SPEED_MODE;
 
             /* Outport: '<Root>/StateFOC' */
-            FOC_Statemachine_Y->StateFOC = 46.0;
+            FOC_Statemachine_Y->StateFOC =
+              FOC_Statemachine_P.enumState_FOC_SPEED;
 
             /* Outport: '<Root>/SPEED_CTRL_Enable' */
             FOC_Statemachine_Y->SPEED_CTRL_Enable = 1.0;
@@ -224,7 +233,7 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
          default:
           /* Outport: '<Root>/State' */
           /* case IN_FOC_TORQUE: */
-          FOC_Statemachine_Y->State = 41.0;
+          FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_TORQUE_MODE;
           break;
         }
       }
@@ -233,7 +242,7 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
      default:
       /* Outport: '<Root>/State' */
       /* case IN_SYS_INIT: */
-      FOC_Statemachine_Y->State = 2.0;
+      FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_SYS_INIT;
 
       /* Outport: '<Root>/FOC_Mode' */
       FOC_Statemachine_Y->FOC_Mode = 1.0;
@@ -242,13 +251,14 @@ void FOC_Statemachine_step(RT_MODEL_FOC_Statemachine_T *const FOC_Statemachine_M
           FOC_Statemachine_IN_ERROR_MODE;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 128.0;
-      } else if (FOC_Statemachine_U->StateReq == 20.0) {
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_ERROR_MODE;
+      } else if (FOC_Statemachine_U->StateReq ==
+                 FOC_Statemachine_P.enumState_CTRL_IDLE) {
         FOC_Statemachine_DW->is_c1_FOC_Statemachine =
           FOC_Statemachine_IN_CTRL_INIT;
 
         /* Outport: '<Root>/State' */
-        FOC_Statemachine_Y->State = 10.0;
+        FOC_Statemachine_Y->State = FOC_Statemachine_P.enumState_CTRL_INIT;
 
         /* Outport: '<Root>/global_reset_errors' */
         FOC_Statemachine_Y->global_reset_errors = 0.0;

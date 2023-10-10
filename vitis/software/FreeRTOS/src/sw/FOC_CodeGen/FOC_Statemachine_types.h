@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_Statemachine'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.9
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Aug 22 14:13:05 2023
+ * C/C++ source code generated on : Mon Oct  9 23:06:59 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -21,6 +21,9 @@
 #define RTW_HEADER_FOC_Statemachine_types_h_
 
 /* Model Code Variants */
+
+/* Parameters (default storage) */
+typedef struct P_FOC_Statemachine_T_ P_FOC_Statemachine_T;
 
 /* Forward declaration for rtModel */
 typedef struct tag_RTM_FOC_Statemachine_T RT_MODEL_FOC_Statemachine_T;

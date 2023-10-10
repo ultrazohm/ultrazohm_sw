@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_Statemachine'.
  *
- * Model version                  : 1.5
+ * Model version                  : 1.9
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Tue Aug 22 14:13:05 2023
+ * C/C++ source code generated on : Mon Oct  9 23:06:59 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -62,6 +62,46 @@ typedef struct {
   real_T SPEED_CTRL_Enable;            /* '<Root>/SPEED_CTRL_Enable' */
 } ExtY_FOC_Statemachine_T;
 
+/* Parameters (default storage) */
+struct P_FOC_Statemachine_T_ {
+  real_T enumState_CTRL_IDLE;          /* Variable: enumState_CTRL_IDLE
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_CTRL_INIT;          /* Variable: enumState_CTRL_INIT
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_ERROR_MODE;         /* Variable: enumState_ERROR_MODE
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_FOC_IDLE;           /* Variable: enumState_FOC_IDLE
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_FOC_OFF;            /* Variable: enumState_FOC_OFF
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_FOC_SPEED;          /* Variable: enumState_FOC_SPEED
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_FOC_STANDBY;        /* Variable: enumState_FOC_STANDBY
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_FOC_TORQUE;         /* Variable: enumState_FOC_TORQUE
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_RUN_MODE;           /* Variable: enumState_RUN_MODE
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_SPEED_MODE;         /* Variable: enumState_SPEED_MODE
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_SYS_INIT;           /* Variable: enumState_SYS_INIT
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+  real_T enumState_TORQUE_MODE;        /* Variable: enumState_TORQUE_MODE
+                                        * Referenced by: '<Root>/FOC_Statemachine'
+                                        */
+};
+
 /* Real-time Model Data Structure */
 struct tag_RTM_FOC_Statemachine_T {
   const char_T * volatile errorStatus;
@@ -69,6 +109,9 @@ struct tag_RTM_FOC_Statemachine_T {
   ExtY_FOC_Statemachine_T *outputs;
   DW_FOC_Statemachine_T *dwork;
 };
+
+/* Block parameters (default storage) */
+extern P_FOC_Statemachine_T FOC_Statemachine_P;
 
 /* Model entry point functions */
 extern void FOC_Statemachine_initialize(RT_MODEL_FOC_Statemachine_T *const

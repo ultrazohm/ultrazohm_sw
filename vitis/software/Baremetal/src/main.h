@@ -64,7 +64,7 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "include/resolver.h"
-
+#include "uz/uz_setpoint/uz_setpoint.h"
 
 //----------------------------------------------------
 // FUNCTIONS

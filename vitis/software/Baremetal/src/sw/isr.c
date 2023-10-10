@@ -107,14 +107,14 @@ static float angle[10] = {0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f,
 #define ADC_CURRENT_SCALING_W               -32.887f
 #define ADC_CURRENT_OFFSET_W				-0.08244f
 
-#define PHASE_CURRENT_CONV_U					33.722//37.735 // 31,732
-#define PHASE_CURRENT_CONV_V					35.983//37.735 // 33.86
-#define PHASE_CURRENT_CONV_W					34.206//37.735 // 32.188
+#define PHASE_CURRENT_CONV_U					36.75 //33.722		//37.735 // 31,732
+#define PHASE_CURRENT_CONV_V					36.75 //35.983		//37.735 // 33.86
+#define PHASE_CURRENT_CONV_W					36.75 //34.206		//37.735 // 32.188
 
 #define DC_VOLT_CONV						240 // -240.0f //12.5f	// Scaling factor for voltage measurement
 #define DC_VOLT_OFFSET						240 //-1.0f    // Offset for DC voltage sensor
 #define PHASE_VOLT_CONV						1.0f //12.5f	// Scaling factor for voltage measurement
-#define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors
+#define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors								// O offset passt
 #define USE_RESOVER							0U		// 0u: Incremental Encoder on D5
 #define MAX_CURRENT_ASSERTION				110.0f	// Maximum Current
 #define MAX_SPEED_ASSERTION					1000.0f	// Maximum Speed
@@ -146,6 +146,7 @@ void ISR_Control(void *data)
     Global_Data.av.omega_el_rad_per_sec = Global_Data.av.resolver_outputs_d4.omega_mech_rad_s * Global_Data.av.polepairs;	// rad/s
     Global_Data.av.mechanicalRotorSpeed = Global_Data.av.resolver_outputs_d4.n_mech_rpm;
 
+    Global_Data.av.mechanicalRotorSpeed_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_speed_rpm, Global_Data.av.mechanicalRotorSpeed);
 
     // Calculate theta_elec
     //Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
@@ -156,9 +157,9 @@ void ISR_Control(void *data)
     Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV_V;
     Global_Data.av.I_W = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV_W;
 
-    measurement_current.a = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.av.I_U) + 0.2f;
-    measurement_current.b = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.av.I_V) - 0.4f;
-    measurement_current.c = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.av.I_W) + 0.45f;
+    measurement_current.a = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.av.I_U) + 0.18f;
+    measurement_current.b = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.av.I_V) - 0.1f;
+    measurement_current.c = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.av.I_W) - 0.35f;
 
 //    measurement_current.a = ADC_CURRENT_SCALING_U * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.aa.A1.me.ADC_B5)) - ADC_CURRENT_OFFSET_U;
 //    measurement_current.b = ADC_CURRENT_SCALING_V * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.aa.A1.me.ADC_B7)) - ADC_CURRENT_OFFSET_V;
@@ -196,7 +197,7 @@ void ISR_Control(void *data)
     dq_measurement_voltage = uz_transformation_3ph_abc_to_dq(measurement_voltage, Global_Data.av.theta_elec);
 
 //    unfiltered_signal = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B8 - DC_VOLT_OFFSET); //Global_Data.aa.A1.me.ADC_A4;
-    Global_Data.av.U_ZK  = -1.0f * DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B8 - DC_VOLT_OFFSET;
+    Global_Data.av.U_ZK  = 25.0f; //-1.0f * DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B8 - DC_VOLT_OFFSET;
     Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
 
     // Value to Scope
@@ -271,11 +272,19 @@ void ISR_Control(void *data)
 
 		        if (Global_Data.av.flg_speed_control){
 		        	Global_Data.av.testsignal = Global_Data.rasv.n_ref_rpm;
+		        	// Drehmomentregelung gibt direkt q-Strom vor, d-Strom 0
 		        	dq_reference_current.q = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
-		        	dq_reference_current.d = fabs(dq_reference_current.q);
+		        	dq_reference_current.d = 0.0f;//fabs(dq_reference_current.q);
 		        	Global_Data.rasv.i_d_ref = dq_reference_current.d;
 		        	Global_Data.rasv.i_q_ref = dq_reference_current.q;
 		        	// currently not implemented !!!
+
+		        	// mit uz_setpoint
+		        	Global_Data.rasv.torque_ref = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
+		        	dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, Global_Data.av.omega_mech_rad_per_sec, Global_Data.rasv.torque_ref, Global_Data.av.U_ZK_filt, dq_measurement_current);
+		        	Global_Data.rasv.i_d_ref = dq_reference_current.d;
+		        	Global_Data.rasv.i_q_ref = dq_reference_current.q;
+
 		        }else{
 		        	// Set I_d and I_q currents for current control
 		        	dq_reference_current.d = Global_Data.rasv.i_d_ref;

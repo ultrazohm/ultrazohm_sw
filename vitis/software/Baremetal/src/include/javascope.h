@@ -53,6 +53,7 @@ enum JS_OberservableData {
 	JSO_duty_cycle_B,
 	JSO_duty_cycle_C,
 	JSO_Speed_rpm,
+	JSO_Speed_filt_rpm,
 	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
@@ -131,8 +132,23 @@ enum JS_SlowData {
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
+	JSSD_FLOAT_ia,
+	JSSD_FLOAT_ib,
+	JSSD_FLOAT_ic,
+	JSSD_FLOAT_ua,
+	JSSD_FLOAT_ub,
+	JSSD_FLOAT_uc,
+	JSSD_FLOAT_ia_filt,
+	JSSD_FLOAT_ib_filt,
+	JSSD_FLOAT_ic_filt,
+	JSSD_FLOAT_ua_filt,
+	JSSD_FLOAT_ub_filt,
+	JSSD_FLOAT_uc_filt,
 	JSSD_ENDMARKER
 };
+
+
+
 
 // Determination of Button IDs via enum. When a button in the GUI is pressed,
 // the GUI sends an ID and a value. IDs of the buttons are the respective enum

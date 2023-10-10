@@ -6083,13 +6083,13 @@
             "inst_hier_path": "uz_user/xlslice_6",
             "parameters": {
               "DIN_FROM": {
-                "value": "5"
+                "value": "0"
               },
               "DIN_TO": {
-                "value": "5"
+                "value": "0"
               },
               "DIN_WIDTH": {
-                "value": "24"
+                "value": "11"
               }
             }
           },
@@ -6100,10 +6100,10 @@
             "inst_hier_path": "uz_user/xlslice_7",
             "parameters": {
               "DIN_FROM": {
-                "value": "0"
+                "value": "1"
               },
               "DIN_TO": {
-                "value": "0"
+                "value": "1"
               },
               "DIN_WIDTH": {
                 "value": "11"

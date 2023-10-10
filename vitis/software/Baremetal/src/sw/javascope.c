@@ -59,6 +59,7 @@ int JavaScope_initalize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_Speed_filt_rpm]		= &data->av.mechanicalRotorSpeed_filt;
 	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;
@@ -109,6 +110,18 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_ia] 					= &data->av.I_U;
+	js_slowDataArray[JSSD_FLOAT_ib] 					= &data->av.I_V;
+	js_slowDataArray[JSSD_FLOAT_ic] 					= &data->av.I_W;
+	js_slowDataArray[JSSD_FLOAT_ua] 					= &data->av.U_U;
+	js_slowDataArray[JSSD_FLOAT_ub] 					= &data->av.U_V;
+	js_slowDataArray[JSSD_FLOAT_uc] 					= &data->av.U_W;
+	js_slowDataArray[JSSD_FLOAT_ia_filt] 				= &data->av.I_U_filt;
+	js_slowDataArray[JSSD_FLOAT_ib_filt] 				= &data->av.I_V_filt;
+	js_slowDataArray[JSSD_FLOAT_ic_filt] 				= &data->av.I_W_filt;
+	js_slowDataArray[JSSD_FLOAT_ua_filt] 				= &data->av.U_U_filt;
+	js_slowDataArray[JSSD_FLOAT_ub_filt] 				= &data->av.U_V_filt;
+	js_slowDataArray[JSSD_FLOAT_uc_filt] 				= &data->av.U_W_filt;
 
 	return Status;
 }

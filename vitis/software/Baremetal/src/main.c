@@ -75,21 +75,25 @@ int main(void)
             initialization_chain = init_CurrentControl_rsm;
             break;
         case init_CurrentControl_rsm:
-            struct uz_PMSM_t config_RSM = {
+            struct uz_PMSM_t config_PMSM = {
                 .Ld_Henry = 20.45e-03f,
                 .Lq_Henry = 1.48e-03f,
-                .Psi_PM_Vs = 0.0f};
+                .Psi_PM_Vs = 0.0f,
+            	.R_ph_Ohm = 0.3,
+            	.polePairs = 7,
+            	//.J_kg_m_squared,
+				.I_max_Ampere = 15.0f};
 
             struct uz_PI_Controller_config config_id = {
-                .Kp = 8.0f,
-                .Ki = 6.0f,
+                .Kp = 4.7266f,//8.0f,
+                .Ki = 688.32f,//6.0f,
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
 
             struct uz_PI_Controller_config config_iq = {
-                .Kp = 22.0f, // 20
-                .Ki = 6.5f,  // 5
+                .Kp = 4.7266f, // 22.0f, // 20
+                .Ki = 688.32f, // 6.5f,  // 5
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
@@ -104,7 +108,7 @@ int main(void)
 
             struct uz_CurrentControl_config config_CurrentControl = {
                 .decoupling_select = linear_decoupling,//no_decoupling, //linear_decoupling,
-                .config_PMSM = config_RSM,
+                .config_PMSM = config_PMSM,
                 .config_id = config_id,
                 .config_iq = config_iq,
 				.max_modulation_index = 1.0f / sqrt(3.0f)};
@@ -127,12 +131,34 @@ int main(void)
             		.sample_frequency_Hz = UZ_PWM_FREQUENCY
             };
 
+            struct uz_IIR_Filter_config iir_config_filt_rpm = {
+            		.selection = LowPass_first_order,
+            		.cutoff_frequency_Hz = 1.0f,
+            		.sample_frequency_Hz = UZ_PWM_FREQUENCY
+            };
+
             struct uz_axi_gpio_config_t config_output = {
             		.base_address = XPAR_GPIO_1_BASEADDR,
             		.device_id = XPAR_GPIO_1_DEVICE_ID,
             		.number_of_pins = 11,
             		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
             };
+
+
+            struct uz_SetPoint_config SP_config = {
+               .config_PMSM.I_max_Ampere = config_PMSM.I_max_Ampere,
+               .config_PMSM.Ld_Henry = config_PMSM.Ld_Henryf,
+               .config_PMSM.Lq_Henry = config_PMSM.Lq_Henry,
+               .config_PMSM.R_ph_Ohm = config_PMSM.R_ph_Ohm,
+               .config_PMSM.polePairs = config_PMSM.polePairs,
+               .config_PMSM.Psi_PM_Vs = config_PMSM.Psi_PM_Vs,
+               .control_type = FOC,
+               .motor_type = SMPMSM,
+               .is_field_weakening_enabled = false,
+               .id_ref_Ampere = 0.0f,
+               .relative_torque_tolerance = 0.001f
+            };
+
 
             // Initialize Global Objects
             Global_Data.objects.CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
@@ -147,17 +173,22 @@ int main(void)
             Global_Data.objects.iir_u_w = uz_signals_IIR_Filter_init(iir_config_filt2);
             Global_Data.objects.iir_u_dc = uz_signals_IIR_Filter_init(iir_config_filt_DC);
 
+            Global_Data.objects.iir_speed_rpm = uz_signals_IIR_Filter_init(iir_config_filt_rpm);
+
             Global_Data.objects.Output_instance = uz_axi_gpio_init(config_output);
 
+            Global_Data.objects.SP_instance = uz_SetPoint_init(SP_config);
+
             // Initialize Global actualValues
-            Global_Data.av.theta_offset = 0.0f; //TODO;
+            Global_Data.av.theta_offset = 0.5292f; //TODO;
             Global_Data.av.polepairs = 11.0f;
-            Global_Data.av.kp_d = 1.0f; //40.0f;
+
+            Global_Data.av.kp_d = 1.0f; //40.0f;		// currently not in use
 			Global_Data.av.ki_d = 1.0f; //35.0f;
             Global_Data.av.kp_q = 1.0f; //40.0f;
 			Global_Data.av.ki_q = 1.0f; //32.0f;
 
-            Global_Data.av.flg_speed_control = true;
+            Global_Data.av.flg_speed_control = false;		// enable or disable speed-control
 
             // Initialize Global referenceAndSetValues
             Global_Data.rasv.state_of_statemachine = 0U;

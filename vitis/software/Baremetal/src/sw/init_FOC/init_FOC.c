@@ -65,7 +65,7 @@ uz_CurrentControl_t* init_dq_FOC(void) {
 	    .decoupling_select = no_decoupling,
 	    .config_id = config_id,
 	    .config_iq = config_iq,
-	    .max_modulation_index = 1.0f/sqrt(3.0f),
+	    .max_modulation_index = 1.0f/2.0f,
 		.config_PMSM = pmsm_config_dq
 	};
 	return(uz_CurrentControl_init(CC_dq_config));

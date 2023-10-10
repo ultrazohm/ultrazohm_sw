@@ -150,11 +150,9 @@ uz_6ph_dq_t u_ref_6ph = {0};
 uz_3ph_dq_t u_ref_3ph = {0};
 uz_3ph_dq_t cc_setpoint = {0};
 
-#define MODULATION 1U // 0=SPWM, 1=SVM
+#define MODULATION 0U // 0=SPWM, 1=SVM
 struct uz_DutyCycle_2x3ph_t duty_cycle = {0};
 struct uz_svm_asym_6ph_CSVPWM24_out svm_out = {0};
-
-volatile float test = 0x3e6d9ebaP23;
 
 
 //==============================================================================================================================================================
@@ -291,8 +289,8 @@ void ISR_Control(void *data)
         	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
            }
 
-           Global_Data.av.clamping = (float)(svm_out.limited_alphabeta);//(float)(uz_CurrentControl_get_ext_clamping(Global_Data.objects.CC_dq_instance));
-
+           Global_Data.av.clamping =(float)(uz_CurrentControl_get_ext_clamping(Global_Data.objects.CC_dq_instance));
+// (float)(svm_out.limited_alphabeta);
    //-----------------------------------------------------------------------------------------------------------------------------//
    //-----------------------------------------------------------------------------------------------------------------------------//
    //-------------------------------------------CONTROL---------------------------------------------------------------------------//
@@ -309,23 +307,22 @@ void ISR_Control(void *data)
     	   u_ref_6ph.q = u_ref_3ph.q;
 
     	   Global_Data.av.abs_dq = sqrt(u_ref_3ph.d*u_ref_3ph.d + u_ref_3ph.q*u_ref_3ph.q);
+    	   if(MODULATION == 0){
+    	       	duty_cycle = uz_spwm_dq_6ph(u_ref_6ph, Global_Data.av.v_dc1, Global_Data.av.theta_elec);
+		   }else if(MODULATION == 1){
+			svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(u_ref_6ph, Global_Data.av.v_dc1, Global_Data.av.theta_elec);
+			duty_cycle = svm_out.Duty_Cycle;
+			uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.shift_system1, svm_out.shift_system1, svm_out.shift_system1);
+			uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.shift_system2, svm_out.shift_system2, svm_out.shift_system2);
+		   }
+		   Global_Data.rasv.halfBridge1DutyCycle = duty_cycle.system1.DutyCycle_A;
+		   Global_Data.rasv.halfBridge2DutyCycle = duty_cycle.system1.DutyCycle_B;
+		   Global_Data.rasv.halfBridge3DutyCycle = duty_cycle.system1.DutyCycle_C;
+		   Global_Data.rasv.halfBridge4DutyCycle = duty_cycle.system2.DutyCycle_A;
+		   Global_Data.rasv.halfBridge5DutyCycle = duty_cycle.system2.DutyCycle_B;
+		   Global_Data.rasv.halfBridge6DutyCycle = duty_cycle.system2.DutyCycle_C;
        }
 
-    if(MODULATION == 0){
-    	duty_cycle = uz_spwm_dq_6ph(u_ref_6ph, Global_Data.av.v_dc1, Global_Data.av.theta_elec);
-
-    }else if(MODULATION == 1){
-    	svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(u_ref_6ph, Global_Data.av.theta_elec, Global_Data.av.v_dc1);
-    	duty_cycle = svm_out.Duty_Cycle;
-    	uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, svm_out.shift_system1, svm_out.shift_system1, svm_out.shift_system1);
-    	uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, svm_out.shift_system2, svm_out.shift_system2, svm_out.shift_system2);
-    }
-    Global_Data.rasv.halfBridge1DutyCycle = duty_cycle.system1.DutyCycle_A;
-    Global_Data.rasv.halfBridge2DutyCycle = duty_cycle.system1.DutyCycle_B;
-    Global_Data.rasv.halfBridge3DutyCycle = duty_cycle.system1.DutyCycle_C;
-    Global_Data.rasv.halfBridge4DutyCycle = duty_cycle.system2.DutyCycle_A;
-    Global_Data.rasv.halfBridge5DutyCycle = duty_cycle.system2.DutyCycle_B;
-    Global_Data.rasv.halfBridge6DutyCycle = duty_cycle.system2.DutyCycle_C;
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

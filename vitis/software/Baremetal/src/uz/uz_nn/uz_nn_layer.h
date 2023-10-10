@@ -4,7 +4,7 @@
 #include "../uz_mtwister/uz_mtwister.h"
 #include "uz_nn_activation_functions.h"
 #include <stdint.h>
-#include <stdio.h>
+#include <stdbool.h>
 
 /**
  * @brief Object definition for a layer of a neural network
@@ -141,13 +141,7 @@ void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate);
  */
 void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize);
 
-/**
- * @brief Save weights from c to .csv data for comparison reasons
- *
- * @param self
- * @param fname char pointer, that determines the .csv data name, where the weights should be stored
- */
-void uz_nn_layer_matrix_export(uz_matrix_t const *const self, char *fname);
+
 
 /**
  * @brief Set gradient in layer to a uz_matrix_t instance with the same dimension

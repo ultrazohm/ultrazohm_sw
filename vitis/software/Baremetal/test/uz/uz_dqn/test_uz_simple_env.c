@@ -243,7 +243,7 @@ void test_dqn_simple(void)
     if (f != NULL)                                                // check for success
     {
         fprintf(f, "Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
-        fprintf(f, "%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", lernrate, discountfact, configenv.epsilon_start, configenv.epsilon_min, configenv.epsilon_decay, NUMBER_OF_HIDDEN_LAYER, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, NUMBER_OF_EPOCHS, TARGET_UPDATE_FREQUENCY, NUMBEROFBITS,
+        fprintf(f, "%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", (double)lernrate, (double)discountfact, (double)configenv.epsilon_start, (double)configenv.epsilon_min, (double)configenv.epsilon_decay, NUMBER_OF_HIDDEN_LAYER, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, NUMBER_OF_EPOCHS, TARGET_UPDATE_FREQUENCY, NUMBEROFBITS,
                 NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
         fclose(f); // close the file
         f = NULL;  // set file handle to null since f is no longer valid

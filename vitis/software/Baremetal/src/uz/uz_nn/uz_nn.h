@@ -1,6 +1,8 @@
 #ifndef UZ_NN_H
 #define UZ_NN_H
+
 #include "uz_nn_layer.h"
+#include <stdbool.h>
 
 /**
  * @brief Arbitrarily defined maximum number of layers for the module. Affect all instances of the module.
@@ -100,12 +102,7 @@ void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix,
  */
 void uz_nn_set_gradients_zero(uz_nn_t *self);
 void uz_nn_schroeder_export(uz_nn_t *self);
-/**
- * @brief Exports trained parameters to matlab, hardcoded for NN with two hidden layers.
- *
- * @param self
- */
-void uz_nn_mat_export(uz_nn_t *self);
+
 /**
  * @brief Calculates the mse for the expected and actual value
  *

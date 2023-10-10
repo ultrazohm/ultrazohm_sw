@@ -19,9 +19,7 @@
 #include "uz_nn_layer.h"
 #include "../uz_mtwister/uz_mtwister.h"
 #include "../uz_HAL.h"
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
+
 struct uz_nn_layer_t
 {
     uint32_t number_of_neurons;
@@ -386,15 +384,8 @@ void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernra
         self->bias->data[i - weight_index] = self->bias->data[i - weight_index] + (lernrate / (float)minibatchsize * (-1.0f * self->gradients->data[i]));
     }
 }
-void uz_nn_layer_matrix_export(uz_matrix_t const *const self, char *fname)
-{
-    FILE *f = fopen(fname, "w");
-    for (uint32_t i = 0; i < self->length_of_data; i++)
-    {
-        fprintf(f, "%.6f,", (double)self->data[i]);
-    }
-    fclose(f);
-}
+
+
 
 void uz_nn_layer_update(uz_nn_layer_t *const self, float *theta, float *bias, float *lernrate)
 {

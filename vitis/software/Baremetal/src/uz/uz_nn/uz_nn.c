@@ -16,8 +16,6 @@
 
 #include "../uz_global_configuration.h"
 #if UZ_NN_MAX_INSTANCES > 0U
-#include <stdio.h>
-#include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_nn.h"
 #include "../uz_matrix/uz_matrix.h"
@@ -264,21 +262,7 @@ void uz_nn_backward_pass_mini_batch(uz_nn_t *self, const float *const error, uz_
     uz_nn_layer_calc_gradients_mini_batch(self->layer[0], input);
 }
 
-void uz_nn_mat_export(uz_nn_t *self)
-{
-    char *fname = "test/uz/uz_nn/matlab_weights/c_layer1_weights.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[0]), fname);
-    char *fname1 = "test/uz/uz_nn/matlab_weights/c_layer2_weights.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[1]), fname1);
-    char *fname2 = "test/uz/uz_nn/matlab_weights/c_layer3_weights.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_weight_matrix(self->layer[2]), fname2);
-    char *fname3 = "test/uz/uz_nn/matlab_weights/c_layer1_bias.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[0]), fname3);
-    char *fname4 = "test/uz/uz_nn/matlab_weights/c_layer2_bias.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname4);
-    char *fname5 = "test/uz/uz_nn/matlab_weights/c_layer3_bias.csv";
-    uz_nn_layer_matrix_export(uz_nn_layer_get_bias_matrix(self->layer[1]), fname5);
-}
+
 
 void uz_nn_set_gradients_zero(uz_nn_t *self)
 {

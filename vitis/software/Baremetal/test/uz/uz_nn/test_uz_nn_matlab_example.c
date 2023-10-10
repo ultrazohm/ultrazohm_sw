@@ -11,6 +11,14 @@
 #include "uz_codegen0_ert_rtw/uz_codegen0.h"
 #include <time.h>
 #include <stdlib.h>
+#include "export_array.h"
+
+/**
+ * @brief Exports trained parameters to matlab, hardcoded for NN with two hidden layers.
+ *
+ * @param self
+ */
+void uz_nn_mat_export(uz_nn_t *self);
 
 #define NUMBER_OF_INPUTS 13
 #define NUMBER_OF_OUTPUTS 1
@@ -337,5 +345,20 @@ void test_uz_nn_matlab(void)
         }
 }
 
+void uz_nn_mat_export(uz_nn_t *self)
+{
+  char *fname = "test/uz/uz_nn/matlab_weights/c_layer1_weights.csv";
+  uz_nn_layer_matrix_export(uz_nn_get_weight_matrix(self, 1U), fname);
+  char *fname1 = "test/uz/uz_nn/matlab_weights/c_layer2_weights.csv";
+  uz_nn_layer_matrix_export(uz_nn_get_weight_matrix(self, 2U), fname1);
+  char *fname2 = "test/uz/uz_nn/matlab_weights/c_layer3_weights.csv";
+  uz_nn_layer_matrix_export(uz_nn_get_weight_matrix(self, 3U), fname2);
+  char *fname3 = "test/uz/uz_nn/matlab_weights/c_layer1_bias.csv";
+  uz_nn_layer_matrix_export(uz_nn_get_bias_matrix(self, 1U), fname3);
+  char *fname4 = "test/uz/uz_nn/matlab_weights/c_layer2_bias.csv";
+  uz_nn_layer_matrix_export(uz_nn_get_bias_matrix(self, 2U), fname4);
+  char *fname5 = "test/uz/uz_nn/matlab_weights/c_layer3_bias.csv";
+  uz_nn_layer_matrix_export(uz_nn_get_bias_matrix(self, 3U), fname5);
+}
 
 #endif // TEST

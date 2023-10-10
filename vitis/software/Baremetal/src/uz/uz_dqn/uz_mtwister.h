@@ -5,9 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-
 typedef struct uz_mtwister_t uz_mtwister_t;
-
 
 uz_mtwister_t *uz_mtwister_init(uint32_t random_seed);
 

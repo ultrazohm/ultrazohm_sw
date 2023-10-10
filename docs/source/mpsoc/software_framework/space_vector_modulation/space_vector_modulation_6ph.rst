@@ -25,7 +25,7 @@ Since an online choosing of SV is not feasible, a preselection from all possible
     :align: center
     :width: 1500px
 
-    Space vectors in :math:`\alpha\beta` (left) and :math:`XY` (right) with highlighted active switching combinations for sector 1 [[#Eldeeb_paper]_Fig.~2]
+    Selected actives witching combinations in :math:`\alpha\beta` (left) and :math:`XY` (right) with highlighting for sector 1 (Fig.~2[[#Eldeeb_paper]_])
 
 
 .. _uz_svm_6ph_usage:
@@ -95,7 +95,7 @@ Both of them limit the absolute value (length) of the SV, while leaving the phas
 The checks for the limitations are executed in the listed order below:
 
 The :math:`XY`-SV must not be longer than 10% of the :math:`\alpha\beta`-SV.
-As can be seen from [[#Eldeeb_diss]_] Fig. 3.3, a large :math:`\alpha\beta`-SV represents a small :math:`XY`-SV and vice versa.
+As can be seen from (Fig. 3.3[[#Eldeeb_diss]_]), a large :math:`\alpha\beta`-SV represents a small :math:`XY`-SV and vice versa.
 Therefore, if the :math:`\alpha\beta`-SV is near the maximum, the :math:`XY`-SV can only be small.
 Although a general limitation can not achieve maximum usage in all operating points, with this rule an overall good performance can be expected.
 
@@ -108,7 +108,7 @@ Space vectors
 -------------
 
 From the existing :math:`2^6` SVs in a six-phase system, not all of them are used.
-Instead, the selected sequences of [[#Eldeeb_diss]_] Tab. 3.III are used.
+Instead, the selected sequences of (Tab. 3.III[[#Eldeeb_diss]_]) are used.
 Please note that the decimal notation of [[#Eldeeb_paper]_] and [[#other_paper]_] are used.
 Therefore, the binary values of [[#Eldeeb_diss]_] must be mirrored, making the switch a1 being represented by the LSB and c2 by the MSB.
 
@@ -177,11 +177,11 @@ The resulting Duty Cycles were fed into the PWM-IP-Core Simulink model and conne
 Setpoints and measured output voltages are shown in the following figure for both subspaces.
 In the last row, the limit flags for both subspaces are shown.
 
-.. figure:: svm_6ph_sim.png
+.. figure:: svm_6ph_simulation.svg
     :align: center
     :width: 1500px
 
-    Simulation with arbitrary setpoints
+    Open loop simulation
 
 
 Closed loop testbench

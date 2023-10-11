@@ -146,7 +146,7 @@ float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self, float *error, uint32_t mb
     }
     if (epoch % TARGET_UPDATE_FREQUENCY == 0)
     {
-        uz_nn_target_update(self->critic, self->critic_target_net, periodic, &targsmoothfact);
+        uz_nn_target_update(self->critic, self->critic_target_net, periodic, targsmoothfact);
     }
     if (arraysequal(self->env->bitinitial, self->env->bittarget, self->env->bitlength) == true)
     {
@@ -336,7 +336,7 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t mbsize, u
     }
     if (epoch % TARGET_UPDATE_FREQUENCY == 0)
     {
-        uz_nn_target_update(self->critic, self->critic_target_net, smoothing, &targsmoothfact);
+        uz_nn_target_update(self->critic, self->critic_target_net, smoothing, targsmoothfact);
     }
     return cum_loss;
 }
@@ -417,7 +417,7 @@ float uz_dqn_step_gd(uz_dqn_t *self, float *error, uint32_t mbsize, uint32_t TAR
     // Targetupdate
     if (epoch % TARGET_UPDATE_FREQUENCY == 0)
     {
-        uz_nn_target_update(self->critic, self->critic_target_net, periodic, &targsmoothfact);
+        uz_nn_target_update(self->critic, self->critic_target_net, periodic, targsmoothfact);
     }
     if (arraysequal(self->env->bitinitial, self->env->bittarget, self->env->bitlength) == true)
     {

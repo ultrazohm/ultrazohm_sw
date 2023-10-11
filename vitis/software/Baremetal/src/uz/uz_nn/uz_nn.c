@@ -93,7 +93,7 @@ void uz_nn_copy(uz_nn_t *source, uz_nn_t *destination)
     }
 }
 
-void uz_nn_copy_smoothing(uz_nn_t *source, uz_nn_t *destination, float *targetsmoothfact)
+void uz_nn_copy_smoothing(uz_nn_t *source, uz_nn_t *destination, float targetsmoothfact)
 {
     uz_assert_not_NULL(source);
     uz_assert_not_NULL(destination);
@@ -104,21 +104,19 @@ void uz_nn_copy_smoothing(uz_nn_t *source, uz_nn_t *destination, float *targetsm
     }
 }
 
-void uz_nn_target_update(uz_nn_t *critic, uz_nn_t *target, enum target_update method, float *targetsmoothfact)
+void uz_nn_target_update(uz_nn_t *critic, uz_nn_t *target, enum target_update method, float targetsmoothfact)
 {
     uz_assert_not_NULL(critic);
     uz_assert_not_NULL(target);
     switch (method)
     {
     case smoothing:
-        uz_assert_not_NULL(targetsmoothfact);
         uz_nn_copy_smoothing(critic, target, targetsmoothfact);
         break;
     case periodic:
         uz_nn_copy(critic, target);
         break;
     case periodic_smoothing:
-        uz_assert_not_NULL(targetsmoothfact);
         uz_nn_copy_smoothing(critic, target, targetsmoothfact);
         break;
     default:

@@ -458,16 +458,15 @@ void uz_matrix_copy(uz_matrix_t const *const source, uz_matrix_t *const destinat
 
 }
 
-void uz_matrix_update_smooth(uz_matrix_t const *const source, uz_matrix_t *const destination, float *const smoothfact)
+void uz_matrix_update_smooth(uz_matrix_t const *const source, uz_matrix_t *const destination, float  smoothfact)
 {    
     uz_assert_not_NULL(source);
     uz_assert_not_NULL(destination);
-    uz_assert_not_NULL(smoothfact);
     uz_assert(source->length_of_data == destination->length_of_data);
     // destination->rows=source->rows;
     // destination->columns=source->columns;
     for(uint32_t i=0U;i<destination->length_of_data;i++){
-        destination->data[i]= (*smoothfact * source->data[i])+(1.0f-*smoothfact)*destination->data[i];
+        destination->data[i]= (smoothfact * source->data[i])+(1.0f-smoothfact)*destination->data[i];
     }
 
 }

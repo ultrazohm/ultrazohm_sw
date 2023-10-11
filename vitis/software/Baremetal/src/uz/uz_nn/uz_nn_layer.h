@@ -90,7 +90,7 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, str
  */
 void uz_nn_layer_ff(uz_nn_layer_t *const self, uz_matrix_t const *const input);
 void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer);
-void uz_nn_layer_copy_smooth(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer, float *const smoothfact);
+void uz_nn_layer_copy_smooth(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer, float smoothfact);
 void uz_nn_update_layer_param_no_bias(uz_nn_layer_t *const self, float lernrate);
 /**
  * @brief Calculates one backward pass of a the output layer with the given error value

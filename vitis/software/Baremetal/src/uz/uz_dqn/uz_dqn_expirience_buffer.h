@@ -51,7 +51,7 @@ uz_matrix_t *uz_dqn_buffer_get_vectorforobs(uz_dqn_experience_replay_t *self);
 uz_matrix_t *uz_dqn_buffer_get_vectorforobs1(uz_dqn_experience_replay_t *self);
 
 float uz_dqn_buffer_get_reward(uz_dqn_experience_replay_t *self,uint32_t index);
-float uz_dqn_buffer_get_action(uz_dqn_experience_replay_t *self,uint32_t index);
+uint32_t uz_dqn_buffer_get_action(uz_dqn_experience_replay_t *self,uint32_t index);
 
 
 

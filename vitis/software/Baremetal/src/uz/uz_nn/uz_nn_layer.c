@@ -258,11 +258,10 @@ void uz_nn_layer_copy(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const des
     uz_matrix_copy(sourcelayer->bias, destinationlayer->bias);
 }
 
-void uz_nn_layer_copy_smooth(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer, float *const smoothfact)
+void uz_nn_layer_copy_smooth(uz_nn_layer_t *const sourcelayer, uz_nn_layer_t *const destinationlayer, float smoothfact)
 {
     uz_assert_not_NULL(sourcelayer);
     uz_assert_not_NULL(destinationlayer);
-    uz_assert_not_NULL(smoothfact);
     uz_matrix_update_smooth(sourcelayer->weights, destinationlayer->weights, smoothfact);
     uz_matrix_update_smooth(sourcelayer->bias, destinationlayer->bias, smoothfact);
 }

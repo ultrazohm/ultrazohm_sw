@@ -191,7 +191,7 @@ void test_uz_dqn_init(void)
 {
     uz_dqn_t *testdqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv);
     float targsmoothfact = 0.05f;
-    uz_nn_target_update(testdqn->critic, testdqn->critic_target_net, smoothing, &targsmoothfact);
+    uz_nn_target_update(testdqn->critic, testdqn->critic_target_net, smoothing, targsmoothfact);
 }
 void test_dqn_bitflip(void)
 {

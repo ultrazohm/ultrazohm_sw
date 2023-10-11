@@ -167,7 +167,7 @@ float uz_dqn_buffer_get_reward(uz_dqn_experience_replay_t *self,uint32_t index)
     return self->reward[index];
 }
 
-float uz_dqn_buffer_get_action(uz_dqn_experience_replay_t *self, uint32_t index)
+uint32_t uz_dqn_buffer_get_action(uz_dqn_experience_replay_t *self, uint32_t index)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

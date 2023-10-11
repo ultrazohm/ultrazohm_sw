@@ -113,7 +113,7 @@ void uz_matrix_get_column_vector_zero_based(uz_matrix_t const *const matrix,uz_m
  * @param C_out Result of the multiplication is written to C_out
  */
 void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
-void uz_matrix_update_smooth(uz_matrix_t const *const source, uz_matrix_t *const destination, float *const smoothfact);
+void uz_matrix_update_smooth(uz_matrix_t const *const source, uz_matrix_t *const destination, float smoothfact);
 void uz_matrix_copy_row_to_matrix(uz_matrix_t const *const source_rowvec, uz_matrix_t *const destination_matrix, uint32_t rowind);
 void uz_matrix_copy_row_from_matrix(uz_matrix_t const *const source_matrix, uz_matrix_t *const destination_rowvec, uint32_t rowind);
 

@@ -209,7 +209,7 @@ void test_uz_dqn_copy_nn(void)
 {
     uz_dqn_t *dqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv);
     float targsmoothfact = 0.05f;
-    uz_nn_target_update(dqn->critic, dqn->critic_target_net, periodic, &targsmoothfact);
+    uz_nn_target_update(dqn->critic, dqn->critic_target_net, periodic, targsmoothfact);
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_1, tw_1, UZ_MATRIX_SIZE(cw_1));
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_2, tw_2, UZ_MATRIX_SIZE(cw_2));
     TEST_ASSERT_EQUAL_FLOAT_ARRAY(cw_3, tw_3, UZ_MATRIX_SIZE(cw_3));

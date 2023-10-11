@@ -17,6 +17,24 @@ struct uz_dqn_experience_replay_config
     uint32_t *const actions;
 };
 
+struct uz_dqn_experience_replay_t
+{
+    float *reward;
+    uint32_t *action;
+    uz_matrix_t *observations;
+    uz_matrix_t *observations1;
+    uz_matrix_t *vectorforobs;
+    uz_matrix_t *vectorforobs1;
+    struct uz_matrix_t vecobs_matrix1;
+    struct uz_matrix_t vecobs_matrix;
+    struct uz_matrix_t observations_matrix;
+    struct uz_matrix_t observations_matrix_1;
+    uint32_t head;
+    uint32_t counterisfull;
+    uint32_t length;
+    bool is_full;
+    bool is_ready;
+};
 
 uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experience_replay_config buf_config, uint32_t length);
 
@@ -32,6 +50,8 @@ uint32_t uz_dqn_buffer_get_length(uz_dqn_experience_replay_t *self);
 uz_matrix_t *uz_dqn_buffer_get_vectorforobs(uz_dqn_experience_replay_t *self);
 uz_matrix_t *uz_dqn_buffer_get_vectorforobs1(uz_dqn_experience_replay_t *self);
 
+float uz_dqn_buffer_get_reward(uz_dqn_experience_replay_t *self,uint32_t index);
+float uz_dqn_buffer_get_action(uz_dqn_experience_replay_t *self,uint32_t index);
 
 
 

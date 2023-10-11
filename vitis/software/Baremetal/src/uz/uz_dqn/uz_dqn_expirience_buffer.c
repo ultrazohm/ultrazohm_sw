@@ -5,24 +5,7 @@
 #include <stdbool.h>
 #include "../uz_HAL.h"
 
-struct uz_dqn_experience_replay_t
-{
-    float *reward;
-    uint32_t *action;
-    uz_matrix_t *observations;
-    uz_matrix_t *observations1;
-    uz_matrix_t *vectorforobs;
-    uz_matrix_t *vectorforobs1;
-    struct uz_matrix_t vecobs_matrix1;
-    struct uz_matrix_t vecobs_matrix;
-    struct uz_matrix_t observations_matrix;
-    struct uz_matrix_t observations_matrix_1;
-    uint32_t head;
-    uint32_t counterisfull;
-    uint32_t length;
-    bool is_full;
-    bool is_ready;
-};
+
 
 static uint32_t instance_counterbuf = 0U;
 static uz_dqn_experience_replay_t instancesbuf[UZ_DQN_BUFFER_MAX_INSTANCES] = {0};
@@ -175,6 +158,20 @@ uz_matrix_t *uz_dqn_buffer_get_vectorforobs1(uz_dqn_experience_replay_t *self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->vectorforobs1;
+}
+
+float uz_dqn_buffer_get_reward(uz_dqn_experience_replay_t *self,uint32_t index)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->reward[index];
+}
+
+float uz_dqn_buffer_get_action(uz_dqn_experience_replay_t *self, uint32_t index)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->action[index];
 }
 
 #endif

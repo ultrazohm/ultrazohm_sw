@@ -236,9 +236,9 @@ void test_dqn_bitflip(void)
         }
         else
         {
-            uz_mtwister_random_uniform_uint32_array(testdqn2->randinstance, r, MINIBATCHSIZE, (float)(testdqn2->experience_buffer->head - 1U));
+            uz_mtwister_random_uniform_uint32_array(testdqn2->randinstance, r, MINIBATCHSIZE, (float)(uz_dqn_buffer_get_head(testdqn2->experience_buffer) - 1U));
         }
-        uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer, rew, act, testdqn2->experience_buffer->vectorforobs, testdqn2->experience_buffer->vectorforobs1, obs, obspl1, MINIBATCHSIZE, indizes);
+        uz_dqn_get_minibatch_from_buffer(testdqn2->experience_buffer, rew, act, uz_dqn_buffer_get_vectorforobs(testdqn2->experience_buffer), uz_dqn_buffer_get_vectorforobs1(testdqn2->experience_buffer), obs, obspl1, MINIBATCHSIZE, indizes);
         loss[i] = uz_dqn_train_adam(testdqn2, error, rew, act, obs, obspl1, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, i, targsmoothfact, adam);
         save_values(Q_Critic, Q_Target, cy_2, ty_2, i, NUMBER_OF_OUTPUTS);
     }

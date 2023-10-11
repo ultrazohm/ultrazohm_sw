@@ -103,19 +103,19 @@ float uz_dqn_step_adam_simple(uz_dqn_t *self, float *error, uint32_t mbsize, uin
         float stepreward = calculate_reward_simple(actionind);
         uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->inputvecnn, self->env->inputfornn);
         self->env->cumreward = stepreward;
-        if (self->experience_buffer->counterisfull > 0U)
+        if (uz_dqn_buffer_get_counterisfull(self->experience_buffer) > 0U)
         {
-            uz_mtwister_random_uniform_uint32_array(self->randinstance, r, mbsize, (float)self->experience_buffer->length - 1);
+            uz_mtwister_random_uniform_uint32_array(self->randinstance, r, mbsize, (float)uz_dqn_buffer_get_length(self->experience_buffer) - 1);
         }
         else
         {
-            uz_mtwister_random_uniform_uint32_array(self->randinstance, r, mbsize, (float)self->experience_buffer->head - 1);
+            uz_mtwister_random_uniform_uint32_array(self->randinstance, r, mbsize, (float)uz_dqn_buffer_get_head(self->experience_buffer) - 1);
         }
         uint32_t *rx;
         rx = r;
         for (uint32_t j = 0; j < mbsize; j++)
         {
-            uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1, self->env->inputfornn, *rx);
+            uz_matrix_get_row_vector_zero_based(uz_dqn_buffer_get_vectorforobs1(self->experience_buffer), self->env->inputfornn, *rx);
             uz_nn_ff(self->critic_target_net, self->env->inputfornn);
             outputtarget = uz_nn_get_output_data(self->critic_target_net);
             qplus1 = uz_matrix_get_max_value(outputtarget);

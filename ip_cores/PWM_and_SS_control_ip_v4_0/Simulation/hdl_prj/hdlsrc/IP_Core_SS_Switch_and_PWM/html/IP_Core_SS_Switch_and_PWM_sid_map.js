@@ -25,7 +25,15 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:1781"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:2460"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:2461"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4057"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4053"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4069"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4064"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4067"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:371"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4054"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4068"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4055"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:221"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:222"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:223"] = "IP_Core_SS_Switch_and_PWM:192";
@@ -46,6 +54,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:538"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:567"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:598"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4050"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:372"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:373"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:374"] = "IP_Core_SS_Switch_and_PWM:371";

@@ -1,7 +1,12 @@
 SLStudio.Utils.RemoveHighlighting(get_param('IP_Core_SS_Switch_and_PWM', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_IP_Core_SS_Switch_and_PWM', 'handle'));
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM', 0, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Delay', 1, 1, '');
+annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Delay', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Delay1', 1, 1, '');
+annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/Delay1', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/delayMatch', 1, 1, '');
+annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/delayMatch1', 1, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Triangle shift', 0, 1, '');
 annotate_port('gm_IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Delay4', 1, 1, '');
 annotate_port('IP_Core_SS_Switch_and_PWM/PWM_and_Switching_Signal_Control/GenPWM/Delay4', 1, 1, '');

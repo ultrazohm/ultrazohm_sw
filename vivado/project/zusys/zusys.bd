@@ -31,10 +31,6 @@
       "uz_digital_adapter": {
         "D1_adapter": {
           "Gates": {
-            "PWM_and_SS_control_V_0": "",
-            "PWM_and_SS_control_V_1": "",
-            "PWM_and_SS_control_V_2": "",
-            "PWM_and_SS_control_V_3": "",
             "util_vector_logic_0": "",
             "uz_interlockDeadtime_0": "",
             "uz_interlockDeadtime_1": "",
@@ -48,7 +44,11 @@
             "xlslice_12": "",
             "xlslice_13": "",
             "xlslice_8": "",
-            "xlslice_9": ""
+            "xlslice_9": "",
+            "PWM_and_SS_control_V_0": "",
+            "PWM_and_SS_control_V_1": "",
+            "PWM_and_SS_control_V_2": "",
+            "PWM_and_SS_control_V_3": ""
           }
         },
         "D2_adapter": {
@@ -1801,30 +1801,6 @@
                   }
                 },
                 "components": {
-                  "PWM_and_SS_control_V_0": {
-                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_0_0",
-                    "xci_path": "ip\\zusys_PWM_and_SS_control_V_0_0_2\\zusys_PWM_and_SS_control_V_0_0.xci",
-                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_0"
-                  },
-                  "PWM_and_SS_control_V_1": {
-                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_1_0",
-                    "xci_path": "ip\\zusys_PWM_and_SS_control_V_1_0_2\\zusys_PWM_and_SS_control_V_1_0.xci",
-                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_1"
-                  },
-                  "PWM_and_SS_control_V_2": {
-                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_2_0",
-                    "xci_path": "ip\\zusys_PWM_and_SS_control_V_2_0_2\\zusys_PWM_and_SS_control_V_2_0.xci",
-                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_2"
-                  },
-                  "PWM_and_SS_control_V_3": {
-                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1",
-                    "xci_name": "zusys_PWM_and_SS_control_V_3_0",
-                    "xci_path": "ip\\zusys_PWM_and_SS_control_V_3_0_2\\zusys_PWM_and_SS_control_V_3_0.xci",
-                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_3"
-                  },
                   "util_vector_logic_0": {
                     "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
                     "xci_name": "zusys_util_vector_logic_0_0",
@@ -2003,6 +1979,30 @@
                         "value": "6"
                       }
                     }
+                  },
+                  "PWM_and_SS_control_V_0": {
+                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.2",
+                    "xci_name": "zusys_PWM_and_SS_control_V_0_1",
+                    "xci_path": "ip\\zusys_PWM_and_SS_control_V_0_1\\zusys_PWM_and_SS_control_V_0_1.xci",
+                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_0"
+                  },
+                  "PWM_and_SS_control_V_1": {
+                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.2",
+                    "xci_name": "zusys_PWM_and_SS_control_V_0_2",
+                    "xci_path": "ip\\zusys_PWM_and_SS_control_V_0_2\\zusys_PWM_and_SS_control_V_0_2.xci",
+                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_1"
+                  },
+                  "PWM_and_SS_control_V_2": {
+                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.2",
+                    "xci_name": "zusys_PWM_and_SS_control_V_0_3",
+                    "xci_path": "ip\\zusys_PWM_and_SS_control_V_0_3\\zusys_PWM_and_SS_control_V_0_3.xci",
+                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_2"
+                  },
+                  "PWM_and_SS_control_V_3": {
+                    "vlnv": "xilinx.com:ip:PWM_and_SS_control_V4_ip:4.2",
+                    "xci_name": "zusys_PWM_and_SS_control_V_0_4",
+                    "xci_path": "ip\\zusys_PWM_and_SS_control_V_0_4\\zusys_PWM_and_SS_control_V_0_4.xci",
+                    "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_3"
                   }
                 },
                 "interface_nets": {
@@ -2059,14 +2059,6 @@
                   "AXI4_Lite_ARESETN_1": {
                     "ports": [
                       "RESETN",
-                      "PWM_and_SS_control_V_0/AXI4_Lite_ARESETN",
-                      "PWM_and_SS_control_V_0/IPCORE_RESETN",
-                      "PWM_and_SS_control_V_1/AXI4_Lite_ARESETN",
-                      "PWM_and_SS_control_V_1/IPCORE_RESETN",
-                      "PWM_and_SS_control_V_2/AXI4_Lite_ARESETN",
-                      "PWM_and_SS_control_V_2/IPCORE_RESETN",
-                      "PWM_and_SS_control_V_3/AXI4_Lite_ARESETN",
-                      "PWM_and_SS_control_V_3/IPCORE_RESETN",
                       "uz_interlockDeadtime_0/AXI4_ARESETN",
                       "uz_interlockDeadtime_0/IPCORE_RESETN",
                       "uz_interlockDeadtime_1/AXI4_ARESETN",
@@ -2074,7 +2066,15 @@
                       "uz_interlockDeadtime_2/AXI4_ARESETN",
                       "uz_interlockDeadtime_2/IPCORE_RESETN",
                       "uz_interlockDeadtime_3/AXI4_ARESETN",
-                      "uz_interlockDeadtime_3/IPCORE_RESETN"
+                      "uz_interlockDeadtime_3/IPCORE_RESETN",
+                      "PWM_and_SS_control_V_3/IPCORE_RESETN",
+                      "PWM_and_SS_control_V_3/AXI4_Lite_ARESETN",
+                      "PWM_and_SS_control_V_2/IPCORE_RESETN",
+                      "PWM_and_SS_control_V_2/AXI4_Lite_ARESETN",
+                      "PWM_and_SS_control_V_1/IPCORE_RESETN",
+                      "PWM_and_SS_control_V_1/AXI4_Lite_ARESETN",
+                      "PWM_and_SS_control_V_0/IPCORE_RESETN",
+                      "PWM_and_SS_control_V_0/AXI4_Lite_ARESETN"
                     ]
                   },
                   "G_mpc_in_1": {
@@ -2124,6 +2124,12 @@
                       "xlconcat_0/In5"
                     ]
                   },
+                  "PWM_and_SS_control_V_0_PWM_en_out": {
+                    "ports": [
+                      "PWM_and_SS_control_V_0/PWM_en_out",
+                      "PWM_and_SS_control_V_1/Sync_PWM_en"
+                    ]
+                  },
                   "PWM_and_SS_control_V_0_SS0_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_0/SS0_OUT",
@@ -2162,14 +2168,14 @@
                   },
                   "PWM_and_SS_control_V_0_Triangular_Max": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/Triangular_Max",
+                      "PWM_and_SS_control_V_1/Triangular_Max",
                       "Carrier_triangular_max",
                       "util_vector_logic_0/Op1"
                     ]
                   },
                   "PWM_and_SS_control_V_0_Triangular_Min": {
                     "ports": [
-                      "PWM_and_SS_control_V_0/Triangular_Min",
+                      "PWM_and_SS_control_V_1/Triangular_Min",
                       "Carrier_triangular_min",
                       "util_vector_logic_0/Op2"
                     ]
@@ -2181,6 +2187,12 @@
                       "PWM_and_SS_control_V_1/triangle_in",
                       "PWM_and_SS_control_V_2/triangle_in",
                       "PWM_and_SS_control_V_3/triangle_in"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_1_PWM_en_out": {
+                    "ports": [
+                      "PWM_and_SS_control_V_1/PWM_en_out",
+                      "PWM_and_SS_control_V_2/Sync_PWM_en"
                     ]
                   },
                   "PWM_and_SS_control_V_1_SS0_OUT": {
@@ -2219,6 +2231,12 @@
                       "uz_interlockDeadtime_1/S5"
                     ]
                   },
+                  "PWM_and_SS_control_V_2_PWM_en_out": {
+                    "ports": [
+                      "PWM_and_SS_control_V_2/PWM_en_out",
+                      "PWM_and_SS_control_V_3/Sync_PWM_en"
+                    ]
+                  },
                   "PWM_and_SS_control_V_2_SS0_OUT": {
                     "ports": [
                       "PWM_and_SS_control_V_2/SS0_OUT",
@@ -2253,6 +2271,12 @@
                     "ports": [
                       "PWM_and_SS_control_V_2/SS5_OUT",
                       "uz_interlockDeadtime_2/S5"
+                    ]
+                  },
+                  "PWM_and_SS_control_V_3_PWM_en_out": {
+                    "ports": [
+                      "PWM_and_SS_control_V_3/PWM_en_out",
+                      "PWM_and_SS_control_V_0/Sync_PWM_en"
                     ]
                   },
                   "PWM_and_SS_control_V_3_SS0_OUT": {
@@ -2456,18 +2480,18 @@
                   "xlconstant_0_dout": {
                     "ports": [
                       "xlconstant_0/dout",
-                      "PWM_and_SS_control_V_0/m_u1_norm",
-                      "PWM_and_SS_control_V_0/m_u2_norm",
                       "PWM_and_SS_control_V_0/m_u3_norm",
-                      "PWM_and_SS_control_V_1/m_u1_norm",
+                      "PWM_and_SS_control_V_0/m_u2_norm",
+                      "PWM_and_SS_control_V_0/m_u1_norm",
                       "PWM_and_SS_control_V_1/m_u2_norm",
                       "PWM_and_SS_control_V_1/m_u3_norm",
-                      "PWM_and_SS_control_V_2/m_u1_norm",
+                      "PWM_and_SS_control_V_1/m_u1_norm",
                       "PWM_and_SS_control_V_2/m_u2_norm",
                       "PWM_and_SS_control_V_2/m_u3_norm",
-                      "PWM_and_SS_control_V_3/m_u1_norm",
+                      "PWM_and_SS_control_V_2/m_u1_norm",
                       "PWM_and_SS_control_V_3/m_u2_norm",
-                      "PWM_and_SS_control_V_3/m_u3_norm"
+                      "PWM_and_SS_control_V_3/m_u3_norm",
+                      "PWM_and_SS_control_V_3/m_u1_norm"
                     ]
                   },
                   "xlslice_10_Dout": {
@@ -2515,14 +2539,6 @@
                   "zynq_ultra_ps_e_0_pl_clk1": {
                     "ports": [
                       "CLK",
-                      "PWM_and_SS_control_V_0/AXI4_Lite_ACLK",
-                      "PWM_and_SS_control_V_0/IPCORE_CLK",
-                      "PWM_and_SS_control_V_1/AXI4_Lite_ACLK",
-                      "PWM_and_SS_control_V_1/IPCORE_CLK",
-                      "PWM_and_SS_control_V_2/AXI4_Lite_ACLK",
-                      "PWM_and_SS_control_V_2/IPCORE_CLK",
-                      "PWM_and_SS_control_V_3/AXI4_Lite_ACLK",
-                      "PWM_and_SS_control_V_3/IPCORE_CLK",
                       "uz_interlockDeadtime_0/AXI4_ACLK",
                       "uz_interlockDeadtime_0/IPCORE_CLK",
                       "uz_interlockDeadtime_1/AXI4_ACLK",
@@ -2531,7 +2547,15 @@
                       "uz_interlockDeadtime_2/IPCORE_CLK",
                       "uz_interlockDeadtime_3/AXI4_ACLK",
                       "uz_interlockDeadtime_3/IPCORE_CLK",
-                      "vio_Gates_2L/clk"
+                      "vio_Gates_2L/clk",
+                      "PWM_and_SS_control_V_3/IPCORE_CLK",
+                      "PWM_and_SS_control_V_2/IPCORE_CLK",
+                      "PWM_and_SS_control_V_3/AXI4_Lite_ACLK",
+                      "PWM_and_SS_control_V_2/AXI4_Lite_ACLK",
+                      "PWM_and_SS_control_V_1/IPCORE_CLK",
+                      "PWM_and_SS_control_V_1/AXI4_Lite_ACLK",
+                      "PWM_and_SS_control_V_0/IPCORE_CLK",
+                      "PWM_and_SS_control_V_0/AXI4_Lite_ACLK"
                     ]
                   }
                 }

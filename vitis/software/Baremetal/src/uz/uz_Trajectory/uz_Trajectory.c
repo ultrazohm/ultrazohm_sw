@@ -32,6 +32,7 @@ typedef struct uz_Trajectory_t {
 	uint32_t Trajectory_Counter;
 	uint32_t Step_Counter;
 	uint32_t Repeats_Counter;
+	float Interploation_Coefficients[4][Max_Trajectory_Samples-1];
 	float Min_Step_Width;
 }uz_Trajectory_t;
 
@@ -41,6 +42,7 @@ static uz_Trajectory_t instances[UZ_TRAJECTORY_MAX_INSTANCES] = { 0 };
 static uz_Trajectory_t* uz_Trajectory_allocation(void);
 
 static uint32_t get_TimeBase(uz_Trajectory_t* self, uint32_t Step);
+static uint32_t get_TimeBase_init(struct uz_Trajectory_config config, uint32_t Step);
 
 static uz_Trajectory_t* uz_Trajectory_allocation(void){
  uz_assert(instance_counter < UZ_TRAJECTORY_MAX_INSTANCES);
@@ -60,6 +62,24 @@ uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){
     self->Step_Counter = 0U;
     self->Repeats_Counter = 0U;
     self->Min_Step_Width = 2*self->config.Stepwidth_ISR;
+
+    float Sum_Timeaxis = 0.0f;
+    if(config.selection_interpolation == Linear){ 	// create interpolation-coefficients for linear interpolation
+    	for(int i = 0; i < (Max_Trajectory_Samples-1);i++){
+    		Sum_Timeaxis = Sum_Timeaxis + get_TimeBase_init(config, config.Sample_Duration_X[i]);
+    		self->Interploation_Coefficients[3][i] = 0.0f;	// not needed
+    		self->Interploation_Coefficients[2][i] = 0.0f;	// not needed
+    		self->Interploation_Coefficients[1][i] = (config.Sample_Amplitdue_Y[i+1] - config.Sample_Amplitdue_Y[i])/(get_TimeBase_init(config, config.Sample_Duration_X[i]));	// represents the slope
+    		self->Interploation_Coefficients[0][i] = config.Sample_Amplitdue_Y[i+1] - self->Interploation_Coefficients[1][i]*Sum_Timeaxis;	// represents the ordinate section
+    	}
+    }else if(config.selection_interpolation == Spline){ 													// create interpolation-coefficients for spline interpolation
+    	for(int i = 0; i < (Max_Trajectory_Samples-1);i++){
+			self->Interploation_Coefficients[3][i] = 0.0f;
+			self->Interploation_Coefficients[2][i] = 0.0f;
+			self->Interploation_Coefficients[1][i] = 0.0f;
+			self->Interploation_Coefficients[0][i] = 0.0f;
+    	}
+    }														// no need for intwerpolation if zero-order-hold is selected
     return(self);
 }
 
@@ -101,12 +121,12 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 					// Choose Interpolation-Style
 					switch(self->config.selection_interpolation){
 					case Zero_Order_Hold:
-						// Calculate Indizies
-						Temp_Trajectory_out = self->config.Sample_Amplitdue_X[self->Step_Counter];
+						// Use Indizies
+						Temp_Trajectory_out = self->config.Sample_Amplitdue_Y[self->Step_Counter];
 						break;
 					case Linear:
-						// TO IMPLEMENT
-						Temp_Trajectory_out = 0.0f;
+						// Calculate linear equation
+						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitdue_Y[self->Step_Counter]);
 						break;
 					case Spline:
 						// TO IMPLEMENT
@@ -142,12 +162,12 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 				// Choose Interpolation-Style
 				switch(self->config.selection_interpolation){
 				case Zero_Order_Hold:
-					// Calculate Indizies
-					Temp_Trajectory_out = self->config.Sample_Amplitdue_X[self->Step_Counter];
+					// Use Indizies
+					Temp_Trajectory_out = self->config.Sample_Amplitdue_Y[self->Step_Counter];
 					break;
 				case Linear:
-					// TO IMPLEMENT
-					Temp_Trajectory_out = 0.0f;
+					// Calculate linear equation
+					Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitdue_Y[self->Step_Counter]);
 					break;
 				case Spline:
 					// TO IMPLEMENT
@@ -178,7 +198,24 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 				Temp_Trajectory_out = 0.0f;
 				break;
 			case HoldLast:
-				Temp_Trajectory_out = self->config.Sample_Amplitdue_X[self->Step_Counter];
+				switch(self->config.selection_interpolation){
+					case Zero_Order_Hold:
+						// Use Indizies
+						Temp_Trajectory_out = self->config.Sample_Amplitdue_Y[self->Step_Counter];
+						break;
+					case Linear:
+						// Calculate linear equation
+						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitdue_Y[self->Step_Counter]);
+						break;
+					case Spline:
+						// TO IMPLEMENT
+						Temp_Trajectory_out = 0.0f;
+						break;
+					default:
+						// Trigger an Assertion- this code should never be reached
+						uz_assert(true);
+						break;
+					}
 				break;
 			default:
 				// Trigger an Assertion- this code should never be reached
@@ -201,23 +238,48 @@ static uint32_t get_TimeBase(uz_Trajectory_t* self, uint32_t Step){
 	switch(self->config.selection_YAxis){
 		case ISR_Ticks:
 			// Simply output the Number of Tickz from the Y-Array
-			Tickz = (uint32_t)self->config.Sample_Duration_Y[Step];
+			Tickz = (uint32_t)self->config.Sample_Duration_X[Step];
 			break;
 		case MicroSeconds:
-			Tickz = (uint32_t)((self->config.Sample_Duration_Y[Step] * 0.000001f ) / self->config.Stepwidth_ISR);
+			Tickz = (uint32_t)((self->config.Sample_Duration_X[Step] * 0.000001f ) / self->config.Stepwidth_ISR);
 			break;
 		case MilliSeconds:
-			Tickz = (uint32_t)((self->config.Sample_Duration_Y[Step] * 0.001f) / self->config.Stepwidth_ISR);
+			Tickz = (uint32_t)((self->config.Sample_Duration_X[Step] * 0.001f) / self->config.Stepwidth_ISR);
 			break;
 		case Seconds:
-			Tickz = (uint32_t)((self->config.Sample_Duration_Y[Step] * 1.0f) / self->config.Stepwidth_ISR);
+			Tickz = (uint32_t)((self->config.Sample_Duration_X[Step] * 1.0f) / self->config.Stepwidth_ISR);
 			break;
 		default:
 			// Trigger an Assertion- this code should never be reached
 			uz_assert(true);
 	}
-	uz_assert(Tickz>2U);
 	return Tickz;
 }
+
+static uint32_t get_TimeBase_init(struct uz_Trajectory_config config, uint32_t Duration){
+	// Default-Tickz set to 1
+	uint32_t Tickz = 1U;
+	switch(config.selection_YAxis){
+		case ISR_Ticks:
+			// Simply output the Number of Tickz from the Y-Array
+			Tickz = (uint32_t)Duration;
+			break;
+		case MicroSeconds:
+			Tickz = (uint32_t)((Duration * 0.000001f ) / config.Stepwidth_ISR);
+			break;
+		case MilliSeconds:
+			Tickz = (uint32_t)((Duration * 0.001f) / config.Stepwidth_ISR);
+			break;
+		case Seconds:
+			Tickz = (uint32_t)((Duration * 1.0f) / config.Stepwidth_ISR);
+			break;
+		default:
+			// Trigger an Assertion- this code should never be reached
+			uz_assert(true);
+	}
+	return Tickz;
+}
+
+
 
 #endif

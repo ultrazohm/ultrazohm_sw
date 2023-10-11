@@ -7,7 +7,7 @@
 /*! enum for readable configuring for type of Interpolationr */
 enum uz_Trajectory_interpolation_selection {
 	Zero_Order_Hold = 0,
-	Linear, 	// need to implement!
+	Linear,
 	Spline 		// need to implement!
 };
 
@@ -41,8 +41,8 @@ struct uz_Trajectory_config {
 	enum uz_Trajectory_Stop_Output_selection StopStyle; /**< Defines the Behavior when Reaching the End or Trajectory is Stopped \n */
 	enum uz_Trajectory_Repeat_selection RepeatStyle; /**< Defines if the Treajecotry should be repeated x times or infinit \n */
     float Number_Sample_Points; /**< Number of Samples of the Signal \n */
-	float Sample_Amplitdue_X[Max_Trajectory_Samples]; /**< X-Axis-Amplitude of the signal \n */
-	float Sample_Duration_Y[Max_Trajectory_Samples]; /**< Y-Axis-Duration of each Sample of the signal \n */
+	float Sample_Amplitdue_Y[Max_Trajectory_Samples]; /**< Y-Axis-Amplitude of the signal \n */
+	float Sample_Duration_X[Max_Trajectory_Samples]; /**< X-Axis-Duration of each Sample of the signal \n */
 	float Repeats; /**< Number of repeats \n */
 	float Stepwidth_ISR; /**< Time of the Stepwidth in with the Trajecotrie is called \n */
 };

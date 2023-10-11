@@ -2,9 +2,12 @@
 #define UZ_TRAJECtory_H
 #include <stdbool.h>
 
+/** @file uz_Trajectory.h */
+
+/** Number of the maximum Samples that can be stored should be as small as possible to save resources */
 #define Max_Trajectory_Samples	20
 
-/*! enum for readable configuring for type of Interpolationr */
+/*! enum for readable configuring for type of Interpolation */
 enum uz_Trajectory_interpolation_selection {
 	Zero_Order_Hold = 0,
 	Linear,
@@ -18,7 +21,7 @@ enum uz_Trajectory_YTicks_selection {
 	MilliSeconds,
 	Seconds
 };
-/*! enum for readable configuring for type of Interpolationr */
+/*! enum for readable configuring for type of Interpolation */
 enum uz_Trajectory_Repeat_selection {
 	Repeat_Times = 0,
 	Repeat_Inf
@@ -47,6 +50,10 @@ struct uz_Trajectory_config {
 	float Stepwidth_ISR; /**< Time of the Stepwidth in with the Trajecotrie is called \n */
 };
 
+/**
+ * @brief Object definition for uz_Trajectory_t
+ *
+ */
 typedef struct uz_Trajectory_t uz_Trajectory_t;
 
 /**

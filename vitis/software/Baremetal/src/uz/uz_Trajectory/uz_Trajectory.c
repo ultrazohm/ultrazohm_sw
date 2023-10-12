@@ -13,7 +13,6 @@
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
-/** @file uz_Trajectory.h */
 
 #include "../uz_Trajectory/uz_Trajectory.h"
 
@@ -28,7 +27,7 @@
 typedef struct uz_Trajectory_t {
 	bool is_ready;
 	struct uz_Trajectory_config config;
-	bool is_runing;
+	bool is_running;
 	bool is_finished;
 	uint32_t Trajectory_Counter;
 	uint32_t Step_Counter;
@@ -58,7 +57,7 @@ uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){
 	uz_Trajectory_t* self = uz_Trajectory_allocation();
 	uz_assert(config.Number_Sample_Points < Max_Trajectory_Samples);
     self->config = config;
-    self->is_runing = false;
+    self->is_running = false;
     self->Trajectory_Counter = 0U;
     self->Step_Counter = 0U;
     self->Repeats_Counter = 0U;
@@ -70,8 +69,8 @@ uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){
     		Sum_Timeaxis = Sum_Timeaxis + get_TimeBase_init(config, config.Sample_Duration_X[i]);
     		self->Interploation_Coefficients[3][i] = 0.0f;	// not needed
     		self->Interploation_Coefficients[2][i] = 0.0f;	// not needed
-    		self->Interploation_Coefficients[1][i] = (config.Sample_Amplitdue_Y[i+1] - config.Sample_Amplitdue_Y[i])/(get_TimeBase_init(config, config.Sample_Duration_X[i]));	// represents the slope
-    		self->Interploation_Coefficients[0][i] = config.Sample_Amplitdue_Y[i+1] - self->Interploation_Coefficients[1][i]*Sum_Timeaxis;	// represents the ordinate section
+    		self->Interploation_Coefficients[1][i] = (config.Sample_Amplitude_Y[i+1] - config.Sample_Amplitude_Y[i])/(get_TimeBase_init(config, config.Sample_Duration_X[i]));	// represents the slope
+    		self->Interploation_Coefficients[0][i] = config.Sample_Amplitude_Y[i+1] - self->Interploation_Coefficients[1][i]*Sum_Timeaxis;	// represents the ordinate section
     	}
     }else if(config.selection_interpolation == Spline){ 													// create interpolation-coefficients for spline interpolation
     	for(int i = 0; i < (Max_Trajectory_Samples-1);i++){
@@ -80,7 +79,7 @@ uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){
 			self->Interploation_Coefficients[1][i] = 0.0f;
 			self->Interploation_Coefficients[0][i] = 0.0f;
     	}
-    }														// no need for intwerpolation if zero-order-hold is selected
+    }														// no need for interpolation if zero-order-hold is selected
     return(self);
 }
 
@@ -88,20 +87,20 @@ void uz_Trajectory_Start(uz_Trajectory_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     if(self->is_finished == false){
-    	self->is_runing = true;
+    	self->is_running = true;
     }
 }
 
 void uz_Trajectory_Stop(uz_Trajectory_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->is_runing = false;
+    self->is_running = false;
 }
 
 void uz_Trajectory_Reset(uz_Trajectory_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->is_runing = false;
+    self->is_running = false;
     self->is_finished = false;
     self->Trajectory_Counter = 0U;
     self->Step_Counter = 0U;
@@ -114,7 +113,7 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
     float Temp_Trajectory_out = 0.0f;
 
     // Check if Trajectory is Running
-	if(self->is_runing == true && self->is_finished == false){
+	if(self->is_running == true && self->is_finished == false){
 
 		if(self->config.RepeatStyle == Repeat_Times){
 			if(self->Repeats_Counter < self->config.Repeats){
@@ -123,11 +122,11 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 					switch(self->config.selection_interpolation){
 					case Zero_Order_Hold:
 						// Use Indizies
-						Temp_Trajectory_out = self->config.Sample_Amplitdue_Y[self->Step_Counter];
+						Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
 						break;
 					case Linear:
 						// Calculate linear equation
-						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitdue_Y[self->Step_Counter]);
+						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
 						break;
 					case Spline:
 						// TO IMPLEMENT
@@ -152,7 +151,7 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 				}
 			}else{
 				//finished running
-				self->is_runing = false;
+				self->is_running = false;
 				self->is_finished = true;
 			}
 
@@ -164,11 +163,11 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 				switch(self->config.selection_interpolation){
 				case Zero_Order_Hold:
 					// Use Indizies
-					Temp_Trajectory_out = self->config.Sample_Amplitdue_Y[self->Step_Counter];
+					Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
 					break;
 				case Linear:
 					// Calculate linear equation
-					Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitdue_Y[self->Step_Counter]);
+					Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
 					break;
 				case Spline:
 					// TO IMPLEMENT
@@ -202,11 +201,11 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 				switch(self->config.selection_interpolation){
 					case Zero_Order_Hold:
 						// Use Indizies
-						Temp_Trajectory_out = self->config.Sample_Amplitdue_Y[self->Step_Counter];
+						Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
 						break;
 					case Linear:
 						// Calculate linear equation
-						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitdue_Y[self->Step_Counter]);
+						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
 						break;
 					case Spline:
 						// TO IMPLEMENT

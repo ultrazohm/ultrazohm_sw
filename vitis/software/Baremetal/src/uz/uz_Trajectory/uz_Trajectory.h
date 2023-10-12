@@ -2,9 +2,10 @@
 #define UZ_TRAJECtory_H
 #include <stdbool.h>
 
-/** @file uz_Trajectory.h */
-
-/** Number of the maximum Samples that can be stored should be as small as possible to save resources */
+/**
+ * @brief Number of the maximum Samples that can be stored. \n Should be as small as possible to save resources.
+ * 
+ */
 #define Max_Trajectory_Samples	20
 
 /*! enum for readable configuring for type of Interpolation */
@@ -42,9 +43,9 @@ struct uz_Trajectory_config {
 	enum uz_Trajectory_interpolation_selection selection_interpolation; /**< Interpolation-Style selection \n */
 	enum uz_Trajectory_YTicks_selection selection_YAxis; /**< Y-Axis-Style selection \n */
 	enum uz_Trajectory_Stop_Output_selection StopStyle; /**< Defines the Behavior when Reaching the End or Trajectory is Stopped \n */
-	enum uz_Trajectory_Repeat_selection RepeatStyle; /**< Defines if the Treajecotry should be repeated x times or infinit \n */
+	enum uz_Trajectory_Repeat_selection RepeatStyle; /**< Defines if the Trajecotry should be repeated x times or infinit \n */
     float Number_Sample_Points; /**< Number of Samples of the Signal \n */
-	float Sample_Amplitdue_Y[Max_Trajectory_Samples]; /**< Y-Axis-Amplitude of the signal \n */
+	float Sample_Amplitude_Y[Max_Trajectory_Samples]; /**< Y-Axis-Amplitude of the signal \n */
 	float Sample_Duration_X[Max_Trajectory_Samples]; /**< X-Axis-Duration of each Sample of the signal \n */
 	float Repeats; /**< Number of repeats \n */
 	float Stepwidth_ISR; /**< Time of the Stepwidth in with the Trajecotrie is called \n */

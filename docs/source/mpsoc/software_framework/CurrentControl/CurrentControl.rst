@@ -90,12 +90,12 @@ Example
       struct uz_PI_Controller_config config_id = {
         .Kp = 10.0f,
         .Ki = 10.0f,
-        .samplingTime_sec = 0.00005f,
+        .samplingTime_sec = 0.00005f
      };
      struct uz_PI_Controller_config config_iq = {
         .Kp = 10.0f,
         .Ki = 10.0f,
-        .samplingTime_sec = 0.00005f,
+        .samplingTime_sec = 0.00005f
      };
      struct uz_CurrentControl_config CC_config = {
         .decoupling_select = linear_decoupling,

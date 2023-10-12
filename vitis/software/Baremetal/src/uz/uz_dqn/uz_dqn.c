@@ -5,6 +5,30 @@
 #include "../uz_HAL.h"
 #include "uz_dqn.h"
 
+struct uz_dqn_t
+{
+    bool is_ready;
+    uz_nn_t *critic;
+    uz_nn_t *critic_target_net;
+    uz_mtwister_t *randinstance;
+    uz_dqn_experience_replay_t *experience_buffer;
+    float discount_factor;
+    float lernrate;
+    uz_matrix_t *observation_k_0;
+    uz_matrix_t *observation_k_1;
+    struct uz_matrix_t observation_k0_matrix;
+    struct uz_matrix_t observation_k1_matrix;
+    adam_optimizer_t *adam;
+    uint32_t minibatch_size;
+    uint32_t target_update_frequency;
+    float target_smooth_factor;
+    enum target_update update_mechanism;
+    float epsilon;
+    float epsilon_min;
+    float epsilon_decay;
+    uint32_t number_of_actions;
+};
+
 static uint32_t instance_counter = 0U;
 static uz_dqn_t instances[UZ_DQN_MAX_INSTANCES] = {0};
 static uz_dqn_t *uz_dqn_allocation(void);
@@ -38,7 +62,6 @@ uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float
     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config, length_of_buffer);
     self->discount_factor = discount_factor;
     self->lernrate = lernrate;
-    self->env = uz_dqn_environment_init(envconf);
     self->adam = uz_adam_init(lernrate / (float)minibatch_size);
     self->minibatch_size = minibatch_size;
     self->target_smooth_factor = target_smooth_factor;
@@ -177,7 +200,7 @@ void uz_dqn_simple_reset(uz_dqn_t *self)
 // }
 
 
-float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t max_steps, bool train)
+float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t max_steps, bool train, uz_dqn_environment_t *env)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(error);
@@ -185,14 +208,14 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t max_steps
     self->epsilon = epsilon_greedy_decay(self->epsilon, self->epsilon_min, self->epsilon_decay);
     for (uint32_t t = 0; t < max_steps; t++)
     {
-        uz_dqn_environment_sample_observation(self->env, self->observation_k_0);
+        uz_dqn_environment_sample_observation(env, self->observation_k_0);
         uint32_t actionind = uz_dqn_determine_action(self);
-        uz_dqn_bitflip_action(self->env, actionind);
+        uz_dqn_bitflip_action(env, actionind);
         // Sample environment k(1)
-        uz_dqn_environment_sample_observation(self->env, self->observation_k_1);
+        uz_dqn_environment_sample_observation(env, self->observation_k_1);
 
-        float stepreward = calculate_reward_bit(self->env);
-        uz_dqn_enviroment_add_to_cumulative_reward(self->env, stepreward);
+        float stepreward = calculate_reward_bit(env);
+        uz_dqn_enviroment_add_to_cumulative_reward(env, stepreward);
         if (train)
         {
             uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->observation_k_0, self->observation_k_1);
@@ -202,7 +225,7 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t max_steps
                 uz_nn_target_update(self->critic, self->critic_target_net, self->update_mechanism, self->target_smooth_factor);
             }
         }
-        if (uz_dqn_environment_is_finished(self->env))
+        if (uz_dqn_environment_is_finished(env))
         {
             return cum_loss;
         }
@@ -642,7 +665,18 @@ void exportFloatArrayToCSV(const char *filename, const float *array, int size)
 
 uint32_t uz_dqn_get_counterisfull(uz_dqn_t *self)
 {
+    uz_assert_not_NULL(self);
     return uz_dqn_buffer_get_counterisfull(self->experience_buffer);
+}
+
+float uz_dqn_get_epsilon(uz_dqn_t *self){
+    uz_assert_not_NULL(self);
+    return self->epsilon;
+}
+
+uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self){
+    uz_assert_not_NULL(self);
+    return self->critic;
 }
 
 #endif

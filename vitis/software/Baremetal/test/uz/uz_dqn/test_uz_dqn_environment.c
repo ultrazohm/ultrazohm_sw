@@ -52,9 +52,9 @@ void test_uz_dqn_environment_reward_calc(void)
 {
 uz_dqn_environment_t *testenv3 = uz_dqn_environment_init(configenv2);
 float reward = calculate_reward_bit(testenv3);
-TEST_ASSERT_EQUAL_FLOAT(0.0f,reward); // arrays sind ungleich
+TEST_ASSERT_EQUAL_FLOAT(1.0f,reward); // arrays sind gleich
 array2[0] = 1;
 reward = calculate_reward_bit(testenv3);
-TEST_ASSERT_EQUAL_FLOAT(-1.0f,reward); // arrays sind ungleich
+TEST_ASSERT_EQUAL_FLOAT(0.0f,reward); // arrays sind ungleich
 }
 #endif // TEST

@@ -26,10 +26,7 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
     self->bitlength = envconf.bitlength;
     self->bitinitial = envconf.bitarray;
     self->bittarget = envconf.targetarray;
-    self->inputfornn = uz_matrix_init(&self->inputfornn_matrix, envconf.inarray, 2 * envconf.bitlength, 1, 2 * envconf.bitlength);
-    self->epsilon_min = envconf.epsilon_min;
-    self->epsilon_start = envconf.epsilon_start;
-    self->epsilon_decay = envconf.epsilon_decay;
+    self->environment_state = uz_matrix_init(&self->inputfornn_matrix, envconf.inarray, 2 * envconf.bitlength, 1, 2 * envconf.bitlength);
     if (envconf.max_steps == 0)
     {
         self->max_steps = self->bitlength;
@@ -53,8 +50,8 @@ void uz_dqn_environment_reset(uz_dqn_environment_t *self, uz_mtwister_t *random_
         // self->inputfornn->data[self->bitlength+i] = 0.0f;
         self->bitinitial[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
         self->bittarget[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
-        self->inputfornn->data[i] = (float)self->bitinitial[i];
-        self->inputfornn->data[self->bitlength + i] = (float)self->bittarget[i];
+        self->environment_state->data[i] = (float)self->bitinitial[i];
+        self->environment_state->data[self->bitlength + i] = (float)self->bittarget[i];
     }
     self->is_ready = true;
     self->cumreward = 0.0f;
@@ -118,12 +115,12 @@ void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action)
     if (self->bitinitial[action] == 1)
     {
         self->bitinitial[action] = 0;
-        self->inputfornn->data[action] = 0.0f;
+        self->environment_state->data[action] = 0.0f;
     }
     else
     {
         self->bitinitial[action] = 1;
-        self->inputfornn->data[action] = 1.0f;
+        self->environment_state->data[action] = 1.0f;
     }
 }
 
@@ -136,4 +133,34 @@ void save_values(float savecritic[], float savetarget[], float critic[], float t
         savetarget[step * size + i] = target[i];
     }
 }
+
+
+
+void uz_dqn_environment_sample_observation(uz_dqn_environment_t *self, uz_matrix_t* sample_destination){
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(sample_destination);
+    uz_matrix_copy(self->environment_state, sample_destination);
+}
+
+bool uz_dqn_environment_is_finished(uz_dqn_environment_t *self){
+    uz_assert_not_NULL(self);
+
+    return (arraysequal(self->bitinitial, self->bittarget, self->bitlength));
+}
+
+void uz_dqn_enviroment_reset_cumulative_reward(uz_dqn_environment_t *self){
+    uz_assert_not_NULL(self);
+    self->cumreward=0.0f;
+}
+
+void uz_dqn_enviroment_add_to_cumulative_reward(uz_dqn_environment_t *self, float added_reward){
+    uz_assert_not_NULL(self);
+    self->cumreward +=added_reward;
+}
+
+float uz_dqn_enviroment_get_cumulative_reward(uz_dqn_environment_t *self){
+    uz_assert_not_NULL(self);
+    return self->cumreward;
+}
+
 #endif

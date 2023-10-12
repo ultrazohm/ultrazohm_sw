@@ -19,228 +19,262 @@ static uz_dqn_t *uz_dqn_allocation(void)
     return (self);
 }
 
-uz_dqn_t *uz_dqn_init(float *vecdata, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t seed_number, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, struct uz_dqn_environment_config envconf, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor)
+float uz_dqn_update(uz_dqn_t *self, float *error);
+uint32_t uz_dqn_determain_action(uz_dqn_t *self);
+
+uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, struct uz_dqn_environment_config envconf, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay)
 {
-    uz_assert_not_NULL(vecdata);
+    uz_assert_not_NULL(observation_data);
     uz_dqn_t *self = uz_dqn_allocation();
-    self->inputvecnn = uz_matrix_init(&self->inputvecnn_matrix, vecdata, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
-    self->randinstance = uz_mtwister_init(seed_number);
+    self->observation_k_0 = uz_matrix_init(&self->observation_k0_matrix, observation_data, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
+    self->observation_k_1 = uz_matrix_init(&self->observation_k1_matrix, observation_k1_data, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
+    self->randinstance = uz_mtwister_init(random_seed);
+
+    // Init critic with random parameters and trainable and copies values to target net
     self->critic = uz_nn_init_with_rand(config_critic, number_of_layer, self->randinstance, true);
     self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
+    uz_nn_copy(self->critic, self->critic_target_net);
+
     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config, length_of_buffer);
     self->discount_factor = discount_factor;
     self->lernrate = lernrate;
     self->env = uz_dqn_environment_init(envconf);
     self->adam = uz_adam_init(lernrate / (float)minibatch_size);
-    self->minibatch_size=minibatch_size;
-    self->target_smooth_factor=target_smooth_factor;
-    self->target_update_frequency=target_update_frequency;
+    self->minibatch_size = minibatch_size;
+    self->target_smooth_factor = target_smooth_factor;
+    self->target_update_frequency = target_update_frequency;
+
+    self->epsilon_decay = epsilon_decay;
+    self->epsilon_min = epsilon_min;
+    self->epsilon = epsilon_start;
+    self->number_of_actions = uz_nn_get_number_of_outputs(self->critic);
     return (self);
 }
 
 void uz_dqn_simple_reset(uz_dqn_t *self)
 {
     uz_assert_not_NULL(self);
-    for (uint32_t i = 0; i < self->critic->number_of_inputs; i++)
+    for (uint32_t i = 0; i < uz_nn_get_number_of_inputs(self->critic); i++)
     {
-        self->inputvecnn->data[i] = uz_mtwister_random_uniform_float(self->randinstance);
+        self->observation_k_0->data[i] = uz_mtwister_random_uniform_float(self->randinstance);
     }
 }
 
-void uz_dqn_sample_simple(uz_dqn_t *self)
-{
-    uz_assert_not_NULL(self);
-    uint32_t action;
-    self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start, self->env->epsilon_min, self->env->epsilon_decay);
-    for (uint32_t i = 0; i < self->env->max_steps; i++)
-    {
-        uz_matrix_copy(self->inputvecnn, self->env->inputfornn);
-        uz_nn_ff(self->critic, self->inputvecnn);
-        uz_matrix_t *outputdqn = uz_nn_get_output_data(self->critic);
-        // randnumber and epsilon comparision
-        if (uz_mtwister_random_uniform_float(self->randinstance) < self->env->epsilon_start)
-        {
-            action = uz_mtwister_random_uniform_uint32(self->randinstance, self->critic->number_of_outputs - 1);
-        }
-        else
-        {
-            action = uz_matrix_get_max_index(outputdqn);
-        }
-        // uz_dqn_simple_action(self->env,actionind);
-        float reward = calculate_reward_simple(action);
-        uz_dqn_push_to_buffer(self->experience_buffer, reward, action, self->env->inputfornn, self->env->inputfornn);
-        self->env->cumreward = reward;
-    }
-}
+// void uz_dqn_sample_simple(uz_dqn_t *self)
+// {
+//     uz_assert_not_NULL(self);
+//     uint32_t action;
+//     self->epsilon = epsilon_greedy_decay(self->epsilon, self->epsilon_min, self->epsilon_decay);
+//     for (uint32_t i = 0; i < self->env->max_steps; i++)
+//     {
+//         uz_matrix_copy(self->observation_k_0, self->env->environment_state);
+//         uz_nn_ff(self->critic, self->observation_k_0);
+//         uz_matrix_t *outputdqn = uz_nn_get_output_data(self->critic);
+//         // randnumber and epsilon comparision
+//         if (uz_mtwister_random_uniform_float(self->randinstance) < self->epsilon)
+//         {
+//             action = uz_mtwister_random_uniform_uint32(self->randinstance, uz_nn_get_number_of_outputs(self->critic) - 1);
+//         }
+//         else
+//         {
+//             action = uz_matrix_get_max_index(outputdqn);
+//         }
+//         // uz_dqn_simple_action(self->env,actionind);
+//         float reward = calculate_reward_simple(action);
+//         uz_dqn_push_to_buffer(self->experience_buffer, reward, action, self->env->environment_state, self->env->environment_state);
+//         self->env->cumreward = reward;
+//     }
+// }
 
-float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self, float *error, uint32_t epoch)
+// float uz_dqn_step_adam_simple_no_array(uz_dqn_t *self, float *error, uint32_t epoch)
+// {
+//     uz_assert_not_NULL(self);
+//     uz_assert_not_NULL(error);
+//     uint32_t actionind;
+//     float qplus1 = 0.0f;
+//     bool terminal = false;
+//     float loss = 0.0f;
+//     float cum_loss = 0.0f;
+//     float dloss = 0.0f;
+//     uz_matrix_t *outputcritic;
+//     uz_matrix_t *outputtarget;
+//     self->epsilon = epsilon_greedy_decay(self->epsilon, self->epsilon_min, self->epsilon_decay);
+//     for (uint32_t i = 0; i < self->env->max_steps; i++)
+//     {
+//         // Determine action to take based on Q-value and epsilon-greedy
+//         uz_matrix_copy(self->observation_k_0, self->env->environment_state);
+//         uz_nn_ff(self->critic, self->observation_k_0);
+//         outputcritic = uz_nn_get_output_data(self->critic);
+//         // randnumber and epsilon comparision
+//         if (uz_mtwister_random_uniform_float(self->randinstance) < self->epsilon)
+//         {
+//             actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, uz_nn_get_number_of_outputs(self->critic) - 1);
+//         }
+//         else
+//         {
+//             actionind = uz_matrix_get_max_index(outputcritic);
+//         }
+
+//         // Take the step
+//         float stepreward = calculate_reward_simple(actionind);
+
+//         // Wait till state=state+1 and push to buffer
+//         uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->observation_k_0, self->env->environment_state);
+//         self->env->cumreward = stepreward;
+
+//         // Training step for one minibatch
+//         for (uint32_t j = 0; j < self->minibatch_size; j++)
+//         {
+//             uint32_t randomindex = 0U;
+//             if (uz_dqn_buffer_get_counterisfull(self->experience_buffer) > 0U)
+//             {
+//                 randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, uz_dqn_buffer_get_length(self->experience_buffer) - 1);
+//             }
+//             else
+//             {
+//                 randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, uz_dqn_buffer_get_head(self->experience_buffer) - 1);
+//             }
+//             uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1, self->env->environment_state, randomindex);
+//             uz_nn_ff(self->critic_target_net, self->env->environment_state);
+//             outputtarget = uz_nn_get_output_data(self->critic_target_net);
+//             qplus1 = uz_matrix_get_max_value(outputtarget);
+//             float rewardtrain = self->experience_buffer->reward[randomindex];
+//             uint32_t actiontrain = self->experience_buffer->action[randomindex];
+//             if (rewardtrain == 0.0f)
+//             {
+//                 terminal = true;
+//             }
+//             else
+//             {
+//                 terminal = false;
+//             }
+//             uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations, self->observation_k_0, randomindex);
+//             uz_nn_ff(self->critic, self->observation_k_0);
+//             outputcritic = uz_nn_get_output_data(self->critic);
+//             float qvaltrain = uz_matrix_get_element_zero_based(outputcritic, 0, actiontrain);
+//             loss = calculate_loss_dqn(self, rewardtrain, qvaltrain, qplus1, terminal);
+//             dloss = calculate_derv_loss_dqn(self, rewardtrain, qvaltrain, qplus1, terminal);
+//             error[actiontrain] = dloss;
+//             cum_loss += loss;
+
+//             uz_nn_backward_pass_mini_batch(self->critic, error, self->observation_k_0);
+//             resetFloatArray(error, uz_nn_get_number_of_outputs(self->critic));
+//         }
+//         cum_loss = cum_loss / (float)self->minibatch_size;
+//         adam_optimizer_step(self->adam, self->critic);
+//         uz_nn_set_gradients_zero(self->critic);
+//     }
+//     if (epoch % self->target_update_frequency == 0)
+//     {
+//         uz_nn_target_update(self->critic, self->critic_target_net, periodic, self->target_smooth_factor);
+//     }
+//     if (arraysequal(self->env->bitinitial, self->env->bittarget, self->env->bitlength) == true)
+//     {
+//         return cum_loss;
+//     }
+//     return cum_loss;
+// }
+
+
+float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t max_steps, bool train)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(error);
-    uint32_t actionind;
-    float qplus1 = 0.0f;
-    bool terminal = false;
-    float loss = 0.0f;
     float cum_loss = 0.0f;
-    float dloss = 0.0f;
-    uz_matrix_t *outputcritic;
-    uz_matrix_t *outputtarget;
-    self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start, self->env->epsilon_min, self->env->epsilon_decay);
-    for (uint32_t i = 0; i < self->env->max_steps; i++)
+    self->epsilon = epsilon_greedy_decay(self->epsilon, self->epsilon_min, self->epsilon_decay);
+    for (uint32_t t = 0; t < max_steps; t++)
     {
-        // Determine action to take based on Q-value and epsilon-greedy
-        uz_matrix_copy(self->inputvecnn, self->env->inputfornn);
-        uz_nn_ff(self->critic, self->inputvecnn);
-        outputcritic = uz_nn_get_output_data(self->critic);
-        // randnumber and epsilon comparision
-        if (uz_mtwister_random_uniform_float(self->randinstance) < self->env->epsilon_start)
-        {
-            actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->critic->number_of_outputs - 1);
-        }
-        else
-        {
-            actionind = uz_matrix_get_max_index(outputcritic);
-        }
-
-        // Take the step
-        float stepreward = calculate_reward_simple(actionind);
-
-        // Wait till state=state+1 and push to buffer
-        uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->inputvecnn, self->env->inputfornn);
-        self->env->cumreward = stepreward;
-
-        // Training step for one minibatch
-        for (uint32_t j = 0; j < self->minibatch_size; j++)
-        {
-            uint32_t randomindex = 0U;
-            if (uz_dqn_buffer_get_counterisfull(self->experience_buffer) > 0U)
-            {
-                randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, uz_dqn_buffer_get_length(self->experience_buffer) - 1);
-            }
-            else
-            {
-                randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, uz_dqn_buffer_get_head(self->experience_buffer) - 1);
-            }
-            uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1, self->env->inputfornn, randomindex);
-            uz_nn_ff(self->critic_target_net, self->env->inputfornn);
-            outputtarget = uz_nn_get_output_data(self->critic_target_net);
-            qplus1 = uz_matrix_get_max_value(outputtarget);
-            float rewardtrain = self->experience_buffer->reward[randomindex];
-            uint32_t actiontrain = self->experience_buffer->action[randomindex];
-            if (rewardtrain == 0.0f)
-            {
-                terminal = true;
-            }
-            else
-            {
-                terminal = false;
-            }
-            uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations, self->inputvecnn, randomindex);
-            uz_nn_ff(self->critic, self->inputvecnn);
-            outputcritic = uz_nn_get_output_data(self->critic);
-            float qvaltrain = uz_matrix_get_element_zero_based(outputcritic, 0, actiontrain);
-            loss = calculate_loss_dqn(self, rewardtrain, qvaltrain, qplus1, terminal);
-            dloss = calculate_derv_loss_dqn(self, rewardtrain, qvaltrain, qplus1, terminal);
-            error[actiontrain] = dloss;
-            cum_loss += loss;
-
-            uz_nn_backward_pass_mini_batch(self->critic, error, self->inputvecnn);
-            resetFloatArray(error, self->critic->number_of_outputs);
-        }
-        cum_loss = cum_loss / (float)self->minibatch_size;
-        adam_optimizer_step(self->adam, self->critic);
-        uz_nn_set_gradients_zero(self->critic);
-    }
-    if (epoch % self->target_update_frequency == 0)
-    {
-        uz_nn_target_update(self->critic, self->critic_target_net, periodic, self->target_smooth_factor);
-    }
-    if (arraysequal(self->env->bitinitial, self->env->bittarget, self->env->bitlength) == true)
-    {
-        return cum_loss;
-    }
-    return cum_loss;
-}
-
-float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t epoch)
-{
-    uz_assert_not_NULL(self);
-    uz_assert_not_NULL(error);
-    uint32_t actionind;
-    uz_matrix_t *outputcritic;
-    uz_matrix_t *outputtarget;
-    float qplus1 = 0.0f;
-    bool terminal = false;
-    float loss = 0.0f;
-    float cum_loss = 0.0f;
-    float dloss = 0.0f;
-    uint32_t randomindex = 0U;
-    self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start, self->env->epsilon_min, self->env->epsilon_decay);
-    for (uint32_t t = 0; t < self->env->max_steps; t++)
-    {
-        uz_matrix_copy(self->env->inputfornn, self->experience_buffer->vectorforobs);
-        uz_nn_ff(self->critic, self->env->inputfornn);
-        outputcritic = uz_nn_get_output_data(self->critic);
-        if (uz_mtwister_random_uniform_float(self->randinstance) < self->env->epsilon_start)
-        {
-            actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->env->bitlength - 1);
-        }
-        else
-        {
-            actionind = uz_matrix_get_max_index(outputcritic);
-        }
+        uz_dqn_environment_sample_observation(self->env, self->observation_k_0);
+        uint32_t actionind = uz_dqn_determain_action(self);
         uz_dqn_bitflip_action(self->env, actionind);
-        float stepreward = calculate_reward_bit(self->env);
-        uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->experience_buffer->vectorforobs, self->env->inputfornn);
-        self->env->cumreward += stepreward;
-        for (uint32_t j = 0; j < self->minibatch_size; j++)
-        {
+        // Sample environment k(1)
+        uz_dqn_environment_sample_observation(self->env, self->observation_k_1);
 
-            if (self->experience_buffer->counterisfull > 0U)
+        float stepreward = calculate_reward_bit(self->env);
+        uz_dqn_enviroment_add_to_cumulative_reward(self->env, stepreward);
+        if (train)
+        {
+            uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->observation_k_0, self->observation_k_1);
+            cum_loss = uz_dqn_update(self, error);
+            if (adam_get_number_of_updates(self->adam) % self->target_update_frequency == 0)
             {
-                randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->experience_buffer->length - 1);
+                uz_nn_target_update(self->critic, self->critic_target_net, periodic, self->target_smooth_factor);
             }
-            else
-            {
-                randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->experience_buffer->head - 1);
-            }
-            uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1, self->experience_buffer->vectorforobs1, randomindex);
-            uz_nn_ff(self->critic_target_net, self->experience_buffer->vectorforobs1);
-            outputtarget = uz_nn_get_output_data(self->critic_target_net);
-            qplus1 = uz_matrix_get_max_value(outputtarget);
-            float rewardtrain = self->experience_buffer->reward[randomindex];
-            uint32_t actiontrain = self->experience_buffer->action[randomindex];
-            if (rewardtrain == 0.0f)
-            {
-                terminal = true;
-            }
-            else
-            {
-                terminal = false;
-            }
-            uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations, self->experience_buffer->vectorforobs, randomindex);
-            uz_nn_ff(self->critic, self->experience_buffer->vectorforobs);
-            outputcritic = uz_nn_get_output_data(self->critic);
-            float qvaltrain = uz_matrix_get_element_zero_based(outputcritic, 0, actiontrain);
-            loss = calculate_loss_dqn(self, rewardtrain, qvaltrain, qplus1, terminal);
-            dloss = calculate_derv_loss_dqn(self, rewardtrain, qvaltrain, qplus1, terminal);
-            error[actiontrain] += dloss;
-            cum_loss += loss;
-            uz_nn_backward_pass_mini_batch(self->critic, error, self->experience_buffer->vectorforobs);
-            resetFloatArray(error, self->critic->number_of_outputs);
         }
-        cum_loss = cum_loss / (float)self->minibatch_size;
-        adam_optimizer_step(self->adam, self->critic);
-        uz_nn_set_gradients_zero(self->critic);
-        if (arraysequal(self->env->bitinitial, self->env->bittarget, self->env->bitlength) == true)
+        if (uz_dqn_environment_is_finished(self->env))
         {
             return cum_loss;
         }
     }
-    if (epoch % self->target_update_frequency == 0)
+
+    return cum_loss;
+}
+
+uint32_t uz_dqn_determain_action(uz_dqn_t *self)
+{
+    uint32_t actionind = 0;
+    uz_nn_ff(self->critic, self->observation_k_0);
+    uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic);
+    if (uz_mtwister_random_uniform_float(self->randinstance) < self->epsilon)
     {
-        uz_nn_target_update(self->critic, self->critic_target_net, smoothing, self->target_smooth_factor);
+        actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->number_of_actions - 1U);
     }
+    else
+    {
+        actionind = uz_matrix_get_max_index(outputcritic);
+    }
+    return actionind;
+}
+
+float uz_dqn_update(uz_dqn_t *self, float *error)
+{
+    uint32_t randomindex = 0U;
+    uz_matrix_t *outputcritic;
+    uz_matrix_t *outputtarget;
+    float qplus1 = 0.0f;
+    bool terminal = false;
+    float loss = 0.0f;
+    float dloss = 0.0f;
+    float cum_loss = 0.0f;
+    for (uint32_t j = 0; j < self->minibatch_size; j++)
+    {
+
+        if (self->experience_buffer->counterisfull > 0U)
+        {
+            randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->experience_buffer->length - 1);
+        }
+        else
+        {
+            randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->experience_buffer->head - 1);
+        }
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1, self->experience_buffer->vectorforobs1, randomindex);
+        uz_nn_ff(self->critic_target_net, self->experience_buffer->vectorforobs1);
+        outputtarget = uz_nn_get_output_data(self->critic_target_net);
+        qplus1 = uz_matrix_get_max_value(outputtarget);
+        float rewardtrain = self->experience_buffer->reward[randomindex];
+        uint32_t actiontrain = self->experience_buffer->action[randomindex];
+        if (rewardtrain == 0.0f)
+        {
+            terminal = true;
+        }
+        else
+        {
+            terminal = false;
+        }
+        uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations, self->experience_buffer->vectorforobs, randomindex);
+        uz_nn_ff(self->critic, self->experience_buffer->vectorforobs);
+        outputcritic = uz_nn_get_output_data(self->critic);
+        float qvaltrain = uz_matrix_get_element_zero_based(outputcritic, 0, actiontrain);
+        loss = calculate_loss_dqn(self, rewardtrain, qvaltrain, qplus1, terminal);
+        dloss = calculate_derv_loss_dqn(self, rewardtrain, qvaltrain, qplus1, terminal);
+        error[actiontrain] += dloss;
+        cum_loss += loss;
+        uz_nn_backward_pass_mini_batch(self->critic, error, self->experience_buffer->vectorforobs);
+        resetFloatArray(error, uz_nn_get_number_of_outputs(self->critic));
+    }
+    cum_loss = cum_loss / (float)self->minibatch_size;
+    adam_optimizer_step(self->adam, self->critic);
+    uz_nn_set_gradients_zero(self->critic);
     return cum_loss;
 }
 
@@ -328,26 +362,6 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t epoch)
 //     return cum_loss;
 // }
 
-void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self)
-{
-    uz_assert_not_NULL(self);
-    uint32_t actionind;
-    for (uint32_t i = 0; i < self->env->max_steps; i++)
-    {
-        uz_nn_ff(self->critic_target_net, self->env->inputfornn);
-        uz_matrix_t *outputaction = uz_nn_get_output_data(self->critic_target_net);
-        actionind = uz_matrix_get_max_index(outputaction);
-        uz_dqn_bitflip_action(self->env, actionind);
-        float reward = calculate_reward_bit(self->env);
-        self->env->cumreward += reward;
-        if (arraysequal(self->env->bitinitial, self->env->bittarget, self->env->bitlength) == true)
-        {
-            // printf("Bitmuster gleich nach %d Schritten.\n",i);
-            return;
-        }
-    }
-}
-
 // float uz_dqn_step_gd(uz_dqn_t *self, float *error, uint32_t mbsize, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact, uint32_t bufferlength, uint32_t *r)
 // {
 //     uz_assert_not_NULL(self);
@@ -432,36 +446,6 @@ void uz_dqn_act_bitenv_no_exploration(uz_dqn_t *self)
 //     }
 //     return cum_loss;
 // }
-
-void uz_dqn_sample_bitenv(uz_dqn_t *self)
-{
-    uz_assert_not_NULL(self);
-    uint32_t actionind;
-    self->env->epsilon_start = calc_epsilon_greedy(self->env->epsilon_start, self->env->epsilon_min, self->env->epsilon_decay);
-    for (uint32_t i = 0; i < self->env->max_steps; i++)
-    {
-        uz_matrix_copy(self->env->inputfornn, self->inputvecnn);
-        uz_nn_ff(self->critic, self->env->inputfornn);
-        uz_matrix_t *outputdqn = uz_nn_get_output_data(self->critic);
-        if (uz_mtwister_random_uniform_float(self->randinstance) < self->env->epsilon_start)
-        {
-            actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->env->bitlength - 1);
-        }
-        else
-        {
-            actionind = uz_matrix_get_max_index(outputdqn);
-        }
-        uz_dqn_bitflip_action(self->env, actionind);
-        float stepreward = calculate_reward_bit(self->env);
-        uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->inputvecnn, self->env->inputfornn);
-        self->env->cumreward += stepreward;
-        if (arraysequal(self->env->bitinitial, self->env->bittarget, self->env->bitlength) == true)
-        {
-            // printf("Bitmuster gleich nach %d Schritten.\n",i);
-            return;
-        }
-    }
-}
 
 // float uz_dqn_train_gd(uz_dqn_t *self, float *error, float *rew, uint32_t *act, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t mbsize, uint32_t TARGET_UPDATE_FREQUENCY, uint32_t epoch, float targsmoothfact)
 // {
@@ -582,12 +566,24 @@ float calculate_reward_pendulum(float samplerate, float theta, float position, f
     return r;
 }
 
-float calc_epsilon_greedy(float epsilon_start, float epsilon_min, float epsilon_decay)
+void uz_dqn_set_epsilon(uz_dqn_t *self, float epsilon, float epsilon_min, float epsilon_decay)
 {
-    uz_assert(epsilon_start < 1.0f);
-    uz_assert(epsilon_decay < 1.0f);
-    uz_assert(epsilon_start > 0.0f);
-    uz_assert(epsilon_decay > 0.0f);
+    uz_assert_not_NULL(self);
+    uz_assert(epsilon <= 1.0f);
+    uz_assert(epsilon_decay <= 1.0f);
+    uz_assert(epsilon >= 0.0f);
+    uz_assert(epsilon_decay >= 0.0f);
+    self->epsilon = epsilon;
+    self->epsilon_min = epsilon_min;
+    self->epsilon_decay = epsilon_decay;
+}
+
+float epsilon_greedy_decay(float epsilon_start, float epsilon_min, float epsilon_decay)
+{
+    uz_assert(epsilon_start <= 1.0f);
+    uz_assert(epsilon_decay <= 1.0f);
+    uz_assert(epsilon_start >= 0.0f);
+    uz_assert(epsilon_decay >= 0.0f);
     uz_assert(epsilon_start >= epsilon_min);
     float epsilon = epsilon_start;
     epsilon = epsilon * (1.0f - epsilon_decay);

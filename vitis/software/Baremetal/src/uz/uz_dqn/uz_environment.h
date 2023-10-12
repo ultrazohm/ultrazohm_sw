@@ -4,7 +4,6 @@
 #include "../uz_matrix/uz_matrix.h"
 #include "../uz_HAL.h"
 #include <stdbool.h>
-#include <stdio.h>
 #include "uz_nn.h"
 #include "../uz_mtwister/uz_mtwister.h"
 
@@ -16,11 +15,8 @@ struct uz_dqn_environment_t
     uint32_t *bitinitial;
     uint32_t *bittarget;
     uint32_t max_steps;
-    uz_matrix_t *inputfornn;
+    uz_matrix_t *environment_state;
     struct uz_matrix_t inputfornn_matrix;
-    float epsilon_start;
-    float epsilon_min;
-    float epsilon_decay;
     float cumreward;
 };
 struct uz_dqn_environment_config
@@ -42,4 +38,11 @@ void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action);
 bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size);
 float calculate_reward_simple(uint32_t actionind);
 void save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size);
+void uz_dqn_environment_sample_observation(uz_dqn_environment_t *self, uz_matrix_t *sample_destination);
+bool uz_dqn_environment_is_finished(uz_dqn_environment_t *self);
+
+void uz_dqn_enviroment_reset_cumulative_reward(uz_dqn_environment_t *self);
+void uz_dqn_enviroment_add_to_cumulative_reward(uz_dqn_environment_t *self, float added_reward);
+float uz_dqn_enviroment_get_cumulative_reward(uz_dqn_environment_t *self);
+
 #endif // UZ_DQN_H

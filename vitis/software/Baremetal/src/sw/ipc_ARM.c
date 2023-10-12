@@ -186,27 +186,83 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-
+		data->av.snd_fld[1] = value;
 			break;
 
 		case (Set_Send_Field_2):
-
+		data->av.snd_fld[2] = value;
 			break;
 
 		case (Set_Send_Field_3):
-
+		data->av.snd_fld[3] = value;
 			break;
 
 		case (Set_Send_Field_4):
-
+		data->av.snd_fld[4] = value;
 			break;
 
 		case (Set_Send_Field_5):
-
+		data->av.snd_fld[5] = value;
 			break;
 
 		case (Set_Send_Field_6):
+		data->av.snd_fld[6] = value;
+			break;
 
+		case (Set_Send_Field_7):
+		data->av.snd_fld[7] = value;
+			break;
+
+		case (Set_Send_Field_8):
+		data->av.snd_fld[8] = value;
+			break;
+
+		case (Set_Send_Field_9):
+		data->av.snd_fld[9] = value;
+			break;
+
+		case (Set_Send_Field_10):
+		data->av.snd_fld[10] = value;
+			break;
+
+		case (Set_Send_Field_11):
+		data->av.snd_fld[11] = value;
+			break;
+
+		case (Set_Send_Field_12):
+		data->av.snd_fld[12] = value;
+			break;
+
+		case (Set_Send_Field_13):
+		data->av.snd_fld[13] = value;
+			break;
+
+		case (Set_Send_Field_14):
+		data->av.snd_fld[14] = value;
+			break;
+
+		case (Set_Send_Field_15):
+		data->av.snd_fld[15] = value;
+			break;
+
+		case (Set_Send_Field_16):
+		data->av.snd_fld[16] = value;
+			break;
+
+		case (Set_Send_Field_17):
+		data->av.snd_fld[17] = value;
+			break;
+
+		case (Set_Send_Field_18):
+		data->av.snd_fld[18] = value;
+			break;
+
+		case (Set_Send_Field_19):
+		data->av.snd_fld[19] = value;
+			break;
+
+		case (Set_Send_Field_20):
+		data->av.snd_fld[20] = value;
 			break;
 
 		case (My_Button_1):

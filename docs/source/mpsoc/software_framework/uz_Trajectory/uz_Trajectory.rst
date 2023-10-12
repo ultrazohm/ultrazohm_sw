@@ -201,3 +201,8 @@ Example
     Global_Data.av.Traj_1 = uz_Trajectory_Step(Global_Data.objects.TraceGen_1);
     ...
   }
+
+Designed by 
+-----------
+
+Robert Zipprich (Universität Kassel / EMA) in 10/2023

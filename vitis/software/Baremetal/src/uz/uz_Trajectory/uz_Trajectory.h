@@ -44,7 +44,7 @@ struct uz_Trajectory_config {
 	enum uz_Trajectory_YTicks_selection selection_YAxis; /**< Y-Axis-Style selection \n */
 	enum uz_Trajectory_Stop_Output_selection StopStyle; /**< Defines the Behavior when Reaching the End or Trajectory is Stopped \n */
 	enum uz_Trajectory_Repeat_selection RepeatStyle; /**< Defines if the Trajecotry should be repeated x times or infinit \n */
-    float Number_Sample_Points; /**< Number of Samples of the Signal \n */
+    float Number_Sample_Points; /**< Number of Samples to use of the Signal. Can be used to represent only the first X values \n */
 	float Sample_Amplitude_Y[Max_Trajectory_Samples]; /**< Y-Axis-Amplitude of the signal \n */
 	float Sample_Duration_X[Max_Trajectory_Samples]; /**< X-Axis-Duration of each Sample of the signal \n */
 	float Repeats; /**< Number of repeats \n */

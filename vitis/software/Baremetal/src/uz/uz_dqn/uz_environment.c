@@ -81,11 +81,11 @@ float calculate_reward_bit(uz_dqn_environment_t *self)
     bool z = arraysequal(self->bitinitial, self->bittarget, self->bitlength);
     if (z == true)
     {
-        r = 0.0f;
+        r = 1.0f;
     }
     else if (z == false)
     {
-        r = -1.0f;
+        r = 0.0f;
     }
     return r;
 }

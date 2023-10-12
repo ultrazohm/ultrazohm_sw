@@ -87,6 +87,7 @@ adam_optimizer_t *uz_adam_init(float learnrate)
     self->traincounter = 0U;
     return (self);
 }
+
 uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config)
 {
     uz_assert_not_NULL(layer_config.weights);

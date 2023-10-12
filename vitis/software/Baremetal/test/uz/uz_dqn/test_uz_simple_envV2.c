@@ -18,7 +18,7 @@
 // buffer
 #define EXPERIENCE_BUFFER_LENGTH 6000U
 #define MINIBATCHSIZE 16U
-#define NUMBER_OF_EPOCHS 2000U
+#define NUMBER_OF_EPOCHS 200000U
 #define TARGET_UPDATE_FREQUENCY 20U
 // nn
 #define NUMBER_OF_INPUTS 4U
@@ -183,9 +183,8 @@ void tearDown(void)
 }
 void test_dqn_simple(void)
 {
-    adam_optimizer_t *adam = uz_adam_init(lernrate / (float)MINIBATCHSIZE);
-    uz_dqn_t *simpledqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, 123U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv);
     float targsmoothfact = 0.05f;
+    uz_dqn_t *simpledqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, 123U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact);
     uz_nn_copy(simpledqn->critic, simpledqn->critic_target_net);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // // prefill buffer
@@ -194,20 +193,20 @@ void test_dqn_simple(void)
     //     uz_dqn_sample_simple(simpledqn);
     // } while ((!simpledqn->experience_buffer->counterisfull) && (simpledqn->experience_buffer->head < (3U * MINIBATCHSIZE)));
     // simpledqn->env->epsilon_start = configenv.epsilon_start;
-    for (uint32_t i = 0U; i < NUMBER_OF_EPOCHS; i++)
+    for (uint32_t epoch = 0U; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
-        loss[i] = uz_dqn_step_adam_simple_no_array(simpledqn, error, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, i, targsmoothfact, adam);
-        cumreward[i] = simpledqn->env->cumreward;
-        if (i == 0U)
+        loss[epoch] = uz_dqn_step_adam_simple_no_array(simpledqn, error, epoch);
+        cumreward[epoch] = simpledqn->env->cumreward;
+        if (epoch == 0U)
         {
-            globalrewardr[i] = simpledqn->env->cumreward;
+            globalrewardr[epoch] = simpledqn->env->cumreward;
         }
         else
         {
-            globalrewardr[i] = 0.99f * globalrewardr[i - 1] + 0.01f * simpledqn->env->cumreward;
+            globalrewardr[epoch] = 0.99f * globalrewardr[epoch - 1] + 0.01f * simpledqn->env->cumreward;
         }
-        epsilonovertime[i] = simpledqn->env->epsilon_start;
-        save_values(Q_Critic, Q_Target, cy_2, ty_2, i, NUMBER_OF_OUTPUTS);
+        epsilonovertime[epoch] = simpledqn->env->epsilon_start;
+        save_values(Q_Critic, Q_Target, cy_2, ty_2, epoch, NUMBER_OF_OUTPUTS);
     }
 
     TEST_ASSERT_FLOAT_WITHIN(0.0001f,3.0f, Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS - 1]);

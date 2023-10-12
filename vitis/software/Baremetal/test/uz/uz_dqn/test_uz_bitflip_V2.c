@@ -200,7 +200,7 @@ void test_dqn_bitflip(void)
 {
     float targsmoothfact = 0.05f;
   
-    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat,X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact,epsilon_start,epsilon_min,epsilon_decay);
+    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat,X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact,epsilon_start,epsilon_min,epsilon_decay, periodic);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
     // prefill buffer
     // do{
@@ -231,7 +231,6 @@ void test_dqn_bitflip(void)
     {
         uz_dqn_environment_reset(testdqn2->env, environment_twister);
           uz_dqn_step_adam_no_array(testdqn2, error, configenv.max_steps,false);
-        //uz_dqn_act_bitenv_no_exploration(testdqn2);
             cumreward_noexpl[i] = uz_dqn_enviroment_get_cumulative_reward(testdqn2->env);
     }
 

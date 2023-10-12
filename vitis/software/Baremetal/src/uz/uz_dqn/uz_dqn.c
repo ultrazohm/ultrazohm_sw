@@ -20,9 +20,9 @@ static uz_dqn_t *uz_dqn_allocation(void)
 }
 
 float uz_dqn_update(uz_dqn_t *self, float *error);
-uint32_t uz_dqn_determain_action(uz_dqn_t *self);
+uint32_t uz_dqn_determine_action(uz_dqn_t *self);
 
-uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, struct uz_dqn_environment_config envconf, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay)
+uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, struct uz_dqn_environment_config envconf, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism)
 {
     uz_assert_not_NULL(observation_data);
     uz_dqn_t *self = uz_dqn_allocation();
@@ -43,8 +43,9 @@ uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float
     self->minibatch_size = minibatch_size;
     self->target_smooth_factor = target_smooth_factor;
     self->target_update_frequency = target_update_frequency;
+    self->update_mechanism = update_mechanism;
 
-    self->epsilon_decay = epsilon_decay;
+                                 self->epsilon_decay = epsilon_decay;
     self->epsilon_min = epsilon_min;
     self->epsilon = epsilon_start;
     self->number_of_actions = uz_nn_get_number_of_outputs(self->critic);
@@ -185,7 +186,7 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t max_steps
     for (uint32_t t = 0; t < max_steps; t++)
     {
         uz_dqn_environment_sample_observation(self->env, self->observation_k_0);
-        uint32_t actionind = uz_dqn_determain_action(self);
+        uint32_t actionind = uz_dqn_determine_action(self);
         uz_dqn_bitflip_action(self->env, actionind);
         // Sample environment k(1)
         uz_dqn_environment_sample_observation(self->env, self->observation_k_1);
@@ -198,7 +199,7 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t max_steps
             cum_loss = uz_dqn_update(self, error);
             if (adam_get_number_of_updates(self->adam) % self->target_update_frequency == 0)
             {
-                uz_nn_target_update(self->critic, self->critic_target_net, periodic, self->target_smooth_factor);
+                uz_nn_target_update(self->critic, self->critic_target_net, self->update_mechanism, self->target_smooth_factor);
             }
         }
         if (uz_dqn_environment_is_finished(self->env))
@@ -210,7 +211,7 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, float *error, uint32_t max_steps
     return cum_loss;
 }
 
-uint32_t uz_dqn_determain_action(uz_dqn_t *self)
+uint32_t uz_dqn_determine_action(uz_dqn_t *self)
 {
     uint32_t actionind = 0;
     uz_nn_ff(self->critic, self->observation_k_0);

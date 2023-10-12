@@ -200,10 +200,10 @@ void test_dqn_bitflip(void)
 {
     float targsmoothfact = 0.05f;
     uz_mtwister_t *environment_twister = uz_mtwister_init(1232U);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
     uz_dqn_environment_t *env=uz_dqn_environment_init(configenv);
-    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat,X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact,epsilon_start,epsilon_min,epsilon_decay, periodic);
-    float error[NUMBER_OF_OUTPUTS] = {0.0f};
+    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat,X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact,epsilon_start,epsilon_min,epsilon_decay, periodic,&error);
     // prefill buffer
     // do{
     // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
@@ -213,7 +213,7 @@ void test_dqn_bitflip(void)
     for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
         uz_dqn_environment_reset(env, environment_twister);
-        loss[epoch] = uz_dqn_step_adam_no_array(testdqn2, error,configenv.max_steps,true,env);
+        loss[epoch] = uz_dqn_step_adam_no_array(testdqn2, configenv.max_steps,true,env);
         cumreward[epoch] = uz_dqn_enviroment_get_cumulative_reward(env);
         if (epoch == 0)
         {
@@ -231,7 +231,7 @@ void test_dqn_bitflip(void)
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
         uz_dqn_environment_reset(env, environment_twister);
-          uz_dqn_step_adam_no_array(testdqn2, error, configenv.max_steps,false,env);
+          uz_dqn_step_adam_no_array(testdqn2, configenv.max_steps,false,env);
             cumreward_noexpl[i] = uz_dqn_enviroment_get_cumulative_reward(env);
     }
 

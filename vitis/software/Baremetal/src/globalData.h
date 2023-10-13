@@ -103,7 +103,6 @@ typedef struct _actualValues_ {
 	float i_q_ref;
 	float i_d_ref_pu;
 	float i_q_ref_pu;
-	float i_q_ref_PI_out_pu;
 	struct uz_resolver_pl_interface_outputs_t pl_interface;
 	float theta_elec_rad_ip;
 	float theta_mech_rad_ip;
@@ -197,7 +196,6 @@ typedef struct{
 	uz_adcLtc2311_t* ADC_A1;
 	uz_adcLtc2311_t* ADC_A2;
 	uz_FOC* foc_current;
-	uz_PI_Controller* MPC_setpoint_PI;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

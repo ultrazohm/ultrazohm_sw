@@ -84,7 +84,7 @@ extern DS_Data Global_Data;
 #define DC_VOLT_OFF_2		452.17f
 #define TORQUE_CONV			20.0f // 20Nm/V
 // software current limit
-#define MAX_PHASE_CURRENT_AMP  20.0f
+#define MAX_PHASE_CURRENT_AMP  12.0f
 #define MAX_DC_VOLT 590.0f
 
 
@@ -341,8 +341,7 @@ void ISR_Control(void *data)
 
 	// write reference values to mpc ip
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
-//    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
-    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
 
@@ -353,8 +352,6 @@ void ISR_Control(void *data)
     	uz_FOC_reset(Global_Data.objects.foc_current);
     	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, false);
 
-    	uz_PI_Controller_reset(Global_Data.objects.MPC_setpoint_PI);
-    	Global_Data.av.i_q_ref_PI_out_pu = Global_Data.av.i_q_ref_pu;
     }
 
     if (current_state==control_state)
@@ -366,7 +363,6 @@ void ISR_Control(void *data)
     	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, true);
     	}
 
-    	Global_Data.av.i_q_ref_PI_out_pu = uz_PI_Controller_sample(Global_Data.objects.MPC_setpoint_PI, Global_Data.av.i_q_ref_pu , Global_Data.av.i_q_ip , false);
 
     	//    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
 

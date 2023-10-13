@@ -207,8 +207,6 @@ int main(void)
             Global_Data.rasv.f_cnt_lambda_u = 1.0f;
             Global_Data.av.pause_time_sec = 1.0f;
 
-            Global_Data.objects.MPC_setpoint_PI = uz_PI_Controller_init(MPC_setpoint_config);
-
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

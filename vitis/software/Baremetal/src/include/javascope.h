@@ -77,6 +77,7 @@ enum JS_OberservableData {
 	JSO_f_cnt,
 	JSO_f_mod_cnt,
 	JSO_lifecheck,
+	JSO_curr_lim_fpga,
 	JSO_ENDMARKER
 };
 
@@ -158,7 +159,7 @@ enum gui_button_mapping {
 	iq_ref,
 	lambda_u,
 	i_max,
-	send_field_5,
+	i_max_fpga,
 	send_field_6,
 	SND_FLD_ENDMARKER
 
@@ -171,7 +172,7 @@ enum gui_button_mapping {
 	A,
 	-,
 	p.u.,
-	-,
+	A,
 	-,
 	SND_LABELS_ENDMARKER
 

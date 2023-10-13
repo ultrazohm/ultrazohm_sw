@@ -131,6 +131,7 @@ struct uz_fixedpoint_definition_t i_setpoint_isr_fp_def = {
 		.fractional_bits = 11
 };
 
+
 bool first_ISR = false;
 
 
@@ -299,6 +300,16 @@ void ISR_Control(void *data)
 			fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
 //		uz_assert(0);
 		ultrazohm_state_machine_set_stop(true);
+	}
+
+	// check fast fpga current limit violation
+	if (uz_axi_read_bool(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x104) == true) {
+		ultrazohm_state_machine_set_stop(true);
+		Global_Data.av.overcurrent_FPGA = true;
+		Global_Data.av.overcurrent_FPGA_fl = 1.0f;
+	} else {
+		Global_Data.av.overcurrent_FPGA = false;
+		Global_Data.av.overcurrent_FPGA_fl = 0.0f;
 	}
 
 	// check DC Bus

@@ -110,6 +110,7 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_f_cnt]				= &data->rasv.f_cnt_lambda_u;
 	js_ch_observable[JSO_f_mod_cnt]			= &f_mod_wait_cnt;
 	js_ch_observable[JSO_lambda_u]			= &data->av.lambda_u;
+	js_ch_observable[JSO_curr_lim_fpga]		= &data->av.overcurrent_FPGA_fl;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

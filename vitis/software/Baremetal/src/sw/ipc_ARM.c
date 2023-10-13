@@ -28,6 +28,7 @@ extern uint32_t js_status_BareToRTOS;
 extern const base_val_t base_val;
 
 extern struct uz_fixedpoint_definition_t i_max_fp_def;
+extern struct uz_fixedpoint_definition_t current_limit_SI;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -211,7 +212,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-
+			data->av.i_max_fpga = value;
+			uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x100, data->av.i_max_fpga, current_limit_SI);
 			break;
 
 		case (Set_Send_Field_6):

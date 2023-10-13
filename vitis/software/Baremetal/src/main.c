@@ -101,13 +101,10 @@ struct uz_fixedpoint_definition_t del_fp = {
 		.fractional_bits = 15
 };
 
-struct uz_PI_Controller_config MPC_setpoint_config = {
-   .type = parallel,
-   .Kp = 0.0f,
-   .Ki = 4.0f,
-   .samplingTime_sec = 0.0001f,
-   .upper_limit = 10.0f,
-   .lower_limit = -10.0f
+struct uz_fixedpoint_definition_t current_limit_SI = {
+		.is_signed = true,
+		.integer_bits = 12,
+		.fractional_bits = 15
 };
 
 extern pre_calc_val_t pre_calc_val;
@@ -188,6 +185,8 @@ int main(void)
             Global_Data.av.theta_mech_offset_rad = 6.1205; //4.420
             Global_Data.av.polepairs = 5.0f;
             Global_Data.objects.foc_current = uz_FOC_init(config);
+            //init fpga current limit
+            Global_Data.av.i_max_fpga = 1.0f;
 
             //init lambda factors sw values for mpc
             Global_Data.av.lambda_d = 1.0f;
@@ -231,6 +230,8 @@ int main(void)
             Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
             Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
 //            reconfig_ADC();
+            // current limit detection ip
+            uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x100, Global_Data.av.i_max_fpga, current_limit_SI);
             // init debug switch ip
             Global_Data.av.debug_ip_off = true; //NO DEBUG BY INIT
             uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x124, Global_Data.av.debug_ip_off);

@@ -143,6 +143,7 @@ typedef struct _actualValues_ {
 	uint32_t ref_idx;
 	bool debug_ip_off;
 	float i_max;
+	float i_max_fpga;
 	float torque;
 	bool f_sw_measure_flag;
 	float f_f_sw_measure_flag;
@@ -152,6 +153,8 @@ typedef struct _actualValues_ {
 	float f_start_trade_off_measurement;
 	float pause_timer_sec;
 	float pause_time_sec;
+	bool overcurrent_FPGA;
+	float overcurrent_FPGA_fl;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

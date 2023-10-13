@@ -84,6 +84,7 @@ float calculate_reward_bit(uz_dqn_environment_t *self)
     {
         r = 0.0f;
     }
+    uz_dqn_enviroment_add_to_cumulative_reward(self, r);
     return r;
 }
 float calculate_reward_simple(uint32_t actionind)

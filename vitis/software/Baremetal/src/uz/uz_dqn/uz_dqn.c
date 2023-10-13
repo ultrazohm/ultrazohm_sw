@@ -197,7 +197,6 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, uint32_t max_steps, bool train, 
 {
     uz_assert_not_NULL(self);
     float cum_loss = 0.0f;
-    self->epsilon = epsilon_greedy_decay(self->epsilon, self->epsilon_min, self->epsilon_decay);
     for (uint32_t t = 0; t < max_steps; t++)
     {
         // sample observation of the environment at k=0
@@ -209,15 +208,10 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, uint32_t max_steps, bool train, 
         // Sample environment at k+1
         uz_dqn_environment_sample_observation(env, self->observation_k_1);
         float stepreward = calculate_reward_bit(env);
-        uz_dqn_enviroment_add_to_cumulative_reward(env, stepreward);
         uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->observation_k_0, self->observation_k_1);
         if (train)
         {
             cum_loss = uz_dqn_update(self);
-            if (adam_get_number_of_updates(self->adam) % self->target_update_frequency == 0)
-            {
-                uz_nn_target_update(self->critic, self->critic_target_net, self->update_mechanism, self->target_smooth_factor);
-            }
         }
         if (uz_dqn_environment_is_finished(env))
         {
@@ -229,6 +223,7 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, uint32_t max_steps, bool train, 
 
 uint32_t uz_dqn_determine_action(uz_dqn_t *self)
 {
+    self->epsilon = epsilon_greedy_decay(self->epsilon, self->epsilon_min, self->epsilon_decay);
     uint32_t actionind = 0;
     uz_nn_ff(self->critic, self->observation_k_0);
     uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic);
@@ -292,6 +287,10 @@ float uz_dqn_update(uz_dqn_t *self)
     cum_loss = cum_loss / (float)self->minibatch_size;
     adam_optimizer_step(self->adam, self->critic);
     uz_nn_set_gradients_zero(self->critic);
+    if (adam_get_number_of_updates(self->adam) % self->target_update_frequency == 0)
+    {
+        uz_nn_target_update(self->critic, self->critic_target_net, self->update_mechanism, self->target_smooth_factor);
+    }
     return cum_loss;
 }
 

@@ -36,7 +36,7 @@ Phase Delay
 UZ_EnDat/UZ_ENDAT/CLK_OUT
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -48,7 +48,7 @@ UZ_EnDat/UZ_ENDAT/CLK_OUT
 UZ_EnDat/UZ_ENDAT/POS
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -60,7 +60,7 @@ UZ_EnDat/UZ_ENDAT/POS
 UZ_EnDat/UZ_ENDAT/1//min
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -72,7 +72,7 @@ UZ_EnDat/UZ_ENDAT/1//min
 UZ_EnDat/UZ_ENDAT/rad//s
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -84,7 +84,7 @@ UZ_EnDat/UZ_ENDAT/rad//s
 UZ_EnDat/UZ_ENDAT/OD1
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -96,7 +96,7 @@ UZ_EnDat/UZ_ENDAT/OD1
 UZ_EnDat/UZ_ENDAT/OD2
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -108,7 +108,7 @@ UZ_EnDat/UZ_ENDAT/OD2
 UZ_EnDat/UZ_ENDAT/statusword
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -120,7 +120,7 @@ UZ_EnDat/UZ_ENDAT/statusword
 UZ_EnDat/UZ_ENDAT/dataout
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -132,7 +132,7 @@ UZ_EnDat/UZ_ENDAT/dataout
 UZ_EnDat/UZ_ENDAT/CRCDEBUG
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -144,7 +144,7 @@ UZ_EnDat/UZ_ENDAT/CRCDEBUG
 UZ_EnDat/UZ_ENDAT/clkwr
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -156,7 +156,7 @@ UZ_EnDat/UZ_ENDAT/clkwr
 UZ_EnDat/UZ_ENDAT/datawr
 </td>
 <td align="left" valign="top" style="border-style: none">
-3
+5
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
@@ -165,28 +165,132 @@ UZ_EnDat/UZ_ENDAT/datawr
 </tr>
 
 </table>
-<br /><br /><br /><br /><a name="Generated Model">
+<br /><br /><br /><br /><a name="Delay Absorption Summary">
 <font size="+1" color="#000066">
 <b class="midprod">
-Generated Model
+Delay Absorption Summary
 </b>
 
 </font>
 
 </a>
-<br /><br /><table width="100%" border="1">
-<tr style="background-color: #eeeeff">
+<br /><br />Design delays may not be fully utilized to absorb delays introduced by optimizations and block implementations because there are blockers that inhibit delay absorption. Consider <a href="matlab:configset.internal.open('UZ_EnDat','PipelineDistributionPriority')">changing the priority to 'Performance'</a> to allow delay absorption across the blockers. Note that this can lead to validation model mismatches during the initialization cycles or whole simulation time if the model has feedback loops.<br /><br /><a href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightDelayAbsorption.m')">
+Highlight delay absorption blockers and design delays excluded from absorption
+</a>
+<br /><a href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\clearhighlighting.m')">
+Clear highlighting
+</a>
+<br /><br /><a name="Delay Absorption Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Delay Absorption Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br />List of delays used for absorption, delays excluded from absorption, and delay absorption blockers. To exclude specific block from being used for absorption, turn off block property 'AllowDelayDistribution'.<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_EnDat:1348')" name="code2model" class="code2model">
+ManualDeserializere
+</a>
+
+</h5>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th align="left" valign="top" style="border-style: none">
+<b>
+Delay Block
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Sample Time
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Latency Absorbed
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Remaining Delays
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Unabsorbed Latency (total/non-absorbable)
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-Generated model after the transformation:
+<a href="matlab:coder.internal.code2model('UZ_EnDat:1975')" name="code2model" class="code2model">
+Delay_absorbed
+</a>
+
 </td>
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_UZ_EnDat')" class="callMATLAB" name="callMATLAB">gm_UZ_EnDat</a>
+1e-08
+</td>
+<td align="left" valign="top" style="border-style: none">
+1
+</td>
+<td align="left" valign="top" style="border-style: none">
+0
+</td>
+<td align="left" valign="top" style="border-style: none">
+0/0
 </td>
 
 </tr>
 
 </table>
-<br />
+<br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('UZ_EnDat:1528')" name="code2model" class="code2model">
+Logical
+Operator
+</a>
+
+</td>
+<td align="left" valign="top" style="border-style: none">
+2 cycles of extra latency cannot be absorbed because of this blocker
+</td>
+
+</tr>
+
+</table>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_EnDat:7')" name="code2model" class="code2model">
+UZ_ENDAT
+</a>
+
+</h5>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('UZ_EnDat:929')" name="code2model" class="code2model">
+Logical
+Operator4
+</a>
+
+</td>
+<td align="left" valign="top" style="border-style: none">
+2 cycles of extra latency cannot be absorbed because of this blocker
+</td>
+
+</tr>
+
+</table>
+<br /><br /><br /><br />
 </body>
 
 </html>

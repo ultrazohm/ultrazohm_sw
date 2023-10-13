@@ -113,3 +113,5 @@ set_property DIFF_TERM_ADV TERM_100 [get_ports {A2_IN[0]}]
 
 
 
+
+

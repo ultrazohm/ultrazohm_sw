@@ -53,7 +53,7 @@ Notes
 </table>
 <br /><br /><b>
 Subsystem: <a href="matlab:coder.internal.code2model('UZ_EnDat:852')" name="code2model" class="code2model">
-SetZero64
+SetZero32
 </a>
 
 </b>
@@ -81,13 +81,13 @@ Notes
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:hilite_system('gm_UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero64/Product');hilite_system('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero64/Product');">Product</a>
+<a href="matlab:hilite_system('gm_UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32/Product');hilite_system('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32/Product');">Product</a>
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
 </td>
 <td align="left" valign="top" style="border-style: none">
-Adaptive pipelining is not supported if the block is in a feedback loop. Number of registers required: 2; Number of registers inserted: 0.
+Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.
 </td>
 
 </tr>
@@ -95,6 +95,141 @@ Adaptive pipelining is not supported if the block is in a feedback loop. Number 
 </table>
 <br /><br /><b>
 Subsystem: <a href="matlab:coder.internal.code2model('UZ_EnDat:1473')" name="code2model" class="code2model">
+SetZero32
+</a>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th align="left" valign="top" style="border-style: none">
+<b>
+Block Name
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Number of pipelines inserted
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Notes
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:hilite_system('gm_UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero32/Product');hilite_system('UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero32/Product');">Product</a>
+</td>
+<td align="left" valign="top" style="border-style: none">
+0
+</td>
+<td align="left" valign="top" style="border-style: none">
+Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero32/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Subsystems: <a href="matlab:coder.internal.code2model('UZ_EnDat:1501')" name="code2model" class="code2model">
+ramwatcher
+</a>
+ &nbsp <a href="matlab:coder.internal.code2model('UZ_EnDat:2720')" name="code2model" class="code2model">
+ramwatcher
+</a>
+ &nbsp <a href="matlab:coder.internal.code2model('UZ_EnDat:2603')" name="code2model" class="code2model">
+ramwatcher
+</a>
+
+</b>
+<br />These reusable atomic subsystems are identical and the following section applies to all identical instances. Only one of the atomic subsystems, <a href="matlab:coder.internal.code2model('UZ_EnDat:1501')" name="code2model" class="code2model">
+ramwatcher
+</a>
+, will be highlighted.<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th align="left" valign="top" style="border-style: none">
+<b>
+Block Name
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Number of pipelines inserted
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Notes
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:hilite_system('gm_UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher/Product');hilite_system('UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher/Product');">Product</a>
+</td>
+<td align="left" valign="top" style="border-style: none">
+0
+</td>
+<td align="left" valign="top" style="border-style: none">
+Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Subsystem: <a href="matlab:coder.internal.code2model('UZ_EnDat:2196')" name="code2model" class="code2model">
+SetZero32
+</a>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th align="left" valign="top" style="border-style: none">
+<b>
+Block Name
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Number of pipelines inserted
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Notes
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:hilite_system('gm_UZ_EnDat/UZ_ENDAT/ManualSerialize/CLKCNTER_RECIEVE/SetZero32/Product');hilite_system('UZ_EnDat/UZ_ENDAT/ManualSerialize/CLKCNTER_RECIEVE/SetZero32/Product');">Product</a>
+</td>
+<td align="left" valign="top" style="border-style: none">
+0
+</td>
+<td align="left" valign="top" style="border-style: none">
+Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/ManualSerialize/CLKCNTER_RECIEVE/SetZero32/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Subsystem: <a href="matlab:coder.internal.code2model('UZ_EnDat:2175')" name="code2model" class="code2model">
 SetZero64
 </a>
 
@@ -123,13 +258,13 @@ Notes
 </tr>
 <tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:hilite_system('gm_UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero64/Product');hilite_system('UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero64/Product');">Product</a>
+<a href="matlab:hilite_system('gm_UZ_EnDat/UZ_ENDAT/ManualSerialize/SetZero64/Product');hilite_system('UZ_EnDat/UZ_ENDAT/ManualSerialize/SetZero64/Product');">Product</a>
 </td>
 <td align="left" valign="top" style="border-style: none">
 0
 </td>
 <td align="left" valign="top" style="border-style: none">
-Adaptive pipelining is not supported if the block is in a feedback loop. Number of registers required: 2; Number of registers inserted: 0.
+Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/ManualSerialize/SetZero64/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.
 </td>
 
 </tr>
@@ -177,6 +312,48 @@ Notes
 </tr>
 
 </table>
+<br /><br /><b>
+Subsystem: <a href="matlab:coder.internal.code2model('UZ_EnDat:2503')" name="code2model" class="code2model">
+SetZero64
+</a>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th align="left" valign="top" style="border-style: none">
+<b>
+Block Name
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Number of pipelines inserted
+</b>
+
+</th>
+<th align="left" valign="top" style="border-style: none">
+<b>
+Notes
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+<a href="matlab:hilite_system('gm_UZ_EnDat/UZ_ENDAT/Subsystem/CLKCNTERBOOTUP/SetZero64/Product');hilite_system('UZ_EnDat/UZ_ENDAT/Subsystem/CLKCNTERBOOTUP/SetZero64/Product');">Product</a>
+</td>
+<td align="left" valign="top" style="border-style: none">
+0
+</td>
+<td align="left" valign="top" style="border-style: none">
+Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/Subsystem/CLKCNTERBOOTUP/SetZero64/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.
+</td>
+
+</tr>
+
+</table>
 <br /><br /><br /><a name="Generated Model">
 <font size="+1" color="#000066">
 <b class="midprod">
@@ -189,10 +366,10 @@ Generated Model
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-Generated model after the transformation:
+Generated model after the transformation
 </td>
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_UZ_EnDat')" class="callMATLAB" name="callMATLAB">gm_UZ_EnDat</a>
+<a href="matlab:open_system('C:\Users\ELSYS_PC\Documents\repos\thesis\sose23_votintsev_wilfling_effizienzmessung_pmsm\Matlab\MATLAB\C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\gm_UZ_EnDat')" class="callMATLAB" name="callMATLAB">gm_UZ_EnDat</a>
 </td>
 
 </tr>

@@ -1,0 +1,18 @@
+open_system('UZ_EnDat');
+open_system('gm_UZ_EnDat');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_UZ_EnDat/UZ_ENDAT/Logical Operator4', 'user1');
+annotate_port('gm_UZ_EnDat/UZ_ENDAT/Logical Operator4', 0, 1, 'Blocks delay absorption: 2 cycles');
+hilite_system('UZ_EnDat/UZ_ENDAT/Logical Operator4', 'user1');
+annotate_port('UZ_EnDat/UZ_ENDAT/Logical Operator4', 0, 1, 'Blocks delay absorption: 2 cycles');
+cs.HiliteType = 'user1';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'cyan';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_UZ_EnDat/UZ_ENDAT/ManualDeserializere/Logical Operator', 'user1');
+annotate_port('gm_UZ_EnDat/UZ_ENDAT/ManualDeserializere/Logical Operator', 0, 1, 'Blocks delay absorption: 2 cycles');
+hilite_system('UZ_EnDat/UZ_ENDAT/ManualDeserializere/Logical Operator', 'user1');
+annotate_port('UZ_EnDat/UZ_ENDAT/ManualDeserializere/Logical Operator', 0, 1, 'Blocks delay absorption: 2 cycles');

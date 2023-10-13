@@ -1,11 +1,11 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x1ED11FFECC1D8798",
+      "boundary_crc": "0xA8690481CF93F9C1",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
-      "synth_flow_mode": "Hierarchical",
+      "synth_flow_mode": "None",
       "tool_version": "2022.2",
       "validated": "true"
     },
@@ -312,20 +312,23 @@
       "Dig_8_Ch5": {
         "direction": "I"
       },
-      "Dig_21_Ch4": {
-        "direction": "O"
-      },
-      "Dig_17_Ch4": {
-        "direction": "I"
-      },
       "Dig_22_Ch4": {
         "direction": "O"
       },
       "Dig_18_Ch4": {
+        "direction": "I"
+      },
+      "Dig_23_Ch4": {
+        "direction": "O"
+      },
+      "Dig_20_Ch4": {
         "direction": "O"
       },
       "Dig_19_Ch4": {
         "direction": "O"
+      },
+      "Dig_21_Ch4": {
+        "direction": "I"
       }
     },
     "components": {
@@ -5523,19 +5526,19 @@
           "CLK_1": {
             "direction": "I"
           },
-          "Dig_17_Ch4": {
+          "Dig_18_Ch4": {
             "direction": "I"
           },
-          "Dig_21_Ch4": {
-            "direction": "O"
-          },
-          "Dig_18_Ch4": {
+          "Dig_22_Ch4": {
             "direction": "O"
           },
           "Dig_19_Ch4": {
             "direction": "O"
           },
-          "Dig_22_Ch4": {
+          "Dig_23_Ch4": {
+            "direction": "O"
+          },
+          "Dig_20_Ch4": {
             "direction": "O"
           }
         },
@@ -5604,7 +5607,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:0.7",
+            "vlnv": "xilinx.com:ip:uz_EnDat:1.0",
             "xci_name": "zusys_uz_EnDat_0_1",
             "xci_path": "ip\\zusys_uz_EnDat_0_1\\zusys_uz_EnDat_0_1.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5631,9 +5634,9 @@
               "uz_EnDat_0/CLK_1"
             ]
           },
-          "Dig_17_Ch4_1": {
+          "Dig_18_Ch4": {
             "ports": [
-              "Dig_17_Ch4",
+              "Dig_18_Ch4",
               "uz_EnDat_0/datain"
             ],
             "hdl_attributes": {
@@ -5653,26 +5656,6 @@
               "uz_EnDat_0/AXI4_Lite_ACLK"
             ]
           },
-          "dataout": {
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
-          },
-          "dataout_1": {
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
-          },
           "proc_sys_reset_1_peripheral_aresetn": {
             "ports": [
               "aresetn",
@@ -5684,10 +5667,13 @@
           "uz_EnDat_0_CLK_OUT": {
             "ports": [
               "uz_EnDat_0/CLK_OUT",
-              "Dig_21_Ch4"
+              "Dig_22_Ch4"
             ],
             "hdl_attributes": {
               "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
                 "value": "true"
               }
             }
@@ -5695,10 +5681,13 @@
           "uz_EnDat_0_clkwr": {
             "ports": [
               "uz_EnDat_0/clkwr",
-              "Dig_22_Ch4"
+              "Dig_23_Ch4"
             ],
             "hdl_attributes": {
               "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
                 "value": "true"
               }
             }
@@ -5706,10 +5695,13 @@
           "uz_EnDat_0_dataout": {
             "ports": [
               "uz_EnDat_0/dataout",
-              "Dig_18_Ch4"
+              "Dig_19_Ch4"
             ],
             "hdl_attributes": {
               "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
                 "value": "true"
               }
             }
@@ -5717,10 +5709,13 @@
           "uz_EnDat_0_datawr": {
             "ports": [
               "uz_EnDat_0/datawr",
-              "Dig_19_Ch4"
+              "Dig_20_Ch4"
             ],
             "hdl_attributes": {
               "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
                 "value": "true"
               }
             }
@@ -8972,10 +8967,10 @@
           "uz_digital_adapter/Dig_13_Ch5"
         ]
       },
-      "Dig_17_Ch4_1": {
+      "Dig_18_Ch4": {
         "ports": [
-          "Dig_17_Ch4",
-          "uz_user/Dig_17_Ch4"
+          "Dig_18_Ch4",
+          "uz_user/Dig_18_Ch4"
         ],
         "hdl_attributes": {
           "DEBUG": {
@@ -9101,20 +9096,6 @@
           "zynq_ultra_ps_e_0/pl_ps_irq1"
         ]
       },
-      "uz_user_Dig_18_Ch4": {
-        "ports": [
-          "uz_user/Dig_18_Ch4",
-          "Dig_18_Ch4"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          },
-          "MARK_DEBUG": {
-            "value": "true"
-          }
-        }
-      },
       "uz_user_Dig_19_Ch4": {
         "ports": [
           "uz_user/Dig_19_Ch4",
@@ -9123,22 +9104,16 @@
         "hdl_attributes": {
           "DEBUG": {
             "value": "true"
-          },
-          "MARK_DEBUG": {
-            "value": "true"
           }
         }
       },
-      "uz_user_Dig_21_Ch4": {
+      "uz_user_Dig_20_Ch4": {
         "ports": [
-          "uz_user/Dig_21_Ch4",
-          "Dig_21_Ch4"
+          "uz_user/Dig_20_Ch4",
+          "Dig_20_Ch4"
         ],
         "hdl_attributes": {
           "DEBUG": {
-            "value": "true"
-          },
-          "MARK_DEBUG": {
             "value": "true"
           }
         }
@@ -9151,8 +9126,16 @@
         "hdl_attributes": {
           "DEBUG": {
             "value": "true"
-          },
-          "MARK_DEBUG": {
+          }
+        }
+      },
+      "uz_user_Dig_23_Ch4": {
+        "ports": [
+          "uz_user/Dig_23_Ch4",
+          "Dig_23_Ch4"
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
             "value": "true"
           }
         }

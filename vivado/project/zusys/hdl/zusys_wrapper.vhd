@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Fri Sep  1 18:14:56 2023
+--Date        : Sun Oct  8 20:05:47 2023
 --Host        : LAPTOP-QM3EKBPJ running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -48,17 +48,18 @@ entity zusys_wrapper is
     Dig_14_Ch5 : in STD_LOGIC;
     Dig_15_Ch5 : in STD_LOGIC;
     Dig_16_Ch5 : in STD_LOGIC;
-    Dig_17_Ch4 : in STD_LOGIC;
     Dig_17_Ch5 : in STD_LOGIC;
-    Dig_18_Ch4 : out STD_LOGIC;
+    Dig_18_Ch4 : in STD_LOGIC;
     Dig_18_Ch5 : in STD_LOGIC;
     Dig_19_Ch4 : out STD_LOGIC;
     Dig_19_Ch5 : in STD_LOGIC;
+    Dig_20_Ch4 : out STD_LOGIC;
     Dig_20_Ch5 : in STD_LOGIC;
-    Dig_21_Ch4 : out STD_LOGIC;
+    Dig_21_Ch4 : in STD_LOGIC;
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch4 : out STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
+    Dig_23_Ch4 : out STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
     Dig_8_Ch5 : in STD_LOGIC
   );
@@ -110,11 +111,12 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
     Dig_8_Ch5 : in STD_LOGIC;
-    Dig_21_Ch4 : out STD_LOGIC;
-    Dig_17_Ch4 : in STD_LOGIC;
     Dig_22_Ch4 : out STD_LOGIC;
-    Dig_18_Ch4 : out STD_LOGIC;
-    Dig_19_Ch4 : out STD_LOGIC
+    Dig_18_Ch4 : in STD_LOGIC;
+    Dig_23_Ch4 : out STD_LOGIC;
+    Dig_20_Ch4 : out STD_LOGIC;
+    Dig_19_Ch4 : out STD_LOGIC;
+    Dig_21_Ch4 : in STD_LOGIC
   );
   end component zusys;
 begin
@@ -155,17 +157,18 @@ zusys_i: component zusys
       Dig_14_Ch5 => Dig_14_Ch5,
       Dig_15_Ch5 => Dig_15_Ch5,
       Dig_16_Ch5 => Dig_16_Ch5,
-      Dig_17_Ch4 => Dig_17_Ch4,
       Dig_17_Ch5 => Dig_17_Ch5,
       Dig_18_Ch4 => Dig_18_Ch4,
       Dig_18_Ch5 => Dig_18_Ch5,
       Dig_19_Ch4 => Dig_19_Ch4,
       Dig_19_Ch5 => Dig_19_Ch5,
+      Dig_20_Ch4 => Dig_20_Ch4,
       Dig_20_Ch5 => Dig_20_Ch5,
       Dig_21_Ch4 => Dig_21_Ch4,
       Dig_21_Ch5 => Dig_21_Ch5,
       Dig_22_Ch4 => Dig_22_Ch4,
       Dig_22_Ch5 => Dig_22_Ch5,
+      Dig_23_Ch4 => Dig_23_Ch4,
       Dig_23_Ch5 => Dig_23_Ch5,
       Dig_8_Ch5 => Dig_8_Ch5
     );

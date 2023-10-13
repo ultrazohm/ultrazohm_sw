@@ -6,6 +6,18 @@
 
 #include "uz_environment.h"
 
+struct uz_dqn_environment_t
+{
+    bool is_ready;
+    uint32_t length_of_bitmask;
+    uint32_t *current_bitmask;
+    uint32_t *target_bitmask;
+    uint32_t max_steps;
+    uz_matrix_t *environment_state;
+    struct uz_matrix_t inputfornn_matrix;
+    float cumulative_reward;
+};
+
 static uint32_t instance_counterenv = 0U;
 static uz_dqn_environment_t instancesenv[UZ_DQN_ENV_MAX_INSTANCES] = {0};
 static uz_dqn_environment_t *uz_dqn_environment_allocation(void);
@@ -23,13 +35,13 @@ static uz_dqn_environment_t *uz_dqn_environment_allocation(void)
 uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf)
 {
     uz_dqn_environment_t *self = uz_dqn_environment_allocation();
-    self->bitlength = envconf.bitlength;
-    self->bitinitial = envconf.bitarray;
-    self->bittarget = envconf.targetarray;
+    self->length_of_bitmask = envconf.bitlength;
+    self->current_bitmask = envconf.bitarray;
+    self->target_bitmask = envconf.targetarray;
     self->environment_state = uz_matrix_init(&self->inputfornn_matrix, envconf.inarray, 2 * envconf.bitlength, 1, 2 * envconf.bitlength);
     if (envconf.max_steps == 0)
     {
-        self->max_steps = self->bitlength;
+        self->max_steps = self->length_of_bitmask;
     }
     else
     {
@@ -42,19 +54,15 @@ void uz_dqn_environment_reset(uz_dqn_environment_t *self, uz_mtwister_t *random_
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(random_generator);
-    for (uint32_t i = 0; i < self->bitlength; i++)
+    for (uint32_t i = 0; i < self->length_of_bitmask; i++)
     {
-        // self->bitinitial[i] = 1U;
-        // self->bittarget[i] = 0U;
-        // self->inputfornn->data[i] = 1.0f;
-        // self->inputfornn->data[self->bitlength+i] = 0.0f;
-        self->bitinitial[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
-        self->bittarget[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
-        self->environment_state->data[i] = (float)self->bitinitial[i];
-        self->environment_state->data[self->bitlength + i] = (float)self->bittarget[i];
+        self->current_bitmask[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
+        self->target_bitmask[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
+        self->environment_state->data[i] = (float)self->current_bitmask[i];
+        self->environment_state->data[self->length_of_bitmask + i] = (float)self->target_bitmask[i];
     }
     self->is_ready = true;
-    self->cumreward = 0.0f;
+    self->cumulative_reward = 0.0f;
 }
 
 bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size)
@@ -71,11 +79,11 @@ bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size)
     return true; // Arrays are equal
 }
 
-float calculate_reward_bit(uz_dqn_environment_t *self)
+float uz_dqn_environment_get_reward(uz_dqn_environment_t *self)
 {
     uz_assert_not_NULL(self);
     float r;
-    bool z = arraysequal(self->bitinitial, self->bittarget, self->bitlength);
+    bool z = arraysequal(self->current_bitmask, self->target_bitmask, self->length_of_bitmask);
     if (z == true)
     {
         r = 1.0f;
@@ -87,6 +95,7 @@ float calculate_reward_bit(uz_dqn_environment_t *self)
     uz_dqn_enviroment_add_to_cumulative_reward(self, r);
     return r;
 }
+
 float calculate_reward_simple(uint32_t actionind)
 {
     float r;
@@ -109,18 +118,18 @@ float calculate_reward_simple(uint32_t actionind)
     return r;
 }
 
-void uz_dqn_bitflip_action(uz_dqn_environment_t *self, uint32_t action)
+void uz_dqn_environment_step(uz_dqn_environment_t *self, uint32_t action)
 {
     uz_assert_not_NULL(self);
     // flip bit
-    if (self->bitinitial[action] == 1)
+    if (self->current_bitmask[action] == 1)
     {
-        self->bitinitial[action] = 0;
+        self->current_bitmask[action] = 0;
         self->environment_state->data[action] = 0.0f;
     }
     else
     {
-        self->bitinitial[action] = 1;
+        self->current_bitmask[action] = 1;
         self->environment_state->data[action] = 1.0f;
     }
 }
@@ -136,32 +145,35 @@ void save_values(float savecritic[], float savetarget[], float critic[], float t
 }
 
 
-
-void uz_dqn_environment_sample_observation(uz_dqn_environment_t *self, uz_matrix_t* sample_destination){
+bool uz_dqn_environment_is_finished(uz_dqn_environment_t *self)
+{
     uz_assert_not_NULL(self);
-    uz_assert_not_NULL(sample_destination);
-    uz_matrix_copy(self->environment_state, sample_destination);
+
+    return (arraysequal(self->current_bitmask, self->target_bitmask, self->length_of_bitmask));
 }
 
-bool uz_dqn_environment_is_finished(uz_dqn_environment_t *self){
+void uz_dqn_enviroment_reset_cumulative_reward(uz_dqn_environment_t *self)
+{
     uz_assert_not_NULL(self);
-
-    return (arraysequal(self->bitinitial, self->bittarget, self->bitlength));
+    self->cumulative_reward = 0.0f;
 }
 
-void uz_dqn_enviroment_reset_cumulative_reward(uz_dqn_environment_t *self){
+void uz_dqn_enviroment_add_to_cumulative_reward(uz_dqn_environment_t *self, float added_reward)
+{
     uz_assert_not_NULL(self);
-    self->cumreward=0.0f;
+    self->cumulative_reward += added_reward;
 }
 
-void uz_dqn_enviroment_add_to_cumulative_reward(uz_dqn_environment_t *self, float added_reward){
+float uz_dqn_enviroment_get_cumulative_reward(uz_dqn_environment_t *self)
+{
     uz_assert_not_NULL(self);
-    self->cumreward +=added_reward;
+    return self->cumulative_reward;
 }
 
-float uz_dqn_enviroment_get_cumulative_reward(uz_dqn_environment_t *self){
+uz_matrix_t *uz_dqn_environment_get_state(uz_dqn_environment_t *self)
+{
     uz_assert_not_NULL(self);
-    return self->cumreward;
+    return self->environment_state;
 }
 
 #endif

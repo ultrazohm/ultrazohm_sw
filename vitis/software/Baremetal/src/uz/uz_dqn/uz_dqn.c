@@ -47,7 +47,7 @@ static uz_dqn_t *uz_dqn_allocation(void)
 float uz_dqn_update(uz_dqn_t *self);
 uint32_t uz_dqn_determine_action(uz_dqn_t *self);
 
-uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism,float *error)
+uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism, float *error)
 {
     uz_assert_not_NULL(observation_data);
     uz_dqn_t *self = uz_dqn_allocation();
@@ -69,8 +69,8 @@ uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float
     self->target_update_frequency = target_update_frequency;
     self->update_mechanism = update_mechanism;
 
-    self->error=error;
-                                 self->epsilon_decay = epsilon_decay;
+    self->error = error;
+    self->epsilon_decay = epsilon_decay;
     self->epsilon_min = epsilon_min;
     self->epsilon = epsilon_start;
     self->number_of_actions = uz_nn_get_number_of_outputs(self->critic);
@@ -192,23 +192,25 @@ uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float
 //     return cum_loss;
 // }
 
-
-float uz_dqn_step_adam_no_array(uz_dqn_t *self, uint32_t max_steps, bool train, uz_dqn_environment_t *env)
+float uz_dqn_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_dqn_environment_t *env)
 {
     uz_assert_not_NULL(self);
     float cum_loss = 0.0f;
     for (uint32_t t = 0; t < max_steps; t++)
     {
         // sample observation of the environment at k=0
-        uz_dqn_environment_sample_observation(env, self->observation_k_0);
+        uz_matrix_t *env_state = uz_dqn_environment_get_state(env);
+        uz_dqn_sample_observation_k_0(self, env_state);
+        //  uz_dqn_environment_sample_observation(env, self->observation_k_0);
         // determine the action based on Q(s,a) with epsilon greedy exploration
-        uint32_t actionind = uz_dqn_determine_action(self);
+        uint32_t action = uz_dqn_determine_action(self);
         // take the action, environment is now in k+1
-        uz_dqn_bitflip_action(env, actionind);
+        uz_dqn_environment_step(env, action);
+        env_state = uz_dqn_environment_get_state(env);
         // Sample environment at k+1
-        uz_dqn_environment_sample_observation(env, self->observation_k_1);
-        float stepreward = calculate_reward_bit(env);
-        uz_dqn_push_to_buffer(self->experience_buffer, stepreward, actionind, self->observation_k_0, self->observation_k_1);
+        uz_dqn_sample_observation_k_1(self, env_state);
+        float reward = uz_dqn_environment_get_reward(env);
+        uz_dqn_push_to_buffer(self->experience_buffer, reward, action, self->observation_k_0, self->observation_k_1);
         if (train)
         {
             cum_loss = uz_dqn_update(self);
@@ -219,6 +221,20 @@ float uz_dqn_step_adam_no_array(uz_dqn_t *self, uint32_t max_steps, bool train, 
         }
     }
     return cum_loss;
+}
+
+void uz_dqn_sample_observation_k_0(uz_dqn_t *self, uz_matrix_t *observation_k_0)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(observation_k_0);
+    uz_matrix_copy(observation_k_0, self->observation_k_0);
+}
+
+void uz_dqn_sample_observation_k_1(uz_dqn_t *self, uz_matrix_t *observation_k_1)
+{
+    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(observation_k_1);
+    uz_matrix_copy(observation_k_1, self->observation_k_1);
 }
 
 uint32_t uz_dqn_determine_action(uz_dqn_t *self)
@@ -661,12 +677,14 @@ uint32_t uz_dqn_get_counterisfull(uz_dqn_t *self)
     return uz_dqn_buffer_get_counterisfull(self->experience_buffer);
 }
 
-float uz_dqn_get_epsilon(uz_dqn_t *self){
+float uz_dqn_get_epsilon(uz_dqn_t *self)
+{
     uz_assert_not_NULL(self);
     return self->epsilon;
 }
 
-uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self){
+uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self)
+{
     uz_assert_not_NULL(self);
     return self->critic;
 }

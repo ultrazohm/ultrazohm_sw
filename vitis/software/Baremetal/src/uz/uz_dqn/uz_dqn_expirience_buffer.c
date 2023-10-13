@@ -71,7 +71,7 @@ void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t *self, float *r
     }
 }
 
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t *self, float rewarddata, uint32_t actionindex, uz_matrix_t *obsdata, uz_matrix_t *obsdata1)
+void uz_dqn_buffer_push_data(uz_dqn_experience_replay_t *self, float rewarddata, uint32_t actionindex, uz_matrix_t *obsdata, uz_matrix_t *obsdata1)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(obsdata);

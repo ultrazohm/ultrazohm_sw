@@ -6,7 +6,7 @@
 
 #include "uz_environment.h"
 
-struct uz_dqn_environment_t
+struct uz_environment_bitflip_t
 {
     bool is_ready;
     uint32_t length_of_bitmask;
@@ -19,22 +19,22 @@ struct uz_dqn_environment_t
 };
 
 static uint32_t instance_counterenv = 0U;
-static uz_dqn_environment_t instancesenv[UZ_DQN_ENV_MAX_INSTANCES] = {0};
-static uz_dqn_environment_t *uz_dqn_environment_allocation(void);
+static uz_environment_bitflip_t instancesenv[UZ_DQN_ENV_MAX_INSTANCES] = {0};
+static uz_environment_bitflip_t *uz_dqn_environment_allocation(void);
 
-static uz_dqn_environment_t *uz_dqn_environment_allocation(void)
+static uz_environment_bitflip_t *uz_dqn_environment_allocation(void)
 {
     uz_assert(instance_counterenv < UZ_DQN_BUFFER_MAX_INSTANCES);
-    uz_dqn_environment_t *self = &instancesenv[instance_counterenv];
+    uz_environment_bitflip_t *self = &instancesenv[instance_counterenv];
     uz_assert_false(self->is_ready);
     instance_counterenv++;
     self->is_ready = true;
     return (self);
 }
 
-uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf)
+uz_environment_bitflip_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf)
 {
-    uz_dqn_environment_t *self = uz_dqn_environment_allocation();
+    uz_environment_bitflip_t *self = uz_dqn_environment_allocation();
     self->length_of_bitmask = envconf.bitlength;
     self->current_bitmask = envconf.bitarray;
     self->target_bitmask = envconf.targetarray;
@@ -50,7 +50,7 @@ uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config e
     return (self);
 }
 
-void uz_dqn_environment_reset(uz_dqn_environment_t *self, uz_mtwister_t *random_generator)
+void uz_dqn_environment_reset(uz_environment_bitflip_t *self, uz_mtwister_t *random_generator)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(random_generator);
@@ -79,7 +79,7 @@ bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size)
     return true; // Arrays are equal
 }
 
-float uz_dqn_environment_get_reward(uz_dqn_environment_t *self)
+float uz_dqn_environment_get_reward(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
     float r;
@@ -118,7 +118,7 @@ float calculate_reward_simple(uint32_t actionind)
     return r;
 }
 
-void uz_dqn_environment_step(uz_dqn_environment_t *self, uint32_t action)
+void uz_dqn_environment_step(uz_environment_bitflip_t *self, uint32_t action)
 {
     uz_assert_not_NULL(self);
     // flip bit
@@ -145,32 +145,32 @@ void save_values(float savecritic[], float savetarget[], float critic[], float t
 }
 
 
-bool uz_dqn_environment_is_finished(uz_dqn_environment_t *self)
+bool uz_dqn_environment_is_finished(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
 
     return (arraysequal(self->current_bitmask, self->target_bitmask, self->length_of_bitmask));
 }
 
-void uz_dqn_enviroment_reset_cumulative_reward(uz_dqn_environment_t *self)
+void uz_dqn_enviroment_reset_cumulative_reward(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
     self->cumulative_reward = 0.0f;
 }
 
-void uz_dqn_enviroment_add_to_cumulative_reward(uz_dqn_environment_t *self, float added_reward)
+void uz_dqn_enviroment_add_to_cumulative_reward(uz_environment_bitflip_t *self, float added_reward)
 {
     uz_assert_not_NULL(self);
     self->cumulative_reward += added_reward;
 }
 
-float uz_dqn_enviroment_get_cumulative_reward(uz_dqn_environment_t *self)
+float uz_dqn_enviroment_get_cumulative_reward(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
     return self->cumulative_reward;
 }
 
-uz_matrix_t *uz_dqn_environment_get_state(uz_dqn_environment_t *self)
+uz_matrix_t *uz_dqn_environment_get_state(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
     return self->environment_state;

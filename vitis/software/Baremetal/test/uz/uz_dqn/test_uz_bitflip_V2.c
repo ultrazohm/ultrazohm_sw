@@ -8,6 +8,7 @@
 #include "uz_nn.h"
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
+#include "uz_array.h"
 #include "uz_matrix.h"
 #include "uz_mtwister.h"
 #include "uz_environment.h"
@@ -202,7 +203,7 @@ void test_dqn_bitflip(void)
     uz_mtwister_t *environment_twister = uz_mtwister_init(1232U);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
-    uz_dqn_environment_t *env=uz_dqn_environment_init(configenv);
+    uz_environment_bitflip_t *env=uz_dqn_environment_init(configenv);
     uz_dqn_t *testdqn2 = uz_dqn_init(X_dat,X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact,epsilon_start,epsilon_min,epsilon_decay, periodic,error);
     // prefill buffer
     // do{

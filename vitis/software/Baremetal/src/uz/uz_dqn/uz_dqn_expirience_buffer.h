@@ -2,6 +2,7 @@
 
 #include "../uz_matrix/uz_matrix.h"
 #include "../uz_HAL.h"
+#include "../uz_array/uz_array.h"
 
 typedef struct uz_dqn_experience_replay_t uz_dqn_experience_replay_t;
 
@@ -40,7 +41,7 @@ uz_dqn_experience_replay_t *uz_dqn_experience_replay_init(struct uz_dqn_experien
 
 
 void uz_dqn_get_minibatch_from_buffer(uz_dqn_experience_replay_t *self, float *reward, uint32_t *actionindex, uz_matrix_t *obsvec, uz_matrix_t *obsvec1, uz_matrix_t *obs, uz_matrix_t *obspl1, uint32_t minibatchsize, uint32_t *indizes);
-void uz_dqn_push_to_buffer(uz_dqn_experience_replay_t *self, float rewarddata, uint32_t actionindex, uz_matrix_t *obsdata, uz_matrix_t *obsdata1);
+void uz_dqn_buffer_push_data(uz_dqn_experience_replay_t *self, float rewarddata, uint32_t actionindex, uz_matrix_t *obsdata, uz_matrix_t *obsdata1);
 void uz_dqn_get_obs_from_buffer(uz_dqn_experience_replay_t *self, uz_matrix_t *obsdata, uint32_t index);
 void uz_dqn_get_from_buffer(uz_dqn_experience_replay_t *self, float *rewarddata, uint32_t *actiondata, uz_matrix_t *obsdata, uz_matrix_t *obsdata1, uint32_t index);
 void uz_dqn_reset_buffer(uz_dqn_experience_replay_t *self);

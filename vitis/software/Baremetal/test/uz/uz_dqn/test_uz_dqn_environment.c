@@ -41,7 +41,7 @@ void tearDown(void)
 
 void test_uz_dqn_environment_reward_calc(void)
 {
-    uz_dqn_environment_t *testenv3 = uz_dqn_environment_init(configenv2);
+    uz_environment_bitflip_t *testenv3 = uz_dqn_environment_init(configenv2);
     float reward = uz_dqn_environment_get_reward(testenv3);
     TEST_ASSERT_EQUAL_FLOAT(1.0f, reward); // arrays sind gleich
     array2[0] = 1;

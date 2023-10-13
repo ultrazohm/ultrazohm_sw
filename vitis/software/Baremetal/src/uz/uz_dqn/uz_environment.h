@@ -7,7 +7,7 @@
 #include "uz_nn.h"
 #include "../uz_mtwister/uz_mtwister.h"
 
-typedef struct uz_dqn_environment_t uz_dqn_environment_t;
+typedef struct uz_environment_bitflip_t uz_environment_bitflip_t;
 
 struct uz_dqn_environment_config
 {
@@ -21,20 +21,20 @@ struct uz_dqn_environment_config
     float epsilon_decay;
 };
 
-uz_dqn_environment_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf);
-void uz_dqn_environment_reset(uz_dqn_environment_t *self, uz_mtwister_t *random_generator);
-float uz_dqn_environment_get_reward(uz_dqn_environment_t *self);
-void uz_dqn_environment_step(uz_dqn_environment_t *self, uint32_t action);
+uz_environment_bitflip_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf);
+void uz_dqn_environment_reset(uz_environment_bitflip_t *self, uz_mtwister_t *random_generator);
+float uz_dqn_environment_get_reward(uz_environment_bitflip_t *self);
+void uz_dqn_environment_step(uz_environment_bitflip_t *self, uint32_t action);
 bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size);
 float calculate_reward_simple(uint32_t actionind);
 
-bool uz_dqn_environment_is_finished(uz_dqn_environment_t *self);
+bool uz_dqn_environment_is_finished(uz_environment_bitflip_t *self);
 
-void uz_dqn_enviroment_reset_cumulative_reward(uz_dqn_environment_t *self);
-void uz_dqn_enviroment_add_to_cumulative_reward(uz_dqn_environment_t *self, float added_reward);
-float uz_dqn_enviroment_get_cumulative_reward(uz_dqn_environment_t *self);
+void uz_dqn_enviroment_reset_cumulative_reward(uz_environment_bitflip_t *self);
+void uz_dqn_enviroment_add_to_cumulative_reward(uz_environment_bitflip_t *self, float added_reward);
+float uz_dqn_enviroment_get_cumulative_reward(uz_environment_bitflip_t *self);
 
-uz_matrix_t *uz_dqn_environment_get_state(uz_dqn_environment_t *self);
+uz_matrix_t *uz_dqn_environment_get_state(uz_environment_bitflip_t *self);
 
 void save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size);
 

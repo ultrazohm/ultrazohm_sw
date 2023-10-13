@@ -17,6 +17,13 @@ enum uz_PWM_SS_2L_PWM_mode {
   direct_control_via_FPGA
 };
 
+/*! enum for readable configuring of the PWM trigger source for the output of new DutyCycles and triangle shift in uz_PWM_SS_2L_hw_SetTriggerSource function */
+enum uz_PWM_SS_2L_PWM_trigger_source {
+    trigger_at_MIN=0,
+    trigger_at_MAX,
+    trigger_at_EITHER
+};
+
 /**
  * @brief Configuration struct for UZ_PWM_SS_2L
  *
@@ -49,6 +56,10 @@ struct uz_PWM_SS_2L_config_t{
                                         1=shift by an entire period */
     float triangle_shift_HB2;           /**< Shift the triangle signal of HB2 to enable interleaved PWM operation. Input is fixed to 0-1. */
     float triangle_shift_HB3;           /**< Shift the triangle signal of HB3 to enable interleaved PWM operation. Input is fixed to 0-1. */
+    enum uz_PWM_SS_2L_PWM_trigger_source trigger_source; /** Trigger source for new DutyCycles and triangle shifts
+                                                        0 = trigger at MIN of triangle\n
+                                                        1 = trigger at MAX of triangle\n 
+                                                        2 = trigger at EITHER MAX or MIN of triangle*/
 };
 
 /**

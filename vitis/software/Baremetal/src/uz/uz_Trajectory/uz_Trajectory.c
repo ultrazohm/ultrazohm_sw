@@ -32,7 +32,7 @@ typedef struct uz_Trajectory_t {
 	uint32_t Trajectory_Counter;
 	uint32_t Step_Counter;
 	uint32_t Repeats_Counter;
-	float Interploation_Coefficients[4][Max_Trajectory_Samples-1];
+	float Interploation_Coefficients[4][Max_Trajectory_Samples-1];		// Dimensions are prepared for spline-interpolaten
 	float Min_Step_Width;
 }uz_Trajectory_t;
 

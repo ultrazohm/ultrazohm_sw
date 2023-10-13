@@ -11,8 +11,7 @@
 /*! enum for readable configuring for type of Interpolation */
 enum uz_Trajectory_interpolation_selection {
 	Zero_Order_Hold = 0,
-	Linear,
-	Spline 		// need to implement!
+	Linear
 };
 
 /*! enum for readable configuring for type of Y-Axis-Style */

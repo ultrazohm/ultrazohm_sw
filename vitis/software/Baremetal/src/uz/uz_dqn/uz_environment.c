@@ -176,4 +176,36 @@ uz_matrix_t *uz_dqn_environment_get_state(uz_environment_bitflip_t *self)
     return self->environment_state;
 }
 
+float uz_dqn_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_bitflip_t *env)
+{
+    uz_assert_not_NULL(self);
+    float cum_loss = 0.0f;
+    for (uint32_t t = 0; t < max_steps; t++)
+    {
+        // sample observation of the environment at k=0
+        uz_matrix_t *env_state = uz_dqn_environment_get_state(env);
+        uz_dqn_sample_observation_k_0(self, env_state);
+        //  uz_dqn_environment_sample_observation(env, self->observation_k_0);
+        // determine the action based on Q(s,a) with epsilon greedy exploration
+        uint32_t action = uz_dqn_determine_action(self);
+        // take the action, environment is now in k+1
+        uz_dqn_environment_step(env, action);
+        env_state = uz_dqn_environment_get_state(env);
+        // Sample environment at k+1
+        uz_dqn_sample_observation_k_1(self, env_state);
+        float reward = uz_dqn_environment_get_reward(env);
+        uz_dqn_set_reward(self, reward);
+        uz_dqn_push_to_buffer(self);
+        if (train)
+        {
+            cum_loss = uz_dqn_update(self);
+        }
+        if (uz_dqn_environment_is_finished(env))
+        {
+            return cum_loss;
+        }
+    }
+    return cum_loss;
+}
+
 #endif

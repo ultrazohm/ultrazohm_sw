@@ -39,8 +39,8 @@ float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
 float epsilon_decay = 0.001f;
 
-    // random array
-    uint32_t array[NUMBEROFBITS] = {0U, 0U, 0U, 0U};
+// random array
+uint32_t array[NUMBEROFBITS] = {0U, 0U, 0U, 0U};
 uint32_t tararray[NUMBEROFBITS] = {1U, 1U, 1U, 1U};
 float inarray[NUMBER_OF_INPUTS] = {0.0f};
 // conf envrionment
@@ -189,7 +189,6 @@ void setUp(void)
 void tearDown(void)
 {
 }
-
 // void test_uz_dqn_init(void)
 // {
 //     uz_dqn_t *testdqn = uz_dqn_init(X_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, configenv);
@@ -203,8 +202,8 @@ void test_dqn_bitflip(void)
     uz_mtwister_t *environment_twister = uz_mtwister_init(1232U);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
-    uz_environment_bitflip_t *env=uz_dqn_environment_init(configenv);
-    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat,X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact,epsilon_start,epsilon_min,epsilon_decay, periodic,error);
+    uz_environment_bitflip_t *env = uz_dqn_environment_init(configenv);
+    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
     // prefill buffer
     // do{
     // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
@@ -214,7 +213,7 @@ void test_dqn_bitflip(void)
     for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
         uz_dqn_environment_reset(env, environment_twister);
-        loss[epoch] = uz_dqn_step_one_episode(testdqn2, configenv.max_steps,true,env);
+        loss[epoch] = uz_dqn_step_one_episode(testdqn2, configenv.max_steps, true, env);
         cumreward[epoch] = uz_dqn_enviroment_get_cumulative_reward(env);
         if (epoch == 0)
         {
@@ -228,12 +227,12 @@ void test_dqn_bitflip(void)
         save_values(Q_Critic, Q_Target, cy_2, ty_2, epoch, NUMBER_OF_OUTPUTS);
     }
 
-    uz_dqn_set_epsilon(testdqn2,0.0f,0.0f,0.0f);
+    uz_dqn_set_epsilon(testdqn2, 0.0f, 0.0f, 0.0f);
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
         uz_dqn_environment_reset(env, environment_twister);
-          uz_dqn_step_one_episode(testdqn2, configenv.max_steps,false,env);
-            cumreward_noexpl[i] = uz_dqn_enviroment_get_cumulative_reward(env);
+        uz_dqn_step_one_episode(testdqn2, configenv.max_steps, false, env);
+        cumreward_noexpl[i] = uz_dqn_enviroment_get_cumulative_reward(env);
     }
 
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
@@ -252,11 +251,11 @@ void test_dqn_bitflip(void)
         fclose(f); // close the file
         f = NULL;  // set file handle to null since f is no longer valid
     }
-    uz_nn_trained_export( uz_dqn_get_critic_net(testdqn2) );
+    uz_nn_trained_export(uz_dqn_get_critic_net(testdqn2));
 
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
-            TEST_ASSERT_EQUAL_FLOAT(1.0f, cumreward_noexpl[i]);
+        TEST_ASSERT_EQUAL_FLOAT(1.0f, cumreward_noexpl[i]);
     }
 }
 

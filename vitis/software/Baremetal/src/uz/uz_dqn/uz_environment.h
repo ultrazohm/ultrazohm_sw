@@ -1,11 +1,11 @@
-#ifndef UZ_ENV_H
-#define UZ_ENV_H
+#pragma once
 
 #include "../uz_matrix/uz_matrix.h"
 #include "../uz_HAL.h"
 #include <stdbool.h>
 #include "uz_nn.h"
 #include "../uz_mtwister/uz_mtwister.h"
+#include "uz_dqn.h"
 
 typedef struct uz_environment_bitflip_t uz_environment_bitflip_t;
 
@@ -37,5 +37,4 @@ float uz_dqn_enviroment_get_cumulative_reward(uz_environment_bitflip_t *self);
 uz_matrix_t *uz_dqn_environment_get_state(uz_environment_bitflip_t *self);
 
 void save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size);
-
-#endif // UZ_DQN_H
+float uz_dqn_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_bitflip_t *env);

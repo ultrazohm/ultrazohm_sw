@@ -146,6 +146,7 @@ Further documentation which explains the structure of the ParameterID in detail.
 ..  toctree::
     :maxdepth: 2
     
+    general_information/setup_6ph
     general_information/setup
     general_information/custom_GUI
     general_information/ParameterID_structs
@@ -165,7 +166,9 @@ Listed are the individual states which are part of the ParameterID.
     
     stateflows/uz_ControlState
     stateflows/uz_ElectricalID
+    stateflows/uz_ElectricalID_6ph
     stateflows/uz_FluxMapID
+    stateflows/uz_FluxMapID_6ph
     stateflows/uz_FrictionID
     stateflows/uz_OnlineID
     stateflows/uz_TwoMassID

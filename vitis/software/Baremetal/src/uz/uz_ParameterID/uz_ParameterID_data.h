@@ -22,7 +22,7 @@
 #include "../uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
 #include "../uz_setpoint/uz_setpoint.h"
-#include "../uz_ResonantController/uz_resonant_controller.h"
+#include "../uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 #include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
 #include "lib/rtwtypes.h"
@@ -252,6 +252,7 @@ typedef struct {
   uint32_T array_index; /**< index of measurement point */
 } uz_ParaID_FluxMapID_output_t;
 
+
 //----------------------------------------//
 //----------------------------------------//
 //------------FrictionID------------------//
@@ -455,16 +456,27 @@ typedef struct uz_ParameterID_Data_t {
 													2 = Speed_Control\n
                           3 = Torque_Control*/
   bool OnlineID_reset_was_pressed; /**<Signals the functions in the main.c, that the reset was pressed */
+  float temp_initial_angle; /**< inital offset angle for encoder offset estimation */
+  uz_encoder_offset_estimation_t* encoder_offset_estimation; /**< encoder offset estimation object */
+  uz_dq_setpoint_filter* filter_1; /**< setpoint filter instance 1 */
+  uz_dq_setpoint_filter* filter_2; /**< setpoint filter instance 2 */
+  uz_dq_setpoint_filter* filter_3; /**< setpoint filter instance 3 */
 } uz_ParameterID_Data_t;
+
 
 /**
  * @brief Data struct to collect all controller pointers
  *
  */
 struct uz_ParameterID_controller{
-  uz_CurrentControl_t* CC_instance_dq; /**< current control instance for dq system */
   uz_SpeedControl_t* SC_instance; /**< speed control instance */
   uz_SetPoint_t* SP_instance; /**< setpoint instance */
+  uz_CurrentControl_t* CC_instance_dq; /**< current control instance for dq system */
+  uz_CurrentControl_t* CC_instance_xy; /**< current control instance for xy system */
+  uz_CurrentControl_t* CC_instance_zero; /**< current control instance for zero system */
+  uz_subspace_resonant_control* res_instance_dq; /**< resonant control instance for dq system */
+  uz_subspace_resonant_control* res_instance_xy; /**< resonant control instance for xy system */
+  uz_subspace_resonant_control* res_instance_zero; /**< resonant control instance for zero system */
 };
 
 #endif

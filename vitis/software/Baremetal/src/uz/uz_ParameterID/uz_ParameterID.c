@@ -438,7 +438,6 @@ void uz_ParameterID_update_transmit_values(uz_ParameterID_Data_t* Data, float *a
 	Data->MeasArrayTorque_pointer = Data->FrictionID_Output->measArrayTorque[Data->Array_counter];
 
 }
-
 static void uz_ParameterID_initialize_data_structs(uz_ParameterID_t *self, uz_ParameterID_Data_t *Data) {
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);

@@ -122,6 +122,18 @@ void test_uz_ParameterID_6ph_step_Data_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_step(ParameterID, NULL));
 }
 
+// init others
+void test_uz_ParameterID_6ph_initialize_encoder_offset_estimation(void){
+    float ptr;
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_initialize_encoder_offset_estimation(&Data_struct, NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_initialize_encoder_offset_estimation(NULL, &ptr));
+}
+
+void test_uz_ParameterID_6ph_initialize_filter(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_initialize_filter(NULL, 0.1f));
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_initialize_filter(&Data_struct, 0.0f));
+}
+
 // other
 void test_uz_uz_ParameterID_6ph_process_actual_values(void){
     TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_process_actual_values(NULL, 0.0f, 0.0f));

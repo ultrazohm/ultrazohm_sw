@@ -33,7 +33,7 @@ void tearDown(void)
 
 #define EXPERIENCE_BUFFER_LENGTH 5000U
 #define MINIBATCHSIZE 8U
-#define NUMBER_OF_EPOCHS 10U
+#define NUMBER_OF_EPOCHS 100U
 #define TARGET_UPDATE_FREQUENCY 20U
 // nn
 #define NUMBER_OF_INPUTS 2U
@@ -47,7 +47,7 @@ float lernrate = 0.002f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
-float epsilon_decay = 0.001f;
+float epsilon_decay = 0.00001f;
 
 // adam
 float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
@@ -181,21 +181,22 @@ struct uz_dqn_experience_replay_config configbuffer = {
     .obsvec1 = vecobs1,
     .actions = action};
 
+#define DAUER 1000
 void test_uz_environment_pt1_one_input(void)
 {
     float array[2]={0};
     float gain = 1.0f;
-    float time_constant = 0.5f;
+    float time_constant = 0.005f;
     float integration_time = 0.0001f;
     uz_environment_pt1_t *pt1 = uz_environment_pt1_init(gain, time_constant, integration_time,array);
-    float current_value[100000] = {0.0f};
-    for (uint32_t i = 0; i < 100000; i++)
+    float current_value[DAUER] = {0.0f};
+    for (uint32_t i = 0; i < DAUER; i++)
     {
         current_value[i] = uz_environment_pt1_step(pt1, 1.0f);
     }
-  //  char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
-    //export_histogram(current_value, 100000, filepath);
-    TEST_ASSERT_FLOAT_WITHIN(0.001f,1.0f,current_value[100000-1]);
+    char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
+    export_histogram(current_value, DAUER, filepath);
+    TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.0f, current_value[DAUER - 1]);
 }
 
 void test_uz_environment_pt1_dqn_zero(void)
@@ -252,13 +253,13 @@ void test_uz_environment_pt1_dqn_two(void)
     TEST_ASSERT_FLOAT_WITHIN(0.001f, -1.0f, current_value[100000 - 1]);
 }
 
-void test_dqn_bitflip(void)
+void test_dqn_pt1(void)
 {
     float targsmoothfact = 0.05f;
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
     float array[2] = {0};
     float gain = 1.0f;
-    float time_constant = 0.5f;
+    float time_constant = 0.005f;
     float integration_time = 0.0001f;
     uz_environment_pt1_t *pt1 = uz_environment_pt1_init(gain, time_constant, integration_time, array);
 
@@ -267,7 +268,7 @@ void test_dqn_bitflip(void)
     for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
         uz_environment_pt1_reset(pt1);
-        loss[epoch] = uz_environment_pt1_step_one_episode(testdqn2, 1000U, true, pt1,0.5f);
+        loss[epoch] = uz_environment_pt1_step_one_episode(testdqn2, 1000U, true, pt1,0.5f,false,NULL,NULL,NULL);
         cumreward[epoch] = uz_environment_pt1_get_cumulative_reward(pt1);
         if (epoch == 0)
         {
@@ -282,12 +283,18 @@ void test_dqn_bitflip(void)
     }
 
     uz_dqn_set_epsilon(testdqn2, 0.0f, 0.0f, 0.0f);
-    for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
-    {
-        uz_environment_pt1_reset(pt1);
-        loss[i] = uz_environment_pt1_step_one_episode(testdqn2, 1000U, false, pt1, 0.5f);
-        cumreward_noexpl[i] = uz_environment_pt1_get_cumulative_reward(pt1);
-    }
+
+    float log_error[1000U] = {0.0f};
+    float log_input[1000U] = {0.0f};
+    float log_output[1000U] = {1.0f};
+    uz_environment_pt1_step_one_episode(testdqn2, 1000U, false, pt1, 0.5f, true, log_error, log_input, log_output);
+
+    char filepath[] = "test/uz/uz_environment_pt1/pt1_dqn_output.csv";
+    char filepath1[] = "test/uz/uz_environment_pt1/pt1_dqn_input.csv";
+    char filepath2[] = "test/uz/uz_environment_pt1/pt1_dqn_error.csv";
+    export_histogram(log_output, 1000U, filepath);
+    export_histogram(log_input, 1000U, filepath1);
+    export_histogram(log_error, 1000U, filepath2);
 
     exportFloatArrayToCSV("test/uz/uz_environment_pt1/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_environment_pt1/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);

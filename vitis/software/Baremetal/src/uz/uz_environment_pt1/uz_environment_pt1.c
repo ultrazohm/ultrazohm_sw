@@ -84,7 +84,7 @@ void uz_environment_pt1_dqn_step(uz_environment_pt1_t *self, uint32_t action, fl
     }
     self->output = uz_environment_pt1_step(self, self->input);
     self->error=set_point-self->output;
-    self->reward=fabsf(self->error);
+    self->reward=-fabsf(self->error);
     self->cumulative_reward+=self->reward;
 }
 
@@ -120,7 +120,7 @@ float uz_environment_pt1_get_cumulative_reward(uz_environment_pt1_t *self)
     return self->cumulative_reward;
 }
 
-float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_pt1_t *env,float set_point)
+float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_pt1_t *env,float set_point, bool logging, float* error, float* input, float* output)
 {
     uz_assert_not_NULL(self);
     float cum_loss = 0.0f;
@@ -134,6 +134,13 @@ float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bo
         uint32_t action = uz_dqn_determine_action(self);
         // take the action, environment is now in k+1
         uz_environment_pt1_dqn_step(env, action,set_point);
+
+    if(logging){
+        error[t]=env->error;
+        input[t]=env->input;
+        output[t]=env->output;
+    }
+
         env_state = uz_environment_pt1_get_state(env);
         // Sample environment at k+1
         uz_dqn_sample_observation_k_1(self, env_state);

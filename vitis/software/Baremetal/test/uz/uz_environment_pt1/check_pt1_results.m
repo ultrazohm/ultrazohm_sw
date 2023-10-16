@@ -142,8 +142,8 @@ load("QCritic.csv");
 load("QTarget.csv");
 
 %% reshape
-QCritic = reshape(QCritic,2,[]);
-QTarget = reshape(QTarget,2,[]);
+QCritic = reshape(QCritic,3,[]);
+QTarget = reshape(QTarget,3,[]);
 
 figure
 subplot(2,1,1)
@@ -152,9 +152,7 @@ hold on;
 plot(QCritic(2,:),'DisplayName',"QC2");
 hold on;
 plot(QCritic(3,:),'DisplayName',"QC3");
-hold on;
-plot(QCritic(4,:),'DisplayName',"QC4");
-grid on;
+
 xlabel('Episoden','interpreter','latex');
 ylabel('Critic Values','interpreter','latex');
 legend
@@ -164,9 +162,7 @@ hold on;
 plot(QTarget(2,:),'DisplayName',"QT2");
 hold on;
 plot(QTarget(3,:),'DisplayName',"QT3");
-hold on;
-plot(QTarget(4,:),'DisplayName',"QT4");
-grid on;
+
 legend
 xlabel('Episoden','interpreter','latex');
 ylabel('Target Values','interpreter','latex');

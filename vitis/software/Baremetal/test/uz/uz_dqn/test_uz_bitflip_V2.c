@@ -11,7 +11,7 @@
 #include "uz_array.h"
 #include "uz_matrix.h"
 #include "uz_mtwister.h"
-#include "uz_environment.h"
+#include "uz_environment_bitflip.h"
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
@@ -202,7 +202,7 @@ void test_dqn_bitflip(void)
     uz_mtwister_t *environment_twister = uz_mtwister_init(1232U);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
-    uz_environment_bitflip_t *env = uz_dqn_environment_init(configenv);
+    uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
     uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
     // prefill buffer
     // do{
@@ -212,27 +212,27 @@ void test_dqn_bitflip(void)
     // testdqn2->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
-        uz_dqn_environment_reset(env, environment_twister);
-        loss[epoch] = uz_dqn_step_one_episode(testdqn2, configenv.max_steps, true, env);
-        cumreward[epoch] = uz_dqn_enviroment_get_cumulative_reward(env);
+        uz_environment_bitflip_reset(env, environment_twister);
+        loss[epoch] = uz_environment_bitflip_step_one_episode(testdqn2, configenv.max_steps, true, env);
+        cumreward[epoch] = uz_environment_bitflip_get_cumulative_reward(env);
         if (epoch == 0)
         {
-            globalrewardr[epoch] = uz_dqn_enviroment_get_cumulative_reward(env);
+            globalrewardr[epoch] = uz_environment_bitflip_get_cumulative_reward(env);
         }
         else
         {
-            globalrewardr[epoch] = 0.99f * globalrewardr[epoch - 1] + 0.01f * uz_dqn_enviroment_get_cumulative_reward(env);
+            globalrewardr[epoch] = 0.99f * globalrewardr[epoch - 1] + 0.01f * uz_environment_bitflip_get_cumulative_reward(env);
         }
         epsilonovertime[epoch] = uz_dqn_get_epsilon(testdqn2);
-        save_values(Q_Critic, Q_Target, cy_2, ty_2, epoch, NUMBER_OF_OUTPUTS);
+        uz_environment_bitflip_save_values(Q_Critic, Q_Target, cy_2, ty_2, epoch, NUMBER_OF_OUTPUTS);
     }
 
     uz_dqn_set_epsilon(testdqn2, 0.0f, 0.0f, 0.0f);
     for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
     {
-        uz_dqn_environment_reset(env, environment_twister);
-        uz_dqn_step_one_episode(testdqn2, configenv.max_steps, false, env);
-        cumreward_noexpl[i] = uz_dqn_enviroment_get_cumulative_reward(env);
+        uz_environment_bitflip_reset(env, environment_twister);
+        uz_environment_bitflip_step_one_episode(testdqn2, configenv.max_steps, false, env);
+        cumreward_noexpl[i] = uz_environment_bitflip_get_cumulative_reward(env);
     }
 
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
@@ -246,7 +246,7 @@ void test_dqn_bitflip(void)
     if (f != NULL)                                         // check for success
     {
         fprintf(f, "Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
-        fprintf(f, "%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", (double)lernrate, (double)discountfact, (double)configenv.epsilon_start, (double)configenv.epsilon_min, (double)configenv.epsilon_decay, NUMBER_OF_HIDDEN_LAYER, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, NUMBER_OF_EPOCHS, TARGET_UPDATE_FREQUENCY, NUMBEROFBITS,
+        fprintf(f, "%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", (double)lernrate, (double)discountfact, (double)epsilon_start, (double)epsilon_min, (double)epsilon_decay, NUMBER_OF_HIDDEN_LAYER, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, NUMBER_OF_EPOCHS, TARGET_UPDATE_FREQUENCY, NUMBEROFBITS,
                 NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
         fclose(f); // close the file
         f = NULL;  // set file handle to null since f is no longer valid

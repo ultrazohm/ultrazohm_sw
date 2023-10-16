@@ -4,7 +4,7 @@
 #include "../uz_HAL.h"
 #include "uz_dqn.h"
 
-#include "uz_environment.h"
+#include "uz_environment_bitflip.h"
 
 struct uz_environment_bitflip_t
 {
@@ -16,7 +16,14 @@ struct uz_environment_bitflip_t
     uz_matrix_t *environment_state;
     struct uz_matrix_t inputfornn_matrix;
     float cumulative_reward;
+    float reward;
 };
+
+bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size);
+void uz_environment_bitflip_calculate_reward(uz_environment_bitflip_t *self);
+void uz_environment_bitflip_reset_cumulative_reward(uz_environment_bitflip_t *self);
+void uz_environment_bitflip_step(uz_environment_bitflip_t *self, uint32_t action);
+float calculate_reward_simple(uint32_t actionind);
 
 static uint32_t instance_counterenv = 0U;
 static uz_environment_bitflip_t instancesenv[UZ_DQN_ENV_MAX_INSTANCES] = {0};
@@ -32,7 +39,7 @@ static uz_environment_bitflip_t *uz_dqn_environment_allocation(void)
     return (self);
 }
 
-uz_environment_bitflip_t *uz_dqn_environment_init(struct uz_dqn_environment_config envconf)
+uz_environment_bitflip_t *uz_environment_bitflip_init(struct uz_dqn_environment_config envconf)
 {
     uz_environment_bitflip_t *self = uz_dqn_environment_allocation();
     self->length_of_bitmask = envconf.bitlength;
@@ -50,7 +57,7 @@ uz_environment_bitflip_t *uz_dqn_environment_init(struct uz_dqn_environment_conf
     return (self);
 }
 
-void uz_dqn_environment_reset(uz_environment_bitflip_t *self, uz_mtwister_t *random_generator)
+void uz_environment_bitflip_reset(uz_environment_bitflip_t *self, uz_mtwister_t *random_generator)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(random_generator);
@@ -79,7 +86,7 @@ bool arraysequal(const uint32_t *inarray, const uint32_t *tararray, size_t size)
     return true; // Arrays are equal
 }
 
-float uz_dqn_environment_get_reward(uz_environment_bitflip_t *self)
+void uz_environment_bitflip_calculate_reward(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
     float r;
@@ -92,8 +99,14 @@ float uz_dqn_environment_get_reward(uz_environment_bitflip_t *self)
     {
         r = 0.0f;
     }
-    uz_dqn_enviroment_add_to_cumulative_reward(self, r);
-    return r;
+    uz_environment_bitflip_add_to_cumulative_reward(self, r);
+    self->reward = r;
+}
+
+float uz_environment_bitflip_get_reward(uz_environment_bitflip_t *self)
+{
+    uz_assert_not_NULL(self);
+    return self->reward;
 }
 
 float calculate_reward_simple(uint32_t actionind)
@@ -118,7 +131,7 @@ float calculate_reward_simple(uint32_t actionind)
     return r;
 }
 
-void uz_dqn_environment_step(uz_environment_bitflip_t *self, uint32_t action)
+void uz_environment_bitflip_step(uz_environment_bitflip_t *self, uint32_t action)
 {
     uz_assert_not_NULL(self);
     // flip bit
@@ -132,9 +145,10 @@ void uz_dqn_environment_step(uz_environment_bitflip_t *self, uint32_t action)
         self->current_bitmask[action] = 1;
         self->environment_state->data[action] = 1.0f;
     }
+    uz_environment_bitflip_calculate_reward(self);
 }
 
-void save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size)
+void uz_environment_bitflip_save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size)
 {
     // Save values from the current step into the larger arrays
     for (uint32_t i = 0U; i < size; i++)
@@ -144,63 +158,62 @@ void save_values(float savecritic[], float savetarget[], float critic[], float t
     }
 }
 
-
-bool uz_dqn_environment_is_finished(uz_environment_bitflip_t *self)
+bool uz_environment_bitflip_is_finished(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
 
     return (arraysequal(self->current_bitmask, self->target_bitmask, self->length_of_bitmask));
 }
 
-void uz_dqn_enviroment_reset_cumulative_reward(uz_environment_bitflip_t *self)
+void uz_environment_bitflip_reset_cumulative_reward(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
     self->cumulative_reward = 0.0f;
 }
 
-void uz_dqn_enviroment_add_to_cumulative_reward(uz_environment_bitflip_t *self, float added_reward)
+void uz_environment_bitflip_add_to_cumulative_reward(uz_environment_bitflip_t *self, float added_reward)
 {
     uz_assert_not_NULL(self);
     self->cumulative_reward += added_reward;
 }
 
-float uz_dqn_enviroment_get_cumulative_reward(uz_environment_bitflip_t *self)
+float uz_environment_bitflip_get_cumulative_reward(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
     return self->cumulative_reward;
 }
 
-uz_matrix_t *uz_dqn_environment_get_state(uz_environment_bitflip_t *self)
+uz_matrix_t *uz_environment_bitflip_get_state(uz_environment_bitflip_t *self)
 {
     uz_assert_not_NULL(self);
     return self->environment_state;
 }
 
-float uz_dqn_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_bitflip_t *env)
+float uz_environment_bitflip_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_bitflip_t *env)
 {
     uz_assert_not_NULL(self);
     float cum_loss = 0.0f;
     for (uint32_t t = 0; t < max_steps; t++)
     {
         // sample observation of the environment at k=0
-        uz_matrix_t *env_state = uz_dqn_environment_get_state(env);
+        uz_matrix_t *env_state = uz_environment_bitflip_get_state(env);
         uz_dqn_sample_observation_k_0(self, env_state);
         //  uz_dqn_environment_sample_observation(env, self->observation_k_0);
         // determine the action based on Q(s,a) with epsilon greedy exploration
         uint32_t action = uz_dqn_determine_action(self);
         // take the action, environment is now in k+1
-        uz_dqn_environment_step(env, action);
-        env_state = uz_dqn_environment_get_state(env);
+        uz_environment_bitflip_step(env, action);
+        env_state = uz_environment_bitflip_get_state(env);
         // Sample environment at k+1
         uz_dqn_sample_observation_k_1(self, env_state);
-        float reward = uz_dqn_environment_get_reward(env);
-        uz_dqn_set_reward(self, reward);
+        env->reward = uz_environment_bitflip_get_reward(env);
+        uz_dqn_set_reward(self, env->reward);
         uz_dqn_push_to_buffer(self);
         if (train)
         {
             cum_loss = uz_dqn_update(self);
         }
-        if (uz_dqn_environment_is_finished(env))
+        if (uz_environment_bitflip_is_finished(env))
         {
             return cum_loss;
         }

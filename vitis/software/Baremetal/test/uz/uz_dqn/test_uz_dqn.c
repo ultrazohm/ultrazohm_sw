@@ -11,7 +11,7 @@
 // #include "uz_matrix.h"
 // #include <stdlib.h>
 // #include "uz_mtwister.h"
-// #include "uz_environment.h"
+// #include "uz_environment_bitflip.h"
 
 // // eps greedy test
 // #define NUMBER_OF_EPSGREEDYSTEPS 1000

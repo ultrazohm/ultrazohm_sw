@@ -16,7 +16,6 @@
 #ifndef UZ_PARAMETERID_6PH_H
 #define UZ_PARAMETERID_6PH_H
 
-#include "../../globalData.h"
 #include "uz_ParameterID_data.h"
 #include "../uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"

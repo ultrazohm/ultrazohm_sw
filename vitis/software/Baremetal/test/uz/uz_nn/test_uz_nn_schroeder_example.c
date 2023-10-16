@@ -10,6 +10,7 @@
 #include "../uz_mtwister/uz_mtwister.h"
 #include <time.h>
 
+void uz_nn_schroeder_export(uz_nn_t *self);
 
 #define NUMBER_OF_INPUTS 1
 #define NUMBER_OF_OUTPUTS 1
@@ -263,5 +264,33 @@ void test_uz_nn_schroeder(void)
     //clock_t end = clock();
     //float seconds = (float)(end - start) / CLOCKS_PER_SEC;
    // printf("Zeit des Tests = %.6f \n", (double)seconds);
+}
+
+void uz_nn_schroeder_export(uz_nn_t *self)
+{
+  uz_matrix_t *weightshelper = uz_nn_get_weight_matrix(self, 1);
+  uz_matrix_t *biasoutput = uz_nn_get_bias_matrix(self, 1);
+  float x11 = 0.0f;
+  float x12 = 0.0f;
+  float b11 = 0.0f;
+  float b12 = 0.0f;
+  x11 = uz_matrix_get_element_zero_based(weightshelper, 0, 0);
+  x12 = uz_matrix_get_element_zero_based(weightshelper, 0, 1);
+  b11 = uz_matrix_get_element_zero_based(biasoutput, 0, 0);
+  b12 = uz_matrix_get_element_zero_based(biasoutput, 0, 1);
+  printf("Neuer Wert für THETA 1.1 ist %.2f \n", (double)x11);
+  printf("Neuer Wert für BIAS 1.1 ist %.2f \n", (double)b11);
+  // Daten in .csv datei überschreiben
+  FILE *file1 = fopen("test/uz/uz_nn/schroeder_weights/layer1_weights.csv", "w");
+  if (file1 != NULL)
+  {
+    fprintf(file1, "%.2ff,%.2ff", (double)x11, (double)x12);
+  }
+
+  FILE *file2 = fopen("test/uz/uz_nn/schroeder_weights/layer1_bias.csv", "w");
+  if (file2 != NULL)
+  {
+    fprintf(file2, "%.2ff,%.2ff", (double)b11, (double)b12);
+  }
 }
 #endif // TEST

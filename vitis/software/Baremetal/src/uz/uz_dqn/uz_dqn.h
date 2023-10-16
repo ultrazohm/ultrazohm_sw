@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include "../uz_nn/uz_nn.h"
 #include "../uz_nn/uz_nn_layer.h"
-#include "uz_mtwister.h"
+#include "../uz_mtwister/uz_mtwister.h"
 #include "uz_dqn_expirience_buffer.h"
 #include "../uz_array/uz_array.h"
 

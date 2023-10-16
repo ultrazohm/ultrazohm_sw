@@ -3,7 +3,6 @@
 #include "../uz_matrix/uz_matrix.h"
 #include "../uz_HAL.h"
 #include <stdbool.h>
-#include "uz_nn.h"
 #include "../uz_mtwister/uz_mtwister.h"
 #include "uz_dqn.h"
 

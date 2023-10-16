@@ -92,7 +92,6 @@ uint32_t adam_get_number_of_updates(adam_optimizer_t *self);
      * @param self
      */
     void uz_nn_set_gradients_zero(uz_nn_t * self);
-    void uz_nn_schroeder_export(uz_nn_t * self);
 
     /**
      * @brief Calculates the mse for the expected and actual value

@@ -89,16 +89,15 @@ void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float
  * @param Data pointer to uz_ParameterID_Data_t struct
  * @param config config for the setpoint filters (same will be used for all)
  */
-void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, const float isr_frequency);
+void uz_ParameterID_6ph_initialize_filter(uz_ParameterID_Data_t* Data, const float isr_frequency);
 
 /**
  * @brief initializes the encoder offset estimation and saves the object pointer to the Data struct
  * 
  * @param Data pointer to uz_ParameterID_Data_t struct
- * @param raw_rotor_angle pointer to the raw (not offset corrected) electric rotor angle
  * @param u_q_ref pointer to the q-voltage reference, take from the output of the FOC controller
  */
-void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref);
+void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* u_q_ref);
 
 /**
  * @brief updates transmit values/Converts some int-values from the ParameterID to float and helps to sync the array transmission

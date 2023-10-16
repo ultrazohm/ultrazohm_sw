@@ -405,7 +405,7 @@ static void uz_ParaID_6ph_reset_controllers(struct uz_ParameterID_controller obj
 	}
 }
 
-void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, const float isr_frequency){
+void uz_ParameterID_6ph_initialize_filter(uz_ParameterID_Data_t* Data, const float isr_frequency){
 	uz_assert_not_NULL(Data);
 	const struct uz_IIR_Filter_config config_filter = {
 		.selection = LowPass_first_order, 
@@ -523,11 +523,11 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 	}
 }
 
-void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref){
+void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* u_q_ref){
 	uz_assert_not_NULL(Data);
 	// other pointers are already asserted by uz_encoder_offset_estimation_init
 	struct uz_encoder_offset_estimation_config offset_estimation_config = {
-		.ptr_measured_rotor_angle = raw_rotor_angle,
+		.ptr_measured_rotor_angle = &Data->ActualValues.theta_el_raw,
 		.ptr_offset_angle = &Data->ElectricalID_Offset_Estimation.offset_angle_rad,
 		.ptr_actual_omega_el = &Data->ActualValues.omega_el,
 		.ptr_actual_u_q_V = u_q_ref,

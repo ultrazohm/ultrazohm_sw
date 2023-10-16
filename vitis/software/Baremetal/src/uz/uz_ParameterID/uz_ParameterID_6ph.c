@@ -77,7 +77,7 @@ void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float
 	uz_3ph_alphabeta_t local_v_ZERO;
 	uz_3ph_alphabeta_t local_i_ZERO;
 	// theta offset correction
-	Data->ActualValues.theta_el = Data->ActualValues.theta_el_raw - Data->ElectricalID_Output.thetaOffset;
+	Data->ActualValues.theta_el = Data->ActualValues.theta_el_raw - Data->ElectricalID_Output->thetaOffset;
 	// transform 6ph abc to dq
 	Data->ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(Data->ActualValues.i_abc_6ph, Data->ActualValues.theta_el);
 	Data->ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(Data->ActualValues.v_abc_6ph, Data->ActualValues.theta_el);

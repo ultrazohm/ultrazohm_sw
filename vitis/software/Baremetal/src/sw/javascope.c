@@ -34,6 +34,12 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+extern float episode_reward;
+extern float evaluation_run;
+extern float finished;
+extern float global_loss;
+extern float global_reward_metric;
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -61,6 +67,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
 	js_ch_observable[JSO_ia] 			= &data->av.I_U;
+	js_ch_observable[JSO_episode_reward] 			= &episode_reward;
+	js_ch_observable[JSO_eval_run] 			= &evaluation_run;
+	js_ch_observable[JSO_finished] 			= &finished;
+	js_ch_observable[JSO_loss] = &global_loss;
+	js_ch_observable[JSO_reward_metric] = &global_reward_metric;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;

@@ -89,7 +89,7 @@ void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float
  * @param Data pointer to uz_ParameterID_Data_t struct
  * @param config config for the setpoint filters (same will be used for all)
  */
-void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_dq_setpoint_filter_config config);
+void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, const float isr_frequency);
 
 /**
  * @brief initializes the encoder offset estimation and saves the object pointer to the Data struct

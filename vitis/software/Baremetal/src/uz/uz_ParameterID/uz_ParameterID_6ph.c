@@ -76,6 +76,8 @@ void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float
 	uz_3ph_alphabeta_t local_v_XY;	
 	uz_3ph_alphabeta_t local_v_ZERO;
 	uz_3ph_alphabeta_t local_i_ZERO;
+	// theta offset correction
+	Data->ActualValues.theta_el = Data->ActualValues.theta_el_raw - Data->ElectricalID_Output.thetaOffset;
 	// transform 6ph abc to dq
 	Data->ActualValues.i_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(Data->ActualValues.i_abc_6ph, Data->ActualValues.theta_el);
 	Data->ActualValues.v_dq_6ph = uz_transformation_asym30deg_6ph_abc_to_dq(Data->ActualValues.v_abc_6ph, Data->ActualValues.theta_el);
@@ -403,11 +405,18 @@ static void uz_ParaID_6ph_reset_controllers(struct uz_ParameterID_controller obj
 	}
 }
 
-void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_dq_setpoint_filter_config config){
+void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, const float isr_frequency){
 	uz_assert_not_NULL(Data);
-	Data->filter_1 = uz_uz_dq_setpoint_filter_init(config);
-	Data->filter_2 = uz_uz_dq_setpoint_filter_init(config);
-	Data->filter_3 = uz_uz_dq_setpoint_filter_init(config);
+	const struct uz_IIR_Filter_config config_filter = {
+		.selection = LowPass_first_order, 
+		.cutoff_frequency_Hz = 1.0f, 
+		.sample_frequency_Hz = isr_frequency};
+	const struct uz_dq_setpoint_filter_config setpoint_filter = {
+		.config_filter_d = config_filter,
+		.config_filter_q = config_filter};
+	Data->filter_1 = uz_uz_dq_setpoint_filter_init(setpoint_filter);
+	Data->filter_2 = uz_uz_dq_setpoint_filter_init(setpoint_filter);
+	Data->filter_3 = uz_uz_dq_setpoint_filter_init(setpoint_filter);
 }  
 
 static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data){

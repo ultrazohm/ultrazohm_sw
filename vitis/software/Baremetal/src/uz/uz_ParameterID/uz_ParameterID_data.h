@@ -55,7 +55,8 @@ typedef struct {
   real32_T omega_m; /**< measured mechanical omega */
   real32_T omega_el; /**< measured electrical omega */
   real32_T theta_m; /**< measured mechanical theta */
-  real32_T theta_el; /**< measured electrical theta */
+  real32_T theta_el; /**< measured electrical theta (with offset correction) */
+  real32_T theta_el_raw; /**< measured electrical theta raw (no offset correction) */
   real32_T V_DC; /**< measured DC-link voltage */
   real32_T average_winding_temp; /**< Average winding temperature in deg C */
 } uz_ParaID_ActualValues_t;

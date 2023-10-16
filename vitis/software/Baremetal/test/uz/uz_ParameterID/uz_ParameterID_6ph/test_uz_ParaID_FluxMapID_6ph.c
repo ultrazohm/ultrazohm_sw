@@ -41,9 +41,12 @@ void test_uz_FluxMapID_6ph_init(void) {
 }
 
 void test_uz_FluxMapID_6ph_step_not_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_FluxMapID_6ph_step(NULL));
+    uz_ParaID_FluxMapIDConfig_t ID_config = {0};
+    uz_ParaID_ActualValues_t av = {0};
+    uz_ParaID_GlobalConfig_t gc = {0};
+    uz_ParaID_ControlFlags_t flags = {0};
+    TEST_ASSERT_FAIL_ASSERT(uz_FluxMapID_6ph_step(NULL, ID_config, av, gc, flags));
 }
-
 
 
 void test_uz_FluxMapID_6ph_get_enteredFluxMapID_not_NULL(void) {

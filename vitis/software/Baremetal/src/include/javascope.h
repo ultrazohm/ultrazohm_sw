@@ -53,6 +53,8 @@ enum JS_OberservableData {
 	JSO_iq_pu_ip,
 	JSO_id_delay_pu,
 	JSO_iq_delay_pu,
+	JSO_idc_left,
+	JSO_idc_right,
 	JSO_vd_pu,
 	JSO_vq_pu,
 	JSO_theta_el_left,

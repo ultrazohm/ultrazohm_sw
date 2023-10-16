@@ -72,13 +72,6 @@ uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){
     		self->Interploation_Coefficients[1][i] = (config.Sample_Amplitude_Y[i+1] - config.Sample_Amplitude_Y[i])/(get_TimeBase_init(config, config.Sample_Duration_X[i]));	// represents the slope
     		self->Interploation_Coefficients[0][i] = config.Sample_Amplitude_Y[i+1] - self->Interploation_Coefficients[1][i]*Sum_Timeaxis;	// represents the ordinate section
     	}
-    }else if(config.selection_interpolation == Spline){ 													// create interpolation-coefficients for spline interpolation
-    	for(int i = 0; i < (Max_Trajectory_Samples-1);i++){
-			self->Interploation_Coefficients[3][i] = 0.0f;
-			self->Interploation_Coefficients[2][i] = 0.0f;
-			self->Interploation_Coefficients[1][i] = 0.0f;
-			self->Interploation_Coefficients[0][i] = 0.0f;
-    	}
     }														// no need for interpolation if zero-order-hold is selected
     return(self);
 }
@@ -128,10 +121,6 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 						// Calculate linear equation
 						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
 						break;
-					case Spline:
-						// TO IMPLEMENT
-						Temp_Trajectory_out = 0.0f;
-						break;
 					default:
 						// Trigger an Assertion- this code should never be reached
 						uz_assert(true);
@@ -169,10 +158,6 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 					// Calculate linear equation
 					Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
 					break;
-				case Spline:
-					// TO IMPLEMENT
-					Temp_Trajectory_out = 0.0f;
-					break;
 				default:
 					// Trigger an Assertion- this code should never be reached
 					uz_assert(true);
@@ -206,10 +191,6 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 					case Linear:
 						// Calculate linear equation
 						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
-						break;
-					case Spline:
-						// TO IMPLEMENT
-						Temp_Trajectory_out = 0.0f;
 						break;
 					default:
 						// Trigger an Assertion- this code should never be reached

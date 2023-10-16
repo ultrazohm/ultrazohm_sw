@@ -9,6 +9,7 @@
 #include "uz_matrix.h"
 #include "uz_mtwister.h"
 #include "uz_environment.h"
+#include "uz_array.h"
 
 #define NUMBEROFBITS 8
 uint32_t array[NUMBEROFBITS] = {0, 1, 0, 0, 1, 0, 1, 0};

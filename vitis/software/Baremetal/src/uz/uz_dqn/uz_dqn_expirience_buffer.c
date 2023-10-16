@@ -4,6 +4,7 @@
 #include "uz_dqn_expirience_buffer.h"
 #include <stdbool.h>
 #include "../uz_HAL.h"
+#include "../uz_array/uz_array.h"
 
 
 

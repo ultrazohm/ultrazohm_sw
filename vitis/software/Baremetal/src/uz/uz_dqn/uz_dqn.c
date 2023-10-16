@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_dqn.h"
+#include "../uz_array/uz_array.h"
 
 struct uz_dqn_t
 {

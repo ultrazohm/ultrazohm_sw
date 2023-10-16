@@ -10,6 +10,7 @@
 #include "uz_matrix.h"
 #include "uz_mtwister.h"
 #include "uz_environment.h"
+#include "uz_array.h"
 
 #define EXPERIENCE_BUFFER_LENGTH 3
 #define NUMBEROFOBS 5

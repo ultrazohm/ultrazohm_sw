@@ -20,7 +20,9 @@ Setup
 Defines
 -------
 
-Inside the 'uz_Trajectory.h' is a define , which limits the maximum number of samples.
+.. _uz_Trajectory_Samples_define:
+
+Inside the ``uz_Trajectory.h`` is a define , which limits the maximum number of samples.
 This must first be set to the desired number of data points before the module can be configured.
 
 .. doxygendefine:: Max_Trajectory_Samples
@@ -37,26 +39,26 @@ Struct to store the desired configuration.
 Configuration
 -------------
 
-The Trajectory Generator is capable to use different interpolation algorythm between each data point.
-At the current time only no interpolation (Zero-Order-Hold) oder linear interpolation is implemented.
+The trajectory generator is able to use different interpolation algorithms between the single data points.
+Currently, only no interpolation (zero-order hold) or linear interpolation is implemented.
 
 .. doxygenenum:: uz_Trajectory_interpolation_selection
 
-Choose the unit of the time base.
-The values for the time are durations, so only values greater zero will lead to correct behavior.
+Select the unit of the time base.
+The values for time are durations, so only values greater than zero will result in correct behavior.
 
-.. doxygenenum:: uz_Trajectory_YTicks_selection
+.. doxygenenum:: uz_Trajectory_XTicks_selection
 
-Switch to force the generator to repeat the sequence infinite or an specified amount of repeats.
+Switch to force the generator to repeat the sequence infinitely or a specified number of times.
     
 .. doxygenenum:: uz_Trajectory_Repeat_selection
 
-Switch to set the output-behavior.
-It is possible to hold the last value or a defined zero when the trajectory has stopped or run through.
+Switch for setting the output behavior.
+It is possible to hold the last value or a defined zero point when the trajectory has stopped or passed through.
     
 .. doxygenenum:: uz_Trajectory_Stop_Output_selection
 
-Config struct to create the Trajectory Generator
+Config struct to create the trajectory generator
   
 .. doxygenstruct:: uz_Trajectory_config
   :members:
@@ -104,14 +106,16 @@ Example
 Description
 ^^^^^^^^^^^
 
-Allocates the memory for the Trajectory Generator instance. 
+Allocates the memory for the trajectory generator instance. 
 Furthermore the input values of the configuration struct are asserted. 
 
 Functions
 =========
 
 Predefined functions are available for easier operation.
-The Functions Start, Stop and Reset can be called directly from the file 'ipc_ARM.c'
+The Start, Stop and Reset functions can be called directly from the ``ipc_ARM.c`` file and should be used to control the trajectory generator.
+
+.. _uz_Trajectory_Start_func:
 
 Start
 -----
@@ -135,6 +139,8 @@ Example
     ...
   }
 
+.. _uz_Trajectory_Stop_func:
+
 Stop
 ----- 
 
@@ -150,12 +156,14 @@ Example
   #include "uz/uz_Trajectory/uz_Trajectory.h"
   void ipc_Control_func(uint32_t msgId, float value, DS_Data *data){
     ...
-    case (My_Button_2):
+    case (My_Button_3):
       ultrazohm_state_machine_set_userLED(false);
       uz_Trajectory_Stop(Global_Data.objects.TraceGen_1);
       break;
     ...
   }
+
+.. _uz_Trajectory_Reset_func:
 
 Reset
 -----
@@ -172,7 +180,7 @@ Example
   #include "uz/uz_Trajectory/uz_Trajectory.h"
   void ipc_Control_func(uint32_t msgId, float value, DS_Data *data){
     ...
-    case (My_Button_2):
+    case (My_Button_4):
       ultrazohm_state_machine_set_userLED(false);
       uz_Trajectory_Reset(Global_Data.objects.TraceGen_1);
       break;
@@ -180,7 +188,9 @@ Example
   }
 
 
-The Step-function should be called from the ISR inside the file 'isr.c'.
+The Step-function should be called from the ISR inside the file ``isr.c``.
+
+.. _uz_Trajectory_Step_func:
 
 Step
 -----
@@ -201,6 +211,33 @@ Example
     Global_Data.av.Traj_1 = uz_Trajectory_Step(Global_Data.objects.TraceGen_1);
     ...
   }
+
+Usecase
+=======
+
+To create a trajectory with the generator module and use it in operation, the following steps must be followed:
+
+#. Define the needed trajectory and determine the grid points.
+#. Define the Samples inside the :ref:`uz_trajectory.h<uz_Trajectory_Samples_define>`.
+#. Write the :ref:`configuration<uz_Trajectory_config>` and create the trajectory generator object.
+
+   * If the complete trajectory is to be played back, the value ``config.Number_Sample_Points`` can be set to the define ``Max_Trajectory_Samples``. Otherwise, the first X grid points can be played with the value ``config.Number_Sample_Points``.  
+
+#. Add the functions :ref:`uz_Trajectory_Start<uz_Trajectory_Start_func>`, :ref:`uz_Trajectory_Stop<uz_Trajectory_Stop_func>` and :ref:`uz_Trajectory_Reset<uz_Trajectory_Reset_func>` to the IPC-Handler.
+  
+   * It is recommended to define some buttons of the JavaScope to control the trajectory generator and to label the buttons according to the programmed functionality.
+
+#. Add the function :ref:`uz_Trajectory_Step<uz_Trajectory_Step_func>` to the ISR and create a variable for the trajectory inside the `Global_Data`.
+#. Add the Output of the trajectory generator to the Global_Data and the JavaScope.
+#. Compile the Code and Start the UltraZohm.
+
+After you set up the trajectory generator, you can control the behavior using the JavaScope buttons and play your own trajectories.
+To do this, first call the start function.
+The generator will start playing the trajectory until the termination condition is reached or continue doing so indefinitely. 
+The trajectory can be stopped with the Stop function.
+If the trajectory is to be continued, the start function must be called up again.
+When the end of the trajectory is reached in repeat mode, the generator locks automatically to prevent an accidental second run.
+If a second run is desired, the trajectory must first be unlocked with the Reset function. 
 
 Designed by 
 -----------

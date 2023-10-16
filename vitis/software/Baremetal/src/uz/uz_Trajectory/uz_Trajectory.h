@@ -3,47 +3,46 @@
 #include <stdbool.h>
 
 /**
- * @brief Number of the maximum Samples that can be stored. \n Should be as small as possible to save resources.
+ * @brief Maximum number of samples that can be stored. Should be as small as possible to save resources.
  * 
  */
 #define Max_Trajectory_Samples	20
 
-/*! enum for readable configuring for type of Interpolation */
+/*! enum for readable configuration of the interpolation type */
 enum uz_Trajectory_interpolation_selection {
 	Zero_Order_Hold = 0,
 	Linear
 };
 
-/*! enum for readable configuring for type of Y-Axis-Style */
-enum uz_Trajectory_YTicks_selection {
+/*! enum for readable configuration of the Y-Axis-Style */
+enum uz_Trajectory_XTicks_selection {
 	ISR_Ticks = 0,
 	MicroSeconds,
 	MilliSeconds,
 	Seconds
 };
-/*! enum for readable configuring for type of Interpolation */
+/*! enum for readable configuration of the repeat behavior*/
 enum uz_Trajectory_Repeat_selection {
 	Repeat_Times = 0,
 	Repeat_Inf
 };
 
-
-/*! enum for readable configuring for type of output behavior */
+/*! enum for readable configuration of the output behavior */
 enum uz_Trajectory_Stop_Output_selection {
 	ForceToZero = 0,
 	HoldLast
 };
 
 /**
- * @brief Configuration struct for a trajectory generator.
+ * @brief configuration struct for a trajectory generator.
  *
  */
 struct uz_Trajectory_config {
-	enum uz_Trajectory_interpolation_selection selection_interpolation; /**< Interpolation-Style selection \n */
-	enum uz_Trajectory_YTicks_selection selection_YAxis; /**< Y-Axis-Style selection \n */
-	enum uz_Trajectory_Stop_Output_selection StopStyle; /**< Defines the Behavior when Reaching the End or Trajectory is Stopped \n */
-	enum uz_Trajectory_Repeat_selection RepeatStyle; /**< Defines if the Trajecotry should be repeated x times or infinit \n */
-    float Number_Sample_Points; /**< Number of Samples to use of the Signal. Can be used to represent only the first X values \n */
+	enum uz_Trajectory_interpolation_selection selection_interpolation; /**< Interpolation type selection \n */
+	enum uz_Trajectory_XTicks_selection selection_YAxis; /**< X-Axis-Style selection \n */
+	enum uz_Trajectory_Stop_Output_selection StopStyle; /**< Defines the behavior when reaching the end or trajectory is stopped \n */
+	enum uz_Trajectory_Repeat_selection RepeatStyle; /**< Defines whether the playback process is to be repeated x times or infinitely \n */
+    float Number_Sample_Points; /**< Number of samples of the signal to be used. Can be used to display only the first X values \n */
 	float Sample_Amplitude_Y[Max_Trajectory_Samples]; /**< Y-Axis-Amplitude of the signal \n */
 	float Sample_Duration_X[Max_Trajectory_Samples]; /**< X-Axis-Duration of each Sample of the signal \n */
 	float Repeats; /**< Number of repeats \n */
@@ -89,7 +88,7 @@ void uz_Trajectory_Reset(uz_Trajectory_t* self);
  * @brief Outputs the calculated trajectory.
  *
  * @param self pointer to uz_Trajectory_t object
- * @return float Returns current Trajectory-step
+ * @return float Returns current trajectory step
  */
 float uz_Trajectory_Step(uz_Trajectory_t* self);
 

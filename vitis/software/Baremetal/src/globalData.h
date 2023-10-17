@@ -156,6 +156,7 @@ typedef struct{
 	uz_inverter_adapter_t* uz_d_inverter_left;
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
+	uz_mux_axi_t* mux_axi_a2;
 }object_pointers_t;
 
 

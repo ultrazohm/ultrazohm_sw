@@ -24,9 +24,21 @@ static struct uz_mux_axi_config_t uz_mux_axi_config = {
         .n_th_interrupt=INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE
 };
 
+static struct uz_mux_axi_config_t uz_mux_axi_config_A2 = {
+        .base_address= XPAR_UZ_SYSTEM_INTERRUPT_MUX_AXI_IP_0_BASEADDR,
+        .ip_clk_frequency_Hz=100000000,
+		.mux=1U,
+        .n_th_interrupt=1U
+};
+
 uz_mux_axi_t* initialize_uz_mux_axi(void) {
 
 	return (uz_mux_axi_init(uz_mux_axi_config));
 
 }
 
+uz_mux_axi_t* initialize_uz_mux_axi_A2(void) {
+
+//	return (uz_mux_axi_init(uz_mux_axi_config_A2));
+
+}

@@ -25,7 +25,7 @@ Defines
 Inside the ``uz_Trajectory.h`` is a define , which limits the maximum number of samples.
 This must first be set to the desired number of data points before the module can be configured.
 
-.. doxygendefine:: Max_Trajectory_Samples
+.. doxygendefine:: MAX_TRAJECTORY_SAMPLES
 
 Struct
 ------
@@ -74,7 +74,7 @@ Example
   int main(void) {
     struct uz_Trajectory_config Trace1_Config = {
       .selection_interpolation = Linear,
-      .selection_YAxis = MilliSeconds,
+      .selection_XAxis = MilliSeconds,
       .StopStyle = HoldLast,
       .RepeatStyle = Repeat_Times,
       .Number_Sample_Points = 11.0f,
@@ -207,7 +207,7 @@ Example
   #include "uz/uz_Trajectory/uz_Trajectory.h"
   void ISR_Control(void *data){
     ...
-    // Generate Trajectorie
+    // Generate Trajectory
     Global_Data.av.Traj_1 = uz_Trajectory_Step(Global_Data.objects.TraceGen_1);
     ...
   }
@@ -221,7 +221,7 @@ To create a trajectory with the generator module and use it in operation, the fo
 #. Define the Samples inside the :ref:`uz_trajectory.h<uz_Trajectory_Samples_define>`.
 #. Write the :ref:`configuration<uz_Trajectory_config>` and create the trajectory generator object.
 
-   * If the complete trajectory is to be played back, the value ``config.Number_Sample_Points`` can be set to the define ``Max_Trajectory_Samples``. Otherwise, the first X grid points can be played with the value ``config.Number_Sample_Points``.  
+   * If the complete trajectory is to be played back, the value ``config.Number_Sample_Points`` can be set to the define ``MAX_TRAJECTORY_SAMPLES``. Otherwise, the first X grid points can be played with the value ``config.Number_Sample_Points``.  
 
 #. Add the functions :ref:`uz_Trajectory_Start<uz_Trajectory_Start_func>`, :ref:`uz_Trajectory_Stop<uz_Trajectory_Stop_func>` and :ref:`uz_Trajectory_Reset<uz_Trajectory_Reset_func>` to the IPC-Handler.
   
@@ -242,4 +242,4 @@ If a second run is desired, the trajectory must first be unlocked with the Reset
 Designed by 
 -----------
 
-Robert Zipprich (Universität Kassel / EMA) in 10/2023
+Robert Zipprich (University of Kassel Kassel / EMA) in 10/2023

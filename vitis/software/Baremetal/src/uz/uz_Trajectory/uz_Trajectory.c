@@ -21,7 +21,6 @@
 #include "../uz_HAL.h"
 #include <math.h>
 #include <stdlib.h>
-#include <stdint.h>
 
 #if UZ_TRAJECTORY_MAX_INSTANCES > 0
 typedef struct uz_Trajectory_t {
@@ -32,8 +31,7 @@ typedef struct uz_Trajectory_t {
 	uint32_t Trajectory_Counter;
 	uint32_t Step_Counter;
 	uint32_t Repeats_Counter;
-	float Interploation_Coefficients[4][Max_Trajectory_Samples-1];		// Dimensions are prepared for spline-interpolaten
-	float Min_Step_Width;
+	float Interpolation_Coefficients[4][MAX_TRAJECTORY_SAMPLES-1];		// Dimensions are prepared for spline-interpolation
 }uz_Trajectory_t;
 
 static uint32_t instance_counter = 0U;
@@ -55,24 +53,32 @@ static uz_Trajectory_t* uz_Trajectory_allocation(void){
 
 uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){
 	uz_Trajectory_t* self = uz_Trajectory_allocation();
-	uz_assert(config.Number_Sample_Points < Max_Trajectory_Samples);
-    self->config = config;
+	uz_assert(config.Number_Sample_Points <= MAX_TRAJECTORY_SAMPLES);										// Check if the number of samples tp play didn't exceed the maximum amount if samples
+	for(int i = 0; i < MAX_TRAJECTORY_SAMPLES;i++){
+		uz_assert(get_TimeBase_init(config, config.Sample_Duration_X[i]) >= self->config.Stepwidth_ISR);	// Check if the Timebase didn't get to short (lesser than the ISR-Timestep)
+	}
+	if(config.RepeatStyle == Repeat_Times){
+		uz_assert(config.Repeats >= 1.0f);																	// Checks for non-zero and positive amount of repeats, will be ignored for Repeat_Inf
+	}
+	self->config = config;
     self->is_running = false;
     self->Trajectory_Counter = 0U;
     self->Step_Counter = 0U;
     self->Repeats_Counter = 0U;
-    self->Min_Step_Width = 2*self->config.Stepwidth_ISR;
 
     float Sum_Timeaxis = 0.0f;
     if(config.selection_interpolation == Linear){ 	// create interpolation-coefficients for linear interpolation
-    	for(int i = 0; i < (Max_Trajectory_Samples-1);i++){
+    	for(int i = 0; i < (MAX_TRAJECTORY_SAMPLES-1);i++){
     		Sum_Timeaxis = Sum_Timeaxis + get_TimeBase_init(config, config.Sample_Duration_X[i]);
-    		self->Interploation_Coefficients[3][i] = 0.0f;	// not needed
-    		self->Interploation_Coefficients[2][i] = 0.0f;	// not needed
-    		self->Interploation_Coefficients[1][i] = (config.Sample_Amplitude_Y[i+1] - config.Sample_Amplitude_Y[i])/(get_TimeBase_init(config, config.Sample_Duration_X[i]));	// represents the slope
-    		self->Interploation_Coefficients[0][i] = config.Sample_Amplitude_Y[i+1] - self->Interploation_Coefficients[1][i]*Sum_Timeaxis;	// represents the ordinate section
+    		self->Interpolation_Coefficients[3][i] = 0.0f;	// not needed
+    		self->Interpolation_Coefficients[2][i] = 0.0f;	// not needed
+    		self->Interpolation_Coefficients[1][i] = (config.Sample_Amplitude_Y[i+1] - config.Sample_Amplitude_Y[i])/(get_TimeBase_init(config, config.Sample_Duration_X[i]));	// represents the slope
+    		self->Interpolation_Coefficients[0][i] = config.Sample_Amplitude_Y[i+1] - self->Interpolation_Coefficients[1][i]*Sum_Timeaxis;										// represents the ordinate section
     	}
-    }														// no need for interpolation if zero-order-hold is selected
+		if(config.Number_Sample_Points < MAX_TRAJECTORY_SAMPLES){ 	// correction of the Trajectory if fewer samples of the Signal where used and interpolation is activated
+			self->Interpolation_Coefficients[1][config.Number_Sample_Points-1] = (config.Sample_Amplitude_Y[0] - config.Sample_Amplitude_Y[config.Number_Sample_Points-1])/(get_TimeBase_init(config, config.Sample_Duration_X[config.Number_Sample_Points-1]));	// represents the slope
+		}
+    }
     return(self);
 }
 
@@ -114,12 +120,12 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 					// Choose Interpolation-Style
 					switch(self->config.selection_interpolation){
 					case Zero_Order_Hold:
-						// Use Indizies
+						// Use Indicies
 						Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
 						break;
 					case Linear:
 						// Calculate linear equation
-						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
+						Temp_Trajectory_out = (self->Interpolation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
 						break;
 					default:
 						// Trigger an Assertion- this code should never be reached
@@ -151,12 +157,12 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 				// Choose Interpolation-Style
 				switch(self->config.selection_interpolation){
 				case Zero_Order_Hold:
-					// Use Indizies
+					// Use Indicies
 					Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
 					break;
 				case Linear:
 					// Calculate linear equation
-					Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
+					Temp_Trajectory_out = (self->Interpolation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
 					break;
 				default:
 					// Trigger an Assertion- this code should never be reached
@@ -185,12 +191,12 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 			case HoldLast:
 				switch(self->config.selection_interpolation){
 					case Zero_Order_Hold:
-						// Use Indizies
+						// Use Indicies
 						Temp_Trajectory_out = self->config.Sample_Amplitude_Y[self->Step_Counter];
 						break;
 					case Linear:
 						// Calculate linear equation
-						Temp_Trajectory_out = (self->Interploation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
+						Temp_Trajectory_out = (self->Interpolation_Coefficients[1][self->Step_Counter] * self->Trajectory_Counter + self->config.Sample_Amplitude_Y[self->Step_Counter]);
 						break;
 					default:
 						// Trigger an Assertion- this code should never be reached
@@ -216,7 +222,7 @@ float uz_Trajectory_Step(uz_Trajectory_t* self){
 static uint32_t get_TimeBase(uz_Trajectory_t* self, uint32_t Step){
 	// Default-Tickz set to 1
 	uint32_t Tickz = 1U;
-	switch(self->config.selection_YAxis){
+	switch(self->config.selection_XAxis){
 		case ISR_Ticks:
 			// Simply output the Number of Tickz from the Y-Array
 			Tickz = (uint32_t)self->config.Sample_Duration_X[Step];
@@ -240,7 +246,7 @@ static uint32_t get_TimeBase(uz_Trajectory_t* self, uint32_t Step){
 static uint32_t get_TimeBase_init(struct uz_Trajectory_config config, uint32_t Duration){
 	// Default-Tickz set to 1
 	uint32_t Tickz = 1U;
-	switch(config.selection_YAxis){
+	switch(config.selection_XAxis){
 		case ISR_Ticks:
 			// Simply output the Number of Tickz from the Y-Array
 			Tickz = (uint32_t)Duration;

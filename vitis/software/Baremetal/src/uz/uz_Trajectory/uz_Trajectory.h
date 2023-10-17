@@ -1,12 +1,13 @@
-#ifndef UZ_TRAJECtory_H
-#define UZ_TRAJECtory_H
+#ifndef UZ_TRAJECTORY_H
+#define UZ_TRAJECTORY_H
 #include <stdbool.h>
+#include <stdint.h>
 
 /**
  * @brief Maximum number of samples that can be stored. Should be as small as possible to save resources.
  * 
  */
-#define Max_Trajectory_Samples	20
+#define MAX_TRAJECTORY_SAMPLES 	20
 
 /*! enum for readable configuration of the interpolation type */
 enum uz_Trajectory_interpolation_selection {
@@ -14,7 +15,7 @@ enum uz_Trajectory_interpolation_selection {
 	Linear
 };
 
-/*! enum for readable configuration of the Y-Axis-Style */
+/*! enum for readable configuration of the X-Axis-Style */
 enum uz_Trajectory_XTicks_selection {
 	ISR_Ticks = 0,
 	MicroSeconds,
@@ -39,14 +40,14 @@ enum uz_Trajectory_Stop_Output_selection {
  */
 struct uz_Trajectory_config {
 	enum uz_Trajectory_interpolation_selection selection_interpolation; /**< Interpolation type selection \n */
-	enum uz_Trajectory_XTicks_selection selection_YAxis; /**< X-Axis-Style selection \n */
+	enum uz_Trajectory_XTicks_selection selection_XAxis; /**< X-Axis-Style selection \n */
 	enum uz_Trajectory_Stop_Output_selection StopStyle; /**< Defines the behavior when reaching the end or trajectory is stopped \n */
 	enum uz_Trajectory_Repeat_selection RepeatStyle; /**< Defines whether the playback process is to be repeated x times or infinitely \n */
-    float Number_Sample_Points; /**< Number of samples of the signal to be used. Can be used to display only the first X values \n */
-	float Sample_Amplitude_Y[Max_Trajectory_Samples]; /**< Y-Axis-Amplitude of the signal \n */
-	float Sample_Duration_X[Max_Trajectory_Samples]; /**< X-Axis-Duration of each Sample of the signal \n */
-	float Repeats; /**< Number of repeats \n */
-	float Stepwidth_ISR; /**< Time of the Stepwidth in with the Trajecotrie is called \n */
+    uint32_t Number_Sample_Points; /**< Number of samples of the signal to be used. Can be used to display only the first X values. \n If this feature isn't needed, set his value to MAX_TRAJECTORY_SAMPLES \n */
+	float Sample_Amplitude_Y[MAX_TRAJECTORY_SAMPLES]; /**< Y-Axis-Amplitude of the signal \n */
+	float Sample_Duration_X[MAX_TRAJECTORY_SAMPLES]; /**< X-Axis-Duration of each Sample of the signal \n */
+	uint32_t Repeats; /**< Number of repeats \n */
+	float Stepwidth_ISR; /**< Time of the Stepwidth in with the Trajectory is called \n */
 };
 
 /**
@@ -93,4 +94,4 @@ void uz_Trajectory_Reset(uz_Trajectory_t* self);
 float uz_Trajectory_Step(uz_Trajectory_t* self);
 
 
-#endif // UZ_TRAJECtory_H
+#endif // UZ_TRAJECTORY_H

@@ -21,7 +21,7 @@
 
 #include "TwoMassID_codegen.h"
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
+#if (UZ_PARAMETERID_MAX_INSTANCES+UZ_PARAMETERID_6PH_MAX_INSTANCES) > 0U
 #include <string.h>
 #include <math.h>
 #include "../lib/rt_nonfinite.h"

@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
+#if (UZ_PARAMETERID_MAX_INSTANCES+UZ_PARAMETERID_6PH_MAX_INSTANCES) > 0U
 #include "uz_ParaID_FrictionID.h"
 #include "../../uz_HAL.h"
 
@@ -28,12 +28,12 @@ struct uz_ParaID_FrictionID_t{
 };
 
 static uint32_t instances_counter_ParaID_FrictionID = 0;
-static uz_ParaID_FrictionID_t instances_ParaID_FrictionID[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
+static uz_ParaID_FrictionID_t instances_ParaID_FrictionID[UZ_PARAMETERID_MAX_INSTANCES+UZ_PARAMETERID_6PH_MAX_INSTANCES] = { 0 };
 
 static uz_ParaID_FrictionID_t* uz_ParaID_FrictionID_allocation(void);
 
 static uz_ParaID_FrictionID_t* uz_ParaID_FrictionID_allocation(void) {
-	uz_assert(instances_counter_ParaID_FrictionID < UZ_PARAMETERID_MAX_INSTANCES);
+	uz_assert(instances_counter_ParaID_FrictionID < (UZ_PARAMETERID_MAX_INSTANCES+UZ_PARAMETERID_6PH_MAX_INSTANCES);
 	uz_ParaID_FrictionID_t* self = &instances_ParaID_FrictionID[instances_counter_ParaID_FrictionID];
 	uz_assert_false(self->is_ready);
 	instances_counter_ParaID_FrictionID++;

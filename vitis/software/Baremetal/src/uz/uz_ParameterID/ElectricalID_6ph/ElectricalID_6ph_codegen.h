@@ -64,8 +64,7 @@ typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  uz_ParaID_ElectricalID_output_t ElectricalID_output;/* '<Root>/ElectricalID_6ph_codegen' */
-  uz_ParaID_Controller_Parameters_output_t FOC_out_old;
+  uz_ParaID_Controller_Parameters_output_t b;
   uint64_T u;
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
@@ -119,16 +118,52 @@ typedef struct {
   real32_T H_iu[4];
   real32_T R_est;              /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T L_est;              /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  real32_T R_est_o;            /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  real32_T L_est_l;            /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  real32_T R_est_e;            /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  real32_T L_est_p;            /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  real32_T duty_a1;            /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  real32_T duty_b1;            /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  real32_T duty_c1;            /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  real32_T duty_a2;            /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  real32_T duty_b2;            /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  real32_T duty_c2;            /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  real32_T R_est_k;            /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  real32_T L_est_h;            /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  real32_T duty_a1_g;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  real32_T duty_b1_m;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  real32_T duty_c1_f;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  real32_T duty_a2_l;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  real32_T duty_b2_p;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  real32_T duty_c2_p;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  real32_T R_est_d;            /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  real32_T L_est_hm;           /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  real32_T duty_a1_h;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  real32_T duty_b1_i;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  real32_T duty_c1_o;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  real32_T duty_a2_a;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  real32_T duty_b2_pt;         /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  real32_T duty_c2_m;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   real32_T R_est_m;            /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  real32_T L_est_n;            /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  real32_T R_est_k;            /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  real32_T L_est_f;            /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  real32_T R_est_ow;            /* '<S1>/ElectricalID.Subchart_Step_Response' */
-  real32_T L_est_pd;            /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T L_est_h4;           /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  real32_T duty_a1_b;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  real32_T duty_b1_f;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  real32_T duty_c1_oz;         /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  real32_T duty_a2_d;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  real32_T duty_b2_pn;         /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  real32_T duty_c2_l;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  real32_T R_est_f;            /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  real32_T L_est_a;            /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  real32_T duty_a1_a;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  real32_T duty_b1_h;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  real32_T duty_c1_c;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  real32_T duty_a2_h;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  real32_T duty_b2_e;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  real32_T duty_c2_me;         /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  real32_T R_est_o;             /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T L_est_k;             /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T duty_a1_m;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T duty_b1_a;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T duty_c1_cc;          /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T duty_a2_o;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T duty_b2_h;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T duty_c2_j;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T bandwidthCurrentControl;    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T dampingFactor;              /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T psiOverJ;                   /* '<Root>/ElectricalID_6ph_codegen' */
@@ -151,59 +186,139 @@ typedef struct {
   real32_T V0_n4;               /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T lambda_l;
   real32_T e_d;
+  real32_T A;
+  real32_T B;
+  real32_T s0;
+  real32_T s2;
+  real32_T C_re;
+  real32_T C_im;
+  real32_T b_y_re;
+  real32_T b_y_im;
+  real32_T a;
+  real32_T b_c;
+  real32_T r;
+  real32_T t;
+  real32_T e_lm;
+  real32_T b_y_idx_0;
+  real32_T b_y_idx_1;
+  real32_T b_y_idx_2;
+  real32_T r_b;
+  real32_T t_p;
+  real32_T e_lm_c;
+  real32_T b_y_idx_0_f;
+  real32_T b_y_idx_1_g;
+  real32_T b_y_idx_2_g;
+  real32_T r_m;
+  real32_T t_n;
+  real32_T e_lm_p;
+  real32_T b_y_idx_0_l;
+  real32_T b_y_idx_1_j;
+  real32_T b_y_idx_2_d;
+  real32_T r_g;
+  real32_T t_l;
+  real32_T e_lm_d;
+  real32_T b_y_idx_0_d;
+  real32_T b_y_idx_1_l;
+  real32_T b_y_idx_2_o;
+  real32_T r_bj;
+  real32_T t_nu;
+  real32_T e_lm_b;
+  real32_T b_y_idx_0_ln;
+  real32_T b_y_idx_1_h;
+  real32_T b_y_idx_2_b;
+  real32_T r_d;
+  real32_T t_e;
+  real32_T e_lm_bj;
+  real32_T b_y_idx_0_j;
+  real32_T b_y_idx_1_f;
+  real32_T b_y_idx_2_a;
   int32_T i;
-  int32_T i_c;
+  int32_T i_j;
+  int32_T i_jz;
+  int32_T k;
+  int32_T b_o;
+  int32_T it;
+  int32_T k_n;
+  int32_T i1;
+  int32_T i2;
+  int32_T b_i;
+  int32_T it_o;
+  int32_T k_nv;
+  int32_T i3;
+  int32_T i4;
+  int32_T b_m;
+  int32_T it_c;
+  int32_T k_m;
+  int32_T i5;
+  int32_T i6;
+  int32_T b_m3;
+  int32_T it_j;
+  int32_T k_h;
+  int32_T i7;
+  int32_T i8;
+  int32_T b_c0;
+  int32_T it_ct;
+  int32_T k_p;
+  int32_T i9;
+  int32_T i10;
+  int32_T b_p;
+  int32_T it_a;
+  int32_T k_e;
+  int32_T i11;
+  int32_T i12;
   uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID_6ph_codegen' */
-  uint32_T one_sec_transition_counter_f;/* '<Root>/ElectricalID_6ph_codegen' */
-  uint32_T one_sec_transition_counter_p;/* '<Root>/ElectricalID_6ph_codegen' */
-  uint32_T one_sec_transition_counter_fz;/* '<Root>/ElectricalID_6ph_codegen' */
-  uint32_T one_sec_transition_counter_c;/* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_d;/* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_e;/* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T one_sec_transition_counter_i;/* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_iz;/* '<Root>/ElectricalID_6ph_codegen' */
+  uint32_T one_sec_transition_counter_ee;/* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T counter;                    /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T wait_count;                 /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T sineCounter;                /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T one_sec_transition_counter_k;/* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T counter_e;          /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint32_T exitPortIndex_f;    /* '<S1>/ElectricalID.Subchart_Step_Response5' */
+  uint32_T exitPortIndex_fb;   /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   uint32_T counter_o;          /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint32_T exitPortIndex_l;    /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  uint32_T exitPortIndex_lu;   /* '<S1>/ElectricalID.Subchart_Step_Response4' */
   uint32_T counter_l;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint32_T exitPortIndex_pn;   /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  uint32_T exitPortIndex_p;    /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint32_T counter_j;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint32_T exitPortIndex_a;    /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  uint32_T exitPortIndex_ax;   /* '<S1>/ElectricalID.Subchart_Step_Response2' */
   uint32_T counter_n;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint32_T exitPortIndex_i;    /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  uint32_T exitPortIndex_ig;   /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   uint32_T counter_b;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
   uint32_T exitPortIndex_c;     /* '<S1>/ElectricalID.Subchart_Step_Response' */
   uint32_T exitPortIndex;
   uint16_T activeState;        /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint16_T activeState_a;      /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint16_T activeState_c;      /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint16_T activeState_j;      /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint16_T activeState_i;      /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint16_T activeState_f;       /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  uint16_T activeState_g;      /* '<S1>/ElectricalID.Subchart_Step_Response4' */
+  uint16_T activeState_o;      /* '<S1>/ElectricalID.Subchart_Step_Response3' */
+  uint16_T activeState_m;      /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  uint16_T activeState_k;      /* '<S1>/ElectricalID.Subchart_Step_Response1' */
+  uint16_T activeState_e;       /* '<S1>/ElectricalID.Subchart_Step_Response' */
   uint16_T z;                  /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   uint16_T z_p;                /* '<S1>/ElectricalID.Subchart_Step_Response4' */
   uint16_T z_n;                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint16_T z_a;                /* '<S1>/ElectricalID.Subchart_Step_Response2' */
   uint16_T z_f;                /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   uint16_T z_b;                 /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  uint16_T n_iters_hn;
   uint8_T is_c3_ElectricalID_6ph_codegen;/* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_ElectricalID;             /* '<Root>/ElectricalID_6ph_codegen' */
   uint8_T is_active_c3_ElectricalID_6ph_c;/* '<Root>/ElectricalID_6ph_codegen' */
-  uint8_T is_c14_sRCDi92N2oSQUmGeYo70UnB_;
+  uint8_T is_c14_s5GFvcIEiHaEeLykNZd26KD_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response5' */
-  uint8_T is_c14_s8u1YeWX83z4pQE5pIRriB_S;
+  uint8_T is_c14_syDLZ7ewW657ORfo5B24P8G_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response4' */
-  uint8_T is_c14_sHNjxE88OKjSUQKwr7t9dEF_;
+  uint8_T is_c14_s6K4fTLncxfnPv75zTq3l7_S;
                                /* '<S1>/ElectricalID.Subchart_Step_Response3' */
-  uint8_T is_c14_sMiNSvwDSSQ0fyDrGJyhQ7C_;
+  uint8_T is_c14_sCl1CynIgUX5UjcC9bfM5eB_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint8_T is_c14_sUNKXbDZSPy5ddVbbHlIXCD_;
+  uint8_T is_c14_sKiiTP0zCCEKg34HNdUfAgH_;
                                /* '<S1>/ElectricalID.Subchart_Step_Response1' */
-  uint8_T is_c14_sV8aPwtNVdy0zGD3J0PF8eB_;
+  uint8_T is_c14_stl2WtPFq3qW31gqVNqzRoF_;
                                 /* '<S1>/ElectricalID.Subchart_Step_Response' */
   boolean_T DC_valid;                  /* '<Root>/ElectricalID_6ph_codegen' */
+  boolean_T updateJ_ok;
 } DW_ElectricalID_6ph_codegen_t;
 
 /* External inputs (root inport signals with default storage) */

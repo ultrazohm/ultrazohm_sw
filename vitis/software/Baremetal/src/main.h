@@ -35,6 +35,7 @@
 // UltraZohm includes
 #include "globalData.h"
 #include "defines.h"
+#include "include/ddpg_current_ctrl.h"
 #include "include/isr.h"
 #include "include/encoder.h"
 #include "include/gpio_axi.h"
@@ -58,6 +59,9 @@
 #include "include/pi_foc.h"
 #include "include/inverter.h"
 #include "include/fcs_mpc.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_nn/uz_nn_activation_functions.h"
+#include "uz/uz_nn/uz_nn_layer.h"
 
 
 

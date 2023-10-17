@@ -107,8 +107,8 @@ const base_val_t base_val={
 		.psiB=(sqrt(2.0f/3.0f)*rated_values.VR)/(rated_values.nR*2.0f*UZ_PIf/60.0f*polepairs)
 };
 
-//const float Ts = 1.0f/UZ_PWM_FREQUENCY;
-const float Ts = 1.0f/100.0e3f;
+const float Ts = 1.0f/UZ_PWM_FREQUENCY_RIGHT;
+//const float Ts = 1.0f/100.0e3f;
 
 //pre-calculated factors for delay compensation and prediction model
 const pre_calc_val_t pre_calc_val={

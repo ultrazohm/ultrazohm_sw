@@ -361,7 +361,7 @@ void control_right_motor() {
     	fcs_mpc_write_setpoint();
 
     	//read axi values from mpc ip for debug
-    	//fcs_mpc_debug();
+    	fcs_mpc_debug();
 	}
 
 	if(Global_Data.rasv.current_ctrl_select == DDPG_CC) {

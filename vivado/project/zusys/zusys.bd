@@ -4674,7 +4674,7 @@
                 "inst_hier_path": "uz_system/Interrupt/xlconcat_0",
                 "parameters": {
                   "NUM_PORTS": {
-                    "value": "7"
+                    "value": "8"
                   }
                 }
               },
@@ -4898,7 +4898,8 @@
                   "xlconcat_0/In3",
                   "xlconcat_0/In6",
                   "xlconcat_0/In5",
-                  "xlconcat_0/In4"
+                  "xlconcat_0/In4",
+                  "xlconcat_0/In7"
                 ]
               },
               "zynq_ultra_ps_e_0_pl_clk1": {

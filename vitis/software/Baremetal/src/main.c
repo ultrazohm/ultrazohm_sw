@@ -15,7 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-#include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L_hw.h"
+
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -102,11 +102,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
-            //
-            uz_PWM_SS_2L_hw_SetStatus(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR, true);
-            uz_PWM_SS_2L_hw_SetStatus(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, true);
-            uz_PWM_SS_2L_hw_SetStatus(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_2_BASEADDR, true);
-            uz_PWM_SS_2L_hw_SetStatus(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_3_BASEADDR, true);
+            uz_axigpio_reset_pwm_counter(); //reset pwm counter of all instances in order to force synchronous start of all PWM modules
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             Global_Data.objects.mux_axi_a2 = initialize_uz_mux_axi_A2();
             PWM_3L_Initialize(&Global_Data); // three-level modulator

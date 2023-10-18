@@ -107,7 +107,7 @@ void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data
  * @param FluxMapCounter pointer to float variable of FluxMapCounter
  * @param ArrayCounter pointer to float variable of ArrayCounter
  */
-void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
+void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState);
 
 /**
  * @brief calculates PsiPMs from FFT in the main function to not block the isr

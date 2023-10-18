@@ -38,7 +38,14 @@ uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void);
  * @param fft_in input from FFT function
  * @param offset_est_in input from encoder offset estimation
  */
-void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self, uz_ParaID_ElectricalIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags, uz_ParaID_ElectricalID_fft_in_t fft_in, uz_ParaID_ElectricalID_offset_estimation_t offset_est_in);
+void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self);
+
+void uz_ElectricalID_6ph_set_Config(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalIDConfig_t Config);
+void uz_ElectricalID_6ph_set_ActualValues(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ActualValues_t ActualValues);
+void uz_ElectricalID_6ph_set_GlobalConfig(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+void uz_ElectricalID_6ph_set_ControlFlags(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
+void uz_ElectricalID_6ph_set_FFT_in(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_fft_in_t* fft_in);
+void uz_ElectricalID_6ph_set_Offset_Estimation(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_offset_estimation_t* offset_est_in);
 
 /**
  * @brief Gets the status of the enteredElectricalID flag

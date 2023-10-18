@@ -68,7 +68,7 @@ typedef struct {
   uint64_T u;
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T i_est[2048];                /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T i_est[1024];                /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T inv_VSD[36];                /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T inv_VSD_a[36];      /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T current_meas_array[1024];
@@ -164,17 +164,14 @@ typedef struct {
   real32_T duty_a2_o;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T duty_b2_h;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T duty_c2_j;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
-  real32_T bandwidthCurrentControl;    /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T dampingFactor;              /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T psiOverJ;                   /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Kp_n_loc;                   /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Ki_n_loc;                   /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Ki_id_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Kp_id_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Ki_iq_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T Kp_iq_loc;                  /* '<Root>/ElectricalID_6ph_codegen' */
-  real32_T ia_sum;                     /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T DutyCycle;                  /* '<Root>/ElectricalID_6ph_codegen' */
+  real32_T ia_sum;                     /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T L_est_m;                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T R_est_c;                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T ref_amplitude;              /* '<Root>/ElectricalID_6ph_codegen' */
@@ -184,6 +181,7 @@ typedef struct {
   real32_T V0_a;               /* '<S1>/ElectricalID.Subchart_Step_Response2' */
   real32_T V0_al;              /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   real32_T V0_n4;               /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  real32_T f;
   real32_T lambda_l;
   real32_T e_d;
   real32_T A;
@@ -283,11 +281,11 @@ typedef struct {
   uint32_T counter_l;          /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint32_T exitPortIndex_p;    /* '<S1>/ElectricalID.Subchart_Step_Response3' */
   uint32_T counter_j;          /* '<S1>/ElectricalID.Subchart_Step_Response2' */
-  uint32_T exitPortIndex_ax;   /* '<S1>/ElectricalID.Subchart_Step_Response2' */
+  uint32_T exitPortIndex_a;    /* '<S1>/ElectricalID.Subchart_Step_Response2' */
   uint32_T counter_n;          /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   uint32_T exitPortIndex_ig;   /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   uint32_T counter_b;           /* '<S1>/ElectricalID.Subchart_Step_Response' */
-  uint32_T exitPortIndex_c;     /* '<S1>/ElectricalID.Subchart_Step_Response' */
+  uint32_T exitPortIndex_cw;    /* '<S1>/ElectricalID.Subchart_Step_Response' */
   uint32_T exitPortIndex;
   uint16_T activeState;        /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   uint16_T activeState_g;      /* '<S1>/ElectricalID.Subchart_Step_Response4' */

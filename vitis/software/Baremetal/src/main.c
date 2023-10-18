@@ -40,6 +40,7 @@ DS_Data Global_Data = {
     }
 };
 
+
 enum init_chain
 {
     init_assertions = 0,
@@ -70,6 +71,8 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
+            Global_Data.objects.ParaID_6ph = init_ParaID_6ph_wrapper();
+            Global_Data.objects.controller = init_ParaID_6ph_controller();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

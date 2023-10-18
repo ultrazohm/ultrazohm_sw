@@ -8,6 +8,8 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_Transformation/uz_transformation.h"
+#include "uz/uz_ParameterID/uz_ParameterID_6ph.h"
+#include "uz/uz_ParameterID/uz_ParameterID_data.h"
 
 
 // union allows to access the values as array and individual variables
@@ -129,6 +131,8 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
+	uz_ParameterID_6ph_t* ParaID_6ph;
+	struct uz_ParameterID_controller controller;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -56,6 +56,8 @@
 
 #include "sw/init_Inv/init_inverter.h"
 
+#include "sw/init_ParaID_6ph/init_ParaID_6ph.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

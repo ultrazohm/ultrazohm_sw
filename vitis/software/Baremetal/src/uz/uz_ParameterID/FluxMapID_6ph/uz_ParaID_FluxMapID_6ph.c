@@ -75,6 +75,7 @@ void uz_FluxMapID_6ph_set_GlobalConfig(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaI
 
 void uz_FluxMapID_6ph_set_ControlFlags(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ControlFlags_t* ControlFlags) {
 	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(ControlFlags);
 	uz_assert(self->is_ready);
 	self->input.ControlFlags = *ControlFlags;
 }

@@ -116,6 +116,6 @@ void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, floa
  * @param Data pointer to uz_ParameterID_Data_t struct
  * @param meas_array pointer to float variable of activeState
  */
-void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array);
+void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data);
 
 #endif // UZ_PARAMETERID_6PH_H

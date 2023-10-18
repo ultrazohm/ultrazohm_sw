@@ -34,14 +34,40 @@ uz_ParaID_InterpMeshGrid_t* uz_InterpMeshGrid_init(void);
 /**
  * @brief steps the InterpolateMeshGrid state once
  * 
- * @param self pointer to object
+ * @param self pointer to uz_ParaID_InterpMeshGrid_t object
  */
 void uz_InterpMeshGrid_step(uz_ParaID_InterpMeshGrid_t *self);
 
+/**
+ * @brief Sets the cleaned psi_array from the CleanPsiArray
+ * 
+ * @param self pointer to uz_ParaID_InterpMeshGrid_t object
+ * @param psi_array_in cleaned array from the CleanPsiArray
+ */
 void uz_InterpMeshGrid_set_psi_array(uz_ParaID_InterpMeshGrid_t *self, float psi_array_in[600]);
+
+/**
+ * @brief Sets the rated current of the machine for the InterpMeshGrid algorithm
+ * 
+ * @param self pointer to uz_ParaID_InterpMeshGrid_t object
+ * @param i_rat rated current of the machine
+ */
 void uz_InterpMeshGrid_set_i_rat(uz_ParaID_InterpMeshGrid_t *self, float i_rat);
+
+/**
+ * @brief Sets the OnlineID output struct for the InterpMeshGrid
+ * 
+ * @param self pointer to uz_ParaID_InterpMeshGrid_t object
+ * @param OnlineID_input output struct of the OnlineID
+ */
 void uz_InterpMeshGrid_set_OnlineID_output(uz_ParaID_InterpMeshGrid_t *self, uz_ParaID_OnlineID_output_t* OnlineID_input);
 
+/**
+ * @brief Gets the inter-&extrapolated FluxMaps
+ * 
+ * @param self pointer to uz_ParaID_InterpMeshGrid_t object
+ * @return uz_ParaID_FluxMapsData_t* pointer to the array
+ */
 uz_ParaID_FluxMapsData_t* uz_InterpMeshGrid_get_FluxMapData(uz_ParaID_InterpMeshGrid_t *self);
 
 

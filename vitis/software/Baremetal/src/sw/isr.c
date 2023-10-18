@@ -49,21 +49,6 @@ float theta_offset = 5.4843f;
 float u_n1 = 0.0f;
 float u_n2 = 0.0f;
 
-
-
-// ParaID 6ph
-#include "../uz/uz_ParameterID/uz_ParameterID_6ph.h"
-extern uz_ParameterID_Data_t ParaID_Data;
-//Next lines only needed, if the uz_FOC is used as the controller
-struct uz_DutyCycle_2x3ph_t ParaID_DutyCycle = { 0 };
-uz_3ph_alphabeta_t voltage_stationary_xy = {0};
-uz_3ph_alphabeta_t voltage_stationary_zero = {0};
-uz_6ph_dq_t controller_out = {0};
-float u_a1c1 = 0.0f;
-float u_a2c2 = 0.0f;
-
-extern uz_ParameterID_6ph_t* ParameterID;
-
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -173,29 +158,7 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
- 	   //ParaID
-			uz_ParameterID_6ph_step(ParameterID, &ParaID_Data);
-//			controller_out = uz_ParameterID_6ph_Controller(&ParaID_Data, Global_Data.objects.controller);
-			ParaID_DutyCycle = uz_ParameterID_6ph_generate_DutyCycle(&ParaID_Data, controller_out);
-			//write duty-cycles
-			Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.system1.DutyCycle_A;
-			Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.system1.DutyCycle_B;
-			Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.system1.DutyCycle_C;
-			Global_Data.rasv.halfBridge4DutyCycle = ParaID_DutyCycle.system2.DutyCycle_A;
-			Global_Data.rasv.halfBridge5DutyCycle = ParaID_DutyCycle.system2.DutyCycle_B;
-			Global_Data.rasv.halfBridge6DutyCycle = ParaID_DutyCycle.system2.DutyCycle_C;
-			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, ParaID_Data.ElectricalID_Output->enable_TriState[0], ParaID_Data.ElectricalID_Output->enable_TriState[1], ParaID_Data.ElectricalID_Output->enable_TriState[2]);
-			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, ParaID_Data.ElectricalID_Output->enable_TriState_set_2[0], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[1], ParaID_Data.ElectricalID_Output->enable_TriState_set_2[2]);
-
-    }else{
-	    Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
-		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
-		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
+        // Start: Control algorithm - only if ultrazohm is in control state
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

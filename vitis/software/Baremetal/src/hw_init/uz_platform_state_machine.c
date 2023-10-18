@@ -242,12 +242,12 @@ static void ready_LED_blink_fast(void)
     if ((uptime_ms % 200) > 100)
     {
         uz_led_set_readyLED_on();
-//        ultrazohm_state.uz_led_states.readyLED = true;
+        ultrazohm_state.uz_led_states.readyLED = true;
     }
     else
     {
         uz_led_set_readyLED_off();
-//        ultrazohm_state.uz_led_states.readyLED = false;
+        ultrazohm_state.uz_led_states.readyLED = false;
     }
 }
 

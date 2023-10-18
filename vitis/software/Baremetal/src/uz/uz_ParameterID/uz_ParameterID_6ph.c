@@ -240,12 +240,12 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
 		V_abc_Volts.c1 = -V_abc_Volts.a1;
 		V_abc_Volts.a2 = 3.0f/2.0f*v_dq_Volts.z2;
 		V_abc_Volts.c2 = -V_abc_Volts.a2;
-//		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC);
+		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	
 	// during normal operation give out calculated dutycycles from setpoints
 	} else if (Data->Controller_Parameters.enableFOC_current == true || Data->Controller_Parameters.enableFOC_speed == true || Data->Controller_Parameters.enableFOC_torque == true || Data->ParaID_Control_Selection == Current_Control) {		
 		V_abc_Volts = uz_transformation_asym30deg_6ph_dq_to_abc(v_dq_Volts, Data->ActualValues.theta_el);
-//		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC);
+		output_DutyCycle = uz_FOC_generate_DutyCycles_6ph(V_abc_Volts, Data->ActualValues.V_DC); 
 	
 	// anything else, set zero
 	} else {
@@ -346,7 +346,7 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 	// if first (dq) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x1)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
 		if(Data->Controller_Parameters.setpoint_filter & (0x1)){
-//			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_1, Data->filter_2, Data->Controller_Parameters.i_dq_ref), Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}else{
 			cc_out_dq = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_dq_ref, Data->ActualValues.i_dq, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
@@ -356,7 +356,7 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 	// if second (xy) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x2)) && !(Data->Controller_Parameters.PI_subsystem & (0x04))){
 		if(Data->Controller_Parameters.setpoint_filter & (0x2)){
-//			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, uz_signals_IIR_Filter_dq_setpoint(Data->filter_3, Data->filter_4, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
 		}else{
 			cc_out_xy = uz_CurrentControl_sample(Data->cc_instance_2, Data->Controller_Parameters.i_xy_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
 		}   
@@ -364,7 +364,7 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data)
 	// if third (zero) system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_subsystem & (0x4)) && !(Data->Controller_Parameters.PI_subsystem & (0x03))){
 		if(Data->Controller_Parameters.setpoint_filter & (0x4)){
-//			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_5, Data->filter_6, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
+			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, uz_signals_IIR_Filter_dq_setpoint(Data->filter_5, Data->filter_6, Data->Controller_Parameters.i_zero_ref), Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}else{
 			cc_out_zero_rotating = uz_CurrentControl_sample(Data->cc_instance_1, Data->Controller_Parameters.i_zero_ref, Data->ActualValues.i_zero_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);
 		}
@@ -480,7 +480,7 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	if(Data->Controller_Parameters.activeState==166U){
 		Data->ElectricalID_Offset_Estimation.i_dq_ref = uz_encoder_offset_estimation_step(Data->encoder_offset_estimation);
 		Data->ElectricalID_Offset_Estimation.finished_flag = uz_encoder_offset_estimation_get_finished(Data->encoder_offset_estimation);
-//		Data->ElectricalID_Offset_Estimation.progress = uz_encoder_offset_estimation_get_progress_status(Data->encoder_offset_estimation);
+		Data->ElectricalID_Offset_Estimation.progress = uz_encoder_offset_estimation_get_progress_status(Data->encoder_offset_estimation);
 	}
 
 	//Step the function

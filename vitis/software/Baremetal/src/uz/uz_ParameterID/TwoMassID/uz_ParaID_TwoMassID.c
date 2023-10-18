@@ -46,13 +46,13 @@ uz_ParaID_TwoMassID_t* uz_TwoMassID_init(void) {
 	self->PtrToModelData->dwork = &self->rtDW;
 	self->PtrToModelData->inputs = &self->input;
 	self->PtrToModelData->outputs = &self->output;
-//	TwoMassID_initialize(self->PtrToModelData);
+	TwoMassID_initialize(self->PtrToModelData);
 	return (self);
 }
 
 void uz_TwoMassID_step(uz_ParaID_TwoMassID_t *self) {
 	uz_assert_not_NULL(self);
-//	TwoMassID_step(self->PtrToModelData);
+	TwoMassID_step(self->PtrToModelData);
 }
 
 void uz_TwoMassID_set_Config(uz_ParaID_TwoMassID_t *self, uz_ParaID_TwoMassIDConfig_t Config) {

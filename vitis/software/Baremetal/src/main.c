@@ -40,10 +40,6 @@ DS_Data Global_Data = {
     }
 };
 
-#include "uz/uz_ParameterID/uz_ParameterID_6ph.h"
-uz_ParameterID_6ph_t* ParameterID = NULL;
-uz_ParameterID_Data_t ParaID_Data = { 0 };
-
 enum init_chain
 {
     init_assertions = 0,
@@ -74,7 +70,6 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            ParameterID = uz_ParameterID_6ph_init(&ParaID_Data);
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

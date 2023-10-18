@@ -67,6 +67,11 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_omega_m,
+	JSO_omega_el,
+	JSO_torque_ref,
+	JSO_omega_m_filt,
+	JSO_omega_el_filt,
 	JSO_ENDMARKER
 };
 

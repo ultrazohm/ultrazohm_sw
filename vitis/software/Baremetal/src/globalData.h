@@ -104,6 +104,9 @@ typedef struct _actualValues_ {
 	// Add additional Variables
 	float polepairs;						// Machine polepairs
 	bool flg_speed_control;					// Flag to start / stop speed control - 0: current control / 1: speed control
+
+	bool flg_torque_setpoint;
+
 	bool flg_enable_FU;						// Flag to check if FU is enabled or disabled
 	float flg_enable_LMG_continues;			// Flag to check if LMG continues measurement is enabled or disabled
 	float flg_enable_LMG_transient;			// Flag to check if LMG transient measurement is enabled or disabled
@@ -123,6 +126,8 @@ typedef struct _actualValues_ {
 
     float omega_mech_rad_per_sec;
     float omega_el_rad_per_sec;
+    float omega_m_rad_per_sec_filt;
+    float omega_el_rad_per_sec_filt;
 
 
 } actualValues;
@@ -163,6 +168,7 @@ typedef struct _referenceAndSetValues_ {
 	float t_set_current;  			// Delay to set the current
 
 	float torque_ref;
+	float torque_setpoint;
 
 } referenceAndSetValues;
 

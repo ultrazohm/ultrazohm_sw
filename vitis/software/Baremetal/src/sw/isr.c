@@ -57,6 +57,7 @@ struct uz_DutyCycle_t output = {
 
 float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
+float omega_m_rad_per_sec_filt = 0.0f;
 
 float unfiltered_signal = 0.0f;
 
@@ -116,8 +117,8 @@ static float angle[10] = {0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f,
 #define PHASE_VOLT_CONV						1.0f //12.5f	// Scaling factor for voltage measurement
 #define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors								// O offset passt
 #define USE_RESOVER							0U		// 0u: Incremental Encoder on D5
-#define MAX_CURRENT_ASSERTION				110.0f	// Maximum Current
-#define MAX_SPEED_ASSERTION					1000.0f	// Maximum Speed
+#define MAX_CURRENT_ASSERTION				35.0f	// Maximum Current
+#define MAX_SPEED_ASSERTION					600.0f	// Maximum Speed
 
 
 //==============================================================================================================================================================
@@ -147,6 +148,11 @@ void ISR_Control(void *data)
     Global_Data.av.mechanicalRotorSpeed = Global_Data.av.resolver_outputs_d4.n_mech_rpm;
 
     Global_Data.av.mechanicalRotorSpeed_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_speed_rpm, Global_Data.av.mechanicalRotorSpeed);
+    Global_Data.av.omega_m_rad_per_sec_filt = Global_Data.av.mechanicalRotorSpeed_filt * (2.0f * M_PI) / 60.0f;
+    Global_Data.av.omega_el_rad_per_sec_filt = Global_Data.av.omega_m_rad_per_sec_filt * Global_Data.av.polepairs;
+
+
+
 
     // Calculate theta_elec
     //Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
@@ -197,7 +203,7 @@ void ISR_Control(void *data)
     dq_measurement_voltage = uz_transformation_3ph_abc_to_dq(measurement_voltage, Global_Data.av.theta_elec);
 
 //    unfiltered_signal = DC_VOLT_CONV * (Global_Data.aa.A1.me.ADC_B8 - DC_VOLT_OFFSET); //Global_Data.aa.A1.me.ADC_A4;
-    Global_Data.av.U_ZK  = 25.0f; //-1.0f * DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B8 - DC_VOLT_OFFSET;
+    Global_Data.av.U_ZK  = 24; //-1.0f * DC_VOLT_CONV * Global_Data.aa.A1.me.ADC_B8 - DC_VOLT_OFFSET;	//24
     Global_Data.av.U_ZK_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_u_dc, Global_Data.av.U_ZK);
 
     // Value to Scope
@@ -211,6 +217,9 @@ void ISR_Control(void *data)
     // calculating values needed for current control
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f; // omega_mech
     omega_el_rad_per_sec = omega_m_rad_per_sec * Global_Data.av.polepairs;
+
+    omega_m_rad_per_sec_filt = Global_Data.av.mechanicalRotorSpeed_filt * (2.0f * M_PI) / 60.0f;
+
     Global_Data.av.omega_el_rad_per_sec = omega_el_rad_per_sec;
 
     // Value to Scope
@@ -270,18 +279,24 @@ void ISR_Control(void *data)
 		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
 		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 
-		        if (Global_Data.av.flg_speed_control){
+		        if (Global_Data.av.flg_speed_control || Global_Data.av.flg_torque_setpoint){
 		        	Global_Data.av.testsignal = Global_Data.rasv.n_ref_rpm;
 		        	// Drehmomentregelung gibt direkt q-Strom vor, d-Strom 0
+
 		        	dq_reference_current.q = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
 		        	dq_reference_current.d = 0.0f;//fabs(dq_reference_current.q);
 		        	Global_Data.rasv.i_d_ref = dq_reference_current.d;
 		        	Global_Data.rasv.i_q_ref = dq_reference_current.q;
-		        	// currently not implemented !!!
 
-		        	// mit uz_setpoint
-		        	Global_Data.rasv.torque_ref = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
-		        	dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, Global_Data.av.omega_mech_rad_per_sec, Global_Data.rasv.torque_ref, Global_Data.av.U_ZK_filt, dq_measurement_current);
+		        	if(Global_Data.av.flg_torque_setpoint){
+		        		Global_Data.rasv.torque_ref = Global_Data.rasv.torque_setpoint;
+		        	}else{
+		        		// mit uz_setpoint			omega_m_rad_per_sec_filt   Global_Data.av.omega_mech_rad_per_sec
+		        		Global_Data.rasv.torque_ref = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, Global_Data.av.omega_m_rad_per_sec_filt, Global_Data.rasv.n_ref_rpm);
+		        	}
+
+
+		        	dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, Global_Data.av.omega_m_rad_per_sec_filt, Global_Data.rasv.torque_ref, Global_Data.av.U_ZK_filt, dq_measurement_current);
 		        	Global_Data.rasv.i_d_ref = dq_reference_current.d;
 		        	Global_Data.rasv.i_q_ref = dq_reference_current.q;
 
@@ -293,7 +308,7 @@ void ISR_Control(void *data)
 		        }
 
 		        // FOC - get U_d and U_q as controlled variables
-		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
+		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, Global_Data.av.omega_el_rad_per_sec_filt);
 //		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
 		        Global_Data.rasv.U_d_ref = dq_reference_voltage.d;
 		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
@@ -312,7 +327,7 @@ void ISR_Control(void *data)
 		       	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
 		       	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 
-		       	output.DutyCycle_A = 0.2f;
+		       	output.DutyCycle_A = 0.02f;
 		       	output.DutyCycle_B = 0.0f;
 		       	output.DutyCycle_C = 0.0f;
 

@@ -90,9 +90,16 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_U_ZK_filt]				= &data->av.U_ZK_filt;
 	js_ch_observable[JSO_LMG_Switch]			= &data->av.flg_enable_LMG_continues;
 	js_ch_observable[JSO_Testsignal]			= &data->av.testsignal;
+	js_ch_observable[JSO_omega_m]				= &data->av.omega_mech_rad_per_sec;
+	js_ch_observable[JSO_omega_el]				= &data->av.omega_el_rad_per_sec;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_torque_ref] 			=&data->rasv.torque_ref;
+	js_ch_observable[JSO_omega_m_filt]				= &data->av.omega_m_rad_per_sec_filt;
+	js_ch_observable[JSO_omega_el_filt]				= &data->av.omega_el_rad_per_sec_filt;
+
+
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

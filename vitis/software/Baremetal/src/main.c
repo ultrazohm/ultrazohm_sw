@@ -76,34 +76,34 @@ int main(void)
             break;
         case init_CurrentControl_rsm:
             struct uz_PMSM_t config_PMSM = {
-                .Ld_Henry = 20.45e-03f,
-                .Lq_Henry = 1.48e-03f,
-                .Psi_PM_Vs = 0.0f,
-            	.R_ph_Ohm = 0.3,
+                .Ld_Henry = 0.0010198f, // 9.84545e-04, //6.6918e-04, //20.45e-03f,
+                .Lq_Henry = 0.0013014f, // 0.00126, //, 6.6918e-04, //1.48e-03f,
+                .Psi_PM_Vs = 0.0485f,
+            	.R_ph_Ohm = 0.0967,
             	.polePairs = 7,
             	//.J_kg_m_squared,
-				.I_max_Ampere = 15.0f};
+				.I_max_Ampere = 30.0f};	// 17.5
 
             struct uz_PI_Controller_config config_id = {
-                .Kp = 4.7266f,//8.0f,
-                .Ki = 688.32f,//6.0f,
+                .Kp = 2.2306,//4.7266f,//8.0f,
+                .Ki = 322.4074,//688.32f,//6.0f,
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
-                .upper_limit = 10.0f,
-                .lower_limit = -10.0f};
+                .upper_limit = 30.0f,
+                .lower_limit = -30.0f};
 
             struct uz_PI_Controller_config config_iq = {
-                .Kp = 4.7266f, // 22.0f, // 20
-                .Ki = 688.32f, // 6.5f,  // 5
+                .Kp = 2.2306,//4.7266f, // 22.0f, // 20
+                .Ki = 322.4074,// 688.32f, // 6.5f,  // 5
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
-                .upper_limit = 10.0f,
-                .lower_limit = -10.0f};
+                .upper_limit = 30.0f,
+                .lower_limit = -30.0f};
 
             struct uz_SpeedControl_config config_speed = {
-            		.config_controller.Kp = 3.5f,
-					.config_controller.Ki = 1.0f,
+            		.config_controller.Kp = 0.5f,//3.5f,
+					.config_controller.Ki = 0.5f,
 					.config_controller.samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
-					.config_controller.upper_limit = 10.0f,
-					.config_controller.lower_limit = -10.0f,
+					.config_controller.upper_limit = 25.0f,
+					.config_controller.lower_limit = -25.0f,
             };
 
             struct uz_CurrentControl_config config_CurrentControl = {
@@ -154,9 +154,9 @@ int main(void)
                .config_PMSM.Psi_PM_Vs = config_PMSM.Psi_PM_Vs,
                .control_type = FOC,
                .motor_type = SMPMSM,
-               .is_field_weakening_enabled = false,
+               .is_field_weakening_enabled = true,
                .id_ref_Ampere = 0.0f,
-               .relative_torque_tolerance = 0.001f
+               .relative_torque_tolerance = 0.01f
             };
 
 
@@ -181,14 +181,22 @@ int main(void)
 
             // Initialize Global actualValues
             Global_Data.av.theta_offset = 0.5292f; //TODO;
-            Global_Data.av.polepairs = 11.0f;
+            Global_Data.av.polepairs = 7.0f;
 
             Global_Data.av.kp_d = 1.0f; //40.0f;		// currently not in use
 			Global_Data.av.ki_d = 1.0f; //35.0f;
             Global_Data.av.kp_q = 1.0f; //40.0f;
 			Global_Data.av.ki_q = 1.0f; //32.0f;
 
+
+
+
             Global_Data.av.flg_speed_control = false;		// enable or disable speed-control
+
+            Global_Data.av.flg_torque_setpoint = false;
+            Global_Data.rasv.torque_setpoint = 0.0f;
+
+
 
             // Initialize Global referenceAndSetValues
             Global_Data.rasv.state_of_statemachine = 0U;

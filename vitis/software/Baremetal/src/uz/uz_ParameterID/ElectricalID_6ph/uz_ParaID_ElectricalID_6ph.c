@@ -84,16 +84,16 @@ void uz_ElectricalID_6ph_set_ControlFlags(uz_ParaID_ElectricalID_6ph_t *self, uz
 	self->input.ControlFlags = *ControlFlags;
 }
 
-void uz_ElectricalID_6ph_set_FFT_in(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_fft_in_t* fft_in) {
+void uz_ElectricalID_6ph_set_FFT_in(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_fft_in_t fft_in) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->input.ElectricalID_fft_in = *fft_in;
+	self->input.ElectricalID_fft_in = fft_in;
 }
 
-void uz_ElectricalID_6ph_set_Offset_Estimation(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_offset_estimation_t* offset_est_in) {
+void uz_ElectricalID_6ph_set_Offset_Estimation(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_offset_estimation_t offset_est_in) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->input.extended_offset_estimation = *offset_est_in;
+	self->input.extended_offset_estimation = offset_est_in;
 }
 
 bool uz_get_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self)

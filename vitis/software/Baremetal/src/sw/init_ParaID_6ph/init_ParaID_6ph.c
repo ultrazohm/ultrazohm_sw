@@ -13,19 +13,19 @@ uz_ParameterID_6ph_t* init_ParaID_6ph_wrapper(void){
 const struct uz_PI_Controller_config PI_config_d = {
 		.Ki = 40.0f,
 		.Kp = 0.1f,
-		.samplingTime_sec = UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE};
+		.samplingTime_sec = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 const struct uz_PI_Controller_config PI_config_q = {
 		.Ki = 45.0f,
 		.Kp = 0.1f,
-		.samplingTime_sec = UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE};
+		.samplingTime_sec = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 const struct uz_PI_Controller_config PI_config_x = {
 		.Ki = 40.0f,
 		.Kp = 0.05f,
-		.samplingTime_sec = UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE};
+		.samplingTime_sec = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 const struct uz_PI_Controller_config PI_config_y = {
 		.Ki = 45.0f,
 		.Kp = 0.05f,
-		.samplingTime_sec = UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE};
+		.samplingTime_sec = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 struct uz_CurrentControl_config cc_config_dq = {
 		.decoupling_select = linear_decoupling,
 		.config_id = PI_config_d,
@@ -43,7 +43,7 @@ struct uz_subspace_resonant_control_config resonant_dq = {
 		.harmonic_order = 2.0f,
 		.lower_limit = -10.0f,
 		.upper_limit = 10.0f,
-		.sampling_time = UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE};
+		.sampling_time = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 struct uz_subspace_resonant_control_config resonant_xy = {
 		.antiwindup_gain = 10.0f,
 		.gain_1 = 200.0f,
@@ -51,7 +51,7 @@ struct uz_subspace_resonant_control_config resonant_xy = {
 		.harmonic_order = 6.0f,
 		.lower_limit = -10.0f,
 		.upper_limit = 10.0f,
-		.sampling_time = UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE};
+		.sampling_time = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 struct uz_subspace_resonant_control_config resonant_zero = {
 		.antiwindup_gain = 10.0f,
 		.gain_1 = 50.0f,
@@ -59,12 +59,12 @@ struct uz_subspace_resonant_control_config resonant_zero = {
 		.harmonic_order = 6.0f,
 		.lower_limit = -10.0f,
 		.upper_limit = 10.0f,
-		.sampling_time = UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE};
+		.sampling_time = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 struct uz_SpeedControl_config speed_config = {
 		.config_controller.type = parallel,
 		.config_controller.Kp = 1.0f,
 		.config_controller.Ki = 1.0f,
-		.config_controller.samplingTime_sec =  UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE,
+		.config_controller.samplingTime_sec =  INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY,
 		.config_controller.upper_limit = 10.0f,
 		.config_controller.lower_limit = -10.0f };
 struct uz_SetPoint_config sp_config = {
@@ -90,11 +90,8 @@ struct uz_ParameterID_controller init_ParaID_6ph_controller(void){
 }
 
 // other
-//void init_ParaID_6ph_misc(void){
-//	uz_ParameterID_6ph_initialize_filter(&ParaID_Data, UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE);
-//	uz_ParameterID_6ph_initialize_encoder_offset_estimation(&ParaID_Data, &controller_out.q);
-//}
+void init_ParaID_6ph_misc(void){
+	uz_ParameterID_6ph_initialize_filter(&ParaID_Data, UZ_PWM_FREQUENCY/INTERRUPT_ISR_SOURCE_USER_CHOICE);
+	uz_ParameterID_6ph_initialize_encoder_offset_estimation(&ParaID_Data, &controller_out.q);
+}
 
-//void ParaID_calc_PsiPMs_wrapper(uz_ParameterID_6ph_t* self){
-////	uz_ParameterID_6ph_calculate_PsiPMs(self, &ParaID_Data, meas_array);
-//}

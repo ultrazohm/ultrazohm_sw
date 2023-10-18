@@ -59,6 +59,7 @@ float u_a1c1 = 0.0f;
 float u_a2c2 = 0.0f;
 
 
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -79,6 +80,11 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    if(abs(Global_Data.av.omega_el < 3.0f)){
+    	Global_Data.av.omega_el = 0.0f;
+    }
+
 
     //Take measurements independent of control_state
        	//Read out speed&position

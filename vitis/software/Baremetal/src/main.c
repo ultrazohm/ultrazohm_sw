@@ -40,6 +40,8 @@ DS_Data Global_Data = {
     }
 };
 
+extern uz_ParameterID_Data_t ParaID_Data;
+
 
 enum init_chain
 {
@@ -73,6 +75,7 @@ int main(void)
             uz_SystemTime_init();
             Global_Data.objects.ParaID_6ph = init_ParaID_6ph_wrapper();
             Global_Data.objects.controller = init_ParaID_6ph_controller();
+            init_ParaID_6ph_misc();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
@@ -112,6 +115,7 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            uz_ParameterID_6ph_calculate_PsiPMs(Global_Data.objects.ParaID_6ph, &ParaID_Data);
             break;
         default:
             break;

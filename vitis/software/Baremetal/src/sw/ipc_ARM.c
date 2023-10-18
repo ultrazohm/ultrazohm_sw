@@ -415,7 +415,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				            ParaID_Data.ElectricalID_Config.n_ref_measurement = value;
 				            break;
 
-				        case (ParaID_EID_goertzl_Torque):
+				        case (ParaID_EID_goertzl_Amp):
 				            ParaID_Data.ElectricalID_Config.goertzlTorque = value;
 				            break;
 
@@ -738,79 +738,79 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);
 
-//	//Replace Bit 12-21 with the following
-//	/* Bit 12 - trigger ext. logging */
-//		 if (ParaID_Data.Controller_Parameters.activeState == 404U) {
-//			js_status_BareToRTOS |= (1 << 12);
-//		 } else {
-//			js_status_BareToRTOS &= ~(1 << 12);
-//		 }
-//
-//		//Replace Bit 13-19 with the following
-//		    /* Bit 13 - Ident_Lq */
-//		    if (ParaID_Data.ElectricalID_Config.identLq == true) {
-//		        js_status_BareToRTOS |= (1 << 13);
-//		    } else {
-//		        js_status_BareToRTOS &= ~(1 << 13);
-//		    }
-//
-//		    /* Bit 14 - FluxMapID R-Online */
-//		    if (ParaID_Data.FluxMapID_Config.identR == true) {
-//		        js_status_BareToRTOS |= (1 << 14);
-//		    } else {
-//		        js_status_BareToRTOS &= ~(1 << 14);
-//		    }
-//
-//		    /* Bit 15 - FluxMapID start */
-//		    if (ParaID_Data.FluxMapID_Config.start_FM_ID == true) {
-//		        js_status_BareToRTOS |= (1 << 15);
-//		    } else {
-//		        js_status_BareToRTOS &= ~(1 << 15);
-//		    }
-//
-//		    /* Bit 16 - ParaID_FOC_CC */
-//		    if (ParaID_Data.ParaID_Control_Selection == Current_Control) {
-//		        js_status_BareToRTOS |= (1 << 16);
-//		    } else {
-//		        js_status_BareToRTOS &= ~(1 << 16);
-//		    }
-//
-//		    /* Bit 17 - ParaID_FOC_SC */
-//		    if (ParaID_Data.ParaID_Control_Selection == Speed_Control) {
-//		        js_status_BareToRTOS |= (1 << 17);
-//		    } else {
-//		        js_status_BareToRTOS &= ~(1 << 17);
-//		    }
-//
-//		    /* Bit 18 -ParaID_FOC_no_control */
-//		    if (ParaID_Data.ParaID_Control_Selection == No_Control) {
-//		        js_status_BareToRTOS |= (1 << 18);
-//		    } else {
-//		        js_status_BareToRTOS &= ~(1 << 18);
-//		    }
-//
-//		    /* Bit 19 -ParameterID active */
-//		    if (ParaID_Data.GlobalConfig.enableParameterID == true) {
-//		        ultrazohm_state_machine_set_userLED(true);
-//		        js_status_BareToRTOS |= (1 << 19);
-//		    } else {
-//		        js_status_BareToRTOS &= ~(1 << 19);
-//		        ultrazohm_state_machine_set_userLED(false);
-//		    }
-//
-//		    /* Bit 20 - ext offset */
-//			if (ParaID_Data.ElectricalID_Config.extended_offset == true) {
-//				js_status_BareToRTOS |= (1 << 20);
-//			} else {
-//				js_status_BareToRTOS &= ~(1 << 20);
-//			}
-//
-//		    //* Bit 21 - ext psi */
-//			if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
-//				js_status_BareToRTOS |= (1 << 21);
-//			} else {
-//				js_status_BareToRTOS &= ~(1 << 21);
-//			}
+	//Replace Bit 12-21 with the following
+	/* Bit 12 - trigger ext. logging */
+		 if (ParaID_Data.Controller_Parameters.activeState == 404U) {
+			js_status_BareToRTOS |= (1 << 12);
+		 } else {
+			js_status_BareToRTOS &= ~(1 << 12);
+		 }
+
+		//Replace Bit 13-19 with the following
+		    /* Bit 13 - Ident_Lq */
+		    if (ParaID_Data.ElectricalID_Config.identLq == true) {
+		        js_status_BareToRTOS |= (1 << 13);
+		    } else {
+		        js_status_BareToRTOS &= ~(1 << 13);
+		    }
+
+		    /* Bit 14 - FluxMapID R-Online */
+		    if (ParaID_Data.FluxMapID_Config.identR == true) {
+		        js_status_BareToRTOS |= (1 << 14);
+		    } else {
+		        js_status_BareToRTOS &= ~(1 << 14);
+		    }
+
+		    /* Bit 15 - FluxMapID start */
+		    if (ParaID_Data.FluxMapID_Config.start_FM_ID == true) {
+		        js_status_BareToRTOS |= (1 << 15);
+		    } else {
+		        js_status_BareToRTOS &= ~(1 << 15);
+		    }
+
+		    /* Bit 16 - ParaID_FOC_CC */
+		    if (ParaID_Data.ParaID_Control_Selection == Current_Control) {
+		        js_status_BareToRTOS |= (1 << 16);
+		    } else {
+		        js_status_BareToRTOS &= ~(1 << 16);
+		    }
+
+		    /* Bit 17 - ParaID_FOC_SC */
+		    if (ParaID_Data.ParaID_Control_Selection == Speed_Control) {
+		        js_status_BareToRTOS |= (1 << 17);
+		    } else {
+		        js_status_BareToRTOS &= ~(1 << 17);
+		    }
+
+		    /* Bit 18 -ParaID_FOC_no_control */
+		    if (ParaID_Data.ParaID_Control_Selection == No_Control) {
+		        js_status_BareToRTOS |= (1 << 18);
+		    } else {
+		        js_status_BareToRTOS &= ~(1 << 18);
+		    }
+
+		    /* Bit 19 -ParameterID active */
+		    if (ParaID_Data.GlobalConfig.enableParameterID == true) {
+		        ultrazohm_state_machine_set_userLED(true);
+		        js_status_BareToRTOS |= (1 << 19);
+		    } else {
+		        js_status_BareToRTOS &= ~(1 << 19);
+		        ultrazohm_state_machine_set_userLED(false);
+		    }
+
+		    /* Bit 20 - ext offset */
+			if (ParaID_Data.ElectricalID_Config.extended_offset == true) {
+				js_status_BareToRTOS |= (1 << 20);
+			} else {
+				js_status_BareToRTOS &= ~(1 << 20);
+			}
+
+		    //* Bit 21 - ext psi */
+			if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
+				js_status_BareToRTOS |= (1 << 21);
+			} else {
+				js_status_BareToRTOS &= ~(1 << 21);
+			}
 }
 
 

@@ -33,8 +33,8 @@ void tearDown(void)
 
 #define EXPERIENCE_BUFFER_LENGTH 5000U
 #define MINIBATCHSIZE 8U
-#define NUMBER_OF_EPOCHS 100U
-#define TARGET_UPDATE_FREQUENCY 20U
+#define NUMBER_OF_EPOCHS 200U
+#define TARGET_UPDATE_FREQUENCY 200U
 // nn
 #define NUMBER_OF_INPUTS 2U
 #define NUMBER_OF_OUTPUTS 3U
@@ -47,7 +47,7 @@ float lernrate = 0.002f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
-float epsilon_decay = 0.00001f;
+float epsilon_decay = 0.0001f;
 
 // adam
 float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
@@ -184,11 +184,11 @@ struct uz_dqn_experience_replay_config configbuffer = {
 #define DAUER 1000
 void test_uz_environment_pt1_one_input(void)
 {
-    float array[2]={0};
+    float array[2] = {0};
     float gain = 1.0f;
     float time_constant = 0.005f;
     float integration_time = 0.0001f;
-    uz_environment_pt1_t *pt1 = uz_environment_pt1_init(gain, time_constant, integration_time,array);
+    uz_environment_pt1_t *pt1 = uz_environment_pt1_init(gain, time_constant, integration_time, array);
     float current_value[DAUER] = {0.0f};
     for (uint32_t i = 0; i < DAUER; i++)
     {
@@ -212,7 +212,7 @@ void test_uz_environment_pt1_dqn_zero(void)
         uz_environment_pt1_dqn_step(pt1, 0U, 0.0f);
         current_value[i] = uz_environment_pt1_get_output(pt1);
     }
-   // char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
+    // char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
     // export_histogram(current_value, 100000, filepath);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.0f, current_value[100000 - 1]);
 }
@@ -230,8 +230,8 @@ void test_uz_environment_pt1_dqn_one(void)
         uz_environment_pt1_dqn_step(pt1, 1U, 0.0f);
         current_value[i] = uz_environment_pt1_get_output(pt1);
     }
-    //char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
-    // export_histogram(current_value, 100000, filepath);
+    // char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
+    //  export_histogram(current_value, 100000, filepath);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 0.0f, current_value[100000 - 1]);
 }
 
@@ -248,12 +248,12 @@ void test_uz_environment_pt1_dqn_two(void)
         uz_environment_pt1_dqn_step(pt1, 2U, 0.0f);
         current_value[i] = uz_environment_pt1_get_output(pt1);
     }
-  //  char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
+    //  char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
     // export_histogram(current_value, 100000, filepath);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, -1.0f, current_value[100000 - 1]);
 }
 
-void test_dqn_pt1(void)
+void test_dqn_pt1_synchron(void)
 {
     float targsmoothfact = 0.05f;
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
@@ -262,13 +262,14 @@ void test_dqn_pt1(void)
     float time_constant = 0.005f;
     float integration_time = 0.0001f;
     uz_environment_pt1_t *pt1 = uz_environment_pt1_init(gain, time_constant, integration_time, array);
-
+    uz_mtwister_t *random_generator = uz_mtwister_init(10U);
     uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
     ///////////////// Training loop///////////////////////////////////////////////////////////////////////////////////////////
     for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
+        float setpoint = uz_mtwister_random_uniform_float(random_generator);
         uz_environment_pt1_reset(pt1);
-        loss[epoch] = uz_environment_pt1_step_one_episode(testdqn2, 1000U, true, pt1,0.5f,false,NULL,NULL,NULL);
+        loss[epoch] = uz_environment_pt1_step_one_episode(testdqn2, 500U, true, pt1, setpoint, false, NULL, NULL, NULL,10);
         cumreward[epoch] = uz_environment_pt1_get_cumulative_reward(pt1);
         if (epoch == 0)
         {
@@ -287,7 +288,8 @@ void test_dqn_pt1(void)
     float log_error[1000U] = {0.0f};
     float log_input[1000U] = {0.0f};
     float log_output[1000U] = {1.0f};
-    uz_environment_pt1_step_one_episode(testdqn2, 1000U, false, pt1, 0.5f, true, log_error, log_input, log_output);
+    uz_environment_pt1_reset(pt1);
+    uz_environment_pt1_step_one_episode(testdqn2, 1000U, false, pt1, 0.5f, true, log_error, log_input, log_output,10);
 
     char filepath[] = "test/uz/uz_environment_pt1/pt1_dqn_output.csv";
     char filepath1[] = "test/uz/uz_environment_pt1/pt1_dqn_input.csv";
@@ -304,7 +306,7 @@ void test_dqn_pt1(void)
     exportFloatArrayToCSV("test/uz/uz_environment_pt1/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_environment_pt1/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
     FILE *f = fopen("test/uz/uz_environment_pt1/hyperparam.txt", "w"); // open the file for writing
-    if (f != NULL)                                         // check for success
+    if (f != NULL)                                                     // check for success
     {
         fprintf(f, "Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
         fprintf(f, "%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", (double)lernrate, (double)discountfact, (double)epsilon_start, (double)epsilon_min, (double)epsilon_decay, NUMBER_OF_HIDDEN_LAYER, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, NUMBER_OF_EPOCHS, TARGET_UPDATE_FREQUENCY, 2,
@@ -312,7 +314,101 @@ void test_dqn_pt1(void)
         fclose(f); // close the file
         f = NULL;  // set file handle to null since f is no longer valid
     }
+}
 
+void test_dqn_pt1_asynchron(void)
+{
+    float targsmoothfact = 0.05f;
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
+    float array[2] = {0};
+    float gain = 1.0f;
+    float time_constant = 0.005f;
+    float integration_time = 0.0001f;
+    uint32_t max_steps=500U;
+    uz_environment_pt1_t *pt1 = uz_environment_pt1_init(gain, time_constant, integration_time, array);
+    uz_mtwister_t *random_generator = uz_mtwister_init(10U);
+    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
+    ///////////////// Training loop///////////////////////////////////////////////////////////////////////////////////////////
+    bool first_episode = true;
+    uz_matrix_t *env_state =NULL;
+    for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
+    {
+        float setpoint = uz_mtwister_random_uniform_float(random_generator);
+        uz_environment_pt1_reset(pt1);
+        // Step Environment x-times
+        // each y-steps, do control
+        float cum_loss = 0.0f;
+        /////////////////////////////////////////// Start episode loop
+        for (uint32_t t = 0; t < max_steps; t++)
+        {
+            if (first_episode)
+            {
+                first_episode = false;
+            }
+            else
+            {
+                env_state = uz_environment_pt1_get_state(pt1);
+                // Sample environment at k+1
+                uz_dqn_sample_observation_k_1(testdqn2, env_state);
+                float reward = uz_environment_pt1_get_reward(pt1);
+                uz_dqn_set_reward(testdqn2, reward);
+                uz_dqn_push_to_buffer(testdqn2);
+            }
+
+            // sample observation of the environment at k=0
+            env_state = uz_environment_pt1_get_state(pt1);
+            uz_dqn_sample_observation_k_0(testdqn2, env_state);
+            uint32_t action = uz_dqn_determine_action(testdqn2);
+            for (uint32_t time_step = 0; time_step < 10; time_step++)
+            {
+                uz_environment_pt1_dqn_step(pt1, action, setpoint);
+            }
+            cum_loss = uz_dqn_update(testdqn2);
+        }
+        cumreward[epoch] = uz_environment_pt1_get_cumulative_reward(pt1);
+        if (epoch == 0)
+        {
+            globalrewardr[epoch] = uz_environment_pt1_get_cumulative_reward(pt1);
+        }
+        else
+        {
+            globalrewardr[epoch] = 0.99f * globalrewardr[epoch - 1] + 0.01f * uz_environment_pt1_get_cumulative_reward(pt1);
+        }
+        epsilonovertime[epoch] = uz_dqn_get_epsilon(testdqn2);
+        save_values(Q_Critic, Q_Target, cy_2, ty_2, epoch, NUMBER_OF_OUTPUTS);
+    }
+
+    uz_dqn_set_epsilon(testdqn2, 0.0f, 0.0f, 0.0f);
+
+    float log_error[1000U] = {0.0f};
+    float log_input[1000U] = {0.0f};
+    float log_output[1000U] = {1.0f};
+    uz_environment_pt1_reset(pt1);
+    uz_environment_pt1_step_one_episode(testdqn2, 1000U, false, pt1, 0.5f, true, log_error, log_input, log_output,10);
+
+    char filepath[] = "test/uz/uz_environment_pt1/pt1_asyn_dqn_output.csv";
+    char filepath1[] = "test/uz/uz_environment_pt1/pt1_asyn_dqn_input.csv";
+    char filepath2[] = "test/uz/uz_environment_pt1/pt1_asyn_dqn_error.csv";
+    export_histogram(log_output, 1000U, filepath);
+    export_histogram(log_input, 1000U, filepath1);
+    export_histogram(log_error, 1000U, filepath2);
+
+    exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_QTarget.csv", Q_Target, NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS);
+    exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_QCritic.csv", Q_Critic, NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS);
+    exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_globalrewardr.csv", globalrewardr, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
+    exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
+    FILE *f = fopen("test/uz/uz_environment_pt1/asyn_hyperparam.txt", "w"); // open the file for writing
+    if (f != NULL)                                                     // check for success
+    {
+        fprintf(f, "Learnrate, Discount Factor,Epsilon_start,Epsilon_min,Epsilon_decay,Hidden Layer,Bufferlength,Minibatchsize,Epochen,Targetupdatefrequency,Numberofbits,Numberofneuronsinhiddenlayer \n");
+        fprintf(f, "%.6f,%.6f,%.6f,%.6f,%.6f,%d,%d,%d,%d,%d,%d,%d\n", (double)lernrate, (double)discountfact, (double)epsilon_start, (double)epsilon_min, (double)epsilon_decay, NUMBER_OF_HIDDEN_LAYER, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, NUMBER_OF_EPOCHS, TARGET_UPDATE_FREQUENCY, 2,
+                NUMBER_OF_NEURONS_IN_HIDDEN_LAYER);
+        fclose(f); // close the file
+        f = NULL;  // set file handle to null since f is no longer valid
+    }
 }
 
 void save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size)

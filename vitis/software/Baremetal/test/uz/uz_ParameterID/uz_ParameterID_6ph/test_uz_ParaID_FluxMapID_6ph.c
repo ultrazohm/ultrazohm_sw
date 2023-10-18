@@ -2,6 +2,8 @@
 
 #include "unity.h"
 
+#include "test_assert_with_exception.h"
+
 #include "uz_ParaID_FluxMapID_6ph.h"
 #include "FluxMapID_6ph_codegen.h"
 #include "FluxMapID_6ph_codegen.c"

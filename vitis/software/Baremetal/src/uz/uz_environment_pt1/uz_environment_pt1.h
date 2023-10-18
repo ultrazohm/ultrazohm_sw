@@ -14,8 +14,9 @@ void uz_environment_pt1_dqn_step(uz_environment_pt1_t *self, uint32_t action, fl
 float uz_environment_pt1_get_output(uz_environment_pt1_t *self);
 float uz_environment_pt1_get_reward(uz_environment_pt1_t *self);
 float uz_environment_pt1_get_cumulative_reward(uz_environment_pt1_t *self);
-float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_pt1_t *env, float set_point, bool logging, float *error, float *input, float *output);
+float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_pt1_t *env, float set_point, bool logging, float *error, float *input, float *output, uint32_t number_of_timesteps_per_control_action);
 
-    uz_matrix_t *uz_environment_pt1_get_state(uz_environment_pt1_t *self);
+uz_matrix_t *uz_environment_pt1_get_state(uz_environment_pt1_t *self);
+float uz_environment_pt1_get_input(uz_environment_pt1_t *self);
 
 #endif // UZ_ENVIRONMENT_PT1_H

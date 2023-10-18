@@ -93,6 +93,12 @@ float uz_environment_pt1_get_output(uz_environment_pt1_t *self){
     return self->output;
 }
 
+float uz_environment_pt1_get_input(uz_environment_pt1_t *self){
+    uz_assert_not_NULL(self);
+    return self->input;
+}
+
+
     void uz_environment_pt1_reset(uz_environment_pt1_t *self)
 {
     uz_assert_not_NULL(self);
@@ -120,7 +126,7 @@ float uz_environment_pt1_get_cumulative_reward(uz_environment_pt1_t *self)
     return self->cumulative_reward;
 }
 
-float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_pt1_t *env,float set_point, bool logging, float* error, float* input, float* output)
+float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_pt1_t *env,float set_point, bool logging, float* error, float* input, float* output, uint32_t number_of_timesteps_per_control_action)
 {
     uz_assert_not_NULL(self);
     float cum_loss = 0.0f;
@@ -133,7 +139,11 @@ float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bo
         // determine the action based on Q(s,a) with epsilon greedy exploration
         uint32_t action = uz_dqn_determine_action(self);
         // take the action, environment is now in k+1
-        uz_environment_pt1_dqn_step(env, action,set_point);
+     //   uz_environment_pt1_dqn_step(env, action,set_point);
+        for (uint32_t time_step = 0; time_step < number_of_timesteps_per_control_action; time_step++)
+        {
+            uz_environment_pt1_dqn_step(env, action, set_point);
+        }
 
     if(logging){
         error[t]=env->error;
@@ -144,8 +154,8 @@ float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bo
         env_state = uz_environment_pt1_get_state(env);
         // Sample environment at k+1
         uz_dqn_sample_observation_k_1(self, env_state);
-        env->reward = uz_environment_pt1_get_reward(env);
-        uz_dqn_set_reward(self, env->reward);
+        float reward = uz_environment_pt1_get_reward(env);
+        uz_dqn_set_reward(self, reward);
         uz_dqn_push_to_buffer(self);
         if (train)
         {

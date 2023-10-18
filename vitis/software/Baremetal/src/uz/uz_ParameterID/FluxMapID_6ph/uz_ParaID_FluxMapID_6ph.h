@@ -24,15 +24,61 @@
 #include "../../uz_signals/uz_signals.h"
 #include <stdio.h>
 
+/**
+ * @brief Object definition for uz_ParaID_FluxMapID_6ph_t
+ * 
+ */
 typedef struct uz_ParaID_FluxMapID_6ph_t uz_ParaID_FluxMapID_6ph_t;
 
+/**
+ * @brief Initializes the uz_ParaID_FluxMapID_6ph_t object
+ * 
+ * @return uz_ParaID_FluxMapID_6ph_t pointer to object
+ */
 uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void);
 
+/**
+ * @brief steps the uz_ParaID_FluxMapID_6ph_t state once
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
+ * @param ID_config config if ID
+ * @param actual actual values
+ * @param global_config ParaID global config
+ * @param flags ParaID control flags
+ */
 void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags);
-bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self);
-bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self);
-uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self);
-uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self);
 
-uz_3ph_dq_t uz_filter_controller_setpoint(uz_IIR_Filter_t* filter_1, uz_IIR_Filter_t* filter_2, uz_3ph_dq_t setpoint);
+/**
+ * @brief Gets the status of the enteredFluxMapID flag
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
+ * @return true state has been entered
+ * @return false state hasn't been entered
+ */
+bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self);
+
+/**
+ * @brief Gets the status of the finishedFluxMapID flag
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
+ * @return true state has finished
+ * @return false state hasn't finished
+ */
+bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self);
+
+/**
+ * @brief Gets the pointer to the output controller struct of the FluxMapID
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
+ * @return uz_ParaID_Controller_Parameters_output_t* pointer to the FOC controller parameters struct
+ */
+uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self);
+
+/**
+ * @brief Gets the pointer to the output struct of the FluxMapID
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
+ * @return uz_ParaID_FluxMapID_output_t* pointer to the output struct
+ */
+uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self);
 #endif // UZ_PARAID_FLUXMAPID_6PH_H

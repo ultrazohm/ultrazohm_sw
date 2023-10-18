@@ -10,7 +10,7 @@
 
 /* Include Files */
 #include "FFTRecordedVoltage_terminate.h"
-#include "rt_nonfinite.h"
+#include "../../lib/rt_nonfinite.h"
 
 /* Function Definitions */
 /*

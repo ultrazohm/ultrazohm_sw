@@ -32,6 +32,7 @@
 #define true                           (1U)
 #endif
 #endif
+#include <stdbool.h>
 
 /*=======================================================================*
  * Target hardware information

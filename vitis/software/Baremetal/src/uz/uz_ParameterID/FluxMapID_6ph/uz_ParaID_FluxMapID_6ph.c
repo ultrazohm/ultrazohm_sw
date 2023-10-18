@@ -27,7 +27,7 @@ static uint32_t instance_counter = 0U;
 static uz_ParaID_FluxMapID_6ph_t instances[UZ_PARAMETERID_6PH_MAX_INSTANCES] = { 0 };
 
 static uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_allocation(void);
-static void uz_FluxMapID_6ph_set_controller_parameter(uz_ParameterID_Data_t* Data, uz_CurrentControl_t* CC_instance_1, uz_CurrentControl_t* CC_instance_2, uz_resonantController_t* resonant_1, uz_resonantController_t* resonant_2);
+
 
 static uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_allocation(void){
     uz_assert(instance_counter < UZ_PARAMETERID_6PH_MAX_INSTANCES);
@@ -35,7 +35,7 @@ static uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_allocation(void){
     uz_assert_false(self->is_ready);
     instance_counter++;
     self->is_ready = true;
-    return (self);
+    return(self);
 }
 
 uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void) {
@@ -45,8 +45,7 @@ uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void) {
     self->PtrToModelData->inputs=&self->input;
     self->PtrToModelData->outputs=&self->output;
     FluxMapID_6ph_codegen_initialize(self->PtrToModelData);
-    return (self);
-    return (self);
+    return(self);
 }
 
 void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags){
@@ -58,11 +57,11 @@ void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDC
 }
 
 bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self){
-    return self->output.enteredFluxMapID;
+    return(self->output.enteredFluxMapID);
 }
 
 bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self){
-    return self->output.finishedFluxMapID;
+    return(self->output.finishedFluxMapID);
 }
 
 uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self){

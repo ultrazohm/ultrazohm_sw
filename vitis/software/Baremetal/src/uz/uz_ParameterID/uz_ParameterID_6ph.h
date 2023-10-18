@@ -16,7 +16,6 @@
 #ifndef UZ_PARAMETERID_6PH_H
 #define UZ_PARAMETERID_6PH_H
 
-#include "../../globalData.h"
 #include "uz_ParameterID_data.h"
 #include "../uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz_SpeedControl/uz_speedcontrol.h"
@@ -31,13 +30,16 @@
 #include "TwoMassID/uz_ParaID_TwoMassID.h"
 #include "../uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "../uz_signals/uz_signals.h"
+#include "../uz_spwm/uz_spwm.h"
+#include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
+#include "../uz_subspace_resonant_control/uz_subspace_resonant_control.h"
+
 
 /**
  * @brief Object definition for uz_ParameterID_6ph_t
  * 
  */
 typedef struct uz_ParameterID_6ph_t uz_ParameterID_6ph_t;
-
 
 /**
  * @brief Initializes the uz_ParameterID_6ph_t object and its sub-objects
@@ -61,7 +63,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
  * @param Data pointer to uz_ParameterID_Data_t struct
  * @return struct uz_6ph_dq_t reference voltages of controller
  */
-uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data);
+uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects);
 
 /**
  * @brief Generates a DutyCycle corresponding to the commands from the uz_ParameterID_6ph_step function. To calculate the reference voltages of the uz_ParameterID_6ph_Controller function into DutyCycles for the inverter, the SPWM is used. 
@@ -81,14 +83,39 @@ struct uz_DutyCycle_2x3ph_t uz_ParameterID_6ph_generate_DutyCycle(uz_ParameterID
  */
 void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float u_a1c1, float u_a2c2);
 
+/**
+ * @brief initializes three dq-setpoint filter instances and saves them to the Data struct
+ * 
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @param config config for the setpoint filters (same will be used for all)
+ */
+void uz_ParameterID_6ph_initialize_filter(uz_ParameterID_Data_t* Data, const float isr_frequency);
 
-void uz_ParameterID_6ph_init_controllers(uz_ParameterID_Data_t* Data, struct uz_SetPoint_config setpoint_config, struct uz_SpeedControl_config speed_config, struct uz_CurrentControl_config config_cc_dq, struct uz_CurrentControl_config config_cc_xy, struct uz_CurrentControl_config config_cc_zero, struct uz_resonantController_config config_res_dq, struct uz_resonantController_config config_res_xy, struct uz_resonantController_config config_res_zero);
-void uz_ParameterID_6ph_init_filter(uz_ParameterID_Data_t* Data, struct uz_IIR_Filter_config config);
-void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* raw_rotor_angle, float* u_q_ref);
+/**
+ * @brief initializes the encoder offset estimation and saves the object pointer to the Data struct
+ * 
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @param u_q_ref pointer to the q-voltage reference, take from the output of the FOC controller
+ */
+void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data_t *Data, float* u_q_ref);
 
-void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FluxMapCounter, float *ArrayCounter);
+/**
+ * @brief updates transmit values/Converts some int-values from the ParameterID to float and helps to sync the array transmission
+ * 
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @param activeState pointer to float variable of activeState
+ * @param FluxMapCounter pointer to float variable of FluxMapCounter
+ * @param ArrayCounter pointer to float variable of ArrayCounter
+ */
+void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState);
+
+/**
+ * @brief calculates PsiPMs from FFT in the main function to not block the isr
+ * 
+ * @param self pointer to uz_ParameterID_6ph_t object
+ * @param Data pointer to uz_ParameterID_Data_t struct
+ * @param meas_array pointer to float variable of activeState
+ */
 void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array);
-// Temp
-void print_paraID(uz_ParameterID_Data_t *Data);
 
 #endif // UZ_PARAMETERID_6PH_H

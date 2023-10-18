@@ -10,7 +10,7 @@
 
 /* Include Files */
 #include "FFTRecordedVoltage_data.h"
-#include "rt_nonfinite.h"
+#include "../../lib/rt_nonfinite.h"
 
 /*
  * File trailer for FFTRecordedVoltage_data.c

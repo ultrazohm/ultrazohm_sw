@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 #include "../../uz_global_configuration.h"
-#if UZ_PARAMETERID_MAX_INSTANCES > 0U
+#if (UZ_PARAMETERID_6PH_MAX_INSTANCES+UZ_PARAMETERID_MAX_INSTANCES) > 0U
 #include "uz_ParaID_ControlState.h"
 #include "../../uz_HAL.h"
 
@@ -28,12 +28,12 @@ struct uz_ParaID_ControlState_t{
 };
 
 static uint32_t instances_counter_ParaID_ControlState = 0;
-static uz_ParaID_ControlState_t instances_ParaID_ControlState[UZ_PARAMETERID_MAX_INSTANCES] = { 0 };
+static uz_ParaID_ControlState_t instances_ParaID_ControlState[UZ_PARAMETERID_MAX_INSTANCES+UZ_PARAMETERID_6PH_MAX_INSTANCES] = { 0 };
 
 static uz_ParaID_ControlState_t* uz_ParaID_ControlState_allocation(void);
 
 static uz_ParaID_ControlState_t* uz_ParaID_ControlState_allocation(void) {
-	uz_assert(instances_counter_ParaID_ControlState < UZ_PARAMETERID_MAX_INSTANCES);
+	uz_assert(instances_counter_ParaID_ControlState < (UZ_PARAMETERID_MAX_INSTANCES+UZ_PARAMETERID_6PH_MAX_INSTANCES));
 	uz_ParaID_ControlState_t* self = &instances_ParaID_ControlState[instances_counter_ParaID_ControlState];
 	uz_assert_false(self->is_ready);
 	instances_counter_ParaID_ControlState++;

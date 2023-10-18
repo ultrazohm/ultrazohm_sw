@@ -19,7 +19,16 @@
 #include "../../uz_HAL.h"
 #include <string.h>
 #include "../../uz_complex/uz_complex.h"
+#include "../../uz_signals/uz_signals.h"
 
+// find the index of the highest value in an array of floats
+uint16_t uz_find_array_max_value_index(float array[], uint16_t elements);
+// slices a large array to a smaller one and searches the largest number in the smaller range
+static uint16_t uz_find_real_index_in_range(float full_array[], uint16_t ideal_index, const uint16_t range, uint16_t fft_elements);
+// finds the indices of the peaks of fft amplitudes
+static void uz_find_fft_peak_indices(uint16_t order[], const uint16_t n_order, float fft_amplitudes[], const uint16_t fft_elements, uint16_t indices_real[]);
+// calculates psi_pms from a given fft result of an induced voltage measurement
+static void uz_calculate_psi_pms(float psi_pm[][3], uint16_t indices_real[], const uint16_t n_order, float fft_frequencies[], float fft_amplitudes[], float fft_angles[]);
 
 uint16_t uz_find_array_max_value_index(float array[], uint16_t elements){
     float high_value = 0.0f;
@@ -35,7 +44,7 @@ uint16_t uz_find_array_max_value_index(float array[], uint16_t elements){
     return index;
 }
 
-uint16_t uz_find_real_index_in_range(float full_array[], uint16_t ideal_index, const uint16_t range, uint16_t fft_elements)
+static uint16_t uz_find_real_index_in_range(float full_array[], uint16_t ideal_index, const uint16_t range, uint16_t fft_elements)
 {
     const uint16_t elements_sliced = 2U*range+1U;
     float temp_array [elements_sliced];
@@ -53,7 +62,7 @@ uint16_t uz_find_real_index_in_range(float full_array[], uint16_t ideal_index, c
     return (real_index + ideal_index - range);
 }
 
-void uz_find_fft_peak_indices(uint16_t order[], const uint16_t n_order, float fft_amplitudes[], const uint16_t fft_elements, uint16_t indices_real[])
+static void uz_find_fft_peak_indices(uint16_t order[], const uint16_t n_order, float fft_amplitudes[], const uint16_t fft_elements, uint16_t indices_real[])
 {
     // inits
     uint16_t indices_ideal[n_order];    // ideal indices, multiplied fundamental index with order
@@ -69,19 +78,7 @@ void uz_find_fft_peak_indices(uint16_t order[], const uint16_t n_order, float ff
     }   
 }
 
-float uz_wrap_to_2pi(float angle)
-{
-    if((angle < 2.0f*UZ_PIf) && (angle >= 0.0f))
-        return angle;
-    else if(angle >= 2.0f*UZ_PIf)
-        return uz_wrap_to_2pi(angle-2.0f*UZ_PIf);
-    else if(angle < 0.0f)
-        return uz_wrap_to_2pi(angle+2.0f*UZ_PIf);
-    else
-        return 0.0f;
-}
-
-void uz_calculate_psi_pms(float psi_pm[][3], uint16_t indices_real[], const uint16_t n_order, float fft_frequencies[], float fft_amplitudes[], float fft_angles[])
+static void uz_calculate_psi_pms(float psi_pm[][3], uint16_t indices_real[], const uint16_t n_order, float fft_frequencies[], float fft_amplitudes[], float fft_angles[])
 {
     // find out psi pm frequencies
     for(uint16_t i=0;i<n_order;i++)
@@ -97,10 +94,9 @@ void uz_calculate_psi_pms(float psi_pm[][3], uint16_t indices_real[], const uint
     for(uint16_t i=0;i<n_order;i++)
     {
         psi_pm[i][2] = fft_angles[indices_real[i]];
-        psi_pm[i][2] = uz_wrap_to_2pi(psi_pm[i][2] - psi_pm[0][2]);
+        psi_pm[i][2] = uz_signals_wrap(psi_pm[i][2] - psi_pm[0][2], 2.0f*UZ_PIf);
     }
 }
-
 
 uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_voltage[10000], float ISR_sampletime)
 {
@@ -113,7 +109,7 @@ uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_
     float psi_pms[PARAMETERID6PH_ELECTRICAL_N_ORDER][3];                  // array holding psi pms
     uz_ParaID_ElectricalID_fft_in_t output;     // output struct for ParaID
     // calculate FFT
-    FFTRecordedVoltage(induced_voltage, ISR_sampletime, 100e-6, frequencies, amplitudes, angles);
+    FFTRecordedVoltage(induced_voltage, ISR_sampletime, 100.0e-6f, frequencies, amplitudes, angles);
     // find fft peaks for psi_pm orders
     uz_find_fft_peak_indices(order, PARAMETERID6PH_ELECTRICAL_N_ORDER, amplitudes, 5001U, indices_real);
     // calculate psi_pms
@@ -129,34 +125,34 @@ uz_ParaID_ElectricalID_fft_in_t uz_calculate_psi_pms_ElectricalID(float induced_
     return output;
 }
 
-uz_ParaID_ElectricalID_fft_in_t uz_correct_psi_pms_ElectricalID(uz_ParaID_ElectricalID_fft_in_t psi_pm_uncorrected, uz_ParaID_GlobalConfig_t global_config, const uint16_t n_order)
+uz_ParaID_ElectricalID_fft_in_t uz_correct_psi_pms_ElectricalID(uz_ParaID_ElectricalID_fft_in_t psi_pm_uncorrected, uz_ParaID_GlobalConfig_t global_config)
 {
     uz_ParaID_ElectricalID_fft_in_t psi_pm_corrected = psi_pm_uncorrected;
-    uz_complex_cartesian_t Xc[n_order];
+    uz_complex_cartesian_t Xc[PARAMETERID6PH_ELECTRICAL_N_ORDER];
     uz_complex_cartesian_t R_parallel;
     uz_complex_cartesian_t R_series;
-    uz_complex_cartesian_t Z_parallel[n_order];
-    uz_complex_polar_t factor[n_order];
+    uz_complex_cartesian_t Z_parallel[PARAMETERID6PH_ELECTRICAL_N_ORDER];
+    uz_complex_polar_t factor[PARAMETERID6PH_ELECTRICAL_N_ORDER];
     R_parallel.real = global_config.voltage_measurement_Rp;
     R_parallel.imag = 0.0f;
     R_series.real = global_config.voltage_measurement_Rs;
     R_series.imag = 0.0f;
 
-    for(uint16_t i=0U;i<n_order;i++)
+    for(uint16_t i=0U;i<PARAMETERID6PH_ELECTRICAL_N_ORDER;i++)
     {   
         Xc[i].real = 0.0f;
         Xc[i].imag = -1.0f/(global_config.voltage_measurement_C*psi_pm_uncorrected.psi_pm_frequency[i]*2.0f*UZ_PIf);                
     }
-    for(uint16_t i=0U;i<n_order;i++)
+    for(uint16_t i=0U;i<PARAMETERID6PH_ELECTRICAL_N_ORDER;i++)
         Z_parallel[i] = uz_complex_division(uz_complex_multiplication(R_parallel,Xc[i]),uz_complex_addition(R_parallel,Xc[i]));
-    for(uint16_t i=0U;i<n_order;i++)
+    for(uint16_t i=0U;i<PARAMETERID6PH_ELECTRICAL_N_ORDER;i++)
         factor[i] = uz_complex_cartesian_to_polar(uz_complex_division(uz_complex_addition(Z_parallel[i],R_series),Z_parallel[i]));
-    for(uint16_t i=0U;i<n_order;i++)
+    for(uint16_t i=0U;i<PARAMETERID6PH_ELECTRICAL_N_ORDER;i++)
     {
         //printf("%f, %f\n", factor[i].abs, factor[i].angle);
         psi_pm_corrected.psi_pm_amplitude[i] = psi_pm_uncorrected.psi_pm_amplitude[i]*factor[i].abs/factor[0].abs;
         psi_pm_corrected.psi_pm_angle[i] = psi_pm_uncorrected.psi_pm_angle[i] + factor[i].angle;
-        psi_pm_corrected.psi_pm_angle[i] = uz_wrap_to_2pi(psi_pm_corrected.psi_pm_angle[i] - psi_pm_corrected.psi_pm_angle[0]);
+        psi_pm_corrected.psi_pm_angle[i] = uz_signals_wrap(psi_pm_corrected.psi_pm_angle[i] - psi_pm_corrected.psi_pm_angle[0], 2.0f*UZ_PIf);
     }
     return psi_pm_corrected;
 }

@@ -96,6 +96,6 @@ uz_ParaID_ElectricalID_output_t* uz_get_ElectricalID_6ph_output(uz_ParaID_Electr
  * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
  * @param destination target array location
  */
-void uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self, float* destination);
+float* uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self);
 
 #endif // ELECTRICALID_6PH_H

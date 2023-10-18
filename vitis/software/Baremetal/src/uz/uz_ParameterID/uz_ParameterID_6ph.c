@@ -161,15 +161,6 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		uz_ControlState_get_GlobalConfig(self->ControlState)->ACCEPT = false;
 		Data->GlobalConfig.ACCEPT = false;
 	}
-
-
-	
-	float test_storage = 0.0f;
-	static int i=0;
-	i++;
-	if(i%1000 == 0){
-		printf("Adress: %p\n", &test_storage);
-	}
 }
 
 static void uz_ParaID_6ph_FOC_output_set_zero(uz_ParameterID_Data_t* Data){
@@ -405,8 +396,8 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	uz_ElectricalID_6ph_set_Config(self->ElectricalID, Data->ElectricalID_Config);
 	uz_ElectricalID_6ph_set_GlobalConfig(self->ElectricalID, *uz_ControlState_get_GlobalConfig(self->ControlState));
 	uz_ElectricalID_6ph_set_ControlFlags(self->ElectricalID, uz_ControlState_get_ControlFlags(self->ControlState));
- //   uz_ElectricalID_6ph_set_FFT_in(self->ElectricalID, Data->ElectricalID_FFT);
- //   uz_ElectricalID_6ph_set_Offset_Estimation(self->ElectricalID, Data->ElectricalID_Offset_Estimation);
+ 	uz_ElectricalID_6ph_set_FFT_in(self->ElectricalID, Data->ElectricalID_FFT);
+    uz_ElectricalID_6ph_set_Offset_Estimation(self->ElectricalID, Data->ElectricalID_Offset_Estimation);
 
 	//Step the function
 	uz_ElectricalID_6ph_step(self->ElectricalID);
@@ -447,14 +438,12 @@ void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, floa
 	*activeState = (float) Data->Controller_Parameters.activeState;
 }
 
-void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data, float *meas_array){
+void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
-	uz_assert_not_NULL(meas_array);
 
 	if(Data->finished_voltage_measurement && Data->Controller_Parameters.activeState==156U){
-			uz_get_ElectricalID_6ph_fft_out(self->ElectricalID, meas_array);
-        	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(meas_array, Data->GlobalConfig.sampleTimeISR);
+        	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(uz_get_ElectricalID_6ph_fft_out(self->ElectricalID), Data->GlobalConfig.sampleTimeISR);
         	Data->ElectricalID_FFT = uz_correct_psi_pms_ElectricalID(uncorrected, Data->GlobalConfig);
         }
 	else{

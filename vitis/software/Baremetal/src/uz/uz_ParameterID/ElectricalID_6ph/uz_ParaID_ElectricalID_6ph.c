@@ -131,11 +131,11 @@ uz_ParaID_ElectricalID_output_t* uz_get_ElectricalID_6ph_output(uz_ParaID_Electr
 	return(&self->output.ElectricalID_output);
 }
 
-void uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self, float* destination)
+float* uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self)
 {
     uz_assert_not_NULL(self);
-    uz_assert_not_NULL(destination);
 	uz_assert(self->is_ready);
-    memcpy(destination, self->output.voltage_meas_array, 10000U * sizeof(float));
+   // memcpy(destination, self->output.voltage_meas_array, 10000U * sizeof(float));
+   return(&self->output.voltage_meas_array[0]);
 }
 #endif

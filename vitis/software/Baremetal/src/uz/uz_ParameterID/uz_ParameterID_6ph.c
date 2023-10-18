@@ -424,8 +424,14 @@ static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_Param
 static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data){
 	uz_assert_not_NULL(self);
 	uz_assert_not_NULL(Data);
+	//Update State-Inputs
+	uz_FluxMapID_6ph_set_ActualValues(self->FluxMapID, Data->ActualValues);
+	uz_FluxMapID_6ph_set_Config(self->FluxMapID, Data->FluxMapID_Config);
+	uz_FluxMapID_6ph_set_GlobalConfig(self->FluxMapID, *uz_ControlState_get_GlobalConfig(self->ControlState));
+	uz_FluxMapID_6ph_set_ControlFlags(self->FluxMapID, uz_ControlState_get_ControlFlags(self->ControlState));
+
 	//Step the function
-	uz_FluxMapID_6ph_step(self->FluxMapID, Data->FluxMapID_Config, Data->ActualValues, Data->GlobalConfig, *Data->ControlFlags);
+	uz_FluxMapID_6ph_step(self->FluxMapID);
 
 	//Update Control-State-inputs
 	uz_ControlState_set_enteredFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_entered(self->FluxMapID));

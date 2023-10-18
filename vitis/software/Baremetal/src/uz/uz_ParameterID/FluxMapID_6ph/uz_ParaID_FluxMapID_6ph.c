@@ -48,12 +48,35 @@ uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void) {
     return(self);
 }
 
-void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags){
-    self->input.FluxMapIDConfig=ID_config;
-    self->input.ActualValues=actual;
-    self->input.GlobalConfig_out=global_config;
-    self->input.ControlFlags=flags;
+void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     FluxMapID_6ph_codegen_step(self->PtrToModelData);
+}
+
+
+void uz_FluxMapID_6ph_set_Config(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_FluxMapIDConfig_t Config) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.FluxMapIDConfig = Config;
+}
+
+void uz_FluxMapID_6ph_set_ActualValues(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ActualValues_t ActualValues) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.ActualValues = ActualValues;
+}
+
+void uz_FluxMapID_6ph_set_GlobalConfig(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_GlobalConfig_t GlobalConfig) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.GlobalConfig_out = GlobalConfig;
+}
+
+void uz_FluxMapID_6ph_set_ControlFlags(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ControlFlags_t* ControlFlags) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.ControlFlags = *ControlFlags;
 }
 
 bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self){

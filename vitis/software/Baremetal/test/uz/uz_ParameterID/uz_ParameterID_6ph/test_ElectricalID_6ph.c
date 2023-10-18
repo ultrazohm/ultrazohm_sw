@@ -20,12 +20,6 @@ void test_uz_ElectricalID_6ph_init(void) {
 }
 
 void test_uz_ELID_6ph_step_not_NULL(void) {
-    uz_ParaID_ElectricalIDConfig_t ID_config = {0};
-    uz_ParaID_ActualValues_t av = {0};
-    uz_ParaID_GlobalConfig_t gc = {0};
-    uz_ParaID_ControlFlags_t flags = {0};
-    uz_ParaID_ElectricalID_fft_in_t fft_in = {0};
-    uz_ParaID_ElectricalID_offset_estimation_t offset_est_in = {0};
     TEST_ASSERT_FAIL_ASSERT(uz_ElectricalID_6ph_step(NULL));
 }
 

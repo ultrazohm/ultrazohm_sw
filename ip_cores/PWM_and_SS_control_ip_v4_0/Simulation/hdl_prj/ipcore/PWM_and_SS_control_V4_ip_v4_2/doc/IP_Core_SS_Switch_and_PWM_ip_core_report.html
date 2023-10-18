@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">7.115
+<td class="summaryTableSndColOddRow">7.118
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">11-Oct-2023 14:17:54
+<td class="summaryTableSndColOddRow">18-Oct-2023 20:02:53
 </td>
 </tr>
 <tr>
@@ -504,7 +504,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:4057')">Sync_PWM_en</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:4057')">pwm_counter_rst</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -741,20 +741,6 @@ Target platform interface table:
 <td class="distinctCellColor">
 </td>
 </tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('IP_Core_SS_Switch_and_PWM:4050')">PWM_en_out</a>
-</td>
-<td>Outport
-</td>
-<td>boolean
-</td>
-<td>External Port
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -795,7 +781,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2310111417
+<td>contains unique IP timestamp (yymmddHHMM): 2310182002
 </td>
 </tr>
 <tr>
@@ -1040,6 +1026,8 @@ Following files are generated under this folder:
 <b>IP core HDL source files</b>
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_2\hdl\vhdl\PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control_pkg.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_PWM_and_Switching_Signal_Control_pkg.vhd</a>
+<br/>
+<a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_2\hdl\vhdl\PWM_and_SS_control_V4_ip_src_Detect_Rise_Positive.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_Detect_Rise_Positive.vhd</a>
 <br/>
 <a href="matlab:edit('hdl_prj\ipcore\PWM_and_SS_control_V4_ip_v4_2\hdl\vhdl\PWM_and_SS_control_V4_ip_src_LimitPulseWidth.vhd')">hdl\vhdl\PWM_and_SS_control_V4_ip_src_LimitPulseWidth.vhd</a>
 <br/>

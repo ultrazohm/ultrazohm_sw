@@ -26,7 +26,7 @@ void test_uz_ELID_6ph_step_not_NULL(void) {
     uz_ParaID_ControlFlags_t flags = {0};
     uz_ParaID_ElectricalID_fft_in_t fft_in = {0};
     uz_ParaID_ElectricalID_offset_estimation_t offset_est_in = {0};
-    TEST_ASSERT_FAIL_ASSERT(uz_ElectricalID_6ph_step(NULL, ID_config, av, gc, flags, fft_in, offset_est_in));
+    TEST_ASSERT_FAIL_ASSERT(uz_ElectricalID_6ph_step(NULL));
 }
 
 void test_uz_ElectricalID_6ph_get_enteredElectricalID_not_NULL(void) {
@@ -46,7 +46,7 @@ void test_uz_ElectricalID_6ph_get_output_not_NULL(void) {
 }
 
 void test_uz_get_ElectricalID_6ph_fft_out(void){
-    TEST_ASSERT_FAIL_ASSERT(uz_get_ElectricalID_6ph_fft_out(NULL, NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_get_ElectricalID_6ph_fft_out(NULL));
 }
 
 void test_uz_get_ElectricalID_6ph_finished_voltage_measurement(void){

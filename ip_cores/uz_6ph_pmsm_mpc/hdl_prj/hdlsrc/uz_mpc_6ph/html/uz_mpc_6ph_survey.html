@@ -36,7 +36,7 @@ uz_mpc_6ph
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.196
+1.215
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2023-10-13 13:22:13
+2023-10-18 10:42:49
 </td>
 
 </tr>
@@ -63,8 +63,8 @@ HDL code generated on
 HDL code generated for
 </td>
 <td align="right" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2836')" name="code2model" class="code2model">
-uz_current_limit
+<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2122')" name="code2model" class="code2model">
+mpc_enable
 </a>
 
 </td>
@@ -132,7 +132,7 @@ on
 HDLSubsystem
 </td>
 <td align="right" valign="top" style="border-style: none">
-uz_mpc_6ph/uz_current_limit
+uz_mpc_6ph/mpc_enable
 </td>
 
 </tr>
@@ -141,7 +141,7 @@ uz_mpc_6ph/uz_current_limit
 ModulePrefix
 </td>
 <td align="right" valign="top" style="border-style: none">
-uz_cur_lim_src_
+mpc_enb_src_
 </td>
 
 </tr>
@@ -247,8 +247,8 @@ Non-default block properties
 
 </a>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2836')" name="code2model" class="code2model">
-uz_current_limit
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2122')" name="code2model" class="code2model">
+mpc_enable
 </a>
 
 </b>
@@ -264,7 +264,7 @@ uz_current_limit
 IPCoreName
 </td>
 <td align="right" valign="top" style="border-style: none">
-uz_cur_lim
+mpc_enb
 </td>
 
 </tr>
@@ -273,7 +273,7 @@ uz_cur_lim
 IPCoreVersion
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.0
+1.2
 </td>
 
 </tr>
@@ -289,8 +289,8 @@ Free running
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2837')" name="code2model" class="code2model">
-ia1_SI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2123')" name="code2model" class="code2model">
+G0
 </a>
 
 </b>
@@ -313,8 +313,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2838')" name="code2model" class="code2model">
-ib1_SI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2141')" name="code2model" class="code2model">
+G1
 </a>
 
 </b>
@@ -337,8 +337,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2854')" name="code2model" class="code2model">
-ic1_SI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2145')" name="code2model" class="code2model">
+G2
 </a>
 
 </b>
@@ -361,8 +361,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2855')" name="code2model" class="code2model">
-ia2_SI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2149')" name="code2model" class="code2model">
+G3
 </a>
 
 </b>
@@ -385,8 +385,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2856')" name="code2model" class="code2model">
-ib2_SI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2153')" name="code2model" class="code2model">
+G4
 </a>
 
 </b>
@@ -409,8 +409,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2857')" name="code2model" class="code2model">
-ic2_SI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2157')" name="code2model" class="code2model">
+G5
 </a>
 
 </b>
@@ -433,8 +433,152 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2858')" name="code2model" class="code2model">
-i_max_ampere_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2161')" name="code2model" class="code2model">
+G6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2165')" name="code2model" class="code2model">
+G7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2169')" name="code2model" class="code2model">
+G8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2173')" name="code2model" class="code2model">
+G9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2177')" name="code2model" class="code2model">
+G10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2181')" name="code2model" class="code2model">
+G11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2124')" name="code2model" class="code2model">
+AXI_mpc_enb
 </a>
 
 </b>
@@ -459,15 +603,15 @@ AXI4-Lite
 IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
-x"100"
+x"17C"
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2859')" name="code2model" class="code2model">
-trigger
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2936')" name="code2model" class="code2model">
+overcurrent_disable
 </a>
 
 </b>
@@ -490,8 +634,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2839')" name="code2model" class="code2model">
-current_limit_violated
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2125')" name="code2model" class="code2model">
+adc_valid_trigger
 </a>
 
 </b>
@@ -514,8 +658,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2861')" name="code2model" class="code2model">
-current_limit_violated_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2135')" name="code2model" class="code2model">
+out_G0
 </a>
 
 </b>
@@ -531,24 +675,303 @@ current_limit_violated_AXI
 IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
-AXI4-Lite
-</td>
-
-</tr>
-<tr style="background-color: #ffffff">
-<td align="left" valign="top" style="border-style: none">
-IOInterfaceMapping
-</td>
-<td align="right" valign="top" style="border-style: none">
-x"104"
+External Port
 </td>
 
 </tr>
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2860')" name="code2model" class="code2model">
-done
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2193')" name="code2model" class="code2model">
+out_G1
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2198')" name="code2model" class="code2model">
+out_G2
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2199')" name="code2model" class="code2model">
+out_G3
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2204')" name="code2model" class="code2model">
+out_G4
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2205')" name="code2model" class="code2model">
+out_G5
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2218')" name="code2model" class="code2model">
+out_G6
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2219')" name="code2model" class="code2model">
+out_G7
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2220')" name="code2model" class="code2model">
+out_G8
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2221')" name="code2model" class="code2model">
+out_G9
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2222')" name="code2model" class="code2model">
+out_G10
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2223')" name="code2model" class="code2model">
+out_G11
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2971')" name="code2model" class="code2model">
+mpc_enb
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_mpc_6ph:2136')" name="code2model" class="code2model">
+enb_mpc_done
 </a>
 
 </b>

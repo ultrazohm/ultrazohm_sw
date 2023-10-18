@@ -77,7 +77,7 @@ id_ref = 0.0;
 iq_ref = 15.0;
 ix_ref = 0.0;
 iy_ref = 0.0;
-n_rpm = 1200.0;
+n_rpm = 2200.0;
 omega_m = n_rpm*pi/30;
 
 lambda_d = 1.0;
@@ -95,6 +95,7 @@ Harmonic_Amplitudes = [0.00 0.0 0.0 0.00 0.00 0.00 0.000 0.00 0.00 0.000];
 
 %simulation control model motor testbench
 RDSon = 0.01;
+diode_fwd_voltage = 4.0;
 J = 1e-4;
 C_dc_link = 800e-6;
 

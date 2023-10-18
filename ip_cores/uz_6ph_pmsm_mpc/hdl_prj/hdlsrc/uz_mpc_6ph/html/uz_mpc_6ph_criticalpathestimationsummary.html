@@ -135,7 +135,7 @@ function hdlTableExpandAll(o, numNtks, numComps)
 // -->
 </script>
 <font SIZE="+2" COLOR="#000066">
-Critical Path Report for uz_mpc_6ph/uz_current_limit
+Critical Path Report for uz_mpc_6ph/mpc_enable
 </font>
 <br /><br /><br /><a name="Summary Section">
 <font size="+1" color="#000066">
@@ -146,11 +146,11 @@ Summary Section
 </font>
 
 </a>
-<hr>Critical Path Delay : 4.703 ns<br>Critical Path Begin : <a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:14')" name="code2model" class="code2model">
-Delay
+<hr>Critical Path Delay : 5.784 ns<br>Critical Path Begin : <a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:50')" name="code2model" class="code2model">
+Delay1
 </a>
-<br>Critical Path End : <a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:20')" name="code2model" class="code2model">
-Delay14
+<br>Critical Path End : <a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:68')" name="code2model" class="code2model">
+Delay25
 </a>
 <br>Highlight Critical Path: <a href="matlab:run('hdl_prj\hdlsrc\uz_mpc_6ph\criticalPathEstimated')">hdl_prj\hdlsrc\uz_mpc_6ph\criticalPathEstimated.m</a> <br>Highlight Uncharacterized blocks: <a href="matlab:run('hdl_prj\hdlsrc\uz_mpc_6ph\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\uz_mpc_6ph\highlightCriticalPathEstimationOffendingBlocks.m</a> <br><br /><br /><a name="Critical Path Details">
 <font size="+1" color="#000066">
@@ -200,8 +200,8 @@ Block Path
 0.0000
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:14')" name="code2model" class="code2model">
-Delay
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:50')" name="code2model" class="code2model">
+Delay1
 </a>
 
 </td>
@@ -212,14 +212,14 @@ Delay
 2
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.6870
+0.2840
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.6870
+0.2840
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:13:4')" name="code2model" class="code2model">
-Positive
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:92')" name="code2model" class="code2model">
+NOT
 </a>
 
 </td>
@@ -230,14 +230,14 @@ Positive
 3
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-1.3740
+1.2260
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.6870
+0.9420
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:13:3')" name="code2model" class="code2model">
-FixPt Relational Operator
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:93')" name="code2model" class="code2model">
+OR
 </a>
 
 </td>
@@ -248,14 +248,14 @@ FixPt Relational Operator
 4
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-1.7260
+1.9130
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.3520
+0.6870
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:45')" name="code2model" class="code2model">
-Switch1
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:33:4')" name="code2model" class="code2model">
+Positive
 </a>
 
 </td>
@@ -266,14 +266,14 @@ Switch1
 5
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-2.7930
+2.6000
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-1.0670
+0.6870
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:32')" name="code2model" class="code2model">
-Abs
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:33:3')" name="code2model" class="code2model">
+FixPt Relational Operator
 </a>
 
 </td>
@@ -284,14 +284,14 @@ Abs
 6
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-3.7100
+2.6000
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.9170
+0.0000
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:39')" name="code2model" class="code2model">
-Relational Operator
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:41')" name="code2model" class="code2model">
+Data Type Conversion2
 </a>
 
 </td>
@@ -302,14 +302,14 @@ Relational Operator
 7
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-4.7030
+2.8840
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-0.9930
+0.2840
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:38')" name="code2model" class="code2model">
-OR
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:42')" name="code2model" class="code2model">
+Logical Operator
 </a>
 
 </td>
@@ -320,14 +320,104 @@ OR
 8
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-4.7030
+3.7720
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.8880
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:46')" name="code2model" class="code2model">
+Logical Operator5
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+9
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+4.7140
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9420
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:45')" name="code2model" class="code2model">
+Logical Operator4
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+10
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+5.0420
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3280
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:47')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+11
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+5.4320
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3900
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:94')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+12
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+5.7840
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3520
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:98')" name="code2model" class="code2model">
+Switch14
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+13
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+5.7840
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
 0.0000
 </td>
 <td width="25%" align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:20')" name="code2model" class="code2model">
-Delay14
+<a href="matlab:coder.internal.code2model('gm_uz_mpc_6ph:68')" name="code2model" class="code2model">
+Delay25
 </a>
 
 </td>

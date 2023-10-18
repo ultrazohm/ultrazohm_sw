@@ -54,6 +54,8 @@
 
 #include "include/pwm_init.h"
 
+#include "sw/init_Inv/init_inverter.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

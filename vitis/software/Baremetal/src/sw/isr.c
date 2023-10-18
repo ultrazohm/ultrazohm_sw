@@ -30,6 +30,24 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_Transformation/uz_transformation.h"
+#include "../uz/uz_math_constants.h"
+
+uz_6ph_abc_t REAL_v_abc_meas = {0};
+
+
+//Offset from Valentin
+float theta_offset = 5.4843f;
+#define PHASE_CURRENT_CONV 12.5f
+#define PHASE_VOLT_CONV	12.0f
+// software limits
+#define MAX_PHASE_CURRENT_AMP  30.0f
+#define MAX_DC_VOLT 50.0f
+#define MAX_TEMP_DEG 90.0f
+//neutral config
+#define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N, 3: zero
+float u_n1 = 0.0f;
+float u_n2 = 0.0f;
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -52,7 +70,92 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    //Take measurements independent of control_state
+       	//Read out speed&position
+           Global_Data.av.omega_mech = (Global_Data.av.mechanicalRotorSpeed / 60.0f) * (2.0f * UZ_PIf);
+           Global_Data.av.omega_el = Global_Data.av.omega_mech * UZ_D5_MOTOR_POLE_PAIR_NUMBER;
+
+           // Read out and convert ADC readings to currents in Amps
+           Global_Data.av.currents.a1 = Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV;
+           Global_Data.av.currents.b1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV;
+           Global_Data.av.currents.c1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV;
+           Global_Data.av.i_dc1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
+           Global_Data.av.currents.a2 = Global_Data.aa.A2.me.ADC_A4 * PHASE_CURRENT_CONV;
+           Global_Data.av.currents.b2 = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV;
+           Global_Data.av.currents.c2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV;
+           Global_Data.av.i_dc2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+
+           // Read out and convert ADC readings to voltages
+           Global_Data.av.v_dc1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_VOLT_CONV;
+           Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV;
+           Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV;
+           Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV;
+           Global_Data.av.v_dc2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_VOLT_CONV;
+           Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV;
+           Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV;
+           Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV;
+
+           //Read out inverter temp
+           Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+           Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
+
+           // check current limit
+           if(fabs(Global_Data.av.currents.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents.c1) > MAX_PHASE_CURRENT_AMP ||
+           	fabs(Global_Data.av.currents.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents.c2) > MAX_PHASE_CURRENT_AMP) {
+        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+           		uz_assert(0);
+           }
+              // check DC Bus
+              if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
+           	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+           	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+           	   uz_assert(0);
+              }
+              // check inverter temp
+              if(fabs(Global_Data.av.temp_VSI_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temp_VSI_2) > MAX_TEMP_DEG) {
+           	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+           	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+           	   uz_assert(0);
+              }
+
+
+              // calc u neutral voltage
+              switch(NEUTRAL_CONFIG){
+              case 1U:{
+              	u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
+              	u_n2 = u_n1;
+              	break;
+              }
+              case 2U:{
+              	u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1)/3.0f;
+              	u_n2 = (Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2)/3.0f;
+              	break;
+              }
+              default: break;
+              }
+
+              // calc phase voltages with neutral voltage
+              REAL_v_abc_meas.a1 = Global_Data.av.v_a1 - u_n1;
+              REAL_v_abc_meas.b1 = Global_Data.av.v_b1 - u_n1;
+              REAL_v_abc_meas.c1 = Global_Data.av.v_c1 - u_n1;
+              REAL_v_abc_meas.a2 = Global_Data.av.v_a2 - u_n2;
+              REAL_v_abc_meas.b2 = Global_Data.av.v_b2 - u_n2;
+              REAL_v_abc_meas.c2 = Global_Data.av.v_c2 - u_n2;
+
+              platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+
+   		   //Only allow enable of inverter, if "select_Real" is true
+              if (current_state == running_state || current_state == control_state) {
+           	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+           	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+              } else {
+           	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+           	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+              }
+
+
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state

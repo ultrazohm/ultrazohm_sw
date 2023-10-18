@@ -23,12 +23,12 @@
 
 #ifndef RTW_HEADER_InterpMeshGrid_h_
 #define RTW_HEADER_InterpMeshGrid_h_
-#include "../../lib/rtwtypes.h"
+#include "../../rtwtypes.h"
 #include <math.h>
 #include <string.h>
 #ifndef InterpMeshGrid_COMMON_INCLUDES_
 #define InterpMeshGrid_COMMON_INCLUDES_
-#include "../../lib/rtwtypes.h"
+#include "../../rtwtypes.h"
 #endif                                 /* InterpMeshGrid_COMMON_INCLUDES_ */
 
 /* Model Code Variants */

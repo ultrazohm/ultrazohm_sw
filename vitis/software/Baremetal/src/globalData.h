@@ -6,6 +6,9 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "uz/uz_Transformation/uz_transformation.h"
+
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -67,23 +70,36 @@ typedef struct _actualValues_ {
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
+	float omega_mech;
+	float omega_el;
+	float mechanicalRotorSpeed;
+	uz_6ph_abc_t currents;
 	float I_d;
 	float I_q;
 	float U_d;
 	float U_q;
-	float theta_elec;
+	float theta_el;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	float mechanicalRotorSpeed_filtered;
 	float snd_fld[21];
+	float i_dc1;
+	float i_dc2;
+	float v_dc1;
+	float v_dc2;
+	float v_a1;
+	float v_b1;
+	float v_c1;
+	float v_a2;
+	float v_b2;
+	float v_c2;
+	float temp_VSI_1;
+	float temp_VSI_2;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -111,6 +127,8 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* inverter_d1;
+	uz_inverter_adapter_t* inverter_d2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

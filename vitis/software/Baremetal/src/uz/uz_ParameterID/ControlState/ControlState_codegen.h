@@ -7,28 +7,30 @@
  *
  * Code generated for Simulink model 'ControlState'.
  *
- * Model version                  : 5.80
- * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Thu Aug 17 17:44:10 2023
+ * Model version                  : 3.59
+ * Simulink Coder version         : 9.6 (R2021b) 14-May-2021
+ * C/C++ source code generated on : Thu Mar  2 15:57:55 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (12), Warning (1), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
 #include "../uz_ParameterID_data.h"
 
 #ifndef RTW_HEADER_ControlState_h_
 #define RTW_HEADER_ControlState_h_
-#include "../lib/rtwtypes.h"
+#include "../rtwtypes.h"
 #include <string.h>
 #ifndef ControlState_COMMON_INCLUDES_
 #define ControlState_COMMON_INCLUDES_
-#include "../lib/rtwtypes.h"
+#include "../rtwtypes.h"
 #endif                                 /* ControlState_COMMON_INCLUDES_ */
+
+/* Model Code Variants */
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -66,9 +68,9 @@ typedef struct {
   uint16_T finishedFrictionID_loc;     /* '<Root>/ControlState' */
   uint16_T finishedTwoMassID_loc;      /* '<Root>/ControlState' */
   uint16_T finishedFluxMapID_loc;      /* '<Root>/ControlState' */
+  uint8_T is_active_c8_ControlState;   /* '<Root>/ControlState' */
   uint8_T is_c8_ControlState;          /* '<Root>/ControlState' */
   uint8_T is_ControlState;             /* '<Root>/ControlState' */
-  uint8_T is_active_c8_ControlState;   /* '<Root>/ControlState' */
 } DW_ControlState_t;
 
 /* External inputs (root inport signals with default storage) */
@@ -117,18 +119,17 @@ extern void ControlState_step(RT_MODEL_ControlState_t *const rtControlState_M);
  * MATLAB hilite_system command to trace the generated code back
  * to the parent model.  For example,
  *
- * hilite_system('uz_3ph_ParameterID/Subsystem Reference1/ControlState')    - opens subsystem uz_3ph_ParameterID/Subsystem Reference1/ControlState
- * hilite_system('uz_3ph_ParameterID/Subsystem Reference1/ControlState/Kp') - opens and selects block Kp
+ * hilite_system('uz_ParameterID_6ph/ControlState_refernce/ControlState')    - opens subsystem uz_ParameterID_6ph/ControlState_refernce/ControlState
+ * hilite_system('uz_ParameterID_6ph/ControlState_refernce/ControlState/Kp') - opens and selects block Kp
  *
  * Here is the system hierarchy for this model
  *
- * '<Root>' : 'uz_3ph_ParameterID/Subsystem Reference1'
- * '<S1>'   : 'uz_3ph_ParameterID/Subsystem Reference1/ControlState'
+ * '<Root>' : 'uz_ParameterID_6ph/ControlState_refernce'
+ * '<S1>'   : 'uz_ParameterID_6ph/ControlState_refernce/ControlState'
  */
 
 /*-
  * Requirements for '<Root>': ControlState
-
  */
 #endif                                 /* RTW_HEADER_ControlState_h_ */
 

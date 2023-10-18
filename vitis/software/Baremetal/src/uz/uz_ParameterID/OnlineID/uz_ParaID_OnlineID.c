@@ -103,23 +103,23 @@ bool uz_OnlineID_get_enteredOnlineID(uz_ParaID_OnlineID_t *self) {
 uz_ParaID_OnlineID_output_t* uz_OnlineID_get_output(uz_ParaID_OnlineID_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	return(&self->output.OnlineID_state_output);
+	return(&self->output.OnlineID_output);
 }
 
 void uz_OnlineID_CleanPsiArray(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t* Data) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert_not_NULL(Data);
-	//Reset the input of the OnlineID before it's written to the CleanPsiArray object
-	if(Data->OnlineID_Config.OnlineID_Reset == true) {
-		memcpy(self->input.cleaned_psi_array, self->output.OnlineID_state_output.psi_array, sizeof(self->input.cleaned_psi_array));
-	}
-	uz_CleanPsiArray_set_OnlineID_output(self->CleanPsiArray, &self->output.OnlineID_state_output);
+	uz_CleanPsiArray_set_OnlineID_output(self->CleanPsiArray, &self->output.OnlineID_output);
 	uz_CleanPsiArray_set_eta_c(self->CleanPsiArray, 0.01f * Data->GlobalConfig.ratCurrent);
 	uz_CleanPsiArray_step(self->CleanPsiArray);
-	float* array_pointer = uz_CleanPsiArray_get_psi_array_out(self->CleanPsiArray);
-	for (uint32_t i = 0U; i < (sizeof(self->input.cleaned_psi_array)/sizeof(self->input.cleaned_psi_array[0])); i++) {
-		self->input.cleaned_psi_array[i] = array_pointer[i];
+	if (Data->OnlineID_Config.OnlineID_Reset == false) {
+		float* array_pointer = uz_CleanPsiArray_get_psi_array_out(self->CleanPsiArray);
+		for (uint32_t i = 0U; i < sizeof(self->input.cleaned_psi_array); i++) {			
+			self->input.cleaned_psi_array[0] = array_pointer[0];
+		}
+	} else {
+		memcpy(self->input.cleaned_psi_array, self->output.OnlineID_output.psi_array, sizeof(self->input.cleaned_psi_array));
 	}
 	Data->OnlineID_Config.array_cleaned = uz_CleanPsiArray_get_array_cleaned_flag(self->CleanPsiArray);
 	Data->FluxMap_MeasuringPoints = uz_CleanPsiArray_get_n_flux_points(self->CleanPsiArray);
@@ -131,7 +131,7 @@ void uz_OnlineID_CalcFluxMaps(uz_ParaID_OnlineID_t* self, uz_ParameterID_Data_t*
 	uz_assert(self->is_ready);
 	uz_InterpMeshGrid_set_psi_array(self->InterpMeshGrid, uz_CleanPsiArray_get_psi_array_out(self->CleanPsiArray));
 	uz_InterpMeshGrid_set_i_rat(self->InterpMeshGrid, Data->GlobalConfig.ratCurrent);
-	uz_InterpMeshGrid_set_OnlineID_output(self->InterpMeshGrid, &self->output.OnlineID_state_output);
+	uz_InterpMeshGrid_set_OnlineID_output(self->InterpMeshGrid, &self->output.OnlineID_output);
 	uz_InterpMeshGrid_step(self->InterpMeshGrid);
 }
 

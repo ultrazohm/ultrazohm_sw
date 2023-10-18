@@ -3,20 +3,29 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "../../uz/uz_matrix/uz_matrix.h"
 
 typedef struct uz_Matrix_Multi_t uz_Matrix_Multi_t;
 
 struct uz_Matrix_Multi_config{
 	 uint32_t base_address;              /**< Base address of the IP-Core */
+	 uint32_t A_length_of_data;
 	 uint32_t A_rows;
+	 uint32_t A_columns;
+	 float *A_data;
+	 uint32_t B_length_of_data;
 	 uint32_t B_rows;
 	 uint32_t B_columns;
+	 float *B_data;
+	 uint32_t C_length_of_data;
+	 uint32_t C_rows;
+	 uint32_t C_columns;
+	 float *C_data;
 };
 
 
-uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config);
-void uz_Matrix_Multi_set_A_matrix(uz_Matrix_Multi_t* self, float* A);
-void uz_Matrix_Multi_set_B_matrix(uz_Matrix_Multi_t* self, float* B);
-void uz_Matrix_Multi_get_C_out_matrix(uz_Matrix_Multi_t* self, float* C_out);
+uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz_matrix_t *A_matrix, uz_matrix_t *B_matrix, uz_matrix_t *C_out_matrix);
+void uz_Matrix_Multi_calculate(uz_Matrix_Multi_t* self);
+
 
 #endif

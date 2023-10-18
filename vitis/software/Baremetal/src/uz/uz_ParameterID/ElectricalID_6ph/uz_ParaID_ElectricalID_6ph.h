@@ -44,8 +44,8 @@ void uz_ElectricalID_6ph_set_Config(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaI
 void uz_ElectricalID_6ph_set_ActualValues(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ActualValues_t ActualValues);
 void uz_ElectricalID_6ph_set_GlobalConfig(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
 void uz_ElectricalID_6ph_set_ControlFlags(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
-void uz_ElectricalID_6ph_set_FFT_in(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_fft_in_t* fft_in);
-void uz_ElectricalID_6ph_set_Offset_Estimation(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_offset_estimation_t* offset_est_in);
+void uz_ElectricalID_6ph_set_FFT_in(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_fft_in_t fft_in);
+void uz_ElectricalID_6ph_set_Offset_Estimation(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_offset_estimation_t offset_est_in);
 
 /**
  * @brief Gets the status of the enteredElectricalID flag

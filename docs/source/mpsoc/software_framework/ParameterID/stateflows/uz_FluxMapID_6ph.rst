@@ -18,6 +18,8 @@ During operation, it is possible to automatically determine the current winding 
 This guarantees that the measurements are only recorded when the motor has the same winding temperature. This can be turned off. The ``ID-state`` simply assumes then, that the winding temperature is constant. 
 Alternatively a temperature measurement can be used.
 
+The effictiveness of the identification methods is researched in [[#param_ID_paper_SF]_] and [[#hoppe_pab2]_].
+
 Stateflow
 =========
 
@@ -29,7 +31,9 @@ The measurement is started by clicking ``Start FM ID``.
 After finishing or to cancel the measurement, unselect ``Start FM ID``.
 Now the current control is set to zero again.
 The load machine can be stopped and after it is at standstill and all currents are zero, unselect the subsystem.
-Now the ID state in back in idle and a new subsystem to identify can be selected.
+Now the ID state is back in idle and a new subsystem to identify can be selected.
+
+After measurement, the Matlab script ``\docs\source\mpsoc\software_framework\ParameterID\simulink_model\FMID_import_and_plot.m`` can be used to plot the FluxMap.
 
 .. tikz:: Schematic overview of the FluxMapID
   :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
@@ -110,11 +114,23 @@ The config and output structs are shared.
 
 :ref:`uz_ParaID_FluxMapIDoutput`
 
-Functions
----------
+General functions
+-----------------
 
 .. doxygenfunction:: uz_FluxMapID_6ph_init
 .. doxygenfunction:: uz_FluxMapID_6ph_step
+
+Set functions
+-------------
+
+.. doxygenfunction:: uz_FluxMapID_6ph_set_Config
+.. doxygenfunction:: uz_FluxMapID_6ph_set_ActualValues
+.. doxygenfunction:: uz_FluxMapID_6ph_set_GlobalConfig
+.. doxygenfunction:: uz_FluxMapID_6ph_set_ControlFlags
+
+Get functions
+-------------
+
 .. doxygenfunction:: uz_get_FluxMapID_6ph_finished
 .. doxygenfunction:: uz_get_FluxMapID_6ph_entered
 .. doxygenfunction:: uz_get_FluxMapID_6ph_FOCoutput
@@ -122,3 +138,6 @@ Functions
 
 Sources
 =======
+
+.. [#param_ID_paper_SF] M. Hoerner, V. Hoppe, T. Wilfling, A. Dietz, P. Karamanakos and R. Kennel, "Parameter Identification Methods for Multi-Phase Permanent Magnet Synchronous Machines," 2023 IEEE International Electric Machines & Drives Conference (IEMDC), San Francisco, CA, USA, 2023, pp. 1-7, doi: 10.1109/IEMDC55163.2023.10238936.
+.. [#hoppe_pab2] "Automated Parameter Identification for Asymmetrical Six-Phase PermanentMagnet Synchronous Machines", Valentin Hoppe, TH Nürnberg Institute ELSYS, 2023

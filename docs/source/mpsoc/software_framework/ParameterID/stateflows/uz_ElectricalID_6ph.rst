@@ -38,7 +38,7 @@ The options are chosen via buttons:
 
 ``ExtendedPsi``: If no load machine is connected, the machine will drive itself up to speed, to determine :math:`\psi_{PM,1}`. If the button is active, the ParameterID will ask the user to set the machine to a specific speed for it to make an FFT. With that, :math:`\psi_{PM1,3,5,7,9}` can be determined. Since usually a filtered voltage measurement is used, the filters's details have to be given to the ParameterID at initialization in order to compensate for them.
 
-``ExtendedTheta``: While an initial offset angle will always be determined with simple voltage steps, the user can activate this option to employ the :ref:`uz_encoder_offset_estimation` for a better result.
+``ExtendedOffset``: While an initial offset angle will always be determined with simple voltage steps, the user can activate this option to employ the :ref:`uz_encoder_offset_estimation` for a better result.
 
 Stateflow Overview
 ==================
@@ -140,11 +140,25 @@ The config and output structs are both shared with the 3ph ElectricalID.
   :members: 
 
 
-Functions
----------
+General functions
+-----------------
 
 .. doxygenfunction:: uz_ElectricalID_6ph_init
 .. doxygenfunction:: uz_ElectricalID_6ph_step
+
+Set functions
+-------------
+
+.. doxygenfunction:: uz_ElectricalID_6ph_set_Config
+.. doxygenfunction:: uz_ElectricalID_6ph_set_ActualValues
+.. doxygenfunction:: uz_ElectricalID_6ph_set_GlobalConfig
+.. doxygenfunction:: uz_ElectricalID_6ph_set_ControlFlags
+.. doxygenfunction:: uz_ElectricalID_6ph_set_FFT_in
+.. doxygenfunction:: uz_ElectricalID_6ph_set_Offset_Estimation
+
+Get functions
+-------------
+
 .. doxygenfunction:: uz_get_ElectricalID_6ph_fft_out
 .. doxygenfunction:: uz_get_ElectricalID_6ph_finished_voltage_measurement
 .. doxygenfunction:: uz_get_ElectricalID_6ph_entered

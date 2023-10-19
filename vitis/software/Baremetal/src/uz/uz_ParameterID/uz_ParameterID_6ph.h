@@ -61,6 +61,7 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
  * @brief Includes multiple control functions of the UZ libraries controllers
  * 
  * @param Data pointer to uz_ParameterID_Data_t struct
+ * @param struct struct with all controller objects
  * @return struct uz_6ph_dq_t reference voltages of controller
  */
 uz_6ph_dq_t uz_ParameterID_6ph_Controller(uz_ParameterID_Data_t* Data, struct uz_ParameterID_controller objects);
@@ -87,7 +88,7 @@ void uz_ParameterID_6ph_process_actual_values(uz_ParameterID_Data_t *Data, float
  * @brief initializes three dq-setpoint filter instances and saves them to the Data struct
  * 
  * @param Data pointer to uz_ParameterID_Data_t struct
- * @param config config for the setpoint filters (same will be used for all)
+ * @param isr_frequency isr frequency
  */
 void uz_ParameterID_6ph_initialize_filter(uz_ParameterID_Data_t* Data, const float isr_frequency);
 
@@ -104,8 +105,7 @@ void uz_ParameterID_6ph_initialize_encoder_offset_estimation(uz_ParameterID_Data
  * 
  * @param Data pointer to uz_ParameterID_Data_t struct
  * @param activeState pointer to float variable of activeState
- * @param FluxMapCounter pointer to float variable of FluxMapCounter
- * @param ArrayCounter pointer to float variable of ArrayCounter
+ * @param FMID_index_array pointer to float variable of array index
  */
 void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FMID_index_array);
 
@@ -114,7 +114,6 @@ void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, floa
  * 
  * @param self pointer to uz_ParameterID_6ph_t object
  * @param Data pointer to uz_ParameterID_Data_t struct
- * @param meas_array pointer to float variable of activeState
  */
 void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data);
 

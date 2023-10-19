@@ -6,13 +6,6 @@
 #include "uz_ParaID_FluxMapID_6ph.h"
 #include "FluxMapID_6ph_codegen.h"
 
-#include "../../uz_SystemTime/uz_SystemTime.h"
-
-
-#define PARAMETERID6PH_FLUXMAP_RES_ORDER_AB 2.0f
-#define PARAMETERID6PH_FLUXMAP_RES_ORDER_XY 6.0f
-#define PARAMETERID6PH_FLUXMAP_ISR_FREQUENCY (UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)
-#define PARAMETERID6PH_FLUXMAP_AC_SQUARED ((0.1f*2.0f*UZ_PIf*PARAMETERID6PH_FLUXMAP_ISR_FREQUENCY)*(0.1f*2.0f*UZ_PIf*PARAMETERID6PH_FLUXMAP_ISR_FREQUENCY))
 
 struct uz_ParaID_FluxMapID_6ph_t {
     bool is_ready;
@@ -48,19 +41,46 @@ uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void) {
     return(self);
 }
 
-void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags){
-    self->input.FluxMapIDConfig=ID_config;
-    self->input.ActualValues=actual;
-    self->input.GlobalConfig_out=global_config;
-    self->input.ControlFlags=flags;
+void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     FluxMapID_6ph_codegen_step(self->PtrToModelData);
 }
 
+void uz_FluxMapID_6ph_set_Config(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_FluxMapIDConfig_t Config) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.FluxMapIDConfig = Config;
+}
+
+void uz_FluxMapID_6ph_set_ActualValues(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ActualValues_t ActualValues) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.ActualValues = ActualValues;
+}
+
+void uz_FluxMapID_6ph_set_GlobalConfig(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_GlobalConfig_t GlobalConfig) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->input.GlobalConfig_out = GlobalConfig;
+}
+
+void uz_FluxMapID_6ph_set_ControlFlags(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ControlFlags_t* ControlFlags) {
+	uz_assert_not_NULL(self);
+	uz_assert_not_NULL(ControlFlags);
+	uz_assert(self->is_ready);
+	self->input.ControlFlags = *ControlFlags;
+}
+
 bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     return(self->output.enteredFluxMapID);
 }
 
 bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     return(self->output.finishedFluxMapID);
 }
 

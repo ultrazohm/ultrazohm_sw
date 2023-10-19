@@ -18,10 +18,6 @@
 #define UZ_PARAID_FLUXMAPID_6PH_H
 
 #include "../uz_ParameterID_data.h"
-#include "../../uz_CurrentControl/uz_CurrentControl.h"
-#include "../../uz_ResonantController/uz_resonant_controller.h"
-#include "../../uz_math_constants.h"
-#include "../../uz_signals/uz_signals.h"
 #include <stdio.h>
 
 /**
@@ -41,12 +37,13 @@ uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void);
  * @brief steps the uz_ParaID_FluxMapID_6ph_t state once
  * 
  * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
- * @param ID_config config if ID
- * @param actual actual values
- * @param global_config ParaID global config
- * @param flags ParaID control flags
  */
-void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self, uz_ParaID_FluxMapIDConfig_t ID_config, uz_ParaID_ActualValues_t actual, uz_ParaID_GlobalConfig_t global_config, uz_ParaID_ControlFlags_t flags);
+void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self);
+
+void uz_FluxMapID_6ph_set_Config(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_FluxMapIDConfig_t Config);
+void uz_FluxMapID_6ph_set_ActualValues(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ActualValues_t ActualValues);
+void uz_FluxMapID_6ph_set_GlobalConfig(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+void uz_FluxMapID_6ph_set_ControlFlags(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
 
 /**
  * @brief Gets the status of the enteredFluxMapID flag

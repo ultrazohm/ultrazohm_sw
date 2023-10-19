@@ -77,7 +77,8 @@ int main(void)
             Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
             Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
-            ddpg_current_ctrl_init();
+            Global_Data.objects.matrix_input = ddpg_matrix_init();
+            Global_Data.objects.nn_layer = ddpg_nn_init();
             Global_Data.av.lambda_d = 1.0f;
             Global_Data.av.lambda_q = 1.0f;
             Global_Data.av.lambda_u = 0.0f;

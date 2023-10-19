@@ -4,9 +4,8 @@
 Setup and functions of the ParameterID 6ph
 ==========================================
 
-This page details the steps to setup the ParameterID in the UltraZohm software project. 
-
-It is split up in the :ref:`ParaID_6ph_setup_general` and the :ref:`ParaID_6ph_setup_GUI`.
+This page shows the steps to setup the ParameterID in the UltraZohm software project. 
+The setup process is split up in :ref:`ParaID_6ph_setup_general` and :ref:`ParaID_6ph_setup_GUI`.
 
 .. _ParaID_6ph_setup_general:
 
@@ -14,10 +13,10 @@ Setup General
 =============
 
 To initialize the ParameterID, the files ``init_ParameterID_6ph.h`` and ``init_ParameterID_6ph.c`` are created.
-Make sure to include the header in ``main.h`` in order to call the initialize functions from ``main.c``.
+Make sure to include them in ``main.h`` in order to call the initialize functions from ``main.c``.
 In the example code, the object pointers were added to the ``global_data`` struct.
-Please make sure to add them yourself if you intend to do it the same way.
-The ParameterID's cyclic calling happens in ``isr.c`` (see also the notes below).
+For simplification reasons this is not shown here.
+The ParameterID's cyclic calling is done in ``isr.c`` (see also the notes below).
 
 .. code-block:: c
   :linenos:
@@ -227,6 +226,8 @@ Setup GUI
 
 To use the custom GUI, changes have to be made to ``javascope.h``, ``javascope.c`` and ``ipc_ARM.c``.
 The changes are in line with :ref:`uz_ParaID_GUI_setup` and the user only has to add a few signals on top of that.
+
+Make sure to change the value of the ParameterID and ParameterID_6ph variables to 1 in ``properties.ini``.
 
 .. code-block:: c
   :linenos:

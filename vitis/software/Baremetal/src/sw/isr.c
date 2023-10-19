@@ -171,7 +171,8 @@ void ISR_Control(void *data)
     	i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
     	//calc average switching frequency of right motor
     	fcs_mpc_calc_f_sw_avg();
-
+    	//read axi values from mpc ip for debug
+    	fcs_mpc_debug();
 
     	// calculate control (speed and current) of left motor
     	control_left_motor();
@@ -360,8 +361,7 @@ void control_right_motor() {
     	//write setpoint to MPC
     	fcs_mpc_write_setpoint();
 
-    	//read axi values from mpc ip for debug
-    	fcs_mpc_debug();
+
 	}
 
 	if(Global_Data.rasv.current_ctrl_select == DDPG_CC) {

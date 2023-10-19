@@ -121,10 +121,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_J]                      = &(ParaID_Data.ElectricalID_Output->PMSM_parameters.J_kg_m_squared);
 	js_slowDataArray[JSSD_FLOAT_activeState]            = &(activeState);
 	js_slowDataArray[JSSD_FLOAT_encoderOffset]          = &(ParaID_Data.ElectricalID_Output->thetaOffset);
-//	js_slowDataArray[JSSD_FLOAT_ArrayCounter]           = &(ArrayCounter);
 	js_slowDataArray[JSSD_FLOAT_measArraySpeed]         = &(ParaID_Data.MeasArraySpeed_pointer);
 	js_slowDataArray[JSSD_FLOAT_measArrayTorque]        = &(ParaID_Data.MeasArrayTorque_pointer);
-//	js_slowDataArray[JSSD_FLOAT_ArrayControlCounter]    = &(ArrayCounter);
 	js_slowDataArray[JSSD_FLOAT_Stribtorque]            = &(ParaID_Data.FrictionID_Output->BrkTorque);
 	js_slowDataArray[JSSD_FLOAT_Coulombtorque]          = &(ParaID_Data.FrictionID_Output->CoulTorque);
 	js_slowDataArray[JSSD_FLOAT_Viscotorque]            = &(ParaID_Data.FrictionID_Output->ViscoTorque);
@@ -141,10 +139,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_n_FluxPoints]           = &(ParaID_Data.FluxMap_MeasuringPoints);
 	js_slowDataArray[JSSD_FLOAT_Rs_online_FMID]         = &(ParaID_Data.FluxMapID_Output->R_s);
 	js_slowDataArray[JSSD_FLOAT_Wtemp_FMID]             = &(ParaID_Data.FluxMapID_Output->WindingTemp);
-//	js_slowDataArray[JSSD_FLOAT_MapCounter]             = &(FluxMapCounter);
 	js_slowDataArray[JSSD_FLOAT_psidMap]                = &(ParaID_Data.Psi_D_pointer);
 	js_slowDataArray[JSSD_FLOAT_psiqMap]                = &(ParaID_Data.Psi_Q_pointer);
-//	js_slowDataArray[JSSD_FLOAT_MapControlCounter]      = &(FluxMapCounter);
 	// ParaID 6ph
 	js_slowDataArray[JSSD_FLOAT_Psi_0]      			= &(ParaID_Data.ElectricalID_Output->psi_pm[0]);
 	js_slowDataArray[JSSD_FLOAT_Psi_1]      			= &(ParaID_Data.ElectricalID_Output->psi_pm[1]);

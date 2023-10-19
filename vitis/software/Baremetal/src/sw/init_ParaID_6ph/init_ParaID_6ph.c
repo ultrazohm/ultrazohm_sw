@@ -2,7 +2,6 @@
 
 // Para ID
 uz_ParameterID_Data_t ParaID_Data = { 0 };
-//float meas_array[10000];  // voltage measurement
 extern uz_6ph_dq_t controller_out;
 
 uz_ParameterID_6ph_t* init_ParaID_6ph_wrapper(void){
@@ -37,28 +36,28 @@ struct uz_CurrentControl_config cc_config_xy_z = {
 		.config_iq = PI_config_y,
 		.max_modulation_index = 0.5f};
 struct uz_subspace_resonant_control_config resonant_dq = {
-		.antiwindup_gain = 10.0f,
+		.antiwindup_gain = RESONANT_ANTIWINDUP_GAIN,
 		.gain_1 = 50.0f,
 		.gain_2 = 50.0f,
 		.harmonic_order = 2.0f,
-		.lower_limit = -10.0f,
-		.upper_limit = 10.0f,
+		.lower_limit = -RESONANT_LIMIT,
+		.upper_limit = RESONANT_LIMIT,
 		.sampling_time = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 struct uz_subspace_resonant_control_config resonant_xy = {
-		.antiwindup_gain = 10.0f,
+		.antiwindup_gain = RESONANT_ANTIWINDUP_GAIN,
 		.gain_1 = 200.0f,
 		.gain_2 = 200.0f,
 		.harmonic_order = 6.0f,
-		.lower_limit = -10.0f,
-		.upper_limit = 10.0f,
+		.lower_limit = -RESONANT_LIMIT,
+		.upper_limit = RESONANT_LIMIT,
 		.sampling_time = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 struct uz_subspace_resonant_control_config resonant_zero = {
-		.antiwindup_gain = 10.0f,
+		.antiwindup_gain = RESONANT_ANTIWINDUP_GAIN,
 		.gain_1 = 50.0f,
 		.gain_2 = 50.0f,
 		.harmonic_order = 6.0f,
-		.lower_limit = -10.0f,
-		.upper_limit = 10.0f,
+		.lower_limit = -RESONANT_LIMIT,
+		.upper_limit = RESONANT_LIMIT,
 		.sampling_time = INTERRUPT_ISR_SOURCE_USER_CHOICE/UZ_PWM_FREQUENCY};
 struct uz_SpeedControl_config speed_config = {
 		.config_controller.type = parallel,

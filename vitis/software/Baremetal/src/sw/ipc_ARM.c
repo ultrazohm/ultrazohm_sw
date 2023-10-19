@@ -37,7 +37,6 @@ extern uint32_t js_status_BareToRTOS;
 
 
 #include "../uz/uz_ParameterID/uz_ParameterID_data.h"
-
 extern uz_ParameterID_Data_t ParaID_Data;
 
 
@@ -51,610 +50,610 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		{
 
 		case (Stop): // Stop
-			ultrazohm_state_machine_set_stop(true);
-			break;
+					ultrazohm_state_machine_set_stop(true);
+		break;
 		case (201): // SELECT_DATA_CH1_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[0] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[0] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (202): // SELECT_DATA_CH2_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[1] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[1] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (203): // SELECT_DATA_CH3_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[2] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[2] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (204): // SELECT_DATA_CH4_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[3] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[3] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (205): // SELECT_DATA_CH5_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[4] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[4] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (206): // SELECT_DATA_CH6_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[5] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[5] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (207): // SELECT_DATA_CH7_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[6] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[6] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (208): // SELECT_DATA_CH8_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[7] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[7] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (209): // SELECT_DATA_CH9_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[8] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[8] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (210): // SELECT_DATA_CH10_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[9] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[9] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (211): // SELECT_DATA_CH11_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[10] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[10] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (212): // SELECT_DATA_CH12_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[11] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[11] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (213): // SELECT_DATA_CH13_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[12] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[12] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (214): // SELECT_DATA_CH14_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[13] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[13] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (215): // SELECT_DATA_CH15_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[14] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[14] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (216): // SELECT_DATA_CH16_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[15] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[15] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (217): // SELECT_DATA_CH17_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[16] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[16] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (218): // SELECT_DATA_CH18_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[17] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[17] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (219): // SELECT_DATA_CH19_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[18] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[18] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (220): // SELECT_DATA_CH20_bits
-			if (value >= 0 && value < JSO_ENDMARKER)
-			{
-				js_ch_selected[19] = js_ch_observable[(uint32_t)value];
-			}
-			break;
+					if (value >= 0 && value < JSO_ENDMARKER)
+					{
+						js_ch_selected[19] = js_ch_observable[(uint32_t)value];
+					}
+		break;
 
 		case (Enable_System): // ConverterEnable
-			ultrazohm_state_machine_set_enable_system(true);
-			break;
+					ultrazohm_state_machine_set_enable_system(true);
+		break;
 
 		case (Enable_Control): // ControlEnable
-			ultrazohm_state_machine_set_enable_control(true);
+					ultrazohm_state_machine_set_enable_control(true);
 
-			break;
+		break;
 
 		case (Set_Send_Field_1):
-			ParaID_Data.GlobalConfig.i_dq_ref.d = value;
-			break;
+					ParaID_Data.GlobalConfig.i_dq_ref.d = value;
+		break;
 
 		case (Set_Send_Field_2):
-			ParaID_Data.GlobalConfig.i_dq_ref.q = value;
-			break;
+					ParaID_Data.GlobalConfig.i_dq_ref.q = value;
+		break;
 
 		case (Set_Send_Field_3):
-					ParaID_Data.GlobalConfig.i_xy_ref.d = value;
-			break;
+							ParaID_Data.GlobalConfig.i_xy_ref.d = value;
+		break;
 
 		case (Set_Send_Field_4):
-					ParaID_Data.GlobalConfig.i_xy_ref.q = value;
-			break;
+							ParaID_Data.GlobalConfig.i_xy_ref.q = value;
+		break;
 
 		case (Set_Send_Field_5):
-			break;
+					break;
 
 		case (Set_Send_Field_6):
 
-			break;
+					break;
 
 		case (My_Button_1):
-			select_Real = false;
-			select_CIL = true;
-			break;
+					select_Real = false;
+		select_CIL = true;
+		break;
 
 		case (My_Button_2):
-			select_Real = true;
-			select_CIL = false;
-			break;
+					select_Real = true;
+		select_CIL = false;
+		break;
 
 		case (My_Button_3):
-			select_CurrentControl = true;
-			select_DDPG_1_64 = false;
-			select_DDPG_3_64 = false;
-			break;
+					select_CurrentControl = true;
+		select_DDPG_1_64 = false;
+		select_DDPG_3_64 = false;
+		break;
 
 		case (My_Button_4):
-			select_CurrentControl = false;
-			select_DDPG_1_64 = true;
-			select_DDPG_3_64 = false;
-			break;
+					select_CurrentControl = false;
+		select_DDPG_1_64 = true;
+		select_DDPG_3_64 = false;
+		break;
 
 		case (My_Button_5):
-			select_CurrentControl = false;
-			select_DDPG_1_64 = false;
-			select_DDPG_3_64 = true;
-			break;
+					select_CurrentControl = false;
+		select_DDPG_1_64 = false;
+		select_DDPG_3_64 = true;
+		break;
 
 		case (My_Button_6):
-				select_automatic_idiq = true;
-			break;
+						select_automatic_idiq = true;
+		break;
 
 		case (My_Button_7):
 
-			break;
+					break;
 
 		case (My_Button_8):
 
-			break;
+					break;
 
 		//After all My_Button cases add the following
-				        //ParameterID
+		//ParameterID
 
-				        case (ParaID_Enable_System):
-				            ultrazohm_state_machine_set_enable_system(true);
-				            break;
+		case (ParaID_Enable_System):
+				            		ultrazohm_state_machine_set_enable_system(true);
+		break;
 
-				        case (ParaID_Enable_Control):
-				            ultrazohm_state_machine_set_enable_control(true);
-				            break;
+		case (ParaID_Enable_Control):
+				            		ultrazohm_state_machine_set_enable_control(true);
+		break;
 
-				        case (ParaID_Enable_ParameterID):
-				            ParaID_Data.GlobalConfig.enableParameterID = true;
-				            break;
+		case (ParaID_Enable_ParameterID):
+				            		ParaID_Data.GlobalConfig.enableParameterID = true;
+		break;
 
-				        case (ParaID_Disable_ParameterID):
-				            ParaID_Data.GlobalConfig.enableParameterID = false;
-				            ParaID_Data.GlobalConfig.ElectricalID = false;
-				            ParaID_Data.GlobalConfig.TwoMassID = false;
-				            ParaID_Data.GlobalConfig.FrictionID = false;
-				            ParaID_Data.GlobalConfig.FluxMapID = false;
-				            ParaID_Data.GlobalConfig.OnlineID = false;
-				            ParaID_Data.FluxMapID_Config.start_FM_ID = false;
-				        break;
+		case (ParaID_Disable_ParameterID):
+				            		ParaID_Data.GlobalConfig.enableParameterID = false;
+		ParaID_Data.GlobalConfig.ElectricalID = false;
+		ParaID_Data.GlobalConfig.TwoMassID = false;
+		ParaID_Data.GlobalConfig.FrictionID = false;
+		ParaID_Data.GlobalConfig.FluxMapID = false;
+		ParaID_Data.GlobalConfig.OnlineID = false;
+		ParaID_Data.FluxMapID_Config.start_FM_ID = false;
+		break;
 
-				        case (ParaID_Enable_Current_Control):
-				            if (ultrazohm_state_machine_get_state() != control_state) {
-				                ParaID_Data.ParaID_Control_Selection = Current_Control;
-				            }
-				            break;
+		case (ParaID_Enable_Current_Control):
+				            		if (ultrazohm_state_machine_get_state() != control_state) {
+				            			ParaID_Data.ParaID_Control_Selection = Current_Control;
+				            		}
+		break;
 
-				        case (ParaID_Enable_Speed_Control):
-				            if (ultrazohm_state_machine_get_state() != control_state) {
-				                ParaID_Data.ParaID_Control_Selection = Speed_Control;
-				            }
-				            break;
+		case (ParaID_Enable_Speed_Control):
+				            		if (ultrazohm_state_machine_get_state() != control_state) {
+				            			ParaID_Data.ParaID_Control_Selection = Speed_Control;
+				            		}
+		break;
 
-				        case (ParaID_Disable_FOC_Control):
-				            ParaID_Data.ParaID_Control_Selection = No_Control;
-				            break;
+		case (ParaID_Disable_FOC_Control):
+				            		ParaID_Data.ParaID_Control_Selection = No_Control;
+		break;
 
-				        case (ParaID_Control_PI):
+		case (ParaID_Control_PI):
+												if(((uint16_t) value) & 0x01){
+													ParaID_Data.GlobalConfig.PI_dq = true;
+												}else{
+													ParaID_Data.GlobalConfig.PI_dq  = false;
+												}
+		if(((uint16_t) value) & 0x02){
+			ParaID_Data.GlobalConfig.PI_xy = true;
+		}else{
+			ParaID_Data.GlobalConfig.PI_xy = false;
+		}
+		if(((uint16_t) value) & 0x04){
+			ParaID_Data.GlobalConfig.PI_zero = true;
+		}else{
+			ParaID_Data.GlobalConfig.PI_zero = false;
+		}
+		ParaID_Data.GlobalConfig.controllers_updated = true;
+		break;
+		case (ParaID_Control_res):
 										if(((uint16_t) value) & 0x01){
-											ParaID_Data.GlobalConfig.PI_dq = true;
+											ParaID_Data.GlobalConfig.resonant_dq = true;
 										}else{
-											ParaID_Data.GlobalConfig.PI_dq  = false;
+											ParaID_Data.GlobalConfig.resonant_dq  = false;
 										}
-										if(((uint16_t) value) & 0x02){
-											ParaID_Data.GlobalConfig.PI_xy = true;
-										}else{
-											ParaID_Data.GlobalConfig.PI_xy = false;
-										}
-										if(((uint16_t) value) & 0x04){
-											ParaID_Data.GlobalConfig.PI_zero = true;
-										}else{
-											ParaID_Data.GlobalConfig.PI_zero = false;
-										}
-				        ParaID_Data.GlobalConfig.controllers_updated = true;
-				        break;
-				        case (ParaID_Control_res):
+		if(((uint16_t) value) & 0x02){
+			ParaID_Data.GlobalConfig.resonant_xy = true;
+		}else{
+			ParaID_Data.GlobalConfig.resonant_xy = false;
+		}
+		if(((uint16_t) value) & 0x04){
+			ParaID_Data.GlobalConfig.resonant_zero = true;
+		}else{
+			ParaID_Data.GlobalConfig.resonant_zero = false;
+		}
+		case (ParaID_Enable_setpoint_filter):
+								ParaID_Data.GlobalConfig.setpoint_filter = true;
+		break;
+		case (ParaID_Disable_setpoint_filter):
+												ParaID_Data.GlobalConfig.setpoint_filter = false;
+		break;
+		case (ParaID_Enable_ElectricalID):
+				            		ParaID_Data.GlobalConfig.ElectricalID = true;
+		break;
+
+		case (ParaID_Disable_ElectricalID):
+				            		ParaID_Data.GlobalConfig.ElectricalID = false;
+		break;
+
+		case (ParaID_Enable_FrictionID):
+				            		ParaID_Data.GlobalConfig.FrictionID = true;
+		break;
+
+		case (ParaID_Disable_FrictionID):
+				            		ParaID_Data.GlobalConfig.FrictionID = false;
+		break;
+
+		case (ParaID_Enable_TwoMassID):
+				            		ParaID_Data.GlobalConfig.TwoMassID = true;
+		break;
+
+		case (ParaID_Disable_TwoMassID):
+				            		ParaID_Data.GlobalConfig.TwoMassID = false;
+		break;
+
+		case (ParaID_Enable_FluxMapID):
+				            		ParaID_Data.GlobalConfig.FluxMapID = true;
+		break;
+
+		case (ParaID_Disable_FluxMapID):
+				            		ParaID_Data.GlobalConfig.FluxMapID = false;
+		ParaID_Data.FluxMapID_Config.start_FM_ID = false;
+		break;
+
+		case (ParaID_Enable_OnlineID):
+				            		ParaID_Data.GlobalConfig.OnlineID = true;
+		break;
+
+		case (ParaID_Disable_OnlineID):
+				            		ParaID_Data.GlobalConfig.OnlineID = false;
+		ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
+		break;
+
+		case (ParaID_ACCEPT):
+				            		ParaID_Data.GlobalConfig.ACCEPT = true;
+		break;
+
+		case (ParaID_RESET):
+				            		ParaID_Data.GlobalConfig.Reset = true;
+		ParaID_Data.GlobalConfig.ElectricalID = false;
+		ParaID_Data.GlobalConfig.TwoMassID = false;
+		ParaID_Data.GlobalConfig.FrictionID = false;
+		ParaID_Data.GlobalConfig.FluxMapID = false;
+		ParaID_Data.GlobalConfig.OnlineID = false;
+		ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
+		ParaID_Data.ParaID_Control_Selection = No_Control;
+		ParaID_Data.ElectricalID_Config.identLq = false;
+		ParaID_Data.FluxMapID_Config.start_FM_ID = false;
+
+		break;
+
+		case (ParaID_EID_sampleTimeISR):
+				            		ParaID_Data.GlobalConfig.sampleTimeISR = value * 0.000001f;
+		break;
+
+		case (ParaID_EID_n_ref_meas):
+				            		ParaID_Data.ElectricalID_Config.n_ref_measurement = value;
+		break;
+
+		case (ParaID_EID_goertzl_Amp):
+				            		ParaID_Data.ElectricalID_Config.goertzlTorque = value;
+		break;
+
+		case (ParaID_EID_goertzl_Freq):
+				            		ParaID_Data.ElectricalID_Config.goertzlFreq = value;
+		break;
+
+		case (ParaID_EID_DutyCyc):
+				            		ParaID_Data.ElectricalID_Config.dutyCyc = value;
+		break;
+
+		case (ParaID_EID_MaxContinousCurrent):
+				            		ParaID_Data.GlobalConfig.PMSM_config.I_max_Ampere = value;
+		break;
+
+		case (ParaID_EID_Enable_IdentLQ):
+				            		ParaID_Data.ElectricalID_Config.identLq = true;
+		break;
+
+		case (ParaID_EID_Disable_IdentLQ):
+				            		ParaID_Data.ElectricalID_Config.identLq = false;
+		break;
+
+		case (ParaID_EID_Enable_EXT_PSI):
+									ParaID_Data.ElectricalID_Config.extended_psi = true;
+		break;
+
+		case (ParaID_EID_Disable_EXT_PSI):
+									ParaID_Data.ElectricalID_Config.extended_psi = false;
+		break;
+
+		case (ParaID_EID_Enable_EXT_THETA):
+									ParaID_Data.ElectricalID_Config.extended_offset = true;
+		break;
+
+		case (ParaID_EID_Disable_EXT_THETA):
+									ParaID_Data.ElectricalID_Config.extended_offset = false;
+		break;
+
+		case (ParaID_EID_ManualOffset):
+									ParaID_Data.ElectricalID_Config.manual_offset = value;
+		break;
+
+		case (ParaID_EID_Admit_Params):
+				            		//If FOC is used
+									//uz_FOC_set_PMSM_parameters(FOC_instance, ParaID_Data.ElectricalID_Output.PMSM_parameters);
+		//uz_SpeedControl_set_PMSM_config(SpeedControl_instance, ParaID_Data.ElectricalID_Output.PMSM_parameters);
+		break;
+
+		case (ParaID_FID_max_speed):
+				            		ParaID_Data.FrictionID_Config.n_eva_max = value;
+		break;
+
+		case (ParaID_FID_N_Brk):
+				            		ParaID_Data.FrictionID_Config.N_Brk = value;
+		break;
+
+		case (ParaID_FID_N_Visco):
+				            		ParaID_Data.FrictionID_Config.N_Visco = value;
+		break;
+
+		case (ParaID_FID_s_step):
+				            		ParaID_Data.FrictionID_Config.StepScale = value;
+		break;
+
+		case (ParaID_FID_Brk_Count):
+				            		ParaID_Data.FrictionID_Config.BrkCount = value;
+		break;
+
+		case (ParaID_FID_eta_speed):
+				            		ParaID_Data.FrictionID_Config.eta = value;
+		break;
+
+		case (ParaID_TMID_Scale_PRBS):
+				            		ParaID_Data.TwoMassID_Config.ScaleTorquePRBS = value;
+		break;
+
+		case (ParaID_TMID_d_TMS_start):
+				            		ParaID_Data.TwoMassID_Config.d_TMS_start = value;
+		break;
+
+		case (ParaID_TMID_n_ref):
+				            		ParaID_Data.TwoMassID_Config.n_ref_measurement = value;
+		break;
+
+		case (ParaID_TMID_f_min):
+				            		ParaID_Data.TwoMassID_Config.f_min = value;
+		break;
+
+		case (ParaID_TMID_f_max):
+				            		ParaID_Data.TwoMassID_Config.f_max = value;
+		break;
+
+		case (ParaID_FMID_i_d_start):
+				            		ParaID_Data.FluxMapID_Config.IDstart = value;
+		break;
+
+		case (ParaID_FMID_i_d_stop):
+				            		ParaID_Data.FluxMapID_Config.IDstop = value;
+		break;
+
+		case (ParaID_FMID_i_d_step):
+				            		ParaID_Data.FluxMapID_Config.IDstepsize = value;
+		break;
+
+		case (ParaID_FMID_i_q_start):
+				            		ParaID_Data.FluxMapID_Config.IQstart = value;
+		break;
+
+		case (ParaID_FMID_i_q_stop):
+				            		ParaID_Data.FluxMapID_Config.IQstop = value;
+		break;
+
+		case (ParaID_FMID_i_q_step):
+				            		ParaID_Data.FluxMapID_Config.IQstepsize = value;
+		break;
+
+		case (ParaID_FMID_Rs_ref):
+				            		ParaID_Data.FluxMapID_Config.R_s_ref = value;
+		break;
+
+		case (ParaID_FMID_Temp_ref):
+				            		ParaID_Data.FluxMapID_Config.Temp_ref = value;
+		break;
+
+		case (ParaID_FMID_identRAmp):
+				            		ParaID_Data.FluxMapID_Config.identRAmp = value;
+		break;
+
+		case (ParaID_FMID_enable_ident_R):
+				            		ParaID_Data.FluxMapID_Config.identR = true;
+		break;
+
+		case (ParaID_FMID_disable_ident_R):
+				            		ParaID_Data.FluxMapID_Config.identR = false;
+		break;
+
+		case (ParaID_FMID_enable_AMM):
+				            		ParaID_Data.FluxMapID_Config.start_FM_ID = true;
+		break;
+
+		case (ParaID_FMID_disable_AMM):
+				            		ParaID_Data.FluxMapID_Config.start_FM_ID = false;
+		break;
+
+		case (ParaID_OID_Refresh_Flux_Maps):
+				            		ParaID_Data.calculate_flux_maps = true;
+		break;
+
+		case (ParaID_OID_Reset_OnlineID):
+				            		ParaID_Data.OnlineID_Config.OnlineID_Reset = true;
+		ParaID_Data.AutoRefCurrents_Config.Reset = true;
+		ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
+		break;
+
+		case (ParaID_OID_Enable_AutoCurrentControl):
+				            		ParaID_Data.AutoRefCurrents_Config.enableCRS = true;
+		break;
+
+		case (ParaID_OID_Disable_AutoCurrentControl):
+				            		ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
+		break;
+
+		case (ParaID_OID_d_current_steps):
+				            		ParaID_Data.AutoRefCurrents_Config.id_points = value;
+		break;
+
+		case (ParaID_OID_q_current_steps):
+				            		ParaID_Data.AutoRefCurrents_Config.iq_points = value;
+		break;
+
+		case (ParaID_OID_max_current):
+				            		ParaID_Data.AutoRefCurrents_Config.max_current = value;
+		break;
+
+		case (ParaID_OID_ref_temp):
+				            		ParaID_Data.OnlineID_Config.Temp_ref = value;
+		break;
+
+		case (ParaID_OID_ref_Rs):
+				            		ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm = value;
+		break;
+
+		case (ParaID_OID_max_speed):
+				            		ParaID_Data.OnlineID_Config.max_n_ratio = value;
+		break;
+
+		case (ParaID_OID_min_speed):
+				            		ParaID_Data.OnlineID_Config.min_n_ratio = value;
+		break;
+
+		case (ParaID_OID_Ident_range_factor):
+				            		ParaID_Data.OnlineID_Config.nom_factor = value;
+		break;
+
+		case (ParaID_OID_max_ident_pause):
+				            		ParaID_Data.OnlineID_Config.Rs_time = value;
+		break;
+		case (ParaID_OID_identR_Amp):
+				            		ParaID_Data.OnlineID_Config.identRAmp = value;
+		break;
+
+		case (ParaID_OID_Fluxmap_Control_counter):
+				            		ParaID_Data.FluxMap_Control_counter = value;
+		break;
+
+		case (ParaID_FID_Array_Control_counter):
+				            		ParaID_Data.Array_Control_counter = value;
+		break;
+		case (ParaID_FMID_temperature_lower):
+									ParaID_Data.FluxMapID_Config.lower_meas_temp = value;
+		break;
+		case (ParaID_FMID_temperature_upper):
+									ParaID_Data.FluxMapID_Config.upper_meas_temp = value;
+		break;
+
+		case (ParaID_FMID_selected_subsystem):
 								if(((uint16_t) value) & 0x01){
-									ParaID_Data.GlobalConfig.resonant_dq = true;
+									ParaID_Data.FluxMapID_Config.select_dq = true;
 								}else{
-									ParaID_Data.GlobalConfig.resonant_dq  = false;
+									ParaID_Data.FluxMapID_Config.select_dq = false;
 								}
-								if(((uint16_t) value) & 0x02){
-									ParaID_Data.GlobalConfig.resonant_xy = true;
-								}else{
-									ParaID_Data.GlobalConfig.resonant_xy = false;
-								}
-								if(((uint16_t) value) & 0x04){
-									ParaID_Data.GlobalConfig.resonant_zero = true;
-								}else{
-									ParaID_Data.GlobalConfig.resonant_zero = false;
-								}
-				        case (ParaID_Enable_setpoint_filter):
-						ParaID_Data.GlobalConfig.setpoint_filter = true;
-						break;
-						case (ParaID_Disable_setpoint_filter):
-										ParaID_Data.GlobalConfig.setpoint_filter = false;
-										break;
-				        case (ParaID_Enable_ElectricalID):
-				            ParaID_Data.GlobalConfig.ElectricalID = true;
-				            break;
+		if(((uint16_t) value) & 0x02){
+			ParaID_Data.FluxMapID_Config.select_xy = true;
+		}else{
+			ParaID_Data.FluxMapID_Config.select_xy = false;
+		}
+		if(((uint16_t) value) & 0x04){
+			ParaID_Data.FluxMapID_Config.select_zero = true;
+		}else{
+			ParaID_Data.FluxMapID_Config.select_zero = false;
+		}
+		break;
 
-				        case (ParaID_Disable_ElectricalID):
-				            ParaID_Data.GlobalConfig.ElectricalID = false;
-				            break;
+		case (Error_Reset):
 
-				        case (ParaID_Enable_FrictionID):
-				            ParaID_Data.GlobalConfig.FrictionID = true;
-				            break;
-
-				        case (ParaID_Disable_FrictionID):
-				            ParaID_Data.GlobalConfig.FrictionID = false;
-				            break;
-
-				        case (ParaID_Enable_TwoMassID):
-				            ParaID_Data.GlobalConfig.TwoMassID = true;
-				            break;
-
-				        case (ParaID_Disable_TwoMassID):
-				            ParaID_Data.GlobalConfig.TwoMassID = false;
-				            break;
-
-				        case (ParaID_Enable_FluxMapID):
-				            ParaID_Data.GlobalConfig.FluxMapID = true;
-				            break;
-
-				        case (ParaID_Disable_FluxMapID):
-				            ParaID_Data.GlobalConfig.FluxMapID = false;
-				            ParaID_Data.FluxMapID_Config.start_FM_ID = false;
-				            break;
-
-				        case (ParaID_Enable_OnlineID):
-				            ParaID_Data.GlobalConfig.OnlineID = true;
-				            break;
-
-				        case (ParaID_Disable_OnlineID):
-				            ParaID_Data.GlobalConfig.OnlineID = false;
-				            ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
-				            break;
-
-				        case (ParaID_ACCEPT):
-				            ParaID_Data.GlobalConfig.ACCEPT = true;
-				            break;
-
-				        case (ParaID_RESET):
-				            ParaID_Data.GlobalConfig.Reset = true;
-				            ParaID_Data.GlobalConfig.ElectricalID = false;
-				            ParaID_Data.GlobalConfig.TwoMassID = false;
-				            ParaID_Data.GlobalConfig.FrictionID = false;
-				            ParaID_Data.GlobalConfig.FluxMapID = false;
-				            ParaID_Data.GlobalConfig.OnlineID = false;
-				            ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
-				            ParaID_Data.ParaID_Control_Selection = No_Control;
-				            ParaID_Data.ElectricalID_Config.identLq = false;
-				            ParaID_Data.FluxMapID_Config.start_FM_ID = false;
-
-				            break;
-
-				        case (ParaID_EID_sampleTimeISR):
-				            ParaID_Data.GlobalConfig.sampleTimeISR = value * 0.000001f;
-				            break;
-
-				        case (ParaID_EID_n_ref_meas):
-				            ParaID_Data.ElectricalID_Config.n_ref_measurement = value;
-				            break;
-
-				        case (ParaID_EID_goertzl_Amp):
-				            ParaID_Data.ElectricalID_Config.goertzlTorque = value;
-				            break;
-
-				        case (ParaID_EID_goertzl_Freq):
-				            ParaID_Data.ElectricalID_Config.goertzlFreq = value;
-				            break;
-
-				        case (ParaID_EID_DutyCyc):
-				            ParaID_Data.ElectricalID_Config.dutyCyc = value;
-				            break;
-
-				        case (ParaID_EID_MaxContinousCurrent):
-				            ParaID_Data.GlobalConfig.PMSM_config.I_max_Ampere = value;
-				            break;
-
-				        case (ParaID_EID_Enable_IdentLQ):
-				            ParaID_Data.ElectricalID_Config.identLq = true;
-				            break;
-
-				        case (ParaID_EID_Disable_IdentLQ):
-				            ParaID_Data.ElectricalID_Config.identLq = false;
-				            break;
-
-				        case (ParaID_EID_Enable_EXT_PSI):
-							ParaID_Data.ElectricalID_Config.extended_psi = true;
 							break;
-
-						case (ParaID_EID_Disable_EXT_PSI):
-							ParaID_Data.ElectricalID_Config.extended_psi = false;
-							break;
-
-						case (ParaID_EID_Enable_EXT_THETA):
-							ParaID_Data.ElectricalID_Config.extended_offset = true;
-							break;
-
-						case (ParaID_EID_Disable_EXT_THETA):
-							ParaID_Data.ElectricalID_Config.extended_offset = false;
-							break;
-
-						case (ParaID_EID_ManualOffset):
-							ParaID_Data.ElectricalID_Config.manual_offset = value;
-							break;
-
-				        case (ParaID_EID_Admit_Params):
-				            //If FOC is used
-				            //uz_FOC_set_PMSM_parameters(FOC_instance, ParaID_Data.ElectricalID_Output.PMSM_parameters);
-				            //uz_SpeedControl_set_PMSM_config(SpeedControl_instance, ParaID_Data.ElectricalID_Output.PMSM_parameters);
-				            break;
-
-				        case (ParaID_FID_max_speed):
-				            ParaID_Data.FrictionID_Config.n_eva_max = value;
-				            break;
-
-				        case (ParaID_FID_N_Brk):
-				            ParaID_Data.FrictionID_Config.N_Brk = value;
-				            break;
-
-				        case (ParaID_FID_N_Visco):
-				            ParaID_Data.FrictionID_Config.N_Visco = value;
-				            break;
-
-				        case (ParaID_FID_s_step):
-				            ParaID_Data.FrictionID_Config.StepScale = value;
-				            break;
-
-				        case (ParaID_FID_Brk_Count):
-				            ParaID_Data.FrictionID_Config.BrkCount = value;
-				            break;
-
-				        case (ParaID_FID_eta_speed):
-				            ParaID_Data.FrictionID_Config.eta = value;
-				            break;
-
-				        case (ParaID_TMID_Scale_PRBS):
-				            ParaID_Data.TwoMassID_Config.ScaleTorquePRBS = value;
-				            break;
-
-				        case (ParaID_TMID_d_TMS_start):
-				            ParaID_Data.TwoMassID_Config.d_TMS_start = value;
-				            break;
-
-				        case (ParaID_TMID_n_ref):
-				            ParaID_Data.TwoMassID_Config.n_ref_measurement = value;
-				            break;
-
-				        case (ParaID_TMID_f_min):
-				            ParaID_Data.TwoMassID_Config.f_min = value;
-				            break;
-
-				        case (ParaID_TMID_f_max):
-				            ParaID_Data.TwoMassID_Config.f_max = value;
-				            break;
-
-				        case (ParaID_FMID_i_d_start):
-				            ParaID_Data.FluxMapID_Config.IDstart = value;
-				            break;
-
-				        case (ParaID_FMID_i_d_stop):
-				            ParaID_Data.FluxMapID_Config.IDstop = value;
-				            break;
-
-				        case (ParaID_FMID_i_d_step):
-				            ParaID_Data.FluxMapID_Config.IDstepsize = value;
-				            break;
-
-				        case (ParaID_FMID_i_q_start):
-				            ParaID_Data.FluxMapID_Config.IQstart = value;
-				            break;
-
-				        case (ParaID_FMID_i_q_stop):
-				            ParaID_Data.FluxMapID_Config.IQstop = value;
-				            break;
-
-				        case (ParaID_FMID_i_q_step):
-				            ParaID_Data.FluxMapID_Config.IQstepsize = value;
-				            break;
-
-				        case (ParaID_FMID_Rs_ref):
-				            ParaID_Data.FluxMapID_Config.R_s_ref = value;
-				            break;
-
-				        case (ParaID_FMID_Temp_ref):
-				            ParaID_Data.FluxMapID_Config.Temp_ref = value;
-				            break;
-
-				        case (ParaID_FMID_identRAmp):
-				            ParaID_Data.FluxMapID_Config.identRAmp = value;
-				            break;
-
-				        case (ParaID_FMID_enable_ident_R):
-				            ParaID_Data.FluxMapID_Config.identR = true;
-				            break;
-
-				        case (ParaID_FMID_disable_ident_R):
-				            ParaID_Data.FluxMapID_Config.identR = false;
-				            break;
-
-				        case (ParaID_FMID_enable_AMM):
-				            ParaID_Data.FluxMapID_Config.start_FM_ID = true;
-				            break;
-
-				        case (ParaID_FMID_disable_AMM):
-				            ParaID_Data.FluxMapID_Config.start_FM_ID = false;
-				            break;
-
-				        case (ParaID_OID_Refresh_Flux_Maps):
-				            ParaID_Data.calculate_flux_maps = true;
-				            break;
-
-				        case (ParaID_OID_Reset_OnlineID):
-				            ParaID_Data.OnlineID_Config.OnlineID_Reset = true;
-				            ParaID_Data.AutoRefCurrents_Config.Reset = true;
-				            ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
-				            break;
-
-				        case (ParaID_OID_Enable_AutoCurrentControl):
-				            ParaID_Data.AutoRefCurrents_Config.enableCRS = true;
-				            break;
-
-				        case (ParaID_OID_Disable_AutoCurrentControl):
-				            ParaID_Data.AutoRefCurrents_Config.enableCRS = false;
-				            break;
-
-				        case (ParaID_OID_d_current_steps):
-				            ParaID_Data.AutoRefCurrents_Config.id_points = value;
-				            break;
-
-				        case (ParaID_OID_q_current_steps):
-				            ParaID_Data.AutoRefCurrents_Config.iq_points = value;
-				            break;
-
-				        case (ParaID_OID_max_current):
-				            ParaID_Data.AutoRefCurrents_Config.max_current = value;
-				            break;
-
-				        case (ParaID_OID_ref_temp):
-				            ParaID_Data.OnlineID_Config.Temp_ref = value;
-				            break;
-
-				        case (ParaID_OID_ref_Rs):
-				            ParaID_Data.GlobalConfig.PMSM_config.R_ph_Ohm = value;
-				            break;
-
-				        case (ParaID_OID_max_speed):
-				            ParaID_Data.OnlineID_Config.max_n_ratio = value;
-				            break;
-
-				        case (ParaID_OID_min_speed):
-				            ParaID_Data.OnlineID_Config.min_n_ratio = value;
-				            break;
-
-				        case (ParaID_OID_Ident_range_factor):
-				            ParaID_Data.OnlineID_Config.nom_factor = value;
-				            break;
-
-				        case (ParaID_OID_max_ident_pause):
-				            ParaID_Data.OnlineID_Config.Rs_time = value;
-				            break;
-				        case (ParaID_OID_identR_Amp):
-				            ParaID_Data.OnlineID_Config.identRAmp = value;
-				            break;
-
-				        case (ParaID_OID_Fluxmap_Control_counter):
-				            ParaID_Data.FluxMap_Control_counter = value;
-				            break;
-
-				        case (ParaID_FID_Array_Control_counter):
-				            ParaID_Data.Array_Control_counter = value;
-				            break;
-				        case (ParaID_FMID_temperature_lower):
-							ParaID_Data.FluxMapID_Config.lower_meas_temp = value;
-							break;
-				        case (ParaID_FMID_temperature_upper):
-							ParaID_Data.FluxMapID_Config.upper_meas_temp = value;
-							break;
-
-				        case (ParaID_FMID_selected_subsystem):
-						if(((uint16_t) value) & 0x01){
-							ParaID_Data.FluxMapID_Config.select_dq = true;
-						}else{
-							ParaID_Data.FluxMapID_Config.select_dq = false;
-						}
-						if(((uint16_t) value) & 0x02){
-							ParaID_Data.FluxMapID_Config.select_xy = true;
-						}else{
-							ParaID_Data.FluxMapID_Config.select_xy = false;
-						}
-						if(((uint16_t) value) & 0x04){
-							ParaID_Data.FluxMapID_Config.select_zero = true;
-						}else{
-							ParaID_Data.FluxMapID_Config.select_zero = false;
-						}
-							break;
-
-				case (Error_Reset):
-
-					break;
 		case (0xFFFF):
-			// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
-			break;
+					// this is triggered if the IPI message buffer is read without being written once before (i.e. at startup)
+		break;
 
 		default:
 			break;		  // Default just breaks since now a lot of unused control worlds are sent from the javascope->a53 which are never handled here.
@@ -688,7 +687,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS |= 1 << 3;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 3);
-		}
+	}
 
 	/* Bit 4 - My_Button_1 */
 	if (select_CIL == true) {
@@ -706,7 +705,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 6 - My_Button_3 */
 	if (select_CurrentControl == true) {
-	 	js_status_BareToRTOS |= (1 << 6);
+		js_status_BareToRTOS |= (1 << 6);
 	} else {
 		js_status_BareToRTOS &= ~(1 << 6);
 	}
@@ -715,20 +714,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	if (select_DDPG_1_64 == true) {
 		js_status_BareToRTOS |= (1 << 7);
 	} else {
-	 	js_status_BareToRTOS &= ~(1 << 7);
+		js_status_BareToRTOS &= ~(1 << 7);
 	}
 	/* Bit 8 - My_Button_5 */
 	if (select_DDPG_3_64 == true) {
 		js_status_BareToRTOS |= (1 << 8);
 	} else {
-	 	js_status_BareToRTOS &= ~(1 << 8);
+		js_status_BareToRTOS &= ~(1 << 8);
 	}
 
 	/* Bit 9 - My_Button_6 */
 	if (select_automatic_idiq == true) {
 		js_status_BareToRTOS |= (1 << 9);
 	} else {
-		 js_status_BareToRTOS &= ~(1 << 9);
+		js_status_BareToRTOS &= ~(1 << 9);
 	}
 
 	/* Bit 10 - My_Button_7 */
@@ -739,77 +738,77 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	//Replace Bit 12-21 with the following
 	/* Bit 12 - trigger ext. logging */
-		 if (ParaID_Data.Controller_Parameters.activeState == 404U) {
-			js_status_BareToRTOS |= (1 << 12);
-		 } else {
-			js_status_BareToRTOS &= ~(1 << 12);
-		 }
+	if (ParaID_Data.Controller_Parameters.activeState == 404U && ParaID_Data.Controller_Parameters.activeState == 405U) {
+		js_status_BareToRTOS |= (1 << 12);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 12);
+	}
 
-		//Replace Bit 13-19 with the following
-		    /* Bit 13 - Ident_Lq */
-		    if (ParaID_Data.ElectricalID_Config.identLq == true) {
-		        js_status_BareToRTOS |= (1 << 13);
-		    } else {
-		        js_status_BareToRTOS &= ~(1 << 13);
-		    }
+	//Replace Bit 13-19 with the following
+	/* Bit 13 - Ident_Lq */
+	if (ParaID_Data.ElectricalID_Config.identLq == true) {
+		js_status_BareToRTOS |= (1 << 13);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 13);
+	}
 
-		    /* Bit 14 - FluxMapID R-Online */
-		    if (ParaID_Data.FluxMapID_Config.identR == true) {
-		        js_status_BareToRTOS |= (1 << 14);
-		    } else {
-		        js_status_BareToRTOS &= ~(1 << 14);
-		    }
+	/* Bit 14 - FluxMapID R-Online */
+	if (ParaID_Data.FluxMapID_Config.identR == true) {
+		js_status_BareToRTOS |= (1 << 14);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 14);
+	}
 
-		    /* Bit 15 - FluxMapID start */
-		    if (ParaID_Data.FluxMapID_Config.start_FM_ID == true) {
-		        js_status_BareToRTOS |= (1 << 15);
-		    } else {
-		        js_status_BareToRTOS &= ~(1 << 15);
-		    }
+	/* Bit 15 - FluxMapID start */
+	if (ParaID_Data.FluxMapID_Config.start_FM_ID == true) {
+		js_status_BareToRTOS |= (1 << 15);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 15);
+	}
 
-		    /* Bit 16 - ParaID_FOC_CC */
-		    if (ParaID_Data.ParaID_Control_Selection == Current_Control) {
-		        js_status_BareToRTOS |= (1 << 16);
-		    } else {
-		        js_status_BareToRTOS &= ~(1 << 16);
-		    }
+	/* Bit 16 - ParaID_FOC_CC */
+	if (ParaID_Data.ParaID_Control_Selection == Current_Control) {
+		js_status_BareToRTOS |= (1 << 16);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 16);
+	}
 
-		    /* Bit 17 - ParaID_FOC_SC */
-		    if (ParaID_Data.ParaID_Control_Selection == Speed_Control) {
-		        js_status_BareToRTOS |= (1 << 17);
-		    } else {
-		        js_status_BareToRTOS &= ~(1 << 17);
-		    }
+	/* Bit 17 - ParaID_FOC_SC */
+	if (ParaID_Data.ParaID_Control_Selection == Speed_Control) {
+		js_status_BareToRTOS |= (1 << 17);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 17);
+	}
 
-		    /* Bit 18 -ParaID_FOC_no_control */
-		    if (ParaID_Data.ParaID_Control_Selection == No_Control) {
-		        js_status_BareToRTOS |= (1 << 18);
-		    } else {
-		        js_status_BareToRTOS &= ~(1 << 18);
-		    }
+	/* Bit 18 -ParaID_FOC_no_control */
+	if (ParaID_Data.ParaID_Control_Selection == No_Control) {
+		js_status_BareToRTOS |= (1 << 18);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 18);
+	}
 
-		    /* Bit 19 -ParameterID active */
-		    if (ParaID_Data.GlobalConfig.enableParameterID == true) {
-		        ultrazohm_state_machine_set_userLED(true);
-		        js_status_BareToRTOS |= (1 << 19);
-		    } else {
-		        js_status_BareToRTOS &= ~(1 << 19);
-		        ultrazohm_state_machine_set_userLED(false);
-		    }
+	/* Bit 19 -ParameterID active */
+	if (ParaID_Data.GlobalConfig.enableParameterID == true) {
+		ultrazohm_state_machine_set_userLED(true);
+		js_status_BareToRTOS |= (1 << 19);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 19);
+		ultrazohm_state_machine_set_userLED(false);
+	}
 
-		    /* Bit 20 - ext offset */
-			if (ParaID_Data.ElectricalID_Config.extended_offset == true) {
-				js_status_BareToRTOS |= (1 << 20);
-			} else {
-				js_status_BareToRTOS &= ~(1 << 20);
-			}
+	/* Bit 20 - ext offset */
+	if (ParaID_Data.ElectricalID_Config.extended_offset == true) {
+		js_status_BareToRTOS |= (1 << 20);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 20);
+	}
 
-		    //* Bit 21 - ext psi */
-			if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
-				js_status_BareToRTOS |= (1 << 21);
-			} else {
-				js_status_BareToRTOS &= ~(1 << 21);
-			}
+	//* Bit 21 - ext psi */
+	if (ParaID_Data.ElectricalID_Config.extended_psi == true) {
+		js_status_BareToRTOS |= (1 << 21);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 21);
+	}
 }
 
 

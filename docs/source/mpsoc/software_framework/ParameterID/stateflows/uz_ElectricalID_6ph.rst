@@ -140,11 +140,25 @@ The config and output structs are both shared with the 3ph ElectricalID.
   :members: 
 
 
-Functions
----------
+General functions
+-----------------
 
 .. doxygenfunction:: uz_ElectricalID_6ph_init
 .. doxygenfunction:: uz_ElectricalID_6ph_step
+
+Set functions
+-------------
+
+.. doxygenfunction:: uz_ElectricalID_6ph_set_Config
+.. doxygenfunction:: uz_ElectricalID_6ph_set_ActualValues
+.. doxygenfunction:: uz_ElectricalID_6ph_set_GlobalConfig
+.. doxygenfunction:: uz_ElectricalID_6ph_set_ControlFlags
+.. doxygenfunction:: uz_ElectricalID_6ph_set_FFT_in
+.. doxygenfunction:: uz_ElectricalID_6ph_set_Offset_Estimation
+
+Get functions
+-------------
+
 .. doxygenfunction:: uz_get_ElectricalID_6ph_fft_out
 .. doxygenfunction:: uz_get_ElectricalID_6ph_finished_voltage_measurement
 .. doxygenfunction:: uz_get_ElectricalID_6ph_entered

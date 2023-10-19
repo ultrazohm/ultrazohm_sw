@@ -133,10 +133,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_out_psi_q,
 	JSSD_FLOAT_average_winding_temp,
 	JSSD_FLOAT_fluxmap_index,
-	JSSD_FLOAT_fluxmap_id,
-	JSSD_FLOAT_fluxmap_iq,
-	JSSD_FLOAT_fluxmap_psid,
-	JSSD_FLOAT_fluxmap_psiq,
 	JSSD_ENDMARKER
 };
 

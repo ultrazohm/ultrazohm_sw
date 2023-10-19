@@ -46,8 +46,7 @@ extern float start_marker;
 extern uz_ParameterID_Data_t ParaID_Data;
 float activeState = 0.0f;
 // ParaID 6ph
-float FMID_logdata_milli[4];
-float FMID_array_index;
+float FMID_array_index = 0.0f;
 
 
 int JavaScope_initialize(DS_Data* data)
@@ -173,10 +172,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_out_psi_q]				= &(ParaID_Data.FluxMapID_Output->psi_array[3]);
 	js_slowDataArray[JSSD_FLOAT_average_winding_temp]	= &(ParaID_Data.ActualValues.average_winding_temp);
 	js_slowDataArray[JSSD_FLOAT_fluxmap_index]			= &(FMID_array_index);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(FMID_logdata_milli[0]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(FMID_logdata_milli[1]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(FMID_logdata_milli[2]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(FMID_logdata_milli[3]);
 
 	return Status;
 }
@@ -193,7 +188,7 @@ void JavaScope_update(DS_Data* data){
 	int status = XST_SUCCESS;
 
 	// ParaID
-	uz_ParameterID_6ph_update_transmit_values(&ParaID_Data, &activeState, &FMID_logdata_milli[0], &FMID_array_index);
+	uz_ParameterID_6ph_update_transmit_values(&ParaID_Data, &activeState, &FMID_array_index);
 
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed

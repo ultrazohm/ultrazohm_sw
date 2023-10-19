@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'ElectricalID_6ph_codegen'.
  *
- * Model version                  : 5.10
+ * Model version                  : 5.34
  * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Sun Aug 27 17:02:57 2023
+ * C/C++ source code generated on : Thu Oct 19 15:26:56 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -65,7 +65,7 @@ typedef struct tag_RTM_ElectricalID_6ph_code_t RT_MODEL_ElectricalID_6ph_cod_t;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  uz_ParaID_Controller_Parameters_output_t FOC_out_old;
+  uz_ParaID_Controller_Parameters_output_t b;
   uint64_T u;
   real32_T d[2048];                    /* '<Root>/ElectricalID_6ph_codegen' */
   real32_T measArray1[1024];           /* '<Root>/ElectricalID_6ph_codegen' */
@@ -117,8 +117,6 @@ typedef struct {
   real32_T setp_abc[6];
   real32_T setp_dq[6];
   real32_T H_iu[4];
-  real32_T setp_abc_c[6];
-  real32_T fv[6];
   real32_T R_est;              /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T L_est;              /* '<S1>/ElectricalID.Subchart_Step_Response5' */
   real32_T duty_a1;            /* '<S1>/ElectricalID.Subchart_Step_Response5' */
@@ -185,8 +183,6 @@ typedef struct {
   real32_T V0_al;              /* '<S1>/ElectricalID.Subchart_Step_Response1' */
   real32_T V0_n4;               /* '<S1>/ElectricalID.Subchart_Step_Response' */
   real32_T f;
-  real32_T PMSM_config_Ld_Henry;
-  real32_T PMSM_config_polePairs;
   real32_T lambda_l;
   real32_T e_d;
   real32_T A;
@@ -198,80 +194,77 @@ typedef struct {
   real32_T b_y_re;
   real32_T b_y_im;
   real32_T a;
-  real32_T b;
-  real32_T DutyCycle_b;
+  real32_T b_c;
   real32_T r;
   real32_T t;
   real32_T e_lm;
   real32_T b_y_idx_0;
   real32_T b_y_idx_1;
   real32_T b_y_idx_2;
-  real32_T r_p;
-  real32_T t_c;
-  real32_T e_lm_f;
-  real32_T b_y_idx_0_g;
-  real32_T b_y_idx_1_g;
-  real32_T b_y_idx_2_m;
-  real32_T r_n;
+  real32_T r_b;
   real32_T t_p;
-  real32_T e_lm_l;
-  real32_T b_y_idx_0_j;
-  real32_T b_y_idx_1_d;
-  real32_T b_y_idx_2_g;
-  real32_T r_l;
-  real32_T t_d;
-  real32_T e_lm_d;
-  real32_T b_y_idx_0_l;
-  real32_T b_y_idx_1_o;
-  real32_T b_y_idx_2_b;
-  real32_T r_nu;
-  real32_T t_b;
-  real32_T e_lm_ln;
-  real32_T b_y_idx_0_h;
-  real32_T b_y_idx_1_b;
-  real32_T b_y_idx_2_d;
-  real32_T r_e;
-  real32_T t_bj;
-  real32_T e_lm_j;
+  real32_T e_lm_c;
   real32_T b_y_idx_0_f;
-  real32_T b_y_idx_1_a;
-  real32_T b_y_idx_2_j;
+  real32_T b_y_idx_1_g;
+  real32_T b_y_idx_2_g;
+  real32_T r_m;
+  real32_T t_n;
+  real32_T e_lm_p;
+  real32_T b_y_idx_0_l;
+  real32_T b_y_idx_1_j;
+  real32_T b_y_idx_2_d;
+  real32_T r_g;
+  real32_T t_l;
+  real32_T e_lm_d;
+  real32_T b_y_idx_0_d;
+  real32_T b_y_idx_1_l;
+  real32_T b_y_idx_2_o;
+  real32_T r_bj;
+  real32_T t_nu;
+  real32_T e_lm_b;
+  real32_T b_y_idx_0_ln;
+  real32_T b_y_idx_1_h;
+  real32_T b_y_idx_2_b;
+  real32_T r_d;
+  real32_T t_e;
+  real32_T e_lm_bj;
+  real32_T b_y_idx_0_j;
+  real32_T b_y_idx_1_f;
+  real32_T b_y_idx_2_a;
   int32_T i;
   int32_T i_j;
-  int32_T i_o;
+  int32_T i_jz;
   int32_T k;
+  int32_T b_o;
+  int32_T it;
+  int32_T k_n;
   int32_T i1;
   int32_T i2;
-  int32_T b_n;
-  int32_T it;
-  int32_T k_i;
+  int32_T b_i;
+  int32_T it_o;
+  int32_T k_nv;
   int32_T i3;
   int32_T i4;
-  int32_T b_o;
-  int32_T it_n;
+  int32_T b_m;
+  int32_T it_c;
   int32_T k_m;
   int32_T i5;
   int32_T i6;
-  int32_T b_c;
-  int32_T it_m;
-  int32_T k_m3;
+  int32_T b_m3;
+  int32_T it_j;
+  int32_T k_h;
   int32_T i7;
   int32_T i8;
-  int32_T b_j;
-  int32_T it_h;
-  int32_T k_c;
+  int32_T b_c0;
+  int32_T it_ct;
+  int32_T k_p;
   int32_T i9;
   int32_T i10;
-  int32_T b_ct;
-  int32_T it_p;
-  int32_T k_p;
+  int32_T b_p;
+  int32_T it_a;
+  int32_T k_e;
   int32_T i11;
   int32_T i12;
-  int32_T b_a;
-  int32_T it_e;
-  int32_T k_a;
-  int32_T i13;
-  int32_T i14;
   uint32_T one_sec_transition_counter; /* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T one_sec_transition_counter_d;/* '<Root>/ElectricalID_6ph_codegen' */
   uint32_T one_sec_transition_counter_e;/* '<Root>/ElectricalID_6ph_codegen' */

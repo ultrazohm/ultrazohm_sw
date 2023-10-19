@@ -183,7 +183,7 @@ void ISR_Control(void *data)
               ParaID_Data.ActualValues.theta_el_raw = Global_Data.av.theta_el;
               // processing
               uz_ParameterID_6ph_process_actual_values(&ParaID_Data, u_a1c1, u_a2c2);
-              ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_el - theta_offset; // if offset is already known and not determined by ElID, set it AFTER process function
+//              ParaID_Data.ActualValues.theta_el =  Global_Data.av.theta_el - theta_offset; // if offset is already known and not determined by ElID, set it AFTER process function
               // ParaID Actual values end
 
 

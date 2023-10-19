@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -88,6 +89,7 @@ int main(void)
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
+
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
@@ -101,6 +103,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
+            uz_axigpio_reset_pwm_counter(); //reset pwm counter of all instances in order to force synchronous start of all PWM modules
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             Global_Data.objects.mux_axi_a2 = initialize_uz_mux_axi_A2();
             PWM_3L_Initialize(&Global_Data); // three-level modulator

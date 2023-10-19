@@ -31,6 +31,7 @@
 
 #define AXI_GPIO_PWM_MODULES    AXI_BIT_0
 #define AXI_GPIO_DIGITAL_ENABLE AXI_BIT_1
+#define AXI_GPIO_PWM_RESET		AXI_BIT_2
 #define AXI_GPIO_AXI2TCM_ENABLE AXI_BIT_4
 
 // Initialize the  GPIO structure
@@ -61,4 +62,8 @@ void uz_axigpio_disable_datamover(void)
 void uz_axigpio_enable_datamover(void)
 {
     XGpio_DiscreteSet(&Gpio_OUT, AXI_GPIO_CHANNEL, AXI_GPIO_AXI2TCM_ENABLE);
+}
+void uz_axigpio_reset_pwm_counter(void)
+{
+	XGpio_DiscreteSet(&Gpio_OUT, AXI_GPIO_CHANNEL, AXI_GPIO_PWM_RESET);
 }

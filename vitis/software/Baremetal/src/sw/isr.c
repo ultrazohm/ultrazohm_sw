@@ -122,6 +122,9 @@ void ISR_Control(void *data)
     Global_Data.av.mean_temp_inv_left = (Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_left_status.ChipTempDegreesCelsius_L3) * 0.1667;
     Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L3) * 0.1667;
 
+	//read axi values from mpc ip for debug
+	fcs_mpc_debug();
+
     // check platform state machine
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
@@ -171,15 +174,12 @@ void ISR_Control(void *data)
     	i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
     	//calc average switching frequency of right motor
     	fcs_mpc_calc_f_sw_avg();
-    	//read axi values from mpc ip for debug
-    	fcs_mpc_debug();
 
     	// calculate control (speed and current) of left motor
     	control_left_motor();
 
     	// calculate selected control algorithm for right motor
     	control_right_motor();
-
 
     	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
     	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;

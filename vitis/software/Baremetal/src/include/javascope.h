@@ -90,6 +90,10 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_lambda_d,
+	JSSD_FLOAT_lambda_q,
+	JSSD_FLOAT_lambda_u,
+	JSSD_FLOAT_i_max_mpc,
 	JSSD_ENDMARKER
 };
 
@@ -214,10 +218,10 @@ enum gui_button_mapping {
 	receive_field_14,
 	receive_field_15,
 	receive_field_16,
-	receive_field_17,
-	receive_field_18,
-	receive_field_19,
-	receive_field_20,
+	lambda_d,
+	lambda_q,
+	lambda_u*1e5,
+	i_max_mpc,
 	RCV_FLD_ENDMARKER
 
 
@@ -284,10 +288,10 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_lambda_d,
+	JSSD_FLOAT_lambda_q,
+	JSSD_FLOAT_lambda_u,
+	JSSD_FLOAT_i_max_mpc,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

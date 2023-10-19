@@ -146,7 +146,7 @@ void test_uz_ParameterID_generate_DutyCycle_Data_NULL(void) {
 }
 
 void test_uz_ParameterID_6ph_calculate_PsiPMs_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_calculate_PsiPMs(NULL, NULL, NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_calculate_PsiPMs(NULL, NULL));
 }
 
 void test_uz_ParameterID_6ph_Controller_NULL(void) {
@@ -156,12 +156,43 @@ void test_uz_ParameterID_6ph_Controller_NULL(void) {
 
 // tests for uz_ParameterID_6ph_update_transmit_values
 void test_uz_ParameterID_6ph_update_transmit_values_Data_NULL(void) {
-    float activeState = 0.0f;
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(NULL, &activeState));
+    float test1;
+    float test2;
+    float test3;
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(NULL, &test1, &test2, &test3));
 }
 
 void test_uz_ParameterID_6ph_update_transmit_values_activeState_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(&Data_struct, NULL));
+    float test1;
+    float test2;
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(&Data_struct, NULL, &test1, &test2));
+}
+
+void test_uz_ParameterID_6ph_update_transmit_values_vector_NULL(void) {
+    float test1;
+    float test2;
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(&Data_struct, &test1, NULL, &test2));
+}
+
+void test_uz_ParameterID_6ph_update_transmit_values_index_NULL(void) {
+    float test1;
+    float test2;
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_6ph_update_transmit_values(&Data_struct, &test1, &test2, NULL));
+}
+
+void test_uz_ParameterID_6ph_update_transmit_values_real_NULL(void) {
+    float activestate;
+    float index;
+    float val_milli[4] = {0.0f, 0.0f, 0.0f, 0.0f};
+    Data_struct.FluxMapID_Output->psi_array[0] = 1.0f;
+    Data_struct.FluxMapID_Output->psi_array[1] = 2.0f;
+    Data_struct.FluxMapID_Output->psi_array[2] = 3.0f;
+    Data_struct.FluxMapID_Output->psi_array[3] = 4.0f;
+    uz_ParameterID_6ph_update_transmit_values(&Data_struct, &activestate, &val_milli[0], &index);
+    TEST_ASSERT_EQUAL_FLOAT(1000.0f, val_milli[0]);
+    TEST_ASSERT_EQUAL_FLOAT(2000.0f, val_milli[1]);
+    TEST_ASSERT_EQUAL_FLOAT(3000.0f, val_milli[2]);
+    TEST_ASSERT_EQUAL_FLOAT(4000.0f, val_milli[3]);
 }
 
 #endif

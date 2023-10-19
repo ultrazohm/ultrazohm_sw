@@ -32,6 +32,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_fixedpoint/uz_fixedpoint.h"
+#include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -43,6 +44,13 @@ extern DS_Data Global_Data;
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
 #define		MAX_CURRENT			15.0f
+#define		RATED_CURRENT		8.0f
+#define		DC_VOLTAGE			48.0f
+#define		MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
+#define		MAX_VOLTAGE			(DC_VOLTAGE * MAX_MODULATION_INDEX)
+#define		RATED_SPEED			1000.0f
+#define		TS_TRAINING			0.0001f
+#define		NUMBER_OF_INPUTS_NN 9U
 
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_left = {0.0f};
@@ -51,6 +59,12 @@ struct uz_3ph_dq_t i_dq_left = {0.0f};
 struct uz_3ph_dq_t i_dq_right = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_left = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_right = {0.0f};
+struct uz_3ph_dq_t i_dq_error_left = {0.0f};
+struct uz_3ph_dq_t i_dq_error_right = {0.0f};
+struct uz_3ph_dq_t i_dq_integrated_error_left = {0.0f};
+struct uz_3ph_dq_t i_dq_integrated_error_right = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_non_limited_left = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_non_limited_right = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_left = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_right = {0.0f};
 struct uz_DutyCycle_t dutycyc_left = {0.0f};
@@ -61,6 +75,12 @@ struct uz_fixedpoint_definition_t fixedpoint_definition_debug = {
 		.integer_bits = 12,
 		.fractional_bits = 15
 };
+
+float observation[NUMBER_OF_INPUTS_NN] = {0};
+
+uz_matrix_t* matrix_output;
+
+bool ddpg_ext_clamping = false;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -144,6 +164,12 @@ void ISR_Control(void *data)
 		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
 		//disable MPC IP
 		fcs_mpc_enable(false);
+		// reset ddpg integrators
+		i_dq_integrated_error_right.d = 0.0f;
+		i_dq_integrated_error_right.q = 0.0f;
+		i_dq_integrated_error_left.d = 0.0f;
+		i_dq_integrated_error_left.q = 0.0f;
+		ddpg_ext_clamping = 0.0f;
     }
 
     // if "ENABLE SYSTEM"
@@ -368,12 +394,40 @@ void control_right_motor() {
     	//disable MPC
     	fcs_mpc_enable(false);
     	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
-
-
-		//THIS IS LARA`S PLAYGROUND
-
+    	// calculate integrated error by using Forward-Euler with error of previous timestep for integration
+    	if(ddpg_ext_clamping == false) {
+    		i_dq_integrated_error_right.d += (i_dq_error_right.d / RATED_CURRENT) * TS_TRAINING;
+    		i_dq_integrated_error_right.q += (i_dq_error_right.q / RATED_CURRENT) * TS_TRAINING;
+    	} else {
+    		i_dq_integrated_error_right.d += 0.0f;
+    		i_dq_integrated_error_right.q += 0.0f;
+    	}
+    	// calculate reference current tracking error
+    	i_dq_error_right.d = i_dq_ref_right.d - i_dq_right.d;
+    	i_dq_error_right.q = i_dq_ref_right.q - i_dq_right.q;
+    	// calculate observations
+    	observation[0] = i_dq_error_right.d / RATED_CURRENT;
+    	observation[1] = i_dq_integrated_error_right.d / TS_TRAINING;
+    	observation[2] = i_dq_error_right.q / RATED_CURRENT;
+    	observation[3] = i_dq_integrated_error_right.q / TS_TRAINING;
+    	observation[4] = i_dq_right.d / RATED_CURRENT;
+    	observation[5] = i_dq_right.q / RATED_CURRENT;
+    	observation[6] = Global_Data.av.resolver_pl_outputs_right.n_mech_rpm / RATED_SPEED;
+    	observation[7] = v_dq_ref_right.d / MAX_VOLTAGE;
+    	observation[8] = v_dq_ref_right.q / MAX_VOLTAGE;
+    	// calculate neural network
+    	for (uint32_t i = 0; i < NUMBER_OF_INPUTS_NN; i++) {
+    		uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation[i],0U,i);
+    	}
+    	uz_nn_ff(Global_Data.objects.nn_layer, Global_Data.objects.matrix_input);
+    	matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
+    	uz_matrix_multiply_by_scalar(matrix_output, MAX_VOLTAGE);
+    	// calculate reference voltages
+    	v_dq_ref_non_limited_right.d = uz_matrix_get_element_zero_based(matrix_output, 0U, 0U);
+    	v_dq_ref_non_limited_right.q = uz_matrix_get_element_zero_based(matrix_output, 0U, 1U);
+    	v_dq_ref_right = uz_CurrentControl_SpaceVector_Limitation(v_dq_ref_non_limited_right, DC_VOLTAGE, MAX_MODULATION_INDEX, Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s * Global_Data.av.polepairs_right, i_dq_right, &ddpg_ext_clamping);
     	// calculate duty cycles from reference dq voltages
-    	//dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+    	dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
 	}
 
 };

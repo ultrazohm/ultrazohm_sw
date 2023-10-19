@@ -37,6 +37,18 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
+extern float episode_reward;
+extern float evaluation_run;
+extern float finished;
+extern float global_loss;
+extern float global_reward_metric;
+extern float epoch_global;
+
+extern float setpoint;
+extern float pt1_output;
+extern float pt1_input;
+
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 

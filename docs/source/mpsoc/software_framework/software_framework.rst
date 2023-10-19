@@ -40,3 +40,4 @@ Software Framework
     VSD_6ph_FD_control/uz_VSD_6ph_FD_control
     uz_sinus_pwm/uz_sinus_pwm
     encoder_offset_estimation/encoder_offset_estimation
+    uz_mtwister/uz_mtwister

@@ -6,10 +6,15 @@
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
+#include "../uz_mtwister/uz_mtwister.h"
 
 #define NUMBER_OF_INPUTS 2
 #define NUMBER_OF_OUTPUTS 1
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 3
+
+float s_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float s_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float s_3[NUMBER_OF_OUTPUTS] = {0};
 
 float x[NUMBER_OF_INPUTS] = {1, 2};
 float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {1, 2, 3, 4, 5, 6};
@@ -38,22 +43,43 @@ struct uz_nn_layer_config config[3] = {
         .length_of_weights = UZ_MATRIX_SIZE(w_1),
         .length_of_bias = UZ_MATRIX_SIZE(b_1),
         .length_of_output = UZ_MATRIX_SIZE(y_1),
+        .length_of_sumout = UZ_MATRIX_SIZE(s_1),
         .weights = w_1,
         .bias = b_1,
-        .output = y_1},
-    [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
-    [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3}};
-
+        .output = y_1,
+        .sumout = s_1},
+    [1] = {.activation_function = activation_ReLU,      
+      .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+      .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+      .length_of_weights = UZ_MATRIX_SIZE(w_2),
+      .length_of_bias = UZ_MATRIX_SIZE(b_2),
+      .length_of_output = UZ_MATRIX_SIZE(y_2),
+      .length_of_sumout = UZ_MATRIX_SIZE(s_2),
+      .weights = w_2,
+      .bias = b_2,
+      .output = y_2,
+      .sumout = s_2},
+    [2] = {.activation_function = activation_linear,    
+   .number_of_neurons = NUMBER_OF_OUTPUTS,
+   .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+   .length_of_weights = UZ_MATRIX_SIZE(w_3),
+   .length_of_bias = UZ_MATRIX_SIZE(b_3),
+   .length_of_output = UZ_MATRIX_SIZE(y_3),
+   .length_of_sumout = UZ_MATRIX_SIZE(s_3),
+   .weights = w_3,
+   .bias = b_3,
+   .output = y_3,
+   .sumout = s_3}};
 void test_uz_nn_init(void)
 {
-    uz_nn_init(config, 3);
+    uz_nn_init(config, 3,false);
 }
 
 void test_uz_nn_ff(void)
 {
     struct uz_matrix_t input_matrix = {0};
     uz_matrix_t *input = uz_matrix_init(&input_matrix, x, UZ_MATRIX_SIZE(x), 1, 2);
-    uz_nn_t *test = uz_nn_init(config, 3);
+    uz_nn_t *test = uz_nn_init(config, 3,false);
     uz_nn_ff(test, input);
     float expected_result_first_layer[3] = {10, 14, 18};
     float expected_result_second_layer[3] = {28, 23, 0};
@@ -70,19 +96,19 @@ void test_uz_nn_ff(void)
 }
 
 void test_uz_nn_get_number_of_layer(void){
-    uz_nn_t *test = uz_nn_init(config, 3);
+    uz_nn_t *test = uz_nn_init(config, 3,false);
     uint32_t number_of_layer=uz_nn_get_number_of_layer(test);
     TEST_ASSERT_EQUAL(number_of_layer,3);
 }
 
 void test_uz_nn_get_number_of_inputs(void){
-    uz_nn_t *test = uz_nn_init(config, 3);
+    uz_nn_t *test = uz_nn_init(config, 3,false);
     uint32_t number_of_inputs=uz_nn_get_number_of_inputs(test);
     TEST_ASSERT_EQUAL(number_of_inputs,NUMBER_OF_INPUTS);
 }
 
 void test_uz_nn_get_number_of_outputs(void){
-    uz_nn_t *test = uz_nn_init(config, 3);
+    uz_nn_t *test = uz_nn_init(config, 3,false);
     uint32_t number_of_outputs=uz_nn_get_number_of_outputs(test);
     TEST_ASSERT_EQUAL(number_of_outputs,NUMBER_OF_OUTPUTS);
 }

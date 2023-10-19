@@ -4,6 +4,14 @@
 // Hardware version of the UltraZohm
 #define UZ_HARDWARE_VERSION 4U
 
+// If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
+// For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
+#define UZ_USE_EXTERNAL_STOP_ON_V4 0U
+
+#if (UZ_HARDWARE_VERSION != 4U) && (UZ_USE_EXTERNAL_STOP_ON_V4 == 1U)
+#error The UZ_USE_EXTERNAL_STOP_ON_V4 flag must not be used on hardware version 3. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
+#endif
+
 /** ISR trigger source
  *
  * chose here which of the above interrupt trigger you want to use:
@@ -59,6 +67,13 @@
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
+#define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U
+#define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
+#define UZ_NN_OPTIMIZER_MAX_INSTANCES                   0U
+#define UZ_DQN_MAX_INSTANCES                            0U
+#define UZ_DQN_ENV_MAX_INSTANCES                        0U
+#define UZ_DQN_BUFFER_MAX_INSTANCES                     0U
+#define UZ_MTWISTER_MAX_INSTANCES                       0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -103,4 +118,11 @@
     #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
     #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      10U
     #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           20U
+    #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             10U
+    #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
+    #define UZ_NN_OPTIMIZER_MAX_INSTANCES                   10U
+    #define UZ_DQN_MAX_INSTANCES                            25U
+    #define UZ_DQN_ENV_MAX_INSTANCES                        25U
+    #define UZ_DQN_BUFFER_MAX_INSTANCES                     50U
+    #define UZ_MTWISTER_MAX_INSTANCES                       50U
 #endif

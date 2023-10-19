@@ -86,8 +86,25 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const*const A,uint32_t row, u
  * @param column Column of element to set
  */
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,uint32_t row, uint32_t column);
+/**
+ * @brief Extract a row vector from a uz_matrix_t instance, and write it to rowvector 
+ * 
+ * @param matrix Pointer to a uz_matrix_t instance, matrix
+ * @param rowvector Pointer to a uz_matrix_t instance, rowvector 
+ * @param row Row of element to extract, zero based
+ */
 
+void uz_matrix_get_row_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const rowvector, uint32_t row);
 
+/**
+ * @brief Extract a column vector from a uz_matrix_t instance, and write it to columnvector 
+ * 
+ * @param matrix Pointer to a uz_matrix_t instance, matrix
+ * @param columnvector Pointer to a uz_matrix_t instance, columnvector 
+ * @param column Column of element to extract, zero based
+ */
+
+void uz_matrix_get_column_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const columnvector, uint32_t column);
 /**
  * @brief Calculates the "real" matrix multiplication C_out=A * B
  * 
@@ -96,6 +113,18 @@ void uz_matrix_set_element_zero_based(uz_matrix_t *const A,float x,uint32_t row,
  * @param C_out Result of the multiplication is written to C_out
  */
 void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
+void uz_matrix_update_smooth(uz_matrix_t const *const source, uz_matrix_t *const destination, float smoothfact);
+void uz_matrix_copy_row_to_matrix(uz_matrix_t const *const source_rowvec, uz_matrix_t *const destination_matrix, uint32_t rowind);
+void uz_matrix_copy_row_from_matrix(uz_matrix_t const *const source_matrix, uz_matrix_t *const destination_rowvec, uint32_t rowind);
+
+/**
+ * @brief Calculates the "real" matrix multiplication C_out=A * B, sets C not to zero and sums it up
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
+ * @param C_out Result of the multiplication is written to C_out
+ */
+void uz_matrix_multiply_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 
 /**
  * @brief Calculates the elementwise product C_out= A .* B of all elements of the matrix A and B (also called Hadamard-Product)
@@ -104,6 +133,7 @@ void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz
  * @param B Pointer to a uz_matrix_t instance 
  * @param C_out Result of the elementwise product is written to C_out
  */
+
 void uz_matrix_elementwise_product(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
 
 /**
@@ -156,10 +186,16 @@ void uz_matrix_multiply_by_scalar(uz_matrix_t *const A, float scalar);
  * @param f Function pointer, function has to accept one float as argument and return one float
  */
 void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float(*f)(float) );
-
+/**
+ * @brief Applies a function f, that is passed as a function pointer, to the diagonal of a uz_matrix
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param f Function pointer, function has to accept one float as argument and return one float
+ */
+void uz_matrix_apply_function_to_diagonal(uz_matrix_t *const A, float (*f)(float) );
 
 /**
- * @brief Retruns the value of the biggest element of the matrix
+ * @brief Returns the value of the biggest element of the matrix
  * 
  * @param A Pointer to a uz_matrix_t instance 
  * @return float 
@@ -188,6 +224,60 @@ void uz_matrix_transpose(uz_matrix_t* A);
  * @param destination Matrix where the data is copied to
  */
 void uz_matrix_copy(uz_matrix_t const*const source, uz_matrix_t *const destination);
+/**
+ * @brief Sets matrix A to a unity/identity matrix
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ */
+void uz_matrix_set_unity_matrix(uz_matrix_t *const A);
 
+/**
+ * @brief Sets whole matrix zero except diagonal axis (see unity matrix)
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ */
+void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A);
 
+/**
+ * @brief Calculates the elementwise product C_out= A .* B of all elements of the columncevtor A and the matrix B, differs from the uz_matrix_elemtwise_product, because it can handle different dimensions.
+ * See https://de.mathworks.com/help/matlab/ref/times.html.
+ * 
+ * @param A Pointer to a uz_matrix_t instance, must be a Columnvector
+ * @param B Pointer to a uz_matrix_t instance 
+ * @param C_out Result of the elementwise product is written to C_out
+ */
+void uz_matrix_columnvec_matrix_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+/**
+ * @brief Set a columnvector of length V to the elements of an matrix A with dimension V x V.
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param columnvector Pointer to a uz_matrix_t instance, which is a columnvector 
+ */
+void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector);
+/**
+ * @brief Set a rowvector of length V to the diagonal elements of an matrix A with dimension V x V.
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param rowvector Pointer to a uz_matrix_t instance, which is a rowvector 
+ */
+void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector);
+/**
+ * @brief Reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
+ * @param C_out Result of the operation is written to C_out
+ */
+void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+/**
+ * @brief Reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab,
+ * !!! Attention. Does not reset the Result of the operation C_out, this have to be done manually before!
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param B Pointer to a uz_matrix_t instance 
+ * @param C_out Result of the operation is written to C_out
+ */
+
+void uz_matrix_reshape_and_concatenate_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+void uz_matrix_clipp_values(uz_matrix_t const *const A, float min, float max);
 #endif // UZ_MATRIX_H

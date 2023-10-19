@@ -163,7 +163,27 @@ The enum ``activation_function`` and the struct ``uz_nn_layer_config`` are direc
 
 .. doxygenfunction:: uz_nn_layer_ff
 
+.. doxygenfunction:: uz_nn_backward_last_layer
+
+.. doxygenfunction:: uz_nn_layer_back
+
+.. doxygenfunction:: uz_nn_layer_calc_gradients
+
+.. doxygenfunction:: uz_nn_update_layer_param
+
+.. doxygenfunction:: uz_nn_set_gradient_in_layer
+
 .. doxygenfunction:: uz_nn_layer_get_output_data
+
+.. doxygenfunction:: uz_nn_layer_get_sumout_data
+
+.. doxygenfunction:: uz_nn_layer_get_weight_matrix
+
+.. doxygenfunction:: uz_nn_layer_get_delta_data
+
+.. doxygenfunction:: uz_nn_layer_get_gradient_data
+
+.. doxygenfunction:: uz_nn_layer_get_cachegradient_data
 
 Sources
 =======

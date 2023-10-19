@@ -21,6 +21,13 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
+	JSO_episode_reward,
+	JSO_loss,
+	JSO_epsilon,
+	JSO_reward_metric,
+	JSO_finished,
+	JSO_eval_run,
+	JSO_epoch,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_dqn_mutex,

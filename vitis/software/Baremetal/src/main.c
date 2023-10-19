@@ -82,10 +82,10 @@ int main(void)
             Global_Data.objects.nn_layer = ddpg_nn_init();
             Global_Data.av.lambda_d = 1.0f;
             Global_Data.av.lambda_q = 1.0f;
-            Global_Data.av.lambda_u = 0.0f;
+            Global_Data.av.lambda_u = 0.000091f;
+            Global_Data.av.lambda_u_e5 = Global_Data.av.lambda_u*1.0e5f;
             Global_Data.av.i_max_mpc = 1.0f;
-            Global_Data.av.idx_AXI = 1U;
-            Global_Data.rasv.current_ctrl_select = PI_FOC;
+            Global_Data.rasv.current_ctrl_select = FCS_MPC;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

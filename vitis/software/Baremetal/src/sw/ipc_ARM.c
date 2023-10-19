@@ -211,7 +211,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
-		data->av.idx_AXI = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -279,6 +278,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_19):
 		data->av.snd_fld[19] = value;
 		data->av.lambda_u = value;
+		data->av.lambda_u_e5 = value*1.0e5f;
 		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + lambda_u_AXI_Data_cost_opt, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17U));
 			break;
 
@@ -296,6 +296,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				i_dq_integrated_error_left.d = 0.0f;
 				i_dq_integrated_error_left.q = 0.0f;
 				ddpg_ext_clamping = 0.0f;
+				// set PWM frequency to 400 kHz
+				uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_LEFT);
+
 			break;
 
 		case (My_Button_2):
@@ -306,10 +309,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				i_dq_integrated_error_left.d = 0.0f;
 				i_dq_integrated_error_left.q = 0.0f;
 				ddpg_ext_clamping = 0.0f;
+    			// set PWM frequency to the same frequency of the load machine
+				//uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_RIGHT);
 			break;
 
 		case (My_Button_3):
 				data->rasv.current_ctrl_select = DDPG_CC;
+				// set PWM frequency to the same frequency of the load machine
+				//uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_RIGHT);
+
 			break;
 
 		case (My_Button_4):

@@ -116,6 +116,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_lambda_d]				= &(data->av.lambda_d);
+	js_slowDataArray[JSSD_FLOAT_lambda_q]				= &(data->av.lambda_q);
+	js_slowDataArray[JSSD_FLOAT_lambda_u]				= &(data->av.lambda_u_e5);
+	js_slowDataArray[JSSD_FLOAT_i_max_mpc]				= &(data->av.i_max_mpc);
 
 	return Status;
 }

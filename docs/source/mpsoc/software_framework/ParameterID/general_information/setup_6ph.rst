@@ -1,11 +1,20 @@
 .. _uz_ParaID_6ph_setup:
 
-==========================================
-Setup and functions of the ParameterID 6ph
-==========================================
+========================================
+Information and Setup of ParameterID 6ph
+========================================
 
 This page shows the steps to setup the ParameterID in the UltraZohm software project. 
 The setup process is split up in :ref:`ParaID_6ph_setup_general` and :ref:`ParaID_6ph_setup_GUI`.
+
+
+.. _ParaID_6ph_general:
+
+General Information
+===================
+
+INTRODUCE EVERYTHING
+
 
 .. _ParaID_6ph_setup_general:
 

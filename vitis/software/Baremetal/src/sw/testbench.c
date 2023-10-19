@@ -176,21 +176,23 @@ void uz_calc_phase_voltage(DS_Data* Data, uint8_t neutral_config){
 	Data->av.voltages_abc.c3 -= u_n3;
 }
 
-void uz_limit_exceed(DS_Data* Data){
+void uz_limit_exceed(DS_Data* Data, float* error_counter){
+	*error_counter += 1.0f;
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_0_to_5, true, true, true);
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_6_to_11, true, true, true);
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_12_to_17, true, true, true);
 	ultrazohm_state_machine_set_stop(true);
-//	ultrazohm_state_machine_set_enable_system(true);
-	Data->rasv.halfBridge1DutyCycle = 0.5f;
-	Data->rasv.halfBridge2DutyCycle = 0.5f;
-	Data->rasv.halfBridge3DutyCycle = 0.5f;
-	Data->rasv.halfBridge4DutyCycle = 0.5f;
-	Data->rasv.halfBridge5DutyCycle = 0.5f;
-	Data->rasv.halfBridge6DutyCycle = 0.5f;
-	Data->rasv.halfBridge7DutyCycle = 0.5f;
-	Data->rasv.halfBridge8DutyCycle = 0.5f;
-	Data->rasv.halfBridge9DutyCycle = 0.5f;
-	Data->rasv.halfBridge10DutyCycle = 0.5f;
-	Data->rasv.halfBridge11DutyCycle = 0.5f;
-	Data->rasv.halfBridge12DutyCycle = 0.5f;
+	uz_set_DC_zero(Data);
+}
+
+void uz_error_reset(DS_Data* Data){
+	ultrazohm_state_machine_set_stop(true);
+	uz_set_DC_zero(Data);
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_0_to_5, false, false, false);
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_6_to_11, false, false, false);
+	uz_PWM_SS_2L_set_tristate(Data->objects.pwm_d1_pin_12_to_17, false, false, false);
+	struct error_struct zero_errors = {0};
+	Data->av.errors = zero_errors;
 }
 
 void uz_resolver_read_and_adapt_direction(DS_Data* Data){

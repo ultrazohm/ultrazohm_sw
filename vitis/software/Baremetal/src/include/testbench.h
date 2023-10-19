@@ -20,6 +20,7 @@ void uz_transformations(uz_9ph_abc_t abc_in, uz_9ph_dq_t* full_dq, uz_3ph_dq_t* 
 void uz_duty_cycles_to_rasv(DS_Data* Data, struct uz_DutyCycle_3x3ph_t duty_cycle);
 void uz_set_DC_zero(DS_Data* Data);
 void uz_calc_phase_voltage(DS_Data* Data, uint8_t neutral_config);
-void uz_limit_exceed(DS_Data* Data);
+void uz_limit_exceed(DS_Data* Data, float* error_counter);
 void uz_resolver_read_and_adapt_direction(DS_Data* Data);
 void uz_ADC_torque(DS_Data* Data);
+void uz_error_reset(DS_Data* Data);

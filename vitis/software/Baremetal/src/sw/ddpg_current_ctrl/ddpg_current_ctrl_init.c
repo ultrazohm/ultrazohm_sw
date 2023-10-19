@@ -45,7 +45,10 @@ struct uz_nn_layer_config config[2] = {
 
 struct uz_matrix_t input_matrix = {0};
 
-void ddpg_current_ctrl_init(void){
-Global_Data.objects.matrix_input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
-Global_Data.objects.nn_layer = uz_nn_init(config, 2); //Warning is a GCC 11 bug
+uz_matrix_t* ddpg_matrix_init(void) {
+	return(uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS));
+}
+
+uz_nn_t* ddpg_nn_init(void) {
+	return(uz_nn_init(config, 2));
 }

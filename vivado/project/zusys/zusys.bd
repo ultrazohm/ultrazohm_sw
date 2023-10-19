@@ -1423,7 +1423,7 @@
                 "value": "NATIVE"
               },
               "C_NUM_OF_PROBES": {
-                "value": "6"
+                "value": "8"
               }
             }
           }
@@ -1497,7 +1497,8 @@
           "A2_adapter_RAW_VALUE": {
             "ports": [
               "A2_adapter/RAW_VALUE",
-              "RAW_VALUE1"
+              "RAW_VALUE1",
+              "system_ila_0/probe6"
             ]
           },
           "A2_adapter_SI_VALID_A2": {
@@ -1510,7 +1511,8 @@
           "A2_adapter_SI_VALUE_A2": {
             "ports": [
               "A2_adapter/SI_VALUE_A2",
-              "SI_VALUE_A2"
+              "SI_VALUE_A2",
+              "system_ila_0/probe7"
             ]
           },
           "A3_IN_1": {
@@ -4221,7 +4223,7 @@
                 "inst_hier_path": "uz_system/DataMover/AXI2TCM_1",
                 "parameters": {
                   "C_M00_AXI_TARGET_SLAVE_BASE_ADDR": {
-                    "value": "0xFFE20080"
+                    "value": "0xFFE20010"
                   },
                   "C_M00_NUMBER_of_ADCs": {
                     "value": "8"
@@ -4260,7 +4262,7 @@
                 "inst_hier_path": "uz_system/DataMover/AXI2TCM_2",
                 "parameters": {
                   "C_M00_AXI_TARGET_SLAVE_BASE_ADDR": {
-                    "value": "0xFFE20100"
+                    "value": "0xFFE20020"
                   },
                   "C_M00_NUMBER_of_ADCs": {
                     "value": "8"

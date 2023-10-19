@@ -127,59 +127,41 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_1_0/zusys_AXI2TCM_1_0.xci">
-          <Proxy FileSetName="zusys_AXI2TCM_1_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_2_0/zusys_AXI2TCM_2_0.xci">
-          <Proxy FileSetName="zusys_AXI2TCM_2_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_IncreEncoder_V24_ip_0_0_1/zusys_IncreEncoder_V24_ip_0_0.xci">
-          <Proxy FileSetName="zusys_IncreEncoder_V24_ip_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_system_ila_0_4_1/zusys_system_ila_0_4.xci">
-          <Proxy FileSetName="zusys_system_ila_0_4"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_0_0_1/zusys_AXI2TCM_0_0.xci">
-          <Proxy FileSetName="zusys_AXI2TCM_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A1_ADC_LTC2311_0_1/zusys_A1_ADC_LTC2311_0.xci">
           <Proxy FileSetName="zusys_A1_ADC_LTC2311_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A2_ADC_LTC2311_0_1/zusys_A2_ADC_LTC2311_0.xci">
-          <Proxy FileSetName="zusys_A2_ADC_LTC2311_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_prediction_0_0/zusys_prediction_0_0.xci">
-          <Proxy FileSetName="zusys_prediction_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_count_f_sw_0_0/zusys_count_f_sw_0_0.xci">
-          <Proxy FileSetName="zusys_count_f_sw_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_sel_resolver_0_0/zusys_uz_sel_resolver_0_0.xci">
-          <Proxy FileSetName="zusys_uz_sel_resolver_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_mpc_enable_0_0/zusys_mpc_enable_0_0.xci">
-          <Proxy FileSetName="zusys_mpc_enable_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_delay_comp_0_0/zusys_delay_comp_0_0.xci">
-          <Proxy FileSetName="zusys_delay_comp_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_zynq_ultra_ps_e_0_0_1/zusys_zynq_ultra_ps_e_0_0.xci">
           <Proxy FileSetName="zusys_zynq_ultra_ps_e_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_count_f_sw_1_0/zusys_count_f_sw_1_0.xci">
-          <Proxy FileSetName="zusys_count_f_sw_1_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_sel_currents_0_0/zusys_uz_sel_currents_0_0.xci">
           <Proxy FileSetName="zusys_uz_sel_currents_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_sel_resolver_0_0/zusys_uz_sel_resolver_0_0.xci">
+          <Proxy FileSetName="zusys_uz_sel_resolver_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_delay_comp_0_0/zusys_delay_comp_0_0.xci">
+          <Proxy FileSetName="zusys_delay_comp_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_mpc_enable_0_0/zusys_mpc_enable_0_0.xci">
+          <Proxy FileSetName="zusys_mpc_enable_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_prediction_0_0/zusys_prediction_0_0.xci">
+          <Proxy FileSetName="zusys_prediction_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_clarke_ip_0_0/zusys_clarke_ip_0_0.xci">
+          <Proxy FileSetName="zusys_clarke_ip_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_debug_ip_0_0/zusys_uz_debug_ip_0_0.xci">
+          <Proxy FileSetName="zusys_uz_debug_ip_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_pu_con_ip_0_0/zusys_uz_pu_con_ip_0_0.xci">
+          <Proxy FileSetName="zusys_uz_pu_con_ip_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_cost_opt_0_0/zusys_cost_opt_0_0.xci">
           <Proxy FileSetName="zusys_cost_opt_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_resolver_pl_inter_1_0/zusys_uz_resolver_pl_inter_1_0.xci">
-          <Proxy FileSetName="zusys_uz_resolver_pl_inter_1_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_pu_con_ip_0_0/zusys_uz_pu_con_ip_0_0.xci">
-          <Proxy FileSetName="zusys_uz_pu_con_ip_0_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_count_f_sw_0_0/zusys_count_f_sw_0_0.xci">
+          <Proxy FileSetName="zusys_count_f_sw_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_mpc_state_ma_ip_0_0/zusys_mpc_state_ma_ip_0_0.xci">
           <Proxy FileSetName="zusys_mpc_state_ma_ip_0_0"/>
@@ -190,8 +172,23 @@
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_pu_voltages_vsd_0_0/zusys_pu_voltages_vsd_0_0.xci">
           <Proxy FileSetName="zusys_pu_voltages_vsd_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_debug_ip_0_0/zusys_uz_debug_ip_0_0.xci">
-          <Proxy FileSetName="zusys_uz_debug_ip_0_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_count_f_sw_1_0/zusys_count_f_sw_1_0.xci">
+          <Proxy FileSetName="zusys_count_f_sw_1_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_park_transform_ip_0_0/zusys_uz_park_transform_ip_0_0.xci">
+          <Proxy FileSetName="zusys_uz_park_transform_ip_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_inverter_adapter_0_0/zusys_uz_inverter_adapter_0_0.xci">
+          <Proxy FileSetName="zusys_uz_inverter_adapter_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Resolver_Interface_v_1_0/zusys_Resolver_Interface_v_1_0.xci">
+          <Proxy FileSetName="zusys_Resolver_Interface_v_1_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_resolver_pl_inter_0_0/zusys_uz_resolver_pl_inter_0_0.xci">
+          <Proxy FileSetName="zusys_uz_resolver_pl_inter_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_resolver_pl_inter_1_0/zusys_uz_resolver_pl_inter_1_0.xci">
+          <Proxy FileSetName="zusys_uz_resolver_pl_inter_1_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_d_inverter_adapter_0_0/zusys_uz_d_inverter_adapter_0_0.xci">
           <Proxy FileSetName="zusys_uz_d_inverter_adapter_0_0"/>
@@ -202,35 +199,41 @@
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Resolver_Interface_v_0_0/zusys_Resolver_Interface_v_0_0.xci">
           <Proxy FileSetName="zusys_Resolver_Interface_v_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_Resolver_Interface_v_1_0/zusys_Resolver_Interface_v_1_0.xci">
-          <Proxy FileSetName="zusys_Resolver_Interface_v_1_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_resolver_pl_inter_0_0/zusys_uz_resolver_pl_inter_0_0.xci">
-          <Proxy FileSetName="zusys_uz_resolver_pl_inter_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_inverter_adapter_0_0/zusys_uz_inverter_adapter_0_0.xci">
-          <Proxy FileSetName="zusys_uz_inverter_adapter_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_clarke_ip_0_0/zusys_clarke_ip_0_0.xci">
-          <Proxy FileSetName="zusys_clarke_ip_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_inverter_adapter_1_0/zusys_uz_inverter_adapter_1_0.xci">
           <Proxy FileSetName="zusys_uz_inverter_adapter_1_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_park_transform_ip_0_0/zusys_uz_park_transform_ip_0_0.xci">
-          <Proxy FileSetName="zusys_uz_park_transform_ip_0_0"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_A2_ADC_LTC2311_0_1/zusys_A2_ADC_LTC2311_0.xci">
+          <Proxy FileSetName="zusys_A2_ADC_LTC2311_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_4/zusys_PWM_and_SS_control_V_0_4.xci">
-          <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_4"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_system_ila_0_0_1/zusys_system_ila_0_0.xci">
+          <Proxy FileSetName="zusys_system_ila_0_0"/>
         </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_1/zusys_PWM_and_SS_control_V_0_1.xci">
-          <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_1"/>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_0_0_1/zusys_AXI2TCM_0_0.xci">
+          <Proxy FileSetName="zusys_AXI2TCM_0_0"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_3/zusys_PWM_and_SS_control_V_0_3.xci">
           <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_3"/>
         </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_2/zusys_PWM_and_SS_control_V_0_2.xci">
           <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_2"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_1/zusys_PWM_and_SS_control_V_0_1.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_1"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_PWM_and_SS_control_V_0_4/zusys_PWM_and_SS_control_V_0_4.xci">
+          <Proxy FileSetName="zusys_PWM_and_SS_control_V_0_4"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_IncreEncoder_V24_ip_0_0_1/zusys_IncreEncoder_V24_ip_0_0.xci">
+          <Proxy FileSetName="zusys_IncreEncoder_V24_ip_0_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_2_0/zusys_AXI2TCM_2_0.xci">
+          <Proxy FileSetName="zusys_AXI2TCM_2_0"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_system_ila_0_4_1/zusys_system_ila_0_4.xci">
+          <Proxy FileSetName="zusys_system_ila_0_4"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_AXI2TCM_1_0/zusys_AXI2TCM_1_0.xci">
+          <Proxy FileSetName="zusys_AXI2TCM_1_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/zusys/hdl/zusys_wrapper.vhd">
@@ -643,6 +646,13 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
+    <FileSet Name="zusys_system_ila_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_system_ila_0_0" RelGenDir="$PGENDIR/zusys_system_ila_0_0">
+      <Config>
+        <Option Name="TopModule" Val="zusys_system_ila_0_0"/>
+        <Option Name="dataflowViewerSettings" Val="min_width=16"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
   </FileSets>
   <Simulators>
     <Simulator Name="XSim">
@@ -665,9 +675,7 @@
   <Runs Version="1" Minor="19">
     <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="true" IncrementalCheckpoint="$PPRDIR/../../../ultrazohm_sw_develop_22/vivado/project/ultrazohm.srcs/utils_1/imports/synth_1/zusys_wrapper.dcp" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -977,9 +985,7 @@
     </Run>
     <Run Id="zusys_system_ila_0_4_synth_1" Type="Ft3:Synth" SrcSet="zusys_system_ila_0_4" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_system_ila_0_4" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_system_ila_0_4_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_4_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_4_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -989,9 +995,7 @@
     </Run>
     <Run Id="zusys_PWM_and_SS_control_V_0_4_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_0_4" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_4" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_0_4_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_4_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_4_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -1001,9 +1005,7 @@
     </Run>
     <Run Id="zusys_PWM_and_SS_control_V_0_1_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_0_1" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_0_1_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_1_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_1_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -1013,9 +1015,7 @@
     </Run>
     <Run Id="zusys_PWM_and_SS_control_V_0_3_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_0_3" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_3" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_0_3_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_3_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_3_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -1024,6 +1024,16 @@
       <RQSFiles/>
     </Run>
     <Run Id="zusys_PWM_and_SS_control_V_0_2_synth_1" Type="Ft3:Synth" SrcSet="zusys_PWM_and_SS_control_V_0_2" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_2" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_PWM_and_SS_control_V_0_2_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_2_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_2_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_system_ila_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_system_ila_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_system_ila_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_system_ila_0_0_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_0_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_0_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
           <Desc>Vivado Synthesis Defaults</Desc>
@@ -1037,9 +1047,7 @@
     </Run>
     <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1567,9 +1575,7 @@
     </Run>
     <Run Id="zusys_system_ila_0_4_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_system_ila_0_4" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_system_ila_0_4_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_4_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_4_impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1586,9 +1592,7 @@
     </Run>
     <Run Id="zusys_PWM_and_SS_control_V_0_4_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_4" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_0_4_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_4_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_4_impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1605,9 +1609,7 @@
     </Run>
     <Run Id="zusys_PWM_and_SS_control_V_0_1_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_0_1_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_1_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_1_impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1624,9 +1626,7 @@
     </Run>
     <Run Id="zusys_PWM_and_SS_control_V_0_3_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_3" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_0_3_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_3_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_3_impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -1642,6 +1642,23 @@
       <RQSFiles/>
     </Run>
     <Run Id="zusys_PWM_and_SS_control_V_0_2_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_PWM_and_SS_control_V_0_2" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_PWM_and_SS_control_V_0_2_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_2_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_PWM_and_SS_control_V_0_2_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="zusys_system_ila_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_system_ila_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_system_ila_0_0_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_0_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_0_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
           <Desc>Default settings for Implementation.</Desc>

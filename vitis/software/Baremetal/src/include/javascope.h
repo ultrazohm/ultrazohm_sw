@@ -70,6 +70,14 @@ enum JS_OberservableData {
 	JSO_UDC1,
 	JSO_UDC2,
 	JSO_UDC3,
+	JSO_controller_out_d,
+	JSO_controller_out_q,
+	JSO_controller_out_x1,
+	JSO_controller_out_y1,
+	JSO_controller_out_x2,
+	JSO_controller_out_y2,
+	JSO_controller_out_x3,
+	JSO_controller_out_y3,
 	JSO_ENDMARKER
 };
 

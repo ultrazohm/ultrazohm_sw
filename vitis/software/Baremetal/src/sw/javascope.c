@@ -38,6 +38,8 @@ uint32_t js_status_BareToRTOS=0;
 float OPF_index_float;
 float n_OPF_float;
 float relais_a1;
+extern uz_9ph_dq_t ref_voltages;
+
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -99,6 +101,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uX3] 			= &data->av.full_voltages_dq.x3;
 	js_ch_observable[JSO_uY3] 			= &data->av.full_voltages_dq.y3;
 	js_ch_observable[JSO_uZero] 		= &data->av.full_voltages_dq.zero;
+	js_ch_observable[JSO_controller_out_d]= &ref_voltages.d;
+	js_ch_observable[JSO_controller_out_q]= &ref_voltages.q;
+	js_ch_observable[JSO_controller_out_x1]= &ref_voltages.x1;
+	js_ch_observable[JSO_controller_out_y1]= &ref_voltages.y1;
+	js_ch_observable[JSO_controller_out_x2]= &ref_voltages.x2;
+	js_ch_observable[JSO_controller_out_y2]= &ref_voltages.y2;
+	js_ch_observable[JSO_controller_out_x3]= &ref_voltages.x3;
+	js_ch_observable[JSO_controller_out_y3]= &ref_voltages.y3;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.rotational_position.position_el_2pi;
 	js_ch_observable[JSO_Theta_mech]	= &data->av.rotational_position.position_mech_2pi;

@@ -65,7 +65,7 @@ uz_9ph_MLMT_kparameter_t k_param = {0};
 // user settings
 #define NEUTRAL_CFG 1U //1U: 1N, 3U: 3N
 #define FAUL_CONTROL true
-enum controller_type selected_controller = PI_R;
+enum controller_type selected_controller = PI_0;
 //----------------------------------------------------
 
 //==============================================================================================================================================================

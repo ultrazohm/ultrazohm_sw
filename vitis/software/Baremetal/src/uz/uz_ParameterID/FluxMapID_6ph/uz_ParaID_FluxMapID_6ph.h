@@ -40,9 +40,36 @@ uz_ParaID_FluxMapID_6ph_t* uz_FluxMapID_6ph_init(void);
  */
 void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self);
 
+/**
+ * @brief Sets the config struct for the FluxMapID
+ * 
+ * @param self uz_ParaID_FluxMapID_6ph_t pointer to object
+ * @param Config configuration struct for the FluxMapID
+ */
 void uz_FluxMapID_6ph_set_Config(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_FluxMapIDConfig_t Config);
+
+/**
+ * @brief Sets the ActualValues struct for the FluxMapID
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
+ * @param ActualValues struct for the measurement values
+ */
 void uz_FluxMapID_6ph_set_ActualValues(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ActualValues_t ActualValues);
+
+/**
+ * @brief Sets the GlobalConfig struct for the FluxMapID
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
+ * @param GlobalConfig struct for the general settings of the ParameterID
+ */
 void uz_FluxMapID_6ph_set_GlobalConfig(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+
+/**
+ * @brief Sets the ControlFlags struct for the FluxMapID
+ * 
+ * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
+ * @param ControlFlags pointer to the struct with the enable signals of the ParameterID
+ */
 void uz_FluxMapID_6ph_set_ControlFlags(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
 
 /**

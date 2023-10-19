@@ -31,20 +31,55 @@ uz_ParaID_ElectricalID_6ph_t* uz_ElectricalID_6ph_init(void);
  * @brief steps the ElectricalID state once
  * 
  * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
- * @param ID_config config if ID
- * @param actual actual values
- * @param global_config ParaID global config
- * @param flags ParaID control flags
- * @param fft_in input from FFT function
- * @param offset_est_in input from encoder offset estimation
  */
 void uz_ElectricalID_6ph_step(uz_ParaID_ElectricalID_6ph_t* self);
 
+/**
+ * @brief Sets the config struct for the ElectricalID
+ * 
+ * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
+ * @param Config configuration struct for ElectricalID
+ */
 void uz_ElectricalID_6ph_set_Config(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalIDConfig_t Config);
+
+/**
+ * @brief Sets the ActualValues struct for the ElectricalID
+ * 
+ * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
+ * @param ActualValues struct for the measurement values
+ */
 void uz_ElectricalID_6ph_set_ActualValues(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ActualValues_t ActualValues);
+
+/**
+ * @brief Sets the GlobalConfig struct for the ElectricalID
+ * 
+ * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
+ * @param GlobalConfig struct for the general settings of the ParameterID
+ */
 void uz_ElectricalID_6ph_set_GlobalConfig(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_GlobalConfig_t GlobalConfig);
+
+/**
+ * @brief Sets the ControlFlags struct for the ElectricalID
+ * 
+ * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
+ * @param ControlFlags pointer to the struct with the enable signals of the ParameterID
+ */
 void uz_ElectricalID_6ph_set_ControlFlags(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ControlFlags_t* ControlFlags);
+
+/**
+ * @brief Sets the GlobalConfig struct for the ElectricalID
+ * 
+ * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
+ * @param fft_in struct for the FFT input
+ */
 void uz_ElectricalID_6ph_set_FFT_in(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_fft_in_t fft_in);
+
+/**
+ * @brief Sets the GlobalConfig struct for the ElectricalID
+ * 
+ * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
+ * @param offset_est_in struct for the offset estimation input
+ */
 void uz_ElectricalID_6ph_set_Offset_Estimation(uz_ParaID_ElectricalID_6ph_t *self, uz_ParaID_ElectricalID_offset_estimation_t offset_est_in);
 
 /**
@@ -94,7 +129,6 @@ uz_ParaID_ElectricalID_output_t* uz_get_ElectricalID_6ph_output(uz_ParaID_Electr
  * @brief copies the logged voltage to the destination for FFT
  * 
  * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
- * @param destination target array location
  */
 float* uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self);
 

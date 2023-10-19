@@ -203,23 +203,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-			n_ref_rpm = value;
+			ParaID_Data.GlobalConfig.i_dq_ref.d = value;
 			break;
 
 		case (Set_Send_Field_2):
-			i_d_ref = value;
+			ParaID_Data.GlobalConfig.i_dq_ref.q = value;
 			break;
 
 		case (Set_Send_Field_3):
-			i_q_ref = value;
+					ParaID_Data.GlobalConfig.i_xy_ref.d = value;
 			break;
 
 		case (Set_Send_Field_4):
-			i_X_ref = value;
+					ParaID_Data.GlobalConfig.i_xy_ref.q = value;
 			break;
 
 		case (Set_Send_Field_5):
-			i_Y_ref = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -308,39 +307,39 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				            break;
 
 				        case (ParaID_Control_PI):
-//										if(((uint16_t) value) & 0x01){
-//											ParaID_Data.GlobalConfig.PI_dq = true;
-//										}else{
-//											ParaID_Data.GlobalConfig.PI_dq  = false;
-//										}
-//										if(((uint16_t) value) & 0x02){
-//											ParaID_Data.GlobalConfig.PI_xy = true;
-//										}else{
-//											ParaID_Data.GlobalConfig.PI_xy = false;
-//										}
-//										if(((uint16_t) value) & 0x04){
-//											ParaID_Data.GlobalConfig.PI_zero = true;
-//										}else{
-//											ParaID_Data.GlobalConfig.PI_zero = false;
-//										}
+										if(((uint16_t) value) & 0x01){
+											ParaID_Data.GlobalConfig.PI_dq = true;
+										}else{
+											ParaID_Data.GlobalConfig.PI_dq  = false;
+										}
+										if(((uint16_t) value) & 0x02){
+											ParaID_Data.GlobalConfig.PI_xy = true;
+										}else{
+											ParaID_Data.GlobalConfig.PI_xy = false;
+										}
+										if(((uint16_t) value) & 0x04){
+											ParaID_Data.GlobalConfig.PI_zero = true;
+										}else{
+											ParaID_Data.GlobalConfig.PI_zero = false;
+										}
 				        ParaID_Data.GlobalConfig.controllers_updated = true;
 				        break;
 				        case (ParaID_Control_res):
-//								if(((uint16_t) value) & 0x01){
-//									ParaID_Data.GlobalConfig.resonant_dq = true;
-//								}else{
-//									ParaID_Data.GlobalConfig.resonant_dq  = false;
-//								}
-//								if(((uint16_t) value) & 0x02){
-//									ParaID_Data.GlobalConfig.resonant_xy = true;
-//								}else{
-//									ParaID_Data.GlobalConfig.resonant_xy = false;
-//								}
-//								if(((uint16_t) value) & 0x04){
-//									ParaID_Data.GlobalConfig.resonant_zero = true;
-//								}else{
-//									ParaID_Data.GlobalConfig.resonant_zero = false;
-//								}
+								if(((uint16_t) value) & 0x01){
+									ParaID_Data.GlobalConfig.resonant_dq = true;
+								}else{
+									ParaID_Data.GlobalConfig.resonant_dq  = false;
+								}
+								if(((uint16_t) value) & 0x02){
+									ParaID_Data.GlobalConfig.resonant_xy = true;
+								}else{
+									ParaID_Data.GlobalConfig.resonant_xy = false;
+								}
+								if(((uint16_t) value) & 0x04){
+									ParaID_Data.GlobalConfig.resonant_zero = true;
+								}else{
+									ParaID_Data.GlobalConfig.resonant_zero = false;
+								}
 				        case (ParaID_Enable_setpoint_filter):
 						ParaID_Data.GlobalConfig.setpoint_filter = true;
 						break;
@@ -633,21 +632,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 							break;
 
 				        case (ParaID_FMID_selected_subsystem):
-//						if(((uint16_t) value) & 0x01){
-//							ParaID_Data.FluxMapID_Config.select_dq = true;
-//						}else{
-//							ParaID_Data.FluxMapID_Config.select_dq = false;
-//						}
-//						if(((uint16_t) value) & 0x02){
-//							ParaID_Data.FluxMapID_Config.select_xy = true;
-//						}else{
-//							ParaID_Data.FluxMapID_Config.select_xy = false;
-//						}
-//						if(((uint16_t) value) & 0x04){
-//							ParaID_Data.FluxMapID_Config.select_zero = true;
-//						}else{
-//							ParaID_Data.FluxMapID_Config.select_zero = false;
-//						}
+						if(((uint16_t) value) & 0x01){
+							ParaID_Data.FluxMapID_Config.select_dq = true;
+						}else{
+							ParaID_Data.FluxMapID_Config.select_dq = false;
+						}
+						if(((uint16_t) value) & 0x02){
+							ParaID_Data.FluxMapID_Config.select_xy = true;
+						}else{
+							ParaID_Data.FluxMapID_Config.select_xy = false;
+						}
+						if(((uint16_t) value) & 0x04){
+							ParaID_Data.FluxMapID_Config.select_zero = true;
+						}else{
+							ParaID_Data.FluxMapID_Config.select_zero = false;
+						}
 							break;
 
 				case (Error_Reset):

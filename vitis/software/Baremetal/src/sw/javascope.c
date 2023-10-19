@@ -46,8 +46,8 @@ extern float start_marker;
 extern uz_ParameterID_Data_t ParaID_Data;
 float activeState = 0.0f;
 // ParaID 6ph
-float values_milli[4];
-float index_array;
+float FMID_logdata_milli[4];
+float FMID_array_index;
 
 
 int JavaScope_initialize(DS_Data* data)
@@ -166,17 +166,17 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_L_Z2]      				= &(ParaID_Data.ElectricalID_Output->inductances_6ph.z2);
 	js_slowDataArray[JSSD_FLOAT_set_rpm_val]      		= &(ParaID_Data.ElectricalID_Output->set_rpm_val);
 	js_slowDataArray[JSSD_FLOAT_extended_offset_progress]= &(ParaID_Data.ElectricalID_Offset_Estimation.progress);
-	js_slowDataArray[JSSD_FLOAT_out_point_number]		= &(index_array);
+	js_slowDataArray[JSSD_FLOAT_out_point_number]		= &(FMID_array_index);
 	js_slowDataArray[JSSD_FLOAT_out_i_d]				= &(ParaID_Data.FluxMapID_Output->psi_array[0]);
 	js_slowDataArray[JSSD_FLOAT_out_i_q]				= &(ParaID_Data.FluxMapID_Output->psi_array[1]);
 	js_slowDataArray[JSSD_FLOAT_out_psi_d]				= &(ParaID_Data.FluxMapID_Output->psi_array[2]);
 	js_slowDataArray[JSSD_FLOAT_out_psi_q]				= &(ParaID_Data.FluxMapID_Output->psi_array[3]);
 	js_slowDataArray[JSSD_FLOAT_average_winding_temp]	= &(ParaID_Data.ActualValues.average_winding_temp);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_index]			= &(index_array);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(values_milli[0]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(values_milli[1]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(values_milli[2]);
-	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(values_milli[3]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_index]			= &(FMID_array_index);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_id]				= &(FMID_logdata_milli[0]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_iq]				= &(FMID_logdata_milli[1]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psid]			= &(FMID_logdata_milli[2]);
+	js_slowDataArray[JSSD_FLOAT_fluxmap_psiq]			= &(FMID_logdata_milli[3]);
 
 	return Status;
 }
@@ -193,12 +193,8 @@ void JavaScope_update(DS_Data* data){
 	int status = XST_SUCCESS;
 
 	// ParaID
-	uz_ParameterID_6ph_update_transmit_values(&ParaID_Data, &activeState);
-	values_milli[0] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[0];
-	values_milli[1] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[1];
-	values_milli[2] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[2];
-	values_milli[3] = 1000.0f*ParaID_Data.FluxMapID_Output->psi_array[3];
-	index_array = (float) ParaID_Data.FluxMapID_Output->array_index;
+	uz_ParameterID_6ph_update_transmit_values(&ParaID_Data, &activeState, &FMID_logdata_milli[0], &FMID_array_index);
+
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;

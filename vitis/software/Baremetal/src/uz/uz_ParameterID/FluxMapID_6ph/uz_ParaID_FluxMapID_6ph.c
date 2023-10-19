@@ -6,13 +6,6 @@
 #include "uz_ParaID_FluxMapID_6ph.h"
 #include "FluxMapID_6ph_codegen.h"
 
-#include "../../uz_SystemTime/uz_SystemTime.h"
-
-
-#define PARAMETERID6PH_FLUXMAP_RES_ORDER_AB 2.0f
-#define PARAMETERID6PH_FLUXMAP_RES_ORDER_XY 6.0f
-#define PARAMETERID6PH_FLUXMAP_ISR_FREQUENCY (UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)
-#define PARAMETERID6PH_FLUXMAP_AC_SQUARED ((0.1f*2.0f*UZ_PIf*PARAMETERID6PH_FLUXMAP_ISR_FREQUENCY)*(0.1f*2.0f*UZ_PIf*PARAMETERID6PH_FLUXMAP_ISR_FREQUENCY))
 
 struct uz_ParaID_FluxMapID_6ph_t {
     bool is_ready;
@@ -54,7 +47,6 @@ void uz_FluxMapID_6ph_step(uz_ParaID_FluxMapID_6ph_t* self){
     FluxMapID_6ph_codegen_step(self->PtrToModelData);
 }
 
-
 void uz_FluxMapID_6ph_set_Config(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaID_FluxMapIDConfig_t Config) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
@@ -81,10 +73,14 @@ void uz_FluxMapID_6ph_set_ControlFlags(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaI
 }
 
 bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     return(self->output.enteredFluxMapID);
 }
 
 bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
     return(self->output.finishedFluxMapID);
 }
 

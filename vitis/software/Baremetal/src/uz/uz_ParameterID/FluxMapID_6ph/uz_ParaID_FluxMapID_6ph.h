@@ -18,10 +18,6 @@
 #define UZ_PARAID_FLUXMAPID_6PH_H
 
 #include "../uz_ParameterID_data.h"
-#include "../../uz_CurrentControl/uz_CurrentControl.h"
-#include "../../uz_ResonantController/uz_resonant_controller.h"
-#include "../../uz_math_constants.h"
-#include "../../uz_signals/uz_signals.h"
 #include <stdio.h>
 
 /**

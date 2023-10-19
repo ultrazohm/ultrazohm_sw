@@ -438,10 +438,17 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	uz_ControlState_set_finishedFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_finished(self->FluxMapID));
 }
 
-void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState){
+void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float FMID_val_milli[4], float *FMID_index_array){
 	uz_assert_not_NULL(Data);
 	uz_assert_not_NULL(activeState);
+	// make integer indices to float because SlowData onl logs floats
 	*activeState = (float) Data->Controller_Parameters.activeState;
+	*FMID_index_array = (float) Data->FluxMapID_Output->array_index;
+	// make FMID outputs milliUNIT because SlowData only logs 2 decimal places and logging as milli increases resolution
+	FMID_val_milli[0] = 1000.0f*Data->FluxMapID_Output->psi_array[0];
+	FMID_val_milli[1] = 1000.0f*Data->FluxMapID_Output->psi_array[1];
+	FMID_val_milli[2] = 1000.0f*Data->FluxMapID_Output->psi_array[2];
+	FMID_val_milli[3] = 1000.0f*Data->FluxMapID_Output->psi_array[3];
 }
 
 void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t *Data){

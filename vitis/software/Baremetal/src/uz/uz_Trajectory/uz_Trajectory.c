@@ -53,12 +53,13 @@ static uz_Trajectory_t* uz_Trajectory_allocation(void){
 
 uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){
 	uz_Trajectory_t* self = uz_Trajectory_allocation();
-	uz_assert(config.Number_Sample_Points <= MAX_TRAJECTORY_SAMPLES);										// Check if the number of samples tp play didn't exceed the maximum amount if samples
+	uz_assert(config.Number_Sample_Points <= MAX_TRAJECTORY_SAMPLES);									// Check if the number of samples to replay didn't exceed the maximum amount if samples
 	for(int i = 0; i < MAX_TRAJECTORY_SAMPLES;i++){
-		uz_assert(get_TimeBase_init(config, config.Sample_Duration_X[i]) >= self->config.Stepwidth_ISR);	// Check if the Timebase didn't get to short (lesser than the ISR-Timestep)
+		uz_assert(config.Sample_Duration_X[i] > 0.0f);													// Check for negative and zero-Durations, this assertion will also fire if fewer samples are defined than specified from MAX_TRAJECTORY_SAMPLES
+		uz_assert(get_TimeBase_init(config, config.Sample_Duration_X[i]) >= 2*config.Stepwidth_ISR);	// Check if the Timebase didn't get to short (lesser than the ISR-Timestep)
 	}
 	if(config.RepeatStyle == Repeat_Times){
-		uz_assert(config.Repeats >= 1.0f);																	// Checks for non-zero and positive amount of repeats, will be ignored for Repeat_Inf
+		uz_assert(config.Repeats >= 1.0f);																// Checks for non-zero and positive amount of repeats, will be ignored for Repeat_Inf
 	}
 	self->config = config;
     self->is_running = false;

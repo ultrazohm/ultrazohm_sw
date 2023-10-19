@@ -441,6 +441,8 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float FMID_val_milli[4], float *FMID_index_array){
 	uz_assert_not_NULL(Data);
 	uz_assert_not_NULL(activeState);
+	uz_assert_not_NULL(FMID_index_array);
+	uz_assert_not_NULL(FMID_val_milli);
 	// make integer indices to float because SlowData onl logs floats
 	*activeState = (float) Data->Controller_Parameters.activeState;
 	*FMID_index_array = (float) Data->FluxMapID_Output->array_index;

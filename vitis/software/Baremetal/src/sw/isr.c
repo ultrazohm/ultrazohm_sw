@@ -96,30 +96,25 @@ void ISR_Control(void *data)
 		if(fabs(Global_Data.av.currents_abc.a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c1) > MAX_PHASE_CURRENT_AMP ||
 				fabs(Global_Data.av.currents_abc.a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c2) > MAX_PHASE_CURRENT_AMP ||
 				fabs(Global_Data.av.currents_abc.a3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.b3) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.currents_abc.c3) > MAX_PHASE_CURRENT_AMP) {
-			Global_Data.av.errors.error_OC += 1.0f;
-			uz_limit_exceed(&Global_Data);
+			uz_limit_exceed(&Global_Data, &Global_Data.av.errors.error_OC);
 		}
 		// check phase voltage limit
 		if(fabs(Global_Data.av.voltages_abc.a1) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b1) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c1) > MAX_PHASE_VOLT ||
 				fabs(Global_Data.av.voltages_abc.a2) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b2) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c2) > MAX_PHASE_VOLT ||
 				fabs(Global_Data.av.voltages_abc.a3) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.b3) > MAX_PHASE_VOLT || fabs(Global_Data.av.voltages_abc.c3) > MAX_PHASE_VOLT) {
-			Global_Data.av.errors.error_OV += 1.0f;
-			uz_limit_exceed(&Global_Data);
+			uz_limit_exceed(&Global_Data, &Global_Data.av.errors.error_OV);
 		}
 		// check DC Bus
 		if(fabs(Global_Data.av.U_ZK1) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK2) > MAX_DC_VOLT || fabs(Global_Data.av.U_ZK3) > MAX_DC_VOLT) {
-			Global_Data.av.errors.error_OV += 1.0f;
-			uz_limit_exceed(&Global_Data);
+			uz_limit_exceed(&Global_Data, &Global_Data.av.errors.error_OV);
 		}
 		// check Speed
 		if(fabs(Global_Data.av.rotational_position.n_mech_rpm) > MAX_SPEED_RPM) {
-			Global_Data.av.errors.error_speed += 1.0f;
-			uz_limit_exceed(&Global_Data);
+			uz_limit_exceed(&Global_Data, &Global_Data.av.errors.error_speed);
 		}
 		// check inverter temp
 		if(fabs(Global_Data.av.temperature_inv_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_2) > MAX_TEMP_DEG || fabs(Global_Data.av.temperature_inv_3) > MAX_TEMP_DEG) {
-			Global_Data.av.errors.error_OT_inv += 1.0f;
-			uz_limit_exceed(&Global_Data);
+			uz_limit_exceed(&Global_Data, &Global_Data.av.errors.error_OT_inv);
 		}
 
 

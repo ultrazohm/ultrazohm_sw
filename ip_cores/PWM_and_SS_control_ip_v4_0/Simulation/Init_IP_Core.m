@@ -11,7 +11,8 @@ clc
 clear all
 
 hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
-'/home/Xilinx/Vivado/2022.2/bin'); % Hierdruch wird dem HDL-Coder gesagt welches Synthesetool er für die HDL-Generierung nutzen soll.
+'C:\Xilinx\Vivado\2022.2\bin\vivado.bat'); % Tells the HDL-Coder which tool for synthesis it should use
+
 
 
 %% Parameter PWM

@@ -121,6 +121,8 @@ int main(void)
             fcs_mpc_select_current_source(true); //false=right, true=left
             //uz_sel_resolver_ip
             fcs_mpc_select_resolver_source(true); //false=right, true=left
+            //uz_sel_triggers for adc conversion and valid
+            fcs_mpc_select_trigger_source(true); //false=right, true=left
             //uz_pu_conversion_ip
             fcs_mpc_init_pu_conversion_ip();
             //uz_park_transform_ip

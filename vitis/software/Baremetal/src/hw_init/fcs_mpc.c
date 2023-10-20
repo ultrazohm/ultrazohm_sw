@@ -133,6 +133,11 @@ void fcs_mpc_select_resolver_source(bool right_or_left) {
 	uz_axi_write_bool(XPAR_UZ_USER_UZ_SEL_RESOLVER_0_BASEADDR + right_or_left_AXI_Data_uz_sel_resolver, right_or_left);
 }
 
+void fcs_mpc_select_trigger_source(bool right_or_left) {
+	//uz_axi_write_bool(XPAR_UZ_USER_UZ_SEL_TRIGGER_0_BASEADDR + right_or_left_AXI_Data_uz_sel_trigger, right_or_left);
+	//uz_axi_write_bool(XPAR_UZ_USER_UZ_SEL_TRIGGER_1_BASEADDR + right_or_left_AXI_Data_uz_sel_trigger, right_or_left);
+}
+
 void fcs_mpc_real_or_debug_inputs(bool debug_or_real) {
 	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_3PH_UZ_DEBUG_IP_0_BASEADDR + real_or_debug_AXI_Data_uz_debug_ip, debug_or_real);
 }

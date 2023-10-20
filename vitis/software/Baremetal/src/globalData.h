@@ -135,6 +135,7 @@ typedef struct _referenceAndSetValues_ {
 	float M_ref_left;
 	float n_ref_left;
 	uz_3ph_dq_t i_dq_ref_right;
+	uz_3ph_dq_t i_dq_ref_left;
 	enum current_control_select current_ctrl_select;
 } referenceAndSetValues;
 

@@ -57,7 +57,6 @@ struct uz_3ph_abc_t i_abc_left = {0.0f};
 struct uz_3ph_abc_t i_abc_right = {0.0f};
 struct uz_3ph_dq_t i_dq_left = {0.0f};
 struct uz_3ph_dq_t i_dq_right = {0.0f};
-struct uz_3ph_dq_t i_dq_ref_left = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_right = {0.0f};
 struct uz_3ph_dq_t i_dq_error_left = {0.0f};
 struct uz_3ph_dq_t i_dq_error_right = {0.0f};
@@ -207,14 +206,14 @@ void ISR_Control(void *data)
     	// calculate selected control algorithm for right motor
     	control_right_motor();
 
-    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
-    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
-    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
+//    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
+//    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_left.DutyCycle_B;
+//    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_left.DutyCycle_C;
     	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
     	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
     	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
@@ -351,25 +350,23 @@ static void ReadAllADC()
 };
 
 void control_left_motor() {
-
+	//enable MPC
+	fcs_mpc_enable(true);
+//	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_0_to_5, direct_control_via_FPGA);
 	// calculate reference torque from speed ctrl of left motor
 	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
 	// calculate current setpoints i_dq_ref for left motor
-	i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
-	// calculate reference voltages for current control
-	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s*Global_Data.av.polepairs_left);
-	Global_Data.av.v_d_left = v_dq_ref_left.d;
-	Global_Data.av.v_q_left = v_dq_ref_left.q;
-	// calculate duty cycles from reference dq voltages
-	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
+    // write measured dc_link voltage to pu_voltages ip
+    fcs_mpc_write_axi_v_dc();
+	//write setpoint to MPC
+	fcs_mpc_write_setpoint();
 };
 
 void control_right_motor() {
 
 	if(Global_Data.rasv.current_ctrl_select == PI_FOC) {
-    	//disable MPC
-    	fcs_mpc_enable(false);
-    	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
+//    	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
     	// calculate reference voltages for current control
     	v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s*Global_Data.av.polepairs_right);
     	Global_Data.av.v_d_right = v_dq_ref_right.d;
@@ -378,22 +375,8 @@ void control_right_motor() {
     	dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
 	}
 
-	if(Global_Data.rasv.current_ctrl_select == FCS_MPC) {
-    	//enable MPC
-    	fcs_mpc_enable(true);
-    	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, direct_control_via_FPGA);
-        // write measured dc_link voltage to pu_voltages ip
-        fcs_mpc_write_axi_v_dc();
-    	//write setpoint to MPC
-    	fcs_mpc_write_setpoint();
-
-
-	}
-
 	if(Global_Data.rasv.current_ctrl_select == DDPG_CC) {
-    	//disable MPC
-    	fcs_mpc_enable(false);
-    	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
+//    	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
     	// calculate integrated error by using Forward-Euler with error of previous timestep for integration
     	if(ddpg_ext_clamping == false) {
     		i_dq_integrated_error_right.d += (i_dq_error_right.d / RATED_CURRENT) * TS_TRAINING;

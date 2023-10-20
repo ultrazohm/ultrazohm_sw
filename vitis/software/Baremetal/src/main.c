@@ -85,7 +85,7 @@ int main(void)
             Global_Data.av.lambda_u = 0.000091f;
             Global_Data.av.lambda_u_e5 = Global_Data.av.lambda_u*1.0e5f;
             Global_Data.av.i_max_mpc = 1.0f;
-            Global_Data.rasv.current_ctrl_select = FCS_MPC;
+            Global_Data.rasv.current_ctrl_select = PI_FOC;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -118,9 +118,9 @@ int main(void)
             //uz_debug_ip
             fcs_mpc_real_or_debug_inputs(true); //false=debug, true=real
             //uz_sel_currents_ip
-            fcs_mpc_select_current_source(false); //false=right, true=left
+            fcs_mpc_select_current_source(true); //false=right, true=left
             //uz_sel_resolver_ip
-            fcs_mpc_select_resolver_source(false); //false=right, true=left
+            fcs_mpc_select_resolver_source(true); //false=right, true=left
             //uz_pu_conversion_ip
             fcs_mpc_init_pu_conversion_ip();
             //uz_park_transform_ip

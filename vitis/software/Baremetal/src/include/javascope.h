@@ -256,7 +256,7 @@ enum gui_button_mapping {
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	PI_FOC_right,
-	FCS-MPC_right,
+	MyButton2,
 	DDPG-CC_right,
 	MyButton4,
 	MyButton5,

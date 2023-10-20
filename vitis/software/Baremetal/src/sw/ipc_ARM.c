@@ -296,27 +296,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				i_dq_integrated_error_left.d = 0.0f;
 				i_dq_integrated_error_left.q = 0.0f;
 				ddpg_ext_clamping = 0.0f;
-				// set PWM frequency to 400 kHz
-				uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_LEFT);
-
 			break;
 
 		case (My_Button_2):
-				data->rasv.current_ctrl_select = FCS_MPC;
-				// reset ddpg integrators
-				i_dq_integrated_error_right.d = 0.0f;
-				i_dq_integrated_error_right.q = 0.0f;
-				i_dq_integrated_error_left.d = 0.0f;
-				i_dq_integrated_error_left.q = 0.0f;
-				ddpg_ext_clamping = 0.0f;
-    			// set PWM frequency to the same frequency of the load machine
-				//uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_RIGHT);
+
 			break;
 
 		case (My_Button_3):
 				data->rasv.current_ctrl_select = DDPG_CC;
-				// set PWM frequency to the same frequency of the load machine
-				//uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_RIGHT);
 
 			break;
 
@@ -392,11 +379,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 5 - My_Button_2 */
-	 if (data->rasv.current_ctrl_select == FCS_MPC) {
-		js_status_BareToRTOS |= (1 << 5);
-	 } else {
+//	 if (data->rasv.current_ctrl_select == FCS_MPC) {
+//		js_status_BareToRTOS |= (1 << 5);
+//	 } else {
 		js_status_BareToRTOS &= ~(1 << 5);
-	 }
+//	 }
 	/* Bit 6 - My_Button_3 */
 	 if (data->rasv.current_ctrl_select == DDPG_CC) {
 		 js_status_BareToRTOS |= (1 << 6);

@@ -11,6 +11,7 @@ For higher phase numbers, multiple instances of this module can be used in the F
 For synchronizing multiple instances, the counter can be fed to subsequent instances.
 Furthermore, an interleaved operation is possible.
 Every half-bridge can be shifted individually.
+The IP-Core has a setting, at which point of the triangle signal the phase-shift and output of new inverter switching signals does happen.
 These features are the only difference between versions V3 and V4.
 In the standard block design of the ultrazohm_sw framework, 4 synchronized instances of this ip core are present with respective software driver instances for controlling up to 12 half-bridge phase legs.
  
@@ -40,6 +41,12 @@ The triangle signal respectively DutyCycle of each half-bridge can be individual
 * triangle_shift_HB1
 * triangle_shift_HB2
 * triangle_shift_HB3
+
+The timing of the triangle shift operation as well as the output of new switching signals can be configured in the ``config`` -struct via an enum. 
+
+* ``trigger_at_MIN`` of the triangle signal
+* ``trigger_at_MAX`` of the triangle signal
+* ``trigger_at_EITHER`` of the triangle signal
 
 The input is fixed to ``0`` till ``1``. Whilst ``0`` represents no shift at all, ``1`` represents a shift by an entire period. 
 E.g. with a PWM-frequency of :math:`f=10kHz` and :math:`T=100µs` the input ``triangle_shift_HB2 = 0.1f`` would shift the second half-bridge by :math:`10µs`. 

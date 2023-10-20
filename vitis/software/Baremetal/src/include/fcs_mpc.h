@@ -12,6 +12,12 @@
 #define  IPCore_Timestamp_uz_sel_resolver         0x8  //contains unique IP timestamp (yymmddHHMM): 2310041727
 #define  right_or_left_AXI_Data_uz_sel_resolver   0x124  //data register for Inport right_or_left_AXI
 
+// uz_sel_trigger
+#define  IPCore_Reset_uz_sel_trigger             0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_uz_sel_trigger            0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_uz_sel_trigger         0x8  //contains unique IP timestamp (yymmddHHMM): 2310201413
+#define  right_or_left_AXI_Data_uz_sel_trigger   0x124  //data register for Inport right_or_left_AXI
+
 // uz_debug_ip
 #define  IPCore_Reset_uz_debug_ip             0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_debug_ip            0x4  //enabled (by default) when bit 0 is 0x1
@@ -128,6 +134,7 @@
 
 void fcs_mpc_select_current_source(bool right_or_left);
 void fcs_mpc_select_resolver_source(bool right_or_left);
+void fcs_mpc_select_trigger_source(bool right_or_left);
 void fcs_mpc_real_or_debug_inputs(bool debug_or_real);
 void fcs_mpc_init_pu_conversion_ip(void);
 void fcs_mpc_init_park_transform(void);

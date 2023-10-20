@@ -107,7 +107,7 @@ const base_val_t base_val={
 		.psiB=(sqrt(2.0f/3.0f)*rated_values.VR)/(rated_values.nR*2.0f*UZ_PIf/60.0f*polepairs)
 };
 
-const float Ts = 1.0f/UZ_PWM_FREQUENCY_RIGHT;
+const float Ts = 1.0f/UZ_PWM_FREQUENCY_LEFT;
 //const float Ts = 1.0f/100.0e3f;
 
 //pre-calculated factors for delay compensation and prediction model
@@ -131,6 +131,11 @@ void fcs_mpc_select_current_source(bool right_or_left) {
 
 void fcs_mpc_select_resolver_source(bool right_or_left) {
 	uz_axi_write_bool(XPAR_UZ_USER_UZ_SEL_RESOLVER_0_BASEADDR + right_or_left_AXI_Data_uz_sel_resolver, right_or_left);
+}
+
+void fcs_mpc_select_trigger_source(bool right_or_left) {
+	uz_axi_write_bool(XPAR_UZ_USER_UZ_SEL_TRIGGER_0_BASEADDR + right_or_left_AXI_Data_uz_sel_trigger, right_or_left);
+	uz_axi_write_bool(XPAR_UZ_USER_UZ_SEL_TRIGGER_1_BASEADDR + right_or_left_AXI_Data_uz_sel_trigger, right_or_left);
 }
 
 void fcs_mpc_real_or_debug_inputs(bool debug_or_real) {
@@ -193,7 +198,7 @@ void fcs_mpc_init_cost_function(){
 }
 
 void fcs_mpc_write_axi_v_dc(){
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + v_DC_pu_AXI_Data_pu_voltages_vsd, uz_convert_float_to_sfixed(Global_Data.av.v_dc_right/base_val.VB, 15));
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + v_DC_pu_AXI_Data_pu_voltages_vsd, uz_convert_float_to_sfixed(Global_Data.av.v_dc_left/base_val.VB, 15));
 
 }
 
@@ -202,8 +207,8 @@ void fcs_mpc_enable(bool enable){
 }
 
 void fcs_mpc_write_setpoint(){
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + id_ref_pu_AXI_Data_cost_opt, Global_Data.rasv.i_dq_ref_right.d * pu_current_conversion, i_setpoint_fp_def);
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + iq_ref_pu_AXI_Data_cost_opt, Global_Data.rasv.i_dq_ref_right.q * pu_current_conversion, i_setpoint_fp_def);
+	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + id_ref_pu_AXI_Data_cost_opt, Global_Data.rasv.i_dq_ref_left.d * pu_current_conversion, i_setpoint_fp_def);
+	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + iq_ref_pu_AXI_Data_cost_opt, Global_Data.rasv.i_dq_ref_left.q * pu_current_conversion, i_setpoint_fp_def);
 }
 
 void fcs_mpc_calc_f_sw_avg(){
@@ -212,19 +217,19 @@ void fcs_mpc_calc_f_sw_avg(){
 	static uint32_t switchNumb = 0U;
 	static float passed_time_sec = 0.0f;
 
-    if(Global_Data.av.speed_rpm_right > 1.0f) {
-    sw_cnt_avg_time_sec = 1.0f/(Global_Data.av.speed_rpm_right / 60.0f * AM8141_MPC.polePairs) * 20.0f; //calculate averaging time window according to 20x fundamental electric period
+    if(fabs(Global_Data.av.speed_rpm_left) > 1.0f) {
+    sw_cnt_avg_time_sec = 1.0f/(fabs(Global_Data.av.speed_rpm_left) / 60.0f * AM8141_MPC.polePairs) * 20.0f; //calculate averaging time window according to 20x fundamental electric period
     } else  {
     	sw_cnt_avg_time_sec = 1.0f;
     }
 
     // calculate average switching frequency and control the measure flag
     if(passed_time_sec >= sw_cnt_avg_time_sec) {
-        	switchNumb = uz_axi_read_uint32(XPAR_UZ_USER_COUNT_F_SW_1_BASEADDR + switchNumb_AXI_Data_count_f_sw);
-        	uz_axi_write_bool(XPAR_UZ_USER_COUNT_F_SW_1_BASEADDR + bResetAXI_Data_count_f_sw, true);	// reset counter = true
+        	switchNumb = uz_axi_read_uint32(XPAR_UZ_USER_COUNT_F_SW_0_BASEADDR + switchNumb_AXI_Data_count_f_sw);
+        	uz_axi_write_bool(XPAR_UZ_USER_COUNT_F_SW_0_BASEADDR + bResetAXI_Data_count_f_sw, true);	// reset counter = true
         	isr_cnt = 0;
         	Global_Data.av.f_sw_avg_Hz = switchNumb * 0.083333f / passed_time_sec; // 0.083333 = 1/(6*2); 6 switches and each transition is counted (*2)
-        	uz_axi_write_bool(XPAR_UZ_USER_COUNT_F_SW_1_BASEADDR + bResetAXI_Data_count_f_sw, false); // reset counter false
+        	uz_axi_write_bool(XPAR_UZ_USER_COUNT_F_SW_0_BASEADDR + bResetAXI_Data_count_f_sw, false); // reset counter false
 //        	Global_Data.av.f_sw_measure_flag = !Global_Data.av.f_sw_measure_flag; //toggle every time f_sw is measured
 //        	Global_Data.av.f_f_sw_measure_flag = (float)Global_Data.av.f_sw_measure_flag;
 //        	// control the measuring flag

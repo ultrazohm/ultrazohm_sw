@@ -299,14 +299,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_2):
-				data->rasv.current_ctrl_select = FCS_MPC;
-				// reset ddpg integrators
-				i_dq_integrated_error_right.d = 0.0f;
-				i_dq_integrated_error_right.q = 0.0f;
-				i_dq_integrated_error_left.d = 0.0f;
-				i_dq_integrated_error_left.q = 0.0f;
-				ddpg_ext_clamping = false;
-  			break;
+
+			break;
 
 		case (My_Button_3):
 				data->rasv.current_ctrl_select = DDPG_CC;
@@ -388,11 +382,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 5 - My_Button_2 */
-	 if (data->rasv.current_ctrl_select == FCS_MPC) {
-		js_status_BareToRTOS |= (1 << 5);
-	 } else {
+//	 if (data->rasv.current_ctrl_select == FCS_MPC) {
+//		js_status_BareToRTOS |= (1 << 5);
+//	 } else {
 		js_status_BareToRTOS &= ~(1 << 5);
-	 }
+//	 }
 	/* Bit 6 - My_Button_3 */
 	 if (data->rasv.current_ctrl_select == DDPG_CC) {
 		 js_status_BareToRTOS |= (1 << 6);

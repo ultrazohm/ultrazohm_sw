@@ -14,6 +14,7 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 
 enum current_control_select {
 		PI_FOC,
@@ -161,6 +162,7 @@ typedef struct{
 	uz_mux_axi_t* mux_axi_a2;
 	uz_nn_t* nn_layer;
 	uz_matrix_t* matrix_input;
+	uz_pmsmModel_t* pmsm_cil;
 }object_pointers_t;
 
 

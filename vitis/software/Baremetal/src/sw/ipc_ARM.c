@@ -295,10 +295,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				i_dq_integrated_error_right.q = 0.0f;
 				i_dq_integrated_error_left.d = 0.0f;
 				i_dq_integrated_error_left.q = 0.0f;
-				ddpg_ext_clamping = 0.0f;
-				// set PWM frequency to 400 kHz
-				uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_LEFT);
-
+				ddpg_ext_clamping = false;
 			break;
 
 		case (My_Button_2):
@@ -308,24 +305,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				i_dq_integrated_error_right.q = 0.0f;
 				i_dq_integrated_error_left.d = 0.0f;
 				i_dq_integrated_error_left.q = 0.0f;
-				ddpg_ext_clamping = 0.0f;
-    			// set PWM frequency to the same frequency of the load machine
-				//uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_RIGHT);
-			break;
+				ddpg_ext_clamping = false;
+  			break;
 
 		case (My_Button_3):
 				data->rasv.current_ctrl_select = DDPG_CC;
-				// set PWM frequency to the same frequency of the load machine
-				//uz_PWM_SS_2L_hw_SetCarrierFrequency(XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR, 100.0e6f, UZ_PWM_FREQUENCY_RIGHT);
-
 			break;
 
-		case (My_Button_4):
-
+		case (My_Button_4): // switching between control plants only possible in idle state
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					data->rasv.ctrl_plant_select = CIL;
+				}
 			break;
 
-		case (My_Button_5):
-
+		case (My_Button_5): // switching between control plants only possible in idle state
+				if (ultrazohm_state_machine_get_state() == idle_state) {
+					data->rasv.ctrl_plant_select = REAL;
+				}
 			break;
 
 		case (My_Button_6):
@@ -405,10 +401,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	 if (data->rasv.ctrl_plant_select == CIL) {
+		 js_status_BareToRTOS |= (1 << 7);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 7);
+	 }
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	 if (data->rasv.ctrl_plant_select == REAL) {
+		 js_status_BareToRTOS |= (1 << 8);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 8);
+	 }
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);

@@ -22,6 +22,11 @@ enum current_control_select {
 		DDPG_CC
 };
 
+enum control_plant {
+	CIL,
+	REAL
+};
+
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -91,6 +96,7 @@ typedef struct _actualValues_ {
 	float v_q_left;
 	float v_d_right;
 	float v_q_right;
+	float omega_mech_right;
 	float speed_rpm_left;
 	float speed_rpm_right;
 	uint32_t  heartbeatframe_content;
@@ -137,6 +143,7 @@ typedef struct _referenceAndSetValues_ {
 	float n_ref_left;
 	uz_3ph_dq_t i_dq_ref_right;
 	enum current_control_select current_ctrl_select;
+	enum control_plant ctrl_plant_select;
 } referenceAndSetValues;
 
 typedef struct{

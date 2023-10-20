@@ -42,7 +42,7 @@
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       3U
 #define UZ_NN_MAX_INSTANCES                             1U
-#define UZ_PMSMMODEL_MAX_INSTANCES                      0U
+#define UZ_PMSMMODEL_MAX_INSTANCES                      1U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        2U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U

@@ -63,7 +63,10 @@
 #include "uz/uz_nn/uz_nn_activation_functions.h"
 #include "uz/uz_nn/uz_nn_layer.h"
 
-
+// PMSM IP Core
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
 //----------------------------------------------------
 // FUNCTIONS

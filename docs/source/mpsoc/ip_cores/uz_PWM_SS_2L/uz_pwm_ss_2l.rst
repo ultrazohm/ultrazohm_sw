@@ -126,7 +126,8 @@ Vitis
             .init_dutyCyc_HB3 = 0.0f,
             .triangle_shift_HB1 = 0.0f,
             .triangle_shift_HB2 = 0.0f,
-            .triangle_shift_HB3 = 0.0f
+            .triangle_shift_HB3 = 0.0f,
+            .trigger_source = trigger_at_MIN
     };
 
 An instance has to be initialized first and then configured:
@@ -143,6 +144,8 @@ Driver reference
 .. doxygentypedef:: uz_PWM_SS_2L_t
 
 .. doxygenenum:: uz_PWM_SS_2L_PWM_mode
+
+.. doxygenenum:: uz_PWM_SS_2L_PWM_trigger_source
 
 .. doxygenstruct:: uz_PWM_SS_2L_config_t
   :members:

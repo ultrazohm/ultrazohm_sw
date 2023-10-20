@@ -174,7 +174,9 @@
         "xlslice_20": "",
         "xlslice_21": "",
         "uz_sel_currents_0": "",
-        "uz_pmsm_model_0": ""
+        "uz_pmsm_model_0": "",
+        "uz_sel_trigger_0": "",
+        "uz_sel_trigger_1": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -6620,7 +6622,7 @@
           "SDI_2_Dig_23": {
             "direction": "I"
           },
-          "sample_trigger": {
+          "sample_trigger_A2": {
             "direction": "I"
           },
           "Gates": {
@@ -6628,7 +6630,7 @@
             "left": "23",
             "right": "0"
           },
-          "adc_valid": {
+          "adc_valid_A2": {
             "direction": "I"
           },
           "G_mpc_out": {
@@ -6645,6 +6647,12 @@
             "direction": "I",
             "left": "215",
             "right": "0"
+          },
+          "sample_trigger_A1": {
+            "direction": "I"
+          },
+          "adc_valid_A1": {
+            "direction": "I"
           }
         },
         "components": {
@@ -6655,7 +6663,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "13"
+                "value": "15"
               },
               "NUM_SI": {
                 "value": "1"
@@ -6687,7 +6695,9 @@
                   "M09_AXI",
                   "M10_AXI",
                   "M11_AXI",
-                  "M12_AXI"
+                  "M12_AXI",
+                  "M13_AXI",
+                  "M14_AXI"
                 ]
               },
               "M00_AXI": {
@@ -7069,6 +7079,68 @@
                 "parameters": {
                   "MAX_BURST_LENGTH": {
                     "value": "256"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M13_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M14_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
                   },
                   "NUM_READ_OUTSTANDING": {
                     "value": "8"
@@ -8635,6 +8707,18 @@
             "xci_name": "zusys_uz_pmsm_model_0_0",
             "xci_path": "ip\\zusys_uz_pmsm_model_0_0\\zusys_uz_pmsm_model_0_0.xci",
             "inst_hier_path": "uz_user/uz_pmsm_model_0"
+          },
+          "uz_sel_trigger_0": {
+            "vlnv": "xilinx.com:ip:uz_sel_trigger:1.0",
+            "xci_name": "zusys_uz_sel_trigger_0_0",
+            "xci_path": "ip\\zusys_uz_sel_trigger_0_0\\zusys_uz_sel_trigger_0_0.xci",
+            "inst_hier_path": "uz_user/uz_sel_trigger_0"
+          },
+          "uz_sel_trigger_1": {
+            "vlnv": "xilinx.com:ip:uz_sel_trigger:1.0",
+            "xci_name": "zusys_uz_sel_trigger_1_0",
+            "xci_path": "ip\\zusys_uz_sel_trigger_1_0\\zusys_uz_sel_trigger_1_0.xci",
+            "inst_hier_path": "uz_user/uz_sel_trigger_1"
           }
         },
         "interface_nets": {
@@ -8720,6 +8804,18 @@
             "interface_ports": [
               "uz_pmsm_model_0/AXI4",
               "smartconnect_1/M12_AXI"
+            ]
+          },
+          "smartconnect_1_M13_AXI": {
+            "interface_ports": [
+              "smartconnect_1/M13_AXI",
+              "uz_sel_trigger_0/AXI4_Lite"
+            ]
+          },
+          "smartconnect_1_M14_AXI": {
+            "interface_ports": [
+              "smartconnect_1/M14_AXI",
+              "uz_sel_trigger_1/AXI4_Lite"
             ]
           },
           "uz_inverter_adapter_0_uz_inverter_adapter": {
@@ -8893,16 +8989,23 @@
               "xlslice_21/Din"
             ]
           },
-          "adc_valid_1": {
-            "ports": [
-              "adc_valid",
-              "uz_sel_currents_0/adc_valid_trigger"
-            ]
-          },
           "adc_valid_2": {
             "ports": [
               "uz_sel_currents_0/selector_ip_done",
               "fcs_mpc_3ph/adc_valid"
+            ]
+          },
+          "adc_valid_A1_1": {
+            "ports": [
+              "adc_valid_A1",
+              "uz_sel_trigger_1/trigger_A1",
+              "uz_sel_trigger_1/adc_valid_trigger"
+            ]
+          },
+          "adc_valid_A2_1": {
+            "ports": [
+              "adc_valid_A2",
+              "uz_sel_trigger_1/trigger_A2"
             ]
           },
           "fcs_mpc_3ph_G_mpc_out": {
@@ -8937,17 +9040,23 @@
               "uz_sel_currents_0/IPCORE_RESETN",
               "uz_sel_currents_0/AXI4_Lite_ARESETN",
               "uz_pmsm_model_0/AXI4_ARESETN",
-              "uz_pmsm_model_0/IPCORE_RESETN"
+              "uz_pmsm_model_0/IPCORE_RESETN",
+              "uz_sel_trigger_0/AXI4_Lite_ARESETN",
+              "uz_sel_trigger_0/IPCORE_RESETN",
+              "uz_sel_trigger_1/IPCORE_RESETN",
+              "uz_sel_trigger_1/AXI4_Lite_ARESETN"
             ]
           },
-          "sample_trigger_1": {
+          "sample_trigger_A1_1": {
             "ports": [
-              "sample_trigger",
-              "uz_resolver_pl_inter_0/trigger",
-              "uz_resolver_pl_inter_1/trigger",
-              "Resolver_Interface_v_0/sample_trigger",
-              "Resolver_Interface_v_1/sample_trigger",
-              "fcs_mpc_3ph/sample_trigger"
+              "sample_trigger_A1",
+              "uz_sel_trigger_0/trigger_A1"
+            ]
+          },
+          "sample_trigger_A2_1": {
+            "ports": [
+              "sample_trigger_A2",
+              "uz_sel_trigger_0/trigger_A2"
             ]
           },
           "uz_d_inverter_adapter_0_PWM_EN": {
@@ -9074,6 +9183,23 @@
             "ports": [
               "uz_sel_resolver_0/theta_el",
               "fcs_mpc_3ph/theta_el"
+            ]
+          },
+          "uz_sel_trigger_0_trigger_out": {
+            "ports": [
+              "uz_sel_trigger_0/trigger_out",
+              "Resolver_Interface_v_1/sample_trigger",
+              "Resolver_Interface_v_0/sample_trigger",
+              "uz_resolver_pl_inter_0/trigger",
+              "uz_resolver_pl_inter_1/trigger",
+              "fcs_mpc_3ph/sample_trigger"
+            ]
+          },
+          "uz_sel_trigger_1_trigger_out": {
+            "ports": [
+              "uz_sel_trigger_1/trigger_out",
+              "uz_sel_trigger_0/adc_valid_trigger",
+              "uz_sel_currents_0/adc_valid_trigger"
             ]
           },
           "xlslice_0_Dout": {
@@ -9246,7 +9372,11 @@
               "uz_sel_currents_0/IPCORE_CLK",
               "uz_sel_currents_0/AXI4_Lite_ACLK",
               "uz_pmsm_model_0/AXI4_ACLK",
-              "uz_pmsm_model_0/IPCORE_CLK"
+              "uz_pmsm_model_0/IPCORE_CLK",
+              "uz_sel_trigger_0/AXI4_Lite_ACLK",
+              "uz_sel_trigger_0/IPCORE_CLK",
+              "uz_sel_trigger_1/IPCORE_CLK",
+              "uz_sel_trigger_1/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -12589,7 +12719,8 @@
         "ports": [
           "uz_system/trigger_converesions_A1",
           "uz_analog_adapter/TRIGGER_CNV_A1",
-          "uz_digital_adapter/probe5"
+          "uz_digital_adapter/probe5",
+          "uz_user/sample_trigger_A1"
         ]
       },
       "SI_VALUE_A1_1": {
@@ -12607,7 +12738,13 @@
       "adc_valid_1": {
         "ports": [
           "uz_analog_adapter/SI_VALID_A2",
-          "uz_user/adc_valid"
+          "uz_user/adc_valid_A2"
+        ]
+      },
+      "adc_valid_A1_1": {
+        "ports": [
+          "uz_analog_adapter/SI_VALID",
+          "uz_user/adc_valid_A1"
         ]
       },
       "interrupt_PWM_1_max_min_1": {
@@ -12676,7 +12813,7 @@
         "ports": [
           "uz_system/trigger_converesions_A2",
           "uz_analog_adapter/TRIGGER_CNV_A2",
-          "uz_user/sample_trigger"
+          "uz_user/sample_trigger_A2"
         ]
       },
       "uz_system_wdt_interrupt": {
@@ -13126,6 +13263,16 @@
               "SEG_uz_sel_resolver_0_reg0": {
                 "address_block": "/uz_user/uz_sel_resolver_0/AXI4_Lite/reg0",
                 "offset": "0x0080270000",
+                "range": "64K"
+              },
+              "SEG_uz_sel_trigger_0_reg0": {
+                "address_block": "/uz_user/uz_sel_trigger_0/AXI4_Lite/reg0",
+                "offset": "0x0080290000",
+                "range": "64K"
+              },
+              "SEG_uz_sel_trigger_1_reg0": {
+                "address_block": "/uz_user/uz_sel_trigger_1/AXI4_Lite/reg0",
+                "offset": "0x00802A0000",
                 "range": "64K"
               }
             }

@@ -21,8 +21,6 @@
 #include <stdbool.h>
 #include "uz_ParameterID.h"
 
-extern uint16_t scope_selected_subsystem;
-
 typedef struct uz_ParameterID_6ph_t {
 	bool is_ready;
 	uz_ParaID_ControlState_t* ControlState;

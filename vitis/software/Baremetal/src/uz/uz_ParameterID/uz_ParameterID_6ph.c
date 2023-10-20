@@ -281,10 +281,10 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, s
     // Initialize structs
     uz_6ph_dq_t out = {0};
 	uz_3ph_dq_t cc_out_dq = {0};
-	uz_3ph_dq_t cc_out_xy = {0};
+	uz_3ph_dq_t cc_out_xy_rotating = {0};
 	uz_3ph_alphabeta_t cc_out_XY = {0};
 	uz_3ph_dq_t cc_out_zero_rotating = {0};
-	uz_3ph_alphabeta_t cc_out_zero_stationary = {0};
+	uz_3ph_alphabeta_t cc_out_ZERO_stationary = {0};
 	uz_3ph_dq_t zero_dq_ref = {0};
 
 	// if dq system PI control is selected and not zero system
@@ -300,9 +300,9 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, s
 	// if xy system PI control is selected and not zero system
 	if((Data->Controller_Parameters.PI_xy == true) && (Data->Controller_Parameters.PI_zero == false)){
 		if(Data->Controller_Parameters.filter_xy == true){
-			cc_out_xy = uz_CurrentControl_sample(objects.CC_instance_xy, uz_signals_IIR_Filter_dq_setpoint(Data->filter_2, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+			cc_out_xy_rotating = uz_CurrentControl_sample(objects.CC_instance_xy, uz_signals_IIR_Filter_dq_setpoint(Data->filter_2, Data->Controller_Parameters.i_xy_ref), Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
 		}else{
-			cc_out_xy = uz_CurrentControl_sample(objects.CC_instance_xy, Data->Controller_Parameters.i_xy_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
+			cc_out_xy_rotating = uz_CurrentControl_sample(objects.CC_instance_xy, Data->Controller_Parameters.i_xy_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.V_DC, Data->ActualValues.omega_el);  
 		}   
 	}
 	// if zero system PI control is selected and not zero system
@@ -320,20 +320,20 @@ static uz_6ph_dq_t uz_ParaID_6ph_extended_control(uz_ParameterID_Data_t* Data, s
 		out.q += resonant_dq.q;
 	}else if(Data->Controller_Parameters.resonant_xy){
 		uz_3ph_dq_t resonant_xy = uz_subspace_resonant_control_step_dq(objects.res_instance_xy, zero_dq_ref, Data->ActualValues.i_xy_rotating, Data->ActualValues.omega_el);
-		cc_out_xy.d += resonant_xy.d;
-		cc_out_xy.q += resonant_xy.q;
+		cc_out_xy_rotating.d += resonant_xy.d;
+		cc_out_xy_rotating.q += resonant_xy.q;
 	}else if(Data->Controller_Parameters.resonant_zero){
 		uz_3ph_dq_t resonant_zero = uz_subspace_resonant_control_step_dq(objects.res_instance_zero, zero_dq_ref, Data->ActualValues.i_zero_rotating, Data->ActualValues.omega_el);
 		cc_out_zero_rotating.d += resonant_zero.d;
 		cc_out_zero_rotating.q += resonant_zero.q;
 	}
 	// back to stationary
-	cc_out_XY = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy, -1.0f*Data->ActualValues.theta_el);
+	cc_out_XY = uz_transformation_3ph_dq_to_alphabeta(cc_out_xy_rotating, -1.0f*Data->ActualValues.theta_el);
 	out.x = cc_out_XY.alpha;
 	out.y = cc_out_XY.beta;
-	cc_out_zero_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*Data->ActualValues.theta_el);
-	out.z1 = cc_out_zero_stationary.alpha;
-	out.z2 = cc_out_zero_stationary.beta;
+	cc_out_ZERO_stationary = uz_transformation_3ph_dq_to_alphabeta(cc_out_zero_rotating, 3.0f*Data->ActualValues.theta_el);
+	out.z1 = cc_out_ZERO_stationary.alpha;
+	out.z2 = cc_out_ZERO_stationary.beta;
     return out;
 }
 

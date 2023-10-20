@@ -7,7 +7,7 @@
  * @brief Maximum number of samples that can be stored. Should be as small as possible to save resources.
  * 
  */
-#define MAX_TRAJECTORY_SAMPLES 	20
+#define MAX_TRAJECTORY_SAMPLES 	20U
 
 /*! enum for readable configuration of the interpolation type */
 enum uz_Trajectory_interpolation_selection {

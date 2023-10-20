@@ -34,6 +34,9 @@
 #include "../uz/uz_setpoint/uz_setpoint.h"
 #include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+
+#include "../uz/uz_dqn/uz_dqn.h"
+
 #define PHASE_CURRENT_SCALING 12.5f
 #define PHASE_VOLT_SCALING	12.0f
 // Declaration for inverter Faults
@@ -56,11 +59,11 @@ float Kp_iq = 7.11f;
 float Ki_iq = 2715.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
-float action_current = 3.6f; // I_q fuer Agenten
+float action_current = 2.0f; // I_q fuer Agenten
 float position_Kp = 0.5f;
 // limits and time setting
 float limit_error = 430.0f;
-float disable_control = 400.0f;
+float disable_control = 380.0f;
 int time_dqn = 15;
 int time_wait_zero = 15;
 // position control
@@ -77,8 +80,8 @@ float old_theta_pendulum=0.0f;
 float old_position=0.0f;
 float angle_derv=0.0f;
 float position_derv=0.0f;
-uint32_t action=0;
-
+extern uint32_t action_k;
+extern uz_dqn_t *testdqn2;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -87,18 +90,12 @@ uint32_t action=0;
 //----------------------------------------------------
 static void ReadAllADC();
 static void Reset_obs_and_measurements();
-extern bool dqn_mutex;
 uz_matrix_t *output_nn = NULL;
 bool ext_clamping=false;
-enum dqn_chain
-{
-    dqn_active = 0,
-    limit_violation,
-	return_to_zero_position,
-	wait_at_zero_position,
-	get_to_start_postion
-};
+extern bool update_lock;
+float epsilon_k;
 enum dqn_chain chain = dqn_active;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -177,6 +174,8 @@ void ISR_Control(void *data)
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
     Global_Data.av.mechanicalRotorSpeed_IIR_Filter = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_2, Global_Data.av.mechanicalRotorSpeed);
     Global_Data.mv.i_dq_Amps = uz_transformation_3ph_abc_to_dq(Global_Data.mv.i_abc_Amps, Global_Data.av.theta_elec);
+
+    epsilon_k=uz_dqn_get_epsilon(testdqn2);
     if (current_state==control_state)
     {
     	if (fabsf(position_abs) > limit_error){
@@ -191,12 +190,8 @@ void ISR_Control(void *data)
 		    	if (fabsf(position_abs) > disable_control){
 		    		chain=limit_violation;
 		    	}
-		        if (dqn_mutex)
-		        {
-		            output_nn = uz_nn_get_output_data(Global_Data.objects.uz_nn_instance);
-		            dqn_mutex = false;
-		            action = uz_matrix_get_max_index(output_nn);
-		            switch (action){
+
+		            switch (action_k){
 		            case 0: Global_Data.rasv.dq_reference_current.q =action_current;
 		            break;
 		            case 1:	Global_Data.rasv.dq_reference_current.q=action_current/2.0f;
@@ -209,7 +204,6 @@ void ISR_Control(void *data)
 		            break;
 		            default: uz_assert(0);
 		            }
-		        }
 		        if (counter_for_reset>(time_dqn*(int)UZ_PWM_FREQUENCY)){
 		        	chain=limit_violation;
 		        }
@@ -217,7 +211,7 @@ void ISR_Control(void *data)
 			case limit_violation:
 				Global_Data.av.trigger_logging = 2.0f;
 				Global_Data.rasv.dq_reference_current.q=0.0f;
-				chain=return_to_zero_position;
+                chain=return_to_zero_position;
 				break;
 			case return_to_zero_position:
 				Global_Data.av.trigger_logging = 3.0f;
@@ -253,7 +247,9 @@ void ISR_Control(void *data)
 				Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm);
 				Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.mv.V_dc_volts, Global_Data.mv.i_dq_Amps);
 				if(fabsf(pos_delta) < 1.0f){
-					chain=dqn_active;
+					if(!update_lock){
+						chain=dqn_active;
+					}
 				}
 				else{// counter im letzten case alle auf 0
 					counter_for_reset = 0;
@@ -352,6 +348,8 @@ void ISR_Control(void *data)
     	error_type = 10.0f;
        ultrazohm_state_machine_set_error(true);
     }
+
+
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

@@ -72,4 +72,14 @@
 void Reset_global_Data(DS_Data *data);
 void InitializeDataStructure(DS_Data* data);
 
+enum dqn_chain
+{
+    dqn_active = 0,
+    limit_violation,
+    return_to_zero_position,
+    wait_at_zero_position,
+    get_to_start_postion
+};
+
+
 #endif /* main_H_ */

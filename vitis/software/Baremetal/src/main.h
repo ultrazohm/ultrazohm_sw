@@ -62,6 +62,7 @@
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_nn/uz_nn_activation_functions.h"
 #include "uz/uz_nn/uz_nn_layer.h"
+#include "uz/uz_Trajectory/uz_Trajectory.h"
 
 // PMSM IP Core
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"

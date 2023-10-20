@@ -299,7 +299,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_2):
-
+			if (data->rasv.reference_select == MANUAL) {
+				data->rasv.reference_select = TRAJECTORY;
+			}
+			else if (data->rasv.reference_select == TRAJECTORY) {
+						data->rasv.reference_select = MANUAL;
+					}
 			break;
 
 		case (My_Button_3):
@@ -319,15 +324,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			uz_Trajectory_Start(data->objects.speed_traj);
+			uz_Trajectory_Start(data->objects.current_traj);
 			break;
 
 		case (My_Button_7):
-
+			uz_Trajectory_Stop(data->objects.speed_traj);
+			uz_Trajectory_Stop(data->objects.current_traj);
 			break;
 
 		case (My_Button_8):
-
+			uz_Trajectory_Reset(data->objects.speed_traj);
+			uz_Trajectory_Reset(data->objects.current_traj);
 			break;
 
 		case (Error_Reset):
@@ -382,11 +390,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 }
 
 	/* Bit 5 - My_Button_2 */
-//	 if (data->rasv.current_ctrl_select == FCS_MPC) {
-//		js_status_BareToRTOS |= (1 << 5);
-//	 } else {
+	 if (data->rasv.reference_select == TRAJECTORY) {
+		js_status_BareToRTOS |= (1 << 5);
+	 } else {
 		js_status_BareToRTOS &= ~(1 << 5);
-//	 }
+	 }
 	/* Bit 6 - My_Button_3 */
 	 if (data->rasv.current_ctrl_select == DDPG_CC) {
 		 js_status_BareToRTOS |= (1 << 6);

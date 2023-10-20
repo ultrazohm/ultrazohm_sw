@@ -96,6 +96,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_idc_right]			= &data->av.i_dc_right;
 	js_ch_observable[JSO_idc_left]			= &data->av.i_dc_left;
+	js_ch_observable[JSO_traj_speed]		= &data->av.traj_speed_ref;
+	js_ch_observable[JSO_traj_current]		= &data->av.traj_current_ref;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;
 

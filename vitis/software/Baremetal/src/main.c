@@ -86,6 +86,8 @@ int main(void)
             Global_Data.av.lambda_u_e5 = Global_Data.av.lambda_u*1.0e5f;
             Global_Data.av.i_max_mpc = 1.0f;
             Global_Data.rasv.current_ctrl_select = PI_FOC;
+            Global_Data.objects.speed_traj = uz_trajectory_speed_init();
+            Global_Data.objects.current_traj = uz_trajectory_current_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

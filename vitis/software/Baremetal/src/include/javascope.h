@@ -55,6 +55,8 @@ enum JS_OberservableData {
 	JSO_iq_delay_pu,
 	JSO_idc_left,
 	JSO_idc_right,
+	JSO_traj_speed,
+	JSO_traj_current,
 	JSO_vd_pu,
 	JSO_vq_pu,
 	JSO_theta_el_left,
@@ -256,13 +258,13 @@ enum gui_button_mapping {
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	PI_FOC_right,
-	MyButton2,
+	Traj_ref,
 	DDPG-CC_right,
 	CIL,
 	REAL,
-	MyButton6,
-	MyButton7,
-	MyButton8,
+	TrajStart,
+	TrajStop,
+	TrajReset,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

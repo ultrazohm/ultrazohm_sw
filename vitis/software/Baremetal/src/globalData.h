@@ -15,6 +15,7 @@
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "uz/uz_Trajectory/uz_Trajectory.h"
 
 enum current_control_select {
 		PI_FOC,
@@ -25,6 +26,11 @@ enum current_control_select {
 enum control_plant {
 	CIL,
 	REAL
+};
+
+enum reference_select {
+	MANUAL,
+	TRAJECTORY
 };
 
 
@@ -124,6 +130,8 @@ typedef struct _actualValues_ {
 	float vq_pu;
 	float id_delay_pu;
 	float iq_delay_pu;
+	float traj_speed_ref;
+	float traj_current_ref;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -145,6 +153,7 @@ typedef struct _referenceAndSetValues_ {
 	uz_3ph_dq_t i_dq_ref_left;
 	enum current_control_select current_ctrl_select;
 	enum control_plant ctrl_plant_select;
+	enum reference_select reference_select;
 } referenceAndSetValues;
 
 typedef struct{
@@ -171,6 +180,8 @@ typedef struct{
 	uz_nn_t* nn_layer;
 	uz_matrix_t* matrix_input;
 	uz_pmsmModel_t* pmsm_cil;
+	uz_Trajectory_t* speed_traj;
+	uz_Trajectory_t* current_traj;
 }object_pointers_t;
 
 

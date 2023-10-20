@@ -144,7 +144,11 @@ void ISR_Control(void *data)
     Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L3) * 0.1667;
 
 	//read axi values from mpc ip for debug
-	fcs_mpc_debug();
+//	fcs_mpc_debug();
+
+    //calculate given trajectory
+    Global_Data.av.traj_speed_ref = uz_Trajectory_Step(Global_Data.objects.speed_traj);
+    Global_Data.av.traj_current_ref = uz_Trajectory_Step(Global_Data.objects.current_traj);
 
     // check platform state machine
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -191,7 +195,10 @@ void ISR_Control(void *data)
 
     	// get reference currents from Global_Data
     	i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
-
+    	//overwrite q-current ref with trajectory
+    	if (Global_Data.rasv.reference_select == TRAJECTORY) {
+    	i_dq_ref_right.q = Global_Data.av.traj_current_ref;
+    	}
     	if (Global_Data.rasv.ctrl_plant_select == CIL) {
     		// calculations necessary for all control algorithms
     		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);
@@ -376,7 +383,10 @@ static void ReadAllADC()
 void control_left_motor() {
 	//enable MPC
 	fcs_mpc_enable(true);
-//	uz_PWM_SS_2L_set_PWM_mode(Global_Data.objects.pwm_d1_pin_0_to_5, direct_control_via_FPGA);
+	//overwrite speed ref with trajectory if selected
+	if (Global_Data.rasv.reference_select == TRAJECTORY) {
+	Global_Data.rasv.n_ref_left = Global_Data.av.traj_speed_ref;
+	}
 	// calculate reference torque from speed ctrl of left motor
 	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
 	// calculate current setpoints i_dq_ref for left motor

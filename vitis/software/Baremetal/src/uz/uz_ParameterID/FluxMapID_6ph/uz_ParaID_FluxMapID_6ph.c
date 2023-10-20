@@ -72,25 +72,25 @@ void uz_FluxMapID_6ph_set_ControlFlags(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaI
 	self->input.ControlFlags = *ControlFlags;
 }
 
-bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self){
+bool uz_FluxMapID_6ph_get_entered(uz_ParaID_FluxMapID_6ph_t* self){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     return(self->output.enteredFluxMapID);
 }
 
-bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self){
+bool uz_FluxMapID_6ph_get_finished(uz_ParaID_FluxMapID_6ph_t* self){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     return(self->output.finishedFluxMapID);
 }
 
-uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self){
+uz_ParaID_Controller_Parameters_output_t* uz_FluxMapID_6ph_get_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return(&self->output.FluxMapID_FOC_output);
 }
 
-uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self){
+uz_ParaID_FluxMapID_output_t* uz_FluxMapID_6ph_get_output(uz_ParaID_FluxMapID_6ph_t* self){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return(&self->output.FluxMapID_output);

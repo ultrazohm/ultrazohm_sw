@@ -89,7 +89,7 @@ void uz_ElectricalID_6ph_set_Offset_Estimation(uz_ParaID_ElectricalID_6ph_t *sel
  * @return true state has been entered
  * @return false state hasn't been entered
  */
-bool uz_get_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self);
+bool uz_ElectricalID_6ph_get_entered(uz_ParaID_ElectricalID_6ph_t* self);
 
 /**
  * @brief Gets the status of the finishedElectricalID flag
@@ -98,7 +98,7 @@ bool uz_get_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self);
  * @return true state has finished
  * @return false state hasn't finished
  */
-bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self);
+bool uz_ElectricalID_6ph_get_finished(uz_ParaID_ElectricalID_6ph_t* self);
 
 /**
  * @brief Gets the status of the finished_voltage_measurement flag
@@ -107,7 +107,7 @@ bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self);
  * @return true measurement has finished
  * @return false measurement hasn't finished
  */
-bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self);
+bool uz_ElectricalID_6ph_get_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self);
 
 /**
  * @brief Gets the pointer to the output controller struct of the ElectricalID
@@ -115,7 +115,7 @@ bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID
  * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
  * @return uz_ParaID_Controller_Parameters_output_t* pointer to the FOC controller parameters struct
  */
-uz_ParaID_Controller_Parameters_output_t* uz_get_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self);
+uz_ParaID_Controller_Parameters_output_t* uz_ElectricalID_6ph_get_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self);
 
 /**
  * @brief Gets the pointer to the output struct of the ElectricalID
@@ -123,13 +123,13 @@ uz_ParaID_Controller_Parameters_output_t* uz_get_ElectricalID_6ph_FOCoutput(uz_P
  * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
  * @return uz_ParaID_ElectricalID_output_t* pointer to the output struct
  */
-uz_ParaID_ElectricalID_output_t* uz_get_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self);
+uz_ParaID_ElectricalID_output_t* uz_ElectricalID_6ph_get_output(uz_ParaID_ElectricalID_6ph_t* self);
 
 /**
  * @brief copies the logged voltage to the destination for FFT
  * 
  * @param self pointer to uz_ParaID_ElectricalID_6ph_t object
  */
-float* uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self);
+float* uz_ElectricalID_6ph_get_fft_out(uz_ParaID_ElectricalID_6ph_t* self);
 
 #endif // ELECTRICALID_6PH_H

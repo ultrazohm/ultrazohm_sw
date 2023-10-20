@@ -97,46 +97,45 @@ void uz_ElectricalID_6ph_set_Offset_Estimation(uz_ParaID_ElectricalID_6ph_t *sel
 	self->input.extended_offset_estimation = offset_est_in;
 }
 
-bool uz_get_ElectricalID_6ph_entered(uz_ParaID_ElectricalID_6ph_t* self)
+bool uz_ElectricalID_6ph_get_entered(uz_ParaID_ElectricalID_6ph_t* self)
 {
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     return self->output.enteredElectricalID;
 }
 
-bool uz_get_ElectricalID_6ph_finished(uz_ParaID_ElectricalID_6ph_t* self)
+bool uz_ElectricalID_6ph_get_finished(uz_ParaID_ElectricalID_6ph_t* self)
 {
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     return self->output.finishedElectricalID;
 }
 
-bool uz_get_ElectricalID_6ph_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self)
+bool uz_ElectricalID_6ph_get_finished_voltage_measurement(uz_ParaID_ElectricalID_6ph_t* self)
 {
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     return self->output.finished_voltage_measurement;
 }
 
-uz_ParaID_Controller_Parameters_output_t* uz_get_ElectricalID_6ph_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self)
+uz_ParaID_Controller_Parameters_output_t* uz_ElectricalID_6ph_get_FOCoutput(uz_ParaID_ElectricalID_6ph_t* self)
 {
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return(&self->output.ElectricalID_FOC_output);
 }
 
-uz_ParaID_ElectricalID_output_t* uz_get_ElectricalID_6ph_output(uz_ParaID_ElectricalID_6ph_t* self)
+uz_ParaID_ElectricalID_output_t* uz_ElectricalID_6ph_get_output(uz_ParaID_ElectricalID_6ph_t* self)
 {
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	return(&self->output.ElectricalID_output);
 }
 
-float* uz_get_ElectricalID_6ph_fft_out(uz_ParaID_ElectricalID_6ph_t* self)
+float* uz_ElectricalID_6ph_get_fft_out(uz_ParaID_ElectricalID_6ph_t* self)
 {
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-   // memcpy(destination, self->output.voltage_meas_array, 10000U * sizeof(float));
    return(&self->output.voltage_meas_array[0]);
 }
 #endif

@@ -105,13 +105,13 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 		//ElectricalID
 		if (uz_ControlState_get_ControlFlags(self->ControlState)->transNr == 1U || uz_ControlState_get_GlobalConfig(self->ControlState)->Reset == true) {
 			uz_ParaID_6ph_ElectricalID_step(self, Data);
-		} else if (uz_ControlState_get_GlobalConfig(self->ControlState)->ElectricalID == false && uz_get_ElectricalID_6ph_entered(self->ElectricalID) == true) {
+		} else if (uz_ControlState_get_GlobalConfig(self->ControlState)->ElectricalID == false && uz_ElectricalID_6ph_get_entered(self->ElectricalID) == true) {
 			uz_ParaID_6ph_ElectricalID_step(self, Data);
 		}
 		//FluxMapID
 		if (uz_ControlState_get_ControlFlags(self->ControlState)->transNr == 4U || uz_ControlState_get_GlobalConfig(self->ControlState)->Reset == true) {
 			uz_ParaID_6ph_FluxMapID_step(self, Data);
-		} else if (uz_ControlState_get_GlobalConfig(self->ControlState)->FluxMapID == false && uz_get_FluxMapID_6ph_entered(self->FluxMapID) == true) {
+		} else if (uz_ControlState_get_GlobalConfig(self->ControlState)->FluxMapID == false && uz_FluxMapID_6ph_get_entered(self->FluxMapID) == true) {
 			uz_ParaID_6ph_FluxMapID_step(self, Data);
 		}
 	}
@@ -120,11 +120,11 @@ void uz_ParameterID_6ph_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* 
 	switch (uz_ControlState_get_ControlFlags(self->ControlState)->transNr) {
 
 	case 1U:
-		Data->Controller_Parameters = *uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID);
+		Data->Controller_Parameters = *uz_ElectricalID_6ph_get_FOCoutput(self->ElectricalID);
 		break;
 
 	case 4U:
-		Data->Controller_Parameters = *uz_get_FluxMapID_6ph_FOCoutput(self->FluxMapID);
+		Data->Controller_Parameters = *uz_FluxMapID_6ph_get_FOCoutput(self->FluxMapID);
 		break;
 
 	default:
@@ -403,11 +403,11 @@ static void uz_ParaID_6ph_ElectricalID_step(uz_ParameterID_6ph_t* self, uz_Param
 	uz_ElectricalID_6ph_step(self->ElectricalID);
 
 	//Update Control-State-inputs
-	uz_ControlState_set_ElectricalID_FOC_output(self->ControlState, *uz_get_ElectricalID_6ph_FOCoutput(self->ElectricalID));
-	uz_ControlState_set_ElectricalID_output(self->ControlState, uz_get_ElectricalID_6ph_output(self->ElectricalID));
-	uz_ControlState_set_enteredElectricalID(self->ControlState, uz_get_ElectricalID_6ph_entered(self->ElectricalID));
-	uz_ControlState_set_finishedElectricalID(self->ControlState, uz_get_ElectricalID_6ph_finished(self->ElectricalID));
-	Data->finished_voltage_measurement = uz_get_ElectricalID_6ph_finished_voltage_measurement(self->ElectricalID);
+	uz_ControlState_set_ElectricalID_FOC_output(self->ControlState, *uz_ElectricalID_6ph_get_FOCoutput(self->ElectricalID));
+	uz_ControlState_set_ElectricalID_output(self->ControlState, uz_ElectricalID_6ph_get_output(self->ElectricalID));
+	uz_ControlState_set_enteredElectricalID(self->ControlState, uz_ElectricalID_6ph_get_entered(self->ElectricalID));
+	uz_ControlState_set_finishedElectricalID(self->ControlState, uz_ElectricalID_6ph_get_finished(self->ElectricalID));
+	Data->finished_voltage_measurement = uz_ElectricalID_6ph_get_finished_voltage_measurement(self->ElectricalID);
 }
 
 static void uz_ParaID_6ph_ControlState_step(uz_ParameterID_6ph_t* self, uz_ParameterID_Data_t* Data){
@@ -434,8 +434,8 @@ static void uz_ParaID_6ph_FluxMapID_step(uz_ParameterID_6ph_t* self, uz_Paramete
 	uz_FluxMapID_6ph_step(self->FluxMapID);
 
 	//Update Control-State-inputs
-	uz_ControlState_set_enteredFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_entered(self->FluxMapID));
-	uz_ControlState_set_finishedFluxMapID(self->ControlState, uz_get_FluxMapID_6ph_finished(self->FluxMapID));
+	uz_ControlState_set_enteredFluxMapID(self->ControlState, uz_FluxMapID_6ph_get_entered(self->FluxMapID));
+	uz_ControlState_set_finishedFluxMapID(self->ControlState, uz_FluxMapID_6ph_get_finished(self->FluxMapID));
 }
 
 void uz_ParameterID_6ph_update_transmit_values(uz_ParameterID_Data_t* Data, float *activeState, float *FMID_index_array){
@@ -452,7 +452,7 @@ void uz_ParameterID_6ph_calculate_PsiPMs(uz_ParameterID_6ph_t* self, uz_Paramete
 	uz_assert_not_NULL(Data);
 
 	if(Data->finished_voltage_measurement && Data->Controller_Parameters.activeState==156U){
-        	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(uz_get_ElectricalID_6ph_fft_out(self->ElectricalID), Data->GlobalConfig.sampleTimeISR);
+        	uz_ParaID_ElectricalID_fft_in_t uncorrected = uz_calculate_psi_pms_ElectricalID(uz_ElectricalID_6ph_get_fft_out(self->ElectricalID), Data->GlobalConfig.sampleTimeISR);
         	Data->ElectricalID_FFT = uz_correct_psi_pms_ElectricalID(uncorrected, Data->GlobalConfig);
         }
 	else{
@@ -558,8 +558,8 @@ static void uz_ParameterID_6ph_initialize_data_structs(uz_ParameterID_6ph_t *sel
 
 	//Initialize Output data structs
 	Data->ControlFlags = uz_ControlState_get_ControlFlags(self->ControlState);
-	Data->ElectricalID_Output = uz_get_ElectricalID_6ph_output(self->ElectricalID);
-	Data->FluxMapID_Output = uz_get_FluxMapID_6ph_output(self->FluxMapID);
+	Data->ElectricalID_Output = uz_ElectricalID_6ph_get_output(self->ElectricalID);
+	Data->FluxMapID_Output = uz_FluxMapID_6ph_get_output(self->FluxMapID);
 	Data->FrictionID_Output = NULL;
 	Data->TwoMassID_Output = NULL;
 	Data->OnlineID_Output = NULL;

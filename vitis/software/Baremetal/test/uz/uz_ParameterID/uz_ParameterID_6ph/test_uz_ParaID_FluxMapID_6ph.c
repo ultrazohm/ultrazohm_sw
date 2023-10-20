@@ -45,19 +45,19 @@ void test_uz_FluxMapID_6ph_set_ControlFlags(void){
 }
 
 void test_uz_FluxMapID_6ph_get_enteredFluxMapID_not_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_get_FluxMapID_6ph_entered(NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_FluxMapID_6ph_get_entered(NULL));
 }
 
 void test_uz_FluxMapID_6ph_get_finishedFluxMapID_not_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_get_FluxMapID_6ph_finished(NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_FluxMapID_6ph_get_finished(NULL));
 }
 
 void test_uz_FluxMapID_6ph_get_FOC_output_not_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_get_FluxMapID_6ph_FOCoutput(NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_FluxMapID_6ph_get_FOCoutput(NULL));
 }
 
 void test_uz_FluxMapID_6ph_get_output_not_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_get_FluxMapID_6ph_output(NULL));
+    TEST_ASSERT_FAIL_ASSERT(uz_FluxMapID_6ph_get_output(NULL));
 }
 
 #endif // TEST

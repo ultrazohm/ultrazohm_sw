@@ -79,7 +79,7 @@ void uz_FluxMapID_6ph_set_ControlFlags(uz_ParaID_FluxMapID_6ph_t *self, uz_ParaI
  * @return true state has been entered
  * @return false state hasn't been entered
  */
-bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self);
+bool uz_FluxMapID_6ph_get_entered(uz_ParaID_FluxMapID_6ph_t* self);
 
 /**
  * @brief Gets the status of the finishedFluxMapID flag
@@ -88,7 +88,7 @@ bool uz_get_FluxMapID_6ph_entered(uz_ParaID_FluxMapID_6ph_t* self);
  * @return true state has finished
  * @return false state hasn't finished
  */
-bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self);
+bool uz_FluxMapID_6ph_get_finished(uz_ParaID_FluxMapID_6ph_t* self);
 
 /**
  * @brief Gets the pointer to the output controller struct of the FluxMapID
@@ -96,7 +96,7 @@ bool uz_get_FluxMapID_6ph_finished(uz_ParaID_FluxMapID_6ph_t* self);
  * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
  * @return uz_ParaID_Controller_Parameters_output_t* pointer to the FOC controller parameters struct
  */
-uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self);
+uz_ParaID_Controller_Parameters_output_t* uz_FluxMapID_6ph_get_FOCoutput(uz_ParaID_FluxMapID_6ph_t* self);
 
 /**
  * @brief Gets the pointer to the output struct of the FluxMapID
@@ -104,5 +104,5 @@ uz_ParaID_Controller_Parameters_output_t* uz_get_FluxMapID_6ph_FOCoutput(uz_Para
  * @param self pointer to uz_ParaID_FluxMapID_6ph_t object
  * @return uz_ParaID_FluxMapID_output_t* pointer to the output struct
  */
-uz_ParaID_FluxMapID_output_t* uz_get_FluxMapID_6ph_output(uz_ParaID_FluxMapID_6ph_t* self);
+uz_ParaID_FluxMapID_output_t* uz_FluxMapID_6ph_get_output(uz_ParaID_FluxMapID_6ph_t* self);
 #endif // UZ_PARAID_FLUXMAPID_6PH_H

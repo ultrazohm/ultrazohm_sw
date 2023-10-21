@@ -32,8 +32,8 @@ typedef struct {
 //--------------------------------------------------------------------
 // Variables
 // -------------------------------------------------------------------
-xcp_stim_t xcp_stim;
-xcp_meas_t xcp_meas;
+extern xcp_stim_t xcp_stim;
+extern xcp_meas_t xcp_meas;
 
 extern uint8_t xcp_80Byte_u8[DUMMY_LEN];
 extern uint32_t xcp_80Byte_u32[DUMMY_LEN/4];

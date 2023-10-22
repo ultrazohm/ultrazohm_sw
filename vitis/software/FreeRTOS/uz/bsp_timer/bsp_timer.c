@@ -154,14 +154,14 @@ void bsp_timer_init(void)
 {
     xil_printf("%s()\n", __func__);
 
-    if (bsp_timer_init_ip(TTC_TICK_DEVICE_ID) != XST_SUCCESS)
-        xil_printf("ERROR: %s() failed\n", "bsp_timer_init_irq");
+//    if (bsp_timer_init_ip(TTC_TICK_DEVICE_ID) != XST_SUCCESS)
+//        xil_printf("ERROR: bsp_timer_init_ip(%d) failed\n", TTC_TICK_DEVICE_ID);
 
-    if (bsp_timer_init_irq(TTC_TICK_DEVICE_ID, TTC_TICK_INTR_ID) != XST_SUCCESS)
-        xil_printf("ERROR: %s() failed\n", "bsp_timer_init_irq");
+//    if (bsp_timer_init_irq(TTC_TICK_DEVICE_ID, TTC_TICK_INTR_ID) != XST_SUCCESS)
+//        xil_printf("ERROR: bsp_timer_init_irq() failed\n");
 
     if (bsp_timer_init_ip(TTC_TIMESTAMP_DEVICE_ID) != XST_SUCCESS)
-        xil_printf("ERROR: %s() failed\n", "bsp_timer_init_irq");
+        xil_printf("ERROR: bsp_timer_init_irq(%d) failed\n", TTC_TIMESTAMP_DEVICE_ID);
 }
 
 void bsp_timer_start(void)

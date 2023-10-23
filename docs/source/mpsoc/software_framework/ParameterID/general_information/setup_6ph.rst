@@ -4,8 +4,9 @@
 Information and Setup of ParameterID 6ph
 ========================================
 
-This page shows the steps to setup the ParameterID in the UltraZohm software project. 
+This page gives an overview over the 6ph ParameterID and the steps to set it up in the UltraZohm software project. 
 The setup process is split up in :ref:`ParaID_6ph_setup_general` and :ref:`ParaID_6ph_setup_GUI`.
+Since the ParameterID 6ph is based on the 3ph version, it is strongly recommended to get familiar with this first.
 
 
 .. _ParaID_6ph_general:
@@ -13,7 +14,16 @@ The setup process is split up in :ref:`ParaID_6ph_setup_general` and :ref:`ParaI
 General Information
 ===================
 
-INTRODUCE EVERYTHING
+The six-phase ParameterID expands features of the three-phase ParameterID's to asymmetrical six-phase PMSM.
+Therefore the ID-states :ref:`uz_ElectricalID_6ph` and :ref:`uz_FluxMapID_6ph` have been implemented and tested.
+These ID-states allow the user to identify many electrical parameters of the machine automatically, allowing for good reproducibility and fast identification processes.
+In order to verify the effictiveness of the methods, the works in  [[#param_ID_paper_SF]_] and [[#hoppe_pab2]_] were conducted.
+
+The ParameterID features a custom GUI extension which has to be used to control the algorithm.
+
+Some other states of the three-phase ParameterID (e.g. :ref:`uz_TwoMassID` :ref:`uz_FrictionID`) do not depend on the amount of phases.
+Since they have not been tested yet, they are not prepared to be used at the moment.
+However it is encouraged to implement them if needed.
 
 
 .. _ParaID_6ph_setup_general:
@@ -944,3 +954,10 @@ Make sure to change the value of the ParameterID and ParameterID_6ph variables t
   void JavaScope_update(DS_Data* data){
     	uz_ParameterID_6ph_update_transmit_values(&ParaID_Data, &activeState, &FMID_array_index);
   ...
+
+
+Sources
+=======
+
+.. [#param_ID_paper_SF] M. Hoerner, V. Hoppe, T. Wilfling, A. Dietz, P. Karamanakos and R. Kennel, "Parameter Identification Methods for Multi-Phase Permanent Magnet Synchronous Machines," 2023 IEEE International Electric Machines & Drives Conference (IEMDC), San Francisco, CA, USA, 2023, pp. 1-7, doi: 10.1109/IEMDC55163.2023.10238936.
+.. [#hoppe_pab2] "Automated Parameter Identification for Asymmetrical Six-Phase PermanentMagnet Synchronous Machines", Valentin Hoppe, TH Nürnberg Institute ELSYS, 2023

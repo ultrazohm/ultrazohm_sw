@@ -131,10 +131,10 @@ Set functions
 Get functions
 -------------
 
-.. doxygenfunction:: uz_get_FluxMapID_6ph_finished
-.. doxygenfunction:: uz_get_FluxMapID_6ph_entered
-.. doxygenfunction:: uz_get_FluxMapID_6ph_FOCoutput
-.. doxygenfunction:: uz_get_FluxMapID_6ph_output
+.. doxygenfunction:: uz_FluxMapID_6ph_get_finished
+.. doxygenfunction:: uz_FluxMapID_6ph_get_entered
+.. doxygenfunction:: uz_FluxMapID_6ph_get_FOCoutput
+.. doxygenfunction:: uz_FluxMapID_6ph_get_output
 
 Sources
 =======

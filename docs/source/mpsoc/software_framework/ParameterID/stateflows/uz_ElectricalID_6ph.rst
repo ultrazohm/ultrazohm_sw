@@ -159,12 +159,12 @@ Set functions
 Get functions
 -------------
 
-.. doxygenfunction:: uz_get_ElectricalID_6ph_fft_out
-.. doxygenfunction:: uz_get_ElectricalID_6ph_finished_voltage_measurement
-.. doxygenfunction:: uz_get_ElectricalID_6ph_entered
-.. doxygenfunction:: uz_get_ElectricalID_6ph_finished
-.. doxygenfunction:: uz_get_ElectricalID_6ph_FOCoutput
-.. doxygenfunction:: uz_get_ElectricalID_6ph_output
+.. doxygenfunction:: uz_ElectricalID_6ph_get_fft_out
+.. doxygenfunction:: uz_ElectricalID_6ph_get_finished_voltage_measurement
+.. doxygenfunction:: uz_ElectricalID_6ph_get_entered
+.. doxygenfunction:: uz_ElectricalID_6ph_get_finished
+.. doxygenfunction:: uz_ElectricalID_6ph_get_FOCoutput
+.. doxygenfunction:: uz_ElectricalID_6ph_get_output
 
 Sources
 =======

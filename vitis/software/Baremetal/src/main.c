@@ -248,8 +248,15 @@ int main(void)
     int status = UZ_SUCCESS;
 
     // Position Controller linear axis
-    struct uz_PI_Controller_config config_position = {
+    struct uz_PI_Controller_config config_angle = {
         .Kp = 0.5f,
+        .Ki = 0.0f,
+        .samplingTime_sec = 0.00005f,
+        .upper_limit = 1500.0f,
+        .lower_limit = -1500.0f};
+
+    struct uz_PI_Controller_config config_position = {
+        .Kp = 3.0f,
         .Ki = 0.0f,
         .samplingTime_sec = 0.00005f,
         .upper_limit = 1500.0f,
@@ -299,6 +306,9 @@ int main(void)
     struct uz_matrix_t x_matrix = {0};
     struct uz_IIR_Filter_config config1 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 200.0f, .sample_frequency_Hz = 20000.0f};
     struct uz_IIR_Filter_config config2 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = 20000.0f};
+    struct uz_IIR_Filter_config config3 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = 20000.0f};
+    struct uz_IIR_Filter_config config4 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 1.0f, .sample_frequency_Hz = 20000.0f};
+
     while (1)
     {
         switch (initialization_chain)
@@ -346,7 +356,11 @@ int main(void)
             Global_Data.objects.LPF1_instance_angle = uz_signals_IIR_Filter_init(config1);
             Global_Data.objects.LPF1_instance_position = uz_signals_IIR_Filter_init(config1);
             Global_Data.objects.LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
+            Global_Data.objects.LPF1_instance_3 = uz_signals_IIR_Filter_init(config3);
+            Global_Data.objects.LPF1_instance_4 = uz_signals_IIR_Filter_init(config4);
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
+            Global_Data.objects.pi_angle = uz_PI_Controller_init(config_angle);
+
             testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
 
             Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);

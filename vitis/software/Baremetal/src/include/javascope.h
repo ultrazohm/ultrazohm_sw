@@ -29,6 +29,7 @@ enum JS_OberservableData {
 	JSO_d_ref,
 	JSO_q_ref,
 	JSO_n_ref,
+	JSO_M_ref,
 	JSO_trigger,
 	JSO_position_motor,
 	JSO_thetapendulum,
@@ -69,6 +70,7 @@ enum JS_OberservableData {
 	JSO_update_lock,
 	JSO_reward,
 	JSO_epsilon,
+	JSO_omega_unfiltered,
 	JSO_ENDMARKER
 };
 

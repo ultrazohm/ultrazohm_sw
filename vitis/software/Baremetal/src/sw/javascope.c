@@ -47,6 +47,8 @@ extern float epoch_global;
 extern float epsilon_k;
 extern float reward_k;
 extern float update_lock_float;
+extern float omega_m_rad_per_sec;
+
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -77,6 +79,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Speed_filtered]	= &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_d_ref]		= &data->rasv.dq_reference_current.d;
 	js_ch_observable[JSO_q_ref]		= &data->rasv.dq_reference_current.q;
+	js_ch_observable[JSO_M_ref]=& data->rasv.M_ref_Nm;
 	js_ch_observable[JSO_n_ref]		= &data->rasv.n_ref_rpm;
 	js_ch_observable[JSO_position_motor]	= &data->av.position_motor;
 	js_ch_observable[JSO_thetapendulum]	= &data->av.theta_pendulum;
@@ -98,6 +101,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uq]			=&data->rasv.dq_ref_Volts.q;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_Theta_mech] 	= &data->av.theta_mech;
+	js_ch_observable[JSO_omega_unfiltered] 				=&omega_m_rad_per_sec;
 	js_ch_observable[JSO_Speed_IIR_Filter]= &data->av.mechanicalRotorSpeed_IIR_Filter;
 	js_ch_observable[JSO_dqn_sin_angle]			= &data->obs.dqn_sin_angle;
 	js_ch_observable[JSO_dqn_cos_angle]			= &data->obs.dqn_cos_angle;

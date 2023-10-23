@@ -25,6 +25,7 @@ extern float speed_Kp;
 extern float speed_Ki;
 extern float position_Kp;
 extern float position_abs;
+extern float position_ref;
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -197,7 +198,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-				position_abs = value;
+		position_ref = value;
 			break;
 
 		case (Set_Send_Field_3):

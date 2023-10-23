@@ -59,13 +59,13 @@ float Kp_iq = 7.11f;
 float Ki_iq = 2715.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
-float action_current = 2.0f; // I_q fuer Agenten
+float action_current = 3.5f; // I_q fuer Agenten
 float position_Kp = 0.5f;
 // limits and time setting
 float limit_error = 430.0f;
 float disable_control = 380.0f;
 int time_dqn = 15;
-int time_wait_zero = 15;
+int time_wait_zero = 1;
 // position control
 float position_ref = 0.0f; // mm
 int pos_strich = 0;         // Striche 0-2000
@@ -82,6 +82,13 @@ float angle_derv=0.0f;
 float position_derv=0.0f;
 extern uint32_t action_k;
 extern uz_dqn_t *testdqn2;
+extern bool limit_was_hit;
+
+float reward_k;
+extern bool first_episode;
+extern float penalty_grenze;
+float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
+extern int dividingfactordqn ;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -94,6 +101,7 @@ uz_matrix_t *output_nn = NULL;
 bool ext_clamping=false;
 extern bool update_lock;
 float epsilon_k;
+extern float input_nn[5];
 enum dqn_chain chain = dqn_active;
 
 void ISR_Control(void *data)
@@ -185,12 +193,43 @@ void ISR_Control(void *data)
     	switch (chain) {
 			case dqn_active:
 				Global_Data.av.trigger_logging = 1.0f;
+
+                if ( (!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)))
+                {
+			    input_nn[0] = Global_Data.obs.dqn_sin_angle;
+			    input_nn[1] = Global_Data.obs.dqn_cos_angle;
+			    input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
+			    input_nn[3] = Global_Data.obs.dqn_chart_position;
+			    input_nn[4] = Global_Data.obs.dqn_angle_derv;
+			    if (first_episode)
+			    {
+			        first_episode = false;
+			    }
+			    else
+			    {
+			        // Sample environment at k+1
+			        uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
+			        reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, (1.0f-Global_Data.obs.dqn_cos_angle),Global_Data.obs.dqn_chart_position,Global_Data.obs.dqn_chart_position_derv,false);
+			        uz_dqn_set_reward(testdqn2, reward_k);
+			        uz_dqn_push_to_buffer(testdqn2);
+			    }
+                }
 				counter_for_reset++;
 				// get output from nn
 		    	if (fabsf(position_abs) > disable_control){
+			        // Sample environment at k+1
+				    input_nn[0] = Global_Data.obs.dqn_sin_angle;
+				    input_nn[1] = Global_Data.obs.dqn_cos_angle;
+				    input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
+				    input_nn[3] = Global_Data.obs.dqn_chart_position;
+				    input_nn[4] = Global_Data.obs.dqn_angle_derv;
+			        uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
+			        reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY,(1.0f-Global_Data.obs.dqn_cos_angle),Global_Data.obs.dqn_chart_position,Global_Data.obs.dqn_chart_position_derv,true);
+			        uz_dqn_set_reward(testdqn2, reward_k);
+			        uz_dqn_push_to_buffer(testdqn2);
 		    		chain=limit_violation;
 		    	}
-
+		    	//Global_Data.rasv.dq_reference_current.q=0.0f;
 		            switch (action_k){
 		            case 0: Global_Data.rasv.dq_reference_current.q =action_current;
 		            break;
@@ -247,9 +286,9 @@ void ISR_Control(void *data)
 				Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, - Global_Data.rasv.n_ref_rpm);
 				Global_Data.rasv.dq_reference_current = uz_SetPoint_sample(Global_Data.objects.SP_instance, omega_m_rad_per_sec, Global_Data.rasv.M_ref_Nm, Global_Data.mv.V_dc_volts, Global_Data.mv.i_dq_Amps);
 				if(fabsf(pos_delta) < 1.0f){
-					if(!update_lock){
+					//if(!update_lock){
 						chain=dqn_active;
-					}
+					//}
 				}
 				else{// counter im letzten case alle auf 0
 					counter_for_reset = 0;
@@ -484,3 +523,14 @@ static void Reset_obs_and_measurements()
 {
 	Reset_global_Data(&Global_Data);
 };
+
+float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty)
+{
+    float z = 0.0f;
+    if (penalty == true)
+    {
+        z = -1000.0f;
+    }
+    float r = -2.0f * samplerate * (100.0f * theta + position + 0.25f * (float)pow(velocity, 2.0f)) + z;
+    return r;
+}

@@ -18,7 +18,7 @@
 
 #include <math.h>										//Include for math operations
 #include <stdbool.h>
-
+#define DQN__CONTROL_FREQUENCY 100
 // Xilinx library functions
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all GIC interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)

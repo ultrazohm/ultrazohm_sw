@@ -17,7 +17,7 @@
 #include "main.h"
 
 // defines for nn
-#define DQN__CONTROL_FREQUENCY 200
+
 float epoch_global = 0.0f;
 
 float finished = 5.0f;
@@ -35,7 +35,7 @@ bool limit_was_hit=false;
 #define EXPERIENCE_BUFFER_LENGTH 5000U
 #define MINIBATCHSIZE 8U
 #define NUMBER_OF_EPOCHS 500U
-#define TARGET_UPDATE_FREQUENCY 200U
+#define TARGET_UPDATE_FREQUENCY 50U
 // nn
 #define NUMBER_OF_INPUTS 5U
 #define NUMBER_OF_OUTPUTS 5U
@@ -48,7 +48,7 @@ float lernrate = 0.002f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
-float epsilon_decay = 0.0001f;
+float epsilon_decay = 0.00005f;
 
 // adam
 float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
@@ -119,10 +119,9 @@ float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
 
 // config random
-float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
 bool update_lock=false;
 float update_lock_float=0.0f;
-float reward_k=0.0f;
+
 
 // config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
@@ -239,11 +238,11 @@ struct uz_PMSM_t config_heidrive = {
     .J_kg_m_squared = 0.0000148f,
     .I_max_Ampere = 5.0f};
 static void dqn_step(void);
-static int dividingfactordqn = UZ_PWM_FREQUENCY / DQN__CONTROL_FREQUENCY;
+int dividingfactordqn = UZ_PWM_FREQUENCY / DQN__CONTROL_FREQUENCY;
 float dqn_mutex_float = 0.0f;
 float input_nn[5] = {-0.47f, -0.88f, -2.9f, 0.375f, -3.2f};
 extern float position_abs;
-
+static uint32_t updates=0;
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -348,7 +347,7 @@ int main(void)
             Global_Data.objects.LPF1_instance_position = uz_signals_IIR_Filter_init(config1);
             Global_Data.objects.LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
-            Global_Data.objects.uz_nn_instance = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
+            testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
 
             Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
             Global_Data.mv.V_dc_volts = 48.0f;
@@ -371,11 +370,11 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
-
+            platform_state_t current_state=ultrazohm_state_machine_get_state();
         	switch (chain) {
     			case dqn_active:
 
-                    if (!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn))
+                    if ( (!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)) && (current_state==control_state) )
                     {
                         dqn_mutex_float = 0.0f;
                         dqn_step();
@@ -386,19 +385,23 @@ int main(void)
 
     				break;
     			case return_to_zero_position:
-
+    				cum_loss = uz_dqn_update(testdqn2);
     				break;
     			case wait_at_zero_position:
     				update_lock=true;
     				update_lock_float=1.0f;
+
+    		//		if(updates<200){
+    			//		updates++;
     				cum_loss = uz_dqn_update(testdqn2);
+    				//}
     				update_lock=false;
     				update_lock_float=0.0f;
                     action_k = 2;
       				first_episode=true;
     				break;
     			case get_to_start_postion:
-
+    				cum_loss = uz_dqn_update(testdqn2);
     				break;
     			default:
     				break;
@@ -415,28 +418,6 @@ int main(void)
 
 static void dqn_step(void)
 {
-    input_nn[0] = Global_Data.obs.dqn_sin_angle;
-    input_nn[1] = Global_Data.obs.dqn_cos_angle;
-    input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
-    input_nn[3] = Global_Data.obs.dqn_chart_position;
-    input_nn[4] = Global_Data.obs.dqn_angle_derv;
-    if (first_episode)
-    {
-        first_episode = false;
-    }
-    else
-    {
-        // Sample environment at k+1
-        uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
-        if(position_abs > penalty_grenze){
-        	limit_was_hit=true;
-        }else{
-        	limit_was_hit=false;
-        }
-        reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY,Global_Data.av.theta_pendulum,Global_Data.obs.dqn_chart_position,Global_Data.obs.dqn_chart_position_derv,limit_was_hit);
-        uz_dqn_set_reward(testdqn2, reward_k);
-        uz_dqn_push_to_buffer(testdqn2);
-    }
     // sample observation of the environment at k=0
     uz_dqn_sample_observation_k_0(testdqn2, Global_Data.objects.input_instance);
     action_k = uz_dqn_determine_action(testdqn2);
@@ -455,13 +436,4 @@ void Reset_global_Data(DS_Data *data)
     data->obs.dqn_cos_angle = 0.0f;
 }
 
-float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty)
-{
-    float z = 0.0f;
-    if (penalty == true)
-    {
-        z = -1000.0f;
-    }
-    float r = -2.0f * samplerate * (100.0f * theta + position + 0.25f * (float)pow(velocity, 2.0f)) + z;
-    return r;
-}
+

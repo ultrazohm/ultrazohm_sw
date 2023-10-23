@@ -55,6 +55,19 @@ uz_9ph_alphabeta_t ref_voltages_fault = {0};
 uz_9ph_MLMT_kparameter_t k_param = {0};
 
 //==============================================================================================================================================================
+//////////////readme//////////////
+// This branch is a clean branch for the nine-phase testbench.
+// It contains all available interface cards, sensor readings and
+// safety features.
+// Some things to look out for:
+// -This branch only works when compiled with -O1
+//	https://docs.ultrazohm.com/general/how_to_guides/vitis/gcc_optimization.html
+// -The error behavior aims to not throw asserts and instead disconnects
+//  the inverters by setting them to TriState. To reset this, use
+//  the "reset error" button in the GUI.
+// -Since the phase-error relais are normally open, their supply has to
+//	be activated in order to allow current flow. They will be switched closed
+//  when the UZ is set to running state.
 //----------------------------------------------------
 // software limits
 #define MAX_PHASE_CURRENT_AMP 12.0f

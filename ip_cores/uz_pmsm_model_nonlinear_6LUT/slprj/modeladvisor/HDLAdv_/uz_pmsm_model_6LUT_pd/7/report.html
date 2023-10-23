@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=8" /> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Model Advisor Report for 'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT'</title>  
+<style type="text/css">
+<!--
+@media screen {    
+    /* Table Formatting */
+    .AdvTable th { 
+        background:#80a0c1 url(data:image/gif;base64,R0lGODlhAQAaAKIAAHSRr3mXtn+fv2V/mX2cvG2JpVxzi4CgwSH5BAAAAAAALAAAAAABABoAAAMJeLrcLCSAMkwCADs=) repeat-x bottom left; 
+    }
+}
+
+@media all {
+    *{ font-family: sans-serif; }
+
+	H3 {
+		font-size: 14pt;
+		font-weight: 200;
+	}
+	H4 {
+		font-size: 9pt;
+		font-weight: normal;
+	}
+	H5 {
+		font-size: 12pt;
+		font-style: italic;
+		font-weight: bold;
+		color: #333333;
+		margin-bottom: 2px;
+	}
+	a[href] {
+		color: #005FCE;
+	}
+	.subsection {
+		padding-left: 30px;
+	}
+    
+    .CheckHeading {
+		font-size:1.05em;
+		font-weight:bold;
+	}
+
+    /* Table Formatting */
+    table.AdvTable { 
+        border-collapse:collapse; border:1px solid #ececec; border-right:none; border-bottom:none; 
+    }
+
+    .AdvTable th { 
+        padding-left:5px; 
+        padding-right:5px; 
+        color:#fff; 
+        line-height:120%; 
+        background:#80a0c1 url(data:image/gif;base64,R0lGODlhAQAaAKIAAHSRr3mXtn+fv2V/mX2cvG2JpVxzi4CgwSH5BAAAAAAALAAAAAABABoAAAMJeLrcLCSAMkwCADs=) repeat-x bottom left; 
+        border-right: 1px solid #ececec; 
+        border-bottom: 1px solid #ececec; 
+    }
+
+    .AdvTable td { 
+        padding-left:5px; 
+        padding-right:5px; 
+        border-right:1px solid #ececec; 
+        border-bottom: 1px solid #ececec; 
+    }
+    
+    .AdvTable th p { 
+        margin-bottom:0px; 
+    }
+
+    .AdvTable p { 
+        margin-bottom:10px; 
+    }
+    
+    .AdvTableNoBorder p { 
+        margin-bottom:10px; 
+    }
+
+    table+span.SDCollapseControl { 
+        font-size:0.8em; 
+        font-weight:bold; 
+    }
+
+    ul+span.SDCollapseControl { 
+        margin-left:25px; 
+        font-size:0.8em;
+        font-weight:bold; 
+    }
+
+    ol+span.SDCollapseControl { 
+        margin-left:25px; 
+        font-size:0.8em; 
+        font-weight:bold; 
+    }
+
+    .SystemdefinedCollapse { 
+        margin-top:0px;
+        margin-bottom:5px; 
+    }
+
+    div.AllCollapse p, div.AllCollapse table, div.AllCollapse ol, div.AllCollapse ul { 
+        margin-top:0pt;
+        margin-bottom:0pt; 
+        margin-left:18px;
+    }
+
+    div.AllCollapse + div { 
+        margin-top:0pt;
+        margin-bottom:0pt; 
+        margin-left:18px; 
+    }
+
+    img.CollapseAllControlImage { 
+        float:left; 
+    }
+
+    .SubResultsSummary {
+        padding-left:30px;
+    }
+
+    .EmptyFolderMessage {
+        color:gray;
+        margin:10px 0 0 30px;
+        font-size:0.8em;
+    }
+	
+    .CsEml-Symbol-Status-Pass
+    { 
+        color: green;
+        font-family: monospace;
+    }
+
+    .CsEml-Symbol-Status-Warn
+        { 
+        color: orange;
+        font-family: monospace;
+    }
+
+    .CsEml-Symbol-Status-Fail
+    { 
+        color: red;
+        font-family: monospace;
+    }
+    
+    .CsEml-Line-Number
+    {
+        color: #A0A0A0;
+        font-style: italic;
+        font-family: monospace;
+    }
+
+    .CsEml-Code
+    {
+        color: blue;
+        font-family: monospace;
+    }
+
+    .CsEml-Code-Fragment
+    {
+        color: blue;
+        font-weight: bold;
+        font-family: monospace;
+        margin-right: 0;
+        padding-right: 0;
+        margin-left: 0;
+        padding-left: 0;
+    }
+
+    .CsEml-Function-Type
+    {
+        color:       #A0A0A0;
+        font-style:  italic;
+        font-family: monospace;
+    }
+
+}
+-->
+</style>
+
+<script type="text/javascript"> <!-- /* Copyright 2013-2017 The MathWorks, Inc */
+/* define String.trim() method if not defined (used by filterByText() function) */
+if(!String.prototype.trim) {
+  String.prototype.trim = function () {
+    return this.replace(/^\s+|\s+$/g,'');
+  };
+}
+
+// rtwreport needs it 
+function init() {
+    var showFailed = document.getElementById("Failed Checkbox");
+    var showPassed = document.getElementById("Passed Checkbox");
+    var showWarning = document.getElementById("Warning Checkbox");
+    var showNotRun = document.getElementById("Not Run Checkbox");
+    var showJustified = document.getElementById("Justified Checkbox");
+    var showIncomplete = document.getElementById("Incomplete Checkbox");      
+    
+    urlQueryStringRegexp = RegExp('\\?(.*)').exec(window.location.search);
+
+    if (urlQueryStringRegexp == null) {
+        /* refresh check boxes and search input */
+        showFailed.checked = true;
+        showPassed.checked = true;
+        showWarning.checked = true;
+        showNotRun.checked = true;
+        showJustified.checked = true;
+        showIncomplete.checked = true;
+    }
+    else 
+    {
+        showFailed.checked = false;
+        showPassed.checked = false;
+        showWarning.checked = false;
+        showNotRun.checked = false;
+        
+        urlQueryString = urlQueryStringRegexp[1];
+        
+        var queryArgs = [];
+        
+        if (urlQueryString.indexOf("&") == -1)
+        {
+            // Only 1 argument
+            queryArgs[0] = urlQueryString;
+        }
+        else
+        {
+            queryArgs = urlQueryString.split("&");
+        }
+        
+        for (var idx = 0; idx < queryArgs.length; ++idx)
+        {
+            // get in
+            if (queryArgs[idx].localeCompare("showPassedChecks") == 0) 
+            {
+                showPassed.checked = true;
+            }
+            else if (queryArgs[idx].localeCompare("showWarningChecks") == 0) 
+            {
+                showWarning.checked = true;
+            }
+            else if (queryArgs[idx].localeCompare("showFailedChecks") == 0)
+            {
+                showFailed.checked = true;
+            }
+            else if (queryArgs[idx].localeCompare("showNotRunChecks") == 0)
+            {
+                showNotRun.checked = true;
+            }
+        }
+            
+        // if nothing is selected, select everything
+        if (!showFailed.checked && !showPassed.checked && 
+            !showWarning.checked && !showNotRun.checked) 
+        {
+            showFailed.checked = true;
+            showPassed.checked = true;
+            showWarning.checked = true;
+            showNotRun.checked = true;
+            showJustified.checked = true;
+            showIncomplete.checked = true;
+        }
+    }
+    
+    updateVisibleChecks();
+}
+
+function markEmptyFolders(){
+	var nodeTypes = ["FailedCheck","PassedCheck",  "WarningCheck", "NotRunCheck"];
+	var folderArray = document.querySelectorAll("div.FolderContent");
+	
+	for (var n=0;n<folderArray.length;n++){
+		/* get direct check result children and check visibility */
+		var childNodes = folderArray[n].childNodes;
+		var noneVisible = true;
+		var noChecksInFolder = true;
+		
+		for (var ni=0;ni<childNodes.length;ni++){
+			if (childNodes[ni].nodeType == 1 && childNodes[ni].tagName.toLowerCase() == "div"){
+				if (childNodes[ni].className == nodeTypes[0] || childNodes[ni].className == nodeTypes[1] || childNodes[ni].className == nodeTypes[2] || childNodes[ni].className == nodeTypes[3]){
+					noChecksInFolder = false;
+					if (childNodes[ni].style.display != "none"){
+						noneVisible = false;
+                        break;
+					}
+				}
+			}
+		}
+		
+		/* Only display hidden message if any checks inside the folders and not just other folders */
+		if (!noChecksInFolder){
+			var hiddenMessage = folderArray[n].querySelector("div.EmptyFolderMessage");
+			
+			if (hiddenMessage && noneVisible == true){
+				hiddenMessage.style.display = "";
+			}else if (hiddenMessage && noneVisible == false){
+				hiddenMessage.style.display = "none";
+			}else{
+				/* hidden message not found */
+			}
+		}
+	}
+
+    return;
+}
+
+function updateVisibleChecks( /* show all flags */ checkbox ){
+	
+	var checkboxes = ["Failed Checkbox", "Passed Checkbox", "Warning Checkbox", "Not Run Checkbox", "Justified Checkbox", "Incomplete Checkbox"];
+	var nodeTypes = ["Failed Check","Passed Check",  "Warning Check", "Not Run Check", "Justified Check", "Incomplete Check"];
+	var textInput = document.getElementById("TxtFilterInput");
+	
+	
+	if (checkbox && textInput && textInput.color=="gray"){
+		var checkType = checkbox.id;
+		var ind = checkboxes.indexOf(checkType);
+		var nodes = document.getElementsByName(nodeTypes[ind]);
+		for (i = 0; i < nodes.length;i++){
+		    nodes[i].style.display = checkbox.checked ? "" : "none";
+		}
+	}
+	else{ /* Update all checks if called from init or if a previous text filter was applied */
+		for (i = 0; i < checkboxes.length; i++){
+			
+			  var show = document.getElementById(checkboxes[i]).checked ? "" : "none";
+			  var nodes = document.getElementsByName(nodeTypes[i]);
+			  for(j = 0; j < nodes.length; j++){
+				  nodes[j].style.display = show;
+			  }
+		   
+		}
+	}
+
+    /* clear text search */
+	if (textInput && checkbox){
+		textInput.value = "Search by check name";
+        textInput.style.color = "gray";
+        textInput.blur;
+	}
+
+    markEmptyFolders();
+
+    return; 
+}
+
+function filterByText(ev){
+	// get all the nodes
+	var allNodeTypes = ["Failed Check","Passed Check",  "Warning Check", "Not Run Check"];
+	var checkboxes = ["Failed Checkbox", "Passed Checkbox", "Warning Checkbox", "Not Run Checkbox"];
+	var nodeTypes = [];
+	
+	// get nodes depending on filter selections
+	for (var n=0; n<checkboxes.length; n++){
+		var checkbox = document.getElementById(checkboxes[n]);
+		if (checkbox && checkbox.checked){
+			nodeTypes.push(allNodeTypes[n]);
+		}
+	}
+	
+    var searchNodes = [".CheckHeading"];
+    var allnodes = [];
+	var alltext = [];
+	if (!ev) return;
+	var target = ev.target ? ev.target : window.event.srcElement;
+	var searchString = target.value;
+	
+	if (!searchString){
+        updateVisibleChecks();  // clear all and display by other filters
+	}else{
+		for (i = 0; i < nodeTypes.length; i++){
+			var nodes = document.getElementsByName(nodeTypes[i]);
+			for (j = 0; j < nodes.length; j++){
+				// get text from check heading
+				var checkContent = nodes[j].querySelector(searchNodes).innerHTML;
+				// creaet a regular expression to ignore case
+				var ss = new RegExp(searchString.trim(), "i");
+				if (ss.exec(checkContent)){
+				   nodes[j].style.display = "";
+				}else{
+				   nodes[j].style.display = "none";
+				}
+			}
+		}
+        markEmptyFolders();
+	}	
+}
+
+
+function MATableShrink(o,tagNameStr){
+    var temp = document.getElementsByName(tagNameStr);
+    var classUsed = document.getElementsByName('EmbedImages'); 
+    var embeddedMode = !(classUsed.length == 0);
+    var img = o.querySelector("img");
+
+    if (temp[0].style.display == "") 
+    {
+        temp[0].style.display = "none";
+        if (embeddedMode)
+        {
+            img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAkUlEQVR42mL8//8/AyUAIICYGCgEAAFEsQEAAUSxAQABxIIu0NTURDBQ6urqGGFsgABiwaagpqYOp+aWliYUPkAAEfQCCwt+JQABRHEYAAQQCzE2w9h//vzDUAcQQDgNgCkGacamEQYAAohiLwAEEEED8NkOAgABxEJMVOEDAAHESGlmAgggisMAIIAoNgAgwAC+/BqtC+40NQAAAABJRU5ErkJggg==";
+        }
+        else
+        {
+            img.src = "plus.png";
+        }
+    } 
+    else 
+    {
+        temp[0].style.display = "";
+        if (embeddedMode)
+        {
+            img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAhklEQVR42mL8//8/AyUAIICYGCgEAAFEsQEAAUSxAQABxIIu0NTURDBQ6urqGGFsgABiwaagpqYOp+aWliYUPkAAUewFgACi2ACAAGLBKcGCafafP/8wxAACCKcB2BRjAwABRLEXAAKIYgMAAoiFmKjCBwACiJHSzAQQQBR7ASCAKDYAIMAAUtQUow+YsTsAAAAASUVORK5CYII=";
+        }
+        else
+        {
+            img.src = "minus.png";
+        }
+    }
+}
+
+// rtwreport needs it 
+function updateHyperlink() {
+    docObj = window.document;
+    loc = document.location;
+    var aHash = "";
+    var externalweb = "false";
+    if (loc.search || loc.hash) {
+        if (loc.search)
+            aHash = loc.search.substring(1);
+        else
+            aHash = loc.hash.substring(1);
+    }    
+    var args = new Array();
+    args = aHash.split('&');
+    for (var i = 0; i < args.length; ++i) {
+        var arg = args[i];
+          sep = arg.indexOf('=');
+        if (sep != -1) {
+            var cmd = arg.substring(0,sep);
+            var opt = arg.substring(sep+1);
+            switch (cmd.toLowerCase()) {
+            case "externalweb":
+                externalweb = opt;
+                break;
+            }
+        }
+    }        
+    if (externalweb === "true") {        
+        var objs = docObj.getElementsByTagName("a");
+        if (objs.length > 0 && objs[0].removeAttribute) {
+            for (var i = 0; i < objs.length; ++i) {           
+                if (objs[i].href.indexOf('matlab') > -1)           
+                    objs[i].removeAttribute("href");                
+            }
+        }
+    }
+    init();
+}
+    
+function findParentNode(e) {
+   var parent = e.parentElement;
+   if (!!parent) {
+    if (parent.id == "") {   
+       return findParentNode(parent);
+    } else {
+       return parent;
+    }
+   } else {
+    return null;
+   }
+}
+
+function expandParentNode(e) {
+   var parent = findParentNode(e);
+   while (!!parent) { 
+    var prefix = "FolderControl_";
+    var folderControl = document.getElementById(prefix.concat(parent.id));
+    if (parent.style.display == "none") {       
+       MATableShrink(folderControl,parent.id);
+    }
+    parent = findParentNode(parent);
+   }
+}
+
+function isHidden(e) {
+    return (e.offsetParent === null)
+}
+
+function navigateToElement(eleID) {
+   var e = document.getElementById(eleID);
+   if (isHidden(e)) {
+       expandParentNode(e);
+   }       
+   if (!!e && e.scrollIntoView) {
+       e.scrollIntoView();
+   }
+}
+
+function setTextContent(element, value) {
+    var content = element.textContent;
+    if (value === undefined) return;
+    
+    if (content !== undefined) element.textContent = value;
+    else element.innerText = value;
+}
+
+function hideControlPanel(control){
+	var panelComponents = ["ControlsCheckFiltering", "ControlsView", "ControlsTOC"];
+	var reportContent = document.querySelector(".ReportContent");
+	var controlPanel = document.getElementById("ControlPanel");
+	var isHidden = false;
+	
+    if (reportContent && control && controlPanel) {
+    	for (var n=0; n<panelComponents.length; n++){
+			var component = document.getElementById(panelComponents[n]);
+			
+			if (component && component.style.display == ""){
+				component.style.display = "none";
+            } else if (component && component.style.display == "none"){
+				component.style.display = "";
+			}
+		}
+		
+		if (controlPanel.style.width != "6px"){
+			reportContent.style.marginLeft = "25px";
+	    	controlPanel.style.width = "6px";
+	    	control.style.left = "0px";
+	       	var innerDiv = control.querySelector("#HidePanelControlInner");
+	       	setTextContent(innerDiv, "\u25BA");
+	    } else {
+	    	reportContent.style.marginLeft = "225px";
+        	controlPanel.style.width = "210px";
+        	control.style.left = "204px";
+        	var innerDiv = control.querySelector("#HidePanelControlInner");
+        	setTextContent(innerDiv, "\u25C0");
+        }
+    }
+}
+/* Copyright 2013 The MathWorks, Inc. */
+//COLLAPSIBLE FEATURE
+
+// global variables
+var GlobalCollapseState = "off";
+
+function collapseSDHelper(o, CollElementParent, disp, mode){
+    var CollElement = CollElementParent; /* ul/ol with lists, tbody with table */
+
+    if (CollElement.nodeName == "UL" || CollElement.nodeName == "OL"){
+        var CollName = "LI";
+    }else if (CollElement.nodeName == "TABLE"){
+        if (CollElement.querySelector('tbody')) {
+            /* tr modes are child nodes of tbody node */
+            CollElement = CollElement.querySelector('tbody');
+        }
+        var CollName = "TR";
+    }
+    
+    // get children (li for list and tr for table)
+    var children = CollElement.childNodes;
+
+    var nElements = 0;
+    for (var i=0;i<children.length;i++){
+        if (children[i].nodeName == CollName){
+            nElements = nElements + 1;
+            if (nElements > 5){
+                children[i].style.display = disp;
+            }
+        }
+    }
+    if (disp == "none"){
+        if (CollName == "LI"){
+            var text = " items)";
+        }else{
+            var text = " rows)";
+        }
+        
+        var textNode = document.createTextNode(("\u2228 More (" + (nElements-5) + text));
+        o.replaceChild(textNode,o.firstChild);
+
+        CollElementParent.setAttribute("dataCollapse", "on");
+
+        /* scroll to element if it is not visible */
+        if (mode == "single" && CollElement.offsetTop < document.documentElement.scrollTop){
+			CollElement.scrollIntoView();
+		}
+    }else{
+        var textNode = document.createTextNode(("\u2227 " + "Less"));
+        o.replaceChild(textNode,o.firstChild);
+
+        CollElementParent.setAttribute("dataCollapse", "off");
+    }
+}
+
+function collapseSD(o, ID){
+    var CollElement = document.getElementById(ID);
+    if (CollElement != null){
+        if (CollElement.getAttribute("dataCollapse") == "off"){
+            var disp="none";
+        }else{
+            var disp="";
+        }
+        collapseSDHelper(o, CollElement, disp, "single");
+    }
+}
+
+function collapseAllHelper(o, CollElement, CollInfo, disp){
+
+    if (CollElement != null){
+        var img = o.querySelector("img");
+        if (disp == "none"){
+            CollElement.style.display = disp;
+			img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAkUlEQVR42mL8//8/AyUAIICYGCgEAAFEsQEAAUSxAQABxIIu0NTURDBQ6urqGGFsgABiwaagpqYOp+aWliYUPkAAEfQCCwt+JQABRHEYAAQQCzE2w9h//vzDUAcQQDgNgCkGacamEQYAAohiLwAEEEED8NkOAgABxEJMVOEDAAHESGlmAgggisMAIIAoNgAgwAC+/BqtC+40NQAAAABJRU5ErkJggg==";
+        }else{
+            CollElement.style.display = disp;
+			img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAABGdBTUEAALGOfPtRkwAAACBjSFJNAAB6JQAAgIMAAPn/AACA6QAAdTAAAOpgAAA6mAAAF2+SX8VGAAAAhklEQVR42mL8//8/AyUAIICYGCgEAAFEsQEAAUSxAQABxIIu0NTURDBQ6urqGGFsgABiwaagpqYOp+aWliYUPkAAUewFgACi2ACAAGLBKcGCafafP/8wxAACCKcB2BRjAwABRLEXAAKIYgMAAoiFmKjCBwACiJHSzAQQQBR7ASCAKDYAIMAAUtQUow+YsTsAAAAASUVORK5CYII=";
+        }
+
+        if (CollInfo != null){
+            if (disp == "none"){
+                CollInfo.style.display = "";
+            }else{
+                CollInfo.style.display = "none";
+            }
+        }
+    }
+}
+
+function collapseAll(o, ID, ID2){
+    var CollElement = document.getElementById(ID);
+    var CollInfo = document.getElementById(ID2);
+
+    if (CollElement.style.display == ""){
+        var disp = "none";
+    }else{
+        var disp = "";
+    }
+
+    collapseAllHelper(o, CollElement, CollInfo, disp);
+}
+
+function expandCollapseAll(o){
+	/* IE has no method for getting elements by class name. Use querySelectorAll instead 
+       Note: requires IE not to be in IE7 compatability mode */
+    var SDCollapse = document.querySelectorAll(".SystemdefinedCollapse");
+    var Button = null;
+
+    if (GlobalCollapseState == "off"){
+        var disp = "none";
+        GlobalCollapseState = "on";
+
+        if (o && o.firstChild.nodeType == 3) {
+            var textNode = o.firstChild;
+        	textNode.nodeValue = " Show check details";
+		}
+    }else{
+        var disp = "";
+        GlobalCollapseState = "off";
+
+        if (o && o.firstChild.nodeType == 3) {
+            var textNode = o.firstChild;
+        	textNode.nodeValue = " Hide check details";
+		}
+    }
+
+    for (var i=0;i<SDCollapse.length;i++){
+        Button = SDCollapse[i].nextSibling;
+        while(Button.nodeType !== 1){
+            Button = Button.nextSibling;
+        }
+        //Button = SDCollapse[i].parentNode.querySelector("span.SDCollapseControl");
+        collapseSDHelper(Button, SDCollapse[i], disp, "all");
+    }
+		
+    var AllCollapse = document.querySelectorAll(".AllCollapse");
+
+    for (i=0;i<AllCollapse.length;i++){
+        // get children of top level collapsible div
+        var children = AllCollapse[i].parentNode.children;
+        
+        // collapsible button is first child
+		Button = children[0];
+        
+        // get content to display in collapsed state
+        // this is optional and last child of collapsible div 
+        if (Button)
+        {
+            if (children.length>2)
+            {
+                collapseAllHelper(Button, AllCollapse[i], children[2], disp);
+            }
+            else
+            {
+                collapseAllHelper(Button, AllCollapse[i], null, disp);
+            }
+        }
+    }
+}
+
+
+function expandCollapseAllOnLoad(){
+    GlobalCollapseState = "on";
+    var Switch = document.getElementById("ExpandCollapseAll");
+    expandCollapseAll(Switch);
+}
+//END COLLAPSIBLE
+
+ --></script></head>  
+<body onload="updateHyperlink(); expandCollapseAllOnLoad();">  
+<span id="top">
+
+</span>
+<!-- mdladv_ignore_start --><div id="Container"><!-- mdladv_ignore_finish -->
+<!-- mdladv_ignore_start --><div class="ReportContent" id="uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT"><!-- mdladv_ignore_finish --><table class="AdvTableNoBorder" width="100%" border="0">
+<tr>
+<td colspan="2" align="center">
+<b>
+Model Advisor Report - <font color="#800000">uz_pmsm_model_6LUT_pd.slx</font>
+</b>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<b>
+Simulink version: <font color="#800000">10.7</font>
+</b>
+
+</td>
+<td align="right" valign="top">
+<b>
+Model version: <font color="#800000">6.56</font>
+</b>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<b>
+System: <font color="#800000">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT</font>
+</b>
+
+</td>
+<td align="right" valign="top">
+<b>
+Current run: <font color="#800000">19-Oct-2023 13:36:28</font>
+</b>
+
+</td>
+
+</tr>
+
+</table>
+<br /><font color="#800000"><b>Run Summary</b></font><br /><table class="AdvTableNoBorder" width="60%" border="0">
+<tr>
+<th align="left" valign="top">
+<b>
+Incomplete
+</b>
+
+</th>
+<th align="left" valign="top">
+<b>
+Failed
+</b>
+
+</th>
+<th align="left" valign="top">
+<b>
+Warning
+</b>
+
+</th>
+<th align="left" valign="top">
+<b>
+Justified
+</b>
+
+</th>
+<th align="left" valign="top">
+<b>
+Passed
+</b>
+
+</th>
+<th align="left" valign="top">
+<b>
+Not Run
+</b>
+
+</th>
+<th align="left" valign="top">
+<b>
+Total
+</b>
+
+</th>
+<th align="left" valign="top">
+&#160;
+</th>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+&#160;&#160;<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEQSURBVHgBrVI7csIwEH3rMK7dZdI5J0jKZNLQJJM+aRPICRJuEG7gI+Ch5QD8ChoGOnwEOobONRgvWo0QDB9jD7xGK+3u05P2AReC9g+4XPbgLn5VWAXDN2WRykS4SevUHk9PEvDbSwUpB+rUw3HEcLhOnVFwQMCvz+pWCpBLN1WpOwwtAb8/+UicScbNh0qW7j0NBrGjtwn9F2gWeCgt/iRwjKYHFAWhIkvJbB712mwBt3fZjfMZ8PUpkb+jwIAJZ7FXYxTwVCV8fH+gAKKtgpRCFMcOQeIGynVx7lapVa60BDJPUFrLTQC2lrafSL1xA8y1TCWSW+GH+kesbGu0K5WxxBub8UJ/cihP1WqviTVjXFeRN9ClYgAAAABJRU5ErkJggg=="  /> 0
+</td>
+<td align="left" valign="top">
+&#160;&#160;<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAEDSURBVHgBrVIxCsJAENwVGzux1MZCxDKg+AYVLHxBYmXjI/IECxsr4wsshPgHEUkZxCJNLCWdnWf2SI41uYBBpzhud2fm9vYO4EcgD9x+18QXruJtvYAfCCHsiXfd5QwSsQNfIDaxUpMKF7emMxhdfOgsljkR5ahGHER0XKNrKoNYbGfJ3CQbSw3Kq0I1idu0hIc91JotrQHhtllLToI6N1Agku5Uyqc1jgpoQMTH+aRi2uvEhQZ0cmMwVDHtdYPVGvDWedu6QRI+ZkBPpBNzg+c95INUHUTcKCsuGGBAi/yJR6NnAYotlIHA+djzHfWVS5kkYmBXAJmIC2lrBYi4+C94A/a+eag5PUw2AAAAAElFTkSuQmCC"  /> 0
+</td>
+<td align="left" valign="top">
+&#160;&#160;<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAD3SURBVHgBzZI7EsFQFIb/I4oQRTSUsgOlNlqPGTtgB+yAHRg9Ywka/c0WFGp0aCgYxuvIZcwk8phkRuGr7uPc///P3AP8NVY9vbBqmgirSQRdiIrWApNhL01RTXUQB9FQDel+Wi/5tFmynWInTF2PnIDuSlu6q/kC1FxBHunIXDqRBKQ7GJ5iArX9UngTXJUe/NFJu/ZDBaQ7EZoIgtAStYwZKEA3ZeLcnzcrnLerLw3uuvcfd/vbKIExIsCgcnl6sFwJSHErS0rDOUqjuUeAiMeuFhxDEw2G8RmuVwtyaGIJvNmb02M2+RJ80MDuvxjnNT8wwy94AjZHSy+aGaDFAAAAAElFTkSuQmCC"  /> 0
+</td>
+<td align="left" valign="top">
+&#160;&#160;<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADqSURBVHgBpZKvC8JAFMffZAPFslXTLBYNitVimBYx+A/of+CibYs2rcZVg4gYBYtFUJdWLFsxb0UUDOod3Insx43dBw7e4/i++753T3h/AQ5ywIlIAuvsgb65QPB8JQpUpQimVoNhU8W5QFooT7fg+XdIg1yQwDcHOKYtsMToRb1VwXHw+LlMNQMkRrbXzi10F1kAvWSPOyDnJSpuL/aRLsWoAvPDFeolBWy9i/M4cawDxGh5BOvkJopjHRDMnQMs/hy4kx4+afNQgSzQRVKMFXMLCWgbiRPqYNZv4AsW6GsNrRp2kBXuGXwAIu1X3q8Yjd0AAAAASUVORK5CYII="  /> 0
+</td>
+<td align="left" valign="top">
+&#160;&#160;<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHTSURBVHgBrVO9ThtBEP7mLomDFEWXpEhFbD9BlC5SUGynSkdSpoiOMt2lovXdG0CqpEpIR2cXtPxJSNAgIyoaOKBBAuEzDRYSHmb29hYbRAWjk3a1O9/PzM4B9wy6dRIHAeBFBJpioJInUIfBHeAyQZyldxL4yatwwJgRYGAvGETEPGBLlDFxgubprMM4dPIyAtNv2T0dYid2e9L9mOw+o1FKsdzf0nPP2q4IOFZFHnLEziJRJXiDuDaNF6XnUo0/k5daEMBXcMCaidFQEgUvhi0069P4WJ3QlAADL3IEYu/tKIa5IFLwUtg2a+doG6vpWu7KRzjkgA3BXrSJ3WhT7JY1h6sG3BLwOLYE/GluEt1+TxSkUqaqI2BbatY/s4ot1MofaNEqK7gxN8lduS8aWti1JSDV9ev8d6TZQU4y1XbKjf9fRPmMhvsCMxfOAf0TVuxnh6pkSDSsMrLzHuNWUMeKw06fv2e6axo3jnp5Au2dBVPWtarzkAGDdzqV16+WBCGx/7d4SjYvQeZjvmGAvJ9oHs/mj1GETlZtrCeA9zDTODoSlJuQe/xA8+RPce6PMK+cr6NempfWBJr/7LH/+skjjy4uORWKX/IzfUPc3cBDxhXE6LNA6WFItQAAAABJRU5ErkJggg=="  /> 1
+</td>
+<td align="left" valign="top">
+&#160;&#160;<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAADhSURBVHgBtZI/CoMwFIdfQg/QyU3o4ubopjdw8gS9heANdOsVegGv0A66F3RzqOCkU92ypUYSCM0flOIHIY/k5cdHEoA/QaLI8/y9TBdLb48xTtI0fZkCqOd5wMYv8zxDXdes/FBKkyzLnmIPy43TNMEwDNrBOSOEHkVRXMXCSQ5wHAd83wcdYRiuc9M00LbtbSnvSgAz4KpGxnFcTYwGQRBYA7gBaAN2GOgDXNeFKIqsAVVVmQ3YhnTjWgghZgP2AocbsE9lNYjjWHuwLEvouk5ZVwxkvS3IX7mH7ezptfMFbNhwT85bFwwAAAAASUVORK5CYII="  /> 0
+</td>
+<td align="left" valign="top">
+ 1
+</td>
+<td align="left" valign="top">
+&#160;
+</td>
+
+</tr>
+
+</table>
+<!-- Compile Status Flag --><!-- Service Status Flag -->
+<!-- mdladv_ignore_start --><div name = "Passed Check"  id = "Passed Check" class="PassedCheck" style="margin-left: 0pt;"><!-- mdladv_ignore_finish -->
+<p><hr /></p>  <a name="CheckRecord_165"></a><div class="CheckHeader" id="Header_com.mathworks.HDL.GenerateIPCore">
+<!-- mdladv_ignore_start --><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAHTSURBVHgBrVO9ThtBEP7mLomDFEWXpEhFbD9BlC5SUGynSkdSpoiOMt2lovXdG0CqpEpIR2cXtPxJSNAgIyoaOKBBAuEzDRYSHmb29hYbRAWjk3a1O9/PzM4B9wy6dRIHAeBFBJpioJInUIfBHeAyQZyldxL4yatwwJgRYGAvGETEPGBLlDFxgubprMM4dPIyAtNv2T0dYid2e9L9mOw+o1FKsdzf0nPP2q4IOFZFHnLEziJRJXiDuDaNF6XnUo0/k5daEMBXcMCaidFQEgUvhi0069P4WJ3QlAADL3IEYu/tKIa5IFLwUtg2a+doG6vpWu7KRzjkgA3BXrSJ3WhT7JY1h6sG3BLwOLYE/GluEt1+TxSkUqaqI2BbatY/s4ot1MofaNEqK7gxN8lduS8aWti1JSDV9ev8d6TZQU4y1XbKjf9fRPmMhvsCMxfOAf0TVuxnh6pkSDSsMrLzHuNWUMeKw06fv2e6axo3jnp5Au2dBVPWtarzkAGDdzqV16+WBCGx/7d4SjYvQeZjvmGAvJ9oHs/mj1GETlZtrCeA9zDTODoSlJuQe/xA8+RPce6PMK+cr6NempfWBJr/7LH/+skjjy4uORWKX/IzfUPc3cBDxhXE6LNA6WFItQAAAABJRU5ErkJggg=="  />&#160;<!-- mdladv_ignore_finish --><span class="CheckHeading" id="Heading_com.mathworks.HDL.GenerateIPCore">
+3.2. Generate RTL Code and IP Core</span>
+<!-- mdladv_ignore_start --><!-- mdladv_ignore_finish --><!-- mdladv_ignore_start --><!-- mdladv_ignore_finish --></div>
+<!-- mdladv_ignore_start --><div class="subsection"><!-- mdladv_ignore_finish --><p />### Begin compilation of the model 'uz_pmsm_model_6LUT_pd'...<p />[Warning: '<a href="matlab:slprivate('open_and_hilite_port_hyperlink', 'hilite', ['uz_pmsm_model_6LUT_pd/Data Type Conversion11'], 'Outport', 1);">Output Port 1</a>' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Data Type Conversion11','error')">uz_pmsm_model_6LUT_pd/Data Type Conversion11</a>' is not connected.] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: '<a href="matlab:slprivate('open_and_hilite_port_hyperlink', 'hilite', ['uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch5'], 'Inport', 3);">Input Port 3</a>' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch5','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch5</a>' is not connected.] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: '<a href="matlab:slprivate('open_and_hilite_port_hyperlink', 'hilite', ['uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch7'], 'Outport', 1);">Output Port 1</a>' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch7','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch7</a>' is not connected.] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Source '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Step1','error')">uz_pmsm_model_6LUT_pd/Step1</a>' specifies that its sample time (-1) is back-inherited. You should explicitly specify the sample time of sources.<p />You can disable this diagnostic by setting the 'Source block specifies -1 sample time' diagnostic to 'none' in the Sample Time group on the Diagnostics pane of<p />the Configuration Parameters dialog box.] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain</a>'.  The original value<p />of the parameter, 0.002, cannot be represented exactly using the run-time data type single. The value is quantized to 0.0020000000949949026. Quantization error<p />occurred with an absolute difference of 9.499490256914545e-11 and a relative difference of 4.74974512845727e-06%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1</a>'.  The original<p />value of the parameter, 0.00045, cannot be represented exactly using the run-time data type single. The value is quantized to 0.00044999999227002263.<p />Quantization error occurred with an absolute difference of 7.729977356991935e-12 and a relative difference of 1.71777274599821e-06%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain</a>'.  The original<p />value of the parameter, 0.3, cannot be represented exactly using the run-time data type single. The value is quantized to 0.30000001192092896. Quantization<p />error occurred with an absolute difference of 1.1920928966180355e-8 and a relative difference of 3.97364298872679e-06%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1</a>'.  The original<p />value of the parameter, 0.3, cannot be represented exactly using the run-time data type single. The value is quantized to 0.30000001192092896. Quantization<p />error occurred with an absolute difference of 1.1920928966180355e-8 and a relative difference of 3.97364298872679e-06%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain','error')">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain</a>'.  The original value of<p />the parameter, 2e-6, cannot be represented exactly using the run-time data type single. The value is quantized to 1.9999999949504854e-6. Quantization error<p />occurred with an absolute difference of 5.049514493739521e-15 and a relative difference of 2.52475724686976e-07%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7','error')">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7</a>'.  The original value of the parameter,<p />2e-6, cannot be represented exactly using the run-time data type single. The value is quantized to 1.9999999949504854e-6. Quantization error occurred with an<p />absolute difference of 5.049514493739521e-15 and a relative difference of 2.52475724686976e-07%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7','error')">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7</a>'.  The original value of the<p />parameter, 2e-6, cannot be represented exactly using the run-time data type single. The value is quantized to 1.9999999949504854e-6. Quantization error<p />occurred with an absolute difference of 5.049514493739521e-15 and a relative difference of 2.52475724686976e-07%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/compileModelAndCreatePIR<p />In slhdlcoder.HDLCoder/makehdl<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />### Generating HDL for 'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT'.<p />### Using the config set for model <a href="matlab:configset.showParameterGroup('uz_pmsm_model_6LUT_pd', { 'HDL Code Generation' } )">uz_pmsm_model_6LUT_pd</a> for HDL code generation parameters.<p />### Running HDL checks on the model 'uz_pmsm_model_6LUT_pd'.<p />### Working on the model 'uz_pmsm_model_6LUT_pd'...<p />### The code generation and optimization options you have chosen have introduced additional pipeline delays.<p />### The delay balancing feature has automatically inserted matching delays for compensation.<p />### The DUT requires an initial pipeline setup latency. Each output port experiences these additional delays.<p />### Output port 1: 1 cycles.<p />### Working on... <a href="matlab:configset.internal.open('uz_pmsm_model_6LUT_pd', 'GenerateModel')">GenerateModel</a><p />### Begin model generation 'gm_uz_pmsm_model_6LUT_pd' ....<p />### Rendering DUT with optimization related changes (IO, Area, Pipelining)...<p />### Model generation complete.<p />### Estimated critical path for design: <a href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\criticalPathEstimated')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\criticalPathEstimated.m</a><p />### Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\highlightCriticalPathEstimationOffendingBlocks.m</a><p />### To clear highlighting, click the following MATLAB script: <a href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\clearhighlighting.m')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\clearhighlighting.m</a><p />### Generating new validation model: <a href="matlab:open_system('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\gm_uz_pmsm_model_6LUT_pd_vnl')">gm_uz_pmsm_model_6LUT_pd_vnl</a>.<p />### Validation model generation complete.<p />### Begin VHDL Code Generation for 'uz_pmsm_model_6LUT_pd'.<p />### MESSAGE: The design requires 200 times faster clock with respect to the base rate = 2e-06.<p />### Begin VHDL Code Generation for 'uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT_tc'.<p />### Working on uz_pmsm_model_6LUT_tc as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT_tc.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT_tc.vhd</a>.<p />### Code Generation for 'uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT_tc' completed.<p />### Working on DirectLUTSubNetwork as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork.vhd</a>.<p />### Working on DirectLUTSubNetwork as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block.vhd</a>.<p />### Working on DirectLUTSubNetwork as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block1.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block1.vhd</a>.<p />### Working on DirectLUTSubNetwork as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block2.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block2.vhd</a>.<p />### Working on DirectLUTSubNetwork as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block3.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block3.vhd</a>.<p />### Working on DirectLUTSubNetwork as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block4.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_DirectLUTSubNetwork_block4.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/nfp_wire_single as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_wire_single.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_wire_single.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/nfp_sub_single as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_sub_single.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_sub_single.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/nfp_div_single as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_div_single.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_div_single.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/nfp_mul_single as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_mul_single.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_mul_single.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/nfp_add_single as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_add_single.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_add_single.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/nfp_recip_single as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_recip_single.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_recip_single.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/nfp_signum_single as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_signum_single.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_signum_single.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/nfp_abs_single as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_abs_single.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_nfp_abs_single.vhd</a>.<p />### Working on uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT.vhd</a>.<p />### Generating package file <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT_pkg.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT_pkg.vhd</a>.<p />### Code Generation for 'uz_pmsm_model_6LUT_pd' completed.<p />### Generating HTML files for code generation report at <a href="matlab:web('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\html\uz_pmsm_model_6LUT_pd_codegen_rpt.html')">uz_pmsm_model_6LUT_pd_codegen_rpt.html</a><p />### Creating HDL Code Generation Check Report <a href="matlab:web('file:///C:/Users/Philipp/ultrazohm/ultrazohm_sw/ip_cores/uz_pmsm_model_nonlinear_6LUT/hdl_prj/hdlsrc/uz_pmsm_model_6LUT_pd/uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT_report.html')">uz_pmsm_6LUT_test_src_uz_pmsm_model_6LUT_report.html</a><p />### HDL check for 'uz_pmsm_model_6LUT_pd' complete with 0 errors, 4 warnings, and 4 messages.<p />### HDL code generation complete.<p />### Begin IP core top level wrapper code generation.<p />### Begin compilation of the model 'uz_pmsm_model_6LUT_pd'...<p />[Warning: '<a href="matlab:slprivate('open_and_hilite_port_hyperlink', 'hilite', ['uz_pmsm_model_6LUT_pd/Data Type Conversion11'], 'Outport', 1);">Output Port 1</a>' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Data Type Conversion11','error')">uz_pmsm_model_6LUT_pd/Data Type Conversion11</a>' is not connected.] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: '<a href="matlab:slprivate('open_and_hilite_port_hyperlink', 'hilite', ['uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch5'], 'Inport', 3);">Input Port 3</a>' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch5','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch5</a>' is not connected.] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: '<a href="matlab:slprivate('open_and_hilite_port_hyperlink', 'hilite', ['uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch7'], 'Outport', 1);">Output Port 1</a>' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch7','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplung_flags/Switch7</a>' is not connected.] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Source '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Step1','error')">uz_pmsm_model_6LUT_pd/Step1</a>' specifies that its sample time (-1) is back-inherited. You should explicitly specify the sample time of sources.<p />You can disable this diagnostic by setting the 'Source block specifies -1 sample time' diagnostic to 'none' in the Sample Time group on the Diagnostics pane of<p />the Configuration Parameters dialog box.] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain</a>'.  The original value<p />of the parameter, 0.002, cannot be represented exactly using the run-time data type single. The value is quantized to 0.0020000000949949026. Quantization error<p />occurred with an absolute difference of 9.499490256914545e-11 and a relative difference of 4.74974512845727e-06%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1</a>'.  The original<p />value of the parameter, 0.00045, cannot be represented exactly using the run-time data type single. The value is quantized to 0.00044999999227002263.<p />Quantization error occurred with an absolute difference of 7.729977356991935e-12 and a relative difference of 1.71777274599821e-06%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/Lineare_Entkopplung/Gain1'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain</a>'.  The original<p />value of the parameter, 0.3, cannot be represented exactly using the run-time data type single. The value is quantized to 0.30000001192092896. Quantization<p />error occurred with an absolute difference of 1.1920928966180355e-8 and a relative difference of 3.97364298872679e-06%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1','error')">uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1</a>'.  The original<p />value of the parameter, 0.3, cannot be represented exactly using the run-time data type single. The value is quantized to 0.30000001192092896. Quantization<p />error occurred with an absolute difference of 1.1920928966180355e-8 and a relative difference of 3.97364298872679e-06%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/Current_Controller/Entkopplungen/decoupling_praediktion/Gain1'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain','error')">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain</a>'.  The original value of<p />the parameter, 2e-6, cannot be represented exactly using the run-time data type single. The value is quantized to 1.9999999949504854e-6. Quantization error<p />occurred with an absolute difference of 5.049514493739521e-15 and a relative difference of 2.52475724686976e-07%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Gain'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7','error')">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7</a>'.  The original value of the parameter,<p />2e-6, cannot be represented exactly using the run-time data type single. The value is quantized to 1.9999999949504854e-6. Quantization error occurred with an<p />absolute difference of 5.049514493739521e-15 and a relative difference of 2.52475724686976e-07%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem/Gain7'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />[Warning: Parameter precision loss occurred for 'Gain' of '<a href="matlab:open_and_hilite_hyperlink ('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7','error')">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7</a>'.  The original value of the<p />parameter, 2e-6, cannot be represented exactly using the run-time data type single. The value is quantized to 1.9999999949504854e-6. Quantization error<p />occurred with an absolute difference of 5.049514493739521e-15 and a relative difference of 2.52475724686976e-07%.<p />Suggested Actions:<p />    • To disable this warning or error for all parameters in the model, set the 'Detect precision loss' option to 'none'. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('SetParamToNone','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7', 'ParameterPrecisionLossMsg');">Apply</a><p />    • Inspect details in the Parameter Quantization Advisor. - <a href="matlab:Simulink.output.ParamDiagnosticFixits.fix('OpenParamQuantizeManager','Gain','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7');">Open</a><p />    •  - <a href="matlab:Simulink.SuppressedDiagnostic({'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Subsystem1/Gain7'},'SimulinkFixedPoint:util:fxpParameterPrecisionLoss');">Suppress</a><p />] <p />[> In slhdlcoder.SimulinkConnection/initModel<p />In slhdlcoder.HDLCoder/inithdlmake<p />In slhdlcoder.HDLCoder/initMakehdl<p />In slhdlcoder.HDLCoder/makehdlpir<p />In hdlturnkey/TurnkeyDriver/makehdlturnkeycore<p />In hdlturnkey/TurnkeyDriver/makehdlturnkey<p />In slhdlcoder.HDLCoder/makehdlturnkey<p />In downstream.DownstreamIntegrationDriver/runIPCoreCodeGen<p />In generateIPCore<p />In Simulink.ModelAdvisor/executeCheckCallbackFct<p />In Simulink.ModelAdvisor/run<p />In Simulink.ModelAdvisor/runCheck<p />In ModelAdvisor.Node/runTaskAdvisor] <p />### Begin VHDL Code Generation for 'uz_pmsm_model_6LUT_pd'.<p />### MESSAGE: The design requires 200 times faster clock with respect to the base rate = 0.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_reset_sync as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_reset_sync.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_reset_sync.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_dut as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_dut.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_dut.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_axi4/uz_pmsm_6LUT_test_addr_decoder as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_addr_decoder.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_addr_decoder.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_axi4/uz_pmsm_6LUT_test_axi4_module/uz_pmsm_6LUT_test_rdfifo_data/uz_pmsm_6LUT_test_rdfifo_data_classic/uz_pmsm_6LUT_test_SimpleDualPortRAM_generic as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_SimpleDualPortRAM_generic.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_SimpleDualPortRAM_generic.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_axi4/uz_pmsm_6LUT_test_axi4_module/uz_pmsm_6LUT_test_rdfifo_data as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_rdfifo_data.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_rdfifo_data.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_axi4/uz_pmsm_6LUT_test_axi4_module/uz_pmsm_6LUT_test_rdfifo_last/uz_pmsm_6LUT_test_rdfifo_last_classic/uz_pmsm_6LUT_test_SimpleDualPortRAM_singlebit as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_SimpleDualPortRAM_singlebit.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_SimpleDualPortRAM_singlebit.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_axi4/uz_pmsm_6LUT_test_axi4_module/uz_pmsm_6LUT_test_rdfifo_last as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_rdfifo_last.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_rdfifo_last.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_axi4/uz_pmsm_6LUT_test_axi4_module/uz_pmsm_6LUT_test_rdfifo_rid as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_rdfifo_rid.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_rdfifo_rid.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_axi4/uz_pmsm_6LUT_test_axi4_module as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_axi4_module.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_axi4_module.vhd</a>.<p />### Working on uz_pmsm_6LUT_test/uz_pmsm_6LUT_test_axi4 as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_axi4.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_axi4.vhd</a>.<p />### Working on uz_pmsm_6LUT_test as <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test.vhd</a>.<p />### Generating package file <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_pkg.vhd')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\uz_pmsm_6LUT_test_pkg.vhd</a>.<p />### Code Generation for 'uz_pmsm_model_6LUT_pd' completed.<p />### HDL code generation complete.<p />### Begin IP core packaging.<p />### Generating IP core report <a href="matlab:web('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\ipcore\uz_pmsm_6LUT_test_v1_0\doc\uz_pmsm_model_6LUT_pd_ip_core_report.html')">uz_pmsm_model_6LUT_pd_ip_core_report.html</a><p />### Task "Vivado IP Packager" successful.<p />Generated logfile: <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\workflow_task_VivadoIPPackager.log')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\workflow_task_VivadoIPPackager.log</a><p /><p /><font color="Green">
+Passed
+</font>
+Generated HDL Code and IP Core. Click on the file name link(s) to open the generated code in the editor.<!-- mdladv_ignore_start --><!-- inputparam_section_start --><H5><b>
+Input Parameters Selection
+</b>
+</H5><table class="AdvTable SystemdefinedCollapse" border="1" id="4c67326a-c8a1-407f-8143-95ff5d994981" dataCollapse="off">
+<tr>
+<th align="left" valign="top">
+<b>
+Name
+</b>
+
+</th>
+<th align="left" valign="top">
+<b>
+Value
+</b>
+
+</th>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+IP core name:
+</td>
+<td align="left" valign="top">
+uz_pmsm_6LUT_test
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+IP core version:
+</td>
+<td align="left" valign="top">
+1.0
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+IP core folder:
+</td>
+<td align="left" valign="top">
+C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\ipcore\uz_pmsm_6LUT_test_v1_0
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+IP repository:
+</td>
+<td align="left" valign="top">
+&#160;
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+Browse...
+</td>
+<td align="left" valign="top">
+N/A
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+Additional source files:
+</td>
+<td align="left" valign="top">
+&#160;
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+Add Source...
+</td>
+<td align="left" valign="top">
+N/A
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+FPGA Data Capture buffer size:
+</td>
+<td align="left" valign="top">
+128
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+FPGA Data Capture maximum sequence depth:
+</td>
+<td align="left" valign="top">
+1
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+Include capture condition logic in FPGA Data Capture
+</td>
+<td align="left" valign="top">
+false
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+AXI4 Slave ID Width:
+</td>
+<td align="left" valign="top">
+12
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+AXI4 slave port to pipeline register ratio:
+</td>
+<td align="left" valign="top">
+auto
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+Generate IP core report
+</td>
+<td align="left" valign="top">
+true
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+Enable readback on AXI4 slave write registers
+</td>
+<td align="left" valign="top">
+false
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+Expose DUT clock enable input port
+</td>
+<td align="left" valign="top">
+false
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+Expose DUT clock enable output port
+</td>
+<td align="left" valign="top">
+false
+</td>
+
+</tr>
+
+</table>
+<span class="SDCollapseControl" onclick="collapseSD(this, '4c67326a-c8a1-407f-8143-95ff5d994981')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br /><!-- inputparam_section_finish --><!-- mdladv_ignore_finish --><!-- mdladv_ignore_start --></div><!-- mdladv_ignore_finish --><!-- mdladv_ignore_start --></div><!-- mdladv_ignore_finish -->
+<span name = "EmbedImages" id="EmbedImages"></span><!-- mdladv_ignore_start -->
+</div><!-- mdladv_ignore_finish --><!-- mdladv_ignore_start -->
+</div><!-- mdladv_ignore_finish -->
+</body>  
+</html>  

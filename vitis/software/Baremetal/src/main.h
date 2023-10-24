@@ -53,7 +53,7 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "IP_Cores/uz_matrix_multiplication/uz_matrix_multiplication.h"
 
 //----------------------------------------------------
 // FUNCTIONS

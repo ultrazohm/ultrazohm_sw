@@ -83,19 +83,19 @@ FluxMapData = readtable('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_
 
 %Psi_d
 % d_currents in d Axe for lookup table
-d_current_d_Flux = single(FluxMapData{1,4:17});
+d_current_d_Flux = FluxMapData{1,4:17};
 % q currents in d Axe for lookup table
-q_current_d_Flux = single(FluxMapData{25:38,1});
+q_current_d_Flux = FluxMapData{25:38,1};
 % Output values for lookup table
-Flux_d = single(FluxMapData{46:59,4:17}'*(1e-3));
+Flux_d = FluxMapData{46:59,4:17}'*(1e-3);
 
 %Psi_q
 % d currents in q Axe for lookup table
-d_current_q_Flux = single(FluxMapData{66,4:17});
+d_current_q_Flux = FluxMapData{66,4:17};
 % q currents in q Axe for lookup table
-q_current_q_Flux = single(FluxMapData{90:103,1});
+q_current_q_Flux = FluxMapData{90:103,1};
 % Output values for lookup table
-Flux_q = single(FluxMapData{111:124,4:17}'*(1e-3));
+Flux_q = FluxMapData{111:124,4:17}'*(1e-3);
 
 %Ldd, Lqq, Ldq=Lqd
 [Ldq,Ldd]=gradient(Flux_d);
@@ -162,14 +162,44 @@ psi_q_cross = (1/Fid1_Giq1)*(psiq_cross_s1)*(psiid_cross_s1_integrated);
 psi_d = psidself - psi_d_cross;
 psi_q = psiqself - psi_q_cross;
 
-%Parameterfinding 
-% beta0 = [1;1;1];
-% test = nlinfit(d_current_d_Flux,Flux_d(7,:),psidself,beta0)
-fun=@(ad1,ad2,ad3)ad1*tanh(ad2*id)+ad3*id;
+fluxdtest = Flux_d(7,:)
 
-for j = 1:size(d_current_q_Flux')
-(Flux_d(7,j)-ad1*tanh(ad2*d_current_d_Flux(j))+ad3*d_current_d_Flux(j))^2;
-end
+fun=@(ad,d_current_d_Flux)fluxdtest-ad(1)*tanh(ad(2)*d_current_d_Flux)+ad(3)*d_current_d_Flux;
+
+beta0 = [1;1;1];
+% opts = statset('nlinfit');
+% opts.RobustWgtFun = 'bisquare';
+test = nlinfit(d_current_d_Flux,fluxdtest,fun,beta0)
+
+options = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt');
+lb = [];
+ub = [];
+test2 = lsqcurvefit(fun,beta0,d_current_d_Flux,fluxdtest,lb,ub,options)
+
+done = fluxdtest-test2(1)*tanh(test2(2)*d_current_d_Flux)+test2(3)*d_current_d_Flux;
+
+
+figure;
+plot(done)
+legend;
+hold on 
+plot(fluxdtest)
+legend;
+% function F=fun(ad1,ad2,ad3)
+% fun=Flux_d(7,:)-ad1*tanh(ad2*d_current_d_Flux(:))+ad3*d_current_d_Flux(:)
+% end 
+
+
+% fun=@(ad1,ad2,ad3)Flux_d(7,:)-ad1*tanh(ad2*d_current_d_Flux(:))+ad3*d_current_d_Flux(:);
+%Parameterfinding 
+
+% fun=@(ad1,ad2,ad3)Flux_d(:,7)-ad1.*tanh(ad2.*d_current_d_Flux(:))+ad3.*d_current_d_Flux(:);
+% x0=[10 1 1];
+% x=lsqnonlin(fun,x0)
+% 
+% for j = 1:size(d_current_q_Flux')
+% (Flux_d(7,j)-ad1*tanh(ad2*d_current_d_Flux(j))+ad3*d_current_d_Flux(j))^2;
+% end
 % test = min()
 
 

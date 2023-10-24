@@ -83,19 +83,19 @@ FluxMapData = readtable('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_
 
 %Psi_d
 % d_currents in d Axe for lookup table
-d_current_d_Flux = single(FluxMapData{1,4:17});
+d_current_d_Flux = FluxMapData{1,4:17};
 % q currents in d Axe for lookup table
-q_current_d_Flux = single(FluxMapData{25:38,1});
+q_current_d_Flux = FluxMapData{25:38,1};
 % Output values for lookup table
-Flux_d = single(FluxMapData{46:59,4:17}'*(1e-3));
+Flux_d = FluxMapData{46:59,4:17}'*(1e-3);
 
 %Psi_q
 % d currents in q Axe for lookup table
-d_current_q_Flux = single(FluxMapData{66,4:17});
+d_current_q_Flux = FluxMapData{66,4:17};
 % q currents in q Axe for lookup table
-q_current_q_Flux = single(FluxMapData{90:103,1});
+q_current_q_Flux = FluxMapData{90:103,1};
 % Output values for lookup table
-Flux_q = single(FluxMapData{111:124,4:17}'*(1e-3));
+Flux_q = FluxMapData{111:124,4:17}'*(1e-3);
 
 %Ldd, Lqq, Ldq=Lqd
 [Ldq,Ldd]=gradient(Flux_d);
@@ -119,60 +119,6 @@ Flux_q = single(FluxMapData{111:124,4:17}'*(1e-3));
 % q_current = FluxMapData{238:257,1:20}';
 % % q_Flux_new = FluxMapData{108:127,1}'*(1e-3);
 % % q_Flux_yaxis = FluxMapData{108,:};
-
-%LUT Fitting
-syms ad1 ad2 ad3 ad4 ad5 ad6 aq1 aq2 aq3 aq4 aq5 aq6;
-syms id iq;
-
-
-%Maximum Crosscoupling current constants id1 und iq1
-
-id1 = d_current_d_Flux(1);
-iq1 = q_current_d_Flux(1);
-
-
-%Selbstinduktion
-psidself = ad1*tanh(ad2*id)+ad3*id;
-psiqself = aq1*tanh(aq2*iq)+aq3*iq;
-
-%gesamte induktion in im maximalen kreuzekkopplungsstrom (also ein
-%ausgewählter betriebspuntk) 
-psid_s1 = ad4*tanh(ad5*id)+ad6*id;
-psiq_s1 = aq4*tanh(aq5*iq)+aq6*iq;
-
-%dann ist die Kreuzkopplungin diesem Punkt 
-psid_cross_s1 = psidself - psid_s1;
-psiq_cross_s1 = psiqself - psiq_s1;
-
-%die beiden werden dann integriert (wieso auch immer) 
-psiid_cross_s1_integrated = (1/2)*(ad3-ad6)*((id)^2)+((ad1/ad2)*log(cosh(ad2*id)))-((ad4/ad5)*log(cosh(ad5*id)));
-psiiq_cross_s1_integrated = (1/2)*(aq3-aq6)*((iq)^2)+((aq1/aq2)*log(cosh(aq2*iq)))-((aq4/aq5)*log(cosh(aq5*iq)));
-
-%jetzt ist noch die Frage wie in dem einen Paper auf die genaue
-%Kruezkopplung gekommen wird weil der einfach die beiden
-%kreuezkopplungsterme in dem betriebspunkt mit den integration
-%multipliziert werden und dann hat man plötzlich die kreuzkopplung
-
-Fid1_Giq1 = (1/2)*(aq3-aq6)*((iq1)^2)+((aq1/aq2)*log(cosh(aq2*iq1)))-((aq4/aq5)*log(cosh(aq5*iq1)));
-
-psi_d_cross = (1/Fid1_Giq1)*(psid_cross_s1)*(psiiq_cross_s1_integrated);
-psi_q_cross = (1/Fid1_Giq1)*(psiq_cross_s1)*(psiid_cross_s1_integrated);
-
-
-psi_d = psidself - psi_d_cross;
-psi_q = psiqself - psi_q_cross;
-
-%Parameterfinding 
-% beta0 = [1;1;1];
-% test = nlinfit(d_current_d_Flux,Flux_d(7,:),psidself,beta0)
-fun=@(ad2)Flux_d(7,:)-tanh(ad2*d_current_d_Flux(:))+d_current_d_Flux(:);
-x0=1;
-x=lsqnonlin(fun,x0)
-
-for j = 1:size(d_current_q_Flux')
-(Flux_d(7,j)-ad1*tanh(ad2*d_current_d_Flux(j))+ad3*d_current_d_Flux(j))^2;
-end
-% test = min()
 
 
 

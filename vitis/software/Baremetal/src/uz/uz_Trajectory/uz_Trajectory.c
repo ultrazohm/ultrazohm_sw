@@ -34,7 +34,7 @@ typedef struct uz_Trajectory_t {
 	float Interpolation_Coefficients[4][MAX_TRAJECTORY_SAMPLES-1];		// Dimensions are prepared for spline-interpolation
 }uz_Trajectory_t;
 
-static uint32_t instance_counter = 0U;
+static uint32_t instance_counter_uz_trajectory = 0U;
 static uz_Trajectory_t instances[UZ_TRAJECTORY_MAX_INSTANCES] = { 0 };
 
 static uz_Trajectory_t* uz_Trajectory_allocation(void);
@@ -43,12 +43,12 @@ static uint32_t get_TimeBase(uz_Trajectory_t* self, uint32_t Step);
 static uint32_t get_TimeBase_init(struct uz_Trajectory_config config, float Duration);
 
 static uz_Trajectory_t* uz_Trajectory_allocation(void){
- uz_assert(instance_counter < UZ_TRAJECTORY_MAX_INSTANCES);
- uz_Trajectory_t* self = &instances[instance_counter];
- uz_assert_false(self->is_ready);
- instance_counter++;
- self->is_ready = true;
- return (self);
+	uz_assert(instance_counter_uz_trajectory < UZ_TRAJECTORY_MAX_INSTANCES);
+	uz_Trajectory_t* self = &instances[instance_counter_uz_trajectory];
+	uz_assert_false(self->is_ready);
+	instance_counter_uz_trajectory++;
+	self->is_ready = true;
+	return (self);
 }
 
 uz_Trajectory_t* uz_Trajectory_init(struct uz_Trajectory_config config){

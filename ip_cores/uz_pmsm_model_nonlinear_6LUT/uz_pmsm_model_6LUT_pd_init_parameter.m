@@ -83,19 +83,19 @@ FluxMapData = readtable('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_
 
 %Psi_d
 % d_currents in d Axe for lookup table
-d_current_d_Flux = FluxMapData{1,4:17};
+d_current_d_Flux = FluxMapData{1,1:20};
 % q currents in d Axe for lookup table
-q_current_d_Flux = FluxMapData{25:38,1};
+q_current_d_Flux = FluxMapData{22:41,1};
 % Output values for lookup table
-Flux_d = FluxMapData{46:59,4:17}'*(1e-3);
+Flux_d = FluxMapData{43:62,1:20}'*(1e-3);
 
 %Psi_q
 % d currents in q Axe for lookup table
-d_current_q_Flux = FluxMapData{66,4:17};
+d_current_q_Flux = FluxMapData{66,1:20};
 % q currents in q Axe for lookup table
-q_current_q_Flux = FluxMapData{90:103,1};
+q_current_q_Flux = FluxMapData{87:106,1};
 % Output values for lookup table
-Flux_q = FluxMapData{111:124,4:17}'*(1e-3);
+Flux_q = FluxMapData{108:127,1:20}'*(1e-3);
 
 %Ldd, Lqq, Ldq=Lqd
 [Ldq,Ldd]=gradient(Flux_d);

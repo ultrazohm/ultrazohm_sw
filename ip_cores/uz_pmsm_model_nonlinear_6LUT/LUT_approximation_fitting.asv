@@ -5,25 +5,22 @@ close all;
 %LeastSquare Problems
 % 1. Gleichung
 Fluxd_iqnull = Flux_d(:,10)';
-% Fluxd_iqnull = Fluxd_iqnull+ rand(1,length(Fluxd_iqnull))
+Fluxd_iqnull = Fluxd_iqnull+ rand(1,length(Fluxd_iqnull))
 % test = Flux_d(:,10)'.*0.5;
-fun1=@(ad) sum((Fluxd_iqnull-ad(1)*tanh(ad(2)*d_current_d_Flux)+ad(3)*d_current_d_Flux).^2);
-
-ad_search = fminsearch(fun1,[1 1 1])
-beta1 = [0.1;1;0.1];
+fun1=@(ad,d_current_d_Flux)ad(1)*tanh(ad(2)*d_current_d_Flux)+ad(3)*d_current_d_Flux;
+beta1 = [-0.0003;96.1725;0.0002];
 % opts = statset('nlinfit');
 % opts.RobustWgtFun = 'bisquare';
-% ad = nlinfit(d_current_d_Flux,Fluxd_iqnull,fun1,beta1)
-% ad = lsqcurvefit(fun1,beta1,d_current_d_Flux,Fluxd_iqnull)
+ad = nlinfit(d_current_d_Flux,Fluxd_iqnull,fun1,beta1)
+% ad = lsqcurvefit(fun1,beta1,d_current_d_Flux,test)
 %Einfach ein anderer solver
 % options = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt');
 % lb = [];
 % ub = [];
 % test2 = lsqcurvefit(fun,beta0,d_current_d_Flux,fluxdtest,lb,ub,options)
 
-Fluxd_iqnull_fitted = Fluxd_iqnull-ad_search(1)*tanh(ad_search(2)*d_current_d_Flux)-ad_search(3)*d_current_d_Flux;
 % Fluxd_iqnull_fitted = Fluxd_iqnull-ad(1)*tanh(ad(2)*d_current_d_Flux)-ad(3)*d_current_d_Flux;
-% Fluxd_iqnull_fitted = fun1(ad_search, d_current_d_Flux);
+Fluxd_iqnull_fitted = fun1(ad, d_current_d_Flux);
 
 % 2. Gleichung
 Fluxq_idnull = Flux_q(15,:)';

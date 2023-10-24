@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-module MatrixMultiplication_MatrixMultiplication_Pipeline_1 (
+module MatrixMultiplication_MatrixMultiplication_Pipeline_2 (
         ap_clk,
         ap_rst,
         ap_start,
@@ -28,7 +28,7 @@ input   ap_start;
 output   ap_done;
 output   ap_idle;
 output   ap_ready;
-output  [7:0] acc_address0;
+output  [4:0] acc_address0;
 output   acc_ce0;
 output   acc_we0;
 output  [31:0] acc_d0;
@@ -45,10 +45,10 @@ reg    ap_condition_exit_pp0_iter0_stage0;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
 wire   [63:0] p_cast_fu_64_p1;
-reg   [8:0] empty_fu_26;
-wire   [8:0] empty_20_fu_58_p2;
+reg   [4:0] empty_fu_26;
+wire   [4:0] empty_21_fu_58_p2;
 wire    ap_loop_init;
-reg   [8:0] ap_sig_allocacmp_p_load;
+reg   [4:0] ap_sig_allocacmp_p_load;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -101,9 +101,9 @@ end
 always @ (posedge ap_clk) begin
     if (((ap_start_int == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
         if ((exitcond1_fu_52_p2 == 1'd0)) begin
-            empty_fu_26 <= empty_20_fu_58_p2;
+            empty_fu_26 <= empty_21_fu_58_p2;
         end else if ((ap_loop_init == 1'b1)) begin
-            empty_fu_26 <= 9'd0;
+            empty_fu_26 <= 5'd0;
         end
     end
 end
@@ -166,7 +166,7 @@ end
 
 always @ (*) begin
     if (((ap_loop_init == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
-        ap_sig_allocacmp_p_load = 9'd0;
+        ap_sig_allocacmp_p_load = 5'd0;
     end else begin
         ap_sig_allocacmp_p_load = empty_fu_26;
     end
@@ -195,10 +195,10 @@ end
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign empty_20_fu_58_p2 = (ap_sig_allocacmp_p_load + 9'd1);
+assign empty_21_fu_58_p2 = (ap_sig_allocacmp_p_load + 5'd1);
 
-assign exitcond1_fu_52_p2 = ((ap_sig_allocacmp_p_load == 9'd256) ? 1'b1 : 1'b0);
+assign exitcond1_fu_52_p2 = ((ap_sig_allocacmp_p_load == 5'd25) ? 1'b1 : 1'b0);
 
 assign p_cast_fu_64_p1 = ap_sig_allocacmp_p_load;
 
-endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_1
+endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_2

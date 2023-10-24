@@ -117,5 +117,5 @@
     #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           20U
     #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             10U
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
-    #define UZ_TRAJECTORY_MAX_INSTANCES                     5U
+    #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
 #endif

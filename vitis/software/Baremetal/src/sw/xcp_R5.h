@@ -9,34 +9,13 @@
 #define SECTION_XCP_TS      __attribute__ ((section (".section_xcp_timestamp")))
 #define SECTION_XCP_MEAS    __attribute__ ((section (".section_xcp_meas")))
 
-#define DUMMY_LEN            80
-
 //--------------------------------------------------------------------
 // Types
 // -------------------------------------------------------------------
-typedef struct {
-    bool button_enable_system;
-    bool button_enable_control;
-    bool disable_calculation;
-} xcp_stim_t;
-
-typedef struct {
-    int8_t sin_u8;
-    int8_t cos_u8;
-    int8_t saw_u8;
-    float sin_f;
-    float cos_f;
-    float saw_f;
-} xcp_meas_t;
 
 //--------------------------------------------------------------------
-// Variables
+// Global Variables
 // -------------------------------------------------------------------
-extern xcp_stim_t xcp_stim;
-extern xcp_meas_t xcp_meas;
-
-extern uint8_t xcp_80Byte_u8[DUMMY_LEN];
-extern uint32_t xcp_80Byte_u32[DUMMY_LEN/4];
 
 //--------------------------------------------------------------------
 // Global functions

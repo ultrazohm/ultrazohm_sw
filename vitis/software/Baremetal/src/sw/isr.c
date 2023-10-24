@@ -60,8 +60,8 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     xcp_R5_cache_flush_stimulate();
-    ultrazohm_state_machine_set_enable_system(xcp_stim.button_enable_system);
-    ultrazohm_state_machine_set_enable_control(xcp_stim.button_enable_control);
+    ultrazohm_state_machine_set_enable_system(1);
+    ultrazohm_state_machine_set_enable_control(1);
 
     xcp_R5_set_timestamp();
 
@@ -71,9 +71,8 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
 //        codegenInstance.input.time = uz_SystemTime_GetGlobalTimeInSec();
 
-        // TODO remove!
-        extern void xcp_dummy_calculations(void);
-        xcp_dummy_calculations();
+        extern void xcp_ctrl_dummy(void);
+        xcp_ctrl_dummy();
 
         //uz_codegen_step(&codegenInstance);
         extern void FOC_CurrentControl_step(void);

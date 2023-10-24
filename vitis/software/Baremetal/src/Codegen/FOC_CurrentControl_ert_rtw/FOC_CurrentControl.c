@@ -396,20 +396,16 @@ real32_T FOC_SELECT_Voltage_Assignment_UVW = 1.0F;
                                    */
 
 /* Block signals and states (default storage) */
-//DW rtDW;
-extern DW rtDW;
+DW rtDW;
 
 /* External inputs (root inport signals with default storage) */
-//ExtU rtU;
-extern ExtU rtU;
+ExtU rtU;
 
 /* External outputs (root outports fed by signals with default storage) */
-//ExtY rtY;
-extern ExtY rtY;
+ExtY rtY;
 
 /* Real-time model */
-//static RT_MODEL rtM_;
-extern RT_MODEL rtM_;
+static RT_MODEL rtM_;
 RT_MODEL *const rtM = &rtM_;
 extern real_T rt_atan2d_snf(real_T u0, real_T u1);
 static real_T look1_pbinlca(real_T u0, const real_T bp0[], const real_T table[],

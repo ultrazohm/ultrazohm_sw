@@ -82,4 +82,16 @@ void uz_PWM_SS_2L_hw_SetMinimumPulseWidth(uint32_t base_address, float min_pulse
  */
 void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shift_HB1, float triangle_shift_HB2, float triangle_shift_HB3);
 
+/**
+ * @brief sets the trigger source to output new DutyCycles and apply the 
+ * 
+ * @param base_address      //base address of the instance
+ * @param trigger_source    //Trigger source for new DutyCycles and triangle shifts
+                            0 = trigger at MIN of triangle\n
+                            e.g. the PWM module will apply new values for triangle shift and DutyCycles respectively switch positions
+                            1 = trigger at MAX of triangle\n 
+                            2 = trigger at EITHER MAX or MIN of triangle
+ */
+void uz_PWM_SS_2L_hw_SetTriggerSource(uint32_t base_address, uint32_t trigger_source);
+
 #endif // UZ_PWM_SS_2L_HW_H

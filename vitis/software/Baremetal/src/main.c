@@ -39,6 +39,28 @@ DS_Data Global_Data = {
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
+struct uz_matrix_t A_input = {0};
+struct uz_matrix_t B_input = {0};
+struct uz_matrix_t C_output = {0};
+float A_matrix[5] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f};
+float B_matrix[25] = {1.0f, 2.0f};
+float C_matrix[5] = {0};
+
+struct uz_Matrix_Multi_config config = {
+		.base_address = XPAR_UZ_USER_MATRIXMULTIPLICATION_0_S_AXI_CONTROL_BASEADDR,
+		.A_columns = 5U,
+		.A_rows = 1U,
+		.A_length_of_data = UZ_MATRIX_SIZE(A_matrix),
+		.A_data = A_matrix,
+		.B_columns = 5U,
+		.B_rows = 5U,
+		.B_length_of_data = UZ_MATRIX_SIZE(B_matrix),
+		.B_data = B_matrix,
+		.C_columns = 5U,
+		.C_rows = 1U,
+		.C_length_of_data = UZ_MATRIX_SIZE(C_matrix),
+		.C_data = C_matrix
+};
 
 enum init_chain
 {
@@ -87,6 +109,7 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
+            Global_Data.objects.matrix_instance = uz_Matrix_Multi_init(config, &A_input, &B_input, &C_output);
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);

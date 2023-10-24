@@ -43,3 +43,4 @@ Software Framework
     controller_setpoint_filter/controller_setpoint_filter
     uz_subspace_resonant_control/uz_subspace_resonant_control
     external_stop/external_stop
+    uz_Trajectory/uz_Trajectory

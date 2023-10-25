@@ -202,11 +202,12 @@ float uz_dqn_update(uz_dqn_t *self)
         cum_loss += loss;
         uz_nn_backward_pass_mini_batch(self->critic, self->error, self->experience_buffer->vectorforobs);
         resetFloatArray(self->error, uz_nn_get_number_of_outputs(self->critic));
+
     }
     cum_loss = cum_loss / (float)self->minibatch_size;
     adam_optimizer_step(self->adam, self->critic);
     uz_nn_set_gradients_zero(self->critic);
-   // uz_nn_copy(self->critic, self->critic_copy);
+    uz_dqn_copy_net(self);
     if (adam_get_number_of_updates(self->adam) % self->target_update_frequency == 0)
     {
         uz_nn_target_update(self->critic, self->critic_target_net, self->update_mechanism, self->target_smooth_factor);

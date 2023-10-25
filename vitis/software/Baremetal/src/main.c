@@ -522,7 +522,7 @@ int main(void)
                     {
                     	do_dqn=true;
                     	 cum_loss = uz_dqn_update(testdqn2);
-                    	 uz_dqn_copy_net(testdqn2);
+
                     }else{
                     	t=0;
                     	dqn_state=2;
@@ -538,7 +538,7 @@ int main(void)
 
                 	for(int i=0;i<200;i++){
                 		 cum_loss = uz_dqn_update(testdqn2);
-                       		 uz_dqn_copy_net(testdqn2);
+
                 		//uz_environment_pt1_reset(pt1);
 
                 	}

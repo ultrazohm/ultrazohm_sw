@@ -237,6 +237,7 @@ void ISR_Control(void *data)
         uz_SpeedControl_reset(Global_Data.objects.Speed_instance);
         uz_CurrentControl_reset(Global_Data.objects.CC_instance);
     }
+    do_dqn_float=(float)do_dqn;
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     read_and_handle_inverter_errors();

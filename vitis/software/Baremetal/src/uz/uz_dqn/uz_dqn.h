@@ -13,7 +13,7 @@
 
 typedef struct uz_dqn_t uz_dqn_t;
 
-uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism, float *error);
+uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism, float *error,  struct uz_nn_layer_config config_copy[UZ_NN_MAX_LAYER]);
 
 void uz_dqn_sample_observation_k_0(uz_dqn_t *self, uz_matrix_t *observation_k_0);
 uint32_t uz_dqn_determine_action(uz_dqn_t *self);
@@ -27,4 +27,5 @@ void uz_dqn_set_epsilon(uz_dqn_t *self, float epsilon, float epsilon_min, float 
 float uz_dqn_get_epsilon(uz_dqn_t *self);
 uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self);
 
+void uz_dqn_copy_net(uz_dqn_t *self);
 #endif // UZ_DQN_H

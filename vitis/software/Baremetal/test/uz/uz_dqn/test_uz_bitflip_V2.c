@@ -79,6 +79,19 @@ float ty_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 float tw_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float tb_2[NUMBER_OF_OUTPUTS] = {0};
 float ty_2[NUMBER_OF_OUTPUTS] = {0};
+
+// copy
+float copy_ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float copy_ts_2[NUMBER_OF_OUTPUTS] = {0};
+
+float copy_tx[NUMBER_OF_INPUTS] = {0};
+float copy_tw_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float copy_tb_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float copy_ty_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float copy_tw_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0};
+float copy_tb_2[NUMBER_OF_OUTPUTS] = {0};
+float copy_ty_2[NUMBER_OF_OUTPUTS] = {0};
+
 // critic
 float cs_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 float cs_2[NUMBER_OF_OUTPUTS] = {0};
@@ -140,6 +153,23 @@ struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
         .output = ty_1,
         .sumout = ts_1},
     [1] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, .length_of_weights = UZ_MATRIX_SIZE(tw_2), .length_of_bias = UZ_MATRIX_SIZE(tb_2), .length_of_output = UZ_MATRIX_SIZE(ty_2), .length_of_sumout = UZ_MATRIX_SIZE(ts_2), .weights = tw_2, .bias = tb_2, .output = ty_2, .sumout = ts_2}};
+
+// config copy
+struct uz_nn_layer_config config_copy[NUMBER_OF_HIDDEN_LAYER] = {
+    [0] = {
+        .activation_function = activation_ReLU,
+        .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+        .number_of_inputs = NUMBER_OF_INPUTS,
+        .length_of_weights = UZ_MATRIX_SIZE(copy_tw_1),
+        .length_of_bias = UZ_MATRIX_SIZE(copy_tb_1),
+        .length_of_output = UZ_MATRIX_SIZE(copy_ty_1),
+        .length_of_sumout = UZ_MATRIX_SIZE(copy_ts_1),
+        .weights = copy_tw_1,
+        .bias = copy_tb_1,
+        .output = copy_ty_1,
+        .sumout = copy_ts_1},
+    [1] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER, .length_of_weights = UZ_MATRIX_SIZE(copy_tw_2), .length_of_bias = UZ_MATRIX_SIZE(copy_tb_2), .length_of_output = UZ_MATRIX_SIZE(copy_ty_2), .length_of_sumout = UZ_MATRIX_SIZE(copy_ts_2), .weights = copy_tw_2, .bias = copy_tb_2, .output = copy_ty_2, .sumout = copy_ts_2}};
+
 // config critic
 struct uz_nn_layer_config config_critic[NUMBER_OF_HIDDEN_LAYER] = {
     [0] = {
@@ -203,7 +233,7 @@ void test_dqn_bitflip(void)
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
     uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
-    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
+    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
     // prefill buffer
     // do{
     // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);

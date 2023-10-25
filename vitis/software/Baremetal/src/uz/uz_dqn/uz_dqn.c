@@ -10,6 +10,7 @@ struct uz_dqn_t
     bool is_ready;
     uz_nn_t *critic;
     uz_nn_t *critic_target_net;
+    uz_nn_t *critic_copy;
     uz_mtwister_t *randinstance;
     uz_dqn_experience_replay_t *experience_buffer;
     float discount_factor;
@@ -50,7 +51,7 @@ float calculate_derv_loss_dqn(uz_dqn_t *self, float samplereward, float qval, fl
 float epsilon_greedy_decay(float epsilon_start, float epsilon_min, float epsilon_decay);
 float calculate_loss_dqn(uz_dqn_t *self, float samplereward, float qval, float qvalplus1, bool terminal);
 
-uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism, float *error)
+uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism, float *error,  struct uz_nn_layer_config config_copy[UZ_NN_MAX_LAYER])
 {
     uz_assert_not_NULL(observation_data);
     uz_dqn_t *self = uz_dqn_allocation();
@@ -61,7 +62,9 @@ uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float
     // Init critic with random parameters and trainable and copies values to target net
     self->critic = uz_nn_init_with_rand(config_critic, number_of_layer, self->randinstance, true);
     self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
+    self->critic_copy= uz_nn_init(config_copy, number_of_layer, false);
     uz_nn_copy(self->critic, self->critic_target_net);
+    uz_nn_copy(self->critic, self->critic_copy);
 
     self->experience_buffer = uz_dqn_experience_replay_init(buffer_config, length_of_buffer);
     self->discount_factor = discount_factor;
@@ -140,8 +143,8 @@ uint32_t uz_dqn_determine_action(uz_dqn_t *self)
 {
     self->epsilon = epsilon_greedy_decay(self->epsilon, self->epsilon_min, self->epsilon_decay);
     uint32_t actionind = 0;
-    uz_nn_ff(self->critic, self->observation_k_0);
-    uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic);
+    uz_nn_ff(self->critic_copy, self->observation_k_0);
+    uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic_copy);
     if (uz_mtwister_random_uniform_float(self->randinstance) < self->epsilon)
     {
         actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->number_of_actions - 1U);
@@ -199,15 +202,22 @@ float uz_dqn_update(uz_dqn_t *self)
         cum_loss += loss;
         uz_nn_backward_pass_mini_batch(self->critic, self->error, self->experience_buffer->vectorforobs);
         resetFloatArray(self->error, uz_nn_get_number_of_outputs(self->critic));
+
     }
     cum_loss = cum_loss / (float)self->minibatch_size;
     adam_optimizer_step(self->adam, self->critic);
     uz_nn_set_gradients_zero(self->critic);
+    uz_dqn_copy_net(self);
     if (adam_get_number_of_updates(self->adam) % self->target_update_frequency == 0)
     {
         uz_nn_target_update(self->critic, self->critic_target_net, self->update_mechanism, self->target_smooth_factor);
     }
     return cum_loss;
+}
+
+void uz_dqn_copy_net(uz_dqn_t *self){
+	uz_assert_not_NULL(self);
+    uz_nn_copy(self->critic, self->critic_copy);
 }
 
 float calculate_loss_dqn(uz_dqn_t *self, float samplereward, float qval, float qvalplus1, bool terminal)

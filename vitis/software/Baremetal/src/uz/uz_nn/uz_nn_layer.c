@@ -290,6 +290,7 @@ void uz_nn_layer_back(uz_nn_layer_t *const self, uz_matrix_t *const locgradprev,
     uz_matrix_transpose(self->sumout);
     uz_matrix_multiply(self->temporarybackprop, locgradprev, self->delta);
 }
+
 void uz_nn_backward_last_layer(uz_nn_layer_t *const self, float *error)
 {
     uz_assert_not_NULL(self);

@@ -44,7 +44,7 @@ extern float epoch_global;
 extern float setpoint;
 extern float pt1_output;
 extern float pt1_input;
-
+extern float do_dqn_float;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -79,6 +79,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_pt1_input] 			= &pt1_input;
 	js_ch_observable[JSO_eval_run] 			= &evaluation_run;
 	js_ch_observable[JSO_finished] 			= &finished;
+	js_ch_observable[JSO_do_dqn] 			= &do_dqn_float;
 	js_ch_observable[JSO_loss] = &global_loss;
 	js_ch_observable[JSO_reward_metric] = &global_reward_metric;
 	js_ch_observable[JSO_epoch] = &epoch_global;

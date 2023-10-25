@@ -71,6 +71,7 @@ float pt1_output;
 float pt1_input;
 extern float global_loss;
 extern bool do_dqn;
+float do_dqn_float=0.0f;
 
 void ISR_Control(void *data)
 {
@@ -112,7 +113,6 @@ void ISR_Control(void *data)
     uz_dqn_sample_observation_k_0(testdqn2, env_state);
      action_k = uz_dqn_determine_action(testdqn2);
 
-
     global_loss=cum_loss;
     t++;
     }
@@ -121,6 +121,7 @@ void ISR_Control(void *data)
     	do_dqn=false;
     }
     }
+    do_dqn_float=(float)do_dqn;
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

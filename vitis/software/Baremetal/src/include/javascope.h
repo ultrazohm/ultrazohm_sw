@@ -26,6 +26,7 @@ enum JS_OberservableData {
 	JSO_epsilon,
 	JSO_reward_metric,
 	JSO_finished,
+	JSO_do_dqn,
 	JSO_eval_run,
 	JSO_epoch,
 	JSO_ISR_ExecTime_us,

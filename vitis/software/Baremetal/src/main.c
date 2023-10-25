@@ -64,6 +64,7 @@ float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
 // dqn
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
 float X1_dat[NUMBER_OF_INPUTS] = {0.0f};
+
 // target
 float ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 float ts_2[NUMBER_OF_OUTPUTS] = {0};
@@ -75,6 +76,17 @@ float ty_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 float tw_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0};
 float tb_2[NUMBER_OF_OUTPUTS] = {0};
 float ty_2[NUMBER_OF_OUTPUTS] = {0};
+
+float copy_ts_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float copy_ts_2[NUMBER_OF_OUTPUTS] = {0};
+
+float copy_tx[NUMBER_OF_INPUTS] = {0};
+float copy_tw_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float copy_tb_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float copy_ty_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+float copy_tw_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0};
+float copy_tb_2[NUMBER_OF_OUTPUTS] = {0};
+float copy_ty_2[NUMBER_OF_OUTPUTS] = {0};
 // critic
 float cs_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 float cs_2[NUMBER_OF_OUTPUTS] = {0};
@@ -119,7 +131,31 @@ float observation1[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
 
-// config random
+struct uz_nn_layer_config config_copy[NUMBER_OF_HIDDEN_LAYER] = {
+    [0] = {
+        .activation_function = activation_ReLU,
+        .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+        .number_of_inputs = NUMBER_OF_INPUTS,
+        .length_of_weights = UZ_MATRIX_SIZE(tw_1),
+        .length_of_bias = UZ_MATRIX_SIZE(tb_1),
+        .length_of_output = UZ_MATRIX_SIZE(ty_1),
+        .length_of_sumout = UZ_MATRIX_SIZE(ts_1),
+        .weights = copy_tw_1,
+        .bias = copy_tb_1,
+        .output = copy_ty_1,
+        .sumout = copy_ts_1},
+    [1] = {.activation_function = activation_linear,
+    		.number_of_neurons = NUMBER_OF_OUTPUTS,
+			.number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+			.length_of_weights = UZ_MATRIX_SIZE(tw_2),
+			.length_of_bias = UZ_MATRIX_SIZE(tb_2),
+			.length_of_output = UZ_MATRIX_SIZE(ty_2),
+			.length_of_sumout = UZ_MATRIX_SIZE(ts_2),
+			.weights = copy_tw_2,
+			.bias = copy_tb_2,
+			.output = copy_ty_2,
+			.sumout = copy_ts_2}};
+// config critic
 
 // config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
@@ -440,12 +476,12 @@ int main(void)
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
             uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
-            float gain = 0.5f;
-            float time_constant = 0.01f;
+            float gain = 2.5f;
+            float time_constant = 0.005f;
             float integration_time = 1.0f/10000.0f;
             random_generator = uz_mtwister_init(10U);
             pt1 = uz_environment_pt1_init(gain, time_constant, integration_time, array);
-            testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error);
+            testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
             ///////////////// Training loop///////////////////////////////////////////////////////////////////////////////////////////
 
             initialization_chain = init_interrupts;
@@ -485,7 +521,8 @@ int main(void)
                     if(t<max_steps)
                     {
                     	do_dqn=true;
-
+                    	 cum_loss = uz_dqn_update(testdqn2);
+                    	 uz_dqn_copy_net(testdqn2);
                     }else{
                     	t=0;
                     	dqn_state=2;
@@ -501,7 +538,12 @@ int main(void)
 
                 	for(int i=0;i<200;i++){
                 		 cum_loss = uz_dqn_update(testdqn2);
+                       		 uz_dqn_copy_net(testdqn2);
+                		//uz_environment_pt1_reset(pt1);
+
                 	}
+                	uz_sleep_seconds(1);
+
                     cumreward[epoch] = uz_environment_pt1_get_cumulative_reward(pt1);
                     episode_reward=cumreward[epoch];
                     if (epoch == 0)

@@ -26,6 +26,8 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:2460"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:2461"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:4048"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4533"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:371"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:4052"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:221"] = "IP_Core_SS_Switch_and_PWM:192";
@@ -49,6 +51,11 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:567"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:598"] = "IP_Core_SS_Switch_and_PWM:192";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:4051"] = "IP_Core_SS_Switch_and_PWM:192";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:1"] = "IP_Core_SS_Switch_and_PWM:4532";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:2"] = "IP_Core_SS_Switch_and_PWM:4532";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:3"] = "IP_Core_SS_Switch_and_PWM:4532";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:4"] = "IP_Core_SS_Switch_and_PWM:4532";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:5"] = "IP_Core_SS_Switch_and_PWM:4532";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:372"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:373"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:374"] = "IP_Core_SS_Switch_and_PWM:371";
@@ -62,6 +69,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:2462"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:2463"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:4047"] = "IP_Core_SS_Switch_and_PWM:371";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4531"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:379"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:380"] = "IP_Core_SS_Switch_and_PWM:371";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:381"] = "IP_Core_SS_Switch_and_PWM:371";
@@ -167,6 +175,10 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:25"] = "IP_Core_SS_Switch_and_PWM:8";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:26"] = "IP_Core_SS_Switch_and_PWM:8";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:27"] = "IP_Core_SS_Switch_and_PWM:8";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:4:1"] = "IP_Core_SS_Switch_and_PWM:4532:4";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:4:2"] = "IP_Core_SS_Switch_and_PWM:4532:4";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:4:3"] = "IP_Core_SS_Switch_and_PWM:4532:4";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:4532:4:5"] = "IP_Core_SS_Switch_and_PWM:4532:4";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:389"] = "IP_Core_SS_Switch_and_PWM:388";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:390"] = "IP_Core_SS_Switch_and_PWM:388";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:391"] = "IP_Core_SS_Switch_and_PWM:388";
@@ -189,6 +201,7 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:411"] = "IP_Core_SS_Switch_and_PWM:388";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:509"] = "IP_Core_SS_Switch_and_PWM:388";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:540"] = "IP_Core_SS_Switch_and_PWM:388";
+    this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:238"] = "IP_Core_SS_Switch_and_PWM:425";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:236"] = "IP_Core_SS_Switch_and_PWM:425";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:237"] = "IP_Core_SS_Switch_and_PWM:425";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:1"] = "IP_Core_SS_Switch_and_PWM:425";
@@ -212,7 +225,6 @@ function RTW_SidParentMap() {
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:35"] = "IP_Core_SS_Switch_and_PWM:425";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:38"] = "IP_Core_SS_Switch_and_PWM:425";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:39"] = "IP_Core_SS_Switch_and_PWM:425";
-    this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:40"] = "IP_Core_SS_Switch_and_PWM:425";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:221"] = "IP_Core_SS_Switch_and_PWM:425";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:220"] = "IP_Core_SS_Switch_and_PWM:425";
     this.sidParentMap["IP_Core_SS_Switch_and_PWM:425:41"] = "IP_Core_SS_Switch_and_PWM:425";

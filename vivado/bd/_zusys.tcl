@@ -133,6 +133,7 @@ xilinx.com:ip:zynq_ultra_ps_e:3.4\
 xilinx.com:ip:axi_timebase_wdt:3.0\
 xilinx.com:ip:smartconnect:1.0\
 xilinx.com:ip:axi_timer:2.0\
+xilinx.com:hls:MatrixMultiplication:1.0\
 user.org:ip:uz_axi_testIP:1.0\
 UltraZohm:user:ADC_LTC2311:3.0\
 xilinx.com:ip:xlconstant:1.1\
@@ -1762,10 +1763,13 @@ proc create_hier_cell_uz_user { parentCell nameHier } {
   create_bd_pin -dir I -type clk aclk
   create_bd_pin -dir I -type rst aresetn
 
+  # Create instance: MatrixMultiplication_0, and set properties
+  set MatrixMultiplication_0 [ create_bd_cell -type ip -vlnv xilinx.com:hls:MatrixMultiplication:1.0 MatrixMultiplication_0 ]
+
   # Create instance: smartconnect_1, and set properties
   set smartconnect_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 smartconnect_1 ]
   set_property -dict [list \
-    CONFIG.NUM_MI {1} \
+    CONFIG.NUM_MI {2} \
     CONFIG.NUM_SI {1} \
   ] $smartconnect_1
 
@@ -1776,10 +1780,11 @@ proc create_hier_cell_uz_user { parentCell nameHier } {
   # Create interface connections
   connect_bd_intf_net -intf_net smartconnect_0_M10_AXI [get_bd_intf_pins S00_AXI] [get_bd_intf_pins smartconnect_1/S00_AXI]
   connect_bd_intf_net -intf_net smartconnect_1_M00_AXI [get_bd_intf_pins smartconnect_1/M00_AXI] [get_bd_intf_pins uz_axi_testIP_0/AXI4]
+  connect_bd_intf_net -intf_net smartconnect_1_M01_AXI [get_bd_intf_pins MatrixMultiplication_0/s_axi_control] [get_bd_intf_pins smartconnect_1/M01_AXI]
 
   # Create port connections
-  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins uz_axi_testIP_0/AXI4_ARESETN] [get_bd_pins uz_axi_testIP_0/IPCORE_RESETN]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins aclk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins uz_axi_testIP_0/AXI4_ACLK] [get_bd_pins uz_axi_testIP_0/IPCORE_CLK]
+  connect_bd_net -net proc_sys_reset_1_peripheral_aresetn [get_bd_pins aresetn] [get_bd_pins MatrixMultiplication_0/ap_rst_n] [get_bd_pins smartconnect_1/aresetn] [get_bd_pins uz_axi_testIP_0/AXI4_ARESETN] [get_bd_pins uz_axi_testIP_0/IPCORE_RESETN]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins aclk] [get_bd_pins MatrixMultiplication_0/ap_clk] [get_bd_pins smartconnect_1/aclk] [get_bd_pins uz_axi_testIP_0/AXI4_ACLK] [get_bd_pins uz_axi_testIP_0/IPCORE_CLK]
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -3364,6 +3369,7 @@ Port;FD4A0000;FD4AFFFF;0|FPD;DPDMA;FD4C0000;FD4CFFFF;0|FPD;DDR_XMPU5_CFG;FD05000
   assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_analog_adapter/A2_adapter/A2_ADC_LTC2311/S00_AXI/S00_AXI_reg] -force
   assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_analog_adapter/A3_adapter/A3_ADC_LTC2311/S00_AXI/S00_AXI_reg] -force
   assign_bd_address -offset 0x80070000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0/AXI4_Lite/reg0] -force
+  assign_bd_address -offset 0x80080000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_user/MatrixMultiplication_0/s_axi_control/Reg] -force
   assign_bd_address -offset 0x80060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D2_adapter/Gates_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0] -force
   assign_bd_address -offset 0x80030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_0/AXI4_Lite/reg0] -force
   assign_bd_address -offset 0x80040000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_1/AXI4_Lite/reg0] -force

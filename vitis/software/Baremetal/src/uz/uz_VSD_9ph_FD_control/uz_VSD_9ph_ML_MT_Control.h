@@ -12,20 +12,20 @@
  *
  */
 typedef struct{
-    float k_X1a;  
-    float k_X1b;
-    float k_Y1a;  
-    float k_Y1b; 
-    float k_X2a;  
-    float k_X2b; 
-    float k_Y2a;  
-    float k_Y2b; 
-    float k_X3a;  
-    float k_X3b; 
-    float k_Y3a;  
-    float k_Y3b; 
-    float derating;
-    bool valid;
+    float k_X1a;        /**< setpoint x1: factor for alpha */
+    float k_X1b;        /**< setpoint x1: factor for beta */
+    float k_Y1a;        /**< setpoint y1: factor for alpha */  
+    float k_Y1b;        /**< setpoint y1: factor for beta */
+    float k_X2a;        /**< setpoint x2: factor for alpha */
+    float k_X2b;        /**< setpoint x2: factor for beta */
+    float k_Y2a;        /**< setpoint y2: factor for alpha */
+    float k_Y2b;        /**< setpoint y2: factor for beta */ 
+    float k_X3a;        /**< setpoint x3: factor for alpha */  
+    float k_X3b;        /**< setpoint x3: factor for beta */ 
+    float k_Y3a;        /**< setpoint y3: factor for alpha */  
+    float k_Y3b;        /**< setpoint y3: factor for beta */ 
+    float derating;     /**< derating factor */ 
+    bool valid;         /**< valid flag (true: parameter set for the fault is found, false: no parameter set is found, e.g. because of non optimized combination) */ 
 }uz_9ph_MLMT_kparameter_t;
 
 

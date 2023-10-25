@@ -44,7 +44,7 @@ struct uz_VSD_9ph_FD_config
 uz_VSD_9ph_FD_t *uz_VSD_9ph_FD_init(struct uz_VSD_9ph_FD_config config);
 
 /**
- * @brief Function for nine-phase open-phase-fault detection, has to be cyclicly called with a the frequency configured in sample_frequency_Hz
+ * @brief Function for nine-phase open-phase-fault detection, has to be called with the frequency configured in sample_frequency_Hz
  * @param uz_VSD_9ph_FD_t* pointer to OPF fault detection struct
  * @param vsdcurrents VSD currents
  * @param omega_el_rad_per_sec omega_el in rad per seconds

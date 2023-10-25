@@ -48,11 +48,11 @@ extern float epsilon_k;
 extern float reward_k;
 extern float update_lock_float;
 extern float omega_m_rad_per_sec;
+extern float reward_angle;
+extern float reward_position;
 
-
-//Initialize the Interrupt structure
-extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+	// Initialize the Interrupt structure
+	extern XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -85,7 +85,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_thetapendulum]	= &data->av.theta_pendulum;
 	js_ch_observable[JSO_position_abs]		= &position_abs;
 	js_ch_observable[JSO_position_ref]		= &position_ref;
-	js_ch_observable[JSO_ia] 				= &data->mv.i_abc_Amps.a;
+	js_ch_observable[JSO_ia] = &data->mv.i_abc_Ampsupdate_lock.a;
 	js_ch_observable[JSO_ib] 				= &data->mv.i_abc_Amps.b;
 	js_ch_observable[JSO_ic] 				= &data->mv.i_abc_Amps.c;
 	js_ch_observable[JSO_dqn_chart_position] 	= &data->obs.dqn_chart_position;
@@ -113,6 +113,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_epsilon] = &epsilon_k;
 	js_ch_observable[JSO_reward] = &reward_k;
 	js_ch_observable[JSO_update_lock] = &update_lock_float;
+	js_ch_observable[JSO_reward_angle] = &reward_angle;
+	js_ch_observable[JSO_reward_position] = &reward_position;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

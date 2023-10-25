@@ -9,7 +9,7 @@ use IEEE.NUMERIC_STD.all;
 
 entity MatrixMultiplication_control_s_axi is
 generic (
-    C_S_AXI_ADDR_WIDTH    : INTEGER := 8;
+    C_S_AXI_ADDR_WIDTH    : INTEGER := 9;
     C_S_AXI_DATA_WIDTH    : INTEGER := 32);
 port (
     ACLK                  :in   STD_LOGIC;
@@ -43,41 +43,59 @@ port (
     C_out_q0              :out  STD_LOGIC_VECTOR(31 downto 0);
     B_rows                :out  STD_LOGIC_VECTOR(63 downto 0);
     B_columns             :out  STD_LOGIC_VECTOR(63 downto 0);
+    trigger               :out  STD_LOGIC_VECTOR(0 downto 0);
     B_address0            :in   STD_LOGIC_VECTOR(4 downto 0);
     B_ce0                 :in   STD_LOGIC;
-    B_q0                  :out  STD_LOGIC_VECTOR(31 downto 0)
+    B_q0                  :out  STD_LOGIC_VECTOR(31 downto 0);
+    is_done_i             :out  STD_LOGIC_VECTOR(0 downto 0);
+    is_done_o             :in   STD_LOGIC_VECTOR(0 downto 0);
+    is_done_o_ap_vld      :in   STD_LOGIC
 );
 end entity MatrixMultiplication_control_s_axi;
 
 -- ------------------------Address Info-------------------
--- 0x00 : reserved
--- 0x04 : reserved
--- 0x08 : reserved
--- 0x0c : reserved
--- 0x10 : Data signal of A_rows
---        bit 31~0 - A_rows[31:0] (Read/Write)
--- 0x14 : Data signal of A_rows
---        bit 31~0 - A_rows[63:32] (Read/Write)
--- 0x18 : reserved
--- 0x60 : Data signal of B_rows
---        bit 31~0 - B_rows[31:0] (Read/Write)
--- 0x64 : Data signal of B_rows
---        bit 31~0 - B_rows[63:32] (Read/Write)
--- 0x68 : reserved
--- 0x6c : Data signal of B_columns
---        bit 31~0 - B_columns[31:0] (Read/Write)
--- 0x70 : Data signal of B_columns
---        bit 31~0 - B_columns[63:32] (Read/Write)
--- 0x74 : reserved
--- 0x20 ~
--- 0x3f : Memory 'A' (5 * 32b)
---        Word n : bit [31:0] - A[n]
--- 0x40 ~
--- 0x5f : Memory 'C_out' (5 * 32b)
---        Word n : bit [31:0] - C_out[n]
--- 0x80 ~
--- 0xff : Memory 'B' (25 * 32b)
---        Word n : bit [31:0] - B[n]
+-- 0x000 : reserved
+-- 0x004 : reserved
+-- 0x008 : reserved
+-- 0x00c : reserved
+-- 0x010 : Data signal of A_rows
+--         bit 31~0 - A_rows[31:0] (Read/Write)
+-- 0x014 : Data signal of A_rows
+--         bit 31~0 - A_rows[63:32] (Read/Write)
+-- 0x018 : reserved
+-- 0x060 : Data signal of B_rows
+--         bit 31~0 - B_rows[31:0] (Read/Write)
+-- 0x064 : Data signal of B_rows
+--         bit 31~0 - B_rows[63:32] (Read/Write)
+-- 0x068 : reserved
+-- 0x06c : Data signal of B_columns
+--         bit 31~0 - B_columns[31:0] (Read/Write)
+-- 0x070 : Data signal of B_columns
+--         bit 31~0 - B_columns[63:32] (Read/Write)
+-- 0x074 : reserved
+-- 0x078 : Data signal of trigger
+--         bit 0  - trigger[0] (Read/Write)
+--         others - reserved
+-- 0x07c : reserved
+-- 0x100 : Data signal of is_done_i
+--         bit 0  - is_done_i[0] (Read/Write)
+--         others - reserved
+-- 0x104 : reserved
+-- 0x108 : Data signal of is_done_o
+--         bit 0  - is_done_o[0] (Read)
+--         others - reserved
+-- 0x10c : Control signal of is_done_o
+--         bit 0  - is_done_o_ap_vld (Read/COR)
+--         others - reserved
+-- 0x020 ~
+-- 0x03f : Memory 'A' (5 * 32b)
+--         Word n : bit [31:0] - A[n]
+-- 0x040 ~
+-- 0x05f : Memory 'C_out' (5 * 32b)
+--         Word n : bit [31:0] - C_out[n]
+-- 0x080 ~
+-- 0x0ff : Memory 'B' (25 * 32b)
+--         Word n : bit [31:0] - B[n]
 -- (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 architecture behave of MatrixMultiplication_control_s_axi is
@@ -85,22 +103,28 @@ architecture behave of MatrixMultiplication_control_s_axi is
     signal wstate  : states := wrreset;
     signal rstate  : states := rdreset;
     signal wnext, rnext: states;
-    constant ADDR_A_ROWS_DATA_0    : INTEGER := 16#10#;
-    constant ADDR_A_ROWS_DATA_1    : INTEGER := 16#14#;
-    constant ADDR_A_ROWS_CTRL      : INTEGER := 16#18#;
-    constant ADDR_B_ROWS_DATA_0    : INTEGER := 16#60#;
-    constant ADDR_B_ROWS_DATA_1    : INTEGER := 16#64#;
-    constant ADDR_B_ROWS_CTRL      : INTEGER := 16#68#;
-    constant ADDR_B_COLUMNS_DATA_0 : INTEGER := 16#6c#;
-    constant ADDR_B_COLUMNS_DATA_1 : INTEGER := 16#70#;
-    constant ADDR_B_COLUMNS_CTRL   : INTEGER := 16#74#;
-    constant ADDR_A_BASE           : INTEGER := 16#20#;
-    constant ADDR_A_HIGH           : INTEGER := 16#3f#;
-    constant ADDR_C_OUT_BASE       : INTEGER := 16#40#;
-    constant ADDR_C_OUT_HIGH       : INTEGER := 16#5f#;
-    constant ADDR_B_BASE           : INTEGER := 16#80#;
-    constant ADDR_B_HIGH           : INTEGER := 16#ff#;
-    constant ADDR_BITS         : INTEGER := 8;
+    constant ADDR_A_ROWS_DATA_0    : INTEGER := 16#010#;
+    constant ADDR_A_ROWS_DATA_1    : INTEGER := 16#014#;
+    constant ADDR_A_ROWS_CTRL      : INTEGER := 16#018#;
+    constant ADDR_B_ROWS_DATA_0    : INTEGER := 16#060#;
+    constant ADDR_B_ROWS_DATA_1    : INTEGER := 16#064#;
+    constant ADDR_B_ROWS_CTRL      : INTEGER := 16#068#;
+    constant ADDR_B_COLUMNS_DATA_0 : INTEGER := 16#06c#;
+    constant ADDR_B_COLUMNS_DATA_1 : INTEGER := 16#070#;
+    constant ADDR_B_COLUMNS_CTRL   : INTEGER := 16#074#;
+    constant ADDR_TRIGGER_DATA_0   : INTEGER := 16#078#;
+    constant ADDR_TRIGGER_CTRL     : INTEGER := 16#07c#;
+    constant ADDR_IS_DONE_I_DATA_0 : INTEGER := 16#100#;
+    constant ADDR_IS_DONE_I_CTRL   : INTEGER := 16#104#;
+    constant ADDR_IS_DONE_O_DATA_0 : INTEGER := 16#108#;
+    constant ADDR_IS_DONE_O_CTRL   : INTEGER := 16#10c#;
+    constant ADDR_A_BASE           : INTEGER := 16#020#;
+    constant ADDR_A_HIGH           : INTEGER := 16#03f#;
+    constant ADDR_C_OUT_BASE       : INTEGER := 16#040#;
+    constant ADDR_C_OUT_HIGH       : INTEGER := 16#05f#;
+    constant ADDR_B_BASE           : INTEGER := 16#080#;
+    constant ADDR_B_HIGH           : INTEGER := 16#0ff#;
+    constant ADDR_BITS         : INTEGER := 9;
 
     signal waddr               : UNSIGNED(ADDR_BITS-1 downto 0);
     signal wmask               : UNSIGNED(C_S_AXI_DATA_WIDTH-1 downto 0);
@@ -117,6 +141,10 @@ architecture behave of MatrixMultiplication_control_s_axi is
     signal int_A_rows          : UNSIGNED(63 downto 0) := (others => '0');
     signal int_B_rows          : UNSIGNED(63 downto 0) := (others => '0');
     signal int_B_columns       : UNSIGNED(63 downto 0) := (others => '0');
+    signal int_trigger         : UNSIGNED(0 downto 0) := (others => '0');
+    signal int_is_done_i       : UNSIGNED(0 downto 0) := (others => '0');
+    signal int_is_done_o_ap_vld : STD_LOGIC;
+    signal int_is_done_o       : UNSIGNED(0 downto 0) := (others => '0');
     -- memory signals
     signal int_A_address0      : UNSIGNED(2 downto 0);
     signal int_A_ce0           : STD_LOGIC;
@@ -376,6 +404,14 @@ port map (
                         rdata_data <= RESIZE(int_B_columns(31 downto 0), 32);
                     when ADDR_B_COLUMNS_DATA_1 =>
                         rdata_data <= RESIZE(int_B_columns(63 downto 32), 32);
+                    when ADDR_TRIGGER_DATA_0 =>
+                        rdata_data <= RESIZE(int_trigger(0 downto 0), 32);
+                    when ADDR_IS_DONE_I_DATA_0 =>
+                        rdata_data <= RESIZE(int_is_done_i(0 downto 0), 32);
+                    when ADDR_IS_DONE_O_DATA_0 =>
+                        rdata_data <= RESIZE(int_is_done_o(0 downto 0), 32);
+                    when ADDR_IS_DONE_O_CTRL =>
+                        rdata_data(0) <= int_is_done_o_ap_vld;
                     when others =>
                         NULL;
                     end case;
@@ -394,6 +430,8 @@ port map (
     A_rows               <= STD_LOGIC_VECTOR(int_A_rows);
     B_rows               <= STD_LOGIC_VECTOR(int_B_rows);
     B_columns            <= STD_LOGIC_VECTOR(int_B_columns);
+    trigger              <= STD_LOGIC_VECTOR(int_trigger);
+    is_done_i            <= STD_LOGIC_VECTOR(int_is_done_i);
 
     process (ACLK)
     begin
@@ -456,6 +494,56 @@ port map (
             if (ACLK_EN = '1') then
                 if (w_hs = '1' and waddr = ADDR_B_COLUMNS_DATA_1) then
                     int_B_columns(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B_columns(63 downto 32));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_TRIGGER_DATA_0) then
+                    int_trigger(0 downto 0) <= (UNSIGNED(WDATA(0 downto 0)) and wmask(0 downto 0)) or ((not wmask(0 downto 0)) and int_trigger(0 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_IS_DONE_I_DATA_0) then
+                    int_is_done_i(0 downto 0) <= (UNSIGNED(WDATA(0 downto 0)) and wmask(0 downto 0)) or ((not wmask(0 downto 0)) and int_is_done_i(0 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ARESET = '1') then
+                int_is_done_o <= (others => '0');
+            elsif (ACLK_EN = '1') then
+                if (is_done_o_ap_vld = '1') then
+                    int_is_done_o <= UNSIGNED(is_done_o);
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ARESET = '1') then
+                int_is_done_o_ap_vld <= '0';
+            elsif (ACLK_EN = '1') then
+                if (is_done_o_ap_vld = '1') then
+                    int_is_done_o_ap_vld <= '1';
+                elsif (ar_hs = '1' and raddr = ADDR_IS_DONE_O_CTRL) then
+                    int_is_done_o_ap_vld <= '0'; -- clear on read
                 end if;
             end if;
         end if;

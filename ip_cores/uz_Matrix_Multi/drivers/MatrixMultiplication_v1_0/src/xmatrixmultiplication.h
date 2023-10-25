@@ -88,6 +88,12 @@ void XMatrixmultiplication_Set_B_rows(XMatrixmultiplication *InstancePtr, u64 Da
 u64 XMatrixmultiplication_Get_B_rows(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_B_columns(XMatrixmultiplication *InstancePtr, u64 Data);
 u64 XMatrixmultiplication_Get_B_columns(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_trigger(XMatrixmultiplication *InstancePtr, u32 Data);
+u32 XMatrixmultiplication_Get_trigger(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_is_done_i(XMatrixmultiplication *InstancePtr, u32 Data);
+u32 XMatrixmultiplication_Get_is_done_i(XMatrixmultiplication *InstancePtr);
+u32 XMatrixmultiplication_Get_is_done_o(XMatrixmultiplication *InstancePtr);
+u32 XMatrixmultiplication_Get_is_done_o_vld(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_Get_A_BaseAddress(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_Get_A_HighAddress(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_Get_A_TotalBytes(XMatrixmultiplication *InstancePtr);

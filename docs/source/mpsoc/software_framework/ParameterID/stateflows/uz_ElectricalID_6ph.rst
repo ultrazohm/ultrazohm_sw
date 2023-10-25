@@ -52,7 +52,6 @@ Stateflow Overview
 	\node[block,fill=green!20,name=entry, below = 0.5cm of PID,drop shadow,align=center] {Entry of state\\\textbf{ACCEPT}};
 	\node[block,fill=yellow!20,name=state1, below right = 0.5cm and 1cm of entry,drop shadow,align=center] {Automatic DutyCycle \\determination\\ \textbf{110}};
 	\node[block,fill=yellow!20,name=state2, below = 2.5cm of entry,drop shadow,align=center] {Align rotor to d-axis \\Identify $\theta_\mathrm{offset}$\\ \textbf{120/121}};
-	%all step responses
 	\node[block,fill=yellow!20,name=state3, below = 5cm of state2,drop shadow,align=center] {Identify $L_\textrm{d},L_\textrm{X},L_\textrm{Y}$,\\$L_\textrm{Z+}L_\textrm{Z-}$\\ and respective $R$\\via step response\\ \textbf{131/133-136}};
 	%Lock rotor
 	\node[block,fill=red!20,name=state7, below right = 0.5cm and 1cm of state2,drop shadow,align=center] {Lock rotor\\ in position };
@@ -74,7 +73,7 @@ Stateflow Overview
 	\node[block,fill=yellow!20,name=state14, below = 3cm of state13,drop shadow,align=center] {Recalculate FOC- \\parameters\\ \textbf{170}};
 	\node[block,fill=green!20,name=exit, below = 0.5cm of state14,drop shadow,align=center] {Exit of state};
 	\begin{scope}[on background layer]
-		\node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (exit)(state1)(state2),inner sep=5pt,minimum width=7cm] {};
+		\node[draw,fill=blue!10,name=ParameterID,rounded corners,fit=(PID) (exit)(state1)(state2),inner sep=5pt,minimum width=9cm] {};
 	\end{scope}
 	\draw[->](entry.east) -| (state1.north);
 	\path ([xshift=-2.3cm,yshift=1cm]entry.east) -- (state1.north) node[midway, align=center] (DC1){DutyCycle == 0.0};
@@ -91,14 +90,14 @@ Stateflow Overview
 	\path (state7.south) -- (state8.north) node [midway, align=center] (ACPT1){\textbf{ACCEPT}};
 	\draw[->](state3.south) -- (state9.north);
 	%around Psi
-	\draw[->](state9.south) -- node[align=center, xshift=-2cm,yshift=-0.2cm]{Extended$\Psi$\\==0\\} (state12.north);
-	\draw[->](state9.east) -- node[align=center,yshift=-2cm]{Extended$\Psi$\\==1\\} (state10.west);
+	\draw[->](state9.south) -- node[align=center, xshift=-2.3cm,yshift=-0.2cm]{Extended$\Psi$\\==0\\} (state12.north);
+	\draw[->](state9.east) -- node[align=center,yshift=0cm]{Extended$\Psi$\\==1\\} (state10.west);
 	\draw[->](state10.south) -- node[]{\textbf{ACCEPT}} (state11.north);
 	\node[name=help1,below = of state10]{};
-	\draw[->](state11.south) |- node[align=center]{free rotor\\\textbf{ACCEPT}} ([yshift=0.5cm]state13.east);
+	\draw[->](state11.south) |- node[align=center, xshift=1cm, yshift=1cm]{free rotor\\\textbf{ACCEPT}} ([yshift=0.5cm]state13.east);
 	\draw[->](state12.south) -- (state13.north);
 	%around J
-	\draw[->](state13.south) --  node[align=center,xshift=-2cm]{Extended$\theta$\\==0\\} (state14.north);
+	\draw[->](state13.south) --  node[align=center,xshift=-2.3cm]{Extended$\theta$\\==0\\} (state14.north);
 	\draw[->](state15.south) |- (state14.east);
 	\draw[->]([yshift=-0.5cm]state13.east) -| node[align=center,yshift=-0.7cm]{Extended$\theta$\\==1\\} (state15.north);
 	\draw[->](state14.south) -- (exit.north);

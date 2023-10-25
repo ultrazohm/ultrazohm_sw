@@ -83,11 +83,11 @@ wire    ap_block_pp0_stage0_11001;
 reg   [63:0] n_2_cast3_reg_228_pp0_iter1_reg;
 reg   [63:0] n_2_cast3_reg_228_pp0_iter2_reg;
 reg   [63:0] n_2_cast3_reg_228_pp0_iter3_reg;
-wire   [63:0] zext_ln25_fu_172_p1;
+wire   [63:0] zext_ln24_fu_172_p1;
 wire    ap_block_pp0_stage0;
-wire   [63:0] zext_ln25_1_fu_189_p1;
+wire   [63:0] zext_ln24_1_fu_189_p1;
 reg   [4:0] phi_mul_fu_54;
-wire   [4:0] add_ln25_2_fu_177_p2;
+wire   [4:0] add_ln24_2_fu_177_p2;
 wire    ap_loop_init;
 reg   [4:0] ap_sig_allocacmp_phi_mul_load;
 reg   [4:0] n_2_fu_58;
@@ -97,8 +97,8 @@ wire   [31:0] grp_fu_125_p2;
 wire   [31:0] grp_fu_125_p0;
 wire   [31:0] grp_fu_125_p1;
 wire   [2:0] empty_fu_162_p1;
-wire   [2:0] add_ln25_fu_166_p2;
-wire   [4:0] add_ln25_1_fu_183_p2;
+wire   [2:0] add_ln24_fu_166_p2;
+wire   [4:0] add_ln24_1_fu_183_p2;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -225,7 +225,7 @@ end
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         if (((icmp_ln23_fu_147_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
-            phi_mul_fu_54 <= add_ln25_2_fu_177_p2;
+            phi_mul_fu_54 <= add_ln24_2_fu_177_p2;
         end else if ((ap_loop_init == 1'b1)) begin
             phi_mul_fu_54 <= 5'd0;
         end
@@ -348,19 +348,19 @@ always @ (*) begin
     endcase
 end
 
-assign A_address0 = zext_ln25_fu_172_p1;
+assign A_address0 = zext_ln24_fu_172_p1;
 
-assign B_address0 = zext_ln25_1_fu_189_p1;
+assign B_address0 = zext_ln24_1_fu_189_p1;
 
 assign acc_address0 = n_2_cast3_reg_228_pp0_iter3_reg;
 
 assign acc_d0 = grp_fu_125_p2;
 
-assign add_ln25_1_fu_183_p2 = (ap_sig_allocacmp_phi_mul_load + trunc_ln2);
+assign add_ln24_1_fu_183_p2 = (ap_sig_allocacmp_phi_mul_load + trunc_ln2);
 
-assign add_ln25_2_fu_177_p2 = (ap_sig_allocacmp_phi_mul_load + trunc_ln3);
+assign add_ln24_2_fu_177_p2 = (ap_sig_allocacmp_phi_mul_load + trunc_ln3);
 
-assign add_ln25_fu_166_p2 = (empty_fu_162_p1 + mul);
+assign add_ln24_fu_166_p2 = (empty_fu_162_p1 + mul);
 
 assign ap_CS_fsm_pp0_stage0 = ap_CS_fsm[32'd0];
 
@@ -398,9 +398,9 @@ assign n_2_cast3_fu_143_p1 = ap_sig_allocacmp_n;
 
 assign n_3_fu_153_p2 = (ap_sig_allocacmp_n + 5'd1);
 
-assign zext_ln25_1_fu_189_p1 = add_ln25_1_fu_183_p2;
+assign zext_ln24_1_fu_189_p1 = add_ln24_1_fu_183_p2;
 
-assign zext_ln25_fu_172_p1 = add_ln25_fu_166_p2;
+assign zext_ln24_fu_172_p1 = add_ln24_fu_166_p2;
 
 always @ (posedge ap_clk) begin
     n_2_cast3_reg_228[63:5] <= 59'b00000000000000000000000000000000000000000000000000000000000;

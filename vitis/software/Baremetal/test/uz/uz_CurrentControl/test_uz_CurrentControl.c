@@ -289,13 +289,45 @@ void test_uz_CurrentControl_sample_output_PI_Controller_limit_deactivated(void){
     }
 }
 
-void test_uz_CurrentControl_max_modulation_index_negative(void){
+void test_uz_CurrentControl_max_modulation_index_negative_assert(void){
     config.max_modulation_index = -5.2f;
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
 }
 
-void test_uz_CurrentControl_max_modulation_index_zero(void){
+void test_uz_CurrentControl_max_modulation_index_zero_assert(void){
     config.max_modulation_index = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
 }
+
+void test_uz_CurrentControl_set_max_modulation_index_zero_assert(void){
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_max_modulation_index(instance, 0.0f));
+}
+
+void test_uz_CurrentControl_set_max_modulation_index_negative_assert(void){
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_max_modulation_index(instance, -10.0f));
+}
+
+void test_uz_CurrentControl_set_max_modulation_index_check(void){
+    //Values for comparision from simulation
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    i_actual_Ampere.q = 0.0f;
+    i_actual_Ampere.d = 0.0f;
+    omega_el_rad_per_sec =  0.0f; 
+    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    TEST_ASSERT_EQUAL_INT(0,uz_CurrentControl_get_ext_clamping(instance));
+    V_dc_volts = 10.0f;
+    i_actual_Ampere.q = 0.874f;
+    i_actual_Ampere.d = 1.0f;
+    omega_el_rad_per_sec =  673.0f; 
+    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    TEST_ASSERT_EQUAL_INT(1,uz_CurrentControl_get_ext_clamping(instance));
+    //Increase max_modulation_index to arbitrary high value. Therefore the limitation should not be active anymore
+    uz_CurrentControl_set_max_modulation_index(instance, 10.0f);
+    uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+    TEST_ASSERT_EQUAL_INT(0,uz_CurrentControl_get_ext_clamping(instance));
+}
+
+
 #endif // TEST

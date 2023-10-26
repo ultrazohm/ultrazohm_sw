@@ -43,13 +43,15 @@ extern float finished;
 extern float global_loss;
 extern float global_reward_metric;
 extern float epoch_global;
+extern float number_of_episodes;
 
-extern float epsilon_k;
+	extern float epsilon_k;
 extern float reward_k;
 extern float update_lock_float;
 extern float omega_m_rad_per_sec;
 extern float reward_angle;
 extern float reward_position;
+extern float cum_loss;
 
 	// Initialize the Interrupt structure
 	extern XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -115,6 +117,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_update_lock] = &update_lock_float;
 	js_ch_observable[JSO_reward_angle] = &reward_angle;
 	js_ch_observable[JSO_reward_position] = &reward_position;
+	js_ch_observable[JSO_number_of_updates] = &number_of_updates;
+	js_ch_observable[JSO_cumulative_loss] = &cum_loss;
+	js_ch_observable[JSO_episode_reward] = &episode_reward;
+	js_ch_observable[JSO_number_of_episodes] = &number_of_episodes;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

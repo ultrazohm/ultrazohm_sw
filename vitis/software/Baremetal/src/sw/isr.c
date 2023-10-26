@@ -85,8 +85,10 @@ extern uz_dqn_t *testdqn2;
 extern bool limit_was_hit;
 float angle_Kp = 400.0f;
 float angle_Ki = 10.0f;
+float episode_reward=0.0f;
+float number_of_episodes=1.0f;
 
-float reward_k;
+    float reward_k;
 extern bool first_episode;
 extern float penalty_grenze;
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
@@ -109,11 +111,11 @@ extern bool update_lock;
 float epsilon_k;
 extern float input_nn[5];
 enum dqn_chain chain = dqn_active;
-float reward_angle=0.0f;
-float reward_position=0.0f;
+float reward_angle = 0.0f;
+float reward_position = 0.0f;
+float number_of_updates = 0.0f;
 
-    void
-    ISR_Control(void *data)
+void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     // Read Measurement from ADCs and Encoder
@@ -201,7 +203,7 @@ float reward_position=0.0f;
     reward_angle = fabsf(Global_Data.obs.dqn_angle) / (float)M_PI;
     reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
     reward_k = calculate_reward_pendulum(1.0f, reward_angle, reward_position, Global_Data.obs.dqn_chart_position_derv, false);
-
+    number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
     if (current_state == control_state)
     {
         if (fabsf(position_abs) > limit_error)
@@ -411,6 +413,7 @@ void dqn_isr(void)
                 // Sample environment at k+1
                 uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
                 uz_dqn_set_reward(testdqn2, reward_k);
+                episode_reward += reward_k;
                 uz_dqn_push_to_buffer(testdqn2);
             }
         }
@@ -427,6 +430,7 @@ void dqn_isr(void)
             uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
             // /DQN__CONTROL_FREQUENCY
             reward_k = calculate_reward_pendulum(1.0f, (1.0f - Global_Data.obs.dqn_cos_angle), Global_Data.obs.dqn_chart_position, Global_Data.obs.dqn_chart_position_derv, true);
+            episode_reward += reward_k;
             uz_dqn_set_reward(testdqn2, reward_k);
             uz_dqn_push_to_buffer(testdqn2);
             chain = limit_violation;
@@ -497,6 +501,7 @@ void dqn_isr(void)
         break;
     case get_to_start_postion:
         Global_Data.av.trigger_logging = 5.0f;
+        episode_reward = 0.0f;
         position_ref = 150.0f;
         pos_delta = position_ref - position_abs;
         position_control(position_ref, true);
@@ -504,6 +509,7 @@ void dqn_isr(void)
         {
             // if(!update_lock){
             chain = dqn_active;
+            number_of_episodes+=1.0f;
             //}
         }
         else

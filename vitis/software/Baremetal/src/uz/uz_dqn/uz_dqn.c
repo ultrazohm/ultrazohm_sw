@@ -220,6 +220,11 @@ void uz_dqn_copy_net(uz_dqn_t *self){
     uz_nn_copy(self->critic, self->critic_copy);
 }
 
+float uz_dqn_get_number_of_updates(uz_dqn_t* self){
+    uz_assert_not_NULL(self);
+    return (float)adam_get_number_of_updates(self->adam);
+}
+
 float calculate_loss_dqn(uz_dqn_t *self, float samplereward, float qval, float qvalplus1, bool terminal)
 {
     uz_assert_not_NULL(self);

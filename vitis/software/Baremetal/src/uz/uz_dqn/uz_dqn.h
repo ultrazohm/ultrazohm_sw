@@ -28,4 +28,5 @@ float uz_dqn_get_epsilon(uz_dqn_t *self);
 uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self);
 
 void uz_dqn_copy_net(uz_dqn_t *self);
+float uz_dqn_get_number_of_updates(uz_dqn_t *self);
 #endif // UZ_DQN_H

@@ -24,7 +24,6 @@ float finished = 5.0f;
 float evaluation_run = 0.0f;
 float global_loss = 0.0f;
 float global_reward_metric = 0.0f;
-float episode_reward = 0.0f;
 float penalty_grenze=340.0f;
 bool limit_was_hit=false;
 

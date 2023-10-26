@@ -13,12 +13,23 @@ struct uz_DutyCycle_t {
 	float DutyCycle_C; /**< DutyCycle for Phase W */
 };
 
+struct uz_DutyCycle_2x3ph_t{
+    struct uz_DutyCycle_t system1;
+    struct uz_DutyCycle_t system2;
+};
+
+struct uz_DutyCycle_3x3ph_t{
+    struct uz_DutyCycle_t system1;
+    struct uz_DutyCycle_t system2;
+	struct uz_DutyCycle_t system3;
+};
+
 /**
  * @brief Generates a DutyCycle from dq-reference voltages via Space Vector Modulation for a carrier based PWM generation
  * 
  * @param v_ref_Volts reference voltages in Volts (e.g. from current controller)
  * @param V_dc_volts DC-Link voltage in volts
- * @param theta_el_rad electrical angle speed in 1/rad
+ * @param theta_el_rad electrical rotor angle in rad
  * @return struct uz_DutyCycle_t generated DutyCycles
  */
 struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float V_DC_Volts, float theta_el_rad);

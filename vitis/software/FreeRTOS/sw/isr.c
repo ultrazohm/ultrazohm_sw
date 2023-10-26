@@ -25,12 +25,7 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
-
-#define IPI_HEADER			0x1E0000 /* 1E - Target Module ID */
-
 struct APU_to_RPU_t ControlData;
-
-extern A53_Data Global_Data_A53;
 extern int js_connection_established;
 
 // Javascope Queue parameters

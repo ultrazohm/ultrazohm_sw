@@ -28,6 +28,12 @@ cd ..
 set FOLDER_PATH [pwd]
 cd $WS_PATH
 
+set FOLDER_PATH [pwd]
+cd $WS_PATH
+
+set VITIS_PATH $::env(XILINX_VITIS)
+cd $VITIS_PATH
+
 set PLATFORM_NAME 	UltraZohm
 set XSA_FOLDER 	[file join $FOLDER_PATH vivado_exported_xsa]
 set EXPORT_FOLDER [file join $FOLDER_PATH software]

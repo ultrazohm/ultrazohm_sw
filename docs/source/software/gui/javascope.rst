@@ -37,7 +37,7 @@ The GUI is shown in :numref:`javascope_gui`.
 
 #. First, press the ``connect`` button (1) in order to connect your scope to the UltraZohm.
 #. You will see some moving signs at (2) if the connection was successful.
-#. Next, press the ``Run/Stop`` button (3) in order to run the scope.
+#. The ``Stop`` (3) respectively ``Run`` button stops or restarts the scope. After the connection has been established, the Scope will be put into the ``Run`` mode automatically.
 #. You can switch between a **Lightmode** and **Darkmode** for the GUI on the fly.
 #. Go to the ``Setup Scope`` panel and press ``sendSelectData (all)`` to get the pre-selected values from the drop-down menus on the scope. For changing the entries of the drop-down menus, see :ref:`javascope_customizing`.
 #. In the time-based scope it is possible to debug up to 20 values by receiving data from the ISR (R5 processor).
@@ -112,9 +112,11 @@ The control page is used to step through the state-machine of the system and for
 
    b. For the selection of which values are shown here, see section :ref:`javascope_customizing`.
 
+   c. If not all of the up to 20 channels are required, they can be set to ``JSSD_FLOAT_ZEROVALUE``. They won't be displayed then. Furthermore, they won't be logged either.
+
 #. The ``send_fields``
 
-   a. Six values are available that can be used as references or setpoints for the user application.
+   a. Twenty values are available that can be used as references or setpoints for the user application.
 
    b. After typing in a value, press ``set`` for sending it to the R5. In ``ipc_ARM.c`` one can choose further usage of the value inside the application.
 
@@ -173,7 +175,8 @@ The logging panel is used to setup the data logger of the GUI.
 #. The button ``Log FastData`` enables or disables the logging of the fast data (the selection in the :ref:`javascope_setup_scope` panel). 
    If the selection is enabled, the text of the button is highlighted green. If the logging is active, this button is deactivated.
 #. The button ``Log SlowData`` enables or disables the logging of the slow data.
-   The slow data values, which are logged, are the values displayed in the ``receive fields``. 
+   The slow data values, which are logged, are the values displayed in the 20 ``receive fields``. 
+   However, to reduce the file size, only values not equal to ``JSSD_FLOAT_ZEROVALUE`` are logged.
    For customizing them see :ref:`javascope_customizing`.
    If the selection is enabled, the text of the button is highlighted green. If the logging is active, this button is deactivated.
 #. With the ``set n-th log value`` the logging rate can be configured. Only the ``x-th`` value will then be logged (e.g. Factor ``10``, only the values for every 10th timestamp will be logged). 
@@ -223,6 +226,7 @@ Some settings can be configured before the start-up of the GUI in the ``properti
    Using ``0`` disables the visibility of the specific channel, whilst ``1`` turns it on. 
    The visibility of the channels can still be changed during runtime by clicking on the appropriate channel in the legend of the scope. 
    Use delimiter (;) to separate the scaling values for the channels.
+#. Panel extension selection. Setting the ``ParameterID`` variable to **1** enables this extension panel.
 
 
 Add variables to the scope drop-down menus
@@ -264,8 +268,11 @@ Customize the Control tab in the GUI
 """"""""""""""""""""""""""""""""""""
 
 For better usability and presentations, one might want to customize the slow data variables to be shown in the ``receive_field_x`` section as well as the description and physical units of ``send_field_x`` and ``receive_field_x`` entries in the control tab of the GUI.
-All those can be customized in the ``javascope.h`` file. Towards the end of this file, you will notice a commented-out section that begins with ``/* Visualization Config for GUI */``. The text below is parsed by the GUI at startup 
-and configures some text and the slow data to be displayed in the ``receive_field`` section. As shown below, one can simply change the text strings to adopt the GUI for the user application.
+All those can be customized in the ``javascope.h`` file.
+Towards the end of this file, you will notice a commented-out section that begins with ``/* Visualization Config for GUI */``.
+The text below is parsed by the GUI at startup and configures some text and the slow data to be displayed in the ``receive_field`` section.
+As shown below, one can simply change the text strings to adopt the GUI for the user application.
+The eight individual buttons can be labeled in the same way.
 
   ..  _javascope_customcontrol:
 
@@ -275,7 +282,7 @@ and configures some text and the slow data to be displayed in the ``receive_fiel
       Correlation of ``javascope.h`` and text entries in the GUI
 
 The selection of which slow data values are displayed in the ``receive_field`` section works the same way. Simply copy the proper entries from the ``JS_SlowData`` enum into 
-the commented out enum at the end of the file ``javascope.h`` as shown below. The slow data values of the six ``JSSD_FLOAT_x`` entries that are above the ``JSSD_FLOAT_Error_Code`` will be displayed in the receive_fields 1 to 6 from top to bottom.
+the commented out enum at the end of the file ``javascope.h`` as shown below. The slow data values of the twenty ``JSSD_FLOAT_x`` entries that are above the ``JSSD_FLOAT_Error_Code`` will be displayed in the receive_fields 1 to 20 from top to bottom.
 The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text field of the GUI and should not be changed.
 
   ..  _javascope_selectslowdata:
@@ -284,6 +291,10 @@ The ``JSSD_FLOAT_Error_Code`` value is always mapped to the error code text fiel
       :align: center
 
       Correlation of ``javascope.h`` and which slow data are displayed in the control tab
+
+If not every out of the 20 ``receive_fields`` is needed, the unnecessary channels can be set to ``JSSD_FLOAT_ZEROVALUE``. 
+They will appear as value 0 in the receive fields. 
+Furthermore, to reduces the size of the .csv logging file, the ``receive_fields`` with the value ``JSSD_FLOAT_ZEROVALUE`` won't be logged.
 
 Known issues
 ------------

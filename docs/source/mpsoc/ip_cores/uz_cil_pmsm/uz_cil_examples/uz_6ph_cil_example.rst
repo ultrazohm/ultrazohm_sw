@@ -70,8 +70,8 @@ The init functions are called during the init process of all IP-cores.
       .friction_coefficient = 0.001f,
       .coulomb_friction_constant = 0.001f,
       .inertia = 0.001f,
-      .simulate_mechanical_system = true,
-      .switch_pspl = false};
+      .simulate_mechanical_system = set_load_torque,
+      .switch_pspl = src_PL};
 
   // Transformation
   uz_pmsm6ph_transformation_t *transformation = NULL;

@@ -50,8 +50,12 @@ uz_pmsm_model3ph_t *uz_pmsm_model3ph_init(struct uz_pmsm_model3ph_config_t confi
 {
     uz_assert(0U != config.base_address);
     uz_assert(0U != config.ip_core_frequency_Hz);
+    uz_assert(config.simulate_mechanical_system >= 0 && config.simulate_mechanical_system < 2);
+    uz_assert(config.switch_pspl >= 0 && config.switch_pspl < 2);
+    uz_assert(config.simulate_mechanical_system >= 0 && config.simulate_mechanical_system < 2);
+    uz_assert(config.switch_pspl >= 0 && config.switch_pspl < 2);
     // If the mechanical system is not simulated, set default values
-    if (!config.simulate_mechanical_system)
+    if (config.simulate_mechanical_system == set_fixed_rpm)
     {
         config.pmsm.J_kg_m_squared = 1.0f;              // If mechanical system is not simulated, set inertia to 1.0 to prevent division by zero
         config.friction_coefficient = 1.0f; // Random default values
@@ -143,8 +147,16 @@ static void write_config_to_pl(uz_pmsm_model3ph_t *self)
     uz_pmsm_model3ph_hw_write_friction_coefficient(self->config.base_address, self->config.friction_coefficient);
     uz_pmsm_model3ph_hw_write_coulomb_friction_constant(self->config.base_address, self->config.coulomb_friction_constant);
     uz_pmsm_model3ph_hw_write_inertia(self->config.base_address, self->config.pmsm.J_kg_m_squared);
-    uz_pmsm_model3ph_hw_write_simulate_mechanical(self->config.base_address, self->config.simulate_mechanical_system);
-    uz_pmsm_model3ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
+    if(self->config.simulate_mechanical_system == set_fixed_rpm){
+        uz_pmsm_model3ph_hw_write_simulate_mechanical(self->config.base_address, false);
+    }else{
+        uz_pmsm_model3ph_hw_write_simulate_mechanical(self->config.base_address, true);       
+    }
+    if(self->config.switch_pspl == src_PS){
+        uz_pmsm_model3ph_hw_write_switch_pspl(self->config.base_address, true);
+    }else{
+        uz_pmsm_model3ph_hw_write_switch_pspl(self->config.base_address, false);
+    }
 }
 
 uz_3ph_dq_t uz_pmsm_model3ph_dq_get_input_voltages(uz_pmsm_model3ph_t *self){

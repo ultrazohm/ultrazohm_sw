@@ -15,8 +15,7 @@ typedef struct uz_pmsm_model3ph_t uz_pmsm_model3ph_t;
 /*! enum for readable configuring for for the source of voltages */
 enum uz_cil_pmsm_input_source {
 	src_PS=0, 
-	src_PL
-	}; 
+	src_PL}; 
 
 /*! enum for readable configuring for for the load type */
 enum uz_cil_pmsm_load_type {
@@ -34,8 +33,8 @@ struct uz_pmsm_model3ph_config_t
     uz_PMSM_t pmsm; /**< PMSM Config with necessary parameters */
     float friction_coefficient; /**< Linear coefficient of friction */
     float coulomb_friction_constant; /**< Static friction constant */
-    enum uz_cil_pmsm_input_source simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
-    enum uz_cil_pmsm_load_type switch_pspl; /**< true: input voltage from AXI, false: input voltage from PL */
+    enum uz_cil_pmsm_load_type simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
+    enum uz_cil_pmsm_input_source switch_pspl; /**< Determine input source */
 };
 
 /**

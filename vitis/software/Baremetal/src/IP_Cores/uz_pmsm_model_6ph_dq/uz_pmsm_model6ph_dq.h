@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "../../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz_pmsm_model_3ph_dq/uz_pmsm_model3ph_dq.h"
 
 /**
  * @brief Object data type definition of the PMSM model IP-Core driver
@@ -26,8 +27,8 @@ struct uz_pmsm_model6ph_dq_config_t
     float friction_coefficient; /**< Linear coefficient of friction */
     float coulomb_friction_constant; /**< Static friction constant */
     float inertia; /**< Inertia of the PMSM */
-    bool simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
-    bool switch_pspl; /**< true: inputs from PS, false: inputs from PL */
+    enum uz_cil_pmsm_load_type simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
+    enum uz_cil_pmsm_input_source switch_pspl; /**< Determine input source */
 };
 
 /**
@@ -148,7 +149,7 @@ void uz_pmsm_model6ph_dq_reset(uz_pmsm_model6ph_dq_t *self);
  * @param self Pointer to driver instance
  * @param use_axi true: voltages from PS, false: voltages from PL
  */
-void uz_pmsm_model6ph_dq_set_use_axi_input(uz_pmsm_model6ph_dq_t *self, bool use_axi);
+void uz_pmsm_model6ph_dq_set_use_axi_input(uz_pmsm_model6ph_dq_t *self, enum uz_cil_pmsm_input_source src);
 
 
 #endif // uz_pmsm_model6ph_dq_H

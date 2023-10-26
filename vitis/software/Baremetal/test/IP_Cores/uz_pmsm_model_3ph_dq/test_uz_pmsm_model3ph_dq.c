@@ -12,8 +12,8 @@
 struct uz_pmsm_model3ph_config_t config = {
     .base_address = BASE_ADDRESS,
     .ip_core_frequency_Hz = IP_FRQ,
-    .simulate_mechanical_system = true,
-    .switch_pspl = true,
+    .simulate_mechanical_system = set_load_torque,
+    .switch_pspl = src_PS,
     .pmsm.R_ph_Ohm = 2.1f,
     .pmsm.Ld_Henry = 0.00005f,
     .pmsm.Lq_Henry = 0.00005f,
@@ -41,7 +41,7 @@ uz_pmsm_model3ph_t *successful_init(struct uz_pmsm_model3ph_config_t configurati
     uz_pmsm_model3ph_hw_write_psi_pm_Expect(BASE_ADDRESS, configuration.pmsm.Psi_PM_Vs);
     uz_pmsm_model3ph_hw_write_L_d_Expect(BASE_ADDRESS, configuration.pmsm.Ld_Henry);
     uz_pmsm_model3ph_hw_write_L_q_Expect(BASE_ADDRESS, configuration.pmsm.Lq_Henry);
-    if (configuration.simulate_mechanical_system)
+    if (configuration.simulate_mechanical_system == set_load_torque)
     {
         uz_pmsm_model3ph_hw_write_friction_coefficient_Expect(BASE_ADDRESS, configuration.friction_coefficient);
         uz_pmsm_model3ph_hw_write_coulomb_friction_constant_Expect(BASE_ADDRESS, configuration.coulomb_friction_constant);
@@ -54,8 +54,8 @@ uz_pmsm_model3ph_t *successful_init(struct uz_pmsm_model3ph_config_t configurati
         uz_pmsm_model3ph_hw_write_coulomb_friction_constant_Expect(BASE_ADDRESS, 0.0f);
         uz_pmsm_model3ph_hw_write_inertia_Expect(BASE_ADDRESS, 1.0f);
     }
-    uz_pmsm_model3ph_hw_write_simulate_mechanical_Expect(BASE_ADDRESS, configuration.simulate_mechanical_system);
-    uz_pmsm_model3ph_hw_write_switch_pspl_Expect(BASE_ADDRESS, configuration.switch_pspl);
+    uz_pmsm_model3ph_hw_write_simulate_mechanical_Expect(BASE_ADDRESS, true);
+    uz_pmsm_model3ph_hw_write_switch_pspl_Expect(BASE_ADDRESS, true);
     uz_pmsm_model3ph_t *instance = uz_pmsm_model3ph_init(configuration);
     return (instance);
 }

@@ -4506,9 +4506,7 @@
               "init_axi2tcm": {
                 "ports": [
                   "util_vector_logic_0/Res",
-                  "AXI2TCM_0/init_axi_txn",
-                  "system_ila_0/probe1",
-                  "AXI2TCM_2/init_axi_txn"
+                  "system_ila_0/probe1"
                 ]
               },
               "proc_sys_reset_1_peripheral_aresetn": {
@@ -4523,8 +4521,10 @@
               "util_vector_logic_1_Res": {
                 "ports": [
                   "util_vector_logic_1/Res",
+                  "system_ila_0/probe5",
                   "AXI2TCM_1/init_axi_txn",
-                  "system_ila_0/probe5"
+                  "AXI2TCM_0/init_axi_txn",
+                  "AXI2TCM_2/init_axi_txn"
                 ]
               },
               "zynq_ultra_ps_e_0_pl_clk1": {

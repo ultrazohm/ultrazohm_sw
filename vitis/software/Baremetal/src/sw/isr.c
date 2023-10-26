@@ -200,7 +200,7 @@ float reward_position=0.0f;
     epsilon_k = uz_dqn_get_epsilon(testdqn2);
     reward_angle = fabsf(Global_Data.obs.dqn_angle) / (float)M_PI;
     reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    reward_k = calculate_reward_pendulum(1.0f / DQN__CONTROL_FREQUENCY, angle_for_reward, reward_position, Global_Data.obs.dqn_chart_position_derv, false);
+    reward_k = calculate_reward_pendulum(1.0f, reward_angle, reward_position, Global_Data.obs.dqn_chart_position_derv, false);
 
     if (current_state == control_state)
     {
@@ -243,7 +243,7 @@ float reward_position=0.0f;
         uz_SpeedControl_reset(Global_Data.objects.Speed_instance);
         uz_CurrentControl_reset(Global_Data.objects.CC_instance);
     }
-    do_dqn_float = (float)do_dqn;
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     read_and_handle_inverter_errors();
@@ -385,7 +385,7 @@ float calculate_reward_pendulum(float samplerate, float theta, float position, f
     {
         z = -1000.0f;
     }
-    float r = -2.0f * samplerate * (100.0f * theta + position + 0.25f * (float)pow(velocity, 2.0f)) + z;
+    float r = -2.0f * samplerate * (10.0f * theta + position + 0.01f * (float)pow(velocity, 2.0f)) + z;
     return r;
 }
 
@@ -425,7 +425,8 @@ void dqn_isr(void)
             input_nn[3] = Global_Data.obs.dqn_chart_position;
             input_nn[4] = Global_Data.obs.dqn_angle_derv;
             uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
-            reward_k = calculate_reward_pendulum(1.0f / DQN__CONTROL_FREQUENCY, (1.0f - Global_Data.obs.dqn_cos_angle), Global_Data.obs.dqn_chart_position, Global_Data.obs.dqn_chart_position_derv, true);
+            // /DQN__CONTROL_FREQUENCY
+            reward_k = calculate_reward_pendulum(1.0f, (1.0f - Global_Data.obs.dqn_cos_angle), Global_Data.obs.dqn_chart_position, Global_Data.obs.dqn_chart_position_derv, true);
             uz_dqn_set_reward(testdqn2, reward_k);
             uz_dqn_push_to_buffer(testdqn2);
             chain = limit_violation;

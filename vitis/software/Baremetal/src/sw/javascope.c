@@ -85,7 +85,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_thetapendulum]	= &data->av.theta_pendulum;
 	js_ch_observable[JSO_position_abs]		= &position_abs;
 	js_ch_observable[JSO_position_ref]		= &position_ref;
-	js_ch_observable[JSO_ia] = &data->mv.i_abc_Ampsupdate_lock.a;
+	js_ch_observable[JSO_ia] = &data->mv.i_abc_Amps.a;
 	js_ch_observable[JSO_ib] 				= &data->mv.i_abc_Amps.b;
 	js_ch_observable[JSO_ic] 				= &data->mv.i_abc_Amps.c;
 	js_ch_observable[JSO_dqn_chart_position] 	= &data->obs.dqn_chart_position;

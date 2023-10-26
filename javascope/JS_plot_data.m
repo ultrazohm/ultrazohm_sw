@@ -30,7 +30,7 @@ overwrite_data_in_simulink_datainspector = 1;
 
 % paste file name here if you want to open a specific file
 %file_name ='Log_2023-03-30_11-12-41.csv';
-file_name ='Log_2023-03-30_11-47-30.csv';
+file_name ='Log_2023-03-30_11-57-37.csv';
 
 
 % specify import options and read csv 

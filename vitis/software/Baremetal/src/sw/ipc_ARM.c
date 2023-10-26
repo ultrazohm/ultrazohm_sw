@@ -44,6 +44,10 @@ extern int mode_1;
 // ------------------ Harmonic Control ------------------ //
 extern struct uz_3ph_dq_t i_dqn_5th_ref_Amps_1;
 extern struct uz_3ph_dq_t i_dqn_7th_ref_Amps_1;
+extern float i_5th_amplitude;
+extern float i_5th_phase;
+extern float i_7th_amplitude;
+extern float i_7th_phase;
 
 // ---------------- Controller Settings ----------------- //
 extern float Kp_speed_1;
@@ -254,33 +258,41 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_1):
 				//n_ref_rpm_1 = value;
 				M_ref_Nm_1 = value;
+//				enable_excitation = value;
 			break;
 
 		case (Set_Send_Field_2):
 				//mode_1 = value;
 				n_ref_rpm_2 = value;
+//				excitation_amplitude = value;
 			break;
 
 		case (Set_Send_Field_3):
-				i_dqn_5th_ref_Amps_1.d = value;
+				i_5th_amplitude = value;
+//				i_dqn_5th_ref_Amps_1.d = value;
 //				Kp_id_5th_1 = value;
 //				Kp_iq_5th_1 = value;
+//				Kp_id_1 = value;
 			break;
 
 		case (Set_Send_Field_4):
-				i_dqn_5th_ref_Amps_1.q = value;
+				i_5th_phase = value;
+//				i_dqn_5th_ref_Amps_1.q = value;
 //				Ki_id_5th_1 = value;
 //				Ki_iq_5th_1 = value;
+//				Ki_id_1 = value;
 			break;
 
 		case (Set_Send_Field_5):
-				i_dqn_7th_ref_Amps_1.d = value;
+				i_7th_amplitude = value;
+//				i_dqn_7th_ref_Amps_1.d = value;
 //				Kp_id_7th_1 = value;
 //				Kp_iq_7th_1 = value;
 			break;
 
 		case (Set_Send_Field_6):
-				i_dqn_7th_ref_Amps_1.q = value;
+				i_7th_phase	= value;
+//				i_dqn_7th_ref_Amps_1.q = value;
 //				Ki_id_7th_1 = value;
 //				Ki_iq_7th_1 = value;
 			break;
@@ -306,7 +318,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			mode_1 = 2;
 			break;
 
 		case (My_Button_7):
@@ -314,7 +326,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
-				enable_excitation=!enable_excitation;
+
 			break;
 
 		case (Error_Reset):

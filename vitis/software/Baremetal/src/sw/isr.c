@@ -62,7 +62,7 @@ extern uz_IIR_Filter_t* LP_instance_5th_q_1;
 extern uz_IIR_Filter_t* LP_instance_7th_d_1;
 extern uz_IIR_Filter_t* LP_instance_7th_q_1;
 extern uz_encoder_offset_estimation_t* encoder_offset_obj_1;
-extern uz_wavegen_chirp* chirp_instance;
+extern uz_wavegen_chirp* chirp_instance_1;
 
 // ---------------- Inverter Measurement ---------------- //
 struct uz_3ph_abc_t v_abc_Volts_1				= {0};
@@ -111,6 +111,17 @@ struct uz_3ph_dq_t v_dqn_7th_ref_Volts_1 				= {0};
 struct uz_3ph_abc_t v_abc_5th_ref_Volts_1 				= {0};
 struct uz_3ph_abc_t v_abc_7th_ref_Volts_1 				= {0};
 struct uz_3ph_dq_t output_FOC_HC_1						= {0};
+struct uz_3ph_abc_t v_abc_5th_Volts_bp_1 				= {0};
+struct uz_3ph_abc_t v_abc_7th_Volts_bp_1 				= {0};
+struct uz_3ph_dq_t v_dqn_5th_Volts_bp_1 				= {0};
+struct uz_3ph_dq_t v_dqn_7th_Volts_bp_1 				= {0};
+struct uz_3ph_dq_t v_dqn_5th_Volts_1 					= {0};
+struct uz_3ph_dq_t v_dqn_7th_Volts_1 					= {0};
+float i_5th_amplitude 									= 0.0f;
+float i_5th_phase 										= 0.0f;
+float i_7th_amplitude 									= 0.0f;
+float i_7th_phase	 									= 0.0f;
+
 
 // ---------------- Controller Settings ----------------- //
 float Kp_speed_1 								= 0.01f;
@@ -119,14 +130,14 @@ float Kp_id_1 									= 0.3f; 	//= 1.47f;
 float Ki_id_1 									= 230.0f; 	//= 830.0f;
 float Kp_iq_1 									= 0.5f; 	//= 8.17f;
 float Ki_iq_1 									= 230.0f; 	//= 830.0f;
-float Kp_id_5th_1								= 2.0f; 	//= 0.3f;
-float Ki_id_5th_1								= 5.0f; 	//= 230.0f;
-float Kp_iq_5th_1								= 2.0f;		//= 0.5f;
-float Ki_iq_5th_1								= 5.0f;	//= 230.0f;
-float Kp_id_7th_1								= 2.0f;
-float Ki_id_7th_1								= 5.0f;
-float Kp_iq_7th_1								= 2.0f;
-float Ki_iq_7th_1								= 5.0f;
+float Kp_id_5th_1								= 3.0f; 	//= 2.0f;
+float Ki_id_5th_1								= 20.0f; 	//= 5.0f;
+float Kp_iq_5th_1								= 3.0f;		//= 2.0f;
+float Ki_iq_5th_1								= 20.0f;	//= 5.0f;
+float Kp_id_7th_1								= 3.0f;
+float Ki_id_7th_1								= 20.0f;
+float Kp_iq_7th_1								= 3.0f;
+float Ki_iq_7th_1								= 20.0f;
 float Gain_RC_6th_1								= 100.0f;
 float Gain_RC_12th_1							= 10.0f;
 float Gain_RC_5th_1								= 100.0f;
@@ -135,7 +146,7 @@ float Gain_RC_7th_1								= 100.0f;
 // ------------------- Wavegen Chirp -------------------- //
 bool enable_excitation 							= false;
 float excitation_amplitude 						= 0.0f;
-float sampling_time 							= 1.0f/30.0e3f;
+float sampling_time 							= 1.0f/25.0e3f;
 
 // ======================= PMSM 2 ======================= //
 // --------------- Pointers to instances ---------------- //
@@ -250,7 +261,7 @@ void ISR_Control(void *data)
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
     }
 
-    // Calculation of Signals for FOC for PMSM 1
+    // Calculation of Signals for FOC of PMSM 1
     omega_m_rad_per_sec_1 = Global_Data.av.mechanicalRotorSpeed_filtered_1*(2.0f*M_PI)/60.0f;
     omega_el_rad_per_sec_1 = omega_m_rad_per_sec_1*config_PMSM_1.polePairs;
     Global_Data.av.omega_el_1 = omega_el_rad_per_sec_1;
@@ -259,7 +270,7 @@ void ISR_Control(void *data)
     i_alphabeta_Amps_1 = uz_transformation_3ph_abc_to_alphabeta(i_abc_Amps_1);
     v_dq_Volts_1 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_1, theta_el_rad_1);
 
-    // Calculation of Signals for FOC for PMSM 2
+    // Calculation of Signals for FOC of PMSM 2
     omega_m_rad_per_sec_2 = Global_Data.av.mechanicalRotorSpeed_filtered_2*(2.0f*M_PI)/60.0f;
     omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2*config_PMSM_2.polePairs;
     Global_Data.av.omega_el_2 = omega_el_rad_per_sec_2;
@@ -281,13 +292,15 @@ void ISR_Control(void *data)
 //    	if(enable_excitation){
 //    		}else{
 //    	}
-//    	i_dq_ref_Amps.q=0.0f;
-//        i_dq_ref_Amps.d=uz_wavegen_white_noise(excitation_amplitude);
-//        i_dq_ref_Amps.d=uz_wavegen_sine(5.0f, excitation_amplitude);
-//        i_dq_ref_Amps.d= excitation_amplitude * uz_wavegen_chirp_sample(chirp_instance, sampling_time);
-//        i_dq_ref_Amps.q=0.0f;
-//        i_dq_ref_Amps.d= excitation_amplitude;
-//        // Offset estimation
+//    	i_dq_ref_Amps_1.q=0.0f;
+////        i_dq_ref_Amps.d=uz_wavegen_white_noise(excitation_amplitude);
+////        i_dq_ref_Amps.d=uz_wavegen_sine(5.0f, excitation_amplitude);
+//        i_dq_ref_Amps_1.d= excitation_amplitude * uz_wavegen_chirp_sample(chirp_instance_1, sampling_time);
+////        i_dq_ref_Amps.q=0.0f;
+////        i_dq_ref_Amps.d= excitation_amplitude;
+// =============================================== //
+
+// =============== Offset Estimation =============== //
 //    	if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){         // if not finished
 //    		i_dq_ref_Amps = uz_encoder_offset_estimation_step(encoder_offset_obj);//receive current controller setpoint current from stepping function
 //    	}else{
@@ -298,7 +311,7 @@ void ISR_Control(void *data)
 
     // -------------------- FOC and additional controls of PMSM 1 -------------------- //
     // Calculate reference Torque
-    //M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
+//    M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
 
     // Set speed ripple compensation
     switch (speed_ripple_comp)
@@ -311,7 +324,7 @@ void ISR_Control(void *data)
     	break;
     }
 
-    // Filter 5th and 7th Harmonics for Harmonic Controllers
+//    // Filter 5th and 7th Harmonics for Harmonic Controllers
     i_abc_5th_Amps_bp_1.a = uz_signals_IIR_Filter_sample(BP_instance_5th_a_1, i_abc_Amps_1.a);
     i_abc_5th_Amps_bp_1.b = uz_signals_IIR_Filter_sample(BP_instance_5th_b_1, i_abc_Amps_1.b);
     i_abc_5th_Amps_bp_1.c = uz_signals_IIR_Filter_sample(BP_instance_5th_c_1, i_abc_Amps_1.c);
@@ -324,6 +337,20 @@ void ISR_Control(void *data)
     i_dqn_5th_Amps_1.q = uz_signals_IIR_Filter_sample(LP_instance_5th_q_1, i_dqn_5th_Amps_bp_1.q);
     i_dqn_7th_Amps_1.d = uz_signals_IIR_Filter_sample(LP_instance_7th_d_1, i_dqn_7th_Amps_bp_1.d);
     i_dqn_7th_Amps_1.q = uz_signals_IIR_Filter_sample(LP_instance_7th_q_1, i_dqn_7th_Amps_bp_1.q);
+
+    // Filter 5th and 7th Harmonics for Harmonic Controllers
+//    v_abc_5th_Volts_bp_1.a = uz_signals_IIR_Filter_sample(BP_instance_5th_a_1, v_abc_Volts_1.a);
+//    v_abc_5th_Volts_bp_1.b = uz_signals_IIR_Filter_sample(BP_instance_5th_b_1, v_abc_Volts_1.b);
+//    v_abc_5th_Volts_bp_1.c = uz_signals_IIR_Filter_sample(BP_instance_5th_c_1, v_abc_Volts_1.c);
+//    v_abc_7th_Volts_bp_1.a = uz_signals_IIR_Filter_sample(BP_instance_7th_a_1, v_abc_Volts_1.a);
+//    v_abc_7th_Volts_bp_1.b = uz_signals_IIR_Filter_sample(BP_instance_7th_b_1, v_abc_Volts_1.b);
+//    v_abc_7th_Volts_bp_1.c = uz_signals_IIR_Filter_sample(BP_instance_7th_c_1, v_abc_Volts_1.c);
+//    v_dqn_5th_Volts_bp_1 = uz_transformation_3ph_harmonic_abc_to_dq(v_abc_5th_Volts_bp_1, theta_el_rad_1, -5.0f);
+//    v_dqn_7th_Volts_bp_1 = uz_transformation_3ph_harmonic_abc_to_dq(v_abc_7th_Volts_bp_1, theta_el_rad_1, 7.0f);
+//    v_dqn_5th_Volts_1.d = uz_signals_IIR_Filter_sample(LP_instance_5th_d_1, v_dqn_5th_Volts_bp_1.d);
+//    v_dqn_5th_Volts_1.q = uz_signals_IIR_Filter_sample(LP_instance_5th_q_1, v_dqn_5th_Volts_bp_1.q);
+//    v_dqn_7th_Volts_1.d = uz_signals_IIR_Filter_sample(LP_instance_7th_d_1, v_dqn_7th_Volts_bp_1.d);
+//    v_dqn_7th_Volts_1.q = uz_signals_IIR_Filter_sample(LP_instance_7th_q_1, v_dqn_7th_Volts_bp_1.q);
 
     // Control Strategy
     switch (mode_1)
@@ -354,6 +381,10 @@ void ISR_Control(void *data)
     	output_1 = uz_Space_Vector_Modulation(output_FOC_RC_1, v_DC_Volts_1, theta_el_rad_1);
     	break;
     case 3: // Harmonic Controllers for 5th and 7th Harmonic in dq System
+    	i_dqn_5th_ref_Amps_1.d = i_5th_amplitude * cosf(i_5th_phase / 180.0f * M_PI);
+    	i_dqn_5th_ref_Amps_1.q = i_5th_amplitude * sinf(i_5th_phase / 180.0f * M_PI);
+    	i_dqn_7th_ref_Amps_1.d = i_7th_amplitude * cosf(i_7th_phase / 180.0f * M_PI);
+		i_dqn_7th_ref_Amps_1.q = i_7th_amplitude * sinf(i_7th_phase / 180.0f * M_PI);
     	v_dqn_5th_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_5th_1, i_dqn_5th_ref_Amps_1, i_dqn_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
     	v_dqn_7th_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_7th_1, i_dqn_7th_ref_Amps_1, i_dqn_7th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
     	v_abc_5th_ref_Volts_1 = uz_transformation_3ph_harmonic_dq_to_abc(v_dqn_5th_ref_Volts_1, theta_el_rad_1, -5.0f);
@@ -377,11 +408,11 @@ void ISR_Control(void *data)
     v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
     output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
 
-    //    dq_resonant_2 = uz_subspace_resonant_control_step_dq(RC_instance_2, dq_resonant_ref_2, i_dq_Amps_2, omega_el_rad_per_sec_2/5.0f*4.0f);
-//    output_FOC_RC_2.d = v_dq_ref_Volts_2.d + dq_resonant_2.d;
-//    output_FOC_RC_2.q = v_dq_ref_Volts_2.q + dq_resonant_2.q;
-//    output_2 = uz_Space_Vector_Modulation(output_FOC_RC_2, v_DC_Volts_2, theta_el_rad_2);
-//    output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+//    //    dq_resonant_2 = uz_subspace_resonant_control_step_dq(RC_instance_2, dq_resonant_ref_2, i_dq_Amps_2, omega_el_rad_per_sec_2/5.0f*4.0f);
+////    output_FOC_RC_2.d = v_dq_ref_Volts_2.d + dq_resonant_2.d;
+////    output_FOC_RC_2.q = v_dq_ref_Volts_2.q + dq_resonant_2.q;
+////    output_2 = uz_Space_Vector_Modulation(output_FOC_RC_2, v_DC_Volts_2, theta_el_rad_2);
+////    output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
 
     // Set DutyCycles of PMSM 2
    	Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
@@ -561,10 +592,10 @@ void ISR_Control(void *data)
        ultrazohm_state_machine_set_error(true);
      }
     //Overcurrent for DC-link
-//    if (!Global_Data.av.inverter_outputs_d2.OC_H2) {
-//      	error_type = 20.0f;
-//       ultrazohm_state_machine_set_error(true);
-//    }
+    if (!Global_Data.av.inverter_outputs_d2.OC_H2) {
+      	error_type = 20.0f;
+       ultrazohm_state_machine_set_error(true);
+    }
 
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

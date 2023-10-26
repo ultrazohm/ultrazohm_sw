@@ -133,8 +133,8 @@ int main(void)
        .Kp = 1.47f, // nach BO
        .Ki = 830.0f, //nach BO
        .samplingTime_sec = 0.0001f,
- 	   .upper_limit = 10.0f,
-  	   .lower_limit = -10.0f
+ 	   .upper_limit = 15.0f,
+  	   .lower_limit = -15.0f
     };
     struct uz_PI_Controller_config config_iq_1 = {
        .Kp = 8.17f, // nach BO
@@ -159,14 +159,14 @@ int main(void)
       .min_omega_el = 300.0f,                                               // target electric rotor angular speed (USE OWN)
       .setpoint_current = 3.0f 												// current setpoint to reach speed (USE OWN)
     };
-    // ---------------- Encoder offset estimation ----------------- //
+    // ---------------- Chirp excitation ----------------- //
     // Configuration Wavegen Chirp
     struct uz_wavegen_chirp_config config_chirp_1 = {
       .amplitude = 1.0f,
       .start_frequency_Hz = 1.0f,
-      .end_frequency_Hz = 3000.0f,
-      .duration_sec = 4.0f,
-      .initial_delay_sec = 3.0f,
+      .end_frequency_Hz = 4000.0f,
+      .duration_sec = 2.0f,
+      .initial_delay_sec = 1.0f,
       .offset = 0.0f
     };
     // ------------------- Resonant Controller -------------------- //

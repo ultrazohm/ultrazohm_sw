@@ -49,6 +49,14 @@ enum JS_OberservableData {
 	JSO_iq_5th_1,
 	JSO_id_7th_1,
 	JSO_iq_7th_1,
+	JSO_ud_5th_1,
+	JSO_uq_5th_1,
+	JSO_ud_7th_1,
+	JSO_uq_7th_1,
+	JSO_5th_ampl_1,
+	JSO_5th_phase_1,
+	JSO_7th_ampl_1,
+	JSO_7th_phase_1,
 	JSO_id_2,
 	JSO_iq_2,
 	JSO_uq_ref_1,
@@ -209,12 +217,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	N_ref_Nm_1,
-	Mode,
-	Kp_id_5th,
-	Ki_id_5th,
-	Kp_iq_5th,
-	Ki_iq_5th,
+	M_ref_Nm_1,
+	N_ref_rpm_2,
+	id_5th,
+	iq_5th,
+	id_7th,
+	iq_7th,
 	SND_FLD_ENDMARKER
 
 

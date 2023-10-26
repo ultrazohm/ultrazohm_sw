@@ -50,6 +50,12 @@ extern struct uz_3ph_dq_t i_dqn_5th_Amps_bp_1;
 extern struct uz_3ph_dq_t i_dqn_7th_Amps_bp_1;
 extern struct uz_3ph_dq_t i_dqn_5th_Amps_1;
 extern struct uz_3ph_dq_t i_dqn_7th_Amps_1;
+extern struct uz_3ph_dq_t v_dqn_5th_Volts_1;
+extern struct uz_3ph_dq_t v_dqn_7th_Volts_1;
+extern float i_5th_amplitude;
+extern float i_5th_phase;
+extern float i_7th_amplitude;
+extern float i_7th_phase;
 
 //Data of PMSM 2
 extern float n_ref_rpm_2;
@@ -120,6 +126,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id_5th_1]      = &i_dqn_5th_Amps_1.d;
 	js_ch_observable[JSO_iq_7th_1]      = &i_dqn_7th_Amps_1.q;
 	js_ch_observable[JSO_id_7th_1]      = &i_dqn_7th_Amps_1.d;
+	js_ch_observable[JSO_uq_5th_1]      = &v_dqn_5th_Volts_1.q;
+	js_ch_observable[JSO_ud_5th_1]      = &v_dqn_5th_Volts_1.d;
+	js_ch_observable[JSO_uq_7th_1]      = &v_dqn_7th_Volts_1.q;
+	js_ch_observable[JSO_ud_7th_1]      = &v_dqn_7th_Volts_1.d;
+	js_ch_observable[JSO_5th_ampl_1]	= &i_5th_amplitude;
+	js_ch_observable[JSO_5th_phase_1]   = &i_5th_phase;
+	js_ch_observable[JSO_7th_ampl_1]	= &i_7th_amplitude;
+	js_ch_observable[JSO_7th_phase_1]	= &i_7th_phase;
 	js_ch_observable[JSO_iq_2] 			= &i_dq_Amps_2.q;
 	js_ch_observable[JSO_id_2] 			= &i_dq_Amps_2.d;
 	js_ch_observable[JSO_uq_ref_1]		= &v_dq_ref_Volts_1.q;

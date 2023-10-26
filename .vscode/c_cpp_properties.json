@@ -3,10 +3,17 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**",
-                "/var/lib/gems/2.7.0/gems/ceedling-0.31.1/**",
+                "C:\\Users\\User\\.gem\\ruby\\2.7.0\\gems",
                 "${workspaceFolder}/vitis/software/Baremetal/build/test/mocks",
-                "${workspaceFolder}/vitis/software/Baremetal/"
+                "${workspaceFolder}/vitis/software/Baremetal/",
+                "C:\\Users\\User\\Documents\\ultrazohm_sw",
+                "C:/Users/User/.gem/ruby/2.7.0/gems/ceedling-0.31.1/vendor/c_exception/lib",
+                "C:/Users/User/.gem/ruby/2.7.0/gems/ceedling-0.31.1/vendor/unity/src",
+                "${workspaceFolder}/vitis/software/Baremetal/src/IP_Cores/uz_EnDat",
+                "${workspaceFolder}/vitis/software/Baremetal/test/support",
+                "${workspaceFolder}/vitis/software/Baremetal/test/helper",
+                "${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_fixedpoint",
+                "${workspaceFolder}/vitis/software/Baremetal/src/uz"
             ],
             "forcedInclude": [
                 "${workspaceFolder}/vitis/software/Baremetal/src/uz/uz_HAL.h",
@@ -15,7 +22,7 @@
             "defines": [
                 "TEST"
             ],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "C:\\Ruby27-x64\\msys64\\mingw64\\bin\\gcc.exe",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "linux-gcc-x64"

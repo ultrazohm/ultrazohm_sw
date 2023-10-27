@@ -307,7 +307,7 @@ static void uz_SetPoint_calculate_omega_cut_rad_per_sec_improved(uz_SetPoint_t* 
     float Lq_squared = self->config.config_PMSM.Lq_Henry * self->config.config_PMSM.Lq_Henry;
     float psi_pm_squared = self->config.config_PMSM.Psi_PM_Vs * self->config.config_PMSM.Psi_PM_Vs;
     float a_omega = (Lq_squared * Iq_squared) + psi_pm_squared + ((self->config.config_PMSM.Ld_Henry * actual_currents_Ampere.d) * 
-                    ((2.0f * self->config.config_PMSM.Psi_PM_Vs) + (self->config.config_PMSM.Ld_Henry * actual_currents_Ampere.d))) + (Ld_squared * Id_squared);
+                    ((2.0f * self->config.config_PMSM.Psi_PM_Vs) + (self->config.config_PMSM.Ld_Henry * actual_currents_Ampere.d)));
     float b_omega = (2.0f * self->config.config_PMSM.R_ph_Ohm) * ((-actual_currents_Ampere.d * self->config.config_PMSM.Lq_Henry * actual_currents_Ampere.q) + 
                     (actual_currents_Ampere.q * self->config.config_PMSM.Psi_PM_Vs) + (actual_currents_Ampere.q * self->config.config_PMSM.Ld_Henry * actual_currents_Ampere.d));
     float c_omega = (Rs_squared * (Id_squared * Iq_squared)) - (V_FE_max * V_FE_max);

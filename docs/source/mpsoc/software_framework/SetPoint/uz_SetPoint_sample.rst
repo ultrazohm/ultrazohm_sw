@@ -37,10 +37,32 @@ The cut-off rotational speed for the field-weakening is calculated based on the 
 
 .. math::
 
-  V_{FE,max} &= \sqrt{\frac{V_{DC}}{\sqrt{3}}} - R_{ph}  I_{max}\\
-  I_1 &= \sqrt{i_{q,meas}^2 + i_{d,meas}^2}\\
-  \omega_c &= \frac{-R_{ph}  \psi_{PM}  I_1}{I_1^2  L_q^2 + \psi_{PM}^2} 
-  + \sqrt{\frac{R_{ph}^2  \psi_{PM}^2  I_1^2 }{(I_1^2  L_q^2 + \psi_{PM}^2)^2} -    \frac{(I_1^2 - R_{ph}^2) - V_{FE,max}^2}{I_1^2  L_q^2 + \psi_{PM}^2}}\\
+  V_{FE,max} &= \frac{V_{DC}}{\sqrt{3}} - R_{s}  I_{1}\\
+
+with 
+
+.. math::
+  I_1 &= \sqrt{i_d^2 + i_q^2}\,. \\
+
+This leads to
+
+.. math::
+  V_{FE,max} = \sqrt{v_d^2 + v_q^2} = \sqrt{(R_s i_d - \omega_c L_q i_q)^2 + (R_s i_q + \omega_c (\psi_{PM} + L_d i_d))^2}\,.\\
+
+Solving for :math:`\omega_c` leads to
+
+.. math::
+  
+  a &= L_q^2 i_q^2 + \psi_{PM}^2 + L_d i_d (2\psi_{PM} + L_d i_d)\\
+  b &= 2 R_s i_q(i_d (L_d - L_q) + \psi_{PM})\\
+  c &= R_s^2 (i_d^2 + i_q^2) - V_{FE,max}^2\\
+
+and finally
+
+.. math::
+  
+  \omega_c = \frac{-b + \sqrt{b^2 - 4ac}}{2a}\,.
+
 
 SM-PMSM[[#matlab]_]
 -------------------
@@ -51,7 +73,7 @@ SM-PMSM[[#matlab]_]
   I_{d,MTPA} &= I_{d,manual}\\
 
 
-for :math:`\omega_{el} > \omega_c\\`:
+for :math:`\omega_{el} > \omega_c`:
 
 .. math::
 
@@ -83,7 +105,7 @@ The d-current, depending on the saliency ratio, will be calculated like the foll
   I_{d,MTPA} &= \left(\frac{-\psi_{PM}}{2  (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{q,MTPA}^2}\right) + I_{d,manual}\ \ \ for \ \ (L_q > L_d)\\
   I_{d,MTPA} &= \left(\frac{-\psi_{PM}}{2  (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{q,MTPA}^2}\right) + I_{d,manual}\ \ \ for \ \ (L_q < L_d)\\
 
-for :math:`\omega_{el} > \omega_c\\`:
+for :math:`\omega_{el} > \omega_c`:
 
 .. math::
 

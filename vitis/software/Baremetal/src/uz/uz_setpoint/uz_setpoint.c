@@ -293,9 +293,9 @@ static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, flo
     float psi_pm_squared = self->config.config_PMSM.Psi_PM_Vs * self->config.config_PMSM.Psi_PM_Vs;
     float a_omega = (Lq_squared * Iq_squared) + psi_pm_squared + ((self->config.config_PMSM.Ld_Henry * actual_currents_Ampere.d) * 
                     ((2.0f * self->config.config_PMSM.Psi_PM_Vs) + (self->config.config_PMSM.Ld_Henry * actual_currents_Ampere.d)));
-    float b_omega = (2.0f * self->config.config_PMSM.R_ph_Ohm) * ((-actual_currents_Ampere.d * self->config.config_PMSM.Lq_Henry * actual_currents_Ampere.q) + 
-                    (actual_currents_Ampere.q * self->config.config_PMSM.Psi_PM_Vs) + (actual_currents_Ampere.q * self->config.config_PMSM.Ld_Henry * actual_currents_Ampere.d));
-    float c_omega = (Rs_squared * (Id_squared * Iq_squared)) - (V_FE_max * V_FE_max);
+    float b_omega = (2.0f * self->config.config_PMSM.R_ph_Ohm * actual_currents_Ampere.q) * ((actual_currents_Ampere.d * (self->config.config_PMSM.Ld_Henry - self->config.config_PMSM.Lq_Henry)) + 
+                    self->config.config_PMSM.Psi_PM_Vs);
+    float c_omega = (Rs_squared * (Id_squared + Iq_squared)) - (V_FE_max * V_FE_max);
     self->omega_cut_rad_per_sec = (-b_omega + sqrtf((b_omega * b_omega) - (4.0f * a_omega * c_omega) )) / (2.0f * a_omega);
 }
 

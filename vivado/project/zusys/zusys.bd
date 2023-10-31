@@ -2157,7 +2157,7 @@
                         "value": "NATIVE"
                       },
                       "C_NUM_OF_PROBES": {
-                        "value": "4"
+                        "value": "10"
                       }
                     }
                   },
@@ -2272,7 +2272,8 @@
                   "InterLock_Module_0_S0_OUT": {
                     "ports": [
                       "uz_interlockDeadtime_0/s0_out",
-                      "xlconcat_0/In0"
+                      "xlconcat_0/In0",
+                      "system_ila_0/probe4"
                     ]
                   },
                   "InterLock_Module_0_S1_OUT": {
@@ -2284,7 +2285,8 @@
                   "InterLock_Module_0_S2_OUT": {
                     "ports": [
                       "uz_interlockDeadtime_0/s2_out",
-                      "xlconcat_0/In2"
+                      "xlconcat_0/In2",
+                      "system_ila_0/probe5"
                     ]
                   },
                   "InterLock_Module_0_S3_OUT": {
@@ -2296,7 +2298,8 @@
                   "InterLock_Module_0_S4_OUT": {
                     "ports": [
                       "uz_interlockDeadtime_0/s4_out",
-                      "xlconcat_0/In4"
+                      "xlconcat_0/In4",
+                      "system_ila_0/probe6"
                     ]
                   },
                   "InterLock_Module_0_S5_OUT": {
@@ -2519,7 +2522,8 @@
                   "uz_interlockDeadtime_1_s0_out": {
                     "ports": [
                       "uz_interlockDeadtime_1/s0_out",
-                      "xlconcat_0/In6"
+                      "xlconcat_0/In6",
+                      "system_ila_0/probe7"
                     ]
                   },
                   "uz_interlockDeadtime_1_s1_out": {
@@ -2531,7 +2535,8 @@
                   "uz_interlockDeadtime_1_s2_out": {
                     "ports": [
                       "uz_interlockDeadtime_1/s2_out",
-                      "xlconcat_0/In8"
+                      "xlconcat_0/In8",
+                      "system_ila_0/probe8"
                     ]
                   },
                   "uz_interlockDeadtime_1_s3_out": {
@@ -2543,7 +2548,8 @@
                   "uz_interlockDeadtime_1_s4_out": {
                     "ports": [
                       "uz_interlockDeadtime_1/s4_out",
-                      "xlconcat_0/In10"
+                      "xlconcat_0/In10",
+                      "system_ila_0/probe9"
                     ]
                   },
                   "uz_interlockDeadtime_1_s5_out": {

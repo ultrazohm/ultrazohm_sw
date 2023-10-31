@@ -146,7 +146,7 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
     im_ref = uz_signals_saturation(im_ref, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
     bool M_ref_hysteresis = false;
     if(self->config.is_field_weakening_enabled) {//Field-weakening
-        float V_FE_max = ((V_DC_Volts / sqrtf(3.0f)) - (self->config.config_PMSM.R_ph_Ohm * I1));
+        float V_FE_max = ((V_DC_Volts / sqrtf(3.0f)) - (self->config.config_PMSM.R_ph_Ohm * I1)) * 0.95f;
         if (self->old_M_ref_Nm > 0.0f) {
         	uz_signals_hysteresisband_filter_flag(M_ref_Nm, self->old_M_ref_Nm * 1.05f, self->old_M_ref_Nm * 0.95f, &M_ref_hysteresis);
         }

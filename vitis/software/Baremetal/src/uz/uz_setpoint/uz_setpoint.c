@@ -21,6 +21,7 @@
 #include "../uz_math_constants.h"
 #include "../uz_signals/uz_signals.h"
 #include "../uz_newton_raphson/uz_newton_raphson.h"
+#include "../uz_signals/uz_signals.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -37,6 +38,7 @@ typedef struct uz_SetPoint_t {
     float derivate_poly_coefficients_MTPA[4];
     float coefficients_FW[5];
     float derivate_poly_coefficients_FW[4];
+    float old_M_ref_Nm;
 }uz_SetPoint_t;
 
 static uint32_t instance_counter = 0U;
@@ -142,11 +144,16 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
     float im_ref = M_ref_Nm / (1.5f * self->config.config_PMSM.polePairs * self->config.config_PMSM.Psi_PM_Vs);
     float I1 = sqrtf((actual_currents_Ampere.d * actual_currents_Ampere.d) + (actual_currents_Ampere.q * actual_currents_Ampere.q));
     im_ref = uz_signals_saturation(im_ref, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
-
+    bool M_ref_hysteresis = false;
     if(self->config.is_field_weakening_enabled) {//Field-weakening
         float V_FE_max = ((V_DC_Volts / sqrtf(3.0f)) - (self->config.config_PMSM.R_ph_Ohm * I1));
-        if(!self->is_field_weakening_active) {
+        if (self->old_M_ref_Nm > 0.0f) {
+        	uz_signals_hysteresisband_filter_flag(M_ref_Nm, self->old_M_ref_Nm * 1.05f, self->old_M_ref_Nm * 0.95f, &M_ref_hysteresis);
+        }
+
+        if(!self->is_field_weakening_active || !M_ref_hysteresis) {
             uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_FE_max, actual_currents_Ampere);
+            self->old_M_ref_Nm = M_ref_Nm;
         }
         float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
         if (fabsf(omega_el_rad_per_sec) > self->omega_cut_rad_per_sec) {

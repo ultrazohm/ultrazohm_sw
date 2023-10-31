@@ -65,8 +65,20 @@ float uz_signals_hysteresisband_filter(float input, float upper_limit, float low
 	if((input > upper_limit) || (input < lower_limit)){
 		output = 0.0f;
 	}
+	return output;
+}
+
+float uz_signals_hysteresisband_filter_flag(float input, float upper_limit, float lower_limit, bool* input_inside_hysteresis){
+	uz_assert(upper_limit > lower_limit);
+	float output = input;
+	*input_inside_hysteresis = true;
+	if((input > upper_limit) || (input < lower_limit)){
+		output = 0.0f;
+		*input_inside_hysteresis = false;
+	}
 	return output;	
 }
+
 
 
 

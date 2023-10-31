@@ -111,6 +111,42 @@ void test_uz_signals_hysteresisband_filter_limits(void){
     TEST_ASSERT_FAIL_ASSERT(uz_signals_hysteresisband_filter(input, upper_limit, lower_limit));
 }
 
+// test output if input is outside of hysteresis-band
+void test_uz_signals_hysteresisband_filter_flag_output_limit(void){
+    float input = 2.5f;
+    float upper_limit = 0.5f;
+    float lower_limit = 0.2f;  
+    bool flag = false;
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_hysteresisband_filter_flag(input, upper_limit, lower_limit, &flag)); 
+    TEST_ASSERT_EQUAL_INT(false, flag);
+    input = -0.7f;
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, uz_signals_hysteresisband_filter_flag(input, upper_limit, lower_limit, &flag));
+    TEST_ASSERT_EQUAL_INT(false, flag); 
+}
+
+// test output if input is inside of hysteresis-band
+void test_uz_signals_hysteresisband_filter_flag_output_within_band(void){
+    float input = 2.5f;
+    float upper_limit = 3.5f;
+    float lower_limit = -1.2f;  
+    bool flag = false;
+    TEST_ASSERT_EQUAL_FLOAT(input, uz_signals_hysteresisband_filter_flag(input, upper_limit, lower_limit, &flag)); 
+    TEST_ASSERT_EQUAL_INT(true, flag);
+    input = -0.7f;
+    TEST_ASSERT_EQUAL_FLOAT(input, uz_signals_hysteresisband_filter_flag(input, upper_limit, lower_limit, &flag)); 
+    TEST_ASSERT_EQUAL_INT(true, flag);
+}
+
+// test assert if upper limit < lower limit
+void test_uz_signals_hysteresisband_filter_flag_limits(void){
+    float input = 1.1f;
+    float upper_limit = 0.5f;
+    float lower_limit = 1.6f;
+    bool flag = false;
+    TEST_ASSERT_FAIL_ASSERT(uz_signals_hysteresisband_filter_flag(input, upper_limit, lower_limit, &flag));
+}
+
+
 void test_uz_signals_threshold_Evaluation(void){
     float input = 4.7f;
     float threshold = 3.5f;

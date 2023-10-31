@@ -129,7 +129,7 @@ For interacting with the IP Core, the following step-by-step example shows a way
  ...
  }object_pointers_t;
 
-6. In ``main.c``, initialize an instance of the driver and assign it the the object pointer structure in the Global_Data inside the ``init_ip_cores`` case:
+6. In ``main.c``, initialize an instance of the driver and assign it to the object pointer structure in the Global_Data inside the ``init_ip_cores`` case:
 
 .. code-block:: c
  :caption: Example of init in main.c

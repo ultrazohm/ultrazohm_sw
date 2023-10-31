@@ -25,7 +25,7 @@
 #define RTW_HEADER_AutoRefCurrents_h_
 #ifndef AutoRefCurrents_COMMON_INCLUDES_
 #define AutoRefCurrents_COMMON_INCLUDES_
-#include "../../rtwtypes.h"
+#include "../../lib/rtwtypes.h"
 #endif                                 /* AutoRefCurrents_COMMON_INCLUDES_ */
 #include <stddef.h>
 

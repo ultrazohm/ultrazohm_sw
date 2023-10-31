@@ -62,6 +62,7 @@
   :test:
     - *common_defines
     - TEST
+    - CMOCK_MEM_DYNAMIC
   :test_preprocess:
     - *common_defines
     - TEST

@@ -25,7 +25,7 @@
 #define RTW_HEADER_FrictionID_h_
 #ifndef FrictionID_COMMON_INCLUDES_
 #define FrictionID_COMMON_INCLUDES_
-#include "../rtwtypes.h"
+#include "../lib/rtwtypes.h"
 #endif                                 /* FrictionID_COMMON_INCLUDES_ */
 #include <stddef.h>
 

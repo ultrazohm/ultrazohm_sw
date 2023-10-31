@@ -44,7 +44,7 @@ void uz_InterpMeshGrid_step(uz_ParaID_InterpMeshGrid_t *self);
  * @param self pointer to uz_ParaID_InterpMeshGrid_t object
  * @param psi_array_in cleaned array from the CleanPsiArray
  */
-void uz_InterpMeshGrid_set_psi_array(uz_ParaID_InterpMeshGrid_t *self, float psi_array_in[600]);
+void uz_InterpMeshGrid_set_psi_array(uz_ParaID_InterpMeshGrid_t *self, float* psi_array_pointer);
 
 /**
  * @brief Sets the rated current of the machine for the InterpMeshGrid algorithm

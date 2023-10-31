@@ -34,7 +34,7 @@ static uz_incrementalEncoder_t* encoder_D5_3;
 void initialize_incremental_encoder_ipcore_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber){
 	struct uz_incrementalEncoder_config encoder_D5_1_config={
 		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
-		.ip_core_frequency_Hz=100000000U,
+		.ip_core_frequency_Hz=50000000U,
 		.line_number_per_turn_mech=incrementalEncoderResolution,
 		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
 		.drive_pole_pair=motorPolePairNumber

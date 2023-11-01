@@ -3,70 +3,66 @@ close all;
 %LUT Fitting
 
 %LeastSquare Problems
-options.Algorithm = 'levenberg-marquardt';
-% 1. Gleichung
-Fluxd_iqnull = Flux_d(:,10);
-% Fluxd_iqnull = Fluxd_iqnull+ rand(1,length(Fluxd_iqnull))
-% test = Flux_d(:,10)'.*0.5;
-% fun1=@(ad) sum((Fluxd_iqnull-ad(1)*tanh(ad(2)*d_current_d_Flux)-ad(3)*d_current_d_Flux).^2);
+options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt');
 d_current = d_current_d_Flux';
-% Fluxd_iqnull_modell = ad(1).*tanh(ad(2).*d_current)+ad(3).*d_current
-%funtest=@(ad) Fluxd_iqnull-(ad(1).*tanh(d_current)+ad(2).*d_current);
-%fun1=@(ad,d_current_d_Flu) ad(1)*tanh(ad(2)*d_current_d_Flux)+ad(3)*d_current_d_Flux;
-% ad = fminsearch(fun1,[1 1 1])
-beta1 = [1;1;1];
-% opts = statset('nlinfit');
-% opts.RobustWgtFun = 'bisquare';
-% ad = nlinfit(d_current_d_Flux,Fluxd_iqnull,fun1,beta1)
-% lb=min(Fluxd_iqnull)
-% ub=max(Fluxd_iqnull)
-ad = lsqnonlin(@(a) fun1(a),beta1,[],[],options)
-% ad = lsqcurvefit(fun1,beta1,d_current_d_Flux,Fluxd_iqnull)
-%Einfach ein anderer solver
-% options = optimoptions('lsqcurvefit','Algorithm','levenberg-marquardt');
-% lb = [];
-% ub = [];
-% test2 = lsqcurvefit(fun,beta0,d_current_d_Flux,fluxdtest,lb,ub,options)
-% d_current = linspace(-24,10,1.7)
-Fluxd_iqnull_fitted = ad(1).*(tanh(ad(2).*d_current))+(ad(3).*d_current);
-% Fluxd_iqnull_fitted = ad(1)+(ad(2).*d_current);
-% Fluxd_iqnull_fitted = (ad(1).*(tanh(d_current)))+(ad(2).*d_current);
-% Fluxd_iqnull_fitted = fun1(ad_search, d_current_d_Flux);
+q_current = q_current_d_Flux;
 
-ad1 = ad(1);
-ad2 = ad(2);
-ad3 = ad(3);
+
+% Fluxd_iqnull = Flux_d(:,10);
+% beta1 = [1;1];
+% ad = lsqnonlin(@(a) fun1(a),beta1,[],[],options)
+% Fluxd_iqnull_fitted = ad(1).*(tanh(d_current))+(ad(2).*d_current);
+% % Fluxd_iqnull_fitted = ad(1)+(ad(2).*d_current);
+% % Fluxd_iqnull_fitted = (ad(1).*(tanh(d_current)))+(ad(2).*d_current);
+% % Fluxd_iqnull_fitted = fun1(ad_search, d_current_d_Flux);
+% 1. Gleichung
+Fluxd_iqnull = Flux_d(:,11);
+fun0=@(ad)Fluxd_iqnull-(ad(1).*(tanh(ad(2)*(d_current-ad(3)))))
+% funtest=@(ad_irgendwas)(Fluxd_iqnull-((ad_irgendwas(1).*((d_current).^2))+(ad_irgendwas(2).*d_current)+ad_irgendwas(3)));
+beta1 = [1;1;1];
+ad_1 = lsqnonlin(fun0,beta1,[],[],options)
+% aq = nlinfit(q_current,Fluxq_idnull,fun2,beta2);
+% Fluxd_iqnull_fitted = ((ad_1(1).*(tanh(ad_1(2)*d_current)))+(ad_1(3).*d_current))
+Fluxd_iqnull_fitted = ad_1(1).*(tanh(ad_1(2)*(d_current-ad_1(3))))
+Fluxd_iqnull_test = ad_1(1).*(tanh(ad_1(2)*(d_current-ad_1(3))));
+
+
+
+ad1 = ad_1(1);
+ad2 = ad_1(2);
+ad3 = ad_1(3);
 
 % 2. Gleichung
-Fluxq_idnull = Flux_q(15,:)';
-q_current = q_current_d_Flux;
-fun2=@(aq)Fluxq_idnull-((aq(1).*(tanh(q_current)))+(aq(2).*q_current));
-beta2 = [1;1];
+Fluxq_idnull = Flux_q(12,:)';
+fun2=@(aq)(Fluxq_idnull-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
+beta2 = [1;1;1];
 aq_1 = lsqnonlin(fun2,beta2,[],[],options)
 % aq = nlinfit(q_current,Fluxq_idnull,fun2,beta2);
-Fluxq_idnull_fitted = ((aq_1(1).*(tanh(q_current)))+(aq_1(2).*q_current));
+Fluxq_idnull_fitted = ((aq_1(1).*(tanh(aq_1(2)*q_current)))+(aq_1(3).*q_current));
 
 aq1 = aq_1(1);
-aq2 = 1;
-aq3 = aq_1(2);
+aq2 = aq_1(2);
+aq3 = aq_1(3);
 
 % 3. Gleichung
 Fluxd_iq1 = Flux_d(:,20);
 %fun3=@(ad_zwei)Fluxd_iq1-((ad_zwei(1).*(tanh(d_current)))+(ad_zwei(2).*d_current));
 % fun3=@(ad_zwei,d_current)Fluxd_iq1-((ad_zwei(1).*(tanh(d_current)))+(ad_zwei(2).*d_current));
-fun3=@(ad_zwei,d_current)ad_zwei(1).*(tanh(d_current))+(ad_zwei(2).*d_current)
-beta3 = [1;1];
-% ad_3_6 = lsqnonlin(fun3,beta3,[],[],options)
-ad_3_6 = nlinfit(d_current,Fluxd_iq1,fun3,beta3)
-Fluxd_iq1_fitted = ((ad_3_6(1).*(tanh(d_current)))+(ad_3_6(2).*d_current));
+% fun3=@(ad_zwei,d_current)ad_zwei(1).*(tanh(d_current))+(ad_zwei(2).*d_current)
+%fun3=@(ad_zwei,d_current)(ad_zwei(1).*((d_current).^2))+(ad_zwei(2).*d_current)+ad_zwei(3)
+fun3=@(ad_zwei)Fluxd_iq1-(ad_zwei(1).*(tanh(ad_zwei(2)*(d_current-ad_zwei(3)))))
+beta3 = [1;1;1];
+ad_3_6 = lsqnonlin(fun3,beta3,[],[],options)
+% ad_3_6 = nlinfit(d_current,Fluxd_iq1,fun3,beta3)
+Fluxd_iq1_fitted = (ad_3_6(1).*(tanh(ad_3_6(2)*(d_current-ad_3_6(3)))));
 
 ad4 = ad_3_6(1);
-ad5 = 1;
-ad6 = ad_3_6(2);
+ad5 = ad_3_6(2);
+ad6 = ad_3_6(3);
 
 % 4. Gleichung
 Fluxq_id1 = Flux_q(1,:)';
-fun4=@(aq_zwei)Fluxq_id1-((aq_zwei(1).*(aq_3_6(2).*tanh(q_current)))+(aq_zwei(3).*q_current));
+fun4=@(aq_zwei)Fluxq_id1-((aq_zwei(1).*(aq_zwei(2).*tanh(q_current)))+(aq_zwei(3).*q_current));
 beta4 = [1;1;1];
 aq_3_6 = lsqnonlin(fun4,beta4,[],[],options)
 % aq_3_6 = nlinfit(q_current_d_Flux,Fluxq_id1,fun4,beta4);
@@ -77,28 +73,47 @@ aq5 = aq_3_6(2);
 aq6 = aq_3_6(3);
 
 % test Gleichung
-Fluxd_iq1 = Flux_d(:,20);
-fun5=@(ad_zwei_test)Fluxd_iq1-((ad_zwei_test(1).*(ad_zwei_test(2).*tanh(d_current)))+(ad_zwei_test(3)*d_current));
-beta5 = [1;1;1];
-ad_test = lsqnonlin(fun5,beta5)
-% aq_3_6 = nlinfit(q_current_d_Flux,Fluxq_id1,fun4,beta4);
-Fluxd_iq1_fitted_test = ((ad_test(1).*(ad_test(2).*tanh(d_current)))+(ad_test(3).*d_current));
+% Fluxd_iq1 = Flux_d(:,20);
+% fun5=@(ad_zwei_test)Fluxd_iq1-((ad_zwei_test(1).*(ad_zwei_test(2).*tanh(d_current)))+(ad_zwei_test(3)*d_current));
+% beta5 = [1;1;1];
+% ad_test = lsqnonlin(fun5,beta5)
+% % aq_3_6 = nlinfit(q_current_d_Flux,Fluxq_id1,fun4,beta4);
+% Fluxd_iq1_fitted_test = ((ad_test(1).*(ad_test(2).*tanh(d_current)))+(ad_test(3).*d_current));
 
 figure;
 % Erster Plot
-subplot(2,1,1); % Erstelle das obere Subplot
+subplot(4,1,1); % Erstelle das obere Subplot
 grid on;
-plot(q_current, Fluxq_id1_fitted  , 'DisplayName', 'Fluxd_iqnull_fitted');
+plot(d_current, Fluxd_iqnull_fitted, 'DisplayName', 'Fluxd_idnull_fitted');
 hold on;
-plot(q_current, Fluxq_id1,'*', 'DisplayName', 'Fluxd_iqnull');
+plot(d_current, Fluxd_iqnull,'*', 'DisplayName', 'Fluxd_idnull');
 legend('show');
 
 % Zweiter Plot
-subplot(2,1,2); % Erstelle das untere Subplot
+subplot(4,1,2); % Erstelle das untere Subplot
 grid on;
-plot(d_current, Fluxd_iq1_fitted  , 'DisplayName', 'Fluxd_iqnull_fitted');
+
+plot(q_current, Fluxq_idnull_fitted  , 'DisplayName', 'Fluxq_idnull_fitted');
 hold on;
-plot(d_current, Fluxd_iq1,'*', 'DisplayName', 'Fluxd_iqnull');
+plot(q_current, Fluxq_idnull,'*', 'DisplayName', 'Fluxq_idnull');
+legend('show');
+
+% Dritter Plot
+subplot(4,1,3); % Erstelle das untere Subplot
+grid on;
+
+plot(d_current, Fluxd_iq1_fitted  , 'DisplayName', 'Fluxd_iq1_fitted');
+hold on;
+plot(d_current, Fluxd_iq1,'*', 'DisplayName', 'Fluxd_iq1');
+legend('show');
+
+% Vierter Plot
+subplot(4,1,4); % Erstelle das untere Subplot
+grid on;
+
+plot(q_current, Fluxq_id1_fitted  , 'DisplayName', 'Fluxq_id1_fitted');
+hold on;
+plot(q_current, Fluxq_id1,'*', 'DisplayName', 'Fluxq_id1');
 legend('show');
 
 
@@ -123,19 +138,9 @@ legend('show');
 %Maximum Crosscoupling current constants id1 und iq1
 
 %Selbstinduktion
-% psidself = [Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,
-%             Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,
-%             Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,
-%             Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted,Fluxd_iqnull_fitted];
-% psidself = repmat(Fluxd_iqnull_fitted, 1, 20);
 psidself = Fluxd_iqnull_fitted;
 
-% psiqself = [Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,
-%             Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,
-%             Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,
-%             Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted,Fluxq_idnull_fitted];
-% psiqself = repmat(Fluxq_idnull_fitted, 1, 20);
-psiqself = Fluxq_idnull_fitted
+psiqself = Fluxq_idnull_fitted;
 
 %gesamte induktion in im maximalen kreuzekkopplungsstrom (also ein
 %ausgewählter betriebspuntk) 
@@ -160,7 +165,9 @@ psid_cross_s1 = psidself - psid_s1;
 psiq_cross_s1 = psiqself - psiq_s1;
 
 %die beiden werden dann integriert (wieso auch immer) 
-psiid_cross_s1_integrated = (1/2)*(ad3-ad6).*((d_current).^2)+((ad1/ad2).*log(cosh(ad2.*d_current)))-((ad4/ad5).*log(cosh(ad5.*d_current)));
+% psiid_cross_s1_integrated = (1/2)*(ad3-ad6).*((d_current).^2)+((ad1/ad2).*log(cosh(ad2.*d_current)))-((ad4/ad5).*log(cosh(ad5.*d_current)));
+psiid_cross_s1_integrated = (1/3)*(ad1-ad4).*((d_current).^3)+(1/2)*(ad2-ad5).*((d_current).^2)+(ad3-ad6).*((d_current));
+
 
 psiiq_cross_s1_integrated = (1/2)*(aq3-aq6).*((q_current).^2)+((aq1/aq2).*log(cosh(aq2.*q_current)))-((aq4/aq5).*log(cosh(aq5.*q_current)));
 
@@ -179,6 +186,8 @@ psiqself_padded = repmat(Fluxq_idnull_fitted, 1, 20);
 
 psi_d = psidself_padded - psi_d_cross;
 psi_q = psiqself_padded - psi_q_cross;
+
+Flux_d_t = Flux_d';
 
 figure;
 % Erster Plot

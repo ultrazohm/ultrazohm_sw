@@ -34,6 +34,7 @@ void test_uz_signals_IIR_Filter_init_assert_cutoff_Freq(void) {
 }
 
 void test_uz_signals_IIR_Filter_init_assert_pass_Freq(void) {
+    config.selection = BandPass_second_order;
     config.pass_frequency_Hz = 0.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_signals_IIR_Filter_init(config));
     config.pass_frequency_Hz = -20.0f;
@@ -50,7 +51,7 @@ void test_uz_signals_IIR_Filter_init_assert_sample_Freq_higher_than_cutoff_Freq(
     TEST_ASSERT_PASS_ASSERT(uz_signals_IIR_Filter_init(config));
 }
 
-void test_uz_signals_IIR_Filter_init_assert_pass_Freq_higher_than_cutoff_Freq(void) {
+void test_uz_signals_IIR_Filter_init_assert_sample_Freq_higher_than_pass_Freq(void) {
     config.pass_frequency_Hz = 10000.0f;
     TEST_ASSERT_FAIL_ASSERT(uz_signals_IIR_Filter_init(config));
     config.pass_frequency_Hz = 30000.0f;

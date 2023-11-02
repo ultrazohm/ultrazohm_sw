@@ -65,7 +65,7 @@
 
 // Configuration defines for the number of used instances for testing with ceedling
 #ifdef TEST
-    #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  13U
+    #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  16U
     #define UZ_DAC_INTERFACE_MAX_INSTANCES                  10U
     #define UZ_MYIP2_MAX_INSTANCES                          5U
     #define UZ_MYIP_MAX_INSTANCES                           5U
@@ -98,6 +98,7 @@
     #define UZ_MOVINGAVERAGEFILTER_MAX_INSTANCES            50U
     #define UZ_INVERTER_ADAPTER_MAX_INSTANCES               20U
     #define UZ_EXP_SMOOTH_MAX_INSTANCES                     5U
+    #define UZ_TEMPERATURE_CARD_MAX_INSTANCES               10U
     #define UZ_RESOLVERIP_MAX_INSTANCES                     40U
     #define UZ_SYSMON_PS_MAX_INSTANCES                      10U 
     #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          30U
@@ -105,4 +106,7 @@
     #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
     #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      10U
     #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           20U
+    #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             10U
+    #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
+    #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
 #endif

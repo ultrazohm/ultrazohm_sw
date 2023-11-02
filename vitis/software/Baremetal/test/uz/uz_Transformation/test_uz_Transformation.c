@@ -516,7 +516,7 @@ void test_uz_dq_harmonic_Transformation_output_positive_theta(void){
     float harmonic_order = 7.0;
     uz_3ph_dq_t output = uz_transformation_3ph_harmonic_abc_to_dq(UVW_system, theta_el_rad, harmonic_order);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 0.0f, output.d);
-    TEST_ASSERT_EQUAL_FLOAT(-1.0f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.q);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, output.zero);
 }
 
@@ -528,7 +528,7 @@ void test_uz_dq_harmonic_Transformation_output_negative_theta(void){
     float harmonic_order = 7.0;
     uz_3ph_dq_t output = uz_transformation_3ph_harmonic_abc_to_dq(UVW_system, theta_el_rad, harmonic_order);
     TEST_ASSERT_FLOAT_WITHIN (1e-06, 0.0f, output.d);
-    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(-1.0f, output.q);
     TEST_ASSERT_EQUAL_FLOAT(0.0f, output.zero);
 }
 
@@ -538,9 +538,9 @@ void test_uz_inverse_dq_harmonic_Transformation_output_positive_theta(void){
     float theta_el_rad = UZ_PIf / 2.0f;
     float harmonic_order = 7.0;
     uz_3ph_abc_t output = uz_transformation_3ph_harmonic_dq_to_abc(dq_system, theta_el_rad, harmonic_order);
-    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.a);
-    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.b);
-    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.c);
+    TEST_ASSERT_EQUAL_FLOAT(-1.0f, output.a);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, output.b);
+    TEST_ASSERT_EQUAL_FLOAT(0.5f, output.c);
 }
 
 void test_uz_inverse_dq_harmonic_Transformation_output_negative_theta(void){
@@ -549,8 +549,8 @@ void test_uz_inverse_dq_harmonic_Transformation_output_negative_theta(void){
     float theta_el_rad = -1.0f * (UZ_PIf / 2.0f);
     float harmonic_order = 7.0;
     uz_3ph_abc_t output = uz_transformation_3ph_harmonic_dq_to_abc(dq_system, theta_el_rad, harmonic_order);
-    TEST_ASSERT_EQUAL_FLOAT(-1.0f, output.a);
-    TEST_ASSERT_EQUAL_FLOAT(0.5f, output.b);
-    TEST_ASSERT_EQUAL_FLOAT(0.5f, output.c);
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, output.a);
+    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.b);
+    TEST_ASSERT_EQUAL_FLOAT(-0.5f, output.c);
 }
 #endif // TEST

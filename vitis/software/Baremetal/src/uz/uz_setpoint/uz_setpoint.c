@@ -114,6 +114,8 @@ uz_3ph_dq_t uz_SetPoint_sample(uz_SetPoint_t* self, float omega_m_rad_per_sec, f
     } else {
         output_currents.d = 0.0f;
         output_currents.q = 0.0f;
+        //Escape out of FW, since no new omega_cut will be calculated
+        self->is_field_weakening_active = false;
     }
     
     
@@ -133,12 +135,6 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input) {
     self->config.config_PMSM = input;
 }
 
-void uz_SetPoint_set_id_ref(uz_SetPoint_t* self, float id_ref_Ampere) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    self->config.id_ref_Ampere = id_ref_Ampere;
-}
-
 static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere) {
     uz_3ph_dq_t output_currents = {0};
     float im_ref = M_ref_Nm / (1.5f * self->config.config_PMSM.polePairs * self->config.config_PMSM.Psi_PM_Vs);
@@ -152,7 +148,7 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
         }
 
         if(!self->is_field_weakening_active || !M_ref_hysteresis) {
-            uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_FE_max, actual_currents_Ampere);
+        	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_FE_max, actual_currents_Ampere);
             self->old_M_ref_Nm = M_ref_Nm;
         }
         float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
@@ -234,7 +230,7 @@ static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, flo
             break;
     }
     float id_limit = sqrtf((I_max_squared) - (output.q * output.q));
-    output.d = uz_signals_saturation(output.d + self->config.id_ref_Ampere, id_limit, -id_limit);
+    output.d = uz_signals_saturation(output.d, id_limit, -id_limit);
     return(output);
 }
 

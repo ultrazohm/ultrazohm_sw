@@ -79,49 +79,11 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-        uz_environment_pt1_dqn_step(pt1, action_k, setpoint);
-        pt1_input   =uz_environment_pt1_get_input(pt1);
-        pt1_output=uz_environment_pt1_get_output(pt1);
-
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
-        env_state = uz_environment_pt1_get_state(pt1);
-        uz_dqn_sample_observation_k_0(testdqn2, env_state);
-         action_k = uz_dqn_determine_action(testdqn2);
-    }else{
-
-
-    if(do_dqn){
-    if (first_episode)
-    {
-        first_episode = false;
     }
-    else
-    {
-        env_state = uz_environment_pt1_get_state(pt1);
-        // Sample environment at k+1
-        uz_dqn_sample_observation_k_1(testdqn2, env_state);
-        float reward = uz_environment_pt1_get_reward(pt1);
-        uz_dqn_set_reward(testdqn2, reward);
-        uz_dqn_push_to_buffer(testdqn2);
-    }
-
-    // sample observation of the environment at k=0
-    env_state = uz_environment_pt1_get_state(pt1);
-    uz_dqn_sample_observation_k_0(testdqn2, env_state);
-     action_k = uz_dqn_determine_action(testdqn2);
-
-    global_loss=cum_loss;
-    t++;
-    }
-
-    if(t>max_steps){
-    	do_dqn=false;
-    }
-    }
-    do_dqn_float=(float)do_dqn;
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

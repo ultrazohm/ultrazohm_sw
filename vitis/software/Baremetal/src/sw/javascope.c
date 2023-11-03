@@ -39,12 +39,7 @@ extern float evaluation_run;
 extern float finished;
 extern float global_loss;
 extern float global_reward_metric;
-extern float epoch_global;
-
-extern float setpoint;
-extern float pt1_output;
-extern float pt1_input;
-extern float do_dqn_float;
+extern float timeflag;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -72,17 +67,12 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_episode_reward] 			= &episode_reward;
-	js_ch_observable[JSO_pt1_setpoint] 			= &setpoint;
-	js_ch_observable[JSO_pt1_output] 			= &pt1_output;
-	js_ch_observable[JSO_pt1_input] 			= &pt1_input;
-	js_ch_observable[JSO_eval_run] 			= &evaluation_run;
-	js_ch_observable[JSO_finished] 			= &finished;
-	js_ch_observable[JSO_do_dqn] 			= &do_dqn_float;
+	js_ch_observable[JSO_time] 			= &timeflag;
+	js_ch_observable[JSO_episode_reward] = &episode_reward;
+	js_ch_observable[JSO_eval_run] 		= &evaluation_run;
+	js_ch_observable[JSO_finished] 		= &finished;
 	js_ch_observable[JSO_loss] = &global_loss;
 	js_ch_observable[JSO_reward_metric] = &global_reward_metric;
-	js_ch_observable[JSO_epoch] = &epoch_global;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;

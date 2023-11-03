@@ -1,3 +1,4 @@
+
 %% clean Matlab Workspace
 close all
 clear all
@@ -169,5 +170,7 @@ if(import_data_to_simulink_datainspector ~= 0)
     Simulink.sdi.view
     
 end
-
-
+TF = ischange(log.CH2);
+I = find(TF == 1);
+Z = diff(I)/10000
+writematrix(Z,'fixepisodes/Batchsize64Zeitmessunguz.csv','Delimiter',',')

@@ -144,7 +144,7 @@ void ISR_Control(void *data)
     Global_Data.av.mean_temp_inv_right = (Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L1+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L2+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_H3+Global_Data.av.inverter_right_status.ChipTempDegreesCelsius_L3) * 0.1667;
 
 	//read axi values from mpc ip for debug
-//	fcs_mpc_debug();
+	fcs_mpc_debug();
 
     //calculate given trajectory
     Global_Data.av.traj_speed_ref = uz_Trajectory_Step(Global_Data.objects.speed_traj);

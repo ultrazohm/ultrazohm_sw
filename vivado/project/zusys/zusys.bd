@@ -7903,7 +7903,6 @@
                 "ports": [
                   "adc_valid",
                   "uz_debug_ip_0/adc_valid_trigger",
-                  "mpc_enable_0/adc_valid_trigger",
                   "system_ila_0/probe1",
                   "system_ila_1/probe0"
                 ]
@@ -8221,7 +8220,8 @@
               "sample_trigger_1": {
                 "ports": [
                   "sample_trigger",
-                  "system_ila_0/probe0"
+                  "system_ila_0/probe0",
+                  "mpc_enable_0/adc_valid_trigger"
                 ]
               },
               "uz_debug_ip_0_debug_ip_done": {

@@ -297,6 +297,62 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //				Ki_iq_7th_1 = value;
 			break;
 
+		case (Set_Send_Field_7):
+
+			break;
+
+		case (Set_Send_Field_8):
+
+			break;
+
+		case (Set_Send_Field_9):
+
+			break;
+
+		case (Set_Send_Field_10):
+
+			break;
+
+		case (Set_Send_Field_11):
+
+			break;
+
+		case (Set_Send_Field_12):
+
+			break;
+
+		case (Set_Send_Field_13):
+
+			break;
+
+		case (Set_Send_Field_14):
+
+			break;
+
+		case (Set_Send_Field_15):
+
+			break;
+
+		case (Set_Send_Field_16):
+
+			break;
+
+		case (Set_Send_Field_17):
+
+			break;
+
+		case (Set_Send_Field_18):
+
+			break;
+
+		case (Set_Send_Field_19):
+
+			break;
+
+		case (Set_Send_Field_20):
+
+			break;
+
 		case (My_Button_1):
 			ultrazohm_state_machine_set_error(true);
 			break;

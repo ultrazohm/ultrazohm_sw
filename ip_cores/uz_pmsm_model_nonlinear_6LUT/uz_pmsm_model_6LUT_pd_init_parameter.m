@@ -40,20 +40,20 @@ static_friction_torque=0.01;
 % Simulation settings
 simulate_mechanical=false;
 simulate_open_loop=false;
-simulate_nonlinear_modell=false;
+simulate_nonlinear_modell=true;
 
-parameter_nachfuerung=false;
+parameter_nachfuerung=true;
 
-praediktion_entkopplung_nonlinear=false;
-entkopplung_linear=true;
+praediktion_entkopplung_nonlinear=true;
+entkopplung_linear=false;
 entkopplung_static=false;
 entkopplung_dynamic=false;
 
 setpoint_step=10.0;
 
-%Stoeraufschaltung
-c0 = 1;
-T0 = tau_sum/10;
+% %Stoeraufschaltung
+% c0 = 1;
+% T0 = tau_sum/10;
 
 % % Import the data from Excel for lookup table
 % FluxMapData = readtable('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear\FluxMapData_2023-05-26_13-07-57.xlsx');
@@ -79,7 +79,7 @@ T0 = tau_sum/10;
 % [Lqq,Lqd]=gradient(Flux_q);
 
 % % Import the data from Excel for lookup table
-FluxMapData = readtable('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\FluxMapData_Prototyp_1000rpm.xlsx');
+FluxMapData = readtable('FluxMapData_Prototyp_1000rpm.xlsx');
 
 %Psi_d
 % d_currents in d Axe for lookup table

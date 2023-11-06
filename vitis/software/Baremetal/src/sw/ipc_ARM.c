@@ -28,26 +28,6 @@ extern float M_ref_Nm_1;
 extern float theta_el_offset_1;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
 
-// ---------------- Resonant Controllers ---------------- //
-extern float Gain_RC_6th_1;
-extern float Gain_RC_12th_1;
-extern float Gain_RC_5th_1;
-extern float Gain_RC_7th_1;
-extern float order_6th;
-extern float i_dq_6th_ref_Amps_1;
-extern float amplitude_6th_d;
-extern float amplitude_6th_q;
-extern float amplitude_5th;
-extern float amplitude_7th;
-extern int mode_1;
-
-// ------------------ Harmonic Control ------------------ //
-extern struct uz_3ph_dq_t i_dqn_5th_ref_Amps_1;
-extern struct uz_3ph_dq_t i_dqn_7th_ref_Amps_1;
-extern float i_5th_amplitude;
-extern float i_5th_phase;
-extern float i_7th_amplitude;
-extern float i_7th_phase;
 
 // ---------------- Controller Settings ----------------- //
 extern float Kp_speed_1;
@@ -56,14 +36,7 @@ extern float Kp_id_1;
 extern float Ki_id_1;
 extern float Kp_iq_1;
 extern float Ki_iq_1;
-extern float Kp_id_5th_1;
-extern float Ki_id_5th_1;
-extern float Kp_iq_5th_1;
-extern float Ki_iq_5th_1;
-extern float Kp_id_7th_1;
-extern float Ki_id_7th_1;
-extern float Kp_iq_7th_1;
-extern float Ki_iq_7th_1;
+
 
 // ------------------- Wavegen Chirp -------------------- //
 extern bool enable_excitation;
@@ -88,6 +61,10 @@ extern float Kp_id_2;
 extern float Ki_id_2;
 extern float Kp_iq_2;
 extern float Ki_iq_2;
+
+// ======================= Others ======================= //
+extern int option;
+extern struct uz_3ph_dq_t v_ind_dq_Volts_2 ;
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -256,45 +233,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-				//n_ref_rpm_1 = value;
-				M_ref_Nm_1 = value;
-//				enable_excitation = value;
+			option = value;
 			break;
 
 		case (Set_Send_Field_2):
-				//mode_1 = value;
-				n_ref_rpm_2 = value;
-//				excitation_amplitude = value;
+			M_ref_Nm_1 = value;
 			break;
 
 		case (Set_Send_Field_3):
-				i_5th_amplitude = value;
-//				i_dqn_5th_ref_Amps_1.d = value;
-//				Kp_id_5th_1 = value;
-//				Kp_iq_5th_1 = value;
-//				Kp_id_1 = value;
+			n_ref_rpm_2 = value;
 			break;
 
 		case (Set_Send_Field_4):
-				i_5th_phase = value;
-//				i_dqn_5th_ref_Amps_1.q = value;
-//				Ki_id_5th_1 = value;
-//				Ki_iq_5th_1 = value;
-//				Ki_id_1 = value;
+			n_ref_rpm_1 = value;
 			break;
 
 		case (Set_Send_Field_5):
-				i_7th_amplitude = value;
-//				i_dqn_7th_ref_Amps_1.d = value;
-//				Kp_id_7th_1 = value;
-//				Kp_iq_7th_1 = value;
+			i_dq_ref_Amps_2.d = value;
 			break;
 
 		case (Set_Send_Field_6):
-				i_7th_phase	= value;
-//				i_dqn_7th_ref_Amps_1.q = value;
-//				Ki_id_7th_1 = value;
-//				Ki_iq_7th_1 = value;
+			i_dq_ref_Amps_2.q = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -366,15 +325,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-			mode_1 = 0;
+
 			break;
 
 		case (My_Button_5):
-			mode_1 = 3;
+
 			break;
 
 		case (My_Button_6):
-			mode_1 = 2;
+
 			break;
 
 		case (My_Button_7):

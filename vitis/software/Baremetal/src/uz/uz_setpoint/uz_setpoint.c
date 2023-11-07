@@ -136,6 +136,18 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input) {
     self->config.config_PMSM = input;
 }
 
+bool uz_SetPoint_get_field_weakening(uz_SetPoint_t* self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return(self->is_field_weakening_active);
+}
+
+float uz_SetPoint_get_omega_cut(uz_SetPoint_t* self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return(self->omega_cut_rad_per_sec);
+}
+
 static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere) {
     uz_3ph_dq_t output_currents = {0};
     float im_ref = M_ref_Nm / (1.5f * self->config.config_PMSM.polePairs * self->config.config_PMSM.Psi_PM_Vs);
@@ -184,7 +196,7 @@ static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoin
 static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_el_rad_per_sec, float V_DC_Volts, float im_ref, float M_ref_Nm, uz_3ph_dq_t actual_currents_Ampere){
     uz_assert(self->omega_cut_rad_per_sec > 0.0f);
     float I1 = sqrtf((actual_currents_Ampere.d * actual_currents_Ampere.d) + (actual_currents_Ampere.q * actual_currents_Ampere.q));
-    float V_FE_max = ((V_DC_Volts / sqrtf(3.0f)) - self->config.config_PMSM.R_ph_Ohm * I1) * 0.95f; // small voltage buffer (95%)
+    float V_FE_max = ((V_DC_Volts * self->config.max_modulation_index) - self->config.config_PMSM.R_ph_Ohm * I1) * 0.95f; // small voltage buffer (95%)
     uz_3ph_dq_t output = {0};
     float I_max_squared = self->config.config_PMSM.I_max_Ampere * self->config.config_PMSM.I_max_Ampere;
     float id_limit = 0.0f;
@@ -300,7 +312,7 @@ static float uz_SetPoint_calculate_IPMSM_id_current(uz_SetPoint_t* self, float i
 }
 
 static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere) {
-    float V_FE_max = (V_DC_Volts / sqrtf(3.0f)) * 0.95f; // small voltage buffer (95%)
+    float V_FE_max = (V_DC_Volts * self->config.max_modulation_index) * 0.95f; // small voltage buffer (95%)
     float Id_squared = actual_currents_Ampere.d * actual_currents_Ampere.d;
     float Iq_squared = actual_currents_Ampere.q * actual_currents_Ampere.q;
     float Rs_squared = self->config.config_PMSM.R_ph_Ohm * self->config.config_PMSM.R_ph_Ohm;

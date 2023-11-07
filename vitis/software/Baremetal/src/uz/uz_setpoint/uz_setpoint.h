@@ -42,6 +42,7 @@ struct uz_SetPoint_config {
 											FOC -> field oriented control \n */
 	enum uz_Setpoint_usecase use_case;		/**<SpeedControl -> if a SpeedControl module is used to set the reference torque \n
   	  	  	  	  	  	  	  	  	  	  	  	  TorqueControl -> if a reference torque is set manually \n*/
+	float max_modulation_index; 		/**< Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation*/
 };
 
 /**
@@ -87,4 +88,7 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input);
  * @param id_ref_Ampere new value for manual id-reference current
  */
 void uz_SetPoint_set_id_ref(uz_SetPoint_t* self, float id_ref_Ampere);
+
+bool uz_SetPoint_get_field_weakening(uz_SetPoint_t* self);
+float uz_SetPoint_get_omega_cut(uz_SetPoint_t* self) ;
 #endif // UZ_SETPOINT_H

@@ -23,6 +23,7 @@ void setUp(void)
     config.motor_type = SMPMSM;
     config.is_field_weakening_enabled = false;
     config.relative_torque_tolerance = 1.0f;
+    config.use_case = SP_TorqueControl;
     currents.d = 0.0f;
     currents.q = 0.0f;
     omega_m_rad_per_sec = 0.0f;
@@ -314,18 +315,18 @@ void test_uz_SetPoint_sample_field_weakening_SMPMSM_operation(void){
     config.is_field_weakening_enabled = true;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = 0.105f;
-    currents.d = -1.659672f;
-    currents.q = 2.333f;
-    omega_m_rad_per_sec = 481.06f; 
+    currents.d = 0.0f;
+    currents.q = 0.0f;
+    omega_m_rad_per_sec = 490.0f; 
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    //TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.q, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.d, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.333f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.7349f, output.d);
     //Negative speed
     M_ref_Nm = -0.105f;
-    omega_m_rad_per_sec = -481.06f; 
+    omega_m_rad_per_sec = -490.0f; 
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -currents.q, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.d, output.d);  
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.333f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.7349f, output.d);  
 }
 
 void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_negative(void){
@@ -333,20 +334,20 @@ void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_negative(void){
     config.is_field_weakening_enabled = true;
     config.config_PMSM.Ld_Henry = 0.0002f;
     config.motor_type = IPMSM;
-    currents.d = -2.367f;
-    currents.q = 2.154f;
+    currents.d = 0.0f;
+    currents.q = 0.0f;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = 0.1f;
-    omega_m_rad_per_sec = 455.6f; 
+    omega_m_rad_per_sec = 500.6f; 
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.q, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.d, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.089f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -4.780f, output.d);
     //Negative speed
     M_ref_Nm = -0.1f;
-    omega_m_rad_per_sec = -455.6f; 
+    omega_m_rad_per_sec = -500.6f; 
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -currents.q, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.d, output.d);  
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.089f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -4.780f, output.d);  
 }
 
 void test_uz_SetPoint_sample_field_weakening_IPMSM_check_tolerance(void){
@@ -375,30 +376,26 @@ void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_two_instances(void)
     config.is_field_weakening_enabled = true;
     config.config_PMSM.Ld_Henry = 0.0002f;
     config.motor_type = IPMSM;
-    currents.d = -2.367f;
-    currents.q = 2.154f;
+    currents.d = 0.0f;
+    currents.q = 0.0f;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     //instance2 has different Ld
     config.config_PMSM.Ld_Henry = 0.00015f;
     uz_SetPoint_t* instance2 = uz_SetPoint_init(config);
     M_ref_Nm = 0.1f;
-    omega_m_rad_per_sec = 455.6f; 
+    omega_m_rad_per_sec = 500.6f; 
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.q, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.d, output.d);
-    currents.d = -3.422f;
-    currents.q = 2.08f;
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.089f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -4.780f, output.d);
     uz_3ph_dq_t output2 = uz_SetPoint_sample(instance2, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     //instance2 with different Ld should lead to different currents
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.q, output2.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.d, output2.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.972f, output2.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -6.352f, output2.d);
     //recalculating instance1 should lead to no different results than before for output. 
     //No mixup with the coefficient array addresses exist
-    currents.d = -2.367f;
-    currents.q = 2.154f;
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.q, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, currents.d, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.089f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -4.780f, output.d);
 }
 
 

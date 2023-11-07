@@ -16,6 +16,11 @@ enum uz_Setpoint_control_type {
 	FOC = 0,
 };
 
+/*! enum for selection of use case. */
+enum uz_Setpoint_usecase {
+	SP_SpeedControl = 0,
+	SP_TorqueControl
+};
 /**
  * @brief Object definition for uz_SetPoint_t
  *
@@ -34,7 +39,9 @@ struct uz_SetPoint_config {
 											SMPMSM -> surface-mounted PMSM (Ld=Lq) \n
 											IPMSM -> interior PMSM (Ld=/=Lq) */
 	enum uz_Setpoint_control_type control_type; /**< Selection for which control type is used \n
-											FOC -> field oriented control \n */							
+											FOC -> field oriented control \n */
+	enum uz_Setpoint_usecase use_case;		/**<SpeedControl -> if a SpeedControl module is used to set the reference torque \n
+  	  	  	  	  	  	  	  	  	  	  	  	  TorqueControl -> if a reference torque is set manually \n*/
 };
 
 /**

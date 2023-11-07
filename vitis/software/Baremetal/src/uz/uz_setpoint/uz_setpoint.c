@@ -47,9 +47,9 @@ static uz_SetPoint_t instances[UZ_SETPOINT_MAX_INSTANCES] = { 0 };
 static uz_SetPoint_t* uz_SetPoint_allocation(void);
 
 static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere);
-static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_m_rad_per_sec, float V_dc_volts, float i_ref, float M_ref_Nm);
+static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_m_rad_per_sec, float V_dc_volts, float i_ref, float M_ref_Nm, uz_3ph_dq_t actual_currents_Ampere);
 static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
-static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_FE_max, uz_3ph_dq_t actual_currents_Ampere);
+static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere);
 static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type);
 static float uz_SetPoint_newton_MTPA_raphson_iq_approximation(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
 static void uz_SetPoint_newton_raphson_MTPA_check(uz_SetPoint_t* self, float iq_ref_Ampere, float Ld_Lq_squared, float M_ref_Nm); 
@@ -92,6 +92,7 @@ uz_SetPoint_t* uz_SetPoint_init(struct uz_SetPoint_config config){
 	self->newton_FW.iterations = 12U;
 	self->newton_FW.check_for_absolute_tolerance = false;
     self->config = config;
+    self->omega_cut_rad_per_sec = 200.0f;//Random initial value is necessary
     return(self);
 }
 
@@ -138,23 +139,26 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input) {
 static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere) {
     uz_3ph_dq_t output_currents = {0};
     float im_ref = M_ref_Nm / (1.5f * self->config.config_PMSM.polePairs * self->config.config_PMSM.Psi_PM_Vs);
-    float I1 = sqrtf((actual_currents_Ampere.d * actual_currents_Ampere.d) + (actual_currents_Ampere.q * actual_currents_Ampere.q));
     im_ref = uz_signals_saturation(im_ref, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
     bool M_ref_hysteresis = false;
+    float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
     if(self->config.is_field_weakening_enabled) {//Field-weakening
-        float V_FE_max = ((V_DC_Volts / sqrtf(3.0f)) - (self->config.config_PMSM.R_ph_Ohm * I1)) * 0.95f;
-        if (self->old_M_ref_Nm > 0.0f) {
-        	uz_signals_hysteresisband_filter_flag(M_ref_Nm, self->old_M_ref_Nm * 1.05f, self->old_M_ref_Nm * 0.95f, &M_ref_hysteresis);
+        
+        if ( (self->old_M_ref_Nm > 0.0f) && (self->config.use_case == SP_TorqueControl)) {
+        	uz_signals_hysteresisband_filter_flag(M_ref_Nm, self->old_M_ref_Nm * 1.001f, self->old_M_ref_Nm * 0.999f, &M_ref_hysteresis);
         }
-
-        if(!self->is_field_weakening_active || !M_ref_hysteresis) {
-        	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_FE_max, actual_currents_Ampere);
-            self->old_M_ref_Nm = M_ref_Nm;
+        //Only recalculate w_c if speed drops below last w_c before entering FW
+        if( (self->config.use_case == SP_SpeedControl) && (!self->is_field_weakening_active) ) {
+        	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
         }
-        float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
+        //Only recalculates w_c if a M_ref change occured or the speed dropped
+        else if ( (self->config.use_case == SP_TorqueControl) && ((!M_ref_hysteresis) || (omega_el_rad_per_sec < self->omega_cut_rad_per_sec)) ) {
+        	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
+        	self->old_M_ref_Nm = M_ref_Nm;
+        }
         if (fabsf(omega_el_rad_per_sec) > self->omega_cut_rad_per_sec) {
             self->is_field_weakening_active = true;
-            output_currents = uz_SetPoint_field_weakening(self, omega_el_rad_per_sec, V_FE_max, im_ref, M_ref_Nm);
+            output_currents = uz_SetPoint_field_weakening(self, omega_el_rad_per_sec, V_DC_Volts, im_ref, M_ref_Nm, actual_currents_Ampere);
         } else { //MPTA, if not in FW territory
             self->is_field_weakening_active = false;
             output_currents = uz_SetPoint_MTPA(self, im_ref, M_ref_Nm);
@@ -177,27 +181,31 @@ static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoin
     }
 }
 
-static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_el_rad_per_sec, float V_FE_max, float im_ref, float M_ref_Nm){
+static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_el_rad_per_sec, float V_DC_Volts, float im_ref, float M_ref_Nm, uz_3ph_dq_t actual_currents_Ampere){
     uz_assert(self->omega_cut_rad_per_sec > 0.0f);
+    float I1 = sqrtf((actual_currents_Ampere.d * actual_currents_Ampere.d) + (actual_currents_Ampere.q * actual_currents_Ampere.q));
+    float V_FE_max = ((V_DC_Volts / sqrtf(3.0f)) - self->config.config_PMSM.R_ph_Ohm * I1) * 0.95f; // small voltage buffer (95%)
     uz_3ph_dq_t output = {0};
     float I_max_squared = self->config.config_PMSM.I_max_Ampere * self->config.config_PMSM.I_max_Ampere;
     float id_limit = 0.0f;
-
+    float Lq_squared = self->config.config_PMSM.Lq_Henry * self->config.config_PMSM.Lq_Henry;
+    float V_FE_squared = V_FE_max * V_FE_max;
+    float omega_squared = omega_el_rad_per_sec * omega_el_rad_per_sec;
+    float Psi_divided_Ld = self->config.config_PMSM.Psi_PM_Vs / self->config.config_PMSM.Ld_Henry;
+    float iq_fw_squared = 0.0f;
     switch (self->config.motor_type)
 	{
         case (SMPMSM):
-            output.d = (self->config.config_PMSM.Psi_PM_Vs / self->config.config_PMSM.Ld_Henry) * ( (self->omega_cut_rad_per_sec / fabsf(omega_el_rad_per_sec) ) - 1.0f);
-            id_limit = sqrtf(I_max_squared - output.d * output.d);
-            output.q = uz_signals_saturation(im_ref, id_limit, -id_limit);//new max. ampere limit for q-axis current
+			output.q = im_ref;
+        	iq_fw_squared = im_ref * im_ref;
+        	output.d = (-Psi_divided_Ld) + ((1.0f / self->config.config_PMSM.Ld_Henry) * sqrtf((V_FE_squared / omega_squared) - (Lq_squared * iq_fw_squared)));
+        	id_limit = sqrtf(I_max_squared - iq_fw_squared);
+        	output.d = uz_signals_saturation(output.d, 0.0f, -id_limit);//To prevent id being positive
             break;
 
         case (IPMSM):
             output.q = uz_SetPoint_newton_FW_raphson_iq_approximation(self, M_ref_Nm, V_FE_max, omega_el_rad_per_sec);
-            float Lq_squared = self->config.config_PMSM.Lq_Henry * self->config.config_PMSM.Lq_Henry;
-            float iq_fw_squared = output.q * output.q;
-            float V_FE_squared = V_FE_max * V_FE_max;
-            float omega_squared = omega_el_rad_per_sec * omega_el_rad_per_sec;
-            float Psi_divided_Ld = self->config.config_PMSM.Psi_PM_Vs / self->config.config_PMSM.Ld_Henry;
+            iq_fw_squared = output.q * output.q;
             output.d = (-Psi_divided_Ld) + ((1.0f / self->config.config_PMSM.Ld_Henry) * sqrtf((V_FE_squared / omega_squared) - (Lq_squared * iq_fw_squared)));
             id_limit = sqrtf(I_max_squared - iq_fw_squared);
             output.d = uz_signals_saturation(output.d, 0.0f, -id_limit);//To prevent id being positive
@@ -291,7 +299,8 @@ static float uz_SetPoint_calculate_IPMSM_id_current(uz_SetPoint_t* self, float i
     return(id_ref_Ampere);
 }
 
-static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_FE_max, uz_3ph_dq_t actual_currents_Ampere) {
+static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere) {
+    float V_FE_max = (V_DC_Volts / sqrtf(3.0f)) * 0.95f; // small voltage buffer (95%)
     float Id_squared = actual_currents_Ampere.d * actual_currents_Ampere.d;
     float Iq_squared = actual_currents_Ampere.q * actual_currents_Ampere.q;
     float Rs_squared = self->config.config_PMSM.R_ph_Ohm * self->config.config_PMSM.R_ph_Ohm;

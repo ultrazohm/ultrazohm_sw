@@ -59,6 +59,8 @@ extern struct uz_3ph_dq_t v_ind_dq_Volts_2;
 
 //Others
 extern float M_meas_Nm;
+extern float option_js;
+extern float error_type;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -135,6 +137,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	js_ch_observable[JSO_ud_ind_2]			= &v_ind_dq_Volts_2.d;
 	js_ch_observable[JSO_uq_ind_2]			= &v_ind_dq_Volts_2.q;
+	js_ch_observable[JSO_error_type]			= &error_type;
 
 
 
@@ -168,6 +171,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_TempL3_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L3);
 	js_slowDataArray[JSSD_FLOAT_u_ind_d]   				= &v_ind_dq_Volts_2.d;
 	js_slowDataArray[JSSD_FLOAT_u_ind_q]   				= &v_ind_dq_Volts_2.q;
+
 
 
 	return Status;

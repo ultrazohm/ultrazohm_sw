@@ -233,27 +233,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-			option = value;
+		n_ref_rpm_1 = value;
 			break;
 
 		case (Set_Send_Field_2):
-			M_ref_Nm_1 = value;
+		i_dq_ref_Amps_2.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-			n_ref_rpm_2 = value;
+		i_dq_ref_Amps_2.q = value;
 			break;
 
 		case (Set_Send_Field_4):
-			n_ref_rpm_1 = value;
+
 			break;
 
 		case (Set_Send_Field_5):
-			i_dq_ref_Amps_2.d = value;
+
 			break;
 
 		case (Set_Send_Field_6):
-			i_dq_ref_Amps_2.q = value;
+
 			break;
 
 		case (Set_Send_Field_7):

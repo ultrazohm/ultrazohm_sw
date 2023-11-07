@@ -120,14 +120,12 @@ float Ki_iq_2 									= 230.0f;
 
 // ---------------- induced voltage ----------------- //
 struct uz_3ph_dq_t v_ind_dq_Volts_2 			= {0};
-float r_s_2 = 0.023f;
+float r_s_2 									= 0.023f;
 
 // ======================= Others ======================= //
 float error_type = 0.0f;
 int counter = 1;
 float M_meas_Nm = 0.0f;
-int option = 0;
-float option_js = 0.0f;
 
 
 //==============================================================================================================================================================
@@ -195,7 +193,6 @@ void ISR_Control(void *data)
     Global_Data.av.omega_el_1 = omega_el_rad_per_sec_1;
     theta_el_rad_1 = Global_Data.av.theta_elec_1 - Global_Data.av.theta_offset_1;
     i_dq_Amps_1 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_1, theta_el_rad_1);
-    i_alphabeta_Amps_1 = uz_transformation_3ph_abc_to_alphabeta(i_abc_Amps_1);
     v_dq_Volts_1 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_1, theta_el_rad_1);
 
     // Calculation of Signals for FOC of PMSM 2
@@ -215,33 +212,6 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
 
-    switch(option){
-
-    	default:
-    		// Field Oriented Control of PMSM 1
-    		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
-			v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-			output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-
-			// Set DutyCycles of PMSM 1
-			Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
-			Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
-			Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
-
-			// Field Oriented Control of PMSM 2
-			M_ref_Nm_2 = uz_SpeedControl_sample(SC_instance_2, omega_m_rad_per_sec_2, n_ref_rpm_2);
-			i_dq_ref_Amps_2 = uz_SetPoint_sample(SP_instance_2, omega_m_rad_per_sec_2, M_ref_Nm_2, v_DC_Volts_2, i_dq_Amps_2);
-			v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-			output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-
-			// Set DutyCycles of PMSM 2
-			Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
-			Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
-			Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
-			break;
-
-    	case 1:
-    		option_js = option;
     		// Field Oriented Control of PMSM 1 - speed-controlled
     		M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
@@ -261,8 +231,6 @@ void ISR_Control(void *data)
 			Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
 			Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
 			Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
-			break;
-    	}
 
     }
     else
@@ -305,8 +273,8 @@ void ISR_Control(void *data)
     uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
 
     //calculate induced voltage for estimation of r_fe
-    v_ind_dq_Volts_2.d = v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q;
-    v_ind_dq_Volts_2.q = v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d;
+    v_ind_dq_Volts_2.d = (v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q)*1000;
+    v_ind_dq_Volts_2.q = (v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d)*1000;
 
 
     // Update JavaScope

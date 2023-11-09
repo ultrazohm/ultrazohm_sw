@@ -1,7 +1,7 @@
 --Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2020.1.1 (win64) Build 2960000 Wed Aug  5 22:57:20 MDT 2020
---Date        : Fri Nov  3 16:50:48 2023
+--Date        : Wed Nov  8 16:43:40 2023
 --Host        : enc177112 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -27,7 +27,9 @@ entity zusys_wrapper is
     A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D3_OUT : out STD_LOGIC_VECTOR ( 25 downto 0 );
     Dig_00_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_00_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_01_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_01_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_02_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_03_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_04_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -100,7 +102,9 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_10_Ch5 : out STD_LOGIC;
     Dig_08_Ch5 : out STD_LOGIC;
     Dig_12_Ch5 : out STD_LOGIC;
-    Dig_11_Ch5 : out STD_LOGIC
+    Dig_11_Ch5 : out STD_LOGIC;
+    Dig_00_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_01_Ch2 : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component zusys;
 begin
@@ -120,7 +124,9 @@ zusys_i: component zusys
       A3_OUT_CNV_1(0) => A3_OUT_CNV_1(0),
       D3_OUT(25 downto 0) => D3_OUT(25 downto 0),
       Dig_00_Ch1(0) => Dig_00_Ch1(0),
+      Dig_00_Ch2(0) => Dig_00_Ch2(0),
       Dig_01_Ch1(0) => Dig_01_Ch1(0),
+      Dig_01_Ch2(0) => Dig_01_Ch2(0),
       Dig_02_Ch1(0) => Dig_02_Ch1(0),
       Dig_03_Ch1(0) => Dig_03_Ch1(0),
       Dig_04_Ch1(0) => Dig_04_Ch1(0),

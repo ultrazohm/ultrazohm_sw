@@ -65,7 +65,7 @@ SM-PMSM[[#matlab]_]
 .. math::
 
   I_{q,MTPA} &= \frac{M_{ref}}{\frac{3}{2}  p  \psi_{PM}}\\
-  I_{d,MTPA} &= I_{d,manual}\\
+  I_{d,MTPA} &= 0\\
 
 
 for :math:`\omega_{el} > \omega_c`:
@@ -108,8 +108,8 @@ The d-current, depending on the saliency ratio, will be calculated like the foll
 
 .. math::
 
-  I_{d,MTPA} &= \left(\frac{-\psi_{PM}}{2  (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{q,MTPA}^2}\right) + I_{d,manual}\ \ \ for \ \ (L_q > L_d)\\
-  I_{d,MTPA} &= \left(\frac{-\psi_{PM}}{2  (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{q,MTPA}^2}\right) + I_{d,manual}\ \ \ for \ \ (L_q < L_d)\\
+  I_{d,MTPA} &= \left(\frac{-\psi_{PM}}{2  (L_d - L_q)} - \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{q,MTPA}^2}\right)\ \ \ for \ \ (L_q > L_d)\\
+  I_{d,MTPA} &= \left(\frac{-\psi_{PM}}{2  (L_d - L_q)} + \sqrt{\frac{\psi_{PM}^2}{4  (L_d - L_q)^2} + I_{q,MTPA}^2}\right)\ \ \ for \ \ (L_q < L_d)\\
 
 for :math:`\omega_{el} > \omega_c`:
 

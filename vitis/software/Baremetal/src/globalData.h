@@ -6,6 +6,10 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_matrix/uz_matrix.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -57,12 +61,13 @@ typedef struct _actualValues_ {
 	float U_L1; 		// Grid side voltage in V
 	float U_L2; 		// Grid side voltage in V
 	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
+	float I_a; 		// Machine side current in A
+	float I_b; 		// Machine side current in A
+	float I_c; 		// Machine side current in A
+	float I_DC;		// DC-link current in A
+	float U_a; 		// Machine side voltage in V
+	float U_b; 		// Machine side voltage in V
+	float U_c; 		// Machine side voltage in V
 	float U_ZK; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
@@ -81,8 +86,11 @@ typedef struct _actualValues_ {
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
+	float omega_m;		// in rad/s
+	float omega_elec;	// in rad/s
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d3;
 	float snd_fld[21];
 } actualValues;
 
@@ -111,6 +119,8 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* inverter_d3;
+	uz_pmsmModel_t* pmsm_IP_core;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

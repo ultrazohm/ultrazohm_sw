@@ -45,12 +45,98 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_actor_nn,
+	init_CurrentControl_pmsm,
     init_ip_cores,
     print_msg,
     init_interrupts,
     infinite_loop
 };
+
+uz_pmsmModel_t *pmsm=NULL;
+uz_CurrentControl_t* CurrentControl_instance = NULL;
+uz_matrix_t* input = NULL;
+uz_nn_t *my_NN = NULL;
+
 enum init_chain initialization_chain = init_assertions;
+
+// init actor-nn from csv 7-32-32-32-2
+float x[NUMBER_OF_INPUTS] = {0};
+static float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+		#include "actor_layer0_weights.csv"
+};
+static float b_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+		#include "actor_layer0_biases.csv"
+};
+
+static float y_1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+
+static float w_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+		#include "actor_layer1_weights.csv"
+};
+static float b_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+		#include "actor_layer1_biases.csv"
+};
+static float y_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+
+static float w_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+		#include "actor_layer2_weights.csv"
+};
+static float b_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+		#include "actor_layer2_biases.csv"
+};
+static float y_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+
+static float w_4[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+		#include "actor_layer3_weights.csv"
+};
+static float b_4[NUMBER_OF_OUTPUTS] = {
+		#include "actor_layer3_biases.csv"
+};
+static float y_4[NUMBER_OF_OUTPUTS] = {0};
+
+struct uz_nn_layer_config config[4] = {
+[0] = {
+		.activation_function = activation_ReLU,
+		.number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+		.number_of_inputs = NUMBER_OF_INPUTS,
+		.length_of_weights = UZ_MATRIX_SIZE(w_1),
+		.length_of_bias = UZ_MATRIX_SIZE(b_1),
+		.length_of_output = UZ_MATRIX_SIZE(y_1),
+		.weights = w_1,
+		.bias = b_1,
+		.output = y_1},
+[1] = {.activation_function = activation_ReLU,
+		.number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+		.number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+		.length_of_weights = UZ_MATRIX_SIZE(w_2),
+		.length_of_bias = UZ_MATRIX_SIZE(b_2),
+		.length_of_output = UZ_MATRIX_SIZE(y_2),
+		.weights = w_2,
+		.bias = b_2,
+		.output = y_2},
+[2] = {.activation_function = activation_ReLU,
+	   .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+	   .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+	   .length_of_weights = UZ_MATRIX_SIZE(w_3),
+	   .length_of_bias = UZ_MATRIX_SIZE(b_3),
+	   .length_of_output = UZ_MATRIX_SIZE(y_3),
+	   .weights = w_3,
+	   .bias = b_3,
+	   .output = y_3},
+[3] = {.activation_function = activation_tanh,
+	   .number_of_neurons = NUMBER_OF_OUTPUTS,
+	   .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
+	   .length_of_weights = UZ_MATRIX_SIZE(w_4),
+	   .length_of_bias = UZ_MATRIX_SIZE(b_4),
+	   .length_of_output = UZ_MATRIX_SIZE(y_4),
+	   .weights = w_4,
+	   .bias = b_4,
+	   .output = y_4}
+	};
+
+struct uz_matrix_t input_matrix={0};
+
 
 int main(void)
 {
@@ -71,8 +157,55 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            initialization_chain = init_actor_nn;
             break;
+        case init_actor_nn:
+        	input=uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1,NUMBER_OF_INPUTS);
+        	my_NN = uz_nn_init(config, 4);
+        	initialization_chain = init_CurrentControl_pmsm;
+        	break;
+        case init_CurrentControl_pmsm:
+        	struct uz_PMSM_t config_PMSM = {
+				.Ld_Henry = 1.13e-03f,
+				.Lq_Henry = 1.42e-03f,
+				.Psi_PM_Vs = 0.0169f,
+				.R_ph_Ohm = 543e-3f,
+				.polePairs = 3.0f,
+				.J_kg_m_squared = 1.48e-05f,
+				.I_max_Ampere = 10.8f};
+            struct uz_PI_Controller_config config_id = {
+				.Kp = 3.767f,
+				.Ki = 1810.0f,
+				.samplingTime_sec = 0.0001f,
+				.upper_limit = 10.0f,
+				.lower_limit = -10.0f};
+            struct uz_PI_Controller_config config_iq = {
+				.Kp = 4.733f,
+				.Ki = 1810.0f,
+				.samplingTime_sec = 0.0001f,
+				.upper_limit = 10.0f,
+				.lower_limit = -10.0f};
+            struct uz_CurrentControl_config config_CurrentControl = {
+				.decoupling_select = linear_decoupling,
+				.config_PMSM = config_PMSM,
+				.config_id = config_id,
+				.config_iq = config_iq,
+				.max_modulation_index = 1.0f / sqrtf(3.0f)};
+            CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+            struct uz_pmsmModel_config_t pmsm_IP_config={
+				.base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+				.ip_core_frequency_Hz=100000000,
+				.simulate_mechanical_system = false,
+				.r_1 = 543e-3f,
+				.L_d = 1.13e-03f,
+				.L_q = 1.42e-03f,
+				.psi_pm = 0.0169f,
+				.polepairs = 3.0f,
+				.inertia = 1.48e-05f,
+				.coulomb_friction_constant = 0.01f,
+				.friction_coefficient = 0.001f};
+            Global_Data.objects.pmsm_IP_core = uz_pmsmModel_init(pmsm_IP_config);
+            initialization_chain = init_ip_cores;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
@@ -90,6 +223,7 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.inverter_d3 = initialize_uz_inverter_adapter_on_D1();
             initialization_chain = print_msg;
             break;
 	    case print_msg:

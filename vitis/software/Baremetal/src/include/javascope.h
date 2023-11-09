@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp LÃ¶hdefink, Michael Hoerner
+* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink, Michael Hoerner
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -19,12 +19,11 @@
 #include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
-enum JS_OberservableData {
+ enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
-	JSO_theta_mech,
 	JSO_ua,
 	JSO_ub,
 	JSO_uc,
@@ -35,78 +34,32 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_ud,
 	JSO_uq,
+	JSO_id_set,
+	JSO_iq_set,
+	JSO_theta_elec,
+	JSO_enable,
 	JSO_Speed_rpm,
-	JSO_el_Speed_rpm,
-	JSO_LoadSpeed_rpm,
-	JSO_volt_temp,
-	JSO_SoC_init,
-	JSO_Theta_el,
-	JSO_Theta_mech,
-	JSO_LoadTheta_mech,
-	JSO_DeltaTheta_mech,
-	JSO_Wtemp,
-	JSO_Rs_mOhm,
-	JSO_Ld_mH,
-	JSO_Lq_mH,
-	JSO_PsiPM_mVs,
 	JSO_ENDMARKER
-};
+ };
 
 // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
 // Do not change the first (zero) and last (end) entries.
-enum JS_SlowData {
-	JSSD_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_FreqReadback,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_ADCconvFactorReadback,
-	JSSD_FLOAT_Error_Code,
-	JSSD_FLOAT_Rs_Offline,
-	JSSD_FLOAT_Ld_Offline,
-	JSSD_FLOAT_Lq_Offline,
-	JSSD_FLOAT_PsiPM_Offline,
-	JSSD_FLOAT_J,
-	JSSD_FLOAT_activeState,
-	JSSD_FLOAT_u_d,
-	JSSD_FLOAT_u_q,
-	JSSD_FLOAT_i_d,
-	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_speed,
-	JSSD_FLOAT_torque,
-	JSSD_FLOAT_encoderOffset,
-	JSSD_FLOAT_u_d_ref,
-	JSSD_FLOAT_u_q_ref,
-	JSSD_FLOAT_ArrayCounter,
-	JSSD_FLOAT_measArraySpeed,
-	JSSD_FLOAT_measArrayTorque,
-	JSSD_FLOAT_ArrayControlCounter,
-	JSSD_FLOAT_Stribtorque,
-	JSSD_FLOAT_Coulombtorque,
-	JSSD_FLOAT_Viscotorque,
-	JSSD_FLOAT_Rs_online_FMID,
-	JSSD_FLOAT_Wtemp_FMID,
-	JSSD_FLOAT_TrainInertia,
-	JSSD_FLOAT_LoadInertia,
-	JSSD_FLOAT_c_est,
-	JSSD_FLOAT_d_est,
-	JSSD_FLOAT_MapCounter,
-	JSSD_FLOAT_psidMap,
-	JSSD_FLOAT_psiqMap,
-	JSSD_FLOAT_FluxTemp,
-	JSSD_FLOAT_MapControl,
-	JSSD_FLOAT_I_rated,
-	JSSD_FLOAT_Ld_Online,
-	JSSD_FLOAT_Lq_Online,
-	JSSD_FLOAT_PsiPM_Online,
-	JSSD_FLOAT_Rs_Online,
-	JSSD_FLOAT_n_FluxPoints,
-	JSSD_FLOAT_totalRotorInertia,
-	JSSD_FLOAT_MapControlCounter,
-	JSSD_FLOAT_polePairs,
-	JSSD_ENDMARKER
-};
+ enum JS_SlowData {
+ 	JSSD_ZEROVALUE=0,
+ 	JSSD_FLOAT_SecondsSinceSystemStart,
+ 	JSSD_FLOAT_ISR_ExecTime_us,
+ 	JSSD_FLOAT_ISR_Period_us,
+ 	JSSD_FLOAT_Milliseconds,
+ 	JSSD_FLOAT_ADCconvFactorReadback,
+ 	JSSD_FLOAT_Error_Code,
+ 	JSSD_FLOAT_u_d,
+ 	JSSD_FLOAT_u_q,
+ 	JSSD_FLOAT_i_d,
+ 	JSSD_FLOAT_i_q,
+ 	JSSD_FLOAT_speed,
+	JSSD_FLOAT_theta_elec,
+ 	JSSD_ENDMARKER
+ };
 
 // Determination of Button IDs via enum. When a button in the GUI is pressed,
 // the GUI sends an ID and a value. IDs of the buttons are the respective enum
@@ -159,9 +112,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
+	i_q_ref,
+	i_d_ref,
+	n_ref,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -186,12 +139,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
+	A,
+	A,
 	RPM,
-	Nm,
-	A,
-	A,
-	A,
-	A,
+	-,
+	-,
+	-,
 	-,
 	-,
 	-,
@@ -213,11 +166,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
+	n,
+	i_d,
+	i_q,
+	v_d,
+	v_q,
 	receive_field_6,
 	receive_field_7,
 	receive_field_8,
@@ -241,7 +194,6 @@ enum gui_button_mapping {
 
 	RCV_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
 	A,
 	A,
 	V,
@@ -260,17 +212,18 @@ enum gui_button_mapping {
 	-,
 	-,
 	-,
-	RCV_LABELS_ENDMARKER
+	-,
+	 RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
-	MyButton2,
-	MyButton3,
-	MyButton4,
-	MyButton5,
+	Motor,
+	CiL,
+	Profil,
+	PI,
+	NN,
 	MyButton6,
 	MyButton7,
 	MyButton8,
@@ -283,11 +236,11 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_speed,
+	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_u_d,
+	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

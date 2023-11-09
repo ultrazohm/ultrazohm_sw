@@ -98,6 +98,8 @@ struct uz_DutyCycle_t dc_non_zero(struct uz_DutyCycle_t uncorrected);
 #include "../IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 extern uz_temperaturecard_t* uz_Tempcard;
 uz_temperaturecard_OneGroup channel_A_data;
+uz_temperaturecard_OneGroup channel_B_data;
+uz_temperaturecard_OneGroup channel_C_data;
 uz_6ph_abc_t winding_temperature = {0};
 
 
@@ -177,20 +179,22 @@ void ISR_Control(void *data)
 
 	// read temperatures from windings
 	uz_TempCard_IF_MeasureTemps_cyclic(uz_Tempcard);
-	channel_A_data = uz_TempCard_IF_get_channel(uz_Tempcard, 'A');
-	winding_temperature.a1 = channel_A_data.temperature[5-1]*(channel_A_data.Channels_Valid[5-1]==1);
-	winding_temperature.b1 = channel_A_data.temperature[6-1]*(channel_A_data.Channels_Valid[6-1]==1);
-	winding_temperature.c1 = channel_A_data.temperature[7-1]*(channel_A_data.Channels_Valid[7-1]==1);
-	winding_temperature.a2 = channel_A_data.temperature[8-1]*(channel_A_data.Channels_Valid[8-1]==1);
-	winding_temperature.b2 = channel_A_data.temperature[9-1]*(channel_A_data.Channels_Valid[9-1]==1);
-	winding_temperature.c2 = channel_A_data.temperature[10-1]*(channel_A_data.Channels_Valid[10-1]==1);
-//	winding_temperature.a1 = channel_A_data.temperature[3]*(channel_A_data.Channels_Valid[3]==1);
-//	winding_temperature.b1 = channel_A_data.temperature[5]*(channel_A_data.Channels_Valid[5]==1);
-//	winding_temperature.c1 = channel_A_data.temperature[7]*(channel_A_data.Channels_Valid[7]==1);
-//	winding_temperature.a2 = channel_A_data.temperature[9]*(channel_A_data.Channels_Valid[9]==1);
-//	winding_temperature.b2 = channel_A_data.temperature[11]*(channel_A_data.Channels_Valid[11]==1);
-//	winding_temperature.c2 = channel_A_data.temperature[13]*(channel_A_data.Channels_Valid[13]==1);
-//	Global_Data.av.avg_winding_temperature = (winding_temperature.a1 + winding_temperature.b1 + winding_temperature.c1 + winding_temperature.a2 + winding_temperature.b2 + winding_temperature.c2)/((channel_A_data.Channels_Valid[3]==1) + (channel_A_data.Channels_Valid[5]==1) + (channel_A_data.Channels_Valid[7]==1) + (channel_A_data.Channels_Valid[9]==1) + (channel_A_data.Channels_Valid[11]==1) + (channel_A_data.Channels_Valid[13]==1));
+	channel_A_data = uz_TempCard_IF_get_channel_group(uz_Tempcard, 'A');
+	channel_B_data = uz_TempCard_IF_get_channel_group(uz_Tempcard, 'B');
+	channel_C_data = uz_TempCard_IF_get_channel_group(uz_Tempcard, 'C');
+	winding_temperature.a1 = channel_A_data.temperature[5-1]*(channel_A_data.Channel_Fault_Data[5-1]==1);
+	winding_temperature.b1 = channel_A_data.temperature[6-1]*(channel_A_data.Channel_Fault_Data[6-1]==1);
+	winding_temperature.c1 = channel_A_data.temperature[7-1]*(channel_A_data.Channel_Fault_Data[7-1]==1);
+	winding_temperature.a2 = channel_A_data.temperature[8-1]*(channel_A_data.Channel_Fault_Data[8-1]==1);
+	winding_temperature.b2 = channel_A_data.temperature[9-1]*(channel_A_data.Channel_Fault_Data[9-1]==1);
+	winding_temperature.c2 = channel_A_data.temperature[10-1]*(channel_A_data.Channel_Fault_Data[10-1]==1);
+//	winding_temperature.a1 = channel_A_data.temperature[3]*(channel_A_data.Channel_Fault_Data[3]==1);
+//	winding_temperature.b1 = channel_A_data.temperature[5]*(channel_A_data.Channel_Fault_Data[5]==1);
+//	winding_temperature.c1 = channel_A_data.temperature[7]*(channel_A_data.Channel_Fault_Data[7]==1);
+//	winding_temperature.a2 = channel_A_data.temperature[9]*(channel_A_data.Channel_Fault_Data[9]==1);
+//	winding_temperature.b2 = channel_A_data.temperature[11]*(channel_A_data.Channel_Fault_Data[11]==1);
+//	winding_temperature.c2 = channel_A_data.temperature[13]*(channel_A_data.Channel_Fault_Data[13]==1);
+//	Global_Data.av.avg_winding_temperature = (winding_temperature.a1 + winding_temperature.b1 + winding_temperature.c1 + winding_temperature.a2 + winding_temperature.b2 + winding_temperature.c2)/((channel_A_data.Channel_Fault_Data[3]==1) + (channel_A_data.Channel_Fault_Data[5]==1) + (channel_A_data.Channel_Fault_Data[7]==1) + (channel_A_data.Channel_Fault_Data[9]==1) + (channel_A_data.Channel_Fault_Data[11]==1) + (channel_A_data.Channel_Fault_Data[13]==1));
 
 	////////////write to structs
 	m_6ph_abc_currents.a1 = Global_Data.av.i_a1;

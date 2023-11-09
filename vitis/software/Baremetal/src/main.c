@@ -107,6 +107,15 @@ struct uz_fixedpoint_definition_t current_limit_SI = {
 		.fractional_bits = 15
 };
 
+struct uz_PI_Controller_config MPC_setpoint_config = {
+   .type = parallel,
+   .Kp = 0.0f,
+   .Ki = 4.0f,
+   .samplingTime_sec = 0.0001f,
+   .upper_limit = 10.0f,
+   .lower_limit = -10.0f
+};
+
 extern pre_calc_val_t pre_calc_val;
 extern const base_val_t base_val;
 extern uz_PMSM_6ph_t dengine;
@@ -197,14 +206,17 @@ int main(void)
 
             // parameters for automated trade-off curve measurements
             Global_Data.rasv.lambda_u_start = 0.000;
-            Global_Data.rasv.lambda_u_stop = 0.03;
-            Global_Data.rasv.lambda_u_step = 0.001;
+            Global_Data.rasv.lambda_u_stop = 0.02;
+            Global_Data.rasv.lambda_u_step = 0.0001;
             Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
             Global_Data.rasv.cnt_lambda_u_end = (uint32_t)(ceilf((Global_Data.rasv.lambda_u_stop - Global_Data.rasv.lambda_u_start) / Global_Data.rasv.lambda_u_step))+1U;
             Global_Data.rasv.f_cnt_lambda_u_end = (float)Global_Data.rasv.cnt_lambda_u_end;
             Global_Data.rasv.cnt_lambda_u = 1U;
             Global_Data.rasv.f_cnt_lambda_u = 1.0f;
-            Global_Data.av.pause_time_sec = 1.0f;
+            Global_Data.av.pause_time_sec = 3.0f;
+
+            Global_Data.objects.MPC_setpoint_PI = uz_PI_Controller_init(MPC_setpoint_config);
+
 
             initialization_chain = init_ip_cores;
             break;
@@ -229,6 +241,7 @@ int main(void)
             Global_Data.objects.pl_interface = initialize_resolver_pl_interface();
             Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
             Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
+            Global_Data.objects.lmg_trigger = init_lmg_trigger();
 //            reconfig_ADC();
             // current limit detection ip
             uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x100, Global_Data.av.i_max_fpga, current_limit_SI);

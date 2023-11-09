@@ -11,6 +11,7 @@
 #include "IP_Cores/uz_PWM_duty_freq_detection/uz_PWM_duty_freq_detection.h"
 #include "uz/uz_FOC/uz_FOC.h"
 #include "IP_Cores/uz_adcLtc2311/uz_adcLtc2311.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -103,6 +104,7 @@ typedef struct _actualValues_ {
 	float i_q_ref;
 	float i_d_ref_pu;
 	float i_q_ref_pu;
+	float i_q_ref_PI_out_pu;
 	struct uz_resolver_pl_interface_outputs_t pl_interface;
 	float theta_elec_rad_ip;
 	float theta_mech_rad_ip;
@@ -155,6 +157,7 @@ typedef struct _actualValues_ {
 	float pause_time_sec;
 	bool overcurrent_FPGA;
 	float overcurrent_FPGA_fl;
+	bool lmg_trigger_status;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -199,6 +202,8 @@ typedef struct{
 	uz_adcLtc2311_t* ADC_A1;
 	uz_adcLtc2311_t* ADC_A2;
 	uz_FOC* foc_current;
+	uz_PI_Controller* MPC_setpoint_PI;
+	uz_axi_gpio_t* lmg_trigger;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

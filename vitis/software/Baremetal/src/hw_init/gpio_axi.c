@@ -15,6 +15,7 @@
 #include "../uz/uz_HAL.h"
 #include "../include/gpio_axi.h"
 #include "xgpio.h"
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 #define GPIO_out_ID XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_BASEADDR /* GPIO device that GPIO is connected to output*/
 #define invEn_ID XPAR_UZ_USER_AXI_GPIO_INVEN_DEVICE_ID
@@ -75,4 +76,16 @@ void uz_axigpio_disable_datamover(void)
 void uz_axigpio_enable_datamover(void)
 {
     XGpio_DiscreteSet(&Gpio_OUT, AXI_GPIO_CHANNEL, AXI_GPIO_AXI2TCM_ENABLE);
+}
+
+struct uz_axi_gpio_config_t lmg_trigger_config={
+            .base_address=XPAR_UZ_USER_AXI_GPIO_TRIGGER_BASEADDR,
+            .device_id=XPAR_UZ_USER_AXI_GPIO_TRIGGER_DEVICE_ID,
+            .number_of_pins=2,
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+};
+
+uz_axi_gpio_t* init_lmg_trigger(void)
+{
+	return(uz_axi_gpio_init(lmg_trigger_config));
 }

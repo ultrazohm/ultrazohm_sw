@@ -90,10 +90,10 @@ mean_avg_f_sw_over_trigger_period(i) = mean(f_sw_avg(i,2:end));
 end
 %%
 
-for i=1:num_of_measured_points
-    figure
-    plot(time(i,1:data_point_length(i)),i_ph(1,1:data_point_length(i),i));
-    hold on
-    plot(time(i,1:data_point_length(i)),i_ph(2,1:data_point_length(i),i));
-    plot(time(i,1:data_point_length(i)),i_ph(3,1:data_point_length(i),i)); 
-end
+% for i=1:num_of_measured_points
+%     figure
+%     plot(time(i,1:data_point_length(i)),i_ph(1,1:data_point_length(i),i));
+%     hold on
+%     plot(time(i,1:data_point_length(i)),i_ph(2,1:data_point_length(i),i));
+%     plot(time(i,1:data_point_length(i)),i_ph(3,1:data_point_length(i),i)); 
+% end

@@ -222,15 +222,15 @@ void ISR_Control(void *data)
     Global_Data.av.posVel_el = uz_resolverIP_readElectricalPositionAndVelocity(Global_Data.objects.resolver_d5_1);
 
     //read pu IP currents
-    Global_Data.av.i_c1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out0_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
-    Global_Data.av.i_b1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out1_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
-    Global_Data.av.i_a1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out2_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
-    Global_Data.av.i_c2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out8_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
-    Global_Data.av.i_b2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out9_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
-    Global_Data.av.i_a2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out10_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+//    Global_Data.av.i_c1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out0_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+//    Global_Data.av.i_b1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out1_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+//    Global_Data.av.i_a1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out2_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+//    Global_Data.av.i_c2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out8_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+//    Global_Data.av.i_b2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out9_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+//    Global_Data.av.i_a2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out10_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
     //read pu IP voltages
-    Global_Data.av.v_dc1_ip = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out3_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
-    Global_Data.av.v_dc2_ip = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out11_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+//    Global_Data.av.v_dc1_ip = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out3_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+//    Global_Data.av.v_dc2_ip = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out11_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
     // read VSD IP
     Global_Data.av.i_alpha_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + alpha_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
     Global_Data.av.i_beta_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + beta_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
@@ -290,17 +290,17 @@ void ISR_Control(void *data)
     Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
     Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * DC_VOLT_CONV_2 + DC_VOLT_OFF_2;
     // convert ADC reading to torque
-    Global_Data.av.torque = Global_Data.aa.A3.me.ADC_A1 * TORQUE_CONV;
+//    Global_Data.av.torque = Global_Data.aa.A3.me.ADC_A1 * TORQUE_CONV;
 
     // write measured dc_link voltage to pu_voltages ip
     uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(Global_Data.av.v_dc1/base_val.VB, 15));
 
     // check current limit
-	if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
-			fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
-//		uz_assert(0);
-		ultrazohm_state_machine_set_stop(true);
-	}
+//	if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
+//			fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
+////		uz_assert(0);
+//		ultrazohm_state_machine_set_stop(true);
+//	}
 
 	// check fast fpga current limit violation
 	if (uz_axi_read_bool(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x104) == true) {
@@ -352,7 +352,8 @@ void ISR_Control(void *data)
 
 	// write reference values to mpc ip
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
-    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
     uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
 
@@ -362,6 +363,9 @@ void ISR_Control(void *data)
     {
     	uz_FOC_reset(Global_Data.objects.foc_current);
     	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, false);
+
+    	uz_PI_Controller_reset(Global_Data.objects.MPC_setpoint_PI);
+    	Global_Data.av.i_q_ref_PI_out_pu = Global_Data.av.i_q_ref_pu;
 
     }
 
@@ -373,6 +377,8 @@ void ISR_Control(void *data)
     	if (Global_Data.av.debug_ip_off == true) {
     	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, true);
     	}
+
+    	Global_Data.av.i_q_ref_PI_out_pu = uz_PI_Controller_sample(Global_Data.objects.MPC_setpoint_PI, Global_Data.av.i_q_ref_pu , Global_Data.av.i_q_ip , false);
 
 
     	//    	speed_ctrl_ref_currents = uz_SpeedControl_sample(Global_Data.objects.foc_speed, Global_Data.av.mechanicalRotorSpeed*3.1415/30.0f*Global_Data.av.polepairs,Global_Data.av.rpm_ref_filt, Global_Data.av.U_ZK_filt, Global_Data.av.i_d_ref, config_PMSM1, false);
@@ -406,10 +412,10 @@ void ISR_Control(void *data)
 
 
 
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
 
     // state machine for automated trade-off curve measurement
@@ -431,7 +437,7 @@ void ISR_Control(void *data)
     }
 
     // assign pause time between automated measurements
-    Global_Data.av.pause_time_sec = 3.0f*sw_cnt_avg_time_sec;
+    Global_Data.av.pause_time_sec = 10.0f*sw_cnt_avg_time_sec;
 
 
     if(Global_Data.av.start_trade_off_measurement == true && Global_Data.av.measure_flag == false) {

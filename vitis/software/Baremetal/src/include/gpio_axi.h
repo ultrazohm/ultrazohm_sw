@@ -16,11 +16,14 @@
 #ifndef GPIO_AXI_H_
 #define GPIO_AXI_H_
 
+#include "../IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
+
 void Initialize_AXI_GPIO(void);
 
 void uz_axigpio_disable_pwm_and_power_electronics(void);
 void uz_axigpio_enable_pwm_and_power_electronics(void);
 void uz_axigpio_disable_datamover(void);
 void uz_axigpio_enable_datamover(void);
+uz_axi_gpio_t* init_lmg_trigger(void);
 
 #endif /* GPIO_H_ */

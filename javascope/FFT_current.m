@@ -71,6 +71,16 @@ FFT_sig=P1;
 %freq=d;                                                % Rückskalieren,wenn die x-Achse von 0 bis 1 geht (Sonderfall)
 freq=d.*1/(time_cut(2)-time_cut(1))/Fs;                 % Rückskalieren, wenn die x-Achse beliebig ist
 
+% extract fundamental frequency and amplitude from each phase current and
+% datapoint
+time_tmp = time_cut(i,:);
+time_tmp = time_tmp';
+time_tmp(all(~time_tmp,2),:) = []; % remove zero rows
+
+for k=1:6
+    [f1(i,k), mag(i,k)] = extract_fundamental_of_sin(time_tmp,F(:,k));
+end
+
 % Calculate THD
 [FundamentalCurrent ,VectorNumber] = max(FFT_sig) %Find fundamental in vector (assumed that fundamental equals maximum)
 FFT_sig_withoutFundamental=FFT_sig;
@@ -80,6 +90,8 @@ FFT_sig_withoutFundamental(VectorNumber,:)=0; %Eliminate fundamental in order to
 %     FundamentalCurrent = FundamentalCurrent + FFT_sig_withoutFundamental(k);
 %     FFT_sig_withoutFundamental(k,:)=0; %Eliminate fundamental in order to calculate THD
 % end
+
+
 
 %bsxfun() multipliziert den Vektor in jeder spalte/zeile mit sich selbst,
 %dadurch erreiche ich, das jeder Wert im urpsrünglichen Vektor quadriert
@@ -103,6 +115,7 @@ ylabel('THD_i in %');
 title('Trade-Off curve');
 % axis([0 max(mean_avg_f_sw_over_trigger_period*0.001) 0 max(THD)]);
 % axis([15 25 0 max(THD)]);
+axis([2 22 15 50]);
 %%
 % %% Plot single-sided amplitude spectrum 
 % figure(2)

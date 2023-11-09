@@ -87,6 +87,8 @@ enum JS_OberservableData {
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
 	JSO_error_type,
+	JSO_ud_ind_filt_2,
+	JSO_uq_ind_filt_2,
 	JSO_ENDMARKER
 };
 
@@ -167,6 +169,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_TempL3_2,
 	JSSD_FLOAT_u_ind_d,
 	JSSD_FLOAT_u_ind_q,
+	JSSD_FLOAT_u_ind_filt_d,
+	JSSD_FLOAT_u_ind_filt_q,
 	JSSD_ENDMARKER
 };
 
@@ -279,9 +283,9 @@ enum gui_button_mapping {
 	Rotor_speed_1,
 	i_d_2,
 	i_q_2,
-	u_ind_d_2,
-	u_ind_q_2,
-	receive_field_6,
+	u_ind_filt_d_2,
+	u_ind_filt_q_2,
+	torque,
 	receive_field_7,
 	receive_field_8,
 	receive_field_9,
@@ -308,7 +312,7 @@ enum gui_button_mapping {
 	A,
 	mV,
 	mV,
-	-,
+	Nm,
 	-,
 	-,
 	-,
@@ -347,9 +351,9 @@ enum gui_button_mapping {
 	JSSD_FLOAT_speed_1,
 	JSSD_FLOAT_i_d_2,
 	JSSD_FLOAT_i_q_2,
-	JSSD_FLOAT_u_ind_d,
-	JSSD_FLOAT_u_ind_q,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_u_ind_filt_d,
+	JSSD_FLOAT_u_ind_filt_q,
+	JSSD_FLOAT_torque,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

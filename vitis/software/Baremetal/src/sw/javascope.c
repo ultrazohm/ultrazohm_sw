@@ -56,6 +56,8 @@ extern struct uz_3ph_abc_t i_abc_Amps_2;
 extern struct uz_3ph_dq_t v_dq_ref_Volts_2;
 extern struct uz_3ph_abc_t v_abc_Volts_2;
 extern struct uz_3ph_dq_t v_ind_dq_Volts_2;
+extern struct uz_3ph_dq_t v_ind_dq_filt_Volts_2;
+
 
 //Others
 extern float M_meas_Nm;
@@ -137,6 +139,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	js_ch_observable[JSO_ud_ind_2]			= &v_ind_dq_Volts_2.d;
 	js_ch_observable[JSO_uq_ind_2]			= &v_ind_dq_Volts_2.q;
+	js_ch_observable[JSO_ud_ind_filt_2]			= &v_ind_dq_filt_Volts_2.d;
+	js_ch_observable[JSO_uq_ind_filt_2]			= &v_ind_dq_filt_Volts_2.q;
 	js_ch_observable[JSO_error_type]			= &error_type;
 
 
@@ -171,6 +175,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_TempL3_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L3);
 	js_slowDataArray[JSSD_FLOAT_u_ind_d]   				= &v_ind_dq_Volts_2.d;
 	js_slowDataArray[JSSD_FLOAT_u_ind_q]   				= &v_ind_dq_Volts_2.q;
+	js_slowDataArray[JSSD_FLOAT_u_ind_filt_d]   		= &v_ind_dq_filt_Volts_2.d;
+	js_slowDataArray[JSSD_FLOAT_u_ind_filt_q]   		= &v_ind_dq_filt_Volts_2.q;
 
 
 

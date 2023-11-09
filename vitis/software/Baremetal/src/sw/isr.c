@@ -120,7 +120,10 @@ float Ki_iq_2 									= 230.0f;
 
 // ---------------- induced voltage ----------------- //
 struct uz_3ph_dq_t v_ind_dq_Volts_2 			= {0};
+struct uz_3ph_dq_t v_ind_dq_filt_Volts_2 			= {0};
 float r_s_2 									= 0.023f;
+extern uz_IIR_Filter_t* LP_instance_ud_ind_2;
+extern uz_IIR_Filter_t* LP_instance_uq_ind_2;
 
 // ======================= Others ======================= //
 float error_type = 0.0f;
@@ -272,9 +275,12 @@ void ISR_Control(void *data)
     uz_CurrentControl_set_Ki_id(CC_instance_2, Ki_id_2);
     uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
 
-    //calculate induced voltage for estimation of r_fe
+    //calculate induced voltage for estimation of r_fe + filter
     v_ind_dq_Volts_2.d = (v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q)*1000;
     v_ind_dq_Volts_2.q = (v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d)*1000;
+
+    v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
+    v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.d);
 
 
     // Update JavaScope

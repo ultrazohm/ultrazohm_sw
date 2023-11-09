@@ -45,24 +45,9 @@ DS_Data Global_Data = {
 uz_SpeedControl_t* SC_instance_1;
 uz_SetPoint_t* SP_instance_1;
 uz_CurrentControl_t* CC_instance_1;
-uz_CurrentControl_t* CC_instance_5th_1;
-uz_CurrentControl_t* CC_instance_7th_1;
 uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 uz_wavegen_chirp* chirp_instance_1;
-uz_subspace_resonant_control* RC_instance_6th_1;
-uz_subspace_resonant_control* RC_instance_12th_1;
-uz_subspace_resonant_control* RC_instance_5th_1;
-uz_subspace_resonant_control* RC_instance_7th_1;
-uz_IIR_Filter_t* BP_instance_5th_a_1;
-uz_IIR_Filter_t* BP_instance_5th_b_1;
-uz_IIR_Filter_t* BP_instance_5th_c_1;
-uz_IIR_Filter_t* BP_instance_7th_a_1;
-uz_IIR_Filter_t* BP_instance_7th_b_1;
-uz_IIR_Filter_t* BP_instance_7th_c_1;
-uz_IIR_Filter_t* LP_instance_5th_d_1;
-uz_IIR_Filter_t* LP_instance_5th_q_1;
-uz_IIR_Filter_t* LP_instance_7th_d_1;
-uz_IIR_Filter_t* LP_instance_7th_q_1;
+
 
 // Declare Pointer for FOC of PMSM 2
 uz_SpeedControl_t* SC_instance_2;
@@ -70,6 +55,8 @@ uz_SetPoint_t* SP_instance_2;
 uz_CurrentControl_t* CC_instance_2;
 uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 uz_subspace_resonant_control* RC_instance_6th_2;
+uz_IIR_Filter_t* LP_instance_ud_ind_2;
+uz_IIR_Filter_t* LP_instance_uq_ind_2;
 
 // Configuration of PMSM 1 (Hoerner PMSM)
 struct uz_PMSM_t config_PMSM_1 = {
@@ -169,142 +156,22 @@ int main(void)
       .initial_delay_sec = 1.0f,
       .offset = 0.0f
     };
-    // ------------------- Resonant Controller -------------------- //
-    struct uz_subspace_resonant_control_config RC_config_6th_1 = {
-          .antiwindup_gain = 10.0f,
-          .gain_1 = 200.0f,
-          .gain_2 = 200.0f,
-          .harmonic_order = 6.0f,
-          .lower_limit = -10.0f,
-          .upper_limit = 10.0f,
-          .sampling_time = 0.0001f
-    };
-    struct uz_subspace_resonant_control_config RC_config_12th_1 = {
-          .antiwindup_gain = 10.0f,
-          .gain_1 = 200.0f,
-          .gain_2 = 200.0f,
-          .harmonic_order = 3.0f,
-          .lower_limit = -10.0f,
-          .upper_limit = 10.0f,
-          .sampling_time = 0.0001f
-    };
-    struct uz_subspace_resonant_control_config RC_config_5th_1 = {
-          .antiwindup_gain = 10.0f,
-          .gain_1 = 200.0f,
-          .gain_2 = 200.0f,
-          .harmonic_order = 5.0f,
-          .lower_limit = -10.0f,
-          .upper_limit = 10.0f,
-          .sampling_time = 0.0001f
-    };
-    struct uz_subspace_resonant_control_config RC_config_7th_1 = {
-          .antiwindup_gain = 10.0f,
-          .gain_1 = 200.0f,
-          .gain_2 = 200.0f,
-          .harmonic_order = 7.0f,
-          .lower_limit = -10.0f,
-          .upper_limit = 10.0f,
-          .sampling_time = 0.0001f
-    };
-    // ------------------- Harmonic Controllers ------------------- //
-    struct uz_IIR_Filter_config BP_config_5th_a_1 = {
-        	.selection = BandPass_second_order,
-    		.pass_frequency_Hz = 300.0f,
-    		.sample_frequency_Hz = 10000.0f,
-			.damping = 0.05f
-    };
-    struct uz_IIR_Filter_config BP_config_5th_b_1 = {
-           	.selection = BandPass_second_order,
-       		.pass_frequency_Hz = 300.0f,
-       		.sample_frequency_Hz = 10000.0f,
-    		.damping = 0.05f
-    };
-    struct uz_IIR_Filter_config BP_config_5th_c_1 = {
-           	.selection = BandPass_second_order,
-       		.pass_frequency_Hz = 300.0f,
-       		.sample_frequency_Hz = 10000.0f,
-    		.damping = 0.05f
-    };
-    struct uz_IIR_Filter_config BP_config_7th_a_1 = {
-            .selection = BandPass_second_order,
-        	.pass_frequency_Hz = 420.0f,
-        	.sample_frequency_Hz = 10000.0f,
-			.damping = 0.05f
-    };
-    struct uz_IIR_Filter_config BP_config_7th_b_1 = {
-            .selection = BandPass_second_order,
-            .pass_frequency_Hz = 420.0f,
-            .sample_frequency_Hz = 10000.0f,
-    		.damping = 0.05f
-    };
-    struct uz_IIR_Filter_config BP_config_7th_c_1 = {
-            .selection = BandPass_second_order,
-            .pass_frequency_Hz = 420.0f,
-            .sample_frequency_Hz = 10000.0f,
-    		.damping = 0.05f
-    };
-    struct uz_IIR_Filter_config LP_config_5th_d_1 = {
-    		.selection = LowPass_first_order,
-			.cutoff_frequency_Hz = 6.0f,
-			.sample_frequency_Hz = 10000.0f
-    };
-    struct uz_IIR_Filter_config LP_config_5th_q_1 = {
+
+    // ------------------- Filter u-ind ------------------- //
+    struct uz_IIR_Filter_config LP_config_ud_ind_2 = {
         	.selection = LowPass_first_order,
-    		.cutoff_frequency_Hz = 6.0f,
-    		.sample_frequency_Hz = 10000.0f
+			.cutoff_frequency_Hz =  300.0f,
+    		.sample_frequency_Hz = 10000.0f,
+
     };
-    struct uz_IIR_Filter_config LP_config_7th_d_1 = {
-           	.selection = LowPass_first_order,
-       		.cutoff_frequency_Hz = 6.0f,
-       		.sample_frequency_Hz = 10000.0f
+
+    struct uz_IIR_Filter_config LP_config_uq_ind_2 = {
+        	.selection = LowPass_first_order,
+			.cutoff_frequency_Hz = 50.0f,
+    		.sample_frequency_Hz = 10000.0f,
+
     };
-    struct uz_IIR_Filter_config LP_config_7th_q_1 = {
-            .selection = LowPass_first_order,
-           	.cutoff_frequency_Hz = 6.0f,
-           	.sample_frequency_Hz = 10000.0f
-    };
-    struct uz_PI_Controller_config config_id_5th_1 = {
-    		.Kp = 0.1f, // nach BO
-			.Ki = 0.5f, //nach BO
-           .samplingTime_sec = 0.0001f,
-     	   .upper_limit = 1.0f,
-      	   .lower_limit = -1.0f
-    };
-    struct uz_PI_Controller_config config_iq_5th_1 = {
-           .Kp = 0.1f,
-           .Ki = 0.5f,
-           .samplingTime_sec = 0.0001f,
-      	   .upper_limit = 1.0f,
-    	   .lower_limit = -1.0f
-    };
-    struct uz_CurrentControl_config CC_config_5th_1 = {
-           .decoupling_select = no_decoupling,
-           .config_PMSM = config_PMSM_1,
-           .config_id = config_id_5th_1,
-           .config_iq = config_iq_5th_1,
-           .max_modulation_index = 1.0f / sqrtf(3.0f)
-    };
-    struct uz_PI_Controller_config config_id_7th_1 = {
-    	   .Kp = 0.1f, // nach BO
-		   .Ki = 0.0f, //nach BO
-           .samplingTime_sec = 0.0001f,
-		   .upper_limit = 1.0f,
-		   .lower_limit = -1.0f
-    };
-    struct uz_PI_Controller_config config_iq_7th_1 = {
-           .Kp = 0.1f,
-           .Ki = 0.0f,
-           .samplingTime_sec = 0.0001f,
-		   .upper_limit = 1.0f,
-       	   .lower_limit = -1.0f
-    };
-    struct uz_CurrentControl_config CC_config_7th_1 = {
-           .decoupling_select = no_decoupling,
-           .config_PMSM = config_PMSM_1,
-           .config_id = config_id_7th_1,
-           .config_iq = config_iq_7th_1,
-           .max_modulation_index = 1.0f / sqrtf(3.0f)
-       };
+
 
 
     //--------- Configs for PMSM 2 (Last) ---------//
@@ -356,16 +223,6 @@ int main(void)
         .min_omega_el = 300.0f,                                              // target electric rotor angular speed (USE OWN)
         .setpoint_current = 3.0f 											 // current setpoint to reach speed (USE OWN)
       };
-      // Resonant Controller
-      struct uz_subspace_resonant_control_config RC_config_6th_2 = {
-        .antiwindup_gain = 10.0f,
-        .gain_1 = 10.0f,
-        .gain_2 = 10.0f,
-        .harmonic_order = 6.0f,
-        .lower_limit = -5.0f,
-        .upper_limit = 5.0f,
-        .sampling_time = 0.0001f
-      };
 
     // Initialization Chain
     while (1)
@@ -413,29 +270,14 @@ int main(void)
             SC_instance_1 = uz_SpeedControl_init(SC_config_1);
             SP_instance_1 = uz_SetPoint_init(SP_config_1);
             CC_instance_1 = uz_CurrentControl_init(CC_config_1);
-            CC_instance_5th_1 = uz_CurrentControl_init(CC_config_5th_1);
-            CC_instance_7th_1 = uz_CurrentControl_init(CC_config_7th_1);
             SC_instance_2 = uz_SpeedControl_init(SC_config_2);
             SP_instance_2 = uz_SetPoint_init(SP_config_2);
             CC_instance_2 = uz_CurrentControl_init(CC_config_2);
            	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
            	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);
-           	RC_instance_6th_1 = uz_subspace_resonant_control_init(RC_config_6th_1);
-           	RC_instance_12th_1 = uz_subspace_resonant_control_init(RC_config_12th_1);
-          	RC_instance_5th_1 = uz_subspace_resonant_control_init(RC_config_5th_1);
-            RC_instance_7th_1 = uz_subspace_resonant_control_init(RC_config_7th_1);
-           	RC_instance_6th_2 = uz_subspace_resonant_control_init(RC_config_6th_2);
-           	BP_instance_5th_a_1 = uz_signals_IIR_Filter_init(BP_config_5th_a_1);
-           	BP_instance_5th_b_1 = uz_signals_IIR_Filter_init(BP_config_5th_b_1);
-           	BP_instance_5th_c_1 = uz_signals_IIR_Filter_init(BP_config_5th_c_1);
-           	BP_instance_7th_a_1 = uz_signals_IIR_Filter_init(BP_config_7th_a_1);
-           	BP_instance_7th_b_1 = uz_signals_IIR_Filter_init(BP_config_7th_b_1);
-           	BP_instance_7th_c_1 = uz_signals_IIR_Filter_init(BP_config_7th_c_1);
-           	LP_instance_5th_d_1 = uz_signals_IIR_Filter_init(LP_config_5th_d_1);
-           	LP_instance_5th_q_1 = uz_signals_IIR_Filter_init(LP_config_5th_q_1);
-           	LP_instance_7th_d_1 = uz_signals_IIR_Filter_init(LP_config_7th_d_1);
-           	LP_instance_7th_q_1 = uz_signals_IIR_Filter_init(LP_config_7th_q_1);
+           	LP_instance_ud_ind_2 = uz_signals_IIR_Filter_init(LP_config_ud_ind_2);
+           	LP_instance_uq_ind_2 = uz_signals_IIR_Filter_init(LP_config_uq_ind_2);
            	Global_Data.av.theta_offset_1 = 0.904f;
            	Global_Data.av.theta_offset_2 = 1.4f;
           	initialization_chain = print_msg;

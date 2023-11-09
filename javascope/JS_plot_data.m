@@ -1,6 +1,6 @@
 %% clean Matlab Workspace
 close all
-clear all
+%clear all
 format compact
 
 %% settings
@@ -25,7 +25,7 @@ for logfile_list_index = size(Logfile_list,1):-1:1
         disp(['Deleted empty file: ', Logfile_list(logfile_list_index).name])
     end
 end
-file_name = Logfile_list(logfile_list_index).name
+%file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
 %file_name = 'Log_2023-09-21_14-55-28.csv';

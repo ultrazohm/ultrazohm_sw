@@ -16,6 +16,12 @@
 #ifndef main_H_
 #define main_H_
 
+#define NUMBER_OF_INPUTS 7
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 32
+
+
+
 #include <math.h>										//Include for math operations
 #include <stdbool.h>
 
@@ -30,6 +36,10 @@
 #include "include/uz_adcLtc2311_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
 
 // UltraZohm includes
@@ -50,11 +60,22 @@
 #include "uz/uz_MioGpio_mediator/uz_MioGpio_mediator.h"
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
 
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_nn/uz_nn_activation_functions.h"
+#include "uz/uz_nn/uz_nn_layer.h"
 
+#include "uz/uz_matrix/uz_matrix.h"
+
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
+
+#include <stdio.h>
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

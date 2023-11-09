@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-file_name = 'Log_2023-09-27_13-19-34.csv';
+% file_name = 'Log_2022-02-16_10-27-23.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);
@@ -42,8 +42,6 @@ log = readtable(file_name, opts);
 % delete rows with NaNs 
 toDelete = not(isfinite(log.time));
 log(toDelete,:) = [];
-%log(1:7515, :) = [];
-%log(500:end,:) = [];
 
 % remove empty coloumns (that consists only of NaN)
 number_of_coloumns = size(log,2);

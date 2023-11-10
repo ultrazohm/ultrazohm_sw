@@ -32,7 +32,7 @@ bool limit_was_hit=false;
 #include "uz/uz_environment_pt1/uz_environment_pt1.h"
 
 #define EXPERIENCE_BUFFER_LENGTH 150000U
-#define MINIBATCHSIZE 8U
+#define MINIBATCHSIZE 16U
 #define NUMBER_OF_EPOCHS 500U
 #define TARGET_UPDATE_FREQUENCY 20U
 // nn
@@ -47,7 +47,7 @@ float lernrate = 0.0002f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
-float epsilon_decay = 0.000001f;
+float epsilon_decay = 0.0001f;
 
 // adam
 float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
@@ -250,9 +250,11 @@ float cum_loss;
 float number_of_updates_per_episode=2000; // 200 Hz für 10s sind 2000 samples und damit 2000 updates
 float old_number_of_updates;
 extern float number_of_updates;
-
 extern enum dqn_chain chain;
 
+// variables for random start position
+extern float start_pos;
+extern float max_pos;
 enum init_chain
 {
     init_assertions = 0,
@@ -496,6 +498,7 @@ void Reset_global_Data(DS_Data *data)
     data->obs.dqn_chart_position_derv_raw = 0.0f;
     data->obs.dqn_angle_derv_raw = 0.0f;
     data->obs.dqn_chart_position = 0.0f;
+    data->obs.dqn_chart_error = 0.0f;
     data->obs.dqn_angle_derv = 0.0f;
     data->obs.dqn_angle = 0.0f;
     data->obs.dqn_chart_position_derv = 0.0f;

@@ -90,7 +90,7 @@ float angle_Ki = 0.0f;
 float episode_reward=0.0f;
 float number_of_episodes=1.0f;
 
-    float reward_k;
+float reward_k;
 extern bool first_episode;
 extern float penalty_grenze;
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
@@ -115,6 +115,7 @@ extern float input_nn[5];
 enum dqn_chain chain = limit_violation;
 float reward_angle = 0.0f;
 float reward_position = 0.0f;
+float reward_position_error = 0.0f;
 float number_of_updates = 0.0f;
 
 bool angle_control=true;
@@ -126,6 +127,10 @@ float position_smoothed=0.0f;
 float angle_smoothed=0.0f;
 float start_position=50.0f;
 
+// randomize start position
+float max_pos = 300.0f;
+float start_pos = 0.0f;
+float end_pos = 0.0f;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -178,6 +183,8 @@ void ISR_Control(void *data)
         Global_Data.obs.dqn_chart_position_derv = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_position, position_derv);
     }
     old_position = Global_Data.obs.dqn_chart_position;
+    // calculate error for dqn observation
+    Global_Data.obs.dqn_chart_error = Global_Data.obs.dqn_chart_position-end_pos;
     Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum - M_PI; // wegen funktionierender Referenzspur muss jetzt offset hinzugerechnet werden
     Global_Data.obs.dqn_sin_angle = sin(Global_Data.obs.dqn_angle);
     Global_Data.obs.dqn_cos_angle = cos(Global_Data.obs.dqn_angle);
@@ -217,7 +224,8 @@ void ISR_Control(void *data)
     epsilon_k = uz_dqn_get_epsilon(testdqn2);
     reward_angle = fabsf(Global_Data.obs.dqn_angle) / (float)M_PI;
     reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, reward_angle, reward_position, Global_Data.obs.dqn_chart_position_derv, false);
+    reward_position_error = fabsf(Global_Data.obs.dqn_chart_error)/2.0f*disable_control *1.0e3;
+    reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, reward_angle, reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
     number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
 
     position_smoothed=uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_position, position_abs);
@@ -412,7 +420,7 @@ float calculate_reward_pendulum(float samplerate, float theta, float position, f
     {
         z = -1000.0f;
     }
-    float r = -2.0f * samplerate * (100.0f * theta + 2*position + (float)pow(velocity, 2.0f)) + z;
+    float r = -2.0f * samplerate * (100.0f * theta + 50*position + (float)pow(velocity, 2.0f)) + z;
     return r;
 }
 
@@ -427,7 +435,7 @@ void dqn_isr(void)
             input_nn[0] = Global_Data.obs.dqn_sin_angle;
             input_nn[1] = Global_Data.obs.dqn_cos_angle;
             input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
-            input_nn[3] = Global_Data.obs.dqn_chart_position;
+            input_nn[3] = Global_Data.obs.dqn_chart_error;
             input_nn[4] = Global_Data.obs.dqn_angle_derv;
             if (first_episode)
             {
@@ -498,7 +506,7 @@ void dqn_isr(void)
         break;
     case return_to_zero_position:
         Global_Data.av.trigger_logging = 3.0f;
-        position_ref = 50.0f;
+        position_ref = end_pos;
         pos_delta = position_ref - position_abs;
         position_control(position_ref, false);
         if ( (fabsf(Global_Data.obs.dqn_chart_position_derv) <0.02f))
@@ -508,7 +516,7 @@ void dqn_isr(void)
         break;
     case wait_at_zero_position:
         Global_Data.av.trigger_logging = 4.0f;
-        position_ref = start_position;
+        position_ref = start_pos;
         pos_delta = position_ref - position_abs;
         position_control(position_ref, true);
         if ( (angle_smoothed<0.005f) && (!update_lock) ) // Hier ändern und warten bis pos und winkel 0
@@ -531,7 +539,10 @@ void dqn_isr(void)
         episode_reward = 0.0f;
         counter_for_reset = 0;
         counter_wait_pos = 0;
-        position_ref = start_position;
+		start_pos = uz_dqn_determine_position(testdqn2, max_pos);
+		end_pos = uz_dqn_determine_position(testdqn2, max_pos);
+        //start_position = start_pos;
+        position_ref = start_pos;
         pos_delta = position_ref - position_abs;
         position_control(position_ref, false);
         if ( (fabsf(Global_Data.obs.dqn_chart_position_derv) <0.02f))

@@ -63,6 +63,10 @@ Both voltages were determined by available resistor values for the rails of the 
 
    Different waveforms of :ref:`wave_generator` measured in DAC-ADC loopback configuration.
 
+.. warning::
+    The DAC always outputs the last value present in the DAC latch register. The user has to take care of safe DAC output states for the application 
+    before stopping control algorithms in the ISR or before flashing the MPSoC during testing.
+
 
 Pinout
 ======

@@ -36,6 +36,7 @@
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 #include "../uz/uz_dqn/uz_dqn.h"
+#include "../uz/uz_exponential_smoothing/uz_exp_smooth.h"
 
 #define PHASE_CURRENT_SCALING 12.5f
 #define PHASE_VOLT_SCALING 12.0f
@@ -59,12 +60,13 @@ float Kp_iq = 7.11f;
 float Ki_iq = 2715.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
-float action_current = 3.5f; // I_q fuer Agenten
-float position_Kp = 3.0f;
+float action_current = 4.0f; // I_q fuer Agenten
+float position_Kp = 2.0f;
+float position_Ki = 0.0f;
 // limits and time setting
 float limit_error = 430.0f;
 float disable_control = 380.0f;
-int time_dqn = 15;
+int time_dqn = 10;
 int time_wait_zero = 1;
 // position control
 float position_ref = 0.0f; // mm
@@ -84,7 +86,7 @@ extern uint32_t action_k;
 extern uz_dqn_t *testdqn2;
 extern bool limit_was_hit;
 float angle_Kp = 400.0f;
-float angle_Ki = 10.0f;
+float angle_Ki = 0.0f;
 float episode_reward=0.0f;
 float number_of_episodes=1.0f;
 
@@ -110,10 +112,19 @@ bool ext_clamping = false;
 extern bool update_lock;
 float epsilon_k;
 extern float input_nn[5];
-enum dqn_chain chain = dqn_active;
+enum dqn_chain chain = limit_violation;
 float reward_angle = 0.0f;
 float reward_position = 0.0f;
 float number_of_updates = 0.0f;
+
+bool angle_control=true;
+
+uz_exp_smooth_t* position_exp_filter;
+uz_exp_smooth_t* angle_exp_filter;
+float alpha = 0.000001f; //smoothing factor defined by user
+float position_smoothed=0.0f;
+float angle_smoothed=0.0f;
+float start_position=50.0f;
 
 void ISR_Control(void *data)
 {
@@ -138,6 +149,9 @@ void ISR_Control(void *data)
         i_counter--;
     }
     position_abs = (float)(i_counter + (globalposition / (UZ_D5_POSINCREMENTAL_ENCODER_RESOLUTION * 4.0f))) * 5.0f;
+
+
+
     pos_strich = (int)Global_Data.av.position_pendulum;
     // calculate and transform observations for dqn
     Global_Data.obs.dqn_chart_position = position_abs / 1.0e3f;
@@ -191,8 +205,9 @@ void ISR_Control(void *data)
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     }
     // calculate data pmsm for foc
+    Global_Data.av.theta_mech = Global_Data.av.theta_elec;
     Global_Data.av.theta_elec = Global_Data.av.theta_elec * 3.0f - theta_offset;
-    Global_Data.av.theta_mech = Global_Data.av.theta_elec * (1.0f / 3.0f);
+    Global_Data.av.theta_elec=uz_signals_wrap(Global_Data.av.theta_elec, 2*M_PI);
 
     Global_Data.av.mechanicalRotorSpeed_IIR_Filter = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_2, Global_Data.av.mechanicalRotorSpeed);
     Global_Data.mv.i_dq_Amps = uz_transformation_3ph_abc_to_dq(Global_Data.mv.i_abc_Amps, Global_Data.av.theta_elec);
@@ -202,8 +217,13 @@ void ISR_Control(void *data)
     epsilon_k = uz_dqn_get_epsilon(testdqn2);
     reward_angle = fabsf(Global_Data.obs.dqn_angle) / (float)M_PI;
     reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    reward_k = calculate_reward_pendulum(1.0f, reward_angle, reward_position, Global_Data.obs.dqn_chart_position_derv, false);
+    reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, reward_angle, reward_position, Global_Data.obs.dqn_chart_position_derv, false);
     number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
+
+    position_smoothed=uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_position, position_abs);
+    angle_smoothed=uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_angle, fabsf(Global_Data.obs.dqn_angle_derv ));
+
+
     if (current_state == control_state)
     {
         if (fabsf(position_abs) > limit_error)
@@ -213,6 +233,8 @@ void ISR_Control(void *data)
         }
         // switch case for switching between dqn, pos_control and other states
         dqn_isr();
+      //position_control(position_ref, angle_control);
+
         if (fabsf(position_abs) < limit_error)
         {
             //            if (fabsf(position_abs) > disable_control){
@@ -234,6 +256,7 @@ void ISR_Control(void *data)
             uz_SpeedControl_set_Kp(Global_Data.objects.Speed_instance, speed_Kp);
             uz_SpeedControl_set_Ki(Global_Data.objects.Speed_instance, speed_Ki);
             uz_PI_Controller_set_Kp(Global_Data.objects.PI_instance, position_Kp);
+            uz_PI_Controller_set_Ki(Global_Data.objects.PI_instance, position_Ki);
             uz_PI_Controller_set_Kp(Global_Data.objects.pi_angle, angle_Kp);
         }
     }
@@ -258,6 +281,8 @@ void ISR_Control(void *data)
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs
 //----------------------------------------------------
+
+
 int Initialize_ISR()
 {
 
@@ -387,7 +412,7 @@ float calculate_reward_pendulum(float samplerate, float theta, float position, f
     {
         z = -1000.0f;
     }
-    float r = -2.0f * samplerate * (10.0f * theta + position + 0.01f * (float)pow(velocity, 2.0f)) + z;
+    float r = -2.0f * samplerate * (100.0f * theta + 2*position + (float)pow(velocity, 2.0f)) + z;
     return r;
 }
 
@@ -463,6 +488,7 @@ void dqn_isr(void)
         if (counter_for_reset > (time_dqn * (int)UZ_PWM_FREQUENCY))
         {
             chain = limit_violation;
+            break;
         }
         break;
     case limit_violation:
@@ -472,50 +498,48 @@ void dqn_isr(void)
         break;
     case return_to_zero_position:
         Global_Data.av.trigger_logging = 3.0f;
-        position_ref = 0.0f;
+        position_ref = 50.0f;
+        pos_delta = position_ref - position_abs;
         position_control(position_ref, false);
-        if (fabsf(position_abs) < 1.0f)
+        if ( (fabsf(Global_Data.obs.dqn_chart_position_derv) <0.02f))
         {
-            chain = wait_at_zero_position;
+            chain = get_to_start_postion;
         }
         break;
     case wait_at_zero_position:
         Global_Data.av.trigger_logging = 4.0f;
-        if (fabsf(position_abs) < 1.0f)
+        position_ref = start_position;
+        pos_delta = position_ref - position_abs;
+        position_control(position_ref, true);
+        if ( (angle_smoothed<0.005f) && (!update_lock) ) // Hier ändern und warten bis pos und winkel 0
         {
-            if (counter_wait_pos < (time_wait_zero * (int)UZ_PWM_FREQUENCY))
-            {
-                counter_wait_pos++;
-            }
-            else
-            {
-                Reset_obs_and_measurements();
-                chain = get_to_start_postion;
-            }
-        }
-        else
-        {
-            position_ref = 0.0f;
-            position_control(position_ref, true);
-        }
+            Reset_obs_and_measurements();
+            chain = dqn_active;
+    }
+//            if (counter_wait_pos < (time_wait_zero * (int)UZ_PWM_FREQUENCY)) // Hier ändern und warten bis pos und winkel 0
+//            {
+//                counter_wait_pos++;
+//            }
+//            else
+//            {
+//                Reset_obs_and_measurements();
+//                chain = dqn_active;
+//            }
         break;
     case get_to_start_postion:
         Global_Data.av.trigger_logging = 5.0f;
         episode_reward = 0.0f;
-        position_ref = 150.0f;
+        counter_for_reset = 0;
+        counter_wait_pos = 0;
+        position_ref = start_position;
         pos_delta = position_ref - position_abs;
-        position_control(position_ref, true);
-        if (fabsf(pos_delta) < 1.0f)
+        position_control(position_ref, false);
+        if ( (fabsf(Global_Data.obs.dqn_chart_position_derv) <0.02f))
         {
             // if(!update_lock){
-            chain = dqn_active;
+            chain = wait_at_zero_position;
             number_of_episodes+=1.0f;
             //}
-        }
-        else
-        { // counter im letzten case alle auf 0
-            counter_for_reset = 0;
-            counter_wait_pos = 0;
         }
         break;
     default:
@@ -530,11 +554,13 @@ void position_control(float position_set_point, bool angle_control_enabled)
     position_set_point = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_4, position_set_point);
     //
 
-    Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_set_point, position_abs, ext_clamping);
 
     if (angle_control_enabled)
     {
-        Global_Data.rasv.n_ref_rpm += (-1.0f) * uz_PI_Controller_sample(Global_Data.objects.pi_angle, 0.0f, sinf(Global_Data.av.theta_pendulum), false);
+        Global_Data.rasv.n_ref_rpm = (-1.0f) * uz_PI_Controller_sample(Global_Data.objects.pi_angle, 0.0f, sinf(Global_Data.av.theta_pendulum), false);
+        Global_Data.rasv.n_ref_rpm += uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_set_point, position_abs, ext_clamping);
+    }else{
+        Global_Data.rasv.n_ref_rpm = uz_PI_Controller_sample(Global_Data.objects.PI_instance, position_set_point, position_abs, ext_clamping);
     }
 
     Global_Data.rasv.M_ref_Nm = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, -Global_Data.rasv.n_ref_rpm);

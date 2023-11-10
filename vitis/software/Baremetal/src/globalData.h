@@ -149,6 +149,8 @@ typedef struct{
 	uz_IIR_Filter_t *LPF1_instance_2;
 	uz_IIR_Filter_t *LPF1_instance_3;
 	uz_IIR_Filter_t *LPF1_instance_4;
+	uz_IIR_Filter_t *LPF1_position;
+	uz_IIR_Filter_t *LPF1_angle;
 	uz_PI_Controller *PI_instance;
 	uz_PI_Controller *pi_angle;
 	uz_nn_t *uz_nn_instance;

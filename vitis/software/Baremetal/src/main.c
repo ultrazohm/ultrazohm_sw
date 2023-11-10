@@ -31,23 +31,23 @@ bool limit_was_hit=false;
 #include "uz/uz_dqn/uz_environment_bitflip.h"
 #include "uz/uz_environment_pt1/uz_environment_pt1.h"
 
-#define EXPERIENCE_BUFFER_LENGTH 5000U
+#define EXPERIENCE_BUFFER_LENGTH 150000U
 #define MINIBATCHSIZE 8U
 #define NUMBER_OF_EPOCHS 500U
-#define TARGET_UPDATE_FREQUENCY 50U
+#define TARGET_UPDATE_FREQUENCY 20U
 // nn
 #define NUMBER_OF_INPUTS 5U
 #define NUMBER_OF_OUTPUTS 5U
 #define NUMBER_OF_HIDDEN_LAYER 2U
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 128U
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 256U
 #define NUMBEROFTESTSTEPS 50U
 
-float discountfact = 0.99f;
-float lernrate = 0.002f;
+float discountfact = 0.9f;
+float lernrate = 0.0002f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
-float epsilon_decay = 0.00005f;
+float epsilon_decay = 0.000001f;
 
 // adam
 float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
@@ -247,6 +247,9 @@ float error[NUMBER_OF_OUTPUTS] = {0.0f};
 bool first_episode = true;
 uz_dqn_t *testdqn2;
 float cum_loss;
+float number_of_updates_per_episode=2000; // 200 Hz für 10s sind 2000 samples und damit 2000 updates
+float old_number_of_updates;
+extern float number_of_updates;
 
 extern enum dqn_chain chain;
 
@@ -303,8 +306,8 @@ int main(void)
         .config_controller.Kp = 0.0207f,
         .config_controller.Ki = 0.207f,
         .config_controller.samplingTime_sec = 0.00005f,
-        .config_controller.upper_limit = 1.0f,
-        .config_controller.lower_limit = -1.0f,
+        .config_controller.upper_limit = 1.5f,
+        .config_controller.lower_limit = -1.5f,
     };
 
     // Configuration of Set Point
@@ -343,7 +346,9 @@ int main(void)
     struct uz_IIR_Filter_config config1 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 200.0f, .sample_frequency_Hz = 20000.0f};
     struct uz_IIR_Filter_config config2 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = 20000.0f};
     struct uz_IIR_Filter_config config3 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = 20000.0f};
-    struct uz_IIR_Filter_config config4 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 1.0f, .sample_frequency_Hz = 20000.0f};
+    struct uz_IIR_Filter_config config4 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 5.0f, .sample_frequency_Hz = 20000.0f};
+    struct uz_IIR_Filter_config config5 = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 1/5.0f, .sample_frequency_Hz = 20000.0f};
+
 
     while (1)
     {
@@ -394,10 +399,13 @@ int main(void)
             Global_Data.objects.LPF1_instance_2 = uz_signals_IIR_Filter_init(config2);
             Global_Data.objects.LPF1_instance_3 = uz_signals_IIR_Filter_init(config3);
             Global_Data.objects.LPF1_instance_4 = uz_signals_IIR_Filter_init(config4);
+            Global_Data.objects.LPF1_position= uz_signals_IIR_Filter_init(config5);
+            Global_Data.objects.LPF1_angle = uz_signals_IIR_Filter_init(config5);
+
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
             Global_Data.objects.pi_angle = uz_PI_Controller_init(config_angle);
 
-            testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
+            testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 21U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
 
             Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
             Global_Data.mv.V_dc_volts = 48.0f;
@@ -421,9 +429,11 @@ int main(void)
         case infinite_loop:
             ultrazohm_state_machine_step();
             platform_state_t current_state=ultrazohm_state_machine_get_state();
+            if(current_state==control_state){
         	switch (chain) {
     			case dqn_active:
-
+    				//cum_loss = uz_dqn_update(testdqn2);
+    				old_number_of_updates=number_of_updates;
                     if ( (!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)) && (current_state==control_state) )
                     {
                         dqn_mutex_float = 0.0f;
@@ -435,7 +445,9 @@ int main(void)
 
     				break;
     			case return_to_zero_position:
-    				cum_loss = uz_dqn_update(testdqn2);
+    				if(number_of_updates< (old_number_of_updates+number_of_updates_per_episode) ){
+    					cum_loss = uz_dqn_update(testdqn2);
+    				}
     				break;
     			case wait_at_zero_position:
     				update_lock=true;
@@ -443,7 +455,9 @@ int main(void)
 
     		//		if(updates<200){
     			//		updates++;
-    				cum_loss = uz_dqn_update(testdqn2);
+    				if(number_of_updates< (old_number_of_updates+number_of_updates_per_episode) ){
+    					cum_loss = uz_dqn_update(testdqn2);
+    				}
     				//}
     				update_lock=false;
     				update_lock_float=0.0f;
@@ -451,11 +465,14 @@ int main(void)
       				first_episode=true;
     				break;
     			case get_to_start_postion:
-    				cum_loss = uz_dqn_update(testdqn2);
+    				if(number_of_updates< (old_number_of_updates+number_of_updates_per_episode) ){
+    					cum_loss = uz_dqn_update(testdqn2);
+    				}
     				break;
     			default:
     				break;
         	}
+            }
 
             break;
         default:

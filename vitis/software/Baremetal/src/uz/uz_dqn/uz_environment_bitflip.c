@@ -213,10 +213,10 @@ float uz_environment_bitflip_step_one_episode(uz_dqn_t *self, uint32_t max_steps
         {
             cum_loss = uz_dqn_update(self);
         }
-//        if (uz_environment_bitflip_is_finished(env))
-//        {
-//            return cum_loss;
-//        }
+        if (uz_environment_bitflip_is_finished(env))
+        {
+            return cum_loss;
+        }
     }
     return cum_loss;
 }

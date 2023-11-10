@@ -32,7 +32,6 @@ struct uz_dqn_t
     uint32_t action;
     float reward;
 };
-
 static uint32_t instance_counter = 0U;
 static uz_dqn_t instances[UZ_DQN_MAX_INSTANCES] = {0};
 static uz_dqn_t *uz_dqn_allocation(void);
@@ -145,14 +144,14 @@ uint32_t uz_dqn_determine_action(uz_dqn_t *self)
     uint32_t actionind = 0;
     uz_nn_ff(self->critic_copy, self->observation_k_0);
     uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic_copy);
-    if (uz_mtwister_random_uniform_float(self->randinstance) < self->epsilon)
-    {
-        actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->number_of_actions - 1U);
-    }
-    else
-    {
+//    if (uz_mtwister_random_uniform_float(self->randinstance) < self->epsilon)
+//    {
+//        actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->number_of_actions - 1U);
+//    }
+//    else
+//    {
         actionind = uz_matrix_get_max_index(outputcritic);
-    }
+//    }
     self->action = actionind;
     return actionind;
 }

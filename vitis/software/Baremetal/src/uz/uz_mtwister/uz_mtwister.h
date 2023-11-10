@@ -17,5 +17,6 @@ void uz_mtwister_random_uniform_uint32_array(uz_mtwister_t *self, uint32_t *arra
 
 uint32_t uz_mtwister_random_zero_or_one_uint32(uz_mtwister_t *self);
 uint32_t uz_mtwister_random_uniform_max_uint32(uz_mtwister_t *self, uint32_t max);
+int uz_mtwister_get_index(uz_mtwister_t *self);
 
 #endif // UZ_DQN_H

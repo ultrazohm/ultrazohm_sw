@@ -19,6 +19,7 @@
 #define TEMPERING_MASK_B 0x9d2c5680
 #define TEMPERING_MASK_C 0xefc60000
 #include "uz_mtwister.h"
+#include "../uz_dqn/uz_dqn.h"
 #include <math.h>
 
 struct uz_mtwister_t
@@ -186,6 +187,13 @@ float uz_mtwister_random_normal_float(uz_mtwister_t *self, float mean, float std
     self->box_mueller_cache = 0.0f;
   }
   return res;
+}
+
+int uz_mtwister_get_index(uz_mtwister_t *self)
+{
+uz_assert_not_NULL(self);
+int index = self->index;
+return index;
 }
 
 #endif // UZ_MTWISTER_H

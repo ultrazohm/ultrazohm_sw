@@ -170,3 +170,10 @@ if(import_data_to_simulink_datainspector ~= 0)
     Simulink.sdi.view
     
 end
+ISRTime = (log.CH1);
+indices = 60001:1:length(ISRTime);
+ISRTime(indices) = [];
+misr = mean(ISRTime)
+stdisr = std(ISRTime)
+x1 = [misr stdisr]
+writematrix(x1,'uz_dqn_determine_action/Model1x256Zeitmessunguz.csv','Delimiter',',')

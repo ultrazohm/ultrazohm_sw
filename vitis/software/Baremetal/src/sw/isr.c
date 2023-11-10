@@ -47,6 +47,7 @@ extern DS_Data Global_Data;
 static void ReadAllADC();
 
 #include "../uz/uz_environment_pt1/uz_environment_pt1.h"
+#include "../uz/uz_mtwister/uz_mtwister.h"
 #include "../uz/uz_dqn/uz_dqn.h"
 
 extern uz_environment_pt1_t *pt1;
@@ -67,17 +68,15 @@ extern float cum_loss;
 extern uint32_t t;
 extern uint32_t max_steps;
 
-float pt1_output;
-float pt1_input;
-extern float global_loss;
-extern bool do_dqn;
-float do_dqn_float=0.0f;
-
+uint32_t action_ff = 0.0f;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+//    ReadAllADC();
+    action_ff = uz_dqn_determine_action(testdqn2);
+    uz_SystemTime_ISR_Toc();
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+//    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -96,7 +95,7 @@ void ISR_Control(void *data)
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
-    uz_SystemTime_ISR_Toc();
+//    uz_SystemTime_ISR_Toc();
 }
 
 //==============================================================================================================================================================

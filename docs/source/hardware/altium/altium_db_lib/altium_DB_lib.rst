@@ -338,7 +338,7 @@ not be accepted.
    .. figure:: img/IPC-7351B_example.png
       :width: 300px
 
-      IPC-7351B name generation example.
+      IPC-7351B name generation example for SOIC127P930X265-16.
 
 .. note :: The extension of the file is written in capital letters.
 

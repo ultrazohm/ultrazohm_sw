@@ -222,9 +222,9 @@ void ISR_Control(void *data)
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_IIR_Filter * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
 
     epsilon_k = uz_dqn_get_epsilon(testdqn2);
-    reward_angle = fabsf(Global_Data.obs.dqn_angle) / (float)M_PI;
-    reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    reward_position_error = fabsf(Global_Data.obs.dqn_chart_error)/2.0f*disable_control *1.0e3;
+    reward_angle = (fabsf(Global_Data.obs.dqn_angle) / (float)M_PI -1.0f)*-1.0f;
+//    reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
+    reward_position_error = fabsf(Global_Data.obs.dqn_chart_error)/2.0f*max_pos;
     reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, reward_angle, reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
     number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
 

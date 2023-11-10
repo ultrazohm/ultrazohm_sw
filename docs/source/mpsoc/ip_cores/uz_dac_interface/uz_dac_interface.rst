@@ -35,7 +35,6 @@ However, supplying out of range values does not trigger an assertion to be able 
     };
     uz_dac_interface_t* dac_instance=uz_dac_interface_init(dac_config);
 
-
 .. code-block:: c
     :caption: Writes values of ``dac_input`` to the DAC channels 
 
@@ -46,7 +45,9 @@ However, supplying out of range values does not trigger an assertion to be able 
     };
     uz_dac_interface_set_ouput_values(dac_instance,&dac_input_array);
 
-
+.. warning::
+    The DAC always outputs the last value present in the DAC latch register. The user has to take care of safe DAC output states for the application 
+    before stopping control algorithms in the ISR or before flashing the MPSoC during testing.
 
 Driver reference
 ----------------

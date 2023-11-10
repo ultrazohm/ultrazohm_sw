@@ -190,7 +190,6 @@ void ISR_Control(void *data)
 	}
 	if (use_Motor) {
     	Global_Data.av.theta_mech = Global_Data.av.theta_mech - offset;
-    	Global_Data.av.omega_m = Global_Data.av.mechanicalRotorSpeed / 30.0f * M_PI;
     	Global_Data.av.omega_elec = Global_Data.av.omega_m * 3.0f;
     	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 3.0f;  //I changed the encoder function to write the theta onto theta_mech
     	Global_Data.av.inverter_outputs_d3 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d3);
@@ -236,8 +235,7 @@ void ISR_Control(void *data)
     			Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
 				Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
 				Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
-    		}
-    		else if (use_NN) {
+    		} else if (use_NN) {
     			obs[0] = i_dq_actual_Ampere.d/10.8f/sqrt(2);
 				obs[1] = i_dq_actual_Ampere.q/10.8f/sqrt(2);
 				obs[2] = Global_Data.av.mechanicalRotorSpeed/4140.0f;

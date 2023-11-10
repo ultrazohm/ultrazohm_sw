@@ -157,6 +157,13 @@ uint32_t uz_dqn_determine_action(uz_dqn_t *self)
     return actionind;
 }
 
+float uz_dqn_determine_position(uz_dqn_t *self, float maximum)
+{
+	float pos = 0.0f;
+	pos = (2.0f * uz_mtwister_random_uniform_float(self->randinstance)- 1.0f) * maximum;
+    return pos;
+}
+
 float uz_dqn_update(uz_dqn_t *self)
 {
     uint32_t randomindex = 0U;

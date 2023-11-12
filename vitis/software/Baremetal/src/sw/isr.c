@@ -420,7 +420,7 @@ float calculate_reward_pendulum(float samplerate, float theta, float position, f
     {
         z = -1000.0f;
     }
-    float r = -2.0f * samplerate * (100.0f * theta + 50*position + (float)pow(velocity, 2.0f)) + z;
+    float r = -2.0f * samplerate * (100.0f * theta + 5*position + (float)pow(velocity, 2.0f)) + z;
     return r;
 }
 

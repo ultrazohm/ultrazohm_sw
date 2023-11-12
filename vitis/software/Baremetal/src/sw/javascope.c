@@ -45,7 +45,7 @@ extern float global_reward_metric;
 extern float epoch_global;
 extern float number_of_episodes;
 
-	extern float epsilon_k;
+extern float epsilon_k;
 extern float reward_k;
 extern float update_lock_float;
 extern float omega_m_rad_per_sec;
@@ -54,6 +54,7 @@ extern float reward_position;
 extern float cum_loss;
 extern float number_of_updates;
 
+extern float reward_position_error;
 //random position
 extern float start_pos;
 extern float end_pos;
@@ -89,7 +90,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Speed_filtered]	= &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_d_ref]		= &data->rasv.dq_reference_current.d;
 	js_ch_observable[JSO_q_ref]		= &data->rasv.dq_reference_current.q;
-	js_ch_observable[JSO_M_ref]=& data->rasv.M_ref_Nm;
+	js_ch_observable[JSO_M_ref]		= &data->rasv.M_ref_Nm;
 	js_ch_observable[JSO_n_ref]		= &data->rasv.n_ref_rpm;
 	js_ch_observable[JSO_position_motor]	= &data->av.position_motor;
 	js_ch_observable[JSO_thetapendulum]	= &data->av.theta_pendulum;
@@ -119,7 +120,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dqn_mutex]   	= &dqn_mutex_float;
 	js_ch_observable[JSO_V_DC]   	= &data->mv.V_dc_volts;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	js_ch_observable[JSO_error_type] = &error_type;
+	js_ch_observable[JSO_reward_position_error] = &reward_position_error;
 	js_ch_observable[JSO_epsilon] = &epsilon_k;
 	js_ch_observable[JSO_reward] = &reward_k;
 	js_ch_observable[JSO_update_lock] = &update_lock_float;

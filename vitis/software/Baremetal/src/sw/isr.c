@@ -87,10 +87,7 @@ extern uz_dqn_t *testdqn2;
 extern bool limit_was_hit;
 float angle_Kp = 400.0f;
 float angle_Ki = 0.0f;
-float episode_reward=0.0f;
-float number_of_episodes=1.0f;
 
-float reward_k;
 extern bool first_episode;
 extern float penalty_grenze;
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
@@ -113,11 +110,6 @@ extern bool update_lock;
 float epsilon_k;
 extern float input_nn[5];
 enum dqn_chain chain = limit_violation;
-float reward_angle = 0.0f;
-float reward_position = 0.0f;
-float reward_position_error = 0.0f;
-float number_of_updates = 0.0f;
-
 bool angle_control=true;
 
 uz_exp_smooth_t* position_exp_filter;
@@ -184,7 +176,7 @@ void ISR_Control(void *data)
     }
     old_position = Global_Data.obs.dqn_chart_position;
     // calculate error for dqn observation
-    Global_Data.obs.dqn_chart_error = Global_Data.obs.dqn_chart_position-end_pos;
+    Global_Data.obs.dqn_chart_error = (Global_Data.obs.dqn_chart_position*1.0e3f)-end_pos;
     Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum - M_PI; // wegen funktionierender Referenzspur muss jetzt offset hinzugerechnet werden
     Global_Data.obs.dqn_sin_angle = sin(Global_Data.obs.dqn_angle);
     Global_Data.obs.dqn_cos_angle = cos(Global_Data.obs.dqn_angle);
@@ -222,11 +214,11 @@ void ISR_Control(void *data)
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_IIR_Filter * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
 
     epsilon_k = uz_dqn_get_epsilon(testdqn2);
-    reward_angle = (fabsf(Global_Data.obs.dqn_angle) / (float)M_PI -1.0f)*-1.0f;
+    Global_Data.dqnp.reward_angle = (fabsf(Global_Data.obs.dqn_angle) / (float)M_PI -1.0f)*-1.0f;
 //    reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    reward_position_error = fabsf(Global_Data.obs.dqn_chart_error)/2.0f*max_pos;
-    reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, reward_angle, reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
-    number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
+    Global_Data.dqnp.reward_position_error = fabsf(Global_Data.obs.dqn_chart_error)/(2.0f*max_pos);
+    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
+    Global_Data.dqnp.number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
 
     position_smoothed=uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_position, position_abs);
     angle_smoothed=uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_angle, fabsf(Global_Data.obs.dqn_angle_derv ));
@@ -445,8 +437,8 @@ void dqn_isr(void)
             {
                 // Sample environment at k+1
                 uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
-                uz_dqn_set_reward(testdqn2, reward_k);
-                episode_reward += reward_k;
+                uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
+                Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
                 uz_dqn_push_to_buffer(testdqn2);
             }
         }
@@ -462,9 +454,9 @@ void dqn_isr(void)
             input_nn[4] = Global_Data.obs.dqn_angle_derv;
             uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
             // /DQN__CONTROL_FREQUENCY
-            reward_k = calculate_reward_pendulum(1.0f, (1.0f - Global_Data.obs.dqn_cos_angle), Global_Data.obs.dqn_chart_position, Global_Data.obs.dqn_chart_position_derv, true);
-            episode_reward += reward_k;
-            uz_dqn_set_reward(testdqn2, reward_k);
+            Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f, (1.0f - Global_Data.obs.dqn_cos_angle), Global_Data.obs.dqn_chart_position, Global_Data.obs.dqn_chart_position_derv, true);
+            Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
+            uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
             uz_dqn_push_to_buffer(testdqn2);
             chain = limit_violation;
         }
@@ -519,11 +511,11 @@ void dqn_isr(void)
         position_ref = start_pos;
         pos_delta = position_ref - position_abs;
         position_control(position_ref, true);
-        if ( (angle_smoothed<0.005f) && (!update_lock) ) // Hier ändern und warten bis pos und winkel 0
+        if ( (angle_smoothed<0.005f) && (!update_lock) ) // Hier aendern und warten bis pos und winkel 0
         {
             Reset_obs_and_measurements();
             chain = dqn_active;
-    }
+        }
 //            if (counter_wait_pos < (time_wait_zero * (int)UZ_PWM_FREQUENCY)) // Hier ändern und warten bis pos und winkel 0
 //            {
 //                counter_wait_pos++;
@@ -536,7 +528,7 @@ void dqn_isr(void)
         break;
     case get_to_start_postion:
         Global_Data.av.trigger_logging = 5.0f;
-        episode_reward = 0.0f;
+        Global_Data.dqnp.episode_reward = 0.0f;
         counter_for_reset = 0;
         counter_wait_pos = 0;
 		start_pos = uz_dqn_determine_position(testdqn2, max_pos);
@@ -549,7 +541,7 @@ void dqn_isr(void)
         {
             // if(!update_lock){
             chain = wait_at_zero_position;
-            number_of_episodes+=1.0f;
+            Global_Data.dqnp.number_of_episodes+=1.0f;
             //}
         }
         break;

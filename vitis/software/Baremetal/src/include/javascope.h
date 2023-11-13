@@ -175,11 +175,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	Reference speed,
-	Position,
-	K_p_position_controller,
-	K_p_speed controller,
-	K_i_speed controller,
+	Refpos Poscontrol,
+	startpos dqn,
+	endpos dqn,
+	,
+	,
 	,
 	SND_FLD_ENDMARKER
 

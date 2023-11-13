@@ -37,24 +37,13 @@ static float System_UpTime_ms;
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
-extern float episode_reward;
 extern float evaluation_run;
 extern float finished;
-extern float global_loss;
-extern float global_reward_metric;
-extern float epoch_global;
-extern float number_of_episodes;
 
 extern float epsilon_k;
-extern float reward_k;
 extern float update_lock_float;
 extern float omega_m_rad_per_sec;
-extern float reward_angle;
-extern float reward_position;
-extern float cum_loss;
-extern float number_of_updates;
 
-extern float reward_position_error;
 //random position
 extern float start_pos;
 extern float end_pos;
@@ -120,16 +109,16 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dqn_mutex]   	= &dqn_mutex_float;
 	js_ch_observable[JSO_V_DC]   	= &data->mv.V_dc_volts;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	js_ch_observable[JSO_reward_position_error] = &reward_position_error;
+	js_ch_observable[JSO_reward_position_error] = &data->dqnp.reward_position_error;
 	js_ch_observable[JSO_epsilon] = &epsilon_k;
-	js_ch_observable[JSO_reward] = &reward_k;
+	js_ch_observable[JSO_reward] = &data->dqnp.reward_k;
 	js_ch_observable[JSO_update_lock] = &update_lock_float;
-	js_ch_observable[JSO_reward_angle] = &reward_angle;
-	js_ch_observable[JSO_reward_position] = &reward_position;
-	js_ch_observable[JSO_number_of_updates] = &number_of_updates;
-	js_ch_observable[JSO_cumulative_loss] = &cum_loss;
-	js_ch_observable[JSO_episode_reward] = &episode_reward;
-	js_ch_observable[JSO_number_of_episodes] = &number_of_episodes;
+	js_ch_observable[JSO_reward_angle] = &data->dqnp.reward_angle;
+	js_ch_observable[JSO_reward_position] = &data->dqnp.reward_position;
+	js_ch_observable[JSO_number_of_updates] = &data->dqnp.number_of_updates;
+	js_ch_observable[JSO_cumulative_loss] = &data->dqnp.cumulative_loss;
+	js_ch_observable[JSO_episode_reward] = &data->dqnp.episode_reward;
+	js_ch_observable[JSO_number_of_episodes] = &data->dqnp.number_of_episodes;
 	js_ch_observable[JSO_position_smoothed] = &position_smoothed;
 	js_ch_observable[JSO_angle_smoothed] = &angle_smoothed;
 

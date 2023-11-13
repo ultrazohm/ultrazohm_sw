@@ -21,9 +21,8 @@
 
 // Global variable structure
 extern DS_Data Global_Data;
-extern float speed_Kp;
-extern float speed_Ki;
-extern float position_Kp;
+extern float start_pos;
+extern float end_pos;
 extern float position_abs;
 extern float position_ref;
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -194,23 +193,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 
 		case (Set_Send_Field_1):
-				Global_Data.rasv.n_ref_rpm = value;
+				position_ref = value;
 			break;
 
 		case (Set_Send_Field_2):
-		position_ref = value;
+				start_pos = value;
 			break;
 
 		case (Set_Send_Field_3):
-				position_Kp=value;
+				end_pos = value;
 			break;
 
 		case (Set_Send_Field_4):
-				speed_Kp=value;
+
 			break;
 
 		case (Set_Send_Field_5):
-				speed_Ki=value;
+
 			break;
 
 		case (Set_Send_Field_6):

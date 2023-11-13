@@ -18,12 +18,8 @@
 
 // defines for nn
 
-float epoch_global = 0.0f;
-
 float finished = 5.0f;
 float evaluation_run = 0.0f;
-float global_loss = 0.0f;
-float global_reward_metric = 0.0f;
 float penalty_grenze=340.0f;
 bool limit_was_hit=false;
 
@@ -33,8 +29,8 @@ bool limit_was_hit=false;
 
 #define EXPERIENCE_BUFFER_LENGTH 150000U
 #define MINIBATCHSIZE 16U
-#define NUMBER_OF_EPOCHS 500U
-#define TARGET_UPDATE_FREQUENCY 20U
+#define NUMBER_OF_EPOCHS 100U
+#define TARGET_UPDATE_FREQUENCY 5U
 // nn
 #define NUMBER_OF_INPUTS 5U
 #define NUMBER_OF_OUTPUTS 5U
@@ -47,7 +43,7 @@ float lernrate = 0.001f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
-float epsilon_decay = 0.0001f;
+float epsilon_decay = 0.00001f;
 
 // adam
 float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
@@ -350,7 +346,8 @@ DS_Data Global_Data = {
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}},
-    .mrp = {.incrementalEncoder_speed_timeout_in_ms = 10}};
+    .mrp = {.incrementalEncoder_speed_timeout_in_ms = 10},
+	.dqnp = {.number_of_episodes = 1.0f}};
 
 uz_environment_pt1_t *pt1;
 uint32_t action_k = 0;
@@ -361,7 +358,7 @@ float error[NUMBER_OF_OUTPUTS] = {0.0f};
 bool first_episode = true;
 uz_dqn_t *testdqn2;
 float cum_loss;
-float number_of_updates_per_episode=2000; // 200 Hz für 10s sind 2000 samples und damit 2000 updates
+float number_of_updates_per_episode=10000; // 100 Hz fuer 10s sind 1000 samples und damit 1000 updates
 float old_number_of_updates;
 extern float number_of_updates;
 extern enum dqn_chain chain;
@@ -397,7 +394,6 @@ int dividingfactordqn = UZ_PWM_FREQUENCY / DQN__CONTROL_FREQUENCY;
 float dqn_mutex_float = 0.0f;
 float input_nn[5] = {-0.47f, -0.88f, -2.9f, 0.375f, -3.2f};
 extern float position_abs;
-static uint32_t updates=0;
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -517,12 +513,9 @@ int main(void)
             Global_Data.objects.LPF1_instance_4 = uz_signals_IIR_Filter_init(config4);
             Global_Data.objects.LPF1_position= uz_signals_IIR_Filter_init(config5);
             Global_Data.objects.LPF1_angle = uz_signals_IIR_Filter_init(config5);
-
             Global_Data.objects.PI_instance = uz_PI_Controller_init(config_position);
             Global_Data.objects.pi_angle = uz_PI_Controller_init(config_angle);
-
-            testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 21U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
-
+            testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 21U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, smoothing, error,config_copy);
             Global_Data.objects.input_instance = uz_matrix_init(&x_matrix, input_nn, UZ_MATRIX_SIZE(input_nn), 1, NUMBER_OF_INPUTS);
             Global_Data.mv.V_dc_volts = 48.0f;
             // tune current control after init
@@ -549,7 +542,7 @@ int main(void)
         	switch (chain) {
     			case dqn_active:
     				//cum_loss = uz_dqn_update(testdqn2);
-    				old_number_of_updates=number_of_updates;
+    				Global_Data.dqnp.old_number_of_updates=Global_Data.dqnp.number_of_updates;
                     if ( (!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)) && (current_state==control_state) )
                     {
                         dqn_mutex_float = 0.0f;
@@ -561,18 +554,16 @@ int main(void)
 
     				break;
     			case return_to_zero_position:
-    				if(number_of_updates< (old_number_of_updates+number_of_updates_per_episode) ){
-    					cum_loss = uz_dqn_update(testdqn2);
+    				if(Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+number_of_updates_per_episode) ){
+    				Global_Data.dqnp.cumulative_loss = uz_dqn_update(testdqn2);
     				}
     				break;
     			case wait_at_zero_position:
     				update_lock=true;
     				update_lock_float=1.0f;
 
-    		//		if(updates<200){
-    			//		updates++;
-    				if(number_of_updates< (old_number_of_updates+number_of_updates_per_episode) ){
-    					cum_loss = uz_dqn_update(testdqn2);
+    				if(Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+number_of_updates_per_episode) ){
+    				Global_Data.dqnp.cumulative_loss = uz_dqn_update(testdqn2);
     				}
     				//}
     				update_lock=false;
@@ -581,8 +572,8 @@ int main(void)
       				first_episode=true;
     				break;
     			case get_to_start_postion:
-    				if(number_of_updates< (old_number_of_updates+number_of_updates_per_episode) ){
-    					cum_loss = uz_dqn_update(testdqn2);
+    				if(Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+number_of_updates_per_episode) ){
+    				Global_Data.dqnp.cumulative_loss = uz_dqn_update(testdqn2);
     				}
     				break;
     			default:

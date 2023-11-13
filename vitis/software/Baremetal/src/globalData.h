@@ -131,6 +131,19 @@ typedef struct _referenceAndSetValues_ {
 	struct uz_3ph_abc_t uvw_ref;
 } referenceAndSetValues;
 
+typedef struct _dqn_performance_ {
+	float number_of_updates;
+	float old_number_of_updates;
+	float reward_position_error;
+	float reward_position;
+	float reward_angle;
+	float cumulative_loss;
+	float global_running_reward;
+	float episode_reward;
+	float number_of_episodes;
+	float reward_k;
+
+} dqn_performance;
 typedef struct{
 	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
 	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
@@ -156,6 +169,7 @@ typedef struct{
 	uz_nn_t *uz_nn_instance;
 	uz_matrix_t *input_instance;
 	uz_inverter_adapter_t* inverter_d1;
+
 }object_pointers_t;
 
 typedef struct _motorrelatedparameters_ {
@@ -177,6 +191,7 @@ typedef struct _dqn_observation_ {
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
+	dqn_performance dqnp;
 	actualValues av;
 	measuredValues mv;
 	AnalogAdapters aa;

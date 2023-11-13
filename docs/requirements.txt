@@ -10,3 +10,12 @@ sphinxcontrib-tikz
 breathe
 matplotlib
 sphinx-plotly-directive
+jupyterlab
+jupyter-dash
+ipywidgets
+pandas
+plotly
+dash
+matplotlib
+bokeh
+jupyter_bokeh

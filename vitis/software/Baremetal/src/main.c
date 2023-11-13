@@ -35,7 +35,7 @@ bool limit_was_hit=false;
 #define NUMBER_OF_INPUTS 5U
 #define NUMBER_OF_OUTPUTS 5U
 #define NUMBER_OF_HIDDEN_LAYER 3U
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64U
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 32U
 #define NUMBEROFTESTSTEPS 50U
 
 float discountfact = 0.99f;
@@ -355,10 +355,10 @@ uint32_t action_k = 0;
 float targsmoothfact = 0.05f;
 float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
-bool first_episode = true;
+bool first_step_in_episode = true;
 uz_dqn_t *testdqn2;
 float cum_loss;
-float number_of_updates_per_episode=10000; // 100 Hz fuer 10s sind 1000 samples und damit 1000 updates
+float number_of_updates_per_episode=1000.0f; // 100 Hz fuer 10s sind 1000 samples und damit 1000 updates
 float old_number_of_updates;
 extern float number_of_updates;
 extern enum dqn_chain chain;
@@ -566,10 +566,12 @@ int main(void)
     				Global_Data.dqnp.cumulative_loss = uz_dqn_update(testdqn2);
     				}
     				//}
+    				else{
     				update_lock=false;
     				update_lock_float=0.0f;
+    				}
                     action_k = 2;
-      				first_episode=true;
+                    first_step_in_episode=true;
     				break;
     			case get_to_start_postion:
     				if(Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+number_of_updates_per_episode) ){

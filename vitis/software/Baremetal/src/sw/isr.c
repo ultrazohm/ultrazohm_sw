@@ -88,8 +88,9 @@ extern bool limit_was_hit;
 float angle_Kp = 400.0f;
 float angle_Ki = 0.0f;
 
-extern bool first_episode;
+extern bool first_step_in_episode;
 extern float penalty_grenze;
+extern float update_lock_float;
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
 void position_control(float position_set_point, bool angle_control_enabled);
 extern int dividingfactordqn;
@@ -109,7 +110,7 @@ bool ext_clamping = false;
 extern bool update_lock;
 float epsilon_k;
 extern float input_nn[5];
-enum dqn_chain chain = limit_violation;
+enum dqn_chain chain = dqn_active;
 bool angle_control=true;
 
 uz_exp_smooth_t* position_exp_filter;
@@ -429,9 +430,9 @@ void dqn_isr(void)
             input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
             input_nn[3] = Global_Data.obs.dqn_chart_error;
             input_nn[4] = Global_Data.obs.dqn_angle_derv;
-            if (first_episode)
+            if (first_step_in_episode)
             {
-                first_episode = false;
+            	first_step_in_episode = false;
             }
             else
             {
@@ -528,6 +529,8 @@ void dqn_isr(void)
         break;
     case get_to_start_postion:
         Global_Data.av.trigger_logging = 5.0f;
+        Global_Data.dqnp.global_running_reward = 0.99f * Global_Data.dqnp.episode_reward_old + 0.01f * Global_Data.dqnp.episode_reward;
+        Global_Data.dqnp.episode_reward_old = Global_Data.dqnp.episode_reward;
         Global_Data.dqnp.episode_reward = 0.0f;
         counter_for_reset = 0;
         counter_wait_pos = 0;
@@ -540,8 +543,10 @@ void dqn_isr(void)
         if ( (fabsf(Global_Data.obs.dqn_chart_position_derv) <0.02f))
         {
             // if(!update_lock){
-            chain = wait_at_zero_position;
+            update_lock = true;
+            update_lock_float=1.0f;
             Global_Data.dqnp.number_of_episodes+=1.0f;
+            chain = wait_at_zero_position;
             //}
         }
         break;

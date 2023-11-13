@@ -79,7 +79,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Speed_filtered]	= &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_d_ref]		= &data->rasv.dq_reference_current.d;
 	js_ch_observable[JSO_q_ref]		= &data->rasv.dq_reference_current.q;
-	js_ch_observable[JSO_M_ref]		= &data->rasv.M_ref_Nm;
+	js_ch_observable[JSO_global_running_reward]		= &data->dqnp.global_running_reward;
 	js_ch_observable[JSO_n_ref]		= &data->rasv.n_ref_rpm;
 	js_ch_observable[JSO_position_motor]	= &data->av.position_motor;
 	js_ch_observable[JSO_thetapendulum]	= &data->av.theta_pendulum;

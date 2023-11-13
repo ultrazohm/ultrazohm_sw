@@ -140,6 +140,7 @@ typedef struct _dqn_performance_ {
 	float cumulative_loss;
 	float global_running_reward;
 	float episode_reward;
+	float episode_reward_old;
 	float number_of_episodes;
 	float reward_k;
 

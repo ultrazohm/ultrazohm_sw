@@ -45,3 +45,5 @@ Software Framework
     uz_subspace_resonant_control/uz_subspace_resonant_control
     external_stop/external_stop
     uz_Trajectory/uz_Trajectory
+    uz_prng/uz_prng
+    uz_prng/uz_prng_squares/uz_prng_squares

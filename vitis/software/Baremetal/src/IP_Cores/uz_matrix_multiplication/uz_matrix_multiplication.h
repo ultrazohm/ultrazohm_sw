@@ -25,7 +25,8 @@ struct uz_Matrix_Multi_config{
 
 
 uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz_matrix_t *A_matrix, uz_matrix_t *B_matrix, uz_matrix_t *C_out_matrix);
-void uz_Matrix_Multi_calculate(uz_Matrix_Multi_t* self);
-
+void uz_Matrix_Multi_write_input(uz_Matrix_Multi_t* self);
+void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self);
+void uz_Matrix_Multi_read_output(uz_Matrix_Multi_t* self);
 
 #endif

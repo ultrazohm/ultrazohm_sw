@@ -103,4 +103,24 @@ void test_uz_matrix_multiplication_hw_read_C_out_matrix(void) {
     }
 }
 
+
+void test_uz_matrix_multiplication_hw_set_trigger_calculation_assert_zero_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_matrix_multiplication_hw_set_trigger_calculation(0x0));
+}
+
+void test_uz_matrix_multiplication_hw_set_trigger_calculation(void) {
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_TRIGGER_DATA, true);
+    uz_matrix_multiplication_hw_set_trigger_calculation(TEST_BASE_ADDRESS);
+}
+
+void test_uz_matrix_multiplication_hw_get_is_done_assert_zero_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_matrix_multiplication_hw_get_is_done(0x0));
+}
+
+void test_uz_matrix_multiplication_hw_get_is_done(void) {
+    uz_axi_read_bool_ExpectAndReturn(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA,true);
+    bool test = uz_matrix_multiplication_hw_get_is_done(TEST_BASE_ADDRESS);
+}
+
+
 #endif // TEST

@@ -46,3 +46,13 @@ void uz_matrix_multiplication_hw_read_C_out_matrix(uint32_t base_address, float 
 			C_out[i] = uz_axi_read_float(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_C_OUT_BASE + REGISTER_OFFSET * i );
 	}
 }
+
+void uz_matrix_multiplication_hw_set_trigger_calculation(uint32_t base_address) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_axi_write_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_TRIGGER_DATA, true);
+}
+
+bool uz_matrix_multiplication_hw_get_is_done(uint32_t base_address) {
+	uz_assert_not_zero_uint32(base_address);
+	return (uz_axi_read_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA));
+}

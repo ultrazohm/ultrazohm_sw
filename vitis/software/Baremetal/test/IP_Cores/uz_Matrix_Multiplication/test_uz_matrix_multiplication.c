@@ -62,7 +62,7 @@ void test_uz_Matrix_Multi_init_assert_C_NULL(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_Matrix_Multi_init(config, &A_matrix, &B_matrix, NULL));
 }
 
-void test_uz_Matrix_Multi_calculate(void) {
+void test_uz_Matrix_Multi_write_input(void) {
     struct uz_matrix_t A_matrix = {0};
     struct uz_matrix_t B_matrix = {0};
     struct uz_matrix_t C_out_matrix = {0};
@@ -72,7 +72,30 @@ void test_uz_Matrix_Multi_calculate(void) {
     uz_matrix_multiplication_hw_set_B_matrix_Expect(config.base_address, config.B_data);
     uz_matrix_multiplication_hw_set_B_rows_Expect(config.base_address, config.B_rows);
     uz_matrix_multiplication_hw_set_B_columns_Expect(config.base_address, config.B_columns);     
+    uz_Matrix_Multi_write_input(instance);
+}
+
+void test_uz_Matrix_Multi_trigger_calculation_assert_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_Matrix_Multi_trigger_calculation(NULL));
+}
+
+void test_uz_Matrix_Multi_read_output_assert_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_Matrix_Multi_read_output(NULL));
+}
+
+void test_uz_Matrix_Multi_read_output(void) {
+    struct uz_matrix_t A_matrix = {0};
+    struct uz_matrix_t B_matrix = {0};
+    struct uz_matrix_t C_out_matrix = {0};
+    uz_Matrix_Multi_t* instance = uz_Matrix_Multi_init(config, &A_matrix, &B_matrix, &C_out_matrix);
+    uz_matrix_multiplication_hw_set_A_matrix_Expect(config.base_address, config.A_data);
+    uz_matrix_multiplication_hw_set_A_rows_Expect(config.base_address, config.A_rows);
+    uz_matrix_multiplication_hw_set_B_matrix_Expect(config.base_address, config.B_data);
+    uz_matrix_multiplication_hw_set_B_rows_Expect(config.base_address, config.B_rows);
+    uz_matrix_multiplication_hw_set_B_columns_Expect(config.base_address, config.B_columns);     
+    uz_Matrix_Multi_write_input(instance);
+    uz_matrix_multiplication_hw_get_is_done_ExpectAndReturn(config.base_address, true);
     uz_matrix_multiplication_hw_read_C_out_matrix_Expect(config.base_address, config.C_data);
-    uz_Matrix_Multi_calculate(instance);
+    uz_Matrix_Multi_read_output(instance);
 }
 #endif // TEST

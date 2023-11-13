@@ -46,7 +46,7 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz
 	return(self);
 }
 
-void uz_Matrix_Multi_calculate(uz_Matrix_Multi_t* self) {
+void uz_Matrix_Multi_write_input(uz_Matrix_Multi_t* self) {
 	uz_assert_not_NULL(self);
 	// C= A * B
     // number of columns in A must b equal to rows of B
@@ -60,7 +60,19 @@ void uz_Matrix_Multi_calculate(uz_Matrix_Multi_t* self) {
 	uz_matrix_multiplication_hw_set_B_matrix(self->config.base_address, self->B_matrix->data);
 	uz_matrix_multiplication_hw_set_B_rows(self->config.base_address, self->B_matrix->rows);
 	uz_matrix_multiplication_hw_set_B_columns(self->config.base_address, self->B_matrix->columns);
-	uz_matrix_multiplication_hw_read_C_out_matrix(self->config.base_address, self->C_out_matrix->data);	
-
 }
+
+void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self) {
+	uz_assert_not_NULL(self);
+	uz_matrix_multiplication_hw_set_trigger_calculation(self->config.base_address);
+}
+
+void uz_Matrix_Multi_read_output(uz_Matrix_Multi_t* self) {
+	uz_assert_not_NULL(self);
+	bool is_done =  uz_matrix_multiplication_hw_get_is_done(self->config.base_address);
+	if (is_done) {
+		uz_matrix_multiplication_hw_read_C_out_matrix(self->config.base_address, self->C_out_matrix->data);
+	}
+}
+
 #endif

@@ -39,7 +39,9 @@ extensions = [
     'sphinx_copybutton',
     'sphinxcontrib.tikz',
     'sphinx.ext.mathjax',
-    'breathe'
+    'breathe',
+    'sphinx_plotly_directive',
+    'matplotlib.sphinxext.plot_directive'
 ]
 tikz_proc_suite='GhostScript'
 breathe_projects = { "doxygen_baremetal_r5": "../doxygen_output/xml" }

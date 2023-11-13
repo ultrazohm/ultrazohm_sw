@@ -8,3 +8,5 @@ sphinx-issues
 sphinx-copybutton
 sphinxcontrib-tikz
 breathe
+matplotlib
+sphinx-plotly-directive

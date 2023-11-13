@@ -223,24 +223,24 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_1):
 				data->av.debug_ip_off = true;
-		uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x124, data->av.debug_ip_off);
-//					data->rasv.halfBridge1DutyCycle = 0.55f;
-//					data->rasv.halfBridge2DutyCycle = 0.5f;
-//					data->rasv.halfBridge3DutyCycle = 0.5f;
-//					data->rasv.halfBridge4DutyCycle = 0.5f;
-//					data->rasv.halfBridge5DutyCycle = 0.5f;
-//					data->rasv.halfBridge6DutyCycle = 0.5f;
+//		uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x124, data->av.debug_ip_off);
+					data->rasv.halfBridge1DutyCycle = 0.55f;
+					data->rasv.halfBridge2DutyCycle = 0.5f;
+					data->rasv.halfBridge3DutyCycle = 0.5f;
+					data->rasv.halfBridge4DutyCycle = 0.5f;
+					data->rasv.halfBridge5DutyCycle = 0.5f;
+					data->rasv.halfBridge6DutyCycle = 0.5f;
 			break;
 
 		case (My_Button_2):
 		data->av.debug_ip_off = false;
-		uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x124, data->av.debug_ip_off);
-//					data->rasv.halfBridge1DutyCycle = 0.5f;
-//					data->rasv.halfBridge2DutyCycle = 0.55f;
-//					data->rasv.halfBridge3DutyCycle = 0.5f;
-//					data->rasv.halfBridge4DutyCycle = 0.5f;
-//					data->rasv.halfBridge5DutyCycle = 0.5f;
-//					data->rasv.halfBridge6DutyCycle = 0.5f;
+//		uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_DEBUG_IP_0_BASEADDR + 0x124, data->av.debug_ip_off);
+					data->rasv.halfBridge1DutyCycle = 0.5f;
+					data->rasv.halfBridge2DutyCycle = 0.55f;
+					data->rasv.halfBridge3DutyCycle = 0.5f;
+					data->rasv.halfBridge4DutyCycle = 0.5f;
+					data->rasv.halfBridge5DutyCycle = 0.5f;
+					data->rasv.halfBridge6DutyCycle = 0.5f;
 			break;
 
 		case (My_Button_3):
@@ -280,12 +280,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7):
-//					data->rasv.halfBridge1DutyCycle = 0.5f;
-//					data->rasv.halfBridge2DutyCycle = 0.5f;
-//					data->rasv.halfBridge3DutyCycle = 0.5f;
-//					data->rasv.halfBridge4DutyCycle = 0.5f;
-//					data->rasv.halfBridge5DutyCycle = 0.5f;
-//					data->rasv.halfBridge6DutyCycle = 0.5f;
+					data->rasv.halfBridge1DutyCycle = 0.5f;
+					data->rasv.halfBridge2DutyCycle = 0.5f;
+					data->rasv.halfBridge3DutyCycle = 0.5f;
+					data->rasv.halfBridge4DutyCycle = 0.5f;
+					data->rasv.halfBridge5DutyCycle = 0.5f;
+					data->rasv.halfBridge6DutyCycle = 0.5f;
 //		uz_PWM_SS_2L_hw_SetMode(data->objects.pwm_d1_pin_0_to_5, normalized_input_via_AXI);
 //		uz_PWM_SS_2L_hw_SetMode(data->objects.pwm_d1_pin_6_to_11, normalized_input_via_AXI);
 //							data->rasv.halfBridge1DutyCycle = 0.0f;
@@ -294,16 +294,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //							data->rasv.halfBridge4DutyCycle = 0.0f;
 //							data->rasv.halfBridge5DutyCycle = 0.0f;
 //							data->rasv.halfBridge6DutyCycle = 0.0f;
-					if (data->av.lmg_trigger_status == true) {
-						uz_axi_gpio_write_pin_zero_based(data->objects.lmg_trigger, 0U, false);
-						data->av.lmg_trigger_status = false;
-						ultrazohm_state_machine_set_userLED(false);
-					}
-					else if (data->av.lmg_trigger_status == false) {
-						uz_axi_gpio_write_pin_zero_based(data->objects.lmg_trigger, 0U, true);
-						data->av.lmg_trigger_status = true;
-						ultrazohm_state_machine_set_userLED(true);
-					}
+//					if (data->av.lmg_trigger_status == true) {
+//						uz_axi_gpio_write_pin_zero_based(data->objects.lmg_trigger, 0U, false);
+//						data->av.lmg_trigger_status = false;
+//						ultrazohm_state_machine_set_userLED(false);
+//					}
+//					else if (data->av.lmg_trigger_status == false) {
+//						uz_axi_gpio_write_pin_zero_based(data->objects.lmg_trigger, 0U, true);
+//						data->av.lmg_trigger_status = true;
+//						ultrazohm_state_machine_set_userLED(true);
+//					}
 
 			break;
 

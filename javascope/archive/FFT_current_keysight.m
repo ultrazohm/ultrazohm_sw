@@ -7,59 +7,62 @@ fs=24;
 
 barWidth = 10;
 
-%  signal(:,1) = time;
-%  signal(:,2) = ia1;
-% 
-% % Orgnialsignal ploten
-% figure(1)
-% set(gcf,'color','white')
-% h=subplot(2,1,1);
-% pp=plot(signal(:,1),signal(:,2));
-% title('Zeitsignal')
-% xlabel('Zeit in s')
-% ylabel('y(t)') %ylabel('F(x)')
-% pp.LineWidth=1;
-% h.FontWeight='bold';
-% h.FontSize=fs;
-% grid on
-% set(gca,'FontSize',fs);
+time = rpm5A20kHzFOCv5ADC.Times;
+sig = rpm5A20kHzFOCv5ADC.Channel1;
 
-% % Programm wird unterbrochen und das Keyboard wird wieder freigegeben
-% keyboard
-% % Mit dem Data Cursor können nun der Start- und Endpunkt des zu
-% % analysierenden Teilsignals festgelegt werden. Dabei ist wichtig zurerst
-% % den Startpunkt und danach den Endpunkt zu wählen. Danach Rechtsklick auf einen
-% % der beiden Datapoint und die Option Export Cursor Data to Workspace. Die
-% % Variable mit 'limits' benennen und Ok drücken. Danach im Command Window
-% % oben auf 'continue' klicken. Nun wird eine FFT-Analyse auf das
-% % markierte Teilsignal durchgeführt.
-% 
-% % markiertes Teilsignal in Variable time und F speichern
-% time_cut=signal(1:limits(1).DataIndex-limits(2).DataIndex+1,1);
-% F=signal(limits(2).DataIndex:limits(1).DataIndex,2);
+ signal(:,1) = time;
+ signal(:,2) = sig(:,1);
 
-time_cut = time;
+% Orgnialsignal ploten
+figure(1)
+set(gcf,'color','white')
+h=subplot(2,1,1);
+pp=plot(signal(:,1),signal(:,2));
+title('Zeitsignal')
+xlabel('Zeit in s')
+ylabel('y(t)') %ylabel('F(x)')
+pp.LineWidth=1;
+h.FontWeight='bold';
+h.FontSize=fs;
+grid on
+set(gca,'FontSize',fs);
+
+% Programm wird unterbrochen und das Keyboard wird wieder freigegeben
+keyboard
+% Mit dem Data Cursor können nun der Start- und Endpunkt des zu
+% analysierenden Teilsignals festgelegt werden. Dabei ist wichtig zurerst
+% den Startpunkt und danach den Endpunkt zu wählen. Danach Rechtsklick auf einen
+% der beiden Datapoint und die Option Export Cursor Data to Workspace. Die
+% Variable mit 'limits' benennen und Ok drücken. Danach im Command Window
+% oben auf 'continue' klicken. Nun wird eine FFT-Analyse auf das
+% markierte Teilsignal durchgeführt.
+
+% markiertes Teilsignal in Variable time und F speichern
+time_cut=signal(1:limits(1).DataIndex-limits(2).DataIndex+1,1);
+F=signal(limits(2).DataIndex:limits(1).DataIndex,2);
+
+% time_cut = time;
 
 
-% %Plot des Teilsignals zur Kontrolle
-% h=subplot(2,1,2);
-% pp=plot(time_cut,F,'r');
-% title('Signalausschnitt für Analyse')
-% xlabel('Zeit in s')
-% ylabel('y(t)')
-% h.FontWeight='bold';
-% h.FontSize=fs;
-% grid on
-% set(gca,'FontSize',fs);
+%Plot des Teilsignals zur Kontrolle
+h=subplot(2,1,2);
+pp=plot(time_cut,F,'r');
+title('Signalausschnitt für Analyse')
+xlabel('Zeit in s')
+ylabel('y(t)')
+h.FontWeight='bold';
+h.FontSize=fs;
+grid on
+set(gca,'FontSize',fs);
 
 
 %% FFT-Analyse Teilsignal mit fft (dft), da nur ein Argument
 
 % for i=2:2
-for i=1:num_of_measured_points
-    F=i_ph(:,1:data_point_length(i),i)';
+% for i=1:num_of_measured_points
+%     F=i_ph(:,1:data_point_length(i),i)';
 %
-Fs = length(time_cut(i,:));
+Fs = length(time_cut);
 T = 1 / Fs;
 L = Fs;
 d = Fs*(0:(L/2))/L;                                     % Zeitvektor
@@ -73,13 +76,13 @@ freq=d.*1/(time_cut(2)-time_cut(1))/Fs;                 % Rückskalieren, wenn di
 
 % extract fundamental frequency and amplitude from each phase current and
 % datapoint
-time_tmp = time_cut(i,:);
-time_tmp = time_tmp';
-time_tmp(all(~time_tmp,2),:) = []; % remove zero rows
+% time_tmp = time_cut(i,:);
+% time_tmp = time_tmp';
+% time_tmp(all(~time_tmp,2),:) = []; % remove zero rows
 
-for k=1:6
-    [f1(i,k), mag(i,k)] = extract_fundamental_of_sin(time_tmp,F(:,k));
-end
+% for k=1:6
+%     [f1(i,k), mag(i,k)] = extract_fundamental_of_sin(time_tmp,F(:,k));
+% end
 
 % Calculate THD
 [FundamentalCurrent ,VectorNumber] = max(FFT_sig) %Find fundamental in vector (assumed that fundamental equals maximum)
@@ -98,15 +101,15 @@ FFT_sig_withoutFundamental(VectorNumber,:)=0; %Eliminate fundamental in order to
 %wird.
 I_squared_Harmonics = sum(bsxfun(@times, FFT_sig_withoutFundamental, FFT_sig_withoutFundamental)) %[A] Respect all harmonics for FCS-MPC (without the fundamental) 
 % calculate THD
-% THD = (sqrt(I_squared_Harmonics)/FundamentalCurrent)*100 %[%] THD in percent -> sqrt((Sum of all the others)^2) / (Fundamental)
-for k=1:6
-THD_components(k) = (sqrt(I_squared_Harmonics(k))/FundamentalCurrent(k))*100; %[%] THD in percent -> sqrt((Sum of all the others)^2) / (Fundamental)
-end
-THD_components
-mean(THD_components)
-THD(i) = mean(THD_components)
-end
-THD
+THD = (sqrt(I_squared_Harmonics)/FundamentalCurrent)*100 %[%] THD in percent -> sqrt((Sum of all the others)^2) / (Fundamental)
+% for k=1:6
+% THD_components(k) = (sqrt(I_squared_Harmonics(k))/FundamentalCurrent(k))*100; %[%] THD in percent -> sqrt((Sum of all the others)^2) / (Fundamental)
+% end
+% THD_components
+% mean(THD_components)
+% THD(i) = mean(THD_components)
+% end
+% THD
 %% Plot trade-off curve
 figure
 plot(mean_avg_f_sw_over_trigger_period*0.001,THD,'*');
@@ -142,37 +145,37 @@ axis([2 22 15 50]);
 % annotation('textbox',[.8 .4 .1 .5],'String', {['THD: ' num2str(round(THD,2)) ' %'] },'FitBoxToText', 'on', 'FontSize', 18)
 % 
 % 
-% %% Plot single-sided amplitude spectrum, scaled to fundamental current
-% figure(20)
-% set(gcf,'color','white')
-% h=subplot(1,1,1);
-% %ps=stem(freq([abs(U_spec_dat(:,1))+1]),FFT_sig([abs(U_spec_dat(:,1))+1]));
-% %ps=stem(freq([abs(F(:,1))+1]),FFT_sig([abs(F(:,1))+1]));
-% 
-% [FundamentalCurrent ,VectorNumber] = max(FFT_sig(:,1)) %Find fundamental in vector
-% % ps=stem(freq(1,:),(FFT_sig(:,1)/FundamentalCurrent)*100,'marker','none'); %SW: Scaled to the fundamental (maximum)
-% % ps=bar(freq(1,:)/1000,(FFT_sig(:,1)/FundamentalCurrent)*100, 'BarWidth', barWidth);  
-% ps=bar(freq(1,:),(FFT_sig(:,1)/FundamentalCurrent)*100, 'BarWidth', barWidth);  
-% title('Phase current spectrum, normalized to fundamental current')
-% %Leg2=legend('‘N_p = 2’','‘ideal’','location','NorthWest');
-% %set(Leg2,'FontSize',24);
-% xlab = xlabel('f in Hz'); %xlabel('\nu []')
-% ylab = ylabel('|i_{a1}(f)| in %');
-% ps.LineWidth=lw;
-% 
-% axis([0 5000 0 110]);
-% 
-% % set(gca,'yscal','log')
-% h.FontWeight='bold';
-% h.FontSize=fs;
-% grid on
-% ax=gca;
-% ax.LineWidth=lwa;
-% 
-% set(xlab,'FontSize',24);
-% set(ylab,'FontSize',24);
-% set(gca,'FontSize',24)
-% annotation('textbox',[.8 .4 .1 .5],'String', {['THD: ' num2str(round(THD,2)) ' %'] ['f_{sw}   : xx.x kHz'] ['I_{fun}   : x.x p.u.']},'FitBoxToText', 'on', 'FontSize', 18)
+%% Plot single-sided amplitude spectrum, scaled to fundamental current
+figure(20)
+set(gcf,'color','white')
+h=subplot(1,1,1);
+%ps=stem(freq([abs(U_spec_dat(:,1))+1]),FFT_sig([abs(U_spec_dat(:,1))+1]));
+%ps=stem(freq([abs(F(:,1))+1]),FFT_sig([abs(F(:,1))+1]));
+
+[FundamentalCurrent ,VectorNumber] = max(FFT_sig(:,1)) %Find fundamental in vector
+% ps=stem(freq(1,:),(FFT_sig(:,1)/FundamentalCurrent)*100,'marker','none'); %SW: Scaled to the fundamental (maximum)
+% ps=bar(freq(1,:)/1000,(FFT_sig(:,1)/FundamentalCurrent)*100, 'BarWidth', barWidth);  
+ps=bar(freq(1,:),(FFT_sig(:,1)/FundamentalCurrent)*100, 'BarWidth', barWidth);  
+title('Phase current spectrum, normalized to fundamental current')
+%Leg2=legend('‘N_p = 2’','‘ideal’','location','NorthWest');
+%set(Leg2,'FontSize',24);
+xlab = xlabel('f in Hz'); %xlabel('\nu []')
+ylab = ylabel('|i_{a1}(f)| in %');
+ps.LineWidth=lw;
+
+axis([0 50000 0 5]);
+
+% set(gca,'yscal','log')
+h.FontWeight='bold';
+h.FontSize=fs;
+grid on
+ax=gca;
+ax.LineWidth=lwa;
+
+set(xlab,'FontSize',24);
+set(ylab,'FontSize',24);
+set(gca,'FontSize',24)
+annotation('textbox',[.8 .4 .1 .5],'String', {['THD: ' num2str(round(THD,2)) ' %'] ['f_{sw}   : xx.x kHz'] ['I_{fun}   : x.x p.u.']},'FitBoxToText', 'on', 'FontSize', 18)
 
 %% plot phase currents, no switching penalization, 'Log_2023-09-15_16-38-27.csv'
 time_tmp = time(1,1586:1886) - time(1,1586);

@@ -1,3 +1,8 @@
+%% run this script in sections:
+%1. Set path
+
+
+
 % Get the current configuration
 cfg = Simulink.fileGenControl('getConfig');
 
@@ -15,6 +20,7 @@ Simulink.fileGenControl('setConfig', 'config', cfg)
 
 
 %%
+% 2. copy shared files
 
 % copy utility-functions form shared folder to other folder
 source_folder_path = 'slprj/ert/_sharedutils'

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Resonant_Controller'.
  *
- * Model version                  : 6.3
+ * Model version                  : 6.4
  * Simulink Coder version         : 9.9 (R2023a) 19-Nov-2022
- * C/C++ source code generated on : Thu Aug 31 10:04:34 2023
+ * C/C++ source code generated on : Mon Nov 13 13:36:26 2023
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -22,8 +22,7 @@
 #ifndef RTW_HEADER_Resonant_Controller_h_
 #define RTW_HEADER_Resonant_Controller_h_
 #ifndef Resonant_Controller_COMMON_INCLUDES_
-
-
+#define Resonant_Controller_COMMON_INCLUDES_
 #include "rtwtypes.h"
 #endif                                /* Resonant_Controller_COMMON_INCLUDES_ */
 

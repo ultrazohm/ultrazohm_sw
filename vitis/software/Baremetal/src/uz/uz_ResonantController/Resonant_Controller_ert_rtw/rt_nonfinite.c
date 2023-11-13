@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Resonant_Controller'.
  *
- * Model version                  : 6.3
+ * Model version                  : 6.4
  * Simulink Coder version         : 9.9 (R2023a) 19-Nov-2022
- * C/C++ source code generated on : Thu Aug 31 10:04:34 2023
+ * C/C++ source code generated on : Mon Nov 13 13:36:26 2023
  */
 
 #include "rtGetNaN.h"
@@ -19,14 +19,12 @@
 #include "rt_nonfinite.h"
 #define NumBitsPerChar                 8U
 
-
 real_T rtInf;
 real_T rtMinusInf;
 real_T rtNaN;
 real32_T rtInfF;
 real32_T rtMinusInfF;
 real32_T rtNaNF;
-
 
 /*
  * Initialize the rtInf, rtMinusInf, and rtNaN needed by the

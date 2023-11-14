@@ -217,7 +217,7 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_no_id(void){
     M_ref_Nm = 0.09f;
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.9986f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,-0.0533f, output.d);//Since Lq>Ld, id should be negative
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,-0.0532f, output.d);//Since Lq>Ld, id should be negative
 }
 
 void test_uz_SetPoint_sample_MTPA_IPMSM_operation_Ld_greater_Lq(void){
@@ -231,7 +231,7 @@ void test_uz_SetPoint_sample_MTPA_IPMSM_operation_Ld_greater_Lq(void){
     M_ref_Nm = 0.09f;
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.9986f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03,0.0533f, output.d);//Since Ld>Lq, id should be positive
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,0.0532f, output.d);//Since Ld>Lq, id should be positive
 }
 
 void test_uz_SetPoint_sample_MTPA_SMPMSM_operation_limit_iq_id(void){
@@ -316,18 +316,18 @@ void test_uz_SetPoint_sample_field_weakening_SMPMSM_operation(void){
     config.is_field_weakening_enabled = true;
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = 0.105f;
-    currents.d = 0.0f;
-    currents.q = 0.0f;
+    currents.d = 2.333f;
+    currents.q = -3.405f;
     omega_m_rad_per_sec = 490.0f; 
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.333f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.7349f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -3.405f, output.d);
     //Negative speed
     M_ref_Nm = -0.105f;
     omega_m_rad_per_sec = -490.0f; 
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
     TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.333f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.7349f, output.d);  
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -3.405f, output.d);  
 }
 
 void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_negative(void){
@@ -340,15 +340,24 @@ void test_uz_SetPoint_sample_field_weakening_IPMSM_operation_negative(void){
     uz_SetPoint_t* instance = uz_SetPoint_init(config);
     M_ref_Nm = 0.1f;
     omega_m_rad_per_sec = 500.6f; 
+    //First sample call to calculate omega_cut and enter FW
+    uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    currents.d = -6.3655f;
+    currents.q = 2.0484f;
     uz_3ph_dq_t output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.089f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -4.780f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 2.0484f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -6.368f, output.d);
     //Negative speed
     M_ref_Nm = -0.1f;
     omega_m_rad_per_sec = -500.6f; 
+    currents.d = 0.0f;
+    currents.q = 0.0f;
+    uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
+    currents.d = -6.3655f;
+    currents.q = -2.0484f;
     output = uz_SetPoint_sample(instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, currents);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.089f, output.q);
-    TEST_ASSERT_FLOAT_WITHIN(1e-03, -4.780f, output.d);  
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -2.0484f, output.q);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -6.368f, output.d);  
 }
 
 void test_uz_SetPoint_sample_field_weakening_IPMSM_check_tolerance(void){

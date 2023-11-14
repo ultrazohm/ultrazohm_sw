@@ -26,7 +26,15 @@ doxygen:
 doxygen_clean:
 	 rm -r doxygen_output
 
+# Taken from here since I'm not sure how to ensure the proper environment for ceedling otherwise https://stackoverflow.com/questions/10566532/how-can-bash-execute-a-command-in-a-different-directory-context
+ceedling_tests:
+	(cd ../vitis/software/Baremetal/; ceedling test:all) 
+
+ceedling_clean:
+	(cd ../vitis/software/Baremetal/; ceedling clobber)
+
 docs:
+	make ceedling_tests
 	make doxygen
 	make html SPHINXOPTS="-W --keep-going -n"
 
@@ -36,4 +44,5 @@ docs:
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 livehtml:
+	make docs
 	sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) --open-browser 

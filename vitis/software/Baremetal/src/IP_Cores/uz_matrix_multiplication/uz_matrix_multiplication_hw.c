@@ -52,7 +52,17 @@ void uz_matrix_multiplication_hw_set_trigger_calculation(uint32_t base_address) 
 	uz_axi_write_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_TRIGGER_DATA, true);
 }
 
-bool uz_matrix_multiplication_hw_get_is_done(uint32_t base_address) {
+bool uz_matrix_multiplication_hw_get_is_done_output(uint32_t base_address) {
 	uz_assert_not_zero_uint32(base_address);
-	return (uz_axi_read_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA));
+	return (uz_axi_read_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_O_DATA));
+}
+
+void uz_matrix_multiplication_hw_set_is_done_input(uint32_t base_address) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_axi_write_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA, true);
+}
+
+void uz_matrix_multiplication_hw_reset(uint32_t base_address) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_axi_write_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA, false);
 }

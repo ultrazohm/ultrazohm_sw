@@ -59,8 +59,8 @@ and finally
   \omega_c = \frac{-b + \sqrt{b^2 - 4ac}}{2a}\,.
 
 
-SM-PMSM[[#matlab]_]
--------------------
+SM-PMSM[[#Schroeder]_]
+----------------------
 
 .. math::
 
@@ -79,7 +79,7 @@ with
 
 .. math::
 
-  V_\mathrm{FE,max} &= (V_\mathrm{dc} m_\mathrm{max} - R_s I_1) 0.95\,,\\
+  V_\mathrm{FE,max} &= (V_\mathrm{max} - R_s I_1) 0.95\,,\\
 
 and
 
@@ -126,13 +126,10 @@ This 4th order polynomial will be solved using the :ref:`uz_newton_raphson`, wit
   a_2 &= \frac{\psi_{PM}^2 L_q^2 - (L_d - L_q)^2 \frac{V_{FE,max}^2}{\omega_{el}^2}}{L_q^2 (L_d - L_q)^2}\\
   a_1 &= \frac{-4 M_{ref} L_d L_q \psi_{PM}}{3 L_q^2 p (L_d - L_q)^2}\\
   a_0 &= \frac{4 (M_{ref} L_d)^2}{9 L_q^2 p^2 (L_d - L_q)^2}\\
-
-  I_{d,FW} = \frac{-\psi_{PM}}{L_d} + \frac{1}{L_d} \sqrt{\left(\frac{V_{FE,max}}{\omega_{el}}\right)^2 - (L_q I_{q,FW})^2}\\
+  I_{d,FW} &= \frac{-\psi_{PM}}{L_d} + \frac{1}{L_d} \sqrt{\left(\frac{V_{FE,max}}{\omega_{el}}\right)^2 - (L_q I_{q,FW})^2}\\
 
 
 Sources
 =======
 
-.. [#Wilfling] T. Wilfling, "Regelung eines Synchronaußenläufermotors und Optimierung der Rotorstruktur zur Drehmomentsteigerung", 2021
 .. [#Schroeder] D. Schröder, "Elektrische Antriebe - Regelung von Antriebssystemen", Berlin, Springer 2015
-.. [#matlab] `MTPA Control Reference, Mathworks <https://de.mathworks.com/help/mcb/ref/mtpacontrolreference.html>`_

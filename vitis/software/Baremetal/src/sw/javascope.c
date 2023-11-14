@@ -39,7 +39,7 @@ uint32_t js_status_BareToRTOS=0;
 
 extern float evaluation_run;
 extern float finished;
-
+extern float evalfloat;
 extern float epsilon_k;
 extern float update_lock_float;
 extern float omega_m_rad_per_sec;
@@ -112,7 +112,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_reward_position_error] = &data->dqnp.reward_position_error;
 	js_ch_observable[JSO_epsilon] = &epsilon_k;
 	js_ch_observable[JSO_reward] = &data->dqnp.reward_k;
-	js_ch_observable[JSO_update_lock] = &update_lock_float;
+	js_ch_observable[JSO_evalfloat] = &evalfloat;
 	js_ch_observable[JSO_reward_angle] = &data->dqnp.reward_angle;
 	js_ch_observable[JSO_reward_position] = &data->dqnp.reward_position;
 	js_ch_observable[JSO_number_of_updates] = &data->dqnp.number_of_updates;

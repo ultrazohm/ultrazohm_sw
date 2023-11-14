@@ -67,7 +67,7 @@ enum JS_OberservableData {
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
 	JSO_reward_position_error,
-	JSO_update_lock,
+	JSO_evalfloat,
 	JSO_reward,
 	JSO_epsilon,
 	JSO_omega_unfiltered,

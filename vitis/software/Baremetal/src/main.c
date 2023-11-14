@@ -16,9 +16,9 @@
 // Includes from own files
 #include "main.h"
 
-// defines for nn
-float finished = 5.0f;
-float evaluation_run = 0.0f;
+// all flags and limits with comments
+float evalfloat = 0.0f;
+bool finished = false;
 float penalty_grenze=340.0f;
 bool limit_was_hit=false;
 bool eval = false;
@@ -27,12 +27,12 @@ int evalcounter = 0;
 #include "uz/uz_dqn/uz_dqn.h"
 #include "uz/uz_dqn/uz_environment_bitflip.h"
 #include "uz/uz_environment_pt1/uz_environment_pt1.h"
-
+// defines for nn
 #define EXPERIENCE_BUFFER_LENGTH 150000U
 #define MINIBATCHSIZE 16U
-#define NUMBER_OF_EPOCHS 50U
-#define NUMBER_OF_UPDATES_PER_EPOCH 500U // 100 Hz fuer 5s sind 500 samples und damit 500 updates
-#define NUMBER_OF_EVALS 5U
+#define NUMBER_OF_EPOCHS 100U
+#define NUMBER_OF_UPDATES_PER_EPOCH 1000U // 100 Hz fuer 5s sind 500 samples und damit 500 updates
+#define NUMBER_OF_EVALS 6U
 #define TARGET_UPDATE_FREQUENCY 1U
 // nn
 #define NUMBER_OF_INPUTS 5U
@@ -538,11 +538,24 @@ int main(void)
         case infinite_loop:
             ultrazohm_state_machine_step();
             platform_state_t current_state=ultrazohm_state_machine_get_state();
+        	// evaluation prüfen
+            if(Global_Data.dqnp.number_of_episodes>NUMBER_OF_EPOCHS){
+            if (evalcounter < NUMBER_OF_EVALS)
+            {
+            chain=start_eval;
+            }
+            if(Global_Data.dqnp.number_of_episodes >= (NUMBER_OF_EPOCHS+NUMBER_OF_EVALS)){
+            chain=end_eval;
+            }
+            }
             if(current_state==control_state){
-            if(!eval){
-        	switch (chain) {
+        	switch (chain){
     			case dqn_active:
     				Global_Data.dqnp.old_number_of_updates=Global_Data.dqnp.number_of_updates;
+    				if(eval)
+    				{
+    				Global_Data.av.trigger_logging = 10.0f;
+    				}
                     if ( (!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)) && (current_state==control_state) )
                     {
                         dqn_mutex_float = 0.0f;
@@ -554,15 +567,14 @@ int main(void)
 
     				break;
     			case return_to_zero_position:
-    				if(Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+NUMBER_OF_UPDATES_PER_EPOCH) ){
+    				if((Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+NUMBER_OF_UPDATES_PER_EPOCH)) && (!eval) ){
     				Global_Data.dqnp.cumulative_loss = uz_dqn_update(testdqn2);
     				}
     				break;
     			case wait_at_zero_position:
     				update_lock=true;
     				update_lock_float=1.0f;
-
-    				if(Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+NUMBER_OF_UPDATES_PER_EPOCH) ){
+    				if((Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+NUMBER_OF_UPDATES_PER_EPOCH)) && (!eval) ){
     				Global_Data.dqnp.cumulative_loss = uz_dqn_update(testdqn2);
     				}
     				//}
@@ -574,13 +586,26 @@ int main(void)
                     first_step_in_episode=true;
     				break;
     			case get_to_start_postion:
-    				if(Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+NUMBER_OF_UPDATES_PER_EPOCH) ){
+    				if((Global_Data.dqnp.number_of_updates< (Global_Data.dqnp.old_number_of_updates+NUMBER_OF_UPDATES_PER_EPOCH)) && (!eval) ){
     				Global_Data.dqnp.cumulative_loss = uz_dqn_update(testdqn2);
     				}
     				break;
+       			case start_eval:
+                		eval = true;
+                		Global_Data.av.trigger_logging = 6.0f;
+                    	uz_dqn_set_epsilon(testdqn2,0.0f,0.0f,0.0f);
+                		evalfloat += 1.0f;
+                		evalcounter++;
+                		chain = dqn_active;
+        				break;
+       			case end_eval:
+                		eval = false;
+                		Global_Data.av.trigger_logging = 7.0f;
+                		evalfloat = 0.0f;
+                		finished = true;
+        				break;
     			default:
     				break;
-        	}
             }
             }
             break;

@@ -20,7 +20,7 @@
 #include <stdbool.h>
 #define DQN__CONTROL_FREQUENCY 100U
 #define REWARD_SCALE_ANGLE 0U
-#define REWARD_SCALE_POSITION 1U
+#define REWARD_SCALE_POSITION 5U
 #define REWARD_SCALE_VELOCITY 0U
 // Xilinx library functions
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all GIC interrupts)
@@ -81,7 +81,9 @@ enum dqn_chain
     limit_violation,
     return_to_zero_position,
     wait_at_zero_position,
-    get_to_start_postion
+    get_to_start_postion,
+	start_eval,
+	end_eval
 };
 
 

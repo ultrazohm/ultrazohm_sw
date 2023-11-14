@@ -70,7 +70,7 @@ float disable_control = 380.0f;
 float max_pos = 300.0f;
 float start_pos = 0.0f;
 float end_pos = 0.0f;
-int time_dqn = 5;
+int time_dqn = 10;
 int time_wait_zero = 1;
 // position control
 float position_ref = 0.0f; // mm
@@ -90,15 +90,21 @@ extern uint32_t action_k;
 extern uz_dqn_t *testdqn2;
 extern bool limit_was_hit;
 extern bool eval;
+extern bool finished;
 float angle_Kp = 400.0f;
 float angle_Ki = 0.0f;
 
 extern bool first_step_in_episode;
 extern float penalty_grenze;
 extern float update_lock_float;
+// funktionen
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
 float sum_reward_pendulum(float samplerate, float thetareward, float positionreward, float velocityreward, bool penalty);
 void position_control(float position_set_point, bool angle_control_enabled);
+void uz_dqn_take_action_current();
+void uz_dqn_sample_limit();
+void uz_dqn_sample_and_push();
+
 extern int dividingfactordqn;
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -129,9 +135,13 @@ float start_position=50.0f;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-    // Read Measurement from ADCs and Encoder
+    // Read Measurement from ADCs
     ReadAllADC();
-    // Read out all encoders
+    // change to running state if training is finished
+    if (finished){
+    	ultrazohm_state_machine_set_stop(true);
+    }
+    // Read Measurements from all encoders
     update_speed_and_position_of_encoder_on_D5_1_ip_v25(&Global_Data);
     update_position_of_encoder_on_D5_2_ip_v25(&Global_Data);
     update_angle_of_encoder_on_D5_3_ip_v25(&Global_Data);
@@ -177,7 +187,7 @@ void ISR_Control(void *data)
     }
     old_position = Global_Data.obs.dqn_chart_position;
     // calculate error for dqn observation
-    Global_Data.obs.dqn_chart_error = (Global_Data.obs.dqn_chart_position*1.0e3f)-end_pos;
+    Global_Data.obs.dqn_chart_error = Global_Data.obs.dqn_chart_position-(end_pos/1.0e3f);
     Global_Data.obs.dqn_angle = Global_Data.av.theta_pendulum - M_PI; // wegen funktionierender Referenzspur muss jetzt offset hinzugerechnet werden
     Global_Data.obs.dqn_sin_angle = sin(Global_Data.obs.dqn_angle);
     Global_Data.obs.dqn_cos_angle = cos(Global_Data.obs.dqn_angle);
@@ -217,7 +227,7 @@ void ISR_Control(void *data)
     epsilon_k = uz_dqn_get_epsilon(testdqn2);
     Global_Data.dqnp.reward_angle = REWARD_SCALE_ANGLE * (fabsf(Global_Data.obs.dqn_angle) / UZ_PIf -1.0f)*-1.0f;
 //    reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
+    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((1.0e3f*Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
     Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_chart_position_derv * Global_Data.obs.dqn_chart_position_derv);
 	Global_Data.dqnp.reward_k = sum_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
 //    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
@@ -231,13 +241,13 @@ void ISR_Control(void *data)
     {
         if (fabsf(position_abs) > limit_error)
         {
-            // uz_assert(0);
             ultrazohm_state_machine_set_stop(true);
         }
         // switch case for switching between dqn, pos_control and other states
         dqn_isr();
-      //position_control(position_ref, angle_control);
-
+//        if (finished){
+//        position_control(position_ref, angle_control);
+//        }
         if (fabsf(position_abs) < limit_error)
         {
             //            if (fabsf(position_abs) > disable_control){
@@ -434,105 +444,19 @@ void dqn_isr(void)
     switch (chain)
     {
     case dqn_active:
-//    	if(eval){
-//    	Global_Data.av.trigger_logging = 10.0f;
-//        if ((!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)))
-//        {
-//            input_nn[0] = Global_Data.obs.dqn_sin_angle;
-//            input_nn[1] = Global_Data.obs.dqn_cos_angle;
-//            input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
-//            input_nn[3] = Global_Data.obs.dqn_chart_error;
-//            input_nn[4] = Global_Data.obs.dqn_angle_derv;
-//            Global_Data.rasv.dq_reference_current.q = 0.0f;
-//            switch (action_k)
-//            {
-//            case 0:
-//                Global_Data.rasv.dq_reference_current.q = action_current;
-//                break;
-//            case 1:
-//                Global_Data.rasv.dq_reference_current.q = action_current / 2.0f;
-//                break;
-//            case 2:
-//                Global_Data.rasv.dq_reference_current.q = 0.0f;
-//                break;
-//            case 3:
-//                Global_Data.rasv.dq_reference_current.q = -action_current / 2.0f;
-//                break;
-//            case 4:
-//                Global_Data.rasv.dq_reference_current.q = -action_current;
-//                break;
-//            default:
-//                uz_assert(0);
-//            }
-//    	}
-//        counter_for_reset++;
-//    	}
-//    	else{
+    	if(eval){
+    	Global_Data.av.trigger_logging = 10.0f;
+    	}
+    	else{
         Global_Data.av.trigger_logging = 1.0f;
-        if ((!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)))
-        {
-            input_nn[0] = Global_Data.obs.dqn_sin_angle;
-            input_nn[1] = Global_Data.obs.dqn_cos_angle;
-            input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
-            input_nn[3] = Global_Data.obs.dqn_chart_error;
-            input_nn[4] = Global_Data.obs.dqn_angle_derv;
-            if (first_step_in_episode)
-            {
-            	first_step_in_episode = false;
-            }
-            else
-            {
-                // Sample environment at k+1
-                uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
-                uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
-                Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
-                uz_dqn_push_to_buffer(testdqn2);
-            }
-        }
+    	}
+    	// uz dqn sample set reward and push to buffer
+    	uz_dqn_sample_and_push();
         counter_for_reset++;
-        // get output from nn
-        if (fabsf(position_abs) > disable_control)
-        {
-            // Sample environment at k+1
-            input_nn[0] = Global_Data.obs.dqn_sin_angle;
-            input_nn[1] = Global_Data.obs.dqn_cos_angle;
-            input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
-            input_nn[3] = Global_Data.obs.dqn_chart_position;
-            input_nn[4] = Global_Data.obs.dqn_angle_derv;
-            uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
-            // Berechne reward für limitverletzung
-        	Global_Data.dqnp.reward_k = sum_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, true);
-            Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
-            uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
-            uz_dqn_push_to_buffer(testdqn2);
-            chain = limit_violation;
-        }
-        else
-        {
-            //	position_control(position_ref,false);
-        }
-        Global_Data.rasv.dq_reference_current.q = 0.0f;
-        switch (action_k)
-        {
-        case 0:
-            Global_Data.rasv.dq_reference_current.q = action_current;
-            break;
-        case 1:
-            Global_Data.rasv.dq_reference_current.q = action_current / 2.0f;
-            break;
-        case 2:
-            Global_Data.rasv.dq_reference_current.q = 0.0f;
-            break;
-        case 3:
-            Global_Data.rasv.dq_reference_current.q = -action_current / 2.0f;
-            break;
-        case 4:
-            Global_Data.rasv.dq_reference_current.q = -action_current;
-            break;
-        default:
-            uz_assert(0);
-        }
-//    	} gehört zum else von if eval else...
+        // sample dqn, wenn limit erreicht
+        uz_dqn_sample_limit();
+        // determine action current
+        uz_dqn_take_action_current();
         if (counter_for_reset > (time_dqn * (int)UZ_PWM_FREQUENCY))
         {
             chain = limit_violation;
@@ -562,17 +486,13 @@ void dqn_isr(void)
         if ( (angle_smoothed<0.005f) && (!update_lock) ) // Hier aendern und warten bis pos und winkel 0
         {
             Reset_obs_and_measurements();
+            if(eval){
+            chain = start_eval;
+            }
+            else{
             chain = dqn_active;
+            }
         }
-//            if (counter_wait_pos < (time_wait_zero * (int)UZ_PWM_FREQUENCY)) // Hier Ã¤ndern und warten bis pos und winkel 0
-//            {
-//                counter_wait_pos++;
-//            }
-//            else
-//            {
-//                Reset_obs_and_measurements();
-//                chain = dqn_active;
-//            }
         break;
     case get_to_start_postion:
         Global_Data.av.trigger_logging = 5.0f;
@@ -591,9 +511,9 @@ void dqn_isr(void)
         {
             // if(!update_lock){
             chain = wait_at_zero_position;
+            Global_Data.dqnp.number_of_episodes+=1.0f;
             update_lock = true;
             update_lock_float=1.0f;
-            Global_Data.dqnp.number_of_episodes+=1.0f;
             //}
         }
         break;
@@ -604,6 +524,76 @@ void dqn_isr(void)
 
 float friction_offset = 0.0f;
 
+// subfunktionen dqn
+void uz_dqn_sample_and_push(){
+if ((!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)))
+{
+    input_nn[0] = Global_Data.obs.dqn_sin_angle;
+    input_nn[1] = Global_Data.obs.dqn_cos_angle;
+    input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
+    input_nn[3] = Global_Data.obs.dqn_chart_error;
+    input_nn[4] = Global_Data.obs.dqn_angle_derv;
+    if (first_step_in_episode || eval)
+    {
+    	first_step_in_episode = false;
+    }
+    else
+    {
+        // Sample environment at k+1
+        uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
+        uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
+        Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
+        uz_dqn_push_to_buffer(testdqn2);
+    }
+}
+}
+
+void uz_dqn_sample_limit(){
+if (fabsf(position_abs) > disable_control)
+{
+    // Sample environment at k+1
+    input_nn[0] = Global_Data.obs.dqn_sin_angle;
+    input_nn[1] = Global_Data.obs.dqn_cos_angle;
+    input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
+    input_nn[3] = Global_Data.obs.dqn_chart_position;
+    input_nn[4] = Global_Data.obs.dqn_angle_derv;
+    uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
+    // Berechne reward für limitverletzung
+	Global_Data.dqnp.reward_k = sum_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, true);
+    Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
+    uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
+    uz_dqn_push_to_buffer(testdqn2);
+    chain = limit_violation;
+}
+else
+{
+    //	position_control(position_ref,false);
+}
+}
+void uz_dqn_take_action_current()
+{
+	  Global_Data.rasv.dq_reference_current.q = 0.0f;
+	        switch (action_k)
+	        {
+	        case 0:
+	            Global_Data.rasv.dq_reference_current.q = action_current;
+	            break;
+	        case 1:
+	            Global_Data.rasv.dq_reference_current.q = action_current / 2.0f;
+	            break;
+	        case 2:
+	            Global_Data.rasv.dq_reference_current.q = 0.0f;
+	            break;
+	        case 3:
+	            Global_Data.rasv.dq_reference_current.q = -action_current / 2.0f;
+	            break;
+	        case 4:
+	            Global_Data.rasv.dq_reference_current.q = -action_current;
+	            break;
+	        default:
+	            uz_assert(0);
+	        }
+}
 void position_control(float position_set_point, bool angle_control_enabled)
 {
     position_set_point = uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_instance_4, position_set_point);

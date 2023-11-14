@@ -66,7 +66,11 @@ float position_Ki = 0.0f;
 // limits and time setting
 float limit_error = 430.0f;
 float disable_control = 380.0f;
-int time_dqn = 10;
+// randomize start position
+float max_pos = 300.0f;
+float start_pos = 0.0f;
+float end_pos = 0.0f;
+int time_dqn = 5;
 int time_wait_zero = 1;
 // position control
 float position_ref = 0.0f; // mm
@@ -85,6 +89,7 @@ float position_derv = 0.0f;
 extern uint32_t action_k;
 extern uz_dqn_t *testdqn2;
 extern bool limit_was_hit;
+extern bool eval;
 float angle_Kp = 400.0f;
 float angle_Ki = 0.0f;
 
@@ -92,6 +97,7 @@ extern bool first_step_in_episode;
 extern float penalty_grenze;
 extern float update_lock_float;
 float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
+float sum_reward_pendulum(float samplerate, float thetareward, float positionreward, float velocityreward, bool penalty);
 void position_control(float position_set_point, bool angle_control_enabled);
 extern int dividingfactordqn;
 //==============================================================================================================================================================
@@ -120,10 +126,6 @@ float position_smoothed=0.0f;
 float angle_smoothed=0.0f;
 float start_position=50.0f;
 
-// randomize start position
-float max_pos = 300.0f;
-float start_pos = 0.0f;
-float end_pos = 0.0f;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -147,8 +149,6 @@ void ISR_Control(void *data)
         i_counter--;
     }
     position_abs = (float)(i_counter + (globalposition / (UZ_D5_POSINCREMENTAL_ENCODER_RESOLUTION * 4.0f))) * 5.0f;
-
-
 
     pos_strich = (int)Global_Data.av.position_pendulum;
     // calculate and transform observations for dqn
@@ -201,8 +201,8 @@ void ISR_Control(void *data)
     }
     else
     {
-        // disable inverter adapter hardware
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    // disable inverter adapter hardware
+    uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     }
     // calculate data pmsm for foc
     Global_Data.av.theta_mech = Global_Data.av.theta_elec;
@@ -215,10 +215,12 @@ void ISR_Control(void *data)
     omega_el_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_IIR_Filter * 3.0f * (2.0f * M_PI) / 60.0f; // calculate w_el with pole pairs 3
 
     epsilon_k = uz_dqn_get_epsilon(testdqn2);
-    Global_Data.dqnp.reward_angle = (fabsf(Global_Data.obs.dqn_angle) / (float)M_PI -1.0f)*-1.0f;
+    Global_Data.dqnp.reward_angle = REWARD_SCALE_ANGLE * (fabsf(Global_Data.obs.dqn_angle) / UZ_PIf -1.0f)*-1.0f;
 //    reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    Global_Data.dqnp.reward_position_error = fabsf(Global_Data.obs.dqn_chart_error)/(2.0f*max_pos);
-    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
+    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
+    Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_chart_position_derv * Global_Data.obs.dqn_chart_position_derv);
+	Global_Data.dqnp.reward_k = sum_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
+//    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
     Global_Data.dqnp.number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
 
     position_smoothed=uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_position, position_abs);
@@ -413,15 +415,59 @@ float calculate_reward_pendulum(float samplerate, float theta, float position, f
     {
         z = -1000.0f;
     }
-    float r = -2.0f * samplerate * (100.0f * theta + 5*position + (float)pow(velocity, 2.0f)) + z;
+    float r = -2.0f * samplerate * (REWARD_SCALE_ANGLE * theta + REWARD_SCALE_POSITION*position + REWARD_SCALE_VELOCITY * (velocity*velocity)) + z;
     return r;
 }
 
+float sum_reward_pendulum(float samplerate, float thetareward, float positionreward, float velocityreward, bool penalty)
+{
+    float z = 0.0f;
+    if (penalty == true)
+    {
+        z = -1000.0f;
+    }
+    float r = -2.0f * samplerate * (thetareward + positionreward + velocityreward) + z;
+    return r;
+}
 void dqn_isr(void)
 {
     switch (chain)
     {
     case dqn_active:
+//    	if(eval){
+//    	Global_Data.av.trigger_logging = 10.0f;
+//        if ((!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)))
+//        {
+//            input_nn[0] = Global_Data.obs.dqn_sin_angle;
+//            input_nn[1] = Global_Data.obs.dqn_cos_angle;
+//            input_nn[2] = Global_Data.obs.dqn_chart_position_derv;
+//            input_nn[3] = Global_Data.obs.dqn_chart_error;
+//            input_nn[4] = Global_Data.obs.dqn_angle_derv;
+//            Global_Data.rasv.dq_reference_current.q = 0.0f;
+//            switch (action_k)
+//            {
+//            case 0:
+//                Global_Data.rasv.dq_reference_current.q = action_current;
+//                break;
+//            case 1:
+//                Global_Data.rasv.dq_reference_current.q = action_current / 2.0f;
+//                break;
+//            case 2:
+//                Global_Data.rasv.dq_reference_current.q = 0.0f;
+//                break;
+//            case 3:
+//                Global_Data.rasv.dq_reference_current.q = -action_current / 2.0f;
+//                break;
+//            case 4:
+//                Global_Data.rasv.dq_reference_current.q = -action_current;
+//                break;
+//            default:
+//                uz_assert(0);
+//            }
+//    	}
+//        counter_for_reset++;
+//    	}
+//    	else{
         Global_Data.av.trigger_logging = 1.0f;
         if ((!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)))
         {
@@ -454,8 +500,8 @@ void dqn_isr(void)
             input_nn[3] = Global_Data.obs.dqn_chart_position;
             input_nn[4] = Global_Data.obs.dqn_angle_derv;
             uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
-            // /DQN__CONTROL_FREQUENCY
-            Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f, (1.0f - Global_Data.obs.dqn_cos_angle), Global_Data.obs.dqn_chart_position, Global_Data.obs.dqn_chart_position_derv, true);
+            // Berechne reward für limitverletzung
+        	Global_Data.dqnp.reward_k = sum_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, true);
             Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
             uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
             uz_dqn_push_to_buffer(testdqn2);
@@ -486,6 +532,7 @@ void dqn_isr(void)
         default:
             uz_assert(0);
         }
+//    	} gehört zum else von if eval else...
         if (counter_for_reset > (time_dqn * (int)UZ_PWM_FREQUENCY))
         {
             chain = limit_violation;
@@ -543,10 +590,10 @@ void dqn_isr(void)
         if ( (fabsf(Global_Data.obs.dqn_chart_position_derv) <0.02f))
         {
             // if(!update_lock){
+            chain = wait_at_zero_position;
             update_lock = true;
             update_lock_float=1.0f;
             Global_Data.dqnp.number_of_episodes+=1.0f;
-            chain = wait_at_zero_position;
             //}
         }
         break;

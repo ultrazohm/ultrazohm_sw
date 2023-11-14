@@ -24,7 +24,7 @@ enum JS_OberservableData {
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_dqn_mutex,
-	JSO_V_DC,
+	JSO_reward_velocity,
 	JSO_theta_mech,
 	JSO_d_ref,
 	JSO_q_ref,

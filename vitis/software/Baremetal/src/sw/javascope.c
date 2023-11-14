@@ -107,7 +107,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dqn_cos_angle]			= &data->obs.dqn_cos_angle;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_dqn_mutex]   	= &dqn_mutex_float;
-	js_ch_observable[JSO_V_DC]   	= &data->mv.V_dc_volts;
+	js_ch_observable[JSO_reward_velocity]   	= &data->dqnp.reward_velocity;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	js_ch_observable[JSO_reward_position_error] = &data->dqnp.reward_position_error;
 	js_ch_observable[JSO_epsilon] = &epsilon_k;

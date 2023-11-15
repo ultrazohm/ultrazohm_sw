@@ -1,10 +1,17 @@
 % load log
 close all
 clear
-filename = 'Log_2023-11-14_16-24-53.mat';
+%% extract all episodes
+filename = 'Log_2023-11-15_11-35-48.mat';
 load(filename)
-Eval_DQN_train
-filename = 'Log_2023-11-14_16-24-53.mat';
-Eval_DQN_sample
-filename = 'Log_2023-11-14_16-24-53.mat';
-Eval_DQN_eval_step
+TF =ischange (log.CH17);
+I = find(TF == 1);
+
+log_new= log(I,:)
+% filename = 'Log_2023-11-15_11-35-48.mat';
+% load(filename)
+% Eval_DQN_train
+% filename = 'Log_2023-11-15_11-35-48.mat';
+% Eval_DQN_sample
+% filename = 'Log_2023-11-15_11-35-48.mat';
+% Eval_DQN_eval_step

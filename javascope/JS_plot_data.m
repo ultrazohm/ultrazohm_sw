@@ -5,19 +5,39 @@ format compact
 
 %% settings
 delete_empty_log_files = 0;
-save_all_logged_data = 1; 
+save_all_logged_data = 0; 
 plot_all_channels = 0;
 rename_channels_manually = 0;
 import_data_to_simulink_datainspector = 1;
 overwrite_data_in_simulink_datainspector = 1;
 
 %% import latest csv
-Logfile_list = dir('Log_*.csv');cific file
-% file_name = 'Log_2022-02-16_10-27-23.csv';
+Logfile_list = dir('Log_*.csv');
+%chose latest logfile which is not empty
+Logfile_list_size = Logfile_list.bytes;
+for logfile_list_index = size(Logfile_list,1):-1:1
+    if (Logfile_list(logfile_list_index).bytes>360)
+        break;
+    elseif(delete_empty_log_files == 1)
+        % delete the most recent empty logfiles
+        delete_file = [Logfile_list(logfile_list_index).folder,'\',Logfile_list(logfile_list_index).name];
+        delete(delete_file)
+        disp(['Deleted empty file: ', Logfile_list(logfile_list_index).name])
+    end
+end
+file_name = Logfile_list(logfile_list_index).name
+
+% paste file name here if you want to open a specific file
+% file_name = 'Log_2023-08-03_10-33-58.csv';
 
 % specify import options and read csv 
-opts = detectImportOptions(fi
-og = readtable(file_name, opts);
+opts = detectImportOptions(file_name);
+opts.VariableNamesLine = 4;
+opts.VariableDescriptionsLine = 5;
+opts = setvartype(opts, 'double');
+
+log = readtable(file_name, opts);
+
 
 %% Clean up imported data
 % delete rows with NaNs 
@@ -116,6 +136,7 @@ file_name_log = file_name(1:end-4);
 if (save_all_logged_data ~= 0)
     save(file_name_log,'log','variable_names','channel_names','-v7.3')
 end
+
 
 %% Import Data into Simulink Data Inspector
 if(import_data_to_simulink_datainspector ~= 0)

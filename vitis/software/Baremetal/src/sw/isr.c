@@ -475,6 +475,8 @@ void dqn_isr(void)
         position_control(position_ref, false);
         if ( (fabsf(Global_Data.obs.dqn_chart_position_derv) <0.02f))
         {
+    		start_pos = uz_dqn_determine_position(testdqn2, max_pos);
+    		end_pos = uz_dqn_determine_position(testdqn2, max_pos);
             chain = get_to_start_postion;
         }
         break;
@@ -501,8 +503,6 @@ void dqn_isr(void)
         Global_Data.dqnp.episode_reward = 0.0f;
         counter_for_reset = 0;
         counter_wait_pos = 0;
-		start_pos = uz_dqn_determine_position(testdqn2, max_pos);
-		end_pos = uz_dqn_determine_position(testdqn2, max_pos);
         //start_position = start_pos;
         position_ref = start_pos;
         pos_delta = position_ref - position_abs;

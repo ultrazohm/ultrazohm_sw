@@ -7,7 +7,7 @@
 #include "test_assert_with_exception.h"
 #include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
 #include "uz_EnDat_hwAddresses.h"
-#define TEST_BASE_ADDRESS 0x00222111F // random hex value that represents a fictional base address
+#define TEST_BASE_ADDRESS 0x00000000F // random hex value that represents a fictional base address
 
 void setUp(void)
 {
@@ -17,7 +17,7 @@ void tearDown(void)
 {
 }
 
-void test_uz_EnDat_hw_write_to_CONTROLWORD(void)
+void test_uz_EnDat_hw_write_to_A(void)
 {
     TEST_IGNORE_MESSAGE("Need to Implement uz_EnDat_hw");
 }

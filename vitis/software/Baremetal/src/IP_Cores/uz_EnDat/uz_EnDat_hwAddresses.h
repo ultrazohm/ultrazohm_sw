@@ -1,17 +1,25 @@
 #pragma once
 
-#define  IPCore_Reset_uz_EnDat       0x0  //write 0x1 to bit 0 to reset IP core
-#define  IPCore_Enable_uz_EnDat      0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_EnDat   0x8  //contains unique IP timestamp (yymmddHHMM): 2310061900
-#define  divider_Data_uz_EnDat       0x100  //data register for Inport divider
-#define  OD1_Data_uz_EnDat           0x104  //data register for Outport OD1
-#define  controlword_Data_uz_EnDat   0x108  //data register for Inport controlword
-#define  CRCDEBUG_Data_uz_EnDat      0x10C  //data register for Outport CRCDEBUG
-#define  POS_Data_uz_EnDat           0x110  //data register for Outport POS. Data width is wider than the register width, so data is split into 2 32-bit sections.. Register is split across a total of 2 addresses, last address is 0x114.
-#define  POS_Strobe_uz_EnDat         0x118  //strobe register for port POS
-#define  OD2_Data_uz_EnDat           0x11C  //data register for Outport OD2
-#define  rev_min_Data_uz_EnDat         0x120  //data register for Outport 1//min. Data width is wider than the register width, so data is split into 2 32-bit sections.. Register is split across a total of 2 addresses, last address is 0x124.
-#define  rev_min_Strobe_uz_EnDat       0x128  //strobe register for port 1_min
-#define  statusword_Data_uz_EnDat    0x12C  //data register for Outport statusword
-#define  rad_s_Data_uz_EnDat         0x130  //data register for Outport rad//s. Data width is wider than the register width, so data is split into 2 32-bit sections.. Register is split across a total of 2 addresses, last address is 0x134.
-#define  rad_s_Strobe_uz_EnDat       0x138  //strobe register for port rad_s
+#ifndef UZ_AXI_TESTIP_H_
+#define UZ_AXI_TESTIP_H_
+
+#define  IPCore_Reset_uz_axi_testIP       0x0U  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_uz_axi_testIP      0x4U  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_uz_axi_testIP   0x8U  //contains unique IP timestamp (yymmddHHMM): 2104181321
+#define  A_float_Data_uz_axi_testIP       0x100U  //data register for Inport A_float, vector with 4 elements, address ends at 0x10C
+#define  A_float_Strobe_uz_axi_testIP     0x110U  //strobe register for port A_float
+#define  C_int32_Data_uz_axi_testIP       0x114U  //data register for Outport C_int32
+#define  C_uint32_Data_uz_axi_testIP      0x118U  //data register for Outport C_uint32
+#define  B_float_Data_uz_axi_testIP       0x120U  //data register for Inport B_float, vector with 4 elements, address ends at 0x12C
+#define  B_float_Strobe_uz_axi_testIP     0x130U  //strobe register for port B_float
+#define  A_uint32_Data_uz_axi_testIP      0x140U  //data register for Inport A_uint32
+#define  B_uint32_Data_uz_axi_testIP      0x160U  //data register for Inport B_uint32
+#define  A_int32_Data_uz_axi_testIP       0x180U  //data register for Inport A_int32
+#define  B_int32_Data_uz_axi_testIP       0x1A0U  //data register for Inport B_int32
+#define  A_fx_1_16_5_Data_uz_axi_testIP   0x1C0U  //data register for Inport A_fx_1_16_5
+#define  B_fx_1_16_5_Data_uz_axi_testIP   0x1E0U  //data register for Inport B_fx_1_16_5
+#define  C_float_Data_uz_axi_testIP       0x200U  //data register for Outport C_float, vector with 4 elements, address ends at 0x20C
+#define  C_float_Strobe_uz_axi_testIP     0x210U  //strobe register for port C_float
+#define  C_fx_1_16_5_Data_uz_axi_testIP   0x260U  //data register for Outport C_fx_1_16_5
+
+#endif /* UZ_AXI_TESTIP_H_ */

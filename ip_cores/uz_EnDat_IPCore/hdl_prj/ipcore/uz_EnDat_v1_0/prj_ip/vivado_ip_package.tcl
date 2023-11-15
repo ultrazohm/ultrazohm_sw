@@ -61,8 +61,8 @@ add_files -norecurse {../hdl/uz_EnDat_src_SetZero64_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Increment_Stored_Integer_block1.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Positional_Counter_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_CLKCNTERBOOTUP.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_WORDTOBOOL_block1.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_ManualDeserializere_block.vhd}
-add_files -norecurse {../hdl/uz_EnDat_src_ManualDeserializere1.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Subsystem.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Increment_Stored_Integer_block2.vhd}
@@ -88,6 +88,7 @@ add_files -norecurse {../hdl/uz_EnDat_src_DualPortRAM_generic.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_16BIT_SPLITTER.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Zero_block5.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Storage16_block.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_WORDTOBOOL_block2.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_SetZero32_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_CLKCNTER_RAMPUP.vhd}
@@ -125,7 +126,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2113239420 [ipx::current_core]
+set_property core_revision 2113269651 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_EnDat_src_UZ_ENDAT_pac.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -364,14 +365,14 @@ ipx::add_file {hdl/uz_EnDat_src_CLKCNTERBOOTUP.vhd} [ipx::get_file_groups xilinx
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_CLKCNTERBOOTUP.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_CLKCNTERBOOTUP.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_CLKCNTERBOOTUP.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_WORDTOBOOL_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_WORDTOBOOL_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_WORDTOBOOL_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_WORDTOBOOL_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_ManualDeserializere_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_ManualDeserializere_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_ManualDeserializere_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_ManualDeserializere_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_ManualDeserializere1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_ManualDeserializere1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_ManualDeserializere1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_ManualDeserializere1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -472,6 +473,10 @@ ipx::add_file {hdl/uz_EnDat_src_Storage16_block.vhd} [ipx::get_file_groups xilin
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Storage16_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Storage16_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Storage16_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_WORDTOBOOL_block2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_WORDTOBOOL_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_WORDTOBOOL_block2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_WORDTOBOOL_block2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -628,8 +633,8 @@ ipx::add_file {doc/free_running.jpg} [ipx::get_file_groups xilinx_productguide -
 set_property type {{image}} [ipx::get_files {doc/free_running.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 ipx::add_file {doc/vector_strobe.jpg} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
 set_property type {{image}} [ipx::get_files {doc/vector_strobe.jpg} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
-ipx::add_file {doc/UZ_EnDat_ip_core_report.html} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
-set_property type {{html}} [ipx::get_files {doc/UZ_EnDat_ip_core_report.html} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
+ipx::add_file {doc/UZ_EnDat_be4_segregation_ip_core_report.html} [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]
+set_property type {{html}} [ipx::get_files {doc/UZ_EnDat_be4_segregation_ip_core_report.html} -of_objects [ipx::get_file_groups xilinx_productguide -of_objects [ipx::current_core]]]
 
 # Add C files
 ipx::add_file_group -type {misc} {} [ipx::current_core]

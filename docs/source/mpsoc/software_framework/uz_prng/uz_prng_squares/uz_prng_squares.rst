@@ -19,35 +19,27 @@ Squares RNG
    import matplotlib.pyplot as plt
    import pandas as pd
 
-   columns=['index','number'];
-   df=pd.read_csv('uz_prng_squares_uint32.csv', header=None, names=columns)
-   df_float=pd.read_csv('uz_prng_squares_float.csv', header=None, names=columns)
-
-   plt.figure()
-   plt.subplot(3, 1, 1)
-   plt.title("Random numbers as uint32 and float")
-   plt.subplot(311)
-   plt.plot(df.index,df.number)
-
-   plt.subplot(3, 1, 2)
-   plt.plot(df.index,df.number/(2**32-1))
-
-   plt.subplot(3, 1, 3)
-   plt.plot(df_float.index,df_float.number)
-   
-
-.. plot::
-
-   import matplotlib.pyplot as plt
-   import pandas as pd
-
-   columns=['index','number'];
+   columns=['index','number']
    df=pd.read_csv('uz_prng_squares_uint32.csv', header=None, names=columns)
    mean=df.loc[:,'number'].mean()
    std=df.loc[:,'number'].std()
    var=df.loc[:,'number'].var()
-   
-   plt.hist(df.number, bins=50, linewidth=0.5, edgecolor="white",density=True)
-   plt.title("Histogram")
-   plt.text(60, .025, r'$\mu=100,\ \sigma=15$')
 
+   fig, axs = plt.subplots(1, 2, figsize=(5, 2.7), layout='constrained')
+   axs[0].set_title("Random uint32 numbers from uz_prng_squares")
+   axs[0].plot(df.index,df.number)
+
+   axs[1].hist(df.number, bins=50, linewidth=0.5, edgecolor="white",density=True)
+   title_string=str(mean)
+   axs[1].set_title("Histogram\n of Squares with mean:" + title_string )
+
+
+
+.. tikz:: Rastring function with n=1
+
+    \pgfplotsset{
+        table/search path={source/mpsoc/software_framework/uz_prng/uz_prng_squares/},
+    }
+    \begin{axis}[]
+          \addplot[thick,color=myblue] table[x expr=\thisrow{time}*1000,y=id] {uz_prng_squares_float.csv};
+    \end{axis}

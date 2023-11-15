@@ -2,6 +2,10 @@
 Pseudorandom number generator (PRNG)
 ====================================
 
+- PRNG create random 32-bit unsigned integer in a uniform distribution
+
+
+
 - https://en.wikipedia.org/wiki/Pseudorandom_number_generator
 - https://en.wikipedia.org/wiki/List_of_random_number_generators#cite_note-38
 - Only non-cryptographically secure generators are of interests here
@@ -60,3 +64,12 @@ Pseudorandom number generator (PRNG)
     - "Dieharder"
     - http://simul.iro.umontreal.ca/testu01/install.html
     
+
+Implemented generators
+----------------------
+
+..	toctree::
+    :maxdepth: 1
+    :glob:
+  
+    uz_prng_squares/uz_prng_squares

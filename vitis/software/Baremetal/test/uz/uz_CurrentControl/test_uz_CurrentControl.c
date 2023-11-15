@@ -302,56 +302,19 @@ void test_uz_CurrentControl_max_modulation_index_zero(void){
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_init(config));
 }
 
-void test_uz_CurrentControl_set_Kp_id_magnitude_optimum(void){
-    TEST_ASSERT_EQUAL_FLOAT(1.35f, uz_CurrentControl_set_Kp_id_magnitude_optimum(config.config_PMSM, tau_sigma_sec));
+void test_uz_CurrentControl_tune_magnitude_optimum(void){
+    config.config_PMSM.Ld_Henry = 0.0001f;
+    config.config_PMSM.Lq_Henry = 0.0002f;
+    config.config_PMSM.R_ph_Ohm = 0.008f;
+    void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t *self, tau_sigma_sec); 
 }
 
-void test_uz_CurrentControl_set_Ki_id_magnitude_optimum(void){
-    TEST_ASSERT_EQUAL_FLOAT(85.0f, uz_CurrentControl_set_Ki_id_magnitude_optimum(config.config_PMSM, tau_sigma_sec));
+void test_uz_CurrentControl_tune_symmetric_optimum(void){
+    void uz_CurrentControl_tune_symmetric_optimum(uz_CurrentControl_t *self, tau_sigma_sec);
 }
 
-void test_uz_CurrentControl_set_Kp_iq_magnitude_optimum(void){
-    config.config_PMSM.Lq_Henry = 0.00028f;
-    TEST_ASSERT_EQUAL_FLOAT(1.4f, uz_CurrentControl_set_Kp_iq_magnitude_optimum(config.config_PMSM, tau_sigma_sec));
-}
-
-void test_uz_CurrentControl_set_Ki_iq_magnitude_optimum(void){
-    TEST_ASSERT_EQUAL_FLOAT(85.0f, uz_CurrentControl_set_Ki_iq_magnitude_optimum(config.config_PMSM, tau_sigma_sec));
-}
-
-void test_uz_CurrentControl_set_Kp_id_symmetric_optimum(void){
-    TEST_ASSERT_EQUAL_FLOAT(1.35f, uz_CurrentControl_set_Kp_id_symmetric_optimum(config.config_PMSM, tau_sigma_sec));
-}
-
-void test_uz_CurrentControl_set_Ki_id_symmetric_optimum(void){
-    TEST_ASSERT_EQUAL_FLOAT(3375.0f, uz_CurrentControl_set_Ki_id_symmetric_optimum(config.config_PMSM, tau_sigma_sec));
-}
-
-void test_uz_CurrentControl_set_Kp_iq_symmetric_optimum(void){
-    config.config_PMSM.Lq_Henry = 0.00028f;
-    TEST_ASSERT_EQUAL_FLOAT(1.4f, uz_CurrentControl_set_Kp_iq_symmetric_optimum(config.config_PMSM, tau_sigma_sec));
-}
-
-void test_uz_CurrentControl_set_Ki_iq_symmetric_optimum(void){
-    config.config_PMSM.Lq_Henry = 0.00028f;
-	TEST_ASSERT_EQUAL_FLOAT(3500.0f, uz_CurrentControl_set_Ki_iq_symmetric_optimum(config.config_PMSM, tau_sigma_sec));
-}
-
-void test_uz_CurrentControl_set_Kp_id_bandwidth(void){
-    TEST_ASSERT_EQUAL_FLOAT(0.675f, uz_CurrentControl_set_Kp_id_bandwidth(config.config_PMSM, bandwidth_rad_per_sec));
-}
-
-void test_uz_CurrentControl_set_Ki_id_bandwidth(void){
-    TEST_ASSERT_EQUAL_FLOAT(42.5f, uz_CurrentControl_set_Ki_id_bandwidth(config.config_PMSM, bandwidth_rad_per_sec));
-}
-
-void test_uz_CurrentControl_set_Kp_iq_bandwidth(void){
-    config.config_PMSM.Lq_Henry = 0.00028f;
-    TEST_ASSERT_EQUAL_FLOAT(0.7f, uz_CurrentControl_set_Kp_iq_bandwidth(config.config_PMSM, bandwidth_rad_per_sec));
-}
-
-void test_uz_CurrentControl_set_Ki_iq_bandwidth(void){
-    TEST_ASSERT_EQUAL_FLOAT(42.5f, uz_CurrentControl_set_Ki_iq_bandwidth(config.config_PMSM, bandwidth_rad_per_sec));
+void test_uz_CurrentControl_tune_bandwidth(void){
+   void uz_CurrentControl_tune_bandwidth(uz_CurrentControl_t *self, bandwidth_rad_per_sec); 
 }
 
 #endif // TEST

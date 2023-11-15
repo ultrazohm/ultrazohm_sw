@@ -1,0 +1,37 @@
+Count - 9
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV1/Triggered
+Subsystem
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV2/Triggered
+Subsystem
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV3/Triggered
+Subsystem
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV4/Triggered
+Subsystem
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV5/Triggered
+Subsystem
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV6/Triggered
+Subsystem
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV7/Triggered
+Subsystem
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV8/Triggered
+Subsystem
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKDIV9/Triggered
+Subsystem
+
+Count - 2
+UZ_EnDat_be4_segregation/UZ_ENDAT/ManualDeserializere/ramwatcher
+UZ_EnDat_be4_segregation/UZ_ENDAT/Subsystem/ManualDeserializere/ramwatcher
+
+Count - 4
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKCNTER_FAST/Positional_Counter
+UZ_EnDat_be4_segregation/UZ_ENDAT/CLKCNTER_RAMPUP/Positional_Counter
+UZ_EnDat_be4_segregation/UZ_ENDAT/ManualSerialize/CLKCNTER_RECIEVE/Positional_Counter
+
+Count - 5
+UZ_EnDat_be4_segregation/UZ_ENDAT/CRC_Check/FF0
+UZ_EnDat_be4_segregation/UZ_ENDAT/CRC_Check/FF1
+UZ_EnDat_be4_segregation/UZ_ENDAT/CRC_Check/FF2
+UZ_EnDat_be4_segregation/UZ_ENDAT/CRC_Check/FF3
+UZ_EnDat_be4_segregation/UZ_ENDAT/CRC_Check/FF4
+

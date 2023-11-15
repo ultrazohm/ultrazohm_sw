@@ -160,14 +160,14 @@ int main(void)
     // ------------------- Filter u-ind ------------------- //
     struct uz_IIR_Filter_config LP_config_ud_ind_2 = {
         	.selection = LowPass_first_order,
-			.cutoff_frequency_Hz =  300.0f,
+			.cutoff_frequency_Hz =  2.0f,
     		.sample_frequency_Hz = 10000.0f,
 
     };
 
     struct uz_IIR_Filter_config LP_config_uq_ind_2 = {
         	.selection = LowPass_first_order,
-			.cutoff_frequency_Hz = 50.0f,
+			.cutoff_frequency_Hz = 2.0f,
     		.sample_frequency_Hz = 10000.0f,
 
     };

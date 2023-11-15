@@ -39,6 +39,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 # define MAX_CURRENT 10.0f
+# define CONROL_FREQUENCY 10000
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -191,7 +192,9 @@ void ISR_Control(void *data)
 	if (use_Motor) {
     	Global_Data.av.theta_mech = Global_Data.av.theta_mech - offset;
     	Global_Data.av.omega_elec = Global_Data.av.omega_m * 3.0f;
-    	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 3.0f;  //I changed the encoder function to write the theta onto theta_mech
+    	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 3.0f;  // changed the encoder function to write the theta onto theta_mech
+    	//Global_Data.av.theta_elec_adv = Global_Data.av.theta_elec;
+    	Global_Data.av.theta_elec_adv = 1.5f / CONROL_FREQUENCY * Global_Data.av.omega_elec + Global_Data.av.theta_elec;	// angle advance 3/2*T_a*omega
     	Global_Data.av.inverter_outputs_d3 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d3);
     	Global_Data.av.I_a = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
     	Global_Data.av.I_b = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
@@ -231,7 +234,7 @@ void ISR_Control(void *data)
     	if (current_state==control_state) {
     		if (use_PI) {
     			CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, i_dq_reference_Ampere, i_dq_actual_Ampere, Global_Data.av.U_ZK, Global_Data.av.omega_elec);
-    			DutyCycle_output = uz_Space_Vector_Modulation(CurrentControl_output_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+    			DutyCycle_output = uz_Space_Vector_Modulation(CurrentControl_output_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec_adv);
     			Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
 				Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
 				Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
@@ -257,7 +260,7 @@ void ISR_Control(void *data)
 				v_dq_non_limited_Volts.q = uz_matrix_get_element_zero_based(output,0,1);
 
 				v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, Global_Data.av.U_ZK, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
-				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec_adv);
 				Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
     	  		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
     	  		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;

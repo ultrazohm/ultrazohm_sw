@@ -147,7 +147,7 @@ xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:xlslice:1.0\
-xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1\
+xilinx.com:ip:PWM_and_SS_control_V4_ip:4.3\
 user.org:ip:uz_interlockDeadtime2L:1.0\
 mwn.de:ip:PWM_SS_3L_ip:1.4\
 "
@@ -425,16 +425,16 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   create_bd_pin -dir I -type rst RESETN
 
   # Create instance: PWM_and_SS_control_V_0, and set properties
-  set PWM_and_SS_control_V_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 PWM_and_SS_control_V_0 ]
+  set PWM_and_SS_control_V_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.3 PWM_and_SS_control_V_0 ]
 
   # Create instance: PWM_and_SS_control_V_1, and set properties
-  set PWM_and_SS_control_V_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 PWM_and_SS_control_V_1 ]
+  set PWM_and_SS_control_V_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.3 PWM_and_SS_control_V_1 ]
 
   # Create instance: PWM_and_SS_control_V_2, and set properties
-  set PWM_and_SS_control_V_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 PWM_and_SS_control_V_2 ]
+  set PWM_and_SS_control_V_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.3 PWM_and_SS_control_V_2 ]
 
   # Create instance: PWM_and_SS_control_V_3, and set properties
-  set PWM_and_SS_control_V_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 PWM_and_SS_control_V_3 ]
+  set PWM_and_SS_control_V_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.3 PWM_and_SS_control_V_3 ]
 
   # Create instance: util_vector_logic_0, and set properties
   set util_vector_logic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_vector_logic:2.0 util_vector_logic_0 ]
@@ -475,6 +475,11 @@ proc create_hier_cell_Gates { parentCell nameHier } {
     CONFIG.CONST_VAL {2048} \
     CONFIG.CONST_WIDTH {14} \
   ] $xlconstant_0
+
+
+  # Create instance: xlconstant_1, and set properties
+  set xlconstant_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_1 ]
+  set_property CONFIG.CONST_VAL {0} $xlconstant_1
 
 
   # Create interface connections
@@ -549,6 +554,7 @@ proc create_hier_cell_Gates { parentCell nameHier } {
   connect_bd_net -net vio_Gates_2L_probe_out5 [get_bd_pins PWM_and_SS_control_V_0/SS5_IN_External] [get_bd_pins PWM_and_SS_control_V_1/SS5_IN_External] [get_bd_pins PWM_and_SS_control_V_2/SS5_IN_External] [get_bd_pins PWM_and_SS_control_V_3/SS5_IN_External] [get_bd_pins vio_Gates_2L/probe_out5]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins Gate_Signals_2L] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins PWM_and_SS_control_V_0/m_u1_norm] [get_bd_pins PWM_and_SS_control_V_0/m_u2_norm] [get_bd_pins PWM_and_SS_control_V_0/m_u3_norm] [get_bd_pins PWM_and_SS_control_V_1/m_u1_norm] [get_bd_pins PWM_and_SS_control_V_1/m_u2_norm] [get_bd_pins PWM_and_SS_control_V_1/m_u3_norm] [get_bd_pins PWM_and_SS_control_V_2/m_u1_norm] [get_bd_pins PWM_and_SS_control_V_2/m_u2_norm] [get_bd_pins PWM_and_SS_control_V_2/m_u3_norm] [get_bd_pins PWM_and_SS_control_V_3/m_u1_norm] [get_bd_pins PWM_and_SS_control_V_3/m_u2_norm] [get_bd_pins PWM_and_SS_control_V_3/m_u3_norm] [get_bd_pins xlconstant_0/dout]
+  connect_bd_net -net xlconstant_1_dout [get_bd_pins PWM_and_SS_control_V_0/pwm_counter_rst] [get_bd_pins PWM_and_SS_control_V_1/pwm_counter_rst] [get_bd_pins PWM_and_SS_control_V_2/pwm_counter_rst] [get_bd_pins PWM_and_SS_control_V_3/pwm_counter_rst] [get_bd_pins xlconstant_1/dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins CLK] [get_bd_pins PWM_and_SS_control_V_0/AXI4_Lite_ACLK] [get_bd_pins PWM_and_SS_control_V_0/IPCORE_CLK] [get_bd_pins PWM_and_SS_control_V_1/AXI4_Lite_ACLK] [get_bd_pins PWM_and_SS_control_V_1/IPCORE_CLK] [get_bd_pins PWM_and_SS_control_V_2/AXI4_Lite_ACLK] [get_bd_pins PWM_and_SS_control_V_2/IPCORE_CLK] [get_bd_pins PWM_and_SS_control_V_3/AXI4_Lite_ACLK] [get_bd_pins PWM_and_SS_control_V_3/IPCORE_CLK] [get_bd_pins uz_interlockDeadtime_0/AXI4_ACLK] [get_bd_pins uz_interlockDeadtime_0/IPCORE_CLK] [get_bd_pins uz_interlockDeadtime_1/AXI4_ACLK] [get_bd_pins uz_interlockDeadtime_1/IPCORE_CLK] [get_bd_pins uz_interlockDeadtime_2/AXI4_ACLK] [get_bd_pins uz_interlockDeadtime_2/IPCORE_CLK] [get_bd_pins uz_interlockDeadtime_3/AXI4_ACLK] [get_bd_pins uz_interlockDeadtime_3/IPCORE_CLK] [get_bd_pins vio_Gates_2L/clk]
 
   # Restore current instance
@@ -3337,8 +3343,8 @@ Port;FD4A0000;FD4AFFFF;0|FPD;DPDMA;FD4C0000;FD4CFFFF;0|FPD;DDR_XMPU5_CFG;FD05000
   assign_bd_address -offset 0x80060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D2_adapter/Gates_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0] -force
   assign_bd_address -offset 0x80030000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_0/AXI4_Lite/reg0] -force
   assign_bd_address -offset 0x80040000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_1/AXI4_Lite/reg0] -force
-  assign_bd_address -offset 0x800E0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_2/AXI4_Lite/reg0] -force
-  assign_bd_address -offset 0x800F0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_3/AXI4_Lite/reg0] -force
+  assign_bd_address -offset 0x80080000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_2/AXI4_Lite/reg0] -force
+  assign_bd_address -offset 0x800E0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_digital_adapter/D1_adapter/Gates/PWM_and_SS_control_V_3/AXI4_Lite/reg0] -force
   assign_bd_address -offset 0x800A0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_system/uz_enable/axi_gpio_2/S_AXI/Reg] -force
   assign_bd_address -offset 0x800D0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_system/axi_timebase_wdt_0/S_AXI/Reg] -force
   assign_bd_address -offset 0x80090000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uz_system/Interrupt/mux_axi_ip_1/AXI4_Lite/reg0] -force

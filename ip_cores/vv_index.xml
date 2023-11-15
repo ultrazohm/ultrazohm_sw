@@ -2397,7 +2397,7 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1">
+		<VLNV value="user.org:ip:PWM_and_SS_control_V4_ip:4.2">
 		</VLNV>
 		<DisplayName value="PWM_and_SS_control_V4_ip">
 		</DisplayName>
@@ -2405,9 +2405,9 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112567927">
+		<CoreRevision value="2113247907">
 		</CoreRevision>
-		<ComponentPath value="PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/component.xml">
+		<ComponentPath value="PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_2/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">
@@ -2421,6 +2421,58 @@
 		</Taxonomies>
 		<LockPrevVersions value="false">
 		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1">
+		</VLNV>
+		<DisplayName value="PWM_and_SS_control_V4_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2112567927">
+		</CoreRevision>
+		<ComponentPath value="PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_1/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
 		<Interfaces>
 			<Interface value="AXI4">
 			</Interface>
@@ -2456,6 +2508,34 @@
 				<Part status="Production" name="ALL">
 				</Part>
 			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:PWM_and_SS_control_V4_ip:4.3">
+		</VLNV>
+		<DisplayName value="PWM_and_SS_control_V4_ip">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113266530">
+		</CoreRevision>
+		<ComponentPath value="PWM_and_SS_control_ip_v4_0/Simulation/hdl_prj/ipcore/PWM_and_SS_control_V4_ip_v4_3/component.xml">
+		</ComponentPath>
+		<Families>
 			<Family name="zynquplus">
 				<Part status="Production" name="ALL">
 				</Part>
@@ -2567,6 +2647,8 @@
 			<Taxonomy value="/UserIP">
 			</Taxonomy>
 		</Taxonomies>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
 		<Interfaces>
 			<Interface value="AXI4">
 			</Interface>
@@ -2579,7 +2661,7 @@
 		</VLNV>
 		<DisplayName value="uz_d_inverter_adapter">
 		</DisplayName>
-		<Description value="ADC_Module_LVDS_v2_0">
+		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
@@ -2596,6 +2678,10 @@
 				<Part status="Production" name="ALL">
 				</Part>
 			</Family>
+			<Family name="virtexuplushbm">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
 			<Family name="zynq">
 				<Part status="Production" name="ALL">
 				</Part>
@@ -2606,15 +2692,13 @@
 			</Family>
 		</Families>
 		<Taxonomies>
-			<Taxonomy value="/UserIP">
+			<Taxonomy value="/HDL Coder Generated IP">
 			</Taxonomy>
 		</Taxonomies>
 		<Interfaces>
 			<Interface value="AXI4">
 			</Interface>
 		</Interfaces>
-		<VendorDisplayName value="Wendel_ELSYS">
-		</VendorDisplayName>
 	</IP>
 	<IP>
 		<VLNV value="xilinx.com:user:uz_inverter_adapter_mapping:1.0">
@@ -2628,6 +2712,10 @@
 		<ComponentPath value="uz_d_inverter_adapter/mapping_ip_core/component.xml">
 		</ComponentPath>
 		<Families>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
 			<Family name="kintexu">
 				<Part status="Beta" name="ALL">
 				</Part>
@@ -2669,7 +2757,7 @@
 		</VLNV>
 		<DisplayName value="uz_mlp_three_layer">
 		</DisplayName>
-		<Description value="uz_inverter_adapter_mapping_v1_0">
+		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4.jpg">
 		</ProductGuide>

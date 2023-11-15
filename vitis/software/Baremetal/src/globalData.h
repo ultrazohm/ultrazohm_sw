@@ -134,6 +134,8 @@ typedef struct _referenceAndSetValues_ {
 typedef struct _dqn_performance_ {
 	float number_of_updates;
 	float old_number_of_updates;
+	float number_of_old_samples;
+	float number_of_samples;
 	float reward_position_error;
 	float reward_position;
 	float reward_velocity;

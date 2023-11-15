@@ -193,7 +193,7 @@ void ISR_Control(void *data)
     	Global_Data.av.theta_mech = Global_Data.av.theta_mech - offset;
     	Global_Data.av.omega_elec = Global_Data.av.omega_m * 3.0f;
     	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 3.0f;  // changed the encoder function to write the theta onto theta_mech
-    	//Global_Data.av.theta_elec_adv = Global_Data.av.theta_elec;
+    	// Global_Data.av.theta_elec_adv = Global_Data.av.theta_elec;
     	Global_Data.av.theta_elec_adv = 1.5f / CONROL_FREQUENCY * Global_Data.av.omega_elec + Global_Data.av.theta_elec;	// angle advance 3/2*T_a*omega
     	Global_Data.av.inverter_outputs_d3 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d3);
     	Global_Data.av.I_a = Global_Data.aa.A1.me.ADC_A4 * 12.5f;

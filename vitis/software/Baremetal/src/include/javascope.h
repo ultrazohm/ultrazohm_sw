@@ -44,7 +44,7 @@
 
 // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
 // Do not change the first (zero) and last (end) entries.
-<<<<<<< HEAD
+
  enum JS_SlowData {
  	JSSD_ZEROVALUE=0,
  	JSSD_FLOAT_SecondsSinceSystemStart,
@@ -61,28 +61,6 @@
 	JSSD_FLOAT_theta_elec,
  	JSSD_ENDMARKER
  };
-=======
-enum JS_SlowData {
-	JSSD_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_FreqReadback,
-	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_ADCconvFactorReadback,
-	JSSD_FLOAT_Error_Code,
-	JSSD_FLOAT_u_d,
-	JSSD_FLOAT_u_q,
-	JSSD_FLOAT_i_d,
-	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_speed,
-	JSSD_FLOAT_torque,
-	JSSD_FLOAT_encoderOffset,
-	JSSD_FLOAT_u_d_ref,
-	JSSD_FLOAT_u_q_ref,
-	JSSD_ENDMARKER
-};
->>>>>>> develop
 
 // Determination of Button IDs via enum. When a button in the GUI is pressed,
 // the GUI sends an ID and a value. IDs of the buttons are the respective enum

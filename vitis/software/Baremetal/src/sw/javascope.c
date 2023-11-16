@@ -36,7 +36,7 @@ uint32_t js_status_BareToRTOS=0;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern float f_mod_wait_cnt;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -100,6 +100,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_traj_current]		= &data->av.traj_current_ref;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;
+	js_ch_observable[JSO_f_sw_avg_Hz]		= &data->av.f_sw_avg_Hz;
+	js_ch_observable[JSO_f_sw_flag]			= &data->av.f_f_sw_measure_flag;
+	js_ch_observable[JSO_req_meas_flag]		= &data->rasv.f_req_measure_flag;
+	js_ch_observable[JSO_meas_flag]			= &data->av.f_measure_flag;
+	js_ch_observable[JSO_pause_timer_sec]	= &data->av.pause_timer_sec;
+	js_ch_observable[JSO_f_cnt]				= &data->rasv.f_cnt_lambda_u;
+	js_ch_observable[JSO_f_mod_cnt]			= &f_mod_wait_cnt;
+	js_ch_observable[JSO_lambda_u]			= &data->av.lambda_u;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -114,6 +122,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_temp_inv_left]			= &(data->av.mean_temp_inv_left);
 	js_slowDataArray[JSSD_FLOAT_temp_inv_right]			= &(data->av.mean_temp_inv_right);
 	js_slowDataArray[JSSD_FLOAT_f_sw_avg_Hz_right]		= &(data->av.f_sw_avg_Hz);
+	js_slowDataArray[JSSD_FLOAT_pause_timer_sec]		= &(data->av.pause_timer_sec);
+	js_slowDataArray[JSSD_FLOAT_cnt_lambda_u]			= &(data->rasv.f_cnt_lambda_u);
+	js_slowDataArray[JSSD_FLOAT_end_cnt_lambda_u]		= &(data->rasv.f_cnt_lambda_u_end);
+	js_slowDataArray[JSSD_FLOAT_f_mod_cnt]				= &f_mod_wait_cnt;
+	js_slowDataArray[JSSD_FLOAT_lambda_u]				= &(data->av.lambda_u);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

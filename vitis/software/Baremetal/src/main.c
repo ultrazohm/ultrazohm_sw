@@ -82,12 +82,24 @@ int main(void)
             Global_Data.objects.nn_layer = ddpg_nn_init();
             Global_Data.av.lambda_d = 1.0f;
             Global_Data.av.lambda_q = 1.0f;
-            Global_Data.av.lambda_u = 0.000091f;
+            Global_Data.av.lambda_u = 0.0f;//0.000091f;
             Global_Data.av.lambda_u_e5 = Global_Data.av.lambda_u*1.0e5f;
             Global_Data.av.i_max_mpc = 1.0f;
             Global_Data.rasv.current_ctrl_select = PI_FOC;
             Global_Data.objects.speed_traj = uz_trajectory_speed_init();
             Global_Data.objects.current_traj = uz_trajectory_current_init();
+
+            // parameters for automated trade-off curve measurements
+            Global_Data.rasv.lambda_u_start = 0.0f;//0.000091;//0.00006;
+            Global_Data.rasv.lambda_u_stop = 0.0001;//0.0004;
+            Global_Data.rasv.lambda_u_step = 0.00001; // precision acc. to fixed-point data-type: 7.62939453125e-06
+            Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
+            Global_Data.rasv.cnt_lambda_u_end = (uint32_t)(ceilf((Global_Data.rasv.lambda_u_stop - Global_Data.rasv.lambda_u_start) / Global_Data.rasv.lambda_u_step))+1U;
+            Global_Data.rasv.f_cnt_lambda_u_end = (float)Global_Data.rasv.cnt_lambda_u_end;
+            Global_Data.rasv.cnt_lambda_u = 1U;
+            Global_Data.rasv.f_cnt_lambda_u = 1.0f;
+            Global_Data.av.pause_time_sec = 3.0f;
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

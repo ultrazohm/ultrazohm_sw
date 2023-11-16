@@ -132,6 +132,14 @@ typedef struct _actualValues_ {
 	float iq_delay_pu;
 	float traj_speed_ref;
 	float traj_current_ref;
+	bool f_sw_measure_flag;
+	float f_f_sw_measure_flag;
+	float pause_time_sec;
+	float pause_timer_sec;
+	bool measure_flag;
+	float f_measure_flag;
+	bool start_trade_off_measurement;
+	float f_start_trade_off_measurement;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -154,6 +162,16 @@ typedef struct _referenceAndSetValues_ {
 	enum current_control_select current_ctrl_select;
 	enum control_plant ctrl_plant_select;
 	enum reference_select reference_select;
+	bool req_measure_flag;
+	float f_req_measure_flag;
+	uint32_t cnt_lambda_u;
+	float f_cnt_lambda_u;
+	float lambda_u_now;
+	float lambda_u_step;
+	uint32_t cnt_lambda_u_end;
+	float lambda_u_start;
+	float lambda_u_stop;
+	float f_cnt_lambda_u_end;
 } referenceAndSetValues;
 
 typedef struct{

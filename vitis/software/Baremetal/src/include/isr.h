@@ -67,5 +67,6 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 void control_left_motor(void);
 void control_right_motor(void);
+void measure_for_thd(void);
 
 #endif /* ISR_H_ */

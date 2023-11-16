@@ -336,6 +336,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (My_Button_8):
 			uz_Trajectory_Reset(data->objects.speed_traj);
 			uz_Trajectory_Reset(data->objects.current_traj);
+			data->av.start_trade_off_measurement = true;
+			data->av.f_start_trade_off_measurement = 1.0f;
 			break;
 
 		case (Error_Reset):

@@ -65,6 +65,14 @@ enum JS_OberservableData {
 	JSO_theta_mech_right,
 	JSO_mech_Speed_rpm_left,
 	JSO_mech_Speed_rpm_right,
+	JSO_lambda_u,
+	JSO_f_sw_avg_Hz,
+	JSO_req_meas_flag,
+	JSO_meas_flag,
+	JSO_f_sw_flag,
+	JSO_pause_timer_sec,
+	JSO_f_cnt,
+	JSO_f_mod_cnt,
 	JSO_ENDMARKER
 };
 
@@ -82,6 +90,10 @@ enum JS_SlowData {
 	JSSD_FLOAT_temp_inv_left,
 	JSSD_FLOAT_temp_inv_right,
 	JSSD_FLOAT_f_sw_avg_Hz_right,
+	JSSD_FLOAT_pause_timer_sec,
+	JSSD_FLOAT_cnt_lambda_u,
+	JSSD_FLOAT_end_cnt_lambda_u,
+	JSSD_FLOAT_f_mod_cnt,
 	JSSD_FLOAT_vd_left,
 	JSSD_FLOAT_vq_left,
 	JSSD_FLOAT_id_left,

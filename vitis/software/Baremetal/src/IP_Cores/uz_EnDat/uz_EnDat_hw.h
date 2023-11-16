@@ -11,6 +11,6 @@ void uz_EnDat_hw_write_FKT4DATACLKSYNC(uint32_t base_address,int32_t FKT4DATACLK
 void uz_EnDat_hw_write_FKT5TELEGRAMLEN(uint32_t base_address,int32_t FKT5TELEGRAMLEN);
 void uz_EnDat_hw_write_controlword(uint32_t base_address,int32_t controlword);
 
-int32_t uz_myIP_hw_read_C(uint32_t base_address);
+int32_t uz_EnDat_hw_read_C(uint32_t base_address);
 
 #endif // UZ_ENDAT_HW_H

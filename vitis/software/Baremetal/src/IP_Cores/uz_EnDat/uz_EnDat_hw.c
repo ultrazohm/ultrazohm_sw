@@ -40,3 +40,4 @@ void uz_EnDat_hw_write_controlword(uint32_t base_address,int32_t controlword)
     uz_assert_not_zero(base_address);
     uz_axi_write_int32(base_address+controlword_Data_uz_EnDat,controlword);
 }
+

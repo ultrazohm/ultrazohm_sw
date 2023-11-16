@@ -16,7 +16,7 @@
 #include <stdint.h>
 #include <math.h>
 #include "../include/encoder.h"
-#include "../IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "../IP_Cores/uz_incrementalEncoder_V26/uz_incrementalEncoder_V26.h"
 #include "xparameters.h"
 
 // Declares pointer to instance on file scope. DO NOT DO THIS! Just done here to be compatible to the rest of the legacy code in this file!
@@ -32,35 +32,47 @@ static uz_incrementalEncoder_t* encoder_D5_3;
 #define IncEncoderLPF_freq 1000.0f
 
 void initialize_incremental_encoder_ipcore_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber){
-	struct uz_incrementalEncoder_config encoder_D5_1_config={
-		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
-		.ip_core_frequency_Hz=50000000U,
-		.line_number_per_turn_mech=incrementalEncoderResolution,
-		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
-		.drive_pole_pair=motorPolePairNumber
-	};
-	encoder_D5_1=uz_incrementalEncoder_init(encoder_D5_1_config);
+	struct uz_incrementalEncoder_config encoder_D5_1_config = {
+		.base_address = 0x0,
+		.ip_core_frequency_Hz = 100000000U,
+		.line_number_per_turn_mech = incrementalEncoderResolution,
+		.OmegaPerOverSample_in_rpm = OMEGA_PER_OVER_SAMPLE_RPM,
+		.drive_pole_pair = motorPolePairNumber,
+		.Encoder_mech_Offset = 0.0f,
+		.Encoder_elec_Offset = 0.0f,
+		.d_axis_Hit_Offset = 0U,
+		.Counting_Direction = CW_Counting,
+		.Speed_Timeout_s = 0.005f};
+	encoder_D5_1=uz_incrementalEncoder_init_V26(encoder_D5_1_config);
 }
 
 void initialize_incremental_encoder_ipcore_on_D5_2(float incrementalEncoderResolution, float motorPolePairNumber){
-	struct uz_incrementalEncoder_config encoder_D5_2_config={
-		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_1_BASEADDR,
-		.ip_core_frequency_Hz=50000000U,
-		.line_number_per_turn_mech=incrementalEncoderResolution,
-		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
-		.drive_pole_pair=motorPolePairNumber
-	};
+	struct uz_incrementalEncoder_config encoder_D5_2_config = {
+		.base_address = 0x0,
+		.ip_core_frequency_Hz = 100000000U,
+		.line_number_per_turn_mech = incrementalEncoderResolution,
+		.OmegaPerOverSample_in_rpm = OMEGA_PER_OVER_SAMPLE_RPM,
+		.drive_pole_pair = motorPolePairNumber,
+		.Encoder_mech_Offset = 0.0f,
+		.Encoder_elec_Offset = 0.0f,
+		.d_axis_Hit_Offset = 0U,
+		.Counting_Direction = CW_Counting,
+		.Speed_Timeout_s = 0.005f};
 	encoder_D5_2=uz_incrementalEncoder_init(encoder_D5_2_config);
 }
 
 void initialize_incremental_encoder_ipcore_on_D5_3(float incrementalEncoderResolution, float motorPolePairNumber){
-	struct uz_incrementalEncoder_config encoder_D5_3_config={
-		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_2_BASEADDR,
-		.ip_core_frequency_Hz=50000000U,
-		.line_number_per_turn_mech=incrementalEncoderResolution,
-		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
-		.drive_pole_pair=motorPolePairNumber
-	};
+	struct uz_incrementalEncoder_config encoder_D5_3_config = {
+		.base_address = 0x0,
+		.ip_core_frequency_Hz = 100000000U,
+		.line_number_per_turn_mech = incrementalEncoderResolution,
+		.OmegaPerOverSample_in_rpm = OMEGA_PER_OVER_SAMPLE_RPM,
+		.drive_pole_pair = motorPolePairNumber,
+		.Encoder_mech_Offset = 0.0f,
+		.Encoder_elec_Offset = 0.0f,
+		.d_axis_Hit_Offset = 0U,
+		.Counting_Direction = CW_Counting,
+		.Speed_Timeout_s = 0.005f};
 	encoder_D5_3=uz_incrementalEncoder_init(encoder_D5_3_config);
 }
 

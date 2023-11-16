@@ -10,8 +10,6 @@ uint64_t default_keys[30] = {
 #include "uz_prng_squares_keys.h"
 };
 
-#define SCALE_TO_FLOAT 0xffffffffU // 4294967296 in the code example of the paper author
-
 struct uz_prng_squares_t
 {
     bool is_ready;
@@ -67,15 +65,6 @@ uint32_t uz_prng_squares_get_uniform_uint32(uz_prng_squares_t *self)
     self->counter++;
     uint32_t random_value = uz_prng_squares32_uniform_uint32(self->counter, self->key);
     return random_value;
-}
-
-float uz_prng_squares_get_uniform_float_zero_to_one(uz_prng_squares_t *self)
-{
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    uint32_t random_value = uz_prng_squares_get_uniform_uint32(self);
-    float random_float = (float)(random_value) / (float)SCALE_TO_FLOAT; // Paper author code uses double and no cast to scale - unclear why this works in the example code provided -> works obv. with cast as it forces floating point division. Additionally, paper scales by 4294967296 instead of 0xffffffffU (which is uint32_t max). Not clear either.
-    return random_float;
 }
 
 static uint32_t uz_prng_squares32_uniform_uint32(uint64_t ctr, uint64_t key)

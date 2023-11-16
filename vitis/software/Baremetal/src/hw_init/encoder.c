@@ -33,7 +33,7 @@ static uz_incrementalEncoder_t* encoder_D5_3;
 
 void initialize_incremental_encoder_ipcore_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber){
 	struct uz_incrementalEncoder_config encoder_D5_1_config = {
-		.base_address = 0x0,
+		.base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_0_BASEADDR,
 		.ip_core_frequency_Hz = 100000000U,
 		.line_number_per_turn_mech = incrementalEncoderResolution,
 		.OmegaPerOverSample_in_rpm = OMEGA_PER_OVER_SAMPLE_RPM,
@@ -43,12 +43,12 @@ void initialize_incremental_encoder_ipcore_on_D5_1(float incrementalEncoderResol
 		.d_axis_Hit_Offset = 0U,
 		.Counting_Direction = CW_Counting,
 		.Speed_Timeout_s = 0.005f};
-	encoder_D5_1=uz_incrementalEncoder_init_V26(encoder_D5_1_config);
+	encoder_D5_1=uz_incrementalEncoder_init(encoder_D5_1_config);
 }
 
 void initialize_incremental_encoder_ipcore_on_D5_2(float incrementalEncoderResolution, float motorPolePairNumber){
 	struct uz_incrementalEncoder_config encoder_D5_2_config = {
-		.base_address = 0x0,
+		.base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_2_BASEADDR,
 		.ip_core_frequency_Hz = 100000000U,
 		.line_number_per_turn_mech = incrementalEncoderResolution,
 		.OmegaPerOverSample_in_rpm = OMEGA_PER_OVER_SAMPLE_RPM,
@@ -63,7 +63,7 @@ void initialize_incremental_encoder_ipcore_on_D5_2(float incrementalEncoderResol
 
 void initialize_incremental_encoder_ipcore_on_D5_3(float incrementalEncoderResolution, float motorPolePairNumber){
 	struct uz_incrementalEncoder_config encoder_D5_3_config = {
-		.base_address = 0x0,
+		.base_address = XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREMENTAL_ENCODER_1_BASEADDR,
 		.ip_core_frequency_Hz = 100000000U,
 		.line_number_per_turn_mech = incrementalEncoderResolution,
 		.OmegaPerOverSample_in_rpm = OMEGA_PER_OVER_SAMPLE_RPM,

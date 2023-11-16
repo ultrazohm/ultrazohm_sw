@@ -22,8 +22,8 @@
 #include <math.h>
 #include "../../uz/uz_HAL.h"
 #include "../../uz/uz_math_constants.h"
-#include "uz_incrementalEncoder.h" 
-#include "uz_incrementalEncoder_hw.h" 
+#include "uz_incrementalEncoder_V26.h"
+#include "uz_incrementalEncoder_hw_V26.h"
 
 #define QUADRATURE_FACTOR 4U // Quadrature factor used to calculate number of edges based on number of lines of the encoder. Incremental encoder have A+B lane by definition, thus this is always 4.
 

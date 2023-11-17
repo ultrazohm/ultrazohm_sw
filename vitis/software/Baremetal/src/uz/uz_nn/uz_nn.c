@@ -284,6 +284,17 @@ void uz_nn_set_gradients_zero(uz_nn_t *self)
     }
 }
 
+void uz_nn_clip_gradients(uz_nn_t *self, float clippingvalue)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_clip_gradient_in_layer(self->layer[i], clippingvalue);
+    }
+}
+
 void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix, uint32_t layer)
 {
     uz_assert_not_NULL(self);

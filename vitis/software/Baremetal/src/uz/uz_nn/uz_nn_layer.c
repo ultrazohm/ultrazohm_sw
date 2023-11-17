@@ -412,6 +412,13 @@ void uz_nn_set_gradient_in_layer_zero(uz_nn_layer_t *const self)
     uz_matrix_set_zero(self->gradients);
 }
 
+void uz_nn_clip_gradient_in_layer(uz_nn_layer_t *const self, float clippingvalue)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_matrix_clipp_values(self->gradients,-clippingvalue,clippingvalue);
+}
+
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
 {
     uz_assert_not_NULL(self);

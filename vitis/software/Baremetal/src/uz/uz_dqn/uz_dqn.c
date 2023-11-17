@@ -212,6 +212,8 @@ float uz_dqn_update(uz_dqn_t *self)
 
     }
     cum_loss = cum_loss / (float)self->minibatch_size;
+    // uz_nn clip gradients
+    uz_nn_clip_gradients(self->critic,(float)self->minibatch_size);
     adam_optimizer_step(self->adam, self->critic);
     uz_nn_set_gradients_zero(self->critic);
     uz_dqn_copy_net(self);
@@ -263,14 +265,14 @@ float calculate_derv_loss_dqn(uz_dqn_t *self, float samplereward, float qval, fl
     }
     float dloss = -2.0f * (y_j - qval);
 
-    if (dloss > 1.0f)
-    {
-        dloss = 1.0f;
-    }
-    if (dloss < -1.0f)
-    {
-        dloss = -1.0f;
-    }
+//    if (dloss > 10.0f)
+//    {
+//        dloss = 10.0f;
+//    }
+//    if (dloss < -10.0f)
+//    {
+//        dloss = -10.0f;
+//    }
     return dloss;
 }
 

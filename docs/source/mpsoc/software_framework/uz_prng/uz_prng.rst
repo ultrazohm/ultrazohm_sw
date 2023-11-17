@@ -73,3 +73,4 @@ Implemented generators
     :glob:
   
     uz_prng_squares/uz_prng_squares
+    uz_prng_mtwister/uz_prng_mtwister

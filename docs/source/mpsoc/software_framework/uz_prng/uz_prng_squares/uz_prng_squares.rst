@@ -14,6 +14,7 @@ Squares RNG
   2. Supply a specific seed that is larger than 30. In this case, the supplied seed is used as a key. Warning: you have to use keys that match the properties of the paper, thus only take seeds from the author (25000 are supplied on his homepage in ``keys.h``)
 
 
+
 .. plot::
 
    import matplotlib.pyplot as plt
@@ -25,21 +26,14 @@ Squares RNG
    std=df.loc[:,'number'].std()
    var=df.loc[:,'number'].var()
 
-   fig, axs = plt.subplots(1, 2, figsize=(5, 2.7), layout='constrained')
-   axs[0].set_title("Random uint32 numbers from uz_prng_squares")
+   fig, axs = plt.subplots(2, 1)
+   axs[0].set_title("Random uint32\n numbers from\n uz_prng_squares")
    axs[0].plot(df.index,df.number)
 
    axs[1].hist(df.number, bins=50, linewidth=0.5, edgecolor="white",density=True)
    title_string=str(mean)
-   axs[1].set_title("Histogram\n of Squares with mean:" + title_string )
+   axs[1].set_title("Histogram\n of Squares\n with mean:" + title_string )
 
 
 
-.. tikz:: Rastring function with n=1
 
-    \pgfplotsset{
-        table/search path={source/mpsoc/software_framework/uz_prng/uz_prng_squares/},
-    }
-    \begin{axis}[]
-          \addplot[thick,color=myblue] table[x expr=\thisrow{time}*1000,y=id] {uz_prng_squares_float.csv};
-    \end{axis}

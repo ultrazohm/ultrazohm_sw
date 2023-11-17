@@ -29,4 +29,5 @@ void uz_Matrix_Multi_write_input(uz_Matrix_Multi_t* self);
 void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self);
 void uz_Matrix_Multi_read_output(uz_Matrix_Multi_t* self);
 bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self);
+void uz_Matrix_Multi_reset(uz_Matrix_Multi_t* self);
 #endif

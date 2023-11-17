@@ -56,12 +56,17 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	if (!done_flag && (counter_test<10)) {
-    		uz_Matrix_Multi_calculate(Global_Data.objects.matrix_instance);
-    		counter_test++;
+    	if(!uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance)) {
+    		uz_Matrix_Multi_write_input(Global_Data.objects.matrix_instance);
+    		uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance);
     	} else {
-    		done_flag = true;
+    		uz_Matrix_Multi_read_output(Global_Data.objects.matrix_instance);
     	}
+
+
+    } else {
+    	uz_Matrix_Multi_reset(Global_Data.objects.matrix_instance);
+    	uz_Matrix_Multi_write_input(Global_Data.objects.matrix_instance);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

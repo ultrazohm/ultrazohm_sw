@@ -55,7 +55,7 @@ int uz_EnDat_write_control_and_divider (uz_EnDat_t* self, uint16_t ctrlword, uin
     return(0);
 }
 
-int8_t uz_EnDat_write_factor(uz_EnDat_t* self, uint16_t factor, uint8_t num)
+int uz_EnDat_write_factor(uz_EnDat_t* self, uint16_t factor, uint8_t num)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -94,7 +94,15 @@ int8_t uz_EnDat_write_factor(uz_EnDat_t* self, uint16_t factor, uint8_t num)
 
 }
 
+uint16_t uz_EnDat_read_statusword(uz_EnDat_t* self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
 
+
+    uz_EnDat_hw_read_C
+
+}
 
 
 #endif

@@ -49,6 +49,15 @@ void test_uz_EnDat_fail_assert_if_write_factor_is_called_with_NULL_pointer(void)
 
 }
 
+
+
+void test_uz_EnDat_fail_assert_if_read_statusword_is_called_with_NULL_pointer(void)
+{
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_statusword(NULL));
+
+}
+
+
 /*void test_uz_EnDat_write_control_and_divider(void)
 {
     int ret;

@@ -20,4 +20,5 @@ vitis/software/Baremetal/src/Codegen/slprj/
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/html/
 
 .vscode/settings.json
+.vscode/c_cpp_properties.json
 control_algorithms/uz_FOC.slxc

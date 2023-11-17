@@ -39,8 +39,8 @@ uz_EnDat_t* uz_EnDat_init(struct uz_EnDat_config_t config);
 
 
 
-void uz_EnDat_write_control_and_divider (uz_EnDat_t* self, uint16_t ctrlword, uint8_t divider);
+int uz_EnDat_write_control_and_divider (uz_EnDat_t* self, uint16_t ctrlword, uint8_t divider);
 
-
+int8_t uz_EnDat_write_factor(uz_EnDat_t* self, uint16_t factor, uint8_t num);
 
 #endif // UZ_ENDAT_H

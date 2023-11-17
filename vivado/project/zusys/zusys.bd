@@ -71,10 +71,10 @@
           "vio_D3_test": ""
         },
         "D5_adapter": {
-          "IncreEncoder_V24_ip_0": "",
           "system_ila_0": "",
-          "IncreEncoder_V24_ip_1": "",
-          "IncreEncoder_V24_ip_2": ""
+          "Incremental_Encoder_0": "",
+          "Incremental_Encoder_1": "",
+          "Incremental_Encoder_2": ""
         }
       },
       "uz_system": {
@@ -3391,12 +3391,6 @@
               }
             },
             "components": {
-              "IncreEncoder_V24_ip_0": {
-                "vlnv": "xilinx.com:ip:IncreEncoder_V24_ip:24.0",
-                "xci_name": "zusys_IncreEncoder_V24_ip_0_0",
-                "xci_path": "ip/zusys_IncreEncoder_V24_ip_0_0/zusys_IncreEncoder_V24_ip_0_0.xci",
-                "inst_hier_path": "uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0"
-              },
               "system_ila_0": {
                 "vlnv": "xilinx.com:ip:system_ila:1.1",
                 "xci_name": "zusys_system_ila_0_2",
@@ -3417,36 +3411,42 @@
                   }
                 }
               },
-              "IncreEncoder_V24_ip_1": {
-                "vlnv": "xilinx.com:ip:IncreEncoder_V24_ip:24.0",
-                "xci_name": "zusys_IncreEncoder_V24_ip_1_0",
-                "xci_path": "ip/zusys_IncreEncoder_V24_ip_1_0/zusys_IncreEncoder_V24_ip_1_0.xci",
-                "inst_hier_path": "uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_1"
+              "Incremental_Encoder_0": {
+                "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
+                "xci_name": "zusys_Incremental_Encoder_0_0",
+                "xci_path": "ip/zusys_Incremental_Encoder_0_0/zusys_Incremental_Encoder_0_0.xci",
+                "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_0"
               },
-              "IncreEncoder_V24_ip_2": {
-                "vlnv": "xilinx.com:ip:IncreEncoder_V24_ip:24.0",
-                "xci_name": "zusys_IncreEncoder_V24_ip_2_0",
-                "xci_path": "ip/zusys_IncreEncoder_V24_ip_2_0/zusys_IncreEncoder_V24_ip_2_0.xci",
-                "inst_hier_path": "uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_2"
+              "Incremental_Encoder_1": {
+                "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
+                "xci_name": "zusys_Incremental_Encoder_1_0",
+                "xci_path": "ip/zusys_Incremental_Encoder_1_0/zusys_Incremental_Encoder_1_0.xci",
+                "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_1"
+              },
+              "Incremental_Encoder_2": {
+                "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
+                "xci_name": "zusys_Incremental_Encoder_2_0",
+                "xci_path": "ip/zusys_Incremental_Encoder_2_0/zusys_Incremental_Encoder_2_0.xci",
+                "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_2"
               }
             },
             "interface_nets": {
+              "AXI4_Lite1_1": {
+                "interface_ports": [
+                  "AXI4_Lite1",
+                  "Incremental_Encoder_2/AXI4_Lite"
+                ]
+              },
+              "AXI4_Lite2_1": {
+                "interface_ports": [
+                  "AXI4_Lite2",
+                  "Incremental_Encoder_1/AXI4_Lite"
+                ]
+              },
               "AXI4_Lite_1": {
                 "interface_ports": [
                   "AXI4_Lite",
-                  "IncreEncoder_V24_ip_0/AXI4_Lite"
-                ]
-              },
-              "Conn1": {
-                "interface_ports": [
-                  "AXI4_Lite1",
-                  "IncreEncoder_V24_ip_1/AXI4_Lite"
-                ]
-              },
-              "Conn2": {
-                "interface_ports": [
-                  "AXI4_Lite2",
-                  "IncreEncoder_V24_ip_2/AXI4_Lite"
+                  "Incremental_Encoder_0/AXI4_Lite"
                 ]
               }
             },
@@ -3454,114 +3454,114 @@
               "AXI4_Lite_ARESETN_1": {
                 "ports": [
                   "AXI4_Lite_ARESETN",
-                  "IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN",
-                  "IncreEncoder_V24_ip_0/IPCORE_RESETN",
-                  "IncreEncoder_V24_ip_1/AXI4_Lite_ARESETN",
-                  "IncreEncoder_V24_ip_1/IPCORE_RESETN",
-                  "IncreEncoder_V24_ip_2/IPCORE_RESETN",
-                  "IncreEncoder_V24_ip_2/AXI4_Lite_ARESETN"
+                  "Incremental_Encoder_0/AXI4_Lite_ARESETN",
+                  "Incremental_Encoder_0/IPCORE_RESETN",
+                  "Incremental_Encoder_1/IPCORE_RESETN",
+                  "Incremental_Encoder_1/AXI4_Lite_ARESETN",
+                  "Incremental_Encoder_2/IPCORE_RESETN",
+                  "Incremental_Encoder_2/AXI4_Lite_ARESETN"
                 ]
               },
               "Dig_12_Ch5_1": {
                 "ports": [
                   "Dig_12_Ch5",
-                  "IncreEncoder_V24_ip_0/B",
-                  "system_ila_0/probe1"
+                  "system_ila_0/probe1",
+                  "Incremental_Encoder_0/B"
                 ]
               },
               "Dig_13_Ch5_1": {
                 "ports": [
                   "Dig_13_Ch5",
-                  "IncreEncoder_V24_ip_0/A",
-                  "system_ila_0/probe0"
+                  "system_ila_0/probe0",
+                  "Incremental_Encoder_0/A"
                 ]
               },
               "Dig_14_Ch5_1": {
                 "ports": [
                   "Dig_14_Ch5",
-                  "IncreEncoder_V24_ip_0/I",
-                  "system_ila_0/probe2"
+                  "system_ila_0/probe2",
+                  "Incremental_Encoder_0/I"
                 ]
               },
               "Dig_15_Ch5_1": {
                 "ports": [
                   "Dig_15_Ch5",
-                  "IncreEncoder_V24_ip_1/B"
+                  "Incremental_Encoder_2/B"
                 ]
               },
               "Dig_16_Ch5_1": {
                 "ports": [
                   "Dig_16_Ch5",
-                  "IncreEncoder_V24_ip_1/A"
+                  "Incremental_Encoder_2/A"
                 ]
               },
               "Dig_17_Ch5_1": {
                 "ports": [
                   "Dig_17_Ch5",
-                  "IncreEncoder_V24_ip_1/I"
+                  "Incremental_Encoder_2/I"
                 ]
               },
               "Dig_18_Ch5_1": {
                 "ports": [
                   "Dig_18_Ch5",
-                  "IncreEncoder_V24_ip_2/B"
+                  "Incremental_Encoder_1/B"
                 ]
               },
               "Dig_19_Ch5_1": {
                 "ports": [
                   "Dig_19_Ch5",
-                  "IncreEncoder_V24_ip_2/A"
+                  "Incremental_Encoder_1/A"
                 ]
               },
               "Dig_20_Ch5_1": {
                 "ports": [
                   "Dig_20_Ch5",
-                  "IncreEncoder_V24_ip_2/I"
+                  "Incremental_Encoder_1/I"
                 ]
               },
-              "IncreEncoder_V24_ip_0_OverSamplFactor": {
+              "Incremental_Encoder_0_count": {
                 "ports": [
-                  "IncreEncoder_V24_ip_0/OverSamplFactor",
+                  "Incremental_Encoder_0/count",
                   "system_ila_0/probe7"
                 ]
               },
-              "IncreEncoder_V24_ip_0_omega": {
+              "Incremental_Encoder_0_omega": {
                 "ports": [
-                  "IncreEncoder_V24_ip_0/omega",
+                  "Incremental_Encoder_0/omega",
                   "system_ila_0/probe3"
                 ]
               },
-              "IncreEncoder_V24_ip_0_position": {
+              "Incremental_Encoder_0_position": {
                 "ports": [
-                  "IncreEncoder_V24_ip_0/position",
+                  "Incremental_Encoder_0/position",
                   "system_ila_0/probe6"
                 ]
               },
-              "IncreEncoder_V24_ip_0_theta_el": {
+              "Incremental_Encoder_0_theta_el": {
                 "ports": [
-                  "IncreEncoder_V24_ip_0/theta_el",
+                  "Incremental_Encoder_0/theta_el",
                   "system_ila_0/probe4"
                 ]
               },
               "Interrupt_muxed": {
                 "ports": [
                   "probe5",
-                  "IncreEncoder_V24_ip_0/PeriodEnd",
                   "system_ila_0/probe5",
-                  "IncreEncoder_V24_ip_1/PeriodEnd",
-                  "IncreEncoder_V24_ip_2/PeriodEnd"
+                  "Incremental_Encoder_0/PeriodEnd",
+                  "Incremental_Encoder_1/PeriodEnd",
+                  "Incremental_Encoder_2/PeriodEnd"
                 ]
               },
               "zynq_ultra_ps_e_0_pl_clk1": {
                 "ports": [
                   "AXI4_LITE_ACLK",
-                  "IncreEncoder_V24_ip_0/AXI4_Lite_ACLK",
-                  "IncreEncoder_V24_ip_0/IPCORE_CLK",
                   "system_ila_0/clk",
-                  "IncreEncoder_V24_ip_1/AXI4_Lite_ACLK",
-                  "IncreEncoder_V24_ip_1/IPCORE_CLK",
-                  "IncreEncoder_V24_ip_2/IPCORE_CLK",
-                  "IncreEncoder_V24_ip_2/AXI4_Lite_ACLK"
+                  "Incremental_Encoder_0/AXI4_Lite_ACLK",
+                  "Incremental_Encoder_0/IPCORE_CLK",
+                  "Incremental_Encoder_1/IPCORE_CLK",
+                  "Incremental_Encoder_1/AXI4_Lite_ACLK",
+                  "Incremental_Encoder_2/IPCORE_CLK",
+                  "Incremental_Encoder_2/AXI4_Lite_ACLK"
                 ]
               }
             }
@@ -10001,18 +10001,18 @@
                 "offset_base_param": "C_S00_AXI_BASEADDR",
                 "offset_high_param": "C_S00_AXI_HIGHADDR"
               },
-              "SEG_IncreEncoder_V24_ip_0_reg0": {
-                "address_block": "/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0/AXI4_Lite/reg0",
+              "SEG_Incremental_Encoder_0_reg0": {
+                "address_block": "/uz_digital_adapter/D5_adapter/Incremental_Encoder_0/AXI4_Lite/reg0",
                 "offset": "0x0080070000",
                 "range": "64K"
               },
-              "SEG_IncreEncoder_V24_ip_1_reg0": {
-                "address_block": "/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_1/AXI4_Lite/reg0",
+              "SEG_Incremental_Encoder_1_reg0": {
+                "address_block": "/uz_digital_adapter/D5_adapter/Incremental_Encoder_1/AXI4_Lite/reg0",
                 "offset": "0x0080140000",
                 "range": "64K"
               },
-              "SEG_IncreEncoder_V24_ip_2_reg0": {
-                "address_block": "/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_2/AXI4_Lite/reg0",
+              "SEG_Incremental_Encoder_2_reg0": {
+                "address_block": "/uz_digital_adapter/D5_adapter/Incremental_Encoder_2/AXI4_Lite/reg0",
                 "offset": "0x0080150000",
                 "range": "64K"
               },

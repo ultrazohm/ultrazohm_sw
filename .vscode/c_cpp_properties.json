@@ -6,6 +6,7 @@
                 "C:\\Users\\User\\.gem\\ruby\\2.7.0\\gems",
                 "${workspaceFolder}/vitis/software/Baremetal/build/test/mocks",
                 "${workspaceFolder}/vitis/software/Baremetal/",
+                "${workspaceFolder}/**",
                 "C:\\Users\\User\\Documents\\ultrazohm_sw",
                 "C:/Users/User/.gem/ruby/2.7.0/gems/ceedling-0.31.1/vendor/c_exception/lib",
                 "C:/Users/User/.gem/ruby/2.7.0/gems/ceedling-0.31.1/vendor/unity/src",

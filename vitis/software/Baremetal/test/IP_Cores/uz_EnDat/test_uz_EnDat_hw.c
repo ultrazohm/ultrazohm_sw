@@ -119,7 +119,13 @@ void test_uz_EnDat_hw_write_to_controlword(void)
 
 ////READING
 
-
+void test_uz_myIP_hw_read_from_C(void)
+/*{
+    int c=101230;
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+C_int32_Data_uz_axi_testIP,c);
+    int c_readback=uz_myIP_hw_read_C(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_INT(c,c_readback);
+}*/
 
 
 #endif // TEST

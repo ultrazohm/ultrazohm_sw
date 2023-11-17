@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_6\include\uz_EnDat_addr.h
  * Description:       C Header File
- * Created:           2023-11-15 22:19:26
+ * Created:           2023-11-17 09:20:48
 */
 
 #ifndef UZ_ENDAT_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_EnDat            0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_EnDat           0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_EnDat        0x8  //contains unique IP timestamp (yymmddHHMM): 2311152215: 2311152219
+#define  IPCore_Timestamp_uz_EnDat        0x8  //contains unique IP timestamp (yymmddHHMM): 2311170920
 #define  divider_Data_uz_EnDat            0x800  //data register for Inport divider
 #define  FKT1DATAFLOW_Data_uz_EnDat       0x804  //data register for Inport FKT1DATAFLOW
 #define  controlword_Data_uz_EnDat        0x808  //data register for Inport controlword
@@ -17,10 +17,10 @@
 #define  FKT3INITIALOFF_Data_uz_EnDat     0x810  //data register for Inport FKT3INITIALOFF
 #define  FKT4DATACLKSYNC_Data_uz_EnDat    0x814  //data register for Inport FKT4DATACLKSYNC
 #define  FKT5TELEGRAMLEN_Data_uz_EnDat    0x818  //data register for Inport FKT5TELEGRAMLEN
-#define  POS4BUS0_Data_uz_EnDat           0x81C  //data register for Outport POS4BUS0
-#define  POS3BUS0_Data_uz_EnDat           0x820  //data register for Outport POS3BUS0
-#define  POS2BUS0_Data_uz_EnDat           0x824  //data register for Outport POS2BUS0
-#define  POS1BUS0_Data_uz_EnDat           0x828  //data register for Outport POS1BUS0
+#define  POS4BUS_Data_uz_EnDat            0x81C  //data register for Outport POS4BUS
+#define  POS3BUS_Data_uz_EnDat            0x820  //data register for Outport POS3BUS
+#define  POS2BUS_Data_uz_EnDat            0x824  //data register for Outport POS2BUS
+#define  POS1BUS_Data_uz_EnDat            0x828  //data register for Outport POS1BUS
 #define  POS0BUS_Data_uz_EnDat            0x82C  //data register for Outport POS0BUS
 #define  statusword_Data_uz_EnDat         0x844  //data register for Outport statusword
 #define  CRCDEBUG_Data_uz_EnDat           0x848  //data register for Outport CRCDEBUG

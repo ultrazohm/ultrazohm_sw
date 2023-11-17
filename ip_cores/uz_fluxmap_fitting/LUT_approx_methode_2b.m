@@ -7,7 +7,7 @@ options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt');
 d_current = d_current_d_Flux';
 q_current = q_current_d_Flux;
 
-%% Selbstinduktivitäten berechnen
+%% Selbstinduktivitäten berechnen Gleiche wie bei Methode 2a
 
 % 1. Gleichung Selbstinduktivität Psid
 Fluxd_iqnull = Flux_d(:,10);
@@ -46,7 +46,7 @@ aq3 = aq_1(3);
 
 figure;
 % Erster Plot
-subplot(4,1,1); 
+subplot(2,1,1); 
 grid on;
 plot(d_current, Fluxd_iqnull_fitted, 'DisplayName', 'Fluxd_{idnull}_{fitted}');
 hold on;
@@ -54,7 +54,7 @@ plot(d_current, Fluxd_iqnull,'*', 'DisplayName', 'Fluxd_{idnull}');
 legend('show');
 
 % Zweiter Plot
-subplot(4,1,2); 
+subplot(2,1,2); 
 grid on;
 
 plot(q_current, Fluxq_idnull_fitted  , 'DisplayName', 'Fluxq_{idnull}_{fitted}');
@@ -62,7 +62,7 @@ hold on;
 plot(q_current, Fluxq_idnull,'*', 'DisplayName', 'Fluxq_{idnull}');
 legend('show');
 
-%% Einfach aufgeschrieben um besser kopieren zu können. 
+%% Einfach aufgeschrieben um besser kopieren zu können. (kann eigentlich auch gelöscht werden) 
 %Nochmal aufgeschrieben um besser rauskopieren zu können
   % %fs
 % (1-exp(-(ad4*id)^2))

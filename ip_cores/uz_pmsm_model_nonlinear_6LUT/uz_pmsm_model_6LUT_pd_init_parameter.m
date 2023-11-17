@@ -79,7 +79,7 @@ setpoint_step=10.0;
 % [Lqq,Lqd]=gradient(Flux_q);
 
 % % Import the data from Excel for lookup table
-FluxMapData = readtable('FluxMapData_Prototyp_1000rpm.xlsx');
+FluxMapData = readtable('FluxMapData_Prototyp_1000rpm');
 
 %Psi_d
 % d_currents in d Axe for lookup table
@@ -98,8 +98,15 @@ q_current_q_Flux = FluxMapData{87:106,1};
 Flux_q = FluxMapData{108:127,1:20}'*(1e-3);
 
 %Ldd, Lqq, Ldq=Lqd
-[Ldq,Ldd]=gradient(Flux_d);
-[Lqq,Lqd]=gradient(Flux_q);
+% [Ldq,Ldd]=gradient(Flux_d);
+% [Lqq,Lqd]=gradient(Flux_q);
+
+[Ldq,Ldd]=gradient(Flux_d,2.5263,1.6842);
+[Lqq,Lqd]=gradient(Flux_q,2.5263,1.6842);
+
+
+% [Ldd,Ldq]=gradient(Flux_d,1.6842,2.5263);
+% [Lqd,Lqq]=gradient(Flux_q,1.6842,2.5263);
 
 % test = polyfit(d_current_d_Flux(:),q_current_d_Flux(:), Flux_d(:), 2);
 

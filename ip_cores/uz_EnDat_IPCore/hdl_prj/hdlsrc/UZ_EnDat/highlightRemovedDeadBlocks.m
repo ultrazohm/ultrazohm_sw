@@ -68,7 +68,7 @@ hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL/Data Type Conversi
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL/Data Type Conversion9','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL/Demux','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/Constant','user1');
-hilite_system('UZ_EnDat/UZ_ENDAT/FKT3','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/Data Type Conversion','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/ManualDeserializere/WORDTOBOOL/Data Type Conversion10','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/ManualDeserializere/WORDTOBOOL/Data Type Conversion11','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/ManualDeserializere/WORDTOBOOL/Data Type Conversion12','user1');

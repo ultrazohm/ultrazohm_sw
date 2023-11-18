@@ -100,8 +100,7 @@ uint16_t uz_EnDat_read_statusword(uz_EnDat_t* self)
     uz_assert(self->is_ready);
 
 
-    uz_EnDat_hw_read_C
-
+    
 }
 
 

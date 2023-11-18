@@ -10,8 +10,12 @@ void uz_EnDat_hw_write_FKT3INITIALOFF(uint32_t base_address,int32_t FKT3INITIALO
 void uz_EnDat_hw_write_FKT4DATACLKSYNC(uint32_t base_address,int32_t FKT4DATACLKSYNC);
 void uz_EnDat_hw_write_FKT5TELEGRAMLEN(uint32_t base_address,int32_t FKT5TELEGRAMLEN);
 void uz_EnDat_hw_write_controlword(uint32_t base_address,int32_t controlword);
-int32_t uz_EnDat_hw_read_statusword(uint32_t base_address)
-int32_t uz_EnDat_hw_read_POS0BUS(uint32_t base_address)
-int32_t uz_EnDat_hw_read_POS1BUS(uint32_t base_address)
+int32_t uz_EnDat_hw_read_statusword(uint32_t base_address);
+int32_t uz_EnDat_hw_read_POS0BUS(uint32_t base_address);
+int32_t uz_EnDat_hw_read_POS1BUS(uint32_t base_address);
+int32_t uz_EnDat_hw_read_POS2BUS(uint32_t base_address);
+int32_t uz_EnDat_hw_read_POS3BUS(uint32_t base_address);
+int32_t uz_EnDat_hw_read_POS4BUS(uint32_t base_address);
+int32_t uz_EnDat_hw_read_CRCDEBUG(uint32_t base_address);
 
 #endif // UZ_ENDAT_HW_H

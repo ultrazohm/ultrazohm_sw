@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_EnDat            0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_EnDat           0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_EnDat        0x8  //contains unique IP timestamp (yymmddHHMM): 2311170920
+#define  IPCore_Timestamp_uz_EnDat        0x8  //contains unique IP timestamp (yymmddHHMM): 2311182212
 #define  divider_Data_uz_EnDat            0x800  //data register for Inport divider
 #define  FKT1DATAFLOW_Data_uz_EnDat       0x804  //data register for Inport FKT1DATAFLOW
 #define  controlword_Data_uz_EnDat        0x808  //data register for Inport controlword
@@ -23,6 +23,6 @@
 #define  POS1BUS_Data_uz_EnDat            0x828  //data register for Outport POS1BUS
 #define  POS0BUS_Data_uz_EnDat            0x82C  //data register for Outport POS0BUS
 #define  statusword_Data_uz_EnDat         0x844  //data register for Outport statusword
-#define  CRCDEBUG_Data_uz_EnDat           0x848  //data register for Outport CRCDEBUG
+#define  CRCFFSTORED_Data_uz_EnDat        0x848  //data register for Outport CRCFFSTORED
 
 #endif /* UZ_ENDAT_H_ */

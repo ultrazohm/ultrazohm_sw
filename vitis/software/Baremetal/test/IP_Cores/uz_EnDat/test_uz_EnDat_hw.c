@@ -24,7 +24,7 @@ void tearDown(void)
 
 void test_uz_EnDat_hw_write_to_divider(void)
 {
-    int a=3;
+    uint16_t a=3;
     // Test passes if uz_axi_write_int32 is called once with these arguments
     uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+divider_Data_uz_EnDat,a);
     uz_EnDat_hw_write_divider(TEST_BASE_ADDRESS,a);
@@ -40,7 +40,7 @@ void test_uz_EnDat_hw_write_to_divider(void)
 
 void test_uz_EnDat_hw_write_to_FKT1DATAFLOW(void)
 {
-    int a=100;
+    uint16_t a=100;
     // Test passes if uz_axi_write_int32 is called once with these arguments
     uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+FKT1DATAFLOW_Data_uz_EnDat,a);
     uz_EnDat_hw_write_FKT1DATAFLOW(TEST_BASE_ADDRESS,a);
@@ -53,7 +53,7 @@ void test_uz_EnDat_hw_write_to_FKT1DATAFLOW(void)
 
 void test_uz_EnDat_hw_write_to_FKT2RECOVERYTIME(void)
 {
-    int a=100;
+    uint16_t a=100;
     // Test passes if uz_axi_write_int32 is called once with these arguments
     uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+FKT2RECOVERYTIME_Data_uz_EnDat,a);
     uz_EnDat_hw_write_FKT2RECOVERYTIME(TEST_BASE_ADDRESS,a);
@@ -65,7 +65,7 @@ void test_uz_EnDat_hw_write_to_FKT2RECOVERYTIME(void)
 }
 void test_uz_EnDat_hw_write_to_FKT3INITIALOFF(void)
 {
-    int a=100;
+    uint16_t a=100;
     // Test passes if uz_axi_write_int32 is called once with these arguments
     uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+FKT3INITIALOFF_Data_uz_EnDat,a);
     uz_EnDat_hw_write_FKT3INITIALOFF(TEST_BASE_ADDRESS,a);
@@ -78,7 +78,7 @@ void test_uz_EnDat_hw_write_to_FKT3INITIALOFF(void)
 }
 void test_uz_EnDat_hw_write_to_FKT4DATACLKSYNC(void)
 {
-    int a=100;
+    uint16_t a=100;
     // Test passes if uz_axi_write_int32 is called once with these arguments
     uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+FKT4DATACLKSYNC_Data_uz_EnDat,a);
     uz_EnDat_hw_write_FKT4DATACLKSYNC(TEST_BASE_ADDRESS,a);
@@ -91,7 +91,7 @@ void test_uz_EnDat_hw_write_to_FKT4DATACLKSYNC(void)
 }
 void test_uz_EnDat_hw_write_to_FKT5TELEGRAMLEN(void)
 {
-    int a=100;
+    uint16_t a=100;
     // Test passes if uz_axi_write_int32 is called once with these arguments
     uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+FKT5TELEGRAMLEN_Data_uz_EnDat,a);
     uz_EnDat_hw_write_FKT5TELEGRAMLEN(TEST_BASE_ADDRESS,a);
@@ -104,7 +104,7 @@ void test_uz_EnDat_hw_write_to_FKT5TELEGRAMLEN(void)
 }
 void test_uz_EnDat_hw_write_to_controlword(void)
 {
-    int a=0xA807;
+    uint16_t a=0xA807;
     // Test passes if uz_axi_write_int32 is called once with these arguments
     uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+controlword_Data_uz_EnDat,a);
     uz_EnDat_hw_write_controlword(TEST_BASE_ADDRESS,a);
@@ -121,7 +121,7 @@ void test_uz_EnDat_hw_write_to_controlword(void)
 
 void test_uz_EnDat_hw_read_from_statusword(void)
 {
-    int c=101230;
+    uint16_t c=1012;
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+statusword_Data_uz_EnDat ,c);
     int c_readback=uz_EnDat_hw_read_statusword(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
@@ -134,7 +134,7 @@ void test_uz_EnDat_hw_read_from_statusword(void)
 
 void test_uz_EnDat_hw_read_from_POS0BUS(void)
 {
-    int c=101230;
+    uint32_t c=101230;
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+POS0BUS_Data_uz_EnDat ,c);
     int c_readback=uz_EnDat_hw_read_POS0BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
@@ -147,7 +147,7 @@ void test_uz_EnDat_hw_read_from_POS0BUS(void)
 
 void test_uz_EnDat_hw_read_from_POS1BUS(void)
 {
-    int c=101230;
+    uint32_t c=101230;
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+POS1BUS_Data_uz_EnDat,c);
     int c_readback=uz_EnDat_hw_read_POS1BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
@@ -160,7 +160,7 @@ void test_uz_EnDat_hw_read_from_POS1BUS(void)
 
 void test_uz_EnDat_hw_read_from_POS2BUS(void)
 {
-    int c=101230;
+    uint32_t c=101230;
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+POS2BUS_Data_uz_EnDat ,c);
     int c_readback=uz_EnDat_hw_read_POS2BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
@@ -174,7 +174,7 @@ void test_uz_EnDat_hw_read_from_POS2BUS(void)
 
 void test_uz_EnDat_hw_read_from_POS3BUS(void)
 {
-    int c=101230;
+    uint32_t c=101230;
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+POS3BUS_Data_uz_EnDat ,c);
     int c_readback=uz_EnDat_hw_read_POS3BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
@@ -187,7 +187,7 @@ void test_uz_EnDat_hw_read_from_POS3BUS(void)
 
 void test_uz_EnDat_hw_read_from_POS4BUS(void)
 {
-    int c=101230;
+    uint32_t c=101230;
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+POS4BUS_Data_uz_EnDat ,c);
     int c_readback=uz_EnDat_hw_read_POS4BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
@@ -198,16 +198,16 @@ void test_uz_EnDat_hw_read_from_POS4BUS(void)
 }
 
 
-void test_uz_EnDat_hw_read_from_CRCDEBUG(void)
+void test_uz_EnDat_hw_read_from_CRCFFSTORED(void)
 {
-    int c=101230;
-    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+CRCDEBUG_Data_uz_EnDat ,c);
-    int c_readback=uz_EnDat_hw_read_CRCDEBUG(TEST_BASE_ADDRESS);
+    uint8_t c=101;
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+CRCFFSTORED_Data_uz_EnDat ,c);
+    int c_readback=uz_EnDat_hw_read_CRCFFSTORED(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c,c_readback);
 
     // Ignores how often the read function is called and returns (c)
-    uz_axi_read_int32_IgnoreAndReturn(c);
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_CRCDEBUG(0));
+    uz_axi_read_uint32_IgnoreAndReturn(c);
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_CRCFFSTORED(0));
 }
 
 

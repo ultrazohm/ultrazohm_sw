@@ -77,8 +77,8 @@ uint32_t uz_EnDat_hw_read_POS4BUS(uint32_t base_address)
     return (uz_axi_read_int32(base_address+POS4BUS_Data_uz_EnDat));
 }
 
-uint8_t uz_EnDat_hw_read_CRCDEBUG(uint32_t base_address)
+uint8_t uz_EnDat_hw_read_CRCFFSTORED(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_int32(base_address+CRCDEBUG_Data_uz_EnDat));
+    return (uz_axi_read_int32(base_address+CRCFFSTORED_Data_uz_EnDat));
 }

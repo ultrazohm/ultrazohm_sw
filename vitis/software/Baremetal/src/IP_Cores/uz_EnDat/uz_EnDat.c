@@ -37,6 +37,7 @@ uz_EnDat_t* uz_EnDat_init(struct uz_EnDat_config_t config)
     }
     
 
+
 int uz_EnDat_write_control_and_divider (uz_EnDat_t* self, uint16_t ctrlword, uint8_t divider)
 {
 
@@ -45,8 +46,9 @@ int uz_EnDat_write_control_and_divider (uz_EnDat_t* self, uint16_t ctrlword, uin
     
     if (ctrlword <1) 
         ctrlword = 1;
-    if (divider <1)
-        divider = 1;
+
+    if (divider < 0 || divider > 6)
+    divider = 3;
 
     uz_EnDat_hw_write_controlword(self->config.base_address, ctrlword);
     uz_EnDat_hw_write_divider(self->config.base_address,divider);
@@ -96,12 +98,122 @@ int uz_EnDat_write_factor(uz_EnDat_t* self, uint16_t factor, uint8_t num)
 
 uint16_t uz_EnDat_read_statusword(uz_EnDat_t* self)
 {
+    uint16_t ret;
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
+    ret = uz_EnDat_hw_read_statusword(self->config.base_address);
 
-    
+    return(ret);
 }
+
+
+
+uint32_t uz_EnDat_read_pos(uz_EnDat_t* self, uint8_t num)
+{
+
+    uint32_t ret;
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    switch (num)
+    {
+    case 0:
+        ret = uz_EnDat_hw_read_POS0BUS(self->config.base_address);
+        break;
+
+    case 1:
+        ret = uz_EnDat_hw_read_POS1BUS(self->config.base_address);
+        break;
+
+    case 2:
+        ret = uz_EnDat_hw_read_POS2BUS(self->config.base_address);
+        break;
+
+    case 3:
+        ret = uz_EnDat_hw_read_POS3BUS(self->config.base_address);
+        break;
+
+    case 4:
+        ret = uz_EnDat_hw_read_POS4BUS(self->config.base_address);
+        break;
+    
+    
+        
+    default:
+        return(-1);
+        break;
+    }
+    
+    return(ret);
+}
+
+
+uint8_t uz_EnDat_read_crc(uz_EnDat_t* self)
+{
+
+    uint8_t ret;
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    ret = uz_EnDat_hw_read_CRCFFSTORED(self->config.base_address);
+
+    return(ret);
+}
+
+
+int uz_EnDat_set_default_values (uz_EnDat_t* self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    int i,j=0;
+    for (i=0 ; i<=FKTENUM-1 ; i++)
+    {
+
+        j = uz_EnDat_write_factor(self->config.base_address,FKT_DEF,i);
+
+        if(j ==-1)
+        return(j);
+        
+    }
+    j   =  uz_EnDat_write_control_and_divider(self->config.base_address,CTRLWORD_DEF,DIVIDER_DEF);
+
+    return(j);
+}
+
+
+uint16_t uz_EnDat_factor_converter(float in)
+{
+    uint32_t i;
+    
+    if (in <= 0.00001)
+    return (0);
+
+    i = floor(in * 100.0);
+
+    return (i);
+}
+
+uint16_t uz_EnDat_ctrlword_builder(ctrlwrd_expanded inp)
+{
+    int mask = 0x0001;
+    uint16_t out = 0x0000;
+    int i=0;
+    for (i=0;i<=15-1;i++)
+    {   
+        if (inp[i])
+        out |= (1<<(i));
+
+        else
+        out &= ~(1<<(i));
+        
+                
+    }
+
+    return (out);
+
+}
+
 
 
 #endif

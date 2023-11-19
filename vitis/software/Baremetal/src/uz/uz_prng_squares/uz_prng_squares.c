@@ -1,3 +1,18 @@
+/******************************************************************************
+ * Copyright Contributors to the UltraZohm project.
+ * Copyright 2023 Tobias Schindler
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ ******************************************************************************/
 #include "uz_prng_squares.h"
 
 #include "../uz_global_configuration.h"
@@ -72,7 +87,8 @@ static uint32_t uz_prng_squares32_uniform_uint32(uint64_t ctr, uint64_t key)
     uint64_t y = ctr * key;
     uint64_t x = ctr * key;
     uint64_t z = y + key;
-    // Calculations and bitshifting according to paper https://arxiv.org/pdf/2004.06278.pdf
+    // Calculations and bit shifting according to paper https://arxiv.org/pdf/2004.06278.pdf
+    // Code adjusted to fit coding rules as good as possible, bitshift and bitwise operations are required.
     x = (x * x) + y;
     x = (x >> 32U) | (x << 32U);
     x = (x * x) + z;

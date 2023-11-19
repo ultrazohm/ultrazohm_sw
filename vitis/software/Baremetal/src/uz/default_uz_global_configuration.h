@@ -71,6 +71,7 @@
 #define UZ_TRAJECTORY_MAX_INSTANCES 0U
 #define UZ_PRNG_SQUARES_MAX_INSTANCES 0U
 #define UZ_MTWISTER_MAX_INSTANCES 0U
+#define UZ_PRNG_PCG_MAX_INSTANCES 0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -121,4 +122,6 @@
 #define UZ_TRAJECTORY_MAX_INSTANCES 50U
 #define UZ_PRNG_SQUARES_MAX_INSTANCES 10U
 #define UZ_MTWISTER_MAX_INSTANCES 10U
+#define UZ_PRNG_PCG_MAX_INSTANCES 10U
+
 #endif

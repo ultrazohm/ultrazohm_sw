@@ -31,13 +31,6 @@ Pseudorandom number generator (PRNG)
 
   - https://en.wikipedia.org/wiki/Well_equidistributed_long-period_linear
 
-  - https://en.wikipedia.org/wiki/Permuted_congruential_generator
-
-    - https://www.pcg-random.org/pdf/hmc-cs-2014-0905.pdf
-    - https://www.pcg-random.org/
-    - https://github.com/imneme/pcg-c-basic/blob/master/pcg_basic.c
-
-
 
 - Algorithms to force better uniform distribution:
 
@@ -74,3 +67,4 @@ Implemented generators
   
     uz_prng_squares/uz_prng_squares
     uz_prng_mtwister/uz_prng_mtwister
+    uz_prng_pcg/uz_prng_pcg

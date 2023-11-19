@@ -4,9 +4,12 @@ Mersene Twister
 
 
 - Twister:
-  - http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/SFMT/index.html#SFMT
   - http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/TINYMT/index.html
   - https://github.com/MersenneTwister-Lab/TinyMT
+
+
+MT19937
+=======
 
 .. plot::
 
@@ -26,3 +29,10 @@ Mersene Twister
    axs[1].hist(df.number, bins=50, linewidth=0.5, edgecolor="white",density=True)
    title_string=str(mean)
    axs[1].set_title("Histogram\n of Squares\n with mean:" + title_string )
+
+
+SIMD-oriented Fast Mersenne Twister (SFMT)
+==========================================
+
+  - http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/SFMT/index.html#SFMT
+  - Can not be used since the implementation relies on recursion, which is not allowed by MISRA and must not be used in ISR due to real-time requirements

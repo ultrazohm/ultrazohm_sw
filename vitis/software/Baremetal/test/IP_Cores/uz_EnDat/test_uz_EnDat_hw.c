@@ -8,7 +8,7 @@
 #include "test_assert_with_exception.h"  // NOLINT
 #include "mock_uz_AXI.h"  // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
 #include "uz_EnDat_hwAddresses.h"
-#define TEST_BASE_ADDRESS 0x00000000F  // random hex value that represents a fictional base address
+#define TEST_BASE_ADDRESS 0x00000FF0F  // random hex value that represents a fictional base address
 
 void setUp(void) {
     // ARE WE STILL USING C?????
@@ -106,7 +106,7 @@ void test_uz_EnDat_hw_write_to_controlword(void) {
 //// READING
 
 void test_uz_EnDat_hw_read_from_statusword(void) {
-    uint16_t c = 1012;
+    uint32_t c = 1;
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+statusword_Data_uz_EnDat, c);
     uint32_t c_readback = uz_EnDat_hw_read_statusword(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c, c_readback);
@@ -118,7 +118,7 @@ void test_uz_EnDat_hw_read_from_statusword(void) {
 
 
 void test_uz_EnDat_hw_read_from_POS0BUS(void) {
-    uint32_t c = 101230;
+    uint32_t c = 2;
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+POS0BUS_Data_uz_EnDat, c);
     uint32_t c_readback = uz_EnDat_hw_read_POS0BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c, c_readback);
@@ -130,7 +130,7 @@ void test_uz_EnDat_hw_read_from_POS0BUS(void) {
 
 
 void test_uz_EnDat_hw_read_from_POS1BUS(void) {
-    uint32_t c = 101230;
+    uint32_t c = 3;
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+POS1BUS_Data_uz_EnDat, c);
     uint32_t c_readback = uz_EnDat_hw_read_POS1BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c, c_readback);
@@ -142,7 +142,7 @@ void test_uz_EnDat_hw_read_from_POS1BUS(void) {
 
 
 void test_uz_EnDat_hw_read_from_POS2BUS(void) {
-    uint32_t c = 101230;
+    uint32_t c = 4;
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+POS2BUS_Data_uz_EnDat, c);
     uint32_t c_readback = uz_EnDat_hw_read_POS2BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c, c_readback);
@@ -155,7 +155,7 @@ void test_uz_EnDat_hw_read_from_POS2BUS(void) {
 
 
 void test_uz_EnDat_hw_read_from_POS3BUS(void) {
-    uint32_t c = 101230;
+    uint32_t c = 5;
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+POS3BUS_Data_uz_EnDat, c);
     uint32_t c_readback = uz_EnDat_hw_read_POS3BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c, c_readback);
@@ -167,7 +167,7 @@ void test_uz_EnDat_hw_read_from_POS3BUS(void) {
 
 
 void test_uz_EnDat_hw_read_from_POS4BUS(void) {
-    uint32_t c = 101230;
+    uint32_t c = 6;
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+POS4BUS_Data_uz_EnDat, c);
     uint32_t c_readback = uz_EnDat_hw_read_POS4BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c, c_readback);
@@ -179,7 +179,7 @@ void test_uz_EnDat_hw_read_from_POS4BUS(void) {
 
 
 void test_uz_EnDat_hw_read_from_CRCFFSTORED(void) {
-    uint8_t c = 101;
+    uint8_t c = 7;
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+CRCFFSTORED_Data_uz_EnDat, c);
     uint32_t c_readback = uz_EnDat_hw_read_CRCFFSTORED(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c, c_readback);

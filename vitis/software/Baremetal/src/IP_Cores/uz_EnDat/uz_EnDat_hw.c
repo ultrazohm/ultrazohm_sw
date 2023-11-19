@@ -44,41 +44,41 @@ void uz_EnDat_hw_write_controlword(uint32_t base_address,uint16_t controlword)
 uint16_t uz_EnDat_hw_read_statusword(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_int32(base_address+statusword_Data_uz_EnDat));
+    return ((uint16_t)uz_axi_read_uint32(base_address+statusword_Data_uz_EnDat));
 }
 
 uint32_t uz_EnDat_hw_read_POS0BUS(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_int32(base_address+POS0BUS_Data_uz_EnDat));
+    return (uz_axi_read_uint32(base_address+POS0BUS_Data_uz_EnDat));
 }
 
 uint32_t uz_EnDat_hw_read_POS1BUS(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_int32(base_address+POS1BUS_Data_uz_EnDat));
+    return (uz_axi_read_uint32(base_address+POS1BUS_Data_uz_EnDat));
 }
 
 uint32_t uz_EnDat_hw_read_POS2BUS(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_int32(base_address+POS2BUS_Data_uz_EnDat));
+    return (uz_axi_read_uint32(base_address+POS2BUS_Data_uz_EnDat));
 }
 
 uint32_t uz_EnDat_hw_read_POS3BUS(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_int32(base_address+POS3BUS_Data_uz_EnDat));
+    return (uz_axi_read_uint32(base_address+POS3BUS_Data_uz_EnDat));
 }
 
 uint32_t uz_EnDat_hw_read_POS4BUS(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_int32(base_address+POS4BUS_Data_uz_EnDat));
+    return (uz_axi_read_uint32(base_address+POS4BUS_Data_uz_EnDat));
 }
 
 uint8_t uz_EnDat_hw_read_CRCFFSTORED(uint32_t base_address)
 {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_int32(base_address+CRCFFSTORED_Data_uz_EnDat));
+    return ((uint8_t)uz_axi_read_uint32(base_address+CRCFFSTORED_Data_uz_EnDat));
 }

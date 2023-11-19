@@ -9,7 +9,7 @@
 #include "mock_uz_EnDat_hw.h"  // Mock the _hw functions to isolate testing
 
 
-#define TEST_BASE_ADDRESS 0x0000000A
+#define TEST_BASE_ADDRESS 0xE00F00A
 #define TEST_IP_CORE_FRQ 100000000U
 
 

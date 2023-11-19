@@ -41,7 +41,7 @@
         - -Wconversion
         - -Wdouble-promotion
         - -Wswitch-default
-        #- -Walloca
+        - -Walloca
         
 
 :paths:

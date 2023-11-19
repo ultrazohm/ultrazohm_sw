@@ -2,7 +2,7 @@
 #ifdef TEST  // NOLINT
 #include <stdint.h>
 
-#include "unity.h"  // NOLINT
+#include "unity.h"
 
 #include "uz_EnDat.h"
 #include "test_assert_with_exception.h"  // NOLINT

@@ -46,4 +46,3 @@ Software Framework
     external_stop/external_stop
     uz_Trajectory/uz_Trajectory
     uz_prng/uz_prng
-    uz_prng/uz_prng_squares/uz_prng_squares

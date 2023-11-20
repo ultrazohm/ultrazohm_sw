@@ -28,7 +28,7 @@ MT19937
 
    fig, axs = plt.subplots(2, 1,layout='constrained')
    axs[0].set_title("Random uint32\n numbers from\n uz_prng_squares")
-   axs[0].plot(df.index,df.number)
+   axs[0].plot(df.index,df.number,'o')
 
    axs[1].hist(df.number, bins=50, linewidth=0.5, edgecolor="white",density=True)
    title_string=str(mean)

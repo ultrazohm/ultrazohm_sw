@@ -25,7 +25,7 @@
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
-#define UZ_MYIP2_MAX_INSTANCES                          0U
+#define UZ_EnDat_MAX_INSTANCES                          1U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
 #define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
@@ -61,7 +61,7 @@
 #ifdef TEST
     #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  13U
     #define UZ_DAC_INTERFACE_MAX_INSTANCES                  10U
-    #define UZ_MYIP2_MAX_INSTANCES                          5U
+    #define UZ_EnDat_MAX_INSTANCES                          20U
     #define UZ_MYIP_MAX_INSTANCES                           5U
     #define UZ_ADCLTC2311_MAX_INSTANCES                     50U
     #define UZ_PI_CONTROLLER_MAX_INSTANCES                  100U

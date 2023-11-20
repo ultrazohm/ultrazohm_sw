@@ -29,7 +29,7 @@ PCG Random Number
    std=df.loc[:,'number'].std()
    var=df.loc[:,'number'].var()
 
-   fig, axs = plt.subplots(2, 1)
+   fig, axs = plt.subplots(2, 1,layout='constrained')
    axs[0].set_title("Random uint32\n numbers from\n uz_prng_squares")
    axs[0].plot(df.index,df.number)
 

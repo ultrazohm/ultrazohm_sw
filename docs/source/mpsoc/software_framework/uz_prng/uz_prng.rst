@@ -4,8 +4,6 @@ Pseudorandom number generator (PRNG)
 
 - PRNG create random 32-bit unsigned integer in a uniform distribution
 
-
-
 - https://en.wikipedia.org/wiki/Pseudorandom_number_generator
 - https://en.wikipedia.org/wiki/List_of_random_number_generators#cite_note-38
 - Only non-cryptographically secure generators are of interests here
@@ -23,14 +21,6 @@ Pseudorandom number generator (PRNG)
 
     - https://github.com/efficient/fasst/blob/master/mica2/src/mica/util/philox/philox_random.h
 
-  - Mersenne Twister
-
-    - https://en.wikipedia.org/wiki/Mersenne_Twister
-    - https://github.com/ESultanik/mtwister/blob/master/mtwister.c
-    - 
-
-  - https://en.wikipedia.org/wiki/Well_equidistributed_long-period_linear
-
 
 - Algorithms to force better uniform distribution:
 
@@ -45,7 +35,6 @@ Pseudorandom number generator (PRNG)
     - 
 
     - https://en.wikipedia.org/wiki/Latin_hypercube_sampling (Mostly for experiement setup)
-    - 
 
 - Possibly hardware-accelerate number generation
 
@@ -58,8 +47,36 @@ Pseudorandom number generator (PRNG)
     - http://simul.iro.umontreal.ca/testu01/install.html
     
 
+Comparison
+==========
+
+.. plot::
+
+   import matplotlib.pyplot as plt
+   import pandas as pd
+   import matplotlib.ticker as mtick
+
+   columns=['index','number']
+   xoshiro=pd.read_csv('uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv', header=None, names=columns)
+   twister=pd.read_csv('uz_prng_mtwister/uz_prng_mtwister_uint32.csv', header=None, names=columns)
+   pcg=pd.read_csv('uz_prng_pcg/uz_prng_pcg_uint32.csv', header=None, names=columns)
+   squares=pd.read_csv('uz_prng_squares/uz_prng_squares_uint32.csv', header=None, names=columns)
+
+   legend=['xoshiro','MTwister','pcg','squares']
+   fig, ax = plt.subplots(1,3,layout='constrained',figsize=(14,5))
+   ax[0].hist([xoshiro.number[1:20], twister.number[1:20], pcg.number[1:20], squares.number[1:20]], bins=10, edgecolor="white",density=True)
+   ax[1].hist([xoshiro.number[1:200], twister.number[1:200], pcg.number[1:200], squares.number[1:200]], bins=10, edgecolor="white",density=True)
+   ax[2].hist([xoshiro.number, twister.number, pcg.number, squares.number], bins=10, edgecolor="white",density=True,label=legend)
+   ax[0].set_title("$N=20$")
+   ax[1].set_title("$N=200$")
+   ax[2].set_title("$N=5000$")
+   fig.legend(loc='outside right upper')
+   fig.suptitle('Histogram of different PRNG for different number of samples')
+
+
+
 Implemented generators
-----------------------
+======================
 
 ..	toctree::
     :maxdepth: 1
@@ -68,3 +85,4 @@ Implemented generators
     uz_prng_squares/uz_prng_squares
     uz_prng_mtwister/uz_prng_mtwister
     uz_prng_pcg/uz_prng_pcg
+    uz_prng_xoshiro/uz_prng_xoshiro

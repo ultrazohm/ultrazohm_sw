@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
-#include "uz_incrementalEncoder_V26.h"
+#include "uz_incrementalEncoder.h"
 
 #include "../../uz/uz_global_configuration.h"
 #if UZ_INCREMENTALENCODER_MAX_INSTANCES > 0U

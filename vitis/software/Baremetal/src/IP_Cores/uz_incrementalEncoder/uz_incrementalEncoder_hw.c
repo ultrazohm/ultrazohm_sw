@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and limitations under the License.
 ******************************************************************************/
 
-#include "uz_incrementalEncoder_hw_V26.h"
+#include "uz_incrementalEncoder_hw.h"
 
 #include "IncreEncoder_V26_ip_addr.h"
 

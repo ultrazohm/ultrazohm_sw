@@ -96,13 +96,13 @@ float a_q_k_1 = 0;
 int k = 0;
 int idx = 0;
 
-// Reference profile idq
+// Reference profile values for idq
 float ref_iq[10] = {
 	0, 2, -2, -1, 3, -1, -3, -4, -2, 2
 };
 
 float ref_id[10] ={
-	0,1,2,3,3,-2,0,-0.5,2, 2
+	0, 1, 2, 3, 3, -2, 0, -0.5, 2, 2
 };
 
 void ISR_Control(void *data)
@@ -113,6 +113,7 @@ void ISR_Control(void *data)
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
+    // whether to use profile or javascope values for idq reference
 	if (select_automatic_idiq) {
 		start_marker = 1.0f;;
 		if ((k%200)==0) {
@@ -132,6 +133,7 @@ void ISR_Control(void *data)
 		idx=0;
 	}
 
+	// test using CiL
 	if (use_CiL) {
 		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_IP_core);
 		uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_IP_core);
@@ -173,13 +175,6 @@ void ISR_Control(void *data)
 				a_q_k_1 = uz_matrix_get_element_zero_based(output,0,1);
 				uz_matrix_multiply_by_scalar(output,24.0f);
 
-				/*float v_d = uz_matrix_get_element_zero_based(output,0,0);
-				float v_q = uz_matrix_get_element_zero_based(output,0,1);
-
-				float eps_elec = Global_Data.av.mechanicalRotorSpeed * M_PI / 30.0f * 3.0f;
-
-				float cumulative_angle +=*/
-
 				pmsm_inputs.v_d_V = uz_matrix_get_element_zero_based(output,0,0);
 				pmsm_inputs.v_q_V = uz_matrix_get_element_zero_based(output,0,1);
 
@@ -189,6 +184,7 @@ void ISR_Control(void *data)
 			}
 		}
 	}
+	// use testbench
 	if (use_Motor) {
     	Global_Data.av.theta_mech = Global_Data.av.theta_mech - offset;
     	Global_Data.av.omega_elec = Global_Data.av.omega_m * 3.0f;

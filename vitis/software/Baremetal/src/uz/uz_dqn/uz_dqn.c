@@ -213,7 +213,9 @@ float uz_dqn_update(uz_dqn_t *self)
     }
     cum_loss = cum_loss / (float)self->minibatch_size;
     // uz_nn clip gradients
-    uz_nn_clip_gradients(self->critic,(float)self->minibatch_size);
+    //uz_nn_clip_gradients(self->critic,(float)self->minibatch_size);
+    // uz_nn-clip_gradients_l2_norm
+    uz_nn_clip_gradients_l2_norm(self->critic,(float)self->minibatch_size);
     adam_optimizer_step(self->adam, self->critic);
     uz_nn_set_gradients_zero(self->critic);
     uz_dqn_copy_net(self);

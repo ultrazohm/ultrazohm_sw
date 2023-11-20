@@ -419,6 +419,16 @@ void uz_nn_clip_gradient_in_layer(uz_nn_layer_t *const self, float clippingvalue
     uz_matrix_clipp_values(self->gradients,-clippingvalue,clippingvalue);
 }
 
+void uz_nn_clip_gradient_in_layer_l2_norm(uz_nn_layer_t *const self, float clippingvalue)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    float l2_norm = uz_matrix_l2_norm_vector(self->gradients);
+    if (l2_norm > clippingvalue){
+    	uz_matrix_multiply_by_scalar(self->gradients,clippingvalue/l2_norm);
+    }
+}
+
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self)
 {
     uz_assert_not_NULL(self);

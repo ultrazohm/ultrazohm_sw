@@ -280,4 +280,5 @@ void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t c
 
 void uz_matrix_reshape_and_concatenate_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
 void uz_matrix_clipp_values(uz_matrix_t const *const A, float min, float max);
+float uz_matrix_l2_norm_vector(uz_matrix_t const *const A);
 #endif // UZ_MATRIX_H

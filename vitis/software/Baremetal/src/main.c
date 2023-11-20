@@ -29,8 +29,8 @@ int evalcounter = 0;
 #include "uz/uz_environment_pt1/uz_environment_pt1.h"
 // defines for nn
 #define EXPERIENCE_BUFFER_LENGTH 150000U
-#define MINIBATCHSIZE 16U
-#define NUMBER_OF_EPOCHS 75+1U // wegen eval, sodass bei 50 epochen auch 50*NUMBER_OF_UPDATES_PER_EPOCH erreicht werden
+#define MINIBATCHSIZE 8U
+#define NUMBER_OF_EPOCHS 500+1U // wegen eval, sodass bei 50 epochen auch 50*NUMBER_OF_UPDATES_PER_EPOCH erreicht werden
 #define NUMBER_OF_UPDATES_PER_EPOCH 1000U // 100 Hz fuer 5s sind 500 samples und damit 500 updates
 #define NUMBER_OF_EVALS 5+1U
 #define TARGET_UPDATE_FREQUENCY 1U
@@ -38,7 +38,7 @@ int evalcounter = 0;
 #define NUMBER_OF_INPUTS 5U
 #define NUMBER_OF_OUTPUTS 5U
 #define NUMBER_OF_HIDDEN_LAYER 3U
-#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 32U
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64U
 #define NUMBEROFTESTSTEPS 50U
 
 float discountfact = 0.99f;

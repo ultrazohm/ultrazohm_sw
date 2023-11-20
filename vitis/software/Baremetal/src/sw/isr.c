@@ -65,7 +65,7 @@ float position_Kp = 2.0f;
 float position_Ki = 0.0f;
 // limits and time setting
 float limit_error = 430.0f;
-float disable_control = 380.0f;
+float disable_control = 340.0f;
 // randomize start position
 float max_pos = 300.0f;
 float start_pos = 0.0f;

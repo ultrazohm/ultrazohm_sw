@@ -547,6 +547,17 @@ for (uint32_t column2 = 0; column2 < B->columns; column2++)
 }
 }
 
+float uz_matrix_l2_norm_vector(uz_matrix_t const *const A){
+	uz_assert_not_NULL(A);
+	uz_assert(A->length_of_data);
+	float res = 0.0f;
+	for (uint32_t i = 0; i < A->length_of_data; i++)
+	{
+		res+= A->data[i] * A->data[i];
+	}
+return sqrt(res);
+}
+
 void uz_matrix_clipp_values(uz_matrix_t const *const A, float min, float max)
 {
 uz_assert_not_NULL(A);

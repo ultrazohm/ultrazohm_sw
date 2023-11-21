@@ -31,8 +31,8 @@ struct uz_incrementalEncoder_config{
     uint32_t line_number_per_turn_mech; /**< Number of lines eper one mechanical turn of the attached encoder */
     float    OmegaPerOverSample_in_rpm; /**< Rotational speed omega in 1/min after which the OverSamplingFactor is increased by one */
     uint32_t drive_pole_pair; /**< Number of pole pairs of the electric drive that is attached to the encoder. Set to zero if no drive is attached or increments per mechanical turn is not an integer multiple of pole pairs */
-    uint32_t Encoder_mech_Offset; /**< Set the Mechanical Encoder Offset */
-    uint32_t Encoder_elec_Offset; /**< Set the electrical Encoder Offset */
+    uint32_t Encoder_mech_Offset; /**< Set the Mechanical Encoder Offset in increments*/
+    uint32_t Encoder_elec_Offset; /**< Set the electrical Encoder Offset in increments*/
     enum uz_incrementalEncoder_counting_direction counting_direction; /**< Set the counting direction to \n
                                                                     0=counter_clock_wise or \n
                                                                     1=counter_clock_wise */

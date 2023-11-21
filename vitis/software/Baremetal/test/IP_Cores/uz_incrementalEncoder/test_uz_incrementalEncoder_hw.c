@@ -25,6 +25,24 @@ void test_uz_incrementalEncoder_hw_set_pi2_inc(void)
     
 }
 
+void test_uz_incrementalEncoder_hw_reset_ip_core(void) {
+    uz_axi_write_bool_Expect(BASE_ADDRESS + IPCore_Enable_Incremental_Encoder_v26, false);
+    uz_axi_write_bool_Expect(BASE_ADDRESS + IPCore_Reset_Incremental_Encoder_v26, false);
+    uz_axi_write_bool_Expect(BASE_ADDRESS + IPCore_Reset_Incremental_Encoder_v26, true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS + IPCore_Reset_Incremental_Encoder_v26, false);
+    uz_axi_write_bool_Expect(BASE_ADDRESS + IPCore_Enable_Incremental_Encoder_v26, true);
+    uz_incrementalEncoder_hw_reset_ip_core(BASE_ADDRESS);
+}
+
+void test_uz_incrementalEncoder_hw_set_Position_Offset_assert_size(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_hw_set_Position_Offset(BASE_ADDRESS, UINT32_MAX));
+}
+void test_uz_incrementalEncoder_hw_set_Position_Offset(void) {
+    uint32_t offset = 20U;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + Position_offset_AXI4_Data_Incremental_Encoder_v26, offset);
+    uz_incrementalEncoder_hw_set_Position_Offset(BASE_ADDRESS, offset);
+}
+
 void test_uz_incrementalEncoder_hw_set_timer_fpga_ms(void)
 {
     float expected=1.5915604308248e-5f; // (T_50MHz*IncPerTurn)/(2*pi) from Simulink model
@@ -39,6 +57,15 @@ void test_uz_incrementalEncoder_hw_set_incPerTurn_mech(void){
      uz_incrementalEncoder_hw_set_increments_per_turn_mechanical(BASE_ADDRESS,expected);
 }
 
+void test_uz_incrementalEncoder_hw_set_theta_el_Offset_assert_size(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_hw_set_theta_el_Offset(BASE_ADDRESS, UINT32_MAX));
+}
+void test_uz_incrementalEncoder_hw_set_theta_el_Offset(void) {
+    uint32_t offset = 20U;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + theta_el_offset_AXI4_Data_Incremental_Encoder_v26, offset);
+    uz_incrementalEncoder_hw_set_theta_el_Offset(BASE_ADDRESS, offset);
+}
+
 void test_uz_incrementalEncoder_hw_set_incPerTurn_elec(void){
     uint32_t expected=34531U;
     uz_axi_write_uint32_Expect(BASE_ADDRESS+IncPerTurn_elek_AXI4_Data_Incremental_Encoder_v26,expected);
@@ -50,6 +77,18 @@ void test_uz_incrementalEncoder_hw_set_omegaPerOverSampl(void){
     uz_axi_write_int32_Expect(BASE_ADDRESS+OmegaPerOverSampl_AXI4_Data_Incremental_Encoder_v26,uz_convert_float_to_sfixed(expected,11)); // datatype sfix24_en11
     TEST_ASSERT_EQUAL_HEX32(0x01A2E1U, uz_convert_float_to_sfixed(expected,11));
     uz_incrementalEncoder_hw_set_omegaPerOverSample(BASE_ADDRESS,expected);
+}
+
+void test_uz_incrementalEncoder_hw_set_speed_timeout_value(void) {
+    uint32_t expected = 100U;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + timeout_value_AXI4_Data_Incremental_Encoder_v26, expected);
+    uz_incrementalEncoder_hw_set_speed_timeout_value(BASE_ADDRESS, expected);
+}
+
+void test_uz_incrementalEncoder_hw_set_cw_ccw_direction(void) {
+    uint32_t expected = 1U;
+    uz_axi_write_uint32_Expect(BASE_ADDRESS + CW_CCW_Switch_AXI4_Data_Incremental_Encoder_v26, expected);
+    uz_incrementalEncoder_hw_set_cw_ccw_direction(BASE_ADDRESS, expected);
 }
 
 void test_uz_incrementalEncoder_hw_get_omega(void){

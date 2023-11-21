@@ -160,6 +160,7 @@ static void set_offset(uz_incrementalEncoder_t* self){
 
 static void set_counting_direction(uz_incrementalEncoder_t* self){
 	 uz_assert(self->is_ready);
+     uz_assert(self->config.counting_direction <= 1U);
 	 uz_incrementalEncoder_hw_set_cw_ccw_direction(self->config.base_address, self->config.counting_direction);
 }
 

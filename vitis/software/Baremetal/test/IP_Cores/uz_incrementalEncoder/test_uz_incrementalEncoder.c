@@ -10,7 +10,7 @@
 
 struct uz_incrementalEncoder_config testconfig={
     .base_address=TEST_BASE_ADDRESS,
-    .ip_core_frequency_Hz=50000000U,
+    .ip_core_frequency_Hz=100000000U,
     .line_number_per_turn_mech=5000u,
     .OmegaPerOverSample_in_rpm=500.0f,
     .drive_pole_pair=4U
@@ -19,10 +19,15 @@ struct uz_incrementalEncoder_config testconfig={
 void setUp(void)
 {
     testconfig.base_address=TEST_BASE_ADDRESS;
-    testconfig.ip_core_frequency_Hz=50000000U;
+    testconfig.ip_core_frequency_Hz=100000000U;
     testconfig.line_number_per_turn_mech=5000u;
     testconfig.OmegaPerOverSample_in_rpm=500.0f;
     testconfig.drive_pole_pair=4U;
+    testconfig.Speed_Timeout_s = 0.1f;
+    testconfig.Encoder_elec_Offset = 0.0f;
+    testconfig.Encoder_mech_Offset = 0.0f;
+    testconfig.Counting_Direction = 0U;
+    testconfig.enable_d_axis_Reset = false;
 }
 
 void tearDown(void)
@@ -31,18 +36,26 @@ void tearDown(void)
 
 
 uz_incrementalEncoder_t* successful_init(){
+    uz_incrementalEncoder_hw_reset_ip_core_Expect(testconfig.base_address);
+    uz_incrementalEncoder_hw_set_Position_Offset_Expect(testconfig.base_address, testconfig.Encoder_mech_Offset);
+    uz_incrementalEncoder_hw_set_theta_el_Offset_Expect(testconfig.base_address, testconfig.Encoder_elec_Offset);
+    uint32_t expected_inc_per_turn_elec=testconfig.line_number_per_turn_mech*4 / testconfig.drive_pole_pair; // *4 due to quadrature factor
+    uz_incrementalEncoder_hw_set_d_axis_hit_Offset_Expect(testconfig.base_address, (expected_inc_per_turn_elec+10U));
+    uint32_t speed_timeout = testconfig.Speed_Timeout_s * testconfig.ip_core_frequency_Hz;
+    uz_incrementalEncoder_hw_set_speed_timeout_value_Expect(testconfig.base_address, speed_timeout);
+    uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.Counting_Direction);
     // Make sure the correct config values are written to the IP-Core
     // PI2_Inc_AXI is 0.0013 in the Simulink model [(2*pi/(IncPerTurn*QuadratureFactor))*PolePair ]
     float expected_pi2_inc=0.0012566447257996f; // (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
     uz_incrementalEncoder_hw_set_pi2_inc_Expect(TEST_BASE_ADDRESS,expected_pi2_inc);
-    // (T_50MHz*IncPerTurn)/(2*pi) in Simulink
-    float expected_timer_fpga=1.5915604308248e-5f * 2.0f; // Half of the expected timer due to bug in IP-Core, see issue #145
+    // (T_100MHz*IncPerTurn)/(2*pi) in Simulink
+    float expected_timer_fpga=7.957748e-6f; 
     uz_incrementalEncoder_hw_set_timer_fpga_ms_Expect(TEST_BASE_ADDRESS, expected_timer_fpga);
 
     uint32_t expected_inc_per_turn_mech=5000U*4U; // random encoder value, *4 due to quadrature factor
     uz_incrementalEncoder_hw_set_increments_per_turn_mechanical_Expect(TEST_BASE_ADDRESS,expected_inc_per_turn_mech);
 
-    uint32_t expected_inc_per_turn_elec=testconfig.line_number_per_turn_mech*4 / testconfig.drive_pole_pair; // *4 due to quadrature factor
+   
     uz_incrementalEncoder_hw_set_increments_per_turn_electric_Expect(TEST_BASE_ADDRESS,expected_inc_per_turn_elec);
 
     float expected_omegaPerOverSampl=52.35986328125f; // from Simulink
@@ -84,17 +97,24 @@ void test_uz_incrementalEncoder_get_position(void){
 void test_uz_incrementalEncoder_non_integer_pole_pair(void){
     // This test makes sure that if increments per turn is not an integer multiple of pole pair, increments_per_turn is set to a default and calling get_theta_el generates an assertion
     testconfig.drive_pole_pair=9U;
+    uz_incrementalEncoder_hw_reset_ip_core_Expect(testconfig.base_address);
+    uz_incrementalEncoder_hw_set_Position_Offset_Expect(testconfig.base_address, testconfig.Encoder_mech_Offset);
+    uz_incrementalEncoder_hw_set_theta_el_Offset_Expect(testconfig.base_address, testconfig.Encoder_elec_Offset);
+    uint32_t expected_inc_per_turn_elec=testconfig.line_number_per_turn_mech*4; // *4 due to quadrature factor but pole pair = 1 if theta_el can not be used
+    uz_incrementalEncoder_hw_set_d_axis_hit_Offset_Expect(testconfig.base_address, (expected_inc_per_turn_elec+10U));
+    uint32_t speed_timeout = testconfig.Speed_Timeout_s * testconfig.ip_core_frequency_Hz;
+    uz_incrementalEncoder_hw_set_speed_timeout_value_Expect(testconfig.base_address, speed_timeout);
+    uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.Counting_Direction);
     
     float expected_pi2_inc= (2.0f*UZ_PIf)/( (float)testconfig.line_number_per_turn_mech*4.0f)* (float)testconfig.drive_pole_pair; // (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
     uz_incrementalEncoder_hw_set_pi2_inc_Expect(TEST_BASE_ADDRESS,expected_pi2_inc);
     // (T_50MHz*IncPerTurn)/(2*pi) in Simulink
-    float expected_timer_fpga=1.5915604308248e-5f * 2.0f; // Half of the expected timer due to bug in IP-Core, see issue #145
+    float expected_timer_fpga=7.957748e-06f; 
     uz_incrementalEncoder_hw_set_timer_fpga_ms_Expect(TEST_BASE_ADDRESS, expected_timer_fpga);
 
     uint32_t expected_inc_per_turn_mech=5000U*4U; // random encoder value, *4 due to quadrature factor
     uz_incrementalEncoder_hw_set_increments_per_turn_mechanical_Expect(TEST_BASE_ADDRESS,expected_inc_per_turn_mech);
 
-    uint32_t expected_inc_per_turn_elec=testconfig.line_number_per_turn_mech*4U ; // *4 due to quadrature factor but pole pair = 1 if theta_el can not be used
     uz_incrementalEncoder_hw_set_increments_per_turn_electric_Expect(TEST_BASE_ADDRESS,expected_inc_per_turn_elec);
 
     float expected_omegaPerOverSampl=52.35986328125f; // from Simulink

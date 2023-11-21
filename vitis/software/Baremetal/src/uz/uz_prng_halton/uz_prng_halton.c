@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_prng_halton.h"
-
+#include <stdbool.h>
 struct uz_prng_halton_t
 {
     bool is_ready;
@@ -17,8 +17,10 @@ static uint32_t instance_counter = 0U;
 static uz_prng_halton_t instances[UZ_PRNG_HALTON_MAX_INSTANCES] = {0};
 
 static uz_prng_halton_t *uz_prng_halton_allocation(void);
+static float get_uniform_float(uint32_t i_th_element, uint32_t base);
 
-static uz_prng_halton_t *uz_prng_halton_allocation(void)
+
+    static uz_prng_halton_t *uz_prng_halton_allocation(void)
 {
     uz_assert(instance_counter < UZ_PRNG_HALTON_MAX_INSTANCES);
     uz_prng_halton_t *self = &instances[instance_counter];
@@ -33,23 +35,39 @@ uz_prng_halton_t *uz_prng_halton_init(uint32_t base)
     uz_prng_halton_t *self = uz_prng_halton_allocation();
     uz_assert(base > 1U);
     self->base = base;
-    self->n_element = 0U;
+    self->n_element = 100U; // Arbitrarily skips the first 100 numbers since Wikipedia states that for some bases, the first elements can be correlated
     return (self);
 }
 
-// Implementation based on Wiki pseudo-code https://en.wikipedia.org/wiki/Halton_sequence#cite_note-Kc1997-1
 float uz_prng_halton_get_uniform_float(uz_prng_halton_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    float r = get_uniform_float(self->n_element, self->base);
+    self->n_element++;
+    return r;
+}
+
+void uz_prng_halton_get_uniform_float_2d(uz_prng_halton_t *self, float *x, float *y)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    *x=get_uniform_float(self->n_element, 3U); // 
+    *y=get_uniform_float(self->n_element, 5U); // 
+    self->n_element++;
+}
+
+// Implementation based on Wiki pseudo-code https://en.wikipedia.org/wiki/Halton_sequence#cite_note-Kc1997-1
+static float get_uniform_float(uint32_t i_th_element, uint32_t base)
 {
     float f = 1.0f;
     float r = 0.0f;
-    uint32_t i = self->n_element;
-    while (i)
+    while (i_th_element)
     {
-        f = f / (float)self->base;
-        r = r + f * (float)(i % self->base);
-        i = i / self->base;
+        f = f / (float)base;
+        r = r + f * (float)(i_th_element % base);
+        i_th_element = i_th_element / base;
     }
-    self->n_element++;
     return r;
 }
 

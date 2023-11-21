@@ -156,9 +156,6 @@ static void set_offset(uz_incrementalEncoder_t* self){
 	 uz_assert(self->is_ready);
 	 uz_incrementalEncoder_hw_set_Position_Offset(self->config.base_address, self->config.Encoder_mech_Offset);
 	 uz_incrementalEncoder_hw_set_theta_el_Offset(self->config.base_address, self->config.Encoder_elec_Offset);
-     //Inits the d_axis_hit_offset with 0 and therefore disables this feature
-     uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, 0U);
-
 }
 
 static void set_counting_direction(uz_incrementalEncoder_t* self){

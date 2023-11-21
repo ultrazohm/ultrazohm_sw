@@ -14,7 +14,6 @@ void uz_incrementalEncoder_hw_set_increments_per_turn_electric(uint32_t base_add
 void uz_incrementalEncoder_hw_set_omegaPerOverSample(uint32_t base_address,float omega_per_over_sampl); 
 void uz_incrementalEncoder_hw_set_speed_timeout_value(uint32_t base_address,uint32_t timeout_ms);
 void uz_incrementalEncoder_hw_set_cw_ccw_direction(uint32_t base_address,uint32_t cw_ccw_direction);
-void uz_incrementalEncoder_hw_set_d_axis_hit_Offset(uint32_t base_address,uint32_t d_axis_hit_Offset_Value);
 
 //------------------------------------------------------------------------------------------------------------------------
 

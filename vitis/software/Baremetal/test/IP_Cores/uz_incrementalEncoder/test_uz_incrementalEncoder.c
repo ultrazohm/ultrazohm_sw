@@ -39,7 +39,6 @@ uz_incrementalEncoder_t* successful_init(){
     uz_incrementalEncoder_hw_set_Position_Offset_Expect(testconfig.base_address, testconfig.Encoder_mech_Offset);
     uz_incrementalEncoder_hw_set_theta_el_Offset_Expect(testconfig.base_address, testconfig.Encoder_elec_Offset);
 
-    uz_incrementalEncoder_hw_set_d_axis_hit_Offset_Expect(testconfig.base_address, 0U);
     uint32_t speed_timeout = (testconfig.Speed_Timeout_ms * testconfig.ip_core_frequency_Hz) / 1000U;
     uz_incrementalEncoder_hw_set_speed_timeout_value_Expect(testconfig.base_address, speed_timeout);
     uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.Counting_Direction);
@@ -100,7 +99,6 @@ void test_uz_incrementalEncoder_non_integer_pole_pair(void){
     uz_incrementalEncoder_hw_set_Position_Offset_Expect(testconfig.base_address, testconfig.Encoder_mech_Offset);
     uz_incrementalEncoder_hw_set_theta_el_Offset_Expect(testconfig.base_address, testconfig.Encoder_elec_Offset);
     
-    uz_incrementalEncoder_hw_set_d_axis_hit_Offset_Expect(testconfig.base_address, 0U);
     uint32_t speed_timeout = (testconfig.Speed_Timeout_ms * testconfig.ip_core_frequency_Hz) / 1000U;
     uz_incrementalEncoder_hw_set_speed_timeout_value_Expect(testconfig.base_address, speed_timeout);
     uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.Counting_Direction);
@@ -113,7 +111,7 @@ void test_uz_incrementalEncoder_non_integer_pole_pair(void){
 
     uint32_t expected_inc_per_turn_mech=5000U*4U; // random encoder value, *4 due to quadrature factor
     uz_incrementalEncoder_hw_set_increments_per_turn_mechanical_Expect(TEST_BASE_ADDRESS,expected_inc_per_turn_mech);
-    
+
     uint32_t expected_inc_per_turn_elec=testconfig.line_number_per_turn_mech*4; // *4 due to quadrature factor but pole pair = 1 if theta_el can not be used
     uz_incrementalEncoder_hw_set_increments_per_turn_electric_Expect(TEST_BASE_ADDRESS,expected_inc_per_turn_elec);
 

@@ -93,11 +93,6 @@ void uz_incrementalEncoder_hw_set_cw_ccw_direction(uint32_t base_address,uint32_
 	uz_axi_write_uint32(base_address+CW_CCW_Switch_AXI4_Data_Incremental_Encoder_v26, cw_ccw_direction);	// set CW- CCW- counting with bool-value
 }
 
-void uz_incrementalEncoder_hw_set_d_axis_hit_Offset(uint32_t base_address,uint32_t d_axis_hit_Offset_Value){
-	uz_assert_not_zero_uint32(base_address);
-	uz_axi_write_uint32(base_address+d_axis_Hit_Compare_AXI_Data_Incremental_Encoder_v26, d_axis_hit_Offset_Value);	// set Counter-Compare_Value for d-Axis-Hit_Offset
-}
-
 //------------------------------------------------------------------------------------------------------------------------
 
 float uz_incrementalEncoder_hw_get_omega(uint32_t base_address){

@@ -51,6 +51,13 @@ uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder
 float uz_incrementalEncoder_get_omega_mech(uz_incrementalEncoder_t* self);
 
 /**
+ * @brief Returns the measured omega based on counting edges of the A-lane in 1/s. Applies a moving average of the 4 last measurements, which in total results in a moving average of the last 8 samples.
+ * 
+ * @param self 
+ * @return float 
+ */
+float uz_incrementalEncoder_get_omega_mech_MA_N4(uz_incrementalEncoder_t* self);
+/**
  * @brief Returns the measured electrical angle in 0..2pi range if drive_pole_pair is not zero in the config.
  * 
  * @param self 

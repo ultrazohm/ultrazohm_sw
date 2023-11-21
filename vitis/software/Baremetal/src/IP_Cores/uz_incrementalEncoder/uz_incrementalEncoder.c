@@ -79,8 +79,12 @@ uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder
 
 float uz_incrementalEncoder_get_omega_mech(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    //return uz_incrementalEncoder_hw_get_omega_MA_N4(self->config.base_address);
     return uz_incrementalEncoder_hw_get_omega(self->config.base_address);
+}
+
+float uz_incrementalEncoder_get_omega_mech_MA_N4(uz_incrementalEncoder_t* self){
+    uz_assert(self->is_ready);
+    return uz_incrementalEncoder_hw_get_omega_MA_N4(self->config.base_address);
 }
 
 float uz_incrementalEncoder_get_theta_el(uz_incrementalEncoder_t* self){

@@ -68,7 +68,7 @@ uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder
     uz_assert(config.line_number_per_turn_mech < UINT16_MAX); // Increments per turn is implemented as a 16 bit unsigned int in the IP-core hardware
     uz_assert(config.Encoder_mech_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware
     uz_assert(config.Encoder_elec_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware
-    uz_assert(config.Speed_Timeout_s > 0.0f); // Check if timeout-Value > 0
+    uz_assert(config.Speed_Timeout_ms < UINT32_MAX); // Timeout ist implemented as a 32bit unsigned in in the IP-core hardware
     uz_incrementalEncoder_t* self = uz_incrementalEncoder_allocation();
     self->config=config;
     self->use_theta_el=check_if_theta_el_can_be_used(self->config.line_number_per_turn_mech,self->config.drive_pole_pair);
@@ -125,13 +125,13 @@ void uz_incrementalEncoder_enable_d_axis_Reset(uz_incrementalEncoder_t* self, bo
 	 }else{
         if (self->use_theta_el) {
             // get maximum counts for one electrical rotation
-		    uint32_t inc_per_turn_el=round((self->config.line_number_per_turn_mech*QUADRATURE_FACTOR)/self->config.drive_pole_pair);
+		    uint32_t inc_per_turn_el = (self->config.line_number_per_turn_mech*QUADRATURE_FACTOR)/self->config.drive_pole_pair;
 		    // set the compare-value to greater then maximum counts per electrical rotation. This will lead to an unreachable compare-situation and so no d-axis-hit will be generated
 		    uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, inc_per_turn_el+10);
             
         } else {
             // get maximum counts for one electrical rotation. Since no valid polepairs, no division with them
-            uint32_t inc_per_turn_el=round(self->config.line_number_per_turn_mech*QUADRATURE_FACTOR);
+            uint32_t inc_per_turn_el = self->config.line_number_per_turn_mech*QUADRATURE_FACTOR;
             // set the compare-value to greater then maximum counts per electrical rotation.
             uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, inc_per_turn_el+10);
         }
@@ -165,7 +165,7 @@ bool check_if_theta_el_can_be_used(uint32_t inc_per_turn, uint32_t pole_pair){
 
 static void set_timeout(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    uint32_t speed_timeout = self->config.Speed_Timeout_s * self->config.ip_core_frequency_Hz;
+    uint32_t speed_timeout = (self->config.Speed_Timeout_ms * self->config.ip_core_frequency_Hz) / 1000U;
     uz_incrementalEncoder_hw_set_speed_timeout_value(self->config.base_address,speed_timeout);
 }
 
@@ -178,13 +178,13 @@ static void set_offset(uz_incrementalEncoder_t* self){
 	 }else{
         if (self->use_theta_el) {
             // get maximum counts for one electrical rotation
-		    uint32_t inc_per_turn_el=round((self->config.line_number_per_turn_mech*QUADRATURE_FACTOR)/self->config.drive_pole_pair);
+		    uint32_t inc_per_turn_el= (self->config.line_number_per_turn_mech*QUADRATURE_FACTOR) / self->config.drive_pole_pair ;
 		    // set the compare-value to greater then maximum counts per electrical rotation. This will lead to an unreachable compare-situation and so no d-axis-hit will be generated
 		    uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, inc_per_turn_el+10);
             
         } else {
             // get maximum counts for one electrical rotation. Since no valid polepairs, no division with them
-            uint32_t inc_per_turn_el=round(self->config.line_number_per_turn_mech*QUADRATURE_FACTOR);
+            uint32_t inc_per_turn_el = self->config.line_number_per_turn_mech*QUADRATURE_FACTOR;
             // set the compare-value to greater then maximum counts per electrical rotation.
             uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, inc_per_turn_el+10);  
         }

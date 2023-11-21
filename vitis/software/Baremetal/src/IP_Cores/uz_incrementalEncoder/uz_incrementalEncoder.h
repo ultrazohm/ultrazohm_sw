@@ -30,7 +30,7 @@ struct uz_incrementalEncoder_config{
     uint32_t Encoder_elec_Offset; /**< Set the electrical Encoder Offset */
     uint32_t d_axis_Hit_Offset; /**< Set the electrical Encoder Offset */
     uint32_t Counting_Direction; /**< Set the counting direction to CW or CCW */
-    float    Speed_Timeout_s; /**< Seconds after the omega_out jumps to zero if a timeout occurs */
+    uint32_t Speed_Timeout_ms; /**< Seconds after the omega_out jumps to zero if a timeout occurs */
     bool	 enable_d_axis_Reset; /**< switch to enable/disable d-axis-reset */
 };
 

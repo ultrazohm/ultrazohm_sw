@@ -23,7 +23,7 @@ void setUp(void)
     testconfig.line_number_per_turn_mech=5000u;
     testconfig.OmegaPerOverSample_in_rpm=500.0f;
     testconfig.drive_pole_pair=4U;
-    testconfig.Speed_Timeout_s = 0.1f;
+    testconfig.Speed_Timeout_ms = 100U;
     testconfig.Encoder_elec_Offset = 0.0f;
     testconfig.Encoder_mech_Offset = 0.0f;
     testconfig.Counting_Direction = 0U;
@@ -41,7 +41,7 @@ uz_incrementalEncoder_t* successful_init(){
     uz_incrementalEncoder_hw_set_theta_el_Offset_Expect(testconfig.base_address, testconfig.Encoder_elec_Offset);
     uint32_t expected_inc_per_turn_elec=testconfig.line_number_per_turn_mech*4 / testconfig.drive_pole_pair; // *4 due to quadrature factor
     uz_incrementalEncoder_hw_set_d_axis_hit_Offset_Expect(testconfig.base_address, (expected_inc_per_turn_elec+10U));
-    uint32_t speed_timeout = testconfig.Speed_Timeout_s * testconfig.ip_core_frequency_Hz;
+    uint32_t speed_timeout = (testconfig.Speed_Timeout_ms * testconfig.ip_core_frequency_Hz) / 1000U;
     uz_incrementalEncoder_hw_set_speed_timeout_value_Expect(testconfig.base_address, speed_timeout);
     uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.Counting_Direction);
     // Make sure the correct config values are written to the IP-Core
@@ -102,7 +102,7 @@ void test_uz_incrementalEncoder_non_integer_pole_pair(void){
     uz_incrementalEncoder_hw_set_theta_el_Offset_Expect(testconfig.base_address, testconfig.Encoder_elec_Offset);
     uint32_t expected_inc_per_turn_elec=testconfig.line_number_per_turn_mech*4; // *4 due to quadrature factor but pole pair = 1 if theta_el can not be used
     uz_incrementalEncoder_hw_set_d_axis_hit_Offset_Expect(testconfig.base_address, (expected_inc_per_turn_elec+10U));
-    uint32_t speed_timeout = testconfig.Speed_Timeout_s * testconfig.ip_core_frequency_Hz;
+    uint32_t speed_timeout = (testconfig.Speed_Timeout_ms * testconfig.ip_core_frequency_Hz) / 1000U;
     uz_incrementalEncoder_hw_set_speed_timeout_value_Expect(testconfig.base_address, speed_timeout);
     uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.Counting_Direction);
     

@@ -6,8 +6,16 @@
 
 typedef struct uz_prng_halton_t uz_prng_halton_t;
 
-uz_prng_halton_t *uz_prng_halton_init(uint32_t base);
+/**
+ * @brief
+ *
+ * @param base_prime Must be a prime number!
+ * @return uz_prng_halton_t*
+ */
+uz_prng_halton_t *uz_prng_halton_init(uint32_t base_prime);
+
 float uz_prng_halton_get_uniform_float(uz_prng_halton_t *self);
+
 void uz_prng_halton_get_uniform_float_2d(uz_prng_halton_t *self, float *x, float *y);
 
 #endif // UZ_PRNG_HALTON_H

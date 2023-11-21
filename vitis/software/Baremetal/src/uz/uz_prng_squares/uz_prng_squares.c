@@ -99,4 +99,19 @@ static uint32_t uz_prng_squares32_uniform_uint32(uint64_t ctr, uint64_t key)
     return (uint32_t)x;
 }
 
+uint32_t uz_prng_squares_bounded_rand_unbiased(uz_prng_squares_t *self, uint32_t range)
+{
+    uint32_t t = (-range) % range;
+    uint32_t l;
+    uint64_t m;
+    do
+    {
+        uint32_t x = uz_prng_squares_get_uniform_uint32(self);
+        m = (uint64_t)(x) * (uint64_t)(range);
+        l = (uint32_t)(m);
+    } while (l < t);
+    return m >> 32;
+}
+
+
 #endif

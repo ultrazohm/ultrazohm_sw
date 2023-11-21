@@ -30,12 +30,12 @@ static float get_uniform_float(uint32_t i_th_element, uint32_t base);
     return (self);
 }
 
-uz_prng_halton_t *uz_prng_halton_init(uint32_t base)
+uz_prng_halton_t *uz_prng_halton_init(uint32_t base_prime)
 {
     uz_prng_halton_t *self = uz_prng_halton_allocation();
-    uz_assert(base > 1U);
-    self->base = base;
-    self->n_element = 100U; // Arbitrarily skips the first 100 numbers since Wikipedia states that for some bases, the first elements can be correlated
+    uz_assert(base_prime > 1U);
+    self->base = base_prime;
+    self->n_element = 100U; // Arbitrarily skips the first 100 numbers since Wikipedia states that for some bases, the first elements can be correlated in the n-d case
     return (self);
 }
 
@@ -52,8 +52,8 @@ void uz_prng_halton_get_uniform_float_2d(uz_prng_halton_t *self, float *x, float
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    *x=get_uniform_float(self->n_element, 3U); // 
-    *y=get_uniform_float(self->n_element, 5U); // 
+    *x=get_uniform_float(self->n_element, 3U); // Hardcoded prime numbers for 2d case
+    *y=get_uniform_float(self->n_element, 5U);
     self->n_element++;
 }
 

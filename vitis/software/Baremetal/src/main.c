@@ -19,7 +19,7 @@
 // all flags and limits with comments
 float evalfloat = 0.0f;
 bool finished = false;
-float penalty_grenze=340.0f;
+float penalty_grenze=375.0f;
 bool limit_was_hit=false;
 bool eval = false;
 int evalcounter = 0;

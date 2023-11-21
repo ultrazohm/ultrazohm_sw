@@ -60,12 +60,12 @@ float Kp_iq = 7.11f;
 float Ki_iq = 2715.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
-float action_current = 4.0f; // I_q fuer Agenten
+float action_current = 4.2f; // I_q fuer Agenten
 float position_Kp = 2.0f;
 float position_Ki = 0.0f;
 // limits and time setting
 float limit_error = 430.0f;
-float disable_control = 340.0f;
+float disable_control = 375.0f;
 // randomize start position
 float max_pos = 200.0f;
 float start_pos = 0.0f;

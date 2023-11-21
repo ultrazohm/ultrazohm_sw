@@ -26,7 +26,7 @@ void setUp(void)
     testconfig.Speed_Timeout_ms = 100U;
     testconfig.Encoder_elec_Offset = 0.0f;
     testconfig.Encoder_mech_Offset = 0.0f;
-    testconfig.Counting_Direction = 0U;
+    testconfig.counting_direction = 0U;
 }
 
 void tearDown(void)
@@ -41,7 +41,7 @@ uz_incrementalEncoder_t* successful_init(){
 
     uint32_t speed_timeout = (testconfig.Speed_Timeout_ms * testconfig.ip_core_frequency_Hz) / 1000U;
     uz_incrementalEncoder_hw_set_speed_timeout_value_Expect(testconfig.base_address, speed_timeout);
-    uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.Counting_Direction);
+    uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.counting_direction);
     // Make sure the correct config values are written to the IP-Core
     // PI2_Inc_AXI is 0.0013 in the Simulink model [(2*pi/(IncPerTurn*QuadratureFactor))*PolePair ]
     float expected_pi2_inc=0.0012566447257996f; // (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
@@ -101,7 +101,7 @@ void test_uz_incrementalEncoder_non_integer_pole_pair(void){
     
     uint32_t speed_timeout = (testconfig.Speed_Timeout_ms * testconfig.ip_core_frequency_Hz) / 1000U;
     uz_incrementalEncoder_hw_set_speed_timeout_value_Expect(testconfig.base_address, speed_timeout);
-    uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.Counting_Direction);
+    uz_incrementalEncoder_hw_set_cw_ccw_direction_Expect(testconfig.base_address, testconfig.counting_direction);
     
     float expected_pi2_inc= (2.0f*UZ_PIf)/( (float)testconfig.line_number_per_turn_mech*4.0f)* (float)testconfig.drive_pole_pair; // (2*pi/(IncPerTurn*QuadratureFactor))*PolePair from Simulink model
     uz_incrementalEncoder_hw_set_pi2_inc_Expect(TEST_BASE_ADDRESS,expected_pi2_inc);

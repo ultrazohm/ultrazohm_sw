@@ -160,7 +160,7 @@ static void set_offset(uz_incrementalEncoder_t* self){
 
 static void set_counting_direction(uz_incrementalEncoder_t* self){
 	 uz_assert(self->is_ready);
-	 uz_incrementalEncoder_hw_set_cw_ccw_direction(self->config.base_address, self->config.Counting_Direction);
+	 uz_incrementalEncoder_hw_set_cw_ccw_direction(self->config.base_address, self->config.counting_direction);
 }
 
 void set_pi2_inc(uz_incrementalEncoder_t* self){

@@ -122,27 +122,6 @@ void uz_incrementalEncoder_set_new_mechanical_Offset(uz_incrementalEncoder_t* se
 	uz_incrementalEncoder_hw_set_Position_Offset(self->config.base_address, self->config.Encoder_mech_Offset);
 }
 
-void uz_incrementalEncoder_enable_d_axis_Reset(uz_incrementalEncoder_t* self, bool enable_d_axis){
-	uz_assert(self->is_ready);
-	 if(enable_d_axis == true){
-		 uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, self->config.d_axis_Hit_Offset);
-	 }else{
-        if (self->use_theta_el) {
-            // get maximum counts for one electrical rotation
-		    uint32_t inc_per_turn_el = (self->config.line_number_per_turn_mech*QUADRATURE_FACTOR)/self->config.drive_pole_pair;
-		    // set the compare-value to greater then maximum counts per electrical rotation. This will lead to an unreachable compare-situation and so no d-axis-hit will be generated
-		    uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, inc_per_turn_el+10);
-            
-        } else {
-            // get maximum counts for one electrical rotation. Since no valid polepairs, no division with them
-            uint32_t inc_per_turn_el = self->config.line_number_per_turn_mech*QUADRATURE_FACTOR;
-            // set the compare-value to greater then maximum counts per electrical rotation.
-            uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, inc_per_turn_el+10);
-        }
-		 
-	 }
-}
-
 // ----------------------------------------------------------- INTERNA BELOW ---------------------------------------------
 
 static void set_configuration(uz_incrementalEncoder_t* self){
@@ -177,23 +156,9 @@ static void set_offset(uz_incrementalEncoder_t* self){
 	 uz_assert(self->is_ready);
 	 uz_incrementalEncoder_hw_set_Position_Offset(self->config.base_address, self->config.Encoder_mech_Offset);
 	 uz_incrementalEncoder_hw_set_theta_el_Offset(self->config.base_address, self->config.Encoder_elec_Offset);
-	 if(self->config.enable_d_axis_Reset == true){
-		 uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, self->config.d_axis_Hit_Offset);
-	 }else{
-        if (self->use_theta_el) {
-            // get maximum counts for one electrical rotation
-		    uint32_t inc_per_turn_el= (self->config.line_number_per_turn_mech*QUADRATURE_FACTOR) / self->config.drive_pole_pair ;
-		    // set the compare-value to greater then maximum counts per electrical rotation. This will lead to an unreachable compare-situation and so no d-axis-hit will be generated
-		    uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, inc_per_turn_el+10);
-            
-        } else {
-            // get maximum counts for one electrical rotation. Since no valid polepairs, no division with them
-            uint32_t inc_per_turn_el = self->config.line_number_per_turn_mech*QUADRATURE_FACTOR;
-            // set the compare-value to greater then maximum counts per electrical rotation.
-            uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, inc_per_turn_el+10);  
-        }
-	 }
-     
+     //Inits the d_axis_hit_offset with 0 and therefore disables this feature
+     uz_incrementalEncoder_hw_set_d_axis_hit_Offset(self->config.base_address, 0U);
+
 }
 
 static void set_counting_direction(uz_incrementalEncoder_t* self){

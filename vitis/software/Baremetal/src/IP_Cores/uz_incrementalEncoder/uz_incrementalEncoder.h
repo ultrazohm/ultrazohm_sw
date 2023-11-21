@@ -28,10 +28,8 @@ struct uz_incrementalEncoder_config{
     uint32_t drive_pole_pair; /**< Number of pole pairs of the electric drive that is attached to the encoder. Set to zero if no drive is attached or increments per mechanical turn is not an integer multiple of pole pairs */
     uint32_t Encoder_mech_Offset; /**< Set the Mechanical Encoder Offset */
     uint32_t Encoder_elec_Offset; /**< Set the electrical Encoder Offset */
-    uint32_t d_axis_Hit_Offset; /**< Set the electrical Encoder Offset */
     uint32_t Counting_Direction; /**< Set the counting direction to CW or CCW */
     uint32_t Speed_Timeout_ms; /**< Seconds after the omega_out jumps to zero if a timeout occurs */
-    bool	 enable_d_axis_Reset; /**< switch to enable/disable d-axis-reset */
 };
 
 /**

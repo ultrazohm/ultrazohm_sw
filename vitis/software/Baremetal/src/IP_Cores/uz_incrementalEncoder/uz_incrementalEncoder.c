@@ -85,7 +85,7 @@ float uz_incrementalEncoder_get_omega_mech(uz_incrementalEncoder_t* self){
 
 float uz_incrementalEncoder_get_theta_el(uz_incrementalEncoder_t* self){
     uz_assert(self->is_ready);
-    //uz_assert(self->use_theta_el);
+    uz_assert(self->use_theta_el);
     return uz_incrementalEncoder_hw_get_theta_electric(self->config.base_address);
 }
 

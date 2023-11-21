@@ -353,7 +353,7 @@ DS_Data Global_Data = {
 	.dqnp = {.number_of_episodes = 1.0f}};
 
 uint32_t action_k = 0;
-float targsmoothfact = 0.05f;
+float targsmoothfact = 1e-3f;
 float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
 bool first_step_in_episode = true;

@@ -67,7 +67,7 @@ float position_Ki = 0.0f;
 float limit_error = 430.0f;
 float disable_control = 340.0f;
 // randomize start position
-float max_pos = 300.0f;
+float max_pos = 200.0f;
 float start_pos = 0.0f;
 float end_pos = 0.0f;
 int time_dqn = 10;

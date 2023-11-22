@@ -109,15 +109,17 @@ uint32_t uz_incrementalEncoder_get_Index_Found(uz_incrementalEncoder_t* self){
 }
 
 void uz_incrementalEncoder_set_new_electrical_Offset(uz_incrementalEncoder_t* self, uint32_t encoder_Offset_elec){
-	uz_assert(self->is_ready);
-	uz_assert(self->config.Encoder_elec_Offset < UINT16_MAX);
+	uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+	uz_assert(encoder_Offset_elec < UINT16_MAX);
 	self->config.Encoder_elec_Offset = encoder_Offset_elec;
 	uz_incrementalEncoder_hw_set_theta_el_Offset(self->config.base_address, self->config.Encoder_elec_Offset);
 }
 
 void uz_incrementalEncoder_set_new_mechanical_Offset(uz_incrementalEncoder_t* self,  uint32_t encoder_Offset_mech){
-	uz_assert(self->is_ready);
-	uz_assert(self->config.Encoder_mech_Offset < UINT16_MAX);
+	uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+	uz_assert(encoder_Offset_mech < UINT16_MAX);
 	self->config.Encoder_mech_Offset = encoder_Offset_mech;
 	uz_incrementalEncoder_hw_set_Position_Offset(self->config.base_address, self->config.Encoder_mech_Offset);
 }

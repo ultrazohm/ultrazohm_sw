@@ -81,7 +81,7 @@
     #define UZ_ADCLTC2311_MAX_INSTANCES                     50U
     #define UZ_PI_CONTROLLER_MAX_INSTANCES                  100U
     #define UZ_CURRENTCONTROL_MAX_INSTANCES                 100U
-    #define UZ_INCREMENTALENCODER_MAX_INSTANCES             5U
+    #define UZ_INCREMENTALENCODER_MAX_INSTANCES             20U
     #define UZ_NN_LAYER_MAX_INSTANCES                       100U
     #define UZ_NN_MAX_INSTANCES                             20U
 	#define UZ_PWM_SS_2L_MAX_INSTANCES                      50U

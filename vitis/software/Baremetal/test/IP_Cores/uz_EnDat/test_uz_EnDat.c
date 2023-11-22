@@ -60,9 +60,19 @@ void test_uz_EnDat_fail_assert_if_read_crc_is_called_with_NULL_pointer(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_crc(NULL));
 }
 
-void test_uz_EnDat_fail_assert_if_set_default_values_with_NULL_pointer(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_default_values(NULL));
+void test_uz_EnDat_fail_assert_if_write_default_values_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_write_default_values(NULL));
 }
+
+void test_uz_EnDat_fail_assert_if_controlword_builder_is_called__with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_controlword_builder(NULL));
+}
+
+void test_uz_EnDat_fail_assert_if_set_operation_mode_is_called__with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_operation_mode(NULL,uz_EnDat_Encoder_send_position_values));
+}
+
+
 
 
 

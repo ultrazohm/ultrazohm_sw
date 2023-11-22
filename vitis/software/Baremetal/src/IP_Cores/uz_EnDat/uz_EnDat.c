@@ -55,7 +55,7 @@ int uz_EnDat_write_control_and_divider(uz_EnDat_t* self, uint16_t ctrlword, uint
 
     return(0);
 }
-
+/*
 int uz_EnDat_write_factor(uz_EnDat_t* self, uint16_t factor, uint8_t num) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -88,6 +88,40 @@ int uz_EnDat_write_factor(uz_EnDat_t* self, uint16_t factor, uint8_t num) {
 
     return (0);
 }
+*/
+
+
+
+int uz_EnDat_write_factor(uz_EnDat_t *self, uint16_t factor, uz_EnDat_factor factornumber) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    switch (factornumber) {
+    case uz_EnDat_factor1_dataflow:
+    uz_EnDat_hw_write_FKT1DATAFLOW(self->config.base_address, factor);
+        break;
+
+    case uz_EnDat_factor2_recoverytime:
+    uz_EnDat_hw_write_FKT2RECOVERYTIME(self->config.base_address, factor);
+        break;
+
+    case uz_EnDat_factor3_initialoff:
+    uz_EnDat_hw_write_FKT3INITIALOFF(self->config.base_address, factor);
+    break;
+    case uz_EnDat_factor4_data2clksync:
+    uz_EnDat_hw_write_FKT4DATACLKSYNC(self->config.base_address, factor);
+        break;
+    case uz_EnDat_factor5_telegrammlength:
+    uz_EnDat_hw_write_FKT5TELEGRAMLEN(self->config.base_address, factor);
+        break;
+    default:
+        return (-1);
+        break;
+    }
+
+
+    return (0);
+}
 
 uint16_t uz_EnDat_read_statusword(uz_EnDat_t* self) {
     uint16_t ret;
@@ -101,29 +135,29 @@ uint16_t uz_EnDat_read_statusword(uz_EnDat_t* self) {
 
 
 
-uint32_t uz_EnDat_read_pos(uz_EnDat_t* self, uint8_t num) {
+uint32_t uz_EnDat_read_pos(uz_EnDat_t *self, uz_EnDat_position t_x) {
     uint32_t ret;
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    switch (num) {
-    case 0:
+    switch (t_x) {
+    case uz_EnDat_pos_t0:
         ret = uz_EnDat_hw_read_POS0BUS(self->config.base_address);
         break;
 
-    case 1:
+    case uz_EnDat_pos_t1:
         ret = uz_EnDat_hw_read_POS1BUS(self->config.base_address);
         break;
 
-    case 2:
+    case uz_EnDat_pos_t2:
         ret = uz_EnDat_hw_read_POS2BUS(self->config.base_address);
         break;
 
-    case 3:
+    case uz_EnDat_pos_t3:
         ret = uz_EnDat_hw_read_POS3BUS(self->config.base_address);
         break;
 
-    case 4:
+    case uz_EnDat_pos_t4:
         ret = uz_EnDat_hw_read_POS4BUS(self->config.base_address);
         break;
 
@@ -133,6 +167,8 @@ uint32_t uz_EnDat_read_pos(uz_EnDat_t* self, uint8_t num) {
     }
     return(ret);
 }
+
+
 
 
 uint8_t uz_EnDat_read_crc(uz_EnDat_t* self) {
@@ -146,7 +182,7 @@ uint8_t uz_EnDat_read_crc(uz_EnDat_t* self) {
 }
 
 
-int uz_EnDat_set_default_values(uz_EnDat_t* self) {
+int uz_EnDat_write_default_values(uz_EnDat_t* self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uint8_t i = 0;
@@ -173,14 +209,15 @@ uint16_t uz_EnDat_factor_converter(float in) {
     return ((uint16_t)i);
 }
 
-uint16_t uz_EnDat_ctrlword_builder(ctrlwrd_expanded inp) {
+uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp) {
+    uz_assert_not_NULL(inp);
     uint16_t out = 0x0000;
     int i = 0;
     int temp = 0;
     for (i = 0; i <= 15-1; i++) {
-        if (inp[i])
+        if (*inp[i])
         temp |= (1 << (i));
-
+              
         else
         temp &= ~(1 << (i));
     }
@@ -189,5 +226,185 @@ uint16_t uz_EnDat_ctrlword_builder(ctrlwrd_expanded inp) {
 }
 
 
+uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency frequency){
+
+uint8_t ret = 3U;
+     
+    switch (frequency) {
+    case uz_EnDat_operatingfrequency_12500000Hz:
+        ret = 0U;
+        break;
+
+    case uz_EnDat_operatingfrequency_6250000Hz:
+        ret = 1U;
+        break;
+
+    case uz_EnDat_operatingfrequency_3125000Hz:
+        ret = 2U;
+        break;
+
+    case uz_EnDat_operatingfrequency_1562500Hz:
+        ret = 3U;
+        break;
+
+    case uz_EnDat_operatingfrequency_781250Hz:
+        ret = 4U;
+        break;
+
+    case uz_EnDat_operatingfrequency_390625Hz:
+        ret = 5U;
+        break;
+
+    case uz_EnDat_operatingfrequency_195312Hz:
+        ret = 6U;
+        break;
+    default:
+        return(3U);
+        break;
+    }
+return(ret);
+}
+
+
+int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_opmode mode) {
+    uz_assert_not_NULL(inp);
+
+    switch (mode) {
+    case uz_EnDat_Encoder_send_position_values:
+        *inp[0]=true;
+        *inp[1]=false;
+        *inp[2]=true;
+        *inp[3]=false;
+        *inp[4]=false;
+        *inp[5]=false;
+            break;
+
+    case uz_EnDat_Encoder_send_position_values_with_additional_data:
+        *inp[0]=false;
+        *inp[1]=false;
+        *inp[2]=false;
+        *inp[3]=true;
+        *inp[4]=true;
+        *inp[5]=true;
+        break;
+
+    case uz_EnDat_Selection_of_memory_area:
+        *inp[0]=false;
+        *inp[1]=true;
+        *inp[2]=true;
+        *inp[3]=true;
+        *inp[4]=false;
+        *inp[5]=false;
+        break;
+
+    case uz_EnDat_Encoder_send_position_values_and_selection_of_memory_area_or_of_the_additional_data:
+        *inp[0]=true;
+        *inp[1]=false;
+        *inp[2]=false;
+        *inp[3]=true;
+        *inp[4]=false;
+        *inp[5]=false;
+        break;
+
+    case uz_EnDat_Encoder_send_parameters:
+        *inp[0]=true;
+        *inp[1]=true;
+        *inp[2]=false;
+        *inp[3]=false;
+        *inp[4]=false;
+        *inp[5]=true;
+        break;
+
+    case uz_EnDat_Encoder_send_position_values_and_send_parameter:
+        *inp[0]=false;
+        *inp[1]=false;
+        *inp[2]=true;
+        *inp[3]=false;
+        *inp[4]=false;
+        *inp[5]=true;
+        break;
+
+    case uz_EnDat_Encoder_receive_parameters:
+        *inp[0]=false;
+        *inp[1]=false;
+        *inp[2]=true;
+        *inp[3]=true;
+        *inp[4]=true;
+        *inp[5]=false;
+        break;
+
+    case uz_EnDat_Encoder_send_position_values_and_receive_parameter:
+        *inp[0]=true;
+        *inp[1]=true;
+        *inp[2]=false;
+        *inp[3]=true;
+        *inp[4]=true;
+        *inp[5]=false;
+        break;
+
+    case uz_EnDat_Encoder_receive_reset:
+        *inp[0]=false;
+        *inp[1]=true;
+        *inp[2]=false;
+        *inp[3]=true;
+        *inp[4]=false;
+        *inp[5]=true;
+        break;
+
+    case uz_EnDat_Encoder_send_position_values_and_receive_error_reset:
+        *inp[0]=true;
+        *inp[1]=false;
+        *inp[2]=true;
+        *inp[3]=true;
+        *inp[4]=false;
+        *inp[5]=true;
+        break;
+
+    case uz_EnDat_Encoder_receive_test_command:
+        *inp[0]=true;
+        *inp[1]=false;
+        *inp[2]=false;
+        *inp[3]=false;
+        *inp[4]=true;
+        *inp[5]=true;
+        break;
+
+    case uz_EnDat_Encoder_send_position_values_and_receive_test_command:
+        *inp[0]=false;
+        *inp[1]=true;
+        *inp[2]=true;
+        *inp[3]=false;
+        *inp[4]=true;
+        *inp[5]=true;
+        break;
+
+    case uz_EnDat_Encoder_send_test_values:
+        *inp[0]=true;
+        *inp[1]=false;
+        *inp[2]=true;
+        *inp[3]=false;
+        *inp[4]=true;
+        *inp[5]=false;
+        break;
+
+
+    case uz_EnDat_Encoder_receive_communication_command:
+        *inp[0]=false;
+        *inp[1]=true;
+        *inp[2]=true;
+        *inp[3]=false;
+        *inp[4]=true;
+        *inp[5]=false;
+        break;
+    default:
+        return(-1);
+        break;
+    }
+      
+    return(0);
+
+
+
+}
 
 #endif  // NOLINT

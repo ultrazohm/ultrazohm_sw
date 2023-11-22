@@ -68,6 +68,7 @@ uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder
     uz_assert(config.line_number_per_turn_mech < UINT16_MAX); // Increments per turn is implemented as a 16 bit unsigned int in the IP-core hardware
     uz_assert(config.Encoder_mech_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware
     uz_assert(config.Encoder_elec_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware
+    uz_assert(config.Speed_Timeout_ms > 0U);
     uz_incrementalEncoder_t* self = uz_incrementalEncoder_allocation();
     self->config=config;
     self->use_theta_el=check_if_theta_el_can_be_used(self->config.line_number_per_turn_mech,self->config.drive_pole_pair);
@@ -117,16 +118,20 @@ void uz_incrementalEncoder_set_new_electrical_Offset(uz_incrementalEncoder_t* se
 	uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 	uz_assert(encoder_Offset_elec < UINT16_MAX);
+	uz_assert(encoder_Offset_elec <= self->config.line_number_per_turn_mech);
 	self->config.Encoder_elec_Offset = encoder_Offset_elec;
-	uz_incrementalEncoder_hw_set_theta_el_Offset(self->config.base_address, self->config.Encoder_elec_Offset);
+	//Offset is relative to the line_number_per_turn_mech. Therefore, the offset has to be multiplied with the quadrature factor
+	uz_incrementalEncoder_hw_set_theta_el_Offset(self->config.base_address, self->config.Encoder_elec_Offset * QUADRATURE_FACTOR);
 }
 
 void uz_incrementalEncoder_set_new_mechanical_Offset(uz_incrementalEncoder_t* self,  uint32_t encoder_Offset_mech){
 	uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 	uz_assert(encoder_Offset_mech < UINT16_MAX);
+	uz_assert(encoder_Offset_mech <= self->config.line_number_per_turn_mech);
 	self->config.Encoder_mech_Offset = encoder_Offset_mech;
-	uz_incrementalEncoder_hw_set_Position_Offset(self->config.base_address, self->config.Encoder_mech_Offset);
+	//Offset is relative to the line_number_per_turn_mech. Therefore, the offset has to be multiplied with the quadrature factor
+	uz_incrementalEncoder_hw_set_Position_Offset(self->config.base_address, self->config.Encoder_mech_Offset * QUADRATURE_FACTOR);
 }
 
 // ----------------------------------------------------------- INTERNA BELOW ---------------------------------------------

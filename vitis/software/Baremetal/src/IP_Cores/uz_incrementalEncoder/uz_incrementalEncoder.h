@@ -34,7 +34,7 @@ struct uz_incrementalEncoder_config{
     uint32_t Encoder_mech_Offset; /**< Set the Mechanical Encoder Offset in increments*/
     uint32_t Encoder_elec_Offset; /**< Set the electrical Encoder Offset in increments*/
     enum uz_incrementalEncoder_counting_direction counting_direction; /**< Set the counting direction to \n
-                                                                    0=counter_clock_wise or \n
+                                                                    0=clock_wise or \n
                                                                     1=counter_clock_wise */
     uint32_t Speed_Timeout_ms; /**< Seconds after the omega_out jumps to zero if a timeout occurs */
 };

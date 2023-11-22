@@ -1,5 +1,21 @@
 
 
+/******************************************************************************
+ * Copyright Contributors to the UltraZohm project.
+ * Copyright 2023 Tobias Schindler
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ ******************************************************************************/
+
 #include "../uz_global_configuration.h"
 #if UZ_PRNG_MAX_INSTANCES > 0U
 #include <stdbool.h>
@@ -147,6 +163,61 @@ float uz_prng_get_uniform_float_min_to_max(uz_prng_t *self, float min, float max
     return (min + (max - min) * uz_prng_get_uniform_float_zero_to_one(self));
 }
 
+uint32_t uz_prng_get_uniform_uint32_zero_to_max(uz_prng_t *self, uint32_t max_range)
+{
+    uint32_t unbounded = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
+    uint32_t bounded = uz_prng_scale_uint32_to_bound_multiply(unbounded, max_range);
+    return bounded;
+}
+
+// Functions that scale uint32_t to float [0,1)
+
+float uz_prng_scale_to_float_zero_to_one_divide(uint32_t random_number)
+{
+    // Paper author code of squares (https://arxiv.org/pdf/2004.06278.pdf) uses double and no cast to scale
+    // unclear why this works in the example code provided
+    // works with cast as it forces floating point division.
+    // Additionally, paper scales by 4294967296 instead of 0xffffffffU (which is uint32_t max).
+    float random_float = (float)(random_number) / (float)UINT32_MAX;
+    return random_float;
+}
+
+float uz_prng_scale_to_float_zero_to_one_multiply(uint32_t random_number)
+{
+    // 0x1.0p-32 is a floating point constant for 2-32 that converts a integer value in the range [0..UINT32_MAX)
+    // into a float in the unit interval;
+    return ((float)0x1.0p-32) * (float)random_number;
+}
+
+
+// Functions that scale float 0..uint32_max to [0,max_range)
+/*
+ * A C++ implementation methods and benchmarks for random numbers in a range
+ * (32-bit version)
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2018 Melissa E. O'Neill
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
 uint32_t uz_prng_get_uniform_uint32_zero_to_max_unbiased(uz_prng_t *self, uint32_t max_range)
 {
     uint32_t t = (-max_range) % max_range;
@@ -161,40 +232,49 @@ uint32_t uz_prng_get_uniform_uint32_zero_to_max_unbiased(uz_prng_t *self, uint32
     return (uint32_t)(m >> 32U);
 }
 
-uint32_t uz_prng_get_uniform_uint32_zero_to_max(uz_prng_t *self, uint32_t max_range)
-{
-    uint32_t unbounded = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
-    uint32_t bounded = uz_prng_scale_to_float_zero_to_one_divide(unbounded);
-    return bounded;
-}
-
-float uz_prng_scale_to_float_zero_to_one_divide(uint32_t random_number)
-{
-    // Paper author code of squares (https://arxiv.org/pdf/2004.06278.pdf) uses double and no cast to scale
-    // unclear why this works in the example code provided
-    // works with cast as it forces floating point division.
-    // Additionally, paper scales by 4294967296 instead of 0xffffffffU (which is uint32_t max).
-    float random_float = (float)(random_number) / (float)UINT32_MAX;
-    return random_float;
-}
-
-float uz_prng_scale_to_float_zero_to_one_multiply(uint32_t random_number)
-{
-    // 0x1.0p-32 is a floating point constant for 2-32 that converts a integer value in the range [0..UINT32_MAX) into a float in the unit interval;
-    return ((float)0x1.0p-32) * (float)random_number;
-}
-
-uint32_t uz_prng_uint32_bounded_multiply(uint32_t unbound_rng, uint32_t range)
+uint32_t uz_prng_scale_uint32_to_bound_multiply(uint32_t unbound_rng, uint32_t range)
 {
     // https://www.pcg-random.org/posts/bounded-rands.html
     float zero_to_one_one = ((float)0x1.0p-32) * (float)unbound_rng;
     return (uint32_t)((float)range * zero_to_one_one);
 }
 
-uint32_t uz_prng_uint32_bounded_shift(uint32_t unbound_rng, uint32_t range)
+uint32_t uz_prng_scale_uint32_to_bound_multiply_shift(uint32_t unbound_rng, uint32_t range)
 {
+    // https://www.pcg-random.org/posts/bounded-rands.html
     uint64_t m = (uint64_t)(unbound_rng) * (uint64_t)(range);
     return ((uint32_t)(m >> 32U));
+}
+
+uint32_t uz_prng_scale_uint32_to_bound_int_multiply_debiased(uz_prng_t* self, uint32_t range)
+{
+    uint32_t x = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
+    uint64_t m = (uint64_t)(x) * (uint64_t)(range);
+    uint32_t l = (uint32_t)(m);
+    if (l < range)
+    {
+        uint32_t t = -range;
+        if (t >= range)
+        {
+            t -= range;
+            if (t >= range)
+                t %= range;
+        }
+        while (l < t)
+        {
+            x = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
+            m = (uint64_t)(x) * (uint64_t)(range);
+            l = (uint32_t)(m);
+        }
+    }
+    return m >> 32;
+}
+
+uint32_t uz_prng_scale_uint32_to_bound_int_multiply(uz_prng_t *self, uint32_t range)
+{
+    uint32_t x = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
+    uint64_t m = (uint64_t)(x) * (uint64_t)(range);
+    return m >> 32;
 }
 
 #endif

@@ -428,7 +428,7 @@ float calculate_reward_pendulum(float bonus, float samplerate,float theta, float
     float z = 0.0f;
     if (penalty == true)
     {
-        z = -200.0f;
+        z = -1000.0f;
     }
     float r = -samplerate *(REWARD_SCALE_ANGLE * theta + REWARD_SCALE_POSITION*position + REWARD_SCALE_VELOCITY * (velocity*velocity)) + z+ bonus;
     return r;
@@ -439,7 +439,7 @@ float sum_reward_pendulum(float bonus,float samplerate, float thetareward, float
     float z = 0.0f;
     if (penalty == true)
     {
-        z = -200.0f;
+        z = -1000.0f;
     }
     float r = -samplerate *(thetareward + positionreward + velocityreward) + z + bonus;
     return r;

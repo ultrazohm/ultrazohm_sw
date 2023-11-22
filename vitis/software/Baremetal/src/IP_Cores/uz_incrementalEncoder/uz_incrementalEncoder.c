@@ -63,7 +63,7 @@ static void set_configuration(uz_incrementalEncoder_t* self);
 
 uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder_config config) {
     uz_assert_not_zero_uint32(config.base_address);
-    uz_assert(config.ip_core_frequency_Hz == 100000000U); // IP-Core has to be used with 100 MHz! (V24 needs 50 MHz, V26 can use 100 MHz!)
+    uz_assert(config.ip_core_frequency_Hz == 100000000U); // IP-Core has to be used with 100 MHz!
     uz_assert_not_zero_uint32(config.line_number_per_turn_mech);
     uz_assert(config.line_number_per_turn_mech < UINT16_MAX); // Increments per turn is implemented as a 16 bit unsigned int in the IP-core hardware
     uz_assert(config.Encoder_mech_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware

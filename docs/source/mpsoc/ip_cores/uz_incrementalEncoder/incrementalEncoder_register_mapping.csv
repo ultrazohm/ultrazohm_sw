@@ -7,12 +7,22 @@ Theta_el, Output, sfix24_En20,External Signal, Theta electric based on the subsy
 omega, Output, sfix24_En11, External Signal, Rotational speed based on time measurement between rising edge of A-lane (subsystem ``omega_by_measure_time``)
 position, Output, uint16_t, External Signal, Outputs the position of the encoder with a range of 0 to increments
 count, Output, bool, External Signal, 1 if edge counter is triggered - 0 otherwise
-edge, Output, bool, External Signal, 1 if an edge is detected - 0 otherwise
-OverSamplFactor, Output, uint16, External Signal, Reads back the over sample factor of the speed calculation
+edge_rsvd, Output, bool, External Signal, 1 if an edge is detected - 0 otherwise
+OverSamplFactor, Output, uint16_t, External Signal, Reads back the over sample factor of the speed calculation
+omega_MA_N4, Output, sfix24_En11, External Signal, omega but with an moving average over the last 4 measurements
+timeout_active, Output, bool, External Signal, Active if a timeout occured
+omegaA, Output, sfix24_En11, External Signal, --
+omegaB, Output, sfix24_En11, External Signal, --
+omegaNOTA, Output, sfix24_En11, External Signal, --
+omegaNOTB, Output, sfix24_En11, External Signal, --
+new_measurement, Output,-- , External Signal, --
+position_wOffset, Output, --, External Signal, --
+Index_found, Output, -- , External Signal, --
 Reset, Input, bool, AXI, Resets the IP-Core
 Enable, Input, bool, AXI, Enables the IP-Core
 Timestamp, Output, uint32_t, AXI, Returns unique IP timestamp
 omega_AXI4, Output, sfix24_En11, AXI, same signal as omega
+omega_MA_N4_AXI4, Output, sfix24_En11, AXI, omega but with an moving average over the last 4 measurements
 theta_el_AXI4, Output, sfix24_en20, AXI, same signal as Theta_el
 position_AXI4, Output, uint16_t, AXI, Outputs the position of the encoder with a range of 0 to increments
 direction_AXI4, Output, sfix4, AXI, 1 if rotation is clockwise - 0 otherwise
@@ -22,3 +32,9 @@ Timer_FPGA_ms_AXI4, Input, ufix32_En32, AXI, Scales clock ticks to rad/s
 IncPerTurn_mech_AXI4, Input, uint16_t, AXI, Number of increments of the encoder of one mechanical turn
 IncPerTurn_elek_AXI4, Input, uint16_t, AXI, Number of increments of the encoder divided by pole pairs for electrical angle
 OmegaPerOverSampl_AXI4, Input, sfix24_En11, AXI, Oversampling factor for speed measurement - provided as multiple 
+Position_offset_AXI4, Input, uint16_t, AXI, Offset for theta_mech in increments
+Theta_el_offset_AXI4, Input, uint16_t, AXI, Offset for theta_el in increments
+Timeout_value_AXI4, Input, uint16_t, AXI, If a timeout occurs the omega_AXI4 port will be set to 0 after the specified time
+CW_CCW_Switch_AXI4, Input, bool, AXI, Sets a clock_wise or counter_clock_wise counting direction
+Position_wOffset_AXI4, Output, uint16_t, AXI, --
+Index_found_AXI4, Output, bool, AXI, --

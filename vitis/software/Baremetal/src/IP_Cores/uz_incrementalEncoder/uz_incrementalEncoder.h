@@ -36,7 +36,7 @@ struct uz_incrementalEncoder_config{
     enum uz_incrementalEncoder_counting_direction counting_direction; /**< Set the counting direction to \n
                                                                     0=clock_wise or \n
                                                                     1=counter_clock_wise */
-    uint32_t Speed_Timeout_ms; /**< Seconds after the omega_out jumps to zero if a timeout occurs */
+    uint32_t Speed_Timeout_ms; /**< Milliseconds after the omega_out jumps to zero if a timeout occurs */
 };
 
 /**

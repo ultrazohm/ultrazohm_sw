@@ -14,8 +14,7 @@ IP Cores
     uz_mux_axi/uz_mux_axi
     adc_LTC2311
     adc_ltc2311_v3/adc_ltc2311_v3
-    uz_incrementalEncoder/uz_incrementalEncoder
-    uz_incrementalEncoder/uz_IncrementalEncoder_V26
+    uz_incrementalEncoder/uz_IncrementalEncoder
     interlock
     axi_testIP/axi_testIP
     uz_interlockDeadtime2L/uz_interlockDeadtime2L

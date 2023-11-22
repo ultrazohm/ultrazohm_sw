@@ -44,7 +44,7 @@ enum JS_OberservableData {
 	JSO_dqn_chart_position_derv_raw,
 	JSO_dqn_angle_raw,
 	JSO_start_pos,
-	JSO_end_pos,
+	JSO_reward_bonus,
 	JSO_dqn_chart_error,
 	JSO_id,
 	JSO_iq,

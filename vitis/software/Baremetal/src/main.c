@@ -46,7 +46,7 @@ float lernrate = 0.001f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.05f;
-float epsilon_decay = 0.00002f;
+float epsilon_decay = 0.002f;
 
 // adam
 float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};

@@ -230,7 +230,7 @@ void ISR_Control(void *data)
     // für instabile ruhelage
     Global_Data.dqnp.reward_angle = REWARD_SCALE_ANGLE * (fabsf(Global_Data.obs.dqn_angle) / UZ_PIf);
     Global_Data.dqnp.reward_position = REWARD_SCALE_POSITION * fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    Global_Data.dqnp.reward_boni = calculate_boni(Global_Data.obs.dqn_angle,Global_Data.obs.dqn_angle_derv_raw);
+    Global_Data.dqnp.reward_boni = calculate_boni(Global_Data.obs.dqn_angle,Global_Data.obs.dqn_angle_derv);
 //  stabile ruhelage, positionsfehler
 //    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((1.0e3f*Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
     Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_chart_position_derv * Global_Data.obs.dqn_chart_position_derv);
@@ -603,7 +603,8 @@ void uz_dqn_take_action_current()
 float calculate_boni(float angle, float anglevelocity)
 {
 	float bonus = 0.0f;
-	if (fabsf(angle)<(5.0f*UZ_PIf*180.0f)&&(anglevelocity<6.0f)){
+	if( fabsf(angle)<(5.0f*UZ_PIf/180.0f) && (anglevelocity<6.0f))
+	{
 	bonus = 2.0f;
 	}
 	return bonus;

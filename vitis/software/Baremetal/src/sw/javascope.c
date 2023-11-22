@@ -86,7 +86,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_position_abs]		= &position_abs;
 	js_ch_observable[JSO_position_ref]		= &position_ref;
 	js_ch_observable[JSO_start_pos] = &start_pos;
-	js_ch_observable[JSO_end_pos] 				= &end_pos;
+	js_ch_observable[JSO_reward_bonus] 				= &data->dqnp.reward_boni;
 	js_ch_observable[JSO_dqn_chart_error] 		= &data->obs.dqn_chart_error;
 	js_ch_observable[JSO_dqn_chart_position] 	= &data->obs.dqn_chart_position;
 	js_ch_observable[JSO_dqn_angle_derv] 		= &data->obs.dqn_angle_derv;

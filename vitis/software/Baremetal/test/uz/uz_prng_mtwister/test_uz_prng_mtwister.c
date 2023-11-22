@@ -19,7 +19,7 @@ void tearDown(void)
 
 void test_uz_prng_mtwister_init(void)
 {
-    uz_prng_mtwister_t *twister = uz_prng_mtwister_init(0U);
+    uz_prng_mtwister_init(0U);
 }
 
 void test_uz_prng_squares_uint32(void)

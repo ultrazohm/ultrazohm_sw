@@ -18,7 +18,7 @@ void tearDown(void)
 
 void test_uz_prng_pcg_init(void)
 {
-    uz_prng_pcg_t *pcg = uz_prng_pcg_init(0U);
+    uz_prng_pcg_init(0U);
 }
 
 void test_uz_prng_squares_uint32(void)

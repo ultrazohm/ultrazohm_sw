@@ -19,8 +19,7 @@ static uz_prng_halton_t instances[UZ_PRNG_HALTON_MAX_INSTANCES] = {0};
 static uz_prng_halton_t *uz_prng_halton_allocation(void);
 static float get_uniform_float(uint32_t i_th_element, uint32_t base);
 
-
-    static uz_prng_halton_t *uz_prng_halton_allocation(void)
+static uz_prng_halton_t *uz_prng_halton_allocation(void)
 {
     uz_assert(instance_counter < UZ_PRNG_HALTON_MAX_INSTANCES);
     uz_prng_halton_t *self = &instances[instance_counter];
@@ -52,8 +51,8 @@ void uz_prng_halton_get_uniform_float_2d(uz_prng_halton_t *self, float *x, float
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    *x=get_uniform_float(self->n_element, 3U); // Hardcoded prime numbers for 2d case
-    *y=get_uniform_float(self->n_element, 5U);
+    *x = get_uniform_float(self->n_element, 3U); // Hardcoded prime numbers for 2d case
+    *y = get_uniform_float(self->n_element, 5U);
     self->n_element++;
 }
 

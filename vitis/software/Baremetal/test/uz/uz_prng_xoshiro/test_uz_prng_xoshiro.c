@@ -21,7 +21,7 @@ void tearDown(void)
 
 void test_uz_prng_xoshiro_init(void)
 {
-    uz_prng_xoshiro_t *xoshiro= uz_prng_xoshiro_init(0U);
+    uz_prng_xoshiro_init(0U);
 }
 
 void test_uz_prng_xoshiro_uint32(void)

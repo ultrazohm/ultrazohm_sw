@@ -21,9 +21,38 @@
 #include "../uz_HAL.h"
 #include "uz_prng_squares.h"
 
+// Default keys are taken from the paper authors code at https://squaresrng.wixsite.com/rand
 uint64_t default_keys[30] = {
-#include "uz_prng_squares_keys.h"
-};
+    0xc8e4fd154ce32f6d,
+    0xfcbd6e154bf53ed9,
+    0xea6342c76bf95d47,
+    0xfb9e125878fa6cb3,
+    0xa1ed294ba7fe8b31,
+    0xcf29ba8dc5f1a98d,
+    0x815a7d4ed4e3b7f9,
+    0x163acbf213f5d867,
+    0x674e2d1542f9e6d3,
+    0xebc9672872ecf651,
+    0xec13a6976ecf14ad,
+    0x42c86e3a9de3542b,
+    0x5489de2cbce65297,
+    0x49bc37fdcad971f3,
+    0xd5b4213fe7db8f61,
+    0xbf785e3215ac7ebd,
+    0x46be329546e1ad3b,
+    0x8b7ef19654e3dca7,
+    0x1d7683c983d7eb15,
+    0x3724b1c872d9fa81,
+    0x2af73db87fab18ed,
+    0xa185f4cbadcf285b,
+    0x53d684c1fbd246c7,
+    0x35fda1821cd68735,
+    0xfd3791543bd985a1,
+    0x7f59c4b657cb941f,
+    0x19f3e5b765cea27b,
+    0xf6235eca95b2c1e7,
+    0x9d827c5ba2b3df45,
+    0x8a149e2dc2a6feb1};
 
 struct uz_prng_squares_t
 {
@@ -95,23 +124,10 @@ static uint32_t uz_prng_squares32_uniform_uint32(uint64_t ctr, uint64_t key)
     x = (x >> 32U) | (x << 32U);
     x = (x * x) + y;
     x = (x >> 32U) | (x << 32U);
-    x = ((x * x + z) >> 32U);
+    x = (((x * x) + z) >> 32U);
     return (uint32_t)x;
 }
 
-uint32_t uz_prng_squares_bounded_rand_unbiased(uz_prng_squares_t *self, uint32_t range)
-{
-    uint32_t t = (-range) % range;
-    uint32_t l;
-    uint64_t m;
-    do
-    {
-        uint32_t x = uz_prng_squares_get_uniform_uint32(self);
-        m = (uint64_t)(x) * (uint64_t)(range);
-        l = (uint32_t)(m);
-    } while (l < t);
-    return m >> 32;
-}
 
 
 #endif

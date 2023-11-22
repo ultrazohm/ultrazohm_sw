@@ -96,27 +96,24 @@ Biased
 
 .. plot::
 
-   import matplotlib.pyplot as plt
-   import pandas as pd
-
-   columns=['index','number']
-   df=pd.read_csv('uz_prng_bounded_bias.csv', header=None, names=columns)
-   df_unbound=pd.read_csv('uz_prng_unbounded_bias.csv', header=None, names=columns)
-   df_unbias=pd.read_csv('uz_prng_unbounded_bias.csv', header=None, names=columns)
-   mean=df.loc[:,'number'].mean()
-   std=df.loc[:,'number'].std()
-   var=df.loc[:,'number'].var()
-
-   bins = np.arange(55) - 0.5
-   fig, axs = plt.subplots(3, 1,layout='constrained',figsize=(14,5))
-   axs[0].hist(df_unbound.number, bins=52, linewidth=0.4, edgecolor="white")
-   axs[2].hist(df_unbias.number, bins=bins, linewidth=0.4, edgecolor="white")
-   axs[1].hist(df.number, bins=bins, linewidth=0.4, edgecolor="white")
-   title_string=str(mean)
-   axs[1].set_title("Histogram\n of Squares\n with mean:" + title_string )
-   plt.xticks(range(54))
-
-
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import numpy as np
+    
+    columns = ["index", "number"]
+    df = pd.read_csv("uz_prng_bounded_bias.csv", header=None, names=columns)
+    df_unbound = pd.read_csv("uz_prng_unbounded_bias.csv", header=None, names=columns)
+    df_unbias = pd.read_csv("uz_prng_unbounded_bias.csv", header=None, names=columns)
+    
+    bins = np.arange(53) 
+    fig, axs = plt.subplots(3, 1, layout="constrained", figsize=(14, 5))
+    axs[0].hist(df_unbound.number, bins=52, linewidth=0.4, edgecolor="white")
+    axs[1].hist(df.number, bins=bins, linewidth=0.4, edgecolor="white")
+    axs[2].hist(df_unbias.number, bins=52, linewidth=0.4, edgecolor="white")
+    axs[1].set_xticks(range(54))
+    fig.show()
+    
+    
 
 
 Generate bounded float values

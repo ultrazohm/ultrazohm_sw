@@ -68,6 +68,8 @@ uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder
     uz_assert(config.line_number_per_turn_mech < UINT16_MAX); // Increments per turn is implemented as a 16 bit unsigned int in the IP-core hardware
     uz_assert(config.Encoder_mech_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware
     uz_assert(config.Encoder_elec_Offset < UINT16_MAX); // Offset is implemented as a 16 bit unsigned int in the IP-core hardware
+    uz_assert(config.Encoder_mech_Offset < config.line_number_per_turn_mech);
+    uz_assert(config.Encoder_elec_Offset < config.line_number_per_turn_mech);
     uz_assert(config.Speed_Timeout_ms > 0U);
     uz_incrementalEncoder_t* self = uz_incrementalEncoder_allocation();
     self->config=config;

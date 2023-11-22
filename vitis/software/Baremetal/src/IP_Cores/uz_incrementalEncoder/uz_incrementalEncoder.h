@@ -42,78 +42,71 @@ struct uz_incrementalEncoder_config{
 /**
  * @brief Initialization of one instance of the driver for the incremental encoder IP-Core
  * 
- * @param config 
- * @return uz_incrementalEncoder_t* 
+ * @param config Configuration values for the IP-Core
+ * @return uz_incrementalEncoder_t* Pointer to initialized instance 
  */
 uz_incrementalEncoder_t* uz_incrementalEncoder_init(struct uz_incrementalEncoder_config config);
 
 /**
  * @brief Returns the measured omega based on counting edges of the A-lane in 1/s.
  * 
- * @param self 
- * @return float 
+ * @param self Pointer to the instance
+ * @return float omega_mech
  */
 float uz_incrementalEncoder_get_omega_mech(uz_incrementalEncoder_t* self);
 
 /**
  * @brief Returns the measured omega based on counting edges of the A-lane in 1/s. Applies a moving average of the 4 last measurements, which in total results in a moving average of the last 8 samples.
  * 
- * @param self 
- * @return float 
+ * @param self Pointer to the instance
+ * @return float averaged omega_mech
  */
 float uz_incrementalEncoder_get_omega_mech_MA_N4(uz_incrementalEncoder_t* self);
 /**
  * @brief Returns the measured electrical angle in 0..2pi range if drive_pole_pair is not zero in the config.
  * 
- * @param self 
- * @return float 
+ * @param self Pointer to the instance
+ * @return float theta_el
  */
 float uz_incrementalEncoder_get_theta_el(uz_incrementalEncoder_t* self);
 
 /**
  * @brief Returns the measured mechanical angle in 0..increments.
  * 
- * @param self 
- * @return uint32_t 
+ * @param self Pointer to the instance
+ * @return uint32_t position
  */
 uint32_t uz_incrementalEncoder_get_position(uz_incrementalEncoder_t* self);
 
 /**
  * @brief Returns the measured mechanical angle in 0..increments with specified Encoder_mech_Offset.
  *
- * @param self
- * @return uint32_t
+ * @param self Pointer to the instance
+ * @return uint32_t position with offset
  */
 uint32_t uz_incrementalEncoder_get_position_wOffset(uz_incrementalEncoder_t* self);
 
 /**
  * @brief Returns if the Index of the Encoder is found.
  *
- * @param self
- * @return uint32_t
+ * @param self Pointer to the instance
+ * @return uint32_t Found index
  */
 uint32_t uz_incrementalEncoder_get_Index_Found(uz_incrementalEncoder_t* self);
 
 /**
  * @brief Allowes to change the electrical Offset during operation
  *
- * @param self
+ * @param self Pointer to the instance
+ * @param encoder_Offset_elec Electrical offset in increments per revolution
  */
 void uz_incrementalEncoder_set_new_electrical_Offset(uz_incrementalEncoder_t* self, uint32_t encoder_Offset_elec);
 
 /**
  * @brief Allowes to change the mechanical Offset during operation
  *
- * @param self
+ * @param self Pointer to the instance
+ * @param encoder_Offset_mech Mechanical o ffset in increments per revolution
  */
 void uz_incrementalEncoder_set_new_mechanical_Offset(uz_incrementalEncoder_t* self, uint32_t encoder_Offset_mech);
-
-/**
- * @brief Allowes to enable/disable d_axis_Reset during operation
- *
- * @param self
- * @param enable_d_axis
- */
-void uz_incrementalEncoder_enable_d_axis_Reset(uz_incrementalEncoder_t* self, bool enable_d_axis);
-
 #endif // UZ_INCREMENTALENCODER_H

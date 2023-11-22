@@ -30,7 +30,7 @@ int evalcounter = 0;
 // defines for nn
 #define EXPERIENCE_BUFFER_LENGTH 150000U
 #define MINIBATCHSIZE 8U
-#define NUMBER_OF_EPOCHS 100+1U // wegen eval, sodass bei 50 epochen auch 50*NUMBER_OF_UPDATES_PER_EPOCH erreicht werden
+#define NUMBER_OF_EPOCHS 250+1U // wegen eval, sodass bei 50 epochen auch 50*NUMBER_OF_UPDATES_PER_EPOCH erreicht werden
 #define NUMBER_OF_UPDATES_PER_EPOCH 1000U // 100 Hz fuer 5s sind 500 samples und damit 500 updates
 #define NUMBER_OF_EVALS 5+1U
 #define TARGET_UPDATE_FREQUENCY 1U
@@ -46,7 +46,7 @@ float lernrate = 0.001f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.05f;
-float epsilon_decay = 0.002f;
+float epsilon_decay = 0.00004f;
 
 // adam
 float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};

@@ -98,8 +98,8 @@ extern bool first_step_in_episode;
 extern float penalty_grenze;
 extern float update_lock_float;
 // funktionen
-float calculate_reward_pendulum(float samplerate, float theta, float position, float velocity, bool penalty);
-float sum_reward_pendulum(float bonus, float thetareward, float positionreward, float velocityreward, bool penalty);
+float calculate_reward_pendulum(float bonus,float samplerate, float theta, float position, float velocity, bool penalty);
+float sum_reward_pendulum(float bonus,float samplerate, float thetareward, float positionreward, float velocityreward, bool penalty);
 void position_control(float position_set_point, bool angle_control_enabled);
 void uz_dqn_take_action_current();
 void uz_dqn_sample_limit();
@@ -234,7 +234,7 @@ void ISR_Control(void *data)
 //  stabile ruhelage, positionsfehler
 //    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((1.0e3f*Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
     Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_chart_position_derv * Global_Data.obs.dqn_chart_position_derv);
-	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.obs.dqn_chart_position_derv, false);
+	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.obs.dqn_chart_position_derv, false);
 //    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
     Global_Data.dqnp.number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
 
@@ -423,25 +423,25 @@ static void Reset_obs_and_measurements()
     Reset_global_Data(&Global_Data);
 };
 
-float calculate_reward_pendulum(float bonus, float theta, float position, float velocity, bool penalty)
+float calculate_reward_pendulum(float bonus, float samplerate,float theta, float position, float velocity, bool penalty)
 {
     float z = 0.0f;
     if (penalty == true)
     {
-        z = -1000.0f;
+        z = -200.0f;
     }
-    float r = -(REWARD_SCALE_ANGLE * theta + REWARD_SCALE_POSITION*position + REWARD_SCALE_VELOCITY * (velocity*velocity)) + z+ bonus;
+    float r = -samplerate *(REWARD_SCALE_ANGLE * theta + REWARD_SCALE_POSITION*position + REWARD_SCALE_VELOCITY * (velocity*velocity)) + z+ bonus;
     return r;
 }
 
-float sum_reward_pendulum(float bonus, float thetareward, float positionreward, float velocityreward, bool penalty)
+float sum_reward_pendulum(float bonus,float samplerate, float thetareward, float positionreward, float velocityreward, bool penalty)
 {
     float z = 0.0f;
     if (penalty == true)
     {
-        z = -1000.0f;
+        z = -200.0f;
     }
-    float r = -(thetareward + positionreward + velocityreward) + z + bonus;
+    float r = -samplerate *(thetareward + positionreward + velocityreward) + z + bonus;
     return r;
 }
 void dqn_isr(void)
@@ -564,7 +564,7 @@ if (fabsf(position_abs) > disable_control)
     input_nn[4] = Global_Data.obs.dqn_angle_derv;
     uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
     // Berechne reward für limitverletzung
-	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.obs.dqn_chart_position_derv, true);
+	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.obs.dqn_chart_position_derv, true);
     Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
     uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
     uz_dqn_push_to_buffer(testdqn2);
@@ -580,30 +580,30 @@ void uz_dqn_take_action_current()
 	  Global_Data.rasv.dq_reference_current.q = 0.0f;
 	        switch (action_k)
 	        {
-//	        case 0:
-//	            Global_Data.rasv.dq_reference_current.q = action_current;
-//	            break;
-//	        case 1:
-//	            Global_Data.rasv.dq_reference_current.q = action_current / 2.0f;
-//	            break;
-//	        case 2:
-//	            Global_Data.rasv.dq_reference_current.q = 0.0f;
-//	            break;
-//	        case 3:
-//	            Global_Data.rasv.dq_reference_current.q = -action_current / 2.0f;
-//	            break;
-//	        case 4:
-//	            Global_Data.rasv.dq_reference_current.q = -action_current;
-//	            break;
-	        	        case 0:
-	        	            Global_Data.rasv.dq_reference_current.q = action_current;
-	        	            break;
-	        	        case 1:
-	        	            Global_Data.rasv.dq_reference_current.q = 0.0f;
-	        	            break;
-	        	        case 2:
-	        	            Global_Data.rasv.dq_reference_current.q = -action_current;
-	        	            break;
+	        case 0:
+	            Global_Data.rasv.dq_reference_current.q = action_current;
+	            break;
+	        case 1:
+	            Global_Data.rasv.dq_reference_current.q = action_current / 2.0f;
+	            break;
+	        case 2:
+	            Global_Data.rasv.dq_reference_current.q = 0.0f;
+	            break;
+	        case 3:
+	            Global_Data.rasv.dq_reference_current.q = -action_current / 2.0f;
+	            break;
+	        case 4:
+	            Global_Data.rasv.dq_reference_current.q = -action_current;
+	            break;
+//	        	        case 0:
+//	        	            Global_Data.rasv.dq_reference_current.q = action_current;
+//	        	            break;
+//	        	        case 1:
+//	        	            Global_Data.rasv.dq_reference_current.q = 0.0f;
+//	        	            break;
+//	        	        case 2:
+//	        	            Global_Data.rasv.dq_reference_current.q = -action_current;
+//	        	            break;
 	        default:
 	            uz_assert(0);
 	        }

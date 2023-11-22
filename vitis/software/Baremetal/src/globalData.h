@@ -139,6 +139,7 @@ typedef struct _dqn_performance_ {
 	float reward_position_error;
 	float reward_position;
 	float reward_velocity;
+	float reward_boni;
 	float reward_angle;
 	float cumulative_loss;
 	float global_running_reward;

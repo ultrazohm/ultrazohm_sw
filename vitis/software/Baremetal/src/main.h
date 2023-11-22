@@ -18,8 +18,8 @@
 
 #include <math.h>										//Include for math operations
 #include <stdbool.h>
-#define DQN__CONTROL_FREQUENCY 100U
-#define REWARD_SCALE_ANGLE 100U
+#define DQN__CONTROL_FREQUENCY 50U
+#define REWARD_SCALE_ANGLE 10U
 #define REWARD_SCALE_POSITION 1U
 #define REWARD_SCALE_VELOCITY 0.25
 // Xilinx library functions

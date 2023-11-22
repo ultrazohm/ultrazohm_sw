@@ -60,17 +60,17 @@ float Kp_iq = 7.11f;
 float Ki_iq = 2715.0f;
 float speed_Kp = 0.0207f; // 0.0207f
 float speed_Ki = 0.207f;
-float action_current = 4.2f; // I_q fuer Agenten
+float action_current = 4.0f; // I_q fuer Agenten
 float position_Kp = 2.0f;
 float position_Ki = 0.0f;
 // limits and time setting
 float limit_error = 430.0f;
-float disable_control = 375.0f;
+float disable_control = 350.0f;
 // randomize start position
 float max_pos = 200.0f;
 float start_pos = 0.0f;
 float end_pos = 0.0f;
-int time_dqn = 10;
+int time_dqn = 20;
 int time_wait_zero = 1;
 // position control
 float position_ref = 0.0f; // mm
@@ -104,7 +104,7 @@ void position_control(float position_set_point, bool angle_control_enabled);
 void uz_dqn_take_action_current();
 void uz_dqn_sample_limit();
 void uz_dqn_sample_and_push();
-
+float calculate_boni(float angle, float anglevelocity);
 extern int dividingfactordqn;
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -229,7 +229,8 @@ void ISR_Control(void *data)
 //    Global_Data.dqnp.reward_angle = REWARD_SCALE_ANGLE * (fabsf(Global_Data.obs.dqn_angle) / UZ_PIf -1.0f)*-1.0f;
     // für instabile ruhelage
     Global_Data.dqnp.reward_angle = REWARD_SCALE_ANGLE * (fabsf(Global_Data.obs.dqn_angle) / UZ_PIf);
-    Global_Data.dqnp.reward_position = fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
+    Global_Data.dqnp.reward_position = REWARD_SCALE_POSITION * fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
+    Global_Data.dqnp.reward_boni = calculate_boni(Global_Data.obs.dqn_angle,Global_Data.obs.dqn_angle_derv_raw);
 //  stabile ruhelage, positionsfehler
 //    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((1.0e3f*Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
     Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_chart_position_derv * Global_Data.obs.dqn_chart_position_derv);
@@ -427,9 +428,9 @@ float calculate_reward_pendulum(float samplerate, float theta, float position, f
     float z = 0.0f;
     if (penalty == true)
     {
-        z = -10000.0f;
+        z = -1000.0f;
     }
-    float r = -2.0f * samplerate * (REWARD_SCALE_ANGLE * theta + REWARD_SCALE_POSITION*position + REWARD_SCALE_VELOCITY * (velocity*velocity)) + z;
+    float r = -(REWARD_SCALE_ANGLE * theta + REWARD_SCALE_POSITION*position + REWARD_SCALE_VELOCITY * (velocity*velocity)) + z;
     return r;
 }
 
@@ -438,9 +439,9 @@ float sum_reward_pendulum(float samplerate, float thetareward, float positionrew
     float z = 0.0f;
     if (penalty == true)
     {
-        z = -10000.0f;
+        z = -1000.0f;
     }
-    float r = -2.0f * samplerate * (thetareward + positionreward + velocityreward) + z;
+    float r = -(thetareward + positionreward + velocityreward) + z;
     return r;
 }
 void dqn_isr(void)
@@ -597,6 +598,15 @@ void uz_dqn_take_action_current()
 	        default:
 	            uz_assert(0);
 	        }
+}
+
+float calculate_boni(float angle, float anglevelocity)
+{
+	float bonus = 0.0f;
+	if (fabsf(angle)<(5.0f*UZ_PIf*180.0f)&&(anglevelocity<6.0f)){
+	bonus = 2.0f;
+	}
+	return bonus;
 }
 void position_control(float position_set_point, bool angle_control_enabled)
 {

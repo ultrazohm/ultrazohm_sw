@@ -61,10 +61,10 @@ static float get_uniform_float(uint32_t i_th_element, uint32_t base)
 {
     float f = 1.0f;
     float r = 0.0f;
-    while (i_th_element)
+    while (i_th_element !=0U)
     {
         f = f / (float)base;
-        r = r + f * (float)(i_th_element % base);
+        r = r + f * (i_th_element % base);
         i_th_element = i_th_element / base;
     }
     return r;

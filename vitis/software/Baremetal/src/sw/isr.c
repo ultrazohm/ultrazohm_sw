@@ -462,11 +462,14 @@ void dqn_isr(void)
         uz_dqn_sample_limit();
         // determine action current
         uz_dqn_take_action_current();
+        // Zeitabbruckkriterium
         if (counter_for_reset > (time_dqn * (int)UZ_PWM_FREQUENCY))
         {
             chain = limit_violation;
             break;
         }
+        // Winkelgeschwindikeitabbruchkriterium
+
         break;
     case limit_violation:
         Global_Data.av.trigger_logging = 2.0f;
@@ -612,7 +615,7 @@ void uz_dqn_take_action_current()
 float calculate_boni(float angle, float anglevelocity)
 {
 	float bonus = 0.0f;
-	if( fabsf(angle)<(5.0f*UZ_PIf/180.0f) && (anglevelocity<6.0f))
+	if( fabsf(angle)<(5.0f*UZ_PIf/180.0f) && (fabsf(anglevelocity)<6.0f))
 	{
 	bonus = 2.0f;
 	}

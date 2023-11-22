@@ -24,9 +24,9 @@ void setUp(void)
     testconfig.OmegaPerOverSample_in_rpm=500.0f;
     testconfig.drive_pole_pair=4U;
     testconfig.Speed_Timeout_ms = 100U;
-    testconfig.Encoder_elec_Offset = 0.0f;
-    testconfig.Encoder_mech_Offset = 0.0f;
-    testconfig.counting_direction = 0U;
+    testconfig.Encoder_elec_Offset = 0U;
+    testconfig.Encoder_mech_Offset = 0U;
+    testconfig.counting_direction = clock_wise;
 }
 
 void tearDown(void)
@@ -68,7 +68,38 @@ void test_uz_incrementalEncoder_init(void)
     successful_init();
 }
 
+void test_uz_incrementalEncoder_init_assert_base_address_zero(void) {
+    testconfig.base_address = 0x0U;
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_init(testconfig));
+}
+
+void test_uz_incrementalEncoder_init_assert_frequency_wrong(void) {
+    testconfig.ip_core_frequency_Hz = 50U;
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_init(testconfig));
+}
+
+void test_uz_incrementalEncoder_init_assert_line_number_not_zero(void) {
+    testconfig.line_number_per_turn_mech = 0U;
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_init(testconfig));
+}
+
+void test_uz_incrementalEncoder_init_assert_line_number_UINT16(void) {
+    testconfig.line_number_per_turn_mech = UINT16_MAX + 1U;
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_init(testconfig));
+}
+
+void test_uz_incrementalEncoder_init_assert_mech_Offset_UINT16(void) {
+    testconfig.Encoder_mech_Offset = UINT16_MAX + 1U;
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_init(testconfig));
+}
+
+void test_uz_incrementalEncoder_init_assert_elec_Offset_UINT16(void) {
+    testconfig.Encoder_elec_Offset = UINT16_MAX + 1U;
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_init(testconfig));
+}
+
 void test_uz_incrementalEncoder_get_omega(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_get_omega_mech(NULL));
     uz_incrementalEncoder_t* test_instance= successful_init();
     float expected=321.1f;
     uz_incrementalEncoder_hw_get_omega_ExpectAndReturn(TEST_BASE_ADDRESS,expected);
@@ -76,7 +107,17 @@ void test_uz_incrementalEncoder_get_omega(void){
     TEST_ASSERT_EQUAL_FLOAT(expected,omega);
 }
 
+void test_uz_incrementalEncoder_get_omega_mech_MA_N4(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_get_omega_mech_MA_N4(NULL));
+    uz_incrementalEncoder_t* test_instance= successful_init();
+    float expected=321.1f;
+    uz_incrementalEncoder_hw_get_omega_MA_N4_ExpectAndReturn(TEST_BASE_ADDRESS,expected);
+    float omega=uz_incrementalEncoder_get_omega_mech_MA_N4(test_instance);
+    TEST_ASSERT_EQUAL_FLOAT(expected,omega);
+}
+
 void test_uz_incrementalEncoder_get_theta_el(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_get_theta_el(NULL));
     uz_incrementalEncoder_t* test_instance= successful_init();
     float expected=0.13f;
     uz_incrementalEncoder_hw_get_theta_electric_ExpectAndReturn(TEST_BASE_ADDRESS,expected);
@@ -85,11 +126,41 @@ void test_uz_incrementalEncoder_get_theta_el(void){
 }
 
 void test_uz_incrementalEncoder_get_position(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_get_position(NULL));
     uz_incrementalEncoder_t* test_instance= successful_init();
     uint32_t expected=3421U;
     uz_incrementalEncoder_hw_get_position_ExpectAndReturn(TEST_BASE_ADDRESS,expected);
     uint32_t position=uz_incrementalEncoder_get_position(test_instance);
     TEST_ASSERT_EQUAL_UINT32(expected,position);
+}
+
+void test_uz_incrementalEncoder_get_position_wOffset(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_get_position_wOffset(NULL));
+    uz_incrementalEncoder_t* test_instance= successful_init();
+    uint32_t expected=3421U;
+    uz_incrementalEncoder_hw_get_position_wOffset_ExpectAndReturn(TEST_BASE_ADDRESS,expected);
+    uint32_t position=uz_incrementalEncoder_get_position_wOffset(test_instance);
+    TEST_ASSERT_EQUAL_UINT32(expected,position);
+}
+
+void test_uz_incrementalEncoder_set_new_electrical_Offset(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_electrical_Offset(NULL, 10U));
+    testconfig.Encoder_elec_Offset = 20U;
+    uz_incrementalEncoder_t* test_instance= successful_init();
+    uint32_t new_offset = 50U;
+    uz_incrementalEncoder_hw_set_theta_el_Offset_Expect(TEST_BASE_ADDRESS, new_offset);
+    uz_incrementalEncoder_set_new_electrical_Offset(test_instance, new_offset);
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_electrical_Offset(test_instance, UINT16_MAX+1U));
+}
+
+void test_uz_incrementalEncoder_set_new_mechanical_Offset(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_mechanical_Offset(NULL, 10U));
+    testconfig.Encoder_mech_Offset = 20U;
+    uz_incrementalEncoder_t* test_instance= successful_init();
+    uint32_t new_offset = 50U;
+    uz_incrementalEncoder_hw_set_Position_Offset_Expect(TEST_BASE_ADDRESS, new_offset);
+    uz_incrementalEncoder_set_new_mechanical_Offset(test_instance, new_offset);
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_mechanical_Offset(test_instance, UINT16_MAX+1U));
 }
 
 void test_uz_incrementalEncoder_non_integer_pole_pair(void){

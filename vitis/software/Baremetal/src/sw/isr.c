@@ -68,7 +68,7 @@ float limit_error = 430.0f;
 float disable_control = 350.0f;
 // randomize start position
 float max_pos = 200.0f;
-float start_pos = 0.0f;
+float start_pos = 150.0f;
 float end_pos = 0.0f;
 int time_dqn = 20;
 int time_wait_zero = 1;
@@ -480,8 +480,8 @@ void dqn_isr(void)
         position_control(position_ref, false);
         if ( (fabsf(Global_Data.obs.dqn_chart_position_derv) <0.02f))
         {
-    		start_pos = uz_dqn_determine_position(testdqn2, max_pos);
-    		//end_pos = uz_dqn_determine_position(testdqn2, max_pos);
+//    		start_pos = uz_dqn_determine_position(testdqn2, max_pos);
+//    		end_pos = uz_dqn_determine_position(testdqn2, max_pos);
             chain = get_to_start_postion;
         }
         break;
@@ -580,21 +580,30 @@ void uz_dqn_take_action_current()
 	  Global_Data.rasv.dq_reference_current.q = 0.0f;
 	        switch (action_k)
 	        {
-	        case 0:
-	            Global_Data.rasv.dq_reference_current.q = action_current;
-	            break;
-	        case 1:
-	            Global_Data.rasv.dq_reference_current.q = action_current / 2.0f;
-	            break;
-	        case 2:
-	            Global_Data.rasv.dq_reference_current.q = 0.0f;
-	            break;
-	        case 3:
-	            Global_Data.rasv.dq_reference_current.q = -action_current / 2.0f;
-	            break;
-	        case 4:
-	            Global_Data.rasv.dq_reference_current.q = -action_current;
-	            break;
+//	        case 0:
+//	            Global_Data.rasv.dq_reference_current.q = action_current;
+//	            break;
+//	        case 1:
+//	            Global_Data.rasv.dq_reference_current.q = action_current / 2.0f;
+//	            break;
+//	        case 2:
+//	            Global_Data.rasv.dq_reference_current.q = 0.0f;
+//	            break;
+//	        case 3:
+//	            Global_Data.rasv.dq_reference_current.q = -action_current / 2.0f;
+//	            break;
+//	        case 4:
+//	            Global_Data.rasv.dq_reference_current.q = -action_current;
+//	            break;
+	        	        case 0:
+	        	            Global_Data.rasv.dq_reference_current.q = action_current;
+	        	            break;
+	        	        case 1:
+	        	            Global_Data.rasv.dq_reference_current.q = 0.0f;
+	        	            break;
+	        	        case 2:
+	        	            Global_Data.rasv.dq_reference_current.q = -action_current;
+	        	            break;
 	        default:
 	            uz_assert(0);
 	        }

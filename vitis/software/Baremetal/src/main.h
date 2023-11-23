@@ -21,7 +21,7 @@
 #define DQN__CONTROL_FREQUENCY 50U
 #define REWARD_SCALE_ANGLE 10U
 #define REWARD_SCALE_POSITION 1U
-#define REWARD_SCALE_VELOCITY 0.25
+#define REWARD_SCALE_VELOCITY 0.05
 // Xilinx library functions
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all GIC interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)

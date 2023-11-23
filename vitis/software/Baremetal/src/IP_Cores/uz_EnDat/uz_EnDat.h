@@ -112,7 +112,7 @@ uint16_t uz_EnDat_read_statusword(uz_EnDat_t *self);
 /**
  * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
  * @brief This function fetches positional values from the EnDat IP-Core.
- * @return Returns the actual status word from the EnDat IP Core.
+ * @return Returns the actual positional value from the EnDat IP Core.
  */
 uint32_t uz_EnDat_read_pos(uz_EnDat_t *self, uz_EnDat_position t_x);
 
@@ -160,9 +160,37 @@ uint8_t uz_EnDat_read_crc(uz_EnDat_t* self);
  */
 int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_opmode mode);
 
+/**
+ * 
+ * @brief This function normalizes the positional output against 2PI (rad);  
+ * @param pos Value which need to be transformed.
+ * @return Returns the positional value in between 0 and 2 pi.
+ */
+float uz_EnDat_pos_to_rad_converter(uint32_t pos);
+
+/**
+ * 
+ * @brief This function disables the evaluation of the control word in the EnDat IP-Core.  
+ * @param inp Pointer to a bit array where control word is stored.
+ * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ */
+int8_t uz_EnDat_disable_config_evaluation_in_IP(controlword_expanded* inp);
 
 
+/**
+ * 
+ * @brief This function enables the evaluation of the control word in the EnDat IP-Core.  
+ * @param inp Pointer to a bit array where control word is stored.
+ * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ */
+int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp);
 
 
+/**
+ * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
+ * @brief This function fetches positional values from the EnDat IP-Core and converts them to radiant (0-2pi) immediately.
+ * @return Returns the actual status word from the EnDat IP Core.
+ */
+float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x);
 
 #endif  // UZ_ENDAT_H  // NOLINT

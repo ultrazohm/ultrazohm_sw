@@ -169,7 +169,7 @@ uint16_t uz_EnDat_factor_converter(float in) {
     if (in <= 0.00001f)
     return (0u);
 
-    i = floor(in * 100.0f);
+    i = floorf(in * 100.0f);
 
     return ((uint16_t)i);
 }
@@ -370,6 +370,38 @@ int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_
 
 
 
+}
+
+float uz_EnDat_pos_to_rad_converter(uint32_t pos) {
+    uint32_t endatmax = ENDAT_23_BIT_MAX_VALUE;
+    float ret = 0.0f;
+    float posconv = 0.0f;
+    float tick = 0.0f;
+    float max_val = (float) endatmax;
+    tick = ((float) M_PI * 2.0f)/max_val; 
+    posconv = (float) pos;
+    ret = posconv * tick;
+    return (ret);
+}
+
+int8_t uz_EnDat_disable_config_evaluation_in_IP(controlword_expanded* inp) {
+    uz_assert_not_NULL(inp);
+    *inp[15]=false;
+    return(0);
+}
+
+int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp) {
+    uz_assert_not_NULL(inp);
+    *inp[15]=true;
+    return(0);
+}
+
+float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x){
+    uint32_t retraw = 0;
+    float retfloat = 0.0f;
+    retraw = uz_EnDat_read_pos(self,t_x);
+    retfloat = uz_EnDat_pos_to_rad_converter(retraw);
+    return(retfloat);  
 }
 
 #endif  // NOLINT

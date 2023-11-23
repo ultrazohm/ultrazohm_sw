@@ -83,6 +83,14 @@ void test_uz_Matrix_Multi_read_output_assert_NULL(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_Matrix_Multi_read_output(NULL));
 }
 
+void test_uz_Matrix_Multi_get_done_flag_assert_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_Matrix_Multi_get_done_flag(NULL));
+}
+
+void test_uz_Matrix_Multi_continue_calculation_assert_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_Matrix_Multi_continue_calculation(NULL));
+}
+
 void test_uz_Matrix_Multi_read_output(void) {
     struct uz_matrix_t A_matrix = {0};
     struct uz_matrix_t B_matrix = {0};
@@ -98,5 +106,23 @@ void test_uz_Matrix_Multi_read_output(void) {
     uz_Matrix_Multi_get_done_flag(instance);
     uz_matrix_multiplication_hw_read_C_out_matrix_Expect(config.base_address, config.C_data);
     uz_Matrix_Multi_read_output(instance);
+}
+
+void test_uz_Matrix_Multi_continue_calculation(void) {
+    struct uz_matrix_t A_matrix = {0};
+    struct uz_matrix_t B_matrix = {0};
+    struct uz_matrix_t C_out_matrix = {0};
+    uz_Matrix_Multi_t* instance = uz_Matrix_Multi_init(config, &A_matrix, &B_matrix, &C_out_matrix);
+    uz_matrix_multiplication_hw_set_continue_Expect(config.base_address);
+    uz_Matrix_Multi_continue_calculation(instance);
+}
+
+void test_uz_Matrix_Multi_get_done_flag(void) {
+    struct uz_matrix_t A_matrix = {0};
+    struct uz_matrix_t B_matrix = {0};
+    struct uz_matrix_t C_out_matrix = {0};
+    uz_Matrix_Multi_t* instance = uz_Matrix_Multi_init(config, &A_matrix, &B_matrix, &C_out_matrix);
+    uz_matrix_multiplication_hw_get_is_done_output_ExpectAndReturn(config.base_address, true);
+    uz_Matrix_Multi_get_done_flag(instance);
 }
 #endif // TEST

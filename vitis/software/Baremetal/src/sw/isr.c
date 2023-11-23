@@ -66,7 +66,7 @@ float position_Ki = 0.0f;
 // limits and time setting
 float limit_error = 430.0f;
 float disable_control = 350.0f;
-float angular_velocity_limit = 20.0f;//35rad/s
+float angular_velocity_limit = 15.0f;//35rad/s
 // randomize start position
 float max_pos = 200.0f;
 float start_pos = 150.0f;
@@ -562,7 +562,7 @@ if ((!(uz_SystemTime_GetInterruptCounter() % dividingfactordqn)))
 }
 
 void uz_dqn_sample_limit(){
-if (fabsf(position_abs) > disable_control)
+if ((fabsf(position_abs) > disable_control) || (fabsf(Global_Data.obs.dqn_angle_derv) > angular_velocity_limit))
 {
     // Sample environment at k+1
     input_nn[0] = Global_Data.obs.dqn_sin_angle;

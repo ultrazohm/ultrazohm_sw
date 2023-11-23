@@ -69,72 +69,72 @@ void test_uz_EnDat_fail_assert_if_controlword_builder_is_called_with_NULL_pointe
 }
 
 void test_uz_EnDat_fail_assert_if_set_operation_mode_is_called_with_NULL_pointer(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_operation_mode(NULL,uz_EnDat_Encoder_send_position_values));
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_operation_mode(NULL, uz_EnDat_Encoder_send_position_values));
 }
 
 void test_uz_EnDat_factor_converter_float_to_special_int_100(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(1.00f),100U);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(1.00f), 100U);
 }
 void test_uz_EnDat_factor_converter_float_to_special_int_150(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(1.50f),150U);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(1.50f), 150U);
 }
 
 void test_uz_EnDat_factor_converter_float_to_special_int_050(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(0.50f),50U);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(0.50f), 50U);
 }
 
 void test_uz_EnDat_frequency_to_divider_expansion_12500kHz(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_12500000Hz),0);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_12500000Hz), 0);
 }
 
 void test_uz_EnDat_frequency_to_divider_expansion_6250kHz(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_6250000Hz),1);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_6250000Hz), 1);
 }
 
 
 void test_uz_EnDat_frequency_to_divider_expansion_3125kHz(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_3125000Hz),2);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_3125000Hz), 2);
 }
 
 
 void test_uz_EnDat_frequency_to_divider_expansion_1562kHz(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_1562500Hz),3);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_1562500Hz), 3);
 }
 
 void test_uz_EnDat_frequency_to_divider_expansion_781kHz(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_781250Hz),4);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_781250Hz), 4);
 }
 
 void test_uz_EnDat_frequency_to_divider_expansion_390kHz(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_390625Hz),5);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_390625Hz), 5);
 }
 
 void test_uz_EnDat_frequency_to_divider_expansion_195kHz(void) {
-    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_195312Hz),6);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_195312Hz), 6);
 }
 
 void test_uz_EnDat_posconv_lsb_to_2pi(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(1U),7.490141458742299498504682322773e-7f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(1U), 7.490141458742299498504682322773e-7f);
 }
 
 void test_uz_EnDat_posconv_msb_to_2pi(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(4194304U),3.1415930280968661755776183085136f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(4194304U), 3.1415930280968661755776183085136f);
 }
 
 void test_uz_EnDat_posconv_max_to_2pi(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(8388607U),6.283185307179586476925286766559f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(8388607U), 6.283185307179586476925286766559f);
 }
 
 void test_uz_EnDat_posconv_rnd_to_2pi(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(5592405U),4.1887904544577729426935077945287f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(5592405U), 4.1887904544577729426935077945287f);
 }
 
-void test_uz_EnDat_fail_assert_if_disable_config_evaluation_in_IP_is_called__with_NULL_pointer(void) {
+void test_uz_EnDat_fail_assert_if_enable_config_evaluation_in_IP_is_called__with_NULL_pointer(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_enable_config_evaluation_in_IP(NULL));
 }
 
 
-void test_uz_EnDat_fail_assert_if_disable_config_evaluation_in_IP_with_NULL_pointer(void) {
+void test_uz_EnDat_fail_assert_if_disable_config_evaluation_in_IP_is_called_with_NULL_pointer(void) {
      TEST_ASSERT_FAIL_ASSERT(uz_EnDat_disable_config_evaluation_in_IP(NULL));
 }
 

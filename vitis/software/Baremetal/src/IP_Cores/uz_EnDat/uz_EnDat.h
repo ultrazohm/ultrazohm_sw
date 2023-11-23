@@ -41,7 +41,7 @@ typedef enum uz_EnDat_frequency_selector {
     uz_EnDat_operatingfrequency_390625Hz,
     uz_EnDat_operatingfrequency_195312Hz
   }uz_EnDat_frequency;
-typedef enum uz_EnDat_EnDat_operating_mode{
+typedef enum uz_EnDat_EnDat_operating_mode {
     uz_EnDat_Encoder_send_position_values,
     uz_EnDat_Encoder_send_position_values_with_additional_data,
     uz_EnDat_Selection_of_memory_area,
@@ -55,7 +55,7 @@ typedef enum uz_EnDat_EnDat_operating_mode{
     uz_EnDat_Encoder_receive_test_command,
     uz_EnDat_Encoder_send_position_values_and_receive_test_command,
     uz_EnDat_Encoder_send_test_values,
-    uz_EnDat_Encoder_receive_communication_command 
+    uz_EnDat_Encoder_receive_communication_command
 }uz_EnDat_protocol_opmode;
 
 
@@ -144,7 +144,7 @@ uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp);
  * @param frequency ENUM of selected frequencies. (e.g. uz_EnDat_operatingfrequency_1562500Hz)
  * @return Returns the divider which then can be written to the EnDat IP-Core.
  */
- uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency frequency);
+uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency frequency);
 
 /**
  * 
@@ -188,7 +188,7 @@ int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp);
 
 /**
  * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
- * @brief This function fetches positional values from the EnDat IP-Core and converts them to radiant (0-2pi) immediately.
+ * @brief This function fetches positional values from the EnDat IP-Core and converts them to rad (2PI) immediately.
  * @return Returns the actual status word from the EnDat IP Core.
  */
 float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x);

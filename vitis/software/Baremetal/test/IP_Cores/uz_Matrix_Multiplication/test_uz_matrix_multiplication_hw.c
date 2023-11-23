@@ -104,41 +104,35 @@ void test_uz_matrix_multiplication_hw_read_C_out_matrix(void) {
 }
 
 
-void test_uz_matrix_multiplication_hw_set_trigger_calculation_assert_zero_base_address(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_matrix_multiplication_hw_set_trigger_calculation(0x0));
+void test_uz_matrix_multiplication_hw_set_start_assert_zero_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_matrix_multiplication_hw_set_start(0x0));
 }
 
-void test_uz_matrix_multiplication_hw_set_trigger_calculation(void) {
-    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_TRIGGER_DATA, true);
-    uz_matrix_multiplication_hw_set_trigger_calculation(TEST_BASE_ADDRESS);
+void test_uz_matrix_multiplication_hw_set_start(void) {
+    uint32_t expected = 0x0U;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, expected);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, (expected | 0x01U));
+    uz_matrix_multiplication_hw_set_start(TEST_BASE_ADDRESS);
 }
 
 void test_uz_matrix_multiplication_hw_get_is_done_output_assert_zero_base_address(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_matrix_multiplication_hw_get_is_done_output(0x0));
 }
 
-void test_uz_matrix_multiplication_hw_get_is_output_done(void) {
-    uz_axi_read_bool_ExpectAndReturn(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_O_DATA,true);
+void test_uz_matrix_multiplication_hw_get_is_done_output(void) {
+    uint32_t expected = 0x01U;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, expected);
     uz_matrix_multiplication_hw_get_is_done_output(TEST_BASE_ADDRESS);
 }
 
-void test_uz_matrix_multiplication_hw_set_is_done_input_assert_zero_base_address(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_matrix_multiplication_hw_set_is_done_input(0x0));
+void test_uz_matrix_multiplication_hw_set_continue_assert_zero_base_address(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_matrix_multiplication_hw_set_continue(0x0U));
 }
 
-void test_uz_matrix_multiplication_hw_set_is_done_input(void) {
-    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA,true);
-    uz_matrix_multiplication_hw_set_is_done_input(TEST_BASE_ADDRESS);
+void test_uz_matrix_multiplication_hw_set_continue(void) {
+    uint32_t expected = 0x0U;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, expected);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, (expected | 0x10U));
+    uz_matrix_multiplication_hw_set_continue(TEST_BASE_ADDRESS);    
 }
-
-void test_uz_matrix_multiplication_hw_reset_assert_zero_base_address(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_matrix_multiplication_hw_reset(0x0));
-}
-
-void test_uz_matrix_multiplication_hw_reset(void) {
-    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA, false);
-    uz_matrix_multiplication_hw_reset(TEST_BASE_ADDRESS);
-}
-
-
 #endif // TEST

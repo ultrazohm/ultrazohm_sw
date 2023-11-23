@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-(* CORE_GENERATION_INFO="MatrixMultiplication_MatrixMultiplication,hls_ip_2022_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu9eg-ffvc900-1-e,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=6.808000,HLS_SYN_LAT=-1,HLS_SYN_TPT=none,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=1613,HLS_SYN_LUT=1974,HLS_VERSION=2022_2}" *)
+(* CORE_GENERATION_INFO="MatrixMultiplication_MatrixMultiplication,hls_ip_2022_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu9eg-ffvc900-1-i,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=6.808000,HLS_SYN_LAT=-1,HLS_SYN_TPT=none,HLS_SYN_MEM=0,HLS_SYN_DSP=0,HLS_SYN_FF=1408,HLS_SYN_LUT=1970,HLS_VERSION=2022_2}" *)
 
 module MatrixMultiplication (
         ap_clk,
@@ -28,7 +28,8 @@ module MatrixMultiplication (
         s_axi_control_RRESP,
         s_axi_control_BVALID,
         s_axi_control_BREADY,
-        s_axi_control_BRESP
+        s_axi_control_BRESP,
+        interrupt
 );
 
 parameter    ap_ST_fsm_state1 = 9'd1;
@@ -41,7 +42,7 @@ parameter    ap_ST_fsm_state7 = 9'd64;
 parameter    ap_ST_fsm_state8 = 9'd128;
 parameter    ap_ST_fsm_state9 = 9'd256;
 parameter    C_S_AXI_CONTROL_DATA_WIDTH = 32;
-parameter    C_S_AXI_CONTROL_ADDR_WIDTH = 9;
+parameter    C_S_AXI_CONTROL_ADDR_WIDTH = 8;
 parameter    C_S_AXI_DATA_WIDTH = 32;
 
 parameter C_S_AXI_CONTROL_WSTRB_WIDTH = (32 / 8);
@@ -66,8 +67,19 @@ output  [1:0] s_axi_control_RRESP;
 output   s_axi_control_BVALID;
 input   s_axi_control_BREADY;
 output  [1:0] s_axi_control_BRESP;
+output   interrupt;
 
- reg    ap_rst_n_inv;
+(* shreg_extract = "no" *) reg    ap_rst_reg_2;
+(* shreg_extract = "no" *) reg    ap_rst_reg_1;
+(* shreg_extract = "no" *) reg    ap_rst_n_inv;
+wire    ap_start;
+reg    ap_done;
+wire    ap_continue;
+reg    ap_done_reg;
+reg    ap_idle;
+(* fsm_encoding = "none" *) reg   [8:0] ap_CS_fsm;
+wire    ap_CS_fsm_state1;
+reg    ap_ready;
 wire   [31:0] A_q0;
 wire   [31:0] B_q0;
 reg   [2:0] C_out_address0;
@@ -78,105 +90,94 @@ wire   [31:0] C_out_q0;
 wire   [63:0] A_rows;
 wire   [63:0] B_rows;
 wire   [63:0] B_columns;
-wire    trigger;
-wire    is_done_i;
-reg    is_done_o;
-reg    is_done_o_ap_vld;
-wire   [0:0] trigger_read_read_fu_104_p2;
-reg   [0:0] trigger_read_reg_296;
-(* fsm_encoding = "none" *) reg   [8:0] ap_CS_fsm;
-wire    ap_CS_fsm_state1;
-reg   [63:0] B_columns_read_reg_300;
-reg   [63:0] B_rows_read_reg_305;
-reg   [63:0] A_rows_read_reg_313;
-wire   [4:0] trunc_ln3_fu_200_p1;
-reg   [4:0] trunc_ln3_reg_324;
-wire  signed [2:0] trunc_ln3_1_fu_204_p1;
-reg  signed [2:0] trunc_ln3_1_reg_329;
-wire  signed [2:0] trunc_ln3_2_fu_208_p1;
-reg  signed [2:0] trunc_ln3_2_reg_334;
-wire   [0:0] is_done_read_read_fu_128_p2;
-reg   [0:0] is_done_read_reg_339;
-wire   [0:0] icmp_ln19_fu_217_p2;
-reg   [0:0] icmp_ln19_reg_350;
+wire  signed [2:0] trunc_ln4_2_fu_164_p1;
+reg  signed [2:0] trunc_ln4_2_reg_281;
 wire    ap_CS_fsm_state2;
-wire   [63:0] m_2_fu_230_p2;
-reg   [63:0] m_2_reg_357;
+wire   [4:0] trunc_ln4_fu_173_p1;
+reg   [4:0] trunc_ln4_reg_296;
+wire  signed [2:0] trunc_ln4_1_fu_177_p1;
+reg  signed [2:0] trunc_ln4_1_reg_301;
+wire   [0:0] icmp_ln16_fu_181_p2;
+reg   [0:0] icmp_ln16_reg_306;
+wire   [63:0] m_2_fu_194_p2;
+reg   [63:0] m_2_reg_313;
 wire    ap_CS_fsm_state3;
-wire   [2:0] mul_fu_240_p2;
-reg   [2:0] mul_reg_362;
-wire   [0:0] icmp_ln22_fu_225_p2;
-wire   [2:0] mul30_fu_245_p2;
-reg   [2:0] mul30_reg_367;
-wire   [63:0] k_1_fu_255_p2;
-reg   [63:0] k_1_reg_375;
+wire   [2:0] mul_fu_204_p2;
+reg   [2:0] mul_reg_318;
+wire   [0:0] icmp_ln19_fu_189_p2;
+wire   [2:0] mul29_fu_209_p2;
+reg   [2:0] mul29_reg_323;
+wire   [63:0] k_1_fu_219_p2;
+reg   [63:0] k_1_reg_331;
 wire    ap_CS_fsm_state5;
-wire   [4:0] trunc_ln24_fu_261_p1;
-reg   [4:0] trunc_ln24_reg_380;
-wire   [0:0] icmp_ln24_fu_250_p2;
-wire   [2:0] add315_fu_270_p2;
-reg   [2:0] add315_reg_385;
-reg   [2:0] C_out_addr_reg_390;
+wire   [4:0] trunc_ln21_fu_225_p1;
+reg   [4:0] trunc_ln21_reg_336;
+wire   [0:0] icmp_ln21_fu_214_p2;
+wire   [2:0] add305_fu_234_p2;
+reg   [2:0] add305_reg_341;
+reg   [2:0] C_out_addr_reg_346;
 wire    ap_CS_fsm_state6;
-wire   [31:0] bitcast_ln29_fu_283_p1;
-reg   [31:0] bitcast_ln29_reg_395;
+wire   [31:0] bitcast_ln26_fu_247_p1;
+reg   [31:0] bitcast_ln26_reg_351;
 wire    ap_CS_fsm_state7;
 reg   [4:0] acc_address0;
 reg    acc_ce0;
 reg    acc_we0;
 reg   [31:0] acc_d0;
 wire   [31:0] acc_q0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_done;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_idle;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_ready;
-wire   [2:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_address0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_ce0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_we0;
-wire   [31:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_d0;
-wire    grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start;
-wire    grp_MatrixMultiplication_Pipeline_2_fu_174_ap_done;
-wire    grp_MatrixMultiplication_Pipeline_2_fu_174_ap_idle;
-wire    grp_MatrixMultiplication_Pipeline_2_fu_174_ap_ready;
-wire   [4:0] grp_MatrixMultiplication_Pipeline_2_fu_174_acc_address0;
-wire    grp_MatrixMultiplication_Pipeline_2_fu_174_acc_ce0;
-wire    grp_MatrixMultiplication_Pipeline_2_fu_174_acc_we0;
-wire   [31:0] grp_MatrixMultiplication_Pipeline_2_fu_174_acc_d0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_done;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_idle;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_ready;
-wire   [2:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_A_address0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_A_ce0;
-wire   [4:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_B_address0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_B_ce0;
-wire   [4:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_address0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_ce0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_we0;
-wire   [31:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_d0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_done;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_idle;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_ready;
-wire   [4:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_acc_address0;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_acc_ce0;
-wire   [31:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_add3311_out;
-wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_add3311_out_ap_vld;
-reg   [63:0] k_reg_155;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_done;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_idle;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_ready;
+wire   [2:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_address0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_ce0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_we0;
+wire   [31:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_d0;
+wire    grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start;
+wire    grp_MatrixMultiplication_Pipeline_2_fu_138_ap_done;
+wire    grp_MatrixMultiplication_Pipeline_2_fu_138_ap_idle;
+wire    grp_MatrixMultiplication_Pipeline_2_fu_138_ap_ready;
+wire   [4:0] grp_MatrixMultiplication_Pipeline_2_fu_138_acc_address0;
+wire    grp_MatrixMultiplication_Pipeline_2_fu_138_acc_ce0;
+wire    grp_MatrixMultiplication_Pipeline_2_fu_138_acc_we0;
+wire   [31:0] grp_MatrixMultiplication_Pipeline_2_fu_138_acc_d0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_done;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_idle;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_ready;
+wire   [2:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_A_address0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_A_ce0;
+wire   [4:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_B_address0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_B_ce0;
+wire   [4:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_address0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_ce0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_we0;
+wire   [31:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_d0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_done;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_idle;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_ready;
+wire   [4:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_acc_address0;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_acc_ce0;
+wire   [31:0] grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_add3211_out;
+wire    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_add3211_out_ap_vld;
+reg   [63:0] k_reg_119;
 wire    ap_CS_fsm_state4;
 wire    ap_CS_fsm_state9;
-reg    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start_reg;
-reg    grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start_reg;
-reg    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start_reg;
-reg    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start_reg;
+reg    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start_reg;
+reg    ap_block_state1_ignore_call34;
+reg    grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start_reg;
+reg    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start_reg;
+reg    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start_reg;
 wire    ap_CS_fsm_state8;
-wire   [63:0] zext_ln29_fu_279_p1;
-reg   [63:0] m_fu_100;
-wire   [31:0] bitcast_ln29_1_fu_291_p1;
-wire  signed [2:0] trunc_ln22_fu_236_p1;
-wire   [2:0] trunc_ln24_1_fu_266_p1;
+wire   [63:0] zext_ln26_fu_243_p1;
+reg   [63:0] m_fu_76;
+reg    ap_block_state1;
+wire   [31:0] bitcast_ln26_1_fu_255_p1;
+wire  signed [2:0] trunc_ln19_fu_200_p1;
+wire   [2:0] trunc_ln21_1_fu_230_p1;
 reg   [8:0] ap_NS_fsm;
-wire    ap_ST_fsm_state1_blk;
+reg    ap_ST_fsm_state1_blk;
 reg    ap_ST_fsm_state2_blk;
 wire    ap_ST_fsm_state3_blk;
 reg    ap_ST_fsm_state4_blk;
@@ -189,11 +190,15 @@ wire    ap_ce_reg;
 
 // power-on initialization
 initial begin
+#0 ap_rst_reg_2 = 1'b1;
+#0 ap_rst_reg_1 = 1'b1;
+#0 ap_rst_n_inv = 1'b1;
+#0 ap_done_reg = 1'b0;
 #0 ap_CS_fsm = 9'd1;
-#0 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start_reg = 1'b0;
-#0 grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start_reg = 1'b0;
-#0 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start_reg = 1'b0;
-#0 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start_reg = 1'b0;
+#0 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start_reg = 1'b0;
+#0 grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start_reg = 1'b0;
+#0 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start_reg = 1'b0;
+#0 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start_reg = 1'b0;
 end
 
 MatrixMultiplication_acc_RAM_AUTO_1R1W #(
@@ -210,70 +215,70 @@ acc_U(
     .q0(acc_q0)
 );
 
-MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166(
+MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .ap_start(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start),
-    .ap_done(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_done),
-    .ap_idle(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_idle),
-    .ap_ready(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_ready),
-    .B_rows(B_rows_read_reg_305),
-    .C_out_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_address0),
-    .C_out_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_ce0),
-    .C_out_we0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_we0),
-    .C_out_d0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_d0)
+    .ap_start(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start),
+    .ap_done(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_done),
+    .ap_idle(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_idle),
+    .ap_ready(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_ready),
+    .B_rows(B_rows),
+    .C_out_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_address0),
+    .C_out_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_ce0),
+    .C_out_we0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_we0),
+    .C_out_d0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_d0)
 );
 
-MatrixMultiplication_MatrixMultiplication_Pipeline_2 grp_MatrixMultiplication_Pipeline_2_fu_174(
+MatrixMultiplication_MatrixMultiplication_Pipeline_2 grp_MatrixMultiplication_Pipeline_2_fu_138(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .ap_start(grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start),
-    .ap_done(grp_MatrixMultiplication_Pipeline_2_fu_174_ap_done),
-    .ap_idle(grp_MatrixMultiplication_Pipeline_2_fu_174_ap_idle),
-    .ap_ready(grp_MatrixMultiplication_Pipeline_2_fu_174_ap_ready),
-    .acc_address0(grp_MatrixMultiplication_Pipeline_2_fu_174_acc_address0),
-    .acc_ce0(grp_MatrixMultiplication_Pipeline_2_fu_174_acc_ce0),
-    .acc_we0(grp_MatrixMultiplication_Pipeline_2_fu_174_acc_we0),
-    .acc_d0(grp_MatrixMultiplication_Pipeline_2_fu_174_acc_d0)
+    .ap_start(grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start),
+    .ap_done(grp_MatrixMultiplication_Pipeline_2_fu_138_ap_done),
+    .ap_idle(grp_MatrixMultiplication_Pipeline_2_fu_138_ap_idle),
+    .ap_ready(grp_MatrixMultiplication_Pipeline_2_fu_138_ap_ready),
+    .acc_address0(grp_MatrixMultiplication_Pipeline_2_fu_138_acc_address0),
+    .acc_ce0(grp_MatrixMultiplication_Pipeline_2_fu_138_acc_ce0),
+    .acc_we0(grp_MatrixMultiplication_Pipeline_2_fu_138_acc_we0),
+    .acc_d0(grp_MatrixMultiplication_Pipeline_2_fu_138_acc_d0)
 );
 
-MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179(
+MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .ap_start(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start),
-    .ap_done(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_done),
-    .ap_idle(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_idle),
-    .ap_ready(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_ready),
-    .B_rows(B_rows_read_reg_305),
-    .mul(mul_reg_362),
-    .A_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_A_address0),
-    .A_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_A_ce0),
+    .ap_start(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start),
+    .ap_done(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_done),
+    .ap_idle(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_idle),
+    .ap_ready(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_ready),
+    .B_rows(B_rows),
+    .mul(mul_reg_318),
+    .A_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_A_address0),
+    .A_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_A_ce0),
     .A_q0(A_q0),
-    .trunc_ln3(trunc_ln3_reg_324),
-    .trunc_ln2(trunc_ln24_reg_380),
-    .B_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_B_address0),
-    .B_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_B_ce0),
+    .trunc_ln4(trunc_ln4_reg_296),
+    .trunc_ln2(trunc_ln21_reg_336),
+    .B_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_B_address0),
+    .B_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_B_ce0),
     .B_q0(B_q0),
-    .acc_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_address0),
-    .acc_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_ce0),
-    .acc_we0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_we0),
-    .acc_d0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_d0)
+    .acc_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_address0),
+    .acc_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_ce0),
+    .acc_we0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_we0),
+    .acc_d0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_d0)
 );
 
-MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192(
+MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst_n_inv),
-    .ap_start(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start),
-    .ap_done(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_done),
-    .ap_idle(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_idle),
-    .ap_ready(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_ready),
-    .bitcast_ln29(bitcast_ln29_reg_395),
-    .B_rows(B_rows_read_reg_305),
-    .acc_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_acc_address0),
-    .acc_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_acc_ce0),
+    .ap_start(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start),
+    .ap_done(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_done),
+    .ap_idle(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_idle),
+    .ap_ready(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_ready),
+    .bitcast_ln26(bitcast_ln26_reg_351),
+    .B_rows(B_rows),
+    .acc_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_acc_address0),
+    .acc_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_acc_ce0),
     .acc_q0(acc_q0),
-    .add3311_out(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_add3311_out),
-    .add3311_out_ap_vld(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_add3311_out_ap_vld)
+    .add3211_out(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_add3211_out),
+    .add3211_out_ap_vld(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_add3211_out_ap_vld)
 );
 
 MatrixMultiplication_control_s_axi #(
@@ -301,8 +306,8 @@ control_s_axi_U(
     .ARESET(ap_rst_n_inv),
     .ACLK_EN(1'b1),
     .A_rows(A_rows),
-    .A_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_A_address0),
-    .A_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_A_ce0),
+    .A_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_A_address0),
+    .A_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_A_ce0),
     .A_q0(A_q0),
     .C_out_address0(C_out_address0),
     .C_out_ce0(C_out_ce0),
@@ -311,13 +316,15 @@ control_s_axi_U(
     .C_out_q0(C_out_q0),
     .B_rows(B_rows),
     .B_columns(B_columns),
-    .trigger(trigger),
-    .B_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_B_address0),
-    .B_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_B_ce0),
+    .B_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_B_address0),
+    .B_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_B_ce0),
     .B_q0(B_q0),
-    .is_done_o(is_done_o),
-    .is_done_o_ap_vld(is_done_o_ap_vld),
-    .is_done_i(is_done_i)
+    .ap_start(ap_start),
+    .interrupt(interrupt),
+    .ap_ready(ap_ready),
+    .ap_done(ap_done),
+    .ap_continue(ap_continue),
+    .ap_idle(ap_idle)
 );
 
 MatrixMultiplication_mul_3s_3s_3_1_1 #(
@@ -327,9 +334,9 @@ MatrixMultiplication_mul_3s_3s_3_1_1 #(
     .din1_WIDTH( 3 ),
     .dout_WIDTH( 3 ))
 mul_3s_3s_3_1_1_U19(
-    .din0(trunc_ln22_fu_236_p1),
-    .din1(trunc_ln3_2_reg_334),
-    .dout(mul_fu_240_p2)
+    .din0(trunc_ln19_fu_200_p1),
+    .din1(trunc_ln4_2_reg_281),
+    .dout(mul_fu_204_p2)
 );
 
 MatrixMultiplication_mul_3s_3s_3_1_1 #(
@@ -339,9 +346,9 @@ MatrixMultiplication_mul_3s_3s_3_1_1 #(
     .din1_WIDTH( 3 ),
     .dout_WIDTH( 3 ))
 mul_3s_3s_3_1_1_U20(
-    .din0(trunc_ln22_fu_236_p1),
-    .din1(trunc_ln3_1_reg_329),
-    .dout(mul30_fu_245_p2)
+    .din0(trunc_ln19_fu_200_p1),
+    .din1(trunc_ln4_1_reg_301),
+    .dout(mul29_fu_209_p2)
 );
 
 always @ (posedge ap_clk) begin
@@ -354,147 +361,161 @@ end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start_reg <= 1'b0;
+        ap_done_reg <= 1'b0;
     end else begin
-        if (((icmp_ln22_fu_225_p2 == 1'd0) & (is_done_read_reg_339 == 1'd0) & (trigger_read_reg_296 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
-            grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start_reg <= 1'b1;
-        end else if ((grp_MatrixMultiplication_Pipeline_2_fu_174_ap_ready == 1'b1)) begin
-            grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start_reg <= 1'b0;
+        if ((ap_continue == 1'b1)) begin
+            ap_done_reg <= 1'b0;
+        end else if (((icmp_ln19_fu_189_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
+            ap_done_reg <= 1'b1;
         end
     end
 end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start_reg <= 1'b0;
+        grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start_reg <= 1'b0;
     end else begin
-        if (((is_done_read_read_fu_128_p2 == 1'd0) & (trigger_read_read_fu_104_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state1))) begin
-            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start_reg <= 1'b1;
-        end else if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_ready == 1'b1)) begin
-            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start_reg <= 1'b0;
+        if (((icmp_ln19_fu_189_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state3))) begin
+            grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start_reg <= 1'b1;
+        end else if ((grp_MatrixMultiplication_Pipeline_2_fu_138_ap_ready == 1'b1)) begin
+            grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start_reg <= 1'b0;
         end
     end
 end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start_reg <= 1'b0;
+        grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start_reg <= 1'b0;
     end else begin
-        if (((1'b1 == ap_CS_fsm_state5) & (icmp_ln24_fu_250_p2 == 1'd0))) begin
-            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start_reg <= 1'b1;
-        end else if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_ready == 1'b1)) begin
-            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start_reg <= 1'b0;
+        if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
+            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start_reg <= 1'b1;
+        end else if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_ready == 1'b1)) begin
+            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start_reg <= 1'b0;
         end
     end
 end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start_reg <= 1'b0;
+        grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start_reg <= 1'b0;
+    end else begin
+        if (((icmp_ln21_fu_214_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state5))) begin
+            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start_reg <= 1'b1;
+        end else if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_ready == 1'b1)) begin
+            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start_reg <= 1'b0;
+        end
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if (ap_rst_n_inv == 1'b1) begin
+        grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start_reg <= 1'b0;
     end else begin
         if ((1'b1 == ap_CS_fsm_state7)) begin
-            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start_reg <= 1'b1;
-        end else if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_ready == 1'b1)) begin
-            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start_reg <= 1'b0;
+            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start_reg <= 1'b1;
+        end else if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_ready == 1'b1)) begin
+            grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start_reg <= 1'b0;
         end
     end
+end
+
+always @ (posedge ap_clk) begin
+    ap_rst_n_inv <= ap_rst_reg_1;
+end
+
+always @ (posedge ap_clk) begin
+    ap_rst_reg_1 <= ap_rst_reg_2;
+end
+
+always @ (posedge ap_clk) begin
+    ap_rst_reg_2 <= ~ap_rst_n;
 end
 
 always @ (posedge ap_clk) begin
     if ((1'b1 == ap_CS_fsm_state9)) begin
-        k_reg_155 <= k_1_reg_375;
-    end else if (((1'b1 == ap_CS_fsm_state4) & (grp_MatrixMultiplication_Pipeline_2_fu_174_ap_done == 1'b1))) begin
-        k_reg_155 <= 64'd0;
+        k_reg_119 <= k_1_reg_331;
+    end else if (((1'b1 == ap_CS_fsm_state4) & (grp_MatrixMultiplication_Pipeline_2_fu_138_ap_done == 1'b1))) begin
+        k_reg_119 <= 64'd0;
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((is_done_read_read_fu_128_p2 == 1'd0) & (trigger_read_read_fu_104_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state1))) begin
-        m_fu_100 <= 64'd0;
-    end else if (((1'b1 == ap_CS_fsm_state5) & (icmp_ln24_fu_250_p2 == 1'd1))) begin
-        m_fu_100 <= m_2_reg_357;
+    if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
+        m_fu_76 <= 64'd0;
+    end else if (((icmp_ln21_fu_214_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state5))) begin
+        m_fu_76 <= m_2_reg_313;
     end
 end
 
 always @ (posedge ap_clk) begin
-    if ((1'b1 == ap_CS_fsm_state1)) begin
-        A_rows_read_reg_313 <= A_rows;
-        B_columns_read_reg_300 <= B_columns;
-        B_rows_read_reg_305 <= B_rows;
-        trigger_read_reg_296 <= trigger;
-        trunc_ln3_1_reg_329 <= trunc_ln3_1_fu_204_p1;
-        trunc_ln3_2_reg_334 <= trunc_ln3_2_fu_208_p1;
-        trunc_ln3_reg_324 <= trunc_ln3_fu_200_p1;
+    if (((icmp_ln16_reg_306 == 1'd0) & (1'b1 == ap_CS_fsm_state6))) begin
+        C_out_addr_reg_346 <= zext_ln26_fu_243_p1;
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((icmp_ln19_reg_350 == 1'd0) & (1'b1 == ap_CS_fsm_state6))) begin
-        C_out_addr_reg_390 <= zext_ln29_fu_279_p1;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((1'b1 == ap_CS_fsm_state5) & (icmp_ln24_fu_250_p2 == 1'd0))) begin
-        add315_reg_385 <= add315_fu_270_p2;
-        trunc_ln24_reg_380 <= trunc_ln24_fu_261_p1;
+    if (((icmp_ln21_fu_214_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state5))) begin
+        add305_reg_341 <= add305_fu_234_p2;
+        trunc_ln21_reg_336 <= trunc_ln21_fu_225_p1;
     end
 end
 
 always @ (posedge ap_clk) begin
     if ((1'b1 == ap_CS_fsm_state7)) begin
-        bitcast_ln29_reg_395 <= bitcast_ln29_fu_283_p1;
+        bitcast_ln26_reg_351 <= bitcast_ln26_fu_247_p1;
     end
 end
 
 always @ (posedge ap_clk) begin
     if ((1'b1 == ap_CS_fsm_state2)) begin
-        icmp_ln19_reg_350 <= icmp_ln19_fu_217_p2;
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (((trigger_read_read_fu_104_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state1))) begin
-        is_done_read_reg_339 <= is_done_i;
+        icmp_ln16_reg_306 <= icmp_ln16_fu_181_p2;
+        trunc_ln4_1_reg_301 <= trunc_ln4_1_fu_177_p1;
+        trunc_ln4_reg_296 <= trunc_ln4_fu_173_p1;
     end
 end
 
 always @ (posedge ap_clk) begin
     if ((1'b1 == ap_CS_fsm_state5)) begin
-        k_1_reg_375 <= k_1_fu_255_p2;
+        k_1_reg_331 <= k_1_fu_219_p2;
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((is_done_read_reg_339 == 1'd0) & (trigger_read_reg_296 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
-        m_2_reg_357 <= m_2_fu_230_p2;
+    if ((1'b1 == ap_CS_fsm_state3)) begin
+        m_2_reg_313 <= m_2_fu_194_p2;
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((icmp_ln22_fu_225_p2 == 1'd0) & (is_done_read_reg_339 == 1'd0) & (trigger_read_reg_296 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
-        mul30_reg_367 <= mul30_fu_245_p2;
-        mul_reg_362 <= mul_fu_240_p2;
+    if (((icmp_ln19_fu_189_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state3))) begin
+        mul29_reg_323 <= mul29_fu_209_p2;
+        mul_reg_318 <= mul_fu_204_p2;
+    end
+end
+
+always @ (posedge ap_clk) begin
+    if ((1'b1 == ap_CS_fsm_state1)) begin
+        trunc_ln4_2_reg_281 <= trunc_ln4_2_fu_164_p1;
     end
 end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state9)) begin
-        C_out_address0 = C_out_addr_reg_390;
+        C_out_address0 = C_out_addr_reg_346;
     end else if ((1'b1 == ap_CS_fsm_state6)) begin
-        C_out_address0 = zext_ln29_fu_279_p1;
+        C_out_address0 = zext_ln26_fu_243_p1;
     end else if ((1'b1 == ap_CS_fsm_state2)) begin
-        C_out_address0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_address0;
+        C_out_address0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_address0;
     end else begin
         C_out_address0 = 'bx;
     end
 end
 
 always @ (*) begin
-    if (((1'b1 == ap_CS_fsm_state9) | ((1'b1 == ap_CS_fsm_state6) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_done == 1'b1)))) begin
+    if (((1'b1 == ap_CS_fsm_state9) | ((1'b1 == ap_CS_fsm_state6) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_done == 1'b1)))) begin
         C_out_ce0 = 1'b1;
     end else if ((1'b1 == ap_CS_fsm_state2)) begin
-        C_out_ce0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_ce0;
+        C_out_ce0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_ce0;
     end else begin
         C_out_ce0 = 1'b0;
     end
@@ -502,19 +523,19 @@ end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state9)) begin
-        C_out_d0 = bitcast_ln29_1_fu_291_p1;
+        C_out_d0 = bitcast_ln26_1_fu_255_p1;
     end else if ((1'b1 == ap_CS_fsm_state2)) begin
-        C_out_d0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_d0;
+        C_out_d0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_d0;
     end else begin
         C_out_d0 = 'bx;
     end
 end
 
 always @ (*) begin
-    if (((icmp_ln19_reg_350 == 1'd0) & (1'b1 == ap_CS_fsm_state9))) begin
+    if (((icmp_ln16_reg_306 == 1'd0) & (1'b1 == ap_CS_fsm_state9))) begin
         C_out_we0 = 1'b1;
     end else if ((1'b1 == ap_CS_fsm_state2)) begin
-        C_out_we0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_C_out_we0;
+        C_out_we0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_C_out_we0;
     end else begin
         C_out_we0 = 1'b0;
     end
@@ -522,11 +543,11 @@ end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state8)) begin
-        acc_address0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_acc_address0;
+        acc_address0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_acc_address0;
     end else if ((1'b1 == ap_CS_fsm_state6)) begin
-        acc_address0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_address0;
+        acc_address0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_address0;
     end else if ((1'b1 == ap_CS_fsm_state4)) begin
-        acc_address0 = grp_MatrixMultiplication_Pipeline_2_fu_174_acc_address0;
+        acc_address0 = grp_MatrixMultiplication_Pipeline_2_fu_138_acc_address0;
     end else begin
         acc_address0 = 'bx;
     end
@@ -534,11 +555,11 @@ end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state8)) begin
-        acc_ce0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_acc_ce0;
+        acc_ce0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_acc_ce0;
     end else if ((1'b1 == ap_CS_fsm_state6)) begin
-        acc_ce0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_ce0;
+        acc_ce0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_ce0;
     end else if ((1'b1 == ap_CS_fsm_state4)) begin
-        acc_ce0 = grp_MatrixMultiplication_Pipeline_2_fu_174_acc_ce0;
+        acc_ce0 = grp_MatrixMultiplication_Pipeline_2_fu_138_acc_ce0;
     end else begin
         acc_ce0 = 1'b0;
     end
@@ -546,9 +567,9 @@ end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state6)) begin
-        acc_d0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_d0;
+        acc_d0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_d0;
     end else if ((1'b1 == ap_CS_fsm_state4)) begin
-        acc_d0 = grp_MatrixMultiplication_Pipeline_2_fu_174_acc_d0;
+        acc_d0 = grp_MatrixMultiplication_Pipeline_2_fu_138_acc_d0;
     end else begin
         acc_d0 = 'bx;
     end
@@ -556,18 +577,24 @@ end
 
 always @ (*) begin
     if ((1'b1 == ap_CS_fsm_state6)) begin
-        acc_we0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_acc_we0;
+        acc_we0 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_acc_we0;
     end else if ((1'b1 == ap_CS_fsm_state4)) begin
-        acc_we0 = grp_MatrixMultiplication_Pipeline_2_fu_174_acc_we0;
+        acc_we0 = grp_MatrixMultiplication_Pipeline_2_fu_138_acc_we0;
     end else begin
         acc_we0 = 1'b0;
     end
 end
 
-assign ap_ST_fsm_state1_blk = 1'b0;
+always @ (*) begin
+    if (((ap_done_reg == 1'b1) | (ap_start == 1'b0))) begin
+        ap_ST_fsm_state1_blk = 1'b1;
+    end else begin
+        ap_ST_fsm_state1_blk = 1'b0;
+    end
+end
 
 always @ (*) begin
-    if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_done == 1'b0)) begin
+    if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_done == 1'b0)) begin
         ap_ST_fsm_state2_blk = 1'b1;
     end else begin
         ap_ST_fsm_state2_blk = 1'b0;
@@ -577,7 +604,7 @@ end
 assign ap_ST_fsm_state3_blk = 1'b0;
 
 always @ (*) begin
-    if ((grp_MatrixMultiplication_Pipeline_2_fu_174_ap_done == 1'b0)) begin
+    if ((grp_MatrixMultiplication_Pipeline_2_fu_138_ap_done == 1'b0)) begin
         ap_ST_fsm_state4_blk = 1'b1;
     end else begin
         ap_ST_fsm_state4_blk = 1'b0;
@@ -587,7 +614,7 @@ end
 assign ap_ST_fsm_state5_blk = 1'b0;
 
 always @ (*) begin
-    if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_done == 1'b0)) begin
+    if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_done == 1'b0)) begin
         ap_ST_fsm_state6_blk = 1'b1;
     end else begin
         ap_ST_fsm_state6_blk = 1'b0;
@@ -597,7 +624,7 @@ end
 assign ap_ST_fsm_state7_blk = 1'b0;
 
 always @ (*) begin
-    if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_done == 1'b0)) begin
+    if ((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_done == 1'b0)) begin
         ap_ST_fsm_state8_blk = 1'b1;
     end else begin
         ap_ST_fsm_state8_blk = 1'b0;
@@ -607,62 +634,70 @@ end
 assign ap_ST_fsm_state9_blk = 1'b0;
 
 always @ (*) begin
-    if (((icmp_ln22_fu_225_p2 == 1'd1) & (is_done_read_reg_339 == 1'd0) & (trigger_read_reg_296 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
-        is_done_o = 1'd1;
+    if (((icmp_ln19_fu_189_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
+        ap_done = 1'b1;
     end else begin
-        is_done_o = is_done_i;
+        ap_done = ap_done_reg;
     end
 end
 
 always @ (*) begin
-    if (((icmp_ln22_fu_225_p2 == 1'd1) & (is_done_read_reg_339 == 1'd0) & (trigger_read_reg_296 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
-        is_done_o_ap_vld = 1'b1;
+    if (((1'b1 == ap_CS_fsm_state1) & (ap_start == 1'b0))) begin
+        ap_idle = 1'b1;
     end else begin
-        is_done_o_ap_vld = 1'b0;
+        ap_idle = 1'b0;
+    end
+end
+
+always @ (*) begin
+    if (((icmp_ln19_fu_189_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
+        ap_ready = 1'b1;
+    end else begin
+        ap_ready = 1'b0;
     end
 end
 
 always @ (*) begin
     case (ap_CS_fsm)
         ap_ST_fsm_state1 : begin
-            if (((is_done_read_read_fu_128_p2 == 1'd0) & (trigger_read_read_fu_104_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state1))) begin
+            if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
                 ap_NS_fsm = ap_ST_fsm_state2;
             end else begin
-                ap_NS_fsm = ap_ST_fsm_state3;
+                ap_NS_fsm = ap_ST_fsm_state1;
             end
         end
         ap_ST_fsm_state2 : begin
-            if (((1'b1 == ap_CS_fsm_state2) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_done == 1'b1))) begin
+            if (((1'b1 == ap_CS_fsm_state2) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_done == 1'b1))) begin
                 ap_NS_fsm = ap_ST_fsm_state3;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state2;
             end
         end
         ap_ST_fsm_state3 : begin
-            if (((1'b1 == ap_CS_fsm_state3) & ((trigger_read_reg_296 == 1'd0) | ((icmp_ln22_fu_225_p2 == 1'd1) | (is_done_read_reg_339 == 1'd1))))) begin
+            if (((icmp_ln19_fu_189_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state3))) begin
                 ap_NS_fsm = ap_ST_fsm_state1;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state4;
             end
         end
         ap_ST_fsm_state4 : begin
-            if (((1'b1 == ap_CS_fsm_state4) & (grp_MatrixMultiplication_Pipeline_2_fu_174_ap_done == 1'b1))) begin
+            if (((1'b1 == ap_CS_fsm_state4) & (grp_MatrixMultiplication_Pipeline_2_fu_138_ap_done == 1'b1))) begin
                 ap_NS_fsm = ap_ST_fsm_state5;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state4;
             end
         end
         ap_ST_fsm_state5 : begin
-            if (((1'b1 == ap_CS_fsm_state5) & (icmp_ln24_fu_250_p2 == 1'd1))) begin
+            if (((icmp_ln21_fu_214_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state5))) begin
                 ap_NS_fsm = ap_ST_fsm_state3;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state6;
             end
         end
         ap_ST_fsm_state6 : begin
-            if (((icmp_ln19_reg_350 == 1'd1) & (1'b1 == ap_CS_fsm_state6) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_done == 1'b1))) begin
+            if (((icmp_ln16_reg_306 == 1'd1) & (1'b1 == ap_CS_fsm_state6) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_done == 1'b1))) begin
                 ap_NS_fsm = ap_ST_fsm_state9;
-            end else if (((icmp_ln19_reg_350 == 1'd0) & (1'b1 == ap_CS_fsm_state6) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_done == 1'b1))) begin
+            end else if (((icmp_ln16_reg_306 == 1'd0) & (1'b1 == ap_CS_fsm_state6) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_done == 1'b1))) begin
                 ap_NS_fsm = ap_ST_fsm_state7;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state6;
@@ -672,7 +707,7 @@ always @ (*) begin
             ap_NS_fsm = ap_ST_fsm_state8;
         end
         ap_ST_fsm_state8 : begin
-            if (((1'b1 == ap_CS_fsm_state8) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_done == 1'b1))) begin
+            if (((1'b1 == ap_CS_fsm_state8) & (grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_done == 1'b1))) begin
                 ap_NS_fsm = ap_ST_fsm_state9;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state8;
@@ -687,7 +722,7 @@ always @ (*) begin
     endcase
 end
 
-assign add315_fu_270_p2 = (trunc_ln24_1_fu_266_p1 + mul30_reg_367);
+assign add305_fu_234_p2 = (trunc_ln21_1_fu_230_p1 + mul29_reg_323);
 
 assign ap_CS_fsm_state1 = ap_CS_fsm[32'd0];
 
@@ -708,47 +743,47 @@ assign ap_CS_fsm_state8 = ap_CS_fsm[32'd7];
 assign ap_CS_fsm_state9 = ap_CS_fsm[32'd8];
 
 always @ (*) begin
-    ap_rst_n_inv = ~ap_rst_n;
+    ap_block_state1 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
 end
 
-assign bitcast_ln29_1_fu_291_p1 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_add3311_out;
+always @ (*) begin
+    ap_block_state1_ignore_call34 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
+end
 
-assign bitcast_ln29_fu_283_p1 = C_out_q0;
+assign bitcast_ln26_1_fu_255_p1 = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_add3211_out;
 
-assign grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start = grp_MatrixMultiplication_Pipeline_2_fu_174_ap_start_reg;
+assign bitcast_ln26_fu_247_p1 = C_out_q0;
 
-assign grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_19_1_fu_166_ap_start_reg;
+assign grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start = grp_MatrixMultiplication_Pipeline_2_fu_138_ap_start_reg;
 
-assign grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_4_fu_179_ap_start_reg;
+assign grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130_ap_start_reg;
 
-assign grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_28_5_fu_192_ap_start_reg;
+assign grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143_ap_start_reg;
 
-assign icmp_ln19_fu_217_p2 = ((B_rows_read_reg_305 == 64'd0) ? 1'b1 : 1'b0);
+assign grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start = grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156_ap_start_reg;
 
-assign icmp_ln22_fu_225_p2 = ((m_fu_100 == A_rows_read_reg_313) ? 1'b1 : 1'b0);
+assign icmp_ln16_fu_181_p2 = ((B_rows == 64'd0) ? 1'b1 : 1'b0);
 
-assign icmp_ln24_fu_250_p2 = ((k_reg_155 == B_columns_read_reg_300) ? 1'b1 : 1'b0);
+assign icmp_ln19_fu_189_p2 = ((m_fu_76 == A_rows) ? 1'b1 : 1'b0);
 
-assign is_done_read_read_fu_128_p2 = is_done_i;
+assign icmp_ln21_fu_214_p2 = ((k_reg_119 == B_columns) ? 1'b1 : 1'b0);
 
-assign k_1_fu_255_p2 = (k_reg_155 + 64'd1);
+assign k_1_fu_219_p2 = (k_reg_119 + 64'd1);
 
-assign m_2_fu_230_p2 = (m_fu_100 + 64'd1);
+assign m_2_fu_194_p2 = (m_fu_76 + 64'd1);
 
-assign trigger_read_read_fu_104_p2 = trigger;
+assign trunc_ln19_fu_200_p1 = m_fu_76[2:0];
 
-assign trunc_ln22_fu_236_p1 = m_fu_100[2:0];
+assign trunc_ln21_1_fu_230_p1 = k_reg_119[2:0];
 
-assign trunc_ln24_1_fu_266_p1 = k_reg_155[2:0];
+assign trunc_ln21_fu_225_p1 = k_reg_119[4:0];
 
-assign trunc_ln24_fu_261_p1 = k_reg_155[4:0];
+assign trunc_ln4_1_fu_177_p1 = B_columns[2:0];
 
-assign trunc_ln3_1_fu_204_p1 = B_columns[2:0];
+assign trunc_ln4_2_fu_164_p1 = B_rows[2:0];
 
-assign trunc_ln3_2_fu_208_p1 = B_rows[2:0];
+assign trunc_ln4_fu_173_p1 = B_columns[4:0];
 
-assign trunc_ln3_fu_200_p1 = B_columns[4:0];
-
-assign zext_ln29_fu_279_p1 = add315_reg_385;
+assign zext_ln26_fu_243_p1 = add305_reg_341;
 
 endmodule //MatrixMultiplication

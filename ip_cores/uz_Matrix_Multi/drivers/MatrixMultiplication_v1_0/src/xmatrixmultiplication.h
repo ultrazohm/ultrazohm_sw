@@ -81,6 +81,13 @@ int XMatrixmultiplication_Initialize(XMatrixmultiplication *InstancePtr, const c
 int XMatrixmultiplication_Release(XMatrixmultiplication *InstancePtr);
 #endif
 
+void XMatrixmultiplication_Start(XMatrixmultiplication *InstancePtr);
+u32 XMatrixmultiplication_IsDone(XMatrixmultiplication *InstancePtr);
+u32 XMatrixmultiplication_IsIdle(XMatrixmultiplication *InstancePtr);
+u32 XMatrixmultiplication_IsReady(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Continue(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_EnableAutoRestart(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_DisableAutoRestart(XMatrixmultiplication *InstancePtr);
 
 void XMatrixmultiplication_Set_A_rows(XMatrixmultiplication *InstancePtr, u64 Data);
 u64 XMatrixmultiplication_Get_A_rows(XMatrixmultiplication *InstancePtr);
@@ -88,12 +95,6 @@ void XMatrixmultiplication_Set_B_rows(XMatrixmultiplication *InstancePtr, u64 Da
 u64 XMatrixmultiplication_Get_B_rows(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_B_columns(XMatrixmultiplication *InstancePtr, u64 Data);
 u64 XMatrixmultiplication_Get_B_columns(XMatrixmultiplication *InstancePtr);
-void XMatrixmultiplication_Set_trigger(XMatrixmultiplication *InstancePtr, u32 Data);
-u32 XMatrixmultiplication_Get_trigger(XMatrixmultiplication *InstancePtr);
-void XMatrixmultiplication_Set_is_done_i(XMatrixmultiplication *InstancePtr, u32 Data);
-u32 XMatrixmultiplication_Get_is_done_i(XMatrixmultiplication *InstancePtr);
-u32 XMatrixmultiplication_Get_is_done_o(XMatrixmultiplication *InstancePtr);
-u32 XMatrixmultiplication_Get_is_done_o_vld(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_Get_A_BaseAddress(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_Get_A_HighAddress(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_Get_A_TotalBytes(XMatrixmultiplication *InstancePtr);
@@ -121,6 +122,14 @@ u32 XMatrixmultiplication_Write_B_Words(XMatrixmultiplication *InstancePtr, int 
 u32 XMatrixmultiplication_Read_B_Words(XMatrixmultiplication *InstancePtr, int offset, word_type *data, int length);
 u32 XMatrixmultiplication_Write_B_Bytes(XMatrixmultiplication *InstancePtr, int offset, char *data, int length);
 u32 XMatrixmultiplication_Read_B_Bytes(XMatrixmultiplication *InstancePtr, int offset, char *data, int length);
+
+void XMatrixmultiplication_InterruptGlobalEnable(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_InterruptGlobalDisable(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_InterruptEnable(XMatrixmultiplication *InstancePtr, u32 Mask);
+void XMatrixmultiplication_InterruptDisable(XMatrixmultiplication *InstancePtr, u32 Mask);
+void XMatrixmultiplication_InterruptClear(XMatrixmultiplication *InstancePtr, u32 Mask);
+u32 XMatrixmultiplication_InterruptGetEnabled(XMatrixmultiplication *InstancePtr);
+u32 XMatrixmultiplication_InterruptGetStatus(XMatrixmultiplication *InstancePtr);
 
 #ifdef __cplusplus
 }

@@ -7,5 +7,5 @@
 Family       : zynquplus
 Device       : xczu9eg
 Package      : -ffvc900
-Speed Grade  : -1-e
+Speed Grade  : -1-i
 Clock Period : 10.000 ns

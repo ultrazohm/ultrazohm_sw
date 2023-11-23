@@ -182,7 +182,6 @@ uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp) {
     for (i = 0; i <= 15-1; i++) {
         if (*inp[i])
         temp |= (1 << (i));
-              
         else
         temp &= ~(1 << (i));
     }
@@ -191,10 +190,8 @@ uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp) {
 }
 
 
-uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency frequency){
-
+uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency frequency) {
 uint8_t ret = 3U;
-     
     switch (frequency) {
     case uz_EnDat_operatingfrequency_12500000Hz:
         ret = 0U;
@@ -236,140 +233,136 @@ int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_
 
     switch (mode) {
     case uz_EnDat_Encoder_send_position_values:
-        *inp[0]=true;
-        *inp[1]=false;
-        *inp[2]=true;
-        *inp[3]=false;
-        *inp[4]=false;
-        *inp[5]=false;
+        *inp[0] = true;
+        *inp[1] = false;
+        *inp[2] = true;
+        *inp[3] = false;
+        *inp[4] = false;
+        *inp[5] = false;
             break;
 
     case uz_EnDat_Encoder_send_position_values_with_additional_data:
-        *inp[0]=false;
-        *inp[1]=false;
-        *inp[2]=false;
-        *inp[3]=true;
-        *inp[4]=true;
-        *inp[5]=true;
+        *inp[0] = false;
+        *inp[1] = false;
+        *inp[2] = false;
+        *inp[3] = true;
+        *inp[4] = true;
+        *inp[5] = true;
         break;
 
     case uz_EnDat_Selection_of_memory_area:
-        *inp[0]=false;
-        *inp[1]=true;
-        *inp[2]=true;
-        *inp[3]=true;
-        *inp[4]=false;
-        *inp[5]=false;
+        *inp[0] = false;
+        *inp[1] = true;
+        *inp[2] = true;
+        *inp[3] = true;
+        *inp[4] = false;
+        *inp[5] = false;
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_selection_of_memory_area_or_of_the_additional_data:
-        *inp[0]=true;
-        *inp[1]=false;
-        *inp[2]=false;
-        *inp[3]=true;
-        *inp[4]=false;
-        *inp[5]=false;
+        *inp[0] = true;
+        *inp[1] = false;
+        *inp[2] = false;
+        *inp[3] = true;
+        *inp[4] = false;
+        *inp[5] = false;
         break;
 
     case uz_EnDat_Encoder_send_parameters:
-        *inp[0]=true;
-        *inp[1]=true;
-        *inp[2]=false;
-        *inp[3]=false;
-        *inp[4]=false;
-        *inp[5]=true;
+        *inp[0] = true;
+        *inp[1] = true;
+        *inp[2] = false;
+        *inp[3] = false;
+        *inp[4] = false;
+        *inp[5] = true;
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_send_parameter:
-        *inp[0]=false;
-        *inp[1]=false;
-        *inp[2]=true;
-        *inp[3]=false;
-        *inp[4]=false;
-        *inp[5]=true;
+        *inp[0] = false;
+        *inp[1] = false;
+        *inp[2] = true;
+        *inp[3] = false;
+        *inp[4] = false;
+        *inp[5] = true;
         break;
 
     case uz_EnDat_Encoder_receive_parameters:
-        *inp[0]=false;
-        *inp[1]=false;
-        *inp[2]=true;
-        *inp[3]=true;
-        *inp[4]=true;
-        *inp[5]=false;
+        *inp[0] = false;
+        *inp[1] = false;
+        *inp[2] = true;
+        *inp[3] = true;
+        *inp[4] = true;
+        *inp[5] = false;
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_parameter:
-        *inp[0]=true;
-        *inp[1]=true;
-        *inp[2]=false;
-        *inp[3]=true;
-        *inp[4]=true;
-        *inp[5]=false;
+        *inp[0] = true;
+        *inp[1] = true;
+        *inp[2] = false;
+        *inp[3] = true;
+        *inp[4] = true;
+        *inp[5] = false;
         break;
 
     case uz_EnDat_Encoder_receive_reset:
-        *inp[0]=false;
-        *inp[1]=true;
-        *inp[2]=false;
-        *inp[3]=true;
-        *inp[4]=false;
-        *inp[5]=true;
+        *inp[0] = false;
+        *inp[1] = true;
+        *inp[2] = false;
+        *inp[3] = true;
+        *inp[4] = false;
+        *inp[5] = true;
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_error_reset:
-        *inp[0]=true;
-        *inp[1]=false;
-        *inp[2]=true;
-        *inp[3]=true;
-        *inp[4]=false;
-        *inp[5]=true;
+        *inp[0] = true;
+        *inp[1] = false;
+        *inp[2] = true;
+        *inp[3] = true;
+        *inp[4] = false;
+        *inp[5] = true;
         break;
 
     case uz_EnDat_Encoder_receive_test_command:
-        *inp[0]=true;
-        *inp[1]=false;
-        *inp[2]=false;
-        *inp[3]=false;
-        *inp[4]=true;
-        *inp[5]=true;
+        *inp[0] = true;
+        *inp[1] = false;
+        *inp[2] = false;
+        *inp[3] = false;
+        *inp[4] = true;
+        *inp[5] = true;
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_test_command:
-        *inp[0]=false;
-        *inp[1]=true;
-        *inp[2]=true;
-        *inp[3]=false;
-        *inp[4]=true;
-        *inp[5]=true;
+        *inp[0] = false;
+        *inp[1] = true;
+        *inp[2] = true;
+        *inp[3] = false;
+        *inp[4] = true;
+        *inp[5] = true;
         break;
 
     case uz_EnDat_Encoder_send_test_values:
-        *inp[0]=true;
-        *inp[1]=false;
-        *inp[2]=true;
-        *inp[3]=false;
-        *inp[4]=true;
-        *inp[5]=false;
+        *inp[0] = true;
+        *inp[1] = false;
+        *inp[2] = true;
+        *inp[3] = false;
+        *inp[4] = true;
+        *inp[5] = false;
         break;
 
 
     case uz_EnDat_Encoder_receive_communication_command:
-        *inp[0]=false;
-        *inp[1]=true;
-        *inp[2]=true;
-        *inp[3]=false;
-        *inp[4]=true;
-        *inp[5]=false;
+        *inp[0] = false;
+        *inp[1] = true;
+        *inp[2] = true;
+        *inp[3] = false;
+        *inp[4] = true;
+        *inp[5] = false;
         break;
     default:
         return(-1);
         break;
     }
-      
     return(0);
-
-
-
 }
 
 float uz_EnDat_pos_to_rad_converter(uint32_t pos) {
@@ -377,31 +370,30 @@ float uz_EnDat_pos_to_rad_converter(uint32_t pos) {
     float ret = 0.0f;
     float posconv = 0.0f;
     float tick = 0.0f;
-    float max_val = (float) endatmax;
-    tick = ((float) M_PI * 2.0f)/max_val; 
-    posconv = (float) pos;
+    float max_val = (float) endatmax;  // NOLINT
+    tick = ((float) M_PI * 2.0f)/max_val;  // NOLINT
+    posconv = (float) pos;  // NOLINT
     ret = posconv * tick;
     return (ret);
 }
 
 int8_t uz_EnDat_disable_config_evaluation_in_IP(controlword_expanded* inp) {
     uz_assert_not_NULL(inp);
-    *inp[15]=false;
+    *inp[15] = false;
     return(0);
 }
 
 int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp) {
     uz_assert_not_NULL(inp);
-    *inp[15]=true;
+    *inp[15] = true;
     return(0);
 }
 
-float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x){
+float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x) {
     uint32_t retraw = 0;
     float retfloat = 0.0f;
-    retraw = uz_EnDat_read_pos(self,t_x);
+    retraw = uz_EnDat_read_pos(self, t_x);
     retfloat = uz_EnDat_pos_to_rad_converter(retraw);
-    return(retfloat);  
+    return(retfloat);
 }
-
 #endif  // NOLINT

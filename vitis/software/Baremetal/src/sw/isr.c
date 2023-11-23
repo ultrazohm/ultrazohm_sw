@@ -66,6 +66,7 @@ float position_Ki = 0.0f;
 // limits and time setting
 float limit_error = 430.0f;
 float disable_control = 350.0f;
+float angular_velocity_limit = 20.0f;//35rad/s
 // randomize start position
 float max_pos = 200.0f;
 float start_pos = 150.0f;
@@ -469,7 +470,11 @@ void dqn_isr(void)
             break;
         }
         // Winkelgeschwindikeitabbruchkriterium
-
+//        if (fabsf(Global_Data.obs.dqn_angle_derv) > angular_velocity_limit)
+//        {
+//            chain = limit_violation;
+//            break;
+//        }
         break;
     case limit_violation:
         Global_Data.av.trigger_logging = 2.0f;
@@ -615,10 +620,10 @@ void uz_dqn_take_action_current()
 float calculate_boni(float angle, float anglevelocity)
 {
 	float bonus = 0.0f;
-	if( fabsf(angle)<(5.0f*UZ_PIf/180.0f) && (fabsf(anglevelocity)<6.0f))
-	{
-	bonus = 2.0f;
-	}
+//	if( fabsf(angle)<(5.0f*UZ_PIf/180.0f) && (fabsf(anglevelocity)<3.0f))
+//	{
+//	bonus = 2.0f;
+//	}
 	return bonus;
 }
 void position_control(float position_set_point, bool angle_control_enabled)

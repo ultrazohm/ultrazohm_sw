@@ -43,7 +43,11 @@ steps:
    commands:
     - cppcheck vitis/software/Baremetal/src 
     - cppcheck --addon=cert vitis/software/Baremetal/src 
-    - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src 
+    - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src
+   when:
+     branch:
+     - main
+     - develop
 
  - name: Vivado_build_tcl
    image: vivado:2022.2
@@ -138,6 +142,10 @@ steps:
    commands:
    - /bin/bash /opt/Xilinx/Vitis/2022.2/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2022.2/bin/xsct tcl_scripts/ci_vitis_update_platform.tcl
+   when:
+     branch:
+     - main
+     - develop
 
  - name: Push_binary
    depends_on: [ Vitis_generate_Workspace ]

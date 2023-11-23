@@ -30,7 +30,7 @@ int evalcounter = 0;
 // defines for nn
 #define EXPERIENCE_BUFFER_LENGTH 150000U
 #define MINIBATCHSIZE 8U
-#define NUMBER_OF_EPOCHS 750+1U // wegen eval, sodass bei 50 epochen auch 50*NUMBER_OF_UPDATES_PER_EPOCH erreicht werden
+#define NUMBER_OF_EPOCHS 500+1U // wegen eval, sodass bei 50 epochen auch 50*NUMBER_OF_UPDATES_PER_EPOCH erreicht werden
 #define NUMBER_OF_UPDATES_PER_EPOCH 1000U // 100 Hz fuer 5s sind 500 samples und damit 500 updates
 #define NUMBER_OF_EVALS 5+1U
 #define TARGET_UPDATE_FREQUENCY 1U

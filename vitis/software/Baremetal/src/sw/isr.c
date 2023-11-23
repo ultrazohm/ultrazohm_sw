@@ -66,7 +66,7 @@ float position_Ki = 0.0f;
 // limits and time setting
 float limit_error = 430.0f;
 float disable_control = 350.0f;
-float angular_velocity_limit = 15.0f;//35rad/s
+float angular_velocity_limit = 20.0f;//35rad/s
 // randomize start position
 float max_pos = 200.0f;
 float start_pos = 150.0f;
@@ -234,7 +234,7 @@ void ISR_Control(void *data)
     Global_Data.dqnp.reward_boni = calculate_boni(Global_Data.obs.dqn_angle,Global_Data.obs.dqn_angle_derv);
 //  stabile ruhelage, positionsfehler
 //    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((1.0e3f*Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
-    Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_chart_position_derv * Global_Data.obs.dqn_chart_position_derv);
+    Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_angle_derv * Global_Data.obs.dqn_angle_derv);
 	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.obs.dqn_chart_position_derv, false);
 //    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
     Global_Data.dqnp.number_of_updates = uz_dqn_get_number_of_updates(testdqn2);

@@ -47,22 +47,21 @@ void uz_matrix_multiplication_hw_read_C_out_matrix(uint32_t base_address, float 
 	}
 }
 
-void uz_matrix_multiplication_hw_set_trigger_calculation(uint32_t base_address) {
+void uz_matrix_multiplication_hw_set_start(uint32_t base_address) {
 	uz_assert_not_zero_uint32(base_address);
-	uz_axi_write_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_TRIGGER_DATA, true);
+	uint32_t status = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL) & 0x80);
+	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, (status | 0x01U));
 }
 
 bool uz_matrix_multiplication_hw_get_is_done_output(uint32_t base_address) {
 	uz_assert_not_zero_uint32(base_address);
-	return (uz_axi_read_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_O_DATA));
+	bool is_done = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL)>> 1U )& 0x1U;
+	return (is_done);
 }
 
-void uz_matrix_multiplication_hw_set_is_done_input(uint32_t base_address) {
+void uz_matrix_multiplication_hw_set_continue(uint32_t base_address) {
 	uz_assert_not_zero_uint32(base_address);
-	uz_axi_write_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA, true);
-}
+	uint32_t status = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL) & 0x80);
+	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, (status | 0x10U));
 
-void uz_matrix_multiplication_hw_reset(uint32_t base_address) {
-	uz_assert_not_zero_uint32(base_address);
-	uz_axi_write_bool(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_IS_DONE_I_DATA, false);
 }

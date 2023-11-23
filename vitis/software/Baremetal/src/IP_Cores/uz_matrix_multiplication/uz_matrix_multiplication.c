@@ -64,7 +64,7 @@ void uz_Matrix_Multi_write_input(uz_Matrix_Multi_t* self) {
 
 void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self) {
 	uz_assert_not_NULL(self);
-	uz_matrix_multiplication_hw_set_trigger_calculation(self->config.base_address);
+	uz_matrix_multiplication_hw_set_start(self->config.base_address);
 }
 
 void uz_Matrix_Multi_read_output(uz_Matrix_Multi_t* self) {
@@ -75,15 +75,12 @@ void uz_Matrix_Multi_read_output(uz_Matrix_Multi_t* self) {
 bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self) {
 	uz_assert_not_NULL(self);
 	bool is_done = uz_matrix_multiplication_hw_get_is_done_output(self->config.base_address);
-	if(is_done) {
-		uz_matrix_multiplication_hw_set_is_done_input(self->config.base_address);
-	}
 	return(is_done);
 }
 
-void uz_Matrix_Multi_reset(uz_Matrix_Multi_t* self) {
+void uz_Matrix_Multi_continue_calculation(uz_Matrix_Multi_t* self) {
 	uz_assert_not_NULL(self);
-	uz_matrix_multiplication_hw_reset(self->config.base_address);
+	uz_matrix_multiplication_hw_set_continue(self->config.base_address);
 }
 
 #endif

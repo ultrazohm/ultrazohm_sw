@@ -8,6 +8,7 @@
 #define AMOUNT_OF_FACTORS 5
 #define CONTROLWORD_DEFAULT 0xA807
 #define DIVIDER_DEFAULT 3
+#define	ENDAT_23_BIT_MAX_VALUE 0x7FFFFF
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -82,7 +83,12 @@ struct uz_EnDat_config_t{
 uz_EnDat_t* uz_EnDat_init(struct uz_EnDat_config_t config);
 
 
-
+/**
+ * @param ctrlword converted control word
+ * @param divider converted divider
+ * @brief This function is to write to uz_EnDat - call it with precaution.
+ * @return Returns 0 when everything went smooth.
+ */
 int uz_EnDat_write_control_and_divider(uz_EnDat_t *self, uint16_t ctrlword, uint8_t divider);
 
 
@@ -95,30 +101,66 @@ int uz_EnDat_write_control_and_divider(uz_EnDat_t *self, uint16_t ctrlword, uint
  * @brief uz_EnDat_factor3_initialoff = adjusts the initial silence period length;
  * @brief uz_EnDat_factor4_data2clksync = adjusts the data to clock resync interval;
  * @brief uz_EnDat_factor5_telegrammlength = adjusts the length of the telegram;
+ * @return Returns 0 when everything went smooth. Returns -1 if no factor was hit.
  */
 int uz_EnDat_write_factor(uz_EnDat_t *self, uint16_t factor, uz_EnDat_factor factornumber);
 
+/**
+ * @brief This function is to read the status word from the EnDat IP-Core.
+ */
 uint16_t uz_EnDat_read_statusword(uz_EnDat_t *self);
 /**
- * @param t_x  means which value you would like to fetch. 0 = t0 recent, 4 = t-4 value
- *
+ * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
+ * @brief This function fetches positional values from the EnDat IP-Core.
+ * @return Returns the actual status word from the EnDat IP Core.
  */
 uint32_t uz_EnDat_read_pos(uz_EnDat_t *self, uz_EnDat_position t_x);
 
+/**
+ * 
+ * @brief This function writes default values to the EnDat IP-Core - use in init.
+ * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ */
 int uz_EnDat_write_default_values(uz_EnDat_t *self);
 
+/**
+ * 
+ * @brief This helper function converts float input to integer for EnDat IP-Core.
+ * @param in Input factor normalized (e.g. 1.00, 1.50, 0.50 etc...)
+ * @return Returns converted factor (e.g. 1.00 = 100);
+ */
 uint16_t uz_EnDat_factor_converter(float in);
+
+/**
+ * 
+ * @brief This helper function converts a bitfield to a control WORD.
+ * @param inp Pointer to a bit array where control word is stored.
+ * @return Returns the actual control WORD which can be written to EnDat IP-Core.
+ */
 uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp);
 /**
- * @brief 12,5 Mhz = 0; 192,5 Khz = 6, 3 (1,5 Mhz is tested)
- *
- *
+ * 
+ * @brief This helper function converts a frequency setpoint to the appropriate divider. 
+ * @param frequency ENUM of selected frequencies. (e.g. uz_EnDat_operatingfrequency_1562500Hz)
+ * @return Returns the divider which then can be written to the EnDat IP-Core.
  */
-uint8_t uz_EnDat_set_clk_frequency_divider(uz_EnDat_frequency frequency);
+ uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency frequency);
 
+/**
+ * 
+ * @brief This function reads the CRC information from the EnDat IP-Core
+ * @return Returns the CRC information.
+ */
 uint8_t uz_EnDat_read_crc(uz_EnDat_t* self);
-
+/**
+ * 
+ * @brief This function sets the operation mode part of the control word.  
+ * @param inp Pointer to a bit array where control word is stored.
+ * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ */
 int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_opmode mode);
+
+
 
 
 

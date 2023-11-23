@@ -72,9 +72,62 @@ void test_uz_EnDat_fail_assert_if_set_operation_mode_is_called__with_NULL_pointe
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_operation_mode(NULL,uz_EnDat_Encoder_send_position_values));
 }
 
+void test_uz_EnDat_factor_converter_float_to_special_int_100(void) {
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(1.00f),100U);
+
+}
+void test_uz_EnDat_factor_converter_float_to_special_int_150(void) {
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(1.50f),150U);
+
+}
+
+void test_uz_EnDat_factor_converter_float_to_special_int_050(void) {
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(0.50f),50U);
+
+}
+
+void test_uz_EnDat_frequency_to_divider_expansion_12500kHz(void) {
+
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_12500000Hz),0);
+
+}
+
+void test_uz_EnDat_frequency_to_divider_expansion_6250kHz(void) {
+
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_6250000Hz),1);
+
+}
 
 
+void test_uz_EnDat_frequency_to_divider_expansion_3125kHz(void) {
+
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_3125000Hz),2);
+
+}
 
 
+void test_uz_EnDat_frequency_to_divider_expansion_1562kHz(void) {
+
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_1562500Hz),3);
+
+}
+
+void test_uz_EnDat_frequency_to_divider_expansion_781kHz(void) {
+
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_781250Hz),4);
+
+}
+
+void test_uz_EnDat_frequency_to_divider_expansion_390kHz(void) {
+
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_390625Hz),5);
+
+}
+
+void test_uz_EnDat_frequency_to_divider_expansion_195kHz(void) {
+
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_195312Hz),6);
+
+}
 
 #endif  // TEST

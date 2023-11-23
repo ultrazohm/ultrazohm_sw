@@ -55,41 +55,6 @@ int uz_EnDat_write_control_and_divider(uz_EnDat_t* self, uint16_t ctrlword, uint
 
     return(0);
 }
-/*
-int uz_EnDat_write_factor(uz_EnDat_t* self, uint16_t factor, uint8_t num) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-
-    if (factor <1)
-    return(-1);
-    switch (num) {
-    case 1:
-    uz_EnDat_hw_write_FKT1DATAFLOW(self->config.base_address, factor);
-        break;
-
-    case 2:
-    uz_EnDat_hw_write_FKT2RECOVERYTIME(self->config.base_address, factor);
-        break;
-
-    case 3:
-    uz_EnDat_hw_write_FKT3INITIALOFF(self->config.base_address, factor);
-    break;
-    case 4:
-    uz_EnDat_hw_write_FKT4DATACLKSYNC(self->config.base_address, factor);
-        break;
-    case 5:
-    uz_EnDat_hw_write_FKT5TELEGRAMLEN(self->config.base_address, factor);
-        break;
-    default:
-        return (-1);
-        break;
-    }
-
-
-    return (0);
-}
-*/
-
 
 
 int uz_EnDat_write_factor(uz_EnDat_t *self, uint16_t factor, uz_EnDat_factor factornumber) {

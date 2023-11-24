@@ -1,0 +1,641 @@
+INFO-FLOW: Workspace /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1 opened at Fri Nov 24 09:55:03 CET 2023
+Execute     ap_set_clock -name default -period 10 -default=false 
+INFO: [SYN 201-201] Setting up clock 'default' with a period of 10ns.
+Execute     set_part xczu9eg-ffvc900-1-e 
+Execute       create_platform xczu9eg-ffvc900-1-e -board  
+DBG:HLSDevice: Trying to load device library: /home/Xilinx/Vitis_HLS/2022.2/lib/lnx64.o/libxv_hlsvwrap.so
+DBG:HLSDevice: first parts/arch.xml in RDI_DATADIR: /home/Xilinx/Vivado/2022.2/data/parts/arch.xml
+DBG:HLSDevice: init success
+INFO: [HLS 200-1611] Setting target device to 'xczu9eg-ffvc900-1-e'
+Command       create_platform done; 0.21 sec.
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/common/xilinx.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/plb46.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/axi4.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/nativeAXI4.gen 
+Execute           source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/saxilite.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/scripts/xilinxcoregen.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/XilEDKCoreGen.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/dds_compiler.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/util.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/xfft.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/xfir.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/DSP48/dsp48.gen 
+Execute       ap_part_info -name xczu9eg-ffvc900-1-e -data info 
+Execute       config_compile -quiet -complex-mul-dsp=0 
+Command     set_part done; 0.29 sec.
+Execute     send_msg_by_id INFO @200-1505@%s%s  vitis 
+INFO: [HLS 200-1505] Using flow_target 'vitis'
+Execute     send_msg_by_id INFO @200-1464@%s config_interface -m_axi_latency=64 
+INFO: [HLS 200-1464] Running solution command: config_interface -m_axi_latency=64
+Execute     config_interface -m_axi_latency=64 
+Execute     send_msg_by_id INFO @200-1464@%s config_interface -m_axi_alignment_byte_size=64 
+INFO: [HLS 200-1464] Running solution command: config_interface -m_axi_alignment_byte_size=64
+Execute     config_interface -m_axi_alignment_byte_size=64 
+Execute     send_msg_by_id INFO @200-1464@%s config_interface -m_axi_max_widen_bitwidth=512 
+INFO: [HLS 200-1464] Running solution command: config_interface -m_axi_max_widen_bitwidth=512
+Execute     config_interface -m_axi_max_widen_bitwidth=512 
+Execute     send_msg_by_id INFO @200-1464@%s config_interface -default_interface=kernel 
+INFO: [HLS 200-1464] Running solution command: config_interface -default_interface=kernel
+Execute     config_interface -default_interface=kernel 
+Execute     send_msg_by_id INFO @200-1464@%s config_rtl -register_reset_num=3 
+INFO: [HLS 200-1464] Running solution command: config_rtl -register_reset_num=3
+Execute     config_rtl -register_reset_num=3 
+Command   open_solution done; 0.34 sec.
+Execute   set_part xczu9eg-ffvc900-1-e 
+INFO: [HLS 200-1510] Running: set_part xczu9eg-ffvc900-1-e 
+Execute     create_platform xczu9eg-ffvc900-1-e -board  
+Execute     source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/common/xilinx.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/plb46.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/axi4.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/nativeAXI4.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/saxilite.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/scripts/xilinxcoregen.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/XilEDKCoreGen.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/dds_compiler.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/util.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/xfft.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/xfir.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/DSP48/dsp48.gen 
+Execute     ap_part_info -name xczu9eg-ffvc900-1-e -data info 
+Execute     config_compile -quiet -complex-mul-dsp=0 
+Execute   create_clock -period 10 -name default 
+INFO: [HLS 200-1510] Running: create_clock -period 10 -name default 
+Execute   config_interface -m_axi_alignment_byte_size 64 -m_axi_latency 64 -m_axi_max_widen_bitwidth 512 
+INFO: [HLS 200-1510] Running: config_interface -m_axi_alignment_byte_size 64 -m_axi_latency 64 -m_axi_max_widen_bitwidth 512 
+Execute   config_rtl -register_reset_num 3 
+INFO: [HLS 200-1510] Running: config_rtl -register_reset_num 3 
+Execute   source ./HLS_Project/solution1/directives.tcl 
+INFO: [HLS 200-1510] Running: source ./HLS_Project/solution1/directives.tcl
+Execute   csynth_design 
+INFO: [HLS 200-1510] Running: csynth_design 
+Execute     elaborate -effort=medium -skip_syncheck=0 -keep_printf=0 -skip_cdt=0 -skip_transform=0 -ng=0 -g=0 -opt_fp=0 -from_csynth_design=1 
+INFO: [HLS 200-111] Finished File checks and directory preparation: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 10.02 seconds; current allocated memory: 206.723 MB.
+INFO: [HLS 200-10] Analyzing design file 'HLS_Project/matrix_multiply.cpp' ... 
+INFO-FLOW: Compiling one TU...
+INFO-FLOW: Handling HLS_Project/matrix_multiply.cpp as C++
+Execute       ap_part_info -name xczu9eg-ffvc900-1-e -data info 
+INFO-FLOW: Running: GCC PP 39
+INFO-FLOW: Source preprocessing
+Execute       ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/clang HLS_Project/matrix_multiply.cpp -foptimization-record-file=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.cpp.clang.diag.yml -mllvm -pass-remarks-missed=reflow|pasta|unroll -mllvm -pass-remarks=reflow|pasta|unroll|inline -fno-limit-debug-info -gcc-toolchain /home/Xilinx/Vitis_HLS/2022.2/tps/lnx64/gcc-8.3.0 -fhls -fno-exceptions -E -fno-math-errno -c -emit-llvm -mllvm -disable-llvm-optzns -Werror=implicit-function-declaration -Werror=implicit-hls-streams -Werror=return-type -Wpragmas -Wunused-parameter -Wdump-hls-pragmas -Wno-error=dump-hls-pragmas -fno-threadsafe-statics -fno-use-cxa-atexit -std=gnu++14 -target fpga64-xilinx-linux-gnu -fno-threadsafe-statics -fno-use-cxa-atexit -D__VITIS_HLS__ -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I /home/Xilinx/Vitis_HLS/2022.2/common/technology/autopilot -I /home/Xilinx/Vitis_HLS/2022.2/common/technology/autopilot/ap_sysc -include etc/autopilot_ssdm_op.h -D__DSP48E2__ -I /usr/include/x86_64-linux-gnu -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp -hls-platform-db-name=/home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/common/platform.db -hls-platform-name=zynquplus_slow -device-resource-info=BRAM_1824.000000_DSP_2520.000000_FF_548160.000000_LUT_274080.000000_SLICE_34260.000000_URAM_0.000000 -device-name-info=xczu9eg-ffvc900-1-e > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.cpp.clang.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.cpp.clang.err.log 
+Command       ap_eval done; 0.2 sec.
+INFO-FLOW: Done: GCC PP 39 time: 0.2 seconds per iteration
+Execute       set_directive_top MatrixMultiplication -name=MatrixMultiplication 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/tps/tcl/tcllib1.11.1/yaml/huddle.tcl 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/tps/tcl/tcllib1.11.1/yaml/json2huddle.tcl 
+INFO-FLOW: Source syntax check for synthesis
+Execute       ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/clang -foptimization-record-file=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/clang.diag.yml -mllvm -pass-remarks-missed=reflow|pasta|unroll -mllvm -pass-remarks=reflow|pasta|unroll|inline -fsyntax-only -fhls -target fpga64-xilinx-linux-gnu /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp -hls-platform-db-name=/home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/common/platform.db -hls-platform-name=zynquplus_slow -device-resource-info=BRAM_1824.000000_DSP_2520.000000_FF_548160.000000_LUT_274080.000000_SLICE_34260.000000_URAM_0.000000 -device-name-info=xczu9eg-ffvc900-1-e > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/clang.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/clang.err.log 
+Command       ap_eval done; 0.13 sec.
+Execute       clang_tidy xilinx-systemc-detector -desc systemc-detector /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp std=gnu++14 -target fpga  -directive=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/.systemc_flag 
+INFO-FLOW: exec /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/clang-tidy -header-filter=.* --checks=-*,xilinx-systemc-detector -import-directive=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/.systemc_flag -fix-errors /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp -- -std=gnu++14 -target fpga -fhls -ferror-limit=0
+INFO-FLOW: Running: clang-tidy CDT preprocess 39
+Execute       clang_tidy xilinx-directive2pragma -desc directive2pragma /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp std=gnu++14 -target fpga  -directive=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/all.directive.json 
+INFO-FLOW: exec /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/clang-tidy -header-filter=.* --checks=-*,xilinx-directive2pragma -import-directive=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/all.directive.json -fix-errors /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp -- -std=gnu++14 -target fpga -fhls -ferror-limit=0
+Execute       clang_tidy xilinx-remove-assert -desc remove-assert /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp std=gnu++14 -target fpga  
+INFO-FLOW: exec /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/clang-tidy -header-filter=.* --checks=-*,xilinx-remove-assert -fix-errors /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp -- -std=gnu++14 -target fpga -fhls -ferror-limit=0
+INFO-FLOW: Done: clang-tidy CDT preprocess 39 time: 0 seconds per iteration
+INFO-FLOW: Calling xilinx-label-all-loops ... 
+INFO-FLOW: Calling xilinx-aggregate-on-hls-vector ... 
+Execute       clang_tidy -errorcheck -desc loop-label xilinx-label-all-loops,xilinx-aggregate-on-hls-vector,,xilinx-warn-mayneed-no-ctor-attribute /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp std=gnu++14 -target fpga  
+Execute         ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/clang-tidy -export-fixes=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.clang-tidy.loop-label.diag.yml -header-filter=.* --checks=-*,xilinx-label-all-loops,xilinx-aggregate-on-hls-vector,,xilinx-warn-mayneed-no-ctor-attribute -fix-errors /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp -- -std=gnu++14 -target fpga -fhls -ferror-limit=0 > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.clang-tidy.loop-label.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.clang-tidy.loop-label.err.log 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/tps/tcl/tcllib1.11.1/yaml/yaml.tcl 
+Execute       ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/xilinx-dataflow-lawyer -export-fixes=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.xilinx-dataflow-lawyer.diag.yml /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp -- -std=gnu++14 -target fpga -fhls -ferror-limit=0 -fstrict-dataflow > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.xilinx-dataflow-lawyer.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.xilinx-dataflow-lawyer.err.log 
+Execute       ap_part_info -name xczu9eg-ffvc900-1-e -data info 
+INFO-FLOW: compiling source code to llvm bc
+Execute       ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/clang -foptimization-record-file=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.clang.diag.yml -mllvm -pass-remarks-missed=reflow|pasta|unroll -mllvm -pass-remarks=reflow|pasta|unroll|inline -fno-limit-debug-info -fhls -flto -fno-exceptions -Wno-error=c++11-narrowing /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp -fno-math-errno -c -emit-llvm -mllvm -disable-llvm-optzns -Werror=implicit-function-declaration -Werror=implicit-hls-streams -Werror=return-type -Wpragmas -Wunused-parameter -Wdump-hls-pragmas -Wno-error=dump-hls-pragmas -fno-threadsafe-statics -fno-use-cxa-atexit -std=gnu++14 -target fpga64-xilinx-linux-gnu -D__VITIS_HLS__ -DAESL_SYN -D__SYNTHESIS__ -D__HLS_SYN__ -I /home/Xilinx/Vitis_HLS/2022.2/common/technology/autopilot -I /home/Xilinx/Vitis_HLS/2022.2/common/technology/autopilot/ap_sysc -include etc/autopilot_ssdm_op.h -D__DSP48E2__ -g -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.bc -hls-platform-db-name=/home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/common/platform.db -hls-platform-name=zynquplus_slow -device-resource-info=BRAM_1824.000000_DSP_2520.000000_FF_548160.000000_LUT_274080.000000_SLICE_34260.000000_URAM_0.000000 -device-name-info=xczu9eg-ffvc900-1-e > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.clang.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp.clang.err.log 
+Command       ap_eval done; 0.11 sec.
+INFO: [HLS 200-111] Finished Source Code Analysis and Preprocessing: CPU user time: 0.2 seconds. CPU system time: 0.37 seconds. Elapsed time: 0.68 seconds; current allocated memory: 206.723 MB.
+INFO-FLOW: Linking Debug ...
+INFO-FLOW: Linking dut bc code.
+Execute       run_link_or_opt -out /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc -args  "/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.g.bc"  
+Execute         ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/llvm-link /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.g.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc.llvm-link.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc.llvm-link.err.log 
+INFO-FLOW: 
+Execute       run_link_or_opt -opt -out /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.1.lower.bc -args /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc -reflow-lower-math-intrinsics 
+Execute         ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/opt -pass-remarks-missed=reflow|pasta|unroll -pass-remarks=reflow|pasta|unroll|inline -pass-remarks-output=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.1.lower.bc.opt.diag.yml /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc -reflow-lower-math-intrinsics -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.1.lower.bc > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.1.lower.bc.opt.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.1.lower.bc.opt.err.log 
+INFO-FLOW: 
+INFO-FLOW: Linking math bc lib
+Execute       run_link_or_opt -out /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.2.m1.bc -args /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.1.lower.bc -only-needed /home/Xilinx/Vitis_HLS/2022.2/lnx64/lib/libhlsm_39.bc /home/Xilinx/Vitis_HLS/2022.2/lnx64/lib/libhlsmc++_39.bc 
+Execute         ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/llvm-link /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.1.lower.bc -only-needed /home/Xilinx/Vitis_HLS/2022.2/lnx64/lib/libhlsm_39.bc /home/Xilinx/Vitis_HLS/2022.2/lnx64/lib/libhlsmc++_39.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.2.m1.bc > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.2.m1.bc.llvm-link.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.2.m1.bc.llvm-link.err.log 
+Command         ap_eval done; 2.14 sec.
+INFO-FLOW: 
+Command       run_link_or_opt done; 2.15 sec.
+Execute       run_link_or_opt -opt -out /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.3.fpc.bc -args /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.2.m1.bc -reflow-globaldce -hls-top-function-name=MatrixMultiplication -reflow-float-conversion 
+Execute         ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/opt -pass-remarks-missed=reflow|pasta|unroll -pass-remarks=reflow|pasta|unroll|inline -pass-remarks-output=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.3.fpc.bc.opt.diag.yml /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.2.m1.bc -reflow-globaldce -hls-top-function-name=MatrixMultiplication -reflow-float-conversion -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.3.fpc.bc > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.3.fpc.bc.opt.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.3.fpc.bc.opt.err.log 
+Command         ap_eval done; 0.75 sec.
+INFO-FLOW: 
+Command       run_link_or_opt done; 0.75 sec.
+Execute       run_link_or_opt -out /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.4.m2.bc -args /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.3.fpc.bc -only-needed /home/Xilinx/Vitis_HLS/2022.2/lnx64/lib/libfloatconversion_39.bc 
+Execute         ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/llvm-link /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.3.fpc.bc -only-needed /home/Xilinx/Vitis_HLS/2022.2/lnx64/lib/libfloatconversion_39.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.4.m2.bc > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.4.m2.bc.llvm-link.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.4.m2.bc.llvm-link.err.log 
+INFO-FLOW: 
+Execute       run_link_or_opt -opt -out /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.5.gdce.bc -args /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.4.m2.bc -reflow-globaldce -hls-top-function-name=MatrixMultiplication 
+Execute         ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/opt -pass-remarks-missed=reflow|pasta|unroll -pass-remarks=reflow|pasta|unroll|inline -pass-remarks-output=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.5.gdce.bc.opt.diag.yml /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.4.m2.bc -reflow-globaldce -hls-top-function-name=MatrixMultiplication -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.5.gdce.bc > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.5.gdce.bc.opt.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.5.gdce.bc.opt.err.log 
+INFO-FLOW: 
+Execute       send_msg_by_id INFO @200-777@%s Vitis 
+INFO: [HLS 200-777] Using interface defaults for 'Vitis' flow target.
+Execute       is_m_axi_addr64 
+INFO-FLOW: Doing LTO.
+Execute       ap_eval exec -ignorestderr /home/Xilinx/Vitis_HLS/2022.2/lnx64/tools/clang-3.9-csynth/bin/clang -foptimization-record-file=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc.clang.diag.yml -mllvm -pass-remarks-missed=reflow|pasta|unroll -mllvm -pass-remarks=reflow|pasta|unroll|inline -fhls -mllvm -hls-top-function-name=MatrixMultiplication -mllvm -hls-db-dir -mllvm /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db -emit-llvm -c -target fpga64-xilinx-none -mllvm -xcl-xmlinfo=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/../../../kernel.xml -mllvm -top-io-mapping-info=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/top-io-fe.xml -mllvm -hls-bitcode-version=3.1 -mllvm -reflow-enable-slave-interface-default-setting=true -mllvm -gen-kernel-xml=true -mllvm -default-maxi-offset=slave -mllvm -maxi-latency=64 -mllvm -hls-maxi-data-size-in-bits=8 -mllvm -hls-maxi-max-data-size-in-bits=1024 -mllvm -hls-max-widen-size-in-bits=512 -mllvm -xcl-kernel-max-mem-ports=0 -mllvm -maxi-read-trans=16 -mllvm -maxi-write-trans=16 -mllvm -maxi-read-burst-len=16 -mllvm -maxi-write-burst-len=16 -mllvm -reflow-enable-saxi-64bits=0 -mllvm -reflow-basic-block-instr-threshold=200000 -mllvm -reflow-auto-pipeline-threshold=64 -mllvm -reflow-enable-maxi-auto-id-channel=0 -mllvm -assume-maxi-align=64 -mllvm -reflow-pipeline-style-llvm-setting=2 -mllvm -reflow-enable-dataflow-strict-mode-checking=1 -mllvm -reflow-auto-array-partition-mode=default -mllvm -reflow-enable-auto-array-partition=true -mllvm -reflow-enable-auto-parallel-performance-driven=true -mllvm -reflow-enable-partition-for-automation=true -mllvm -reflow-aggregate-bitwidth-threshold=4096 -mllvm -reflow-assume-no-address-wrap=true -mllvm -hls -mllvm -disable-inlined-alloca-merging=true -mllvm -enable-reflow-vitis-flow-setting=true -mllvm -default-clock-period=10 -x ir /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.5.gdce.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.lto.bc -hls-platform-db-name=/home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/common/platform.db -hls-platform-name=zynquplus_slow -device-resource-info=BRAM_1824.000000_DSP_2520.000000_FF_548160.000000_LUT_274080.000000_SLICE_34260.000000_URAM_0.000000 -device-name-info=xczu9eg-ffvc900-1-e > /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc.clang.out.log 2> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.ld.0.bc.clang.err.log 
+Command       ap_eval done; 0.2 sec.
+INFO-FLOW: DBG:PUTS: copy_raw_kernel_xml ap_link_39: copying raw kernel.xml: /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/../../../kernel.xml -> /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/kernel.internal.xml
+INFO: [HLS 200-111] Finished Compiling Optimization and Transform: CPU user time: 2.75 seconds. CPU system time: 0.48 seconds. Elapsed time: 3.33 seconds; current allocated memory: 207.578 MB.
+INFO: [HLS 200-111] Finished Checking Pragmas: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0 seconds; current allocated memory: 207.578 MB.
+Execute       opt_and_import_c a -opt_level=2 -skip_syncheck=0 -ng=0 -keep_printf=0 
+Execute         cleanup_all_models 
+INFO: [HLS 200-10] Starting code transformations ...
+INFO-FLOW: Running Standard Transforms...
+Execute         transform -hls -share-std-xform -demangle-name -inline-byval-memcpy -always-inline -promote-dbg-pointer -interface-preproc -mem2reg -scalarrepl -mem2reg -keep-read-access -instcombine -dce -promote-dbg-pointer -bitop-raise -loop-simplify -indvarspre -indvars -loop-simplify -xunroll -constprop -instcombine -simplifycfg -indvars -simplifycfg -dce -globaldce -basicaa -simplifycfg -mem2reg -globalopt -global-constprop -deadargelim -instcombine -simplifycfg -scalarrepl -instcombine -reassociate -licm -simplifycfg -loop-simplify -indvars -instcombine -simplifycfg -mem2reg -loop-simplify -indvars -instcombine -gvn -gvn -instcombine -adce -break-crit-edges -simplifycfg -loop-delete -global-array-opt -dce -dse -adce -find-syn-modules -top MatrixMultiplication -deadargelim -mem2reg -instcombine -dce -presyn-prepare -auto-rom-infer -interface-preproc -syn-check -check-rec-only -find-region -simplifycfg -func-extr -function-inline -globaldce -mem2reg -instcombine -dce -gvn -globaldce -adce -adse -constprop -instcombine -bit-constprop -instcombine -dce -simplifycfg -bitop-raise -simplifycfg -dce -loop-delete -reassociate -globalopt -global-privatize -mem2reg -dce -global-constprop -pointer-simplify -constprop -dce -auto-shift-reg-idiom -promote-dbg-pointer -norm-name /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.0.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.1.bc -f -phase std-opt 
+INFO: [HLS 200-111] Finished Standard Transforms: CPU user time: 0 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.03 seconds; current allocated memory: 208.203 MB.
+INFO: [HLS 200-10] Checking synthesizability ...
+INFO-FLOW: Checking Synthesizability 1/2..
+Execute         transform -hls -syn-check -check-rec-only -scalarrepl -norm-name -dce -mem2reg -instcombine -directive-preproc -mem2reg -dse -dce -auto-rom-infer -dce -pag -array-normalize -instcombine -dce -array-seg-normalize -instcombine -dce -data-pack -instcombine -dce -inst-simplify -array-flatten -instcombine -dce -array-burst -dce -deadargelim -promote-global-argument -simplifycfg -mem2reg -globaldce -dce -deadargelim -dce -instcombine -function-inline -globaldce -dce -doublePtrSimplify -doublePtrElim -dce -doublePtrSimplify -promote-dbg-pointer -dce -scalarrepl -dse -adse -instcombine -ptrLegalization -simplifycfg -dce -instcombine -pointer-simplify -ptrArgReplace -dce -instcombine -resolve-double-ptr -scalarrepl -norm-name -dce -mem2reg -instcombine -ptrLegalization -simplifycfg -deadargelim -instcombine -dce -inst-simplify -directive-preproc -mem2reg -dse -dce -globaldce /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.1.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.2.prechk.bc -f 
+INFO-FLOW: Checking Synthesizability 2/2..
+Execute         transform -syn-check /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.2.prechk.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.2.bc -f -phase syn-check 
+INFO: [HLS 200-111] Finished Checking Synthesizability: CPU user time: 0 seconds. CPU system time: 0 seconds. Elapsed time: 0.01 seconds; current allocated memory: 208.258 MB.
+INFO-FLOW: Compiler optimizing ...
+INFO-FLOW: Share syncheck's 1.bc for syn flow: copy /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.g.1.bc to /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.o.1.bc
+INFO-FLOW: Presyn 1...
+Execute         transform -hls -tmp /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db -interface-port-rename -directive-preproc -mem2reg -dse -dce -scalarrepl -norm-name -deadargelim -mem2reg -instcombine -dce -simplifycfg -auto-rom-infer -dce -resource-proc -clib-intrinsic-prepare -dce -func-buffer -dce -pag -array-normalize -func-legal -instcombine -gvn -constprop -dce -simplifycfg -mem2reg -globaldce -resolve-double-ptr -dce -deadargelim -dce -instcombine -ptrArgReplace -mem2reg -dce -array-seg-normalize -deadargelim -instcombine -dce -directive-preproc -mem2reg -dse -dce -pointer-simplify -dce -port-alignment -dce -interface-preproc -data-pack -instcombine -dce -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -gvn -gvn -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -dse -adse -adce -loop-simplify -indvars -instcombine -gvn -loop-simplify -mem2reg -dce -find-region -instcombine -auto-loop-pipeline -inst-simplify -interface-preproc -cfgopt -instcombine -indvars -auto-loop-unroll -loop-simplify -loop-bound -xunroll -constprop -instcombine -simplifycfg -indvars -simplifycfg -dce -globaldce -clean-region -attach-range -gvn -inst-simplify -constprop -simplifycfg -dce -pointer-simplify -dce -globalopt -constprop -dce -array-promote -scalar-auto-dep-elim -constprop -dce -ptrArgReplace -mem2reg -simplifycfg -dce -instcombine -dce -array-transform-check -array-reshape -instcombine -simplifycfg -dce -ptrArgReplace -deadargelim -mem2reg -instcombine -simplifycfg -dce -indvars -loop-simplify -loop-bound -xunroll -constprop -instcombine -simplifycfg -indvars -simplifycfg -dce -globaldce -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -dse -duplicate-dataflow-processes -globaldce -instcombine -array-partition -prepare-dynamic-array-partition -instcombine -simplifycfg -dce -ptrArgReplace -global-constprop -deadargelim -mem2reg -func-legal -dce -global-constprop -deadargelim -mem2reg -simplifycfg -dce -merge-param -deadargelim -globalopt -constprop -dce -array-promote -scalar-auto-dep-elim -constprop -dce -ptrArgReplace -mem2reg -simplifycfg -dce -mem-intrinsic-preproc -dce -global-internalize -global-privatize -mem2reg -globaldce -promote-global-argument -ptrArgReplace -mem2reg -dce -globalopt -mergereturn -simplify-global-access -mem2reg -dce -pointer-simplify -dce -functionattrs -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -gvn -gvn -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -dse -adse -adce -dce -norm-name -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -accesses-merge -function-inline -complex-op-raise -inst-simplify -globaldce -func-legal -dce -loop-bound -arraycheck -bitwidthmin2 -bitwidthmin2 -on-by-dataflow -loop-delete -instcombine -simplifycfg -globaldce -dce -gvn -deadargelim -dce -loop-simplify -clean-region -simplifycfg -propagate-stable-arguments -loop-stream -instcombine -simplifycfg -dce -globaldce -duplicate-dataflow-processes -stream-intrinsic-preproc -dce -check-ap-stream -loop-simplify -eliminate-keepreads -extract-dataflow-in-loop -loop-simplify -dce -gvn -deadargelim -dse -duplicate-dataflow-processes -check-dataflow-syntax -legalize-stream-variable -globaldce -legalize-global -extract-subproc -dce -dead-channel-elimination -canonicalize-gep -globaldce -dce -gvn -hls-dead-arg-elim -deadargelim -directive-preproc -canonicalize-dataflow -dce -globaldce -scalar-preprocessing -scalar-propagation2 -deadargelim -globaldce -mem2reg -check-dataflow-channels -function-stream -dce -globaldce -prop-fifo-spec -internal-stream-gen -canonicalize-gep -globaldce -dce -gvn -deadargelim -mergereturn -indvars -loop-simplify -instcombine -array-stream -array-seg-normalize -array-partition -func-legal -instcombine -simplifycfg -dce -bundle-memfifo-ops -deadargelim -directive-preproc -mem2reg -dse -dce -group-axi-access -licm -simplifycfg -dce -loop-delete -hls-display -norm-name /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.o.1.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.o.1.tmp.bc -f 
+INFO: [XFORM 203-510] Pipelining loop 'VITIS_LOOP_16_1' (HLS_Project/matrix_multiply.cpp:16) in function 'MatrixMultiplication' automatically.
+INFO: [XFORM 203-510] Pipelining loop 'VITIS_LOOP_22_4' (HLS_Project/matrix_multiply.cpp:22) in function 'MatrixMultiplication' automatically.
+INFO: [XFORM 203-510] Pipelining loop 'VITIS_LOOP_25_5' (HLS_Project/matrix_multiply.cpp:25) in function 'MatrixMultiplication' automatically.
+INFO: [XFORM 203-510] Pipelining loop 'Loop-3.1' in function 'MatrixMultiplication' automatically.
+INFO-FLOW: Presyn 2...
+Execute         transform -hls -keep-callgraph -scalarrepl -mem2reg -port-alignment -attach-range -dce -pipe-mux-gen -indvars -loop-bound -inst-simplify -instcombine -dce -merge-array-access -mem2reg -dce -clean-region -mergereturn -if-conv -instcombine -dce -constprop -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -gvn -gvn -basicaa -aggr-aa -aggrmodref-aa -aggr-aa -dse -adse -adce -scalarrepl -mem2reg -global-constprop -deadargelim -deadargelim -instcombine -dce -simplifycfg -ptrArgReplace -mem2reg -function-inline -globaldce -mem2reg -instcombine -dce -expr-balance -instcombine -dce -bitwidthmin2 -bitwidthmin2 -interface-preproc -directive-preproc -inst-rectify -instcombine -dce -functionattrs -constprop -instcombine -bit-constprop -simplify-global-access -globalopt -globaldce -inst-simplify -instcombine -elimdeaddata -dce -loop-delete -simplifycfg -loop-simplify -barrier -norm-name /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.o.1.tmp.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.o.2.bc -f -phase presyn 
+INFO: [HLS 200-111] Finished Loop, function and other optimizations: CPU user time: 0.04 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.04 seconds; current allocated memory: 229.973 MB.
+INFO-FLOW: Building ssdm...
+Execute         transform -hls -auto-function-inline -globaldce -ptrArgReplace -mem2reg -dce -reset-lda -loop-simplify -indvars -aggr-aa -licm -loop-dep -loop-bound -licm -loop-simplify -loop-sink-hoist -flattenloopnest -array-flatten -gvn -instcombine -dce -array-map -dce -func-legal -gvn -adce -instcombine -cfgopt -simplifycfg -loop-simplify -array-burst -promote-global-argument -dce -array-seg-normalize -basicaa -aggrmodref-aa -globalsmodref-aa -aggr-aa -gvn -gvn -basicaa -aggrmodref-aa -globalsmodref-aa -aggr-aa -dse -adse -adce -licm -inst-simplify -dce -globaldce -instcombine -array-stream -eliminate-keepreads -instcombine -dce -deadargelim -doublePtrSimplify -doublePtrElim -dce -doublePtrSimplify -promote-dbg-pointer -dce -scalarrepl -mem2reg -norm-name -mem2reg -instcombine -dse -adse -adce -ptrLegalization -dce -auto-rom-infer -array-flatten -dce -instcombine -check-doubleptr -loop-rot -constprop -cfgopt -simplifycfg -loop-simplify -indvars -pointer-simplify -dce -loop-bound -loop-simplify -loop-preproc -constprop -global-constprop -gvn -mem2reg -instcombine -dce -loop-bound -loop-merge -dce -deadargelim -dce -canonicalize-dataflow -dce -deadargelim -globaldce -mem2reg -bram-byte-enable -load-elim -read-loop-dep -loop-simplify -loop-extract-inner -directive-preproc -bitwidthmin2 -bitwidthmin2 -read-loop-dep -interface-preproc -directive-preproc -interface-gen -bram-byte-enable-spec-prop -deadargelim -inst-simplify -dce -gvn -mem2reg -instcombine -dce -adse -loop-bound -instcombine -cfgopt -simplifycfg -loop-simplify -clean-region -io-protocol -find-region -mem2reg -bitop-raise -complex-op-raise -inst-simplify -inst-rectify -instcombine -adce -deadargelim -float-op-raise -loop-simplify -phi-opt -bitop-raise -cfgopt -simplifycfg -strip-dead-prototypes -interface-lower -bitop-lower -intrinsic-lower -auto-function-inline -basicaa -aggrmodref-aa -globalsmodref-aa -aggr-aa -inst-simplify -simplifycfg -loop-simplify -mergereturn -inst-simplify -inst-rectify -dce -load-elim -bitop-lower -float-op-raise -fma-raise -loop-rewind -pointer-simplify -dce -cfgopt -dce -loop-bound -loop-dep -read-loop-dep -dce -dyn-mem-reuse -dce -recurrence-min -dce -share-scalar-alloca -deadargelim -dce -check-stream -norm-name -legalize -validate-dataflow -inst-clarity -bitwidth -dump-loop-dep-to-ir -check-all-ssdm -cdfg-build /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.o.2.bc -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/a.o.3.bc -f -phase build-ssdm 
+WARNING: [HLS 200-960] Cannot flatten loop 'VITIS_LOOP_21_3' (HLS_Project/matrix_multiply.cpp:21:40) in function 'MatrixMultiplication' more than one sub loop.
+WARNING: [HLS 200-960] Cannot flatten loop 'VITIS_LOOP_19_2' (HLS_Project/matrix_multiply.cpp:19:39) in function 'MatrixMultiplication' more than one sub loop.
+INFO: [HLS 200-472] Inferring partial write operation for 'acc' 
+INFO: [HLS 200-472] Inferring partial write operation for 'acc' (HLS_Project/matrix_multiply.cpp:23:13)
+INFO: [HLS 200-111] Finished Architecture Synthesis: CPU user time: 0.04 seconds. CPU system time: 0.02 seconds. Elapsed time: 0.06 seconds; current allocated memory: 253.531 MB.
+INFO-FLOW: Finish building internal data model.
+Command       opt_and_import_c done; 0.14 sec.
+Command     elaborate done; 4.15 sec.
+Execute     ap_eval exec zip -j /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/dut.hcp $dbDir/a.o.3.bc $dbDir/${topname}.rtl_wrap.cfg.tcl $dbDir/apatb_${topname}.cpp $dbDir/apatb_${topname}_util.cpp $dbDir/apatb_${topname}_ir.ll $dbDir/mapper_${topname}.cpp $dbDir/top-io-fe.xml $dbDir/kernel.internal.xml $workdir/../hls.app 
+Execute     autosyn -from_csynth_design=1 
+INFO: [HLS 200-10] Starting hardware synthesis ...
+INFO-FLOW: Synthesizing C/C++ design ...
+INFO: [HLS 200-10] Synthesizing 'MatrixMultiplication' ...
+Execute       ap_set_top_model MatrixMultiplication 
+Execute       get_model_list MatrixMultiplication -filter all-wo-channel -topdown 
+Execute       preproc_iomode -model MatrixMultiplication 
+Execute       preproc_iomode -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       preproc_iomode -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       preproc_iomode -model MatrixMultiplication_Pipeline_2 
+Execute       preproc_iomode -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       get_model_list MatrixMultiplication -filter all-wo-channel 
+INFO-FLOW: Model list for configure: MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 MatrixMultiplication_Pipeline_2 MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 MatrixMultiplication
+INFO-FLOW: Configuring Module : MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 ...
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       apply_spec_resource_limit MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+INFO-FLOW: Configuring Module : MatrixMultiplication_Pipeline_2 ...
+Execute       set_default_model MatrixMultiplication_Pipeline_2 
+Execute       apply_spec_resource_limit MatrixMultiplication_Pipeline_2 
+INFO-FLOW: Configuring Module : MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 ...
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       apply_spec_resource_limit MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+INFO-FLOW: Configuring Module : MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 ...
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       apply_spec_resource_limit MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+INFO-FLOW: Configuring Module : MatrixMultiplication ...
+Execute       set_default_model MatrixMultiplication 
+Execute       apply_spec_resource_limit MatrixMultiplication 
+INFO-FLOW: Model list for preprocess: MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 MatrixMultiplication_Pipeline_2 MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 MatrixMultiplication
+INFO-FLOW: Preprocessing Module: MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 ...
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       cdfg_preprocess -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       rtl_gen_preprocess MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+INFO-FLOW: Preprocessing Module: MatrixMultiplication_Pipeline_2 ...
+Execute       set_default_model MatrixMultiplication_Pipeline_2 
+Execute       cdfg_preprocess -model MatrixMultiplication_Pipeline_2 
+Execute       rtl_gen_preprocess MatrixMultiplication_Pipeline_2 
+INFO-FLOW: Preprocessing Module: MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 ...
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       cdfg_preprocess -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       rtl_gen_preprocess MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+INFO-FLOW: Preprocessing Module: MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 ...
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       cdfg_preprocess -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       rtl_gen_preprocess MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+INFO-FLOW: Preprocessing Module: MatrixMultiplication ...
+Execute       set_default_model MatrixMultiplication 
+Execute       cdfg_preprocess -model MatrixMultiplication 
+Execute       rtl_gen_preprocess MatrixMultiplication 
+INFO-FLOW: Model list for synthesis: MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 MatrixMultiplication_Pipeline_2 MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 MatrixMultiplication
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'MatrixMultiplication_Pipeline_VITIS_LOOP_16_1' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       schedule -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining loop 'VITIS_LOOP_16_1'.
+INFO: [HLS 200-1470] Pipelining result : Target II = NA, Final II = 1, Depth = 3, loop 'VITIS_LOOP_16_1'
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0.02 seconds. CPU system time: 0.02 seconds. Elapsed time: 0.05 seconds; current allocated memory: 254.035 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.verbose.sched.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.sched.adb -f 
+INFO-FLOW: Finish scheduling MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       bind -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0.02 seconds. CPU system time: 0 seconds. Elapsed time: 0.02 seconds; current allocated memory: 254.051 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.verbose.bind.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.bind.adb -f 
+INFO-FLOW: Finish binding MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'MatrixMultiplication_Pipeline_2' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       set_default_model MatrixMultiplication_Pipeline_2 
+Execute       schedule -model MatrixMultiplication_Pipeline_2 
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining loop 'Loop 1'.
+INFO: [HLS 200-1470] Pipelining result : Target II = NA, Final II = 1, Depth = 1, loop 'Loop 1'
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0.03 seconds. CPU system time: 0 seconds. Elapsed time: 0.03 seconds; current allocated memory: 255.195 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.verbose.sched.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.sched.adb -f 
+INFO-FLOW: Finish scheduling MatrixMultiplication_Pipeline_2.
+Execute       set_default_model MatrixMultiplication_Pipeline_2 
+Execute       bind -model MatrixMultiplication_Pipeline_2 
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0.01 seconds. CPU system time: 0 seconds. Elapsed time: 0.01 seconds; current allocated memory: 255.195 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.verbose.bind.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.bind.adb -f 
+INFO-FLOW: Finish binding MatrixMultiplication_Pipeline_2.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'MatrixMultiplication_Pipeline_VITIS_LOOP_22_4' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       schedule -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining loop 'VITIS_LOOP_22_4'.
+INFO: [HLS 200-1470] Pipelining result : Target II = NA, Final II = 1, Depth = 5, loop 'VITIS_LOOP_22_4'
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0.03 seconds. CPU system time: 0 seconds. Elapsed time: 0.04 seconds; current allocated memory: 255.547 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.verbose.sched.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.sched.adb -f 
+INFO-FLOW: Finish scheduling MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       bind -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0.02 seconds. CPU system time: 0 seconds. Elapsed time: 0.03 seconds; current allocated memory: 255.547 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.verbose.bind.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.bind.adb -f 
+INFO-FLOW: Finish binding MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       schedule -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-61] Pipelining loop 'VITIS_LOOP_25_5'.
+WARNING: [HLS 200-880] The II Violation in module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' (loop 'VITIS_LOOP_25_5'): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 0) between 'store' operation ('add3211_write_ln25', HLS_Project/matrix_multiply.cpp:25) of variable 'add', HLS_Project/matrix_multiply.cpp:26 on local variable 'add3211' and 'load' operation ('add3211_load', HLS_Project/matrix_multiply.cpp:26) on local variable 'add3211'.
+WARNING: [HLS 200-880] The II Violation in module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' (loop 'VITIS_LOOP_25_5'): Unable to enforce a carried dependence constraint (II = 2, distance = 1, offset = 0) between 'store' operation ('add3211_write_ln25', HLS_Project/matrix_multiply.cpp:25) of variable 'add', HLS_Project/matrix_multiply.cpp:26 on local variable 'add3211' and 'load' operation ('add3211_load', HLS_Project/matrix_multiply.cpp:26) on local variable 'add3211'.
+WARNING: [HLS 200-880] The II Violation in module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' (loop 'VITIS_LOOP_25_5'): Unable to enforce a carried dependence constraint (II = 3, distance = 1, offset = 0) between 'store' operation ('add3211_write_ln25', HLS_Project/matrix_multiply.cpp:25) of variable 'add', HLS_Project/matrix_multiply.cpp:26 on local variable 'add3211' and 'load' operation ('add3211_load', HLS_Project/matrix_multiply.cpp:26) on local variable 'add3211'.
+INFO: [HLS 200-1470] Pipelining result : Target II = NA, Final II = 4, Depth = 6, loop 'VITIS_LOOP_25_5'
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0.05 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.05 seconds; current allocated memory: 255.961 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.verbose.sched.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.sched.adb -f 
+INFO-FLOW: Finish scheduling MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.
+Execute       set_default_model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       bind -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0.03 seconds. CPU system time: 0 seconds. Elapsed time: 0.03 seconds; current allocated memory: 255.961 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.verbose.bind.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.bind.adb -f 
+INFO-FLOW: Finish binding MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-42] -- Implementing module 'MatrixMultiplication' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       set_default_model MatrixMultiplication 
+Execute       schedule -model MatrixMultiplication 
+INFO: [SCHED 204-11] Starting scheduling ...
+INFO: [SCHED 204-11] Finished scheduling.
+INFO: [HLS 200-111] Finished Scheduling: CPU user time: 0.04 seconds. CPU system time: 0 seconds. Elapsed time: 0.05 seconds; current allocated memory: 256.465 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.verbose.sched.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.sched.adb -f 
+INFO-FLOW: Finish scheduling MatrixMultiplication.
+Execute       set_default_model MatrixMultiplication 
+Execute       bind -model MatrixMultiplication 
+INFO: [BIND 205-100] Starting micro-architecture generation ...
+INFO: [BIND 205-101] Performing variable lifetime analysis.
+INFO: [BIND 205-101] Exploring resource sharing.
+INFO: [BIND 205-101] Binding ...
+INFO: [BIND 205-100] Finished micro-architecture generation.
+INFO: [HLS 200-111] Finished Binding: CPU user time: 0.05 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.05 seconds; current allocated memory: 256.465 MB.
+Execute       syn_report -verbosereport -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.verbose.bind.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.bind.adb -f 
+INFO-FLOW: Finish binding MatrixMultiplication.
+Execute       get_model_list MatrixMultiplication -filter all-wo-channel 
+INFO-FLOW: Preprocessing for RTLGen ...
+Execute       rtl_gen_preprocess MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       rtl_gen_preprocess MatrixMultiplication_Pipeline_2 
+Execute       rtl_gen_preprocess MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       rtl_gen_preprocess MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       rtl_gen_preprocess MatrixMultiplication 
+INFO-FLOW: Model list for RTL generation: MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 MatrixMultiplication_Pipeline_2 MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 MatrixMultiplication
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'MatrixMultiplication_Pipeline_VITIS_LOOP_16_1' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       create_rtl_model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -top_prefix MatrixMultiplication_ -sub_prefix MatrixMultiplication_ -mg_file /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.compgen.tcl 
+INFO: [HLS 200-1030] Apply Unified Pipeline Control on module 'MatrixMultiplication_Pipeline_VITIS_LOOP_16_1' pipeline 'VITIS_LOOP_16_1' pipeline type 'loop pipeline'
+INFO: [RTGEN 206-100] Finished creating RTL model for 'MatrixMultiplication_Pipeline_VITIS_LOOP_16_1'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0.06 seconds. CPU system time: 0 seconds. Elapsed time: 0.06 seconds; current allocated memory: 256.465 MB.
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.rtl_wrap.cfg.tcl 
+Execute       gen_rtl MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -style xilinx -f -lang vhdl -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       gen_rtl MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -style xilinx -f -lang vlog -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+Execute       syn_report -csynth -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_csynth.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       syn_report -rtlxml -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_csynth.xml 
+Execute       syn_report -verbosereport -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.verbose.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -f -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.adb 
+Execute       db_write -model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -bindview -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/design.bindinfo.xml 
+Execute       gen_tb_info MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 -p /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'MatrixMultiplication_Pipeline_2' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       create_rtl_model MatrixMultiplication_Pipeline_2 -top_prefix MatrixMultiplication_ -sub_prefix MatrixMultiplication_ -mg_file /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.compgen.tcl 
+INFO: [RTGEN 206-100] Finished creating RTL model for 'MatrixMultiplication_Pipeline_2'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0.03 seconds. CPU system time: 0 seconds. Elapsed time: 0.04 seconds; current allocated memory: 256.883 MB.
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.rtl_wrap.cfg.tcl 
+Execute       gen_rtl MatrixMultiplication_Pipeline_2 -style xilinx -f -lang vhdl -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_2 
+Execute       gen_rtl MatrixMultiplication_Pipeline_2 -style xilinx -f -lang vlog -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_2 
+Execute       syn_report -csynth -model MatrixMultiplication_Pipeline_2 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_Pipeline_2_csynth.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       syn_report -rtlxml -model MatrixMultiplication_Pipeline_2 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_Pipeline_2_csynth.xml 
+Execute       syn_report -verbosereport -model MatrixMultiplication_Pipeline_2 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.verbose.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -model MatrixMultiplication_Pipeline_2 -f -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.adb 
+Execute       db_write -model MatrixMultiplication_Pipeline_2 -bindview -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/design.bindinfo.xml 
+Execute       gen_tb_info MatrixMultiplication_Pipeline_2 -p /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'MatrixMultiplication_Pipeline_VITIS_LOOP_22_4' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       create_rtl_model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -top_prefix MatrixMultiplication_ -sub_prefix MatrixMultiplication_ -mg_file /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.compgen.tcl 
+INFO: [HLS 200-1030] Apply Unified Pipeline Control on module 'MatrixMultiplication_Pipeline_VITIS_LOOP_22_4' pipeline 'VITIS_LOOP_22_4' pipeline type 'loop pipeline'
+INFO: [RTGEN 206-100] Generating core module 'fmul_32ns_32ns_32_4_max_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'MatrixMultiplication_Pipeline_VITIS_LOOP_22_4'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0.03 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.03 seconds; current allocated memory: 257.746 MB.
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.rtl_wrap.cfg.tcl 
+Execute       gen_rtl MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -style xilinx -f -lang vhdl -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       gen_rtl MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -style xilinx -f -lang vlog -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+Execute       syn_report -csynth -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_csynth.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       syn_report -rtlxml -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_csynth.xml 
+Execute       syn_report -verbosereport -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.verbose.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -f -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.adb 
+Execute       db_write -model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -bindview -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/design.bindinfo.xml 
+Execute       gen_tb_info MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 -p /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       create_rtl_model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -top_prefix MatrixMultiplication_ -sub_prefix MatrixMultiplication_ -mg_file /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.compgen.tcl 
+INFO: [HLS 200-1030] Apply Unified Pipeline Control on module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' pipeline 'VITIS_LOOP_25_5' pipeline type 'loop pipeline'
+INFO: [RTGEN 206-100] Generating core module 'fadd_32ns_32ns_32_5_full_dsp_1': 1 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5'.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0.06 seconds. CPU system time: 0.01 seconds. Elapsed time: 0.08 seconds; current allocated memory: 258.883 MB.
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.rtl_wrap.cfg.tcl 
+Execute       gen_rtl MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -style xilinx -f -lang vhdl -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       gen_rtl MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -style xilinx -f -lang vlog -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+Execute       syn_report -csynth -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_csynth.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       syn_report -rtlxml -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_csynth.xml 
+Execute       syn_report -verbosereport -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.verbose.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -f -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.adb 
+Execute       db_write -model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -bindview -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/design.bindinfo.xml 
+Execute       gen_tb_info MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 -p /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+INFO: [HLS 200-10] -- Generating RTL for module 'MatrixMultiplication' 
+INFO: [HLS 200-10] ----------------------------------------------------------------
+Execute       create_rtl_model MatrixMultiplication -top_prefix  -sub_prefix MatrixMultiplication_ -mg_file /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.compgen.tcl 
+WARNING: [RTGEN 206-101] Design contains AXI ports. Reset is fixed to synchronous and active low.
+INFO: [RTGEN 206-500] Setting interface mode on port 'MatrixMultiplication/A' to 's_axilite & ap_memory'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'MatrixMultiplication/B' to 's_axilite & ap_memory'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'MatrixMultiplication/C_out' to 's_axilite & ap_memory'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'MatrixMultiplication/A_rows' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'MatrixMultiplication/B_rows' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on port 'MatrixMultiplication/B_columns' to 's_axilite & ap_none'.
+INFO: [RTGEN 206-500] Setting interface mode on function 'MatrixMultiplication' to 's_axilite & ap_ctrl_chain'.
+INFO: [RTGEN 206-100] Bundling port 'A_rows', 'A', 'C_out', 'B_rows', 'B_columns', 'B' to AXI-Lite port control.
+INFO: [RTGEN 206-100] Generating core module 'mul_3s_3s_3_1_1': 2 instance(s).
+INFO: [RTGEN 206-100] Finished creating RTL model for 'MatrixMultiplication'.
+INFO: [RTMG 210-278] Implementing memory 'MatrixMultiplication_acc_RAM_AUTO_1R1W' using auto RAMs.
+INFO: [HLS 200-111] Finished Creating RTL model: CPU user time: 0.07 seconds. CPU system time: 0 seconds. Elapsed time: 0.07 seconds; current allocated memory: 260.281 MB.
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.rtl_wrap.cfg.tcl 
+Execute       gen_rtl MatrixMultiplication -istop -style xilinx -f -lang vhdl -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/vhdl/MatrixMultiplication 
+Execute       gen_rtl MatrixMultiplication -istop -style xilinx -f -lang vlog -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/verilog/MatrixMultiplication 
+Execute       syn_report -csynth -model MatrixMultiplication -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_csynth.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       syn_report -rtlxml -model MatrixMultiplication -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/MatrixMultiplication_csynth.xml 
+Execute       syn_report -verbosereport -model MatrixMultiplication -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.verbose.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       db_write -model MatrixMultiplication -f -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.adb 
+Execute       db_write -model MatrixMultiplication -bindview -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/design.bindinfo.xml 
+Execute       gen_tb_info MatrixMultiplication -p /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication 
+Execute       export_constraint_db -f -tool general -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.constraint.tcl 
+Execute       syn_report -designview -model MatrixMultiplication -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.design.xml 
+Execute       syn_report -csynthDesign -model MatrixMultiplication -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/csynth.rpt 
+Execute         AP::get_flow_target_display_name
+Execute       syn_report -wcfg -model MatrixMultiplication -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_dataflow_ana.wcfg 
+Execute       syn_report -protoinst -model MatrixMultiplication -o /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.protoinst 
+Execute       sc_get_clocks MatrixMultiplication 
+Execute       sc_get_portdomain MatrixMultiplication 
+INFO-FLOW: Model list for RTL component generation: MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 MatrixMultiplication_Pipeline_2 MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 MatrixMultiplication
+INFO-FLOW: Handling components in module [MatrixMultiplication_Pipeline_VITIS_LOOP_16_1] ... 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.compgen.tcl 
+INFO-FLOW: Found component MatrixMultiplication_flow_control_loop_pipe_sequential_init.
+INFO-FLOW: Append model MatrixMultiplication_flow_control_loop_pipe_sequential_init
+INFO-FLOW: Handling components in module [MatrixMultiplication_Pipeline_2] ... 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.compgen.tcl 
+INFO-FLOW: Found component MatrixMultiplication_flow_control_loop_pipe_sequential_init.
+INFO-FLOW: Append model MatrixMultiplication_flow_control_loop_pipe_sequential_init
+INFO-FLOW: Handling components in module [MatrixMultiplication_Pipeline_VITIS_LOOP_22_4] ... 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.compgen.tcl 
+INFO-FLOW: Found component MatrixMultiplication_fmul_32ns_32ns_32_4_max_dsp_1.
+INFO-FLOW: Append model MatrixMultiplication_fmul_32ns_32ns_32_4_max_dsp_1
+INFO-FLOW: Found component MatrixMultiplication_flow_control_loop_pipe_sequential_init.
+INFO-FLOW: Append model MatrixMultiplication_flow_control_loop_pipe_sequential_init
+INFO-FLOW: Handling components in module [MatrixMultiplication_Pipeline_VITIS_LOOP_25_5] ... 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.compgen.tcl 
+INFO-FLOW: Found component MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1.
+INFO-FLOW: Append model MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1
+INFO-FLOW: Found component MatrixMultiplication_flow_control_loop_pipe_sequential_init.
+INFO-FLOW: Append model MatrixMultiplication_flow_control_loop_pipe_sequential_init
+INFO-FLOW: Handling components in module [MatrixMultiplication] ... 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.compgen.tcl 
+INFO-FLOW: Found component MatrixMultiplication_mul_3s_3s_3_1_1.
+INFO-FLOW: Append model MatrixMultiplication_mul_3s_3s_3_1_1
+INFO-FLOW: Found component MatrixMultiplication_acc_RAM_AUTO_1R1W.
+INFO-FLOW: Append model MatrixMultiplication_acc_RAM_AUTO_1R1W
+INFO-FLOW: Found component MatrixMultiplication_control_s_axi.
+INFO-FLOW: Append model MatrixMultiplication_control_s_axi
+INFO-FLOW: Append model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1
+INFO-FLOW: Append model MatrixMultiplication_Pipeline_2
+INFO-FLOW: Append model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4
+INFO-FLOW: Append model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5
+INFO-FLOW: Append model MatrixMultiplication
+INFO-FLOW: Generating RTL model list ...
+INFO-FLOW: All models in this session: MatrixMultiplication_flow_control_loop_pipe_sequential_init MatrixMultiplication_flow_control_loop_pipe_sequential_init MatrixMultiplication_fmul_32ns_32ns_32_4_max_dsp_1 MatrixMultiplication_flow_control_loop_pipe_sequential_init MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1 MatrixMultiplication_flow_control_loop_pipe_sequential_init MatrixMultiplication_mul_3s_3s_3_1_1 MatrixMultiplication_acc_RAM_AUTO_1R1W MatrixMultiplication_control_s_axi MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 MatrixMultiplication_Pipeline_2 MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 MatrixMultiplication
+INFO-FLOW: Generating /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/autopilot.rtl.models.txt file...
+INFO-FLOW: To file: write model MatrixMultiplication_flow_control_loop_pipe_sequential_init
+INFO-FLOW: To file: write model MatrixMultiplication_flow_control_loop_pipe_sequential_init
+INFO-FLOW: To file: write model MatrixMultiplication_fmul_32ns_32ns_32_4_max_dsp_1
+INFO-FLOW: To file: write model MatrixMultiplication_flow_control_loop_pipe_sequential_init
+INFO-FLOW: To file: write model MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1
+INFO-FLOW: To file: write model MatrixMultiplication_flow_control_loop_pipe_sequential_init
+INFO-FLOW: To file: write model MatrixMultiplication_mul_3s_3s_3_1_1
+INFO-FLOW: To file: write model MatrixMultiplication_acc_RAM_AUTO_1R1W
+INFO-FLOW: To file: write model MatrixMultiplication_control_s_axi
+INFO-FLOW: To file: write model MatrixMultiplication_Pipeline_VITIS_LOOP_16_1
+INFO-FLOW: To file: write model MatrixMultiplication_Pipeline_2
+INFO-FLOW: To file: write model MatrixMultiplication_Pipeline_VITIS_LOOP_22_4
+INFO-FLOW: To file: write model MatrixMultiplication_Pipeline_VITIS_LOOP_25_5
+INFO-FLOW: To file: write model MatrixMultiplication
+INFO-FLOW: Generating /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/autopilot.rtl.models.tcl file...
+INFO-FLOW: Finished generating RTL model list.
+
+
+INFO-FLOW: RTL Generation done.
+INFO-FLOW: CAS Generation done.
+INFO-FLOW: CBC Generation done.
+INFO-FLOW: DBG:PROC: ::AESL_AUTOMG::auto_generate_csynth_design
+INFO-FLOW: DBG:PUTS: read_platform_lib /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/generic/autopilot/common.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/generic/autopilot/APCoreGen.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/generic/autopilot/op.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/generic/autopilot/op_simcore.gen 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/generic/autopilot/interface.gen 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl 
+Execute       source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/common/xilinx.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/plb46.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/axi4.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/nativeAXI4.gen 
+Execute           source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/saxilite.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/scripts/xilinxcoregen.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/interface/XilEDKCoreGen.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/dds_compiler.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/util.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/xfft.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/ip/xfir.gen 
+Execute         source /home/Xilinx/Vitis_HLS/2022.2/common/technology/xilinx/DSP48/dsp48.gen 
+INFO-FLOW: DBG:PUTS:   using AESL_AUTOCG::g_clock_period=10.000 (was NA)
+INFO-FLOW: DBG:PROC: ::AESL_AUTOMG::generate_ip_cores gen_sim_model='1' gen_fp_models='0' gen_for_export='0' dstSCDir='' dstVhdlDir='/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/vhdl' dstVlogDir='/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/vlog' tclDir='/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db' modelList='MatrixMultiplication_flow_control_loop_pipe_sequential_init
+MatrixMultiplication_flow_control_loop_pipe_sequential_init
+MatrixMultiplication_fmul_32ns_32ns_32_4_max_dsp_1
+MatrixMultiplication_flow_control_loop_pipe_sequential_init
+MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1
+MatrixMultiplication_flow_control_loop_pipe_sequential_init
+MatrixMultiplication_mul_3s_3s_3_1_1
+MatrixMultiplication_acc_RAM_AUTO_1R1W
+MatrixMultiplication_control_s_axi
+MatrixMultiplication_Pipeline_VITIS_LOOP_16_1
+MatrixMultiplication_Pipeline_2
+MatrixMultiplication_Pipeline_VITIS_LOOP_22_4
+MatrixMultiplication_Pipeline_VITIS_LOOP_25_5
+MatrixMultiplication
+' expOnly='0'
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl 
+Execute       ap_part_info -name xczu9eg-ffvc900-1-e -data names -quiet 
+Execute       ap_part_info -name xczu9eg-ffvc900-1-e -data info -quiet 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.compgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.compgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.compgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.compgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.compgen.tcl 
+Execute         source ./control.slave.tcl 
+INFO: [HLS 200-111] Finished Generating all RTL models: CPU user time: 0.22 seconds. CPU system time: 0.04 seconds. Elapsed time: 0.26 seconds; current allocated memory: 264.516 MB.
+INFO-FLOW: DBG:PROC: ::HLSREPORTS::create_csynth_xml bind_info_var='bind_info' RtlSubPrefix='MatrixMultiplication_' outfile=''
+INFO-FLOW: Running: create_csynth_xml read xml data
+INFO-FLOW: Done: create_csynth_xml read xml data time: 0 seconds per iteration
+INFO-FLOW: Running: create_csynth_xml bind info
+INFO-FLOW: Done: create_csynth_xml bind info time: 0 seconds per iteration
+INFO-FLOW: Running: create_csynth_xml config info
+INFO-FLOW: Done: create_csynth_xml config info time: 0.1 seconds per iteration
+INFO-FLOW: Running: create_csynth_xml write xml
+INFO-FLOW: Done: create_csynth_xml write xml time: 0 seconds per iteration
+INFO-FLOW: DBG:PUTS:      create_csynth_xml wrote csynth_xml=/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/syn/report/csynth.xml
+INFO-FLOW: DBG:PROC: ::AP::DESIGN_DATA::generate_json generate_bd_files='0' generate_xo_files='0' modelList='MatrixMultiplication_flow_control_loop_pipe_sequential_init
+MatrixMultiplication_flow_control_loop_pipe_sequential_init
+MatrixMultiplication_fmul_32ns_32ns_32_4_max_dsp_1
+MatrixMultiplication_flow_control_loop_pipe_sequential_init
+MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1
+MatrixMultiplication_flow_control_loop_pipe_sequential_init
+MatrixMultiplication_mul_3s_3s_3_1_1
+MatrixMultiplication_acc_RAM_AUTO_1R1W
+MatrixMultiplication_control_s_axi
+MatrixMultiplication_Pipeline_VITIS_LOOP_16_1
+MatrixMultiplication_Pipeline_2
+MatrixMultiplication_Pipeline_VITIS_LOOP_22_4
+MatrixMultiplication_Pipeline_VITIS_LOOP_25_5
+MatrixMultiplication
+' rtl_lang='both' bootstrap_tcl='false' outdir='' outfilename=''
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/top-io-be.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.tbgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.compgen.dataonly.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.compgen.dataonly.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.rtl_wrap.cfg.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.compgen.dataonly.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_16_1.tbgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_2.tbgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_22_4.tbgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication_Pipeline_VITIS_LOOP_25_5.tbgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.tbgen.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl 
+Execute       ap_part_info -name xczu9eg-ffvc900-1-e -data names -quiet 
+Execute       ap_part_info -name xczu9eg-ffvc900-1-e -data info -quiet 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/MatrixMultiplication.constraint.tcl 
+Execute       sc_get_clocks MatrixMultiplication 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/global.setting.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/impl/misc/MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1_ip.tcl 
+Execute       source /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/impl/misc/MatrixMultiplication_fmul_32ns_32ns_32_4_max_dsp_1_ip.tcl 
+INFO-FLOW: DBG:PROC: ::HLSREPORTS::add_csynth_report_sections bind_info_dict='adapter_nodes {{BINDTYPE adapter DISPLAY {bind_adapter axilite} ID {} IMPL {} LATENCY {} OPTYPE {} PRAGMA yes RTLNAME control_s_axi_U SOURCE {} VARIABLE {} MODULE MatrixMultiplication LOOP {} BUNDLEDNAME control DSP 0 BRAM 0 URAM 0}} report_dict {TOPINST MatrixMultiplication MODULE2INSTS {MatrixMultiplication MatrixMultiplication MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130 MatrixMultiplication_Pipeline_2 grp_MatrixMultiplication_Pipeline_2_fu_138 MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143 MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156} INST2MODULE {MatrixMultiplication MatrixMultiplication grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130 MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 grp_MatrixMultiplication_Pipeline_2_fu_138 MatrixMultiplication_Pipeline_2 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143 MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156 MatrixMultiplication_Pipeline_VITIS_LOOP_25_5} INSTDATA {MatrixMultiplication {DEPTH 1 CHILDREN {grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130 grp_MatrixMultiplication_Pipeline_2_fu_138 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143 grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156}} grp_MatrixMultiplication_Pipeline_VITIS_LOOP_16_1_fu_130 {DEPTH 2 CHILDREN {}} grp_MatrixMultiplication_Pipeline_2_fu_138 {DEPTH 2 CHILDREN {}} grp_MatrixMultiplication_Pipeline_VITIS_LOOP_22_4_fu_143 {DEPTH 2 CHILDREN {}} grp_MatrixMultiplication_Pipeline_VITIS_LOOP_25_5_fu_156 {DEPTH 2 CHILDREN {}}} MODULEDATA {MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 {BINDINFO {{BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME n_5_fu_73_p2 SOURCE HLS_Project/matrix_multiply.cpp:16 VARIABLE n_5 LOOP VITIS_LOOP_16_1 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}}} AREA {DSP 0 BRAM 0 URAM 0}} MatrixMultiplication_Pipeline_2 {BINDINFO {{BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME empty_21_fu_58_p2 SOURCE {} VARIABLE empty_21 LOOP {Loop 1} BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}}} AREA {DSP 0 BRAM 0 URAM 0}} MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 {BINDINFO {{BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME n_3_fu_153_p2 SOURCE HLS_Project/matrix_multiply.cpp:22 VARIABLE n_3 LOOP VITIS_LOOP_22_4 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}} {BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME add_ln23_fu_166_p2 SOURCE HLS_Project/matrix_multiply.cpp:23 VARIABLE add_ln23 LOOP VITIS_LOOP_22_4 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}} {BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME add_ln23_2_fu_177_p2 SOURCE HLS_Project/matrix_multiply.cpp:23 VARIABLE add_ln23_2 LOOP VITIS_LOOP_22_4 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}} {BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME add_ln23_1_fu_183_p2 SOURCE HLS_Project/matrix_multiply.cpp:23 VARIABLE add_ln23_1 LOOP VITIS_LOOP_22_4 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}} {BINDTYPE op ID {} IMPL maxdsp LATENCY 3 OPTYPE fmul PRAGMA {} RTLNAME fmul_32ns_32ns_32_4_max_dsp_1_U4 SOURCE HLS_Project/matrix_multiply.cpp:23 VARIABLE mul1 LOOP VITIS_LOOP_22_4 BUNDLEDNAME {} DSP 3 BRAM 0 URAM 0 DISPNAME {bind_op fmul}}} AREA {DSP 3 BRAM 0 URAM 0}} MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 {BINDINFO {{BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME n_2_fu_107_p2 SOURCE HLS_Project/matrix_multiply.cpp:25 VARIABLE n_2 LOOP VITIS_LOOP_25_5 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}} {BINDTYPE op ID {} IMPL fulldsp LATENCY 4 OPTYPE fadd PRAGMA {} RTLNAME fadd_32ns_32ns_32_5_full_dsp_1_U13 SOURCE HLS_Project/matrix_multiply.cpp:26 VARIABLE add LOOP VITIS_LOOP_25_5 BUNDLEDNAME {} DSP 2 BRAM 0 URAM 0 DISPNAME {bind_op fadd}}} AREA {DSP 2 BRAM 0 URAM 0}} MatrixMultiplication {BINDINFO {{BINDTYPE storage ID {} IMPL auto LATENCY 1 OPTYPE ram_1p PRAGMA {} RTLNAME acc_U SOURCE HLS_Project/matrix_multiply.cpp:20 VARIABLE acc LOOP {} BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_storage ram_1p}} {BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME m_2_fu_194_p2 SOURCE HLS_Project/matrix_multiply.cpp:19 VARIABLE m_2 LOOP VITIS_LOOP_19_2 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}} {BINDTYPE op ID {} IMPL auto LATENCY 0 OPTYPE mul PRAGMA {} RTLNAME mul_3s_3s_3_1_1_U19 SOURCE HLS_Project/matrix_multiply.cpp:19 VARIABLE mul LOOP VITIS_LOOP_19_2 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op mul}} {BINDTYPE op ID {} IMPL auto LATENCY 0 OPTYPE mul PRAGMA {} RTLNAME mul_3s_3s_3_1_1_U20 SOURCE HLS_Project/matrix_multiply.cpp:19 VARIABLE mul29 LOOP VITIS_LOOP_19_2 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op mul}} {BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME k_1_fu_219_p2 SOURCE HLS_Project/matrix_multiply.cpp:21 VARIABLE k_1 LOOP VITIS_LOOP_21_3 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}} {BINDTYPE op ID {} IMPL fabric LATENCY 0 OPTYPE add PRAGMA {} RTLNAME add305_fu_234_p2 SOURCE HLS_Project/matrix_multiply.cpp:21 VARIABLE add305 LOOP VITIS_LOOP_21_3 BUNDLEDNAME {} DSP 0 BRAM 0 URAM 0 DISPNAME {bind_op add}}} AREA {DSP 5 BRAM 0 URAM 0}}}}'
+INFO-FLOW: DBG:PUTS:      update_csynth_reports json2rpt_hw_sw_interfaces
+INFO-FLOW: Running: gen_csynth_sec_pragma
+INFO-FLOW: Done: gen_csynth_sec_pragma time: 0 seconds per iteration
+INFO-FLOW: DBG:PUTS:      update_csynth_reports wrote xml
+INFO-FLOW: DBG:PUTS:      update_csynth_reports appended to csynth rpt file
+INFO: [HLS 200-111] Finished Updating report files: CPU user time: 0.27 seconds. CPU system time: 0.02 seconds. Elapsed time: 0.29 seconds; current allocated memory: 273.379 MB.
+INFO: [VHDL 208-304] Generating VHDL RTL for MatrixMultiplication.
+INFO: [VLOG 209-307] Generating Verilog RTL for MatrixMultiplication.
+Execute       syn_report -model MatrixMultiplication -printsummary 
+INFO: [HLS 200-790] **** Loop Constraint Status: All loop constraints were NOT satisfied.
+INFO: [HLS 200-789] **** Estimated Fmax: 146.89 MHz
+Command     autosyn done; 1.18 sec.
+Command   csynth_design done; 5.36 sec.
+INFO: [HLS 200-111] Finished Command csynth_design CPU user time: 4.1 seconds. CPU system time: 1.01 seconds. Elapsed time: 5.36 seconds; current allocated memory: 66.914 MB.
+Command ap_source done; 15.79 sec.
+Execute cleanup_all 

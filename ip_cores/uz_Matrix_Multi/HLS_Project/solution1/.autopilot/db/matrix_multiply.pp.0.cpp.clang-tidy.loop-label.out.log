@@ -1,0 +1,25 @@
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1150:3: warning: Added loop label VITIS_LOOP_16_1:   [xilinx-label-all-loops]
+  for (uint_fast32_t n = 0; n < N; n++) {
+  ^~~
+  VITIS_LOOP_16_1: 
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1150:3: note: FIX-IT applied suggested code changes
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1153:3: warning: Added loop label VITIS_LOOP_19_2:   [xilinx-label-all-loops]
+  for (uint_fast32_t m = 0; m < M; m++) {
+  ^~~
+  VITIS_LOOP_19_2: 
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1153:3: note: FIX-IT applied suggested code changes
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1155:4: warning: Added loop label VITIS_LOOP_21_3:   [xilinx-label-all-loops]
+   for (uint_fast32_t k = 0; k < K; k++) {
+   ^~~
+   VITIS_LOOP_21_3: 
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1155:4: note: FIX-IT applied suggested code changes
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1156:5: warning: Added loop label VITIS_LOOP_22_4:   [xilinx-label-all-loops]
+    for (uint_fast32_t n = 0; n < N; n++) {
+    ^~~
+    VITIS_LOOP_22_4: 
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1156:5: note: FIX-IT applied suggested code changes
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1159:8: warning: Added loop label VITIS_LOOP_25_5:   [xilinx-label-all-loops]
+       for (uint_fast32_t n = 0; n < N; n++) {
+       ^~~
+       VITIS_LOOP_25_5: 
+/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp:1159:8: note: FIX-IT applied suggested code changes

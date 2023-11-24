@@ -1,0 +1,49 @@
+---
+MainSourceFile:  /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp
+Diagnostics:     
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_16_1:  '
+    FileOffset:      16
+    FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/matrix_multiply.cpp
+    Replacements:    
+      - FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp
+        Offset:          33183
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_16_1: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_19_2:  '
+    FileOffset:      19
+    FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/matrix_multiply.cpp
+    Replacements:    
+      - FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp
+        Offset:          33250
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_19_2: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_21_3:  '
+    FileOffset:      21
+    FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/matrix_multiply.cpp
+    Replacements:    
+      - FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp
+        Offset:          33315
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_21_3: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_22_4:  '
+    FileOffset:      22
+    FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/matrix_multiply.cpp
+    Replacements:    
+      - FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp
+        Offset:          33359
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_22_4: '
+  - DiagnosticName:  xilinx-label-all-loops
+    Message:         'Added loop label VITIS_LOOP_25_5:  '
+    FileOffset:      25
+    FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/matrix_multiply.cpp
+    Replacements:    
+      - FilePath:        /home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/.autopilot/db/matrix_multiply.pp.0.cpp
+        Offset:          33462
+        Length:          0
+        ReplacementText: 'VITIS_LOOP_25_5: '
+...

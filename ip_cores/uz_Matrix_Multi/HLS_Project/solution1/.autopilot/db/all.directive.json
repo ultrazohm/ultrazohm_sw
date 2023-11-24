@@ -1,0 +1,18 @@
+{"sourceFile": [{
+      "name": "",
+      "directive": [{
+          "functionName": "MatrixMultiplication",
+          "label": "",
+          "functionLabel": "",
+          "id": "1",
+          "sourceFile": "\/home\/hufnagelde\/ultrazohm_sw\/ip_cores\/uz_Matrix_Multi\/HLS_Project\/solution1\/csynth.tcl",
+          "sourceLine": "17",
+          "pragma": {
+            "name": "TOP",
+            "option": [{
+                "name": "name",
+                "value": "MatrixMultiplication"
+              }]
+          }
+        }]
+    }]}

@@ -1,0 +1,159 @@
+
+
+================================================================
+== Synthesis Summary Report of 'MatrixMultiplication'
+================================================================
++ General Information: 
+    * Date:           Fri Nov 24 09:55:19 2023
+    * Version:        2022.2 (Build 3670227 on Oct 13 2022)
+    * Project:        HLS_Project
+    * Solution:       solution1 (Vitis Kernel Flow Target)
+    * Product family: zynquplus
+    * Target device:  xczu9eg-ffvc900-1-e
+    
+
++ Performance & Resource Estimates: 
+    
+    PS: '+' for module; 'o' for loop; '*' for dataflow
+    +----------------------------------------------------+------+------+---------+-----------+----------+---------+------+----------+------+---------+------------+------------+-----+
+    |                       Modules                      | Issue|      | Latency |  Latency  | Iteration|         | Trip |          |      |         |            |            |     |
+    |                       & Loops                      | Type | Slack| (cycles)|    (ns)   |  Latency | Interval| Count| Pipelined| BRAM |   DSP   |     FF     |     LUT    | URAM|
+    +----------------------------------------------------+------+------+---------+-----------+----------+---------+------+----------+------+---------+------------+------------+-----+
+    |+ MatrixMultiplication                              |     -|  0.49|        -|          -|         -|        -|     -|        no|     -|  5 (~0%)|  1408 (~0%)|  1970 (~0%)|    -|
+    | + MatrixMultiplication_Pipeline_VITIS_LOOP_16_1    |     -|  5.03|        -|          -|         -|        -|     -|        no|     -|        -|    68 (~0%)|   138 (~0%)|    -|
+    |  o VITIS_LOOP_16_1                                 |     -|  7.30|        -|          -|         2|        1|     -|       yes|     -|        -|           -|           -|    -|
+    | o VITIS_LOOP_19_2                                  |     -|  7.30|        -|          -|         -|        -|     -|        no|     -|        -|           -|           -|    -|
+    |  + MatrixMultiplication_Pipeline_2                 |     -|  5.63|       27|    270.000|         -|       27|     -|        no|     -|        -|     7 (~0%)|    48 (~0%)|    -|
+    |   o Loop 1                                         |     -|  7.30|       25|    250.000|         1|        1|    25|       yes|     -|        -|           -|           -|    -|
+    |  o VITIS_LOOP_21_3                                 |     -|  7.30|        -|          -|         -|        -|     -|        no|     -|        -|           -|           -|    -|
+    |   + MatrixMultiplication_Pipeline_VITIS_LOOP_22_4  |     -|  1.84|        -|          -|         -|        -|     -|        no|     -|  3 (~0%)|   231 (~0%)|   303 (~0%)|    -|
+    |    o VITIS_LOOP_22_4                               |     -|  7.30|        -|          -|         5|        1|     -|       yes|     -|        -|           -|           -|    -|
+    |   + MatrixMultiplication_Pipeline_VITIS_LOOP_25_5  |     -|  0.49|      127|  1.270e+03|         -|      127|     -|        no|     -|  2 (~0%)|   250 (~0%)|   347 (~0%)|    -|
+    |    o VITIS_LOOP_25_5                               |    II|  7.30|      125|  1.250e+03|         6|        4|    31|       yes|     -|        -|           -|           -|    -|
+    +----------------------------------------------------+------+------+---------+-----------+----------+---------+------+----------+------+---------+------------+------------+-----+
+
+
+================================================================
+== HW Interfaces
+================================================================
+* S_AXILITE Interfaces
++---------------+------------+---------------+--------+----------+
+| Interface     | Data Width | Address Width | Offset | Register |
++---------------+------------+---------------+--------+----------+
+| s_axi_control | 32         | 8             | 32     | 0        |
++---------------+------------+---------------+--------+----------+
+
+* S_AXILITE Registers
++---------------+-------------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------------------+
+| Interface     | Register    | Offset | Width | Access | Description                      | Bit Fields                                                                         |
++---------------+-------------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------------------+
+| s_axi_control | CTRL        | 0x00   | 32    | RW     | Control signals                  | 0=AP_START 1=AP_DONE 2=AP_IDLE 3=AP_READY 4=AP_CONTINUE 7=AUTO_RESTART 9=INTERRUPT |
+| s_axi_control | GIER        | 0x04   | 32    | RW     | Global Interrupt Enable Register | 0=Enable                                                                           |
+| s_axi_control | IP_IER      | 0x08   | 32    | RW     | IP Interrupt Enable Register     | 0=CHAN0_INT_EN 1=CHAN1_INT_EN                                                      |
+| s_axi_control | IP_ISR      | 0x0c   | 32    | RW     | IP Interrupt Status Register     | 0=CHAN0_INT_ST 1=CHAN1_INT_ST                                                      |
+| s_axi_control | A_rows_1    | 0x10   | 32    | W      | Data signal of A_rows            |                                                                                    |
+| s_axi_control | A_rows_2    | 0x14   | 32    | W      | Data signal of A_rows            |                                                                                    |
+| s_axi_control | B_rows_1    | 0x60   | 32    | W      | Data signal of B_rows            |                                                                                    |
+| s_axi_control | B_rows_2    | 0x64   | 32    | W      | Data signal of B_rows            |                                                                                    |
+| s_axi_control | B_columns_1 | 0x6c   | 32    | W      | Data signal of B_columns         |                                                                                    |
+| s_axi_control | B_columns_2 | 0x70   | 32    | W      | Data signal of B_columns         |                                                                                    |
++---------------+-------------+--------+-------+--------+----------------------------------+------------------------------------------------------------------------------------+
+
+* TOP LEVEL CONTROL
++-----------+---------------+-----------+
+| Interface | Type          | Ports     |
++-----------+---------------+-----------+
+| ap_clk    | clock         | ap_clk    |
+| ap_rst_n  | reset         | ap_rst_n  |
+| interrupt | interrupt     | interrupt |
+| ap_ctrl   | ap_ctrl_chain |           |
++-----------+---------------+-----------+
+
+
+================================================================
+== SW I/O Information
+================================================================
+* Top Function Arguments
++-----------+-----------+-------------------+
+| Argument  | Direction | Datatype          |
++-----------+-----------+-------------------+
+| A         | in        | float const *     |
+| B         | in        | float const *     |
+| C_out     | inout     | float*            |
+| A_rows    | in        | long unsigned int |
+| B_rows    | in        | long unsigned int |
+| B_columns | in        | long unsigned int |
++-----------+-----------+-------------------+
+
+* SW-to-HW Mapping
++-----------+---------------+----------+---------------------------------------+
+| Argument  | HW Interface  | HW Type  | HW Info                               |
++-----------+---------------+----------+---------------------------------------+
+| A         | s_axi_control | memory   | name=A offset=32 range=32             |
+| B         | s_axi_control | memory   | name=B offset=128 range=128           |
+| C_out     | s_axi_control | memory   | name=C_out offset=64 range=32         |
+| A_rows    | s_axi_control | register | name=A_rows_1 offset=0x10 range=32    |
+| A_rows    | s_axi_control | register | name=A_rows_2 offset=0x14 range=32    |
+| B_rows    | s_axi_control | register | name=B_rows_1 offset=0x60 range=32    |
+| B_rows    | s_axi_control | register | name=B_rows_2 offset=0x64 range=32    |
+| B_columns | s_axi_control | register | name=B_columns_1 offset=0x6c range=32 |
+| B_columns | s_axi_control | register | name=B_columns_2 offset=0x70 range=32 |
++-----------+---------------+----------+---------------------------------------+
+
+
+================================================================
+== Bind Op Report
+================================================================
++--------------------------------------------------+-----+--------+------------+------+---------+---------+
+| Name                                             | DSP | Pragma | Variable   | Op   | Impl    | Latency |
++--------------------------------------------------+-----+--------+------------+------+---------+---------+
+| + MatrixMultiplication                           | 5   |        |            |      |         |         |
+|   m_2_fu_194_p2                                  | -   |        | m_2        | add  | fabric  | 0       |
+|   mul_3s_3s_3_1_1_U19                            | -   |        | mul        | mul  | auto    | 0       |
+|   mul_3s_3s_3_1_1_U20                            | -   |        | mul29      | mul  | auto    | 0       |
+|   k_1_fu_219_p2                                  | -   |        | k_1        | add  | fabric  | 0       |
+|   add305_fu_234_p2                               | -   |        | add305     | add  | fabric  | 0       |
+|  + MatrixMultiplication_Pipeline_VITIS_LOOP_16_1 | 0   |        |            |      |         |         |
+|    n_5_fu_73_p2                                  | -   |        | n_5        | add  | fabric  | 0       |
+|  + MatrixMultiplication_Pipeline_2               | 0   |        |            |      |         |         |
+|    empty_21_fu_58_p2                             | -   |        | empty_21   | add  | fabric  | 0       |
+|  + MatrixMultiplication_Pipeline_VITIS_LOOP_22_4 | 3   |        |            |      |         |         |
+|    n_3_fu_153_p2                                 | -   |        | n_3        | add  | fabric  | 0       |
+|    add_ln23_fu_166_p2                            | -   |        | add_ln23   | add  | fabric  | 0       |
+|    add_ln23_2_fu_177_p2                          | -   |        | add_ln23_2 | add  | fabric  | 0       |
+|    add_ln23_1_fu_183_p2                          | -   |        | add_ln23_1 | add  | fabric  | 0       |
+|    fmul_32ns_32ns_32_4_max_dsp_1_U4              | 3   |        | mul1       | fmul | maxdsp  | 3       |
+|  + MatrixMultiplication_Pipeline_VITIS_LOOP_25_5 | 2   |        |            |      |         |         |
+|    n_2_fu_107_p2                                 | -   |        | n_2        | add  | fabric  | 0       |
+|    fadd_32ns_32ns_32_5_full_dsp_1_U13            | 2   |        | add        | fadd | fulldsp | 4       |
++--------------------------------------------------+-----+--------+------------+------+---------+---------+
+
+
+================================================================
+== Bind Storage Report
+================================================================
++------------------------+------+------+--------+----------+---------+------+---------+
+| Name                   | BRAM | URAM | Pragma | Variable | Storage | Impl | Latency |
++------------------------+------+------+--------+----------+---------+------+---------+
+| + MatrixMultiplication | 0    | 0    |        |          |         |      |         |
+|   acc_U                | -    | -    |        | acc      | ram_1p  | auto | 1       |
++------------------------+------+------+--------+----------+---------+------+---------+
+
+
+================================================================
+== Pragma Report
+================================================================
+* Valid Pragma Syntax
++-----------+--------------------------------+-----------------------------------------------------------------------+
+| Type      | Options                        | Location                                                              |
++-----------+--------------------------------+-----------------------------------------------------------------------+
+| interface | s_axilite port=A               | HLS_Project/matrix_multiply.cpp:5 in matrixmultiplication, A          |
+| interface | s_axilite port=B               | HLS_Project/matrix_multiply.cpp:6 in matrixmultiplication, B          |
+| interface | s_axilite port=C_out           | HLS_Project/matrix_multiply.cpp:7 in matrixmultiplication, C_out      |
+| interface | s_axilite port=A_rows          | HLS_Project/matrix_multiply.cpp:8 in matrixmultiplication, A_rows     |
+| interface | s_axilite port=B_rows          | HLS_Project/matrix_multiply.cpp:9 in matrixmultiplication, B_rows     |
+| interface | s_axilite port=B_columns       | HLS_Project/matrix_multiply.cpp:10 in matrixmultiplication, B_columns |
+| interface | mode=ap_ctrl_chain port=return | HLS_Project/matrix_multiply.cpp:11 in matrixmultiplication, return    |
++-----------+--------------------------------+-----------------------------------------------------------------------+
+
+

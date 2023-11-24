@@ -65,7 +65,6 @@ void ISR_Control(void *data)
 
 
     } else {
-    	uz_Matrix_Multi_reset(Global_Data.objects.matrix_instance);
     	uz_Matrix_Multi_write_input(Global_Data.objects.matrix_instance);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

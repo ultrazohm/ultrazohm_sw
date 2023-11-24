@@ -19,9 +19,9 @@
 #include <math.h>										//Include for math operations
 #include <stdbool.h>
 #define DQN__CONTROL_FREQUENCY 50U
-#define REWARD_SCALE_ANGLE 10U
-#define REWARD_SCALE_POSITION 1U
-#define REWARD_SCALE_VELOCITY 0.1
+#define REWARD_SCALE_ANGLE 10.0f
+#define REWARD_SCALE_POSITION 1.0f
+#define REWARD_SCALE_VELOCITY 0.1 // vorher 0.025 "zu wenig"
 // Xilinx library functions
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all GIC interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)

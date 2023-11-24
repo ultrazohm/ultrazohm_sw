@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
-//#include "dqn_reward.h"
+#include "../uz/uz_dqn_reward_scaling/uz_dqn_reward_scaling.h"
 #include "../include/isr.h"
 #include "../defines.h"
 #include "../main.h"
@@ -99,7 +99,8 @@ extern bool first_step_in_episode;
 extern float penalty_grenze;
 extern float update_lock_float;
 // funktionen
-float calculate_reward_pendulum(float bonus,float samplerate, float theta, float position, float velocity, bool penalty);
+//float calculate_reward_pendulum(float bonus,float samplerate, float theta, float position, float velocity, bool penalty);
+float calculate_reward_pendulum(float control_frequency, float position, float angle, float angle_derivative, bool apply_penalty);
 float sum_reward_pendulum(float bonus,float samplerate, float thetareward, float positionreward, float velocityreward, bool penalty);
 void position_control(float position_set_point, bool angle_control_enabled);
 void uz_dqn_take_action_current();
@@ -132,6 +133,11 @@ float alpha = 0.000001f; //smoothing factor defined by user
 float position_smoothed=0.0f;
 float angle_smoothed=0.0f;
 float start_position=50.0f;
+
+// 24.11 reward scaling nature paper
+float position_scaled = 0.0f;
+float angle_scaled = 0.0f;
+float angle_derivative_scaled = 0.0f;
 
 void ISR_Control(void *data)
 {
@@ -229,15 +235,15 @@ void ISR_Control(void *data)
 //    für stabile ruhelage
 //    Global_Data.dqnp.reward_angle = REWARD_SCALE_ANGLE * (fabsf(Global_Data.obs.dqn_angle) / UZ_PIf -1.0f)*-1.0f;
     // für instabile ruhelage
-    Global_Data.dqnp.reward_angle = REWARD_SCALE_ANGLE * (fabsf(Global_Data.obs.dqn_angle) / UZ_PIf);
-    Global_Data.dqnp.reward_position = REWARD_SCALE_POSITION * fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
-    Global_Data.dqnp.reward_boni = calculate_boni(Global_Data.obs.dqn_angle,Global_Data.obs.dqn_angle_derv);
+//    Global_Data.dqnp.reward_angle = REWARD_SCALE_ANGLE * (fabsf(Global_Data.obs.dqn_angle) / UZ_PIf);
+//    Global_Data.dqnp.reward_position = REWARD_SCALE_POSITION * fabsf(Global_Data.obs.dqn_chart_position) / disable_control * 1.0e3;
+//    Global_Data.dqnp.reward_boni = calculate_boni(Global_Data.obs.dqn_angle,Global_Data.obs.dqn_angle_derv);
 //  stabile ruhelage, positionsfehler
 //    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((1.0e3f*Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
-    Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_angle_derv * Global_Data.obs.dqn_angle_derv);
-	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.dqnp.reward_velocity, false);
+//    Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_angle_derv * Global_Data.obs.dqn_angle_derv);
+//	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.dqnp.reward_velocity, false);
 // calculation with extern function
-//    Global_Data.dqnp.reward_k = calculate_reward_pendulum(DQN__CONTROL_FREQUENCY,Global_Data.obs.dqn_chart_position,Global_Data.obs.dqn_angle,  Global_Data.obs.dqn_angle_derv, false);
+    Global_Data.dqnp.reward_k = calculate_reward_pendulum(DQN__CONTROL_FREQUENCY,Global_Data.obs.dqn_chart_position,Global_Data.obs.dqn_angle,  Global_Data.obs.dqn_angle_derv, false);
 
 	//    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
     Global_Data.dqnp.number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
@@ -426,7 +432,24 @@ static void Reset_obs_and_measurements()
 {
     Reset_global_Data(&Global_Data);
 };
+float calculate_reward_pendulum(float control_frequency, float position, float angle, float angle_derivative, bool apply_penalty)
+{
 
+//	float lambda_angle = 10.0f;
+//	float lambda_position = 1.0f;
+//	float lambda_angle_derivative = 0.25f;
+	float penalty = 1000.0f;
+	Global_Data.dqnp.reward_position = uz_dqn_scaling_log(position, 350.0f);
+	Global_Data.dqnp.reward_angle = uz_dqn_scaling_log(angle, M_PI);
+    Global_Data.dqnp.reward_velocity = uz_dqn_scaling_log(angle_derivative, 20.0f);
+
+    float scaled_reward = (1.0f / control_frequency) * ((REWARD_SCALE_POSITION * Global_Data.dqnp.reward_position) + (REWARD_SCALE_ANGLE * Global_Data.dqnp.reward_angle ) + (REWARD_SCALE_VELOCITY * Global_Data.dqnp.reward_velocity));
+    if (apply_penalty)
+    {
+        scaled_reward = scaled_reward - penalty;
+    }
+    return scaled_reward;
+}
 //float calculate_reward_pendulum(float bonus, float samplerate,float theta, float position, float velocity, bool penalty)
 //{
 //    float z = 0.0f;
@@ -575,8 +598,8 @@ if ((fabsf(position_abs) > disable_control) || (fabsf(Global_Data.obs.dqn_angle_
     input_nn[4] = Global_Data.obs.dqn_angle_derv;
     uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
     // Berechne reward für limitverletzung
-	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.dqnp.reward_velocity, true);
-//	Global_Data.dqnp.reward_k = calculate_reward_pendulum(DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_position,Global_Data.dqnp.reward_angle,  Global_Data.obs.dqn_angle_derv, true);
+//	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.dqnp.reward_velocity, true);
+	Global_Data.dqnp.reward_k = calculate_reward_pendulum(DQN__CONTROL_FREQUENCY,Global_Data.obs.dqn_chart_position,Global_Data.obs.dqn_angle,  Global_Data.obs.dqn_angle_derv, true);
 	Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
     uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
     uz_dqn_push_to_buffer(testdqn2);

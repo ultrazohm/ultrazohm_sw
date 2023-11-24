@@ -2,8 +2,8 @@
 # Vivado v2020.1.1 (64-bit)
 # SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
 # IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
-# Start of session at: Fri Nov 24 11:39:53 2023
-# Process ID: 26436
+# Start of session at: Fri Nov 24 16:16:29 2023
+# Process ID: 7416
 # Current directory: C:/GIT/Promotion/simulation/01_MATLAB/uz_3ph_pmsm_mpc/hdl_prj/ipcore/pu_voltages_dq_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/GIT/Promotion/simulation/01_MATLAB/uz_3ph_pmsm_mpc/hdl_prj/ipcore/pu_voltages_dq_v1_0/prj_ip/vivado.log
@@ -61,4 +61,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/pu_voltages_dq_axi_lite.vhd" alr
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/pu_voltages_dq_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/pu_voltages_dq.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/vhdl/pu_voltages_dq.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Fri Nov 24 11:40:11 2023...
+INFO: [Common 17-206] Exiting Vivado at Fri Nov 24 16:16:39 2023...

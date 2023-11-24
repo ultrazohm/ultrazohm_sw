@@ -83,6 +83,7 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	uint32_t EnDat_raw_pos 
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -110,6 +111,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_mux_axi_t* mux_axi;
+	uz_EnDat_t* EnDat_master_pointer;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

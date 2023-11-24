@@ -1,0 +1,188 @@
+
+
+================================================================
+== Vitis HLS Report for 'MatrixMultiplication_Pipeline_VITIS_LOOP_34_6'
+================================================================
+* Date:           Fri Nov 24 13:07:10 2023
+
+* Version:        2022.2 (Build 3670227 on Oct 13 2022)
+* Project:        HLS_Project
+* Solution:       solution1 (Vitis Kernel Flow Target)
+* Product family: zynquplus
+* Target device:  xczu9eg-ffvc900-1-e
+
+
+================================================================
+== Performance Estimates
+================================================================
++ Timing: 
+    * Summary: 
+    +--------+----------+----------+------------+
+    |  Clock |  Target  | Estimated| Uncertainty|
+    +--------+----------+----------+------------+
+    |ap_clk  |  10.00 ns|  6.808 ns|     2.70 ns|
+    +--------+----------+----------+------------+
+
++ Latency: 
+    * Summary: 
+    +---------+---------+-----------+----------+-----+-----+---------+
+    |  Latency (cycles) |  Latency (absolute)  |  Interval | Pipeline|
+    |   min   |   max   |    min    |    max   | min | max |   Type  |
+    +---------+---------+-----------+----------+-----+-----+---------+
+    |        2|      127|  20.000 ns|  1.270 us|    2|  127|       no|
+    +---------+---------+-----------+----------+-----+-----+---------+
+
+    + Detail: 
+        * Instance: 
+        N/A
+
+        * Loop: 
+        +-------------------+---------+---------+----------+-----------+-----------+--------+----------+
+        |                   |  Latency (cycles) | Iteration|  Initiation Interval  |  Trip  |          |
+        |     Loop Name     |   min   |   max   |  Latency |  achieved |   target  |  Count | Pipelined|
+        +-------------------+---------+---------+----------+-----------+-----------+--------+----------+
+        |- VITIS_LOOP_34_6  |        0|      125|         6|          4|          1|  0 ~ 31|       yes|
+        +-------------------+---------+---------+----------+-----------+-----------+--------+----------+
+
+============================================================
++ Verbose Summary: Synthesis Manager
+============================================================
+InlineROM: 1
+ExposeGlobal: 0
+============================================================
++ Verbose Summary: CDFG Model
+============================================================
+IsTopModel: 0
+ResetActiveHigh: 1
+IsCombinational: 0
+IsDatapathOnly: 0
+HasWiredReturn: 1
+HasMFsm: 2
+HasVarLatency: 1
+IsPipeline: 0
+IsRtlPipelined: 0
+IsInstanceOverlapped: 0
+IsDontTouch: 0
+HasImplIP: 0
+IsGatedGlobalClock: 0
+
++ Individual pipeline summary: 
+  * Pipeline-0: initiation interval (II) = 4, depth = 6
+
+
+============================================================
++ Verbose Summary: Schedule
+============================================================
+* Number of FSM states : 6
+* Pipeline : 1
+  Pipeline-0 : II = 4, D = 6, States = { 1 2 3 4 5 6 }
+* Dataflow Pipeline: 0
+
+* FSM state transitions: 
+1 --> 2 
+2 --> 3 
+3 --> 4 
+4 --> 5 
+5 --> 6 
+6 --> 
+
+* FSM state operations: 
+
+State 1 <SV = 0> <Delay = 1.97>
+ST_1 : Operation 9 [1/1] (0.00ns)   --->   "%n = alloca i32 1"   --->   Operation 9 'alloca' 'n' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 10 [1/1] (0.00ns)   --->   "%add4518 = alloca i32 1"   --->   Operation 10 'alloca' 'add4518' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 11 [1/1] (0.00ns)   --->   "%B_rows_read = read i64 @_ssdm_op_Read.ap_auto.i64, i64 %B_rows"   --->   Operation 11 'read' 'B_rows_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 12 [1/1] (0.00ns)   --->   "%C_load_1_read = read i32 @_ssdm_op_Read.ap_auto.float, i32 %C_load_1"   --->   Operation 12 'read' 'C_load_1_read' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 13 [1/1] (0.48ns)   --->   "%store_ln0 = store i32 %C_load_1_read, i32 %add4518"   --->   Operation 13 'store' 'store_ln0' <Predicate = true> <Delay = 0.48>
+ST_1 : Operation 14 [1/1] (0.48ns)   --->   "%store_ln0 = store i5 0, i5 %n"   --->   Operation 14 'store' 'store_ln0' <Predicate = true> <Delay = 0.48>
+ST_1 : Operation 15 [1/1] (0.00ns)   --->   "%br_ln0 = br void %for.inc46"   --->   Operation 15 'br' 'br_ln0' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 16 [1/1] (0.00ns)   --->   "%n_1 = load i5 %n" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 16 'load' 'n_1' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 17 [1/1] (0.00ns)   --->   "%n_2_cast = zext i5 %n_1" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 17 'zext' 'n_2_cast' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 18 [1/1] (0.00ns)   --->   "%specpipeline_ln0 = specpipeline void @_ssdm_op_SpecPipeline, i32 4294967295, i32 0, i32 1, i32 0, void @p_str"   --->   Operation 18 'specpipeline' 'specpipeline_ln0' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 19 [1/1] (1.48ns)   --->   "%icmp_ln34 = icmp_eq  i64 %n_2_cast, i64 %B_rows_read" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 19 'icmp' 'icmp_ln34' <Predicate = true> <Delay = 1.48> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.48> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_1 : Operation 20 [1/1] (0.00ns)   --->   "%empty = speclooptripcount i32 @_ssdm_op_SpecLoopTripCount, i64 0, i64 31, i64 0"   --->   Operation 20 'speclooptripcount' 'empty' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 21 [1/1] (0.87ns)   --->   "%n_2 = add i5 %n_1, i5 1" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 21 'add' 'n_2' <Predicate = true> <Delay = 0.87> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.87> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_1 : Operation 22 [1/1] (0.00ns)   --->   "%br_ln34 = br i1 %icmp_ln34, void %for.inc46.split, void %for.inc49.loopexit.exitStub" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 22 'br' 'br_ln34' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 23 [1/1] (0.00ns)   --->   "%acc_addr = getelementptr i32 %acc, i64 0, i64 %n_2_cast" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 23 'getelementptr' 'acc_addr' <Predicate = (!icmp_ln34)> <Delay = 0.00>
+ST_1 : Operation 24 [2/2] (0.79ns)   --->   "%acc_load = load i5 %acc_addr" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 24 'load' 'acc_load' <Predicate = (!icmp_ln34)> <Delay = 0.79> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 25> <RAM>
+ST_1 : Operation 25 [1/1] (0.48ns)   --->   "%store_ln34 = store i5 %n_2, i5 %n" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 25 'store' 'store_ln34' <Predicate = (!icmp_ln34)> <Delay = 0.48>
+
+State 2 <SV = 1> <Delay = 6.80>
+ST_2 : Operation 26 [1/1] (0.00ns)   --->   "%add4518_load = load i32 %add4518" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 26 'load' 'add4518_load' <Predicate = (!icmp_ln34)> <Delay = 0.00>
+ST_2 : Operation 27 [1/2] (0.79ns)   --->   "%acc_load = load i5 %acc_addr" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 27 'load' 'acc_load' <Predicate = (!icmp_ln34)> <Delay = 0.79> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 25> <RAM>
+ST_2 : Operation 28 [5/5] (6.01ns)   --->   "%add = fadd i32 %add4518_load, i32 %acc_load" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 28 'fadd' 'add' <Predicate = (!icmp_ln34)> <Delay = 6.01> <CoreInst = "FAddSub_fulldsp">   --->   Core 18 'FAddSub_fulldsp' <Latency = 4> <II = 1> <Delay = 6.01> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+ST_2 : Operation 36 [1/1] (0.00ns)   --->   "%add4518_load_1 = load i32 %add4518"   --->   Operation 36 'load' 'add4518_load_1' <Predicate = (icmp_ln34)> <Delay = 0.00>
+ST_2 : Operation 37 [1/1] (0.00ns)   --->   "%write_ln0 = write void @_ssdm_op_Write.ap_auto.floatP0A, i32 %add4518_out, i32 %add4518_load_1"   --->   Operation 37 'write' 'write_ln0' <Predicate = (icmp_ln34)> <Delay = 0.00>
+ST_2 : Operation 38 [1/1] (0.00ns)   --->   "%ret_ln0 = ret"   --->   Operation 38 'ret' 'ret_ln0' <Predicate = (icmp_ln34)> <Delay = 0.00>
+
+State 3 <SV = 2> <Delay = 6.01>
+ST_3 : Operation 29 [4/5] (6.01ns)   --->   "%add = fadd i32 %add4518_load, i32 %acc_load" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 29 'fadd' 'add' <Predicate = (!icmp_ln34)> <Delay = 6.01> <CoreInst = "FAddSub_fulldsp">   --->   Core 18 'FAddSub_fulldsp' <Latency = 4> <II = 1> <Delay = 6.01> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+
+State 4 <SV = 3> <Delay = 6.01>
+ST_4 : Operation 30 [3/5] (6.01ns)   --->   "%add = fadd i32 %add4518_load, i32 %acc_load" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 30 'fadd' 'add' <Predicate = (!icmp_ln34)> <Delay = 6.01> <CoreInst = "FAddSub_fulldsp">   --->   Core 18 'FAddSub_fulldsp' <Latency = 4> <II = 1> <Delay = 6.01> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+
+State 5 <SV = 4> <Delay = 6.01>
+ST_5 : Operation 31 [2/5] (6.01ns)   --->   "%add = fadd i32 %add4518_load, i32 %acc_load" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 31 'fadd' 'add' <Predicate = true> <Delay = 6.01> <CoreInst = "FAddSub_fulldsp">   --->   Core 18 'FAddSub_fulldsp' <Latency = 4> <II = 1> <Delay = 6.01> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+
+State 6 <SV = 5> <Delay = 6.50>
+ST_6 : Operation 32 [1/1] (0.00ns)   --->   "%specloopname_ln34 = specloopname void @_ssdm_op_SpecLoopName, void @empty_17" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 32 'specloopname' 'specloopname_ln34' <Predicate = true> <Delay = 0.00>
+ST_6 : Operation 33 [1/5] (6.01ns)   --->   "%add = fadd i32 %add4518_load, i32 %acc_load" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 33 'fadd' 'add' <Predicate = true> <Delay = 6.01> <CoreInst = "FAddSub_fulldsp">   --->   Core 18 'FAddSub_fulldsp' <Latency = 4> <II = 1> <Delay = 6.01> <FuncUnit> <Opcode : 'fadd' 'fsub'> <InPorts = 2> <OutPorts = 1>
+ST_6 : Operation 34 [1/1] (0.48ns)   --->   "%store_ln34 = store i32 %add, i32 %add4518" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 34 'store' 'store_ln34' <Predicate = true> <Delay = 0.48>
+ST_6 : Operation 35 [1/1] (0.00ns)   --->   "%br_ln34 = br void %for.inc46" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 35 'br' 'br_ln34' <Predicate = true> <Delay = 0.00>
+
+
+============================================================
++ Verbose Summary: Timing violations
+============================================================
+Target clock period: 10ns, clock uncertainty: 2.7ns.
+
+ <State 1>: 1.97ns
+The critical path consists of the following:
+	'alloca' operation ('n') [5]  (0 ns)
+	'load' operation ('n', HLS_Project/matrix_multiply.cpp:34) on local variable 'n' [13]  (0 ns)
+	'icmp' operation ('icmp_ln34', HLS_Project/matrix_multiply.cpp:34) [16]  (1.48 ns)
+	blocking operation 0.489 ns on control path)
+
+ <State 2>: 6.81ns
+The critical path consists of the following:
+	'load' operation ('acc_load', HLS_Project/matrix_multiply.cpp:35) on array 'acc' [24]  (0.79 ns)
+	'fadd' operation ('add', HLS_Project/matrix_multiply.cpp:35) [25]  (6.02 ns)
+
+ <State 3>: 6.02ns
+The critical path consists of the following:
+	'fadd' operation ('add', HLS_Project/matrix_multiply.cpp:35) [25]  (6.02 ns)
+
+ <State 4>: 6.02ns
+The critical path consists of the following:
+	'fadd' operation ('add', HLS_Project/matrix_multiply.cpp:35) [25]  (6.02 ns)
+
+ <State 5>: 6.02ns
+The critical path consists of the following:
+	'fadd' operation ('add', HLS_Project/matrix_multiply.cpp:35) [25]  (6.02 ns)
+
+ <State 6>: 6.51ns
+The critical path consists of the following:
+	'fadd' operation ('add', HLS_Project/matrix_multiply.cpp:35) [25]  (6.02 ns)
+	'store' operation ('store_ln34', HLS_Project/matrix_multiply.cpp:34) of variable 'add', HLS_Project/matrix_multiply.cpp:35 on local variable 'add4518' [26]  (0.489 ns)
+
+
+============================================================
++ Verbose Summary: Binding
+============================================================
+N/A
+* FSMD analyzer results:
+  - Output states:
+ - Input state : 
+  - Chain level:
+	State 1
+	State 2
+	State 3
+	State 4
+	State 5
+	State 6
+
+
+============================================================
++ Verbose Summary: Datapath Resource usage 
+============================================================
+N/A

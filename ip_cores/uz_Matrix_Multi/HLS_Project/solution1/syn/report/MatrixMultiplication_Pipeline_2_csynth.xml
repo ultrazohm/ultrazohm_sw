@@ -130,8 +130,8 @@
 <Attribute>control</Attribute>
 </RtlPorts>
 <RtlPorts>
-<name>acc_address0</name>
-<Object>acc</Object>
+<name>B_address0</name>
+<Object>B</Object>
 <Type>array</Type>
 <Scope></Scope>
 <IOProtocol>ap_memory</IOProtocol>
@@ -141,8 +141,8 @@
 <Attribute>address</Attribute>
 </RtlPorts>
 <RtlPorts>
-<name>acc_ce0</name>
-<Object>acc</Object>
+<name>B_ce0</name>
+<Object>B</Object>
 <Type>array</Type>
 <Scope></Scope>
 <IOProtocol>ap_memory</IOProtocol>
@@ -152,8 +152,8 @@
 <Attribute>control</Attribute>
 </RtlPorts>
 <RtlPorts>
-<name>acc_we0</name>
-<Object>acc</Object>
+<name>B_we0</name>
+<Object>B</Object>
 <Type>array</Type>
 <Scope></Scope>
 <IOProtocol>ap_memory</IOProtocol>
@@ -163,8 +163,8 @@
 <Attribute>control</Attribute>
 </RtlPorts>
 <RtlPorts>
-<name>acc_d0</name>
-<Object>acc</Object>
+<name>B_d0</name>
+<Object>B</Object>
 <Type>array</Type>
 <Scope></Scope>
 <IOProtocol>ap_memory</IOProtocol>

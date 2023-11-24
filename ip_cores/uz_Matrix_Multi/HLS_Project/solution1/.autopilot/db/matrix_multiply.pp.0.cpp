@@ -1127,18 +1127,22 @@ extern int __overflow (FILE *, int);
 # 902 "/usr/include/stdio.h" 3 4
 }
 # 3 "HLS_Project/matrix_multiply.h" 2
-__attribute__((sdx_kernel("MatrixMultiplication", 0))) void MatrixMultiplication(float const A[5], float const B[25], float C_out[5], uint_fast32_t A_rows, uint_fast32_t B_rows, uint_fast32_t B_columns);
+__attribute__((sdx_kernel("MatrixMultiplication", 0))) void MatrixMultiplication(float *A_input, float *B_input, float *C_output, uint_fast32_t A_rows, uint_fast32_t B_rows, uint_fast32_t B_columns);
 # 2 "HLS_Project/matrix_multiply.cpp" 2
 
 
-__attribute__((sdx_kernel("MatrixMultiplication", 0))) void MatrixMultiplication(float const A[5], float const B[25], float C_out[5], uint_fast32_t A_rows, uint_fast32_t B_rows, uint_fast32_t B_columns){
+__attribute__((sdx_kernel("MatrixMultiplication", 0))) void MatrixMultiplication(float *A_input, float *B_input, float *C_output, uint_fast32_t A_rows, uint_fast32_t B_rows, uint_fast32_t B_columns){
 #line 17 "/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/csynth.tcl"
 #pragma HLSDIRECTIVE TOP name=MatrixMultiplication
 # 4 "HLS_Project/matrix_multiply.cpp"
 
-#pragma HLS INTERFACE s_axilite port=A
-#pragma HLS INTERFACE s_axilite port=B
-#pragma HLS INTERFACE s_axilite port=C_out
+#line 6 "/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/directives.tcl"
+#pragma HLSDIRECTIVE TOP name=MatrixMultiplication
+# 4 "HLS_Project/matrix_multiply.cpp"
+
+#pragma HLS INTERFACE m_axi port=A_input bundle=arrays depth=32 offset=slave
+#pragma HLS INTERFACE m_axi port=B_input bundle=arrays depth=32 offset=slave
+#pragma HLS INTERFACE m_axi port=C_output bundle=arrays depth=32 offset=slave
 #pragma HLS INTERFACE s_axilite port=A_rows
 #pragma HLS INTERFACE s_axilite port=B_rows
 #pragma HLS INTERFACE s_axilite port=B_columns
@@ -1147,19 +1151,32 @@ __attribute__((sdx_kernel("MatrixMultiplication", 0))) void MatrixMultiplication
  const uint_fast32_t N = B_rows;
  const uint_fast32_t K = B_columns;
 
-  VITIS_LOOP_16_1: for (uint_fast32_t n = 0; n < N; n++) {
-    C_out[n] = 0.0f;
-  }
-  VITIS_LOOP_19_2: for (uint_fast32_t m = 0; m < M; m++) {
-   float acc[25]={0};
-   VITIS_LOOP_21_3: for (uint_fast32_t k = 0; k < K; k++) {
-    VITIS_LOOP_22_4: for (uint_fast32_t n = 0; n < N; n++) {
-     acc[n] = A[(N * m) + n] * B[(K * n) + k];
-       }
-       VITIS_LOOP_25_5: for (uint_fast32_t n = 0; n < N; n++) {
-        C_out[(K * m) + k] += acc[n];
-       }
-   }
+ float A[5] = {0};
+ float B[25] = {0};
+ float C[5] = {0};
 
+ VITIS_LOOP_20_1: for(int i=0; i < 5; i++) {
+  A[i] = A_input[i];
+ }
+
+ VITIS_LOOP_24_2: for(int i=0; i < 25; i++) {
+  B[i] = B_input[i];
+ }
+
+ VITIS_LOOP_28_3: for (uint_fast32_t m = 0; m < M; m++) {
+  float acc[25]={0};
+  VITIS_LOOP_30_4: for (uint_fast32_t k = 0; k < K; k++) {
+   VITIS_LOOP_31_5: for (uint_fast32_t n = 0; n < N; n++) {
+    acc[n] = A[(N * m) + n] * B[(K * n) + k];
+      }
+      VITIS_LOOP_34_6: for (uint_fast32_t n = 0; n < N; n++) {
+       C[(K * m) + k] += acc[n];
+      }
   }
+ }
+
+
+ VITIS_LOOP_41_7: for(int i=0; i < 5; i++) {
+  C_output[i] = C[i];
+ }
 }

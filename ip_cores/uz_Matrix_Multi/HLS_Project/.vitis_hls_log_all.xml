@@ -3,26 +3,18 @@
   <errorLogs>
     <logs>
       <synLog/>
-      <simLog/>
-      <mgLog/>
       <packageLog/>
-      <csimLog/>
     </logs>
   </errorLogs>
   <warningLogs>
     <logs>
       <synLog>
-        <logs message="WARNING: [RTGEN 206-101] Design contains AXI ports. Reset is fixed to synchronous and active low." projectName="HLS_Project" solutionName="solution1" date="2023-11-24T09:55:19.127+0100" type="Warning"/>
-        <logs message="WARNING: [HLS 200-880] The II Violation in module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' (loop 'VITIS_LOOP_25_5'): Unable to enforce a carried dependence constraint (II = 3, distance = 1, offset = 0) between 'store' operation ('add3211_write_ln25', HLS_Project/matrix_multiply.cpp:25) of variable 'add', HLS_Project/matrix_multiply.cpp:26 on local variable 'add3211' and 'load' operation ('add3211_load', HLS_Project/matrix_multiply.cpp:26) on local variable 'add3211'.&#xA;Resolution: For help on HLS 200-880 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-880.html" projectName="HLS_Project" solutionName="solution1" date="2023-11-24T09:55:18.730+0100" type="Warning"/>
-        <logs message="WARNING: [HLS 200-880] The II Violation in module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' (loop 'VITIS_LOOP_25_5'): Unable to enforce a carried dependence constraint (II = 2, distance = 1, offset = 0) between 'store' operation ('add3211_write_ln25', HLS_Project/matrix_multiply.cpp:25) of variable 'add', HLS_Project/matrix_multiply.cpp:26 on local variable 'add3211' and 'load' operation ('add3211_load', HLS_Project/matrix_multiply.cpp:26) on local variable 'add3211'.&#xA;Resolution: For help on HLS 200-880 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-880.html" projectName="HLS_Project" solutionName="solution1" date="2023-11-24T09:55:18.727+0100" type="Warning"/>
-        <logs message="WARNING: [HLS 200-880] The II Violation in module 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' (loop 'VITIS_LOOP_25_5'): Unable to enforce a carried dependence constraint (II = 1, distance = 1, offset = 0) between 'store' operation ('add3211_write_ln25', HLS_Project/matrix_multiply.cpp:25) of variable 'add', HLS_Project/matrix_multiply.cpp:26 on local variable 'add3211' and 'load' operation ('add3211_load', HLS_Project/matrix_multiply.cpp:26) on local variable 'add3211'.&#xA;Resolution: For help on HLS 200-880 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-880.html" projectName="HLS_Project" solutionName="solution1" date="2023-11-24T09:55:18.723+0100" type="Warning"/>
-        <logs message="WARNING: [HLS 200-960] Cannot flatten loop 'VITIS_LOOP_19_2' (HLS_Project/matrix_multiply.cpp:19:39) in function 'MatrixMultiplication' more than one sub loop.&#xA;Resolution: For help on HLS 200-960 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-960.html" projectName="HLS_Project" solutionName="solution1" date="2023-11-24T09:55:18.468+0100" type="Warning"/>
-        <logs message="WARNING: [HLS 200-960] Cannot flatten loop 'VITIS_LOOP_21_3' (HLS_Project/matrix_multiply.cpp:21:40) in function 'MatrixMultiplication' more than one sub loop.&#xA;Resolution: For help on HLS 200-960 see www.xilinx.com/cgi-bin/docs/rdoc?v=2022.2;t=hls+guidance;d=200-960.html" projectName="HLS_Project" solutionName="solution1" date="2023-11-24T09:55:18.462+0100" type="Warning"/>
+        <logs message="WARNING: [RTGEN 206-101] Design contains AXI ports. Reset is fixed to synchronous and active low." projectName="HLS_Project" solutionName="solution1" date="2023-11-24T13:07:12.604+0100" type="Warning"/>
       </synLog>
-      <simLog/>
-      <mgLog/>
-      <packageLog/>
-      <csimLog/>
+      <packageLog>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'MatrixMultiplication_fmul_32ns_32ns_32_4_max_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues." projectName="HLS_Project" solutionName="solution1" date="2023-11-24T13:14:28.459+0100" type="Warning"/>
+        <logs message="WARNING: [IP_Flow 19-4832] The IP name 'MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1_ip' you have specified is long. The Windows operating system has path length limitations. It is recommended you use shorter names to reduce the likelihood of issues." projectName="HLS_Project" solutionName="solution1" date="2023-11-24T13:14:28.044+0100" type="Warning"/>
+      </packageLog>
     </logs>
   </warningLogs>
 </vivadoHLSLog:LogRoot>

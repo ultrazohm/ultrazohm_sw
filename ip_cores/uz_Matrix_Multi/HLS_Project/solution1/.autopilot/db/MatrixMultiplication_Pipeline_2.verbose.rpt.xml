@@ -1,7 +1,7 @@
 <profile>
 
 <section name = "Vitis HLS Report for 'MatrixMultiplication_Pipeline_2'" level="0">
-<item name = "Date">Fri Nov 24 09:55:18 2023
+<item name = "Date">Fri Nov 24 13:07:11 2023
 </item>
 <item name = "Version">2022.2 (Build 3670227 on Oct 13 2022)</item>
 <item name = "Project">HLS_Project</item>
@@ -78,8 +78,8 @@
 </item>
 <item name = "Expression"><table name="" hasTotal="1">
 <keys size="7">Variable Name, Operation, DSP, FF, LUT, Bitwidth P0, Bitwidth P1</keys>
-<column name="empty_21_fu_58_p2">+, 0, 0, 12, 5, 1</column>
-<column name="exitcond1_fu_52_p2">icmp, 0, 0, 9, 5, 4</column>
+<column name="empty_34_fu_58_p2">+, 0, 0, 12, 5, 1</column>
+<column name="exitcond3114_fu_52_p2">icmp, 0, 0, 9, 5, 4</column>
 </table>
 </item>
 <item name = "Multiplexer"><table name="" hasTotal="1">
@@ -109,10 +109,10 @@
 <column name="ap_done">out, 1, ap_ctrl_hs, MatrixMultiplication_Pipeline_2, return value</column>
 <column name="ap_idle">out, 1, ap_ctrl_hs, MatrixMultiplication_Pipeline_2, return value</column>
 <column name="ap_ready">out, 1, ap_ctrl_hs, MatrixMultiplication_Pipeline_2, return value</column>
-<column name="acc_address0">out, 5, ap_memory, acc, array</column>
-<column name="acc_ce0">out, 1, ap_memory, acc, array</column>
-<column name="acc_we0">out, 1, ap_memory, acc, array</column>
-<column name="acc_d0">out, 32, ap_memory, acc, array</column>
+<column name="B_address0">out, 5, ap_memory, B, array</column>
+<column name="B_ce0">out, 1, ap_memory, B, array</column>
+<column name="B_we0">out, 1, ap_memory, B, array</column>
+<column name="B_d0">out, 32, ap_memory, B, array</column>
 </table>
 </item>
 </section>

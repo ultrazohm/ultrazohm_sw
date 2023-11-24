@@ -7,7 +7,17 @@ if {${::AESL::PGuard_rtl_comp_handler}} {
 
 
 if {${::AESL::PGuard_rtl_comp_handler}} {
-	::AP::rtl_comp_handler MatrixMultiplication_acc_RAM_AUTO_1R1W BINDTYPE {storage} TYPE {ram} IMPL {auto} LATENCY 2 ALLOW_PRAGMA 1
+	::AP::rtl_comp_handler MatrixMultiplication_A_RAM_AUTO_1R1W BINDTYPE {storage} TYPE {ram} IMPL {auto} LATENCY 2 ALLOW_PRAGMA 1
+}
+
+
+if {${::AESL::PGuard_rtl_comp_handler}} {
+	::AP::rtl_comp_handler MatrixMultiplication_B_RAM_AUTO_1R1W BINDTYPE {storage} TYPE {ram} IMPL {auto} LATENCY 2 ALLOW_PRAGMA 1
+}
+
+
+if {${::AESL::PGuard_rtl_comp_handler}} {
+	::AP::rtl_comp_handler MatrixMultiplication_arrays_m_axi BINDTYPE {interface} TYPE {adapter} IMPL {m_axi}
 }
 
 
@@ -20,7 +30,7 @@ if {${::AESL::PGuard_autoexp_gen}} {
 
 set axilite_register_dict [dict create]
 set port_control {
-A_rows { 
+A_input { 
 	dir I
 	width 64
 	depth 1
@@ -28,57 +38,45 @@ A_rows {
 	offset 16
 	offset_end 27
 }
-A { 
+B_input { 
 	dir I
-	width 32
-	depth 5
-	mode ap_memory
-	offset 32
-	offset_end 63
-	core_op ram_1p
-	core_impl auto
-	core_latency 1
-	byte_write 0
+	width 64
+	depth 1
+	mode ap_none
+	offset 28
+	offset_end 39
 }
-C_out { 
-	dir IO
-	width 32
-	depth 5
-	mode ap_memory
-	offset 64
-	offset_end 95
-	core_op ram_1p
-	core_impl auto
-	core_latency 1
-	byte_write 0
+C_output { 
+	dir I
+	width 64
+	depth 1
+	mode ap_none
+	offset 40
+	offset_end 51
+}
+A_rows { 
+	dir I
+	width 64
+	depth 1
+	mode ap_none
+	offset 52
+	offset_end 63
 }
 B_rows { 
 	dir I
 	width 64
 	depth 1
 	mode ap_none
-	offset 96
-	offset_end 107
+	offset 64
+	offset_end 75
 }
 B_columns { 
 	dir I
 	width 64
 	depth 1
 	mode ap_none
-	offset 108
-	offset_end 119
-}
-B { 
-	dir I
-	width 32
-	depth 25
-	mode ap_memory
-	offset 128
-	offset_end 255
-	core_op ram_1p
-	core_impl auto
-	core_latency 1
-	byte_write 0
+	offset 76
+	offset_end 87
 }
 ap_start { }
 ap_done { }
@@ -95,7 +93,7 @@ dict set axilite_register_dict control $port_control
 if {${::AESL::PGuard_simmodel_gen}} {
 	if {[info proc ::AESL_LIB_XILADAPTER::s_axilite_gen] == "::AESL_LIB_XILADAPTER::s_axilite_gen"} {
 		eval "::AESL_LIB_XILADAPTER::s_axilite_gen { \
-			id 23 \
+			id 34 \
 			corename MatrixMultiplication_control_axilite \
 			name MatrixMultiplication_control_s_axi \
 			ports {$port_control} \

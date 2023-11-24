@@ -1,7 +1,7 @@
 <profile>
 
 <section name = "Vitis HLS Report for 'MatrixMultiplication_Pipeline_2'" level="0">
-<item name = "Date">Fri Nov 24 09:55:18 2023
+<item name = "Date">Fri Nov 24 13:07:10 2023
 </item>
 <item name = "Version">2022.2 (Build 3670227 on Oct 13 2022)</item>
 <item name = "Project">HLS_Project</item>

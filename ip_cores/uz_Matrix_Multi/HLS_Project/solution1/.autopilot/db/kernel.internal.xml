@@ -1,15 +1,16 @@
 <root versionMajor = "1" versionMinor = "5">
   <kernel name="MatrixMultiplication" language="c" vlnv="xilinx.com:hls:MatrixMultiplication:1.0" attributes="" hash="" preferredWorkGroupSizeMultiple="0" workGroupSize="1" debug="false" compileOptions="" profileType="none" hwControlProtocol="ap_ctrl_chain">
     <ports>
-      <port name="S_AXI_CONTROL" portType="addressable" mode="slave" base="0x0" range="0x100" dataWidth="32"/>
+      <port name="M_AXI_ARRAYS" portType="addressable" mode="master" base="0x0" range="0xFFFFFFFF" dataWidth="32"/>
+      <port name="S_AXI_CONTROL" portType="addressable" mode="slave" base="0x0" range="0x58" dataWidth="32"/>
     </ports>
     <args>
-      <arg id="0" name="A" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x14" offset="0x20" size="0x20" type="float const *"/>
-      <arg id="1" name="B" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x64" offset="0x80" size="0x80" type="float const *"/>
-      <arg id="2" name="C_out" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x14" offset="0x40" size="0x20" type="float*"/>
-      <arg id="3" name="A_rows" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x8" offset="0x10" size="0x8" type="unsigned long long"/>
-      <arg id="4" name="B_rows" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x8" offset="0x60" size="0x8" type="unsigned long long"/>
-      <arg id="5" name="B_columns" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x8" offset="0x6C" size="0x8" type="unsigned long long"/>
+      <arg id="0" name="A_input" addressQualifier="1" port="M_AXI_ARRAYS" hostOffset="0x0" hostSize="0x8" offset="0x10" size="0x8" type="void*"/>
+      <arg id="1" name="B_input" addressQualifier="1" port="M_AXI_ARRAYS" hostOffset="0x0" hostSize="0x8" offset="0x1C" size="0x8" type="void*"/>
+      <arg id="2" name="C_output" addressQualifier="1" port="M_AXI_ARRAYS" hostOffset="0x0" hostSize="0x8" offset="0x28" size="0x8" type="void*"/>
+      <arg id="3" name="A_rows" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x8" offset="0x34" size="0x8" type="unsigned long long"/>
+      <arg id="4" name="B_rows" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x8" offset="0x40" size="0x8" type="unsigned long long"/>
+      <arg id="5" name="B_columns" addressQualifier="0" port="S_AXI_CONTROL" hostOffset="0x0" hostSize="0x8" offset="0x4C" size="0x8" type="unsigned long long"/>
     </args>
     <compileWorkGroupSize x="1" y="1" z="1"/>
     <maxWorkGroupSize x="1" y="1" z="1"/>

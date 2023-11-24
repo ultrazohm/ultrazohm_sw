@@ -23,13 +23,29 @@
       <key>level</key>
       <string>warning</string>
       <key>filename</key>
+      <string>/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/solution1/directives.tcl</string>
+      <key>line</key>
+      <integer>6</integer>
+      <key>column</key>
+      <integer>9</integer>
+      <key>message</key>
+      <string>HLS pragma dump _XLX_SEP_ PragmaIsValid=1_XLX_SEP_ PragmaType=top_XLX_SEP_ PragmaContext=directive_XLX_SEP_ PragmaFunction=MatrixMultiplication_XLX_SEP_ PragmaOptions=name=MatrixMultiplication_XLX_SEP_</string>
+      <key>ID</key>
+      <integer>5471</integer>
+      <key>WarningOption</key>
+      <string>dump-hls-pragmas</string>
+    </dict>
+    <dict>
+      <key>level</key>
+      <string>warning</string>
+      <key>filename</key>
       <string>HLS_Project/matrix_multiply.cpp</string>
       <key>line</key>
       <integer>5</integer>
       <key>column</key>
       <integer>9</integer>
       <key>message</key>
-      <string>HLS pragma dump _XLX_SEP_ PragmaIsValid=1_XLX_SEP_ PragmaType=interface_XLX_SEP_ PragmaContext=_XLX_SEP_ PragmaFunction=MatrixMultiplication_XLX_SEP_ PragmaOptions=s_axilite port=A_XLX_SEP_</string>
+      <string>HLS pragma dump _XLX_SEP_ PragmaIsValid=1_XLX_SEP_ PragmaType=interface_XLX_SEP_ PragmaContext=_XLX_SEP_ PragmaFunction=MatrixMultiplication_XLX_SEP_ PragmaOptions=m_axi port=A_input bundle=arrays depth=32 offset=slave_XLX_SEP_</string>
       <key>ID</key>
       <integer>5471</integer>
       <key>WarningOption</key>
@@ -45,7 +61,7 @@
       <key>column</key>
       <integer>9</integer>
       <key>message</key>
-      <string>HLS pragma dump _XLX_SEP_ PragmaIsValid=1_XLX_SEP_ PragmaType=interface_XLX_SEP_ PragmaContext=_XLX_SEP_ PragmaFunction=MatrixMultiplication_XLX_SEP_ PragmaOptions=s_axilite port=B_XLX_SEP_</string>
+      <string>HLS pragma dump _XLX_SEP_ PragmaIsValid=1_XLX_SEP_ PragmaType=interface_XLX_SEP_ PragmaContext=_XLX_SEP_ PragmaFunction=MatrixMultiplication_XLX_SEP_ PragmaOptions=m_axi port=B_input bundle=arrays depth=32 offset=slave_XLX_SEP_</string>
       <key>ID</key>
       <integer>5471</integer>
       <key>WarningOption</key>
@@ -61,7 +77,7 @@
       <key>column</key>
       <integer>9</integer>
       <key>message</key>
-      <string>HLS pragma dump _XLX_SEP_ PragmaIsValid=1_XLX_SEP_ PragmaType=interface_XLX_SEP_ PragmaContext=_XLX_SEP_ PragmaFunction=MatrixMultiplication_XLX_SEP_ PragmaOptions=s_axilite port=C_out_XLX_SEP_</string>
+      <string>HLS pragma dump _XLX_SEP_ PragmaIsValid=1_XLX_SEP_ PragmaType=interface_XLX_SEP_ PragmaContext=_XLX_SEP_ PragmaFunction=MatrixMultiplication_XLX_SEP_ PragmaOptions=m_axi port=C_output bundle=arrays depth=32 offset=slave_XLX_SEP_</string>
       <key>ID</key>
       <integer>5471</integer>
       <key>WarningOption</key>

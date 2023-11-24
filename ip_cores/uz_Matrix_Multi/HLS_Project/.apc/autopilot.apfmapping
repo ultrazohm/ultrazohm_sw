@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <autopilotfilemapping:AutoPilotFileMapping xmlns:autopilotfilemapping="www.autoesl.com/autopilotfilemapping">
-  <source/>
+  <source>
+    <originFiles name="matrix_multiply.h" path="/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/matrix_multiply.h"/>
+    <originFiles name="matrix_multiply.cpp" path="/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/matrix_multiply.cpp"/>
+  </source>
   <testbench>
     <originFiles name="tb_matrix_multiply.cpp" path="/home/hufnagelde/ultrazohm_sw/ip_cores/uz_Matrix_Multi/HLS_Project/tb_matrix_multiply.cpp"/>
   </testbench>

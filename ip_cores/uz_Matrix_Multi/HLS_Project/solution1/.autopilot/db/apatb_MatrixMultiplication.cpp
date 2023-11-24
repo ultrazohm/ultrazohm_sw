@@ -18,22 +18,24 @@
 using namespace std;
 
 // wrapc file define:
-#define AUTOTB_TVIN_A "../tv/cdatafile/c.MatrixMultiplication.autotvin_A.dat"
-#define AUTOTB_TVOUT_A "../tv/cdatafile/c.MatrixMultiplication.autotvout_A.dat"
-#define AUTOTB_TVIN_B "../tv/cdatafile/c.MatrixMultiplication.autotvin_B.dat"
-#define AUTOTB_TVOUT_B "../tv/cdatafile/c.MatrixMultiplication.autotvout_B.dat"
-#define AUTOTB_TVIN_C_out "../tv/cdatafile/c.MatrixMultiplication.autotvin_C_out.dat"
-#define AUTOTB_TVOUT_C_out "../tv/cdatafile/c.MatrixMultiplication.autotvout_C_out.dat"
+#define AUTOTB_TVIN_A_input "../tv/cdatafile/c.MatrixMultiplication.autotvin_A_input.dat"
+#define AUTOTB_TVOUT_A_input "../tv/cdatafile/c.MatrixMultiplication.autotvout_A_input.dat"
+#define AUTOTB_TVIN_B_input "../tv/cdatafile/c.MatrixMultiplication.autotvin_B_input.dat"
+#define AUTOTB_TVOUT_B_input "../tv/cdatafile/c.MatrixMultiplication.autotvout_B_input.dat"
+#define AUTOTB_TVIN_C_output "../tv/cdatafile/c.MatrixMultiplication.autotvin_C_output.dat"
+#define AUTOTB_TVOUT_C_output "../tv/cdatafile/c.MatrixMultiplication.autotvout_C_output.dat"
 #define AUTOTB_TVIN_A_rows "../tv/cdatafile/c.MatrixMultiplication.autotvin_A_rows.dat"
 #define AUTOTB_TVOUT_A_rows "../tv/cdatafile/c.MatrixMultiplication.autotvout_A_rows.dat"
 #define AUTOTB_TVIN_B_rows "../tv/cdatafile/c.MatrixMultiplication.autotvin_B_rows.dat"
 #define AUTOTB_TVOUT_B_rows "../tv/cdatafile/c.MatrixMultiplication.autotvout_B_rows.dat"
 #define AUTOTB_TVIN_B_columns "../tv/cdatafile/c.MatrixMultiplication.autotvin_B_columns.dat"
 #define AUTOTB_TVOUT_B_columns "../tv/cdatafile/c.MatrixMultiplication.autotvout_B_columns.dat"
+#define AUTOTB_TVIN_arrays "../tv/cdatafile/c.MatrixMultiplication.autotvin_arrays.dat"
+#define AUTOTB_TVOUT_arrays "../tv/cdatafile/c.MatrixMultiplication.autotvout_arrays.dat"
 
 
 // tvout file define:
-#define AUTOTB_TVOUT_PC_C_out "../tv/rtldatafile/rtl.MatrixMultiplication.autotvout_C_out.dat"
+#define AUTOTB_TVOUT_PC_arrays "../tv/rtldatafile/rtl.MatrixMultiplication.autotvout_arrays.dat"
 
 
 namespace hls::sim
@@ -961,9 +963,45 @@ extern "C"
 void MatrixMultiplication_hw_stub_wrapper(void*, void*, void*, hls::sim::Byte<8>, hls::sim::Byte<8>, hls::sim::Byte<8>);
 
 extern "C"
-void apatb_MatrixMultiplication_hw(void* __xlx_apatb_param_A, void* __xlx_apatb_param_B, void* __xlx_apatb_param_C_out, hls::sim::Byte<8> __xlx_apatb_param_A_rows, hls::sim::Byte<8> __xlx_apatb_param_B_rows, hls::sim::Byte<8> __xlx_apatb_param_B_columns)
+void apatb_MatrixMultiplication_hw(void* __xlx_apatb_param_A_input, void* __xlx_apatb_param_B_input, void* __xlx_apatb_param_C_output, hls::sim::Byte<8> __xlx_apatb_param_A_rows, hls::sim::Byte<8> __xlx_apatb_param_B_rows, hls::sim::Byte<8> __xlx_apatb_param_B_columns)
 {
+  hls::sim::Byte<4> __xlx_offset_byte_param_A_input;
   static hls::sim::Register port0 {
+    .name = "A_input",
+    .width = 32,
+#ifdef POST_CHECK
+#else
+    .owriter = nullptr,
+    .iwriter = new hls::sim::Writer(AUTOTB_TVIN_A_input),
+#endif
+  };
+  port0.param = &__xlx_offset_byte_param_A_input;
+
+  hls::sim::Byte<4> __xlx_offset_byte_param_B_input;
+  static hls::sim::Register port1 {
+    .name = "B_input",
+    .width = 32,
+#ifdef POST_CHECK
+#else
+    .owriter = nullptr,
+    .iwriter = new hls::sim::Writer(AUTOTB_TVIN_B_input),
+#endif
+  };
+  port1.param = &__xlx_offset_byte_param_B_input;
+
+  hls::sim::Byte<4> __xlx_offset_byte_param_C_output;
+  static hls::sim::Register port2 {
+    .name = "C_output",
+    .width = 32,
+#ifdef POST_CHECK
+#else
+    .owriter = nullptr,
+    .iwriter = new hls::sim::Writer(AUTOTB_TVIN_C_output),
+#endif
+  };
+  port2.param = &__xlx_offset_byte_param_C_output;
+
+  static hls::sim::Register port3 {
     .name = "A_rows",
     .width = 64,
 #ifdef POST_CHECK
@@ -972,9 +1010,9 @@ void apatb_MatrixMultiplication_hw(void* __xlx_apatb_param_A, void* __xlx_apatb_
     .iwriter = new hls::sim::Writer(AUTOTB_TVIN_A_rows),
 #endif
   };
-  port0.param = &__xlx_apatb_param_A_rows;
+  port3.param = &__xlx_apatb_param_A_rows;
 
-  static hls::sim::Register port1 {
+  static hls::sim::Register port4 {
     .name = "B_rows",
     .width = 64,
 #ifdef POST_CHECK
@@ -983,9 +1021,9 @@ void apatb_MatrixMultiplication_hw(void* __xlx_apatb_param_A, void* __xlx_apatb_
     .iwriter = new hls::sim::Writer(AUTOTB_TVIN_B_rows),
 #endif
   };
-  port1.param = &__xlx_apatb_param_B_rows;
+  port4.param = &__xlx_apatb_param_B_rows;
 
-  static hls::sim::Register port2 {
+  static hls::sim::Register port5 {
     .name = "B_columns",
     .width = 64,
 #ifdef POST_CHECK
@@ -994,94 +1032,49 @@ void apatb_MatrixMultiplication_hw(void* __xlx_apatb_param_A, void* __xlx_apatb_
     .iwriter = new hls::sim::Writer(AUTOTB_TVIN_B_columns),
 #endif
   };
-  port2.param = &__xlx_apatb_param_B_columns;
+  port5.param = &__xlx_apatb_param_B_columns;
 
 #ifdef USE_BINARY_TV_FILE
-  static hls::sim::Memory<hls::sim::Input, hls::sim::Output> port3 {
+  static hls::sim::Memory<hls::sim::Input, hls::sim::Output> port6 {
 #else
-  static hls::sim::Memory<hls::sim::Reader, hls::sim::Writer> port3 {
+  static hls::sim::Memory<hls::sim::Reader, hls::sim::Writer> port6 {
 #endif
     .width = 32,
     .asize = 4,
     .hbm = false,
-    .name = { "A" },
+    .name = { "arrays" },
 #ifdef POST_CHECK
-#else
-    .owriter = nullptr,
 #ifdef USE_BINARY_TV_FILE
-    .iwriter = new hls::sim::Output(AUTOTB_TVIN_A),
+    .reader = new hls::sim::Input(AUTOTB_TVOUT_PC_arrays),
 #else
-    .iwriter = new hls::sim::Writer(AUTOTB_TVIN_A),
+    .reader = new hls::sim::Reader(AUTOTB_TVOUT_PC_arrays),
+#endif
+#else
+#ifdef USE_BINARY_TV_FILE
+    .owriter = new hls::sim::Output(AUTOTB_TVOUT_arrays),
+#else
+    .owriter = new hls::sim::Writer(AUTOTB_TVOUT_arrays),
+#endif
+#ifdef USE_BINARY_TV_FILE
+    .iwriter = new hls::sim::Output(AUTOTB_TVIN_arrays),
+#else
+    .iwriter = new hls::sim::Writer(AUTOTB_TVIN_arrays),
 #endif
 #endif
   };
-  port3.param = { __xlx_apatb_param_A };
-  port3.depth = { 5 };
-  port3.offset = {  };
-  port3.hasWrite = { false };
-
-#ifdef USE_BINARY_TV_FILE
-  static hls::sim::Memory<hls::sim::Input, hls::sim::Output> port4 {
-#else
-  static hls::sim::Memory<hls::sim::Reader, hls::sim::Writer> port4 {
-#endif
-    .width = 32,
-    .asize = 4,
-    .hbm = false,
-    .name = { "B" },
-#ifdef POST_CHECK
-#else
-    .owriter = nullptr,
-#ifdef USE_BINARY_TV_FILE
-    .iwriter = new hls::sim::Output(AUTOTB_TVIN_B),
-#else
-    .iwriter = new hls::sim::Writer(AUTOTB_TVIN_B),
-#endif
-#endif
-  };
-  port4.param = { __xlx_apatb_param_B };
-  port4.depth = { 25 };
-  port4.offset = {  };
-  port4.hasWrite = { false };
-
-#ifdef USE_BINARY_TV_FILE
-  static hls::sim::Memory<hls::sim::Input, hls::sim::Output> port5 {
-#else
-  static hls::sim::Memory<hls::sim::Reader, hls::sim::Writer> port5 {
-#endif
-    .width = 32,
-    .asize = 4,
-    .hbm = false,
-    .name = { "C_out" },
-#ifdef POST_CHECK
-#ifdef USE_BINARY_TV_FILE
-    .reader = new hls::sim::Input(AUTOTB_TVOUT_PC_C_out),
-#else
-    .reader = new hls::sim::Reader(AUTOTB_TVOUT_PC_C_out),
-#endif
-#else
-#ifdef USE_BINARY_TV_FILE
-    .owriter = new hls::sim::Output(AUTOTB_TVOUT_C_out),
-#else
-    .owriter = new hls::sim::Writer(AUTOTB_TVOUT_C_out),
-#endif
-#ifdef USE_BINARY_TV_FILE
-    .iwriter = new hls::sim::Output(AUTOTB_TVIN_C_out),
-#else
-    .iwriter = new hls::sim::Writer(AUTOTB_TVIN_C_out),
-#endif
-#endif
-  };
-  port5.param = { __xlx_apatb_param_C_out };
-  port5.depth = { 5 };
-  port5.offset = {  };
-  port5.hasWrite = { true };
+  __xlx_offset_byte_param_A_input = 0*4;
+  __xlx_offset_byte_param_B_input = 32*4;
+  __xlx_offset_byte_param_C_output = 64*4;
+  port6.param = { __xlx_apatb_param_A_input, __xlx_apatb_param_B_input, __xlx_apatb_param_C_output };
+  port6.depth = { 32, 32, 32 };
+  port6.offset = { 0, 32, 64 };
+  port6.hasWrite = { true, true, true };
 
   refine_signal_handler();
   try {
 #ifdef POST_CHECK
     CodeState = ENTER_WRAPC_PC;
-    check(port5);
+    check(port6);
 #else
     static hls::sim::RefTCL tcl("../tv/cdatafile/ref.tcl");
     CodeState = DUMP_INPUTS;
@@ -1091,16 +1084,18 @@ void apatb_MatrixMultiplication_hw(void* __xlx_apatb_param_A, void* __xlx_apatb_
     dump(port3, port3.iwriter, tcl.AESL_transaction);
     dump(port4, port4.iwriter, tcl.AESL_transaction);
     dump(port5, port5.iwriter, tcl.AESL_transaction);
+    dump(port6, port6.iwriter, tcl.AESL_transaction);
     port0.doTCL(tcl);
     port1.doTCL(tcl);
     port2.doTCL(tcl);
     port3.doTCL(tcl);
     port4.doTCL(tcl);
     port5.doTCL(tcl);
+    port6.doTCL(tcl);
     CodeState = CALL_C_DUT;
-    MatrixMultiplication_hw_stub_wrapper(__xlx_apatb_param_A, __xlx_apatb_param_B, __xlx_apatb_param_C_out, __xlx_apatb_param_A_rows, __xlx_apatb_param_B_rows, __xlx_apatb_param_B_columns);
+    MatrixMultiplication_hw_stub_wrapper(__xlx_apatb_param_A_input, __xlx_apatb_param_B_input, __xlx_apatb_param_C_output, __xlx_apatb_param_A_rows, __xlx_apatb_param_B_rows, __xlx_apatb_param_B_columns);
     CodeState = DUMP_OUTPUTS;
-    dump(port5, port5.owriter, tcl.AESL_transaction);
+    dump(port6, port6.owriter, tcl.AESL_transaction);
     tcl.AESL_transaction++;
 #endif
   } catch (const hls::sim::SimException &e) {

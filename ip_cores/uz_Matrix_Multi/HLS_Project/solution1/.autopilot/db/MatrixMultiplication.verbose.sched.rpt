@@ -3,7 +3,7 @@
 ================================================================
 == Vitis HLS Report for 'MatrixMultiplication'
 ================================================================
-* Date:           Fri Nov 24 09:55:18 2023
+* Date:           Fri Nov 24 13:07:11 2023
 
 * Version:        2022.2 (Build 3670227 on Oct 13 2022)
 * Project:        HLS_Project
@@ -20,7 +20,7 @@
     +--------+----------+----------+------------+
     |  Clock |  Target  | Estimated| Uncertainty|
     +--------+----------+----------+------------+
-    |ap_clk  |  10.00 ns|  6.808 ns|     2.70 ns|
+    |ap_clk  |  10.00 ns|  7.300 ns|     2.70 ns|
     +--------+----------+----------+------------+
 
 + Latency: 
@@ -41,8 +41,8 @@
         |                    |  Latency (cycles) | Iteration|  Initiation Interval  | Trip |          |
         |      Loop Name     |   min   |   max   |  Latency |  achieved |   target  | Count| Pipelined|
         +--------------------+---------+---------+----------+-----------+-----------+------+----------+
-        |- VITIS_LOOP_19_2   |        ?|        ?|         ?|          -|          -|     ?|        no|
-        | + VITIS_LOOP_21_3  |        ?|        ?|         ?|          -|          -|     ?|        no|
+        |- VITIS_LOOP_28_3   |        ?|        ?|         ?|          -|          -|     ?|        no|
+        | + VITIS_LOOP_30_4  |        ?|        ?|         ?|          -|          -|     ?|        no|
         +--------------------+---------+---------+----------+-----------+-----------+------+----------+
 
 ============================================================
@@ -71,7 +71,7 @@ IsGatedGlobalClock: 0
 ============================================================
 + Verbose Summary: Schedule
 ============================================================
-* Number of FSM states : 9
+* Number of FSM states : 223
 * Pipeline : 0
 * Dataflow Pipeline: 0
 
@@ -80,106 +80,976 @@ IsGatedGlobalClock: 0
 2 --> 3 
 3 --> 4 
 4 --> 5 
-5 --> 6 3 
-6 --> 7 9 
+5 --> 6 
+6 --> 7 
 7 --> 8 
 8 --> 9 
-9 --> 5 
+9 --> 10 
+10 --> 11 
+11 --> 12 
+12 --> 13 
+13 --> 14 
+14 --> 15 
+15 --> 16 
+16 --> 17 
+17 --> 18 
+18 --> 19 
+19 --> 20 
+20 --> 21 
+21 --> 22 
+22 --> 23 
+23 --> 24 
+24 --> 25 
+25 --> 26 
+26 --> 27 
+27 --> 28 
+28 --> 29 
+29 --> 30 
+30 --> 31 
+31 --> 32 
+32 --> 33 
+33 --> 34 
+34 --> 35 
+35 --> 36 
+36 --> 37 
+37 --> 38 
+38 --> 39 
+39 --> 40 
+40 --> 41 
+41 --> 42 
+42 --> 43 
+43 --> 44 
+44 --> 45 
+45 --> 46 
+46 --> 47 
+47 --> 48 
+48 --> 49 
+49 --> 50 
+50 --> 51 
+51 --> 52 
+52 --> 53 
+53 --> 54 
+54 --> 55 
+55 --> 56 
+56 --> 57 
+57 --> 58 
+58 --> 59 
+59 --> 60 
+60 --> 61 
+61 --> 62 
+62 --> 63 
+63 --> 64 
+64 --> 65 
+65 --> 66 
+66 --> 67 
+67 --> 68 
+68 --> 69 
+69 --> 70 
+70 --> 71 
+71 --> 72 
+72 --> 73 
+73 --> 74 
+74 --> 75 
+75 --> 76 
+76 --> 77 
+77 --> 78 
+78 --> 79 
+79 --> 80 
+80 --> 81 
+81 --> 82 
+82 --> 83 
+83 --> 84 
+84 --> 85 
+85 --> 86 
+86 --> 87 
+87 --> 88 
+88 --> 89 
+89 --> 90 
+90 --> 91 
+91 --> 92 
+92 --> 93 
+93 --> 94 
+94 --> 95 
+95 --> 96 
+96 --> 97 
+97 --> 98 
+98 --> 99 
+99 --> 100 
+100 --> 101 
+101 --> 102 
+102 --> 103 
+103 --> 104 
+104 --> 105 
+105 --> 106 
+106 --> 107 
+107 --> 108 
+108 --> 109 
+109 --> 110 
+110 --> 111 
+111 --> 112 
+112 --> 113 
+113 --> 114 
+114 --> 115 
+115 --> 116 
+116 --> 117 
+117 --> 118 
+118 --> 119 
+119 --> 120 
+120 --> 121 
+121 --> 122 
+122 --> 123 
+123 --> 124 
+124 --> 125 
+125 --> 126 
+126 --> 127 
+127 --> 128 
+128 --> 129 
+129 --> 130 
+130 --> 131 
+131 --> 132 
+132 --> 133 
+133 --> 134 
+134 --> 135 
+135 --> 136 
+136 --> 137 
+137 --> 138 
+138 --> 139 
+139 --> 140 
+140 --> 141 
+141 --> 142 
+142 --> 143 
+143 --> 144 
+144 --> 145 
+145 --> 146 
+146 --> 147 153 
+147 --> 148 
+148 --> 149 146 
+149 --> 150 152 
+150 --> 151 
+151 --> 152 
+152 --> 148 
+153 --> 154 
+154 --> 155 
+155 --> 156 
+156 --> 157 
+157 --> 158 
+158 --> 159 
+159 --> 160 
+160 --> 161 
+161 --> 162 
+162 --> 163 
+163 --> 164 
+164 --> 165 
+165 --> 166 
+166 --> 167 
+167 --> 168 
+168 --> 169 
+169 --> 170 
+170 --> 171 
+171 --> 172 
+172 --> 173 
+173 --> 174 
+174 --> 175 
+175 --> 176 
+176 --> 177 
+177 --> 178 
+178 --> 179 
+179 --> 180 
+180 --> 181 
+181 --> 182 
+182 --> 183 
+183 --> 184 
+184 --> 185 
+185 --> 186 
+186 --> 187 
+187 --> 188 
+188 --> 189 
+189 --> 190 
+190 --> 191 
+191 --> 192 
+192 --> 193 
+193 --> 194 
+194 --> 195 
+195 --> 196 
+196 --> 197 
+197 --> 198 
+198 --> 199 
+199 --> 200 
+200 --> 201 
+201 --> 202 
+202 --> 203 
+203 --> 204 
+204 --> 205 
+205 --> 206 
+206 --> 207 
+207 --> 208 
+208 --> 209 
+209 --> 210 
+210 --> 211 
+211 --> 212 
+212 --> 213 
+213 --> 214 
+214 --> 215 
+215 --> 216 
+216 --> 217 
+217 --> 218 
+218 --> 219 
+219 --> 220 
+220 --> 221 
+221 --> 222 
+222 --> 223 
+223 --> 
 
 * FSM state operations: 
 
 State 1 <SV = 0> <Delay = 1.00>
-ST_1 : Operation 10 [1/1] (0.00ns)   --->   "%m = alloca i32 1"   --->   Operation 10 'alloca' 'm' <Predicate = true> <Delay = 0.00>
-ST_1 : Operation 11 [1/1] (1.00ns)   --->   "%B_rows_read = read i64 @_ssdm_op_Read.ap_none.i64, i64 %B_rows"   --->   Operation 11 'read' 'B_rows_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
-ST_1 : Operation 12 [1/1] (0.00ns)   --->   "%add3211_loc = alloca i64 1"   --->   Operation 12 'alloca' 'add3211_loc' <Predicate = true> <Delay = 0.00>
-ST_1 : Operation 13 [1/1] (0.00ns)   --->   "%trunc_ln4_2 = trunc i64 %B_rows_read" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 13 'trunc' 'trunc_ln4_2' <Predicate = true> <Delay = 0.00>
-ST_1 : Operation 14 [1/1] (0.00ns)   --->   "%acc = alloca i64 1" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 14 'alloca' 'acc' <Predicate = true> <Delay = 0.00>
-ST_1 : Operation 15 [2/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_16_1, i64 %B_rows_read, i32 %C_out"   --->   Operation 15 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
-ST_1 : Operation 16 [1/1] (0.48ns)   --->   "%store_ln19 = store i64 0, i64 %m" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 16 'store' 'store_ln19' <Predicate = true> <Delay = 0.48>
+ST_1 : Operation 224 [1/1] (0.00ns)   --->   "%m = alloca i32 1"   --->   Operation 224 'alloca' 'm' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 225 [1/1] (1.00ns)   --->   "%C_output_read = read i64 @_ssdm_op_Read.s_axilite.i64, i64 %C_output"   --->   Operation 225 'read' 'C_output_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_1 : Operation 226 [1/1] (1.00ns)   --->   "%B_input_read = read i64 @_ssdm_op_Read.s_axilite.i64, i64 %B_input"   --->   Operation 226 'read' 'B_input_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_1 : Operation 227 [1/1] (1.00ns)   --->   "%A_input_read = read i64 @_ssdm_op_Read.s_axilite.i64, i64 %A_input"   --->   Operation 227 'read' 'A_input_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_1 : Operation 228 [1/1] (0.00ns)   --->   "%add4518_loc = alloca i64 1"   --->   Operation 228 'alloca' 'add4518_loc' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 229 [1/1] (0.00ns)   --->   "%A = alloca i64 1" [HLS_Project/matrix_multiply.cpp:16]   --->   Operation 229 'alloca' 'A' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 230 [1/1] (0.00ns)   --->   "%B = alloca i64 1" [HLS_Project/matrix_multiply.cpp:17]   --->   Operation 230 'alloca' 'B' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 231 [1/1] (0.00ns)   --->   "%C = alloca i64 1" [HLS_Project/matrix_multiply.cpp:18]   --->   Operation 231 'alloca' 'C' <Predicate = true> <Delay = 0.00> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 5> <RAM>
+ST_1 : Operation 232 [1/1] (0.00ns)   --->   "%acc = alloca i64 1" [HLS_Project/matrix_multiply.cpp:29]   --->   Operation 232 'alloca' 'acc' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 233 [2/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_1, i32 %A"   --->   Operation 233 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_1 : Operation 234 [2/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_2, i32 %B"   --->   Operation 234 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_1 : Operation 235 [2/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_3, i32 %C"   --->   Operation 235 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_1 : Operation 236 [1/1] (0.00ns)   --->   "%trunc_ln = partselect i62 @_ssdm_op_PartSelect.i62.i64.i32.i32, i64 %A_input_read, i32 2, i32 63" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 236 'partselect' 'trunc_ln' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 237 [1/1] (0.00ns)   --->   "%trunc_ln1 = partselect i62 @_ssdm_op_PartSelect.i62.i64.i32.i32, i64 %B_input_read, i32 2, i32 63" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 237 'partselect' 'trunc_ln1' <Predicate = true> <Delay = 0.00>
+ST_1 : Operation 238 [1/1] (0.48ns)   --->   "%store_ln28 = store i64 0, i64 %m" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 238 'store' 'store_ln28' <Predicate = true> <Delay = 0.48>
 
-State 2 <SV = 1> <Delay = 1.48>
-ST_2 : Operation 17 [1/1] (1.00ns)   --->   "%B_columns_read = read i64 @_ssdm_op_Read.ap_none.i64, i64 %B_columns"   --->   Operation 17 'read' 'B_columns_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
-ST_2 : Operation 18 [1/1] (1.00ns)   --->   "%A_rows_read = read i64 @_ssdm_op_Read.ap_none.i64, i64 %A_rows"   --->   Operation 18 'read' 'A_rows_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
-ST_2 : Operation 19 [1/1] (0.00ns)   --->   "%trunc_ln4 = trunc i64 %B_columns_read" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 19 'trunc' 'trunc_ln4' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 20 [1/1] (0.00ns)   --->   "%trunc_ln4_1 = trunc i64 %B_columns_read" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 20 'trunc' 'trunc_ln4_1' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 21 [1/1] (0.00ns)   --->   "%spectopmodule_ln4 = spectopmodule void @_ssdm_op_SpecTopModule, void @empty_15" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 21 'spectopmodule' 'spectopmodule_ln4' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 22 [1/1] (0.00ns)   --->   "%specinterface_ln4 = specinterface void @_ssdm_op_SpecInterface, i32 0, void @empty_16, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_3, void @empty_3, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 22 'specinterface' 'specinterface_ln4' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 23 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %A, void @empty_2, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_4, void @empty_5, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 23 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 24 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %A, void @empty_9, i32 0, i32 0, void @empty_3, i32 1, i32 0, void @empty_3, void @empty_3, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 24 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 25 [1/1] (0.00ns)   --->   "%specmemcore_ln0 = specmemcore void @_ssdm_op_SpecMemCore, i32 %A, i64 666, i64 207, i64 1"   --->   Operation 25 'specmemcore' 'specmemcore_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 26 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i32 %A"   --->   Operation 26 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 27 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %B, void @empty_2, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_4, void @empty_7, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 27 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 28 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %B, void @empty_9, i32 0, i32 0, void @empty_3, i32 1, i32 0, void @empty_3, void @empty_3, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 28 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 29 [1/1] (0.00ns)   --->   "%specmemcore_ln0 = specmemcore void @_ssdm_op_SpecMemCore, i32 %B, i64 666, i64 207, i64 1"   --->   Operation 29 'specmemcore' 'specmemcore_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 30 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i32 %B"   --->   Operation 30 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 31 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %C_out, void @empty_2, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_4, void @empty, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 31 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 32 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %C_out, void @empty_9, i32 0, i32 0, void @empty_3, i32 1, i32 0, void @empty_3, void @empty_3, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 32 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 33 [1/1] (0.00ns)   --->   "%specmemcore_ln0 = specmemcore void @_ssdm_op_SpecMemCore, i32 %C_out, i64 666, i64 207, i64 1"   --->   Operation 33 'specmemcore' 'specmemcore_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 34 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i32 %C_out"   --->   Operation 34 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 35 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %A_rows"   --->   Operation 35 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 36 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %A_rows, void @empty_2, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_4, void @empty_0, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 36 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 37 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %A_rows, void @empty_1, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_3, void @empty_3, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 37 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 38 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %B_rows"   --->   Operation 38 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 39 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_rows, void @empty_2, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_4, void @empty_13, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 39 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 40 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_rows, void @empty_1, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_3, void @empty_3, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 40 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 41 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %B_columns"   --->   Operation 41 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 42 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_columns, void @empty_2, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_4, void @empty_14, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 42 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 43 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_columns, void @empty_1, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_3, void @empty_3, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 43 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 44 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 0, void @empty_2, i32 0, i32 0, void @empty_3, i32 0, i32 0, void @empty_4, void @empty_3, void @empty_3, i32 0, i32 0, i32 0, i32 0, void @empty_3, void @empty_3, i32 4294967295, i32 0"   --->   Operation 44 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
-ST_2 : Operation 45 [1/1] (1.48ns)   --->   "%icmp_ln16 = icmp_eq  i64 %B_rows_read, i64 0" [HLS_Project/matrix_multiply.cpp:16]   --->   Operation 45 'icmp' 'icmp_ln16' <Predicate = true> <Delay = 1.48> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.48> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
-ST_2 : Operation 46 [1/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_16_1, i64 %B_rows_read, i32 %C_out"   --->   Operation 46 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
-ST_2 : Operation 47 [1/1] (0.00ns)   --->   "%br_ln19 = br void %for.body4" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 47 'br' 'br_ln19' <Predicate = true> <Delay = 0.00>
+State 2 <SV = 1> <Delay = 7.30>
+ST_2 : Operation 239 [1/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_1, i32 %A"   --->   Operation 239 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_2 : Operation 240 [1/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_2, i32 %B"   --->   Operation 240 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_2 : Operation 241 [1/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_3, i32 %C"   --->   Operation 241 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_2 : Operation 242 [1/1] (0.00ns)   --->   "%sext_ln20 = sext i62 %trunc_ln" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 242 'sext' 'sext_ln20' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 243 [1/1] (0.00ns)   --->   "%arrays_addr = getelementptr i32 %arrays, i64 %sext_ln20" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 243 'getelementptr' 'arrays_addr' <Predicate = true> <Delay = 0.00>
+ST_2 : Operation 244 [70/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 244 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
 
-State 3 <SV = 2> <Delay = 1.48>
-ST_3 : Operation 48 [1/1] (0.00ns)   --->   "%m_1 = load i64 %m" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 48 'load' 'm_1' <Predicate = true> <Delay = 0.00>
-ST_3 : Operation 49 [1/1] (1.48ns)   --->   "%icmp_ln19 = icmp_eq  i64 %m_1, i64 %A_rows_read" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 49 'icmp' 'icmp_ln19' <Predicate = true> <Delay = 1.48> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.48> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
-ST_3 : Operation 50 [1/1] (1.47ns)   --->   "%m_2 = add i64 %m_1, i64 1" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 50 'add' 'm_2' <Predicate = true> <Delay = 1.47> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 1.47> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
-ST_3 : Operation 51 [1/1] (0.00ns)   --->   "%br_ln19 = br i1 %icmp_ln19, void %for.body4.split, void %for.end41.loopexit" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 51 'br' 'br_ln19' <Predicate = true> <Delay = 0.00>
-ST_3 : Operation 52 [1/1] (0.00ns)   --->   "%trunc_ln19 = trunc i64 %m_1" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 52 'trunc' 'trunc_ln19' <Predicate = (!icmp_ln19)> <Delay = 0.00>
-ST_3 : Operation 53 [2/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_2, i32 %acc"   --->   Operation 53 'call' 'call_ln0' <Predicate = (!icmp_ln19)> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
-ST_3 : Operation 54 [1/1] (0.58ns)   --->   "%mul = mul i3 %trunc_ln19, i3 %trunc_ln4_2" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 54 'mul' 'mul' <Predicate = (!icmp_ln19)> <Delay = 0.58> <CoreInst = "Multiplier">   --->   Core 3 'Multiplier' <Latency = 0> <II = 1> <Delay = 0.58> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
-ST_3 : Operation 55 [1/1] (0.58ns)   --->   "%mul29 = mul i3 %trunc_ln19, i3 %trunc_ln4_1" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 55 'mul' 'mul29' <Predicate = (!icmp_ln19)> <Delay = 0.58> <CoreInst = "Multiplier">   --->   Core 3 'Multiplier' <Latency = 0> <II = 1> <Delay = 0.58> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
-ST_3 : Operation 56 [1/1] (0.00ns)   --->   "%ret_ln31 = ret" [HLS_Project/matrix_multiply.cpp:31]   --->   Operation 56 'ret' 'ret_ln31' <Predicate = (icmp_ln19)> <Delay = 0.00>
+State 3 <SV = 2> <Delay = 7.30>
+ST_3 : Operation 245 [69/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 245 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
 
-State 4 <SV = 3> <Delay = 0.48>
-ST_4 : Operation 57 [1/1] (0.00ns)   --->   "%specloopname_ln19 = specloopname void @_ssdm_op_SpecLoopName, void @empty_11" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 57 'specloopname' 'specloopname_ln19' <Predicate = true> <Delay = 0.00>
-ST_4 : Operation 58 [1/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_2, i32 %acc"   --->   Operation 58 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
-ST_4 : Operation 59 [1/1] (0.48ns)   --->   "%br_ln21 = br void %VITIS_LOOP_22_4" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 59 'br' 'br_ln21' <Predicate = true> <Delay = 0.48>
+State 4 <SV = 3> <Delay = 7.30>
+ST_4 : Operation 246 [68/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 246 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
 
-State 5 <SV = 4> <Delay = 3.45>
-ST_5 : Operation 60 [1/1] (0.00ns)   --->   "%k = phi i64 0, void %for.body4.split, i64 %k_1, void %for.inc36"   --->   Operation 60 'phi' 'k' <Predicate = true> <Delay = 0.00>
-ST_5 : Operation 61 [1/1] (1.48ns)   --->   "%icmp_ln21 = icmp_eq  i64 %k, i64 %B_columns_read" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 61 'icmp' 'icmp_ln21' <Predicate = true> <Delay = 1.48> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.48> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
-ST_5 : Operation 62 [1/1] (1.47ns)   --->   "%k_1 = add i64 %k, i64 1" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 62 'add' 'k_1' <Predicate = true> <Delay = 1.47> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 1.47> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
-ST_5 : Operation 63 [1/1] (0.00ns)   --->   "%br_ln21 = br i1 %icmp_ln21, void %VITIS_LOOP_22_4.split, void %for.inc39.loopexit" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 63 'br' 'br_ln21' <Predicate = true> <Delay = 0.00>
-ST_5 : Operation 64 [1/1] (0.00ns)   --->   "%trunc_ln21 = trunc i64 %k" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 64 'trunc' 'trunc_ln21' <Predicate = (!icmp_ln21)> <Delay = 0.00>
-ST_5 : Operation 65 [1/1] (0.00ns)   --->   "%trunc_ln21_1 = trunc i64 %k" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 65 'trunc' 'trunc_ln21_1' <Predicate = (!icmp_ln21)> <Delay = 0.00>
-ST_5 : Operation 66 [2/2] (1.97ns)   --->   "%call_ln19 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_22_4, i64 %B_rows_read, i3 %mul, i32 %A, i5 %trunc_ln4, i5 %trunc_ln21, i32 %B, i32 %acc" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 66 'call' 'call_ln19' <Predicate = (!icmp_ln21)> <Delay = 1.97> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
-ST_5 : Operation 67 [1/1] (0.74ns)   --->   "%add305 = add i3 %trunc_ln21_1, i3 %mul29" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 67 'add' 'add305' <Predicate = (!icmp_ln21)> <Delay = 0.74> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.74> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
-ST_5 : Operation 68 [1/1] (0.48ns)   --->   "%store_ln19 = store i64 %m_2, i64 %m" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 68 'store' 'store_ln19' <Predicate = (icmp_ln21)> <Delay = 0.48>
-ST_5 : Operation 69 [1/1] (0.00ns)   --->   "%br_ln19 = br void %for.body4" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 69 'br' 'br_ln19' <Predicate = (icmp_ln21)> <Delay = 0.00>
+State 5 <SV = 4> <Delay = 7.30>
+ST_5 : Operation 247 [67/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 247 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
 
-State 6 <SV = 5> <Delay = 0.79>
-ST_6 : Operation 70 [1/1] (0.00ns)   --->   "%specloopname_ln21 = specloopname void @_ssdm_op_SpecLoopName, void @empty_6" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 70 'specloopname' 'specloopname_ln21' <Predicate = true> <Delay = 0.00>
-ST_6 : Operation 71 [1/2] (0.00ns)   --->   "%call_ln19 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_22_4, i64 %B_rows_read, i3 %mul, i32 %A, i5 %trunc_ln4, i5 %trunc_ln21, i32 %B, i32 %acc" [HLS_Project/matrix_multiply.cpp:19]   --->   Operation 71 'call' 'call_ln19' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
-ST_6 : Operation 72 [1/1] (0.00ns)   --->   "%br_ln25 = br i1 %icmp_ln16, void %for.body27.lr.ph, void %for.inc36" [HLS_Project/matrix_multiply.cpp:25]   --->   Operation 72 'br' 'br_ln25' <Predicate = true> <Delay = 0.00>
-ST_6 : Operation 73 [1/1] (0.00ns)   --->   "%zext_ln26 = zext i3 %add305" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 73 'zext' 'zext_ln26' <Predicate = (!icmp_ln16)> <Delay = 0.00>
-ST_6 : Operation 74 [1/1] (0.00ns)   --->   "%C_out_addr = getelementptr i32 %C_out, i64 0, i64 %zext_ln26" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 74 'getelementptr' 'C_out_addr' <Predicate = (!icmp_ln16)> <Delay = 0.00>
-ST_6 : Operation 75 [2/2] (0.79ns)   --->   "%C_out_load = load i3 %C_out_addr" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 75 'load' 'C_out_load' <Predicate = (!icmp_ln16)> <Delay = 0.79> <CoreInst = "RAM_1P">   --->   Core 88 'RAM_1P' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 5> <RAM>
+State 6 <SV = 5> <Delay = 7.30>
+ST_6 : Operation 248 [66/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 248 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
 
-State 7 <SV = 6> <Delay = 2.76>
-ST_7 : Operation 76 [1/2] (0.79ns)   --->   "%C_out_load = load i3 %C_out_addr" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 76 'load' 'C_out_load' <Predicate = true> <Delay = 0.79> <CoreInst = "RAM_1P">   --->   Core 88 'RAM_1P' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 5> <RAM>
-ST_7 : Operation 77 [1/1] (0.00ns)   --->   "%bitcast_ln26 = bitcast i32 %C_out_load" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 77 'bitcast' 'bitcast_ln26' <Predicate = true> <Delay = 0.00>
-ST_7 : Operation 78 [2/2] (1.97ns)   --->   "%call_ln26 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_25_5, i32 %bitcast_ln26, i64 %B_rows_read, i32 %acc, i32 %add3211_loc" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 78 'call' 'call_ln26' <Predicate = true> <Delay = 1.97> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+State 7 <SV = 6> <Delay = 7.30>
+ST_7 : Operation 249 [65/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 249 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
 
-State 8 <SV = 7> <Delay = 0.00>
-ST_8 : Operation 79 [1/2] (0.00ns)   --->   "%call_ln26 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_25_5, i32 %bitcast_ln26, i64 %B_rows_read, i32 %acc, i32 %add3211_loc" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 79 'call' 'call_ln26' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+State 8 <SV = 7> <Delay = 7.30>
+ST_8 : Operation 250 [64/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 250 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
 
-State 9 <SV = 8> <Delay = 0.79>
-ST_9 : Operation 80 [1/1] (0.00ns)   --->   "%add3211_loc_load = load i32 %add3211_loc"   --->   Operation 80 'load' 'add3211_loc_load' <Predicate = (!icmp_ln16)> <Delay = 0.00>
-ST_9 : Operation 81 [1/1] (0.00ns)   --->   "%bitcast_ln26_1 = bitcast i32 %add3211_loc_load" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 81 'bitcast' 'bitcast_ln26_1' <Predicate = (!icmp_ln16)> <Delay = 0.00>
-ST_9 : Operation 82 [1/1] (0.79ns)   --->   "%store_ln26 = store i32 %bitcast_ln26_1, i3 %C_out_addr" [HLS_Project/matrix_multiply.cpp:26]   --->   Operation 82 'store' 'store_ln26' <Predicate = (!icmp_ln16)> <Delay = 0.79> <CoreInst = "RAM_1P">   --->   Core 88 'RAM_1P' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 1> <Width = 32> <Depth = 5> <RAM>
-ST_9 : Operation 83 [1/1] (0.00ns)   --->   "%br_ln21 = br void %for.inc36" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 83 'br' 'br_ln21' <Predicate = (!icmp_ln16)> <Delay = 0.00>
-ST_9 : Operation 84 [1/1] (0.00ns)   --->   "%br_ln21 = br void %VITIS_LOOP_22_4" [HLS_Project/matrix_multiply.cpp:21]   --->   Operation 84 'br' 'br_ln21' <Predicate = true> <Delay = 0.00>
+State 9 <SV = 8> <Delay = 7.30>
+ST_9 : Operation 251 [63/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 251 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 10 <SV = 9> <Delay = 7.30>
+ST_10 : Operation 252 [62/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 252 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 11 <SV = 10> <Delay = 7.30>
+ST_11 : Operation 253 [61/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 253 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 12 <SV = 11> <Delay = 7.30>
+ST_12 : Operation 254 [60/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 254 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 13 <SV = 12> <Delay = 7.30>
+ST_13 : Operation 255 [59/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 255 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 14 <SV = 13> <Delay = 7.30>
+ST_14 : Operation 256 [58/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 256 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 15 <SV = 14> <Delay = 7.30>
+ST_15 : Operation 257 [57/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 257 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 16 <SV = 15> <Delay = 7.30>
+ST_16 : Operation 258 [56/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 258 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 17 <SV = 16> <Delay = 7.30>
+ST_17 : Operation 259 [55/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 259 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 18 <SV = 17> <Delay = 7.30>
+ST_18 : Operation 260 [54/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 260 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 19 <SV = 18> <Delay = 7.30>
+ST_19 : Operation 261 [53/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 261 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 20 <SV = 19> <Delay = 7.30>
+ST_20 : Operation 262 [52/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 262 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 21 <SV = 20> <Delay = 7.30>
+ST_21 : Operation 263 [51/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 263 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 22 <SV = 21> <Delay = 7.30>
+ST_22 : Operation 264 [50/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 264 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 23 <SV = 22> <Delay = 7.30>
+ST_23 : Operation 265 [49/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 265 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 24 <SV = 23> <Delay = 7.30>
+ST_24 : Operation 266 [48/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 266 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 25 <SV = 24> <Delay = 7.30>
+ST_25 : Operation 267 [47/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 267 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 26 <SV = 25> <Delay = 7.30>
+ST_26 : Operation 268 [46/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 268 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 27 <SV = 26> <Delay = 7.30>
+ST_27 : Operation 269 [45/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 269 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 28 <SV = 27> <Delay = 7.30>
+ST_28 : Operation 270 [44/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 270 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 29 <SV = 28> <Delay = 7.30>
+ST_29 : Operation 271 [43/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 271 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 30 <SV = 29> <Delay = 7.30>
+ST_30 : Operation 272 [42/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 272 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 31 <SV = 30> <Delay = 7.30>
+ST_31 : Operation 273 [41/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 273 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 32 <SV = 31> <Delay = 7.30>
+ST_32 : Operation 274 [40/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 274 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 33 <SV = 32> <Delay = 7.30>
+ST_33 : Operation 275 [39/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 275 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 34 <SV = 33> <Delay = 7.30>
+ST_34 : Operation 276 [38/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 276 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 35 <SV = 34> <Delay = 7.30>
+ST_35 : Operation 277 [37/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 277 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 36 <SV = 35> <Delay = 7.30>
+ST_36 : Operation 278 [36/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 278 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 37 <SV = 36> <Delay = 7.30>
+ST_37 : Operation 279 [35/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 279 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 38 <SV = 37> <Delay = 7.30>
+ST_38 : Operation 280 [34/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 280 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 39 <SV = 38> <Delay = 7.30>
+ST_39 : Operation 281 [33/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 281 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 40 <SV = 39> <Delay = 7.30>
+ST_40 : Operation 282 [32/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 282 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 41 <SV = 40> <Delay = 7.30>
+ST_41 : Operation 283 [31/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 283 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 42 <SV = 41> <Delay = 7.30>
+ST_42 : Operation 284 [30/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 284 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 43 <SV = 42> <Delay = 7.30>
+ST_43 : Operation 285 [29/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 285 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 44 <SV = 43> <Delay = 7.30>
+ST_44 : Operation 286 [28/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 286 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 45 <SV = 44> <Delay = 7.30>
+ST_45 : Operation 287 [27/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 287 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 46 <SV = 45> <Delay = 7.30>
+ST_46 : Operation 288 [26/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 288 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 47 <SV = 46> <Delay = 7.30>
+ST_47 : Operation 289 [25/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 289 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 48 <SV = 47> <Delay = 7.30>
+ST_48 : Operation 290 [24/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 290 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 49 <SV = 48> <Delay = 7.30>
+ST_49 : Operation 291 [23/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 291 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 50 <SV = 49> <Delay = 7.30>
+ST_50 : Operation 292 [22/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 292 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 51 <SV = 50> <Delay = 7.30>
+ST_51 : Operation 293 [21/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 293 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 52 <SV = 51> <Delay = 7.30>
+ST_52 : Operation 294 [20/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 294 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 53 <SV = 52> <Delay = 7.30>
+ST_53 : Operation 295 [19/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 295 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 54 <SV = 53> <Delay = 7.30>
+ST_54 : Operation 296 [18/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 296 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 55 <SV = 54> <Delay = 7.30>
+ST_55 : Operation 297 [17/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 297 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 56 <SV = 55> <Delay = 7.30>
+ST_56 : Operation 298 [16/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 298 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 57 <SV = 56> <Delay = 7.30>
+ST_57 : Operation 299 [15/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 299 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 58 <SV = 57> <Delay = 7.30>
+ST_58 : Operation 300 [14/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 300 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 59 <SV = 58> <Delay = 7.30>
+ST_59 : Operation 301 [13/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 301 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 60 <SV = 59> <Delay = 7.30>
+ST_60 : Operation 302 [12/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 302 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 61 <SV = 60> <Delay = 7.30>
+ST_61 : Operation 303 [11/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 303 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 62 <SV = 61> <Delay = 7.30>
+ST_62 : Operation 304 [10/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 304 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 63 <SV = 62> <Delay = 7.30>
+ST_63 : Operation 305 [9/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 305 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 64 <SV = 63> <Delay = 7.30>
+ST_64 : Operation 306 [8/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 306 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 65 <SV = 64> <Delay = 7.30>
+ST_65 : Operation 307 [7/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 307 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 66 <SV = 65> <Delay = 7.30>
+ST_66 : Operation 308 [6/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 308 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 67 <SV = 66> <Delay = 7.30>
+ST_67 : Operation 309 [5/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 309 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 68 <SV = 67> <Delay = 7.30>
+ST_68 : Operation 310 [4/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 310 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 69 <SV = 68> <Delay = 7.30>
+ST_69 : Operation 311 [3/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 311 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 70 <SV = 69> <Delay = 7.30>
+ST_70 : Operation 312 [2/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 312 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 71 <SV = 70> <Delay = 7.30>
+ST_71 : Operation 313 [1/70] (7.30ns)   --->   "%empty = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr, i32 5" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 313 'readreq' 'empty' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 72 <SV = 71> <Delay = 0.00>
+ST_72 : Operation 314 [2/2] (0.00ns)   --->   "%call_ln20 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_20_1, i32 %arrays, i62 %trunc_ln, i32 %A" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 314 'call' 'call_ln20' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 73 <SV = 72> <Delay = 0.00>
+ST_73 : Operation 315 [1/2] (0.00ns)   --->   "%call_ln20 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_20_1, i32 %arrays, i62 %trunc_ln, i32 %A" [HLS_Project/matrix_multiply.cpp:20]   --->   Operation 315 'call' 'call_ln20' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 74 <SV = 73> <Delay = 7.30>
+ST_74 : Operation 316 [1/1] (0.00ns)   --->   "%sext_ln24 = sext i62 %trunc_ln1" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 316 'sext' 'sext_ln24' <Predicate = true> <Delay = 0.00>
+ST_74 : Operation 317 [1/1] (0.00ns)   --->   "%arrays_addr_1 = getelementptr i32 %arrays, i64 %sext_ln24" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 317 'getelementptr' 'arrays_addr_1' <Predicate = true> <Delay = 0.00>
+ST_74 : Operation 318 [70/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 318 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 75 <SV = 74> <Delay = 7.30>
+ST_75 : Operation 319 [69/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 319 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 76 <SV = 75> <Delay = 7.30>
+ST_76 : Operation 320 [68/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 320 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 77 <SV = 76> <Delay = 7.30>
+ST_77 : Operation 321 [67/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 321 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 78 <SV = 77> <Delay = 7.30>
+ST_78 : Operation 322 [66/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 322 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 79 <SV = 78> <Delay = 7.30>
+ST_79 : Operation 323 [65/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 323 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 80 <SV = 79> <Delay = 7.30>
+ST_80 : Operation 324 [64/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 324 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 81 <SV = 80> <Delay = 7.30>
+ST_81 : Operation 325 [63/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 325 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 82 <SV = 81> <Delay = 7.30>
+ST_82 : Operation 326 [62/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 326 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 83 <SV = 82> <Delay = 7.30>
+ST_83 : Operation 327 [61/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 327 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 84 <SV = 83> <Delay = 7.30>
+ST_84 : Operation 328 [60/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 328 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 85 <SV = 84> <Delay = 7.30>
+ST_85 : Operation 329 [59/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 329 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 86 <SV = 85> <Delay = 7.30>
+ST_86 : Operation 330 [58/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 330 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 87 <SV = 86> <Delay = 7.30>
+ST_87 : Operation 331 [57/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 331 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 88 <SV = 87> <Delay = 7.30>
+ST_88 : Operation 332 [56/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 332 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 89 <SV = 88> <Delay = 7.30>
+ST_89 : Operation 333 [55/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 333 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 90 <SV = 89> <Delay = 7.30>
+ST_90 : Operation 334 [54/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 334 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 91 <SV = 90> <Delay = 7.30>
+ST_91 : Operation 335 [53/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 335 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 92 <SV = 91> <Delay = 7.30>
+ST_92 : Operation 336 [52/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 336 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 93 <SV = 92> <Delay = 7.30>
+ST_93 : Operation 337 [51/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 337 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 94 <SV = 93> <Delay = 7.30>
+ST_94 : Operation 338 [50/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 338 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 95 <SV = 94> <Delay = 7.30>
+ST_95 : Operation 339 [49/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 339 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 96 <SV = 95> <Delay = 7.30>
+ST_96 : Operation 340 [48/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 340 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 97 <SV = 96> <Delay = 7.30>
+ST_97 : Operation 341 [47/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 341 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 98 <SV = 97> <Delay = 7.30>
+ST_98 : Operation 342 [46/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 342 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 99 <SV = 98> <Delay = 7.30>
+ST_99 : Operation 343 [45/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 343 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 100 <SV = 99> <Delay = 7.30>
+ST_100 : Operation 344 [44/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 344 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 101 <SV = 100> <Delay = 7.30>
+ST_101 : Operation 345 [43/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 345 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 102 <SV = 101> <Delay = 7.30>
+ST_102 : Operation 346 [42/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 346 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 103 <SV = 102> <Delay = 7.30>
+ST_103 : Operation 347 [41/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 347 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 104 <SV = 103> <Delay = 7.30>
+ST_104 : Operation 348 [40/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 348 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 105 <SV = 104> <Delay = 7.30>
+ST_105 : Operation 349 [39/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 349 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 106 <SV = 105> <Delay = 7.30>
+ST_106 : Operation 350 [38/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 350 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 107 <SV = 106> <Delay = 7.30>
+ST_107 : Operation 351 [37/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 351 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 108 <SV = 107> <Delay = 7.30>
+ST_108 : Operation 352 [36/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 352 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 109 <SV = 108> <Delay = 7.30>
+ST_109 : Operation 353 [35/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 353 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 110 <SV = 109> <Delay = 7.30>
+ST_110 : Operation 354 [34/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 354 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 111 <SV = 110> <Delay = 7.30>
+ST_111 : Operation 355 [33/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 355 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 112 <SV = 111> <Delay = 7.30>
+ST_112 : Operation 356 [32/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 356 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 113 <SV = 112> <Delay = 7.30>
+ST_113 : Operation 357 [31/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 357 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 114 <SV = 113> <Delay = 7.30>
+ST_114 : Operation 358 [30/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 358 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 115 <SV = 114> <Delay = 7.30>
+ST_115 : Operation 359 [29/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 359 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 116 <SV = 115> <Delay = 7.30>
+ST_116 : Operation 360 [28/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 360 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 117 <SV = 116> <Delay = 7.30>
+ST_117 : Operation 361 [27/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 361 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 118 <SV = 117> <Delay = 7.30>
+ST_118 : Operation 362 [26/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 362 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 119 <SV = 118> <Delay = 7.30>
+ST_119 : Operation 363 [25/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 363 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 120 <SV = 119> <Delay = 7.30>
+ST_120 : Operation 364 [24/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 364 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 121 <SV = 120> <Delay = 7.30>
+ST_121 : Operation 365 [23/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 365 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 122 <SV = 121> <Delay = 7.30>
+ST_122 : Operation 366 [22/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 366 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 123 <SV = 122> <Delay = 7.30>
+ST_123 : Operation 367 [21/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 367 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 124 <SV = 123> <Delay = 7.30>
+ST_124 : Operation 368 [20/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 368 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 125 <SV = 124> <Delay = 7.30>
+ST_125 : Operation 369 [19/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 369 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 126 <SV = 125> <Delay = 7.30>
+ST_126 : Operation 370 [18/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 370 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 127 <SV = 126> <Delay = 7.30>
+ST_127 : Operation 371 [17/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 371 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 128 <SV = 127> <Delay = 7.30>
+ST_128 : Operation 372 [16/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 372 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 129 <SV = 128> <Delay = 7.30>
+ST_129 : Operation 373 [15/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 373 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 130 <SV = 129> <Delay = 7.30>
+ST_130 : Operation 374 [14/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 374 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 131 <SV = 130> <Delay = 7.30>
+ST_131 : Operation 375 [13/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 375 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 132 <SV = 131> <Delay = 7.30>
+ST_132 : Operation 376 [12/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 376 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 133 <SV = 132> <Delay = 7.30>
+ST_133 : Operation 377 [11/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 377 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 134 <SV = 133> <Delay = 7.30>
+ST_134 : Operation 378 [10/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 378 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 135 <SV = 134> <Delay = 7.30>
+ST_135 : Operation 379 [9/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 379 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 136 <SV = 135> <Delay = 7.30>
+ST_136 : Operation 380 [8/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 380 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 137 <SV = 136> <Delay = 7.30>
+ST_137 : Operation 381 [7/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 381 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 138 <SV = 137> <Delay = 7.30>
+ST_138 : Operation 382 [6/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 382 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 139 <SV = 138> <Delay = 7.30>
+ST_139 : Operation 383 [5/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 383 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 140 <SV = 139> <Delay = 7.30>
+ST_140 : Operation 384 [4/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 384 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 141 <SV = 140> <Delay = 7.30>
+ST_141 : Operation 385 [3/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 385 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 142 <SV = 141> <Delay = 7.30>
+ST_142 : Operation 386 [2/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 386 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 143 <SV = 142> <Delay = 7.30>
+ST_143 : Operation 387 [1/70] (7.30ns)   --->   "%empty_37 = readreq i1 @_ssdm_op_ReadReq.m_axi.p1i32, i32 %arrays_addr_1, i32 25" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 387 'readreq' 'empty_37' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 144 <SV = 143> <Delay = 0.00>
+ST_144 : Operation 388 [2/2] (0.00ns)   --->   "%call_ln24 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_24_2, i32 %arrays, i62 %trunc_ln1, i32 %B" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 388 'call' 'call_ln24' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 145 <SV = 144> <Delay = 2.48>
+ST_145 : Operation 389 [1/1] (1.00ns)   --->   "%B_columns_read = read i64 @_ssdm_op_Read.ap_none.i64, i64 %B_columns"   --->   Operation 389 'read' 'B_columns_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_145 : Operation 390 [1/1] (1.00ns)   --->   "%B_rows_read = read i64 @_ssdm_op_Read.ap_none.i64, i64 %B_rows"   --->   Operation 390 'read' 'B_rows_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_145 : Operation 391 [1/1] (1.00ns)   --->   "%A_rows_read = read i64 @_ssdm_op_Read.ap_none.i64, i64 %A_rows"   --->   Operation 391 'read' 'A_rows_read' <Predicate = true> <Delay = 1.00> <CoreInst = "s_axilite">   --->   Core 122 's_axilite' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write'>
+ST_145 : Operation 392 [1/1] (0.00ns)   --->   "%trunc_ln4 = trunc i64 %B_columns_read" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 392 'trunc' 'trunc_ln4' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 393 [1/1] (0.00ns)   --->   "%trunc_ln4_1 = trunc i64 %B_columns_read" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 393 'trunc' 'trunc_ln4_1' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 394 [1/1] (0.00ns)   --->   "%trunc_ln4_2 = trunc i64 %B_rows_read" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 394 'trunc' 'trunc_ln4_2' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 395 [1/1] (0.00ns)   --->   "%spectopmodule_ln4 = spectopmodule void @_ssdm_op_SpecTopModule, void @empty_12" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 395 'spectopmodule' 'spectopmodule_ln4' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 396 [1/1] (0.00ns)   --->   "%specinterface_ln4 = specinterface void @_ssdm_op_SpecInterface, i32 0, void @empty_14, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_6, void @empty_6, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_6, i32 4294967295, i32 0" [HLS_Project/matrix_multiply.cpp:4]   --->   Operation 396 'specinterface' 'specinterface_ln4' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 397 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 %arrays, void @empty_5, i32 0, i32 0, void @empty_6, i32 64, i32 32, void @empty_7, void @empty_8, void @empty_6, i32 16, i32 16, i32 16, i32 16, void @empty_6, void @empty_6, i32 4294967295, i32 0"   --->   Operation 397 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 398 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i32 %arrays"   --->   Operation 398 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 399 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %A_input, void @empty_15, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_13, void @empty, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_0, i32 4294967295, i32 0"   --->   Operation 399 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 400 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %A_input, void @empty_1, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_6, void @empty_6, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_0, i32 4294967295, i32 0"   --->   Operation 400 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 401 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_input, void @empty_15, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_13, void @empty_2, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_0, i32 4294967295, i32 0"   --->   Operation 401 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 402 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_input, void @empty_1, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_6, void @empty_6, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_0, i32 4294967295, i32 0"   --->   Operation 402 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 403 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %C_output, void @empty_15, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_13, void @empty_3, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_0, i32 4294967295, i32 0"   --->   Operation 403 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 404 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %C_output, void @empty_1, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_6, void @empty_6, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_0, i32 4294967295, i32 0"   --->   Operation 404 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 405 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %A_rows"   --->   Operation 405 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 406 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %A_rows, void @empty_15, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_13, void @empty_4, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_6, i32 4294967295, i32 0"   --->   Operation 406 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 407 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %A_rows, void @empty_22, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_6, void @empty_6, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_6, i32 4294967295, i32 0"   --->   Operation 407 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 408 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %B_rows"   --->   Operation 408 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 409 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_rows, void @empty_15, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_13, void @empty_10, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_6, i32 4294967295, i32 0"   --->   Operation 409 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 410 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_rows, void @empty_22, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_6, void @empty_6, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_6, i32 4294967295, i32 0"   --->   Operation 410 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 411 [1/1] (0.00ns)   --->   "%specbitsmap_ln0 = specbitsmap void @_ssdm_op_SpecBitsMap, i64 %B_columns"   --->   Operation 411 'specbitsmap' 'specbitsmap_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 412 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_columns, void @empty_15, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_13, void @empty_11, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_6, i32 4294967295, i32 0"   --->   Operation 412 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 413 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i64 %B_columns, void @empty_22, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_6, void @empty_6, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_6, i32 4294967295, i32 0"   --->   Operation 413 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 414 [1/1] (0.00ns)   --->   "%specinterface_ln0 = specinterface void @_ssdm_op_SpecInterface, i32 0, void @empty_15, i32 0, i32 0, void @empty_6, i32 0, i32 0, void @empty_13, void @empty_6, void @empty_6, i32 0, i32 0, i32 0, i32 0, void @empty_6, void @empty_6, i32 4294967295, i32 0"   --->   Operation 414 'specinterface' 'specinterface_ln0' <Predicate = true> <Delay = 0.00>
+ST_145 : Operation 415 [1/2] (0.00ns)   --->   "%call_ln24 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_24_2, i32 %arrays, i62 %trunc_ln1, i32 %B" [HLS_Project/matrix_multiply.cpp:24]   --->   Operation 415 'call' 'call_ln24' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_145 : Operation 416 [1/1] (1.48ns)   --->   "%cmp248 = icmp_eq  i64 %B_rows_read, i64 0"   --->   Operation 416 'icmp' 'cmp248' <Predicate = true> <Delay = 1.48> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.48> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_145 : Operation 417 [1/1] (0.00ns)   --->   "%br_ln28 = br void %for.body18" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 417 'br' 'br_ln28' <Predicate = true> <Delay = 0.00>
+
+State 146 <SV = 145> <Delay = 1.48>
+ST_146 : Operation 418 [1/1] (0.00ns)   --->   "%m_1 = load i64 %m" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 418 'load' 'm_1' <Predicate = true> <Delay = 0.00>
+ST_146 : Operation 419 [1/1] (1.48ns)   --->   "%icmp_ln28 = icmp_eq  i64 %m_1, i64 %A_rows_read" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 419 'icmp' 'icmp_ln28' <Predicate = true> <Delay = 1.48> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.48> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_146 : Operation 420 [1/1] (1.47ns)   --->   "%m_2 = add i64 %m_1, i64 1" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 420 'add' 'm_2' <Predicate = true> <Delay = 1.47> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 1.47> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_146 : Operation 421 [1/1] (0.00ns)   --->   "%br_ln28 = br i1 %icmp_ln28, void %for.body18.split, void %VITIS_LOOP_41_7.loopexit" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 421 'br' 'br_ln28' <Predicate = true> <Delay = 0.00>
+ST_146 : Operation 422 [1/1] (0.00ns)   --->   "%trunc_ln28 = trunc i64 %m_1" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 422 'trunc' 'trunc_ln28' <Predicate = (!icmp_ln28)> <Delay = 0.00>
+ST_146 : Operation 423 [2/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_6, i32 %acc"   --->   Operation 423 'call' 'call_ln0' <Predicate = (!icmp_ln28)> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_146 : Operation 424 [1/1] (0.58ns)   --->   "%mul = mul i3 %trunc_ln28, i3 %trunc_ln4_2" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 424 'mul' 'mul' <Predicate = (!icmp_ln28)> <Delay = 0.58> <CoreInst = "Multiplier">   --->   Core 3 'Multiplier' <Latency = 0> <II = 1> <Delay = 0.58> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_146 : Operation 425 [1/1] (0.58ns)   --->   "%mul42 = mul i3 %trunc_ln28, i3 %trunc_ln4_1" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 425 'mul' 'mul42' <Predicate = (!icmp_ln28)> <Delay = 0.58> <CoreInst = "Multiplier">   --->   Core 3 'Multiplier' <Latency = 0> <II = 1> <Delay = 0.58> <FuncUnit> <Opcode : 'mul'> <InPorts = 2> <OutPorts = 1>
+ST_146 : Operation 426 [1/1] (0.00ns)   --->   "%trunc_ln2 = partselect i62 @_ssdm_op_PartSelect.i62.i64.i32.i32, i64 %C_output_read, i32 2, i32 63" [HLS_Project/matrix_multiply.cpp:41]   --->   Operation 426 'partselect' 'trunc_ln2' <Predicate = (icmp_ln28)> <Delay = 0.00>
+
+State 147 <SV = 146> <Delay = 0.48>
+ST_147 : Operation 427 [1/1] (0.00ns)   --->   "%specloopname_ln28 = specloopname void @_ssdm_op_SpecLoopName, void @empty_19" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 427 'specloopname' 'specloopname_ln28' <Predicate = true> <Delay = 0.00>
+ST_147 : Operation 428 [1/2] (0.00ns)   --->   "%call_ln0 = call void @MatrixMultiplication_Pipeline_6, i32 %acc"   --->   Operation 428 'call' 'call_ln0' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_147 : Operation 429 [1/1] (0.48ns)   --->   "%br_ln30 = br void %VITIS_LOOP_31_5" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 429 'br' 'br_ln30' <Predicate = true> <Delay = 0.48>
+
+State 148 <SV = 147> <Delay = 3.45>
+ST_148 : Operation 430 [1/1] (0.00ns)   --->   "%k = phi i64 0, void %for.body18.split, i64 %k_1, void %for.inc49"   --->   Operation 430 'phi' 'k' <Predicate = true> <Delay = 0.00>
+ST_148 : Operation 431 [1/1] (1.48ns)   --->   "%icmp_ln30 = icmp_eq  i64 %k, i64 %B_columns_read" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 431 'icmp' 'icmp_ln30' <Predicate = true> <Delay = 1.48> <CoreInst = "Cmp">   --->   Core 9 'Cmp' <Latency = 0> <II = 1> <Delay = 1.48> <FuncUnit> <Opcode : 'icmp'> <InPorts = 2> <OutPorts = 1>
+ST_148 : Operation 432 [1/1] (1.47ns)   --->   "%k_1 = add i64 %k, i64 1" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 432 'add' 'k_1' <Predicate = true> <Delay = 1.47> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 1.47> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_148 : Operation 433 [1/1] (0.00ns)   --->   "%br_ln30 = br i1 %icmp_ln30, void %VITIS_LOOP_31_5.split, void %for.inc52.loopexit" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 433 'br' 'br_ln30' <Predicate = true> <Delay = 0.00>
+ST_148 : Operation 434 [1/1] (0.00ns)   --->   "%trunc_ln30 = trunc i64 %k" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 434 'trunc' 'trunc_ln30' <Predicate = (!icmp_ln30)> <Delay = 0.00>
+ST_148 : Operation 435 [1/1] (0.00ns)   --->   "%trunc_ln30_1 = trunc i64 %k" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 435 'trunc' 'trunc_ln30_1' <Predicate = (!icmp_ln30)> <Delay = 0.00>
+ST_148 : Operation 436 [2/2] (1.97ns)   --->   "%call_ln28 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_31_5, i64 %B_rows_read, i3 %mul, i32 %A, i5 %trunc_ln4, i5 %trunc_ln30, i32 %B, i32 %acc" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 436 'call' 'call_ln28' <Predicate = (!icmp_ln30)> <Delay = 1.97> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_148 : Operation 437 [1/1] (0.74ns)   --->   "%add43 = add i3 %trunc_ln30_1, i3 %mul42" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 437 'add' 'add43' <Predicate = (!icmp_ln30)> <Delay = 0.74> <CoreInst = "Adder">   --->   Core 1 'Adder' <Latency = 0> <II = 1> <Delay = 0.74> <FuncUnit> <Opcode : 'add' 'sub'> <InPorts = 2> <OutPorts = 1>
+ST_148 : Operation 438 [1/1] (0.00ns)   --->   "%add43_cast = zext i3 %add43" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 438 'zext' 'add43_cast' <Predicate = (!icmp_ln30)> <Delay = 0.00>
+ST_148 : Operation 439 [1/1] (0.00ns)   --->   "%C_addr = getelementptr i32 %C, i64 0, i64 %add43_cast" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 439 'getelementptr' 'C_addr' <Predicate = (!icmp_ln30)> <Delay = 0.00>
+ST_148 : Operation 440 [1/1] (0.48ns)   --->   "%store_ln28 = store i64 %m_2, i64 %m" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 440 'store' 'store_ln28' <Predicate = (icmp_ln30)> <Delay = 0.48>
+ST_148 : Operation 441 [1/1] (0.00ns)   --->   "%br_ln28 = br void %for.body18" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 441 'br' 'br_ln28' <Predicate = (icmp_ln30)> <Delay = 0.00>
+
+State 149 <SV = 148> <Delay = 0.79>
+ST_149 : Operation 442 [1/1] (0.00ns)   --->   "%specloopname_ln30 = specloopname void @_ssdm_op_SpecLoopName, void @empty_18" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 442 'specloopname' 'specloopname_ln30' <Predicate = true> <Delay = 0.00>
+ST_149 : Operation 443 [1/2] (0.00ns)   --->   "%call_ln28 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_31_5, i64 %B_rows_read, i3 %mul, i32 %A, i5 %trunc_ln4, i5 %trunc_ln30, i32 %B, i32 %acc" [HLS_Project/matrix_multiply.cpp:28]   --->   Operation 443 'call' 'call_ln28' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+ST_149 : Operation 444 [1/1] (0.00ns)   --->   "%br_ln34 = br i1 %cmp248, void %for.body40.lr.ph, void %for.inc49" [HLS_Project/matrix_multiply.cpp:34]   --->   Operation 444 'br' 'br_ln34' <Predicate = true> <Delay = 0.00>
+ST_149 : Operation 445 [2/2] (0.79ns)   --->   "%C_load = load i3 %C_addr" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 445 'load' 'C_load' <Predicate = (!cmp248)> <Delay = 0.79> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 5> <RAM>
+
+State 150 <SV = 149> <Delay = 2.76>
+ST_150 : Operation 446 [1/2] (0.79ns)   --->   "%C_load = load i3 %C_addr" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 446 'load' 'C_load' <Predicate = true> <Delay = 0.79> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 5> <RAM>
+ST_150 : Operation 447 [2/2] (1.97ns)   --->   "%call_ln35 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_34_6, i32 %C_load, i64 %B_rows_read, i32 %acc, i32 %add4518_loc" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 447 'call' 'call_ln35' <Predicate = true> <Delay = 1.97> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 151 <SV = 150> <Delay = 0.00>
+ST_151 : Operation 448 [1/2] (0.00ns)   --->   "%call_ln35 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_34_6, i32 %C_load, i64 %B_rows_read, i32 %acc, i32 %add4518_loc" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 448 'call' 'call_ln35' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 152 <SV = 151> <Delay = 0.79>
+ST_152 : Operation 449 [1/1] (0.00ns)   --->   "%add4518_loc_load = load i32 %add4518_loc"   --->   Operation 449 'load' 'add4518_loc_load' <Predicate = (!cmp248)> <Delay = 0.00>
+ST_152 : Operation 450 [1/1] (0.79ns)   --->   "%store_ln35 = store i32 %add4518_loc_load, i3 %C_addr" [HLS_Project/matrix_multiply.cpp:35]   --->   Operation 450 'store' 'store_ln35' <Predicate = (!cmp248)> <Delay = 0.79> <CoreInst = "RAM">   --->   Core 83 'RAM' <Latency = 1> <II = 1> <Delay = 0.79> <Storage> <Opcode : 'load' 'store'> <Ports = 2> <Width = 32> <Depth = 5> <RAM>
+ST_152 : Operation 451 [1/1] (0.00ns)   --->   "%br_ln30 = br void %for.inc49" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 451 'br' 'br_ln30' <Predicate = (!cmp248)> <Delay = 0.00>
+ST_152 : Operation 452 [1/1] (0.00ns)   --->   "%br_ln30 = br void %VITIS_LOOP_31_5" [HLS_Project/matrix_multiply.cpp:30]   --->   Operation 452 'br' 'br_ln30' <Predicate = true> <Delay = 0.00>
+
+State 153 <SV = 146> <Delay = 7.30>
+ST_153 : Operation 453 [1/1] (0.00ns)   --->   "%sext_ln41 = sext i62 %trunc_ln2" [HLS_Project/matrix_multiply.cpp:41]   --->   Operation 453 'sext' 'sext_ln41' <Predicate = true> <Delay = 0.00>
+ST_153 : Operation 454 [1/1] (0.00ns)   --->   "%arrays_addr_2 = getelementptr i32 %arrays, i64 %sext_ln41" [HLS_Project/matrix_multiply.cpp:41]   --->   Operation 454 'getelementptr' 'arrays_addr_2' <Predicate = true> <Delay = 0.00>
+ST_153 : Operation 455 [1/1] (7.30ns)   --->   "%empty_38 = writereq i1 @_ssdm_op_WriteReq.m_axi.p1i32, i32 %arrays_addr_2, i32 5" [HLS_Project/matrix_multiply.cpp:41]   --->   Operation 455 'writereq' 'empty_38' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 154 <SV = 147> <Delay = 0.00>
+ST_154 : Operation 456 [2/2] (0.00ns)   --->   "%call_ln41 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_41_7, i32 %arrays, i62 %trunc_ln2, i32 %C" [HLS_Project/matrix_multiply.cpp:41]   --->   Operation 456 'call' 'call_ln41' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 155 <SV = 148> <Delay = 0.00>
+ST_155 : Operation 457 [1/2] (0.00ns)   --->   "%call_ln41 = call void @MatrixMultiplication_Pipeline_VITIS_LOOP_41_7, i32 %arrays, i62 %trunc_ln2, i32 %C" [HLS_Project/matrix_multiply.cpp:41]   --->   Operation 457 'call' 'call_ln41' <Predicate = true> <Delay = 0.00> <CoreType = "Generic">   --->   Core 0 '' <Latency = 0> <II = 1> <Delay = 1.00> <Generic> <Opcode : >
+
+State 156 <SV = 149> <Delay = 7.30>
+ST_156 : Operation 458 [68/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 458 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 157 <SV = 150> <Delay = 7.30>
+ST_157 : Operation 459 [67/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 459 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 158 <SV = 151> <Delay = 7.30>
+ST_158 : Operation 460 [66/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 460 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 159 <SV = 152> <Delay = 7.30>
+ST_159 : Operation 461 [65/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 461 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 160 <SV = 153> <Delay = 7.30>
+ST_160 : Operation 462 [64/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 462 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 161 <SV = 154> <Delay = 7.30>
+ST_161 : Operation 463 [63/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 463 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 162 <SV = 155> <Delay = 7.30>
+ST_162 : Operation 464 [62/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 464 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 163 <SV = 156> <Delay = 7.30>
+ST_163 : Operation 465 [61/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 465 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 164 <SV = 157> <Delay = 7.30>
+ST_164 : Operation 466 [60/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 466 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 165 <SV = 158> <Delay = 7.30>
+ST_165 : Operation 467 [59/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 467 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 166 <SV = 159> <Delay = 7.30>
+ST_166 : Operation 468 [58/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 468 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 167 <SV = 160> <Delay = 7.30>
+ST_167 : Operation 469 [57/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 469 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 168 <SV = 161> <Delay = 7.30>
+ST_168 : Operation 470 [56/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 470 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 169 <SV = 162> <Delay = 7.30>
+ST_169 : Operation 471 [55/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 471 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 170 <SV = 163> <Delay = 7.30>
+ST_170 : Operation 472 [54/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 472 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 171 <SV = 164> <Delay = 7.30>
+ST_171 : Operation 473 [53/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 473 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 172 <SV = 165> <Delay = 7.30>
+ST_172 : Operation 474 [52/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 474 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 173 <SV = 166> <Delay = 7.30>
+ST_173 : Operation 475 [51/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 475 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 174 <SV = 167> <Delay = 7.30>
+ST_174 : Operation 476 [50/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 476 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 175 <SV = 168> <Delay = 7.30>
+ST_175 : Operation 477 [49/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 477 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 176 <SV = 169> <Delay = 7.30>
+ST_176 : Operation 478 [48/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 478 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 177 <SV = 170> <Delay = 7.30>
+ST_177 : Operation 479 [47/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 479 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 178 <SV = 171> <Delay = 7.30>
+ST_178 : Operation 480 [46/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 480 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 179 <SV = 172> <Delay = 7.30>
+ST_179 : Operation 481 [45/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 481 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 180 <SV = 173> <Delay = 7.30>
+ST_180 : Operation 482 [44/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 482 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 181 <SV = 174> <Delay = 7.30>
+ST_181 : Operation 483 [43/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 483 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 182 <SV = 175> <Delay = 7.30>
+ST_182 : Operation 484 [42/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 484 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 183 <SV = 176> <Delay = 7.30>
+ST_183 : Operation 485 [41/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 485 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 184 <SV = 177> <Delay = 7.30>
+ST_184 : Operation 486 [40/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 486 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 185 <SV = 178> <Delay = 7.30>
+ST_185 : Operation 487 [39/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 487 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 186 <SV = 179> <Delay = 7.30>
+ST_186 : Operation 488 [38/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 488 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 187 <SV = 180> <Delay = 7.30>
+ST_187 : Operation 489 [37/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 489 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 188 <SV = 181> <Delay = 7.30>
+ST_188 : Operation 490 [36/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 490 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 189 <SV = 182> <Delay = 7.30>
+ST_189 : Operation 491 [35/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 491 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 190 <SV = 183> <Delay = 7.30>
+ST_190 : Operation 492 [34/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 492 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 191 <SV = 184> <Delay = 7.30>
+ST_191 : Operation 493 [33/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 493 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 192 <SV = 185> <Delay = 7.30>
+ST_192 : Operation 494 [32/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 494 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 193 <SV = 186> <Delay = 7.30>
+ST_193 : Operation 495 [31/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 495 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 194 <SV = 187> <Delay = 7.30>
+ST_194 : Operation 496 [30/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 496 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 195 <SV = 188> <Delay = 7.30>
+ST_195 : Operation 497 [29/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 497 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 196 <SV = 189> <Delay = 7.30>
+ST_196 : Operation 498 [28/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 498 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 197 <SV = 190> <Delay = 7.30>
+ST_197 : Operation 499 [27/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 499 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 198 <SV = 191> <Delay = 7.30>
+ST_198 : Operation 500 [26/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 500 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 199 <SV = 192> <Delay = 7.30>
+ST_199 : Operation 501 [25/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 501 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 200 <SV = 193> <Delay = 7.30>
+ST_200 : Operation 502 [24/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 502 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 201 <SV = 194> <Delay = 7.30>
+ST_201 : Operation 503 [23/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 503 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 202 <SV = 195> <Delay = 7.30>
+ST_202 : Operation 504 [22/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 504 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 203 <SV = 196> <Delay = 7.30>
+ST_203 : Operation 505 [21/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 505 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 204 <SV = 197> <Delay = 7.30>
+ST_204 : Operation 506 [20/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 506 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 205 <SV = 198> <Delay = 7.30>
+ST_205 : Operation 507 [19/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 507 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 206 <SV = 199> <Delay = 7.30>
+ST_206 : Operation 508 [18/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 508 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 207 <SV = 200> <Delay = 7.30>
+ST_207 : Operation 509 [17/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 509 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 208 <SV = 201> <Delay = 7.30>
+ST_208 : Operation 510 [16/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 510 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 209 <SV = 202> <Delay = 7.30>
+ST_209 : Operation 511 [15/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 511 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 210 <SV = 203> <Delay = 7.30>
+ST_210 : Operation 512 [14/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 512 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 211 <SV = 204> <Delay = 7.30>
+ST_211 : Operation 513 [13/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 513 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 212 <SV = 205> <Delay = 7.30>
+ST_212 : Operation 514 [12/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 514 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 213 <SV = 206> <Delay = 7.30>
+ST_213 : Operation 515 [11/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 515 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 214 <SV = 207> <Delay = 7.30>
+ST_214 : Operation 516 [10/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 516 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 215 <SV = 208> <Delay = 7.30>
+ST_215 : Operation 517 [9/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 517 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 216 <SV = 209> <Delay = 7.30>
+ST_216 : Operation 518 [8/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 518 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 217 <SV = 210> <Delay = 7.30>
+ST_217 : Operation 519 [7/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 519 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 218 <SV = 211> <Delay = 7.30>
+ST_218 : Operation 520 [6/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 520 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 219 <SV = 212> <Delay = 7.30>
+ST_219 : Operation 521 [5/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 521 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 220 <SV = 213> <Delay = 7.30>
+ST_220 : Operation 522 [4/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 522 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 221 <SV = 214> <Delay = 7.30>
+ST_221 : Operation 523 [3/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 523 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 222 <SV = 215> <Delay = 7.30>
+ST_222 : Operation 524 [2/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 524 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+
+State 223 <SV = 216> <Delay = 7.30>
+ST_223 : Operation 525 [1/68] (7.30ns)   --->   "%empty_39 = writeresp i1 @_ssdm_op_WriteResp.m_axi.p1i32, i32 %arrays_addr_2" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 525 'writeresp' 'empty_39' <Predicate = true> <Delay = 7.30> <CoreInst = "m_axi">   --->   Core 121 'm_axi' <Latency = 0> <II = 1> <Delay = 1.00> <Adapter> <Opcode : 'read' 'write' 'readreq' 'writereq' 'writeresp'>
+ST_223 : Operation 526 [1/1] (0.00ns)   --->   "%ret_ln44 = ret" [HLS_Project/matrix_multiply.cpp:44]   --->   Operation 526 'ret' 'ret_ln44' <Predicate = true> <Delay = 0.00>
 
 
 ============================================================
@@ -189,44 +1059,898 @@ Target clock period: 10ns, clock uncertainty: 2.7ns.
 
  <State 1>: 1ns
 The critical path consists of the following:
-	wire read operation ('B_rows') on port 'B_rows' [9]  (1 ns)
+	s_axi read operation ('C_output') on port 'C_output' [12]  (1 ns)
 
- <State 2>: 1.48ns
+ <State 2>: 7.3ns
 The critical path consists of the following:
-	'icmp' operation ('icmp_ln16', HLS_Project/matrix_multiply.cpp:16) [40]  (1.48 ns)
+	'getelementptr' operation ('arrays_addr', HLS_Project/matrix_multiply.cpp:20) [48]  (0 ns)
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
 
- <State 3>: 1.48ns
+ <State 3>: 7.3ns
 The critical path consists of the following:
-	'load' operation ('m', HLS_Project/matrix_multiply.cpp:19) on local variable 'm' [45]  (0 ns)
-	'icmp' operation ('icmp_ln19', HLS_Project/matrix_multiply.cpp:19) [46]  (1.48 ns)
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
 
- <State 4>: 0.489ns
+ <State 4>: 7.3ns
 The critical path consists of the following:
-	multiplexor before 'phi' operation ('k') with incoming values : ('k', HLS_Project/matrix_multiply.cpp:21) [57]  (0.489 ns)
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
 
- <State 5>: 3.45ns
+ <State 5>: 7.3ns
 The critical path consists of the following:
-	'phi' operation ('k') with incoming values : ('k', HLS_Project/matrix_multiply.cpp:21) [57]  (0 ns)
-	'call' operation ('call_ln19', HLS_Project/matrix_multiply.cpp:19) to 'MatrixMultiplication_Pipeline_VITIS_LOOP_22_4' [65]  (1.97 ns)
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 6>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 7>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 8>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 9>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 10>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 11>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 12>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 13>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 14>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 15>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 16>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 17>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 18>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 19>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 20>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 21>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 22>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 23>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 24>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 25>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 26>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 27>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 28>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 29>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 30>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 31>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 32>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 33>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 34>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 35>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 36>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 37>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 38>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 39>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 40>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 41>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 42>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 43>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 44>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 45>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 46>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 47>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 48>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 49>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 50>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 51>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 52>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 53>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 54>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 55>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 56>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 57>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 58>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 59>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 60>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 61>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 62>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 63>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 64>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 65>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 66>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 67>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 68>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 69>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 70>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 71>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty', HLS_Project/matrix_multiply.cpp:20) on port 'arrays' (HLS_Project/matrix_multiply.cpp:20) [49]  (7.3 ns)
+
+ <State 72>: 0ns
+The critical path consists of the following:
+
+ <State 73>: 0ns
+The critical path consists of the following:
+
+ <State 74>: 7.3ns
+The critical path consists of the following:
+	'getelementptr' operation ('arrays_addr_1', HLS_Project/matrix_multiply.cpp:24) [53]  (0 ns)
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 75>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 76>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 77>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 78>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 79>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 80>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 81>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 82>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 83>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 84>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 85>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 86>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 87>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 88>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 89>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 90>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 91>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 92>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 93>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 94>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 95>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 96>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 97>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 98>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 99>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 100>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 101>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 102>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 103>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 104>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 105>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 106>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 107>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 108>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 109>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 110>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 111>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 112>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 113>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 114>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 115>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 116>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 117>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 118>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 119>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 120>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 121>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 122>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 123>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 124>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 125>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 126>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 127>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 128>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 129>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 130>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 131>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 132>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 133>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 134>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 135>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 136>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 137>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 138>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 139>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 140>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 141>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 142>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 143>: 7.3ns
+The critical path consists of the following:
+	bus request operation ('empty_37', HLS_Project/matrix_multiply.cpp:24) on port 'arrays' (HLS_Project/matrix_multiply.cpp:24) [54]  (7.3 ns)
+
+ <State 144>: 0ns
+The critical path consists of the following:
+
+ <State 145>: 2.48ns
+The critical path consists of the following:
+	wire read operation ('B_rows') on port 'B_rows' [10]  (1 ns)
+	'icmp' operation ('cmp248') [56]  (1.48 ns)
+
+ <State 146>: 1.48ns
+The critical path consists of the following:
+	'load' operation ('m', HLS_Project/matrix_multiply.cpp:28) on local variable 'm' [60]  (0 ns)
+	'icmp' operation ('icmp_ln28', HLS_Project/matrix_multiply.cpp:28) [61]  (1.48 ns)
+
+ <State 147>: 0.489ns
+The critical path consists of the following:
+	multiplexor before 'phi' operation ('k') with incoming values : ('k', HLS_Project/matrix_multiply.cpp:30) [72]  (0.489 ns)
+
+ <State 148>: 3.45ns
+The critical path consists of the following:
+	'phi' operation ('k') with incoming values : ('k', HLS_Project/matrix_multiply.cpp:30) [72]  (0 ns)
+	'call' operation ('call_ln28', HLS_Project/matrix_multiply.cpp:28) to 'MatrixMultiplication_Pipeline_VITIS_LOOP_31_5' [80]  (1.97 ns)
 	blocking operation 1.48 ns on control path)
 
- <State 6>: 0.79ns
+ <State 149>: 0.79ns
 The critical path consists of the following:
-	'getelementptr' operation ('C_out_addr', HLS_Project/matrix_multiply.cpp:26) [70]  (0 ns)
-	'load' operation ('C_out_load', HLS_Project/matrix_multiply.cpp:26) on array 'C_out' [71]  (0.79 ns)
+	'load' operation ('C_load', HLS_Project/matrix_multiply.cpp:35) on array 'C', HLS_Project/matrix_multiply.cpp:18 [86]  (0.79 ns)
 
- <State 7>: 2.76ns
+ <State 150>: 2.76ns
 The critical path consists of the following:
-	'load' operation ('C_out_load', HLS_Project/matrix_multiply.cpp:26) on array 'C_out' [71]  (0.79 ns)
-	'call' operation ('call_ln26', HLS_Project/matrix_multiply.cpp:26) to 'MatrixMultiplication_Pipeline_VITIS_LOOP_25_5' [73]  (1.97 ns)
+	'load' operation ('C_load', HLS_Project/matrix_multiply.cpp:35) on array 'C', HLS_Project/matrix_multiply.cpp:18 [86]  (0.79 ns)
+	'call' operation ('call_ln35', HLS_Project/matrix_multiply.cpp:35) to 'MatrixMultiplication_Pipeline_VITIS_LOOP_34_6' [87]  (1.97 ns)
 
- <State 8>: 0ns
+ <State 151>: 0ns
 The critical path consists of the following:
 
- <State 9>: 0.79ns
+ <State 152>: 0.79ns
 The critical path consists of the following:
-	'load' operation ('add3211_loc_load') on local variable 'add3211_loc' [74]  (0 ns)
-	'store' operation ('store_ln26', HLS_Project/matrix_multiply.cpp:26) of variable 'bitcast_ln26_1', HLS_Project/matrix_multiply.cpp:26 on array 'C_out' [76]  (0.79 ns)
+	'load' operation ('add4518_loc_load') on local variable 'add4518_loc' [88]  (0 ns)
+	'store' operation ('store_ln35', HLS_Project/matrix_multiply.cpp:35) of variable 'add4518_loc_load' on array 'C', HLS_Project/matrix_multiply.cpp:18 [89]  (0.79 ns)
+
+ <State 153>: 7.3ns
+The critical path consists of the following:
+	'getelementptr' operation ('arrays_addr_2', HLS_Project/matrix_multiply.cpp:41) [99]  (0 ns)
+	bus request operation ('empty_38', HLS_Project/matrix_multiply.cpp:41) on port 'arrays' (HLS_Project/matrix_multiply.cpp:41) [100]  (7.3 ns)
+
+ <State 154>: 0ns
+The critical path consists of the following:
+
+ <State 155>: 0ns
+The critical path consists of the following:
+
+ <State 156>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 157>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 158>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 159>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 160>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 161>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 162>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 163>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 164>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 165>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 166>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 167>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 168>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 169>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 170>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 171>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 172>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 173>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 174>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 175>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 176>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 177>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 178>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 179>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 180>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 181>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 182>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 183>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 184>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 185>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 186>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 187>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 188>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 189>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 190>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 191>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 192>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 193>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 194>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 195>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 196>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 197>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 198>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 199>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 200>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 201>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 202>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 203>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 204>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 205>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 206>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 207>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 208>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 209>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 210>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 211>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 212>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 213>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 214>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 215>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 216>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 217>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 218>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 219>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 220>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 221>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 222>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
+
+ <State 223>: 7.3ns
+The critical path consists of the following:
+	bus response operation ('empty_39', HLS_Project/matrix_multiply.cpp:44) on port 'arrays' (HLS_Project/matrix_multiply.cpp:44) [102]  (7.3 ns)
 
 
 ============================================================
@@ -246,6 +1970,220 @@ N/A
 	State 7
 	State 8
 	State 9
+	State 10
+	State 11
+	State 12
+	State 13
+	State 14
+	State 15
+	State 16
+	State 17
+	State 18
+	State 19
+	State 20
+	State 21
+	State 22
+	State 23
+	State 24
+	State 25
+	State 26
+	State 27
+	State 28
+	State 29
+	State 30
+	State 31
+	State 32
+	State 33
+	State 34
+	State 35
+	State 36
+	State 37
+	State 38
+	State 39
+	State 40
+	State 41
+	State 42
+	State 43
+	State 44
+	State 45
+	State 46
+	State 47
+	State 48
+	State 49
+	State 50
+	State 51
+	State 52
+	State 53
+	State 54
+	State 55
+	State 56
+	State 57
+	State 58
+	State 59
+	State 60
+	State 61
+	State 62
+	State 63
+	State 64
+	State 65
+	State 66
+	State 67
+	State 68
+	State 69
+	State 70
+	State 71
+	State 72
+	State 73
+	State 74
+	State 75
+	State 76
+	State 77
+	State 78
+	State 79
+	State 80
+	State 81
+	State 82
+	State 83
+	State 84
+	State 85
+	State 86
+	State 87
+	State 88
+	State 89
+	State 90
+	State 91
+	State 92
+	State 93
+	State 94
+	State 95
+	State 96
+	State 97
+	State 98
+	State 99
+	State 100
+	State 101
+	State 102
+	State 103
+	State 104
+	State 105
+	State 106
+	State 107
+	State 108
+	State 109
+	State 110
+	State 111
+	State 112
+	State 113
+	State 114
+	State 115
+	State 116
+	State 117
+	State 118
+	State 119
+	State 120
+	State 121
+	State 122
+	State 123
+	State 124
+	State 125
+	State 126
+	State 127
+	State 128
+	State 129
+	State 130
+	State 131
+	State 132
+	State 133
+	State 134
+	State 135
+	State 136
+	State 137
+	State 138
+	State 139
+	State 140
+	State 141
+	State 142
+	State 143
+	State 144
+	State 145
+	State 146
+	State 147
+	State 148
+	State 149
+	State 150
+	State 151
+	State 152
+	State 153
+	State 154
+	State 155
+	State 156
+	State 157
+	State 158
+	State 159
+	State 160
+	State 161
+	State 162
+	State 163
+	State 164
+	State 165
+	State 166
+	State 167
+	State 168
+	State 169
+	State 170
+	State 171
+	State 172
+	State 173
+	State 174
+	State 175
+	State 176
+	State 177
+	State 178
+	State 179
+	State 180
+	State 181
+	State 182
+	State 183
+	State 184
+	State 185
+	State 186
+	State 187
+	State 188
+	State 189
+	State 190
+	State 191
+	State 192
+	State 193
+	State 194
+	State 195
+	State 196
+	State 197
+	State 198
+	State 199
+	State 200
+	State 201
+	State 202
+	State 203
+	State 204
+	State 205
+	State 206
+	State 207
+	State 208
+	State 209
+	State 210
+	State 211
+	State 212
+	State 213
+	State 214
+	State 215
+	State 216
+	State 217
+	State 218
+	State 219
+	State 220
+	State 221
+	State 222
+	State 223
 
 
 ============================================================

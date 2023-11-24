@@ -237,45 +237,41 @@ class AESL_RUNTIME_BC {
     string mName;
 };
 using hls::sim::Byte;
-extern "C" void MatrixMultiplication(Byte<4>*, Byte<4>*, Byte<4>*, long long, long long, long long);
-extern "C" void apatb_MatrixMultiplication_hw(volatile void * __xlx_apatb_param_A, volatile void * __xlx_apatb_param_B, volatile void * __xlx_apatb_param_C_out, long long __xlx_apatb_param_A_rows, long long __xlx_apatb_param_B_rows, long long __xlx_apatb_param_B_columns) {
+extern "C" void MatrixMultiplication(Byte<4>*, int, int, int, long long, long long, long long);
+extern "C" void apatb_MatrixMultiplication_hw(volatile void * __xlx_apatb_param_A_input, volatile void * __xlx_apatb_param_B_input, volatile void * __xlx_apatb_param_C_output, long long __xlx_apatb_param_A_rows, long long __xlx_apatb_param_B_rows, long long __xlx_apatb_param_B_columns) {
 using hls::sim::createStream;
-  // Collect __xlx_A__tmp_vec
-std::vector<Byte<4>> __xlx_A__tmp_vec;
-for (size_t i = 0; i < 5; ++i){
-__xlx_A__tmp_vec.push_back(((Byte<4>*)__xlx_apatb_param_A)[i]);
+  // Collect __xlx_A_input_B_input_C_output__tmp_vec
+std::vector<Byte<4>> __xlx_A_input_B_input_C_output__tmp_vec;
+for (size_t i = 0; i < 32; ++i){
+__xlx_A_input_B_input_C_output__tmp_vec.push_back(((Byte<4>*)__xlx_apatb_param_A_input)[i]);
 }
-  int __xlx_size_param_A = 5;
-  int __xlx_offset_param_A = 0;
-  int __xlx_offset_byte_param_A = 0*4;
-  // Collect __xlx_B__tmp_vec
-std::vector<Byte<4>> __xlx_B__tmp_vec;
-for (size_t i = 0; i < 25; ++i){
-__xlx_B__tmp_vec.push_back(((Byte<4>*)__xlx_apatb_param_B)[i]);
+  int __xlx_size_param_A_input = 32;
+  int __xlx_offset_param_A_input = 0;
+  int __xlx_offset_byte_param_A_input = 0*4;
+for (size_t i = 0; i < 32; ++i){
+__xlx_A_input_B_input_C_output__tmp_vec.push_back(((Byte<4>*)__xlx_apatb_param_B_input)[i]);
 }
-  int __xlx_size_param_B = 25;
-  int __xlx_offset_param_B = 0;
-  int __xlx_offset_byte_param_B = 0*4;
-  // Collect __xlx_C_out__tmp_vec
-std::vector<Byte<4>> __xlx_C_out__tmp_vec;
-for (size_t i = 0; i < 5; ++i){
-__xlx_C_out__tmp_vec.push_back(((Byte<4>*)__xlx_apatb_param_C_out)[i]);
+  int __xlx_size_param_B_input = 32;
+  int __xlx_offset_param_B_input = 32;
+  int __xlx_offset_byte_param_B_input = 32*4;
+for (size_t i = 0; i < 32; ++i){
+__xlx_A_input_B_input_C_output__tmp_vec.push_back(((Byte<4>*)__xlx_apatb_param_C_output)[i]);
 }
-  int __xlx_size_param_C_out = 5;
-  int __xlx_offset_param_C_out = 0;
-  int __xlx_offset_byte_param_C_out = 0*4;
+  int __xlx_size_param_C_output = 32;
+  int __xlx_offset_param_C_output = 64;
+  int __xlx_offset_byte_param_C_output = 64*4;
   // DUT call
-  MatrixMultiplication(__xlx_A__tmp_vec.data(), __xlx_B__tmp_vec.data(), __xlx_C_out__tmp_vec.data(), __xlx_apatb_param_A_rows, __xlx_apatb_param_B_rows, __xlx_apatb_param_B_columns);
-// print __xlx_apatb_param_A
-for (size_t i = 0; i < __xlx_size_param_A; ++i) {
-((Byte<4>*)__xlx_apatb_param_A)[i] = __xlx_A__tmp_vec[__xlx_offset_param_A+i];
+  MatrixMultiplication(__xlx_A_input_B_input_C_output__tmp_vec.data(), __xlx_offset_byte_param_A_input, __xlx_offset_byte_param_B_input, __xlx_offset_byte_param_C_output, __xlx_apatb_param_A_rows, __xlx_apatb_param_B_rows, __xlx_apatb_param_B_columns);
+// print __xlx_apatb_param_A_input
+for (size_t i = 0; i < __xlx_size_param_A_input; ++i) {
+((Byte<4>*)__xlx_apatb_param_A_input)[i] = __xlx_A_input_B_input_C_output__tmp_vec[__xlx_offset_param_A_input+i];
 }
-// print __xlx_apatb_param_B
-for (size_t i = 0; i < __xlx_size_param_B; ++i) {
-((Byte<4>*)__xlx_apatb_param_B)[i] = __xlx_B__tmp_vec[__xlx_offset_param_B+i];
+// print __xlx_apatb_param_B_input
+for (size_t i = 0; i < __xlx_size_param_B_input; ++i) {
+((Byte<4>*)__xlx_apatb_param_B_input)[i] = __xlx_A_input_B_input_C_output__tmp_vec[__xlx_offset_param_B_input+i];
 }
-// print __xlx_apatb_param_C_out
-for (size_t i = 0; i < __xlx_size_param_C_out; ++i) {
-((Byte<4>*)__xlx_apatb_param_C_out)[i] = __xlx_C_out__tmp_vec[__xlx_offset_param_C_out+i];
+// print __xlx_apatb_param_C_output
+for (size_t i = 0; i < __xlx_size_param_C_output; ++i) {
+((Byte<4>*)__xlx_apatb_param_C_output)[i] = __xlx_A_input_B_input_C_output__tmp_vec[__xlx_offset_param_C_output+i];
 }
 }

@@ -47,6 +47,7 @@ uint32_t counter_test = 0U;
 //----------------------------------------------------
 static void ReadAllADC();
 
+bool continue_calculation = false;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -56,17 +57,15 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-    	if(!uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance)) {
-    		uz_Matrix_Multi_write_input(Global_Data.objects.matrix_instance);
-    		uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance);
-    	} else {
-    		uz_Matrix_Multi_read_output(Global_Data.objects.matrix_instance);
-    	}
 
-
-    } else {
     	uz_Matrix_Multi_write_input(Global_Data.objects.matrix_instance);
+    	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance);
+    	uz_Matrix_Multi_read_output(Global_Data.objects.matrix_instance);
+    	if(continue_calculation) {
+    		uz_Matrix_Multi_continue_calculation(Global_Data.objects.matrix_instance);
+    	}
     }
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

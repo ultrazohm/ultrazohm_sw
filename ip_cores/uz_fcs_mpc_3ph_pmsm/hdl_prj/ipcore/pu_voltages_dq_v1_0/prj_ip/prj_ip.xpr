@@ -6,7 +6,7 @@
 <Project Version="7" Minor="49" Path="C:/GIT/Promotion/simulation/01_MATLAB/uz_3ph_pmsm_mpc/hdl_prj/ipcore/pu_voltages_dq_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="738568a24ada46e6bfc731135a968939"/>
+    <Option Name="Id" Val="5b452f55723147ba994b7683847f0784"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1-e"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -121,7 +121,25 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/vhdl/pu_voltages_dq_src_dead_time.vhd">
+      <File Path="$PPRDIR/../hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/pu_voltages_dq_src_dead_time_voltage_alpha_beta.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/pu_voltages_dq_src_corrected_voltage_alpha_beta.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/vhdl/pu_voltages_dq_src_corrected_voltage_dq.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

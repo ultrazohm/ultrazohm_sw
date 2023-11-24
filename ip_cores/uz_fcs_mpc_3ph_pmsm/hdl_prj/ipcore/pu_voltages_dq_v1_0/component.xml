@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>04f099a4</spirit:value>
+            <spirit:value>5e668aaa</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>04f099a4</spirit:value>
+            <spirit:value>5e668aaa</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -900,7 +900,19 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/pu_voltages_dq_src_dead_time.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_dead_time_voltage_alpha_beta.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_corrected_voltage_alpha_beta.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_corrected_voltage_dq.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -914,7 +926,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/pu_voltages_dq.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_69d4051a</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_e93be2e1</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -965,7 +977,22 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/pu_voltages_dq_src_dead_time.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_dead_time_voltage_alpha_beta.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_corrected_voltage_alpha_beta.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_corrected_voltage_dq.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1034,14 +1061,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>pu_voltages_dq</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113308324</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-11-23T14:24:28Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113309539</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-11-24T10:40:10Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="65197f5d"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="4d7383ef"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="8d531d10"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="f8b9036e"/>
     </xilinx:packagingInfo>

@@ -4,7 +4,7 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
-module MatrixMultiplication_acc_RAM_AUTO_1R1W (
+module MatrixMultiplication_A_RAM_AUTO_1R1W (
      
     address0, ce0,
     d0, we0, 
@@ -13,8 +13,8 @@ module MatrixMultiplication_acc_RAM_AUTO_1R1W (
     reset, clk);
 
 parameter DataWidth = 32;
-parameter AddressWidth = 5;
-parameter AddressRange = 25;
+parameter AddressWidth = 3;
+parameter AddressRange = 5;
  
 input[AddressWidth-1:0] address0;
 input ce0;

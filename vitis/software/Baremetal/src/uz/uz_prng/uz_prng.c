@@ -39,8 +39,11 @@ static uz_prng_t instances[UZ_PRNG_MAX_INSTANCES] = {0};
 
 static float uz_prng_scale_to_float_zero_to_one_divide(uint32_t random_number);
 static float uz_prng_scale_to_float_zero_to_one_multiply(uint32_t random_number);
+static float uz_prng_scale_to_float_zero_to_one_shift_multiply(uint32_t random_number);
+
 static uint32_t uz_prng_scale_uint32_to_bound_multiply(uint32_t unbound_rng, uint32_t range);
 static uint32_t uz_prng_scale_uint32_to_bound_int_multiply(uint32_t unbound_rng, uint32_t range);
+
 
 static uz_prng_t *uz_prng_allocation(void);
 
@@ -54,11 +57,11 @@ static uz_prng_t *uz_prng_allocation(void)
     return (self);
 }
 
+
 uz_prng_t *uz_prng_init(enum uz_prng_generator generator, uint64_t seed)
 {
     uz_prng_t *self = uz_prng_allocation();
     self->generator_type = generator;
-
     switch (self->generator_type)
     {
     case uz_prng_generator_squares:
@@ -100,7 +103,7 @@ uint32_t uz_prng_get_uniform_uint32_zero_to_uint32_max(uz_prng_t *self)
         random_number = uz_prng_mtwister_get_uniform_uint32(self->generator);
         break;
     case uz_prng_generator_halton:
-        random_number = (uz_prng_halton_get_uniform_float(self->generator) * (float)UINT32_MAX);
+        random_number = (uint32_t)((uz_prng_halton_get_uniform_float(self->generator) * (float)UINT32_MAX));
         break;
     case uz_prng_generator_pcg:
         random_number = uz_prng_pcg_get_uniform_uint32(self->generator);
@@ -125,22 +128,22 @@ float uz_prng_get_uniform_float_zero_to_one(uz_prng_t *self)
     {
     case uz_prng_generator_squares:
         random_uint = uz_prng_squares_get_uniform_uint32(self->generator);
-        random_number = uz_prng_scale_to_float_zero_to_one_multiply(random_uint);
+        random_number = uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
         break;
     case uz_prng_generator_mtwister:
         random_uint = uz_prng_mtwister_get_uniform_uint32(self->generator);
-        random_number = uz_prng_scale_to_float_zero_to_one_multiply(random_uint);
+        random_number = uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
         break;
     case uz_prng_generator_halton:
         random_number = uz_prng_halton_get_uniform_float(self->generator);
         break;
     case uz_prng_generator_pcg:
         random_uint = uz_prng_pcg_get_uniform_uint32(self->generator);
-        random_number = uz_prng_scale_to_float_zero_to_one_multiply(random_uint);
+        random_number =  uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
         break;
     case uz_prng_generator_xoshiro:
         random_uint = uz_prng_xoshiro_get_uniform_uint32(self->generator);
-        random_number = uz_prng_scale_to_float_zero_to_one_multiply(random_uint);
+        random_number = uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
         break;
     default:
         uz_assert(0); // No valid choice for generator type
@@ -171,7 +174,7 @@ float uz_prng_get_uniform_float_min_to_max(uz_prng_t *self, float min, float max
 uint32_t uz_prng_get_uniform_uint32_zero_to_max(uz_prng_t *self, uint32_t max_range)
 {
     uint32_t unbounded = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
-    uint32_t bounded = uz_prng_scale_uint32_to_bound_multiply(unbounded, max_range);
+    uint32_t bounded = uz_prng_scale_uint32_to_bound_int_multiply(unbounded, max_range);
     return bounded;
 }
 
@@ -192,6 +195,12 @@ static float uz_prng_scale_to_float_zero_to_one_multiply(uint32_t random_number)
     // 0x1.0p-32 is a floating point constant for 2-32 that converts a integer value in the range [0..UINT32_MAX)
     // into a float in the unit interval;
     return ((float)0x1.0p-32) * (float)random_number;
+}
+
+static float uz_prng_scale_to_float_zero_to_one_shift_multiply(uint32_t random_number)
+{
+    // https://prng.di.unimi.it/ section Generating uniform doubles in the unit interval, adapted to single precision
+    return (((random_number >> 8U) * (float)0x1.0p-24));
 }
 
 // Functions that scale float 0..uint32_max to [0,max_range), see https://www.pcg-random.org/posts/bounded-rands.html
@@ -277,5 +286,6 @@ static uint32_t uz_prng_scale_uint32_to_bound_int_multiply(uint32_t unbound_rng,
     uint64_t m = (uint64_t)(unbound_rng) * (uint64_t)(range);
     return (uint32_t)(m >> 32);
 }
+
 
 #endif

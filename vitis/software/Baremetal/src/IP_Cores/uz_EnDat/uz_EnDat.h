@@ -58,6 +58,24 @@ typedef enum uz_EnDat_EnDat_operating_mode {
     uz_EnDat_Encoder_receive_communication_command
 }uz_EnDat_protocol_opmode;
 
+/*typedef enum uz_EnDat_statusword_elaborate {
+    uz_EnDat_Errorbit1_HDH,
+    uz_EnDat_Errorbit2_HDH,
+    uz_EnDat_Warningbit_HDH,
+    uz_EnDat_bit3,      //not used right now
+    uz_EnDat_bit4,      //not used right now
+    uz_EnDat_bit5,      //not used right now
+    uz_EnDat_bit6,      //not used right now
+    uz_EnDat_Faktor1_altered,
+    uz_EnDat_Faktor2_altered,
+    uz_EnDat_Faktor3_altered,
+    uz_EnDat_Faktor4_altered,  
+    uz_EnDat_Faktor5_altered,
+    uz_EnDat_posvalue_is_valid,
+    uz_EnDat_continious_mode_is_active,  //not used right now
+    uz_EnDat_StartUp_Sequence_Done,
+    uz_EnDat_config_is_set      //debatable use
+}uz_EnDat_statusword;*/
 
 /**
  * @brief Data type for object EnDat
@@ -107,6 +125,7 @@ int uz_EnDat_write_factor(uz_EnDat_t *self, uint16_t factor, uz_EnDat_factor fac
 
 /**
  * @brief This function is to read the status word from the EnDat IP-Core.
+ * @return Returns status word as a word from the IP-Core.
  */
 uint16_t uz_EnDat_read_statusword(uz_EnDat_t *self);
 /**
@@ -192,5 +211,40 @@ int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp);
  * @return Returns the actual status word from the EnDat IP Core.
  */
 float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x);
+
+/**
+ * 
+ * @brief This function sets the soft reset bit in the control word. 
+ * @param inp Pointer to a bit array where control word is stored.
+ * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ */
+int8_t uz_EnDat_set_soft_reset_in_controlword(controlword_expanded* inp);
+
+/**
+ * 
+ * @brief This function resets the soft reset bit in the control word. 
+ * @param inp Pointer to a bit array where control word is stored.
+ * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ */
+int8_t uz_EnDat_reset_soft_reset_in_controlword(controlword_expanded* inp);
+
+/**
+ * 
+ * @brief This function sets the soft reset bit in the control word. 
+ * @param inp Pointer to a bit array where control word is stored.
+ * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ */
+int8_t uz_EnDat_set_output_enable_in_controlword(controlword_expanded* inp);
+
+/**
+ * 
+ * @brief This function resets the soft reset bit in the control word. 
+ * @param inp Pointer to a bit array where control word is stored.
+ * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ */
+int8_t uz_EnDat_reset_output_enable_in_controlword(controlword_expanded* inp);
+
+
+
 
 #endif  // UZ_ENDAT_H  // NOLINT

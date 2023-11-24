@@ -396,4 +396,30 @@ float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t
     retfloat = uz_EnDat_pos_to_rad_converter(retraw);
     return(retfloat);
 }
+
+int8_t uz_EnDat_reset_soft_reset_in_controlword(controlword_expanded* inp) {
+    uz_assert_not_NULL(inp);
+    *inp[6] = false;
+    return(0);
+}
+
+int8_t uz_EnDat_set_soft_reset_in_controlword(controlword_expanded* inp) {
+    uz_assert_not_NULL(inp);
+    *inp[6] = true;
+    return(0);
+}
+
+
+int8_t uz_EnDat_reset_output_enable_in_controlword(controlword_expanded* inp) {
+    uz_assert_not_NULL(inp);
+    *inp[13] = false;
+    return(0);
+}
+
+int8_t uz_EnDat_set_output_enable_in_controlword(controlword_expanded* inp) {
+    uz_assert_not_NULL(inp);
+    *inp[13] = true;
+    return(0);
+}
+
 #endif  // NOLINT

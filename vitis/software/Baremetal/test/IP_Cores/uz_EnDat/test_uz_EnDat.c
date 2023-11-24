@@ -138,5 +138,21 @@ void test_uz_EnDat_fail_assert_if_disable_config_evaluation_in_IP_is_called_with
      TEST_ASSERT_FAIL_ASSERT(uz_EnDat_disable_config_evaluation_in_IP(NULL));
 }
 
+void test_uz_EnDat_fail_assert_if_set_soft_reset_in_controlword_is_called_with_NULL_pointer(void) {
+     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_soft_reset_in_controlword(NULL));
+}
+
+void test_uz_EnDat_fail_assert_if_reset_soft_reset_in_controlword_is_called_with_NULL_pointer(void) {
+     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_reset_soft_reset_in_controlword(NULL));
+}
+
+void test_uz_EnDat_fail_assert_if_set_output_enable_in_controlword_is_called_with_NULL_pointer(void) {
+     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_output_enable_in_controlword(NULL));
+}
+
+void test_uz_EnDat_fail_assert_if_reset_output_enable_in_controlword_in_controlword_is_called_with_NULL_pointer(void) {
+     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_reset_output_enable_in_controlword(NULL));
+}
+
 
 #endif  // TEST

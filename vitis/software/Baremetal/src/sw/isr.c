@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
-
+//#include "dqn_reward.h"
 #include "../include/isr.h"
 #include "../defines.h"
 #include "../main.h"
@@ -235,8 +235,11 @@ void ISR_Control(void *data)
 //  stabile ruhelage, positionsfehler
 //    Global_Data.dqnp.reward_position_error = REWARD_SCALE_POSITION * fabsf((1.0e3f*Global_Data.obs.dqn_chart_error)/(2.0f*penalty_grenze));
     Global_Data.dqnp.reward_velocity = REWARD_SCALE_VELOCITY * (Global_Data.obs.dqn_angle_derv * Global_Data.obs.dqn_angle_derv);
-	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.obs.dqn_chart_position_derv, false);
-//    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
+	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.dqnp.reward_velocity, false);
+// calculation with extern function
+//    Global_Data.dqnp.reward_k = calculate_reward_pendulum(DQN__CONTROL_FREQUENCY,Global_Data.obs.dqn_chart_position,Global_Data.obs.dqn_angle,  Global_Data.obs.dqn_angle_derv, false);
+
+	//    Global_Data.dqnp.reward_k = calculate_reward_pendulum(1.0f/DQN__CONTROL_FREQUENCY, Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position_error, Global_Data.obs.dqn_chart_position_derv, false);
     Global_Data.dqnp.number_of_updates = uz_dqn_get_number_of_updates(testdqn2);
 
     position_smoothed=uz_signals_IIR_Filter_sample(Global_Data.objects.LPF1_position, position_abs);
@@ -424,16 +427,16 @@ static void Reset_obs_and_measurements()
     Reset_global_Data(&Global_Data);
 };
 
-float calculate_reward_pendulum(float bonus, float samplerate,float theta, float position, float velocity, bool penalty)
-{
-    float z = 0.0f;
-    if (penalty == true)
-    {
-        z = -1000.0f;
-    }
-    float r = -samplerate *(REWARD_SCALE_ANGLE * theta + REWARD_SCALE_POSITION*position + REWARD_SCALE_VELOCITY * (velocity*velocity)) + z+ bonus;
-    return r;
-}
+//float calculate_reward_pendulum(float bonus, float samplerate,float theta, float position, float velocity, bool penalty)
+//{
+//    float z = 0.0f;
+//    if (penalty == true)
+//    {
+//        z = -1000.0f;
+//    }
+//    float r = -samplerate *(REWARD_SCALE_ANGLE * theta + REWARD_SCALE_POSITION*position + REWARD_SCALE_VELOCITY * (velocity*velocity)) + z+ bonus;
+//    return r;
+//}
 
 float sum_reward_pendulum(float bonus,float samplerate, float thetareward, float positionreward, float velocityreward, bool penalty)
 {
@@ -572,8 +575,9 @@ if ((fabsf(position_abs) > disable_control) || (fabsf(Global_Data.obs.dqn_angle_
     input_nn[4] = Global_Data.obs.dqn_angle_derv;
     uz_dqn_sample_observation_k_1(testdqn2, Global_Data.objects.input_instance);
     // Berechne reward für limitverletzung
-	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.obs.dqn_chart_position_derv, true);
-    Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
+	Global_Data.dqnp.reward_k = sum_reward_pendulum(Global_Data.dqnp.reward_boni,1.0f/DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_angle, Global_Data.dqnp.reward_position, Global_Data.dqnp.reward_velocity, true);
+//	Global_Data.dqnp.reward_k = calculate_reward_pendulum(DQN__CONTROL_FREQUENCY,Global_Data.dqnp.reward_position,Global_Data.dqnp.reward_angle,  Global_Data.obs.dqn_angle_derv, true);
+	Global_Data.dqnp.episode_reward += Global_Data.dqnp.reward_k;
     uz_dqn_set_reward(testdqn2, Global_Data.dqnp.reward_k);
     uz_dqn_push_to_buffer(testdqn2);
     chain = limit_violation;

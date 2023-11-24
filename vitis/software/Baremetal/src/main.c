@@ -24,6 +24,7 @@ bool limit_was_hit=false;
 bool eval = false;
 int evalcounter = 0;
 
+//#include "sw/dqn_reward.h"
 #include "uz/uz_dqn/uz_dqn.h"
 #include "uz/uz_dqn/uz_environment_bitflip.h"
 #include "uz/uz_environment_pt1/uz_environment_pt1.h"

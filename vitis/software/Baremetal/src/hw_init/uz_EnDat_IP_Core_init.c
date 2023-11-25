@@ -9,7 +9,7 @@
 
  uz_EnDat_t* uz_EnDat_IP_core_init(void) {
     uz_EnDat_t* EnDat_init_object;
-    uz_EnDat_config_t config = {
+    struct uz_EnDat_config_t config = {
         .base_address = XPARS_NON_FINAL_BASE_ADDRESS,
         .ip_clk_frequency_Hz = XPARS_NON_FINAL_BASE_CLK
 

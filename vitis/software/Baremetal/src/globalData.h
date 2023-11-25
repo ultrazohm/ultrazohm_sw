@@ -84,7 +84,7 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
-	uint32_t EnDat_raw_pos 
+	uint32_t EnDat_raw_pos;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

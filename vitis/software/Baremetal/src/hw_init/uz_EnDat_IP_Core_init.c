@@ -13,7 +13,7 @@
         .base_address = XPARS_NON_FINAL_BASE_ADDRESS,
         .ip_clk_frequency_Hz = XPARS_NON_FINAL_BASE_CLK
 
-    }
+    };
 
    EnDat_init_object = uz_EnDat_init(config);
    uz_EnDat_write_default_values(EnDat_init_object);

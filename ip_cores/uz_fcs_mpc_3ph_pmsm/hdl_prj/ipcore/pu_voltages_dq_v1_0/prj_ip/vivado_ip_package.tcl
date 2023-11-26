@@ -5,12 +5,12 @@ set_property ip_repo_paths {../../} [current_fileset]
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_pu_voltages_dq_pkg.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_Detect_Rise_Positive.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_Detect_Rise_Positive1.vhd}
-add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_MATLAB_Function.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_corrected_voltage_alpha_beta.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_corrected_voltage_dq.vhd}
-add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_dead_time_voltage_alpha_beta.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_finite_control_set.vhd}
+add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_iph_ref.vhd}
+add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_switching_table.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_src_pu_voltages_dq.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_reset_sync.vhd}
 add_files -norecurse {../hdl/vhdl/pu_voltages_dq_dut.vhd}
@@ -37,7 +37,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2113309816 [ipx::current_core]
+set_property core_revision 2113312618 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_pu_voltages_dq_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -52,10 +52,6 @@ ipx::add_file {hdl/vhdl/pu_voltages_dq_src_Detect_Rise_Positive1.vhd} [ipx::get_
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/pu_voltages_dq_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/pu_voltages_dq_src_MATLAB_Function.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_MATLAB_Function.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_corrected_voltage_alpha_beta.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_corrected_voltage_alpha_beta.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_corrected_voltage_alpha_beta.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -64,10 +60,6 @@ ipx::add_file {hdl/vhdl/pu_voltages_dq_src_corrected_voltage_dq.vhd} [ipx::get_f
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_corrected_voltage_dq.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_corrected_voltage_dq.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_corrected_voltage_dq.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_dead_time_voltage_alpha_beta.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_dead_time_voltage_alpha_beta.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_dead_time_voltage_alpha_beta.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -76,6 +68,14 @@ ipx::add_file {hdl/vhdl/pu_voltages_dq_src_finite_control_set.vhd} [ipx::get_fil
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_finite_control_set.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_finite_control_set.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_finite_control_set.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/pu_voltages_dq_src_iph_ref.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_iph_ref.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/pu_voltages_dq_src_iph_ref.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_iph_ref.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/pu_voltages_dq_src_switching_table.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_switching_table.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/vhdl/pu_voltages_dq_src_switching_table.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_switching_table.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_pu_voltages_dq.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/vhdl/pu_voltages_dq_src_pu_voltages_dq.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/vhdl/pu_voltages_dq_src_pu_voltages_dq.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

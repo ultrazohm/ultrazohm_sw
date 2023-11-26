@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>79a9d3e0</spirit:value>
+            <spirit:value>fe39c847</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>79a9d3e0</spirit:value>
+            <spirit:value>fe39c847</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -896,11 +896,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/pu_voltages_dq_src_MATLAB_Function.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_switching_table.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_iph_ref.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -926,7 +926,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/pu_voltages_dq.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_b9e260a5</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_b0881228</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -972,12 +972,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/pu_voltages_dq_src_MATLAB_Function.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_switching_table.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/pu_voltages_dq_src_dead_time_switch_position.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_iph_ref.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1061,14 +1061,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>pu_voltages_dq</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113309816</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-11-24T15:16:38Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113312618</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-11-26T13:59:10Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="eb14b234"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3d939ab7"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="8d531d10"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="f8b9036e"/>
     </xilinx:packagingInfo>

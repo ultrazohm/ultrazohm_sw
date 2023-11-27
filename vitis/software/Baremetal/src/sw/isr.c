@@ -57,10 +57,7 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-
-    	uz_Matrix_Multi_write_input(Global_Data.objects.matrix_instance);
     	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance);
-    	uz_Matrix_Multi_read_output(Global_Data.objects.matrix_instance);
     	if(continue_calculation) {
     		uz_Matrix_Multi_continue_calculation(Global_Data.objects.matrix_instance);
     	}

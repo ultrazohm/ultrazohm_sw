@@ -43,33 +43,21 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz
 	self->B_matrix = uz_matrix_init(B_matrix, self->config.B_data, self->config.B_length_of_data, self->config.B_rows, self->config.B_columns);
 	self->C_out_matrix = uz_matrix_init(C_out_matrix, self->config.C_data, self->config.C_length_of_data, self->config.C_rows, self->config.C_columns);
 	uz_assert_not_zero(self->is_ready);
-	return(self);
-}
-
-void uz_Matrix_Multi_write_input(uz_Matrix_Multi_t* self) {
-	uz_assert_not_NULL(self);
-	// C= A * B
-    // number of columns in A must b equal to rows of B
-    uz_assert(self->A_matrix->columns == self->B_matrix->rows);
-	// the product of an m x n matrix and n x k matrix is an m x k
-    // i.e. A->row x B->column
-    uz_assert(self->A_matrix->rows == self->C_out_matrix->rows);
+	uz_assert(self->A_matrix->columns == self->B_matrix->rows);
+	uz_assert(self->A_matrix->rows == self->C_out_matrix->rows);
     uz_assert(self->B_matrix->columns == self->C_out_matrix->columns);
 	uz_matrix_multiplication_hw_set_A_matrix(self->config.base_address, self->A_matrix->data);
 	uz_matrix_multiplication_hw_set_A_rows(self->config.base_address, self->A_matrix->rows);
 	uz_matrix_multiplication_hw_set_B_matrix(self->config.base_address, self->B_matrix->data);
 	uz_matrix_multiplication_hw_set_B_rows(self->config.base_address, self->B_matrix->rows);
 	uz_matrix_multiplication_hw_set_B_columns(self->config.base_address, self->B_matrix->columns);
+	uz_matrix_multiplication_hw_set_C_out_matrix(self->config.base_address, self->C_out_matrix->data);
+	return(self);
 }
 
 void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self) {
 	uz_assert_not_NULL(self);
 	uz_matrix_multiplication_hw_set_start(self->config.base_address);
-}
-
-void uz_Matrix_Multi_read_output(uz_Matrix_Multi_t* self) {
-	uz_assert_not_NULL(self);
-	uz_matrix_multiplication_hw_read_C_out_matrix(self->config.base_address, self->C_out_matrix->data);
 }
 
 bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self) {

@@ -236,3 +236,115 @@ Halton timing
     ax.set_ylim(0,0.7)
     ax.yaxis.set_minor_locator(AutoMinorLocator())
     ax.set_xlabel('ISR sample')
+
+
+Float [0,1)
+===========
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import numpy as np
+    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+
+    df = pd.read_csv("generator_isr_float.csv")
+
+    fig, ax = plt.subplots(1,3,layout='constrained',figsize=(13,5),sharey=True)
+
+    ax[0].plot(df.fp_muliply)
+    ax[0].set_title('Float multiply mean=$0.496\,\mu s$')
+    ax[1].plot(df.fp_divide)
+    ax[1].set_title('Float divide mean=$0.496\,\mu s$')
+    ax[2].plot(df.shift_multi)
+    ax[2].set_title('Shift multiply mean=$0.485\,\mu s$')
+
+    ax[0].set_ylabel(r'Time in $\mu s$')
+    fig.suptitle('Execution time to generate one random float [0,1)')
+
+    for ax in ax.flat:
+        ax.grid(True,which='both')
+        ax.set_ylim(0.48,0.5)
+        ax.set_xlim(0,200)
+        ax.yaxis.set_minor_locator(AutoMinorLocator())
+        ax.set_xlabel('ISR sample')
+
+
+fp_muliply_mean = 0.4960
+fp_divide_mean = 0.4964
+shift_multi_mean = 0.4851
+
+Calculated using Matlab ksdensity function over 10000 samples.
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import numpy as np
+    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+
+    df = pd.read_csv("generator_isr_float_density.csv")
+
+    fig, ax = plt.subplots(1,3,layout='constrained',figsize=(13,5),sharey=True)
+
+    ax[0].plot(df.fp_multiply_xi,df.fp_multiply_f)
+    ax[0].set_title('Float multiply mean=$0.496\,\mu s$')
+    ax[1].plot(df.fp_divide_xi,df.fp_divide_f)
+    ax[1].set_title('Float divide mean=$0.496\,\mu s$')
+    ax[2].plot(df.shift_multi_xi,df.shift_multi_f)
+    ax[2].set_title('Shift multiply mean=$0.485\,\mu s$')
+
+    ax[0].set_xlabel('probability density estimate')
+
+    fig.suptitle('Execution time to generate one random float [0,1)')
+
+    for ax in ax.flat:
+        ax.grid(True,which='both')
+        ax.yaxis.set_minor_locator(AutoMinorLocator())
+        ax.set_ylabel('probability density estimate')
+
+
+
+uint32_t in range [0,range)
+===========================
+
+- int multi is the fastest but is biased
+- unbiased opt is unbiased and faster than unbias
+- No reason to use float multi version
+- Use unbiased mean if comparability with other Frameworks that use Lemir's method is desired
+
+float_mult_mean = 0.4889
+
+int_mult_mean = 0.4262
+
+unbiased_mean = 0.5270
+
+unbiased_opt_mean = 0.4402
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import numpy as np
+    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+
+    df = pd.read_csv("generator_isr_bounded_uint32_density.csv")
+
+    fig, ax = plt.subplots(1,4,layout='constrained',figsize=(13,5),sharey=True)
+
+    ax[0].plot(df.float_mult_xi,df.float_mult_f)
+    ax[0].set_title('Float multiply mean=$0.49\,\mu s$')
+    ax[1].plot(df.int_mult_xi,df.int_mult_f)
+    ax[1].set_title('Integer multiply mean=$0.43\,\mu s$')
+    ax[2].plot(df.unbiased_xi,df.unbiased_f)
+    ax[2].set_title('Unbiased optimized mean=$0.44\,\mu s$')
+    ax[3].plot(df.unbiased_opt_xi,df.unbiased_opt_f)
+    ax[3].set_title('Unbiased mean=$0.53\,\mu s$')
+    ax[0].set_ylabel('probability density estimate')
+
+    fig.suptitle('Execution time to generate one random float [0,1)')
+
+    for ax in ax.flat:
+        ax.grid(True,which='both')
+        ax.yaxis.set_minor_locator(AutoMinorLocator())
+        ax.set_xlabel(r'Time in $\mu s$')

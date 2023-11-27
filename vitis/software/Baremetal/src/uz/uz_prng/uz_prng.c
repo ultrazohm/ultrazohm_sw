@@ -32,6 +32,7 @@ struct uz_prng_t
     bool is_ready;
     void *generator; // This points to an instance of uz_prng_squares/pca/etc. -> since these have different types, this is a pointer to void*
     enum uz_prng_generator generator_type;
+    enum uz_prng_float_scale_method float_scale_method;
 };
 
 static uint32_t instance_counter = 0U;
@@ -40,10 +41,6 @@ static uz_prng_t instances[UZ_PRNG_MAX_INSTANCES] = {0};
 static float uz_prng_scale_to_float_zero_to_one_divide(uint32_t random_number);
 static float uz_prng_scale_to_float_zero_to_one_multiply(uint32_t random_number);
 static float uz_prng_scale_to_float_zero_to_one_shift_multiply(uint32_t random_number);
-
-static uint32_t uz_prng_scale_uint32_to_bound_multiply(uint32_t unbound_rng, uint32_t range);
-static uint32_t uz_prng_scale_uint32_to_bound_int_multiply(uint32_t unbound_rng, uint32_t range);
-
 
 static uz_prng_t *uz_prng_allocation(void);
 
@@ -57,11 +54,11 @@ static uz_prng_t *uz_prng_allocation(void)
     return (self);
 }
 
-
-uz_prng_t *uz_prng_init(enum uz_prng_generator generator, uint64_t seed)
+uz_prng_t *uz_prng_init(enum uz_prng_generator generator, enum uz_prng_float_scale_method scale_method, uint64_t seed)
 {
     uz_prng_t *self = uz_prng_allocation();
     self->generator_type = generator;
+    self->float_scale_method = scale_method;
     switch (self->generator_type)
     {
     case uz_prng_generator_squares:
@@ -123,37 +120,38 @@ float uz_prng_get_uniform_float_zero_to_one(uz_prng_t *self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     float random_number = 0.0f;
-    uint32_t random_uint;
-    switch (self->generator_type)
+    uint32_t random_uint = 0U;
+
+    if (self->generator_type == uz_prng_generator_halton)
     {
-    case uz_prng_generator_squares:
-        random_uint = uz_prng_squares_get_uniform_uint32(self->generator);
-        random_number = uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
-        break;
-    case uz_prng_generator_mtwister:
-        random_uint = uz_prng_mtwister_get_uniform_uint32(self->generator);
-        random_number = uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
-        break;
-    case uz_prng_generator_halton:
         random_number = uz_prng_halton_get_uniform_float(self->generator);
-        break;
-    case uz_prng_generator_pcg:
-        random_uint = uz_prng_pcg_get_uniform_uint32(self->generator);
-        random_number =  uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
-        break;
-    case uz_prng_generator_xoshiro:
-        random_uint = uz_prng_xoshiro_get_uniform_uint32(self->generator);
-        random_number = uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
-        break;
-    default:
-        uz_assert(0); // No valid choice for generator type
-        break;
+    }
+    else
+    {
+        random_uint = uz_prng_squares_get_uniform_uint32(self->generator);
+        switch (self->float_scale_method)
+        {
+        case uz_prng_float_scale_fp_multiply:
+            random_number = uz_prng_scale_to_float_zero_to_one_multiply(random_uint);
+            break;
+        case uz_prng_float_scale_fp_divide:
+            random_number = uz_prng_scale_to_float_zero_to_one_divide(random_uint);
+            break;
+        case uz_prng_float_scale_fp_shift_multiply:
+            random_number = uz_prng_scale_to_float_zero_to_one_shift_multiply(random_uint);
+            break;
+        default:
+            uz_assert(0);
+            break;
+        }
     }
     return random_number;
 }
 
 bool uz_prng_get_uniform_bool(uz_prng_t *self)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     bool random_value = false;
     uint32_t determine_half = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
     if (determine_half > (UINT32_MAX / 2U))
@@ -165,16 +163,19 @@ bool uz_prng_get_uniform_bool(uz_prng_t *self)
 
 float uz_prng_get_uniform_float_min_to_max(uz_prng_t *self, float min, float max)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     // Generate values in the open interval (a,b)
     // r = a + (b - a)*random_zero_to_one
     uz_assert(min > max);
     return (min + (max - min) * uz_prng_get_uniform_float_zero_to_one(self));
 }
 
-uint32_t uz_prng_get_uniform_uint32_zero_to_max(uz_prng_t *self, uint32_t max_range)
+uint32_t uz_prng_get_uniform_uint32_zero_to_range(uz_prng_t *self, uint32_t range)
 {
-    uint32_t unbounded = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
-    uint32_t bounded = uz_prng_scale_uint32_to_bound_int_multiply(unbounded, max_range);
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uint32_t bounded = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self, range);
     return bounded;
 }
 
@@ -199,7 +200,7 @@ static float uz_prng_scale_to_float_zero_to_one_multiply(uint32_t random_number)
 
 static float uz_prng_scale_to_float_zero_to_one_shift_multiply(uint32_t random_number)
 {
-    // https://prng.di.unimi.it/ section Generating uniform doubles in the unit interval, adapted to single precision
+    // https://prng.di.unimi.it/ section generating uniform doubles in the unit interval, adapted to single precision
     return (((random_number >> 8U) * (float)0x1.0p-24));
 }
 
@@ -231,23 +232,27 @@ static float uz_prng_scale_to_float_zero_to_one_shift_multiply(uint32_t random_n
  * DEALINGS IN THE SOFTWARE.
  */
 
-uint32_t uz_prng_get_uniform_uint32_zero_to_max_unbiased(uz_prng_t *self, uint32_t max_range)
+uint32_t uz_prng_get_uniform_uint32_zero_to_range_unbiased(uz_prng_t *self, uint32_t range)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     // This is USE_DEBIASED_INT_MULT of https://github.com/imneme/bounded-rands/blob/3d71f53c975b1e5b29f2f3b05a74e26dab9c3d84/bounded32.cpp#L236
-    uint32_t t = (-max_range) % max_range;
+    uint32_t t = (-range) % range;
     uint32_t l = 0U;
     uint64_t m = 0U;
     do
     {
         uint32_t x = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
-        m = (uint64_t)(x) * (uint64_t)(max_range);
+        m = (uint64_t)(x) * (uint64_t)(range);
         l = (uint32_t)(m);
     } while (l < t);
     return (uint32_t)(m >> 32U);
 }
 
-uint32_t uz_prng_scale_uint32_to_bound_int_multiply_debiased(uz_prng_t *self, uint32_t range)
+uint32_t uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(uz_prng_t *self, uint32_t range)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     // This is USE_DEBIASED_INT_MULT_TOPT_MOPT of https://github.com/imneme/bounded-rands/blob/3d71f53c975b1e5b29f2f3b05a74e26dab9c3d84/bounded32.cpp#L290
     uint32_t x = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
     uint64_t m = (uint64_t)(x) * (uint64_t)(range);
@@ -273,19 +278,24 @@ uint32_t uz_prng_scale_uint32_to_bound_int_multiply_debiased(uz_prng_t *self, ui
     return (uint32_t)(m >> 32);
 }
 
-static uint32_t uz_prng_scale_uint32_to_bound_multiply(uint32_t unbound_rng, uint32_t range)
+uint32_t uz_prng_get_uniform_uint32_zero_to_range_float_mult(uz_prng_t *self, uint32_t range)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     // This is USE_BIASED_FP_MULT_SCALE of https://github.com/imneme/bounded-rands/blob/3d71f53c975b1e5b29f2f3b05a74e26dab9c3d84/bounded32.cpp#L63
+    uint32_t unbound_rng = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
     float zero_to_one_one = ((float)0x1.0p-32) * (float)unbound_rng;
     return (uint32_t)((float)range * zero_to_one_one);
 }
 
-static uint32_t uz_prng_scale_uint32_to_bound_int_multiply(uint32_t unbound_rng, uint32_t range)
+uint32_t uz_prng_get_uniform_uint32_zero_to_range_int_mult(uz_prng_t *self, uint32_t range)
 {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uint32_t unbound_rng = uz_prng_get_uniform_uint32_zero_to_uint32_max(self);
     // This is USE_BIASED_INT_MULT of https://github.com/imneme/bounded-rands/blob/3d71f53c975b1e5b29f2f3b05a74e26dab9c3d84/bounded32.cpp#L228
     uint64_t m = (uint64_t)(unbound_rng) * (uint64_t)(range);
     return (uint32_t)(m >> 32);
 }
-
 
 #endif

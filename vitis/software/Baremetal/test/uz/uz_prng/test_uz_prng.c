@@ -50,7 +50,7 @@ void test_uz_prng_test_mean(void)
 void test_uz_prng_test_function_pointer(void)
 {
     uz_prng_squares_t *squares = uz_prng_squares_init(0U);
-    uz_prng_t* squares_by_prng=uz_prng_init(uz_prng_generator_squares,0U);
+    uz_prng_t *squares_by_prng = uz_prng_init(uz_prng_generator_squares, uz_prng_float_scale_fp_multiply,0U);
 
     uint32_t random_number[NUMBER_OF_CALLS];
     uz_array_uint32_t random_array = {

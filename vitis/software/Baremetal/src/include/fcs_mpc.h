@@ -62,15 +62,20 @@
 #define  AXI_no_of_iterations_Data_mpc_state_ma_ip   0x100  //data register for Inport AXI_no_of_iterations
 
 // uz_pu_voltages
-#define  IPCore_Reset_pu_voltages_vsd            0x0  //write 0x1 to bit 0 to reset IP core
-#define  IPCore_Enable_pu_voltages_vsd           0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_pu_voltages_vsd        0x8  //contains unique IP timestamp (yymmddHHMM): 2310041550
-#define  index_select_AXI_Data_pu_voltages_vsd   0x100  //data register for Inport index_select_AXI
-#define  index_AXI_Data_pu_voltages_vsd          0x104  //data register for Inport index_AXI
-#define  pu_vd_AXI_Data_pu_voltages_vsd          0x108  //data register for Outport pu_vd_AXI
-#define  pu_vq_AXI_Data_pu_voltages_vsd          0x10C  //data register for Outport pu_vq_AXI
-#define  v_DC_pu_AXI_Data_pu_voltages_vsd        0x118  //data register for Inport v_DC_pu_AXI
-#define  v_dc_select_AXI_Data_pu_voltages_vsd    0x11C  //data register for Inport v_dc_select_AXI
+#define  IPCore_Reset_pu_voltages_dq                   0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_pu_voltages_dq                  0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_pu_voltages_dq               0x8  //contains unique IP timestamp (yymmddHHMM): 2311271544
+#define  index_select_AXI_Data_pu_voltages_dq          0x100  //data register for Inport index_select_AXI
+#define  index_AXI_Data_pu_voltages_dq                 0x104  //data register for Inport index_AXI
+#define  pu_vd_AXI_Data_pu_voltages_dq                 0x108  //data register for Outport pu_vd_AXI
+#define  pu_vq_AXI_Data_pu_voltages_dq                 0x10C  //data register for Outport pu_vq_AXI
+#define  id_ref_pu_AXI_Data_pu_voltages_dq             0x110  //data register for Inport id_ref_pu_AXI
+#define  iq_ref_pu_AXI_Data_pu_voltages_dq             0x114  //data register for Inport iq_ref_pu_AXI
+#define  v_DC_pu_AXI_Data_pu_voltages_dq               0x118  //data register for Inport v_DC_pu_AXI
+#define  v_dc_select_AXI_Data_pu_voltages_dq           0x11C  //data register for Inport v_dc_select_AXI
+#define  Ts_minus_Td_over_Ts_AXI_Data_pu_voltages_dq   0x120  //data register for Inport Ts_minus_Td_over_Ts_AXI
+#define  Td_over_Ts_AXI_Data_pu_voltages_dq            0x124  //data register for Inport Td_over_Ts_AXI
+#define  deadtime_comp_onoff_AXI_Data_pu_voltages_dq   0x128  //data register for Inport deadtime_comp_onoff_AXI
 
 // uz_pu_omega_m
 #define  IPCore_Reset_pu_omega_m          0x0  //write 0x1 to bit 0 to reset IP core
@@ -139,7 +144,8 @@ void fcs_mpc_real_or_debug_inputs(bool debug_or_real);
 void fcs_mpc_init_pu_conversion_ip(void);
 void fcs_mpc_init_park_transform(void);
 void fcs_mpc_init_state_machine(uint32_t no_of_iterations);
-void fcs_mpc_init_pu_voltages(bool index_from_axi_or_pl, bool v_dc_from_axi_or_pl, float v_dc_axi);
+void fcs_mpc_init_pu_voltages(bool index_from_axi_or_pl, bool v_dc_from_axi_or_pl, float v_dc_axi, float Ts_minus_Td_over_Ts, float Td_over_Ts, bool deadtime_comp_onoff);
+void fcs_mpc_write_i_ref_to_pu_voltages(void);
 void fcs_mpc_init_omega_m_pu_conversion(void);
 void fcs_mpc_init_delay_comp(void);
 void fcs_mpc_init_prediction_model(void);
@@ -149,3 +155,4 @@ void fcs_mpc_enable(bool enable);
 void fcs_mpc_write_setpoint(void);
 void fcs_mpc_calc_f_sw_avg(void);
 void fcs_mpc_debug(void);
+void fcs_mpc_deadtime_comp_onoff(bool onoff);

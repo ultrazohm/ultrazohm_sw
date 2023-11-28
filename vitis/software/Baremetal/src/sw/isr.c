@@ -395,6 +395,8 @@ void control_left_motor() {
     fcs_mpc_write_axi_v_dc();
 	//write setpoint to MPC
 	fcs_mpc_write_setpoint();
+	//write setpoint to pu_voltages for deadtime compensation algorithm
+	fcs_mpc_write_i_ref_to_pu_voltages();
 };
 
 void control_right_motor() {

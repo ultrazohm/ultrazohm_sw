@@ -172,6 +172,9 @@ typedef struct _referenceAndSetValues_ {
 	float lambda_u_start;
 	float lambda_u_stop;
 	float f_cnt_lambda_u_end;
+	float Ts_minus_Td_over_Ts;
+	float Td_over_Ts;
+	bool deadtime_comp_onoff;
 } referenceAndSetValues;
 
 typedef struct{

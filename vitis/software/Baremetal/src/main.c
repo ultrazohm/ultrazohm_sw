@@ -91,7 +91,7 @@ int main(void)
 
             // parameters for automated trade-off curve measurements
             Global_Data.rasv.lambda_u_start = 0.0f;//0.000091;//0.00006;
-            Global_Data.rasv.lambda_u_stop = 0.0001;//0.0004;
+            Global_Data.rasv.lambda_u_stop = 0.0004;
             Global_Data.rasv.lambda_u_step = 0.00001; // precision acc. to fixed-point data-type: 7.62939453125e-06
             Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
             Global_Data.rasv.cnt_lambda_u_end = (uint32_t)(ceilf((Global_Data.rasv.lambda_u_stop - Global_Data.rasv.lambda_u_start) / Global_Data.rasv.lambda_u_step))+1U;
@@ -99,6 +99,11 @@ int main(void)
             Global_Data.rasv.cnt_lambda_u = 1U;
             Global_Data.rasv.f_cnt_lambda_u = 1.0f;
             Global_Data.av.pause_time_sec = 3.0f;
+
+            //deadtime comp parameters
+            Global_Data.rasv.Ts_minus_Td_over_Ts = 0.94; //0.94 is valid for 150ns deadtime
+            Global_Data.rasv.Td_over_Ts = 1.0f-Global_Data.rasv.Ts_minus_Td_over_Ts;
+            Global_Data.rasv.deadtime_comp_onoff = false;
 
             initialization_chain = init_ip_cores;
             break;
@@ -145,7 +150,7 @@ int main(void)
             //uz_mpc_State_machine
             fcs_mpc_init_state_machine(8U); //state machine shall perform 8 iterations for the 8 switch positions
             //uz_pu_voltages
-            fcs_mpc_init_pu_voltages(1U,0U,48.0f); //0=index via AXI 1=index via PL | //0=v_dc via AXI 1=v_dc via PL measured
+            fcs_mpc_init_pu_voltages(1U,0U,48.0f,Global_Data.rasv.Ts_minus_Td_over_Ts, Global_Data.rasv.Td_over_Ts, Global_Data.rasv.deadtime_comp_onoff); //0=index via AXI 1=index via PL | //0=v_dc via AXI 1=v_dc via PL measured
             //uz_pu_omega_m_conversion
             fcs_mpc_init_omega_m_pu_conversion();
             //delay_comp

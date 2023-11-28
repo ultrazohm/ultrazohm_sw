@@ -324,18 +324,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-			uz_Trajectory_Start(data->objects.speed_traj);
-			uz_Trajectory_Start(data->objects.current_traj);
+//			uz_Trajectory_Start(data->objects.speed_traj);
+//			uz_Trajectory_Start(data->objects.current_traj);
 			break;
 
 		case (My_Button_7):
-			uz_Trajectory_Stop(data->objects.speed_traj);
-			uz_Trajectory_Stop(data->objects.current_traj);
+//			uz_Trajectory_Stop(data->objects.speed_traj);
+//			uz_Trajectory_Stop(data->objects.current_traj);
+			if(data->rasv.deadtime_comp_onoff == false) {
+				data->rasv.deadtime_comp_onoff = true;
+				fcs_mpc_deadtime_comp_onoff(data->rasv.deadtime_comp_onoff);
+			}
+			else if(data->rasv.deadtime_comp_onoff == true) {
+				data->rasv.deadtime_comp_onoff = false;
+				fcs_mpc_deadtime_comp_onoff(data->rasv.deadtime_comp_onoff);
+			}
 			break;
 
 		case (My_Button_8):
-			uz_Trajectory_Reset(data->objects.speed_traj);
-			uz_Trajectory_Reset(data->objects.current_traj);
+//			uz_Trajectory_Reset(data->objects.speed_traj);
+//			uz_Trajectory_Reset(data->objects.current_traj);
 			data->av.start_trade_off_measurement = true;
 			data->av.f_start_trade_off_measurement = 1.0f;
 			break;
@@ -422,7 +430,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 9);
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	 if (data->rasv.deadtime_comp_onoff == true) {
+		 js_status_BareToRTOS |= (1 << 10);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 10);
+	 }
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

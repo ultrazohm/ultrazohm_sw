@@ -274,9 +274,9 @@ enum gui_button_mapping {
 	DDPG-CC_right,
 	CIL,
 	REAL,
-	TrajStart,
-	TrajStop,
-	TrajReset,
+	-,
+	DT_comp,
+	automeasure,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

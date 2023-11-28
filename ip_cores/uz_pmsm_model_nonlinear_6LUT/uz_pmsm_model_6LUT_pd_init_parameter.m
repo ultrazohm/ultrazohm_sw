@@ -88,7 +88,7 @@ d_current_d_Flux = FluxMapData{1,1:20};
 q_current_d_Flux = FluxMapData{22:41,1};
 % Output values for lookup table
 Flux_d = FluxMapData{43:62,1:20}'*(1e-3);
-
+Flux_d_test = FluxMapData{43:62,1:20}*(1e-3);
 %Psi_q
 % d currents in q Axe for lookup table
 d_current_q_Flux = FluxMapData{66,1:20};
@@ -96,14 +96,16 @@ d_current_q_Flux = FluxMapData{66,1:20};
 q_current_q_Flux = FluxMapData{87:106,1};
 % Output values for lookup table
 Flux_q = FluxMapData{108:127,1:20}'*(1e-3);
-
-%Ldd, Lqq, Ldq=Lqd
+Flux_q_test = FluxMapData{108:127,1:20}*(1e-3);
+%Ldd, Lqq, Ldq=Lqd;
 % [Ldq,Ldd]=gradient(Flux_d);
 % [Lqq,Lqd]=gradient(Flux_q);
 
 [Ldq,Ldd]=gradient(Flux_d,2.5263,1.6842);
 [Lqq,Lqd]=gradient(Flux_q,2.5263,1.6842);
 
+[Ldd_real,Ldq_real]=gradient(Flux_d_test,1.6842,2.5263);
+[Lqd_real,Lqq_real]=gradient(Flux_q_test,1.6842,2.5263);
 
 % [Ldd,Ldq]=gradient(Flux_d,1.6842,2.5263);
 % [Lqd,Lqq]=gradient(Flux_q,1.6842,2.5263);

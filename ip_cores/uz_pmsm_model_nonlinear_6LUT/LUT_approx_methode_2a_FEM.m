@@ -4,12 +4,17 @@ close all;
 
 %LeastSquare Problems
 options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt');
-d_current = d_current_d_Flux';
-q_current = q_current_d_Flux;
+d_current = id;
+q_current = iq;
 
+d_current = d_current(1,:);
+q_current = q_current(:,1);
+figure;
+surf(id,iq,psi_d)
 
+%% Berechnen der Selbsinduktivitäten und Kreuzkopplungsinduktivitäten
 % 1. Gleichung Selbstinduktivität Psid
-Fluxd_iqnull = Flux_d(:,10);
+Fluxd_iqnull = psi_d(1,:);
 
 %Formel aus Paper2 für Methode 2c "Linearen Bereich" 
 %fun0=@(ad)Fluxd_iqnull-(ad(1).*tanh(ad(2)*(d_current-ad(3))));
@@ -31,7 +36,7 @@ ad3 = ad_1(3);
 
 
 % 2. Gleichung Selbstinduktivität Psiq
-Fluxq_idnull = Flux_q(15,:)';
+Fluxq_idnull = psi_q(:,9);
 fun2=@(aq)(Fluxq_idnull-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
 
 beta2 = [1;1;1];
@@ -43,7 +48,7 @@ aq2 = aq_1(2);
 aq3 = aq_1(3);
 
 % 3. Gleichung Maximale Induktivität psid bei Iq1
-Fluxd_iq1 = Flux_d(:,1);
+Fluxd_iq1 = psi_d(33,:);
 fun3=@(ad_zwei)Fluxd_iq1-(ad_zwei(1).*(tanh(ad_zwei(2)*(d_current-ad_zwei(3)))))
 
 beta3 =   [0.0305;0.0402; -16.4812];  %Diese 2-D Plots würden in den meisten fällen auch mit "schlechten" Anfangswerten funktionieren
@@ -55,7 +60,7 @@ ad5 = ad_3_6(2);
 ad6 = ad_3_6(3);
 
 % 4. Gleichung Maximale Induktivität pisq bei Id1
-Fluxq_id1 = Flux_q(14,:)';
+Fluxq_id1 = psi_q(:,6);
 fun4=@(aq_zwei)Fluxq_id1-((aq_zwei(1).*(tanh(aq_zwei(2).*q_current)))+(aq_zwei(3).*q_current));
 
 beta4 = [1;1;1];
@@ -66,7 +71,7 @@ aq4 = aq_3_6(1);
 aq5 = aq_3_6(2);
 aq6 = aq_3_6(3);
 
-
+%% Plotten der Selbsinduktivitäten und Kreuzkopplungsinduktivitäten
 figure;
 % Erster Plot
 subplot(4,1,1); 
@@ -103,27 +108,34 @@ plot(q_current, Fluxq_id1,'*', 'DisplayName', 'Fluxq_{id1}');
 legend('show');
 
 
-%Maximum Crosscoupling current constants id1 und iq1
-
+%% Vorbereitung 
 %Selbstinduktion (Zuweisung eigentlich nur wegen Namesgebung)
 psidself = Fluxd_iqnull_fitted;
 
 psiqself = Fluxq_idnull_fitted;
 
-% psid_s1 = repmat(Fluxd_iq1_fitted, 1, 20);
-
 psid_s1 = Fluxd_iq1_fitted; 
-
-% psiq_s1 = repmat(Fluxq_id1_fitted, 1, 20);
 
 psiq_s1 = Fluxq_id1_fitted;
 
+fluxd_real = psi_d;
+fluxq_real = psi_q;
 
-psi_d_cross_integrated = @(d_current) ad1.*(tanh(ad2*(d_current-ad3))) - (ad4.*(tanh(ad5*(d_current-ad6))));
-test = integral(psi_d_cross_integrated,min(d_current),max(d_current))
-%dann ist die Kreuzkopplungin diesem Punkt 
+d_current = id;
+q_current = iq;
+
+%% Berechnen der Methode 2a
+%Maximum Crosscoupling current constants id1 und iq1
+
+% psi_d_cross_integrated = @(d_current) ad1.*(tanh(ad2*(d_current-ad3))) - (ad4.*(tanh(ad5*(d_current-ad6))));
+% test = integral(psi_d_cross_integrated,min(d_current),max(d_current))
+
+%dann ist die Kreuzkopplungin diesem Punkt
 psid_cross_s1 = psidself - psid_s1;
 psiq_cross_s1 = psiqself - psiq_s1;
+
+psid_cross_s1 = repmat(psid_cross_s1, 33, 1);
+psiq_cross_s1 = repmat(psiq_cross_s1, 1, 9);
 
 %Die beiden werden dann integriert (wieso auch immer) 
 %psiid_cross_s1_integrated = (1/2)*(ad3-ad6).*((d_current).^2)+((ad1/ad2).*log(cosh(ad2.*d_current)))-((ad4/ad5).*log(cosh(ad5.*d_current)));
@@ -134,21 +146,21 @@ psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*lo
 
 %Berechnen von F(i1)*G(i1) (wie im Paper)
 
-%Das sind die Setpoints aus für 
-q_current_set = q_current(1)
-d_current_set = d_current(14)
+%Das sind die Setpoints kann mit gespielt werden um Ergebnis zu verändern müssen oben dann auch geändert werden.  
+q_current_set = q_current(33,1);
+d_current_set = d_current(1,1);
 
 %Für den Faktor setzte ich einfach in der Formel der Integrierten Terme den Set Strom ein 
-Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
+Fid1_Giq1 = (1/2).*(aq3-aq6).*((q_current_set).^2)+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
 Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(d_current_set-ad3))))) - (((ad1.*ad4)).*(log(cosh(ad5.*(d_current_set-ad6)))./ad5));
 
 %Kreuzkopplung ist dann
-psi_d_cross = (1/Fid1_Giq1).*((psid_cross_s1').*(psiiq_cross_s1_integrated));
+psi_d_cross = (1/Fid1_Giq1).*((psid_cross_s1).*(psiiq_cross_s1_integrated));
 psi_q_cross = (1/Fid2_Giq2).*((psiq_cross_s1).*(psiid_cross_s1_integrated));
 
 %Eigeninduktivität noch "padden"
-psidself_padded = repmat(Fluxd_iqnull_fitted, 1, 20)';
-psiqself_padded = repmat(Fluxq_idnull_fitted, 1, 20);
+psidself_padded = repmat(Fluxd_iqnull_fitted, 33, 1);
+psiqself_padded = repmat(Fluxq_idnull_fitted, 1, 9);
 
 % psiid_cross_s1_integrated = repmat(psiid_cross_s1_integrated, 20, 1);
 % psiiq_cross_s1_integrated = repmat(psiiq_cross_s1_integrated, 1, 20);
@@ -158,9 +170,7 @@ psi_d_approx = psidself_padded - psi_d_cross;
 psi_q_approx = psiqself_padded - psi_q_cross;
 
 
-fluxd_real = Flux_d';
-fluxq_real = Flux_q';
-
+%% Berechnung des errors
 %Error berechung zwischen den Flusskarten
 fluxd_max = max(fluxd_real, [], 'all')
 fluxq_max = max(fluxq_real, [], 'all');
@@ -168,16 +178,7 @@ fluxq_max = max(fluxq_real, [], 'all');
 ed = ((abs(fluxd_real-psi_d_approx))/fluxd_max).*100;
 eq = ((abs(fluxq_real-psi_q_approx))/fluxq_max).*100;
 
-
-crossfluxd1 = Flux_d(10,:);
-crossfluxd2 = Flux_d(15,:);
-crossfluxd3 = Flux_d(20,:);
-
-tacos = (((psidself*1e3) .* (crossfluxd1*1e3)).*1e-3); 
-tacos = psidself_padded -  (psidself.*crossfluxd1);
-
-tacos2 = fluxd_real./psidself_padded;
-
+%% plotten
 
 figure;
 % Approximierter Fluss
@@ -194,11 +195,12 @@ legend;
 subplot(2,1,2); 
 grid on;
 % plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current, fluxd_real);
+% surf(d_current, q_current, fluxd_real);
+surf(id,iq,psi_d)
 %surf(X, Y, fluxd_real);
 xlabel('D Current');
 ylabel('Q Current');
-zlabel('psi_qreal');
+zlabel('psi_dreal');
 legend;
 
 figure;
@@ -227,7 +229,6 @@ legend;
 figure;
 % Error psid zwischen approx und echtem Fluss
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
 surf(d_current, q_current, ed);
 xlabel('D Current');
 ylabel('Q Current');
@@ -238,7 +239,6 @@ legend;
 figure;
 % Error psiq zwischen approx und echtem Fluss
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
 surf(d_current, q_current, eq);
 xlabel('D Current');
 ylabel('Q Current');

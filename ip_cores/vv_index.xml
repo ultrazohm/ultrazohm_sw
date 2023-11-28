@@ -2245,6 +2245,34 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:prediction:1.2">
+		</VLNV>
+		<DisplayName value="prediction">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113314252">
+		</CoreRevision>
+		<ComponentPath value="uz_fcs_mpc_3ph_pmsm/hdl_prj/ipcore/prediction_v1_2/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:pu_omega_m:1.1">
 		</VLNV>
 		<DisplayName value="pu_omega_m">
@@ -2256,6 +2284,90 @@
 		<CoreRevision value="2113236345">
 		</CoreRevision>
 		<ComponentPath value="uz_fcs_mpc_3ph_pmsm/hdl_prj/ipcore/pu_omega_m_v1_1/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:pu_voltages_dq:1.0">
+		</VLNV>
+		<DisplayName value="pu_voltages_dq">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113312618">
+		</CoreRevision>
+		<ComponentPath value="uz_fcs_mpc_3ph_pmsm/hdl_prj/ipcore/pu_voltages_dq_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:pu_voltages_dq:1.1">
+		</VLNV>
+		<DisplayName value="pu_voltages_dq">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113312864">
+		</CoreRevision>
+		<ComponentPath value="uz_fcs_mpc_3ph_pmsm/hdl_prj/ipcore/pu_voltages_dq_v1_1/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:pu_voltages_dq:1.2">
+		</VLNV>
+		<DisplayName value="pu_voltages_dq">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113314104">
+		</CoreRevision>
+		<ComponentPath value="uz_fcs_mpc_3ph_pmsm/hdl_prj/ipcore/pu_voltages_dq_v1_2/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">

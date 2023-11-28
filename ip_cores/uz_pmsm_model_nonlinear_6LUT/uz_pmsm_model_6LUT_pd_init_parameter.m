@@ -45,7 +45,7 @@ simulate_nonlinear_modell=true;
 parameter_nachfuerung=true;
 
 praediktion_entkopplung_nonlinear=true;
-entkopplung_linear=true;
+entkopplung_linear=false;
 entkopplung_static=false;
 entkopplung_dynamic=false;
 

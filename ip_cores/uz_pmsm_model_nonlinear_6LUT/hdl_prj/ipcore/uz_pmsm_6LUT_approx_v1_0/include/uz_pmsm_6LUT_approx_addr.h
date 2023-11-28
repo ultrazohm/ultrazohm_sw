@@ -1,0 +1,31 @@
+/*
+ * File Name:         C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\ipcore\uz_pmsm_6LUT_approx_v1_0\include\uz_pmsm_6LUT_approx_addr.h
+ * Description:       C Header File
+ * Created:           2023-11-28 16:06:43
+*/
+
+#ifndef UZ_PMSM_6LUT_APPROX_H_
+#define UZ_PMSM_6LUT_APPROX_H_
+
+#define  IPCore_Reset_uz_pmsm_6LUT_approx                0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_uz_pmsm_6LUT_approx               0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_uz_pmsm_6LUT_approx            0x8  //contains unique IP timestamp (yymmddHHMM): 2311281606
+#define  reset_integrators_Data_uz_pmsm_6LUT_approx      0x100  //data register for Inport reset_integrators
+#define  simulate_mechanical_Data_uz_pmsm_6LUT_approx    0x104  //data register for Inport simulate_mechanical
+#define  simulate_nonlinear_Data_uz_pmsm_6LUT_approx     0x108  //data register for Inport simulate_nonlinear
+#define  reciprocal_J_Data_uz_pmsm_6LUT_approx           0x10C  //data register for Inport reciprocal_J
+#define  mu_Data_uz_pmsm_6LUT_approx                     0x110  //data register for Inport mu
+#define  M_n0_Data_uz_pmsm_6LUT_approx                   0x114  //data register for Inport M_n0
+#define  Ld_Data_uz_pmsm_6LUT_approx                     0x118  //data register for Inport Ld
+#define  Lq_Data_uz_pmsm_6LUT_approx                     0x11C  //data register for Inport Lq
+#define  R1_Data_uz_pmsm_6LUT_approx                     0x120  //data register for Inport R1
+#define  polepairs_Data_uz_pmsm_6LUT_approx              0x124  //data register for Inport polepairs
+#define  psi_pm_Data_uz_pmsm_6LUT_approx                 0x128  //data register for Inport psi_pm
+#define  inputs_Data_uz_pmsm_6LUT_approx                 0x130  //data register for Inport inputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x13C.
+#define  inputs_Strobe_uz_pmsm_6LUT_approx               0x140  //strobe register for port inputs
+#define  outputs_Data_uz_pmsm_6LUT_approx                0x150  //data register for Outport outputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x15C.
+#define  outputs_Strobe_uz_pmsm_6LUT_approx              0x160  //strobe register for port outputs
+#define  fitting_parameters_Data_uz_pmsm_6LUT_approx     0x180  //data register for Inport fitting_parameters. Vector with 14 elements. Data width is wider than the register width, so data is split into 2 32-bit sections.. Register is split across a total of 28 addresses, last address is 0x1EC.
+#define  fitting_parameters_Strobe_uz_pmsm_6LUT_approx   0x200  //strobe register for port fitting_parameters
+
+#endif /* UZ_PMSM_6LUT_APPROX_H_ */

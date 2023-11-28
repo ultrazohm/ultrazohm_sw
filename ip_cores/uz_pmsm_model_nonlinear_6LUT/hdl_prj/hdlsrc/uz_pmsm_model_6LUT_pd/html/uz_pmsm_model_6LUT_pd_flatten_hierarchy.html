@@ -153,7 +153,7 @@ List of subsystems:
 [+]
 </span>
 <span name="onList" id="onList" style="display: none;">
-<ul class="SystemdefinedCollapse" id="4b7a8525-f1c5-4a14-bb82-48db73594a40" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="ddbd0ee8-3927-4c57-9346-76aa140e32fa" dataCollapse="off">
 <li>
 <a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:300')" name="code2model" class="code2model">
 mechanical_system
@@ -173,6 +173,30 @@ pmsm
 
 </li>
 <li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:2333')" name="code2model" class="code2model">
+Ldd_approx1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:2521')" name="code2model" class="code2model">
+Ldq
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:2478')" name="code2model" class="code2model">
+Lqd
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:2374')" name="code2model" class="code2model">
+Lqq_approx1
+</a>
+
+</li>
+<li>
 <a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:1043')" name="code2model" class="code2model">
 Subsystem
 </a>
@@ -185,62 +209,26 @@ Subsystem1
 
 </li>
 <li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:2046')" name="code2model" class="code2model">
+psid_approx
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:2055')" name="code2model" class="code2model">
+psiq_approx
+</a>
+
+</li>
+<li>
 <a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:428')" name="code2model" class="code2model">
 torque_calculation
 </a>
 
 </li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:1025')" name="code2model" class="code2model">
-Flux_d Lookup
-Table
-</a>
-
-</li>
-<li>
-LinearInterpolationTopNetwork
-</li>
-<li>
-DirectLUTNetwork
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:1026')" name="code2model" class="code2model">
-Flux_q Lookup
-Table
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:1031')" name="code2model" class="code2model">
-Ldd Lookup
-Table
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:1032')" name="code2model" class="code2model">
-Ldq Lookup
-Table2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:1033')" name="code2model" class="code2model">
-Lqd Lookup
-Table1
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model_6LUT_pd:1034')" name="code2model" class="code2model">
-Lqq Lookup
-Table
-</a>
-
-</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '4b7a8525-f1c5-4a14-bb82-48db73594a40')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -272,13 +260,22 @@ Flattening Status:
 </font>
 
 </a>
-<br /><br />'Hierarchical flattening' was successful.<br /><br /><table width="100%" border="1">
+<br /><br />'Hierarchical flattening' was successful.<br /><br /><a name="Validation Model">
+<font size="+1" color="#000066">
+<b class="midprod">
+Validation Model
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-Validation model:
+Validation model to verify functional equivalence
 </td>
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model_6LUT_pd_vnl')" class="callMATLAB" name="callMATLAB">gm_uz_pmsm_model_6LUT_pd_vnl</a>
+<a href="matlab:open_system('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\gm_uz_pmsm_model_6LUT_pd_vnl')" class="callMATLAB" name="callMATLAB">gm_uz_pmsm_model_6LUT_pd_vnl</a>
 </td>
 
 </tr>
@@ -296,10 +293,10 @@ Generated Model
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-Generated model after the transformation:
+Generated model after the transformation
 </td>
 <td align="left" valign="top" style="border-style: none">
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model_6LUT_pd')" class="callMATLAB" name="callMATLAB">gm_uz_pmsm_model_6LUT_pd</a>
+<a href="matlab:open_system('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\gm_uz_pmsm_model_6LUT_pd')" class="callMATLAB" name="callMATLAB">gm_uz_pmsm_model_6LUT_pd</a>
 </td>
 
 </tr>

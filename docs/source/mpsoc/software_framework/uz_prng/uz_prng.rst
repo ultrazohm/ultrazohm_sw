@@ -269,10 +269,11 @@ Float [0,1)
         ax.yaxis.set_minor_locator(AutoMinorLocator())
         ax.set_xlabel('ISR sample')
 
-
-fp_muliply_mean = 0.4960
-fp_divide_mean = 0.4964
-shift_multi_mean = 0.4851
+=============== ============== ================
+fp_muliply_mean fp_divide_mean shift_multi_mean
+=============== ============== ================
+0.4960          0.4964         0.4851
+=============== ============== ================
 
 Calculated using Matlab ksdensity function over 10000 samples.
 
@@ -311,15 +312,13 @@ uint32_t in range [0,range)
 - int multi is the fastest but is biased
 - unbiased opt is unbiased and faster than unbias
 - No reason to use float multi version
-- Use unbiased mean if comparability with other Frameworks that use Lemir's method is desired
+- Use unbiased mean if comparability with other Frameworks that use Lemire's method (https://arxiv.org/abs/1805.10941) is desired
 
-float_mult_mean = 0.4889
-
-int_mult_mean = 0.4262
-
-unbiased_mean = 0.5270
-
-unbiased_opt_mean = 0.4402
+=============== ============= ============= =============================== 
+float_mult_mean int_mult_mean unbiased_mean unbiased_mean unbiased_opt_mean
+=============== ============= ============= =============================== 
+0.4889          0.4262         0.5270       0.4402
+=============== ============= ============= =============================== 
 
 .. plot::
 

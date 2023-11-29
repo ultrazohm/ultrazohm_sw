@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj\ipcore\pu_voltages_dq_v1_3\include\pu_voltages_dq_addr.h
  * Description:       C Header File
- * Created:           2023-11-29 09:02:39
+ * Created:           2023-11-29 17:01:23
 */
 
 #ifndef PU_VOLTAGES_DQ_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_pu_voltages_dq                   0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_pu_voltages_dq                  0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_pu_voltages_dq               0x8  //contains unique IP timestamp (yymmddHHMM): 2311290902
+#define  IPCore_Timestamp_pu_voltages_dq               0x8  //contains unique IP timestamp (yymmddHHMM): 2311291701
 #define  index_select_AXI_Data_pu_voltages_dq          0x100  //data register for Inport index_select_AXI
 #define  index_AXI_Data_pu_voltages_dq                 0x104  //data register for Inport index_AXI
 #define  pu_vd_AXI_Data_pu_voltages_dq                 0x108  //data register for Outport pu_vd_AXI

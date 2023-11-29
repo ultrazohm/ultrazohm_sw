@@ -147,8 +147,8 @@
           "xlconstant_0": "",
           "system_ila_0": "",
           "system_ila_1": "",
-          "pu_voltages_dq_0": "",
-          "prediction_0": ""
+          "prediction_0": "",
+          "pu_voltages_dq_0": ""
         },
         "count_f_sw_0": "",
         "count_f_sw_1": "",
@@ -7811,17 +7811,17 @@
                   }
                 }
               },
-              "pu_voltages_dq_0": {
-                "vlnv": "xilinx.com:ip:pu_voltages_dq:1.2",
-                "xci_name": "zusys_pu_voltages_dq_1_7",
-                "xci_path": "ip\\zusys_pu_voltages_dq_1_7\\zusys_pu_voltages_dq_1_7.xci",
-                "inst_hier_path": "uz_user/fcs_mpc_3ph/pu_voltages_dq_0"
-              },
               "prediction_0": {
                 "vlnv": "xilinx.com:ip:prediction:1.2",
                 "xci_name": "zusys_prediction_1_0",
                 "xci_path": "ip\\zusys_prediction_1_0\\zusys_prediction_1_0.xci",
                 "inst_hier_path": "uz_user/fcs_mpc_3ph/prediction_0"
+              },
+              "pu_voltages_dq_0": {
+                "vlnv": "xilinx.com:ip:pu_voltages_dq:1.3",
+                "xci_name": "zusys_pu_voltages_dq_1_10",
+                "xci_path": "ip\\zusys_pu_voltages_dq_1_10\\zusys_pu_voltages_dq_1_10.xci",
+                "inst_hier_path": "uz_user/fcs_mpc_3ph/pu_voltages_dq_0"
               }
             },
             "interface_nets": {
@@ -7949,10 +7949,10 @@
                   "smartcon_mpc/aclk",
                   "system_ila_0/clk",
                   "system_ila_1/clk",
-                  "pu_voltages_dq_0/IPCORE_CLK",
-                  "pu_voltages_dq_0/AXI4_Lite_ACLK",
                   "prediction_0/IPCORE_CLK",
-                  "prediction_0/AXI4_Lite_ACLK"
+                  "prediction_0/AXI4_Lite_ACLK",
+                  "pu_voltages_dq_0/AXI4_Lite_ACLK",
+                  "pu_voltages_dq_0/IPCORE_CLK"
                 ]
               },
               "cost_opt_0_G0": {
@@ -8170,7 +8170,7 @@
                   "prediction_0/omega_m_pu"
                 ]
               },
-              "pu_voltages_dq_1_voltages_done": {
+              "pu_voltages_dq_0_voltages_done": {
                 "ports": [
                   "pu_voltages_dq_0/voltages_done",
                   "mpc_state_ma_ip_0/trigger_voltages_done"
@@ -8212,10 +8212,10 @@
                   "mpc_enable_0/IPCORE_RESETN",
                   "mpc_enable_0/AXI4_Lite_ARESETN",
                   "smartcon_mpc/aresetn",
-                  "pu_voltages_dq_0/IPCORE_RESETN",
-                  "pu_voltages_dq_0/AXI4_Lite_ARESETN",
                   "prediction_0/IPCORE_RESETN",
-                  "prediction_0/AXI4_Lite_ARESETN"
+                  "prediction_0/AXI4_Lite_ARESETN",
+                  "pu_voltages_dq_0/AXI4_Lite_ARESETN",
+                  "pu_voltages_dq_0/IPCORE_RESETN"
                 ]
               },
               "sample_trigger_1": {

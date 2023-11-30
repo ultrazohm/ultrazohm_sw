@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1b99010b</spirit:value>
+            <spirit:value>bfe70f13</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1b99010b</spirit:value>
+            <spirit:value>bfe70f13</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -841,7 +841,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/pu_voltages_dq_src_switching_table.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_v_alpha.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_v_beta.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -855,7 +859,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/pu_voltages_dq.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_86bb3588</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_b3267b3a</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -896,7 +900,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/pu_voltages_dq_src_switching_table.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_v_alpha.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/pu_voltages_dq_src_v_beta.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -965,14 +974,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>pu_voltages_dq</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113317061</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-11-29T16:01:39Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113318054</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-11-30T08:35:03Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="19d18aaa"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="9a919f21"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="8bcd628c"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="f8b9036e"/>
     </xilinx:packagingInfo>

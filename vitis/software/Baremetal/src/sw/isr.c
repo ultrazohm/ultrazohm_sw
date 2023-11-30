@@ -100,7 +100,7 @@ float i_DC_Amps_2 								= 0.0f;
 float omega_m_rad_per_sec_2 					= 0.0f;
 float omega_el_rad_per_sec_2 					= 0.0f;
 float theta_el_rad_2 							= 0.0f;
-float theta_el_offset_2 						= 1.4f;
+float theta_el_offset_2 						= 1.54f;
 struct uz_3ph_dq_t i_dq_Amps_2 					= {0};
 struct uz_3ph_dq_t v_dq_Volts_2 				= {0};
 float n_ref_rpm_2 								= 0.0f;
@@ -124,6 +124,7 @@ struct uz_3ph_dq_t v_ind_dq_filt_Volts_2 			= {0};
 float r_s_2 									= 0.023f;
 extern uz_IIR_Filter_t* LP_instance_ud_ind_2;
 extern uz_IIR_Filter_t* LP_instance_uq_ind_2;
+struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
 
 // ======================= Others ======================= //
 float error_type = 0.0f;
@@ -247,6 +248,7 @@ void ISR_Control(void *data)
     	uz_CurrentControl_reset(CC_instance_1);
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
+
     }
 
     // Set duty cycles for two-level modulator
@@ -276,11 +278,14 @@ void ISR_Control(void *data)
     uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
 
     //calculate induced voltage for estimation of r_fe + filter
-    v_ind_dq_Volts_2.d = (v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q);
-    v_ind_dq_Volts_2.q = (v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d);
+    v_ind_dq_Volts_2.q = (v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q)-0.14f;
+    v_ind_dq_Volts_2.d = (v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d)+0.32f;
 
     v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
     v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);
+
+    psi_dq_mVoltseconds_2.q  = (v_ind_dq_filt_Volts_2.d/(omega_el_rad_per_sec_2*-1.0f))*1000;
+    psi_dq_mVoltseconds_2.d  = (v_ind_dq_filt_Volts_2.q/omega_el_rad_per_sec_2)*1000;
 
 
     // Update JavaScope

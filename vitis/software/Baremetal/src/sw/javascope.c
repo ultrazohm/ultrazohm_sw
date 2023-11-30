@@ -57,6 +57,8 @@ extern struct uz_3ph_dq_t v_dq_ref_Volts_2;
 extern struct uz_3ph_abc_t v_abc_Volts_2;
 extern struct uz_3ph_dq_t v_ind_dq_Volts_2;
 extern struct uz_3ph_dq_t v_ind_dq_filt_Volts_2;
+extern struct uz_3ph_dq_t v_dq_Volts_2;
+extern struct uz_3ph_dq_t psi_dq_mVoltseconds_2;
 
 
 //Others
@@ -129,11 +131,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Theta_el_3] 	= &data->av.theta_elec_3;
 	js_ch_observable[JSO_Theta_el_cor_1]= &theta_el_rad_1;
 	js_ch_observable[JSO_Theta_el_cor_2]= &theta_el_rad_2;
-	js_ch_observable[JSO_Theta_el_off_1]= &theta_el_offset_1;
-	js_ch_observable[JSO_Theta_el_off_1]= &theta_el_offset_2;
+	js_ch_observable[JSO_Theta_el_off_1]= &data->av.theta_offset_1;
+	js_ch_observable[JSO_Theta_el_off_2]= &data->av.theta_offset_2;
 	js_ch_observable[JSO_Theta_mech_1] 	= &data->av.theta_mech_1;
 	js_ch_observable[JSO_ud_1]			= &v_dq_Volts_1.d;
 	js_ch_observable[JSO_uq_1]			= &v_dq_Volts_1.q;
+	js_ch_observable[JSO_ud_2]			= &v_dq_Volts_2.d;
+	js_ch_observable[JSO_uq_2]			= &v_dq_Volts_2.q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
@@ -142,6 +146,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ud_ind_filt_2]			= &v_ind_dq_filt_Volts_2.d;
 	js_ch_observable[JSO_uq_ind_filt_2]			= &v_ind_dq_filt_Volts_2.q;
 	js_ch_observable[JSO_error_type]			= &error_type;
+	js_ch_observable[JSO_psi_d_2]			= &psi_dq_mVoltseconds_2.d;
+	js_ch_observable[JSO_psi_q_2]			= &psi_dq_mVoltseconds_2.q;
 
 
 
@@ -177,7 +183,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_ind_q]   				= &v_ind_dq_Volts_2.q;
 	js_slowDataArray[JSSD_FLOAT_u_ind_filt_d]   		= &v_ind_dq_filt_Volts_2.d;
 	js_slowDataArray[JSSD_FLOAT_u_ind_filt_q]   		= &v_ind_dq_filt_Volts_2.q;
-
+	js_slowDataArray[JSSD_FLOAT_psi_d]   				= &psi_dq_mVoltseconds_2.d;
+	js_slowDataArray[JSSD_FLOAT_psi_q]   				= &psi_dq_mVoltseconds_2.q;
+	js_slowDataArray[JSSD_FLOAT_theta_el_offset_2]   	= &data->av.theta_offset_2;
 
 
 	return Status;

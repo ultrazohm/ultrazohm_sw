@@ -3,14 +3,15 @@
 #include "../IP_Cores/uz_EnDat/uz_EnDat.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include "xparameters.h"
 
 #define XPARS_NON_FINAL_BASE_CLK 100000000U
-#define XPARS_NON_FINAL_BASE_ADDRESS 0x8000000U
+//#define XPARS_NON_FINAL_BASE_ADDRESS 0x8000000U
 
  uz_EnDat_t* uz_EnDat_IP_core_init(void) {
     uz_EnDat_t* EnDat_init_object;
     struct uz_EnDat_config_t config = {
-        .base_address = XPARS_NON_FINAL_BASE_ADDRESS,
+        .base_address = XPAR_UZ_USER_UZ_ENDAT_0_BASEADDR,
         .ip_clk_frequency_Hz = XPARS_NON_FINAL_BASE_CLK
 
     };

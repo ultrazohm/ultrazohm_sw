@@ -5,7 +5,7 @@
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
-      "synth_flow_mode": "None",
+      "synth_flow_mode": "Hierarchical",
       "tool_version": "2022.2",
       "validated": "true"
     },

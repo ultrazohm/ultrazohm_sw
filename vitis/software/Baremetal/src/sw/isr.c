@@ -203,7 +203,7 @@ void ISR_Control(void *data)
     omega_m_rad_per_sec_2 = Global_Data.av.mechanicalRotorSpeed_filtered_2*(2.0f*M_PI)/60.0f;
     omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2*config_PMSM_2.polePairs;
     Global_Data.av.omega_el_2 = omega_el_rad_per_sec_2;
-    theta_el_rad_2 = Global_Data.av.theta_elec_2 - Global_Data.av.theta_offset_2;
+    theta_el_rad_2 = Global_Data.av.theta_elec_2 - theta_el_offset_2;
     i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
     v_dq_Volts_2 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_2, theta_el_rad_2);
 
@@ -278,8 +278,8 @@ void ISR_Control(void *data)
     uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
 
     //calculate induced voltage for estimation of r_fe + filter
-    v_ind_dq_Volts_2.q = (v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q)-0.14f;
-    v_ind_dq_Volts_2.d = (v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d)+0.32f;
+    v_ind_dq_Volts_2.q = v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q;
+    v_ind_dq_Volts_2.d = v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d;
 
     v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
     v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);

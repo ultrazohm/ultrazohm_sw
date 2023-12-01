@@ -7819,8 +7819,8 @@
               },
               "pu_voltages_dq_0": {
                 "vlnv": "xilinx.com:ip:pu_voltages_dq:1.3",
-                "xci_name": "zusys_pu_voltages_dq_1_0",
-                "xci_path": "ip\\zusys_pu_voltages_dq_1_0\\zusys_pu_voltages_dq_1_0.xci",
+                "xci_name": "zusys_pu_voltages_dq_1_1",
+                "xci_path": "ip\\zusys_pu_voltages_dq_1_1\\zusys_pu_voltages_dq_1_1.xci",
                 "inst_hier_path": "uz_user/fcs_mpc_3ph/pu_voltages_dq_0"
               }
             },

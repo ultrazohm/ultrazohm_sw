@@ -2393,7 +2393,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2113318054">
+		<CoreRevision value="2113319543">
 		</CoreRevision>
 		<ComponentPath value="uz_fcs_mpc_3ph_pmsm/hdl_prj/ipcore/pu_voltages_dq_v1_3/component.xml">
 		</ComponentPath>

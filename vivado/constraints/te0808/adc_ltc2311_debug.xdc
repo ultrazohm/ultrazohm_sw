@@ -54,44 +54,7 @@ connect_debug_port u_ila_0/probe4 [get_nets [list {zusys_i/uz_user/payloadswappe
 connect_debug_port u_ila_0/probe5 [get_nets [list {zusys_i/uz_user/dbgjnklower[0]} {zusys_i/uz_user/dbgjnklower[1]} {zusys_i/uz_user/dbgjnklower[2]} {zusys_i/uz_user/dbgjnklower[3]} {zusys_i/uz_user/dbgjnklower[4]} {zusys_i/uz_user/dbgjnklower[5]} {zusys_i/uz_user/dbgjnklower[6]} {zusys_i/uz_user/dbgjnklower[7]} {zusys_i/uz_user/dbgjnklower[8]} {zusys_i/uz_user/dbgjnklower[9]} {zusys_i/uz_user/dbgjnklower[10]} {zusys_i/uz_user/dbgjnklower[11]} {zusys_i/uz_user/dbgjnklower[12]} {zusys_i/uz_user/dbgjnklower[13]} {zusys_i/uz_user/dbgjnklower[14]} {zusys_i/uz_user/dbgjnklower[15]}]]
 connect_debug_port u_ila_0/probe6 [get_nets [list {zusys_i/uz_user/dbgjnkupper[0]} {zusys_i/uz_user/dbgjnkupper[1]} {zusys_i/uz_user/dbgjnkupper[2]} {zusys_i/uz_user/dbgjnkupper[3]} {zusys_i/uz_user/dbgjnkupper[4]} {zusys_i/uz_user/dbgjnkupper[5]} {zusys_i/uz_user/dbgjnkupper[6]} {zusys_i/uz_user/dbgjnkupper[7]} {zusys_i/uz_user/dbgjnkupper[8]} {zusys_i/uz_user/dbgjnkupper[9]} {zusys_i/uz_user/dbgjnkupper[10]} {zusys_i/uz_user/dbgjnkupper[11]} {zusys_i/uz_user/dbgjnkupper[12]} {zusys_i/uz_user/dbgjnkupper[13]} {zusys_i/uz_user/dbgjnkupper[14]} {zusys_i/uz_user/dbgjnkupper[15]}]]
 
-create_debug_core u_ila_0 ila
-set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
-set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
-set_property C_ADV_TRIGGER false [get_debug_cores u_ila_0]
-set_property C_DATA_DEPTH 65536 [get_debug_cores u_ila_0]
-set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
-set_property C_INPUT_PIPE_STAGES 0 [get_debug_cores u_ila_0]
-set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
-set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
-set_property port_width 1 [get_debug_ports u_ila_0/clk]
-connect_debug_port u_ila_0/clk [get_nets [list zusys_i/zynq_ultra_ps_e_0/U0/pl_clk0]]
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
-set_property port_width 64 [get_debug_ports u_ila_0/probe0]
-connect_debug_port u_ila_0/probe0 [get_nets [list {zusys_i/uz_user/POSRAW[0]} {zusys_i/uz_user/POSRAW[1]} {zusys_i/uz_user/POSRAW[2]} {zusys_i/uz_user/POSRAW[3]} {zusys_i/uz_user/POSRAW[4]} {zusys_i/uz_user/POSRAW[5]} {zusys_i/uz_user/POSRAW[6]} {zusys_i/uz_user/POSRAW[7]} {zusys_i/uz_user/POSRAW[8]} {zusys_i/uz_user/POSRAW[9]} {zusys_i/uz_user/POSRAW[10]} {zusys_i/uz_user/POSRAW[11]} {zusys_i/uz_user/POSRAW[12]} {zusys_i/uz_user/POSRAW[13]} {zusys_i/uz_user/POSRAW[14]} {zusys_i/uz_user/POSRAW[15]} {zusys_i/uz_user/POSRAW[16]} {zusys_i/uz_user/POSRAW[17]} {zusys_i/uz_user/POSRAW[18]} {zusys_i/uz_user/POSRAW[19]} {zusys_i/uz_user/POSRAW[20]} {zusys_i/uz_user/POSRAW[21]} {zusys_i/uz_user/POSRAW[22]} {zusys_i/uz_user/POSRAW[23]} {zusys_i/uz_user/POSRAW[24]} {zusys_i/uz_user/POSRAW[25]} {zusys_i/uz_user/POSRAW[26]} {zusys_i/uz_user/POSRAW[27]} {zusys_i/uz_user/POSRAW[28]} {zusys_i/uz_user/POSRAW[29]} {zusys_i/uz_user/POSRAW[30]} {zusys_i/uz_user/POSRAW[31]} {zusys_i/uz_user/POSRAW[32]} {zusys_i/uz_user/POSRAW[33]} {zusys_i/uz_user/POSRAW[34]} {zusys_i/uz_user/POSRAW[35]} {zusys_i/uz_user/POSRAW[36]} {zusys_i/uz_user/POSRAW[37]} {zusys_i/uz_user/POSRAW[38]} {zusys_i/uz_user/POSRAW[39]} {zusys_i/uz_user/POSRAW[40]} {zusys_i/uz_user/POSRAW[41]} {zusys_i/uz_user/POSRAW[42]} {zusys_i/uz_user/POSRAW[43]} {zusys_i/uz_user/POSRAW[44]} {zusys_i/uz_user/POSRAW[45]} {zusys_i/uz_user/POSRAW[46]} {zusys_i/uz_user/POSRAW[47]} {zusys_i/uz_user/POSRAW[48]} {zusys_i/uz_user/POSRAW[49]} {zusys_i/uz_user/POSRAW[50]} {zusys_i/uz_user/POSRAW[51]} {zusys_i/uz_user/POSRAW[52]} {zusys_i/uz_user/POSRAW[53]} {zusys_i/uz_user/POSRAW[54]} {zusys_i/uz_user/POSRAW[55]} {zusys_i/uz_user/POSRAW[56]} {zusys_i/uz_user/POSRAW[57]} {zusys_i/uz_user/POSRAW[58]} {zusys_i/uz_user/POSRAW[59]} {zusys_i/uz_user/POSRAW[60]} {zusys_i/uz_user/POSRAW[61]} {zusys_i/uz_user/POSRAW[62]} {zusys_i/uz_user/POSRAW[63]}]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
-set_property port_width 1 [get_debug_ports u_ila_0/probe1]
-connect_debug_port u_ila_0/probe1 [get_nets [list zusys_i/uz_user/CRCTEST]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
-set_property port_width 1 [get_debug_ports u_ila_0/probe2]
-connect_debug_port u_ila_0/probe2 [get_nets [list Dig_17_Ch4_IBUF]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
-set_property port_width 1 [get_debug_ports u_ila_0/probe3]
-connect_debug_port u_ila_0/probe3 [get_nets [list zusys_i/uz_user/uz_EnDat_0_CLK_OUT]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
-set_property port_width 1 [get_debug_ports u_ila_0/probe4]
-connect_debug_port u_ila_0/probe4 [get_nets [list zusys_i/uz_user/uz_EnDat_0_clkwr]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
-set_property port_width 1 [get_debug_ports u_ila_0/probe5]
-connect_debug_port u_ila_0/probe5 [get_nets [list zusys_i/uz_user/uz_EnDat_0_dataout]]
-create_debug_port u_ila_0 probe
-set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
-set_property port_width 1 [get_debug_ports u_ila_0/probe6]
-connect_debug_port u_ila_0/probe6 [get_nets [list zusys_i/uz_user/uz_EnDat_0_datawr]]
+
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]

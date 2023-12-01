@@ -422,4 +422,32 @@ int8_t uz_EnDat_set_output_enable_in_controlword(controlword_expanded* inp) {
     return(0);
 }
 
+float uz_EnDat_mrps_to_rpm_converter(int32_t mrps) {
+    float ret = 0.0f;
+    float rpmconv = 0.0f;
+    rpmconv = ((float) mrps / 1000.0f);
+    ret = rpmconv; 
+    return (ret);
+}
+
+int32_t uz_EnDat_read_mrps(uz_EnDat_t *self) {
+    int32_t ret;
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    ret = uz_EnDat_hw_read_MILIREVSPERSECOND(self->config.base_address);
+       
+    return(ret);
+}
+
+float uz_EnDat_read_rpm_and_convert_to_float (uz_EnDat_t *self) {
+    int32_t mrps = 0;
+    float retrpm = 0.0f;
+    mrps = uz_EnDat_read_mrps(self);
+    retrpm = uz_EnDat_mrps_to_rpm_converter(mrps);
+
+    return (retrpm);
+
+}
+
+
 #endif  // NOLINT

@@ -70,3 +70,8 @@ uint8_t uz_EnDat_hw_read_CRCFFSTORED(uint32_t base_address) {
     return ((uint8_t)uz_axi_read_uint32(base_address+CRCFFSTORED_Data_uz_EnDat));
 }
 
+int32_t uz_EnDat_hw_read_MILIREVSPERSECOND(uint32_t base_address) {
+    uz_assert_not_zero(base_address);
+    return ((int32_t)uz_axi_read_uint32(base_address+MILIREVSPERSECOND_Data_uz_EnDat));
+}
+

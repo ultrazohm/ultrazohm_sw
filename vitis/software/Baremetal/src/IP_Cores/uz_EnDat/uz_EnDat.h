@@ -128,6 +128,7 @@ int uz_EnDat_write_factor(uz_EnDat_t *self, uint16_t factor, uz_EnDat_factor fac
  * @return Returns status word as a word from the IP-Core.
  */
 uint16_t uz_EnDat_read_statusword(uz_EnDat_t *self);
+
 /**
  * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
  * @brief This function fetches positional values from the EnDat IP-Core.
@@ -244,7 +245,24 @@ int8_t uz_EnDat_set_output_enable_in_controlword(controlword_expanded* inp);
  */
 int8_t uz_EnDat_reset_output_enable_in_controlword(controlword_expanded* inp);
 
+/**
+ * 
+ * @brief This function read the raw rotational speed and converts it to RPM.
+ * @param mrps mili-revolutions per second from EnDat.
+ * @return Returns RPM in float.
+ */
+float uz_EnDat_mrps_to_rpm_converter(int32_t mrps);
 
+/**
+ * @brief This function fetches the revolution value from the EnDat IP Core.
+ * @return Returns the actual rpm value from the EnDat IP Core in mili revs per second.
+ */
+int32_t uz_EnDat_read_mrps(uz_EnDat_t *self);
 
+/**
+ * @brief This function fetches the revolution value from the EnDat IP Core.
+ * @return Returns the actual rpm value from the EnDat IP Core in RPM float.
+ */
+float uz_EnDat_read_rpm_and_convert_to_float (uz_EnDat_t *self);
 
 #endif  // UZ_ENDAT_H  // NOLINT

@@ -154,5 +154,26 @@ void test_uz_EnDat_fail_assert_if_reset_output_enable_in_controlword_in_controlw
      TEST_ASSERT_FAIL_ASSERT(uz_EnDat_reset_output_enable_in_controlword(NULL));
 }
 
+void test_uz_EnDat_mrps_to_rpm_converter_msb(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_mrps_to_rpm_converter(0x7FFFFFFF), 2147483.647f);
+}
+
+void test_uz_EnDat_mrps_to_rpm_converter_lsb(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_mrps_to_rpm_converter((int32_t)0x80000000), -2147483.648f);
+}
+
+void test_uz_EnDat_mrps_to_rpm_converter_near_zero_1(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_mrps_to_rpm_converter((int32_t)0x12), 0.018f);
+}
+
+void test_uz_EnDat_mrps_to_rpm_converter_near_zero_2(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_mrps_to_rpm_converter((int32_t)0xFFFFFFEE), -0.018f);
+}
+
+void test_uz_EnDat_fail_assert_if_uz_EnDat_read_rpm_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_mrps(NULL));
+}
+
+
 
 #endif  // TEST

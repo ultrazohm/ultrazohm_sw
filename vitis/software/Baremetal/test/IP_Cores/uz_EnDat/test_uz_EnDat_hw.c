@@ -190,4 +190,16 @@ void test_uz_EnDat_hw_read_from_CRCFFSTORED(void) {
 }
 
 
+void test_uz_EnDat_hw_read_from_MILIREVSPERSECOND(void) {
+    int32_t c = 777;
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS+MILIREVSPERSECOND_Data_uz_EnDat, c);
+    int32_t c_readback = uz_EnDat_hw_read_MILIREVSPERSECOND(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_INT(c, c_readback);
+
+    // Ignores how often the read function is called and returns (c)
+    uz_axi_read_int32_IgnoreAndReturn(c);
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_MILIREVSPERSECOND(0));
+}
+
+
 #endif  // TEST

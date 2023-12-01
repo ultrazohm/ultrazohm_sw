@@ -6,8 +6,7 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2",
-      "validated": "true"
+      "tool_version": "2022.2"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -180,13 +179,7 @@
       "D1_OUT": {
         "direction": "O",
         "left": "23",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "24",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "D1_OUT_26": {
         "direction": "O",
@@ -211,13 +204,7 @@
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "12",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "D2_OUT_26": {
         "direction": "O",
@@ -5644,42 +5631,18 @@
           "CRCTEST": {
             "ports": [
               "uz_EnDat_0/CRCTEST"
-            ],
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
+            ]
           },
           "Dig_18_Ch4": {
             "ports": [
               "Dig_17_Ch4",
               "uz_EnDat_0/datain"
-            ],
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
+            ]
           },
           "POSRAW": {
             "ports": [
               "uz_EnDat_0/POSRAW"
-            ],
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
+            ]
           },
           "aclk_1": {
             "ports": [
@@ -5751,57 +5714,25 @@
             "ports": [
               "uz_EnDat_0/CLK_OUT",
               "Dig_21_Ch4"
-            ],
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
+            ]
           },
           "uz_EnDat_0_clkwr": {
             "ports": [
               "uz_EnDat_0/clkwr",
               "Dig_22_Ch4"
-            ],
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
+            ]
           },
           "uz_EnDat_0_dataout": {
             "ports": [
               "uz_EnDat_0/dataout",
               "Dig_18_Ch5"
-            ],
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
+            ]
           },
           "uz_EnDat_0_datawr": {
             "ports": [
               "uz_EnDat_0/datawr",
               "Dig_19_Ch4"
-            ],
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
+            ]
           }
         }
       },
@@ -9054,12 +8985,7 @@
         "ports": [
           "Dig_17_Ch4",
           "uz_user/Dig_17_Ch4"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          }
-        }
+        ]
       },
       "Enable_Gates_CPLD_High_dout": {
         "ports": [
@@ -9183,45 +9109,25 @@
         "ports": [
           "uz_user/Dig_18_Ch5",
           "Dig_18_Ch4"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          }
-        }
+        ]
       },
       "uz_user_Dig_19_Ch4": {
         "ports": [
           "uz_user/Dig_19_Ch4",
           "Dig_19_Ch4"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          }
-        }
+        ]
       },
       "uz_user_Dig_21_Ch4": {
         "ports": [
           "uz_user/Dig_21_Ch4",
           "Dig_21_Ch4"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          }
-        }
+        ]
       },
       "uz_user_Dig_22_Ch4": {
         "ports": [
           "uz_user/Dig_22_Ch4",
           "Dig_22_Ch4"
-        ],
-        "hdl_attributes": {
-          "DEBUG": {
-            "value": "true"
-          }
-        }
+        ]
       },
       "vio_D2_test_probe_out0": {
         "ports": [

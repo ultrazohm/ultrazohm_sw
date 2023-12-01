@@ -34,6 +34,13 @@ Squares RNG
    title_string=str(mean)
    axs[1].set_title("Histogram\n of Squares\n with mean:" + title_string )
 
+Reference
+=========
 
+.. doxygentypedef:: uz_prng_squares_t
+
+.. doxygenfunction:: uz_prng_squares_init
+
+.. doxygenfunction:: uz_prng_squares_get_uniform_uint32
 
 

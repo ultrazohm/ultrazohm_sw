@@ -1,6 +1,6 @@
-======
-Halton
-======
+===============
+Halton sequence
+===============
 
 - https://de.mathworks.com/help/stats/pseudorandom-and-quasi-random-number-generation.html?s_tid=CRUX_lftnav
 - https://de.mathworks.com/help/stats/sobolset.html
@@ -60,3 +60,16 @@ Halton
    axs[1].hist(df.number, bins=50, linewidth=0.5, edgecolor="white",density=True)
    title_string=str(mean)
    axs[1].set_title("Histogram\n of Halton Sequence\n with mean:" + title_string )
+
+
+Reference
+=========
+
+.. doxygentypedef:: uz_prng_halton_t
+
+.. doxygenfunction:: uz_prng_halton_init
+
+.. doxygenfunction:: uz_prng_halton_get_uniform_float
+
+.. doxygenfunction:: uz_prng_halton_get_uniform_float_2d
+

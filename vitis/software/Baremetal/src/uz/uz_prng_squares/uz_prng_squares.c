@@ -78,17 +78,17 @@ static uz_prng_squares_t *uz_prng_squares_allocation(void)
     return (self);
 }
 
-uz_prng_squares_t *uz_prng_squares_init(uint64_t seed)
+uz_prng_squares_t *uz_prng_squares_init(uint64_t key)
 {
     uz_prng_squares_t *self = uz_prng_squares_allocation();
 
-    if (seed < 30U)
+    if (key < 30U)
     {
-        self->key = default_keys[seed];
+        self->key = default_keys[key];
     }
     else
     {
-        self->key = seed;
+        self->key = key;
     }
 
     self->counter = 0U;

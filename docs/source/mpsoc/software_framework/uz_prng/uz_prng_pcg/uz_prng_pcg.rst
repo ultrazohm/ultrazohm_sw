@@ -36,3 +36,12 @@ PCG Random Number
    axs[1].hist(df.number, bins=50, linewidth=0.5, edgecolor="white",density=True)
    title_string=str(mean)
    axs[1].set_title("Histogram\n of Squares\n with mean:" + title_string )
+
+Reference
+=========
+
+.. doxygentypedef:: uz_prng_pcg_t
+
+.. doxygenfunction:: uz_prng_pcg_init
+
+.. doxygenfunction:: uz_prng_pcg_get_uniform_uint32

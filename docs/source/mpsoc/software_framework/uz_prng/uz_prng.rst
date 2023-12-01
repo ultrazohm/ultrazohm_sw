@@ -1,3 +1,5 @@
+.. _uz_prng:
+
 ====================================
 Pseudorandom number generator (PRNG)
 ====================================
@@ -347,3 +349,35 @@ float_mult_mean int_mult_mean unbiased_mean unbiased_mean unbiased_opt_mean
         ax.grid(True,which='both')
         ax.yaxis.set_minor_locator(AutoMinorLocator())
         ax.set_xlabel(r'Time in $\mu s$')
+
+
+
+
+
+Reference
+=========
+
+.. doxygentypedef:: uz_prng_t
+
+.. doxygenenum:: uz_prng_generator
+
+.. doxygenenum:: uz_prng_float_scale_method
+
+.. doxygenfunction:: uz_prng_init
+
+.. doxygenfunction:: uz_prng_get_uniform_uint32_zero_to_uint32_max
+
+.. doxygenfunction:: uz_prng_get_uniform_uint32_zero_to_range_unbiased
+
+.. doxygenfunction:: uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt
+
+.. doxygenfunction:: uz_prng_get_uniform_uint32_zero_to_range_float_mult
+
+.. doxygenfunction:: uz_prng_get_uniform_uint32_zero_to_range_int_mult
+
+.. doxygenfunction:: uz_prng_get_uniform_bool
+
+.. doxygenfunction:: uz_prng_get_uniform_float_zero_to_one
+    
+.. doxygenfunction:: uz_prng_get_uniform_float_min_to_max
+

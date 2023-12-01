@@ -1,19 +1,27 @@
-===============
-Mersene Twister
-===============
+================
+Mersenne Twister
+================
 
+The Mersenne Twister [[#mtwister_paper]_] is a random number generator producing uniform pseudorandom numbers.
+The implementation is based on the following resources:
 
-- Twister:
+  - https://github.com/ESultanik/mtwister/blob/master/mtwister.c
+  - https://en.wikipedia.org/wiki/Mersenne_Twister
   - http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/TINYMT/index.html
   - https://github.com/MersenneTwister-Lab/TinyMT
 
-  - Mersenne Twister
+In addition to the implemented Mersenne Twister, there exist multiple improvements including a SIMD-oriented Fast Mersenne Twister (SFMT) [[#fast_twister]_].
+However, the implementation relies on recursion, which is not allowed within the UltraZohm project and not implemented.
 
-    - https://en.wikipedia.org/wiki/Mersenne_Twister
-    - https://github.com/ESultanik/mtwister/blob/master/mtwister.c
+.. warning:: Using the Mersenne Twister for real-time applications, especially in interrupts, is not recommended (see :ref:`uz_prng`).
 
 MT19937
 =======
+
+The following figures shows the generation of 5000 random numbers using the Mersenne Twister.
+Additionally, the Histogram of the generated values is shown.
+The generated random values are uniformly distributed, but not in a perfect manner.
+The specific pattern and distribution depends on the random seed.
 
 .. plot::
 
@@ -35,8 +43,18 @@ MT19937
    axs[1].set_title("Histogram\n of Squares\n with mean:" + title_string )
 
 
-SIMD-oriented Fast Mersenne Twister (SFMT)
-==========================================
+Reference
+=========
 
-  - http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/SFMT/index.html#SFMT
-  - Can not be used since the implementation relies on recursion, which is not allowed by MISRA and must not be used in ISR due to real-time requirements
+.. doxygentypedef:: uz_prng_mtwister_t
+
+.. doxygenfunction:: uz_prng_mtwister_init
+
+.. doxygenfunction:: uz_prng_mtwister_get_uniform_uint32
+
+
+Sources
+=======
+
+.. [#mtwister_paper] Mersenne twister: a 623-dimensionally equidistributed uniform pseudo-random number generator, https://dl.acm.org/doi/10.1145/272991.272995
+.. [#fast_twister] http://www.math.sci.hiroshima-u.ac.jp/m-mat/MT/SFMT/index.html#SFMT

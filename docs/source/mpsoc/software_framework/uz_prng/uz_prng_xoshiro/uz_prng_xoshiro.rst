@@ -2,7 +2,13 @@
 Xoshiro128++
 ============
 
+Implementation of Xoshiro128++[[#xoshiro_paper]_] random number generator.
+This is a wrapper around the original source code of the paper authors [[#xoshiro_source]_]. 
+Based on:
 
+   - https://vigna.di.unimi.it/
+   - https://github.com/svaarala/duktape/blob/master/misc/splitmix64.c
+   - https://en.wikipedia.org/wiki/Xoroshiro128%2B
 
 
 .. plot::
@@ -32,3 +38,9 @@ Reference
 .. doxygenfunction:: uz_prng_xoshiro_init
 
 .. doxygenfunction:: uz_prng_xoshiro_get_uniform_uint32
+
+Sources
+=======
+
+.. [#xoshiro_paper] https://arxiv.org/abs/1805.01407
+.. [#xoshiro_source] https://prng.di.unimi.it/xoshiro128plusplus.c

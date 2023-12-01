@@ -2,19 +2,18 @@
 PCG Random Number
 =================
 
+Implements the PCG random number generator [[#pcg_homepage]_].
+The Implementation is based on:
 
-- https://www.pcg-random.org/
-- Implementation based on
-- https://github.com/imneme/pcg-c-basic/blob/master/pcg_basic.h
-- https://github.com/imneme/pcg-c-basic/blob/master/pcg_basic.c
-- Has the ability to create independent sub-streams, i.e., use one generator instance with different id's instead of multiple generators with different seeds. Using different id's is more efficient w.r.t. memory usage (no multiple instances of the module and state required). However, we do not use this feature to keep it consistent with different generators and have a unified usage  
-
-
+  - https://github.com/imneme/pcg-c-basic/blob/master/pcg_basic.h
+  - https://github.com/imneme/pcg-c-basic/blob/master/pcg_basic.c
   - https://en.wikipedia.org/wiki/Permuted_congruential_generator
+  - https://www.pcg-random.org/pdf/hmc-cs-2014-0905.pdf
 
-    - https://www.pcg-random.org/pdf/hmc-cs-2014-0905.pdf
-    - https://www.pcg-random.org/
-    - https://github.com/imneme/pcg-c-basic/blob/master/pcg_basic.c
+
+The PCG generators have the ability to create independent sub-streams, i.e., use one generator instance with different id's instead of multiple generators with different seeds. 
+Using different id's is more efficient w.r.t. memory usage (no multiple instances of the module and state required).
+However, this feature is not implemented to keep it consistent with the other implemented generators.
 
 
 
@@ -45,3 +44,9 @@ Reference
 .. doxygenfunction:: uz_prng_pcg_init
 
 .. doxygenfunction:: uz_prng_pcg_get_uniform_uint32
+
+Sources
+=======
+
+.. [#pcg_homepage] https://www.pcg-random.org/
+ 

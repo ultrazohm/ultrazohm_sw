@@ -2,12 +2,15 @@
 Squares RNG
 ===========
 
-- Paper https://arxiv.org/pdf/2004.06278.pdf
-- Web-page of the author: https://squaresrng.wixsite.com/rand
-- https://en.wikipedia.org/wiki/Middle-square_method
-- https://en.wikipedia.org/wiki/Counter-based_random_number_generator
+Implements the Squares RNG generator [[#squares_paper]_].
+Based on:
 
-- Two ways to initialize the generator
+  - Web-page of the author: https://squaresrng.wixsite.com/rand
+  - https://en.wikipedia.org/wiki/Middle-square_method
+  - https://en.wikipedia.org/wiki/Counter-based_random_number_generator
+
+Contrary to the other PRNG generators, the seed of this generator has to be chosen more carefully.
+Two ways to initialize the generator are implemented:
 
   1. supply a seed between 0 and 29. This will initialize the generator with a specific key from the list supplied by the author. I.e., seed=3 takes the 3. seed in the authors list
 
@@ -34,6 +37,7 @@ Squares RNG
    title_string=str(mean)
    axs[1].set_title("Histogram\n of Squares\n with mean:" + title_string )
 
+
 Reference
 =========
 
@@ -43,4 +47,9 @@ Reference
 
 .. doxygenfunction:: uz_prng_squares_get_uniform_uint32
 
+
+Sources
+=======
+
+.. [#squares_paper] https://arxiv.org/pdf/2004.06278.pdf
 

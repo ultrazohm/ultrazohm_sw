@@ -4,77 +4,34 @@
 Pseudorandom number generator (PRNG)
 ====================================
 
-- PRNG create random 32-bit unsigned integer in a uniform distribution
-- https://en.wikipedia.org/wiki/Pseudorandom_number_generator
-- https://en.wikipedia.org/wiki/List_of_random_number_generators#cite_note-38
-- Only non-cryptographically secure generators are of interests here
-- IEEE Paper regarding different generators  https://ieeexplore.ieee.org/abstract/document/9132873
+This software module implements different pseudorandom number generators (PRNGs) [[#prng_wiki]_], [[#prng_wiki_list]_].
+The implemented generators return uniformly distributed unsigned 32-bit integers.
+All implemented generators are not cryptographically secure and intended for engineering applications such as neural network initialization or random excitation for model identification.
+Additional reading:
 
-- Generators (all generate uniform distribution)
+- Paper regarding different generators  https://ieeexplore.ieee.org/abstract/document/9132873
+- Possibly hardware-accelerate number generation (https://link.springer.com/article/10.1007/s11265-012-0684-4)
+- *Dieharder* is a commonly used test-suite for random generators (http://simul.iro.umontreal.ca/testu01/install.html)
 
-- https://en.wikipedia.org/wiki/Latin_hypercube_sampling (Mostly for experiement setup)
+Implementation
+==============
 
-- Possibly hardware-accelerate number generation
+Stuff about uz_prng, how to use.
 
-    - https://link.springer.com/article/10.1007/s11265-012-0684-4
+Seeds
+-----
 
-- Test suite for random generators:
+PRNGs use an initial condition, called **seed**, that determines the specific random number stream.
+The sequence of random numbers is deterministic for a given seed, i.e., initializing ``uz_prng`` with a given seed and generator type allways returns the same sequence.
 
-    - "Dieharder"
-    - http://simul.iro.umontreal.ca/testu01/install.html
-
-
-
-Comparison
-==========
-
-.. 
-    .. plot:: 
-
-    .. import matplotlib.pyplot as plt
-    .. import pandas as pd
-    .. import matplotlib.ticker as mtick
-
-    .. columns=['index','number']
-    .. xoshiro=pd.read_csv('uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv', header=None, names=columns)
-    .. twister=pd.read_csv('uz_prng_mtwister/uz_prng_mtwister_uint32.csv', header=None, names=columns)
-    .. pcg=pd.read_csv('uz_prng_pcg/uz_prng_pcg_uint32.csv', header=None, names=columns)
-    .. squares=pd.read_csv('uz_prng_squares/uz_prng_squares_uint32.csv', header=None, names=columns)
-    .. halton=pd.read_csv('uz_prng_halton/uz_prng_halton_uint32.csv', header=None, names=columns)
-
-    .. fig, ax = plt.subplots(5,3,layout='constrained',figsize=(14,7))
-    .. ax[0,0].hist([xoshiro.number[1:20] ], bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[0,1].hist([xoshiro.number[1:200]], bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[0,2].hist([xoshiro.number       ], bins=50,density=True, histtype='step', stacked=False, fill=True, label='xoshiro')
-    .. ax[1,0].hist([twister.number[1:20] ],color="tab:orange", bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[1,1].hist([twister.number[1:200]],color="tab:orange", bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[1,2].hist([twister.number       ],color="tab:orange", bins=50,density=True, histtype='step', stacked=False, fill=True, label='MTwister')
-    .. ax[2,0].hist([pcg.number[1:20] ],color="tab:green", bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[2,1].hist([pcg.number[1:200]],color="tab:green", bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[2,2].hist([pcg.number       ],color="tab:green", bins=50,density=True, histtype='step', stacked=False, fill=True, label='PCG')
-    .. ax[3,0].hist([squares.number[1:20] ],color="tab:red", bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[3,1].hist([squares.number[1:200]],color="tab:red", bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[3,2].hist([squares.number       ],color="tab:red", bins=50,density=True, histtype='step', stacked=False, fill=True, label='Squares')
-    .. ax[4,0].hist([halton.number[1:20] ],color="tab:purple", bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[4,1].hist([halton.number[1:200]],color="tab:purple", bins=50,density=True, histtype='step', stacked=False, fill=True)
-    .. ax[4,2].hist([halton.number       ],color="tab:purple", bins=50,density=True, histtype='step', stacked=False, fill=True, label='Halton')
-    .. ax[0,0].set_title("$N=20$")
-    .. ax[0,1].set_title("$N=200$")
-    .. ax[0,2].set_title("$N=5000$")
-    .. fig.legend(loc='outside right upper')
-    .. fig.suptitle('Histogram of different PRNG for different number of samples')
-
-.. _uz_prng_2d_case:
-
-Comparison 2D case
-==================
-
-.. plot:: mpsoc/software_framework/uz_prng/uz_prng_2d_compare.py
-
-
+- Squares: Number between 0 und 29, which selects one pregenerated key
+- MTwister: uint32_t seed
+- Halton: prime number
+- PCG: random seed, inital sequence is arbitrarily set to 54
+- Xoshiro128: random seed, wird durch splitmix geschoben
 
 Implemented generators
-======================
+----------------------
 
 ..	toctree::
     :maxdepth: 1
@@ -87,15 +44,75 @@ Implemented generators
     uz_prng_halton/uz_prng_halton
 
 
+Distribution of PRNG
+====================
+
+1D-Case
+-------
+
+The following plot compares the distributions of the different implemented PRNGs by showing the histogram of the generated numbers after different number of samples are drawn.
+The distribution of the generated numbers tend towards a uniform distribution for increasing number of samples.
+
+.. plot:: 
+    
+     import matplotlib.pyplot as plt
+     import pandas as pd
+     import matplotlib.ticker as mtick
+     path_to_tests='../../../../../vitis/software/Baremetal/test/uz/'
+     columns=['index','number']
+     xoshiro=pd.read_csv(path_to_tests+'uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv', header=None, names=columns)
+     twister=pd.read_csv(path_to_tests+'uz_prng_mtwister/uz_prng_mtwister_uint32.csv', header=None, names=columns)
+     pcg=pd.read_csv(path_to_tests+'uz_prng_pcg/uz_prng_pcg_uint32.csv', header=None, names=columns)
+     squares=pd.read_csv(path_to_tests+'uz_prng_squares/uz_prng_squares_uint32.csv', header=None, names=columns)
+     halton=pd.read_csv(path_to_tests+'uz_prng_halton/uz_prng_halton_uint32.csv', header=None, names=columns)
+     fig, ax = plt.subplots(5,3,layout='constrained',figsize=(14,7))
+     ax[0,0].hist([xoshiro.number[1:20] ], bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[0,1].hist([xoshiro.number[1:200]], bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[0,2].hist([xoshiro.number       ], bins=50,density=True, histtype='step', stacked=False, fill=True, label='xoshiro')
+     ax[1,0].hist([twister.number[1:20] ],color="tab:orange", bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[1,1].hist([twister.number[1:200]],color="tab:orange", bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[1,2].hist([twister.number       ],color="tab:orange", bins=50,density=True, histtype='step', stacked=False, fill=True, label='MTwister')
+     ax[2,0].hist([pcg.number[1:20] ],color="tab:green", bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[2,1].hist([pcg.number[1:200]],color="tab:green", bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[2,2].hist([pcg.number       ],color="tab:green", bins=50,density=True, histtype='step', stacked=False, fill=True, label='PCG')
+     ax[3,0].hist([squares.number[1:20] ],color="tab:red", bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[3,1].hist([squares.number[1:200]],color="tab:red", bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[3,2].hist([squares.number       ],color="tab:red", bins=50,density=True, histtype='step', stacked=False, fill=True, label='Squares')
+     ax[4,0].hist([halton.number[1:20] ],color="tab:purple", bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[4,1].hist([halton.number[1:200]],color="tab:purple", bins=50,density=True, histtype='step', stacked=False, fill=True)
+     ax[4,2].hist([halton.number       ],color="tab:purple", bins=50,density=True, histtype='step', stacked=False, fill=True, label='Halton')
+     ax[0,0].set_title("$N=20$")
+     ax[0,1].set_title("$N=200$")
+     ax[0,2].set_title("$N=5000$")
+     fig.legend(loc='outside right upper')
+     fig.suptitle('Histogram of different PRNG for different number of samples')
+
+.. _uz_prng_2d_case:
+
+2D-Case
+-------
+
+Applications may require the generation of random numbers for n-dimensions.
+One example is random sampling the possible operating range of an electrical machine, i.e., the rotational speed and output torque.
+Other examples include identification of model parameters, which might require an random excitation to yield transfer functions.
+Random sampling for multiple dimensions using the :ref:`uz_prng_halton` requires special care.
+If 2D-Halton sequence is required, ``uz_prng`` can not be used, use ``uz_prng_halton`` directly.
+
+.. plot:: mpsoc/software_framework/uz_prng/uz_prng_2d_compare.py
+
+
+Bounded random values
+=====================
+
 Generate bounded integer
-========================
+------------------------
 
 - https://c-faq.com/lib/randrange.html
 - https://www.pcg-random.org/posts/bounded-rands.html
 - https://github.com/imneme/bounded-rands
 
 Biased
-------
+******
 
 
 .. .. plot::
@@ -121,10 +138,10 @@ Biased
 
 
 Generate bounded float values
-==============================
+-----------------------------
 
 Unit interval [0,1)
--------------------
+*******************
 
 - uz_prng_scale_to_float_zero_to_one_divide
 - uz_prng_scale_to_float_zero_to_one_multiply = 10ns overhead
@@ -134,22 +151,11 @@ Unit interval [0,1)
 - Additional calculation time for float is approx. 10ns compared to uint32
 
 Arbitrarily scaled
-------------------
+******************
 
 - 0.166us für uint32_t mit unbiased version, but the calculation time jitters a bit
 - 0.16 für uint32_t mit biased version
 - Does not seem to make much difference regarding jitter 
-
-
-
-Seeds
-=====
-
-- Squares: Number between 0 und 29, which selects one pregenerated key
-- MTwister: uint32_t seed
-- Halton: prime number
-- PCG: random seed, inital sequence is arbitrarily set to 54
-- Xoshiro128: random seed, wird durch splitmix geschoben
 
 
 Timing to generate one rand
@@ -382,3 +388,9 @@ Reference
     
 .. doxygenfunction:: uz_prng_get_uniform_float_min_to_max
 
+
+Sources
+=======
+
+.. [#prng_wiki] https://en.wikipedia.org/wiki/Pseudorandom_number_generator
+.. [#prng_wiki_list] https://en.wikipedia.org/wiki/List_of_random_number_generators#cite_note-38

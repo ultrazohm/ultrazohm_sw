@@ -1,3 +1,5 @@
+.. _uz_prng_mtwister:
+
 ================
 Mersenne Twister
 ================
@@ -15,8 +17,8 @@ However, the implementation relies on recursion, which is not allowed within the
 
 .. warning:: Using the Mersenne Twister for real-time applications, especially in interrupts, is not recommended (see :ref:`uz_prng`).
 
-MT19937
-=======
+MT19937 distribution
+====================
 
 The following figures shows the generation of 5000 random numbers using the Mersenne Twister.
 Additionally, the Histogram of the generated values is shown.
@@ -24,12 +26,13 @@ The generated random values are uniformly distributed, but not in a perfect mann
 The specific pattern and distribution depends on the random seed.
 
 .. plot::
+  :caption: Distribution generated using the Mersenne Twister PRNG using seed 0.
 
    import matplotlib.pyplot as plt
    import pandas as pd
 
    columns=['index','number']
-   df=pd.read_csv('uz_prng_mtwister_uint32.csv', header=None, names=columns)
+   df=pd.read_csv('../../../../../../vitis/software/Baremetal/test/uz/uz_prng_mtwister/uz_prng_mtwister_uint32.csv', header=None, names=columns)
    mean=df.loc[:,'number'].mean()
    std=df.loc[:,'number'].std()
    var=df.loc[:,'number'].var()

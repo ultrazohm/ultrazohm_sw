@@ -3,13 +3,13 @@ import pandas as pd
 import matplotlib.ticker as mtick
 
 columns=['index','number']
-xoshiro=pd.read_csv('uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv', header=None, names=columns)
-twister=pd.read_csv('uz_prng_mtwister/uz_prng_mtwister_uint32.csv', header=None, names=columns)
-pcg=pd.read_csv('uz_prng_pcg/uz_prng_pcg_uint32.csv', header=None, names=columns)
-squares=pd.read_csv('uz_prng_squares/uz_prng_squares_uint32.csv', header=None, names=columns)
-halton=pd.read_csv('uz_prng_halton/uz_prng_halton_float.csv', header=None, names=columns)
-halton_x=pd.read_csv('uz_prng_halton/uz_prng_halton_2d_float_x.csv', header=None, names=columns)
-halton_y=pd.read_csv('uz_prng_halton/uz_prng_halton_2d_float_y.csv', header=None, names=columns)
+xoshiro=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv', header=None, names=columns)
+twister=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng_mtwister/uz_prng_mtwister_uint32.csv', header=None, names=columns)
+pcg=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng_pcg/uz_prng_pcg_uint32.csv', header=None, names=columns)
+squares=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng_squares/uz_prng_squares_uint32.csv', header=None, names=columns)
+halton=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng_halton/uz_prng_halton_float.csv', header=None, names=columns)
+halton_x=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng_halton/uz_prng_halton_2d_float_x.csv', header=None, names=columns)
+halton_y=pd.read_csv('../../../../../vitis/software/Baremetal/test/uz/uz_prng_halton/uz_prng_halton_2d_float_y.csv', header=None, names=columns)
 
 start_x1=1
 end_x1=50

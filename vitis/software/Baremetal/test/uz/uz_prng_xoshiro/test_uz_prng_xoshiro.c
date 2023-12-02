@@ -36,7 +36,7 @@ void test_uz_prng_xoshiro_uint32(void)
     {
         random_array.data[i] = uz_prng_xoshiro_get_uniform_uint32(xoshiro);
     }
-    char filepath[] = "../../../docs/source/mpsoc/software_framework/uz_prng/uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv";
+    char filepath[] = "test/uz/uz_prng_xoshiro/uz_prng_xoshiro_uint32.csv";
     export_array_uint32(random_array, filepath);
 }
 

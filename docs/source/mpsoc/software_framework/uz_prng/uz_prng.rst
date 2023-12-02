@@ -64,6 +64,7 @@ Comparison
     .. fig.legend(loc='outside right upper')
     .. fig.suptitle('Histogram of different PRNG for different number of samples')
 
+.. _uz_prng_2d_case:
 
 Comparison 2D case
 ==================

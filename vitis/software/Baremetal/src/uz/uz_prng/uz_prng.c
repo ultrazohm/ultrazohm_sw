@@ -201,7 +201,7 @@ static float uz_prng_scale_to_float_zero_to_one_multiply(uint32_t random_number)
 static float uz_prng_scale_to_float_zero_to_one_shift_multiply(uint32_t random_number)
 {
     // https://prng.di.unimi.it/ section generating uniform doubles in the unit interval, adapted to single precision
-    return (((random_number >> 8U) * (float)0x1.0p-24));
+    return (( (float)(random_number >> 8U) * (float)0x1.0p-24));
 }
 
 // Functions that scale float 0..uint32_max to [0,max_range), see https://www.pcg-random.org/posts/bounded-rands.html

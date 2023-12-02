@@ -87,7 +87,7 @@ static uz_prng_pcg_t *uz_prng_pcg_allocation(void)
 uz_prng_pcg_t *uz_prng_pcg_init(uint64_t seed)
 {
     uz_prng_pcg_t *self = uz_prng_pcg_allocation();
-    pcg32_srandom_r(&self->pcg_state, seed, 54U); // Sequency randomly set to 54 since this is done in https://github.com/imneme/pcg-c-basic/blob/master/pcg32-demo.c
+    pcg32_srandom_r(&self->pcg_state, seed, 54U); // Sequence randomly set to 54 since this is done in https://github.com/imneme/pcg-c-basic/blob/master/pcg32-demo.c
     return (self);
 }
 

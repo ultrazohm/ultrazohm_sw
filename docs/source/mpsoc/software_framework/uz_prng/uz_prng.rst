@@ -16,19 +16,24 @@ Additional reading:
 Implementation
 ==============
 
-Stuff about uz_prng, how to use.
+The module ``uz_prng`` is a generic implementation for PRNGs.
+The actual generation of the random numbers is facilitated by the `Implemented generators`, each with specific properties.
+Other software modules can depend on ``uz_prng`` instead of the individual generators, which enables easy changing the generator for experiments.
+In addition to generate uniform distributions of ``uint32_t`` type, different scaling methods and generation of bounded generation of ``uint32_t`` as well as ``float`` is supported.
 
 Seeds
 -----
 
 PRNGs use an initial condition, called **seed**, that determines the specific random number stream.
-The sequence of random numbers is deterministic for a given seed, i.e., initializing ``uz_prng`` with a given seed and generator type allways returns the same sequence.
+The sequence of random numbers is deterministic for a given seed, i.e., initializing ``uz_prng`` with a given seed and generator type always returns the same sequence.
+The initialization of ``uz_prng`` passes the seed to the specific algorithm.
+The details of each generator seed are as following:
 
-- Squares: Number between 0 und 29, which selects one pregenerated key
-- MTwister: uint32_t seed
-- Halton: prime number
-- PCG: random seed, inital sequence is arbitrarily set to 54
-- Xoshiro128: random seed, wird durch splitmix geschoben
+- ``uz_prng_squares``: if seed is a between 0 und 29, a pre-generated key is used (recommended). Otherwise, the value is used as key.
+- ``uz_prng_mtwister``: 32-bit seed. Since ``uz_prng_init`` uses 64-bit seeds, the upper 32-bit are ignored if Mersenne Twister is used.
+- ``uz_prng_halton``: seed must be a prime number
+- ``uz_prng_pcg``: 64-bit random seed. Initial sequence controlling substreams is arbitrarily set to 54.
+- ``uz_prng_xoshiro``: 64-bit random seed which is shuffled using splitmix64 as recommended by algorithm author
 
 Implemented generators
 ----------------------
@@ -44,8 +49,8 @@ Implemented generators
     uz_prng_halton/uz_prng_halton
 
 
-Distribution of PRNG
-====================
+Distribution of PRNG [0,UINT32_MAX]
+===================================
 
 1D-Case
 -------
@@ -107,12 +112,18 @@ Bounded random values
 Generate bounded integer
 ------------------------
 
-- https://c-faq.com/lib/randrange.html
+Generation of bounded integer values is not straight forward.
+Essentially, there are methods for scaling uniform distributions in the interval [0,UINT32_MAX] to [0,upper_bound] which are simple but slightly biased and more complex methods that are not biased.
+Bias and unbiased methods are implemented.
+See the following for more information:
+
 - https://www.pcg-random.org/posts/bounded-rands.html
+- https://c-faq.com/lib/randrange.html
 - https://github.com/imneme/bounded-rands
 
-Biased
-******
+Bounded integer [0,upper_bound)
+*******************************
+
 
 
 .. .. plot::
@@ -136,35 +147,13 @@ Biased
     
     
 
+Calculation time
+================
 
-Generate bounded float values
------------------------------
-
-Unit interval [0,1)
-*******************
-
-- uz_prng_scale_to_float_zero_to_one_divide
-- uz_prng_scale_to_float_zero_to_one_multiply = 10ns overhead
-- uz_prng_scale_to_float_zero_to_one_shift_multiply = 8ns -> This is the fastest
-- All three functions do not have a measureable difference in exectuion time
-- Generating one float (0,1) using pcg takes 0.153 us
-- Additional calculation time for float is approx. 10ns compared to uint32
-
-Arbitrarily scaled
-******************
-
-- 0.166us für uint32_t mit unbiased version, but the calculation time jitters a bit
-- 0.16 für uint32_t mit biased version
-- Does not seem to make much difference regarding jitter 
-
-
-Timing to generate one rand
-===========================
-
-Measurement setup to calculate mean execution time required to generate one uint32 for each generator.
-Measurements on the R5 of the UltraZohm.
-Calculated generating 20 values per ISR over 4000 ISR cycles.
-Result in us.
+The following calculation times are measured using the mean execution time required to generate one uint32 for each generator.
+Measurements are facilitated on the R5 of the UltraZohm.
+The measurement principle uses :ref:`systemTimeR5` to log the execution time of the ISR.
+The following code is used in the ISR.
 
 .. code-block:: c
 
@@ -177,13 +166,19 @@ Result in us.
         }
     }
 
-- Baseline of execution without generating random values is 16.2 us
-- Baseline is substracted from executin time to yield the time required for calculting 20 rand values
-- Results
+If the system is not in control state, the baseline  execution without generating random values is :math:`16.2\,\mu s`.
+This baseline is subtracted from execution time and divided by the number of generated PRNGs to yield the generation time for one value.
+Note that the smallest differentiable difference between execution times by this method is :math:`10\,ns` due to the clock frequency of the global counter in the FPGA.
 
-  - xoshiro128 and pcg are the fastest generators
-  - Halton sequence seems to increase calculation time with the number of samples taken and settles at arround 0.6 us per random number -> no ISR usage! -> Evtl. pendelt sich das auch ein? Oder doch nicht? Wirkt, als würde es bei 27.5us (bei 16.2 us ohne) einpendeln
-  - MTwister ist auch schnell, außer alle 620 Ausführungen -> kein Twister
+Generate one rand [0,UINT32_MAX]
+********************************
+
+The measurements based on generating 20 or 50 (depending on the) values per ISR over 4000 ISR cycles by calling ``uz_prng_get_uniform_uint32_zero_to_uint32_max``.
+Results:
+
+  - ``uz_prng_generator_xoshiro`` and ``uz_prng_generator_pcg`` are the fastest generators
+  - ``uz_prng_generator_mtwister`` has a low mean calculation time. However, the internal state is shuffled every 620 calls resulting in a hughe spike in calculation time. This shuffle of the state is inherent to the algorithm. Thus, ``uz_prng_generator_mtwister`` is not recommended for usage in the ISR.
+  - ``uz_prng_generator_halton`` seems to increase calculation time with the number of samples taken and approaches :math:`0.6\,\mu s` per random number, see `Halton timing`.
 
 
 .. plot::
@@ -219,12 +214,37 @@ Result in us.
         ax.set_xlabel('ISR sample')
 
 
-Halton timing
-=============
+Generate bounded float values
+-----------------------------
 
-- Calculation time increases with number of samples taken from halton sequence
-- Evaluated for 874,821,900 samples, which did not result in a settled calculation time
-- Used seed=7U, behavior probably depends on the starting prime number
+Unit interval [0,1)
+*******************
+
+- uz_prng_scale_to_float_zero_to_one_divide
+- uz_prng_scale_to_float_zero_to_one_multiply = 10ns overhead
+- uz_prng_scale_to_float_zero_to_one_shift_multiply = 8ns -> This is the fastest
+- All three functions do not have a measureable difference in exectuion time
+- Generating one float (0,1) using pcg takes 0.153 us
+- Additional calculation time for float is approx. 10ns compared to uint32
+
+Arbitrarily scaled
+******************
+
+- 0.166us für uint32_t mit unbiased version, but the calculation time jitters a bit
+- 0.16 für uint32_t mit biased version
+- Does not seem to make much difference regarding jitter 
+
+
+
+
+Halton timing
+*************
+
+The calculation time for ``uz_prng_generator_halton`` increases with number of samples taken from Halton sequence.
+This seems to be related that the implementation relies on a loop to find the :math:`n`th value of the Halton sequence requires more passes for increasing numbers of :math:`n`.
+The following figure shows the execution time of ``uz_prng_generator_halton`` for 874,821,900 samples, which did not result in a settled calculation time
+The seed is set to 7 in this experiment, the behavior probably depends on the starting prime number.
+Usage of ``uz_prng_generator_halton`` in long-running applications (multiple days) should be handled with care.
 
 .. warning:: Halton generator draws the :math:`i-th` number of the halton sequence of the starting prime number. Therefore, the internal counter will overflow after 4,294,967,295 (i.e., UINT32_MAX) drawn samples. Note that `unsigned integer wrap <https://www.gnu.org/software/autoconf/manual/autoconf-2.63/html_node/Integer-Overflow-Basics.html>`_, therefore, the Halton sequence will repeat after 2^32-1 calls.
 
@@ -248,7 +268,17 @@ Halton timing
 
 
 Float [0,1)
-===========
+***********
+
+Calculation time of calling ``uz_prng_get_uniform_float_zero_to_one`` once.
+Comparison of different settings for ``uz_prng_float_scale_method``.
+The results  do not show a meaningful difference.
+
+==================== ==================== ====================
+fp_muliply_mean      fp_divide_mean       shift_multi_mean
+==================== ==================== ====================
+0.4960 :math:`\mu s` 0.4964 :math:`\mu s` 0.4851 :math:`\mu s`
+==================== ==================== ====================
 
 .. plot::
 
@@ -278,13 +308,7 @@ Float [0,1)
         ax.yaxis.set_minor_locator(AutoMinorLocator())
         ax.set_xlabel('ISR sample')
 
-=============== ============== ================
-fp_muliply_mean fp_divide_mean shift_multi_mean
-=============== ============== ================
-0.4960          0.4964         0.4851
-=============== ============== ================
-
-Calculated using Matlab ksdensity function over 10000 samples.
+The following figure shows the density distribution over 10000 samples of the execution times calculated using `Matlab ksdensity <https://de.mathworks.com/help/stats/ksdensity.html>`_.
 
 .. plot::
 
@@ -316,7 +340,7 @@ Calculated using Matlab ksdensity function over 10000 samples.
 
 
 uint32_t in range [0,range)
-===========================
+---------------------------
 
 - int multi is the fastest but is biased
 - unbiased opt is unbiased and faster than unbias
@@ -359,8 +383,6 @@ float_mult_mean int_mult_mean unbiased_mean unbiased_mean unbiased_opt_mean
 
 
 
-
-
 Reference
 =========
 
@@ -388,6 +410,14 @@ Reference
     
 .. doxygenfunction:: uz_prng_get_uniform_float_min_to_max
 
+Implementation details
+======================
+
+This module uses a pointer of type ``void`` internally to be able to provide a generic interface for different generator types.
+Specifically, each generator has a type, e.g., ``uz_prng_squares_t`` or ``uz_prng_pcg_t``.
+The initialization function of these generators return a pointer of type ``uz_prng_X_t``, with ``X`` beeing the specfic generator.
+This type is cast to void to store the pointer independent of the generator.
+Type safety is probably decreased by this approach.
 
 Sources
 =======

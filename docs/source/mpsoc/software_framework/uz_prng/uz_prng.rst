@@ -17,7 +17,7 @@ Implementation
 ==============
 
 The module ``uz_prng`` is a generic implementation for PRNGs.
-The actual generation of the random numbers is facilitated by the `Implemented generators`, each with specific properties.
+The actual generation of the random numbers is facilitated by the `Implemented generators`_ , each with specific properties.
 Other software modules can depend on ``uz_prng`` instead of the individual generators, which enables easy changing the generator for experiments.
 In addition to generate uniform distributions of ``uint32_t`` type, different scaling methods and generation of bounded generation of ``uint32_t`` as well as ``float`` is supported.
 
@@ -55,8 +55,8 @@ Distribution of PRNG [0,UINT32_MAX]
 1D-Case
 -------
 
-The following plot compares the distributions of the different implemented PRNGs by showing the histogram of the generated numbers after different number of samples are drawn.
-The distribution of the generated numbers tend towards a uniform distribution for increasing number of samples.
+The following figure compares the distributions of the different implemented PRNGs by showing the histogram of the generated numbers after different number of samples are drawn.
+The distribution of the generated numbers tend towards a uniform distribution for an increasing number of samples.
 
 .. plot:: 
     
@@ -102,8 +102,10 @@ One example is random sampling the possible operating range of an electrical mac
 Other examples include identification of model parameters, which might require an random excitation to yield transfer functions.
 Random sampling for multiple dimensions using the :ref:`uz_prng_halton` requires special care.
 If 2D-Halton sequence is required, ``uz_prng`` can not be used, use ``uz_prng_halton`` directly.
+The following figure shows 
 
 .. plot:: mpsoc/software_framework/uz_prng/uz_prng_2d_compare.py
+    :caption: Generated random values generated with ``uz_prng_get_uniform_uint32_zero_to_uint32_max`` using different generators plotted as 2-dimensional data. Using ``uz_prng_generator_halton`` does not yield a random pattern but a linear relationship between the generated values. Using ``uz_prng_halton_get_uniform_float_2d`` generates a proper Halton sequence for 2 dimensions.
 
 
 Bounded random values
@@ -120,6 +122,7 @@ See the following for more information:
 - https://www.pcg-random.org/posts/bounded-rands.html
 - https://c-faq.com/lib/randrange.html
 - https://github.com/imneme/bounded-rands
+
 
 Bounded integer [0,upper_bound)
 *******************************
@@ -173,7 +176,7 @@ Note that the smallest differentiable difference between execution times by this
 Generate one rand [0,UINT32_MAX]
 ********************************
 
-The measurements based on generating 20 or 50 (depending on the) values per ISR over 4000 ISR cycles by calling ``uz_prng_get_uniform_uint32_zero_to_uint32_max``.
+The measurements based on generating 20 values per ISR over 4000 ISR cycles by calling ``uz_prng_get_uniform_uint32_zero_to_uint32_max``.
 Results:
 
   - ``uz_prng_generator_xoshiro`` and ``uz_prng_generator_pcg`` are the fastest generators

@@ -26,7 +26,7 @@ void setUp(void)
     testconfig.Speed_Timeout_ms = 100U;
     testconfig.Encoder_elec_Offset = 0U;
     testconfig.Encoder_mech_Offset = 0U;
-    testconfig.counting_direction = clock_wise;
+    testconfig.counting_direction = uz_incrementalEncoder_counting_clock_wise;
 }
 
 void tearDown(void)
@@ -153,30 +153,30 @@ void test_uz_incrementalEncoder_get_position_wOffset(void){
     TEST_ASSERT_EQUAL_UINT32(expected,position);
 }
 
-void test_uz_incrementalEncoder_set_new_electrical_Offset(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_electrical_Offset(NULL, 10U));
+void test_uz_incrementalEncoder_set_electrical_Offset(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_electrical_Offset(NULL, 10U));
     testconfig.Encoder_elec_Offset = 20U;
     uz_incrementalEncoder_t* test_instance= successful_init();    
     uint32_t new_offset = 50U;
     uint32_t new_offset_expected = new_offset * 4; //Because of quadrature factor
     uz_incrementalEncoder_hw_set_theta_el_Offset_Expect(TEST_BASE_ADDRESS, new_offset_expected);
-    uz_incrementalEncoder_set_new_electrical_Offset(test_instance, new_offset);
-    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_electrical_Offset(test_instance, UINT16_MAX+1U));
+    uz_incrementalEncoder_set_electrical_Offset(test_instance, new_offset);
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_electrical_Offset(test_instance, UINT16_MAX+1U));
     //Should assert, since offset is larger than line number
-    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_electrical_Offset(test_instance, testconfig.line_number_per_turn_mech + 10U));
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_electrical_Offset(test_instance, testconfig.line_number_per_turn_mech + 10U));
 }
 
-void test_uz_incrementalEncoder_set_new_mechanical_Offset(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_mechanical_Offset(NULL, 10U));
+void test_uz_incrementalEncoder_set_mechanical_Offset(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_mechanical_Offset(NULL, 10U));
     testconfig.Encoder_mech_Offset = 20U;
     uz_incrementalEncoder_t* test_instance= successful_init();
     uint32_t new_offset = 50U;
     uint32_t new_offset_expected = new_offset * 4; //Because of quadrature factor
     uz_incrementalEncoder_hw_set_Position_Offset_Expect(TEST_BASE_ADDRESS, new_offset_expected);
-    uz_incrementalEncoder_set_new_mechanical_Offset(test_instance, new_offset);
-    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_mechanical_Offset(test_instance, UINT16_MAX+1U));
+    uz_incrementalEncoder_set_mechanical_Offset(test_instance, new_offset);
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_mechanical_Offset(test_instance, UINT16_MAX+1U));
     //Should assert, since offset is larger than line number
-    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_new_mechanical_Offset(test_instance, testconfig.line_number_per_turn_mech + 10U));
+    TEST_ASSERT_FAIL_ASSERT(uz_incrementalEncoder_set_mechanical_Offset(test_instance, testconfig.line_number_per_turn_mech + 10U));
 }
 
 void test_uz_incrementalEncoder_non_integer_pole_pair(void){

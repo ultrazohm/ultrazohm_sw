@@ -17,8 +17,8 @@ typedef struct uz_incrementalEncoder_t uz_incrementalEncoder_t;
 
 /*! enum for readable configuring counting direction of the IP Core.  */
 enum uz_incrementalEncoder_counting_direction {
-    clock_wise=0,
-    counter_clock_wise
+    uz_incrementalEncoder_counting_clock_wise=0,
+    uz_incrementalEncoder_counting_counter_clock_wise
 };
 
 /**

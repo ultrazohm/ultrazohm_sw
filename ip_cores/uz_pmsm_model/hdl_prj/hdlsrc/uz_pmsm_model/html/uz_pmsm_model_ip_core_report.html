@@ -64,7 +64,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core folder
 </td>
-<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('hdl_prj/ipcore/uz_pmsm_model_v1_0/*.*')">hdl_prj/ipcore/uz_pmsm_model_v1_0</a>
+<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\*.*')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0</a>
 </td>
 </tr>
 <tr>
@@ -100,19 +100,19 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">2.93
+<td class="summaryTableSndColOddRow">2.104
 </td>
 </tr>
 <tr>
 <td>HDL Coder version
 </td>
-<td class="summaryTableSndColEvenRow">3.18
+<td class="summaryTableSndColEvenRow">23.2
 </td>
 </tr>
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">23-Jul-2021 16:45:58
+<td class="summaryTableSndColOddRow">04-Dec-2023 17:03:13
 </td>
 </tr>
 <tr>
@@ -361,7 +361,7 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2107231645
+<td>contains unique IP timestamp (yymmddHHMM): 2312041703
 </td>
 </tr>
 <tr>
@@ -449,7 +449,7 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td class="distinctCellColor">0x130
 </td>
-<td class="distinctCellColor">data register for Inport inputs, vector with 4 elements, address ends at 0x13C
+<td class="distinctCellColor">data register for Inport inputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x13C.
 </td>
 </tr>
 <tr>
@@ -465,7 +465,7 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td class="distinctCellColor">0x150
 </td>
-<td class="distinctCellColor">data register for Outport outputs, vector with 4 elements, address ends at 0x15C
+<td class="distinctCellColor">data register for Outport outputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x15C.
 </td>
 </tr>
 <tr>
@@ -483,7 +483,7 @@ The AXI4 slave write register readback is OFF for the IP core.
 <br/>
 The register address mapping is also in the following C header file for you to use when programming the processor:
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/include/uz_pmsm_model_addr.h')">include/uz_pmsm_model_addr.h</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\include\uz_pmsm_model_addr.h')">include\uz_pmsm_model_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
 </div>
@@ -513,9 +513,11 @@ mode means there is no explicit synchronization between embedded processor softw
 <br/><br/>
 <b>Vector Data Read/Write with Strobe Synchronization</b>
 <br/><br/>
-All the elements of vector data are treated as synchronous to the IP core algorithm logic. Additional strobe registers added for each vector input and output port maintain this synchronization across multiple sequential AXI4 reads/writes. For input ports, the strobe register controls the enables on a set of shadow registers, allowing the IP core logic to see all the updated vector elements simultaneously. For output ports, the strobe register controls the synchronous capturing of vector data to be read.
+Vector data and data whose bit width is wider than the AXI4 register width (32 bits) use multiple registers and therefore require multiple sequential AXI4 reads/writes. All such data is treated as synchronous to the IP core algorithm logic. Additional strobe registers added for each such input and output port maintain this synchronization across multiple sequential AXI4 reads/writes. For input ports, the strobe register controls the enables on a set of shadow registers, allowing the IP core logic to see all the updated data elements simultaneously. For output ports, the strobe register controls the synchronous capturing of data elements to be read.
 <br/><br/>
-To read a vector data port, first write the strobe address with 0x1, then read each desired data element from corresponding address range. To write a vector data port, first write each desired data element, then write 0x1 to the strobe address to complete the transaction.
+To read a data port that uses multiple registers, first write the strobe address with 0x1, then read each desired data element from corresponding address range. To write a data port that uses multiple registers, first write each desired data element, then write 0x1 to the strobe address to complete the transaction.
+<br/><br/>
+To read data whose bit width is wider than the AXI4 register width (32 bits), the individual 32-bit data elements should be concatenated after reading. For write operations, the data should be sliced into 32-bit sections before writing.
 <br/><br/>
 <img src="vector_strobe.jpg"/>
 <br/><br/>
@@ -548,68 +550,68 @@ If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Packag
 <h3 class="sectionHeading">IP Core File List</h3>
 The IP core folder is located at:
 <br/>
-<a href="matlab:uiopen('hdl_prj/ipcore/uz_pmsm_model_v1_0/*.*')">hdl_prj/ipcore/uz_pmsm_model_v1_0</a>
+<a href="matlab:uiopen('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\*.*')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0</a>
 <br/>
 Following files are generated under this folder:
 <br/><br/>
 <b>IP core zip file</b>
 <br/>
-<a href="matlab:uiopen('hdl_prj/ipcore/uz_pmsm_model_v1_0/*.*')">uz_pmsm_model_v1_0.zip</a>
+<a href="matlab:uiopen('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\*.*')">uz_pmsm_model_v1_0.zip</a>
 <br/><br/>
 <b>IP core report</b>
 <br/>
-<a href="matlab:web('hdl_prj/ipcore/uz_pmsm_model_v1_0/doc/uz_pmsm_model_ip_core_report.html')">doc/uz_pmsm_model_ip_core_report.html</a>
+<a href="matlab:web('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\doc\uz_pmsm_model_ip_core_report.html')">doc\uz_pmsm_model_ip_core_report.html</a>
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd')">hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_pkg.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_uz_pmsm_model_pkg.vhd')">hdl\uz_pmsm_model_src_uz_pmsm_model_pkg.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_convert_double2single.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_convert_double2single.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_uz_pmsm_model_tc.vhd')">hdl\uz_pmsm_model_src_uz_pmsm_model_tc.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_convert_single2double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_convert_single2double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_convert_double2single.vhd')">hdl\uz_pmsm_model_src_nfp_convert_double2single.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_mul_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_mul_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_convert_single2double.vhd')">hdl\uz_pmsm_model_src_nfp_convert_single2double.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_sub_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_sub_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_mul_double.vhd')">hdl\uz_pmsm_model_src_nfp_mul_double.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_add_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_add_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_sub_double.vhd')">hdl\uz_pmsm_model_src_nfp_sub_double.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_abs_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_add_double.vhd')">hdl\uz_pmsm_model_src_nfp_add_double.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_nfp_signum_double.vhd')">hdl/vhdl/uz_pmsm_model_src_nfp_signum_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_abs_double.vhd')">hdl\uz_pmsm_model_src_nfp_abs_double.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_tc.vhd')">hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model_tc.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_signum_double.vhd')">hdl\uz_pmsm_model_src_nfp_signum_double.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model.vhd')">hdl/vhdl/uz_pmsm_model_src_uz_pmsm_model.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_uz_pmsm_model.vhd')">hdl\uz_pmsm_model_src_uz_pmsm_model.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_pkg.vhd')">hdl/vhdl/uz_pmsm_model_pkg.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_pkg.vhd')">hdl\uz_pmsm_model_pkg.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_reset_sync.vhd')">hdl/vhdl/uz_pmsm_model_reset_sync.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_reset_sync.vhd')">hdl\uz_pmsm_model_reset_sync.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_dut.vhd')">hdl/vhdl/uz_pmsm_model_dut.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_dut.vhd')">hdl\uz_pmsm_model_dut.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_addr_decoder.vhd')">hdl/vhdl/uz_pmsm_model_addr_decoder.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_addr_decoder.vhd')">hdl\uz_pmsm_model_addr_decoder.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_SimpleDualPortRAM_generic.vhd')">hdl/vhdl/uz_pmsm_model_SimpleDualPortRAM_generic.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_SimpleDualPortRAM_generic.vhd')">hdl\uz_pmsm_model_SimpleDualPortRAM_generic.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_rdfifo_data.vhd')">hdl/vhdl/uz_pmsm_model_rdfifo_data.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_rdfifo_data.vhd')">hdl\uz_pmsm_model_rdfifo_data.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_SimpleDualPortRAM_singlebit.vhd')">hdl/vhdl/uz_pmsm_model_SimpleDualPortRAM_singlebit.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_SimpleDualPortRAM_singlebit.vhd')">hdl\uz_pmsm_model_SimpleDualPortRAM_singlebit.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_rdfifo_last.vhd')">hdl/vhdl/uz_pmsm_model_rdfifo_last.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_rdfifo_last.vhd')">hdl\uz_pmsm_model_rdfifo_last.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_rdfifo_rid.vhd')">hdl/vhdl/uz_pmsm_model_rdfifo_rid.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_rdfifo_rid.vhd')">hdl\uz_pmsm_model_rdfifo_rid.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_axi4_module.vhd')">hdl/vhdl/uz_pmsm_model_axi4_module.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_axi4_module.vhd')">hdl\uz_pmsm_model_axi4_module.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model_axi4.vhd')">hdl/vhdl/uz_pmsm_model_axi4.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_axi4.vhd')">hdl\uz_pmsm_model_axi4.vhd</a>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/hdl/vhdl/uz_pmsm_model.vhd')">hdl/vhdl/uz_pmsm_model.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model.vhd')">hdl\uz_pmsm_model.vhd</a>
 <br/>
 <br/>
 <b>IP core C header file</b>
 <br/>
-<a href="matlab:edit('hdl_prj/ipcore/uz_pmsm_model_v1_0/include/uz_pmsm_model_addr.h')">include/uz_pmsm_model_addr.h</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\include\uz_pmsm_model_addr.h')">include\uz_pmsm_model_addr.h</a>
 </div>
 </body>
 </html>

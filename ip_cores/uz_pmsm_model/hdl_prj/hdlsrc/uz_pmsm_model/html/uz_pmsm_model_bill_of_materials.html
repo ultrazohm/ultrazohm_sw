@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_pmsm_model
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiplexer_1_12');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_8');hdlTableShrink(this, 'Register_1_15');hdlTableShrink(this, 'Multiplexer_1_12');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-375
+376
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-1631
+1645
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-28654
+29180
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-5011
+5001
 </td>
 
 </tr>
@@ -215,7 +215,7 @@ I/O Bits
 Static Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+12
 </td>
 
 </tr>
@@ -252,10 +252,10 @@ Multipliers (17)
 53x53-bit Multiply 							: 17
 </span>
 <br /><h5>
-Adders/Subtractors (375)
+Adders/Subtractors (376)
 </h5>
 <span style="font-family:monospace">
-6x6-bit Adder 							: 16
+6x6-bit Adder 							: 17
 </span>
 <br /><span style="font-family:monospace">
 13x13-bit Adder 							: 12
@@ -303,13 +303,13 @@ Adders/Subtractors (375)
 11x11-bit Subtractor 							: 12
 </span>
 <br /><h5>
-Registers (1631)
+Registers (1645)
 </h5>
 <span style="font-family:monospace">
-1-bit Register 							: 777
+6-bit Register 							: 80
 </span>
 <br /><span style="font-family:monospace">
-6-bit Register 							: 78
+1-bit Register 							: 779
 </span>
 <br /><span style="font-family:monospace">
 8-bit Register 							: 28
@@ -325,6 +325,87 @@ Registers (1631)
 </span>
 <br /><span style="font-family:monospace">
 52-bit Register 							: 219
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_8')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+64-bit Register 							: 14
+</span>
+<span name="Register_1_8" id="Register_1_8">
+<ul class="SystemdefinedCollapse" id="abbb5808-515e-44e2-88d2-dc950a4bb3a5" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:335')" name="code2model" class="code2model">
+delayMatch15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:334')" name="code2model" class="code2model">
+delayMatch14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:339')" name="code2model" class="code2model">
+crp_out_delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:26')" name="code2model" class="code2model">
+Delay1_lowered_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:341')" name="code2model" class="code2model">
+crp_out_delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:32')" name="code2model" class="code2model">
+Delay_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:336')" name="code2model" class="code2model">
+delayMatch16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:342')" name="code2model" class="code2model">
+crp_out_delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:29')" name="code2model" class="code2model">
+Delay1_lowered1_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:340')" name="code2model" class="code2model">
+crp_out_delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:35')" name="code2model" class="code2model">
+Delay1_lowered2_bypass
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
 </span>
 <br /><span style="font-family:monospace">
 53-bit Register 							: 55
@@ -342,28 +423,40 @@ Registers (1631)
 56-bit Register 							: 24
 </span>
 <br /><span style="font-family:monospace">
-64-bit Register 							: 4
-</span>
-<br /><span style="font-family:monospace">
 12-bit Register 							: 4
 </span>
-<br /><span style="font-family:monospace">
-32-bit Register 							: 4
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_15')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+real Register 							: 4
+</span>
+<span name="Register_1_15" id="Register_1_15">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:25')" name="code2model" class="code2model">
+t_bypass
+</a>
+
+</li>
+
+</ul>
+
 </span>
 <br /><h5>
-Multiplexers (5011)
+Multiplexers (5001)
 </h5>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 895
+6-bit 2-to-1 Multiplexer 							: 3345
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 884
 </span>
 <br /><span style="font-family:monospace">
 8-bit 2-to-1 Multiplexer 							: 40
 </span>
 <br /><span style="font-family:monospace">
 24-bit 2-to-1 Multiplexer 							: 12
-</span>
-<br /><span style="font-family:monospace">
-6-bit 2-to-1 Multiplexer 							: 3344
 </span>
 <br /><span style="font-family:monospace">
 11-bit 2-to-1 Multiplexer 							: 293
@@ -393,10 +486,70 @@ Multiplexers (5011)
 real 2-to-1 Multiplexer 							: 16
 </span>
 <span name="Multiplexer_1_12" id="Multiplexer_1_12">
-<ul>
+<ul class="SystemdefinedCollapse" id="24d2ffb5-269d-4a6c-91da-2b77b1c01f38" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:49')" name="code2model" class="code2model">
+reset_in2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:26')" name="code2model" class="code2model">
+Delay1_lowered_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:47')" name="code2model" class="code2model">
+reset_out2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:32')" name="code2model" class="code2model">
+Delay_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:43')" name="code2model" class="code2model">
+reset_in1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:29')" name="code2model" class="code2model">
+Delay1_lowered1_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:44')" name="code2model" class="code2model">
+reset_out1
+</a>
+
+</li>
 <li>
 <a href="matlab:coder.internal.code2model('uz_pmsm_model:357')" name="code2model" class="code2model">
 Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:41')" name="code2model" class="code2model">
+reset_in
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:35')" name="code2model" class="code2model">
+Delay1_lowered2_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:39')" name="code2model" class="code2model">
+reset_out
 </a>
 
 </li>
@@ -406,9 +559,18 @@ Switch1
 </a>
 
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:25')" name="code2model" class="code2model">
+t_bypass
+</a>
+
+</li>
 
 </ul>
-
+<span class="SDCollapseControl" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
 </span>
 <br /><span style="font-family:monospace">
 25-bit 2-to-1 Multiplexer 							: 4
@@ -417,9 +579,12 @@ Switch1
 23-bit 2-to-1 Multiplexer 							: 28
 </span>
 <br /><h5>
-Number of Shift operators (95)
+Number of Shift operators (107)
 </h5>
 <span style="font-family:monospace">
+Static Shift Right 							: 12
+</span>
+<br /><span style="font-family:monospace">
 24-bit Dynamic Shift Left 							: 12
 </span>
 <br /><span style="font-family:monospace">
@@ -447,7 +612,7 @@ Number of I/O Bits (518)
 Number of Input Bits: 389
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="817ad189-f654-4305-bf69-e40415e8fd44" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="ddfbadff-7a1b-47af-897f-bbf5bc6d3f3e" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -531,7 +696,7 @@ inputs_3: 32 bits
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, '817ad189-f654-4305-bf69-e40415e8fd44')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />

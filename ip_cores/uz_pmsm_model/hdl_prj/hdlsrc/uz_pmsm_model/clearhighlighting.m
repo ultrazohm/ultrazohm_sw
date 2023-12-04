@@ -4,7 +4,6 @@ annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion15', 1, 1, '')
 annotate_port('uz_pmsm_model/uz_pmsm_model/Data Type Conversion15', 1, 1, '');
 annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion6', 1, 1, '');
 annotate_port('uz_pmsm_model/uz_pmsm_model/Data Type Conversion6', 1, 1, '');
-annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Product7', 0, 1, '');
 annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion8', 1, 1, '');
 annotate_port('uz_pmsm_model/uz_pmsm_model/Data Type Conversion8', 1, 1, '');
 annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion9', 1, 1, '');
@@ -15,6 +14,7 @@ annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion17', 1, 1, '')
 annotate_port('uz_pmsm_model/uz_pmsm_model/Data Type Conversion17', 1, 1, '');
 annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion12', 1, 1, '');
 annotate_port('uz_pmsm_model/uz_pmsm_model/Data Type Conversion12', 1, 1, '');
+annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Product12', 0, 1, '');
 annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion13', 1, 1, '');
 annotate_port('uz_pmsm_model/uz_pmsm_model/Data Type Conversion13', 1, 1, '');
 annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion14', 1, 1, '');
@@ -33,6 +33,3 @@ annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion16', 1, 1, '')
 annotate_port('uz_pmsm_model/uz_pmsm_model/Data Type Conversion16', 1, 1, '');
 annotate_port('gm_uz_pmsm_model/uz_pmsm_model/Data Type Conversion10', 1, 1, '');
 annotate_port('uz_pmsm_model/uz_pmsm_model/Data Type Conversion10', 1, 1, '');
-annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch', 1, 1, '');
-annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch1', 1, 1, '');
-annotate_port('gm_uz_pmsm_model/uz_pmsm_model/delayMatch2', 1, 1, '');

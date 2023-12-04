@@ -3,12 +3,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// Some defines for easier configuration
-#define CW_Counting 	0x00000000
-#define CCW_Counting 	0x00000001
-// a 0 will have no effect to the Lines A and B /  a 1 will result in an internal change of the AB-Lines
-
-
 /**
  * @brief Object data type definition of the incremental encoder IP-Core driver
  * 

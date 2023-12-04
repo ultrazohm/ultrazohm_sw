@@ -18,8 +18,8 @@
 
 #include "IncreEncoder_V26_ip_addr.h"
 
-int frac_omega_V25 = 11;
-int frac_theta_el_V25 = 20;
+#define FRAC_OMEGA_V26 11U
+#define FRAC_THETA_EL_V26 20U
 
 
 void uz_incrementalEncoder_hw_reset_ip_core(uint32_t base_address){
@@ -98,19 +98,19 @@ void uz_incrementalEncoder_hw_set_cw_ccw_direction(uint32_t base_address,uint32_
 float uz_incrementalEncoder_hw_get_omega(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     int32_t tmp=uz_axi_read_int32(base_address+omega_AXI4_Data_Incremental_Encoder_v26);
-    return uz_convert_sfixed_to_float(tmp,frac_omega_V25);
+    return uz_convert_sfixed_to_float(tmp,FRAC_OMEGA_V26);
 }
 
 float uz_incrementalEncoder_hw_get_direction(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     int32_t tmp=uz_axi_read_int32(base_address+direction_AXI4_Data_Incremental_Encoder_v26);
-    return uz_convert_sfixed_to_float(tmp,frac_omega_V25);
+    return uz_convert_sfixed_to_float(tmp,FRAC_OMEGA_V26);
 }
 
 float uz_incrementalEncoder_hw_get_theta_electric(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     int32_t tmp= uz_axi_read_int32(base_address+theta_el_AXI4_Data_Incremental_Encoder_v26);
-    return uz_convert_sfixed_to_float(tmp,frac_theta_el_V25);
+    return uz_convert_sfixed_to_float(tmp,FRAC_THETA_EL_V26);
 }
 
 uint32_t uz_incrementalEncoder_hw_get_position(uint32_t base_address){
@@ -128,7 +128,7 @@ uint32_t uz_incrementalEncoder_hw_get_counterPerPeriod(uint32_t base_address){
 float uz_incrementalEncoder_hw_get_omega_MA_N4(uint32_t base_address){
 	uz_assert_not_zero_uint32(base_address);
 	int32_t tmp=uz_axi_read_int32(base_address+omega_MA_N4_AXI_Data_Incremental_Encoder_v26);
-	return uz_convert_sfixed_to_float(tmp,frac_omega_V25);
+	return uz_convert_sfixed_to_float(tmp,FRAC_OMEGA_V26);
 }
 
 uint32_t uz_incrementalEncoder_hw_get_position_wOffset(uint32_t base_address){

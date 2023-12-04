@@ -102,7 +102,7 @@ One example is random sampling the possible operating range of an electrical mac
 Other examples include identification of model parameters, which might require an random excitation to yield transfer functions.
 Random sampling for multiple dimensions using the :ref:`uz_prng_halton` requires special care.
 If 2D-Halton sequence is required, ``uz_prng`` can not be used, use ``uz_prng_halton`` directly.
-The following figure shows 
+The following figure shows the generated distributions of different PRNGs in the 2D-case.
 
 .. plot:: mpsoc/software_framework/uz_prng/uz_prng_2d_compare.py
     :caption: Generated random values generated with ``uz_prng_get_uniform_uint32_zero_to_uint32_max`` using different generators plotted as 2-dimensional data. Using ``uz_prng_generator_halton`` does not yield a random pattern but a linear relationship between the generated values. Using ``uz_prng_halton_get_uniform_float_2d`` generates a proper Halton sequence for 2 dimensions.
@@ -153,7 +153,7 @@ Bounded integer [0,upper_bound)
 Calculation time
 ================
 
-The following calculation times are measured using the mean execution time required to generate one uint32 for each generator.
+The following calculation times are measured using the mean execution time required to generate one ``uint32_t`` for each generator.
 Measurements are facilitated on the R5 of the UltraZohm.
 The measurement principle uses :ref:`systemTimeR5` to log the execution time of the ISR.
 The following code is used in the ISR.
@@ -165,26 +165,29 @@ The following code is used in the ISR.
         // Start: Control algorithm - only if ultrazohm is in control state
         for (uint32_t i = 0; i < NUMBER_OF_PRNG_RUNS_PER_ISR; i++)
         {
-        	rnd_numbers[i]=uz_prng_get_uniform_float_zero_to_one(generator);
+        	rnd_numbers[i]=uz_prng_get_uniform_uint32_zero_to_uint32_max(generator);
         }
     }
 
 If the system is not in control state, the baseline  execution without generating random values is :math:`16.2\,\mu s`.
 This baseline is subtracted from execution time and divided by the number of generated PRNGs to yield the generation time for one value.
 Note that the smallest differentiable difference between execution times by this method is :math:`10\,ns` due to the clock frequency of the global counter in the FPGA.
+Therefore, the measurements should be used as a rough estimation.
 
 Generate one rand [0,UINT32_MAX]
-********************************
+--------------------------------
 
-The measurements based on generating 20 values per ISR over 4000 ISR cycles by calling ``uz_prng_get_uniform_uint32_zero_to_uint32_max``.
+The measurement is based on generating 20 values per ISR over 4000 ISR cycles by calling ``uz_prng_get_uniform_uint32_zero_to_uint32_max``.
+
 Results:
 
   - ``uz_prng_generator_xoshiro`` and ``uz_prng_generator_pcg`` are the fastest generators
-  - ``uz_prng_generator_mtwister`` has a low mean calculation time. However, the internal state is shuffled every 620 calls resulting in a hughe spike in calculation time. This shuffle of the state is inherent to the algorithm. Thus, ``uz_prng_generator_mtwister`` is not recommended for usage in the ISR.
-  - ``uz_prng_generator_halton`` seems to increase calculation time with the number of samples taken and approaches :math:`0.6\,\mu s` per random number, see `Halton timing`.
+  - ``uz_prng_generator_mtwister`` has a low mean calculation time. However, the internal state is shuffled every 620 calls resulting in a spike in calculation time. This shuffle of the state is inherent to the algorithm. Thus, ``uz_prng_generator_mtwister`` is not recommended for usage in the ISR.
+  - ``uz_prng_generator_halton`` seems to increase calculation time with the number of samples taken and approaches :math:`0.6\,\mu s` per random number, see `Halton timing`_.
 
 
 .. plot::
+    :caption: Measured execution time of ``uz_prng_get_uniform_uint32_zero_to_uint32_max`` for different generators.
 
     import matplotlib.pyplot as plt
     import pandas as pd
@@ -217,31 +220,138 @@ Results:
         ax.set_xlabel('ISR sample')
 
 
-Generate bounded float values
------------------------------
 
-Unit interval [0,1)
-*******************
+
+Float [0,1)
+-----------
 
 - uz_prng_scale_to_float_zero_to_one_divide
 - uz_prng_scale_to_float_zero_to_one_multiply = 10ns overhead
 - uz_prng_scale_to_float_zero_to_one_shift_multiply = 8ns -> This is the fastest
-- All three functions do not have a measureable difference in exectuion time
+- All three functions do not have a measurable difference in execution time
 - Generating one float (0,1) using pcg takes 0.153 us
 - Additional calculation time for float is approx. 10ns compared to uint32
 
-Arbitrarily scaled
-******************
+The following table shows the calculation time of calling ``uz_prng_get_uniform_float_zero_to_one`` once and compares the different settings of ``uz_prng_float_scale_method``.
+The results  do not show a meaningful difference.
+Measurements 
 
-- 0.166us für uint32_t mit unbiased version, but the calculation time jitters a bit
-- 0.16 für uint32_t mit biased version
-- Does not seem to make much difference regarding jitter 
+================ =====================
+Method           Execution time
+================ =====================
+fp_muliply_mean  :math:`0.1985\,\mu s`
+fp_divide_mean   :math:`0.1983\,\mu s`
+shift_multi_mean :math:`0.1942\,\mu s`
+================ =====================
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import numpy as np
+    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+
+    df = pd.read_csv("generator_isr_float.csv")
+
+    fig, ax = plt.subplots(1,3,layout='constrained',figsize=(13,5),sharey=True)
+
+    ax[0].plot(df.fp_muliply)
+    ax[0].set_title('Float multiply mean=$0.0.198\,\mu s$')
+    ax[1].plot(df.fp_divide)
+    ax[1].set_title('Float divide mean=$0.198\,\mu s$')
+    ax[2].plot(df.shift_multi)
+    ax[2].set_title('Shift multiply mean=$0.194\,\mu s$')
+
+    ax[0].set_ylabel(r'Time in $\mu s$')
+    fig.suptitle('Execution time to generate one random float [0,1)')
+
+    for ax in ax.flat:
+        ax.grid(True,which='both')
+        ax.set_ylim(0.19,0.2)
+        ax.set_xlim(0,200)
+        ax.yaxis.set_minor_locator(AutoMinorLocator())
+        ax.set_xlabel('ISR sample')
+
+The following figure shows the density distribution over 10000 samples of the execution times calculated using `Matlab ksdensity <https://de.mathworks.com/help/stats/ksdensity.html>`_.
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import numpy as np
+    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+
+    df = pd.read_csv("generator_isr_float_density.csv")
+
+    fig, ax = plt.subplots(1,3,layout='constrained',figsize=(13,5),sharey=True)
+
+    ax[0].plot(df.fp_multiply_xi,df.fp_multiply_f)
+    ax[0].set_title('Float multiply mean=$0.198\,\mu s$')
+    ax[1].plot(df.fp_divide_xi,df.fp_divide_f)
+    ax[1].set_title('Float divide mean=$0.198\,\mu s$')
+    ax[2].plot(df.shift_multi_xi,df.shift_multi_f)
+    ax[2].set_title('Shift multiply mean=$0.194\,\mu s$')
+    ax[0].set_xlabel('probability density estimate')
+    ax[1].set_xlabel('probability density estimate')
+    ax[2].set_xlabel('probability density estimate')
+
+    fig.suptitle('Execution time to generate one random float [0,1)')
+
+    for ax in ax.flat:
+        ax.grid(True,which='both')
+        ax.yaxis.set_minor_locator(AutoMinorLocator())
+        ax.set_ylabel('probability density estimate')
 
 
 
+uint32_t in range [0,range)
+---------------------------
+
+- int multi is the fastest but is biased
+- unbiased opt is unbiased and faster than unbias
+- No reason to use float multi version
+- Use unbiased mean if comparability with other Frameworks that use Lemire's method (https://arxiv.org/abs/1805.10941) is desired
+
+================= =====================
+Method            Execution time
+================= =====================
+float_mult_mean   :math:`0.1955\,\mu s`
+int_mult_mean     :math:`0.1705\,\mu s`
+unbiased_mean     :math:`0.2108\,\mu s`
+unbiased_opt_mean :math:`0.1761\,\mu s`
+================= =====================
+
+
+.. plot::
+
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    import numpy as np
+    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+
+    df = pd.read_csv("generator_isr_bounded_uint32_density.csv")
+
+    fig, ax = plt.subplots(1,4,layout='constrained',figsize=(13,5),sharey=True)
+
+    ax[0].plot(df.float_mult_xi,df.float_mult_f)
+    ax[0].set_title('Float multiply mean=$0.196\,\mu s$')
+    ax[1].plot(df.int_mult_xi,df.int_mult_f)
+    ax[1].set_title('Integer multiply mean=$0.170\,\mu s$')
+    ax[2].plot(df.unbiased_xi,df.unbiased_f)
+    ax[2].set_title('Unbiased optimized mean=$0.176\,\mu s$')
+    ax[3].plot(df.unbiased_opt_xi,df.unbiased_opt_f)
+    ax[3].set_title('Unbiased mean=$0.211\,\mu s$')
+    ax[0].set_ylabel('probability density estimate')
+
+    fig.suptitle('Execution time to generate one random float [0,1)')
+
+    for ax in ax.flat:
+        ax.grid(True,which='both')
+        ax.yaxis.set_minor_locator(AutoMinorLocator())
+        ax.set_xlabel(r'Time in $\mu s$')
 
 Halton timing
-*************
+-------------
 
 The calculation time for ``uz_prng_generator_halton`` increases with number of samples taken from Halton sequence.
 This seems to be related that the implementation relies on a loop to find the :math:`n`th value of the Halton sequence requires more passes for increasing numbers of :math:`n`.
@@ -268,123 +378,7 @@ Usage of ``uz_prng_generator_halton`` in long-running applications (multiple day
     ax.set_ylim(0,0.7)
     ax.yaxis.set_minor_locator(AutoMinorLocator())
     ax.set_xlabel('ISR sample')
-
-
-Float [0,1)
-***********
-
-Calculation time of calling ``uz_prng_get_uniform_float_zero_to_one`` once.
-Comparison of different settings for ``uz_prng_float_scale_method``.
-The results  do not show a meaningful difference.
-
-==================== ==================== ====================
-fp_muliply_mean      fp_divide_mean       shift_multi_mean
-==================== ==================== ====================
-0.4960 :math:`\mu s` 0.4964 :math:`\mu s` 0.4851 :math:`\mu s`
-==================== ==================== ====================
-
-.. plot::
-
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    import numpy as np
-    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
-
-    df = pd.read_csv("generator_isr_float.csv")
-
-    fig, ax = plt.subplots(1,3,layout='constrained',figsize=(13,5),sharey=True)
-
-    ax[0].plot(df.fp_muliply)
-    ax[0].set_title('Float multiply mean=$0.496\,\mu s$')
-    ax[1].plot(df.fp_divide)
-    ax[1].set_title('Float divide mean=$0.496\,\mu s$')
-    ax[2].plot(df.shift_multi)
-    ax[2].set_title('Shift multiply mean=$0.485\,\mu s$')
-
-    ax[0].set_ylabel(r'Time in $\mu s$')
-    fig.suptitle('Execution time to generate one random float [0,1)')
-
-    for ax in ax.flat:
-        ax.grid(True,which='both')
-        ax.set_ylim(0.48,0.5)
-        ax.set_xlim(0,200)
-        ax.yaxis.set_minor_locator(AutoMinorLocator())
-        ax.set_xlabel('ISR sample')
-
-The following figure shows the density distribution over 10000 samples of the execution times calculated using `Matlab ksdensity <https://de.mathworks.com/help/stats/ksdensity.html>`_.
-
-.. plot::
-
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    import numpy as np
-    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
-
-    df = pd.read_csv("generator_isr_float_density.csv")
-
-    fig, ax = plt.subplots(1,3,layout='constrained',figsize=(13,5),sharey=True)
-
-    ax[0].plot(df.fp_multiply_xi,df.fp_multiply_f)
-    ax[0].set_title('Float multiply mean=$0.496\,\mu s$')
-    ax[1].plot(df.fp_divide_xi,df.fp_divide_f)
-    ax[1].set_title('Float divide mean=$0.496\,\mu s$')
-    ax[2].plot(df.shift_multi_xi,df.shift_multi_f)
-    ax[2].set_title('Shift multiply mean=$0.485\,\mu s$')
-
-    ax[0].set_xlabel('probability density estimate')
-
-    fig.suptitle('Execution time to generate one random float [0,1)')
-
-    for ax in ax.flat:
-        ax.grid(True,which='both')
-        ax.yaxis.set_minor_locator(AutoMinorLocator())
-        ax.set_ylabel('probability density estimate')
-
-
-
-uint32_t in range [0,range)
----------------------------
-
-- int multi is the fastest but is biased
-- unbiased opt is unbiased and faster than unbias
-- No reason to use float multi version
-- Use unbiased mean if comparability with other Frameworks that use Lemire's method (https://arxiv.org/abs/1805.10941) is desired
-
-=============== ============= ============= =============================== 
-float_mult_mean int_mult_mean unbiased_mean unbiased_mean unbiased_opt_mean
-=============== ============= ============= =============================== 
-0.4889          0.4262         0.5270       0.4402
-=============== ============= ============= =============================== 
-
-.. plot::
-
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    import numpy as np
-    from matplotlib.ticker import AutoMinorLocator, MultipleLocator
-
-    df = pd.read_csv("generator_isr_bounded_uint32_density.csv")
-
-    fig, ax = plt.subplots(1,4,layout='constrained',figsize=(13,5),sharey=True)
-
-    ax[0].plot(df.float_mult_xi,df.float_mult_f)
-    ax[0].set_title('Float multiply mean=$0.49\,\mu s$')
-    ax[1].plot(df.int_mult_xi,df.int_mult_f)
-    ax[1].set_title('Integer multiply mean=$0.43\,\mu s$')
-    ax[2].plot(df.unbiased_xi,df.unbiased_f)
-    ax[2].set_title('Unbiased optimized mean=$0.44\,\mu s$')
-    ax[3].plot(df.unbiased_opt_xi,df.unbiased_opt_f)
-    ax[3].set_title('Unbiased mean=$0.53\,\mu s$')
-    ax[0].set_ylabel('probability density estimate')
-
-    fig.suptitle('Execution time to generate one random float [0,1)')
-
-    for ax in ax.flat:
-        ax.grid(True,which='both')
-        ax.yaxis.set_minor_locator(AutoMinorLocator())
-        ax.set_xlabel(r'Time in $\mu s$')
-
-
+    ax.set_ylabel(r'Time in $\mu s$')
 
 Reference
 =========

@@ -2635,45 +2635,17 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:uz_pmsm_6LUT_test:1.0">
+		<VLNV value="xilinx.com:ip:uz_pmsm_6LUT_approx:1.0">
 		</VLNV>
-		<DisplayName value="uz_pmsm_6LUT_test">
+		<DisplayName value="uz_pmsm_6LUT_approx">
 		</DisplayName>
 		<Description value="HDL Coder generated IP">
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4.jpg">
 		</ProductGuide>
-		<CoreRevision value="2113257818">
+		<CoreRevision value="2113315566">
 		</CoreRevision>
-		<ComponentPath value="uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore/uz_pmsm_6LUT_test_v1_0/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/HDL Coder Generated IP">
-			</Taxonomy>
-		</Taxonomies>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-	</IP>
-	<IP>
-		<VLNV value="xilinx.com:ip:uz_pmsm_6LUT:1.0">
-		</VLNV>
-		<DisplayName value="uz_pmsm_6LUT">
-		</DisplayName>
-		<Description value="HDL Coder generated IP">
-		</Description>
-		<ProductGuide value="doc/doc_arch_axi4.jpg">
-		</ProductGuide>
-		<CoreRevision value="2113257711">
-		</CoreRevision>
-		<ComponentPath value="uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore/uz_pmsm_6LUT_v1_0/component.xml">
+		<ComponentPath value="uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore/uz_pmsm_6LUT_approx_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">

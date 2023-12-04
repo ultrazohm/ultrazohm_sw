@@ -48,58 +48,27 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT'
 <a href="matlab:open_system('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT');">open model 'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT'</a><BR>
-Generated on 2023-11-28 16:05:59</h1>
-<H2>HDL check for 'uz_pmsm_model_6LUT_pd' complete with 0 errors, 4 warnings, and 4 messages.</H2><BR>
+Generated on 2023-12-01 13:28:50</h1>
+<H2>HDL check for 'uz_pmsm_model_6LUT_pd' complete with 2 errors, 1 warnings, and 0 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcommon:nativefloatingpoint:NFPContainsDoubleError" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 47 112 109 115 109 47 112 115 105 100 95 97 112 112 114 111 120 47 65 83 105 110 104]))">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/psid_approx/ASinh</a>
+</TD>
+<TD>Error</TD>
+<TD>Double types are not supported for this block in native-floating point code generation; consider using single types instead.</TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
+<a alt="hdlcommon:nativefloatingpoint:NFPContainsDoubleError" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 47 112 109 115 109 47 112 115 105 100 95 97 112 112 114 111 120 47 84 97 110 104 52]))">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/psid_approx/Tanh4</a>
+</TD>
+<TD>Error</TD>
+<TD>Double types are not supported for this block in native-floating point code generation; consider using single types instead.</TD>
+</TR>
+<TR bgcolor="#F0F0F0"><TD>
 <a alt="hdlcoder:validate:UnsupportedAutoInsertRateTransition" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]))">uz_pmsm_model_6LUT_pd</a>
 </TD>
 <TD>Warning</TD>
 <TD>HDL Code Generation is not supported with implicit rate transitions. Consider turning off Simulink Solver setting <a href="matlab:configset.internal.open('uz_pmsm_model_6LUT_pd','AutoInsertRateTranBlk')">"Automatically handle rate transition for data transfer"</a> and detect such implicit transitions and add explicit rate conversion blocks with valid sample times.</TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:engine:MultirateSolver" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]))">uz_pmsm_model_6LUT_pd</a>
-</TD>
-<TD>Warning</TD>
-<TD>HDL optimizations that result in overclocking, such as streaming, resource sharing, or clock-rate pipelining require a fixed step, discrete solver in single-tasking mode. The fixed-step size must be set to 'auto' and the treat each discrete rate as a separate task must be set to 'off'.
-You can set these options in Modeling -> Model Settings -> Solver -> Solver details -> Tasking and sample time options. Not setting these options may result in failure to update (Ctrl+D) the generated models (like the validation model) and inability to generate an HDL testbench.</TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="HDLShared:hdlshared:cpespeednotcharacterized" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]))">uz_pmsm_model_6LUT_pd</a>
-</TD>
-<TD>Warning</TD>
-<TD>SynthesisToolSpeedValue -1LV not characterized for Family zynq_ultrascale+. Using default value, SynthesisToolSpeedValue=1, for critical path estimation.</TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="HDLShared:hdlshared:cpeignoresmultirate" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]))">uz_pmsm_model_6LUT_pd</a>
-</TD>
-<TD>Warning</TD>
-<TD>The model contains multiple rates, which are either explicitly designed or introduced by optimizations. Critical Path Estimation does not account for multiple rates in the reported timing estimates.</TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:optimization:CRPInFeedbackUnderbudget" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100 47 117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84]))">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT</a>
-</TD>
-<TD>Message</TD>
-<TD>Clock-rate pipelining identified at least one feedback loop which does not utilize the full latency budget. Oversampling factor is set to '200', but the minimum oversampling factor needed for the design is '156'. To reduce unnecessary clock cycles, either <a href="matlab:configset.internal.open('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT','Oversampling')">lower the oversampling factor</a> to reduce the latency budget or add optimizations that increase latency like pipelining and serialization in your design to use the full latency budget.</TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\criticalPathEstimated')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\criticalPathEstimated.m</a>
-</TD>
-<TD>Message</TD>
-<TD>Estimated critical path for design: <a href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\criticalPathEstimated')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\criticalPathEstimated.m</a></TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\highlightCriticalPathEstimationOffendingBlocks.m</a>
-</TD>
-<TD>Message</TD>
-<TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\hdlsrc\uz_pmsm_model_6LUT_pd\highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:hdldisp:OversampleMessage" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 95 54 76 85 84 95 112 100]))">uz_pmsm_model_6LUT_pd</a>
-</TD>
-<TD>Message</TD>
-<TD>MESSAGE: The design requires 200 times faster clock with respect to the base rate = 2e-06.</TD>
 </TR>
 </TABLE>
 <BR><BR> </div></div></div></div>

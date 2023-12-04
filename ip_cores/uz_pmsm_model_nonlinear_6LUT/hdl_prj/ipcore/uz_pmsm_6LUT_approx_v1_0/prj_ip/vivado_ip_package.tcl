@@ -4,21 +4,18 @@ set_property ip_repo_paths {../../} [current_fileset]
 # Add HDL source files to project
 add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_pkg.vhd}
 add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_tc.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_double.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_convert_single2double.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_mul_double.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_sub_double.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd}
 add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_abs_double.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_recip_double.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd}
-add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_div_double.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd}
+add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd}
 add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT.vhd}
 add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_pkg.vhd}
 add_files -norecurse {../hdl/uz_pmsm_6LUT_approx_reset_sync.vhd}
@@ -51,7 +48,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2113324241 [ipx::current_core]
+set_property core_revision 2113324321 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_pkg.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -62,66 +59,54 @@ ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_tc.vhd} [ipx::get_
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_tc.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_tc.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_tc.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_single2double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_single2double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_single2double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_single2double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_mul_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_mul_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_mul_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_mul_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_sub_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_sub_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_sub_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_sub_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_abs_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_abs_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_abs_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_abs_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_recip_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_recip_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_recip_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_recip_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_div_double.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_div_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_div_double.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_div_double.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

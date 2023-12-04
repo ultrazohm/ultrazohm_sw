@@ -6,8 +6,7 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2",
-      "validated": "true"
+      "tool_version": "2022.2"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -112,7 +111,7 @@
       },
       "uz_user": {
         "smartconnect_1": "",
-        "uz_axi_testIP_0": ""
+        "uz_pmsm_6LUT_approx_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -180,13 +179,7 @@
       "D1_OUT": {
         "direction": "O",
         "left": "23",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "24",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "D1_OUT_26": {
         "direction": "O",
@@ -211,13 +204,7 @@
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "12",
-            "value_src": "ip_prop"
-          }
-        }
+        "right": "0"
       },
       "D2_OUT_26": {
         "direction": "O",
@@ -267,13 +254,7 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "1",
-            "value_src": "default_prop"
-          }
-        }
+        "right": "0"
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -5601,11 +5582,11 @@
               }
             }
           },
-          "uz_axi_testIP_0": {
-            "vlnv": "user.org:ip:uz_axi_testIP:1.0",
-            "xci_name": "zusys_uz_axi_testIP_0_0",
-            "xci_path": "ip\\zusys_uz_axi_testIP_0_0_1\\zusys_uz_axi_testIP_0_0.xci",
-            "inst_hier_path": "uz_user/uz_axi_testIP_0"
+          "uz_pmsm_6LUT_approx_0": {
+            "vlnv": "xilinx.com:ip:uz_pmsm_6LUT_approx:1.0",
+            "xci_name": "zusys_uz_pmsm_6LUT_approx_0_0",
+            "xci_path": "ip\\zusys_uz_pmsm_6LUT_approx_0_0\\zusys_uz_pmsm_6LUT_approx_0_0.xci",
+            "inst_hier_path": "uz_user/uz_pmsm_6LUT_approx_0"
           }
         },
         "interface_nets": {
@@ -5618,7 +5599,7 @@
           "smartconnect_1_M00_AXI": {
             "interface_ports": [
               "smartconnect_1/M00_AXI",
-              "uz_axi_testIP_0/AXI4"
+              "uz_pmsm_6LUT_approx_0/AXI4"
             ]
           }
         },
@@ -5627,16 +5608,16 @@
             "ports": [
               "aresetn",
               "smartconnect_1/aresetn",
-              "uz_axi_testIP_0/AXI4_ARESETN",
-              "uz_axi_testIP_0/IPCORE_RESETN"
+              "uz_pmsm_6LUT_approx_0/IPCORE_RESETN",
+              "uz_pmsm_6LUT_approx_0/AXI4_ARESETN"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
             "ports": [
               "aclk",
               "smartconnect_1/aclk",
-              "uz_axi_testIP_0/AXI4_ACLK",
-              "uz_axi_testIP_0/IPCORE_CLK"
+              "uz_pmsm_6LUT_approx_0/IPCORE_CLK",
+              "uz_pmsm_6LUT_approx_0/AXI4_ACLK"
             ]
           }
         }
@@ -9152,11 +9133,6 @@
                 "offset": "0x00800B0000",
                 "range": "64K"
               },
-              "SEG_uz_axi_testIP_0_reg0": {
-                "address_block": "/uz_user/uz_axi_testIP_0/AXI4/reg0",
-                "offset": "0x00800C0000",
-                "range": "64K"
-              },
               "SEG_uz_interlockDeadtime_0_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_0/AXI4/reg0",
                 "offset": "0x0080050000",
@@ -9175,6 +9151,11 @@
               "SEG_uz_interlockDeadtime_3_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_3/AXI4/reg0",
                 "offset": "0x0080120000",
+                "range": "64K"
+              },
+              "SEG_uz_pmsm_6LUT_approx_0_reg0": {
+                "address_block": "/uz_user/uz_pmsm_6LUT_approx_0/AXI4/reg0",
+                "offset": "0x0080080000",
                 "range": "64K"
               }
             }

@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0ed8fd27</spirit:value>
+            <spirit:value>6350cb71</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0ed8fd27</spirit:value>
+            <spirit:value>6350cb71</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1144,19 +1144,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_convert_single2double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_div_double.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_sub_double.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_mul_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1164,15 +1156,15 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_recip_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1180,15 +1172,15 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_abs_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1196,11 +1188,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1246,7 +1234,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_6LUT_approx.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_d9de0315</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_490c016d</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1272,22 +1260,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_convert_single2double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_div_double.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_sub_double.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_mul_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1297,17 +1275,17 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_recip_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1317,17 +1295,17 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_abs_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1337,12 +1315,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_double.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1455,14 +1428,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_6LUT_approx</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113324241</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-12-04T15:43:10Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113324321</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-12-04T17:02:53Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c50c70f3"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c6a64e36"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="2be5b0a2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="22ba322a"/>
     </xilinx:packagingInfo>

@@ -166,17 +166,20 @@ void fcs_mpc_init_state_machine(uint32_t no_of_iterations){
 }
 
 void fcs_mpc_init_pu_voltages(bool index_from_axi_or_pl, bool v_dc_from_axi_or_pl, float v_dc_axi, float Ts_minus_Td_over_Ts, float Td_over_Ts, bool deadtime_comp_onoff){
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + index_select_AXI_Data_pu_voltages_dq, index_from_axi_or_pl);
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + v_dc_select_AXI_Data_pu_voltages_dq, v_dc_from_axi_or_pl);
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + v_DC_pu_AXI_Data_pu_voltages_dq, uz_convert_float_to_sfixed(v_dc_axi/base_val.VB, 15));
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + Ts_minus_Td_over_Ts_AXI_Data_pu_voltages_dq, uz_convert_float_to_unsigned_fixed(Ts_minus_Td_over_Ts, 18));
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + Td_over_Ts_AXI_Data_pu_voltages_dq, uz_convert_float_to_unsigned_fixed(Td_over_Ts, 18));
-	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + deadtime_comp_onoff_AXI_Data_pu_voltages_dq, deadtime_comp_onoff);
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + index_select_AXI_Data_pu_voltages_dq, index_from_axi_or_pl);
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + v_dc_select_AXI_Data_pu_voltages_dq, v_dc_from_axi_or_pl);
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + v_DC_pu_AXI_Data_pu_voltages_dq, uz_convert_float_to_sfixed(v_dc_axi/base_val.VB, 15));
+//	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + index_select_AXI_Data_pu_voltages_dq, index_from_axi_or_pl);
+//	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + v_dc_select_AXI_Data_pu_voltages_dq, v_dc_from_axi_or_pl);
+//	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + v_DC_pu_AXI_Data_pu_voltages_dq, uz_convert_float_to_sfixed(v_dc_axi/base_val.VB, 15));
+//	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + Ts_minus_Td_over_Ts_AXI_Data_pu_voltages_dq, uz_convert_float_to_unsigned_fixed(Ts_minus_Td_over_Ts, 18));
+//	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + Td_over_Ts_AXI_Data_pu_voltages_dq, uz_convert_float_to_unsigned_fixed(Td_over_Ts, 18));
+//	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + deadtime_comp_onoff_AXI_Data_pu_voltages_dq, deadtime_comp_onoff);
 }
 
 void fcs_mpc_write_i_ref_to_pu_voltages(void) {
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + id_ref_pu_AXI_Data_pu_voltages_dq, Global_Data.rasv.i_dq_ref_left.d * pu_current_conversion,  i_setpoint_fp_def);
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + iq_ref_pu_AXI_Data_pu_voltages_dq, Global_Data.rasv.i_dq_ref_left.q * pu_current_conversion,  i_setpoint_fp_def);
+	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + id_ref_pu_AXI_Data_pu_voltages_dq, Global_Data.rasv.i_dq_ref_left.d * pu_current_conversion,  i_setpoint_fp_def);
+	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + iq_ref_pu_AXI_Data_pu_voltages_dq, Global_Data.rasv.i_dq_ref_left.q * pu_current_conversion,  i_setpoint_fp_def);
 }
 
 void fcs_mpc_init_omega_m_pu_conversion(void){
@@ -213,7 +216,7 @@ void fcs_mpc_init_cost_function(){
 }
 
 void fcs_mpc_write_axi_v_dc(){
-	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + v_DC_pu_AXI_Data_pu_voltages_dq, uz_convert_float_to_sfixed(Global_Data.av.v_dc_left/base_val.VB, 15));
+	uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + v_DC_pu_AXI_Data_pu_voltages_dq, uz_convert_float_to_sfixed(Global_Data.av.v_dc_left/base_val.VB, 15));
 
 }
 
@@ -315,8 +318,8 @@ void fcs_mpc_debug(void){
     Global_Data.av.i_c_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_UZ_PU_CON_IP_0_BASEADDR + out2_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
 
     //read pu voltages
-    Global_Data.av.vd_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + pu_vd_AXI_Data_pu_voltages_dq, park_fixedpoint_definition);
-    Global_Data.av.vq_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + pu_vq_AXI_Data_pu_voltages_dq, park_fixedpoint_definition);
+    Global_Data.av.vd_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + pu_vd_AXI_Data_pu_voltages_dq, park_fixedpoint_definition);
+    Global_Data.av.vq_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_VSD_0_BASEADDR + pu_vq_AXI_Data_pu_voltages_dq, park_fixedpoint_definition);
 
     //read delaycomp_currents
     Global_Data.av.id_delay_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_3PH_DELAY_COMP_0_BASEADDR + id_delay_pu_AXI_Data_delay_comp, park_fixedpoint_definition);
@@ -327,5 +330,5 @@ void fcs_mpc_debug(void){
 }
 
 void fcs_mpc_deadtime_comp_onoff(bool onoff){
-	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + deadtime_comp_onoff_AXI_Data_pu_voltages_dq, onoff);
+//	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + deadtime_comp_onoff_AXI_Data_pu_voltages_VSD, onoff);
 }

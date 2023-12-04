@@ -38,12 +38,12 @@ The specific pattern and distribution depends on the random seed.
    var=df.loc[:,'number'].var()
 
    fig, axs = plt.subplots(2, 1,layout='constrained')
-   axs[0].set_title("Random uint32\n numbers from\n uz_prng_squares")
+   axs[0].set_title("Random uint32\n numbers from\n uz_prng_mtwister")
    axs[0].plot(df.index,df.number,'o')
 
    axs[1].hist(df.number, bins=50, linewidth=0.5, edgecolor="white",density=True)
    title_string=str(mean)
-   axs[1].set_title("Histogram\n of Squares\n with mean:" + title_string )
+   axs[1].set_title("Histogram\n of MTwister\n with mean:" + title_string )
 
 
 Reference

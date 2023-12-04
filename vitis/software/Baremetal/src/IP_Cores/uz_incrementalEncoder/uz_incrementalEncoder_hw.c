@@ -84,7 +84,6 @@ void uz_incrementalEncoder_hw_set_omegaPerOverSample(uint32_t base_address,float
 
 void uz_incrementalEncoder_hw_set_speed_timeout_value(uint32_t base_address,uint32_t speed_timeout){
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(speed_timeout < UINT32_MAX); // Data type in IP-Core is uint32_t
     uz_axi_write_uint32(base_address + timeout_value_AXI4_Data_Incremental_Encoder_v26, speed_timeout);
 }
 

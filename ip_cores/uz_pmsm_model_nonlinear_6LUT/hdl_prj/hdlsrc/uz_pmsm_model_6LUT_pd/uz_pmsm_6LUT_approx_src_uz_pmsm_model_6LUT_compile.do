@@ -6,10 +6,10 @@ vcom  uz_pmsm_6LUT_approx_src_nfp_uminus_double.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_convert_single2double.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_mul_double.vhd
-vcom  uz_pmsm_6LUT_approx_src_nfp_log_single.vhd
-vcom  uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_sub_double.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd
+vcom  uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd
+vcom  uz_pmsm_6LUT_approx_src_nfp_log_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_add_double.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd

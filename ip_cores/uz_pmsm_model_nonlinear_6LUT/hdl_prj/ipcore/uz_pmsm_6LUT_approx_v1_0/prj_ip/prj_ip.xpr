@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Users/Philipp/ultrazohm/ultrazohm_sw/ip_cores/uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore/uz_pmsm_6LUT_approx_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="7a9b5e2350a14f008697864f27776e21"/>
+    <Option Name="Id" Val="4b83540a15d04291b9e48a6423099d90"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1LV-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -149,24 +149,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -185,6 +167,12 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_add_double.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_signum_double.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -192,6 +180,18 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_abs_double.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_double.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

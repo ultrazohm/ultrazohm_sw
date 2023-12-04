@@ -100,7 +100,7 @@ uint32_t uz_incrementalEncoder_get_Index_Found(uz_incrementalEncoder_t* self);
  * @param self Pointer to the instance
  * @param encoder_Offset_elec Electrical offset in increments per revolution
  */
-void uz_incrementalEncoder_set_new_electrical_Offset(uz_incrementalEncoder_t* self, uint32_t encoder_Offset_elec);
+void uz_incrementalEncoder_set_electrical_Offset(uz_incrementalEncoder_t* self, uint32_t encoder_Offset_elec);
 
 /**
  * @brief Allowes to change the mechanical Offset during operation
@@ -108,5 +108,5 @@ void uz_incrementalEncoder_set_new_electrical_Offset(uz_incrementalEncoder_t* se
  * @param self Pointer to the instance
  * @param encoder_Offset_mech Mechanical o ffset in increments per revolution
  */
-void uz_incrementalEncoder_set_new_mechanical_Offset(uz_incrementalEncoder_t* self, uint32_t encoder_Offset_mech);
+void uz_incrementalEncoder_set_mechanical_Offset(uz_incrementalEncoder_t* self, uint32_t encoder_Offset_mech);
 #endif // UZ_INCREMENTALENCODER_H

@@ -6,7 +6,8 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2"
+      "tool_version": "2022.2",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -179,7 +180,13 @@
       "D1_OUT": {
         "direction": "O",
         "left": "23",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "24",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D1_OUT_26": {
         "direction": "O",
@@ -204,7 +211,13 @@
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "12",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D2_OUT_26": {
         "direction": "O",
@@ -254,7 +267,13 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          }
+        }
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -5584,8 +5603,8 @@
           },
           "uz_pmsm_6LUT_approx_0": {
             "vlnv": "xilinx.com:ip:uz_pmsm_6LUT_approx:1.0",
-            "xci_name": "zusys_uz_pmsm_6LUT_approx_0_0",
-            "xci_path": "ip\\zusys_uz_pmsm_6LUT_approx_0_0\\zusys_uz_pmsm_6LUT_approx_0_0.xci",
+            "xci_name": "zusys_uz_pmsm_6LUT_approx_0_1",
+            "xci_path": "ip\\zusys_uz_pmsm_6LUT_approx_0_1_1\\zusys_uz_pmsm_6LUT_approx_0_1.xci",
             "inst_hier_path": "uz_user/uz_pmsm_6LUT_approx_0"
           }
         },

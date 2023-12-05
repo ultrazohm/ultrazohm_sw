@@ -1013,7 +1013,7 @@ Simulink version: <font color="#800000">23.2</font>
 </td>
 <td align="right" valign="top">
 <b>
-Model version: <font color="#800000">7.21</font>
+Model version: <font color="#800000">7.23</font>
 </b>
 
 </td>
@@ -1028,7 +1028,7 @@ System: <font color="#800000">uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT</font>
 </td>
 <td align="right" valign="top">
 <b>
-Current run: <font color="#800000">04-Dec-2023 17:48:03</font>
+Current run: <font color="#800000">05-Dec-2023 12:55:10</font>
 </b>
 
 </td>
@@ -1272,7 +1272,7 @@ Message
 </font>
 
 </b>
- : Following blocks introduce latency in the generated code and the generated model. Add the appropriate number of delays in your Simulink model to simulate the model with latency.<ul class="SystemdefinedCollapse" id="2ab9d89d-2351-4a18-a749-bef4b2db4563" dataCollapse="off">
+ : Following blocks introduce latency in the generated code and the generated model. Add the appropriate number of delays in your Simulink model to simulate the model with latency.<ul class="SystemdefinedCollapse" id="b49ffa50-e206-4dc3-b015-ae00ac89bd64" dataCollapse="off">
 <li>
  Demux block introduces latency but might report an incorrect value for vector inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47   68  101  109  117  120]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/Demux
@@ -1328,12 +1328,6 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1/Sum3
 
 </li>
 <li>
- Data Type Conversion17 block has a latency of 3 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   68   97  116   97   32   84  121  112  101   32   67  111  110  118  101  114  115  105  111  110   49   55]))">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Data Type Conversion17
-</a>
-
-</li>
-<li>
  Divide block introduces latency but might report an incorrect value when there are more than two inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   68  105  118  105  100  101]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Divide
 </a>
@@ -1376,12 +1370,6 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Product10
 
 </li>
 <li>
- Product13 block has a latency of 31 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  100   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   49   51]))">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Product13
-</a>
-
-</li>
-<li>
  Product14 block has a latency of 6 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  100   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   49   52]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Product14
 </a>
@@ -1394,12 +1382,6 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Product15
 
 </li>
 <li>
- Product16 block has a latency of 31 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  100   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   49   54]))">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Product16
-</a>
-
-</li>
-<li>
  Product2 block has a latency of 6 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  100   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   50]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Product2
 </a>
@@ -1408,6 +1390,18 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Product2
 <li>
  Product3 block introduces latency but might report an incorrect value when there are more than two inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  100   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   51]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Product3
+</a>
+
+</li>
+<li>
+ Reciprocal block has a latency of 16 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  100   95   97  112  112  114  111  120   49   47   82  101   99  105  112  114  111   99   97  108]))">
+uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Reciprocal
+</a>
+
+</li>
+<li>
+ Reciprocal1 block has a latency of 16 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  100   95   97  112  112  114  111  120   49   47   82  101   99  105  112  114  111   99   97  108   49]))">
+uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Reciprocal1
 </a>
 
 </li>
@@ -1448,12 +1442,6 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Tanh4
 
 </li>
 <li>
- Demux block introduces latency but might report an incorrect value for vector inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  113   47   68  101  109  117  120]))">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldq/Demux
-</a>
-
-</li>
-<li>
  Gain block has a latency of 1 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  113   47   71   97  105  110]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldq/Gain
 </a>
@@ -1466,8 +1454,8 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldq/Product20
 
 </li>
 <li>
- Demux block introduces latency but might report an incorrect value for vector inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  100   47   68  101  109  117  120]))">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqd/Demux
+ Selector block introduces latency but might report an incorrect value for vector inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  113   47   83  101  108  101   99  116  111  114]))">
+uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldq/Selector
 </a>
 
 </li>
@@ -1480,6 +1468,12 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqd/Gain
 <li>
  Product20 block introduces latency but might report an incorrect value when there are more than two inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  100   47   80  114  111  100  117   99  116   50   48]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqd/Product20
+</a>
+
+</li>
+<li>
+ Selector block introduces latency but might report an incorrect value for vector inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  100   47   83  101  108  101   99  116  111  114]))">
+uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqd/Selector
 </a>
 
 </li>
@@ -1502,12 +1496,6 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Product1
 
 </li>
 <li>
- Product13 block has a latency of 31 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  113   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   49   51]))">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Product13
-</a>
-
-</li>
-<li>
  Product14 block has a latency of 6 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  113   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   49   52]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Product14
 </a>
@@ -1516,12 +1504,6 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Product14
 <li>
  Product15 block has a latency of 6 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  113   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   49   53]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Product15
-</a>
-
-</li>
-<li>
- Product16 block has a latency of 31 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  113   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   49   54]))">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Product16
 </a>
 
 </li>
@@ -1540,6 +1522,18 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Product20
 <li>
  Product3 block introduces latency but might report an incorrect value when there are more than two inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  113   95   97  112  112  114  111  120   49   47   80  114  111  100  117   99  116   51]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Product3
+</a>
+
+</li>
+<li>
+ Reciprocal block has a latency of 16 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  113   95   97  112  112  114  111  120   49   47   82  101   99  105  112  114  111   99   97  108]))">
+uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Reciprocal
+</a>
+
+</li>
+<li>
+ Reciprocal1 block has a latency of 16 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  113  113   95   97  112  112  114  111  120   49   47   82  101   99  105  112  114  111   99   97  108   49]))">
+uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqq_approx1/Reciprocal1
 </a>
 
 </li>
@@ -1672,12 +1666,6 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Sum3
 <li>
  Sum4 block has a latency of 6 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   83  117  109   52]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Sum4
-</a>
-
-</li>
-<li>
- Data Type Conversion17 block has a latency of 3 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47  112  115  105  100   95   97  112  112  114  111  120   47   68   97  116   97   32   84  121  112  101   32   67  111  110  118  101  114  115  105  111  110   49   55]))">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/psid_approx/Data Type Conversion17
 </a>
 
 </li>
@@ -1840,6 +1828,12 @@ uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/psid_approx/Tanh3
 <li>
  Demux block introduces latency but might report an incorrect value for vector inputs. Use the generated model to see the latency value. <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47  112  115  105  113   95   97  112  112  114  111  120   47   68  101  109  117  120]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/psiq_approx/Demux
+</a>
+
+</li>
+<li>
+ Gain block has a latency of 1 but there are no delays adjacent to the block: <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47  112  115  105  113   95   97  112  112  114  111  120   47   71   97  105  110]))">
+uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/psiq_approx/Gain
 </a>
 
 </li>
@@ -2078,18 +2072,6 @@ Warning
 <li>
 <a href="matlab: modeladvisorprivate hiliteSystem uz0_pmsm_model_6LUT_pdzfuz0_pmsm_model_6LUTzfpmsmzfLdd_approx1zfDemux" title="uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Demux">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Demux
-</a>
-
-</li>
-<li>
-<a href="matlab: modeladvisorprivate hiliteSystem uz0_pmsm_model_6LUT_pdzfuz0_pmsm_model_6LUTzfpmsmzfLdqzfDemux" title="uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldq/Demux">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldq/Demux
-</a>
-
-</li>
-<li>
-<a href="matlab: modeladvisorprivate hiliteSystem uz0_pmsm_model_6LUT_pdzfuz0_pmsm_model_6LUTzfpmsmzfLqdzfDemux" title="uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqd/Demux">
-uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Lqd/Demux
 </a>
 
 </li>
@@ -2564,7 +2546,7 @@ Warning
 </font>
 
 </b>
- : Following Blocks have non-zero ULP Error<ul class="SystemdefinedCollapse" id="7c9b335a-4629-488d-864d-1f7fd50aa7cb" dataCollapse="off">
+ : Following Blocks have non-zero ULP Error<ul class="SystemdefinedCollapse" id="9aaf64a3-c9da-46b0-8b01-0ee2159bf624" dataCollapse="off">
 <li>
  ULP is 1 in <a href="matlab: hilite_system(char([117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   95  112  100   47  117  122   95  112  109  115  109   95  109  111  100  101  108   95   54   76   85   84   47  112  109  115  109   47   76  100  100   95   97  112  112  114  111  120   49   47   84   97  110  104   49]))">
 uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm/Ldd_approx1/Tanh1

@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdl_prj\ipcore\uz_pmsm_6LUT_approx_v1_0\include\uz_pmsm_6LUT_approx_addr.h
  * Description:       C Header File
- * Created:           2023-12-05 11:30:56
+ * Created:           2023-12-05 13:03:37
 */
 
 #ifndef UZ_PMSM_6LUT_APPROX_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_pmsm_6LUT_approx                0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_pmsm_6LUT_approx               0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_pmsm_6LUT_approx            0x8  //contains unique IP timestamp (yymmddHHMM): 2312051009: 2312051102: 2312051121: 2312051130
+#define  IPCore_Timestamp_uz_pmsm_6LUT_approx            0x8  //contains unique IP timestamp (yymmddHHMM): 2312051303
 #define  reset_integrators_Data_uz_pmsm_6LUT_approx      0x100  //data register for Inport reset_integrators
 #define  simulate_mechanical_Data_uz_pmsm_6LUT_approx    0x104  //data register for Inport simulate_mechanical
 #define  simulate_nonlinear_Data_uz_pmsm_6LUT_approx     0x108  //data register for Inport simulate_nonlinear

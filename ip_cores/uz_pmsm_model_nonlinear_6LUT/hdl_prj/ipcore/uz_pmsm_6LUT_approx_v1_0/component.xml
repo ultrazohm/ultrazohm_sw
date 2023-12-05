@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>7a7a73c6</spirit:value>
+            <spirit:value>fc5ff17d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>7a7a73c6</spirit:value>
+            <spirit:value>fc5ff17d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1234,7 +1234,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_6LUT_approx.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_b05594ab</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_ad1aa3fb</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1428,14 +1428,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_6LUT_approx</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113325370</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-12-05T10:31:20Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113325463</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-12-05T12:04:04Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="f7453730"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="b2e401b8"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="2be5b0a2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="22ba322a"/>
     </xilinx:packagingInfo>

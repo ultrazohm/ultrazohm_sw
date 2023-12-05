@@ -4,14 +4,14 @@ vcom  uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_pkg.vhd
 vcom  uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_tc.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd
-vcom  uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd
+vcom  uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_add_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_log_single.vhd
-vcom  uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd
+vcom  uz_pmsm_6LUT_approx_src_nfp_gain_pow2_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_div_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT.vhd

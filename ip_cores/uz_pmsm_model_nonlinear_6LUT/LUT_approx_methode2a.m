@@ -251,17 +251,17 @@ Lqq_approx_max = max(Lqq_approx, [], 'all');
 ed_L = ((abs(Lqq_approx-Lqq_approx_test))/Lqq_approx_max).*100;
 
 %% Plotten
-figure;
-% Approximierter Fluss
-subplot(1,2,1); 
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(d_current, q_current,psi_d_approx);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
-% legend;
+% figure;
+% % Approximierter Fluss
+% % subplot(1,2,1); 
+% grid on;
+% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
+% surf(d_current, q_current,psi_d_approx);
+% xlabel('$$i_{d}$$','Interpreter','Latex');
+% ylabel('$$i_{q}$$','Interpreter','Latex');
+% zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
+% % title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
+% % legend;
 
 %matlab2tikz('C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\testobsspeichert.tex','width','\figurewidth','height','\figureheight')
 
@@ -276,17 +276,17 @@ zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
 % zlabel('\psi_{d}');
 % legend;
 
-% figure;
-% Approximierter Fluss
-subplot(1,2,2);
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(d_current, q_current,psi_q_approx);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
-% legend;
+% % figure;
+% % Approximierter Fluss
+% subplot(1,2,2);
+% grid on;
+% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
+% surf(d_current, q_current,psi_q_approx);
+% xlabel('$$i_{d}$$','Interpreter','Latex');
+% ylabel('$$i_{q}$$','Interpreter','Latex');
+% zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
+% % title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
+% % legend;
 
 % % Echter Fluss
 % subplot(2,1,2); 
@@ -306,20 +306,20 @@ zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
 % grid on;
 % % plot(q_current_q_Flux, Fluxd_iqnull);
 % surf(d_current, q_current, ed);
-% xlabel('D Current');
-% ylabel('Q Current');
-% zlabel('error %');
-% title('error psid');
-% legend;
+% xlabel('$$i_{d}/A$$','Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','Interpreter','Latex');
+% zlabel('$$\varepsilon_d/\%$$','Interpreter','Latex');
+% % title('error psid');
+% % legend;
 % 
-% figure;
-% % Error psiq zwischen approx und echtem Fluss
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, eq);
-% xlabel('D Current');
-% ylabel('Q Current');
-% zlabel('error %');
+figure;
+% Error psiq zwischen approx und echtem Fluss
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull);
+surf(d_current, q_current, eq);
+xlabel('$$i_{d}/A$$','Interpreter','Latex');
+ylabel('$$i_{q}/A$$','Interpreter','Latex');
+zlabel('$$\varepsilon_q/\%$$','Interpreter','Latex');
 % title('error psiq');
 % legend;
 % 

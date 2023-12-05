@@ -13,7 +13,6 @@
 #include "task.h"
 #include "netif/xadapter.h"
 #include "lwip/sockets.h"
-#include "queue.h"
 #include "xil_printf.h"
 #include "xil_cache.h"
 
@@ -46,22 +45,26 @@
 
 
 /*
- * OCM bank3 is reserved for javascope: Address: 0xFFFF0000, len 0x10000 (= 65K).
- * Place XCP data behind javascope memory in same bank3. Use the last 32K for this.
+ * OCM bank3 is reserved for javascope: Address: 0xFFFF_0000, len 0x1_0000 (= 65K).
+ * Place XCP data behind javascope memory in same bank3.
+ * Use the last 0x0_8000 (= 32K) for this.
  */
-#define XCP_OUT_ADDR				0xFFFF8000
-#define XCP_OUT_LEN					0x00007000
-#define XCP_IN_ADDR 				(XCP_OUT_ADDR + XCP_OUT_LEN)
-#define XCP_IN_LEN					0x00001000
+#define XCP_RW_LEN					4
+
+// OUT: from device (UZ) to host (CANape)
+// IN: from host (CANape) to device (UZ)
+#define XCP_OUT_ADDR_RW				0xFFFF8000
+#define XCP_OUT_ADDR_DATA_FIRST		(XCP_OUT_ADDR_RW + XCP_RW_LEN)
+#define XCP_OUT_LEN					(0x7000 - XCP_RW_LEN)
+#define XCP_OUT_ADDR_DATA_LAST		(XCP_OUT_ADDR_DATA_FIRST + XCP_OUT_LEN - 4)
+#define XCP_IN_ADDR_RW				(XCP_OUT_ADDR_DATA_FIRST + XCP_OUT_LEN)
+#define XCP_IN_ADDR_DATA_FIRST 		(XCP_IN_ADDR_RW + XCP_RW_LEN)
+#define XCP_IN_LEN					(0x1000 - XCP_RW_LEN)
+#define XCP_IN_ADDR_DATA_LAST 		(XCP_IN_ADDR_DATA_FIRST + XCP_IN_LEN - 4)
 
 /*-------------------------------------------------------------------
  * Variables
  *-----------------------------------------------------------------*/
-#define QUEUE_XCP_TX_LEN        1000
-#define QUEUE_XCP_RX_LEN        10
-
-static QueueHandle_t queue_xcp_tx;
-static QueueHandle_t queue_xcp_rx = NULL;
 
 static uint32_t xcp_timestamp;
 
@@ -78,9 +81,6 @@ void my_print_ip(ip_addr_t *ip)
 
 void xcp_interface_init(void)
 {
-    queue_xcp_tx = xQueueGenericCreate(QUEUE_XCP_TX_LEN, BUF_SIZE_XCP_TX, 0);
-    queue_xcp_rx = xQueueGenericCreate(QUEUE_XCP_RX_LEN, BUF_SIZE_XCP_RX, 0);
-
     XcpInit();
 //    bsp_timer_init();
 //    bsp_timer_start();
@@ -89,8 +89,6 @@ void xcp_interface_init(void)
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
-
-
 static void xcp_eth_tx(void *arg_p)
 {
     int sd = * (int *) arg_p;
@@ -98,25 +96,43 @@ static void xcp_eth_tx(void *arg_p)
 
     xil_printf("%s() start\n", __func__);
 
-    xQueueReset(queue_xcp_tx);
-
     while (1) {
-        uint8_t buf_xcp_tx[BUF_SIZE_XCP_TX];
-        if(xQueueReceive(queue_xcp_tx, buf_xcp_tx, portMAX_DELAY) != pdPASS) {
-            xil_printf("%s(): xQueueReceive() tx failed\n", __func__);
-            xil_printf("%s(): critical error, can not recover\n", __func__);
-            vTaskDelay(5);
-            return;
-        }
-        // length was already written before msg was given to queue
-        uint16_t len_xcp_tx;
-        len_xcp_tx = ((buf_xcp_tx[0] << 0) | (buf_xcp_tx[1] << 8));
 
+    	uint32_t buf[BUF_SIZE_XCP_TX / 4];
+		uint8_t *buf_xcp_tx = (uint8_t *)buf;
 
-        if ((nwrote = write(sd, buf_xcp_tx, (len_xcp_tx + XCP_HEADER_LEN))) < 0) {
-            xil_printf("%s(): write() failed\n", __func__);
-            break;
-        }
+        // Read package from exchange memory
+		static volatile uint32_t *src_p = (volatile uint32_t *)XCP_OUT_ADDR_DATA_FIRST;
+        volatile uint32_t *rw_p = (volatile uint32_t *)XCP_OUT_ADDR_RW;
+        // Is there new data in the buffer?
+		if (*rw_p != (size_t)src_p) {
+			// First 4 bytes hold package length
+			int n = *src_p++;
+			int words_to_copy = n / 4;
+			if (n % 4) {
+				words_to_copy++;
+			}
+			for (int i = 0; i < words_to_copy; i++) {
+				buf[i] = *src_p;
+				src_p++;
+				// Wrap around
+				if ((size_t)src_p > XCP_OUT_ADDR_DATA_LAST) {
+					src_p = (volatile uint32_t *)XCP_OUT_ADDR_DATA_FIRST;
+				}
+			}
+
+			// length was already written before msg was given to exchange memory
+			uint16_t len_xcp_tx;
+			len_xcp_tx = ((buf_xcp_tx[0] << 0) | (buf_xcp_tx[1] << 8));
+
+			if ((nwrote = write(sd, buf_xcp_tx, (len_xcp_tx + XCP_HEADER_LEN))) < 0) {
+				xil_printf("%s(): write() failed\n", __func__);
+				vTaskDelay(5);
+				break;
+			}
+		} else {
+			vTaskDelay(1);
+		}
     }
 
     xil_printf("%s(): delete\n", __func__);
@@ -130,11 +146,11 @@ static void xcp_eth_rx(void *arg_p)
     int n;
 
     xil_printf("%s() start\n", __func__);
-    uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
+    uint32_t buf_xcp_rx[BUF_SIZE_XCP_RX / 4];
 
     while (1) {
         // Will block here until new data is available
-        if ((n = read(sd, buf_xcp_rx, BUF_SIZE_XCP_RX)) < 0) {
+        if ((n = read(sd, (uint8_t *)buf_xcp_rx, BUF_SIZE_XCP_RX)) < 0) {
             xil_printf("ERROR: could not read from xcp master socket\n");
             break;
         }
@@ -145,12 +161,25 @@ static void xcp_eth_rx(void *arg_p)
             break;
         }
 
-        if (xQueueSend(queue_xcp_rx, buf_xcp_rx, 0) != pdPASS) {
-            xil_printf("%s(): xQueueSend() tcp_rx failed\n", __func__);
-            xil_printf("%s(): critical error!\n", __func__);
-            vTaskDelay(5);
-            return;
+        // Write package received from CANape via ethernet to exchange memory
+		static volatile uint32_t *dst_p = (volatile uint32_t *)XCP_IN_ADDR_DATA_FIRST;
+		// Write package length in first 4 bytes
+		*dst_p++ = n;
+		int words_to_copy = n / 4;
+		if (n % 4) {
+			words_to_copy++;
+		}
+        for (int i = 0; i < words_to_copy; i++) {
+        	*dst_p = buf_xcp_rx[i];
+
+        	dst_p++;
+        	// Wrap around
+        	if ((size_t)dst_p > XCP_IN_ADDR_DATA_LAST) {
+        		dst_p = (volatile uint32_t *)XCP_IN_ADDR_DATA_FIRST;
+        	}
         }
+        volatile uint32_t *rw_p = (volatile uint32_t *)XCP_IN_ADDR_RW;
+        *rw_p = (size_t)dst_p;
     }
 
     xil_printf("%s(): delete\n", __func__);
@@ -164,6 +193,9 @@ void xcp_device(void *p)
 
     extern void xcp_interface_init(void);
     xcp_interface_init();
+
+    volatile uint32_t *rw_p = (volatile uint32_t *)XCP_IN_ADDR_RW;
+    *rw_p = XCP_IN_ADDR_DATA_FIRST;
 
     void dummy_task(void *p);
     sys_thread_new("dummy_task", dummy_task, NULL, STACKSIZE_XCP, PRIO_XCP_RX);
@@ -192,16 +224,16 @@ void xcp_device(void *p)
         int new_sd;
         int size = sizeof(remote);
 
-        xil_printf("%s() waiting for xcp host connection on port %d\n", __func__, XCP_ETH_PORT);
+//        xil_printf("%s() waiting for xcp host connection on port %d\n", __func__, XCP_ETH_PORT);
         if ((new_sd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
 //        	uint32_t before = lwip_fcntl(new_sd, F_GETFL, 0);
 //        	lwip_fcntl(new_sd, F_SETFL, O_NONBLOCK);
 //        	uint32_t after = lwip_fcntl(new_sd, F_GETFL, 0);
 //        	xil_printf("sock opts: before %X, after %X\n", before, after);
 
-            xil_printf("xcp master connected from\n");
-            extern void my_print_ip(ip_addr_t *ip);
-            my_print_ip((ip_addr_t*) &remote.sin_addr);
+//            xil_printf("xcp master connected from\n");
+//            extern void my_print_ip(ip_addr_t *ip);
+//            my_print_ip((ip_addr_t*) &remote.sin_addr);
 
             if (! flag_xcp_eth_tx_created_once) {
                 flag_xcp_eth_tx_created_once = 1;
@@ -259,12 +291,29 @@ void dummy_task(void *p)
 	while (1) {
 		xcp_events_10kHz();
 
-		// This irq can occur before the queue is created (xcp main task)
-		if (queue_xcp_rx != NULL) {
-			static uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
-			if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) == pdPASS) {
-				XcpCommand((uint32_t *) (buf_xcp_rx + XCP_HEADER_LEN));
+		uint32_t buf_xcp_rx[BUF_SIZE_XCP_RX / 4];
+
+        // Read package from exchange memory
+		static volatile uint32_t *src_p = (volatile uint32_t *)XCP_IN_ADDR_DATA_FIRST;
+        volatile uint32_t *rw_p = (volatile uint32_t *)XCP_IN_ADDR_RW;
+        // Is there new data in the buffer?
+		if (*rw_p != (size_t)src_p) {
+			// First 4 bytes hold package length
+			int n = *src_p++;
+			int words_to_copy = n / 4;
+			if (n % 4) {
+				words_to_copy++;
 			}
+			for (int i = 0; i < words_to_copy; i++) {
+				buf_xcp_rx[i] = *src_p;
+				src_p++;
+				// Wrap around
+				if ((size_t)src_p > XCP_IN_ADDR_DATA_LAST) {
+					src_p = (volatile uint32_t *)XCP_IN_ADDR_DATA_FIRST;
+				}
+			}
+
+			XcpCommand((uint32_t *) ((size_t)buf_xcp_rx + XCP_HEADER_LEN));
 		}
 
         vTaskDelay(1);
@@ -282,15 +331,28 @@ void ApplXcpSend( vuint8 len, const BYTEPTR msg )
     msg_with_header_p[3] = (uint8_t) (xcp_package_counter >> 8);
     xcp_package_counter++;
 
-    BaseType_t * const pxHigherPriorityTaskWoken_ = 0;
-    if(xQueueSendFromISR(queue_xcp_tx,
-                         msg_with_header_p,
-                         pxHigherPriorityTaskWoken_) != pdPASS) {
-        xil_printf("%s(): xQueueSend() failed\n", __func__);
-        xil_printf("%s(): critical error!\n", __func__);
-        vTaskDelay(5);
-        return;
+    uint32_t *u32_src_p = (uint32_t *)msg_with_header_p;
+    int n = len + XCP_HEADER_LEN;
+
+    // Write package from XCP stack to exchange memory
+	static volatile uint32_t *dst_p = (volatile uint32_t *)XCP_OUT_ADDR_DATA_FIRST;
+	// Write package length in first 4 bytes
+	*dst_p++ = n;
+	int words_to_copy = n / 4;
+	if (n % 4) {
+		words_to_copy++;
+	}
+    for (int i = 0; i < words_to_copy; i++) {
+    	*dst_p = u32_src_p[i];
+
+    	dst_p++;
+    	// Wrap around
+    	if ((size_t)dst_p > XCP_OUT_ADDR_DATA_LAST) {
+    		dst_p = (volatile uint32_t *)XCP_OUT_ADDR_DATA_FIRST;
+    	}
     }
+    volatile uint32_t *rw_p = (volatile uint32_t *)XCP_OUT_ADDR_RW;
+    *rw_p = (size_t)dst_p;
 
     // TODO necessary?
     XcpSendCallBack();

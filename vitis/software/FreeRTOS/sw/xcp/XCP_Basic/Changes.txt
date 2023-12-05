@@ -1,0 +1,71 @@
+**********************************************
+*                                            * 
+*                                            *
+*        V1.30.05 from 2021-07-28            *
+*        (c) Vector Informatik GmbH          *
+*                                            *
+*                                            *
+**********************************************
+
+V1.30.05 from 2021-07-28
+
++ Updated XCPsim demo project to VS2017
+
+
+V1.30.04 from 2017-09-01
+
++ Updated Xcp Basic Driver to latest version 1.0.19
+   + Various bug fixes
+
+- Removed sample CAN C167
+
+
+
+V1.0.13 from 2011-08-12
+
++  XCP on CAN example for Freescale MPC5xxx
+   - Pointer based calibration concept (AUTOSAR or INCIRCUIT2) 
+   - VX1000 support added
+   - XCP on CAN using same memory resources as VX1000
+
+- XCP on CAN example for Tricore TC17x7 updated
+
+
+
+
+V1.0.11 from 2010-08-11
+
++  Added document How to integrate a automatic detection of map file names v1.0._EN.pdf
+-  delete some older documents from the README.TXT
++  Insert the automatic detection of map file name into the xcpsim project
+-  Delete some useless Tricore files  
+
+
+
+V1.0.10 from 2010-07-19
+
++  Update xcpBasic to version 1.25.01
++  Added example for CAN MPC55XX       Remark: This project uses a Calibration Concept RAM Overlay
++  Added example for CAN Tricore       Remark: This project uses an on demand RAM Overlay concept
+-  
+
+
+
+V1.0.06 from 2005-03-21
+
++  Insert "Generate MAP-File" into XCPSim Project
++  Generated MAP-File copied to CANape example folder 
+
+
+
+
+V1.0.05 from 2005-03-21
+
+New features of XCP BASIC :
+
++  support of Flashkernels
++  Some new Documents
++  Added sample CANape Generic XCP API Transport Layer DLL
+
+
+

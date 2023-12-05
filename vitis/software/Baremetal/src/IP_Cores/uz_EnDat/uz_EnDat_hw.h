@@ -17,6 +17,9 @@ uint32_t uz_EnDat_hw_read_POS2BUS(uint32_t base_address);
 uint32_t uz_EnDat_hw_read_POS3BUS(uint32_t base_address);
 uint32_t uz_EnDat_hw_read_POS4BUS(uint32_t base_address);
 uint8_t uz_EnDat_hw_read_CRCFFSTORED(uint32_t base_address);
-int32_t uz_EnDat_hw_read_MILIREVSPERSECOND(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T1BUS(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T3BUS(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(uint32_t base_address);
 
 #endif // UZ_ENDAT_HW_H

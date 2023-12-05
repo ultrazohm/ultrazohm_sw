@@ -56,7 +56,7 @@ void ISR_Control(void *data)
     //Global_Data.av.theta_mech = uz_EnDat_pos_to_rad_converter(Global_Data.av.EnDat_raw_pos);
     //For Debug Purposes the above
     Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0);
-    Global_Data.av.mechanicalRotorSpeed = uz_EnDat_read_rpm_and_convert_to_float(Global_Data.objects.EnDat_master_pointer);
+    Global_Data.av.mechanicalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0),uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t4),uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer,uz_EnDat_elapsed_t0_t4));
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

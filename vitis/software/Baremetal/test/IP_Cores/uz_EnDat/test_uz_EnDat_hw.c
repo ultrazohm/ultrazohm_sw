@@ -190,15 +190,48 @@ void test_uz_EnDat_hw_read_from_CRCFFSTORED(void) {
 }
 
 
-void test_uz_EnDat_hw_read_from_MILIREVSPERSECOND(void) {
+void test_uz_EnDat_hw_read_from_TIMEELASPEDT0T1BUS(void) {
     uint32_t c = 777;
-    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+MILIREVSPERSECOND_Data_uz_EnDat, c);
-    uint32_t c_readback = (uint32_t) uz_EnDat_hw_read_MILIREVSPERSECOND(TEST_BASE_ADDRESS);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+TIMEELASPEDT0T1BUS_Data_uz_EnDat, c);
+    uint32_t c_readback = (uint32_t) uz_EnDat_hw_read_TIMEELASPEDT0T1BUS(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_INT(c, c_readback);
 
     // Ignores how often the read function is called and returns (c)
     uz_axi_read_uint32_IgnoreAndReturn(c);
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_MILIREVSPERSECOND(0));
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_TIMEELASPEDT0T1BUS(0));
+}
+
+void test_uz_EnDat_hw_read_from_TIMEELASPEDT0T2BUS(void) {
+    uint32_t c = 777;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+TIMEELASPEDT0T2BUS_Data_uz_EnDat, c);
+    uint32_t c_readback = (uint32_t) uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_INT(c, c_readback);
+
+    // Ignores how often the read function is called and returns (c)
+    uz_axi_read_uint32_IgnoreAndReturn(c);
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(0));
+}
+
+void test_uz_EnDat_hw_read_from_TIMEELASPEDT0T3BUS(void) {
+    uint32_t c = 777;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+TIMEELASPEDT0T3BUS_Data_uz_EnDat, c);
+    uint32_t c_readback = (uint32_t) uz_EnDat_hw_read_TIMEELASPEDT0T3BUS(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_INT(c, c_readback);
+
+    // Ignores how often the read function is called and returns (c)
+    uz_axi_read_uint32_IgnoreAndReturn(c);
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_TIMEELASPEDT0T3BUS(0));
+}
+
+void test_uz_EnDat_hw_read_from_TIMEELASPEDT0T4BUS(void) {
+    uint32_t c = 777;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+TIMEELASPEDT0T4BUS_Data_uz_EnDat, c);
+    uint32_t c_readback = (uint32_t) uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_INT(c, c_readback);
+
+    // Ignores how often the read function is called and returns (c)
+    uz_axi_read_uint32_IgnoreAndReturn(c);
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(0));
 }
 
 

@@ -430,24 +430,57 @@ float uz_EnDat_mrps_to_rpm_converter(int32_t mrps) {
     return (ret);
 }
 
-int32_t uz_EnDat_read_mrps(uz_EnDat_t *self) {
-    int32_t ret;
+uint32_t uz_EnDat_read_time_elapsed(uz_EnDat_t *self, uz_EnDat_elapsed tx_ty) {
+    uint32_t ret;
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    ret = uz_EnDat_hw_read_MILIREVSPERSECOND(self->config.base_address);
-       
+
+    switch (tx_ty) {
+    case uz_EnDat_elapsed_t0_t1:
+        ret = uz_EnDat_hw_read_TIMEELASPEDT0T1BUS(self->config.base_address);
+        break;
+
+    case uz_EnDat_elapsed_t0_t2:
+        ret = uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(self->config.base_address);
+        break;
+
+    case uz_EnDat_elapsed_t0_t3:
+        ret = uz_EnDat_hw_read_TIMEELASPEDT0T3BUS(self->config.base_address);
+        break;
+
+    case uz_EnDat_elapsed_t0_t4:
+        ret = uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(self->config.base_address);
+        break;
+
+    default:
+        return(0xFFFFFFFF);
+        break;
+    }
     return(ret);
 }
 
-float uz_EnDat_read_rpm_and_convert_to_float (uz_EnDat_t *self) {
-    int32_t mrps = 0;
-    float retrpm = 0.0f;
-    mrps = uz_EnDat_read_mrps(self);
-    retrpm = uz_EnDat_mrps_to_rpm_converter(mrps);
+float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed) {
+    float ret = 0.0f;
+    const float nstos = 1000000000.0f;
 
-    return (retrpm);
-
+    ret = ((float) elapsed / nstos);
+    return(ret);
 }
 
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed) {
+    float ret = 0.0f;
+    int32_t dif = 0U;
+    uint32_t maxval = ENDAT_23_BIT_MAX_VALUE;
+    float diff = 0.0f;
+    float maxvalf = 0.0f;
+    float tick = 0.0f;
+    dif = (int32_t)(pos2 - pos1);
+    diff = (float) dif;
+    maxvalf = (float) maxval;
+    tick = (diff / maxvalf);
+    ret = (tick / time_elapsed);
+    ret *= 60.0f;
+    return(ret);
+}
 
 #endif  // NOLINT

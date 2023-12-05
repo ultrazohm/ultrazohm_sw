@@ -32,6 +32,12 @@ typedef enum uz_EnDat_position_values {
     uz_EnDat_pos_t3,
     uz_EnDat_pos_t4
 }uz_EnDat_position;
+typedef enum uz_EnDat_time_elapsed_values {
+    uz_EnDat_elapsed_t0_t1,
+    uz_EnDat_elapsed_t0_t2,
+    uz_EnDat_elapsed_t0_t3,
+    uz_EnDat_elapsed_t0_t4,
+    }uz_EnDat_elapsed;
 typedef enum uz_EnDat_frequency_selector {
     uz_EnDat_operatingfrequency_12500000Hz,
     uz_EnDat_operatingfrequency_6250000Hz,
@@ -254,15 +260,26 @@ int8_t uz_EnDat_reset_output_enable_in_controlword(controlword_expanded* inp);
 float uz_EnDat_mrps_to_rpm_converter(int32_t mrps);
 
 /**
- * @brief This function fetches the revolution value from the EnDat IP Core.
- * @return Returns the actual rpm value from the EnDat IP Core in mili revs per second.
+ * @param tx_ty  means which value you would like to fetch. Time elapsed from t0_t1 to t0_t4
+ * @brief This function fetches the time elapsed fetching for positional values from the EnDat IP-Core.
+ * @return Returns the actual time value from the EnDat IP Core in ns.
  */
-int32_t uz_EnDat_read_mrps(uz_EnDat_t *self);
+uint32_t uz_EnDat_read_time_elapsed(uz_EnDat_t *self, uz_EnDat_elapsed tx_ty);
 
 /**
- * @brief This function fetches the revolution value from the EnDat IP Core.
- * @return Returns the actual rpm value from the EnDat IP Core in RPM float.
+ * @param elapsed is the Value in ns from the EnDat IP-Core
+ * @brief This function converts the ns value to floating point seconds.
+ * @return Returns the actual time value elapsed in floating point seconds.
  */
-float uz_EnDat_read_rpm_and_convert_to_float (uz_EnDat_t *self);
+float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed);
+
+/**
+ * @param pos1 First positional value - can be directly pasted from read pos value.
+ * @param pos2 Second positional value - can be directly pasted from read pos value.
+ * @param time_elapsed Time between both positions.
+ * @brief This function calculate a rotation from two positional values for EnDat.
+ * @return Returns the RPM value.
+ */
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed);
 
 #endif  // UZ_ENDAT_H  // NOLINT

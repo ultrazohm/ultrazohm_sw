@@ -12,10 +12,6 @@ Count - 2
 UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL
 UZ_EnDat/UZ_ENDAT/ManualDeserializere/WORDTOBOOL
 
-Count - 2
-UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher
-UZ_EnDat/UZ_ENDAT/Subsystem/ManualDeserializere/ramwatcher
-
 Count - 5
 UZ_EnDat/UZ_ENDAT/responseslicer
 UZ_EnDat/UZ_ENDAT/responseslicer1
@@ -33,20 +29,23 @@ UZ_EnDat/UZ_ENDAT/CLKDIV7
 UZ_EnDat/UZ_ENDAT/CLKDIV8
 UZ_EnDat/UZ_ENDAT/CLKDIV9
 
-Count - 5
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT
-UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP
+Count - 3
 UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP
-UZ_EnDat/UZ_ENDAT/poormansrevcalc/CLKCNTER_ACT
-UZ_EnDat/UZ_ENDAT/poormansrevcalc/CLKCNTER_RAMPUP
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/CLKCNTER_POSCNTR
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/CLKCNTER_POSRDY
 
-Count - 2
+Count - 3
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter
+UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/Positional_Counter
 UZ_EnDat/UZ_ENDAT/ManualSerialize/CLKCNTER_RECIEVE/Positional_Counter
 
 Count - 2
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem3
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem4
+
+Count - 2
+UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT
+UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP
 
 Count - 6
 UZ_EnDat/UZ_ENDAT/5timestorage/Storage20/Compare
@@ -61,6 +60,10 @@ UZ_EnDat/UZ_ENDAT/5timestorage/Storage24/Compare
 To Zero
 UZ_EnDat/UZ_ENDAT/ManualSerialize/Storage16/Compare
 To Zero
+
+Count - 2
+UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher
+UZ_EnDat/UZ_ENDAT/Subsystem/ManualDeserializere/ramwatcher
 
 Count - 22
 UZ_EnDat/UZ_ENDAT/DATA2CLOCKSYNCER/Subsystem1

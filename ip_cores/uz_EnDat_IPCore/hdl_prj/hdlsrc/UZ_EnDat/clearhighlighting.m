@@ -65,10 +65,6 @@ annotate_port('gm_UZ_EnDat/UZ_ENDAT/Subsystem/ManualDeserializere/Data Type Conv
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/Subsystem/ManualDeserializere/Logical Operator', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/Subsystem/ManualDeserializere/Multiport Switch', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/Subsystem/ManualDeserializere/ramwatcher', 0, 1, '');
-annotate_port('gm_UZ_EnDat/UZ_ENDAT/poormansrevcalc/Divide', 1, 1, '');
-annotate_port('UZ_EnDat/UZ_ENDAT/poormansrevcalc/Divide', 1, 1, '');
-annotate_port('gm_UZ_EnDat/UZ_ENDAT/poormansrevcalc/Divide1', 1, 1, '');
-annotate_port('UZ_EnDat/UZ_ENDAT/poormansrevcalc/Divide1', 1, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/ramselektor/Increment Stored Integer', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/ramselektor/Delay', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/ramselektor/Increment Stored Integer/FixPt Sum1', 0, 1, '');

@@ -58,19 +58,19 @@ thead.reportTableHeader {
 <tr>
 <td>IP core version
 </td>
-<td class="summaryTableSndColEvenRow">1.9
+<td class="summaryTableSndColEvenRow">2.4
 </td>
 </tr>
 <tr>
 <td class="distinctCellColor">IP core folder
 </td>
-<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\*.*')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9</a>
+<td class="summaryTableSndColOddRow"><a href="matlab:uiopen('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\*.*')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4</a>
 </td>
 </tr>
 <tr>
 <td>IP core zip file name
 </td>
-<td class="summaryTableSndColEvenRow">uz_EnDat_v1_9.zip
+<td class="summaryTableSndColEvenRow">uz_EnDat_v2_4.zip
 </td>
 </tr>
 <tr>
@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">2.208
+<td class="summaryTableSndColOddRow">2.234
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">01-Dec-2023 19:50:08
+<td class="summaryTableSndColOddRow">05-Dec-2023 15:43:38
 </td>
 </tr>
 <tr>
@@ -616,11 +616,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4220')">MILIREVSPERMINUTE</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4223')">TIMEELAPSEDDEBUG</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">int32
+<td class="distinctCellColor">uint32
 </td>
 <td class="distinctCellColor">External Port
 </td>
@@ -630,11 +630,67 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4221')">MILIREVSPERSECOND</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4229')">TIMEELASPEDT0T1</a>
 </td>
 <td>Outport
 </td>
-<td>int32
+<td>uint32
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4230')">TIMEELASPEDT0T2</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">uint32
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4231')">TIMEELASPEDT0T3</a>
+</td>
+<td>Outport
+</td>
+<td>uint32
+</td>
+<td>External Port
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4232')">TIMEELASPEDT0T4</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">uint32
+</td>
+<td class="distinctCellColor">External Port
+</td>
+<td class="distinctCellColor">
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4234')">TIMEELASPEDT0T1BUS</a>
+</td>
+<td>Outport
+</td>
+<td>uint32
 </td>
 <td>AXI4-Lite
 </td>
@@ -644,15 +700,43 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4223')">TIMEELAPSEDDEBUG</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4235')">TIMEELASPEDT0T2BUS</a>
 </td>
 <td class="distinctCellColor">Outport
 </td>
-<td class="distinctCellColor">uint64
+<td class="distinctCellColor">uint32
 </td>
-<td class="distinctCellColor">External Port
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"860"
 </td>
 <td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4236')">TIMEELASPEDT0T3BUS</a>
+</td>
+<td>Outport
+</td>
+<td>uint32
+</td>
+<td>AXI4-Lite
+</td>
+<td>x"870"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('UZ_EnDat:4237')">TIMEELASPEDT0T4BUS</a>
+</td>
+<td class="distinctCellColor">Outport
+</td>
+<td class="distinctCellColor">uint32
+</td>
+<td class="distinctCellColor">AXI4-Lite
+</td>
+<td class="distinctCellColor">x"880"
 </td>
 <td class="distinctCellColor">
 </td>
@@ -697,7 +781,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2312011950
+<td>contains unique IP timestamp (yymmddHHMM): 2312051543
 </td>
 </tr>
 <tr>
@@ -813,11 +897,35 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">MILIREVSPERSECOND_Data
+<td class="distinctCellColor">TIMEELASPEDT0T1BUS_Data
 </td>
 <td class="distinctCellColor">0x850
 </td>
-<td class="distinctCellColor">data register for Outport MILIREVSPERSECOND
+<td class="distinctCellColor">data register for Outport TIMEELASPEDT0T1BUS
+</td>
+</tr>
+<tr>
+<td>TIMEELASPEDT0T2BUS_Data
+</td>
+<td>0x860
+</td>
+<td>data register for Outport TIMEELASPEDT0T2BUS
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">TIMEELASPEDT0T3BUS_Data
+</td>
+<td class="distinctCellColor">0x870
+</td>
+<td class="distinctCellColor">data register for Outport TIMEELASPEDT0T3BUS
+</td>
+</tr>
+<tr>
+<td>TIMEELASPEDT0T4BUS_Data
+</td>
+<td>0x880
+</td>
+<td>data register for Outport TIMEELASPEDT0T4BUS
 </td>
 </tr>
 </tbody>
@@ -827,7 +935,7 @@ The AXI4 slave write register readback is OFF for the IP core.
 <br/>
 The register address mapping is also in the following C header file for you to use when programming the processor:
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\include\uz_EnDat_addr.h')">include\uz_EnDat_addr.h</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\include\uz_EnDat_addr.h')">include\uz_EnDat_addr.h</a>
 <br/>
 The IP core name is appended to the register names to avoid name conflicts.
 </div>
@@ -849,7 +957,7 @@ interface. To connect the external ports to the FPGA external IO pins, add FPGA 
 <br/><br/>
 The AXI4 Slave port to pipeline register ratio selected as 35 in task 3.2 for this model. The default delay to read AXI4 register is one clock cycle.
 Depending on the selected ratio and IO connected to AXI4 interface, register pipelining is introduced in the read logic of AXI4 registers.
-For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 9, so no pipelining is added to the AXI4 register read back logic.
+For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 12, so no pipelining is added to the AXI4 register read back logic.
 <br/><br/>
 <b>Processor/FPGA Synchronization</b>
 <br/><br/>
@@ -887,266 +995,272 @@ If you are targeting Xilinx Zynq hardwares supported by HDL Coder Support Packag
 <h3 class="sectionHeading">IP Core File List</h3>
 The IP core folder is located at:
 <br/>
-<a href="matlab:uiopen('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\*.*')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9</a>
+<a href="matlab:uiopen('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\*.*')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4</a>
 <br/>
 Following files are generated under this folder:
 <br/><br/>
 <b>IP core zip file</b>
 <br/>
-<a href="matlab:uiopen('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\*.*')">uz_EnDat_v1_9.zip</a>
+<a href="matlab:uiopen('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\*.*')">uz_EnDat_v2_4.zip</a>
 <br/><br/>
 <b>IP core report</b>
 <br/>
-<a href="matlab:web('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\doc\UZ_EnDat_ip_core_report.html')">doc\UZ_EnDat_ip_core_report.html</a>
+<a href="matlab:web('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\doc\UZ_EnDat_ip_core_report.html')">doc\UZ_EnDat_ip_core_report.html</a>
 <br/><br/>
 <b>IP core HDL source files</b>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_UZ_ENDAT_pac.vhd')">hdl\uz_EnDat_src_UZ_ENDAT_pac.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_UZ_ENDAT_pac.vhd')">hdl\uz_EnDat_src_UZ_ENDAT_pac.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant.vhd')">hdl\uz_EnDat_src_Compare_To_Constant.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant.vhd')">hdl\uz_EnDat_src_Compare_To_Constant.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant2.vhd')">hdl\uz_EnDat_src_Compare_To_Constant2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant2.vhd')">hdl\uz_EnDat_src_Compare_To_Constant2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant3.vhd')">hdl\uz_EnDat_src_Compare_To_Constant3.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant3.vhd')">hdl\uz_EnDat_src_Compare_To_Constant3.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant4.vhd')">hdl\uz_EnDat_src_Compare_To_Constant4.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant4.vhd')">hdl\uz_EnDat_src_Compare_To_Constant4.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Zero.vhd')">hdl\uz_EnDat_src_Compare_To_Zero.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Zero.vhd')">hdl\uz_EnDat_src_Compare_To_Zero.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SinglePortRAM_generic.vhd')">hdl\uz_EnDat_src_SinglePortRAM_generic.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SinglePortRAM_generic.vhd')">hdl\uz_EnDat_src_SinglePortRAM_generic.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Storage20.vhd')">hdl\uz_EnDat_src_Storage20.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Storage20.vhd')">hdl\uz_EnDat_src_Storage20.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Storage21.vhd')">hdl\uz_EnDat_src_Storage21.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Storage21.vhd')">hdl\uz_EnDat_src_Storage21.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Storage22.vhd')">hdl\uz_EnDat_src_Storage22.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Storage22.vhd')">hdl\uz_EnDat_src_Storage22.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Storage23.vhd')">hdl\uz_EnDat_src_Storage23.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Storage23.vhd')">hdl\uz_EnDat_src_Storage23.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Storage24.vhd')">hdl\uz_EnDat_src_Storage24.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Storage24.vhd')">hdl\uz_EnDat_src_Storage24.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Real_World.vhd')">hdl\uz_EnDat_src_Increment_Real_World.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Increment_Real_World.vhd')">hdl\uz_EnDat_src_Increment_Real_World.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Wrap_To_Zero.vhd')">hdl\uz_EnDat_src_Wrap_To_Zero.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Wrap_To_Zero.vhd')">hdl\uz_EnDat_src_Wrap_To_Zero.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Counter_Limited.vhd')">hdl\uz_EnDat_src_Counter_Limited.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Counter_Limited.vhd')">hdl\uz_EnDat_src_Counter_Limited.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Triggered_Subsystem.vhd')">hdl\uz_EnDat_src_Triggered_Subsystem.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Triggered_Subsystem.vhd')">hdl\uz_EnDat_src_Triggered_Subsystem.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_5timestorage.vhd')">hdl\uz_EnDat_src_5timestorage.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_5timestorage.vhd')">hdl\uz_EnDat_src_5timestorage.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Triggered_Subsystem_block.vhd')">hdl\uz_EnDat_src_Triggered_Subsystem_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Triggered_Subsystem_block.vhd')">hdl\uz_EnDat_src_Triggered_Subsystem_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKDIV1.vhd')">hdl\uz_EnDat_src_CLKDIV1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CLKDIV1.vhd')">hdl\uz_EnDat_src_CLKDIV1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_WORDTOBOOL.vhd')">hdl\uz_EnDat_src_WORDTOBOOL.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_WORDTOBOOL.vhd')">hdl\uz_EnDat_src_WORDTOBOOL.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CONTROLWORDRAW.vhd')">hdl\uz_EnDat_src_CONTROLWORDRAW.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CONTROLWORDRAW.vhd')">hdl\uz_EnDat_src_CONTROLWORDRAW.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_FF0.vhd')">hdl\uz_EnDat_src_FF0.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_FF0.vhd')">hdl\uz_EnDat_src_FF0.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_FF0_block.vhd')">hdl\uz_EnDat_src_FF0_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_FF0_block.vhd')">hdl\uz_EnDat_src_FF0_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_FF2.vhd')">hdl\uz_EnDat_src_FF2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_FF2.vhd')">hdl\uz_EnDat_src_FF2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_FF0_block1.vhd')">hdl\uz_EnDat_src_FF0_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_FF0_block1.vhd')">hdl\uz_EnDat_src_FF0_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CRC_Check.vhd')">hdl\uz_EnDat_src_CRC_Check.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CRC_Check.vhd')">hdl\uz_EnDat_src_CRC_Check.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant_block.vhd')">hdl\uz_EnDat_src_Compare_To_Constant_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant_block.vhd')">hdl\uz_EnDat_src_Compare_To_Constant_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant1_block.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant1_block.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant2_block.vhd')">hdl\uz_EnDat_src_Compare_To_Constant2_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant2_block.vhd')">hdl\uz_EnDat_src_Compare_To_Constant2_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem1.vhd')">hdl\uz_EnDat_src_Subsystem1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem1.vhd')">hdl\uz_EnDat_src_Subsystem1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_DATA2CLOCKSYNCER.vhd')">hdl\uz_EnDat_src_DATA2CLOCKSYNCER.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_DATA2CLOCKSYNCER.vhd')">hdl\uz_EnDat_src_DATA2CLOCKSYNCER.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_DATAFLOWCHGER.vhd')">hdl\uz_EnDat_src_DATAFLOWCHGER.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_DATAFLOWCHGER.vhd')">hdl\uz_EnDat_src_DATAFLOWCHGER.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Detect_Change.vhd')">hdl\uz_EnDat_src_Detect_Change.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Detect_Change.vhd')">hdl\uz_EnDat_src_Detect_Change.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Positional_Counter.vhd')">hdl\uz_EnDat_src_Positional_Counter.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Positional_Counter.vhd')">hdl\uz_EnDat_src_Positional_Counter.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKCNTER_FAST.vhd')">hdl\uz_EnDat_src_CLKCNTER_FAST.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CLKCNTER_FAST.vhd')">hdl\uz_EnDat_src_CLKCNTER_FAST.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem6.vhd')">hdl\uz_EnDat_src_Subsystem6.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem6.vhd')">hdl\uz_EnDat_src_Subsystem6.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_INITIALOFF.vhd')">hdl\uz_EnDat_src_INITIALOFF.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_INITIALOFF.vhd')">hdl\uz_EnDat_src_INITIALOFF.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_WORDTOBOOL_block.vhd')">hdl\uz_EnDat_src_WORDTOBOOL_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_WORDTOBOOL_block.vhd')">hdl\uz_EnDat_src_WORDTOBOOL_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Increment_Stored_Integer.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_ramwatcher.vhd')">hdl\uz_EnDat_src_ramwatcher.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_ramwatcher.vhd')">hdl\uz_EnDat_src_ramwatcher.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_ManualDeserializere.vhd')">hdl\uz_EnDat_src_ManualDeserializere.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_ManualDeserializere.vhd')">hdl\uz_EnDat_src_ManualDeserializere.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer_block.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Increment_Stored_Integer_block.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Positional_Counter_block.vhd')">hdl\uz_EnDat_src_Positional_Counter_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Positional_Counter_block.vhd')">hdl\uz_EnDat_src_Positional_Counter_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero32.vhd')">hdl\uz_EnDat_src_SetZero32.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZero32.vhd')">hdl\uz_EnDat_src_SetZero32.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKCNTER_RECIEVE.vhd')">hdl\uz_EnDat_src_CLKCNTER_RECIEVE.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CLKCNTER_RECIEVE.vhd')">hdl\uz_EnDat_src_CLKCNTER_RECIEVE.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Storage16.vhd')">hdl\uz_EnDat_src_Storage16.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Storage16.vhd')">hdl\uz_EnDat_src_Storage16.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Triggered_Subsystem_block1.vhd')">hdl\uz_EnDat_src_Triggered_Subsystem_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Triggered_Subsystem_block1.vhd')">hdl\uz_EnDat_src_Triggered_Subsystem_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero64.vhd')">hdl\uz_EnDat_src_SetZero64.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZero64.vhd')">hdl\uz_EnDat_src_SetZero64.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_ManualSerialize.vhd')">hdl\uz_EnDat_src_ManualSerialize.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_ManualSerialize.vhd')">hdl\uz_EnDat_src_ManualSerialize.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_RECOVERYTIMESELECTOR.vhd')">hdl\uz_EnDat_src_RECOVERYTIMESELECTOR.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_RECOVERYTIMESELECTOR.vhd')">hdl\uz_EnDat_src_RECOVERYTIMESELECTOR.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero.vhd')">hdl\uz_EnDat_src_SetZero.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZero.vhd')">hdl\uz_EnDat_src_SetZero.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZeroBool1.vhd')">hdl\uz_EnDat_src_SetZeroBool1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZeroBool1.vhd')">hdl\uz_EnDat_src_SetZeroBool1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer_block1.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Increment_Stored_Integer_block1.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Positional_Counter_block1.vhd')">hdl\uz_EnDat_src_Positional_Counter_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Positional_Counter_block1.vhd')">hdl\uz_EnDat_src_Positional_Counter_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero64_block.vhd')">hdl\uz_EnDat_src_SetZero64_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZero64_block.vhd')">hdl\uz_EnDat_src_SetZero64_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKCNTERBOOTUP.vhd')">hdl\uz_EnDat_src_CLKCNTERBOOTUP.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CLKCNTERBOOTUP.vhd')">hdl\uz_EnDat_src_CLKCNTERBOOTUP.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_WORDTOBOOL_block1.vhd')">hdl\uz_EnDat_src_WORDTOBOOL_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_WORDTOBOOL_block1.vhd')">hdl\uz_EnDat_src_WORDTOBOOL_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_ManualDeserializere_block.vhd')">hdl\uz_EnDat_src_ManualDeserializere_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_ManualDeserializere_block.vhd')">hdl\uz_EnDat_src_ManualDeserializere_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd')">hdl\uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd')">hdl\uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem.vhd')">hdl\uz_EnDat_src_Subsystem.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem.vhd')">hdl\uz_EnDat_src_Subsystem.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem1_block.vhd')">hdl\uz_EnDat_src_Subsystem1_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem1_block.vhd')">hdl\uz_EnDat_src_Subsystem1_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer_block2.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Increment_Stored_Integer_block2.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Positional_Counter_block2.vhd')">hdl\uz_EnDat_src_Positional_Counter_block2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Positional_Counter_block2.vhd')">hdl\uz_EnDat_src_Positional_Counter_block2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero32_block.vhd')">hdl\uz_EnDat_src_SetZero32_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZero32_block.vhd')">hdl\uz_EnDat_src_SetZero32_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKCNTER_ACT.vhd')">hdl\uz_EnDat_src_CLKCNTER_ACT.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CLKCNTER_RAMPUP.vhd')">hdl\uz_EnDat_src_CLKCNTER_RAMPUP.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant1_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Increment_Stored_Integer_block3.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block3.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Detect_Increase.vhd')">hdl\uz_EnDat_src_Detect_Increase.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Positional_Counter_block3.vhd')">hdl\uz_EnDat_src_Positional_Counter_block3.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Constant_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZero32_block1.vhd')">hdl\uz_EnDat_src_SetZero32_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer_block3.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block3.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CLKCNTER_RAMPUP_block.vhd')">hdl\uz_EnDat_src_CLKCNTER_RAMPUP_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Positional_Counter_block3.vhd')">hdl\uz_EnDat_src_Positional_Counter_block3.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero32_block1.vhd')">hdl\uz_EnDat_src_SetZero32_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Detect_Increase1.vhd')">hdl\uz_EnDat_src_Detect_Increase1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKCNTER_ACT_block.vhd')">hdl\uz_EnDat_src_CLKCNTER_ACT_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant1_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_poormansrevcalc.vhd')">hdl\uz_EnDat_src_poormansrevcalc.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Detect_Increase.vhd')">hdl\uz_EnDat_src_Detect_Increase.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_responseslicer.vhd')">hdl\uz_EnDat_src_responseslicer.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem_block.vhd')">hdl\uz_EnDat_src_Subsystem_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer_block4.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block4.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant1_block2.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_ramselektor.vhd')">hdl\uz_EnDat_src_ramselektor.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Detect_Increase_block.vhd')">hdl\uz_EnDat_src_Detect_Increase_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem_block.vhd')">hdl\uz_EnDat_src_Subsystem_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem1_block1.vhd')">hdl\uz_EnDat_src_Subsystem1_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem1_block1.vhd')">hdl\uz_EnDat_src_Subsystem1_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant1_block3.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block3.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem10.vhd')">hdl\uz_EnDat_src_Subsystem10.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Detect_Increase_block1.vhd')">hdl\uz_EnDat_src_Detect_Increase_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem11.vhd')">hdl\uz_EnDat_src_Subsystem11.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem2.vhd')">hdl\uz_EnDat_src_Subsystem2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem12.vhd')">hdl\uz_EnDat_src_Subsystem12.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Constant1_block4.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block4.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem13.vhd')">hdl\uz_EnDat_src_Subsystem13.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Detect_Increase_block2.vhd')">hdl\uz_EnDat_src_Detect_Increase_block2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem14.vhd')">hdl\uz_EnDat_src_Subsystem14.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem3.vhd')">hdl\uz_EnDat_src_Subsystem3.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem15.vhd')">hdl\uz_EnDat_src_Subsystem15.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_poormansrevcalc.vhd')">hdl\uz_EnDat_src_poormansrevcalc.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem2.vhd')">hdl\uz_EnDat_src_Subsystem2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_responseslicer.vhd')">hdl\uz_EnDat_src_responseslicer.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem3.vhd')">hdl\uz_EnDat_src_Subsystem3.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Increment_Stored_Integer_block4.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block4.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem5.vhd')">hdl\uz_EnDat_src_Subsystem5.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_ramselektor.vhd')">hdl\uz_EnDat_src_ramselektor.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem6_block.vhd')">hdl\uz_EnDat_src_Subsystem6_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem_block1.vhd')">hdl\uz_EnDat_src_Subsystem_block1.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem7.vhd')">hdl\uz_EnDat_src_Subsystem7.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem1_block2.vhd')">hdl\uz_EnDat_src_Subsystem1_block2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem8.vhd')">hdl\uz_EnDat_src_Subsystem8.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem10.vhd')">hdl\uz_EnDat_src_Subsystem10.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Subsystem9.vhd')">hdl\uz_EnDat_src_Subsystem9.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem11.vhd')">hdl\uz_EnDat_src_Subsystem11.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_16bitgather.vhd')">hdl\uz_EnDat_src_16bitgather.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem12.vhd')">hdl\uz_EnDat_src_Subsystem12.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_DualPortRAM_generic.vhd')">hdl\uz_EnDat_src_DualPortRAM_generic.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem13.vhd')">hdl\uz_EnDat_src_Subsystem13.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_16BIT_SPLITTER.vhd')">hdl\uz_EnDat_src_16BIT_SPLITTER.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem14.vhd')">hdl\uz_EnDat_src_Subsystem14.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Compare_To_Zero_block.vhd')">hdl\uz_EnDat_src_Compare_To_Zero_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem15.vhd')">hdl\uz_EnDat_src_Subsystem15.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Storage16_block.vhd')">hdl\uz_EnDat_src_Storage16_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem2_block.vhd')">hdl\uz_EnDat_src_Subsystem2_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_WORDTOBOOL_block2.vhd')">hdl\uz_EnDat_src_WORDTOBOOL_block2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem3_block.vhd')">hdl\uz_EnDat_src_Subsystem3_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CONTROLWORDSTORED.vhd')">hdl\uz_EnDat_src_CONTROLWORDSTORED.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem5.vhd')">hdl\uz_EnDat_src_Subsystem5.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer_block5.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block5.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem6_block.vhd')">hdl\uz_EnDat_src_Subsystem6_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Positional_Counter_block4.vhd')">hdl\uz_EnDat_src_Positional_Counter_block4.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem7.vhd')">hdl\uz_EnDat_src_Subsystem7.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero32_block2.vhd')">hdl\uz_EnDat_src_SetZero32_block2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem8.vhd')">hdl\uz_EnDat_src_Subsystem8.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKCNTER_ACT_block1.vhd')">hdl\uz_EnDat_src_CLKCNTER_ACT_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Subsystem9.vhd')">hdl\uz_EnDat_src_Subsystem9.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZeroBool.vhd')">hdl\uz_EnDat_src_SetZeroBool.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_16bitgather.vhd')">hdl\uz_EnDat_src_16bitgather.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_OUTPUTCONTROLCONTINIOUS_block.vhd')">hdl\uz_EnDat_src_OUTPUTCONTROLCONTINIOUS_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_DualPortRAM_generic.vhd')">hdl\uz_EnDat_src_DualPortRAM_generic.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer_block6.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block6.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_16BIT_SPLITTER.vhd')">hdl\uz_EnDat_src_16BIT_SPLITTER.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Positional_Counter_block5.vhd')">hdl\uz_EnDat_src_Positional_Counter_block5.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Compare_To_Zero_block.vhd')">hdl\uz_EnDat_src_Compare_To_Zero_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero32_block3.vhd')">hdl\uz_EnDat_src_SetZero32_block3.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Storage16_block.vhd')">hdl\uz_EnDat_src_Storage16_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKCNTER_ACT_block2.vhd')">hdl\uz_EnDat_src_CLKCNTER_ACT_block2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_WORDTOBOOL_block2.vhd')">hdl\uz_EnDat_src_WORDTOBOOL_block2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Increment_Stored_Integer_block7.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block7.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CONTROLWORDSTORED.vhd')">hdl\uz_EnDat_src_CONTROLWORDSTORED.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_Positional_Counter_block6.vhd')">hdl\uz_EnDat_src_Positional_Counter_block6.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZeroBool.vhd')">hdl\uz_EnDat_src_SetZeroBool.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SetZero32_block4.vhd')">hdl\uz_EnDat_src_SetZero32_block4.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_OUTPUTCONTROLCONTINIOUS_block.vhd')">hdl\uz_EnDat_src_OUTPUTCONTROLCONTINIOUS_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_CLKCNTER_ACT_block3.vhd')">hdl\uz_EnDat_src_CLKCNTER_ACT_block3.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Increment_Stored_Integer_block5.vhd')">hdl\uz_EnDat_src_Increment_Stored_Integer_block5.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_SimpleDualPortRAM_generic.vhd')">hdl\uz_EnDat_src_SimpleDualPortRAM_generic.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_Positional_Counter_block4.vhd')">hdl\uz_EnDat_src_Positional_Counter_block4.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_src_UZ_ENDAT.vhd')">hdl\uz_EnDat_src_UZ_ENDAT.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SetZero32_block2.vhd')">hdl\uz_EnDat_src_SetZero32_block2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_reset_sync.vhd')">hdl\uz_EnDat_reset_sync.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_CLKCNTER_ACT.vhd')">hdl\uz_EnDat_src_CLKCNTER_ACT.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_dut.vhd')">hdl\uz_EnDat_dut.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_SimpleDualPortRAM_generic.vhd')">hdl\uz_EnDat_src_SimpleDualPortRAM_generic.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_addr_decoder.vhd')">hdl\uz_EnDat_addr_decoder.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_src_UZ_ENDAT.vhd')">hdl\uz_EnDat_src_UZ_ENDAT.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_axi_lite_module.vhd')">hdl\uz_EnDat_axi_lite_module.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_reset_sync.vhd')">hdl\uz_EnDat_reset_sync.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat_axi_lite.vhd')">hdl\uz_EnDat_axi_lite.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_dut.vhd')">hdl\uz_EnDat_dut.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\hdl\uz_EnDat.vhd')">hdl\uz_EnDat.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_addr_decoder.vhd')">hdl\uz_EnDat_addr_decoder.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_axi_lite_module.vhd')">hdl\uz_EnDat_axi_lite_module.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat_axi_lite.vhd')">hdl\uz_EnDat_axi_lite.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\hdl\uz_EnDat.vhd')">hdl\uz_EnDat.vhd</a>
 <br/>
 <br/>
 <b>IP core C header file</b>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v1_9\include\uz_EnDat_addr.h')">include\uz_EnDat_addr.h</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v2_4\include\uz_EnDat_addr.h')">include\uz_EnDat_addr.h</a>
 </div>
 </body>
 </html>

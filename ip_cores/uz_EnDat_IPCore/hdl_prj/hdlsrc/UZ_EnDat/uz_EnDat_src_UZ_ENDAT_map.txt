@@ -61,30 +61,41 @@ UZ_EnDat/UZ_ENDAT/Subsystem/OUTPUTCONTROLCONTINIOUS --> uz_EnDat_src_OUTPUTCONTR
 UZ_EnDat/UZ_ENDAT/Subsystem --> uz_EnDat_src_Subsystem
 UZ_EnDat/UZ_ENDAT/Subsystem1 --> uz_EnDat_src_Subsystem1_block
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block2
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block2
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32 --> uz_EnDat_src_SetZero32_block
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT
-UZ_EnDat/UZ_ENDAT/poormansrevcalc/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block1
-UZ_EnDat/UZ_ENDAT/poormansrevcalc/Detect Increase --> uz_EnDat_src_Detect_Increase
-UZ_EnDat/UZ_ENDAT/poormansrevcalc/Compare To Constant --> uz_EnDat_src_Compare_To_Constant_block1
+UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/Positional_Counter --> uz_EnDat_src_Positional_Counter_block2
+UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero32 --> uz_EnDat_src_SetZero32_block
+UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP --> uz_EnDat_src_CLKCNTER_RAMPUP
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block3
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block3
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32 --> uz_EnDat_src_SetZero32_block1
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT_block
+UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/Positional_Counter --> uz_EnDat_src_Positional_Counter_block3
+UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero32 --> uz_EnDat_src_SetZero32_block1
+UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP --> uz_EnDat_src_CLKCNTER_RAMPUP_block
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Compare To Constant --> uz_EnDat_src_Compare_To_Constant_block1
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Detect Increase1 --> uz_EnDat_src_Detect_Increase1
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block1
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem/Detect Increase --> uz_EnDat_src_Detect_Increase
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem --> uz_EnDat_src_Subsystem_block
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem1/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block2
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem1/Detect Increase --> uz_EnDat_src_Detect_Increase_block
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem1 --> uz_EnDat_src_Subsystem1_block1
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem2/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block3
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem2/Detect Increase --> uz_EnDat_src_Detect_Increase_block1
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem2 --> uz_EnDat_src_Subsystem2
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem3/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block4
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem3/Detect Increase --> uz_EnDat_src_Detect_Increase_block2
+UZ_EnDat/UZ_ENDAT/poormansrevcalc/Subsystem3 --> uz_EnDat_src_Subsystem3
 UZ_EnDat/UZ_ENDAT/poormansrevcalc --> uz_EnDat_src_poormansrevcalc
 UZ_EnDat/UZ_ENDAT/responseslicer --> uz_EnDat_src_responseslicer
 UZ_EnDat/UZ_ENDAT/ramselektor/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block4
 UZ_EnDat/UZ_ENDAT/ramselektor --> uz_EnDat_src_ramselektor
-UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem --> uz_EnDat_src_Subsystem_block
-UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem1 --> uz_EnDat_src_Subsystem1_block1
+UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem --> uz_EnDat_src_Subsystem_block1
+UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem1 --> uz_EnDat_src_Subsystem1_block2
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem10 --> uz_EnDat_src_Subsystem10
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem11 --> uz_EnDat_src_Subsystem11
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem12 --> uz_EnDat_src_Subsystem12
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem13 --> uz_EnDat_src_Subsystem13
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem14 --> uz_EnDat_src_Subsystem14
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem15 --> uz_EnDat_src_Subsystem15
-UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem2 --> uz_EnDat_src_Subsystem2
-UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem3 --> uz_EnDat_src_Subsystem3
+UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem2 --> uz_EnDat_src_Subsystem2_block
+UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem3 --> uz_EnDat_src_Subsystem3_block
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem5 --> uz_EnDat_src_Subsystem5
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem6 --> uz_EnDat_src_Subsystem6_block
 UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem7 --> uz_EnDat_src_Subsystem7
@@ -97,19 +108,11 @@ UZ_EnDat/UZ_ENDAT/Storage16/Compare To Zero --> uz_EnDat_src_Compare_To_Zero_blo
 UZ_EnDat/UZ_ENDAT/Storage16 --> uz_EnDat_src_Storage16_block
 UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL --> uz_EnDat_src_WORDTOBOOL_block2
 UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED --> uz_EnDat_src_CONTROLWORDSTORED
+UZ_EnDat/UZ_ENDAT/SetZeroBool --> uz_EnDat_src_SetZeroBool
+UZ_EnDat/UZ_ENDAT/OUTPUTCONTROLCONTINIOUS --> uz_EnDat_src_OUTPUTCONTROLCONTINIOUS_block
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block5
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block4
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32 --> uz_EnDat_src_SetZero32_block2
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT_block1
-UZ_EnDat/UZ_ENDAT/SetZeroBool --> uz_EnDat_src_SetZeroBool
-UZ_EnDat/UZ_ENDAT/OUTPUTCONTROLCONTINIOUS --> uz_EnDat_src_OUTPUTCONTROLCONTINIOUS_block
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block6
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block5
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32 --> uz_EnDat_src_SetZero32_block3
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT_block2
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block7
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block6
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32 --> uz_EnDat_src_SetZero32_block4
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT_block3
+UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT
 UZ_EnDat/UZ_ENDAT/SimpleDualPortRAM_generic --> uz_EnDat_src_SimpleDualPortRAM_generic
 UZ_EnDat/UZ_ENDAT --> uz_EnDat_src_UZ_ENDAT

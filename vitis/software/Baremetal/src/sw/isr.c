@@ -167,9 +167,9 @@ void ISR_Control(void *data)
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
 
     // Read Measurement Data of second Inverter Card
-    v_abc_Volts_2.a = Global_Data.aa.A2.me.ADC_B8 * 12.0f;
-    v_abc_Volts_2.b = Global_Data.aa.A2.me.ADC_B7 * 12.0f;
-    v_abc_Volts_2.c = Global_Data.aa.A2.me.ADC_B6 * 12.0f;
+    v_abc_Volts_2.a = Global_Data.aa.A2.me.ADC_B8 * 11.32f;
+    v_abc_Volts_2.b = Global_Data.aa.A2.me.ADC_B7 * 11.82f;
+    v_abc_Volts_2.c = Global_Data.aa.A2.me.ADC_B6 * 11.8f;
     v_DC_Volts_2 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
     i_abc_Amps_2.a  = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
     i_abc_Amps_2.b  = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
@@ -278,8 +278,8 @@ void ISR_Control(void *data)
     uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
 
     //calculate induced voltage for estimation of r_fe + filter
-    v_ind_dq_Volts_2.q = v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q;
-    v_ind_dq_Volts_2.d = v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d;
+    v_ind_dq_Volts_2.q = v_dq_ref_Volts_2.q - r_s_2 * i_dq_Amps_2.q;
+    v_ind_dq_Volts_2.d = v_dq_ref_Volts_2.d - r_s_2 * i_dq_Amps_2.d;
 
     v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
     v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);

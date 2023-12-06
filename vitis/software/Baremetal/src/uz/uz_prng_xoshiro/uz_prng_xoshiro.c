@@ -44,7 +44,7 @@ void uz_prng_xoshiro_reset(uz_prng_xoshiro_t* self, uint64_t seed){
     uint64_t state_2 = splitmix64_get_random_uint64(state_1); // Shuffles the given seed as recommended by xoshiro128++ authors
     uint64_t state_3 = splitmix64_get_random_uint64(state_2); // Shuffles the given seed as recommended by xoshiro128++ authors
 
-    self->state[1] = (uint32_t)state_0;
+    self->state[0] = (uint32_t)state_0;
     self->state[1] = (uint32_t)state_1;
     self->state[2] = (uint32_t)state_2;
     self->state[3] = (uint32_t)state_3;

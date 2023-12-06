@@ -82,11 +82,38 @@ uz_prng_t *uz_prng_init(enum uz_prng_generator generator, enum uz_prng_float_sca
         uz_assert(0); // No valid choice for generator type
         break;
     }
+        return (self);
+    }
 
-    return (self);
+void uz_prng_reset(uz_prng_t* self,uint64_t seed){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    switch (self->generator_type)
+    {
+    case uz_prng_generator_squares:
+        uz_prng_squares_reset(self->generator,seed);
+        break;
+    case uz_prng_generator_mtwister:
+        uz_assert(seed <= UINT32_MAX); // Seed of init is always 64 since some generators require 64bit seed. Seed must fit uint32_t
+        uz_prng_mtwister_reset(self->generator, (uint32_t)seed);
+        break;
+    case uz_prng_generator_halton:
+        uz_assert(seed <= UINT32_MAX); // Seed of init is always 64 since some generators require 64bit seed. Seed must fit uint32_t
+        uz_prng_halton_reset(self->generator, (uint32_t)seed);
+        break;
+    case uz_prng_generator_pcg:
+        uz_prng_pcg_reset(self->generator, seed);
+        break;
+    case uz_prng_generator_xoshiro:
+        uz_prng_xoshiro_reset(self->generator, seed);
+        break;
+    default:
+        uz_assert(0); // No valid choice for generator type
+        break;
+    }
 }
 
-uint32_t uz_prng_get_uniform_uint32_zero_to_uint32_max(uz_prng_t *self)
+    uint32_t uz_prng_get_uniform_uint32_zero_to_uint32_max(uz_prng_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

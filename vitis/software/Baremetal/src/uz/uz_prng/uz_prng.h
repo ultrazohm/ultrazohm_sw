@@ -115,4 +115,13 @@ float uz_prng_get_uniform_float_zero_to_one(uz_prng_t *self);
  */
 float uz_prng_get_uniform_float_min_to_max(uz_prng_t *self, float min, float max);
 
+/**
+ * @brief Resets the generator to given seed
+ * 
+ * @param self 
+ * @param seed 
+ */
+void uz_prng_reset(uz_prng_t *self, uint64_t seed);
+
+
 #endif // UZ_PRNG_H

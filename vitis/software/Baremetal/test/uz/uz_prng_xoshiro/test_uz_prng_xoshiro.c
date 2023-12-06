@@ -8,6 +8,7 @@
 
 #include "uz_array.h"
 #include "export_array.h"
+#include "uz_math.h"
 
 #define NUMBER_OF_CALLS 5000U
 
@@ -89,7 +90,7 @@ void test_uz_prng_xoshiro_equal_after_reset(void)
         random_array.data[i] = uz_prng_xoshiro_get_uniform_uint32(xoshiro);
     }
 
-    uz_prng_xoshiroxoshiro_reset(xoshiro, seed);
+    uz_prng_xoshiro_reset(xoshiro, seed);
 
     for (uint32_t i = 0; i < random_array.length; i++)
     {

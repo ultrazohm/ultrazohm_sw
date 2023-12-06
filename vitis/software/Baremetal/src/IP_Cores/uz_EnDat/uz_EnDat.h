@@ -9,6 +9,8 @@
 #define CONTROLWORD_DEFAULT 0xA807
 #define DIVIDER_DEFAULT 3
 #define	ENDAT_23_BIT_MAX_VALUE 0x7FFFFF
+#define ENDAT_23_BIT_HALF_VALUE 0x3FFFFF
+#define ENDAT_23_BIT_HALF_VALUE_NEG 0xFFC00001
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -277,9 +279,10 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed);
  * @param pos1 First positional value - can be directly pasted from read pos value.
  * @param pos2 Second positional value - can be directly pasted from read pos value.
  * @param time_elapsed Time between both positions.
+ * @param invert Inverts the RPM to negative or positive.
  * @brief This function calculate a rotation from two positional values for EnDat.
  * @return Returns the RPM value.
  */
-float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed);
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert);
 
 #endif  // UZ_ENDAT_H  // NOLINT

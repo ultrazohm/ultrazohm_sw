@@ -48,21 +48,25 @@ static void ReadAllADC();
 
 void ISR_Control(void *data)
 {
+
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
-   
+    update_speed_and_position_of_encoder_on_D5(&Global_Data);     // ISR TIME : uses about 2,7 us ISR time
+    /* Following two lines use about 0,7 us ISR Time */
     //Global_Data.av.EnDat_raw_pos = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0);
     //Global_Data.av.theta_mech = uz_EnDat_pos_to_rad_converter(Global_Data.av.EnDat_raw_pos);
-    //For Debug Purposes the above
-    Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0);
-    Global_Data.av.mechanicalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0),uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t4),uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer,uz_EnDat_elapsed_t0_t4));
+    //For Debug Purposes the above uses 0,7 us ISR Time
+    Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0); // uses sligtly less then 0,7 us ISR
+    Global_Data.av.mechanicalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t0), uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t4), uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t4)), 0x0U); //uses about 1,5 us ISR Time
 
+    //DEBUG:
+    Global_Data.av.electricalRotorSpeed= uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1));
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     }
+    /* ISR TIME : The part here uses about 9,5 us ISR time*/
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
@@ -72,6 +76,7 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+    /* 9,5 us ISR Time */
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

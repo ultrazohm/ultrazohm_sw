@@ -5631,16 +5631,6 @@
               "uz_EnDat_0/CLK_1"
             ]
           },
-          "CRCDBG": {
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
-          },
           "CRCTEST": {
             "ports": [
               "uz_EnDat_0/CRCTEST"

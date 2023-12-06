@@ -467,19 +467,38 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed) {
     return(ret);
 }
 
-float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed) {
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert) {
     float ret = 0.0f;
     int32_t dif = 0U;
     uint32_t maxval = ENDAT_23_BIT_MAX_VALUE;
+    int32_t endatnegboundry = ENDAT_23_BIT_HALF_VALUE_NEG;
+    int32_t endatposboundry = ENDAT_23_BIT_HALF_VALUE;
     float diff = 0.0f;
     float maxvalf = 0.0f;
     float tick = 0.0f;
     dif = (int32_t)(pos2 - pos1);
+    //repair overflow of positional value
+    if (dif > endatposboundry) {
+       dif -= maxval;
+
+    }
+    if (dif < endatnegboundry) {
+    	dif += maxval;
+
+    }
     diff = (float) dif;
     maxvalf = (float) maxval;
     tick = (diff / maxvalf);
     ret = (tick / time_elapsed);
-    ret *= 60.0f;
+    if (invert == 0x1U) {
+        ret *= -60.0f;
+    }
+    else
+    {
+        ret *= 60.0f;
+    }
+    
+
     return(ret);
 }
 

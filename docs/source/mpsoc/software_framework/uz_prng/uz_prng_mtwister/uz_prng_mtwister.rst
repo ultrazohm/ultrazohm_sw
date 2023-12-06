@@ -55,6 +55,8 @@ Reference
 
 .. doxygenfunction:: uz_prng_mtwister_get_uniform_uint32
 
+.. doxygenfunction:: uz_prng_mtwister_reset
+
 
 Sources
 =======

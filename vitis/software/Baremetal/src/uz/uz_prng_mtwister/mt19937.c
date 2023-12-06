@@ -86,7 +86,7 @@ void _sgenrand_dc(_org_state *st, uint32_t seed)
 uint32_t _genrand_dc(_org_state *st)
 {
     uint32_t y;
-    static const uint32_t mag01[2] = {0x0, MATRIX_A};
+    const uint32_t mag01[2] = {0x0, MATRIX_A};
     /* mag01[x] = x * MATRIX_A  for x=0,1 */
 
     if (st->mti >= N)

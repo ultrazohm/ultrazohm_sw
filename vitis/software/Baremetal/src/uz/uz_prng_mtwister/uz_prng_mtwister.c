@@ -45,11 +45,19 @@ static uz_prng_mtwister_t *uz_prng_mtwister_allocation(void)
 uz_prng_mtwister_t *uz_prng_mtwister_init(uint32_t random_seed)
 {
     uz_prng_mtwister_t *self = uz_prng_mtwister_allocation();
-    _sgenrand_dc(&self->state,random_seed);
+    uz_prng_mtwister_reset(self, random_seed);
     return (self);
 }
 
-uint32_t uz_prng_mtwister_get_uniform_uint32(uz_prng_mtwister_t *self){
+void uz_prng_mtwister_reset(uz_prng_mtwister_t *self, uint32_t random_seed)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    _sgenrand_dc(&self->state, random_seed);
+}
+
+uint32_t uz_prng_mtwister_get_uniform_uint32(uz_prng_mtwister_t *self)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return _genrand_dc(&self->state);

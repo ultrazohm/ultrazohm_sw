@@ -81,7 +81,14 @@ static uz_prng_squares_t *uz_prng_squares_allocation(void)
 uz_prng_squares_t *uz_prng_squares_init(uint64_t key)
 {
     uz_prng_squares_t *self = uz_prng_squares_allocation();
+    uz_prng_squares_reset(self, key);
+    return (self);
+}
 
+void uz_prng_squares_reset(uz_prng_squares_t *self, uint64_t key)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
     if (key < 30U)
     {
         self->key = default_keys[key];
@@ -92,7 +99,6 @@ uz_prng_squares_t *uz_prng_squares_init(uint64_t key)
     }
 
     self->counter = 0U;
-    return (self);
 }
 
 void uz_prng_squares_reset_counter(uz_prng_squares_t *self)
@@ -127,7 +133,5 @@ static uint32_t uz_prng_squares32_uniform_uint32(uint64_t ctr, uint64_t key)
     x = (((x * x) + z) >> 32U);
     return (uint32_t)x;
 }
-
-
 
 #endif

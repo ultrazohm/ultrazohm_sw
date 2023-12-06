@@ -5,7 +5,7 @@
 #include "uz_prng_halton.h"
 #include "uz_array.h"
 #include "export_array.h"
-
+#include "uz_math.h"
 
 void setUp(void)
 {
@@ -28,6 +28,8 @@ void test_uz_prng_halton_float(void)
     {
         random_array.data[i] = uz_prng_halton_get_uniform_float(halton);
     }
+    float mean = uz_math_mean(random_array);
+    TEST_ASSERT_FLOAT_WITHIN(0.01,0.5f, mean);
     char filepath[] = "test/uz/uz_prng_halton/uz_prng_halton_float.csv";
     export_array_float(random_array, filepath);
 }

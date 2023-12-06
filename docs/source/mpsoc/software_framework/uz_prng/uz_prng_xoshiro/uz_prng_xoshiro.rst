@@ -49,6 +49,8 @@ Reference
 
 .. doxygenfunction:: uz_prng_xoshiro_get_uniform_uint32
 
+.. doxygenfunction:: uz_prng_xoshiro_reset
+
 Sources
 =======
 

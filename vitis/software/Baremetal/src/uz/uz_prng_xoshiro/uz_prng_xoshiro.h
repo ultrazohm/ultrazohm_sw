@@ -25,4 +25,13 @@ uz_prng_xoshiro_t *uz_prng_xoshiro_init(uint64_t seed);
  */
 uint32_t uz_prng_xoshiro_get_uniform_uint32(uz_prng_xoshiro_t *self);
 
+/**
+ * @brief Resets generator to seed.
+ * 
+ * @param self 
+ * @param seed 
+ */
+void uz_prng_xoshiro_reset(uz_prng_xoshiro_t *self, uint64_t seed);
+
+
 #endif // UZ_PRNG_XOSHIRO_H

@@ -25,4 +25,13 @@ uz_prng_mtwister_t *uz_prng_mtwister_init(uint32_t random_seed);
  */
 uint32_t uz_prng_mtwister_get_uniform_uint32(uz_prng_mtwister_t *self);
 
+/**
+ * @brief Resets the internal state of the generator to random_seed
+ *
+ * @param self
+ * @param random_seed
+ */
+void uz_prng_mtwister_reset(uz_prng_mtwister_t *self, uint32_t random_seed);
+
+
 #endif // UZ_PRNG_MTWISTER_H

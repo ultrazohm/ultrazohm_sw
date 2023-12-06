@@ -25,4 +25,12 @@ uz_prng_pcg_t *uz_prng_pcg_init(uint64_t seed);
  */
 uint32_t uz_prng_pcg_get_uniform_uint32(uz_prng_pcg_t *self);
 
+/**
+ * @brief Resets generator to seed
+ * 
+ * @param self 
+ * @param seed 
+ */
+void uz_prng_pcg_reset(uz_prng_pcg_t *self, uint64_t seed);
+
 #endif // UZ_PRNG_PCG_H

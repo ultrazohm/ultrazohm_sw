@@ -87,8 +87,15 @@ static uz_prng_pcg_t *uz_prng_pcg_allocation(void)
 uz_prng_pcg_t *uz_prng_pcg_init(uint64_t seed)
 {
     uz_prng_pcg_t *self = uz_prng_pcg_allocation();
-    pcg32_srandom_r(&self->pcg_state, seed, 54U); // Sequence randomly set to 54 since this is done in https://github.com/imneme/pcg-c-basic/blob/master/pcg32-demo.c
+    uz_prng_pcg_reset(self, seed);
     return (self);
+}
+
+void uz_prng_pcg_reset(uz_prng_pcg_t *self, uint64_t seed)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    pcg32_srandom_r(&self->pcg_state, seed, 54U); // Sequence randomly set to 54 since this is done in https://github.com/imneme/pcg-c-basic/blob/master/pcg32-demo.c
 }
 
 uint32_t uz_prng_pcg_get_uniform_uint32(uz_prng_pcg_t *self)
@@ -111,7 +118,7 @@ uint32_t pcg32_random_r(pcg32_random_t *rng)
 {
     uint64_t oldstate = rng->state;
     rng->state = (oldstate * 6364136223846793005ULL) + rng->inc;
-    uint32_t xorshifted =  (uint32_t)(((oldstate >> 18u) ^ oldstate) >> 27u);
+    uint32_t xorshifted = (uint32_t)(((oldstate >> 18u) ^ oldstate) >> 27u);
     uint32_t rot = (uint32_t)(oldstate >> 59u);
     return (uint32_t)(xorshifted >> rot) | (xorshifted << ((-rot) & 31));
 }

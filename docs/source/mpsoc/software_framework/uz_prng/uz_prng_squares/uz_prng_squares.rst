@@ -54,6 +54,8 @@ Reference
 .. doxygenfunction:: uz_prng_squares_init
 
 .. doxygenfunction:: uz_prng_squares_get_uniform_uint32
+  
+.. doxygenfunction:: uz_prng_squares_reset
 
 
 Sources

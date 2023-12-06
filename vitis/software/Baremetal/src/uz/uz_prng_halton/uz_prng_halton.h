@@ -35,4 +35,12 @@ float uz_prng_halton_get_uniform_float(uz_prng_halton_t *self);
  */
 void uz_prng_halton_get_uniform_float_2d(uz_prng_halton_t *self, float *x, float *y);
 
+/**
+ * @brief Resets the Generator to the given base prime number and n-th number in the sequence
+ * 
+ * @param self 
+ * @param base_prime 
+ */
+void uz_prng_halton_reset(uz_prng_halton_t *self, uint32_t base_prime);
+
 #endif // UZ_PRNG_HALTON_H

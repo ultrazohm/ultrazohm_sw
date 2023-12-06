@@ -25,4 +25,12 @@ uz_prng_squares_t *uz_prng_squares_init(uint64_t key);
  */
 uint32_t uz_prng_squares_get_uniform_uint32(uz_prng_squares_t *self);
 
+/**
+ * @brief Resets generator to key
+ * 
+ * @param self 
+ * @param key 
+ */
+void uz_prng_squares_reset(uz_prng_squares_t *self, uint64_t key);
+
 #endif // UZ_PRNG_SQUARES_H

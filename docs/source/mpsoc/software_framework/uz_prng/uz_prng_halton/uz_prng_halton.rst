@@ -74,6 +74,8 @@ Reference
 
 .. doxygenfunction:: uz_prng_halton_get_uniform_float_2d
 
+.. doxygenfunction:: uz_prng_halton_reset
+
 Sources
 =======
 

@@ -10,7 +10,7 @@ annotate_port('gm_UZ_EnDat/UZ_ENDAT/Dual Port RAM System', 1, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/Dual Port RAM System', 1, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/16BIT_SPLITTER', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED', 0, 15, '');
-annotate_port('gm_UZ_EnDat/UZ_ENDAT/delayMatch17', 1, 1, '');
+annotate_port('gm_UZ_EnDat/UZ_ENDAT/delayMatch', 1, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/16BIT_SPLITTER/Subtract', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/16BIT_SPLITTER/Switch', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/16bitgather/Subsystem/Bit Set', 1, 1, '');

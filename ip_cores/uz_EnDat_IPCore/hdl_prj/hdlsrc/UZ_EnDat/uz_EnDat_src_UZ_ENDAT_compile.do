@@ -61,6 +61,7 @@ vcom  uz_EnDat_src_ManualDeserializere_block.vhd
 vcom  uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd
 vcom  uz_EnDat_src_Subsystem.vhd
 vcom  uz_EnDat_src_Subsystem1_block.vhd
+vcom  uz_EnDat_src_responseslicer.vhd
 vcom  uz_EnDat_src_Increment_Stored_Integer_block2.vhd
 vcom  uz_EnDat_src_Positional_Counter_block2.vhd
 vcom  uz_EnDat_src_SetZero32_block.vhd
@@ -83,8 +84,7 @@ vcom  uz_EnDat_src_Subsystem2.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block4.vhd
 vcom  uz_EnDat_src_Detect_Increase_block2.vhd
 vcom  uz_EnDat_src_Subsystem3.vhd
-vcom  uz_EnDat_src_poormansrevcalc.vhd
-vcom  uz_EnDat_src_responseslicer.vhd
+vcom  uz_EnDat_src_timingprovider.vhd
 vcom  uz_EnDat_src_Increment_Stored_Integer_block4.vhd
 vcom  uz_EnDat_src_ramselektor.vhd
 vcom  uz_EnDat_src_Subsystem_block1.vhd

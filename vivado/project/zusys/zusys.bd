@@ -5604,7 +5604,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:2.4",
+            "vlnv": "xilinx.com:ip:uz_EnDat:2.6",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5665,46 +5665,6 @@
               "uz_EnDat_0/AXI4_Lite_ACLK"
             ]
           },
-          "dbgjnklower": {
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
-          },
-          "dbgjnkupper": {
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
-          },
-          "payload": {
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
-          },
-          "payloadswapped": {
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
-          },
           "proc_sys_reset_1_peripheral_aresetn": {
             "ports": [
               "aresetn",
@@ -5712,16 +5672,6 @@
               "uz_EnDat_0/IPCORE_RESETN",
               "uz_EnDat_0/AXI4_Lite_ARESETN"
             ]
-          },
-          "upperecieve": {
-            "hdl_attributes": {
-              "DEBUG": {
-                "value": "true"
-              },
-              "MARK_DEBUG": {
-                "value": "true"
-              }
-            }
           },
           "uz_EnDat_0_CLK_OUT": {
             "ports": [

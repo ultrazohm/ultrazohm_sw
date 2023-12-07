@@ -330,5 +330,5 @@ void fcs_mpc_debug(void){
 }
 
 void fcs_mpc_deadtime_comp_onoff(bool onoff){
-//	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + deadtime_comp_onoff_AXI_Data_pu_voltages_VSD, onoff);
+	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + deadtime_comp_onoff_AXI_Data_pu_voltages_dq, onoff);
 }

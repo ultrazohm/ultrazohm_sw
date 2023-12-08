@@ -136,18 +136,6 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input) {
     self->config.config_PMSM = input;
 }
 
-bool uz_SetPoint_get_field_weakening(uz_SetPoint_t* self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    return(self->is_field_weakening_active);
-}
-
-float uz_SetPoint_get_omega_cut(uz_SetPoint_t* self) {
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    return(self->omega_cut_rad_per_sec);
-}
-
 static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere) {
     uz_3ph_dq_t output_currents = {0};
     float im_ref = M_ref_Nm / (1.5f * self->config.config_PMSM.polePairs * self->config.config_PMSM.Psi_PM_Vs);

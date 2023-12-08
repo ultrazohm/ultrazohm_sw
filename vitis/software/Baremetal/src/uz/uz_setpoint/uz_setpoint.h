@@ -89,6 +89,4 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input);
  */
 void uz_SetPoint_set_id_ref(uz_SetPoint_t* self, float id_ref_Ampere);
 
-bool uz_SetPoint_get_field_weakening(uz_SetPoint_t* self);
-float uz_SetPoint_get_omega_cut(uz_SetPoint_t* self) ;
 #endif // UZ_SETPOINT_H

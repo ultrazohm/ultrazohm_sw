@@ -60,17 +60,6 @@ float uz_signals_saturation(float input, float upper_limit, float lower_limit);
 float uz_signals_hysteresisband_filter(float input, float upper_limit, float lower_limit);
 
 /**
- * @brief Passes the input signal through if it is inside the hysteresis band limited by the upper or lower limit, otherwise the output is zero. \n
- * Give out a bool flag, if the input is inside or outside the hysteresisband
- *
- * @param input Any input signal
- * @param upper_limit Upper limit of the hysteresis band
- * @param lower_limit Lower limit of the hysteresis band (needs to be smaller than the upper limit)
- * @param input_inside_hysteresis returns true, if the value is inside the hysteresisband. Otherwise, its false
- * @return float filtered signal
- */
-float uz_signals_hysteresisband_filter_flag(float input, float upper_limit, float lower_limit, bool* input_inside_hysteresis);
-/**
  * @brief Initialization of the filter 1st order object
  * 
  * @param config uz_Filter_1st_config configuration struct

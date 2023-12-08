@@ -490,66 +490,84 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed) {
 
 float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision) {
     float ret = 0.0f;
+    static float retold = 1.0f;
     int32_t dif = 0;
-    uint32_t maxval = ENDAT_23_BIT_MAX_VALUE;
-    int32_t endatnegboundry = ENDAT_23_BIT_HALF_VALUE_NEG;
-    int32_t endatposboundry = ENDAT_23_BIT_HALF_VALUE;
+    uint32_t difabs = 0U;
+    uint32_t difoldabs = 0U;
+    static int32_t difold = 1;
+    float diff = 0.0f;
+    float maxvalf = 0.0f;
+    float tick = 0.0f;
+    uint32_t maxval = 0;
+    int32_t endatnegboundry = 0;
+    int32_t endatposboundry = 0;
 
     switch (sensorprecision) {
     case uz_EnDat_19_bit:
         maxval = ENDAT_19_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_19_BIT_HALF_VALUE_NEG;
-        endatposboundry = ENDAT_19_BIT_HALF_VALUE;
+        endatnegboundry = ENDAT_19_BIT_OUTLIER_VALUE_NEG;
+        endatposboundry = ENDAT_19_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_21_bit:
         maxval = ENDAT_21_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_21_BIT_HALF_VALUE_NEG;
-        endatposboundry = ENDAT_21_BIT_HALF_VALUE;
+        endatnegboundry = ENDAT_21_BIT_OUTLIER_VALUE_NEG;
+        endatposboundry = ENDAT_21_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_23_bit:
         maxval = ENDAT_23_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_23_BIT_HALF_VALUE_NEG;
-        endatposboundry = ENDAT_23_BIT_HALF_VALUE;
+        endatnegboundry = ENDAT_23_BIT_OUTLIER_VALUE_NEG;
+        endatposboundry = ENDAT_23_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_25_bit:
         maxval = ENDAT_25_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_25_BIT_HALF_VALUE_NEG;
-        endatposboundry = ENDAT_25_BIT_HALF_VALUE;
+        endatnegboundry = ENDAT_25_BIT_OUTLIER_VALUE_NEG;
+        endatposboundry = ENDAT_25_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_27_bit:
         maxval = ENDAT_27_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_27_BIT_HALF_VALUE_NEG;
-        endatposboundry = ENDAT_27_BIT_HALF_VALUE;
+        endatnegboundry = ENDAT_27_BIT_OUTLIER_VALUE_NEG;
+        endatposboundry = ENDAT_27_BIT_OUTLIER_VALUE;
         break;
 
     default:
         maxval = ENDAT_23_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_23_BIT_HALF_VALUE_NEG;
-        endatposboundry = ENDAT_23_BIT_HALF_VALUE;
+        endatnegboundry = ENDAT_23_BIT_OUTLIER_VALUE_NEG;
+        endatposboundry = ENDAT_23_BIT_OUTLIER_VALUE;
         break;
     }
 
-    float diff = 0.0f;
-    float maxvalf = 0.0f;
-    float tick = 0.0f;
     dif = (int32_t)(pos2 - pos1);
-    //repair overflow of positional value
-    if (dif > endatposboundry) {
-       dif -= (int32_t) maxval;
-
+    //mitigation of singularity events
+    if (dif < 0) {
+        difabs = (uint32_t )(dif * -1);
     }
-    if (dif < endatnegboundry) {
-    	dif += (int32_t) maxval;
-
+    else {
+        difabs = (uint32_t) dif;
     }
+    if (difold < 0) {
+        difoldabs = (uint32_t) (difold * -1);
+    }
+    else {
+        difoldabs = (uint32_t) difold;
+    }
+    //mitigation of singularity events
+    if ((dif > endatposboundry) || (dif < endatnegboundry) || ((difabs > (difoldabs * 1000)))) {
+        dif = difold;
+    }
+    
+    
     diff = (float) dif;
     maxvalf = (float) maxval;
     tick = (diff / maxvalf);
     ret = (tick / time_elapsed);
+    //mitigation of singularity events
+    if (((ret < 0.00001f) && (ret > -0.00001f)) || (fabsf(ret)-fabsf(retold)) > (fabsf(retold) * 10.0f)) {
+        return (retold);
+    }
     if (invert == 0x1U) {
         ret *= -60.0f;
     }
@@ -557,6 +575,10 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     {
         ret *= 60.0f;
     }
+
+
+    difold = dif;
+    retold = ret;
     return (ret);
 }
 
@@ -567,8 +589,8 @@ float uz_EnDat_rpm_to_rad_per_second_converter(float rpm) {
     return (ret);
 }
 
-float uz_EnDat_rpm_smoothening(float rawvalue, uint8_t amountofperiods) {
-    float ret = 0.0f;
+float uz_EnDat_rpm_smoothening(float rawvalue, uint16_t amountofperiods) {
+    static float ret = 0.0f;
     float periods = (float) amountofperiods;
     ret -= (ret / periods);
     ret += (rawvalue / periods);

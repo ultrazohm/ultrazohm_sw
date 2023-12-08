@@ -9,20 +9,20 @@
 #define CONTROLWORD_DEFAULT 0xB207 //0xA807 
 #define DIVIDER_DEFAULT 3
 #define	ENDAT_23_BIT_MAX_VALUE 0x7FFFFF
-#define ENDAT_23_BIT_HALF_VALUE 4194303
-#define ENDAT_23_BIT_HALF_VALUE_NEG -4194303
+#define ENDAT_23_BIT_OUTLIER_VALUE 838860
+#define ENDAT_23_BIT_OUTLIER_VALUE_NEG -838860
 #define ENDAT_19_BIT_MAX_VALUE 0x7FFFF
-#define ENDAT_19_BIT_HALF_VALUE 0x7FFFF
-#define ENDAT_19_BIT_HALF_VALUE_NEG 0x7FFFF
+#define ENDAT_19_BIT_OUTLIER_VALUE 0x7FFFF
+#define ENDAT_19_BIT_OUTLIER_VALUE_NEG 0x7FFFF
 #define ENDAT_21_BIT_MAX_VALUE 0x1FFFFF
-#define ENDAT_21_BIT_HALF_VALUE 0x1FFFFF
-#define ENDAT_21_BIT_HALF_VALUE_NEG 0x1FFFFF
+#define ENDAT_21_BIT_OUTLIER_VALUE 0x1FFFFF
+#define ENDAT_21_BIT_OUTLIER_VALUE_NEG 0x1FFFFF
 #define ENDAT_25_BIT_MAX_VALUE 0x1FFFFFF
-#define ENDAT_25_BIT_HALF_VALUE 0x1FFFFFF
-#define ENDAT_25_BIT_HALF_VALUE_NEG 0x1FFFFFF
+#define ENDAT_25_BIT_OUTLIER_VALUE 0x1FFFFFF
+#define ENDAT_25_BIT_OUTLIER_VALUE_NEG 0x1FFFFFF
 #define ENDAT_27_BIT_MAX_VALUE 0x7FFFFFF
-#define ENDAT_27_BIT_HALF_VALUE 0x7FFFFFF
-#define ENDAT_27_BIT_HALF_VALUE_NEG 0x7FFFFFF
+#define ENDAT_27_BIT_OUTLIER_VALUE 0x7FFFFFF
+#define ENDAT_27_BIT_OUTLIER_VALUE_NEG 0x7FFFFFF
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -311,7 +311,7 @@ float uz_EnDat_rpm_to_rad_per_second_converter(float rpm);
  * @brief This smoothens float values.
  * @return Returns the smoothed value.
  */
-float uz_EnDat_rpm_smoothening(float rawvalue, uint8_t amountofperiods);
+float uz_EnDat_rpm_smoothening(float rawvalue, uint16_t amountofperiods);
 
 
 #endif  // UZ_ENDAT_H  // NOLINT

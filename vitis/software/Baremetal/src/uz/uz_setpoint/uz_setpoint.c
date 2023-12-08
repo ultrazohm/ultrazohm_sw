@@ -140,21 +140,21 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
     uz_3ph_dq_t output_currents = {0};
     float im_ref = M_ref_Nm / (1.5f * self->config.config_PMSM.polePairs * self->config.config_PMSM.Psi_PM_Vs);
     im_ref = uz_signals_saturation(im_ref, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
-    bool M_ref_hysteresis = false;
+    float M_ref_hysteresis_output = 0.0f;
     float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
     if(self->config.is_field_weakening_enabled) {//Field-weakening
         
         if ( (self->old_M_ref_Nm > 0.0f) && (self->config.use_case == uz_Setpoint_use_torque_control)) {
-        	uz_signals_hysteresisband_filter_flag(M_ref_Nm, self->old_M_ref_Nm * 1.001f, self->old_M_ref_Nm * 0.999f, &M_ref_hysteresis);
+        	M_ref_hysteresis_output = uz_signals_hysteresisband_filter(M_ref_Nm, self->old_M_ref_Nm * 1.001f, self->old_M_ref_Nm * 0.999f);
         } else if ( (self->old_M_ref_Nm < 0.0f) && (self->config.use_case == uz_Setpoint_use_torque_control)) {
-            uz_signals_hysteresisband_filter_flag(M_ref_Nm, self->old_M_ref_Nm * 0.999f, self->old_M_ref_Nm * 1.001f, &M_ref_hysteresis);
+            M_ref_hysteresis_output = uz_signals_hysteresisband_filter(M_ref_Nm, self->old_M_ref_Nm * 0.999f, self->old_M_ref_Nm * 1.001f);
         }
         //Only recalculate w_c if speed drops below last w_c before entering FW
         if( (self->config.use_case == uz_Setpoint_use_speed_control) && (!self->is_field_weakening_active) ) {
         	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
         }
         //Only recalculates w_c if a M_ref change occured or the speed dropped
-        else if ( (self->config.use_case == uz_Setpoint_use_torque_control) && ((!M_ref_hysteresis) || (fabsf(omega_el_rad_per_sec) < self->omega_cut_rad_per_sec)) ) {
+        else if ( (self->config.use_case == uz_Setpoint_use_torque_control) && ((M_ref_hysteresis_output == 0.0f) || (fabsf(omega_el_rad_per_sec) < self->omega_cut_rad_per_sec)) ) {
         	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
         	self->old_M_ref_Nm = M_ref_Nm;
         }

@@ -50,6 +50,7 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
 static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_m_rad_per_sec, float V_dc_volts, float i_ref, float M_ref_Nm, uz_3ph_dq_t actual_currents_Ampere);
 static uz_3ph_dq_t uz_SetPoint_MTPA(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
 static void uz_SetPoint_calculate_omega_cut_rad_per_sec(uz_SetPoint_t* self, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere);
+static void uz_SetPoint_determine_field_weakening_active(uz_SetPoint_t* self, float V_DC_Volts, float M_ref_Nm, uz_3ph_dq_t actual_currents_Ampere, float omega_el_rad_per_sec);
 static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type);
 static float uz_SetPoint_newton_MTPA_raphson_iq_approximation(uz_SetPoint_t* self, float i_ref_Ampere, float M_ref_Nm);
 static void uz_SetPoint_newton_raphson_MTPA_check(uz_SetPoint_t* self, float iq_ref_Ampere, float Ld_Lq_squared, float M_ref_Nm); 
@@ -139,37 +140,18 @@ void uz_SetPoint_set_PMSM_config(uz_SetPoint_t* self, uz_PMSM_t input) {
 static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_rad_per_sec, float M_ref_Nm, float V_DC_Volts, uz_3ph_dq_t actual_currents_Ampere) {
     uz_3ph_dq_t output_currents = {0};
     float im_ref = M_ref_Nm / (1.5f * self->config.config_PMSM.polePairs * self->config.config_PMSM.Psi_PM_Vs);
-    im_ref = uz_signals_saturation(im_ref, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);
-    float M_ref_hysteresis_output = 0.0f;
+    im_ref = uz_signals_saturation(im_ref, self->config.config_PMSM.I_max_Ampere, -self->config.config_PMSM.I_max_Ampere);   
     float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
-    if(self->config.is_field_weakening_enabled) {//Field-weakening
-        
-        if ( (self->old_M_ref_Nm > 0.0f) && (self->config.use_case == uz_Setpoint_use_torque_control)) {
-        	M_ref_hysteresis_output = uz_signals_hysteresisband_filter(M_ref_Nm, self->old_M_ref_Nm * 1.001f, self->old_M_ref_Nm * 0.999f);
-        } else if ( (self->old_M_ref_Nm < 0.0f) && (self->config.use_case == uz_Setpoint_use_torque_control)) {
-            M_ref_hysteresis_output = uz_signals_hysteresisband_filter(M_ref_Nm, self->old_M_ref_Nm * 0.999f, self->old_M_ref_Nm * 1.001f);
-        }
-        //Only recalculate w_c if speed drops below last w_c before entering FW
-        if( (self->config.use_case == uz_Setpoint_use_speed_control) && (!self->is_field_weakening_active) ) {
-        	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
-        }
-        //Only recalculates w_c if a M_ref change occured or the speed dropped
-        else if ( (self->config.use_case == uz_Setpoint_use_torque_control) && ((M_ref_hysteresis_output == 0.0f) || (fabsf(omega_el_rad_per_sec) < self->omega_cut_rad_per_sec)) ) {
-        	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
-        	self->old_M_ref_Nm = M_ref_Nm;
-        }
-        if (fabsf(omega_el_rad_per_sec) > self->omega_cut_rad_per_sec) {
-            self->is_field_weakening_active = true;
-            output_currents = uz_SetPoint_field_weakening(self, omega_el_rad_per_sec, V_DC_Volts, im_ref, M_ref_Nm, actual_currents_Ampere);
-        } else { //MPTA, if not in FW territory
-            self->is_field_weakening_active = false;
-            output_currents = uz_SetPoint_MTPA(self, im_ref, M_ref_Nm);
-        }
-    } else {//MPTA
+
+    uz_SetPoint_determine_field_weakening_active(self, V_DC_Volts, M_ref_Nm, actual_currents_Ampere, omega_el_rad_per_sec);
+    if (self->is_field_weakening_active) {
+        output_currents = uz_SetPoint_field_weakening(self, omega_el_rad_per_sec, V_DC_Volts, im_ref, M_ref_Nm, actual_currents_Ampere);
+    } else { //MPTA, if not in FW territory
         output_currents = uz_SetPoint_MTPA(self, im_ref, M_ref_Nm);
     }
     return(output_currents);
 }
+
 static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoint_motor_type motor_type) {
     uz_assert(input.polePairs > 0.0f);
 	uz_assert(fmodf(input.polePairs, 1.0f) == 0);
@@ -182,7 +164,41 @@ static void uz_SetPoint_assert_motor_parameters(uz_PMSM_t input, enum uz_Setpoin
         uz_assert(input.Ld_Henry != input.Lq_Henry);
     }
 }
+static void uz_SetPoint_determine_field_weakening_active(uz_SetPoint_t* self, float V_DC_Volts, float M_ref_Nm, uz_3ph_dq_t actual_currents_Ampere, float omega_el_rad_per_sec) {
+    float M_ref_hysteresis_output = 0.0f;
+    
+    //Determine, if omega_cut should be recalculated
+    switch(self->config.use_case) {
+        case uz_Setpoint_use_torque_control:
+            if (self->old_M_ref_Nm > 0.0f) {
+                M_ref_hysteresis_output = uz_signals_hysteresisband_filter(M_ref_Nm, self->old_M_ref_Nm * 1.001f, self->old_M_ref_Nm * 0.999f);
+            }
+            else if (self->old_M_ref_Nm < 0.0f) {
+                M_ref_hysteresis_output = uz_signals_hysteresisband_filter(M_ref_Nm, self->old_M_ref_Nm * 0.999f, self->old_M_ref_Nm * 1.001f);
+            }
+            //Only recalculates w_c if a M_ref change occured or the speed dropped
+            if ((M_ref_hysteresis_output == 0.0f) || (fabsf(omega_el_rad_per_sec) < self->omega_cut_rad_per_sec)) {
+                uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
+        	    self->old_M_ref_Nm = M_ref_Nm;
+            }
+        case uz_Setpoint_use_speed_control:
+            //Only recalculate w_c if speed drops below last w_c before entering FW
+            if(!self->is_field_weakening_active) {
+        	    uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
+            }
+    }
 
+    //Determine, if FW should be activated
+    if(self->config.is_field_weakening_enabled) {//Field-weakening
+        if (fabsf(omega_el_rad_per_sec) > self->omega_cut_rad_per_sec) {
+            self->is_field_weakening_active = true;
+        } else {
+            self->is_field_weakening_active = false;
+        }
+    } else {
+        self->is_field_weakening_active = false;
+    }
+}
 static uz_3ph_dq_t uz_SetPoint_field_weakening(uz_SetPoint_t* self, float omega_el_rad_per_sec, float V_DC_Volts, float im_ref, float M_ref_Nm, uz_3ph_dq_t actual_currents_Ampere){
     uz_assert(self->omega_cut_rad_per_sec > 0.0f);
     float I1 = sqrtf((actual_currents_Ampere.d * actual_currents_Ampere.d) + (actual_currents_Ampere.q * actual_currents_Ampere.q));

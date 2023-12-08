@@ -23,7 +23,7 @@ void setUp(void)
     config.motor_type = SMPMSM;
     config.is_field_weakening_enabled = false;
     config.relative_torque_tolerance = 1.0f;
-    config.use_case = SP_TorqueControl;
+    config.use_case = uz_Setpoint_use_torque_control;
     config.max_modulation_index = 1.0f / sqrtf(3.0f);
     currents.d = 0.0f;
     currents.q = 0.0f;

@@ -144,17 +144,17 @@ static uz_3ph_dq_t uz_SetPoint_FOC_control(uz_SetPoint_t* self, float omega_m_ra
     float omega_el_rad_per_sec = omega_m_rad_per_sec * self->config.config_PMSM.polePairs;
     if(self->config.is_field_weakening_enabled) {//Field-weakening
         
-        if ( (self->old_M_ref_Nm > 0.0f) && (self->config.use_case == SP_TorqueControl)) {
+        if ( (self->old_M_ref_Nm > 0.0f) && (self->config.use_case == uz_Setpoint_use_torque_control)) {
         	uz_signals_hysteresisband_filter_flag(M_ref_Nm, self->old_M_ref_Nm * 1.001f, self->old_M_ref_Nm * 0.999f, &M_ref_hysteresis);
-        } else if ( (self->old_M_ref_Nm < 0.0f) && (self->config.use_case == SP_TorqueControl)) {
+        } else if ( (self->old_M_ref_Nm < 0.0f) && (self->config.use_case == uz_Setpoint_use_torque_control)) {
             uz_signals_hysteresisband_filter_flag(M_ref_Nm, self->old_M_ref_Nm * 0.999f, self->old_M_ref_Nm * 1.001f, &M_ref_hysteresis);
         }
         //Only recalculate w_c if speed drops below last w_c before entering FW
-        if( (self->config.use_case == SP_SpeedControl) && (!self->is_field_weakening_active) ) {
+        if( (self->config.use_case == uz_Setpoint_use_speed_control) && (!self->is_field_weakening_active) ) {
         	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
         }
         //Only recalculates w_c if a M_ref change occured or the speed dropped
-        else if ( (self->config.use_case == SP_TorqueControl) && ((!M_ref_hysteresis) || (fabsf(omega_el_rad_per_sec) < self->omega_cut_rad_per_sec)) ) {
+        else if ( (self->config.use_case == uz_Setpoint_use_torque_control) && ((!M_ref_hysteresis) || (fabsf(omega_el_rad_per_sec) < self->omega_cut_rad_per_sec)) ) {
         	uz_SetPoint_calculate_omega_cut_rad_per_sec(self, V_DC_Volts, actual_currents_Ampere);
         	self->old_M_ref_Nm = M_ref_Nm;
         }

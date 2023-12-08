@@ -18,10 +18,10 @@ enum uz_Setpoint_control_type {
 
 /*! enum for selection of use case. */
 enum uz_Setpoint_usecase {
-	SP_SpeedControl = 0,
-	SP_TorqueControl
+	uz_Setpoint_use_speed_control = 0,
+  	uz_Setpoint_use_torque_control
 };
-/**
+/** 
  * @brief Object definition for uz_SetPoint_t
  *
  */

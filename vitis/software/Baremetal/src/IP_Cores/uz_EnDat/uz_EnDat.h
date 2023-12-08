@@ -9,8 +9,8 @@
 #define CONTROLWORD_DEFAULT 0xA807
 #define DIVIDER_DEFAULT 3
 #define	ENDAT_23_BIT_MAX_VALUE 0x7FFFFF
-#define ENDAT_23_BIT_HALF_VALUE 0x3FFFFF
-#define ENDAT_23_BIT_HALF_VALUE_NEG 0xFFC00001
+#define ENDAT_23_BIT_HALF_VALUE 4194303
+#define ENDAT_23_BIT_HALF_VALUE_NEG -4194303
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -284,5 +284,21 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed);
  * @return Returns the RPM value.
  */
 float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert);
+
+/**
+ * @param rpm is the revolutions per minute value.
+ * @brief This function converts RPM to RAD/S.
+ * @return Returns the rotational speed in RAD/S.
+ */
+float uz_EnDat_rpm_to_rad_per_second_converter(float rpm);
+
+/**
+ * @param raw is a float value that you want to smooth out.
+ * @param amountofperiods is a value with which you can adjust the smoothening factor.
+ * @brief This smoothens float values.
+ * @return Returns the smoothed value.
+ */
+float uz_EnDat_rpm_smoothening(float rawvalue, uint8_t amountofperiods);
+
 
 #endif  // UZ_ENDAT_H  // NOLINT

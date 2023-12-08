@@ -80,12 +80,13 @@ typedef struct _actualValues_ {
 	float U_q;
 	float theta_elec;
 	float theta_mech;
+	float omega_mech;
+	float omega_mech_filtered;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
-	uint32_t EnDat_raw_pos;
-} actualValues;
+	} actualValues;
 
 typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;

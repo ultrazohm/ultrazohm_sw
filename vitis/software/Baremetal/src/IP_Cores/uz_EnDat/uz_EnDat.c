@@ -469,7 +469,7 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed) {
 
 float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert) {
     float ret = 0.0f;
-    int32_t dif = 0U;
+    int32_t dif = 0;
     uint32_t maxval = ENDAT_23_BIT_MAX_VALUE;
     int32_t endatnegboundry = ENDAT_23_BIT_HALF_VALUE_NEG;
     int32_t endatposboundry = ENDAT_23_BIT_HALF_VALUE;
@@ -479,11 +479,11 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     dif = (int32_t)(pos2 - pos1);
     //repair overflow of positional value
     if (dif > endatposboundry) {
-       dif -= maxval;
+       dif -= (int32_t) maxval;
 
     }
     if (dif < endatnegboundry) {
-    	dif += maxval;
+    	dif += (int32_t) maxval;
 
     }
     diff = (float) dif;
@@ -497,9 +497,22 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     {
         ret *= 60.0f;
     }
-    
-
-    return(ret);
+    return (ret);
 }
 
+float uz_EnDat_rpm_to_rad_per_second_converter(float rpm) {
+    float ret = 0.0f;
+    ret = rpm / 60.0f;
+    ret *= ((float) M_PI * 2.0f);
+    return (ret);
+}
+
+float uz_EnDat_rpm_smoothening(float rawvalue, uint8_t amountofperiods) {
+    float ret = 0.0f;
+    float periods = (float) amountofperiods;
+    ret -= (ret / periods);
+    ret += (rawvalue / periods);
+
+    return (ret);
+}
 #endif  // NOLINT

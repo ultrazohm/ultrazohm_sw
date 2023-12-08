@@ -194,4 +194,12 @@ void test_uz_EnDat_calc_revs_from_pos_delta_and_time_negative_15upm(void) {
 void test_uz_EnDat_calc_revs_from_pos_delta_and_time_negative_15kupm(void) {
     TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time((ENDAT_23_BIT_MAX_VALUE/4), 0, 0.001f, 0U), -15000.0f);
 }
+
+void test_uz_EnDat_rpm_to_rad_per_second_converter_positive(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_rpm_to_rad_per_second_converter(100.0f), 10.471975);
+}
+
+void test_uz_EnDat_rpm_to_rad_per_second_converter_negative(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_rpm_to_rad_per_second_converter(-100.0f), -10.471975 );
+}
 #endif  // TEST

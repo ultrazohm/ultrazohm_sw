@@ -6,11 +6,23 @@
 
 #define FACTOR_DEFAULT 100
 #define AMOUNT_OF_FACTORS 5
-#define CONTROLWORD_DEFAULT 0xA807
+#define CONTROLWORD_DEFAULT 0xB207 //0xA807 
 #define DIVIDER_DEFAULT 3
 #define	ENDAT_23_BIT_MAX_VALUE 0x7FFFFF
 #define ENDAT_23_BIT_HALF_VALUE 4194303
 #define ENDAT_23_BIT_HALF_VALUE_NEG -4194303
+#define ENDAT_19_BIT_MAX_VALUE 0x7FFFF
+#define ENDAT_19_BIT_HALF_VALUE 0x7FFFF
+#define ENDAT_19_BIT_HALF_VALUE_NEG 0x7FFFF
+#define ENDAT_21_BIT_MAX_VALUE 0x1FFFFF
+#define ENDAT_21_BIT_HALF_VALUE 0x1FFFFF
+#define ENDAT_21_BIT_HALF_VALUE_NEG 0x1FFFFF
+#define ENDAT_25_BIT_MAX_VALUE 0x1FFFFFF
+#define ENDAT_25_BIT_HALF_VALUE 0x1FFFFFF
+#define ENDAT_25_BIT_HALF_VALUE_NEG 0x1FFFFFF
+#define ENDAT_27_BIT_MAX_VALUE 0x7FFFFFF
+#define ENDAT_27_BIT_HALF_VALUE 0x7FFFFFF
+#define ENDAT_27_BIT_HALF_VALUE_NEG 0x7FFFFFF
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -65,6 +77,14 @@ typedef enum uz_EnDat_EnDat_operating_mode {
     uz_EnDat_Encoder_send_test_values,
     uz_EnDat_Encoder_receive_communication_command
 }uz_EnDat_protocol_opmode;
+
+typedef enum uz_EnDat_positional_precision {
+    uz_EnDat_19_bit,
+    uz_EnDat_21_bit,
+    uz_EnDat_23_bit,
+    uz_EnDat_25_bit,
+    uz_EnDat_27_bit
+    }uz_EnDat_precision;
 
 /*typedef enum uz_EnDat_statusword_elaborate {
     uz_EnDat_Errorbit1_HDH,
@@ -194,7 +214,7 @@ int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_
  * @param pos Value which need to be transformed.
  * @return Returns the positional value in between 0 and 2 pi.
  */
-float uz_EnDat_pos_to_rad_converter(uint32_t pos);
+float uz_EnDat_pos_to_rad_converter(uint32_t pos, uz_EnDat_precision sensorprecision);
 
 /**
  * 
@@ -219,7 +239,7 @@ int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp);
  * @brief This function fetches positional values from the EnDat IP-Core and converts them to rad (2PI) immediately.
  * @return Returns the actual status word from the EnDat IP Core.
  */
-float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x);
+float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x, uz_EnDat_precision sensorprecision);
 
 /**
  * 
@@ -253,13 +273,6 @@ int8_t uz_EnDat_set_output_enable_in_controlword(controlword_expanded* inp);
  */
 int8_t uz_EnDat_reset_output_enable_in_controlword(controlword_expanded* inp);
 
-/**
- * 
- * @brief This function read the raw rotational speed and converts it to RPM.
- * @param mrps mili-revolutions per second from EnDat.
- * @return Returns RPM in float.
- */
-float uz_EnDat_mrps_to_rpm_converter(int32_t mrps);
 
 /**
  * @param tx_ty  means which value you would like to fetch. Time elapsed from t0_t1 to t0_t4
@@ -283,7 +296,7 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed);
  * @brief This function calculate a rotation from two positional values for EnDat.
  * @return Returns the RPM value.
  */
-float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert);
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision);
 
 /**
  * @param rpm is the revolutions per minute value.

@@ -365,8 +365,36 @@ int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_
     return(0);
 }
 
-float uz_EnDat_pos_to_rad_converter(uint32_t pos) {
-    uint32_t endatmax = ENDAT_23_BIT_MAX_VALUE;
+float uz_EnDat_pos_to_rad_converter(uint32_t pos, uz_EnDat_precision sensorprecision) {
+    uint32_t endatmax = 0;
+
+    switch (sensorprecision) {
+    case uz_EnDat_19_bit:
+        endatmax = ENDAT_19_BIT_MAX_VALUE;
+        break;
+
+    case uz_EnDat_21_bit:
+        endatmax = ENDAT_21_BIT_MAX_VALUE;
+        break;
+
+    case uz_EnDat_23_bit:
+        endatmax = ENDAT_23_BIT_MAX_VALUE;
+        break;
+
+    case uz_EnDat_25_bit:
+        endatmax = ENDAT_25_BIT_MAX_VALUE;
+        break;
+
+    case uz_EnDat_27_bit:
+        endatmax = ENDAT_27_BIT_MAX_VALUE;
+        break;
+
+    default:
+        endatmax = ENDAT_23_BIT_MAX_VALUE;
+        break;
+    }
+
+
     float ret = 0.0f;
     float posconv = 0.0f;
     float tick = 0.0f;
@@ -389,11 +417,11 @@ int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp) {
     return(0);
 }
 
-float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x) {
+float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x, uz_EnDat_precision sensorprecision) {
     uint32_t retraw = 0;
     float retfloat = 0.0f;
     retraw = uz_EnDat_read_pos(self, t_x);
-    retfloat = uz_EnDat_pos_to_rad_converter(retraw);
+    retfloat = uz_EnDat_pos_to_rad_converter(retraw, sensorprecision);
     return(retfloat);
 }
 
@@ -422,13 +450,6 @@ int8_t uz_EnDat_set_output_enable_in_controlword(controlword_expanded* inp) {
     return(0);
 }
 
-float uz_EnDat_mrps_to_rpm_converter(int32_t mrps) {
-    float ret = 0.0f;
-    float rpmconv = 0.0f;
-    rpmconv = ((float) mrps / 1000.0f);
-    ret = rpmconv; 
-    return (ret);
-}
 
 uint32_t uz_EnDat_read_time_elapsed(uz_EnDat_t *self, uz_EnDat_elapsed tx_ty) {
     uint32_t ret;
@@ -467,12 +488,51 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed) {
     return(ret);
 }
 
-float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert) {
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision) {
     float ret = 0.0f;
     int32_t dif = 0;
     uint32_t maxval = ENDAT_23_BIT_MAX_VALUE;
     int32_t endatnegboundry = ENDAT_23_BIT_HALF_VALUE_NEG;
     int32_t endatposboundry = ENDAT_23_BIT_HALF_VALUE;
+
+    switch (sensorprecision) {
+    case uz_EnDat_19_bit:
+        maxval = ENDAT_19_BIT_MAX_VALUE;
+        endatnegboundry = ENDAT_19_BIT_HALF_VALUE_NEG;
+        endatposboundry = ENDAT_19_BIT_HALF_VALUE;
+        break;
+
+    case uz_EnDat_21_bit:
+        maxval = ENDAT_21_BIT_MAX_VALUE;
+        endatnegboundry = ENDAT_21_BIT_HALF_VALUE_NEG;
+        endatposboundry = ENDAT_21_BIT_HALF_VALUE;
+        break;
+
+    case uz_EnDat_23_bit:
+        maxval = ENDAT_23_BIT_MAX_VALUE;
+        endatnegboundry = ENDAT_23_BIT_HALF_VALUE_NEG;
+        endatposboundry = ENDAT_23_BIT_HALF_VALUE;
+        break;
+
+    case uz_EnDat_25_bit:
+        maxval = ENDAT_25_BIT_MAX_VALUE;
+        endatnegboundry = ENDAT_25_BIT_HALF_VALUE_NEG;
+        endatposboundry = ENDAT_25_BIT_HALF_VALUE;
+        break;
+
+    case uz_EnDat_27_bit:
+        maxval = ENDAT_27_BIT_MAX_VALUE;
+        endatnegboundry = ENDAT_27_BIT_HALF_VALUE_NEG;
+        endatposboundry = ENDAT_27_BIT_HALF_VALUE;
+        break;
+
+    default:
+        maxval = ENDAT_23_BIT_MAX_VALUE;
+        endatnegboundry = ENDAT_23_BIT_HALF_VALUE_NEG;
+        endatposboundry = ENDAT_23_BIT_HALF_VALUE;
+        break;
+    }
+
     float diff = 0.0f;
     float maxvalf = 0.0f;
     float tick = 0.0f;

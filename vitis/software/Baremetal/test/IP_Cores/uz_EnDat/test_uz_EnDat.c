@@ -114,19 +114,19 @@ void test_uz_EnDat_frequency_to_divider_expansion_195kHz(void) {
 }
 
 void test_uz_EnDat_posconv_lsb_to_2pi(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(1U), 7.490141458742299498504682322773e-7f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(1U, uz_EnDat_23_bit), 7.490141458742299498504682322773e-7f);
 }
 
 void test_uz_EnDat_posconv_msb_to_2pi(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(4194304U), 3.1415930280968661755776183085136f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(4194304U, uz_EnDat_23_bit), 3.1415930280968661755776183085136f);
 }
 
 void test_uz_EnDat_posconv_max_to_2pi(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(8388607U), 6.283185307179586476925286766559f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(8388607U, uz_EnDat_23_bit), 6.283185307179586476925286766559f);
 }
 
 void test_uz_EnDat_posconv_rnd_to_2pi(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(5592405U), 4.1887904544577729426935077945287f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(5592405U, uz_EnDat_23_bit), 4.1887904544577729426935077945287f);
 }
 
 void test_uz_EnDat_fail_assert_if_enable_config_evaluation_in_IP_is_called__with_NULL_pointer(void) {
@@ -180,19 +180,19 @@ void test_uz_EnDat_time_elapsed_ns_to_s_converter_lsb(void) {
 }
 
 void test_uz_EnDat_calc_revs_from_pos_delta_and_time_15upm(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time(0, (ENDAT_23_BIT_MAX_VALUE/4), 1.0f, 0U), 15.0f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time(0, (ENDAT_23_BIT_MAX_VALUE/4), 1.0f, 0U, uz_EnDat_23_bit), 15.0f);
 }
 
 void test_uz_EnDat_calc_revs_from_pos_delta_and_time_15kupm(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time(0, (ENDAT_23_BIT_MAX_VALUE/4), 0.001f, 0U), 15000.0f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time(0, (ENDAT_23_BIT_MAX_VALUE/4), 0.001f, 0U, uz_EnDat_23_bit), 15000.0f);
 }
 
 void test_uz_EnDat_calc_revs_from_pos_delta_and_time_negative_15upm(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time((ENDAT_23_BIT_MAX_VALUE/4), 0, 1.0f, 0U), -15.0f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time((ENDAT_23_BIT_MAX_VALUE/4), 0, 1.0f, 0U, uz_EnDat_23_bit), -15.0f);
 }
 
 void test_uz_EnDat_calc_revs_from_pos_delta_and_time_negative_15kupm(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time((ENDAT_23_BIT_MAX_VALUE/4), 0, 0.001f, 0U), -15000.0f);
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_pos_delta_and_time((ENDAT_23_BIT_MAX_VALUE/4), 0, 0.001f, 0U, uz_EnDat_23_bit), -15000.0f);
 }
 
 void test_uz_EnDat_rpm_to_rad_per_second_converter_positive(void) {

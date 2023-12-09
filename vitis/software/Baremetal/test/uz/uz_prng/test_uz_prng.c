@@ -228,6 +228,87 @@ void test_uz_prng_export_many_seeds(void)
     }
 }
 
+void test_uz_prng_normal_distribution_mean_5(void){
+    uz_prng_t *squares = uz_prng_init(uz_prng_generator_squares, uz_prng_float_scale_fp_multiply, 0U);
+
+    float expected_mean=5.0f;
+    float expected_std=3.0f;
+
+    float squares_output[NUMBER_OF_CALLS];
+    uz_array_float_t squares_array = {
+        .data = squares_output,
+        .length = UZ_ARRAY_SIZE(squares_output)};
+
+    for (uint32_t i = 0; i < squares_array.length; i++)
+    {
+        squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
+    }
+    float mean=uz_math_mean(squares_array);
+    float std=uz_math_standard_deviation(squares_array);
+    TEST_ASSERT_FLOAT_WITHIN(0.1, expected_mean,mean);
+    TEST_ASSERT_FLOAT_WITHIN(0.1, expected_std,std);
+}
+
+void test_uz_prng_normal_distribution(void)
+{
+
+    float expected_mean = 0.0f;
+    float expected_std = 1.0f;
+
+    uz_prng_t *squares = uz_prng_init(uz_prng_generator_squares, uz_prng_float_scale_fp_multiply, 0U);
+
+    float squares_output[NUMBER_OF_CALLS];
+    uz_array_float_t squares_array = {
+        .data = squares_output,
+        .length = UZ_ARRAY_SIZE(squares_output)};
+
+    for (uint32_t i = 0; i < squares_array.length; i++)
+    {
+        squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
+    }
+    float mean = uz_math_mean(squares_array);
+    float std = uz_math_standard_deviation(squares_array);
+    TEST_ASSERT_FLOAT_WITHIN(0.1, expected_mean, mean);
+    TEST_ASSERT_FLOAT_WITHIN(0.1, expected_std, std);
+}
+
+void test_uz_prng_normal_distribution_plot(void)
+{
+
+    float expected_mean = 0.0f;
+    float expected_std = 1.0f;
+
+    uz_prng_t *squares = uz_prng_init(uz_prng_generator_squares, uz_prng_float_scale_fp_multiply, 0U);
+
+    float squares_output[NUMBER_OF_CALLS];
+    uz_array_float_t squares_array = {
+        .data = squares_output,
+        .length = UZ_ARRAY_SIZE(squares_output)};
+
+    for (uint32_t i = 0; i < squares_array.length; i++)
+    {
+        squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
+    }
+    char filepath_1[] = "test/uz/uz_prng/uz_prng_normal_distribution_1.csv";
+    export_array_float(squares_array, filepath_1);
+
+    uz_prng_reset(squares,1U);
+    for (uint32_t i = 0; i < squares_array.length; i++)
+    {
+        squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
+    }
+    char filepath_2[] = "test/uz/uz_prng/uz_prng_normal_distribution_2.csv";
+    export_array_float(squares_array, filepath_2);
+
+    uz_prng_reset(squares,2U);
+    for (uint32_t i = 0; i < squares_array.length; i++)
+    {
+        squares_array.data[i] = uz_prng_get_normal_float(squares, expected_mean, expected_std);
+    }
+    char filepath_3[] = "test/uz/uz_prng/uz_prng_normal_distribution_3.csv";
+    export_array_float(squares_array, filepath_3);
+}
+
 void export_helper(uz_array_float_t export_array, uint32_t seed_index, char generator_type[])
 {
 

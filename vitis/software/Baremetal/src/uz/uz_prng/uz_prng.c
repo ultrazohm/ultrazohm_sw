@@ -82,16 +82,17 @@ uz_prng_t *uz_prng_init(enum uz_prng_generator generator, enum uz_prng_float_sca
         uz_assert(0); // No valid choice for generator type
         break;
     }
-        return (self);
-    }
+    return (self);
+}
 
-void uz_prng_reset(uz_prng_t* self,uint64_t seed){
+void uz_prng_reset(uz_prng_t *self, uint64_t seed)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     switch (self->generator_type)
     {
     case uz_prng_generator_squares:
-        uz_prng_squares_reset(self->generator,seed);
+        uz_prng_squares_reset(self->generator, seed);
         break;
     case uz_prng_generator_mtwister:
         uz_assert(seed <= UINT32_MAX); // Seed of init is always 64 since some generators require 64bit seed. Seed must fit uint32_t
@@ -113,7 +114,7 @@ void uz_prng_reset(uz_prng_t* self,uint64_t seed){
     }
 }
 
-    uint32_t uz_prng_get_uniform_uint32_zero_to_uint32_max(uz_prng_t *self)
+uint32_t uz_prng_get_uniform_uint32_zero_to_uint32_max(uz_prng_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -194,7 +195,7 @@ float uz_prng_get_uniform_float_min_to_max(uz_prng_t *self, float min, float max
     uz_assert(self->is_ready);
     // Generate values in the open interval (a,b)
     // r = a + (b - a)*random_zero_to_one
-    uz_assert(min > max);
+    uz_assert(max > min);
     return (min + (max - min) * uz_prng_get_uniform_float_zero_to_one(self));
 }
 
@@ -228,7 +229,7 @@ static float uz_prng_scale_to_float_zero_to_one_multiply(uint32_t random_number)
 static float uz_prng_scale_to_float_zero_to_one_shift_multiply(uint32_t random_number)
 {
     // https://prng.di.unimi.it/ section generating uniform doubles in the unit interval, adapted to single precision
-    return (( (float)(random_number >> 8U) * (float)0x1.0p-24));
+    return (((float)(random_number >> 8U) * (float)0x1.0p-24));
 }
 
 // Functions that scale float 0..uint32_max to [0,max_range), see https://www.pcg-random.org/posts/bounded-rands.html
@@ -323,6 +324,25 @@ uint32_t uz_prng_get_uniform_uint32_zero_to_range_int_mult(uz_prng_t *self, uint
     // This is USE_BIASED_INT_MULT of https://github.com/imneme/bounded-rands/blob/3d71f53c975b1e5b29f2f3b05a74e26dab9c3d84/bounded32.cpp#L228
     uint64_t m = (uint64_t)(unbound_rng) * (uint64_t)(range);
     return (uint32_t)(m >> 32);
+}
+
+// Based on https://de.wikipedia.org/wiki/Polar-Methode
+float uz_prng_get_normal_float(uz_prng_t *self, float mean, float sigma)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    float u = 0.0f;
+    float v = 0.0f;
+    float q = 0.0f;
+    float p = 0.0f;
+    do
+    {
+        u = uz_prng_get_uniform_float_min_to_max(self, -1.0f, 1.0f);
+        v = uz_prng_get_uniform_float_min_to_max(self, -1.0f, 1.0f);
+        q = u * u + v * v;
+    } while ((q >= 1.0f) || (q == 0.0f)); // Since uz_prng_get_uniform_float_zero_to_one returns the closed interval, catch that 0 is not zero, preventing  that log(0)=1 is calculated, which would result in a sqrt(-2)=i*sqrt(2) -> not a real number
+    p = sqrtf(-2.0f * logf(q) / q);
+    return (mean + (sigma * u * p));
 }
 
 #endif

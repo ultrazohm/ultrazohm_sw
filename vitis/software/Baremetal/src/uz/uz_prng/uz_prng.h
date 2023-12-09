@@ -123,5 +123,14 @@ float uz_prng_get_uniform_float_min_to_max(uz_prng_t *self, float min, float max
  */
 void uz_prng_reset(uz_prng_t *self, uint64_t seed);
 
+/**
+ * @brief Generate normal distributed random float
+ * 
+ * @param self 
+ * @param mean Mean value of the normal distribution
+ * @param sigma Standard deviation of the normal distribution
+ * @return float 
+ */
+float uz_prng_get_normal_float(uz_prng_t *self, float mean, float sigma);
 
 #endif // UZ_PRNG_H

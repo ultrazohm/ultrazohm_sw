@@ -124,30 +124,11 @@ See the following for more information:
 - https://github.com/imneme/bounded-rands
 
 
-Bounded integer [0,upper_bound)
-*******************************
+Distributions for multiple seeds
+--------------------------------
 
-
-
-.. .. plot::
-
-..     import matplotlib.pyplot as plt
-..     import pandas as pd
-..     import numpy as np
-    
-..     columns = ["index", "number"]
-..     df = pd.read_csv("uz_prng_bounded_bias.csv", header=None, names=columns)
-..     df_unbound = pd.read_csv("uz_prng_unbounded_bias.csv", header=None, names=columns)
-..     df_unbias = pd.read_csv("uz_prng_unbounded_bias.csv", header=None, names=columns)
-    
-..     bins = np.arange(53) 
-..     fig, axs = plt.subplots(3, 1, layout="constrained", figsize=(14, 5))
-..     axs[0].hist(df_unbound.number, bins=52, linewidth=0.4, edgecolor="white")
-..     axs[1].hist(df.number, bins=bins, linewidth=0.4, edgecolor="white")
-..     axs[2].hist(df_unbias.number, bins=52, linewidth=0.4, edgecolor="white")
-..     axs[1].set_xticks(range(54))
-..     fig.show()
-    
+.. plot:: mpsoc/software_framework/uz_prng/density_plot_multiple_seeds.py
+    :caption: Density distribution of different generators calculated using Matlab ksdensity for 10 different random seeds each. 
     
 
 Calculation time
@@ -379,6 +360,9 @@ Usage of ``uz_prng_generator_halton`` in long-running applications (multiple day
     ax.yaxis.set_minor_locator(AutoMinorLocator())
     ax.set_xlabel('ISR sample')
     ax.set_ylabel(r'Time in $\mu s$')
+
+
+
 
 Reference
 =========

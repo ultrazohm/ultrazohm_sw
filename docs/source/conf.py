@@ -40,7 +40,7 @@ extensions = [
     "sphinxcontrib.tikz",
     "sphinx.ext.mathjax",
     "breathe",
-    "sphinx_plotly_directive",
+    "sphinx_plotly_directive", # https://matplotlib.org/stable/api/sphinxext_plot_directive_api.html#module-matplotlib.sphinxext.plot_directive
     "matplotlib.sphinxext.plot_directive",
 ]
 
@@ -144,6 +144,8 @@ mathjax_path = (
 nitpick_ignore = [
     ("c:identifier", "int32_t"),
     ("c:identifier", "uint32_t"),
+    ("c:identifier", "int64_t"),
+    ("c:identifier", "uint64_t"),
     ("c:identifier", "int16_t"),
     ("c:identifier", "uint16_t"),
     ("c:identifier", "size_t"),

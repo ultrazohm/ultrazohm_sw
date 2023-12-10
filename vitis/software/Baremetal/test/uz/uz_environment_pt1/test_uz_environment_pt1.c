@@ -224,7 +224,7 @@ void test_uz_environment_pt1_one_input(void)
         current_value[i] = uz_environment_pt1_step(pt1, 1.0f);
     }
     char filepath[] = "test/uz/uz_environment_pt1/pt1.csv";
-    export_histogram(current_value, DAUER, filepath);
+//    export_histogram(current_value, DAUER, filepath);
     TEST_ASSERT_FLOAT_WITHIN(0.001f, 1.0f, current_value[DAUER - 1]);
 }
 
@@ -323,9 +323,9 @@ void test_dqn_pt1_synchron(void)
     char filepath[] = "test/uz/uz_environment_pt1/pt1_dqn_output.csv";
     char filepath1[] = "test/uz/uz_environment_pt1/pt1_dqn_input.csv";
     char filepath2[] = "test/uz/uz_environment_pt1/pt1_dqn_error.csv";
-    export_histogram(log_output, 1000U, filepath);
-    export_histogram(log_input, 1000U, filepath1);
-    export_histogram(log_error, 1000U, filepath2);
+  //  export_histogram(log_output, 1000U, filepath);
+  //  export_histogram(log_input, 1000U, filepath1);
+  //  export_histogram(log_error, 1000U, filepath2);
 
     exportFloatArrayToCSV("test/uz/uz_environment_pt1/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_environment_pt1/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
@@ -418,9 +418,9 @@ void test_dqn_pt1_asynchron(void)
     char filepath[] = "test/uz/uz_environment_pt1/pt1_asyn_dqn_output.csv";
     char filepath1[] = "test/uz/uz_environment_pt1/pt1_asyn_dqn_input.csv";
     char filepath2[] = "test/uz/uz_environment_pt1/pt1_asyn_dqn_error.csv";
-    export_histogram(log_output, 1000U, filepath);
-    export_histogram(log_input, 1000U, filepath1);
-    export_histogram(log_error, 1000U, filepath2);
+  //  export_histogram(log_output, 1000U, filepath);
+  //  export_histogram(log_input, 1000U, filepath1);
+  //  export_histogram(log_error, 1000U, filepath2);
 
     exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_environment_pt1/asyn_cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);

@@ -77,7 +77,6 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
         uz_environment_pt1_dqn_step(pt1, action_k, setpoint);
         pt1_input   =uz_environment_pt1_get_input(pt1);

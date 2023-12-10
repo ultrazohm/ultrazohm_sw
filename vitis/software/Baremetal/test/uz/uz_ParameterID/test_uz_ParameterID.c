@@ -33,6 +33,11 @@
 #include "uz_signals.h"
 #include "uz_newton_raphson.h"
 #include "uz_space_vector_modulation.h"
+#include "rt_nonfinite.h"
+#include "eye_6olvtp5i.h"
+#include "rtGetNaN.h"
+#include "rt_nonfinite.h"
+#include "rtGetInf.h"
 
 uz_ParameterID_Data_t ParaID_Data = { 0 };
 struct uz_CurrentControl_config config = {0};
@@ -86,28 +91,35 @@ void test_uz_ParameterID_generate_DutyCycle_PWM_NULL(void) {
 }
 
 void test_uz_ParameterID_Controller_Data_NULL(void) {
-    uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(config);
-    uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(config_n);
-    uz_SetPoint_t* SP_instance = uz_SetPoint_init(config_sp);   
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(NULL, CC_instance, SC_instance, SP_instance));
+    struct uz_ParameterID_controller obj = {
+        .CC_instance_dq = uz_CurrentControl_init(config),
+        .SC_instance = uz_SpeedControl_init(config_n),
+        .SP_instance = uz_SetPoint_init(config_sp)};
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(NULL, obj));
 }
 
 void test_uz_ParameterID_Controller_FOC_NULL(void) {
-    uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(config_n);
-    uz_SetPoint_t* SP_instance = uz_SetPoint_init(config_sp);
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, NULL, SC_instance, SP_instance));
+        struct uz_ParameterID_controller obj = {
+        .CC_instance_dq = NULL,
+        .SC_instance = uz_SpeedControl_init(config_n),
+        .SP_instance = uz_SetPoint_init(config_sp)};
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, obj));
 }
 
 void test_uz_ParameterID_Controller_SC_NULL(void) {
-    uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(config);
-    uz_SetPoint_t* SP_instance = uz_SetPoint_init(config_sp);
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, CC_instance, NULL, SP_instance));
+        struct uz_ParameterID_controller obj = {
+        .CC_instance_dq = uz_CurrentControl_init(config),
+        .SC_instance = NULL,
+        .SP_instance = uz_SetPoint_init(config_sp)};
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, obj));
 }
 
 void test_uz_ParameterID_Controller_SP_NULL(void) {
-    uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(config);
-    uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(config_n);
-    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, CC_instance, SC_instance, NULL));
+        struct uz_ParameterID_controller obj = {
+        .CC_instance_dq = uz_CurrentControl_init(config),
+        .SC_instance = uz_SpeedControl_init(config_n),
+        .SP_instance = NULL};
+    TEST_ASSERT_FAIL_ASSERT(uz_ParameterID_Controller(&ParaID_Data, obj));
 }
 
 void test_uz_ParameterID_CleanPsiArray_NULL(void) {

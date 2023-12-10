@@ -27,6 +27,7 @@ Software Framework
     SpeedControl/SpeedControl
     SetPoint/SetPoint
     space_vector_modulation/space_vector_modulation
+    space_vector_modulation/space_vector_modulation_6ph
     wavegen/wavegen
     global_configuration/global_configuration
     unit_tests/unit_tests
@@ -41,3 +42,7 @@ Software Framework
     uz_sinus_pwm/uz_sinus_pwm
     encoder_offset_estimation/encoder_offset_estimation
     uz_mtwister/uz_mtwister
+    controller_setpoint_filter/controller_setpoint_filter
+    uz_subspace_resonant_control/uz_subspace_resonant_control
+    external_stop/external_stop
+    uz_Trajectory/uz_Trajectory

@@ -124,6 +124,14 @@ void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t* self, uz_PMSM_t 
 void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_CurrentControl_decoupling_select decoupling_select);
 
 /**
+ * @brief Function to change the max_modulation_index of the Space Vector Limitation during runtime
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param max_modulation_index Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation
+ */
+void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float max_modulation_index);
+
+/**
  * @brief Returns the current value of the external clamping signal
  * 
  * @param self uz_CurrentControl_t instance

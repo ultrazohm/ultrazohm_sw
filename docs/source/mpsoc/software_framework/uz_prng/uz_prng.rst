@@ -6,39 +6,39 @@ Pseudorandom number generator (PRNG)
 
 This software module implements different pseudorandom number generators (PRNGs) [[#prng_wiki]_], [[#prng_wiki_list]_].
 The implemented generators return uniformly distributed unsigned 32-bit integers.
-All implemented generators are not cryptographically secure and intended for engineering applications such as neural network initialization or random excitation for model identification.
+All implemented generators are not cryptographically secure and are intended for engineering applications such as neural network initialization or random excitation for model identification.
 Additional reading:
 
-- Paper regarding different generators  https://ieeexplore.ieee.org/abstract/document/9132873
-- Possibly hardware-accelerate number generation (https://link.springer.com/article/10.1007/s11265-012-0684-4)
-- *Dieharder* is a commonly used test-suite for random generators (http://simul.iro.umontreal.ca/testu01/install.html)
+- Paper regarding different generators:  https://ieeexplore.ieee.org/abstract/document/9132873
+- Possibly hardware-accelerate number generation: https://link.springer.com/article/10.1007/s11265-012-0684-
+- *Dieharder* is a commonly used test suite for random generators: http://simul.iro.umontreal.ca/testu01/install.html
 
 Implementation
 ==============
 
 The module ``uz_prng`` is a generic implementation for PRNGs.
-The actual generation of the random numbers is facilitated by the `Implemented generators`_ , each with specific properties.
-Other software modules can depend on ``uz_prng`` instead of the individual generators, which enables easy changing the generator for experiments.
-In addition to generate uniform distributions of ``uint32_t`` type, different scaling methods and generation of bounded generation of ``uint32_t`` as well as ``float`` is supported.
+The actual generation of the random numbers is facilitated by the `Implemented generators`_, each with specific properties.
+Other software modules can depend on ``uz_prng`` instead of the individual generators, which enables changing the generator for experiments without code changes.
+In addition to generating uniform distributions of ``uint32_t`` type, different scaling methods and generation of bounded generation of ``uint32_t`` as well as ``float`` are supported.
 
 Seeds
 -----
 
-PRNGs use an initial condition, called **seed**, that determines the specific random number stream.
+PRNGs use an initial condition called **seed** that determines the specific random number stream.
 The sequence of random numbers is deterministic for a given seed, i.e., initializing ``uz_prng`` with a given seed and generator type always returns the same sequence.
 The initialization of ``uz_prng`` passes the seed to the specific algorithm.
-The details of each generator seed are as following:
+The details of each generator seed are as follows:
 
-- ``uz_prng_squares``: if seed is a between 0 und 29, a pre-generated key is used (recommended). Otherwise, the value is used as key.
-- ``uz_prng_mtwister``: 32-bit seed. Since ``uz_prng_init`` uses 64-bit seeds, the upper 32-bit are ignored if Mersenne Twister is used.
-- ``uz_prng_halton``: seed must be a prime number
-- ``uz_prng_pcg``: 64-bit random seed. Initial sequence controlling substreams is arbitrarily set to 54.
-- ``uz_prng_xoshiro``: 64-bit random seed which is shuffled using splitmix64 as recommended by algorithm author
+- ``uz_prng_squares``: if the seed is between 0 and 29, a pre-generated key is used (recommended). Otherwise, the value is used as the key.
+- ``uz_prng_mtwister``: 32-bit seed. Since ``uz_prng_init`` uses 64-bit seeds, the upper 32-bits are ignored if Mersenne Twister is used.
+- ``uz_prng_halton``: seed must be a prime number.
+- ``uz_prng_pcg``: 64-bit random seed. The initial sequence controlling substreams is arbitrarily set to 54.
+- ``uz_prng_xoshiro``: 64-bit random seed which is shuffled using splitmix64 as recommended by algorithm author.
 
 Implemented generators
 ----------------------
 
-..	toctree::
+..  toctree::
     :maxdepth: 1
     :glob:
   
@@ -55,10 +55,11 @@ Distribution of PRNG [0,UINT32_MAX]
 1D-Case
 -------
 
-The following figure compares the distributions of the different implemented PRNGs by showing the histogram of the generated numbers after different number of samples are drawn.
-The distribution of the generated numbers tend towards a uniform distribution for an increasing number of samples.
+The following figure compares the distributions of the different implemented PRNGs by showing the generated numbers' histogram after different sample sizes are drawn.
+The distributions of the generated numbers tend towards a uniform distribution for an increasing number of samples.
 
 .. plot:: 
+    :caption: Histogram for different number of samples taken from the implemented generators. Samples are generated using ``uz_prng_X_get_uniform_uint32``, where X is the name of the specific generator. For increasing number of taken samples, the distribution tends towards uniform data. However, for small number of samples, the generated random numbers can deviate from a uniform distribution considerably (as is the case with *real* randomness, i.e., law of large numbers). As can be seen, the Halton sequence produces uniform distributed values already for low number of samples.
     
      import matplotlib.pyplot as plt
      import pandas as pd
@@ -94,28 +95,28 @@ The distribution of the generated numbers tend towards a uniform distribution fo
 
 .. _uz_prng_2d_case:
 
-2D-Case
+2D Case
 -------
 
 Applications may require the generation of random numbers for n-dimensions.
-One example is random sampling the possible operating range of an electrical machine, i.e., the rotational speed and output torque.
-Other examples include identification of model parameters, which might require an random excitation to yield transfer functions.
+One example is a random sampling of the possible operating range of an electrical machine, i.e., the rotational speed and output torque.
+Other examples include the identification of model parameters, which might require a random excitation to yield transfer functions.
 Random sampling for multiple dimensions using the :ref:`uz_prng_halton` requires special care.
-If 2D-Halton sequence is required, ``uz_prng`` can not be used, use ``uz_prng_halton`` directly.
-The following figure shows the generated distributions of different PRNGs in the 2D-case.
+If a 2D-Halton sequence is required, ``uz_prng`` can not be used; use ``uz_prng_halton`` directly.
+The following figure shows the generated distributions of different PRNGs in the 2D case.
 
 .. plot:: mpsoc/software_framework/uz_prng/uz_prng_2d_compare.py
     :caption: Generated random values generated with ``uz_prng_get_uniform_uint32_zero_to_uint32_max`` using different generators plotted as 2-dimensional data. Using ``uz_prng_generator_halton`` does not yield a random pattern but a linear relationship between the generated values. Using ``uz_prng_halton_get_uniform_float_2d`` generates a proper Halton sequence for 2 dimensions.
 
 
-Bounded random values
-=====================
+Distributions for multiple seeds
+================================
 
-Generate bounded integer
-------------------------
+Bounded integer
+---------------
 
-Generation of bounded integer values is not straight forward.
-Essentially, there are methods for scaling uniform distributions in the interval [0,UINT32_MAX] to [0,upper_bound] which are simple but slightly biased and more complex methods that are not biased.
+The generation of bounded integer values is not straightforward.
+Essentially, there are methods for scaling uniform distributions in the interval [0,UINT32_MAX] to [0,upper_bound], which are simple but slightly biased, and more complex methods that are not biased.
 Bias and unbiased methods are implemented.
 See the following for more information:
 
@@ -123,17 +124,46 @@ See the following for more information:
 - https://c-faq.com/lib/randrange.html
 - https://github.com/imneme/bounded-rands
 
+Note that the bias happens rarely.
+I.e., in the Ceedling tests, 50000 random samples for different seeds and generatores do not yield any different between biased and unbiased transformation to bounded integers.
+A loop generating random integers like so:
 
-Distributions for multiple seeds
+.. code-block:: c
+
+    #pragma GCC push_options
+    #pragma GCC optimize("O0")
+    void test_uz_prng_ever_biased(void)
+    {
+        uz_prng_t *pcg = uz_prng_init(uz_prng_generator_pcg, uz_prng_float_scale_fp_multiply, 0U);
+        volatile uint32_t unbiased = 0;
+        volatile uint32_t biased = 0;
+
+        for (uint32_t i = 0U; i < UINT32_MAX; i++)
+        {
+            unbiased = uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(pcg, 9);
+            biased = uz_prng_get_uniform_uint32_zero_to_range_int_mult(pcg, 9);
+            TEST_ASSERT_EQUAL_UINT32(unbiased, biased);
+        }
+    }
+    #pragma GCC pop_options
+
+Will fail the tetst, i.e., some random numbers differ between biased and unbiased versions.
+Note that the GCC options are required to prevent that the loop is not executed since both variables are unused for the compiler.
+
+.. plot:: mpsoc/software_framework/uz_prng/density_plot_multipe_seeds_biased_uint1000.py
+    :caption:  Histogram of ``uz_prng_get_uniform_uint32_zero_to_range_unbiased_opt(X,9U)`` (left) and ``uz_prng_get_uniform_uint32_zero_to_range_int_mult(X,9U)`` (right) for the implemented generators for 10 different random seeds. The different distributions of the generators as well as the random seeds results in varying distributions of random numbers. Within this test, no difference between biased and unbiased version is observed. Note that this bias is more pronounced for large numbers for the range.
+    
+
+Uniform distribution float [0,1)
 --------------------------------
 
 The following figure highlights the dependency of the different generators on the random seed.
-A sample of 5000 values is taken from each generator for 10 different random seeds.
-As can be seen, the specific distribution generated varies for the given seed as well as the used generator.
+A sample of 5000 values is taken from each generator for ten different random seeds.
+As can be seen, the specific distribution generated varies for the given seed and the used generator.
 
 
 .. plot:: mpsoc/software_framework/uz_prng/density_plot_multiple_seeds.py
-    :caption: Density distribution of different generators calculated using Matlab ksdensity for 10 different random seeds each. 
+    :caption: Density distribution of each generator calculated using Matlab ksdensity for 10 random seeds each. Values generated by ``uz_prng_get_uniform_float_zero_to_one`` using ``uz_prng_float_scale_fp_multiply``.
     
 
 Normal distribution
@@ -161,13 +191,13 @@ The following code is used in the ISR.
         // Start: Control algorithm - only if ultrazohm is in control state
         for (uint32_t i = 0; i < NUMBER_OF_PRNG_RUNS_PER_ISR; i++)
         {
-        	rnd_numbers[i]=uz_prng_get_uniform_uint32_zero_to_uint32_max(generator);
+            rnd_numbers[i]=uz_prng_get_uniform_uint32_zero_to_uint32_max(generator);
         }
     }
 
-If the system is not in control state, the baseline  execution without generating random values is :math:`16.2\,\mu s`.
+If the system is not in the control state, the baseline execution without generating random values is :math:`16.2\,\mu s`.
 This baseline is subtracted from execution time and divided by the number of generated PRNGs to yield the generation time for one value.
-Note that the smallest differentiable difference between execution times by this method is :math:`10\,ns` due to the clock frequency of the global counter in the FPGA.
+Note that the smallest difference between execution times by this method is :math:`10\,ns` due to the clock frequency of the global counter in the FPGA.
 Therefore, the measurements should be used as a rough estimation.
 
 Generate one rand [0,UINT32_MAX]
@@ -178,7 +208,7 @@ The measurement is based on generating 20 values per ISR over 4000 ISR cycles by
 Results:
 
   - ``uz_prng_generator_xoshiro`` and ``uz_prng_generator_pcg`` are the fastest generators
-  - ``uz_prng_generator_mtwister`` has a low mean calculation time. However, the internal state is shuffled every 620 calls resulting in a spike in calculation time. This shuffle of the state is inherent to the algorithm. Thus, ``uz_prng_generator_mtwister`` is not recommended for usage in the ISR.
+  - ``uz_prng_generator_mtwister`` has a low mean calculation time. However, the internal state is shuffled every 620 calls, resulting in a spike in calculation time. This shuffle of the state is inherent to the algorithm. Thus, ``uz_prng_generator_mtwister`` is not recommended for usage in the ISR.
   - ``uz_prng_generator_halton`` seems to increase calculation time with the number of samples taken and approaches :math:`0.6\,\mu s` per random number, see `Halton timing`_.
 
 
@@ -229,7 +259,7 @@ Float [0,1)
 - Additional calculation time for float is approx. 10ns compared to uint32
 
 The following table shows the calculation time of calling ``uz_prng_get_uniform_float_zero_to_one`` once and compares the different settings of ``uz_prng_float_scale_method``.
-The results  do not show a meaningful difference.
+The results do not show a meaningful difference.
 Measurements 
 
 ================ =====================
@@ -305,7 +335,7 @@ uint32_t in range [0,range)
 
 - int multi is the fastest but is biased
 - unbiased opt is unbiased and faster than unbias
-- No reason to use float multi version
+- No reason to use float multiplication version
 - Use unbiased mean if comparability with other Frameworks that use Lemire's method (https://arxiv.org/abs/1805.10941) is desired
 
 ================= =====================
@@ -349,13 +379,13 @@ unbiased_opt_mean :math:`0.1761\,\mu s`
 Halton timing
 -------------
 
-The calculation time for ``uz_prng_generator_halton`` increases with number of samples taken from Halton sequence.
-This seems to be related that the implementation relies on a loop to find the :math:`n`th value of the Halton sequence requires more passes for increasing numbers of :math:`n`.
-The following figure shows the execution time of ``uz_prng_generator_halton`` for 874,821,900 samples, which did not result in a settled calculation time
-The seed is set to 7 in this experiment, the behavior probably depends on the starting prime number.
-Usage of ``uz_prng_generator_halton`` in long-running applications (multiple days) should be handled with care.
+The calculation time for ``uz_prng_generator_halton`` increases with the number of samples taken from the Halton sequence.
+This seems to be related to the fact that the implementation relies on a loop to find the :math:`n`th value of the Halton sequence requires more passes for increasing numbers of :math:`n`.
+The following figure shows the execution time of ``uz_prng_generator_halton`` for 874,821,900 samples, which did not result in a settled calculation time.
+The seed is set to 7 in this experiment; the behavior probably depends on the starting prime number.
+Usage of ``uz_prng_generator_halton`` in long-running applications (multiple days) should be handled carefully.
 
-.. warning:: Halton generator draws the :math:`i-th` number of the halton sequence of the starting prime number. Therefore, the internal counter will overflow after 4,294,967,295 (i.e., UINT32_MAX) drawn samples. Note that `unsigned integer wrap <https://www.gnu.org/software/autoconf/manual/autoconf-2.63/html_node/Integer-Overflow-Basics.html>`_, therefore, the Halton sequence will repeat after 2^32-1 calls.
+.. warning:: Halton generator draws the :math:`i-th` number of the Halton sequence of the starting prime number. Therefore, the internal counter will overflow after 4,294,967,295 (i.e., UINT32_MAX) drawn samples. Note that `unsigned integer wrap <https://www.gnu.org/software/autoconf/manual/autoconf-2.63/html_node/Integer-Overflow-Basics.html>`_, therefore, the Halton sequence will repeat after 2^32-1 calls.
 
 .. plot::
 
@@ -405,17 +435,19 @@ Reference
 .. doxygenfunction:: uz_prng_get_uniform_float_zero_to_one
     
 .. doxygenfunction:: uz_prng_get_uniform_float_min_to_max
-    
+
 .. doxygenfunction:: uz_prng_get_normal_float
+
+
 
 Implementation details
 ======================
 
 This module uses a pointer of type ``void`` internally to be able to provide a generic interface for different generator types.
 Specifically, each generator has a type, e.g., ``uz_prng_squares_t`` or ``uz_prng_pcg_t``.
-The initialization function of these generators return a pointer of type ``uz_prng_X_t``, with ``X`` beeing the specfic generator.
+The initialization function of these generators returns a pointer of type ``uz_prng_X_t``, with ``X`` being the specific generator.
 This type is cast to void to store the pointer independent of the generator.
-Type safety is probably decreased by this approach.
+This approach decreases type safety, but enables flexibility.
 
 Sources
 =======
@@ -424,3 +456,4 @@ Sources
 .. [#prng_wiki_list] https://en.wikipedia.org/wiki/List_of_random_number_generators#cite_note-38
 .. [#polar_method] https://de.wikipedia.org/wiki/Polar-Methode
 .. [#box_mueller] https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform
+

@@ -147,7 +147,7 @@ uint32_t uz_dqn_determine_action(uz_dqn_t *self)
     uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic_copy);
     if (uz_prng_get_uniform_float_zero_to_one (self->randinstance) < self->epsilon)
     {
-        actionind = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->randinstance, self->number_of_actions - 1U);
+        actionind = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->randinstance, self->number_of_actions);
     }
     else
     {

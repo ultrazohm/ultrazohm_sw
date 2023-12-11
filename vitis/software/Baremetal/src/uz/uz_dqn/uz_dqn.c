@@ -150,9 +150,9 @@ uint32_t uz_dqn_determine_action(uz_dqn_t *self)
     uint32_t actionind = 0;
     uz_nn_ff(self->critic_copy, self->observation_k_0);
     uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic_copy);
-    if (uz_prng_get_uniform_float_zero_to_one(self->rand_instance_init) < self->epsilon)
+    if (uz_prng_get_uniform_float_zero_to_one(self->rand_instance_exploration) < self->epsilon)
     {
-        actionind = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_init, self->number_of_actions);
+        actionind = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_exploration, self->number_of_actions);
     }
     else
     {
@@ -177,11 +177,11 @@ float uz_dqn_update(uz_dqn_t *self)
 
         if (self->experience_buffer->counterisfull > 0U)
         {
-            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_init, self->experience_buffer->length);
+            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_training, self->experience_buffer->length);
         }
         else
         {
-            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_init, self->experience_buffer->head);
+            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_training, self->experience_buffer->head);
         }
         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1, self->experience_buffer->vectorforobs1, randomindex);
         uz_nn_ff(self->critic_target_net, self->experience_buffer->vectorforobs1);

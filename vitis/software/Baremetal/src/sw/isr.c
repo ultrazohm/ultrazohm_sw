@@ -30,7 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_prng/uz_prng.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -45,17 +45,26 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+uz_prng_t* generator=NULL;
+
+#define NUMBER_OF_PRNG_RUNS_PER_ISR 50U
+uint32_t rnd_numbers[NUMBER_OF_PRNG_RUNS_PER_ISR] = {0};
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
+    if (current_state == control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+        for (uint32_t i = 0; i < NUMBER_OF_PRNG_RUNS_PER_ISR; i++)
+        {
+        	rnd_numbers[i]=uz_prng_get_uniform_uint32_zero_to_range_int_mult(generator, 26402U);
+        }
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -67,9 +76,9 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+    uz_SystemTime_ISR_Toc();
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
-    uz_SystemTime_ISR_Toc();
 }
 
 //==============================================================================================================================================================
@@ -78,11 +87,12 @@ void ISR_Control(void *data)
 //----------------------------------------------------
 // INITIALIZE & SET THE INTERRUPTs and ISRs
 //----------------------------------------------------
+
 int Initialize_ISR()
 {
 
     int Status = 0;
-
+    generator = uz_prng_init(uz_prng_generator_pcg, uz_prng_float_scale_fp_shift_multiply, 7U);
     // Initialize interrupt controller for the IPI -> Initialize RPU IPI
     Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
     if (Status != XST_SUCCESS)
@@ -100,14 +110,13 @@ int Initialize_ISR()
     }
 
     // Enable uz_mux_axi for triggering the ADCs and the ISR
-//    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
-//    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-//    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-    //uz_mux_axi_enable(Global_Data.objects.mux_axi);
+    //    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+    //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    // uz_mux_axi_enable(Global_Data.objects.mux_axi);
 
     return Status;
 }
-
 
 //==============================================================================================================================================================
 //----------------------------------------------------

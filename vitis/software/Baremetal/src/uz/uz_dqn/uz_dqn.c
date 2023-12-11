@@ -51,34 +51,34 @@ float calculate_derv_loss_dqn(uz_dqn_t *self, float samplereward, float qval, fl
 float epsilon_greedy_decay(float epsilon_start, float epsilon_min, float epsilon_decay);
 float calculate_loss_dqn(uz_dqn_t *self, float samplereward, float qval, float qvalplus1, bool terminal);
 
-uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint64_t random_seed, enum uz_prng_generator uz_prng_type, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism, float *error, struct uz_nn_layer_config config_copy[UZ_NN_MAX_LAYER])
+    uz_dqn_t *uz_dqn_init(struct uz_dqn_config_t config)
 {
-    uz_assert_not_NULL(observation_data);
+    uz_assert_not_NULL(config.observation_data);
     uz_dqn_t *self = uz_dqn_allocation();
-    self->observation_k_0 = uz_matrix_init(&self->observation_k0_matrix, observation_data, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
-    self->observation_k_1 = uz_matrix_init(&self->observation_k1_matrix, observation_k1_data, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
-    self->randinstance = uz_prng_init(uz_prng_type, uz_prng_float_scale_fp_multiply, random_seed);
+    self->observation_k_0 = uz_matrix_init(&self->observation_k0_matrix, config.observation_data,config.network.config_critic->number_of_inputs, 1, config.network.config_critic->number_of_inputs);
+    self->observation_k_1 = uz_matrix_init(&self->observation_k1_matrix, config.observation_k1_data, config.network.config_critic->number_of_inputs, 1, config.network.config_critic->number_of_inputs);
+    self->randinstance = uz_prng_init(config.prng.uz_prng_type,uz_prng_float_scale_fp_multiply, config.prng.random_seed);
 
     // Init critic with random parameters and trainable and copies values to target net
-    self->critic = uz_nn_init_with_rand(config_critic, number_of_layer, self->randinstance, true);
-    self->critic_target_net = uz_nn_init(config_target, number_of_layer, false);
-    self->critic_copy= uz_nn_init(config_copy, number_of_layer, false);
+    self->critic = uz_nn_init_with_rand(config.network.config_critic, config.network.number_of_layer, self->randinstance, true);
+    self->critic_target_net = uz_nn_init(config.network.config_target, config.network.number_of_layer, false);
+    self->critic_copy = uz_nn_init(config.network.config_copy, config.network.number_of_layer, false);
     uz_nn_copy(self->critic, self->critic_target_net);
     uz_nn_copy(self->critic, self->critic_copy);
 
-    self->experience_buffer = uz_dqn_experience_replay_init(buffer_config, length_of_buffer);
-    self->discount_factor = discount_factor;
-    self->lernrate = lernrate;
-    self->adam = uz_adam_init(lernrate / (float)minibatch_size);
-    self->minibatch_size = minibatch_size;
-    self->target_smooth_factor = target_smooth_factor;
-    self->target_update_frequency = target_update_frequency;
-    self->update_mechanism = update_mechanism;
+    self->experience_buffer = uz_dqn_experience_replay_init(config.buffer_config, config.length_of_buffer);
+    self->discount_factor = config.training.discount_factor;
+    self->lernrate = config.training.learn_rate;
+    self->minibatch_size = config.training.minibatch_size;
+    self->adam = uz_adam_init(self->lernrate / (float) self->minibatch_size);
+    self->target_smooth_factor = config.training.target_smooth_factor;
+    self->target_update_frequency = config.training.target_update_frequency;
+    self->update_mechanism = config.training.update_mechanism;
 
-    self->error = error;
-    self->epsilon_decay = epsilon_decay;
-    self->epsilon_min = epsilon_min;
-    self->epsilon = epsilon_start;
+    self->error = config.error;
+    self->epsilon_decay = config.exploration.epsilon_decay;
+    self->epsilon_min = config.exploration.epsilon_min;
+    self->epsilon = config.exploration.epsilon_start;
     self->number_of_actions = uz_nn_get_number_of_outputs(self->critic);
     return (self);
 }

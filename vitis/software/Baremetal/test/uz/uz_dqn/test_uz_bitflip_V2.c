@@ -27,7 +27,6 @@
 #include "splitmix64.h"
 #include "xoshiro128plusplus.h"
 
-
 void uz_nn_trained_export(uz_nn_t *self);
 
 // buffer
@@ -240,17 +239,35 @@ void tearDown(void)
 void test_dqn_bitflip(void)
 {
     float targsmoothfact = 0.05f;
-    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister,uz_prng_float_scale_fp_multiply,1232U);
+    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 41850483U);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
     uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
-    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U,uz_prng_generator_mtwister, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
-    // prefill buffer
-    // do{
-    // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
-    // uz_dqn_sample_bitenv(testdqn2);
-    // } while ((!testdqn2->experience_buffer->counterisfull) && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
-    // testdqn2->env->epsilon_start = configenv.epsilon_start;
+
+    struct uz_dqn_config_t dqn_config =
+        {
+            .observation_data = X_dat,
+            .observation_k1_data = X1_dat,
+            .buffer_config = configbuffer,
+            .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
+            .error = error,
+            .training = {
+                .learn_rate = lernrate,
+                .discount_factor = discountfact,
+                .minibatch_size = MINIBATCHSIZE,
+                .target_update_frequency = TARGET_UPDATE_FREQUENCY,
+                .target_smooth_factor = targsmoothfact,
+                .update_mechanism = periodic},
+            .network = {.config_critic = config_critic, .config_target = config_critic, .config_copy = config_copy, .number_of_layer = NUMBER_OF_HIDDEN_LAYER},
+            .exploration = {.epsilon_start = epsilon_start, .epsilon_min = epsilon_min, .epsilon_decay = epsilon_decay},
+            .prng = {.random_seed = 2U, .uz_prng_type = uz_prng_generator_squares}};
+    uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
+    //  prefill buffer
+    //  do{
+    //  uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);
+    //  uz_dqn_sample_bitenv(testdqn2);
+    //  } while ((!testdqn2->experience_buffer->counterisfull) && (testdqn2->experience_buffer->head< (3 * MINIBATCHSIZE)));
+    //  testdqn2->env->epsilon_start = configenv.epsilon_start;
     for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
         uz_environment_bitflip_reset(env, environment_twister);

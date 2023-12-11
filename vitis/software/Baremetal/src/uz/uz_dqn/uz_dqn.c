@@ -11,7 +11,9 @@ struct uz_dqn_t
     uz_nn_t *critic;
     uz_nn_t *critic_target_net;
     uz_nn_t *critic_copy;
-    uz_prng_t *randinstance;
+    uz_prng_t *rand_instance_init;
+    uz_prng_t *rand_instance_exploration;
+    uz_prng_t *rand_instance_training;
     uz_dqn_experience_replay_t *experience_buffer;
     float discount_factor;
     float lernrate;
@@ -51,16 +53,18 @@ float calculate_derv_loss_dqn(uz_dqn_t *self, float samplereward, float qval, fl
 float epsilon_greedy_decay(float epsilon_start, float epsilon_min, float epsilon_decay);
 float calculate_loss_dqn(uz_dqn_t *self, float samplereward, float qval, float qvalplus1, bool terminal);
 
-    uz_dqn_t *uz_dqn_init(struct uz_dqn_config_t config)
+uz_dqn_t *uz_dqn_init(struct uz_dqn_config_t config)
 {
     uz_assert_not_NULL(config.observation_data);
     uz_dqn_t *self = uz_dqn_allocation();
-    self->observation_k_0 = uz_matrix_init(&self->observation_k0_matrix, config.observation_data,config.network.config_critic->number_of_inputs, 1, config.network.config_critic->number_of_inputs);
+    self->observation_k_0 = uz_matrix_init(&self->observation_k0_matrix, config.observation_data, config.network.config_critic->number_of_inputs, 1, config.network.config_critic->number_of_inputs);
     self->observation_k_1 = uz_matrix_init(&self->observation_k1_matrix, config.observation_k1_data, config.network.config_critic->number_of_inputs, 1, config.network.config_critic->number_of_inputs);
-    self->randinstance = uz_prng_init(config.prng.uz_prng_type,uz_prng_float_scale_fp_multiply, config.prng.random_seed);
+    self->rand_instance_init = uz_prng_init(config.prng_init.uz_prng_type, uz_prng_float_scale_fp_multiply, config.prng_init.random_seed);
+    self->rand_instance_exploration = uz_prng_init(config.prng_exploration.uz_prng_type, uz_prng_float_scale_fp_multiply, config.prng_exploration.random_seed);
+    self->rand_instance_training = uz_prng_init(config.prng_training.uz_prng_type, uz_prng_float_scale_fp_multiply, config.prng_training.random_seed);
 
     // Init critic with random parameters and trainable and copies values to target net
-    self->critic = uz_nn_init_with_rand(config.network.config_critic, config.network.number_of_layer, self->randinstance, true);
+    self->critic = uz_nn_init_with_rand(config.network.config_critic, config.network.number_of_layer, self->rand_instance_init, true);
     self->critic_target_net = uz_nn_init(config.network.config_target, config.network.number_of_layer, false);
     self->critic_copy = uz_nn_init(config.network.config_copy, config.network.number_of_layer, false);
     uz_nn_copy(self->critic, self->critic_target_net);
@@ -70,7 +74,7 @@ float calculate_loss_dqn(uz_dqn_t *self, float samplereward, float qval, float q
     self->discount_factor = config.training.discount_factor;
     self->lernrate = config.training.learn_rate;
     self->minibatch_size = config.training.minibatch_size;
-    self->adam = uz_adam_init(self->lernrate / (float) self->minibatch_size);
+    self->adam = uz_adam_init(self->lernrate / (float)self->minibatch_size);
     self->target_smooth_factor = config.training.target_smooth_factor;
     self->target_update_frequency = config.training.target_update_frequency;
     self->update_mechanism = config.training.update_mechanism;
@@ -115,9 +119,10 @@ float calculate_loss_dqn(uz_dqn_t *self, float samplereward, float qval, float q
 //     return cum_loss;
 // }
 
-void uz_dqn_set_reward(uz_dqn_t *self,float reward){
+void uz_dqn_set_reward(uz_dqn_t *self, float reward)
+{
     uz_assert_not_NULL(self);
-    self->reward=reward;
+    self->reward = reward;
 }
 
 void uz_dqn_sample_observation_k_0(uz_dqn_t *self, uz_matrix_t *observation_k_0)
@@ -145,9 +150,9 @@ uint32_t uz_dqn_determine_action(uz_dqn_t *self)
     uint32_t actionind = 0;
     uz_nn_ff(self->critic_copy, self->observation_k_0);
     uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic_copy);
-    if (uz_prng_get_uniform_float_zero_to_one (self->randinstance) < self->epsilon)
+    if (uz_prng_get_uniform_float_zero_to_one(self->rand_instance_init) < self->epsilon)
     {
-        actionind = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->randinstance, self->number_of_actions);
+        actionind = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_init, self->number_of_actions);
     }
     else
     {
@@ -172,11 +177,11 @@ float uz_dqn_update(uz_dqn_t *self)
 
         if (self->experience_buffer->counterisfull > 0U)
         {
-            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->randinstance, self->experience_buffer->length);
+            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_init, self->experience_buffer->length);
         }
         else
         {
-            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->randinstance, self->experience_buffer->head);
+            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->rand_instance_init, self->experience_buffer->head);
         }
         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1, self->experience_buffer->vectorforobs1, randomindex);
         uz_nn_ff(self->critic_target_net, self->experience_buffer->vectorforobs1);
@@ -202,7 +207,6 @@ float uz_dqn_update(uz_dqn_t *self)
         cum_loss += loss;
         uz_nn_backward_pass_mini_batch(self->critic, self->error, self->experience_buffer->vectorforobs);
         resetFloatArray(self->error, uz_nn_get_number_of_outputs(self->critic));
-
     }
     cum_loss = cum_loss / (float)self->minibatch_size;
     adam_optimizer_step(self->adam, self->critic);
@@ -215,8 +219,9 @@ float uz_dqn_update(uz_dqn_t *self)
     return cum_loss;
 }
 
-void uz_dqn_copy_net(uz_dqn_t *self){
-	uz_assert_not_NULL(self);
+void uz_dqn_copy_net(uz_dqn_t *self)
+{
+    uz_assert_not_NULL(self);
     uz_nn_copy(self->critic, self->critic_copy);
 }
 
@@ -289,8 +294,6 @@ float epsilon_greedy_decay(float epsilon_start, float epsilon_min, float epsilon
     }
     return epsilon;
 }
-
-
 
 uint32_t uz_dqn_get_counterisfull(uz_dqn_t *self)
 {
@@ -645,8 +648,6 @@ uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self)
 //     }
 //     return cum_loss;
 // }
-
-
 
 // float calculate_reward_dqn(float samplerate, uz_matrix_t *observations, bool penalty)
 // {

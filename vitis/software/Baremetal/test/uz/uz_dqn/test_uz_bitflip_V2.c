@@ -260,7 +260,9 @@ void test_dqn_bitflip(void)
                 .update_mechanism = periodic},
             .network = {.config_critic = config_critic, .config_target = config_critic, .config_copy = config_copy, .number_of_layer = NUMBER_OF_HIDDEN_LAYER},
             .exploration = {.epsilon_start = epsilon_start, .epsilon_min = epsilon_min, .epsilon_decay = epsilon_decay},
-            .prng = {.random_seed = 2U, .uz_prng_type = uz_prng_generator_squares}};
+            .prng_init = {.random_seed = 2U, .uz_prng_type = uz_prng_generator_squares},
+            .prng_exploration = {.random_seed = 2U, .uz_prng_type = uz_prng_generator_squares},
+            .prng_training = {.random_seed = 2U, .uz_prng_type = uz_prng_generator_squares}};
     uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
     //  prefill buffer
     //  do{

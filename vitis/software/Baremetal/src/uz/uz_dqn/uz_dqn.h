@@ -53,7 +53,9 @@ struct uz_dqn_config_t
     float *error;
     struct uz_dqn_training_config_t training;
     struct uz_dqn_network_config_t network;
-    struct uz_dqn_prng_config_t prng;
+    struct uz_dqn_prng_config_t prng_init;
+    struct uz_dqn_prng_config_t prng_exploration;
+    struct uz_dqn_prng_config_t prng_training;
     struct uz_dqn_exploration_config_t exploration;
 };
 

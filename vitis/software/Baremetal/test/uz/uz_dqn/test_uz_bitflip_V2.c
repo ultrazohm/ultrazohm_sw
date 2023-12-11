@@ -10,12 +10,23 @@
 #include "uz_nn_activation_functions.h"
 #include "uz_array.h"
 #include "uz_matrix.h"
-#include "uz_mtwister.h"
+#include "uz_prng.h"
 #include "uz_environment_bitflip.h"
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
 #include "export_array.h"
+
+#include "uz_prng.h"
+#include "../uz_prng_squares/uz_prng_squares.h"
+#include "../uz_prng_halton/uz_prng_halton.h"
+#include "../uz_prng_mtwister/uz_prng_mtwister.h"
+#include "../uz_prng_pcg/uz_prng_pcg.h"
+#include "../uz_prng_xoshiro/uz_prng_xoshiro.h"
+#include "mt19937.h"
+#include "splitmix64.h"
+#include "xoshiro128plusplus.h"
+
 
 void uz_nn_trained_export(uz_nn_t *self);
 
@@ -229,11 +240,11 @@ void tearDown(void)
 void test_dqn_bitflip(void)
 {
     float targsmoothfact = 0.05f;
-    uz_mtwister_t *environment_twister = uz_mtwister_init(1232U);
+    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister,uz_prng_float_scale_fp_multiply,1232U);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
     uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
-    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
+    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U,uz_prng_generator_mtwister, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
     // prefill buffer
     // do{
     // uz_dqn_environment_reset(testdqn2->env,&testdqn2->randinstance->seedRand);

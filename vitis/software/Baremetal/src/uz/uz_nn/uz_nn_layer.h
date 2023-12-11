@@ -1,7 +1,7 @@
 #ifndef UZ_NN_LAYER_H
 #define UZ_NN_LAYER_H
 #include "../uz_matrix/uz_matrix.h"
-#include "../uz_mtwister/uz_mtwister.h"
+#include "../uz_prng/uz_prng.h"
 #include "uz_nn_activation_functions.h"
 #include <stdint.h>
 #include <stdbool.h>
@@ -78,10 +78,10 @@ struct uz_nn_layer_config
  */
 uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config);
 uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config);
-void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_mtwister_t *self, float mean, float std);
-void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_mtwister_t *self, float mean, float std);
+void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
+void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
 
-void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, struct uz_nn_layer_config layer_config);
+void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, struct uz_nn_layer_config layer_config);
 /**
  * @brief Calculates one forward pass of a network layer with the given input value (column vector)
  *

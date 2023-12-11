@@ -7,7 +7,17 @@
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
 #include "uz_matrix.h"
-#include "uz_mtwister.h"
+
+#include "uz_prng.h"
+#include "../uz_prng_squares/uz_prng_squares.h"
+#include "../uz_prng_halton/uz_prng_halton.h"
+#include "../uz_prng_mtwister/uz_prng_mtwister.h"
+#include "../uz_prng_pcg/uz_prng_pcg.h"
+#include "../uz_prng_xoshiro/uz_prng_xoshiro.h"
+#include "mt19937.h"
+#include "splitmix64.h"
+#include "xoshiro128plusplus.h"
+
 #include "uz_environment_bitflip.h"
 #include "uz_array.h"
 

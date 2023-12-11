@@ -238,6 +238,6 @@ Reference
 
 .. doxygenfunction:: uz_nn_train_minibatch
 
-.. doxygenfunction:: calc_epsilon_greedy
+.. ..  doxygenfunction:: calc_epsilon_greedy
 
 .. doxygendefine:: UZ_NN_MAX_LAYER

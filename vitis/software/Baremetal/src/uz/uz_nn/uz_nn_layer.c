@@ -17,7 +17,6 @@
 #include "../uz_global_configuration.h"
 #if UZ_NN_LAYER_MAX_INSTANCES > 0U
 #include "uz_nn_layer.h"
-#include "../uz_mtwister/uz_mtwister.h"
 #include "../uz_HAL.h"
 
 struct uz_nn_layer_t
@@ -201,28 +200,30 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
     return (self);
 }
 
-void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_mtwister_t *self, float mean, float std)
+void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
 {
     uz_assert_not_NULL(parameter);
-    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(prng);
     for (uint32_t i = 0U; i < parameter->length_of_data; i++)
     {
-        parameter->data[i] = uz_mtwister_random_normal_float(self, mean, std);
+        parameter->data[i] = uz_prng_get_normal_float(prng, mean, std);
     }
 }
 
-void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_mtwister_t *self, float mean, float std)
+void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
 {
     uz_assert_not_NULL(parameter);
-    uz_assert_not_NULL(self);
+    uz_assert_not_NULL(prng);
     for (uint32_t i = 0U; i < parameter->length_of_data; i++)
     {
-        parameter->data[i] = uz_mtwister_random_normal_float(self, mean, std);
+        parameter->data[i] = uz_prng_get_normal_float(prng, mean, std);
     }
 }
 
-void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, struct uz_nn_layer_config layer_config)
+void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, struct uz_nn_layer_config layer_config)
 {
+    uz_assert_not_NULL(layer);
+    uz_assert_not_NULL(prng);
     switch ((layer_config.activation_function))
     {
     case (activation_linear || activation_sigmoid || activation_tanh || activation_sigmoid2):
@@ -231,7 +232,7 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, str
         float std = sqrtf(2.0f / (float)((layer->number_of_neurons + layer_config.length_of_output)));
         float mean = 0.0f;
         // uz_nn_layer_init_Glorot(layer->bias,self);
-        uz_nn_layer_init_Glorot_uniform(layer->weights, self, mean, std);
+        uz_nn_layer_init_Glorot_uniform(layer->weights, prng, mean, std);
         break;
     }
     case activation_ReLU:
@@ -241,7 +242,7 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_mtwister_t *self, str
         float mean = 0.0f;
         // float fanin = (float)(layer->number_of_neurons);
         // uz_nn_layer_init_He(layer->bias,self);
-        uz_nn_layer_init_He_uniform(layer->weights, self, mean, std);
+        uz_nn_layer_init_He_uniform(layer->weights, prng, mean, std);
         break;
     }
     default:

@@ -11,7 +11,7 @@ struct uz_dqn_t
     uz_nn_t *critic;
     uz_nn_t *critic_target_net;
     uz_nn_t *critic_copy;
-    uz_mtwister_t *randinstance;
+    uz_prng_t *randinstance;
     uz_dqn_experience_replay_t *experience_buffer;
     float discount_factor;
     float lernrate;
@@ -51,13 +51,13 @@ float calculate_derv_loss_dqn(uz_dqn_t *self, float samplereward, float qval, fl
 float epsilon_greedy_decay(float epsilon_start, float epsilon_min, float epsilon_decay);
 float calculate_loss_dqn(uz_dqn_t *self, float samplereward, float qval, float qvalplus1, bool terminal);
 
-uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint32_t random_seed, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism, float *error,  struct uz_nn_layer_config config_copy[UZ_NN_MAX_LAYER])
+uz_dqn_t *uz_dqn_init(float *observation_data, float *observation_k1_data, float lernrate, float discount_factor, struct uz_nn_layer_config config_critic[UZ_NN_MAX_LAYER], struct uz_nn_layer_config config_target[UZ_NN_MAX_LAYER], uint64_t random_seed, enum uz_prng_generator uz_prng_type, uint32_t number_of_layer, struct uz_dqn_experience_replay_config buffer_config, uint32_t length_of_buffer, uint32_t minibatch_size, uint32_t target_update_frequency, float target_smooth_factor, float epsilon_start, float epsilon_min, float epsilon_decay, enum target_update update_mechanism, float *error, struct uz_nn_layer_config config_copy[UZ_NN_MAX_LAYER])
 {
     uz_assert_not_NULL(observation_data);
     uz_dqn_t *self = uz_dqn_allocation();
     self->observation_k_0 = uz_matrix_init(&self->observation_k0_matrix, observation_data, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
     self->observation_k_1 = uz_matrix_init(&self->observation_k1_matrix, observation_k1_data, config_critic->number_of_inputs, 1, config_critic->number_of_inputs);
-    self->randinstance = uz_mtwister_init(random_seed);
+    self->randinstance = uz_prng_init(uz_prng_type, uz_prng_float_scale_fp_multiply, random_seed);
 
     // Init critic with random parameters and trainable and copies values to target net
     self->critic = uz_nn_init_with_rand(config_critic, number_of_layer, self->randinstance, true);
@@ -145,9 +145,9 @@ uint32_t uz_dqn_determine_action(uz_dqn_t *self)
     uint32_t actionind = 0;
     uz_nn_ff(self->critic_copy, self->observation_k_0);
     uz_matrix_t *outputcritic = uz_nn_get_output_data(self->critic_copy);
-    if (uz_mtwister_random_uniform_float(self->randinstance) < self->epsilon)
+    if (uz_prng_get_uniform_float_zero_to_one (self->randinstance) < self->epsilon)
     {
-        actionind = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->number_of_actions - 1U);
+        actionind = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->randinstance, self->number_of_actions - 1U);
     }
     else
     {
@@ -172,11 +172,11 @@ float uz_dqn_update(uz_dqn_t *self)
 
         if (self->experience_buffer->counterisfull > 0U)
         {
-            randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->experience_buffer->length - 1);
+            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->randinstance, self->experience_buffer->length);
         }
         else
         {
-            randomindex = uz_mtwister_random_uniform_max_uint32(self->randinstance, self->experience_buffer->head - 1);
+            randomindex = uz_prng_get_uniform_uint32_zero_to_range_int_mult(self->randinstance, self->experience_buffer->head);
         }
         uz_matrix_get_row_vector_zero_based(self->experience_buffer->observations1, self->experience_buffer->vectorforobs1, randomindex);
         uz_nn_ff(self->critic_target_net, self->experience_buffer->vectorforobs1);

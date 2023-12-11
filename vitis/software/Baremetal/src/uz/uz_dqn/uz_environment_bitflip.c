@@ -57,14 +57,14 @@ uz_environment_bitflip_t *uz_environment_bitflip_init(struct uz_dqn_environment_
     return (self);
 }
 
-void uz_environment_bitflip_reset(uz_environment_bitflip_t *self, uz_mtwister_t *random_generator)
+void uz_environment_bitflip_reset(uz_environment_bitflip_t *self, uz_prng_t *random_generator)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(random_generator);
     for (uint32_t i = 0; i < self->length_of_bitmask; i++)
     {
-        self->current_bitmask[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
-        self->target_bitmask[i] = uz_mtwister_random_zero_or_one_uint32(random_generator);
+        self->current_bitmask[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(random_generator,2U);
+        self->target_bitmask[i] = uz_prng_get_uniform_uint32_zero_to_range_int_mult(random_generator, 2U);
         self->environment_state->data[i] = (float)self->current_bitmask[i];
         self->environment_state->data[self->length_of_bitmask + i] = (float)self->target_bitmask[i];
     }

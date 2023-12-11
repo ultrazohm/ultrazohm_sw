@@ -3,7 +3,7 @@
 #include "../uz_matrix/uz_matrix.h"
 #include "../uz_HAL.h"
 #include <stdbool.h>
-#include "../uz_mtwister/uz_mtwister.h"
+#include "../uz_prng/uz_prng.h"
 #include "uz_dqn.h"
 
 typedef struct uz_environment_bitflip_t uz_environment_bitflip_t;
@@ -18,7 +18,8 @@ struct uz_dqn_environment_config
 };
 
 uz_environment_bitflip_t *uz_environment_bitflip_init(struct uz_dqn_environment_config envconf);
-void uz_environment_bitflip_reset(uz_environment_bitflip_t *self, uz_mtwister_t *random_generator);
+void uz_environment_bitflip_reset(uz_environment_bitflip_t *self, uz_prng_t *random_generator);
+
 float uz_environment_bitflip_get_reward(uz_environment_bitflip_t *self);
 
 bool uz_environment_bitflip_is_finished(uz_environment_bitflip_t *self);

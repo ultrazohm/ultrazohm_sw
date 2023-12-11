@@ -14,12 +14,22 @@
 #include "uz_nn_activation_functions.h"
 #include "uz_array.h"
 #include "uz_matrix.h"
-#include "uz_mtwister.h"
+#include "uz_prng.h"
 #include "uz_environment_bitflip.h"
 #include <time.h>
 #include <string.h>
 #include <stdlib.h>
 #include "export_array.h"
+
+#include "uz_prng.h"
+#include "../uz_prng_squares/uz_prng_squares.h"
+#include "../uz_prng_halton/uz_prng_halton.h"
+#include "../uz_prng_mtwister/uz_prng_mtwister.h"
+#include "../uz_prng_pcg/uz_prng_pcg.h"
+#include "../uz_prng_xoshiro/uz_prng_xoshiro.h"
+#include "mt19937.h"
+#include "splitmix64.h"
+#include "xoshiro128plusplus.h"
 
 void save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size);
 
@@ -291,12 +301,12 @@ void test_dqn_pt1_synchron(void)
     float time_constant = 0.005f;
     float integration_time = 0.0001f;
     uz_environment_pt1_t *pt1 = uz_environment_pt1_init(gain, time_constant, integration_time, array);
-    uz_mtwister_t *random_generator = uz_mtwister_init(10U);
-    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
+    uz_prng_t *random_generator = uz_prng_init(uz_prng_generator_mtwister,uz_prng_float_scale_fp_multiply,10U);
+    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U,uz_prng_generator_mtwister, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
     ///////////////// Training loop///////////////////////////////////////////////////////////////////////////////////////////
     for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
-        float setpoint = uz_mtwister_random_uniform_float(random_generator);
+        float setpoint = uz_prng_get_uniform_float_zero_to_one(random_generator);
         uz_environment_pt1_reset(pt1);
         loss[epoch] = uz_environment_pt1_step_one_episode(testdqn2, 500U, true, pt1, setpoint, false, NULL, NULL, NULL,10);
         cumreward[epoch] = uz_environment_pt1_get_cumulative_reward(pt1);
@@ -355,14 +365,14 @@ void test_dqn_pt1_asynchron(void)
     float integration_time = 0.0001f;
     uint32_t max_steps=500U;
     uz_environment_pt1_t *pt1 = uz_environment_pt1_init(gain, time_constant, integration_time, array);
-    uz_mtwister_t *random_generator = uz_mtwister_init(10U);
-    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
+    uz_prng_t *random_generator = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 10U);
+    uz_dqn_t *testdqn2 = uz_dqn_init(X_dat, X1_dat, lernrate, discountfact, config_critic, config_target, 2U, uz_prng_generator_mtwister,NUMBER_OF_HIDDEN_LAYER, configbuffer, EXPERIENCE_BUFFER_LENGTH, MINIBATCHSIZE, TARGET_UPDATE_FREQUENCY, targsmoothfact, epsilon_start, epsilon_min, epsilon_decay, periodic, error,config_copy);
     ///////////////// Training loop///////////////////////////////////////////////////////////////////////////////////////////
     bool first_episode = true;
     uz_matrix_t *env_state =NULL;
     for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
     {
-        float setpoint = uz_mtwister_random_uniform_float(random_generator);
+        float setpoint = uz_prng_get_uniform_float_zero_to_one(random_generator);
         uz_environment_pt1_reset(pt1);
         // Step Environment x-times
         // each y-steps, do control

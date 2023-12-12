@@ -2,8 +2,8 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Tue Dec  5 11:21:47 2023
-# Process ID: 9412
+# Start of session at: Tue Dec 12 10:47:45 2023
+# Process ID: 17516
 # Current directory: C:/Users/Philipp/ultrazohm/ultrazohm_sw/ip_cores/uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore/uz_pmsm_6LUT_approx_v1_0/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/Users/Philipp/ultrazohm/ultrazohm_sw/ip_cores/uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore/uz_pmsm_6LUT_approx_v1_0/prj_ip/vivado.log
@@ -11,7 +11,7 @@
 # Running On: DESKTOP-MRHTEUR, OS: Windows, CPU Frequency: 1896 MHz, CPU Physical cores: 4, Host memory: 8458 MB
 #-----------------------------------------------------------
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:03 ; elapsed = 00:00:09 . Memory (MB): peak = 378.117 ; gain = 70.383
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:09 . Memory (MB): peak = 378.375 ; gain = 71.488
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/Philipp/ultrazohm/ultrazohm_sw/ip_cores/uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/Philipp/ultrazohm/ultrazohm_sw/ip_cores/uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/Philipp/ultrazohm/ultrazohm_sw/ip_cores/uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore/uz_pmsm_6LUT_approx_v1_0/prj_ip'.)
@@ -37,20 +37,18 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_si
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_mul_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_convert_double2single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_cosh_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_add_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_log_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
-WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_recip_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
@@ -83,4 +81,4 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_axi4.vhd" already
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_6LUT_approx.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Tue Dec  5 11:22:12 2023...
+INFO: [Common 17-206] Exiting Vivado at Tue Dec 12 10:48:10 2023...

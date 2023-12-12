@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Users/Philipp/ultrazohm/ultrazohm_sw/ip_cores/uz_pmsm_model_nonlinear_6LUT/hdl_prj/ipcore/uz_pmsm_6LUT_approx_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="2cd9a8dcf29742859fb9d5cdd8453dc5"/>
+    <Option Name="Id" Val="6d380bdf72f848ecbc2948fabc42ffb9"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1LV-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -113,12 +113,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -173,13 +167,13 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_single.vhd">
+      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd">
+      <File Path="$PPRDIR/../hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

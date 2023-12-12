@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>fc5ff17d</spirit:value>
+            <spirit:value>3d4f833e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>fc5ff17d</spirit:value>
+            <spirit:value>3d4f833e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1144,10 +1144,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_sub_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1184,11 +1180,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_single.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1234,7 +1230,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_6LUT_approx.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_ad1aa3fb</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_aa3f8c58</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1256,11 +1252,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT_tc.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1310,12 +1301,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_gain_pow2_single.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_uminus_single.vhd</spirit:name>
+        <spirit:name>hdl/uz_pmsm_6LUT_approx_src_nfp_div_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1428,14 +1419,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_6LUT_approx</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113325463</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-12-05T12:04:04Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113335550</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-12-12T12:11:17Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="b2e401b8"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="c2eca750"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="2be5b0a2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="22ba322a"/>
     </xilinx:packagingInfo>

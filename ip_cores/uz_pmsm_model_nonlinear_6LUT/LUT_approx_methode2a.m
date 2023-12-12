@@ -6,6 +6,10 @@ close all;
 path('C:\SoSe23\Masterarbeit\MatlabtoTikz\src',path);
 
 
+% HDL SETUP TOOLPATH muss nach jedem Neustart einmal ausgeführt werden
+% hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath','C:\Xilinx\Vivado\2022.2\bin');
+
+
 %LUT Fitting
 
 %LeastSquare Problems
@@ -335,41 +339,42 @@ zlabel('$$\varepsilon_q/\%$$','Interpreter','Latex');
 % zlabel('L');
 % title('Mit Gradient');
 % legend;
+
+% Approximierter Fluss
+figure;
+subplot(2,1,1); 
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
+surf(d_current, q_current,Lqq_approx_test);
+xlabel('d Current');
+ylabel('q Current');
+zlabel('L');
+title('Mit Ableitung');
+legend;
 % 
-% % Approximierter Fluss
-% subplot(2,1,2); 
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-% surf(d_current, q_current,Ldd);
-% xlabel('d Current');
-% ylabel('q Current');
-% zlabel('L');
-% title('Mit Ableitung');
-% legend;
+% Echter Fluss
+subplot(2,1,2); 
+
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull);
+surf(d_current, q_current,Lqq_approx);
+%surf(X, Y, fluxd_real);
+xlabel('D Current');
+ylabel('Q Current');
+zlabel('L');
+title('Mit Gradient aus approx. Flusskarte');
+legend;
 % 
-% % Echter Fluss
-% % subplot(2,1,3); 
-% figure;
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current,Ldd_simu);
-% %surf(X, Y, fluxd_real);
-% xlabel('D Current');
-% ylabel('Q Current');
-% zlabel('L');
-% title('Mit Gradient aus Flusskarte');
-% legend;
-% % 
-% figure;
-% % Error psiq zwischen approx und echtem Fluss
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, ed_L);
-% xlabel('D Current');
-% ylabel('Q Current');
-% zlabel('error %');
-% title('error L');
-% legend;
+figure;
+% Error psiq zwischen approx und echtem Fluss
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull);
+surf(d_current, q_current, ed_L);
+xlabel('D Current');
+ylabel('Q Current');
+zlabel('error %');
+title('error L');
+legend;
 
 
 

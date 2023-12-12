@@ -12,6 +12,5 @@ vcom  uz_pmsm_6LUT_approx_src_nfp_tanh_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_log_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_signum_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_abs_single.vhd
-vcom  uz_pmsm_6LUT_approx_src_nfp_gain_pow2_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_nfp_div_single.vhd
 vcom  uz_pmsm_6LUT_approx_src_uz_pmsm_model_6LUT.vhd

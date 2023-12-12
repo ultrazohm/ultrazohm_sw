@@ -19,3 +19,4 @@ dash
 matplotlib
 bokeh
 jupyter_bokeh
+seaborn

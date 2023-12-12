@@ -12,17 +12,17 @@
 #define ENDAT_23_BIT_OUTLIER_VALUE 838860
 #define ENDAT_23_BIT_OUTLIER_VALUE_NEG -838860
 #define ENDAT_19_BIT_MAX_VALUE 0x7FFFF
-#define ENDAT_19_BIT_OUTLIER_VALUE 0x7FFFF
-#define ENDAT_19_BIT_OUTLIER_VALUE_NEG 0x7FFFF
+#define ENDAT_19_BIT_OUTLIER_VALUE 52428
+#define ENDAT_19_BIT_OUTLIER_VALUE_NEG -52428
 #define ENDAT_21_BIT_MAX_VALUE 0x1FFFFF
-#define ENDAT_21_BIT_OUTLIER_VALUE 0x1FFFFF
-#define ENDAT_21_BIT_OUTLIER_VALUE_NEG 0x1FFFFF
+#define ENDAT_21_BIT_OUTLIER_VALUE 209715
+#define ENDAT_21_BIT_OUTLIER_VALUE_NEG -209715
 #define ENDAT_25_BIT_MAX_VALUE 0x1FFFFFF
-#define ENDAT_25_BIT_OUTLIER_VALUE 0x1FFFFFF
-#define ENDAT_25_BIT_OUTLIER_VALUE_NEG 0x1FFFFFF
+#define ENDAT_25_BIT_OUTLIER_VALUE 3355443
+#define ENDAT_25_BIT_OUTLIER_VALUE_NEG -3355443
 #define ENDAT_27_BIT_MAX_VALUE 0x7FFFFFF
-#define ENDAT_27_BIT_OUTLIER_VALUE 0x7FFFFFF
-#define ENDAT_27_BIT_OUTLIER_VALUE_NEG 0x7FFFFFF
+#define ENDAT_27_BIT_OUTLIER_VALUE 13421772
+#define ENDAT_27_BIT_OUTLIER_VALUE_NEG -3421772
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -296,7 +296,7 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed);
  * @brief This function calculate a rotation from two positional values for EnDat.
  * @return Returns the RPM value.
  */
-float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision);
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode);
 
 /**
  * @param rpm is the revolutions per minute value.

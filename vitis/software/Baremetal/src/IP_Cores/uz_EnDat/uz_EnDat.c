@@ -488,7 +488,7 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed) {
     return(ret);
 }
 
-float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision) {
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode) {
     float ret = 0.0f;
     static float retold = 1.0f;
     int32_t dif = 0;
@@ -542,6 +542,7 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
 
     dif = (int32_t)(pos2 - pos1);
     //mitigation of singularity events
+    if (testmode == 0x0U) {
     if (dif < 0) {
         difabs = (uint32_t )(dif * -1);
     }
@@ -558,16 +559,19 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     if ((dif > endatposboundry) || (dif < endatnegboundry) || ((difabs > (difoldabs * 1000)))) {
         dif = difold;
     }
-    
+    }
     
     diff = (float) dif;
     maxvalf = (float) maxval;
     tick = (diff / maxvalf);
     ret = (tick / time_elapsed);
     //mitigation of singularity events
+    if (testmode == 0x0U) {
     if (((ret < 0.00001f) && (ret > -0.00001f)) || (fabsf(ret)-fabsf(retold)) > (fabsf(retold) * 10.0f)) {
         return (retold);
     }
+    }
+
     if (invert == 0x1U) {
         ret *= -60.0f;
     }
@@ -575,8 +579,7 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     {
         ret *= 60.0f;
     }
-
-
+    
     difold = dif;
     retold = ret;
     return (ret);

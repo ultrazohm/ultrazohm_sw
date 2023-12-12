@@ -42,6 +42,7 @@
 // }
 
 void export_abitrary_number_of_arrays(uz_array_float_t **export_array, size_t length_of_export_array, char table_header[], char absolute_path[], uint32_t index);
+void train_bitflip(uint32_t number_of_epochs, uz_environment_bitflip_t *env, uz_prng_t *env_prng, uz_dqn_t *dqn, uz_array_float_t episode_loss, uz_array_float_t cumulative_reward, uz_array_float_t global_reward_metric, uz_array_float_t epsilon_per_epsiode);
 
 void eval_steps_bitflip(uz_dqn_t *dqn, uz_environment_bitflip_t *env, uz_array_float_t reward_log, uint32_t number_of_eval_episodes, uz_prng_t *prng);
 
@@ -302,24 +303,36 @@ void test_dqn_bitflip(void)
             .prng_training = {.random_seed = 7U, .uz_prng_type = uz_prng_generator_mtwister}};
     uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
 
-    for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
+    for (uint32_t i = 0; i < 2; i++)
     {
-        uz_environment_bitflip_reset(env, environment_twister);
-        episode_loss.data[epoch] = uz_environment_bitflip_step_one_episode(testdqn2, true, env);
-        cumulative_reward.data[epoch] = uz_environment_bitflip_get_cumulative_reward(env);
-        if (epoch == 0)
+        uz_dqn_set_prng_seeds(testdqn2, 9U, 9U, 7U);
+        uz_prng_reset(environment_twister, 41850483U);
+        uz_dqn_reset(testdqn2, epsilon_start);
+        uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval
+        for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
         {
-            global_reward_metric.data[epoch] = uz_environment_bitflip_get_cumulative_reward(env);
+            uz_environment_bitflip_reset(env, environment_twister);
+            episode_loss.data[epoch] = uz_environment_bitflip_step_one_episode(testdqn2, true, env);
+            cumulative_reward.data[epoch] = uz_environment_bitflip_get_cumulative_reward(env);
+            if (epoch == 0)
+            {
+                global_reward_metric.data[epoch] = uz_environment_bitflip_get_cumulative_reward(env);
+            }
+            else
+            {
+                global_reward_metric.data[epoch] = 0.99f * global_reward_metric.data[epoch - 1] + 0.01f * uz_environment_bitflip_get_cumulative_reward(env);
+            }
+            epsilon_per_epsiode.data[epoch] = uz_dqn_get_epsilon(testdqn2);
+            uz_environment_bitflip_save_values(Q_Critic, Q_Target, cy_2, ty_2, epoch, NUMBER_OF_OUTPUTS);
         }
-        else
-        {
-            global_reward_metric.data[epoch] = 0.99f * global_reward_metric.data[epoch - 1] + 0.01f * uz_environment_bitflip_get_cumulative_reward(env);
-        }
-        epsilon_per_epsiode.data[epoch] = uz_dqn_get_epsilon(testdqn2);
-        uz_environment_bitflip_save_values(Q_Critic, Q_Target, cy_2, ty_2, epoch, NUMBER_OF_OUTPUTS);
-    }
 
-    eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+        eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+        export_abitrary_number_of_arrays(export_array, 4, header, absolute_path, i);
+        for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
+        {
+            TEST_ASSERT_EQUAL_FLOAT(1.0f, cumreward_noexpl[i]);
+        }
+    }
 
     exportFloatArrayToCSV("test/uz/uz_dqn/loss256_clipped.csv", loss, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_clipped.csv", cumreward, NUMBER_OF_EPOCHS);
@@ -329,7 +342,6 @@ void test_dqn_bitflip(void)
     exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
 
-    export_abitrary_number_of_arrays(export_array, 4, header, absolute_path, 0);
 
     FILE *f = fopen("test/uz/uz_dqn/hyperparam.txt", "w"); // open the file for writing
     if (f != NULL)                                         // check for success
@@ -341,11 +353,6 @@ void test_dqn_bitflip(void)
         f = NULL;  // set file handle to null since f is no longer valid
     }
     uz_nn_trained_export(uz_dqn_get_critic_net(testdqn2));
-
-    for (size_t i = 0; i < NUMBEROFTESTSTEPS; i++)
-    {
-        TEST_ASSERT_EQUAL_FLOAT(1.0f, cumreward_noexpl[i]);
-    }
 }
 
 void uz_nn_trained_export(uz_nn_t *self)
@@ -404,21 +411,6 @@ void export_abitrary_number_of_arrays(uz_array_float_t **export_array, size_t le
     }
 }
 
-void eval_steps_bitflip(uz_dqn_t *dqn, uz_environment_bitflip_t *env, uz_array_float_t reward_log, uint32_t number_of_eval_episodes, uz_prng_t *prng)
-{
-    assert(dqn != NULL);
-    assert(env != NULL);
-    assert(reward_log.length == number_of_eval_episodes);
-
-    uz_dqn_set_epsilon(dqn, 0.0f, 0.0f, 0.0f);
-    for (size_t i = 0; i < number_of_eval_episodes; i++)
-    {
-        uz_environment_bitflip_reset(env, prng);
-        uz_environment_bitflip_step_one_episode(dqn, false, env);
-        reward_log.data[i] = uz_environment_bitflip_get_cumulative_reward(env);
-    }
-}
-
 void test_dqn_bitflip_twister_10_seeds(void)
 {
     float Q_Target[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
@@ -453,7 +445,7 @@ void test_dqn_bitflip_twister_10_seeds(void)
     char eval_absolute_path[] = "test/uz/uz_dqn/twister_eval";
 
     float targsmoothfact = 0.05f;
-    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 0U);
+    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 41850483U);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
     uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
@@ -482,10 +474,32 @@ void test_dqn_bitflip_twister_10_seeds(void)
     uz_prng_t *dqn_training_prng = uz_dqn_get_prng_training(testdqn2);
     uz_prng_t *dqn_exploration_prng = uz_dqn_get_prng_exploration(testdqn2);
 
-    for (uint32_t epoch = 0; epoch < NUMBER_OF_EPOCHS; epoch++)
+    //  uint64_t mtwister_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116}; // arbitrary numbers with large and small seeds
+
+    for (uint32_t seed_index = 0; seed_index < 2; seed_index++)
     {
-        uz_environment_bitflip_reset(env, environment_twister);
-        episode_loss.data[epoch] = uz_environment_bitflip_step_one_episode(testdqn2, true, env);
+
+        uz_dqn_set_prng_seeds(testdqn2, 9U, 9U, 7U);
+        uz_prng_reset(environment_twister, 41850483U);
+        uz_dqn_reset(testdqn2, epsilon_start);
+        uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval
+
+        train_bitflip(NUMBER_OF_EPOCHS, env, environment_twister, testdqn2, episode_loss, cumulative_reward, global_reward_metric, epsilon_per_epsiode);
+        eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+
+        export_abitrary_number_of_arrays(training_log, 4, training_header, training_absolute_path, seed_index);
+        export_abitrary_number_of_arrays(evaluation_log, 1, eval_header, eval_absolute_path, seed_index);
+    }
+}
+
+// NUMBER_OF_EPOCHS,
+void train_bitflip(uint32_t number_of_epochs, uz_environment_bitflip_t *env, uz_prng_t *env_prng, uz_dqn_t *dqn, uz_array_float_t episode_loss, uz_array_float_t cumulative_reward, uz_array_float_t global_reward_metric, uz_array_float_t epsilon_per_epsiode)
+{
+
+    for (uint32_t epoch = 0; epoch < number_of_epochs; epoch++)
+    {
+        uz_environment_bitflip_reset(env, env_prng);
+        episode_loss.data[epoch] = uz_environment_bitflip_step_one_episode(dqn, true, env);
         cumulative_reward.data[epoch] = uz_environment_bitflip_get_cumulative_reward(env);
         if (epoch == 0)
         {
@@ -495,12 +509,23 @@ void test_dqn_bitflip_twister_10_seeds(void)
         {
             global_reward_metric.data[epoch] = 0.99f * global_reward_metric.data[epoch - 1] + 0.01f * uz_environment_bitflip_get_cumulative_reward(env);
         }
-        epsilon_per_epsiode.data[epoch] = uz_dqn_get_epsilon(testdqn2);
-        uz_environment_bitflip_save_values(Q_Critic, Q_Target, cy_2, ty_2, epoch, NUMBER_OF_OUTPUTS);
+        epsilon_per_epsiode.data[epoch] = uz_dqn_get_epsilon(dqn);
     }
-
-    eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
-    export_abitrary_number_of_arrays(training_log, 4, training_header, training_absolute_path, 0);
-    export_abitrary_number_of_arrays(evaluation_log, 1, eval_header, eval_absolute_path, 0);
 }
+
+void eval_steps_bitflip(uz_dqn_t *dqn, uz_environment_bitflip_t *env, uz_array_float_t reward_log, uint32_t number_of_eval_episodes, uz_prng_t *prng)
+{
+    assert(dqn != NULL);
+    assert(env != NULL);
+    assert(reward_log.length == number_of_eval_episodes);
+
+    uz_dqn_set_epsilon(dqn, 0.0f, 0.0f, 0.0f);
+    for (size_t i = 0; i < number_of_eval_episodes; i++)
+    {
+        uz_environment_bitflip_reset(env, prng);
+        uz_environment_bitflip_step_one_episode(dqn, false, env);
+        reward_log.data[i] = uz_environment_bitflip_get_cumulative_reward(env);
+    }
+}
+
 #endif // TEST

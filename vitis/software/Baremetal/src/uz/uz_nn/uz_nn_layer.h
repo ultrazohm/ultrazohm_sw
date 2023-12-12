@@ -81,7 +81,8 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
 void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
 void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
 
-void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, struct uz_nn_layer_config layer_config);
+void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, uint32_t length_of_output);
+
 /**
  * @brief Calculates one forward pass of a network layer with the given input value (column vector)
  *
@@ -140,8 +141,6 @@ void uz_nn_update_layer_param(uz_nn_layer_t *const self, float lernrate);
  * @param minibatchsize float, that determines the mini batch size of the training parameter
  */
 void uz_nn_update_layer_param_mini_batch(uz_nn_layer_t *const self, float lernrate, uint32_t minibatchsize);
-
-
 
 /**
  * @brief Set gradient in layer to a uz_matrix_t instance with the same dimension
@@ -208,4 +207,8 @@ uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const *const self);
 uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const *const self);
 adam_optimizer_t *uz_adam_init(float learnrate);
 void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer);
+void uz_adam_reset(adam_optimizer_t *self, float learn_rate);
+void adam_layer_reset(uz_nn_layer_t *layer);
+void uz_nn_layer_set_zero(uz_nn_layer_t *layer);
+
 #endif // UZ_NN_LAYER_H

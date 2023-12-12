@@ -25,9 +25,9 @@ struct uz_dqn_training_config_t
 
 struct uz_dqn_network_config_t
 {
-    struct uz_nn_layer_config* config_critic;
-    struct uz_nn_layer_config* config_target;
-    struct uz_nn_layer_config* config_copy;
+    struct uz_nn_layer_config *config_critic;
+    struct uz_nn_layer_config *config_target;
+    struct uz_nn_layer_config *config_copy;
     uint32_t number_of_layer;
 };
 
@@ -76,7 +76,11 @@ uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self);
 
 void uz_dqn_copy_net(uz_dqn_t *self);
 
-uz_prng_t* uz_dqn_get_prng_init(uz_dqn_t* self);
-uz_prng_t* uz_dqn_get_prng_training(uz_dqn_t* self);
-uz_prng_t* uz_dqn_get_prng_exploration(uz_dqn_t* self);
+uz_prng_t *uz_dqn_get_prng_init(uz_dqn_t *self);
+uz_prng_t *uz_dqn_get_prng_training(uz_dqn_t *self);
+uz_prng_t *uz_dqn_get_prng_exploration(uz_dqn_t *self);
+void uz_dqn_set_prng_seeds(uz_dqn_t *self, uint64_t init_seed, uint64_t exploration_seed, uint64_t training_seed);
+
+void uz_dqn_reset(uz_dqn_t *self, float epsilon_start);
+
 #endif // UZ_DQN_H

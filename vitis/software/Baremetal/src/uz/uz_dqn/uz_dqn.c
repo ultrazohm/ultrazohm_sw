@@ -87,6 +87,18 @@ uz_dqn_t *uz_dqn_init(struct uz_dqn_config_t config)
     return (self);
 }
 
+void uz_dqn_reset(uz_dqn_t *self, float epsilon_start)
+{
+    uz_adam_reset(self->adam, self->lernrate / (float)self->minibatch_size);
+    adam_optimizer_reset(self->adam, self->critic);
+    uz_dqn_reset_buffer(self->experience_buffer);
+    self->epsilon = epsilon_start;
+    // reset critic net
+    uz_nn_reset_parameter_random(self->critic, self->rand_instance_init);
+    uz_nn_copy(self->critic, self->critic_target_net);
+    uz_nn_copy(self->critic, self->critic_copy);
+}
+
 // float uz_dqn_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_bitflip_t *env)
 // {
 //     uz_assert_not_NULL(self);
@@ -313,19 +325,29 @@ uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self)
     return self->critic;
 }
 
-uz_prng_t *uz_dqn_get_prng_init(uz_dqn_t *self){
+void uz_dqn_set_prng_seeds(uz_dqn_t *self, uint64_t init_seed, uint64_t exploration_seed, uint64_t training_seed)
+{
+    uz_prng_reset(self->rand_instance_init, init_seed);
+    uz_prng_reset(self->rand_instance_exploration, exploration_seed);
+    uz_prng_reset(self->rand_instance_training, training_seed);
+}
+
+uz_prng_t *uz_dqn_get_prng_init(uz_dqn_t *self)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->rand_instance_init;
 }
 
-uz_prng_t *uz_dqn_get_prng_training(uz_dqn_t *self){
+uz_prng_t *uz_dqn_get_prng_training(uz_dqn_t *self)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->rand_instance_training;
 }
 
-uz_prng_t *uz_dqn_get_prng_exploration(uz_dqn_t *self){
+uz_prng_t *uz_dqn_get_prng_exploration(uz_dqn_t *self)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->rand_instance_exploration;

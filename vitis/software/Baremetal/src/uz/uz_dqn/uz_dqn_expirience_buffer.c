@@ -6,8 +6,6 @@
 #include "../uz_HAL.h"
 #include "../uz_array/uz_array.h"
 
-
-
 static uint32_t instance_counterbuf = 0U;
 static uz_dqn_experience_replay_t instancesbuf[UZ_DQN_BUFFER_MAX_INSTANCES] = {0};
 static uz_dqn_experience_replay_t *uz_dqn_experience_replay_allocation(void);
@@ -119,6 +117,8 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t *self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->head = 0U;
+    self->is_full = false;
+    self->counterisfull = 0U;
     resetFloatArray(self->reward, self->length);
     resetuintArray(self->action, self->length);
     uz_matrix_set_zero(self->observations);
@@ -127,15 +127,15 @@ void uz_dqn_reset_buffer(uz_dqn_experience_replay_t *self)
     uz_matrix_set_zero(self->vectorforobs1);
 }
 
-uint32_t uz_dqn_buffer_get_counterisfull(uz_dqn_experience_replay_t *self){
+uint32_t uz_dqn_buffer_get_counterisfull(uz_dqn_experience_replay_t *self)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->counterisfull;
 }
 
-
-
-uint32_t uz_dqn_buffer_get_head(uz_dqn_experience_replay_t *self){
+uint32_t uz_dqn_buffer_get_head(uz_dqn_experience_replay_t *self)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->head;
@@ -148,7 +148,8 @@ uint32_t uz_dqn_buffer_get_length(uz_dqn_experience_replay_t *self)
     return self->length;
 }
 
-uz_matrix_t *uz_dqn_buffer_get_vectorforobs(uz_dqn_experience_replay_t *self){
+uz_matrix_t *uz_dqn_buffer_get_vectorforobs(uz_dqn_experience_replay_t *self)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->vectorforobs;
@@ -161,7 +162,7 @@ uz_matrix_t *uz_dqn_buffer_get_vectorforobs1(uz_dqn_experience_replay_t *self)
     return self->vectorforobs1;
 }
 
-float uz_dqn_buffer_get_reward(uz_dqn_experience_replay_t *self,uint32_t index)
+float uz_dqn_buffer_get_reward(uz_dqn_experience_replay_t *self, uint32_t index)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);

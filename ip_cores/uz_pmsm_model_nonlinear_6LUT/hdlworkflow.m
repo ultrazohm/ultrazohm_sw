@@ -1,21 +1,21 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 23.2 (R2023b) at 13:04:28 on 05/12/2023
+% Generated with MATLAB 23.2 (R2023b) at 15:34:25 on 12/12/2023
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model_nonlinear_6LUT\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
-%     DUT       : 'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT'
+%     DUT       : 'uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear'
 % To view changes after modifying the workflow, run the following command:
-% >> hWC.export('DUT','uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT');
+% >> hWC.export('DUT','uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear');
 %--------------------------------------------------------------------------
 
 %% Load the Model
 load_system('uz_pmsm_model_6LUT_pd');
 
 %% Restore the Model to default HDL parameters
-%hdlrestoreparams('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT');
+%hdlrestoreparams('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear');
 
 %% Model HDL Parameters
 %% Set Model 'uz_pmsm_model_6LUT_pd' HDL parameters
@@ -25,7 +25,7 @@ fpconfig = hdlcoder.createFloatingPointTargetConfig('NATIVEFLOATINGPOINT' ...
 );
 hdlset_param('uz_pmsm_model_6LUT_pd', 'FloatingPointTargetConfiguration', fpconfig);
 hdlset_param('uz_pmsm_model_6LUT_pd', 'GenerateValidationModel', 'on');
-hdlset_param('uz_pmsm_model_6LUT_pd', 'HDLSubsystem', 'uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT');
+hdlset_param('uz_pmsm_model_6LUT_pd', 'HDLSubsystem', 'uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear');
 hdlset_param('uz_pmsm_model_6LUT_pd', 'LUTMapToRAM', 'off');
 hdlset_param('uz_pmsm_model_6LUT_pd', 'OptimizationReport', 'on');
 hdlset_param('uz_pmsm_model_6LUT_pd', 'Oversampling', 200);
@@ -44,81 +44,81 @@ hdlset_param('uz_pmsm_model_6LUT_pd', 'UseFloatingPoint', 'on');
 hdlset_param('uz_pmsm_model_6LUT_pd', 'Workflow', 'IP Core Generation');
 
 % Set SubSystem HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT', 'AXI4SlaveIDWidth', '12');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT', 'IPCoreName', 'uz_pmsm_6LUT_approx');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT', 'ProcessorFPGASynchronization', 'Free running');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear', 'AXI4SlaveIDWidth', '12');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear', 'IPCoreName', 'uz_pmsm_nonlinear');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear', 'ProcessorFPGASynchronization', 'Free running');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/reset_integrators', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/reset_integrators', 'IOInterfaceMapping', 'x"100"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/reset_integrators', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/reset_integrators', 'IOInterfaceMapping', 'x"100"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/simulate_mechanical', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/simulate_mechanical', 'IOInterfaceMapping', 'x"104"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/simulate_mechanical', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/simulate_mechanical', 'IOInterfaceMapping', 'x"104"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/simulate_nonlinear', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/simulate_nonlinear', 'IOInterfaceMapping', 'x"108"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/simulate_nonlinear', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/simulate_nonlinear', 'IOInterfaceMapping', 'x"108"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/reciprocal_J', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/reciprocal_J', 'IOInterfaceMapping', 'x"10C"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/reciprocal_J', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/reciprocal_J', 'IOInterfaceMapping', 'x"10C"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mu', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mu', 'IOInterfaceMapping', 'x"110"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/mu', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/mu', 'IOInterfaceMapping', 'x"110"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/M_n0', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/M_n0', 'IOInterfaceMapping', 'x"114"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/M_n0', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/M_n0', 'IOInterfaceMapping', 'x"114"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/R1', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/R1', 'IOInterfaceMapping', 'x"120"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/R1', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/R1', 'IOInterfaceMapping', 'x"120"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/polepairs', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/polepairs', 'IOInterfaceMapping', 'x"124"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/polepairs', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/polepairs', 'IOInterfaceMapping', 'x"124"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/Ld', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/Ld', 'IOInterfaceMapping', 'x"118"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/Ld', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/Ld', 'IOInterfaceMapping', 'x"118"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/Lq', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/Lq', 'IOInterfaceMapping', 'x"11C"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/Lq', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/Lq', 'IOInterfaceMapping', 'x"11C"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/psi_pm', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/psi_pm', 'IOInterfaceMapping', 'x"128"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/psi_pm', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/psi_pm', 'IOInterfaceMapping', 'x"128"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/fitting_parameters', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/fitting_parameters', 'IOInterfaceMapping', 'x"180"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/fitting_parameters', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/fitting_parameters', 'IOInterfaceMapping', 'x"180"');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/inputs', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/inputs', 'IOInterfaceMapping', 'x"130"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/inputs', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/inputs', 'IOInterfaceMapping', 'x"130"');
 
 % Set SubSystem HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system', 'FlattenHierarchy', 'on');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/mechanical_system', 'FlattenHierarchy', 'on');
 
 % Set Inport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/reciprocal_J', 'IOInterface', 'AXI4-Lite');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/reciprocal_J', 'IOInterfaceMapping', 'x"150"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/mechanical_system/reciprocal_J', 'IOInterface', 'AXI4-Lite');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/mechanical_system/reciprocal_J', 'IOInterfaceMapping', 'x"150"');
 
 % Set SubSystem HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/mechanical_system/integrator1', 'FlattenHierarchy', 'on');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/mechanical_system/integrator1', 'FlattenHierarchy', 'on');
 
 % Set SubSystem HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/pmsm', 'FlattenHierarchy', 'on');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/pmsm', 'FlattenHierarchy', 'on');
 
 % Set SubSystem HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/torque_calculation', 'FlattenHierarchy', 'on');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/torque_calculation', 'FlattenHierarchy', 'on');
 
 % Set Outport HDL parameters
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/outputs', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT/outputs', 'IOInterfaceMapping', 'x"150"');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/outputs', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear/outputs', 'IOInterfaceMapping', 'x"150"');
 
 
 %% Workflow Configuration Settings
@@ -173,4 +173,4 @@ hWC.SSHPassword = '';
 hWC.validate;
 
 %% Run the workflow
-hdlcoder.runWorkflow('uz_pmsm_model_6LUT_pd/uz_pmsm_model_6LUT', hWC);
+hdlcoder.runWorkflow('uz_pmsm_model_6LUT_pd/uz_pmsm_model_nonlinear', hWC);

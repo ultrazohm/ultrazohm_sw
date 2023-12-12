@@ -113,8 +113,29 @@ void uz_matrix_get_column_vector_zero_based(uz_matrix_t const *const matrix,uz_m
  * @param C_out Result of the multiplication is written to C_out
  */
 void uz_matrix_multiply(uz_matrix_t const*const A, uz_matrix_t const*const B, uz_matrix_t* const C_out);
+/**
+ * @brief Calculates the "real" matrix multiplication C_out=A * B
+ * 
+ * @param source Matrix where the data is copied from
+ * @param destination  Matrix where the data is copied to
+ * @param smoothfact Smoothingfactor for Copy Data
+ */
 void uz_matrix_update_smooth(uz_matrix_t const *const source, uz_matrix_t *const destination, float smoothfact);
+/**
+ * @brief Calculates the "real" matrix multiplication C_out=A * B
+ * 
+ * @param source_rowvec Rowvector where the data is copied from
+ * @param destination_matrix  Matrix where the data is copied to
+ * @param rowind Rowindex where vector is copied
+ */
 void uz_matrix_copy_row_to_matrix(uz_matrix_t const *const source_rowvec, uz_matrix_t *const destination_matrix, uint32_t rowind);
+/**
+ * @brief Calculates the "real" matrix multiplication C_out=A * B
+ * 
+ * @param source_matrix Matrix where the data is copied from
+ * @param destination_rowvec  Rowvector where the data is copied to
+ * @param rowind Rowindex, where rowvector is copied from the matrix
+ */
 void uz_matrix_copy_row_from_matrix(uz_matrix_t const *const source_matrix, uz_matrix_t *const destination_rowvec, uint32_t rowind);
 
 /**
@@ -279,5 +300,12 @@ void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t c
  */
 
 void uz_matrix_reshape_and_concatenate_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out);
+/**
+ * @brief Check all elements of an uz_matrix and clipp all between min and max
+ * 
+ * @param A Pointer to a uz_matrix_t instance 
+ * @param min Minimum value for clipping 
+ * @param max Maximum value for clipping
+ */
 void uz_matrix_clipp_values(uz_matrix_t const *const A, float min, float max);
 #endif // UZ_MATRIX_H

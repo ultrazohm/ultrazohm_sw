@@ -189,11 +189,11 @@ uz_matrix_t *uz_environment_bitflip_get_state(uz_environment_bitflip_t *self)
     return self->environment_state;
 }
 
-float uz_environment_bitflip_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_bitflip_t *env)
+float uz_environment_bitflip_step_one_episode(uz_dqn_t *self, bool train, uz_environment_bitflip_t *env)
 {
     uz_assert_not_NULL(self);
     float cum_loss = 0.0f;
-    for (uint32_t t = 0; t < max_steps; t++)
+    for (uint32_t t = 0; t < env->max_steps; t++)
     {
         // sample observation of the environment at k=0
         uz_matrix_t *env_state = uz_environment_bitflip_get_state(env);

@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "../uz_prng/uz_prng.h"
 #include "uz_dqn.h"
+#include "../uz_prng/uz_prng.h"
 
 typedef struct uz_environment_bitflip_t uz_environment_bitflip_t;
 
@@ -30,4 +31,4 @@ float uz_environment_bitflip_get_cumulative_reward(uz_environment_bitflip_t *sel
 void uz_environment_bitflip_save_values(float savecritic[], float savetarget[], float critic[], float target[], uint32_t step, uint32_t size);
 
 uz_matrix_t *uz_environment_bitflip_get_state(uz_environment_bitflip_t *self);
-float uz_environment_bitflip_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_bitflip_t *env);
+float uz_environment_bitflip_step_one_episode(uz_dqn_t *self, bool train, uz_environment_bitflip_t *env);

@@ -313,6 +313,24 @@ uz_nn_t *uz_dqn_get_critic_net(uz_dqn_t *self)
     return self->critic;
 }
 
+uz_prng_t *uz_dqn_get_prng_init(uz_dqn_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->rand_instance_init;
+}
+
+uz_prng_t *uz_dqn_get_prng_training(uz_dqn_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->rand_instance_training;
+}
+
+uz_prng_t *uz_dqn_get_prng_exploration(uz_dqn_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->rand_instance_exploration;
+}
+
 // void uz_dqn_sample_simple(uz_dqn_t *self)
 // {
 //     uz_assert_not_NULL(self);

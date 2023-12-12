@@ -5604,7 +5604,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:2.7",
+            "vlnv": "xilinx.com:ip:uz_EnDat:2.9",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5631,10 +5631,18 @@
               "uz_EnDat_0/CLK_1"
             ]
           },
-          "CRCTEST": {
+          "DBGACTIVENUMBER": {
             "ports": [
-              "uz_EnDat_0/CRCTEST"
-            ]
+              "uz_EnDat_0/DBGACTIVENUMBER"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
           },
           "Dig_18_Ch4": {
             "ports": [
@@ -5642,10 +5650,31 @@
               "uz_EnDat_0/datain"
             ]
           },
+          "POS0": {
+            "ports": [
+              "uz_EnDat_0/POS0"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
           "POSRAW": {
             "ports": [
               "uz_EnDat_0/POSRAW"
-            ]
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
           },
           "aclk_1": {
             "ports": [

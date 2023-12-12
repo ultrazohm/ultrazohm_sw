@@ -57,6 +57,7 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
     uz_assert(A->length_of_data);
     uz_assert(B->length_of_data);
     uz_assert(C_out->length_of_data);
+    // https://de.mathworks.com/help/matlab/matlab_prog/compatible-array-sizes-for-basic-operations.html
     uz_assert(A->columns == B->columns);
     uz_assert(A->columns == C_out->columns);
     uz_assert(A->rows == B->rows);
@@ -71,6 +72,25 @@ void uz_matrix_elementwise_product(uz_matrix_t const *const A, uz_matrix_t const
     }
 }
 
+void uz_matrix_columnvec_matrix_product(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(B);
+    uz_assert_not_NULL(C_out);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
+    uz_assert(A->columns == 1);
+    uz_assert(A->rows == B->rows);
+    for (uint32_t row = 0; row < B->rows; row++)
+    {
+        for (uint32_t column = 0; column < B->columns; column++)
+        {
+            C_out->data[(row * B->columns) + column] = A->data[row] * B->data[(row * B->columns) + column];
+        }
+    }
+}
+
 float uz_matrix_get_element_zero_based(uz_matrix_t const *const A, uint32_t row, uint32_t column)
 {
     uz_assert_not_NULL(A);
@@ -78,6 +98,32 @@ float uz_matrix_get_element_zero_based(uz_matrix_t const *const A, uint32_t row,
     uz_assert(row <= A->rows);
     uz_assert(column <= A->columns);
     return (A->data[(row * A->columns) + column]);
+}
+
+void uz_matrix_get_column_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const columnvector, uint32_t column)
+{
+    uz_assert_not_NULL(matrix);
+    uz_assert_not_NULL(columnvector);
+    uz_assert(matrix->length_of_data);
+    uz_assert((matrix->rows * matrix->columns) > 0U);
+    //uz_assert(!(columnvector->rows == 1U));
+    for (uint32_t row = 0; row < matrix->rows; row++)
+    {
+        columnvector->data[row] = matrix->data[(row * matrix->columns)+column];
+    }
+}
+
+void uz_matrix_get_row_vector_zero_based(uz_matrix_t const *const matrix,uz_matrix_t const *const rowvector, uint32_t row)
+{
+    uz_assert_not_NULL(matrix);
+    uz_assert_not_NULL(rowvector);
+    uz_assert(matrix->length_of_data);
+    uz_assert((matrix->rows * matrix->columns) > 0U);
+    //uz_assert(!(rowvector->columns == 1U));
+    for (uint32_t column = 0; column < matrix->columns; column++)
+    {
+        rowvector->data[column] = matrix->data[(row * matrix->columns) + column];
+    }
 }
 
 void uz_matrix_set_element_zero_based(uz_matrix_t *const A, float x, uint32_t row, uint32_t column)
@@ -165,6 +211,37 @@ void uz_matrix_multiply(uz_matrix_t const *const A, uz_matrix_t const *const B, 
     }
 }
 
+void uz_matrix_multiply_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(B);
+    uz_assert_not_NULL(C_out);
+    uz_assert(A->length_of_data);
+    uz_assert(B->length_of_data);
+    uz_assert(C_out->length_of_data);
+    uz_assert(A->columns == B->rows);
+    // the product of an m x n matrix and n x k matrix is an m x k
+    // i.e. A->row x B->column
+    uz_assert(A->rows == C_out->rows);
+    uz_assert(B->columns == C_out->columns);
+    // The following implementation is "slow" as in it does not use special mechanism to speed it up. See the following resources for possible improvements.
+    // https://github.com/deuxbot/fast-matrix-multiplication/blob/master/mxm.c
+    // https://en.wikipedia.org/wiki/Matrix_multiplication
+    uint32_t m = A->rows;
+    uint32_t n = A->columns;
+    uint32_t p = B->columns;
+    for (uint32_t i = 0; i < m; i++)
+    {
+        for (uint32_t j = 0; j < p; j++)
+        {
+            for (uint32_t k = 0; k < n; k++)
+            {
+                C_out->data[(p * i) + j] += A->data[(n * i) + k] * B->data[(p * k) + j];
+            }
+        }
+    }
+}
+
 void uz_matrix_set_zero(uz_matrix_t *const A)
 {
     uz_assert_not_NULL(A);
@@ -178,6 +255,73 @@ void uz_matrix_set_zero(uz_matrix_t *const A)
     }
 }
 
+void uz_matrix_set_unity_matrix(uz_matrix_t *const A)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){
+            A->data[(row * A->columns) + column] = 1.0f;
+        }
+            else{
+            A->data[(row * A->columns) + column] = 0.0f;
+            }
+        }
+    }
+}
+
+void uz_matrix_set_zero_except_diagonal(uz_matrix_t *const A)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){}
+            
+            else{
+            A->data[(row * A->columns) + column] = 0.0f;
+            }
+        }
+    }
+}
+
+void uz_matrix_set_rowvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const rowvector)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){
+        A->data[(row * A->columns) + column] = rowvector->data[column];
+        }
+        else{
+            }
+        }
+    }
+}
+void uz_matrix_set_columnvector_as_diagonal(uz_matrix_t *const A,uz_matrix_t *const columnvector)
+{
+    uz_assert_not_NULL(A);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        {   if (row == column){
+        A->data[(row * A->columns) + column] = columnvector->data[row];
+        }
+        else{
+            }
+        }
+    }
+}
 void uz_matrix_add(uz_matrix_t const *const A, uz_matrix_t *const C_out)
 {
     uz_assert_not_NULL(A);
@@ -223,6 +367,25 @@ void uz_matrix_apply_function_to_each_element(uz_matrix_t *const A, float (*f)(f
     for (uint32_t i = 0; i < (A->rows * A->columns); i++)
     {
         A->data[i] = f(A->data[i]);
+    }
+}
+
+void uz_matrix_apply_function_to_diagonal(uz_matrix_t *const A, float (*f)(float))
+{
+    uz_assert_not_NULL(A);
+    uz_assert_not_NULL(f);
+    uz_assert(A->length_of_data);
+    uz_assert(A->rows==A->columns);
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+        for (uint32_t column = 0; column < A->columns; column++)
+        { 
+        if (row == column){
+            A->data[(row * A->columns) + column] = f(A->data[(row * A->columns) + column]);
+        }
+        else{
+            }
+        }
     }
 }
 
@@ -290,9 +453,110 @@ void uz_matrix_copy(uz_matrix_t const *const source, uz_matrix_t *const destinat
     uz_assert(source->length_of_data == destination->length_of_data);
     destination->rows=source->rows;
     destination->columns=source->columns;
-
     for(uint32_t i=0U;i<destination->length_of_data;i++){
         destination->data[i]=source->data[i];
     }
 
+}
+
+void uz_matrix_update_smooth(uz_matrix_t const *const source, uz_matrix_t *const destination, float  smoothfact)
+{    
+    uz_assert_not_NULL(source);
+    uz_assert_not_NULL(destination);
+    uz_assert(source->length_of_data == destination->length_of_data);
+    // destination->rows=source->rows;
+    // destination->columns=source->columns;
+    for(uint32_t i=0U;i<destination->length_of_data;i++){
+        destination->data[i]= (smoothfact * source->data[i])+(1.0f-smoothfact)*destination->data[i];
+    }
+
+}
+
+void uz_matrix_copy_row_to_matrix(uz_matrix_t const *const source_rowvec, uz_matrix_t *const destination_matrix, uint32_t rowind)
+{    
+    uz_assert_not_NULL(source_rowvec);
+    uz_assert_not_NULL(destination_matrix);
+    uz_assert(source_rowvec->length_of_data == destination_matrix->columns);
+    uz_assert(source_rowvec->rows == 1);
+    for(uint32_t i=0U;i<source_rowvec->length_of_data;i++){
+        destination_matrix->data[(rowind*source_rowvec->length_of_data)+i]=source_rowvec->data[i];
+    }
+}
+
+void uz_matrix_copy_row_from_matrix(uz_matrix_t const *const source_matrix, uz_matrix_t *const destination_rowvec, uint32_t rowind)
+{    
+    uz_assert_not_NULL(source_matrix);
+    uz_assert_not_NULL(destination_rowvec);
+    uz_assert(destination_rowvec->columns == destination_rowvec->length_of_data);
+    uz_assert(destination_rowvec->rows == 1);
+    for(uint32_t i=0U;i<destination_rowvec->length_of_data;i++){
+        destination_rowvec->data[i] = source_matrix->data[(rowind*destination_rowvec->length_of_data)+i];
+    }
+}
+
+void uz_matrix_reshape_and_concatenate(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+// does the same as the reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab
+{
+uz_assert_not_NULL(A);
+uz_assert_not_NULL(B);
+uz_assert_not_NULL(C_out);
+uz_assert(A->length_of_data);
+uz_assert(B->length_of_data);
+uz_assert(C_out->length_of_data);
+uz_matrix_set_zero(C_out);
+for (uint32_t column = 0; column < A->columns; column++)
+{
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+    C_out->data[(column * A->rows) + row] = A->data[(row * A->columns) + column];
+    }
+}
+
+for (uint32_t row2 = 0; row2 < B->rows; row2++)
+{
+for (uint32_t column2 = 0; column2 < B->columns; column2++)
+{
+    C_out->data[(A->rows*A->columns)+(row2 * B->columns) + column2] =  B->data[(row2 * B->columns) + column2];
+}
+}
+}
+
+void uz_matrix_reshape_and_concatenate_acc(uz_matrix_t const *const A, uz_matrix_t const *const B, uz_matrix_t *const C_out)
+// does the same as the reshape(A,[],1),reshape(B,[],1) and then concatenate them vertically see cat(1,reshape(A,[],1),reshape(B,[],1)) in matlab
+// for minibatch calculation all data are accumulated
+{
+uz_assert_not_NULL(A);
+uz_assert_not_NULL(B);
+uz_assert_not_NULL(C_out);
+uz_assert(A->length_of_data);
+uz_assert(B->length_of_data);
+uz_assert(C_out->length_of_data);
+for (uint32_t column = 0; column < A->columns; column++)
+{
+    for (uint32_t row = 0; row < A->rows; row++)
+    {
+    C_out->data[(column * A->rows) + row] += A->data[(row * A->columns) + column];
+    }
+}
+
+for (uint32_t row2 = 0; row2 < B->rows; row2++)
+{
+for (uint32_t column2 = 0; column2 < B->columns; column2++)
+{
+    C_out->data[(A->rows*A->columns)+(row2 * B->columns) + column2] +=  B->data[(row2 * B->columns) + column2];
+}
+}
+}
+
+void uz_matrix_clipp_values(uz_matrix_t const *const A, float min, float max)
+{
+uz_assert_not_NULL(A);
+uz_assert(A->length_of_data);
+for (uint32_t i = 0; i < A->length_of_data; i++)
+{
+    if (A->data[i] < min)
+    A->data[i] = min;
+    else if (A->data[i]> max)
+    A->data[i] = max;
+}
 }

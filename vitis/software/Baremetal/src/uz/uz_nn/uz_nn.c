@@ -16,7 +16,6 @@
 
 #include "../uz_global_configuration.h"
 #if UZ_NN_MAX_INSTANCES > 0U
-#include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_nn.h"
 #include "../uz_matrix/uz_matrix.h"
@@ -24,9 +23,11 @@
 struct uz_nn_t
 {
     bool is_ready;
+    bool is_trainable;
+    bool initialize;
     uint32_t number_of_layer;
     uint32_t number_of_inputs;
-    uint32_t number_of_outpts;
+    uint32_t number_of_outputs;
     uz_nn_layer_t *layer[UZ_NN_MAX_LAYER];
 };
 
@@ -45,31 +46,253 @@ static uz_nn_t *uz_nn_allocation(void)
     return (self);
 }
 
-uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer)
+uz_nn_t *uz_nn_init(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer, bool is_trainable)
 {
     uz_assert(number_of_layer < UZ_NN_MAX_LAYER);
     uz_assert(number_of_layer > 1U);
     uz_nn_t *self = uz_nn_allocation();
+    self->is_trainable = is_trainable;
     self->number_of_layer = number_of_layer;
     self->number_of_inputs = config[0U].number_of_inputs;
-    self->number_of_outpts = config[number_of_layer - 1U].length_of_output;
-    for (uint32_t i = 0U; i < number_of_layer; i++)
+    self->number_of_outputs = config[number_of_layer - 1U].length_of_output;
+    if (self->is_trainable == true)
     {
-        self->layer[i] = uz_nn_layer_init(config[i]);
+        for (uint32_t i = 0U; i < number_of_layer; i++)
+        {
+            self->layer[i] = uz_nn_layer_init_trainable(config[i]);
+        }
+    }
+    else
+    {
+        for (uint32_t i = 0U; i < number_of_layer; i++)
+        {
+            self->layer[i] = uz_nn_layer_init(config[i]);
+        }
     }
     return (self);
+}
+
+uz_nn_t *uz_nn_init_with_rand(struct uz_nn_layer_config config[UZ_NN_MAX_LAYER], uint32_t number_of_layer, uz_prng_t *prng, bool is_trainable)
+{
+    uz_assert(number_of_layer < UZ_NN_MAX_LAYER);
+    uz_assert(number_of_layer > 1U);
+    uz_nn_t *self = uz_nn_allocation();
+    self->is_trainable = is_trainable;
+    self->number_of_layer = number_of_layer;
+    self->number_of_inputs = config[0U].number_of_inputs;
+    self->number_of_outputs = config[number_of_layer - 1U].length_of_output;
+    self->initialize = true;
+    if (self->is_trainable == true || self->initialize == true)
+    {
+        for (uint32_t i = 0U; i < number_of_layer; i++)
+        {
+            self->layer[i] = uz_nn_layer_init_trainable(config[i]);
+            uz_nn_layer_param_init(self->layer[i], prng, config[i]);
+        }
+    }
+    return (self);
+}
+
+void uz_nn_copy(uz_nn_t *source, uz_nn_t *destination)
+{
+    uz_assert_not_NULL(source);
+    uz_assert_not_NULL(destination);
+    // durch die layer loopen
+    for (size_t i = 0; i < source->number_of_layer; i++)
+    {
+        uz_nn_layer_copy(source->layer[i], destination->layer[i]);
+    }
+}
+
+void uz_nn_copy_smoothing(uz_nn_t *source, uz_nn_t *destination, float targetsmoothfact)
+{
+    uz_assert_not_NULL(source);
+    uz_assert_not_NULL(destination);
+    // durch die layer loopen
+    for (size_t i = 0; i < source->number_of_layer; i++)
+    {
+        uz_nn_layer_copy_smooth(source->layer[i], destination->layer[i], targetsmoothfact);
+    }
+}
+
+void uz_nn_target_update(uz_nn_t *critic, uz_nn_t *target, enum target_update method, float targetsmoothfact)
+{
+    uz_assert_not_NULL(critic);
+    uz_assert_not_NULL(target);
+    switch (method)
+    {
+    case smoothing:
+        uz_nn_copy_smoothing(critic, target, targetsmoothfact);
+        break;
+    case periodic:
+        uz_nn_copy(critic, target);
+        break;
+    case periodic_smoothing:
+        uz_nn_copy_smoothing(critic, target, targetsmoothfact);
+        break;
+    default:
+        uz_assert(0);
+        break;
+    }
+}
+
+void uz_nn_train_minibatch(uz_nn_t *self, float *mse, uz_matrix_t const *const input, uz_matrix_t const *const refout, uz_matrix_t const *const rowvec, uz_matrix_t const *const ref, float const learnrate, uint32_t minibatchsize, uint32_t numberofepochs)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    for (uint32_t i = 0; i < numberofepochs; i++)
+    {
+        for (uint32_t j = 0; j < minibatchsize; j++)
+        {
+            uz_matrix_get_row_vector_zero_based(input, rowvec, j);
+            uz_nn_ff(self, rowvec);
+            uz_matrix_t *output = uz_nn_get_output_data(self);
+            uz_matrix_get_row_vector_zero_based(refout, ref, j);
+            float msederv = uz_nn_mse_derv(output, ref);
+            uz_nn_backward_pass_mini_batch(self, &msederv, rowvec);
+        }
+        uz_nn_gradient_descent_mini_batch(self, learnrate, minibatchsize);
+        uz_matrix_t *output = uz_nn_get_output_data(self);
+        mse[i] = uz_nn_mse(output, ref);
+        uz_nn_set_gradients_zero(self);
+    }
 }
 
 void uz_nn_ff(uz_nn_t *self, uz_matrix_t const *const input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert_not_NULL(input);
     uz_nn_layer_ff(self->layer[0], input);
     for (uint32_t i = 0; i < (self->number_of_layer - 1U); i++)
     {
         uz_nn_layer_ff(self->layer[i + 1U], uz_nn_layer_get_output_data(self->layer[i]));
     }
 }
+
+void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_update_layer_param(self->layer[i], learnrate);
+    }
+}
+void uz_nn_gradient_descent_no_bias(uz_nn_t *self, float const learnrate)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_update_layer_param_no_bias(self->layer[i], learnrate);
+    }
+}
+void uz_nn_gradient_descent_mini_batch(uz_nn_t *self, float const learnrate, uint32_t minibatchsize)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_update_layer_param_mini_batch(self->layer[i], learnrate, minibatchsize);
+    }
+}
+
+void uz_nn_mse_derv_mult(uz_matrix_t const *const output, uz_matrix_t const *const expectedoutput, float *error)
+{
+    uz_assert(expectedoutput->length_of_data == output->length_of_data);
+    float z = 0.0f;
+    for (uint32_t i = 0; i < output->length_of_data; i++)
+    {
+        error[i] = -(expectedoutput->data[i] - output->data[i]);
+    }
+}
+
+float uz_nn_mse_derv(uz_matrix_t const *const output, uz_matrix_t const *const expectedoutput)
+{
+    uz_assert(expectedoutput->length_of_data == output->length_of_data);
+    float z = 0.0f;
+    for (uint32_t i = 0; i < output->length_of_data; i++)
+    {
+        z += (expectedoutput->data[i] - output->data[i]);
+    }
+    z = -1.0f * z;
+    return z;
+}
+
+float uz_nn_mse(uz_matrix_t *const output, uz_matrix_t const *const expectedoutput)
+{
+    uz_assert(expectedoutput->length_of_data == output->length_of_data);
+    float y = 0.0f;
+    for (uint32_t i = 0; i < output->length_of_data; i++)
+    {
+        y += (expectedoutput->data[i] - output->data[i]) * (expectedoutput->data[i] - output->data[i]);
+    }
+    y = 1.0f / (float)output->length_of_data * y;
+
+    return y;
+}
+
+void uz_nn_backward_pass(uz_nn_t *self, const float *const error, uz_matrix_t *const input)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], error);
+    for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
+    {
+        uz_nn_layer_back(self->layer[i - 1], uz_nn_get_delta_data(self, i + 1), uz_nn_get_weight_matrix(self, i + 1));
+    }
+    for (uint32_t i = self->number_of_layer - 1U; i > 0; --i)
+    {
+        uz_nn_layer_calc_gradients(self->layer[i], uz_nn_get_output_from_each_layer(self, i));
+    }
+    uz_nn_layer_calc_gradients(self->layer[0], input);
+}
+
+void uz_nn_backward_pass_mini_batch(uz_nn_t *self, const float *const error, uz_matrix_t const *const input)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    uz_nn_backward_last_layer(self->layer[self->number_of_layer - 1U], error);
+    for (uint32_t i = self->number_of_layer - 1U; i > 0; i--)
+    {
+        uz_nn_layer_back(self->layer[i - 1], uz_nn_get_delta_data(self, i + 1), uz_nn_get_weight_matrix(self, i + 1));
+    }
+    for (uint32_t i = self->number_of_layer - 1U; i > 0; --i)
+    {
+        uz_nn_layer_calc_gradients_mini_batch(self->layer[i], uz_nn_get_output_from_each_layer(self, i));
+    }
+    uz_nn_layer_calc_gradients_mini_batch(self->layer[0], input);
+}
+
+
+
+void uz_nn_set_gradients_zero(uz_nn_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    for (uint32_t i = 0; i < (self->number_of_layer); i++)
+    {
+        uz_nn_set_gradient_in_layer_zero(self->layer[i]);
+    }
+}
+
+void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_assert(self->is_trainable);
+    uz_nn_set_gradient_in_layer(self->layer[layer - 1], gradientmatrix);
+}
+
+
 
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
 {
@@ -78,17 +301,53 @@ uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self)
     return uz_nn_layer_get_output_data(self->layer[(self->number_of_layer - 1U)]);
 }
 
+uz_matrix_t *uz_nn_get_output_from_each_layer(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_output_data(self->layer[layer - 1]);
+}
+
 uz_matrix_t *uz_nn_get_bias_matrix(uz_nn_t const *const self, uint32_t layer)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_nn_layer_get_bias_matrix(self->layer[layer - 1]);
 }
+
 uz_matrix_t *uz_nn_get_weight_matrix(uz_nn_t const *const self, uint32_t layer)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return uz_nn_layer_get_weight_matrix(self->layer[layer - 1]);
+}
+
+uz_matrix_t *uz_nn_get_delta_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_delta_data(self->layer[layer - 1]);
+}
+
+uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_sumout_data(self->layer[layer - 1]);
+}
+
+uz_matrix_t *uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_gradient_data(self->layer[layer - 1]);
+}
+
+uz_matrix_t *uz_nn_get_cachegradient_data(uz_nn_t const *const self, uint32_t layer)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return uz_nn_layer_get_cachegradient_data(self->layer[layer - 1]);
 }
 
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const *const self)
@@ -109,7 +368,21 @@ uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return self->number_of_outpts;
+    return self->number_of_outputs;
+}
+
+void adam_optimizer_step(adam_optimizer_t *optimizer, uz_nn_t *network)
+{
+    optimizer->traincounter++;
+    for (uint32_t i = 0U; i < network->number_of_layer; i++)
+    {
+        adam_layer_step(optimizer, network->layer[i]);
+    }
+}
+
+uint32_t adam_get_number_of_updates(adam_optimizer_t *self){
+    uz_assert_not_NULL(self);
+    return self->traincounter;
 }
 
 #endif

@@ -12,6 +12,7 @@
 #define DEFAULT_OFFSET 0
 
 #define CURRENT_2_SI_CONVERSION_FACTOR 0.00190734f // (10*12,5)/(2^16) 10=to volts 12,5= volts to current in ampere
+//#define CURRENT_2_SI_CONVERSION_FACTOR -0.01033875f // (10*67.756)/(2^16) 10=to volts 67.756= volts to current in ampere
 
 void uz_adcLtc2311_ip_core_init(void)
 {
@@ -37,6 +38,7 @@ void uz_adcLtc2311_ip_core_init(void)
         .post_delay = 0U,
         .clk_div = 0U,
         .max_attempts = 10U};
+
 
     // Apply the same configurations to all instances
     uz_adcLtc2311_init(default_configuration);

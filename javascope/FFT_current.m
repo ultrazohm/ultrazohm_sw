@@ -76,7 +76,7 @@ freq=d.*1/(time_cut(i,2)-time_cut(i,1))/Fs;                 % Rückskalieren, wen
 % time_tmp = time_cut(i,:);
 % time_tmp = time_tmp';
 % time_tmp(all(~time_tmp,2),:) = []; % remove zero rows
-
+% 
 % for k=1:3
 %     [f1(i,k), mag(i,k)] = extract_fundamental_of_sin(time_tmp,F(:,k));
 % end
@@ -88,6 +88,7 @@ FFT_sig_withoutFundamental(VectorNumber,:)=0; %Eliminate fundamental in order to
 
 % remove dc value
 FFT_sig_withoutFundamental(1,:)=0; 
+
 
 % FFT_sig_withoutFundamental(14,:)=0; 
 % FFT_sig_withoutFundamental(28,:)=0; 
@@ -102,6 +103,7 @@ FFT_sig_withoutFundamental(1,:)=0;
 % end
 
 bar(freq(1,:)./freq(1,VectorNumber(1)),FFT_sig_withoutFundamental(:,1)/FundamentalCurrent(1)*100, 'BarWidth',barWidth)
+% bar(freq(1,:)./freq(1,VectorNumber(1)),FFT_sig_withoutFundamental(:,1)/mag(1)*100, 'BarWidth',barWidth)
 axis([0 50 0 10]);
 
 %bsxfun() multipliziert den Vektor in jeder spalte/zeile mit sich selbst,
@@ -113,6 +115,8 @@ I_squared_Harmonics = sum(bsxfun(@times, FFT_sig_withoutFundamental, FFT_sig_wit
 for k=1:3
 THD_components(k) = (sqrt(I_squared_Harmonics(k))/FundamentalCurrent(k))*100; %[%] THD in percent -> sqrt((Sum of all the others)^2) / (Fundamental)
 TDD_components(k) = (sqrt(I_squared_Harmonics(k))/i_nom)*100;
+% THD_components(k) = (sqrt(I_squared_Harmonics(k))/mag(k))*100; %[%] THD in percent -> sqrt((Sum of all the others)^2) / (Fundamental)
+% TDD_components(k) = (sqrt(I_squared_Harmonics(k))/i_nom)*100;
 end
 THD_components
 TDD_components
@@ -131,7 +135,7 @@ ylabel('THD_i in %');
 title('Trade-Off curve');
 % axis([0 max(mean_avg_f_sw_over_trigger_period*0.001) 0 max(THD)]);
 % axis([15 25 0 max(THD)]);
-axis([0 100 0 10]);
+axis([0 100 0 12]);
 
 figure
 plot(mean_avg_f_sw_over_trigger_period*0.001,TDD,'*');
@@ -140,7 +144,7 @@ ylabel('TDD_i in %');
 title('Trade-Off curve');
 % axis([0 max(mean_avg_f_sw_over_trigger_period*0.001) 0 max(THD)]);
 % axis([15 25 0 max(THD)]);
-axis([0 100 0 5]);
+axis([0 100 0 6]);
 %%
 % %% Plot single-sided amplitude spectrum 
 % figure(2)
@@ -213,7 +217,7 @@ title('phase currents');
 grid on
 xlabel('time in s')
 ylabel('current in A')
-axis([0 0.05 -8 8])
+axis([0 0.05 -12 12])
 [hleg, hobj, hout, mout] = legend('i_a_1','i_b_1','i_c_1');
 set(hobj,'linewidth',1.5);
 
@@ -227,6 +231,6 @@ title('dq currents');
 grid on
 xlabel('time in s')
 ylabel('current in A')
-axis([0 0.03 -8 8])
+axis([0 0.03 -12 12])
 [hleg, hobj, hout, mout] = legend('i_d','i_q');
 set(hobj,'linewidth',1.5);

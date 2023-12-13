@@ -284,7 +284,9 @@ void fcs_mpc_calc_f_sw_avg(){
         		Global_Data.rasv.f_cnt_lambda_u = (float)Global_Data.rasv.cnt_lambda_u;
         		// set next lamda_u
         		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_now + Global_Data.rasv.lambda_u_step;
-        		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
+//        		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
+        		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_LUT[Global_Data.rasv.cnt_lambda_u];
+        		Global_Data.av.lambda_u_e5 = Global_Data.av.lambda_u*1e5f;
         		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_3PH_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
         	}
         }

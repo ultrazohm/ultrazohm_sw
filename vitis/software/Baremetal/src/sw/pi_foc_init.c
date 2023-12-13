@@ -11,7 +11,7 @@ extern DS_Data Global_Data;
       .Lq_Henry = 0.002f,
       .Psi_PM_Vs = 0.042f,
 	  .polePairs = 4.0f,
-	  .I_max_Ampere = 12.0f,
+	  .I_max_Ampere = 20.0f,
 	  .J_kg_m_squared = 0.000108
     };//these parameters are only needed if linear decoupling is selected
     const struct uz_PI_Controller_config config_id_left = {
@@ -32,8 +32,8 @@ extern DS_Data Global_Data;
 		   .Kp = 0.008f,
 		   .Ki = 0.8f,
 		   .samplingTime_sec = 0.0001f,
-		   .upper_limit = 2.4f,
-		   .lower_limit = -2.4f
+		   .upper_limit = 3.4f,
+		   .lower_limit = -3.4f
    };
 
    const struct uz_SetPoint_config config_setpoint_left = {

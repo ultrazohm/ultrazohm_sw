@@ -100,8 +100,13 @@ int main(void)
             Global_Data.rasv.f_cnt_lambda_u = 1.0f;
             Global_Data.av.pause_time_sec = 3.0f;
 
+            Global_Data.rasv.lambda_u_LUT[0] = 0.0f;
+            for(uint32_t i=1;i<=41;i++) {
+            	Global_Data.rasv.lambda_u_LUT[i] = 9e-6*expf(0.1125*(float)i);
+            };
+
             //deadtime comp parameters
-            Global_Data.rasv.Ts_minus_Td_over_Ts = 0.94; //0.94 is valid for 150ns deadtime
+            Global_Data.rasv.Ts_minus_Td_over_Ts = 0.94; //0.94 is valid for 150ns deadtime 0.8 is valid for 500ns deadtime
             Global_Data.rasv.Td_over_Ts = 1.0f-Global_Data.rasv.Ts_minus_Td_over_Ts;
             Global_Data.rasv.deadtime_comp_onoff = false;
 

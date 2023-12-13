@@ -43,7 +43,9 @@ extern DS_Data Global_Data;
 
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
-#define		MAX_CURRENT			15.0f
+//#define 	CURRENT_2_SI_AMPERE	-67.756f
+//#define		VOLTAGE_2_SI_VOLTS	-150.875f
+#define		MAX_CURRENT			25.0f
 #define		RATED_CURRENT		8.0f
 #define		DC_VOLTAGE			48.0f
 #define		MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
@@ -115,6 +117,7 @@ void ISR_Control(void *data)
 	Global_Data.av.v_b_left = Global_Data.aa.A1.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_c_left = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_dc_left = Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+//	Global_Data.av.v_dc_left = DC_VOLTAGE;
 
 	Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
 	Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
@@ -124,6 +127,7 @@ void ISR_Control(void *data)
 	Global_Data.av.v_b_right = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_c_right = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+//	Global_Data.av.v_dc_right = DC_VOLTAGE;
 
 	// assign measurements from global_data to motor control structs
     i_abc_left.a = Global_Data.av.i_a_left;

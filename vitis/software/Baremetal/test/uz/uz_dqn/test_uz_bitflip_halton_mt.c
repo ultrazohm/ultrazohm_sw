@@ -256,31 +256,154 @@ struct experiment_config
     size_t number_of_seeds;
 };
 
-void do_experiment(char training_absolute_path[], char eval_absolute_path[], struct experiment_config);
+uint64_t halton_seed[10] = {13, 17, 19, 23, 29, 31, 37, 41, 43, 47};                                 // 6. to 15. prime number
+uint64_t xoshiro_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116};  // arbitrary numbers with large and small seeds
+uint64_t pcg_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116};      // arbitrary numbers with large and small seeds
+uint64_t mtwister_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116}; // arbitrary numbers with large and small seeds
+uint64_t squares_seed[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};                                          // take key's from list
+uint64_t environment_seed[10] = {41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U};
 
-    void test_dqn_bitflip_twister(void)
+void do_experiment(char training_absolute_path[], char eval_absolute_path[], struct experiment_config);
+struct experiment_config get_exp_config(enum uz_prng_generator init_generator, enum uz_prng_generator exploration_generator, enum uz_prng_generator training_generator, enum uz_prng_generator env_generator);
+
+void test_dqn_bitflip_halton(void)
+{
+    char training_absolute_path[] = "test/uz/uz_dqn/halton2_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/halton2_eval";
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_mtwister);
+    do_experiment(training_absolute_path, eval_absolute_path, exp);
+}
+
+struct experiment_config get_exp_config(enum uz_prng_generator init_generator, enum uz_prng_generator exploration_generator, enum uz_prng_generator training_generator, enum uz_prng_generator env_generator)
 {
 
-    char training_absolute_path[] = "test/uz/uz_dqn/halton_mt_training";
-    char eval_absolute_path[] = "test/uz/uz_dqn/halton_mt_eval";
-    uint64_t halton_seed[10] = {13, 17, 19, 23, 29, 31, 37, 41, 43, 47};                                 // 6. to 15. prime number
-    uint64_t xoshiro_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116};  // arbitrary numbers with large and small seeds
-    uint64_t pcg_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116};      // arbitrary numbers with large and small seeds
-    uint64_t mtwister_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116}; // arbitrary numbers with large and small seeds
-    uint64_t squares_seed[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};                                          // take key's from list
+    struct experiment_config exp = {0};
+    exp.number_of_seeds = 10;
 
-    struct experiment_config exp = {
-        .init_config = {.random_seed = mtwister_seed[0], .uz_prng_type = uz_prng_generator_mtwister},
-        .exploration_config = {.random_seed = mtwister_seed[0], .uz_prng_type = uz_prng_generator_mtwister},
-        .training_config = {.random_seed = mtwister_seed[0], .uz_prng_type = uz_prng_generator_mtwister},
-        .environment_config = {.random_seed = mtwister_seed[0], .uz_prng_type = uz_prng_generator_mtwister},
-        .init_seeds = mtwister_seed,
-        .exploration_seeds = mtwister_seed,
-        .training_seeds = mtwister_seed,
-        .environment_seeds = mtwister_seed,
-        .number_of_seeds = 10};
+    switch (init_generator)
+    {
+    case uz_prng_generator_halton:
+        exp.init_config.random_seed = halton_seed[0];
+        exp.init_config.uz_prng_type = uz_prng_generator_halton;
+        exp.init_seeds = halton_seed;
+        break;
+    case uz_prng_generator_mtwister:
+        exp.init_config.random_seed = mtwister_seed[0];
+        exp.init_config.uz_prng_type = uz_prng_generator_mtwister;
+        exp.init_seeds = mtwister_seed;
+        break;
+    case uz_prng_generator_squares:
+        exp.init_config.random_seed = squares_seed[0];
+        exp.init_config.uz_prng_type = uz_prng_generator_squares;
+        exp.init_seeds = squares_seed;
+        break;
+    case uz_prng_generator_pcg:
+        exp.init_config.random_seed = pcg_seed[0];
+        exp.init_config.uz_prng_type = uz_prng_generator_pcg;
+        exp.init_seeds = pcg_seed;
+        break;
+    case uz_prng_generator_xoshiro:
+        exp.init_config.random_seed = xoshiro_seed[0];
+        exp.init_config.uz_prng_type = uz_prng_generator_xoshiro;
+        exp.init_seeds = xoshiro_seed;
+        break;
+    default:
+        break;
+    }
 
-    do_experiment(training_absolute_path, eval_absolute_path, exp);
+    switch (training_generator)
+    {
+    case uz_prng_generator_halton:
+        exp.training_config.random_seed = halton_seed[0];
+        exp.training_config.uz_prng_type = uz_prng_generator_halton;
+        exp.training_seeds = halton_seed;
+        break;
+    case uz_prng_generator_mtwister:
+        exp.training_config.random_seed = mtwister_seed[0];
+        exp.training_config.uz_prng_type = uz_prng_generator_mtwister;
+        exp.training_seeds = mtwister_seed;
+        break;
+    case uz_prng_generator_squares:
+        exp.training_config.random_seed = squares_seed[0];
+        exp.training_config.uz_prng_type = uz_prng_generator_squares;
+        exp.training_seeds = squares_seed;
+        break;
+    case uz_prng_generator_pcg:
+        exp.training_config.random_seed = pcg_seed[0];
+        exp.training_config.uz_prng_type = uz_prng_generator_pcg;
+        exp.training_seeds = pcg_seed;
+        break;
+    case uz_prng_generator_xoshiro:
+        exp.training_config.random_seed = xoshiro_seed[0];
+        exp.training_config.uz_prng_type = uz_prng_generator_xoshiro;
+        exp.training_seeds = xoshiro_seed;
+        break;
+    default:
+        break;
+    }
+
+    switch (exploration_generator)
+    {
+    case uz_prng_generator_halton:
+        exp.exploration_config.random_seed = halton_seed[0];
+        exp.exploration_config.uz_prng_type = uz_prng_generator_halton;
+        exp.exploration_seeds = halton_seed;
+        break;
+    case uz_prng_generator_mtwister:
+        exp.exploration_config.random_seed = mtwister_seed[0];
+        exp.exploration_config.uz_prng_type = uz_prng_generator_mtwister;
+        exp.exploration_seeds = mtwister_seed;
+        break;
+    case uz_prng_generator_squares:
+        exp.exploration_config.random_seed = squares_seed[0];
+        exp.exploration_config.uz_prng_type = uz_prng_generator_squares;
+        exp.exploration_seeds = squares_seed;
+        break;
+    case uz_prng_generator_pcg:
+        exp.exploration_config.random_seed = pcg_seed[0];
+        exp.exploration_config.uz_prng_type = uz_prng_generator_pcg;
+        exp.exploration_seeds = pcg_seed;
+        break;
+    case uz_prng_generator_xoshiro:
+        exp.exploration_config.random_seed = xoshiro_seed[0];
+        exp.exploration_config.uz_prng_type = uz_prng_generator_xoshiro;
+        exp.exploration_seeds = xoshiro_seed;
+        break;
+    default:
+        break;
+    }
+
+    switch (env_generator)
+    {
+    case uz_prng_generator_halton:
+        exp.environment_config.random_seed = halton_seed[0];
+        exp.environment_config.uz_prng_type = uz_prng_generator_halton;
+        exp.environment_seeds = environment_seed;
+        break;
+    case uz_prng_generator_mtwister:
+        exp.environment_config.random_seed = mtwister_seed[0];
+        exp.environment_config.uz_prng_type = uz_prng_generator_mtwister;
+        exp.environment_seeds = environment_seed;
+        break;
+    case uz_prng_generator_squares:
+        exp.environment_config.random_seed = squares_seed[0];
+        exp.environment_config.uz_prng_type = uz_prng_generator_squares;
+        exp.environment_seeds = environment_seed;
+        break;
+    case uz_prng_generator_pcg:
+        exp.environment_config.random_seed = pcg_seed[0];
+        exp.environment_config.uz_prng_type = uz_prng_generator_pcg;
+        exp.environment_seeds = environment_seed;
+        break;
+    case uz_prng_generator_xoshiro:
+        exp.environment_config.random_seed = xoshiro_seed[0];
+        exp.environment_config.uz_prng_type = uz_prng_generator_xoshiro;
+        exp.environment_seeds = environment_seed;
+        break;
+    default:
+        break;
+    }
+    return exp;
 }
 
 void do_experiment(char training_absolute_path[], char eval_absolute_path[], struct experiment_config exp)

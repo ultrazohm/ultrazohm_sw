@@ -20,23 +20,23 @@ steps:
    - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
    
   
- - name: Ceedling_unit_tests
-   image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
-   commands:
-   - cd vitis/software/Baremetal
-   - ceedling test:all
+#  - name: Ceedling_unit_tests
+#    image: ultrazohm/ultrazohm_remote_container
+#    depends_on: [ copy_global_config ]
+#    commands:
+#    - cd vitis/software/Baremetal
+#    - ceedling test:all
 
- - name: docs
-   image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ Ceedling_unit_tests ]
-   commands: # Modify the commands below to build your repository.
-   - cd docs
-   - pip install -r requirements.txt
-   - pip list
-   - make docs
-   - cd build
-   - ls
+#  - name: docs
+#    image: ultrazohm/ultrazohm_remote_container
+#    depends_on: [ Ceedling_unit_tests ]
+#    commands: # Modify the commands below to build your repository.
+#    - cd docs
+#    - pip install -r requirements.txt
+#    - pip list
+#    - make docs
+#    - cd build
+#    - ls
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container

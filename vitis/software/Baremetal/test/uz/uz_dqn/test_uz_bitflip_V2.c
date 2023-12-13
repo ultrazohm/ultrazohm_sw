@@ -273,7 +273,7 @@ void test_dqn_bitflip(void)
         &cumulative_reward,
         &global_reward_metric,
         &epsilon_per_epsiode};
-    char header[] = {"episode_loss,cumulative_reward, global_reward_metric, epsilon_per_epsiode\n"};
+    char header[] = {"episode_loss,cumulative_reward,global_reward_metric,epsilon_per_epsiode\n"};
     char absolute_path[] = "test/uz/uz_dqn/export_test";
 
     float targsmoothfact = 0.05f;
@@ -439,7 +439,7 @@ void test_dqn_bitflip_twister_10_seeds(void)
     uz_array_float_t *evaluation_log[1] = {
         &episode_loss_eval};
 
-    char training_header[] = {"episode_loss,cumulative_reward, global_reward_metric, epsilon_per_epsiode\n"};
+    char training_header[] = {"episode_loss,cumulative_reward,global_reward_metric,epsilon_per_epsiode\n"};
     char eval_header[] = {"cumulative_reward\n"};
     char training_absolute_path[] = "test/uz/uz_dqn/twister_training";
     char eval_absolute_path[] = "test/uz/uz_dqn/twister_eval";
@@ -479,7 +479,7 @@ void test_dqn_bitflip_twister_10_seeds(void)
     for (uint32_t seed_index = 0; seed_index < 2; seed_index++)
     {
 
-        uz_dqn_set_prng_seeds(testdqn2, 9U, 9U, 7U);
+        // uz_dqn_set_prng_seeds(testdqn2, 9U, 9U, 7U);
         uz_prng_reset(environment_twister, 41850483U);
         uz_dqn_reset(testdqn2, epsilon_start);
         uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval

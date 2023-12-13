@@ -62,8 +62,25 @@ typedef struct uz_array_uint16_t
     uint16_t *data;  /**< pointer to data */
 }uz_array_uint16_t;
 
+/**
+ * @brief Functions that resets uint32_t array to zero
+ * @param arr Pointer to uint32_t array
+ * @param size Size of uint32_t array, which will be reset
+ */
 void resetuintArray(uint32_t *arr, uint32_t size);
+
+/**
+ * @brief Functions that resets float array to zero
+ * @param arr Pointer to float array
+ * @param size Size of float array, which will be reset
+ */
 void resetFloatArray(float *arr, uint32_t size);
+/**
+ * @brief Functions that exports float array to .csv 
+ * @param filename Name for .csv file, where the data are written to
+ * @param array Pointer to float array
+ * @param size Size of float array
+ */
 void exportFloatArrayToCSV(const char *filename, const float *array, int size);
 
 #endif // UZ_ARRAY_H

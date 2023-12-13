@@ -10,6 +10,8 @@
  *
  */
 #define UZ_NN_MAX_LAYER 10U
+
+/*! enum for target_update_methods for RL */
 enum target_update
 {
     smoothing,

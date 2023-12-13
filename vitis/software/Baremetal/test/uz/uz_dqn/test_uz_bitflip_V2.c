@@ -303,6 +303,7 @@ void test_dqn_bitflip(void)
             .prng_training = {.random_seed = 7U, .uz_prng_type = uz_prng_generator_mtwister}};
     uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
 
+    // Do the training twice and make sure everything is the same after reset
     for (uint32_t i = 0; i < 2; i++)
     {
         uz_dqn_set_prng_seeds(testdqn2, 9U, 9U, 7U);
@@ -341,7 +342,6 @@ void test_dqn_bitflip(void)
     exportFloatArrayToCSV("test/uz/uz_dqn/globalrewardr.csv", globalrewardr, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/epsilon256_clipped.csv", epsilonovertime, NUMBER_OF_EPOCHS);
     exportFloatArrayToCSV("test/uz/uz_dqn/cumreward256_nur_action.csv", cumreward_noexpl, NUMBEROFTESTSTEPS);
-
 
     FILE *f = fopen("test/uz/uz_dqn/hyperparam.txt", "w"); // open the file for writing
     if (f != NULL)                                         // check for success
@@ -474,12 +474,406 @@ void test_dqn_bitflip_twister_10_seeds(void)
     uz_prng_t *dqn_training_prng = uz_dqn_get_prng_training(testdqn2);
     uz_prng_t *dqn_exploration_prng = uz_dqn_get_prng_exploration(testdqn2);
 
-    //  uint64_t mtwister_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116}; // arbitrary numbers with large and small seeds
+    uint64_t mtwister_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116}; // arbitrary numbers with large and small seeds
 
-    for (uint32_t seed_index = 0; seed_index < 2; seed_index++)
+    for (uint32_t seed_index = 0; seed_index < 10; seed_index++)
     {
+        uz_dqn_set_prng_seeds(testdqn2, mtwister_seed[seed_index], mtwister_seed[seed_index], mtwister_seed[seed_index]);
+        uz_prng_reset(environment_twister, 41850483U);
+        uz_dqn_reset(testdqn2, epsilon_start);
+        uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval
 
-        // uz_dqn_set_prng_seeds(testdqn2, 9U, 9U, 7U);
+        train_bitflip(NUMBER_OF_EPOCHS, env, environment_twister, testdqn2, episode_loss, cumulative_reward, global_reward_metric, epsilon_per_epsiode);
+        eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+
+        export_abitrary_number_of_arrays(training_log, 4, training_header, training_absolute_path, seed_index);
+        export_abitrary_number_of_arrays(evaluation_log, 1, eval_header, eval_absolute_path, seed_index);
+    }
+}
+
+void test_dqn_bitflip_squares_10_seeds(void)
+{
+    float Q_Target[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
+    uz_array_float_t evaluation_run_reward = {
+        .data = cumreward_noexpl,
+        .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+
+    float loss[NUMBER_OF_EPOCHS] = {0.0f};
+    float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
+    float globalrewardr[NUMBER_OF_EPOCHS] = {0.0f};
+    float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
+    //
+    uz_array_float_t episode_loss = {.data = loss, .length = UZ_ARRAY_SIZE(loss)};
+    uz_array_float_t episode_loss_eval = {.data = cumreward_noexpl, .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+    uz_array_float_t cumulative_reward = {.data = cumreward, .length = UZ_ARRAY_SIZE(cumreward)};
+    uz_array_float_t global_reward_metric = {.data = globalrewardr, .length = UZ_ARRAY_SIZE(globalrewardr)};
+    uz_array_float_t epsilon_per_epsiode = {.data = epsilonovertime, .length = UZ_ARRAY_SIZE(epsilonovertime)};
+
+    uz_array_float_t *training_log[4] = {
+        &episode_loss,
+        &cumulative_reward,
+        &global_reward_metric,
+        &epsilon_per_epsiode};
+    uz_array_float_t *evaluation_log[1] = {
+        &episode_loss_eval};
+
+    char training_header[] = {"episode_loss,cumulative_reward,global_reward_metric,epsilon_per_epsiode\n"};
+    char eval_header[] = {"cumulative_reward\n"};
+    char training_absolute_path[] = "test/uz/uz_dqn/squares_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/squares_eval";
+
+    float targsmoothfact = 0.05f;
+    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 41850483U);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
+
+    uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
+
+    struct uz_dqn_config_t dqn_config =
+        {
+            .observation_data = X_dat,
+            .observation_k1_data = X1_dat,
+            .buffer_config = configbuffer,
+            .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
+            .error = error,
+            .training = {
+                .learn_rate = lernrate,
+                .discount_factor = discountfact,
+                .minibatch_size = MINIBATCHSIZE,
+                .target_update_frequency = TARGET_UPDATE_FREQUENCY,
+                .target_smooth_factor = targsmoothfact,
+                .update_mechanism = periodic},
+            .network = {.config_critic = config_critic, .config_target = config_critic, .config_copy = config_copy, .number_of_layer = NUMBER_OF_HIDDEN_LAYER},
+            .exploration = {.epsilon_start = epsilon_start, .epsilon_min = epsilon_min, .epsilon_decay = epsilon_decay},
+            .prng_init = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_squares},
+            .prng_exploration = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_squares},
+            .prng_training = {.random_seed = 7U, .uz_prng_type = uz_prng_generator_squares}};
+    uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
+    uz_prng_t *dqn_init_prng = uz_dqn_get_prng_init(testdqn2);
+    uz_prng_t *dqn_training_prng = uz_dqn_get_prng_training(testdqn2);
+    uz_prng_t *dqn_exploration_prng = uz_dqn_get_prng_exploration(testdqn2);
+
+    uint64_t seed[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}; // take key's from list
+
+    for (uint32_t seed_index = 0; seed_index < 10; seed_index++)
+    {
+        uz_dqn_set_prng_seeds(testdqn2, seed[seed_index], seed[seed_index], seed[seed_index]);
+        uz_prng_reset(environment_twister, 41850483U);
+        uz_dqn_reset(testdqn2, epsilon_start);
+        uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval
+
+        train_bitflip(NUMBER_OF_EPOCHS, env, environment_twister, testdqn2, episode_loss, cumulative_reward, global_reward_metric, epsilon_per_epsiode);
+        eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+
+        export_abitrary_number_of_arrays(training_log, 4, training_header, training_absolute_path, seed_index);
+        export_abitrary_number_of_arrays(evaluation_log, 1, eval_header, eval_absolute_path, seed_index);
+    }
+}
+
+void test_dqn_bitflip_pcg_10_seeds(void)
+{
+    float Q_Target[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
+    uz_array_float_t evaluation_run_reward = {
+        .data = cumreward_noexpl,
+        .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+
+    float loss[NUMBER_OF_EPOCHS] = {0.0f};
+    float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
+    float globalrewardr[NUMBER_OF_EPOCHS] = {0.0f};
+    float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
+    //
+    uz_array_float_t episode_loss = {.data = loss, .length = UZ_ARRAY_SIZE(loss)};
+    uz_array_float_t episode_loss_eval = {.data = cumreward_noexpl, .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+    uz_array_float_t cumulative_reward = {.data = cumreward, .length = UZ_ARRAY_SIZE(cumreward)};
+    uz_array_float_t global_reward_metric = {.data = globalrewardr, .length = UZ_ARRAY_SIZE(globalrewardr)};
+    uz_array_float_t epsilon_per_epsiode = {.data = epsilonovertime, .length = UZ_ARRAY_SIZE(epsilonovertime)};
+
+    uz_array_float_t *training_log[4] = {
+        &episode_loss,
+        &cumulative_reward,
+        &global_reward_metric,
+        &epsilon_per_epsiode};
+    uz_array_float_t *evaluation_log[1] = {
+        &episode_loss_eval};
+
+    char training_header[] = {"episode_loss,cumulative_reward,global_reward_metric,epsilon_per_epsiode\n"};
+    char eval_header[] = {"cumulative_reward\n"};
+    char training_absolute_path[] = "test/uz/uz_dqn/pcg_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/pcg_eval";
+
+    float targsmoothfact = 0.05f;
+    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 41850483U);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
+
+    uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
+
+    struct uz_dqn_config_t dqn_config =
+        {
+            .observation_data = X_dat,
+            .observation_k1_data = X1_dat,
+            .buffer_config = configbuffer,
+            .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
+            .error = error,
+            .training = {
+                .learn_rate = lernrate,
+                .discount_factor = discountfact,
+                .minibatch_size = MINIBATCHSIZE,
+                .target_update_frequency = TARGET_UPDATE_FREQUENCY,
+                .target_smooth_factor = targsmoothfact,
+                .update_mechanism = periodic},
+            .network = {.config_critic = config_critic, .config_target = config_critic, .config_copy = config_copy, .number_of_layer = NUMBER_OF_HIDDEN_LAYER},
+            .exploration = {.epsilon_start = epsilon_start, .epsilon_min = epsilon_min, .epsilon_decay = epsilon_decay},
+            .prng_init = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_pcg},
+            .prng_exploration = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_pcg},
+            .prng_training = {.random_seed = 7U, .uz_prng_type = uz_prng_generator_pcg}};
+    uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
+
+    uint64_t seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116}; // arbitrary numbers with large and small seeds
+
+    for (uint32_t seed_index = 0; seed_index < 10; seed_index++)
+    {
+        uz_dqn_set_prng_seeds(testdqn2, seed[seed_index], seed[seed_index], seed[seed_index]);
+        uz_prng_reset(environment_twister, 41850483U);
+        uz_dqn_reset(testdqn2, epsilon_start);
+        uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval
+
+        train_bitflip(NUMBER_OF_EPOCHS, env, environment_twister, testdqn2, episode_loss, cumulative_reward, global_reward_metric, epsilon_per_epsiode);
+        eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+
+        export_abitrary_number_of_arrays(training_log, 4, training_header, training_absolute_path, seed_index);
+        export_abitrary_number_of_arrays(evaluation_log, 1, eval_header, eval_absolute_path, seed_index);
+    }
+}
+
+void test_dqn_bitflip_xoshiro_10_seeds(void)
+{
+    float Q_Target[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
+    uz_array_float_t evaluation_run_reward = {
+        .data = cumreward_noexpl,
+        .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+
+    float loss[NUMBER_OF_EPOCHS] = {0.0f};
+    float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
+    float globalrewardr[NUMBER_OF_EPOCHS] = {0.0f};
+    float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
+    //
+    uz_array_float_t episode_loss = {.data = loss, .length = UZ_ARRAY_SIZE(loss)};
+    uz_array_float_t episode_loss_eval = {.data = cumreward_noexpl, .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+    uz_array_float_t cumulative_reward = {.data = cumreward, .length = UZ_ARRAY_SIZE(cumreward)};
+    uz_array_float_t global_reward_metric = {.data = globalrewardr, .length = UZ_ARRAY_SIZE(globalrewardr)};
+    uz_array_float_t epsilon_per_epsiode = {.data = epsilonovertime, .length = UZ_ARRAY_SIZE(epsilonovertime)};
+
+    uz_array_float_t *training_log[4] = {
+        &episode_loss,
+        &cumulative_reward,
+        &global_reward_metric,
+        &epsilon_per_epsiode};
+    uz_array_float_t *evaluation_log[1] = {
+        &episode_loss_eval};
+
+    char training_header[] = {"episode_loss,cumulative_reward,global_reward_metric,epsilon_per_epsiode\n"};
+    char eval_header[] = {"cumulative_reward\n"};
+    char training_absolute_path[] = "test/uz/uz_dqn/xoshiro_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/xoshiro_eval";
+
+    float targsmoothfact = 0.05f;
+    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 41850483U);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
+
+    uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
+
+    struct uz_dqn_config_t dqn_config =
+        {
+            .observation_data = X_dat,
+            .observation_k1_data = X1_dat,
+            .buffer_config = configbuffer,
+            .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
+            .error = error,
+            .training = {
+                .learn_rate = lernrate,
+                .discount_factor = discountfact,
+                .minibatch_size = MINIBATCHSIZE,
+                .target_update_frequency = TARGET_UPDATE_FREQUENCY,
+                .target_smooth_factor = targsmoothfact,
+                .update_mechanism = periodic},
+            .network = {.config_critic = config_critic, .config_target = config_critic, .config_copy = config_copy, .number_of_layer = NUMBER_OF_HIDDEN_LAYER},
+            .exploration = {.epsilon_start = epsilon_start, .epsilon_min = epsilon_min, .epsilon_decay = epsilon_decay},
+            .prng_init = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_xoshiro},
+            .prng_exploration = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_xoshiro},
+            .prng_training = {.random_seed = 7U, .uz_prng_type = uz_prng_generator_xoshiro}};
+    uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
+
+    uint64_t seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116}; // arbitrary numbers with large and small seeds
+
+    for (uint32_t seed_index = 0; seed_index < 10; seed_index++)
+    {
+        uz_dqn_set_prng_seeds(testdqn2, seed[seed_index], seed[seed_index], seed[seed_index]);
+        uz_prng_reset(environment_twister, 41850483U);
+        uz_dqn_reset(testdqn2, epsilon_start);
+        uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval
+
+        train_bitflip(NUMBER_OF_EPOCHS, env, environment_twister, testdqn2, episode_loss, cumulative_reward, global_reward_metric, epsilon_per_epsiode);
+        eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+
+        export_abitrary_number_of_arrays(training_log, 4, training_header, training_absolute_path, seed_index);
+        export_abitrary_number_of_arrays(evaluation_log, 1, eval_header, eval_absolute_path, seed_index);
+    }
+}
+
+void test_dqn_bitflip_halton_10_seeds(void)
+{
+    float Q_Target[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
+    uz_array_float_t evaluation_run_reward = {
+        .data = cumreward_noexpl,
+        .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+
+    float loss[NUMBER_OF_EPOCHS] = {0.0f};
+    float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
+    float globalrewardr[NUMBER_OF_EPOCHS] = {0.0f};
+    float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
+    //
+    uz_array_float_t episode_loss = {.data = loss, .length = UZ_ARRAY_SIZE(loss)};
+    uz_array_float_t episode_loss_eval = {.data = cumreward_noexpl, .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+    uz_array_float_t cumulative_reward = {.data = cumreward, .length = UZ_ARRAY_SIZE(cumreward)};
+    uz_array_float_t global_reward_metric = {.data = globalrewardr, .length = UZ_ARRAY_SIZE(globalrewardr)};
+    uz_array_float_t epsilon_per_epsiode = {.data = epsilonovertime, .length = UZ_ARRAY_SIZE(epsilonovertime)};
+
+    uz_array_float_t *training_log[4] = {
+        &episode_loss,
+        &cumulative_reward,
+        &global_reward_metric,
+        &epsilon_per_epsiode};
+    uz_array_float_t *evaluation_log[1] = {
+        &episode_loss_eval};
+
+    char training_header[] = {"episode_loss,cumulative_reward,global_reward_metric,epsilon_per_epsiode\n"};
+    char eval_header[] = {"cumulative_reward\n"};
+    char training_absolute_path[] = "test/uz/uz_dqn/halton_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/halton_eval";
+
+    float targsmoothfact = 0.05f;
+    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 41850483U);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
+
+    uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
+
+    struct uz_dqn_config_t dqn_config =
+        {
+            .observation_data = X_dat,
+            .observation_k1_data = X1_dat,
+            .buffer_config = configbuffer,
+            .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
+            .error = error,
+            .training = {
+                .learn_rate = lernrate,
+                .discount_factor = discountfact,
+                .minibatch_size = MINIBATCHSIZE,
+                .target_update_frequency = TARGET_UPDATE_FREQUENCY,
+                .target_smooth_factor = targsmoothfact,
+                .update_mechanism = periodic},
+            .network = {.config_critic = config_critic, .config_target = config_critic, .config_copy = config_copy, .number_of_layer = NUMBER_OF_HIDDEN_LAYER},
+            .exploration = {.epsilon_start = epsilon_start, .epsilon_min = epsilon_min, .epsilon_decay = epsilon_decay},
+            .prng_init = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_halton},
+            .prng_exploration = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_halton},
+            .prng_training = {.random_seed = 7U, .uz_prng_type = uz_prng_generator_halton}};
+    uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
+    uz_prng_t *dqn_init_prng = uz_dqn_get_prng_init(testdqn2);
+    uz_prng_t *dqn_training_prng = uz_dqn_get_prng_training(testdqn2);
+    uz_prng_t *dqn_exploration_prng = uz_dqn_get_prng_exploration(testdqn2);
+
+    uint64_t seed[10] = {13, 17, 19, 23, 29, 31, 37, 41, 43, 47}; // 6. to 15. prime number
+
+    for (uint32_t seed_index = 0; seed_index < 10; seed_index++)
+    {
+        uz_dqn_set_prng_seeds(testdqn2, seed[seed_index], seed[seed_index], seed[seed_index]);
+        uz_prng_reset(environment_twister, 41850483U);
+        uz_dqn_reset(testdqn2, epsilon_start);
+        uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval
+
+        train_bitflip(NUMBER_OF_EPOCHS, env, environment_twister, testdqn2, episode_loss, cumulative_reward, global_reward_metric, epsilon_per_epsiode);
+        eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+
+        export_abitrary_number_of_arrays(training_log, 4, training_header, training_absolute_path, seed_index);
+        export_abitrary_number_of_arrays(evaluation_log, 1, eval_header, eval_absolute_path, seed_index);
+    }
+}
+
+void test_dqn_bitflip_halton_10_seeds_but_init_with_twister(void)
+{
+    float Q_Target[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
+    float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
+    uz_array_float_t evaluation_run_reward = {
+        .data = cumreward_noexpl,
+        .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+
+    float loss[NUMBER_OF_EPOCHS] = {0.0f};
+    float cumreward[NUMBER_OF_EPOCHS] = {0.0f};
+    float globalrewardr[NUMBER_OF_EPOCHS] = {0.0f};
+    float epsilonovertime[NUMBER_OF_EPOCHS] = {0.0f};
+    //
+    uz_array_float_t episode_loss = {.data = loss, .length = UZ_ARRAY_SIZE(loss)};
+    uz_array_float_t episode_loss_eval = {.data = cumreward_noexpl, .length = UZ_ARRAY_SIZE(cumreward_noexpl)};
+    uz_array_float_t cumulative_reward = {.data = cumreward, .length = UZ_ARRAY_SIZE(cumreward)};
+    uz_array_float_t global_reward_metric = {.data = globalrewardr, .length = UZ_ARRAY_SIZE(globalrewardr)};
+    uz_array_float_t epsilon_per_epsiode = {.data = epsilonovertime, .length = UZ_ARRAY_SIZE(epsilonovertime)};
+
+    uz_array_float_t *training_log[4] = {
+        &episode_loss,
+        &cumulative_reward,
+        &global_reward_metric,
+        &epsilon_per_epsiode};
+    uz_array_float_t *evaluation_log[1] = {
+        &episode_loss_eval};
+
+    char training_header[] = {"episode_loss,cumulative_reward,global_reward_metric,epsilon_per_epsiode\n"};
+    char eval_header[] = {"cumulative_reward\n"};
+    char training_absolute_path[] = "test/uz/uz_dqn/halton_mt_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/halton_mt_eval";
+
+    float targsmoothfact = 0.05f;
+    uz_prng_t *environment_twister = uz_prng_init(uz_prng_generator_mtwister, uz_prng_float_scale_fp_multiply, 41850483U);
+    float error[NUMBER_OF_OUTPUTS] = {0.0f};
+
+    uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
+
+    struct uz_dqn_config_t dqn_config =
+        {
+            .observation_data = X_dat,
+            .observation_k1_data = X1_dat,
+            .buffer_config = configbuffer,
+            .length_of_buffer = EXPERIENCE_BUFFER_LENGTH,
+            .error = error,
+            .training = {
+                .learn_rate = lernrate,
+                .discount_factor = discountfact,
+                .minibatch_size = MINIBATCHSIZE,
+                .target_update_frequency = TARGET_UPDATE_FREQUENCY,
+                .target_smooth_factor = targsmoothfact,
+                .update_mechanism = periodic},
+            .network = {.config_critic = config_critic, .config_target = config_critic, .config_copy = config_copy, .number_of_layer = NUMBER_OF_HIDDEN_LAYER},
+            .exploration = {.epsilon_start = epsilon_start, .epsilon_min = epsilon_min, .epsilon_decay = epsilon_decay},
+            .prng_init = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_mtwister},
+            .prng_exploration = {.random_seed = 9U, .uz_prng_type = uz_prng_generator_halton},
+            .prng_training = {.random_seed = 7U, .uz_prng_type = uz_prng_generator_halton}};
+    uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
+    uz_prng_t *dqn_init_prng = uz_dqn_get_prng_init(testdqn2);
+    uz_prng_t *dqn_training_prng = uz_dqn_get_prng_training(testdqn2);
+    uz_prng_t *dqn_exploration_prng = uz_dqn_get_prng_exploration(testdqn2);
+
+    uint64_t seed[10] = {13, 17, 19, 23, 29, 31, 37, 41, 43, 47};                                        // 6. to 15. prime number
+    uint64_t mtwister_seed[10] = {0, 59994356, 96162775, 58988824, 66869139, 20, 17, 23605, 50, 258116}; // arbitrary numbers with large and small seeds
+
+    for (uint32_t seed_index = 0; seed_index < 10; seed_index++)
+    {
+        uz_dqn_set_prng_seeds(testdqn2, mtwister_seed[seed_index], seed[seed_index], seed[seed_index]);
         uz_prng_reset(environment_twister, 41850483U);
         uz_dqn_reset(testdqn2, epsilon_start);
         uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval

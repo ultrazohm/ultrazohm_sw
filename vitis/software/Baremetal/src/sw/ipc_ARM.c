@@ -52,9 +52,6 @@ extern float theta_el_offset_2;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
 
 
-// ---------------- Resonant Controllers ---------------- //
-extern float Gain_RC_6th_2;
-
 // ---------------- Controller Settings ----------------- //
 extern float Kp_speed_2;
 extern float Ki_speed_2;
@@ -246,7 +243,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.theta_offset_2 = value;
+
 			break;
 
 		case (Set_Send_Field_5):

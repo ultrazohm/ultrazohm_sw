@@ -156,25 +156,41 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
 
     // Read Measurement Data of first Inverter Card
-    v_abc_Volts_1.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
+    v_abc_Volts_1.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
+    v_abc_Volts_1.b = 11.7657f * Global_Data.aa.A1.me.ADC_B7 + 0.0533f;
+    v_abc_Volts_1.c = 11.7657f * Global_Data.aa.A1.me.ADC_B6 + 0.0533f;
+    v_DC_Volts_1 	= Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    i_abc_Amps_1.a  = 12.223f * Global_Data.aa.A1.me.ADC_A4 + 0.0164f;
+    i_abc_Amps_1.b  = 12.3123f * Global_Data.aa.A1.me.ADC_A3 + 0.0161f ;
+    i_abc_Amps_1.c  = 12.4303f * Global_Data.aa.A1.me.ADC_A2 - 0.0184f ;
+    i_DC_Amps_1     = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    /*v_abc_Volts_1.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
     v_abc_Volts_1.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
     v_abc_Volts_1.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
     v_DC_Volts_1 	= Global_Data.aa.A1.me.ADC_A1 * 12.0f;
     i_abc_Amps_1.a  = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
     i_abc_Amps_1.b  = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
     i_abc_Amps_1.c  = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
-    i_DC_Amps_1     = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    i_DC_Amps_1     = Global_Data.aa.A1.me.ADC_B5 * 12.5f;*/
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
 
     // Read Measurement Data of second Inverter Card
-    v_abc_Volts_2.a = Global_Data.aa.A2.me.ADC_B8 * 11.32f;
+    v_abc_Volts_2.a = 11.6798f * Global_Data.aa.A2.me.ADC_B8 - 0.3648f;
+    v_abc_Volts_2.b = 11.7657f * Global_Data.aa.A2.me.ADC_B7 + 0.0533f;
+    v_abc_Volts_2.c = 11.7657f * Global_Data.aa.A2.me.ADC_B6 + 0.0533f;
+    v_DC_Volts_2 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
+    i_abc_Amps_2.a  = 12.2889f * Global_Data.aa.A2.me.ADC_A4 + 0.0802f;
+    i_abc_Amps_2.b  = 11.8330f * Global_Data.aa.A2.me.ADC_A3 + 0.1344f;
+    i_abc_Amps_2.c  = 11.7894f * Global_Data.aa.A2.me.ADC_A2 + 0.1197f;
+    i_DC_Amps_2     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
+    /*v_abc_Volts_2.a = Global_Data.aa.A2.me.ADC_B8 * 11.32f;
     v_abc_Volts_2.b = Global_Data.aa.A2.me.ADC_B7 * 11.82f;
     v_abc_Volts_2.c = Global_Data.aa.A2.me.ADC_B6 * 11.8f;
     v_DC_Volts_2 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
     i_abc_Amps_2.a  = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
     i_abc_Amps_2.b  = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
     i_abc_Amps_2.c  = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
-    i_DC_Amps_2     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
+    i_DC_Amps_2     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;*/
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
 
     // Get Current State
@@ -278,8 +294,8 @@ void ISR_Control(void *data)
     uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
 
     //calculate induced voltage for estimation of r_fe + filter
-    v_ind_dq_Volts_2.q = v_dq_ref_Volts_2.q - r_s_2 * i_dq_Amps_2.q;
-    v_ind_dq_Volts_2.d = v_dq_ref_Volts_2.d - r_s_2 * i_dq_Amps_2.d;
+    v_ind_dq_Volts_2.q = v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q;
+    v_ind_dq_Volts_2.d = v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d;
 
     v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
     v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);

@@ -192,6 +192,16 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ua2_av]   				= &data->aa.A2.me.ADC_B8;
 	js_slowDataArray[JSSD_FLOAT_ub2_av]  			 	= &data->aa.A2.me.ADC_B7;
 	js_slowDataArray[JSSD_FLOAT_uc2_av]  			 	= &data->aa.A2.me.ADC_B6;
+	js_slowDataArray[JSSD_FLOAT_ia1_av]   				= &data->aa.A1.me.ADC_A4;
+	js_slowDataArray[JSSD_FLOAT_ib1_av]  			 	= &data->aa.A1.me.ADC_A3;
+	js_slowDataArray[JSSD_FLOAT_ic1_av]  			 	= &data->aa.A1.me.ADC_A2;
+	js_slowDataArray[JSSD_FLOAT_ua1_av]   				= &data->aa.A1.me.ADC_B8;
+	js_slowDataArray[JSSD_FLOAT_ub1_av]  			 	= &data->aa.A1.me.ADC_B7;
+	js_slowDataArray[JSSD_FLOAT_uc1_av]  			 	= &data->aa.A1.me.ADC_B6;
+	js_slowDataArray[JSSD_FLOAT_DC_A_av]   				= &data->rasv.halfBridge1DutyCycle;
+	js_slowDataArray[JSSD_FLOAT_DC_B_av]  			 	= &data->rasv.halfBridge2DutyCycle;
+	js_slowDataArray[JSSD_FLOAT_DC_C_av]  			 	= &data->rasv.halfBridge3DutyCycle;
+
 
 
 

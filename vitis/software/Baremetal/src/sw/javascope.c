@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_ParameterID/uz_ParameterID.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -65,6 +66,7 @@ extern struct uz_3ph_dq_t psi_dq_mVoltseconds_2;
 extern float M_meas_Nm;
 extern float option_js;
 extern float error_type;
+extern uz_ParameterID_Data_t ParaID_Data;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -148,6 +150,18 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_error_type]			= &error_type;
 	js_ch_observable[JSO_psi_d_2]			= &psi_dq_mVoltseconds_2.d;
 	js_ch_observable[JSO_psi_q_2]			= &psi_dq_mVoltseconds_2.q;
+	js_ch_observable[JSO_ia_para] = &ParaID_Data.ActualValues.I_abc.a;
+	js_ch_observable[JSO_ib_para] = &ParaID_Data.ActualValues.I_abc.b;
+	js_ch_observable[JSO_ic_para] = &ParaID_Data.ActualValues.I_abc.c;
+	js_ch_observable[JSO_ua_para] = &ParaID_Data.ActualValues.V_abc.a;
+	js_ch_observable[JSO_ub_para] = &ParaID_Data.ActualValues.V_abc.b;
+	js_ch_observable[JSO_uc_para] = &ParaID_Data.ActualValues.V_abc.c;
+	js_ch_observable[JSO_iq_para] = &ParaID_Data.ActualValues.i_dq.q;
+	js_ch_observable[JSO_id_para] = &ParaID_Data.ActualValues.i_dq.d;
+	js_ch_observable[JSO_Theta_el_para] = &ParaID_Data.ActualValues.theta_el;
+	js_ch_observable[JSO_theta_mech_para] = &ParaID_Data.ActualValues.theta_m;
+	js_ch_observable[JSO_ud_para] = &ParaID_Data.ActualValues.v_dq.d;
+	js_ch_observable[JSO_uq_para] = &ParaID_Data.ActualValues.v_dq.q;
 
 
 

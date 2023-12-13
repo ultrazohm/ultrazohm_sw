@@ -91,6 +91,18 @@ enum JS_OberservableData {
 	JSO_uq_ind_filt_2,
 	JSO_psi_d_2,
 	JSO_psi_q_2,
+	JSO_ia_para,
+	JSO_ib_para,
+	JSO_ic_para,
+	JSO_ua_para,
+	JSO_ub_para,
+	JSO_uc_para,
+	JSO_iq_para,
+	JSO_id_para,
+	JSO_Theta_el_para,
+	JSO_theta_mech_para,
+	JSO_ud_para,
+	JSO_uq_para,
 	JSO_ENDMARKER
 };
 

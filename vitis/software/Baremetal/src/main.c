@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 #include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "uz/uz_ParameterID/uz_ParameterID.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -48,11 +49,13 @@ uz_CurrentControl_t* CC_instance_1;
 uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 uz_wavegen_chirp* chirp_instance_1;
 
-
+//ParameterID Code
+uz_ParameterID_t* ParameterID = NULL;
+uz_ParameterID_Data_t ParaID_Data = { 0 };
 // Declare Pointer for FOC of PMSM 2
-uz_SpeedControl_t* SC_instance_2;
-uz_SetPoint_t* SP_instance_2;
-uz_CurrentControl_t* CC_instance_2;
+uz_SpeedControl_t* SC_instance;
+uz_SetPoint_t* SP_instance;
+uz_CurrentControl_t* CC_instance_dq;
 uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 uz_subspace_resonant_control* RC_instance_6th_2;
 uz_IIR_Filter_t* LP_instance_ud_ind_2;
@@ -96,7 +99,7 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
-
+    ParameterID = uz_ParameterID_init(&ParaID_Data);
     // ============== Configs for PMSM 1 (Pruefling) ============== //
     // -------------- Configuration of Speed Control -------------- //
     struct uz_SpeedControl_config SC_config_1 = {
@@ -176,16 +179,16 @@ int main(void)
 
     //--------- Configs for PMSM 2 (Last) ---------//
     // Configuration of Speed Control
-    struct uz_SpeedControl_config SC_config_2 = {
-       .config_controller.Kp = 0.1f,
-       .config_controller.Ki = 1.0f,
+    struct uz_SpeedControl_config SC_config = {
+       .config_controller.Kp = ParaID_Data.GlobalConfig.Kp_n,
+       .config_controller.Ki = ParaID_Data.GlobalConfig.Ki_n,
        .config_controller.samplingTime_sec = 0.0001f,
        .config_controller.upper_limit = 10.0f,
        .config_controller.lower_limit = -10.0f,
     };
     // Configuration of Set Point
-    struct uz_SetPoint_config SP_config_2 = {
-       .config_PMSM = config_PMSM_2,
+    struct uz_SetPoint_config SP_config = {
+       .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
        .control_type = FOC,
        .motor_type = IPMSM,
        .is_field_weakening_enabled = false,
@@ -194,22 +197,22 @@ int main(void)
      };
      // Configuration of Current Control
      struct uz_PI_Controller_config config_id_2 = {
-        .Kp = 0.1f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
-        .Ki = 55.5f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+        .Kp = ParaID_Data.GlobalConfig.Kp_id, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
+        .Ki = ParaID_Data.GlobalConfig.Ki_id, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
         .lower_limit = -15.0f
       };
       struct uz_PI_Controller_config config_iq_2 = {
-        .Kp = 0.17f, // nach BO, 0.5f nach Nina
-        .Ki = 55.5f, // nach BO, 230.0f nach Nina
+        .Kp = ParaID_Data.GlobalConfig.Kp_iq, // nach BO, 0.5f nach Nina
+        .Ki = ParaID_Data.GlobalConfig.Ki_iq, // nach BO, 230.0f nach Nina
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
 	    .lower_limit = -15.0f
       };
-      struct uz_CurrentControl_config CC_config_2 = {
+      struct uz_CurrentControl_config CC_config_dq = {
         .decoupling_select = linear_decoupling,
-        .config_PMSM = config_PMSM_2,
+        .config_PMSM = ParaID_Data.GlobalConfig.PMSM_config,
         .config_id = config_id_2,
         .config_iq = config_iq_2,
         .max_modulation_index = 1.0f / sqrtf(3.0f)
@@ -270,9 +273,9 @@ int main(void)
             SC_instance_1 = uz_SpeedControl_init(SC_config_1);
             SP_instance_1 = uz_SetPoint_init(SP_config_1);
             CC_instance_1 = uz_CurrentControl_init(CC_config_1);
-            SC_instance_2 = uz_SpeedControl_init(SC_config_2);
-            SP_instance_2 = uz_SetPoint_init(SP_config_2);
-            CC_instance_2 = uz_CurrentControl_init(CC_config_2);
+            SC_instance = uz_SpeedControl_init(SC_config);
+            SP_instance = uz_SetPoint_init(SP_config);
+            CC_instance_dq = uz_CurrentControl_init(CC_config_dq);
            	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
            	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);

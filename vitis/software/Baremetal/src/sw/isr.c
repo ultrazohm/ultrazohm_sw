@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_ParameterID/uz_ParameterID.h"
 
 
 // Initialize the Interrupt structure
@@ -85,9 +86,9 @@ float sampling_time 							= 1.0f/25.0e3f;
 // ======================= PMSM 2 ======================= //
 // --------------- Pointers to instances ---------------- //
 extern struct uz_PMSM_t config_PMSM_2;
-extern uz_SpeedControl_t* SC_instance_2;
-extern uz_SetPoint_t* SP_instance_2;
-extern uz_CurrentControl_t* CC_instance_2;
+extern uz_SpeedControl_t* SC_instance;
+extern uz_SetPoint_t* SP_instance;
+extern uz_CurrentControl_t* CC_instance_dq;
 extern uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 
 // ---------------- Inverter Measurement ---------------- //
@@ -130,7 +131,10 @@ struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
 float error_type = 0.0f;
 int counter = 1;
 float M_meas_Nm = 0.0f;
-
+extern uz_ParameterID_Data_t ParaID_Data;
+extern uz_ParameterID_t* ParameterID;
+struct uz_3ph_dq_t ParaID_v_dq = { 0 };
+struct uz_DutyCycle_t ParaID_DutyCycle = { 0 };
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -167,13 +171,13 @@ void ISR_Control(void *data)
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
 
     // Read Measurement Data of second Inverter Card
-    v_abc_Volts_2.a = Global_Data.aa.A2.me.ADC_B8 * 12.0f;
-    v_abc_Volts_2.b = Global_Data.aa.A2.me.ADC_B7 * 12.0f;
-    v_abc_Volts_2.c = Global_Data.aa.A2.me.ADC_B6 * 12.0f;
-    v_DC_Volts_2 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
-    i_abc_Amps_2.a  = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
-    i_abc_Amps_2.b  = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
-    i_abc_Amps_2.c  = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
+    ParaID_Data.ActualValues.I_abc.a = Global_Data.aa.A2.me.ADC_B8 * 12.0f;
+    ParaID_Data.ActualValues.I_abc.b = Global_Data.aa.A2.me.ADC_B7 * 12.0f;
+    ParaID_Data.ActualValues.I_abc.c = Global_Data.aa.A2.me.ADC_B6 * 12.0f;
+    ParaID_Data.ActualValues.V_DC 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
+    ParaID_Data.ActualValues.V_abc.a  = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
+    ParaID_Data.ActualValues.V_abc.b  = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
+    ParaID_Data.ActualValues.V_abc.c  = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
     i_DC_Amps_2     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
 
@@ -200,13 +204,12 @@ void ISR_Control(void *data)
     v_dq_Volts_1 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_1, theta_el_rad_1);
 
     // Calculation of Signals for FOC of PMSM 2
-    omega_m_rad_per_sec_2 = Global_Data.av.mechanicalRotorSpeed_filtered_2*(2.0f*M_PI)/60.0f;
-    omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2*config_PMSM_2.polePairs;
+    ParaID_Data.ActualValues.omega_m = Global_Data.av.mechanicalRotorSpeed_filtered_2*(2.0f*M_PI)/60.0f;
+    ParaID_Data.ActualValues.omega_el = omega_m_rad_per_sec_2*config_PMSM_2.polePairs;
     Global_Data.av.omega_el_2 = omega_el_rad_per_sec_2;
-    theta_el_rad_2 = Global_Data.av.theta_elec_2 - theta_el_offset_2;
-    i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
-    v_dq_Volts_2 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_2, theta_el_rad_2);
-
+    ParaID_Data.ActualValues.theta_el = Global_Data.av.theta_elec_2 - theta_el_offset_2;
+    ParaID_Data.ActualValues.i_dq = uz_transformation_3ph_abc_to_dq(ParaID_Data.ActualValues.I_abc, ParaID_Data.ActualValues.theta_el);
+    ParaID_Data.ActualValues.v_dq = uz_transformation_3ph_abc_to_dq(ParaID_Data.ActualValues.V_abc, ParaID_Data.ActualValues.theta_el);
 // =============== Offset Estimation =============== //
 //    // Offset Estimation
 //    Global_Data.av.U_q = v_dq_ref_Volts_1.q;                                              // write controller output ref voltage to global data
@@ -216,6 +219,7 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
 
+    	    uz_ParameterID_step(ParameterID, &ParaID_Data);
     		// Field Oriented Control of PMSM 1 - speed-controlled
     		M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
@@ -228,13 +232,12 @@ void ISR_Control(void *data)
 			Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
 
 			// Field Oriented Control of PMSM 2 - current-controlled
-			v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-			output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-
-			// Set DutyCycles of PMSM 2
-			Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
-			Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
-			Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
+	        ParaID_v_dq = uz_ParameterID_Controller(&ParaID_Data, CC_instance_dq, SC_instance, SP_instance);
+	        //If Gate-output is on the first 6 DIG-IO Pins. Otherwise use different PWM object
+	        ParaID_DutyCycle = uz_ParameterID_generate_DutyCycle(&ParaID_Data, ParaID_v_dq, Global_Data.objects.pwm_d1_pin_6_to_11);
+	        Global_Data.rasv.halfBridge1DutyCycle = ParaID_DutyCycle.DutyCycle_A;
+	        Global_Data.rasv.halfBridge2DutyCycle = ParaID_DutyCycle.DutyCycle_B;
+	        Global_Data.rasv.halfBridge3DutyCycle = ParaID_DutyCycle.DutyCycle_C;
 
     }
     else
@@ -246,8 +249,8 @@ void ISR_Control(void *data)
     	// Reset Speed and Current Controllers
     	uz_SpeedControl_reset(SC_instance_1);
     	uz_CurrentControl_reset(CC_instance_1);
-    	uz_SpeedControl_reset(SC_instance_2);
-    	uz_CurrentControl_reset(CC_instance_2);
+    	uz_SpeedControl_reset(SC_instance);
+    	uz_CurrentControl_reset(CC_instance_dq);
 
     }
 
@@ -270,12 +273,12 @@ void ISR_Control(void *data)
 
 
     // Set Controllers of PMSM 2
-    uz_SpeedControl_set_Kp(SC_instance_2, Kp_speed_2);
-    uz_SpeedControl_set_Ki(SC_instance_2, Ki_speed_2);
-    uz_CurrentControl_set_Kp_id(CC_instance_2, Kp_id_2);
-    uz_CurrentControl_set_Kp_iq(CC_instance_2, Kp_iq_2);
-    uz_CurrentControl_set_Ki_id(CC_instance_2, Ki_id_2);
-    uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
+    uz_SpeedControl_set_Kp(SC_instance, Kp_speed_2);
+    uz_SpeedControl_set_Ki(SC_instance, Ki_speed_2);
+    uz_CurrentControl_set_Kp_id(CC_instance_dq, Kp_id_2);
+    uz_CurrentControl_set_Kp_iq(CC_instance_dq, Kp_iq_2);
+    uz_CurrentControl_set_Ki_id(CC_instance_dq, Ki_id_2);
+    uz_CurrentControl_set_Ki_iq(CC_instance_dq, Ki_iq_2);
 
     //calculate induced voltage for estimation of r_fe + filter
     v_ind_dq_Volts_2.q = v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q;

@@ -36,13 +36,6 @@ sns.set_theme(style='whitegrid')
 palette = sns.color_palette("tab10")
 
 fig, axs = plt.subplots(5, 1,layout='constrained',figsize=(14,13))
-sns.lineplot(data=twister,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[0],legend=False)
-sns.lineplot(data=squares,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[1],legend=False)
-sns.lineplot(data=pcg,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[2],legend=False)
-sns.lineplot(data=halton,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[3],legend=False)
-sns.lineplot(data=xoshiro,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[4],legend=False)
-
-fig, axs = plt.subplots(5, 1,layout='constrained',figsize=(14,13))
 sns.lineplot(data=twister,x='episode',y='global_reward_metric',errorbar=("sd", 3),ax=axs[0],legend=False)
 sns.lineplot(data=squares,x='episode',y='global_reward_metric',errorbar=("sd", 3),ax=axs[1],legend=False)
 sns.lineplot(data=pcg,x='episode',y='global_reward_metric',errorbar=("sd", 3),ax=axs[2],legend=False)
@@ -54,18 +47,3 @@ axs[1].title.set_text('Squares')
 axs[2].title.set_text('PCG')
 axs[3].title.set_text('Halton')
 axs[4].title.set_text('Xoshiro')
-
-
-fig2, axs2 = plt.subplots(1, 1,layout='constrained',figsize=(14,13))
-sns.lineplot(data=train_data_full,x='episode',y='global_reward_metric',errorbar=("sd", 1),ax=axs2,hue='prng')
-
-
-sns.relplot(
-    data=train_data_full, x="episode", y="global_reward_metric",
-    col="prng", # hue="event", style="event",
-    kind="line",errorbar=("sd", 1)
-)
-
-fig3, axs3 = plt.subplots(1, 1,layout='constrained',figsize=(14,13))
-sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric",ax=axs3)
-

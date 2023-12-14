@@ -47,3 +47,4 @@ Software Framework
     external_stop/external_stop
     uz_Trajectory/uz_Trajectory
     uz_prng/uz_prng
+    dqn_bitflip_seed_experiments/dqn_bitflip_seed_experiments

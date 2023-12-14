@@ -14,6 +14,7 @@
   :build_root: build
 #  :release_build: TRUE
   :test_file_prefix: test_
+  #:test_file_prefix: exp_
   :which_ceedling: gem
   :ceedling_version: 0.31.0
   :default_tasks:

@@ -248,43 +248,43 @@ uint64_t environment_seed[10] = {41850483U, 41850483U, 41850483U, 41850483U, 418
 void do_experiment(char training_absolute_path[], char eval_absolute_path[], struct experiment_config);
 struct experiment_config get_exp_config(enum uz_prng_generator init_generator, enum uz_prng_generator exploration_generator, enum uz_prng_generator training_generator, enum uz_prng_generator env_generator);
 
-void test_dqn_bitflip_halton(void)
+void test_dqn_bitflip_one_not_twister_init_mt(void)
 {
-    char training_absolute_path[] = "test/uz/uz_dqn/halton_training";
-    char eval_absolute_path[] = "test/uz/uz_dqn/halton_eval";
-    struct experiment_config exp = get_exp_config(uz_prng_generator_halton, uz_prng_generator_halton, uz_prng_generator_halton, uz_prng_generator_mtwister);
-    do_experiment(training_absolute_path, eval_absolute_path, exp);
-}
-
-void test_dqn_bitflip_twister(void)
-{
-    char training_absolute_path[] = "test/uz/uz_dqn/twister_training";
-    char eval_absolute_path[] = "test/uz/uz_dqn/twister_eval";
+    char training_absolute_path[] = "test/uz/uz_dqn/mt_training_mt_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/mt_training_mt_eval";
     struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, eval_absolute_path, exp);
 }
 
-void test_dqn_bitflip_squares(void)
+void test_dqn_bitflip_one_not_twister_init_squares(void)
 {
-    char training_absolute_path[] = "test/uz/uz_dqn/squares_training";
-    char eval_absolute_path[] = "test/uz/uz_dqn/squares_eval";
-    struct experiment_config exp = get_exp_config(uz_prng_generator_squares, uz_prng_generator_squares, uz_prng_generator_squares, uz_prng_generator_mtwister);
+    char training_absolute_path[] = "test/uz/uz_dqn/mt_training_squares_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/mt_training_squares_eval";
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_squares, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, eval_absolute_path, exp);
 }
 
-void test_dqn_bitflip_pcg(void)
+void test_dqn_bitflip_one_not_twister_init_pcg(void)
 {
-    char training_absolute_path[] = "test/uz/uz_dqn/pcg_training";
-    char eval_absolute_path[] = "test/uz/uz_dqn/pcg_eval";
-    struct experiment_config exp = get_exp_config(uz_prng_generator_pcg, uz_prng_generator_pcg, uz_prng_generator_pcg, uz_prng_generator_mtwister);
+    char training_absolute_path[] = "test/uz/uz_dqn/mt_training_pcg_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/mt_training_pcg_eval";
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_pcg, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, eval_absolute_path, exp);
 }
 
-void test_dqn_bitflip_xoshiro(void)
+void test_dqn_bitflip_one_not_twister_init_halton(void)
 {
-    char training_absolute_path[] = "test/uz/uz_dqn/xoshiro_training";
-    char eval_absolute_path[] = "test/uz/uz_dqn/xoshiro_eval";
-    struct experiment_config exp = get_exp_config(uz_prng_generator_xoshiro, uz_prng_generator_xoshiro, uz_prng_generator_xoshiro, uz_prng_generator_mtwister);
+    char training_absolute_path[] = "test/uz/uz_dqn/mt_training_halton_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/mt_training_halton_eval";
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_halton, uz_prng_generator_mtwister);
+    do_experiment(training_absolute_path, eval_absolute_path, exp);
+}
+
+void test_dqn_bitflip_one_not_twister_init_xoshiro(void)
+{
+    char training_absolute_path[] = "test/uz/uz_dqn/mt_training_xoshiro_training";
+    char eval_absolute_path[] = "test/uz/uz_dqn/mt_training_xoshiro_eval";
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_xoshiro, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, eval_absolute_path, exp);
 }
 

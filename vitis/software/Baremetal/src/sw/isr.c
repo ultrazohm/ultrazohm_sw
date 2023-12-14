@@ -48,7 +48,7 @@ static void ReadAllADC();
 
 void ISR_Control(void *data)
 {
-    int test = 0;
+
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);     // ISR TIME : uses about 2,7 us ISR time
@@ -66,7 +66,18 @@ void ISR_Control(void *data)
     //Global_Data.av.omega_mech = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed);
     //Global_Data.av.omega_mech_filtered = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed_filtered);
     //DEBUG:cd
-    test = uz_EnDat_read_statusword(Global_Data.objects.EnDat_master_pointer);
+    //test = uz_EnDat_read_statusword(Global_Data.objects.EnDat_master_pointer);
+
+    Global_Data.av.test = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0);
+    Global_Data.av.test1 = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t1);
+    Global_Data.av.test2 = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t2);
+    Global_Data.av.test3 = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t3);
+    Global_Data.av.test4 = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t4);
+    Global_Data.av.test = Global_Data.av.test;
+    Global_Data.av.test1 = Global_Data.av.test1;
+    Global_Data.av.test2 = Global_Data.av.test2;
+    Global_Data.av.test3 = Global_Data.av.test3;
+    Global_Data.av.test4 = Global_Data.av.test4;
     Global_Data.av.electricalRotorSpeed= uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1));
     
     platform_state_t current_state=ultrazohm_state_machine_get_state();

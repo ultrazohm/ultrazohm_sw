@@ -48,51 +48,27 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'UZ_EnDat/UZ_ENDAT'
 <a href="matlab:open_system('UZ_EnDat/UZ_ENDAT');">open model 'UZ_EnDat/UZ_ENDAT'</a><BR>
-Generated on 2023-12-12 20:30:58</h1>
-<H2>HDL check for 'UZ_EnDat' complete with 0 errors, 7 warnings, and 5 messages.</H2><BR>
+Generated on 2023-12-14 21:52:58</h1>
+<H2>HDL check for 'UZ_EnDat' complete with 0 errors, 3 warnings, and 5 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcoder:validate:UnsupportedAutoInsertRateTransition" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');open_system(char([85 90 95 69 110 68 97 116]))">UZ_EnDat</a>
+</TD>
+<TD>Warning</TD>
+<TD>HDL Code Generation is not supported with implicit rate transitions. Consider turning off Simulink Solver setting <a href="matlab:configset.internal.open('UZ_EnDat','AutoInsertRateTranBlk')">"Automatically handle rate transition for data transfer"</a> and detect such implicit transitions and add explicit rate conversion blocks with valid sample times.</TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:makehdl:genericfamilynotcharacterized" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');open_system(char([85 90 95 69 110 68 97 116]))">UZ_EnDat</a>
 </TD>
 <TD>Warning</TD>
 <TD>Family Zynq UltraScale+ not characterized. Using default value, SynthesisToolChipFamily=virtex7 and SynthesisToolSpeedValue=-1, for adaptive pipelining.</TD>
 </TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 67 76 75 67 78 84 69 82 95 65 67 84 47 83 101 116 90 101 114 111 51 50 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32/Product</a>
-</TD>
-<TD>Warning</TD>
-<TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
-</TR>
 <TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 67 76 75 67 78 84 69 82 95 82 65 77 80 85 80 47 83 101 116 90 101 114 111 51 50 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero32/Product</a>
-</TD>
-<TD>Warning</TD>
-<TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP/SetZero32/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 77 97 110 117 97 108 68 101 115 101 114 105 97 108 105 122 101 114 101 47 114 97 109 119 97 116 99 104 101 114 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher/Product</a>
 </TD>
 <TD>Warning</TD>
 <TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 77 97 110 117 97 108 83 101 114 105 97 108 105 122 101 47 67 76 75 67 78 84 69 82 95 82 69 67 73 69 86 69 47 83 101 116 90 101 114 111 51 50 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/ManualSerialize/CLKCNTER_RECIEVE/SetZero32/Product</a>
-</TD>
-<TD>Warning</TD>
-<TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/ManualSerialize/CLKCNTER_RECIEVE/SetZero32/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
-</TR>
-<TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 77 97 110 117 97 108 83 101 114 105 97 108 105 122 101 47 83 101 116 90 101 114 111 54 52 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/ManualSerialize/SetZero64/Product</a>
-</TD>
-<TD>Warning</TD>
-<TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/ManualSerialize/SetZero64/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
-</TR>
-<TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 83 117 98 115 121 115 116 101 109 47 67 76 75 67 78 84 69 82 66 79 79 84 85 80 47 83 101 116 90 101 114 111 54 52 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/Subsystem/CLKCNTERBOOTUP/SetZero64/Product</a>
-</TD>
-<TD>Warning</TD>
-<TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/Subsystem/CLKCNTERBOOTUP/SetZero64/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:workflow:LUTMapToRAMOffMessage" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');open_system(char([85 90 95 69 110 68 97 116]))">UZ_EnDat</a>

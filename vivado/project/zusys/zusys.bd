@@ -71,7 +71,7 @@
           "vio_D3_test": ""
         },
         "D5_adapter": {
-          "system_ila_0": ""
+          "IncreEncoder_V24_ip_0": ""
         }
       },
       "uz_system": {
@@ -3100,56 +3100,52 @@
               }
             },
             "components": {
-              "system_ila_0": {
-                "vlnv": "xilinx.com:ip:system_ila:1.1",
-                "xci_name": "zusys_system_ila_0_2",
-                "xci_path": "ip\\zusys_system_ila_0_2\\zusys_system_ila_0_2.xci",
-                "inst_hier_path": "uz_digital_adapter/D5_adapter/system_ila_0",
-                "parameters": {
-                  "C_DATA_DEPTH": {
-                    "value": "1024"
-                  },
-                  "C_MON_TYPE": {
-                    "value": "NATIVE"
-                  },
-                  "C_NUM_MONITOR_SLOTS": {
-                    "value": "8"
-                  },
-                  "C_NUM_OF_PROBES": {
-                    "value": "8"
-                  }
-                }
+              "IncreEncoder_V24_ip_0": {
+                "vlnv": "xilinx.com:ip:IncreEncoder_V24_ip:24.0",
+                "xci_name": "zusys_IncreEncoder_V24_ip_0_0",
+                "xci_path": "ip\\zusys_IncreEncoder_V24_ip_0_0\\zusys_IncreEncoder_V24_ip_0_0.xci",
+                "inst_hier_path": "uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0"
+              }
+            },
+            "interface_nets": {
+              "AXI4_Lite_1": {
+                "interface_ports": [
+                  "AXI4_Lite",
+                  "IncreEncoder_V24_ip_0/AXI4_Lite"
+                ]
               }
             },
             "nets": {
+              "AXI4_Lite_ARESETN_1": {
+                "ports": [
+                  "AXI4_Lite_ARESETN",
+                  "IncreEncoder_V24_ip_0/AXI4_Lite_ARESETN",
+                  "IncreEncoder_V24_ip_0/IPCORE_RESETN"
+                ]
+              },
               "A_1": {
                 "ports": [
                   "Dig_12_Ch5",
-                  "system_ila_0/probe0"
+                  "IncreEncoder_V24_ip_0/A"
                 ]
               },
               "B_1": {
                 "ports": [
                   "Dig_13_Ch5",
-                  "system_ila_0/probe1"
+                  "IncreEncoder_V24_ip_0/B"
                 ]
               },
               "I_1": {
                 "ports": [
                   "Dig_11_Ch5",
-                  "system_ila_0/probe2"
-                ]
-              },
-              "Interrupt_muxed": {
-                "ports": [
-                  "probe5",
-                  "system_ila_0/probe5"
+                  "IncreEncoder_V24_ip_0/I"
                 ]
               },
               "zynq_ultra_ps_e_0_pl_clk1": {
                 "ports": [
                   "AXI4_LITE_ACLK",
-                  "system_ila_0/clk"
+                  "IncreEncoder_V24_ip_0/AXI4_Lite_ACLK",
+                  "IncreEncoder_V24_ip_0/IPCORE_CLK"
                 ]
               }
             }
@@ -5552,7 +5548,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:3.1",
+            "vlnv": "xilinx.com:ip:uz_EnDat:4.5",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5596,7 +5592,15 @@
             "ports": [
               "Dig_17_Ch4",
               "uz_EnDat_0/datain"
-            ]
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
           },
           "POS0": {
             "ports": [
@@ -5644,7 +5648,15 @@
             "ports": [
               "uz_EnDat_0/CLK_OUT",
               "Dig_21_Ch4"
-            ]
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
           },
           "uz_EnDat_0_clkwr": {
             "ports": [
@@ -5656,13 +5668,29 @@
             "ports": [
               "uz_EnDat_0/dataout",
               "Dig_18_Ch5"
-            ]
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
           },
           "uz_EnDat_0_datawr": {
             "ports": [
               "uz_EnDat_0/datawr",
               "Dig_19_Ch4"
-            ]
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
           }
         }
       },
@@ -8915,7 +8943,12 @@
         "ports": [
           "Dig_17_Ch4",
           "uz_user/Dig_17_Ch4"
-        ]
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          }
+        }
       },
       "Enable_Gates_CPLD_High_dout": {
         "ports": [
@@ -9039,19 +9072,34 @@
         "ports": [
           "uz_user/Dig_18_Ch5",
           "Dig_18_Ch4"
-        ]
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          }
+        }
       },
       "uz_user_Dig_19_Ch4": {
         "ports": [
           "uz_user/Dig_19_Ch4",
           "Dig_19_Ch4"
-        ]
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          }
+        }
       },
       "uz_user_Dig_21_Ch4": {
         "ports": [
           "uz_user/Dig_21_Ch4",
           "Dig_21_Ch4"
-        ]
+        ],
+        "hdl_attributes": {
+          "DEBUG": {
+            "value": "true"
+          }
+        }
       },
       "uz_user_Dig_22_Ch4": {
         "ports": [
@@ -9157,6 +9205,11 @@
                 "range": "64K",
                 "offset_base_param": "C_S00_AXI_BASEADDR",
                 "offset_high_param": "C_S00_AXI_HIGHADDR"
+              },
+              "SEG_IncreEncoder_V24_ip_0_reg0": {
+                "address_block": "/uz_digital_adapter/D5_adapter/IncreEncoder_V24_ip_0/AXI4_Lite/reg0",
+                "offset": "0x0080070000",
+                "range": "64K"
               },
               "SEG_PWM_SS_3L_ip_0_reg0": {
                 "address_block": "/uz_digital_adapter/D2_adapter/Gates_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0",

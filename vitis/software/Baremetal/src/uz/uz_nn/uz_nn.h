@@ -101,21 +101,21 @@ void uz_nn_backward_pass_mini_batch(uz_nn_t *self, const float *const error, uz_
 /**
  * @brief Update whole neural network with gradient descent
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param learnrate float, that determines the step size of the update
  */
 void uz_nn_gradient_descent(uz_nn_t *self, float const learnrate);
 /**
  * @brief Update neural network with gradient descent, just updates the weights
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param learnrate float, that determines the step size of the update
  */
 void uz_nn_gradient_descent_no_bias(uz_nn_t *self, float const learnrate);
 /**
  * @brief Update whole neural network with gradient descent
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param learnrate float, that determines the step size of the update
  * @param minibatchsize size of the minibatch for the training
  */
@@ -123,7 +123,7 @@ void uz_nn_gradient_descent_mini_batch(uz_nn_t *self, float const learnrate, uin
 /**
  * @brief Set gradient in specific layer to a uz_matrix_t instance with the same dimension
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param gradientmatrix uz_matrix_t, that should be written into the gradient in the layer
  * @param layer layer, which gradients are overwritten
  */
@@ -131,7 +131,7 @@ void uz_nn_set_gradient_matrix(uz_nn_t *self, uz_matrix_t *const gradientmatrix,
 /**
  * @brief Set all gradients in the network to zero.
  *
- * @param self
+ * @param self Pointer to neural network instance
  */
 void uz_nn_set_gradients_zero(uz_nn_t *self);
 
@@ -154,7 +154,7 @@ float uz_nn_mse_derv(uz_matrix_t const *const output, uz_matrix_t const *const e
 /**
  * @brief Returns a matrix of dimension 1xOutputs of the last fordward pass.
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @return uz_matrix_t*
  */
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
@@ -169,7 +169,7 @@ uz_matrix_t *uz_nn_get_output_from_each_layer(uz_nn_t const *const self, uint32_
 /**
  * @brief Returns a matrix with the sumout data of a specific layer
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param layer uint32_t value for layer, zero based
  * @return uz_matrix_t*
  */
@@ -177,7 +177,7 @@ uz_matrix_t *uz_nn_get_sumout_data(uz_nn_t const *const self, uint32_t layer);
 /**
  * @brief Returns a matrix with the bias data of a specific layer
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param layer uint32_t value for layer, zero based
  * @return uz_matrix_t*
  */
@@ -185,7 +185,7 @@ uz_matrix_t *uz_nn_get_bias_matrix(uz_nn_t const *const self, uint32_t layer);
 /**
  * @brief Returns a matrix with the weight data of a specific layer
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param layer uint32_t value for layer, zero based
  * @return uz_matrix_t*
  */
@@ -193,7 +193,7 @@ uz_matrix_t *uz_nn_get_weight_matrix(uz_nn_t const *const self, uint32_t layer);
 /**
  * @brief Returns a matrix with the delta data of a specific layer
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param layer uint32_t value for layer, zero based
  * @return uz_matrix_t*
  */
@@ -201,7 +201,7 @@ uz_matrix_t *uz_nn_get_delta_data(uz_nn_t const *const self, uint32_t layer);
 /**
  * @brief Returns a matrix with the gradient data of a specific layer
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param layer uint32_t value for layer, zero based
  * @return uz_matrix_t*
  */
@@ -209,7 +209,7 @@ uz_matrix_t *uz_nn_get_gradient_data(uz_nn_t const *const self, uint32_t layer);
 /**
  * @brief Returns a matrix with the cachegradient data of a specific layer
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @param layer uint32_t value for layer, zero based
  * @return uz_matrix_t*
  */
@@ -217,21 +217,21 @@ uz_matrix_t *uz_nn_get_cachegradient_data(uz_nn_t const *const self, uint32_t la
 /**
  * @brief Returns number of layer from a nn
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @return uint32_t
  */
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const *const self);
 /**
  * @brief Returns number of inputs from a nn
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @return uint32_t
  */
 uint32_t uz_nn_get_number_of_inputs(uz_nn_t const *const self);
 /**
  * @brief Returns number of outputs from a nn
  *
- * @param self
+ * @param self Pointer to neural network instance
  * @return uint32_t
  */
 uint32_t uz_nn_get_number_of_outputs(uz_nn_t const *const self);

@@ -27,6 +27,7 @@ struct uz_pmsmModel_config_t
     float coulomb_friction_constant; /**< Static friction constant */
     float inertia; /**< Inertia of the PMSM */
     bool simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
+    bool simulate_nonlinear; /**< true: simulate nonlinear PMSM Model in the PL*/
 };
 
 /**

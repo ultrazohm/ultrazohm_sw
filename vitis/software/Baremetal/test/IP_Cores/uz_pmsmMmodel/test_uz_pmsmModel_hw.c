@@ -94,13 +94,13 @@ void test_uz_pmsmModel_hw_write_psi_pm(void){
 
 void test_uz_pmsmModel_hw_write_L_d(void){
     float L_d=0.003f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Ld_Data_uz_pmsm_model,1.0f/L_d);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Ld_Data_uz_pmsm_model,L_d);
     uz_pmsmModel_hw_write_L_d(BASE_ADDRESS,L_d);
 }
 
 void test_uz_pmsmModel_hw_write_L_q(void){
     float L_q=0.001f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+Lq_Data_uz_pmsm_model,1.0f/L_q);
+    uz_axi_write_float_Expect(BASE_ADDRESS+Lq_Data_uz_pmsm_model,L_q);
     uz_pmsmModel_hw_write_L_q(BASE_ADDRESS,L_q);
 }
 
@@ -172,46 +172,120 @@ void test_uz_pmsmModel_hw_write_ad6(void){
     uz_pmsmModel_hw_write_ad6(BASE_ADDRESS,ad6);
 }
 
-void test_uz_pmsmModel_hw_write_aq(void){
+void test_uz_pmsmModel_hw_write_aq1(void){
     float aq1=0.005f;
-    float aq2=0.17f;
-    float aq3=0.926f;
-    float aq4=0.049f;
-    float aq5=0.17f;
-    float aq6=0.918f;
     uz_axi_write_float_Expect(BASE_ADDRESS+aq1_Data_uz_pmsm_model,aq1);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq2_Data_uz_pmsm_model,aq2);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq3_Data_uz_pmsm_model,aq3);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq4_Data_uz_pmsm_model,aq4);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq5_Data_uz_pmsm_model,aq5);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq6_Data_uz_pmsm_model,aq6);
-    uz_pmsmModel_hw_write_aq(BASE_ADDRESS,aq1,aq2,aq3,aq4,aq5,aq6);
+    uz_pmsmModel_hw_write_aq1(BASE_ADDRESS,aq1);
 }
 
-void test_uz_pmsmModel_hw_write_fitting_parameters(void){
+void test_uz_pmsmModel_hw_write_aq2(void){
+    float aq2=0.17f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq2_Data_uz_pmsm_model,aq2);
+    uz_pmsmModel_hw_write_aq2(BASE_ADDRESS,aq2);
+}
+
+void test_uz_pmsmModel_hw_write_aq3(void){
+    float aq3=0.926f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq3_Data_uz_pmsm_model,aq3);
+    uz_pmsmModel_hw_write_aq3(BASE_ADDRESS,aq3);
+}
+
+void test_uz_pmsmModel_hw_write_aq4(void){
+    float aq4=0.049f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq4_Data_uz_pmsm_model,aq4);
+    uz_pmsmModel_hw_write_aq4(BASE_ADDRESS,aq4);
+}
+
+void test_uz_pmsmModel_hw_write_aq5(void){
+    float aq5=0.17f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq5_Data_uz_pmsm_model,aq5);
+    uz_pmsmModel_hw_write_aq5(BASE_ADDRESS,aq5);
+}
+
+void test_uz_pmsmModel_hw_write_aq6(void){
+    float aq6=0.918f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq6_Data_uz_pmsm_model,aq6);
+    uz_pmsmModel_hw_write_aq6(BASE_ADDRESS,aq6);
+}
+
+void test_uz_pmsmModel_hw_write_reciprocal_F1G1(void){
     float reciprocal_F1G1=0.005f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_F1G1_Data_uz_pmsm_model,1.0f/reciprocal_F1G1);
+    uz_pmsmModel_hw_write_reciprocal_F1G1(BASE_ADDRESS,reciprocal_F1G1);
+}
+
+void test_uz_pmsmModel_hw_write_reciprocal_F2G2(void){
     float reciprocal_F2G2=0.17f;
-    float ad4_mul_ad5=0.926f;
-    float ad1_mul_ad2=0.049f;
-    float aq4_mul_aq5=0.17f;
-    float aq1_mul_aq2=0.918f;
-    float aq4_div_aq5=0.918f;
-    float aq1_div_aq2=0.918f;
-    float ad4_div_ad5=0.918f;
-    float ad1_div_ad2=0.918f;
-    float aq3_min_aq6=0.918f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_F1G1_Data_uz_pmsm_model,reciprocal_F1G1);
-    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_F2G2_Data_uz_pmsm_model,reciprocal_F2G2);
-    uz_axi_write_float_Expect(BASE_ADDRESS+ad4_mul_ad5_Data_uz_pmsm_model,ad4_mul_ad5);
-    uz_axi_write_float_Expect(BASE_ADDRESS+ad1_mul_ad2_Data_uz_pmsm_model,ad1_mul_ad2);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq4_mul_aq5_Data_uz_pmsm_model,aq4_mul_aq5);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq1_mul_aq2_Data_uz_pmsm_model,aq1_mul_aq2);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq4_div_aq5_Data_uz_pmsm_model,aq4_div_aq5);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq1_div_aq2_Data_uz_pmsm_model,aq1_div_aq2);
-    uz_axi_write_float_Expect(BASE_ADDRESS+ad4_div_ad5_Data_uz_pmsm_model,ad4_div_ad5);
-    uz_axi_write_float_Expect(BASE_ADDRESS+ad1_div_ad2_Data_uz_pmsm_model,ad1_div_ad2);
-    uz_axi_write_float_Expect(BASE_ADDRESS+aq3_min_aq6_Data_uz_pmsm_model,aq3_min_aq6);
-    uz_pmsmModel_hw_write_fitting_parameters(BASE_ADDRESS,reciprocal_F1G1,reciprocal_F2G2,ad4_mul_ad5,ad1_mul_ad2,aq4_mul_aq5,aq1_mul_aq2,aq4_div_aq5,aq1_div_aq2,ad4_div_ad5,ad1_div_ad2,aq3_min_aq6);
+    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_F2G2_Data_uz_pmsm_model,1.0f/reciprocal_F2G2);
+    uz_pmsmModel_hw_write_reciprocal_F2G2(BASE_ADDRESS,reciprocal_F2G2);
+}
+
+//FittingParameter that are calculated in driver
+
+//Multiply
+void test_uz_pmsmModel_hw_write_ad4_mul_ad5(void){
+    float ad4=0.11f;
+    float ad5=0.12f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+ad4_mul_ad5_Data_uz_pmsm_model,ad4*ad5);
+    uz_pmsmModel_hw_write_ad4_mul_ad5(BASE_ADDRESS,ad4,ad5);
+}
+
+void test_uz_pmsmModel_hw_write_ad1_mul_ad2(void){
+    float ad1=0.13f;
+    float ad2=0.14f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+ad1_mul_ad2_Data_uz_pmsm_model,ad1*ad2);
+    uz_pmsmModel_hw_write_ad1_mul_ad2(BASE_ADDRESS,ad1,ad2);
+}
+
+void test_uz_pmsmModel_hw_write_aq4_mul_aq5(void){
+    float aq4=0.15f;
+    float aq5=0.16f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq4_mul_aq5_Data_uz_pmsm_model,aq4*aq5);
+    uz_pmsmModel_hw_write_aq4_mul_aq5(BASE_ADDRESS,aq4,aq5);
+}
+
+void test_uz_pmsmModel_hw_write_aq1_mul_aq2(void){
+    float aq1=0.17f;
+    float aq2=0.18f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq1_mul_aq2_Data_uz_pmsm_model,aq1*aq2);
+    uz_pmsmModel_hw_write_aq1_mul_aq2(BASE_ADDRESS,aq1,aq2);
+}
+
+//Divide
+
+void test_uz_pmsmModel_hw_write_aq4_div_aq5(void){
+    float aq4=0.21f;
+    float aq5=0.22f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq4_div_aq5_Data_uz_pmsm_model,aq4/aq5);
+    uz_pmsmModel_hw_write_aq4_div_aq5(BASE_ADDRESS,aq4,aq5);
+}
+
+void test_uz_pmsmModel_hw_write_aq1_div_aq2(void){
+    float aq1=0.23f;
+    float aq2=0.24f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq1_div_aq2_Data_uz_pmsm_model,aq1/aq2);
+    uz_pmsmModel_hw_write_aq1_div_aq2(BASE_ADDRESS,aq1,aq2);
+}
+
+void test_uz_pmsmModel_hw_write_ad4_div_ad5(void){
+    float ad4=0.25f;
+    float ad5=0.26f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+ad4_div_ad5_Data_uz_pmsm_model,ad4/ad5);
+    uz_pmsmModel_hw_write_ad4_div_ad5(BASE_ADDRESS,ad4,ad5);
+}
+
+void test_uz_pmsmModel_hw_write_ad1_div_ad2(void){
+    float ad1=0.27f;
+    float ad2=0.28f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+ad1_div_ad2_Data_uz_pmsm_model,ad1/ad2);
+    uz_pmsmModel_hw_write_ad1_div_ad2(BASE_ADDRESS,ad1,ad2);
+}
+
+void test_uz_pmsmModel_hw_write_aq3_min_aq6(void){
+    float aq3=0.45f;
+    float aq6=0.46f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+aq3_min_aq6_Data_uz_pmsm_model,0.5f*(aq3-aq6));
+    uz_pmsmModel_hw_write_aq3_min_aq6(BASE_ADDRESS,aq3,aq6);
 }
 
 void test_uz_pmsmModel_hw_trigger_input_strobe(void){

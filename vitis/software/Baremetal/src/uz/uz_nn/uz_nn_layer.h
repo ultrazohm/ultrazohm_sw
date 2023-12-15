@@ -200,57 +200,57 @@ void uz_nn_set_gradient_in_layer(uz_nn_layer_t *const self, uz_matrix_t const *c
  */
 void uz_nn_set_gradient_in_layer_zero(uz_nn_layer_t *const self);
 /**
- * @brief Returns a pointer to the output data of the layer.
- *        Intended to be used by the following layer as input data.
+ * @brief Returns a pointer to the output data of the layer
+ *        Intended to be used by the following layer as input data
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_output_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the sumout data of the layer.
+ * @brief Returns a pointer to the sumout data of the layer
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_sumout_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the bias data of the layer.
+ * @brief Returns a pointer to the bias data of the layer
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_bias_matrix(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the weight data of the layer.
+ * @brief Returns a pointer to the weight data of the layer
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_weight_matrix(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the delta data of the layer.
+ * @brief Returns a pointer to the delta data of the layer
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_delta_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the gradient data of the layer.
+ * @brief Returns a pointer to the gradient data of the layer
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_gradient_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the cachegradient data of the layer.
+ * @brief Returns a pointer to the cachegradient data of the layer
  *
  * @param self
  * @return uz_matrix*
  */
 uz_matrix_t *uz_nn_layer_get_cachegradient_data(uz_nn_layer_t const *const self);
 /**
- * @brief Returns a pointer to the cachegradient data of the layer.
+ * @brief Initializes the adam optimizer object
  *
  * @param lernrate Lernrate for optimization algorithm
  * @return adam_optimizer_t*
@@ -259,7 +259,7 @@ adam_optimizer_t *uz_adam_init(float learnrate);
 /**
  * @brief Make one optimization step with the gradients of the layer with the adam GD algorithm
  *
- * @param optimizer Instance for optimizert
+ * @param optimizer Pointer to adam optimizer instance
  * @param layer Layer, which gradients are taken for the optimization step
  */
 void adam_layer_step(adam_optimizer_t *optimizer, uz_nn_layer_t *layer);

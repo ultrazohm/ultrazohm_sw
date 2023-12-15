@@ -5,3 +5,4 @@ doxygen_output/
 *.raw
 *.plt
 *.net
+vitis/**

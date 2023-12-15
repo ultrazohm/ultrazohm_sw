@@ -238,25 +238,91 @@ struct experiment_config
     size_t number_of_seeds;
 };
 
-uint64_t halton_seed_1[10] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};                                              // 6. to 15. prime number
-uint64_t halton_seed_2[10] = {31, 37, 41, 43, 47, 53, 59, 61, 67, 71};                                                   // 6. to 15. prime number
-uint64_t halton_seed_3[10] = {73, 79, 83, 89, 97, 101, 103, 107, 109, 113};                                                       // 6. to 15. prime number
+uint64_t halton_seed_1[10] = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29};          // 6. to 15. prime number
+uint64_t halton_seed_2[10] = {31, 37, 41, 43, 47, 53, 59, 61, 67, 71};      // 6. to 15. prime number
+uint64_t halton_seed_3[10] = {73, 79, 83, 89, 97, 101, 103, 107, 109, 113}; // 6. to 15. prime number
 
-uint64_t xoshiro_seed_1[10] = {1599, 2120, 1305, 3696, 6966, 5906, 4061, 3277, 5526, 5865};                     // arbitrary numbers with large and small seeds
-uint64_t xoshiro_seed_2[10] = {9462, 7859, 3075, 5917, 7253, 7642, 3147, 1335, 7898, 4771};                     // arbitrary numbers with large and small seeds
-uint64_t xoshiro_seed_3[10] = {270, 7856, 88, 6822, 8105, 540, 5166, 5807, 957, 1328};                          // arbitrary numbers with large and small seeds
+// uint64_t xoshiro_seed_1[10] = {1599, 2120, 1305, 3696, 6966, 5906, 4061, 3277, 5526, 5865};                     // arbitrary numbers with large and small seeds
+// uint64_t xoshiro_seed_2[10] = {9462, 7859, 3075, 5917, 7253, 7642, 3147, 1335, 7898, 4771};                     // arbitrary numbers with large and small seeds
+// uint64_t xoshiro_seed_3[10] = {270, 7856, 88, 6822, 8105, 540, 5166, 5807, 957, 1328};                          // arbitrary numbers with large and small seeds
 
-uint64_t pcg_seed_1[10] = {1599, 2120, 1305, 3696, 6966, 5906, 4061, 3277, 5526, 5865}; // arbitrary numbers with large and small seeds
-uint64_t pcg_seed_2[10] = {9462, 7859, 3075, 5917, 7253, 7642, 3147, 1335, 7898, 4771}; // arbitrary numbers with large and small seeds
-uint64_t pcg_seed_3[10] = {270, 7856, 88, 6822, 8105, 540, 5166, 5807, 957, 1328};      // arbitrary numbers with large and small seeds
+// uint64_t pcg_seed_1[10] = {1599, 2120, 1305, 3696, 6966, 5906, 4061, 3277, 5526, 5865}; // arbitrary numbers with large and small seeds
+// uint64_t pcg_seed_2[10] = {9462, 7859, 3075, 5917, 7253, 7642, 3147, 1335, 7898, 4771}; // arbitrary numbers with large and small seeds
+// uint64_t pcg_seed_3[10] = {270, 7856, 88, 6822, 8105, 540, 5166, 5807, 957, 1328};      // arbitrary numbers with large and small seeds
 
-uint64_t mtwister_seed_1[10] = {1599, 2120, 1305, 3696, 6966, 5906, 4061, 3277, 5526, 5865}; // arbitrary numbers with large and small seeds
-uint64_t mtwister_seed_2[10] = {9462, 7859, 3075, 5917, 7253, 7642, 3147, 1335, 7898, 4771}; // arbitrary numbers with large and small seeds
-uint64_t mtwister_seed_3[10] = {270, 7856, 88, 6822, 8105, 540, 5166, 5807, 957, 1328};      // arbitrary numbers with large and small seeds
+// uint64_t mtwister_seed_1[10] = {1599, 2120, 1305, 3696, 6966, 5906, 4061, 3277, 5526, 5865}; // arbitrary numbers with large and small seeds
+// uint64_t mtwister_seed_2[10] = {9462, 7859, 3075, 5917, 7253, 7642, 3147, 1335, 7898, 4771}; // arbitrary numbers with large and small seeds
+// uint64_t mtwister_seed_3[10] = {270, 7856, 88, 6822, 8105, 540, 5166, 5807, 957, 1328};      // arbitrary numbers with large and small seeds
 
-uint64_t squares_seed_1[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};                                          // take key's from list
-uint64_t squares_seed_2[10] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};                                          // take key's from list
-uint64_t squares_seed_3[10] = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29};                                          // take key's from list
+uint64_t mtwister_seed_1[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};           // take key's from list
+uint64_t mtwister_seed_2[10] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19}; // take key's from list
+uint64_t mtwister_seed_3[10] = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29}; // take key's from list
+
+uint64_t pcg_seed_1[10] = {0xc8e4fd154ce32f6d,
+                           0xfcbd6e154bf53ed9,
+                           0xea6342c76bf95d47,
+                           0xfb9e125878fa6cb3,
+                           0xa1ed294ba7fe8b31,
+                           0xcf29ba8dc5f1a98d,
+                           0x815a7d4ed4e3b7f9,
+                           0x163acbf213f5d867,
+                           0x674e2d1542f9e6d3,
+                           0xebc9672872ecf651}; // take key's from list
+uint64_t pcg_seed_2[10] = {0xec13a6976ecf14ad,
+                           0x42c86e3a9de3542b,
+                           0x5489de2cbce65297,
+                           0x49bc37fdcad971f3,
+                           0xd5b4213fe7db8f61,
+                           0xbf785e3215ac7ebd,
+                           0x46be329546e1ad3b,
+                           0x8b7ef19654e3dca7,
+                           0x1d7683c983d7eb15,
+                           0x3724b1c872d9fa81}; // take key's from list
+uint64_t pcg_seed_3[10] = {0x2af73db87fab18ed,
+                           0xa185f4cbadcf285b,
+                           0x53d684c1fbd246c7,
+                           0x35fda1821cd68735,
+                           0xfd3791543bd985a1,
+                           0x7f59c4b657cb941f,
+                           0x19f3e5b765cea27b,
+                           0xf6235eca95b2c1e7,
+                           0x9d827c5ba2b3df45,
+                           0x8a149e2dc2a6feb1}; // take key's from list
+
+uint64_t xoshiro_seed_1[10] = {0xc8e4fd154ce32f6d,
+                           0xfcbd6e154bf53ed9,
+                           0xea6342c76bf95d47,
+                           0xfb9e125878fa6cb3,
+                           0xa1ed294ba7fe8b31,
+                           0xcf29ba8dc5f1a98d,
+                           0x815a7d4ed4e3b7f9,
+                           0x163acbf213f5d867,
+                           0x674e2d1542f9e6d3,
+                           0xebc9672872ecf651}; // take key's from list
+uint64_t xoshiro_seed_2[10] = {0xec13a6976ecf14ad,
+                           0x42c86e3a9de3542b,
+                           0x5489de2cbce65297,
+                           0x49bc37fdcad971f3,
+                           0xd5b4213fe7db8f61,
+                           0xbf785e3215ac7ebd,
+                           0x46be329546e1ad3b,
+                           0x8b7ef19654e3dca7,
+                           0x1d7683c983d7eb15,
+                           0x3724b1c872d9fa81}; // take key's from list
+uint64_t xoshiro_seed_3[10] = {0x2af73db87fab18ed,
+                           0xa185f4cbadcf285b,
+                           0x53d684c1fbd246c7,
+                           0x35fda1821cd68735,
+                           0xfd3791543bd985a1,
+                           0x7f59c4b657cb941f,
+                           0x19f3e5b765cea27b,
+                           0xf6235eca95b2c1e7,
+                           0x9d827c5ba2b3df45,
+                           0x8a149e2dc2a6feb1}; // take key's from list
+
+uint64_t squares_seed_1[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};           // take key's from list
+uint64_t squares_seed_2[10] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19}; // take key's from list
+uint64_t squares_seed_3[10] = {20, 21, 22, 23, 24, 25, 26, 27, 28, 29}; // take key's from list
 
 uint64_t environment_seed[10] = {41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U, 41850483U};
 

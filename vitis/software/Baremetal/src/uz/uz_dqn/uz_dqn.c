@@ -332,6 +332,13 @@ void uz_dqn_set_prng_seeds(uz_dqn_t *self, uint64_t init_seed, uint64_t explorat
     uz_prng_reset(self->rand_instance_training, training_seed);
 }
 
+void uz_dqn_use_only_one_prng(uz_dqn_t *self)
+{
+    self->rand_instance_init = self->rand_instance_init;
+    self->rand_instance_exploration = self->rand_instance_init;
+    self->rand_instance_training = self->rand_instance_init;
+}
+
 uz_prng_t *uz_dqn_get_prng_init(uz_dqn_t *self)
 {
     uz_assert_not_NULL(self);

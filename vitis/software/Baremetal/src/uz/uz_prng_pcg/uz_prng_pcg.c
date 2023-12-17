@@ -95,7 +95,7 @@ void uz_prng_pcg_reset(uz_prng_pcg_t *self, uint64_t seed)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    pcg32_srandom_r(&self->pcg_state, seed, 54U); // Sequence randomly set to 54 since this is done in https://github.com/imneme/pcg-c-basic/blob/master/pcg32-demo.c
+    pcg32_srandom_r(&self->pcg_state, seed, seed ^ seed); // Sequence randomly set to 54 since this is done in https://github.com/imneme/pcg-c-basic/blob/master/pcg32-demo.c
 }
 
 uint32_t uz_prng_pcg_get_uniform_uint32(uz_prng_pcg_t *self)

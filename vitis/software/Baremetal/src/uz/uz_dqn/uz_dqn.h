@@ -82,5 +82,6 @@ uz_prng_t *uz_dqn_get_prng_exploration(uz_dqn_t *self);
 void uz_dqn_set_prng_seeds(uz_dqn_t *self, uint64_t init_seed, uint64_t exploration_seed, uint64_t training_seed);
 
 void uz_dqn_reset(uz_dqn_t *self, float epsilon_start);
+void uz_dqn_use_only_one_prng(uz_dqn_t *self);
 
 #endif // UZ_DQN_H

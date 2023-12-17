@@ -38,5 +38,28 @@ exp_uz_bitflip_10_seeds
          .. plot:: ../../vitis/software/Baremetal/test/uz/uz_dqn/plot_bitflip_experiments.py plot_only_one_generator
             :scale: 30
 
+- Plot 1 
 
 
+.. plot:: ../../vitis/software/Baremetal/test/uz/uz_dqn/plot_bitflip_experiments.py boxplots_for_all_experiments
+            :scale: 30
+
+- Plot 2
+
+.. plot:: ../../vitis/software/Baremetal/test/uz/uz_dqn/plot_bitflip_experiments.py compare_boxplots
+            :scale: 30
+
+- Conclusion: it is not clear, what exactly influences the performance
+- Mersenne Twister performance is bad, if the individual generators have the same random seed and if only one random seed is used
+- PCG is best if only one generator is used for some reason
+- Halton shows bad performance, probably due to problems with initialization
+- "Which" set of random seeds is used does not seem to make much of a difference
+
+Inverted ablation studies
+=========================
+
+Ablation studies take one characteristic of ML algorithms away and see if the behavior changes.
+Inverted ablation study: test if using Halton sequences improve the behavior of the RL training, i.e., reduce the variance in the training.
+Idea: Take one of the setup's and change only one of the generators.
+Question: which one?
+Since Mersenne Twister is default most of the time, all comparisons are done with 

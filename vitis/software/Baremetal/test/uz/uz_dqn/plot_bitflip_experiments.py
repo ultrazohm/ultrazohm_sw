@@ -5,6 +5,18 @@ import pandas as pd
 import matplotlib.pyplot as plt     
 import seaborn as sns
 import numpy as np
+from matplotlib.ticker import AutoMinorLocator, MultipleLocator
+
+
+def concat_data(folder_name):
+    twister=read_data('twister',folder_name)
+    halton=read_data('halton',folder_name)
+    squares=read_data('squares',folder_name)
+    pcg=read_data('pcg',folder_name)
+    xoshiro=read_data('xoshiro',folder_name)
+
+    train_data_full=pd.concat( [twister,squares,pcg,halton,xoshiro])
+    return train_data_full
 
 def read_data(prng_name,folder_name):
     path='vitis/software/Baremetal/test/uz/uz_dqn/' #pathlib.Path(__file__).parent.resolve()
@@ -18,6 +30,7 @@ def read_data(prng_name,folder_name):
         train_log[x].insert(1,"episode",range(0,len(train_log[x])))
         train_log[x].insert(1,"seed",[x]*len(train_log[x]))
         train_log[x].insert(1,"prng",[prng_name]*len(train_log[x]))
+        train_log[x].insert(1,"folder_name",[folder_name]*len(train_log[x]))
 
     train_data=pd.concat(train_log)
     return train_data
@@ -40,7 +53,6 @@ def plot_individual_runs(folder_name):
     sns.lineplot(data=pcg,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[2],legend=False)
     sns.lineplot(data=halton,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[3],legend=False)
     sns.lineplot(data=xoshiro,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[4],legend=False)
-
 
 def plot_errorbar(folder_name):
     twister=read_data('twister',folder_name)
@@ -81,6 +93,7 @@ def plot_boxplot(folder_name):
     fig3, axs3 = plt.subplots(1, 1,layout='constrained',figsize=(14,13))
     sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric",ax=axs3)
 
+
 def plot_only_one_generator():
     folder_name='only_one_generator'
     plot_individual_runs(folder_name=folder_name)
@@ -106,8 +119,36 @@ def plot_10_other_seeds():
     plot_boxplot(folder_name=folder_name)
 
 
-plot_10_seeds()
-plot_10_other_seeds()
-plot_10_other_seeds_wrong()
-plot_only_one_generator()
+def compare_boxplots():
+    seeds_10=concat_data('10_seeds')
+    only_one_generator=concat_data('only_one_generator')
+    seeds_other_10=concat_data('10_other_seeds')
+    seeds_wrong_other_10=concat_data('10_other_seeds_wrong')
 
+    sns.set_theme(style='whitegrid')
+    palette = sns.color_palette("tab10")
+
+    fig3, ax = plt.subplots(1, 4,layout='constrained',figsize=(14,13),sharex=True)
+    sns.boxplot(data=seeds_10, x="prng", y="global_reward_metric",ax=ax[0],color=palette[0])
+    sns.boxplot(data=seeds_other_10, x="prng", y="global_reward_metric",ax=ax[1],color=palette[1])
+    sns.boxplot(data=only_one_generator, x="prng", y="global_reward_metric",ax=ax[2],color=palette[2])
+    sns.boxplot(data=seeds_wrong_other_10, x="prng", y="global_reward_metric",ax=ax[3],color=palette[3])
+
+    for ax in ax.flat:
+        ax.grid(True,which='both')
+        ax.yaxis.set_minor_locator(AutoMinorLocator())
+
+def boxplots_for_all_experiments():
+    seeds_10=concat_data('10_seeds')
+    only_one_generator=concat_data('only_one_generator')
+    seeds_other_10=concat_data('10_other_seeds')
+    seeds_wrong_other_10=concat_data('10_other_seeds_wrong')
+
+    train_data_full=pd.concat( [seeds_10,seeds_other_10,seeds_wrong_other_10,only_one_generator])
+
+    sns.set_theme(style='whitegrid')
+    palette = sns.color_palette("tab10")
+
+    fig, ax = plt.subplots(1, 1,layout='constrained',figsize=(14,13),sharey=True)
+    g=sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric",palette=palette, hue='folder_name')
+    sns.move_legend(g, "lower left") 

@@ -93,77 +93,50 @@ def plot_boxplot(folder_name):
     fig3, axs3 = plt.subplots(1, 1,layout='constrained',figsize=(14,13))
     sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric",ax=axs3)
 
-
-def plot_only_one_generator():
-    folder_name='only_one_generator'
-    plot_individual_runs(folder_name=folder_name)
-    plot_errorbar(folder_name=folder_name)
-    plot_boxplot(folder_name=folder_name)
-
-def plot_10_other_seeds_wrong():
-    folder_name='10_other_seeds_wrong'
-    plot_individual_runs(folder_name=folder_name)
-    plot_errorbar(folder_name=folder_name)
-    plot_boxplot(folder_name=folder_name)
-
-def plot_10_seeds():
-    folder_name='10_seeds'
-    plot_individual_runs(folder_name=folder_name)
-    plot_errorbar(folder_name=folder_name)
-    plot_boxplot(folder_name=folder_name)
-
-def plot_10_other_seeds():
-    folder_name='10_other_seeds'
-    plot_individual_runs(folder_name=folder_name)
-    plot_errorbar(folder_name=folder_name)
-    plot_boxplot(folder_name=folder_name)
-
-
-def compare_boxplots():
+def compare_boxplots_hue_prng():
     seeds_10=concat_data('10_seeds')
-    only_one_generator=concat_data('only_one_generator')
-    seeds_other_10=concat_data('10_other_seeds')
-    seeds_wrong_other_10=concat_data('10_other_seeds_wrong')
-
-    sns.set_theme(style='whitegrid')
-    palette = sns.color_palette("tab10")
-
-    fig3, ax = plt.subplots(1, 4,layout='constrained',figsize=(14,13),sharex=True)
-    sns.boxplot(data=seeds_10, x="prng", y="global_reward_metric",ax=ax[0],color=palette[0])
-    sns.boxplot(data=seeds_other_10, x="prng", y="global_reward_metric",ax=ax[1],color=palette[1])
-    sns.boxplot(data=only_one_generator, x="prng", y="global_reward_metric",ax=ax[2],color=palette[2])
-    sns.boxplot(data=seeds_wrong_other_10, x="prng", y="global_reward_metric",ax=ax[3],color=palette[3])
-
-    for ax in ax.flat:
-        ax.grid(True,which='both')
-        ax.yaxis.set_minor_locator(AutoMinorLocator())
-
-def boxplots_for_all_experiments():
-    seeds_10=concat_data('10_seeds')
-    only_one_generator=concat_data('only_one_generator')
-    seeds_other_10=concat_data('10_other_seeds')
-    seeds_wrong_other_10=concat_data('10_other_seeds_wrong')
-
-    train_data_full=pd.concat( [seeds_10,seeds_other_10,seeds_wrong_other_10,only_one_generator])
+    training=concat_data('bitflip_different_prng_training')
+    init=concat_data('bitflip_different_prng_init')
+    exploration=concat_data('bitflip_different_prng_exploration')
+    train_data_full=pd.concat( [seeds_10,training,init,exploration])
 
     sns.set_theme(style='whitegrid')
     palette = sns.color_palette("tab10")
 
     fig, ax = plt.subplots(1, 1,layout='constrained',figsize=(14,13),sharey=True)
-    g=sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric",palette=palette, hue='folder_name')
+    g=sns.boxplot(data=train_data_full, x="folder_name", y="global_reward_metric", hue='prng')
     sns.move_legend(g, "lower left") 
 
-def boxplots_for_all_experiments_reordered():
+def compare_boxplots_hue_experiment():
     seeds_10=concat_data('10_seeds')
-    only_one_generator=concat_data('only_one_generator')
-    seeds_other_10=concat_data('10_other_seeds')
-    seeds_wrong_other_10=concat_data('10_other_seeds_wrong')
-
-    train_data_full=pd.concat( [seeds_10,seeds_other_10,seeds_wrong_other_10,only_one_generator])
+    training=concat_data('bitflip_different_prng_training')
+    init=concat_data('bitflip_different_prng_init')
+    exploration=concat_data('bitflip_different_prng_exploration')
+    train_data_full=pd.concat( [seeds_10,training,init,exploration])
 
     sns.set_theme(style='whitegrid')
     palette = sns.color_palette("tab10")
 
     fig, ax = plt.subplots(1, 1,layout='constrained',figsize=(14,13),sharey=True)
-    g=sns.boxplot(data=train_data_full, x="folder_name", y="global_reward_metric",palette=palette, hue='prng')
+    g=sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric", hue='folder_name')
     sns.move_legend(g, "lower left") 
+
+
+
+def plot_individual():
+    seeds_10=concat_data('10_seeds')
+    training=concat_data('bitflip_different_prng_training')
+    init=concat_data('bitflip_different_prng_init')
+    exploration=concat_data('bitflip_different_prng_exploration')
+    train_data_full=pd.concat( [seeds_10,training,init,exploration])
+
+    sns.set_theme(style='whitegrid')
+    palette = sns.color_palette("tab10")
+
+    fig, axs = plt.subplots(4, 1,layout='constrained',figsize=(14,13),sharey=True)
+    sns.lineplot(data=training.query("prng == 'twister'"),x='episode',y='global_reward_metric',ax=axs[0],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=training.query("prng == 'pcg'"),x='episode',y='global_reward_metric',ax=axs[0],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=training.query("prng == 'squares'"),x='episode',y='global_reward_metric',ax=axs[0],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=training.query("prng == 'xoshiro'"),x='episode',y='global_reward_metric',ax=axs[0],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=training.query("prng == 'halton'"),x='episode',y='global_reward_metric',ax=axs[0],units="seed",estimator=None,hue="seed")
+

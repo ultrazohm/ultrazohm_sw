@@ -94,26 +94,20 @@ def plot_boxplot(folder_name):
     sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric",ax=axs3)
 
 
-def plot_only_one_generator():
-    folder_name='only_one_generator'
+def plot_halton_init():
+    folder_name='bitflip_ablation_halton_init'
     plot_individual_runs(folder_name=folder_name)
     plot_errorbar(folder_name=folder_name)
     plot_boxplot(folder_name=folder_name)
 
-def plot_10_other_seeds_wrong():
-    folder_name='10_other_seeds_wrong'
+def plot_halton_exploration():
+    folder_name='bitflip_ablation_halton_exploration'
     plot_individual_runs(folder_name=folder_name)
     plot_errorbar(folder_name=folder_name)
     plot_boxplot(folder_name=folder_name)
 
-def plot_10_seeds():
-    folder_name='10_seeds'
-    plot_individual_runs(folder_name=folder_name)
-    plot_errorbar(folder_name=folder_name)
-    plot_boxplot(folder_name=folder_name)
-
-def plot_10_other_seeds():
-    folder_name='10_other_seeds'
+def plot_halton_training():
+    folder_name='bitflip_ablation_halton_training'
     plot_individual_runs(folder_name=folder_name)
     plot_errorbar(folder_name=folder_name)
     plot_boxplot(folder_name=folder_name)
@@ -121,45 +115,22 @@ def plot_10_other_seeds():
 
 def compare_boxplots():
     seeds_10=concat_data('10_seeds')
-    only_one_generator=concat_data('only_one_generator')
-    seeds_other_10=concat_data('10_other_seeds')
-    seeds_wrong_other_10=concat_data('10_other_seeds_wrong')
-
-    sns.set_theme(style='whitegrid')
-    palette = sns.color_palette("tab10")
-
-    fig3, ax = plt.subplots(1, 4,layout='constrained',figsize=(14,13),sharex=True)
-    sns.boxplot(data=seeds_10, x="prng", y="global_reward_metric",ax=ax[0],color=palette[0])
-    sns.boxplot(data=seeds_other_10, x="prng", y="global_reward_metric",ax=ax[1],color=palette[1])
-    sns.boxplot(data=only_one_generator, x="prng", y="global_reward_metric",ax=ax[2],color=palette[2])
-    sns.boxplot(data=seeds_wrong_other_10, x="prng", y="global_reward_metric",ax=ax[3],color=palette[3])
-
-    for ax in ax.flat:
-        ax.grid(True,which='both')
-        ax.yaxis.set_minor_locator(AutoMinorLocator())
-
-def boxplots_for_all_experiments():
-    seeds_10=concat_data('10_seeds')
-    only_one_generator=concat_data('only_one_generator')
-    seeds_other_10=concat_data('10_other_seeds')
-    seeds_wrong_other_10=concat_data('10_other_seeds_wrong')
-
-    train_data_full=pd.concat( [seeds_10,seeds_other_10,seeds_wrong_other_10,only_one_generator])
+    halton_init=concat_data('bitflip_ablation_halton_init')
+    halton_exploration=concat_data('bitflip_ablation_halton_exploration')
+    halton_training=concat_data('bitflip_ablation_halton_training')
+    train_data_full=pd.concat( [seeds_10,halton_init,halton_exploration,halton_training])
 
     sns.set_theme(style='whitegrid')
     palette = sns.color_palette("tab10")
 
     fig, ax = plt.subplots(1, 1,layout='constrained',figsize=(14,13),sharey=True)
-    g=sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric",palette=palette, hue='folder_name')
+    g=sns.boxplot(data=train_data_full, x="folder_name", y="global_reward_metric",palette=palette, hue='prng')
     sns.move_legend(g, "lower left") 
 
-def boxplots_for_all_experiments_reordered():
+def focus_halton_training():
     seeds_10=concat_data('10_seeds')
-    only_one_generator=concat_data('only_one_generator')
-    seeds_other_10=concat_data('10_other_seeds')
-    seeds_wrong_other_10=concat_data('10_other_seeds_wrong')
-
-    train_data_full=pd.concat( [seeds_10,seeds_other_10,seeds_wrong_other_10,only_one_generator])
+    halton_training=concat_data('bitflip_ablation_halton_training')
+    train_data_full=pd.concat( [seeds_10,halton_training])
 
     sns.set_theme(style='whitegrid')
     palette = sns.color_palette("tab10")

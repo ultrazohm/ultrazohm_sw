@@ -54,30 +54,19 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);     // ISR TIME : uses about 2,7 us ISR time
     /* Following two lines use about 0,7 us ISR Time */
     //Global_Data.av.EnDat_raw_pos = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0);
-    //Global_Data.av.theta_mech = uz_EnDat_pos_to_rad_converter(Global_Data.av.EnDat_raw_pos);
+    //Global_Data.av.theta_mech = uz_EnDat_pos_to_rad_converter(Global_Data.av.EnDat_raw_pos, uz_EnDat_25_bit);
     //For Debug Purposes the above uses 0,7 us ISR Time
-    //Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0, uz_EnDat_25_bit); // uses slightly less then 0,7 us ISR
-    Global_Data.av.theta_elec = (float)uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0);
-    Global_Data.av.theta_mech = (float)uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t1);
+    Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0, uz_EnDat_25_bit); // uses slightly less then 0,7 us ISR
+    //Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0, uz_EnDat_23_bit); // uses slightly less then 0,7 us ISR
     //Global_Data.av.mechanicalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t0), uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t1), uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1)), 0x0U, uz_EnDat_23_bit, 0U); //uses about 1,5 us ISR Time
-    //Global_Data.av.mechanicalRotorSpeed_filtered = uz_EnDat_rpm_smoothening(Global_Data.av.mechanicalRotorSpeed, 128U);
     Global_Data.av.mechanicalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t0), uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t1), uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1)), 0x0U, uz_EnDat_25_bit, 0U); //uses about 1,5 us ISR Time
-    Global_Data.av.mechanicalRotorSpeed_filtered = uz_EnDat_rpm_smoothening(Global_Data.av.mechanicalRotorSpeed, 128U);
-    //Global_Data.av.omega_mech = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed);
-    //Global_Data.av.omega_mech_filtered = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed_filtered);
+    Global_Data.av.mechanicalRotorSpeed_filtered = uz_EnDat_rpm_smoothening(Global_Data.av.mechanicalRotorSpeed, 256U);
+    Global_Data.av.omega_mech = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed);
+    Global_Data.av.omega_mech_filtered = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed_filtered);
     //DEBUG:cd
-    //test = uz_EnDat_read_statusword(Global_Data.objects.EnDat_master_pointer);
+    
 
-    Global_Data.av.test = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0);
-    Global_Data.av.test1 = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t1);
-    Global_Data.av.test2 = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t2);
-    Global_Data.av.test3 = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t3);
-    Global_Data.av.test4 = uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t4);
-    Global_Data.av.test = Global_Data.av.test;
-    Global_Data.av.test1 = Global_Data.av.test1;
-    Global_Data.av.test2 = Global_Data.av.test2;
-    Global_Data.av.test3 = Global_Data.av.test3;
-    Global_Data.av.test4 = Global_Data.av.test4;
+
     Global_Data.av.electricalRotorSpeed= uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1));
     
     platform_state_t current_state=ultrazohm_state_machine_get_state();

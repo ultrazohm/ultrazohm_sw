@@ -5548,7 +5548,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:4.5",
+            "vlnv": "xilinx.com:ip:uz_EnDat:6.0",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5635,6 +5635,45 @@
               "uz_EnDat_0/IPCORE_CLK",
               "uz_EnDat_0/AXI4_Lite_ACLK"
             ]
+          },
+          "dbg": {
+            "ports": [
+              "uz_EnDat_0/dbg"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "dbg1": {
+            "ports": [
+              "uz_EnDat_0/dbg1"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "dbg2": {
+            "ports": [
+              "uz_EnDat_0/dbg2"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
           },
           "proc_sys_reset_1_peripheral_aresetn": {
             "ports": [

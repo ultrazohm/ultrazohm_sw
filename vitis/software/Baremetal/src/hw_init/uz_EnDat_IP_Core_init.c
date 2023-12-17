@@ -18,7 +18,7 @@
 
    EnDat_init_object = uz_EnDat_init(config);
    uz_EnDat_write_default_values(EnDat_init_object);
-   uz_EnDat_write_factor(EnDat_init_object, 100 /*134*/, uz_EnDat_factor5_telegrammlength);
+   uz_EnDat_write_factor(EnDat_init_object, 94 /*134*/, uz_EnDat_factor5_telegrammlength);
 
    //DEBUG following line
   //uz_EnDat_write_control_and_divider(EnDat_init_object, 0xB407, 3);

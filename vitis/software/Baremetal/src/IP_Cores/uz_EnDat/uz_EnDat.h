@@ -204,6 +204,7 @@ uint8_t uz_EnDat_read_crc(uz_EnDat_t* self);
  * 
  * @brief This function sets the operation mode part of the control word.  
  * @param inp Pointer to a bit array where control word is stored.
+ * @param mode Sets the EnDat mode - only return position is tested!
  * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
  */
 int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_opmode mode);
@@ -212,6 +213,7 @@ int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_
  * 
  * @brief This function normalizes the positional output against 2PI (rad);  
  * @param pos Value which need to be transformed.
+ * @param sensorprecision Which kind of EnDat sensor do you connect?
  * @return Returns the positional value in between 0 and 2 pi.
  */
 float uz_EnDat_pos_to_rad_converter(uint32_t pos, uz_EnDat_precision sensorprecision);
@@ -236,6 +238,7 @@ int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp);
 
 /**
  * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
+ * @param sensorprecision Which kind of EnDat sensor do you connect?
  * @brief This function fetches positional values from the EnDat IP-Core and converts them to rad (2PI) immediately.
  * @return Returns the actual status word from the EnDat IP Core.
  */
@@ -293,6 +296,8 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed);
  * @param pos2 Second positional value - can be directly pasted from read pos value.
  * @param time_elapsed Time between both positions.
  * @param invert Inverts the RPM to negative or positive.
+ * @param testmode Write a 1U for ceedling test - because of singularities.
+ * @param sensorprecision Which kind of EnDat sensor do you connect?
  * @brief This function calculate a rotation from two positional values for EnDat.
  * @return Returns the RPM value.
  */

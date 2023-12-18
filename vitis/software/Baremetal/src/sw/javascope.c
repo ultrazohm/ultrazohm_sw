@@ -76,7 +76,11 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_id] 					= &data->av.I_d;
 	js_ch_observable[JSO_iq_ref] 				= &data->rasv.i_q_ref;
 	js_ch_observable[JSO_id_ref] 				= &data->rasv.i_d_ref;
+	js_ch_observable[JSO_ud_decoup]				= &data->av.v_decoup_Volts_d;
+	js_ch_observable[JSO_uq_decoup]				= &data->av.v_decoup_Volts_q;
 	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
+	js_ch_observable[JSO_Theta_el_ad] 			= &data->av.theta_elec_ad;
+	js_ch_observable[JSO_Theta_offset] 			= &data->av.theta_offset;
 	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]					= &data->av.U_d;
 	js_ch_observable[JSO_uq]					= &data->av.U_q;
@@ -105,6 +109,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_U_ZK]					= &(data->av.U_ZK);
+	js_slowDataArray[JSSD_FLOAT_i_d_ref]				= &(data->rasv.i_d_ref);
+	js_slowDataArray[JSSD_FLOAT_i_q_ref]				= &(data->rasv.i_q_ref);
+	js_slowDataArray[JSSD_FLOAT_Theta_offset]			= &(data->av.theta_offset);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

@@ -26,8 +26,20 @@ enum JS_OberservableData {
 	JSO_ic_filt,
 	JSO_id,
 	JSO_iq,
-	JSO_iq_ref,
 	JSO_id_ref,
+	JSO_iq_ref,
+	JSO_ua_filt,
+	JSO_ub_filt,
+	JSO_uc_filt,
+	JSO_ud,
+	JSO_uq,
+	JSO_ud_ref,
+	JSO_uq_ref,
+	JSO_Theta_el,
+	JSO_Theta_el_ad,
+	JSO_Theta_offset,
+	JSO_ud_decoup,
+	JSO_uq_decoup,
 	JSO_Testsignal,
 	JSO_LMG_Switch,
 	JSO_ISR_ExecTime_us,
@@ -40,13 +52,6 @@ enum JS_OberservableData {
 	JSO_ia,
 	JSO_ib,
 	JSO_ic,
-	JSO_ua_filt,
-	JSO_ub_filt,
-	JSO_uc_filt,
-	JSO_ud,
-	JSO_uq,
-	JSO_uq_ref,
-	JSO_ud_ref,
 	JSO_U_ZK,
 	JSO_U_ZK_filt,
 	JSO_duty_cycle_A,
@@ -57,7 +62,6 @@ enum JS_OberservableData {
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
 	JSO_SoC_init,
-	JSO_Theta_el,
 	JSO_Theta_mech,
 	JSO_LoadTheta_mech,
 	JSO_DeltaTheta_mech,
@@ -91,9 +95,12 @@ enum JS_SlowData {
 	JSSD_FLOAT_u_q,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_i_d_ref,
+	JSSD_FLOAT_i_q_ref,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_torque,
 	JSSD_FLOAT_U_ZK,
+	JSSD_FLOAT_Theta_offset,
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
@@ -173,10 +180,10 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	set_Speed,
 	set_Torque,
-	set_I_d,
-	set_I_q,
-	kp_d,
-	ki_d,
+	set_I_peak,
+	set_I_angle_deg,
+	--,
+	--,
 	SND_FLD_ENDMARKER
 
 
@@ -187,7 +194,7 @@ enum gui_button_mapping {
 	RPM,
 	Nm,
 	A,
-	A,
+	deg,
 	--,
 	--,
 	SND_LABELS_ENDMARKER
@@ -198,11 +205,11 @@ enum gui_button_mapping {
 
 	RCV_FLD_ZEROVALUE=0,
 	Speed,
-	Torque,
 	i_d,
 	i_q,
-	U_ZK,
-	receive_field_6,
+	i_d_ref
+	i_q_ref
+	U_Z,
 	RCV_FLD_ENDMARKER
 
 
@@ -211,10 +218,10 @@ enum gui_button_mapping {
 
 	RCV_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
 	A,
 	A,
-	V,
+	A,
+	A,
 	V,
 	RCV_LABELS_ENDMARKER
 
@@ -238,11 +245,11 @@ MYBUTTONS_LABELS_ENDMARKER
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
 	JSSD_FLOAT_speed,
-	JSSD_FLOAT_torque,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_i_d_ref,
+	JSSD_FLOAT_i_q_ref,
 	JSSD_FLOAT_U_ZK,
-	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

@@ -196,19 +196,24 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-			data->rasv.i_d_ref = value;
+//			data->rasv.i_d_ref = value;
+			data->rasv.i_peak = value;
 			break;
 
 		case (Set_Send_Field_4):
-			data->rasv.i_q_ref = value;
+//			data->rasv.i_q_ref = value;
+			data->rasv.i_angle_deg = value;
 			break;
 
 		case (Set_Send_Field_5):
-//			data->av.kp_d = value;
+			//data->av.kp_d = value;
+			//data->av.theta_offset = value;
+
 			break;
 
 		case (Set_Send_Field_6):
-//			data->av.ki_d = value;
+			//data->av.ki_d = value;
+
 			break;
 
 		case (My_Button_1):

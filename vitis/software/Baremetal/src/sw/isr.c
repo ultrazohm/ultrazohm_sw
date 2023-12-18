@@ -47,6 +47,8 @@ struct uz_3ph_dq_t dq_measurement_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f}
 struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 struct uz_3ph_dq_t dq_reference_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
 
+struct uz_3ph_dq_t dq_decoup_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
 struct uz_DutyCycle_t output = {
 		.DutyCycle_A = 0.0f,
 		.DutyCycle_B = 0.0f,
@@ -63,6 +65,7 @@ bool state_controller_delay = false;
 bool state_slow_current_set = false;
 bool state_set_next_point = true;
 bool state_stop_current_angle = false;
+bool state_stop_efficiencey_map = false;
 float n_delay_controller = 0.0f;
 float n_measurements = 0.0f;
 float n_slow_current = 0.0f;
@@ -78,40 +81,50 @@ static float iq_soll = 0.0f;
 // automatic measurement
 uint32_t counter_current = 0U;
 uint32_t counter_angle = 0U;
-static uint32_t n_currents_max = 3U; //10U;
-static uint32_t n_angles_max = 10U;//37U;
+uint32_t counter_Torque_points = 0U;
+static uint32_t n_currents_max = 1U; //10U;
+static uint32_t n_angles_max = 3U;//37U;
+static uint32_t n_Torque_points_max = 3U;//37U;
 
-//static float ieff[10] = {1.0f, 5.0f, 10.0f, 15.0f, 20.0f, 25.0f, 30.0f, 35.0f, 40.0f, 45.0f};
-static float ieff[3] = {1.0f, 5.0f, 10.0f};
+// Currents and Angles for measurement the Torque Current Angle characteristic
+// Example
 //static float angle[37] = {0.0f, 2.5f, 5.0f, 7.5f, 10.0f, 12.5f, 15.0f, 17.5f, 20.0f, 22.5f, 25.0f, 27.5f,
 //		 30.0f, 32.5f, 35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
 //		 65.0f, 67.5f, 70.0f, 72.5f, 75.0f, 77.5f, 80.0f, 82.5f, 85.0f, 87.5f, 90.0f};
 
-//static float angle[15] = {35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
-//		 65.0f, 67.5f, 70.0f};
+static float angle[3] = {0.0f, 50.0f, 90.0f};
 
-static float angle[10] = {0.0f, 10.0f, 20.0f, 30.0f, 40.0f, 50.0f, 60.0f, 70.0f, 80.0f, 90.0f};
+static float ieff[1] = { 10.0f};
+//static float angle[19] = {0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 45.0f, 47.5f, 50.0f,
+//		52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f};
+
+// Currents and Angles for measurement the Efficiency Map
+// Example
+//static float ieff[3] = {2.0f, 5.0f, 10.0f};
+//static float angle[3] = {45.0f, 48.0f, 53.0f};
+
 
 // Conversion factors for current and voltage
 #define NUMBER_OF_TURNS_CURRENT_MEASURING 	1.0f 	// Number of turns Current Measuring FU
-#define ADC_CURRENT_SCALING_U 				39.89f //80.0f	// Scaling factor for current measurement
-#define ADC_CURRENT_OFFSET_U				-0.55849f // 2.5f	// Offset for LEM Sensors
-#define ADC_CURRENT_SCALING_V 				32.887f
-#define ADC_CURRENT_OFFSET_V				0.3298f
-#define ADC_CURRENT_SCALING_W               -32.887f
-#define ADC_CURRENT_OFFSET_W				-0.08244f
+//#define ADC_CURRENT_SCALING_U 				39.89f //80.0f	// Scaling factor for current measurement
+//#define ADC_CURRENT_OFFSET_U				-0.55849f // 2.5f	// Offset for LEM Sensors
+//#define ADC_CURRENT_SCALING_V 				32.887f
+//#define ADC_CURRENT_OFFSET_V				0.3298f
+//#define ADC_CURRENT_SCALING_W               -32.887f
+//#define ADC_CURRENT_OFFSET_W				-0.08244f
 
-#define PHASE_CURRENT_CONV_U					33.722//37.735 // 31,732
-#define PHASE_CURRENT_CONV_V					35.983//37.735 // 33.86
-#define PHASE_CURRENT_CONV_W					34.206//37.735 // 32.188
+#define PHASE_CURRENT_CONV_U				36.75 //	33.722//37.735 // 31,732 36.75
+#define PHASE_CURRENT_CONV_V				36.75 //	35.983//37.735 // 33.86
+#define PHASE_CURRENT_CONV_W				36.75 //	34.206//37.735 // 32.188
+//#define CURRENT_CONV_FACTOR					80.0f/3.0f
 
 #define DC_VOLT_CONV						240 // -240.0f //12.5f	// Scaling factor for voltage measurement
 #define DC_VOLT_OFFSET						240 //-1.0f    // Offset for DC voltage sensor
 #define PHASE_VOLT_CONV						1.0f //12.5f	// Scaling factor for voltage measurement
 #define ADC_PH_VOLT_OFFSET					0.0f	// Offset for voltage sensors
 #define USE_RESOVER							0U		// 0u: Incremental Encoder on D5
-#define MAX_CURRENT_ASSERTION				110.0f	// Maximum Current
-#define MAX_SPEED_ASSERTION					2600.0f	// Maximum Speed
+#define MAX_CURRENT_ASSERTION				180.0f	// Maximum Current
+#define MAX_SPEED_ASSERTION					2500.0f	// Maximum Speed
 
 
 //==============================================================================================================================================================
@@ -133,14 +146,28 @@ void ISR_Control(void *data)
     Global_Data.av.theta_mech = 1.0f / Global_Data.av.polepairs * Global_Data.av.theta_elec;
     // convert ADC currents
 
+    // Dependable Engine FU
     Global_Data.av.I_U = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV_U;
     Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_CURRENT_CONV_V;
     Global_Data.av.I_W = -1.0f * Global_Data.aa.A1.me.ADC_B6 * PHASE_CURRENT_CONV_W;
 
-    measurement_current.a = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.av.I_U) + 0.2f;
-    measurement_current.b = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.av.I_V) - 0.4f;
-    measurement_current.c = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.av.I_W) + 0.45f;
+    measurement_current.a = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.av.I_U) + 0.4f; // +0.18
+    measurement_current.b = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.av.I_V) - 0.3f; // -0.1
+    measurement_current.c = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.av.I_W) + 0.0f; // -0.35
 
+/************************************************
+    // Power Tower Setup
+//    Global_Data.av.I_U = CURRENT_CONV_FACTOR * (Global_Data.aa.A3.me.ADC_A1-2.5f);
+//    Global_Data.av.I_V = CURRENT_CONV_FACTOR * (Global_Data.aa.A3.me.ADC_A2-2.5f);
+//    Global_Data.av.I_W = CURRENT_CONV_FACTOR * (Global_Data.aa.A3.me.ADC_A3-2.5f);
+
+//    measurement_current.a = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.av.I_U); // +0.18
+//    measurement_current.b = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.av.I_V); // -0.1
+//    measurement_current.c = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.av.I_W); // -0.35
+
+ ***********************************************/
+
+// OLD CONVERSION
 //    measurement_current.a = ADC_CURRENT_SCALING_U * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_u, Global_Data.aa.A1.me.ADC_B5)) - ADC_CURRENT_OFFSET_U;
 //    measurement_current.b = ADC_CURRENT_SCALING_V * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_v, Global_Data.aa.A1.me.ADC_B7)) - ADC_CURRENT_OFFSET_V;
 //    measurement_current.c = ADC_CURRENT_SCALING_W * (uz_signals_IIR_Filter_sample(Global_Data.objects.iir_i_w, Global_Data.aa.A1.me.ADC_B6)) - ADC_CURRENT_OFFSET_W;
@@ -154,7 +181,7 @@ void ISR_Control(void *data)
     Global_Data.av.I_d = dq_measurement_current.d;
     Global_Data.av.I_q = dq_measurement_current.q;
 
-    Global_Data.av.testsignal = 0.0f;
+    //Global_Data.av.testsignal = 0.0f;
 
     // Check if maximum current or maximum speed is reached
     if (fabs(measurement_current.a) > MAX_CURRENT_ASSERTION || fabs(measurement_current.b) > MAX_CURRENT_ASSERTION || fabs(measurement_current.c) > MAX_CURRENT_ASSERTION || fabs(Global_Data.av.mechanicalRotorSpeed) > MAX_SPEED_ASSERTION)
@@ -166,7 +193,10 @@ void ISR_Control(void *data)
     	Global_Data.rasv.n_ref_rpm = 0.0f;
     	Global_Data.rasv.i_q_ref = 0.0f;
 		Global_Data.rasv.i_d_ref = 0.0f;
+		Global_Data.rasv.i_peak = 0.0f;
+		Global_Data.rasv.i_angle_deg = 0.0f;
     	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 0);
+    	Global_Data.av.testsignal = 80.0f;
     	ultrazohm_state_machine_set_stop(true);
     }
 
@@ -191,6 +221,7 @@ void ISR_Control(void *data)
     // calculating values needed for current control
     omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed * (2.0f * M_PI) / 60.0f; // omega_mech
     omega_el_rad_per_sec = omega_m_rad_per_sec * Global_Data.av.polepairs;
+
 
     // Value to Scope
 
@@ -231,14 +262,23 @@ void ISR_Control(void *data)
 				Global_Data.av.flg_enable_LMG_transient = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient);
 
 				// Reset Current Angle Measurement
+				state_stop_efficiencey_map = false;
 				state_stop_current_angle = false;
 				state_set_next_point = true;
 				counter_angle = 0U;
 				counter_current = 0U;
+				counter_Torque_points = 0U;
+
+				id_last = 0.0f;
+				iq_last = 0.0f;
+				id_soll = 0.0f;
+				iq_soll = 0.0f;
 
 				Global_Data.rasv.i_d_ref = 0.0f;
 				Global_Data.rasv.i_q_ref = 0.0f;
 				Global_Data.rasv.n_ref_rpm = 0.0f;
+				Global_Data.rasv.i_peak = 0.0f;
+				Global_Data.rasv.i_angle_deg = 0.0f;
 
     			break;
 			case 1U: // Manual Control
@@ -247,7 +287,7 @@ void ISR_Control(void *data)
 		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 
 		        if (Global_Data.av.flg_speed_control){
-		        	Global_Data.av.testsignal = Global_Data.rasv.n_ref_rpm;
+		        	//Global_Data.av.testsignal = Global_Data.rasv.n_ref_rpm;
 		        	dq_reference_current.q = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
 		        	dq_reference_current.d = fabs(dq_reference_current.q);
 		        	Global_Data.rasv.i_d_ref = dq_reference_current.d;
@@ -255,6 +295,10 @@ void ISR_Control(void *data)
 		        	// currently not implemented !!!
 		        }else{
 		        	// Set I_d and I_q currents for current control
+
+		    		Global_Data.rasv.i_d_ref = Global_Data.rasv.i_peak * cos(Global_Data.rasv.i_angle_deg * M_PI / 180.0f);
+					Global_Data.rasv.i_q_ref = Global_Data.rasv.i_peak * sin(Global_Data.rasv.i_angle_deg * M_PI / 180.0f);
+
 		        	dq_reference_current.d = Global_Data.rasv.i_d_ref;
 		        	dq_reference_current.q = Global_Data.rasv.i_q_ref;
 		        	dq_reference_current.zero = 0;
@@ -262,12 +306,17 @@ void ISR_Control(void *data)
 
 		        // FOC - get U_d and U_q as controlled variables
 		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
-//		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
+
+		        //		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
+
 		        Global_Data.rasv.U_d_ref = dq_reference_voltage.d;
 		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
 
 		        // Generate PWM Signal for each phase
-		        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK_filt, Global_Data.av.theta_elec);
+
+		        Global_Data.av.theta_elec_ad = Global_Data.av.theta_elec + (1.5f*1.0f/UZ_PWM_FREQUENCY*omega_el_rad_per_sec);
+
+		        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK_filt, Global_Data.av.theta_elec_ad);
 		        Global_Data.av.duty_cycle_A = output.DutyCycle_A;
 		        Global_Data.av.duty_cycle_B = output.DutyCycle_B;
 		        Global_Data.av.duty_cycle_C = output.DutyCycle_C;
@@ -289,9 +338,7 @@ void ISR_Control(void *data)
 		        break;
 
 			case 3U: // Torque Current Angle
-
-				// Set Currents
-
+//				// Set Currents
 				if(state_set_next_point && (state_stop_current_angle == false))
 				{
 					if(counter_angle >= n_angles_max){
@@ -300,20 +347,20 @@ void ISR_Control(void *data)
 						counter_angle = 0U;
 //						Global_Data.av.testsignal = 0.0f;
 						if(counter_current >= n_currents_max) {
-							Global_Data.rasv.i_d_ref = 0.0f;
-							Global_Data.rasv.i_q_ref = 0.0f;
-							state_stop_current_angle = true;
-							Global_Data.rasv.state_of_statemachine = 0U;
+							//Global_Data.rasv.i_d_ref = 0.0f;
+							//Global_Data.rasv.i_q_ref = 0.0f;
+							id_soll = 0.0f;
+							iq_soll = 0.0f;
 						}
 					}
 
-					if(state_stop_current_angle == false){
+					if((state_stop_current_angle == false) && (counter_current < n_currents_max)){
 						id_last = id_soll;
 						iq_last = iq_soll;
 						id_soll = ieff[counter_current] * cos(angle[counter_angle] * M_PI / 180.0f);
 						iq_soll = ieff[counter_current] * sin(angle[counter_angle] * M_PI / 180.0f);
 						counter_angle = counter_angle + 1U;
-//						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
+						//Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
 					}
 
 					counter_n_delay_controller = 0.0f;
@@ -324,7 +371,6 @@ void ISR_Control(void *data)
 					state_slow_current_set = true;
 					state_controller_delay = false;
 					state_LMG_measure = false;
-
 
 				}
 
@@ -338,11 +384,18 @@ void ISR_Control(void *data)
 	//					state_slow_current_set = false;
 	//					state_controller_delay = true;
 
-						state_set_next_point = false;
-						state_slow_current_set = false;
-						state_controller_delay = true;
-						state_LMG_measure = false;
-
+						if(counter_current >= n_currents_max)
+						{
+							Global_Data.rasv.i_d_ref = 0.0f;
+							Global_Data.rasv.i_q_ref = 0.0f;
+							state_stop_current_angle = true;
+							Global_Data.rasv.state_of_statemachine = 0U;
+						} else {
+							state_set_next_point = false;
+							state_slow_current_set = false;
+							state_controller_delay = true;
+							state_LMG_measure = false;
+						}
 					}
 				}
 
@@ -352,13 +405,14 @@ void ISR_Control(void *data)
 //		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
 //
 //		        if (Global_Data.av.flg_speed_control){
-//		        	//dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
+//		        	//Global_Data.av.testsignal = Global_Data.rasv.n_ref_rpm;
+//
 //		        	// currently not implemented !!!
 //		        }else{
 //		        	// Set I_d and I_q currents for current control
 //		        	dq_reference_current.d = Global_Data.rasv.i_d_ref;
 //		        	dq_reference_current.q = Global_Data.rasv.i_q_ref;
-//		        	dq_reference_current.zero = 0.0f;
+//		        	dq_reference_current.zero = 0;
 //		        }
 //
 //		        // FOC - get U_d and U_q as controlled variables
@@ -368,11 +422,13 @@ void ISR_Control(void *data)
 //		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
 //
 //		        // Generate PWM Signal for each phase
-//		        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK_filt, Global_Data.av.theta_elec);
+//
+//		        Global_Data.av.theta_elec_ad = Global_Data.av.theta_elec + (1.5f*1.0f/UZ_PWM_FREQUENCY*omega_el_rad_per_sec);
+//
+//		        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK_filt, Global_Data.av.theta_elec_ad);
 //		        Global_Data.av.duty_cycle_A = output.DutyCycle_A;
 //		        Global_Data.av.duty_cycle_B = output.DutyCycle_B;
 //		        Global_Data.av.duty_cycle_C = output.DutyCycle_C;
-//
 //
 //		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
 
@@ -441,6 +497,155 @@ void ISR_Control(void *data)
 				break;
 
 			case 4U: // Efficiency Map
+				// Set Currents
+				if(state_set_next_point && (state_stop_efficiencey_map == false))
+				{
+					//if(counter_Torque_points <= n_Torque_points_max){
+
+//						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
+						if(counter_Torque_points >= n_Torque_points_max) {
+							Global_Data.rasv.i_d_ref = 0.0f;
+							Global_Data.rasv.i_q_ref = 0.0f;
+//							Global_Data.av.testsignal = 0.0f;
+							counter_Torque_points = 0.0f;
+							id_last = 0.0f;
+							iq_last = 0.0f;
+							state_stop_efficiencey_map = true;
+							Global_Data.rasv.state_of_statemachine = 0U;
+						}
+					//}
+
+					if(state_stop_efficiencey_map == false){
+						id_last = id_soll;
+						iq_last = iq_soll;
+						id_soll = ieff[counter_Torque_points] * cos(angle[counter_Torque_points] * M_PI / 180.0f);
+						iq_soll = ieff[counter_Torque_points] * sin(angle[counter_Torque_points] * M_PI / 180.0f);
+
+//						Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
+						counter_Torque_points = counter_Torque_points + 1U;
+					}
+
+					counter_n_delay_controller = 0.0f;
+					counter_n_measurements = 0.0f;
+					counter_slow_current = 0.0f;
+
+					state_set_next_point = false;
+					state_slow_current_set = true;
+					state_controller_delay = false;
+					state_LMG_measure = false;
+
+				}
+
+				if((state_stop_efficiencey_map == false) && state_slow_current_set){
+					if(counter_slow_current <= n_slow_current){
+						counter_slow_current = counter_slow_current + 1.0f;
+
+						Global_Data.rasv.i_d_ref = id_last + (id_soll - id_last)/n_slow_current * counter_slow_current;
+						Global_Data.rasv.i_q_ref = iq_last + (iq_soll - iq_last)/n_slow_current * counter_slow_current;
+					}else{
+	//					state_slow_current_set = false;
+	//					state_controller_delay = true;
+
+						state_set_next_point = false;
+						state_slow_current_set = false;
+						state_controller_delay = true;
+						state_LMG_measure = false;
+
+					}
+				}
+
+				// FOC
+//		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+//		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
+//		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
+//
+//		        if (Global_Data.av.flg_speed_control){
+//		        	//dq_reference_current = uz_SpeedControl_sample(Global_Data.objects.Speed_instance, omega_m_rad_per_sec, Global_Data.rasv.n_ref_rpm);
+//		        	// currently not implemented !!!
+//		        }else{
+//		        	// Set I_d and I_q currents for current control
+//		        	dq_reference_current.d = Global_Data.rasv.i_d_ref;
+//		        	dq_reference_current.q = Global_Data.rasv.i_q_ref;
+//		        	dq_reference_current.zero = 0.0f;
+//		        }
+//
+//		        // FOC - get U_d and U_q as controlled variables
+//		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
+////		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
+//		        Global_Data.rasv.U_d_ref = dq_reference_voltage.d;
+//		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
+//
+//		        // Generate PWM Signal for each phase
+				Global_Data.av.theta_elec_ad = Global_Data.av.theta_elec + (1.5f*1.0f/UZ_PWM_FREQUENCY*omega_el_rad_per_sec);
+
+//		        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK_filt, Global_Data.av.theta_elec_ad);
+//		        Global_Data.av.duty_cycle_A = output.DutyCycle_A;
+//		        Global_Data.av.duty_cycle_B = output.DutyCycle_B;
+//		        Global_Data.av.duty_cycle_C = output.DutyCycle_C;
+//
+//
+//		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
+
+
+		        // Enable / Disable Measurement
+				if((state_controller_delay == true) && (state_stop_efficiencey_map == false)){
+					if(counter_n_delay_controller <= n_delay_controller)
+					{
+						counter_n_delay_controller = counter_n_delay_controller + 1.0f;
+
+					} else {
+	//					state_controller_delay = false;
+	//					state_LMG_measure = true;
+
+						state_set_next_point = false;
+						state_slow_current_set = false;
+						state_controller_delay = false;
+						state_LMG_measure = true;
+					}
+    			}
+
+				// Counter for continues measurement
+				if((state_LMG_measure == true) && (state_stop_efficiencey_map == false)){
+					if(counter_n_measurements <= n_measurements)
+					{
+						counter_n_measurements = counter_n_measurements + 1.0f;
+//						Global_Data.av.testsignal = counter_n_measurements;
+					} else {
+//						state_LMG_measure = false;
+//						state_set_next_point = true;
+
+						state_set_next_point = true;
+						state_slow_current_set = false;
+						state_controller_delay = false;
+						state_LMG_measure = false;
+
+					}
+				}
+
+				switch (Global_Data.rasv.LMG_measurement_typ) {
+					case 1U: // Continues
+						if((state_LMG_measure == true) && (state_stop_efficiencey_map == false)) {
+							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 1);
+							Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
+
+						} else {
+							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 0);
+							Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
+						}
+
+//						if (state_LMG_measure == true){
+//							Global_Data.av.testsignal = 1.0f;
+//						} else {
+//							Global_Data.av.testsignal = 0.0f;
+//						}
+//						break;
+
+					case 2U: // Transient
+						break;
+					default:
+						break;
+
+				}
 
 				break;
 

@@ -90,7 +90,10 @@ typedef struct _actualValues_ {
 	float I_q;								// calculated q current from measured values in A
 	float U_d;								// calculated d voltage from measured values in V
 	float U_q;								// calculated q voltage from measured values in V
+	float v_decoup_Volts_d;
+	float v_decoup_Volts_q;
 	float theta_elec;						// Electrical angle in rad
+	float theta_elec_ad;						// Electrical angle in rad
 	float theta_mech;						// Mechanical angle in rad
 	float theta_offset; 					// Mechanical angle in rad
 	float temperature;						// Variable for temperature (currently not used)
@@ -142,6 +145,8 @@ typedef struct _referenceAndSetValues_ {
 	uint32_t LMG_measurement_typ;
 
 	// Add additional Variables
+	float i_peak;
+	float i_angle_deg;
 	float i_d_ref;
 	float i_q_ref;
 	float U_d_ref;

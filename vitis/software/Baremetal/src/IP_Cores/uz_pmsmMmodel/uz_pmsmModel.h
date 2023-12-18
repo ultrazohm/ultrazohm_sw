@@ -27,6 +27,20 @@ struct uz_pmsmModel_config_t
     float coulomb_friction_constant; /**< Static friction constant */
     float inertia; /**< Inertia of the PMSM */
     bool simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
+    float ad1; /**< Fitting Parameter for flux approximation*/
+    float ad2; /**< Fitting Parameter for flux approximation*/
+    float ad3; /**< Fitting Parameter for flux approximation*/
+    float ad4; /**< Fitting Parameter for flux approximation*/
+    float ad5; /**< Fitting Parameter for flux approximation*/
+    float ad6; /**< Fitting Parameter for flux approximation*/
+    float aq1; /**< Fitting Parameter for flux approximation*/
+    float aq2; /**< Fitting Parameter for flux approximation*/
+    float aq3; /**< Fitting Parameter for flux approximation*/
+    float aq4; /**< Fitting Parameter for flux approximation*/
+    float aq5; /**< Fitting Parameter for flux approximation*/
+    float aq6; /**< Fitting Parameter for flux approximation*/
+    float F1G1; /**< Fitting Parameter for flux approximation*/
+    float F2G2; /**< Fitting Parameter for flux approximation*/
     bool simulate_nonlinear; /**< true: simulate nonlinear PMSM Model in the PL*/
 };
 
@@ -75,6 +89,13 @@ void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self);
  * @param self 
  */
 void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self);
+
+/**
+ * @brief Takes the values of the shadow register and pass them to the actual AXI register.
+ * 
+ * @param self 
+ */
+void uz_pmsmModel_trigger_fitting_parameters_strobe(uz_pmsmModel_t *self);
 
 /**
  * @brief Set inputs of the model and write them to the PMSM model IP-Core

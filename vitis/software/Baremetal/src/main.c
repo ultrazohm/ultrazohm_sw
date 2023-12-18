@@ -76,20 +76,20 @@ int main(void)
             break;
         case init_CurrentControl_rsm:
             struct uz_PMSM_t config_RSM = {
-                .Ld_Henry = 20.45e-03f,
-                .Lq_Henry = 1.48e-03f,
+                .Ld_Henry = 20.45e-03f, // OLD: 20.45e-03f
+                .Lq_Henry = 1.48e-03f,  // OLD: 1.48e-03f
                 .Psi_PM_Vs = 0.0f};
 
             struct uz_PI_Controller_config config_id = {
-                .Kp = 8.0f,
-                .Ki = 6.0f,
+                .Kp = 8.0f, //25.0f, //8.0f, //8.0f,
+                .Ki = 6.0f, //15.0f, //6.0f, // 6.0f,
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
 
             struct uz_PI_Controller_config config_iq = {
-                .Kp = 22.0f, // 20
-                .Ki = 6.5f,  // 5
+                .Kp = 14.0f, //33.0f, //25.0f, //22.0f, // 20 // 21 18
+                .Ki = 7.5f, //15.0f, //7.0f, //6.5f,  // 5
                 .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY,
                 .upper_limit = 10.0f,
                 .lower_limit = -10.0f};
@@ -111,13 +111,13 @@ int main(void)
 
             struct uz_IIR_Filter_config iir_config_filt1 = {
             		.selection = LowPass_first_order,
-            		.cutoff_frequency_Hz = 500.0f,
+            		.cutoff_frequency_Hz = 500.0f, //500.0f;
             		.sample_frequency_Hz = UZ_PWM_FREQUENCY
             };
 
             struct uz_IIR_Filter_config iir_config_filt2 = {
             		.selection = LowPass_first_order,
-            		.cutoff_frequency_Hz = 1.0f,
+            		.cutoff_frequency_Hz = 100.0f,
             		.sample_frequency_Hz = UZ_PWM_FREQUENCY
             };
 
@@ -150,14 +150,17 @@ int main(void)
             Global_Data.objects.Output_instance = uz_axi_gpio_init(config_output);
 
             // Initialize Global actualValues
-            Global_Data.av.theta_offset = 4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
+            Global_Data.av.theta_offset = 4.291866f; //4.3317f;//4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
+
             Global_Data.av.polepairs = 2.0f;
             Global_Data.av.kp_d = 0.0f; //40.0f;
 			Global_Data.av.ki_d = 0.0f; //35.0f;
             Global_Data.av.kp_q = 0.0f; //40.0f;
 			Global_Data.av.ki_q = 0.0f; //32.0f;
 
-            Global_Data.av.flg_speed_control = true;
+            Global_Data.av.flg_speed_control = false;
+
+            Global_Data.av.testsignal = 0.0f;
 
             // Initialize Global referenceAndSetValues
             Global_Data.rasv.state_of_statemachine = 0U;

@@ -192,16 +192,16 @@ void uz_pmsmModel_hw_write_aq6(uint32_t base_address, float aq6){
     uz_axi_write_float(base_address+aq6_Data_uz_pmsm_model,aq6);
 }
 
-void uz_pmsmModel_hw_write_reciprocal_F1G1(uint32_t base_address, float reciprocal_F1G1){
+void uz_pmsmModel_hw_write_reciprocal_F1G1(uint32_t base_address, float F1G1){
     uz_assert_not_zero(base_address);
-    uz_assert(reciprocal_F1G1 > 0.0f); // prevent division by zero and no negative inertia exists
-    uz_axi_write_float(base_address+reciprocal_F1G1_Data_uz_pmsm_model,1.0f/reciprocal_F1G1);
+    uz_assert(F1G1 > 0.0f); // prevent division by zero and no negative inertia exists
+    uz_axi_write_float(base_address+reciprocal_F1G1_Data_uz_pmsm_model,1.0f/F1G1);
 }
 
-void uz_pmsmModel_hw_write_reciprocal_F2G2(uint32_t base_address, float reciprocal_F2G2){
+void uz_pmsmModel_hw_write_reciprocal_F2G2(uint32_t base_address, float F2G2){
     uz_assert_not_zero(base_address);
-    uz_assert(reciprocal_F2G2 > 0.0f); // prevent division by zero and no negative inertia exists
-    uz_axi_write_float(base_address+reciprocal_F2G2_Data_uz_pmsm_model,1.0f/reciprocal_F2G2);
+    uz_assert(F2G2 > 0.0f); // prevent division by zero and no negative inertia exists
+    uz_axi_write_float(base_address+reciprocal_F2G2_Data_uz_pmsm_model,1.0f/F2G2);
 }
 
 //FittingParameter that are calculated in driver

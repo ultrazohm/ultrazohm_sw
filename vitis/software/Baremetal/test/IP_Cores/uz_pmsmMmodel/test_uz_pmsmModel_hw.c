@@ -209,15 +209,15 @@ void test_uz_pmsmModel_hw_write_aq6(void){
 }
 
 void test_uz_pmsmModel_hw_write_reciprocal_F1G1(void){
-    float reciprocal_F1G1=0.005f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_F1G1_Data_uz_pmsm_model,1.0f/reciprocal_F1G1);
-    uz_pmsmModel_hw_write_reciprocal_F1G1(BASE_ADDRESS,reciprocal_F1G1);
+    float F1G1=0.005f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_F1G1_Data_uz_pmsm_model,1.0f/F1G1);
+    uz_pmsmModel_hw_write_reciprocal_F1G1(BASE_ADDRESS,F1G1);
 }
 
 void test_uz_pmsmModel_hw_write_reciprocal_F2G2(void){
-    float reciprocal_F2G2=0.17f;
-    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_F2G2_Data_uz_pmsm_model,1.0f/reciprocal_F2G2);
-    uz_pmsmModel_hw_write_reciprocal_F2G2(BASE_ADDRESS,reciprocal_F2G2);
+    float F2G2=0.17f;
+    uz_axi_write_float_Expect(BASE_ADDRESS+reciprocal_F2G2_Data_uz_pmsm_model,1.0f/F2G2);
+    uz_pmsmModel_hw_write_reciprocal_F2G2(BASE_ADDRESS,F2G2);
 }
 
 //FittingParameter that are calculated in driver

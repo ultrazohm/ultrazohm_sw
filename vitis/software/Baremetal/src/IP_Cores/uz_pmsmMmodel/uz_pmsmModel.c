@@ -67,7 +67,7 @@ uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config)
     uz_assert(config.friction_coefficient >= 0.0f);
     if (!config.simulate_nonlinear)
     {
-        config.ad1 = 1.0f;              // If mechanical system is not simulated, set inertia to 1.0 to prevent division by zero
+        config.ad1 = 1.0f;              // If nonlinear model is not simulated, set inertia to 1.0 to prevent division by zero
         config.ad2 = 1.0f; // Random default values
         config.ad3 = 1.0f;
         config.ad4 = 1.0f;
@@ -157,19 +157,17 @@ void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self){
     uz_pmsmModel_hw_trigger_input_strobe(self->config.base_address);
 }
 
-
 void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self){
-        uz_assert_not_NULL(self);
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_pmsmModel_hw_trigger_output_strobe(self->config.base_address);
 }
 
 void uz_pmsmModel_trigger_fitting_parameters_strobe(uz_pmsmModel_t *self){
-        uz_assert_not_NULL(self);
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_pmsmModel_hw_trigger_fitting_parameters_strobe(self->config.base_address);
 }
-
 
 static void write_config_to_pl(uz_pmsmModel_t *self)
 {

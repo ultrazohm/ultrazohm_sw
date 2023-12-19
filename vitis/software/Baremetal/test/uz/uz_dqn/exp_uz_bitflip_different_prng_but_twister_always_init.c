@@ -142,8 +142,6 @@ float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
 
 // config random
-#include "uz_environment_pt1.h"
-#include "uz_integrator.h"
 
 // config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
@@ -332,7 +330,7 @@ void do_experiment(char training_absolute_path[], struct experiment_config exp);
 
 struct experiment_config get_exp_config(enum uz_prng_generator init_generator, enum uz_prng_generator exploration_generator, enum uz_prng_generator training_generator, enum uz_prng_generator env_generator);
 
-char folder_path[] = "test/uz/uz_dqn/10_seeds/";
+char folder_path[] = "test/uz/uz_dqn/bitflip_different_prng_twister_init/";
 
 void test_dqn_bitflip_one_not_twister_init_mt(void)
 {
@@ -344,28 +342,28 @@ void test_dqn_bitflip_one_not_twister_init_mt(void)
 void test_dqn_bitflip_one_not_twister_init_squares(void)
 {
     char training_absolute_path[] = "squares";
-    struct experiment_config exp = get_exp_config(uz_prng_generator_squares, uz_prng_generator_squares, uz_prng_generator_squares, uz_prng_generator_mtwister);
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_squares, uz_prng_generator_squares, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, exp);
 }
 
 void test_dqn_bitflip_one_not_twister_init_pcg(void)
 {
     char training_absolute_path[] = "pcg";
-    struct experiment_config exp = get_exp_config(uz_prng_generator_pcg, uz_prng_generator_pcg, uz_prng_generator_pcg, uz_prng_generator_mtwister);
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_pcg, uz_prng_generator_pcg, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, exp);
 }
 
 void test_dqn_bitflip_one_not_twister_init_halton(void)
 {
     char training_absolute_path[] = "halton";
-    struct experiment_config exp = get_exp_config(uz_prng_generator_halton, uz_prng_generator_halton, uz_prng_generator_halton, uz_prng_generator_mtwister);
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_halton, uz_prng_generator_halton, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, exp);
 }
 
 void test_dqn_bitflip_one_not_twister_init_xoshiro(void)
 {
     char training_absolute_path[] = "xoshiro";
-    struct experiment_config exp = get_exp_config(uz_prng_generator_xoshiro, uz_prng_generator_xoshiro, uz_prng_generator_xoshiro, uz_prng_generator_mtwister);
+    struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_xoshiro, uz_prng_generator_xoshiro, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, exp);
 }
 

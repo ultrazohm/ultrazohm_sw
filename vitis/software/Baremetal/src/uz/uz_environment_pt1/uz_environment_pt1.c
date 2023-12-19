@@ -59,19 +59,20 @@ float uz_environment_pt1_step(uz_environment_pt1_t *self, float input)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    input= (input*self->gain)-self->old_output;
-    float integrator_value=uz_integrator_eulerforward(input,self->old_integrator_value,self->integration_time,false);
-    self->old_integrator_value=integrator_value;
+    input = (input * self->gain) - self->old_output;
+    float integrator_value = uz_integrator_eulerforward(input, self->old_integrator_value, self->integration_time, false);
+    self->old_integrator_value = integrator_value;
     self->old_output = integrator_value * (1.0f / self->time_constant);
     return self->old_output;
 }
 
-void uz_environment_pt1_dqn_step(uz_environment_pt1_t *self, uint32_t action, float set_point){
+void uz_environment_pt1_dqn_step(uz_environment_pt1_t *self, uint32_t action, float set_point)
+{
     uz_assert_not_NULL(self);
     switch (action)
     {
     case 0:
-        self->input=1.0f;
+        self->input = 1.0f;
         break;
     case 1:
         self->input = 0.0f;
@@ -83,37 +84,42 @@ void uz_environment_pt1_dqn_step(uz_environment_pt1_t *self, uint32_t action, fl
         break;
     }
     self->output = uz_environment_pt1_step(self, self->input);
-    self->error=set_point-self->output;
-    self->reward=-fabsf(self->error);
-    self->cumulative_reward+=self->reward;
+    self->error = set_point - self->output;
+    self->reward = -fabsf(self->error);
+    self->cumulative_reward += self->reward;
 }
 
-float uz_environment_pt1_get_output(uz_environment_pt1_t *self){
+float uz_environment_pt1_get_output(uz_environment_pt1_t *self)
+{
     uz_assert_not_NULL(self);
     return self->output;
 }
 
-float uz_environment_pt1_get_input(uz_environment_pt1_t *self){
+float uz_environment_pt1_get_input(uz_environment_pt1_t *self)
+{
     uz_assert_not_NULL(self);
     return self->input;
 }
 
-
-    void uz_environment_pt1_reset(uz_environment_pt1_t *self)
+void uz_environment_pt1_reset(uz_environment_pt1_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->old_integrator_value=0.0f;
-    self->old_output=0.0f;
-    self->cumulative_reward=0.0f;
+    self->old_integrator_value = 0.0f;
+    self->old_output = 0.0f;
+    self->cumulative_reward = 0.0f;
+    self->error=0.0f;
+    self->input=0.0f;
+    self->output=0.0f;
 }
 
-uz_matrix_t* uz_environment_pt1_get_state(uz_environment_pt1_t *self){
+uz_matrix_t *uz_environment_pt1_get_state(uz_environment_pt1_t *self)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_matrix_set_element_zero_based(self->environment_state,self->error,0U,0U);
-    uz_matrix_set_element_zero_based(self->environment_state,self->output,0U,1U);
-   return (self->environment_state);
+    uz_matrix_set_element_zero_based(self->environment_state, self->error, 0U, 0U);
+    uz_matrix_set_element_zero_based(self->environment_state, self->output, 0U, 1U);
+    return (self->environment_state);
 }
 
 float uz_environment_pt1_get_reward(uz_environment_pt1_t *self)
@@ -126,12 +132,18 @@ float uz_environment_pt1_get_cumulative_reward(uz_environment_pt1_t *self)
     return self->cumulative_reward;
 }
 
-float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_pt1_t *env,float set_point, bool logging, float* error, float* input, float* output, uint32_t number_of_timesteps_per_control_action)
+float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bool train, uz_environment_pt1_t *env, float set_point, bool logging, float *error, float *input, float *output, uint32_t number_of_timesteps_per_control_action)
 {
     uz_assert_not_NULL(self);
     float cum_loss = 0.0f;
     for (uint32_t t = 0; t < max_steps; t++)
     {
+        if (logging)
+        {
+            input[t] = env->input;
+            output[t] = env->output;
+            error[t] = set_point-output[t];
+        }
         // sample observation of the environment at k=0
         uz_matrix_t *env_state = uz_environment_pt1_get_state(env);
         uz_dqn_sample_observation_k_0(self, env_state);
@@ -139,17 +151,11 @@ float uz_environment_pt1_step_one_episode(uz_dqn_t *self, uint32_t max_steps, bo
         // determine the action based on Q(s,a) with epsilon greedy exploration
         uint32_t action = uz_dqn_determine_action(self);
         // take the action, environment is now in k+1
-     //   uz_environment_pt1_dqn_step(env, action,set_point);
+        //   uz_environment_pt1_dqn_step(env, action,set_point);
         for (uint32_t time_step = 0; time_step < number_of_timesteps_per_control_action; time_step++)
         {
             uz_environment_pt1_dqn_step(env, action, set_point);
         }
-
-    if(logging){
-        error[t]=env->error;
-        input[t]=env->input;
-        output[t]=env->output;
-    }
 
         env_state = uz_environment_pt1_get_state(env);
         // Sample environment at k+1

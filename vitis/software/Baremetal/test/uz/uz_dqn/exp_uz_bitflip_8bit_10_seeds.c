@@ -31,14 +31,14 @@
 #include "dqn_helper.h"
 
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 50000U
+#define EXPERIENCE_BUFFER_LENGTH 200000U
 #define MINIBATCHSIZE 8U
 #define NUMBER_OF_EPOCHS 5000U
 #define TARGET_UPDATE_FREQUENCY 20U
 // nn
-#define NUMBEROFBITS 4U
-#define NUMBER_OF_INPUTS 8U
-#define NUMBER_OF_OUTPUTS 4U
+#define NUMBEROFBITS 6U
+#define NUMBER_OF_INPUTS 12U
+#define NUMBER_OF_OUTPUTS 6U
 #define NUMBER_OF_HIDDEN_LAYER 2U
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 128U
 #define NUMBEROFTESTSTEPS 50U
@@ -48,7 +48,7 @@ float lernrate = 0.002f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
-float epsilon_decay = 0.001f;
+float epsilon_decay = 0.00003f;
 
 // random array
 uint32_t array[NUMBEROFBITS] = {0U, 0U, 0U, 0U};
@@ -142,8 +142,6 @@ float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
 
 // config random
-#include "uz_environment_pt1.h"
-#include "uz_integrator.h"
 
 // config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
@@ -332,7 +330,7 @@ void do_experiment(char training_absolute_path[], struct experiment_config exp);
 
 struct experiment_config get_exp_config(enum uz_prng_generator init_generator, enum uz_prng_generator exploration_generator, enum uz_prng_generator training_generator, enum uz_prng_generator env_generator);
 
-char folder_path[] = "test/uz/uz_dqn/10_seeds/";
+char folder_path[] = "test/uz/uz_dqn/8bit_10_seeds/";
 
 void test_dqn_bitflip_one_not_twister_init_mt(void)
 {

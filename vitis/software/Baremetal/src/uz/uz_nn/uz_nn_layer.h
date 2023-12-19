@@ -78,8 +78,8 @@ struct uz_nn_layer_config
  */
 uz_nn_layer_t *uz_nn_layer_init(struct uz_nn_layer_config layer_config);
 uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config);
-void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
-void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
+void uz_nn_layer_init_He_normal(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
+void uz_nn_layer_init_Glorot_normal(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std);
 
 void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, uint32_t length_of_output);
 

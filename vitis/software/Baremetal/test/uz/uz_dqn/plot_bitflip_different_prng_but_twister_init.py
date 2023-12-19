@@ -8,21 +8,24 @@ import numpy as np
 from matplotlib.ticker import AutoMinorLocator, MultipleLocator
 
 
-def concat_data(folder_name):
-    twister=read_data('twister',folder_name)
-    halton=read_data('halton',folder_name)
-    squares=read_data('squares',folder_name)
-    pcg=read_data('pcg',folder_name)
-    xoshiro=read_data('xoshiro',folder_name)
+def concat_data(folder_name,read_eval):
+    twister=read_data('twister',folder_name,read_eval)
+    halton=read_data('halton',folder_name,read_eval)
+    squares=read_data('squares',folder_name,read_eval)
+    pcg=read_data('pcg',folder_name,read_eval)
+    xoshiro=read_data('xoshiro',folder_name,read_eval)
 
     train_data_full=pd.concat( [twister,squares,pcg,halton,xoshiro])
     return train_data_full
 
-def read_data(prng_name,folder_name):
+def read_data(prng_name,folder_name,read_eval):
     path='vitis/software/Baremetal/test/uz/uz_dqn/' #pathlib.Path(__file__).parent.resolve()
     extension = 'csv'
  #   os.chdir(path)
-    twister_training_filenames = glob.glob(folder_name+'/'+prng_name+'_training_*.{}'.format(extension))
+    if read_eval==True:
+        twister_training_filenames = glob.glob(folder_name+'/'+prng_name+'_eval_*.{}'.format(extension))
+    else:
+        twister_training_filenames = glob.glob(folder_name+'/'+prng_name+'_training_*.{}'.format(extension))
 
     train_log={}
     for x in range(len(twister_training_filenames)):
@@ -36,11 +39,11 @@ def read_data(prng_name,folder_name):
     return train_data
 
 def plot_individual_runs(folder_name):
-    twister=read_data('twister',folder_name)
-    halton=read_data('halton',folder_name)
-    squares=read_data('squares',folder_name)
-    pcg=read_data('pcg',folder_name)
-    xoshiro=read_data('xoshiro',folder_name)
+    twister=read_data('twister',folder_name,False)
+    halton=read_data('halton',folder_name,False)
+    squares=read_data('squares',folder_name,False)
+    pcg=read_data('pcg',folder_name,False)
+    xoshiro=read_data('xoshiro',folder_name,False)
 
     train_data_full=pd.concat( [twister,squares,pcg,halton,xoshiro])
 
@@ -55,11 +58,11 @@ def plot_individual_runs(folder_name):
     sns.lineplot(data=xoshiro,x='episode',y='global_reward_metric',units='seed',estimator=None,hue='seed',palette=palette,ax=axs[4],legend=False)
 
 def plot_errorbar(folder_name):
-    twister=read_data('twister',folder_name)
-    halton=read_data('halton',folder_name)
-    squares=read_data('squares',folder_name)
-    pcg=read_data('pcg',folder_name)
-    xoshiro=read_data('xoshiro',folder_name)
+    twister=read_data('twister',folder_name,False)
+    halton=read_data('halton',folder_name,False)
+    squares=read_data('squares',folder_name,False)
+    pcg=read_data('pcg',folder_name,False)
+    xoshiro=read_data('xoshiro',folder_name,False)
 
     train_data_full=pd.concat( [twister,squares,pcg,halton,xoshiro])
     sns.set_theme(style='whitegrid')
@@ -79,11 +82,11 @@ def plot_errorbar(folder_name):
     axs[4].title.set_text('Xoshiro')
 
 def plot_boxplot(folder_name):
-    twister=read_data('twister',folder_name)
-    halton=read_data('halton',folder_name)
-    squares=read_data('squares',folder_name)
-    pcg=read_data('pcg',folder_name)
-    xoshiro=read_data('xoshiro',folder_name)
+    twister=read_data('twister',folder_name,False)
+    halton=read_data('halton',folder_name,False)
+    squares=read_data('squares',folder_name,False)
+    pcg=read_data('pcg',folder_name,False)
+    xoshiro=read_data('xoshiro',folder_name,False)
 
     train_data_full=pd.concat( [twister,squares,pcg,halton,xoshiro])
 
@@ -94,10 +97,10 @@ def plot_boxplot(folder_name):
     sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric",ax=axs3)
 
 def compare_boxplots_hue_prng():
-    seeds_10=concat_data('10_seeds')
-    training=concat_data('bitflip_different_prng_training')
-    init=concat_data('bitflip_different_prng_init')
-    exploration=concat_data('bitflip_different_prng_exploration')
+    seeds_10=concat_data('10_seeds',False)
+    training=concat_data('bitflip_different_prng_training',False)
+    init=concat_data('bitflip_different_prng_init',False)
+    exploration=concat_data('bitflip_different_prng_exploration',False)
     train_data_full=pd.concat( [seeds_10,training,init,exploration])
 
     sns.set_theme(style='whitegrid')
@@ -107,28 +110,11 @@ def compare_boxplots_hue_prng():
     g=sns.boxplot(data=train_data_full, x="folder_name", y="global_reward_metric", hue='prng')
     sns.move_legend(g, "lower left") 
 
-def compare_boxplots_hue_experiment():
-    seeds_10=concat_data('10_seeds')
-    training=concat_data('bitflip_different_prng_training')
-    init=concat_data('bitflip_different_prng_init')
-    exploration=concat_data('bitflip_different_prng_exploration')
-    train_data_full=pd.concat( [seeds_10,training,init,exploration])
-
-    sns.set_theme(style='whitegrid')
-    palette = sns.color_palette("tab10")
-
-    fig, ax = plt.subplots(1, 1,layout='constrained',figsize=(14,13),sharey=True)
-    g=sns.boxplot(data=train_data_full, x="prng", y="global_reward_metric", hue='folder_name')
-    sns.move_legend(g, "lower left") 
-
-
 
 def plot_individual():
-    seeds_10=concat_data('10_seeds')
-    training=concat_data('bitflip_different_prng_training')
-    init=concat_data('bitflip_different_prng_init')
-    exploration=concat_data('bitflip_different_prng_exploration')
-    train_data_full=pd.concat( [seeds_10,training,init,exploration])
+    seeds_10=concat_data('10_seeds',False)
+    training=concat_data('bitflip_different_prng_twister_init',False)
+    train_data_full=pd.concat( [seeds_10,training])
 
     sns.set_theme(style='whitegrid')
     palette = sns.color_palette("tab10")
@@ -140,3 +126,32 @@ def plot_individual():
     sns.lineplot(data=training.query("prng == 'xoshiro'"),x='episode',y='global_reward_metric',ax=axs[3],units="seed",estimator=None,hue="seed")
     sns.lineplot(data=training.query("prng == 'halton'"),x='episode',y='global_reward_metric',ax=axs[4],units="seed",estimator=None,hue="seed")
 
+def plot_eval():
+    seeds_10=concat_data('10_seeds',True)
+    training=concat_data('bitflip_different_prng_twister_init',True)
+    train_data_full=pd.concat( [seeds_10,training])
+
+    sns.set_theme(style='whitegrid')
+    palette = sns.color_palette("tab10")
+
+    fig, axs = plt.subplots(5, 1,layout='constrained',figsize=(14,13),sharey=True)
+    sns.lineplot(data=training.query("prng == 'twister'"),x='episode',y='cumulative_reward',ax=axs[0],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=training.query("prng == 'pcg'"),x='episode',y='cumulative_reward',ax=axs[1],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=training.query("prng == 'squares'"),x='episode',y='cumulative_reward',ax=axs[2],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=training.query("prng == 'xoshiro'"),x='episode',y='cumulative_reward',ax=axs[3],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=training.query("prng == 'halton'"),x='episode',y='cumulative_reward',ax=axs[4],units="seed",estimator=None,hue="seed")
+
+def plot_eval_10seeds():
+    seeds_10=concat_data('10_seeds',True)
+    training=concat_data('bitflip_different_prng_twister_init',True)
+    train_data_full=pd.concat( [seeds_10,training])
+
+    sns.set_theme(style='whitegrid')
+    palette = sns.color_palette("tab10")
+
+    fig, axs = plt.subplots(5, 1,layout='constrained',figsize=(14,13),sharey=True)
+    sns.lineplot(data=seeds_10.query("prng == 'twister'"),x='episode',y='cumulative_reward',ax=axs[0],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=seeds_10.query("prng == 'pcg'"),x='episode',y='cumulative_reward',ax=axs[1],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=seeds_10.query("prng == 'squares'"),x='episode',y='cumulative_reward',ax=axs[2],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=seeds_10.query("prng == 'xoshiro'"),x='episode',y='cumulative_reward',ax=axs[3],units="seed",estimator=None,hue="seed")
+    sns.lineplot(data=seeds_10.query("prng == 'halton'"),x='episode',y='cumulative_reward',ax=axs[4],units="seed",estimator=None,hue="seed")

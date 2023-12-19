@@ -209,7 +209,7 @@ uz_nn_layer_t *uz_nn_layer_init_trainable(struct uz_nn_layer_config layer_config
     return (self);
 }
 
-void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
+void uz_nn_layer_init_Glorot_normal(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
 {
     uz_assert_not_NULL(parameter);
     uz_assert_not_NULL(prng);
@@ -219,7 +219,7 @@ void uz_nn_layer_init_Glorot_uniform(uz_matrix_t *parameter, uz_prng_t *prng, fl
     }
 }
 
-void uz_nn_layer_init_He_uniform(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
+void uz_nn_layer_init_He_normal(uz_matrix_t *parameter, uz_prng_t *prng, float mean, float std)
 {
     uz_assert_not_NULL(parameter);
     uz_assert_not_NULL(prng);
@@ -247,7 +247,7 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, uint32_
         float std = sqrtf(2.0f / (float)((layer->number_of_neurons + length_of_output)));
         float mean = 0.0f;
         // uz_nn_layer_init_Glorot(layer->bias,self);
-        uz_nn_layer_init_Glorot_uniform(layer->weights, prng, mean, std);
+        uz_nn_layer_init_Glorot_normal(layer->weights, prng, mean, std);
         break;
     }
     case activation_ReLU:
@@ -257,7 +257,7 @@ void uz_nn_layer_param_init(uz_nn_layer_t *const layer, uz_prng_t *prng, uint32_
         float mean = 0.0f;
         // float fanin = (float)(layer->number_of_neurons);
         // uz_nn_layer_init_He(layer->bias,self);
-        uz_nn_layer_init_He_uniform(layer->weights, prng, mean, std);
+        uz_nn_layer_init_He_normal(layer->weights, prng, mean, std);
         break;
     }
     default:

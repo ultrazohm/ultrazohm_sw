@@ -47,6 +47,51 @@ void train_bitflip(uint32_t number_of_epochs, uz_environment_bitflip_t *env, uz_
     }
 }
 
+void train_pt1(uint32_t number_of_epochs, uz_environment_pt1_t *env, uz_prng_t *env_prng, uz_dqn_t *dqn, uz_array_float_t episode_loss, uz_array_float_t cumulative_reward, uz_array_float_t global_reward_metric, uz_array_float_t epsilon_per_epsiode, uint32_t steps_per_episode)
+{
+    for (uint32_t epoch = 0; epoch < number_of_epochs; epoch++)
+    {
+        float setpoint = uz_prng_get_uniform_float_zero_to_one(env_prng);
+        uz_environment_pt1_reset(env);
+        episode_loss.data[epoch] = uz_environment_pt1_step_one_episode(dqn, steps_per_episode, true, env, setpoint, false, NULL, NULL, NULL, 10);
+        cumulative_reward.data[epoch] = uz_environment_pt1_get_cumulative_reward(env);
+        if (epoch == 0)
+        {
+            global_reward_metric.data[epoch] = uz_environment_pt1_get_cumulative_reward(env);
+        }
+        else
+        {
+            global_reward_metric.data[epoch] = 0.99f * global_reward_metric.data[epoch - 1] + 0.01f * uz_environment_pt1_get_cumulative_reward(env);
+        }
+        epsilon_per_epsiode.data[epoch] = uz_dqn_get_epsilon(dqn);
+    }
+}
+
+void eval_steps_pt1(uz_dqn_t *dqn, uz_environment_pt1_t *env, uz_array_float_t reward_log, uint32_t number_of_eval_episodes, uz_prng_t *prng, uz_array_float_t set_point, uz_array_float_t error, uz_array_float_t input, uz_array_float_t output, uz_array_float_t time_step, uz_array_float_t eval_run_number, uint32_t steps_per_episode)
+{
+    assert(dqn != NULL);
+    assert(env != NULL);
+    assert(reward_log.length == number_of_eval_episodes);
+    uz_dqn_set_epsilon(dqn, 0.0f, 0.0f, 0.0f);
+
+    size_t index = 0; // i*cols+j
+    for (size_t i = 0; i < number_of_eval_episodes; i++)
+    {
+        index=i*steps_per_episode;
+        float setpoint = uz_prng_get_uniform_float_zero_to_one(prng);
+        uz_environment_pt1_reset(env);
+        uz_environment_pt1_step_one_episode(dqn, steps_per_episode, false, env, setpoint, true, &error.data[index], &input.data[index], &output.data[index], 10);
+
+        for (uint32_t t = 0; t < steps_per_episode; t++)
+        {
+            set_point.data[index+t]=setpoint;
+            time_step.data[index + t] = (float)t;
+            eval_run_number.data[index + t] = (float)i;
+        }
+        reward_log.data[i] = uz_environment_pt1_get_cumulative_reward(env);
+    }
+}
+
 void export_abitrary_number_of_arrays(uz_array_float_t **export_array, size_t length_of_export_array, char table_header[], char absolute_path[], uint32_t index)
 {
     assert(export_array != NULL);
@@ -90,5 +135,3 @@ void export_abitrary_number_of_arrays(uz_array_float_t **export_array, size_t le
         }
     }
 }
-
-

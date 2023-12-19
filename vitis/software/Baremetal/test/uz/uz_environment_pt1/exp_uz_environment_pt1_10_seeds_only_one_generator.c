@@ -5,6 +5,9 @@
 #include "uz_dqn.h"
 #include "uz_dqn_expirience_buffer.h"
 
+#include "uz_environment_pt1.h"
+#include "uz_integrator.h"
+
 #include "uz_nn.h"
 #include "uz_nn_layer.h"
 #include "uz_nn_activation_functions.h"
@@ -30,29 +33,26 @@
 #include <assert.h>
 #include "dqn_helper.h"
 
+#define NUMBER_OF_TIMESTEPS 250U
 // buffer
-#define EXPERIENCE_BUFFER_LENGTH 50000U
+#define EXPERIENCE_BUFFER_LENGTH 200000U
 #define MINIBATCHSIZE 8U
-#define NUMBER_OF_EPOCHS 5000U
+#define NUMBER_OF_EPOCHS 1000U
 #define TARGET_UPDATE_FREQUENCY 20U
 // nn
-#define NUMBEROFBITS 4U
-#define NUMBER_OF_INPUTS 8U
-#define NUMBER_OF_OUTPUTS 4U
+#define NUMBER_OF_INPUTS 2U
+#define NUMBER_OF_OUTPUTS 3U
 #define NUMBER_OF_HIDDEN_LAYER 2U
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 128U
-#define NUMBEROFTESTSTEPS 50U
+#define NUMBEROFTESTSTEPS 10U
 
 float discountfact = 0.99f;
 float lernrate = 0.002f;
 
 float epsilon_start = 0.99f;
 float epsilon_min = 0.0000000001f;
-float epsilon_decay = 0.001f;
+float epsilon_decay = 0.00003f;
 
-// random array
-uint32_t array[NUMBEROFBITS] = {0U, 0U, 0U, 0U};
-uint32_t tararray[NUMBEROFBITS] = {1U, 1U, 1U, 1U};
 float inarray[NUMBER_OF_INPUTS] = {0.0f};
 // conf envrionment
 
@@ -61,14 +61,6 @@ float m1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER *
 float m2[NUMBER_OF_OUTPUTS + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0.0f};
 float v1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_INPUTS] = {0.0f};
 float v2[NUMBER_OF_OUTPUTS + NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {0.0f};
-
-struct uz_dqn_environment_config configenv = {
-    .bitlength = NUMBEROFBITS,
-    .bitarray = array,
-    .targetarray = tararray,
-    .inarray = inarray,
-    .max_steps = NUMBEROFBITS + 3};
-// debug stuff
 
 // dqn
 float X_dat[NUMBER_OF_INPUTS] = {0.0f};
@@ -140,10 +132,6 @@ float observation[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float observation1[NUMBER_OF_INPUTS * EXPERIENCE_BUFFER_LENGTH] = {0.0f};
 float vecobs[NUMBER_OF_INPUTS] = {0.0f};
 float vecobs1[NUMBER_OF_INPUTS] = {0.0f};
-
-// config random
-#include "uz_environment_pt1.h"
-#include "uz_integrator.h"
 
 // config target
 struct uz_nn_layer_config config_target[NUMBER_OF_HIDDEN_LAYER] = {
@@ -219,6 +207,7 @@ struct uz_dqn_experience_replay_config configbuffer = {
     .obsvec = vecobs,
     .obsvec1 = vecobs1,
     .actions = action};
+
 void setUp(void)
 {
 }
@@ -292,35 +281,35 @@ uint64_t pcg_seed_3[10] = {0x2af73db87fab18ed,
                            0x8a149e2dc2a6feb1}; // take key's from list
 
 uint64_t xoshiro_seed_1[10] = {0xc8e4fd154ce32f6d,
-                           0xfcbd6e154bf53ed9,
-                           0xea6342c76bf95d47,
-                           0xfb9e125878fa6cb3,
-                           0xa1ed294ba7fe8b31,
-                           0xcf29ba8dc5f1a98d,
-                           0x815a7d4ed4e3b7f9,
-                           0x163acbf213f5d867,
-                           0x674e2d1542f9e6d3,
-                           0xebc9672872ecf651}; // take key's from list
+                               0xfcbd6e154bf53ed9,
+                               0xea6342c76bf95d47,
+                               0xfb9e125878fa6cb3,
+                               0xa1ed294ba7fe8b31,
+                               0xcf29ba8dc5f1a98d,
+                               0x815a7d4ed4e3b7f9,
+                               0x163acbf213f5d867,
+                               0x674e2d1542f9e6d3,
+                               0xebc9672872ecf651}; // take key's from list
 uint64_t xoshiro_seed_2[10] = {0xec13a6976ecf14ad,
-                           0x42c86e3a9de3542b,
-                           0x5489de2cbce65297,
-                           0x49bc37fdcad971f3,
-                           0xd5b4213fe7db8f61,
-                           0xbf785e3215ac7ebd,
-                           0x46be329546e1ad3b,
-                           0x8b7ef19654e3dca7,
-                           0x1d7683c983d7eb15,
-                           0x3724b1c872d9fa81}; // take key's from list
+                               0x42c86e3a9de3542b,
+                               0x5489de2cbce65297,
+                               0x49bc37fdcad971f3,
+                               0xd5b4213fe7db8f61,
+                               0xbf785e3215ac7ebd,
+                               0x46be329546e1ad3b,
+                               0x8b7ef19654e3dca7,
+                               0x1d7683c983d7eb15,
+                               0x3724b1c872d9fa81}; // take key's from list
 uint64_t xoshiro_seed_3[10] = {0x2af73db87fab18ed,
-                           0xa185f4cbadcf285b,
-                           0x53d684c1fbd246c7,
-                           0x35fda1821cd68735,
-                           0xfd3791543bd985a1,
-                           0x7f59c4b657cb941f,
-                           0x19f3e5b765cea27b,
-                           0xf6235eca95b2c1e7,
-                           0x9d827c5ba2b3df45,
-                           0x8a149e2dc2a6feb1}; // take key's from list
+                               0xa185f4cbadcf285b,
+                               0x53d684c1fbd246c7,
+                               0x35fda1821cd68735,
+                               0xfd3791543bd985a1,
+                               0x7f59c4b657cb941f,
+                               0x19f3e5b765cea27b,
+                               0xf6235eca95b2c1e7,
+                               0x9d827c5ba2b3df45,
+                               0x8a149e2dc2a6feb1}; // take key's from list
 
 uint64_t squares_seed_1[10] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};           // take key's from list
 uint64_t squares_seed_2[10] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19}; // take key's from list
@@ -332,37 +321,37 @@ void do_experiment(char training_absolute_path[], struct experiment_config exp);
 
 struct experiment_config get_exp_config(enum uz_prng_generator init_generator, enum uz_prng_generator exploration_generator, enum uz_prng_generator training_generator, enum uz_prng_generator env_generator);
 
-char folder_path[] = "test/uz/uz_dqn/10_seeds/";
+char folder_path[] = "test/uz/uz_environment_pt1/pt1_only_one_generator/";
 
-void test_dqn_bitflip_one_not_twister_init_mt(void)
+void test_dqn_pt1_twister(void)
 {
     char training_absolute_path[] = "twister";
     struct experiment_config exp = get_exp_config(uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_mtwister, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, exp);
 }
 
-void test_dqn_bitflip_one_not_twister_init_squares(void)
+void test_dqn_pt1_squares(void)
 {
     char training_absolute_path[] = "squares";
     struct experiment_config exp = get_exp_config(uz_prng_generator_squares, uz_prng_generator_squares, uz_prng_generator_squares, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, exp);
 }
 
-void test_dqn_bitflip_one_not_twister_init_pcg(void)
+void test_dqn_pt1_pcg(void)
 {
     char training_absolute_path[] = "pcg";
     struct experiment_config exp = get_exp_config(uz_prng_generator_pcg, uz_prng_generator_pcg, uz_prng_generator_pcg, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, exp);
 }
 
-void test_dqn_bitflip_one_not_twister_init_halton(void)
+void test_dqn_pt1_halton(void)
 {
     char training_absolute_path[] = "halton";
     struct experiment_config exp = get_exp_config(uz_prng_generator_halton, uz_prng_generator_halton, uz_prng_generator_halton, uz_prng_generator_mtwister);
     do_experiment(training_absolute_path, exp);
 }
 
-void test_dqn_bitflip_one_not_twister_init_xoshiro(void)
+void test_dqn_pt1_xoshiro(void)
 {
     char training_absolute_path[] = "xoshiro";
     struct experiment_config exp = get_exp_config(uz_prng_generator_xoshiro, uz_prng_generator_xoshiro, uz_prng_generator_xoshiro, uz_prng_generator_mtwister);
@@ -518,7 +507,7 @@ void do_experiment(char training_absolute_path[], struct experiment_config exp)
     strcat(training_absolute_path_full, training);
     strcat(eval_absolute_path_full, eval);
 
-    char eval_header[] = {"cumulative_reward\n"};
+    char eval_header[] = {"eval_output,eval_setpoint,eval_error,eval_input,eval_time_step,eval_run\n"};
     float Q_Target[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
     float Q_Critic[NUMBER_OF_EPOCHS * NUMBER_OF_OUTPUTS] = {0.0f};
     float cumreward_noexpl[NUMBEROFTESTSTEPS] = {0.0f};
@@ -537,18 +526,42 @@ void do_experiment(char training_absolute_path[], struct experiment_config exp)
     uz_array_float_t global_reward_metric = {.data = globalrewardr, .length = UZ_ARRAY_SIZE(globalrewardr)};
     uz_array_float_t epsilon_per_epsiode = {.data = epsilonovertime, .length = UZ_ARRAY_SIZE(epsilonovertime)};
 
+    float output_eval[NUMBEROFTESTSTEPS * NUMBER_OF_TIMESTEPS] = {0.0f};
+    float setpoint_eval[NUMBEROFTESTSTEPS * NUMBER_OF_TIMESTEPS] = {0.0f};
+    float error_eval[NUMBEROFTESTSTEPS * NUMBER_OF_TIMESTEPS] = {0.0f};
+    float input_eval[NUMBEROFTESTSTEPS * NUMBER_OF_TIMESTEPS] = {0.0f};
+    float t_eval[NUMBEROFTESTSTEPS * NUMBER_OF_TIMESTEPS] = {0.0f};
+    float run_number[NUMBEROFTESTSTEPS * NUMBER_OF_TIMESTEPS] = {0.0f};
+
+    uz_array_float_t eval_output = {.data = output_eval, .length = UZ_ARRAY_SIZE(output_eval)};
+    uz_array_float_t eval_setpoint = {.data = setpoint_eval, .length = UZ_ARRAY_SIZE(setpoint_eval)};
+    uz_array_float_t eval_error = {.data = error_eval, .length = UZ_ARRAY_SIZE(error_eval)};
+    uz_array_float_t eval_input = {.data = input_eval, .length = UZ_ARRAY_SIZE(input_eval)};
+    uz_array_float_t eval_time_step = {.data = t_eval, .length = UZ_ARRAY_SIZE(t_eval)};
+    uz_array_float_t eval_run_number = {.data = run_number, .length = UZ_ARRAY_SIZE(run_number)};
+
     uz_array_float_t *training_log[4] = {
         &episode_loss,
         &cumulative_reward,
         &global_reward_metric,
         &epsilon_per_epsiode};
-    uz_array_float_t *evaluation_log[1] = {
-        &episode_loss_eval};
+    uz_array_float_t *evaluation_log[] = {
+        &eval_output,
+        &eval_setpoint,
+        &eval_error,
+        &eval_input,
+        &eval_time_step,
+        &eval_run_number};
+
     float targsmoothfact = 0.05f;
     uz_prng_t *environment_twister = uz_prng_init(exp.environment_config.uz_prng_type, uz_prng_float_scale_fp_multiply, exp.environment_seeds[0]);
     float error[NUMBER_OF_OUTPUTS] = {0.0f};
 
-    uz_environment_bitflip_t *env = uz_environment_bitflip_init(configenv);
+    float array[2] = {0};
+    float gain = 1.0f;
+    float time_constant = 0.005f;
+    float integration_time = 0.0001f;
+    uz_environment_pt1_t *env = uz_environment_pt1_init(gain, time_constant, integration_time, array);
 
     struct uz_dqn_config_t dqn_config =
         {
@@ -571,6 +584,7 @@ void do_experiment(char training_absolute_path[], struct experiment_config exp)
             .prng_training = exp.training_config};
     uz_dqn_t *testdqn2 = uz_dqn_init(dqn_config);
     uz_prng_reset(environment_twister, exp.environment_seeds[0]);
+    uz_dqn_use_only_one_prng(testdqn2);
 
     for (uint32_t seed_index = 0; seed_index < exp.number_of_seeds; seed_index++)
     {
@@ -579,11 +593,11 @@ void do_experiment(char training_absolute_path[], struct experiment_config exp)
         uz_dqn_reset(testdqn2, epsilon_start);
         uz_dqn_set_epsilon(testdqn2, epsilon_start, epsilon_min, epsilon_decay); // Required because epsilon is set to 0 for eval
 
-        train_bitflip(NUMBER_OF_EPOCHS, env, environment_twister, testdqn2, episode_loss, cumulative_reward, global_reward_metric, epsilon_per_epsiode);
-        eval_steps_bitflip(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister);
+        train_pt1(NUMBER_OF_EPOCHS, env, environment_twister, testdqn2, episode_loss, cumulative_reward, global_reward_metric, epsilon_per_epsiode, NUMBER_OF_TIMESTEPS);
+        eval_steps_pt1(testdqn2, env, evaluation_run_reward, NUMBEROFTESTSTEPS, environment_twister, eval_setpoint, eval_error, eval_input, eval_output, eval_time_step, eval_run_number,NUMBER_OF_TIMESTEPS);
 
-        export_abitrary_number_of_arrays(training_log, 4, training_header, training_absolute_path_full, seed_index);
-        export_abitrary_number_of_arrays(evaluation_log, 1, eval_header, eval_absolute_path_full, seed_index);
+        export_abitrary_number_of_arrays(training_log, UZ_ARRAY_SIZE(training_log), training_header, training_absolute_path_full, seed_index);
+        export_abitrary_number_of_arrays(evaluation_log, UZ_ARRAY_SIZE(evaluation_log), eval_header, eval_absolute_path_full, seed_index);
     }
 }
 

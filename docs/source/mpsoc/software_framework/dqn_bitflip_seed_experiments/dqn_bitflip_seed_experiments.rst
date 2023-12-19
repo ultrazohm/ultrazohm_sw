@@ -12,6 +12,27 @@ Halton shows a really bad performance, failing to solve the Bitflip environment 
 This is likely to the fact that each generator uses the same seed for each run and 3 generators are used.
 Therefore, the random numbers are not independent of each other.
 
+Open Questions:
+
+- How unrelated are multiple streams of random numbers for different streams in the different PRNGs?
+- Is non-uniformity actually better for Init?
+- Maybe, because symmetry is broken?
+
+
+todos:
+
+- Eval Runs plotten
+- Zusammenfassung finden
+- Tests wiederholen für schwerere Probleme (mehr bits in Bitflip)
+- Auf PT1 Training übertragen
+- Philox implementieren?
+
+Notes:
+
+- bitflip with 20.000 epsioden statt 5.000 episoden bei Buffersize 50000U sorgt dafür, dass die Performance über die Zeit schlechter wird
+- Buffersize auf 200000U erhöht -> Wirkt nicht, als hätte es etwas gebracht - ggf. experiment gar nicht funktioniert?
+
+
 
 exp_uz_bitflip_10_seeds
 =======================
@@ -120,3 +141,21 @@ Different generators for exploration, init, and training
             :caption: Each group compares using each generator either for training sampling, init, or exploration. Everything except halton improves when used for training sampling. Everything is kind of close, except for the initialization.
 
 - Look into what is going on with the initialization of the networks when not using Twister.
+
+
+
+Twister for Init, different PRNG for other 
+------------------------------------------
+
+- Using Mersenne Twister for init, other PRNG for exploration and training
+
+.. plot:: ../../vitis/software/Baremetal/test/uz/uz_dqn/plot_bitflip_different_prng_but_twister_init.py compare_boxplots_hue_prng
+            :scale: 30
+            :caption: Using Squares or PCG for everything except for Init seems to improve behavior.
+
+- Why is init with Twister so good?
+
+.. plot:: ../../vitis/software/Baremetal/test/uz/uz_dqn/plot_bitflip_different_prng_but_twister_init.py plot_individual
+            :scale: 30
+            :caption: Plot all individual runs
+

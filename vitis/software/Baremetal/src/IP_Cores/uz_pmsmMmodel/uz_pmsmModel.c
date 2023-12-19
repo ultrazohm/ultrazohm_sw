@@ -67,7 +67,7 @@ uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config)
     uz_assert(config.friction_coefficient >= 0.0f);
     if (!config.simulate_nonlinear)
     {
-        config.ad1 = 1.0f;              // If nonlinear model is not simulated, set inertia to 1.0 to prevent division by zero
+        config.ad1 = 1.0f;              // If nonlinear model is not simulated, set parameters to random values to prevent division by zero
         config.ad2 = 1.0f; // Random default values
         config.ad3 = 1.0f;
         config.ad4 = 1.0f;

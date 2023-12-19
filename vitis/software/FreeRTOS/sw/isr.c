@@ -69,6 +69,11 @@ void Transfer_ipc_Intr_Handler(void *data)
 	}
 	// queue is purged when new connection is established
 
+	extern void dummy_task(void *p);
+	dummy_task(NULL);
+	extern void read_OCM_write_queue(void);
+	read_OCM_write_queue();
+
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 	// Write message for acknowledge of the interrupt to RPU
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);

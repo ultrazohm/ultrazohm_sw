@@ -71,8 +71,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	extern void dummy_task(void *p);
 	dummy_task(NULL);
-	extern void read_OCM_write_queue(void);
-	read_OCM_write_queue();
+	extern void read_OCM_write_txQueue(void);
+	read_OCM_write_txQueue();
+	extern void read_rxQueue_write_OCM(void);
+	read_rxQueue_write_OCM();
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 	// Write message for acknowledge of the interrupt to RPU

@@ -137,7 +137,7 @@ void write_package_to_ocm(volatile size_t *dst_addr_p, uint8_t len, uint8_t *dat
     // Write current OCM write address to global variable
     *dst_addr_p = (size_t)dst_p;
 
-    // Todo remove
+    // Todo remove debug variable
     cnt_msg_out_w++;
 }
 
@@ -163,7 +163,7 @@ void read_package_from_ocm(volatile size_t *src_addr_p, uint8_t *len, uint8_t **
 	src_p += *len;
     *src_addr_p = (size_t)src_p;
 
-	// todo remove
+    // Todo remove debug variable
 	cnt_msg_out_r++;
 }
 
@@ -347,8 +347,27 @@ void xcp_events_10kHz(void)
 
 }
 
+void read_rxQueue_write_OCM(void)
+{
+	// This irq can occur before the queue is created (xcp main task)
+	if (queue_xcp_rx == NULL) {
+		return;
+	}
 
-void read_OCM_write_queue(void)
+	addr_in_w = XCP_IN_ADDR;
+	while (1) {
+		uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
+
+		// Abort receive if no message could be read
+		if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) != pdPASS) {
+			break;
+		}
+
+		write_package_to_ocm(&addr_in_w, BUF_SIZE_XCP_RX, buf_xcp_rx);
+	}
+}
+
+void read_OCM_write_txQueue(void)
 {
 	addr_out_r = XCP_OUT_ADDR;
 
@@ -390,23 +409,20 @@ static xcp_data_t xcp_data = {0};
 
 void xcp_stim(void)
 {
-	// This irq can occur before the queue is created (xcp main task)
-	if (queue_xcp_rx != NULL) {
-		static uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
-		if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) == pdPASS) {
-			XcpCommand((uint32_t *) (buf_xcp_rx + XCP_HEADER_LEN));
-		}
-	}
-
-#if 0
 	addr_in_r = XCP_IN_ADDR;
-	uint8_t *data;
-	uint8_t len;
-	read_package_from_ocm(&addr_in_r, &len, &data);
-	if (len) {
+
+	while (1) {
+		uint8_t *data;
+		uint8_t len;
+		read_package_from_ocm(&addr_in_r, &len, &data);
+
+		// Is a message present in the OCM?
+		if (len == 0) {
+			break;
+		}
+
 		XcpCommand((uint32_t *)(data + XCP_HEADER_LEN));
 	}
-#endif
 }
 
 void dummy_task(void *p)

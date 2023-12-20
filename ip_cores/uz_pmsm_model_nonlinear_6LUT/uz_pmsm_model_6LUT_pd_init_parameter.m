@@ -79,7 +79,7 @@ setpoint_step=10.0;
 % [Lqq,Lqd]=gradient(Flux_q);
 
 % % Import the data from Excel for lookup table
-FluxMapData = readtable('FluxMapData_Prototyp_1000rpm');
+FluxMapData = readtable('FluxMapData_2023-05-26_13-07-57');
 
 %Psi_d
 % d_currents in d Axe for lookup table

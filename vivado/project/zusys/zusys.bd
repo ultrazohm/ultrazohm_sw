@@ -5548,7 +5548,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:6.0",
+            "vlnv": "xilinx.com:ip:uz_EnDat:6.8",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5618,6 +5618,19 @@
           "POSRAW": {
             "ports": [
               "uz_EnDat_0/POSRAW"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "TIMEELAPSEDDEBUG": {
+            "ports": [
+              "uz_EnDat_0/TIMEELAPSEDDEBUG"
             ],
             "hdl_attributes": {
               "DEBUG": {

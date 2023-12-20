@@ -48,8 +48,8 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'UZ_EnDat/UZ_ENDAT'
 <a href="matlab:open_system('UZ_EnDat/UZ_ENDAT');">open model 'UZ_EnDat/UZ_ENDAT'</a><BR>
-Generated on 2023-12-17 16:17:04</h1>
-<H2>HDL check for 'UZ_EnDat' complete with 0 errors, 2 warnings, and 5 messages.</H2><BR>
+Generated on 2023-12-20 11:14:24</h1>
+<H2>HDL check for 'UZ_EnDat' complete with 0 errors, 3 warnings, and 5 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
@@ -59,36 +59,42 @@ Generated on 2023-12-17 16:17:04</h1>
 <TD>Family Zynq UltraScale+ not characterized. Using default value, SynthesisToolChipFamily=virtex7 and SynthesisToolSpeedValue=-1, for adaptive pipelining.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 77 97 110 117 97 108 68 101 115 101 114 105 97 108 105 122 101 114 101 47 114 97 109 119 97 116 99 104 101 114 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher/Product</a>
+<a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 83 117 98 115 121 115 116 101 109 50 47 77 97 110 117 97 108 68 101 115 101 114 105 97 108 105 122 101 114 101 47 114 97 109 119 97 116 99 104 101 114 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/Subsystem2/ManualDeserializere/ramwatcher/Product</a>
 </TD>
 <TD>Warning</TD>
-<TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/ManualDeserializere/ramwatcher/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
+<TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/Subsystem2/ManualDeserializere/ramwatcher/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcoder:optimization:HwModeCantBuyRegisters" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');hilite_system(char([85 90 95 69 110 68 97 116 47 85 90 95 69 78 68 65 84 47 116 105 109 105 110 103 112 114 111 118 105 100 101 114 47 67 76 75 67 78 84 69 82 95 80 79 83 67 78 84 82 47 83 101 116 90 101 114 111 51 50 47 80 114 111 100 117 99 116]))">UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR/SetZero32/Product</a>
+</TD>
+<TD>Warning</TD>
+<TD>Unable to insert required number of pipeline registers because the block, UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR/SetZero32/Product, is in a feedback loop and there are not enough latency budget at the output of the block. Number of registers required: 1; number of registers inserted: 0. Consider increasing the latency budget by adding more design delays in the feedback loop or using clock-rate pipelining.</TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:workflow:LUTMapToRAMOffMessage" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');open_system(char([85 90 95 69 110 68 97 116]))">UZ_EnDat</a>
 </TD>
 <TD>Message</TD>
 <TD><a href="matlab:configset.internal.open('UZ_EnDat','LUTMapToRAM')">'LUTMapToRAM'</a> is set to 'On' for the model. This option is used to map lookup tables to a block RAM in hardware.  To disable pipeline insertion for mapping lookup tables to RAM, please set the option to 'Off'.</TD>
 </TR>
-<TR bgcolor="#FFFFFF"><TD>
+<TR bgcolor="#F0F0F0"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\criticalPathEstimated')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\criticalPathEstimated.m</a>
 </TD>
 <TD>Message</TD>
 <TD>Estimated critical path for design: <a href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\criticalPathEstimated')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\criticalPathEstimated.m</a></TD>
 </TR>
-<TR bgcolor="#F0F0F0"><TD>
+<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingDelayAbsorptionHiliteScript" href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightDelayAbsorption')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightDelayAbsorption.m</a>
 </TD>
 <TD>Message</TD>
 <TD>Delay absorption obstacles can be diagnosed by running this script: <a href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightDelayAbsorption')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightDelayAbsorption.m</a></TD>
 </TR>
-<TR bgcolor="#FFFFFF"><TD>
+<TR bgcolor="#F0F0F0"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightCriticalPathEstimationOffendingBlocks.m</a>
 </TD>
 <TD>Message</TD>
 <TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\hdlsrc\UZ_EnDat\highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
 </TR>
-<TR bgcolor="#F0F0F0"><TD>
+<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingDCEHighlightingScript" href="matlab:hilite(get_param(char([85 90 95 69 110 68 97 116]),'object'),'none');open_system(char([85 90 95 69 110 68 97 116]))">UZ_EnDat</a>
 </TD>
 <TD>Message</TD>

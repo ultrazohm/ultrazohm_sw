@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">2.104
+<td class="summaryTableSndColOddRow">7.35
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">04-Dec-2023 17:03:13
+<td class="summaryTableSndColOddRow">20-Dec-2023 14:32:46
 </td>
 </tr>
 <tr>
@@ -182,11 +182,11 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:295')">reciprocal_J</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:2065')">simulate_nonlinear</a>
 </td>
 <td>Inport
 </td>
-<td>single
+<td>boolean
 </td>
 <td>AXI4
 </td>
@@ -196,7 +196,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:293')">mu</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:295')">reciprocal_J</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -210,7 +210,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:294')">M_n0</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:293')">mu</a>
 </td>
 <td>Inport
 </td>
@@ -224,7 +224,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:250')">reciprocal_L_d</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:294')">M_n0</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -238,35 +238,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:249')">reciprocal_L_q</a>
-</td>
-<td>Inport
-</td>
-<td>single
-</td>
-<td>AXI4
-</td>
-<td>x"118"
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:246')">R1</a>
-</td>
-<td class="distinctCellColor">Inport
-</td>
-<td class="distinctCellColor">single
-</td>
-<td class="distinctCellColor">AXI4
-</td>
-<td class="distinctCellColor">x"11C"
-</td>
-<td class="distinctCellColor">
-</td>
-</tr>
-<tr>
-<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:247')">polepairs</a>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:246')">R1</a>
 </td>
 <td>Inport
 </td>
@@ -280,7 +252,7 @@ Target platform interface table:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:248')">psi_pm</a>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:247')">polepairs</a>
 </td>
 <td class="distinctCellColor">Inport
 </td>
@@ -289,6 +261,62 @@ Target platform interface table:
 <td class="distinctCellColor">AXI4
 </td>
 <td class="distinctCellColor">x"124"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:2043')">Ld</a>
+</td>
+<td>Inport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"118"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:2044')">Lq</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">single
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"11C"
+</td>
+<td class="distinctCellColor">
+</td>
+</tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:2045')">psi_pm</a>
+</td>
+<td>Inport
+</td>
+<td>single
+</td>
+<td>AXI4
+</td>
+<td>x"128"
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor"><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:2111')">fitting_parameters</a>
+</td>
+<td class="distinctCellColor">Inport
+</td>
+<td class="distinctCellColor">single (23)
+</td>
+<td class="distinctCellColor">AXI4
+</td>
+<td class="distinctCellColor">x"180"
 </td>
 <td class="distinctCellColor">
 </td>
@@ -361,7 +389,7 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2312041703
+<td>contains unique IP timestamp (yymmddHHMM): 2312201432
 </td>
 </tr>
 <tr>
@@ -381,99 +409,123 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">reciprocal_J_Data
+<td class="distinctCellColor">simulate_nonlinear_Data
 </td>
 <td class="distinctCellColor">0x108
 </td>
-<td class="distinctCellColor">data register for Inport reciprocal_J
+<td class="distinctCellColor">data register for Inport simulate_nonlinear
 </td>
 </tr>
 <tr>
-<td>mu_Data
+<td>reciprocal_J_Data
 </td>
 <td>0x10C
 </td>
-<td>data register for Inport mu
+<td>data register for Inport reciprocal_J
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">M_n0_Data
+<td class="distinctCellColor">mu_Data
 </td>
 <td class="distinctCellColor">0x110
 </td>
-<td class="distinctCellColor">data register for Inport M_n0
+<td class="distinctCellColor">data register for Inport mu
 </td>
 </tr>
 <tr>
-<td>reciprocal_L_d_Data
+<td>M_n0_Data
 </td>
 <td>0x114
 </td>
-<td>data register for Inport reciprocal_L_d
+<td>data register for Inport M_n0
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">reciprocal_L_q_Data
+<td class="distinctCellColor">Ld_Data
 </td>
 <td class="distinctCellColor">0x118
 </td>
-<td class="distinctCellColor">data register for Inport reciprocal_L_q
+<td class="distinctCellColor">data register for Inport Ld
 </td>
 </tr>
 <tr>
-<td>R1_Data
+<td>Lq_Data
 </td>
 <td>0x11C
 </td>
-<td>data register for Inport R1
+<td>data register for Inport Lq
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">polepairs_Data
+<td class="distinctCellColor">R1_Data
 </td>
 <td class="distinctCellColor">0x120
 </td>
-<td class="distinctCellColor">data register for Inport polepairs
+<td class="distinctCellColor">data register for Inport R1
 </td>
 </tr>
 <tr>
-<td>psi_pm_Data
+<td>polepairs_Data
 </td>
 <td>0x124
 </td>
-<td>data register for Inport psi_pm
+<td>data register for Inport polepairs
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">inputs_Data
+<td class="distinctCellColor">psi_pm_Data
 </td>
-<td class="distinctCellColor">0x130
+<td class="distinctCellColor">0x128
 </td>
-<td class="distinctCellColor">data register for Inport inputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x13C.
-</td>
-</tr>
-<tr>
-<td>inputs_Strobe
-</td>
-<td>0x140
-</td>
-<td>strobe register for port inputs
+<td class="distinctCellColor">data register for Inport psi_pm
 </td>
 </tr>
 <tr>
-<td class="distinctCellColor">outputs_Data
+<td>inputs_Data
 </td>
-<td class="distinctCellColor">0x150
+<td>0x130
 </td>
-<td class="distinctCellColor">data register for Outport outputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x15C.
+<td>data register for Inport inputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x13C.
 </td>
 </tr>
 <tr>
-<td>outputs_Strobe
+<td class="distinctCellColor">inputs_Strobe
 </td>
-<td>0x160
+<td class="distinctCellColor">0x140
 </td>
-<td>strobe register for port outputs
+<td class="distinctCellColor">strobe register for port inputs
+</td>
+</tr>
+<tr>
+<td>outputs_Data
+</td>
+<td>0x150
+</td>
+<td>data register for Outport outputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x15C.
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">outputs_Strobe
+</td>
+<td class="distinctCellColor">0x160
+</td>
+<td class="distinctCellColor">strobe register for port outputs
+</td>
+</tr>
+<tr>
+<td>fitting_parameters_Data
+</td>
+<td>0x180
+</td>
+<td>data register for Inport fitting_parameters. Vector with 23 elements. Register is split across a total of 23 addresses, last address is 0x1D8.
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">fitting_parameters_Strobe
+</td>
+<td class="distinctCellColor">0x200
+</td>
+<td class="distinctCellColor">strobe register for port fitting_parameters
 </td>
 </tr>
 </tbody>
@@ -568,19 +620,27 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_uz_pmsm_model_tc.vhd')">hdl\uz_pmsm_model_src_uz_pmsm_model_tc.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_convert_double2single.vhd')">hdl\uz_pmsm_model_src_nfp_convert_double2single.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_uminus_single.vhd')">hdl\uz_pmsm_model_src_nfp_uminus_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_convert_single2double.vhd')">hdl\uz_pmsm_model_src_nfp_convert_single2double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_mul_single.vhd')">hdl\uz_pmsm_model_src_nfp_mul_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_mul_double.vhd')">hdl\uz_pmsm_model_src_nfp_mul_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_sub_single.vhd')">hdl\uz_pmsm_model_src_nfp_sub_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_sub_double.vhd')">hdl\uz_pmsm_model_src_nfp_sub_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_cosh_single.vhd')">hdl\uz_pmsm_model_src_nfp_cosh_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_add_double.vhd')">hdl\uz_pmsm_model_src_nfp_add_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_recip_single.vhd')">hdl\uz_pmsm_model_src_nfp_recip_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_abs_double.vhd')">hdl\uz_pmsm_model_src_nfp_abs_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_add_single.vhd')">hdl\uz_pmsm_model_src_nfp_add_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_signum_double.vhd')">hdl\uz_pmsm_model_src_nfp_signum_double.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_tanh_single.vhd')">hdl\uz_pmsm_model_src_nfp_tanh_single.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_log_single.vhd')">hdl\uz_pmsm_model_src_nfp_log_single.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_signum_single.vhd')">hdl\uz_pmsm_model_src_nfp_signum_single.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_abs_single.vhd')">hdl\uz_pmsm_model_src_nfp_abs_single.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_div_single.vhd')">hdl\uz_pmsm_model_src_nfp_div_single.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_uz_pmsm_model.vhd')">hdl\uz_pmsm_model_src_uz_pmsm_model.vhd</a>
 <br/>

@@ -48,7 +48,7 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'uz_pmsm_model/uz_pmsm_model'
 <a href="matlab:open_system('uz_pmsm_model/uz_pmsm_model');">open model 'uz_pmsm_model/uz_pmsm_model'</a><BR>
-Generated on 2023-12-04 17:02:22</h1>
+Generated on 2023-12-20 14:32:29</h1>
 <H2>HDL check for 'uz_pmsm_model' complete with 0 errors, 4 warnings, and 4 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
@@ -69,7 +69,7 @@ You can set these options in Modeling -> Model Settings -> Solver -> Solver deta
 <a alt="HDLShared:hdlshared:cpespeednotcharacterized" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
 </TD>
 <TD>Warning</TD>
-<TD>SynthesisToolSpeedValue -1L not characterized for Family zynq_ultrascale+. Using default value, SynthesisToolSpeedValue=1, for critical path estimation.</TD>
+<TD>SynthesisToolSpeedValue -1LV not characterized for Family zynq_ultrascale+. Using default value, SynthesisToolSpeedValue=1, for critical path estimation.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
 <a alt="HDLShared:hdlshared:cpeignoresmultirate" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
@@ -81,7 +81,7 @@ You can set these options in Modeling -> Model Settings -> Solver -> Solver deta
 <a alt="hdlcoder:optimization:CRPInFeedbackUnderbudget" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 47 117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model/uz_pmsm_model</a>
 </TD>
 <TD>Message</TD>
-<TD>Clock-rate pipelining identified at least one feedback loop which does not utilize the full latency budget. Oversampling factor is set to '50', but the minimum oversampling factor needed for the design is '45'. To reduce unnecessary clock cycles, either <a href="matlab:configset.internal.open('uz_pmsm_model/uz_pmsm_model','Oversampling')">lower the oversampling factor</a> to reduce the latency budget or add optimizations that increase latency like pipelining and serialization in your design to use the full latency budget.</TD>
+<TD>Clock-rate pipelining identified at least one feedback loop which does not utilize the full latency budget. Oversampling factor is set to '200', but the minimum oversampling factor needed for the design is '126'. To reduce unnecessary clock cycles, either <a href="matlab:configset.internal.open('uz_pmsm_model/uz_pmsm_model','Oversampling')">lower the oversampling factor</a> to reduce the latency budget or add optimizations that increase latency like pipelining and serialization in your design to use the full latency budget.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated.m</a>
@@ -90,16 +90,16 @@ You can set these options in Modeling -> Model Settings -> Solver -> Solver deta
 <TD>Estimated critical path for design: <a href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated.m</a></TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\highlightCriticalPathEstimationOffendingBlocks.m</a>
+<a alt="hdlcoder:hdldisp:GeneratingDCEHighlightingScript" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
 </TD>
 <TD>Message</TD>
-<TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\highlightCriticalPathEstimationOffendingBlocks')">C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
+<TD>Unused logic removed during HDL code generation. To highlight the logic removed, click the following MATLAB script: <a href="matlab:run('C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\highlightRemovedDeadBlocks.m')">highlightRemovedDeadBlocks.m</a></TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:hdldisp:OversampleMessage" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
 </TD>
 <TD>Message</TD>
-<TD>MESSAGE: The design requires 50 times faster clock with respect to the base rate = 5e-07.</TD>
+<TD>MESSAGE: The design requires 200 times faster clock with respect to the base rate = 2e-06.</TD>
 </TR>
 </TABLE>
 <BR><BR> </div></div></div></div>

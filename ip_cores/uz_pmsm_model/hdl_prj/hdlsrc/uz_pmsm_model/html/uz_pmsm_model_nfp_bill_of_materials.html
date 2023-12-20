@@ -161,16 +161,34 @@ Abs
 Adders
 </td>
 <td align="center" valign="top" style="border-style: none">
-5
+11
 </td>
 
 </tr>
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
-Datatype Converters
+Cosh
 </td>
 <td align="center" valign="top" style="border-style: none">
-16
+8
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dividers
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Logarithm
+</td>
+<td align="center" valign="top" style="border-style: none">
+4
 </td>
 
 </tr>
@@ -179,11 +197,20 @@ Datatype Converters
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-17
+64
 </td>
 
 </tr>
 <tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Reciprocal
+</td>
+<td align="center" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 Signum
 </td>
@@ -192,12 +219,30 @@ Signum
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-7
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Tanh
+</td>
+<td align="center" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Unary Minus
+</td>
+<td align="center" valign="top" style="border-style: none">
+2
 </td>
 
 </tr>
@@ -213,10 +258,10 @@ Detailed Report
 
 </a>
 <br /><br /><p><hr /></p><h5>
-Module <!-- Report for Multiply-instantiated Identical Subsystems  5 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+Module <!-- Report for Multiply-instantiated Identical Subsystems  11 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
 uz_pmsm_model
 </a>
-, , , , --> uz_pmsm_model_src_nfp_add_double
+, , , , , , , , , , --> uz_pmsm_model_src_nfp_add_single
 </h5>
 (Latency = "Min")<table width="100%" border="1">
 <tr style="background-color: #eeeeff">
@@ -251,7 +296,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-864
+450
 </td>
 
 </tr>
@@ -269,7 +314,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-126
+109
 </td>
 
 </tr>
@@ -294,10 +339,10 @@ Dynamic Shift operators
 
 </table>
 <p><hr /></p><h5>
-Module <!-- Report for Multiply-instantiated Identical Subsystems  7 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+Module <!-- Report for Multiply-instantiated Identical Subsystems  24 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
 uz_pmsm_model
 </a>
-, , , , , , --> uz_pmsm_model_src_nfp_sub_double
+, , , , , , , , , , , , , , , , , , , , , , , --> uz_pmsm_model_src_nfp_sub_single
 </h5>
 (Latency = "Min")<table width="100%" border="1">
 <tr style="background-color: #eeeeff">
@@ -332,7 +377,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-864
+450
 </td>
 
 </tr>
@@ -350,7 +395,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-126
+109
 </td>
 
 </tr>
@@ -375,12 +420,12 @@ Dynamic Shift operators
 
 </table>
 <p><hr /></p><h5>
-Module <!-- Report for Multiply-instantiated Identical Subsystems  17 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+Module <!-- Report for Multiply-instantiated Identical Subsystems  64 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
 uz_pmsm_model
 </a>
-, , , , , , , , , , , , , , , , --> uz_pmsm_model_src_nfp_mul_double
+, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , --> uz_pmsm_model_src_nfp_mul_single
 </h5>
-(Latency = "Min", Denormal = "on", Mantissa Multiply = "FullMultiplier")<table width="100%" border="1">
+(Latency = "Min", Denormal = "on", Mantissa Multiply = "PartMultiplierPartAddShift", Part Add Shift Multiplier Size = "18x24")<table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 Multipliers
@@ -395,7 +440,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-11
+15
 </td>
 
 </tr>
@@ -404,7 +449,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-42
+40
 </td>
 
 </tr>
@@ -413,7 +458,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-861
+497
 </td>
 
 </tr>
@@ -431,7 +476,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-153
+69
 </td>
 
 </tr>
@@ -440,7 +485,7 @@ Multiplexers
 Static Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+2
 </td>
 
 </tr>
@@ -459,7 +504,169 @@ Dynamic Shift operators
 Module <!-- Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
 uz_pmsm_model
 </a>
---> uz_pmsm_model_src_nfp_abs_double
+--> uz_pmsm_model_src_nfp_div_single
+</h5>
+(Latency = "Min", Denormal = "on", Radix = "2")<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+35
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+178
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+1769
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+147
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+26
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+3
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
+Module <!-- Report for Multiply-instantiated Identical Subsystems  5 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+uz_pmsm_model
+</a>
+, , , , --> uz_pmsm_model_src_nfp_recip_single
+</h5>
+(Latency = "Min", Denormal = "on", Radix = "2")<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+33
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+131
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+1569
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+106
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+24
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
+Module <!-- Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+uz_pmsm_model
+</a>
+--> uz_pmsm_model_src_nfp_abs_single
 </h5>
 <table width="100%" border="1">
 <tr style="background-color: #eeeeff">
@@ -537,18 +744,18 @@ Dynamic Shift operators
 
 </table>
 <p><hr /></p><h5>
-Module <!-- Report for Multiply-instantiated Identical Subsystems  12 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+Module <!-- Report for Multiply-instantiated Identical Subsystems  4 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
 uz_pmsm_model
 </a>
-, , , , , , , , , , , --> uz_pmsm_model_src_nfp_convert_single2double
+, , , --> uz_pmsm_model_src_nfp_log_single
 </h5>
-(Latency = "Min")<table width="100%" border="1">
+(Latency = "Min", Denormal = "on")<table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+2
 </td>
 
 </tr>
@@ -557,7 +764,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-5
+44
 </td>
 
 </tr>
@@ -566,7 +773,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-20
+171
 </td>
 
 </tr>
@@ -575,7 +782,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-195
+2445
 </td>
 
 </tr>
@@ -593,7 +800,169 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-42
+207
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+23
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
+Module <!-- Report for Multiply-instantiated Identical Subsystems  8 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+uz_pmsm_model
+</a>
+, , , , , , , --> uz_pmsm_model_src_nfp_cosh_single
+</h5>
+(Latency = "Min")<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+80
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+166
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+2138
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+123
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+44
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+3
+</td>
+
+</tr>
+
+</table>
+<p><hr /></p><h5>
+Module <!-- Report for Multiply-instantiated Identical Subsystems  2 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+uz_pmsm_model
+</a>
+, --> uz_pmsm_model_src_nfp_uminus_single
+</h5>
+<table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+1
 </td>
 
 </tr>
@@ -611,7 +980,7 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-1
+0
 </td>
 
 </tr>
@@ -621,7 +990,7 @@ Dynamic Shift operators
 Module <!-- Report for Multiply-instantiated Identical Subsystems  4 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
 uz_pmsm_model
 </a>
-, , , --> uz_pmsm_model_src_nfp_convert_double2single
+, , , --> uz_pmsm_model_src_nfp_tanh_single
 </h5>
 (Latency = "Min")<table width="100%" border="1">
 <tr style="background-color: #eeeeff">
@@ -629,7 +998,7 @@ uz_pmsm_model
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+3
 </td>
 
 </tr>
@@ -638,7 +1007,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-8
+96
 </td>
 
 </tr>
@@ -647,7 +1016,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-23
+263
 </td>
 
 </tr>
@@ -656,7 +1025,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-231
+3617
 </td>
 
 </tr>
@@ -674,7 +1043,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-90
+133
 </td>
 
 </tr>
@@ -683,7 +1052,7 @@ Multiplexers
 Static Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+64
 </td>
 
 </tr>
@@ -692,17 +1061,17 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-2
+4
 </td>
 
 </tr>
 
 </table>
 <p><hr /></p><h5>
-Module <!-- Report for Multiply-instantiated Identical Subsystems  12 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
+Module <!-- Report for Multiply-instantiated Identical Subsystems  8 :   <a href="matlab:coder.internal.code2model('uz_pmsm_model:7')" name="code2model" class="code2model">
 uz_pmsm_model
 </a>
-, , , , , , , , , , , --> uz_pmsm_model_src_nfp_convert_single2double
+, , , , , , , --> uz_pmsm_model_src_nfp_cosh_single
 </h5>
 (Latency = "Min")<table width="100%" border="1">
 <tr style="background-color: #eeeeff">
@@ -710,7 +1079,7 @@ uz_pmsm_model
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+5
 </td>
 
 </tr>
@@ -719,7 +1088,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-5
+80
 </td>
 
 </tr>
@@ -728,7 +1097,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-20
+166
 </td>
 
 </tr>
@@ -737,7 +1106,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-195
+2138
 </td>
 
 </tr>
@@ -755,7 +1124,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-42
+123
 </td>
 
 </tr>
@@ -764,7 +1133,7 @@ Multiplexers
 Static Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-0
+44
 </td>
 
 </tr>
@@ -773,7 +1142,7 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-1
+3
 </td>
 
 </tr>

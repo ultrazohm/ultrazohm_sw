@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_pmsm_model
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_8');hdlTableShrink(this, 'Register_1_15');hdlTableShrink(this, 'Multiplexer_1_12');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_44');hdlTableShrink(this, 'Multiplexer_1_27');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -152,7 +152,7 @@ Summary
 Multipliers
 </td>
 <td align="center" valign="top" style="border-style: none">
-17
+124
 </td>
 
 </tr>
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-376
+2641
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-1645
+8300
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-29180
+100433
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-5001
+11287
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-518
+1255
 </td>
 
 </tr>
@@ -215,7 +215,7 @@ I/O Bits
 Static Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-12
+1009
 </td>
 
 </tr>
@@ -224,7 +224,7 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-95
+331
 </td>
 
 </tr>
@@ -246,157 +246,535 @@ uz_pmsm_model
 
 </h5>
 <h5>
-Multipliers (17)
+Multipliers (124)
 </h5>
 <span style="font-family:monospace">
-53x53-bit Multiply 							: 17
+18x24-bit Multiply 							: 64
+</span>
+<br /><span style="font-family:monospace">
+24x32-bit Multiply 							: 8
+</span>
+<br /><span style="font-family:monospace">
+21x20-bit Multiply 							: 16
+</span>
+<br /><span style="font-family:monospace">
+21x21-bit Multiply 							: 16
+</span>
+<br /><span style="font-family:monospace">
+24x34-bit Multiply 							: 4
+</span>
+<br /><span style="font-family:monospace">
+23x20-bit Multiply 							: 4
+</span>
+<br /><span style="font-family:monospace">
+20x23-bit Multiply 							: 4
+</span>
+<br /><span style="font-family:monospace">
+11x28-bit Multiply 							: 4
+</span>
+<br /><span style="font-family:monospace">
+26x26-bit Multiply 							: 4
 </span>
 <br /><h5>
-Adders/Subtractors (376)
+Adders/Subtractors (2641)
 </h5>
 <span style="font-family:monospace">
-6x6-bit Adder 							: 17
+8x8-bit Adder 							: 177
 </span>
 <br /><span style="font-family:monospace">
-13x13-bit Adder 							: 12
+32x32-bit Adder 							: 507
 </span>
 <br /><span style="font-family:monospace">
-14x14-bit Adder 							: 85
+24x24-bit Adder 							: 56
 </span>
 <br /><span style="font-family:monospace">
-53x53-bit Adder 							: 29
+43x43-bit Adder 							: 64
 </span>
 <br /><span style="font-family:monospace">
-11x11-bit Adder 							: 41
+46x46-bit Adder 							: 64
 </span>
 <br /><span style="font-family:monospace">
-58x58-bit Adder 							: 12
+6x6-bit Adder 							: 38
 </span>
 <br /><span style="font-family:monospace">
-26x26-bit Adder 							: 4
+11x11-bit Adder 							: 20
 </span>
 <br /><span style="font-family:monospace">
-9x9-bit Adder 							: 4
+33x33-bit Adder 							: 196
 </span>
 <br /><span style="font-family:monospace">
-9x9-bit Subtractor 							: 12
+9x9-bit Adder 							: 20
 </span>
 <br /><span style="font-family:monospace">
-7x7-bit Subtractor 							: 50
+13x13-bit Adder 							: 20
 </span>
 <br /><span style="font-family:monospace">
-12x12-bit Subtractor 							: 36
+18x18-bit Adder 							: 20
 </span>
 <br /><span style="font-family:monospace">
-14x14-bit Subtractor 							: 21
+31x31-bit Adder 							: 20
 </span>
 <br /><span style="font-family:monospace">
-15-bit Subtractor 							: 17
+34x34-bit Adder 							: 108
 </span>
 <br /><span style="font-family:monospace">
-58-bit Subtractor 							: 12
+10x10-bit Adder 							: 17
 </span>
 <br /><span style="font-family:monospace">
-6x6-bit Subtractor 							: 12
+26x26-bit Adder 							: 150
 </span>
 <br /><span style="font-family:monospace">
-11x11-bit Subtractor 							: 12
+25x25-bit Adder 							: 9
+</span>
+<br /><span style="font-family:monospace">
+35x35-bit Adder 							: 52
+</span>
+<br /><span style="font-family:monospace">
+36x36-bit Adder 							: 44
+</span>
+<br /><span style="font-family:monospace">
+23x23-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+37x37-bit Adder 							: 160
+</span>
+<br /><span style="font-family:monospace">
+30x30-bit Adder 							: 84
+</span>
+<br /><span style="font-family:monospace">
+38x38-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+39x39-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+40x40-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+41x41-bit Adder 							: 8
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 36
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 235
+</span>
+<br /><span style="font-family:monospace">
+5x5-bit Subtractor 							: 35
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Subtractor 							: 80
+</span>
+<br /><span style="font-family:monospace">
+7-bit Subtractor 							: 128
+</span>
+<br /><span style="font-family:monospace">
+6x6-bit Subtractor 							: 20
+</span>
+<br /><span style="font-family:monospace">
+9x9-bit Subtractor 							: 20
+</span>
+<br /><span style="font-family:monospace">
+13x13-bit Subtractor 							: 20
+</span>
+<br /><span style="font-family:monospace">
+18x18-bit Subtractor 							: 20
+</span>
+<br /><span style="font-family:monospace">
+24x24-bit Subtractor 							: 20
+</span>
+<br /><span style="font-family:monospace">
+31x31-bit Subtractor 							: 20
+</span>
+<br /><span style="font-family:monospace">
+34x34-bit Subtractor 							: 80
+</span>
+<br /><span style="font-family:monospace">
+27-bit Subtractor 							: 5
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Subtractor 							: 12
+</span>
+<br /><span style="font-family:monospace">
+35x35-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+36x36-bit Subtractor 							: 28
+</span>
+<br /><span style="font-family:monospace">
+37-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+31-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+30x30-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+51-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+50x50-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+58x58-bit Subtractor 							: 4
+</span>
+<br /><span style="font-family:monospace">
+59-bit Subtractor 							: 4
 </span>
 <br /><h5>
-Registers (1645)
+Registers (8300)
 </h5>
 <span style="font-family:monospace">
-6-bit Register 							: 80
+8-bit Register 							: 1396
 </span>
-<br /><span style="font-family:monospace">
-1-bit Register 							: 779
-</span>
-<br /><span style="font-family:monospace">
-8-bit Register 							: 28
-</span>
-<br /><span style="font-family:monospace">
-23-bit Register 							: 32
-</span>
-<br /><span style="font-family:monospace">
-11-bit Register 							: 262
-</span>
-<br /><span style="font-family:monospace">
-24-bit Register 							: 28
-</span>
-<br /><span style="font-family:monospace">
-52-bit Register 							: 219
-</span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_8')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-64-bit Register 							: 14
+1-bit Register 							: 3516
 </span>
-<span name="Register_1_8" id="Register_1_8">
-<ul class="SystemdefinedCollapse" id="abbb5808-515e-44e2-88d2-dc950a4bb3a5" dataCollapse="off">
+<span name="Register_1_2" id="Register_1_2">
+<ul>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:335')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:862')" name="code2model" class="code2model">
+delayMatch50
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 56
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul class="SystemdefinedCollapse" id="d1b6e9ac-2b00-49ec-915c-c8e2e79710e9" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:812')" name="code2model" class="code2model">
+delayMatch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:813')" name="code2model" class="code2model">
+delayMatch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:814')" name="code2model" class="code2model">
+delayMatch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:815')" name="code2model" class="code2model">
+delayMatch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:816')" name="code2model" class="code2model">
+delayMatch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:854')" name="code2model" class="code2model">
+delayMatch42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:851')" name="code2model" class="code2model">
+delayMatch39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:841')" name="code2model" class="code2model">
+delayMatch29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:831')" name="code2model" class="code2model">
+delayMatch19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:832')" name="code2model" class="code2model">
+delayMatch20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:833')" name="code2model" class="code2model">
+delayMatch21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:840')" name="code2model" class="code2model">
+delayMatch28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:865')" name="code2model" class="code2model">
+delayMatch53
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:822')" name="code2model" class="code2model">
+delayMatch10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:821')" name="code2model" class="code2model">
+delayMatch9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:824')" name="code2model" class="code2model">
+delayMatch12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:823')" name="code2model" class="code2model">
+delayMatch11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:825')" name="code2model" class="code2model">
+delayMatch13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:845')" name="code2model" class="code2model">
+delayMatch33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:849')" name="code2model" class="code2model">
+delayMatch37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:861')" name="code2model" class="code2model">
+delayMatch49
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:855')" name="code2model" class="code2model">
+delayMatch43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:856')" name="code2model" class="code2model">
+delayMatch44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:857')" name="code2model" class="code2model">
+delayMatch45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:858')" name="code2model" class="code2model">
+delayMatch46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:859')" name="code2model" class="code2model">
+delayMatch47
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:817')" name="code2model" class="code2model">
+delayMatch5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:818')" name="code2model" class="code2model">
+delayMatch6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:819')" name="code2model" class="code2model">
+delayMatch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:837')" name="code2model" class="code2model">
+delayMatch25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:827')" name="code2model" class="code2model">
 delayMatch15
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:334')" name="code2model" class="code2model">
-delayMatch14
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:339')" name="code2model" class="code2model">
-crp_out_delay
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:26')" name="code2model" class="code2model">
-Delay1_lowered_bypass
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:341')" name="code2model" class="code2model">
-crp_out_delay2
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:32')" name="code2model" class="code2model">
-Delay_bypass
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:336')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:828')" name="code2model" class="code2model">
 delayMatch16
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:342')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:829')" name="code2model" class="code2model">
+delayMatch17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:830')" name="code2model" class="code2model">
+delayMatch18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:834')" name="code2model" class="code2model">
+delayMatch22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:838')" name="code2model" class="code2model">
+delayMatch26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:871')" name="code2model" class="code2model">
 crp_out_delay3
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:29')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:39')" name="code2model" class="code2model">
+Unit_Delay1_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:820')" name="code2model" class="code2model">
+delayMatch8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:863')" name="code2model" class="code2model">
+delayMatch51
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:866')" name="code2model" class="code2model">
+delayMatch54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:850')" name="code2model" class="code2model">
+delayMatch38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:870')" name="code2model" class="code2model">
+crp_out_delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:36')" name="code2model" class="code2model">
+Delay_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:873')" name="code2model" class="code2model">
+crp_out_delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:33')" name="code2model" class="code2model">
 Delay1_lowered1_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:340')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:868')" name="code2model" class="code2model">
+crp_out_delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:45')" name="code2model" class="code2model">
+Unit_Delay_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:852')" name="code2model" class="code2model">
+delayMatch40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:872')" name="code2model" class="code2model">
+crp_out_delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:42')" name="code2model" class="code2model">
+Delay1_lowered2_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:869')" name="code2model" class="code2model">
 crp_out_delay1
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:35')" name="code2model" class="code2model">
-Delay1_lowered2_bypass
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:30')" name="code2model" class="code2model">
+Delay1_lowered_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:848')" name="code2model" class="code2model">
+delayMatch36
 </a>
 
 </li>
@@ -408,33 +786,135 @@ Delay1_lowered2_bypass
 <br />
 </span>
 <br /><span style="font-family:monospace">
-53-bit Register 							: 55
+23-bit Register 							: 923
 </span>
 <br /><span style="font-family:monospace">
-106-bit Register 							: 34
+28-bit Register 							: 142
 </span>
 <br /><span style="font-family:monospace">
-14-bit Register 							: 34
+27-bit Register 							: 70
 </span>
 <br /><span style="font-family:monospace">
-57-bit Register 							: 48
+5-bit Register 							: 110
 </span>
 <br /><span style="font-family:monospace">
-56-bit Register 							: 24
+45-bit Register 							: 64
 </span>
 <br /><span style="font-family:monospace">
-12-bit Register 							: 4
+29-bit Register 							: 64
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_15')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span style="font-family:monospace">
+10-bit Register 							: 451
+</span>
+<br /><span style="font-family:monospace">
+6-bit Register 							: 152
+</span>
+<br /><span style="font-family:monospace">
+49-bit Register 							: 192
+</span>
+<br /><span style="font-family:monospace">
+80-bit Register 							: 64
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 120
+</span>
+<br /><span style="font-family:monospace">
+40-bit Register 							: 16
+</span>
+<br /><span style="font-family:monospace">
+4-bit Register 							: 26
+</span>
+<br /><span style="font-family:monospace">
+9-bit Register 							: 24
+</span>
+<br /><span style="font-family:monospace">
+18-bit Register 							: 26
+</span>
+<br /><span style="font-family:monospace">
+31-bit Register 							: 20
+</span>
+<br /><span style="font-family:monospace">
+34-bit Register 							: 120
+</span>
+<br /><span style="font-family:monospace">
+21-bit Register 							: 76
+</span>
+<br /><span style="font-family:monospace">
+24-bit Register 							: 113
+</span>
+<br /><span style="font-family:monospace">
+26-bit Register 							: 167
+</span>
+<br /><span style="font-family:monospace">
+2-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+12-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+14-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+20-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+22-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+35-bit Register 							: 36
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+36-bit Register 							: 84
+</span>
+<br /><span style="font-family:monospace">
+37-bit Register 							: 80
+</span>
+<br /><span style="font-family:monospace">
+13-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+17-bit Register 							: 4
+</span>
+<br /><span style="font-family:monospace">
+11-bit Register 							: 40
+</span>
+<br /><span style="font-family:monospace">
+30-bit Register 							: 28
+</span>
+<br /><span style="font-family:monospace">
+38-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+41-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 32
+</span>
+<br /><span style="font-family:monospace">
+52-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+58-bit Register 							: 12
+</span>
+<br /><span style="font-family:monospace">
+57-bit Register 							: 4
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_44')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
 real Register 							: 4
 </span>
-<span name="Register_1_15" id="Register_1_15">
+<span name="Register_1_44" id="Register_1_44">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:25')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:29')" name="code2model" class="code2model">
 t_bypass
 </a>
 
@@ -444,87 +924,144 @@ t_bypass
 
 </span>
 <br /><h5>
-Multiplexers (5001)
+Multiplexers (11287)
 </h5>
 <span style="font-family:monospace">
-6-bit 2-to-1 Multiplexer 							: 3345
+8-bit 2-to-1 Multiplexer 							: 1450
 </span>
 <br /><span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 884
+1-bit 2-to-1 Multiplexer 							: 3486
 </span>
 <br /><span style="font-family:monospace">
-8-bit 2-to-1 Multiplexer 							: 40
+3-bit 2-to-1 Multiplexer 							: 70
 </span>
 <br /><span style="font-family:monospace">
-24-bit 2-to-1 Multiplexer 							: 12
+23-bit 2-to-1 Multiplexer 							: 506
 </span>
 <br /><span style="font-family:monospace">
-11-bit 2-to-1 Multiplexer 							: 293
+28-bit 2-to-1 Multiplexer 							: 36
 </span>
 <br /><span style="font-family:monospace">
-52-bit 2-to-1 Multiplexer 							: 170
+5-bit 2-to-1 Multiplexer 							: 1426
 </span>
 <br /><span style="font-family:monospace">
-53-bit 2-to-1 Multiplexer 							: 88
+27-bit 2-to-1 Multiplexer 							: 70
 </span>
 <br /><span style="font-family:monospace">
-14-bit 2-to-1 Multiplexer 							: 51
+24-bit 2-to-1 Multiplexer 							: 295
 </span>
 <br /><span style="font-family:monospace">
-54-bit 2-to-1 Multiplexer 							: 34
+26-bit 4-to-1 Multiplexer 							: 192
 </span>
 <br /><span style="font-family:monospace">
-57-bit 2-to-1 Multiplexer 							: 12
+10-bit 2-to-1 Multiplexer 							: 205
 </span>
 <br /><span style="font-family:monospace">
-56-bit 2-to-1 Multiplexer 							: 24
+6-bit 2-to-1 Multiplexer 							: 1772
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_12')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span style="font-family:monospace">
+49-bit 2-to-1 Multiplexer 							: 192
+</span>
+<br /><span style="font-family:monospace">
+7-bit 2-to-1 Multiplexer 							: 64
+</span>
+<br /><span style="font-family:monospace">
+80-bit 2-to-1 Multiplexer 							: 64
+</span>
+<br /><span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 24
+</span>
+<br /><span style="font-family:monospace">
+5-bit 3-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+40-bit 2-to-1 Multiplexer 							: 24
+</span>
+<br /><span style="font-family:monospace">
+33-bit 2-to-1 Multiplexer 							: 376
+</span>
+<br /><span style="font-family:monospace">
+4-bit 2-to-1 Multiplexer 							: 20
+</span>
+<br /><span style="font-family:monospace">
+9-bit 2-to-1 Multiplexer 							: 40
+</span>
+<br /><span style="font-family:monospace">
+13-bit 2-to-1 Multiplexer 							: 56
+</span>
+<br /><span style="font-family:monospace">
+18-bit 2-to-1 Multiplexer 							: 40
+</span>
+<br /><span style="font-family:monospace">
+31-bit 2-to-1 Multiplexer 							: 40
+</span>
+<br /><span style="font-family:monospace">
+34-bit 2-to-1 Multiplexer 							: 176
+</span>
+<br /><span style="font-family:monospace">
+25-bit 2-to-1 Multiplexer 							: 21
+</span>
+<br /><span style="font-family:monospace">
+26-bit 2-to-1 Multiplexer 							: 149
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_27')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-real 2-to-1 Multiplexer 							: 16
+real 2-to-1 Multiplexer 							: 25
 </span>
-<span name="Multiplexer_1_12" id="Multiplexer_1_12">
-<ul class="SystemdefinedCollapse" id="24d2ffb5-269d-4a6c-91da-2b77b1c01f38" dataCollapse="off">
+<span name="Multiplexer_1_27" id="Multiplexer_1_27">
+<ul class="SystemdefinedCollapse" id="c6663e10-d008-4f26-8c45-a378e5008d28" dataCollapse="off">
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:49')" name="code2model" class="code2model">
-reset_in2
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:69')" name="code2model" class="code2model">
+Switch2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:26')" name="code2model" class="code2model">
-Delay1_lowered_bypass
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:39')" name="code2model" class="code2model">
+Unit_Delay1_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:47')" name="code2model" class="code2model">
-reset_out2
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:361')" name="code2model" class="code2model">
+Switch1
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:32')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:810')" name="code2model" class="code2model">
+zero_protection
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:79')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:36')" name="code2model" class="code2model">
 Delay_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:43')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:62')" name="code2model" class="code2model">
 reset_in1
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:29')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:33')" name="code2model" class="code2model">
 Delay1_lowered1_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:44')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:63')" name="code2model" class="code2model">
 reset_out1
 </a>
 
@@ -536,31 +1073,73 @@ Switch
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:41')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:70')" name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:45')" name="code2model" class="code2model">
+Unit_Delay_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:77')" name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:58')" name="code2model" class="code2model">
 reset_in
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:35')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:42')" name="code2model" class="code2model">
 Delay1_lowered2_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:39')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:56')" name="code2model" class="code2model">
 reset_out
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:361')" name="code2model" class="code2model">
-Switch1
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:78')" name="code2model" class="code2model">
+Switch3
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:25')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:67')" name="code2model" class="code2model">
+reset_in2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:30')" name="code2model" class="code2model">
+Delay1_lowered_bypass
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:65')" name="code2model" class="code2model">
+reset_out2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:81')" name="code2model" class="code2model">
+Switch11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:29')" name="code2model" class="code2model">
 t_bypass
 </a>
 
@@ -573,46 +1152,163 @@ t_bypass
 <br />
 </span>
 <br /><span style="font-family:monospace">
-25-bit 2-to-1 Multiplexer 							: 4
+36-bit 2-to-1 Multiplexer 							: 80
 </span>
 <br /><span style="font-family:monospace">
-23-bit 2-to-1 Multiplexer 							: 28
+6-bit 3-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+35-bit 2-to-1 Multiplexer 							: 104
+</span>
+<br /><span style="font-family:monospace">
+20-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+15-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+37-bit 2-to-1 Multiplexer 							: 144
+</span>
+<br /><span style="font-family:monospace">
+30-bit 2-to-1 Multiplexer 							: 56
+</span>
+<br /><span style="font-family:monospace">
+11-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+58-bit 2-to-1 Multiplexer 							: 12
+</span>
+<br /><span style="font-family:monospace">
+38-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+41-bit 2-to-1 Multiplexer 							: 16
+</span>
+<br /><span style="font-family:monospace">
+50-bit 2-to-1 Multiplexer 							: 8
 </span>
 <br /><h5>
-Number of Shift operators (107)
+Number of Shift operators (1340)
 </h5>
 <span style="font-family:monospace">
-Static Shift Right 							: 12
+Static Shift Left 							: 176
 </span>
 <br /><span style="font-family:monospace">
-24-bit Dynamic Shift Left 							: 12
+Static Shift Left 							: 145
 </span>
 <br /><span style="font-family:monospace">
-53-bit Dynamic Shift Left 							: 38
+Static Shift Left 							: 52
 </span>
 <br /><span style="font-family:monospace">
-56-bit Dynamic Shift Left 							: 12
+Static Shift Left 							: 148
 </span>
 <br /><span style="font-family:monospace">
-54-bit Dynamic Shift Right 							: 17
+Static Shift Left 							: 44
 </span>
 <br /><span style="font-family:monospace">
-57-bit Dynamic Shift Right 							: 12
+Static Shift Left 							: 1
 </span>
 <br /><span style="font-family:monospace">
-53-bit Dynamic Shift Right 							: 4
+Static Shift Right 							: 35
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 64
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 64
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 20
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 20
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 20
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 20
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 20
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 20
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 80
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 32
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 48
+</span>
+<br /><span style="font-family:monospace">
+27-bit Dynamic Shift Left 							: 35
+</span>
+<br /><span style="font-family:monospace">
+49-bit Dynamic Shift Left 							: 64
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Left 							: 64
+</span>
+<br /><span style="font-family:monospace">
+40-bit Dynamic Shift Left 							: 8
+</span>
+<br /><span style="font-family:monospace">
+24-bit Dynamic Shift Left 							: 11
+</span>
+<br /><span style="font-family:monospace">
+39-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+36-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+30-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+57-bit Dynamic Shift Left 							: 4
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 35
+</span>
+<br /><span style="font-family:monospace">
+80-bit Dynamic Shift Right 							: 64
+</span>
+<br /><span style="font-family:monospace">
+40-bit Dynamic Shift Right 							: 8
+</span>
+<br /><span style="font-family:monospace">
+34-bit Dynamic Shift Right 							: 8
+</span>
+<br /><span style="font-family:monospace">
+25-bit Dynamic Shift Right 							: 6
+</span>
+<br /><span style="font-family:monospace">
+39-bit Dynamic Shift Right 							: 4
+</span>
+<br /><span style="font-family:monospace">
+36-bit Dynamic Shift Right 							: 4
+</span>
+<br /><span style="font-family:monospace">
+50-bit Dynamic Shift Right 							: 4
 </span>
 <br /><h5>
-Number of I/O Bits (518)
+Number of I/O Bits (1255)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 389
+Number of Input Bits: 1126
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="ddfbadff-7a1b-47af-897f-bbf5bc6d3f3e" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="1e04d520-0e7d-44d4-b4cc-5745f9236333" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -635,6 +1331,12 @@ simulate_mechanical
 : 1 bit
 </li>
 <li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:2065')" name="code2model" class="code2model">
+simulate_nonlinear
+</a>
+: 1 bit
+</li>
+<li>
 <a href="matlab:coder.internal.code2model('uz_pmsm_model:295')" name="code2model" class="code2model">
 reciprocal_J
 </a>
@@ -653,18 +1355,6 @@ M_n0
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:250')" name="code2model" class="code2model">
-reciprocal_L_d
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:249')" name="code2model" class="code2model">
-reciprocal_L_q
-</a>
-: 32 bits
-</li>
-<li>
 <a href="matlab:coder.internal.code2model('uz_pmsm_model:246')" name="code2model" class="code2model">
 R1
 </a>
@@ -677,10 +1367,91 @@ polepairs
 : 32 bits
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:248')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:2043')" name="code2model" class="code2model">
+Ld
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:2044')" name="code2model" class="code2model">
+Lq
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pmsm_model:2045')" name="code2model" class="code2model">
 psi_pm
 </a>
 : 32 bits
+</li>
+<li>
+fitting_parameters_0: 32 bits
+</li>
+<li>
+fitting_parameters_1: 32 bits
+</li>
+<li>
+fitting_parameters_2: 32 bits
+</li>
+<li>
+fitting_parameters_3: 32 bits
+</li>
+<li>
+fitting_parameters_4: 32 bits
+</li>
+<li>
+fitting_parameters_5: 32 bits
+</li>
+<li>
+fitting_parameters_6: 32 bits
+</li>
+<li>
+fitting_parameters_7: 32 bits
+</li>
+<li>
+fitting_parameters_8: 32 bits
+</li>
+<li>
+fitting_parameters_9: 32 bits
+</li>
+<li>
+fitting_parameters_10: 32 bits
+</li>
+<li>
+fitting_parameters_11: 32 bits
+</li>
+<li>
+fitting_parameters_12: 32 bits
+</li>
+<li>
+fitting_parameters_13: 32 bits
+</li>
+<li>
+fitting_parameters_14: 32 bits
+</li>
+<li>
+fitting_parameters_15: 32 bits
+</li>
+<li>
+fitting_parameters_16: 32 bits
+</li>
+<li>
+fitting_parameters_17: 32 bits
+</li>
+<li>
+fitting_parameters_18: 32 bits
+</li>
+<li>
+fitting_parameters_19: 32 bits
+</li>
+<li>
+fitting_parameters_20: 32 bits
+</li>
+<li>
+fitting_parameters_21: 32 bits
+</li>
+<li>
+fitting_parameters_22: 32 bits
 </li>
 <li>
 inputs_0: 32 bits

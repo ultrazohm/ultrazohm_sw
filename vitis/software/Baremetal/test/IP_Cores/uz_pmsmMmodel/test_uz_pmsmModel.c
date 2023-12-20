@@ -12,6 +12,7 @@ struct uz_pmsmModel_config_t config = {
     .base_address = BASE_ADDRESS,
     .ip_core_frequency_Hz = IP_FRQ,
     .simulate_mechanical_system = true,
+    .simulate_nonlinear = true,
     .r_1 = 2.1f,
     .L_d = 0.00005f,
     .L_q = 0.00005f,
@@ -19,7 +20,21 @@ struct uz_pmsmModel_config_t config = {
     .polepairs = 2.0f,
     .inertia = 0.001f,
     .coulomb_friction_constant = 0.01f,
-    .friction_coefficient = 0.001f};
+    .friction_coefficient = 0.001f,
+    .ad1 = 0.1474f,
+    .ad2 = 0.0145f,
+    .ad3 = -20.4552f,
+    .ad4 = 0.1831f,
+    .ad5 = 0.0114f,
+    .ad6 = -20.5474f,
+    .aq1 = 0.000255f,
+    .aq2 = 0.9932f,
+    .aq3 = 0.0022f,
+    .aq4 = 0.00029387f,
+    .aq5 = 0.9913f,
+    .aq6 = 0.0022f,
+    .F1G1 = -0.0033f,
+    .F2G2 = 0.0043f};
 
 void setUp(void)
 {
@@ -52,6 +67,42 @@ uz_pmsmModel_t *successful_init(struct uz_pmsmModel_config_t configuration)
         uz_pmsmModel_hw_write_inertia_Expect(BASE_ADDRESS, 1.0f);
     }
     uz_pmsmModel_hw_write_simulate_mechanical_Expect(BASE_ADDRESS, configuration.simulate_mechanical_system);
+    if (configuration.simulate_nonlinear)
+    {
+        uz_pmsmModel_hw_write_ad1_Expect(BASE_ADDRESS, configuration.ad1);
+        uz_pmsmModel_hw_write_ad2_Expect(BASE_ADDRESS, configuration.ad2);
+        uz_pmsmModel_hw_write_ad3_Expect(BASE_ADDRESS, configuration.ad3);
+        uz_pmsmModel_hw_write_ad4_Expect(BASE_ADDRESS, configuration.ad4);
+        uz_pmsmModel_hw_write_ad5_Expect(BASE_ADDRESS, configuration.ad5);
+        uz_pmsmModel_hw_write_ad6_Expect(BASE_ADDRESS, configuration.ad6);
+        uz_pmsmModel_hw_write_aq1_Expect(BASE_ADDRESS, configuration.aq1);
+        uz_pmsmModel_hw_write_aq2_Expect(BASE_ADDRESS, configuration.aq2);
+        uz_pmsmModel_hw_write_aq3_Expect(BASE_ADDRESS, configuration.aq3);
+        uz_pmsmModel_hw_write_aq4_Expect(BASE_ADDRESS, configuration.aq4);
+        uz_pmsmModel_hw_write_aq5_Expect(BASE_ADDRESS, configuration.aq5);
+        uz_pmsmModel_hw_write_aq6_Expect(BASE_ADDRESS, configuration.aq6);
+        uz_pmsmModel_hw_write_reciprocal_F1G1_Expect(BASE_ADDRESS, configuration.F1G1);
+        uz_pmsmModel_hw_write_reciprocal_F2G2_Expect(BASE_ADDRESS, configuration.F2G2);
+    }
+    else
+    {
+        // if nonlinear model is not simulated, expect the hw write functions to be called with the default values
+        uz_pmsmModel_hw_write_ad1_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_ad2_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_ad3_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_ad4_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_ad5_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_ad6_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_aq1_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_aq2_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_aq3_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_aq4_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_aq5_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_aq6_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_reciprocal_F1G1_Expect(BASE_ADDRESS, 1.0f);
+        uz_pmsmModel_hw_write_reciprocal_F2G2_Expect(BASE_ADDRESS, 1.0f);
+    }
+    uz_pmsmModel_hw_write_simulate_nonlinear_Expect(BASE_ADDRESS, configuration.simulate_nonlinear);
     uz_pmsmModel_t *instance = uz_pmsmModel_init(configuration);
     return (instance);
 }
@@ -121,7 +172,6 @@ void test_uz_pmsmModel_normal_usage(void)
     uz_pmsmModel_hw_write_omega_mech_Expect(BASE_ADDRESS, inputs.omega_mech_1_s);
     uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,inputs.load_torque);
     uz_pmsmModel_set_inputs(test_instance, inputs);
-
 }
 
 #endif // TEST

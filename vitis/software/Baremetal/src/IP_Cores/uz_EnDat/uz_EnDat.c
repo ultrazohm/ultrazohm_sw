@@ -572,12 +572,15 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     }
     }
 
+
+
+
     if (invert == 0x1U) {
-        ret *= -30.0f;
+        ret *= -60.0f;
     }
     else
     {
-        ret *= 30.0f;
+        ret *= 60.0f;
     }
     
     difold = dif;

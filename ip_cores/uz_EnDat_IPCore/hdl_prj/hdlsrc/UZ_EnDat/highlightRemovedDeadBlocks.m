@@ -46,7 +46,6 @@ hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion'
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion1','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion10','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion11','user1');
-hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion12','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion14','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion2','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion3','user1');
@@ -59,7 +58,6 @@ hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion9
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Demux','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL/Data Type Conversion13','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL/Demux','user1');
-hilite_system('UZ_EnDat/UZ_ENDAT/Constant','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/Constant12','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/Constant13','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/Logical Operator24','user1');

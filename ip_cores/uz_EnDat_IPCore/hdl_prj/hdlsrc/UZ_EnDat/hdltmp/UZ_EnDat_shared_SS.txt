@@ -5,6 +5,11 @@ UZ_EnDat/UZ_ENDAT/CRC_Check/FF2
 UZ_EnDat/UZ_ENDAT/CRC_Check/FF3
 UZ_EnDat/UZ_ENDAT/CRC_Check/FF4
 
+Count - 3
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padding1
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padding3
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padding4
+
 Count - 4
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT
 UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP
@@ -24,15 +29,6 @@ UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer1
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer2
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer3
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer4
-
-Count - 2
-UZ_EnDat/UZ_ENDAT/ManualSerialize/Storage1/prolonger
-UZ_EnDat/UZ_ENDAT/ManualSerialize/prolonger
-
-Count - 3
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padding1
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padding3
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padding4
 
 Count - 5
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/21BITSLICER/responseslicer

@@ -18,11 +18,11 @@
 
    EnDat_init_object = uz_EnDat_init(config);
    uz_EnDat_write_default_values(EnDat_init_object);
-   uz_EnDat_write_factor(EnDat_init_object, 94 /*134*/, uz_EnDat_factor5_telegrammlength);
+   //uz_EnDat_write_factor(EnDat_init_object, 105, uz_EnDat_factor5_telegrammlength);
    //uz_EnDat_write_factor(EnDat_init_object, 95, uz_EnDat_factor2_recoverytime);
    //uz_EnDat_write_factor(EnDat_init_object, 80, uz_EnDat_factor2_recoverytime);
 
    //DEBUG following line
-  uz_EnDat_write_control_and_divider(EnDat_init_object, 0xB407, 3);
+    uz_EnDat_write_control_and_divider(EnDat_init_object, 0xB407, 4);
     return(EnDat_init_object);
 }

@@ -116,6 +116,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_Ld,
 	JSSD_FLOAT_Lq,
 	JSSD_FLOAT_totalRotorInertia,
+	JSSD_FLOAT_EnDat_Value_Calc_Time,
 	JSSD_ENDMARKER
 };
 

@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1b4c2e1d</spirit:value>
+            <spirit:value>b9835513</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>1b4c2e1d</spirit:value>
+            <spirit:value>b9835513</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1639,7 +1639,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_EnDat.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_acc1f995</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_3b1d9d79</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -2344,14 +2344,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_EnDat</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113349159</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2023-12-21T23:00:07Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113349165</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2023-12-21T23:06:10Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="e2b8b480"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="3d555ff2"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="497c2122"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="a8b08012"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="7b1be292"/>
     </xilinx:packagingInfo>

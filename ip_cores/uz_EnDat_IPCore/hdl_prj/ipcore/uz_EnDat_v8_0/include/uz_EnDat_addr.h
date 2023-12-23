@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v8_0\include\uz_EnDat_addr.h
  * Description:       C Header File
- * Created:           2023-12-22 17:28:44
+ * Created:           2023-12-23 12:44:20
 */
 
 #ifndef UZ_ENDAT_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_EnDat              0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_EnDat             0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_EnDat          0x8  //contains unique IP timestamp (yymmddHHMM): 2312221728
+#define  IPCore_Timestamp_uz_EnDat          0x8  //contains unique IP timestamp (yymmddHHMM): 2312231244
 #define  divider_Data_uz_EnDat              0x800  //data register for Inport divider
 #define  FKT1DATAFLOW_Data_uz_EnDat         0x804  //data register for Inport FKT1DATAFLOW
 #define  controlword_Data_uz_EnDat          0x808  //data register for Inport controlword
@@ -29,6 +29,6 @@
 #define  TIMEELASPEDT0T3BUS_Data_uz_EnDat   0x870  //data register for Outport TIMEELASPEDT0T3BUS
 #define  TIMEELASPEDT0T4BUS_Data_uz_EnDat   0x880  //data register for Outport TIMEELASPEDT0T4BUS
 #define  FKT6SYNCRESPONSE_Data_uz_EnDat     0x890  //data register for Inport FKT6SYNCRESPONSE
-#define  FKT7SYNCRESPONSE1_Data_uz_EnDat    0x894  //data register for Inport FKT7SYNCRESPONSE1
+#define  FKT7EXTRASHIFT_Data_uz_EnDat       0x894  //data register for Inport FKT7EXTRASHIFT
 
 #endif /* UZ_ENDAT_H_ */

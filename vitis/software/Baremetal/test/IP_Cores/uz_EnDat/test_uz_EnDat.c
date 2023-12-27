@@ -50,8 +50,6 @@ void test_uz_EnDat_fail_assert_if_read_statusword_is_called_with_NULL_pointer(vo
 }
 
 
-
-
 void test_uz_EnDat_fail_assert_if_read_pos_tx_is_called_with_NULL_pointer(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_pos(NULL, 0));
 }
@@ -64,13 +62,6 @@ void test_uz_EnDat_fail_assert_if_write_default_values_is_called_with_NULL_point
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_write_default_values(NULL));
 }
 
-void test_uz_EnDat_fail_assert_if_controlword_builder_is_called_with_NULL_pointer(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_controlword_builder(NULL));
-}
-
-void test_uz_EnDat_fail_assert_if_set_operation_mode_is_called_with_NULL_pointer(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_operation_mode(NULL, uz_EnDat_Encoder_send_position_values));
-}
 
 void test_uz_EnDat_factor_converter_float_to_special_int_100(void) {
     TEST_ASSERT_EQUAL_INT(uz_EnDat_factor_converter(1.00f), 100U);
@@ -129,34 +120,10 @@ void test_uz_EnDat_posconv_rnd_to_2pi(void) {
     TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_pos_to_rad_converter(5592405U, uz_EnDat_23_bit), 4.1887904544577729426935077945287f);
 }
 
-void test_uz_EnDat_fail_assert_if_enable_config_evaluation_in_IP_is_called__with_NULL_pointer(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_enable_config_evaluation_in_IP(NULL));
-}
-
-
-void test_uz_EnDat_fail_assert_if_disable_config_evaluation_in_IP_is_called_with_NULL_pointer(void) {
-     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_disable_config_evaluation_in_IP(NULL));
-}
-
-void test_uz_EnDat_fail_assert_if_set_soft_reset_in_controlword_is_called_with_NULL_pointer(void) {
-     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_soft_reset_in_controlword(NULL));
-}
-
-void test_uz_EnDat_fail_assert_if_reset_soft_reset_in_controlword_is_called_with_NULL_pointer(void) {
-     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_reset_soft_reset_in_controlword(NULL));
-}
-
-void test_uz_EnDat_fail_assert_if_set_output_enable_in_controlword_is_called_with_NULL_pointer(void) {
-     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_set_output_enable_in_controlword(NULL));
-}
-
-void test_uz_EnDat_fail_assert_if_reset_output_enable_in_controlword_in_controlword_is_called_with_NULL_pointer(void) {
-     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_reset_output_enable_in_controlword(NULL));
-}
 
 
 void test_uz_EnDat_fail_assert_if_uz_EnDat_read_time_elapsed_is_called_with_NULL_pointer(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_time_elapsed(NULL,uz_EnDat_elapsed_t0_t1));
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_time_elapsed(NULL, uz_EnDat_elapsed_t0_t1));
 }
 
 void test_uz_EnDat_time_elapsed_ns_to_s_converter_1(void) {
@@ -200,6 +167,157 @@ void test_uz_EnDat_rpm_to_rad_per_second_converter_positive(void) {
 }
 
 void test_uz_EnDat_rpm_to_rad_per_second_converter_negative(void) {
-    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_rpm_to_rad_per_second_converter(-100.0f), -10.471975 );
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_rpm_to_rad_per_second_converter(-100.0f), -10.471975);
+}
+
+void test_uz_EnDat_set_output_enable_in_controlword(void) {
+    controlword test = 0x0ABC;
+    
+    TEST_ASSERT_EQUAL_INT(0x1ABCU , uz_EnDat_set_output_enable_in_controlword(test));
+}
+
+void test_uz_EnDat_reset_output_enable_in_controlword(void) {
+    controlword test = 0xBBCD;
+    
+    TEST_ASSERT_EQUAL_INT(0xABCDU , uz_EnDat_reset_output_enable_in_controlword(test));
+}
+
+void test_uz_EnDat_enable_config_evaluation_in_IP(void) {
+    controlword test = 0x0ABC;
+    
+    TEST_ASSERT_EQUAL_INT(0x8ABCU , uz_EnDat_enable_config_evaluation_in_IP(test));
+}
+
+void test_uz_EnDat_disable_config_evaluation_in_IP(void) {
+    controlword test = 0xFBCD;
+    
+    TEST_ASSERT_EQUAL_INT(0x7BCDU , uz_EnDat_disable_config_evaluation_in_IP(test));
+}
+
+void test_uz_EnDat_set_sensor_precision_in_controlword_19_bit(void) {
+    controlword test = 0xAF87;
+    
+    TEST_ASSERT_EQUAL_INT(0xA087 , uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_19_bit));
+}
+
+void test_uz_EnDat_set_sensor_precision_in_controlword_21_bit(void) {
+    controlword test = 0xAF87;
+    
+    TEST_ASSERT_EQUAL_INT(0xA107 , uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_21_bit));
+}
+
+void test_uz_EnDat_set_sensor_precision_in_controlword_23_bit(void) {
+    controlword test = 0xAF87;
+    
+    TEST_ASSERT_EQUAL_INT(0xA207 , uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_23_bit));
+}
+
+void test_uz_EnDat_set_sensor_precision_in_controlword_25_bit(void) {
+    controlword test = 0xAF87;
+    
+    TEST_ASSERT_EQUAL_INT(0xA407 , uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_25_bit));
+}
+
+void test_uz_EnDat_set_sensor_precision_in_controlword_27_bit(void) {
+    controlword test = 0xAF87;
+    
+    TEST_ASSERT_EQUAL_INT(0xA807 , uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_27_bit));
+}
+
+void test_uz_EnDat_fetch_sensor_precision_from_controlword_19_bit(void) {
+    controlword test = 0xAF87;
+    test = uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_19_bit);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_19_bit , uz_EnDat_fetch_sensor_precision_from_controlword(test));
+}
+
+void test_uz_EnDat_fetch_sensor_precision_from_controlword_21_bit(void) {
+    controlword test = 0xAF87;
+    test = uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_21_bit);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_21_bit , uz_EnDat_fetch_sensor_precision_from_controlword(test));
+}
+
+void test_uz_EnDat_fetch_sensor_precision_from_controlword_23_bit(void) {
+    controlword test = 0xAF87;
+    test = uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_23_bit);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_23_bit , uz_EnDat_fetch_sensor_precision_from_controlword(test));
+}
+void test_uz_EnDat_fetch_sensor_precision_from_controlword_25_bit(void) {
+    controlword test = 0xAF87;
+    test = uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_25_bit);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_25_bit , uz_EnDat_fetch_sensor_precision_from_controlword(test));
+}
+void test_uz_EnDat_fetch_sensor_precision_from_controlword_27_bit(void) {
+    controlword test = 0xAF87;
+    test = uz_EnDat_set_sensor_precision_in_controlword(test, uz_EnDat_27_bit);
+    TEST_ASSERT_EQUAL_INT(uz_EnDat_27_bit , uz_EnDat_fetch_sensor_precision_from_controlword(test));
+}
+void test_uz_EnDat_fail_assert_if_fetch_sensor_precision_from_EnDat_object_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_fetch_sensor_precision_from_EnDat_object(NULL));
+}
+void test_uz_EnDat_set_operation_mode_000111(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x7 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_position_values));
+}
+
+void test_uz_EnDat_set_operation_mode_111000(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x38 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_position_values_with_additional_data));
+}
+
+void test_uz_EnDat_set_operation_mode_001110(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0xE , uz_EnDat_set_operation_mode(test, uz_EnDat_Selection_of_memory_area));
+}
+
+void test_uz_EnDat_set_operation_mode_001001(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x9 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_position_values_and_selection_of_memory_area_or_of_the_additional_data));
+}
+
+void test_uz_EnDat_set_operation_mode_100011(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x23 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_parameters));
+}
+
+void test_uz_EnDat_set_operation_mode_100100(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x24 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_position_values_and_send_parameter));
+}
+
+void test_uz_EnDat_set_operation_mode_011100(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x1C , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_receive_parameters));
+}
+
+void test_uz_EnDat_set_operation_mode_011011(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x1B , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_position_values_and_receive_parameter));
+}
+
+void test_uz_EnDat_set_operation_mode_101010(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x2A , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_receive_reset));
+}
+void test_uz_EnDat_set_operation_mode_101101(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x2D , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_position_values_and_receive_error_reset));
+}
+void test_uz_EnDat_set_operation_mode_110001(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x31 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_receive_test_command));
+}
+void test_uz_EnDat_set_operation_mode_110110(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x36 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_position_values_and_receive_test_command));
+}
+
+void test_uz_EnDat_set_operation_mode_010101(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x15 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_send_test_values));
+}
+
+void test_uz_EnDat_set_operation_mode_010010(void) {
+    controlword test = 0x0;
+        TEST_ASSERT_EQUAL_INT(0x12 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_receive_communication_command));
 }
 #endif  // TEST

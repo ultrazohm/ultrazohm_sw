@@ -20,7 +20,7 @@
    uz_EnDat_write_default_values(EnDat_init_object);
    //uz_EnDat_write_factor(EnDat_init_object, 175, uz_EnDat_factor5_telegrammlength); //good for 25 bit 12,5mhz
    // uz_EnDat_write_factor(EnDat_init_object, 98 , uz_EnDat_factor5_telegrammlength); //good for 23 bit endat
-
+    
    //uz_EnDat_write_factor(EnDat_init_object, 55, uz_EnDat_factor2_recoverytime); //tweak for faster reponse times
 
    //DEBUG following line

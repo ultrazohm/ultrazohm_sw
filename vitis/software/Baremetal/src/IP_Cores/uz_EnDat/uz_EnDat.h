@@ -5,7 +5,8 @@
 // Useful Values to begin with
 
 #define FACTOR_DEFAULT 100
-#define AMOUNT_OF_FACTORS 5
+#define FACTOR_DEFAULT2 0
+#define AMOUNT_OF_FACTORS 7
 #define CONTROLWORD_DEFAULT 0xA407 //0xB407 //0xB407 //0xB207 //0xA807
 #define DIVIDER_DEFAULT 3
 #define	ENDAT_23_BIT_MAX_VALUE 0x7FFFFF
@@ -32,12 +33,15 @@
 
 
 typedef bool controlword_expanded[16];
+typedef uint16_t controlword;
 typedef enum uz_EnDat_factors {
     uz_EnDat_factor1_dataflow,
     uz_EnDat_factor2_recoverytime,
     uz_EnDat_factor3_initialoff,
     uz_EnDat_factor4_data2clksync,
-    uz_EnDat_factor5_telegrammlength
+    uz_EnDat_factor5_telegrammlength,
+    uz_EnDat_factor6_responsesync,
+    uz_EnDat_factor7_extrashift
 }uz_EnDat_factor;
 typedef enum uz_EnDat_position_values {
     uz_EnDat_pos_t0,
@@ -118,6 +122,8 @@ typedef struct uz_EnDat_t uz_EnDat_t;
 struct uz_EnDat_config_t{
     uint32_t base_address; /**< Base address of the IP-Core */
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
+    controlword control; /**< Controlword stored per instance */
+    uint8_t divider; /**< Clockdivider stored per instance */
 };
 
 /**
@@ -140,16 +146,18 @@ int uz_EnDat_write_control_and_divider(uz_EnDat_t *self, uint16_t ctrlword, uint
 
 /**
  * @param factornumber means which Factor you want to write 
- * @param factor value that you want to write 100 (e.g. 1.00 is default)
+ * @param factor value that you want to write 100 e.g. 1.00 is default for factors 1-5, factors 6&7 are absolute hence default is 0.
  * @brief The following factors are available as of now;
  * @brief uz_EnDat_factor1_dataflow = adjusts the data flow change timing;
  * @brief uz_EnDat_factor2_recoverytime = adjusts the recovery time after a telegramm;
  * @brief uz_EnDat_factor3_initialoff = adjusts the initial silence period length;
  * @brief uz_EnDat_factor4_data2clksync = adjusts the data to clock resync interval;
  * @brief uz_EnDat_factor5_telegrammlength = adjusts the length of the telegram;
+ * @brief uz_EnDat_factor6_responsesync = delays the Data in pulses
+ * @brief uz_EnDat_factor7_extrashift = alters the shifting behaviour of the response
  * @return Returns 0 when everything went smooth. Returns -1 if no factor was hit.
  */
-int uz_EnDat_write_factor(uz_EnDat_t *self, uint16_t factor, uz_EnDat_factor factornumber);
+int uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber);
 
 /**
  * @brief This function is to read the status word from the EnDat IP-Core.
@@ -185,7 +193,7 @@ uint16_t uz_EnDat_factor_converter(float in);
  * @param inp Pointer to a bit array where control word is stored.
  * @return Returns the actual control WORD which can be written to EnDat IP-Core.
  */
-uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp);
+//uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp);
 /**
  * 
  * @brief This helper function converts a frequency setpoint to the appropriate divider. 
@@ -203,11 +211,11 @@ uint8_t uz_EnDat_read_crc(uz_EnDat_t* self);
 /**
  * 
  * @brief This function sets the operation mode part of the control word.  
- * @param inp Pointer to a bit array where control word is stored.
  * @param mode Sets the EnDat mode - only return position is tested!
- * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
  */
-int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_opmode mode);
+controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode mode);
 
 /**
  * 
@@ -221,60 +229,45 @@ float uz_EnDat_pos_to_rad_converter(uint32_t pos, uz_EnDat_precision sensorpreci
 /**
  * 
  * @brief This function disables the evaluation of the control word in the EnDat IP-Core.  
- * @param inp Pointer to a bit array where control word is stored.
- * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
  */
-int8_t uz_EnDat_disable_config_evaluation_in_IP(controlword_expanded* inp);
+controlword uz_EnDat_disable_config_evaluation_in_IP(controlword in);
 
 
 /**
  * 
  * @brief This function enables the evaluation of the control word in the EnDat IP-Core.  
- * @param inp Pointer to a bit array where control word is stored.
- * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
  */
-int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp);
+controlword uz_EnDat_enable_config_evaluation_in_IP(controlword in);
+
 
 
 /**
  * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
- * @param sensorprecision Which kind of EnDat sensor do you connect?
- * @brief This function fetches positional values from the EnDat IP-Core and converts them to rad (2PI) immediately.
+ * @brief This function fetches positional values from the EnDat IP-Core and converts them to rad (2PI) immediately. Precision is auto derived.
  * @return Returns the actual status word from the EnDat IP Core.
  */
-float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x, uz_EnDat_precision sensorprecision);
+float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x);
+
 
 /**
  * 
- * @brief This function sets the soft reset bit in the control word. 
- * @param inp Pointer to a bit array where control word is stored.
- * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ * @brief This function enables output for EnDat IP-Core. 
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
  */
-int8_t uz_EnDat_set_soft_reset_in_controlword(controlword_expanded* inp);
+controlword uz_EnDat_set_output_enable_in_controlword(controlword in);
 
 /**
  * 
- * @brief This function resets the soft reset bit in the control word. 
- * @param inp Pointer to a bit array where control word is stored.
- * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ * @brief This function disables output for EnDat IP-Core. 
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
  */
-int8_t uz_EnDat_reset_soft_reset_in_controlword(controlword_expanded* inp);
-
-/**
- * 
- * @brief This function sets the soft reset bit in the control word. 
- * @param inp Pointer to a bit array where control word is stored.
- * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
- */
-int8_t uz_EnDat_set_output_enable_in_controlword(controlword_expanded* inp);
-
-/**
- * 
- * @brief This function resets the soft reset bit in the control word. 
- * @param inp Pointer to a bit array where control word is stored.
- * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
- */
-int8_t uz_EnDat_reset_output_enable_in_controlword(controlword_expanded* inp);
+controlword uz_EnDat_reset_output_enable_in_controlword(controlword in);
 
 
 /**
@@ -318,5 +311,30 @@ float uz_EnDat_rpm_to_rad_per_second_converter(float rpm);
  */
 float uz_EnDat_rpm_smoothening(float rawvalue, uint16_t amountofperiods);
 
+
+/**
+ * 
+ * @brief This function sets the precision in the controlword of the EnDat IP-Core.  
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
+ */
+controlword uz_EnDat_set_sensor_precision_in_controlword(controlword in, uz_EnDat_precision sensorprecision);
+
+/**
+ * 
+ * @brief This function gets the precision from the controlword of the EnDat IP-Core.  
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
+ */
+uz_EnDat_precision uz_EnDat_fetch_sensor_precision_from_controlword(controlword in);
+
+
+/**
+ * 
+ * @brief This function gets the precision from the object of the EnDat IP-Core.  
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
+ */
+uz_EnDat_precision uz_EnDat_fetch_sensor_precision_from_EnDat_object(uz_EnDat_t *self);
 
 #endif  // UZ_ENDAT_H  // NOLINT

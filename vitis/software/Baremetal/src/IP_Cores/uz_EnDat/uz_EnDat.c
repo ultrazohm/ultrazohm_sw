@@ -42,7 +42,7 @@ uz_EnDat_t* uz_EnDat_init(struct uz_EnDat_config_t config)  {
 int uz_EnDat_write_control_and_divider(uz_EnDat_t* self, uint16_t ctrlword, uint8_t divider) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-
+    
     if (ctrlword < 1)
         ctrlword = 1;
 
@@ -57,28 +57,39 @@ int uz_EnDat_write_control_and_divider(uz_EnDat_t* self, uint16_t ctrlword, uint
 }
 
 
-int uz_EnDat_write_factor(uz_EnDat_t *self, uint16_t factor, uz_EnDat_factor factornumber) {
+int uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
     switch (factornumber) {
     case uz_EnDat_factor1_dataflow:
-    uz_EnDat_hw_write_FKT1DATAFLOW(self->config.base_address, factor);
+    uz_EnDat_hw_write_FKT1DATAFLOW(self->config.base_address, (uint16_t) factor);
         break;
 
     case uz_EnDat_factor2_recoverytime:
-    uz_EnDat_hw_write_FKT2RECOVERYTIME(self->config.base_address, factor);
+    uz_EnDat_hw_write_FKT2RECOVERYTIME(self->config.base_address, (uint16_t) factor);
         break;
 
     case uz_EnDat_factor3_initialoff:
-    uz_EnDat_hw_write_FKT3INITIALOFF(self->config.base_address, factor);
-    break;
+    uz_EnDat_hw_write_FKT3INITIALOFF(self->config.base_address, (uint16_t) factor);
+        break;
+
     case uz_EnDat_factor4_data2clksync:
-    uz_EnDat_hw_write_FKT4DATACLKSYNC(self->config.base_address, factor);
+    uz_EnDat_hw_write_FKT4DATACLKSYNC(self->config.base_address, (uint16_t) factor);
         break;
+
     case uz_EnDat_factor5_telegrammlength:
-    uz_EnDat_hw_write_FKT5TELEGRAMLEN(self->config.base_address, factor);
+    uz_EnDat_hw_write_FKT5TELEGRAMLEN(self->config.base_address, (uint16_t) factor);
         break;
+    
+    case uz_EnDat_factor6_responsesync:
+    uz_EnDat_hw_write_FKT6SYNCRESPONSE(self->config.base_address, (uint16_t) factor);
+        break;
+    
+    case uz_EnDat_factor7_extrashift:
+    uz_EnDat_hw_write_FKT7EXTRASHIFT(self->config.base_address, (int8_t) factor);
+        break;
+
     default:
         return (-1);
         break;
@@ -153,7 +164,12 @@ int uz_EnDat_write_default_values(uz_EnDat_t* self) {
     uint8_t i = 0;
     int j = 0;
     for (i = 0 ; i <= AMOUNT_OF_FACTORS-1 ; i++) {
+        if (i < 6) {
         j = uz_EnDat_write_factor(self, FACTOR_DEFAULT, i);
+        }
+        else {
+        j = uz_EnDat_write_factor(self, FACTOR_DEFAULT2, i);    
+        }
 
         if (j ==-1)
         return(j);
@@ -173,21 +189,23 @@ uint16_t uz_EnDat_factor_converter(float in) {
 
     return ((uint16_t)i);
 }
-
-uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp) {
+/*
+uint16_t uz_EnDat_controlword_builder(controlword_expanded *inp) {
     uz_assert_not_NULL(inp);
-    uint16_t out = 0x0000;
-    int i = 0;
-    int temp = 0;
-    for (i = 0; i <= 15-1; i++) {
-        if (*inp[i])
-        temp |= (1 << (i));
-        else
-        temp &= ~(1 << (i));
+    uint16_t out = 0U;
+    uint16_t i = 0;
+    uint16_t temp = 0;
+    float power2 = 2.0f;
+    for (i = 1; i < 16; i++) {
+        power2 *= power2;
+        if (*inp[i-1] == true) {
+        temp += (uint16_t) power2;
+        }
+        
     }
     out = (uint16_t)temp;
     return (out);
-}
+}*/
 
 
 uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency frequency) {
@@ -228,141 +246,231 @@ return(ret);
 }
 
 
-int8_t uz_EnDat_set_operation_mode(controlword_expanded* inp, uz_EnDat_protocol_opmode mode) {
-    uz_assert_not_NULL(inp);
+controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode mode) {
+    controlword out = in;
 
     switch (mode) {
     case uz_EnDat_Encoder_send_position_values:
-        *inp[0] = true;
-        *inp[1] = false;
+        out  |= ((controlword)1 << 0);
+        out  |= ((controlword)1 << 1);
+        out  |= ((controlword)1 << 2);
+        out  &= (controlword)~((controlword)1 << 3);
+        out  &= (controlword)~((controlword)1 << 4);
+        out  &= (controlword)~((controlword)1 << 5);
+        
+        /**inp[0] = true;
+        *inp[1] = true;
         *inp[2] = true;
         *inp[3] = false;
         *inp[4] = false;
-        *inp[5] = false;
+        *inp[5] = false;*/
             break;
 
     case uz_EnDat_Encoder_send_position_values_with_additional_data:
-        *inp[0] = false;
+        out  |= ((controlword)1 << 3);
+        out  |= ((controlword)1 << 4);
+        out  |= ((controlword)1 << 5);
+        out  &= (controlword)~((controlword)1 << 0);
+        out  &= (controlword)~((controlword)1 << 1);
+        out  &= (controlword)~((controlword)1 << 2);
+        /**inp[0] = false;
         *inp[1] = false;
         *inp[2] = false;
         *inp[3] = true;
         *inp[4] = true;
-        *inp[5] = true;
+        *inp[5] = true;*/
         break;
 
     case uz_EnDat_Selection_of_memory_area:
-        *inp[0] = false;
+        out  |= ((controlword)1 << 1);
+        out  |= ((controlword)1 << 2);
+        out  |= ((controlword)1 << 3);
+        out  &= (controlword)~((controlword)1 << 0);
+        out  &= (controlword)~((controlword)1 << 4);
+        out  &= (controlword)~((controlword)1 << 5);
+        /**inp[0] = false;
         *inp[1] = true;
         *inp[2] = true;
         *inp[3] = true;
         *inp[4] = false;
-        *inp[5] = false;
+        *inp[5] = false;*/
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_selection_of_memory_area_or_of_the_additional_data:
-        *inp[0] = true;
+        out  |= ((controlword)1 << 0);
+        out  |= ((controlword)1 << 3);
+        out  &= (controlword)~((controlword)1 << 1);
+        out  &= (controlword)~((controlword)1 << 2);
+        out  &= (controlword)~((controlword)1 << 4);
+        out  &= (controlword)~((controlword)1 << 5);
+        /**inp[0] = true;
         *inp[1] = false;
         *inp[2] = false;
         *inp[3] = true;
         *inp[4] = false;
-        *inp[5] = false;
+        *inp[5] = false;*/
         break;
 
     case uz_EnDat_Encoder_send_parameters:
-        *inp[0] = true;
+        out  |= ((controlword)1 << 0);
+        out  |= ((controlword)1 << 1);
+        out  |= ((controlword)1 << 5);
+        out  &= (controlword)~((controlword)1 << 2);
+        out  &= (controlword)~((controlword)1 << 3);
+        out  &= (controlword)~((controlword)1 << 4);
+        /**inp[0] = true;
         *inp[1] = true;
         *inp[2] = false;
         *inp[3] = false;
         *inp[4] = false;
-        *inp[5] = true;
+        *inp[5] = true;*/
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_send_parameter:
-        *inp[0] = false;
+        out  |= ((controlword)1 << 2);
+        out  |= ((controlword)1 << 5);
+        out  &= (controlword)~((controlword)1 << 0);
+        out  &= (controlword)~((controlword)1 << 1);
+        out  &= (controlword)~((controlword)1 << 3);
+        out  &= (controlword)~((controlword)1 << 4);
+        /**inp[0] = false;
         *inp[1] = false;
         *inp[2] = true;
         *inp[3] = false;
         *inp[4] = false;
-        *inp[5] = true;
+        *inp[5] = true;*/
         break;
 
     case uz_EnDat_Encoder_receive_parameters:
-        *inp[0] = false;
+        out  |= ((controlword)1 << 2);
+        out  |= ((controlword)1 << 3);
+        out  |= ((controlword)1 << 4);
+        out  &= (controlword)~((controlword)1 << 0);
+        out  &= (controlword)~((controlword)1 << 1);
+        out  &= (controlword)~((controlword)1 << 5);
+        /**inp[0] = false;
         *inp[1] = false;
         *inp[2] = true;
         *inp[3] = true;
         *inp[4] = true;
-        *inp[5] = false;
+        *inp[5] = false;*/
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_parameter:
-        *inp[0] = true;
+        out  |= ((controlword)1 << 0);
+        out  |= ((controlword)1 << 1);
+        out  |= ((controlword)1 << 3);
+        out  |= ((controlword)1 << 4);
+        out  &= (controlword)~((controlword)1 << 2);
+        out  &= (controlword)~((controlword)1 << 5);
+        /**inp[0] = true;
         *inp[1] = true;
         *inp[2] = false;
         *inp[3] = true;
         *inp[4] = true;
-        *inp[5] = false;
+        *inp[5] = false;*/
         break;
 
     case uz_EnDat_Encoder_receive_reset:
-        *inp[0] = false;
+        out  |= ((controlword)1 << 1);
+        out  |= ((controlword)1 << 3);
+        out  |= ((controlword)1 << 5);
+        out  &= (controlword)~((controlword)1 << 0);
+        out  &= (controlword)~((controlword)1 << 2);
+        out  &= (controlword)~((controlword)1 << 4);
+        /**inp[0] = false;
         *inp[1] = true;
         *inp[2] = false;
         *inp[3] = true;
         *inp[4] = false;
-        *inp[5] = true;
+        *inp[5] = true;*/
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_error_reset:
-        *inp[0] = true;
+        out  |= ((controlword)1 << 0);
+        out  |= ((controlword)1 << 2);
+        out  |= ((controlword)1 << 3);
+        out  |= ((controlword)1 << 5);
+        out  &= (controlword)~((controlword)1 << 1);
+        out  &= (controlword)~((controlword)1 << 4);
+        /**inp[0] = true;
         *inp[1] = false;
         *inp[2] = true;
         *inp[3] = true;
         *inp[4] = false;
-        *inp[5] = true;
+        *inp[5] = true;*/
         break;
 
     case uz_EnDat_Encoder_receive_test_command:
-        *inp[0] = true;
+        out  |= ((controlword)1 << 0);
+        out  |= ((controlword)1 << 4);
+        out  |= ((controlword)1 << 5);
+        out  &= (controlword)~((controlword)1 << 1);
+        out  &= (controlword)~((controlword)1 << 2);
+        out  &= (controlword)~((controlword)1 << 3);
+        /**inp[0] = true;
         *inp[1] = false;
         *inp[2] = false;
         *inp[3] = false;
         *inp[4] = true;
-        *inp[5] = true;
+        *inp[5] = true;*/
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_test_command:
-        *inp[0] = false;
+        out  |= ((controlword)1 << 1);
+        out  |= ((controlword)1 << 2);
+        out  |= ((controlword)1 << 4);
+        out  |= ((controlword)1 << 5);
+        out  &= (controlword)~((controlword)1 << 0);
+        out  &= (controlword)~((controlword)1 << 3);
+        /**inp[0] = false;
         *inp[1] = true;
         *inp[2] = true;
         *inp[3] = false;
         *inp[4] = true;
-        *inp[5] = true;
+        *inp[5] = true;*/
         break;
 
     case uz_EnDat_Encoder_send_test_values:
-        *inp[0] = true;
+        out  |= ((controlword)1 << 0);
+        out  |= ((controlword)1 << 2);
+        out  |= ((controlword)1 << 4);
+        out  &= (controlword)~((controlword)1 << 1);
+        out  &= (controlword)~((controlword)1 << 3);
+        out  &= (controlword)~((controlword)1 << 5);
+        /**inp[0] = true;
         *inp[1] = false;
         *inp[2] = true;
         *inp[3] = false;
         *inp[4] = true;
-        *inp[5] = false;
+        *inp[5] = false;*/
         break;
 
 
     case uz_EnDat_Encoder_receive_communication_command:
-        *inp[0] = false;
+        out  |= ((controlword)1 << 1);
+        out  |= ((controlword)1 << 4);
+        out  &= (controlword)~((controlword)1 << 0);
+        out  &= (controlword)~((controlword)1 << 3);
+        out  &= (controlword)~((controlword)1 << 5);
+        out  &= (controlword)~((controlword)1 << 2);
+        /**inp[0] = false;
         *inp[1] = true;
-        *inp[2] = true;
+        *inp[2] = false;
         *inp[3] = false;
         *inp[4] = true;
-        *inp[5] = false;
+        *inp[5] = false;*/
         break;
     default:
-        return(-1);
+        out  |= ((controlword)1 << 0);
+        out  |= ((controlword)1 << 1);
+        out  |= ((controlword)1 << 2);
+        out  &= (controlword)~((controlword)1 << 3);
+        out  &= (controlword)~((controlword)1 << 4);
+        out  &= (controlword)~((controlword)1 << 5);
         break;
     }
-    return(0);
+    return(out);
 }
 
 float uz_EnDat_pos_to_rad_converter(uint32_t pos, uz_EnDat_precision sensorprecision) {
@@ -405,49 +513,40 @@ float uz_EnDat_pos_to_rad_converter(uint32_t pos, uz_EnDat_precision sensorpreci
     return (ret);
 }
 
-int8_t uz_EnDat_disable_config_evaluation_in_IP(controlword_expanded* inp) {
-    uz_assert_not_NULL(inp);
-    *inp[15] = false;
-    return(0);
+controlword uz_EnDat_disable_config_evaluation_in_IP(controlword in) {
+    controlword out = in;
+    out  &= (controlword)~((controlword)1 << 15);
+    return(out);
 }
 
-int8_t uz_EnDat_enable_config_evaluation_in_IP(controlword_expanded* inp) {
-    uz_assert_not_NULL(inp);
-    *inp[15] = true;
-    return(0);
+
+controlword uz_EnDat_enable_config_evaluation_in_IP(controlword in) {
+    controlword out = in;
+    out  |= ((controlword)1 << 15);
+    return(out);
 }
 
-float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x, uz_EnDat_precision sensorprecision) {
+
+float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x) {
     uint32_t retraw = 0;
     float retfloat = 0.0f;
+    uz_EnDat_precision sensorprecision = uz_EnDat_fetch_sensor_precision_from_EnDat_object(self);
     retraw = uz_EnDat_read_pos(self, t_x);
     retfloat = uz_EnDat_pos_to_rad_converter(retraw, sensorprecision);
     return(retfloat);
 }
 
-int8_t uz_EnDat_reset_soft_reset_in_controlword(controlword_expanded* inp) {
-    uz_assert_not_NULL(inp);
-    *inp[6] = false;
-    return(0);
+
+controlword uz_EnDat_reset_output_enable_in_controlword(controlword in) {
+    controlword out = in;
+    out  &= (controlword)~((controlword)1 << 12);
+    return(out);
 }
 
-int8_t uz_EnDat_set_soft_reset_in_controlword(controlword_expanded* inp) {
-    uz_assert_not_NULL(inp);
-    *inp[6] = true;
-    return(0);
-}
-
-
-int8_t uz_EnDat_reset_output_enable_in_controlword(controlword_expanded* inp) {
-    uz_assert_not_NULL(inp);
-    *inp[13] = false;
-    return(0);
-}
-
-int8_t uz_EnDat_set_output_enable_in_controlword(controlword_expanded* inp) {
-    uz_assert_not_NULL(inp);
-    *inp[13] = true;
-    return(0);
+controlword uz_EnDat_set_output_enable_in_controlword(controlword in) {
+    controlword out = in;
+    out  |= ((controlword)1 << 12);
+    return(out);
 }
 
 
@@ -572,14 +671,10 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     }
     }
 
-
-
-
     if (invert == 0x1U) {
         ret *= -60.0f;
     }
-    else
-    {
+    else {
         ret *= 60.0f;
     }
     
@@ -602,5 +697,85 @@ float uz_EnDat_rpm_smoothening(float rawvalue, uint16_t amountofperiods) {
     ret += (rawvalue / periods);
 
     return (ret);
+}
+
+controlword uz_EnDat_set_sensor_precision_in_controlword(controlword in, uz_EnDat_precision sensorprecision) {
+    controlword out = in;
+
+    switch (sensorprecision) {
+    case uz_EnDat_19_bit:
+        out  &= (controlword)~((controlword)31 << 7);
+        out  |= ((controlword)1 << 7);
+        break;
+
+    case uz_EnDat_21_bit:
+        out  &= (controlword)~((controlword)31 << 7);
+        out  |= ((controlword)1 << 8);
+        break;
+
+    case uz_EnDat_23_bit:
+        out  &= (controlword)~((controlword)31 << 7);
+        out  |= ((controlword)1 << 9);
+        break;
+
+    case uz_EnDat_25_bit:
+        out  &= (controlword)~((controlword)31 << 7);
+        out  |= ((controlword)1 << 10);
+        break;
+
+    case uz_EnDat_27_bit:
+        out  &= (controlword)~((controlword)31 << 7);
+        out  |= ((controlword)1 << 11);
+        break;
+
+    default:
+        out  &= (controlword)~((controlword)31 << 7);
+        out  |= ((controlword)1 << 9);
+        break;
+    }
+    
+    return(out);
+}
+
+uz_EnDat_precision uz_EnDat_fetch_sensor_precision_from_controlword(controlword in) {
+    uz_EnDat_precision out = uz_EnDat_23_bit;
+    controlword temp = in;
+    temp  &= (controlword)~((controlword)15 << 12);
+    temp  &= (controlword)~((controlword)127 << 0);
+
+    switch (temp) {
+    case 0x0080:
+        out = uz_EnDat_19_bit;
+        break;
+
+    case 0x0100:
+        out = uz_EnDat_21_bit;
+        break;
+
+    case 0x0200:
+        out = uz_EnDat_23_bit;
+        break;
+
+    case 0x0400:
+        out = uz_EnDat_25_bit;
+        break;
+
+    case 0x0800:
+        out = uz_EnDat_27_bit;
+        break;
+
+    default:
+        out = uz_EnDat_23_bit;
+        break;
+    }
+    return(out);
+}
+
+uz_EnDat_precision uz_EnDat_fetch_sensor_precision_from_EnDat_object(uz_EnDat_t *self) {
+    uz_assert_not_NULL(self);
+    uz_EnDat_precision out;
+
+    out = uz_EnDat_fetch_sensor_precision_from_controlword(self->config.control);
+    return (out);
 }
 #endif  // NOLINT

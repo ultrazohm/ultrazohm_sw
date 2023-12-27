@@ -234,5 +234,27 @@ void test_uz_EnDat_hw_read_from_TIMEELASPEDT0T4BUS(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(0));
 }
 
+void test_uz_EnDat_hw_write_to_FKT6SYNCRESPONSE(void) {
+    uint16_t a = 0;
+    // Test passes if uz_axi_write_int32 is called once with these arguments
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+FKT6SYNCRESPONSE_Data_uz_EnDat, a);
+    uz_EnDat_hw_write_FKT6SYNCRESPONSE(TEST_BASE_ADDRESS, a);
 
+    // Tell the test that we do not care how often this function is called
+    uz_axi_write_int32_Ignore();
+    // Test passes if an assert fails in the function under test
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_write_FKT6SYNCRESPONSE(0, a))
+}
+
+void test_uz_EnDat_hw_write_to_FKT7EXTRASHIFT(void) {
+    int8_t a = 0;
+    // Test passes if uz_axi_write_int32 is called once with these arguments
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS+FKT7EXTRASHIFT_Data_uz_EnDat, a);
+    uz_EnDat_hw_write_FKT7EXTRASHIFT(TEST_BASE_ADDRESS, a);
+
+    // Tell the test that we do not care how often this function is called
+    uz_axi_write_int32_Ignore();
+    // Test passes if an assert fails in the function under test
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_write_FKT7EXTRASHIFT(0, a))
+}
 #endif  // TEST

@@ -89,3 +89,13 @@ uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(uint32_t base_address) {
     uz_assert_not_zero(base_address);
     return ((uint32_t)uz_axi_read_uint32(base_address+TIMEELASPEDT0T4BUS_Data_uz_EnDat));
 }
+
+void uz_EnDat_hw_write_FKT6SYNCRESPONSE(uint32_t base_address, uint16_t FKT6SYNCRESPONSE) {
+    uz_assert_not_zero(base_address);
+    uz_axi_write_int32(base_address+FKT6SYNCRESPONSE_Data_uz_EnDat, FKT6SYNCRESPONSE);
+}
+
+void uz_EnDat_hw_write_FKT7EXTRASHIFT(uint32_t base_address, int8_t FKT7EXTRASHIFT) {
+    uz_assert_not_zero(base_address);
+    uz_axi_write_int32(base_address+FKT7EXTRASHIFT_Data_uz_EnDat, FKT7EXTRASHIFT);
+}

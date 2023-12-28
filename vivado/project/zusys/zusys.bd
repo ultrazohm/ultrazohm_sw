@@ -5548,7 +5548,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:8.0",
+            "vlnv": "xilinx.com:ip:uz_EnDat:8.1",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5705,15 +5705,10 @@
               }
             }
           },
-          "Dig_18_Ch4": {
+          "Dig_17_Ch4_1": {
             "ports": [
               "Dig_17_Ch4",
               "uz_EnDat_0/datain"
-            ]
-          },
-          "POS0": {
-            "ports": [
-              "uz_EnDat_0/POS0"
             ]
           },
           "SENSORERROR": {

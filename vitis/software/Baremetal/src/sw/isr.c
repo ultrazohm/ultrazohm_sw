@@ -53,14 +53,14 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);     // ISR TIME : uses about 2,7 us ISR time
 
-    //For Debug Purposes the above uses 0,7 us ISR Time
-    Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0); // uses slightly less then 0,7 us ISR
-    Global_Data.av.mechanicalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t0), uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t1), uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1)), 0x0U, uz_EnDat_fetch_sensor_precision_from_EnDat_object(Global_Data.objects.EnDat_master_pointer), 0U); //uses about 1,5 us ISR Time
-    Global_Data.av.electricalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t0), uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t4), uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t4)), 0x0U, uz_EnDat_fetch_sensor_precision_from_EnDat_object(Global_Data.objects.EnDat_master_pointer), 0U); //uses about 1,5 us ISR Time
+    
+    Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0); // ISR TIME : uses slightly less then 0,7 us ISR
+    Global_Data.av.mechanicalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t0), uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t1), uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1)), 0x0U, uz_EnDat_fetch_sensor_precision_from_EnDat_object(Global_Data.objects.EnDat_master_pointer), 0U); //ISR TIME : uses about 1,5 us ISR Time
+    //Global_Data.av.mechanicalRotorSpeed = uz_EnDat_calc_revs_from_pos_delta_and_time(uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t0), uz_EnDat_read_pos(Global_Data.objects.EnDat_master_pointer, uz_EnDat_pos_t4), uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t4)), 0x0U, uz_EnDat_fetch_sensor_precision_from_EnDat_object(Global_Data.objects.EnDat_master_pointer), 0U); //ISR TIME : uses about 1,5 us ISR Time
     Global_Data.av.mechanicalRotorSpeed_filtered = uz_EnDat_rpm_smoothening(Global_Data.av.mechanicalRotorSpeed, 256U);
     Global_Data.av.omega_mech = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed);
     Global_Data.av.omega_mech_filtered = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed_filtered);
-    Global_Data.av.EnDat_value_calc_time = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1));
+    Global_Data.av.EnDat_value_calc_time = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1)); //this does not to be into ISR
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

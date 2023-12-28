@@ -10,10 +10,10 @@
 #include "../../uz/uz_HAL.h"
 
 
-struct uz_EnDat_t {
+/*struct uz_EnDat_t {
     bool is_ready;
     struct uz_EnDat_config_t config;
-};
+};*/
 
 static uint32_t instance_counter = 0U;
 static uz_EnDat_t instances[UZ_EnDat_MAX_INSTANCES] = { 0 };
@@ -32,6 +32,8 @@ static uz_EnDat_t* uz_EnDat_allocation(void) {
 uz_EnDat_t* uz_EnDat_init(struct uz_EnDat_config_t config)  {
         uz_assert_not_zero(config.base_address);
         uz_assert_not_zero(config.ip_clk_frequency_Hz);
+        uz_assert_not_zero(config.control);
+        uz_assert_not_zero(config.divider);
         uz_EnDat_t* self = uz_EnDat_allocation();
         self->config = config;
         return (self);
@@ -56,6 +58,12 @@ int uz_EnDat_write_control_and_divider(uz_EnDat_t* self, uint16_t ctrlword, uint
     return(0);
 }
 
+int uz_EnDat_write_control_and_divider_from_object(uz_EnDat_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_EnDat_write_control_and_divider(self, self->config.control, self->config.divider);
+    return(0);
+}
 
 int uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber) {
     uz_assert_not_NULL(self);

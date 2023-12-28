@@ -90,7 +90,8 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_init();
+            //Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_init();
+            Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_custom_init();
             initialization_chain = print_msg;
             break;
 	    case print_msg:

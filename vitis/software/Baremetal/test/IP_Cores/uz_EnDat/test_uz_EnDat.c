@@ -38,6 +38,9 @@ void test_uz_EnDat_fail_assert_if_write_control_and_divider_is_called_with_NULL_
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_write_control_and_divider(NULL, 0, 0));
 }
 
+void test_uz_EnDat_fail_assert_if_write_control_and_divider_from_object_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_write_control_and_divider_from_object(NULL));
+}
 
 void test_uz_EnDat_fail_assert_if_write_factor_is_called_with_NULL_pointer(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_write_factor(NULL, 0, 0));

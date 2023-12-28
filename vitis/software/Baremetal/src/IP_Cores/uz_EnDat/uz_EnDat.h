@@ -115,6 +115,7 @@ typedef enum uz_EnDat_positional_precision {
  */
 typedef struct uz_EnDat_t uz_EnDat_t;
 
+
 /**
  * @brief Configuration struct for EnDat
  *
@@ -124,6 +125,11 @@ struct uz_EnDat_config_t{
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
     controlword control; /**< Controlword stored per instance */
     uint8_t divider; /**< Clockdivider stored per instance */
+};
+
+struct uz_EnDat_t {
+    bool is_ready;
+    struct uz_EnDat_config_t config;
 };
 
 /**
@@ -143,6 +149,11 @@ uz_EnDat_t* uz_EnDat_init(struct uz_EnDat_config_t config);
  */
 int uz_EnDat_write_control_and_divider(uz_EnDat_t *self, uint16_t ctrlword, uint8_t divider);
 
+/**
+ * @brief This function is to write to uz_EnDat - call it with precaution.
+ * @return Returns 0 when everything went smooth.
+ */
+int uz_EnDat_write_control_and_divider_from_object(uz_EnDat_t *self);
 
 /**
  * @param factornumber means which Factor you want to write 

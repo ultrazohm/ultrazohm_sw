@@ -323,4 +323,22 @@ void test_uz_EnDat_set_operation_mode_010010(void) {
     controlword test = 0x0;
         TEST_ASSERT_EQUAL_INT(0x12 , uz_EnDat_set_operation_mode(test, uz_EnDat_Encoder_receive_communication_command));
 }
+
+void test_uz_EnDat_fail_assert_if_fetch_fetch_statusword_from_EnDat_object_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT( uz_EnDat_fetch_statusword_from_EnDat_object(NULL));
+}
+
+void test_uz_EnDat_fetch_errorbit_from_statusword_false(void) {
+    controlword test = 0xFFBF;
+        TEST_ASSERT_EQUAL_INT(false , uz_EnDat_fetch_errorbit_from_statusword(test));
+}
+
+void test_uz_EnDat_fetch_errorbit_from_statusword_true(void) {
+    controlword test = 0xFFFF;
+        TEST_ASSERT_EQUAL_INT(true , uz_EnDat_fetch_errorbit_from_statusword(test));
+}
+
+void test_uz_EnDat_fail_assert_if_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(NULL));
+}
 #endif  // TEST

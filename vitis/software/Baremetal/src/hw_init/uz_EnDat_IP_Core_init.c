@@ -14,8 +14,8 @@
         .base_address = XPAR_UZ_USER_UZ_ENDAT_0_BASEADDR,
         .ip_clk_frequency_Hz = XPAR_UZ_USER_UZ_ENDAT_0_IP_CORE_FREQUENCY,
         .control = CONTROLWORD_DEFAULT,
-        .divider = DIVIDER_DEFAULT
-
+        .divider = DIVIDER_DEFAULT,
+        
     };
 
     EnDat_init_object = uz_EnDat_init(config);

@@ -786,4 +786,34 @@ uz_EnDat_precision uz_EnDat_fetch_sensor_precision_from_EnDat_object(uz_EnDat_t 
     out = uz_EnDat_fetch_sensor_precision_from_controlword(self->config.control);
     return (out);
 }
+
+controlword uz_EnDat_fetch_statusword_from_EnDat_object(uz_EnDat_t *self) {
+    uz_assert_not_NULL(self);
+    controlword statusout;
+    statusout = uz_EnDat_read_statusword(self);
+
+    return(statusout);
+}
+
+bool uz_EnDat_fetch_errorbit_from_statusword(controlword in) {
+    bool out;
+    controlword temp = in;
+    temp  &= (controlword)~((controlword)511 << 7);
+    temp  &= (controlword)~((controlword)63 << 0);
+
+    if (temp == 0x40U) {
+        out = true;
+    }
+    else if ((temp != 0x40U)) {
+        out = false;
+    }
+    
+    return(out);
+}
+
+void uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(uz_EnDat_t *self) {
+    uz_assert_not_NULL(self);
+    self->status.statusword = uz_EnDat_fetch_statusword_from_EnDat_object(self);
+    self->status.errorbit = uz_EnDat_fetch_errorbit_from_statusword(self->status.statusword);
+}
 #endif  // NOLINT

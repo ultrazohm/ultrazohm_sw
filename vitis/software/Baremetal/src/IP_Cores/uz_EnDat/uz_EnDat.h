@@ -32,7 +32,7 @@
 
 
 
-typedef bool controlword_expanded[16];
+
 typedef uint16_t controlword;
 typedef enum uz_EnDat_factors {
     uz_EnDat_factor1_dataflow,
@@ -90,24 +90,6 @@ typedef enum uz_EnDat_positional_precision {
     uz_EnDat_27_bit
     }uz_EnDat_precision;
 
-/*typedef enum uz_EnDat_statusword_elaborate {
-    uz_EnDat_Errorbit1_HDH,
-    uz_EnDat_Errorbit2_HDH,
-    uz_EnDat_Warningbit_HDH,
-    uz_EnDat_bit3,      //not used right now
-    uz_EnDat_bit4,      //not used right now
-    uz_EnDat_bit5,      //not used right now
-    uz_EnDat_bit6,      //not used right now
-    uz_EnDat_Faktor1_altered,
-    uz_EnDat_Faktor2_altered,
-    uz_EnDat_Faktor3_altered,
-    uz_EnDat_Faktor4_altered,  
-    uz_EnDat_Faktor5_altered,
-    uz_EnDat_posvalue_is_valid,
-    uz_EnDat_continious_mode_is_active,  //not used right now
-    uz_EnDat_StartUp_Sequence_Done,
-    uz_EnDat_config_is_set      //debatable use
-}uz_EnDat_statusword;*/
 
 /**
  * @brief Data type for object EnDat
@@ -118,18 +100,25 @@ typedef struct uz_EnDat_t uz_EnDat_t;
 
 /**
  * @brief Configuration struct for EnDat
- *
+ * 
  */
 struct uz_EnDat_config_t{
     uint32_t base_address; /**< Base address of the IP-Core */
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
     controlword control; /**< Controlword stored per instance */
     uint8_t divider; /**< Clockdivider stored per instance */
+    
+};
+
+struct uz_EnDat_status_t{
+    controlword statusword; /**< statusword stored per instance */
+    bool errorbit;  /**< errorbit from sensor stored per instance */
 };
 
 struct uz_EnDat_t {
     bool is_ready;
     struct uz_EnDat_config_t config;
+    struct uz_EnDat_status_t status;
 };
 
 /**
@@ -335,7 +324,7 @@ controlword uz_EnDat_set_sensor_precision_in_controlword(controlword in, uz_EnDa
  * 
  * @brief This function gets the precision from the controlword of the EnDat IP-Core.  
  * @param in Controlword to work with.
- * @return Returns the control word modified by this call.
+ * @return Returns the precision stored into the control word.
  */
 uz_EnDat_precision uz_EnDat_fetch_sensor_precision_from_controlword(controlword in);
 
@@ -343,9 +332,54 @@ uz_EnDat_precision uz_EnDat_fetch_sensor_precision_from_controlword(controlword 
 /**
  * 
  * @brief This function gets the precision from the object of the EnDat IP-Core.  
- * @param in Controlword to work with.
- * @return Returns the control word modified by this call.
+ * @param self EnDat Object to work with.
+ * @return Returns the precision stored into the EnDat object.
  */
 uz_EnDat_precision uz_EnDat_fetch_sensor_precision_from_EnDat_object(uz_EnDat_t *self);
 
+/**
+ * 
+ * @brief This function fetches the statusword from the EnDat IP-Core.  
+ * @param self EnDat Object to work with.
+ * @return Returns statusword from the EnDat IP-Core.
+ */
+controlword uz_EnDat_fetch_statusword_from_EnDat_object(uz_EnDat_t *self);
+
+/**
+ * 
+ * @brief This function gets the errorbit from the statusword.  
+ * @param in Statusword to extract errrobit from.
+ * @return Returns the errobit of the sensor from the EnDat object.
+ */
+bool uz_EnDat_fetch_errorbit_from_statusword(controlword in);
+
+/**
+ * 
+ * @brief This function gets the precision from the object of the EnDat IP-Core.  
+ * @param self EnDat Object to work with.
+ *
+ */
+void uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(uz_EnDat_t *self);
+
+
+/* STATUSWORD CONTENT
+| Bit |   Description   | Target  | Default |
+| --- | :-------------: | :-----: | :-----: |
+| 0   |     ModeCom     |   HDH   |    1    |
+| 1   |     ModeCom     |   HDH   |    1    |
+| 2   |     ModeCom     |   HDH   |    1    |
+| 3   |     ModeCom     |   HDH   |    0    |
+| 4   |     ModeCom     |   HDH   |    0    |
+| 5   |     ModeCom     |   HDH   |    0    |
+| 6   |   SENSORERROR   |   HDH   |    0    |
+| 7   |     19_Bit      | IP-Core |    0    |
+| 8   |     21_Bit      | IP-Core |    0    |
+| 9   |     23_Bit      | IP-Core |    1    |
+| 10  |     25_Bit      | IP-Core |    0    |
+| 11  |     27_bit      | IP-Core |    0    |
+| 12  |  Output_Enable  | IP-Core |    0    |
+| 13  |  StartContMode  | IP-Core |    0    |
+| 14  | StartUpSequence | IP-Core |    0    |
+| 15  |   WriteConfig   | IP-Core |    0    |
+*/
 #endif  // UZ_ENDAT_H  // NOLINT

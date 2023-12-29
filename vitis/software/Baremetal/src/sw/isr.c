@@ -60,7 +60,7 @@ void ISR_Control(void *data)
     Global_Data.av.mechanicalRotorSpeed_filtered = uz_EnDat_rpm_smoothening(Global_Data.av.mechanicalRotorSpeed, 256U);
     Global_Data.av.omega_mech = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed);
     Global_Data.av.omega_mech_filtered = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed_filtered);
-    Global_Data.av.EnDat_value_calc_time = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1)); //this does not to be into ISR
+    //Global_Data.av.EnDat_value_calc_time = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1)); //this does not to be into ISR --> moved to new async slow cycle
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

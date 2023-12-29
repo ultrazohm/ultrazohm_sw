@@ -19,6 +19,7 @@
 #include <math.h>										//Include for math operations
 #include <stdbool.h>
 
+
 // Xilinx library functions
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all GIC interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)
@@ -55,12 +56,15 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "include/slow_cycle.h"
 
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------
 
 void InitializeDataStructure(DS_Data* data);
+
+
+
 
 #endif /* main_H_ */

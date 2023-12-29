@@ -104,7 +104,7 @@ vcom  uz_EnDat_src_ramselektor.vhd
 vcom  uz_EnDat_src_WORDTOBOOL_block1.vhd
 vcom  uz_EnDat_src_CONTROLWORDSTORED.vhd
 vcom  uz_EnDat_src_DualPortRAM_generic.vhd
-vcom  uz_EnDat_src_16BIT_SPLITTER.vhd
+vcom  uz_EnDat_src_8BIT_SPLITTER.vhd
 vcom  uz_EnDat_src_Increment_Stored_Integer_block3.vhd
 vcom  uz_EnDat_src_Positional_Counter_block2.vhd
 vcom  uz_EnDat_src_SetZero32modified_block1.vhd

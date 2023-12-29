@@ -108,6 +108,7 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            async_slow_clk_cycle_100ms();
             break;
         default:
             break;
@@ -115,3 +116,6 @@ int main(void)
     }
     return (status);
 }
+
+
+

@@ -103,7 +103,7 @@ UZ_EnDat/UZ_ENDAT/ramselektor --> uz_EnDat_src_ramselektor
 UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL --> uz_EnDat_src_WORDTOBOOL_block1
 UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED --> uz_EnDat_src_CONTROLWORDSTORED
 UZ_EnDat/UZ_ENDAT/DualPortRAM_generic --> uz_EnDat_src_DualPortRAM_generic
-UZ_EnDat/UZ_ENDAT/16BIT_SPLITTER --> uz_EnDat_src_16BIT_SPLITTER
+UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER --> uz_EnDat_src_8BIT_SPLITTER
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block3
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block2
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32modified --> uz_EnDat_src_SetZero32modified_block1

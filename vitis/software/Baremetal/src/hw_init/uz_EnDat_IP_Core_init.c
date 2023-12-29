@@ -29,14 +29,14 @@ uz_EnDat_t* uz_EnDat_IP_core_custom_init(void) {
 
     EnDat_temp_ptr->config.control = uz_EnDat_set_operation_mode(EnDat_temp_ptr->config.control, uz_EnDat_Encoder_send_position_values);
     EnDat_temp_ptr->config.control = uz_EnDat_set_sensor_precision_in_controlword(EnDat_temp_ptr->config.control, uz_EnDat_25_bit);
-    EnDat_temp_ptr->config.divider = uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_1562500Hz);
+    EnDat_temp_ptr->config.divider = uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_6250000Hz);
     uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT, uz_EnDat_factor1_dataflow);
     uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT, uz_EnDat_factor2_recoverytime);
     uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT, uz_EnDat_factor3_initialoff);
     uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT, uz_EnDat_factor4_data2clksync);
     uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT, uz_EnDat_factor5_telegrammlength);
     uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT2, uz_EnDat_factor6_responsesync);
-    uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT2, uz_EnDat_factor7_extrashift);
+    uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT2, uz_EnDat_factor7_extrashift); //+2 should usually work for most odd behaviours
     EnDat_temp_ptr->config.control = uz_EnDat_enable_config_evaluation_in_IP(EnDat_temp_ptr->config.control);
     EnDat_temp_ptr->config.control = uz_EnDat_set_output_enable_in_controlword(EnDat_temp_ptr->config.control);
     uz_EnDat_write_control_and_divider_from_object(EnDat_temp_ptr);

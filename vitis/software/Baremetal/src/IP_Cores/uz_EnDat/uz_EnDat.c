@@ -10,10 +10,6 @@
 #include "../../uz/uz_HAL.h"
 
 
-/*struct uz_EnDat_t {
-    bool is_ready;
-    struct uz_EnDat_config_t config;
-};*/
 
 static uint32_t instance_counter = 0U;
 static uz_EnDat_t instances[UZ_EnDat_MAX_INSTANCES] = { 0 };
@@ -197,24 +193,6 @@ uint16_t uz_EnDat_factor_converter(float in) {
 
     return ((uint16_t)i);
 }
-/*
-uint16_t uz_EnDat_controlword_builder(controlword_expanded *inp) {
-    uz_assert_not_NULL(inp);
-    uint16_t out = 0U;
-    uint16_t i = 0;
-    uint16_t temp = 0;
-    float power2 = 2.0f;
-    for (i = 1; i < 16; i++) {
-        power2 *= power2;
-        if (*inp[i-1] == true) {
-        temp += (uint16_t) power2;
-        }
-        
-    }
-    out = (uint16_t)temp;
-    return (out);
-}*/
-
 
 uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency frequency) {
 uint8_t ret = 3U;
@@ -265,14 +243,8 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 3);
         out  &= (controlword)~((controlword)1 << 4);
         out  &= (controlword)~((controlword)1 << 5);
-        
-        /**inp[0] = true;
-        *inp[1] = true;
-        *inp[2] = true;
-        *inp[3] = false;
-        *inp[4] = false;
-        *inp[5] = false;*/
-            break;
+
+        break;
 
     case uz_EnDat_Encoder_send_position_values_with_additional_data:
         out  |= ((controlword)1 << 3);
@@ -281,12 +253,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 0);
         out  &= (controlword)~((controlword)1 << 1);
         out  &= (controlword)~((controlword)1 << 2);
-        /**inp[0] = false;
-        *inp[1] = false;
-        *inp[2] = false;
-        *inp[3] = true;
-        *inp[4] = true;
-        *inp[5] = true;*/
+        
         break;
 
     case uz_EnDat_Selection_of_memory_area:
@@ -296,12 +263,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 0);
         out  &= (controlword)~((controlword)1 << 4);
         out  &= (controlword)~((controlword)1 << 5);
-        /**inp[0] = false;
-        *inp[1] = true;
-        *inp[2] = true;
-        *inp[3] = true;
-        *inp[4] = false;
-        *inp[5] = false;*/
+        
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_selection_of_memory_area_or_of_the_additional_data:
@@ -311,12 +273,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 2);
         out  &= (controlword)~((controlword)1 << 4);
         out  &= (controlword)~((controlword)1 << 5);
-        /**inp[0] = true;
-        *inp[1] = false;
-        *inp[2] = false;
-        *inp[3] = true;
-        *inp[4] = false;
-        *inp[5] = false;*/
+        
         break;
 
     case uz_EnDat_Encoder_send_parameters:
@@ -326,12 +283,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 2);
         out  &= (controlword)~((controlword)1 << 3);
         out  &= (controlword)~((controlword)1 << 4);
-        /**inp[0] = true;
-        *inp[1] = true;
-        *inp[2] = false;
-        *inp[3] = false;
-        *inp[4] = false;
-        *inp[5] = true;*/
+        
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_send_parameter:
@@ -341,12 +293,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 1);
         out  &= (controlword)~((controlword)1 << 3);
         out  &= (controlword)~((controlword)1 << 4);
-        /**inp[0] = false;
-        *inp[1] = false;
-        *inp[2] = true;
-        *inp[3] = false;
-        *inp[4] = false;
-        *inp[5] = true;*/
+        
         break;
 
     case uz_EnDat_Encoder_receive_parameters:
@@ -356,12 +303,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 0);
         out  &= (controlword)~((controlword)1 << 1);
         out  &= (controlword)~((controlword)1 << 5);
-        /**inp[0] = false;
-        *inp[1] = false;
-        *inp[2] = true;
-        *inp[3] = true;
-        *inp[4] = true;
-        *inp[5] = false;*/
+        
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_parameter:
@@ -371,12 +313,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  |= ((controlword)1 << 4);
         out  &= (controlword)~((controlword)1 << 2);
         out  &= (controlword)~((controlword)1 << 5);
-        /**inp[0] = true;
-        *inp[1] = true;
-        *inp[2] = false;
-        *inp[3] = true;
-        *inp[4] = true;
-        *inp[5] = false;*/
+        
         break;
 
     case uz_EnDat_Encoder_receive_reset:
@@ -386,12 +323,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 0);
         out  &= (controlword)~((controlword)1 << 2);
         out  &= (controlword)~((controlword)1 << 4);
-        /**inp[0] = false;
-        *inp[1] = true;
-        *inp[2] = false;
-        *inp[3] = true;
-        *inp[4] = false;
-        *inp[5] = true;*/
+        
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_error_reset:
@@ -401,12 +333,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  |= ((controlword)1 << 5);
         out  &= (controlword)~((controlword)1 << 1);
         out  &= (controlword)~((controlword)1 << 4);
-        /**inp[0] = true;
-        *inp[1] = false;
-        *inp[2] = true;
-        *inp[3] = true;
-        *inp[4] = false;
-        *inp[5] = true;*/
+        
         break;
 
     case uz_EnDat_Encoder_receive_test_command:
@@ -416,12 +343,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 1);
         out  &= (controlword)~((controlword)1 << 2);
         out  &= (controlword)~((controlword)1 << 3);
-        /**inp[0] = true;
-        *inp[1] = false;
-        *inp[2] = false;
-        *inp[3] = false;
-        *inp[4] = true;
-        *inp[5] = true;*/
+        
         break;
 
     case uz_EnDat_Encoder_send_position_values_and_receive_test_command:
@@ -431,12 +353,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  |= ((controlword)1 << 5);
         out  &= (controlword)~((controlword)1 << 0);
         out  &= (controlword)~((controlword)1 << 3);
-        /**inp[0] = false;
-        *inp[1] = true;
-        *inp[2] = true;
-        *inp[3] = false;
-        *inp[4] = true;
-        *inp[5] = true;*/
+        
         break;
 
     case uz_EnDat_Encoder_send_test_values:
@@ -446,12 +363,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 1);
         out  &= (controlword)~((controlword)1 << 3);
         out  &= (controlword)~((controlword)1 << 5);
-        /**inp[0] = true;
-        *inp[1] = false;
-        *inp[2] = true;
-        *inp[3] = false;
-        *inp[4] = true;
-        *inp[5] = false;*/
+        
         break;
 
 
@@ -462,12 +374,7 @@ controlword uz_EnDat_set_operation_mode(controlword in, uz_EnDat_protocol_opmode
         out  &= (controlword)~((controlword)1 << 3);
         out  &= (controlword)~((controlword)1 << 5);
         out  &= (controlword)~((controlword)1 << 2);
-        /**inp[0] = false;
-        *inp[1] = true;
-        *inp[2] = false;
-        *inp[3] = false;
-        *inp[4] = true;
-        *inp[5] = false;*/
+        
         break;
     default:
         out  |= ((controlword)1 << 0);

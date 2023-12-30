@@ -20,7 +20,8 @@ UZ_EnDat/UZ_ENDAT/CLKDIV1/Triggered Subsystem --> uz_EnDat_src_Triggered_Subsyst
 UZ_EnDat/UZ_ENDAT/CLKDIV1 --> uz_EnDat_src_CLKDIV1
 UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL --> uz_EnDat_src_WORDTOBOOL
 UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW --> uz_EnDat_src_CONTROLWORDRAW
-UZ_EnDat/UZ_ENDAT/CRC_Check/FF0 --> uz_EnDat_src_FF0
+UZ_EnDat/UZ_ENDAT/CRC_Check/DFF1/JKFF --> uz_EnDat_src_JKFF
+UZ_EnDat/UZ_ENDAT/CRC_Check/DFF1 --> uz_EnDat_src_DFF1
 UZ_EnDat/UZ_ENDAT/CRC_Check --> uz_EnDat_src_CRC_Check
 UZ_EnDat/UZ_ENDAT/Compare To Constant --> uz_EnDat_src_Compare_To_Constant_block
 UZ_EnDat/UZ_ENDAT/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block

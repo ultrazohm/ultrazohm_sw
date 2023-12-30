@@ -21,7 +21,8 @@ vcom  uz_EnDat_src_Triggered_Subsystem_block.vhd
 vcom  uz_EnDat_src_CLKDIV1.vhd
 vcom  uz_EnDat_src_WORDTOBOOL.vhd
 vcom  uz_EnDat_src_CONTROLWORDRAW.vhd
-vcom  uz_EnDat_src_FF0.vhd
+vcom  uz_EnDat_src_JKFF.vhd
+vcom  uz_EnDat_src_DFF1.vhd
 vcom  uz_EnDat_src_CRC_Check.vhd
 vcom  uz_EnDat_src_Compare_To_Constant_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block.vhd

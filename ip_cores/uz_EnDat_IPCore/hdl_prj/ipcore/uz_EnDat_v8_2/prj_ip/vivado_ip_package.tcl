@@ -24,7 +24,8 @@ add_files -norecurse {../hdl/uz_EnDat_src_Triggered_Subsystem_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_CLKDIV1.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_WORDTOBOOL.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_CONTROLWORDRAW.vhd}
-add_files -norecurse {../hdl/uz_EnDat_src_FF0.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_JKFF.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_DFF1.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_CRC_Check.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant1_block.vhd}
@@ -153,7 +154,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2113360068 [ipx::current_core]
+set_property core_revision 2113361747 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_EnDat_src_UZ_ENDAT_pac.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -244,10 +245,14 @@ ipx::add_file {hdl/uz_EnDat_src_CONTROLWORDRAW.vhd} [ipx::get_file_groups xilinx
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_CONTROLWORDRAW.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_CONTROLWORDRAW.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_CONTROLWORDRAW.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_FF0.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_FF0.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_FF0.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_FF0.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_JKFF.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_JKFF.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_JKFF.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_JKFF.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_DFF1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_DFF1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_DFF1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_DFF1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_CRC_Check.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_CRC_Check.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_CRC_Check.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

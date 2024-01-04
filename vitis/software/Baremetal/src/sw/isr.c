@@ -256,10 +256,10 @@ void ISR_Control(void *data)
 //    uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x100, 0U);
 
     // read pu_voltages_vsd ip
-    Global_Data.av.vd_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x108, pu_volts_vsd_fixedpoint_definition);
-    Global_Data.av.vq_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x10C, pu_volts_vsd_fixedpoint_definition);
-    Global_Data.av.vx_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x110, pu_volts_vsd_fixedpoint_definition);
-    Global_Data.av.vy_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x114, pu_volts_vsd_fixedpoint_definition);
+//    Global_Data.av.vd_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x108, pu_volts_vsd_fixedpoint_definition);
+//    Global_Data.av.vq_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x10C, pu_volts_vsd_fixedpoint_definition);
+//    Global_Data.av.vx_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x110, pu_volts_vsd_fixedpoint_definition);
+//    Global_Data.av.vy_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x114, pu_volts_vsd_fixedpoint_definition);
 //
 //    // save raw angles to variables
 //    Global_Data.av.theta_mech_rad = Global_Data.av.posVel_mech.position;
@@ -297,7 +297,7 @@ void ISR_Control(void *data)
 //    Global_Data.av.torque = Global_Data.aa.A3.me.ADC_A1 * TORQUE_CONV;
 
     // write measured dc_link voltage to pu_voltages ip
-    uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(Global_Data.av.v_dc1/base_val.VB, 15));
+    uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(Global_Data.av.v_dc1/base_val.VB, 15));
 
     // check current limit
 	if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
@@ -307,10 +307,11 @@ void ISR_Control(void *data)
 	}
 
 	// check fast fpga current limit violation
-	if (uz_axi_read_bool(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x104) == true) {
+	if (uz_axi_read_bool(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x108) == true) {
 		ultrazohm_state_machine_set_stop(true);
 		Global_Data.av.overcurrent_FPGA = true;
 		Global_Data.av.overcurrent_FPGA_fl = 1.0f;
+		uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x104, false); //clear reset flag for current limit violation
 	} else {
 		Global_Data.av.overcurrent_FPGA = false;
 		Global_Data.av.overcurrent_FPGA_fl = 0.0f;
@@ -355,18 +356,60 @@ void ISR_Control(void *data)
 
 
 	// write reference values to mpc ip
-    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
-//    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
-    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
-    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
-    uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
+
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+//    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
+    uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
 
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==idle_state)
     {
     	uz_FOC_reset(Global_Data.objects.foc_current);
-    	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, false);
+    	uz_axi_write_bool(XPAR_MPC_PAR_MPC_ENB_0_BASEADDR + 0x17C, false);
 
     	uz_PI_Controller_reset(Global_Data.objects.MPC_setpoint_PI);
     	Global_Data.av.i_q_ref_PI_out_pu = Global_Data.av.i_q_ref_pu;
@@ -379,7 +422,8 @@ void ISR_Control(void *data)
 //		uz_PWM_SS_2L_hw_SetMode(Global_Data.objects.pwm_d1_pin_6_to_11, direct_control_via_FPGA);
         // Start: Control algorithm - only if ultrazohm is in control state
     	if (Global_Data.av.debug_ip_off == true) {
-    	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, true);
+    	uz_axi_write_bool(XPAR_MPC_PAR_MPC_ENB_0_BASEADDR + 0x17C, true);
+    	uz_axi_write_bool(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x104, true); //reset current limit violation
     	}
 
     	Global_Data.av.i_q_ref_PI_out_pu = uz_PI_Controller_sample(Global_Data.objects.MPC_setpoint_PI, Global_Data.av.i_q_ref_pu , Global_Data.av.i_q_ip , false);
@@ -475,7 +519,14 @@ void ISR_Control(void *data)
         		// set next lamda_u
         		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_now + Global_Data.rasv.lambda_u_step;
         		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
-        		uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
         	}
         }
 
@@ -487,7 +538,14 @@ void ISR_Control(void *data)
     	Global_Data.rasv.f_cnt_lambda_u = 1.0f;
 		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
 		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
-		uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+		uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+		uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+		uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+		uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+		uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+		uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+		uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+		uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
     }
 
         isr_cnt++;

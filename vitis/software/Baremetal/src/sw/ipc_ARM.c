@@ -203,12 +203,26 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_3):
 			data->av.lambda_u = value;
-			uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
+			uz_axi_write_int32(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 17));
 			break;
 
 		case (Set_Send_Field_4):
 			data->av.i_max = value;
-			uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x110, data->av.i_max, i_max_fp_def);
 			break;
 
 		case (Set_Send_Field_5):
@@ -218,7 +232,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_6):
 			data->av.ref_idx = (uint32_t)value;
-			uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x104, data->av.ref_idx);
+//			uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x104, data->av.ref_idx);
 			break;
 
 		case (My_Button_1):

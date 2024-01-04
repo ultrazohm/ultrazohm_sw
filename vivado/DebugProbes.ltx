@@ -224,112 +224,14 @@
                                 "id": 6,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
-                                "isVector": true,
+                                "isVector": false,
                                 "leftIndex": 0,
-                                "rightIndex": 31,
+                                "rightIndex": 0,
                                 "portIndex": 6,
                                 "nets": [
                                     {
                                         "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1",
-                                        "isBus": true,
-                                        "subnets": [
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[31]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[30]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[29]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[28]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[27]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[26]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[25]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[24]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[23]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[22]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[21]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[20]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[19]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[18]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[17]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[16]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[15]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[14]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[13]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[12]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[11]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[10]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[9]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[8]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[7]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[6]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[5]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[4]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[3]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[2]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[1]"
-                                            },
-                                            {
-                                                "name": "zusys_i/mpc/mpc_ila_0/U0/probe6_1[0]"
-                                            }
-                                        ]
+                                        "isBus": false
                                     }
                                 ]
                             },
@@ -1165,8 +1067,6 @@
                             },
                             {
                                 "name": "probe4",
-                                "connectedBus": "cost_opt_0_optimization_done",
-                                "protocol": "PROBE",
                                 "port_maps": [
                                     {
                                         "logical_port": "probe4",
@@ -1197,8 +1097,6 @@
                             },
                             {
                                 "name": "probe6",
-                                "connectedBus": "cost_opt_0_opt_index",
-                                "protocol": "PROBE",
                                 "port_maps": [
                                     {
                                         "logical_port": "probe6",
@@ -1206,7 +1104,7 @@
                                             "id": 6,
                                             "name": "probe6",
                                             "leftBit": 0,
-                                            "width": 32
+                                            "width": 1
                                         }
                                     }
                                 ]
@@ -1634,7 +1532,7 @@
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0_A_S1",
                                         "isBus": false,
-                                        "parentNetId": 253
+                                        "parentNetId": 221
                                     }
                                 ]
                             },
@@ -1683,7 +1581,7 @@
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0_A_S4",
                                         "isBus": false,
-                                        "parentNetId": 256
+                                        "parentNetId": 224
                                     }
                                 ]
                             },
@@ -1700,7 +1598,7 @@
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0_B_S1",
                                         "isBus": false,
-                                        "parentNetId": 257
+                                        "parentNetId": 225
                                     }
                                 ]
                             },
@@ -1749,7 +1647,7 @@
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0_B_S4",
                                         "isBus": false,
-                                        "parentNetId": 260
+                                        "parentNetId": 228
                                     }
                                 ]
                             },
@@ -1766,7 +1664,7 @@
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0_C_S1",
                                         "isBus": false,
-                                        "parentNetId": 261
+                                        "parentNetId": 229
                                     }
                                 ]
                             },
@@ -1815,7 +1713,7 @@
                                     {
                                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0_C_S4",
                                         "isBus": false,
-                                        "parentNetId": 264
+                                        "parentNetId": 232
                                     }
                                 ]
                             },
@@ -3983,7 +3881,7 @@
                 ],
                 "parent_nets": [
                     {
-                        "id": 253,
+                        "id": 221,
                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_A/Q[2]",
                         "state_reg": [
                             {
@@ -4018,7 +3916,7 @@
                         ]
                     },
                     {
-                        "id": 256,
+                        "id": 224,
                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_A/Q[1]",
                         "state_reg": [
                             {
@@ -4053,7 +3951,7 @@
                         ]
                     },
                     {
-                        "id": 257,
+                        "id": 225,
                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_B/Q[2]",
                         "state_reg": [
                             {
@@ -4088,7 +3986,7 @@
                         ]
                     },
                     {
-                        "id": 260,
+                        "id": 228,
                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_B/Q[1]",
                         "state_reg": [
                             {
@@ -4123,7 +4021,7 @@
                         ]
                     },
                     {
-                        "id": 261,
+                        "id": 229,
                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_C/Q[2]",
                         "state_reg": [
                             {
@@ -4158,7 +4056,7 @@
                         ]
                     },
                     {
-                        "id": 264,
+                        "id": 232,
                         "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_C/Q[1]",
                         "state_reg": [
                             {

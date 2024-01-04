@@ -69,7 +69,7 @@ P1 = P2(1:L/2+1,:);                                       % Berechnung einseitig
 P1(2:end-1) = 2*P1(2:end-1);
 FFT_sig=P1;
 %freq=d;                                                % Rückskalieren,wenn die x-Achse von 0 bis 1 geht (Sonderfall)
-freq=d.*1/(time_cut(2)-time_cut(1))/Fs;                 % Rückskalieren, wenn die x-Achse beliebig ist
+freq=d.*1/(time_cut(i,2)-time_cut(i,1))/Fs;                 % Rückskalieren, wenn die x-Achse beliebig ist
 
 % extract fundamental frequency and amplitude from each phase current and
 % datapoint
@@ -86,12 +86,15 @@ end
 FFT_sig_withoutFundamental=FFT_sig;
 FFT_sig_withoutFundamental(VectorNumber,:)=0; %Eliminate fundamental in order to calculate THD
 
+% FFT_sig_withoutFundamental(101,:)=0;
+% FFT_sig_withoutFundamental(141,:)=0;
 % for k= (VectorNumber-5):(VectorNumber+5)
 %     FundamentalCurrent = FundamentalCurrent + FFT_sig_withoutFundamental(k);
 %     FFT_sig_withoutFundamental(k,:)=0; %Eliminate fundamental in order to calculate THD
 % end
 
-
+bar(freq(1,:)./freq(1,VectorNumber(1)),FFT_sig(:,1)/FundamentalCurrent(1)*100, 'BarWidth',barWidth)
+axis([0 21 0 5]);
 
 %bsxfun() multipliziert den Vektor in jeder spalte/zeile mit sich selbst,
 %dadurch erreiche ich, das jeder Wert im urpsrünglichen Vektor quadriert

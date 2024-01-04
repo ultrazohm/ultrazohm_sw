@@ -5,10 +5,10 @@ lw=2;
 %Fontsize
 fs=24;
 
-barWidth = 10;
+barWidth = 1;
 
-time = rpm5A20kHzFOCv5ADC.Times;
-sig = rpm5A20kHzFOCv5ADC.Channel1;
+time = rpm5A10kHzFOC.Times;
+sig = rpm5A10kHzFOC.Channel1;
 
  signal(:,1) = time;
  signal(:,2) = sig(:,1);
@@ -164,7 +164,7 @@ ylab = ylabel('|i_{a1}(f)| in %');
 ps.LineWidth=lw;
 
 axis([0 50000 0 5]);
-
+% breakyaxis([3 99]);
 % set(gca,'yscal','log')
 h.FontWeight='bold';
 h.FontSize=fs;
@@ -175,7 +175,7 @@ ax.LineWidth=lwa;
 set(xlab,'FontSize',24);
 set(ylab,'FontSize',24);
 set(gca,'FontSize',24)
-annotation('textbox',[.8 .4 .1 .5],'String', {['THD: ' num2str(round(THD,2)) ' %'] ['f_{sw}   : xx.x kHz'] ['I_{fun}   : x.x p.u.']},'FitBoxToText', 'on', 'FontSize', 18)
+% annotation('textbox',[.8 .4 .1 .5],'String', {['THD: ' num2str(round(THD,2)) ' %'] ['f_{sw}   : xx.x kHz'] ['I_{fun}   : x.x p.u.']},'FitBoxToText', 'on', 'FontSize', 18)
 
 %% plot phase currents, no switching penalization, 'Log_2023-09-15_16-38-27.csv'
 time_tmp = time(1,1586:1886) - time(1,1586);

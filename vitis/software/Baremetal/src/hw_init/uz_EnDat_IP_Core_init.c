@@ -6,7 +6,7 @@
 #include "xparameters.h"
 
 #define XPAR_UZ_USER_UZ_ENDAT_0_IP_CORE_FREQUENCY 100000000U
-//#define XPARS_NON_FINAL_BASE_ADDRESS 0x8000000U
+
 
  uz_EnDat_t* uz_EnDat_IP_core_init(void) {
     uz_EnDat_t* EnDat_init_object;

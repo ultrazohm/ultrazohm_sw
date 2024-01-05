@@ -280,12 +280,19 @@ int main(void)
             uz_axi_write_uint32(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + offset_angle_el_AXI_Data_uz_park_transform_ip, uz_convert_float_to_sfixed(0.0f, 14)); //offset angle is already respected in uz_resolver_pl_interface
 
             // ctrl_state_machine IP init
-            uz_axi_write_uint32(XPAR_MPC_CTRL_STAT_IP_0_BASEADDR + 0x100, 64U); //state machine shall perform 64 iterations for the 64 switch positions
+            uz_axi_write_uint32(XPAR_MPC_CTRL_STAT_IP_0_BASEADDR + 0x100, 8U); //state machine shall perform 8 iterations for the 8 parallel branches of the MPC (=64 switch positions)
 
             // mpc_voltages IP init
             uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x100, 1U); //0=index via AXI 1=index via PL
             uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x11C, 0U); //0=v_dc via AXI 1=v_dc via PL measured
             uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(50.0f/base_val.VB, 15));
+            uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x108, 8U); // idx_offset_1
+            uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x10C, 16U); // idx_offset_2
+            uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x110, 24U); // idx_offset_3
+            uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x114, 32U); // idx_offset_4
+            uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x120, 40U); // idx_offset_5
+            uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x124, 48U); // idx_offset_6
+            uz_axi_write_uint32(XPAR_MPC_PAR_PU_VOLTS_VSD_0_BASEADDR + 0x128, 56U); // idx_offset_7
 
             // pu_omega_m IP init
             float pu_omega_m_conversion = 1.0f/base_val.omegaB;

@@ -20,6 +20,8 @@
 #include "xcp_config.h"
 #include "XCP_Basic/XcpBasic.h"
 
+#include "RPU_APU_exchange.h"
+
 /*-------------------------------------------------------------------
  * Types
  *-----------------------------------------------------------------*/
@@ -38,22 +40,6 @@
 #define PRIO_XCP_RX             5
 #define PRIO_XCP_TX             4
 
-// Address definitions for data exchange R5 <-> A53
-#define XCP_MEAS_R5_ADDR        0xFFFC0400
-#define XCP_MEAS_R5_LEN         0x00001400
-// Timestamp from R5 is used
-#define XCP_TIMESTAMP_R5_ADDR   0xFFFC0400
-
-
-/*
- * OCM bank3 is reserved for javascope: Address: 0xFFFF0000, len 0x10000 (= 65K).
- * Place XCP data behind javascope memory in same bank3. Use the last 32K for this.
- */
-#define XCP_OUT_ADDR				0xFFFF8000
-#define XCP_OUT_LEN					0x00007000
-#define XCP_IN_ADDR 				(XCP_OUT_ADDR + XCP_OUT_LEN)
-#define XCP_IN_LEN					0x00001000
-
 /*-------------------------------------------------------------------
  * Variables
  *-----------------------------------------------------------------*/
@@ -65,18 +51,10 @@ static QueueHandle_t queue_xcp_rx = NULL;
 
 static uint32_t xcp_timestamp;
 
-volatile size_t addr_out_w = 0;
-volatile size_t addr_out_r = 0;
-volatile size_t addr_in_w = 0;
-volatile size_t addr_in_r = 0;
-volatile uint8_t xcp_eth_connected = 0;
+static volatile uint8_t xcp_eth_connected = 0;
 
-volatile uint32_t cnt_msg_out_w = 0;
-volatile uint32_t cnt_msg_out_r = 0;
-
-
-volatile uint32_t txq_msg_written = 0;
-volatile uint32_t txq_msg_read = 0;
+static volatile uint32_t txq_msg_written = 0;
+static volatile uint32_t txq_msg_read = 0;
 
 /*-------------------------------------------------------------------
  * Local functions
@@ -94,77 +72,11 @@ void xcp_interface_init(void)
     queue_xcp_tx = xQueueGenericCreate(QUEUE_XCP_TX_LEN, BUF_SIZE_XCP_TX, 0);
     queue_xcp_rx = xQueueGenericCreate(QUEUE_XCP_RX_LEN, BUF_SIZE_XCP_RX, 0);
 
-    *(uint32_t *)XCP_OUT_ADDR = 0;
-    *(uint32_t *)XCP_IN_ADDR = 0;
+    rpu_apu_exchange_init();
 
     XcpInit();
 //    bsp_timer_init();
 //    bsp_timer_start();
-}
-
-/*
- * Memory exchange via OCM
- * Memory layout:
- * Byte [0..3]: package len
- * Byte [4..(3 + len)]: payload
- * Byte [len..(3 + len)]: zero. Indicator for OCM reader, this is end of msgs.
- * 						  (If a package follows it will be overwritten
- * 						  with actual length)
- */
-
-void memcpy_volatile(volatile uint8_t *dst, volatile uint8_t *src, int len)
-{
-	for (int i = 0; i < len; i++) {
-		dst[i] = src[i];
-	}
-}
-
-void write_package_to_ocm(volatile size_t *dst_addr_p, uint8_t len, uint8_t *data)
-{
-	volatile uint8_t *dst_p = (volatile uint8_t *)(*dst_addr_p);
-
-	// Write package len to [0..3]
-    *(uint32_t *)dst_p = len;
-    dst_p += 4;
-
-    // Write payload to [4..(3+len)]
-    memcpy_volatile(dst_p, data, len);
-    dst_p += len;
-
-    // Set next len to 0 at [(4+len)..(7+len)]
-    *(uint32_t *)dst_p = 0;
-
-    // Write current OCM write address to global variable
-    *dst_addr_p = (size_t)dst_p;
-
-    // Todo remove debug variable
-    cnt_msg_out_w++;
-}
-
-void read_package_from_ocm(volatile size_t *src_addr_p, uint8_t *len, uint8_t **data_p)
-{
-	volatile uint8_t *src_p = (volatile uint8_t *)(*src_addr_p);
-
-	// Read len from [0..3]
-	*len = *(uint32_t *)src_p;
-	// Immediately 'delete' current message
-	*(uint32_t *)src_p = 0;
-	src_p += 4;
-
-	// Is a package ready to read?
-	if (*len == 0) {
-		return;
-	}
-
-	// Set data_p to start of message
-	*data_p = (uint8_t *)src_p;
-
-    // Write current OCM read address to global variable
-	src_p += *len;
-    *src_addr_p = (size_t)src_p;
-
-    // Todo remove debug variable
-	cnt_msg_out_r++;
 }
 
 /*-------------------------------------------------------------------
@@ -308,9 +220,7 @@ void xcp_device(void *p)
 
 void xcp_events_10kHz(void)
 {
-	// 'Delete' messages in exchange memory
-	*(volatile uint32_t *)XCP_OUT_ADDR = 0;
-	addr_out_w = XCP_OUT_ADDR;
+	rpu_apu_exchange_reset(rapu_exchange_write_rpu);
 
     xcp_timestamp += 1; // = uz_SystemTime_GetUptimeInUs();
 
@@ -354,7 +264,7 @@ void read_rxQueue_write_OCM(void)
 		return;
 	}
 
-	addr_in_w = XCP_IN_ADDR;
+	rpu_apu_exchange_reset(rapu_exchange_write_apu);
 	while (1) {
 		uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
 
@@ -363,13 +273,13 @@ void read_rxQueue_write_OCM(void)
 			break;
 		}
 
-		write_package_to_ocm(&addr_in_w, BUF_SIZE_XCP_RX, buf_xcp_rx);
+		rpu_apu_exchange_writeOCM(rapu_exchange_write_apu, BUF_SIZE_XCP_RX, buf_xcp_rx);
 	}
 }
 
 void read_OCM_write_txQueue(void)
 {
-	addr_out_r = XCP_OUT_ADDR;
+	rpu_apu_exchange_reset(rapu_exchange_read_apu);
 
 	while (1) {
 		if (xcp_eth_connected == 0) {
@@ -378,12 +288,11 @@ void read_OCM_write_txQueue(void)
 
 		uint8_t *data;
 		uint8_t len;
-		read_package_from_ocm(&addr_out_r, &len, &data);
-
-		// Is a message present in the OCM?
-		if (len == 0) {
+		if (! rpu_apu_exchange_readOCM(rapu_exchange_read_apu, &len, &data)) {
+			// Could not read a message from OCM
 			break;
 		}
+
 		BaseType_t* const taskWoken_p = 0;
 		if(xQueueSendFromISR(queue_xcp_tx, data, taskWoken_p) != pdPASS) {
 			xil_printf("%s(): xQueueSend() failed\n", __func__);
@@ -409,15 +318,13 @@ static xcp_data_t xcp_data = {0};
 
 void xcp_stim(void)
 {
-	addr_in_r = XCP_IN_ADDR;
+	rpu_apu_exchange_reset(rapu_exchange_read_rpu);
 
 	while (1) {
 		uint8_t *data;
 		uint8_t len;
-		read_package_from_ocm(&addr_in_r, &len, &data);
-
-		// Is a message present in the OCM?
-		if (len == 0) {
+		if (! rpu_apu_exchange_readOCM(rapu_exchange_read_rpu, &len, &data)) {
+			// Could not read a message from OCM
 			break;
 		}
 
@@ -493,7 +400,7 @@ void ApplXcpSend( vuint8 len, const BYTEPTR msg )
     msg_with_header_p[3] = (uint8_t) (xcp_package_counter >> 8);
     xcp_package_counter++;
 
-    write_package_to_ocm(&addr_out_w, len + 4, msg_with_header_p);
+    rpu_apu_exchange_writeOCM(rapu_exchange_write_rpu, len + 4, msg_with_header_p);
 
 //    BaseType_t * const pxHigherPriorityTaskWoken_ = 0;
 //    if(xQueueSendFromISR(queue_xcp_tx,

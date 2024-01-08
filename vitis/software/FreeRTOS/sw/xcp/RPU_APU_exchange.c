@@ -95,17 +95,14 @@ void rpu_apu_exchange_reset(rapu_exchange_t rapu)
 	}
 }
 
-//void write_package_to_ocm(volatile size_t *dst_addr_p, uint8_t len, uint8_t *data)
 void rpu_apu_exchange_writeOCM(rapu_exchange_t rapu, uint8_t len, uint8_t *data)
 {
-	size_t addr_w = 0;
+	volatile uint8_t *dst_p;
 	if (rapu == rapu_exchange_write_apu) {
-		addr_w = addr_in_w;
+		dst_p = (volatile uint8_t *)(addr_in_w);
 	} else if (rapu == rapu_exchange_write_rpu) {
-		addr_w = addr_out_w;
+		dst_p = (volatile uint8_t *)(addr_out_w);
 	}
-
-	volatile uint8_t *dst_p = (volatile uint8_t *)(addr_w);
 
 	// Write package len
     *(uint32_t *)dst_p = len;
@@ -119,23 +116,24 @@ void rpu_apu_exchange_writeOCM(rapu_exchange_t rapu, uint8_t len, uint8_t *data)
     *(uint32_t *)dst_p = 0;
 
     // Write current OCM write address for the next call/entry
-    *(volatile size_t *)addr_w = (size_t)dst_p;
+	if (rapu == rapu_exchange_write_apu) {
+		addr_in_w = (size_t)dst_p;
+	} else if (rapu == rapu_exchange_write_rpu) {
+		addr_out_w = (size_t)dst_p;
+	}
 
     // Todo remove debug variable
     cnt_msg_out_w++;
 }
 
-//void read_package_from_ocm(volatile size_t *src_addr_p, uint8_t *len, uint8_t **data_p)
 int rpu_apu_exchange_readOCM(rapu_exchange_t rapu, uint8_t *len, uint8_t **data_p)
 {
-	size_t addr_r = 0;
+	volatile uint8_t *src_p;
 	if (rapu == rapu_exchange_read_apu) {
-		addr_r = addr_out_r;
+		src_p = (volatile uint8_t *)(addr_out_r);
 	} else if (rapu == rapu_exchange_read_rpu) {
-		addr_r = addr_in_r;
+		src_p = (volatile uint8_t *)(addr_in_r);
 	}
-
-	volatile uint8_t *src_p = (volatile uint8_t *)(addr_r);
 
 	// Read len
 	*len = *(uint32_t *)src_p;
@@ -154,7 +152,11 @@ int rpu_apu_exchange_readOCM(rapu_exchange_t rapu, uint8_t *len, uint8_t **data_
 	src_p += *len;
 
     // Write current OCM write address for the next call/entry
-    *(volatile size_t *)addr_r = (size_t)src_p;
+	if (rapu == rapu_exchange_read_apu) {
+		addr_out_r = (size_t)src_p;
+	} else if (rapu == rapu_exchange_read_rpu) {
+		addr_in_r = (size_t)src_p;
+	}
 
     // Todo remove debug variable
 	cnt_msg_out_r++;

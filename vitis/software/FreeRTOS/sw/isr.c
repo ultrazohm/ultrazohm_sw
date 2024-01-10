@@ -71,8 +71,6 @@ void Transfer_ipc_Intr_Handler(void *data)
 	}
 	// queue is purged when new connection is established
 
-	extern void dummy_task(void);
-	dummy_task();
 	read_OCM_write_txQueue();
 	read_rxQueue_write_OCM();
 

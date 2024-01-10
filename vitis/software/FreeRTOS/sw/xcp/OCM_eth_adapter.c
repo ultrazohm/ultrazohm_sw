@@ -50,8 +50,11 @@ static QueueHandle_t queue_xcp_rx = NULL;
 
 static volatile uint8_t xcp_eth_connected = 0;
 
-static volatile uint32_t txq_msg_written = 0;
-static volatile uint32_t txq_msg_read = 0;
+// TODO delete
+static volatile uint32_t msg_txq_written = 0;
+static volatile uint32_t msg_txq_read = 0;
+static volatile uint32_t msg_rxq_written = 0;
+static volatile uint32_t msg_rxq_read = 0;
 
 /*-------------------------------------------------------------------
  * Local functions
@@ -62,7 +65,7 @@ static void my_print_ip(ip_addr_t *ip)
             ip4_addr3(ip), ip4_addr4(ip));
 }
 
-static void xcp_eth_tx(void *arg_p)
+static void ocm_eth_adapter_tx(void *arg_p)
 {
     int sd = * (int *) arg_p;
     int nwrote;
@@ -79,7 +82,7 @@ static void xcp_eth_tx(void *arg_p)
             vTaskDelay(5);
             return;
         }
-        txq_msg_read++;
+        msg_txq_read++;
 
         // length was already written before msg was given to queue
         uint16_t len_xcp_tx;
@@ -97,7 +100,7 @@ static void xcp_eth_tx(void *arg_p)
     vTaskDelete(NULL);
 }
 
-static void xcp_eth_rx(void *arg_p)
+static void ocm_eth_adapter_rx(void *arg_p)
 {
     int sd = * (int *) arg_p;
     int n;
@@ -127,6 +130,7 @@ static void xcp_eth_rx(void *arg_p)
             vTaskDelay(5);
             return;
         }
+        msg_rxq_written++;
     }
 
     xcp_eth_connected = 0;
@@ -137,7 +141,7 @@ static void xcp_eth_rx(void *arg_p)
     vTaskDelete(NULL);
 }
 
-static void xcp_interface_init(void)
+static void ocm_eth_adapter_init(void)
 {
     queue_xcp_tx = xQueueGenericCreate(QUEUE_XCP_TX_LEN, BUF_SIZE_XCP_TX, 0);
     queue_xcp_rx = xQueueGenericCreate(QUEUE_XCP_RX_LEN, BUF_SIZE_XCP_RX, 0);
@@ -148,15 +152,11 @@ static void xcp_interface_init(void)
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
-void xcp_device(void *p)
+void ocm_eth_adapter_task(void *p)
 {
     xil_printf("%s() start\n", __func__);
 
-    extern void xcp_interface_init(void);
-    xcp_interface_init();
-
-    //void dummy_task(void *p);
-    //sys_thread_new("dummy_task", dummy_task, NULL, STACKSIZE_XCP, PRIO_XCP_RX);
+    ocm_eth_adapter_init();
 
     struct sockaddr_in address, remote;
     memset(&address, 0, sizeof(address));
@@ -195,10 +195,10 @@ void xcp_device(void *p)
 
             if (! flag_xcp_eth_tx_created_once) {
                 flag_xcp_eth_tx_created_once = 1;
-                sys_thread_new("xcp_eth_tx", xcp_eth_tx,
+                sys_thread_new("xcp_eth_tx", ocm_eth_adapter_tx,
                     (void*)&new_sd, STACKSIZE_XCP, PRIO_XCP_TX);
             }
-            sys_thread_new("xcp_eth_rx", xcp_eth_rx,
+            sys_thread_new("xcp_eth_rx", ocm_eth_adapter_rx,
                 (void*)&new_sd, STACKSIZE_XCP, PRIO_XCP_RX);
         }
     }
@@ -214,7 +214,7 @@ void read_rxQueue_write_OCM(void)
 		return;
 	}
 
-	rpu_apu_exchange_reset(rapu_exchange_write_apu);
+	rpu_apu_exchange_prepare(rapu_exchange_write_apu);
 	while (1) {
 		uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
 
@@ -222,14 +222,18 @@ void read_rxQueue_write_OCM(void)
 		if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) != pdPASS) {
 			break;
 		}
+		msg_rxq_read++;
 
 		rpu_apu_exchange_writeOCM(rapu_exchange_write_apu, BUF_SIZE_XCP_RX, buf_xcp_rx);
 	}
+
+	rpu_apu_exchange_cache_flush_after_write();
 }
 
 void read_OCM_write_txQueue(void)
 {
-	rpu_apu_exchange_reset(rapu_exchange_read_apu);
+	rpu_apu_exchange_cache_flush_before_read();
+	rpu_apu_exchange_prepare(rapu_exchange_read_apu);
 
 	while (1) {
 		if (xcp_eth_connected == 0) {
@@ -250,6 +254,6 @@ void read_OCM_write_txQueue(void)
 			vTaskDelay(5);
 			return;
 		}
-		txq_msg_written++;
+		msg_txq_written++;
 	}
 }

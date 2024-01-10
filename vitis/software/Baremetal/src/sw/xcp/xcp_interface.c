@@ -6,6 +6,7 @@
  */
 
 #include <stdint.h>
+#include <stddef.h>
 
 #include "xcp_config.h"
 #include "XCP_Basic/XcpBasic.h"
@@ -25,6 +26,12 @@
  *-----------------------------------------------------------------*/
 static uint32_t xcp_timestamp;
 
+// TODO delete
+static volatile uint32_t msg_ocm_written = 0;
+static volatile uint32_t msg_ocm_read = 0;
+
+volatile uint32_t data_first_addr_read_OCM = 0;
+
 /*-------------------------------------------------------------------
  * Local functions
  *-----------------------------------------------------------------*/
@@ -32,9 +39,40 @@ static uint32_t xcp_timestamp;
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
-void xcp_events_10kHz(void)
+void xcp_interface_init(void)
 {
-	rpu_apu_exchange_reset(rapu_exchange_write_rpu);
+	XcpInit();
+	rpu_apu_exchange_init();
+}
+
+void xcp_interface_stim(void)
+{
+	rpu_apu_exchange_cache_flush_before_read();
+	rpu_apu_exchange_prepare(rapu_exchange_read_rpu);
+
+	while (1) {
+		uint8_t *data;
+		uint8_t len;
+		if (! rpu_apu_exchange_readOCM(rapu_exchange_read_rpu, &len, &data)) {
+			// Could not read a message from OCM
+			break;
+		}
+		msg_ocm_read++;
+
+		XcpCommand((uint32_t *)(data + XCP_HEADER_LEN));
+	}
+}
+
+void xcp_interface_events_10kHz(void)
+{
+	/* TODO: Possible optimization: Make sure only 2 or 3 messages are written
+	 * to the OCM at a time to reduce IRQ run time in R5 and A53.
+	 *  This could be achieved by adding a counter of packages sent in a cycle.
+	 *  If this counter reaches 2 an additional xcp events activation is
+	 *  delayed to the next cycle.
+	 *  This will add jitter to the slower tasks.
+	 */
+	rpu_apu_exchange_prepare(rapu_exchange_write_rpu);
 
     xcp_timestamp += 1; // = uz_SystemTime_GetUptimeInUs();
 
@@ -69,61 +107,7 @@ void xcp_events_10kHz(void)
         XcpEvent(XCP_EVENT_1S);
     }
 
-}
-
-typedef struct {
-	struct {
-		uint8_t saw_90B[90];
-		uint32_t ticks_run;
-		uint8_t saw;
-	} meas;
-	struct {
-		uint8_t enable;
-	} stim;
-} xcp_data_t;
-static xcp_data_t xcp_data = {0};
-
-void xcp_stim(void)
-{
-	rpu_apu_exchange_reset(rapu_exchange_read_rpu);
-
-	while (1) {
-		uint8_t *data;
-		uint8_t len;
-		if (! rpu_apu_exchange_readOCM(rapu_exchange_read_rpu, &len, &data)) {
-			// Could not read a message from OCM
-			break;
-		}
-
-		XcpCommand((uint32_t *)(data + XCP_HEADER_LEN));
-	}
-}
-
-void dummy_task(void)
-{
-//	static int div_cnt = 0;
-//	if (div_cnt++ < 100) {
-//		return;
-//	}
-//	div_cnt = 0;
-
-	static int init_once = 1;
-	if (init_once) {
-		init_once = 0;
-		for (int i = 0; i < sizeof(xcp_data.meas.saw_90B); i++) {
-			xcp_data.meas.saw_90B[i] = i;
-		}
-	}
-
-	if (xcp_data.stim.enable) {
-		xcp_data.meas.saw += 1;
-		for (int i = 0; i < sizeof(xcp_data.meas.saw_90B); i++) {
-			xcp_data.meas.saw_90B[i] += 1;
-		}
-	}
-
-	xcp_events_10kHz();
-	xcp_stim();
+	rpu_apu_exchange_cache_flush_after_write();
 }
 
 void ApplXcpSend( vuint8 len, const BYTEPTR msg )
@@ -138,6 +122,7 @@ void ApplXcpSend( vuint8 len, const BYTEPTR msg )
     xcp_package_counter++;
 
     rpu_apu_exchange_writeOCM(rapu_exchange_write_rpu, len + 4, msg_with_header_p);
+    msg_ocm_written++;
 
     // TODO necessary?
     XcpSendCallBack();
@@ -147,7 +132,7 @@ MTABYTEPTR ApplXcpGetPointer( vuint8 addr_ext, vuint32 addr )
 {
     // Address extension is not used.
     // --> addr already holds the requested memory address
-    return (MTABYTEPTR)((uint64_t)addr);
+    return (MTABYTEPTR)((size_t)addr);
 }
 
 void ApplXcpInterruptDisable( void )

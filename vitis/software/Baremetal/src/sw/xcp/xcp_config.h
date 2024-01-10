@@ -42,6 +42,12 @@
 #define USE_XCP_ETH
 
 #ifdef USE_XCP_ETH
+/* TODO: Optimization
+ * Reduce size of XCP packages/msgs. APU must copy the xcp msgs to/from queues.
+ * Most of these msgs is zero, so make it shorter to copy fewer bytes.
+ *  - Reduce CTO package size to 10?
+ *  - Reduce DTO package size to 50?
+ */
 #define kXcpMaxCTO              100
 #define kXcpMaxDTO              kXcpMaxCTO
 #endif

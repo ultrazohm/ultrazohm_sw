@@ -71,6 +71,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            xcp_interface_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

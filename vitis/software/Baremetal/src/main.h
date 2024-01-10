@@ -39,6 +39,7 @@
 #include "include/encoder.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
+#include "sw/xcp/xcp_interface.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
 

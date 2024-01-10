@@ -44,7 +44,7 @@ err_t dhcp_start(struct netif *netif);
 
 static struct netif server_netif;
 
-extern void xcp_device(void *p);
+extern void ocm_eth_adapter_task(void *p);
 
 //==============================================================================================================================================================
 void print_ip(char *msg, ip_addr_t *ip)
@@ -271,7 +271,7 @@ int main_thread()
 			sys_thread_new("echod", application_thread, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
-			sys_thread_new("xcp_device", xcp_device, 0,
+			sys_thread_new("xcp_device", ocm_eth_adapter_task, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
 			break;
@@ -294,7 +294,7 @@ int main_thread()
 			sys_thread_new("echod", application_thread, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
-			sys_thread_new("xcp_device", xcp_device, 0,
+			sys_thread_new("xcp_device", ocm_eth_adapter_task, 0,
 					THREAD_STACKSIZE,
 					DEFAULT_THREAD_PRIO);
 			break;

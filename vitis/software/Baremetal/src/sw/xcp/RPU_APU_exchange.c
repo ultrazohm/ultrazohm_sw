@@ -11,8 +11,8 @@
 #include "RPU_APU_exchange.h"
 #include "xil_cache.h"
 
-#define APU
-//#define RPU
+//#define APU
+#define RPU
 #if (!defined(APU) && !defined(RPU)) || (defined(APU) && defined(RPU))
 	#error "Define either RPU or APU"
 #endif
@@ -57,10 +57,6 @@ static volatile uint32_t cnt_msg_out_r = 0;
 /*-------------------------------------------------------------------
  * Static functions
  *-----------------------------------------------------------------*/
-/* TODO volatile should not be necessary for OCM?!
- * Only 1 code position writes/reads to OCM --> no volatile necessary.
- * -> Then use memcpy() which will probably be much faster
- */
 static void memcpy_volatile(volatile uint8_t *dst, volatile uint8_t *src, int len)
 {
 	for (int i = 0; i < len; i++) {

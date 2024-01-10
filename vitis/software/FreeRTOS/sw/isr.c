@@ -25,6 +25,8 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
+#include "xcp/OCM_eth_adapter.h"
+
 struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
 
@@ -69,11 +71,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 	}
 	// queue is purged when new connection is established
 
-	extern void dummy_task(void *p);
-	dummy_task(NULL);
-	extern void read_OCM_write_txQueue(void);
+	extern void dummy_task(void);
+	dummy_task();
 	read_OCM_write_txQueue();
-	extern void read_rxQueue_write_OCM(void);
 	read_rxQueue_write_OCM();
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length

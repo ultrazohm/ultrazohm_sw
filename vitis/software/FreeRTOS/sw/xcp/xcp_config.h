@@ -26,7 +26,7 @@
 
 #ifdef USE_XCP_CAN
 #define kXcpMaxCTO              8
-#define kXcpMaxDTO              8
+#define kXcpMaxDTO              kXcpMaxCTO
 #define XCP_CAN_ID_TX            (uint16_t) 0x23
 /*
  * No filter implemented.
@@ -43,8 +43,7 @@
 
 #ifdef USE_XCP_ETH
 #define kXcpMaxCTO              100
-#define kXcpMaxDTO              100
-#define XCP_ETH_PORT            (uint16_t) 12340
+#define kXcpMaxDTO              kXcpMaxCTO
 #endif
 
 /*-----------------------------------------------

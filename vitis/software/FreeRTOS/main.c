@@ -31,6 +31,8 @@
 #include "include/isr.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 
+#include "sw/xcp/OCM_eth_adapter.h"
+
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;

@@ -8,6 +8,7 @@
 
 struct uz_parameterid_rs_t {
     bool is_ready;
+    struct uz_parameterid_rs_config_t internal_config;
 };
 
 static uint32_t instance_counter = 0U;
@@ -24,8 +25,17 @@ static uz_parameterid_rs_t* uz_parameterid_rs_allocation(void){
     return (self);
 }
 
-uz_parameterid_rs_t* uz_parameterid_rs_init() {
+uz_parameterid_rs_t *uz_parameterid_rs_init(struct uz_parameterid_rs_config_t initial_config)
+{
     uz_parameterid_rs_t* self = uz_parameterid_rs_allocation();
+    self->internal_config = initial_config;
     return (self);
 }
+
+struct uz_parameterid_rs_config_t uz_parameterid_rs_get_current_config(uz_parameterid_rs_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->internal_config;
+}
+
 #endif

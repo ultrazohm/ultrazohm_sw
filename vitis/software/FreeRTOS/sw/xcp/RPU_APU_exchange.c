@@ -8,11 +8,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#include "RPU_APU_exchange.h"
 #include "xil_cache.h"
 
 #define APU
-//#define RPU
 #if (!defined(APU) && !defined(RPU)) || (defined(APU) && defined(RPU))
 	#error "Define either RPU or APU"
 #endif
@@ -39,28 +37,23 @@
  * Place XCP data behind javascope memory in same bank3. Use the last 32K for this.
  */
 #define XCP_OUT_ADDR				0xFFFF8000
-#define XCP_OUT_LEN					0x00007000
-#define XCP_IN_ADDR 				(XCP_OUT_ADDR + XCP_OUT_LEN)
-#define XCP_IN_LEN					0x00001000
+#define XCP_OUT_LEN					512
+#define XCP_IN_ADDR 				0xFFFFC000
+#define XCP_IN_LEN					512
 
 /*-------------------------------------------------------------------
  * Variables
  *-----------------------------------------------------------------*/
-static volatile size_t addr_out_w = 0;
-static volatile size_t addr_out_r = 0;
-static volatile size_t addr_in_w = 0;
-static volatile size_t addr_in_r = 0;
+static volatile size_t addr_w = 0;
+static volatile size_t addr_r = 0;
 
-static volatile uint32_t cnt_msg_out_w = 0;
-static volatile uint32_t cnt_msg_out_r = 0;
+// Todo remove debug variable
+static volatile uint32_t cnt_msg_ocm_w = 0;
+static volatile uint32_t cnt_msg_ocm_r = 0;
 
 /*-------------------------------------------------------------------
  * Static functions
  *-----------------------------------------------------------------*/
-/* TODO volatile should not be necessary for OCM?!
- * Only 1 code position writes/reads to OCM --> no volatile necessary.
- * -> Then use memcpy() which will probably be much faster
- */
 static void memcpy_volatile(volatile uint8_t *dst, volatile uint8_t *src, int len)
 {
 	for (int i = 0; i < len; i++) {
@@ -76,21 +69,23 @@ void rpu_apu_exchange_init(void)
 	// The CPU which reads the OCM area initializes it
 #ifdef RPU
     *(uint32_t *)XCP_IN_ADDR = 0;
+    Xil_DCacheFlushLine(XCP_IN_ADDR);
 #endif
 #ifdef APU
     *(uint32_t *)XCP_OUT_ADDR = 0;
+    Xil_DCacheFlushLine(XCP_OUT_ADDR);
 #endif
 }
 
-void rpu_apu_exchange_cache_flush_before_read(void)
+void rpu_apu_exchange_cache_invalidate_before_read(void)
 {
 	// TODO: The memory length that is flushed can be shortened to 2 or 3 messages
 	// -> Then also make sure only 2 or 3 message are in the buffer at a time
 #ifdef RPU
-	Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_LEN);
+	Xil_DCacheInvalidateRange(XCP_IN_ADDR, XCP_IN_LEN);
 #endif
 #ifdef APU
-	Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_LEN);
+	Xil_DCacheInvalidateRange(XCP_OUT_ADDR, XCP_OUT_LEN);
 #endif
 }
 
@@ -106,34 +101,30 @@ void rpu_apu_exchange_cache_flush_after_write(void)
 #endif
 }
 
-void rpu_apu_exchange_prepare(rapu_exchange_t rapu)
+void rpu_apu_exchange_prepare_read(void)
 {
-	// TODO: Use #ifdef APU/RPU instead of switch
-	switch (rapu) {
-	case rapu_exchange_write_apu:
-		addr_in_w = XCP_IN_ADDR;
-		break;
-	case rapu_exchange_write_rpu:
-		addr_out_w = XCP_OUT_ADDR;
-		break;
-	case rapu_exchange_read_apu:
-		addr_out_r = XCP_OUT_ADDR;
-		break;
-	case rapu_exchange_read_rpu:
-		addr_in_r = XCP_IN_ADDR;
-		break;
-	}
+#ifdef RPU
+	addr_r = XCP_IN_ADDR;
+#endif
+#ifdef APU
+	addr_r = XCP_OUT_ADDR;
+#endif
 }
 
-void rpu_apu_exchange_writeOCM(rapu_exchange_t rapu, uint8_t len, uint8_t *data)
+void rpu_apu_exchange_prepare_write(void)
 {
-	// TODO: Use #ifdef APU/RPU instead of if/else
-	volatile uint8_t *dst_p;
-	if (rapu == rapu_exchange_write_apu) {
-		dst_p = (volatile uint8_t *)(addr_in_w);
-	} else if (rapu == rapu_exchange_write_rpu) {
-		dst_p = (volatile uint8_t *)(addr_out_w);
-	}
+#ifdef RPU
+	addr_w = XCP_OUT_ADDR;
+#endif
+#ifdef APU
+	addr_w = XCP_IN_ADDR;
+#endif
+    *(uint32_t *)addr_w = 0;
+}
+
+void rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data)
+{
+	volatile uint8_t *dst_p = (volatile uint8_t *)(addr_w);
 
 	// Write package len
     *(uint32_t *)dst_p = len;
@@ -146,27 +137,15 @@ void rpu_apu_exchange_writeOCM(rapu_exchange_t rapu, uint8_t len, uint8_t *data)
     // Set next len to 0
     *(uint32_t *)dst_p = 0;
 
-	// TODO: Use #ifdef APU/RPU instead of if/else
     // Write current OCM write address for the next call/entry
-	if (rapu == rapu_exchange_write_apu) {
-		addr_in_w = (size_t)dst_p;
-	} else if (rapu == rapu_exchange_write_rpu) {
-		addr_out_w = (size_t)dst_p;
-	}
+	addr_w = (size_t)dst_p;
 
-    // Todo remove debug variable
-    cnt_msg_out_w++;
+    cnt_msg_ocm_w++;
 }
 
-int rpu_apu_exchange_readOCM(rapu_exchange_t rapu, uint8_t *len, uint8_t **data_p)
+int rpu_apu_exchange_readOCM(uint8_t *len, uint8_t **data_p)
 {
-	// TODO: Use #ifdef APU/RPU instead of if/else
-	volatile uint8_t *src_p;
-	if (rapu == rapu_exchange_read_apu) {
-		src_p = (volatile uint8_t *)(addr_out_r);
-	} else if (rapu == rapu_exchange_read_rpu) {
-		src_p = (volatile uint8_t *)(addr_in_r);
-	}
+	volatile uint8_t *src_p = (volatile uint8_t *)(addr_r);
 
 	// Read len
 	*len = *(uint32_t *)src_p;
@@ -176,7 +155,7 @@ int rpu_apu_exchange_readOCM(rapu_exchange_t rapu, uint8_t *len, uint8_t **data_
 
 	// Is a package ready to read?
 	if (*len == 0) {
-		addr_out_r = XCP_OUT_ADDR;
+		addr_r = XCP_OUT_ADDR;
 		return 0;
 	}
 
@@ -184,16 +163,10 @@ int rpu_apu_exchange_readOCM(rapu_exchange_t rapu, uint8_t *len, uint8_t **data_
 	*data_p = (uint8_t *)src_p;
 	src_p += *len;
 
-	// TODO: Use #ifdef APU/RPU instead of if/else
     // Write current OCM write address for the next call/entry
-	if (rapu == rapu_exchange_read_apu) {
-		addr_out_r = (size_t)src_p;
-	} else if (rapu == rapu_exchange_read_rpu) {
-		addr_in_r = (size_t)src_p;
-	}
+	addr_r = (size_t)src_p;
 
-    // Todo remove debug variable
-	cnt_msg_out_r++;
+	cnt_msg_ocm_r++;
 
 	return 1;
 }

@@ -9,7 +9,6 @@
 #define OCM_ETH_ADAPTER_H_
 
 void ocm_eth_adapter_task(void *p);
-void read_rxQueue_write_OCM(void);
-void read_OCM_write_txQueue(void);
+void ocm_eth_adapter_irq(void);
 
 #endif /* OCM_ETH_ADAPTER_H_ */

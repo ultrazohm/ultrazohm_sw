@@ -8,18 +8,12 @@
 #ifndef RPU_APU_EXCHANGE_H_
 #define RPU_APU_EXCHANGE_H_
 
-typedef enum {
-	rapu_exchange_write_apu,
-	rapu_exchange_write_rpu,
-	rapu_exchange_read_apu,
-	rapu_exchange_read_rpu,
-} rapu_exchange_t;
-
 void rpu_apu_exchange_init(void);
-void rpu_apu_exchange_prepare(rapu_exchange_t rapu);
-void rpu_apu_exchange_cache_flush_before_read(void);
+void rpu_apu_exchange_prepare_read(void);
+void rpu_apu_exchange_prepare_write(void);
+void rpu_apu_exchange_cache_invalidate_before_read(void);
 void rpu_apu_exchange_cache_flush_after_write(void);
-void rpu_apu_exchange_writeOCM(rapu_exchange_t rapu, uint8_t len, uint8_t *data);
-int rpu_apu_exchange_readOCM(rapu_exchange_t rapu, uint8_t *len, uint8_t **data_p);
+void rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data);
+int rpu_apu_exchange_readOCM(uint8_t *len, uint8_t **data_p);
 
 #endif /* RPU_APU_EXCHANGE_H_ */

@@ -9,7 +9,6 @@
 #define XCP_INTERFACE_H_
 
 void xcp_interface_init(void);
-void xcp_interface_stim(void);
-void xcp_interface_events_10kHz(void);
+void xcp_irq(void);
 
 #endif /* XCP_INTERFACE_H_ */

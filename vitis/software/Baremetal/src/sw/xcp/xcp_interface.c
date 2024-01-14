@@ -26,44 +26,26 @@
  *-----------------------------------------------------------------*/
 static uint32_t xcp_timestamp;
 
-// TODO delete
-static volatile uint32_t msg_ocm_written = 0;
-static volatile uint32_t msg_ocm_read = 0;
-
 volatile uint32_t data_first_addr_read_OCM = 0;
 
 /*-------------------------------------------------------------------
- * Local functions
+ * Static functions
  *-----------------------------------------------------------------*/
-
-/*-------------------------------------------------------------------
- * Global functions
- *-----------------------------------------------------------------*/
-void xcp_interface_init(void)
+static void xcp_interface_stim(void)
 {
-	XcpInit();
-	rpu_apu_exchange_init();
-}
-
-void xcp_interface_stim(void)
-{
-	rpu_apu_exchange_cache_flush_before_read();
-	rpu_apu_exchange_prepare(rapu_exchange_read_rpu);
-
 	while (1) {
 		uint8_t *data;
 		uint8_t len;
-		if (! rpu_apu_exchange_readOCM(rapu_exchange_read_rpu, &len, &data)) {
+		if (! rpu_apu_exchange_readOCM(&len, &data)) {
 			// Could not read a message from OCM
 			break;
 		}
-		msg_ocm_read++;
 
 		XcpCommand((uint32_t *)(data + XCP_HEADER_LEN));
 	}
 }
 
-void xcp_interface_events_10kHz(void)
+static void xcp_interface_events_10kHz(void)
 {
 	/* TODO: Possible optimization: Make sure only 2 or 3 messages are written
 	 * to the OCM at a time to reduce IRQ run time in R5 and A53.
@@ -72,7 +54,6 @@ void xcp_interface_events_10kHz(void)
 	 *  delayed to the next cycle.
 	 *  This will add jitter to the slower tasks.
 	 */
-	rpu_apu_exchange_prepare(rapu_exchange_write_rpu);
 
     xcp_timestamp += 1; // = uz_SystemTime_GetUptimeInUs();
 
@@ -106,7 +87,25 @@ void xcp_interface_events_10kHz(void)
         cnt_div_10000 = 0;
         XcpEvent(XCP_EVENT_1S);
     }
+}
 
+/*-------------------------------------------------------------------
+ * Global functions
+ *-----------------------------------------------------------------*/
+void xcp_interface_init(void)
+{
+	XcpInit();
+	rpu_apu_exchange_init();
+}
+
+void xcp_irq(void)
+{
+	rpu_apu_exchange_prepare_write();
+    xcp_interface_events_10kHz();
+
+	rpu_apu_exchange_cache_invalidate_before_read();
+	rpu_apu_exchange_prepare_read();
+    xcp_interface_stim();
 	rpu_apu_exchange_cache_flush_after_write();
 }
 
@@ -121,8 +120,7 @@ void ApplXcpSend( vuint8 len, const BYTEPTR msg )
     msg_with_header_p[3] = (uint8_t) (xcp_package_counter >> 8);
     xcp_package_counter++;
 
-    rpu_apu_exchange_writeOCM(rapu_exchange_write_rpu, len + 4, msg_with_header_p);
-    msg_ocm_written++;
+    rpu_apu_exchange_writeOCM(len + 4, msg_with_header_p);
 
     // TODO necessary?
     XcpSendCallBack();

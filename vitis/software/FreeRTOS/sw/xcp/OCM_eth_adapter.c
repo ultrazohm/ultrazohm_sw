@@ -56,8 +56,10 @@ static volatile uint32_t msg_txq_read = 0;
 static volatile uint32_t msg_rxq_written = 0;
 static volatile uint32_t msg_rxq_read = 0;
 
+volatile uint32_t try_to_read_ocm = 0;
+
 /*-------------------------------------------------------------------
- * Local functions
+ * Static functions
  *-----------------------------------------------------------------*/
 static void my_print_ip(ip_addr_t *ip)
 {
@@ -149,6 +151,52 @@ static void ocm_eth_adapter_init(void)
     rpu_apu_exchange_init();
 }
 
+static void read_rxQueue_write_OCM(void)
+{
+	// This irq can occur before the queue is created (xcp main task)
+	if (queue_xcp_rx == NULL) {
+		return;
+	}
+
+	while (1) {
+		uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
+
+		// Abort receive if no message could be read
+		if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) != pdPASS) {
+			break;
+		}
+		msg_rxq_read++;
+
+		rpu_apu_exchange_writeOCM(BUF_SIZE_XCP_RX, buf_xcp_rx);
+	}
+}
+
+static void read_OCM_write_txQueue(void)
+{
+	while (1) {
+		if (xcp_eth_connected == 0) {
+			break;
+		}
+
+		uint8_t *data;
+		uint8_t len;
+		try_to_read_ocm++;
+		if (! rpu_apu_exchange_readOCM(&len, &data)) {
+			// Could not read a message from OCM
+			break;
+		}
+
+		BaseType_t* const taskWoken_p = 0;
+		if(xQueueSendFromISR(queue_xcp_tx, data, taskWoken_p) != pdPASS) {
+			xil_printf("%s(): xQueueSend() failed\n", __func__);
+			xil_printf("%s(): critical error!\n", __func__);
+			vTaskDelay(5);
+			return;
+		}
+		msg_txq_written++;
+	}
+}
+
 /*-------------------------------------------------------------------
  * Global functions
  *-----------------------------------------------------------------*/
@@ -184,10 +232,6 @@ void ocm_eth_adapter_task(void *p)
 
         xil_printf("%s() waiting for xcp host connection on port %d\n", __func__, XCP_ETH_PORT);
         if ((new_sd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
-//        	uint32_t before = lwip_fcntl(new_sd, F_GETFL, 0);
-//        	lwip_fcntl(new_sd, F_SETFL, O_NONBLOCK);
-//        	uint32_t after = lwip_fcntl(new_sd, F_GETFL, 0);
-//        	xil_printf("sock opts: before %X, after %X\n", before, after);
 
             xil_printf("xcp master connected from\n");
             extern void my_print_ip(ip_addr_t *ip);
@@ -207,53 +251,13 @@ void ocm_eth_adapter_task(void *p)
     vTaskDelete(NULL);
 }
 
-void read_rxQueue_write_OCM(void)
+void ocm_eth_adapter_irq(void)
 {
-	// This irq can occur before the queue is created (xcp main task)
-	if (queue_xcp_rx == NULL) {
-		return;
-	}
+	rpu_apu_exchange_cache_invalidate_before_read();
+	rpu_apu_exchange_prepare_read();
+	read_OCM_write_txQueue();
 
-	rpu_apu_exchange_prepare(rapu_exchange_write_apu);
-	while (1) {
-		uint8_t buf_xcp_rx[BUF_SIZE_XCP_RX];
-
-		// Abort receive if no message could be read
-		if(xQueueReceiveFromISR(queue_xcp_rx, buf_xcp_rx, NULL) != pdPASS) {
-			break;
-		}
-		msg_rxq_read++;
-
-		rpu_apu_exchange_writeOCM(rapu_exchange_write_apu, BUF_SIZE_XCP_RX, buf_xcp_rx);
-	}
-
+	rpu_apu_exchange_prepare_write();
+	read_rxQueue_write_OCM();
 	rpu_apu_exchange_cache_flush_after_write();
-}
-
-void read_OCM_write_txQueue(void)
-{
-	rpu_apu_exchange_cache_flush_before_read();
-	rpu_apu_exchange_prepare(rapu_exchange_read_apu);
-
-	while (1) {
-		if (xcp_eth_connected == 0) {
-			break;
-		}
-
-		uint8_t *data;
-		uint8_t len;
-		if (! rpu_apu_exchange_readOCM(rapu_exchange_read_apu, &len, &data)) {
-			// Could not read a message from OCM
-			break;
-		}
-
-		BaseType_t* const taskWoken_p = 0;
-		if(xQueueSendFromISR(queue_xcp_tx, data, taskWoken_p) != pdPASS) {
-			xil_printf("%s(): xQueueSend() failed\n", __func__);
-			xil_printf("%s(): critical error!\n", __func__);
-			vTaskDelay(5);
-			return;
-		}
-		msg_txq_written++;
-	}
 }

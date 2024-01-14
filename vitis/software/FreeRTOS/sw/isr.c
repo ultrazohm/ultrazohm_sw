@@ -24,7 +24,6 @@
 #include "../defines.h"
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
-
 #include "xcp/OCM_eth_adapter.h"
 
 struct APU_to_RPU_t ControlData;
@@ -49,6 +48,8 @@ XScuGic_Config *IntcConfig;
 // Standard isr interrupt from BareMetal -> frequency depends on the Software-interrupt from BareMetal
 void Transfer_ipc_Intr_Handler(void *data)
 {
+	ocm_eth_adapter_irq();
+
 	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
 	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
 	int status;
@@ -70,9 +71,6 @@ void Transfer_ipc_Intr_Handler(void *data)
 		}
 	}
 	// queue is purged when new connection is established
-
-	read_OCM_write_txQueue();
-	read_rxQueue_write_OCM();
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 	// Write message for acknowledge of the interrupt to RPU

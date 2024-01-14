@@ -66,10 +66,9 @@ void ISR_Control(void *data)
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
-    JavaScope_update(&Global_Data);
 
-    xcp_interface_events_10kHz();
-    xcp_interface_stim();
+	xcp_irq();
+    JavaScope_update(&Global_Data);
 
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

@@ -1,7 +1,7 @@
 /*
- * File Name:         C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\include\uz_pmsm_model_addr.h
+ * File Name:         C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\include\uz_pmsm_model_addr.h
  * Description:       C Header File
- * Created:           2023-12-20 14:33:02
+ * Created:           2024-01-15 11:08:02
 */
 
 #ifndef UZ_PMSM_MODEL_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_pmsm_model                0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_pmsm_model               0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_pmsm_model            0x8  //contains unique IP timestamp (yymmddHHMM): 2312201432
+#define  IPCore_Timestamp_uz_pmsm_model            0x8  //contains unique IP timestamp (yymmddHHMM): 2401151107
 #define  reset_integrators_Data_uz_pmsm_model      0x100  //data register for Inport reset_integrators
 #define  simulate_mechanical_Data_uz_pmsm_model    0x104  //data register for Inport simulate_mechanical
 #define  simulate_nonlinear_Data_uz_pmsm_model     0x108  //data register for Inport simulate_nonlinear

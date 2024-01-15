@@ -1,8 +1,8 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 23.2 (R2023b) at 14:34:09 on 20/12/2023
+% Generated with MATLAB 23.2 (R2023b) at 11:08:51 on 15/01/2024
 % This script was generated using the following parameter values:
-%     Filename  : 'C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdlworkflow.m'
+%     Filename  : 'C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
@@ -29,7 +29,7 @@ hdlset_param('uz_pmsm_model', 'HDLSubsystem', 'uz_pmsm_model/uz_pmsm_model');
 hdlset_param('uz_pmsm_model', 'LUTMapToRAM', 'off');
 hdlset_param('uz_pmsm_model', 'OptimizationReport', 'on');
 hdlset_param('uz_pmsm_model', 'Oversampling', 200);
-hdlset_param('uz_pmsm_model', 'ProjectFolder', 'C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj');
+hdlset_param('uz_pmsm_model', 'ProjectFolder', 'C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj');
 hdlset_param('uz_pmsm_model', 'ResetType', 'Synchronous');
 hdlset_param('uz_pmsm_model', 'ResourceReport', 'on');
 hdlset_param('uz_pmsm_model', 'ScalarizePorts', 'DUTLevel');
@@ -38,7 +38,7 @@ hdlset_param('uz_pmsm_model', 'SynthesisToolChipFamily', 'Zynq UltraScale+');
 hdlset_param('uz_pmsm_model', 'SynthesisToolDeviceName', 'xczu9eg-ffvc900-1LV-i');
 hdlset_param('uz_pmsm_model', 'SynthesisToolPackageName', '');
 hdlset_param('uz_pmsm_model', 'SynthesisToolSpeedValue', '');
-hdlset_param('uz_pmsm_model', 'TargetDirectory', 'C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc');
+hdlset_param('uz_pmsm_model', 'TargetDirectory', 'C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc');
 hdlset_param('uz_pmsm_model', 'TargetPlatform', 'Generic Xilinx Platform');
 hdlset_param('uz_pmsm_model', 'UseFloatingPoint', 'on');
 hdlset_param('uz_pmsm_model', 'Workflow', 'IP Core Generation');
@@ -126,7 +126,7 @@ hdlset_param('uz_pmsm_model/uz_pmsm_model/outputs', 'IOInterfaceMapping', 'x"150
 hWC = hdlcoder.WorkflowConfig('SynthesisTool','Xilinx Vivado','TargetWorkflow','IP Core Generation');
 
 % Specify the top level project directory
-hWC.ProjectFolder = 'C:\Users\Philipp\ultrazohm\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj';
+hWC.ProjectFolder = 'C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj';
 hWC.AllowUnsupportedToolVersion = true;
 hWC.ReferenceDesignToolVersion = '';
 hWC.IgnoreToolVersionMismatch = false;

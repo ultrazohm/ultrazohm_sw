@@ -54,6 +54,9 @@
 
 #include "include/pwm_init.h"
 
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
 //----------------------------------------------------
 // FUNCTIONS

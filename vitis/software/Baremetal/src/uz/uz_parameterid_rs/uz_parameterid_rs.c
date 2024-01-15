@@ -9,6 +9,8 @@
 struct uz_parameterid_rs_t {
     bool is_ready;
     struct uz_parameterid_rs_config_t internal_config;
+    struct uz_parameterid_rs_increments_t calc_increments;
+
 };
 
 static uint32_t instance_counter = 0U;
@@ -25,10 +27,20 @@ static uz_parameterid_rs_t* uz_parameterid_rs_allocation(void){
     return (self);
 }
 
-uz_parameterid_rs_t *uz_parameterid_rs_init(struct uz_parameterid_rs_config_t initial_config)
+uz_parameterid_rs_t* uz_parameterid_rs_init(struct uz_parameterid_rs_config_t initial_config)
 {
     uz_parameterid_rs_t* self = uz_parameterid_rs_allocation();
     self->internal_config = initial_config;
+    self->calc_increments.n_increment = (initial_config.n_end - initial_config.n_start)/initial_config.n_steps;
+    self->calc_increments.i_increment = (initial_config.i_end - initial_config.i_start)/initial_config.i_steps;
+	uz_assert(initial_config.n_start > 0.0f);
+	uz_assert(initial_config.n_end > 0.0f);
+	uz_assert(initial_config.n_end > initial_config.n_start);
+	uz_assert(initial_config.n_steps > 0.0f);
+	uz_assert(initial_config.i_start > 0.0f);
+	uz_assert(initial_config.i_end > 0.0f);
+	uz_assert(initial_config.i_end > initial_config.i_start);
+	uz_assert(initial_config.i_steps > 0.0f);
     return (self);
 }
 
@@ -38,4 +50,16 @@ struct uz_parameterid_rs_config_t uz_parameterid_rs_get_current_config(uz_parame
     return self->internal_config;
 }
 
+struct uz_parameterid_rs_increments_t uz_parameterid_rs_get_current_increments(uz_parameterid_rs_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->calc_increments;
+}
+
+
+
+
 #endif
+
+
+

@@ -63,14 +63,14 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
-	js_ch_observable[JSO_iq] 			= &data->av.I_q;
-	js_ch_observable[JSO_id] 			= &data->av.I_d;
+//	js_ch_observable[JSO_ia] 			= &data->av.I_U;
+//	js_ch_observable[JSO_ib] 			= &data->av.I_V;
+//	js_ch_observable[JSO_ic] 			= &data->av.I_W;
+//	js_ch_observable[JSO_ua] 			= &data->av.U_U;
+//	js_ch_observable[JSO_ub] 			= &data->av.U_V;
+//	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+//	js_ch_observable[JSO_iq] 			= &data->av.I_q;
+//	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;

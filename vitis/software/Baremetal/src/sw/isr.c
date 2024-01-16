@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -56,6 +57,9 @@ uz_3ph_dq_t measured_currents_Amp = {0};
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
 
 float omega_el_rad_per_sec = 0.0f;
+
+float i_d_soll=0.0f;
+float i_q_soll=0.0f;
 
 struct uz_pmsmModel_inputs_t pmsm_inputs={
 
@@ -90,24 +94,37 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+    	//Mit CurrentControll
+//    	uz_pmsmModel_trigger_input_strobe(pmsm);
+//
+//    	uz_pmsmModel_trigger_output_strobe(pmsm);
+//    	uz_pmsmModel_trigger_fitting_parameters_strobe(pmsm);
+//
+//    	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+//
+//    	measured_currents_Amp.d = pmsm_outputs.i_d_A;
+//
+//    	measured_currents_Amp.q = pmsm_outputs.i_q_A;
+//
+//    	omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+//
+//    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+//
+//    	pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+//
+//    	pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+//
+//    	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+
+
+    	//Ohne Currentcontroll
     	uz_pmsmModel_trigger_input_strobe(pmsm);
-
     	uz_pmsmModel_trigger_output_strobe(pmsm);
-
+    	uz_pmsmModel_trigger_fitting_parameters_strobe(pmsm);
     	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-
-    	measured_currents_Amp.d = pmsm_outputs.i_d_A;
-
-    	measured_currents_Amp.q = pmsm_outputs.i_q_A;
-
-    	omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
-
-    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
-
-    	pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-
-    	pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
-
+    	pmsm_inputs.v_q_V=uz_wavegen_pulse(10.0f, 0.10f, 0.5f);
+    	pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
     	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

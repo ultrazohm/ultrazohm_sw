@@ -149,7 +149,6 @@ int main(void)
 				.coulomb_friction_constant = 0.01f,
 
 				.friction_coefficient = 0.001f};
-
         	pmsm=uz_pmsmModel_init(pmsm_config);
 
         	initialization_chain = init_ip_cores;

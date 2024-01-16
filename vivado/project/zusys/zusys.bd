@@ -112,7 +112,8 @@
       },
       "uz_user": {
         "smartconnect_1": "",
-        "uz_pmsm_model_0": ""
+        "uz_pmsm_model_0": "",
+        "system_ila_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5603,9 +5604,22 @@
           },
           "uz_pmsm_model_0": {
             "vlnv": "xilinx.com:ip:uz_pmsm_model:1.0",
-            "xci_name": "zusys_uz_pmsm_model_0_1",
-            "xci_path": "ip\\zusys_uz_pmsm_model_0_1_1\\zusys_uz_pmsm_model_0_1.xci",
+            "xci_name": "zusys_uz_pmsm_model_0_0",
+            "xci_path": "ip\\zusys_uz_pmsm_model_0_0_1\\zusys_uz_pmsm_model_0_0.xci",
             "inst_hier_path": "uz_user/uz_pmsm_model_0"
+          },
+          "system_ila_0": {
+            "vlnv": "xilinx.com:ip:system_ila:1.1",
+            "xci_name": "zusys_system_ila_0_5",
+            "xci_path": "ip\\zusys_system_ila_0_5\\zusys_system_ila_0_5.xci",
+            "inst_hier_path": "uz_user/system_ila_0",
+            "interface_ports": {
+              "SLOT_0_AXI": {
+                "mode": "Monitor",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -5618,7 +5632,8 @@
           "smartconnect_1_M00_AXI": {
             "interface_ports": [
               "smartconnect_1/M00_AXI",
-              "uz_pmsm_model_0/AXI4"
+              "uz_pmsm_model_0/AXI4",
+              "system_ila_0/SLOT_0_AXI"
             ]
           }
         },
@@ -5628,7 +5643,8 @@
               "aresetn",
               "smartconnect_1/aresetn",
               "uz_pmsm_model_0/IPCORE_RESETN",
-              "uz_pmsm_model_0/AXI4_ARESETN"
+              "uz_pmsm_model_0/AXI4_ARESETN",
+              "system_ila_0/resetn"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5636,7 +5652,8 @@
               "aclk",
               "smartconnect_1/aclk",
               "uz_pmsm_model_0/IPCORE_CLK",
-              "uz_pmsm_model_0/AXI4_ACLK"
+              "uz_pmsm_model_0/AXI4_ACLK",
+              "system_ila_0/clk"
             ]
           }
         }

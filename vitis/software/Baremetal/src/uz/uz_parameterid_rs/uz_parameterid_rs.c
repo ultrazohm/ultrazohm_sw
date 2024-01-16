@@ -8,6 +8,9 @@
 
 struct uz_parameterid_rs_t {
     bool is_ready;
+    bool is_first_call_to_sample;
+	float elapsed_time_since_start;
+	float initial_global_time_sec;
     struct uz_parameterid_rs_config_t internal_config;
     struct uz_parameterid_rs_increments_t calc_increments;
 
@@ -37,8 +40,6 @@ uz_parameterid_rs_t* uz_parameterid_rs_init(struct uz_parameterid_rs_config_t in
 	uz_assert(initial_config.n_end > 0.0f);
 	uz_assert(initial_config.n_end > initial_config.n_start);
 	uz_assert(initial_config.n_steps > 0.0f);
-	uz_assert(initial_config.i_start > 0.0f);
-	uz_assert(initial_config.i_end > 0.0f);
 	uz_assert(initial_config.i_end > initial_config.i_start);
 	uz_assert(initial_config.i_steps > 0.0f);
     return (self);
@@ -56,9 +57,22 @@ struct uz_parameterid_rs_increments_t uz_parameterid_rs_get_current_increments(u
     return self->calc_increments;
 }
 
+void uz_parameterid_rs_reset(uz_parameterid_rs_t* self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->is_first_call_to_sample = true;
+	self->elapsed_time_since_start = 0.0f;
+}
 
 
-
+struct uz_parameterid_output uz_parameterid_rs_sample(uz_parameterid_rs_t* self){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+    struct uz_parameterid_output output;
+    output.n_sample = 100.0f;
+    output.i_sample = 10.0f; 
+    return output;
+}
 #endif
 
 

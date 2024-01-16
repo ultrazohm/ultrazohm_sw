@@ -6,6 +6,7 @@
 
 struct uz_parameterid_rs_config_t test_config = {0};
 struct uz_parameterid_rs_increments_t test_increments = {0};
+struct uz_parameterid_output test_output = {0};
 
 void setUp(void)
 {
@@ -13,10 +14,12 @@ void setUp(void)
     test_config.n_end = 1000.0f;
     test_config.n_steps = 9.0f;
     test_increments.n_increment = (test_config.n_end - test_config.n_start)/test_config.n_steps;
-    test_config.i_start = 100.0f;
-    test_config.i_end = 1000.0f; 
+    test_config.i_start = 1.0f;
+    test_config.i_end = 10.0f; 
     test_config.i_steps = 9.0f;
     test_increments.i_increment = (test_config.i_end - test_config.i_start)/test_config.i_steps;
+    test_output.i_sample = 10.0f;
+    test_output.n_sample = 100.0f;
 }
 
 void tearDown(void)
@@ -50,6 +53,48 @@ void test_uz_parameterid_rs_negative_end_speed(void){
     test_config.n_end = 1000.0f;
 }
 
+void test_uz_parameterid_rs_negative_start_speed(void){ 
+    test_config.n_start = -200.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_parameterid_rs_init(test_config));
+    test_config.n_start = 100.0f;
+}
 
+void test_uz_parameterid_rs_negative_steps_speed(void){ 
+    test_config.n_steps = -2.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_parameterid_rs_init(test_config));
+    test_config.n_steps = 9.0f;
+}
+
+void test_uz_parameterid_rs_start_higher_end_speed(void){ 
+    test_config.n_end = 100.0f;
+    test_config.n_start = 1000.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_parameterid_rs_init(test_config));
+    test_config.n_end = 1000.0f;
+    test_config.n_start = 100.0f;
+}
+
+void test_uz_parameterid_rs_negative_steps_current(void){ 
+    test_config.n_steps = -2.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_parameterid_rs_init(test_config));
+    test_config.n_steps = 9.0f;
+}
+
+void test_uz_parameterid_rs_start_higher_end_current(void){ 
+    test_config.i_end = 10.0f;
+    test_config.i_start = 20.0f;
+    TEST_ASSERT_FAIL_ASSERT(uz_parameterid_rs_init(test_config));
+    test_config.i_end = 10.0f;
+    test_config.i_start = 1.0f;
+}
+
+void test_uz_parameterid_rs_reset_NULL(void){
+    TEST_ASSERT_FAIL_ASSERT(uz_parameterid_rs_reset(NULL));
+}
+
+void test_uz_parameterid_rs_sample(void){
+    uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
+    struct uz_parameterid_output actual_output = uz_parameterid_rs_sample(test_instance2);
+    TEST_ASSERT_EQUAL_FLOAT(test_output.n_sample, actual_output.n_sample);
+}
 
 #endif // TEST

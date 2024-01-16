@@ -21,10 +21,18 @@ struct uz_parameterid_rs_increments_t
 
 };
 
+struct uz_parameterid_output
+{
+    float n_sample;
+    float i_sample;
+
+};
+
 uz_parameterid_rs_t *uz_parameterid_rs_init(struct uz_parameterid_rs_config_t initial_config);
 struct uz_parameterid_rs_config_t uz_parameterid_rs_get_current_config(uz_parameterid_rs_t* self);
 struct uz_parameterid_rs_increments_t uz_parameterid_rs_get_current_increments(uz_parameterid_rs_t* self);
-
+void uz_parameterid_rs_reset(uz_parameterid_rs_t* self);
+struct uz_parameterid_output uz_parameterid_rs_sample(uz_parameterid_rs_t* self);
 
 
 #endif // UZ_PARAMETERID_RS_H

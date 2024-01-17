@@ -105,6 +105,36 @@ int reset = 0U;
 float theta_offset = 5.4843f;
 #define PHASE_CURRENT_CONV 12.5f
 #define PHASE_VOLT_CONV	12.0f
+
+#define PHASE_CURRENT_CONV_A1	12.803f
+#define PHASE_CURRENT_CONV_B1	12.663f
+#define PHASE_CURRENT_CONV_C1	12.652f
+#define PHASE_CURRENT_CONV_A2	12.67f
+#define PHASE_CURRENT_CONV_B2	12.69f
+#define PHASE_CURRENT_CONV_C2	12.643f
+
+#define PHASE_CURRENT_OFFSET_A1	0.012f
+#define PHASE_CURRENT_OFFSET_B1	0.004f
+#define PHASE_CURRENT_OFFSET_C1	0.006f
+#define PHASE_CURRENT_OFFSET_A2	-0.012f
+#define PHASE_CURRENT_OFFSET_B2	-0.01f
+#define PHASE_CURRENT_OFFSET_C2	0.019f
+
+#define PHASE_VOLT_CONV_A1	11.963f
+#define PHASE_VOLT_CONV_B1	11.959f
+#define PHASE_VOLT_CONV_C1	11.954f
+#define PHASE_VOLT_CONV_A2	11.959f
+#define PHASE_VOLT_CONV_B2	11.959f
+#define PHASE_VOLT_CONV_C2	11.961f
+
+#define PHASE_VOLT_OFFSET_A1	-0.09f
+#define PHASE_VOLT_OFFSET_B1	0.002f
+#define PHASE_VOLT_OFFSET_C1	-0.065f
+#define PHASE_VOLT_OFFSET_A2	-0.038f
+#define PHASE_VOLT_OFFSET_B2	-0.049f
+#define PHASE_VOLT_OFFSET_C2	-0.02f
+
+
 // software limits
 #define MAX_PHASE_CURRENT_AMP  30.0f
 #define MAX_DC_VOLT 50.0f
@@ -193,24 +223,24 @@ void ISR_Control(void *data)
         Global_Data.av.omega_elec = Global_Data.av.omega_mech * polepairs;
 
         // Read out and convert ADC readings to currents in Amps
-        Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV;
-        Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV;
-        Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV;
+        Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV_A1 +PHASE_CURRENT_OFFSET_A1;
+        Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV_B1 +PHASE_CURRENT_OFFSET_B1;
+        Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV_C1 +PHASE_CURRENT_OFFSET_C1;
         Global_Data.av.i_dc1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
-        Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_A4 * PHASE_CURRENT_CONV;
-        Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV;
-        Global_Data.av.i_c2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV;
+        Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_A4 * PHASE_CURRENT_CONV_A2 +PHASE_CURRENT_OFFSET_A2;
+        Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV_B2 +PHASE_CURRENT_OFFSET_B2;
+        Global_Data.av.i_c2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV_C2 +PHASE_CURRENT_OFFSET_C2;
         Global_Data.av.i_dc2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
 
         // Read out and convert ADC readings to voltages
         Global_Data.av.v_dc1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_VOLT_CONV;
-        Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV;
-        Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV;
-        Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV;
+        Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_A1 +PHASE_VOLT_OFFSET_A1;
+        Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_B1 +PHASE_VOLT_OFFSET_B1;
+        Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_C1 +PHASE_VOLT_OFFSET_C1;
         Global_Data.av.v_dc2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_VOLT_CONV;
-        Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV;
-        Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV;
-        Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV;
+        Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV_A2 +PHASE_VOLT_OFFSET_A2;
+        Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2 +PHASE_VOLT_OFFSET_B2;
+        Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2 +PHASE_VOLT_OFFSET_C2;
 
         //Read out inverter temp
         Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);

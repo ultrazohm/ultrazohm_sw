@@ -34,7 +34,6 @@ ad1 = ad_1(1);
 ad2 = ad_1(2);
 ad3 = ad_1(3);
 
-
 % 2. Gleichung Selbstinduktivität Psiq
 Fluxq_idnull = psi_q(:,9);
 fun2=@(aq)(Fluxq_idnull-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));

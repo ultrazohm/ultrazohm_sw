@@ -1,157 +1,116 @@
 %Fitting_flux_approximation
 close all;
-% addpath C:\SoSe23\Masterarbeit\MatlabtoTikz
-% 
-% addpath(genpath(C:\SoSe23\Masterarbeit\MatlabtoTikz\));
-path('C:\SoSe23\Masterarbeit\MatlabtoTikz\src',path);
-
-
-% HDL SETUP TOOLPATH muss nach jedem Neustart einmal ausgeführt werden
-% hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath','C:\Xilinx\Vivado\2022.2\bin');
-
-
 %LUT Fitting
-
 %LeastSquare Problems
 options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt');
-d_current = d_current_d_Flux';
-q_current = q_current_d_Flux;
+d_current = id;
+q_current = iq;
+d_current = d_current(1,:);
+q_current = q_current(:,1);
+[~,id_null] = min(abs(d_current))
+[~,iq_null] = min(abs(q_current))
 
+id1 = id_null-1;
+[~,iq1] = max(abs(iq))
 
-% 1. Gleichung Selbstinduktivität Psid
-Fluxd_iqnull = Flux_d(:,10);
+%Preparation
+%Hier soll mall die Werte für den Fluss gesucht werden
 
-%Formel aus Paper2 für Methode 2c "Linearen Bereich" 
-%fun0=@(ad)Fluxd_iqnull-(ad(1).*tanh(ad(2)*(d_current-ad(3))));
+%% Start der eigentlichen Berechnung 
 
-%Mit folgender Formel funktioniert das fitting leider nicht (echte daten sind zu linear)
-%fun0=@(ad)(Fluxd_iqnull-((ad(1).*(tanh(ad(2)*d_current)))+(ad(3).*d_current)));
-fun0=@(ad,d_current) ad(1).*tanh(ad(2)*(d_current-ad(3)));
-
-beta1 =  [0.0305;0.0402; -16.4812];
-%ad_1 = lsqnonlin(fun0,beta1,[],[],options)
-ad_1 = nlinfit(d_current,Fluxd_iqnull,fun0,beta1);
-% Fluxd_iqnull_fitted = ((ad_1(1).*(tanh(ad_1(2)*d_current)))+(ad_1(3).*d_current))
-Fluxd_iqnull_fitted = ad_1(1).*(tanh(ad_1(2)*(d_current-ad_1(3))));
-
+% 1. Self-axis flux linkage d-axis
+psi_d_iq_null = psi_d(iq_null,:);
+fun0=@(ad) psi_d_iq_null-(ad(1).*tanh(ad(2)*(d_current-ad(3))));
+beta1 =  [1;1;1]; %random starting parameters
+ad_self = lsqnonlin(fun0,beta1,[],[],options);
 %Zuweisung der Parameter
-ad1 = ad_1(1);
-ad2 = ad_1(2);
-ad3 = ad_1(3);
+ad1 = ad_self(1);
+ad2 = ad_self(2);
+ad3 = ad_self(3);
 
+% 2. Self-axis flux linkage q-axis
+psi_q_id_null = psi_q(:,id_null);
+fun2=@(aq)(psi_q_id_null-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
+beta2 = [1;1;1]; %random starting parameters
+aq_self = lsqnonlin(fun2,beta2,[],[],options);
+aq1 = aq_self(1);
+aq2 = aq_self(2);
+aq3 = aq_self(3);
 
-% 2. Gleichung Selbstinduktivität Psiq
-Fluxq_idnull = Flux_q(15,:)';
-fun2=@(aq)(Fluxq_idnull-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
+% 3. flux linkage d-axis with maximum cross-coupling
+psi_d_iq1 = psi_d(iq1,:);
+fun3=@(ad_cross)psi_d_iq1-(ad_cross(1).*(tanh(ad_cross(2)*(d_current-ad_cross(3)))));
+beta3 = [1;1;1]; %random starting parameters
+ad_4_6 = lsqnonlin(fun3,beta3,[],[],options);
+ad4 = ad_4_6(1);
+ad5 = ad_4_6(2);
+ad6 = ad_4_6(3);
 
-beta2 = [1;1;1];
-aq_1 = lsqnonlin(fun2,beta2,[],[],options)
-Fluxq_idnull_fitted = ((aq_1(1).*(tanh(aq_1(2)*q_current)))+(aq_1(3).*q_current));
+% 4. flux linkage q-axis with maximum cross-coupling
+psi_q_id1 = psi_q(:,id1);
+fun4=@(aq_cross)psi_q_id1-((aq_cross(1).*(tanh(aq_cross(2).*q_current)))+(aq_cross(3).*q_current));
+beta4 = [1;1;1]; %random starting parameters
+aq_4_6 = lsqnonlin(fun4,beta4,[],[],options);
+aq4 = aq_4_6(1);
+aq5 = aq_4_6(2);
+aq6 = aq_4_6(3);
 
-aq1 = aq_1(1);
-aq2 = aq_1(2);
-aq3 = aq_1(3);
+% get die flux linkages with the calculated parameters
+psidself = ad1.*(tanh(ad2*(d_current-ad3)));
+psiqself = (aq1.*(tanh(aq2*q_current)))+(aq3.*q_current);
+psid_s1 = ad4.*(tanh(ad5*(d_current-ad6))); 
+psiq_s1 = (aq4.*(tanh(aq5.*q_current)))+(aq6.*q_current);
+% cross coupling in s1
+psid_cross_s1 = psidself - psid_s1;
+psiq_cross_s1 = psiqself - psiq_s1;
 
-% 3. Gleichung Maximale Induktivität psid bei Iq1
-Fluxd_iq1 = Flux_d(:,1);
-fun3=@(ad_zwei)Fluxd_iq1-(ad_zwei(1).*(tanh(ad_zwei(2)*(d_current-ad_zwei(3)))))
-
-beta3 =   [0.0305;0.0402; -16.4812];  %Diese 2-D Plots würden in den meisten fällen auch mit "schlechten" Anfangswerten funktionieren
-ad_3_6 = lsqnonlin(fun3,beta3,[],[],options)
-Fluxd_iq1_fitted = (ad_3_6(1).*(tanh(ad_3_6(2)*(d_current-ad_3_6(3)))));
-
-ad4 = ad_3_6(1);
-ad5 = ad_3_6(2);
-ad6 = ad_3_6(3);
-
-% 4. Gleichung Maximale Induktivität pisq bei Id1
-Fluxq_id1 = Flux_q(14,:)';
-fun4=@(aq_zwei)Fluxq_id1-((aq_zwei(1).*(tanh(aq_zwei(2).*q_current)))+(aq_zwei(3).*q_current));
-
-beta4 = [1;1;1];
-aq_3_6 = lsqnonlin(fun4,beta4,[],[],options)
-Fluxq_id1_fitted = ((aq_3_6(1).*(tanh(aq_3_6(2).*q_current)))+(aq_3_6(3).*q_current));
-
-aq4 = aq_3_6(1);
-aq5 = aq_3_6(2);
-aq6 = aq_3_6(3);
-
-
+%% Plotten
 figure;
 % Erster Plot
 subplot(4,1,1); 
 grid on;
-plot(d_current, Fluxd_iqnull_fitted, 'DisplayName', 'Fluxd_{idnull}_{fitted}');
+plot(d_current, psidself, 'DisplayName', 'Fluxd_{idnull}_{fitted}');
 hold on;
-plot(d_current, Fluxd_iqnull,'*', 'DisplayName', 'Fluxd_{idnull}');
+plot(d_current, psi_d_iq_null,'*', 'DisplayName', 'Fluxd_{idnull}');
 legend('show');
 
 % Zweiter Plot
 subplot(4,1,2); 
 grid on;
 
-plot(q_current, Fluxq_idnull_fitted  , 'DisplayName', 'Fluxq_{idnull}_{fitted}');
+plot(q_current, psiqself, 'DisplayName', 'Fluxq_{idnull}_{fitted}');
 hold on;
-plot(q_current, Fluxq_idnull,'*', 'DisplayName', 'Fluxq_{idnull}');
+plot(q_current, psi_q_id_null,'*', 'DisplayName', 'Fluxq_{idnull}');
 legend('show');
 
 %Dritter Plot
 subplot(4,1,3); 
 grid on;
-
-plot(d_current, Fluxd_iq1_fitted  , 'DisplayName', 'Fluxd_{iq1}_{fitted}');
+plot(d_current, psid_s1, 'DisplayName', 'Fluxd_{iq1}_{fitted}');
 hold on;
-plot(d_current, Fluxd_iq1,'*', 'DisplayName', 'Fluxd_{iq1}');
+plot(d_current, psi_d_iq1,'*', 'DisplayName', 'Fluxd_{iq1}');
 legend('show');
 
 % Vierter Plot
 subplot(4,1,4); 
 grid on;
-plot(q_current, Fluxq_id1_fitted  , 'DisplayName', 'Fluxq_{id1}_{fitted}');
+plot(q_current, psiq_s1, 'DisplayName', 'Fluxq_{id1}_{fitted}');
 hold on;
-plot(q_current, Fluxq_id1,'*', 'DisplayName', 'Fluxq_{id1}');
+plot(q_current, psi_q_id1,'*', 'DisplayName', 'Fluxq_{id1}');
 legend('show');
 
 
-%Maximum Crosscoupling current constants id1 und iq1
+%% fitting only to plot the function and see if the fitting worked
 
-%Selbstinduktion (Zuweisung eigentlich nur wegen Namesgebung)
-psidself = Fluxd_iqnull_fitted;
-
-psiqself = Fluxq_idnull_fitted;
-
-% psid_s1 = repmat(Fluxd_iq1_fitted, 1, 20);
-
-psid_s1 = Fluxd_iq1_fitted; 
-
-% psiq_s1 = repmat(Fluxq_id1_fitted, 1, 20);
-
-psiq_s1 = Fluxq_id1_fitted;
-
-
-psi_d_cross_integrated = @(d_current) ad1.*(tanh(ad2*(d_current-ad3))) - (ad4.*(tanh(ad5*(d_current-ad6))));
-test = integral(psi_d_cross_integrated,min(d_current),max(d_current))
-%dann ist die Kreuzkopplungin diesem Punkt 
-psid_cross_s1 = psidself - psid_s1;
-psiq_cross_s1 = psiqself - psiq_s1;
-
+d_current = id;
+q_current = iq;
 
 %Die beiden werden dann integriert (wieso auch immer) 
-%psiid_cross_s1_integrated = (1/2)*(ad3-ad6).*((d_current).^2)+((ad1/ad2).*log(cosh(ad2.*d_current)))-((ad4/ad5).*log(cosh(ad5.*d_current)));
-%psiid_cross_s1_integrated = (1/3)*(ad1-ad4).*((d_current).^3)+(1/2)*(ad2-ad5).*((d_current).^2)+(ad3-ad6).*((d_current));
-
-%psiid_cross_s1_integrated = ((ad1./ad2).*(log(cosh(ad2.*(d_current-ad3))))) - (((ad1.*ad4)).*(log(cosh(ad5.*(d_current-ad6)))./ad5));
 psiid_cross_s1_integrated = ((ad1./ad2).*(log(cosh(ad2.*(d_current-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current-ad6)))));
 psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*log(cosh(aq2.*q_current)))-((aq4./aq5).*log(cosh(aq5.*q_current)));
 
-%Ableitungen
-% psid_nachId = (ad1*tanh(ad2*(x-ad3))-(ad4*(tanh(ad5*(x-ad6)))))
-% psiq_nachiq = (((1/2)*(aq3-aq6)*((q_current)^2))+((aq1/aq2)*log(cosh(aq2*q_current)))-((aq4/aq5)*log(cosh(aq5*q_current))))
-
-
 %Berechnen von F(i1)*G(i1) (wie im Paper)
-
-%Das sind die Setpoints aus für 
+%Das sind die Setpoints an denen eben die kreuzkopplung berechnet wird
 q_current_set = q_current(1);
 d_current_set = d_current(14);
 
@@ -161,12 +120,12 @@ Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*
 Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(d_current_set-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current_set-ad6)))));
 
 %Kreuzkopplung ist dann
-psi_d_cross = (1/Fid1_Giq1).*((psid_cross_s1').*(psiiq_cross_s1_integrated));
+psi_d_cross = (1/Fid1_Giq1).*((psid_cross_s1).*(psiiq_cross_s1_integrated));
 psi_q_cross = (1/Fid2_Giq2).*((psiq_cross_s1).*(psiid_cross_s1_integrated'));
 
 %Eigeninduktivität noch "padden"
-psidself_padded = repmat(Fluxd_iqnull_fitted, 1, 20)';
-psiqself_padded = repmat(Fluxq_idnull_fitted, 1, 20);
+psidself_padded = repmat(psidself, 20, 1);
+psiqself_padded = repmat(psiqself, 1, 20);
 
 % psiid_cross_s1_integrated = repmat(psiid_cross_s1_integrated, 20, 1);
 % psiiq_cross_s1_integrated = repmat(psiiq_cross_s1_integrated, 1, 20);
@@ -185,7 +144,7 @@ fluxq_real = Flux_q';
 psi_d_cross_s1_abgeleitet = ((ad1.*ad2.*(1./((cosh(ad2.*(d_current-ad3))).^2)))-(ad4.*ad5.*(1./((cosh(ad5.*(d_current-ad6))).^2))));
 psi_dself_abgeleitet = (ad1.*ad2.*(1./((cosh(ad2.*(d_current-ad3))).^2)));
 
-psi_dself_abgeleitet_padded = repmat(psi_dself_abgeleitet, 1, 20)';
+psi_dself_abgeleitet_padded = repmat(psi_dself_abgeleitet, 20, 1);
 psi_dcross_abgeleitet = (1/Fid1_Giq1).*(psi_d_cross_s1_abgeleitet').*(psiiq_cross_s1_integrated);
 
 Ldd_approx_test = psi_dself_abgeleitet_padded - psi_dcross_abgeleitet;
@@ -255,17 +214,17 @@ Lqq_approx_max = max(Lqq_approx, [], 'all');
 ed_L = ((abs(Lqq_approx-Lqq_approx_test))/Lqq_approx_max).*100;
 
 %% Plotten
-% figure;
-% % Approximierter Fluss
-% % subplot(1,2,1); 
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-% surf(d_current, q_current,psi_d_approx);
-% xlabel('$$i_{d}$$','Interpreter','Latex');
-% ylabel('$$i_{q}$$','Interpreter','Latex');
-% zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
-% % title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
-% % legend;
+figure;
+% Approximierter Fluss
+% subplot(1,2,1); 
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
+surf(d_current, q_current,psi_d_approx);
+xlabel('$$i_{d}$$','Interpreter','Latex');
+ylabel('$$i_{q}$$','Interpreter','Latex');
+zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
+% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
+% legend;
 
 %matlab2tikz('C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\testobsspeichert.tex','width','\figurewidth','height','\figureheight')
 
@@ -291,7 +250,7 @@ ed_L = ((abs(Lqq_approx-Lqq_approx_test))/Lqq_approx_max).*100;
 % zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
 % % title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
 % % legend;
-
+% 
 % % Echter Fluss
 % subplot(2,1,2); 
 % grid on;

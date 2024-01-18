@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="61" Path="C:/GIT/UltraZohm/software/ultrazohm_sw/vivado/project/ultrazohm.xpr">
+<Project Version="7" Minor="61" Path="C:/Users/Philipp/uz_temp/ultrazohm_sw/vivado/project/ultrazohm.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="2d54095b28b94217985d4503527932f4"/>
@@ -127,14 +127,11 @@
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_IncreEncoder_V24_ip_0_0_2/zusys_IncreEncoder_V24_ip_0_0.xci">
-          <Proxy FileSetName="zusys_IncreEncoder_V24_ip_0_0"/>
-        </CompFileExtendedInfo>
-        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_uz_pmsm_model_0_0_1/zusys_uz_pmsm_model_0_0.xci">
-          <Proxy FileSetName="zusys_uz_pmsm_model_0_0"/>
-        </CompFileExtendedInfo>
         <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_system_ila_0_5/zusys_system_ila_0_5.xci">
           <Proxy FileSetName="zusys_system_ila_0_5"/>
+        </CompFileExtendedInfo>
+        <CompFileExtendedInfo CompFileName="zusys.bd" FileRelPathName="ip/zusys_IncreEncoder_V24_ip_0_0_2/zusys_IncreEncoder_V24_ip_0_0.xci">
+          <Proxy FileSetName="zusys_IncreEncoder_V24_ip_0_0"/>
         </CompFileExtendedInfo>
       </File>
       <File Path="$PPRDIR/zusys/hdl/zusys_wrapper.vhd">
@@ -363,26 +360,20 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_uz_pmsm_model_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_pmsm_model_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_pmsm_model_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_uz_pmsm_model_0_0_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_uz_pmsm_model_0_0_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_uz_pmsm_model_0_0_synth_1">
+    <Run Id="zusys_uz_pmsm_model_0_0_synth_1" Type="Ft3:Synth" SrcSet="zusys_uz_pmsm_model_0_0" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_pmsm_model_0_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_uz_pmsm_model_0_0_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_uz_pmsm_model_0_0_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="zusys_system_ila_0_5_synth_1" Type="Ft3:Synth" SrcSet="zusys_system_ila_0_5" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_system_ila_0_5" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/zusys_system_ila_0_5_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_5_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_5_synth_1">
+    <Run Id="zusys_system_ila_0_5_synth_1" Type="Ft3:Synth" SrcSet="zusys_system_ila_0_5" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_system_ila_0_5" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_5_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_5_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
@@ -424,9 +415,7 @@
     </Run>
     <Run Id="zusys_uz_pmsm_model_0_0_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_uz_pmsm_model_0_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_uz_pmsm_model_0_0_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_uz_pmsm_model_0_0_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_uz_pmsm_model_0_0_impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -443,9 +432,7 @@
     </Run>
     <Run Id="zusys_system_ila_0_5_impl_1" Type="Ft2:EntireDesign" Part="xczu9eg-ffvc900-1-e" ConstrsSet="zusys_system_ila_0_5" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="zusys_system_ila_0_5_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_5_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/zusys_system_ila_0_5_impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>

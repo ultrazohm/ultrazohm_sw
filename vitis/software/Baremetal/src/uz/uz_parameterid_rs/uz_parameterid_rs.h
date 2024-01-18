@@ -35,9 +35,10 @@ struct uz_parameterid_rs_config_t uz_parameterid_rs_get_current_config(uz_parame
 struct uz_parameterid_rs_increments_t uz_parameterid_rs_get_current_increments(uz_parameterid_rs_t* self);
 float uz_parameterid_rs_get_elapsed_time(uz_parameterid_rs_t* self);
 void uz_parameterid_rs_reset(uz_parameterid_rs_t* self);
-struct uz_parameterid_output uz_parameterid_rs_sample(uz_parameterid_rs_t* self);
+struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_rs_t* self);
 float uz_parameterid_rs_get_isr_counter(uz_parameterid_rs_t* self);
 float uz_parameterid_rs_get_end_time(uz_parameterid_rs_t* self);
+float uz_parameterid_rs_sample(uz_parameterid_rs_t* self, struct uz_parameterid_output input, float ud, float id, float n);
 
 
 #endif // UZ_PARAMETERID_RS_H

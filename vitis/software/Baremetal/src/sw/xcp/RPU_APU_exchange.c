@@ -10,7 +10,13 @@
 
 #include "xil_cache.h"
 
-#define RPU
+// A processor specific define like "ARMR5" is only available on R5.
+#ifdef ARMR5
+	#define RPU
+#else
+	#define APU
+#endif
+
 #if (!defined(APU) && !defined(RPU)) || (defined(APU) && defined(RPU))
 	#error "Define either RPU or APU"
 #endif
@@ -36,10 +42,10 @@
  * OCM bank3 is reserved for javascope: Address: 0xFFFF0000, len 0x10000 (= 65K).
  * Place XCP data behind javascope memory in same bank3. Use the last 32K for this.
  */
-#define XCP_OUT_ADDR				0xFFFF8000
-#define XCP_OUT_LEN					512
+#define XCP_OUT_ADDR				0xFFFFE000
+#define XCP_OUT_LEN					128
 #define XCP_IN_ADDR 				0xFFFFC000
-#define XCP_IN_LEN					512
+#define XCP_IN_LEN					128
 
 /*-------------------------------------------------------------------
  * Variables
@@ -69,11 +75,11 @@ void rpu_apu_exchange_init(void)
 	// The CPU which reads the OCM area initializes it
 #ifdef RPU
     *(uint32_t *)XCP_IN_ADDR = 0;
-    Xil_DCacheFlushLine(XCP_IN_ADDR);
+	Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_LEN);
 #endif
 #ifdef APU
     *(uint32_t *)XCP_OUT_ADDR = 0;
-    Xil_DCacheFlushLine(XCP_OUT_ADDR);
+	Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_LEN);
 #endif
 }
 
@@ -82,10 +88,10 @@ void rpu_apu_exchange_cache_invalidate_before_read(void)
 	// TODO: The memory length that is flushed can be shortened to 2 or 3 messages
 	// -> Then also make sure only 2 or 3 message are in the buffer at a time
 #ifdef RPU
-	Xil_DCacheInvalidateRange(XCP_IN_ADDR, XCP_IN_LEN);
+	Xil_DCacheFlushRange(XCP_IN_ADDR, XCP_IN_LEN);
 #endif
 #ifdef APU
-	Xil_DCacheInvalidateRange(XCP_OUT_ADDR, XCP_OUT_LEN);
+	Xil_DCacheFlushRange(XCP_OUT_ADDR, XCP_OUT_LEN);
 #endif
 }
 
@@ -149,15 +155,15 @@ int rpu_apu_exchange_readOCM(uint8_t *len, uint8_t **data_p)
 
 	// Read len
 	*len = *(uint32_t *)src_p;
-	// Immediately 'delete' current message by setting its len to 0
-	*(uint32_t *)src_p = 0;
-	src_p += 4;
 
 	// Is a package ready to read?
 	if (*len == 0) {
-		addr_r = XCP_OUT_ADDR;
 		return 0;
 	}
+
+	// Immediately 'delete' current message by setting its len to 0
+	*(uint32_t *)src_p = 0;
+	src_p += 4;
 
 	// Set data_p to start of message
 	*data_p = (uint8_t *)src_p;

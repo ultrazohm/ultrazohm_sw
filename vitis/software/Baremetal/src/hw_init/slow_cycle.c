@@ -3,8 +3,8 @@
 extern DS_Data Global_Data;
 
 void async_slow_clk_cycle_100ms(void) {
-    unsigned int act;
-    static unsigned int old;
+    unsigned long int act;
+    static unsigned long int old;
     static bool skip = false;
     act = uz_SystemTime_GetUptimeInMs();
 

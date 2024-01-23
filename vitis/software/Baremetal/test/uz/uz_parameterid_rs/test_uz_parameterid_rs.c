@@ -19,8 +19,9 @@ void setUp(void)
     test_increments.n_increment = (test_config.n_end - test_config.n_start)/test_config.n_steps;
     test_config.i_start = 10.0f;
     test_config.i_diff = 1.0f; 
-    test_config.i_steps = 9.0f;
-    test_increments.i_increment = (test_config.i_diff - test_config.i_start)/test_config.i_steps;
+    test_config.i_repeats = 5.0f;
+    test_config.i_steptime = 2.0f;
+    test_config.wait_time = 4.0f;
     test_config.isr_steptime = (1.0f / 10.0e3f) * 1.0f;
     test_output.i_sample = 0.0f;
     test_output.n_sample = 0.0f;
@@ -45,7 +46,7 @@ void test_uz_parameterid_rs_init_equal(void)
     TEST_ASSERT_EQUAL_FLOAT(test_config.n_steps, actual_configuration.n_steps);
     TEST_ASSERT_EQUAL_FLOAT(test_config.i_start, actual_configuration.i_start);
     TEST_ASSERT_EQUAL_FLOAT(test_config.i_diff, actual_configuration.i_diff);
-    TEST_ASSERT_EQUAL_FLOAT(test_config.i_steps, actual_configuration.i_steps);  
+    TEST_ASSERT_EQUAL_FLOAT(test_config.i_repeats, actual_configuration.i_repeats);  
     struct uz_parameterid_rs_increments_t actual_increments = uz_parameterid_rs_get_current_increments(test_instance);
     TEST_ASSERT_EQUAL_FLOAT(test_increments.n_increment, actual_increments.n_increment);   
 }
@@ -93,77 +94,117 @@ void test_uz_parameterid_rs_reset_NULL(void){
     TEST_ASSERT_FAIL_ASSERT(uz_parameterid_rs_reset(NULL));
 }
 
-void test_uz_parameterid_rs_generate_outputs_calc_isr_counter_and_elapsed_time(void){
+void test_uz_parameterid_rs_generate_outputs_test_isr_counter(void){
     uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
     struct uz_parameterid_output actual_output;
     float c = 20000.0f; 
     for (int i = 0; i<=c; i++){
         actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
     }
-    float output_time = uz_parameterid_rs_get_elapsed_time(test_instance2);
     float output_isr_counter = uz_parameterid_rs_get_isr_counter(test_instance2);
-    float actual_time = c * test_config.isr_steptime;
-    float end_time = uz_parameterid_rs_get_end_time(test_instance2); 
-    float actual_endtime = (test_config.i_steps+3.0f) * (test_config.n_steps+1.0f) * 2.0f ; 
-    TEST_ASSERT_EQUAL_FLOAT(actual_time, output_time);
     TEST_ASSERT_EQUAL_FLOAT(c, output_isr_counter);
     TEST_ASSERT_EQUAL_FLOAT(c, actual_output.isr_stepcounter);
-    TEST_ASSERT_EQUAL_FLOAT(end_time, actual_endtime);
+    test_config.i_steptime = 2.0f;
+    test_config.wait_time = 4.0f;
 }
 
-void test_uz_parameterid_rs_generate_outputs_i_null_n_400(void){
-    uz_parameterid_rs_t* test_instance3 = uz_parameterid_rs_init(test_config);
-    struct uz_parameterid_output actual_output = {0};
-    float c = (((test_config.i_steps+3.0f)*2.0f/test_config.isr_steptime))*3.0f + 1.0f; 
+void test_uz_parameterid_rs_generate_outputs_i_start_state(void){
+    test_config.i_steptime = 2.0f * test_config.isr_steptime;
+    test_config.wait_time = 4.0f * test_config.isr_steptime;
+    uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
+    struct uz_parameterid_output actual_output;
+    float c = 6.0f; 
     for (int i = 0; i<=c; i++){
-        actual_output = uz_parameterid_rs_generate_outputs(test_instance3);
-    }
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.i_sample);
-    TEST_ASSERT_EQUAL_FLOAT(400.0f, actual_output.n_sample);
-}
-
-void test_uz_parameterid_rs_generate_outputs_i_10_n_400(void){
-    uz_parameterid_rs_t* test_instance3 = uz_parameterid_rs_init(test_config);
-    struct uz_parameterid_output actual_output = {0};
-    float c = (((test_config.i_steps+3.0f)*2.0f/test_config.isr_steptime))*3.0f + 4.0f/test_config.isr_steptime + 1.0f; 
-    for (int i = 0; i<=c; i++){
-        actual_output = uz_parameterid_rs_generate_outputs(test_instance3);
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
     }
     TEST_ASSERT_EQUAL_FLOAT(10.0f, actual_output.i_sample);
-    TEST_ASSERT_EQUAL_FLOAT(400.0f, actual_output.n_sample);
+    TEST_ASSERT_EQUAL_FLOAT(test_config.n_start, actual_output.n_sample);
+    test_config.i_steptime = 2.0f;
+    test_config.wait_time = 4.0f;
 }
 
-void test_uz_parameterid_rs_generate_outputs_i_11_n_400(void){
-    uz_parameterid_rs_t* test_instance3 = uz_parameterid_rs_init(test_config);
-    struct uz_parameterid_output actual_output = {0};
-    float c = (((test_config.i_steps+3.0f)*2.0f/test_config.isr_steptime))*3.0f + 6.0f/test_config.isr_steptime + 1.0f; 
+void test_uz_parameterid_rs_generate_outputs_i_increment_state(void){
+    test_config.i_steptime = 2.0f * test_config.isr_steptime;
+    test_config.wait_time = 4.0f * test_config.isr_steptime;
+    uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
+    struct uz_parameterid_output actual_output;
+    float c = 8.0f; 
     for (int i = 0; i<=c; i++){
-        actual_output = uz_parameterid_rs_generate_outputs(test_instance3);
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
     }
     TEST_ASSERT_EQUAL_FLOAT(11.0f, actual_output.i_sample);
-    TEST_ASSERT_EQUAL_FLOAT(400.0f, actual_output.n_sample);
+    TEST_ASSERT_EQUAL_FLOAT(test_config.n_start, actual_output.n_sample);
+    test_config.i_steptime = 2.0f;
+    test_config.wait_time = 4.0f;
 }
 
-void test_uz_parameterid_rs_generate_outputs_finished(void){
-    uz_parameterid_rs_t* test_instance4 = uz_parameterid_rs_init(test_config);
-    struct uz_parameterid_output actual_output = {0};
-    float c = ((test_config.i_steps+3.0f) * (test_config.n_steps+1.0f) * 2.0f)/test_config.isr_steptime+1.0f; 
+void test_uz_parameterid_rs_generate_outputs_n_increment_and_wait(void){
+    test_config.i_steptime = 2.0f * test_config.isr_steptime;
+    test_config.wait_time = 4.0f * test_config.isr_steptime;
+    uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
+    struct uz_parameterid_output actual_output;
+    float c = 76.0f; 
     for (int i = 0; i<=c; i++){
-        actual_output = uz_parameterid_rs_generate_outputs(test_instance4);
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
+    }
+    TEST_ASSERT_EQUAL_FLOAT(400.0f, actual_output.n_sample);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.i_sample);
+    test_config.i_steptime = 2.0f;
+    test_config.wait_time = 4.0f;
+}
+
+void test_uz_parameterid_rs_generate_outputs_n_increment_and_i_start(void){
+    test_config.i_steptime = 2.0f * test_config.isr_steptime;
+    test_config.wait_time = 4.0f * test_config.isr_steptime;
+    uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
+    struct uz_parameterid_output actual_output;
+    int32_t c = 81; 
+    for (int i = 0; i<=c; i++){
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
+    }
+    TEST_ASSERT_EQUAL_FLOAT(400.0f, actual_output.n_sample);
+    TEST_ASSERT_EQUAL_FLOAT(10.0f, actual_output.i_sample);
+    test_config.i_steptime = 2.0f;
+    test_config.wait_time = 4.0f;
+}
+
+
+
+void test_uz_parameterid_rs_generate_outputs_start_state(void){
+    test_config.i_steptime = 2.0f * test_config.isr_steptime;
+    test_config.wait_time = 4.0f * test_config.isr_steptime;
+    uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
+    struct uz_parameterid_output actual_output;
+    float c = 2.0f; 
+    for (int i = 0; i<=c; i++){
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
     }
     TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.i_sample);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.n_sample);
+    TEST_ASSERT_EQUAL_FLOAT(test_config.n_start, actual_output.n_sample);
 }
 
-/*void test_uz_parameterid_rs_calc_rs(void){
+
+void test_uz_parameterid_rs_sample_fail_assert(void){
+    uz_parameterid_rs_t* test_instance5 = uz_parameterid_rs_init(test_config);   
+    TEST_ASSERT_FAIL_ASSERT(uz_parameterid_rs_sample(test_instance5, test_output, 1.0f, 1.0f, 1.0f););
+
+}
+
+void test_uz_parameterid_rs_sample(void){
+    test_config.wait_time = 2.0f * test_config.isr_steptime;
+    test_config.i_steptime = 5004.0f * test_config.isr_steptime;
     uz_parameterid_rs_t* test_instance5 = uz_parameterid_rs_init(test_config);
-    struct uz_parameterid_output actual_output = {0};
-    actual_output = uz_parameterid_rs_generate_outputs(test_instance5);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.i_sample);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.n_sample);
-}*/
+    struct uz_parameterid_output actual_output;
+    float test;
+    float c = 5008.0f; 
+    for (int i = 0; i<=c; i++){
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance5);
+        test = uz_parameterid_rs_sample(test_instance5, test_output, 1.0f, 1.0f, 1.0f);
+    }
+    
+    TEST_ASSERT_EQUAL_FLOAT(1.0f, test);
 
-
+}
 
 
 #endif // TEST

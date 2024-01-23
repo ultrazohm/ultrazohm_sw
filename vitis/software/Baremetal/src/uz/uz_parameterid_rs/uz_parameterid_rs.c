@@ -13,14 +13,13 @@ struct uz_parameterid_rs_t {
     bool starts_generating_outputs;
     bool is_first_call_to_generate_outputs;
     bool is_first_call_to_sample;
-	float elapsed_time_since_start;
     struct uz_parameterid_rs_config_t internal_config;
     struct uz_parameterid_rs_increments_t calc_increments;
+    struct uz_parameterid_rs_counter_t counter;
+    struct uz_parameterid_rs_sample_output sample;
     float isr_counter;
-    float i_counter;
-    float n_counter;
-    float end_time;
-    float duration;
+    enum state state;
+    enum sample sample_state;
 };
 
 
@@ -45,11 +44,12 @@ uz_parameterid_rs_t* uz_parameterid_rs_init(struct uz_parameterid_rs_config_t in
     self->is_first_call_to_sample = true;
     self->is_first_call_to_generate_outputs = true;
     self->calc_increments.n_increment = (initial_config.n_end - initial_config.n_start)/initial_config.n_steps;
+    self->state = start; 
 	uz_assert(initial_config.n_start > 0.0f);
 	uz_assert(initial_config.n_end > 0.0f);
 	uz_assert(initial_config.n_end > initial_config.n_start);
 	uz_assert(initial_config.n_steps > 0.0f);
-	uz_assert(initial_config.i_steps > 0.0f);
+	uz_assert(initial_config.i_repeats > 0.0f);
     uz_assert(initial_config.i_diff > 0.0f);
     return (self);
 }
@@ -66,32 +66,26 @@ struct uz_parameterid_rs_increments_t uz_parameterid_rs_get_current_increments(u
     return self->calc_increments;
 }
 
-float uz_parameterid_rs_get_end_time(uz_parameterid_rs_t* self){
+enum state uz_parameterid_rs_get_current_state(uz_parameterid_rs_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return self->end_time;
+    return self->state;
 }
+
+
 
 void uz_parameterid_rs_reset(uz_parameterid_rs_t* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	self->is_first_call_to_sample = true;
-	self->elapsed_time_since_start = 0.0f;
-
 }
 
-float uz_parameterid_rs_get_elapsed_time(uz_parameterid_rs_t* self){
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    return self->elapsed_time_since_start;
-}
 
 float uz_parameterid_rs_get_isr_counter(uz_parameterid_rs_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->isr_counter;
 }
-
 
 struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_rs_t* self){
     uz_assert_not_NULL(self);
@@ -100,48 +94,135 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
 	// If its the first call, we take the current time as the initial time to have small numbers at start with 0
 	if (self->is_first_call_to_generate_outputs) {
         self->starts_generating_outputs = true;
+        self->state = start;
+        self->sample_state = sample_off;
         output.i_sample = 0.0f;
         output.n_sample = 0.0f;
         output.isr_stepcounter = 0.0f; 
 		self->isr_counter = 0.0f;
-        self->elapsed_time_since_start = 0.0f; // holds the time that has passed since the first call of the function
-		self->is_first_call_to_generate_outputs = false;
-        self->end_time = (self->internal_config.i_steps+3.0f)*(self->internal_config.n_steps+1.0f)*2.0f;
-	    self->duration = ((self->internal_config.i_steps+3.0f)*2.0f);
+        self->counter.wait = 0;
+        self->counter.i = 0;
+        self->counter.n = 0; 
+        self->counter.i_repeat = 0;
+        self->counter.wait_max = self->internal_config.wait_time/self->internal_config.isr_steptime; 
+        self->counter.i_max =self->internal_config.i_steptime/self->internal_config.isr_steptime;
+        self->is_first_call_to_generate_outputs = false;
     } else {
         self->isr_counter++; 
         output.isr_stepcounter = self->isr_counter; 
-        self->elapsed_time_since_start = self->isr_counter * self->internal_config.isr_steptime;
-        
-        if (self->elapsed_time_since_start<=self->end_time){
-                self->n_counter = (int)(self->elapsed_time_since_start/((self->internal_config.i_steps+3.0f)*2.0f));
-                self->i_counter = (int)(self->elapsed_time_since_start/2.0f);
-                if(self->elapsed_time_since_start > self->duration*self->n_counter && self->elapsed_time_since_start < self->duration*self->n_counter + 4.0f){
-                output.i_sample = 0.0f;
-                output.n_sample = self->internal_config.n_start + self->n_counter * self->calc_increments.n_increment;
-                return output;
-                } else {
-                output.i_sample = self->internal_config.i_start + fmodf(self->i_counter,2.0f) * self->internal_config.i_diff;
-                output.n_sample = self->internal_config.n_start + self->n_counter * self->calc_increments.n_increment;
-                return output;
-                }
 
-        } else {
-            output.i_sample = 0.0f;
-            output.n_sample = 0.0f;
-            return output;
+            switch (self->state){
+
+            case start:
+                output.n_sample = self->internal_config.n_start;
+                output.i_sample = 0.0f;
+                self->state = wait; 
+                break;
+            
+            case wait:
+            self->counter.wait++;
+                if(self->counter.wait == self->counter.wait_max){
+                    self->state=i_start;
+                    self->counter.wait = 0;
+                }
+                break;
+            
+            case i_start:
+                self->counter.i++; 
+                output.i_sample = self->internal_config.i_start;
+                if (self->counter.i == (0.5f/self->internal_config.isr_steptime))
+                {
+                    self->sample_state = sample_on;
+                }
+                
+                if(self->counter.i == self->counter.i_max){
+                    self->state=i_increment;
+                    self->sample_state=calc;
+                    self->counter.i = 0;
+                }
+                break;
+
+            case i_increment:
+                self->counter.i++; 
+                output.i_sample = self->internal_config.i_start + self->internal_config.i_diff;
+                if (self->counter.i == (0.5f/self->internal_config.isr_steptime))
+                {
+                    self->sample_state = sample_on;
+                }
+                if(self->counter.i == self->counter.i_max){
+                    self->counter.i_repeat++; 
+                    if(self->counter.i_repeat == self->internal_config.i_repeats){
+                        self->counter.i_repeat = 0;
+                        self->counter.i = 0;
+                        self->state = n_increment; 
+                        break;
+                    }
+                    self->state = i_start;
+                    self->sample_state = sample_off;
+                    self->counter.i = 0;
+                }
+                break; 
+
+            case n_increment:
+                 self->counter.n++;
+                 output.i_sample = 0.0f;
+                 output.n_sample = self->internal_config.n_start + self->counter.n*self->calc_increments.n_increment; 
+                 if(self->counter.n > (self->internal_config.n_steps+1.0f)){
+                    self->state = finished;
+                 } else {
+                    self->state = wait;
+                 }
+                    
+                break;
+
+            default:
+                output.i_sample = 0.0f;
+                output.n_sample = 0.0f;
+                break;
         }
+        return output;
     }
 }
 
-/*float uz_parameterid_rs_sample(uz_parameterid_rs_t* self, struct uz_parameterid_output input, float ud, float id, float n){
+float uz_parameterid_rs_sample(uz_parameterid_rs_t* self, struct uz_parameterid_output input, float ud, float id, float n){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     uz_assert(self->starts_generating_outputs);
-    float test = 1.0;
-    return test; 
+    if (self->is_first_call_to_sample) {
+        self->sample.sum_ud = 0.0f;
+        self->sample.sum_id = 0.0f;
+        self->counter.meas = 0;
+        self->sample.mean_ud = 0.0f;
+        self->sample.mean_id = 0.0f;
+        self->is_first_call_to_sample = false;
+    } else {
+        switch (self->sample_state)
+        {
+        case sample_on:
+            self->sample.sum_ud = self->sample.sum_ud + ud;
+            self->sample.sum_id = self->sample.sum_id + id;
+            self->counter.meas++; 
+            break;
 
-}*/
+        case calc:
+            self->sample.mean_ud = self->sample.sum_ud/self->counter.meas;
+            self->sample.mean_id = self->sample.sum_id/self->counter.meas;
+            break;    
+        
+        case sample_off:
+            self->sample.sum_ud = 0.0f;
+            self->sample.sum_id = 0.0f;
+            self->counter.meas=0; 
+            break;
+
+        default:
+            break;
+        }
+
+    }
+    return self->sample.mean_ud; 
+
+}
 
 #endif
 

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_fastCTRL'.
  *
- * Model version                  : 1.16
+ * Model version                  : 1.17
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Oct  9 23:28:17 2023
+ * C/C++ source code generated on : Wed Jan 10 21:30:06 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -253,15 +253,25 @@ typedef struct {
   real_T Sum2_di;                      /* '<S9>/Sum2' */
   real_T TrigonometricFunction_p;      /* '<S9>/Trigonometric Function' */
   real_T DiscreteFIRFilter10thorder; /* '<S9>/Discrete FIR Filter 10th order' */
+  real_T Cnt_State;                    /* '<S1>/Cnt_State' */
+  real_T Cnt_1;                        /* '<S1>/Cnt_1' */
+  real_T Cnt_2;                        /* '<S1>/Cnt_2' */
+  real_T Cnt_3;                        /* '<S1>/Cnt_3' */
+  real_T Cnt_4;                        /* '<S1>/Cnt_4' */
+  real_T Cnt_5;                        /* '<S1>/Cnt_5' */
+  real_T Cnt_6;                        /* '<S1>/Cnt_6' */
+  real_T Cnt_7;                        /* '<S1>/Cnt_7' */
+  real_T Cnt_8;                        /* '<S1>/Cnt_8' */
+  real_T Sum1_l;                       /* '<S1>/Sum1' */
   real_T Sum_pl;                       /* '<S1>/Sum' */
-  real_T Sig1;                         /* '<S1>/Gain' */
-  real_T Sig2;                         /* '<S1>/Gain1' */
-  real_T Sig3;                         /* '<S1>/Gain2' */
-  real_T Sig4;                         /* '<S1>/Gain3' */
-  real_T Sig5;                         /* '<S1>/Gain4' */
-  real_T Sig6;                         /* '<S1>/Gain5' */
-  real_T Sig7;                         /* '<S1>/Gain6' */
-  real_T Sig8;                         /* '<S1>/Gain7' */
+  real_T Sig1;                         /* '<S1>/Sig1' */
+  real_T Sig2;                         /* '<S1>/Sig2' */
+  real_T Sig3;                         /* '<S1>/Sig3' */
+  real_T Sig4;                         /* '<S1>/Sig4' */
+  real_T Sig5;                         /* '<S1>/Sig5' */
+  real_T Sig6;                         /* '<S1>/Sig6' */
+  real_T Sig7;                         /* '<S1>/Sig7' */
+  real_T Sig8;                         /* '<S1>/Sig8' */
   real_T U_DC2;                        /* '<S52>/U_DC//2' */
   real_T AvoidDivBy0;                  /* '<S52>/AvoidDivBy0' */
   real_T Divide3[6];                   /* '<S52>/Divide3' */
@@ -382,6 +392,7 @@ typedef struct {
   real_T UnitDelay_DSTATE_bs[2];       /* '<S1>/Unit Delay' */
   real_T DiscreteFIRFilter10thorder_stat[9];
                                      /* '<S9>/Discrete FIR Filter 10th order' */
+  real_T Cnt_State_DSTATE;             /* '<S1>/Cnt_State' */
   real_T FCF_Cnt_DSTATE;               /* '<S1>/FCF_Cnt' */
   real_T DiscreteTransferFcn_tmp;      /* '<S13>/Discrete Transfer Fcn' */
   real_T DiscreteTransferFcn1_tmp;     /* '<S13>/Discrete Transfer Fcn1' */
@@ -1176,35 +1187,65 @@ struct P_FOC_fastCTRL_T_ {
   real_T Manipulate_FOC_Error_Value;   /* Expression: 0
                                         * Referenced by: '<S1>/Manipulate_FOC_Error'
                                         */
+  real_T Cnt_State_InitialCondition;   /* Expression: 0
+                                        * Referenced by: '<S1>/Cnt_State'
+                                        */
+  real_T Cnt_1_Gain;                   /* Expression: 1
+                                        * Referenced by: '<S1>/Cnt_1'
+                                        */
+  real_T Cnt_2_Gain;                   /* Expression: 1
+                                        * Referenced by: '<S1>/Cnt_2'
+                                        */
+  real_T Cnt_3_Gain;                   /* Expression: 1
+                                        * Referenced by: '<S1>/Cnt_3'
+                                        */
+  real_T Cnt_4_Gain;                   /* Expression: 1
+                                        * Referenced by: '<S1>/Cnt_4'
+                                        */
+  real_T Cnt_5_Gain;                   /* Expression: 1
+                                        * Referenced by: '<S1>/Cnt_5'
+                                        */
+  real_T Cnt_6_Gain;                   /* Expression: 1
+                                        * Referenced by: '<S1>/Cnt_6'
+                                        */
+  real_T Cnt_7_Gain;                   /* Expression: 1
+                                        * Referenced by: '<S1>/Cnt_7'
+                                        */
+  real_T Cnt_8_Gain;                   /* Expression: 1
+                                        * Referenced by: '<S1>/Cnt_8'
+                                        */
+  real_T Constant1_Value_lw;           /* Expression: 1
+                                        * Referenced by: '<S1>/Constant1'
+                                        */
   real_T Counter_Start_Value;          /* Expression: 1
                                         * Referenced by: '<S1>/Counter_Start'
                                         */
   real_T FCF_Cnt_InitialCondition;     /* Expression: 0
                                         * Referenced by: '<S1>/FCF_Cnt'
                                         */
-  real_T Gain_Gain_m;                  /* Expression: 1
-                                        * Referenced by: '<S1>/Gain'
+  real_T Sig1_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S1>/Sig1'
                                         */
-  real_T Gain1_Gain_m;                 /* Expression: 1
-                                        * Referenced by: '<S1>/Gain1'
+  real_T Sig2_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S1>/Sig2'
                                         */
-  real_T Gain2_Gain_i;                 /* Expression: 1
-                                        * Referenced by: '<S1>/Gain2'
+  real_T Sig3_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S1>/Sig3'
                                         */
-  real_T Gain3_Gain_o;                 /* Expression: 1
-                                        * Referenced by: '<S1>/Gain3'
+  real_T Sig4_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S1>/Sig4'
                                         */
-  real_T Gain4_Gain_l;                 /* Expression: 1
-                                        * Referenced by: '<S1>/Gain4'
+  real_T Sig5_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S1>/Sig5'
                                         */
-  real_T Gain5_Gain_o;                 /* Expression: 1
-                                        * Referenced by: '<S1>/Gain5'
+  real_T Sig6_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S1>/Sig6'
                                         */
-  real_T Gain6_Gain_o;                 /* Expression: 1
-                                        * Referenced by: '<S1>/Gain6'
+  real_T Sig7_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S1>/Sig7'
                                         */
-  real_T Gain7_Gain;                   /* Expression: 1
-                                        * Referenced by: '<S1>/Gain7'
+  real_T Sig8_Gain;                    /* Expression: 1
+                                        * Referenced by: '<S1>/Sig8'
                                         */
 };
 

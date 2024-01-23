@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_fastCTRL'.
  *
- * Model version                  : 1.16
+ * Model version                  : 1.17
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Oct  9 23:28:17 2023
+ * C/C++ source code generated on : Wed Jan 10 21:30:06 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -1242,6 +1242,56 @@ P_FOC_fastCTRL_T FOC_fastCTRL_P = {
    */
   0.0,
 
+  /* Expression: 0
+   * Referenced by: '<S1>/Cnt_State'
+   */
+  0.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Cnt_1'
+   */
+  1.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Cnt_2'
+   */
+  1.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Cnt_3'
+   */
+  1.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Cnt_4'
+   */
+  1.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Cnt_5'
+   */
+  1.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Cnt_6'
+   */
+  1.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Cnt_7'
+   */
+  1.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Cnt_8'
+   */
+  1.0,
+
+  /* Expression: 1
+   * Referenced by: '<S1>/Constant1'
+   */
+  1.0,
+
   /* Expression: 1
    * Referenced by: '<S1>/Counter_Start'
    */
@@ -1253,42 +1303,42 @@ P_FOC_fastCTRL_T FOC_fastCTRL_P = {
   0.0,
 
   /* Expression: 1
-   * Referenced by: '<S1>/Gain'
+   * Referenced by: '<S1>/Sig1'
    */
   1.0,
 
   /* Expression: 1
-   * Referenced by: '<S1>/Gain1'
+   * Referenced by: '<S1>/Sig2'
    */
   1.0,
 
   /* Expression: 1
-   * Referenced by: '<S1>/Gain2'
+   * Referenced by: '<S1>/Sig3'
    */
   1.0,
 
   /* Expression: 1
-   * Referenced by: '<S1>/Gain3'
+   * Referenced by: '<S1>/Sig4'
    */
   1.0,
 
   /* Expression: 1
-   * Referenced by: '<S1>/Gain4'
+   * Referenced by: '<S1>/Sig5'
    */
   1.0,
 
   /* Expression: 1
-   * Referenced by: '<S1>/Gain5'
+   * Referenced by: '<S1>/Sig6'
    */
   1.0,
 
   /* Expression: 1
-   * Referenced by: '<S1>/Gain6'
+   * Referenced by: '<S1>/Sig7'
    */
   1.0,
 
   /* Expression: 1
-   * Referenced by: '<S1>/Gain7'
+   * Referenced by: '<S1>/Sig8'
    */
   1.0
 };

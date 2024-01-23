@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'FOC_fastCTRL'.
  *
- * Model version                  : 1.16
+ * Model version                  : 1.17
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Mon Oct  9 23:28:17 2023
+ * C/C++ source code generated on : Wed Jan 10 21:30:06 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-A
@@ -2737,6 +2737,39 @@ void FOC_fastCTRL_step(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
    */
   FOC_fastCTRL_Y->FOC_Error = FOC_fastCTRL_P.Manipulate_FOC_Error_Value;
 
+  /* UnitDelay: '<S1>/Cnt_State' */
+  FOC_fastCTRL_B->Cnt_State = FOC_fastCTRL_DW->Cnt_State_DSTATE;
+
+  /* Gain: '<S1>/Cnt_1' */
+  FOC_fastCTRL_B->Cnt_1 = FOC_fastCTRL_P.Cnt_1_Gain * FOC_fastCTRL_B->Cnt_State;
+
+  /* Gain: '<S1>/Cnt_2' */
+  FOC_fastCTRL_B->Cnt_2 = FOC_fastCTRL_P.Cnt_2_Gain * FOC_fastCTRL_B->Cnt_State;
+
+  /* Gain: '<S1>/Cnt_3' */
+  FOC_fastCTRL_B->Cnt_3 = FOC_fastCTRL_P.Cnt_3_Gain * FOC_fastCTRL_B->Cnt_State;
+
+  /* Gain: '<S1>/Cnt_4' */
+  FOC_fastCTRL_B->Cnt_4 = FOC_fastCTRL_P.Cnt_4_Gain * FOC_fastCTRL_B->Cnt_State;
+
+  /* Gain: '<S1>/Cnt_5' */
+  FOC_fastCTRL_B->Cnt_5 = FOC_fastCTRL_P.Cnt_5_Gain * FOC_fastCTRL_B->Cnt_State;
+
+  /* Gain: '<S1>/Cnt_6' */
+  FOC_fastCTRL_B->Cnt_6 = FOC_fastCTRL_P.Cnt_6_Gain * FOC_fastCTRL_B->Cnt_State;
+
+  /* Gain: '<S1>/Cnt_7' */
+  FOC_fastCTRL_B->Cnt_7 = FOC_fastCTRL_P.Cnt_7_Gain * FOC_fastCTRL_B->Cnt_State;
+
+  /* Gain: '<S1>/Cnt_8' */
+  FOC_fastCTRL_B->Cnt_8 = FOC_fastCTRL_P.Cnt_8_Gain * FOC_fastCTRL_B->Cnt_State;
+
+  /* Sum: '<S1>/Sum1' incorporates:
+   *  Constant: '<S1>/Constant1'
+   */
+  FOC_fastCTRL_B->Sum1_l = FOC_fastCTRL_P.Constant1_Value_lw +
+    FOC_fastCTRL_B->Cnt_State;
+
   /* UnitDelay: '<S1>/FCF_Cnt' */
   FCF_Cnt = FOC_fastCTRL_DW->FCF_Cnt_DSTATE;
 
@@ -2745,45 +2778,45 @@ void FOC_fastCTRL_step(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
    */
   FOC_fastCTRL_B->Sum_pl = FOC_fastCTRL_P.Counter_Start_Value + FCF_Cnt;
 
-  /* Gain: '<S1>/Gain' incorporates:
+  /* Gain: '<S1>/Sig1' incorporates:
    *  Constant: '<S1>/Par1'
    */
-  FOC_fastCTRL_B->Sig1 = FOC_fastCTRL_P.Gain_Gain_m * FOC_fastCTRL_P.Par1;
+  FOC_fastCTRL_B->Sig1 = FOC_fastCTRL_P.Sig1_Gain * FOC_fastCTRL_P.Par1;
 
-  /* Gain: '<S1>/Gain1' incorporates:
+  /* Gain: '<S1>/Sig2' incorporates:
    *  Constant: '<S1>/Par2'
    */
-  FOC_fastCTRL_B->Sig2 = FOC_fastCTRL_P.Gain1_Gain_m * FOC_fastCTRL_P.Par2;
+  FOC_fastCTRL_B->Sig2 = FOC_fastCTRL_P.Sig2_Gain * FOC_fastCTRL_P.Par2;
 
-  /* Gain: '<S1>/Gain2' incorporates:
+  /* Gain: '<S1>/Sig3' incorporates:
    *  Constant: '<S1>/Par3'
    */
-  FOC_fastCTRL_B->Sig3 = FOC_fastCTRL_P.Gain2_Gain_i * FOC_fastCTRL_P.Par3;
+  FOC_fastCTRL_B->Sig3 = FOC_fastCTRL_P.Sig3_Gain * FOC_fastCTRL_P.Par3;
 
-  /* Gain: '<S1>/Gain3' incorporates:
+  /* Gain: '<S1>/Sig4' incorporates:
    *  Constant: '<S1>/Par4'
    */
-  FOC_fastCTRL_B->Sig4 = FOC_fastCTRL_P.Gain3_Gain_o * FOC_fastCTRL_P.Par4;
+  FOC_fastCTRL_B->Sig4 = FOC_fastCTRL_P.Sig4_Gain * FOC_fastCTRL_P.Par4;
 
-  /* Gain: '<S1>/Gain4' incorporates:
+  /* Gain: '<S1>/Sig5' incorporates:
    *  Constant: '<S1>/Par5'
    */
-  FOC_fastCTRL_B->Sig5 = FOC_fastCTRL_P.Gain4_Gain_l * FOC_fastCTRL_P.Par5;
+  FOC_fastCTRL_B->Sig5 = FOC_fastCTRL_P.Sig5_Gain * FOC_fastCTRL_P.Par5;
 
-  /* Gain: '<S1>/Gain5' incorporates:
+  /* Gain: '<S1>/Sig6' incorporates:
    *  Constant: '<S1>/Par6'
    */
-  FOC_fastCTRL_B->Sig6 = FOC_fastCTRL_P.Gain5_Gain_o * FOC_fastCTRL_P.Par6;
+  FOC_fastCTRL_B->Sig6 = FOC_fastCTRL_P.Sig6_Gain * FOC_fastCTRL_P.Par6;
 
-  /* Gain: '<S1>/Gain6' incorporates:
+  /* Gain: '<S1>/Sig7' incorporates:
    *  Constant: '<S1>/Par7'
    */
-  FOC_fastCTRL_B->Sig7 = FOC_fastCTRL_P.Gain6_Gain_o * FOC_fastCTRL_P.Par7;
+  FOC_fastCTRL_B->Sig7 = FOC_fastCTRL_P.Sig7_Gain * FOC_fastCTRL_P.Par7;
 
-  /* Gain: '<S1>/Gain7' incorporates:
+  /* Gain: '<S1>/Sig8' incorporates:
    *  Constant: '<S1>/Par8'
    */
-  FOC_fastCTRL_B->Sig8 = FOC_fastCTRL_P.Gain7_Gain * FOC_fastCTRL_P.Par8;
+  FOC_fastCTRL_B->Sig8 = FOC_fastCTRL_P.Sig8_Gain * FOC_fastCTRL_P.Par8;
 
   /* Update for DiscreteTransferFcn: '<S7>/Discrete Transfer Fcn' */
   maxV = FOC_fastCTRL_B->f_2_w_el;
@@ -2932,6 +2965,9 @@ void FOC_fastCTRL_step(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
     FOC_fastCTRL_B->TrigonometricFunction_p;
 
   /* End of Update for DiscreteFir: '<S9>/Discrete FIR Filter 10th order' */
+
+  /* Update for UnitDelay: '<S1>/Cnt_State' */
+  FOC_fastCTRL_DW->Cnt_State_DSTATE = FOC_fastCTRL_B->Sum1_l;
 
   /* Update for UnitDelay: '<S1>/FCF_Cnt' */
   FOC_fastCTRL_DW->FCF_Cnt_DSTATE = FOC_fastCTRL_B->Sum_pl;
@@ -3133,6 +3169,10 @@ void FOC_fastCTRL_initialize(RT_MODEL_FOC_fastCTRL_T *const FOC_fastCTRL_M)
     }
 
     /* End of InitializeConditions for DiscreteFir: '<S9>/Discrete FIR Filter 10th order' */
+
+    /* InitializeConditions for UnitDelay: '<S1>/Cnt_State' */
+    FOC_fastCTRL_DW->Cnt_State_DSTATE =
+      FOC_fastCTRL_P.Cnt_State_InitialCondition;
 
     /* InitializeConditions for UnitDelay: '<S1>/FCF_Cnt' */
     FOC_fastCTRL_DW->FCF_Cnt_DSTATE = FOC_fastCTRL_P.FCF_Cnt_InitialCondition;

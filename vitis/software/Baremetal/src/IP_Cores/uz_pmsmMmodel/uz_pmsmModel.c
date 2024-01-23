@@ -196,6 +196,15 @@ static void write_config_to_pl(uz_pmsmModel_t *self)
     uz_pmsmModel_hw_write_aq6(self->config.base_address, self->config.aq6);
     uz_pmsmModel_hw_write_reciprocal_F1G1(self->config.base_address, self->config.F1G1);
     uz_pmsmModel_hw_write_reciprocal_F2G2(self->config.base_address, self->config.F2G2);
+    uz_pmsmModel_hw_write_ad4_mul_ad5(self->config.base_address, self->config.ad4, self->config.ad5);
+    uz_pmsmModel_hw_write_ad1_mul_ad2(self->config.base_address, self->config.ad1, self->config.ad2);
+    uz_pmsmModel_hw_write_aq4_mul_aq5(self->config.base_address, self->config.aq4, self->config.aq5);
+    uz_pmsmModel_hw_write_aq1_mul_aq2(self->config.base_address, self->config.aq1, self->config.aq2);
+    uz_pmsmModel_hw_write_aq4_div_aq5(self->config.base_address, self->config.aq4, self->config.aq5);
+    uz_pmsmModel_hw_write_aq1_div_aq2(self->config.base_address, self->config.aq1, self->config.aq2);
+    uz_pmsmModel_hw_write_ad4_div_ad5(self->config.base_address, self->config.ad4, self->config.ad5);
+    uz_pmsmModel_hw_write_ad1_div_ad2(self->config.base_address, self->config.ad1, self->config.ad2);
+    uz_pmsmModel_hw_write_aq3_min_aq6(self->config.base_address, self->config.aq3, self->config.aq6);
     uz_pmsmModel_hw_write_simulate_nonlinear(self->config.base_address, self->config.simulate_nonlinear);
 }
 

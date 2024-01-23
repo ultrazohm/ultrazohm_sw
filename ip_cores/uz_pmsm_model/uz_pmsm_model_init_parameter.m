@@ -1,6 +1,22 @@
 %% Parameter for simulation of uz_pmsm_model.slx
 % This is called by a callback when uz_pmsm_model is opened
 % 
+
+%test
+ad1 =1;
+ad2 =1;
+ad3 =1;
+ad4 =1;
+ad5 =1;
+ad6 =1;
+aq1 =1;
+aq2 =1;
+aq3 =1;
+aq4 =1;
+aq5 =1;
+aq6 =1;
+Fid1_Giq1 = 1;
+Fid2_Giq2 = 1;
 % Electrical parameters
 R_1=0.3;
 L_d=0.00045;
@@ -38,14 +54,14 @@ friction_coefficient=0.001;
 static_friction_torque=0.01;
 
 % Simulation settings
-simulate_mechanical=false;
+simulate_mechanical=true;
 simulate_open_loop=false;
-simulate_nonlinear_modell=true;
+simulate_nonlinear_modell=false;
 
 parameter_nachfuerung=false;
 
-praediktion_entkopplung_nonlinear=true;
-entkopplung_linear=false;
+praediktion_entkopplung_nonlinear=false;
+entkopplung_linear=true;
 entkopplung_static=false;
 entkopplung_dynamic=false;
 

@@ -58,6 +58,7 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
+
     while (1)
     {
         switch (initialization_chain)
@@ -123,33 +124,33 @@ int main(void)
 				.max_modulation_index = 1.0f / sqrtf(3.0f)};
 
         	CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
-
         	struct uz_pmsmModel_config_t pmsm_config={
 
-        		.base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+        	            		.base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
 
-				.ip_core_frequency_Hz=100000000,
+        	    				.ip_core_frequency_Hz=100000000,
 
-				.simulate_mechanical_system = true,
+        	    				.simulate_mechanical_system = true,
 
-				.simulate_nonlinear =false,
+        	    				.simulate_nonlinear =false,
 
-				.r_1 = 0.085f,
+        	    				.r_1 = 0.085f,
 
-				.L_d = 3.00e-04f,
+        	    				.L_d = 3.00e-04f,
 
-				.L_q = 3.00e-04f,
+        	    				.L_q = 3.00e-04f,
 
-				.psi_pm = 0.0075f,
+        	    				.psi_pm = 0.0075f,
 
-				.polepairs = 4.0f,
+        	    				.polepairs = 4.0f,
 
-				.inertia = 3.24e-05f,
+        	    				.inertia = 3.24e-05f,
 
-				.coulomb_friction_constant = 0.01f,
+        	    				.coulomb_friction_constant = 0.01f,
 
-				.friction_coefficient = 0.001f};
-        	pmsm=uz_pmsmModel_init(pmsm_config);
+        	    				.friction_coefficient = 0.001f};
+        	            	pmsm=uz_pmsmModel_init(pmsm_config);
+
 
         	initialization_chain = init_ip_cores;
         	break;

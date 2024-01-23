@@ -195,13 +195,13 @@ void uz_pmsmModel_hw_write_aq6(uint32_t base_address, float aq6){
 void uz_pmsmModel_hw_write_reciprocal_F1G1(uint32_t base_address, float F1G1){
     uz_assert_not_zero(base_address);
     uz_assert(F1G1 > 0.0f); // prevent division by zero and no negative inertia exists
-    uz_axi_write_float(base_address+reciprocal_F1G1_Data_uz_pmsm_model,1.0f/F1G1);
+    uz_axi_write_float(base_address+reciprocal_F1G1_Data_uz_pmsm_model,(1.0f/F1G1));
 }
 
 void uz_pmsmModel_hw_write_reciprocal_F2G2(uint32_t base_address, float F2G2){
     uz_assert_not_zero(base_address);
     uz_assert(F2G2 > 0.0f); // prevent division by zero and no negative inertia exists
-    uz_axi_write_float(base_address+reciprocal_F2G2_Data_uz_pmsm_model,1.0f/F2G2);
+    uz_axi_write_float(base_address+reciprocal_F2G2_Data_uz_pmsm_model,(1.0f/F2G2));
 }
 
 //FittingParameter that are calculated in driver
@@ -209,48 +209,48 @@ void uz_pmsmModel_hw_write_reciprocal_F2G2(uint32_t base_address, float F2G2){
 //Multiply
 void uz_pmsmModel_hw_write_ad4_mul_ad5(uint32_t base_address, float ad4, float ad5){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+ad4_mul_ad5_Data_uz_pmsm_model,ad4*ad5);
+    uz_axi_write_float(base_address+ad4_mul_ad5_Data_uz_pmsm_model,(ad4*ad5));
 }
 
 void uz_pmsmModel_hw_write_ad1_mul_ad2(uint32_t base_address, float ad1, float ad2){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+ad1_mul_ad2_Data_uz_pmsm_model,ad1*ad2);
+    uz_axi_write_float(base_address+ad1_mul_ad2_Data_uz_pmsm_model,(ad1*ad2));
 }
 
 void uz_pmsmModel_hw_write_aq4_mul_aq5(uint32_t base_address, float aq4, float aq5){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+aq4_mul_aq5_Data_uz_pmsm_model,aq4*aq5);
+    uz_axi_write_float(base_address+aq4_mul_aq5_Data_uz_pmsm_model,(aq4*aq5));
 }
 
 void uz_pmsmModel_hw_write_aq1_mul_aq2(uint32_t base_address, float aq1, float aq2){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+aq1_mul_aq2_Data_uz_pmsm_model,aq1*aq2);
+    uz_axi_write_float(base_address+aq1_mul_aq2_Data_uz_pmsm_model,(aq1*aq2));
 }
 
 //Divide
 void uz_pmsmModel_hw_write_aq4_div_aq5(uint32_t base_address, float aq4, float aq5){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+aq4_div_aq5_Data_uz_pmsm_model,aq4/aq5);
+    uz_axi_write_float(base_address+aq4_div_aq5_Data_uz_pmsm_model,(aq4/aq5));
 }
 
 void uz_pmsmModel_hw_write_aq1_div_aq2(uint32_t base_address, float aq1, float aq2){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+aq1_div_aq2_Data_uz_pmsm_model,aq1/aq2);
+    uz_axi_write_float(base_address+aq1_div_aq2_Data_uz_pmsm_model,(aq1/aq2));
 }
 
 void uz_pmsmModel_hw_write_ad4_div_ad5(uint32_t base_address, float ad4, float ad5){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+ad4_div_ad5_Data_uz_pmsm_model,ad4/ad5);
+    uz_axi_write_float(base_address+ad4_div_ad5_Data_uz_pmsm_model,(ad4/ad5));
 }
 
 void uz_pmsmModel_hw_write_ad1_div_ad2(uint32_t base_address, float ad1, float ad2){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+ad1_div_ad2_Data_uz_pmsm_model,ad1/ad2);
+    uz_axi_write_float(base_address+ad1_div_ad2_Data_uz_pmsm_model,(ad1/ad2));
 }
 
 void uz_pmsmModel_hw_write_aq3_min_aq6(uint32_t base_address, float aq3, float aq6){
     uz_assert_not_zero(base_address);
-    uz_axi_write_float(base_address+aq3_min_aq6_Data_uz_pmsm_model,0.5f*(aq3-aq6));
+    uz_axi_write_float(base_address+aq3_min_aq6_Data_uz_pmsm_model,(0.5f*(aq3-aq6)));
 }
 
 void uz_pmsmModel_hw_trigger_input_strobe(uint32_t base_address){

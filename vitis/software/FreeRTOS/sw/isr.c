@@ -28,6 +28,9 @@
 struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
 
+// cf. main.c
+extern uint32_t javascope_data_status;
+
 // Javascope Queue parameters
 QueueHandle_t js_queue;
 int js_queue_full = 0;
@@ -68,6 +71,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 		}
 	}
 	// queue is purged when new connection is established
+
+	// Maintain APU-local copy of status word (cf. main.c)
+	javascope_data_status = javascope_data->status;
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 	// Write message for acknowledge of the interrupt to RPU

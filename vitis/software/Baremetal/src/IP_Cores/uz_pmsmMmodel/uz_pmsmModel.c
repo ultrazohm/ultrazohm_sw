@@ -163,12 +163,6 @@ void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self){
     uz_pmsmModel_hw_trigger_output_strobe(self->config.base_address);
 }
 
-void uz_pmsmModel_trigger_fitting_parameters_strobe(uz_pmsmModel_t *self){
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    uz_pmsmModel_hw_trigger_fitting_parameters_strobe(self->config.base_address);
-}
-
 static void write_config_to_pl(uz_pmsmModel_t *self)
 {
     uz_assert_not_NULL(self);
@@ -206,6 +200,6 @@ static void write_config_to_pl(uz_pmsmModel_t *self)
     uz_pmsmModel_hw_write_ad1_div_ad2(self->config.base_address, self->config.ad1, self->config.ad2);
     uz_pmsmModel_hw_write_aq3_min_aq6(self->config.base_address, self->config.aq3, self->config.aq6);
     uz_pmsmModel_hw_write_simulate_nonlinear(self->config.base_address, self->config.simulate_nonlinear);
-}
+    }
 
 #endif

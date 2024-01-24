@@ -83,6 +83,15 @@ uz_pmsmModel_t *successful_init(struct uz_pmsmModel_config_t configuration)
         uz_pmsmModel_hw_write_aq6_Expect(BASE_ADDRESS, configuration.aq6);
         uz_pmsmModel_hw_write_reciprocal_F1G1_Expect(BASE_ADDRESS, configuration.F1G1);
         uz_pmsmModel_hw_write_reciprocal_F2G2_Expect(BASE_ADDRESS, configuration.F2G2);
+        uz_pmsmModel_hw_write_ad4_mul_ad5_Expect(BASE_ADDRESS, configuration.ad4, configuration.ad5);
+        uz_pmsmModel_hw_write_ad1_mul_ad2_Expect(BASE_ADDRESS, configuration.ad1, configuration.ad2);
+        uz_pmsmModel_hw_write_aq4_mul_aq5_Expect(BASE_ADDRESS, configuration.aq4, configuration.aq5);
+        uz_pmsmModel_hw_write_aq1_mul_aq2_Expect(BASE_ADDRESS, configuration.aq1, configuration.aq2);
+        uz_pmsmModel_hw_write_aq4_div_aq5_Expect(BASE_ADDRESS, configuration.aq4, configuration.aq5);
+        uz_pmsmModel_hw_write_aq1_div_aq2_Expect(BASE_ADDRESS, configuration.aq1, configuration.aq2);
+        uz_pmsmModel_hw_write_ad4_div_ad5_Expect(BASE_ADDRESS, configuration.ad4, configuration.ad5);
+        uz_pmsmModel_hw_write_ad1_div_ad2_Expect(BASE_ADDRESS, configuration.ad1, configuration.ad2);
+        uz_pmsmModel_hw_write_aq3_min_aq6_Expect(BASE_ADDRESS, configuration.aq3, configuration.aq6);
     }
     else
     {
@@ -101,7 +110,16 @@ uz_pmsmModel_t *successful_init(struct uz_pmsmModel_config_t configuration)
         uz_pmsmModel_hw_write_aq6_Expect(BASE_ADDRESS, 1.0f);
         uz_pmsmModel_hw_write_reciprocal_F1G1_Expect(BASE_ADDRESS, 1.0f);
         uz_pmsmModel_hw_write_reciprocal_F2G2_Expect(BASE_ADDRESS, 1.0f);
-    }
+        uz_pmsmModel_hw_write_ad4_mul_ad5_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+        uz_pmsmModel_hw_write_ad1_mul_ad2_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+        uz_pmsmModel_hw_write_aq4_mul_aq5_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+        uz_pmsmModel_hw_write_aq1_mul_aq2_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+        uz_pmsmModel_hw_write_aq4_div_aq5_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+        uz_pmsmModel_hw_write_aq1_div_aq2_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+        uz_pmsmModel_hw_write_ad4_div_ad5_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+        uz_pmsmModel_hw_write_ad1_div_ad2_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+        uz_pmsmModel_hw_write_aq3_min_aq6_Expect(BASE_ADDRESS, 1.0f, 1.0f);
+    }   
     uz_pmsmModel_hw_write_simulate_nonlinear_Expect(BASE_ADDRESS, configuration.simulate_nonlinear);
     uz_pmsmModel_t *instance = uz_pmsmModel_init(configuration);
     return (instance);

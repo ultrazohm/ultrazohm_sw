@@ -95,14 +95,7 @@ void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self);
  * 
  * @param self 
  */
-void uz_pmsmModel_trigger_fitting_parameters_strobe(uz_pmsmModel_t *self);
 
-/**
- * @brief Set inputs of the model and write them to the PMSM model IP-Core
- * 
- * @param self Pointer to driver instance
- * @param inputs Inputs to be written to IP-Core
- */
 void uz_pmsmModel_set_inputs(uz_pmsmModel_t *self,struct uz_pmsmModel_inputs_t inputs);
 
 /**

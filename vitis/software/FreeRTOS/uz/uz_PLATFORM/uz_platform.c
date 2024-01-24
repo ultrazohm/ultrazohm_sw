@@ -1,7 +1,9 @@
+#define UZ_PLATFORM_C
+
 #include "../uz_HAL.h"
 
 #include "uz_platform.h"
-#include "../../../shared/uz_platform_eeprom.h"
+#include "../../../shared/uz_platform_eeprom.h"	// Also includes uz_platform_cardeeprom.h
 #include "../uz_IIC/uz_iic.h"
 #include "uz_platform_gpiops.h"
 
@@ -16,6 +18,11 @@
 // EEPROMs with MAC addresses for Ethernet
 #define UZ_PLATFORM_I2CADDR_MACEE0	(0x50)		// On SoM or(/and!) on the extension board for UZ Rev04
 #define UZ_PLATFORM_I2CADDR_MACEE1	(0x52)		// On UZ >=Rev05 or on the extension board for UZ Rev04
+
+#if (UZ_PLATFORM_CARDID==1)
+ //// Bus instance ID (set to 1 for the "user I²C" and bound to PS I²C *0*)
+ #define UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS	(1U)
+#endif
 
 typedef enum uz_platform_gpiodrv_ {
 	UZP_GPIOTYPE_I2C = 0,
@@ -255,6 +262,11 @@ uint32_t uz_platform_init() {
 
 	uzp.is_ready = true;
 
+#if (UZ_PLATFORM_CARDID==1)
+	//// Secondary I²C bus used by UZP
+	uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, XPAR_PSU_I2C_0_BASEADDR, XPAR_PSU_I2C_0_DEVICE_ID, XPAR_PSU_I2C_0_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
+#endif
+
 	return(UZ_SUCCESS);
 #else
 	return(UZ_FAILURE);
@@ -398,3 +410,47 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 	return(UZ_FAILURE);
 #endif
 }
+
+#if (UZ_PLATFORM_CARDID==1)
+ /**
+  * @brief Read platform identification data for a given adapter card from its on-board EEPROM
+  *
+  * @param slot Slot ID of the card to be read (i.e., 0-2 for slots A1-3, 3-7 for slots D1-5).
+  * @param model_p Pointer to uz_platform_eeprom_group000models_t for the card's model number.
+  * @param revision_p Pointer to single-int buffer to be filled with the card's board revision.
+  * @param serial_p Pointer to single-int buffer to be filled with the card's serial number.
+  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
+  */
+ uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, int* revision_p, int* serial_p) {
+ #if (UZ_PLATFORM_ENABLE==1)
+	uz_assert_not_NULL(model_p);
+	uz_assert_not_NULL(revision_p);
+	uz_assert_not_NULL(serial_p);
+
+	//// Create I²C devices: EEPROM
+	uint8_t cardaddr;
+	cardaddr = UZ_PLATFORM_I2CADDR_CARDEEPROM_BASE + slot;
+	uz_assert(cardaddr <= UZ_PLATFORM_I2CADDR_CARDEEPROM_LAST);
+
+	uz_iic cardeeprom;
+	uz_iic_initdev(&cardeeprom, UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, cardaddr);
+
+	uint32_t status;
+	uz_platform_eeprom cardeeprom_data;
+	status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_CARDEEPROM_INFOOFFSET, (uint8_t*) &cardeeprom_data, sizeof(cardeeprom_data));
+
+	// Option: Check whether group matches?
+	// Option: Check whether model is known?
+
+	if ( UZ_SUCCESS == status ) {
+		*model_p = cardeeprom_data.hw_model;
+		*revision_p = cardeeprom_data.hw_revision;
+		*serial_p = cardeeprom_data.serialdata.hw_batchandserial.serial;
+	}
+
+	return(status);
+ #else
+	return(UZ_FAILURE);
+ #endif
+ }
+#endif

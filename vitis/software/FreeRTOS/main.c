@@ -81,6 +81,28 @@ int main()
 	uz_assert( UZ_SUCCESS == uz_platform_init() );
 #endif
 
+#if (UZ_PLATFORM_CARDID==1)
+ {
+	const uint8_t card_slots = UZ_PLATFORM_I2CADDR_CARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_CARDEEPROM_BASE + 1;
+
+	uz_printf("\r\n--- Adapter Card ID:\r\n\r\n");
+
+	for (int i=0; i<card_slots; i++) {
+		uz_platform_eeprom_group000models_t model;
+		int revision, serial;
+
+		if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) )
+			uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i)\r\n", i, model, revision, serial);
+		else
+			uz_printf("Identification of adapter card in slot %i failed (no card or EEPROM)\r\n", i);
+
+		uz_printf("\r\n");
+	}
+
+	uz_printf("---\r\n\r\n");
+ }
+#endif
+
 	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 	Initialize_InterruptHandler();
 

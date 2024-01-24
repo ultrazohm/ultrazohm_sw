@@ -3,14 +3,19 @@
 
 #include <stdint.h>
 
+#include "uz_platform_cardeeprom.h"		// models_t → API; Header located in same directory as uz_platform_eeprom.h (cf. include in uz_platform.c)
+
 // (De)Activate UZ auto-platform detection and platform-specific I/O-HAL framework (NB: disabling it turns most of its hooks into failing NOPs...)
 #define UZ_PLATFORM_ENABLE	(0U)
 
 // (De)Activate run-time warnings for (currently) unsupported GPIO operations
 #define UZ_PLATFORM_OPWARN	(0U)
 
+// (De)Activate API and demo of adapter card identification logic - This (including the associated uz_iic bus inst.) probably should go to the RPU
+//  NB: To use this, increase UZ_IIC_MAX_BUSINSTANCES in uz_iic.c to 2!
+#define UZ_PLATFORM_CARDID	(0U)
+
 uint32_t uz_platform_init();
-void uz_platform_printinfo();
 
 // GPOs supported by this framework
 enum uz_platform_gpo_id {
@@ -47,5 +52,9 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 
 uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addr);
 uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p);
+
+#if (UZ_PLATFORM_CARDID==1)
+ uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, int* revision_p, int* serial_p);
+#endif
 
 #endif

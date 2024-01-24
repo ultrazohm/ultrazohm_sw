@@ -1,31 +1,52 @@
 /*
  * File Name:         C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\include\uz_pmsm_model_addr.h
  * Description:       C Header File
- * Created:           2024-01-15 11:08:02
+ * Created:           2024-01-24 17:39:55
 */
 
 #ifndef UZ_PMSM_MODEL_H_
 #define UZ_PMSM_MODEL_H_
 
-#define  IPCore_Reset_uz_pmsm_model                0x0  //write 0x1 to bit 0 to reset IP core
-#define  IPCore_Enable_uz_pmsm_model               0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_pmsm_model            0x8  //contains unique IP timestamp (yymmddHHMM): 2401151107
-#define  reset_integrators_Data_uz_pmsm_model      0x100  //data register for Inport reset_integrators
-#define  simulate_mechanical_Data_uz_pmsm_model    0x104  //data register for Inport simulate_mechanical
-#define  simulate_nonlinear_Data_uz_pmsm_model     0x108  //data register for Inport simulate_nonlinear
-#define  reciprocal_J_Data_uz_pmsm_model           0x10C  //data register for Inport reciprocal_J
-#define  mu_Data_uz_pmsm_model                     0x110  //data register for Inport mu
-#define  M_n0_Data_uz_pmsm_model                   0x114  //data register for Inport M_n0
-#define  Ld_Data_uz_pmsm_model                     0x118  //data register for Inport Ld
-#define  Lq_Data_uz_pmsm_model                     0x11C  //data register for Inport Lq
-#define  R1_Data_uz_pmsm_model                     0x120  //data register for Inport R1
-#define  polepairs_Data_uz_pmsm_model              0x124  //data register for Inport polepairs
-#define  psi_pm_Data_uz_pmsm_model                 0x128  //data register for Inport psi_pm
-#define  inputs_Data_uz_pmsm_model                 0x130  //data register for Inport inputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x13C.
-#define  inputs_Strobe_uz_pmsm_model               0x140  //strobe register for port inputs
-#define  outputs_Data_uz_pmsm_model                0x150  //data register for Outport outputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x15C.
-#define  outputs_Strobe_uz_pmsm_model              0x160  //strobe register for port outputs
-#define  fitting_parameters_Data_uz_pmsm_model     0x180  //data register for Inport fitting_parameters. Vector with 23 elements. Register is split across a total of 23 addresses, last address is 0x1D8.
-#define  fitting_parameters_Strobe_uz_pmsm_model   0x200  //strobe register for port fitting_parameters
+#define  IPCore_Reset_uz_pmsm_model               0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_uz_pmsm_model              0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_uz_pmsm_model           0x8  //contains unique IP timestamp (yymmddHHMM): 2401241739
+#define  reset_integrators_Data_uz_pmsm_model     0x100  //data register for Inport reset_integrators
+#define  simulate_mechanical_Data_uz_pmsm_model   0x104  //data register for Inport simulate_mechanical
+#define  simulate_nonlinear_Data_uz_pmsm_model    0x108  //data register for Inport simulate_nonlinear
+#define  reciprocal_J_Data_uz_pmsm_model          0x10C  //data register for Inport reciprocal_J
+#define  mu_Data_uz_pmsm_model                    0x110  //data register for Inport mu
+#define  M_n0_Data_uz_pmsm_model                  0x114  //data register for Inport M_n0
+#define  Ld_Data_uz_pmsm_model                    0x118  //data register for Inport Ld
+#define  Lq_Data_uz_pmsm_model                    0x11C  //data register for Inport Lq
+#define  R1_Data_uz_pmsm_model                    0x120  //data register for Inport R1
+#define  polepairs_Data_uz_pmsm_model             0x124  //data register for Inport polepairs
+#define  psi_pm_Data_uz_pmsm_model                0x128  //data register for Inport psi_pm
+#define  ad2_Data_uz_pmsm_model                   0x12C  //data register for Inport ad2
+#define  inputs_Data_uz_pmsm_model                0x130  //data register for Inport inputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x13C.
+#define  inputs_Strobe_uz_pmsm_model              0x140  //strobe register for port inputs
+#define  ad3_Data_uz_pmsm_model                   0x144  //data register for Inport ad3
+#define  ad4_Data_uz_pmsm_model                   0x148  //data register for Inport ad4
+#define  ad6_Data_uz_pmsm_model                   0x14C  //data register for Inport ad6
+#define  outputs_Data_uz_pmsm_model               0x150  //data register for Outport outputs. Vector with 4 elements. Register is split across a total of 4 addresses, last address is 0x15C.
+#define  outputs_Strobe_uz_pmsm_model             0x160  //strobe register for port outputs
+#define  aq1_Data_uz_pmsm_model                   0x164  //data register for Inport aq1
+#define  aq2_Data_uz_pmsm_model                   0x168  //data register for Inport aq2
+#define  aq3_Data_uz_pmsm_model                   0x16C  //data register for Inport aq3
+#define  aq4_Data_uz_pmsm_model                   0x170  //data register for Inport aq4
+#define  aq5_Data_uz_pmsm_model                   0x174  //data register for Inport aq5
+#define  aq6_Data_uz_pmsm_model                   0x178  //data register for Inport aq6
+#define  reciprocal_F1G1_Data_uz_pmsm_model       0x17C  //data register for Inport reciprocal_F1G1
+#define  ad1_Data_uz_pmsm_model                   0x180  //data register for Inport ad1
+#define  reciprocal_F2G2_Data_uz_pmsm_model       0x184  //data register for Inport reciprocal_F2G2
+#define  ad4_mul_ad5_Data_uz_pmsm_model           0x188  //data register for Inport ad4_mul_ad5
+#define  ad1_mul_ad2_Data_uz_pmsm_model           0x18C  //data register for Inport ad1_mul_ad2
+#define  aq4_mul_aq5_Data_uz_pmsm_model           0x190  //data register for Inport aq4_mul_aq5
+#define  aq1_mul_aq2_Data_uz_pmsm_model           0x194  //data register for Inport aq1_mul_aq2
+#define  aq4_div_aq5_Data_uz_pmsm_model           0x198  //data register for Inport aq4_div_aq5
+#define  aq1_div_aq2_Data_uz_pmsm_model           0x19C  //data register for Inport aq1_div_aq2
+#define  ad4_div_ad5_Data_uz_pmsm_model           0x1A0  //data register for Inport ad4_div_ad5
+#define  ad5_Data_uz_pmsm_model                   0x1A4  //data register for Inport ad5
+#define  ad1_div_ad2_Data_uz_pmsm_model           0x1A8  //data register for Inport ad1_div_ad2
+#define  aq3_min_aq6_Data_uz_pmsm_model           0x1AC  //data register for Inport aq3_min_aq6
 
 #endif /* UZ_PMSM_MODEL_H_ */

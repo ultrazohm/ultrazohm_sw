@@ -7,6 +7,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <string.h>
 
 #include "xil_cache.h"
 
@@ -60,12 +61,6 @@ static volatile uint32_t cnt_msg_ocm_r = 0;
 /*-------------------------------------------------------------------
  * Static functions
  *-----------------------------------------------------------------*/
-static void memcpy_volatile(volatile uint8_t *dst, volatile uint8_t *src, int len)
-{
-	for (int i = 0; i < len; i++) {
-		dst[i] = src[i];
-	}
-}
 
 /*-------------------------------------------------------------------
  * Global functions
@@ -130,14 +125,14 @@ void rpu_apu_exchange_prepare_write(void)
 
 void rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data)
 {
-	volatile uint8_t *dst_p = (volatile uint8_t *)(addr_w);
+	uint8_t *dst_p = (uint8_t *)(addr_w);
 
 	// Write package len
     *(uint32_t *)dst_p = len;
     dst_p += 4;
 
     // Write payload
-    memcpy_volatile(dst_p, data, len);
+    memcpy(dst_p, data, len);
     dst_p += len;
 
     // Set next len to 0
@@ -151,19 +146,16 @@ void rpu_apu_exchange_writeOCM(uint8_t len, uint8_t *data)
 
 int rpu_apu_exchange_readOCM(uint8_t *len, uint8_t **data_p)
 {
-	volatile uint8_t *src_p = (volatile uint8_t *)(addr_r);
+	uint8_t *src_p = (uint8_t *)(addr_r);
 
 	// Read len
 	*len = *(uint32_t *)src_p;
+	src_p += 4;
 
 	// Is a package ready to read?
 	if (*len == 0) {
 		return 0;
 	}
-
-	// Immediately 'delete' current message by setting its len to 0
-	*(uint32_t *)src_p = 0;
-	src_p += 4;
 
 	// Set data_p to start of message
 	*data_p = (uint8_t *)src_p;

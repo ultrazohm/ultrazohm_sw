@@ -2,21 +2,6 @@
 % This is called by a callback when uz_pmsm_model is opened
 % 
 
-%test
-ad1 =1;
-ad2 =1;
-ad3 =1;
-ad4 =1;
-ad5 =1;
-ad6 =1;
-aq1 =1;
-aq2 =1;
-aq3 =1;
-aq4 =1;
-aq5 =1;
-aq6 =1;
-Fid1_Giq1 = 1;
-Fid2_Giq2 = 1;
 % Electrical parameters
 R_1=0.3;
 L_d=0.00045;

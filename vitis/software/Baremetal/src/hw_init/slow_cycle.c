@@ -14,7 +14,7 @@ void async_slow_clk_cycle_100ms(void) {
         Global_Data.av.slow_cycle_period_ms = (float)(act - old);
         old = act;
     }
-    if ((old + 99) < act) {
+    if (((old + 99) < act) || (act < old)) {
         skip = false; 
     }
 }

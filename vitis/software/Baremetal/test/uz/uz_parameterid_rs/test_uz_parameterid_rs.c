@@ -199,10 +199,10 @@ void test_uz_parameterid_rs_sample(void){
     float c = 5008.0f; 
     for (int i = 0; i<=c; i++){
         actual_output = uz_parameterid_rs_generate_outputs(test_instance5);
-        test = uz_parameterid_rs_sample(test_instance5, test_output, 1.0f, 1.0f, 1.0f);
+        test = uz_parameterid_rs_sample(test_instance5, test_output, 2.0f, 1.0f, 1.0f);
     }
     
-    TEST_ASSERT_EQUAL_FLOAT(1.0f, test);
+    TEST_ASSERT_EQUAL_FLOAT(2.0f, test);
 
 }
 

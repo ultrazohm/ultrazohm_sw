@@ -35,6 +35,7 @@ struct uz_parameterid_rs_counter_t
     int32_t i_repeat;
     int32_t n;
     int32_t meas;
+    int32_t rs;
 };
 
 struct uz_parameterid_output
@@ -50,6 +51,10 @@ struct uz_parameterid_rs_sample_output
     float sum_id;
     float mean_ud;
     float mean_id;
+    float ref_ud;
+    float ref_id;
+    float rs;
+    float sum_rs;
 };
 
 enum state{
@@ -65,6 +70,7 @@ enum sample {
     sample_off,
     sample_on,
     calc,
+    rs_write,
 };
 
 

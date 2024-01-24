@@ -17,12 +17,14 @@ struct uz_parameterid_rs_t {
     bool is_first_call_to_sample;
     struct uz_parameterid_rs_config_t internal_config;
     struct uz_parameterid_rs_increments_t calc_increments;
+    struct uz_parameterid_output act_vals;
     struct uz_parameterid_rs_counter_t counter;
-    struct uz_parameterid_rs_sample_output sample;
+    struct uz_parameterid_rs_sample_var sample;
+    struct uz_parameterid_rs_sample_output sample_out;
     float isr_counter;
     enum state state;
     enum sample sample_state;
-    float *rs_calc;
+
 };
 
 
@@ -44,7 +46,6 @@ uz_parameterid_rs_t* uz_parameterid_rs_init(struct uz_parameterid_rs_config_t in
 {
     uz_parameterid_rs_t* self = uz_parameterid_rs_allocation();
     self->internal_config = initial_config;
-    self->rs_calc = (float *) malloc(self->internal_config.n_steps * sizeof(float));
     self->is_first_call_to_sample = true;
     self->is_first_call_to_generate_outputs = true;
     self->calc_increments.n_increment = (initial_config.n_end - initial_config.n_start)/initial_config.n_steps;
@@ -70,6 +71,12 @@ struct uz_parameterid_rs_increments_t uz_parameterid_rs_get_current_increments(u
     return self->calc_increments;
 }
 
+struct uz_parameterid_rs_sample_output uz_parameterid_rs_get_rs(uz_parameterid_rs_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->sample_out;
+}
+
 enum state uz_parameterid_rs_get_current_state(uz_parameterid_rs_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -77,6 +84,13 @@ enum state uz_parameterid_rs_get_current_state(uz_parameterid_rs_t* self){
 }
 
 
+
+
+enum sample uz_parameterid_rs_get_current_sample_state(uz_parameterid_rs_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return self->sample_state;
+}
 
 void uz_parameterid_rs_reset(uz_parameterid_rs_t* self) {
 	uz_assert_not_NULL(self);
@@ -92,7 +106,7 @@ float uz_parameterid_rs_get_isr_counter(uz_parameterid_rs_t* self){
     return self->isr_counter;
 }
 
-struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_rs_t* self){
+struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_rs_t* self, float ud, float id){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     struct uz_parameterid_output output;
@@ -101,9 +115,9 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
         self->starts_generating_outputs = true;
         self->state = start;
         self->sample_state = sample_off;
-        output.i_sample = 0.0f;
-        output.n_sample = 0.0f;
-        output.isr_stepcounter = 0.0f; 
+        self->act_vals.i_sample = 0.0f;
+        self->act_vals.n_sample = 0.0f;
+        self->act_vals.isr_stepcounter = 0.0f; 
 		self->isr_counter = 0.0f;
         self->counter.wait = 0;
         self->counter.i = 0;
@@ -114,13 +128,13 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
         self->is_first_call_to_generate_outputs = false;
     } else {
         self->isr_counter++; 
-        output.isr_stepcounter = self->isr_counter; 
+        self->act_vals.isr_stepcounter = self->isr_counter; 
 
             switch (self->state){
 
             case start:
-                output.n_sample = self->internal_config.n_start;
-                output.i_sample = 0.0f;
+                self->act_vals.n_sample = self->internal_config.n_start;
+                self->act_vals.i_sample = 0.0f;
                 self->state = wait; 
                 break;
             
@@ -134,8 +148,8 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
             
             case i_start:
                 self->counter.i++; 
-                output.i_sample = self->internal_config.i_start;
-                if (self->counter.i == (int32_t)(0.5f/self->internal_config.isr_steptime))
+                self->act_vals.i_sample = self->internal_config.i_start;
+                if (self->counter.i >= (int32_t)(0.5f/self->internal_config.isr_steptime))
                 {
                     self->sample_state = sample_on;
                 }
@@ -149,8 +163,8 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
 
             case i_increment:
                 self->counter.i++; 
-                output.i_sample = self->internal_config.i_start + self->internal_config.i_diff;
-                if (self->counter.i == (int32_t)(0.5f/self->internal_config.isr_steptime))
+                self->act_vals.i_sample = self->internal_config.i_start + self->internal_config.i_diff;
+                if (self->counter.i >= (int32_t)(0.5f/self->internal_config.isr_steptime))
                 {
                     self->sample_state = sample_on;
                 }
@@ -169,9 +183,10 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
                 break; 
 
             case n_increment:
+                 self->sample_state = rs_write;
                  self->counter.n++;
-                 output.i_sample = 0.0f;
-                 output.n_sample = self->internal_config.n_start + self->counter.n*self->calc_increments.n_increment; 
+                 self->act_vals.i_sample = 0.0f;
+                 self->act_vals.n_sample = self->internal_config.n_start + self->counter.n*self->calc_increments.n_increment; 
                  if(self->counter.n > (self->internal_config.n_steps+1)){
                     self->state = finished;
                  } else {
@@ -181,21 +196,22 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
                 break;
 
             case finished:
-                output.i_sample = 0.0f;
-                output.n_sample = 0.0f;
+                self->act_vals.i_sample = 0.0f;
+                self->act_vals.n_sample = 0.0f;
                 break;
 
             default:
-                output.i_sample = 0.0f;
-                output.n_sample = 0.0f;
+                self->act_vals.i_sample = 0.0f;
+                self->act_vals.n_sample = 0.0f;
                 break;
         }
-
+    output = self->act_vals;
+    uz_parameterid_rs_sample(self, ud, id);
     }
     return output;
 }
 
-float uz_parameterid_rs_sample(uz_parameterid_rs_t* self, struct uz_parameterid_output input, float ud, float id, float n){
+void uz_parameterid_rs_sample(uz_parameterid_rs_t* self, float ud, float id){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     uz_assert(self->starts_generating_outputs);
@@ -229,25 +245,35 @@ float uz_parameterid_rs_sample(uz_parameterid_rs_t* self, struct uz_parameterid_
                 self->sample_state = sample_off;
             } else {
                 self->sample.ref_ud = self->sample.mean_ud;
-                self->sample.ref_ud = self->sample.mean_id;
+                self->sample.ref_id = self->sample.mean_id;
                 self->sample.mean_ud = self->sample.sum_ud/self->counter.meas;
                 self->sample.mean_id = self->sample.sum_id/self->counter.meas;
-                self->sample.rs = fabsf(self->sample.ref_ud - self->sample.mean_ud)/fabsf(self->sample.ref_id = self->sample.mean_id);
+                self->sample.rs = fabsf(self->sample.ref_ud - self->sample.mean_ud)/fabsf(self->sample.ref_id - self->sample.mean_id);
                 self->sample.sum_rs = self->sample.sum_rs + self->sample.rs;
-                self->counter.rs++;
-                self->sample_state = sample_off;   
+                self->counter.rs++; 
+                self->sample_state = sample_off;
             }
             break;
 
         case sample_off:
             self->sample.sum_ud = 0.0f;
             self->sample.sum_id = 0.0f;
-            self->counter.meas=0; 
+            self->counter.meas = 0;
             break;
 
         case rs_write:
             ind = self->counter.n;
-            self->rs_calc[ind] = self->sample.sum_rs/self->counter.rs;
+            self->sample_out.rs_calc[ind] = self->sample.sum_rs/self->counter.rs;
+            self->sample_out.rs_speeds[ind] = self->act_vals.n_sample;            
+            self->sample.sum_ud = 0.0f;
+            self->sample.sum_id = 0.0f;
+            self->sample.mean_ud = 0.0f;
+            self->sample.mean_id = 0.0f;
+            self->counter.meas = 0; 
+            self->sample.rs = 0.0f;
+            self->sample.sum_rs = 0.0f;
+            self->counter.rs = 0;
+            self->sample_state = sample_off;   
             break;
 
         
@@ -256,7 +282,7 @@ float uz_parameterid_rs_sample(uz_parameterid_rs_t* self, struct uz_parameterid_
         }
 
     }
-    return self->sample.mean_ud; 
+    return; 
 
 }
 

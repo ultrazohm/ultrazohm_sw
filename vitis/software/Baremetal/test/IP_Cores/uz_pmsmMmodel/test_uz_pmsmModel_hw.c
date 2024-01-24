@@ -300,6 +300,12 @@ void test_uz_pmsmModel_hw_trigger_output_strobe(void){
     uz_pmsmModel_hw_trigger_output_strobe(BASE_ADDRESS);
 }
 
+void test_uz_pmsmModel_hw_trigger_fitting_parameters_strobe(void){
+    uz_axi_write_bool_Expect(BASE_ADDRESS+fitting_parameters_Strobe_uz_pmsm_model,true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS+fitting_parameters_Strobe_uz_pmsm_model,false);
+    uz_pmsmModel_hw_trigger_fitting_parameters_strobe(BASE_ADDRESS);
+}
+
 
 
 

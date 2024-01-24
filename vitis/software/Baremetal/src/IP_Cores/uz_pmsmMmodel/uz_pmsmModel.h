@@ -96,6 +96,14 @@ void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self);
  * @param self 
  */
 
+void uz_pmsmModel_trigger_fitting_parameters_strobe(uz_pmsmModel_t *self);
+
+/**
+ * @brief Takes the values of the shadow register and pass them to the actual AXI register.
+ * 
+ * @param self 
+ */
+
 void uz_pmsmModel_set_inputs(uz_pmsmModel_t *self,struct uz_pmsmModel_inputs_t inputs);
 
 /**

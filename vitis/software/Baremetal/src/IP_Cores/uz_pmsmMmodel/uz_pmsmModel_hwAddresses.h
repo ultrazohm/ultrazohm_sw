@@ -57,6 +57,7 @@
 #define ad4_div_ad5_Data_uz_pmsm_model            0x180+0x50 // offset due to vector port
 #define ad1_div_ad2_Data_uz_pmsm_model            0x180+0x54 // offset due to vector port
 #define aq3_min_aq6_Data_uz_pmsm_model            0x180+0x58 // offset due to vector port
+#define fitting_parameters_Strobe_uz_pmsm_model   0x200  //strobe register for port fitting_parameters
 
 #endif /* UZ_PMSM_MODEL_H_ */
 

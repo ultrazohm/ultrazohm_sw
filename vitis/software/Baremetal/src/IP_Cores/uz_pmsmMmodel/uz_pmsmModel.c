@@ -75,7 +75,7 @@ uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config)
         config.ad6 = 1.0f;
         config.aq1 = 1.0f;
         config.aq2 = 1.0f;
-        config.aq3 = 1.0f;
+        config.aq3 = 2.0f;
         config.aq4 = 1.0f;
         config.aq5 = 1.0f;
         config.aq6 = 1.0f;

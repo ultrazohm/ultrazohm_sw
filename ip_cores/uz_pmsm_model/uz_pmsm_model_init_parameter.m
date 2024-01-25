@@ -19,7 +19,7 @@
 
 % Electrical parameters
 R_1=0.3;
-L_d=0.000;
+L_d=0.00045;
 L_q=0.002;
 psi_pm=0.0194;
 polepair=4;
@@ -36,7 +36,7 @@ rpm2 = 100;
 
 
 % Controller parameter
-ts_regler=1/25e3;
+ts_regler=1/20e3;
 
 tau_d=L_d/R_1;
 tau_q=L_q/R_1;
@@ -54,9 +54,9 @@ friction_coefficient=0.001;
 static_friction_torque=0.01;
 
 % Simulation settings
-simulate_mechanical=true;
+simulate_mechanical=false;
 simulate_open_loop=false;
-simulate_nonlinear_modell=false;
+simulate_nonlinear_modell=true;
 
 parameter_nachfuerung=false;
 

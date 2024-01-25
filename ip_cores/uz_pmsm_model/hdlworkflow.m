@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 23.2 (R2023b) at 17:46:54 on 24/01/2024
+% Generated with MATLAB 23.2 (R2023b) at 16:14:39 on 25/01/2024
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdlworkflow.m'
 %     Overwrite : true
@@ -93,100 +93,100 @@ hdlset_param('uz_pmsm_model/uz_pmsm_model/psi_pm', 'IOInterface', 'AXI4');
 hdlset_param('uz_pmsm_model/uz_pmsm_model/psi_pm', 'IOInterfaceMapping', 'x"128"');
 
 % Set Inport HDL parameters
+hdlset_param('uz_pmsm_model/uz_pmsm_model/inputs', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/inputs', 'IOInterfaceMapping', 'x"130"');
+
+% Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad1', 'IOInterface', 'AXI4');
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad1', 'IOInterfaceMapping', 'x"180"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad2', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad2', 'IOInterfaceMapping', 'x"12C"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad2', 'IOInterfaceMapping', 'x"184"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad3', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad3', 'IOInterfaceMapping', 'x"144"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad3', 'IOInterfaceMapping', 'x"188"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4', 'IOInterfaceMapping', 'x"148"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4', 'IOInterfaceMapping', 'x"18C"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad5', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad5', 'IOInterfaceMapping', 'x"1A4"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad5', 'IOInterfaceMapping', 'x"190"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad6', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad6', 'IOInterfaceMapping', 'x"14C"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad6', 'IOInterfaceMapping', 'x"194"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1', 'IOInterfaceMapping', 'x"164"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1', 'IOInterfaceMapping', 'x"198"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq2', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq2', 'IOInterfaceMapping', 'x"168"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq2', 'IOInterfaceMapping', 'x"19C"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq3', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq3', 'IOInterfaceMapping', 'x"16C"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq3', 'IOInterfaceMapping', 'x"1A0"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4', 'IOInterfaceMapping', 'x"170"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4', 'IOInterfaceMapping', 'x"1A4"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq5', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq5', 'IOInterfaceMapping', 'x"174"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq5', 'IOInterfaceMapping', 'x"1A8"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq6', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq6', 'IOInterfaceMapping', 'x"178"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq6', 'IOInterfaceMapping', 'x"1AC"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_F1G1', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_F1G1', 'IOInterfaceMapping', 'x"17C"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_F1G1', 'IOInterfaceMapping', 'x"1B0"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_F2G2', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_F2G2', 'IOInterfaceMapping', 'x"184"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/reciprocal_F2G2', 'IOInterfaceMapping', 'x"1B4"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4_mul_ad5', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4_mul_ad5', 'IOInterfaceMapping', 'x"188"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4_mul_ad5', 'IOInterfaceMapping', 'x"1B8"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad1_mul_ad2', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad1_mul_ad2', 'IOInterfaceMapping', 'x"18C"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad1_mul_ad2', 'IOInterfaceMapping', 'x"1BC"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4_mul_aq5', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4_mul_aq5', 'IOInterfaceMapping', 'x"190"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4_mul_aq5', 'IOInterfaceMapping', 'x"1C0"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1_mul_aq2', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1_mul_aq2', 'IOInterfaceMapping', 'x"194"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1_mul_aq2', 'IOInterfaceMapping', 'x"1C4"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4_div_aq5', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4_div_aq5', 'IOInterfaceMapping', 'x"198"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq4_div_aq5', 'IOInterfaceMapping', 'x"1C8"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1_div_aq2', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1_div_aq2', 'IOInterfaceMapping', 'x"19C"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq1_div_aq2', 'IOInterfaceMapping', 'x"1CC"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4_div_ad5', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4_div_ad5', 'IOInterfaceMapping', 'x"1A0"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad4_div_ad5', 'IOInterfaceMapping', 'x"1D0"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/ad1_div_ad2', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/ad1_div_ad2', 'IOInterfaceMapping', 'x"1A8"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/ad1_div_ad2', 'IOInterfaceMapping', 'x"1D4"');
 
 % Set Inport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/aq3_min_aq6', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/aq3_min_aq6', 'IOInterfaceMapping', 'x"1AC"');
-
-% Set Inport HDL parameters
-hdlset_param('uz_pmsm_model/uz_pmsm_model/inputs', 'IOInterface', 'AXI4');
-hdlset_param('uz_pmsm_model/uz_pmsm_model/inputs', 'IOInterfaceMapping', 'x"130"');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/aq3_min_aq6', 'IOInterfaceMapping', 'x"1D8"');
 
 % Set SubSystem HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/mechanical_system', 'FlattenHierarchy', 'on');
@@ -207,6 +207,10 @@ hdlset_param('uz_pmsm_model/uz_pmsm_model/torque_calculation', 'FlattenHierarchy
 % Set Outport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/outputs', 'IOInterface', 'AXI4');
 hdlset_param('uz_pmsm_model/uz_pmsm_model/outputs', 'IOInterfaceMapping', 'x"150"');
+
+% Set Outport HDL parameters
+hdlset_param('uz_pmsm_model/uz_pmsm_model/outputs_fitting_parameter', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/outputs_fitting_parameter', 'IOInterfaceMapping', 'x"200"');
 
 
 %% Workflow Configuration Settings

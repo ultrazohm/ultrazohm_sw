@@ -109,4 +109,5 @@
     #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             10U
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
+    #define UZ_PARAMETERID_RS_MAX_INSTANCES                 100U
 #endif

@@ -43,7 +43,7 @@ void setUp(void)
 void tearDown(void)
 {
 }
-
+ 
 uz_pmsmModel_t *successful_init(struct uz_pmsmModel_config_t configuration);
 uz_pmsmModel_t *successful_init(struct uz_pmsmModel_config_t configuration)
 {

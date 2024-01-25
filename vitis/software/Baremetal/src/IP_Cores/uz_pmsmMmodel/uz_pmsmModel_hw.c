@@ -265,9 +265,10 @@ void uz_pmsmModel_hw_trigger_output_strobe(uint32_t base_address){
     uz_axi_write_bool(base_address+outputs_Strobe_uz_pmsm_model,false);
 }
 
-void uz_pmsmModel_hw_trigger_fitting_parameters_strobe(uint32_t base_address){
+/* void uz_pmsmModel_hw_trigger_fitting_parameters_strobe(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     uz_axi_write_bool(base_address+fitting_parameters_Strobe_uz_pmsm_model,true);
     uz_axi_write_bool(base_address+fitting_parameters_Strobe_uz_pmsm_model,false);
 }
+*/
 

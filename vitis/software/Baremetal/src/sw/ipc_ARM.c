@@ -36,7 +36,7 @@ extern float Kp_id_1;
 extern float Ki_id_1;
 extern float Kp_iq_1;
 extern float Ki_iq_1;
-
+extern float r_s_2;
 
 // ------------------- Wavegen Chirp -------------------- //
 extern bool enable_excitation;
@@ -243,7 +243,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-
+		r_s_2 = value;
 			break;
 
 		case (Set_Send_Field_5):

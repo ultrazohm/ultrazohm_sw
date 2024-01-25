@@ -65,6 +65,7 @@ extern struct uz_3ph_dq_t psi_dq_mVoltseconds_2;
 extern float M_meas_Nm;
 extern float option_js;
 extern float error_type;
+extern float r_s_2;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -201,6 +202,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_DC_A_av]   				= &data->rasv.halfBridge1DutyCycle;
 	js_slowDataArray[JSSD_FLOAT_DC_B_av]  			 	= &data->rasv.halfBridge2DutyCycle;
 	js_slowDataArray[JSSD_FLOAT_DC_C_av]  			 	= &data->rasv.halfBridge3DutyCycle;
+	js_slowDataArray[JSSD_FLOAT_rs2]  			 		= &r_s_2;
 
 
 

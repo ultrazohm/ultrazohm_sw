@@ -191,6 +191,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_DC_A_av,
 	JSSD_FLOAT_DC_B_av,
 	JSSD_FLOAT_DC_C_av,
+	JSSD_FLOAT_rs2,
 	JSSD_ENDMARKER
 };
 
@@ -248,7 +249,7 @@ enum gui_button_mapping {
 	n_ref_rpm_1,
 	i_dq_ref_Amps_2.d,
 	i_dq_ref_Amps_2.q,
-	theta_el_offset_2,
+	r_s_2,
 	send_field_5,
 	send_field_6,
 	DC_A,
@@ -305,7 +306,7 @@ enum gui_button_mapping {
 	i_q_2,
 	u_ind_filt_d_2,
 	u_ind_filt_q_2,
-	theta_el_offset_2,
+	r_s_2,
 	psi_d,
 	psi_q,
 	receive_field_9,
@@ -332,7 +333,7 @@ enum gui_button_mapping {
 	A,
 	V,
 	V,
-	rad/s,
+	Ohm,
 	mVs,
 	mVs,
 	-,
@@ -373,7 +374,7 @@ enum gui_button_mapping {
 	JSSD_FLOAT_i_q_2,
 	JSSD_FLOAT_u_ind_filt_d,
 	JSSD_FLOAT_u_ind_filt_q,
-	JSSD_FLOAT_theta_el_offset_2,
+	JSSD_FLOAT_rs2,
 	JSSD_FLOAT_psi_d,
 	JSSD_FLOAT_psi_q,
 	JSSD_FLOAT_ZEROVALUE,

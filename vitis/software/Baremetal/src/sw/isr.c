@@ -121,7 +121,7 @@ float Ki_iq_2 									= 230.0f;
 // ---------------- induced voltage ----------------- //
 struct uz_3ph_dq_t v_ind_dq_Volts_2 			= {0};
 struct uz_3ph_dq_t v_ind_dq_filt_Volts_2 			= {0};
-float r_s_2 									= 0.03f;
+float r_s_2 									= 0.03136f;
 extern uz_IIR_Filter_t* LP_instance_ud_ind_2;
 extern uz_IIR_Filter_t* LP_instance_uq_ind_2;
 struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
@@ -130,6 +130,10 @@ struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
 float error_type = 0.0f;
 int counter = 1;
 float M_meas_Nm = 0.0f;
+
+float DC_A = 0.0f;
+float DC_B = 0.0f;
+float DC_C = 0.0f;
 
 
 //==============================================================================================================================================================
@@ -251,6 +255,10 @@ void ISR_Control(void *data)
 			Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
 			Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
 			Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
+
+			/*Global_Data.rasv.halfBridge4DutyCycle = DC_A;
+			Global_Data.rasv.halfBridge5DutyCycle = DC_B;
+			Global_Data.rasv.halfBridge6DutyCycle = DC_C;*/
 
     }
     else

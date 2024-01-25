@@ -28,14 +28,14 @@ struct uz_parameterid_rs_increments_t
 
 struct uz_parameterid_rs_counter_t
 {
-    int32_t wait;
-    int32_t wait_max;
-    int32_t i_max;
-    int32_t i;
-    int32_t i_repeat;
-    int32_t n;
-    int32_t meas;
-    int32_t rs;
+    uint32_t wait;
+    uint32_t wait_max;
+    uint32_t i_max;
+    uint32_t i;
+    uint32_t i_repeat;
+    uint32_t n;
+    uint32_t meas;
+    uint32_t rs;
 };
 
 struct uz_parameterid_output

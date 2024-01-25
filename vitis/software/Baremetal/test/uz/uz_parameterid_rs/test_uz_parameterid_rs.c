@@ -193,13 +193,14 @@ void test_uz_parameterid_rs_sample_fail_assert(void){
 void test_uz_parameterid_rs_sample(void){
     test_config.wait_time = 2.0f * test_config.isr_steptime;
     test_config.i_steptime = 2.0f;
+    test_config.i_repeats = 2.0f;
     enum state test; 
     float ud;
     float id;
     uz_parameterid_rs_t* test_instance5 = uz_parameterid_rs_init(test_config);
     struct uz_parameterid_output actual_output;
     struct uz_parameterid_rs_sample_output test_output;
-    float c = 60000000.0f; 
+    float c = 10.0f*80004.0f; 
     for (int i = 0; i<=c; i++){
         test = uz_parameterid_rs_get_current_state(test_instance5);
         switch (test)

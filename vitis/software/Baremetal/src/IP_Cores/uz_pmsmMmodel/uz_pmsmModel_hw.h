@@ -19,7 +19,7 @@ void uz_pmsmModel_hw_write_load_torque(uint32_t base_address, float load_torque)
 // Strobes
 void uz_pmsmModel_hw_trigger_input_strobe(uint32_t base_address);
 void uz_pmsmModel_hw_trigger_output_strobe(uint32_t base_address);
-// void uz_pmsmModel_hw_trigger_fitting_parameters_strobe(uint32_t base_address);
+void uz_pmsmModel_hw_trigger_fitting_parameters_strobe(uint32_t base_address);
 
 // Electrical configuration parameters
 void uz_pmsmModel_hw_write_polepairs(uint32_t base_address, float polepairs);
@@ -58,6 +58,31 @@ void uz_pmsmModel_hw_write_aq1_div_aq2(uint32_t base_address, float aq1, float a
 void uz_pmsmModel_hw_write_ad4_div_ad5(uint32_t base_address, float ad4, float ad5);
 void uz_pmsmModel_hw_write_ad1_div_ad2(uint32_t base_address, float ad1, float ad2);
 void uz_pmsmModel_hw_write_aq3_min_aq6(uint32_t base_address, float aq3, float aq6);
+
+//fitting parameter output for testing the ip-core
+float uz_pmsmModel_hw_read_out_ad1(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad2(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad3(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad4(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad5(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad6(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq1(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq2(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq3(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq4(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq5(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq6(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_reciprocal_F1G1(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_reciprocal_F2G2(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad4_mul_ad5(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad1_mul_ad2(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq4_mul_aq5(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq1_mul_aq2(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq4_div_aq5(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq1_div_aq2(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad4_div_ad5(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_ad1_div_ad2(uint32_t base_address);
+float uz_pmsmModel_hw_read_out_aq3_min_aq6(uint32_t base_address);
 
 // Determine if omega mech is a input or the mechanical system is simulated with a simple friction model
 void uz_pmsmModel_hw_write_simulate_mechanical(uint32_t base_address, bool simulate_mechanical);

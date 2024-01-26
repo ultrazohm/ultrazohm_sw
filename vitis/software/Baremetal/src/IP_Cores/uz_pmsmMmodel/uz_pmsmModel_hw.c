@@ -194,13 +194,13 @@ void uz_pmsmModel_hw_write_aq6(uint32_t base_address, float aq6){
 
 void uz_pmsmModel_hw_write_reciprocal_F1G1(uint32_t base_address, float F1G1){
     uz_assert_not_zero(base_address);
-    uz_assert(F1G1 > 0.0f); // prevent division by zero and no negative inertia exists
+    uz_assert(F1G1 != 0.0f); // prevent division by zero and no negative inertia exists
     uz_axi_write_float(base_address+reciprocal_F1G1_Data_uz_pmsm_model,(1.0f/F1G1));
 }
 
 void uz_pmsmModel_hw_write_reciprocal_F2G2(uint32_t base_address, float F2G2){
     uz_assert_not_zero(base_address);
-    uz_assert(F2G2 > 0.0f); // prevent division by zero and no negative inertia exists
+    uz_assert(F2G2 != 0.0f); // prevent division by zero and no negative inertia exists
     uz_axi_write_float(base_address+reciprocal_F2G2_Data_uz_pmsm_model,(1.0f/F2G2));
 }
 
@@ -254,10 +254,136 @@ void uz_pmsmModel_hw_write_ad1_div_ad2(uint32_t base_address, float ad1, float a
 
 void uz_pmsmModel_hw_write_aq3_min_aq6(uint32_t base_address, float aq3, float aq6){
     uz_assert_not_zero(base_address);
-    uz_assert(aq3 != aq6); // prevent difference is zero
+    uz_assert(aq3 != aq6); // prevent difference becoming zero
     uz_axi_write_float(base_address+aq3_min_aq6_Data_uz_pmsm_model,(0.5f*(aq3-aq6)));
 }
 
+
+
+//Fitting parameter as outputs to test ip-core
+
+//Fitting Parameter
+float uz_pmsmModel_hw_read_out_ad1(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad1_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_ad2(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad2_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_ad3(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad3_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_ad4(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad4_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_ad5(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad5_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_ad6(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad6_Data_uz_pmsm_model);
+}
+
+
+float uz_pmsmModel_hw_read_out_aq1(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq1_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq2(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq2_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq3(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq3_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq4(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq4_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq5(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq5_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq6(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq6_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_reciprocal_F1G1(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_reciprocal_F1G1_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_reciprocal_F2G2(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_reciprocal_F2G2_Data_uz_pmsm_model);
+    }
+
+//FittingParameter that are calculated in driver
+
+//Multiply
+float uz_pmsmModel_hw_read_out_ad4_mul_ad5(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad4_mul_ad5_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_ad1_mul_ad2(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad1_mul_ad2_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq4_mul_aq5(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq4_mul_aq5_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq1_mul_aq2(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq1_mul_aq2_Data_uz_pmsm_model);
+}
+
+//Divide
+float uz_pmsmModel_hw_read_out_aq4_div_aq5(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq4_div_aq5_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq1_div_aq2(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq1_div_aq2_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_ad4_div_ad5(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad4_div_ad5_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_ad1_div_ad2(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_ad1_div_ad2_Data_uz_pmsm_model);
+}
+
+float uz_pmsmModel_hw_read_out_aq3_min_aq6(uint32_t base_address){
+    uz_assert_not_zero(base_address);
+    return uz_axi_read_float(base_address + out_aq3_min_aq6_Data_uz_pmsm_model);
+}
+
+//Strobes
 void uz_pmsmModel_hw_trigger_input_strobe(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
     uz_axi_write_bool(base_address+inputs_Strobe_uz_pmsm_model,true);
@@ -270,10 +396,11 @@ void uz_pmsmModel_hw_trigger_output_strobe(uint32_t base_address){
     uz_axi_write_bool(base_address+outputs_Strobe_uz_pmsm_model,false);
 }
 
-/* void uz_pmsmModel_hw_trigger_fitting_parameters_strobe(uint32_t base_address){
+void uz_pmsmModel_hw_trigger_fitting_parameter_strobe(uint32_t base_address){
     uz_assert_not_zero_uint32(base_address);
-    uz_axi_write_bool(base_address+fitting_parameters_Strobe_uz_pmsm_model,true);
-    uz_axi_write_bool(base_address+fitting_parameters_Strobe_uz_pmsm_model,false);
+    uz_axi_write_bool(base_address+outputs_fitting_parameter_Strobe_uz_pmsm_model ,true);
+    uz_axi_write_bool(base_address+outputs_fitting_parameter_Strobe_uz_pmsm_model ,false);
 }
-*/
+
+
 

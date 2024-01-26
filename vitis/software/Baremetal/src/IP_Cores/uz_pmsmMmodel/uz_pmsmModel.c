@@ -75,7 +75,7 @@ uz_pmsmModel_t *uz_pmsmModel_init(struct uz_pmsmModel_config_t config)
         config.ad6 = 1.0f;
         config.aq1 = 1.0f;
         config.aq2 = 1.0f;
-        config.aq3 = 2.0f;
+        config.aq3 = 1.0f;
         config.aq4 = 1.0f;
         config.aq5 = 1.0f;
         config.aq6 = 1.0f;
@@ -151,6 +151,62 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self)
     return outputs;
 }
 
+struct uz_pmsmModel_fitting_parameter_t uz_pmsmModel_get_fitting_parameter(uz_pmsmModel_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    struct uz_pmsmModel_fitting_parameter_t fitting_parameter_out = {
+        .out_ad1 = 0.0f,
+        .out_ad2 = 0.0f,
+        .out_ad3 = 0.0f,
+        .out_ad4 = 0.0f,
+        .out_ad5 = 0.0f,
+        .out_ad6 = 0.0f,
+        .out_aq1 = 0.0f,
+        .out_aq2 = 0.0f,
+        .out_aq3 = 0.0f,
+        .out_aq4 = 0.0f,
+        .out_aq5 = 0.0f,
+        .out_aq6 = 0.0f,
+        .out_reciprocal_F1G1 = 0.0f,
+        .out_reciprocal_F2G2 = 0.0f,
+        .out_ad4_mul_ad5 = 0.0f,
+        .out_ad1_mul_ad2 = 0.0f,
+        .out_aq4_mul_aq5 = 0.0f,
+        .out_aq1_mul_aq2 = 0.0f,
+        .out_aq4_div_aq5 = 0.0f,
+        .out_aq1_div_aq2 = 0.0f,
+        .out_ad4_div_ad5 = 0.0f,
+        .out_ad1_div_ad2 = 0.0f,
+        .out_aq3_min_aq6 = 0.0f
+        };
+
+    fitting_parameter_out.out_ad1 = uz_pmsmModel_hw_read_out_ad1(self->config.base_address);
+    fitting_parameter_out.out_ad2 = uz_pmsmModel_hw_read_out_ad2(self->config.base_address);
+    fitting_parameter_out.out_ad3 = uz_pmsmModel_hw_read_out_ad3(self->config.base_address);
+    fitting_parameter_out.out_ad4 = uz_pmsmModel_hw_read_out_ad4(self->config.base_address);
+    fitting_parameter_out.out_ad5 = uz_pmsmModel_hw_read_out_ad5(self->config.base_address);
+    fitting_parameter_out.out_ad6 = uz_pmsmModel_hw_read_out_ad6(self->config.base_address);
+    fitting_parameter_out.out_aq1 = uz_pmsmModel_hw_read_out_aq1(self->config.base_address);
+    fitting_parameter_out.out_aq2 = uz_pmsmModel_hw_read_out_aq2(self->config.base_address);
+    fitting_parameter_out.out_aq3 = uz_pmsmModel_hw_read_out_aq3(self->config.base_address);
+    fitting_parameter_out.out_aq4 = uz_pmsmModel_hw_read_out_aq4(self->config.base_address);
+    fitting_parameter_out.out_aq5 = uz_pmsmModel_hw_read_out_aq5(self->config.base_address);
+    fitting_parameter_out.out_aq6 = uz_pmsmModel_hw_read_out_aq6(self->config.base_address);
+    fitting_parameter_out.out_reciprocal_F1G1 = uz_pmsmModel_hw_read_out_reciprocal_F1G1(self->config.base_address);
+    fitting_parameter_out.out_reciprocal_F2G2 = uz_pmsmModel_hw_read_out_reciprocal_F2G2(self->config.base_address);
+    fitting_parameter_out.out_ad4_mul_ad5 = uz_pmsmModel_hw_read_out_ad4_mul_ad5(self->config.base_address);
+    fitting_parameter_out.out_ad1_mul_ad2 = uz_pmsmModel_hw_read_out_ad1_mul_ad2(self->config.base_address);
+    fitting_parameter_out.out_aq4_mul_aq5 = uz_pmsmModel_hw_read_out_aq4_mul_aq5(self->config.base_address);
+    fitting_parameter_out.out_aq1_mul_aq2 = uz_pmsmModel_hw_read_out_aq1_mul_aq2(self->config.base_address);
+    fitting_parameter_out.out_aq4_div_aq5 = uz_pmsmModel_hw_read_out_aq4_div_aq5(self->config.base_address);
+    fitting_parameter_out.out_aq1_div_aq2 = uz_pmsmModel_hw_read_out_aq1_div_aq2(self->config.base_address);
+    fitting_parameter_out.out_ad4_div_ad5 = uz_pmsmModel_hw_read_out_ad4_div_ad5(self->config.base_address);
+    fitting_parameter_out.out_ad1_div_ad2 = uz_pmsmModel_hw_read_out_ad1_div_ad2(self->config.base_address);
+    fitting_parameter_out.out_aq3_min_aq6 = uz_pmsmModel_hw_read_out_aq3_min_aq6(self->config.base_address);  
+    return fitting_parameter_out;
+}
+
 void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -161,6 +217,12 @@ void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_pmsmModel_hw_trigger_output_strobe(self->config.base_address);
+}
+
+void uz_pmsmModel_trigger_fitting_parameters_strobe(uz_pmsmModel_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsmModel_hw_trigger_fitting_parameters_strobe(self->config.base_address);
 }
 
 static void write_config_to_pl(uz_pmsmModel_t *self)

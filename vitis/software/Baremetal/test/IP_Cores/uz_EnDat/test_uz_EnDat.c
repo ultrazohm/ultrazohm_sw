@@ -341,4 +341,9 @@ void test_uz_EnDat_fetch_errorbit_from_statusword_true(void) {
 void test_uz_EnDat_fail_assert_if_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object_is_called_with_NULL_pointer(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(NULL));
 }
+
+void test_uz_EnDat_fail_assert_read_reponselength_and_convert_to_float_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_reponselength_and_convert_to_float(NULL));
+}
+
 #endif  // TEST

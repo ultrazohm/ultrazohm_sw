@@ -30,5 +30,7 @@
 #define  TIMEELASPEDT0T4BUS_Data_uz_EnDat   0x880  //data register for Outport TIMEELASPEDT0T4BUS
 #define  FKT6SYNCRESPONSE_Data_uz_EnDat     0x890  //data register for Inport FKT6SYNCRESPONSE
 #define  FKT7EXTRASHIFT_Data_uz_EnDat       0x894  //data register for Inport FKT7EXTRASHIFT
+#define  RESPONSELENBUS_Data_uz_EnDat       0x898  //data register for Outport RESPONSELENBUS
+
 
 #endif /* UZ_ENDAT_H_ */

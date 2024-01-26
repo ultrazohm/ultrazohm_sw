@@ -361,6 +361,12 @@ bool uz_EnDat_fetch_errorbit_from_statusword(controlword in);
  */
 void uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(uz_EnDat_t *self);
 
+/**
+ * 
+ * @brief This function reads the Responselength in bits from the EnDat IP-Core and converts it to float
+ * @return Returns the Length of the response information.
+ */
+float uz_EnDat_read_reponselength_and_convert_to_float(uz_EnDat_t* self);
 
 /* STATUSWORD CONTENT
 | Bit |   Description   | Target  | Default |

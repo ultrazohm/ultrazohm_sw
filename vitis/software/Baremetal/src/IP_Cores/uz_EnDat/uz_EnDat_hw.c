@@ -99,3 +99,8 @@ void uz_EnDat_hw_write_FKT7EXTRASHIFT(uint32_t base_address, int8_t FKT7EXTRASHI
     uz_assert_not_zero(base_address);
     uz_axi_write_int32(base_address+FKT7EXTRASHIFT_Data_uz_EnDat, FKT7EXTRASHIFT);
 }
+
+uint8_t uz_EnDat_hw_read_RESPONSELENBUS(uint32_t base_address) {
+    uz_assert_not_zero(base_address);
+    return ((uint8_t)uz_axi_read_uint32(base_address+RESPONSELENBUS_Data_uz_EnDat));
+}

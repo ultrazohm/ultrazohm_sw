@@ -723,4 +723,15 @@ void uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_objec
     self->status.statusword = uz_EnDat_fetch_statusword_from_EnDat_object(self);
     self->status.errorbit = uz_EnDat_fetch_errorbit_from_statusword(self->status.statusword);
 }
+
+float uz_EnDat_read_reponselength_and_convert_to_float(uz_EnDat_t* self) {
+    float ret;
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    ret = (float)uz_EnDat_hw_read_RESPONSELENBUS(self->config.base_address);
+
+    return(ret);
+}
+
 #endif  // NOLINT

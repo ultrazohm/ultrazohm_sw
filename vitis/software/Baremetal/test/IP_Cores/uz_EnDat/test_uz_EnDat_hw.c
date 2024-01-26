@@ -257,4 +257,16 @@ void test_uz_EnDat_hw_write_to_FKT7EXTRASHIFT(void) {
     // Test passes if an assert fails in the function under test
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_write_FKT7EXTRASHIFT(0, a))
 }
+
+void test_uz_EnDat_hw_read_from_RESPONSELENBUS(void) {
+    uint8_t c = 7;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+RESPONSELENBUS_Data_uz_EnDat, c);
+    uint32_t c_readback = uz_EnDat_hw_read_RESPONSELENBUS(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_INT(c, c_readback);
+
+    // Ignores how often the read function is called and returns (c)
+    uz_axi_read_uint32_IgnoreAndReturn(c);
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_RESPONSELENBUS(0));
+}
+
 #endif  // TEST

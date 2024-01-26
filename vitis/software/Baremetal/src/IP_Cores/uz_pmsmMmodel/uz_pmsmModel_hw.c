@@ -230,26 +230,31 @@ void uz_pmsmModel_hw_write_aq1_mul_aq2(uint32_t base_address, float aq1, float a
 //Divide
 void uz_pmsmModel_hw_write_aq4_div_aq5(uint32_t base_address, float aq4, float aq5){
     uz_assert_not_zero(base_address);
+    uz_assert(aq5 != 0.0f); // prevent division by zero
     uz_axi_write_float(base_address+aq4_div_aq5_Data_uz_pmsm_model,(aq4/aq5));
 }
 
 void uz_pmsmModel_hw_write_aq1_div_aq2(uint32_t base_address, float aq1, float aq2){
     uz_assert_not_zero(base_address);
+    uz_assert(aq2 != 0.0f); // prevent division by zero
     uz_axi_write_float(base_address+aq1_div_aq2_Data_uz_pmsm_model,(aq1/aq2));
 }
 
 void uz_pmsmModel_hw_write_ad4_div_ad5(uint32_t base_address, float ad4, float ad5){
     uz_assert_not_zero(base_address);
+    uz_assert(ad5 != 0.0f); // prevent division by zero
     uz_axi_write_float(base_address+ad4_div_ad5_Data_uz_pmsm_model,(ad4/ad5));
 }
 
 void uz_pmsmModel_hw_write_ad1_div_ad2(uint32_t base_address, float ad1, float ad2){
     uz_assert_not_zero(base_address);
+    uz_assert(ad2 != 0.0f); // prevent division by zero
     uz_axi_write_float(base_address+ad1_div_ad2_Data_uz_pmsm_model,(ad1/ad2));
 }
 
 void uz_pmsmModel_hw_write_aq3_min_aq6(uint32_t base_address, float aq3, float aq6){
     uz_assert_not_zero(base_address);
+    uz_assert(aq3 != aq6); // prevent difference is zero
     uz_axi_write_float(base_address+aq3_min_aq6_Data_uz_pmsm_model,(0.5f*(aq3-aq6)));
 }
 

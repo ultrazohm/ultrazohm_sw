@@ -48,6 +48,10 @@ Compatibility
 ----------------------
 Slots D1 to D4 can be used without limitations
 
+Optical Cables 
+--------------
+* Optical Cables of type **HFBR-RNSxxxZ** are tested and recommended for transmitting the optical signals. The **xxx** determines the length of the cable in meters.
+
 See also
 """""""""""""""
 * :download:`Schematic 2v02 <optical_16tx_v2/SCH_Optical_16tx_2v02.pdf>`

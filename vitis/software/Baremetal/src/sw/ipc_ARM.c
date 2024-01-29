@@ -21,9 +21,7 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
-bool select_CurrentControl = false;
-bool select_DDPG_1_64 = false;
-bool select_DDPG_3_64 = false;
+bool select_CurrentControl = true;
 bool select_Real = false;
 bool select_CIL = false;
 bool select_automatic_idiq = false;
@@ -231,21 +229,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-			select_CurrentControl = true;
-			select_DDPG_1_64 = false;
-			select_DDPG_3_64 = false;
+
 			break;
 
 		case (My_Button_4):
-			select_CurrentControl = false;
-			select_DDPG_1_64 = true;
-			select_DDPG_3_64 = false;
+
 			break;
 
 		case (My_Button_5):
-			select_CurrentControl = false;
-			select_DDPG_1_64 = false;
-			select_DDPG_3_64 = true;
+
 			break;
 
 		case (My_Button_6):
@@ -323,18 +315,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 6);
 	}
 
-	/* Bit 7 - My_Button_4 */
-	if (select_DDPG_1_64 == true) {
-		js_status_BareToRTOS |= (1 << 7);
-	} else {
-	 	js_status_BareToRTOS &= ~(1 << 7);
-	}
-	/* Bit 8 - My_Button_5 */
-	if (select_DDPG_3_64 == true) {
-		js_status_BareToRTOS |= (1 << 8);
-	} else {
-	 	js_status_BareToRTOS &= ~(1 << 8);
-	}
+//	/* Bit 7 - My_Button_4 */
+//	if (your_condition == true) {
+//		js_status_BareToRTOS |= (1 << 7);
+//	} else {
+//	 	js_status_BareToRTOS &= ~(1 << 7);
+//	}
+//	/* Bit 8 - My_Button_5 */
+//	if (your_condition == true) {
+//		js_status_BareToRTOS |= (1 << 8);
+//	} else {
+//	 	js_status_BareToRTOS &= ~(1 << 8);
+//	}
 
 	/* Bit 9 - My_Button_6 */
 	if (select_automatic_idiq == true) {

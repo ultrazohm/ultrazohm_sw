@@ -91,6 +91,11 @@ enum JS_OberservableData {
 	JSO_uq_ind_filt_2,
 	JSO_psi_d_2,
 	JSO_psi_q_2,
+	JSO_i_q,
+	JSO_i_d,
+	JSO_omega,
+	JSO_v_q,
+	JSO_v_d,
 	JSO_ENDMARKER
 };
 
@@ -192,6 +197,11 @@ enum JS_SlowData {
 	JSSD_FLOAT_DC_B_av,
 	JSSD_FLOAT_DC_C_av,
 	JSSD_FLOAT_rs2,
+	JSSD_FLOAT_u_d,
+	JSSD_FLOAT_u_q,
+	JSSD_FLOAT_i_d,
+	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_speed,
 	JSSD_ENDMARKER
 };
 
@@ -318,9 +328,9 @@ enum gui_button_mapping {
 	receive_field_15,
 	receive_field_16,
 	receive_field_17,
-	receive_field_18,
-	receive_field_19,
-	receive_field_20,
+	CIL_iq,
+	CIL_id,
+	CIL_speed,
 	RCV_FLD_ENDMARKER
 
 
@@ -345,9 +355,9 @@ enum gui_button_mapping {
 	-,
 	-,
 	-,
-	-,
-	-,
-	-,
+	A,
+	A,
+	rad/s,
 	RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
@@ -386,9 +396,9 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_i_d,
+	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_speed,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

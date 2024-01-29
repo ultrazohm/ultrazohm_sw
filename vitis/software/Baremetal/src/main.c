@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 #include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -47,6 +48,7 @@ uz_SetPoint_t* SP_instance_1;
 uz_CurrentControl_t* CC_instance_1;
 uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 uz_wavegen_chirp* chirp_instance_1;
+uz_parameterid_rs_t* test_instance;
 
 
 // Declare Pointer for FOC of PMSM 2
@@ -80,18 +82,27 @@ struct uz_PMSM_t config_PMSM_2 = {
    .I_max_Ampere = 20.0f
 };//these parameters are only needed if linear decoupling is selected
 
+
+
+
 enum init_chain
 {
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_CurrentControl_pmsm,
     init_ip_cores,
 	init_control,
     print_msg,
     init_interrupts,
     infinite_loop
 };
+uz_pmsmModel_t *pmsm=NULL;
+uz_CurrentControl_t* CurrentControl_instance = NULL;
+
 enum init_chain initialization_chain = init_assertions;
+
+
 
 int main(void)
 {
@@ -172,7 +183,18 @@ int main(void)
 
     };
 
-
+    // config for CIL measurement
+    struct uz_parameterid_rs_config_t test_config = {
+    		.n_start = 100.0f,
+    	    .n_end = 1000.0f,
+    	    .n_steps = 9.0f,
+    	    .i_start = 10.0f,
+    	    .i_diff = 1.0f,
+    	    .i_repeats = 2.0f,
+    	    .i_steptime = 0.7f,
+    	    .wait_time = 0.1f,
+    	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
+    };
 
     //--------- Configs for PMSM 2 (Last) ---------//
     // Configuration of Speed Control
@@ -241,8 +263,46 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            initialization_chain = init_CurrentControl_pmsm;
             break;
+        case init_CurrentControl_pmsm:;
+            struct uz_PMSM_t config_PMSM = {
+                .Ld_Henry = 3.00e-04f,
+                .Lq_Henry = 3.00e-04f,
+                .Psi_PM_Vs = 0.0075f};
+            struct uz_PI_Controller_config config_id = {
+                .Kp = 0.25f,
+                .Ki = 158.8f,
+                .samplingTime_sec = 0.00005f,
+                .upper_limit = 10.0f,
+                .lower_limit = -10.0f};
+            struct uz_PI_Controller_config config_iq = {
+                .Kp = 0.25f,
+                .Ki = 158.8f,
+                .samplingTime_sec = 0.00005f,
+                .upper_limit = 10.0f,
+                .lower_limit = -10.0f};
+            struct uz_CurrentControl_config config_CurrentControl = {
+                .decoupling_select = linear_decoupling,
+                .config_PMSM = config_PMSM,
+                .config_id = config_id,
+                .config_iq = config_iq,
+                .max_modulation_index = 1.0f / sqrtf(3.0f)};
+            CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+            struct uz_pmsmModel_config_t pmsm_config={
+                .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+                .ip_core_frequency_Hz=100000000,
+                .simulate_mechanical_system = false,
+                .r_1 = 0.085f,
+                .L_d = 3.00e-04f,
+                .L_q = 3.00e-04f,
+                .psi_pm = 0.0075f,
+                .polepairs = 4.0f,
+                .inertia = 3.24e-05f,
+                .coulomb_friction_constant = 0.01f,
+                .friction_coefficient = 0.001f};
+            pmsm=uz_pmsmModel_init(pmsm_config);
+            initialization_chain = init_ip_cores;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
@@ -273,6 +333,7 @@ int main(void)
             SC_instance_2 = uz_SpeedControl_init(SC_config_2);
             SP_instance_2 = uz_SetPoint_init(SP_config_2);
             CC_instance_2 = uz_CurrentControl_init(CC_config_2);
+		    test_instance = uz_parameterid_rs_init(test_config);
            	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
            	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);

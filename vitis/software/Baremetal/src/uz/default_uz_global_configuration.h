@@ -61,6 +61,7 @@
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      2U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           4U
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES		6U
+#define UZ_PARAMETERID_RS_MAX_INSTANCES                 1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

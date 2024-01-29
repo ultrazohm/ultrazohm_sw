@@ -41,8 +41,11 @@
 #include "include/javascope.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
-
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
 #include "uz/uz_HAL.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
 
 #include "uz/uz_LED/uz_LED_facade.h"
 #include "uz/uz_PushButton/uz_PushButton_facade.h"

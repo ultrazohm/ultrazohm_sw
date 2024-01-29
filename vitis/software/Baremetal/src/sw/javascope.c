@@ -66,6 +66,9 @@ extern float M_meas_Nm;
 extern float option_js;
 extern float error_type;
 extern float r_s_2;
+extern struct uz_pmsmModel_outputs_t pmsm_outputs;
+extern struct uz_pmsmModel_inputs_t pmsm_inputs;
+extern float omega_el_rad_per_sec;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -149,6 +152,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_error_type]			= &error_type;
 	js_ch_observable[JSO_psi_d_2]			= &psi_dq_mVoltseconds_2.d;
 	js_ch_observable[JSO_psi_q_2]			= &psi_dq_mVoltseconds_2.q;
+	js_ch_observable[JSO_i_q] 			= &pmsm_outputs.i_q_A;
+	js_ch_observable[JSO_i_d] 			= &pmsm_outputs.i_d_A;
+	js_ch_observable[JSO_omega]			 = &pmsm_outputs.omega_mech_1_s;
+	js_ch_observable[JSO_v_d]			 = &pmsm_inputs.v_d_V;
+	js_ch_observable[JSO_v_q]			 = &pmsm_inputs.v_q_V;
 
 
 
@@ -203,6 +211,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_DC_B_av]  			 	= &data->rasv.halfBridge2DutyCycle;
 	js_slowDataArray[JSSD_FLOAT_DC_C_av]  			 	= &data->rasv.halfBridge3DutyCycle;
 	js_slowDataArray[JSSD_FLOAT_rs2]  			 		= &r_s_2;
+	js_slowDataArray[JSSD_FLOAT_u_d]                    = &(pmsm_inputs.v_d_V);
+	js_slowDataArray[JSSD_FLOAT_u_q]                    = &(pmsm_inputs.v_q_V);
+	js_slowDataArray[JSSD_FLOAT_i_d]                    = &(pmsm_outputs.i_d_A);
+	js_slowDataArray[JSSD_FLOAT_i_q]                    = &(pmsm_outputs.i_q_A);
+	js_slowDataArray[JSSD_FLOAT_speed]                  = &(pmsm_outputs.omega_mech_1_s);
+
 
 
 

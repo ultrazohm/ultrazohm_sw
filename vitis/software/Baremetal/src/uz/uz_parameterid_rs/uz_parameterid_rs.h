@@ -59,8 +59,8 @@ struct uz_parameterid_rs_sample_var
 
 struct uz_parameterid_rs_sample_output
 {
-    float rs_calc[10];
-    float rs_speeds[10];
+    float rs_calc[20];
+    float rs_speeds[20];
 
 };
 
@@ -78,6 +78,7 @@ enum sample {
     sample_on,
     calc,
     rs_write,
+    sample_finished,
 };
 
 

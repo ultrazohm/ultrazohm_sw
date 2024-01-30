@@ -225,6 +225,41 @@ void test_uz_parameterid_rs_sample(void){
 }
 
 
+void test_uz_parameterid_rs_sample_finished_states(void){
+    test_config.wait_time = 2.0f * test_config.isr_steptime;
+    test_config.i_steptime = 2.0f;
+    test_config.i_repeats = 2.0f;
+    enum state test; 
+    float ud;
+    float id;
+    uz_parameterid_rs_t* test_instance5 = uz_parameterid_rs_init(test_config);
+    struct uz_parameterid_output actual_output;
+    struct uz_parameterid_rs_sample_output test_output;
+    float c = 8000004.0f; 
+    for (int i = 0; i<=c; i++){
+        test = uz_parameterid_rs_get_current_state(test_instance5);
+        switch (test)
+        {
+        case i_start:
+            ud = 1.0f+(actual_output.n_sample/100.0f);
+            id = 2.0f;  
+            break;
+         case i_increment:
+            ud = 1.0f; 
+            id = 1.0f; 
+            break;       
+        default:
+            break;
+        }
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance5, ud, id);
+        test_output = uz_parameterid_rs_get_rs(test_instance5);
+    }
+    
+    TEST_ASSERT_EQUAL_FLOAT(2.0f, test_output.rs_calc[1]);
+
+}
+
+
 
 
 #endif // TEST

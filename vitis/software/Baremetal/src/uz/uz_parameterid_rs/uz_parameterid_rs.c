@@ -262,8 +262,9 @@ void uz_parameterid_rs_sample(uz_parameterid_rs_t* self, float ud, float id){
             self->counter.meas = 0U;
             break;
 
-        case rs_write:
+        case rs_write:            
             ind = self->counter.n-1;
+            if (ind <= self->internal_config.n_steps){
             uint32_t max_size_rs_calc =  sizeof(self->sample_out.rs_calc) / sizeof(float);
             uz_assert(ind < max_size_rs_calc );
             uint32_t max_size_rs_speeds =  sizeof(self->sample_out.rs_speeds) / sizeof(float);
@@ -280,8 +281,13 @@ void uz_parameterid_rs_sample(uz_parameterid_rs_t* self, float ud, float id){
             self->counter.rs = 0U;
             self->sample_state = sample_off;   
             break;
+            } else {
+            self->sample_state = sample_finished; 
+            }
 
-        
+        case sample_finished:
+            break;
+            
         default:
             break;
         }

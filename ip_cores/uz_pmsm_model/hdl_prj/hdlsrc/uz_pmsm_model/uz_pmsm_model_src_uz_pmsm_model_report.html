@@ -48,8 +48,8 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'uz_pmsm_model/uz_pmsm_model'
 <a href="matlab:open_system('uz_pmsm_model/uz_pmsm_model');">open model 'uz_pmsm_model/uz_pmsm_model'</a><BR>
-Generated on 2024-01-25 16:12:17</h1>
-<H2>HDL check for 'uz_pmsm_model' complete with 0 errors, 4 warnings, and 4 messages.</H2><BR>
+Generated on 2024-01-30 14:15:06</h1>
+<H2>HDL check for 'uz_pmsm_model' complete with 0 errors, 6 warnings, and 5 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
@@ -57,6 +57,18 @@ Generated on 2024-01-25 16:12:17</h1>
 </TD>
 <TD>Warning</TD>
 <TD>HDL Code Generation is not supported with implicit rate transitions. Consider turning off Simulink Solver setting <a href="matlab:configset.internal.open('uz_pmsm_model','AutoInsertRateTranBlk')">"Automatically handle rate transition for data transfer"</a> and detect such implicit transitions and add explicit rate conversion blocks with valid sample times.</TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
+<a alt="hdlcommon:nativefloatingpoint:InefficientSwitchCriteria" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 47 117 122 95 112 109 115 109 95 109 111 100 101 108 47 112 109 115 109 47 83 119 105 116 99 104 55]))">uz_pmsm_model/uz_pmsm_model/pmsm/Switch7</a>
+</TD>
+<TD>Warning</TD>
+<TD>Chosen switch criteria with a floating-point type is not optimal and can introduce extra latency. Select 'u2 ~= 0' criteria for the most efficient results with native floating-point code generation.</TD>
+</TR>
+<TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcommon:nativefloatingpoint:InefficientSwitchCriteria" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');hilite_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108 47 117 122 95 112 109 115 109 95 109 111 100 101 108 47 112 109 115 109 47 83 119 105 116 99 104 56]))">uz_pmsm_model/uz_pmsm_model/pmsm/Switch8</a>
+</TD>
+<TD>Warning</TD>
+<TD>Chosen switch criteria with a floating-point type is not optimal and can introduce extra latency. Select 'u2 ~= 0' criteria for the most efficient results with native floating-point code generation.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:engine:MultirateSolver" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
@@ -84,18 +96,24 @@ You can set these options in Modeling -> Model Settings -> Solver -> Solver deta
 <TD>Clock-rate pipelining identified at least one feedback loop which does not utilize the full latency budget. Oversampling factor is set to '200', but the minimum oversampling factor needed for the design is '126'. To reduce unnecessary clock cycles, either <a href="matlab:configset.internal.open('uz_pmsm_model/uz_pmsm_model','Oversampling')">lower the oversampling factor</a> to reduce the latency budget or add optimizations that increase latency like pipelining and serialization in your design to use the full latency budget.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated')">C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated.m</a>
+<a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated')">hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated.m</a>
 </TD>
 <TD>Message</TD>
-<TD>Estimated critical path for design: <a href="matlab:run('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated')">C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated.m</a></TD>
+<TD>Estimated critical path for design: <a href="matlab:run('hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated')">hdl_prj\hdlsrc\uz_pmsm_model\criticalPathEstimated.m</a></TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('hdl_prj\hdlsrc\uz_pmsm_model\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\uz_pmsm_model\highlightCriticalPathEstimationOffendingBlocks.m</a>
+</TD>
+<TD>Message</TD>
+<TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('hdl_prj\hdlsrc\uz_pmsm_model\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\uz_pmsm_model\highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:hdldisp:GeneratingDCEHighlightingScript" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
 </TD>
 <TD>Message</TD>
-<TD>Unused logic removed during HDL code generation. To highlight the logic removed, click the following MATLAB script: <a href="matlab:run('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\hdlsrc\uz_pmsm_model\highlightRemovedDeadBlocks.m')">highlightRemovedDeadBlocks.m</a></TD>
+<TD>Unused logic removed during HDL code generation. To highlight the logic removed, click the following MATLAB script: <a href="matlab:run('hdl_prj\hdlsrc\uz_pmsm_model\highlightRemovedDeadBlocks.m')">highlightRemovedDeadBlocks.m</a></TD>
 </TR>
-<TR bgcolor="#FFFFFF"><TD>
+<TR bgcolor="#F0F0F0"><TD>
 <a alt="hdlcoder:hdldisp:OversampleMessage" href="matlab:hilite(get_param(char([117 122 95 112 109 115 109 95 109 111 100 101 108]),'object'),'none');open_system(char([117 122 95 112 109 115 109 95 109 111 100 101 108]))">uz_pmsm_model</a>
 </TD>
 <TD>Message</TD>

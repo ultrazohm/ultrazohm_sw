@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_pmsm_model
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_44');hdlTableShrink(this, 'Multiplexer_1_27');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_46');hdlTableShrink(this, 'Multiplexer_1_29');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-2641
+2659
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-8345
+8362
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-100370
+101031
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-11288
+11503
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-1991
+1255
 </td>
 
 </tr>
@@ -224,7 +224,7 @@ Static Shift operators
 Dynamic Shift operators
 </td>
 <td align="center" valign="top" style="border-style: none">
-331
+335
 </td>
 
 </tr>
@@ -276,10 +276,19 @@ Multipliers (124)
 26x26-bit Multiply 							: 4
 </span>
 <br /><h5>
-Adders/Subtractors (2641)
+Adders/Subtractors (2659)
 </h5>
 <span style="font-family:monospace">
 8x8-bit Adder 							: 177
+</span>
+<br /><span style="font-family:monospace">
+6x6-bit Adder 							: 40
+</span>
+<br /><span style="font-family:monospace">
+26x26-bit Adder 							: 152
+</span>
+<br /><span style="font-family:monospace">
+9x9-bit Adder 							: 22
 </span>
 <br /><span style="font-family:monospace">
 32x32-bit Adder 							: 507
@@ -294,16 +303,10 @@ Adders/Subtractors (2641)
 46x46-bit Adder 							: 64
 </span>
 <br /><span style="font-family:monospace">
-6x6-bit Adder 							: 38
-</span>
-<br /><span style="font-family:monospace">
 11x11-bit Adder 							: 20
 </span>
 <br /><span style="font-family:monospace">
 33x33-bit Adder 							: 196
-</span>
-<br /><span style="font-family:monospace">
-9x9-bit Adder 							: 20
 </span>
 <br /><span style="font-family:monospace">
 13x13-bit Adder 							: 20
@@ -321,10 +324,10 @@ Adders/Subtractors (2641)
 10x10-bit Adder 							: 17
 </span>
 <br /><span style="font-family:monospace">
-26x26-bit Adder 							: 150
+25x25-bit Adder 							: 9
 </span>
 <br /><span style="font-family:monospace">
-25x25-bit Adder 							: 9
+3x3-bit Adder 							: 2
 </span>
 <br /><span style="font-family:monospace">
 35x35-bit Adder 							: 52
@@ -352,6 +355,15 @@ Adders/Subtractors (2641)
 </span>
 <br /><span style="font-family:monospace">
 41x41-bit Adder 							: 8
+</span>
+<br /><span style="font-family:monospace">
+12x12-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+7x7-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+14x14-bit Subtractor 							: 2
 </span>
 <br /><span style="font-family:monospace">
 29-bit Subtractor 							: 36
@@ -423,21 +435,21 @@ Adders/Subtractors (2641)
 59-bit Subtractor 							: 4
 </span>
 <br /><h5>
-Registers (8345)
+Registers (8362)
 </h5>
 <span style="font-family:monospace">
-8-bit Register 							: 1396
+8-bit Register 							: 1402
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 3517
+1-bit Register 							: 3548
 </span>
 <span name="Register_1_2" id="Register_1_2">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:909')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:898')" name="code2model" class="code2model">
 delayMatch50
 </a>
 
@@ -450,306 +462,330 @@ delayMatch50
 [+]
 </span>
 <span style="font-family:monospace">
-32-bit Register 							: 54
+32-bit Register 							: 56
 </span>
 <span name="Register_1_3" id="Register_1_3">
-<ul class="SystemdefinedCollapse" id="81ddda13-061a-4b49-ac74-435c973fa889" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="8dd1c8d2-1495-4864-a357-a1675e154a7f" dataCollapse="off">
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:859')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:848')" name="code2model" class="code2model">
 delayMatch
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:861')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:849')" name="code2model" class="code2model">
+delayMatch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:850')" name="code2model" class="code2model">
 delayMatch2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:863')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:851')" name="code2model" class="code2model">
+delayMatch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:852')" name="code2model" class="code2model">
 delayMatch4
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:901')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:890')" name="code2model" class="code2model">
 delayMatch42
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:898')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:887')" name="code2model" class="code2model">
 delayMatch39
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:888')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:877')" name="code2model" class="code2model">
 delayMatch29
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:878')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:867')" name="code2model" class="code2model">
 delayMatch19
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:879')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:868')" name="code2model" class="code2model">
 delayMatch20
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:880')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:869')" name="code2model" class="code2model">
 delayMatch21
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:887')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:876')" name="code2model" class="code2model">
 delayMatch28
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:912')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:901')" name="code2model" class="code2model">
 delayMatch53
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:869')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:858')" name="code2model" class="code2model">
 delayMatch10
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:871')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:857')" name="code2model" class="code2model">
+delayMatch9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:860')" name="code2model" class="code2model">
 delayMatch12
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:872')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:859')" name="code2model" class="code2model">
+delayMatch11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:861')" name="code2model" class="code2model">
 delayMatch13
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:892')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:881')" name="code2model" class="code2model">
 delayMatch33
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:896')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:885')" name="code2model" class="code2model">
 delayMatch37
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:908')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:897')" name="code2model" class="code2model">
 delayMatch49
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:902')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:891')" name="code2model" class="code2model">
 delayMatch43
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:903')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:892')" name="code2model" class="code2model">
 delayMatch44
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:904')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:893')" name="code2model" class="code2model">
 delayMatch45
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:905')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:894')" name="code2model" class="code2model">
 delayMatch46
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:906')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:895')" name="code2model" class="code2model">
 delayMatch47
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:864')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:853')" name="code2model" class="code2model">
 delayMatch5
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:865')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:854')" name="code2model" class="code2model">
 delayMatch6
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:866')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:855')" name="code2model" class="code2model">
 delayMatch7
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:884')" name="code2model" class="code2model">
-delayMatch25
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:872')" name="code2model" class="code2model">
+delayMatch24
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:874')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:863')" name="code2model" class="code2model">
 delayMatch15
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:875')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:864')" name="code2model" class="code2model">
 delayMatch16
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:876')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:865')" name="code2model" class="code2model">
 delayMatch17
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:877')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:866')" name="code2model" class="code2model">
 delayMatch18
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:881')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:870')" name="code2model" class="code2model">
 delayMatch22
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:885')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:874')" name="code2model" class="code2model">
 delayMatch26
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:918')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:907')" name="code2model" class="code2model">
 crp_out_delay3
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:85')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:39')" name="code2model" class="code2model">
 Unit_Delay1_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:867')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:856')" name="code2model" class="code2model">
 delayMatch8
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:910')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:899')" name="code2model" class="code2model">
 delayMatch51
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:913')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:902')" name="code2model" class="code2model">
 delayMatch54
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:897')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:886')" name="code2model" class="code2model">
 delayMatch38
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:917')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:906')" name="code2model" class="code2model">
 crp_out_delay2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:82')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:36')" name="code2model" class="code2model">
 Delay_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:920')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:909')" name="code2model" class="code2model">
 crp_out_delay5
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:79')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:33')" name="code2model" class="code2model">
 Delay1_lowered1_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:915')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:904')" name="code2model" class="code2model">
 crp_out_delay
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:91')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:45')" name="code2model" class="code2model">
 Unit_Delay_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:899')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:888')" name="code2model" class="code2model">
 delayMatch40
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:919')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:908')" name="code2model" class="code2model">
 crp_out_delay4
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:88')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:42')" name="code2model" class="code2model">
 Delay1_lowered2_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:916')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:905')" name="code2model" class="code2model">
 crp_out_delay1
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:76')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:30')" name="code2model" class="code2model">
 Delay1_lowered_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:895')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:884')" name="code2model" class="code2model">
 delayMatch36
 </a>
 
@@ -762,7 +798,25 @@ delayMatch36
 <br />
 </span>
 <br /><span style="font-family:monospace">
-23-bit Register 							: 923
+6-bit Register 							: 156
+</span>
+<br /><span style="font-family:monospace">
+11-bit Register 							: 42
+</span>
+<br /><span style="font-family:monospace">
+52-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+12-bit Register 							: 8
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+24-bit Register 							: 115
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 931
 </span>
 <br /><span style="font-family:monospace">
 28-bit Register 							: 142
@@ -781,9 +835,6 @@ delayMatch36
 </span>
 <br /><span style="font-family:monospace">
 10-bit Register 							: 451
-</span>
-<br /><span style="font-family:monospace">
-6-bit Register 							: 152
 </span>
 <br /><span style="font-family:monospace">
 49-bit Register 							: 192
@@ -816,16 +867,10 @@ delayMatch36
 21-bit Register 							: 76
 </span>
 <br /><span style="font-family:monospace">
-24-bit Register 							: 113
-</span>
-<br /><span style="font-family:monospace">
 26-bit Register 							: 167
 </span>
 <br /><span style="font-family:monospace">
 2-bit Register 							: 6
-</span>
-<br /><span style="font-family:monospace">
-12-bit Register 							: 6
 </span>
 <br /><span style="font-family:monospace">
 14-bit Register 							: 6
@@ -838,6 +883,9 @@ delayMatch36
 </span>
 <br /><span style="font-family:monospace">
 22-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
 </span>
 <br /><span style="font-family:monospace">
 35-bit Register 							: 36
@@ -858,9 +906,6 @@ delayMatch36
 17-bit Register 							: 4
 </span>
 <br /><span style="font-family:monospace">
-11-bit Register 							: 40
-</span>
-<br /><span style="font-family:monospace">
 30-bit Register 							: 28
 </span>
 <br /><span style="font-family:monospace">
@@ -873,37 +918,22 @@ delayMatch36
 50-bit Register 							: 32
 </span>
 <br /><span style="font-family:monospace">
-52-bit Register 							: 8
-</span>
-<br /><span style="font-family:monospace">
 58-bit Register 							: 12
 </span>
 <br /><span style="font-family:monospace">
 57-bit Register 							: 4
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_44')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_46')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-real Register 							: 50
+real Register 							: 4
 </span>
-<span name="Register_1_44" id="Register_1_44">
+<span name="Register_1_46" id="Register_1_46">
 <ul>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:74')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:29')" name="code2model" class="code2model">
 t_bypass
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:75')" name="code2model" class="code2model">
-t1_output
-</a>
-
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:923')" name="code2model" class="code2model">
-delayMatch56
 </a>
 
 </li>
@@ -912,19 +942,31 @@ delayMatch56
 
 </span>
 <br /><h5>
-Multiplexers (11288)
+Multiplexers (11503)
 </h5>
 <span style="font-family:monospace">
-8-bit 2-to-1 Multiplexer 							: 1450
+8-bit 2-to-1 Multiplexer 							: 1464
 </span>
 <br /><span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 3487
+1-bit 2-to-1 Multiplexer 							: 3558
+</span>
+<br /><span style="font-family:monospace">
+11-bit 2-to-1 Multiplexer 							: 10
+</span>
+<br /><span style="font-family:monospace">
+53-bit 2-to-1 Multiplexer 							: 4
+</span>
+<br /><span style="font-family:monospace">
+6-bit 2-to-1 Multiplexer 							: 1878
+</span>
+<br /><span style="font-family:monospace">
+25-bit 2-to-1 Multiplexer 							: 23
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 520
 </span>
 <br /><span style="font-family:monospace">
 3-bit 2-to-1 Multiplexer 							: 70
-</span>
-<br /><span style="font-family:monospace">
-23-bit 2-to-1 Multiplexer 							: 506
 </span>
 <br /><span style="font-family:monospace">
 28-bit 2-to-1 Multiplexer 							: 36
@@ -943,9 +985,6 @@ Multiplexers (11288)
 </span>
 <br /><span style="font-family:monospace">
 10-bit 2-to-1 Multiplexer 							: 205
-</span>
-<br /><span style="font-family:monospace">
-6-bit 2-to-1 Multiplexer 							: 1772
 </span>
 <br /><span style="font-family:monospace">
 49-bit 2-to-1 Multiplexer 							: 192
@@ -987,27 +1026,30 @@ Multiplexers (11288)
 34-bit 2-to-1 Multiplexer 							: 176
 </span>
 <br /><span style="font-family:monospace">
-25-bit 2-to-1 Multiplexer 							: 21
-</span>
-<br /><span style="font-family:monospace">
 26-bit 2-to-1 Multiplexer 							: 149
 </span>
-<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_27')" onmouseover="this.style.cursor = 'pointer'">
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_29')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-real 2-to-1 Multiplexer 							: 25
+real 2-to-1 Multiplexer 							: 27
 </span>
-<span name="Multiplexer_1_27" id="Multiplexer_1_27">
-<ul class="SystemdefinedCollapse" id="c54fe98b-668a-4b50-ba48-69602574a0dc" dataCollapse="off">
+<span name="Multiplexer_1_29" id="Multiplexer_1_29">
+<ul class="SystemdefinedCollapse" id="2dea9c9c-2865-4565-b9da-d2f8fdd96b9d" dataCollapse="off">
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:115')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:75')" name="code2model" class="code2model">
 Switch2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:85')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:74')" name="code2model" class="code2model">
+Switch8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:39')" name="code2model" class="code2model">
 Unit_Delay1_bypass
 </a>
 
@@ -1019,37 +1061,43 @@ Switch1
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:857')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:71')" name="code2model" class="code2model">
+Switch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:846')" name="code2model" class="code2model">
 zero_protection
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:126')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:85')" name="code2model" class="code2model">
 Switch6
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:82')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:36')" name="code2model" class="code2model">
 Delay_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:108')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:64')" name="code2model" class="code2model">
 reset_in1
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:79')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:33')" name="code2model" class="code2model">
 Delay1_lowered1_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:109')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:65')" name="code2model" class="code2model">
 reset_out1
 </a>
 
@@ -1061,73 +1109,73 @@ Switch
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:116')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:76')" name="code2model" class="code2model">
 Switch5
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:91')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:45')" name="code2model" class="code2model">
 Unit_Delay_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:124')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:83')" name="code2model" class="code2model">
 Switch4
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:104')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:60')" name="code2model" class="code2model">
 reset_in
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:88')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:42')" name="code2model" class="code2model">
 Delay1_lowered2_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:102')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:58')" name="code2model" class="code2model">
 reset_out
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:125')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:84')" name="code2model" class="code2model">
 Switch3
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:113')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:69')" name="code2model" class="code2model">
 reset_in2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:76')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:30')" name="code2model" class="code2model">
 Delay1_lowered_bypass
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:111')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:67')" name="code2model" class="code2model">
 reset_out2
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:128')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:87')" name="code2model" class="code2model">
 Switch11
 </a>
 
 </li>
 <li>
-<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:74')" name="code2model" class="code2model">
+<a href="matlab:coder.internal.code2model('gm_uz_pmsm_model:29')" name="code2model" class="code2model">
 t_bypass
 </a>
 
@@ -1164,9 +1212,6 @@ t_bypass
 30-bit 2-to-1 Multiplexer 							: 56
 </span>
 <br /><span style="font-family:monospace">
-11-bit 2-to-1 Multiplexer 							: 8
-</span>
-<br /><span style="font-family:monospace">
 58-bit 2-to-1 Multiplexer 							: 12
 </span>
 <br /><span style="font-family:monospace">
@@ -1179,7 +1224,7 @@ t_bypass
 50-bit 2-to-1 Multiplexer 							: 8
 </span>
 <br /><h5>
-Number of Shift operators (1340)
+Number of Shift operators (1344)
 </h5>
 <span style="font-family:monospace">
 Static Shift Left 							: 176
@@ -1236,6 +1281,9 @@ Static Shift Right 							: 32
 Static Shift Right 							: 48
 </span>
 <br /><span style="font-family:monospace">
+53-bit Dynamic Shift Left 							: 2
+</span>
+<br /><span style="font-family:monospace">
 27-bit Dynamic Shift Left 							: 35
 </span>
 <br /><span style="font-family:monospace">
@@ -1263,6 +1311,9 @@ Static Shift Right 							: 48
 57-bit Dynamic Shift Left 							: 4
 </span>
 <br /><span style="font-family:monospace">
+53-bit Dynamic Shift Right 							: 2
+</span>
+<br /><span style="font-family:monospace">
 28-bit Dynamic Shift Right 							: 35
 </span>
 <br /><span style="font-family:monospace">
@@ -1287,7 +1338,7 @@ Static Shift Right 							: 48
 50-bit Dynamic Shift Right 							: 4
 </span>
 <br /><h5>
-Number of I/O Bits (1991)
+Number of I/O Bits (1255)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -1296,7 +1347,7 @@ Number of I/O Bits (1991)
 Number of Input Bits: 1126
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="bb6478c5-0cd1-40a2-a065-243bd16f9bcb" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="5f37dced-18de-47e0-8d4f-40c367754a87" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
@@ -1373,6 +1424,75 @@ psi_pm
 : 32 bits
 </li>
 <li>
+fitting_parameter_0: 32 bits
+</li>
+<li>
+fitting_parameter_1: 32 bits
+</li>
+<li>
+fitting_parameter_2: 32 bits
+</li>
+<li>
+fitting_parameter_3: 32 bits
+</li>
+<li>
+fitting_parameter_4: 32 bits
+</li>
+<li>
+fitting_parameter_5: 32 bits
+</li>
+<li>
+fitting_parameter_6: 32 bits
+</li>
+<li>
+fitting_parameter_7: 32 bits
+</li>
+<li>
+fitting_parameter_8: 32 bits
+</li>
+<li>
+fitting_parameter_9: 32 bits
+</li>
+<li>
+fitting_parameter_10: 32 bits
+</li>
+<li>
+fitting_parameter_11: 32 bits
+</li>
+<li>
+fitting_parameter_12: 32 bits
+</li>
+<li>
+fitting_parameter_13: 32 bits
+</li>
+<li>
+fitting_parameter_14: 32 bits
+</li>
+<li>
+fitting_parameter_15: 32 bits
+</li>
+<li>
+fitting_parameter_16: 32 bits
+</li>
+<li>
+fitting_parameter_17: 32 bits
+</li>
+<li>
+fitting_parameter_18: 32 bits
+</li>
+<li>
+fitting_parameter_19: 32 bits
+</li>
+<li>
+fitting_parameter_20: 32 bits
+</li>
+<li>
+fitting_parameter_21: 32 bits
+</li>
+<li>
+fitting_parameter_22: 32 bits
+</li>
+<li>
 inputs_0: 32 bits
 </li>
 <li>
@@ -1383,144 +1503,6 @@ inputs_2: 32 bits
 </li>
 <li>
 inputs_3: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4873')" name="code2model" class="code2model">
-ad1
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4874')" name="code2model" class="code2model">
-ad2
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4875')" name="code2model" class="code2model">
-ad3
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4876')" name="code2model" class="code2model">
-ad4
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4877')" name="code2model" class="code2model">
-ad5
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4878')" name="code2model" class="code2model">
-ad6
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4879')" name="code2model" class="code2model">
-aq1
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4880')" name="code2model" class="code2model">
-aq2
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4881')" name="code2model" class="code2model">
-aq3
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4882')" name="code2model" class="code2model">
-aq4
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4883')" name="code2model" class="code2model">
-aq5
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4884')" name="code2model" class="code2model">
-aq6
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4885')" name="code2model" class="code2model">
-reciprocal_F1G1
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4886')" name="code2model" class="code2model">
-reciprocal_F2G2
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4887')" name="code2model" class="code2model">
-ad4_mul_ad5
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4888')" name="code2model" class="code2model">
-ad1_mul_ad2
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4889')" name="code2model" class="code2model">
-aq4_mul_aq5
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4890')" name="code2model" class="code2model">
-aq1_mul_aq2
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4891')" name="code2model" class="code2model">
-aq4_div_aq5
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4892')" name="code2model" class="code2model">
-aq1_div_aq2
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4893')" name="code2model" class="code2model">
-ad4_div_ad5
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4894')" name="code2model" class="code2model">
-ad1_div_ad2
-</a>
-: 32 bits
-</li>
-<li>
-<a href="matlab:coder.internal.code2model('uz_pmsm_model:4895')" name="code2model" class="code2model">
-aq3_min_aq6
-</a>
-: 32 bits
 </li>
 
 </ul>
@@ -1533,10 +1515,10 @@ aq3_min_aq6
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Output Bits: 865
+Number of Output Bits: 129
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="4c7a1021-a9fd-4b1b-98ea-e22533086ce7" dataCollapse="off">
+<ul>
 <li>
 ce_out: 1 bit
 </li>
@@ -1552,81 +1534,9 @@ outputs_2: 32 bits
 <li>
 outputs_3: 32 bits
 </li>
-<li>
-outputs_fitting_parameter_0: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_1: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_2: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_3: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_4: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_5: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_6: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_7: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_8: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_9: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_10: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_11: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_12: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_13: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_14: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_15: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_16: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_17: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_18: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_19: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_20: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_21: 32 bits
-</li>
-<li>
-outputs_fitting_parameter_22: 32 bits
-</li>
 
 </ul>
-<span class="SDCollapseControl" onmouseover="this.style.cursor = 'pointer'">
-&#8743; Less
-</span>
-<br />
+
 </span>
 <br /><p><hr /></p>
 </body>

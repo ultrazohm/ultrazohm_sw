@@ -158,7 +158,8 @@ extern struct uz_parameterid_rs_config_t test_config;
 struct uz_parameterid_output actual_output;
 
 
-enum running_mode run_state;
+enum running_mode run_state = cil_rs_measurement;
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -246,22 +247,59 @@ void ISR_Control(void *data)
 
 
     		switch(run_state) {
+				case cil_rs_measurement:
+			    	// Tristate ON
+			    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+			    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+
+					// calculation of set-values
+		           actual_output = uz_parameterid_rs_generate_outputs(test_instance, CurrentControl_output_Volts.d, pmsm_outputs.i_d_A);
+			       reference_currents_Amp.d = actual_output.i_sample;
+			       reference_currents_Amp.q = 0.0f;
+
+			       // CIL
+			       uz_pmsmModel_trigger_input_strobe(pmsm);
+			       uz_pmsmModel_trigger_output_strobe(pmsm);
+			       pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+			       measured_currents_Amp.d = pmsm_outputs.i_d_A;
+			       measured_currents_Amp.q = pmsm_outputs.i_q_A;
+
+			       omega_el_rad_per_sec = (2.0f * UZ_PIf * actual_output.n_sample *5.0f)/60.0f ;
+			       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+			       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+			       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+			       pmsm_inputs.omega_mech_1_s = (2.0f * UZ_PIf * actual_output.n_sample)/60.0f;
+			       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+
+			       break;
+
 				case rs_measurement:
-			           actual_output = uz_parameterid_rs_generate_outputs(test_instance, CurrentControl_output_Volts.d, pmsm_outputs.i_d_A);
-				       uz_pmsmModel_trigger_input_strobe(pmsm);
-				       uz_pmsmModel_trigger_output_strobe(pmsm);
-				       pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-				       measured_currents_Amp.d = pmsm_outputs.i_d_A;
-				       measured_currents_Amp.q = pmsm_outputs.i_q_A;
-				       reference_currents_Amp.d = actual_output.i_sample;
-				       reference_currents_Amp.q = 0.0f;
-				       omega_el_rad_per_sec = (2.0f * M_PI * actual_output.n_sample *5.0f)/60.0f ;
-				       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
-				       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-				       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
-				       pmsm_inputs.omega_mech_1_s = (2.0f * M_PI * actual_output.n_sample)/60.0f;
-				       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+					// calculation of set-values
+			        actual_output = uz_parameterid_rs_generate_outputs(test_instance, v_dq_Volts_2.d, i_dq_Amps_2.d);
+			        i_dq_ref_Amps_2.d = actual_output.i_sample;
+			        i_dq_ref_Amps_2.q = 0.0f;
+
+					// Field Oriented Control of PMSM 1 - speed-controlled
+		    		M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, actual_output.n_sample);
+		    		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
+					v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+					output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+
+					// Set DutyCycles of PMSM 1
+					Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
+					Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
+					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
+
+					// Field Oriented Control of PMSM 2 - current-controlled
+					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+
+					// Set DutyCycles of PMSM 2
+					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
+					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
+					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
 					break;
+
 
 				case rc_measurement:
 					break;
@@ -288,9 +326,37 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
 					break;
 
+				case reset:
+					uz_parameterid_rs_reset(test_instance);
+					actual_output.i_sample = 0.0f;
+					actual_output.n_sample = 0.0f;
+					actual_output.isr_stepcounter = 0.0f;
+					n_ref_rpm_1 = 0.0f;
+					i_dq_ref_Amps_1.d = 0.0f;
+					i_dq_ref_Amps_1.q = 0.0f;
+					i_dq_ref_Amps_2.d = 0.0f;
+					i_dq_ref_Amps_2.q = 0.0f;
+
+					// Set DutyCycles of PMSM 1 and 2
+					v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+					output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+					Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
+					Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
+					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
+
+					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
+					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
+					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
+
+				    // Tristate OFF
+				    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+				    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
+					break;
 
 				default:
-
+					break;
 			}
 
 

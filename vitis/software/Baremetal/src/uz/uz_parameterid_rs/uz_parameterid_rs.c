@@ -56,6 +56,8 @@ uz_parameterid_rs_t* uz_parameterid_rs_init(struct uz_parameterid_rs_config_t in
 	uz_assert(initial_config.n_steps > 0.0f);
 	uz_assert(initial_config.i_repeats > 0.0f);
     uz_assert(initial_config.i_diff > 0.0f);
+    uz_assert(initial_config.i_steptime >
+    0.5f);
     return (self);
 }
 

@@ -324,30 +324,30 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-			run_state = rs_measurement;
+			run_state = cil_rs_measurement;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_5):
-			run_state = rc_measurement;
-			uz_parameterid_rs_reset(test_instance);
-			actual_output = {0};
+			run_state = rs_measurement;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_6):
-			run_state = normal;
-			uz_parameterid_rs_reset(test_instance);
+			run_state = rc_measurement;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_7):
-
+			run_state = normal;
+			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_8):
-
+			run_state = reset;
+			ultrazohm_state_machine_set_userLED(false);
 			break;
+
 
 		case (Error_Reset):
 
@@ -394,11 +394,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	if (run_state == rs_measurement) {
-		js_status_BareToRTOS |= (1 << 4);
-	} else {
-		js_status_BareToRTOS &= ~(1 << 4);
-	}
+	//if (your condition = true) {
+	//	js_status_BareToRTOS |= (1 << 4);
+	//} else {
+	//	js_status_BareToRTOS &= ~(1 << 4);
+	//}
 
 	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);
@@ -407,19 +407,39 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+    if (run_state == cil_rs_measurement) {
+       js_status_BareToRTOS |= 1 << 7;
+    } else {
+       js_status_BareToRTOS &= ~(1 << 7);
+    }
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+    if (run_state == rs_measurement) {
+       js_status_BareToRTOS |= 1 << 8;
+    } else {
+       js_status_BareToRTOS &= ~(1 << 8);
+    }
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+    if (run_state == rc_measurement) {
+       js_status_BareToRTOS |= 1 << 9;
+    } else {
+       js_status_BareToRTOS &= ~(1 << 9);
+    }
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+    if (run_state == normal ) {
+       js_status_BareToRTOS |= 1 << 10;
+    } else {
+       js_status_BareToRTOS &= ~(1 << 10);
+    }
 
 	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
+    if (run_state == reset ) {
+       js_status_BareToRTOS |= 1 << 11;
+    } else {
+       js_status_BareToRTOS &= ~(1 << 11);
+    }
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

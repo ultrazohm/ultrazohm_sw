@@ -190,9 +190,9 @@ int main(void)
     	    .n_steps = 9.0f,
     	    .i_start = 10.0f,
     	    .i_diff = 1.0f,
-    	    .i_repeats = 2.0f,
-    	    .i_steptime = 0.7f,
-    	    .wait_time = 0.1f,
+    	    .i_repeats = 3.0f,
+    	    .i_steptime = 1.0f,
+    	    .wait_time = 1.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
     };
 

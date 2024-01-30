@@ -367,11 +367,11 @@ enum gui_button_mapping {
 	MyButton1,
 	MyButton2,
 	MyButton3,
+	cil_rs_meas,
 	rs_meas,
 	rc_meas,
 	FOC,
-	MyButton7,
-	MyButton8,
+	reset,
 	MYBUTTONS_LABELS_ENDMARKER
 
 // Slow Data values that are displayed in the receive_fields top to bottom

@@ -63,11 +63,10 @@ extern float Ki_iq_2;
 // ======================= Others ======================= //
 extern int option;
 extern struct uz_3ph_dq_t v_ind_dq_Volts_2 ;
-
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
-
 extern uint32_t js_status_BareToRTOS;
+extern enum running_mode run_state;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -323,15 +322,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			run_state = rs_measurement;
+			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_5):
+			run_state = rc_measurement;
 
+			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_6):
-
+			run_state = normal;
+			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_7):

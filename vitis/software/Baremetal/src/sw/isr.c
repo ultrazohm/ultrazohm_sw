@@ -158,6 +158,7 @@ extern struct uz_parameterid_rs_config_t test_config;
 struct uz_parameterid_output actual_output;
 
 
+enum running_mode run_state;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -243,10 +244,9 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
 
-    		int a=1;
 
-    		switch(a) {
-				case 1:
+    		switch(run_state) {
+				case rs_measurement:
 			           actual_output = uz_parameterid_rs_generate_outputs(test_instance, CurrentControl_output_Volts.d, pmsm_outputs.i_d_A);
 				       uz_pmsmModel_trigger_input_strobe(pmsm);
 				       uz_pmsmModel_trigger_output_strobe(pmsm);
@@ -255,7 +255,6 @@ void ISR_Control(void *data)
 				       measured_currents_Amp.q = pmsm_outputs.i_q_A;
 				       reference_currents_Amp.d = actual_output.i_sample;
 				       reference_currents_Amp.q = 0.0f;
-//				       omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
 				       omega_el_rad_per_sec = (2.0f * M_PI * actual_output.n_sample *5.0f)/60.0f ;
 				       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
 				       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
@@ -264,7 +263,10 @@ void ISR_Control(void *data)
 				       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 					break;
 
-				default:
+				case rc_measurement:
+					break;
+
+				case normal:
 					// Field Oriented Control of PMSM 1 - speed-controlled
 		    		M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
 		    		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
@@ -285,6 +287,10 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
 					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
 					break;
+
+
+				default:
+
 			}
 
 

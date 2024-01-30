@@ -367,9 +367,9 @@ enum gui_button_mapping {
 	MyButton1,
 	MyButton2,
 	MyButton3,
-	HC_off,
-	HC_on,
-	MyButton6,
+	rs_meas,
+	rc_meas,
+	FOC,
 	MyButton7,
 	MyButton8,
 	MYBUTTONS_LABELS_ENDMARKER

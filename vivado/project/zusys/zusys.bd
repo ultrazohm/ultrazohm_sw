@@ -5617,8 +5617,8 @@
           },
           "uz_pmsm_model_0": {
             "vlnv": "xilinx.com:ip:uz_pmsm_model:1.0",
-            "xci_name": "zusys_uz_pmsm_model_0_2",
-            "xci_path": "ip\\zusys_uz_pmsm_model_0_2\\zusys_uz_pmsm_model_0_2.xci",
+            "xci_name": "zusys_uz_pmsm_model_0_3",
+            "xci_path": "ip\\zusys_uz_pmsm_model_0_3\\zusys_uz_pmsm_model_0_3.xci",
             "inst_hier_path": "uz_user/uz_pmsm_model_0"
           }
         },

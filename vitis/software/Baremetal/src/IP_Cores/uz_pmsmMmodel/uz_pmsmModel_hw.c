@@ -254,7 +254,7 @@ void uz_pmsmModel_hw_write_ad1_div_ad2(uint32_t base_address, float ad1, float a
 
 void uz_pmsmModel_hw_write_aq3_min_aq6(uint32_t base_address, float aq3, float aq6){
     uz_assert_not_zero(base_address);
-    uz_assert(aq3 != aq6); // prevent difference becoming zero
+    uz_assert(aq3 != 0); // prevent difference becoming zero
     uz_axi_write_float(base_address+aq3_min_aq6_Data_uz_pmsm_model,(0.5f*(aq3-aq6)));
 }
 

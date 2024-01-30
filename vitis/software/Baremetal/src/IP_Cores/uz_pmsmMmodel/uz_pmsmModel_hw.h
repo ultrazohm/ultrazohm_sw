@@ -19,7 +19,7 @@ void uz_pmsmModel_hw_write_load_torque(uint32_t base_address, float load_torque)
 // Strobes
 void uz_pmsmModel_hw_trigger_input_strobe(uint32_t base_address);
 void uz_pmsmModel_hw_trigger_output_strobe(uint32_t base_address);
-void uz_pmsmModel_hw_trigger_fitting_parameters_strobe(uint32_t base_address);
+void uz_pmsmModel_hw_trigger_fitting_parameter_strobe(uint32_t base_address);
 
 // Electrical configuration parameters
 void uz_pmsmModel_hw_write_polepairs(uint32_t base_address, float polepairs);

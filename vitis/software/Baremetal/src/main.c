@@ -132,7 +132,7 @@ int main(void)
 
         	    				.simulate_mechanical_system = false,
 
-        	    				.simulate_nonlinear =false,
+        	    				.simulate_nonlinear =true,
 
         	    				.r_1 = 0.085f,
 
@@ -148,7 +148,21 @@ int main(void)
 
         	    				.coulomb_friction_constant = 0.01f,
 
-        	    				.friction_coefficient = 0.001f};
+        	    				.friction_coefficient = 0.001f,
+							    .ad1 = 0.1474f,
+							    .ad2 = 0.0145f,
+							    .ad3 = -20.4552f,
+							    .ad4 = 0.1831f,
+							    .ad5 = 0.0114f,
+							    .ad6 = -20.5474f,
+							    .aq1 = 0.000255f,
+							    .aq2 = 0.9932f,
+							    .aq3 = 0.0021f,
+							    .aq4 = 0.00029387f,
+							    .aq5 = 0.9913f,
+							    .aq6 = 0.0022f,
+							    .F1G1 = -0.0033f,
+							    .F2G2 = 0.0043f};
         	            	pmsm=uz_pmsmModel_init(pmsm_config);
 
 

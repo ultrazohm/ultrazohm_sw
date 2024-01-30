@@ -222,7 +222,7 @@ void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self){
 void uz_pmsmModel_trigger_fitting_parameters_strobe(uz_pmsmModel_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_pmsmModel_hw_trigger_fitting_parameters_strobe(self->config.base_address);
+    uz_pmsmModel_hw_trigger_fitting_parameter_strobe(self->config.base_address);
 }
 
 static void write_config_to_pl(uz_pmsmModel_t *self)

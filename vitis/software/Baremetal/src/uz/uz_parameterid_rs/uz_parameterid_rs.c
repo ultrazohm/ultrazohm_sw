@@ -97,6 +97,8 @@ void uz_parameterid_rs_reset(uz_parameterid_rs_t* self) {
 	uz_assert(self->is_ready);
 	self->is_first_call_to_sample = true;
     self->is_first_call_to_generate_outputs = true;
+    self->act_vals.i_sample = 0.0f;
+    self->act_vals.n_sample = 0.0f;
 }
 
 
@@ -110,7 +112,6 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     struct uz_parameterid_output output;
-	// If its the first call, we take the current time as the initial time to have small numbers at start with 0
 	if (self->is_first_call_to_generate_outputs) {
         self->starts_generating_outputs = true;
         self->state = start;

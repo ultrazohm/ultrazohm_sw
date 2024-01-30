@@ -67,6 +67,8 @@ extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 extern uint32_t js_status_BareToRTOS;
 extern enum running_mode run_state;
+extern uz_parameterid_rs_t* test_instance;
+extern struct uz_parameterid_output actual_output;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -328,12 +330,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_5):
 			run_state = rc_measurement;
-
+			uz_parameterid_rs_reset(test_instance);
+			actual_output = {0};
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_6):
 			run_state = normal;
+			uz_parameterid_rs_reset(test_instance);
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
@@ -390,11 +394,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	if (run_state == rs_measurement) {
+		js_status_BareToRTOS |= (1 << 4);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	}
 
 	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);

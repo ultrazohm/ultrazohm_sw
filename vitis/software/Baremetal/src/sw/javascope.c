@@ -64,11 +64,13 @@ extern float theta_el_offset_2;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
 extern struct uz_3ph_dq_t i_dq_Amps_2;
 extern struct uz_3ph_abc_t i_abc_Amps_2;
+extern struct uz_3ph_dq_t v_dq_Volts_2;
 extern struct uz_3ph_dq_t v_dq_ref_Volts_2;
 extern struct uz_3ph_abc_t v_abc_Volts_2;
 
 //Others
 extern float M_meas_Nm;
+extern int trigger;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -157,6 +159,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Theta_mech_1] 	= &data->av.theta_mech_1;
 	js_ch_observable[JSO_ud_1]			= &v_dq_Volts_1.d;
 	js_ch_observable[JSO_uq_1]			= &v_dq_Volts_1.q;
+	js_ch_observable[JSO_ud_2]			= &v_dq_Volts_2.d;
+	js_ch_observable[JSO_uq_2]			= &v_dq_Volts_2.q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

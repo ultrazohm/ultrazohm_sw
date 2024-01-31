@@ -122,7 +122,6 @@ float i_5th_phase 										= 0.0f;
 float i_7th_amplitude 									= 0.0f;
 float i_7th_phase	 									= 0.0f;
 
-
 // ---------------- Controller Settings ----------------- //
 float Kp_speed_1 								= 0.01f;
 float Ki_speed_1 								= 1.0f;
@@ -146,7 +145,13 @@ float Gain_RC_7th_1								= 100.0f;
 // ------------------- Wavegen Chirp -------------------- //
 bool enable_excitation 							= false;
 float excitation_amplitude 						= 0.0f;
-float sampling_time 							= 1.0f/25.0e3f;
+float sampling_time 							= 1.0f/10.0e3f;
+
+// --------------------- HCI Switch --------------------- //
+float time_elapsed								= 0.0f;
+int i 											= 0;
+int j 											= 0;
+int current										= 1;
 
 // ======================= PMSM 2 ======================= //
 // --------------- Pointers to instances ---------------- //
@@ -201,6 +206,8 @@ float amplitude_5th = 0.0f;
 float amplitude_7th = 0.0f;
 int speed_ripple_comp = 0;
 float M_meas_Nm = 0.0f;
+float phase = -180.0f;
+float amplitude = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -220,6 +227,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_3(&Global_Data);
     M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f;
+    //M_meas_Nm = Global_Data.aa.A3.me.ADC_B5;
 
     // Tristate Inverters
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
@@ -381,6 +389,66 @@ void ISR_Control(void *data)
     	output_1 = uz_Space_Vector_Modulation(output_FOC_RC_1, v_DC_Volts_1, theta_el_rad_1);
     	break;
     case 3: // Harmonic Controllers for 5th and 7th Harmonic in dq System
+
+//    	// Loop through values for amplitudes and phases
+//    	float time_end = 3.0f;
+//
+//    	if (time_elapsed > time_end)
+//    	{
+//			time_elapsed = 0.0f;
+//    		if (phase < 180)
+//    		{
+//    			phase = phase+10;
+//    		}
+//    		else
+//    		{
+//    			phase = -180.0f;
+//    			amplitude = amplitude + 0.2f;
+//
+//    			if (amplitude > 2.1f)
+//    			{
+//    				if (current == 1)
+//    				{
+//    					current = 2;
+//    					phase = -180.0f;
+//    					amplitude = 0.0f;
+//    					break;
+//    				}
+//
+//    				if (current == 2)
+//    				{
+//    					current = 3;
+//    					phase = -180.0f;
+//    					amplitude = 0.0f;
+//    					break;
+//
+//    				}
+//    			}
+//    		 }
+//    	}
+//
+//    	switch (current)
+//    	{
+//    	 	 case 1:
+//    		 	 i_5th_amplitude = amplitude;
+//    			 i_5th_phase     = phase;
+//    			 i_7th_amplitude = 1.2;
+//    			 i_7th_phase 	 = 60;
+//    			 break;
+//
+//    		 case 2:
+//    		     i_5th_amplitude = 1.2;
+//    		     i_5th_phase     = 150;
+//    		     i_7th_amplitude = amplitude;
+//    		     i_7th_phase 	 = phase;
+//    		     break;
+//    		 case 3:
+//    			 ultrazohm_state_machine_set_stop(true);
+//    			 break;
+//    	}
+//
+//    	time_elapsed += sampling_time;
+
     	i_dqn_5th_ref_Amps_1.d = i_5th_amplitude * cosf(i_5th_phase / 180.0f * M_PI);
     	i_dqn_5th_ref_Amps_1.q = i_5th_amplitude * sinf(i_5th_phase / 180.0f * M_PI);
     	i_dqn_7th_ref_Amps_1.d = i_7th_amplitude * cosf(i_7th_phase / 180.0f * M_PI);

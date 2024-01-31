@@ -5,8 +5,6 @@ vcom  uz_pmsm_model_src_uz_pmsm_model_tc.vhd
 vcom  uz_pmsm_model_src_nfp_uminus_single.vhd
 vcom  uz_pmsm_model_src_nfp_mul_single.vhd
 vcom  uz_pmsm_model_src_nfp_abs_single.vhd
-vcom  uz_pmsm_model_src_nfp_convert_double2single.vhd
-vcom  uz_pmsm_model_src_nfp_relop_single.vhd
 vcom  uz_pmsm_model_src_nfp_sub_single.vhd
 vcom  uz_pmsm_model_src_nfp_cosh_single.vhd
 vcom  uz_pmsm_model_src_nfp_recip_single.vhd

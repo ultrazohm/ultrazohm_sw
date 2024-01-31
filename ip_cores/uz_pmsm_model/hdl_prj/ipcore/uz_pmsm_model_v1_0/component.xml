@@ -413,7 +413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e9f71329</spirit:value>
+            <spirit:value>a8f0f8e6</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -429,7 +429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e9f71329</spirit:value>
+            <spirit:value>a8f0f8e6</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1144,10 +1144,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_model_src_nfp_convert_double2single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/uz_pmsm_model_src_nfp_sub_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1165,10 +1161,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_model_src_nfp_abs_single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_model_src_nfp_relop_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1238,7 +1230,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_model.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_756b8c72</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_3525a83b</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1264,11 +1256,6 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_pmsm_model_src_nfp_convert_double2single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/uz_pmsm_model_src_nfp_sub_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -1290,11 +1277,6 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_pmsm_model_src_nfp_abs_single.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/uz_pmsm_model_src_nfp_relop_single.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1437,14 +1419,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_pmsm_model</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113406175</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2024-01-30T13:16:00Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113407835</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2024-01-31T16:56:33Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="28409b6f"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="be4c39c2"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="024603d3"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="e432a3b2"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="2be5b0a2"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="49bb2f57"/>
     </xilinx:packagingInfo>

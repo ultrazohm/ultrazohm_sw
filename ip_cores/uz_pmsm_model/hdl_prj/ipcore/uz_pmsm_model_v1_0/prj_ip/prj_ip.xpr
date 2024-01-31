@@ -6,7 +6,7 @@
 <Project Version="7" Minor="61" Path="C:/Users/Philipp/uz_temp/ultrazohm_sw/ip_cores/uz_pmsm_model/hdl_prj/ipcore/uz_pmsm_model_v1_0/prj_ip/prj_ip.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
-    <Option Name="Id" Val="b1ad7f8fc8ab425484a33ff10c28c8cd"/>
+    <Option Name="Id" Val="f5ca297529474bc48eaaf7a07a23ead7"/>
     <Option Name="Part" Val="xczu9eg-ffvc900-1LV-i"/>
     <Option Name="CompiledLibDir" Val="$PCACHEDIR/compile_simlib"/>
     <Option Name="CompiledLibDirXSim" Val=""/>
@@ -113,12 +113,6 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../hdl/uz_pmsm_model_src_nfp_convert_double2single.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PPRDIR/../hdl/uz_pmsm_model_src_nfp_sub_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -144,12 +138,6 @@
         </FileInfo>
       </File>
       <File Path="$PPRDIR/../hdl/uz_pmsm_model_src_nfp_abs_single.vhd">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PPRDIR/../hdl/uz_pmsm_model_src_nfp_relop_single.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>

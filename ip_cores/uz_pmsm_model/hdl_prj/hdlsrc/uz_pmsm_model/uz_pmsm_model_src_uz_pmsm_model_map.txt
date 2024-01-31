@@ -3,8 +3,6 @@ uz_pmsm_model_tc --> uz_pmsm_model_src_uz_pmsm_model_tc
 uz_pmsm_model/uz_pmsm_model/nfp_uminus_single --> uz_pmsm_model_src_nfp_uminus_single
 uz_pmsm_model/uz_pmsm_model/nfp_mul_single --> uz_pmsm_model_src_nfp_mul_single
 uz_pmsm_model/uz_pmsm_model/nfp_abs_single --> uz_pmsm_model_src_nfp_abs_single
-uz_pmsm_model/uz_pmsm_model/nfp_convert_double2single --> uz_pmsm_model_src_nfp_convert_double2single
-uz_pmsm_model/uz_pmsm_model/nfp_relop_single --> uz_pmsm_model_src_nfp_relop_single
 uz_pmsm_model/uz_pmsm_model/nfp_sub_single --> uz_pmsm_model_src_nfp_sub_single
 uz_pmsm_model/uz_pmsm_model/nfp_cosh_single --> uz_pmsm_model_src_nfp_cosh_single
 uz_pmsm_model/uz_pmsm_model/nfp_recip_single --> uz_pmsm_model_src_nfp_recip_single

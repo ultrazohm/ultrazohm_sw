@@ -62,7 +62,7 @@ friction_coefficient=0.001;
 static_friction_torque=0.01;
 % 
 % % Mechanical parameters
-inertia=0;
+% inertia=0;
 % inertia=0.001;
 friction_coefficient=0;
 static_friction_torque=0;

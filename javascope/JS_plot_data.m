@@ -29,7 +29,7 @@ end
 %file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-file_name = 'toggle600.csv';
+file_name = 'Log_2024-01-31_15-58-09.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

@@ -59,6 +59,9 @@ extern struct uz_3ph_dq_t v_ind_dq_Volts_2;
 extern struct uz_3ph_dq_t v_ind_dq_filt_Volts_2;
 extern struct uz_3ph_dq_t v_dq_Volts_2;
 extern struct uz_3ph_dq_t psi_dq_mVoltseconds_2;
+extern struct uz_3ph_dq_t rc_dq_Ohm;
+extern struct uz_3ph_dq_t rc_para_dq;
+
 
 
 //Others
@@ -157,6 +160,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_omega]			 = &pmsm_outputs.omega_mech_1_s;
 	js_ch_observable[JSO_v_d]			 = &pmsm_inputs.v_d_V;
 	js_ch_observable[JSO_v_q]			 = &pmsm_inputs.v_q_V;
+	js_ch_observable[JSO_rc_d]			 = &rc_dq_Ohm.d;
+	js_ch_observable[JSO_rc_q]			 = &rc_dq_Ohm.q;
+	js_ch_observable[JSO_rc_para_d]			 = &rc_para_dq.d;
+	js_ch_observable[JSO_rc_para_q]			 = &rc_para_dq.q;
 
 
 
@@ -176,18 +183,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_TempH1_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H1);
-	js_slowDataArray[JSSD_FLOAT_TempL1_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2);
-	js_slowDataArray[JSSD_FLOAT_TempH2_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2);
-	js_slowDataArray[JSSD_FLOAT_TempL2_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L2);
-	js_slowDataArray[JSSD_FLOAT_TempH3_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H3);
-	js_slowDataArray[JSSD_FLOAT_TempL3_1]   			= &(data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L3);
-	js_slowDataArray[JSSD_FLOAT_TempH1_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H1);
-	js_slowDataArray[JSSD_FLOAT_TempL1_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H2);
-	js_slowDataArray[JSSD_FLOAT_TempH2_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H2);
-	js_slowDataArray[JSSD_FLOAT_TempL2_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L2);
-	js_slowDataArray[JSSD_FLOAT_TempH3_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H3);
-	js_slowDataArray[JSSD_FLOAT_TempL3_2]   			= &(data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L3);
 	js_slowDataArray[JSSD_FLOAT_u_ind_d]   				= &v_ind_dq_Volts_2.d;
 	js_slowDataArray[JSSD_FLOAT_u_ind_q]   				= &v_ind_dq_Volts_2.q;
 	js_slowDataArray[JSSD_FLOAT_u_ind_filt_d]   		= &v_ind_dq_filt_Volts_2.d;
@@ -207,19 +202,16 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ua1_av]   				= &data->aa.A1.me.ADC_B8;
 	js_slowDataArray[JSSD_FLOAT_ub1_av]  			 	= &data->aa.A1.me.ADC_B7;
 	js_slowDataArray[JSSD_FLOAT_uc1_av]  			 	= &data->aa.A1.me.ADC_B6;
-	js_slowDataArray[JSSD_FLOAT_DC_A_av]   				= &data->rasv.halfBridge1DutyCycle;
-	js_slowDataArray[JSSD_FLOAT_DC_B_av]  			 	= &data->rasv.halfBridge2DutyCycle;
-	js_slowDataArray[JSSD_FLOAT_DC_C_av]  			 	= &data->rasv.halfBridge3DutyCycle;
 	js_slowDataArray[JSSD_FLOAT_rs2]  			 		= &r_s_2;
 	js_slowDataArray[JSSD_FLOAT_u_d]                    = &(pmsm_inputs.v_d_V);
 	js_slowDataArray[JSSD_FLOAT_u_q]                    = &(pmsm_inputs.v_q_V);
 	js_slowDataArray[JSSD_FLOAT_i_d]                    = &(pmsm_outputs.i_d_A);
 	js_slowDataArray[JSSD_FLOAT_i_q]                    = &(pmsm_outputs.i_q_A);
 	js_slowDataArray[JSSD_FLOAT_speed]                  = &(pmsm_outputs.omega_mech_1_s);
-
-
-
-
+	js_slowDataArray[JSSD_FLOAT_rc_d]			 		= &rc_dq_Ohm.d;
+	js_slowDataArray[JSSD_FLOAT_rc_q]					= &rc_dq_Ohm.q;
+	js_slowDataArray[JSSD_FLOAT_rc_para_d]			 	= &rc_para_dq.d;
+	js_slowDataArray[JSSD_FLOAT_rc_para_q]				= &rc_para_dq.q;
 
 	return Status;
 }

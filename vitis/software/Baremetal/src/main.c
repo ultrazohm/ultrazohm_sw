@@ -59,6 +59,8 @@ uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 uz_subspace_resonant_control* RC_instance_6th_2;
 uz_IIR_Filter_t* LP_instance_ud_ind_2;
 uz_IIR_Filter_t* LP_instance_uq_ind_2;
+uz_IIR_Filter_t* LP_instance_rc_d_2;
+uz_IIR_Filter_t* LP_instance_rc_q_2;
 
 // Configuration of PMSM 1 (Hoerner PMSM)
 struct uz_PMSM_t config_PMSM_1 = {
@@ -182,6 +184,23 @@ int main(void)
     		.sample_frequency_Hz = 10000.0f,
 
     };
+
+    // ------------------- Filter rc ------------------- //
+
+    struct uz_IIR_Filter_config LP_config_rc_d_2 = {
+        	.selection = LowPass_first_order,
+			.cutoff_frequency_Hz =  2.0f,
+    		.sample_frequency_Hz = 10000.0f,
+
+    };
+
+    struct uz_IIR_Filter_config LP_config_rc_q_2 = {
+        	.selection = LowPass_first_order,
+			.cutoff_frequency_Hz = 2.0f,
+    		.sample_frequency_Hz = 10000.0f,
+
+    };
+
 
     // config for CIL measurement
     struct uz_parameterid_rs_config_t test_config = {
@@ -339,6 +358,8 @@ int main(void)
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);
            	LP_instance_ud_ind_2 = uz_signals_IIR_Filter_init(LP_config_ud_ind_2);
            	LP_instance_uq_ind_2 = uz_signals_IIR_Filter_init(LP_config_uq_ind_2);
+           	LP_instance_rc_d_2 = uz_signals_IIR_Filter_init(LP_config_rc_d_2);
+           	LP_instance_rc_q_2 = uz_signals_IIR_Filter_init(LP_config_rc_q_2);
            	Global_Data.av.theta_offset_1 = 0.904f;
            	Global_Data.av.theta_offset_2 = 1.4f;
           	initialization_chain = print_msg;

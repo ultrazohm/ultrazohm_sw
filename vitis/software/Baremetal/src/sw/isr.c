@@ -122,10 +122,19 @@ float Ki_iq_2 									= 230.0f;
 // ---------------- induced voltage ----------------- //
 struct uz_3ph_dq_t v_ind_dq_Volts_2 			= {0};
 struct uz_3ph_dq_t v_ind_dq_filt_Volts_2 			= {0};
-float r_s_2 									= 0.03136f;
+float r_s_2 									= 0.030f;
 extern uz_IIR_Filter_t* LP_instance_ud_ind_2;
 extern uz_IIR_Filter_t* LP_instance_uq_ind_2;
+extern uz_IIR_Filter_t* LP_instance_rc_d_2;
+extern uz_IIR_Filter_t* LP_instance_rc_q_2;
 struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
+struct uz_3ph_dq_t rc_dq_Ohm 			= {0};
+struct uz_3ph_dq_t rc_dq_filt_Ohm 			= {0};
+struct uz_3ph_dq_t rc_para_dq 			= {0};
+float Ld2 = 30.0e-6f;
+float Lq2 = 50.0e-6f;
+float Psi_PM = 7.0e-3f;
+
 
 // ======================= Others ======================= //
 float error_type = 0.0f;
@@ -326,6 +335,7 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
 					break;
 
+
 				case reset:
 					uz_parameterid_rs_reset(test_instance);
 					actual_output.i_sample = 0.0f;
@@ -411,6 +421,16 @@ void ISR_Control(void *data)
     psi_dq_mVoltseconds_2.q  = (v_ind_dq_filt_Volts_2.d/(omega_el_rad_per_sec_2*-1.0f))*1000;
     psi_dq_mVoltseconds_2.d  = (v_ind_dq_filt_Volts_2.q/omega_el_rad_per_sec_2)*1000;
 
+
+
+    rc_para_dq.d =  (v_dq_Volts_2.q - omega_el_rad_per_sec_2 * Ld2 * i_dq_Amps_2.d - r_s_2 * i_dq_Amps_2.q - omega_el_rad_per_sec_2 * Psi_PM) / (Lq2 * i_dq_Amps_2.q);
+    rc_para_dq.q =  (v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d + omega_el_rad_per_sec_2 * Lq2 * i_dq_Amps_2.q) / ((Ld2 *  i_dq_Amps_2.d) + Psi_PM);
+
+    rc_dq_Ohm.d = (omega_el_rad_per_sec_2 * omega_el_rad_per_sec_2 * Ld2) / (rc_para_dq.d);
+    rc_dq_Ohm.q = (omega_el_rad_per_sec_2 * omega_el_rad_per_sec_2 * Lq2) / (rc_para_dq.q);
+
+//    rc_dq_filt_Ohm.d = uz_signals_IIR_Filter_sample(LP_instance_rc_d_2, rc_dq_Ohm.d);
+//    rc_dq_filt_Ohm.q = uz_signals_IIR_Filter_sample(LP_instance_rc_q_2, rc_dq_Ohm.q);
 
     // Update JavaScope
     JavaScope_update(&Global_Data);

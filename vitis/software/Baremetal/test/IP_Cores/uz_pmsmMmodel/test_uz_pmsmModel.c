@@ -180,86 +180,6 @@ void test_uz_pmsmModel_normal_usage(void)
     TEST_ASSERT_EQUAL_FLOAT(omega_mech_expect,out.omega_mech_1_s);
 
 
-    //
-    uz_pmsmModel_hw_trigger_fitting_parameters_strobe_Expect(BASE_ADDRESS);
-    uz_pmsmModel_trigger_fitting_parameters_strobe(test_instance);
-    uz_pmsmModel_hw_trigger_fitting_parameters_strobe_Expect(BASE_ADDRESS);
-    uz_pmsmModel_trigger_fitting_parameters_strobe(test_instance);
-    float ad1_expect = 6.4f;
-    float ad2_expect = 1.1f;
-    float ad3_expect = 4.1f;
-    float ad4_expect =131.1f;
-    float ad5_expect =131.1f;
-    float ad6_expect =131.1f;
-    float aq1_expect = 6.4f;
-    float aq2_expect = 1.1f;
-    float aq3_expect = 4.1f;
-    float aq4_expect=131.1f;
-    float aq5_expect=131.1f;
-    float aq6_expect=131.1f;
-    float reciprocal_F1G1_expect =131.1f;
-    float reciprocal_F2G2_expect =131.1f;
-    float ad4_mul_ad5_expect =131.1f;
-    float ad1_mul_ad2_expect =131.1f;
-    float aq4_mul_aq5_expect =131.1f;
-    float aq1_mul_aq2_expect =131.1f;
-    float aq4_div_aq5_expect =131.1f;
-    float aq1_div_aq2_expect =131.1f;
-    float ad4_div_ad5_expect =131.1f;
-    float ad1_div_ad2_expect =131.1f;
-    float aq3_min_aq6_expect =131.1f;
-
-    // After strobe register was high, current values can be read from AXI
-    uz_pmsmModel_hw_read_out_ad1_ExpectAndReturn(BASE_ADDRESS, ad1_expect);
-    uz_pmsmModel_hw_read_out_ad2_ExpectAndReturn(BASE_ADDRESS, ad2_expect);
-    uz_pmsmModel_hw_read_out_ad3_ExpectAndReturn(BASE_ADDRESS, ad3_expect);
-    uz_pmsmModel_hw_read_out_ad4_ExpectAndReturn(BASE_ADDRESS, ad4_expect); 
-    uz_pmsmModel_hw_read_out_ad5_ExpectAndReturn(BASE_ADDRESS, ad5_expect); 
-    uz_pmsmModel_hw_read_out_ad6_ExpectAndReturn(BASE_ADDRESS, ad6_expect); 
-    uz_pmsmModel_hw_read_out_aq1_ExpectAndReturn(BASE_ADDRESS, aq1_expect);
-    uz_pmsmModel_hw_read_out_aq2_ExpectAndReturn(BASE_ADDRESS, aq2_expect);
-    uz_pmsmModel_hw_read_out_aq3_ExpectAndReturn(BASE_ADDRESS, aq3_expect);
-    uz_pmsmModel_hw_read_out_aq4_ExpectAndReturn(BASE_ADDRESS, aq4_expect); 
-    uz_pmsmModel_hw_read_out_aq5_ExpectAndReturn(BASE_ADDRESS, aq5_expect); 
-    uz_pmsmModel_hw_read_out_aq6_ExpectAndReturn(BASE_ADDRESS, aq6_expect); 
-    uz_pmsmModel_hw_read_out_reciprocal_F1G1_ExpectAndReturn(BASE_ADDRESS, reciprocal_F1G1_expect); 
-    uz_pmsmModel_hw_read_out_reciprocal_F2G2_ExpectAndReturn(BASE_ADDRESS, reciprocal_F2G2_expect); 
-    uz_pmsmModel_hw_read_out_ad4_mul_ad5_ExpectAndReturn(BASE_ADDRESS, ad4_mul_ad5_expect); 
-    uz_pmsmModel_hw_read_out_ad1_mul_ad2_ExpectAndReturn(BASE_ADDRESS, ad1_mul_ad2_expect); 
-    uz_pmsmModel_hw_read_out_aq4_mul_aq5_ExpectAndReturn(BASE_ADDRESS, aq4_mul_aq5_expect); 
-    uz_pmsmModel_hw_read_out_aq1_mul_aq2_ExpectAndReturn(BASE_ADDRESS, aq1_mul_aq2_expect); 
-    uz_pmsmModel_hw_read_out_aq4_div_aq5_ExpectAndReturn(BASE_ADDRESS, aq4_div_aq5_expect); 
-    uz_pmsmModel_hw_read_out_aq1_div_aq2_ExpectAndReturn(BASE_ADDRESS, aq1_div_aq2_expect); 
-    uz_pmsmModel_hw_read_out_ad4_div_ad5_ExpectAndReturn(BASE_ADDRESS, ad4_div_ad5_expect); 
-    uz_pmsmModel_hw_read_out_ad1_div_ad2_ExpectAndReturn(BASE_ADDRESS, ad1_div_ad2_expect); 
-    uz_pmsmModel_hw_read_out_aq3_min_aq6_ExpectAndReturn(BASE_ADDRESS, aq3_min_aq6_expect); 
-
-    struct uz_pmsmModel_fitting_parameter_t fitting_parameter_out = uz_pmsmModel_get_fitting_parameter(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(ad1_expect, fitting_parameter_out.out_ad1);
-    TEST_ASSERT_EQUAL_FLOAT(ad2_expect, fitting_parameter_out.out_ad2);
-    TEST_ASSERT_EQUAL_FLOAT(ad3_expect, fitting_parameter_out.out_ad3);
-    TEST_ASSERT_EQUAL_FLOAT(ad4_expect, fitting_parameter_out.out_ad4);
-    TEST_ASSERT_EQUAL_FLOAT(ad5_expect, fitting_parameter_out.out_ad5);
-    TEST_ASSERT_EQUAL_FLOAT(ad6_expect, fitting_parameter_out.out_ad6);
-    TEST_ASSERT_EQUAL_FLOAT(aq1_expect, fitting_parameter_out.out_aq1);
-    TEST_ASSERT_EQUAL_FLOAT(aq2_expect, fitting_parameter_out.out_aq2);
-    TEST_ASSERT_EQUAL_FLOAT(aq3_expect, fitting_parameter_out.out_aq3);
-    TEST_ASSERT_EQUAL_FLOAT(aq4_expect, fitting_parameter_out.out_aq4);
-    TEST_ASSERT_EQUAL_FLOAT(aq5_expect, fitting_parameter_out.out_aq5);
-    TEST_ASSERT_EQUAL_FLOAT(aq6_expect, fitting_parameter_out.out_aq6);
-    TEST_ASSERT_EQUAL_FLOAT(reciprocal_F1G1_expect, fitting_parameter_out.out_reciprocal_F1G1);
-    TEST_ASSERT_EQUAL_FLOAT(reciprocal_F2G2_expect, fitting_parameter_out.out_reciprocal_F2G2);
-    TEST_ASSERT_EQUAL_FLOAT(ad4_mul_ad5_expect, fitting_parameter_out.out_ad4_mul_ad5);
-    TEST_ASSERT_EQUAL_FLOAT(ad1_mul_ad2_expect, fitting_parameter_out.out_ad1_mul_ad2);
-    TEST_ASSERT_EQUAL_FLOAT(aq4_mul_aq5_expect, fitting_parameter_out.out_aq4_mul_aq5);
-    TEST_ASSERT_EQUAL_FLOAT(aq1_mul_aq2_expect, fitting_parameter_out.out_aq1_mul_aq2);
-    TEST_ASSERT_EQUAL_FLOAT(aq4_div_aq5_expect, fitting_parameter_out.out_aq4_mul_aq5);
-    TEST_ASSERT_EQUAL_FLOAT(aq1_div_aq2_expect, fitting_parameter_out.out_aq1_mul_aq2);
-    TEST_ASSERT_EQUAL_FLOAT(ad4_div_ad5_expect, fitting_parameter_out.out_ad4_mul_ad5);
-    TEST_ASSERT_EQUAL_FLOAT(ad1_div_ad2_expect, fitting_parameter_out.out_ad1_mul_ad2);
-    TEST_ASSERT_EQUAL_FLOAT(aq3_min_aq6_expect, fitting_parameter_out.out_aq3_min_aq6);
-
-
     // Based on the new values, something can be calculated, e.g., a controller
     struct uz_pmsmModel_inputs_t inputs = {
         .v_d_V = 100.1f,
@@ -273,5 +193,6 @@ void test_uz_pmsmModel_normal_usage(void)
     uz_pmsmModel_hw_write_load_torque_Expect(BASE_ADDRESS,inputs.load_torque);
     uz_pmsmModel_set_inputs(test_instance, inputs);
 }
+
 
 #endif // TEST

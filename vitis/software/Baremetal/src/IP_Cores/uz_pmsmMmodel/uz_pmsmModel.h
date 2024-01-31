@@ -68,32 +68,6 @@ struct uz_pmsmModel_inputs_t
     float load_torque; /**< Applied load torque in Nm */
 };
 
-struct uz_pmsmModel_fitting_parameter_t
-{
-    float out_ad1; 
-    float out_ad2; 
-    float out_ad3; 
-    float out_ad4; 
-    float out_ad5;
-    float out_ad6;
-    float out_aq1; 
-    float out_aq2; 
-    float out_aq3; 
-    float out_aq4; 
-    float out_aq5;
-    float out_aq6;
-    float out_reciprocal_F1G1;
-    float out_reciprocal_F2G2;
-    float out_ad4_mul_ad5;
-    float out_ad1_mul_ad2;
-    float out_aq4_mul_aq5;
-    float out_aq1_mul_aq2;
-    float out_aq4_div_aq5;
-    float out_aq1_div_aq2;
-    float out_ad4_div_ad5;
-    float out_ad1_div_ad2;
-    float out_aq3_min_aq6;
-};
 
 /**
  * @brief Initialize an instance of the driver
@@ -123,7 +97,7 @@ void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self);
  * @param self 
  */
 
-void uz_pmsmModel_trigger_fitting_parameters_strobe(uz_pmsmModel_t *self);
+void uz_pmsmModel_trigger_fitting_parameter_strobe(uz_pmsmModel_t *self);
 
 /**
  * @brief Takes the values of the shadow register and pass them to the actual AXI register.
@@ -147,13 +121,6 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self);
  * @param self Pointer to driver instance
  */
 
-struct uz_pmsmModel_fitting_parameter_t uz_pmsmModel_get_fitting_parameter(uz_pmsmModel_t *self);
-
-/**
- * @brief Resets the PMSM model by writing zero to all inputs and sets integrators to zero
- * 
- * @param self Pointer to driver instance
- */
 void uz_pmsmModel_reset(uz_pmsmModel_t *self);
 
 

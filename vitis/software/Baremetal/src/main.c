@@ -132,7 +132,7 @@ int main(void)
 
         	    				.simulate_mechanical_system = false,
 
-        	    				.simulate_nonlinear =true,
+        	    				.simulate_nonlinear =false,
 
         	    				.r_1 = 0.085f,
 

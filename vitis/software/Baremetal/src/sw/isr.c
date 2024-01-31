@@ -85,32 +85,6 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 
 };
 
-struct uz_pmsmModel_fitting_parameter_t fitting_parameter_out = {
-		 .out_ad1 = 0.0f,
-		    .out_ad2 = 0.0f,
-		    .out_ad3 = 0.0f,
-		    .out_ad4 = 0.0f,
-		    .out_ad5 = 0.0f,
-		    .out_ad6 = 0.0f,
-		    .out_aq1 = 0.0f,
-		    .out_aq2 = 0.0f,
-		    .out_aq3 = 0.0f,
-		    .out_aq4 = 0.0f,
-		    .out_aq5 = 0.0f,
-		    .out_aq6 = 0.0f,
-		    .out_reciprocal_F1G1 = 0.0f,
-		    .out_reciprocal_F2G2 = 0.0f,
-		   .out_ad4_mul_ad5 = 0.0f,
-		   .out_ad1_mul_ad2 = 0.0f,
-		    .out_aq4_mul_aq5 = 0.0f,
-		    .out_aq1_mul_aq2 = 0.0f,
-		    .out_aq4_div_aq5 = 0.0f,
-		    .out_aq1_div_aq2 = 0.0f,
-		    . out_ad4_div_ad5 = 0.0f,
-		    .out_ad1_div_ad2 = 0.0f,
-		    .out_aq3_min_aq6 = 0.0f,
-
-};
 
 void ISR_Control(void *data)
 {
@@ -144,10 +118,10 @@ void ISR_Control(void *data)
 
     	       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
-    	//get fitting parameter
-
-    	       uz_pmsmModel_trigger_fitting_parameters_strobe(pmsm);
-    	       fitting_parameter_out = uz_pmsmModel_get_fitting_parameter(pmsm);
+//    	//get fitting parameter
+//
+//    	       uz_pmsmModel_trigger_fitting_parameters_strobe(pmsm);
+//    	       fitting_parameter_out = uz_pmsmModel_get_fitting_parameter(pmsm);
 
 
 //    	//Ohne Currentcontroll

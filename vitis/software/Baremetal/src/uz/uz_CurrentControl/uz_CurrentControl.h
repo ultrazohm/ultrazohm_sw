@@ -8,16 +8,16 @@
 #include <stdbool.h>
 
 /*! enum for readable configuring for the decoupling in the CurrentControl sample function */
-enum uz_CurrentControl_decoupling_select 
+enum uz_CurrentControl_decoupling_select
 {
-	no_decoupling = 0, 
+	no_decoupling = 0,
 	linear_decoupling
 };
 
 /**
  * @brief Configuration struct for CurrentControl. Accessible by the user
  */
-struct uz_CurrentControl_config 
+struct uz_CurrentControl_config
 {
 	enum uz_CurrentControl_decoupling_select decoupling_select; /**< CurrentControl decoupling selector \n
 													 no_decoupling \n
@@ -56,7 +56,7 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t *self, uz_3ph_dq_t i_re
 
 /**
  * @brief calculates last sample and transforms the dq-output voltage into the abc-system
- * 
+ *
  * @param self uz_CurrentControl_t instance
  * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
  * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
@@ -107,7 +107,7 @@ void uz_CurrentControl_set_Ki_iq(uz_CurrentControl_t *self, float Ki_iq);
 
 /**
  * @brief Function to change the PMSM parameters during runtime
- * 
+ *
  * @param self uz_CurrentControl_t instance
  * @param pmsm_config PMSM_config struct with updated values
  */
@@ -115,7 +115,7 @@ void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t *self, uz_PMSM_t 
 
 /**
  * @brief Function to change the type of decoupling during runtime
- * 
+ *
  * @param self uz_CurrentControl_t instance
  * @param decoupling_select enum CurrentControl decoupling selector \n
 							 no_decoupling \n
@@ -131,28 +131,9 @@ void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t *self, enum uz_
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t *self);
 
-/**
- * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to the magnitude optimum
- * 
- * @param self uz_CurrentControl_t instance
- * @param tau_sigma_sec Dead time due to measurement, calculation and the actuator 
- */
+
 void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t *self, float tau_sigma_sec);
-
-/**
- * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to the symmetric optimum
- * 
- * @param self uz_CurrentControl_t instance
- * @param tau_sigma_sec Dead time due to measurement, calculation and actuator 
- */
 void uz_CurrentControl_tune_symmetric_optimum(uz_CurrentControl_t *self, float tau_sigma_sec);
-
-/**
- * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to a desired bandwidth
- * 
- * @param self uz_CurrentControl_t instance
- * @param bandwidth_rad_per_sec Desired bandwidth of current controller
- */
 void uz_CurrentControl_tune_bandwidth(uz_CurrentControl_t *self, float bandwidth_rad_per_sec);
 
 #endif // UZ_CURRENTCONTROL_H

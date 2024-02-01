@@ -12,7 +12,7 @@
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
-******************************************************************************/
+ ******************************************************************************/
 
 #include "uz_CurrentControl.h"
 #include "../uz_global_configuration.h"
@@ -23,7 +23,7 @@
 #include <math.h>
 
 #if UZ_CURRENTCONTROL_MAX_INSTANCES > 0
-typedef struct uz_CurrentControl_t 
+typedef struct uz_CurrentControl_t
 {
 	bool is_ready;
 	bool ext_clamping;
@@ -45,7 +45,7 @@ static uz_CurrentControl_t instances_CurrentControl[UZ_CURRENTCONTROL_MAX_INSTAN
  */
 static uz_CurrentControl_t *uz_CurrentControl_allocation(void);
 
-static uz_CurrentControl_t *uz_CurrentControl_allocation(void) 
+static uz_CurrentControl_t *uz_CurrentControl_allocation(void)
 {
 	uz_assert(instances_counter_CurrentControl < UZ_CURRENTCONTROL_MAX_INSTANCES);
 	uz_CurrentControl_t *self = &instances_CurrentControl[instances_counter_CurrentControl];
@@ -55,7 +55,7 @@ static uz_CurrentControl_t *uz_CurrentControl_allocation(void)
 	return (self);
 }
 
-uz_CurrentControl_t *uz_CurrentControl_init(struct uz_CurrentControl_config config) 
+uz_CurrentControl_t *uz_CurrentControl_init(struct uz_CurrentControl_config config)
 {
 	uz_CurrentControl_t *self = uz_CurrentControl_allocation();
 	// Disables the built in limitation of the PI-Controllers, since the limitation is done by the space-vector-limitation module
@@ -70,7 +70,7 @@ uz_CurrentControl_t *uz_CurrentControl_init(struct uz_CurrentControl_config conf
 	return (self);
 }
 
-uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec) 
+uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec)
 {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
@@ -83,7 +83,7 @@ uz_3ph_dq_t uz_CurrentControl_sample(uz_CurrentControl_t *self, uz_3ph_dq_t i_re
 	return (v_output_Volts);
 }
 
-uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad) 
+uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad)
 {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
@@ -92,7 +92,7 @@ uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t *self, uz_3ph_dq_t
 	return (v_output_Volts);
 }
 
-static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) 
+static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere)
 {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
@@ -143,22 +143,22 @@ void uz_CurrentControl_set_Ki_iq(uz_CurrentControl_t *self, float Ki_iq)
 	uz_PI_Controller_set_Ki(self->Controller_iq, Ki_iq);
 }
 
-void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t *self, uz_PMSM_t pmsm_config) 
+void uz_CurrentControl_set_PMSM_parameters(uz_CurrentControl_t *self, uz_PMSM_t pmsm_config)
 {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	// Only assert relevant parts of the PMSM-struct
-    uz_assert(pmsm_config.Ld_Henry > 0.0f);
+	uz_assert(pmsm_config.Ld_Henry > 0.0f);
 	uz_assert(pmsm_config.Lq_Henry > 0.0f);
 	uz_assert(pmsm_config.Psi_PM_Vs >= 0.0f);
 	self->config.config_PMSM = pmsm_config;
 }
 
-void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t *self, enum uz_CurrentControl_decoupling_select decoupling_select) 
+void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t *self, enum uz_CurrentControl_decoupling_select decoupling_select)
 {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->config.decoupling_select=decoupling_select;
+	self->config.decoupling_select = decoupling_select;
 }
 
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t *self)
@@ -172,15 +172,15 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
 {
 	uz_3ph_dq_t decouple_voltage = {0};
 	switch (decoupling_select)
-    {
-		case no_decoupling:
-			// do nothing since no decoupling
-			break;
-		case linear_decoupling:
-			decouple_voltage = uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
-			break;
-		default:
-			break;
+	{
+	case no_decoupling:
+		// do nothing since no decoupling
+		break;
+	case linear_decoupling:
+		decouple_voltage = uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+		break;
+	default:
+		break;
 	}
 	return (decouple_voltage);
 }
@@ -235,5 +235,7 @@ void uz_CurrentControl_tune_bandwidth(uz_CurrentControl_t *self, float bandwidth
 	uz_CurrentControl_set_Ki_id(self, Ki_id);
 	uz_CurrentControl_set_Ki_iq(self, Ki_iq);
 }
+
+
 
 #endif

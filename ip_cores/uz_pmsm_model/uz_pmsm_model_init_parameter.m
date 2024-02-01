@@ -61,11 +61,11 @@ inertia=0.000084;
 friction_coefficient=0.001;
 static_friction_torque=0.01;
 % 
-% % Mechanical parameters
-% inertia=0;
-% inertia=0.001;
-friction_coefficient=0;
-static_friction_torque=0;
+% % % Mechanical parameters
+% % inertia=0;
+% % inertia=0.001;
+% friction_coefficient=0;
+% static_friction_torque=0;
 
 % Simulation settings
 simulate_mechanical=true;

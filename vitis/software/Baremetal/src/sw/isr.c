@@ -93,6 +93,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+//    current_state = control_state;
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state

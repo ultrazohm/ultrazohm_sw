@@ -81,17 +81,17 @@ int main(void)
 
         	struct uz_PMSM_t config_PMSM = {
 
-        		.Ld_Henry = 3.00e-04f,
+        		.Ld_Henry = 0.00045f,
 
-				.Lq_Henry = 3.00e-04f,
+				.Lq_Henry = 0.002f,
 
-				.Psi_PM_Vs = 0.0075f};
+				.Psi_PM_Vs = 0.0194f};
 
         	struct uz_PI_Controller_config config_id = {
 
-        		.Kp = 0.25f,
+        		.Kp = 2.2500f,
 
-				.Ki = 158.8f,
+				.Ki = 1.500e+03f,
 
 				.samplingTime_sec = 0.00005f,
 
@@ -101,9 +101,9 @@ int main(void)
 
         	struct uz_PI_Controller_config config_iq = {
 
-        		.Kp = 0.25f,
+        		.Kp = 10.0f,
 
-				.Ki = 158.8f,
+				.Ki = 1.500e+03f,
 
 				.samplingTime_sec = 0.00005f,
 
@@ -132,37 +132,37 @@ int main(void)
 
         	    				.simulate_mechanical_system = false,
 
-        	    				.simulate_nonlinear =false,
+        	    				.simulate_nonlinear =true,
 
-        	    				.r_1 = 0.085f,
+        	    				.r_1 = 0.30f,
 
-        	    				.L_d = 3.00e-04f,
+        	    				.L_d = 0.00045f,
 
-        	    				.L_q = 3.00e-04f,
+        	    				.L_q = 0.002f,
 
-        	    				.psi_pm = 0.0075f,
+        	    				.psi_pm = 0.0194f,
 
         	    				.polepairs = 4.0f,
 
-        	    				.inertia = 3.24e-05f,
+        	    				.inertia = 0.000084f,
 
         	    				.coulomb_friction_constant = 0.01f,
 
         	    				.friction_coefficient = 0.001f,
-							    .ad1 = 0.1474f,
-							    .ad2 = 0.0145f,
-							    .ad3 = -20.4552f,
-							    .ad4 = 0.1831f,
-							    .ad5 = 0.0114f,
-							    .ad6 = -20.5474f,
-							    .aq1 = 0.000255f,
-							    .aq2 = 0.9932f,
-							    .aq3 = 0.0021f,
-							    .aq4 = 0.00029387f,
-							    .aq5 = 0.9913f,
-							    .aq6 = 0.0022f,
-							    .F1G1 = -0.0033f,
-							    .F2G2 = 0.0043f};
+							    .ad1 = 0.030483840951002f,
+							    .ad2 = 0.040244227373267f,
+							    .ad3 = -16.481195185733903f,
+							    .ad4 = 1.296438633344970f,
+							    .ad5 = 6.183163374457993e-04f,
+							    .ad6 = -12.275586044862504f,
+							    .aq1 = 0.004816670542863f,
+							    .aq2 = 0.171595254784258f,
+							    .aq3 = 9.262938633610718e-04f,
+							    .aq4 = 0.005001870975338f,
+							    .aq5 = 0.170521235710151f,
+							    .aq6 = 9.186084507499523e-04f,
+							    .F1G1 = -0.001356794026337f,
+							    .F2G2 = 0.078813850391713f};
         	            	pmsm=uz_pmsmModel_init(pmsm_config);
 
 

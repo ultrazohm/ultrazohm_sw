@@ -7,7 +7,7 @@ Generated logfile:
     ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 
 source vivado_ip_package.tcl -notrace
-create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:11 . Memory (MB): peak = 376.801 ; gain = 60.152
+create_project: Time (s): cpu = 00:00:03 ; elapsed = 00:00:13 . Memory (MB): peak = 378.141 ; gain = 70.801
 INFO: [IP_Flow 19-234] Refreshing IP repositories
 INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/Users/Philipp/uz_temp/ultrazohm_sw/ip_cores/uz_pmsm_model/hdl_prj/ipcore'.
 WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'c:/Users/Philipp/uz_temp/ultrazohm_sw/ip_cores/uz_pmsm_model/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'c:/Users/Philipp/uz_temp/ultrazohm_sw/ip_cores/uz_pmsm_model/hdl_prj/ipcore/uz_pmsm_model_v1_0/prj_ip'.)
@@ -77,6 +77,6 @@ WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_axi4.vhd" already exist
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model_axi4.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
 WARNING: [IP_Flow 19-1971] File named "hdl/uz_pmsm_model.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
-INFO: [Common 17-206] Exiting Vivado at Thu Feb  1 11:31:51 2024...
+INFO: [Common 17-206] Exiting Vivado at Thu Feb  1 18:14:48 2024...
 
-Elapsed time is 34.4933 seconds.
+Elapsed time is 32.7565 seconds.

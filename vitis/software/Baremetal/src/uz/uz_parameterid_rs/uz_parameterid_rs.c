@@ -50,14 +50,13 @@ uz_parameterid_rs_t* uz_parameterid_rs_init(struct uz_parameterid_rs_config_t in
     self->is_first_call_to_generate_outputs = true;
     self->calc_increments.n_increment = (initial_config.n_end - initial_config.n_start)/initial_config.n_steps;
     self->state = start; 
-	uz_assert(initial_config.n_start > 0.0f);
+	uz_assert(initial_config.n_start >= 0.0f);
 	uz_assert(initial_config.n_end > 0.0f);
 	uz_assert(initial_config.n_end > initial_config.n_start);
 	uz_assert(initial_config.n_steps > 0.0f);
 	uz_assert(initial_config.i_repeats > 0.0f);
     uz_assert(initial_config.i_diff > 0.0f);
-    uz_assert(initial_config.i_steptime >
-    0.5f);
+    uz_assert(initial_config.i_steptime > 0.5f);
     return (self);
 }
 
@@ -286,6 +285,7 @@ void uz_parameterid_rs_sample(uz_parameterid_rs_t* self, float ud, float id){
             break;
             } else {
             self->sample_state = sample_finished; 
+            self->sample_state = finished;
             }
 
         case sample_finished:

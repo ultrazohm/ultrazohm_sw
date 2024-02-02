@@ -61,7 +61,8 @@ extern struct uz_3ph_dq_t v_dq_Volts_2;
 extern struct uz_3ph_dq_t psi_dq_mVoltseconds_2;
 extern struct uz_3ph_dq_t rc_dq_Ohm;
 extern struct uz_3ph_dq_t rc_para_dq;
-
+extern struct uz_3ph_dq_t cil_u_ind_Volts;
+extern struct uz_3ph_dq_t cil_u_ind_ref_Volts;
 
 
 //Others
@@ -164,6 +165,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_rc_q]			 = &rc_dq_Ohm.q;
 	js_ch_observable[JSO_rc_para_d]			 = &rc_para_dq.d;
 	js_ch_observable[JSO_rc_para_q]			 = &rc_para_dq.q;
+	js_ch_observable[JSO_cil_u_ind_Volts_d]	 = &cil_u_ind_Volts.d;
+	js_ch_observable[JSO_cil_u_ind_Volts_q]	 = &cil_u_ind_Volts.q;
+	js_ch_observable[JSO_cil_u_ind_ref_Volts_d]	 = &cil_u_ind_ref_Volts.d;
+	js_ch_observable[JSO_cil_u_ind_ref_Volts_q]	 = &cil_u_ind_ref_Volts.q;
 
 
 
@@ -212,6 +217,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_rc_q]					= &rc_dq_Ohm.q;
 	js_slowDataArray[JSSD_FLOAT_rc_para_d]			 	= &rc_para_dq.d;
 	js_slowDataArray[JSSD_FLOAT_rc_para_q]				= &rc_para_dq.q;
+	js_slowDataArray[JSSD_FLOAT_cil_u_ind_Volts_d]	 = &cil_u_ind_Volts.d;
+	js_slowDataArray[JSSD_FLOAT_cil_u_ind_Volts_q]	 = &cil_u_ind_Volts.q;
+	js_slowDataArray[JSSD_FLOAT_cil_u_ind_ref_Volts_d]	 = &cil_u_ind_ref_Volts.d;
+	js_slowDataArray[JSSD_FLOAT_cil_u_ind_ref_Volts_q]	 = &cil_u_ind_ref_Volts.q;
 
 	return Status;
 }

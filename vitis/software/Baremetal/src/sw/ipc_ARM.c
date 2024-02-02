@@ -69,6 +69,8 @@ extern uint32_t js_status_BareToRTOS;
 extern enum running_mode run_state;
 extern uz_parameterid_rs_t* test_instance;
 extern struct uz_parameterid_output actual_output;
+extern struct uz_3ph_dq_t cil_u_ind_Volts;
+extern struct uz_3ph_dq_t cil_u_ind_ref_Volts;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -248,11 +250,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-
+		cil_u_ind_ref_Volts.d = value;
 			break;
 
 		case (Set_Send_Field_6):
-
+		cil_u_ind_ref_Volts.q = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -320,7 +322,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			run_state = cil_FOC;
+			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_4):

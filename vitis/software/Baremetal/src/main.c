@@ -204,14 +204,14 @@ int main(void)
 
     // config for CIL measurement
     struct uz_parameterid_rs_config_t test_config = {
-    		.n_start = 100.0f,
-    	    .n_end = 1000.0f,
-    	    .n_steps = 9.0f,
-    	    .i_start = 10.0f,
-    	    .i_diff = 1.0f,
-    	    .i_repeats = 3.0f,
-    	    .i_steptime = 1.0f,
-    	    .wait_time = 1.0f,
+    		.n_start = 0.0f,
+    	    .n_end = 1500.0f,
+    	    .n_steps = 15.0f,
+    	    .i_start = 8.0f,
+    	    .i_diff = 2.0f,
+    	    .i_repeats = 5.0f,
+    	    .i_steptime = 2.0f,
+    	    .wait_time = 3.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
     };
 
@@ -312,11 +312,11 @@ int main(void)
                 .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
                 .ip_core_frequency_Hz=100000000,
                 .simulate_mechanical_system = false,
-                .r_1 = 0.085f,
-                .L_d = 3.00e-04f,
-                .L_q = 3.00e-04f,
-                .psi_pm = 0.0075f,
-                .polepairs = 4.0f,
+                .r_1 = 0.03f,
+                .L_d = 3.00e-05f,
+                .L_q = 5.00e-05f,
+                .psi_pm = 0.007f,
+                .polepairs = 5.0f,
                 .inertia = 3.24e-05f,
                 .coulomb_friction_constant = 0.01f,
                 .friction_coefficient = 0.001f};

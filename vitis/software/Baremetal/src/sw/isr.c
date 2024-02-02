@@ -165,6 +165,8 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 extern uz_parameterid_rs_t* test_instance;
 extern struct uz_parameterid_rs_config_t test_config;
 struct uz_parameterid_output actual_output;
+struct uz_3ph_dq_t cil_u_ind_Volts 			= {0};
+struct uz_3ph_dq_t cil_u_ind_ref_Volts 			= {0};
 
 
 enum running_mode run_state = cil_rs_measurement;
@@ -278,6 +280,31 @@ void ISR_Control(void *data)
 			       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
 			       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
 			       pmsm_inputs.omega_mech_1_s = (2.0f * UZ_PIf * actual_output.n_sample)/60.0f;
+			       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+
+			       break;
+
+				case cil_FOC:
+			    	// Tristate ON
+			    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+			    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
+
+			       // CIL
+			       uz_pmsmModel_trigger_input_strobe(pmsm);
+			       uz_pmsmModel_trigger_output_strobe(pmsm);
+			       pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+			       measured_currents_Amp.d = pmsm_outputs.i_d_A;
+			       measured_currents_Amp.q = pmsm_outputs.i_q_A;
+
+			       //calc ud_ind
+			       cil_u_ind_Volts.d = pmsm_inputs.v_d_V - pmsm_outputs.i_d_A * 0.03f;
+			       cil_u_ind_Volts.q = pmsm_inputs.v_q_V - pmsm_outputs.i_q_A * 0.03f;
+
+			       omega_el_rad_per_sec = (2.0f * UZ_PIf * 1000.0f *5.0f)/60.0f ;
+			       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, cil_u_ind_ref_Volts, cil_u_ind_Volts, 24.0f, omega_el_rad_per_sec);
+			       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+			       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+			       pmsm_inputs.omega_mech_1_s = (2.0f * UZ_PIf * 1000.0f )/60.0f;
 			       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
 			       break;

@@ -85,6 +85,15 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 
 };
 
+struct uz_pmsmModel_flux_approx_t approx_flux_maps = {
+        .psi_q_approx = 0.0f,
+        .psi_d_approx = 0.0f,
+        .Lqq_approx= 0.0f,
+        .Ldd_approx= 0.0f,
+        .Lqd_approx= 0.0f,
+        .Ldq_approx= 0.0f
+    };
+
 
 void ISR_Control(void *data)
 {
@@ -117,10 +126,18 @@ void ISR_Control(void *data)
 
     	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
 
+    	       uz_pmsmModel_trigger_approx_flux_testing_strobe(pmsm);
+    	       approx_flux_maps = uz_pmsmModel_get_flux_approx_maps(pmsm);
+
+
+
+
 //    	       pmsm_inputs.v_q_V= 0.5f;
 //    	       pmsm_inputs.v_d_V= 0.5f;
 
     	       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+
+
 
 //    	//get fitting parameter
 //

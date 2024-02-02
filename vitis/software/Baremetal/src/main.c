@@ -130,7 +130,7 @@ int main(void)
 
         	    				.ip_core_frequency_Hz=100000000,
 
-        	    				.simulate_mechanical_system = true,
+        	    				.simulate_mechanical_system = false,
 
         	    				.simulate_nonlinear =true,
 

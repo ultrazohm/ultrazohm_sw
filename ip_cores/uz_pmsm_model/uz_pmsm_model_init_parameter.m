@@ -45,7 +45,7 @@ rpm2 = 100;
 
 % Controller parameter
 ts_regler=1/20e3;
- 
+ L_d = 3e-4;
 tau_d=L_d/R_1;
 tau_q=L_q/R_1;
 tau_sum=2*ts_regler;
@@ -68,9 +68,9 @@ static_friction_torque=0.01;
 % static_friction_torque=0;
 
 % Simulation settings
-simulate_mechanical=true;
+simulate_mechanical=false;
 simulate_open_loop=false;
-simulate_nonlinear_modell=false;
+simulate_nonlinear_modell=true;
 
 parameter_nachfuerung=false;
 

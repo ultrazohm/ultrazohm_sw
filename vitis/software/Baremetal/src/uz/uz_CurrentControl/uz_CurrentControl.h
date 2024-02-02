@@ -139,4 +139,28 @@ void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
+/**
+ * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to the magnitude optimum
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param tau_sigma_sec Dead time due to measurement, calculation and the actuator 
+ */
+void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t *self, float tau_sigma_sec);
+
+/**
+ * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to the symmetric optimum
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param tau_sigma_sec Dead time due to measurement, calculation and the actuator 
+ */
+void uz_CurrentControl_tune_symmetric_optimum(uz_CurrentControl_t *self, float tau_sigma_sec);
+
+/**
+ * @brief Function to change the Ki- and Kp-values of the iq- and id-PI-Controllers according to a desired bandwidth
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param bandwidth_rad_per_sec Desired bandwidth of current controller
+ */
+void uz_CurrentControl_tune_bandwidth(uz_CurrentControl_t *self, float bandwidth_rad_per_sec);
+
 #endif // UZ_CURRENTCONTROL_H

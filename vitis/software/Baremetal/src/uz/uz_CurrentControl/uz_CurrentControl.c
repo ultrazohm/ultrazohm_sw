@@ -1,13 +1,13 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
 * Copyright 2022 Dennis Hufnagel
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,9 +21,6 @@
 #include "uz_linear_decoupling.h"
 #include "uz_space_vector_limitation.h"
 #include <math.h>
-
-
-
 
 #if UZ_CURRENTCONTROL_MAX_INSTANCES > 0
 #include <math.h>
@@ -170,7 +167,7 @@ bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self){
 }
 
 static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t config_PMSM, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
-	uz_3ph_dq_t decouple_voltage={0};
+	uz_3ph_dq_t decouple_voltage = {0};
 	switch (decoupling_select)
     {
     case no_decoupling:
@@ -183,6 +180,57 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
         break;
     }
 	return (decouple_voltage);
+}
+
+void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t* self, float tau_sigma_sec)
+{
+	uz_assert_not_NULL(self);
+	uz_assert(tau_sigma_sec > 0.0f);
+	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
+	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
+	uz_assert(self->config.config_PMSM.Lq_Henry > 0.0f);
+	float Kp_id = self->config.config_PMSM.Ld_Henry / (2.0f * tau_sigma_sec);
+	float Ki_id = self->config.config_PMSM.R_ph_Ohm / (2.0f * tau_sigma_sec);
+	float Kp_iq = self->config.config_PMSM.Lq_Henry / (2.0f * tau_sigma_sec);
+	float Ki_iq = self->config.config_PMSM.R_ph_Ohm / (2.0f * tau_sigma_sec);
+	uz_CurrentControl_set_Kp_id(self, Kp_id);
+	uz_CurrentControl_set_Kp_iq(self, Kp_iq);
+	uz_CurrentControl_set_Ki_id(self, Ki_id);
+	uz_CurrentControl_set_Ki_iq(self, Ki_iq);
+}
+
+void uz_CurrentControl_tune_symmetric_optimum(uz_CurrentControl_t* self, float tau_sigma_sec)
+{
+	uz_assert_not_NULL(self);
+	uz_assert(tau_sigma_sec > 0.0f);
+	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
+	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
+	uz_assert(self->config.config_PMSM.Lq_Henry > 0.0f);
+	float Kp_id = self->config.config_PMSM.Ld_Henry / (2.0f * tau_sigma_sec);
+	float Ki_id = self->config.config_PMSM.Ld_Henry / (8.0f * tau_sigma_sec * tau_sigma_sec);
+	float Kp_iq = self->config.config_PMSM.Lq_Henry / (2.0f * tau_sigma_sec);
+	float Ki_iq = self->config.config_PMSM.Lq_Henry / (8.0f * tau_sigma_sec * tau_sigma_sec);
+	uz_CurrentControl_set_Kp_id(self, Kp_id);
+	uz_CurrentControl_set_Kp_iq(self, Kp_iq);
+	uz_CurrentControl_set_Ki_id(self, Ki_id);
+	uz_CurrentControl_set_Ki_iq(self, Ki_iq);
+}
+
+void uz_CurrentControl_tune_bandwidth(uz_CurrentControl_t* self, float bandwidth_rad_per_sec)
+{
+	uz_assert_not_NULL(self);
+	uz_assert(bandwidth_rad_per_sec > 0.0f);
+	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
+	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
+	uz_assert(self->config.config_PMSM.Lq_Henry > 0.0f);
+	float Kp_id = self->config.config_PMSM.Ld_Henry * bandwidth_rad_per_sec;
+	float Ki_id = self->config.config_PMSM.R_ph_Ohm * bandwidth_rad_per_sec;
+	float Kp_iq = self->config.config_PMSM.Lq_Henry * bandwidth_rad_per_sec;
+	float Ki_iq = self->config.config_PMSM.R_ph_Ohm * bandwidth_rad_per_sec;
+	uz_CurrentControl_set_Kp_id(self, Kp_id);
+	uz_CurrentControl_set_Kp_iq(self, Kp_iq);
+	uz_CurrentControl_set_Ki_id(self, Ki_id);
+	uz_CurrentControl_set_Ki_iq(self, Ki_iq);
 }
 
 #endif

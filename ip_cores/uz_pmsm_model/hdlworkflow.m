@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 23.2 (R2023b) at 11:13:59 on 02/02/2024
+% Generated with MATLAB 23.2 (R2023b) at 16:04:09 on 02/02/2024
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdlworkflow.m'
 %     Overwrite : true
@@ -119,6 +119,10 @@ hdlset_param('uz_pmsm_model/uz_pmsm_model/torque_calculation', 'FlattenHierarchy
 % Set Outport HDL parameters
 hdlset_param('uz_pmsm_model/uz_pmsm_model/outputs', 'IOInterface', 'AXI4');
 hdlset_param('uz_pmsm_model/uz_pmsm_model/outputs', 'IOInterfaceMapping', 'x"150"');
+
+% Set Outport HDL parameters
+hdlset_param('uz_pmsm_model/uz_pmsm_model/approx_flux_testing', 'IOInterface', 'AXI4');
+hdlset_param('uz_pmsm_model/uz_pmsm_model/approx_flux_testing', 'IOInterfaceMapping', 'x"220"');
 
 
 %% Workflow Configuration Settings

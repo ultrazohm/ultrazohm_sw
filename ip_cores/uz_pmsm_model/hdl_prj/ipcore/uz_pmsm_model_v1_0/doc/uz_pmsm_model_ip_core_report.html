@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">7.66
+<td class="summaryTableSndColOddRow">7.70
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">02-Feb-2024 11:09:58
+<td class="summaryTableSndColOddRow">02-Feb-2024 16:02:20
 </td>
 </tr>
 <tr>
@@ -349,6 +349,20 @@ Target platform interface table:
 <td class="distinctCellColor">
 </td>
 </tr>
+<tr>
+<td><a class="code2model" id="code2model" href="matlab:Simulink.ID.hilite('uz_pmsm_model:5541')">approx_flux_testing</a>
+</td>
+<td>Outport
+</td>
+<td>single (6)
+</td>
+<td>AXI4
+</td>
+<td>x"220"
+</td>
+<td>
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -389,7 +403,7 @@ The following AXI4 bus accessible registers were generated for this IP core:
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2402021109
+<td>contains unique IP timestamp (yymmddHHMM): 2402021602
 </td>
 </tr>
 <tr>
@@ -528,6 +542,22 @@ The following AXI4 bus accessible registers were generated for this IP core:
 <td class="distinctCellColor">strobe register for port fitting_parameter
 </td>
 </tr>
+<tr>
+<td>approx_flux_testing_Data
+</td>
+<td>0x220
+</td>
+<td>data register for Outport approx_flux_testing. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x234.
+</td>
+</tr>
+<tr>
+<td class="distinctCellColor">approx_flux_testing_Strobe
+</td>
+<td class="distinctCellColor">0x240
+</td>
+<td class="distinctCellColor">strobe register for port approx_flux_testing
+</td>
+</tr>
 </tbody>
 </table>
 <br/>
@@ -553,7 +583,7 @@ For example, to reset the IP core, write 0x1 to the bit 0 of IPCore_Reset regist
 <br/><br/>
 The AXI4 Slave port to pipeline register ratio selected as 35 in task 3.2 for this model. The default delay to read AXI4 register is one clock cycle.
 Depending on the selected ratio and IO connected to AXI4 interface, register pipelining is introduced in the read logic of AXI4 registers.
-For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 5, so no pipelining is added to the AXI4 register read back logic.
+For your model AXI4 pipeline register ratio setting 35 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 11, so no pipelining is added to the AXI4 register read back logic.
 <br/><br/>
 <b>Processor/FPGA Synchronization</b>
 <br/><br/>
@@ -624,17 +654,17 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_mul_single.vhd')">hdl\uz_pmsm_model_src_nfp_mul_single.vhd</a>
 <br/>
+<a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_add_single.vhd')">hdl\uz_pmsm_model_src_nfp_add_single.vhd</a>
+<br/>
 <a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_abs_single.vhd')">hdl\uz_pmsm_model_src_nfp_abs_single.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_sub_single.vhd')">hdl\uz_pmsm_model_src_nfp_sub_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_cosh_single.vhd')">hdl\uz_pmsm_model_src_nfp_cosh_single.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_tanh_single.vhd')">hdl\uz_pmsm_model_src_nfp_tanh_single.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_recip_single.vhd')">hdl\uz_pmsm_model_src_nfp_recip_single.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_add_single.vhd')">hdl\uz_pmsm_model_src_nfp_add_single.vhd</a>
-<br/>
-<a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_tanh_single.vhd')">hdl\uz_pmsm_model_src_nfp_tanh_single.vhd</a>
+<a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_cosh_single.vhd')">hdl\uz_pmsm_model_src_nfp_cosh_single.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdl_prj\ipcore\uz_pmsm_model_v1_0\hdl\uz_pmsm_model_src_nfp_log_single.vhd')">hdl\uz_pmsm_model_src_nfp_log_single.vhd</a>
 <br/>

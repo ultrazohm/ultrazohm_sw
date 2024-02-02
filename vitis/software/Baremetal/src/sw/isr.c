@@ -111,11 +111,14 @@ void ISR_Control(void *data)
 
     	       omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
 
-    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+//    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+//
+//    	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+//
+//    	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
 
-    	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-
-    	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+    	       pmsm_inputs.v_q_V= 0.5f;
+    	       pmsm_inputs.v_d_V= 0.5f;
 
     	       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 

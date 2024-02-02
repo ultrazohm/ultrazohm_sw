@@ -95,21 +95,21 @@ int main(void)
 
 				.samplingTime_sec = 0.00005f,
 
-				.upper_limit = 10.0f,
+				.upper_limit = 100.0f,
 
-				.lower_limit = -10.0f};
+				.lower_limit = -100.0f};
 
         	struct uz_PI_Controller_config config_iq = {
 
         		.Kp = 10.0f,
 
-				.Ki = 1.500e+03f,
+				.Ki = 1.500e3f,
 
 				.samplingTime_sec = 0.00005f,
 
-				.upper_limit = 10.0f,
+				.upper_limit = 100.0f,
 
-				.lower_limit = -10.0f};
+				.lower_limit = -100.0f};
 
         	struct uz_CurrentControl_config config_CurrentControl = {
 
@@ -130,7 +130,7 @@ int main(void)
 
         	    				.ip_core_frequency_Hz=100000000,
 
-        	    				.simulate_mechanical_system = false,
+        	    				.simulate_mechanical_system = true,
 
         	    				.simulate_nonlinear =true,
 

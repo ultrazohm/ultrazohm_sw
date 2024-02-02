@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 23.2 (R2023b) at 18:15:57 on 01/02/2024
+% Generated with MATLAB 23.2 (R2023b) at 11:13:59 on 02/02/2024
 % This script was generated using the following parameter values:
 %     Filename  : 'C:\Users\Philipp\uz_temp\ultrazohm_sw\ip_cores\uz_pmsm_model\hdlworkflow.m'
 %     Overwrite : true

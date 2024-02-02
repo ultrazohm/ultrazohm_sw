@@ -20,6 +20,7 @@ void uz_pmsmModel_hw_write_load_torque(uint32_t base_address, float load_torque)
 void uz_pmsmModel_hw_trigger_input_strobe(uint32_t base_address);
 void uz_pmsmModel_hw_trigger_output_strobe(uint32_t base_address);
 void uz_pmsmModel_hw_trigger_fitting_parameter_strobe(uint32_t base_address);
+void uz_pmsmModel_hw_trigger_approx_flux_testing_strobe(uint32_t base_address);
 
 // Electrical configuration parameters
 void uz_pmsmModel_hw_write_polepairs(uint32_t base_address, float polepairs);
@@ -58,6 +59,15 @@ void uz_pmsmModel_hw_write_aq1_div_aq2(uint32_t base_address, float aq1, float a
 void uz_pmsmModel_hw_write_ad4_div_ad5(uint32_t base_address, float ad4, float ad5);
 void uz_pmsmModel_hw_write_ad1_div_ad2(uint32_t base_address, float ad1, float ad2);
 void uz_pmsmModel_hw_write_aq3_min_aq6(uint32_t base_address, float aq3, float aq6);
+
+
+//Read out approximated flux maps
+float uz_pmsmModel_hw_read_psi_q_approx(uint32_t base_address);
+float uz_pmsmModel_hw_read_psi_d_approx(uint32_t base_address);
+float uz_pmsmModel_hw_read_Lqq_approx(uint32_t base_address);
+float uz_pmsmModel_hw_read_Ldd_approx(uint32_t base_address);
+float uz_pmsmModel_hw_read_Lqd_approx(uint32_t base_address);
+float uz_pmsmModel_hw_read_Ldq_approx(uint32_t base_address);
 
 // Determine if omega mech is a input or the mechanical system is simulated with a simple friction model
 void uz_pmsmModel_hw_write_simulate_mechanical(uint32_t base_address, bool simulate_mechanical);

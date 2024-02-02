@@ -151,6 +151,27 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self)
     return outputs;
 }
 
+struct uz_pmsmModel_flux_approx_t uz_pmsmModel_get_flux_approx_maps(uz_pmsmModel_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    struct uz_pmsmModel_flux_approx_t approx_flux_maps = {
+        .psi_q_approx = 0.0f,
+        .psi_d_approx = 0.0f,
+        .Lqq_approx= 0.0f,
+        .Ldd_approx= 0.0f,
+        .Lqd_approx= 0.0f,
+        .Ldq_approx= 0.0f
+    }; 
+approx_flux_maps.psi_q_approx = uz_pmsmModel_hw_read_psi_q_approx(self->config.base_address);
+approx_flux_maps.psi_d_approx = uz_pmsmModel_hw_read_psi_d_approx(self->config.base_address);
+approx_flux_maps.Lqq_approx = uz_pmsmModel_hw_read_Lqq_approx(self->config.base_address);
+approx_flux_maps.Ldd_approx = uz_pmsmModel_hw_read_Ldd_approx(self->config.base_address);
+approx_flux_maps.Lqd_approx = uz_pmsmModel_hw_read_Lqd_approx(self->config.base_address);
+approx_flux_maps.Ldq_approx = uz_pmsmModel_hw_read_Ldq_approx(self->config.base_address);
+return approx_flux_maps;
+}
+
 void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
@@ -167,6 +188,12 @@ void uz_pmsmModel_trigger_fitting_parameter_strobe(uz_pmsmModel_t *self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     uz_pmsmModel_hw_trigger_fitting_parameter_strobe(self->config.base_address);
+}
+
+void uz_pmsmModel_trigger_approx_flux_testing_strobe(uz_pmsmModel_t *self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_pmsmModel_hw_trigger_approx_flux_testing_strobe(self->config.base_address);
 }
 
 static void write_config_to_pl(uz_pmsmModel_t *self)

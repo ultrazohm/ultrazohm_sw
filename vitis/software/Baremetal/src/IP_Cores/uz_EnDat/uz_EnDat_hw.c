@@ -55,14 +55,14 @@ uint32_t uz_EnDat_hw_read_POS2BUS(uint32_t base_address) {
     return (uz_axi_read_uint32(base_address+POS2BUS_Data_uz_EnDat));
 }
 
-uint32_t uz_EnDat_hw_read_POS3BUS(uint32_t base_address) {
+int32_t uz_EnDat_hw_read_DIFT0T1BUS(uint32_t base_address) {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_uint32(base_address+POS3BUS_Data_uz_EnDat));
+    return (uz_axi_read_int32(base_address+DIFT0T1BUS_Data_uz_EnDat));
 }
 
-uint32_t uz_EnDat_hw_read_POS4BUS(uint32_t base_address) {
+int32_t uz_EnDat_hw_read_DIFT0T2BUS(uint32_t base_address) {
     uz_assert_not_zero(base_address);
-    return (uz_axi_read_uint32(base_address+POS4BUS_Data_uz_EnDat));
+    return (uz_axi_read_int32(base_address+DIFT0T2BUS_Data_uz_EnDat));
 }
 
 uint8_t uz_EnDat_hw_read_CRCFFSTORED(uint32_t base_address) {
@@ -78,16 +78,6 @@ uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T1BUS(uint32_t base_address) {
 uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(uint32_t base_address) {
     uz_assert_not_zero(base_address);
     return ((uint32_t)uz_axi_read_uint32(base_address+TIMEELASPEDT0T2BUS_Data_uz_EnDat));
-}
-
-uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T3BUS(uint32_t base_address) {
-    uz_assert_not_zero(base_address);
-    return ((uint32_t)uz_axi_read_uint32(base_address+TIMEELASPEDT0T3BUS_Data_uz_EnDat));
-}
-
-uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(uint32_t base_address) {
-    uz_assert_not_zero(base_address);
-    return ((uint32_t)uz_axi_read_uint32(base_address+TIMEELASPEDT0T4BUS_Data_uz_EnDat));
 }
 
 void uz_EnDat_hw_write_FKT6SYNCRESPONSE(uint32_t base_address, uint16_t FKT6SYNCRESPONSE) {

@@ -132,7 +132,7 @@ uint32_t uz_EnDat_read_pos(uz_EnDat_t *self, uz_EnDat_position t_x) {
     case uz_EnDat_pos_t2:
         ret = uz_EnDat_hw_read_POS2BUS(self->config.base_address);
         break;
-
+    /*
     case uz_EnDat_pos_t3:
         ret = uz_EnDat_hw_read_POS3BUS(self->config.base_address);
         break;
@@ -140,7 +140,7 @@ uint32_t uz_EnDat_read_pos(uz_EnDat_t *self, uz_EnDat_position t_x) {
     case uz_EnDat_pos_t4:
         ret = uz_EnDat_hw_read_POS4BUS(self->config.base_address);
         break;
-
+    */
     default:
         return(0xFFFFFFFF);
         break;
@@ -478,7 +478,7 @@ uint32_t uz_EnDat_read_time_elapsed(uz_EnDat_t *self, uz_EnDat_elapsed tx_ty) {
     case uz_EnDat_elapsed_t0_t2:
         ret = uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(self->config.base_address);
         break;
-
+    /*
     case uz_EnDat_elapsed_t0_t3:
         ret = uz_EnDat_hw_read_TIMEELASPEDT0T3BUS(self->config.base_address);
         break;
@@ -486,7 +486,7 @@ uint32_t uz_EnDat_read_time_elapsed(uz_EnDat_t *self, uz_EnDat_elapsed tx_ty) {
     case uz_EnDat_elapsed_t0_t4:
         ret = uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(self->config.base_address);
         break;
-
+    */
     default:
         return(0xFFFFFFFF);
         break;
@@ -734,12 +734,11 @@ float uz_EnDat_read_reponselength_and_convert_to_float(uz_EnDat_t* self) {
     return(ret);
 }
 
-#endif  // NOLINT
 
-/*
-float uz_EnDat_calc_revs_from_pos_delta_and_time(int32_t dif, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode) {
+
+float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode) {
     float ret = 0.0f;
-    static float retold = 1.0f;
+   // static float retold = 1.0f;
     uint32_t difabs = 0U;
     uint32_t difoldabs = 0U;
     static int32_t difold = 1;
@@ -828,6 +827,32 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(int32_t dif, float time_elapsed
     }
     
     difold = dif;
-    retold = ret;
+    //retold = ret;
     return (ret);
-}*/
+}
+
+
+int32_t uz_EnDat_read_pos_dif(uz_EnDat_t *self,  uz_EnDat_dif dif) {
+    int32_t ret;
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    switch (dif) {
+    case uz_EnDat_dif_t0_t1:
+        ret = uz_EnDat_hw_read_DIFT0T1BUS(self->config.base_address);
+        break;
+
+    case uz_EnDat_dif_t0_t2:
+        ret = uz_EnDat_hw_read_DIFT0T2BUS(self->config.base_address);
+        break;
+
+    default:
+        return(-1);
+        break;
+    }
+    return(ret);
+}
+
+
+#endif  // NOLINT
+

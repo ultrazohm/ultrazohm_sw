@@ -46,16 +46,22 @@ typedef enum uz_EnDat_factors {
 typedef enum uz_EnDat_position_values {
     uz_EnDat_pos_t0,
     uz_EnDat_pos_t1,
-    uz_EnDat_pos_t2,
+    uz_EnDat_pos_t2/*,
     uz_EnDat_pos_t3,
-    uz_EnDat_pos_t4
+    uz_EnDat_pos_t4*/
 }uz_EnDat_position;
 typedef enum uz_EnDat_time_elapsed_values {
     uz_EnDat_elapsed_t0_t1,
-    uz_EnDat_elapsed_t0_t2,
+    uz_EnDat_elapsed_t0_t2/*,
     uz_EnDat_elapsed_t0_t3,
-    uz_EnDat_elapsed_t0_t4,
+    uz_EnDat_elapsed_t0_t4,*/
     }uz_EnDat_elapsed;
+typedef enum uz_EnDat_pos_dif_values {
+    uz_EnDat_dif_t0_t1,
+    uz_EnDat_dif_t0_t2/*,
+    uz_EnDat_elapsed_t0_t3,
+    uz_EnDat_elapsed_t0_t4,*/
+    }uz_EnDat_dif;
 typedef enum uz_EnDat_frequency_selector {
     uz_EnDat_operatingfrequency_12500000Hz,
     uz_EnDat_operatingfrequency_6250000Hz,
@@ -367,6 +373,24 @@ void uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_objec
  * @return Returns the Length of the response information.
  */
 float uz_EnDat_read_reponselength_and_convert_to_float(uz_EnDat_t* self);
+
+/**
+ * @param dif  means which value you would like to fetch. uz_EnDat_dif_t0_t1 to uz_EnDat_dif_t0_t2
+ * @brief This function fetches positional difference from the EnDat IP-Core.
+ * @return Returns the actual positional difference from the EnDat IP Core.
+ */
+int32_t uz_EnDat_read_pos_dif(uz_EnDat_t *self, uz_EnDat_dif dif);
+
+/**
+ * @param dif Positional difference value from EnDat IP Core.
+ * @param time_elapsed Time between both positions.
+ * @param invert Inverts the RPM to negative or positive.
+ * @param testmode Write a 1U for ceedling test - because of singularities.
+ * @param sensorprecision Which kind of EnDat sensor do you connect?
+ * @brief This alternative function calculate a rotational speed from a positional difference for EnDat.
+ * @return Returns the RPM value.
+ */
+float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode);
 
 /* STATUSWORD CONTENT
 | Bit |   Description   | Target  | Default |

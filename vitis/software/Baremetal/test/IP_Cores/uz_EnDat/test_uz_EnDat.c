@@ -346,4 +346,24 @@ void test_uz_EnDat_fail_assert_read_reponselength_and_convert_to_float_is_called
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_reponselength_and_convert_to_float(NULL));
 }
 
+void test_uz_EnDat_calc_revs_from_fpga_pos_dif_and_time_15upm(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(-(ENDAT_23_BIT_MAX_VALUE/4), 1.0f, 1U, uz_EnDat_23_bit, 1U), 15.0f);
+}
+
+void test_uz_EnDat_calc_revs_from_fpga_pos_dif_and_time_15kupm(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(-(ENDAT_23_BIT_MAX_VALUE/4), 0.001f, 1U, uz_EnDat_23_bit, 1U), 15000.0f);
+}
+
+void test_uz_EnDat_calc_revs_from_fpga_pos_dif_and_time_negative_15upm(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_fpga_pos_dif_and_time((ENDAT_23_BIT_MAX_VALUE/4), 1.0f, 1U, uz_EnDat_23_bit, 1U), -15.0f);
+}
+
+void test_uz_EnDat_calc_revs_from_fpga_pos_dif_and_time_negative_15kupm(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_calc_revs_from_fpga_pos_dif_and_time((ENDAT_23_BIT_MAX_VALUE/4), 0.001f, 1U, uz_EnDat_23_bit, 1U), -15000.0f);
+}
+
+
+
+
+
 #endif  // TEST

@@ -17,8 +17,8 @@
 #define  FKT3INITIALOFF_Data_uz_EnDat       0x810  //data register for Inport FKT3INITIALOFF
 #define  FKT4DATACLKSYNC_Data_uz_EnDat      0x814  //data register for Inport FKT4DATACLKSYNC
 #define  FKT5TELEGRAMLEN_Data_uz_EnDat      0x818  //data register for Inport FKT5TELEGRAMLEN
-#define  POS4BUS_Data_uz_EnDat              0x81C  //data register for Outport POS4BUS
-#define  POS3BUS_Data_uz_EnDat              0x820  //data register for Outport POS3BUS
+//#define  POS4BUS_Data_uz_EnDat              0x81C  //data register for Outport POS4BUS
+//#define  POS3BUS_Data_uz_EnDat              0x820  //data register for Outport POS3BUS
 #define  POS2BUS_Data_uz_EnDat              0x824  //data register for Outport POS2BUS
 #define  POS1BUS_Data_uz_EnDat              0x828  //data register for Outport POS1BUS
 #define  POS0BUS_Data_uz_EnDat              0x82C  //data register for Outport POS0BUS
@@ -26,11 +26,12 @@
 #define  CRCFFSTORED_Data_uz_EnDat          0x848  //data register for Outport CRCFFSTORED
 #define  TIMEELASPEDT0T1BUS_Data_uz_EnDat   0x850  //data register for Outport TIMEELASPEDT0T1BUS
 #define  TIMEELASPEDT0T2BUS_Data_uz_EnDat   0x860  //data register for Outport TIMEELASPEDT0T2BUS
-#define  TIMEELASPEDT0T3BUS_Data_uz_EnDat   0x870  //data register for Outport TIMEELASPEDT0T3BUS
-#define  TIMEELASPEDT0T4BUS_Data_uz_EnDat   0x880  //data register for Outport TIMEELASPEDT0T4BUS
+//#define  TIMEELASPEDT0T3BUS_Data_uz_EnDat   0x870  //data register for Outport TIMEELASPEDT0T3BUS
+//#define  TIMEELASPEDT0T4BUS_Data_uz_EnDat   0x880  //data register for Outport TIMEELASPEDT0T4BUS
 #define  FKT6SYNCRESPONSE_Data_uz_EnDat     0x890  //data register for Inport FKT6SYNCRESPONSE
 #define  FKT7EXTRASHIFT_Data_uz_EnDat       0x894  //data register for Inport FKT7EXTRASHIFT
 #define  RESPONSELENBUS_Data_uz_EnDat       0x898  //data register for Outport RESPONSELENBUS
-
+#define  DIFT0T1BUS_Data_uz_EnDat           0x8A0  //data register for Outport DIFT0T1BUS
+#define  DIFT0T2BUS_Data_uz_EnDat           0x8B0  //data register for Outport DIFT0T2BUS
 
 #endif /* UZ_ENDAT_H_ */

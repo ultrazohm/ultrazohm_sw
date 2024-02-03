@@ -2,9 +2,8 @@ cs.HiliteType = 'user1';
 cs.ForegroundColor = 'black';
 cs.BackgroundColor = 'red';
 set_param(0, 'HiliteAncestorsData', cs);
-hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Constant8','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant8','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Memory7','user1');
-hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Subtract8','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Switch8','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion1','user1');
@@ -42,5 +41,7 @@ hilite_system('UZ_EnDat/UZ_ENDAT/Subsystem2/ManualDeserializere/WORDTOBOOL/Data 
 hilite_system('UZ_EnDat/UZ_ENDAT/Subsystem2/ManualDeserializere/WORDTOBOOL/Data Type Conversion8','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/Subsystem2/ManualDeserializere/WORDTOBOOL/Data Type Conversion9','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/Subsystem2/ManualDeserializere/WORDTOBOOL/Demux','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant8/Compare','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant8/Constant','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/ManualSerialize/Detect Change/Delay Input1','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/ManualSerialize/Detect Change/FixPt Relational Operator','user1');

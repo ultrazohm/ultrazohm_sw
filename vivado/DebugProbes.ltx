@@ -1162,7 +1162,7 @@
                                 "portIndex": 0,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/SS0_IN_External",
+                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/probe_out0",
                                         "isBus": false
                                     }
                                 ]
@@ -1178,7 +1178,7 @@
                                 "portIndex": 1,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/SS1_IN_External",
+                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/probe_out1",
                                         "isBus": false
                                     }
                                 ]
@@ -1194,7 +1194,7 @@
                                 "portIndex": 2,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/SS2_IN_External",
+                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/probe_out2",
                                         "isBus": false
                                     }
                                 ]
@@ -1210,7 +1210,7 @@
                                 "portIndex": 3,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/SS3_IN_External",
+                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/probe_out3",
                                         "isBus": false
                                     }
                                 ]
@@ -1226,7 +1226,7 @@
                                 "portIndex": 4,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/SS4_IN_External",
+                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/probe_out4",
                                         "isBus": false
                                     }
                                 ]
@@ -1242,7 +1242,7 @@
                                 "portIndex": 5,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/SS5_IN_External",
+                                        "name": "zusys_i/uz_digital_adapter/D1_adapter/Gates/probe_out5",
                                         "isBus": false
                                     }
                                 ]
@@ -3771,7 +3771,7 @@
                         "native_ports": [
                             {
                                 "name": "probe0",
-                                "connectedBus": "DATA_IN",
+                                "connectedBus": "ADCs_ADC_values_raw_0",
                                 "protocol": "PROBE",
                                 "port_maps": [
                                     {
@@ -3787,7 +3787,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "connectedBus": "init_axi_txn",
+                                "connectedBus": "init_axi2tcm_0",
                                 "protocol": "PROBE",
                                 "port_maps": [
                                     {
@@ -3835,7 +3835,7 @@
                             },
                             {
                                 "name": "probe4",
-                                "connectedBus": "Trigger_AXI2TCM",
+                                "connectedBus": "probe4",
                                 "protocol": "PROBE",
                                 "port_maps": [
                                     {
@@ -3874,41 +3874,41 @@
                                 "portIndex": 0,
                                 "nets": [
                                     {
-                                        "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0",
+                                        "name": "zusys_i/uz_system/Interrupt/delay_cycles",
                                         "isBus": true,
                                         "subnets": [
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[10]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[10]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[9]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[9]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[8]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[8]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[7]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[7]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[6]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[6]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[5]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[5]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[4]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[4]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[3]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[3]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[2]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[2]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[1]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[1]"
                                             },
                                             {
-                                                "name": "zusys_i/uz_system/Interrupt/adc_delay_probe_out0[0]"
+                                                "name": "zusys_i/uz_system/Interrupt/delay_cycles[0]"
                                             }
                                         ]
                                     }
@@ -4202,7 +4202,7 @@
                             },
                             {
                                 "name": "probe7",
-                                "connectedBus": "mux_axi_ip_1_select_out",
+                                "connectedBus": "probe7",
                                 "protocol": "PROBE",
                                 "port_maps": [
                                     {
@@ -4801,7 +4801,7 @@
                 "parent_nets": [
                     {
                         "id": 220,
-                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_A/Q[2]",
+                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_A/Q[1]",
                         "state_reg": [
                             {
                                 "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_A/FSM_onehot_phase_state_reg[5]",
@@ -4836,7 +4836,7 @@
                     },
                     {
                         "id": 223,
-                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_A/Q[1]",
+                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_A/Q[0]",
                         "state_reg": [
                             {
                                 "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_A/FSM_onehot_phase_state_reg[4]",
@@ -4871,7 +4871,7 @@
                     },
                     {
                         "id": 224,
-                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_B/Q[2]",
+                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_B/Q[1]",
                         "state_reg": [
                             {
                                 "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_B/FSM_onehot_phase_state_reg[5]",
@@ -4906,7 +4906,7 @@
                     },
                     {
                         "id": 227,
-                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_B/Q[1]",
+                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_B/Q[0]",
                         "state_reg": [
                             {
                                 "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_B/FSM_onehot_phase_state_reg[4]",
@@ -4941,7 +4941,7 @@
                     },
                     {
                         "id": 228,
-                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_C/Q[2]",
+                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_C/Q[1]",
                         "state_reg": [
                             {
                                 "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_C/FSM_onehot_phase_state_reg[5]",
@@ -4976,7 +4976,7 @@
                     },
                     {
                         "id": 231,
-                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_C/Q[1]",
+                        "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_C/Q[0]",
                         "state_reg": [
                             {
                                 "name": "zusys_i/uz_digital_adapter/D2_adapter/Gates_3L/top_npc_state_machine_0/U0/npc_FCM_phase_C/FSM_onehot_phase_state_reg[4]",

@@ -5,7 +5,7 @@
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
-      "synth_flow_mode": "Hierarchical",
+      "synth_flow_mode": "None",
       "tool_version": "2022.2",
       "validated": "true"
     },
@@ -5548,7 +5548,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:8.2",
+            "vlnv": "xilinx.com:ip:uz_EnDat:8.7",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5572,7 +5572,7 @@
           "CLK_1_1": {
             "ports": [
               "CLK_1",
-              "uz_EnDat_0/CLK_1"
+              "uz_EnDat_0/CLK50MHZ"
             ]
           },
           "DBGACTIVENUMBER": {

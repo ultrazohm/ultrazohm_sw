@@ -88,6 +88,7 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float slow_cycle_period_ms;
 	float EnDat_value_calc_time;
+	float EnDat_value_response_length;
 
 	} actualValues;
 

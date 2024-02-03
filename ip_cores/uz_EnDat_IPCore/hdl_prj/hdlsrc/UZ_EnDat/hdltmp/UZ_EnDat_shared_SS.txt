@@ -1,7 +1,7 @@
 Count - 3
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padding1
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padding3
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padding4
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding1
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding2
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding3
 
 Count - 4
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT
@@ -9,12 +9,40 @@ UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP
 UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP
 UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR1
 
-Count - 5
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/19BITSLICER/responseslicer
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/19BITSLICER/responseslicer1
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/19BITSLICER/responseslicer2
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/19BITSLICER/responseslicer3
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/19BITSLICER/responseslicer4
+Count - 28
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding10
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding11
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding12
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding13
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding14
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding15
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding16
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding17
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding18
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding19
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding2
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding20
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding21
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding22
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding23
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding24
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding25
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding26
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding27
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding28
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding29
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding3
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding4
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding6
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding7
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding8
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding9
+
+Count - 3
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/19BITSLICER/responseslicer
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/19BITSLICER/responseslicer1
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/19BITSLICER/responseslicer2
 
 Count - 5
 UZ_EnDat/UZ_ENDAT/CRC_Check/DFF1
@@ -23,19 +51,15 @@ UZ_EnDat/UZ_ENDAT/CRC_Check/DFF3
 UZ_EnDat/UZ_ENDAT/CRC_Check/DFF4
 UZ_EnDat/UZ_ENDAT/CRC_Check/DFF5
 
-Count - 5
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer1
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer2
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer3
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/23BITSLICER/responseslicer4
+Count - 3
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/23BITSLICER/responseslicer
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/23BITSLICER/responseslicer1
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/23BITSLICER/responseslicer2
 
-Count - 5
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/21BITSLICER/responseslicer
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/21BITSLICER/responseslicer1
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/21BITSLICER/responseslicer2
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/21BITSLICER/responseslicer3
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/21BITSLICER/responseslicer4
+Count - 3
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/21BITSLICER/responseslicer
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/21BITSLICER/responseslicer3
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/21BITSLICER/responseslicer4
 
 Count - 2
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter
@@ -51,24 +75,18 @@ UZ_EnDat/UZ_ENDAT/CLKDIV7
 UZ_EnDat/UZ_ENDAT/CLKDIV8
 UZ_EnDat/UZ_ENDAT/CLKDIV9
 
-Count - 5
-UZ_EnDat/UZ_ENDAT/5timestorage/Storage1
-UZ_EnDat/UZ_ENDAT/5timestorage/Storage2
-UZ_EnDat/UZ_ENDAT/5timestorage/Storage20
-UZ_EnDat/UZ_ENDAT/5timestorage/Storage3
-UZ_EnDat/UZ_ENDAT/5timestorage/Storage4
+Count - 3
+UZ_EnDat/UZ_ENDAT/3timestorage/Storage1
+UZ_EnDat/UZ_ENDAT/3timestorage/Storage2
+UZ_EnDat/UZ_ENDAT/3timestorage/Storage20
 
-Count - 5
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/25BITSLICER/responseslicer
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/25BITSLICER/responseslicer1
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/25BITSLICER/responseslicer2
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/25BITSLICER/responseslicer3
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/25BITSLICER/responseslicer4
+Count - 3
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/25BITSLICER/responseslicer
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/25BITSLICER/responseslicer1
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/25BITSLICER/responseslicer2
 
-Count - 5
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/27BITSLICER/responseslicer
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/27BITSLICER/responseslicer1
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/27BITSLICER/responseslicer2
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/27BITSLICER/responseslicer3
-UZ_EnDat/UZ_ENDAT/RESPONSESLICER5X/27BITSLICER/responseslicer4
+Count - 3
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/27BITSLICER/responseslicer
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/27BITSLICER/responseslicer1
+UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/27BITSLICER/responseslicer2
 

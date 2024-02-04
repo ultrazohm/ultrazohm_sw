@@ -26,8 +26,8 @@
  *-----------------------------------------------------------------*/
 // Copied from XCP implementation on R5
 #define XCP_HEADER_LEN          4
-#define kXcpMaxCTO              100
-#define kXcpMaxDTO              100
+#define kXcpMaxCTO              32
+#define kXcpMaxDTO              64
 
 #define BUF_SIZE_XCP_RX         (kXcpMaxCTO + XCP_HEADER_LEN)
 #define BUF_SIZE_XCP_TX         (kXcpMaxCTO + XCP_HEADER_LEN)
@@ -37,7 +37,7 @@
 #define PRIO_XCP_RX             5
 #define PRIO_XCP_TX             4
 
-#define QUEUE_XCP_TX_LEN        1000
+#define QUEUE_XCP_TX_LEN        10000
 #define QUEUE_XCP_RX_LEN        10
 
 #define XCP_ETH_PORT            (uint16_t) 12340
@@ -188,8 +188,7 @@ static void read_OCM_write_txQueue(void)
 
 		BaseType_t* const taskWoken_p = 0;
 		if(xQueueSendFromISR(queue_xcp_tx, data, taskWoken_p) != pdPASS) {
-			xil_printf("%s(): xQueueSend() failed\n", __func__);
-			xil_printf("%s(): critical error!\n", __func__);
+			xil_printf("%s(): xQueueSend() failed, queue full\n", __func__);
 			vTaskDelay(5);
 			return;
 		}

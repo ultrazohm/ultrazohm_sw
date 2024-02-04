@@ -44,9 +44,9 @@
  * Place XCP data behind javascope memory in same bank3. Use the last 32K for this.
  */
 #define XCP_OUT_ADDR				0xFFFFE000
-#define XCP_OUT_LEN					128
+#define XCP_OUT_LEN					512
 #define XCP_IN_ADDR 				0xFFFFC000
-#define XCP_IN_LEN					128
+#define XCP_IN_LEN					256
 
 /*-------------------------------------------------------------------
  * Variables

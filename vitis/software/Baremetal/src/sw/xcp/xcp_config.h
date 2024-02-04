@@ -48,8 +48,8 @@
  *  - Reduce CTO package size to 10?
  *  - Reduce DTO package size to 50?
  */
-#define kXcpMaxCTO              100
-#define kXcpMaxDTO              kXcpMaxCTO
+#define kXcpMaxCTO              32
+#define kXcpMaxDTO              64
 #endif
 
 /*-----------------------------------------------

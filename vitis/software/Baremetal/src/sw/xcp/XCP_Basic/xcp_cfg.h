@@ -129,7 +129,7 @@ typedef int32_t		vsint32;
 #define XCP_DISABLE_PROGRAM
 
 /* Activate the flash programming kernel download support */
-#define XCP_ENABLE_BOOTLOADER_DOWNLOAD
+//#define XCP_ENABLE_BOOTLOADER_DOWNLOAD /* not implemented */
 
 
 /*----------------------------------------------------------------------------*/
@@ -146,14 +146,14 @@ typedef int32_t		vsint32;
 /* XCP Calibration Parameters */
 
 #define XCP_ENABLE_CALIBRATION
-#define XCP_DISABLE_CALIBRATION_PAGE
+//#define XCP_DISABLE_CALIBRATION_PAGE /* not implemented */
 
-#define XCP_ENABLE_SHORT_DOWNLOAD
-#define XCP_ENABLE_SHORT_UPLOAD
+//#define XCP_ENABLE_SHORT_DOWNLOAD /* not implemented */
+//#define XCP_ENABLE_SHORT_UPLOAD /* not implemented */
 
 /* Enable block transfer */
-#define XCP_ENABLE_BLOCK_UPLOAD
-#define XCP_ENABLE_BLOCK_DOWNLOAD
+//#define XCP_ENABLE_BLOCK_UPLOAD /* not implemented */
+//#define XCP_ENABLE_BLOCK_DOWNLOAD /* not implemented */
 
 /* Enable memory checksum */
 /* The checksum will be calculated in XcpBackground() */
@@ -176,8 +176,8 @@ typedef int32_t		vsint32;
 /* XCP Data Stimulation Parameters */
 
 /* Synchronous Data Stimulation (STIM) */
-//#define XCP_ENABLE_STIM
-//#define XCP_DISABLE_STIM
+//#define XCP_ENABLE_STIM /* not implemented */
+#define XCP_DISABLE_STIM
 //#define kXcpStimOdtCount 16
 
 
@@ -189,9 +189,9 @@ typedef int32_t		vsint32;
 //#define XCP_ENABLE_DAQ_HDR_ODT_DAQ
 #define XCP_DISABLE_DAQ_HDR_ODT_DAQ
 
-#define XCP_ENABLE_DAQ_PRESCALER
-#define XCP_ENABLE_DAQ_OVERRUN_INDICATION
-//#define XCP_ENABLE_DAQ_RESUME
+//#define XCP_ENABLE_DAQ_PRESCALER
+//#define XCP_ENABLE_DAQ_OVERRUN_INDICATION
+//#define XCP_ENABLE_DAQ_RESUME /* not implemented */
 #define XCP_ENABLE_DAQ_PROCESSOR_INFO
 #define XCP_ENABLE_DAQ_RESOLUTION_INFO
 
@@ -200,8 +200,10 @@ typedef int32_t		vsint32;
 /* Memory space reserved for DAQ */
 /* This memory is also shared with the VX, so the size was set to fullfill VX max requirement */
 #define kXcpDaqMemSize (1024*2)
-#define XCP_ENABLE_SEND_QUEUE
-#define XCP_DISABLE_SEND_BUFFER
+#define XCP_ENABLE_SEND_DIRECT
+//#define XCP_ENABLE_SEND_QUEUE
+#define XCP_DISABLE_SEND_QUEUE
+#define XCP_DISABLE_SEND_BUFFER  /* not implemented */
 
 /* DAQ Timestamp */
 #define XCP_ENABLE_DAQ_TIMESTAMP

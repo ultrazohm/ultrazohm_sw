@@ -51,6 +51,10 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
+    Global_Data.av.resolver_d4_0 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interf_d4_0);
+    Global_Data.av.resolver_d4_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interf_d4_1);
+    Global_Data.av.resolver_d4_2 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interf_d4_2);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {

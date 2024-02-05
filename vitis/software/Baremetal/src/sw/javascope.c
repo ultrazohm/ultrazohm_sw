@@ -61,9 +61,9 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
+	js_ch_observable[JSO_theta_m_res_d4_0]	= &data->av.resolver_d4_0.position_mech_2pi;
+	js_ch_observable[JSO_theta_m_res_d4_1]	= &data->av.resolver_d4_1.position_mech_2pi;
+	js_ch_observable[JSO_theta_m_res_d4_2]	= &data->av.resolver_d4_2.position_mech_2pi;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;

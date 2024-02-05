@@ -2,7 +2,7 @@
 ## Makefile generated for component 'uz_pmsm_rfe'. 
 ## 
 ## Makefile     : uz_pmsm_rfe.mk
-## Generated on : Mon Feb 05 22:25:10 2024
+## Generated on : Mon Feb 05 22:51:33 2024
 ## Final product: $(RELATIVE_PATH_TO_ANCHOR)/uz_pmsm_rfe
 ## Product type : executable
 ## 
@@ -168,7 +168,7 @@ DEFINES = $(DEFINES_BUILD_ARGS) $(DEFINES_CUSTOM) $(DEFINES_OPTS) $(DEFINES_STAN
 ## SOURCE FILES
 ###########################################################################
 
-SRCS = $(START_DIR)/uz_pmsm_rfe_ert_rtw/uz_pmsm_rfe.c
+SRCS = $(START_DIR)/uz_pmsm_rfe_ert_rtw/uz_pmsm_rfe.c $(START_DIR)/uz_pmsm_rfe_ert_rtw/uz_pmsm_rfe_data.c
 
 MAIN_SRC = $(MATLAB_ROOT)/rtw/c/src/common/rt_malloc_main.c
 
@@ -178,7 +178,7 @@ ALL_SRCS = $(SRCS) $(MAIN_SRC)
 ## OBJECTS
 ###########################################################################
 
-OBJS = uz_pmsm_rfe.o
+OBJS = uz_pmsm_rfe.o uz_pmsm_rfe_data.o
 
 MAIN_OBJ = rt_malloc_main.o
 
@@ -327,6 +327,10 @@ $(PRODUCT) : $(OBJS) $(PREBUILT_OBJS) $(MAIN_OBJ)
 
 
 uz_pmsm_rfe.o : $(START_DIR)/uz_pmsm_rfe_ert_rtw/uz_pmsm_rfe.c
+	$(CC) $(CFLAGS) -o "$@" "$<"
+
+
+uz_pmsm_rfe_data.o : $(START_DIR)/uz_pmsm_rfe_ert_rtw/uz_pmsm_rfe_data.c
 	$(CC) $(CFLAGS) -o "$@" "$<"
 
 

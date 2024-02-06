@@ -5,10 +5,8 @@ close all;
 % addpath(genpath(C:\SoSe23\Masterarbeit\MatlabtoTikz\));
 path('C:\SoSe23\Masterarbeit\MatlabtoTikz\src',path);
 
-
 % HDL SETUP TOOLPATH muss nach jedem Neustart einmal ausgeführt werden
 % hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath','C:\Xilinx\Vivado\2022.2\bin');
-
 
 %LUT Fitting
 

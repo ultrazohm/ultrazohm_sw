@@ -85,14 +85,14 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 
 };
 
-struct uz_pmsmModel_flux_approx_t approx_flux_maps = {
-        .psi_q_approx = 0.0f,
-        .psi_d_approx = 0.0f,
-        .Lqq_approx= 0.0f,
-        .Ldd_approx= 0.0f,
-        .Lqd_approx= 0.0f,
-        .Ldq_approx= 0.0f
-    };
+//struct uz_pmsmModel_flux_approx_t approx_flux_maps = {
+//        .psi_q_approx = 0.0f,
+//        .psi_d_approx = 0.0f,
+//        .Lqq_approx= 0.0f,
+//        .Ldd_approx= 0.0f,
+//        .Lqd_approx= 0.0f,
+//        .Ldq_approx= 0.0f
+//    };
 
 
 void ISR_Control(void *data)
@@ -119,16 +119,18 @@ void ISR_Control(void *data)
     	       measured_currents_Amp.q = pmsm_outputs.i_q_A;
 
     	       omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+//
+//    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+//
+//    	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+//
+//    	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
 
-    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+//    	       uz_pmsmModel_trigger_approx_flux_testing_strobe(pmsm);
+//    	       approx_flux_maps = uz_pmsmModel_get_flux_approx_maps(pmsm);
 
-    	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-
-    	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
-
-    	       uz_pmsmModel_trigger_approx_flux_testing_strobe(pmsm);
-    	       approx_flux_maps = uz_pmsmModel_get_flux_approx_maps(pmsm);
-
+    	       pmsm_inputs.v_q_V=reference_currents_Amp.q;
+    	       pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
 
 
 

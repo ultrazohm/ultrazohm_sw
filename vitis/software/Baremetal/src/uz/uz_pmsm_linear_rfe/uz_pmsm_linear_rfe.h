@@ -6,8 +6,7 @@
 
 typedef struct uz_pmsm_linear_rfe_t uz_pmsm_linear_rfe_t;
 
-uz_pmsm_linear_rfe_t *uz_pmsm_linear_rfe_init(float R, float L_d, float L_q, float rfe_d, float rfe_q, float ts);
+uz_pmsm_linear_rfe_t *uz_pmsm_linear_rfe_init(float R, float psi_pm, float L_d, float L_q, float rfe_d, float rfe_q, float ts);
 uz_3ph_dq_t uz_pmsm_linear_rfe_step(uz_pmsm_linear_rfe_t *self, uz_3ph_dq_t v, float omega_el);
-
 
 #endif // UZ_PMSMK_LIENAR_RFE_H

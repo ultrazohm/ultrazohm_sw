@@ -33,13 +33,14 @@ static uz_pmsm_linear_t* uz_pmsm_linear_allocation(void){
     return (self);
 }
 
-uz_pmsm_linear_t* uz_pmsm_linear_init(float R, float L_d, float L_q, float ts) {
+uz_pmsm_linear_t* uz_pmsm_linear_init(float R, float L_d, float L_q, float psi_pm, float ts) {
     uz_pmsm_linear_t* self = uz_pmsm_linear_allocation();
     uz_pmsm_linear_reset(self);
     uz_assert(R>0.0f);
     uz_assert(ts>0.0f);
     uz_assert(L_d>0.0f);
     uz_assert(L_q>0.0f);
+    self->psi_pm=psi_pm;
     self->R=R;
     self->L_d=L_d;
     self->L_q=L_q;

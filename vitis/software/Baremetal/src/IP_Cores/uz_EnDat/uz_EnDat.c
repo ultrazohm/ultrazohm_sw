@@ -61,7 +61,7 @@ int uz_EnDat_write_control_and_divider_from_object(uz_EnDat_t *self) {
     return(0);
 }
 
-int uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber) {
+uint16_t uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
@@ -95,12 +95,12 @@ int uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor fact
         break;
 
     default:
-        return (-1);
+        return (9999);
         break;
     }
 
 
-    return (0);
+    return (factor);
 }
 
 uint16_t uz_EnDat_read_statusword(uz_EnDat_t* self) {
@@ -502,61 +502,54 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed) {
     return(ret);
 }
 
-float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode) {
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t rawmode) {
     float ret = 0.0f;
     static float retold = 1.0f;
     int32_t dif = 0;
     uint32_t difabs = 0U;
-    uint32_t difoldabs = 0U;
+    uint32_t difoldabs = 1U;
     static int32_t difold = 1;
     float diff = 0.0f;
     float maxvalf = 0.0f;
     float tick = 0.0f;
     uint32_t maxval = 0;
-    int32_t endatnegboundry = 0;
     int32_t endatposboundry = 0;
 
     switch (sensorprecision) {
     case uz_EnDat_19_bit:
         maxval = ENDAT_19_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_19_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_19_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_21_bit:
         maxval = ENDAT_21_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_21_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_21_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_23_bit:
         maxval = ENDAT_23_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_23_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_23_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_25_bit:
         maxval = ENDAT_25_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_25_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_25_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_27_bit:
         maxval = ENDAT_27_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_27_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_27_BIT_OUTLIER_VALUE;
         break;
 
     default:
         maxval = ENDAT_23_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_23_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_23_BIT_OUTLIER_VALUE;
         break;
     }
 
     dif = (int32_t)(pos2 - pos1);
     //mitigation of singularity events
-    if (testmode == 0x0U) {
+    if (rawmode == 0x0U) {
     if (dif < 0) {
         difabs = (uint32_t )(dif * -1);
     }
@@ -570,7 +563,7 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
         difoldabs = (uint32_t) difold;
     }
     //mitigation of singularity events
-    if ((dif > endatposboundry) || (dif < endatnegboundry) || ((difabs > (difoldabs * 1000)))) {
+    if ((difabs > endatposboundry) || ((difabs > (difoldabs * 1000)))) {
         dif = difold;
     }
     }
@@ -580,7 +573,7 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     tick = (diff / maxvalf);
     ret = (tick / time_elapsed);
     //mitigation of singularity events
-    if (testmode == 0x0U) {
+    if (rawmode == 0x0U) {
     if (((ret < 0.00001f) && (ret > -0.00001f)) || (fabsf(ret)-fabsf(retold)) > (fabsf(retold) * 10.0f)) {
         return (retold);
     }
@@ -736,74 +729,59 @@ float uz_EnDat_read_reponselength_and_convert_to_float(uz_EnDat_t* self) {
 
 
 
-float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode) {
+float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t rawmode) {
     float ret = 0.0f;
-   // static float retold = 1.0f;
-    uint32_t difabs = 0U;
-    uint32_t difoldabs = 0U;
+    int32_t difabs = 0;
     static int32_t difold = 1;
     float diff = 0.0f;
     float maxvalf = 0.0f;
     float tick = 0.0f;
     uint32_t maxval = 0;
-    int32_t endatnegboundry = 0;
     int32_t endatposboundry = 0;
 
     switch (sensorprecision) {
     case uz_EnDat_19_bit:
         maxval = ENDAT_19_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_19_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_19_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_21_bit:
         maxval = ENDAT_21_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_21_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_21_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_23_bit:
         maxval = ENDAT_23_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_23_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_23_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_25_bit:
         maxval = ENDAT_25_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_25_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_25_BIT_OUTLIER_VALUE;
         break;
 
     case uz_EnDat_27_bit:
         maxval = ENDAT_27_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_27_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_27_BIT_OUTLIER_VALUE;
         break;
 
     default:
         maxval = ENDAT_23_BIT_MAX_VALUE;
-        endatnegboundry = ENDAT_23_BIT_OUTLIER_VALUE_NEG;
         endatposboundry = ENDAT_23_BIT_OUTLIER_VALUE;
         break;
     }
 
     
     //mitigation of singularity events
-    if (testmode == 0x0U) {
+    if (rawmode == 0x0U) {
     if (dif < 0) {
-        difabs = (uint32_t )(dif * -1);
+        difabs = (dif * -1);
     }
     else {
-        difabs = (uint32_t) dif;
-    }
-    if (difold < 0) {
-        difoldabs = (uint32_t) (difold * -1);
-    }
-    else {
-        difoldabs = (uint32_t) difold;
+        difabs =  dif;
     }
     //mitigation of singularity events
-    if ((dif > endatposboundry) || (dif < endatnegboundry) || ((difabs > (difoldabs * 1000)))) {
+    if ((difabs > endatposboundry)) {
         dif = difold;
     }
     }
@@ -812,12 +790,6 @@ float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elap
     maxvalf = (float) maxval;
     tick = (diff / maxvalf);
     ret = (tick / time_elapsed);
-    //mitigation of singularity events
-    /*if (testmode == 0x0U) {
-    if (((ret < 0.00001f) && (ret > -0.00001f)) || (fabsf(ret)-fabsf(retold)) > (fabsf(retold) * 10.0f)) {
-        return (retold);
-    }
-    }*/
 
     if (invert == 0x1U) {
         ret *= -60.0f;
@@ -827,7 +799,6 @@ float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elap
     }
     
     difold = dif;
-    //retold = ret;
     return (ret);
 }
 

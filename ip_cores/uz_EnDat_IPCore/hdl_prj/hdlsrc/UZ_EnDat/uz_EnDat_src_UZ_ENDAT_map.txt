@@ -34,6 +34,7 @@ UZ_EnDat/UZ_ENDAT/INITIALOFF/Subsystem6/Compare To Constant --> uz_EnDat_src_Com
 UZ_EnDat/UZ_ENDAT/INITIALOFF/Subsystem6 --> uz_EnDat_src_Subsystem6
 UZ_EnDat/UZ_ENDAT/INITIALOFF --> uz_EnDat_src_INITIALOFF
 UZ_EnDat/UZ_ENDAT/ManualSerialize/Compare To Constant --> uz_EnDat_src_Compare_To_Constant_block2
+UZ_EnDat/UZ_ENDAT/ManualSerialize/Detect Increase1 --> uz_EnDat_src_Detect_Increase1
 UZ_EnDat/UZ_ENDAT/ManualSerialize/FF1/S-R Flip Flop --> uz_EnDat_src_S_R_Flip_Flop
 UZ_EnDat/UZ_ENDAT/ManualSerialize/FF1 --> uz_EnDat_src_FF1
 UZ_EnDat/UZ_ENDAT/ManualSerialize/Storage1/Compare To Zero --> uz_EnDat_src_Compare_To_Zero
@@ -82,7 +83,7 @@ UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32modified --> uz_EnDat_src_SetZero32modif
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT
 UZ_EnDat/UZ_ENDAT/timingprovider/Compare To Constant --> uz_EnDat_src_Compare_To_Constant_block3
 UZ_EnDat/UZ_ENDAT/timingprovider/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block1
-UZ_EnDat/UZ_ENDAT/timingprovider/Detect Increase1 --> uz_EnDat_src_Detect_Increase1
+UZ_EnDat/UZ_ENDAT/timingprovider/Detect Increase1 --> uz_EnDat_src_Detect_Increase1_block
 UZ_EnDat/UZ_ENDAT/timingprovider/Subsystem2/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block2
 UZ_EnDat/UZ_ENDAT/timingprovider/Subsystem2/Detect Increase --> uz_EnDat_src_Detect_Increase_block
 UZ_EnDat/UZ_ENDAT/timingprovider/Subsystem2 --> uz_EnDat_src_Subsystem2_block
@@ -104,21 +105,13 @@ UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant5 --> uz_EnDat_src_Compare_To
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant6 --> uz_EnDat_src_Compare_To_Constant6
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant7 --> uz_EnDat_src_Compare_To_Constant7
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER --> uz_EnDat_src_8BIT_SPLITTER
+UZ_EnDat/UZ_ENDAT/Storage16/Compare To Zero --> uz_EnDat_src_Compare_To_Zero_block
+UZ_EnDat/UZ_ENDAT/Storage16/SinglePortRAM_generic --> uz_EnDat_src_SinglePortRAM_generic
+UZ_EnDat/UZ_ENDAT/Storage16 --> uz_EnDat_src_Storage16
+UZ_EnDat/UZ_ENDAT/OUTPUTCONTROLCONTINIOUS --> uz_EnDat_src_OUTPUTCONTROLCONTINIOUS
+UZ_EnDat/UZ_ENDAT/SetZeroBool --> uz_EnDat_src_SetZeroBool
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block3
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block2
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32modified --> uz_EnDat_src_SetZero32modified_block1
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT_block
-UZ_EnDat/UZ_ENDAT/Storage16/Compare To Zero --> uz_EnDat_src_Compare_To_Zero_block
-UZ_EnDat/UZ_ENDAT/Storage16/SinglePortRAM_generic --> uz_EnDat_src_SinglePortRAM_generic
-UZ_EnDat/UZ_ENDAT/Storage16 --> uz_EnDat_src_Storage16
-UZ_EnDat/UZ_ENDAT/SetZeroBool --> uz_EnDat_src_SetZeroBool
-UZ_EnDat/UZ_ENDAT/OUTPUTCONTROLCONTINIOUS --> uz_EnDat_src_OUTPUTCONTROLCONTINIOUS
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block4
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block3
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32modified --> uz_EnDat_src_SetZero32modified_block2
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT_block1
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block5
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter --> uz_EnDat_src_Positional_Counter_block4
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32modified --> uz_EnDat_src_SetZero32modified_block3
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT_block2
 UZ_EnDat/UZ_ENDAT --> uz_EnDat_src_UZ_ENDAT

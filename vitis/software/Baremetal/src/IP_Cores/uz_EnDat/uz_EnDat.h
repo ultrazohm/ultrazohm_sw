@@ -11,19 +11,15 @@
 #define DIVIDER_DEFAULT 3
 #define	ENDAT_23_BIT_MAX_VALUE 0x7FFFFF
 #define ENDAT_23_BIT_OUTLIER_VALUE 838860
-#define ENDAT_23_BIT_OUTLIER_VALUE_NEG -838860
 #define ENDAT_19_BIT_MAX_VALUE 0x7FFFF
 #define ENDAT_19_BIT_OUTLIER_VALUE 52428
-#define ENDAT_19_BIT_OUTLIER_VALUE_NEG -52428
 #define ENDAT_21_BIT_MAX_VALUE 0x1FFFFF
 #define ENDAT_21_BIT_OUTLIER_VALUE 209715
-#define ENDAT_21_BIT_OUTLIER_VALUE_NEG -209715
 #define ENDAT_25_BIT_MAX_VALUE 0x1FFFFFF
 #define ENDAT_25_BIT_OUTLIER_VALUE 3355443
-#define ENDAT_25_BIT_OUTLIER_VALUE_NEG -3355443
 #define ENDAT_27_BIT_MAX_VALUE 0x7FFFFFF
 #define ENDAT_27_BIT_OUTLIER_VALUE 13421772
-#define ENDAT_27_BIT_OUTLIER_VALUE_NEG -3421772
+
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -113,7 +109,13 @@ struct uz_EnDat_config_t{
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core */
     controlword control; /**< Controlword stored per instance */
     uint8_t divider; /**< Clockdivider stored per instance */
-    
+    uint16_t factor1;
+    uint16_t factor2;
+    uint16_t factor3;
+    uint16_t factor4;
+    uint16_t factor5;
+    uint16_t factor6;
+    uint16_t factor7;
 };
 
 struct uz_EnDat_status_t{
@@ -161,9 +163,9 @@ int uz_EnDat_write_control_and_divider_from_object(uz_EnDat_t *self);
  * @brief uz_EnDat_factor5_telegrammlength = adjusts the length of the telegram;
  * @brief uz_EnDat_factor6_responsesync = delays the Data in pulses
  * @brief uz_EnDat_factor7_extrashift = alters the shifting behaviour of the response
- * @return Returns 0 when everything went smooth. Returns -1 if no factor was hit.
+ * @return Returns the factorvalue written. Returns 9999 if no factor was hit.
  */
-int uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber);
+uint16_t uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber);
 
 /**
  * @brief This function is to read the status word from the EnDat IP-Core.
@@ -295,12 +297,12 @@ float uz_EnDat_time_elapsed_ns_to_s_converter(uint32_t elapsed);
  * @param pos2 Second positional value - can be directly pasted from read pos value.
  * @param time_elapsed Time between both positions.
  * @param invert Inverts the RPM to negative or positive.
- * @param testmode Write a 1U for ceedling test - because of singularities.
+ * @param rawmode Write a 1U for ceedling test - because it disables singularity mitigations.
  * @param sensorprecision Which kind of EnDat sensor do you connect?
  * @brief This function calculate a rotation from two positional values for EnDat.
  * @return Returns the RPM value.
  */
-float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode);
+float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t rawmode);
 
 /**
  * @param rpm is the revolutions per minute value.
@@ -385,12 +387,12 @@ int32_t uz_EnDat_read_pos_dif(uz_EnDat_t *self, uz_EnDat_dif dif);
  * @param dif Positional difference value from EnDat IP Core.
  * @param time_elapsed Time between both positions.
  * @param invert Inverts the RPM to negative or positive.
- * @param testmode Write a 1U for ceedling test - because of singularities.
+ * @param rawmode Write a 1U for ceedling test - because it disables singularity mitigations.
  * @param sensorprecision Which kind of EnDat sensor do you connect?
  * @brief This alternative function calculate a rotational speed from a positional difference for EnDat.
  * @return Returns the RPM value.
  */
-float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t testmode);
+float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t rawmode);
 
 /* STATUSWORD CONTENT
 | Bit |   Description   | Target  | Default |

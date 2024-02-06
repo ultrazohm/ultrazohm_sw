@@ -16,7 +16,6 @@
 % aq6 =0;
 % Fid1_Giq1 = 0;
 % Fid2_Giq2 = 0;
-% 
 % R_1=0;
 % L_d=0;
 % L_q=0;
@@ -29,23 +28,29 @@ L_d=0.00045;
 L_q=0.002;
 psi_pm=0.0194;
 polepair=4;
-ts=1/5e5; % =2e-6
-rpm1 = 100;
-rpm2 = 100;
-%DiffrentMotor
+
+% %DiffrentMotor
 % R_1=0.45;
 % L_d=0.00175;
 % L_q=0.00175;
 % psi_pm=0.042;
 % polepair=4;
-% ts=1/5e5; % =2e-6
 
- % L_d = 0;
+%DiffrentMotor
+% R_1=0.085;
+% L_d=3.00e-04;
+% L_q=3.00e-04;
+% psi_pm=0.0075;
+% polepair=4.0;
 
+ts=1/5e5; % =2e-6
+
+setpoint_step=4.0;
+rpm = 0;
+load_torque = 0;
 
 % Controller parameter
 ts_regler=1/20e3;
- L_d = 3e-4;
 tau_d=L_d/R_1;
 tau_q=L_q/R_1;
 tau_sum=2*ts_regler;
@@ -57,7 +62,7 @@ k_i_q=R_1/(2*tau_sum);
 
 % Mechanical parameters
 inertia=0.000084;
-% inertia=0.001;
+% inertia=3.24e-05;
 friction_coefficient=0.001;
 static_friction_torque=0.01;
 % 
@@ -68,8 +73,8 @@ static_friction_torque=0.01;
 % static_friction_torque=0;
 
 % Simulation settings
-simulate_mechanical=false;
-simulate_open_loop=false;
+simulate_mechanical=true;
+simulate_open_loop=true;
 simulate_nonlinear_modell=true;
 
 parameter_nachfuerung=false;
@@ -79,7 +84,7 @@ entkopplung_linear=true;
 entkopplung_static=false;
 entkopplung_dynamic=false;
 
-setpoint_step=10.0;
+
 
 % %Stoeraufschaltung
 % c0 = 1;
@@ -110,7 +115,6 @@ setpoint_step=10.0;
 
 % % Import the data from Excel for lookup table
 FluxMapData = readtable('FluxMapData_Prototyp_1000rpm');
-
 %Psi_d
 % d_currents in d Axe for lookup table
 d_current_d_Flux = FluxMapData{1,1:20};

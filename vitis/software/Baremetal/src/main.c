@@ -209,9 +209,9 @@ int main(void)
     	    .n_steps = 15.0f,
     	    .i_start = 8.0f,
     	    .i_diff = 2.0f,
-    	    .i_repeats = 5.0f,
-    	    .i_steptime = 2.0f,
-    	    .wait_time = 3.0f,
+    	    .i_repeats = 3.0f,
+    	    .i_steptime = 1.0f,
+    	    .wait_time = 1.5f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
     };
 

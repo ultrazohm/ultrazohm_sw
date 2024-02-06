@@ -43,6 +43,7 @@ struct uz_parameterid_output
     float n_sample;
     float i_sample;
     float isr_stepcounter;
+    float isr_steptime;
 };
 
 struct uz_parameterid_rs_sample_var

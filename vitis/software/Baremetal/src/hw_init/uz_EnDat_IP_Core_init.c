@@ -29,7 +29,7 @@ uz_EnDat_t* uz_EnDat_IP_core_custom_init(void) {
 
     EnDat_temp_ptr->config.control = uz_EnDat_set_operation_mode(EnDat_temp_ptr->config.control, uz_EnDat_Encoder_send_position_values);
     EnDat_temp_ptr->config.control = uz_EnDat_set_sensor_precision_in_controlword(EnDat_temp_ptr->config.control, uz_EnDat_25_bit);
-    EnDat_temp_ptr->config.divider = uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_781250Hz);
+    EnDat_temp_ptr->config.divider = uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_1562500Hz);
     EnDat_temp_ptr->config.factor1 = uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT, uz_EnDat_factor1_dataflow);
     EnDat_temp_ptr->config.factor2 = uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT, uz_EnDat_factor2_recoverytime);
     EnDat_temp_ptr->config.factor3 = uz_EnDat_write_factor(EnDat_temp_ptr, FACTOR_DEFAULT, uz_EnDat_factor3_initialoff);

@@ -115,7 +115,7 @@ struct uz_EnDat_config_t{
     uint16_t factor4;
     uint16_t factor5;
     uint16_t factor6;
-    uint16_t factor7;
+    int16_t factor7;
 };
 
 struct uz_EnDat_status_t{

@@ -58,14 +58,6 @@
 #define  ad1_div_ad2_Data_uz_pmsm_model           0x180+0x54 // offset due to vector port
 #define  aq3_min_aq6_Data_uz_pmsm_model           0x180+0x58 // offset due to vector port
 #define  fitting_parameter_Strobe_uz_pmsm_model   0x200  //strobe register for port fitting_parameter
-#define  approx_flux_testing_Data_uz_pmsm_model   0x220  //data register for Outport approx_flux_testing. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x234.
-#define  psi_q_approx_Data_uz_pmsm_model          0x220  //data register for Outport approx_flux_testing. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x234.
-#define  psi_d_approx_Data_uz_pmsm_model          0x220+0x4  //data register for Outport approx_flux_testing. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x234.
-#define  Lqq_approx_Data_uz_pmsm_model            0x220+0x8  //data register for Outport approx_flux_testing. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x234.
-#define  Ldd_approx_Data_uz_pmsm_model            0x220+0xC  //data register for Outport approx_flux_testing. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x234.
-#define  Lqd_approx_Data_uz_pmsm_model            0x220+0x10  //data register for Outport approx_flux_testing. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x234.
-#define  Ldq_approx_Data_uz_pmsm_model            0x220+0x14  //data register for Outport approx_flux_testing. Vector with 6 elements. Register is split across a total of 6 addresses, last address is 0x234.
-#define  approx_flux_testing_Strobe_uz_pmsm_model 0x240  //strobe register for port approx_flux_testing
 
 #endif /* UZ_PMSM_MODEL_H_ */
 

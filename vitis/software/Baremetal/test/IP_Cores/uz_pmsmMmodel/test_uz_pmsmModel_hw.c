@@ -288,55 +288,6 @@ void test_uz_pmsmModel_hw_write_aq3_min_aq6(void){
     uz_pmsmModel_hw_write_aq3_min_aq6(BASE_ADDRESS,aq3,aq6);
 }
 
-void test_uz_pmsmModel_hw_read_psi_q_approx(void)
-{
-    float psi_q_approx_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+psi_q_approx_Data_uz_pmsm_model,psi_q_approx_val);
-    float readback=uz_pmsmModel_hw_read_psi_q_approx(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(psi_q_approx_val,readback);
-}
-
-void test_uz_pmsmModel_hw_read_psi_d_approx(void)
-{
-    float psi_d_approx_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+psi_d_approx_Data_uz_pmsm_model,psi_d_approx_val);
-    float readback=uz_pmsmModel_hw_read_psi_d_approx(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(psi_d_approx_val,readback);
-}
-
-void test_uz_pmsmModel_hw_read_Lqq_approx(void)
-{
-    float Lqq_approx_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+Lqq_approx_Data_uz_pmsm_model,Lqq_approx_val);
-    float readback=uz_pmsmModel_hw_read_Lqq_approx(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(Lqq_approx_val,readback);
-}
-
-void test_uz_pmsmModel_hw_read_Ldd_approx(void)
-{
-    float Ldd_approx_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+Ldd_approx_Data_uz_pmsm_model,Ldd_approx_val);
-    float readback=uz_pmsmModel_hw_read_Ldd_approx(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(Ldd_approx_val,readback);
-}
-
-void test_uz_pmsmModel_hw_read_Lqd_approx(void)
-{
-    float Lqd_approx_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+Lqd_approx_Data_uz_pmsm_model,Lqd_approx_val);
-    float readback=uz_pmsmModel_hw_read_Lqd_approx(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(Lqd_approx_val,readback);
-}
-
-void test_uz_pmsmModel_hw_read_Ldq_approx(void)
-{
-    float Ldq_approx_val=4.2f;
-    uz_axi_read_float_ExpectAndReturn(BASE_ADDRESS+Ldq_approx_Data_uz_pmsm_model,Ldq_approx_val);
-    float readback=uz_pmsmModel_hw_read_Ldq_approx(BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(Ldq_approx_val,readback);
-}
-
-
 //strobes
 void test_uz_pmsmModel_hw_trigger_input_strobe(void){
     uz_axi_write_bool_Expect(BASE_ADDRESS+inputs_Strobe_uz_pmsm_model,true);
@@ -356,11 +307,7 @@ void test_uz_pmsmModel_hw_trigger_fitting_parameter_strobe(void){
     uz_pmsmModel_hw_trigger_fitting_parameter_strobe(BASE_ADDRESS);
 }
 
-void test_uz_pmsmModel_hw_trigger_approx_flux_testing_strobe(void){
-    uz_axi_write_bool_Expect(BASE_ADDRESS+approx_flux_testing_Strobe_uz_pmsm_model,true);
-    uz_axi_write_bool_Expect(BASE_ADDRESS+approx_flux_testing_Strobe_uz_pmsm_model,false);
-    uz_pmsmModel_hw_trigger_approx_flux_testing_strobe(BASE_ADDRESS);
-}
+
 
 
 

@@ -258,38 +258,6 @@ void uz_pmsmModel_hw_write_aq3_min_aq6(uint32_t base_address, float aq3, float a
     uz_axi_write_float(base_address+aq3_min_aq6_Data_uz_pmsm_model,(0.5f*(aq3-aq6)));
 }
 
-//read out flux maps for testing
-float uz_pmsmModel_hw_read_psi_q_approx(uint32_t base_address){
-    uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address + psi_q_approx_Data_uz_pmsm_model);
-}
-
-float uz_pmsmModel_hw_read_psi_d_approx(uint32_t base_address){
-    uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address + psi_d_approx_Data_uz_pmsm_model);
-}
-
-float uz_pmsmModel_hw_read_Lqq_approx(uint32_t base_address){
-    uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address + Lqq_approx_Data_uz_pmsm_model);
-}
-
-float uz_pmsmModel_hw_read_Ldd_approx(uint32_t base_address){
-    uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address + Ldd_approx_Data_uz_pmsm_model);
-}
-
-float uz_pmsmModel_hw_read_Lqd_approx(uint32_t base_address){
-    uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address + Lqd_approx_Data_uz_pmsm_model);
-}
-
-float uz_pmsmModel_hw_read_Ldq_approx(uint32_t base_address){
-    uz_assert_not_zero(base_address);
-    return uz_axi_read_float(base_address + Ldq_approx_Data_uz_pmsm_model);
-}
-
-
 
 //Strobes
 void uz_pmsmModel_hw_trigger_input_strobe(uint32_t base_address){
@@ -310,11 +278,6 @@ void uz_pmsmModel_hw_trigger_fitting_parameter_strobe(uint32_t base_address){
     uz_axi_write_bool(base_address+fitting_parameter_Strobe_uz_pmsm_model ,false);
 }
 
-void uz_pmsmModel_hw_trigger_approx_flux_testing_strobe(uint32_t base_address){
-    uz_assert_not_zero_uint32(base_address);
-    uz_axi_write_bool(base_address+approx_flux_testing_Strobe_uz_pmsm_model ,true);
-    uz_axi_write_bool(base_address+approx_flux_testing_Strobe_uz_pmsm_model ,false);
-}
 
 
 

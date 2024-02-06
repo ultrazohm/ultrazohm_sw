@@ -131,21 +131,6 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self);
  * @param self Pointer to driver instance
  */
 
-struct uz_pmsmModel_flux_approx_t uz_pmsmModel_get_flux_approx_maps(uz_pmsmModel_t *self);
-
-/**
- * @brief Resets the PMSM model by writing zero to all inputs and sets integrators to zero
- * 
- * @param self Pointer to driver instance
- */
-
-void uz_pmsmModel_trigger_approx_flux_testing_strobe(uz_pmsmModel_t *self);
-
-/**
- * @brief Takes the values of the shadow register and pass them to the actual AXI register.
- * 
- * @param self 
- */
 
 void uz_pmsmModel_reset(uz_pmsmModel_t *self);
 

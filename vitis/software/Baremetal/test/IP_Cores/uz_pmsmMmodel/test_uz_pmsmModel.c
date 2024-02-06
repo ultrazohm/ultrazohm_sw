@@ -179,35 +179,6 @@ void test_uz_pmsmModel_normal_usage(void)
     TEST_ASSERT_EQUAL_FLOAT(torque_expect, out.torque_Nm);
     TEST_ASSERT_EQUAL_FLOAT(omega_mech_expect,out.omega_mech_1_s);
 
-    uz_pmsmModel_hw_trigger_approx_flux_testing_strobe_Expect(BASE_ADDRESS);
-    uz_pmsmModel_trigger_approx_flux_testing_strobe(test_instance);
-    uz_pmsmModel_hw_trigger_approx_flux_testing_strobe_Expect(BASE_ADDRESS);
-    uz_pmsmModel_trigger_approx_flux_testing_strobe(test_instance);
-
-    float psi_q_expect = 0.015f;
-    float psi_d_expect = 0.010f;
-    float Lqq_expect = 0.20f;
-    float Ldd_expect = 0.21f;
-    float Lqd_expect = 0.25f;
-    float Ldq_expect = 0.16f;
-
-    // After strobe register was high, current values can be read from AXI
-    uz_pmsmModel_hw_read_psi_q_approx_ExpectAndReturn(BASE_ADDRESS, psi_q_expect);
-    uz_pmsmModel_hw_read_psi_d_approx_ExpectAndReturn(BASE_ADDRESS, psi_d_expect);
-    uz_pmsmModel_hw_read_Lqq_approx_ExpectAndReturn(BASE_ADDRESS, Lqq_expect);
-    uz_pmsmModel_hw_read_Ldd_approx_ExpectAndReturn(BASE_ADDRESS, Ldd_expect);
-    uz_pmsmModel_hw_read_Lqd_approx_ExpectAndReturn(BASE_ADDRESS, Lqd_expect);
-    uz_pmsmModel_hw_read_Ldq_approx_ExpectAndReturn(BASE_ADDRESS, Ldq_expect);
-
-    struct uz_pmsmModel_flux_approx_t approx_flux_maps = uz_pmsmModel_get_flux_approx_maps(test_instance);
-    TEST_ASSERT_EQUAL_FLOAT(psi_q_expect, approx_flux_maps.psi_q_approx);
-    TEST_ASSERT_EQUAL_FLOAT(psi_d_expect, approx_flux_maps.psi_d_approx);
-    TEST_ASSERT_EQUAL_FLOAT(Lqq_expect, approx_flux_maps.Lqq_approx);
-    TEST_ASSERT_EQUAL_FLOAT(Ldd_expect, approx_flux_maps.Ldd_approx);
-    TEST_ASSERT_EQUAL_FLOAT(Lqd_expect, approx_flux_maps.Lqd_approx);
-    TEST_ASSERT_EQUAL_FLOAT(Ldq_expect, approx_flux_maps.Ldq_approx);
-
-
     // Based on the new values, something can be calculated, e.g., a controller
     struct uz_pmsmModel_inputs_t inputs = {
         .v_d_V = 100.1f,

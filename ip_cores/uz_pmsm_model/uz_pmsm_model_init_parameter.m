@@ -74,8 +74,8 @@ static_friction_torque=0.01;
 
 % Simulation settings
 simulate_mechanical=true;
-simulate_open_loop=true;
-simulate_nonlinear_modell=true;
+simulate_open_loop=false;
+simulate_nonlinear_modell=false;
 
 parameter_nachfuerung=false;
 

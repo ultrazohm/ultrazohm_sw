@@ -119,42 +119,19 @@ void ISR_Control(void *data)
     	       measured_currents_Amp.q = pmsm_outputs.i_q_A;
 
     	       omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
-//
-//    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
-//
-//    	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-//
-//    	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+    	       //Closed Loop
+    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 100.0f, omega_el_rad_per_sec);
 
-//    	       uz_pmsmModel_trigger_approx_flux_testing_strobe(pmsm);
-//    	       approx_flux_maps = uz_pmsmModel_get_flux_approx_maps(pmsm);
+    	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
 
-    	       pmsm_inputs.v_q_V=reference_currents_Amp.q;
-    	       pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
-
-
-
-//    	       pmsm_inputs.v_q_V= 0.5f;
-//    	       pmsm_inputs.v_d_V= 0.5f;
+    	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+    	       //OpenLoop
+//    	       pmsm_inputs.v_q_V=reference_currents_Amp.q;
+//    	       pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
 
     	       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
 
-
-//    	//get fitting parameter
-//
-//    	       uz_pmsmModel_trigger_fitting_parameters_strobe(pmsm);
-//    	       fitting_parameter_out = uz_pmsmModel_get_fitting_parameter(pmsm);
-
-
-//    	//Ohne Currentcontroll
-//    	uz_pmsmModel_trigger_input_strobe(pmsm);
-//    	uz_pmsmModel_trigger_output_strobe(pmsm);
-////    	uz_pmsmModel_trigger_fitting_parameters_strobe(pmsm);
-//    	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-//    	pmsm_inputs.v_q_V=uz_wavegen_pulse(1.0f, 0.10f, 0.5f);
-//    	pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
-//    	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

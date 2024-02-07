@@ -40,6 +40,7 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 
 extern struct uz_pmsmModel_inputs_t pmsm_inputs;
+extern uz_3ph_dq_t reference_currents_Amp;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -67,7 +68,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_uc] 			= &reference_currents_Amp.q;
 	js_ch_observable[JSO_iq] 			= &(pmsm_outputs.i_q_A);
 	js_ch_observable[JSO_id] 			= &(pmsm_outputs.i_d_A);
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;

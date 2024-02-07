@@ -2,6 +2,7 @@
 #define UZ_PMSM_LINEAR_H
 
 #include "../uz_Transformation/uz_Transformation.h"
+#include "../uz_integrator/uz_integrator.h"
 #include <stdbool.h>
 
 typedef struct uz_pmsm_linear_t uz_pmsm_linear_t;

@@ -33,6 +33,18 @@ static uz_pmsm_linear_t* uz_pmsm_linear_allocation(void){
     return (self);
 }
 
+void uz_pmsm_linear_reset(uz_pmsm_linear_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->phi_k_1.d=0.0f; 
+    self->phi_k_1.q=0.0f; 
+    self->i.d=0.0f;  
+    self->i.q=0.0f;  
+    self->phi_k.d=0.0f;
+    self->phi_k.q=0.0f;
+}
+
+
 uz_pmsm_linear_t* uz_pmsm_linear_init(float R, float L_d, float L_q, float psi_pm, float ts) {
     uz_pmsm_linear_t* self = uz_pmsm_linear_allocation();
     uz_pmsm_linear_reset(self);
@@ -68,15 +80,6 @@ uz_3ph_dq_t uz_pmsm_linear_step(uz_pmsm_linear_t *self, uz_3ph_dq_t v, float ome
 }
 
 
-void uz_pmsm_linear_reset(uz_pmsm_linear_t *self){
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    self->phi_k_1.d=0.0f; 
-    self->phi_k_1.q=0.0f; 
-    self->i.d=0.0f;  
-    self->i.q=0.0f;  
-    self->phi_k.d=0.0f;
-    self->phi_k.q=0.0f;
-}
+
 
 #endif

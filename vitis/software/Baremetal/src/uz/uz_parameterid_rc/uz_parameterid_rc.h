@@ -76,9 +76,20 @@ struct uz_parameterid_rc_sample_var_t
 
 struct uz_parameterid_rc_meas_out_t
 {
-    float rc;
+    float rc_d;
+    float rc_q;
     struct uz_parameterid_rc_u_ind_t u_ind_gen_out;
     struct uz_parameterid_rc_set_values_t set_out;
+    bool gen;
+};
+
+struct uz_parameterid_rc_calc_rc_t
+{
+    float i_dm;
+    float i_qm;
+    float i_di;
+    float i_qi;
+    
 };
 
 enum state{
@@ -91,6 +102,7 @@ enum state{
     switch2gen,
     check_u_ind,
     finished,
+    calc_rc,
     };
 
 uz_parameterid_rc_t* uz_parameterid_rc_init(struct uz_parameterid_rc_config_t internal_data);

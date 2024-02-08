@@ -3,13 +3,12 @@ UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding1
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding2
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding3
 
-Count - 4
+Count - 3
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT
 UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP
-UZ_EnDat/UZ_ENDAT/CLKCNTER_RAMPUP
 UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR1
 
-Count - 28
+Count - 29
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding10
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding11
@@ -33,6 +32,7 @@ UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding27
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding28
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding29
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding3
+UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding30
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding4
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding6
 UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding7

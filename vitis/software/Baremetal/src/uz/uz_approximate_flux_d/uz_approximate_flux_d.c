@@ -19,8 +19,7 @@ static uz_approximate_flux_d_t instances[UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES] = 
 
 static uz_approximate_flux_d_t *uz_approximate_flux_d_allocation(void);
 
-static uz_approximate_flux_d_t *uz_approximate_flux_d_allocation(void)
-{
+static uz_approximate_flux_d_t *uz_approximate_flux_d_allocation(void){
     uz_assert(instance_counter < UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES);
     uz_approximate_flux_d_t *self = &instances[instance_counter];
     uz_assert(self->is_ready == false);

@@ -1,7 +1,6 @@
 #ifdef TEST
 
 #include "unity.h"
-
 #include "uz_approximate_flux_d.h"
 #include "../../../src/uz/uz_approximate_flux_d/approximate_flux_d_ert_rtw/approximate_flux_d.h"
 #include "../uz_global_configuration.h"
@@ -27,15 +26,6 @@ void setUp(void)
 	fitting_config.aq6_parameter = 9.186084507499523e-04f;
 	fitting_config.F1G1_parameter = -0.001356794026337f;
 	fitting_config.F2G2_parameter = 0.078813850391713f;
-}
-
-void tearDown(void)
-{
-}
-
-void test_uz_approximate_flux_d_NeedToImplement(void)
-{
-    uz_approximate_flux_d_init(fitting_config);
 }
 
 void test_uz_approximate_flux_d_step(void){

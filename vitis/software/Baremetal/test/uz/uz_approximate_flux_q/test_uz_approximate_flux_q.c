@@ -1,8 +1,8 @@
 #ifdef TEST
 
 #include "unity.h"
-#include "uz_approximate_flux_d.h"
-#include "../../../src/uz/uz_approximate_flux_d/approximate_flux_d_ert_rtw/approximate_flux_d.h"
+#include "uz_approximate_flux_q.h"
+#include "../../../src/uz/uz_approximate_flux_q/approximate_flux_q_ert_rtw/approximate_flux_q.h"
 #include "../uz_global_configuration.h"
 #include "../uz_Transformation/uz_Transformation.h"
 #include "test_assert_with_exception.h"
@@ -27,12 +27,12 @@ void setUp(void)
 	fitting_config.F2G2_parameter = 0.078813850391713f;
 }
 
-void test_uz_approximate_flux_d_step(void){
-    uz_approximate_flux_d_t* test_instance = uz_approximate_flux_d_init(fitting_config);
-    i_Ampere.d = 3.0f;
+void test_uz_approximate_flux_q_step(void){
+    uz_approximate_flux_q_t* test_instance = uz_approximate_flux_q_init(fitting_config);
+    i_Ampere.d = -3.0f;
     i_Ampere.q = 3.0f;
-    float result = uz_approximate_flux_d_step(test_instance,i_Ampere);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.020f,result);
+    float result = uz_approximate_flux_q_step(test_instance,i_Ampere);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.0050f,result);
 } 
 
 #endif // TEST

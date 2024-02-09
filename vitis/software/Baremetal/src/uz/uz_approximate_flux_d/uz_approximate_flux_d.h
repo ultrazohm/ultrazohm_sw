@@ -20,6 +20,4 @@ uz_approximate_flux_d_t* uz_approximate_flux_d_init( uz_PMSM_flux_fitting_parame
 
 float uz_approximate_flux_d_step(uz_approximate_flux_d_t* self, uz_3ph_dq_t i_Ampere);
 
-float uz_approximate_flux_d_get_output(uz_approximate_flux_d_t* self);
-
 #endif // UZ_APPROXIMATE_FLUX_D_H

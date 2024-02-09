@@ -1,0 +1,75 @@
+#include "../uz_global_configuration.h"
+#if UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES > 0U
+#include "approximate_flux_d_ert_rtw/approximate_flux_d.h"
+#include "../../uz_HAL.h"
+#include "uz_approximate_flux_d.h"
+
+struct uz_approximate_flux_d_t {
+    bool is_ready;
+    ExtY output;
+    ExtU input;
+    RT_MODEL modelData;
+    RT_MODEL *PtrToModelData;
+    
+};
+
+float psi_d_approx;
+static uint32_t instance_counter = 0U;
+static uz_approximate_flux_d_t instances[UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES] = { 0 };
+
+static uz_approximate_flux_d_t *uz_approximate_flux_d_allocation(void);
+
+static uz_approximate_flux_d_t *uz_approximate_flux_d_allocation(void)
+{
+    uz_assert(instance_counter < UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES);
+    uz_approximate_flux_d_t *self = &instances[instance_counter];
+    uz_assert(self->is_ready == false);
+    instance_counter++;
+    self->is_ready = true;
+    return (self);
+}
+
+uz_approximate_flux_d_t* uz_approximate_flux_d_init(uz_PMSM_flux_fitting_parameter_config_t fitting_config){
+    uz_approximate_flux_d_t* self = uz_approximate_flux_d_allocation();
+    self->PtrToModelData=&self->modelData;
+    self->PtrToModelData->inputs=&self->input;
+    self->PtrToModelData->outputs=&self->output;
+    self->input.fitting_parameters[0]=fitting_config.ad1_parameter;
+    self->input.fitting_parameters[1]=fitting_config.ad2_parameter;
+    self->input.fitting_parameters[2]=fitting_config.ad3_parameter;
+    self->input.fitting_parameters[3]=fitting_config.ad4_parameter;
+    self->input.fitting_parameters[4]=fitting_config.ad5_parameter;
+    self->input.fitting_parameters[5]=fitting_config.ad6_parameter;
+    self->input.fitting_parameters[6]=fitting_config.aq1_parameter;
+    self->input.fitting_parameters[7]=fitting_config.aq2_parameter;
+    self->input.fitting_parameters[8]=fitting_config.aq3_parameter;
+    self->input.fitting_parameters[9]=fitting_config.aq4_parameter;
+    self->input.fitting_parameters[10]=fitting_config.aq5_parameter;
+    self->input.fitting_parameters[11]=fitting_config.aq6_parameter;
+    self->input.fitting_parameters[12]=1/fitting_config.F1G1_parameter;
+    self->input.fitting_parameters[13]=1/fitting_config.F2G2_parameter;
+    self->input.fitting_parameters[14] = fitting_config.ad4_parameter*fitting_config.ad5_parameter;
+    self->input.fitting_parameters[15] = fitting_config.ad1_parameter*fitting_config.ad2_parameter;
+    self->input.fitting_parameters[16] = fitting_config.aq4_parameter*fitting_config.aq5_parameter;
+    self->input.fitting_parameters[17] = fitting_config.aq1_parameter*fitting_config.aq2_parameter;
+    self->input.fitting_parameters[18] = fitting_config.aq4_parameter/fitting_config.aq5_parameter;
+    self->input.fitting_parameters[19] = fitting_config.aq1_parameter/fitting_config.aq2_parameter;
+    self->input.fitting_parameters[20] = fitting_config.ad4_parameter/fitting_config.ad5_parameter;
+    self->input.fitting_parameters[21] = fitting_config.ad1_parameter/fitting_config.ad2_parameter;
+    self->input.fitting_parameters[22] = fitting_config.aq3_parameter-fitting_config.aq6_parameter;
+    
+    return(self);
+}
+
+float uz_approximate_flux_d_step(uz_approximate_flux_d_t* self, uz_3ph_dq_t i_Ampere){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->input.id=i_Ampere.d;
+    self->input.iq=i_Ampere.q;
+    approximate_flux_d_step(self->PtrToModelData);
+    psi_d_approx = self->output.psid_approx;
+    return(psi_d_approx);
+}
+
+#endif
+

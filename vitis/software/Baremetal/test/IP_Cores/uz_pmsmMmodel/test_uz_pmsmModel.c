@@ -3,6 +3,9 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "uz_pmsmModel.h"
+#include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
+#include "uz_pmsmModel_hw.h"
+#include "uz_pmsmModel_hwAddresses.h"
 #include "mock_uz_pmsmModel_hw.h"
 
 #define BASE_ADDRESS 0x0000000FU
@@ -122,6 +125,7 @@ uz_pmsmModel_t *successful_init(struct uz_pmsmModel_config_t configuration)
         uz_pmsmModel_hw_write_aq3_min_aq6_Expect(BASE_ADDRESS, 1.0f, 1.0f);
     }   
     uz_pmsmModel_hw_write_simulate_nonlinear_Expect(BASE_ADDRESS, configuration.simulate_nonlinear);
+    uz_pmsmModel_hw_trigger_fitting_parameter_strobe_Expect(BASE_ADDRESS);
     uz_pmsmModel_t *instance = uz_pmsmModel_init(configuration);
     return (instance);
 }

@@ -57,7 +57,6 @@ uz_approximate_flux_d_t* uz_approximate_flux_d_init(uz_PMSM_flux_fitting_paramet
     self->input.fitting_parameters[20] = fitting_config.ad4_parameter/fitting_config.ad5_parameter;
     self->input.fitting_parameters[21] = fitting_config.ad1_parameter/fitting_config.ad2_parameter;
     self->input.fitting_parameters[22] = fitting_config.aq3_parameter-fitting_config.aq6_parameter;
-    
     return(self);
 }
 

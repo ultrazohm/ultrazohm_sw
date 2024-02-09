@@ -61,7 +61,7 @@ int uz_EnDat_write_control_and_divider_from_object(uz_EnDat_t *self) {
     return(0);
 }
 
-uint16_t uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber) {
+int16_t uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
@@ -464,6 +464,18 @@ controlword uz_EnDat_set_output_enable_in_controlword(controlword in) {
     return(out);
 }
 
+controlword uz_EnDat_reset_alternative_age_mode_in_controlword(controlword in) {
+    controlword out = in;
+    out  &= (controlword)~((controlword)1 << 6);
+    return(out);
+}
+
+controlword uz_EnDat_set_alternative_age_mode_in_controlword(controlword in) {
+    controlword out = in;
+    out  |= ((controlword)1 << 6);
+    return(out);
+}
+
 
 uint32_t uz_EnDat_read_time_elapsed(uz_EnDat_t *self, uz_EnDat_elapsed tx_ty) {
     uint32_t ret;
@@ -513,7 +525,7 @@ float uz_EnDat_calc_revs_from_pos_delta_and_time(uint32_t pos1, uint32_t pos2, f
     float maxvalf = 0.0f;
     float tick = 0.0f;
     uint32_t maxval = 0;
-    int32_t endatposboundry = 0;
+    uint32_t endatposboundry = 0;
 
     switch (sensorprecision) {
     case uz_EnDat_19_bit:
@@ -822,6 +834,108 @@ int32_t uz_EnDat_read_pos_dif(uz_EnDat_t *self,  uz_EnDat_dif dif) {
         break;
     }
     return(ret);
+}
+
+
+
+uz_EnDat_pos_with_age uz_EnDat_read_pos_t0_as_radiant_and_age(uz_EnDat_t *self, int8_t compensation) {
+    uz_EnDat_pos_with_age out;
+    float temp_age;
+    float temp1;
+    float temp2;
+    static float holdresponse;
+    out.pos = uz_EnDat_read_pos_and_return_radiant(self, uz_EnDat_pos_t0);
+    temp_age = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_hw_read_POSAGET0BUS(self->config.base_address));
+
+    switch (compensation) {
+    case (0):
+        out.age = temp_age;
+        break;
+
+    case (-1):
+        temp1 = uz_EnDat_read_reponselength_and_convert_to_float(self);
+        if (temp1 > 0)
+        {
+            holdresponse = temp1;
+        }
+        temp2 = uz_EnDat_get_clk_frequency_or_period_from_divider(self->config.divider, true);
+        out.age = temp_age + (holdresponse * temp2);
+        break;
+
+    default:
+        temp1 = uz_EnDat_read_reponselength_and_convert_to_float(self);
+        temp2 = (float) compensation;
+        out.age = temp_age + (temp1 * temp2);
+        break;
+    }
+    
+    return(out);
+
+}
+
+
+float uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(uz_EnDat_t *self, int8_t compensation, bool posorage) {
+    static uz_EnDat_pos_with_age storage;
+    storage = uz_EnDat_read_pos_t0_as_radiant_and_age(self, compensation);
+
+    if (posorage)
+    {
+        return (storage.age);
+    }
+    else
+    {   
+        return(storage.pos);
+    }
+
+}
+
+float uz_EnDat_get_clk_frequency_or_period_from_divider(uint8_t divider, bool freqorperiod) {
+    float ret;
+
+    
+    switch (divider) {
+    case 0:
+        ret = 12500000.0f;
+        break;
+
+    case 1:
+        ret = 6250000.0f;
+        break;
+
+    case 2:
+        ret = 3125000.0f;
+        break;
+
+    case 3:
+        ret = 1562500.0f;
+        break;
+
+    case 4:
+        ret = 781250.0f;
+        break;
+
+    case 5:
+        ret = 390625.0f;
+        break;
+
+    case uz_EnDat_operatingfrequency_195312Hz:
+        ret = 195312.5f;
+        break;
+    default:
+        return(1562500.0f);
+        break;
+    }
+
+
+    if (freqorperiod)
+    {
+        return (1.0f/ret);
+    }
+    else
+    {
+        return (ret);
+    }
+
 }
 
 

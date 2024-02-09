@@ -78,6 +78,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm_filtered]				= &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_omega_mech]						= &data->av.omega_mech;
 	js_ch_observable[JSO_omega_mech_filtered]				= &data->av.omega_mech_filtered;
+	js_ch_observable[JSO_positional_age]					= &data->av.EnDat_pos_age;
 	
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

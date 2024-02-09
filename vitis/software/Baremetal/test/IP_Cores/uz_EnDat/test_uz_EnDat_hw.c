@@ -247,4 +247,15 @@ void test_uz_EnDat_hw_read_from_RESPONSELENBUS(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_RESPONSELENBUS(0));
 }
 
+void test_uz_EnDat_hw_read_from_POSAGET0BUS(void) {
+    uint32_t c = 888;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+POSAGET0BUS_Data_uz_EnDat, c);
+    uint32_t c_readback = (uint32_t) uz_EnDat_hw_read_POSAGET0BUS(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_INT(c, c_readback);
+
+    // Ignores how often the read function is called and returns (c)
+    uz_axi_read_uint32_IgnoreAndReturn(c);
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_POSAGET0BUS(0));
+}
+
 #endif  // TEST

@@ -52,6 +52,7 @@ enum JS_OberservableData {
 	JSO_Speed_rpm_filtered,
 	JSO_omega_mech,
 	JSO_omega_mech_filtered,
+	JSO_positional_age,
 	JSO_ENDMARKER
 };
 

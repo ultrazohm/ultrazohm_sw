@@ -30,6 +30,12 @@
 
 
 typedef uint16_t controlword;
+typedef struct uz_EnDat_pos_with_age_of_pos{
+    float pos; /**< Positional Value */
+    float age;  /**< Age of this value */
+}uz_EnDat_pos_with_age;
+
+
 typedef enum uz_EnDat_factors {
     uz_EnDat_factor1_dataflow,
     uz_EnDat_factor2_recoverytime,
@@ -165,7 +171,7 @@ int uz_EnDat_write_control_and_divider_from_object(uz_EnDat_t *self);
  * @brief uz_EnDat_factor7_extrashift = alters the shifting behaviour of the response
  * @return Returns the factorvalue written. Returns 9999 if no factor was hit.
  */
-uint16_t uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber);
+int16_t uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor factornumber);
 
 /**
  * @brief This function is to read the status word from the EnDat IP-Core.
@@ -328,6 +334,23 @@ float uz_EnDat_rpm_smoothening(float rawvalue, uint16_t amountofperiods);
  */
 controlword uz_EnDat_set_sensor_precision_in_controlword(controlword in, uz_EnDat_precision sensorprecision);
 
+
+/**
+ * 
+ * @brief This function sets an alternative POS age mode in the IP core.
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
+ */
+controlword uz_EnDat_set_alternative_age_mode_in_controlword(controlword in);
+
+/**
+ * 
+ * @brief This function disables output for EnDat IP-Core. 
+ * @param in Controlword to work with.
+ * @return Returns the control word modified by this call.
+ */
+controlword uz_EnDat_reset_alternative_age_mode_in_controlword(controlword in);
+
 /**
  * 
  * @brief This function gets the precision from the controlword of the EnDat IP-Core.  
@@ -393,6 +416,34 @@ int32_t uz_EnDat_read_pos_dif(uz_EnDat_t *self, uz_EnDat_dif dif);
  * @return Returns the RPM value.
  */
 float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elapsed, uint8_t invert, uz_EnDat_precision sensorprecision, uint8_t rawmode);
+
+
+/**
+ * @param compensation  -1 = auto, 0 = off, > 0 Amount of cycles to compensate. 
+ * @brief This function fetches positional value t0 from the EnDat IP-Core, convert it to radiant and delivers the age of that value.
+ * @return Returns the actual positional value from the EnDat IP Core and the age of that value in s.
+ */
+uz_EnDat_pos_with_age uz_EnDat_read_pos_t0_as_radiant_and_age(uz_EnDat_t *self, int8_t compensation);
+
+/**
+ * @param compensation  -1 = auto, 0 = off, > 0 Amount of cycles to compensate. 
+ * @param posorage true = age, false = pos
+ * @brief This function fetches positional value t0 from the EnDat IP-Core, convert it to radiant and delivers the age of that value.
+ * @return Returns the actual positional value from the EnDat IP Core and the age of that value in s.
+ */
+float uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(uz_EnDat_t *self, int8_t compensation, bool posorage);
+
+/**
+ * @param divider converted divider
+ * @param freqorperiod true = period, false = freq
+ * @brief This function returns either the period or the frequency from the divider value.
+ * @return Returns the actual period or frequency in float.
+ */
+float uz_EnDat_get_clk_frequency_or_period_from_divider(uint8_t divider, bool freqorperiod);
+
+
+
+
 
 /* STATUSWORD CONTENT
 | Bit |   Description   | Target  | Default |

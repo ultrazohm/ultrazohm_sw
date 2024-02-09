@@ -185,6 +185,18 @@ void test_uz_EnDat_reset_output_enable_in_controlword(void) {
     TEST_ASSERT_EQUAL_INT(0xABCDU , uz_EnDat_reset_output_enable_in_controlword(test));
 }
 
+void test_uz_EnDat_set_alternative_age_mode_in_controlword(void) {
+    controlword test = 0x0ABC;
+    
+    TEST_ASSERT_EQUAL_INT(0x0AFCU , uz_EnDat_set_alternative_age_mode_in_controlword(test));
+}
+
+void test_uz_EnDat_reset_alternative_age_mode_in_controlword(void) {
+    controlword test = 0xBBCD;
+    
+    TEST_ASSERT_EQUAL_INT(0xBB8DU , uz_EnDat_reset_alternative_age_mode_in_controlword(test));
+}
+
 void test_uz_EnDat_enable_config_evaluation_in_IP(void) {
     controlword test = 0x0ABC;
     
@@ -363,7 +375,38 @@ void test_uz_EnDat_calc_revs_from_fpga_pos_dif_and_time_negative_15kupm(void) {
 }
 
 
+void test_uz_EnDat_get_clk_frequency_or_period_from_divider_freq_0(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_get_clk_frequency_or_period_from_divider(0, false), 12.5f*1000.0f*1000.0f);
+}
 
+void test_uz_EnDat_get_clk_frequency_or_period_from_divider_time_0(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_get_clk_frequency_or_period_from_divider(0, true), 1/(12.5f*1000.0f*1000.0f));
+}
+
+void test_uz_EnDat_get_clk_frequency_or_period_from_divider_freq_3(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_get_clk_frequency_or_period_from_divider(3, false), 1.5625f*1000.0f*1000.0f);
+}
+
+void test_uz_EnDat_get_clk_frequency_or_period_from_divider_time_3(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_get_clk_frequency_or_period_from_divider(3, true), 1/(1.5625f*1000.0f*1000.0f));
+}
+
+void test_uz_EnDat_get_clk_frequency_or_period_from_divider_freq_6(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_get_clk_frequency_or_period_from_divider(6, false), 0.1953125f*1000.0f*1000.0f);
+}
+
+void test_uz_EnDat_get_clk_frequency_or_period_from_divider_time_6(void) {
+    TEST_ASSERT_EQUAL_FLOAT(uz_EnDat_get_clk_frequency_or_period_from_divider(6, true), 1/(0.1953125f*1000.0f*1000.0f));
+}
+
+void test_uz_EnDat_fail_assert_if_uz_EnDat_read_pos_t0_as_radiant_and_age_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_pos_t0_as_radiant_and_age(NULL, 0U));
+}
+
+
+void test_uz_EnDat_fail_assert_if_uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(NULL, 0U, false));
+}
 
 
 #endif  // TEST

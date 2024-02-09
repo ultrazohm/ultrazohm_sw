@@ -11,7 +11,6 @@ uz_3ph_dq_t i_Ampere = {0};
 uz_PMSM_flux_fitting_parameter_config_t fitting_config = {0};
 void setUp(void)
 {
-
 	fitting_config.ad1_parameter = 0.030483840951002f;
 	fitting_config.ad2_parameter = 0.040244227373267f;
 	fitting_config.ad3_parameter = -16.481195185733903f;

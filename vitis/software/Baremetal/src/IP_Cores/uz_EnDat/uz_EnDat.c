@@ -844,8 +844,13 @@ uz_EnDat_pos_with_age uz_EnDat_read_pos_t0_as_radiant_and_age(uz_EnDat_t *self, 
     float temp1;
     float temp2;
     static float holdresponse;
-    out.pos = uz_EnDat_read_pos_and_return_radiant(self, uz_EnDat_pos_t0);
-    temp_age = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_hw_read_POSAGET0BUS(self->config.base_address));
+    uint32_t temppos;
+    uint32_t temptime;
+    //optimized for delay using non combined functions here
+    temppos = uz_EnDat_read_pos(self, uz_EnDat_pos_t0);
+    temptime = uz_EnDat_hw_read_POSAGET0BUS(self->config.base_address);
+    out.pos = uz_EnDat_pos_to_rad_converter(temppos, uz_EnDat_fetch_sensor_precision_from_EnDat_object(self));
+    temp_age = uz_EnDat_time_elapsed_ns_to_s_converter(temptime);
 
     switch (compensation) {
     case (0):

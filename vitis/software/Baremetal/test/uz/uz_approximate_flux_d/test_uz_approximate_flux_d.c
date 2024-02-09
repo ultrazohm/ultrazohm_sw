@@ -44,6 +44,6 @@ void test_uz_approximate_flux_d_step(void){
     i_Ampere.q = 3.0f;
     float result = uz_approximate_flux_d_step(test_instance,i_Ampere);
     TEST_ASSERT_FLOAT_WITHIN(0.020f,0.019f,result);
-}
+} 
 
 #endif // TEST

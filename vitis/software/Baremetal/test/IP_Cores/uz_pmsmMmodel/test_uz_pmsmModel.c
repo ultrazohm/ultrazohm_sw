@@ -3,10 +3,8 @@
 #include "unity.h"
 #include "test_assert_with_exception.h"
 #include "uz_pmsmModel.h"
-#include "mock_uz_AXI.h" // Tells Ceedling to create mock versions of the functions in uz_AXI (e.g., _Expect)
-#include "uz_pmsmModel_hw.h"
-#include "uz_pmsmModel_hwAddresses.h"
 #include "mock_uz_pmsmModel_hw.h"
+#include "uz_pmsmModel_hwAddresses.h"
 
 #define BASE_ADDRESS 0x0000000FU
 #define IP_FRQ 100000000U

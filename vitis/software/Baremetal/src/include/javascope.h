@@ -120,6 +120,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_EnDat_Value_Calc_Time,
 	JSSD_FLOAT_EnDat_responselength_bits,
 	JSSD_FLOAT_slow_cycle_period_ms,
+	JSSD_FLOAT_EnDat_sync_quality,
 	JSSD_ENDMARKER
 };
 

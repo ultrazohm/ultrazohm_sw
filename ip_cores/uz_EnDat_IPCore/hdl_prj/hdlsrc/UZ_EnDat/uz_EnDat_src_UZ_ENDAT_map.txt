@@ -73,6 +73,8 @@ UZ_EnDat/UZ_ENDAT/Subsystem2 --> uz_EnDat_src_Subsystem2
 UZ_EnDat/UZ_ENDAT/Subsystem6 --> uz_EnDat_src_Subsystem6_block
 UZ_EnDat/UZ_ENDAT/ageprovider/Detect Increase1 --> uz_EnDat_src_Detect_Increase1_block
 UZ_EnDat/UZ_ENDAT/ageprovider --> uz_EnDat_src_ageprovider
+UZ_EnDat/UZ_ENDAT/signalquality/Detect Increase1 --> uz_EnDat_src_Detect_Increase1_block1
+UZ_EnDat/UZ_ENDAT/signalquality --> uz_EnDat_src_signalquality
 UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR/SetZero32modified1 --> uz_EnDat_src_SetZero32modified1
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer --> uz_EnDat_src_Increment_Stored_Integer_block
 UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR/Positional_Counter --> uz_EnDat_src_Positional_Counter_block
@@ -84,7 +86,7 @@ UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32modified --> uz_EnDat_src_SetZero32modif
 UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT --> uz_EnDat_src_CLKCNTER_ACT
 UZ_EnDat/UZ_ENDAT/timingprovider/Compare To Constant --> uz_EnDat_src_Compare_To_Constant_block3
 UZ_EnDat/UZ_ENDAT/timingprovider/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block1
-UZ_EnDat/UZ_ENDAT/timingprovider/Detect Increase1 --> uz_EnDat_src_Detect_Increase1_block1
+UZ_EnDat/UZ_ENDAT/timingprovider/Detect Increase1 --> uz_EnDat_src_Detect_Increase1_block2
 UZ_EnDat/UZ_ENDAT/timingprovider/Subsystem2/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block2
 UZ_EnDat/UZ_ENDAT/timingprovider/Subsystem2/Detect Increase --> uz_EnDat_src_Detect_Increase_block
 UZ_EnDat/UZ_ENDAT/timingprovider/Subsystem2 --> uz_EnDat_src_Subsystem2_block

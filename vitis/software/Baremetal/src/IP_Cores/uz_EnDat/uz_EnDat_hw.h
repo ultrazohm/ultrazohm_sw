@@ -23,7 +23,7 @@ uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T1BUS(uint32_t base_address);
 uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(uint32_t base_address);
 uint8_t uz_EnDat_hw_read_RESPONSELENBUS(uint32_t base_address);
 uint32_t uz_EnDat_hw_read_POSAGET0BUS(uint32_t base_address);
-
+uint16_t uz_EnDat_hw_read_SYNCQUALITYBUS(uint32_t base_address);
 
 
 #endif // UZ_ENDAT_HW_H

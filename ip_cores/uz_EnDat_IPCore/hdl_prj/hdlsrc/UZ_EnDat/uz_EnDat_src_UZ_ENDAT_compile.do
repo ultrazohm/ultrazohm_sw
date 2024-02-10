@@ -74,6 +74,8 @@ vcom  uz_EnDat_src_Subsystem2.vhd
 vcom  uz_EnDat_src_Subsystem6_block.vhd
 vcom  uz_EnDat_src_Detect_Increase1_block.vhd
 vcom  uz_EnDat_src_ageprovider.vhd
+vcom  uz_EnDat_src_Detect_Increase1_block1.vhd
+vcom  uz_EnDat_src_signalquality.vhd
 vcom  uz_EnDat_src_SetZero32modified1.vhd
 vcom  uz_EnDat_src_Increment_Stored_Integer_block.vhd
 vcom  uz_EnDat_src_Positional_Counter_block.vhd
@@ -85,7 +87,7 @@ vcom  uz_EnDat_src_SetZero32modified_block.vhd
 vcom  uz_EnDat_src_CLKCNTER_ACT.vhd
 vcom  uz_EnDat_src_Compare_To_Constant_block3.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block1.vhd
-vcom  uz_EnDat_src_Detect_Increase1_block1.vhd
+vcom  uz_EnDat_src_Detect_Increase1_block2.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block2.vhd
 vcom  uz_EnDat_src_Detect_Increase_block.vhd
 vcom  uz_EnDat_src_Subsystem2_block.vhd

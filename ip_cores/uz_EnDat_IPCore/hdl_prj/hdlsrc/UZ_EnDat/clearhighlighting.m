@@ -61,6 +61,8 @@ annotate_port('UZ_EnDat/UZ_ENDAT/Subsystem2', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/Subsystem6', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/ageprovider', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/ageprovider', 0, 1, '');
+annotate_port('gm_UZ_EnDat/UZ_ENDAT/signalquality', 0, 1, '');
+annotate_port('UZ_EnDat/UZ_ENDAT/signalquality', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/timingprovider', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/timingprovider', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/Logical Operator10', 0, 1, '');
@@ -184,7 +186,7 @@ annotate_port('gm_UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP/Positional_Counter', 0, 1, '
 annotate_port('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP/SetZero32modified', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/SetZero32modified', 0, 1, '');
-annotate_port('gm_UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR/Positional_Counter/Increment Stored Integer', 0, 1, '');
+annotate_port('gm_UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP/Positional_Counter/Increment Stored Integer', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/CLKDIV1/Triggered Subsystem', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/CLKDIV1/Triggered Subsystem', 0, 1, '');
@@ -499,7 +501,7 @@ annotate_port('gm_UZ_EnDat/UZ_ENDAT/timingprovider/Subsystem3/Compare To Constan
 annotate_port('UZ_EnDat/UZ_ENDAT/timingprovider/Subsystem3/Compare To Constant1/Compare', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/Dual Port RAM System', 1, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/Storage16/Single Port RAM System', 1, 1, '');
-annotate_port('gm_UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP/Positional_Counter/Increment Stored Integer', 0, 1, '');
+annotate_port('gm_UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR/Positional_Counter/Increment Stored Integer', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR1/Positional_Counter', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter', 0, 1, '');

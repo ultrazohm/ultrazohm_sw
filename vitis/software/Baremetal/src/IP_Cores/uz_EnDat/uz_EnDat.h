@@ -428,10 +428,11 @@ uz_EnDat_pos_with_age uz_EnDat_read_pos_t0_as_radiant_and_age(uz_EnDat_t *self, 
 /**
  * @param compensation  -1 = auto, 0 = off, > 0 Amount of cycles to compensate. 
  * @param posorage true = age, false = pos
+ * @param update update the underlying value
  * @brief This function fetches positional value t0 from the EnDat IP-Core, convert it to radiant and delivers the age of that value.
  * @return Returns the actual positional value from the EnDat IP Core and the age of that value in s.
  */
-float uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(uz_EnDat_t *self, int8_t compensation, bool posorage);
+float uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(uz_EnDat_t *self, int8_t compensation, bool posorage, bool update);
 
 /**
  * @param divider converted divider
@@ -441,6 +442,12 @@ float uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(uz_EnDat_t *self, int8_t c
  */
 float uz_EnDat_get_clk_frequency_or_period_from_divider(uint8_t divider, bool freqorperiod);
 
+/**
+ * @param valuecalctime Time used to calculate a value.
+  * @brief This function calculates a quality of sync value based on one second of connection.
+ * @return Returnns a precentage value of the sync quality.
+ */
+float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecalctime);
 
 
 

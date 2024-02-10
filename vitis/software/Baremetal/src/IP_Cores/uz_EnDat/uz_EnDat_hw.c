@@ -40,6 +40,11 @@ uint16_t uz_EnDat_hw_read_statusword(uint32_t base_address) {
     return ((uint16_t)uz_axi_read_uint32(base_address+statusword_Data_uz_EnDat));
 }
 
+uint16_t uz_EnDat_hw_read_SYNCQUALITYBUS(uint32_t base_address) {
+    uz_assert_not_zero(base_address);
+    return ((uint16_t)uz_axi_read_uint32(base_address+SYNCQUALITYBUS_Data_uz_EnDat));
+}
+
 uint32_t uz_EnDat_hw_read_POS0BUS(uint32_t base_address) {
     uz_assert_not_zero(base_address);
     return (uz_axi_read_uint32(base_address+POS0BUS_Data_uz_EnDat));

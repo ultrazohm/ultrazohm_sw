@@ -53,8 +53,8 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);     // ISR TIME : uses about 2,7 us ISR time
 
-    /*NEW AGE MODE*/ Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 0, false);
-    /*NEW AGE MODE*/ Global_Data.av.EnDat_pos_age = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 0, true);
+    /*NEW AGE MODE*/ Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, -1, false, true);
+    /*NEW AGE MODE*/ Global_Data.av.EnDat_pos_age = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 0, true, false);
 
     /*NEW DIFF MODE*/Global_Data.av.theta_elec = (float)uz_EnDat_read_pos_dif(Global_Data.objects.EnDat_master_pointer, uz_EnDat_dif_t0_t1);
     //Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0); // ISR TIME : uses slightly less then 0,7 us ISR
@@ -67,7 +67,7 @@ void ISR_Control(void *data)
     //Global_Data.av.EnDat_value_calc_time = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1)); //this does not to be into ISR --> moved to new async slow cycle
 
 
-    /*TEST FOR INTEGRITY*/ Global_Data.av.I_d = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 0, false);
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

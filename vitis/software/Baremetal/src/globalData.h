@@ -90,7 +90,7 @@ typedef struct _actualValues_ {
 	float EnDat_value_calc_time;
 	float EnDat_value_response_length;
 	float EnDat_pos_age;
-
+	float EnDat_sync_quality;
 	} actualValues;
 
 typedef struct _referenceAndSetValues_ {

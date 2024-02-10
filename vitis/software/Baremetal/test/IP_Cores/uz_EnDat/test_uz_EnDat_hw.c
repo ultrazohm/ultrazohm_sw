@@ -258,4 +258,17 @@ void test_uz_EnDat_hw_read_from_POSAGET0BUS(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_POSAGET0BUS(0));
 }
 
+
+void test_uz_EnDat_hw_read_from_SYNCQUALITYBUS(void) {
+    uint32_t c = 1;
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS+SYNCQUALITYBUS_Data_uz_EnDat, c);
+    uint32_t c_readback = uz_EnDat_hw_read_SYNCQUALITYBUS(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_INT(c, c_readback);
+
+    // Ignores how often the read function is called and returns (c)
+    uz_axi_read_uint32_IgnoreAndReturn(c);
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_hw_read_SYNCQUALITYBUS(0));
+}
+
+
 #endif  // TEST

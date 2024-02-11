@@ -100,7 +100,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">Model version
 </td>
-<td class="summaryTableSndColOddRow">2.649
+<td class="summaryTableSndColOddRow">2.656
 </td>
 </tr>
 <tr>
@@ -112,7 +112,7 @@ thead.reportTableHeader {
 <tr>
 <td class="distinctCellColor">IP core generated on
 </td>
-<td class="summaryTableSndColOddRow">10-Feb-2024 20:39:30
+<td class="summaryTableSndColOddRow">11-Feb-2024 20:20:56
 </td>
 </tr>
 <tr>
@@ -851,7 +851,7 @@ The following AXI4-Lite bus accessible registers were generated for this IP core
 </td>
 <td>0x8
 </td>
-<td>contains unique IP timestamp (yymmddHHMM): 2402102039
+<td>contains unique IP timestamp (yymmddHHMM): 2402111959: 2402112005: 2402112015: 2402112020
 </td>
 </tr>
 <tr>
@@ -1049,9 +1049,9 @@ This IP core also support the
 <b>External Port </b>
 interface. To connect the external ports to the FPGA external IO pins, add FPGA pin assignment constraints in the Xilinx Vivado environment.
 <br/><br/>
-The AXI4 Slave port to pipeline register ratio selected as 20 in task 3.2 for this model. The default delay to read AXI4 register is one clock cycle.
+The AXI4 Slave port to pipeline register ratio selected as 50 in task 3.2 for this model. The default delay to read AXI4 register is one clock cycle.
 Depending on the selected ratio and IO connected to AXI4 interface, register pipelining is introduced in the read logic of AXI4 registers.
-For your model AXI4 pipeline register ratio setting 20 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 13, so no pipelining is added to the AXI4 register read back logic.
+For your model AXI4 pipeline register ratio setting 50 is larger than all the readable AXI4 slave registers. Total readable AXI4 slave registers are 13, so no pipelining is added to the AXI4 register read back logic.
 <br/><br/>
 <b>Processor/FPGA Synchronization</b>
 <br/><br/>
@@ -1253,6 +1253,12 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_ageprovider.vhd')">hdl\uz_EnDat_src_ageprovider.vhd</a>
 <br/>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block1.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant2_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant2_block1.vhd</a>
+<br/>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Zero_block.vhd')">hdl\uz_EnDat_src_Compare_To_Zero_block.vhd</a>
+<br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Detect_Increase1_block1.vhd')">hdl\uz_EnDat_src_Detect_Increase1_block1.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_signalquality.vhd')">hdl\uz_EnDat_src_signalquality.vhd</a>
@@ -1277,17 +1283,17 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant_block3.vhd')">hdl\uz_EnDat_src_Compare_To_Constant_block3.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block2.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block2.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Detect_Increase1_block2.vhd')">hdl\uz_EnDat_src_Detect_Increase1_block2.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block2.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block2.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block3.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block3.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Detect_Increase_block.vhd')">hdl\uz_EnDat_src_Detect_Increase_block.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Subsystem2_block.vhd')">hdl\uz_EnDat_src_Subsystem2_block.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block3.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block3.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block4.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block4.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Detect_Increase_block1.vhd')">hdl\uz_EnDat_src_Detect_Increase_block1.vhd</a>
 <br/>
@@ -1307,9 +1313,9 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant_block4.vhd')">hdl\uz_EnDat_src_Compare_To_Constant_block4.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block4.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block4.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant1_block5.vhd')">hdl\uz_EnDat_src_Compare_To_Constant1_block5.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant2_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Constant2_block1.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant2_block2.vhd')">hdl\uz_EnDat_src_Compare_To_Constant2_block2.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Constant3_block.vhd')">hdl\uz_EnDat_src_Compare_To_Constant3_block.vhd</a>
 <br/>
@@ -1323,7 +1329,7 @@ Following files are generated under this folder:
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_8BIT_SPLITTER.vhd')">hdl\uz_EnDat_src_8BIT_SPLITTER.vhd</a>
 <br/>
-<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Zero_block.vhd')">hdl\uz_EnDat_src_Compare_To_Zero_block.vhd</a>
+<a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_Compare_To_Zero_block1.vhd')">hdl\uz_EnDat_src_Compare_To_Zero_block1.vhd</a>
 <br/>
 <a href="matlab:edit('C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v9_5\hdl\uz_EnDat_src_SinglePortRAM_generic.vhd')">hdl\uz_EnDat_src_SinglePortRAM_generic.vhd</a>
 <br/>

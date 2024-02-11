@@ -958,10 +958,12 @@ float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecal
     float ret;
     float expectation = 0.0f;
     float measuredin = 0.0f;
-    measuredin = (float) (uz_EnDat_hw_read_SYNCQUALITYBUS(self->config.base_address));
-    expectation = floorf((oneperiod / valuecalctime)); //BY DESIGN TO GET RID OF DECIMAL
-    ret = (expectation / measuredin) * 100.0f;
-
+    uint16_t temp = 0;
+    temp = uz_EnDat_hw_read_SYNCQUALITYBUS(self->config.base_address);
+    measuredin = (float) temp;
+    expectation = (oneperiod / valuecalctime); //BY DESIGN TO GET RID OF DECIMAL
+    ret = roundf((measuredin / expectation) * 100.0f);
+    
     return (ret);
 
 

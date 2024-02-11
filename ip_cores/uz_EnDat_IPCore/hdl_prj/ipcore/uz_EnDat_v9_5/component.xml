@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0e104880</spirit:value>
+            <spirit:value>969d42fd</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0e104880</spirit:value>
+            <spirit:value>969d42fd</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1109,11 +1109,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block5.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant2_block1.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant2_block2.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1165,7 +1165,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Zero_block.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Zero_block1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1465,7 +1465,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block1.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block2.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1489,7 +1489,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block2.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block3.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1501,7 +1501,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block3.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1529,6 +1529,18 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Zero_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant2_block1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/uz_EnDat_src_Detect_Increase1_block1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -1547,7 +1559,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_EnDat.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_c9eee279</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_ec737e5e</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1633,12 +1645,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block5.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant2_block1.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant2_block2.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -1703,7 +1715,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Zero_block.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Zero_block1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2078,7 +2090,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block1.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block2.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2108,7 +2120,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block2.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block3.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2123,7 +2135,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block3.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2154,6 +2166,21 @@
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/uz_EnDat_src_ageprovider.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Zero_block.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant1_block1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/uz_EnDat_src_Compare_To_Constant2_block1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2232,14 +2259,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_EnDat</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113422399</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2024-02-10T19:40:03Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113423820</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2024-02-11T19:21:28Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="e2b8b480"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="b6ba20fd"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="cf762062"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="0d4186c8"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="7b1be292"/>
     </xilinx:packagingInfo>

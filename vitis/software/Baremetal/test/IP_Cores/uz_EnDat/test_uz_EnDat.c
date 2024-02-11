@@ -405,7 +405,7 @@ void test_uz_EnDat_fail_assert_if_uz_EnDat_read_pos_t0_as_radiant_and_age_is_cal
 
 
 void test_uz_EnDat_fail_assert_if_uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper_is_called_with_NULL_pointer(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(NULL, 0U, false));
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(NULL, 0U, false, false));
 }
 
 void test_uz_EnDat_fail_assert_if_uz_EnDat_calculate_sync_quality_indicator_is_called_with_NULL_pointer(void) {

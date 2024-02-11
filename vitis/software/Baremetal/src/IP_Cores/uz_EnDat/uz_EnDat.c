@@ -189,7 +189,7 @@ uint16_t uz_EnDat_factor_converter(float in) {
     if (in <= 0.00001f)
     return (0u);
 
-    i = floorf(in * 100.0f);
+    i = (uint32_t) floorf(in * 100.0f);
 
     return ((uint16_t)i);
 }
@@ -954,11 +954,11 @@ float uz_EnDat_get_clk_frequency_or_period_from_divider(uint8_t divider, bool fr
 float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecalctime) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    float oneperiod 1.0f;
+    float oneperiod = 1.0f;
     float ret;
     float expectation = 0.0f;
     float measuredin = 0.0f;
-    measuredin = (float) uz_EnDat_hw_read_SYNCQUALITYBUS;
+    measuredin = (float) (uz_EnDat_hw_read_SYNCQUALITYBUS(self->config.base_address));
     expectation = floorf((oneperiod / valuecalctime)); //BY DESIGN TO GET RID OF DECIMAL
     ret = (expectation / measuredin) * 100.0f;
 

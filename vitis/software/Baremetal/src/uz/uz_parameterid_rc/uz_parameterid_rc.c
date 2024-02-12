@@ -43,13 +43,12 @@ uz_parameterid_rc_t* uz_parameterid_rc_init(struct uz_parameterid_rc_config_t in
     uz_parameterid_rc_t* self = uz_parameterid_rc_allocation();
     self->internal_config = initial_config;
     self->is_first_call_to_sample = true;
-    self->motormode = true;
     self->counter.meas_max = (uint32_t)(self->internal_config.sample_time/self->internal_config.isr_steptime);
     self->counter.wait_max = (uint32_t)(self->internal_config.wait_time/self->internal_config.isr_steptime); 
     uz_assert(self->internal_config.n_ref >= 0.0f);
     uz_assert(self->internal_config.n_ref <= 1500.0f);
-//    uz_assert(self->internal_config.id_ref > 0.0f);
-//    uz_assert(self->internal_config.iq_ref > 0.0f);
+    uz_assert(fabsf(self->internal_config.id_ref) < 20.0f);
+    uz_assert(fabsf(self->internal_config.iq_ref) < 20.0f);
     return (self);
 }
 
@@ -73,6 +72,14 @@ uz_parameterid_rc_t* uz_parameterid_rc_reset_meas(uz_parameterid_rc_t* self){
     self->sample.mean_iq = 0.0f;
     self->sample.mean_n = 0.0f;
     self->counter.meas = 0U;
+    return(self);
+}
+
+uz_parameterid_rc_t* uz_parameterid_rc_reset(uz_parameterid_rc_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_parameterid_rc_reset_meas(self); 
+    self->is_first_call_to_sample = true;
     return(self);
 }
 
@@ -231,6 +238,9 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             break;
 
         case finished:
+            self->output.set_out.id_set = 0.0f;
+            self->output.set_out.iq_set = 0.0f;
+            self->output.set_out.n_set = 0.0f;
             break;
 
         default:
@@ -243,9 +253,6 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
 
 return self->output;
 }
-
-
-
 
 
 #endif

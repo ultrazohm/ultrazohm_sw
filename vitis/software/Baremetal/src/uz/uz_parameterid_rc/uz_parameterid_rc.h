@@ -109,5 +109,6 @@ uz_parameterid_rc_t* uz_parameterid_rc_init(struct uz_parameterid_rc_config_t in
 struct uz_parameterid_rc_config_t uz_parameterid_rc_get_config(uz_parameterid_rc_t* self);
 struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parameterid_rc_t* self, float ud, float uq, float id, float iq, float n);
 uz_parameterid_rc_t* uz_parameterid_rc_reset_meas(uz_parameterid_rc_t* self);
+uz_parameterid_rc_t* uz_parameterid_rc_reset(uz_parameterid_rc_t* self);
 
 #endif // UZ_PARAMETERID_RC_H

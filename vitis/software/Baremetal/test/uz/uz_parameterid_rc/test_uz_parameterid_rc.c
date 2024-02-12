@@ -172,12 +172,12 @@ void test_uz_parameterid_rc_generate_outputs_calc_rc(void){
 
 TEST_ASSERT_FLOAT_WITHIN(1e-3, 0.7f, actual_output2.rc_d);
 TEST_ASSERT_FLOAT_WITHIN(1e-3, 0.7f, actual_output2.rc_q);
-TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);
+TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output2.set_out.n_set);
 }
 
 void test_uz_parameterid_rc_generate_outputs_simulate_behaviour(void){
     test_config.wait_time = 5000.0f * test_config.isr_steptime;
-    test_config.sample_time = 500.0f * test_config.isr_steptime;
+    test_config.sample_time = 5000.0f * test_config.isr_steptime;
     test_config.id_ref = 5.0f;
     test_config.iq_ref = -5.0f;
     float r_s = (1.75e-6f * 1000.0f *  1000.0f + 5.733e-4f *  1000.0f + 28.4648f)/1000.0f;
@@ -207,7 +207,7 @@ void test_uz_parameterid_rc_generate_outputs_simulate_behaviour(void){
 
 TEST_ASSERT_FLOAT_WITHIN(0.1, 0.7f, actual_output2.rc_d);
 TEST_ASSERT_FLOAT_WITHIN(0.1, 0.7f, actual_output2.rc_q);
-TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);
+TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output2.set_out.n_set);
 }
 
 

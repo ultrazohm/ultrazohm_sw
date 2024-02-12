@@ -62,6 +62,10 @@
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           4U
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES		6U
 #define UZ_PARAMETERID_RS_MAX_INSTANCES                 1U
+#define UZ_PARAMETERID_RC_MAX_INSTANCES                 1U
+#define UZ_PMSM_RFE_MAX_INSTANCES                       1U
+#define UZ_PMSM_LINEAR_MAX_INSTANCES                    1U
+#define UZ_PMSM_LINEAR_RFE_MAX_INSTANCES                1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -111,4 +115,8 @@
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_PARAMETERID_RS_MAX_INSTANCES                 100U
+    #define UZ_PARAMETERID_RC_MAX_INSTANCES                 50U
+    #define UZ_PMSM_RFE_MAX_INSTANCES                       10U
+    #define UZ_PMSM_LINEAR_MAX_INSTANCES                    10U
+    #define UZ_PMSM_LINEAR_RFE_MAX_INSTANCES                10U
 #endif

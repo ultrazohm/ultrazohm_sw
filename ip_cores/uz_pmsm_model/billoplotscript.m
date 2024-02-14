@@ -1,5 +1,5 @@
 close all;
-pgfplots_test = readtable('data_from_javascope_for_plotting/Log_2024-02-14_14-32-51');
+pgfplots_test = readtable('data_from_javascope_for_plotting/closed_loop_linear_1A');
 pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 pgfplots_test_cut = pgfplots_test_cut(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
@@ -8,10 +8,8 @@ pgfplots_test_cut = pgfplots_test_cut(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
 writetable( pgfplots_test,'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Implementierung\pgfplots_test_mat.csv');
 
-
-
 %% Simulink Simulation
-simouttest = sim('uz_pmsm_model','StopTime','0.075');
+simouttest = sim('uz_pmsm_model','StopTime','0.05');
 iq_plot = simouttest.logsout.getElement('i_q_hdl').Values.Data;
 timeplot_iq = simouttest.logsout.getElement('i_q_hdl').Values.time;
 iq_plot_test = simouttest.logsout.getElement('i_q_soll').Values.Data;
@@ -37,14 +35,18 @@ plot(timeplot_iq,iq_plot, 'LineWidth', 4,'Color', 'blue');
 hold on;
 plot(timeplot_iq_test,iq_plot_test, 'LineWidth', 4,'Color', 'red');
 hold on;
-% plot(final_adjusted_time_vector,adjusted_value_vector, 'LineWidth', 4,'Color', 'green');
-% hold on;
-%plot(final_adjusted_time_vector,test_iqsoll_ausGui_value, 'LineWidth', 4,'Color', 'cyan');
-%legend('iq_{sim}','iq_{set}','iq_{CiL}','iq_{sollCiL}');
+plot(final_adjusted_time_vector,adjusted_value_vector, 'LineWidth', 4,'Color', 'green');
+hold on;
+plot(final_adjusted_time_vector,test_iqsoll_ausGui_value, 'LineWidth', 4,'Color', 'cyan');
+legend('iq_{sim}','iq_{set}','iq_{CiL}','iq_{sollCiL}');
 title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
 set(gca, 'FontSize', 22);
-%figure;
-%plot(final_adjusted_time_vector,adjusted_value_vector);
+
+% %% Fehler berechnen
+% iq_cil_interpoliert = interp1(iq_plot,timeplot_iq,final_adjusted_time_vector);
+% absolute_error = abs(iq_cil_interpoliert - adjusted_value_vector);
+% figure;
+% plot(final_adjusted_time_vector,absolute_error);
 
 
 

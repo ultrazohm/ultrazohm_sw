@@ -81,17 +81,17 @@ int main(void)
 
         	struct uz_PMSM_t config_PMSM = {
 
-        		.Ld_Henry = 0.00045f,
+        		.Ld_Henry = 3.00e-04f,
 
-				.Lq_Henry = 0.002f,
+				.Lq_Henry = 3.00e-04f,
 
-				.Psi_PM_Vs = 0.0194f};
+				.Psi_PM_Vs = 0.0075f};
 
         	struct uz_PI_Controller_config config_id = {
 
-        		.Kp = 2.2500f,
+        		.Kp = 3.00f,
 
-				.Ki = 1.500e+03f,
+				.Ki = 850.0f,
 
 				.samplingTime_sec = 0.00005f,
 
@@ -101,9 +101,9 @@ int main(void)
 
         	struct uz_PI_Controller_config config_iq = {
 
-        		.Kp = 10.0f,
+        		.Kp = 3.00f,
 
-				.Ki = 1.500e3f,
+				.Ki = 850.0f,
 
 				.samplingTime_sec = 0.00005f,
 
@@ -134,21 +134,21 @@ int main(void)
 
         	    				.simulate_nonlinear =false,
 
-        	    				.r_1 = 0.30f,
+								.r_1 = 0.085f,
 
-        	    				.L_d = 0.00045f,
+								.L_d = 3.00e-04f,
 
-        	    				.L_q = 0.002f,
+								.L_q = 3.00e-04f,
 
-        	    				.psi_pm = 0.0194f,
+								.psi_pm = 0.0075f,
 
-        	    				.polepairs = 4.0f,
+								.polepairs = 4.0f,
 
-        	    				.inertia = 0.000084f,
+								.inertia = 3.24e-05f,
 
-        	    				.coulomb_friction_constant = 0.01f,
+								.coulomb_friction_constant = 0.01f,
 
-        	    				.friction_coefficient = 0.001f,
+								.friction_coefficient = 0.001f,
 							    .ad1 = 0.030483840951002f,
 							    .ad2 = 0.040244227373267f,
 							    .ad3 = -16.481195185733903f,

@@ -45,7 +45,7 @@ polepair=4;
 
 ts=1/5e5; % =2e-6
 
-setpoint_step=4.0;
+setpoint_step=1.0;
 rpm = 0;
 load_torque = 0;
 
@@ -77,7 +77,7 @@ simulate_mechanical=true;
 simulate_open_loop=false;
 simulate_nonlinear_modell=false;
 
-parameter_nachfuerung=true;
+parameter_nachfuerung=false;
 
 praediktion_entkopplung_nonlinear=false;
 entkopplung_linear=true;

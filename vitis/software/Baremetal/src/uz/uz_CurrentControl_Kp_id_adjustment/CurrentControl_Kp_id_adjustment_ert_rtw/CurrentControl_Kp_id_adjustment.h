@@ -52,7 +52,7 @@ typedef struct tag_RTM RT_MODEL;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
-  real32_T dead_time_reciprodical;     /* '<Root>/dead_time_reciprodical' */
+  real32_T dead_time_reciprocal;     /* '<Root>/dead_time_reciprocal' */
   real32_T psi_d_ref;                  /* '<Root>/psid_ref' */
   real32_T psi_d_mea;                  /* '<Root>/psid_mea' */
   real32_T id_ref;                     /* '<Root>/id_ref' */

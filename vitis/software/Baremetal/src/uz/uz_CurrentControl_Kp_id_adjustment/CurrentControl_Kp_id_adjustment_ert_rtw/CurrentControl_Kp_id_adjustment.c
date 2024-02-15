@@ -47,7 +47,7 @@ void CurrentControl_Kp_id_adjustment_step(RT_MODEL *const rtM)
    *  Switch: '<S1>/Switch2'
    */
   rtY->Kp_id = (rtU->psi_d_ref - rtU->psi_d_mea) / rtb_Switch2 *
-    rtU->dead_time_reciprodical;
+    rtU->dead_time_reciprocal * 0.5f;
 }
 
 /* Model initialize function */

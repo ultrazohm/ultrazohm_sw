@@ -48,7 +48,7 @@ void CurrentControl_Kp_iq_adjustment_step(RT_MODEL *const rtM)
    *  Switch: '<S1>/Switch2'
    */
   rtY->Kp_iq = (rtU->psiq_ref - rtU->psiq_mea) / rtb_Switch2 * (0.5F *
-    rtU->dead_time_reciprodical);
+    rtU->dead_time_reciprocal);
 }
 
 /* Model initialize function */

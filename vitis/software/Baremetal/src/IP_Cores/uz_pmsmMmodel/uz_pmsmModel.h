@@ -68,16 +68,6 @@ struct uz_pmsmModel_inputs_t
     float load_torque; /**< Applied load torque in Nm */
 };
 
-struct uz_pmsmModel_flux_approx_t
-{
-    float psi_q_approx; 
-    float psi_d_approx; 
-    float Lqq_approx; 
-    float Ldd_approx; 
-    float Lqd_approx;
-    float Ldq_approx;
-};
-
 
 /**
  * @brief Initialize an instance of the driver

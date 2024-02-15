@@ -2,7 +2,7 @@
 #include "../uz_global_configuration.h"
 #if UZ_CURRENTCONTROL_KP_ID_ADJUSTMENT_MAX_INSTANCES > 0U
 #include "CurrentControl_Kp_id_adjustment_ert_rtw/CurrentControl_Kp_id_adjustment.h"
-#include "../../uz_HAL.h"
+#include "../uz_HAL.h"
 
 struct uz_CurrentControl_Kp_id_adjustment_t {
     bool is_ready;
@@ -13,7 +13,6 @@ struct uz_CurrentControl_Kp_id_adjustment_t {
 };
 
 float Kp_id;
-float dead_time_reciprocal;
 static uint32_t instance_counter = 0U;
 static uz_CurrentControl_Kp_id_adjustment_t instances[UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES] = { 0 };
 

@@ -42,6 +42,8 @@ extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 extern uz_3ph_dq_t reference_currents_Amp;
 
+extern uz_3ph_abc_t test_to_show_flux;
+
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -63,12 +65,12 @@ int JavaScope_initialize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_el_Speed_rpm]		= &(pmsm_outputs.omega_mech_1_s);
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
+	js_ch_observable[JSO_psid_approx] 			= &test_to_show_flux.a;
+	js_ch_observable[JSO_psiq_approx] 			= &test_to_show_flux.b;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &reference_currents_Amp.q;
+	js_ch_observable[JSO_iq_ref] 			= &reference_currents_Amp.q;
 	js_ch_observable[JSO_iq] 			= &(pmsm_outputs.i_q_A);
 	js_ch_observable[JSO_id] 			= &(pmsm_outputs.i_d_A);
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;

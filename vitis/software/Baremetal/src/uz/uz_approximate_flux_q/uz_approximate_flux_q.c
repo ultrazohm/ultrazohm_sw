@@ -1,7 +1,7 @@
 #include "../uz_global_configuration.h"
 #if UZ_APPROXIMATE_FLUX_Q_MAX_INSTANCES > 0U
 #include "approximate_flux_q_ert_rtw/approximate_flux_q.h"
-#include "../../uz_HAL.h"
+#include "../uz_HAL.h"
 #include "uz_approximate_flux_q.h"
 
 struct uz_approximate_flux_q_t {

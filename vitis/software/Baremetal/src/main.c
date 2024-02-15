@@ -53,6 +53,10 @@ enum init_chain
 };
 uz_pmsmModel_t *pmsm=NULL;
 uz_CurrentControl_t* CurrentControl_instance = NULL;
+uz_approximate_flux_d_t* approximate_flux_d_instance = NULL;
+uz_approximate_flux_q_t* approximate_flux_q_instance = NULL;
+uz_CurrentControl_Kp_id_adjustment_t* test_instance = NULL;
+
 enum init_chain initialization_chain = init_assertions;
 
 int main(void)
@@ -79,15 +83,33 @@ int main(void)
             break;
         case init_CurrentControl_pmsm:;
 
-        	struct uz_PMSM_t config_PMSM = {
+        struct uz_PMSM_t config_PMSM = {
 
         		.Ld_Henry = 3.00e-04f,
 
 				.Lq_Henry = 3.00e-04f,
 
 				.Psi_PM_Vs = 0.0075f};
+        struct uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
 
-        	struct uz_PI_Controller_config config_id = {
+        		.ad1_parameter = 0.030483840951002f,
+				.ad2_parameter = 0.040244227373267f,
+				.ad3_parameter = -16.481195185733903f,
+				.ad4_parameter = 1.296438633344970f,
+				.ad5_parameter = 6.183163374457993e-04f,
+				.ad6_parameter = -12.275586044862504f,
+				.aq1_parameter = 0.004816670542863f,
+				.aq2_parameter = 0.171595254784258f,
+				.aq3_parameter = 9.262938633610718e-04f,
+				.aq4_parameter = 0.005001870975338f,
+				.aq5_parameter = 0.170521235710151f,
+				.aq6_parameter = 9.186084507499523e-04f,
+				.F1G1_parameter = -0.001356794026337f,
+				.F2G2_parameter = 0.078813850391713f};
+        approximate_flux_d_instance = uz_approximate_flux_d_init(fitting_config);
+        approximate_flux_q_instance = uz_approximate_flux_q_init(fitting_config);
+
+        struct uz_PI_Controller_config config_id = {
 
         		.Kp = 3.00f,
 
@@ -99,7 +121,7 @@ int main(void)
 
 				.lower_limit = -100.0f};
 
-        	struct uz_PI_Controller_config config_iq = {
+        struct uz_PI_Controller_config config_iq = {
 
         		.Kp = 3.00f,
 
@@ -111,7 +133,7 @@ int main(void)
 
 				.lower_limit = -100.0f};
 
-        	struct uz_CurrentControl_config config_CurrentControl = {
+        struct uz_CurrentControl_config config_CurrentControl = {
 
         		.decoupling_select = linear_decoupling,
 
@@ -123,51 +145,53 @@ int main(void)
 
 				.max_modulation_index = 1.0f / sqrtf(3.0f)};
 
-        	CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
-        	struct uz_pmsmModel_config_t pmsm_config={
-
-        	            		.base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
-
-        	    				.ip_core_frequency_Hz=100000000,
-
-        	    				.simulate_mechanical_system = true,
-
-        	    				.simulate_nonlinear =false,
-
-								.r_1 = 0.085f,
-
-								.L_d = 3.00e-04f,
-
-								.L_q = 3.00e-04f,
-
-								.psi_pm = 0.0075f,
-
-								.polepairs = 4.0f,
-
-								.inertia = 3.24e-05f,
-
-								.coulomb_friction_constant = 0.01f,
-
-								.friction_coefficient = 0.001f,
-							    .ad1 = 0.030483840951002f,
-							    .ad2 = 0.040244227373267f,
-							    .ad3 = -16.481195185733903f,
-							    .ad4 = 1.296438633344970f,
-							    .ad5 = 6.183163374457993e-04f,
-							    .ad6 = -12.275586044862504f,
-							    .aq1 = 0.004816670542863f,
-							    .aq2 = 0.171595254784258f,
-							    .aq3 = 9.262938633610718e-04f,
-							    .aq4 = 0.005001870975338f,
-							    .aq5 = 0.170521235710151f,
-							    .aq6 = 9.186084507499523e-04f,
-							    .F1G1 = -0.001356794026337f,
-							    .F2G2 = 0.078813850391713f};
-        	            	pmsm=uz_pmsmModel_init(pmsm_config);
+        CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
 
 
-        	initialization_chain = init_ip_cores;
-        	break;
+        struct uz_pmsmModel_config_t pmsm_config={
+
+        		.base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+
+				.ip_core_frequency_Hz=100000000,
+
+				.simulate_mechanical_system = true,
+
+				.simulate_nonlinear =false,
+
+				.r_1 = 0.085f,
+
+				.L_d = 3.00e-04f,
+
+				.L_q = 3.00e-04f,
+
+				.psi_pm = 0.0075f,
+
+				.polepairs = 4.0f,
+
+				.inertia = 3.24e-05f,
+
+				.coulomb_friction_constant = 0.01f,
+
+				.friction_coefficient = 0.001f,
+				.ad1 = 0.030483840951002f,
+				.ad2 = 0.040244227373267f,
+				.ad3 = -16.481195185733903f,
+				.ad4 = 1.296438633344970f,
+				.ad5 = 6.183163374457993e-04f,
+				.ad6 = -12.275586044862504f,
+				.aq1 = 0.004816670542863f,
+				.aq2 = 0.171595254784258f,
+				.aq3 = 9.262938633610718e-04f,
+				.aq4 = 0.005001870975338f,
+				.aq5 = 0.170521235710151f,
+				.aq6 = 9.186084507499523e-04f,
+				.F1G1 = -0.001356794026337f,
+				.F2G2 = 0.078813850391713f};
+        pmsm=uz_pmsmModel_init(pmsm_config);
+
+
+        initialization_chain = init_ip_cores;
+        break;
 
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

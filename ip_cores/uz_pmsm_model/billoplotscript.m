@@ -1,5 +1,5 @@
 close all;
-pgfplots_test = readtable('data_from_javascope_for_plotting/psid_psiq_mit_tutorialparametern_undfaktor1totzeit');
+pgfplots_test = readtable('data_from_javascope_for_plotting/Log_2024-02-16_15-15-30');
 pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 pgfplots_test_cut = pgfplots_test_cut(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
@@ -15,10 +15,10 @@ timeplot_iq = simouttest.logsout.getElement('i_q_hdl').Values.time;
 iq_plot_test = simouttest.logsout.getElement('i_q_soll').Values.Data;
 timeplot_iq_test = simouttest.logsout.getElement('i_q_soll').Values.time;
 
-psi_d_approx = simouttest.logsout.getElement('psi_d_approx').Values.Data;
-psi_d_approx_time = simouttest.logsout.getElement('psi_d_approx').Values.time;
-psi_q_approx = simouttest.logsout.getElement('psi_q_approx').Values.Data;
-psi_q_approx_time = simouttest.logsout.getElement('psi_q_approx').Values.time;
+psi_d_approx = simouttest.logsout.getElement('Kp_d_adap').Values.Data;
+psi_d_approx_time = simouttest.logsout.getElement('Kp_d_adap').Values.time;
+psi_q_approx = simouttest.logsout.getElement('Kp_q_adap').Values.Data;
+psi_q_approx_time = simouttest.logsout.getElement('Kp_q_adap').Values.time;
 
 %% PgfPlot Fugaze
 setpoint_search = setpoint_step;
@@ -43,8 +43,8 @@ hold on;
 plot(final_adjusted_time_vector,adjusted_value_vector, 'LineWidth', 4,'Color', 'green');
 hold on;
 plot(final_adjusted_time_vector,test_iqsoll_ausGui_value, 'LineWidth', 4,'Color', 'cyan');
-legend('psid_{sim}','psiq_{sim}','psid_{CiL}','psiq_{CiL}');
-title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
+legend('Kp_d{sim}','Kp_q{sim}','Kp_d{CiL}','Kp_q{CiL}');
+%title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
 set(gca, 'FontSize', 22);
 
 % %% Fehler berechnen

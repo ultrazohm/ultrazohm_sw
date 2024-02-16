@@ -55,7 +55,8 @@ uz_pmsmModel_t *pmsm=NULL;
 uz_CurrentControl_t* CurrentControl_instance = NULL;
 uz_approximate_flux_d_t* approximate_flux_d_instance = NULL;
 uz_approximate_flux_q_t* approximate_flux_q_instance = NULL;
-uz_CurrentControl_Kp_id_adjustment_t* test_instance = NULL;
+uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_instance = NULL;
+uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_instance = NULL;
 
 enum init_chain initialization_chain = init_assertions;
 
@@ -85,11 +86,11 @@ int main(void)
 
         struct uz_PMSM_t config_PMSM = {
 
-        		.Ld_Henry = 3.00e-04f,
+        		.Ld_Henry = 0.00045f,
 
-				.Lq_Henry = 3.00e-04f,
+				.Lq_Henry = 0.002f,
 
-				.Psi_PM_Vs = 0.0075f};
+				.Psi_PM_Vs = 0.0194f};
         struct uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
 
         		.ad1_parameter = 0.030483840951002f,
@@ -111,9 +112,9 @@ int main(void)
 
         struct uz_PI_Controller_config config_id = {
 
-        		.Kp = 3.00f,
+        		.Kp = 2.25f,
 
-				.Ki = 850.0f,
+				.Ki = 1.50e+03f,
 
 				.samplingTime_sec = 0.00005f,
 
@@ -121,11 +122,14 @@ int main(void)
 
 				.lower_limit = -100.0f};
 
+        float dead_time_reciprocal = 10.0e3f;
+        uz_CurrentControl_Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(dead_time_reciprocal);
+
         struct uz_PI_Controller_config config_iq = {
 
-        		.Kp = 3.00f,
+        		.Kp = 10.0f,
 
-				.Ki = 850.0f,
+				.Ki = 1.50e+03f,
 
 				.samplingTime_sec = 0.00005f,
 
@@ -147,6 +151,7 @@ int main(void)
 
         CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
 
+        uz_CurrentControl_Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(dead_time_reciprocal);
 
         struct uz_pmsmModel_config_t pmsm_config={
 
@@ -156,19 +161,19 @@ int main(void)
 
 				.simulate_mechanical_system = true,
 
-				.simulate_nonlinear =false,
+				.simulate_nonlinear =true,
 
-				.r_1 = 0.085f,
+				.r_1 = 0.3f,
 
-				.L_d = 3.00e-04f,
+				.L_d = 0.00045f,
 
-				.L_q = 3.00e-04f,
+				.L_q = 0.002f,
 
-				.psi_pm = 0.0075f,
+				.psi_pm = 0.0194f,
 
 				.polepairs = 4.0f,
 
-				.inertia = 3.24e-05f,
+				.inertia = 0.000084f,
 
 				.coulomb_friction_constant = 0.01f,
 

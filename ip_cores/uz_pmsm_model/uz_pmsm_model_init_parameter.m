@@ -23,11 +23,11 @@
 % polepair=0;
 
 % % Electrical parameters
-% R_1=0.3;
-% L_d=0.00045;
-% L_q=0.002;
-% psi_pm=0.0194;
-% polepair=4;
+R_1=0.3;
+L_d=0.00045;
+L_q=0.002;
+psi_pm=0.0194;
+polepair=4;
 
 % %DiffrentMotor
 % R_1=0.45;
@@ -37,11 +37,11 @@
 % polepair=4;
 
 %DiffrentMotor
-R_1=0.085;
-L_d=3.00e-04;
-L_q=3.00e-04;
-psi_pm=0.0075;
-polepair=4.0;
+% R_1=0.085;
+% L_d=3.00e-04;
+% L_q=3.00e-04;
+% psi_pm=0.0075;
+% polepair=4.0;
 
 ts=1/5e5; % =2e-6
 
@@ -53,7 +53,7 @@ load_torque = 0;
 ts_regler=1/20e3;
 tau_d=L_d/R_1;
 tau_q=L_q/R_1;
-tau_sum=1*ts_regler;
+tau_sum=2*ts_regler;
 % Parallel PID
 k_p_d=L_d/(2*tau_sum);
 k_p_q=L_q/(2*tau_sum);

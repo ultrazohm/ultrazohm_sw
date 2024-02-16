@@ -56,7 +56,7 @@ uz_3ph_dq_t measured_currents_Amp = {0};
 
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
 
-uz_3ph_abc_t test_to_show_flux = {0};
+uz_6ph_abc_t test_to_show_flux = {0};
 
 uz_PMSM_flux_fitting_parameter_config_t fitting_config = {0};
 
@@ -89,8 +89,14 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 //init for flux approx and kp adaption
 extern uz_approximate_flux_d_t* approximate_flux_d_instance;
 extern uz_approximate_flux_q_t* approximate_flux_q_instance;
-float psid_approx;
-float psiq_approx;
+extern uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_instance;
+extern uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_instance;
+float psid_actual;
+float psiq_actual;
+float psid_ref;
+float psiq_ref;
+float K_p_id;
+float K_p_iq;
 
 
 void ISR_Control(void *data)
@@ -120,11 +126,20 @@ void ISR_Control(void *data)
 
     	       //Approximate psid and psiq and set new kpd and kpq
 
-    	       psid_approx = uz_approximate_flux_d_step(approximate_flux_d_instance,measured_currents_Amp);
-    	       psiq_approx = uz_approximate_flux_q_step(approximate_flux_q_instance,measured_currents_Amp);
+    	       psid_actual = uz_approximate_flux_d_step(approximate_flux_d_instance,measured_currents_Amp);
+    	       psiq_actual = uz_approximate_flux_q_step(approximate_flux_q_instance,measured_currents_Amp);
 
-    	       test_to_show_flux.a = psid_approx;
-    	       test_to_show_flux.b = psiq_approx;
+    	       psid_ref = uz_approximate_flux_d_step(approximate_flux_d_instance,reference_currents_Amp);
+    	       psiq_ref = uz_approximate_flux_q_step(approximate_flux_q_instance,reference_currents_Amp);
+
+    	       K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psid_ref, psid_actual);
+    	       K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psiq_ref, psiq_actual);
+    	       test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
+    	       test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
+    	       test_to_show_flux.c1 = psid_actual; //only so i can look at it in javascope
+    	       test_to_show_flux.a2 = psid_ref ; //only so i can look at it in javascope
+    	       test_to_show_flux.b2 = psiq_actual; //only so i can look at it in javascope
+    	       test_to_show_flux.c2 = psiq_ref ; //only so i can look at it in javascope
 
 
     	       //Closed Loop

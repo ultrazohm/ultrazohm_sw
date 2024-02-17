@@ -13,7 +13,8 @@ struct uz_approximate_flux_d_t {
     
 };
 
-float psi_d_approx;
+float psi_d_actual;
+float psi_d_ref;
 static uint32_t instance_counter = 0U;
 static uz_approximate_flux_d_t instances[UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES] = { 0 };
 
@@ -59,14 +60,24 @@ uz_approximate_flux_d_t* uz_approximate_flux_d_init(uz_PMSM_flux_fitting_paramet
     return(self);
 }
 
-float uz_approximate_flux_d_step(uz_approximate_flux_d_t* self, uz_3ph_dq_t i_Ampere){
+float uz_approximate_flux_d_step(uz_approximate_flux_d_t* self, uz_3ph_dq_t i_actual_Ampere){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->input.id=i_Ampere.d;
-    self->input.iq=i_Ampere.q;
+    self->input.id=i_actual_Ampere.d;
+    self->input.iq=i_actual_Ampere.q;
     approximate_flux_d_step(self->PtrToModelData);
-    psi_d_approx = self->output.psid_approx;
-    return(psi_d_approx);
+    psi_d_actual = self->output.psid_approx;
+    return(psi_d_actual);
+}
+
+float uz_approximate_flux_d_set_step(uz_approximate_flux_d_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->input.id=i_reference_Ampere.d;
+    self->input.iq=i_actual_Ampere.q;
+    approximate_flux_d_step(self->PtrToModelData);
+    psi_d_ref = self->output.psid_approx;
+    return(psi_d_ref);
 }
 
 #endif

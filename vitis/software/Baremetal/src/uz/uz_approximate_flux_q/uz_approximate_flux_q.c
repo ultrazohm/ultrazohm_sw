@@ -13,7 +13,8 @@ struct uz_approximate_flux_q_t {
     
 };
 
-float psi_q_approx;
+float psi_q_actual;
+float psi_q_ref;
 static uint32_t instance_counter = 0U;
 static uz_approximate_flux_q_t instances[UZ_APPROXIMATE_FLUX_Q_MAX_INSTANCES] = { 0 };
 
@@ -65,9 +66,18 @@ float uz_approximate_flux_q_step(uz_approximate_flux_q_t* self, uz_3ph_dq_t i_Am
     self->input.id=i_Ampere.d;
     self->input.iq=i_Ampere.q;
     approximate_flux_q_step(self->PtrToModelData);
-    psi_q_approx = self->output.psiq_approx;
-    return(psi_q_approx);
+    psi_q_actual = self->output.psiq_approx;
+    return(psi_q_actual);
 }
 
+float uz_approximate_flux_q_set_step(uz_approximate_flux_q_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->input.id=i_actual_Ampere.d;
+    self->input.iq=i_reference_Ampere.q;
+    approximate_flux_q_step(self->PtrToModelData);
+    psi_q_ref = self->output.psiq_approx;
+    return(psi_q_ref);
+}
 #endif
 

@@ -1,6 +1,6 @@
 #include "uz_CurrentControl_Kp_id_adjustment.h"
 #include "../uz_global_configuration.h"
-#if UZ_CURRENTCONTROL_KP_ID_ADJUSTMENT_MAX_INSTANCES > 0U
+#if UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES > 0U
 #include "CurrentControl_Kp_id_adjustment_ert_rtw/CurrentControl_Kp_id_adjustment.h"
 #include "../uz_HAL.h"
 
@@ -14,12 +14,12 @@ struct uz_CurrentControl_Kp_id_adjustment_t {
 
 float Kp_id;
 static uint32_t instance_counter = 0U;
-static uz_CurrentControl_Kp_id_adjustment_t instances[UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES] = { 0 };
+static uz_CurrentControl_Kp_id_adjustment_t instances[UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES] = { 0 };
 
 static uz_CurrentControl_Kp_id_adjustment_t *uz_CurrentControl_Kp_id_adjustment_allocation(void);
 
 static uz_CurrentControl_Kp_id_adjustment_t *uz_CurrentControl_Kp_id_adjustment_allocation(void){
-    uz_assert(instance_counter < UZ_APPROXIMATE_FLUX_D_MAX_INSTANCES);
+    uz_assert(instance_counter < UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES);
     uz_CurrentControl_Kp_id_adjustment_t *self = &instances[instance_counter];
     uz_assert(self->is_ready == false);
     instance_counter++;

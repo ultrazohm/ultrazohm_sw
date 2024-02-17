@@ -7,7 +7,8 @@
 #include "../uz_Transformation/uz_Transformation.h"
 #include "test_assert_with_exception.h"
 
-uz_3ph_dq_t i_Ampere = {0};
+uz_3ph_dq_t i_reference_Ampere = {0};
+uz_3ph_dq_t i_actual_Ampere = {0};
 uz_PMSM_flux_fitting_parameter_config_t fitting_config = {0};
 void setUp(void)
 {
@@ -29,9 +30,17 @@ void setUp(void)
 
 void test_uz_approximate_flux_q_step(void){
     uz_approximate_flux_q_t* test_instance = uz_approximate_flux_q_init(fitting_config);
-    i_Ampere.d = -3.0f;
-    i_Ampere.q = 3.0f;
-    float result = uz_approximate_flux_q_step(test_instance,i_Ampere);
+    i_actual_Ampere.d = -3.0f;
+    i_actual_Ampere.q = 3.0f;
+    float result = uz_approximate_flux_q_step(test_instance,i_actual_Ampere);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.0050f,result);
+} 
+
+void test_uz_approximate_flux_q_set_step(void){
+    uz_approximate_flux_q_t* test_instance = uz_approximate_flux_q_init(fitting_config);
+    i_actual_Ampere.d = -3.0f;
+    i_reference_Ampere.q = 3.0f;
+    float result = uz_approximate_flux_q_set_step(test_instance,i_reference_Ampere,i_actual_Ampere);
     TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.0050f,result);
 } 
 

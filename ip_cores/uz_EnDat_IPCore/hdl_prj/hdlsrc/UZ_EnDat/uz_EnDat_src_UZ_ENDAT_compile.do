@@ -15,6 +15,7 @@ vcom  uz_EnDat_src_Triggered_Subsystem.vhd
 vcom  uz_EnDat_src_3timestorage.vhd
 vcom  uz_EnDat_src_Triggered_Subsystem_block.vhd
 vcom  uz_EnDat_src_CLKDIV1.vhd
+vcom  uz_EnDat_src_CLKGEN.vhd
 vcom  uz_EnDat_src_WORDTOBOOL.vhd
 vcom  uz_EnDat_src_CONTROLWORDRAW.vhd
 vcom  uz_EnDat_src_JKFF.vhd
@@ -28,6 +29,7 @@ vcom  uz_EnDat_src_DATA2CLOCKSYNCER.vhd
 vcom  uz_EnDat_src_DATAFLOWCHGER.vhd
 vcom  uz_EnDat_src_DIFFBUILDER.vhd
 vcom  uz_EnDat_src_Detect_Change.vhd
+vcom  uz_EnDat_src_Increment_Stored_Integer.vhd
 vcom  uz_EnDat_src_Positional_Counter.vhd
 vcom  uz_EnDat_src_CLKCNTER_FAST.vhd
 vcom  uz_EnDat_src_Compare_To_Constant_block1.vhd
@@ -64,10 +66,9 @@ vcom  uz_EnDat_src_SetZeroBool2.vhd
 vcom  uz_EnDat_src_SetZeroBool3.vhd
 vcom  uz_EnDat_src_SetZeroBool4.vhd
 vcom  uz_EnDat_src_SetZeroBool5.vhd
-vcom  uz_EnDat_src_Subsystem_block.vhd
 vcom  uz_EnDat_src_Subsystem1.vhd
 vcom  uz_EnDat_src_WORDTOBOOL_block.vhd
-vcom  uz_EnDat_src_Increment_Stored_Integer.vhd
+vcom  uz_EnDat_src_Increment_Stored_Integer_block.vhd
 vcom  uz_EnDat_src_ramwatcher.vhd
 vcom  uz_EnDat_src_ManualDeserializere.vhd
 vcom  uz_EnDat_src_Subsystem2.vhd
@@ -80,11 +81,11 @@ vcom  uz_EnDat_src_Compare_To_Zero_block.vhd
 vcom  uz_EnDat_src_Detect_Increase1_block1.vhd
 vcom  uz_EnDat_src_signalquality.vhd
 vcom  uz_EnDat_src_SetZero32modified1.vhd
-vcom  uz_EnDat_src_Increment_Stored_Integer_block.vhd
+vcom  uz_EnDat_src_Increment_Stored_Integer_block1.vhd
 vcom  uz_EnDat_src_Positional_Counter_block.vhd
 vcom  uz_EnDat_src_SetZero32modified.vhd
 vcom  uz_EnDat_src_CLKCNTER_POSCNTR.vhd
-vcom  uz_EnDat_src_Increment_Stored_Integer_block1.vhd
+vcom  uz_EnDat_src_Increment_Stored_Integer_block2.vhd
 vcom  uz_EnDat_src_Positional_Counter_block1.vhd
 vcom  uz_EnDat_src_SetZero32modified_block.vhd
 vcom  uz_EnDat_src_CLKCNTER_ACT.vhd
@@ -98,7 +99,7 @@ vcom  uz_EnDat_src_Compare_To_Constant1_block4.vhd
 vcom  uz_EnDat_src_Detect_Increase_block1.vhd
 vcom  uz_EnDat_src_Subsystem3.vhd
 vcom  uz_EnDat_src_timingprovider.vhd
-vcom  uz_EnDat_src_Increment_Stored_Integer_block2.vhd
+vcom  uz_EnDat_src_Increment_Stored_Integer_block3.vhd
 vcom  uz_EnDat_src_ramselektor.vhd
 vcom  uz_EnDat_src_WORDTOBOOL_block1.vhd
 vcom  uz_EnDat_src_CONTROLWORDSTORED.vhd
@@ -117,7 +118,7 @@ vcom  uz_EnDat_src_SinglePortRAM_generic.vhd
 vcom  uz_EnDat_src_Storage16.vhd
 vcom  uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd
 vcom  uz_EnDat_src_SetZeroBool.vhd
-vcom  uz_EnDat_src_Increment_Stored_Integer_block3.vhd
+vcom  uz_EnDat_src_Increment_Stored_Integer_block4.vhd
 vcom  uz_EnDat_src_Positional_Counter_block2.vhd
 vcom  uz_EnDat_src_SetZero32modified_block1.vhd
 vcom  uz_EnDat_src_CLKCNTER_ACT_block.vhd

@@ -129,8 +129,8 @@ void ISR_Control(void *data)
     	       psid_actual = uz_approximate_flux_d_step(approximate_flux_d_instance,measured_currents_Amp);
     	       psiq_actual = uz_approximate_flux_q_step(approximate_flux_q_instance,measured_currents_Amp);
 
-    	       psid_ref = uz_approximate_flux_d_step(approximate_flux_d_instance,reference_currents_Amp);
-    	       psiq_ref = uz_approximate_flux_q_step(approximate_flux_q_instance,reference_currents_Amp);
+    	       psid_ref = uz_approximate_flux_d_set_step(approximate_flux_d_instance,reference_currents_Amp,measured_currents_Amp);
+    	       psiq_ref = uz_approximate_flux_q_set_step(approximate_flux_q_instance,reference_currents_Amp,measured_currents_Amp);
 
     	       K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psid_ref, psid_actual);
     	       K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psiq_ref, psiq_actual);
@@ -141,12 +141,9 @@ void ISR_Control(void *data)
     	       test_to_show_flux.b2 = psiq_actual; //only so i can look at it in javascope
     	       test_to_show_flux.c2 = psiq_ref ; //only so i can look at it in javascope
 
-
     	       //Closed Loop
     	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 100.0f, omega_el_rad_per_sec);
-
     	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-
     	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
     	       //OpenLoop
 //    	       pmsm_inputs.v_q_V=reference_currents_Amp.q;

@@ -318,4 +318,44 @@ uz_9ph_dq_t uz_transformation_9ph_abc_to_dq(uz_9ph_abc_t input, float theta_el_r
  */
 uz_9ph_abc_t uz_transformation_9ph_dq_to_abc(uz_9ph_dq_t input, float theta_el_rad);
 
+/**
+ * @brief Calculates the dq0-components from the abc-phases of a specific current harmonic
+ * 
+ * @param input uz_3ph_abc_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @param harmonic_order order of the harmonic to be transformed
+ * @return uz_3ph_dq_t Outputs the calculated dq0-components
+ */
+uz_3ph_dq_t uz_transformation_3ph_harmonic_abc_to_dqn(uz_3ph_abc_t input, float theta_el_rad, float harmonic_order);
+
+/**
+ * @brief Calculates the abc-phases from the dq0-components of a specific current harmonic 
+ * 
+ * @param input uz_3ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @param harmonic_order order of the harmonic to be transformed
+ * @return uz_3ph_abc_t Outputs the calculated abc-phases
+ */
+uz_3ph_abc_t uz_transformation_3ph_harmonic_dqn_to_abc(uz_3ph_dq_t input, float theta_el_rad, float harmonic_order);
+
+/**
+ * @brief Transforms the dq0-components into a n-times faster rotating system (n is defined by the difference of the harmonic order minus 1).
+ * 
+ * @param input uz_3ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @param harmonic_order order of the harmonic to be transformed
+ * @return uz_3ph_dq_t Outputs the calculated dq0-components for the n-times faster rotating system
+ */
+uz_3ph_dq_t uz_transformation_3ph_harmonic_dq_to_dqn(uz_3ph_dq_t input, float theta_el_rad, float harmonic_order);
+
+/**
+ * @brief Transforms the dq0-components of a n-times faster rotating system back into the original dq-system (n is defined by the difference of the harmonic order minus 1). 
+ * 
+ * @param input uz_3ph_dq_t struct
+ * @param theta_el_rad electrical rotor angle in rad
+ * @param harmonic_order order of the harmonic to be transformed
+ * @return uz_3ph_dq_t Outputs the calculated dq0-components of the original dq-system
+ */
+uz_3ph_dq_t uz_transformation_3ph_harmonic_dqn_to_dq(uz_3ph_dq_t input, float theta_el_rad, float harmonic_order);
+
 #endif // UZ_TRANSFORMATION_H

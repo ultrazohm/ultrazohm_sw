@@ -8,6 +8,7 @@
 
 uz_3ph_abc_t UVW_system = {0}; 
 uz_3ph_dq_t dq_system = {0};
+uz_3ph_dq_t dqn_system = {0};
 uz_3ph_alphabeta_t alphabeta_system = {0};
 
 uz_6ph_abc_t sixphase_abc = {0};
@@ -506,4 +507,187 @@ void test_9ph_vsd_circular_example(void)
          TEST_ASSERT_FLOAT_WITHIN(1e-05, dq_value.zero,dq_reverse.zero);
     }
 }
+
+// Testfunctions 3-phase Harmonics
+
+void test_uz_transformation_3ph_harmonic_abc_to_dqn_positive_order_positive_theta(void){
+    UVW_system.a = 1.0f;
+    UVW_system.b = -(1.0f / 2.0f);
+    UVW_system.c = -(1.0f / 2.0f);
+    float theta_el_rad = UZ_PIf / 3.0f;
+    float harmonic_order = 7.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_abc_to_dqn(UVW_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03,  0.500f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.866f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dqn_to_abc_positive_order_positive_theta(void){
+    dq_system.d = 0.5f;
+    dq_system.q = -0.866f;
+    float theta_el_rad = UZ_PIf / 3.0f;
+    float harmonic_order = 7.0;
+    uz_3ph_abc_t output = uz_transformation_3ph_harmonic_dqn_to_abc(dq_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.a);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.b);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.c);
+}
+
+void test_uz_transformation_3ph_harmonic_abc_to_dqn_positive_order_negative_theta(void){
+    UVW_system.a = 1.0f;
+    UVW_system.b = -(1.0f / 2.0f);
+    UVW_system.c = -(1.0f / 2.0f);
+    float theta_el_rad = -1.0f * (UZ_PIf / 3.0f);
+    float harmonic_order = 7.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_abc_to_dqn(UVW_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.500f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.866f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dqn_to_abc_positive_order_negative_theta(void){
+    dq_system.d = 0.5f;
+    dq_system.q = 0.866f;
+    float theta_el_rad = -1.0f * (UZ_PIf / 3.0f);
+    float harmonic_order = 7.0;
+    uz_3ph_abc_t output = uz_transformation_3ph_harmonic_dqn_to_abc(dq_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.a);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.b);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.c);
+}
+
+void test_uz_transformation_3ph_harmonic_abc_to_dqn_negative_order_positive_theta(void){
+    UVW_system.a = 1.0f;
+    UVW_system.b = -(1.0f / 2.0f);
+    UVW_system.c = -(1.0f / 2.0f);
+    float theta_el_rad = UZ_PIf / 3.0f;
+    float harmonic_order = -5.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_abc_to_dqn(UVW_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.500f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.866f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dqn_to_abc_negative_order_positive_theta(void){
+    dq_system.d = 0.5f;
+    dq_system.q = -0.866f;
+    float theta_el_rad = UZ_PIf / 3.0f;
+    float harmonic_order = -5.0;
+    uz_3ph_abc_t output = uz_transformation_3ph_harmonic_dqn_to_abc(dq_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.a);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.b);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.c);
+}
+
+void test_uz_transformation_3ph_harmonic_abc_to_dqn_negative_order_negative_theta(void){
+    UVW_system.a = 1.0f;
+    UVW_system.b = -(1.0f / 2.0f);
+    UVW_system.c = -(1.0f / 2.0f);
+    float theta_el_rad = -1.0f * (UZ_PIf / 3.0f);
+    float harmonic_order = -5.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_abc_to_dqn(UVW_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.500f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.866f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dqn_to_abc_negative_order_negative_theta(void){
+    dq_system.d = 0.5f;
+    dq_system.q = 0.866f;
+    float theta_el_rad = -1.0f * (UZ_PIf / 3.0f);
+    float harmonic_order = -5.0;
+    uz_3ph_abc_t output = uz_transformation_3ph_harmonic_dqn_to_abc(dq_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.a);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.b);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.c);
+}
+
+void test_uz_transformation_3ph_harmonic_dq_to_dqn_positive_order_postive_theta(void){
+    dq_system.d = 1.0f;
+    dq_system.q = 0.5f;
+    float theta_el_rad = 1.0f * (UZ_PIf / 2.0f);
+    float harmonic_order = 7.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_dq_to_dqn(dq_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -1.0f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dqn_to_dq_positive_order_postive_theta(void){
+    dqn_system.d = -1.0f;
+    dqn_system.q = -0.5f;
+    float theta_el_rad = 1.0f * (UZ_PIf / 2.0f);
+    float harmonic_order = 7.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_dqn_to_dq(dqn_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.5f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dq_to_dqn_positive_order_negative_theta(void){
+    dq_system.d = 1.0f;
+    dq_system.q = 0.5f;
+    float theta_el_rad = -1.0f * (UZ_PIf / 2.0f);
+    float harmonic_order = 7.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_dq_to_dqn(dq_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -1.0f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dqn_to_dq_positive_order_negative_theta(void){
+    dqn_system.d = -1.0f;
+    dqn_system.q = -0.5f;
+    float theta_el_rad = -1.0f * (UZ_PIf / 2.0f);
+    float harmonic_order = 7.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_dqn_to_dq(dqn_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.5f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dq_to_dqn_negative_order_postive_theta(void){
+    dq_system.d = 1.0f;
+    dq_system.q = 0.5f;
+    float theta_el_rad = 1.0f * (UZ_PIf / 2.0f);
+    float harmonic_order = -5.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_dq_to_dqn(dq_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -1.0f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dqn_to_dq_negative_order_postive_theta(void){
+    dqn_system.d = -1.0f;
+    dqn_system.q = -0.5f;
+    float theta_el_rad = 1.0f * (UZ_PIf / 2.0f);
+    float harmonic_order = -5.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_dqn_to_dq(dqn_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.5f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dq_to_dqn_negative_order_negative_theta(void){
+    dq_system.d = 1.0f;
+    dq_system.q = 0.5f;
+    float theta_el_rad = -1.0f * (UZ_PIf / 2.0f);
+    float harmonic_order = -5.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_dq_to_dqn(dq_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -1.0f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, -0.5f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
+void test_uz_transformation_3ph_harmonic_dqn_to_dq_negative_order_negative_theta(void){
+    dqn_system.d = -1.0f;
+    dqn_system.q = -0.5f;
+    float theta_el_rad = -1.0f * (UZ_PIf / 2.0f);
+    float harmonic_order = -5.0;
+    uz_3ph_dq_t output = uz_transformation_3ph_harmonic_dqn_to_dq(dqn_system, theta_el_rad, harmonic_order);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 1.0f, output.d);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03, 0.5f, output.q);
+    TEST_ASSERT_EQUAL_FLOAT(0.0, output.zero);
+}
+
 #endif // TEST

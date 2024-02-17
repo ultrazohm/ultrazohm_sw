@@ -409,3 +409,44 @@ uz_9ph_abc_t uz_transformation_9ph_dq_to_abc(uz_9ph_dq_t input, float theta_el_r
     uz_9ph_alphabeta_t intermediate=uz_transformation_9ph_dq_to_alphabeta(input,theta_el_rad);
     return (uz_transformation_9ph_alphabeta_to_abc(intermediate));
 }
+
+// 3-phase harmonics
+uz_3ph_dq_t uz_transformation_3ph_harmonic_abc_to_dqn(uz_3ph_abc_t input, float theta_el_rad, float harmonic_order)
+{
+    float theta_el_rad_harmonic = theta_el_rad * harmonic_order;
+    uz_3ph_alphabeta_t ab = uz_transformation_3ph_abc_to_alphabeta(input);
+    uz_3ph_dq_t output= uz_transformation_3ph_alphabeta_to_dq(ab,theta_el_rad_harmonic);
+    return (output);
+}
+
+uz_3ph_abc_t uz_transformation_3ph_harmonic_dqn_to_abc(uz_3ph_dq_t input, float theta_el_rad, float harmonic_order)
+{
+    float theta_el_rad_harmonic = theta_el_rad * harmonic_order;
+    uz_3ph_alphabeta_t ab = uz_transformation_3ph_dq_to_alphabeta(input,theta_el_rad_harmonic);
+    uz_3ph_abc_t output = uz_transformation_3ph_alphabeta_to_abc(ab);
+    return (output);
+}
+
+uz_3ph_dq_t uz_transformation_3ph_harmonic_dq_to_dqn(uz_3ph_dq_t input, float theta_el_rad, float harmonic_order)
+{
+    float theta_el_rad_harmonic = theta_el_rad * fabsf(harmonic_order-1.0f);
+    float sin_coefficient = sinf(theta_el_rad_harmonic);
+    float cos_coefficient = cosf(theta_el_rad_harmonic);
+    uz_3ph_dq_t output = {
+        .d = (cos_coefficient * input.d) + ((fabsf(harmonic_order)-fabsf(harmonic_order-1.0f)) * sin_coefficient * input.q),
+        .q = ((fabsf(harmonic_order-1.0f)-fabsf(harmonic_order)) * sin_coefficient * input.d) + (cos_coefficient * input.q),
+        .zero = input.zero}; 
+    return (output);
+}
+
+uz_3ph_dq_t uz_transformation_3ph_harmonic_dqn_to_dq(uz_3ph_dq_t input, float theta_el_rad, float harmonic_order)
+{
+    float theta_el_rad_harmonic = theta_el_rad * fabsf(harmonic_order-1.0f);
+    float sin_coefficient = sinf(theta_el_rad_harmonic);
+    float cos_coefficient = cosf(theta_el_rad_harmonic);
+    uz_3ph_dq_t output = {
+        .d = (cos_coefficient * input.d) + ((fabsf(harmonic_order-1.0f)-fabsf(harmonic_order)) * sin_coefficient * input.q),
+        .q = ((fabsf(harmonic_order)-fabsf(harmonic_order-1.0f)) * sin_coefficient * input.d) + (cos_coefficient * input.q),
+        .zero = input.zero}; 
+    return (output);
+}

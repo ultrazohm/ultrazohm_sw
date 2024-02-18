@@ -91,12 +91,12 @@ extern uz_approximate_flux_d_t* approximate_flux_d_instance;
 extern uz_approximate_flux_q_t* approximate_flux_q_instance;
 extern uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_instance;
 extern uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_instance;
-float psid_actual;
-float psiq_actual;
-float psid_ref;
-float psiq_ref;
-float K_p_id;
-float K_p_iq;
+float psid_actual= 0.0f;
+float psiq_actual= 0.0f;
+float psid_ref= 0.0f;
+float psiq_ref= 0.0f;
+float K_p_id = 0.0f;
+float K_p_iq= 0.0f;
 
 
 void ISR_Control(void *data)
@@ -134,6 +134,9 @@ void ISR_Control(void *data)
 
     	       K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psid_ref, psid_actual);
     	       K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psiq_ref, psiq_actual);
+    	       // Set new controll parameters (parameter_adaption)
+    	       uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
+    	       uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
     	       test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
     	       test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
     	       test_to_show_flux.c1 = psid_actual; //only so i can look at it in javascope

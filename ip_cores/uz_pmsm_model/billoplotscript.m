@@ -1,5 +1,5 @@
 close all;
-pgfplots_test = readtable('data_from_javascope_for_plotting/Log_2024-02-16_15-15-30');
+pgfplots_test = readtable('data_from_javascope_for_plotting/closed_loop_nonlinear_4A_parameteradaption');
 pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 pgfplots_test_cut = pgfplots_test_cut(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
@@ -22,9 +22,9 @@ psi_q_approx_time = simouttest.logsout.getElement('Kp_q_adap').Values.time;
 
 %% PgfPlot Fugaze
 setpoint_search = setpoint_step;
-test_sprung_ausGui_value = pgfplots_test{1:end, 5};
+test_sprung_ausGui_value = pgfplots_test{1:end, 2};
 test_sprung_ausGui_time = pgfplots_test{1:end, 1};
-test_iqsoll_ausGui_value = pgfplots_test{1:end, 6};
+test_iqsoll_ausGui_value = pgfplots_test{1:end, 3};
 reference_current_gui = pgfplots_test{1:end, 4}; %%%%% Des ist der Sprung Der WErt 5 könnte sich unterscheiden je nachdem auf Welchen Kanal ich des schreiben werde
 desired_step_time = 0.025;
 find_value = max(reference_current_gui);
@@ -36,14 +36,23 @@ adjusted_value_vector = test_sprung_ausGui_value(adjusted_time_vector >= 0 & adj
 test_iqsoll_ausGui_value = test_iqsoll_ausGui_value(adjusted_time_vector >= 0 & adjusted_time_vector <= 0.1);
 
 figure;
-plot(psi_d_approx_time,psi_d_approx , 'LineWidth', 4,'Color', 'blue');
+
+plot(timeplot_iq,iq_plot , 'LineWidth', 4,'Color', 'blue');
 hold on;
-plot(psi_q_approx_time,psi_q_approx, 'LineWidth', 4,'Color', 'red');
-hold on;
+% plot(psi_q_approx_time,psi_q_approx, 'LineWidth', 4,'Color', 'red');
+% hold on;
 plot(final_adjusted_time_vector,adjusted_value_vector, 'LineWidth', 4,'Color', 'green');
 hold on;
 plot(final_adjusted_time_vector,test_iqsoll_ausGui_value, 'LineWidth', 4,'Color', 'cyan');
-legend('Kp_d{sim}','Kp_q{sim}','Kp_d{CiL}','Kp_q{CiL}');
+grid on;
+% Set grid line width
+grid(gca, 'minor');
+set(gca, 'GridColor', 'k'); % Set grid color to black
+set(gca, 'MinorGridLineStyle', '-'); % Set style of minor grid lines to solid
+set(gca, 'MinorGridLineWidth', 6); % Set thickness of minor grid lines
+set(gca, 'LineWidth', 6); % Set thickness of major grid lines
+legend('iq{sim}','iq{CiL}','iq_soll{CiL}');
+
 %title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
 set(gca, 'FontSize', 22);
 

@@ -1,6 +1,5 @@
 %% Init parameters
 clc
-clear
 close all
 set(0,'defaulttextinterpreter','latex')
 plot_figures=false;
@@ -10,12 +9,20 @@ uz_pmsm_model_init_parameter;
 % Adjust simulation settings
 simulate_mechanical=true;
 simulate_open_loop=true;
-setpoint_step=10.0;
+simulate_nonlinear_modell=false;
+
+parameter_nachfuerung=false;
+
+praediktion_entkopplung_nonlinear=false;
+entkopplung_linear=true;
+entkopplung_static=false;
+entkopplung_dynamic=false;
+setpoint_step=4.0;
 
 if simulate_open_loop==true
 measruement_csv_name='open_loop_measruement.csv';
 else
-    measruement_csv_name='closed_loop_measruement.csv';
+    measruement_csv_name='data_from_javascope_for_plotting/open_loop_sprung_linear_4A';
 end
 
 
@@ -41,10 +48,10 @@ out=sim(mdl);
 %   13  [1x1 Signal]      id_regler              uz_pmsm_model/Rate Transition12
 %   14  [1x1 Signal]      u_q_input              uz_pmsm_model/Step1
 %   15  [1x1 Signal]      i_d                    uz_pmsm_model/uz_pmsm_model/pmsm
-sim.ud=out.logsout{1}.Values.Data;
-sim.uq=out.logsout{2}.Values.Data;
-sim.id=out.logsout{6}.Values.Data;
-sim.iq=out.logsout{7}.Values.Data;
+sim.ud=out.logsout.getElement('u_d').Values.Data;
+sim.uq=out.logsout.getElement('u_q').Values.Data;
+sim.id=out.logsout.getElement('i_d_hdl').Values.Data;
+sim.iq=out.logsout.getElement('i_q_hdl').Values.Data;
 sim.speed=out.logsout{8}.Values.Data;
 sim.time=out.logsout{8}.Values.Time-0.00005; % Some magic number adjustments to align the steps
 sim.time=sim.time*1e3-199.8;

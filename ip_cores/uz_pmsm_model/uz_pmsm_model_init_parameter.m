@@ -45,7 +45,7 @@ polepair=4;
 
 ts=1/5e5; % =2e-6
 
-setpoint_step=1.0;
+setpoint_step=4.0;
 rpm = 0;
 load_torque = 0;
 
@@ -75,9 +75,9 @@ static_friction_torque=0.01;
 % Simulation settings
 simulate_mechanical=true;
 simulate_open_loop=false;
-simulate_nonlinear_modell=false;
+simulate_nonlinear_modell=true;
 
-parameter_nachfuerung=false;
+parameter_nachfuerung=true;
 
 praediktion_entkopplung_nonlinear=false;
 entkopplung_linear=true;

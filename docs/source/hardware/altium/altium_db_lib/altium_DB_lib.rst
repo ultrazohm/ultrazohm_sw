@@ -322,7 +322,7 @@ not be accepted.
 
 .. note :: The extension of the file is written in capital letters.
 
-3. Check if the footprint symbol already exists in the Bitbucket system. If the component does not exist copy the footprint in the suitable folder of the footprints ``\alitum_libraries\footprints``. It is vital that the ``.PcbLib`` file **only contains one symbol**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
+3. Check if the footprint symbol already exists in the Bitbucket system. Use the `IPC-7351B <https://ohm.bu.edu/~pbohn/__Engineering_Reference/pcb_layout/pcbmatrix/IPC-7x51%20&%20PCBM%20Land%20Pattern%20Naming%20Convention.pdf>`_ naming convention when searching for the footprint. If the component does not exist copy the footprint in the suitable folder of the footprints ``\alitum_libraries\footprints``. It is vital that the ``.PcbLib`` file **only contains one footprint**. See :ref:`SchematicAndFootprints` on how to extract the symbol from different sources.
 
 .. _42_Explorer_PCB:
 
@@ -331,8 +331,14 @@ not be accepted.
 
       Explorer - footprints.
 
-4. Follow the naming convention for the ``.PcbLib`` file **PCB - <directory> - <description>.PCBLIB**
+4. Follow the naming convention for the ``.PcbLib`` file **PCB - <directory> - <description>.PCBLIB**. Try to use the `IPC-7351B <https://ohm.bu.edu/~pbohn/__Engineering_Reference/pcb_layout/pcbmatrix/IPC-7x51%20&%20PCBM%20Land%20Pattern%20Naming%20Convention.pdf>`_ naming convention for **<description>** and make sure to use the same name for the footprint name property which is used as ``Footprint Ref`` in the MariaDB.
 
+.. _IPC-7351B_example:
+
+   .. figure:: img/IPC-7351B_example.png
+      :width: 300px
+
+      IPC-7351B name generation example for SOIC127P930X265-16.
 
 .. note :: The extension of the file is written in capital letters.
 

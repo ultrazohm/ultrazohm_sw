@@ -603,6 +603,36 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="user.org:ip:uz_pmsm_model_6ph_dq:1.1">
+		</VLNV>
+		<DisplayName value="uz_pmsm_model_6ph_dq">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/InBitPacking.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113115475">
+		</CoreRevision>
+		<ComponentPath value="uz_pmsm_model_6ph_dq/hdl_prj/ipcore/uz_pmsm_model_6ph_dq_v1_1/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<LockPrevVersions value="false">
+		</LockPrevVersions>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:uz_resolver_pl_interface:1.0">
 		</VLNV>
 		<DisplayName value="uz_resolver_pl_interface">

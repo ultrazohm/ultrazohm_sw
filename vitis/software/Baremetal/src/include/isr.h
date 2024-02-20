@@ -67,6 +67,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 
 enum running_mode{
+
     rs_measurement,
     cil_rs_measurement,
     cil_FOC,
@@ -75,6 +76,9 @@ enum running_mode{
 	reset
     };
 
-
+enum switch_control {
+	control_uind,
+	control_idq
+};
 
 #endif /* ISR_H_ */

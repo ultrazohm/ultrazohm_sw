@@ -17,6 +17,7 @@
 #include "main.h"
 #include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
+#include "uz/uz_parameterid_rc/uz_parameterid_rc.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -48,13 +49,15 @@ uz_SetPoint_t* SP_instance_1;
 uz_CurrentControl_t* CC_instance_1;
 uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 uz_wavegen_chirp* chirp_instance_1;
-uz_parameterid_rs_t* test_instance;
+uz_parameterid_rs_t* rs_meas_instance;
+uz_parameterid_rc_t* rc_meas_instance;
 
 
 // Declare Pointer for FOC of PMSM 2
 uz_SpeedControl_t* SC_instance_2;
 uz_SetPoint_t* SP_instance_2;
 uz_CurrentControl_t* CC_instance_2;
+uz_CurrentControl_t* CC_instance_u_ind;
 uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 uz_subspace_resonant_control* RC_instance_6th_2;
 uz_IIR_Filter_t* LP_instance_ud_ind_2;
@@ -203,7 +206,7 @@ int main(void)
 
 
     // config for CIL measurement
-    struct uz_parameterid_rs_config_t test_config = {
+    struct uz_parameterid_rs_config_t config_rs_meas = {
     		.n_start = 0.0f,
     	    .n_end = 1500.0f,
     	    .n_steps = 15.0f,
@@ -213,6 +216,15 @@ int main(void)
     	    .i_steptime = 1.0f,
     	    .wait_time = 1.5f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
+    };
+
+    struct uz_parameterid_rc_config_t config_rc_meas = {
+    	    .id_ref = 3.0f,
+    	    .iq_ref = -3.0f,
+    	    .n_ref = 300.0f,
+    	    .wait_time = 1.0f,
+    	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
+    	    .sample_time = 2.0f
     };
 
     //--------- Configs for PMSM 2 (Last) ---------//
@@ -239,14 +251,16 @@ int main(void)
         .Ki = 55.5f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
-        .lower_limit = -15.0f
+        .lower_limit = -15.0f,
+		.type = parallel
       };
       struct uz_PI_Controller_config config_iq_2 = {
         .Kp = 0.17f, // nach BO, 0.5f nach Nina
         .Ki = 55.5f, // nach BO, 230.0f nach Nina
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
-	    .lower_limit = -15.0f
+	    .lower_limit = -15.0f,
+		.type = parallel
       };
       struct uz_CurrentControl_config CC_config_2 = {
         .decoupling_select = linear_decoupling,
@@ -255,6 +269,33 @@ int main(void)
         .config_iq = config_iq_2,
         .max_modulation_index = 1.0f / sqrtf(3.0f)
       };
+
+      // Configuration of induced voltage Controller
+      struct uz_PI_Controller_config config_ud_ind = {
+         .Kp = 0.0f,
+         .Ki = 10.0f,
+         .samplingTime_sec = 0.0001f,
+         .upper_limit = 10.0f,
+         .lower_limit = -10.0f,
+ 		.type = parallel
+       };
+       struct uz_PI_Controller_config config_uq_ind = {
+         .Kp = 0.0f,
+         .Ki = 10.0f,
+         .samplingTime_sec = 0.0001f,
+         .upper_limit = 10.0f,
+ 	    .lower_limit = -10.0f,
+ 		.type = parallel
+       };
+       struct uz_CurrentControl_config CC_config_u_ind = {
+         .decoupling_select = linear_decoupling,
+         .config_PMSM = config_PMSM_2,
+         .config_id = config_ud_ind ,
+         .config_iq = config_uq_ind,
+         .max_modulation_index = 1.0f / sqrtf(3.0f)
+       };
+
+
       // Encoder offset estimation
       struct uz_encoder_offset_estimation_config encoder_offset_cfg_2 = {  	 // config struct
         .ptr_measured_rotor_angle = &Global_Data.av.theta_elec_2,            // pointer to the measured electric rotor angle (raw, not offset corrected)
@@ -352,7 +393,9 @@ int main(void)
             SC_instance_2 = uz_SpeedControl_init(SC_config_2);
             SP_instance_2 = uz_SetPoint_init(SP_config_2);
             CC_instance_2 = uz_CurrentControl_init(CC_config_2);
-		    test_instance = uz_parameterid_rs_init(test_config);
+            CC_instance_u_ind = uz_CurrentControl_init(CC_config_u_ind);
+		    rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
+		    rc_meas_instance = uz_parameterid_rc_init(config_rc_meas);
            	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
            	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);

@@ -31,6 +31,8 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_parameterid_rs/uz_parameterid_rs.h"
+#include "../uz/uz_parameterid_rc/uz_parameterid_rc.h"
+#include "stdbool.h"
 
 
 // Initialize the Interrupt structure
@@ -122,11 +124,13 @@ float Ki_iq_2 									= 230.0f;
 // ---------------- induced voltage ----------------- //
 struct uz_3ph_dq_t v_ind_dq_Volts_2 			= {0};
 struct uz_3ph_dq_t v_ind_dq_filt_Volts_2 			= {0};
+struct uz_3ph_dq_t v_ind_dq_ref_Volts_2 			= {0};
 float r_s_2 									= 0.030f;
 extern uz_IIR_Filter_t* LP_instance_ud_ind_2;
 extern uz_IIR_Filter_t* LP_instance_uq_ind_2;
 extern uz_IIR_Filter_t* LP_instance_rc_d_2;
 extern uz_IIR_Filter_t* LP_instance_rc_q_2;
+extern uz_CurrentControl_t* CC_instance_u_ind;
 struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
 struct uz_3ph_dq_t rc_dq_Ohm 			= {0};
 struct uz_3ph_dq_t rc_dq_filt_Ohm 			= {0};
@@ -140,10 +144,10 @@ float Psi_PM = 7.0e-3f;
 float error_type = 0.0f;
 int counter = 1;
 float M_meas_Nm = 0.0f;
+int control_induced_voltages = 0;
 
 // ======================= CIL ======================= //
 
-int state = 0;
 extern uz_pmsmModel_t *pmsm;
 extern uz_CurrentControl_t* CurrentControl_instance;
 uz_3ph_dq_t reference_currents_Amp = {0};
@@ -162,15 +166,17 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
   .torque_Nm=0.0f,
   .omega_mech_1_s=0.0f
 };
-extern uz_parameterid_rs_t* test_instance;
-extern struct uz_parameterid_rs_config_t test_config;
+extern uz_parameterid_rs_t* rs_meas_instance;
+extern uz_parameterid_rc_t* rc_meas_instance;
 struct uz_parameterid_output actual_output;
+struct uz_parameterid_rc_meas_out_t rc_output;
 struct uz_3ph_dq_t cil_u_ind_Volts 			= {0};
 struct uz_3ph_dq_t cil_u_ind_ref_Volts 			= {0};
 
 
 enum running_mode run_state = cil_rs_measurement;
 
+enum switch_control switch_control = control_idq;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -256,15 +262,20 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
 
+    		float rc_meas_rs = 30.78f/1000.0f;
+    		v_ind_dq_Volts_2.d = v_dq_Volts_2.d - (rc_meas_rs * i_dq_Amps_2.d);
+    		v_ind_dq_Volts_2.q = v_dq_Volts_2.q - (rc_meas_rs * i_dq_Amps_2.q);
+    		v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
+    	    v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);
 
-    		switch(run_state) {
+    	    switch(run_state) {
 				case cil_rs_measurement:
 			    	// Tristate ON
 			    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
 			    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
 
 					// calculation of set-values
-		           actual_output = uz_parameterid_rs_generate_outputs(test_instance, CurrentControl_output_Volts.d, pmsm_outputs.i_d_A);
+		           actual_output = uz_parameterid_rs_generate_outputs(rs_meas_instance, CurrentControl_output_Volts.d, pmsm_outputs.i_d_A);
 			       reference_currents_Amp.d = actual_output.i_sample;
 			       reference_currents_Amp.q = 0.0f;
 
@@ -275,7 +286,7 @@ void ISR_Control(void *data)
 			       measured_currents_Amp.d = pmsm_outputs.i_d_A;
 			       measured_currents_Amp.q = pmsm_outputs.i_q_A;
 
-			       omega_el_rad_per_sec = (2.0f * UZ_PIf * actual_output.n_sample *5.0f)/60.0f ;
+			       omega_el_rad_per_sec = (2.0f * UZ_PIf * actual_output.n_sample * 5.0f ) / 60.0f ;
 			       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
 			       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
 			       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
@@ -289,6 +300,9 @@ void ISR_Control(void *data)
 			    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
 			    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
 
+			    	rc_output = uz_parameterid_rc_generate_outputs(rc_meas_instance, v_dq_Volts_2.d, v_dq_Volts_2.q, i_dq_Amps_2.d, v_dq_Volts_2.q, Global_Data.av.mechanicalRotorSpeed_filtered_1);
+			    	i_dq_ref_Amps_2.d = rc_output.set_out.id_set;
+			    	i_dq_ref_Amps_2.q = rc_output.set_out.iq_set;
 			       // CIL
 			       uz_pmsmModel_trigger_input_strobe(pmsm);
 			       uz_pmsmModel_trigger_output_strobe(pmsm);
@@ -297,11 +311,17 @@ void ISR_Control(void *data)
 			       measured_currents_Amp.q = pmsm_outputs.i_q_A;
 
 			       //calc ud_ind
-			       cil_u_ind_Volts.d = pmsm_inputs.v_d_V - pmsm_outputs.i_d_A * 0.03f;
-			       cil_u_ind_Volts.q = pmsm_inputs.v_q_V - pmsm_outputs.i_q_A * 0.03f;
+			       //cil_u_ind_Volts.d = pmsm_inputs.v_d_V - pmsm_outputs.i_d_A * 0.03f;
+			       //cil_u_ind_Volts.q = pmsm_inputs.v_q_V - pmsm_outputs.i_q_A * 0.03f;
+
+			       if(rc_output.gen){
+			    	   float rc_meas_rs = 30.78f/1000.0f;
+			    	   measured_currents_Amp.d = CurrentControl_output_Volts.d - rc_meas_rs * pmsm_outputs.i_d_A;
+			    	   measured_currents_Amp.q = CurrentControl_output_Volts.q - rc_meas_rs * pmsm_outputs.i_q_A;
+			       		}
 
 			       omega_el_rad_per_sec = (2.0f * UZ_PIf * 1000.0f *5.0f)/60.0f ;
-			       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, cil_u_ind_ref_Volts, cil_u_ind_Volts, 24.0f, omega_el_rad_per_sec);
+			       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, i_dq_ref_Amps_2, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
 			       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
 			       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
 			       pmsm_inputs.omega_mech_1_s = (2.0f * UZ_PIf * 1000.0f )/60.0f;
@@ -311,7 +331,7 @@ void ISR_Control(void *data)
 
 				case rs_measurement:
 					// calculation of set-values
-			        actual_output = uz_parameterid_rs_generate_outputs(test_instance, v_dq_Volts_2.d, i_dq_Amps_2.d);
+			        actual_output = uz_parameterid_rs_generate_outputs(rs_meas_instance, v_dq_Volts_2.d, i_dq_Amps_2.d);
 			        i_dq_ref_Amps_2.d = actual_output.i_sample;
 			        i_dq_ref_Amps_2.q = 0.0f;
 
@@ -338,6 +358,36 @@ void ISR_Control(void *data)
 
 
 				case rc_measurement:
+					// calculation of set-values
+			        rc_output = uz_parameterid_rc_generate_outputs(rc_meas_instance, v_dq_Volts_2.d, v_dq_Volts_2.q, i_dq_Amps_2.d, i_dq_Amps_2.q, Global_Data.av.mechanicalRotorSpeed_filtered_1);
+			        i_dq_ref_Amps_2.d = rc_output.set_out.id_set;
+			        i_dq_ref_Amps_2.q = rc_output.set_out.iq_set;
+
+					// Field Oriented Control of PMSM 1 - speed-controlled
+		    		M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, rc_output.set_out.n_set);
+		    		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
+					v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+					output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+
+					// Set DutyCycles of PMSM 1
+					Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
+					Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
+					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
+
+			        if(rc_output.gen){
+						// Field Oriented Control of PMSM 2 - u_ind-controlled
+						v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_u_ind, v_ind_dq_ref_Volts_2, v_ind_dq_Volts_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+						output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+			        } else {
+					// Field Oriented Control of PMSM 2 - current-controlled
+					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+			        }
+
+					// Set DutyCycles of PMSM 2
+					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
+					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
+					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
 					break;
 
 				case normal:
@@ -352,10 +402,14 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
 					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
 
+					if (switch_control == control_uind ){
 					// Field Oriented Control of PMSM 2 - current-controlled
+					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_u_ind, v_ind_dq_ref_Volts_2, v_ind_dq_Volts_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+					} else {
 					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
 					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-
+					}
 					// Set DutyCycles of PMSM 2
 					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
 					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
@@ -364,15 +418,22 @@ void ISR_Control(void *data)
 
 
 				case reset:
-					uz_parameterid_rs_reset(test_instance);
+					uz_parameterid_rs_reset(rs_meas_instance);
 					actual_output.i_sample = 0.0f;
 					actual_output.n_sample = 0.0f;
 					actual_output.isr_stepcounter = 0.0f;
 					n_ref_rpm_1 = 0.0f;
+					uz_parameterid_rc_reset(rc_meas_instance);
+			    	uz_CurrentControl_reset(CC_instance_u_ind);
+					rc_output.rc_d = 0.0f;
+					rc_output.rc_q = 0.0f;
+					rc_output.set_out.id_set = 0.0f;
+					rc_output.set_out.iq_set = 0.0f;
 					i_dq_ref_Amps_1.d = 0.0f;
 					i_dq_ref_Amps_1.q = 0.0f;
 					i_dq_ref_Amps_2.d = 0.0f;
 					i_dq_ref_Amps_2.q = 0.0f;
+					switch_control = control_idq;
 
 					// Set DutyCycles of PMSM 1 and 2
 					v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
@@ -409,6 +470,7 @@ void ISR_Control(void *data)
     	uz_CurrentControl_reset(CC_instance_1);
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
+    	uz_CurrentControl_reset(CC_instance_u_ind);
 
     }
 
@@ -438,23 +500,27 @@ void ISR_Control(void *data)
     uz_CurrentControl_set_Ki_id(CC_instance_2, Ki_id_2);
     uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
 
+
     //calculate induced voltage for estimation of r_fe + filter
-    v_ind_dq_Volts_2.q = v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q;
-    v_ind_dq_Volts_2.d = v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d;
+//    v_ind_dq_Volts_2.q = v_dq_Volts_2.q;
+//    v_ind_dq_Volts_2.d = v_dq_Volts_2.d;
 
-    v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
-    v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);
+//    v_ind_dq_Volts_2.q = v_dq_Volts_2.q - r_s_2 * i_dq_Amps_2.q;
+//    v_ind_dq_Volts_2.d = v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d;
 
-    psi_dq_mVoltseconds_2.q  = (v_ind_dq_filt_Volts_2.d/(omega_el_rad_per_sec_2*-1.0f))*1000;
-    psi_dq_mVoltseconds_2.d  = (v_ind_dq_filt_Volts_2.q/omega_el_rad_per_sec_2)*1000;
+//    v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
+//    v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);
+
+//    psi_dq_mVoltseconds_2.q  = (v_ind_dq_filt_Volts_2.d/(omega_el_rad_per_sec_2*-1.0f))*1000;
+//    psi_dq_mVoltseconds_2.d  = (v_ind_dq_filt_Volts_2.q/omega_el_rad_per_sec_2)*1000;
 
 
 
-    rc_para_dq.d =  (v_dq_Volts_2.q - omega_el_rad_per_sec_2 * Ld2 * i_dq_Amps_2.d - r_s_2 * i_dq_Amps_2.q - omega_el_rad_per_sec_2 * Psi_PM) / (Lq2 * i_dq_Amps_2.q);
-    rc_para_dq.q =  (v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d + omega_el_rad_per_sec_2 * Lq2 * i_dq_Amps_2.q) / ((Ld2 *  i_dq_Amps_2.d) + Psi_PM);
+//    rc_para_dq.d =  (v_dq_Volts_2.q - omega_el_rad_per_sec_2 * Ld2 * i_dq_Amps_2.d - r_s_2 * i_dq_Amps_2.q - omega_el_rad_per_sec_2 * Psi_PM) / (Lq2 * i_dq_Amps_2.q);
+//    rc_para_dq.q =  (v_dq_Volts_2.d - r_s_2 * i_dq_Amps_2.d + omega_el_rad_per_sec_2 * Lq2 * i_dq_Amps_2.q) / ((Ld2 *  i_dq_Amps_2.d) + Psi_PM);
 
-    rc_dq_Ohm.d = (omega_el_rad_per_sec_2 * omega_el_rad_per_sec_2 * Ld2) / (rc_para_dq.d);
-    rc_dq_Ohm.q = (omega_el_rad_per_sec_2 * omega_el_rad_per_sec_2 * Lq2) / (rc_para_dq.q);
+//    rc_dq_Ohm.d = (omega_el_rad_per_sec_2 * omega_el_rad_per_sec_2 * Ld2) / (rc_para_dq.d);
+//    rc_dq_Ohm.q = (omega_el_rad_per_sec_2 * omega_el_rad_per_sec_2 * Lq2) / (rc_para_dq.q);
 
 //    rc_dq_filt_Ohm.d = uz_signals_IIR_Filter_sample(LP_instance_rc_d_2, rc_dq_Ohm.d);
 //    rc_dq_filt_Ohm.q = uz_signals_IIR_Filter_sample(LP_instance_rc_q_2, rc_dq_Ohm.q);

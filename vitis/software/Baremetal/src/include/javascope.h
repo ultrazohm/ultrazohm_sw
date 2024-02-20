@@ -104,6 +104,8 @@ enum JS_OberservableData {
 	JSO_cil_u_ind_Volts_q,
 	JSO_cil_u_ind_ref_Volts_d,
 	JSO_cil_u_ind_ref_Volts_q,
+	JSO_u_ind_ref_Volts_d,
+	JSO_u_ind_ref_Volts_q,
 	JSO_ENDMARKER
 };
 
@@ -203,6 +205,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_cil_u_ind_Volts_q,
 	JSSD_FLOAT_cil_u_ind_ref_Volts_d,
 	JSSD_FLOAT_cil_u_ind_ref_Volts_q,
+	JSSD_FLOAT_u_ind_ref_Volts_d,
+	JSSD_FLOAT_u_ind_ref_Volts_q,
 	JSSD_ENDMARKER
 };
 
@@ -261,8 +265,8 @@ enum gui_button_mapping {
 	i_dq_ref_Amps_2.d,
 	i_dq_ref_Amps_2.q,
 	r_s_2,
-	send_field_5,
-	send_field_6,
+	u_ind_d_ref,
+	u_ind_q_ref,
 	DC_A,
 	DC_B,
 	DC_C,
@@ -329,9 +333,9 @@ enum gui_button_mapping {
 	receive_field_15,
 	receive_field_16,
 	receive_field_17,
-	CIL_iq,
-	CIL_id,
-	CIL_speed,
+	u_ind_ref_d,
+	u_ind_ref_q,
+
 	RCV_FLD_ENDMARKER
 
 
@@ -366,7 +370,7 @@ enum gui_button_mapping {
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	MyButton1,
-	MyButton2,
+	control_uind,
 	cil_FOC,
 	cil_rs_meas,
 	rs_meas,
@@ -397,9 +401,8 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_i_d,
-	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_speed,
+	JSSD_FLOAT_u_ind_ref_Volts_d,
+	JSSD_FLOAT_u_ind_ref_Volts_q,
 	JSSD_FLOAT_Error_Code,
 	SLOWDAT_DISPLAY_ENDMARKER
 */

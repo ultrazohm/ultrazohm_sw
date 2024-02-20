@@ -29,15 +29,6 @@ extern float theta_el_offset_1;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
 
 
-// ---------------- Controller Settings ----------------- //
-extern float Kp_speed_1;
-extern float Ki_speed_1;
-extern float Kp_id_1;
-extern float Ki_id_1;
-extern float Kp_iq_1;
-extern float Ki_iq_1;
-extern float r_s_2;
-
 // ------------------- Wavegen Chirp -------------------- //
 extern bool enable_excitation;
 extern float excitation_amplitude;
@@ -50,15 +41,7 @@ extern float n_ref_rpm_2;
 extern float M_ref_Nm_2;
 extern float theta_el_offset_2;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
-
-
-// ---------------- Controller Settings ----------------- //
-extern float Kp_speed_2;
-extern float Ki_speed_2;
-extern float Kp_id_2;
-extern float Ki_id_2;
-extern float Kp_iq_2;
-extern float Ki_iq_2;
+extern struct uz_3ph_dq_t v_ind_dq_ref_Volts_2;
 
 // ======================= Others ======================= //
 extern int option;
@@ -67,10 +50,12 @@ extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 extern uint32_t js_status_BareToRTOS;
 extern enum running_mode run_state;
+extern enum switch_control switch_control;
 extern uz_parameterid_rs_t* test_instance;
 extern struct uz_parameterid_output actual_output;
 extern struct uz_3ph_dq_t cil_u_ind_Volts;
 extern struct uz_3ph_dq_t cil_u_ind_ref_Volts;
+extern float r_s_2;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -250,11 +235,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-		cil_u_ind_ref_Volts.d = value;
+		v_ind_dq_ref_Volts_2.d = value;
 			break;
 
 		case (Set_Send_Field_6):
-		cil_u_ind_ref_Volts.q = value;
+		v_ind_dq_ref_Volts_2.q = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -318,6 +303,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_2):
+			switch_control = control_uind;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 

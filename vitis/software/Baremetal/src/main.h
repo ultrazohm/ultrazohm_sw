@@ -46,6 +46,7 @@
 #include "uz/uz_HAL.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
+#include "uz/uz_parameterid_rc/uz_parameterid_rc.h"
 
 #include "uz/uz_LED/uz_LED_facade.h"
 #include "uz/uz_PushButton/uz_PushButton_facade.h"

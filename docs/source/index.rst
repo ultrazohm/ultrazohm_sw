@@ -59,6 +59,8 @@ Having a common platform enables the active research community to focus on publi
     In addition, researchers of TH Nuremberg and TU Munich founded the start-up `Zohm Control GmbH <https://zohm-control.com/>`_ to ensure the long term development of the system and to be able to distribute the fully assembled UltraZohm systems.
 
 
+.. _uzslack:
+
 UltraZohm Community Slack
 *************************
 

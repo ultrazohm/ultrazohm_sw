@@ -106,53 +106,53 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-//    current_state = control_state;
+   // current_state = control_state;
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
 
-    	//Mit CurrentControll
     	uz_pmsmModel_trigger_input_strobe(pmsm);
 
-    	       uz_pmsmModel_trigger_output_strobe(pmsm);
+    	uz_pmsmModel_trigger_output_strobe(pmsm);
 
-    	       pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+    	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
 
-    	       measured_currents_Amp.d = pmsm_outputs.i_d_A;
+    	measured_currents_Amp.d = pmsm_outputs.i_d_A;
 
-    	       measured_currents_Amp.q = pmsm_outputs.i_q_A;
+    	measured_currents_Amp.q = pmsm_outputs.i_q_A;
 
-    	       omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+    	omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
 
-    	       //Approximate psid and psiq and set new kpd and kpq
+    	//Approximate psid and psiq and set new kpd and kpq
 
-    	       psid_actual = uz_approximate_flux_d_step(approximate_flux_d_instance,measured_currents_Amp);
-    	       psiq_actual = uz_approximate_flux_q_step(approximate_flux_q_instance,measured_currents_Amp);
+    	psid_actual = uz_approximate_flux_d_step(approximate_flux_d_instance,measured_currents_Amp);
+    	psiq_actual = uz_approximate_flux_q_step(approximate_flux_q_instance,measured_currents_Amp);
 
-    	       psid_ref = uz_approximate_flux_d_set_step(approximate_flux_d_instance,reference_currents_Amp,measured_currents_Amp);
-    	       psiq_ref = uz_approximate_flux_q_set_step(approximate_flux_q_instance,reference_currents_Amp,measured_currents_Amp);
+    	psid_ref = uz_approximate_flux_d_set_step(approximate_flux_d_instance,reference_currents_Amp,measured_currents_Amp);
+    	psiq_ref = uz_approximate_flux_q_set_step(approximate_flux_q_instance,reference_currents_Amp,measured_currents_Amp);
 
-    	       K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psid_ref, psid_actual);
-    	       K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psiq_ref, psiq_actual);
-    	       // Set new controll parameters (parameter_adaption)
-    	       uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
-    	       uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
-    	       test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
-    	       test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
-    	       test_to_show_flux.c1 = psid_actual; //only so i can look at it in javascope
-    	       test_to_show_flux.a2 = psid_ref ; //only so i can look at it in javascope
-    	       test_to_show_flux.b2 = psiq_actual; //only so i can look at it in javascope
-    	       test_to_show_flux.c2 = psiq_ref ; //only so i can look at it in javascope
+    	K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psid_ref, psid_actual);
+    	K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psiq_ref, psiq_actual);
+    	// Set new controll parameters (parameter_adaption)
+    	//uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
+    	//uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
 
-    	       //Closed Loop
-    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 100.0f, omega_el_rad_per_sec);
-    	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-    	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
-    	       //OpenLoop
-//    	       pmsm_inputs.v_q_V=reference_currents_Amp.q;
-//    	       pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
+    	test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
+    	test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
+    	test_to_show_flux.c1 = psid_actual; //only so i can look at it in javascope
+    	test_to_show_flux.a2 = psid_ref ; //only so i can look at it in javascope
+    	test_to_show_flux.b2 = psiq_actual; //only so i can look at it in javascope
+    	test_to_show_flux.c2 = psiq_ref ; //only so i can look at it in javascope
 
-    	       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    	//Closed Loop
+    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 100.0f, omega_el_rad_per_sec);
+    	pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+    	pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+    	//OpenLoop
+		//pmsm_inputs.v_q_V=reference_currents_Amp.q;
+    	//pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
+
+    	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
 
     }

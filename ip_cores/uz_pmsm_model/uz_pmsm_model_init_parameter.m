@@ -45,7 +45,7 @@ polepair=4;
 
 ts=1/5e5; % =2e-6
 
-setpoint_step=4.0;
+setpoint_step=1.0;
 rpm = 0;
 load_torque = 0;
 
@@ -53,7 +53,7 @@ load_torque = 0;
 ts_regler=1/20e3;
 tau_d=L_d/R_1;
 tau_q=L_q/R_1;
-tau_sum=2*ts_regler;
+tau_sum=1.2*ts_regler;
 % Parallel PID
 k_p_d=L_d/(2*tau_sum);
 k_p_q=L_q/(2*tau_sum);
@@ -77,7 +77,7 @@ simulate_mechanical=true;
 simulate_open_loop=false;
 simulate_nonlinear_modell=true;
 
-parameter_nachfuerung=true;
+parameter_nachfuerung=false;
 
 praediktion_entkopplung_nonlinear=false;
 entkopplung_linear=true;

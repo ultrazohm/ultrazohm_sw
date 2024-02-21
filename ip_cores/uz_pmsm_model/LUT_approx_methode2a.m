@@ -43,7 +43,7 @@ Fluxq_idnull = Flux_q(15,:)';
 fun2=@(aq)(Fluxq_idnull-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
 
 beta2 = [1;1;1];
-aq_1 = lsqnonlin(fun2,beta2,[],[],options)
+aq_1 = lsqnonlin(fun2,beta2,[],[],options);
 Fluxq_idnull_fitted = ((aq_1(1).*(tanh(aq_1(2)*q_current)))+(aq_1(3).*q_current));
 
 aq1 = aq_1(1);
@@ -52,7 +52,7 @@ aq3 = aq_1(3);
 
 % 3. Gleichung Maximale Induktivität psid bei Iq1
 Fluxd_iq1 = Flux_d(:,1);
-fun3=@(ad_zwei)Fluxd_iq1-(ad_zwei(1).*(tanh(ad_zwei(2)*(d_current-ad_zwei(3)))))
+fun3=@(ad_zwei)Fluxd_iq1-(ad_zwei(1).*(tanh(ad_zwei(2)*(d_current-ad_zwei(3)))));
 
 beta3 =   [0.0305;0.0402; -16.4812];  %Diese 2-D Plots würden in den meisten fällen auch mit "schlechten" Anfangswerten funktionieren
 ad_3_6 = lsqnonlin(fun3,beta3,[],[],options)
@@ -67,7 +67,7 @@ Fluxq_id1 = Flux_q(14,:)';
 fun4=@(aq_zwei)Fluxq_id1-((aq_zwei(1).*(tanh(aq_zwei(2).*q_current)))+(aq_zwei(3).*q_current));
 
 beta4 = [1;1;1];
-aq_3_6 = lsqnonlin(fun4,beta4,[],[],options)
+aq_3_6 = lsqnonlin(fun4,beta4,[],[],options);
 Fluxq_id1_fitted = ((aq_3_6(1).*(tanh(aq_3_6(2).*q_current)))+(aq_3_6(3).*q_current));
 
 aq4 = aq_3_6(1);

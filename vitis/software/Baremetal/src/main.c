@@ -112,9 +112,9 @@ int main(void)
 
         struct uz_PI_Controller_config config_id = {
 
-        		.Kp = 2.25f,
+        		.Kp = 3.75f,
 
-				.Ki = 1.50e+03f,
+				.Ki = 2.5e+03f,
 
 				.samplingTime_sec = 0.00005f,
 
@@ -122,14 +122,14 @@ int main(void)
 
 				.lower_limit = -100.0f};
 
-        float dead_time_reciprocal = 10.0e3f;
+        float dead_time_reciprocal = 10.0e3f;  //This is a factor 2 for deadtime approx
         uz_CurrentControl_Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(dead_time_reciprocal);
 
         struct uz_PI_Controller_config config_iq = {
 
-        		.Kp = 10.0f,
+        		.Kp = 16.666666666666668f,
 
-				.Ki = 1.50e+03f,
+				.Ki = 2.5e+03f,
 
 				.samplingTime_sec = 0.00005f,
 

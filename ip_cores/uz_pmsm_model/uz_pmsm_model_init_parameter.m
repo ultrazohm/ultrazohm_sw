@@ -53,7 +53,7 @@ load_torque = 0;
 ts_regler=1/20e3;
 tau_d=L_d/R_1;
 tau_q=L_q/R_1;
-tau_sum=1.2*ts_regler;
+tau_sum=2*ts_regler;
 % Parallel PID
 k_p_d=L_d/(2*tau_sum);
 k_p_q=L_q/(2*tau_sum);

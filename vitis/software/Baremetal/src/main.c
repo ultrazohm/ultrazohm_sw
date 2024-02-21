@@ -112,9 +112,9 @@ int main(void)
 
         struct uz_PI_Controller_config config_id = {
 
-        		.Kp = 3.75f,
+        		.Kp = 2.25f,
 
-				.Ki = 2.5e+03f,
+				.Ki = 1.5e+03f,
 
 				.samplingTime_sec = 0.00005f,
 
@@ -127,9 +127,9 @@ int main(void)
 
         struct uz_PI_Controller_config config_iq = {
 
-        		.Kp = 16.666666666666668f,
+        		.Kp = 10.0f,
 
-				.Ki = 2.5e+03f,
+				.Ki = 1.5e+03f,
 
 				.samplingTime_sec = 0.00005f,
 

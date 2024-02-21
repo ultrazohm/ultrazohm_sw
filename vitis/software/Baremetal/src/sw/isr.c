@@ -85,6 +85,17 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
   .omega_mech_1_s=0.0f
 
 };
+struct uz_pmsmModel_outputs_t pmsm_old_outputs={
+
+  .i_d_A=0.0f,
+
+  .i_q_A=0.0f,
+
+  .torque_Nm=0.0f,
+
+  .omega_mech_1_s=0.0f
+
+};
 
 //init for flux approx and kp adaption
 extern uz_approximate_flux_d_t* approximate_flux_d_instance;
@@ -117,11 +128,11 @@ void ISR_Control(void *data)
 
     	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
 
-    	measured_currents_Amp.d = pmsm_outputs.i_d_A;
+    	measured_currents_Amp.d = pmsm_old_outputs.i_d_A;
 
-    	measured_currents_Amp.q = pmsm_outputs.i_q_A;
+    	measured_currents_Amp.q = pmsm_old_outputs.i_q_A;
 
-    	omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+    	omega_el_rad_per_sec = pmsm_old_outputs.omega_mech_1_s * 4.0f;
 
     	//Approximate psid and psiq and set new kpd and kpq
 
@@ -152,6 +163,7 @@ void ISR_Control(void *data)
 		//pmsm_inputs.v_q_V=reference_currents_Amp.q;
     	//pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
 
+    	pmsm_old_outputs = pmsm_outputs;
     	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
 

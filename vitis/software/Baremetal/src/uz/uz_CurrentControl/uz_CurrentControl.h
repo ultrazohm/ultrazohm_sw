@@ -12,7 +12,8 @@
 /*! enum for readable configuring for the decoupling in the CurrentControl sample function */
 enum uz_CurrentControl_decoupling_select {
 	no_decoupling=0, 
-	linear_decoupling
+	linear_decoupling,
+	static_nonlinear_decoupling
 	}; 
 
 /**

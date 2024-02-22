@@ -77,7 +77,7 @@ simulate_mechanical=true;
 simulate_open_loop=false;
 simulate_nonlinear_modell=true;
 
-parameter_nachfuerung=false;
+parameter_nachfuerung=true;
 
 praediktion_entkopplung_nonlinear=false;
 entkopplung_linear=true;

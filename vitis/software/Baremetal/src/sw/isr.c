@@ -112,6 +112,7 @@ float K_p_iq= 0.0f;
 
 void ISR_Control(void *data)
 {
+
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);

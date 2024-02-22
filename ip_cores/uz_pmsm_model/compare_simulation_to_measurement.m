@@ -22,7 +22,7 @@ setpoint_step=4.0;
 if simulate_open_loop==true
 measruement_csv_name='open_loop_measruement.csv';
 else
-    measruement_csv_name='data_from_javascope_for_plotting/open_loop_sprung_linear_4A';
+    measruement_csv_name='data_from_javascope_for_plotting/closes_loop_with_adjusted_output_old_to_sim_delay_1A_nonlinear';
 end
 
 
@@ -80,6 +80,7 @@ measurment.speed=measurements(first_nonzero:end,4);
 %% Matlab2Tikz options
 
 if plot_figures
+    cleanfigure('targetResolution',300);
     extraaxisoptions = ['y tick label style={/pgf/number format/.cd, fixed,precision=2}'...
         ,',ylabel style={yshift=-0.2cm,font=\small}'...
         ,',xlabel style={font=\small}'...

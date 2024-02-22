@@ -1,5 +1,6 @@
 close all;
-pgfplots_test = readtable('data_from_javascope_for_plotting/Log_2024-02-21_17-36-35');
+set(0,'defaulttextinterpreter','latex')
+pgfplots_test = readtable('data_from_javascope_for_plotting/Log_2024-02-22_10-54-21');
 pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 pgfplots_test_cut = pgfplots_test_cut(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
@@ -55,8 +56,23 @@ legend('iq{sim}','iq{CiL}','iq_soll{CiL}');
 
 %title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
 set(gca, 'FontSize', 22);
+%cleanfigure('targetResolution',300);
 
-test = iq_plot-adjusted_value_vector;
+
+sim_iq = timeseries(iq_plot ,timeplot_iq);
+meas_iq = timeseries(adjusted_value_vector,final_adjusted_time_vector);
+[sim_iq,meas_iq]=synchronize(sim_iq,meas_iq,'union');
+abs_error_iq = sim_iq-meas_iq;
+
+figure;
+plot(abs_error_iq,'LineWidth',3);
+grid on
+ title('Error $I_q$', 'FontSize', 20);
+legend('i_q error', 'FontSize', 18);
+ xlabel('Time (ms)', 'FontSize', 18);
+ ylabel('Current (A)', 'FontSize', 18);
+ set(gca,'fontsize',20);
+% xlim([0.19 200]);
 % %% Fehler berechnen
 % iq_cil_interpoliert = interp1(iq_plot,timeplot_iq,final_adjusted_time_vector);
 % absolute_error = abs(iq_cil_interpoliert - adjusted_value_vector);

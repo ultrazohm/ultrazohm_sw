@@ -70,28 +70,21 @@ uz_3ph_dq_t uz_approximate_flux_step(uz_approximate_flux_t* self, uz_3ph_dq_t i_
     return(flux_approx);
 }
 
-uz_3ph_dq_t uz_approximate_flux_d_set_step(uz_approximate_flux_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere){
+uz_3ph_dq_t uz_approximate_flux_reference_step(uz_approximate_flux_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    //setting Function inputs to get flux_d_set
     self->input.id=i_reference_Ampere.d;
     self->input.iq=i_actual_Ampere.q;
     approximate_flux_step(self->PtrToModelData);
-    uz_3ph_dq_t flux_d_set_approx = {0};
-    flux_d_set_approx.d = self->output.psid_approx;
-    flux_d_set_approx.q = self->output.psiq_approx;
-    return(flux_d_set_approx);
-}
-
-uz_3ph_dq_t uz_approximate_flux_q_set_step(uz_approximate_flux_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere){
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    uz_3ph_dq_t flux_reference_approx = {0};
+    flux_reference_approx.d = self->output.psid_approx;
+    //setting Function inputs to get flux_q_set
     self->input.id=i_actual_Ampere.d;
     self->input.iq=i_reference_Ampere.q;
     approximate_flux_step(self->PtrToModelData);
-    uz_3ph_dq_t flux_q_set_approx = {0};
-    flux_q_set_approx.d = self->output.psid_approx;
-    flux_q_set_approx.q = self->output.psiq_approx;
-    return(flux_q_set_approx);
+    flux_reference_approx.q = self->output.psiq_approx;
+    return(flux_reference_approx);
 }
 
 #endif

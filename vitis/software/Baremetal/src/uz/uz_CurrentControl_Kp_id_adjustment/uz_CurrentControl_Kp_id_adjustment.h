@@ -18,7 +18,7 @@ typedef struct uz_CurrentControl_Kp_id_adjustment_t uz_CurrentControl_Kp_id_adju
  */
 uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_init(float dead_time_reciprocal);
 
-float uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere,float psid_reference,float psid_actual);
+float uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere,uz_3ph_dq_t flux_reference,uz_3ph_dq_t flux_actual);
 
 
 #endif // UZ_CURRENTCONTROL_KP_ID_ADJUSTMENT_H

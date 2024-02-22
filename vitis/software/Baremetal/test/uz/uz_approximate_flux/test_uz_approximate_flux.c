@@ -39,15 +39,12 @@ void test_uz_approximate_flux_step(void){
     TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.0050f,flux_approx_output.q);
 } 
 
-void test_uz_approximate_flux_d_set_step(void){
+void test_uz_approximate_flux_reference_step(void){
     uz_approximate_flux_t* test_instance = uz_approximate_flux_init(fitting_config);
-    uz_3ph_dq_t flux_d_set_approx_output = uz_approximate_flux_d_set_step(test_instance,i_reference_Ampere,i_actual_Ampere);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.015f,flux_d_set_approx_output.d); //Only test the d-axis since the q-axis does not matter in calculating the setpoint with these currents
+    uz_3ph_dq_t flux_reference_output = uz_approximate_flux_reference_step(test_instance,i_reference_Ampere,i_actual_Ampere);
+    TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.015f,flux_reference_output.d); //Only test the d-axis since the q-axis does not matter in calculating the setpoint with these currents
+    TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.0050f,flux_reference_output.q);//Only test the q-axis since the d-axis does not matter in calculating the setpoint with these currents
 } 
 
-void test_uz_approximate_flux_q_set_step(void){
-    uz_approximate_flux_t* test_instance = uz_approximate_flux_init(fitting_config); 
-    uz_3ph_dq_t flux_q_set_approx_output = uz_approximate_flux_q_set_step(test_instance,i_reference_Ampere,i_actual_Ampere);
-    TEST_ASSERT_FLOAT_WITHIN(1e-02f,0.0050f,flux_q_set_approx_output.q);//Only test the q-axis since the d-axis does not matter in calculating the setpoint with these currents
-} 
+
 #endif // TEST

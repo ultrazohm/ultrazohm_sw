@@ -27,12 +27,6 @@ uz_3ph_dq_t uz_approximate_flux_step(uz_approximate_flux_t* self, uz_3ph_dq_t i_
  * @brief approximate flux_d_setpoint
  * @return approximated flux_d_setpoint.
  */
-uz_3ph_dq_t uz_approximate_flux_d_set_step(uz_approximate_flux_t* self,  uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere);
-
-/**
- * @brief approximate flux_q_setpoint
- * @return approximated flux_q_setpoint.
- */
-uz_3ph_dq_t uz_approximate_flux_q_set_step(uz_approximate_flux_t* self,  uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere);
+uz_3ph_dq_t uz_approximate_flux_reference_step(uz_approximate_flux_t* self,  uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere);
 
 #endif // UZ_APPROXIMATE_FLUX_H

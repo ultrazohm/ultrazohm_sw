@@ -12,7 +12,7 @@ struct uz_CurrentControl_Kp_iq_adjustment_t {
     RT_MODEL *PtrToModelData; 
 };
 
-float Kp_iq;
+
 static uint32_t instance_counter = 0U;
 static uz_CurrentControl_Kp_iq_adjustment_t instances[UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES] = { 0 };
 
@@ -36,15 +36,15 @@ uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_init(fl
     return(self);
 }
 
-float uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere,float psiq_reference,float psiq_actual){
+float uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_t* self, uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere,uz_3ph_dq_t flux_reference,uz_3ph_dq_t flux_actual){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     self->input.iq_ref=i_reference_Ampere.q;
     self->input.iq_mea= i_actual_Ampere.q;
-    self->input.psiq_ref= psiq_reference;
-    self->input.psiq_mea= psiq_actual;
+    self->input.psiq_ref= flux_reference.q;
+    self->input.psiq_mea= flux_actual.q;
     CurrentControl_Kp_iq_adjustment_step(self->PtrToModelData);
-    Kp_iq = self->output.Kp_iq;
+    float Kp_iq = self->output.Kp_iq;
     return(Kp_iq);
 }
 

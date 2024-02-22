@@ -16,7 +16,7 @@ typedef struct uz_approximate_flux_t uz_approximate_flux_t;
  * @brief init function for the flux approximation
  * @return uz_approximate_flux*, pointer to the flux approximation
  */
-uz_approximate_flux_t* uz_approximate_flux_init( uz_PMSM_flux_fitting_parameter_config_t fitting_config);
+uz_approximate_flux_t* uz_approximate_flux_init(uz_PMSM_flux_fitting_parameter_config_t fitting_config);
 /**
  * @brief approximate flux
  * @return approximated flux

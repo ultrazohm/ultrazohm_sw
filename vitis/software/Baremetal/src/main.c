@@ -53,8 +53,7 @@ enum init_chain
 };
 uz_pmsmModel_t *pmsm=NULL;
 uz_CurrentControl_t* CurrentControl_instance = NULL;
-uz_approximate_flux_d_t* approximate_flux_d_instance = NULL;
-uz_approximate_flux_q_t* approximate_flux_q_instance = NULL;
+uz_approximate_flux_t* approximate_flux_instance = NULL;
 uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_instance = NULL;
 uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_instance = NULL;
 
@@ -107,8 +106,9 @@ int main(void)
 				.aq6_parameter = 9.186084507499523e-04f,
 				.F1G1_parameter = -0.001356794026337f,
 				.F2G2_parameter = 0.078813850391713f};
-        approximate_flux_d_instance = uz_approximate_flux_d_init(fitting_config);
-        approximate_flux_q_instance = uz_approximate_flux_q_init(fitting_config);
+
+        approximate_flux_instance = uz_approximate_flux_init(fitting_config);
+
 
         struct uz_PI_Controller_config config_id = {
 
@@ -139,7 +139,7 @@ int main(void)
 
         struct uz_CurrentControl_config config_CurrentControl = {
 
-        		.decoupling_select = linear_decoupling,
+        		.decoupling_select = static_nonlinear_decoupling,
 
 				.config_PMSM = config_PMSM,
 

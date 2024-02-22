@@ -69,8 +69,8 @@
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
 #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
-#define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
-#define UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES   0U
+#define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               1U
+#define UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES   1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

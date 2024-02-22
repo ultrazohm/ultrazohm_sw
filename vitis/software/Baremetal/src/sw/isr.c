@@ -54,6 +54,10 @@ uz_3ph_dq_t reference_currents_Amp = {0};
 
 uz_3ph_dq_t measured_currents_Amp = {0};
 
+uz_3ph_dq_t flux_approx = {0};
+
+uz_3ph_dq_t flux_reference = {0};
+
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
 
 uz_6ph_abc_t test_to_show_flux = {0};
@@ -98,14 +102,9 @@ struct uz_pmsmModel_outputs_t pmsm_old_outputs={
 };
 
 //init for flux approx and kp adaption
-extern uz_approximate_flux_d_t* approximate_flux_d_instance;
-extern uz_approximate_flux_q_t* approximate_flux_q_instance;
+extern uz_approximate_flux_t* approximate_flux_instance;
 extern uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_instance;
 extern uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_instance;
-float psid_actual= 0.0f;
-float psiq_actual= 0.0f;
-float psid_ref= 0.0f;
-float psiq_ref= 0.0f;
 float K_p_id = 0.0f;
 float K_p_iq= 0.0f;
 
@@ -137,24 +136,24 @@ void ISR_Control(void *data)
 
     	//Approximate psid and psiq and set new kpd and kpq
 
-    	psid_actual = uz_approximate_flux_d_step(approximate_flux_d_instance,measured_currents_Amp);
-    	psiq_actual = uz_approximate_flux_q_step(approximate_flux_q_instance,measured_currents_Amp);
+    	flux_approx = uz_approximate_flux_step(approximate_flux_instance, measured_currents_Amp);
 
-    	psid_ref = uz_approximate_flux_d_set_step(approximate_flux_d_instance,reference_currents_Amp,measured_currents_Amp);
-    	psiq_ref = uz_approximate_flux_q_set_step(approximate_flux_q_instance,reference_currents_Amp,measured_currents_Amp);
 
-    	K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psid_ref, psid_actual);
-    	K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, psiq_ref, psiq_actual);
+    	flux_reference = uz_approximate_flux_reference_step(approximate_flux_instance,reference_currents_Amp,measured_currents_Amp);
+
+
+    	K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
+    	K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	// Set new controll parameters (parameter_adaption)
-    	//uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
-    	//uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
+    	uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
+    	uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
 
     	test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
     	test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
-    	test_to_show_flux.c1 = psid_actual; //only so i can look at it in javascope
-    	test_to_show_flux.a2 = psid_ref ; //only so i can look at it in javascope
-    	test_to_show_flux.b2 = psiq_actual; //only so i can look at it in javascope
-    	test_to_show_flux.c2 = psiq_ref ; //only so i can look at it in javascope
+    	test_to_show_flux.c1 = flux_approx.d; //only so i can look at it in javascope
+    	test_to_show_flux.a2 = flux_reference.d; //only so i can look at it in javascope
+    	test_to_show_flux.b2 = flux_approx.q; //only so i can look at it in javascope
+    	test_to_show_flux.c2 = flux_reference.q; //only so i can look at it in javascope
 
     	//Closed Loop
     	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 100.0f, omega_el_rad_per_sec);

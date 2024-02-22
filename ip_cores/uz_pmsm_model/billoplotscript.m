@@ -1,13 +1,20 @@
+clc;
+clear;
 close all;
 set(0,'defaulttextinterpreter','latex')
-pgfplots_test = readtable('data_from_javascope_for_plotting/Log_2024-02-22_10-54-21');
+
+
+uz_pmsm_model_init_parameter;
+LUT_approx_methode2a;
+
+pgfplots_test = readtable('data_from_javascope_for_plotting/closes_loop_with_adjusted_output_old_to_sim_delay_1A_nonlinear');
 pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 pgfplots_test_cut = pgfplots_test_cut(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
-writetable( pgfplots_test,'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Implementierung\pgfplots_test_mat.csv');
+%writetable( pgfplots_test,'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Implementierung\pgfplots_test_mat.csv');
 
 %% Simulink Simulation
 simouttest = sim('uz_pmsm_model','StopTime','0.05');
@@ -36,6 +43,7 @@ final_adjusted_time_vector = adjusted_time_vector(adjusted_time_vector >= 0 & ad
 adjusted_value_vector = test_sprung_ausGui_value(adjusted_time_vector >= 0 & adjusted_time_vector <= 0.05);
 test_iqsoll_ausGui_value = test_iqsoll_ausGui_value(adjusted_time_vector >= 0 & adjusted_time_vector <= 0.05);
 
+
 figure;
 
 plot(timeplot_iq,iq_plot , 'LineWidth', 4,'Color', 'blue');
@@ -56,6 +64,7 @@ legend('iq{sim}','iq{CiL}','iq_soll{CiL}');
 
 %title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
 set(gca, 'FontSize', 22);
+set(0,'defaulttextinterpreter','latex')
 %cleanfigure('targetResolution',300);
 
 
@@ -65,6 +74,7 @@ meas_iq = timeseries(adjusted_value_vector,final_adjusted_time_vector);
 abs_error_iq = sim_iq-meas_iq;
 
 figure;
+
 plot(abs_error_iq,'LineWidth',3);
 grid on
  title('Error $I_q$', 'FontSize', 20);
@@ -72,6 +82,7 @@ legend('i_q error', 'FontSize', 18);
  xlabel('Time (ms)', 'FontSize', 18);
  ylabel('Current (A)', 'FontSize', 18);
  set(gca,'fontsize',20);
+ set(0,'defaulttextinterpreter','latex')
 % xlim([0.19 200]);
 % %% Fehler berechnen
 % iq_cil_interpoliert = interp1(iq_plot,timeplot_iq,final_adjusted_time_vector);

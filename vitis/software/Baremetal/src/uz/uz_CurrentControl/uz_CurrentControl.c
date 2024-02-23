@@ -19,6 +19,7 @@
 #include "../uz_HAL.h"
 #include "../uz_signals/uz_signals.h"
 #include "uz_linear_decoupling.h"
+#include "uz_static_nonlinear_decoupling.h"
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 
@@ -29,6 +30,7 @@
 #include <math.h>
 #include "../uz_HAL.h"
 #include "uz_linear_decoupling.h"
+#include "uz_static_nonlinear_decoupling.h"
 #include "uz_space_vector_limitation.h"
 typedef struct uz_CurrentControl_t {
 	bool is_ready;
@@ -171,14 +173,18 @@ bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self){
 
 static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t config_PMSM, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
 	uz_3ph_dq_t decouple_voltage={0};
+	extern uz_3ph_dq_t flux_approx;
 	switch (decoupling_select)
     {
     case no_decoupling:
         // do nothing since no decoupling
         break;
     case linear_decoupling:
-        decouple_voltage=uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+        decouple_voltage = uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
+    case static_nonlinear_decoupling:
+    	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(flux_approx, omega_el_rad_per_sec);
+    	break;
     default:
         break;
     }

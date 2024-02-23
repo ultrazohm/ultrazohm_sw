@@ -14,8 +14,8 @@
 #define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
 	ENUMNAME(uz_platform_eeprom_group000models)																	/* Group 0: Adapter cards (in both A and D slots) */ \
 	ENUMITEM( 2,	UZP_HWGROUP_ADCARD_LTC2311,		"ADC LTC2311-16")											/*  */ \
-	ENUMITEM( 3,	UZP_HWGROUP_ADCARD_DIGVOLT,		"Digital Voltage")											/*  */ \
-	ENUMITEM( 4,	UZP_HWGROUP_ADCARD_DIGOPT,	 	"Digital Optical")											/*  */ \
+	ENUMITEM( 3,	UZP_HWGROUP_ADCARD_DIGVOLT,		"Digital Voltage 3V3/5V/15V/RS422")							/*  */ \
+	ENUMITEM( 4,	UZP_HWGROUP_ADCARD_DIGOPT,	 	"Digital Optical xTX/xRX/xTXyRX")							/*  */ \
 	ENUMITEM( 5,	UZP_HWGROUP_ADCARD_DIGRES,	 	"Digital Resolver")											/*  */ \
 	ENUMITEM( 6,	UZP_HWGROUP_ADCARD_DIGENC,	 	"Digital Incremental Encoder")								/*  */ \
 	ENUMITEM( 7,	UZP_HWGROUP_ADCARD_MAX11331C,	"ADC MAX11331 (CL)")										/*  */ \
@@ -23,7 +23,9 @@
 	ENUMITEM( 9,	UZP_HWGROUP_ADCARD_MAX11331,	"ADC MAX11331 (24x)")										/*  */ \
 	ENUMITEM(10,	UZP_HWGROUP_ADCARD_LTC2983,	 	"Digital Temperature LTC2983")								/*  */ \
 	ENUMITEM(11,	UZP_HWGROUP_ADCARD_DIGINV,		"Digital Inverter")											/*  */ \
-	ENUMITEM(12,	UZP_HWGROUP_ADCARD_DAC8831,	 	"DAC TI DAC8831")											/* ... and *no* \ after the end of the last line! */
+	ENUMITEM(12,	UZP_HWGROUP_ADCARD_DAC8831,	 	"DAC TI DAC8831")											/*  */ \
+	ENUMITEM(13,	UZP_HWGROUP_ADCARD_DIGVOLT33, 	"Digital Voltage 3V3")										/*  */ \
+	ENUMITEM(14,	UZP_HWGROUP_ADCARD_DIGVOLT5, 	"Digital Voltage 5V")										/* ... and *no* \ after the end of the last line! */
 #include "uz_enum/uz_numberedenum.h"
 
 #endif

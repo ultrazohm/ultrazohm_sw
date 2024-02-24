@@ -72,11 +72,11 @@ fixdt_type_delta_u_costs = fixdt(0,27,24);
 % reference values for simulation
 fixdt_type_vsd = fixdt(1,18,15);
 v_dc = 565.0;
-id_ref = -5.0;
-iq_ref = 10.0;
-ix_ref = 0.0;
-iy_ref = 0.0;
-n_rpm = 1200.0;
+id_ref = 0.0;
+iq_ref = 5.0;
+ix_ref = 1.0;
+iy_ref = -1.0;
+n_rpm = 3000.0;
 omega_m = n_rpm*pi/30;
 
 lambda_d = 1.0;

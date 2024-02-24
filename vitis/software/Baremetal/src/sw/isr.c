@@ -59,7 +59,7 @@ float phase2 = UZ_PIf/6.0f;
 
 uz_3ph_abc_t three_phase1, three_phase1, three_phase2, three_phase22;
 
-float dac_input[8]={-1.0f, -1.5f, -2.0f, -2.5f, -3.0f, -3.5f, -4.0f, -4.5f};
+float dac_input[8]={5.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f, 5.0f};
 
                 uz_array_float_t dac_input_array={
                 .data=&dac_input[0],
@@ -186,10 +186,10 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
 
-    //Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
-    //Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2);
-    //Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
-    //Global_Data.av.theta_elec = test_angle*UZ_PIf/180.0;
+    Global_Data.objects.three_phase1 = uz_wavegen_three_phase_sample(amplitude1, frequency1, offset1, phase1);
+    Global_Data.objects.three_phase2 = uz_wavegen_three_phase_sample(amplitude2, frequency2, offset2, phase2);
+//    Global_Data.av.theta_elec = uz_wavegen_sawtooth(2*UZ_PIf, frequency1);
+//    Global_Data.av.theta_elec = test_angle*UZ_PIf/180.0;
 
     //uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(Global_Data.av.theta_elec, 14));
     uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x100, uz_convert_float_to_sfixed(1.0f, 14));
@@ -197,12 +197,14 @@ void ISR_Control(void *data)
     //write offset angle to park transform ip core
     uz_axi_write_int32(XPAR_UZ_USER_UZ_PARK_TRANSFORM_IP_0_BASEADDR+0x104, uz_convert_float_to_sfixed(0.0f, 14)); //no offset
 
-//    dac_input[0]=Global_Data.objects.three_phase1.a;
-//    dac_input[1]=Global_Data.objects.three_phase1.b;
-//    dac_input[2]=Global_Data.objects.three_phase1.c;
-//    dac_input[3]=Global_Data.objects.three_phase2.a;
-//    dac_input[4]=Global_Data.objects.three_phase2.b;
-//    dac_input[5]=Global_Data.objects.three_phase2.c;
+    dac_input[0]=Global_Data.objects.three_phase1.a;
+    dac_input[1]=Global_Data.objects.three_phase1.b;
+    dac_input[2]=Global_Data.objects.three_phase1.c;
+    dac_input[3]=Global_Data.objects.three_phase2.a;
+    dac_input[4]=Global_Data.objects.three_phase2.b;
+    dac_input[5]=Global_Data.objects.three_phase2.c;
+    dac_input[6]=Global_Data.objects.three_phase1.a;
+    dac_input[7]=Global_Data.objects.three_phase2.a;
 
     uz_dac_interface_set_ouput_values(Global_Data.objects.dac_instance,&dac_input_array);
 

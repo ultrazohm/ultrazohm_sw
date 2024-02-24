@@ -5,39 +5,43 @@ Feature Extension Retrofits
 ===========================
 
 This page documents helpful PCB retrofits that add new functionalities to existing carrier boards.
-As of 2024, there is exactly one such retrofit (cf. below); all other retrofits aim at fixing bugs, as documented in :ref:`carrier_known_issues`.
+All retrofits that aim at fixing bugs are documented in :ref:`carrier_known_issues`.
 
 
 .. _carrier_retrofits_cardid:
 
 Adapter card identification retrofit
-------------------------------------
+====================================
 
-.. note::
-	This retrofit *only* applies to UltraZohm carrier cards **Rev04 and older**.
-	Newer revisions of the carrier are going to implement this feature by default and thus *are not subject* to the instructions below.
-	Furthermore, Rev04 UltraZohm systems (currently) shipped by `Zohm Control GmbH <https://zohm-control.com/>`_ already include this retrofit, if in doubt please get in touch before proceeding.
-
-**Feature description**
-
-This retrofit adds address pins to the A and D connectors between the UltraZohm carrier card and its various A and D adapter cards.
+The retrofit adds address pins to the A and D connectors between the UltraZohm carrier board and its various A and D adapter cards.
 By doing so, the EEPROMs on current and future adapter cards become reachable, which enables the :ref:`uzpA53` (running on the PS CPUs) to fetch the card identification (model, revision and serial) and hand it over to the user.
 The user then may rely on this to, e.g., select/apply any card-specific calibration datasets as required during system initialization, for instance on ADC or DAC cards to compensate for part-based offsets or other analog differences.
+The retrofit requires soldering multiple wires on the carrier board.
 
-**Prerequisites and preparation**
+.. note::
+  This retrofit only applies to UltraZohm with a carrier board of **Rev04**.
+  Carrier boards with Revision 3 and earlier can not be retrofitted to add the adapter card identification feature.
+  The systems with the serial number (see back of system) 002-001-0400-0002 to 001-001-0401-0016 can be upgraded.
+  Systems with the serial number 00x-001-0401-0017 and higher (e.g., -0030) do not require the upgrade since the feature is added by default.
 
-You need: Screwdrivers, soldering iron, tin solder and thin enameled (copper) wire *aka* magnet wire, plus
+Prerequisites and preparation
+-----------------------------
 
-... $some time -- The soldering itself takes less than ten minutes; the mechanics are the more tedious bit.
+Requred tools:
+
+- Screwdrivers
+- Soldering iron
+- Tin solder
+- Thin enameled (copper) wire (magnet wire)
+
+Soldering should take less than ten minutes, the mechanics depend on your specific hardware setup since the carrier board has to be disassembly from the chassis.
 
 .. warning::
-	Given the sensitive nature of some of the electronics on the carrier board, please deploy the usual ESD prevention methods during disassembly, soldering and reassembly.
+	Given the sensitive nature of the electronics on the carrier board, please deploy the usual ESD prevention methods during disassembly, soldering and reassembly.
 
-To perform the retrofit, the carrier card has to be extracted from the UltraZohm chassis.
-Depending on exact chassis type, build date etc., this may be a five-minute operation -- or take considerably longer (according to those who built these systems).
-The UltraZohm maintainers welcome additions to this page by users who performed the retrofit on their system to inform others about their experience.
 
-**Step-by-step PCB instructions**
+Step-by-step PCB instructions
+-----------------------------
 
 The goal of this retrofit is to add slot-specific voltage levels to two/three predefined connector pins (A and D slots, respectively) for the (up to) eight adapter cards that can be connected to the UltraZohm carrier.
 Due to the design of this feature, selected connector pins have to be connected to only ground (GND), not to any other signal.
@@ -54,6 +58,7 @@ Important aspects:
 The following image shows the individual test pads that have to be connected to GND:
 
 .. image:: pictures/adretro2d.png
+   :width: 50 %
 
 They are
 
@@ -69,8 +74,10 @@ They are
 The following 3D rendering shows the affected slots and test pads (NB: slot D5 thus not shown here):
 
 .. image:: pictures/adretro3d.png
+   :width: 50 %
 
-To connect the above pads to GND,
+
+To connect the above pads to GND:
 
 * select a suitable "GND spot" close to the pad(s), i.e.,
 
@@ -96,17 +103,23 @@ The :ref:`adretro-photos` below exemplify the above steps by means of the shared
      - Pre-solder test pad(s)
      - Add enameled wire(s)
      - Connect wire(s) to GND
-   * - .. image :: pictures/adretrostep1.jpg
+   * - .. image :: pictures/adretrostep1.jpg 
+          :width: 100 %
      - .. image :: pictures/adretrostep2.jpg
+          :width: 100 %
      - .. image :: pictures/adretrostep3.jpg
+          :width: 100 %
      - .. image :: pictures/adretrostep4.jpg
+          :width: 100 %
      - .. image :: pictures/adretrostep5.jpg
+          :width: 100 %
 
 Please refer to :ref:`uzpA53` for a description of the software API that helps to retrieve the per-card identification data on the APU.
 
-**Further reading**
+Further reading
+---------------
 
-For those curious, please refer to
+Please refer to the following references for more details.
 
 * `Issue #6 ("Add I²C EEPROM") <https://bitbucket.org/ultrazohm/uz_d_template/issues/6/add-i-c-eeprom>`_ in the ``UZ_D_Template`` repository for more information on the design ideas (and history) of the adapter card identification feature and on how to add an EEPROM to an existing adapter card
 

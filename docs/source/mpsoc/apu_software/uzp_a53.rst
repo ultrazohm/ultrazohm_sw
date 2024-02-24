@@ -4,12 +4,14 @@
 Platform Framework
 ==================
 
+.. warning:: The UltraZohm Platform Framework is currently under development! Additionally, mentioned hardware such as the I²C/SSD Extension Board are not available yet.
 
 Overview
 --------
 
-The UltraZohm Platform Framework (or, in short, UZP) is a currently-still-work-in-progress subsystem that aims at making the current I/O HAL *dynamically* aware of the underlying hardware platform during runtime.
-In other words, its various functions -- e.g., writing to an output pin "RST_PHY" during bring-up of, in this case, the Ethernet PHY -- are able to route the desired operation to whatever I/O device/pin (may it be PS-based, over I²C, or ...) based on which hardware (carrier, revision, etc.) the code is *currently* running.
+The UltraZohm Platform Framework (or, in short, UZP) is a subsystem that aims at making the current I/O HAL *dynamically* aware of the underlying hardware platform during runtime.
+In other words, its various functions are able to route the desired operation to whatever I/O device/pin based on which hardware (carrier, revision, etc.) the code is *currently* running.
+This simplifies, e.g., writing to an output pin "RST_PHY" during bring-up of, in this case, the Ethernet PHY,  which is connected to an IIC or GPIO depending on the hardware revision.
 It thus loosens the need to precisely specify the underlying platform *during compile time* and thus, eventually, will make the CPU binaries independent of, e.g., the exact revision of the carrier card they are loaded to.
 
 For this and beyond, it adds crucial functionalities in conjunction with the upcoming I²C/SSD Extension Board for Rev04 UltraZohm carrier cards - such as

@@ -89,6 +89,9 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+            Global_Data.objects.incremental_d5_1 = uz_incremental_encoder_d5_1_init();
+            Global_Data.objects.incremental_d5_2 = uz_incremental_encoder_d5_2_init();
+            Global_Data.objects.incremental_d5_3 = uz_incremental_encoder_d5_3_init();
             initialization_chain = print_msg;
             break;
 	    case print_msg:

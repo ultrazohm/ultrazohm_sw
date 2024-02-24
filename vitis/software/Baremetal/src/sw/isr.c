@@ -51,6 +51,11 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
 
+    // read all incremental encoders
+    Global_Data.av.angle_d5_1 = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_d5_1);
+    Global_Data.av.angle_d5_2 = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_d5_2);
+    Global_Data.av.angle_d5_3 = uz_incrementalEncoder_get_position(Global_Data.objects.incremental_d5_3);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {

@@ -1,0 +1,3 @@
+uz_incrementalEncoder_t* uz_incremental_encoder_d5_1_init(void);
+uz_incrementalEncoder_t* uz_incremental_encoder_d5_2_init(void);
+uz_incrementalEncoder_t* uz_incremental_encoder_d5_3_init(void);

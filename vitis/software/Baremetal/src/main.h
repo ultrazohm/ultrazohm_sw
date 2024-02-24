@@ -54,6 +54,7 @@
 
 #include "include/pwm_init.h"
 
+#include "include/incremental.h"
 
 //----------------------------------------------------
 // FUNCTIONS

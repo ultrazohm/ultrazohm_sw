@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 3U
 
 /** ISR trigger source
  *
@@ -16,11 +16,11 @@
  * 6 for Interrupt_timer_fcc
 */
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
-#define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
+#define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	10U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-#define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_PWM_FREQUENCY                        100.0e3f
 
 
 // Configuration defines for the number of used instances
@@ -38,11 +38,13 @@
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
-#define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
+#define UZ_DAC_INTERFACE_MAX_INSTANCES                  1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_PMSM9PH_TRANSFORMATION_MAX_INSTANCES         0U
 #define UZ_PMSM_MODEL9PH_DQ_MAX_INSTANCES               1U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
+#define UZ_PMSM_MODEL6PH_DQ_MAX_INSTANCES				1U
+#define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES			1U
 
 #endif
 

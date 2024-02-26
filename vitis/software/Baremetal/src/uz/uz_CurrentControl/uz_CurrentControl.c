@@ -23,6 +23,8 @@
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 
+#include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
+
 
 
 
@@ -31,6 +33,7 @@
 #include "../uz_HAL.h"
 #include "uz_linear_decoupling.h"
 #include "uz_static_nonlinear_decoupling.h"
+#include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
 #include "uz_space_vector_limitation.h"
 typedef struct uz_CurrentControl_t {
 	bool is_ready;

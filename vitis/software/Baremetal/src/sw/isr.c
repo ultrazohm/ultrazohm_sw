@@ -123,30 +123,21 @@ void ISR_Control(void *data)
         // Start: Control algorithm - only if ultrazohm is in control state
 
     	uz_pmsmModel_trigger_input_strobe(pmsm);
-
     	uz_pmsmModel_trigger_output_strobe(pmsm);
-
     	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-
     	measured_currents_Amp.d = pmsm_old_outputs.i_d_A;
-
     	measured_currents_Amp.q = pmsm_old_outputs.i_q_A;
-
     	omega_el_rad_per_sec = pmsm_old_outputs.omega_mech_1_s * 4.0f;
 
     	//Approximate psid and psiq and set new kpd and kpq
-
     	flux_approx = uz_approximate_flux_step(approximate_flux_instance, measured_currents_Amp);
-
-
     	flux_reference = uz_approximate_flux_reference_step(approximate_flux_instance,reference_currents_Amp,measured_currents_Amp);
-
 
     	K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	// Set new controll parameters (parameter_adaption)
-    	uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
-    	uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
+    	//uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
+    	//uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
 
     	test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
     	test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope

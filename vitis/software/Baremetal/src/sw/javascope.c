@@ -44,6 +44,8 @@ extern uz_3ph_dq_t reference_currents_Amp;
 
 extern uz_6ph_abc_t test_to_show_flux;
 
+extern uz_3ph_dq_t decouple_voltage;
+
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -77,6 +79,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech] 	= &(pmsm_outputs.omega_mech_1_s);
 	js_ch_observable[JSO_ud]			= &(pmsm_inputs.v_d_V);
 	js_ch_observable[JSO_uq]			= &(pmsm_inputs.v_q_V);
+	js_ch_observable[JSO_ud_geg]			= &data->av.theta_elec;
+	js_ch_observable[JSO_uq_geg]			= &data->av.theta_elec;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;

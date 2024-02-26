@@ -46,8 +46,8 @@ enum JS_OberservableData {
 		JSO_DeltaTheta_mech,
 		JSO_Wtemp,
 		JSO_Rs_mOhm,
-		JSO_Ld_mH,
-		JSO_Lq_mH,
+		JSO_ud_geg,
+		JSO_uq_geg,
 		JSO_PsiPM_mVs,
 	JSO_ENDMARKER
 };

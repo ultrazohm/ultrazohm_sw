@@ -7,7 +7,7 @@
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_PMSM_config/uz_PMSM_config.h"
 
-/*! enum for readable configuring for Mode of the HarmonicCurrentInjection sample function */
+/*! enum for readable configuring for the mode of the HarmonicCurrentInjection sample function */
 enum uz_HarmonicCurrentInjection_mode_select {
     abc_to_dq=0,
     dq_to_dqn    
@@ -16,6 +16,17 @@ enum uz_HarmonicCurrentInjection_mode_select {
 /**
  * @brief Configuration struct for HarmonicCurrentInjection. Accessible by the user
  */
+struct uz_HarmonicCurrentInjection_config {
+    float order_harmonic; /**< Selected order of harmonic */
+    enum uz_HarmonicCurrentInjection_mode_select selection; /**< HarmonicCurrentInjection mode selector \n
+													 abc_to_dq \n
+													 dq_to_dqn */
+    struct uz_CurrentControl_config config_currentcontroller; /**< Configuration struct for CurrentController */
+    struct uz_IIR_Filter_config config_bandpass_abc; /**< Configuration struct for bandpasses of abc-phases */
+    struct uz_IIR_Filter_config config_bandpass_dq; /**< Configuration struct for bandpasses of d- and q-axis */
+    struct uz_IIR_Filter_config config_lowpass_dq; /**< Configuration struct for lowpasses of d- and q-axis */
+};
+
 // struct uz_HarmonicCurrentInjection_config {
 //     int order_first_harmonic;
 //     int order_second_harmonic;
@@ -27,15 +38,6 @@ enum uz_HarmonicCurrentInjection_mode_select {
 //     struct uz_IIR_Filter_config config_bandpass_harmonic_dq;
 //     struct uz_IIR_Filter_config config_lowpass_dq;
 // };
-
-struct uz_HarmonicCurrentInjection_config {
-    float order_harmonic;
-    enum uz_HarmonicCurrentInjection_mode_select selection;
-    struct uz_CurrentControl_config config_currentcontroller;
-    struct uz_IIR_Filter_config config_bandpass_abc;
-    struct uz_IIR_Filter_config config_bandpass_dq;
-    struct uz_IIR_Filter_config config_lowpass_dq;
-};
 
 /**
  * @brief Object definition for HarmonicCurrentInjection

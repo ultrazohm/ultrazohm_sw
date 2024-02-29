@@ -24,7 +24,7 @@
 #include <math.h>
 
 #include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
-
+#include "../../main.h"
 
 
 
@@ -49,6 +49,9 @@ static uint32_t instances_counter_CurrentControl = 0;
 
 static uz_CurrentControl_t instances_CurrentControl[UZ_CURRENTCONTROL_MAX_INSTANCES] = {0};
 
+
+extern uz_3ph_dq_t flux_approx; //Hacky way to get fluxapprox
+extern uz_6ph_abc_t test_to_show_flux; //mehr pfusch
 
 /**
  * @brief Memory allocation of the uz_CurrentControl_t struct
@@ -176,7 +179,6 @@ bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self){
 
 static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t config_PMSM, uz_3ph_dq_t i_actual_Ampere, float omega_el_rad_per_sec){
 	uz_3ph_dq_t decouple_voltage={0};
-	extern uz_3ph_dq_t flux_approx;
 	switch (decoupling_select)
     {
     case no_decoupling:
@@ -187,6 +189,8 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
         break;
     case static_nonlinear_decoupling:
     	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(flux_approx, omega_el_rad_per_sec);
+    	test_to_show_flux.b2 = decouple_voltage.d;
+		test_to_show_flux.c2 = decouple_voltage.q;
     	break;
     default:
         break;

@@ -107,7 +107,8 @@ extern uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_
 extern uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_instance;
 float K_p_id = 0.0f;
 float K_p_iq= 0.0f;
-
+float flux_d_approx = 0.0f;
+float flux_q_approx = 0.0f;
 
 void ISR_Control(void *data)
 {
@@ -133,6 +134,7 @@ void ISR_Control(void *data)
     	flux_approx = uz_approximate_flux_step(approximate_flux_instance, measured_currents_Amp);
     	flux_reference = uz_approximate_flux_reference_step(approximate_flux_instance,reference_currents_Amp,measured_currents_Amp);
 
+    	//controller parameter adaption
     	K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	// Set new controll parameters (parameter_adaption)
@@ -143,8 +145,8 @@ void ISR_Control(void *data)
     	test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
     	test_to_show_flux.c1 = flux_approx.d; //only so i can look at it in javascope
     	test_to_show_flux.a2 = flux_reference.d; //only so i can look at it in javascope
-    	test_to_show_flux.b2 = flux_approx.q; //only so i can look at it in javascope
-    	test_to_show_flux.c2 = flux_reference.q; //only so i can look at it in javascope
+//    	test_to_show_flux.b2 = flux_approx.q; //only so i can look at it in javascope
+//    	test_to_show_flux.c2 = flux_reference.q; //only so i can look at it in javascope
 
     	//Closed Loop
     	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 100.0f, omega_el_rad_per_sec);
@@ -153,6 +155,7 @@ void ISR_Control(void *data)
     	//OpenLoop
 		//pmsm_inputs.v_q_V=reference_currents_Amp.q;
     	//pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
+
 
     	pmsm_old_outputs = pmsm_outputs;
     	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);

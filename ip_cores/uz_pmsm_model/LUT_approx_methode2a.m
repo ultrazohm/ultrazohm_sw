@@ -93,6 +93,8 @@ hold on;
 plot(q_current, Fluxq_idnull,'*', 'DisplayName', 'Fluxq_{idnull}');
 legend('show');
 
+writematrix([q_current, Fluxq_idnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\Messungen_grundlagen\schematic_inductance_pgf.csv');
+%writematrix([f(1:2:10240)', FRF_x(1:2:10240)'], 'Shaker_x.csv')
 %Dritter Plot
 subplot(4,1,3); 
 grid on;

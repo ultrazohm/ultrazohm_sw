@@ -76,11 +76,13 @@ struct uz_parameterid_rc_sample_var_t
 
 struct uz_parameterid_rc_meas_out_t
 {
-    float rc_d;
-    float rc_q;
-    struct uz_parameterid_rc_u_ind_t u_ind_gen_out;
+    float mot_rc_d;
+    float mot_rc_q;
+    float gen_rc_d;
+    float gen_rc_q;
     struct uz_parameterid_rc_set_values_t set_out;
-    bool gen;
+    bool generator_mode; // is_generator_operating_point
+    int32_t finished;
 };
 
 struct uz_parameterid_rc_calc_rc_t
@@ -92,17 +94,18 @@ struct uz_parameterid_rc_calc_rc_t
     
 };
 
-enum state{
-    sample,
-    generator,
-    wait,
-    start,
-    calc_mot,
-    calc_gen,
-    switch2gen,
-    check_u_ind,
-    finished,
-    calc_rc,
+enum rc_state{
+    rc_sample,
+    rc_generator,
+    rc_wait,
+	rc_wait_uind,
+    rc_start,
+    rc_calc_mot,
+    rc_calc_gen,
+    rc_switch2gen,
+    rc_check_u_ind,
+    rc_finished,
+    rc_calc_rc,
     };
 
 uz_parameterid_rc_t* uz_parameterid_rc_init(struct uz_parameterid_rc_config_t internal_data);

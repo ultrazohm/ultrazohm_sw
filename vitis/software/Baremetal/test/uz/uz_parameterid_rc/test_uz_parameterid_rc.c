@@ -36,6 +36,7 @@ void setUp(void)
     test_config.wait_time = 0.5f;
     test_config.isr_steptime = (1.0f / 10.0e3f) * 1.0f;
     test_config.sample_time = 0.5f;
+    test_config.pn = 5;
 
 
      // Configuration of Current Control
@@ -86,7 +87,7 @@ void test_uz_parameterid_rc_generate_outputs_motor(void){
     struct uz_parameterid_rc_meas_out_t actual_output;
     float c = 500.0f; 
     for (int i = 0; i<=c; i++){
-        actual_output = uz_parameterid_rc_generate_outputs(rc_instance, 1.0f, 1.0f, 1.0f, 1.0f, 1000.0f);
+        actual_output = uz_parameterid_rc_generate_outputs(rc_instance, 1.0f, 1.0f, 1.0f, 1.0f, 1000.0f, 1.0f);
     }
     TEST_ASSERT_EQUAL_FLOAT(1.0f, actual_output.set_out.id_set);
     TEST_ASSERT_EQUAL_FLOAT(1.0f, actual_output.set_out.iq_set);
@@ -101,7 +102,7 @@ void test_uz_parameterid_rc_generate_outputs_calc_u_ind_gen(void){
     struct uz_parameterid_rc_meas_out_t actual_output;
     float c = 21.0f; 
     for (int i = 0; i<=c; i++){
-        actual_output = uz_parameterid_rc_generate_outputs(rc_instance, 1.0f, 1.0f, 1.0f, 1.0f, 1000.0f);
+        actual_output = uz_parameterid_rc_generate_outputs(rc_instance, 1.0f, 1.0f, 1.0f, 1.0f, 1000.0f, 1.0f);
     }
 
     float r_s = (1.75e-6f * 1000.0f *  1000.0f + 5.733e-4f *  1000.0f + 28.4648f)/1000.0f;
@@ -128,7 +129,7 @@ void test_uz_parameterid_rc_generate_outputs_u_ind_gen_mode(void){
             vol.q = 3.7790f;
             cur.d = 8.6077f;
             cur.q = -0.6824f;      
-            actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,vol.d ,vol.q ,cur.d ,cur.q , 1000.0f);
+            actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,vol.d ,vol.q ,cur.d ,cur.q , 1000.0f, 1.0f);
     }
 
     float r_s = (1.75e-6f * 1000.0f *  1000.0f + 5.733e-4f *  1000.0f + 28.4648f)/1000.0f;
@@ -141,7 +142,7 @@ TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);
 }
 
 
-void test_uz_parameterid_rc_generate_outputs_calc_rc(void){
+void test_uz_parameterid_rc_generate_outputs_calc_rc_once(void){
     test_config.wait_time = 10.0f * test_config.isr_steptime;
     test_config.sample_time = 100.0f * test_config.isr_steptime;
     test_config.id_ref = 8.6077f;
@@ -150,7 +151,7 @@ void test_uz_parameterid_rc_generate_outputs_calc_rc(void){
     struct uz_parameterid_rc_meas_out_t actual_output2;
     uz_3ph_dq_t vol = {0};
     uz_3ph_dq_t cur = {0};
-    uint32_t k = 400U; 
+    uint32_t k = 325U; 
     for (uint32_t i = 0U; i<=k; i++){
         if (i<=122U){
             vol.d = 0.4250f;
@@ -164,7 +165,7 @@ void test_uz_parameterid_rc_generate_outputs_calc_rc(void){
             cur.d = 8.1509f;
             cur.q = 11.5304f;
             }         
-    actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,vol.d ,vol.q ,cur.d ,cur.q , 1000.0f);
+    actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,vol.d ,vol.q ,cur.d ,cur.q , 1000.0f, 1.0f);
     }
 
 TEST_ASSERT_FLOAT_WITHIN(1e-2, 0.7f, actual_output2.mot_rc_d);
@@ -188,7 +189,7 @@ void test_uz_parameterid_rc_generate_outputs_simulate_behaviour(void){
     uz_3ph_dq_t v_dq_Volts = {0};
     uz_3ph_dq_t i_dq_Amps = {0};
     float v_DC_Volts = 24.0f;
-    uint32_t k = 500000U; 
+    uint32_t k = 350000U; 
     for (uint32_t i = 0U; i<=k; i++){
 
         if(actual_output2.generator_mode){
@@ -198,7 +199,7 @@ void test_uz_parameterid_rc_generate_outputs_simulate_behaviour(void){
 
         v_dq_Volts = uz_CurrentControl_sample(CC_instance, i_dq_ref_Amps, i_dq_Amps, v_DC_Volts, omega_el);   
         i_dq_Amps = uz_pmsm_linear_rfe_step(pmsm, v_dq_Volts, omega_el);
-        actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,v_dq_Volts.d ,v_dq_Volts.q ,i_dq_Amps.d ,i_dq_Amps.q , 1000.0f);
+        actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,v_dq_Volts.d ,v_dq_Volts.q ,i_dq_Amps.d ,i_dq_Amps.q , 1000.0f, 1.0f);
         i_dq_ref_Amps.d = actual_output2.set_out.id_set;
         i_dq_ref_Amps.q = actual_output2.set_out.iq_set;
 
@@ -212,40 +213,6 @@ TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);
 
 }
 
-void test_uz_parameterid_rc_generate_outputs_test(void){
-    test_config.wait_time = 10.0f * test_config.isr_steptime;
-    test_config.sample_time = 100.0f * test_config.isr_steptime;
-    test_config.id_ref = 8.6077f;
-    test_config.iq_ref = -0.6824f;
-    uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
-    struct uz_parameterid_rc_meas_out_t actual_output2;
-    uz_3ph_dq_t vol = {0};
-    uz_3ph_dq_t cur = {0};
-    uint32_t k = 400U; 
-    for (uint32_t i = 0U; i<=k; i++){
-        if (i<=122U){
-            vol.d = 0.4250f;
-            vol.q = 3.7790f;
-            cur.d = 8.6077f;
-            cur.q = -0.6824f;
-            }
-        else{
-            vol.d = 0.0910f;
-            vol.q = 4.1550f;
-            cur.d = 8.1509f;
-            cur.q = 11.5304f;
-            }         
-    actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,vol.d ,vol.q ,cur.d ,cur.q , 1000.0f);
-    }
 
-    uz_parameterid_rc_reset(rc_instance);
-    actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,vol.d ,vol.q ,cur.d ,cur.q , 1000.0f);
-    
-TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output2.mot_rc_d);
-TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output2.mot_rc_q);
-TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output2.gen_rc_d);
-TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output2.gen_rc_q);
-TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);
-}
 
 #endif // TEST

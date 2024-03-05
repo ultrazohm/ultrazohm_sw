@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Mon Mar  4 10:19:35 2024
+# Process ID: 18964
+# Current directory: C:/GIT/Promotion/simulation/01_MATLAB/uz_3ph_pmsm_mpc/hdl_prj/ipcore/cost_opt_v1_2/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/GIT/Promotion/simulation/01_MATLAB/uz_3ph_pmsm_mpc/hdl_prj/ipcore/cost_opt_v1_2/prj_ip/vivado.log
+# Journal file: C:/GIT/Promotion/simulation/01_MATLAB/uz_3ph_pmsm_mpc/hdl_prj/ipcore/cost_opt_v1_2/prj_ip\vivado.jou
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

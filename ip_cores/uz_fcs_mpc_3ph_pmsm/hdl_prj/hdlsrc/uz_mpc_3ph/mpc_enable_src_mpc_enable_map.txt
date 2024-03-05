@@ -1,0 +1,2 @@
+uz_mpc_3ph/mpc_enable/Detect Rise Positive --> mpc_enable_src_Detect_Rise_Positive
+uz_mpc_3ph/mpc_enable --> mpc_enable_src_mpc_enable

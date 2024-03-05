@@ -1,0 +1,12 @@
+vlib work
+vcom  mpc_state_ma_ip_src_Detect_Rise_Positive.vhd
+vcom  mpc_state_ma_ip_src_Detect_Rise_Positive1.vhd
+vcom  mpc_state_ma_ip_src_Detect_Rise_Positive2.vhd
+vcom  mpc_state_ma_ip_src_Detect_Rise_Positive3.vhd
+vcom  mpc_state_ma_ip_src_Detect_Rise_Positive4.vhd
+vcom  mpc_state_ma_ip_src_Subsystem.vhd
+vcom  mpc_state_ma_ip_src_Subsystem2.vhd
+vcom  mpc_state_ma_ip_src_Subsystem4.vhd
+vcom  mpc_state_ma_ip_src_Subsystem7.vhd
+vcom  mpc_state_ma_ip_src_resetable_counter.vhd
+vcom  mpc_state_ma_ip_src_ctrl_state_machine.vhd

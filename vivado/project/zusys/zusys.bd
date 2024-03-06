@@ -145,7 +145,6 @@
           "mpc_state_ma_ip_0": "",
           "clarke_ip_0": "",
           "uz_park_transform_ip_0": "",
-          "pu_voltages_dq_0": "",
           "delay_comp_0": "",
           "prediction_0": "",
           "cost_opt_0": "",
@@ -154,7 +153,8 @@
           "smartconnect_mpc_0": "",
           "xlconstant_0": "",
           "gates_concat_0": "",
-          "system_ila_0": ""
+          "system_ila_0": "",
+          "pu_voltages_dq_0": ""
         },
         "slice_A1": {
           "xlslice_0": "",
@@ -174,7 +174,6 @@
           "mpc_state_ma_ip_0": "",
           "clarke_ip_0": "",
           "uz_park_transform_ip_0": "",
-          "pu_voltages_dq_0": "",
           "delay_comp_0": "",
           "prediction_0": "",
           "cost_opt_0": "",
@@ -182,7 +181,8 @@
           "pu_omega_m_0": "",
           "smartconnect_mpc_0": "",
           "xlconstant_0": "",
-          "gates_concat_0": ""
+          "gates_concat_0": "",
+          "pu_voltages_dq_0": ""
         }
       },
       "zynq_ultra_ps_e_0": ""
@@ -7881,12 +7881,6 @@
                 "xci_path": "ip\\zusys_uz_park_transform_ip_0_0\\zusys_uz_park_transform_ip_0_0.xci",
                 "inst_hier_path": "uz_user/fcs_mpc_0/uz_park_transform_ip_0"
               },
-              "pu_voltages_dq_0": {
-                "vlnv": "xilinx.com:ip:pu_voltages_dq:1.4",
-                "xci_name": "zusys_pu_voltages_dq_0_0",
-                "xci_path": "ip\\zusys_pu_voltages_dq_0_0\\zusys_pu_voltages_dq_0_0.xci",
-                "inst_hier_path": "uz_user/fcs_mpc_0/pu_voltages_dq_0"
-              },
               "delay_comp_0": {
                 "vlnv": "xilinx.com:ip:delay_comp:1.1",
                 "xci_name": "zusys_delay_comp_0_0",
@@ -8341,6 +8335,12 @@
                     "value": "12"
                   }
                 }
+              },
+              "pu_voltages_dq_0": {
+                "vlnv": "xilinx.com:ip:pu_voltages_dq:1.6",
+                "xci_name": "zusys_pu_voltages_dq_1_0",
+                "xci_path": "ip\\zusys_pu_voltages_dq_1_0\\zusys_pu_voltages_dq_1_0.xci",
+                "inst_hier_path": "uz_user/fcs_mpc_0/pu_voltages_dq_0"
               }
             },
             "interface_nets": {
@@ -8388,8 +8388,8 @@
               },
               "smartconnect_mpc_0_M06_AXI": {
                 "interface_ports": [
-                  "smartconnect_mpc_0/M06_AXI",
-                  "pu_voltages_dq_0/AXI4_Lite"
+                  "pu_voltages_dq_0/AXI4_Lite",
+                  "smartconnect_mpc_0/M06_AXI"
                 ]
               },
               "smartconnect_mpc_0_M07_AXI": {
@@ -8476,15 +8476,15 @@
                   "uz_park_transform_ip_0/AXI4_Lite_ACLK",
                   "delay_comp_0/IPCORE_CLK",
                   "delay_comp_0/AXI4_Lite_ACLK",
-                  "pu_voltages_dq_0/IPCORE_CLK",
-                  "pu_voltages_dq_0/AXI4_Lite_ACLK",
                   "prediction_0/IPCORE_CLK",
                   "prediction_0/AXI4_Lite_ACLK",
                   "cost_opt_0/IPCORE_CLK",
                   "cost_opt_0/AXI4_Lite_ACLK",
                   "mpc_enable_0/AXI4_Lite_ACLK",
                   "mpc_enable_0/IPCORE_CLK",
-                  "system_ila_0/clk"
+                  "system_ila_0/clk",
+                  "pu_voltages_dq_0/IPCORE_CLK",
+                  "pu_voltages_dq_0/AXI4_Lite_ACLK"
                 ]
               },
               "cost_opt_0_G0": {
@@ -8624,9 +8624,9 @@
               "mpc_state_ma_ip_0_index": {
                 "ports": [
                   "mpc_state_ma_ip_0/index",
-                  "pu_voltages_dq_0/index",
                   "cost_opt_0/index",
-                  "system_ila_0/probe10"
+                  "system_ila_0/probe10",
+                  "pu_voltages_dq_0/index"
                 ]
               },
               "mpc_state_ma_ip_0_trigger_delay_comp": {
@@ -8646,8 +8646,8 @@
               "mpc_state_ma_ip_0_trigger_park_done_statemachine": {
                 "ports": [
                   "mpc_state_ma_ip_0/trigger_park_done_statemachine",
-                  "pu_voltages_dq_0/trigger_park_done",
-                  "delay_comp_0/trigger_park_done"
+                  "delay_comp_0/trigger_park_done",
+                  "pu_voltages_dq_0/trigger_park_done"
                 ]
               },
               "mpc_state_ma_ip_0_trigger_prediction": {
@@ -8660,8 +8660,8 @@
               "mpc_state_ma_ip_0_trigger_voltages": {
                 "ports": [
                   "mpc_state_ma_ip_0/trigger_voltages",
-                  "pu_voltages_dq_0/trigger_voltages",
-                  "system_ila_0/probe5"
+                  "system_ila_0/probe5",
+                  "pu_voltages_dq_0/trigger_voltages"
                 ]
               },
               "omega_m_1": {
@@ -8709,7 +8709,7 @@
                   "prediction_0/vq_pu"
                 ]
               },
-              "pu_voltages_dq_0_voltages_done": {
+              "pu_voltages_dq_1_voltages_done": {
                 "ports": [
                   "pu_voltages_dq_0/voltages_done",
                   "mpc_state_ma_ip_0/trigger_voltages_done"
@@ -8733,14 +8733,14 @@
                   "uz_park_transform_ip_0/AXI4_Lite_ARESETN",
                   "delay_comp_0/IPCORE_RESETN",
                   "delay_comp_0/AXI4_Lite_ARESETN",
-                  "pu_voltages_dq_0/IPCORE_RESETN",
-                  "pu_voltages_dq_0/AXI4_Lite_ARESETN",
                   "prediction_0/IPCORE_RESETN",
                   "prediction_0/AXI4_Lite_ARESETN",
                   "cost_opt_0/IPCORE_RESETN",
                   "cost_opt_0/AXI4_Lite_ARESETN",
                   "mpc_enable_0/AXI4_Lite_ARESETN",
-                  "mpc_enable_0/IPCORE_RESETN"
+                  "mpc_enable_0/IPCORE_RESETN",
+                  "pu_voltages_dq_0/IPCORE_RESETN",
+                  "pu_voltages_dq_0/AXI4_Lite_ARESETN"
                 ]
               },
               "trigger_cnv_adc_1": {
@@ -9222,12 +9222,6 @@
                 "xci_path": "ip\\zusys_uz_park_transform_ip_0_1\\zusys_uz_park_transform_ip_0_1.xci",
                 "inst_hier_path": "uz_user/fcs_mpc_1/uz_park_transform_ip_0"
               },
-              "pu_voltages_dq_0": {
-                "vlnv": "xilinx.com:ip:pu_voltages_dq:1.4",
-                "xci_name": "zusys_pu_voltages_dq_0_1",
-                "xci_path": "ip\\zusys_pu_voltages_dq_0_1\\zusys_pu_voltages_dq_0_1.xci",
-                "inst_hier_path": "uz_user/fcs_mpc_1/pu_voltages_dq_0"
-              },
               "delay_comp_0": {
                 "vlnv": "xilinx.com:ip:delay_comp:1.1",
                 "xci_name": "zusys_delay_comp_0_1",
@@ -9665,6 +9659,12 @@
                     "value": "6"
                   }
                 }
+              },
+              "pu_voltages_dq_0": {
+                "vlnv": "xilinx.com:ip:pu_voltages_dq:1.6",
+                "xci_name": "zusys_pu_voltages_dq_1_1",
+                "xci_path": "ip\\zusys_pu_voltages_dq_1_1\\zusys_pu_voltages_dq_1_1.xci",
+                "inst_hier_path": "uz_user/fcs_mpc_1/pu_voltages_dq_0"
               }
             },
             "interface_nets": {
@@ -9712,8 +9712,8 @@
               },
               "smartconnect_mpc_0_M06_AXI": {
                 "interface_ports": [
-                  "smartconnect_mpc_0/M06_AXI",
-                  "pu_voltages_dq_0/AXI4_Lite"
+                  "pu_voltages_dq_0/AXI4_Lite",
+                  "smartconnect_mpc_0/M06_AXI"
                 ]
               },
               "smartconnect_mpc_0_M07_AXI": {
@@ -9792,14 +9792,14 @@
                   "uz_park_transform_ip_0/AXI4_Lite_ACLK",
                   "delay_comp_0/IPCORE_CLK",
                   "delay_comp_0/AXI4_Lite_ACLK",
-                  "pu_voltages_dq_0/IPCORE_CLK",
-                  "pu_voltages_dq_0/AXI4_Lite_ACLK",
                   "prediction_0/IPCORE_CLK",
                   "prediction_0/AXI4_Lite_ACLK",
                   "cost_opt_0/IPCORE_CLK",
                   "cost_opt_0/AXI4_Lite_ACLK",
                   "mpc_enable_0/AXI4_Lite_ACLK",
-                  "mpc_enable_0/IPCORE_CLK"
+                  "mpc_enable_0/IPCORE_CLK",
+                  "pu_voltages_dq_0/IPCORE_CLK",
+                  "pu_voltages_dq_0/AXI4_Lite_ACLK"
                 ]
               },
               "cost_opt_0_G0": {
@@ -9933,8 +9933,8 @@
               "mpc_state_ma_ip_0_index": {
                 "ports": [
                   "mpc_state_ma_ip_0/index",
-                  "pu_voltages_dq_0/index",
-                  "cost_opt_0/index"
+                  "cost_opt_0/index",
+                  "pu_voltages_dq_0/index"
                 ]
               },
               "mpc_state_ma_ip_0_trigger_delay_comp": {
@@ -9952,8 +9952,8 @@
               "mpc_state_ma_ip_0_trigger_park_done_statemachine": {
                 "ports": [
                   "mpc_state_ma_ip_0/trigger_park_done_statemachine",
-                  "pu_voltages_dq_0/trigger_park_done",
-                  "delay_comp_0/trigger_park_done"
+                  "delay_comp_0/trigger_park_done",
+                  "pu_voltages_dq_0/trigger_park_done"
                 ]
               },
               "mpc_state_ma_ip_0_trigger_prediction": {
@@ -10013,7 +10013,7 @@
                   "prediction_0/vq_pu"
                 ]
               },
-              "pu_voltages_dq_0_voltages_done": {
+              "pu_voltages_dq_1_voltages_done": {
                 "ports": [
                   "pu_voltages_dq_0/voltages_done",
                   "mpc_state_ma_ip_0/trigger_voltages_done"
@@ -10037,14 +10037,14 @@
                   "uz_park_transform_ip_0/AXI4_Lite_ARESETN",
                   "delay_comp_0/IPCORE_RESETN",
                   "delay_comp_0/AXI4_Lite_ARESETN",
-                  "pu_voltages_dq_0/IPCORE_RESETN",
-                  "pu_voltages_dq_0/AXI4_Lite_ARESETN",
                   "prediction_0/IPCORE_RESETN",
                   "prediction_0/AXI4_Lite_ARESETN",
                   "cost_opt_0/IPCORE_RESETN",
                   "cost_opt_0/AXI4_Lite_ARESETN",
                   "mpc_enable_0/AXI4_Lite_ARESETN",
-                  "mpc_enable_0/IPCORE_RESETN"
+                  "mpc_enable_0/IPCORE_RESETN",
+                  "pu_voltages_dq_0/AXI4_Lite_ARESETN",
+                  "pu_voltages_dq_0/IPCORE_RESETN"
                 ]
               },
               "uz_debug_ip_0_debug_ip_done": {

@@ -54,6 +54,10 @@
 
 #include "include/pwm_init.h"
 
+// Custom includes
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

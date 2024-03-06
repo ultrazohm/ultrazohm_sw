@@ -38,6 +38,76 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+// =============== Declares for PMSM 1 =============== //
+// FOC Instances and Configs
+extern uz_SpeedControl_t* SC_instance_1;
+extern uz_SetPoint_t* SP_instance_1;
+extern uz_CurrentControl_t* CC_instance_1;
+extern struct uz_PMSM_t config_PMSM_1;
+
+// Inverter Measurement
+struct uz_3ph_abc_t v_abc_Volts_1 	= {0};
+struct uz_3ph_dq_t v_dq_Volts_1 	= {0};
+struct uz_3ph_dq_t v_dq_ref_Volts_1 = {0};
+struct uz_3ph_abc_t i_abc_Amps_1 	= {0};
+struct uz_3ph_dq_t i_dq_Amps_1 		= {0};
+struct uz_3ph_dq_t i_dq_ref_Amps_1 	= {0};
+float v_DC_Volts_1 					= 24.0f;
+float i_DC_Amps_1 					= 0.0f;
+
+// FOC Variables
+float n_ref_rpm_1 					= 0.0f;
+float M_ref_Nm_1 					= 0.0f;
+float omega_m_rad_per_sec_1 		= 0.0f;
+float omega_el_rad_per_sec_1 		= 0.0f;
+float theta_el_rad_1 				= 0.0f;
+float theta_el_offset_1 			= 1.1f;
+struct uz_DutyCycle_t output_1 		= {0};
+
+// Controller Settings
+float Kp_speed_1 					= 0.005f;
+float Ki_speed_1 					= 0.01f;
+//float Kp_id = 0.3f;
+//float Ki_id = 230.0f;
+//float Kp_iq = 0.5f;
+//float Ki_iq = 230.0f;
+
+// =============== Declares for PMSM 2 =============== //
+// FOC Instances and Configs
+extern uz_SpeedControl_t* SC_instance_2;
+extern uz_SetPoint_t* SP_instance_2;
+extern uz_CurrentControl_t* CC_instance_2;
+extern struct uz_PMSM_t config_PMSM_2;
+
+// Inverter Measurement
+struct uz_3ph_abc_t v_abc_Volts_2 	= {0};
+struct uz_3ph_dq_t v_dq_Volts_2 	= {0};
+struct uz_3ph_dq_t v_dq_ref_Volts_2 = {0};
+struct uz_3ph_abc_t i_abc_Amps_2 	= {0};
+struct uz_3ph_dq_t i_dq_Amps_2 		= {0};
+struct uz_3ph_dq_t i_dq_ref_Amps_2 	= {0};
+float v_DC_Volts_2 					= 12.0f;
+float i_DC_Amps_2 					= 0.0f;
+
+// FOC Variables
+float n_ref_rpm_2 					= 0.0f;
+float M_ref_Nm_2 					= 0.0f;
+float omega_m_rad_per_sec_2 		= 0.0f;
+float omega_el_rad_per_sec_2 		= 0.0f;
+float theta_el_rad_2 				= 0.0f;
+float theta_el_offset_2 			= 1.4f;
+struct uz_DutyCycle_t output_2 		= {0};
+
+// Controller Settings
+float Kp_speed_2 					= 0.01f;
+float Ki_speed_2 					= 1.0f;
+//float Kp_id = 0.3f;
+//float Ki_id = 230.0f;
+//float Kp_iq = 0.5f;
+//float Ki_iq = 230.0f;
+
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -50,12 +120,80 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
+    update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
+    update_speed_and_position_of_encoder_on_D5_3(&Global_Data);
 
+    // Set tristate to false
+    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
+
+    // Read Measurement Data of First Inverter
+    v_abc_Volts_1.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
+    v_abc_Volts_1.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
+    v_abc_Volts_1.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
+    v_DC_Volts_1 	= Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    i_abc_Amps_1.a  = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+    i_abc_Amps_1.b  = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+    i_abc_Amps_1.c  = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+    i_DC_Amps_1     = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+
+    // Read Measurement of Second Inverter
+    v_abc_Volts_2.a = Global_Data.aa.A2.me.ADC_B8 * 12.0f;
+    v_abc_Volts_2.b = Global_Data.aa.A2.me.ADC_B7 * 12.0f;
+    v_abc_Volts_2.c = Global_Data.aa.A2.me.ADC_B6 * 12.0f;
+    v_DC_Volts_2 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
+    i_abc_Amps_2.a  = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
+    i_abc_Amps_2.b  = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
+    i_abc_Amps_2.c  = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
+    i_DC_Amps_2     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
+    Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
+
+    // Get current state
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+    // Enable Inverter Adapter Hardware
+    if (current_state == running_state || current_state == control_state) {
+      // enable inverter adapter hardware
+      uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+      uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+    } else {
+      // disable inverter adapter hardware
+      uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+      uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+    }
+
+    // Calculation of Signals for FOC for PMSM 1
+    omega_m_rad_per_sec_1 = Global_Data.av.mechanicalRotorSpeed_filtered_1*(2.0f*M_PI)/60.0f;
+    omega_el_rad_per_sec_1 = omega_m_rad_per_sec_1*config_PMSM_1.polePairs;
+    Global_Data.av.omega_el_1 = omega_el_rad_per_sec_1;
+    theta_el_rad_1 = Global_Data.av.theta_elec_1 - Global_Data.av.theta_offset_1;
+    i_dq_Amps_1 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_1, theta_el_rad_1);
+
+    // Calculation of Signals for FOC for PMSM 2
+    omega_m_rad_per_sec_2 = Global_Data.av.mechanicalRotorSpeed_filtered_2*(2.0f*M_PI)/60.0f;
+    omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2*config_PMSM_2.polePairs;
+    Global_Data.av.omega_el_2 = omega_el_rad_per_sec_2;
+    theta_el_rad_2 = Global_Data.av.theta_elec_2 - Global_Data.av.theta_offset_2;
+    i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
+
+
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+
+
+
+
+
+
+
+
+
+
+
+
+    	// Start: Control algorithm - only if ultrazohm is in control state
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -67,6 +205,95 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+
+    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+    //Overtemperature for H1
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L1
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H2
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L2
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H3
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L3
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+    //Binding of the signals to the driver is slightly unintuitive
+    //Overcurrent for Phase A
+    if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for Phase B
+    if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for Phase C
+    if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for DC-link
+    if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+
+    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+    //Overtemperature for H1
+    if (!Global_Data.av.inverter_outputs_d2.FAULT_H1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L1
+    if (!Global_Data.av.inverter_outputs_d2.FAULT_L1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H2
+    if (!Global_Data.av.inverter_outputs_d2.FAULT_H2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L2
+    if (!Global_Data.av.inverter_outputs_d2.FAULT_L2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H3
+    if (!Global_Data.av.inverter_outputs_d2.FAULT_H3) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L3
+    if (!Global_Data.av.inverter_outputs_d2.FAULT_L3) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+    //Binding of the signals to the driver is slightly unintuitive
+    //Overcurrent for Phase A
+    if (!Global_Data.av.inverter_outputs_d2.OC_L1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for Phase B
+    if (!Global_Data.av.inverter_outputs_d2.OC_H1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for Phase C
+    if (!Global_Data.av.inverter_outputs_d2.OC_L2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for DC-link
+    if (!Global_Data.av.inverter_outputs_d2.OC_H2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

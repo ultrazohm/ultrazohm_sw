@@ -1,0 +1,3 @@
+vlib work
+vcom  uz_sel_resolver_src_uz_sel_resolver_pkg.vhd
+vcom  uz_sel_resolver_src_uz_sel_resolver.vhd

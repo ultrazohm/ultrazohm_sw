@@ -1,0 +1,2 @@
+ --> uz_debug_ip_src_uz_debug_switch_measurements_pkg
+uz_mpc_3ph/uz_debug_switch_measurements --> uz_debug_ip_src_uz_debug_switch_measurements

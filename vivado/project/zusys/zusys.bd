@@ -44,7 +44,23 @@
             "xlconstant_0": "",
             "util_vector_logic_1": "",
             "xlconcat_1": "",
-            "xlconcat_2": ""
+            "xlconcat_2": "",
+            "slice_gates_0": {
+              "xlslice_0": "",
+              "xlslice_1": "",
+              "xlslice_2": "",
+              "xlslice_3": "",
+              "xlslice_4": "",
+              "xlslice_5": ""
+            },
+            "slice_gates_1": {
+              "xlslice_0": "",
+              "xlslice_1": "",
+              "xlslice_2": "",
+              "xlslice_3": "",
+              "xlslice_4": "",
+              "xlslice_5": ""
+            }
           }
         },
         "D2_adapter": {
@@ -1501,6 +1517,16 @@
           "Dig_10_Ch5": {
             "type": "rst",
             "direction": "O"
+          },
+          "gates_mpc_0": {
+            "direction": "I",
+            "left": "5",
+            "right": "0"
+          },
+          "gates_mpc_1": {
+            "direction": "I",
+            "left": "5",
+            "right": "0"
           }
         },
         "components": {
@@ -1603,6 +1629,16 @@
                 "direction": "O",
                 "left": "5",
                 "right": "0"
+              },
+              "gates_mpc_0": {
+                "direction": "I",
+                "left": "5",
+                "right": "0"
+              },
+              "gates_mpc_1": {
+                "direction": "I",
+                "left": "5",
+                "right": "0"
               }
             },
             "components": {
@@ -1703,6 +1739,16 @@
                   },
                   "gates_0_dt_out": {
                     "direction": "O",
+                    "left": "5",
+                    "right": "0"
+                  },
+                  "gates_mpc_0": {
+                    "direction": "I",
+                    "left": "5",
+                    "right": "0"
+                  },
+                  "gates_mpc_1": {
+                    "direction": "I",
                     "left": "5",
                     "right": "0"
                   }
@@ -1842,6 +1888,372 @@
                     "parameters": {
                       "NUM_PORTS": {
                         "value": "6"
+                      }
+                    }
+                  },
+                  "slice_gates_0": {
+                    "ports": {
+                      "gates_mpc_0": {
+                        "direction": "I",
+                        "left": "5",
+                        "right": "0"
+                      },
+                      "Dout": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout1": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout2": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout3": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout4": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout5": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      }
+                    },
+                    "components": {
+                      "xlslice_0": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_0_1",
+                        "xci_path": "ip\\zusys_xlslice_0_1\\zusys_xlslice_0_1.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_0/xlslice_0",
+                        "parameters": {
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_1": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_0_2",
+                        "xci_path": "ip\\zusys_xlslice_0_2\\zusys_xlslice_0_2.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_0/xlslice_1",
+                        "parameters": {
+                          "DIN_FROM": {
+                            "value": "1"
+                          },
+                          "DIN_TO": {
+                            "value": "1"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_2": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_0_3",
+                        "xci_path": "ip\\zusys_xlslice_0_3\\zusys_xlslice_0_3.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_0/xlslice_2",
+                        "parameters": {
+                          "DIN_FROM": {
+                            "value": "2"
+                          },
+                          "DIN_TO": {
+                            "value": "2"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_3": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_0_4",
+                        "xci_path": "ip\\zusys_xlslice_0_4\\zusys_xlslice_0_4.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_0/xlslice_3",
+                        "parameters": {
+                          "DIN_TO": {
+                            "value": "3"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_4": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_0_5",
+                        "xci_path": "ip\\zusys_xlslice_0_5\\zusys_xlslice_0_5.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_0/xlslice_4",
+                        "parameters": {
+                          "DIN_FROM": {
+                            "value": "4"
+                          },
+                          "DIN_TO": {
+                            "value": "4"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_5": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_0_6",
+                        "xci_path": "ip\\zusys_xlslice_0_6\\zusys_xlslice_0_6.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_0/xlslice_5",
+                        "parameters": {
+                          "DIN_FROM": {
+                            "value": "5"
+                          },
+                          "DIN_TO": {
+                            "value": "5"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      }
+                    },
+                    "nets": {
+                      "gates_mpc_0_1": {
+                        "ports": [
+                          "gates_mpc_0",
+                          "xlslice_5/Din",
+                          "xlslice_3/Din",
+                          "xlslice_4/Din",
+                          "xlslice_2/Din",
+                          "xlslice_0/Din",
+                          "xlslice_1/Din"
+                        ]
+                      },
+                      "xlslice_0_Dout": {
+                        "ports": [
+                          "xlslice_0/Dout",
+                          "Dout"
+                        ]
+                      },
+                      "xlslice_1_Dout": {
+                        "ports": [
+                          "xlslice_1/Dout",
+                          "Dout1"
+                        ]
+                      },
+                      "xlslice_2_Dout": {
+                        "ports": [
+                          "xlslice_2/Dout",
+                          "Dout2"
+                        ]
+                      },
+                      "xlslice_3_Dout": {
+                        "ports": [
+                          "xlslice_3/Dout",
+                          "Dout3"
+                        ]
+                      },
+                      "xlslice_4_Dout": {
+                        "ports": [
+                          "xlslice_4/Dout",
+                          "Dout4"
+                        ]
+                      },
+                      "xlslice_5_Dout": {
+                        "ports": [
+                          "xlslice_5/Dout",
+                          "Dout5"
+                        ]
+                      }
+                    }
+                  },
+                  "slice_gates_1": {
+                    "ports": {
+                      "gates_mpc_0": {
+                        "direction": "I",
+                        "left": "5",
+                        "right": "0"
+                      },
+                      "Dout": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout1": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout2": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout3": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout4": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      },
+                      "Dout5": {
+                        "direction": "O",
+                        "left": "0",
+                        "right": "0"
+                      }
+                    },
+                    "components": {
+                      "xlslice_0": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_0_7",
+                        "xci_path": "ip\\zusys_xlslice_0_7\\zusys_xlslice_0_7.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_1/xlslice_0",
+                        "parameters": {
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_1": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_1_0",
+                        "xci_path": "ip\\zusys_xlslice_1_0\\zusys_xlslice_1_0.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_1/xlslice_1",
+                        "parameters": {
+                          "DIN_FROM": {
+                            "value": "1"
+                          },
+                          "DIN_TO": {
+                            "value": "1"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_2": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_2_0",
+                        "xci_path": "ip\\zusys_xlslice_2_0\\zusys_xlslice_2_0.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_1/xlslice_2",
+                        "parameters": {
+                          "DIN_FROM": {
+                            "value": "2"
+                          },
+                          "DIN_TO": {
+                            "value": "2"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_3": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_3_0",
+                        "xci_path": "ip\\zusys_xlslice_3_0\\zusys_xlslice_3_0.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_1/xlslice_3",
+                        "parameters": {
+                          "DIN_TO": {
+                            "value": "3"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_4": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_4_0",
+                        "xci_path": "ip\\zusys_xlslice_4_0\\zusys_xlslice_4_0.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_1/xlslice_4",
+                        "parameters": {
+                          "DIN_FROM": {
+                            "value": "4"
+                          },
+                          "DIN_TO": {
+                            "value": "4"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      },
+                      "xlslice_5": {
+                        "vlnv": "xilinx.com:ip:xlslice:1.0",
+                        "xci_name": "zusys_xlslice_5_0",
+                        "xci_path": "ip\\zusys_xlslice_5_0\\zusys_xlslice_5_0.xci",
+                        "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/slice_gates_1/xlslice_5",
+                        "parameters": {
+                          "DIN_FROM": {
+                            "value": "5"
+                          },
+                          "DIN_TO": {
+                            "value": "5"
+                          },
+                          "DIN_WIDTH": {
+                            "value": "6"
+                          }
+                        }
+                      }
+                    },
+                    "nets": {
+                      "gates_mpc_0_1": {
+                        "ports": [
+                          "gates_mpc_0",
+                          "xlslice_5/Din",
+                          "xlslice_3/Din",
+                          "xlslice_4/Din",
+                          "xlslice_2/Din",
+                          "xlslice_0/Din",
+                          "xlslice_1/Din"
+                        ]
+                      },
+                      "xlslice_0_Dout": {
+                        "ports": [
+                          "xlslice_0/Dout",
+                          "Dout"
+                        ]
+                      },
+                      "xlslice_1_Dout": {
+                        "ports": [
+                          "xlslice_1/Dout",
+                          "Dout1"
+                        ]
+                      },
+                      "xlslice_2_Dout": {
+                        "ports": [
+                          "xlslice_2/Dout",
+                          "Dout2"
+                        ]
+                      },
+                      "xlslice_3_Dout": {
+                        "ports": [
+                          "xlslice_3/Dout",
+                          "Dout3"
+                        ]
+                      },
+                      "xlslice_4_Dout": {
+                        "ports": [
+                          "xlslice_4/Dout",
+                          "Dout4"
+                        ]
+                      },
+                      "xlslice_5_Dout": {
+                        "ports": [
+                          "xlslice_5/Dout",
+                          "Dout5"
+                        ]
                       }
                     }
                   }
@@ -2147,6 +2559,90 @@
                       "uz_interlockDeadtime_3/S5"
                     ]
                   },
+                  "gates_mpc_0_1": {
+                    "ports": [
+                      "gates_mpc_0",
+                      "slice_gates_0/gates_mpc_0"
+                    ]
+                  },
+                  "gates_mpc_1_1": {
+                    "ports": [
+                      "gates_mpc_1",
+                      "slice_gates_1/gates_mpc_0"
+                    ]
+                  },
+                  "slice_gates_0_Dout": {
+                    "ports": [
+                      "slice_gates_0/Dout",
+                      "PWM_and_SS_control_V_0/SS0_IN_External"
+                    ]
+                  },
+                  "slice_gates_0_Dout1": {
+                    "ports": [
+                      "slice_gates_0/Dout1",
+                      "PWM_and_SS_control_V_0/SS1_IN_External"
+                    ]
+                  },
+                  "slice_gates_0_Dout2": {
+                    "ports": [
+                      "slice_gates_0/Dout2",
+                      "PWM_and_SS_control_V_0/SS2_IN_External"
+                    ]
+                  },
+                  "slice_gates_0_Dout3": {
+                    "ports": [
+                      "slice_gates_0/Dout3",
+                      "PWM_and_SS_control_V_0/SS3_IN_External"
+                    ]
+                  },
+                  "slice_gates_0_Dout4": {
+                    "ports": [
+                      "slice_gates_0/Dout4",
+                      "PWM_and_SS_control_V_0/SS4_IN_External"
+                    ]
+                  },
+                  "slice_gates_0_Dout5": {
+                    "ports": [
+                      "slice_gates_0/Dout5",
+                      "PWM_and_SS_control_V_0/SS5_IN_External"
+                    ]
+                  },
+                  "slice_gates_1_Dout": {
+                    "ports": [
+                      "slice_gates_1/Dout",
+                      "PWM_and_SS_control_V_1/SS0_IN_External"
+                    ]
+                  },
+                  "slice_gates_1_Dout1": {
+                    "ports": [
+                      "slice_gates_1/Dout1",
+                      "PWM_and_SS_control_V_1/SS1_IN_External"
+                    ]
+                  },
+                  "slice_gates_1_Dout2": {
+                    "ports": [
+                      "slice_gates_1/Dout2",
+                      "PWM_and_SS_control_V_1/SS2_IN_External"
+                    ]
+                  },
+                  "slice_gates_1_Dout3": {
+                    "ports": [
+                      "slice_gates_1/Dout3",
+                      "PWM_and_SS_control_V_1/SS3_IN_External"
+                    ]
+                  },
+                  "slice_gates_1_Dout4": {
+                    "ports": [
+                      "slice_gates_1/Dout4",
+                      "PWM_and_SS_control_V_1/SS4_IN_External"
+                    ]
+                  },
+                  "slice_gates_1_Dout5": {
+                    "ports": [
+                      "slice_gates_1/Dout5",
+                      "PWM_and_SS_control_V_1/SS5_IN_External"
+                    ]
+                  },
                   "util_vector_logic_0_Res": {
                     "ports": [
                       "util_vector_logic_0/Res",
@@ -2270,8 +2766,6 @@
                   "vio_Gates_2L_probe_out0": {
                     "ports": [
                       "vio_Gates_2L/probe_out0",
-                      "PWM_and_SS_control_V_0/SS0_IN_External",
-                      "PWM_and_SS_control_V_1/SS0_IN_External",
                       "PWM_and_SS_control_V_2/SS0_IN_External",
                       "PWM_and_SS_control_V_3/SS0_IN_External"
                     ]
@@ -2279,8 +2773,6 @@
                   "vio_Gates_2L_probe_out1": {
                     "ports": [
                       "vio_Gates_2L/probe_out1",
-                      "PWM_and_SS_control_V_0/SS1_IN_External",
-                      "PWM_and_SS_control_V_1/SS1_IN_External",
                       "PWM_and_SS_control_V_2/SS1_IN_External",
                       "PWM_and_SS_control_V_3/SS1_IN_External"
                     ]
@@ -2288,8 +2780,6 @@
                   "vio_Gates_2L_probe_out2": {
                     "ports": [
                       "vio_Gates_2L/probe_out2",
-                      "PWM_and_SS_control_V_0/SS2_IN_External",
-                      "PWM_and_SS_control_V_1/SS2_IN_External",
                       "PWM_and_SS_control_V_2/SS2_IN_External",
                       "PWM_and_SS_control_V_3/SS2_IN_External"
                     ]
@@ -2297,8 +2787,6 @@
                   "vio_Gates_2L_probe_out3": {
                     "ports": [
                       "vio_Gates_2L/probe_out3",
-                      "PWM_and_SS_control_V_0/SS3_IN_External",
-                      "PWM_and_SS_control_V_1/SS3_IN_External",
                       "PWM_and_SS_control_V_2/SS3_IN_External",
                       "PWM_and_SS_control_V_3/SS3_IN_External"
                     ]
@@ -2306,8 +2794,6 @@
                   "vio_Gates_2L_probe_out4": {
                     "ports": [
                       "vio_Gates_2L/probe_out4",
-                      "PWM_and_SS_control_V_0/SS4_IN_External",
-                      "PWM_and_SS_control_V_1/SS4_IN_External",
                       "PWM_and_SS_control_V_2/SS4_IN_External",
                       "PWM_and_SS_control_V_3/SS4_IN_External"
                     ]
@@ -2315,8 +2801,6 @@
                   "vio_Gates_2L_probe_out5": {
                     "ports": [
                       "vio_Gates_2L/probe_out5",
-                      "PWM_and_SS_control_V_0/SS5_IN_External",
-                      "PWM_and_SS_control_V_1/SS5_IN_External",
                       "PWM_and_SS_control_V_2/SS5_IN_External",
                       "PWM_and_SS_control_V_3/SS5_IN_External"
                     ]
@@ -2493,6 +2977,18 @@
                 "ports": [
                   "Gates/gates_0_out",
                   "gates_0_out"
+                ]
+              },
+              "gates_mpc_0_1": {
+                "ports": [
+                  "gates_mpc_0",
+                  "Gates/gates_mpc_0"
+                ]
+              },
+              "gates_mpc_1_1": {
+                "ports": [
+                  "gates_mpc_1",
+                  "Gates/gates_mpc_1"
                 ]
               },
               "proc_sys_reset_1_peripheral_aresetn": {
@@ -4043,6 +4539,18 @@
             "ports": [
               "D1_adapter/gates_0_dt_out",
               "D3_adapter/In1"
+            ]
+          },
+          "gates_mpc_0_1": {
+            "ports": [
+              "gates_mpc_0",
+              "D1_adapter/gates_mpc_0"
+            ]
+          },
+          "gates_mpc_1_1": {
+            "ports": [
+              "gates_mpc_1",
+              "D1_adapter/gates_mpc_1"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -6819,6 +7327,16 @@
           },
           "SI_VALID_A2": {
             "direction": "I"
+          },
+          "gates_mpc_0": {
+            "direction": "O",
+            "left": "5",
+            "right": "0"
+          },
+          "gates_mpc_1": {
+            "direction": "O",
+            "left": "5",
+            "right": "0"
           }
         },
         "components": {
@@ -10447,6 +10965,18 @@
         "ports": [
           "uz_system/wdt_interrupt",
           "zynq_ultra_ps_e_0/pl_ps_irq1"
+        ]
+      },
+      "uz_user_gates_mpc_0": {
+        "ports": [
+          "uz_user/gates_mpc_0",
+          "uz_digital_adapter/gates_mpc_0"
+        ]
+      },
+      "uz_user_gates_mpc_1": {
+        "ports": [
+          "uz_user/gates_mpc_1",
+          "uz_digital_adapter/gates_mpc_1"
         ]
       },
       "xlconcat_0_dout": {

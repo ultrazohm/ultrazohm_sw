@@ -135,6 +135,19 @@ struct uz_parameterid_rc_repeat{
     float save_M_meas_gen[10];
     float save_M_wf_mot[10];
     float save_M_wf_gen[10];
+    float save_iqm_mot[10];
+    float save_iqm_gen[10];
+    float save_iqi_mot[10];
+    float save_iqi_gen[10];
+    float save_idm_mot[10];
+    float save_idm_gen[10];
+    float save_idi_mot[10];
+    float save_idi_gen[10];
+    float save_u_ind_q_mot[10];
+    float save_u_ind_q_gen[10];
+    float save_u_ind_d_mot[10];
+    float save_u_ind_d_gen[10];
+
 };
 
 
@@ -143,6 +156,6 @@ struct uz_parameterid_rc_config_t uz_parameterid_rc_get_config(uz_parameterid_rc
 struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parameterid_rc_t* self, float ud, float uq, float id, float iq, float n, float M);
 uz_parameterid_rc_t* uz_parameterid_rc_reset_meas(uz_parameterid_rc_t* self);
 uz_parameterid_rc_t* uz_parameterid_rc_reset(uz_parameterid_rc_t* self);
-struct uz_parameterid_rc_repeat uz_parameterid_rc_repeat(uz_parameterid_rc_t* self);
+void uz_parameterid_rc_repeat(uz_parameterid_rc_t* self);
 
 #endif // UZ_PARAMETERID_RC_H

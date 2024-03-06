@@ -2,6 +2,7 @@
 
 #include "unity.h"
 #include "test_assert_with_exception.h"
+#include <math.h>
 
 #include "../uz_global_configuration.h"
 #include "../uz_parameterid_rc/uz_parameterid_rc.h"
@@ -36,7 +37,7 @@ void setUp(void)
     test_config.wait_time = 0.5f;
     test_config.isr_steptime = (1.0f / 10.0e3f) * 1.0f;
     test_config.sample_time = 0.5f;
-    test_config.pn = 5;
+    test_config.pn = 5.0f;
 
 
      // Configuration of Current Control

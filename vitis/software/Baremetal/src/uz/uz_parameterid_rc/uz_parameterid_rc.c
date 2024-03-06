@@ -148,15 +148,6 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             break;
             
 
-/*        case rc_wait_uind:
-            self->counter.wait++;
-                if(self->counter.wait == self->counter.wait_max){
-                	self->rc_state=rc_check_u_ind;
-                    self->counter.wait = 0U;
-                }
-            break;
-*/
-
         case rc_sample:
             self->counter.meas++;
             self->sample.sum_ud = self->sample.sum_ud + ud;
@@ -180,7 +171,7 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->sample.mean_id = self->sample.sum_id / self->counter.meas;
             self->sample.mean_iq = self->sample.sum_iq / self->counter.meas;
             self->sample.mean_n = self->sample.sum_n / self->counter.meas;
-            self->sample.mean_omega = (self->sample.mean_n / 60.0f) * 2.0f * M_PI; 
+            self->sample.mean_omega = (self->sample.mean_n / 60.0f) * 2.0f * M_PI * self->internal_config.pn; 
             self->sample.r_s = (1.75e-6f * self->sample.mean_n * self->sample.mean_n + 5.733e-4f * self->sample.mean_n + 28.4648f)/1000.0f;
             self->save_values.save_M_meas_mot[self->counter.repeat] = self->sample.sum_M / self->counter.meas;
             self->u_ind.mot_d = self->sample.mean_ud - self->sample.r_s * self->sample.mean_id;
@@ -199,7 +190,7 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->sample.mean_id = self->sample.sum_id / self->counter.meas;
             self->sample.mean_iq = self->sample.sum_iq / self->counter.meas;
             self->sample.mean_n = self->sample.sum_n / self->counter.meas;
-            self->save_values.save_M_meas_gen[self->counter.repeat] = self->sample.sum_M / self->counter.meas;
+            self->save_values.save_M_meas_gen[self->counter.repeat] = self->sample.sum_M / self->counter.meas * -1.0f;
             self->sample.r_s = (1.75e-6f * self->sample.mean_n * self->sample.mean_n + 5.733e-4f * self->sample.mean_n + 28.4648f)/1000.0f;
 
             self->u_ind.gen_d = self->sample.mean_ud - self->sample.r_s * self->sample.mean_id;
@@ -239,11 +230,10 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
                 self->diff_u_ind_d = fabsf(fabsf(self->u_ind.mot_d)-fabsf(self->u_ind.gen_d));
                 self->diff_u_ind_q = fabsf(fabsf(self->u_ind.mot_q)-fabsf(self->u_ind.gen_q));
 
-                if ((self->diff_u_ind_d <= 0.01f) && (self->diff_u_ind_q <= 0.005f)){
+                if ((self->diff_u_ind_d <= 0.005f) && (self->diff_u_ind_q <= 0.005f)){
                 	self->rc_state = rc_sample;
                     uz_parameterid_rc_reset_meas(self);
                 } else {
-                    //self->rc_state = rc_wait_uind;
                     uz_parameterid_rc_reset_meas(self);
                 }
 
@@ -291,21 +281,51 @@ return self->output;
 }
 
 
-struct uz_parameterid_rc_repeat uz_parameterid_rc_repeat(uz_parameterid_rc_t* self){
+void uz_parameterid_rc_repeat(uz_parameterid_rc_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    if (self->counter.repeat == 10U)
+    uint32_t max_size_rc_calc = sizeof(self->save_values.save_gen_rc_d) / sizeof(float);
+    if (self->counter.repeat == (max_size_rc_calc - 1U))
     {
         self->rc_state = rc_finished; 
+        self->save_values.save_gen_rc_d[self->counter.repeat] = self->output.gen_rc_d;
+        self->save_values.save_gen_rc_q[self->counter.repeat] = self->output.gen_rc_q;
+        self->save_values.save_mot_rc_d[self->counter.repeat] = self->output.mot_rc_d;
+        self->save_values.save_mot_rc_q[self->counter.repeat] = self->output.mot_rc_q;
+        self->save_values.save_M_i_gen[self->counter.repeat] = 1.5f * self->internal_config.pn * ((self->u_ind.gen_q/self->sample.mean_omega)*self->calc_gen.i_qm - (self->u_ind.gen_d/(-1.0f * self->sample.mean_omega))*self->calc_gen.i_dm);
+        self->save_values.save_M_i_mot[self->counter.repeat] = 1.5f * self->internal_config.pn * ((self->u_ind.mot_q/self->sample.mean_omega)*self->calc_mot.i_qm - (self->u_ind.mot_d/(-1.0f * self->sample.mean_omega))*self->calc_mot.i_dm);
+        self->save_values.save_M_wf_gen[self->counter.repeat] = -1.0f * self->save_values.save_M_meas_gen[self->counter.repeat] - self->save_values.save_M_i_gen[self->counter.repeat];
+        self->save_values.save_M_wf_mot[self->counter.repeat] = -1.0f * self->save_values.save_M_meas_mot[self->counter.repeat] - self->save_values.save_M_i_mot[self->counter.repeat];
+        self->save_values.save_p_fe_gen[self->counter.repeat] = 1.5f * (self->output.gen_rc_d * self->calc_gen.i_di*self->calc_gen.i_di + self->output.gen_rc_q * self->calc_gen.i_qi*self->calc_gen.i_qi);
+        self->save_values.save_p_fe_mot[self->counter.repeat] = 1.5f * (self->output.mot_rc_d * self->calc_mot.i_di*self->calc_mot.i_di + self->output.mot_rc_q * self->calc_mot.i_qi*self->calc_mot.i_qi);
+        self->save_values.save_p_el_gen[self->counter.repeat] = 1.5f * (self->u_meas.gen_ud * self->i_meas.gen_id + self->u_meas.gen_uq * self->i_meas.gen_iq);
+        self->save_values.save_p_el_mot[self->counter.repeat] = 1.5f * (self->u_meas.mot_ud * self->i_meas.mot_id + self->u_meas.mot_uq * self->i_meas.mot_iq);
+        self->save_values.save_p_cu_gen[self->counter.repeat] = 1.5f * (self->sample.r_s * self->i_meas.gen_id*self->i_meas.gen_id + self->sample.r_s * self->i_meas.gen_iq*self->i_meas.gen_iq);
+        self->save_values.save_p_cu_mot[self->counter.repeat] = 1.5f * (self->sample.r_s * self->i_meas.mot_id*self->i_meas.mot_id + self->sample.r_s * self->i_meas.mot_iq*self->i_meas.mot_iq);
+        self->save_values.save_p_wf_gen[self->counter.repeat] = self->save_values.save_M_wf_gen[self->counter.repeat] * (self->sample.mean_omega/self->internal_config.pn);
+        self->save_values.save_p_wf_mot[self->counter.repeat] = self->save_values.save_M_wf_mot[self->counter.repeat] * (self->sample.mean_omega/self->internal_config.pn);
+        self->save_values.save_p_mech_gen[self->counter.repeat] = self->save_values.save_M_meas_gen[self->counter.repeat]* (self->sample.mean_omega/self->internal_config.pn);
+        self->save_values.save_p_mech_mot[self->counter.repeat] = self->save_values.save_M_meas_mot[self->counter.repeat]* (self->sample.mean_omega/self->internal_config.pn);
+        self->save_values.save_iqm_mot[self->counter.repeat] = self->calc_mot.i_qm;
+        self->save_values.save_iqm_gen[self->counter.repeat] = self->calc_gen.i_qm;
+        self->save_values.save_iqi_mot[self->counter.repeat] = self->calc_mot.i_qi;
+        self->save_values.save_iqi_gen[self->counter.repeat] = self->calc_gen.i_qi;
+        self->save_values.save_idm_mot[self->counter.repeat] = self->calc_mot.i_dm;
+        self->save_values.save_idm_gen[self->counter.repeat] = self->calc_gen.i_dm;
+        self->save_values.save_idi_mot[self->counter.repeat] = self->calc_mot.i_di;
+        self->save_values.save_idi_gen[self->counter.repeat] = self->calc_gen.i_di;
+        self->save_values.save_u_ind_q_mot[self->counter.repeat] = self->u_ind.mot_q;
+        self->save_values.save_u_ind_q_gen[self->counter.repeat] = self->u_ind.gen_q;
+        self->save_values.save_u_ind_d_mot[self->counter.repeat] = self->u_ind.mot_d;
+        self->save_values.save_u_ind_d_gen[self->counter.repeat] = self->u_ind.gen_d;
     } else {
-    uint32_t max_size_rc_calc = sizeof(self->save_values.save_gen_rc_d) / sizeof(float);
     uz_assert(self->counter.repeat < max_size_rc_calc);
     self->save_values.save_gen_rc_d[self->counter.repeat] = self->output.gen_rc_d;
     self->save_values.save_gen_rc_q[self->counter.repeat] = self->output.gen_rc_q;
     self->save_values.save_mot_rc_d[self->counter.repeat] = self->output.mot_rc_d;
     self->save_values.save_mot_rc_q[self->counter.repeat] = self->output.mot_rc_q;
-    self->save_values.save_M_i_gen[self->counter.repeat] = 1.5f * self->internal_config.pn * ((self->u_ind.gen_q/self->sample.mean_omega)*self->calc_gen.i_qm - (self->u_ind.gen_d/self->sample.mean_omega)*self->calc_gen.i_dm);
-    self->save_values.save_M_i_mot[self->counter.repeat] = 1.5f * self->internal_config.pn * ((self->u_ind.mot_q/self->sample.mean_omega)*self->calc_mot.i_qm - (self->u_ind.mot_d/self->sample.mean_omega)*self->calc_mot.i_dm);
+    self->save_values.save_M_i_gen[self->counter.repeat] = 1.5f * self->internal_config.pn * ((self->u_ind.gen_q/self->sample.mean_omega)*self->calc_gen.i_qm - (self->u_ind.gen_d/(-1.0f * self->sample.mean_omega))*self->calc_gen.i_dm);
+    self->save_values.save_M_i_mot[self->counter.repeat] = 1.5f * self->internal_config.pn * ((self->u_ind.mot_q/self->sample.mean_omega)*self->calc_mot.i_qm - (self->u_ind.mot_d/(-1.0f * self->sample.mean_omega))*self->calc_mot.i_dm);
     self->save_values.save_M_wf_gen[self->counter.repeat] = -1.0f * self->save_values.save_M_meas_gen[self->counter.repeat] - self->save_values.save_M_i_gen[self->counter.repeat];
     self->save_values.save_M_wf_mot[self->counter.repeat] = -1.0f * self->save_values.save_M_meas_mot[self->counter.repeat] - self->save_values.save_M_i_mot[self->counter.repeat];
     self->save_values.save_p_fe_gen[self->counter.repeat] = 1.5f * (self->output.gen_rc_d * self->calc_gen.i_di*self->calc_gen.i_di + self->output.gen_rc_q * self->calc_gen.i_qi*self->calc_gen.i_qi);
@@ -318,12 +338,22 @@ struct uz_parameterid_rc_repeat uz_parameterid_rc_repeat(uz_parameterid_rc_t* se
     self->save_values.save_p_wf_mot[self->counter.repeat] = self->save_values.save_M_wf_mot[self->counter.repeat] * (self->sample.mean_omega/self->internal_config.pn);
     self->save_values.save_p_mech_gen[self->counter.repeat] = self->save_values.save_M_meas_gen[self->counter.repeat]* (self->sample.mean_omega/self->internal_config.pn);
     self->save_values.save_p_mech_mot[self->counter.repeat] = self->save_values.save_M_meas_mot[self->counter.repeat]* (self->sample.mean_omega/self->internal_config.pn);
+    self->save_values.save_iqm_mot[self->counter.repeat] = self->calc_mot.i_qm;
+    self->save_values.save_iqm_gen[self->counter.repeat] = self->calc_gen.i_qm;
+    self->save_values.save_iqi_mot[self->counter.repeat] = self->calc_mot.i_qi;
+    self->save_values.save_iqi_gen[self->counter.repeat] = self->calc_gen.i_qi;
+    self->save_values.save_idm_mot[self->counter.repeat] = self->calc_mot.i_dm;
+    self->save_values.save_idm_gen[self->counter.repeat] = self->calc_gen.i_dm;
+    self->save_values.save_idi_mot[self->counter.repeat] = self->calc_mot.i_di;
+    self->save_values.save_idi_gen[self->counter.repeat] = self->calc_gen.i_di;
+    self->save_values.save_u_ind_q_mot[self->counter.repeat] = self->u_ind.mot_q;
+    self->save_values.save_u_ind_q_gen[self->counter.repeat] = self->u_ind.gen_q;
+    self->save_values.save_u_ind_d_mot[self->counter.repeat] = self->u_ind.mot_d;
+    self->save_values.save_u_ind_d_gen[self->counter.repeat] = self->u_ind.gen_d;
     self->counter.repeat = self->counter.repeat + 1U;
     uz_parameterid_rc_reset(self);
     }
 
-    
-     
 }
 
 #endif

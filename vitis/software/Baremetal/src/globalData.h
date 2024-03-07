@@ -106,14 +106,14 @@ typedef struct _referenceAndSetValues_ {
 } referenceAndSetValues;
 
 typedef struct{
-	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
-	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
-	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
-	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
+	uz_PWM_SS_2L_t* pwm_d3_pin_0_to_5;
+	uz_PWM_SS_2L_t* pwm_d3_pin_6_to_11;
+	uz_PWM_SS_2L_t* pwm_d3_pin_12_to_17;
+	uz_PWM_SS_2L_t* pwm_d3_pin_18_to_23;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d3_pin_0_to_5;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d3_pin_6_to_11;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d3_pin_12_to_17;
+	uz_interlockDeadtime2L_handle deadtime_interlock_d3_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	///////////////Adding this line for I_A_C//////////////////
 	uz_inverter_adapter_t* inverter_d3;

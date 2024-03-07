@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -68,22 +69,39 @@ typedef struct _actualValues_ {
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
+	float mechanicalRotorSpeed_1; 		// in rpm
+	float mechanicalRotorSpeed_2; 		// in rpm
+	float mechanicalRotorSpeed_3; 		// in rpm
+	float mechanicalRotorSpeed_filtered_1; // in rpm
+	float mechanicalRotorSpeed_filtered_2; // in rpm
+	float mechanicalRotorSpeed_filtered_3; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm
 	float mechanicalTorqueSensitive; // in Nm
 	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
+	float I_d_1;
+	float I_q_1;
+	float I_d_2;
+	float I_q_2;
+	float U_d_1;
+	float U_q_1;
+	float U_d_2;
+	float U_q_2;
+	float theta_elec_1;
+	float theta_elec_2;
+	float theta_elec_3;
+	float theta_mech_1;
+	float theta_mech_2;
+	float theta_offset_1; //in rad/s
+	float theta_offset_2; //in rad/s
+	float omega_el_1;
+	float omega_el_2;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	float temperature;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
+	float electricalRotorSpeed_1;
+	float electricalRotorSpeed_2;
 	float snd_fld[21];
 } actualValues;
 
@@ -111,8 +129,12 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
+	uz_incrementalEncoder_t* encoder_D5_1;
+	uz_incrementalEncoder_t* encoder_D5_2;
+	uz_incrementalEncoder_t* encoder_D5_3;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* inverter_d1;
+	uz_inverter_adapter_t* inverter_d2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

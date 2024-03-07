@@ -121,6 +121,7 @@ int main(void)
                        //pmsm=uz_pmsmModel_init(pmsm_config);
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
+            Global_Data.objects.inverter_d3 = initialize_uz_inverter_adapter_on_D3();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();

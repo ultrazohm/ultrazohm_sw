@@ -58,6 +58,10 @@ struct uz_pmsmModel_inputs_t pmsm_inputs={
    .omega_mech_1_s=0.0f
  };
  ///////////////////////////////////////////////////////////////////////
+ struct uz_3ph_abc_t v_abc_Volts = {0};
+ struct uz_3ph_abc_t i_abc_Amps = {0};
+ float v_DC_Volts = 0.0f;
+ float i_DC_Amps = 0.0f;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -73,7 +77,33 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    // Read Measurement Data of Inverter Card/////////////////////////////////////////////////////////////////////
+    v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
+    v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
+    v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
+    v_DC_Volts 	  = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    i_abc_Amps.a  = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+    i_abc_Amps.b  = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+    i_abc_Amps.c  = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+    i_DC_Amps    = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    Global_Data.av.inverter_outputs_d3 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d3);
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // Enable Inverter Adapter Hardware///////////////////////////////////////////////////////////////////////////
+    if (current_state == running_state || current_state == control_state) {
+        	// enable inverter adapter hardware
+            uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, true);
+    } else {
+        	// disable inverter adapter hardware
+            uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, false);
+    }
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+    //Get current state
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
@@ -88,7 +118,7 @@ void ISR_Control(void *data)
     	 pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
     	 pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
     	 uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
-    	 //////////////////////////////////////////////////////////////////////////////
+    	///////////////////////////////////////////////////////////////////////////////
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -100,6 +130,50 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+
+    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+    //Overtemperature for H1
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L1
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H2
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L2
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for H3
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overtemperature for L3
+    if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+    //Binding of the signals to the driver is slightly unintuitive
+    //Overcurrent for Phase A
+    if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for Phase B
+    if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for Phase C
+    if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
+       ultrazohm_state_machine_set_error(true);
+    }
+    //Overcurrent for DC-link
+    if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
+       ultrazohm_state_machine_set_error(true);
+    }
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

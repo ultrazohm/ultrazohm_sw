@@ -23,6 +23,9 @@ extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
+//////////////Adding this line for tutorial 5///////////////
+extern uz_3ph_dq_t reference_currents_Amp;
+///////////////////////////////////////////////////////////
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -186,11 +189,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		//data->av.snd_fld[1] = value;
+		    reference_currents_Amp.q = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		//data->av.snd_fld[2] = value;
+		    reference_currents_Amp.d = value;
 			break;
 
 		case (Set_Send_Field_3):

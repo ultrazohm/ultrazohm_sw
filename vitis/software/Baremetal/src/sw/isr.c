@@ -38,6 +38,27 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+//Define input and output of the IP-Core///////////////////////////////
+extern uz_pmsmModel_t *pmsm;
+extern uz_CurrentControl_t* CurrentControl_instance;
+uz_3ph_dq_t reference_currents_Amp = {0};
+uz_3ph_dq_t measured_currents_Amp = {0};
+uz_3ph_dq_t CurrentControl_output_Volts = {0};
+float omega_el_rad_per_sec = 0.0f;
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+   .omega_mech_1_s=0.0f,
+   .v_d_V=0.0f,
+   .v_q_V=0.0f,
+   .load_torque=0.0f
+ };
+ struct uz_pmsmModel_outputs_t pmsm_outputs={
+   .i_d_A=0.0f,
+   .i_q_A=0.0f,
+   .torque_Nm=0.0f,
+   .omega_mech_1_s=0.0f
+ };
+ ///////////////////////////////////////////////////////////////////////
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -56,6 +77,18 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	///////////////////////////////////////////////////////////////////////////////
+    	 uz_pmsmModel_trigger_input_strobe(pmsm);
+    	 uz_pmsmModel_trigger_output_strobe(pmsm);
+    	 pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+    	 measured_currents_Amp.d = pmsm_outputs.i_d_A;
+    	 measured_currents_Amp.q = pmsm_outputs.i_q_A;
+    	 omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+    	 CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+    	 pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+    	 pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+    	 uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+    	 //////////////////////////////////////////////////////////////////////////////
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

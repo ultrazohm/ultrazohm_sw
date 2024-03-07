@@ -45,13 +45,18 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_CurrentControl_pmsm,
     init_ip_cores,
     print_msg,
     init_interrupts,
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
-
+//////////////////////////Adding this line for tutorial 5//////////////////////////
+///////////////////Define global variable of the PMSM IP-Core//////////////////////
+uz_pmsmModel_t *pmsm=NULL;
+uz_CurrentControl_t* CurrentControl_instance = NULL;
+///////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -71,8 +76,49 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            //initialization_chain = init_ip_cores; // comment this line just for tutorial 5
+            //Adding this line for tutorial 5///////////////////
+            initialization_chain = init_CurrentControl_pmsm;
             break;
+        ////////////////Adding this code for tutorial 5//////////////////////////////////
+        case init_CurrentControl_pmsm:;
+                       struct uz_PMSM_t config_PMSM = {
+                           .Ld_Henry = 3.00e-04f,
+                           .Lq_Henry = 3.00e-04f,
+                           .Psi_PM_Vs = 0.0075f};
+                       struct uz_PI_Controller_config config_id = {
+                           .Kp = 0.25f,
+                           .Ki = 158.8f,
+                           .samplingTime_sec = 0.00005f,
+                           .upper_limit = 10.0f,
+                           .lower_limit = -10.0f};
+                       struct uz_PI_Controller_config config_iq = {
+                           .Kp = 0.25f,
+                           .Ki = 158.8f,
+                           .samplingTime_sec = 0.00005f,
+                           .upper_limit = 10.0f,
+                           .lower_limit = -10.0f};
+                       struct uz_CurrentControl_config config_CurrentControl = {
+                           .decoupling_select = linear_decoupling,
+                           .config_PMSM = config_PMSM,
+                           .config_id = config_id,
+                           .config_iq = config_iq
+                           .max_modulation_index = 1.0f / sqrtf(3.0f)};
+                       CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+/////////////////////////////////////////comment this code for inveter card///////////
+                       //struct uz_pmsmModel_config_t pmsm_config={
+                           //.base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+                           //.ip_core_frequency_Hz=100000000,
+                           //.simulate_mechanical_system = true,
+                           //.r_1 = 0.085f,
+                           //.L_d = 3.00e-04f,
+                           //.L_q = 3.00e-04f,
+                           //.psi_pm = 0.0075f,
+                           //.polepairs = 4.0f,
+                           //.inertia = 3.24e-05f,
+                           //.coulomb_friction_constant = 0.01f,
+                           //.friction_coefficient = 0.001f};
+                       //pmsm=uz_pmsmModel_init(pmsm_config);
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();

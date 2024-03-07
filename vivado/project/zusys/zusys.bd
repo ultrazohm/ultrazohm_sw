@@ -5156,7 +5156,7 @@
                 "inst_hier_path": "uz_system/DataMover/AXI2TCM_1",
                 "parameters": {
                   "C_M00_AXI_TARGET_SLAVE_BASE_ADDR": {
-                    "value": "0xFFE20080"
+                    "value": "0xFFE20010"
                   },
                   "C_M00_NUMBER_of_ADCs": {
                     "value": "8"
@@ -5195,7 +5195,7 @@
                 "inst_hier_path": "uz_system/DataMover/AXI2TCM_2",
                 "parameters": {
                   "C_M00_AXI_TARGET_SLAVE_BASE_ADDR": {
-                    "value": "0xFFE20100"
+                    "value": "0xFFE20020"
                   },
                   "C_M00_NUMBER_of_ADCs": {
                     "value": "8"
@@ -7482,6 +7482,12 @@
             "ports": [
               "Trigger_AXI2TCM_A1_A3",
               "DataMover/Trigger_AXI2TCM_A1_A3"
+            ]
+          },
+          "Trigger_AXI2TCM_A2_1": {
+            "ports": [
+              "Trigger_AXI2TCM_A2",
+              "DataMover/Trigger_AXI2TCM_A2"
             ]
           },
           "axi_timebase_wdt_0_wdt_interrupt": {

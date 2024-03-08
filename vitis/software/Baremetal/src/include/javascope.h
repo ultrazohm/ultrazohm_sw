@@ -35,11 +35,11 @@ enum JS_OberservableData {
 	JSO_uc,
 	JSO_ia,
 	JSO_ib,
-	//JSO_ic,
-	//JSO_id,
-	//JSO_iq,
-	//JSO_ud,
-	//JSO_uq,
+	JSO_ic,
+	JSO_id,
+	JSO_iq,
+	JSO_ud,
+	JSO_uq,
 	JSO_Speed_rpm,
 	JSO_el_Speed_rpm,
 	JSO_LoadSpeed_rpm,
@@ -126,7 +126,7 @@ enum gui_button_mapping {
 /* Visualization Config for GUI*/
 // LEAVE IT COMMENTED OUT AS IT IS, the plain text below is parsed by the GUI!
 // Change entries according to your needs.
-
+/*
 // Description (printed text) for the send_fields top to bottom
 // Do not change the first (zero) and last (end) entries.
 

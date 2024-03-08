@@ -39,7 +39,8 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern struct uz_pmsmModel_inputs_t pmsm_inputs;
+extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 
 int JavaScope_initialize(DS_Data* data)
 {

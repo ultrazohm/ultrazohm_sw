@@ -44,5 +44,5 @@ static struct uz_inverter_adapter_outputs_t uz_inverter_adapter_outputs_d3 = {
 };
 
 uz_inverter_adapter_t* initialize_uz_inverter_adapter_on_D3(void) {
-       return(uz_inverter_adapter_init(uz_inverter_adapter_config_d1, uz_inverter_adapter_outputs_d3));
+       return(uz_inverter_adapter_init(uz_inverter_adapter_config_d3, uz_inverter_adapter_outputs_d3));
 }

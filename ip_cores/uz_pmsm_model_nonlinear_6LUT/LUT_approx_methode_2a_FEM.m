@@ -178,17 +178,17 @@ ed = ((abs(fluxd_real-psi_d_approx))/fluxd_max).*100;
 eq = ((abs(fluxq_real-psi_q_approx))/fluxq_max).*100;
 
 %% plotten
-
+set(0,'defaulttextinterpreter','latex')
 figure;
 % Approximierter Fluss
 subplot(2,1,1); 
 grid on;
 % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
 surf(d_current, q_current,psi_d_approx);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('psi_dapprox');
-legend;
+xlabel('$i_d/A$','FontSize', 18);
+ylabel('$i_q/A$','FontSize', 18);
+zlabel('$psi_{approx}^d/Vs$','FontSize', 18);
+view(-127.5,30)
 
 % Echter Fluss
 subplot(2,1,2); 
@@ -197,10 +197,10 @@ grid on;
 % surf(d_current, q_current, fluxd_real);
 surf(id,iq,psi_d)
 %surf(X, Y, fluxd_real);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('psi_dreal');
-legend;
+xlabel('$i_d/A$','FontSize', 18);
+ylabel('$i_q/A$','FontSize', 18);
+zlabel('$psi_{real}^d/Vs$','FontSize', 18);
+view(-127.5,30)
 
 figure;
 % Approximierter Fluss
@@ -208,10 +208,9 @@ subplot(2,1,1);
 grid on;
 % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
 surf(d_current, q_current,psi_q_approx);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('psi_{qapprox}');
-legend;
+xlabel('$i_d/A$','FontSize', 18);
+ylabel('$i_q/A$','FontSize', 18);
+zlabel('$psi_{approx}^q/Vs$','FontSize', 18);
 
 % Echter Fluss
 subplot(2,1,2); 
@@ -219,31 +218,28 @@ grid on;
 % plot(q_current_q_Flux, Fluxd_iqnull);
 surf(d_current, q_current, fluxq_real);
 %surf(X, Y, fluxd_real);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('psi_{qreal}');
-legend;
+xlabel('$i_d/A$','FontSize', 18);
+ylabel('$i_q/A$','FontSize', 18);
+zlabel('$psi_{real}^q/Vs$','FontSize', 18);
 
 
 figure;
 % Error psid zwischen approx und echtem Fluss
 grid on;
 surf(d_current, q_current, ed);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('error %');
-title('error psid');
-legend;
+xlabel('$i_d/A$','FontSize', 18);
+ylabel('$i_q/A$','FontSize', 18);
+zlabel('$\epsilon_d/\%$','FontSize', 18);
+title('Fehler $\psi_d$','FontSize', 18);
 
 figure;
 % Error psiq zwischen approx und echtem Fluss
 grid on;
 surf(d_current, q_current, eq);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('error %');
-title('error psiq');
-legend;
+xlabel('$i_d/A$','FontSize', 18);
+ylabel('$i_q/A$','FontSize', 18);
+zlabel('$\epsilon_q/\%$','FontSize', 18);
+title('Fehler $\psi_q$','FontSize', 18);
 
 
 

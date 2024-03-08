@@ -1,7 +1,8 @@
 %% Parameter for simulation of uz_pmsm_model.slx
 % This is called by a callback when uz_pmsm_model is opened
 % 
-
+close all;
+path('C:\SoSe23\Masterarbeit\MatlabtoTikz\src',path);
 % ad1 = 0;
 % ad2 = 0;
 % ad3 = 0;
@@ -45,8 +46,8 @@ polepair=4;
 
 ts=1/5e5; % =2e-6
 
-setpoint_step=1.0;
-rpm = 0;
+setpoint_step=10.0;
+rpm = 1250;
 load_torque = 0;
 
 % Controller parameter
@@ -73,15 +74,16 @@ static_friction_torque=0.01;
 % static_friction_torque=0;
 
 % Simulation settings
-simulate_mechanical=true;
+simulate_mechanical=false;
 simulate_open_loop=false;
 simulate_nonlinear_modell=true;
 
-parameter_nachfuerung=true;
+parameter_nachfuerung=false;
 
-praediktion_entkopplung_nonlinear=false;
+praediktion_entkopplung_nonlinear=true;
+
 entkopplung_linear=false;
-entkopplung_static=true;
+entkopplung_static=false;
 entkopplung_dynamic=false;
 
 
@@ -143,6 +145,8 @@ Flux_q_test = FluxMapData{108:127,1:20}*(1e-3);
 
 % [Ldd,Ldq]=gradient(Flux_d,1.6842,2.5263);
 % [Lqd,Lqq]=gradient(Flux_q,1.6842,2.5263);
+
+
 
 % test = polyfit(d_current_d_Flux(:),q_current_d_Flux(:), Flux_d(:), 2);
 

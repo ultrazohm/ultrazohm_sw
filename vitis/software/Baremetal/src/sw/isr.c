@@ -138,8 +138,8 @@ void ISR_Control(void *data)
     	K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	// Set new controll parameters (parameter_adaption)
-    	//uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
-    	//uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
+    	uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
+    	uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
 
     	test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
     	test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
@@ -149,7 +149,7 @@ void ISR_Control(void *data)
 //    	test_to_show_flux.c2 = flux_reference.q; //only so i can look at it in javascope
 
     	//Closed Loop
-    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 100.0f, omega_el_rad_per_sec);
+    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 400.0f, omega_el_rad_per_sec);
     	pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
     	pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
     	//OpenLoop

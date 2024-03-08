@@ -81,7 +81,7 @@ subplot(4,1,1);
 grid on;
 plot(d_current, Fluxd_iqnull_fitted, 'DisplayName', 'Fluxd_{idnull}_{fitted}');
 hold on;
-plot(d_current, Fluxd_iqnull,'*', 'DisplayName', 'Fluxd_{idnull}');
+plot(d_current, Fluxd_iqnull,'--', 'DisplayName', 'Fluxd_{idnull}');
 legend('show');
 
 % Zweiter Plot
@@ -90,7 +90,7 @@ grid on;
 
 plot(q_current, Fluxq_idnull_fitted  , 'DisplayName', 'Fluxq_{idnull}_{fitted}');
 hold on;
-plot(q_current, Fluxq_idnull,'*', 'DisplayName', 'Fluxq_{idnull}');
+plot(q_current, Fluxq_idnull,'--', 'DisplayName', 'Fluxq_{idnull}');
 legend('show');
 
 writematrix([q_current, Fluxq_idnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\Messungen_grundlagen\schematic_inductance_pgf.csv');
@@ -101,7 +101,7 @@ grid on;
 
 plot(d_current, Fluxd_iq1_fitted  , 'DisplayName', 'Fluxd_{iq1}_{fitted}');
 hold on;
-plot(d_current, Fluxd_iq1,'*', 'DisplayName', 'Fluxd_{iq1}');
+plot(d_current, Fluxd_iq1,'--', 'DisplayName', 'Fluxd_{iq1}');
 legend('show');
 
 % Vierter Plot
@@ -109,8 +109,22 @@ subplot(4,1,4);
 grid on;
 plot(q_current, Fluxq_id1_fitted  , 'DisplayName', 'Fluxq_{id1}_{fitted}');
 hold on;
-plot(q_current, Fluxq_id1,'*', 'DisplayName', 'Fluxq_{id1}');
+plot(q_current, Fluxq_id1,'--', 'DisplayName', 'Fluxq_{id1}');
 legend('show');
+
+% psid_iqnull
+writematrix([d_current, Fluxd_iqnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq0_approx.csv');
+writematrix([d_current, Fluxd_iqnull],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq0_real.csv');
+% psiq_idnull
+writematrix([q_current, Fluxq_idnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id0_approx.csv');
+writematrix([q_current, Fluxq_idnull],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id0_real.csv');
+% psid_iq1
+writematrix([d_current, Fluxd_iq1_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq1_approx.csv');
+writematrix([d_current, Fluxd_iq1],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq1_real.csv');
+% psid_id1
+writematrix([q_current, Fluxq_id1_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id1_approx.csv');
+writematrix([q_current, Fluxq_id1],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id1_real.csv');
+
 
 
 %Maximum Crosscoupling current constants id1 und iq1
@@ -153,7 +167,7 @@ psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*lo
 
 %Das sind die Setpoints aus für 
 q_current_set = q_current(1);
-d_current_set = d_current(14);
+d_current_set = d_current(20);
 
 %Für den Faktor setzte ich einfach in der Formel der Integrierten Terme den Set Strom ein 
 Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
@@ -268,40 +282,50 @@ ed_L = ((abs(Lqq_approx-Lqq_approx_test))/Lqq_approx_max).*100;
 % % legend;
 
 %matlab2tikz('C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\testobsspeichert.tex','width','\figurewidth','height','\figureheight')
+figure;
+% Echter Fluss
+subplot(2,2,1); 
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull);
+surf(d_current, q_current, fluxq_real);
+%surf(X, Y, fluxd_real);
+xlabel('i_{d}');
+ylabel('i_{q}');
+zlabel('\psi_{d}');
+legend;
 
-% % Echter Fluss
-% subplot(2,1,2); 
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, fluxd_real);
-% %surf(X, Y, fluxd_real);
-% xlabel('i_{d}');
-% ylabel('i_{q}');
-% zlabel('\psi_{d}');
+% Approximierter Fluss
+subplot(2,2,2);
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
+surf(d_current, q_current,psi_q_approx);
+xlabel('$$i_{d}$$','Interpreter','Latex');
+ylabel('$$i_{q}$$','Interpreter','Latex');
+zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
+% title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
 % legend;
 
-% % figure;
-% % Approximierter Fluss
-% subplot(1,2,2);
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-% surf(d_current, q_current,psi_q_approx);
-% xlabel('$$i_{d}$$','Interpreter','Latex');
-% ylabel('$$i_{q}$$','Interpreter','Latex');
-% zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
-% % title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
-% % legend;
+% Echter Fluss
+subplot(2,2,3); 
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull);
+surf(d_current, q_current, fluxd_real);
+%surf(X, Y, fluxd_real);
+xlabel('D Current');
+ylabel('Q Current');
+zlabel('psi_{qreal}');
+title('Fluss \psi_{d}');
+legend;
 
-% % Echter Fluss
-% subplot(2,1,2); 
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, fluxq_real);
-% %surf(X, Y, fluxd_real);
-% xlabel('D Current');
-% ylabel('Q Current');
-% zlabel('psi_{qreal}');
-% title('Fluss \psi_{d}');
+% Approximierter Fluss
+subplot(2,2,4);
+grid on;
+% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
+surf(d_current, q_current,psi_d_approx);
+xlabel('$$i_{d}$$','Interpreter','Latex');
+ylabel('$$i_{q}$$','Interpreter','Latex');
+zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
+% title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
 % legend;
 
 

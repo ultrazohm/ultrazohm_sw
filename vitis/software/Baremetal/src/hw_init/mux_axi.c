@@ -17,16 +17,29 @@
 #include "../uz/uz_global_configuration.h"
 #include "xparameters.h"
 
-static struct uz_mux_axi_config_t uz_mux_axi_config = {
-        .base_address= XPAR_UZ_SYSTEM_INTERRUPT_MUX_AXI_IP_1_BASEADDR,
+static struct uz_mux_axi_config_t uz_mux_axi_config_0 = {
+        .base_address= XPAR_UZ_SYSTEM_INTERRUPT_MUX_AXI_IP_0_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
-		.mux=INTERRUPT_ISR_SOURCE_USER_CHOICE,
-        .n_th_interrupt=INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE
+		.mux=INTERRUPT_ISR_SOURCE_USER_CHOICE_0,
+        .n_th_interrupt=INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE_0
 };
 
-uz_mux_axi_t* initialize_uz_mux_axi(void) {
+static struct uz_mux_axi_config_t uz_mux_axi_config_1 = {
+        .base_address= XPAR_UZ_SYSTEM_INTERRUPT_MUX_AXI_IP_1_BASEADDR,
+        .ip_clk_frequency_Hz=100000000,
+		.mux=INTERRUPT_ISR_SOURCE_USER_CHOICE_1,
+        .n_th_interrupt=INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE_1
+};
 
-	return (uz_mux_axi_init(uz_mux_axi_config));
+uz_mux_axi_t* initialize_uz_mux_axi_0(void) {
+
+	return (uz_mux_axi_init(uz_mux_axi_config_0));
+
+}
+
+uz_mux_axi_t* initialize_uz_mux_axi_1(void) {
+
+	return (uz_mux_axi_init(uz_mux_axi_config_1));
 
 }
 

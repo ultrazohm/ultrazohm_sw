@@ -31,25 +31,25 @@
 #define Interrupt_3L_center			XPS_FPGA5_INT_ID
 #define Interrupt_axi2tcm_write_done	XPS_FPGA6_INT_ID
 
-#if INTERRUPT_ISR_SOURCE_USER_CHOICE == 0
+#if INTERRUPT_ISR_SOURCE_USER_CHOICE_0 == 0
 	#define Interrupt_ISR_ID			Interrupt_2L_max_min
 	#define Interrupt_ISR_freq_factor	2
-#elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 1
+#elif INTERRUPT_ISR_SOURCE_USER_CHOICE_0 == 1
 	#define Interrupt_ISR_ID			Interrupt_2L_min
 	#define Interrupt_ISR_freq_factor	1
-#elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 2
+#elif INTERRUPT_ISR_SOURCE_USER_CHOICE_0 == 2
 	#define Interrupt_ISR_ID			Interrupt_2L_max
 	#define Interrupt_ISR_freq_factor	1
-#elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 3
+#elif INTERRUPT_ISR_SOURCE_USER_CHOICE_0 == 3
 	#define Interrupt_ISR_ID			Interrupt_3L_start_center
 	#define Interrupt_ISR_freq_factor 	2
-#elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 4
+#elif INTERRUPT_ISR_SOURCE_USER_CHOICE_0 == 4
 	#define Interrupt_ISR_ID			Interrupt_3L_start
 	#define Interrupt_ISR_freq_factor	1
-#elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 5
+#elif INTERRUPT_ISR_SOURCE_USER_CHOICE_0 == 5
 	#define Interrupt_ISR_ID			Interrupt_3L_center
 	#define Interrupt_ISR_freq_factor	1
-#elif INTERRUPT_ISR_SOURCE_USER_CHOICE == 6
+#elif INTERRUPT_ISR_SOURCE_USER_CHOICE_0 == 6
 	#define Interrupt_ISR_ID			Interrupt_axi2tcm_write_done
 	#define Interrupt_ISR_freq_factor	1
 #else
@@ -66,5 +66,7 @@ int Initialize_ISR(void);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 
+void control_left_motor(void);
+void control_right_motor(void);
 
 #endif /* ISR_H_ */

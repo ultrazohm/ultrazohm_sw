@@ -8,17 +8,17 @@ static uz_interlockDeadtime2L interlock_slotD1_pin_12_to_17 = { .base_address = 
 static uz_interlockDeadtime2L interlock_slotD1_pin_18_to_23 = { .base_address = XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_UZ_INTERLOCKDEADTIME_3_BASEADDR, .clock_frequency_MHz = 100, .deadtime_us = 0.2, .inverse_bottom_switch = false };
 
 uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5(void) {
-	return (uz_interlockDeadtime2L_init(&interlock_slotD3_pin_0_to_5));
+	return (uz_interlockDeadtime2L_init(&interlock_slotD1_pin_0_to_5));
 }
 
 uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11(void) {
-	return (uz_interlockDeadtime2L_init(&interlock_slotD3_pin_6_to_11));
+	return (uz_interlockDeadtime2L_init(&interlock_slotD1_pin_6_to_11));
 }
 
 uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17(void) {
-	return (uz_interlockDeadtime2L_init(&interlock_slotD3_pin_12_to_17));
+	return (uz_interlockDeadtime2L_init(&interlock_slotD1_pin_12_to_17));
 }
 
 uz_interlockDeadtime2L_handle uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23(void) {
-	return (uz_interlockDeadtime2L_init(&interlock_slotD3_pin_18_to_23));
+	return (uz_interlockDeadtime2L_init(&interlock_slotD1_pin_18_to_23));
 }

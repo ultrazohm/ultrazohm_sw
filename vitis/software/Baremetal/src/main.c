@@ -122,18 +122,18 @@ int main(void)
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.inverter_d3 = initialize_uz_inverter_adapter_on_D3();
-            Global_Data.objects.deadtime_interlock_d3_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
-            Global_Data.objects.deadtime_interlock_d3_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
-            Global_Data.objects.deadtime_interlock_d3_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
-            Global_Data.objects.deadtime_interlock_d3_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d3_pin_0_to_5, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d3_pin_6_to_11, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d3_pin_12_to_17, true);
-            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d3_pin_18_to_23, true);
-            Global_Data.objects.pwm_d3_pin_0_to_5 = initialize_pwm_2l_on_D3_pin_0_to_5();
-            Global_Data.objects.pwm_d3_pin_6_to_11 = initialize_pwm_2l_on_D3_pin_6_to_11();
-            Global_Data.objects.pwm_d3_pin_12_to_17 = initialize_pwm_2l_on_D3_pin_12_to_17();
-            Global_Data.objects.pwm_d3_pin_18_to_23 = initialize_pwm_2l_on_D3_pin_18_to_23();
+            Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();
+            Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
+            Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
+            Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
+            uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
+            Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
+            Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
+            Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
+            Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);

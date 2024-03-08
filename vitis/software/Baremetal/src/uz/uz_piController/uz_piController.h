@@ -19,6 +19,7 @@ struct uz_PI_Controller_config {
 	float samplingTime_sec; /**< SamplingTime of the PI-Controller in seconds. Must be greater than 0.0f */
 	float upper_limit; /**< Upper limit for the output limitation. Must be greater than lower limit */
 	float lower_limit; /**< Lower limit for the output limitation */
+
 };
 
 /**

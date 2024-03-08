@@ -219,12 +219,13 @@ int main(void)
     };
 
     struct uz_parameterid_rc_config_t config_rc_meas = {
-    	    .id_ref = 3.0f,
-    	    .iq_ref = -3.0f,
-    	    .n_ref = 300.0f,
-    	    .wait_time = 1.0f,
+    	    .id_ref = 5.0f,
+    	    .iq_ref = 10.0f,
+    	    .n_ref = 1200.0f,
+    	    .wait_time = 4.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
-    	    .sample_time = 2.0f
+    	    .sample_time = 4.0f,
+			.pn = 5.0f
     };
 
     //--------- Configs for PMSM 2 (Last) ---------//
@@ -247,16 +248,16 @@ int main(void)
      };
      // Configuration of Current Control
      struct uz_PI_Controller_config config_id_2 = {
-        .Kp = 0.1f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
-        .Ki = 55.5f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+        .Kp = 0.1f, //0.1f nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
+        .Ki = 55.0f, //55.5f nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
         .lower_limit = -15.0f,
 		.type = parallel
       };
       struct uz_PI_Controller_config config_iq_2 = {
-        .Kp = 0.17f, // nach BO, 0.5f nach Nina
-        .Ki = 55.5f, // nach BO, 230.0f nach Nina
+        .Kp = 0.15f, // nach BO, 0.5f nach Nina
+        .Ki = 55.0f, // nach BO, 230.0f nach Nina
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
 	    .lower_limit = -15.0f,
@@ -272,15 +273,15 @@ int main(void)
 
       // Configuration of induced voltage Controller
       struct uz_PI_Controller_config config_ud_ind = {
-         .Kp = 0.0f,
-         .Ki = 10.0f,
+         .Kp = 0.1f,
+         .Ki = 30.0f,
          .samplingTime_sec = 0.0001f,
          .upper_limit = 10.0f,
          .lower_limit = -10.0f,
  		.type = parallel
        };
        struct uz_PI_Controller_config config_uq_ind = {
-         .Kp = 0.0f,
+         .Kp = 0.05f,
          .Ki = 10.0f,
          .samplingTime_sec = 0.0001f,
          .upper_limit = 10.0f,

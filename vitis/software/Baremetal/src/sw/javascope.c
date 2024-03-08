@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -64,7 +65,9 @@ extern struct uz_3ph_dq_t rc_dq_Ohm;
 extern struct uz_3ph_dq_t rc_para_dq;
 extern struct uz_3ph_dq_t cil_u_ind_Volts;
 extern struct uz_3ph_dq_t cil_u_ind_ref_Volts;
-
+extern struct uz_CurrentControl_t* CC_instance_u_ind;
+extern struct uz_parameterid_rc_meas_out_t rc_output;
+extern float rc_repeat_counter;
 
 //Others
 extern float M_meas_Nm;
@@ -226,6 +229,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_cil_u_ind_ref_Volts_q]	= &cil_u_ind_ref_Volts.q;
 	js_slowDataArray[JSSD_FLOAT_u_ind_ref_Volts_d]		= &v_ind_dq_ref_Volts_2.d;
 	js_slowDataArray[JSSD_FLOAT_u_ind_ref_Volts_q]		= &v_ind_dq_ref_Volts_2.q;
+	js_slowDataArray[JSSD_FLOAT_rc_repeat]				= &rc_repeat_counter;
+//	js_slowDataArray[JSSD_FLOAT_u_ind_d_Kp]				= &(CC_instance_u_ind->Controller_id->config.Kp);
+//	js_slowDataArray[JSSD_FLOAT_u_ind_d_Ki]				= &(CC_instance_u_ind->Controller_id->config.Ki);
+//	js_slowDataArray[JSSD_FLOAT_u_ind_q_Kp]				= &CC_instance_u_ind->Controller_iq->config.Kp;
+//	js_slowDataArray[JSSD_FLOAT_u_ind_q_Ki]				= &CC_instance_u_ind->Controller_iq->config.Ki;
 
 	return Status;
 }

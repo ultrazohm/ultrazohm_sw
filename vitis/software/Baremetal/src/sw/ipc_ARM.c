@@ -56,6 +56,10 @@ extern struct uz_parameterid_output actual_output;
 extern struct uz_3ph_dq_t cil_u_ind_Volts;
 extern struct uz_3ph_dq_t cil_u_ind_ref_Volts;
 extern float r_s_2;
+extern float Kp_uind_d_2;
+extern float Ki_uind_d_2;
+extern float Kp_uind_q_2;
+extern float Ki_uind_q_2;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -243,19 +247,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-
+		Kp_uind_d_2 = value;
 			break;
 
 		case (Set_Send_Field_8):
-
+		Ki_uind_d_2 = value;
 			break;
 
 		case (Set_Send_Field_9):
-
+		Kp_uind_q_2 = value;
 			break;
 
 		case (Set_Send_Field_10):
-
+		Ki_uind_q_2 = value;
 			break;
 
 		case (Set_Send_Field_11):

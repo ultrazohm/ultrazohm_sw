@@ -230,10 +230,10 @@ uz_3ph_dq_t uz_HarmonicCurrentInjection_filter(uz_HarmonicCurrentInjection_t* se
     default: ;
         break;
     }
-    return(v_dq_Volts);
+    return(i_dqn_lp_filtered_Ampere);
 }
 
-uz_3ph_dq_t uz_HarmonicCurrentInjection_sample(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_harmonic_Ampere, uz_3ph_abc_t i_dqn_filtered_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad){
+uz_3ph_dq_t uz_HarmonicCurrentInjection_sample(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_harmonic_Ampere, uz_3ph_dq_t i_dqn_filtered_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     uz_3ph_dq_t v_dqn_Volts = { 0 };

@@ -61,6 +61,7 @@
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_HarmonicCurrentInjection/uz_HarmonicCurrentInjection.h"
 
 
 //----------------------------------------------------

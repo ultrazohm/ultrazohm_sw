@@ -45,6 +45,8 @@ extern uz_SpeedControl_t* SC_instance_1;
 extern uz_SetPoint_t* SP_instance_1;
 extern uz_CurrentControl_t* CC_instance_1;
 extern struct uz_PMSM_t config_PMSM_1;
+extern uz_HarmonicCurrentInjection_t* HCI_instance_5th_1;
+extern uz_HarmonicCurrentInjection_t* HCI_instance_7th_1;
 
 // Inverter Measurement
 struct uz_3ph_abc_t v_abc_Volts_1 	= {0};
@@ -72,6 +74,12 @@ float Ki_speed_1 					= 0.01f;
 //float Ki_id_1 = 230.0f;
 //float Kp_iq_1 = 0.5f;
 //float Ki_iq_1 = 230.0f;
+
+// Harmonic Current Injection
+struct uz_3ph_dq_t i_dqn_ref_5th_Amps_1 = {0};
+struct uz_3ph_dq_t i_dqn_ref_7th_Amps_1 = {0};
+struct uz_3ph_dq_t v_dq_ref_5th_Volts_1 = {0};
+struct uz_3ph_dq_t v_dq_ref_7th_Volts_1 = {0};
 
 // =============== Declares for PMSM 2 =============== //
 
@@ -182,12 +190,12 @@ void ISR_Control(void *data)
     {
     	// Field Oriented Control of PMSM 1
     	// M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
-    	i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
-    	v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-    	output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-    	Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
-    	Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
-    	Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
+    	//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
+    	//v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+    	//output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+    	//Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
+    	//Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
+    	//Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
 
     	// Field Oriented Control of PMSM 2
         M_ref_Nm_2 = uz_SpeedControl_sample(SC_instance_2, omega_m_rad_per_sec_2, n_ref_rpm_2);

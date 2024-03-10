@@ -46,6 +46,8 @@ DS_Data Global_Data = {
 uz_SpeedControl_t* SC_instance_1;
 uz_SetPoint_t* SP_instance_1;
 uz_CurrentControl_t* CC_instance_1;
+uz_HarmonicCurrentInjection_t* HCI_instance_5th_1;
+uz_HarmonicCurrentInjection_t* HCI_instance_7th_1;
 
 // Configuration of PMSM 1 (Hoerner PMSM)
 struct uz_PMSM_t config_PMSM_1 = {
@@ -131,6 +133,81 @@ int main(void)
            .config_id = config_id_1,
            .config_iq = config_iq_1,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
+    };
+
+    // Configuration of HCI
+    struct uz_IIR_Filter_config BP_config_5th_abc_1 = {
+    	   .selection = BandPass_second_order,
+           .pass_frequency_Hz = 300.0f,
+           .sample_frequency_Hz = 10000.0f,
+    	   .damping = 0.05f
+    };
+    struct uz_IIR_Filter_config BP_config_7th_abc_1 = {
+           .selection = BandPass_second_order,
+           .pass_frequency_Hz = 420.0f,
+           .sample_frequency_Hz = 10000.0f,
+    	   .damping = 0.05f
+    };
+    struct uz_IIR_Filter_config LP_config_dq_1 = {
+       	   .selection = LowPass_first_order,
+    	   .cutoff_frequency_Hz = 6.0f,
+    	   .sample_frequency_Hz = 10000.0f
+    };
+    struct uz_PI_Controller_config config_id_5th_1 = {
+      	   .Kp = 2.0f, // nach BO
+		   .Ki = 5.0f, //nach BO
+           .samplingTime_sec = 0.0001f,
+       	   .upper_limit = 1.0f,
+       	   .lower_limit = -1.0f
+    };
+    struct uz_PI_Controller_config config_iq_5th_1 = {
+           .Kp = 2.0f,
+           .Ki = 5.0f,
+           .samplingTime_sec = 0.0001f,
+           .upper_limit = 1.0f,
+           .lower_limit = -1.0f
+    };
+    struct uz_CurrentControl_config CC_config_5th_1 = {
+           .decoupling_select = no_decoupling,
+           .config_PMSM = config_PMSM_1,
+           .config_id = config_id_5th_1,
+           .config_iq = config_iq_5th_1,
+           .max_modulation_index = 1.0f / sqrtf(3.0f)
+    };
+    struct uz_PI_Controller_config config_id_7th_1 = {
+      	   .Kp = 2.0f, // nach BO
+    	   .Ki = 5.0f, //nach BO
+           .samplingTime_sec = 0.0001f,
+		   .upper_limit = 1.0f,
+    	   .lower_limit = -1.0f
+    };
+    struct uz_PI_Controller_config config_iq_7th_1 = {
+           .Kp = 2.0f,
+           .Ki = 5.0f,
+           .samplingTime_sec = 0.0001f,
+           .upper_limit = 1.0f,
+           .lower_limit = -1.0f
+    };
+    struct uz_CurrentControl_config CC_config_7th_1 = {
+           .decoupling_select = no_decoupling,
+           .config_PMSM = config_PMSM_1,
+           .config_id = config_id_7th_1,
+           .config_iq = config_iq_7th_1,
+           .max_modulation_index = 1.0f / sqrtf(3.0f)
+    };
+    struct uz_HarmonicCurrentInjection_config HCI_config_5th_1 = {
+    		.order_harmonic = -5.0f,
+			.selection = abc_to_dq,
+			.config_bandpass_abc = BP_config_5th_abc_1,
+			.config_lowpass_dq = LP_config_dq_1,
+			.config_currentcontroller = CC_config_5th_1
+    };
+    struct uz_HarmonicCurrentInjection_config HCI_config_7th_1 = {
+        	.order_harmonic = 7.0f,
+    		.selection = abc_to_dq,
+    		.config_bandpass_abc = BP_config_7th_abc_1,
+    		.config_lowpass_dq = LP_config_dq_1,
+    		.config_currentcontroller = CC_config_7th_1
     };
 
     // ***************** PMSM 2 ***************** //
@@ -221,6 +298,8 @@ int main(void)
         	SC_instance_2 = uz_SpeedControl_init(SC_config_2);
         	SP_instance_2 = uz_SetPoint_init(SP_config_2);
         	CC_instance_2 = uz_CurrentControl_init(CC_config_2);
+        	HCI_instance_5th_1 = uz_HarmonicCurrentInjection_init(HCI_config_5th_1);
+        	HCI_instance_7th_1 = uz_HarmonicCurrentInjection_init(HCI_config_7th_1);
         	Global_Data.av.theta_offset_1 = 0.904f;
         	Global_Data.av.theta_offset_2 = 1.4f;
         	initialization_chain = print_msg;

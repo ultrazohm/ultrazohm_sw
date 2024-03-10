@@ -1,7 +1,33 @@
-Count - 3
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding1
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding2
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1/padding3
+Count - 29
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding1
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding10
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding11
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding12
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding13
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding14
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding15
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding16
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding17
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding18
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding19
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding2
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding20
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding21
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding22
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding23
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding24
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding25
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding26
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding27
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding28
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding29
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding3
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding30
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding4
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding6
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding7
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding8
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding9
 
 Count - 3
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/25BITSLICER/responseslicer
@@ -9,45 +35,9 @@ UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/25BITSLICER/responseslicer1
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/25BITSLICER/responseslicer2
 
 Count - 3
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT
-UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP
-UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR1
-
-Count - 3
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/23BITSLICER/responseslicer
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/23BITSLICER/responseslicer1
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/23BITSLICER/responseslicer2
-
-Count - 29
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding1
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding10
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding11
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding12
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding13
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding14
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding15
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding16
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding17
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding18
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding19
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding2
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding20
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding21
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding22
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding23
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding24
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding25
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding26
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding27
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding28
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding29
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding3
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding30
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding4
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding6
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding7
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding8
-UZ_EnDat/UZ_ENDAT/ManualSerialize/padder/nibblepadding9
 
 Count - 3
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/21BITSLICER/responseslicer
@@ -67,8 +57,13 @@ UZ_EnDat/UZ_ENDAT/CRC_Check/DFF4
 UZ_EnDat/UZ_ENDAT/CRC_Check/DFF5
 
 Count - 2
-UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter
-UZ_EnDat/UZ_ENDAT/timingprovider/CLKCNTER_POSCNTR/Positional_Counter
+UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT
+UZ_EnDat/UZ_ENDAT/CLKCNTER_NOSTOP
+
+Count - 3
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding1/padding1
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding1/padding2
+UZ_EnDat/UZ_ENDAT/ManualDeserialize/padder/nibblepadding1/padding3
 
 Count - 3
 UZ_EnDat/UZ_ENDAT/RESPONSESLICER3X/27BITSLICER/responseslicer

@@ -5470,7 +5470,7 @@
           "Dig_22_Ch4": {
             "direction": "O"
           },
-          "Dig_18_Ch5": {
+          "Dig_18_Ch4": {
             "direction": "O"
           },
           "Dig_21_Ch4": {
@@ -5548,7 +5548,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:9.6",
+            "vlnv": "xilinx.com:ip:uz_EnDat:9.8",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5708,7 +5708,7 @@
           "Dig_17_Ch4_1": {
             "ports": [
               "Dig_17_Ch4",
-              "uz_EnDat_0/datain"
+              "uz_EnDat_0/DATAIN"
             ]
           },
           "SENSORERROR": {
@@ -5748,19 +5748,19 @@
           },
           "uz_EnDat_0_clkwr": {
             "ports": [
-              "uz_EnDat_0/clkwr",
+              "uz_EnDat_0/CLKWR",
               "Dig_22_Ch4"
             ]
           },
           "uz_EnDat_0_dataout": {
             "ports": [
-              "uz_EnDat_0/dataout",
-              "Dig_18_Ch5"
+              "uz_EnDat_0/DATAOUT",
+              "Dig_18_Ch4"
             ]
           },
           "uz_EnDat_0_datawr": {
             "ports": [
-              "uz_EnDat_0/datawr",
+              "uz_EnDat_0/DATAWR",
               "Dig_19_Ch4"
             ]
           }
@@ -9137,7 +9137,7 @@
       },
       "uz_user_Dig_18_Ch5": {
         "ports": [
-          "uz_user/Dig_18_Ch5",
+          "uz_user/Dig_18_Ch4",
           "Dig_18_Ch4"
         ]
       },

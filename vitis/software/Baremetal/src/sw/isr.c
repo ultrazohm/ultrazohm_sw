@@ -59,9 +59,16 @@ struct uz_pmsmModel_inputs_t pmsm_inputs={
  };
  ///////////////////////////////////////////////////////////////////////
  struct uz_3ph_abc_t v_abc_Volts = {0};
+ struct uz_3ph_dq_t v_dq_Volts = {0};
+ struct uz_3ph_dq_t v_dq_ref_Volts = {0};
  struct uz_3ph_abc_t i_abc_Amps = {0};
+ struct uz_3ph_dq_t i_dq_Amps = {0};
+ struct uz_3ph_dq_t i_dq_ref_Amps = {0};
  float v_DC_Volts = 0.0f;
  float i_DC_Amps = 0.0f;
+ float theta_el_rad = 0.0f;
+ float theta_el_offset = 1.1f;
+ ///////////////////////////////////////////////////////////////////////
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -100,6 +107,7 @@ void ISR_Control(void *data)
             uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, false);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    i_dq_Amps = uz_transformation_3ph_abc_to_dq(i_abc_Amps, theta_el_rad);
 
 
 
@@ -120,6 +128,7 @@ void ISR_Control(void *data)
     	 pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
     	 uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     	///////////////////////////////////////////////////////////////////////////////
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

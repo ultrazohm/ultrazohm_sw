@@ -42,6 +42,8 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 
+
+
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;

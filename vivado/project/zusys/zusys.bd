@@ -148,13 +148,13 @@
           "delay_comp_0": "",
           "prediction_0": "",
           "cost_opt_0": "",
-          "mpc_enable_0": "",
           "pu_omega_m_0": "",
           "smartconnect_mpc_0": "",
           "xlconstant_0": "",
           "gates_concat_0": "",
           "system_ila_0": "",
-          "pu_voltages_vsd_0": ""
+          "pu_voltages_vsd_0": "",
+          "mpc_enable_0": ""
         },
         "slice_A1": {
           "xlslice_0": "",
@@ -177,12 +177,12 @@
           "delay_comp_0": "",
           "prediction_0": "",
           "cost_opt_0": "",
-          "mpc_enable_0": "",
           "pu_omega_m_0": "",
           "smartconnect_mpc_0": "",
           "xlconstant_0": "",
           "gates_concat_0": "",
-          "pu_voltages_vsd_0": ""
+          "pu_voltages_vsd_0": "",
+          "mpc_enable_1": ""
         }
       },
       "zynq_ultra_ps_e_0": ""
@@ -5495,7 +5495,7 @@
                 "left": "0",
                 "right": "0"
               },
-              "Interrupt_vector": {
+              "Interrupt_vector_0": {
                 "direction": "O",
                 "left": "7",
                 "right": "0"
@@ -5524,6 +5524,11 @@
               },
               "trigger_conversion_1": {
                 "direction": "O"
+              },
+              "Interrupt_vector_1": {
+                "direction": "O",
+                "left": "7",
+                "right": "0"
               }
             },
             "components": {
@@ -5749,8 +5754,7 @@
               "Gates_3L_Interrupt_Start_Center": {
                 "ports": [
                   "Interrupt3",
-                  "Concat_interrupts/In3",
-                  "system_ila_0/probe3"
+                  "Concat_interrupts/In3"
                 ]
               },
               "Gates_Carrier_triangular_max1": {
@@ -5839,7 +5843,14 @@
               "mux_axi_ip_1_interrupt_out_isr": {
                 "ports": [
                   "mux_axi_ip_0/interrupt_out_isr",
-                  "Interrupt_vector"
+                  "Interrupt_vector_0",
+                  "system_ila_0/probe3"
+                ]
+              },
+              "mux_axi_ip_1_interrupt_out_isr1": {
+                "ports": [
+                  "mux_axi_ip_1/interrupt_out_isr",
+                  "Interrupt_vector_1"
                 ]
               },
               "mux_axi_ip_1_select_out": {
@@ -5869,7 +5880,8 @@
                   "Concat_interrupts1/In3",
                   "Concat_interrupts1/In6",
                   "Concat_interrupts1/In5",
-                  "Concat_interrupts1/In4"
+                  "Concat_interrupts1/In4",
+                  "Concat_interrupts1/In7"
                 ]
               },
               "zynq_ultra_ps_e_0_pl_clk1": {
@@ -7573,7 +7585,7 @@
           },
           "xlconcat_0_dout": {
             "ports": [
-              "Interrupt/Interrupt_vector",
+              "Interrupt/Interrupt_vector_0",
               "interrupt_vector_0"
             ]
           },
@@ -7904,12 +7916,6 @@
                 "xci_name": "zusys_cost_opt_0_1",
                 "xci_path": "ip\\zusys_cost_opt_0_1\\zusys_cost_opt_0_1.xci",
                 "inst_hier_path": "uz_user/fcs_mpc_0/cost_opt_0"
-              },
-              "mpc_enable_0": {
-                "vlnv": "xilinx.com:ip:mpc_enable:1.1",
-                "xci_name": "zusys_mpc_enable_0_0",
-                "xci_path": "ip\\zusys_mpc_enable_0_0\\zusys_mpc_enable_0_0.xci",
-                "inst_hier_path": "uz_user/fcs_mpc_0/mpc_enable_0"
               },
               "pu_omega_m_0": {
                 "vlnv": "xilinx.com:ip:pu_omega_m:1.1",
@@ -8347,6 +8353,12 @@
                 "xci_name": "zusys_pu_voltages_vsd_0_0",
                 "xci_path": "ip\\zusys_pu_voltages_vsd_0_0\\zusys_pu_voltages_vsd_0_0.xci",
                 "inst_hier_path": "uz_user/fcs_mpc_0/pu_voltages_vsd_0"
+              },
+              "mpc_enable_0": {
+                "vlnv": "xilinx.com:ip:mpc_enable:1.2",
+                "xci_name": "zusys_mpc_enable_1_0",
+                "xci_path": "ip\\zusys_mpc_enable_1_0\\zusys_mpc_enable_1_0.xci",
+                "inst_hier_path": "uz_user/fcs_mpc_0/mpc_enable_0"
               }
             },
             "interface_nets": {
@@ -8429,7 +8441,6 @@
                   "adc_valid",
                   "uz_debug_ip_0/adc_valid_trigger",
                   "pu_omega_m_0/adc_valid_trigger",
-                  "mpc_enable_0/adc_valid_trigger",
                   "system_ila_0/probe1"
                 ]
               },
@@ -8486,11 +8497,11 @@
                   "prediction_0/AXI4_Lite_ACLK",
                   "cost_opt_0/IPCORE_CLK",
                   "cost_opt_0/AXI4_Lite_ACLK",
-                  "mpc_enable_0/AXI4_Lite_ACLK",
-                  "mpc_enable_0/IPCORE_CLK",
                   "system_ila_0/clk",
                   "pu_voltages_vsd_0/IPCORE_CLK",
-                  "pu_voltages_vsd_0/AXI4_Lite_ACLK"
+                  "pu_voltages_vsd_0/AXI4_Lite_ACLK",
+                  "mpc_enable_0/IPCORE_CLK",
+                  "mpc_enable_0/AXI4_Lite_ACLK"
                 ]
               },
               "cost_opt_0_G0": {
@@ -8584,43 +8595,43 @@
                   "uz_debug_ip_0/in2"
                 ]
               },
-              "mpc_enable_0_enb_mpc_done": {
+              "mpc_enable_1_enb_mpc_done": {
                 "ports": [
                   "mpc_enable_0/enb_mpc_done",
                   "system_ila_0/probe9"
                 ]
               },
-              "mpc_enable_0_out_G0": {
+              "mpc_enable_1_out_G0": {
                 "ports": [
                   "mpc_enable_0/out_G0",
                   "gates_concat_0/In0"
                 ]
               },
-              "mpc_enable_0_out_G1": {
+              "mpc_enable_1_out_G1": {
                 "ports": [
                   "mpc_enable_0/out_G1",
                   "gates_concat_0/In1"
                 ]
               },
-              "mpc_enable_0_out_G2": {
+              "mpc_enable_1_out_G2": {
                 "ports": [
                   "mpc_enable_0/out_G2",
                   "gates_concat_0/In2"
                 ]
               },
-              "mpc_enable_0_out_G3": {
+              "mpc_enable_1_out_G3": {
                 "ports": [
                   "mpc_enable_0/out_G3",
                   "gates_concat_0/In3"
                 ]
               },
-              "mpc_enable_0_out_G4": {
+              "mpc_enable_1_out_G4": {
                 "ports": [
                   "mpc_enable_0/out_G4",
                   "gates_concat_0/In4"
                 ]
               },
-              "mpc_enable_0_out_G5": {
+              "mpc_enable_1_out_G5": {
                 "ports": [
                   "mpc_enable_0/out_G5",
                   "gates_concat_0/In5"
@@ -8742,16 +8753,17 @@
                   "prediction_0/AXI4_Lite_ARESETN",
                   "cost_opt_0/IPCORE_RESETN",
                   "cost_opt_0/AXI4_Lite_ARESETN",
-                  "mpc_enable_0/AXI4_Lite_ARESETN",
-                  "mpc_enable_0/IPCORE_RESETN",
                   "pu_voltages_vsd_0/IPCORE_RESETN",
-                  "pu_voltages_vsd_0/AXI4_Lite_ARESETN"
+                  "pu_voltages_vsd_0/AXI4_Lite_ARESETN",
+                  "mpc_enable_0/IPCORE_RESETN",
+                  "mpc_enable_0/AXI4_Lite_ARESETN"
                 ]
               },
               "trigger_cnv_adc_1": {
                 "ports": [
                   "trigger_cnv_adc",
-                  "system_ila_0/probe0"
+                  "system_ila_0/probe0",
+                  "mpc_enable_0/adc_cnv_trigger"
                 ]
               },
               "uz_debug_ip_0_debug_ip_done": {
@@ -9194,6 +9206,9 @@
                 "direction": "O",
                 "left": "5",
                 "right": "0"
+              },
+              "trigger_cnv_adc": {
+                "direction": "I"
               }
             },
             "components": {
@@ -9244,12 +9259,6 @@
                 "xci_name": "zusys_cost_opt_0_2",
                 "xci_path": "ip\\zusys_cost_opt_0_2\\zusys_cost_opt_0_2.xci",
                 "inst_hier_path": "uz_user/fcs_mpc_1/cost_opt_0"
-              },
-              "mpc_enable_0": {
-                "vlnv": "xilinx.com:ip:mpc_enable:1.1",
-                "xci_name": "zusys_mpc_enable_0_1",
-                "xci_path": "ip\\zusys_mpc_enable_0_1\\zusys_mpc_enable_0_1.xci",
-                "inst_hier_path": "uz_user/fcs_mpc_1/mpc_enable_0"
               },
               "pu_omega_m_0": {
                 "vlnv": "xilinx.com:ip:pu_omega_m:1.1",
@@ -9670,6 +9679,12 @@
                 "xci_name": "zusys_pu_voltages_vsd_0_1",
                 "xci_path": "ip\\zusys_pu_voltages_vsd_0_1\\zusys_pu_voltages_vsd_0_1.xci",
                 "inst_hier_path": "uz_user/fcs_mpc_1/pu_voltages_vsd_0"
+              },
+              "mpc_enable_1": {
+                "vlnv": "xilinx.com:ip:mpc_enable:1.2",
+                "xci_name": "zusys_mpc_enable_1_1",
+                "xci_path": "ip\\zusys_mpc_enable_1_1\\zusys_mpc_enable_1_1.xci",
+                "inst_hier_path": "uz_user/fcs_mpc_1/mpc_enable_1"
               }
             },
             "interface_nets": {
@@ -9735,7 +9750,7 @@
               },
               "smartconnect_mpc_0_M09_AXI": {
                 "interface_ports": [
-                  "mpc_enable_0/AXI4_Lite",
+                  "mpc_enable_1/AXI4_Lite",
                   "smartconnect_mpc_0/M09_AXI"
                 ]
               },
@@ -9751,8 +9766,7 @@
                 "ports": [
                   "adc_valid",
                   "uz_debug_ip_0/adc_valid_trigger",
-                  "pu_omega_m_0/adc_valid_trigger",
-                  "mpc_enable_0/adc_valid_trigger"
+                  "pu_omega_m_0/adc_valid_trigger"
                 ]
               },
               "angle_el_2pi_1": {
@@ -9801,46 +9815,46 @@
                   "prediction_0/AXI4_Lite_ACLK",
                   "cost_opt_0/IPCORE_CLK",
                   "cost_opt_0/AXI4_Lite_ACLK",
-                  "mpc_enable_0/AXI4_Lite_ACLK",
-                  "mpc_enable_0/IPCORE_CLK",
                   "pu_voltages_vsd_0/IPCORE_CLK",
-                  "pu_voltages_vsd_0/AXI4_Lite_ACLK"
+                  "pu_voltages_vsd_0/AXI4_Lite_ACLK",
+                  "mpc_enable_1/IPCORE_CLK",
+                  "mpc_enable_1/AXI4_Lite_ACLK"
                 ]
               },
               "cost_opt_0_G0": {
                 "ports": [
                   "cost_opt_0/G0",
-                  "mpc_enable_0/G0"
+                  "mpc_enable_1/G0"
                 ]
               },
               "cost_opt_0_G1": {
                 "ports": [
                   "cost_opt_0/G1",
-                  "mpc_enable_0/G1"
+                  "mpc_enable_1/G1"
                 ]
               },
               "cost_opt_0_G2": {
                 "ports": [
                   "cost_opt_0/G2",
-                  "mpc_enable_0/G2"
+                  "mpc_enable_1/G2"
                 ]
               },
               "cost_opt_0_G3": {
                 "ports": [
                   "cost_opt_0/G3",
-                  "mpc_enable_0/G3"
+                  "mpc_enable_1/G3"
                 ]
               },
               "cost_opt_0_G4": {
                 "ports": [
                   "cost_opt_0/G4",
-                  "mpc_enable_0/G4"
+                  "mpc_enable_1/G4"
                 ]
               },
               "cost_opt_0_G5": {
                 "ports": [
                   "cost_opt_0/G5",
-                  "mpc_enable_0/G5"
+                  "mpc_enable_1/G5"
                 ]
               },
               "cost_opt_0_opt_index": {
@@ -9898,39 +9912,39 @@
                   "uz_debug_ip_0/in2"
                 ]
               },
-              "mpc_enable_0_out_G0": {
+              "mpc_enable_1_out_G0": {
                 "ports": [
-                  "mpc_enable_0/out_G0",
+                  "mpc_enable_1/out_G0",
                   "gates_concat_0/In0"
                 ]
               },
-              "mpc_enable_0_out_G1": {
+              "mpc_enable_1_out_G1": {
                 "ports": [
-                  "mpc_enable_0/out_G1",
+                  "mpc_enable_1/out_G1",
                   "gates_concat_0/In1"
                 ]
               },
-              "mpc_enable_0_out_G2": {
+              "mpc_enable_1_out_G2": {
                 "ports": [
-                  "mpc_enable_0/out_G2",
+                  "mpc_enable_1/out_G2",
                   "gates_concat_0/In2"
                 ]
               },
-              "mpc_enable_0_out_G3": {
+              "mpc_enable_1_out_G3": {
                 "ports": [
-                  "mpc_enable_0/out_G3",
+                  "mpc_enable_1/out_G3",
                   "gates_concat_0/In3"
                 ]
               },
-              "mpc_enable_0_out_G4": {
+              "mpc_enable_1_out_G4": {
                 "ports": [
-                  "mpc_enable_0/out_G4",
+                  "mpc_enable_1/out_G4",
                   "gates_concat_0/In4"
                 ]
               },
-              "mpc_enable_0_out_G5": {
+              "mpc_enable_1_out_G5": {
                 "ports": [
-                  "mpc_enable_0/out_G5",
+                  "mpc_enable_1/out_G5",
                   "gates_concat_0/In5"
                 ]
               },
@@ -10045,10 +10059,16 @@
                   "prediction_0/AXI4_Lite_ARESETN",
                   "cost_opt_0/IPCORE_RESETN",
                   "cost_opt_0/AXI4_Lite_ARESETN",
-                  "mpc_enable_0/AXI4_Lite_ARESETN",
-                  "mpc_enable_0/IPCORE_RESETN",
                   "pu_voltages_vsd_0/IPCORE_RESETN",
-                  "pu_voltages_vsd_0/AXI4_Lite_ARESETN"
+                  "pu_voltages_vsd_0/AXI4_Lite_ARESETN",
+                  "mpc_enable_1/IPCORE_RESETN",
+                  "mpc_enable_1/AXI4_Lite_ARESETN"
+                ]
+              },
+              "trigger_cnv_adc_1": {
+                "ports": [
+                  "trigger_cnv_adc",
+                  "mpc_enable_1/adc_cnv_trigger"
                 ]
               },
               "uz_debug_ip_0_debug_ip_done": {
@@ -10324,7 +10344,8 @@
           "trigger_cnv_adc_1": {
             "ports": [
               "trigger_cnv_adc",
-              "fcs_mpc_0/trigger_cnv_adc"
+              "fcs_mpc_0/trigger_cnv_adc",
+              "fcs_mpc_1/trigger_cnv_adc"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -14123,8 +14144,8 @@
                 "offset": "0x00801B0000",
                 "range": "64K"
               },
-              "SEG_mpc_enable_0_reg0_1": {
-                "address_block": "/uz_user/fcs_mpc_1/mpc_enable_0/AXI4_Lite/reg0",
+              "SEG_mpc_enable_1_reg0": {
+                "address_block": "/uz_user/fcs_mpc_1/mpc_enable_1/AXI4_Lite/reg0",
                 "offset": "0x0080260000",
                 "range": "64K"
               },

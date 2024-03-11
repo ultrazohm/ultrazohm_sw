@@ -1648,14 +1648,40 @@
                                 "id": 16,
                                 "type": "DATA_TRIGGER",
                                 "direction": "IN",
-                                "isVector": false,
+                                "isVector": true,
                                 "leftIndex": 0,
-                                "rightIndex": 0,
+                                "rightIndex": 7,
                                 "portIndex": 3,
                                 "nets": [
                                     {
                                         "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1",
-                                        "isBus": false
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1[7]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1[6]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_system/Interrupt/system_ila_0/U0/probe3_1[0]"
+                                            }
+                                        ]
                                     }
                                 ]
                             },
@@ -1805,6 +1831,8 @@
                             },
                             {
                                 "name": "probe3",
+                                "connectedBus": "interrupt_vector_0",
+                                "protocol": "PROBE",
                                 "port_maps": [
                                     {
                                         "logical_port": "probe3",
@@ -1812,7 +1840,7 @@
                                             "id": 16,
                                             "name": "probe3",
                                             "leftBit": 0,
-                                            "width": 1
+                                            "width": 8
                                         }
                                     }
                                 ]
@@ -2407,7 +2435,7 @@
                             },
                             {
                                 "name": "probe9",
-                                "connectedBus": "mpc_enable_0_enb_mpc_done",
+                                "connectedBus": "mpc_enable_1_enb_mpc_done",
                                 "protocol": "PROBE",
                                 "port_maps": [
                                     {

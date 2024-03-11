@@ -4,6 +4,7 @@
 #include "../uz/uz_math_constants.h"
 #include "../uz/uz_fixedpoint/uz_fixedpoint.h"
 #include "xparameters.h"
+#include "../include/gpio_axi.h"
 
 extern DS_Data Global_Data;
 
@@ -233,14 +234,14 @@ void fcs_mpc_init_cost_function(){
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + max_current_pu_AXI_Data_cost_opt, Global_Data.av.i_max_mpc, i_max_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + lambda_d_AXI_Data_cost_opt, Global_Data.av.lambda_d, cost_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + lambda_q_AXI_Data_cost_opt, Global_Data.av.lambda_q, cost_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + lambda_u_AXI_Data_cost_opt, Global_Data.av.lambda_u, lambda_u_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + lambda_u_AXI_Data_cost_opt, Global_Data.av.lambda_u_left, lambda_u_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + id_ref_pu_AXI_Data_cost_opt, 0.0f/base_val.IB, i_setpoint_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + iq_ref_pu_AXI_Data_cost_opt, 0.0f/base_val.IB, i_setpoint_fp_def);
 
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR + max_current_pu_AXI_Data_cost_opt, Global_Data.av.i_max_mpc, i_max_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR + lambda_d_AXI_Data_cost_opt, Global_Data.av.lambda_d, cost_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR + lambda_q_AXI_Data_cost_opt, Global_Data.av.lambda_q, cost_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR + lambda_u_AXI_Data_cost_opt, Global_Data.av.lambda_u, lambda_u_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR + lambda_u_AXI_Data_cost_opt, Global_Data.av.lambda_u_right, lambda_u_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR + id_ref_pu_AXI_Data_cost_opt, 0.0f/base_val.IB, i_setpoint_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR + iq_ref_pu_AXI_Data_cost_opt, 0.0f/base_val.IB, i_setpoint_fp_def);
 }
@@ -316,6 +317,7 @@ void fcs_mpc_calc_f_sw_avg(){
         	if (Global_Data.rasv.req_measure_flag == true && Global_Data.av.f_sw_measure_flag == false && mod_wait_cnt == 2) {
         	Global_Data.av.measure_flag = true;
         	Global_Data.av.f_measure_flag = 1.0f;
+        	uz_axigpio_d4_out_set_pin(0);
         	mod_wait_cnt=0U;
         	}
         	if (Global_Data.av.f_sw_measure_flag == true && Global_Data.av.measure_flag == true) {
@@ -324,15 +326,16 @@ void fcs_mpc_calc_f_sw_avg(){
         		Global_Data.rasv.f_req_measure_flag = 0.0f;
         		Global_Data.av.measure_flag = false;
         		Global_Data.av.f_measure_flag = 0.0f;
+        		uz_axigpio_d4_out_clear_pin(0);
         		// increase measuring point counter
         		Global_Data.rasv.cnt_lambda_u++;
         		Global_Data.rasv.f_cnt_lambda_u = (float)Global_Data.rasv.cnt_lambda_u;
         		// set next lamda_u
         		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_now + Global_Data.rasv.lambda_u_step;
 //        		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
-        		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_LUT[Global_Data.rasv.cnt_lambda_u];
-        		Global_Data.av.lambda_u_e5 = Global_Data.av.lambda_u*1e5f;
-        		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 19));
+        		Global_Data.av.lambda_u_left = Global_Data.rasv.lambda_u_LUT[Global_Data.rasv.cnt_lambda_u];
+        		Global_Data.av.lambda_u_e5_left = Global_Data.av.lambda_u_left*1e5f;
+        		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u_left, 19));
         	}
         }
 
@@ -343,8 +346,8 @@ void fcs_mpc_calc_f_sw_avg(){
     	Global_Data.rasv.cnt_lambda_u = 1U;
     	Global_Data.rasv.f_cnt_lambda_u = 1.0f;
 		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
-		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
-		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 19));
+		Global_Data.av.lambda_u_left = Global_Data.rasv.lambda_u_now;
+		uz_axi_write_int32(XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u_left, 19));
     }
 
     isr_cnt++;

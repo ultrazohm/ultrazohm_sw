@@ -110,44 +110,42 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_pause_timer_sec]	= &data->av.pause_timer_sec;
 	js_ch_observable[JSO_f_cnt]				= &data->rasv.f_cnt_lambda_u;
 	js_ch_observable[JSO_f_mod_cnt]			= &f_mod_wait_cnt;
-	js_ch_observable[JSO_lambda_u]			= &data->av.lambda_u;
-	js_ch_observable[JSO_traj]				= &data->rasv.traj;
+	js_ch_observable[JSO_lambda_u_left]		= &data->av.lambda_u_left;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_vd_left] 			    = &(data->av.v_d_0);
-	js_slowDataArray[JSSD_FLOAT_vq_left] 			    = &(data->av.v_q_0);
+	js_slowDataArray[JSSD_FLOAT_id_right] 			    = &(data->av.i_d_1);
+	js_slowDataArray[JSSD_FLOAT_iq_right] 			    = &(data->av.i_q_1);
 	js_slowDataArray[JSSD_FLOAT_id_left] 			    = &(data->av.i_d_0);
 	js_slowDataArray[JSSD_FLOAT_iq_left] 			    = &(data->av.i_q_0);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.resolver_pl_outputs_d5_1.n_mech_rpm);
+	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.resolver_pl_outputs_d5_2.n_mech_rpm);
 	js_slowDataArray[JSSD_FLOAT_v_dc_d1]				= &(data->av.v_dc_d1);
 	js_slowDataArray[JSSD_FLOAT_v_dc_d2]				= &(data->av.v_dc_d2);
 	js_slowDataArray[JSSD_FLOAT_temp_inv_left]			= &(data->av.mean_temp_inv_d1);
 	js_slowDataArray[JSSD_FLOAT_temp_inv_right]			= &(data->av.mean_temp_inv_d2);
-	js_slowDataArray[JSSD_FLOAT_f_sw_avg_Hz_0]		= &(data->av.f_sw_avg_Hz_0);
-	js_slowDataArray[JSSD_FLOAT_f_sw_avg_Hz_1]		= &(data->av.f_sw_avg_Hz_1);
+	js_slowDataArray[JSSD_FLOAT_f_sw_avg_Hz_0]			= &(data->av.f_sw_avg_Hz_0);
+	js_slowDataArray[JSSD_FLOAT_f_sw_avg_Hz_1]			= &(data->av.f_sw_avg_Hz_1);
 	js_slowDataArray[JSSD_FLOAT_pause_timer_sec]		= &(data->av.pause_timer_sec);
 	js_slowDataArray[JSSD_FLOAT_cnt_lambda_u]			= &(data->rasv.f_cnt_lambda_u);
 	js_slowDataArray[JSSD_FLOAT_end_cnt_lambda_u]		= &(data->rasv.f_cnt_lambda_u_end);
 	js_slowDataArray[JSSD_FLOAT_f_mod_cnt]				= &f_mod_wait_cnt;
-	js_slowDataArray[JSSD_FLOAT_lambda_u]				= &(data->av.lambda_u);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_lambda_d]				= &(data->av.lambda_d);
-	js_slowDataArray[JSSD_FLOAT_lambda_q]				= &(data->av.lambda_q);
-	js_slowDataArray[JSSD_FLOAT_lambda_u]				= &(data->av.lambda_u_e5);
+	js_slowDataArray[JSSD_FLOAT_lambda_u_left]			= &(data->av.lambda_u_left);
+	js_slowDataArray[JSSD_FLOAT_lambda_u_right]			= &(data->av.lambda_u_right);
+	js_slowDataArray[JSSD_FLOAT_lambda_u_left_1e5]		= &(data->av.lambda_u_e5_left);
 	js_slowDataArray[JSSD_FLOAT_i_max_mpc]				= &(data->av.i_max_mpc);
-	js_slowDataArray[JSSD_FLOAT_Kp_spd_left]			= &(data->rasv.Kp_spd_left);
-	js_slowDataArray[JSSD_FLOAT_Ki_spd_left]			= &(data->rasv.Ki_spd_left);
-	js_slowDataArray[JSSD_FLOAT_Kp_cur_d_right]			= &(data->rasv.Kp_cur_d_right);
-	js_slowDataArray[JSSD_FLOAT_Ki_cur_d_right]			= &(data->rasv.Ki_cur_d_right);
-	js_slowDataArray[JSSD_FLOAT_Kp_cur_q_right]			= &(data->rasv.Kp_cur_q_right);
-	js_slowDataArray[JSSD_FLOAT_Ki_cur_q_right]			= &(data->rasv.Ki_cur_q_right);
+	js_slowDataArray[JSSD_FLOAT_Kp_spd_right]			= &(data->rasv.Kp_spd_right);
+	js_slowDataArray[JSSD_FLOAT_Ki_spd_right]			= &(data->rasv.Ki_spd_right);
+	js_slowDataArray[JSSD_FLOAT_Kp_cur_d_left]			= &(data->rasv.Kp_cur_d_left);
+	js_slowDataArray[JSSD_FLOAT_Ki_cur_d_left]			= &(data->rasv.Ki_cur_d_left);
+	js_slowDataArray[JSSD_FLOAT_Kp_cur_q_left]			= &(data->rasv.Kp_cur_q_left);
+	js_slowDataArray[JSSD_FLOAT_Ki_cur_q_left]			= &(data->rasv.Ki_cur_q_left);
 
 	return Status;
 }

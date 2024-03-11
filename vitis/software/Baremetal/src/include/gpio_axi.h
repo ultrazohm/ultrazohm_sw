@@ -23,5 +23,7 @@ void uz_axigpio_enable_pwm_and_power_electronics(void);
 void uz_axigpio_disable_datamover(void);
 void uz_axigpio_enable_datamover(void);
 void uz_axigpio_reset_pwm_counter(void);
+void uz_axigpio_d4_out_set_pin(uint32_t gpio_number);
+void uz_axigpio_d4_out_clear_pin(uint32_t gpio_number);
 
 #endif /* GPIO_H_ */

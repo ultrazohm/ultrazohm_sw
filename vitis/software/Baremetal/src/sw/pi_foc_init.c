@@ -1,7 +1,5 @@
-#include "../uz/uz_CurrentControl/uz_CurrentControl.h"
-#include "../uz/uz_setpoint/uz_setpoint.h"
-#include "../uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "../main.h"
+#include "../include/pi_foc.h"
 
 extern DS_Data Global_Data;
 
@@ -15,28 +13,30 @@ extern DS_Data Global_Data;
 	  .J_kg_m_squared = 0.000108
     };//these parameters are only needed if linear decoupling is selected
     const struct uz_PI_Controller_config config_id_left = {
-      .Kp = 5.0f,
+      .type = parallel,
+      .Kp = 6.67f,
       .Ki = 255.0f,
-      .samplingTime_sec = 0.0001f,
+      .samplingTime_sec = 1/UZ_PWM_FREQUENCY_ISR,
       .upper_limit = 48.0f,
       .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_iq_left = {
-      .Kp = 5.0f,
+	  .type = parallel,
+	  .Kp = 6.67f,
       .Ki = 255.0f,
-      .samplingTime_sec = 0.0001f,
+      .samplingTime_sec = 1/UZ_PWM_FREQUENCY_ISR,
       .upper_limit = 48.0f,
       .lower_limit = -48.0f
    };
-   const struct uz_PI_Controller_config config_speed_left = {
+   const struct uz_PI_Controller_config config_speed_right = {
 		   .Kp = 0.2f,
 		   .Ki = 2.0f,
-		   .samplingTime_sec = 0.0001f,
+		   .samplingTime_sec = 1/UZ_PWM_FREQUENCY_ISR,
 		   .upper_limit = 3.4f,
 		   .lower_limit = -3.4f
    };
 
-   const struct uz_SetPoint_config config_setpoint_left = {
+   const struct uz_SetPoint_config config_setpoint_right = {
 		   .config_PMSM = Beckhoff_AM8141,
 		   .control_type = FOC,
 		   .id_ref_Ampere = 0.0f,
@@ -45,24 +45,10 @@ extern DS_Data Global_Data;
 		   .relative_torque_tolerance = 0.01f
    };
 
-   const struct uz_SpeedControl_config config_speed_ctrl_left = {
-		   .config_controller = config_speed_left
+   const struct uz_SpeedControl_config config_speed_ctrl_right = {
+		   .config_controller = config_speed_right
    };
 
-   const struct uz_PI_Controller_config config_id_right = {
-     .Kp = 5.0f,
-     .Ki = 255.0f,
-     .samplingTime_sec = 0.0001f,
-     .upper_limit = 48.0f,
-     .lower_limit = -48.0f
-  };
-  const struct uz_PI_Controller_config config_iq_right = {
-     .Kp = 5.0f,
-     .Ki = 255.0f,
-     .samplingTime_sec = 0.0001f,
-     .upper_limit = 48.0f,
-     .lower_limit = -48.0f
-  };
 
    struct uz_CurrentControl_config config_current_ctrl_left = {
       .config_PMSM = Beckhoff_AM8141,
@@ -72,32 +58,22 @@ extern DS_Data Global_Data;
 	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
    };
 
-   struct uz_CurrentControl_config config_current_ctrl_right = {
-      .config_PMSM = Beckhoff_AM8141,
-	  .config_id = config_id_right,
-	  .config_iq = config_iq_right,
-	  .decoupling_select = no_decoupling,
-	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
-   };
-
    uz_CurrentControl_t* current_ctrl_left_init(void) {
+	   Global_Data.rasv.Kp_cur_d_left = config_current_ctrl_left.config_id.Kp;
+	   Global_Data.rasv.Ki_cur_d_left = config_current_ctrl_left.config_id.Ki;
+	   Global_Data.rasv.Kp_cur_q_left = config_current_ctrl_left.config_iq.Kp;
+	   Global_Data.rasv.Ki_cur_q_left = config_current_ctrl_left.config_iq.Ki;
 	   return(uz_CurrentControl_init(config_current_ctrl_left));
    }
 
-   uz_SetPoint_t* setpoint_ctrl_left_init(void) {
-	   return(uz_SetPoint_init(config_setpoint_left));
+   uz_SetPoint_t* setpoint_ctrl_right_init(void) {
+	   return(uz_SetPoint_init(config_setpoint_right));
    }
 
-   uz_SpeedControl_t* speed_ctrl_left_init(void) {
-	   Global_Data.rasv.Kp_spd_left = config_speed_ctrl_left.config_controller.Kp;
-	   Global_Data.rasv.Ki_spd_left = config_speed_ctrl_left.config_controller.Ki;
-	   return(uz_SpeedControl_init(config_speed_ctrl_left));
+   uz_SpeedControl_t* speed_ctrl_right_init(void) {
+	   Global_Data.rasv.Kp_spd_right = config_speed_ctrl_right.config_controller.Kp;
+	   Global_Data.rasv.Ki_spd_right = config_speed_ctrl_right.config_controller.Ki;
+	   return(uz_SpeedControl_init(config_speed_ctrl_right));
    }
 
-   uz_CurrentControl_t* current_ctrl_right_init(void) {
-	   Global_Data.rasv.Kp_cur_d_right = config_current_ctrl_right.config_id.Kp;
-	   Global_Data.rasv.Ki_cur_d_right = config_current_ctrl_right.config_id.Ki;
-	   Global_Data.rasv.Kp_cur_q_right = config_current_ctrl_right.config_iq.Kp;
-	   Global_Data.rasv.Ki_cur_q_right = config_current_ctrl_right.config_iq.Ki;
-	   return(uz_CurrentControl_init(config_current_ctrl_right));
-   }
+

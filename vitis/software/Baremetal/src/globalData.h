@@ -101,8 +101,10 @@ typedef struct _actualValues_ {
 	float omega_mech_d5_2;
 	float lambda_d;
 	float lambda_q;
-	float lambda_u;
-	float lambda_u_e5;
+	float lambda_u_left;
+	float lambda_u_e5_left;
+	float lambda_u_right;
+	float lambda_u_e5_right;
 	float i_max_mpc;
 	float speed_rpm_d5_1;
 	float speed_rpm_d5_2;
@@ -140,9 +142,9 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
-	float M_ref_left;
-	float n_ref_left;
-	float n_ref_left_filt;
+	float M_ref_right;
+	float n_ref_right;
+	float n_ref_right_filt;
 	uz_3ph_dq_t i_dq_ref_0;
 	uz_3ph_dq_t i_dq_ref_1;
 	enum current_control_select current_ctrl_select;
@@ -160,13 +162,12 @@ typedef struct _referenceAndSetValues_ {
 	float Td_over_Ts;
 	bool deadtime_comp_onoff;
 	float lambda_u_LUT[42];
-	float Kp_spd_left;
-	float Ki_spd_left;
-	float Kp_cur_d_right;
-	float Ki_cur_d_right;
-	float Kp_cur_q_right;
-	float Ki_cur_q_right;
-	float traj;
+	float Kp_spd_right;
+	float Ki_spd_right;
+	float Kp_cur_d_left;
+	float Ki_cur_d_left;
+	float Kp_cur_q_left;
+	float Ki_cur_q_left;
 } referenceAndSetValues;
 
 typedef struct{
@@ -188,8 +189,8 @@ typedef struct{
 	uz_inverter_adapter_t* uz_d_inverter_d2;
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_CurrentControl_t* current_ctrl_left;
-	uz_SpeedControl_t* speed_ctrl_left;
-	uz_SetPoint_t* setpoint_ctrl_left;
+	uz_SpeedControl_t* speed_ctrl_right;
+	uz_SetPoint_t* setpoint_ctrl_right;
 	uz_IIR_Filter_t* iir_filter_ref_speed;
 }object_pointers_t;
 

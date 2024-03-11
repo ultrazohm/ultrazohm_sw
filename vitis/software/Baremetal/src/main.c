@@ -80,14 +80,13 @@ int main(void)
 			Global_Data.av.polepairs_left = Beckhoff_AM8141.polePairs;
 			Global_Data.av.polepairs_right = Beckhoff_AM8141.polePairs;
 			Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
-			Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
-			Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
-			Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+			Global_Data.objects.setpoint_ctrl_right = setpoint_ctrl_right_init();
+			Global_Data.objects.speed_ctrl_right = speed_ctrl_right_init();
 			Global_Data.objects.iir_filter_ref_speed = uz_signals_IIR_Filter_init(config);
 			Global_Data.av.lambda_d = 1.0f;
 			Global_Data.av.lambda_q = 1.0f;
-			Global_Data.av.lambda_u = 0.0f; //0.000091f;
-			Global_Data.av.lambda_u_e5 = Global_Data.av.lambda_u * 1.0e5f;
+			Global_Data.av.lambda_u_left = 0.0f; //0.000091f;
+			Global_Data.av.lambda_u_e5_left = Global_Data.av.lambda_u_left * 1.0e5f;
 			Global_Data.av.i_max_mpc = 1.2f;
 			Global_Data.rasv.current_ctrl_select = PI_FOC;
             // parameters for automated trade-off curve measurements

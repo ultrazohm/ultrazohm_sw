@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 3U
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
@@ -23,28 +23,32 @@
  * 5 for Interrupt_3L_center
  * 6 for Interrupt_timer_fcc
 */
-#define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
-#define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
+#define INTERRUPT_ISR_SOURCE_USER_CHOICE_0         1U
+#define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE_0  40U
+#define INTERRUPT_ISR_SOURCE_USER_CHOICE_1         1U
+#define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE_1   1U
 
-#define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
-#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-#define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_PWM_FREQUENCY_0                     400.0e3f
+#define UZ_PWM_FREQUENCY_1                     400.0e3f
+#define UZ_PWM_FREQUENCY_2                      10.0e3f
+#define UZ_PWM_FREQUENCY_3                      10.0e3f
 
+#define UZ_PWM_FREQUENCY_ISR					(UZ_PWM_FREQUENCY_0/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE_0)
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  5U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
-#define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
+#define UZ_INCREMENTALENCODER_MAX_INSTANCES             0U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
 #define UZ_NN_MAX_INSTANCES                             0U
-#define UZ_PMSMMODEL_MAX_INSTANCES                      0U
+#define UZ_PMSMMODEL_MAX_INSTANCES                      1U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
-#define UZ_MUX_AXI_MAX_INSTANCES                        1U
-#define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
+#define UZ_MUX_AXI_MAX_INSTANCES                        5U
+#define UZ_SPEEDCONTROL_MAX_INSTANCES                   2U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
 #define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
@@ -63,13 +67,13 @@
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
-#define UZ_AXI_GPIO_MAX_INSTANCES                       0U
+#define UZ_AXI_GPIO_MAX_INSTANCES                       3U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
 #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
-#define UZ_TRAJECTORY_MAX_INSTANCES                     0U
+#define UZ_TRAJECTORY_MAX_INSTANCES                     1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

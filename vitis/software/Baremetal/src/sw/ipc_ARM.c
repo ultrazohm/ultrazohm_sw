@@ -186,23 +186,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->rasv.n_ref_left = value;
+		data->rasv.n_ref_right = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->rasv.i_dq_ref_0.d = value;
-			break;
-
-		case (Set_Send_Field_3):
-		data->rasv.i_dq_ref_0.q = value;
-			break;
-
-		case (Set_Send_Field_4):
 		data->rasv.i_dq_ref_1.d = value;
 			break;
 
-		case (Set_Send_Field_5):
+		case (Set_Send_Field_3):
 		data->rasv.i_dq_ref_1.q = value;
+			break;
+
+		case (Set_Send_Field_4):
+		data->rasv.i_dq_ref_0.d = value;
+			break;
+
+		case (Set_Send_Field_5):
+		data->rasv.i_dq_ref_0.q = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -211,84 +211,85 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
-//		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left, value);
+
 			break;
 
 		case (Set_Send_Field_8):
-			data->av.snd_fld[8] = value;
-//			uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_left, value);
+		data->av.snd_fld[8] = value;
 			break;
 
 		case (Set_Send_Field_9):
-			data->av.snd_fld[9] = value;
-//			uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_left, value);
+		data->av.snd_fld[9] = value;
 			break;
 
 		case (Set_Send_Field_10):
-			data->av.snd_fld[10] = value;
-//			uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_left, value);
+		data->av.snd_fld[10] = value;
 			break;
 
 		case (Set_Send_Field_11):
 			data->av.snd_fld[11] = value;
-			data->rasv.Kp_spd_left = value;
-			uz_SpeedControl_set_Kp(data->objects.speed_ctrl_left, value);
+			data->rasv.Kp_spd_right = value;
+			uz_SpeedControl_set_Kp(data->objects.speed_ctrl_right, value);
+
 			break;
 
 		case (Set_Send_Field_12):
 			data->av.snd_fld[12] = value;
-			data->rasv.Ki_spd_left = value;
-			uz_SpeedControl_set_Ki(data->objects.speed_ctrl_left, value);
+			data->rasv.Ki_spd_right = value;
+			uz_SpeedControl_set_Ki(data->objects.speed_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_13):
 			data->av.snd_fld[13] = value;
-			data->rasv.Kp_cur_d_right = value;
-			uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_right,
+			data->rasv.Kp_cur_d_left = value;
+			uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left,
 					value);
 			break;
 
 		case (Set_Send_Field_14):
 			data->av.snd_fld[14] = value;
-			data->rasv.Ki_cur_d_right = value;
-			uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_right,
+			data->rasv.Ki_cur_d_left = value;
+			uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_left,
 					value);
 			break;
 
 		case (Set_Send_Field_15):
 			data->av.snd_fld[15] = value;
-			data->rasv.Kp_cur_q_right = value;
-			uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_right,
+			data->rasv.Kp_cur_q_left = value;
+			uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_left,
 					value);
 			break;
 
 		case (Set_Send_Field_16):
 			data->av.snd_fld[16] = value;
-			data->rasv.Ki_cur_q_right = value;
-			uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_right,
+			data->rasv.Ki_cur_q_left = value;
+			uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_left,
 					value);
 			break;
 
 		case (Set_Send_Field_17):
 		data->av.snd_fld[17] = value;
+		data->av.lambda_u_left = value;
+		data->av.lambda_u_e5_left = value * 1.0e5f;
+		uz_axi_write_int32(
+				XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR
+						+ lambda_u_AXI_Data_cost_opt,
+				uz_convert_float_to_unsigned_fixed(data->av.lambda_u_left, 19U));
 			break;
 
 		case (Set_Send_Field_18):
 			data->av.snd_fld[18] = value;
+			data->av.lambda_u_right = value;
+			data->av.lambda_u_e5_right = value * 1.0e5f;
+			uz_axi_write_int32(
+					XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR
+							+ lambda_u_AXI_Data_cost_opt,
+					uz_convert_float_to_unsigned_fixed(data->av.lambda_u_right, 19U));
 			break;
 
 		case (Set_Send_Field_19):
 			data->av.snd_fld[19] = value;
-			data->av.lambda_u = value;
-			data->av.lambda_u_e5 = value * 1.0e5f;
-			uz_axi_write_int32(
-					XPAR_UZ_USER_FCS_MPC_0_COST_OPT_0_BASEADDR
-							+ lambda_u_AXI_Data_cost_opt,
-					uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 19U));
-			uz_axi_write_int32(
-					XPAR_UZ_USER_FCS_MPC_1_COST_OPT_0_BASEADDR
-							+ lambda_u_AXI_Data_cost_opt,
-					uz_convert_float_to_unsigned_fixed(data->av.lambda_u, 19U));
+
 			break;
 
 		case (Set_Send_Field_20):

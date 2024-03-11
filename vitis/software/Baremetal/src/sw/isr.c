@@ -140,9 +140,8 @@ void ISR_Control(void *data)
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_d1, false);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_d2, false);
     	// reset controllers
-//		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
-		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_right);
-		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left);
+		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
+		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_right);
 		// write zero dutycycle
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -323,11 +322,8 @@ static void ReadAllADC()
 };
 
 void control_left_motor() {
-	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed, Global_Data.rasv.n_ref_left);
-	// calculate reference torque from speed ctrl of left motor
-	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s, Global_Data.rasv.n_ref_left_filt);
-	// calculate current setpoints i_dq_ref for left motor
-	Global_Data.rasv.i_dq_ref_0 = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_d1, i_dq_0);
+
+
 //	v_dq_ref_0 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_0, i_dq_0, DC_VOLTAGE, Global_Data.av.omega_mech_d5_1*Global_Data.av.polepairs_left);
 //	dutycyc_0 = uz_Space_Vector_Modulation(v_dq_ref_0, Global_Data.av.v_dc_d1, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
 	// write measured dc_link voltage to pu_voltages ip
@@ -339,8 +335,20 @@ void control_left_motor() {
 };
 
 void control_right_motor() {
+	// filter speed setpoint signal
+	Global_Data.rasv.n_ref_right_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed, Global_Data.rasv.n_ref_right);
+	// calculate reference torque from speed ctrl of right motor
+	Global_Data.rasv.M_ref_right = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_right, Global_Data.av.resolver_pl_outputs_d5_2.omega_mech_rad_s, Global_Data.rasv.n_ref_right_filt);
+	// calculate current setpoints i_dq_ref for right motor
+	Global_Data.rasv.i_dq_ref_1 = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_right, Global_Data.av.resolver_pl_outputs_d5_2.omega_mech_rad_s, Global_Data.rasv.M_ref_right, Global_Data.av.v_dc_d2, i_dq_1);
 	// calculate reference voltages for current control
-	v_dq_ref_1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_1, i_dq_1, DC_VOLTAGE, Global_Data.av.omega_mech_d5_2*Global_Data.av.polepairs_right);
+//	v_dq_ref_1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_1, i_dq_1, DC_VOLTAGE, Global_Data.av.omega_mech_d5_2*Global_Data.av.polepairs_right);
 	// calculate duty cycles from reference dq voltages
-	dutycyc_1 = uz_Space_Vector_Modulation(v_dq_ref_1, Global_Data.av.v_dc_d2, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
+//	dutycyc_1 = uz_Space_Vector_Modulation(v_dq_ref_1, Global_Data.av.v_dc_d2, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
+	// write measured dc_link voltage to pu_voltages ip
+    fcs_mpc_write_axi_v_dc();
+	//write setpoint to MPC
+	fcs_mpc_write_setpoint_1();
+	//write setpoint to pu_voltages for deadtime compensation algorithm
+//	fcs_mpc_write_i_ref_to_pu_voltages();
 };

@@ -32,8 +32,6 @@ file_name = Logfile_list(logfile_list_index).name
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);
-opts.VariableNamesLine = 4;
-opts.VariableDescriptionsLine = 5;
 opts = setvartype(opts, 'double');
 
 log = readtable(file_name, opts);

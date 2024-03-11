@@ -6,10 +6,11 @@
 #include <stdbool.h>
 
 #define XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY 100000000U
-#define DEFAULT_CONVERSION_FACTOR 1.0f
-#define DEFAULT_INTEGER_BITS 14
-#define DEFAULT_FRACTIONAL_BITS 4
+#define CURRENT_2_SI_CONVERSION_FACTOR 0.00190734f // (10*12,5)/(2^16) 10=to volts 12,5= volts to current in ampere
+#define DEFAULT_INTEGER_BITS 3
+#define DEFAULT_FRACTIONAL_BITS 15
 #define DEFAULT_OFFSET 0
+
 
 void uz_adcLtc2311_ip_core_init(void)
 {
@@ -17,7 +18,7 @@ void uz_adcLtc2311_ip_core_init(void)
         .base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_LTC2311_S00_AXI_BASEADDR,
         .ip_clk_frequency_Hz = XPAR_A1_ADC_LTC2311_IP_CORE_FREQUENCY,
         .channel_config = {
-            .conversion_factor = DEFAULT_CONVERSION_FACTOR,
+            .conversion_factor = CURRENT_2_SI_CONVERSION_FACTOR,
             .conversion_factor_definition = {
                 .is_signed = true,
                 .integer_bits = DEFAULT_INTEGER_BITS,

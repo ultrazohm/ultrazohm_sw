@@ -36,22 +36,21 @@
 #include "globalData.h"
 #include "defines.h"
 #include "include/isr.h"
-#include "include/encoder.h"
 #include "include/gpio_axi.h"
 #include "include/javascope.h"
 #include "include/mux_axi.h"
-#include "include/pwm_3L_driver.h"
+#include "include/resolver.h"
+#include "include/inverter.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "include/pi_foc.h"
+#include "include/fcs_mpc.h"
 
 #include "uz/uz_HAL.h"
-
 #include "uz/uz_LED/uz_LED_facade.h"
 #include "uz/uz_PushButton/uz_PushButton_facade.h"
-
 #include "uz/uz_MioGpio_mediator/uz_MioGpio_mediator.h"
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
-
 #include "uz/uz_SystemTime/uz_SystemTime.h"
-
 #include "include/pwm_init.h"
 
 

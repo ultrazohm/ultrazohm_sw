@@ -6,7 +6,18 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
-#include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_signals/uz_signals.h"
+
+enum current_control_select {
+		PI_FOC,
+		FCS_MPC,
+};
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -52,39 +63,68 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
-	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
-	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
-	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed; 		// in rpm
-	float mechanicalRotorSpeed_filtered; // in rpm
-	float mechanicalPosition; 		// in m
-	float mechanicalTorque; 			// in Nm
-	float mechanicalTorqueSensitive; // in Nm
-	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
-	float I_d;
-	float I_q;
-	float U_d;
-	float U_q;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
-	float temperature;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
 	float snd_fld[21];
+	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d5_1;
+	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d5_2;
+	struct uz_inverter_adapter_outputs_t inverter_d1_status;
+	struct uz_inverter_adapter_outputs_t inverter_d2_status;
+	float mean_temp_inv_d1;
+	float mean_temp_inv_d2;
+	float i_a_d1;
+	float i_b_d1;
+	float i_c_d1;
+	float i_dc_d1;
+	float v_a_d1;
+	float v_b_d1;
+	float v_c_d1;
+	float v_dc_d1;
+	float i_a_d2;
+	float i_b_d2;
+	float i_c_d2;
+	float i_dc_d2;
+	float v_a_d2;
+	float v_b_d2;
+	float v_c_d2;
+	float v_dc_d2;
+	float i_d_0;
+	float i_q_0;
+	float i_d_1;
+	float i_q_1;
+	float v_d_0;
+	float v_q_0;
+	float v_d_1;
+	float v_q_1;
+	float polepairs_left;
+	float polepairs_right;
+	float omega_mech_d5_1;
+	float omega_mech_d5_2;
+	float lambda_d;
+	float lambda_q;
+	float lambda_u;
+	float lambda_u_e5;
+	float i_max_mpc;
+	float speed_rpm_d5_1;
+	float speed_rpm_d5_2;
+	bool f_sw_measure_flag;
+	float f_f_sw_measure_flag;
+	float pause_time_sec;
+	float pause_timer_sec;
+	bool measure_flag;
+	float f_measure_flag;
+	bool start_trade_off_measurement;
+	float f_start_trade_off_measurement;
+	float f_sw_avg_Hz_0;
+	float f_sw_avg_Hz_1;
+	float i_d_ip;
+	float i_q_ip;
+	float i_a_pu;
+	float i_b_pu;
+	float i_c_pu;
+	float vd_pu;
+	float vq_pu;
+	float id_delay_pu;
+	float iq_delay_pu;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -100,19 +140,57 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	float M_ref_left;
+	float n_ref_left;
+	float n_ref_left_filt;
+	uz_3ph_dq_t i_dq_ref_0;
+	uz_3ph_dq_t i_dq_ref_1;
+	enum current_control_select current_ctrl_select;
+	bool req_measure_flag;
+	float f_req_measure_flag;
+	uint32_t cnt_lambda_u;
+	float f_cnt_lambda_u;
+	float lambda_u_now;
+	float lambda_u_step;
+	uint32_t cnt_lambda_u_end;
+	float lambda_u_start;
+	float lambda_u_stop;
+	float f_cnt_lambda_u_end;
+	float Ts_minus_Td_over_Ts;
+	float Td_over_Ts;
+	bool deadtime_comp_onoff;
+	float lambda_u_LUT[42];
+	float Kp_spd_left;
+	float Ki_spd_left;
+	float Kp_cur_d_right;
+	float Ki_cur_d_right;
+	float Kp_cur_q_right;
+	float Ki_cur_q_right;
+	float traj;
 } referenceAndSetValues;
 
 typedef struct{
-	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
-	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
-	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
-	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
-	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
-	uz_mux_axi_t* mux_axi;
+	uz_PWM_SS_2L_t* pwm_0;
+	uz_PWM_SS_2L_t* pwm_1;
+	uz_PWM_SS_2L_t* pwm_2;
+	uz_PWM_SS_2L_t* pwm_3;
+	uz_interlockDeadtime2L_handle deadtime_interlock_PWM_0;
+	uz_interlockDeadtime2L_handle deadtime_interlock_PWM_1;
+	uz_interlockDeadtime2L_handle deadtime_interlock_PWM_2;
+	uz_interlockDeadtime2L_handle deadtime_interlock_PWM_3;
+	uz_mux_axi_t* mux_axi_0;
+	uz_mux_axi_t* mux_axi_1;
+	uz_resolverIP_t* resolver_d5_1;
+	uz_resolverIP_t* resolver_d5_2;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d5_1;
+	uz_resolver_pl_interface_t* resolver_pl_interface_d5_2;
+	uz_inverter_adapter_t* uz_d_inverter_d1;
+	uz_inverter_adapter_t* uz_d_inverter_d2;
+	uz_CurrentControl_t* current_ctrl_right;
+	uz_CurrentControl_t* current_ctrl_left;
+	uz_SpeedControl_t* speed_ctrl_left;
+	uz_SetPoint_t* setpoint_ctrl_left;
+	uz_IIR_Filter_t* iir_filter_ref_speed;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

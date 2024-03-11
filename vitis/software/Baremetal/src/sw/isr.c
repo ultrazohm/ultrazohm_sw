@@ -20,9 +20,7 @@
 #include <math.h>
 #include <xtmrctr.h>
 #include "../include/javascope.h"
-#include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
-#include "../include/encoder.h"
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
@@ -38,6 +36,27 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+#define 	CURRENT_2_SI_AMPERE	12.5f
+#define		VOLTAGE_2_SI_VOLTS	12.0f
+#define		MAX_CURRENT			25.0f
+#define		RATED_CURRENT		8.0f
+#define		DC_VOLTAGE			48.0f
+#define		MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
+
+// measurement structs for motor control
+struct uz_3ph_abc_t i_abc_0 = {0.0f};
+struct uz_3ph_abc_t i_abc_1 = {0.0f};
+struct uz_3ph_dq_t i_dq_0 = {0.0f};
+struct uz_3ph_dq_t i_dq_1 = {0.0f};
+struct uz_3ph_dq_t i_dq_ref_0 = {0.0f};
+struct uz_3ph_dq_t i_dq_ref_1 = {0.0f};
+struct uz_3ph_dq_t i_dq_error_0 = {0.0f};
+struct uz_3ph_dq_t i_dq_error_1 = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_0 = {0.0f};
+struct uz_3ph_dq_t v_dq_ref_1 = {0.0f};
+struct uz_DutyCycle_t dutycyc_0 = {0.0f};
+struct uz_DutyCycle_t dutycyc_1 = {0.0f};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -50,22 +69,128 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    // update speed and position of resolvers
+    Global_Data.av.resolver_pl_outputs_d5_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d5_1);
+    Global_Data.av.resolver_pl_outputs_d5_2 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d5_2);
+
+	// assign measurements to Global_Data
+	Global_Data.av.i_a_d1 = Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_b_d1 = Global_Data.aa.A1.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_c_d1 = Global_Data.aa.A1.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_dc_d1 = Global_Data.aa.A1.me.ADC_B5 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.v_a_d1 = Global_Data.aa.A1.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_b_d1 = Global_Data.aa.A1.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_c_d1 = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_dc_d1 = Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+//	Global_Data.av.v_dc_d1 = DC_VOLTAGE;
+
+	Global_Data.av.i_a_d2 = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_b_d2 = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_c_d2 = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_dc_d2 = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.v_a_d2 = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_b_d2 = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_c_d2 = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_dc_d2 = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+//	Global_Data.av.v_dc_d2 = DC_VOLTAGE;
+
+	Global_Data.av.omega_mech_d5_1 = Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s;
+	Global_Data.av.omega_mech_d5_2 = Global_Data.av.resolver_pl_outputs_d5_2.omega_mech_rad_s;
+
+	// get reference currents from Global_Data
+	i_dq_ref_0 = Global_Data.rasv.i_dq_ref_0;
+	i_dq_ref_1 = Global_Data.rasv.i_dq_ref_1;
+
+	// assign measurements from global_data to motor control structs
+    i_abc_0.a = Global_Data.av.i_a_d1;
+    i_abc_0.b = Global_Data.av.i_b_d1;
+    i_abc_0.c = Global_Data.av.i_c_d1;
+    i_abc_1.a = Global_Data.av.i_a_d2;
+    i_abc_1.b = Global_Data.av.i_b_d2;
+    i_abc_1.c = Global_Data.av.i_c_d2;
+
+	// park transformation of measured currents
+	i_dq_0 = uz_transformation_3ph_abc_to_dq(i_abc_0, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
+	i_dq_1 = uz_transformation_3ph_abc_to_dq(i_abc_1, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
+	Global_Data.av.i_d_0 = i_dq_0.d;
+	Global_Data.av.i_q_0 = i_dq_0.q;
+	Global_Data.av.i_d_1 = i_dq_1.d;
+	Global_Data.av.i_q_1 = i_dq_1.q;
+
+    // check for current limit
+    if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
+   		fabs(Global_Data.av.i_a_d2) > MAX_CURRENT || fabs(Global_Data.av.i_b_d2) > MAX_CURRENT || fabs(Global_Data.av.i_c_d2) > MAX_CURRENT) {
+    	ultrazohm_state_machine_set_stop(true);
+    }
+
+	//read axi values from mpc ip for debug
+//	fcs_mpc_debug();
+
+	//calc average switching frequency of inverters
+	fcs_mpc_calc_f_sw_avg();
+
+    // check platform state machine
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+    // if "STOP"
+    if (current_state==idle_state)
+    {
+    	// disable inverters
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_d1, false);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_d2, false);
+    	// reset controllers
+//		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
+		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_right);
+		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left);
+		// write zero dutycycle
+		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+		//disable MPC IP
+		fcs_mpc_enable_0(false);
+		fcs_mpc_enable_1(false);
+    }
+
+    // if "ENABLE SYSTEM"
+    if (current_state==running_state)
+    {
+    	// enable inverters
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_d1, true);
+    	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_d2, true);
+    }
+
+    // if "ENABLE CONTROL"
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
-    }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    	//enable MPC IP
+		fcs_mpc_enable_0(true);
+		fcs_mpc_enable_1(true);
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+    	// calculate control of left motor at inverter d1 and resolver d5_1
+    	control_left_motor();
+
+    	// calculate control of right motor at inverter d2 and resolver d5_2
+    	control_right_motor();
+
+    	// assign dutycycles to PWM module variables
+    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_0.DutyCycle_A;
+    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_0.DutyCycle_B;
+    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_0.DutyCycle_C;
+    	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_1.DutyCycle_A;
+    	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_1.DutyCycle_B;
+    	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_1.DutyCycle_C;
+    }
+
+
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_0, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_1, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_2, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_3, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
@@ -195,4 +320,27 @@ u32 Rpu_IpiInit(u16 DeviceId)
 static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
+};
+
+void control_left_motor() {
+	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed, Global_Data.rasv.n_ref_left);
+	// calculate reference torque from speed ctrl of left motor
+	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s, Global_Data.rasv.n_ref_left_filt);
+	// calculate current setpoints i_dq_ref for left motor
+	Global_Data.rasv.i_dq_ref_0 = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_d1, i_dq_0);
+//	v_dq_ref_0 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_0, i_dq_0, DC_VOLTAGE, Global_Data.av.omega_mech_d5_1*Global_Data.av.polepairs_left);
+//	dutycyc_0 = uz_Space_Vector_Modulation(v_dq_ref_0, Global_Data.av.v_dc_d1, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
+	// write measured dc_link voltage to pu_voltages ip
+    fcs_mpc_write_axi_v_dc();
+	//write setpoint to MPC
+	fcs_mpc_write_setpoint_0();
+	//write setpoint to pu_voltages for deadtime compensation algorithm
+//	fcs_mpc_write_i_ref_to_pu_voltages();
+};
+
+void control_right_motor() {
+	// calculate reference voltages for current control
+	v_dq_ref_1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_1, i_dq_1, DC_VOLTAGE, Global_Data.av.omega_mech_d5_2*Global_Data.av.polepairs_right);
+	// calculate duty cycles from reference dq voltages
+	dutycyc_1 = uz_Space_Vector_Modulation(v_dq_ref_1, Global_Data.av.v_dc_d2, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
 };

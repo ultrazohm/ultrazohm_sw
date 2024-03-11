@@ -17,6 +17,7 @@
 #include "xgpio.h"
 
 #define GPIO_out_ID XPAR_UZ_SYSTEM_UZ_ENABLE_AXI_GPIO_2_DEVICE_ID /* GPIO device that GPIO is connected to output*/
+#define GPIO_D4_ID XPAR_UZ_DIGITAL_ADAPTER_D4_ADAPTER_AXI_GPIO_0_DEVICE_ID
 
 #define AXI_GPIO_CHANNEL 1
 
@@ -31,10 +32,12 @@
 
 #define AXI_GPIO_PWM_MODULES    AXI_BIT_0
 #define AXI_GPIO_DIGITAL_ENABLE AXI_BIT_1
+#define AXI_GPIO_PWM_RESET		AXI_BIT_2
 #define AXI_GPIO_AXI2TCM_ENABLE AXI_BIT_4
 
 // Initialize the  GPIO structure
 static XGpio Gpio_OUT; /* GPIO Device driver instance for the real GPIOs */
+static XGpio D4_OUT;
 
 //----------------------------------------------------
 // INITIALIZE & SET DIRECTIONS OF GPIOs that are instanced on the FPGA
@@ -44,6 +47,10 @@ void Initialize_AXI_GPIO(void)
     int status = XGpio_Initialize(&Gpio_OUT, GPIO_out_ID);
     uz_assert(XST_SUCCESS == status);
     XGpio_SetDataDirection(&Gpio_OUT, AXI_GPIO_CHANNEL, 0x00U); //SW: First eight signals are outputs by setting the bitmask to zero for these
+
+    status = XGpio_Initialize(&D4_OUT, GPIO_D4_ID);
+    uz_assert(XST_SUCCESS == status);
+    XGpio_SetDataDirection(&D4_OUT, AXI_GPIO_CHANNEL, 0x00000000U);
 }
 
 void uz_axigpio_disable_pwm_and_power_electronics(void)
@@ -61,4 +68,18 @@ void uz_axigpio_disable_datamover(void)
 void uz_axigpio_enable_datamover(void)
 {
     XGpio_DiscreteSet(&Gpio_OUT, AXI_GPIO_CHANNEL, AXI_GPIO_AXI2TCM_ENABLE);
+}
+
+void uz_axigpio_reset_pwm_counter(void)
+{
+	XGpio_DiscreteSet(&Gpio_OUT, AXI_GPIO_CHANNEL, AXI_GPIO_PWM_RESET);
+}
+// Functions for GPIO_D4
+void uz_axigpio_d4_out_set_pin(uint32_t gpio_number)
+{
+	XGpio_DiscreteSet(&D4_OUT, AXI_GPIO_CHANNEL, (1U << gpio_number));
+}
+void uz_axigpio_d4_out_clear_pin(uint32_t gpio_number)
+{
+	XGpio_DiscreteClear(&D4_OUT, AXI_GPIO_CHANNEL, (1U << gpio_number));
 }

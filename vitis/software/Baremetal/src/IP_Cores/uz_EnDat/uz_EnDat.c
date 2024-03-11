@@ -132,15 +132,6 @@ uint32_t uz_EnDat_read_pos(uz_EnDat_t *self, uz_EnDat_position t_x) {
     case uz_EnDat_pos_t2:
         ret = uz_EnDat_hw_read_POS2BUS(self->config.base_address);
         break;
-    /*
-    case uz_EnDat_pos_t3:
-        ret = uz_EnDat_hw_read_POS3BUS(self->config.base_address);
-        break;
-
-    case uz_EnDat_pos_t4:
-        ret = uz_EnDat_hw_read_POS4BUS(self->config.base_address);
-        break;
-    */
     default:
         return(0xFFFFFFFF);
         break;
@@ -490,15 +481,6 @@ uint32_t uz_EnDat_read_time_elapsed(uz_EnDat_t *self, uz_EnDat_elapsed tx_ty) {
     case uz_EnDat_elapsed_t0_t2:
         ret = uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(self->config.base_address);
         break;
-    /*
-    case uz_EnDat_elapsed_t0_t3:
-        ret = uz_EnDat_hw_read_TIMEELASPEDT0T3BUS(self->config.base_address);
-        break;
-
-    case uz_EnDat_elapsed_t0_t4:
-        ret = uz_EnDat_hw_read_TIMEELASPEDT0T4BUS(self->config.base_address);
-        break;
-    */
     default:
         return(0xFFFFFFFF);
         break;

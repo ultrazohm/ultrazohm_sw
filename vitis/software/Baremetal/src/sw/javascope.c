@@ -57,6 +57,7 @@ extern struct uz_3ph_abc_t i_abc_Amps_2;
 extern struct uz_3ph_dq_t v_dq_ref_Volts_2;
 extern struct uz_3ph_abc_t v_abc_Volts_2;
 extern struct uz_3ph_dq_t v_ind_dq_Volts_2;
+extern struct uz_3ph_dq_t v_ind_dq_Volts_1;
 extern struct uz_3ph_dq_t v_ind_dq_filt_Volts_2;
 extern struct uz_3ph_dq_t v_ind_dq_ref_Volts_2;
 extern struct uz_3ph_dq_t v_dq_Volts_2;
@@ -104,13 +105,10 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm_filtered_1] = &data->av.mechanicalRotorSpeed_filtered_1;
 	js_ch_observable[JSO_Speed_rpm_filtered_2] = &data->av.mechanicalRotorSpeed_filtered_2;
-	js_ch_observable[JSO_Speed_rpm_filtered_3] = &data->av.mechanicalRotorSpeed_filtered_3;
 	js_ch_observable[JSO_Speed_rpm_1] 	= &data->av.mechanicalRotorSpeed_1;
 	js_ch_observable[JSO_Speed_rpm_2] 	= &data->av.mechanicalRotorSpeed_2;
-	js_ch_observable[JSO_Speed_rpm_3] 	= &data->av.mechanicalRotorSpeed_3;
 	js_ch_observable[JSO_el_Speed_rpm_1]	= &data->av.electricalRotorSpeed_1;
 	js_ch_observable[JSO_el_Speed_rpm_2]	= &data->av.electricalRotorSpeed_2;
-	js_ch_observable[JSO_el_Speed_rpm_3]	= &data->av.electricalRotorSpeed_3;
 	js_ch_observable[JSO_ia_1] 			= &i_abc_Amps_1.a;
 	js_ch_observable[JSO_ib_1] 			= &i_abc_Amps_1.b;
 	js_ch_observable[JSO_ic_1] 			= &i_abc_Amps_1.c;
@@ -140,7 +138,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_M_meas]		= &M_meas_Nm;
 	js_ch_observable[JSO_Theta_el_1] 	= &data->av.theta_elec_1;
 	js_ch_observable[JSO_Theta_el_2] 	= &data->av.theta_elec_2;
-	js_ch_observable[JSO_Theta_el_3] 	= &data->av.theta_elec_3;
 	js_ch_observable[JSO_Theta_el_cor_1]= &theta_el_rad_1;
 	js_ch_observable[JSO_Theta_el_cor_2]= &theta_el_rad_2;
 	js_ch_observable[JSO_Theta_el_off_1]= &data->av.theta_offset_1;
@@ -155,24 +152,17 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	js_ch_observable[JSO_ud_ind_2]			= &v_ind_dq_Volts_2.d;
 	js_ch_observable[JSO_uq_ind_2]			= &v_ind_dq_Volts_2.q;
+	js_ch_observable[JSO_ud_ind_1]			= &v_ind_dq_Volts_1.d;
+	js_ch_observable[JSO_uq_ind_1]			= &v_ind_dq_Volts_1.q;
 	js_ch_observable[JSO_ud_ind_filt_2]			= &v_ind_dq_filt_Volts_2.d;
 	js_ch_observable[JSO_uq_ind_filt_2]			= &v_ind_dq_filt_Volts_2.q;
 	js_ch_observable[JSO_error_type]			= &error_type;
 	js_ch_observable[JSO_psi_d_2]			= &psi_dq_mVoltseconds_2.d;
 	js_ch_observable[JSO_psi_q_2]			= &psi_dq_mVoltseconds_2.q;
-	js_ch_observable[JSO_i_q] 			= &pmsm_outputs.i_q_A;
-	js_ch_observable[JSO_i_d] 			= &pmsm_outputs.i_d_A;
-	js_ch_observable[JSO_omega]			 = &pmsm_outputs.omega_mech_1_s;
-	js_ch_observable[JSO_v_d]			 = &pmsm_inputs.v_d_V;
-	js_ch_observable[JSO_v_q]			 = &pmsm_inputs.v_q_V;
 	js_ch_observable[JSO_rc_d]			 = &rc_dq_Ohm.d;
 	js_ch_observable[JSO_rc_q]			 = &rc_dq_Ohm.q;
 	js_ch_observable[JSO_rc_para_d]			 = &rc_para_dq.d;
 	js_ch_observable[JSO_rc_para_q]			 = &rc_para_dq.q;
-	js_ch_observable[JSO_cil_u_ind_Volts_d]	 = &cil_u_ind_Volts.d;
-	js_ch_observable[JSO_cil_u_ind_Volts_q]	 = &cil_u_ind_Volts.q;
-	js_ch_observable[JSO_cil_u_ind_ref_Volts_d]	 = &cil_u_ind_ref_Volts.d;
-	js_ch_observable[JSO_cil_u_ind_ref_Volts_q]	 = &cil_u_ind_ref_Volts.q;
 	js_ch_observable[JSO_u_ind_ref_Volts_d]		= &v_ind_dq_ref_Volts_2.d;
 	js_ch_observable[JSO_u_ind_ref_Volts_q]		= &v_ind_dq_ref_Volts_2.q;
 
@@ -196,6 +186,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_u_ind_d]   				= &v_ind_dq_Volts_2.d;
 	js_slowDataArray[JSSD_FLOAT_u_ind_q]   				= &v_ind_dq_Volts_2.q;
+	js_slowDataArray[JSSD_FLOAT_u_ind_d_1]   			= &v_ind_dq_Volts_1.d;
+	js_slowDataArray[JSSD_FLOAT_u_ind_q_1]   			= &v_ind_dq_Volts_1.q;
 	js_slowDataArray[JSSD_FLOAT_u_ind_filt_d]   		= &v_ind_dq_filt_Volts_2.d;
 	js_slowDataArray[JSSD_FLOAT_u_ind_filt_q]   		= &v_ind_dq_filt_Volts_2.q;
 	js_slowDataArray[JSSD_FLOAT_psi_d]   				= &psi_dq_mVoltseconds_2.d;
@@ -214,27 +206,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ub1_av]  			 	= &data->aa.A1.me.ADC_B7;
 	js_slowDataArray[JSSD_FLOAT_uc1_av]  			 	= &data->aa.A1.me.ADC_B6;
 	js_slowDataArray[JSSD_FLOAT_rs2]  			 		= &r_s_2;
-	js_slowDataArray[JSSD_FLOAT_u_d]                    = &(pmsm_inputs.v_d_V);
-	js_slowDataArray[JSSD_FLOAT_u_q]                    = &(pmsm_inputs.v_q_V);
-	js_slowDataArray[JSSD_FLOAT_i_d]                    = &(pmsm_outputs.i_d_A);
-	js_slowDataArray[JSSD_FLOAT_i_q]                    = &(pmsm_outputs.i_q_A);
-	js_slowDataArray[JSSD_FLOAT_speed]                  = &(pmsm_outputs.omega_mech_1_s);
 	js_slowDataArray[JSSD_FLOAT_rc_d]			 		= &rc_dq_Ohm.d;
 	js_slowDataArray[JSSD_FLOAT_rc_q]					= &rc_dq_Ohm.q;
 	js_slowDataArray[JSSD_FLOAT_rc_para_d]			 	= &rc_para_dq.d;
 	js_slowDataArray[JSSD_FLOAT_rc_para_q]				= &rc_para_dq.q;
-	js_slowDataArray[JSSD_FLOAT_cil_u_ind_Volts_d]		= &cil_u_ind_Volts.d;
-	js_slowDataArray[JSSD_FLOAT_cil_u_ind_Volts_q]	 	= &cil_u_ind_Volts.q;
-	js_slowDataArray[JSSD_FLOAT_cil_u_ind_ref_Volts_d]	= &cil_u_ind_ref_Volts.d;
-	js_slowDataArray[JSSD_FLOAT_cil_u_ind_ref_Volts_q]	= &cil_u_ind_ref_Volts.q;
 	js_slowDataArray[JSSD_FLOAT_u_ind_ref_Volts_d]		= &v_ind_dq_ref_Volts_2.d;
 	js_slowDataArray[JSSD_FLOAT_u_ind_ref_Volts_q]		= &v_ind_dq_ref_Volts_2.q;
 	js_slowDataArray[JSSD_FLOAT_rc_repeat]				= &rc_repeat_counter;
-//	js_slowDataArray[JSSD_FLOAT_u_ind_d_Kp]				= &(CC_instance_u_ind->Controller_id->config.Kp);
-//	js_slowDataArray[JSSD_FLOAT_u_ind_d_Ki]				= &(CC_instance_u_ind->Controller_id->config.Ki);
-//	js_slowDataArray[JSSD_FLOAT_u_ind_q_Kp]				= &CC_instance_u_ind->Controller_iq->config.Kp;
-//	js_slowDataArray[JSSD_FLOAT_u_ind_q_Ki]				= &CC_instance_u_ind->Controller_iq->config.Ki;
-
 	return Status;
 }
 

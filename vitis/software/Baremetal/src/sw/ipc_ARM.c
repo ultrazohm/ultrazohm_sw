@@ -27,7 +27,7 @@ extern float n_ref_rpm_1;
 extern float M_ref_Nm_1;
 extern float theta_el_offset_1;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
-
+extern struct uz_3ph_dq_t v_ind_dq_ref_Volts_1;
 
 // ------------------- Wavegen Chirp -------------------- //
 extern bool enable_excitation;
@@ -223,15 +223,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		n_ref_rpm_1 = value;
+		n_ref_rpm_2 = value;
 			break;
 
 		case (Set_Send_Field_2):
-		i_dq_ref_Amps_2.d = value;
+		i_dq_ref_Amps_1.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-		i_dq_ref_Amps_2.q = value;
+		i_dq_ref_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -239,11 +239,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-		v_ind_dq_ref_Volts_2.d = value;
+		v_ind_dq_ref_Volts_1.d = value;
 			break;
 
 		case (Set_Send_Field_6):
-		v_ind_dq_ref_Volts_2.q = value;
+		v_ind_dq_ref_Volts_1.q = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -312,12 +312,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-			run_state = cil_FOC;
+			run_state = rc_measurement_Hoerner;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_4):
-			run_state = cil_rs_measurement;
+			run_state = rs_measurement_Hoerner;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
@@ -397,10 +397,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 5);
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+    if (run_state == rs_measurement_Hoerner) {
+       js_status_BareToRTOS |= 1 << 6;
+    } else {
+    	js_status_BareToRTOS &= ~(1 << 6);;
+    }
 
 	/* Bit 7 - My_Button_4 */
-    if (run_state == cil_rs_measurement) {
+    if (run_state == rs_measurement_Hoerner) {
        js_status_BareToRTOS |= 1 << 7;
     } else {
        js_status_BareToRTOS &= ~(1 << 7);

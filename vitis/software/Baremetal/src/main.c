@@ -50,7 +50,9 @@ uz_CurrentControl_t* CC_instance_1;
 uz_encoder_offset_estimation_t* encoder_offset_obj_1;
 uz_wavegen_chirp* chirp_instance_1;
 uz_parameterid_rs_t* rs_meas_instance;
+uz_parameterid_rs_t* rs_meas_instance_hoerner;
 uz_parameterid_rc_t* rc_meas_instance;
+uz_parameterid_rc_t* rc_meas_instance_Hoerner;
 
 
 // Declare Pointer for FOC of PMSM 2
@@ -218,14 +220,36 @@ int main(void)
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
     };
 
+    struct uz_parameterid_rs_config_t config_rs_meas_hoerner = {
+    		.n_start = 100.0f,
+    	    .n_end = 1200.0f,
+    	    .n_steps = 11.0f,
+    	    .i_start = 3.0f,
+    	    .i_diff = 2.0f,
+    	    .i_repeats = 6.0f,
+    	    .i_steptime = 2.0f,
+    	    .wait_time = 2.0f,
+    	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
+    };
+
     struct uz_parameterid_rc_config_t config_rc_meas = {
-    	    .id_ref = 5.0f,
-    	    .iq_ref = 10.0f,
-    	    .n_ref = 1200.0f,
+    	    .id_ref = 9.0f,
+    	    .iq_ref = 11.0f,
+    	    .n_ref = 1000.0f,
     	    .wait_time = 4.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
     	    .sample_time = 4.0f,
 			.pn = 5.0f
+    };
+
+    struct uz_parameterid_rc_config_t config_rc_meas_Hoerner = {
+    	    .id_ref = 3.0f,
+    	    .iq_ref = 5.0f,
+    	    .n_ref = 1200.0f,
+    	    .wait_time = 5.0f,
+    	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
+    	    .sample_time = 10.0f,
+			.pn = 4.0f
     };
 
     //--------- Configs for PMSM 2 (Last) ---------//
@@ -274,7 +298,7 @@ int main(void)
       // Configuration of induced voltage Controller
       struct uz_PI_Controller_config config_ud_ind = {
          .Kp = 0.1f,
-         .Ki = 30.0f,
+         .Ki = 5.0f,
          .samplingTime_sec = 0.0001f,
          .upper_limit = 10.0f,
          .lower_limit = -10.0f,
@@ -282,7 +306,7 @@ int main(void)
        };
        struct uz_PI_Controller_config config_uq_ind = {
          .Kp = 0.05f,
-         .Ki = 10.0f,
+         .Ki = 5.0f,
          .samplingTime_sec = 0.0001f,
          .upper_limit = 10.0f,
  	    .lower_limit = -10.0f,
@@ -396,7 +420,9 @@ int main(void)
             CC_instance_2 = uz_CurrentControl_init(CC_config_2);
             CC_instance_u_ind = uz_CurrentControl_init(CC_config_u_ind);
 		    rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
+		    rs_meas_instance_hoerner = uz_parameterid_rs_init(config_rs_meas_hoerner);
 		    rc_meas_instance = uz_parameterid_rc_init(config_rc_meas);
+		    rc_meas_instance_Hoerner = uz_parameterid_rc_init(config_rc_meas_Hoerner);
            	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
            	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);

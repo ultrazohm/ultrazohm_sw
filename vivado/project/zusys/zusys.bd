@@ -4125,12 +4125,6 @@
                   "uz_resolver_pl_inter_0/position_raw"
                 ]
               },
-              "Resolver_Interface_v_0_valid_m": {
-                "ports": [
-                  "Resolver_Interface_v_0/valid_m",
-                  "uz_resolver_pl_inter_0/trigger"
-                ]
-              },
               "Resolver_Interface_v_0_velocity_out_m": {
                 "ports": [
                   "Resolver_Interface_v_0/velocity_out_m",
@@ -4191,12 +4185,6 @@
                   "uz_resolver_pl_inter_1/position_raw"
                 ]
               },
-              "Resolver_Interface_v_1_valid_m": {
-                "ports": [
-                  "Resolver_Interface_v_1/valid_m",
-                  "uz_resolver_pl_inter_1/trigger"
-                ]
-              },
               "Resolver_Interface_v_1_velocity_out_m": {
                 "ports": [
                   "Resolver_Interface_v_1/velocity_out_m",
@@ -4218,13 +4206,15 @@
               "trigger_resolver_0_1": {
                 "ports": [
                   "trigger_resolver_0",
-                  "Resolver_Interface_v_0/sample_trigger"
+                  "Resolver_Interface_v_0/sample_trigger",
+                  "uz_resolver_pl_inter_0/trigger"
                 ]
               },
               "trigger_resolver_1_1": {
                 "ports": [
                   "trigger_resolver_1",
-                  "Resolver_Interface_v_1/sample_trigger"
+                  "Resolver_Interface_v_1/sample_trigger",
+                  "uz_resolver_pl_inter_1/trigger"
                 ]
               },
               "uz_resolver_pl_inter_0_done": {

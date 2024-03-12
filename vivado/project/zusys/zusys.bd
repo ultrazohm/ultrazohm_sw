@@ -81,7 +81,8 @@
           "Resolver_Interface_v_1": "",
           "uz_resolver_pl_inter_0": "",
           "uz_resolver_pl_inter_1": "",
-          "smartconnect_0": ""
+          "smartconnect_0": "",
+          "system_ila_0": ""
         },
         "D4_adapter": {
           "axi_gpio_0": ""
@@ -4012,6 +4013,23 @@
                     }
                   }
                 }
+              },
+              "system_ila_0": {
+                "vlnv": "xilinx.com:ip:system_ila:1.1",
+                "xci_name": "zusys_system_ila_0_4",
+                "xci_path": "ip\\zusys_system_ila_0_4\\zusys_system_ila_0_4.xci",
+                "inst_hier_path": "uz_digital_adapter/D5_adapter/system_ila_0",
+                "parameters": {
+                  "C_DATA_DEPTH": {
+                    "value": "4096"
+                  },
+                  "C_MON_TYPE": {
+                    "value": "NATIVE"
+                  },
+                  "C_NUM_OF_PROBES": {
+                    "value": "3"
+                  }
+                }
               }
             },
             "interface_nets": {
@@ -4125,6 +4143,13 @@
                   "uz_resolver_pl_inter_0/position_raw"
                 ]
               },
+              "Resolver_Interface_v_0_valid_m": {
+                "ports": [
+                  "Resolver_Interface_v_0/valid_m",
+                  "uz_resolver_pl_inter_0/trigger",
+                  "system_ila_0/probe1"
+                ]
+              },
               "Resolver_Interface_v_0_velocity_out_m": {
                 "ports": [
                   "Resolver_Interface_v_0/velocity_out_m",
@@ -4185,6 +4210,12 @@
                   "uz_resolver_pl_inter_1/position_raw"
                 ]
               },
+              "Resolver_Interface_v_1_valid_m": {
+                "ports": [
+                  "Resolver_Interface_v_1/valid_m",
+                  "uz_resolver_pl_inter_1/trigger"
+                ]
+              },
               "Resolver_Interface_v_1_velocity_out_m": {
                 "ports": [
                   "Resolver_Interface_v_1/velocity_out_m",
@@ -4200,27 +4231,28 @@
                   "uz_resolver_pl_inter_1/AXI4_Lite_ACLK",
                   "uz_resolver_pl_inter_0/IPCORE_CLK",
                   "uz_resolver_pl_inter_0/AXI4_Lite_ACLK",
-                  "smartconnect_0/aclk"
+                  "smartconnect_0/aclk",
+                  "system_ila_0/clk"
                 ]
               },
               "trigger_resolver_0_1": {
                 "ports": [
                   "trigger_resolver_0",
                   "Resolver_Interface_v_0/sample_trigger",
-                  "uz_resolver_pl_inter_0/trigger"
+                  "system_ila_0/probe0"
                 ]
               },
               "trigger_resolver_1_1": {
                 "ports": [
                   "trigger_resolver_1",
-                  "Resolver_Interface_v_1/sample_trigger",
-                  "uz_resolver_pl_inter_1/trigger"
+                  "Resolver_Interface_v_1/sample_trigger"
                 ]
               },
               "uz_resolver_pl_inter_0_done": {
                 "ports": [
                   "uz_resolver_pl_inter_0/done",
-                  "done"
+                  "done",
+                  "system_ila_0/probe2"
                 ]
               },
               "uz_resolver_pl_inter_0_omega_mech_rad_s": {
@@ -7657,10 +7689,13 @@
             "left": "23",
             "right": "0"
           },
-          "trigger_cnv_adc": {
+          "trigger_cnv_adc_A1": {
             "direction": "I"
           },
           "angle_valid": {
+            "direction": "I"
+          },
+          "trigger_cnv_adc_A2": {
             "direction": "I"
           }
         },
@@ -10333,8 +10368,13 @@
           },
           "trigger_cnv_adc_1": {
             "ports": [
-              "trigger_cnv_adc",
-              "fcs_mpc_0/trigger_cnv_adc",
+              "trigger_cnv_adc_A1",
+              "fcs_mpc_0/trigger_cnv_adc"
+            ]
+          },
+          "trigger_cnv_adc_A2_1": {
+            "ports": [
+              "trigger_cnv_adc_A2",
               "fcs_mpc_1/trigger_cnv_adc"
             ]
           },
@@ -13655,7 +13695,7 @@
           "uz_analog_adapter/trigger_cnv_A1",
           "uz_analog_adapter/trigger_cnv_A3",
           "uz_digital_adapter/trigger_resolver_0",
-          "uz_user/trigger_cnv_adc"
+          "uz_user/trigger_cnv_adc_A1"
         ]
       },
       "SI_VALID_A1_1": {
@@ -13730,7 +13770,8 @@
         "ports": [
           "uz_system/trigger_conversion_1",
           "uz_analog_adapter/trigger_cnv_A2",
-          "uz_digital_adapter/trigger_resolver_1"
+          "uz_digital_adapter/trigger_resolver_1",
+          "uz_user/trigger_cnv_adc_A2"
         ]
       },
       "uz_analog_adapter_RAW_VALID_A2": {

@@ -44,19 +44,30 @@ extern uz_CurrentControl_t* CurrentControl_instance;
 uz_3ph_dq_t reference_currents_Amp = {0};
 uz_3ph_dq_t measured_currents_Amp = {0};
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
-float omega_el_rad_per_sec = 0.0f;
+float omega_el_rad_per_sec = 125.1f; // electrical rotational speed in red/sec
 struct uz_pmsmModel_inputs_t pmsm_inputs={
    .omega_mech_1_s=0.0f,
    .v_d_V=0.0f,
    .v_q_V=0.0f,
    .load_torque=0.0f
  };
- struct uz_pmsmModel_outputs_t pmsm_outputs={
+struct uz_pmsmModel_outputs_t pmsm_outputs={
    .i_d_A=0.0f,
    .i_q_A=0.0f,
    .torque_Nm=0.0f,
    .omega_mech_1_s=0.0f
  };
+
+struct uz_3ph_dq_t i_actual_Ampere = {
+	.d = 1.0f,
+	.q = 2.0f,
+	.zero = 0.0f
+ };
+struct uz_3ph_dq_t i_reference_Ampere = {
+	.d = 1.0f,
+	.q = 2.0f,
+	.zero = 0.0f
+};
  ///////////////////////////////////////////////////////////////////////
  struct uz_3ph_abc_t v_abc_Volts = {0};
  struct uz_3ph_dq_t v_dq_Volts = {0};
@@ -64,10 +75,12 @@ struct uz_pmsmModel_inputs_t pmsm_inputs={
  struct uz_3ph_abc_t i_abc_Amps = {0};
  struct uz_3ph_dq_t i_dq_Amps = {0};
  struct uz_3ph_dq_t i_dq_ref_Amps = {0};
- float v_DC_Volts = 0.0f;
+ float v_DC_Volts = 24.0f;
  float i_DC_Amps = 0.0f;
- float theta_el_rad = 0.0f;
+ float theta_el_rad = 1.2f; //electrical rotor angle in rad
  float theta_el_offset = 1.1f;
+ float omega_m_rad_per_sec = 0.0f;
+
  ///////////////////////////////////////////////////////////////////////
 
 //==============================================================================================================================================================
@@ -107,7 +120,9 @@ void ISR_Control(void *data)
             uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, false);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    i_dq_Amps = uz_transformation_3ph_abc_to_dq(i_abc_Amps, theta_el_rad);
+    theta_el_rad = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
+    i_dq_Amps = uz_transformation_3ph_abc_to_dq(i_abc_Amps, theta_el_rad); //actual Amp
+    v_dq_Volts = uz_transformation_3ph_abc_to_dq(v_abc_Volts, theta_el_rad); // actual voltage
 
 
 
@@ -128,7 +143,8 @@ void ISR_Control(void *data)
     	 pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
     	 uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     	///////////////////////////////////////////////////////////////////////////////
-
+    	 //i_dq_ref_Amps = uz_SetPoint_sample(SP_instance, omega_m_rad_per_sec, v_DC_Volts, i_dq_Amps);				// Calculate Reference Currents
+    	 //v_dq_ref_Volts = uz_CurrentControl_sample(CurrentControl_instance, i_dq_ref_Amps, i_dq_Amps, v_DC_Volts, omega_el_rad_per_sec, theta_el_rad);		// Calculate Reference Voltages
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

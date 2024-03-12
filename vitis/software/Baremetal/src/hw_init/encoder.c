@@ -88,7 +88,7 @@ void update_speed_and_position_of_encoder_on_D5_2(DS_Data* const data){	// updat
 	//low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
-	data->av.mechanicalRotorSpeed_filtered_1 = LPF1(	data->av.mechanicalRotorSpeed_1, &speed_lpf_mem_in, &speed_lpf_mem_out,
+	data->av.mechanicalRotorSpeed_filtered_2 = LPF1(	data->av.mechanicalRotorSpeed_2, &speed_lpf_mem_in, &speed_lpf_mem_out,
 			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }

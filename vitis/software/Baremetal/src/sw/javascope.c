@@ -37,6 +37,10 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 												//  This is probably it?
 												// Is sent to APU (and PC) by means of javascope_data->status in JavaScope_update (below)
 
+// External
+extern float theta_el_rad_1;
+extern float theta_el_rad_2;
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -75,8 +79,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq_2] 			= &data->av.I_q_2;
 	js_ch_observable[JSO_id_1] 			= &data->av.I_d_1;
 	js_ch_observable[JSO_id_2] 			= &data->av.I_d_2;
-	js_ch_observable[JSO_Theta_el_1] 		= &data->av.theta_elec_1;
-	js_ch_observable[JSO_Theta_el_2] 		= &data->av.theta_elec_2;
+	js_ch_observable[JSO_Theta_el_1] 	= &theta_el_rad_1;
+	js_ch_observable[JSO_Theta_el_2] 	= &theta_el_rad_2;
 	js_ch_observable[JSO_theta_mech_1] 	= &data->av.theta_mech_1;
 	js_ch_observable[JSO_theta_mech_2] 	= &data->av.theta_mech_2;
 	js_ch_observable[JSO_ud_1]			= &data->av.U_d_1;

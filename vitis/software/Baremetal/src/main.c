@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -56,6 +57,12 @@ enum init_chain initialization_chain = init_assertions;
 ///////////////////Define global variable of the PMSM IP-Core//////////////////////
 uz_pmsmModel_t *pmsm=NULL;
 uz_CurrentControl_t* CurrentControl_instance = NULL;
+struct uz_PMSM_t config_PMSM = {
+                           .Ld_Henry = 3.00e-04f,
+                           .Lq_Henry = 3.00e-04f,
+                           .Psi_PM_Vs = 0.0075f};
+// Declare Pointer for Offset Estimation
+uz_encoder_offset_estimation_t* encoder_offset_obj;
 ///////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
@@ -82,10 +89,7 @@ int main(void)
             break;
         ////////////////Adding this code for tutorial 5//////////////////////////////////
         case init_CurrentControl_pmsm:;
-                       struct uz_PMSM_t config_PMSM = {
-                           .Ld_Henry = 3.00e-04f,
-                           .Lq_Henry = 3.00e-04f,
-                           .Psi_PM_Vs = 0.0075f};
+
                        struct uz_PI_Controller_config config_id = {
                            .Kp = 0.25f,
                            .Ki = 158.8f,
@@ -105,6 +109,16 @@ int main(void)
                            .config_iq = config_iq,
                            .max_modulation_index = 1.0f / sqrtf(3.0f)};
                        CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+
+                       // Encoder offset estimation
+                       struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
+                           .ptr_measured_rotor_angle = &Global_Data.av.theta_elec,                     // pointer to the measured electric rotor angle (raw, not offset corrected)
+                           .ptr_offset_angle = &Global_Data.av.theta_offset,                           // pointer to global variable holding the offset angle
+                           .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
+                           .ptr_actual_u_q_V = &Global_Data.av.U_q,                                    // pointer to q-setpoint voltage
+                           .min_omega_el = 400.0f,                                                     // target electric rotor angular speed (USE OWN)
+                           .setpoint_current = 0.0f 												   // current setpoint to reach speed (USE OWN)
+                           };
 
 /////////////////////////////////////////comment this code for inveter card///////////
                        //struct uz_pmsmModel_config_t pmsm_config={

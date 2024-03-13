@@ -58,13 +58,15 @@
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "xparameters.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 /////////Adding this code for Inverter_adapter_card////////////////////////////////////////////
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "include/uz_inverter_adapter_init.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////
-
+// Include for Encoder Estimation
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

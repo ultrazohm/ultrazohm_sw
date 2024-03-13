@@ -17,6 +17,7 @@
 #include "../main.h"
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
+
 #include <stdbool.h>
 
 extern float *js_ch_observable[JSO_ENDMARKER];
@@ -25,6 +26,7 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern uint32_t js_status_BareToRTOS;
 //////////////Adding this line for tutorial 5///////////////
 extern uz_3ph_dq_t reference_currents_Amp;
+extern float theta_el_offset;
 ///////////////////////////////////////////////////////////
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)

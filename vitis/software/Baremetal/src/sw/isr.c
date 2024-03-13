@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,11 +41,13 @@ extern DS_Data Global_Data;
 
 //Define input and output of the IP-Core///////////////////////////////
 extern uz_pmsmModel_t *pmsm;
+extern struct uz_PMSM_t config_PMSM;
+extern uz_encoder_offset_estimation_t* encoder_offset_obj;
 extern uz_CurrentControl_t* CurrentControl_instance;
 uz_3ph_dq_t reference_currents_Amp = {0};
 uz_3ph_dq_t measured_currents_Amp = {0};
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
-float omega_el_rad_per_sec = 125.1f; // electrical rotational speed in red/sec
+float omega_el_rad_per_sec = 0.0f; // electrical rotational speed in red/sec
 struct uz_pmsmModel_inputs_t pmsm_inputs={
    .omega_mech_1_s=0.0f,
    .v_d_V=0.0f,
@@ -58,28 +61,29 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
    .omega_mech_1_s=0.0f
  };
 
-struct uz_3ph_dq_t i_actual_Ampere = {
-	.d = 1.0f,
-	.q = 2.0f,
-	.zero = 0.0f
- };
-struct uz_3ph_dq_t i_reference_Ampere = {
-	.d = 1.0f,
-	.q = 2.0f,
-	.zero = 0.0f
-};
+struct uz_3ph_dq_t i_actual_Ampere = {0};
+struct uz_3ph_dq_t i_reference_Ampere = {0};
+struct uz_DutyCycle_t output = {0};
  ///////////////////////////////////////////////////////////////////////
  struct uz_3ph_abc_t v_abc_Volts = {0};
- struct uz_3ph_dq_t v_dq_Volts = {0};
+ struct uz_3ph_dq_t v_dq_measured_Volts = {0};
  struct uz_3ph_dq_t v_dq_ref_Volts = {0};
  struct uz_3ph_abc_t i_abc_Amps = {0};
- struct uz_3ph_dq_t i_dq_Amps = {0};
+ struct uz_3ph_dq_t i_dq_measured_Amps = {0};
  struct uz_3ph_dq_t i_dq_ref_Amps = {0};
- float v_DC_Volts = 24.0f;
+ struct uz_encoder_offset_estimation_status status;
+ struct uz_3ph_dq_t ref_voltage_3ph_abc = {0};
+ float v_DC_Volts = 0.0f;
  float i_DC_Amps = 0.0f;
- float theta_el_rad = 1.2f; //electrical rotor angle in rad
- float theta_el_offset = 1.1f;
+ float theta_el_rad = 0.0f; //electrical rotor angle in rad
+ float theta_el_offset = 0.0f;
  float omega_m_rad_per_sec = 0.0f;
+ float n_ref_rpm = 0.0f;
+ float M_ref_Nm = 0.0f;
+ float theta;
+
+
+
 
  ///////////////////////////////////////////////////////////////////////
 
@@ -94,6 +98,7 @@ static void ReadAllADC();
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+    // Read Measurment from ADCs and Encoder
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
@@ -120,32 +125,43 @@ void ISR_Control(void *data)
             uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, false);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered*(2.0f*M_PI)/60.0f;
+    omega_el_rad_per_sec = omega_m_rad_per_sec*config_PMSM.polePairs;
     theta_el_rad = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
-    i_dq_Amps = uz_transformation_3ph_abc_to_dq(i_abc_Amps, theta_el_rad); //actual Amp
-    v_dq_Volts = uz_transformation_3ph_abc_to_dq(v_abc_Volts, theta_el_rad); // actual voltage
+    i_dq_measured_Amps = uz_transformation_3ph_abc_to_dq(i_abc_Amps, theta_el_rad); //actual Amp
+    v_dq_measured_Volts = uz_transformation_3ph_abc_to_dq(v_abc_Volts, theta_el_rad); // actual voltage
 
 
 
+    // Offset Estimation
+    v_dq_ref_Volts.q = Global_Data.av.U_q; //controller output ref voltage to gobal data
 
-
+    // Enable Control
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
     	///////////////////////////////////////////////////////////////////////////////
-    	 uz_pmsmModel_trigger_input_strobe(pmsm);
-    	 uz_pmsmModel_trigger_output_strobe(pmsm);
-    	 pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-    	 measured_currents_Amp.d = pmsm_outputs.i_d_A;
-    	 measured_currents_Amp.q = pmsm_outputs.i_q_A;
-    	 omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
-    	 CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
-    	 pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-    	 pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
-    	 uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+//    	 uz_pmsmModel_trigger_input_strobe(pmsm);
+//    	 uz_pmsmModel_trigger_output_strobe(pmsm);
+//    	 pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+//    	 measured_currents_Amp.d = pmsm_outputs.i_d_A;
+//    	 measured_currents_Amp.q = pmsm_outputs.i_q_A;
+//    	 omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+    	 CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, i_dq_measured_Amps, v_DC_Volts, omega_el_rad_per_sec);
+    	 //ref_voltage_3ph_abc = invPark(CurrentControl_output_Volts, theta);
+    	 output = uz_Space_Vector_Modulation(v_dq_ref_Volts, v_DC_Volts, theta_el_rad);
+    	 Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_A;		// Set Duty Cycle A
+    	 Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;	   // Set Duty Cycle B
+    	 Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;	  // Set Duty Cycle C
+
+//    	 pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+//    	 pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+//    	 uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
     	///////////////////////////////////////////////////////////////////////////////
     	 //i_dq_ref_Amps = uz_SetPoint_sample(SP_instance, omega_m_rad_per_sec, v_DC_Volts, i_dq_Amps);				// Calculate Reference Currents
     	 //v_dq_ref_Volts = uz_CurrentControl_sample(CurrentControl_instance, i_dq_ref_Amps, i_dq_Amps, v_DC_Volts, omega_el_rad_per_sec, theta_el_rad);		// Calculate Reference Voltages
     }
+    // Set duty cycles for teo-level modulator
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

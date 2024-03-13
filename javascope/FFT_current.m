@@ -136,6 +136,7 @@ title('Trade-Off curve');
 % axis([0 max(mean_avg_f_sw_over_trigger_period*0.001) 0 max(THD)]);
 % axis([15 25 0 max(THD)]);
 axis([0 100 0 12]);
+grid on
 
 figure
 plot(mean_avg_f_sw_over_trigger_period*0.001,TDD,'*');

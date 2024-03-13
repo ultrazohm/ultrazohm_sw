@@ -121,19 +121,28 @@ const base_val_t base_val={
 		.psiB=(sqrt(2.0f/3.0f)*rated_values.VR)/(rated_values.nR*2.0f*UZ_PIf/60.0f*polepairs)
 };
 
-const float Ts = 1.0f/UZ_PWM_FREQUENCY_0;
+const float Ts_left = 1.0f/UZ_PWM_FREQUENCY_0;
+const float Ts_right = 1.0f/UZ_PWM_FREQUENCY_1;
 //const float Ts = 1.0f/100.0e3f;
 
 //pre-calculated factors for delay compensation and prediction model
-const pre_calc_val_t pre_calc_val={
+const pre_calc_val_t pre_calc_val_left={
 		.Rs_over_ZB = AM8141_MPC.R_ph_Ohm/base_val.ZB,
-		.Ts_times_ZB_over_Ld = Ts*base_val.ZB/AM8141_MPC.Ld_Henry,
-		.Ts_times_ZB_over_Lq = Ts*base_val.ZB/AM8141_MPC.Lq_Henry,
+		.Ts_times_ZB_over_Ld = Ts_left*base_val.ZB/AM8141_MPC.Ld_Henry,
+		.Ts_times_ZB_over_Lq = Ts_left*base_val.ZB/AM8141_MPC.Lq_Henry,
 		.Ld_over_LB = AM8141_MPC.Ld_Henry/base_val.LB,
 		.Lq_over_LB = AM8141_MPC.Lq_Henry/base_val.LB,
 		.psi_pm_over_psiB = AM8141_MPC.Psi_PM_Vs/base_val.psiB
 };
 
+const pre_calc_val_t pre_calc_val_right={
+		.Rs_over_ZB = AM8141_MPC.R_ph_Ohm/base_val.ZB,
+		.Ts_times_ZB_over_Ld = Ts_right*base_val.ZB/AM8141_MPC.Ld_Henry,
+		.Ts_times_ZB_over_Lq = Ts_right*base_val.ZB/AM8141_MPC.Lq_Henry,
+		.Ld_over_LB = AM8141_MPC.Ld_Henry/base_val.LB,
+		.Lq_over_LB = AM8141_MPC.Lq_Henry/base_val.LB,
+		.psi_pm_over_psiB = AM8141_MPC.Psi_PM_Vs/base_val.psiB
+};
 
 float pu_current_conversion = 1.0f/base_val.IB;
 float pu_voltage_conversion = 1.0f/base_val.VB;
@@ -195,38 +204,38 @@ void fcs_mpc_init_omega_m_pu_conversion(void){
 }
 
 void fcs_mpc_init_delay_comp(void){
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Rs_over_ZB_AXI_Data_delay_comp, pre_calc_val.Rs_over_ZB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_delay_comp, pre_calc_val.Ts_times_ZB_over_Ld, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_delay_comp, pre_calc_val.Ts_times_ZB_over_Lq, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ld_over_LB_AXI_Data_delay_comp, pre_calc_val.Ld_over_LB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Lq_over_LB_AXI_Data_delay_comp, pre_calc_val.Lq_over_LB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + psi_pm_over_psiB_AXI_Data_delay_comp, pre_calc_val.psi_pm_over_psiB, delay_comp_fp_def);
+	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Rs_over_ZB_AXI_Data_delay_comp, pre_calc_val_left.Rs_over_ZB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_delay_comp, pre_calc_val_left.Ts_times_ZB_over_Ld, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_delay_comp, pre_calc_val_left.Ts_times_ZB_over_Lq, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ld_over_LB_AXI_Data_delay_comp, pre_calc_val_left.Ld_over_LB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Lq_over_LB_AXI_Data_delay_comp, pre_calc_val_left.Lq_over_LB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + psi_pm_over_psiB_AXI_Data_delay_comp, pre_calc_val_left.psi_pm_over_psiB, delay_comp_fp_def);
     uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + polepairs_AXI_Data_delay_comp, (uint32_t)(polepairs));
 
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Rs_over_ZB_AXI_Data_delay_comp, pre_calc_val.Rs_over_ZB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_delay_comp, pre_calc_val.Ts_times_ZB_over_Ld, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_delay_comp, pre_calc_val.Ts_times_ZB_over_Lq, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Ld_over_LB_AXI_Data_delay_comp, pre_calc_val.Ld_over_LB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Lq_over_LB_AXI_Data_delay_comp, pre_calc_val.Lq_over_LB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + psi_pm_over_psiB_AXI_Data_delay_comp, pre_calc_val.psi_pm_over_psiB, delay_comp_fp_def);
+	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Rs_over_ZB_AXI_Data_delay_comp, pre_calc_val_right.Rs_over_ZB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_delay_comp, pre_calc_val_right.Ts_times_ZB_over_Ld, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_delay_comp, pre_calc_val_right.Ts_times_ZB_over_Lq, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Ld_over_LB_AXI_Data_delay_comp, pre_calc_val_right.Ld_over_LB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + Lq_over_LB_AXI_Data_delay_comp, pre_calc_val_right.Lq_over_LB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + psi_pm_over_psiB_AXI_Data_delay_comp, pre_calc_val_right.psi_pm_over_psiB, delay_comp_fp_def);
     uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + polepairs_AXI_Data_delay_comp, (uint32_t)(polepairs));
 }
 
 void fcs_mpc_init_prediction_model(){
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Rs_over_ZB_AXI_Data_prediction, pre_calc_val.Rs_over_ZB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_prediction, pre_calc_val.Ts_times_ZB_over_Ld, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_prediction, pre_calc_val.Ts_times_ZB_over_Lq, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ld_over_LB_AXI_Data_prediction, pre_calc_val.Ld_over_LB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Lq_over_LB_AXI_Data_prediction, pre_calc_val.Lq_over_LB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + psi_pm_over_psiB_AXI_Data_prediction, pre_calc_val.psi_pm_over_psiB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Rs_over_ZB_AXI_Data_prediction, pre_calc_val_left.Rs_over_ZB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_prediction, pre_calc_val_left.Ts_times_ZB_over_Ld, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_prediction, pre_calc_val_left.Ts_times_ZB_over_Lq, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ld_over_LB_AXI_Data_prediction, pre_calc_val_left.Ld_over_LB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Lq_over_LB_AXI_Data_prediction, pre_calc_val_left.Lq_over_LB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + psi_pm_over_psiB_AXI_Data_prediction, pre_calc_val_left.psi_pm_over_psiB, delay_comp_fp_def);
     uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + polepairs_AXI_Data_prediction, (uint32_t)(polepairs));
 
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Rs_over_ZB_AXI_Data_prediction, pre_calc_val.Rs_over_ZB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_prediction, pre_calc_val.Ts_times_ZB_over_Ld, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_prediction, pre_calc_val.Ts_times_ZB_over_Lq, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Ld_over_LB_AXI_Data_prediction, pre_calc_val.Ld_over_LB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Lq_over_LB_AXI_Data_prediction, pre_calc_val.Lq_over_LB, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + psi_pm_over_psiB_AXI_Data_prediction, pre_calc_val.psi_pm_over_psiB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Rs_over_ZB_AXI_Data_prediction, pre_calc_val_right.Rs_over_ZB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_prediction, pre_calc_val_right.Ts_times_ZB_over_Ld, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_prediction, pre_calc_val_right.Ts_times_ZB_over_Lq, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Ld_over_LB_AXI_Data_prediction, pre_calc_val_right.Ld_over_LB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + Lq_over_LB_AXI_Data_prediction, pre_calc_val_right.Lq_over_LB, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + psi_pm_over_psiB_AXI_Data_prediction, pre_calc_val_right.psi_pm_over_psiB, delay_comp_fp_def);
     uz_axi_write_uint32(XPAR_UZ_USER_FCS_MPC_1_PREDICTION_0_BASEADDR + polepairs_AXI_Data_prediction, (uint32_t)(polepairs));
 }
 
@@ -257,7 +266,7 @@ void fcs_mpc_enable_0(bool enable){
 }
 
 void fcs_mpc_enable_1(bool enable){
-	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_1_MPC_ENABLE_0_BASEADDR + AXI_mpc_enb_Data_mpc_enable, enable);
+	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_1_MPC_ENABLE_1_BASEADDR + AXI_mpc_enb_Data_mpc_enable, enable);
 }
 
 void fcs_mpc_write_setpoint_0(){

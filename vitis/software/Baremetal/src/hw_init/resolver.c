@@ -33,7 +33,8 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_d5_1 = {
                .machine_polepairs = 4,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -0.3959959f
+//               .theta_m_offset_rad = -0.3959959f
+			   .theta_m_offset_rad = -0.3913f
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d5_1 = {

@@ -207,6 +207,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+		uz_resolver_pl_interface_set_theta_m_offset_rad(data->objects.resolver_pl_interface_d5_1, value);
 			break;
 
 		case (Set_Send_Field_7):

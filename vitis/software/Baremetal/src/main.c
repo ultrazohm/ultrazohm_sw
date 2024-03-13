@@ -18,6 +18,14 @@
 
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 
+struct uz_movingAverageFilter_config config_MovAvg = {
+   .filterLength = 300U
+};
+float data [300] = {0};
+uz_array_float_t circularBuffer = {
+   .length = UZ_ARRAY_SIZE(data),
+   .data = &data[0]
+};
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -83,6 +91,7 @@ int main(void)
 			Global_Data.objects.setpoint_ctrl_right = setpoint_ctrl_right_init();
 			Global_Data.objects.speed_ctrl_right = speed_ctrl_right_init();
 			Global_Data.objects.iir_filter_ref_speed = uz_signals_IIR_Filter_init(config);
+			Global_Data.objects.movAvgFilt = uz_movingAverageFilter_init(config_MovAvg, circularBuffer);
 			Global_Data.av.lambda_d = 1.0f;
 			Global_Data.av.lambda_q = 1.0f;
 			Global_Data.av.lambda_u_left = 0.0f; //0.000091f;

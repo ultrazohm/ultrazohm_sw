@@ -46,12 +46,15 @@ extern DS_Data Global_Data;
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_0 = {0.0f};
 struct uz_3ph_abc_t i_abc_1 = {0.0f};
+struct uz_3ph_abc_t v_abc_0 = {0.0f};
+struct uz_3ph_abc_t v_abc_1 = {0.0f};
 struct uz_3ph_dq_t i_dq_0 = {0.0f};
 struct uz_3ph_dq_t i_dq_1 = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_0 = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_1 = {0.0f};
 struct uz_3ph_dq_t i_dq_error_0 = {0.0f};
 struct uz_3ph_dq_t i_dq_error_1 = {0.0f};
+struct uz_3ph_dq_t v_dq_0 = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_0 = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_1 = {0.0f};
 struct uz_DutyCycle_t dutycyc_0 = {0.0f};
@@ -110,6 +113,10 @@ void ISR_Control(void *data)
     i_abc_1.b = Global_Data.av.i_b_d2;
     i_abc_1.c = Global_Data.av.i_c_d2;
 
+    v_abc_0.a = Global_Data.av.v_a_d1;
+    v_abc_0.b = Global_Data.av.v_b_d1;
+    v_abc_0.c = Global_Data.av.v_c_d1;
+
 	// park transformation of measured currents
 	i_dq_0 = uz_transformation_3ph_abc_to_dq(i_abc_0, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
 	i_dq_1 = uz_transformation_3ph_abc_to_dq(i_abc_1, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
@@ -117,6 +124,13 @@ void ISR_Control(void *data)
 	Global_Data.av.i_q_0 = i_dq_0.q;
 	Global_Data.av.i_d_1 = i_dq_1.d;
 	Global_Data.av.i_q_1 = i_dq_1.q;
+
+	// park transformation of measured voltages
+	v_dq_0 = uz_transformation_3ph_abc_to_dq(v_abc_0, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
+	Global_Data.av.v_d_0 = v_dq_0.d;
+	Global_Data.av.v_q_0 = v_dq_0.q;
+
+	Global_Data.av.v_d_0_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt, Global_Data.av.v_d_0);
 
     // check for current limit
     if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
@@ -324,8 +338,8 @@ static void ReadAllADC()
 void control_left_motor() {
 
 
-//	v_dq_ref_0 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_0, i_dq_0, DC_VOLTAGE, Global_Data.av.omega_mech_d5_1*Global_Data.av.polepairs_left);
-//	dutycyc_0 = uz_Space_Vector_Modulation(v_dq_ref_0, Global_Data.av.v_dc_d1, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
+	v_dq_ref_0 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_0, i_dq_0, DC_VOLTAGE, Global_Data.av.omega_mech_d5_1*Global_Data.av.polepairs_left);
+	dutycyc_0 = uz_Space_Vector_Modulation(v_dq_ref_0, Global_Data.av.v_dc_d1, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
 	// write measured dc_link voltage to pu_voltages ip
     fcs_mpc_write_axi_v_dc();
 	//write setpoint to MPC

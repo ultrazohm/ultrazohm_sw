@@ -13,6 +13,7 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 enum current_control_select {
 		PI_FOC,
@@ -92,6 +93,7 @@ typedef struct _actualValues_ {
 	float i_d_1;
 	float i_q_1;
 	float v_d_0;
+	float v_d_0_filt;
 	float v_q_0;
 	float v_d_1;
 	float v_q_1;
@@ -192,6 +194,7 @@ typedef struct{
 	uz_SpeedControl_t* speed_ctrl_right;
 	uz_SetPoint_t* setpoint_ctrl_right;
 	uz_IIR_Filter_t* iir_filter_ref_speed;
+	uz_movingAverageFilter_t* movAvgFilt;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

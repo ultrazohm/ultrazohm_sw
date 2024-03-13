@@ -79,11 +79,11 @@ vcom  uz_EnDat_src_Compare_To_Constant1_block2.vhd
 vcom  uz_EnDat_src_Subsystem1_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block3.vhd
 vcom  uz_EnDat_src_Detect_Increase_block.vhd
-vcom  uz_EnDat_src_Subsystem2.vhd
-vcom  uz_EnDat_src_Compare_To_Constant1_block4.vhd
-vcom  uz_EnDat_src_Detect_Increase_block1.vhd
 vcom  uz_EnDat_src_Subsystem3.vhd
 vcom  uz_EnDat_src_Subsystem4.vhd
+vcom  uz_EnDat_src_Compare_To_Constant1_block4.vhd
+vcom  uz_EnDat_src_Detect_Increase_block1.vhd
+vcom  uz_EnDat_src_Subsystem7.vhd
 vcom  uz_EnDat_src_timingprovider.vhd
 vcom  uz_EnDat_src_Increment_Stored_Integer_block.vhd
 vcom  uz_EnDat_src_ramselektor.vhd

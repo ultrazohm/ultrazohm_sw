@@ -82,11 +82,11 @@ add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant1_block2.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Subsystem1_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant1_block3.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Detect_Increase_block.vhd}
-add_files -norecurse {../hdl/uz_EnDat_src_Subsystem2.vhd}
-add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd}
-add_files -norecurse {../hdl/uz_EnDat_src_Detect_Increase_block1.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Subsystem3.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Subsystem4.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_Detect_Increase_block1.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_Subsystem7.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_timingprovider.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Increment_Stored_Integer_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_ramselektor.vhd}
@@ -139,7 +139,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2113454126 [ipx::current_core]
+set_property core_revision 2113468188 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_EnDat_src_UZ_ENDAT_pac.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -462,18 +462,6 @@ ipx::add_file {hdl/uz_EnDat_src_Detect_Increase_block.vhd} [ipx::get_file_groups
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Detect_Increase_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Detect_Increase_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Detect_Increase_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_Subsystem2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Subsystem2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_Subsystem2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Subsystem2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_Detect_Increase_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Detect_Increase_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_Detect_Increase_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Detect_Increase_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Subsystem3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Subsystem3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Subsystem3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -482,6 +470,18 @@ ipx::add_file {hdl/uz_EnDat_src_Subsystem4.vhd} [ipx::get_file_groups xilinx_any
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Subsystem4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Subsystem4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Subsystem4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Compare_To_Constant1_block4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_Detect_Increase_block1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Detect_Increase_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_Detect_Increase_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Detect_Increase_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_Subsystem7.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Subsystem7.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_Subsystem7.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Subsystem7.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_timingprovider.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_timingprovider.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_timingprovider.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>7ec1ad3a</spirit:value>
+            <spirit:value>9496184d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>7ec1ad3a</spirit:value>
+            <spirit:value>9496184d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1445,7 +1445,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Subsystem2.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Subsystem3.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1457,7 +1457,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Subsystem3.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Subsystem7.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1507,7 +1507,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_EnDat.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_6d0aeec5</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_4653b87e</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -2013,7 +2013,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Subsystem2.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Subsystem3.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2028,7 +2028,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/uz_EnDat_src_Subsystem3.vhd</spirit:name>
+        <spirit:name>hdl/uz_EnDat_src_Subsystem7.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2142,14 +2142,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_EnDat</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2113454126</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2024-03-03T20:27:25Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113468188</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2024-03-13T14:49:21Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="91f34ec4"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="e2b8b480"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="254cf795"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="a4302787"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="078c0c5f"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="7b1be292"/>
     </xilinx:packagingInfo>

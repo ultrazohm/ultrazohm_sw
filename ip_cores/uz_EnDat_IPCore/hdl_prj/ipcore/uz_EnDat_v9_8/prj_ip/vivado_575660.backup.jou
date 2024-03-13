@@ -2,8 +2,8 @@
 # Vivado v2022.2 (64-bit)
 # SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
 # IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
-# Start of session at: Sun Mar  3 17:06:55 2024
-# Process ID: 361392
+# Start of session at: Wed Mar 13 15:39:54 2024
+# Process ID: 575660
 # Current directory: C:/Users/ELSYS_PC/Documents/repos/ultrazohm_sw/ip_cores/uz_EnDat_IPCore/hdl_prj/ipcore/uz_EnDat_v9_8/prj_ip
 # Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
 # Log file: C:/Users/ELSYS_PC/Documents/repos/ultrazohm_sw/ip_cores/uz_EnDat_IPCore/hdl_prj/ipcore/uz_EnDat_v9_8/prj_ip/vivado.log

@@ -83,7 +83,7 @@ uint32_t counter_current = 0U;
 uint32_t counter_angle = 0U;
 uint32_t counter_Torque_points = 0U;
 static uint32_t n_currents_max = 1U; //10U;
-static uint32_t n_angles_max = 3U;//37U;
+static uint32_t n_angles_max = 91U;//37U;
 static uint32_t n_Torque_points_max = 3U;//37U;
 
 // Currents and Angles for measurement the Torque Current Angle characteristic
@@ -92,9 +92,22 @@ static uint32_t n_Torque_points_max = 3U;//37U;
 //		 30.0f, 32.5f, 35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
 //		 65.0f, 67.5f, 70.0f, 72.5f, 75.0f, 77.5f, 80.0f, 82.5f, 85.0f, 87.5f, 90.0f};
 
-static float angle[3] = {0.0f, 50.0f, 90.0f};
+//static float angle[19] = {0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 45.0f, 47.5f, 50.0f,
+//				52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f};
 
-static float ieff[1] = { 10.0f};
+
+static float angle[91] = {
+		0.0f, 2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f, 20.0f, 22.0f, 24.0f, 26.0f, 28.0f, 30.0f, 32.0f,
+		34.0f, 36.0f, 38.0f, 40.0f, 42.0f, 44.0f, 46.0f, 48.0f, 50.0f, 52.0f, 54.0f, 56.0f, 58.0f, 60.0f, 62.0f, 64.0f,
+		66.0f, 68.0f, 70.0f, 72.0f, 74.0f, 76.0f, 78.0f, 80.0f, 82.0f, 84.0f, 86.0f, 88.0f, 90.0f, 92.0f, 94.0f, 96.0f,
+		98.0f, 100.0f, 102.0f, 104.0f, 106.0f, 108.0f, 110.0f, 112.0f, 114.0f, 116.0f, 118.0f, 120.0f, 122.0f, 124.0f,
+		126.0f, 128.0f, 130.0f, 132.0f, 134.0f, 136.0f, 138.0f, 140.0f, 142.0f, 144.0f, 146.0f, 148.0f, 150.0f, 152.0f,
+		154.0f, 156.0f, 158.0f, 160.0f, 162.0f, 164.0f, 166.0f, 168.0f, 170.0f, 172.0f, 174.0f, 176.0f, 178.0f, 180.0f,
+};
+
+
+
+static float ieff[1] = { 20.0f};
 //static float angle[19] = {0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 45.0f, 47.5f, 50.0f,
 //		52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f};
 
@@ -349,6 +362,9 @@ void ISR_Control(void *data)
 						if(counter_current >= n_currents_max) {
 							//Global_Data.rasv.i_d_ref = 0.0f;
 							//Global_Data.rasv.i_q_ref = 0.0f;
+							id_last = id_soll;
+							iq_last = iq_soll;
+
 							id_soll = 0.0f;
 							iq_soll = 0.0f;
 						}
@@ -400,37 +416,37 @@ void ISR_Control(void *data)
 				}
 
 				// FOC
-//		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
-//		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
-//		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
-//
-//		        if (Global_Data.av.flg_speed_control){
-//		        	//Global_Data.av.testsignal = Global_Data.rasv.n_ref_rpm;
-//
-//		        	// currently not implemented !!!
-//		        }else{
-//		        	// Set I_d and I_q currents for current control
-//		        	dq_reference_current.d = Global_Data.rasv.i_d_ref;
-//		        	dq_reference_current.q = Global_Data.rasv.i_q_ref;
-//		        	dq_reference_current.zero = 0;
-//		        }
-//
-//		        // FOC - get U_d and U_q as controlled variables
-//		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
-////		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
-//		        Global_Data.rasv.U_d_ref = dq_reference_voltage.d;
-//		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
-//
-//		        // Generate PWM Signal for each phase
-//
-//		        Global_Data.av.theta_elec_ad = Global_Data.av.theta_elec + (1.5f*1.0f/UZ_PWM_FREQUENCY*omega_el_rad_per_sec);
-//
-//		        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK_filt, Global_Data.av.theta_elec_ad);
-//		        Global_Data.av.duty_cycle_A = output.DutyCycle_A;
-//		        Global_Data.av.duty_cycle_B = output.DutyCycle_B;
-//		        Global_Data.av.duty_cycle_C = output.DutyCycle_C;
-//
-//		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
+		    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+		    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU, 1);
+		    	Global_Data.av.flg_enable_FU = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_FU);
+
+		        if (Global_Data.av.flg_speed_control){
+		        	//Global_Data.av.testsignal = Global_Data.rasv.n_ref_rpm;
+
+		        	// currently not implemented !!!
+		        }else{
+		        	// Set I_d and I_q currents for current control
+		        	dq_reference_current.d = Global_Data.rasv.i_d_ref;
+		        	dq_reference_current.q = Global_Data.rasv.i_q_ref;
+		        	dq_reference_current.zero = 0;
+		        }
+
+		        // FOC - get U_d and U_q as controlled variables
+		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
+//		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
+		        Global_Data.rasv.U_d_ref = dq_reference_voltage.d;
+		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
+
+		        // Generate PWM Signal for each phase
+
+		        Global_Data.av.theta_elec_ad = Global_Data.av.theta_elec + (1.5f*1.0f/UZ_PWM_FREQUENCY*omega_el_rad_per_sec);
+
+		        output = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK_filt, Global_Data.av.theta_elec_ad);
+		        Global_Data.av.duty_cycle_A = output.DutyCycle_A;
+		        Global_Data.av.duty_cycle_B = output.DutyCycle_B;
+		        Global_Data.av.duty_cycle_C = output.DutyCycle_C;
+
+		        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output.DutyCycle_A, output.DutyCycle_B, output.DutyCycle_C);
 
 
 		        // Enable / Disable Measurement

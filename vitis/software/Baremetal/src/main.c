@@ -150,7 +150,10 @@ int main(void)
             Global_Data.objects.Output_instance = uz_axi_gpio_init(config_output);
 
             // Initialize Global actualValues
-            Global_Data.av.theta_offset = 4.291866f; //4.3317f;//4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
+
+            // Zu testen - theta_offset = 4.271849612
+
+            Global_Data.av.theta_offset = 4.291866f; //4.291866f;  //4.3317f;//4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
 
             Global_Data.av.polepairs = 2.0f;
             Global_Data.av.kp_d = 0.0f; //40.0f;

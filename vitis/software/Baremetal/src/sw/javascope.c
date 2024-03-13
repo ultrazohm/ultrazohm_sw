@@ -78,14 +78,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ia] 			= &i_abc_Amps.a;
 	js_ch_observable[JSO_ib] 			= &i_abc_Amps.b;
 	js_ch_observable[JSO_ic] 			= &i_abc_Amps.c;
-	//js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
-	//js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
 	js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
 	js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
 	js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
-	//js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	//js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	//js_ch_observable[JSO_uc] 			= &data->av.U_W;
 	js_ch_observable[JSO_iq] 			= &i_dq_measured_Amps.q;
 	js_ch_observable[JSO_id] 			= &i_dq_measured_Amps.d;
 	js_ch_observable[JSO_uq_ref]		= &v_dq_ref_Volts.q;
@@ -108,12 +103,6 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-//	js_slowDataArray[JSSD_FLOAT_u_d]                                = &(pmsm_inputs.v_d_V);
-//	js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
-//	js_slowDataArray[JSSD_FLOAT_i_d]                                = &(pmsm_outputs.i_d_A);
-//	js_slowDataArray[JSSD_FLOAT_i_q]                                = &(pmsm_outputs.i_q_A);
-//	js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_outputs.omega_mech_1_s);
-//	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &(System_UpTime_seconds);
 	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &i_dq_measured_Amps.d;

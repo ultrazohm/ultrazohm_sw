@@ -76,15 +76,15 @@ struct uz_PMSM_t config_PMSM_1 = {
    .I_max_Ampere = 10.0f
 };//these parameters are only needed if linear decoupling is selected
 
-// Configuration of PMSM 2 (Brose PMSM)
+// Configuration of PMSM 2 (Heidrive PMSM)
 struct uz_PMSM_t config_PMSM_2 = {
-   .R_ph_Ohm = 0.01664f,
-   .Ld_Henry = 0.00003f,
-   .Lq_Henry = 0.00005f,
-   .Psi_PM_Vs = 0.007f,
-   .polePairs = 5.0f,
+   .R_ph_Ohm = 0.543f,
+   .Ld_Henry = 0.00113f,
+   .Lq_Henry = 0.00142f,
+   .Psi_PM_Vs = 0.0169f,
+   .polePairs = 3.0f,
    .J_kg_m_squared = 0.00001773f,
-   .I_max_Ampere = 20.0f
+   .I_max_Ampere = 10.8f
 };//these parameters are only needed if linear decoupling is selected
 
 
@@ -112,7 +112,7 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
-
+    /*
     // ============== Configs for PMSM 1 (Pruefling) ============== //
     // -------------- Configuration of Speed Control -------------- //
     struct uz_SpeedControl_config SC_config_1 = {
@@ -173,6 +173,8 @@ int main(void)
       .offset = 0.0f
     };
 
+	*/
+
     // ------------------- Filter u-ind ------------------- //
     struct uz_IIR_Filter_config LP_config_ud_ind_2 = {
         	.selection = LowPass_first_order,
@@ -210,21 +212,21 @@ int main(void)
     		.n_start = 0.0f,
     	    .n_end = 1500.0f,
     	    .n_steps = 15.0f,
-    	    .i_start = 8.0f,
-    	    .i_diff = 2.0f,
-    	    .i_repeats = 3.0f,
-    	    .i_steptime = 1.0f,
-    	    .wait_time = 1.5f,
+    	    .i_start = 2.0f,
+    	    .i_diff = 1.0f,
+    	    .i_repeats = 4.0f,
+    	    .i_steptime = 2.0f,
+    	    .wait_time = 2.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
     };
 
     struct uz_parameterid_rc_config_t config_rc_meas = {
-    	    .id_ref = 5.0f,
-    	    .iq_ref = 10.0f,
+    	    .id_ref = 1.0f,
+    	    .iq_ref = 1.0f,
     	    .n_ref = 1200.0f,
-    	    .wait_time = 4.0f,
+    	    .wait_time = 5.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
-    	    .sample_time = 4.0f,
+    	    .sample_time = 10.0f,
 			.pn = 5.0f
     };
 
@@ -248,16 +250,16 @@ int main(void)
      };
      // Configuration of Current Control
      struct uz_PI_Controller_config config_id_2 = {
-        .Kp = 0.1f, //0.1f nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
-        .Ki = 55.0f, //55.5f nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+        .Kp = 2.825f, //nach BO
+        .Ki = 1357.5f, //nach BO
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
         .lower_limit = -15.0f,
 		.type = parallel
       };
       struct uz_PI_Controller_config config_iq_2 = {
-        .Kp = 0.15f, // nach BO, 0.5f nach Nina
-        .Ki = 55.0f, // nach BO, 230.0f nach Nina
+        .Kp = 3.55f, // nach BO
+        .Ki = 1357.5f, // nach BO
         .samplingTime_sec = 0.0001f,
         .upper_limit = 15.0f,
 	    .lower_limit = -15.0f,
@@ -273,16 +275,16 @@ int main(void)
 
       // Configuration of induced voltage Controller
       struct uz_PI_Controller_config config_ud_ind = {
-         .Kp = 0.1f,
-         .Ki = 30.0f,
+         .Kp = 0.0f,
+         .Ki = 1.0f,
          .samplingTime_sec = 0.0001f,
          .upper_limit = 10.0f,
          .lower_limit = -10.0f,
  		.type = parallel
        };
        struct uz_PI_Controller_config config_uq_ind = {
-         .Kp = 0.05f,
-         .Ki = 10.0f,
+         .Kp = 0.0f,
+         .Ki = 1.0f,
          .samplingTime_sec = 0.0001f,
          .upper_limit = 10.0f,
  	    .lower_limit = -10.0f,
@@ -388,17 +390,17 @@ int main(void)
             initialization_chain = init_control;
             break;
         case init_control:
-            SC_instance_1 = uz_SpeedControl_init(SC_config_1);
-            SP_instance_1 = uz_SetPoint_init(SP_config_1);
-            CC_instance_1 = uz_CurrentControl_init(CC_config_1);
+//            SC_instance_1 = uz_SpeedControl_init(SC_config_1);
+//           SP_instance_1 = uz_SetPoint_init(SP_config_1);
+//            CC_instance_1 = uz_CurrentControl_init(CC_config_1);
             SC_instance_2 = uz_SpeedControl_init(SC_config_2);
             SP_instance_2 = uz_SetPoint_init(SP_config_2);
             CC_instance_2 = uz_CurrentControl_init(CC_config_2);
             CC_instance_u_ind = uz_CurrentControl_init(CC_config_u_ind);
 		    rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
 		    rc_meas_instance = uz_parameterid_rc_init(config_rc_meas);
-           	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
-           	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
+//           	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
+//           	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);
            	LP_instance_ud_ind_2 = uz_signals_IIR_Filter_init(LP_config_ud_ind_2);
            	LP_instance_uq_ind_2 = uz_signals_IIR_Filter_init(LP_config_uq_ind_2);

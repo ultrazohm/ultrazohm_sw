@@ -160,19 +160,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_error_type]			= &error_type;
 	js_ch_observable[JSO_psi_d_2]			= &psi_dq_mVoltseconds_2.d;
 	js_ch_observable[JSO_psi_q_2]			= &psi_dq_mVoltseconds_2.q;
-	js_ch_observable[JSO_i_q] 			= &pmsm_outputs.i_q_A;
-	js_ch_observable[JSO_i_d] 			= &pmsm_outputs.i_d_A;
-	js_ch_observable[JSO_omega]			 = &pmsm_outputs.omega_mech_1_s;
-	js_ch_observable[JSO_v_d]			 = &pmsm_inputs.v_d_V;
-	js_ch_observable[JSO_v_q]			 = &pmsm_inputs.v_q_V;
 	js_ch_observable[JSO_rc_d]			 = &rc_dq_Ohm.d;
 	js_ch_observable[JSO_rc_q]			 = &rc_dq_Ohm.q;
 	js_ch_observable[JSO_rc_para_d]			 = &rc_para_dq.d;
 	js_ch_observable[JSO_rc_para_q]			 = &rc_para_dq.q;
-	js_ch_observable[JSO_cil_u_ind_Volts_d]	 = &cil_u_ind_Volts.d;
-	js_ch_observable[JSO_cil_u_ind_Volts_q]	 = &cil_u_ind_Volts.q;
-	js_ch_observable[JSO_cil_u_ind_ref_Volts_d]	 = &cil_u_ind_ref_Volts.d;
-	js_ch_observable[JSO_cil_u_ind_ref_Volts_q]	 = &cil_u_ind_ref_Volts.q;
 	js_ch_observable[JSO_u_ind_ref_Volts_d]		= &v_ind_dq_ref_Volts_2.d;
 	js_ch_observable[JSO_u_ind_ref_Volts_q]		= &v_ind_dq_ref_Volts_2.q;
 
@@ -214,11 +205,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ub1_av]  			 	= &data->aa.A1.me.ADC_B7;
 	js_slowDataArray[JSSD_FLOAT_uc1_av]  			 	= &data->aa.A1.me.ADC_B6;
 	js_slowDataArray[JSSD_FLOAT_rs2]  			 		= &r_s_2;
-	js_slowDataArray[JSSD_FLOAT_u_d]                    = &(pmsm_inputs.v_d_V);
-	js_slowDataArray[JSSD_FLOAT_u_q]                    = &(pmsm_inputs.v_q_V);
-	js_slowDataArray[JSSD_FLOAT_i_d]                    = &(pmsm_outputs.i_d_A);
-	js_slowDataArray[JSSD_FLOAT_i_q]                    = &(pmsm_outputs.i_q_A);
-	js_slowDataArray[JSSD_FLOAT_speed]                  = &(pmsm_outputs.omega_mech_1_s);
 	js_slowDataArray[JSSD_FLOAT_rc_d]			 		= &rc_dq_Ohm.d;
 	js_slowDataArray[JSSD_FLOAT_rc_q]					= &rc_dq_Ohm.q;
 	js_slowDataArray[JSSD_FLOAT_rc_para_d]			 	= &rc_para_dq.d;

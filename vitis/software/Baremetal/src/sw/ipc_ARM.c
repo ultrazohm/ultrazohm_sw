@@ -235,7 +235,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-		r_s_2 = value;
+		theta_el_offset_2 = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -247,19 +247,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-		Kp_uind_d_2 = value;
+
 			break;
 
 		case (Set_Send_Field_8):
-		Ki_uind_d_2 = value;
+
 			break;
 
 		case (Set_Send_Field_9):
-		Kp_uind_q_2 = value;
+
 			break;
 
 		case (Set_Send_Field_10):
-		Ki_uind_q_2 = value;
+
 			break;
 
 		case (Set_Send_Field_11):
@@ -312,22 +312,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-			run_state = cil_FOC;
+			run_state = rs_measurement_Heidrive;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_4):
-			run_state = cil_rs_measurement;
+			run_state = rc_measurement_Heidrive;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_5):
-			run_state = rs_measurement;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_6):
-			run_state = rc_measurement;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
@@ -400,39 +398,39 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
-    if (run_state == cil_rs_measurement) {
+    if (run_state == rs_measurement_Heidrive) {
        js_status_BareToRTOS |= 1 << 7;
     } else {
        js_status_BareToRTOS &= ~(1 << 7);
     }
 
 	/* Bit 8 - My_Button_5 */
-    if (run_state == rs_measurement) {
+    if (run_state == rc_measurement_Heidrive) {
        js_status_BareToRTOS |= 1 << 8;
     } else {
        js_status_BareToRTOS &= ~(1 << 8);
     }
 
 	/* Bit 9 - My_Button_6 */
-    if (run_state == rc_measurement) {
+    /*if (run_state == ) {
        js_status_BareToRTOS |= 1 << 9;
     } else {
        js_status_BareToRTOS &= ~(1 << 9);
-    }
+    }*/
 
 	/* Bit 10 - My_Button_7 */
-    if (run_state == normal ) {
+    /*if (run_state == ) {
        js_status_BareToRTOS |= 1 << 10;
     } else {
        js_status_BareToRTOS &= ~(1 << 10);
-    }
+    }*/
 
 	/* Bit 11 - My_Button_8 */
-    if (run_state == reset ) {
+    /*if (run_state == reset ) {
        js_status_BareToRTOS |= 1 << 11;
     } else {
        js_status_BareToRTOS &= ~(1 << 11);
-    }
+    }*/
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

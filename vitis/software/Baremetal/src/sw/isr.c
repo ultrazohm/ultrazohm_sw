@@ -96,7 +96,7 @@ float i_DC_Amps_2 								= 0.0f;
 float omega_m_rad_per_sec_2 					= 0.0f;
 float omega_el_rad_per_sec_2 					= 0.0f;
 float theta_el_rad_2 							= 0.0f;
-float theta_el_offset_2 						= 1.54f;
+float theta_el_offset_2 						= 0.6f;
 struct uz_3ph_dq_t i_dq_Amps_2 					= {0};
 struct uz_3ph_dq_t v_dq_Volts_2 				= {0};
 float n_ref_rpm_2 								= 0.0f;
@@ -191,7 +191,7 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
 
     // Read Measurement Data of first Inverter Card
-    /*v_abc_Volts_1.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
+    v_abc_Volts_1.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
     v_abc_Volts_1.b = 11.7657f * Global_Data.aa.A1.me.ADC_B7 + 0.0533f;
     v_abc_Volts_1.c = 11.7657f * Global_Data.aa.A1.me.ADC_B6 + 0.0533f;
     v_DC_Volts_1 	= Global_Data.aa.A1.me.ADC_A1 * 12.0f;
@@ -199,16 +199,16 @@ void ISR_Control(void *data)
     i_abc_Amps_1.b  = 12.3123f * Global_Data.aa.A1.me.ADC_A3 + 0.0161f ;
     i_abc_Amps_1.c  = 12.4303f * Global_Data.aa.A1.me.ADC_A2 - 0.0184f ;
     i_DC_Amps_1     = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
-    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);*/
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
 
     // Read Measurement Data of second Inverter Card
-    v_abc_Volts_2.a = 11.6798f * Global_Data.aa.A2.me.ADC_B8 - 0.3648f;
-    v_abc_Volts_2.b = 11.7657f * Global_Data.aa.A2.me.ADC_B7 + 0.0533f;
-    v_abc_Volts_2.c = 11.7657f * Global_Data.aa.A2.me.ADC_B6 + 0.0533f;
+    v_abc_Volts_2.a = 12.0f * Global_Data.aa.A2.me.ADC_B8;
+    v_abc_Volts_2.b = 12.0f * Global_Data.aa.A2.me.ADC_B7;
+    v_abc_Volts_2.c = 12.0f * Global_Data.aa.A2.me.ADC_B6;
     v_DC_Volts_2 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
-    i_abc_Amps_2.a  = 12.2889f * Global_Data.aa.A2.me.ADC_A4 + 0.0802f;
-    i_abc_Amps_2.b  = 11.8330f * Global_Data.aa.A2.me.ADC_A3 + 0.1344f;
-    i_abc_Amps_2.c  = 11.7894f * Global_Data.aa.A2.me.ADC_A2 + 0.1197f;
+    i_abc_Amps_2.a  = 12.5f * Global_Data.aa.A2.me.ADC_A4;
+    i_abc_Amps_2.b  = 12.5f * Global_Data.aa.A2.me.ADC_A3;
+    i_abc_Amps_2.c  = 12.5f * Global_Data.aa.A2.me.ADC_A2;
     i_DC_Amps_2     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
 

@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp LÃ¶hdefink, Michael Hoerner
+* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink, Michael Hoerner
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -269,13 +269,13 @@ enum gui_button_mapping {
 	n_ref_rpm_1,
 	i_dq_ref_Amps_2.d,
 	i_dq_ref_Amps_2.q,
-	theta_el_offset_2,
+	r_s_2,
 	u_ind_d_ref,
 	u_ind_q_ref,
-	send_field_7,
-	send_field_8,
-	send_field_9,
-	send_field_10,
+	Kp_uind_d_2,
+	Ki_uind_d_2,
+	Kp_uind_q_2,
+	Ki_u_ind_q_2,
 	send_field_11,
 	send_field_12,
 	send_field_13,
@@ -326,7 +326,7 @@ enum gui_button_mapping {
 	i_q_2,
 	u_ind_filt_d_2,
 	u_ind_filt_q_2,
-	r_s_2,
+	theta_offset,
 	psi_d,
 	psi_q,
 	rc_d,

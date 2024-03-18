@@ -10,6 +10,7 @@
 
 %% Determine the number of measured points (number of rising edges of measuring trigger)
 clc
+data_sampling_freq_Hz = 1/(log.time(2)-log.time(1))
 % variable declaration
 k=1;
 l=1;
@@ -35,11 +36,11 @@ disp('get indices of rising and falling edges of the measuring trigger variable.
 % flag varaible is always assigned to CH20 of the scope variables)
 for i=2:length(log.CH20)
     if log.CH20(i) == 1 && log.CH20(i-1) == 0
-        idx_rising(k) = int32(log.time(i)*1e4);
+        idx_rising(k) = int32(log.time(i)*data_sampling_freq_Hz);
         k = k+1;
     end
     if log.CH20(i) == 0 && log.CH20(i-1) == 1
-        idx_falling(l) = int32(log.time(i)*1e4);
+        idx_falling(l) = int32(log.time(i)*data_sampling_freq_Hz);
         l = l+1;
     end
 end

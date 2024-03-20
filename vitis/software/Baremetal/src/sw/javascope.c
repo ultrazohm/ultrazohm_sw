@@ -85,7 +85,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech_left] 	= &data->av.resolver_pl_outputs_d5_1.position_mech_2pi;
 	js_ch_observable[JSO_theta_mech_right] 	= &data->av.resolver_pl_outputs_d5_2.position_mech_2pi;
 	js_ch_observable[JSO_vd_left]			= &data->av.v_d_0;
-	js_ch_observable[JSO_vd_left_filt]			= &data->av.v_d_0_filt;
+	js_ch_observable[JSO_vd_left_filt]		= &data->av.v_d_0_filt;
 	js_ch_observable[JSO_vq_left]			= &data->av.v_q_0;
 	js_ch_observable[JSO_vd_right]			= &data->av.v_d_1;
 	js_ch_observable[JSO_vq_right]			= &data->av.v_q_1;
@@ -112,6 +112,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_f_cnt]				= &data->rasv.f_cnt_lambda_u;
 	js_ch_observable[JSO_f_mod_cnt]			= &f_mod_wait_cnt;
 	js_ch_observable[JSO_lambda_u_left]		= &data->av.lambda_u_left;
+	js_ch_observable[JSO_duty_a_left]		= &data->rasv.halfBridge1DutyCycle;
+	js_ch_observable[JSO_duty_b_left]		= &data->rasv.halfBridge2DutyCycle;
+	js_ch_observable[JSO_duty_c_left]		= &data->rasv.halfBridge3DutyCycle;
+	js_ch_observable[JSO_duty_a_right]		= &data->rasv.halfBridge4DutyCycle;
+	js_ch_observable[JSO_duty_b_right]		= &data->rasv.halfBridge5DutyCycle;
+	js_ch_observable[JSO_duty_c_right]		= &data->rasv.halfBridge6DutyCycle;
+	js_ch_observable[JSO_svm_clamping_left]	= &data->av.f_svm_clamping_left;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -148,7 +155,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Kp_cur_q_left]			= &(data->rasv.Kp_cur_q_left);
 	js_slowDataArray[JSSD_FLOAT_Ki_cur_q_left]			= &(data->rasv.Ki_cur_q_left);
 	js_slowDataArray[JSSD_FLOAT_vd_left]				= &(data->av.v_d_0);
-	js_slowDataArray[JSSD_FLOAT_vd_left_filt]				= &(data->av.v_d_0_filt);
 	js_slowDataArray[JSSD_FLOAT_vq_left]				= &(data->av.v_q_0);
 
 	return Status;

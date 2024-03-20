@@ -43,7 +43,6 @@ enum JS_OberservableData {
 	JSO_v_dc_left,
 	JSO_v_dc_right,
 	JSO_vd_left,
-	JSO_vd_left_filt,
 	JSO_vq_left,
 	JSO_vd_right,
 	JSO_vq_right,
@@ -73,6 +72,14 @@ enum JS_OberservableData {
 	JSO_pause_timer_sec,
 	JSO_f_cnt,
 	JSO_f_mod_cnt,
+	JSO_vd_left_filt,
+	JSO_duty_a_left,
+	JSO_duty_b_left,
+	JSO_duty_c_left,
+	JSO_duty_a_right,
+	JSO_duty_b_right,
+	JSO_duty_c_right,
+	JSO_svm_clamping_left,
 	JSO_ENDMARKER
 };
 
@@ -279,8 +286,8 @@ enum gui_button_mapping {
 	MyButton1,
 	MyButton2,
 	MyButton3,
-	MyButton4,
-	MyButton5,
+	set d4_out_0,
+	clear_d4_out_0,
 	MyButton6,
 	MyButton7,
 	TradeOff_meas,

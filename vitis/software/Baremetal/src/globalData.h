@@ -129,6 +129,8 @@ typedef struct _actualValues_ {
 	float vq_pu;
 	float id_delay_pu;
 	float iq_delay_pu;
+	bool svm_clamping_left;
+	float f_svm_clamping_left;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -147,6 +149,9 @@ typedef struct _referenceAndSetValues_ {
 	float M_ref_right;
 	float n_ref_right;
 	float n_ref_right_filt;
+	float M_ref_left;
+	float n_ref_left;
+	float n_ref_left_filt;
 	uz_3ph_dq_t i_dq_ref_0;
 	uz_3ph_dq_t i_dq_ref_1;
 	enum current_control_select current_ctrl_select;
@@ -166,10 +171,16 @@ typedef struct _referenceAndSetValues_ {
 	float lambda_u_LUT[42];
 	float Kp_spd_right;
 	float Ki_spd_right;
+	float Kp_spd_left;
+	float Ki_spd_left;
 	float Kp_cur_d_left;
 	float Ki_cur_d_left;
 	float Kp_cur_q_left;
 	float Ki_cur_q_left;
+	float Kp_cur_d_right;
+	float Ki_cur_d_right;
+	float Kp_cur_q_right;
+	float Ki_cur_q_right;
 } referenceAndSetValues;
 
 typedef struct{
@@ -192,8 +203,11 @@ typedef struct{
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_CurrentControl_t* current_ctrl_left;
 	uz_SpeedControl_t* speed_ctrl_right;
+	uz_SpeedControl_t* speed_ctrl_left;
 	uz_SetPoint_t* setpoint_ctrl_right;
-	uz_IIR_Filter_t* iir_filter_ref_speed;
+	uz_SetPoint_t* setpoint_ctrl_left;
+	uz_IIR_Filter_t* iir_filter_ref_speed_left;
+	uz_IIR_Filter_t* iir_filter_ref_speed_right;
 	uz_movingAverageFilter_t* movAvgFilt;
 }object_pointers_t;
 

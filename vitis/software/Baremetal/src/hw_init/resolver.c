@@ -10,7 +10,8 @@ struct uz_resolverIP_config_t resolver_config_d5_1={
         .freq_clockin = 8192000,
         .pole_pairs_machine = 4.0f,
         .pole_pairs_resolver = 1.0f,
-        .zero_position_mechanical = 0.3959959f, //0.3923f <- was the rough estimate
+        .zero_position_mechanical = 0.3912f,
+//		.zero_position_mechanical = 0.6560f,
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
 
@@ -21,7 +22,7 @@ struct uz_resolverIP_config_t resolver_config_d5_2={
         .freq_clockin = 8192000,
         .pole_pairs_machine = 4.0f,
         .pole_pairs_resolver = 1.0f,
-        .zero_position_mechanical =  0.4008981f, //0.3964f <- was the rough estimate
+        .zero_position_mechanical =  0.3994f,
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
 
@@ -33,8 +34,8 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_d5_1 = {
                .machine_polepairs = 4,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-//               .theta_m_offset_rad = -0.3959959f
-			   .theta_m_offset_rad = -0.3913f
+			   .theta_m_offset_rad = -0.3912f // A B C
+//			   .theta_m_offset_rad = -0.6560f // B A C + SIN/COS twisted
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d5_1 = {
@@ -52,7 +53,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_d5_2 = {
                .machine_polepairs = 4,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -0.4008981f
+               .theta_m_offset_rad = -0.3994f
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d5_2 = {

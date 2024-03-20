@@ -28,6 +28,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_math_constants.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -40,9 +41,8 @@ extern DS_Data Global_Data;
 #define		VOLTAGE_2_SI_VOLTS	12.0f
 #define		MAX_CURRENT			25.0f
 #define		RATED_CURRENT		8.0f
-#define		DC_VOLTAGE			48.0f
 #define		MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
-
+#define		TURN_ANGLE			(2.0f*UZ_PIf)-
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_0 = {0.0f};
 struct uz_3ph_abc_t i_abc_1 = {0.0f};
@@ -55,6 +55,7 @@ struct uz_3ph_dq_t i_dq_ref_1 = {0.0f};
 struct uz_3ph_dq_t i_dq_error_0 = {0.0f};
 struct uz_3ph_dq_t i_dq_error_1 = {0.0f};
 struct uz_3ph_dq_t v_dq_0 = {0.0f};
+struct uz_3ph_dq_t v_dq_1 = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_0 = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_1 = {0.0f};
 struct uz_DutyCycle_t dutycyc_0 = {0.0f};
@@ -86,7 +87,6 @@ void ISR_Control(void *data)
 	Global_Data.av.v_b_d1 = Global_Data.aa.A1.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_c_d1 = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_dc_d1 = Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
-//	Global_Data.av.v_dc_d1 = DC_VOLTAGE;
 
 	Global_Data.av.i_a_d2 = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
 	Global_Data.av.i_b_d2 = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
@@ -96,7 +96,6 @@ void ISR_Control(void *data)
 	Global_Data.av.v_b_d2 = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_c_d2 = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
 	Global_Data.av.v_dc_d2 = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
-//	Global_Data.av.v_dc_d2 = DC_VOLTAGE;
 
 	Global_Data.av.omega_mech_d5_1 = Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s;
 	Global_Data.av.omega_mech_d5_2 = Global_Data.av.resolver_pl_outputs_d5_2.omega_mech_rad_s;
@@ -116,6 +115,9 @@ void ISR_Control(void *data)
     v_abc_0.a = Global_Data.av.v_a_d1;
     v_abc_0.b = Global_Data.av.v_b_d1;
     v_abc_0.c = Global_Data.av.v_c_d1;
+    v_abc_1.a = Global_Data.av.v_a_d2;
+    v_abc_1.b = Global_Data.av.v_b_d2;
+    v_abc_1.c = Global_Data.av.v_c_d2;
 
 	// park transformation of measured currents
 	i_dq_0 = uz_transformation_3ph_abc_to_dq(i_abc_0, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
@@ -127,10 +129,13 @@ void ISR_Control(void *data)
 
 	// park transformation of measured voltages
 	v_dq_0 = uz_transformation_3ph_abc_to_dq(v_abc_0, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
+//	v_dq_1 = uz_transformation_3ph_abc_to_dq(v_abc_1, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
 	Global_Data.av.v_d_0 = v_dq_0.d;
 	Global_Data.av.v_q_0 = v_dq_0.q;
-
-	Global_Data.av.v_d_0_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt, Global_Data.av.v_d_0);
+//	Global_Data.av.v_d_1 = v_dq_1.d;
+//	Global_Data.av.v_q_1 = v_dq_1.q;
+//
+//	Global_Data.av.v_d_0_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt, Global_Data.av.v_d_0);
 
     // check for current limit
     if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
@@ -337,8 +342,19 @@ static void ReadAllADC()
 
 void control_left_motor() {
 
+	// filter speed setpoint signal
+//	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
+	// calculate reference torque from speed ctrl of right motor
+//	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s, Global_Data.rasv.n_ref_left_filt);
+	// calculate current setpoints i_dq_ref for right motor
+//	Global_Data.rasv.i_dq_ref_0 = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_d1, i_dq_0);
+	// calculate reference voltages for current control
+	v_dq_ref_0 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_0, i_dq_0, Global_Data.av.v_dc_d1, Global_Data.av.omega_mech_d5_1*Global_Data.av.polepairs_left);
+	// write space vector limitation clamping flag to Global_Data
+	Global_Data.av.svm_clamping_left = uz_CurrentControl_get_ext_clamping(Global_Data.objects.current_ctrl_left);
+	Global_Data.av.f_svm_clamping_left = (float)Global_Data.av.svm_clamping_left;
 
-	v_dq_ref_0 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_0, i_dq_0, DC_VOLTAGE, Global_Data.av.omega_mech_d5_1*Global_Data.av.polepairs_left);
+	// calculate duty cycles from reference dq voltages
 	dutycyc_0 = uz_Space_Vector_Modulation(v_dq_ref_0, Global_Data.av.v_dc_d1, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
 	// write measured dc_link voltage to pu_voltages ip
     fcs_mpc_write_axi_v_dc();
@@ -350,15 +366,15 @@ void control_left_motor() {
 
 void control_right_motor() {
 	// filter speed setpoint signal
-	Global_Data.rasv.n_ref_right_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed, Global_Data.rasv.n_ref_right);
+	Global_Data.rasv.n_ref_right_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_right, Global_Data.rasv.n_ref_right);
 	// calculate reference torque from speed ctrl of right motor
 	Global_Data.rasv.M_ref_right = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_right, Global_Data.av.resolver_pl_outputs_d5_2.omega_mech_rad_s, Global_Data.rasv.n_ref_right_filt);
 	// calculate current setpoints i_dq_ref for right motor
 	Global_Data.rasv.i_dq_ref_1 = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_right, Global_Data.av.resolver_pl_outputs_d5_2.omega_mech_rad_s, Global_Data.rasv.M_ref_right, Global_Data.av.v_dc_d2, i_dq_1);
 	// calculate reference voltages for current control
-//	v_dq_ref_1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_1, i_dq_1, DC_VOLTAGE, Global_Data.av.omega_mech_d5_2*Global_Data.av.polepairs_right);
+	v_dq_ref_1 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_1, i_dq_1, Global_Data.av.v_dc_d2, Global_Data.av.omega_mech_d5_2*Global_Data.av.polepairs_right);
 	// calculate duty cycles from reference dq voltages
-//	dutycyc_1 = uz_Space_Vector_Modulation(v_dq_ref_1, Global_Data.av.v_dc_d2, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
+	dutycyc_1 = uz_Space_Vector_Modulation(v_dq_ref_1, Global_Data.av.v_dc_d2, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
 	// write measured dc_link voltage to pu_voltages ip
     fcs_mpc_write_axi_v_dc();
 	//write setpoint to MPC

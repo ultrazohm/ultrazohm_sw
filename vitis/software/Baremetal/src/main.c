@@ -18,14 +18,15 @@
 
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 
-struct uz_movingAverageFilter_config config_MovAvg = {
-   .filterLength = 300U
-};
-float data [300] = {0};
-uz_array_float_t circularBuffer = {
-   .length = UZ_ARRAY_SIZE(data),
-   .data = &data[0]
-};
+//struct uz_movingAverageFilter_config config_MovAvg = {
+//   .filterLength = 300U
+//};
+//float data [300] = {0};
+//uz_array_float_t circularBuffer = {
+//   .length = UZ_ARRAY_SIZE(data),
+//   .data = &data[0]
+//};
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -88,10 +89,14 @@ int main(void)
 			Global_Data.av.polepairs_left = Beckhoff_AM8141.polePairs;
 			Global_Data.av.polepairs_right = Beckhoff_AM8141.polePairs;
 			Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
+			Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
 			Global_Data.objects.setpoint_ctrl_right = setpoint_ctrl_right_init();
+			Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
 			Global_Data.objects.speed_ctrl_right = speed_ctrl_right_init();
-			Global_Data.objects.iir_filter_ref_speed = uz_signals_IIR_Filter_init(config);
-			Global_Data.objects.movAvgFilt = uz_movingAverageFilter_init(config_MovAvg, circularBuffer);
+			Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+			Global_Data.objects.iir_filter_ref_speed_right = uz_signals_IIR_Filter_init(config);
+			Global_Data.objects.iir_filter_ref_speed_left = uz_signals_IIR_Filter_init(config);
+//			Global_Data.objects.movAvgFilt = uz_movingAverageFilter_init(config_MovAvg, circularBuffer);
 			Global_Data.av.lambda_d = 1.0f;
 			Global_Data.av.lambda_q = 1.0f;
 			Global_Data.av.lambda_u_left = 0.0f; //0.000091f;
@@ -111,7 +116,11 @@ int main(void)
 
             Global_Data.rasv.lambda_u_LUT[0] = 0.0f;
             for(uint32_t i=1;i<=41;i++) {
-            	Global_Data.rasv.lambda_u_LUT[i] = 9e-6*expf(0.1125*(float)i);
+//            	Global_Data.rasv.lambda_u_LUT[i] = 9e-5*expf(0.099*(float)i);// 100 kHz FCS 900rpm 9A
+//            	Global_Data.rasv.lambda_u_LUT[i] = 9e-6*expf(0.1265*(float)i); // 400 kHz FCS 900rpm 9.0A
+//            	Global_Data.rasv.lambda_u_LUT[i] = 9e-6*expf(0.1125*(float)i); // 400 kHz FCS 1050rpm 11.3A
+//            	Global_Data.rasv.lambda_u_LUT[i] = 9e-5*expf(0.08553*(float)i);// 100 kHz FCS 1050rpm 11.3A
+            	Global_Data.rasv.lambda_u_LUT[i] = 9e-6*expf(0.1095*(float)i); // 400 kHz FCS 300 rpm 5.65A
             };
 
             //deadtime comp parameters

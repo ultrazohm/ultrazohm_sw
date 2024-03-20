@@ -3,18 +3,18 @@
 #define UZ_ENDAT_H
 
 // Useful Values to begin with
-#define FACTOR_DEFAULT 100
-#define FACTOR_DEFAULT2 0
-#define FACTOR_1_DEFAULT 100
-#define FACTOR_2_DEFAULT 100
-#define FACTOR_3_DEFAULT 100
-#define FACTOR_4_DEFAULT 100
-#define FACTOR_5_DEFAULT 100
-#define FACTOR_6_DEFAULT 0
-#define FACTOR_7_DEFAULT 0
+#define ENDAT_FACTOR_DEFAULT 100
+#define ENDAT_FACTOR_DEFAULT2 0
+#define ENDAT_FACTOR_1_DEFAULT 100
+#define ENDAT_FACTOR_2_DEFAULT 100
+#define ENDAT_FACTOR_3_DEFAULT 100
+#define ENDAT_FACTOR_4_DEFAULT 100
+#define ENDAT_FACTOR_5_DEFAULT 100
+#define ENDAT_FACTOR_6_DEFAULT 0
+#define ENDAT_FACTOR_7_DEFAULT 0
 #define AMOUNT_OF_FACTORS 7
-#define CONTROLWORD_DEFAULT 0xA407 //0xB407 //0xB407 //0xB207 //0xA807
-#define DIVIDER_DEFAULT 3
+#define ENDAT_CONTROLWORD_DEFAULT 0xA407 //0xB407 //0xB407 //0xB207 //0xA807
+#define ENDAT_DIVIDER_DEFAULT 3
 #define	ENDAT_23_BIT_MAX_VALUE 0x7FFFFF
 #define ENDAT_23_BIT_OUTLIER_VALUE 838860
 #define ENDAT_19_BIT_MAX_VALUE 0x7FFFF
@@ -54,21 +54,15 @@ typedef enum uz_EnDat_factors {
 typedef enum uz_EnDat_position_values {
     uz_EnDat_pos_t0,
     uz_EnDat_pos_t1,
-    uz_EnDat_pos_t2/*,
-    uz_EnDat_pos_t3,
-    uz_EnDat_pos_t4*/
+    uz_EnDat_pos_t2
 }uz_EnDat_position;
 typedef enum uz_EnDat_time_elapsed_values {
     uz_EnDat_elapsed_t0_t1,
-    uz_EnDat_elapsed_t0_t2/*,
-    uz_EnDat_elapsed_t0_t3,
-    uz_EnDat_elapsed_t0_t4,*/
+    uz_EnDat_elapsed_t0_t2
     }uz_EnDat_elapsed;
 typedef enum uz_EnDat_pos_dif_values {
     uz_EnDat_dif_t0_t1,
-    uz_EnDat_dif_t0_t2/*,
-    uz_EnDat_elapsed_t0_t3,
-    uz_EnDat_elapsed_t0_t4,*/
+    uz_EnDat_dif_t0_t2
     }uz_EnDat_dif;
 typedef enum uz_EnDat_frequency_selector {
     uz_EnDat_operatingfrequency_12500000Hz,

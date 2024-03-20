@@ -160,16 +160,16 @@ int uz_EnDat_write_default_values(uz_EnDat_t* self) {
     int j = 0;
     for (i = 0 ; i <= AMOUNT_OF_FACTORS-1 ; i++) {
         if (i < 6) {
-        j = uz_EnDat_write_factor(self, FACTOR_DEFAULT, i);
+        j = uz_EnDat_write_factor(self, ENDAT_FACTOR_DEFAULT, i);
         }
         else {
-        j = uz_EnDat_write_factor(self, FACTOR_DEFAULT2, i);    
+        j = uz_EnDat_write_factor(self, ENDAT_FACTOR_DEFAULT2, i);    
         }
 
         if (j ==-1)
         return(j);
     }
-    j   =  uz_EnDat_write_control_and_divider(self, CONTROLWORD_DEFAULT, DIVIDER_DEFAULT);
+    j   =  uz_EnDat_write_control_and_divider(self, ENDAT_CONTROLWORD_DEFAULT, ENDAT_DIVIDER_DEFAULT);
 
     return(j);
 }

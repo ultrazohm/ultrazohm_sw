@@ -112,18 +112,18 @@ hold on;
 plot(q_current, Fluxq_id1,'--', 'DisplayName', 'Fluxq_{id1}');
 legend('show');
 
-% psid_iqnull
-writematrix([d_current, Fluxd_iqnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq0_approx.csv');
-writematrix([d_current, Fluxd_iqnull],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq0_real.csv');
-% psiq_idnull
-writematrix([q_current, Fluxq_idnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id0_approx.csv');
-writematrix([q_current, Fluxq_idnull],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id0_real.csv');
-% psid_iq1
-writematrix([d_current, Fluxd_iq1_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq1_approx.csv');
-writematrix([d_current, Fluxd_iq1],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq1_real.csv');
-% psid_id1
-writematrix([q_current, Fluxq_id1_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id1_approx.csv');
-writematrix([q_current, Fluxq_id1],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id1_real.csv');
+% % psid_iqnull
+% writematrix([d_current, Fluxd_iqnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq0_approx.csv');
+% writematrix([d_current, Fluxd_iqnull],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq0_real.csv');
+% % psiq_idnull
+% writematrix([q_current, Fluxq_idnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id0_approx.csv');
+% writematrix([q_current, Fluxq_idnull],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id0_real.csv');
+% % psid_iq1
+% writematrix([d_current, Fluxd_iq1_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq1_approx.csv');
+% writematrix([d_current, Fluxd_iq1],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq1_real.csv');
+% % psid_id1
+% writematrix([q_current, Fluxq_id1_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id1_approx.csv');
+% writematrix([q_current, Fluxq_id1],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_q_bei_id1_real.csv');
 
 
 
@@ -251,8 +251,8 @@ Lqd_approx_test = -psi_qdcross_abgeleitet;
 
 
 %Induktivitäten aus approximiertem Fluss mit Gradienten
-[Ldd_approx,Ldq_approx]=gradient(psi_d_approx,1.6842,2.5263);
-[Lqd_approx,Lqq_approx]=gradient(psi_q_approx,1.6842,2.5263);
+[Ldd_diff,Ldq_diff]=gradient(psi_d_approx,1.6842,2.5263);
+[Lqd_diff,Lqq_diff]=gradient(psi_q_approx,1.6842,2.5263);
 
 %Induktivitäten aus approximiertem Fluss mit Gradienten (nur als Vergleich für die Simulink Simulation
 [Ldq_simu,Ldd_simu]=gradient(psi_d_approx',2.5263,1.6842);
@@ -262,145 +262,238 @@ Lqd_approx_test = -psi_qdcross_abgeleitet;
 fluxd_max = max(fluxd_real, [], 'all');
 fluxq_max = max(fluxq_real, [], 'all');
 
-ed = ((abs(fluxd_real-psi_d_approx))/fluxd_max).*100;
-eq = ((abs(fluxq_real-psi_q_approx))/fluxq_max).*100;
+e_psid = ((abs(fluxd_real-psi_d_approx))/fluxd_max).*100;
+e_psiq = ((abs(fluxq_real-psi_q_approx))/fluxq_max).*100;
 
-Lqq_approx_max = max(Lqq_approx, [], 'all');
-ed_L = ((abs(Lqq_approx-Lqq_approx_test))/Lqq_approx_max).*100;
+%error Ldd
+Ldd_diff_max = max(Ldd_diff, [], 'all');
+e_Ldd = ((abs(Ldd_diff-Ldd_approx_test))/Ldd_diff_max).*100;
+%error Ldq
+Ldq_diff_max = max(Ldq_diff, [], 'all');
+e_Ldq = ((abs(Ldq_diff-Ldq_approx_test))/Ldq_diff_max).*100;
+%error Lqd
+Lqd_diff_max = max(Lqd_diff, [], 'all');
+e_Lqd = ((abs(Lqd_diff-Lqd_approx_test))/Lqd_diff_max).*100;
+%error Lqq
+Lqq_diff_max = max(Lqq_diff, [], 'all');
+e_Lqq = ((abs(Lqq_diff-Lqq_approx_test))/Lqq_diff_max).*100;
 
-%% Plotten
-% figure;
-% % Approximierter Fluss
-% % subplot(1,2,1); 
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-% surf(d_current, q_current,psi_d_approx);
-% xlabel('$$i_{d}$$','Interpreter','Latex');
-% ylabel('$$i_{q}$$','Interpreter','Latex');
-% zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
-% % title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
-% % legend;
 
-%matlab2tikz('C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\testobsspeichert.tex','width','\figurewidth','height','\figureheight')
+
+% Plotten
+
+%Approximierte Flüsse
 figure;
-% Echter Fluss
-subplot(2,2,1); 
+%Approximierter Fluss psid
+%subplot(1,2,1); 
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current, fluxq_real);
-%surf(X, Y, fluxd_real);
-xlabel('i_{d}');
-ylabel('i_{q}');
-zlabel('\psi_{d}');
-legend;
-
-% Approximierter Fluss
-subplot(2,2,2);
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(d_current, q_current,psi_q_approx);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
-% legend;
-
-% Echter Fluss
-subplot(2,2,3); 
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current, fluxd_real);
-%surf(X, Y, fluxd_real);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('psi_{qreal}');
-title('Fluss \psi_{d}');
-legend;
-
-% Approximierter Fluss
-subplot(2,2,4);
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
 surf(d_current, q_current,psi_d_approx);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
-% legend;
+xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\hat{\psi}_{d}/Vs$$','FontSize', 18,'Interpreter','Latex');
+title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
 
-
-% figure;
-% % Error psid zwischen approx und echtem Fluss
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, ed);
-% xlabel('$$i_{d}/A$$','Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','Interpreter','Latex');
-% zlabel('$$\varepsilon_d/\%$$','Interpreter','Latex');
-% % title('error psid');
-% % legend;
-% 
+%Approximierter Fluss psiq
 figure;
-% Error psiq zwischen approx und echtem Fluss
+%subplot(1,2,2);
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current, eq);
-xlabel('$$i_{d}/A$$','Interpreter','Latex');
-ylabel('$$i_{q}/A$$','Interpreter','Latex');
-zlabel('$$\varepsilon_q/\%$$','Interpreter','Latex');
-% title('error psiq');
-% legend;
+surf(d_current, q_current,psi_q_approx);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\hat{\psi}_{q}/Vs$$','FontSize', 18,'Interpreter','Latex');
+title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
+
+
+%Echter Fluss psid
+figure;
+%subplot(1,2,1); 
+grid on;
+surf(d_current, q_current, fluxd_real);
+xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\psi_{d}$$/Vs','FontSize', 18,'Interpreter','Latex');
+
+%Echter Fluss psiq
+figure;
+%subplot(1,2,2); 
+grid on;
+surf(d_current, q_current,fluxq_real);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\psi_{q}/Vs$$','FontSize', 18,'Interpreter','Latex');
+
+% %% Approximierte Induktivitäten Aus Flusskarten, Approximierte differentielle, approximierte mit Ableitungen
 % 
-% 
+% % %------------------Induktivitäen aus Flusskarten--------------------------%
+% % Ldd real
 % figure;
-% % Approximierter Fluss
-% subplot(2,1,1); 
+% % subplot(4,3,1);
 % grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
+% surf(d_current, q_current,Ldd_real);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(a)','FontSize', 18,'Interpreter','Latex');
+% % Ldq_real
+% % subplot(4,3,4);
+% figure;
+% grid on;
+% surf(d_current, q_current,Ldq_real);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(d)','FontSize', 18,'Interpreter','Latex');
+% % Lqd_real
+% % subplot(4,3,7);
+% figure;
+% grid on;
+% surf(d_current, q_current,Lqd_real);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(g)','FontSize', 18,'Interpreter','Latex');
+% % Lqq_real
+% % subplot(4,3,10);
+% figure;
+% grid on;
+% surf(d_current, q_current,Lqq_real);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(j)','FontSize', 18,'Interpreter','Latex');
+% % %------------------Differentielle Induktivitäen--------------------------%
+% % Ldd diff
+% % subplot(4,3,2);
+% figure;
+% grid on;
+% surf(d_current, q_current,Ldd_diff);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(b)','FontSize', 18,'Interpreter','Latex');
+% % Ldq_real
+% % subplot(4,3,5);
+% figure;
+% grid on;
+% surf(d_current, q_current,Ldq_diff);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(e)','FontSize', 18,'Interpreter','Latex');
+% % Lqd_real
+% % subplot(4,3,8);
+% figure;
+% grid on;
+% surf(d_current, q_current,Lqd_diff);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(h)','FontSize', 18,'Interpreter','Latex');
+% % Lqq_real
+% % subplot(4,3,11);
+% figure;
+% grid on;
+% surf(d_current, q_current,Lqq_diff);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(k)','FontSize', 18,'Interpreter','Latex');
+% % 
+% % %---------------------Induktivitäen Abgeleitet--------------------------%
+% % Ldd diff
+% % subplot(4,3,3);
+% figure;
+% grid on;
 % surf(d_current, q_current,Ldd_approx_test);
-% xlabel('d Current');
-% ylabel('q Current');
-% zlabel('L');
-% title('Mit Gradient');
-% legend;
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(c)','FontSize', 18,'Interpreter','Latex');
+% % Ldq_real
+% % subplot(4,3,6);
+% figure;
+% grid on;
+% surf(d_current, q_current,Ldq_approx_test);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(f)','FontSize', 18,'Interpreter','Latex');
+% % Lqd_real
+% % subplot(4,3,9);
+% figure;
+% grid on;
+% surf(d_current, q_current,Lqd_approx_test);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(i)','FontSize', 18,'Interpreter','Latex');
+% % Lqq_real
+% % subplot(4,3,12);
+% figure;
+% grid on;
+% surf(d_current, q_current,Lqq_approx_test);
+% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
+% % title('(l)','FontSize', 18,'Interpreter','Latex');
 
-% Approximierter Fluss
-figure;
-subplot(2,1,1); 
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(d_current, q_current,Lqq_approx_test);
-xlabel('d Current');
-ylabel('q Current');
-zlabel('L');
-title('Mit Ableitung');
-legend;
-% 
-% Echter Fluss
-subplot(2,1,2); 
+%% Fehler der echten und approximierten Flüsse psid und psiq
 
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current,Lqq_approx);
-%surf(X, Y, fluxd_real);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('L');
-title('Mit Gradient aus approx. Flusskarte');
-legend;
-% 
 figure;
+% Error psid zwischen approx und echtem Fluss
+grid on;
+% subplot(1,2,1);
+surf(d_current, q_current, e_psid);
+xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+zlabel('$\varepsilon_d/\%$','FontSize', 18,'Interpreter','Latex');
 % Error psiq zwischen approx und echtem Fluss
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current, ed_L);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('error %');
-title('error L');
-legend;
+figure;
+% subplot(1,2,2);
+surf(d_current, q_current, e_psiq);
+xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+zlabel('$\varepsilon_q/\%$','FontSize', 18,'Interpreter','Latex');
 
-
+% %% Fehler der differentielle Induktivitäten der Approximation und Ableitungen aus der approximation
+% 
+% figure;
+% % Error differentieller Induktivität Ldd_diff und abgeleiteter Ldd_approx 
+% grid on;
+% % subplot(2,2,1);
+% surf(d_current, q_current, e_Ldd);
+% xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$\varepsilon_{L_{dd}}/\%$','FontSize', 18,'Interpreter','Latex');
+% % title('(a)','FontSize', 18,'Interpreter','Latex');
+% % Error differentieller Induktivität Ldq_diff und abgeleiteter Ldq_approx 
+% figure;
+% grid on;
+% % subplot(2,2,2);
+% surf(d_current, q_current, e_Ldq);
+% xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$\varepsilon_{L_{dq}}/\%$','FontSize', 18,'Interpreter','Latex');
+% % title('(b)','FontSize', 18,'Interpreter','Latex');
+% % Error differentieller Induktivität Lqd_diff und abgeleiteter Lqd_approx
+% figure;
+% grid on;
+% % subplot(2,2,3);
+% surf(d_current, q_current, e_Lqd);
+% xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$\varepsilon_{L_{qd}}/\%$','FontSize', 18,'Interpreter','Latex');
+% % title('(c)','FontSize', 18,'Interpreter','Latex');
+% % Error differentieller Induktivität Lqq_diff und abgeleiteter Lqq_approx 
+% figure;
+% grid on;
+% % subplot(2,2,4);
+% surf(d_current, q_current, e_Lqq);
+% xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$\varepsilon_{L_{qq}}/\%$','FontSize', 18,'Interpreter','Latex');
+% % title('(d)','FontSize', 18,'Interpreter','Latex');
 
 
 

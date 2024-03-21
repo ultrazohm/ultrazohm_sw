@@ -148,13 +148,13 @@ void ISR_Control(void *data)
 //    	test_to_show_flux.b2 = flux_approx.q; //only so i can look at it in javascope
 //    	test_to_show_flux.c2 = flux_reference.q; //only so i can look at it in javascope
 
-    	//Closed Loop
-    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 400.0f, omega_el_rad_per_sec);
-    	pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-    	pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+//    	//Closed Loop
+//    	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 400.0f, omega_el_rad_per_sec);
+//    	pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+//    	pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
     	//OpenLoop
-		//pmsm_inputs.v_q_V=reference_currents_Amp.q;
-    	//pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
+		pmsm_inputs.v_q_V=reference_currents_Amp.q;
+    	pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
 
 
     	pmsm_old_outputs = pmsm_outputs;

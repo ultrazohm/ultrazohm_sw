@@ -46,10 +46,6 @@ polepair=4;
 
 ts=1/5e5; % =2e-6
 
-setpoint_step=10.0;
-rpm = 1250;
-load_torque = 0;
-
 % Controller parameter
 ts_regler=1/20e3;
 tau_d=L_d/R_1;
@@ -72,17 +68,20 @@ static_friction_torque=0.01;
 % % inertia=0.001;
 % friction_coefficient=0;
 % static_friction_torque=0;
+setpoint_step = 8.0;
+rpm = 0;
+load_torque = 0;
 
 % Simulation settings
-simulate_mechanical=false;
+simulate_mechanical=true;
 simulate_open_loop=false;
 simulate_nonlinear_modell=true;
 
-parameter_nachfuerung=false;
+parameter_nachfuerung=true;
 
-praediktion_entkopplung_nonlinear=true;
+praediktion_entkopplung_nonlinear=false;
 
-entkopplung_linear=false;
+entkopplung_linear=true;
 entkopplung_static=false;
 entkopplung_dynamic=false;
 
@@ -116,7 +115,8 @@ entkopplung_dynamic=false;
 % [Lqq,Lqd]=gradient(Flux_q);
 
 % % Import the data from Excel for lookup table
-FluxMapData = readtable('FluxMapData_Prototyp_1000rpm');
+FluxMapData = readtable('FluxMaps_1000rpm_03_buehler_201');
+FluxMapData_einfachtest = readtable('FluxMapData_Prototyp_1000rpm');
 %Psi_d
 % d_currents in d Axe for lookup table
 d_current_d_Flux = FluxMapData{1,1:20};

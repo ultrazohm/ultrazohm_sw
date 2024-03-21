@@ -1,5 +1,6 @@
 %Fitting_flux_approximation
 close all;
+path('C:\SoSe23\Masterarbeit\MatlabtoTikz\src',path);
 %LUT Fitting
 
 %LeastSquare Problems
@@ -9,8 +10,9 @@ q_current = iq;
 
 d_current = d_current(1,:);
 q_current = q_current(:,1);
-figure;
-surf(id,iq,psi_d)
+
+% figure;
+% surf(id,iq,psi_d)
 
 %% Berechnen der Selbsinduktivitäten und Kreuzkopplungsinduktivitäten
 % 1. Gleichung Selbstinduktivität Psid
@@ -181,65 +183,65 @@ eq = ((abs(fluxq_real-psi_q_approx))/fluxq_max).*100;
 set(0,'defaulttextinterpreter','latex')
 figure;
 % Approximierter Fluss
-subplot(2,1,1); 
+% subplot(2,1,1); 
 grid on;
 % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
 surf(d_current, q_current,psi_d_approx);
-xlabel('$i_d/A$','FontSize', 18);
-ylabel('$i_q/A$','FontSize', 18);
-zlabel('$psi_{approx}^d/Vs$','FontSize', 18);
+xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+zlabel('$\hat{\psi}_d/Vs$','FontSize', 18,'Interpreter','Latex');
 view(-127.5,30)
 
-% Echter Fluss
-subplot(2,1,2); 
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, fluxd_real);
-surf(id,iq,psi_d)
-%surf(X, Y, fluxd_real);
-xlabel('$i_d/A$','FontSize', 18);
-ylabel('$i_q/A$','FontSize', 18);
-zlabel('$psi_{real}^d/Vs$','FontSize', 18);
-view(-127.5,30)
+% % Echter Fluss
+% subplot(2,1,2); 
+% grid on;
+% % plot(q_current_q_Flux, Fluxd_iqnull);
+% % surf(d_current, q_current, fluxd_real);
+% surf(id,iq,psi_d)
+% %surf(X, Y, fluxd_real);
+% xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$psi_d/Vs$','FontSize', 18,'Interpreter','Latex');
+% view(-127.5,30)
 
 figure;
 % Approximierter Fluss
-subplot(2,1,1); 
+% subplot(2,1,1); 
 grid on;
 % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
 surf(d_current, q_current,psi_q_approx);
-xlabel('$i_d/A$','FontSize', 18);
-ylabel('$i_q/A$','FontSize', 18);
-zlabel('$psi_{approx}^q/Vs$','FontSize', 18);
+xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+zlabel('$\hat{\psi}_q/Vs$','FontSize', 18,'Interpreter','Latex');
 
-% Echter Fluss
-subplot(2,1,2); 
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current, fluxq_real);
-%surf(X, Y, fluxd_real);
-xlabel('$i_d/A$','FontSize', 18);
-ylabel('$i_q/A$','FontSize', 18);
-zlabel('$psi_{real}^q/Vs$','FontSize', 18);
+% % Echter Fluss
+% subplot(2,1,2); 
+% grid on;
+% % plot(q_current_q_Flux, Fluxd_iqnull);
+% surf(d_current, q_current, fluxq_real);
+% %surf(X, Y, fluxd_real);
+% xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+% ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+% zlabel('$psi_{real}^q/Vs$','FontSize', 18,'Interpreter','Latex');
 
 
 figure;
 % Error psid zwischen approx und echtem Fluss
 grid on;
 surf(d_current, q_current, ed);
-xlabel('$i_d/A$','FontSize', 18);
-ylabel('$i_q/A$','FontSize', 18);
-zlabel('$\epsilon_d/\%$','FontSize', 18);
-title('Fehler $\psi_d$','FontSize', 18);
+xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+zlabel('$\varepsilon_d/\%$','FontSize', 18,'Interpreter','Latex');
+% title('Fehler $\psi_d$','FontSize', 18,'Interpreter','Latex');
 
 figure;
 % Error psiq zwischen approx und echtem Fluss
 grid on;
 surf(d_current, q_current, eq);
-xlabel('$i_d/A$','FontSize', 18);
-ylabel('$i_q/A$','FontSize', 18);
-zlabel('$\epsilon_q/\%$','FontSize', 18);
-title('Fehler $\psi_q$','FontSize', 18);
+xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+zlabel('$\varepsilon_q/\%$','FontSize', 18,'Interpreter','Latex');
+% title('Fehler $\psi_q$','FontSize', 18,'Interpreter','Latex');
 
 
 

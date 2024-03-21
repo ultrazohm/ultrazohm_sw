@@ -254,10 +254,10 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->calc_gen.i_di = self->i_meas.gen_id - self->calc_gen.i_dm;
             self->calc_gen.i_qi = self->i_meas.gen_iq - self->calc_gen.i_qm;
 
-            self->output.mot_rc_d = (self->u_meas.mot_ud - self->sample.r_s * self->i_meas.mot_id ) / self->calc_mot.i_di;
-            self->output.mot_rc_q = (self->u_meas.mot_uq - self->sample.r_s * self->i_meas.mot_iq ) / self->calc_mot.i_qi;
-            self->output.gen_rc_d = (self->u_meas.gen_ud - self->sample.r_s * self->i_meas.gen_id ) / self->calc_gen.i_di;
-            self->output.gen_rc_q = (self->u_meas.gen_uq - self->sample.r_s * self->i_meas.gen_iq ) / self->calc_gen.i_qi;
+            self->output.mot_rc_d = (self->u_ind.mot_d) / self->calc_mot.i_di;
+            self->output.mot_rc_q = (self->u_ind.mot_q ) / self->calc_mot.i_qi;
+            self->output.gen_rc_d = (self->u_ind.gen_d) / self->calc_gen.i_di;
+            self->output.gen_rc_q = (self->u_ind.gen_q ) / self->calc_gen.i_qi;
             self->rc_state = rc_repeat;
             break;
 

@@ -219,12 +219,12 @@ int main(void)
     };
 
     struct uz_parameterid_rc_config_t config_rc_meas = {
-    	    .id_ref = 5.0f,
-    	    .iq_ref = 10.0f,
-    	    .n_ref = 1200.0f,
-    	    .wait_time = 4.0f,
+    	    .id_ref = -4.0f,
+    	    .iq_ref = 12.0f,
+    	    .n_ref = 1050.0f,
+    	    .wait_time = 5.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
-    	    .sample_time = 4.0f,
+    	    .sample_time = 10.0f,
 			.pn = 5.0f
     };
 
@@ -273,16 +273,16 @@ int main(void)
 
       // Configuration of induced voltage Controller
       struct uz_PI_Controller_config config_ud_ind = {
-         .Kp = 0.1f,
-         .Ki = 30.0f,
+         .Kp = 0.0f,
+         .Ki = 1.0f,
          .samplingTime_sec = 0.0001f,
          .upper_limit = 10.0f,
          .lower_limit = -10.0f,
  		.type = parallel
        };
        struct uz_PI_Controller_config config_uq_ind = {
-         .Kp = 0.05f,
-         .Ki = 10.0f,
+         .Kp = 0.0f,
+         .Ki = 1.0f,
          .samplingTime_sec = 0.0001f,
          .upper_limit = 10.0f,
  	    .lower_limit = -10.0f,

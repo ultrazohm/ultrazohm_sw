@@ -46,14 +46,14 @@ void ADC_readCardA2(DS_Data *data, uz_array_int16_t adc_data)
 
 void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
 {
-    data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q16) * data->aa.A3.cf.ADC_A1;
-    data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q16) * data->aa.A3.cf.ADC_A2;
-    data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q16) * data->aa.A3.cf.ADC_A3;
-    data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q16) * data->aa.A3.cf.ADC_A4;
-    data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q16) * data->aa.A3.cf.ADC_B5;
-    data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q16) * data->aa.A3.cf.ADC_B6;
-    data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q16) * data->aa.A3.cf.ADC_B7;
-    data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q16) * data->aa.A3.cf.ADC_B8;
+    data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q12) * data->aa.A3.cf.ADC_A1;
+    data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q12) * data->aa.A3.cf.ADC_A2;
+    data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q12) * data->aa.A3.cf.ADC_A3;
+    data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q12) * data->aa.A3.cf.ADC_A4;
+    data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q12) * data->aa.A3.cf.ADC_B5;
+    data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q12) * data->aa.A3.cf.ADC_B6;
+    data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q12) * data->aa.A3.cf.ADC_B7;
+    data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q12) * data->aa.A3.cf.ADC_B8;
 };
 
 void ADC_readCardALL(DS_Data *data)

@@ -42,6 +42,9 @@ extern float M_ref_Nm_2;
 extern float theta_el_offset_2;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
 extern struct uz_3ph_dq_t v_ind_dq_ref_Volts_2;
+extern float DC_A;
+extern float DC_B;
+extern float DC_C;
 
 // ======================= Others ======================= //
 extern int option;
@@ -247,7 +250,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-
 			break;
 
 		case (Set_Send_Field_8):
@@ -263,15 +265,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_11):
-
+			DC_A = value;
 			break;
 
 		case (Set_Send_Field_12):
-
+			DC_B = value;
 			break;
 
 		case (Set_Send_Field_13):
-
+			DC_C = value;
 			break;
 
 		case (Set_Send_Field_14):

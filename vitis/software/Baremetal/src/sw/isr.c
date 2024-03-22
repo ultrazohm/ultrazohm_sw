@@ -88,7 +88,7 @@ extern uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 
 // ---------------- Inverter Measurement ---------------- //
 struct uz_3ph_abc_t v_abc_Volts_2 				= {0};
-float v_DC_Volts_2 								= 24.0f;
+float v_DC_Volts_2 								= 48.0f;
 struct uz_3ph_abc_t i_abc_Amps_2 				= {0};
 float i_DC_Amps_2 								= 0.0f;
 
@@ -96,7 +96,7 @@ float i_DC_Amps_2 								= 0.0f;
 float omega_m_rad_per_sec_2 					= 0.0f;
 float omega_el_rad_per_sec_2 					= 0.0f;
 float theta_el_rad_2 							= 0.0f;
-float theta_el_offset_2 						= 0.6f;
+float theta_el_offset_2 						= 3.46f;
 struct uz_3ph_dq_t i_dq_Amps_2 					= {0};
 struct uz_3ph_dq_t v_dq_Volts_2 				= {0};
 float n_ref_rpm_2 								= 0.0f;
@@ -134,6 +134,10 @@ float M_meas_Nm = 0.0f;
 float M_meas_Nm2 = 0.0f;
 int control_induced_voltages = 0;
 float rc_repeat_counter = 0.0f;
+
+float DC_A = 0.0f;
+float DC_B = 0.0f;
+float DC_C = 0.0f;
 // ======================= CIL ======================= //
 
 extern uz_pmsmModel_t *pmsm;
@@ -341,6 +345,10 @@ void ISR_Control(void *data)
 					}
 
 					// Set DutyCycles of PMSM 2
+					//Global_Data.rasv.halfBridge4DutyCycle = DC_A;
+					//Global_Data.rasv.halfBridge5DutyCycle = DC_B;
+					//Global_Data.rasv.halfBridge6DutyCycle = DC_C;
+
 					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
 					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
 					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;

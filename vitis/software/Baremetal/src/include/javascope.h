@@ -106,6 +106,9 @@ enum JS_OberservableData {
 	JSO_cil_u_ind_ref_Volts_q,
 	JSO_u_ind_ref_Volts_d,
 	JSO_u_ind_ref_Volts_q,
+	JSO_DC_A,
+	JSO_DC_B,
+	JSO_DC_C,
 	JSO_ENDMARKER
 };
 
@@ -276,9 +279,9 @@ enum gui_button_mapping {
 	Ki_uind_d_2,
 	Kp_uind_q_2,
 	Ki_u_ind_q_2,
-	send_field_11,
-	send_field_12,
-	send_field_13,
+	DC_A,
+	DC_B,
+	DC_C,
 	send_field_14,
 	send_field_15,
 	send_field_16,

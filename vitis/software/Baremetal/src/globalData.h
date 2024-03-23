@@ -46,6 +46,8 @@ typedef struct _AnalogAdapters_ {
 	ADCcard A1;
 	ADCcard A2;
 	ADCcard A3;
+	ADCcard A3_Max11_ADC2;
+	ADCcard A3_Max11_ADC3;
 } AnalogAdapters;
 
 typedef struct _actualValues_ {

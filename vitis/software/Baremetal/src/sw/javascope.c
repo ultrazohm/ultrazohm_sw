@@ -61,30 +61,41 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
 
-	js_ch_observable[JSO_ua] 			= &data->aa.A3.me.ADC_array[0];
-	js_ch_observable[JSO_ub] 			= &data->aa.A3.me.ADC_array[1];
-	js_ch_observable[JSO_uc] 			= &data->aa.A3.me.ADC_array[2];
-	js_ch_observable[JSO_ia] 			= &data->aa.A3.me.ADC_array[3];
-	js_ch_observable[JSO_ib] 			= &data->aa.A3.me.ADC_array[4];
-	js_ch_observable[JSO_ic] 			= &data->aa.A3.me.ADC_array[5];
-	js_ch_observable[JSO_iq] 			= &data->aa.A3.me.ADC_array[6];
-	js_ch_observable[JSO_id] 			= &data->aa.A3.me.ADC_array[7];
-	js_ch_observable[JSO_ud]			= &data->av.U_d;
-	js_ch_observable[JSO_uq]			= &data->av.U_q;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
-	js_ch_selected[0] = &data->aa.A3.me.ADC_array[0];
-	js_ch_selected[1] = &data->aa.A3.me.ADC_array[1];
-	js_ch_selected[2] = &data->aa.A3.me.ADC_array[2];
-	js_ch_selected[3] = &data->aa.A3.me.ADC_array[3];
-	js_ch_selected[4] = &data->aa.A3.me.ADC_array[4];
-	js_ch_selected[5] = &data->aa.A3.me.ADC_array[5];
-	js_ch_selected[6] = &data->aa.A3.me.ADC_array[6];
-	js_ch_selected[7] = &data->aa.A3.me.ADC_array[7];
+// MAX11 ADC1
+	js_ch_observable[JSO_MAX11_ADC1_CH1] = &data->aa.A3.me.ADC_array[0];
+	js_ch_observable[JSO_MAX11_ADC1_CH2] = &data->aa.A3.me.ADC_array[1];
+	js_ch_observable[JSO_MAX11_ADC1_CH3] = &data->aa.A3.me.ADC_array[2];
+	js_ch_observable[JSO_MAX11_ADC1_CH4] = &data->aa.A3.me.ADC_array[3];
+	js_ch_observable[JSO_MAX11_ADC1_CH5] = &data->aa.A3.me.ADC_array[4];
+	js_ch_observable[JSO_MAX11_ADC1_CH6] = &data->aa.A3.me.ADC_array[5];
+	js_ch_observable[JSO_MAX11_ADC1_CH7] = &data->aa.A3.me.ADC_array[6];
+	js_ch_observable[JSO_MAX11_ADC1_CH8] = &data->aa.A3.me.ADC_array[7];
+
+// MAX11 ADC2
+	js_ch_observable[JSO_MAX11_ADC2_CH1] = &data->aa.A3_Max11_ADC2.me.ADC_array[0];
+	js_ch_observable[JSO_MAX11_ADC2_CH2] = &data->aa.A3_Max11_ADC2.me.ADC_array[1];
+	js_ch_observable[JSO_MAX11_ADC2_CH3] = &data->aa.A3_Max11_ADC2.me.ADC_array[2];
+	js_ch_observable[JSO_MAX11_ADC2_CH4] = &data->aa.A3_Max11_ADC2.me.ADC_array[3];
+	js_ch_observable[JSO_MAX11_ADC2_CH5] = &data->aa.A3_Max11_ADC2.me.ADC_array[4];
+	js_ch_observable[JSO_MAX11_ADC2_CH6] = &data->aa.A3_Max11_ADC2.me.ADC_array[5];
+	js_ch_observable[JSO_MAX11_ADC2_CH7] = &data->aa.A3_Max11_ADC2.me.ADC_array[6];
+	js_ch_observable[JSO_MAX11_ADC2_CH8] = &data->aa.A3_Max11_ADC2.me.ADC_array[7];
+
+// MAX11 ADC3
+	js_ch_observable[JSO_MAX11_ADC3_CH1] = &data->aa.A3_Max11_ADC3.me.ADC_array[0];
+	js_ch_observable[JSO_MAX11_ADC3_CH2] = &data->aa.A3_Max11_ADC3.me.ADC_array[1];
+	js_ch_observable[JSO_MAX11_ADC3_CH3] = &data->aa.A3_Max11_ADC3.me.ADC_array[2];
+	js_ch_observable[JSO_MAX11_ADC3_CH4] = &data->aa.A3_Max11_ADC3.me.ADC_array[3];
+	js_ch_observable[JSO_MAX11_ADC3_CH5] = &data->aa.A3_Max11_ADC3.me.ADC_array[4];
+	js_ch_observable[JSO_MAX11_ADC3_CH6] = &data->aa.A3_Max11_ADC3.me.ADC_array[5];
+	js_ch_observable[JSO_MAX11_ADC3_CH7] = &data->aa.A3_Max11_ADC3.me.ADC_array[6];
+	js_ch_observable[JSO_MAX11_ADC3_CH8] = &data->aa.A3_Max11_ADC3.me.ADC_array[7];
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -100,6 +111,15 @@ int JavaScope_initalize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+
+	js_ch_selected[0] = &data->aa.A3.me.ADC_array[0];
+	js_ch_selected[1] = &data->aa.A3.me.ADC_array[1];
+	js_ch_selected[2] = &data->aa.A3.me.ADC_array[2];
+	js_ch_selected[3] = &data->aa.A3.me.ADC_array[3];
+	js_ch_selected[4] = &data->aa.A3.me.ADC_array[4];
+	js_ch_selected[5] = &data->aa.A3.me.ADC_array[5];
+	js_ch_selected[6] = &data->aa.A3.me.ADC_array[6];
+	js_ch_selected[7] = &data->aa.A3.me.ADC_array[7];
 
 	return Status;
 }

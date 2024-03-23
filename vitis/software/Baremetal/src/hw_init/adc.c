@@ -56,10 +56,34 @@ void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
     data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q12) * data->aa.A3.cf.ADC_B8;
 };
 
+void ADC_readCardA3_MAX11(DS_Data *data, uz_array_int16_t adc_data)
+{
+    data->aa.A3_Max11_ADC2.me.ADC_array[0] = ((float)adc_data.data[24]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_A1;
+    data->aa.A3_Max11_ADC2.me.ADC_array[1] = ((float)adc_data.data[25]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_A2;
+    data->aa.A3_Max11_ADC2.me.ADC_array[2] = ((float)adc_data.data[26]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_A3;
+    data->aa.A3_Max11_ADC2.me.ADC_array[3] = ((float)adc_data.data[27]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_A4;
+    data->aa.A3_Max11_ADC2.me.ADC_array[4] = ((float)adc_data.data[28]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_B5;
+    data->aa.A3_Max11_ADC2.me.ADC_array[5] = ((float)adc_data.data[29]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_B6;
+    data->aa.A3_Max11_ADC2.me.ADC_array[6] = ((float)adc_data.data[30]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_B7;
+    data->aa.A3_Max11_ADC2.me.ADC_array[7] = ((float)adc_data.data[31]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_B8;
+
+    data->aa.A3_Max11_ADC3.me.ADC_array[0] = ((float)adc_data.data[32]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_A1;
+    data->aa.A3_Max11_ADC3.me.ADC_array[1] = ((float)adc_data.data[33]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_A2;
+    data->aa.A3_Max11_ADC3.me.ADC_array[2] = ((float)adc_data.data[34]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_A3;
+    data->aa.A3_Max11_ADC3.me.ADC_array[3] = ((float)adc_data.data[35]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_A4;
+    data->aa.A3_Max11_ADC3.me.ADC_array[4] = ((float)adc_data.data[36]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_B5;
+    data->aa.A3_Max11_ADC3.me.ADC_array[5] = ((float)adc_data.data[37]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_B6;
+    data->aa.A3_Max11_ADC3.me.ADC_array[6] = ((float)adc_data.data[38]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_B7;
+    data->aa.A3_Max11_ADC3.me.ADC_array[7] = ((float)adc_data.data[39]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_B8;
+};
+
+
+
 void ADC_readCardALL(DS_Data *data)
 {
     uz_array_int16_t adc_data = uz_dataMover_update_buffer_and_get_data();
     ADC_readCardA1(data, adc_data);
     ADC_readCardA2(data, adc_data);
     ADC_readCardA3(data, adc_data);
+    ADC_readCardA3_MAX11(data, adc_data);
 }

@@ -188,10 +188,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		reference_currents_Amp.q = value;
+		reference_currents_Amp.d = -value;
 			break;
 
 		case (Set_Send_Field_2):
-		reference_currents_Amp.d = value;
+
+		data->av.snd_fld[2] = value;
 			break;
 
 		case (Set_Send_Field_3):

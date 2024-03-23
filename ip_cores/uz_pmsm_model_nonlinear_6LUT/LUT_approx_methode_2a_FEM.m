@@ -233,7 +233,7 @@ xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
 ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
 zlabel('$\varepsilon_d/\%$','FontSize', 18,'Interpreter','Latex');
 % title('Fehler $\psi_d$','FontSize', 18,'Interpreter','Latex');
-
+mittlerer_fehler_psid = mean(mean(ed))
 figure;
 % Error psiq zwischen approx und echtem Fluss
 grid on;
@@ -242,6 +242,7 @@ xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
 ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
 zlabel('$\varepsilon_q/\%$','FontSize', 18,'Interpreter','Latex');
 % title('Fehler $\psi_q$','FontSize', 18,'Interpreter','Latex');
+mittlerer_fehler_psiq = mean(mean(eq))
 
 
 

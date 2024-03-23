@@ -139,7 +139,7 @@ int main(void)
 
         struct uz_CurrentControl_config config_CurrentControl = {
 
-        		.decoupling_select = linear_decoupling, //
+        		.decoupling_select = static_nonlinear_decoupling, //
 
 				.config_PMSM = config_PMSM,
 
@@ -159,7 +159,7 @@ int main(void)
 
 				.ip_core_frequency_Hz=100000000,
 
-				.simulate_mechanical_system = true,
+				.simulate_mechanical_system = false,
 
 				.simulate_nonlinear =true,
 

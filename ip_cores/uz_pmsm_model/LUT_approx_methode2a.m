@@ -291,7 +291,7 @@ surf(d_current, q_current,psi_d_approx);
 xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
 ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
 zlabel('$$\hat{\psi}_{d}/Vs$$','FontSize', 18,'Interpreter','Latex');
-title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
+% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
 
 %Approximierter Fluss psiq
 figure;
@@ -301,7 +301,7 @@ surf(d_current, q_current,psi_q_approx);
 xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
 ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
 zlabel('$$\hat{\psi}_{q}/Vs$$','FontSize', 18,'Interpreter','Latex');
-title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
+% title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
 
 
 %Echter Fluss psid
@@ -447,6 +447,8 @@ surf(d_current, q_current, e_psid);
 xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
 ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
 zlabel('$\varepsilon_d/\%$','FontSize', 18,'Interpreter','Latex');
+mittlerer_fehler_psid = mean(mean(e_psid))
+
 % Error psiq zwischen approx und echtem Fluss
 grid on;
 figure;
@@ -455,6 +457,7 @@ surf(d_current, q_current, e_psiq);
 xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
 ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
 zlabel('$\varepsilon_q/\%$','FontSize', 18,'Interpreter','Latex');
+mittlerer_fehler_psiq = mean(mean(e_psiq))
 
 % %% Fehler der differentielle Induktivitäten der Approximation und Ableitungen aus der approximation
 % 

@@ -89,7 +89,7 @@ vcom  uz_EnDat_src_Increment_Stored_Integer_block.vhd
 vcom  uz_EnDat_src_ramselektor.vhd
 vcom  uz_EnDat_src_WORDTOBOOL_block1.vhd
 vcom  uz_EnDat_src_CONTROLWORDSTORED.vhd
-vcom  uz_EnDat_src_DualPortRAM_generic.vhd
+vcom  uz_EnDat_src_SinglePortRAM_generic.vhd
 vcom  uz_EnDat_src_Compare_To_Constant_block3.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block5.vhd
 vcom  uz_EnDat_src_Compare_To_Constant2_block2.vhd
@@ -100,7 +100,7 @@ vcom  uz_EnDat_src_Compare_To_Constant6.vhd
 vcom  uz_EnDat_src_Compare_To_Constant7.vhd
 vcom  uz_EnDat_src_8BIT_SPLITTER.vhd
 vcom  uz_EnDat_src_Compare_To_Zero_block1.vhd
-vcom  uz_EnDat_src_SinglePortRAM_generic.vhd
+vcom  uz_EnDat_src_SinglePortRAM_generic_block.vhd
 vcom  uz_EnDat_src_Storage16.vhd
 vcom  uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd
 vcom  uz_EnDat_src_SetZeroBool.vhd

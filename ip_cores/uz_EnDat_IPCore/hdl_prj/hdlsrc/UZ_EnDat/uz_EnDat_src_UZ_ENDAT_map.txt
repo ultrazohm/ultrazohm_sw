@@ -88,7 +88,7 @@ UZ_EnDat/UZ_ENDAT/ramselektor/Increment Stored Integer --> uz_EnDat_src_Incremen
 UZ_EnDat/UZ_ENDAT/ramselektor --> uz_EnDat_src_ramselektor
 UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED/WORDTOBOOL --> uz_EnDat_src_WORDTOBOOL_block1
 UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED --> uz_EnDat_src_CONTROLWORDSTORED
-UZ_EnDat/UZ_ENDAT/DualPortRAM_generic --> uz_EnDat_src_DualPortRAM_generic
+UZ_EnDat/UZ_ENDAT/SinglePortRAM_generic --> uz_EnDat_src_SinglePortRAM_generic
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant --> uz_EnDat_src_Compare_To_Constant_block3
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block5
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant2 --> uz_EnDat_src_Compare_To_Constant2_block2
@@ -99,7 +99,7 @@ UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant6 --> uz_EnDat_src_Compare_To
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant7 --> uz_EnDat_src_Compare_To_Constant7
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER --> uz_EnDat_src_8BIT_SPLITTER
 UZ_EnDat/UZ_ENDAT/Storage16/Compare To Zero --> uz_EnDat_src_Compare_To_Zero_block1
-UZ_EnDat/UZ_ENDAT/Storage16/SinglePortRAM_generic --> uz_EnDat_src_SinglePortRAM_generic
+UZ_EnDat/UZ_ENDAT/Storage16/SinglePortRAM_generic --> uz_EnDat_src_SinglePortRAM_generic_block
 UZ_EnDat/UZ_ENDAT/Storage16 --> uz_EnDat_src_Storage16
 UZ_EnDat/UZ_ENDAT/OUTPUTCONTROLCONTINIOUS --> uz_EnDat_src_OUTPUTCONTROLCONTINIOUS
 UZ_EnDat/UZ_ENDAT/SetZeroBool --> uz_EnDat_src_SetZeroBool

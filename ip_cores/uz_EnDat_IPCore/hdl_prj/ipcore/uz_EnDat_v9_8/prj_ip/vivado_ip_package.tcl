@@ -92,7 +92,7 @@ add_files -norecurse {../hdl/uz_EnDat_src_Increment_Stored_Integer_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_ramselektor.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_WORDTOBOOL_block1.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd}
-add_files -norecurse {../hdl/uz_EnDat_src_DualPortRAM_generic.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_SinglePortRAM_generic.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant_block3.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant1_block5.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant2_block2.vhd}
@@ -103,7 +103,7 @@ add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant6.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Constant7.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_8BIT_SPLITTER.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Compare_To_Zero_block1.vhd}
-add_files -norecurse {../hdl/uz_EnDat_src_SinglePortRAM_generic.vhd}
+add_files -norecurse {../hdl/uz_EnDat_src_SinglePortRAM_generic_block.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_Storage16.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_OUTPUTCONTROLCONTINIOUS.vhd}
 add_files -norecurse {../hdl/uz_EnDat_src_SetZeroBool.vhd}
@@ -139,7 +139,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2113468188 [ipx::current_core]
+set_property core_revision 2113482673 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_EnDat_src_UZ_ENDAT_pac.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -502,10 +502,10 @@ ipx::add_file {hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd} [ipx::get_file_groups xil
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_CONTROLWORDSTORED.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_DualPortRAM_generic.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_DualPortRAM_generic.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_DualPortRAM_generic.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_DualPortRAM_generic.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_SinglePortRAM_generic.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_SinglePortRAM_generic.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_SinglePortRAM_generic.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_SinglePortRAM_generic.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Compare_To_Constant_block3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Compare_To_Constant_block3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Compare_To_Constant_block3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -546,10 +546,10 @@ ipx::add_file {hdl/uz_EnDat_src_Compare_To_Zero_block1.vhd} [ipx::get_file_group
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Compare_To_Zero_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Compare_To_Zero_block1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Compare_To_Zero_block1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_SinglePortRAM_generic.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_SinglePortRAM_generic.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
-ipx::add_file {hdl/uz_EnDat_src_SinglePortRAM_generic.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
-set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_SinglePortRAM_generic.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_SinglePortRAM_generic_block.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_SinglePortRAM_generic_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_EnDat_src_SinglePortRAM_generic_block.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_SinglePortRAM_generic_block.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Storage16.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_EnDat_src_Storage16.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_EnDat_src_Storage16.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

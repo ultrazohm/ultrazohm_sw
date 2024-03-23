@@ -71,6 +71,7 @@
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               1U
 #define UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES   1U
+#define UZ_FLUX_PREDICTION_MAX_INSTANCES                1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -120,4 +121,5 @@
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
     #define UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES   5U
+    #define UZ_FLUX_PREDICTION_MAX_INSTANCES                5U
 #endif

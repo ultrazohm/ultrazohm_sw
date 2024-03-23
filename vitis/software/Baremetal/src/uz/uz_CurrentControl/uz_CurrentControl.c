@@ -23,8 +23,8 @@
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 
-#include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
-#include "../../main.h"
+// #include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
+// #include "../../main.h"
 
 
 
@@ -33,7 +33,7 @@
 #include "../uz_HAL.h"
 #include "uz_linear_decoupling.h"
 #include "uz_static_nonlinear_decoupling.h"
-#include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
+// #include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
 #include "uz_space_vector_limitation.h"
 typedef struct uz_CurrentControl_t {
 	bool is_ready;
@@ -187,11 +187,11 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
     case linear_decoupling:
         decouple_voltage = uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
-    case static_nonlinear_decoupling:
-    	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(flux_approx, omega_el_rad_per_sec);
-    	test_to_show_flux.b2 = decouple_voltage.d;
-		test_to_show_flux.c2 = decouple_voltage.q;
-    	break;
+    // case static_nonlinear_decoupling:
+    // 	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(flux_approx, omega_el_rad_per_sec);
+    // 	test_to_show_flux.b2 = decouple_voltage.d;
+	// 	test_to_show_flux.c2 = decouple_voltage.q;
+    // 	break;
     default:
         break;
     }

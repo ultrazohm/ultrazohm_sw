@@ -1,0 +1,1 @@
+var modelInfo = {model:"flux_prediction"};var modelHierarchy=[{model:"flux_prediction",relativePath:"_internal.html",parent:"null"},];

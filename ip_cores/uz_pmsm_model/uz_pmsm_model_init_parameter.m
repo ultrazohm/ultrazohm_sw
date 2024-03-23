@@ -79,7 +79,7 @@ simulate_nonlinear_modell=true;
 
 parameter_nachfuerung=true;
 
-praediktion_entkopplung_nonlinear=false;
+praediktion_entkopplung_nonlinear=true;
 
 entkopplung_linear=false;
 entkopplung_static=true;

@@ -23,8 +23,8 @@
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 
-// #include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
-// #include "../../main.h"
+ #include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
+ #include "../../main.h"
 
 
 
@@ -42,15 +42,15 @@ typedef struct uz_CurrentControl_t {
 	struct uz_PI_Controller* Controller_id;
 	struct uz_PI_Controller* Controller_iq;
 }uz_CurrentControl_t;
-
-static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
+//static PFUUUUUUUUUUUUSCH
+//static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
 static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t pmsm, uz_3ph_dq_t actual_Ampere, float omega_el_rad_per_sec);
 static uint32_t instances_counter_CurrentControl = 0;
 
 static uz_CurrentControl_t instances_CurrentControl[UZ_CURRENTCONTROL_MAX_INSTANCES] = {0};
 
 
-extern uz_3ph_dq_t flux_approx; //Hacky way to get fluxapprox
+extern uz_3ph_dq_t flux_prediction; //Hacky way to get fluxapprox
 extern uz_6ph_abc_t test_to_show_flux; //mehr pfusch
 
 /**
@@ -102,8 +102,8 @@ uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t
 	uz_3ph_abc_t v_output_Volts = uz_transformation_3ph_dq_to_abc(v_dq_Volts, theta_el_rad);
 	return(v_output_Volts);
 }
-
-static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
+//static  das war davor wurde auskommentiert kranker pfusch
+uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_3ph_dq_t v_output_Volts = { 0 };
@@ -187,11 +187,11 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
     case linear_decoupling:
         decouple_voltage = uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
-    // case static_nonlinear_decoupling:
-    // 	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(flux_approx, omega_el_rad_per_sec);
-    // 	test_to_show_flux.b2 = decouple_voltage.d;
-	// 	test_to_show_flux.c2 = decouple_voltage.q;
-    // 	break;
+     case static_nonlinear_decoupling:
+     	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(flux_prediction, omega_el_rad_per_sec);
+     	test_to_show_flux.b2 = decouple_voltage.d;
+	 	test_to_show_flux.c2 = decouple_voltage.q;
+     	break;
     default:
         break;
     }

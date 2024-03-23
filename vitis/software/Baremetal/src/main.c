@@ -54,6 +54,7 @@ enum init_chain
 uz_pmsmModel_t *pmsm=NULL;
 uz_CurrentControl_t* CurrentControl_instance = NULL;
 uz_approximate_flux_t* approximate_flux_instance = NULL;
+uz_flux_prediction_t* flux_prediction_instance = NULL;
 uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_instance = NULL;
 uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_instance = NULL;
 
@@ -84,12 +85,18 @@ int main(void)
         case init_CurrentControl_pmsm:;
 
         struct uz_PMSM_t config_PMSM = {
+        		.R_ph_Ohm = 0.3f,
 
         		.Ld_Henry = 0.00045f,
 
 				.Lq_Henry = 0.002f,
 
 				.Psi_PM_Vs = 0.0194f};
+
+        float omega_el_prediction = 4.0*130.8997f; //Only a placeholder probably have to fix the flux prediciton function so this is an input
+        float ts_regler = 5e-5;
+        flux_prediction_instance = uz_flux_prediction_init(config_PMSM, ts_regler, omega_el_prediction);
+
         struct uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
 
         		.ad1_parameter = 0.030483840951002f,

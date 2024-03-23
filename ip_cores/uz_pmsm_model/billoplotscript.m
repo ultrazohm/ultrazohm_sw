@@ -52,7 +52,7 @@ measurement_iqsollwert_value = pgfplots_test{1:end, 4}; %Sollte immer gleich ble
 % Es wird ein Zeitschritt ausgewählt auf was die Achse sozusagen verschoben
 % werden soll also ist der Sprung bei 0.0 das muss dann immer zu Simulink
 % passen
-desired_step_time = 0.0;
+desired_step_time = 0.1;
 find_value = max(measurement_iqsollwert_value); %der Dazugehörige maximale Sprung
 first_step_index = find(measurement_iqsollwert_value == find_value, 1); %%%% Die  ist der istwert sprung muss eben gleich dem sein was in der excel file ist
 time_difference = measurement_1_time(first_step_index-1) - desired_step_time;

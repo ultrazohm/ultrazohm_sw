@@ -31,7 +31,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
-
+#include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -58,9 +58,14 @@ uz_3ph_dq_t flux_approx = {0};
 
 uz_3ph_dq_t flux_reference = {0};
 
+uz_3ph_dq_t flux_prediction = {0};
+
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
 
 uz_6ph_abc_t test_to_show_flux = {0};
+
+//extern uz_3ph_dq_t v_pre_limit_Volts;
+uz_3ph_dq_t v_out_of_pi_controller = {0};
 
 uz_PMSM_flux_fitting_parameter_config_t fitting_config = {0};
 
@@ -103,12 +108,15 @@ struct uz_pmsmModel_outputs_t pmsm_old_outputs={
 
 //init for flux approx and kp adaption
 extern uz_approximate_flux_t* approximate_flux_instance;
+extern uz_flux_prediction_t* flux_prediction_instance;
 extern uz_CurrentControl_Kp_id_adjustment_t* uz_CurrentControl_Kp_id_adjustment_instance;
 extern uz_CurrentControl_Kp_iq_adjustment_t* uz_CurrentControl_Kp_iq_adjustment_instance;
 float K_p_id = 0.0f;
 float K_p_iq= 0.0f;
 float flux_d_approx = 0.0f;
 float flux_q_approx = 0.0f;
+
+
 
 void ISR_Control(void *data)
 {
@@ -134,6 +142,14 @@ void ISR_Control(void *data)
     	flux_approx = uz_approximate_flux_step(approximate_flux_instance, measured_currents_Amp);
     	flux_reference = uz_approximate_flux_reference_step(approximate_flux_instance,reference_currents_Amp,measured_currents_Amp);
 
+
+    	//Get volatge after the pi controllers
+    	v_out_of_pi_controller = uz_CurrentControl_sample_pi_controllers(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp);
+    	//Predict the Flux for static nonlinear decoupling
+    	flux_prediction = uz_flux_prediction_step(flux_prediction_instance, measured_currents_Amp, CurrentControl_output_Volts, v_out_of_pi_controller,  flux_approx);
+    	// if flux_prediction is off
+    	flux_prediction = flux_approx;
+
     	//controller parameter adaption
     	K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
@@ -143,8 +159,8 @@ void ISR_Control(void *data)
 
     	test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
     	test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
-    	test_to_show_flux.c1 = flux_approx.d; //only so i can look at it in javascope
-    	test_to_show_flux.a2 = flux_reference.d; //only so i can look at it in javascope
+    	test_to_show_flux.c1 = flux_prediction.d; //only so i can look at it in javascope
+    	test_to_show_flux.a2 = flux_prediction.q; //only so i can look at it in javascope
 //    	test_to_show_flux.b2 = flux_approx.q; //only so i can look at it in javascope
 //    	test_to_show_flux.c2 = flux_reference.q; //only so i can look at it in javascope
 

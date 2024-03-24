@@ -6,8 +6,8 @@ uz_pmsm_model_init_parameter;
 LUT_approx_methode2a;
 close all;
 
-pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/Open_Loop_idminus4A_iq_4A_0rpm');
-pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
+pgfplots_test = readtable('data_from_javascope_for_plotting/open_loop_sprung_nonlinear_4A');
+% pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
 
 %writetable( pgfplots_test,'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Implementierung\pgfplots_test_mat.csv');
@@ -57,7 +57,7 @@ measurement_iqsollwert_value = pgfplots_test{1:end, 4}; %Sollte immer gleich ble
 % Es wird ein Zeitschritt ausgewählt auf was die Achse sozusagen verschoben
 % werden soll also ist der Sprung bei 0.0 das muss dann immer zu Simulink
 % passen
-desired_step_time = 0.0;
+desired_step_time = 0.025;
 find_value = max(measurement_iqsollwert_value); %der Dazugehörige maximale Sprung
 first_step_index = find(measurement_iqsollwert_value == find_value, 1); %%%% Die  ist der istwert sprung muss eben gleich dem sein was in der excel file ist
 time_difference = measurement_1_time(first_step_index-1) - desired_step_time;
@@ -71,10 +71,10 @@ measurement_iqsollwert_value = measurement_iqsollwert_value(global_time_vector >
 
 %% write to csv
 
-iq_plot = iq_plot(1:20:end);
-timeplot_iq = timeplot_iq(1:20:end);
-id_plot = id_plot(1:20:end);
-timeplot_id = timeplot_id(1:20:end);
+% iq_plot = iq_plot(1:20:end);
+% timeplot_iq = timeplot_iq(1:20:end);
+% id_plot = id_plot(1:20:end);
+% timeplot_id = timeplot_id(1:20:end);
 
 
 % psid_sim = psid_sim(1:20:end);

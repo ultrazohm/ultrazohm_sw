@@ -73,9 +73,9 @@ rpm = 0;
 load_torque = 0;
 
 % Simulation settings
-simulate_mechanical=false;
+simulate_mechanical=true;
 simulate_open_loop=true;
-simulate_nonlinear_modell=false;
+simulate_nonlinear_modell=true;
 
 parameter_nachfuerung=false;
 

@@ -167,7 +167,7 @@ psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*lo
 
 %Das sind die Setpoints aus für 
 q_current_set = q_current(1);
-d_current_set = d_current(20);
+d_current_set = d_current(14);
 
 %Für den Faktor setzte ich einfach in der Formel der Integrierten Terme den Set Strom ein 
 Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
@@ -281,17 +281,17 @@ e_Lqq = ((abs(Lqq_diff-Lqq_approx_test))/Lqq_diff_max).*100;
 
 
 % Plotten
-
-%Approximierte Flüsse
-% figure;
-% %Approximierter Fluss psid
-% %subplot(1,2,1); 
-% grid on;
-% surf(d_current, q_current,psi_d_approx);
-% xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\hat{\psi}_{d}/Vs$$','FontSize', 18,'Interpreter','Latex');
-% % title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
+% 
+% Approximierte Flüsse
+figure;
+%Approximierter Fluss psid
+%subplot(1,2,1); 
+grid on;
+surf(d_current, q_current,psi_d_approx);
+xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\hat{\psi}_{d}/Vs$$','FontSize', 18,'Interpreter','Latex');
+% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
 
 %Approximierter Fluss psiq
 figure;
@@ -304,14 +304,14 @@ zlabel('$$\hat{\psi}_{q}/Vs$$','FontSize', 18,'Interpreter','Latex');
 % title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
 
 
-% %Echter Fluss psid
-% figure;
-% %subplot(1,2,1); 
-% grid on;
-% surf(d_current, q_current, fluxd_real);
-% xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\psi_{d}$$/Vs','FontSize', 18,'Interpreter','Latex');
+%Echter Fluss psid
+figure;
+%subplot(1,2,1); 
+grid on;
+surf(d_current, q_current, fluxd_real);
+xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\psi_{d}$$/Vs','FontSize', 18,'Interpreter','Latex');
 
 %Echter Fluss psiq
 figure;

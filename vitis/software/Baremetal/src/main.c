@@ -93,7 +93,9 @@ int main(void)
 
 				.Psi_PM_Vs = 0.0194f};
 
-        float omega_el_prediction = 4.0*130.8997f; //Only a placeholder probably have to fix the flux prediciton function so this is an input
+        //float omega_el_prediction = 4.0f*130.8997f; //Only a placeholder probably have to fix the flux prediciton function so this is an input
+        float omega_el_prediction = 523.5988f; //Only a placeholder probably have to fix the flux prediciton function so this is an input
+
         float ts_regler = 5e-5;
         flux_prediction_instance = uz_flux_prediction_init(config_PMSM, ts_regler, omega_el_prediction);
 

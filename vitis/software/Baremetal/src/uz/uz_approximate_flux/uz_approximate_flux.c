@@ -44,8 +44,8 @@ uz_approximate_flux_t* uz_approximate_flux_init(uz_PMSM_flux_fitting_parameter_c
     self->input.fitting_parameters[9]=fitting_config.aq4_parameter;
     self->input.fitting_parameters[10]=fitting_config.aq5_parameter;
     self->input.fitting_parameters[11]=fitting_config.aq6_parameter;
-    self->input.fitting_parameters[12]=1/fitting_config.F1G1_parameter;
-    self->input.fitting_parameters[13]=1/fitting_config.F2G2_parameter;
+    self->input.fitting_parameters[12]=1.0f/fitting_config.F1G1_parameter;
+    self->input.fitting_parameters[13]=1.0f/fitting_config.F2G2_parameter;
     self->input.fitting_parameters[14] = fitting_config.ad4_parameter*fitting_config.ad5_parameter;
     self->input.fitting_parameters[15] = fitting_config.ad1_parameter*fitting_config.ad2_parameter;
     self->input.fitting_parameters[16] = fitting_config.aq4_parameter*fitting_config.aq5_parameter;

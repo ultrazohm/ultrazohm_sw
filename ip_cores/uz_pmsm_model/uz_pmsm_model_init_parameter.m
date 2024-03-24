@@ -23,12 +23,26 @@ path('C:\SoSe23\Masterarbeit\MatlabtoTikz\src',path);
 % psi_pm=0;
 % polepair=0;
 
-% % Electrical parameters
-R_1=0.3;
-L_d=0.00045;
-L_q=0.002;
-psi_pm=0.0194;
-polepair=4;
+% % % Electrical parameters (MOTOR1)
+% R_1=0.3;
+% L_d=0.00045;
+% L_q=0.002;
+% psi_pm=0.0194;
+% polepair=4;
+% 
+%MOTOR2 bühler 201
+R_1 = 0.08;
+L_d = 0.3;
+L_q = 0.3;
+psi_pm = 0.0075;
+polepair = 4;
+
+% %MOTOR3 bühler 401
+% R_1 = 0.065;
+% L_d = 0.15;
+% L_q = 0.15;
+% psi_pm = 0.007;
+% polepair = 4;
 
 % %DiffrentMotor
 % R_1=0.45;
@@ -68,13 +82,13 @@ static_friction_torque=0.01;
 % % inertia=0.001;
 % friction_coefficient=0;
 % static_friction_torque=0;
-setpoint_step = 4.0;
-rpm = 0;
+setpoint_step = 8.0;
+rpm = 1250;
 load_torque = 0;
 
 % Simulation settings
-simulate_mechanical=true;
-simulate_open_loop=true;
+simulate_mechanical=false;
+simulate_open_loop=false;
 simulate_nonlinear_modell=true;
 
 parameter_nachfuerung=false;
@@ -82,7 +96,7 @@ parameter_nachfuerung=false;
 praediktion_entkopplung_nonlinear=false;
 
 entkopplung_linear=false;
-entkopplung_static=false;
+entkopplung_static=true;
 entkopplung_dynamic=false;
 
 
@@ -115,7 +129,7 @@ entkopplung_dynamic=false;
 % [Lqq,Lqd]=gradient(Flux_q);
 
 % % Import the data from Excel for lookup table
-FluxMapData = readtable('FluxMapData_Prototyp_1000rpm');
+FluxMapData = readtable('FluxMaps_1000rpm_03_buehler_201');
 
 %Psi_d
 % d_currents in d Axe for lookup table

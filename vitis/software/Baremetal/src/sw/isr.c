@@ -143,11 +143,11 @@ void ISR_Control(void *data)
     	flux_reference = uz_approximate_flux_reference_step(approximate_flux_instance,reference_currents_Amp,measured_currents_Amp);
 
 
-    	//Get volatge after the pi controllers
-    	v_out_of_pi_controller = uz_CurrentControl_sample_pi_controllers(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp);
-    	//Predict the Flux for static nonlinear decoupling
-    	flux_prediction = uz_flux_prediction_step(flux_prediction_instance, measured_currents_Amp, CurrentControl_output_Volts, v_out_of_pi_controller,  flux_approx);
-    	// if flux_prediction is off
+//    	//Get volatge after the pi controllers
+//    	v_out_of_pi_controller = uz_CurrentControl_sample_pi_controllers_hacky(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp);
+//    	//Predict the Flux for static nonlinear decoupling
+//    	flux_prediction = uz_flux_prediction_step(flux_prediction_instance, measured_currents_Amp, CurrentControl_output_Volts, v_out_of_pi_controller,  flux_approx);
+//    	// if flux_prediction is off
     	flux_prediction = flux_approx;
 
     	//controller parameter adaption
@@ -159,8 +159,8 @@ void ISR_Control(void *data)
 
     	test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
     	test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
-    	test_to_show_flux.c1 = flux_prediction.d; //only so i can look at it in javascope
-    	test_to_show_flux.a2 = flux_prediction.q; //only so i can look at it in javascope
+    	test_to_show_flux.c1 = flux_approx.d; //only so i can look at it in javascope
+    	test_to_show_flux.a2 = flux_approx.q; //only so i can look at it in javascope
 //    	test_to_show_flux.b2 = flux_approx.q; //only so i can look at it in javascope
 //    	test_to_show_flux.c2 = flux_reference.q; //only so i can look at it in javascope
 

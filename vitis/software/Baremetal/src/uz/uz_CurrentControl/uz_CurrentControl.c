@@ -33,7 +33,7 @@
 #include "../uz_HAL.h"
 #include "uz_linear_decoupling.h"
 #include "uz_static_nonlinear_decoupling.h"
-// #include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
+#include "../../include/isr.h" //This is only in here for nonlinear decoupling for the extern uz_3ph_dq_t flux approx
 #include "uz_space_vector_limitation.h"
 typedef struct uz_CurrentControl_t {
 	bool is_ready;
@@ -43,7 +43,7 @@ typedef struct uz_CurrentControl_t {
 	struct uz_PI_Controller* Controller_iq;
 }uz_CurrentControl_t;
 //static PFUUUUUUUUUUUUSCH
-//static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
+static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere);
 static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decoupling_select decoupling_select, uz_PMSM_t pmsm, uz_3ph_dq_t actual_Ampere, float omega_el_rad_per_sec);
 static uint32_t instances_counter_CurrentControl = 0;
 
@@ -103,14 +103,23 @@ uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t
 	return(v_output_Volts);
 }
 //static  das war davor wurde auskommentiert kranker pfusch
-uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
+static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_3ph_dq_t v_output_Volts = { 0 };
 	v_output_Volts.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
 	v_output_Volts.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
 	return (v_output_Volts);
+}
 
+// Entire Function got added for testing the flux prediction
+uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers_hacky(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_3ph_dq_t v_output_Volts_hacky = { 0 };
+	v_output_Volts_hacky.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
+	v_output_Volts_hacky.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
+	return (v_output_Volts_hacky);
 }
 
 void uz_CurrentControl_reset(uz_CurrentControl_t* self){
@@ -186,6 +195,8 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
         break;
     case linear_decoupling:
         decouple_voltage = uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+//        test_to_show_flux.b2 = decouple_voltage.d;
+//        test_to_show_flux.c2 = decouple_voltage.q;
         break;
      case static_nonlinear_decoupling:
      	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(flux_prediction, omega_el_rad_per_sec);

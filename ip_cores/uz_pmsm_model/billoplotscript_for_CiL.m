@@ -35,10 +35,10 @@ sim.id_soll_time = simouttest.logsout.getElement('i_d_soll').Values.time;
 % psiq_sim = simouttest.logsout.getElement('psi_q_approx').Values.Data;
 % psiq_sim_time = simouttest.logsout.getElement('psi_q_approx').Values.time;
 
-psid_predic = simouttest.logsout.getElement('fluxd_predic').Values.Data;
-psid_predic_time = simouttest.logsout.getElement('fluxd_predic').Values.time;
-psiq_predic = simouttest.logsout.getElement('fluxq_predic').Values.Data;
-psiq_predic_time = simouttest.logsout.getElement('fluxq_predic').Values.time;
+% psid_predic = simouttest.logsout.getElement('fluxd_predic').Values.Data;
+% psid_predic_time = simouttest.logsout.getElement('fluxd_predic').Values.time;
+% psiq_predic = simouttest.logsout.getElement('fluxq_predic').Values.Data;
+% psiq_predic_time = simouttest.logsout.getElement('fluxq_predic').Values.time;
 
 % u_d_static_ent = simouttest.logsout.getElement('u_d_static_ent').Values.Data;
 % u_d_static_ent = -1*u_d_static_ent;

@@ -22,11 +22,12 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
-
+extern bool is_control_state_active;
 extern uint32_t js_status_BareToRTOS;
 //////////////Adding this line for tutorial 5///////////////
 extern uz_3ph_dq_t reference_currents_Amp;
 extern float theta_el_offset;
+extern DS_Data Global_Data;
 ///////////////////////////////////////////////////////////
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -285,11 +286,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			is_control_state_active = true;
+			Global_Data.rasv.halfBridge1DutyCycle = 0.01f;
+			Global_Data.rasv.halfBridge2DutyCycle = 0.01f;
+			Global_Data.rasv.halfBridge3DutyCycle = 0.01f;
 			break;
 
 		case (My_Button_5):
-
+			is_control_state_active = false;
+			Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+			Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+			Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
 			break;
 
 		case (My_Button_6):
@@ -362,9 +369,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
+	if (is_control_state_active) {
+	    js_status_BareToRTOS |= 1 << 7;
+	    } else {
+	       js_status_BareToRTOS &= ~(1 << 7);
+	    }
 	// js_status_BareToRTOS &= ~(1 << 7);
 
 	/* Bit 8 - My_Button_5 */
+	if (!is_control_state_active) {
+		       js_status_BareToRTOS |= 1 << 8;
+		    } else {
+		       js_status_BareToRTOS &= ~(1 << 8);
+		    }
 	// js_status_BareToRTOS &= ~(1 << 8);
 
 	/* Bit 9 - My_Button_6 */

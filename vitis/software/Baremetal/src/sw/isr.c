@@ -48,6 +48,7 @@ uz_3ph_dq_t reference_currents_Amp = {0};
 uz_3ph_dq_t measured_currents_Amp = {0};
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
 uz_3ph_dq_t setpoint_current = {0};
+bool is_control_state_active = false;
 float omega_el_rad_per_sec = 0.0f; // electrical rotational speed in red/sec
 struct uz_pmsmModel_inputs_t pmsm_inputs={
    .omega_mech_1_s=0.0f,
@@ -126,7 +127,7 @@ void ISR_Control(void *data)
             uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, false);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed_filtered*(2.0f*M_PI)/60.0f;
+    omega_m_rad_per_sec = Global_Data.av.mechanicalRotorSpeed*(2.0f*M_PI)/60.0f;
     omega_el_rad_per_sec = omega_m_rad_per_sec*config_PMSM.polePairs;
     theta_el_rad = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
     i_dq_measured_Amps = uz_transformation_3ph_abc_to_dq(i_abc_Amps, theta_el_rad); //actual Amp
@@ -151,7 +152,6 @@ void ISR_Control(void *data)
 
     	 CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, i_dq_measured_Amps, v_DC_Volts, omega_el_rad_per_sec);
     	 output = uz_Space_Vector_Modulation(CurrentControl_output_Volts, v_DC_Volts, theta_el_rad);
-    	 ref_voltage_3ph_abc = uz_transformation_3ph_dq_to_abc(CurrentControl_output_Volts, theta_el_rad);
     	 Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_A;		// Set Duty Cycle A
     	 Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;	   // Set Duty Cycle B
     	 Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;	  // Set Duty Cycle C

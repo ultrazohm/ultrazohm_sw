@@ -50,7 +50,7 @@ extern struct uz_3ph_dq_t i_dq_ref_Amps;
 extern struct uz_3ph_dq_t i_dq_measured_Amps;
 extern struct uz_3ph_abc_t i_abc_Amps;
 extern struct uz_3ph_dq_t v_dq_ref_Volts;
-
+extern struct uz_3ph_abc_t v_abc_Volts;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -75,6 +75,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm_filtered] = &data->av.mechanicalRotorSpeed_filtered;
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
+	js_ch_observable[JSO_ua] 			= &v_abc_Volts.a;
+	js_ch_observable[JSO_ub] 			= &v_abc_Volts.b;
+	js_ch_observable[JSO_uc] 			= &v_abc_Volts.c;
 	js_ch_observable[JSO_ia] 			= &i_abc_Amps.a;
 	js_ch_observable[JSO_ib] 			= &i_abc_Amps.b;
 	js_ch_observable[JSO_ic] 			= &i_abc_Amps.c;

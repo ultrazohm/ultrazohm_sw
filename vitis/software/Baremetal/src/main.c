@@ -31,7 +31,7 @@ DS_Data Global_Data = {
 		.halfBridge9DutyCycle = 0.0f,
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
+		.halfBridge12DutyCycle = 0.0f,
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
@@ -83,8 +83,6 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            //initialization_chain = init_ip_cores; // comment this line just for tutorial 5
-            //Adding this line for tutorial 5///////////////////
             initialization_chain = init_CurrentControl_pmsm;
             break;
         ////////////////Adding this code for tutorial 5//////////////////////////////////
@@ -108,7 +106,7 @@ int main(void)
                            .config_id = config_id,
                            .config_iq = config_iq,
                            .max_modulation_index = 1.0f / sqrtf(3.0f)};
-                       CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+
 
                        // Encoder offset estimation
                        struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
@@ -119,21 +117,9 @@ int main(void)
                            .min_omega_el = 400.0f,                                                     // target electric rotor angular speed (USE OWN)
                            .setpoint_current = 0.0f 												   // current setpoint to reach speed (USE OWN)
                            };
+                       encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);
+                       CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
 
-/////////////////////////////////////////comment this code for inveter card///////////
-                       //struct uz_pmsmModel_config_t pmsm_config={
-                           //.base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
-                           //.ip_core_frequency_Hz=100000000,
-                           //.simulate_mechanical_system = true,
-                           //.r_1 = 0.085f,
-                           //.L_d = 3.00e-04f,
-                           //.L_q = 3.00e-04f,
-                           //.psi_pm = 0.0075f,
-                           //.polepairs = 4.0f,
-                           //.inertia = 3.24e-05f,
-                           //.coulomb_friction_constant = 0.01f,
-                           //.friction_coefficient = 0.001f};
-                       //pmsm=uz_pmsmModel_init(pmsm_config);
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.inverter_d3 = initialize_uz_inverter_adapter_on_D3();

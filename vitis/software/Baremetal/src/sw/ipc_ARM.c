@@ -29,6 +29,10 @@ extern float n_ref_rpm_1;
 extern float n_ref_rpm_2;
 extern float M_ref_Nm_1;
 extern float M_ref_Nm_2;
+extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
+extern struct uz_3ph_dq_t i_dqn_ref_5th_Amps_1;
+extern struct uz_3ph_dq_t i_dqn_ref_7th_Amps_1;
+extern int mode;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -192,27 +196,31 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-				M_ref_Nm_1 = value;
+				//n_ref_rpm_1 = value;
+				//M_ref_Nm_1 = value;
+				i_dq_ref_Amps_1.q = value;
+				i_dq_ref_Amps_1.d = 0.0f;
 			break;
 
 		case (Set_Send_Field_2):
 				n_ref_rpm_2 = value;
+				//M_ref_Nm_2 = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+				i_dqn_ref_5th_Amps_1.d = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+				i_dqn_ref_5th_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+				i_dqn_ref_7th_Amps_1.d = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+				i_dqn_ref_7th_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -284,11 +292,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			mode = 0;
 			break;
 
 		case (My_Button_5):
-
+			mode = 1;
 			break;
 
 		case (My_Button_6):

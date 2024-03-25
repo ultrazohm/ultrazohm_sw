@@ -9,7 +9,7 @@
 
 /*! enum for readable configuring for the mode of the HarmonicCurrentInjection sample function */
 enum uz_HarmonicCurrentInjection_mode_select {
-    abc_to_dq=0,
+    abc_to_dqn=0,
     dq_to_dqn
 };
 
@@ -18,6 +18,7 @@ enum uz_HarmonicCurrentInjection_mode_select {
  */
 struct uz_HarmonicCurrentInjection_config {
     float order_harmonic; /**< Selected order of harmonic */
+    float sampling_frequency_Hz; /**< Sampling frequency in Hz */
     enum uz_HarmonicCurrentInjection_mode_select selection; /**< HarmonicCurrentInjection mode selector \n
 													 abc_to_dq \n
 													 dq_to_dqn */
@@ -91,19 +92,21 @@ uz_3ph_dq_t uz_HarmonicCurrentInjection_filter(uz_HarmonicCurrentInjection_t* se
 uz_3ph_dq_t uz_HarmonicCurrentInjection_sample(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_harmonic_Ampere, uz_3ph_dq_t i_dqn_filtered_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
 
 /**
- * @brief Updates the abc-bandpasses and dqn-lowpasses for a given electrical rotational speed
+ * @brief Updates the bandpasses and lowpasses for a given electrical rotational speed
  *
  * @param self uz_HarmonicCurrentInjection_t instance
  * @param omega_el_ref_rad_per_sec Electrical rotational speed in rad/s
  */
-void uz_HarmonicCurrentInjection_set_filters_abc(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec);
+void uz_HarmonicCurrentInjection_set_filters(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec);
 
 /**
- * @brief Updates the dq-bandpasses and dqn-lowpasses for a given electrical rotational speed
+ * @brief Updates the current controllers for a given electrical rotational speed
  *
  * @param self uz_HarmonicCurrentInjection_t instance
+ * @param config_PMSM PMSM config struct
  * @param omega_el_ref_rad_per_sec Electrical rotational speed in rad/s
  */
-void uz_HarmonicCurrentInjection_set_filters_dq(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec);
+void uz_HarmonicCurrentInjection_set_controllers(uz_HarmonicCurrentInjection_t* self, struct uz_PMSM_t config_PMSM, float omega_el_rad_per_sec);
+
 
 #endif // UZ_HARMONICCURRENTINJECTION_H

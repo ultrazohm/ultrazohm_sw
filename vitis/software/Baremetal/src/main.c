@@ -114,15 +114,15 @@ int main(void)
      	   .relative_torque_tolerance = 0.1f
     };
     struct uz_PI_Controller_config config_id_1 = {
-    		.Kp = 2.2f, // nach BO
-    		.Ki = 1245.0f, //nach BO
+    		.Kp = 1.47f, // nach BO
+    		.Ki = 830.0f, //nach BO
     		.samplingTime_sec = 0.0001f,
     		.upper_limit = 15.0f,
     		.lower_limit = -15.0f
     };
     struct uz_PI_Controller_config config_iq_1 = {
-           .Kp = 12.25f, // nach BO
-           .Ki = 1245.0f, // nach BO
+           .Kp = 8.17f, // nach BO
+           .Ki = 830.0f, // nach BO
            .samplingTime_sec = 0.0001f,
       	   .upper_limit = 15.0f,
     	   .lower_limit = -15.0f
@@ -136,19 +136,13 @@ int main(void)
     };
 
     // Configuration of HCI
-    struct uz_IIR_Filter_config BP_config_5th_abc_1 = {
-    	   .selection = BandPass_second_order,
-           .pass_frequency_Hz = 300.0f,
+    struct uz_IIR_Filter_config BP_config_1 = {
+      	   .selection = BandPass_second_order,
+           .pass_frequency_Hz = 360.0f,
            .sample_frequency_Hz = 10000.0f,
-    	   .damping = 0.05f
+       	   .damping = 0.05f
     };
-    struct uz_IIR_Filter_config BP_config_7th_abc_1 = {
-           .selection = BandPass_second_order,
-           .pass_frequency_Hz = 420.0f,
-           .sample_frequency_Hz = 10000.0f,
-    	   .damping = 0.05f
-    };
-    struct uz_IIR_Filter_config LP_config_dq_1 = {
+    struct uz_IIR_Filter_config LP_config_1 = {
        	   .selection = LowPass_first_order,
     	   .cutoff_frequency_Hz = 6.0f,
     	   .sample_frequency_Hz = 10000.0f
@@ -197,16 +191,16 @@ int main(void)
     };
     struct uz_HarmonicCurrentInjection_config HCI_config_5th_1 = {
     		.order_harmonic = -5.0f,
-			.selection = abc_to_dq,
-			.config_bandpass_abc = BP_config_5th_abc_1,
-			.config_lowpass_dq = LP_config_dq_1,
+			.selection = dq_to_dqn,
+			.config_bandpass_dq = BP_config_1,
+			.config_lowpass_dq = LP_config_1,
 			.config_currentcontroller = CC_config_5th_1
     };
     struct uz_HarmonicCurrentInjection_config HCI_config_7th_1 = {
         	.order_harmonic = 7.0f,
-    		.selection = abc_to_dq,
-    		.config_bandpass_abc = BP_config_7th_abc_1,
-    		.config_lowpass_dq = LP_config_dq_1,
+    		.selection = dq_to_dqn,
+    		.config_bandpass_dq = BP_config_1,
+    		.config_lowpass_dq = LP_config_1,
     		.config_currentcontroller = CC_config_7th_1
     };
 
@@ -229,15 +223,15 @@ int main(void)
            .relative_torque_tolerance = 0.1f
     };
     struct uz_PI_Controller_config config_id_2 = {
-           .Kp = 0.15f, // nach BO, 0.3 nach Nina, 1.51f nach Bandbreite
-           .Ki = 83.2f, //nach BO, 230.0f nach Nina , 836.4f nach Bandbreite
+           .Kp = 0.1f, // nach BO
+           .Ki = 55.5f, //nach BO
            .samplingTime_sec = 0.0001f,
            .upper_limit = 15.0f,
            .lower_limit = -15.0f
     };
     struct uz_PI_Controller_config config_iq_2 = {
-           .Kp = 0.25f, // nach BO, 0.5f nach Nina
-           .Ki = 83.2f, // nach BO, 230.0f nach Nina
+           .Kp = 0.17f, // nach BO
+           .Ki = 55.5f, // nach BO
            .samplingTime_sec = 0.0001f,
            .upper_limit = 15.0f,
     	   .lower_limit = -15.0f

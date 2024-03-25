@@ -40,6 +40,11 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 // External
 extern float theta_el_rad_1;
 extern float theta_el_rad_2;
+extern struct uz_3ph_abc_t i_abc_Amps_1;
+extern struct uz_3ph_abc_t i_abc_Amps_2;
+extern struct uz_3ph_dq_t i_dq_Amps_1;
+extern struct uz_3ph_dq_t i_dqn_filtered_5th_Amps_1;
+extern struct uz_3ph_dq_t i_dqn_filtered_7th_Amps_1;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -69,16 +74,23 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm_2]		= &data->av.mechanicalRotorSpeed_2;
 	js_ch_observable[JSO_el_Speed_rpm_1]		= &data->av.electricalRotorSpeed_1;
 	js_ch_observable[JSO_el_Speed_rpm_2]		= &data->av.electricalRotorSpeed_2;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
+	js_ch_observable[JSO_ia_1] 			= &i_abc_Amps_1.a;
+	js_ch_observable[JSO_ib_1] 			= &i_abc_Amps_1.b;
+	js_ch_observable[JSO_ic_1] 			= &i_abc_Amps_1.c;
+	js_ch_observable[JSO_ia_2] 			= &i_abc_Amps_2.a;
+	js_ch_observable[JSO_ib_2] 			= &i_abc_Amps_2.b;
+	js_ch_observable[JSO_ic_2] 			= &i_abc_Amps_2.c;
 	js_ch_observable[JSO_ua] 			= &data->av.U_U;
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
-	js_ch_observable[JSO_iq_1] 			= &data->av.I_q_1;
+	js_ch_observable[JSO_iq_1] 			= &i_dq_Amps_1.q;
 	js_ch_observable[JSO_iq_2] 			= &data->av.I_q_2;
-	js_ch_observable[JSO_id_1] 			= &data->av.I_d_1;
+	js_ch_observable[JSO_id_1] 			= &i_dq_Amps_1.d;
 	js_ch_observable[JSO_id_2] 			= &data->av.I_d_2;
+	js_ch_observable[JSO_id_5th_1] 		= &i_dqn_filtered_5th_Amps_1.d;
+	js_ch_observable[JSO_iq_5th_1] 		= &i_dqn_filtered_5th_Amps_1.q;
+	js_ch_observable[JSO_id_7th_1] 		= &i_dqn_filtered_7th_Amps_1.d;
+	js_ch_observable[JSO_iq_7th_1] 		= &i_dqn_filtered_7th_Amps_1.q;
 	js_ch_observable[JSO_Theta_el_1] 	= &theta_el_rad_1;
 	js_ch_observable[JSO_Theta_el_2] 	= &theta_el_rad_2;
 	js_ch_observable[JSO_theta_mech_1] 	= &data->av.theta_mech_1;

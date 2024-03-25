@@ -76,10 +76,14 @@ float Ki_speed_1 					= 0.01f;
 //float Ki_iq_1 = 230.0f;
 
 // Harmonic Current Injection
+int mode = 0;
 struct uz_3ph_dq_t i_dqn_ref_5th_Amps_1 = {0};
 struct uz_3ph_dq_t i_dqn_ref_7th_Amps_1 = {0};
+struct uz_3ph_dq_t i_dqn_filtered_5th_Amps_1 = {0};
+struct uz_3ph_dq_t i_dqn_filtered_7th_Amps_1 = {0};
 struct uz_3ph_dq_t v_dq_ref_5th_Volts_1 = {0};
 struct uz_3ph_dq_t v_dq_ref_7th_Volts_1 = {0};
+struct uz_3ph_dq_t v_dq_ref_HCI_Volts_1 = {0};
 
 // =============== Declares for PMSM 2 =============== //
 
@@ -189,13 +193,29 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	// Field Oriented Control of PMSM 1
-    	// M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
+    	//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     	//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
-    	//v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-    	//output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-    	//Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
-    	//Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
-    	//Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
+    	v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+    	i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
+    	i_dqn_filtered_7th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_Amps_1, theta_el_rad_1);
+    	uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_1);
+    	uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_1);
+    	switch (mode)
+    	{
+    	default:
+    		output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+    		break;
+		case 1:
+			v_dq_ref_HCI_Volts_1.d = v_dq_ref_Volts_1.d +  v_dq_ref_5th_Volts_1.d + v_dq_ref_7th_Volts_1.d;
+			v_dq_ref_HCI_Volts_1.q = v_dq_ref_Volts_1.q +  v_dq_ref_5th_Volts_1.q + v_dq_ref_7th_Volts_1.q;
+			v_dq_ref_5th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_5th_1, i_dqn_ref_5th_Amps_1, i_dqn_filtered_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
+			v_dq_ref_7th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_7th_1, i_dqn_ref_7th_Amps_1, i_dqn_filtered_7th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
+			output_1 = uz_Space_Vector_Modulation(v_dq_ref_HCI_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+			break;
+    	}
+    	Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
+    	Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
+    	Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;
 
     	// Field Oriented Control of PMSM 2
         M_ref_Nm_2 = uz_SpeedControl_sample(SC_instance_2, omega_m_rad_per_sec_2, n_ref_rpm_2);

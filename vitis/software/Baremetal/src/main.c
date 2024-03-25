@@ -243,9 +243,9 @@ int main(void)
     };
 
     struct uz_parameterid_rc_config_t config_rc_meas_Hoerner = {
-    	    .id_ref = 3.0f,
+    	    .id_ref = -3.0f,
     	    .iq_ref = 5.0f,
-    	    .n_ref = 1200.0f,
+    	    .n_ref = 1000.0f,
     	    .wait_time = 5.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
     	    .sample_time = 10.0f,

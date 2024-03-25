@@ -27,10 +27,10 @@ for logfile_list_index = size(Logfile_list,1):-1:1
     end
 end
 
-file_name = Logfile_list(logfile_list_index).name;
+%file_name = Logfile_list(logfile_list_index).name;
 
 % paste file name here if you want to open a specific file
-%file_name = '1100rpm_10A_7A';
+file_name = 'Log_2024-03-21_14-03-39';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

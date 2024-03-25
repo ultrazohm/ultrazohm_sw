@@ -60,6 +60,7 @@ extern float Kp_uind_d_2;
 extern float Ki_uind_d_2;
 extern float Kp_uind_q_2;
 extern float Ki_uind_q_2;
+extern float theta_el_offset_1;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -235,7 +236,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-		r_s_2 = value;
+		theta_el_offset_1 = value;
 			break;
 
 		case (Set_Send_Field_5):

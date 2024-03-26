@@ -83,6 +83,9 @@ struct uz_DutyCycle_t output = {0};
  float n_ref_rpm = 0.0f;
  float M_ref_Nm = 0.0f;
  float theta;
+ float DutyCycle_A = 0.0f;
+ float DutyCycle_B = 0.0f;
+ float DutyCycle_C = 0.0f;
 
 
 
@@ -157,6 +160,12 @@ void ISR_Control(void *data)
     	 Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;	  // Set Duty Cycle C
 
     }
+    else
+    {
+          	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+          	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+          	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+     }
     // Set duty cycles for teo-level modulator
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

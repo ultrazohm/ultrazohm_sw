@@ -22,12 +22,15 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
-extern bool is_control_state_active;
 extern uint32_t js_status_BareToRTOS;
 //////////////Adding this line for tutorial 5///////////////
 extern uz_3ph_dq_t reference_currents_Amp;
 extern float theta_el_offset;
+extern float DutyCycle_A;
+extern float DutyCycle_B;
+extern float DutyCycle_C;
 extern DS_Data Global_Data;
+extern struct uz_DutyCycle_t output;
 ///////////////////////////////////////////////////////////
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -194,18 +197,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_1):
 		//data->av.snd_fld[1] = value;
 		    //reference_currents_Amp.q = value;
-			Global_Data.rasv.halfBridge1DutyCycle = value;
+			output.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_2):
 		//data->av.snd_fld[2] = value;
 		    //reference_currents_Amp.d = value;
-			Global_Data.rasv.halfBridge2DutyCycle = value;
+			output.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_3):
 		//data->av.snd_fld[3] = value;
-			Global_Data.rasv.halfBridge3DutyCycle = value;
+			output.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_4):

@@ -142,16 +142,16 @@ void ISR_Control(void *data)
     // Enable Control
     if (current_state==control_state)
     {
-    	if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){         // if not finished
-    		reference_currents_Amp = uz_encoder_offset_estimation_step(encoder_offset_obj);//receive current controller setpoint current from stepping function
-    	}else{
-    			reference_currents_Amp.d = 0.0f;                                              // else: it is finished, setpoints are 0
-    			reference_currents_Amp.q = 0.0f;
-    	}
-        // Start: Control algorithm - only if ultrazohm is in control state
-
-    	 CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, i_dq_measured_Amps, v_DC_Volts, omega_el_rad_per_sec);
-    	 output = uz_Space_Vector_Modulation(CurrentControl_output_Volts, v_DC_Volts, theta_el_rad);
+//    	if(!uz_encoder_offset_estimation_get_finished(encoder_offset_obj)){         // if not finished
+//    		reference_currents_Amp = uz_encoder_offset_estimation_step(encoder_offset_obj);//receive current controller setpoint current from stepping function
+//    	}else{
+//    			reference_currents_Amp.d = 0.0f;                                              // else: it is finished, setpoints are 0
+//    			reference_currents_Amp.q = 0.0f;
+//    	}
+//        // Start: Control algorithm - only if ultrazohm is in control state
+//
+//    	 CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, i_dq_measured_Amps, v_DC_Volts, omega_el_rad_per_sec);
+//    	 output = uz_Space_Vector_Modulation(CurrentControl_output_Volts, v_DC_Volts, theta_el_rad);
     	 Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_A;		// Set Duty Cycle A
     	 Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;	   // Set Duty Cycle B
     	 Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;	  // Set Duty Cycle C

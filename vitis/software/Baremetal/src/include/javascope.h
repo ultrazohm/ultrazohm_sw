@@ -146,9 +146,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	i_q_ref,
-	i_d_ref,
-	send_field_3,
+	DutyCycle_1,
+	DutyCycle_2,
+	DutyCycle_3,
 	send_field_4,
 	send_field_5,
 	send_field_6,

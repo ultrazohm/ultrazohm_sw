@@ -193,16 +193,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		//data->av.snd_fld[1] = value;
-		    reference_currents_Amp.q = value;
+		    //reference_currents_Amp.q = value;
+			Global_Data.rasv.halfBridge1DutyCycle = value;
 			break;
 
 		case (Set_Send_Field_2):
 		//data->av.snd_fld[2] = value;
-		    reference_currents_Amp.d = value;
+		    //reference_currents_Amp.d = value;
+			Global_Data.rasv.halfBridge2DutyCycle = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		//data->av.snd_fld[3] = value;
+			Global_Data.rasv.halfBridge3DutyCycle = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -286,17 +289,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-			is_control_state_active = true;
-			Global_Data.rasv.halfBridge1DutyCycle = 0.01f;
-			Global_Data.rasv.halfBridge2DutyCycle = 0.01f;
-			Global_Data.rasv.halfBridge3DutyCycle = 0.01f;
+
 			break;
 
 		case (My_Button_5):
-			is_control_state_active = false;
-			Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-			Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-			Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+
 			break;
 
 		case (My_Button_6):
@@ -369,19 +366,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
-	if (is_control_state_active) {
-	    js_status_BareToRTOS |= 1 << 7;
-	    } else {
-	       js_status_BareToRTOS &= ~(1 << 7);
-	    }
+
 	// js_status_BareToRTOS &= ~(1 << 7);
 
 	/* Bit 8 - My_Button_5 */
-	if (!is_control_state_active) {
-		       js_status_BareToRTOS |= 1 << 8;
-		    } else {
-		       js_status_BareToRTOS &= ~(1 << 8);
-		    }
+
 	// js_status_BareToRTOS &= ~(1 << 8);
 
 	/* Bit 9 - My_Button_6 */

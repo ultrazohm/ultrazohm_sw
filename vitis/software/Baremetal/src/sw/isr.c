@@ -39,7 +39,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 // =============== Declares for PMSM 1 =============== //
-
+struct uz_resolver_pl_interface_outputs_t Resolver_outputs = {0};
 // FOC Instances and Configs
 extern uz_SpeedControl_t* SC_instance_1;
 extern uz_SetPoint_t* SP_instance_1;
@@ -133,8 +133,7 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
-    update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
-    update_speed_and_position_of_encoder_on_D5_3(&Global_Data);
+
 
     // Set tristate to false
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
@@ -184,14 +183,23 @@ void ISR_Control(void *data)
     i_dq_Amps_1 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_1, theta_el_rad_1);
 
     // Calculation of Signals for FOC for PMSM 2
-    omega_m_rad_per_sec_2 = Global_Data.av.mechanicalRotorSpeed_filtered_2*(2.0f*M_PI)/60.0f;
-    omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2*config_PMSM_2.polePairs;
+    Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
+    Global_Data.av.mechanicalRotorSpeed_filtered_2 = Resolver_outputs.n_mech_rpm;
+    omega_m_rad_per_sec_2 = Resolver_outputs.omega_mech_rad_s;
+    omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2 * config_PMSM_2.polePairs;
     Global_Data.av.omega_el_2 = omega_el_rad_per_sec_2;
-    theta_el_rad_2 = Global_Data.av.theta_elec_2 - Global_Data.av.theta_offset_2;
+    theta_el_rad_2 = Resolver_outputs.position_el_2pi;
     i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
 
     if (current_state==control_state)
     {
+    	//Only for offset determination
+    	uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_d4, Global_Data.av.theta_offset_2);
+
+
+
+
+
     	// Field Oriented Control of PMSM 1
     	//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     	//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);

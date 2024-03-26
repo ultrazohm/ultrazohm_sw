@@ -69,13 +69,13 @@ uz_CurrentControl_t* CC_instance_2;
 
 // Configuration of PMSM 2 (Brose PMSM)
 struct uz_PMSM_t config_PMSM_2 = {
-		.R_ph_Ohm = 0.01664f,
-		.Ld_Henry = 0.00003f,
-		.Lq_Henry = 0.00005f,
-		.Psi_PM_Vs = 0.007f,
-		.polePairs = 5.0f,
-		.J_kg_m_squared = 0.00001773f,
-		.I_max_Ampere = 20.0f
+		.R_ph_Ohm = 0.51f,
+		.Ld_Henry = 0.002f,
+		.Lq_Henry = 0.002f,
+		.Psi_PM_Vs = 0.042f,
+		.polePairs = 4.0f,
+		.J_kg_m_squared = 0.000108f,
+		.I_max_Ampere = 12.0f
 };
 
 enum init_chain
@@ -114,15 +114,15 @@ int main(void)
      	   .relative_torque_tolerance = 0.1f
     };
     struct uz_PI_Controller_config config_id_1 = {
-    		.Kp = 1.47f, // nach BO
-    		.Ki = 830.0f, //nach BO
+    		.Kp = 1.1f, //1.47f, // nach BO
+    		.Ki = 622.5f, //830.0f, //nach BO
     		.samplingTime_sec = 0.0001f,
     		.upper_limit = 15.0f,
     		.lower_limit = -15.0f
     };
     struct uz_PI_Controller_config config_iq_1 = {
-           .Kp = 8.17f, // nach BO
-           .Ki = 830.0f, // nach BO
+           .Kp = 6.125f, //8.17f, // nach BO
+           .Ki = 622.5f, //830.0f, // nach BO
            .samplingTime_sec = 0.0001f,
       	   .upper_limit = 15.0f,
     	   .lower_limit = -15.0f
@@ -223,15 +223,15 @@ int main(void)
            .relative_torque_tolerance = 0.1f
     };
     struct uz_PI_Controller_config config_id_2 = {
-           .Kp = 0.1f, // nach BO
-           .Ki = 55.5f, //nach BO
+           .Kp = 6.67f, // nach BO
+           .Ki = 1700.0f, //nach BO
            .samplingTime_sec = 0.0001f,
            .upper_limit = 15.0f,
            .lower_limit = -15.0f
     };
     struct uz_PI_Controller_config config_iq_2 = {
-           .Kp = 0.17f, // nach BO
-           .Ki = 55.5f, // nach BO
+           .Kp = 6.67f, // nach BO
+           .Ki = 1700.0f, // nach BO
            .samplingTime_sec = 0.0001f,
            .upper_limit = 15.0f,
     	   .lower_limit = -15.0f
@@ -279,10 +279,10 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
             Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
+            Global_Data.objects.resolver_d4 = initialize_resolver_d4();
+            Global_Data.objects.resolver_pl_d4 = initialize_resolver_pl_d4();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5_1 = initialize_incremental_encoder_ipcore_on_D5_1(UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_1_MOTOR_POLE_PAIR_NUMBER);
-            Global_Data.objects.encoder_D5_2 = initialize_incremental_encoder_ipcore_on_D5_2(UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_2_MOTOR_POLE_PAIR_NUMBER);
-            Global_Data.objects.encoder_D5_3 = initialize_incremental_encoder_ipcore_on_D5_3(UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_3_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = init_control;
             break;
         case init_control:

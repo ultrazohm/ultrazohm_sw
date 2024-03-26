@@ -8,6 +8,8 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -135,6 +137,8 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
+	uz_resolver_pl_interface_t* resolver_pl_d4;
+	uz_resolverIP_t* resolver_d4;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

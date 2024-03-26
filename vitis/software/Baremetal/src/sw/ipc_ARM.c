@@ -33,7 +33,7 @@ extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
 extern struct uz_3ph_dq_t i_dqn_ref_5th_Amps_1;
 extern struct uz_3ph_dq_t i_dqn_ref_7th_Amps_1;
 extern int mode;
-
+extern DS_Data Global_Data;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -224,7 +224,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		Global_Data.av.theta_offset_2 = value;
 			break;
 
 		case (Set_Send_Field_8):

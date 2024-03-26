@@ -6,7 +6,8 @@ uz_pmsm_model_init_parameter;
 LUT_approx_methode2a;
 close all;
 
-pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/um_die_flussabweichungen_zu_zeigen/Closed_loop_flux_pre_aus_nonlin_ent_para_aus_plusminus8A_1250prm');
+% pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/Open_Loop_iq_id_omegamech_mechan');
+pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/um_die_flussabweichungen_zu_zeigen/Log_2024-03-26_10-33-21');
 % pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
 
@@ -37,10 +38,15 @@ sim.id_soll_time = simouttest.logsout.getElement('i_d_soll').Values.time;
 % psiq_sim = simouttest.logsout.getElement('psi_q_approx').Values.Data;
 % psiq_sim_time = simouttest.logsout.getElement('psi_q_approx').Values.time;
 
-psid_predic = simouttest.logsout.getElement('psi_d_regler_approx').Values.Data;
-psid_predic_time = simouttest.logsout.getElement('psi_d_regler_approx').Values.time;
-psiq_predic = simouttest.logsout.getElement('psi_q_regler_approx').Values.Data;
-psiq_predic_time = simouttest.logsout.getElement('psi_q_regler_approx').Values.time;
+% psid_predic = simouttest.logsout.getElement('psi_d_regler_approx').Values.Data;
+% psid_predic_time = simouttest.logsout.getElement('psi_d_regler_approx').Values.time;
+% psiq_predic = simouttest.logsout.getElement('psi_q_regler_approx').Values.Data;
+% psiq_predic_time = simouttest.logsout.getElement('psi_q_regler_approx').Values.time;
+
+psid_predic = simouttest.logsout.getElement('fluxd_predic').Values.Data;
+psid_predic_time = simouttest.logsout.getElement('fluxd_predic').Values.time;
+psiq_predic = simouttest.logsout.getElement('fluxq_predic').Values.Data;
+psiq_predic_time = simouttest.logsout.getElement('fluxq_predic').Values.time;
 
 ud_ent = simouttest.logsout.getElement('ud_ent').Values.Data;
 ud_ent = -1*ud_ent;
@@ -59,10 +65,10 @@ measurement_iqsollwert_value = pgfplots_test{1:end, 4}; %Sollte immer gleich ble
 % Es wird ein Zeitschritt ausgewählt auf was die Achse sozusagen verschoben
 % werden soll also ist der Sprung bei 0.0 das muss dann immer zu Simulink
 % passen
-desired_step_time = 0.025;
+desired_step_time = 0.02;
 find_value = max(measurement_iqsollwert_value); %der Dazugehörige maximale Sprung
 first_step_index = find(measurement_iqsollwert_value == find_value, 1); %%%% Die  ist der istwert sprung muss eben gleich dem sein was in der excel file ist
-time_difference = measurement_1_time(first_step_index-1) - desired_step_time;
+time_difference = measurement_1_time(first_step_index) - desired_step_time;
 global_time_vector = measurement_1_time - time_difference;
 
 %Hier werden die measurement vectoren in den richtigen Zeitbereich gebracht
@@ -181,7 +187,7 @@ measurement_iqsollwert_value = measurement_iqsollwert_value(global_time_vector >
 
 %% plotten
 
-% %% iq 
+%% iq 
 % figure;
 % plot(timeplot_iq,iq_plot, 'LineWidth', 3,'Color', 'blue');
 % hold on;
@@ -222,7 +228,7 @@ measurement_iqsollwert_value = measurement_iqsollwert_value(global_time_vector >
 % %title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
 % set(gca, 'FontSize', 22);
 % set(0,'defaulttextinterpreter','latex')
-% %% uq 
+ %% uq 
 % figure;
 % plot(ud_ent_time,uq_ent, 'LineWidth', 3,'Color', 'red');
 % hold on;
@@ -255,7 +261,7 @@ measurement_iqsollwert_value = measurement_iqsollwert_value(global_time_vector >
 % set(gca, 'FontSize', 22);
 % set(0,'defaulttextinterpreter','latex')
 
-%% flux prediction
+ %% flux prediction
 figure;
 plot(psiq_predic_time,psiq_predic, 'LineWidth', 3,'Color', 'blue');
 hold on;
@@ -298,7 +304,7 @@ set(0,'defaulttextinterpreter','latex')
 
 
 %% Calculate error 
-% %% iq
+%% iq
 % sim_iq = timeseries(iq_plot,timeplot_iq);
 % meas_iq = timeseries(measurement_1_value,cil_time);
 % [sim_iq,meas_iq]=synchronize(sim_iq,meas_iq,'union');
@@ -344,7 +350,7 @@ set(0,'defaulttextinterpreter','latex')
 figure;
  % xlim([0.0, 0.1]);
 % hold on;
-plot(abs_error_id,'LineWidth',3);
+plot(abs_error_id.Time,abs_error_id.Data,'LineWidth',3);
 xlim([0.0, stop_time]);
 % grid on
 title('Error d-achse', 'FontSize', 20);
@@ -355,6 +361,48 @@ ylabel('Fehler', 'FontSize', 18);
 set(gca,'fontsize',20);
 set(0,'defaulttextinterpreter','latex')
 
+
+%% extrahiere nach pgfplots
+% %iq
+% time_iq_sim_cut = sim_iq.Time(1:100:end);
+% data_iq_sim_cut = sim_iq.Data(1:100:end);
+% time_iq_mea_cut = meas_iq.Time(1:100:end);
+% data_iq_mea_cut = meas_iq.Data(1:100:end);
+% 
+% %id
+% time_id_sim_cut = sim_id.Time(1:100:end);
+% data_id_sim_cut = sim_id.Data(1:100:end);
+% time_id_mea_cut = meas_id.Time(1:100:end);
+% data_id_mea_cut = meas_id.Data(1:100:end);
+% 
+% %error iq
+% time_iq_error_cut = abs_error_iq.Time(1:100:end);
+% data_iq_error_cut = abs_error_iq.Data(1:100:end);
+% 
+% %error id
+% time_id_error_cut = abs_error_id.Time(1:100:end);
+% data_id_error_cut = abs_error_id.Data(1:100:end);
+
+
+%flux_approximation
+time_psiq_sim_cut = sim_iq.Time(1:100:end);
+data_psiq_sim_cut = sim_iq.Data(1:100:end);
+time_psiq_mea_cut = meas_iq.Time(1:100:end);
+data_psiq_mea_cut = meas_iq.Data(1:100:end);
+
+%id
+time_psid_sim_cut = sim_id.Time(1:100:end);
+data_psid_sim_cut = sim_id.Data(1:100:end);
+time_psid_mea_cut = meas_id.Time(1:100:end);
+data_psid_mea_cut = meas_id.Data(1:100:end);
+
+%error iq
+time_psiq_error_cut = abs_error_iq.Time(1:100:end);
+data_psiq_error_cut = abs_error_iq.Data(1:100:end);
+
+%error id
+time_psid_error_cut = abs_error_id.Time(1:100:end);
+data_psid_error_cut = abs_error_id.Data(1:100:end);
 
 
 

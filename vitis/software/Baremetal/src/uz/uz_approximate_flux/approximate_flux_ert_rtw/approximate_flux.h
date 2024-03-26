@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'approximate_flux'.
  *
- * Model version                  : 7.7
+ * Model version                  : 7.8
  * Simulink Coder version         : 23.2 (R2023b) 01-Aug-2023
- * C/C++ source code generated on : Sun Mar 24 17:08:32 2024
+ * C/C++ source code generated on : Mon Mar 25 10:25:03 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R

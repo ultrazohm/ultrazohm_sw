@@ -94,9 +94,9 @@ int main(void)
 				.Psi_PM_Vs = 0.0194f};
 
         //float omega_el_prediction = 4.0f*130.8997f; //Only a placeholder probably have to fix the flux prediciton function so this is an input
-        float omega_el_prediction = 523.5988f; //Only a placeholder probably have to fix the flux prediciton function so this is an input
+        float omega_el_prediction = 523.5988f; //Entspricht 1250 rpm,  Only a placeholder probably have to fix the flux prediciton function so this is an input
 
-        float ts_regler = 5e-5;
+        float ts_regler = 0.00005f;
         flux_prediction_instance = uz_flux_prediction_init(config_PMSM, ts_regler, omega_el_prediction);
 
         struct uz_PMSM_flux_fitting_parameter_config_t fitting_config = {

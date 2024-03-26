@@ -32,16 +32,16 @@ uz_approximate_flux_t* uz_approximate_flux_init(uz_PMSM_flux_fitting_parameter_c
     self->PtrToModelData=&self->modelData;
     self->PtrToModelData->inputs=&self->input;
     self->PtrToModelData->outputs=&self->output;
-    self->input.fitting_parameters[0]=fitting_config.ad1_parameter;
-    self->input.fitting_parameters[1]=fitting_config.ad2_parameter;
-    self->input.fitting_parameters[2]=fitting_config.ad3_parameter;
-    self->input.fitting_parameters[3]=fitting_config.ad4_parameter;
-    self->input.fitting_parameters[4]=fitting_config.ad5_parameter;
-    self->input.fitting_parameters[5]=fitting_config.ad6_parameter;
-    self->input.fitting_parameters[6]=fitting_config.aq1_parameter;
-    self->input.fitting_parameters[7]=fitting_config.aq2_parameter;
-    self->input.fitting_parameters[8]=fitting_config.aq3_parameter;
-    self->input.fitting_parameters[9]=fitting_config.aq4_parameter;
+    self->input.fitting_parameters[0] =fitting_config.ad1_parameter;
+    self->input.fitting_parameters[1] =fitting_config.ad2_parameter;
+    self->input.fitting_parameters[2] =fitting_config.ad3_parameter;
+    self->input.fitting_parameters[3] =fitting_config.ad4_parameter;
+    self->input.fitting_parameters[4] =fitting_config.ad5_parameter;
+    self->input.fitting_parameters[5] =fitting_config.ad6_parameter;
+    self->input.fitting_parameters[6] =fitting_config.aq1_parameter;
+    self->input.fitting_parameters[7] =fitting_config.aq2_parameter;
+    self->input.fitting_parameters[8] =fitting_config.aq3_parameter;
+    self->input.fitting_parameters[9] =fitting_config.aq4_parameter;
     self->input.fitting_parameters[10]=fitting_config.aq5_parameter;
     self->input.fitting_parameters[11]=fitting_config.aq6_parameter;
     self->input.fitting_parameters[12]=1.0f/fitting_config.F1G1_parameter;
@@ -54,7 +54,7 @@ uz_approximate_flux_t* uz_approximate_flux_init(uz_PMSM_flux_fitting_parameter_c
     self->input.fitting_parameters[19] = fitting_config.aq1_parameter/fitting_config.aq2_parameter;
     self->input.fitting_parameters[20] = fitting_config.ad4_parameter/fitting_config.ad5_parameter;
     self->input.fitting_parameters[21] = fitting_config.ad1_parameter/fitting_config.ad2_parameter;
-    self->input.fitting_parameters[22] = fitting_config.aq3_parameter-fitting_config.aq6_parameter;
+    self->input.fitting_parameters[22] = 0.5f*(fitting_config.aq3_parameter-fitting_config.aq6_parameter);
     return(self);
 }
 

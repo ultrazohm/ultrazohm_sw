@@ -62,6 +62,8 @@ uz_3ph_dq_t flux_prediction = {0};
 
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
 
+uz_3ph_dq_t CurrentControl_output_Volts_old = {0};
+
 uz_6ph_abc_t test_to_show_flux = {0};
 
 //extern uz_3ph_dq_t v_pre_limit_Volts;
@@ -73,7 +75,7 @@ float omega_el_rad_per_sec = 0.0f;
 
 struct uz_pmsmModel_inputs_t pmsm_inputs={
 
-  .omega_mech_1_s=130.8997f,
+  .omega_mech_1_s=130.8997f,  //130.8997
 
   .v_d_V=0.0f,
 
@@ -134,20 +136,28 @@ void ISR_Control(void *data)
     	uz_pmsmModel_trigger_input_strobe(pmsm);
     	uz_pmsmModel_trigger_output_strobe(pmsm);
     	pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
-    	measured_currents_Amp.d = pmsm_old_outputs.i_d_A;
-    	measured_currents_Amp.q = pmsm_old_outputs.i_q_A;
-    	omega_el_rad_per_sec = pmsm_old_outputs.omega_mech_1_s * 4.0f;
+//    	measured_currents_Amp.d = pmsm_old_outputs.i_d_A;
+//    	measured_currents_Amp.q = pmsm_old_outputs.i_q_A;
+//    	measured_currents_Amp.d = pmsm_old_outputs.i_d_A;
+//    	measured_currents_Amp.q = pmsm_old_outputs.i_q_A;
+//    	omega_el_rad_per_sec = pmsm_old_outputs.omega_mech_1_s * 4.0f;
+    	measured_currents_Amp.d = pmsm_outputs.i_d_A;
+    	measured_currents_Amp.q = pmsm_outputs.i_q_A;
+    	measured_currents_Amp.d = pmsm_outputs.i_d_A;
+    	measured_currents_Amp.q = pmsm_outputs.i_q_A;
+    	omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+
 
     	//Approximate psid and psiq and set new kpd and kpq
     	flux_approx = uz_approximate_flux_step(approximate_flux_instance, measured_currents_Amp);
     	flux_reference = uz_approximate_flux_reference_step(approximate_flux_instance,reference_currents_Amp,measured_currents_Amp);
 
 
-    	//Get volatge after the pi controllers
-    	v_out_of_pi_controller = uz_CurrentControl_sample_pi_controllers_hacky(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp);
-    	//Predict the Flux for static nonlinear decoupling
-    	flux_prediction = uz_flux_prediction_step(flux_prediction_instance, measured_currents_Amp, CurrentControl_output_Volts, v_out_of_pi_controller,  flux_approx);
-    	// if flux_prediction is off
+//    	//Get volatge after the pi controllers
+//    	v_out_of_pi_controller = uz_CurrentControl_sample_pi_controllers_hacky(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp);
+//    	//Predict the Flux for static nonlinear decoupling
+//    	flux_prediction = uz_flux_prediction_step(flux_prediction_instance, measured_currents_Amp, CurrentControl_output_Volts, v_out_of_pi_controller,  flux_approx);
+//    	// if flux_prediction is off
     	flux_prediction = flux_approx;
 
     	//controller parameter adaption
@@ -166,14 +176,18 @@ void ISR_Control(void *data)
 
 //    	//Closed Loop
     	CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 400.0f, omega_el_rad_per_sec);
-    	pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
-    	pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
-//    	//OpenLoop
+
+
+    	pmsm_inputs.v_q_V=CurrentControl_output_Volts_old.q;
+    	pmsm_inputs.v_d_V=CurrentControl_output_Volts_old.d;
+
+    	CurrentControl_output_Volts_old = CurrentControl_output_Volts;
+////    	//OpenLoop
 //		pmsm_inputs.v_q_V=reference_currents_Amp.q;
 //    	pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
 
 
-    	pmsm_old_outputs = pmsm_outputs;
+//    	pmsm_old_outputs = pmsm_outputs;
     	uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
 

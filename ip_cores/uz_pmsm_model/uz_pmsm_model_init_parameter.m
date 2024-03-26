@@ -82,7 +82,8 @@ static_friction_torque=0.01;
 % % inertia=0.001;
 % friction_coefficient=0;
 % static_friction_torque=0;
-setpoint_step = 4.0;
+setpoint_step = 8.0;
+omega_mech = 130.8997;
 rpm = 1250;
 load_torque = 0;
 
@@ -93,9 +94,9 @@ simulate_nonlinear_modell=true;
 
 parameter_nachfuerung=false;
 
-praediktion_entkopplung_nonlinear=true;
+praediktion_entkopplung_nonlinear=false;
 
-entkopplung_linear=false;
+entkopplung_linear=true;
 entkopplung_static=false;
 entkopplung_dynamic=false;
 

@@ -217,7 +217,7 @@ int main(void)
     struct uz_SetPoint_config SP_config_2 = {
            .config_PMSM = config_PMSM_2,
            .control_type = FOC,
-           .motor_type = IPMSM,
+           .motor_type = SMPMSM,
            .is_field_weakening_enabled = false,
            .id_ref_Ampere = 0.0f,
            .relative_torque_tolerance = 0.1f

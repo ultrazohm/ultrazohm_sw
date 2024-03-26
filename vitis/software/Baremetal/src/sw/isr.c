@@ -184,12 +184,14 @@ void ISR_Control(void *data)
 
     // Calculation of Signals for FOC for PMSM 2
     Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
+    Global_Data.av.mechanicalRotorSpeed_2 = Resolver_outputs.n_mech_rpm;
     Global_Data.av.mechanicalRotorSpeed_filtered_2 = Resolver_outputs.n_mech_rpm;
     omega_m_rad_per_sec_2 = Resolver_outputs.omega_mech_rad_s;
     omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2 * config_PMSM_2.polePairs;
     Global_Data.av.omega_el_2 = omega_el_rad_per_sec_2;
     theta_el_rad_2 = Resolver_outputs.position_el_2pi;
     i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
+    v_dq_Volts_2 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_2, theta_el_rad_2);
 
     if (current_state==control_state)
     {

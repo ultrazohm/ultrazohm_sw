@@ -43,8 +43,10 @@ extern float theta_el_rad_2;
 extern struct uz_3ph_abc_t i_abc_Amps_1;
 extern struct uz_3ph_abc_t i_abc_Amps_2;
 extern struct uz_3ph_dq_t i_dq_Amps_1;
+extern struct uz_3ph_dq_t i_dq_Amps_2;
 extern struct uz_3ph_dq_t i_dqn_filtered_5th_Amps_1;
 extern struct uz_3ph_dq_t i_dqn_filtered_7th_Amps_1;
+extern struct uz_3ph_dq_t v_dq_Volts_2;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -84,9 +86,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ub] 			= &data->av.U_V;
 	js_ch_observable[JSO_uc] 			= &data->av.U_W;
 	js_ch_observable[JSO_iq_1] 			= &i_dq_Amps_1.q;
-	js_ch_observable[JSO_iq_2] 			= &data->av.I_q_2;
+	js_ch_observable[JSO_iq_2] 			= &i_dq_Amps_2.q;
 	js_ch_observable[JSO_id_1] 			= &i_dq_Amps_1.d;
-	js_ch_observable[JSO_id_2] 			= &data->av.I_d_2;
+	js_ch_observable[JSO_id_2] 			= &i_dq_Amps_2.d;
 	js_ch_observable[JSO_id_5th_1] 		= &i_dqn_filtered_5th_Amps_1.d;
 	js_ch_observable[JSO_iq_5th_1] 		= &i_dqn_filtered_5th_Amps_1.q;
 	js_ch_observable[JSO_id_7th_1] 		= &i_dqn_filtered_7th_Amps_1.d;

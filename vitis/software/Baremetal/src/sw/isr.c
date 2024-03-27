@@ -195,13 +195,6 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
-    	//Only for offset determination
-    	uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_d4, Global_Data.av.theta_offset_2);
-
-
-
-
-
     	// Field Oriented Control of PMSM 1
     	//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     	//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);

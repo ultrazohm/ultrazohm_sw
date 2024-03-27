@@ -148,7 +148,7 @@ int main(void)
 
         struct uz_CurrentControl_config config_CurrentControl = {
 
-        		.decoupling_select = linear_decoupling, //
+        		.decoupling_select = static_nonlinear_decoupling, //
 
 				.config_PMSM = config_PMSM,
 

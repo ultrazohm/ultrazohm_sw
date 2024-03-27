@@ -7,7 +7,7 @@ LUT_approx_methode2a;
 close all;
 
 % pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/Open_Loop_iq_id_omegamech_mechan');
-pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/ClosedLoopMotor1/Log_2024-03-26_19-46-33');
+pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/ClosedLoopMotor1/Closed_Loop_flux_pre_aus_lin_ent_para_aus_iplusminus8A_1250prm');
 % pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
 
@@ -17,7 +17,7 @@ pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/ClosedLoopMotor1/
 set(0,'defaulttextinterpreter','latex')
 %% Simulink Simulation
 %Set stop_time
-stop_time = 0.06;
+stop_time = 0.006;
 simouttest = sim('uz_pmsm_model','StopTime','stop_time');
 iq_plot = simouttest.logsout.getElement('i_q_hdl').Values.Data;
 timeplot_iq = simouttest.logsout.getElement('i_q_hdl').Values.time;
@@ -38,10 +38,10 @@ sim.id_soll_time = simouttest.logsout.getElement('i_d_soll').Values.time;
 % psiq_sim = simouttest.logsout.getElement('psi_q_approx').Values.Data;
 % psiq_sim_time = simouttest.logsout.getElement('psi_q_approx').Values.time;
 
-psid_predic = simouttest.logsout.getElement('psi_d_regler_approx').Values.Data;
-psid_predic_time = simouttest.logsout.getElement('psi_d_regler_approx').Values.time;
-psiq_predic = simouttest.logsout.getElement('psi_q_regler_approx').Values.Data;
-psiq_predic_time = simouttest.logsout.getElement('psi_q_regler_approx').Values.time;
+% psid_predic = simouttest.logsout.getElement('psi_d_regler_approx').Values.Data;
+% psid_predic_time = simouttest.logsout.getElement('psi_d_regler_approx').Values.time;
+% psiq_predic = simouttest.logsout.getElement('psi_q_regler_approx').Values.Data;
+% psiq_predic_time = simouttest.logsout.getElement('psi_q_regler_approx').Values.time;
 
 % psid_predic = simouttest.logsout.getElement('fluxd_predic').Values.Data;
 % psid_predic_time = simouttest.logsout.getElement('fluxd_predic').Values.time;
@@ -53,10 +53,11 @@ psiq_predic_time = simouttest.logsout.getElement('psi_q_regler_approx').Values.t
 % psiq_predic = simouttest.logsout.getElement('Kp_q_adap').Values.Data;
 % psiq_predic_time = simouttest.logsout.getElement('Kp_q_adap').Values.time;
 
-% psid_predic = simouttest.logsout.getElement('ud_ent').Values.Data;
-% psid_predic_time = simouttest.logsout.getElement('ud_ent').Values.time;
-% psiq_predic = simouttest.logsout.getElement('uq_ent').Values.Data;
-% psiq_predic_time = simouttest.logsout.getElement('uq_ent').Values.time;
+psid_predic = simouttest.logsout.getElement('ud_ent').Values.Data;
+psid_predic = -1*psid_predic;
+psid_predic_time = simouttest.logsout.getElement('ud_ent').Values.time;
+psiq_predic = simouttest.logsout.getElement('uq_ent').Values.Data;
+psiq_predic_time = simouttest.logsout.getElement('uq_ent').Values.time;
 
 % ud_ent = simouttest.logsout.getElement('ud_ent').Values.Data;
 % ud_ent = -1*ud_ent;
@@ -67,7 +68,7 @@ psiq_predic_time = simouttest.logsout.getElement('psi_q_regler_approx').Values.t
 %% PgfPlot Fugaze
 setpoint_search = setpoint_step;  %%Hier wird der Wert gesetzt nachdem er später gesucht wird
 %Hier werden einfach die Werte aus der csv datei in eine matrix geschrieben
-measurement_1_value = pgfplots_test{1:end, 2};
+measurement_1_value = pgfplots_test{1:end, 3};
 measurement_1_time = pgfplots_test{1:end, 1}; %Channel 1 ist immer die Zeit
 measurement_2_value = pgfplots_test{1:end, 4};
 measurement_iqsollwert_value = pgfplots_test{1:end, 4}; %Sollte immer gleich bleiben,Des ist der Sprung Der WErt 4 könnte sich unterscheiden je nachdem auf Welchen Kanal ich des schreiben werde
@@ -75,7 +76,7 @@ measurement_iqsollwert_value = pgfplots_test{1:end, 4}; %Sollte immer gleich ble
 % Es wird ein Zeitschritt ausgewählt auf was die Achse sozusagen verschoben
 % werden soll also ist der Sprung bei 0.0 das muss dann immer zu Simulink
 % passen
-desired_step_time = 0.02;
+desired_step_time = 0.001;
 find_value = max(measurement_iqsollwert_value); %der Dazugehörige maximale Sprung
 first_step_index = find(measurement_iqsollwert_value == find_value, 1); %%%% Die  ist der istwert sprung muss eben gleich dem sein was in der excel file ist
 time_difference = measurement_1_time(first_step_index) - desired_step_time;
@@ -287,7 +288,7 @@ set(0,'defaulttextinterpreter','latex')
 % 
 % xlabel('Zeit/s', 'FontSize', 18);
 % ylabel('Fluss/Vs', 'FontSize', 18);
-% legend('psiq sim','psid sim','psiq cil','psid cil');
+% legend('uq sim','ud sim','uq cil','ud cil');
 % % legend('psi_q predic sim','psi_d predic sim','psi_q predic cil','psi_d predic cil');
 % %title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
 % set(gca, 'FontSize', 22);
@@ -396,7 +397,7 @@ set(0,'defaulttextinterpreter','latex')
 % data_id_error_cut = abs_error_id.Data(1:100:end);
 
 
-% % %flux_approximation
+%% flux_approximation
 % time_psiq_sim_cut = sim_iq.Time(1:4:end);
 % data_psiq_sim_cut = sim_iq.Data(1:4:end);
 % time_psiq_mea_cut = meas_iq.Time(1:4:end);
@@ -416,8 +417,39 @@ set(0,'defaulttextinterpreter','latex')
 % time_psid_error_cut = abs_error_id.Time(1:10:end);
 % data_psid_error_cut = abs_error_id.Data(1:10:end);
 
+%% Voltage_for decoupling
+% time_uq_sim_cut = sim_iq.Time(1:10:end);
+% data_uq_sim_cut = sim_iq.Data(1:10:end);
+% time_uq_mea_cut = meas_iq.Time(1:10:end);
+% data_uq_mea_cut = meas_iq.Data(1:10:end);
+% 
+% %id
+% time_ud_sim_cut = sim_id.Time(1:10:end);
+% data_ud_sim_cut = sim_id.Data(1:10:end);
+% time_ud_mea_cut = meas_id.Time(1:10:end);
+% data_ud_mea_cut = meas_id.Data(1:10:end);
+% 
+% %error iq
+% time_uq_error_cut = abs_error_iq.Time(1:10:end);
+% data_uq_error_cut = abs_error_iq.Data(1:10:end);
+% 
+% %error id
+% time_ud_error_cut = abs_error_id.Time(1:10:end);
+% data_ud_error_cut = abs_error_id.Data(1:10:end);
 
+% data_iq_soll_cut =meas_id.Data(1:10:end);
+% time_iq_soll_cut =meas_id.Time(1:10:end);
+% data_iq_lin_cut =meas_iq.Data(1:10:end);
+% time_iq_lin_cut =meas_iq.Time(1:10:end);
 
+% sim_iq = timeseries(sim.id_soll_value,sim.id_soll_time);
+
+data_id_soll_cut =-1*meas_id.Data(1:10:end);
+time_id_soll_cut =meas_id.Time(1:10:end);
+% data_id_soll_cut =sim_iq.Data(1:10:end);
+% time_id_soll_cut =sim_iq.Time(1:10:end);
+% data_id_lin_cut =meas_iq.Data(1:10:end);
+% time_id_lin_cut =meas_iq.Time(1:10:end);
 
 
 

@@ -1,5 +1,7 @@
 %% adaption nach pgfplots exportieren
 
+%% Open LOOp Measurement
+
 % writematrix([time_iq_sim_cut, data_iq_sim_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Open_Loop_iq_4A_0rpm_sim.csv');
 % writematrix([time_id_sim_cut, data_id_sim_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Open_Loop_idminus4A_0rpm_sim.csv');
 % 
@@ -28,7 +30,9 @@
 % 
 % writematrix([time_iq_error_cut,data_iq_error_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Open_Loop_iq_8A_1250rpm_error.csv');
 % writematrix([time_id_error_cut,data_id_error_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Open_Loop_idminus8A_1250rpm_error.csv');
-% % 
+
+%% Flux Approximation
+
 % %%---------------------------4--------------------------------------%%%%%
 % writematrix([time_psiq_sim_cut, data_psiq_sim_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\flux_q_approx_Open_Loop_8A_1250rpm_sim.csv');
 % writematrix([time_psid_sim_cut, data_psid_sim_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\flux_d_approx_Open_Loop_8A_1250rpm_sim.csv');
@@ -49,6 +53,38 @@
 % writematrix([time_psiq_error_cut,data_psiq_error_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\flux_approx_q_Open_Loop_4A_1250rpm_error.csv');
 % writematrix([time_psid_error_cut,data_psid_error_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\flux_approx_d_Open_Loop_4A_1250rpm_error.csv');
 % % 
+
+%% Decoupling 
+%% Voltages
+%%---------------------------6--------------------------------------%%%%%
+% writematrix([time_uq_sim_cut, data_uq_sim_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_uq_nonlin_ent_8A_1250rpm_sim.csv');
+% writematrix([time_ud_sim_cut, data_ud_sim_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_ud_nonlin_ent_8A_1250rpm_sim.csv');
+% 
+% writematrix([time_uq_mea_cut, data_uq_mea_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_uq_nonlin_ent_8A_1250rpm_cil.csv');
+% writematrix([time_ud_mea_cut,data_ud_mea_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_ud_nonlin_ent_8A_1250rpm_cil.csv');
+% 
+% writematrix([time_uq_error_cut,data_uq_error_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_uq_nonlin_ent_8A_1250rpm_error.csv');
+% writematrix([time_ud_error_cut,data_ud_error_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_ud_nonlin_ent_8A_1250rpm_error.csv');
+%% Currents
 % %%---------------------------6--------------------------------------%%%%%
-% writematrix([timeplot_iq, iq_plot],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_datein\iq_adap_an_8A.csv');
-% writematrix([timeplot_id, id_plot],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_datein\id_adap_an_8A.csv');
+% writematrix([time_uq_sim_cut, data_uq_sim_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_iq_nonlin_ent_8A_1250rpm_sim.csv');
+% writematrix([time_ud_sim_cut, data_ud_sim_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_id_nonlin_ent_8A_1250rpm_sim.csv');
+% 
+% writematrix([time_uq_mea_cut, data_uq_mea_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_iq_nonlin_ent_8A_1250rpm_cil.csv');
+% writematrix([time_ud_mea_cut,data_ud_mea_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_id_nonlin_ent_8A_1250rpm_cil.csv');
+% 
+% writematrix([time_uq_error_cut,data_uq_error_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_iq_nonlin_ent_8A_1250rpm_error.csv');
+% writematrix([time_ud_error_cut,data_ud_error_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_id_nonlin_ent_8A_1250rpm_error.csv');
+
+
+
+% writematrix([time_iq_lin_cut,data_iq_lin_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_iq_lin_ent_8A_1250rpm.csv');
+% writematrix([time_iq_soll_cut,data_iq_soll_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_iq_soll_ent_8A_1250rpm.csv');
+
+% writematrix([time_id_lin_cut,data_id_lin_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_id_lin_ent_8A_1250rpm.csv');
+writematrix([time_id_soll_cut,data_id_soll_cut],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_ergebnisse_und_Validierung\Motor1_ergebnisse\csv_dateien\Motor1_Closed_Loop\Closed_Loop_id_soll_ent_8A_1250rpm.csv');
+
+
+% %%---------------------------6--------------------------------------%%%%%
+% %%---------------------------6--------------------------------------%%%%%
+

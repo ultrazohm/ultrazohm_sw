@@ -96,8 +96,8 @@ parameter_nachfuerung=false;
 
 praediktion_entkopplung_nonlinear=false;
 
-entkopplung_linear=true;
-entkopplung_static=false;
+entkopplung_linear=false;
+entkopplung_static=true;
 entkopplung_dynamic=false;
 
 

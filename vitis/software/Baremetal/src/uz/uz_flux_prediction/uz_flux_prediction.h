@@ -16,7 +16,7 @@ typedef struct uz_flux_prediction_t uz_flux_prediction_t;
  * @brief init function for the flux_prediction
  * @return uz_flux_prediction*, pointer to the flux_prediction
  */
-uz_flux_prediction_t* uz_flux_prediction_init(uz_PMSM_t config, float ts_regler, float omega_el);
+uz_flux_prediction_t* uz_flux_prediction_init(uz_PMSM_t config, float ts_regler, float omega_el_prediction);
 /**
  * @brief flux_prediction
  * @return flux_prediction

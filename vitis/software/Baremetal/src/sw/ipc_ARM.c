@@ -188,7 +188,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		reference_currents_Amp.q = value;
-		reference_currents_Amp.d = -value;
+		reference_currents_Amp.d = -1.0f*value;
 			break;
 
 		case (Set_Send_Field_2):

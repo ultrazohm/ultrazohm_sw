@@ -113,14 +113,14 @@ static uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers(uz_CurrentControl_t* 
 }
 
 // Entire Function got added for testing the flux prediction
-//uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers_hacky(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
-//	uz_assert_not_NULL(self);
-//	uz_assert(self->is_ready);
-//	uz_3ph_dq_t v_output_Volts_hacky = { 0 };
-//	v_output_Volts_hacky.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
-//	v_output_Volts_hacky.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
-//	return (v_output_Volts_hacky);
-//}
+uz_3ph_dq_t uz_CurrentControl_sample_pi_controllers_hacky(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere, uz_3ph_dq_t i_actual_Ampere) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_3ph_dq_t v_output_Volts_hacky = { 0 };
+	v_output_Volts_hacky.q = uz_PI_Controller_sample(self->Controller_iq, i_reference_Ampere.q, i_actual_Ampere.q, self->ext_clamping);
+	v_output_Volts_hacky.d = uz_PI_Controller_sample(self->Controller_id, i_reference_Ampere.d, i_actual_Ampere.d, self->ext_clamping);
+	return (v_output_Volts_hacky);
+}
 
 void uz_CurrentControl_reset(uz_CurrentControl_t* self){
 	uz_assert_not_NULL(self);

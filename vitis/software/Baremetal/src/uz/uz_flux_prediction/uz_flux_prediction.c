@@ -26,13 +26,13 @@ static uz_flux_prediction_t *uz_flux_prediction_allocation(void){
     return (self);
 }
 
-uz_flux_prediction_t* uz_flux_prediction_init(uz_PMSM_t config, float ts_regler, float omega_el){
+uz_flux_prediction_t* uz_flux_prediction_init(uz_PMSM_t config, float ts_regler, float omega_el_prediction){
     uz_flux_prediction_t* self = uz_flux_prediction_allocation();
     self->PtrToModelData=&self->modelData;
     self->PtrToModelData->inputs=&self->input;
     self->PtrToModelData->outputs=&self->output;
     self->input.r_1 = config.R_ph_Ohm;
-    self->input.omega_ell = omega_el;
+    self->input.omega_ell = omega_el_prediction;
     self->input.ts_regler = ts_regler;
 
     return(self);

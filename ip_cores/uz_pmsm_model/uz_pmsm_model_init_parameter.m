@@ -92,7 +92,7 @@ simulate_mechanical=false;
 simulate_open_loop=false;
 simulate_nonlinear_modell=true;
 
-parameter_nachfuerung=false;
+parameter_nachfuerung=true;
 
 praediktion_entkopplung_nonlinear=true;
 

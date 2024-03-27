@@ -154,8 +154,9 @@ void ISR_Control(void *data)
 
 
     	//Get volatge after the pi controllers
-    	v_out_of_pi_controller = uz_CurrentControl_sample_pi_controllers_hacky(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp);
+//    	v_out_of_pi_controller = uz_CurrentControl_sample_pi_controllers_hacky(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp);
     	//Predict the Flux for static nonlinear decoupling
+//    	uz_CurrentControl_reset(CurrentControl_instance);
     	flux_prediction = uz_flux_prediction_step(flux_prediction_instance, measured_currents_Amp, CurrentControl_output_Volts, v_out_of_pi_controller,  flux_approx);
     	// if flux_prediction is off
 //    	flux_prediction = flux_approx;

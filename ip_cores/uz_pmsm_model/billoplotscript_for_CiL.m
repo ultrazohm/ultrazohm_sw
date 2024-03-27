@@ -7,7 +7,7 @@ LUT_approx_methode2a;
 close all;
 
 % pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/Open_Loop_iq_id_omegamech_mechan');
-pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/ClosedLoopMotor1/Closed_Loop_flux_pre_aus_lin_ent_para_aus_iplusminus8A_1250prm');
+pgfplots_test = readtable('Neue_Plot_funktionen_besserer_Namen/ClosedLoopMotor1/Closed_loop_flux_pre_an_nonlin_ent_para_aus_8A_1250rpm');
 % pgfplots_test_cut = pgfplots_test(2:2:end, 1:1:2);
 % pgfplots_test = pgfplots_test(2:2:end, 1:1:2);
 
@@ -68,9 +68,9 @@ psiq_predic_time = simouttest.logsout.getElement('uq_ent').Values.time;
 %% PgfPlot Fugaze
 setpoint_search = setpoint_step;  %%Hier wird der Wert gesetzt nachdem er später gesucht wird
 %Hier werden einfach die Werte aus der csv datei in eine matrix geschrieben
-measurement_1_value = pgfplots_test{1:end, 3};
+measurement_1_value = pgfplots_test{1:end, 11};
 measurement_1_time = pgfplots_test{1:end, 1}; %Channel 1 ist immer die Zeit
-measurement_2_value = pgfplots_test{1:end, 4};
+measurement_2_value = pgfplots_test{1:end,10};
 measurement_iqsollwert_value = pgfplots_test{1:end, 4}; %Sollte immer gleich bleiben,Des ist der Sprung Der WErt 4 könnte sich unterscheiden je nachdem auf Welchen Kanal ich des schreiben werde
 
 % Es wird ein Zeitschritt ausgewählt auf was die Achse sozusagen verschoben
@@ -199,48 +199,48 @@ measurement_iqsollwert_value = measurement_iqsollwert_value(global_time_vector >
 %% plotten
 
 %% iq 
-figure;
-plot(timeplot_iq,iq_plot, 'LineWidth', 3,'Color', 'blue');
-hold on;
+% figure;
+% plot(timeplot_iq,iq_plot, 'LineWidth', 3,'Color', 'blue');
+% hold on;
+% % plot(timeplot_id,id_plot, 'LineWidth', 3,'Color', 'red');
+% % hold on;
+% 
+% 
+% plot(cil_time,measurement_1_value,'--', 'LineWidth', 3,'Color', 'cyan');
+% hold on;
+% plot(sim.iq_soll_time,sim.iq_soll_value,'--', 'LineWidth', 1,'Color', 'green');
+% hold on;
+% % plot(cil_time,measurement_2_value,'--', 'LineWidth', 3,'Color', 'green');
+% % hold on;
+% xlim([0.0, stop_time]);
+% % plot(cil_time,measurement_iqsollwert_value,'--', 'LineWidth', 2,'Color', 'cyan');
+% % title('Sprung 1A,nonlinear, mechsys an, normal CC', 'FontSize', 20);
+% xlabel('Zeit/s', 'FontSize', 18);
+% ylabel('Fluss/Vs', 'FontSize', 18);
+% legend('iq sim','iq cil','iq soll sim');
+% % legend('psi_q predic sim','psi_d predic sim','psi_q predic cil','psi_d predic cil');
+% %title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
+% set(gca, 'FontSize', 22);
+% set(0,'defaulttextinterpreter','latex')
+% 
+% %% id 
+% figure;
 % plot(timeplot_id,id_plot, 'LineWidth', 3,'Color', 'red');
 % hold on;
-
-
-plot(cil_time,measurement_1_value,'--', 'LineWidth', 3,'Color', 'cyan');
-hold on;
-plot(sim.iq_soll_time,sim.iq_soll_value,'--', 'LineWidth', 1,'Color', 'green');
-hold on;
 % plot(cil_time,measurement_2_value,'--', 'LineWidth', 3,'Color', 'green');
 % hold on;
-xlim([0.0, stop_time]);
-% plot(cil_time,measurement_iqsollwert_value,'--', 'LineWidth', 2,'Color', 'cyan');
-% title('Sprung 1A,nonlinear, mechsys an, normal CC', 'FontSize', 20);
-xlabel('Zeit/s', 'FontSize', 18);
-ylabel('Fluss/Vs', 'FontSize', 18);
-legend('iq sim','iq cil','iq soll sim');
-% legend('psi_q predic sim','psi_d predic sim','psi_q predic cil','psi_d predic cil');
-%title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
-set(gca, 'FontSize', 22);
-set(0,'defaulttextinterpreter','latex')
-
-%% id 
-figure;
-plot(timeplot_id,id_plot, 'LineWidth', 3,'Color', 'red');
-hold on;
-plot(cil_time,measurement_2_value,'--', 'LineWidth', 3,'Color', 'green');
-hold on;
- plot(sim.id_soll_time,sim.id_soll_value,'--', 'LineWidth', 1,'Color', 'cyan');
-% hold on;
-xlim([0.0, stop_time]);
-% plot(cil_time,measurement_iqsollwert_value,'--', 'LineWidth', 2,'Color', 'cyan');
-% title('Sprung 1A,nonlinear, mechsys an, normal CC', 'FontSize', 20);
-xlabel('Zeit/s', 'FontSize', 18);
-ylabel('Fluss/Vs', 'FontSize', 18);
-legend('id sim','id cil','iq soll sim');
-% legend('psi_q predic sim','psi_d predic sim','psi_q predic cil','psi_d predic cil');
-%title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
-set(gca, 'FontSize', 22);
-set(0,'defaulttextinterpreter','latex')
+%  plot(sim.id_soll_time,sim.id_soll_value,'--', 'LineWidth', 1,'Color', 'cyan');
+% % hold on;
+% xlim([0.0, stop_time]);
+% % plot(cil_time,measurement_iqsollwert_value,'--', 'LineWidth', 2,'Color', 'cyan');
+% % title('Sprung 1A,nonlinear, mechsys an, normal CC', 'FontSize', 20);
+% xlabel('Zeit/s', 'FontSize', 18);
+% ylabel('Fluss/Vs', 'FontSize', 18);
+% legend('id sim','id cil','iq soll sim');
+% % legend('psi_q predic sim','psi_d predic sim','psi_q predic cil','psi_d predic cil');
+% %title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
+% set(gca, 'FontSize', 22);
+% set(0,'defaulttextinterpreter','latex')
  %% uq 
 % figure;
 % plot(ud_ent_time,uq_ent, 'LineWidth', 3,'Color', 'red');
@@ -275,24 +275,24 @@ set(0,'defaulttextinterpreter','latex')
 % set(0,'defaulttextinterpreter','latex')
 
  %% flux prediction
-% figure;
-% plot(psiq_predic_time,psiq_predic, 'LineWidth', 3,'Color', 'blue');
-% hold on;
-% plot(psid_predic_time,psid_predic, 'LineWidth', 3,'Color', 'red');
-% hold on;
-% plot(cil_time,measurement_1_value,'--', 'LineWidth', 3,'Color', 'cyan');
-% hold on;
-% plot(cil_time,measurement_2_value,'--', 'LineWidth', 3,'Color', 'green');
-% hold on;
-% xlim([0.0, stop_time]);
-% 
-% xlabel('Zeit/s', 'FontSize', 18);
-% ylabel('Fluss/Vs', 'FontSize', 18);
-% legend('uq sim','ud sim','uq cil','ud cil');
-% % legend('psi_q predic sim','psi_d predic sim','psi_q predic cil','psi_d predic cil');
-% %title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
-% set(gca, 'FontSize', 22);
-% set(0,'defaulttextinterpreter','latex')
+figure;
+plot(psiq_predic_time,psiq_predic, 'LineWidth', 3,'Color', 'blue');
+hold on;
+plot(psid_predic_time,psid_predic, 'LineWidth', 3,'Color', 'red');
+hold on;
+plot(cil_time,measurement_1_value,'--', 'LineWidth', 3,'Color', 'cyan');
+hold on;
+plot(cil_time,measurement_2_value,'--', 'LineWidth', 3,'Color', 'green');
+hold on;
+xlim([0.0, stop_time]);
+
+xlabel('Zeit/s', 'FontSize', 18);
+ylabel('Fluss/Vs', 'FontSize', 18);
+legend('uq sim','ud sim','uq cil','ud cil');
+% legend('psi_q predic sim','psi_d predic sim','psi_q predic cil','psi_d predic cil');
+%title('Sprungantworten Simulation mit Betragsoptimum Cil mit Tutorialparametern')
+set(gca, 'FontSize', 22);
+set(0,'defaulttextinterpreter','latex')
 
 
 % figure;
@@ -318,29 +318,29 @@ set(0,'defaulttextinterpreter','latex')
 
 %% Calculate error 
 %% iq
-sim_iq = timeseries(iq_plot,timeplot_iq);
-meas_iq = timeseries(measurement_1_value,cil_time);
-[sim_iq,meas_iq]=synchronize(sim_iq,meas_iq,'union');
-abs_error_iq = sim_iq-meas_iq;
-
-%% id 
-sim_id = timeseries(id_plot,timeplot_id);
-meas_id = timeseries(measurement_2_value,cil_time);
-[sim_id,meas_id]=synchronize(sim_id,meas_id,'union');
-abs_error_id = sim_id-meas_id;
-
-%% anythingelse
-
-% sim_iq = timeseries(psiq_predic,psiq_predic_time);
+% sim_iq = timeseries(iq_plot,timeplot_iq);
 % meas_iq = timeseries(measurement_1_value,cil_time);
 % [sim_iq,meas_iq]=synchronize(sim_iq,meas_iq,'union');
 % abs_error_iq = sim_iq-meas_iq;
 % 
-% 
-% sim_id = timeseries(psid_predic,psid_predic_time);
+% %% id 
+% sim_id = timeseries(id_plot,timeplot_id);
 % meas_id = timeseries(measurement_2_value,cil_time);
 % [sim_id,meas_id]=synchronize(sim_id,meas_id,'union');
 % abs_error_id = sim_id-meas_id;
+
+%% anythingelse
+
+sim_iq = timeseries(psiq_predic,psiq_predic_time);
+meas_iq = timeseries(measurement_1_value,cil_time);
+[sim_iq,meas_iq]=synchronize(sim_iq,meas_iq,'union');
+abs_error_iq = sim_iq-meas_iq;
+
+
+sim_id = timeseries(psid_predic,psid_predic_time);
+meas_id = timeseries(measurement_2_value,cil_time);
+[sim_id,meas_id]=synchronize(sim_id,meas_id,'union');
+abs_error_id = sim_id-meas_id;
 
 %% plotte error
 %% iq error
@@ -376,13 +376,13 @@ set(0,'defaulttextinterpreter','latex')
 
 
 %% extrahiere nach pgfplots
-% %iq
+%iq
 % time_iq_sim_cut = sim_iq.Time(1:100:end);
 % data_iq_sim_cut = sim_iq.Data(1:100:end);
 % time_iq_mea_cut = meas_iq.Time(1:100:end);
 % data_iq_mea_cut = meas_iq.Data(1:100:end);
-% 
-% %id
+
+%id
 % time_id_sim_cut = sim_id.Time(1:100:end);
 % data_id_sim_cut = sim_id.Data(1:100:end);
 % time_id_mea_cut = meas_id.Time(1:100:end);
@@ -418,38 +418,46 @@ set(0,'defaulttextinterpreter','latex')
 % data_psid_error_cut = abs_error_id.Data(1:10:end);
 
 %% Voltage_for decoupling
-% time_uq_sim_cut = sim_iq.Time(1:10:end);
-% data_uq_sim_cut = sim_iq.Data(1:10:end);
-% time_uq_mea_cut = meas_iq.Time(1:10:end);
-% data_uq_mea_cut = meas_iq.Data(1:10:end);
+time_uq_sim_cut = sim_iq.Time(1:1:end);
+data_uq_sim_cut = sim_iq.Data(1:1:end);
+time_uq_mea_cut = meas_iq.Time(1:1:end);
+data_uq_mea_cut = meas_iq.Data(1:1:end);
+
+%id
+time_ud_sim_cut = sim_id.Time(1:1:end);
+data_ud_sim_cut = sim_id.Data(1:1:end);
+time_ud_mea_cut = meas_id.Time(1:1:end);
+data_ud_mea_cut = meas_id.Data(1:1:end);
+
+%error iq
+time_uq_error_cut = abs_error_iq.Time(1:1:end);
+data_uq_error_cut = abs_error_iq.Data(1:1:end);
+
+%error id
+time_ud_error_cut = abs_error_id.Time(1:1:end);
+data_ud_error_cut = abs_error_id.Data(1:1:end);
+
+% %iq
+% time_iq_sim_cut = sim_iq.Time(1:10:end);
+% data_iq_sim_cut = sim_iq.Data(1:10:end);
+% time_iq_mea_cut = meas_iq.Time(1:10:end);
+% data_iq_mea_cut = meas_iq.Data(1:10:end);
 % 
 % %id
-% time_ud_sim_cut = sim_id.Time(1:10:end);
-% data_ud_sim_cut = sim_id.Data(1:10:end);
-% time_ud_mea_cut = meas_id.Time(1:10:end);
-% data_ud_mea_cut = meas_id.Data(1:10:end);
+% time_id_sim_cut = sim_id.Time(1:10:end);
+% data_id_sim_cut = sim_id.Data(1:10:end);
+% time_id_mea_cut = meas_id.Time(1:10:end);
+% data_id_mea_cut = meas_id.Data(1:10:end);
 % 
 % %error iq
-% time_uq_error_cut = abs_error_iq.Time(1:10:end);
-% data_uq_error_cut = abs_error_iq.Data(1:10:end);
+% time_iq_error_cut = abs_error_iq.Time(1:10:end);
+% data_iq_error_cut = abs_error_iq.Data(1:10:end);
 % 
 % %error id
-% time_ud_error_cut = abs_error_id.Time(1:10:end);
-% data_ud_error_cut = abs_error_id.Data(1:10:end);
+% time_id_error_cut = abs_error_id.Time(1:10:end);
+% data_id_error_cut = abs_error_id.Data(1:10:end);
 
-% data_iq_soll_cut =meas_id.Data(1:10:end);
-% time_iq_soll_cut =meas_id.Time(1:10:end);
-% data_iq_lin_cut =meas_iq.Data(1:10:end);
-% time_iq_lin_cut =meas_iq.Time(1:10:end);
 
-% sim_iq = timeseries(sim.id_soll_value,sim.id_soll_time);
-
-data_id_soll_cut =-1*meas_id.Data(1:10:end);
-time_id_soll_cut =meas_id.Time(1:10:end);
-% data_id_soll_cut =sim_iq.Data(1:10:end);
-% time_id_soll_cut =sim_iq.Time(1:10:end);
-% data_id_lin_cut =meas_iq.Data(1:10:end);
-% time_id_lin_cut =meas_iq.Time(1:10:end);
 
 
 

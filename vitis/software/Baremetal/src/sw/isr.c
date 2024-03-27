@@ -96,7 +96,7 @@ float i_DC_Amps_2 								= 0.0f;
 float omega_m_rad_per_sec_2 					= 0.0f;
 float omega_el_rad_per_sec_2 					= 0.0f;
 float theta_el_rad_2 							= 0.0f;
-float theta_el_offset_2 						= 3.46f;
+float theta_el_offset_2 						= 3.631f;
 struct uz_3ph_dq_t i_dq_Amps_2 					= {0};
 struct uz_3ph_dq_t v_dq_Volts_2 				= {0};
 float n_ref_rpm_2 								= 0.0f;
@@ -117,6 +117,8 @@ extern uz_IIR_Filter_t* LP_instance_ud_ind_2;
 extern uz_IIR_Filter_t* LP_instance_uq_ind_2;
 extern uz_IIR_Filter_t* LP_instance_rc_d_2;
 extern uz_IIR_Filter_t* LP_instance_rc_q_2;
+extern uz_IIR_Filter_t* LP_instance_ud_2;
+extern uz_IIR_Filter_t* LP_instance_uq_2;
 extern uz_CurrentControl_t* CC_instance_u_ind;
 struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
 struct uz_3ph_dq_t rc_dq_Ohm 			= {0};
@@ -135,9 +137,6 @@ float M_meas_Nm2 = 0.0f;
 int control_induced_voltages = 0;
 float rc_repeat_counter = 0.0f;
 
-float DC_A = 0.0f;
-float DC_B = 0.0f;
-float DC_C = 0.0f;
 // ======================= CIL ======================= //
 
 extern uz_pmsmModel_t *pmsm;
@@ -164,6 +163,8 @@ struct uz_parameterid_output actual_output;
 struct uz_parameterid_rc_meas_out_t rc_output;
 struct uz_3ph_dq_t cil_u_ind_Volts 			= {0};
 struct uz_3ph_dq_t cil_u_ind_ref_Volts 			= {0};
+struct uz_3ph_dq_t v_dq_filt_Volts_2 			= {0};
+
 
 
 enum running_mode run_state = normal;
@@ -206,13 +207,13 @@ void ISR_Control(void *data)
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
 
     // Read Measurement Data of second Inverter Card
-    v_abc_Volts_2.a = 12.0f * Global_Data.aa.A2.me.ADC_B8;
-    v_abc_Volts_2.b = 12.0f * Global_Data.aa.A2.me.ADC_B7;
-    v_abc_Volts_2.c = 12.0f * Global_Data.aa.A2.me.ADC_B6;
+    v_abc_Volts_2.a = 11.734f * Global_Data.aa.A2.me.ADC_B8 + 0.0899f;
+    v_abc_Volts_2.b = 11.734f * Global_Data.aa.A2.me.ADC_B7 + 0.0899f;
+    v_abc_Volts_2.c = 11.734f * Global_Data.aa.A2.me.ADC_B6 + 0.0899f;
     v_DC_Volts_2 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
-    i_abc_Amps_2.a  = 12.5f * Global_Data.aa.A2.me.ADC_A4;
-    i_abc_Amps_2.b  = 12.5f * Global_Data.aa.A2.me.ADC_A3;
-    i_abc_Amps_2.c  = 12.5f * Global_Data.aa.A2.me.ADC_A2;
+    i_abc_Amps_2.a  = 11.9738f * Global_Data.aa.A2.me.ADC_A4 - 0.0253f;
+    i_abc_Amps_2.b  = 11.7798f * Global_Data.aa.A2.me.ADC_A3 - 0.0484f;
+    i_abc_Amps_2.c  = 12.5121f * Global_Data.aa.A2.me.ADC_A2 -0.0054;
     i_DC_Amps_2     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
 
@@ -246,15 +247,18 @@ void ISR_Control(void *data)
     i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
     v_dq_Volts_2 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_2, theta_el_rad_2);
 
+    v_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_2, v_dq_Volts_2.d);
+    v_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_2, v_dq_Volts_2.q);
+
     // Enable Control
     if (current_state==control_state)
     {
 
     		v_dq_SOS_Volts_2.d = (v_dq_Volts_2.d + v_dq_ref_Volts_2.d)/2.0f;
     		v_dq_SOS_Volts_2.q = (v_dq_Volts_2.q + v_dq_ref_Volts_2.q)/2.0f;
-    		r_s_2 = (1.75e-6f * Global_Data.av.mechanicalRotorSpeed_filtered_2 * Global_Data.av.mechanicalRotorSpeed_filtered_2 + 5.733e-4f * Global_Data.av.mechanicalRotorSpeed_filtered_2 + 28.4648f)/1000.0f;
-    		v_ind_dq_Volts_2.d = v_dq_SOS_Volts_2.d - (r_s_2 * i_dq_Amps_2.d);
-    		v_ind_dq_Volts_2.q = v_dq_SOS_Volts_2.q - (r_s_2 * i_dq_Amps_2.q);
+    		r_s_2 = (1.16e-8f * Global_Data.av.mechanicalRotorSpeed_filtered_2 * Global_Data.av.mechanicalRotorSpeed_filtered_2 - 8.001e-7f * Global_Data.av.mechanicalRotorSpeed_filtered_2 + 0.55f);
+    		v_ind_dq_Volts_2.d = v_dq_Volts_2.d - (r_s_2 * i_dq_Amps_2.d);
+    		v_ind_dq_Volts_2.q = v_dq_Volts_2.q - (r_s_2 * i_dq_Amps_2.q);
     		v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
     	    v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);
 
@@ -275,6 +279,7 @@ void ISR_Control(void *data)
 			        actual_output = uz_parameterid_rs_generate_outputs(rs_meas_instance, v_dq_Volts_2.d, i_dq_Amps_2.d);
 			        i_dq_ref_Amps_2.d = actual_output.i_sample;
 			        i_dq_ref_Amps_2.q = 0.0f;
+			        n_ref_rpm_1 = actual_output.n_sample;
 
 					// Field Oriented Control of PMSM 2 - current-controlled
 					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
@@ -300,7 +305,7 @@ void ISR_Control(void *data)
 					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;*/
 
 					// calculation of set-values
-			        rc_output = uz_parameterid_rc_generate_outputs(rc_meas_instance, v_dq_SOS_Volts_2.d, v_dq_SOS_Volts_2.q, i_dq_Amps_2.d, i_dq_Amps_2.q, Global_Data.av.mechanicalRotorSpeed_filtered_2, M_meas_Nm);
+			        rc_output = uz_parameterid_rc_generate_outputs(rc_meas_instance, v_dq_Volts_2.d, v_dq_Volts_2.q, i_dq_Amps_2.d, i_dq_Amps_2.q, Global_Data.av.mechanicalRotorSpeed_filtered_2, M_meas_Nm);
 			        i_dq_ref_Amps_2.d = rc_output.set_out.id_set;
 			        i_dq_ref_Amps_2.q = rc_output.set_out.iq_set;
 			        rc_repeat_counter = rc_output.finished;
@@ -344,10 +349,6 @@ void ISR_Control(void *data)
 					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
 					}
 
-					// Set DutyCycles of PMSM 2
-					//Global_Data.rasv.halfBridge4DutyCycle = DC_A;
-					//Global_Data.rasv.halfBridge5DutyCycle = DC_B;
-					//Global_Data.rasv.halfBridge6DutyCycle = DC_C;
 
 					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
 					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
@@ -490,10 +491,10 @@ void ISR_Control(void *data)
        ultrazohm_state_machine_set_error(true);
     }
     //Overtemperature for L1
-    if (!Global_Data.av.inverter_outputs_d2.FAULT_L1) {
+   /* if (!Global_Data.av.inverter_outputs_d2.FAULT_L1) {
      	error_type = 12.0f;
        ultrazohm_state_machine_set_error(true);
-    }
+    }*/
     //Overtemperature for H2
     if (!Global_Data.av.inverter_outputs_d2.FAULT_H2) {
      	error_type = 13.0f;

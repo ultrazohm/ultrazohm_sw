@@ -42,9 +42,7 @@ extern float M_ref_Nm_2;
 extern float theta_el_offset_2;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
 extern struct uz_3ph_dq_t v_ind_dq_ref_Volts_2;
-extern float DC_A;
-extern float DC_B;
-extern float DC_C;
+
 
 // ======================= Others ======================= //
 extern int option;
@@ -59,10 +57,6 @@ extern struct uz_parameterid_output actual_output;
 extern struct uz_3ph_dq_t cil_u_ind_Volts;
 extern struct uz_3ph_dq_t cil_u_ind_ref_Volts;
 extern float r_s_2;
-extern float Kp_uind_d_2;
-extern float Ki_uind_d_2;
-extern float Kp_uind_q_2;
-extern float Ki_uind_q_2;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -265,15 +259,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_11):
-			DC_A = value;
 			break;
 
 		case (Set_Send_Field_12):
-			DC_B = value;
 			break;
 
 		case (Set_Send_Field_13):
-			DC_C = value;
 			break;
 
 		case (Set_Send_Field_14):
@@ -314,16 +305,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
+
+			break;
+
+		case (My_Button_4):
 			run_state = rs_measurement_Heidrive;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
-		case (My_Button_4):
-			run_state = rc_measurement_Heidrive;
-			ultrazohm_state_machine_set_userLED(true);
-			break;
-
 		case (My_Button_5):
+			run_state = rc_measurement_Heidrive;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 

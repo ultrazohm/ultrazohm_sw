@@ -64,6 +64,9 @@ uz_IIR_Filter_t* LP_instance_ud_ind_2;
 uz_IIR_Filter_t* LP_instance_uq_ind_2;
 uz_IIR_Filter_t* LP_instance_rc_d_2;
 uz_IIR_Filter_t* LP_instance_rc_q_2;
+uz_IIR_Filter_t* LP_instance_ud_2;
+uz_IIR_Filter_t* LP_instance_uq_2;
+
 
 // Configuration of PMSM 1 (Hoerner PMSM)
 struct uz_PMSM_t config_PMSM_1 = {
@@ -190,6 +193,8 @@ int main(void)
 
     };
 
+
+
     // ------------------- Filter rc ------------------- //
 
     struct uz_IIR_Filter_config LP_config_rc_d_2 = {
@@ -206,28 +211,44 @@ int main(void)
 
     };
 
+    // ------------------- Filter u2 ------------------- //
+
+    struct uz_IIR_Filter_config LP_config_ud_2 = {
+        	.selection = LowPass_first_order,
+			.cutoff_frequency_Hz =  1.0f,
+    		.sample_frequency_Hz = 10000.0f,
+
+    };
+
+    struct uz_IIR_Filter_config LP_config_uq_2 = {
+        	.selection = LowPass_first_order,
+			.cutoff_frequency_Hz =  1.0f,
+    		.sample_frequency_Hz = 10000.0f,
+
+    };
+
 
     // config for CIL measurement
     struct uz_parameterid_rs_config_t config_rs_meas = {
     		.n_start = 0.0f,
-    	    .n_end = 1500.0f,
-    	    .n_steps = 15.0f,
-    	    .i_start = 2.0f,
+    	    .n_end = 3000.0f,
+    	    .n_steps = 10.0f,
+    	    .i_start = 1.0f,
     	    .i_diff = 1.0f,
-    	    .i_repeats = 4.0f,
-    	    .i_steptime = 2.0f,
-    	    .wait_time = 2.0f,
+    	    .i_repeats = 10.0f,
+    	    .i_steptime = 3.0f,
+    	    .wait_time = 6.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f
     };
 
     struct uz_parameterid_rc_config_t config_rc_meas = {
-    	    .id_ref = 1.0f,
-    	    .iq_ref = 1.0f,
-    	    .n_ref = 1200.0f,
+    	    .id_ref = 0.0f,
+    	    .iq_ref = 1.5f,
+    	    .n_ref = 3000.0f,
     	    .wait_time = 5.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
     	    .sample_time = 10.0f,
-			.pn = 5.0f
+			.pn = 3.0f
     };
 
     //--------- Configs for PMSM 2 (Last) ---------//
@@ -364,7 +385,6 @@ int main(void)
                 .inertia = 3.24e-05f,
                 .coulomb_friction_constant = 0.01f,
                 .friction_coefficient = 0.001f};
-            pmsm=uz_pmsmModel_init(pmsm_config);
             initialization_chain = init_ip_cores;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
@@ -406,6 +426,8 @@ int main(void)
            	LP_instance_uq_ind_2 = uz_signals_IIR_Filter_init(LP_config_uq_ind_2);
            	LP_instance_rc_d_2 = uz_signals_IIR_Filter_init(LP_config_rc_d_2);
            	LP_instance_rc_q_2 = uz_signals_IIR_Filter_init(LP_config_rc_q_2);
+           	LP_instance_ud_2 = uz_signals_IIR_Filter_init(LP_config_ud_2);
+           	LP_instance_uq_2 = uz_signals_IIR_Filter_init(LP_config_uq_2);
            	Global_Data.av.theta_offset_1 = 0.904f;
            	Global_Data.av.theta_offset_2 = 1.4f;
           	initialization_chain = print_msg;

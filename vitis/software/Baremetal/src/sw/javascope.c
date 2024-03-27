@@ -178,9 +178,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_cil_u_ind_ref_Volts_q]	 = &cil_u_ind_ref_Volts.q;
 	js_ch_observable[JSO_u_ind_ref_Volts_d]		= &v_ind_dq_ref_Volts_2.d;
 	js_ch_observable[JSO_u_ind_ref_Volts_q]		= &v_ind_dq_ref_Volts_2.q;
-	js_ch_observable[JSO_DC_A]				= &DC_A;
-	js_ch_observable[JSO_DC_B]				= &DC_B;
-	js_ch_observable[JSO_DC_C]				= &DC_C;
+
 
 
 

@@ -49,9 +49,9 @@ uz_parameterid_rc_t* uz_parameterid_rc_init(struct uz_parameterid_rc_config_t in
     self->counter.meas_max = (uint32_t)(self->internal_config.sample_time/self->internal_config.isr_steptime);
     self->counter.wait_max = (uint32_t)(self->internal_config.wait_time/self->internal_config.isr_steptime);
     uz_assert(self->internal_config.n_ref >= 0.0f);
-    uz_assert(self->internal_config.n_ref <= 1500.0f);
-    uz_assert(fabsf(self->internal_config.id_ref) < 20.0f);
-    uz_assert(fabsf(self->internal_config.iq_ref) < 20.0f);
+    uz_assert(self->internal_config.n_ref <= 3200.0f);
+    uz_assert(fabsf(self->internal_config.id_ref) < 10.0f);
+    uz_assert(fabsf(self->internal_config.iq_ref) < 10.0f);
     uz_assert(sizeof(self->save_values.save_gen_rc_d)==sizeof(self->save_values.save_gen_rc_q));
     uz_assert(sizeof(self->save_values.save_mot_rc_d)==sizeof(self->save_values.save_mot_rc_q));
     uz_assert(sizeof(self->save_values.save_mot_rc_d)==sizeof(self->save_values.save_gen_rc_q));
@@ -172,7 +172,7 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->sample.mean_iq = self->sample.sum_iq / self->counter.meas;
             self->sample.mean_n = self->sample.sum_n / self->counter.meas;
             self->sample.mean_omega = (self->sample.mean_n / 60.0f) * 2.0f * M_PI * self->internal_config.pn;
-            self->sample.r_s = (1.75e-6f * self->sample.mean_n * self->sample.mean_n + 5.733e-4f * self->sample.mean_n + 28.4648f)/1000.0f;
+            self->sample.r_s = (1.16e-8f * self->sample.mean_n * self->sample.mean_n - 8.001e-7f * self->sample.mean_n + 0.55f);
             self->save_values.save_M_meas_mot[self->counter.repeat] = self->sample.sum_M / self->counter.meas;
             self->save_values.speed[self->counter.repeat] = self->sample.mean_n;
             self->u_ind.mot_d = self->sample.mean_ud - self->sample.r_s * self->sample.mean_id;
@@ -192,7 +192,7 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->sample.mean_iq = self->sample.sum_iq / self->counter.meas;
             self->sample.mean_n = self->sample.sum_n / self->counter.meas;
             self->save_values.save_M_meas_gen[self->counter.repeat] = self->sample.sum_M / self->counter.meas;
-            self->sample.r_s = (1.75e-6f * self->sample.mean_n * self->sample.mean_n + 5.733e-4f * self->sample.mean_n + 28.4648f)/1000.0f;
+            self->sample.r_s = (1.16e-8f * self->sample.mean_n * self->sample.mean_n - 8.001e-7f * self->sample.mean_n + 0.55f);
             self->u_ind.gen_d = self->sample.mean_ud - self->sample.r_s * self->sample.mean_id;
             self->u_ind.gen_q = self->sample.mean_uq - self->sample.r_s * self->sample.mean_iq;
             self->u_meas.gen_ud = self->sample.mean_ud;

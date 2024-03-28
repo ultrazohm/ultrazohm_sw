@@ -71,6 +71,12 @@ struct uz_fixedpoint_definition_t fixedpoint_definition = {
 		.fractional_bits = 15
 };
 
+struct uz_fixedpoint_definition_t pred_error_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 29
+};
+
 typedef struct rated_val_t {
 	float VR;
 	float IR;
@@ -396,4 +402,22 @@ void fcs_mpc_debug(void){
 
 void fcs_mpc_deadtime_comp_onoff(bool onoff){
 //	uz_axi_write_bool(XPAR_UZ_USER_FCS_MPC_3PH_PU_VOLTAGES_DQ_0_BASEADDR + deadtime_comp_onoff_AXI_Data_pu_voltages_dq, onoff);
+}
+
+void fcs_mpc_get_pred_error_pu(void) {
+	Global_Data.av.d_pred_error = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_0_UZ_PRED_ERROR_0_BASEADDR + ed_pred_AXI_Data_uz_pred_error, pred_error_fixedpoint_definition);
+	Global_Data.av.q_pred_error = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_0_UZ_PRED_ERROR_0_BASEADDR + eq_pred_AXI_Data_uz_pred_error, pred_error_fixedpoint_definition);
+	Global_Data.av.d_pred_error_sq = powf(Global_Data.av.d_pred_error, 2.0f);
+	Global_Data.av.q_pred_error_sq = powf(Global_Data.av.q_pred_error, 2.0f);
+}
+
+void fcs_mpc_change_Ts_for_delay_and_prediction(float Ts_left_changed) {
+
+	float Ts_times_ZB_over_Ld_changed = Ts_left_changed*base_val.ZB/AM8141_MPC.Ld_Henry;
+	float Ts_times_ZB_over_Lq_changed = Ts_left_changed*base_val.ZB/AM8141_MPC.Lq_Henry;
+
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_delay_comp, Ts_times_ZB_over_Ld_changed, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_delay_comp, Ts_times_ZB_over_Lq_changed, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_prediction, pre_calc_val_left.Ts_times_ZB_over_Ld, delay_comp_fp_def);
+    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_prediction, pre_calc_val_left.Ts_times_ZB_over_Lq, delay_comp_fp_def);
 }

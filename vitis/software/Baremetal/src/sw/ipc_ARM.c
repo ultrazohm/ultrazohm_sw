@@ -207,12 +207,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
-		uz_resolver_pl_interface_set_theta_m_offset_rad(data->objects.resolver_pl_interface_d5_1, value);
+		data->rasv.iq_ref_step = value;
 			break;
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
-
+		data->rasv.Ts_left_changed = value;
+		fcs_mpc_change_Ts_for_delay_and_prediction(data->rasv.Ts_left_changed);
 			break;
 
 		case (Set_Send_Field_8):
@@ -329,7 +330,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+		data->rasv.trigger_iq_step_armed = true;
 			break;
 
 		case (My_Button_7):
@@ -405,7 +406,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 8);
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	if (data->rasv.trigger_iq_step_armed == true) {
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

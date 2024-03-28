@@ -43,6 +43,9 @@ extern DS_Data Global_Data;
 #define		RATED_CURRENT		8.0f
 #define		MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
 #define		TURN_ANGLE			(2.0f*UZ_PIf)-
+#define		MEASURING_TIME_S	0.02
+#define		MEASURING_ISR_TICKS	(uint32_t)(MEASURING_TIME_S/(1/UZ_PWM_FREQUENCY_ISR)+1)
+uint32_t trig_cnt = 0U;
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_0 = {0.0f};
 struct uz_3ph_abc_t i_abc_1 = {0.0f};
@@ -134,8 +137,45 @@ void ISR_Control(void *data)
 	Global_Data.av.v_q_0 = v_dq_0.q;
 //	Global_Data.av.v_d_1 = v_dq_1.d;
 //	Global_Data.av.v_q_1 = v_dq_1.q;
-//
+
 //	Global_Data.av.v_d_0_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt, Global_Data.av.v_d_0);
+//	Global_Data.av.d_pred_error_sq_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt_d, Global_Data.av.d_pred_error_sq);
+//	Global_Data.av.q_pred_error_sq_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt_q, Global_Data.av.q_pred_error_sq);
+	Global_Data.av.d_pred_error_sq_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_pred_error_d, Global_Data.av.d_pred_error_sq);
+	Global_Data.av.q_pred_error_sq_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_pred_error_q, Global_Data.av.q_pred_error_sq);
+
+	// inverse transformation of reference currents for detecting zero crossing in phase currents
+	Global_Data.rasv.i_abc_ref_left = uz_transformation_3ph_dq_to_abc(i_dq_ref_0, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
+	Global_Data.rasv.i_a_ref_last_and_present[1] = Global_Data.rasv.i_a_ref_last_and_present[0];
+	Global_Data.rasv.i_a_ref_last_and_present[0] = Global_Data.rasv.i_abc_ref_left.a;
+	if ( Global_Data.rasv.i_a_ref_last_and_present[0] > 0.0f && Global_Data.rasv.i_a_ref_last_and_present[1] <= 0.0f) {
+		Global_Data.rasv.i_a_ref_zero_crossing = true;
+		Global_Data.rasv.f_i_a_ref_zero_crossing = 1.0f;
+	} else {
+		Global_Data.rasv.i_a_ref_zero_crossing = false;
+		Global_Data.rasv.f_i_a_ref_zero_crossing = 0.0f;
+	}
+
+	// if selected, trigger iq reference step at ia_ref zero crossing
+	if (Global_Data.rasv.trigger_iq_step_armed == true && Global_Data.rasv.i_a_ref_zero_crossing == true) {
+		Global_Data.rasv.i_dq_ref_0.q = Global_Data.rasv.iq_ref_step;
+		Global_Data.rasv.trigger_iq_step_armed = false;
+		Global_Data.av.trig_flag = true;
+		Global_Data.av.f_trig_flag = 1.0f;
+		uz_axigpio_d4_out_set_pin(0);
+	}
+	// wait until the defined measuring time is over, then reset the flag, the counter and the externaö trigger
+	if (Global_Data.av.trig_flag == true) {
+		trig_cnt++;
+		if(trig_cnt == MEASURING_ISR_TICKS) {
+			Global_Data.av.trig_flag = false;
+			Global_Data.av.f_trig_flag = 0.0f;
+			trig_cnt = 0U;
+			uz_axigpio_d4_out_clear_pin(0);
+		}
+	}
+
+
 
     // check for current limit
     if (fabs(Global_Data.av.i_a_d1) > MAX_CURRENT || fabs(Global_Data.av.i_b_d1) > MAX_CURRENT || fabs(Global_Data.av.i_c_d1) > MAX_CURRENT ||
@@ -145,6 +185,9 @@ void ISR_Control(void *data)
 
 	//read axi values from mpc ip for debug
 //	fcs_mpc_debug();
+
+    //read axi values from prediction error ip for debug
+    fcs_mpc_get_pred_error_pu();
 
 	//calc average switching frequency of inverters
 	fcs_mpc_calc_f_sw_avg();
@@ -161,6 +204,12 @@ void ISR_Control(void *data)
     	// reset controllers
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
 		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_right);
+		Global_Data.rasv.n_ref_right = 0.0f;
+		Global_Data.rasv.n_ref_right_filt = 0.0f;
+		Global_Data.rasv.M_ref_right = 0.0f;
+		Global_Data.rasv.i_dq_ref_1.d = 0.0f;
+		Global_Data.rasv.i_dq_ref_1.q = 0.0f;
+		fcs_mpc_write_setpoint_1();
 		// write zero dutycycle
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;

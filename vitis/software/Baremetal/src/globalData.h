@@ -131,6 +131,14 @@ typedef struct _actualValues_ {
 	float iq_delay_pu;
 	bool svm_clamping_left;
 	float f_svm_clamping_left;
+	bool trig_flag;
+	float f_trig_flag;
+	float d_pred_error;
+	float q_pred_error;
+	float d_pred_error_sq;
+	float q_pred_error_sq;
+	float d_pred_error_sq_filt;
+	float q_pred_error_sq_filt;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -181,6 +189,13 @@ typedef struct _referenceAndSetValues_ {
 	float Ki_cur_d_right;
 	float Kp_cur_q_right;
 	float Ki_cur_q_right;
+	float iq_ref_step;
+	uz_3ph_abc_t i_abc_ref_left;
+	float i_a_ref_last_and_present[2];
+	bool i_a_ref_zero_crossing;
+	float f_i_a_ref_zero_crossing;
+	bool trigger_iq_step_armed;
+	float Ts_left_changed;
 } referenceAndSetValues;
 
 typedef struct{
@@ -208,7 +223,10 @@ typedef struct{
 	uz_SetPoint_t* setpoint_ctrl_left;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 	uz_IIR_Filter_t* iir_filter_ref_speed_right;
-	uz_movingAverageFilter_t* movAvgFilt;
+	uz_IIR_Filter_t* iir_filter_pred_error_d;
+	uz_IIR_Filter_t* iir_filter_pred_error_q;
+	uz_movingAverageFilter_t* movAvgFilt_d;
+	uz_movingAverageFilter_t* movAvgFilt_q;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -137,6 +137,14 @@
 #define  bResetAXI_Data_count_f_sw        0x100  //data register for Inport bResetAXI
 #define  switchNumb_AXI_Data_count_f_sw   0x104  //data register for Outport switchNumb_AXI
 
+//prediction error
+#define  IPCore_Reset_uz_pred_error       0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_uz_pred_error      0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_uz_pred_error   0x8  //contains unique IP timestamp (yymmddHHMM): 2403221708
+#define  ed_pred_AXI_Data_uz_pred_error   0x100  //data register for Outport ed_pred_AXI
+#define  eq_pred_AXI_Data_uz_pred_error   0x104  //data register for Outport eq_pred_AXI
+
+
 
 void fcs_mpc_real_or_debug_inputs(bool debug_or_real);
 void fcs_mpc_init_pu_conversion_ip(void);
@@ -156,3 +164,5 @@ void fcs_mpc_write_setpoint_1(void);
 void fcs_mpc_calc_f_sw_avg(void);
 void fcs_mpc_debug(void);
 void fcs_mpc_deadtime_comp_onoff(bool onoff);
+void fcs_mpc_get_pred_error_pu(void);
+void fcs_mpc_change_Ts_for_delay_and_prediction(float Ts_left_changed);

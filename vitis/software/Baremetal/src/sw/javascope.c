@@ -119,6 +119,16 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_duty_b_right]		= &data->rasv.halfBridge5DutyCycle;
 	js_ch_observable[JSO_duty_c_right]		= &data->rasv.halfBridge6DutyCycle;
 	js_ch_observable[JSO_svm_clamping_left]	= &data->av.f_svm_clamping_left;
+	js_ch_observable[JSO_i_ref_a_left]		= &data->rasv.i_abc_ref_left.a;
+	js_ch_observable[JSO_i_ref_b_left]		= &data->rasv.i_abc_ref_left.b;
+	js_ch_observable[JSO_i_ref_c_left]		= &data->rasv.i_abc_ref_left.c;
+	js_ch_observable[JSO_i_ref_a_left_zero_crossing] = &data->rasv.f_i_a_ref_zero_crossing;
+	js_ch_observable[JSO_iq_ref_left]		= &data->rasv.i_dq_ref_0.q;
+	js_ch_observable[JSO_trig_flag]			= &data->av.f_trig_flag;
+	js_ch_observable[JSO_d_pred_er_sq_filt_pu]	= &data->av.d_pred_error_sq_filt;
+	js_ch_observable[JSO_q_pred_er_sq_filt_pu]	= &data->av.q_pred_error_sq_filt;
+	js_ch_observable[JSO_d_pred_er_sq_pu]	= &data->av.d_pred_error_sq;
+	js_ch_observable[JSO_q_pred_er_sq_pu]	= &data->av.q_pred_error_sq;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -156,6 +166,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Ki_cur_q_left]			= &(data->rasv.Ki_cur_q_left);
 	js_slowDataArray[JSSD_FLOAT_vd_left]				= &(data->av.v_d_0);
 	js_slowDataArray[JSSD_FLOAT_vq_left]				= &(data->av.v_q_0);
+	js_slowDataArray[JSSD_FLOAT_Ts_left]				= &(data->rasv.Ts_left_changed);
 
 	return Status;
 }

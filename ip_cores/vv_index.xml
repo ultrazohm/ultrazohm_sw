@@ -2099,6 +2099,62 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:delay_comp_all_2724:1.0">
+		</VLNV>
+		<DisplayName value="delay_comp_all_2724">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113489821">
+		</CoreRevision>
+		<ComponentPath value="uz_fcs_mpc_3ph_pmsm/hdl_prj/ipcore/delay_comp_all_2724_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:delay_comp_sum4_2724:1.0">
+		</VLNV>
+		<DisplayName value="delay_comp_sum4_2724">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113489829">
+		</CoreRevision>
+		<ComponentPath value="uz_fcs_mpc_3ph_pmsm/hdl_prj/ipcore/delay_comp_sum4_2724_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:delay_comp_sum4:1.0">
 		</VLNV>
 		<DisplayName value="delay_comp_sum4">

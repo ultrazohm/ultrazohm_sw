@@ -68,7 +68,7 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 float n_ref_rpm = 0.0f;
 float M_ref_Nm = 0.0f;
 float SC_torque_out = 0.0f;
-float PMSM_IP_Core_V_DC = 48.0f;
+float PMSM_IP_Core_V_DC = 200.0f;//48.0f;
 extern bool select_CurrentControl;
 extern bool select_DDPG_1;
 extern bool select_DDPG_2;
@@ -103,6 +103,10 @@ float max_modulation_index = 1.0f / 1.732050808f;
 float ts = 1.0f / UZ_PWM_FREQUENCY;
 
 float offset = 3.31f;
+
+#define MAX_CURRENT 10.0f
+
+float theta_el_advanced = 0.0f;
 
 float id_setpoints[22]={
 #include "id_setpoints.csv"
@@ -296,7 +300,7 @@ void ISR_Control(void *data)
     if(select_Real) {
     	Global_Data.av.theta_mech = Global_Data.av.theta_mech - offset;
     	Global_Data.av.omega_elec = Global_Data.av.omega_m * 3.0f;
-    	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 3.0f;  //I changed the encoder function to write the theta onto theta_mech
+    	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 3.0f; // + 5.0f * M_PI / 180.0f;  //I changed the encoder function to write the theta onto theta_mech
     	Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
     	Global_Data.av.I_U = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
     	Global_Data.av.I_V = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
@@ -306,6 +310,16 @@ void ISR_Control(void *data)
     	Global_Data.av.U_V = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
     	Global_Data.av.U_W = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
     	Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+
+    	// check for current limit
+    	if (fabs(Global_Data.av.I_U) > MAX_CURRENT || fabs(Global_Data.av.I_V) > MAX_CURRENT || fabs(Global_Data.av.I_W) > MAX_CURRENT) {
+    	    		ultrazohm_state_machine_set_stop(true);
+    	}
+    	// check for DC link voltage
+    	if (Global_Data.av.U_ZK > 60.0f) {
+    		ultrazohm_state_machine_set_stop(true);
+    	}
+
     	i_abc_actual_Ampere.a = Global_Data.av.I_U;
     	i_abc_actual_Ampere.b = Global_Data.av.I_V;
     	i_abc_actual_Ampere.c = Global_Data.av.I_W;
@@ -318,6 +332,8 @@ void ISR_Control(void *data)
     	Global_Data.av.I_q = i_dq_actual_Ampere.q;
     	Global_Data.av.U_d = v_dq_actual_Volts.d;
     	Global_Data.av.U_q = v_dq_actual_Volts.q;
+    	theta_el_advanced = Global_Data.av.theta_elec + 1.5f * ts * Global_Data.av.omega_elec;
+
     	if (current_state == running_state || current_state == control_state) {
     		// enable inverter adapter hardware
     	 	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
@@ -326,6 +342,7 @@ void ISR_Control(void *data)
     	   	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
     	}
     	if (current_state==control_state) {
+    		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
     	  	if(select_SpeedControl || select_CurrentControl) {
     	   		if(select_SpeedControl) {
     	   			SC_torque_out = uz_SpeedControl_sample(Global_Data.objects.SC_instance, Global_Data.av.omega_m, n_ref_rpm);
@@ -336,7 +353,7 @@ void ISR_Control(void *data)
     	   		if(select_CurrentControl) {
     	   			v_dq_CurrentControl_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_dq_reference_Ampere, i_dq_actual_Ampere, Global_Data.av.U_ZK, Global_Data.av.omega_elec);
     	   		}
-    	   		DutyCycle_output = uz_Space_Vector_Modulation(v_dq_CurrentControl_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+    	   		DutyCycle_output = uz_Space_Vector_Modulation(v_dq_CurrentControl_Volts, Global_Data.av.U_ZK, theta_el_advanced);
     	   		Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
     	   		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
     	   		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
@@ -379,7 +396,7 @@ void ISR_Control(void *data)
 #endif
     	  		v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, Global_Data.av.U_ZK, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
 				v_dq_limited_Volts_k_old = v_dq_limited_Volts;
-				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, theta_el_advanced);
 				Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
     	  		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
     	  		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
@@ -420,7 +437,7 @@ void ISR_Control(void *data)
 #endif
     	  		v_dq_limited_Volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts, Global_Data.av.U_ZK, max_modulation_index, Global_Data.av.omega_elec, i_dq_actual_Ampere, &ext_clamping);
 				v_dq_limited_Volts_k_old = v_dq_limited_Volts;
-				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+				DutyCycle_output = uz_Space_Vector_Modulation(v_dq_limited_Volts, Global_Data.av.U_ZK, theta_el_advanced);
 				Global_Data.rasv.halfBridge1DutyCycle = DutyCycle_output.DutyCycle_A;
     	  		Global_Data.rasv.halfBridge2DutyCycle = DutyCycle_output.DutyCycle_B;
     	  		Global_Data.rasv.halfBridge3DutyCycle = DutyCycle_output.DutyCycle_C;
@@ -435,9 +452,10 @@ void ISR_Control(void *data)
    	    } else {
     	    	uz_CurrentControl_reset(Global_Data.objects.CC_instance);
     	    	uz_SpeedControl_reset(Global_Data.objects.SC_instance);
-    	    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-    	    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-    	    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+    	    	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
+    	    	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
+    	    	Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
             	i_dq_integrated_error_Amp.d = 0.0f;
             	i_dq_integrated_error_Amp.q = 0.0f;
             	ext_clamping = false;

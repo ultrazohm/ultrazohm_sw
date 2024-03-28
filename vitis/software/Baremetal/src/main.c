@@ -208,8 +208,8 @@ int main(void)
 
     // Configuration FOC
     struct uz_SpeedControl_config SC_config_2 = {
-    		.config_controller.Kp = 0.01f,
-    		.config_controller.Ki = 1.0f,
+    		.config_controller.Kp = 0.2f,
+    		.config_controller.Ki = 0.25f,
     		.config_controller.samplingTime_sec = 0.0001f,
     		.config_controller.upper_limit = 2.0f,
     		.config_controller.lower_limit = -2.0f

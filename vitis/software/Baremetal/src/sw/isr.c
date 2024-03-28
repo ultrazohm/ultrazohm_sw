@@ -113,8 +113,8 @@ float theta_el_offset_2 			= 1.4f;
 struct uz_DutyCycle_t output_2 		= {0};
 
 // Controller Settings
-float Kp_speed_2 					= 0.01f;
-float Ki_speed_2 					= 1.0f;
+float Kp_speed_2 					= 0.2f;
+float Ki_speed_2 					= 0.25f;
 //float Kp_id_2 = 0.3f;
 //float Ki_id_2 = 230.0f;
 //float Kp_iq_2 = 0.5f;

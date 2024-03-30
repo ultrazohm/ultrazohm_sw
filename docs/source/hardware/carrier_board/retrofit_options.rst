@@ -91,7 +91,7 @@ To connect the above pads to GND:
 * solder some enameled wire to the pre-soldered test pad(s); and
 * solder the enameled wire(s) to the GND point created before.
 
-The :ref:`adretro-photos` below exemplify the above steps by means of the shared GND point between slots D1 and D2.
+The :ref:`adretro-photos` below exemplify the above steps by means of the shared GND point between slots D1 and D2, whilst :ref:`adretro-photo` shows the final result.
 
 .. _adretro-photos:
 .. list-table:: soldering step-by-step photos
@@ -113,6 +113,11 @@ The :ref:`adretro-photos` below exemplify the above steps by means of the shared
           :width: 100 %
      - .. image :: pictures/adretrostep5.jpg
           :width: 100 %
+
+.. _adretro-photo:
+.. figure:: pictures/adretroboard.jpg
+
+   Retrofitted Carrier Card
 
 Please refer to :ref:`uzpA53` for a description of the software API that helps to retrieve the per-card identification data on the APU.
 

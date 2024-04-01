@@ -85,6 +85,15 @@ int main(void)
         case init_CurrentControl_pmsm:;
 
         struct uz_PMSM_t config_PMSM = {
+        		//Buehler 201
+//        		.R_ph_Ohm = 0.08f,
+//
+//        		.Ld_Henry = 0.0003f,
+//
+//        		.Lq_Henry = 0.0003f,
+//
+//        		.Psi_PM_Vs = 0.0075f};
+        // hoerner prototyp
         		.R_ph_Ohm = 0.3f,
 
         		.Ld_Henry = 0.00045f,
@@ -101,8 +110,25 @@ int main(void)
 
         struct uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
 
+//        		// buehler 201
+//        		.ad1_parameter = 0.024735767160700f,
+//				.ad2_parameter = 0.017485669417295f,
+//				.ad3_parameter = -17.571613572739174f,
+//				.ad4_parameter = 0.035600780424146f,
+//				.ad5_parameter = 0.011170977859609f,
+//				.ad6_parameter = -17.930481431176965f,
+//				.aq1_parameter = 3.442776934585647e-05f,
+//				.aq2_parameter = 0.993488475714375f,
+//				.aq3_parameter = 3.120494740841664e-04f,
+//				.aq4_parameter = 2.129563487348091e-05f,
+//				.aq5_parameter = 0.993468870761397f,
+//				.aq6_parameter = 3.140856336372933e-04f,
+//				.F1G1_parameter = -2.804045923851899e-04f,
+//				.F2G2_parameter = 0.001571046078979f};
+
+//        Hoerner prototyp
         		.ad1_parameter = 0.030483840951002f,
-				.ad2_parameter = 0.040244227373267f,
+        		.ad2_parameter = 0.040244227373267f,
 				.ad3_parameter = -16.481195185733903f,
 				.ad4_parameter = 1.296438633344970f,
 				.ad5_parameter = 6.183163374457993e-04f,
@@ -121,7 +147,15 @@ int main(void)
 
         struct uz_PI_Controller_config config_id = {
 
-        		.Kp = 2.25f,
+        		//buehler 201
+
+//        		.Kp = 1.500000000000000f,
+//
+//				.Ki = 400.0f,
+
+				//Hoerner Prototyp
+
+				.Kp = 2.25f,
 
 				.Ki = 1.5e+03f,
 
@@ -135,8 +169,15 @@ int main(void)
         uz_CurrentControl_Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(dead_time_reciprocal);
 
         struct uz_PI_Controller_config config_iq = {
+        		//buehler 201
 
-        		.Kp = 10.0f,
+//        		.Kp = 1.50f,
+//
+//				.Ki = 400.0f,
+
+				//Hoerner Prototyp
+
+				.Kp = 10.0f,
 
 				.Ki = 1.5e+03f,
 
@@ -172,6 +213,16 @@ int main(void)
 
 				.simulate_nonlinear =true,
 
+//				.r_1 = 0.08f,
+//
+//				.L_d = 0.0003f,
+//
+//				.L_q = 0.0003f,
+//
+//				.psi_pm = 0.0075f,
+
+				//Hoerner Prototyp
+
 				.r_1 = 0.3f,
 
 				.L_d = 0.00045f,
@@ -187,8 +238,26 @@ int main(void)
 				.coulomb_friction_constant = 0.01f,
 
 				.friction_coefficient = 0.001f,
-				.ad1 = 0.030483840951002f,
-				.ad2 = 0.040244227373267f,
+
+				//Buehler 201
+//				.ad1 = 0.024735767160700f,
+//				.ad2 = 0.017485669417295f,
+//				.ad3 = -17.571613572739174f,
+//				.ad4 = 0.035600780424146f,
+//				.ad5 = 0.011170977859609f,
+//				.ad6 = -17.930481431176965f,
+//				.aq1 = 3.442776934585647e-05f,
+//				.aq2 = 0.993488475714375f,
+//				.aq3 = 3.120494740841664e-04f,
+//				.aq4 = 2.129563487348091e-05f,
+//				.aq5 = 0.993468870761397f,
+//				.aq6 = 3.140856336372933e-04f,
+//				.F1G1 = -2.804045923851899e-04f,
+//				.F2G2 = 0.001571046078979f};
+
+        		//Hoerner Prototyp
+        		.ad1 = 0.030483840951002f,
+        		.ad2 = 0.040244227373267f,
 				.ad3 = -16.481195185733903f,
 				.ad4 = 1.296438633344970f,
 				.ad5 = 6.183163374457993e-04f,
@@ -201,6 +270,7 @@ int main(void)
 				.aq6 = 9.186084507499523e-04f,
 				.F1G1 = -0.001356794026337f,
 				.F2G2 = 0.078813850391713f};
+
         pmsm=uz_pmsmModel_init(pmsm_config);
 
 

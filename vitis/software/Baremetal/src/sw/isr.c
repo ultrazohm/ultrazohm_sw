@@ -155,18 +155,25 @@ void ISR_Control(void *data)
 
     	//Get volatge after the pi controllers
 //    	v_out_of_pi_controller = uz_CurrentControl_sample_pi_controllers_hacky(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp);
-    	//Predict the Flux for static nonlinear decoupling
+//    	Predict the Flux for static nonlinear decoupling
 //    	uz_CurrentControl_reset(CurrentControl_instance);
     	flux_prediction = uz_flux_prediction_step(flux_prediction_instance, measured_currents_Amp, CurrentControl_output_Volts, v_out_of_pi_controller,  flux_approx);
-    	// if flux_prediction is off
+//    	 if flux_prediction is off
 //    	flux_prediction = flux_approx;
+
+//    	if (flux_approx.d < 1.1920928e-7f) {
+//    		flux_approx.d = 1.1920929e-7f;
+//    	  }
+//    	if (flux_approx.q <=1.1920928e-7f) {
+//    	    		flux_approx.q = 1.1920929e-7f;
+//    	    	  }
 
     	//controller parameter adaption
     	K_p_id = uz_CurrentControl_Kp_id_adjustment_step(uz_CurrentControl_Kp_id_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(uz_CurrentControl_Kp_iq_adjustment_instance,reference_currents_Amp, measured_currents_Amp, flux_reference, flux_approx);
     	// Set new controll parameters (parameter_adaption)
-    	uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
-    	uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
+//    	uz_CurrentControl_set_Kp_id(CurrentControl_instance, K_p_id);
+//    	uz_CurrentControl_set_Kp_iq(CurrentControl_instance, K_p_iq);
 
     	test_to_show_flux.a1 = K_p_id; //only so i can look at it in javascope
     	test_to_show_flux.b1 = K_p_iq; //only so i can look at it in javascope
@@ -183,7 +190,7 @@ void ISR_Control(void *data)
     	pmsm_inputs.v_d_V=CurrentControl_output_Volts_old.d;
 
     	CurrentControl_output_Volts_old = CurrentControl_output_Volts;
-////    	//OpenLoop
+//    	//OpenLoop
 //		pmsm_inputs.v_q_V=reference_currents_Amp.q;
 //    	pmsm_inputs.v_d_V=-pmsm_inputs.v_q_V;
 

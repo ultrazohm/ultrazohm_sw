@@ -75,42 +75,42 @@ aq5 = aq_3_6(2);
 aq6 = aq_3_6(3);
 
 
-% figure;
-% % Erster Plot
-% subplot(4,1,1); 
-% grid on;
-% plot(d_current, Fluxd_iqnull_fitted, 'DisplayName', 'Fluxd_{idnull}_{fitted}');
-% hold on;
-% plot(d_current, Fluxd_iqnull,'--', 'DisplayName', 'Fluxd_{idnull}');
-% legend('show');
-% 
-% % Zweiter Plot
-% subplot(4,1,2); 
-% grid on;
-% 
-% plot(q_current, Fluxq_idnull_fitted  , 'DisplayName', 'Fluxq_{idnull}_{fitted}');
-% hold on;
-% plot(q_current, Fluxq_idnull,'--', 'DisplayName', 'Fluxq_{idnull}');
-% legend('show');
-% 
+figure;
+% Erster Plot
+subplot(4,1,1); 
+grid on;
+plot(d_current, Fluxd_iqnull_fitted, 'DisplayName', 'Fluxd_{idnull}_{fitted}');
+hold on;
+plot(d_current, Fluxd_iqnull,'--', 'DisplayName', 'Fluxd_{idnull}');
+legend('show');
+
+% Zweiter Plot
+subplot(4,1,2); 
+grid on;
+
+plot(q_current, Fluxq_idnull_fitted  , 'DisplayName', 'Fluxq_{idnull}_{fitted}');
+hold on;
+plot(q_current, Fluxq_idnull,'--', 'DisplayName', 'Fluxq_{idnull}');
+legend('show');
+
 % writematrix([q_current, Fluxq_idnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\Messungen_grundlagen\schematic_inductance_pgf.csv');
-% %writematrix([f(1:2:10240)', FRF_x(1:2:10240)'], 'Shaker_x.csv')
-% %Dritter Plot
-% subplot(4,1,3); 
-% grid on;
-% 
-% plot(d_current, Fluxd_iq1_fitted  , 'DisplayName', 'Fluxd_{iq1}_{fitted}');
-% hold on;
-% plot(d_current, Fluxd_iq1,'--', 'DisplayName', 'Fluxd_{iq1}');
-% legend('show');
-% 
-% % Vierter Plot
-% subplot(4,1,4); 
-% grid on;
-% plot(q_current, Fluxq_id1_fitted  , 'DisplayName', 'Fluxq_{id1}_{fitted}');
-% hold on;
-% plot(q_current, Fluxq_id1,'--', 'DisplayName', 'Fluxq_{id1}');
-% legend('show');
+%writematrix([f(1:2:10240)', FRF_x(1:2:10240)'], 'Shaker_x.csv')
+%Dritter Plot
+subplot(4,1,3); 
+grid on;
+
+plot(d_current, Fluxd_iq1_fitted  , 'DisplayName', 'Fluxd_{iq1}_{fitted}');
+hold on;
+plot(d_current, Fluxd_iq1,'--', 'DisplayName', 'Fluxd_{iq1}');
+legend('show');
+
+% Vierter Plot
+subplot(4,1,4); 
+grid on;
+plot(q_current, Fluxq_id1_fitted  , 'DisplayName', 'Fluxq_{id1}_{fitted}');
+hold on;
+plot(q_current, Fluxq_id1,'--', 'DisplayName', 'Fluxq_{id1}');
+legend('show');
 
 % % psid_iqnull
 % writematrix([d_current, Fluxd_iqnull_fitted],'C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Simulation\Flusskarten_approximation\psi_d_bei_iq0_approx.csv');

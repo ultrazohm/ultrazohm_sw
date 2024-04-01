@@ -36,7 +36,7 @@ void CurrentControl_Kp_id_adjustment_step(RT_MODEL *const rtM)
   /* Switch: '<S1>/Switch2' incorporates:
    *  Constant: '<S1>/Constant4'
    */
-  if (rtb_Switch2 == 0.0F) {
+  if (rtb_Switch2 ==0.0F) {
     rtb_Switch2 = 1.1920929E-7F;
   }
 

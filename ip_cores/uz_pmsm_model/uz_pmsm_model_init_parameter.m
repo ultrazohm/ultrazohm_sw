@@ -30,10 +30,10 @@ L_q=0.002;
 psi_pm=0.0194;
 polepair=4;
 % 
-% %MOTOR2 bühler 201
+%MOTOR2 bühler 201
 % R_1 = 0.08;
-% L_d = 0.3;
-% L_q = 0.3;
+% L_d = 0.0003;
+% L_q = 0.0003;
 % psi_pm = 0.0075;
 % polepair = 4;
 
@@ -82,19 +82,21 @@ static_friction_torque=0.01;
 % % inertia=0.001;
 % friction_coefficient=0;
 % static_friction_torque=0;
-setpoint_step = 8.0;
-omega_mech = 130.8997;
+setpoint_step = 1.0;
+% omega_mech = 130.8997;
+omega_mech = 50.0;
+% omega_mech = 0.0;
 rpm = 1250;
 load_torque = 0;
 
 % Simulation settings
 simulate_mechanical=false;
-simulate_open_loop=false;
+simulate_open_loop=true;
 simulate_nonlinear_modell=true;
 
-parameter_nachfuerung=true;
+parameter_nachfuerung=false;
 
-praediktion_entkopplung_nonlinear=true;
+praediktion_entkopplung_nonlinear=false;
 
 entkopplung_linear=false;
 entkopplung_static=false;

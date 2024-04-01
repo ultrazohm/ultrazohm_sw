@@ -90,8 +90,8 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            //Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_custom_init();
-            Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_expert_init(XPAR_UZ_USER_UZ_ENDAT_0_BASEADDR, 100000000U, 100, 100, 100, 100, 100, 0, 0, uz_EnDat_set_output_enable_in_controlword(uz_EnDat_enable_config_evaluation_in_IP(uz_EnDat_set_sensor_precision_in_controlword( uz_EnDat_set_operation_mode(ENDAT_CONTROLWORD_DEFAULT, uz_EnDat_Encoder_send_position_values), uz_EnDat_25_bit))), 1);
+            Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_custom_init();
+            //Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_expert_init(XPAR_UZ_USER_UZ_ENDAT_0_BASEADDR, 100000000U, 100, 100, 100, 100, 100, 0, 0, uz_EnDat_set_output_enable_in_controlword(uz_EnDat_enable_config_evaluation_in_IP(uz_EnDat_set_sensor_precision_in_controlword( uz_EnDat_set_operation_mode(ENDAT_CONTROLWORD_DEFAULT, uz_EnDat_Encoder_send_position_values), uz_EnDat_25_bit))), 1);
             initialization_chain = print_msg;
             break;
 	    case print_msg:

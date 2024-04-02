@@ -68,6 +68,11 @@
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------
+#include "uz/uz_approximate_flux/uz_approximate_flux.h"
+#include "uz/uz_flux_prediction/uz_flux_prediction.h"
+#include "uz/uz_CurrentControl_Kp_id_adjustment/uz_CurrentControl_Kp_id_adjustment.h"
+#include "uz/uz_CurrentControl_Kp_iq_adjustment/uz_CurrentControl_Kp_iq_adjustment.h"
+
 
 void InitializeDataStructure(DS_Data* data);
 

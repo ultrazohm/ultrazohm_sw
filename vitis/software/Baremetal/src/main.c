@@ -60,6 +60,22 @@ struct uz_PMSM_t config_PMSM_1 = {
 		.I_max_Ampere = 10.0f
 };
 
+struct uz_PMSM_flux_fitting_parameter_config_t Hoerner_Fitting = {
+    .ad1_parameter = 0.026620095524092f,
+    .ad2_parameter = 0.047133812840564f,
+    .ad3_parameter = -27.868596691410815f,
+    .ad4_parameter = 0.026771852823277,
+    .ad5_parameter = 0.032335709299499f,
+    .ad6_parameter = -27.939757152811232f,
+    .aq1_parameter = 0.006639611096337f,
+    .aq2_parameter = 0.140324092149110f,
+    .aq3_parameter = 6.036938033671378e-04f,
+    .aq4_parameter = 0.006818079861355f,
+    .aq5_parameter = 0.148494853843815f,
+    .aq6_parameter = 6.202760235239144e-04f,
+    .F1G1_parameter = -0.005816630245736f,
+    .F2G2_parameter = 0.294469757399354f};
+
 // ***************** PMSM 2 ***************** //
 
 // Declare Pointer for FOC of PMSM 2
@@ -260,6 +276,9 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.objects.approximate_flux_instance = uz_approximate_flux_init(Hoerner_Fitting);
+            Global_Data.objects.Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(2.0f * UZ_PWM_FREQUENCY);
+            Global_Data.objects.Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(2.0f * UZ_PWM_FREQUENCY);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

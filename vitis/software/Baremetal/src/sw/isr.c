@@ -111,7 +111,10 @@ float omega_el_rad_per_sec_2 		= 0.0f;
 float theta_el_rad_2 				= 0.0f;
 float theta_el_offset_2 			= 1.4f;
 struct uz_DutyCycle_t output_2 		= {0};
-
+uz_3ph_dq_t flux_approx             = {0};
+uz_3ph_dq_t flux_reference          = {0};
+float K_p_id                        = 0.0f;
+float K_p_iq                        = 0.0f;
 // Controller Settings
 float Kp_speed_2 					= 0.2f;
 float Ki_speed_2 					= 0.25f;
@@ -198,6 +201,14 @@ void ISR_Control(void *data)
     	// Field Oriented Control of PMSM 1
     	//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     	//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
+
+        //Approximate psid and psiq and set new kpd and kpq
+    	flux_approx = uz_approximate_flux_step(Global_Data.objects.approximate_flux_instance, i_dq_Amps_1);
+    	flux_reference = uz_approximate_flux_reference_step(Global_Data.objects.approximate_flux_instance,i_dq_ref_Amps_1,i_dq_Amps_1);
+        K_p_id = uz_CurrentControl_Kp_id_adjustment_step(Global_Data.objects.Kp_id_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
+        K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(Global_Data.objects.Kp_iq_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
+        uz_CurrentControl_set_Kp_id(CC_instance_1, K_p_id);
+        uz_CurrentControl_set_Kp_iq(CC_instance_1, K_p_iq);
     	v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
     	i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
     	i_dqn_filtered_7th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_Amps_1, theta_el_rad_1);

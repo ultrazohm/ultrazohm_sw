@@ -10,6 +10,10 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "uz/uz_approximate_flux/uz_approximate_flux.h"
+#include "uz/uz_CurrentControl_Kp_id_adjustment/uz_CurrentControl_Kp_id_adjustment.h"
+#include "uz/uz_CurrentControl_Kp_iq_adjustment/uz_CurrentControl_Kp_iq_adjustment.h"
+
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -139,6 +143,9 @@ typedef struct{
 	uz_inverter_adapter_t* inverter_d2;
 	uz_resolver_pl_interface_t* resolver_pl_d4;
 	uz_resolverIP_t* resolver_d4;
+	uz_approximate_flux_t* approximate_flux_instance;
+	uz_CurrentControl_Kp_id_adjustment_t* Kp_id_adjustment_instance;
+	uz_CurrentControl_Kp_iq_adjustment_t* Kp_iq_adjustment_instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

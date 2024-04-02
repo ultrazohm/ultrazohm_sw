@@ -318,6 +318,8 @@ void uz_parameterid_rc_repeat(uz_parameterid_rc_t* self){
         self->save_values.save_u_ind_q_gen[self->counter.repeat] = self->u_ind.gen_q;
         self->save_values.save_u_ind_d_mot[self->counter.repeat] = self->u_ind.mot_d;
         self->save_values.save_u_ind_d_gen[self->counter.repeat] = self->u_ind.gen_d;
+        self->save_values.speed[self->counter.repeat] = self->sample.mean_n;
+        self->save_values.delta_M_meas[self->counter.repeat]= fabsf(fabsf(self->save_values.save_M_meas_gen[self->counter.repeat]) - fabsf(self->save_values.save_M_meas_mot[self->counter.repeat])); 
     } else {
     uz_assert(self->counter.repeat < max_size_rc_calc);
     self->save_values.save_gen_rc_d[self->counter.repeat] = self->output.gen_rc_d;
@@ -350,9 +352,12 @@ void uz_parameterid_rc_repeat(uz_parameterid_rc_t* self){
     self->save_values.save_u_ind_q_gen[self->counter.repeat] = self->u_ind.gen_q;
     self->save_values.save_u_ind_d_mot[self->counter.repeat] = self->u_ind.mot_d;
     self->save_values.save_u_ind_d_gen[self->counter.repeat] = self->u_ind.gen_d;
+    self->save_values.speed[self->counter.repeat] = self->sample.mean_n;
+    self->save_values.delta_M_meas[self->counter.repeat]= fabsf(fabsf(self->save_values.save_M_meas_gen[self->counter.repeat]) - fabsf(self->save_values.save_M_meas_mot[self->counter.repeat])); 
     self->counter.repeat = self->counter.repeat + 1U;
     uz_parameterid_rc_reset(self);
     }
+
 
 }
 

@@ -133,6 +133,7 @@ struct uz_parameterid_rc_repeat{
     float save_M_i_gen[10];
     float save_M_meas_mot[10];
     float save_M_meas_gen[10];
+    float delta_M_meas[10];
     float save_M_wf_mot[10];
     float save_M_wf_gen[10];
     float save_iqm_mot[10];
@@ -147,6 +148,7 @@ struct uz_parameterid_rc_repeat{
     float save_u_ind_q_gen[10];
     float save_u_ind_d_mot[10];
     float save_u_ind_d_gen[10];
+    float speed[10];
 
 };
 

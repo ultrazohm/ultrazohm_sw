@@ -11,12 +11,17 @@ typedef struct uz_parameterid_rc_t uz_parameterid_rc_t;
 
 struct uz_parameterid_rc_config_t
 {
-    float id_ref;
-    float iq_ref;
-    float n_ref;
-    float wait_time;
-    float isr_steptime;
-    float sample_time;
+    float id_ref_Amps;
+    float iq_ref_Amps;
+    float n_ref_rpm;
+    bool multiple_workingpoints; 
+    float delta_id_Amps;
+    float delta_iq_Amps;
+    uint32_t id_steps;
+    uint32_t iq_steps;
+    float wait_time_secs;
+    float isr_steptime_secs;
+    float sample_time_secs;
     float pn;
 };
 
@@ -35,6 +40,8 @@ struct uz_parameterid_rc_counter_t
     uint32_t meas_max;
     uint32_t isr;
     uint32_t repeat;
+    uint32_t increment_id;
+    uint32_t increment_iq;
 };
 
 struct uz_parameterid_rc_u_ind_t
@@ -86,7 +93,8 @@ struct uz_parameterid_rc_meas_out_t
     float gen_rc_q;
     struct uz_parameterid_rc_set_values_t set_out;
     bool generator_mode; // is_generator_operating_point
-    uint32_t finished;
+    uint32_t routine_finished_once;
+    uint32_t program_finished;
 };
 
 struct uz_parameterid_rc_calc_rc_t
@@ -108,7 +116,8 @@ enum rc_state{
     rc_calc_gen,
     rc_switch2gen,
     rc_check_u_ind,
-    rc_finished,
+    rc_finished_routine,
+    rc_finished_program,
     rc_repeat,
     rc_calc_rc,
     };
@@ -159,5 +168,6 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
 uz_parameterid_rc_t* uz_parameterid_rc_reset_meas(uz_parameterid_rc_t* self);
 uz_parameterid_rc_t* uz_parameterid_rc_reset(uz_parameterid_rc_t* self);
 void uz_parameterid_rc_repeat(uz_parameterid_rc_t* self);
+void uz_parameterid_rc_set_next_workingpoint(uz_parameterid_rc_t* self);
 
 #endif // UZ_PARAMETERID_RC_H

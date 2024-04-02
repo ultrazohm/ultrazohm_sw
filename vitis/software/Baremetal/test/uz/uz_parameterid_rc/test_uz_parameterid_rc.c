@@ -31,13 +31,18 @@ float omega_el = 523.598775598299f;
 
 void setUp(void)
 {
-    test_config.id_ref = 1.0f;
-    test_config.iq_ref = 1.0f;
-    test_config.n_ref = 1000.0f;
-    test_config.wait_time = 0.5f;
-    test_config.isr_steptime = (1.0f / 10.0e3f) * 1.0f;
-    test_config.sample_time = 0.5f;
+    test_config.id_ref_Amps = 1.0f;
+    test_config.iq_ref_Amps = 1.0f;
+    test_config.n_ref_rpm = 1000.0f;
+    test_config.wait_time_secs = 0.5f;
+    test_config.isr_steptime_secs = (1.0f / 10.0e3f) * 1.0f;
+    test_config.sample_time_secs = 0.5f;
     test_config.pn = 5.0f;
+    test_config.multiple_workingpoints = false;
+    test_config.delta_id_Amps = 1.0f;
+    test_config.delta_iq_Amps = 1.0f;
+    test_config.id_steps = 3U;
+    test_config.iq_steps = 3U; 
 
 
      // Configuration of Current Control
@@ -78,12 +83,12 @@ void test_uz_parameterid_rs_init_equal(void){
     uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
     struct uz_parameterid_rc_config_t get_internal_config = uz_parameterid_rc_get_config(rc_instance);
 
-    TEST_ASSERT_EQUAL_FLOAT(test_config.id_ref, get_internal_config.id_ref);
-    TEST_ASSERT_EQUAL_FLOAT(test_config.iq_ref, get_internal_config.iq_ref);
+    TEST_ASSERT_EQUAL_FLOAT(test_config.id_ref_Amps, get_internal_config.id_ref_Amps);
+    TEST_ASSERT_EQUAL_FLOAT(test_config.iq_ref_Amps, get_internal_config.iq_ref_Amps);
 }
 
 void test_uz_parameterid_rc_generate_outputs_motor(void){
-    test_config.wait_time = 4.0f * test_config.isr_steptime;
+    test_config.wait_time_secs = 4.0f * test_config.isr_steptime_secs;
     uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
     struct uz_parameterid_rc_meas_out_t actual_output;
     float c = 500.0f; 
@@ -97,8 +102,8 @@ void test_uz_parameterid_rc_generate_outputs_motor(void){
 }
 
 void test_uz_parameterid_rc_generate_outputs_calc_u_ind_gen(void){
-    test_config.wait_time = 4.0f * test_config.isr_steptime;
-    test_config.sample_time = 10.0f * test_config.isr_steptime;
+    test_config.wait_time_secs = 4.0f * test_config.isr_steptime_secs;
+    test_config.sample_time_secs = 10.0f * test_config.isr_steptime_secs;
     uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
     struct uz_parameterid_rc_meas_out_t actual_output;
     float c = 21.0f; 
@@ -116,10 +121,10 @@ void test_uz_parameterid_rc_generate_outputs_calc_u_ind_gen(void){
 }
 
 void test_uz_parameterid_rc_generate_outputs_u_ind_gen_mode(void){
-    test_config.wait_time = 5.0f * test_config.isr_steptime;
-    test_config.sample_time = 5.0f * test_config.isr_steptime;
-    test_config.id_ref = 8.6077f;
-    test_config.iq_ref = -0.6824f;
+    test_config.wait_time_secs = 5.0f * test_config.isr_steptime_secs;
+    test_config.sample_time_secs = 5.0f * test_config.isr_steptime_secs;
+    test_config.id_ref_Amps = 8.6077f;
+    test_config.iq_ref_Amps = -0.6824f;
     uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
     struct uz_parameterid_rc_meas_out_t actual_output2;
     uz_3ph_dq_t vol = {0};
@@ -144,10 +149,10 @@ TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);
 
 
 void test_uz_parameterid_rc_generate_outputs_calc_rc_once(void){
-    test_config.wait_time = 10.0f * test_config.isr_steptime;
-    test_config.sample_time = 100.0f * test_config.isr_steptime;
-    test_config.id_ref = 8.6077f;
-    test_config.iq_ref = -0.6824f;
+    test_config.wait_time_secs = 10.0f * test_config.isr_steptime_secs;
+    test_config.sample_time_secs = 100.0f * test_config.isr_steptime_secs;
+    test_config.id_ref_Amps = 8.6077f;
+    test_config.iq_ref_Amps = -0.6824f;
     uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
     struct uz_parameterid_rc_meas_out_t actual_output2;
     uz_3ph_dq_t vol = {0};
@@ -177,10 +182,10 @@ TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);
 }
 
 void test_uz_parameterid_rc_generate_outputs_simulate_behaviour(void){
-    test_config.wait_time = 5000.0f * test_config.isr_steptime;
-    test_config.sample_time = 5000.0f * test_config.isr_steptime;
-    test_config.id_ref = 15.0f;
-    test_config.iq_ref = 15.0f;
+    test_config.wait_time_secs = 5000.0f * test_config.isr_steptime_secs;
+    test_config.sample_time_secs = 5000.0f * test_config.isr_steptime_secs;
+    test_config.id_ref_Amps = 15.0f;
+    test_config.iq_ref_Amps = 15.0f;
     float r_s = (1.75e-6f * 1000.0f *  1000.0f + 5.733e-4f *  1000.0f + 28.4648f)/1000.0f;
     uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(CC_config);
     uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
@@ -215,5 +220,12 @@ TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);
 }
 
 
+void test_uz_parameterid_rc_set_next_workingpoint(void){
+    test_config.multiple_workingpoints = true;
+    uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
+    for(uint32_t i = 0U; i<16; i++) {
+        uz_parameterid_rc_set_next_workingpoint(rc_instance); 
+    }
+}
 
 #endif // TEST

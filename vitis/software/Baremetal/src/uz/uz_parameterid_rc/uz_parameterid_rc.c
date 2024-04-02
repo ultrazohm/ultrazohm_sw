@@ -2,9 +2,9 @@
 
 #include "../uz_global_configuration.h"
 #if UZ_PARAMETERID_RC_MAX_INSTANCES > 0U
-#include <stdbool.h> 
+#include <stdbool.h>
 #include "../uz_HAL.h"
-#include "uz_parameterid_rc.h" 
+#include "uz_parameterid_rc.h"
 
 struct uz_parameterid_rc_t{
     bool is_ready;
@@ -46,12 +46,12 @@ uz_parameterid_rc_t* uz_parameterid_rc_init(struct uz_parameterid_rc_config_t in
     uz_parameterid_rc_t* self = uz_parameterid_rc_allocation();
     self->internal_config = initial_config;
     self->is_first_call_to_sample = true;
-    self->counter.meas_max = (uint32_t)(self->internal_config.sample_time/self->internal_config.isr_steptime);
-    self->counter.wait_max = (uint32_t)(self->internal_config.wait_time/self->internal_config.isr_steptime); 
-    uz_assert(self->internal_config.n_ref >= 0.0f);
-    uz_assert(self->internal_config.n_ref <= 1500.0f);
-    uz_assert(fabsf(self->internal_config.id_ref) < 20.0f);
-    uz_assert(fabsf(self->internal_config.iq_ref) < 20.0f);
+    self->counter.meas_max = (uint32_t)(self->internal_config.sample_time_secs/self->internal_config.isr_steptime_secs);
+    self->counter.wait_max = (uint32_t)(self->internal_config.wait_time_secs/self->internal_config.isr_steptime_secs);
+    uz_assert(self->internal_config.n_ref_rpm >= 0.0f);
+    uz_assert(self->internal_config.n_ref_rpm <= 3200.0f);
+    uz_assert(fabsf(self->internal_config.id_ref_Amps) < 20.0f);
+    uz_assert(fabsf(self->internal_config.iq_ref_Amps) < 20.0f);
     uz_assert(sizeof(self->save_values.save_gen_rc_d)==sizeof(self->save_values.save_gen_rc_q));
     uz_assert(sizeof(self->save_values.save_mot_rc_d)==sizeof(self->save_values.save_mot_rc_q));
     uz_assert(sizeof(self->save_values.save_mot_rc_d)==sizeof(self->save_values.save_gen_rc_q));
@@ -71,7 +71,7 @@ uz_parameterid_rc_t* uz_parameterid_rc_reset_meas(uz_parameterid_rc_t* self){
     self->sample.sum_uq = 0.0f;
     self->sample.sum_id = 0.0f;
     self->sample.sum_iq = 0.0f;
-    self->sample.sum_n = 0.0f;  
+    self->sample.sum_n = 0.0f;
     self->sample.mean_ud = 0.0f;
     self->sample.mean_uq = 0.0f;
     self->sample.mean_id = 0.0f;
@@ -79,33 +79,35 @@ uz_parameterid_rc_t* uz_parameterid_rc_reset_meas(uz_parameterid_rc_t* self){
     self->sample.mean_n = 0.0f;
     self->sample.sum_M = 0.0f;
     self->counter.meas = 0U;
-    self->output.finished = 0U;
+    self->output.routine_finished_once = 0U;
     return(self);
 }
 
 uz_parameterid_rc_t* uz_parameterid_rc_reset(uz_parameterid_rc_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    uz_parameterid_rc_reset_meas(self); 
+    uz_parameterid_rc_reset_meas(self);
     self->output.mot_rc_d = 0.0f;
     self->output.mot_rc_q = 0.0f;
     self->output.gen_rc_d = 0.0f;
     self->output.gen_rc_q = 0.0f;
     self->output.generator_mode = false;
-    self->output.finished = 0U;
+    self->output.routine_finished_once = 0U;
     self->output.set_out.id_set = 0.0f;
     self->output.set_out.iq_set = 0.0f;
-    self->output.set_out.n_set = -1.0f * self->internal_config.n_ref;
+    self->output.set_out.n_set = -1.0f * self->internal_config.n_ref_rpm;
     self->is_first_call_to_sample = true;
     return(self);
 }
+
+
 
 struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parameterid_rc_t* self, float ud, float uq, float id, float iq, float n, float M){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     if(self->is_first_call_to_sample){
             self->motormode = false;
-            self->output.finished = 0U;
+            self->output.routine_finished_once = 0U;
             self->u_ind.gen_d = 0.0f;
             self->u_ind.gen_q = 0.0f;
             self->u_ind.mot_d = 0.0f;
@@ -114,25 +116,27 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->i_meas.gen_iq = 0.0f;
             self->i_meas.mot_id = 0.0f;
             self->i_meas.mot_iq = 0.0f;
+            self->counter.increment_id = 0U;
+            self->counter.increment_iq = 0U;
             self->counter.wait = 0U;
             self->counter.meas = 0U;
             self->output.generator_mode = false;
             self->rc_state = rc_wait;
             self->output.set_out.id_set = 0.0f;
             self->output.set_out.iq_set = 0.0f;
-            self->output.set_out.n_set = -1.0f * self->internal_config.n_ref;
+            self->output.set_out.n_set = -1.0f * self->internal_config.n_ref_rpm;
             self->is_first_call_to_sample = false;
     } else {
-        self->counter.isr++; 
+        self->counter.isr++;
 
         switch (self->rc_state)
         {
 
         case rc_start:
-            self->output.set_out.id_set = self->internal_config.id_ref;
-            self->output.set_out.iq_set = self->internal_config.iq_ref;
+            self->output.set_out.id_set = self->internal_config.id_ref_Amps + self->counter.increment_id * self->internal_config.delta_id_Amps;
+            self->output.set_out.iq_set = self->internal_config.iq_ref_Amps + self->counter.increment_iq * self->internal_config.delta_iq_Amps;
             self->rc_state = rc_wait;
-            self->motormode = true; 
+            self->motormode = true;
             break;
 
         case rc_wait:
@@ -146,7 +150,7 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
                     self->counter.wait = 0U;
                 }
             break;
-            
+
 
         case rc_sample:
             self->counter.meas++;
@@ -154,14 +158,14 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->sample.sum_uq = self->sample.sum_uq + uq;
             self->sample.sum_id = self->sample.sum_id + id;
             self->sample.sum_iq = self->sample.sum_iq + iq;
-            self->sample.sum_n = self->sample.sum_n + n;  
-            self->sample.sum_M = self->sample.sum_M + M; 
+            self->sample.sum_n = self->sample.sum_n + n;
+            self->sample.sum_M = self->sample.sum_M + M;
             if (self->counter.meas == self->counter.meas_max){
                 if (self->motormode){
                 self->rc_state=rc_calc_mot;
                 } else {
                 self->rc_state=rc_calc_gen;
-                }               
+                }
             }
             break;
 
@@ -171,9 +175,10 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->sample.mean_id = self->sample.sum_id / self->counter.meas;
             self->sample.mean_iq = self->sample.sum_iq / self->counter.meas;
             self->sample.mean_n = self->sample.sum_n / self->counter.meas;
-            self->sample.mean_omega = (self->sample.mean_n / 60.0f) * 2.0f * M_PI * self->internal_config.pn; 
-            self->sample.r_s = (1.75e-6f * self->sample.mean_n * self->sample.mean_n + 5.733e-4f * self->sample.mean_n + 28.4648f)/1000.0f;
+            self->sample.mean_omega = (self->sample.mean_n / 60.0f) * 2.0f * M_PI * self->internal_config.pn;
+            self->sample.r_s = (1.75e-6f * 1000.0f *  1000.0f + 5.733e-4f *  1000.0f + 28.4648f)/1000.0f;
             self->save_values.save_M_meas_mot[self->counter.repeat] = self->sample.sum_M / self->counter.meas;
+            self->save_values.speed[self->counter.repeat] = self->sample.mean_n;
             self->u_ind.mot_d = self->sample.mean_ud - self->sample.r_s * self->sample.mean_id;
             self->u_ind.mot_q = self->sample.mean_uq - self->sample.r_s * self->sample.mean_iq;
             self->u_meas.mot_ud = self->sample.mean_ud;
@@ -190,9 +195,8 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
             self->sample.mean_id = self->sample.sum_id / self->counter.meas;
             self->sample.mean_iq = self->sample.sum_iq / self->counter.meas;
             self->sample.mean_n = self->sample.sum_n / self->counter.meas;
-            self->save_values.save_M_meas_gen[self->counter.repeat] = self->sample.sum_M / self->counter.meas * -1.0f;
-            self->sample.r_s = (1.75e-6f * self->sample.mean_n * self->sample.mean_n + 5.733e-4f * self->sample.mean_n + 28.4648f)/1000.0f;
-
+            self->save_values.save_M_meas_gen[self->counter.repeat] = self->sample.sum_M / self->counter.meas;
+            self->sample.r_s = (1.75e-6f * 1000.0f *  1000.0f + 5.733e-4f *  1000.0f + 28.4648f)/1000.0f;
             self->u_ind.gen_d = self->sample.mean_ud - self->sample.r_s * self->sample.mean_id;
             self->u_ind.gen_q = self->sample.mean_uq - self->sample.r_s * self->sample.mean_iq;
             self->u_meas.gen_ud = self->sample.mean_ud;
@@ -222,10 +226,10 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
                 self->sample.mean_ud = self->sample.sum_ud / self->counter.meas;
                 self->sample.mean_uq = self->sample.sum_uq / self->counter.meas;
                 self->sample.mean_id = self->sample.sum_id / self->counter.meas;
-                self->sample.mean_iq = self->sample.sum_iq / self->counter.meas; 
+                self->sample.mean_iq = self->sample.sum_iq / self->counter.meas;
 
                 self->u_ind.gen_d = self->sample.mean_ud - self->sample.r_s * self->sample.mean_id;
-                self->u_ind.gen_q = self->sample.mean_uq - self->sample.r_s * self->sample.mean_iq; 
+                self->u_ind.gen_q = self->sample.mean_uq - self->sample.r_s * self->sample.mean_iq;
 
                 self->diff_u_ind_d = fabsf(fabsf(self->u_ind.mot_d)-fabsf(self->u_ind.gen_d));
                 self->diff_u_ind_q = fabsf(fabsf(self->u_ind.mot_q)-fabsf(self->u_ind.gen_q));
@@ -238,20 +242,20 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
                 }
 
             }
-            
+
             break;
 
 
 
         case rc_calc_rc:
-            self->calc_mot.i_dm = (self->i_meas.mot_id + self->i_meas.gen_id)/2.0f; 
-            self->calc_mot.i_qm = (self->i_meas.mot_iq - self->i_meas.gen_iq)/2.0f; 
-            self->calc_gen.i_dm = (self->i_meas.mot_id + self->i_meas.gen_id)/2.0f; 
+            self->calc_mot.i_dm = (self->i_meas.mot_id + self->i_meas.gen_id)/2.0f;
+            self->calc_mot.i_qm = (self->i_meas.mot_iq - self->i_meas.gen_iq)/2.0f;
+            self->calc_gen.i_dm = (self->i_meas.mot_id + self->i_meas.gen_id)/2.0f;
             self->calc_gen.i_qm = (self->i_meas.mot_iq - self->i_meas.gen_iq)/-2.0f;
 
-            self->calc_mot.i_di = self->i_meas.mot_id - self->calc_mot.i_dm; 
-            self->calc_mot.i_qi = self->i_meas.mot_iq - self->calc_mot.i_qm; 
-            self->calc_gen.i_di = self->i_meas.gen_id - self->calc_gen.i_dm; 
+            self->calc_mot.i_di = self->i_meas.mot_id - self->calc_mot.i_dm;
+            self->calc_mot.i_qi = self->i_meas.mot_iq - self->calc_mot.i_qm;
+            self->calc_gen.i_di = self->i_meas.gen_id - self->calc_gen.i_dm;
             self->calc_gen.i_qi = self->i_meas.gen_iq - self->calc_gen.i_qm;
 
             self->output.mot_rc_d = (self->u_meas.mot_ud - self->sample.r_s * self->i_meas.mot_id ) / self->calc_mot.i_di;
@@ -263,16 +267,20 @@ struct uz_parameterid_rc_meas_out_t uz_parameterid_rc_generate_outputs(uz_parame
 
         case rc_repeat:
             uz_parameterid_rc_repeat(self);
-        	self->output.finished = self->counter.repeat;
+        	self->output.routine_finished_once = self->counter.repeat;
             break;
 
-        case rc_finished:
+        case rc_finished_routine:
+            uz_parameterid_rc_set_next_workingpoint(self);
+            break;
+
+        case rc_finished_program:
             break;
 
         default:
             break;
         }
-     
+
 
     }
 
@@ -287,7 +295,7 @@ void uz_parameterid_rc_repeat(uz_parameterid_rc_t* self){
     uint32_t max_size_rc_calc = sizeof(self->save_values.save_gen_rc_d) / sizeof(float);
     if (self->counter.repeat == (max_size_rc_calc - 1U))
     {
-        self->rc_state = rc_finished; 
+        self->rc_state = rc_finished_routine;
         self->save_values.save_gen_rc_d[self->counter.repeat] = self->output.gen_rc_d;
         self->save_values.save_gen_rc_q[self->counter.repeat] = self->output.gen_rc_q;
         self->save_values.save_mot_rc_d[self->counter.repeat] = self->output.mot_rc_d;
@@ -318,8 +326,7 @@ void uz_parameterid_rc_repeat(uz_parameterid_rc_t* self){
         self->save_values.save_u_ind_q_gen[self->counter.repeat] = self->u_ind.gen_q;
         self->save_values.save_u_ind_d_mot[self->counter.repeat] = self->u_ind.mot_d;
         self->save_values.save_u_ind_d_gen[self->counter.repeat] = self->u_ind.gen_d;
-        self->save_values.speed[self->counter.repeat] = self->sample.mean_n;
-        self->save_values.delta_M_meas[self->counter.repeat]= fabsf(fabsf(self->save_values.save_M_meas_gen[self->counter.repeat]) - fabsf(self->save_values.save_M_meas_mot[self->counter.repeat])); 
+        self->save_values.delta_M_meas[self->counter.repeat]= fabsf(fabsf(self->save_values.save_M_meas_gen[self->counter.repeat]) - fabsf(self->save_values.save_M_meas_mot[self->counter.repeat]));
     } else {
     uz_assert(self->counter.repeat < max_size_rc_calc);
     self->save_values.save_gen_rc_d[self->counter.repeat] = self->output.gen_rc_d;
@@ -352,12 +359,37 @@ void uz_parameterid_rc_repeat(uz_parameterid_rc_t* self){
     self->save_values.save_u_ind_q_gen[self->counter.repeat] = self->u_ind.gen_q;
     self->save_values.save_u_ind_d_mot[self->counter.repeat] = self->u_ind.mot_d;
     self->save_values.save_u_ind_d_gen[self->counter.repeat] = self->u_ind.gen_d;
-    self->save_values.speed[self->counter.repeat] = self->sample.mean_n;
-    self->save_values.delta_M_meas[self->counter.repeat]= fabsf(fabsf(self->save_values.save_M_meas_gen[self->counter.repeat]) - fabsf(self->save_values.save_M_meas_mot[self->counter.repeat])); 
+    self->save_values.delta_M_meas[self->counter.repeat]= fabsf(fabsf(self->save_values.save_M_meas_gen[self->counter.repeat]) - fabsf(self->save_values.save_M_meas_mot[self->counter.repeat]));
     self->counter.repeat = self->counter.repeat + 1U;
     uz_parameterid_rc_reset(self);
     }
 
+
+}
+
+
+void uz_parameterid_rc_set_next_workingpoint(uz_parameterid_rc_t* self){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    if (self->internal_config.multiple_workingpoints == false) {
+        self->output.program_finished = 1U; 
+        self->rc_state = rc_finished_program;
+    } else {
+        self->counter.increment_id = self->counter.increment_id + 1U;
+        if (self->counter.increment_id == self->internal_config.id_steps + 1U){
+            if (self->counter.increment_iq == self->internal_config.iq_steps){
+                self->rc_state = rc_finished_program;
+                self->counter.increment_iq = 0U;
+                self->counter.increment_id = 0U;
+            } else {
+            self->counter.increment_iq = self->counter.increment_iq + 1U;
+            self->counter.increment_id = 0U;
+            }
+        }
+
+    }
+    printf("id counter %d\n", self->counter.increment_id);
+    printf("iq counter %d\n", self->counter.increment_iq);
 
 }
 

@@ -26,9 +26,6 @@ extern uint32_t js_status_BareToRTOS;
 //////////////Adding this line for tutorial 5///////////////
 extern uz_3ph_dq_t reference_currents_Amp;
 extern float theta_el_offset;
-extern float DutyCycle_A;
-extern float DutyCycle_B;
-extern float DutyCycle_C;
 extern DS_Data Global_Data;
 extern struct uz_DutyCycle_t output;
 ///////////////////////////////////////////////////////////

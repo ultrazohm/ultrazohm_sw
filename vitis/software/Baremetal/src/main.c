@@ -115,7 +115,7 @@ int main(void)
                            .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
                            .ptr_actual_u_q_V = &Global_Data.av.U_q,                                    // pointer to q-setpoint voltage
                            .min_omega_el = 400.0f,                                                     // target electric rotor angular speed (USE OWN)
-                           .setpoint_current = 0.0f 												   // current setpoint to reach speed (USE OWN)
+                           .setpoint_current = 1.0f 												   // current setpoint to reach speed (USE OWN)
                            };
                        encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);
                        CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);

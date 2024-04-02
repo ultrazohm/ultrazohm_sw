@@ -83,9 +83,6 @@ struct uz_DutyCycle_t output = {0};
  float n_ref_rpm = 0.0f;
  float M_ref_Nm = 0.0f;
  float theta;
- float DutyCycle_A = 0.0f;
- float DutyCycle_B = 0.0f;
- float DutyCycle_C = 0.0f;
 
 
 

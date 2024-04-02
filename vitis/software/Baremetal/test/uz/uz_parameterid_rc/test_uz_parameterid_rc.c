@@ -228,4 +228,43 @@ void test_uz_parameterid_rc_set_next_workingpoint(void){
     }
 }
 
+void test_uz_parameterid_rc_generate_outputs_simulate_behaviour_for_multiple_wp(void){
+    test_config.wait_time_secs = 5000.0f * test_config.isr_steptime_secs;
+    test_config.sample_time_secs = 5000.0f * test_config.isr_steptime_secs;
+    test_config.id_ref_Amps = 15.0f;
+    test_config.iq_ref_Amps = 15.0f;
+    test_config.multiple_workingpoints = true;
+    float r_s = (1.75e-6f * 1000.0f *  1000.0f + 5.733e-4f *  1000.0f + 28.4648f)/1000.0f;
+    uz_CurrentControl_t* CC_instance = uz_CurrentControl_init(CC_config);
+    uz_parameterid_rc_t* rc_instance = uz_parameterid_rc_init(test_config);
+    uz_pmsm_linear_rfe_t *pmsm = uz_pmsm_linear_rfe_init(R, psi_pm, L_d, L_q, rfe_d, rfe_q, ts);
+    struct uz_parameterid_rc_meas_out_t actual_output2;
+    uz_3ph_dq_t i_dq_ref_Amps = {0};
+    uz_3ph_dq_t v_dq_Volts = {0};
+    uz_3ph_dq_t i_dq_Amps = {0};
+    float v_DC_Volts = 24.0f;
+    uint32_t k = 3500000U; 
+    for (uint32_t i = 0U; i<=k; i++){
+
+        if(actual_output2.generator_mode){
+            i_dq_Amps.d = v_dq_Volts.d - r_s * i_dq_Amps.d;
+            i_dq_Amps.q = v_dq_Volts.q - r_s * i_dq_Amps.q;
+        }
+
+        v_dq_Volts = uz_CurrentControl_sample(CC_instance, i_dq_ref_Amps, i_dq_Amps, v_DC_Volts, omega_el);   
+        i_dq_Amps = uz_pmsm_linear_rfe_step(pmsm, v_dq_Volts, omega_el);
+        actual_output2 = uz_parameterid_rc_generate_outputs(rc_instance,v_dq_Volts.d ,v_dq_Volts.q ,i_dq_Amps.d ,i_dq_Amps.q , 1000.0f, 1.0f);
+        i_dq_ref_Amps.d = actual_output2.set_out.id_set;
+        i_dq_ref_Amps.q = actual_output2.set_out.iq_set;
+
+    }
+
+/*TEST_ASSERT_FLOAT_WITHIN(0.1, 0.7f, actual_output2.mot_rc_d);
+TEST_ASSERT_FLOAT_WITHIN(0.1, 0.7f, actual_output2.mot_rc_q);
+TEST_ASSERT_FLOAT_WITHIN(0.1, 0.7f, actual_output2.gen_rc_d);
+TEST_ASSERT_FLOAT_WITHIN(0.1, 0.7f, actual_output2.gen_rc_q);
+TEST_ASSERT_EQUAL_FLOAT(-1000.0f, actual_output2.set_out.n_set);*/
+
+}
+
 #endif // TEST

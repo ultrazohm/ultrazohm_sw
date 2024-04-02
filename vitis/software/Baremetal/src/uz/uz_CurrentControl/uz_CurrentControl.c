@@ -19,6 +19,7 @@
 #include "../uz_HAL.h"
 #include "../uz_signals/uz_signals.h"
 #include "uz_linear_decoupling.h"
+#include "uz_static_nonlinear_decoupling.h"
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 
@@ -43,6 +44,7 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
 static uint32_t instances_counter_CurrentControl = 0;
 
 static uz_CurrentControl_t instances_CurrentControl[UZ_CURRENTCONTROL_MAX_INSTANCES] = {0};
+
 
 
 /**
@@ -177,8 +179,13 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(enum uz_CurrentControl_decouplin
         // do nothing since no decoupling
         break;
     case linear_decoupling:
-        decouple_voltage=uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
+        decouple_voltage = uz_CurrentControl_linear_decoupling(config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
+    // case static_nonlinear_decoupling:
+    // 	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(flux_approx, omega_el_rad_per_sec);
+    // 	test_to_show_flux.b2 = decouple_voltage.d;
+	// 	test_to_show_flux.c2 = decouple_voltage.q;
+    // 	break;
     default:
         break;
     }

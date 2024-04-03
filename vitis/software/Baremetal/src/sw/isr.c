@@ -118,11 +118,21 @@ float K_p_iq                        = 0.0f;
 // Controller Settings
 float Kp_speed_2 					= 0.2f;
 float Ki_speed_2 					= 0.25f;
-//float Kp_id_2 = 0.3f;
-//float Ki_id_2 = 230.0f;
-//float Kp_iq_2 = 0.5f;
-//float Ki_iq_2 = 230.0f;
 
+//Stuff
+
+uint32_t setpoint_index				= 0U;
+uint64_t old_uptime					= 0U;
+float start_marker					= 0.0f;
+float id_setpoints[22]={
+#include "id_setpoints.csv"
+};
+
+float iq_setpoints[22]={
+#include "iq_setpoints.csv"
+};
+extern bool select_automatic_idiq;
+extern float PMSM_rated_current_1;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -137,6 +147,30 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
 
+    if( (select_automatic_idiq) ){
+    	start_marker=1.0f;
+    	i_dq_ref_Amps_1.d = id_setpoints[setpoint_index];
+    	i_dq_ref_Amps_1.q = iq_setpoints[setpoint_index] * PMSM_rated_current_1;
+
+    	// step throught the array
+    	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+    	if(current_uptime>(old_uptime +300 ) ){
+    		old_uptime=current_uptime;
+
+    		if(setpoint_index<21){
+    			setpoint_index++;
+    		}else{
+    			setpoint_index=0;
+    			select_automatic_idiq=false;
+    			start_marker=0.0f;
+    		}
+
+
+
+    	}
+    }else{
+    	i_dq_ref_Amps_1=i_dq_ref_Amps_1;
+    }
 
     // Set tristate to false
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
@@ -258,26 +292,6 @@ void ISR_Control(void *data)
     // Set duty cycles for two-level modulator
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-
-    // Change variables during runtime
-    uz_SpeedControl_set_Kp(SC_instance_1, Kp_speed_1);
-    uz_SpeedControl_set_Ki(SC_instance_1, Ki_speed_1);
-    //uz_CurrentControl_set_Kp_id(CC_instance_1, Kp_id_1);
-    //uz_CurrentControl_set_Kp_iq(CC_instance_1, Kp_iq_1);
-    //uz_CurrentControl_set_Ki_id(CC_instance_1, Ki_id_1);
-    //uz_CurrentControl_set_Ki_iq(CC_instance_1, Ki_iq_1);
-    uz_SpeedControl_set_Kp(SC_instance_2, Kp_speed_2);
-    uz_SpeedControl_set_Ki(SC_instance_2, Ki_speed_2);
-    //uz_CurrentControl_set_Kp_id(CC_instance_2, Kp_id_2);
-    //uz_CurrentControl_set_Kp_iq(CC_instance_2, Kp_iq_2);
-    //uz_CurrentControl_set_Ki_id(CC_instance_2, Ki_id_2);
-    //uz_CurrentControl_set_Ki_iq(CC_instance_2, Ki_iq_2);
-
     // Update Javascope
     JavaScope_update(&Global_Data);
 

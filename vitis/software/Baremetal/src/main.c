@@ -59,6 +59,7 @@ struct uz_PMSM_t config_PMSM_1 = {
 		.J_kg_m_squared = 0.000084f,
 		.I_max_Ampere = 10.0f
 };
+float PMSM_rated_current_1 = 10.0f;
 
 struct uz_PMSM_flux_fitting_parameter_config_t Hoerner_Fitting = {
     .ad1_parameter = 0.026620095524092f,

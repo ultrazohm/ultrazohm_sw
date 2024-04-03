@@ -1,6 +1,7 @@
 %% Fitting_flux_approximation
 %% Readout Flux-map from LUT
 close all;
+set(0,'defaulttextinterpreter','latex')
 FluxMapData = readtable('FluxMapData_Prototyp_1000rpm');
 options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt');
 %Readout the flux-linkage from LUT
@@ -12,22 +13,17 @@ psi_q = FluxMapData{108:127,1:20}*(1e-3);  %flux-linkage in q axis
 
 %LUT Fitting
 %LeastSquare Problems
-d_current = id;
-q_current = iq;
-id = id(1,:);
-iq = iq(:,1);
-d_current = d_current(1,:);
-q_current = q_current(:,1);
-[~,id_null] = min(abs(d_current))
-[~,iq_null] = min(abs(q_current))
+% id = id(1,:);
+% iq = iq(:,1);
+% [~,id_null] = min(abs(id));
+% [~,iq_null] = min(abs(iq));
+id_null = 15;
+iq_null = 10;
 
-id1 = id_null+1;
-[~,iq1] = max(abs(q_current))
-% [~,id1] = max(d_current)
+id1 = id_null-1;
+[~,iq1] = max(abs(iq));
+% [~,id1] = max(iq)
 % iq1 = iq_null-1;
-
-%Preparation
-%Hier soll mall die Werte für den Fluss gesucht werden
 
 %% Start der eigentlichen Berechnung 
 
@@ -43,7 +39,7 @@ ad3 = ad_self(3);
 
 % 2. Self-axis flux linkage q-axis
 psi_q_id_null = psi_q(:,id_null);
-fun2=@(aq)(psi_q_id_null-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
+fun2=@(aq)(psi_q_id_null-((aq(1).*(tanh(aq(2)*iq)))+(aq(3).*iq)));
 beta2 = [1;1;1]; %random starting parameters
 aq_self = lsqnonlin(fun2,beta2,[],[],options);
 aq1 = aq_self(1);
@@ -61,7 +57,7 @@ ad6 = ad_4_6(3);
 
 % 4. flux linkage q-axis with maximum cross-coupling
 psi_q_id1 = psi_q(:,id1);
-fun4=@(aq_cross)psi_q_id1-((aq_cross(1).*(tanh(aq_cross(2).*q_current)))+(aq_cross(3).*q_current));
+fun4=@(aq_cross)psi_q_id1-((aq_cross(1).*(tanh(aq_cross(2).*iq)))+(aq_cross(3).*iq));
 beta4 = [1;1;1]; %random starting parameters
 aq_4_6 = lsqnonlin(fun4,beta4,[],[],options);
 aq4 = aq_4_6(1);
@@ -70,9 +66,9 @@ aq6 = aq_4_6(3);
 
 % get die flux linkages with the calculated parameters
 psidself = ad1.*(tanh(ad2*(id-ad3)));
-psiqself = (aq1.*(tanh(aq2*q_current)))+(aq3.*q_current);
+psiqself = (aq1.*(tanh(aq2*iq)))+(aq3.*iq);
 psid_s1 = ad4.*(tanh(ad5*(id-ad6))); 
-psiq_s1 = (aq4.*(tanh(aq5.*q_current)))+(aq6.*q_current);
+psiq_s1 = (aq4.*(tanh(aq5.*iq)))+(aq6.*iq);
 % cross coupling in s1
 psid_cross_s1 = psidself - psid_s1;
 psiq_cross_s1 = psiqself - psiq_s1;
@@ -80,36 +76,44 @@ psiq_cross_s1 = psiqself - psiq_s1;
 %% Plotten
 figure;
 % Erster Plot
-subplot(4,1,1); 
+subplot(2,2,1); 
 grid on;
 plot(id, psidself, 'DisplayName', 'Fluxd_{idnull}_{fitted}');
 hold on;
 plot(id, psi_d_iq_null,'*', 'DisplayName', 'Fluxd_{idnull}');
+xlabel('$i_\mathrm{d}$/A', 'FontSize', 18);
+ylabel('$\hat{\psi}_\mathrm{d,self}$/Vs', 'FontSize', 18);
 legend('show');
 
 % Zweiter Plot
-subplot(4,1,2); 
+subplot(2,2,2); 
 grid on;
 
-plot(q_current, psiqself, 'DisplayName', 'Fluxq_{idnull}_{fitted}');
+plot(iq, psiqself, 'DisplayName', 'Fluxq_{idnull}_{fitted}');
 hold on;
-plot(q_current, psi_q_id_null,'*', 'DisplayName', 'Fluxq_{idnull}');
+plot(iq, psi_q_id_null,'*', 'DisplayName', 'Fluxq_{idnull}');
+xlabel('$i_\mathrm{q}$/A', 'FontSize', 18);
+ylabel('$\hat{\psi}_\mathrm{q,self}$/Vs', 'FontSize', 18);
 legend('show');
 
 %Dritter Plot
-subplot(4,1,3); 
+subplot(2,2,3); 
 grid on;
 plot(id, psid_s1, 'DisplayName', 'Fluxd_{iq1}_{fitted}');
 hold on;
 plot(id, psi_d_iq1,'*', 'DisplayName', 'Fluxd_{iq1}');
+xlabel('$i_\mathrm{d}$/A', 'FontSize', 18);
+ylabel('$\hat{\psi}_\mathrm{d,s1}$/Vs', 'FontSize', 18);
 legend('show');
 
 % Vierter Plot
-subplot(4,1,4); 
+subplot(2,2,4); 
 grid on;
-plot(q_current, psiq_s1, 'DisplayName', 'Fluxq_{id1}_{fitted}');
+plot(iq, psiq_s1, 'DisplayName', 'Fluxq_{id1}_{fitted}');
 hold on;
-plot(q_current, psi_q_id1,'*', 'DisplayName', 'Fluxq_{id1}');
+plot(iq, psi_q_id1,'*', 'DisplayName', 'Fluxq_{id1}');
+xlabel('$i_\mathrm{q}$/A', 'FontSize', 18);
+ylabel('$\hat{\psi}_\mathrm{q,s1}$/Vs', 'FontSize', 18);
 legend('show');
 
 
@@ -117,20 +121,20 @@ legend('show');
 
 %Die beiden werden dann integriert (wieso auch immer) 
 psiid_cross_s1_integrated = ((ad1./ad2).*(log(cosh(ad2.*(id-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(id-ad6)))));
-psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*log(cosh(aq2.*q_current)))-((aq4./aq5).*log(cosh(aq5.*q_current)));
+psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((iq).^2))+((aq1./aq2).*log(cosh(aq2.*iq)))-((aq4./aq5).*log(cosh(aq5.*iq)));
 
 %Berechnen von F(i1)*G(i1) (wie im Paper)
 %Das sind die Setpoints an denen eben die kreuzkopplung berechnet wird
-q_current_set = q_current(iq1);
-id_set = id(id1);
+iq_set = iq(1);
+id_set = id(14);
 
 %Für den Faktor setzte ich einfach in der Formel der Integrierten Terme den Set Strom ein 
-Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*id_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
+Fid1_Giq1 = ((1/2).*(aq3-aq6).*((iq_set).^2))+((aq1./aq2).*log(cosh(aq2.*id_set)))-((aq4/aq5).*log(cosh(aq5.*iq_set)));
 Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(id_set-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(id_set-ad6)))));
 
 %Kreuzkopplung ist dann
 psi_d_cross = (1/Fid1_Giq1).*((psid_cross_s1).*(psiiq_cross_s1_integrated));
-psi_q_cross = (1/Fid2_Giq2).*((psiq_cross_s1).*(psiid_cross_s1_integrated'));
+psi_q_cross = (1/Fid2_Giq2).*((psiq_cross_s1).*(psiid_cross_s1_integrated));
 
 %Eigeninduktivität noch "padden"
 psidself_padded = repmat(psidself, 20, 1);
@@ -227,62 +231,52 @@ figure;
 % Approximierter Fluss
  subplot(2,3,1); 
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(id, q_current,psi_d_approx);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
-
-% Approximierter Fluss
- subplot(2,3,4); 
+surf(id, iq,psi_d_approx);
+xlabel('$i_{d}$/A', 'FontSize', 18);
+ylabel('$i_{q}$/A', 'FontSize', 18);
+zlabel('$\hat{\psi}_{d}$/Vs', 'FontSize', 18);
+title('approx. flux-linkage $\hat{\psi}_{d}$', 'FontSize', 18);
+subplot(2,3,4); 
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(id, q_current,psi_q_approx);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
+surf(id, iq,psi_q_approx);
+xlabel('$i_{d}$/A', 'FontSize', 18);
+ylabel('$i_{q}$/A', 'FontSize', 18);
+zlabel('$\hat{\psi}_{q}$/Vs', 'FontSize', 18);
+title('approx. flux-linkage $\hat{\psi}_{q}$', 'FontSize', 18);
 
- subplot(2,3,2); 
+%Echter Fluss
+subplot(2,3,2); 
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(id, q_current,psi_d);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
-
- subplot(2,3,5); 
+surf(id, iq,psi_d);
+xlabel('$i_{d}$/A', 'FontSize', 18);
+ylabel('$i_{q}$/A', 'FontSize', 18);
+zlabel('$\psi_{d}/Vs$', 'FontSize', 18);
+title('flux-linkage $\psi_{d}$', 'FontSize', 18);
+subplot(2,3,5); 
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(id, q_current,psi_q);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
+surf(id, iq,psi_q);
+xlabel('$i_{d}$/A', 'FontSize', 18);
+ylabel('$i_{q}$/A', 'FontSize', 18);
+zlabel('$\psi_{q}$/Vs', 'FontSize', 18);
+title('flux-linkage $\psi_{q}$', 'FontSize', 18);
 
-
-% Approximierter Fluss
- subplot(2,3,3); 
+%Error between meas and approx
+subplot(2,3,3); 
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(id, q_current,ed);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\varepsilon_{d}$$','Interpreter','Latex');
-
-
- subplot(2,3,6); 
+surf(id, iq,ed);
+xlabel('$i_{d}$/A', 'FontSize', 18);
+ylabel('$i_{q}$/A', 'FontSize', 18);
+zlabel('$\varepsilon_{d}$/\%', 'FontSize', 18);
+title('normalized Error $\varepsilon_{d}$', 'FontSize', 18);
+subplot(2,3,6); 
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(id, q_current,eq);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\varepsilon_{d}$$','Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
+surf(id, iq,eq);
+xlabel('$i_{d}$/A', 'FontSize', 18);
+ylabel('$i_{q}$/A', 'FontSize', 18);
+zlabel('$\varepsilon_{q}$/\%', 'FontSize', 18);
+title('normalized Error $\varepsilon_{d}$', 'FontSize', 18);
 
-
-%matlab2tikz('C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\testobsspeichert.tex','width','\figurewidth','height','\figureheight')
-
+%% Inductances
 % % Echter Fluss
 % subplot(2,1,2); 
 % grid on;

@@ -140,4 +140,6 @@ void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
+void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t flux_approx);
+
 #endif // UZ_CURRENTCONTROL_H

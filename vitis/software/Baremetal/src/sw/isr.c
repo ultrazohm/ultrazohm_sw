@@ -204,6 +204,7 @@ void ISR_Control(void *data)
 
         //Approximate psid and psiq and set new kpd and kpq
     	flux_approx = uz_approximate_flux_step(Global_Data.objects.approximate_flux_instance, i_dq_Amps_1);
+    	uz_CurrentControl_set_flux_approx(CC_instance_1, flux_approx);
     	flux_reference = uz_approximate_flux_reference_step(Global_Data.objects.approximate_flux_instance,i_dq_ref_Amps_1,i_dq_Amps_1);
         K_p_id = uz_CurrentControl_Kp_id_adjustment_step(Global_Data.objects.Kp_id_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
         K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(Global_Data.objects.Kp_iq_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);

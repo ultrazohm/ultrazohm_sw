@@ -232,7 +232,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-		theta_el_offset_2 = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -385,7 +384,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	//}
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+    if (switch_control == control_uind) {
+       js_status_BareToRTOS |= 1 << 5;
+    } else {
+       js_status_BareToRTOS &= ~(1 << 5);
+    }
 
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);
@@ -412,11 +415,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
     }*/
 
 	/* Bit 10 - My_Button_7 */
-    /*if (run_state == ) {
+    if (run_state == normal ) {
        js_status_BareToRTOS |= 1 << 10;
     } else {
        js_status_BareToRTOS &= ~(1 << 10);
-    }*/
+    }
 
 	/* Bit 11 - My_Button_8 */
     /*if (run_state == reset ) {

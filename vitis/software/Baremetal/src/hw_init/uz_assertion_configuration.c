@@ -4,9 +4,10 @@
 #include "../uz/uz_HAL.h"
 #include "../include/uz_platform_state_machine.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-#include "../../globalData.h"
+#include "../globalData.h"
 #include <stdbool.h>
 
+extern DS_Data Global_Data;
 
 static void uz_assertCallback(const char8 *file, s32 line);
 

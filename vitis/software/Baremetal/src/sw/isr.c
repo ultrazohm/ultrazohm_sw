@@ -119,7 +119,9 @@ extern uz_IIR_Filter_t* LP_instance_rc_d_2;
 extern uz_IIR_Filter_t* LP_instance_rc_q_2;
 extern uz_IIR_Filter_t* LP_instance_ud_2;
 extern uz_IIR_Filter_t* LP_instance_uq_2;
-extern uz_CurrentControl_t* CC_instance_u_ind;
+//extern uz_CurrentControl_t* CC_instance_u_ind;
+extern uz_PI_Controller* PI_instance_ud_ind;
+extern uz_PI_Controller* PI_instance_uq_ind;
 struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
 struct uz_3ph_dq_t rc_dq_Ohm 			= {0};
 struct uz_3ph_dq_t rc_dq_filt_Ohm 			= {0};
@@ -254,9 +256,7 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
 
-    		v_dq_SOS_Volts_2.d = (v_dq_Volts_2.d + v_dq_ref_Volts_2.d)/2.0f;
-    		v_dq_SOS_Volts_2.q = (v_dq_Volts_2.q + v_dq_ref_Volts_2.q)/2.0f;
-    		r_s_2 = (1.16e-8f * Global_Data.av.mechanicalRotorSpeed_filtered_2 * Global_Data.av.mechanicalRotorSpeed_filtered_2 - 8.001e-7f * Global_Data.av.mechanicalRotorSpeed_filtered_2 + 0.55f);
+    		r_s_2 = (1.28e-8f * Global_Data.av.mechanicalRotorSpeed_filtered_2 * Global_Data.av.mechanicalRotorSpeed_filtered_2 - 2.353e-6f * Global_Data.av.mechanicalRotorSpeed_filtered_2 + 0.539f);
     		v_ind_dq_Volts_2.d = v_dq_Volts_2.d - (r_s_2 * i_dq_Amps_2.d);
     		v_ind_dq_Volts_2.q = v_dq_Volts_2.q - (r_s_2 * i_dq_Amps_2.q);
     		v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
@@ -306,17 +306,22 @@ void ISR_Control(void *data)
 
 					// calculation of set-values
 			        rc_output = uz_parameterid_rc_generate_outputs(rc_meas_instance, v_dq_Volts_2.d, v_dq_Volts_2.q, i_dq_Amps_2.d, i_dq_Amps_2.q, Global_Data.av.mechanicalRotorSpeed_filtered_2, M_meas_Nm);
-			        i_dq_ref_Amps_2.d = rc_output.set_out.id_set;
-			        i_dq_ref_Amps_2.q = rc_output.set_out.iq_set;
 			        rc_repeat_counter = rc_output.finished;
 
 			        // Field Oriented Control of PMSM 2
 			        if(rc_output.generator_mode){
 						// Field Oriented Control of PMSM 2 - u_ind-controlled
-						v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_u_ind, i_dq_ref_Amps_2, v_ind_dq_Volts_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-						output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+			        	v_ind_dq_ref_Volts_2.d = rc_output.set_out.id_set;
+			        	v_ind_dq_ref_Volts_2.q = rc_output.set_out.iq_set;
+			        	i_dq_ref_Amps_2.q = uz_PI_Controller_sample(PI_instance_ud_ind, v_ind_dq_ref_Volts_2.d, v_ind_dq_Volts_2.d, false);
+			        	i_dq_ref_Amps_2.q = -1.0f * i_dq_ref_Amps_2.q;
+			        	i_dq_ref_Amps_2.d = uz_PI_Controller_sample(PI_instance_uq_ind, v_ind_dq_ref_Volts_2.q, v_ind_dq_Volts_2.q, false);
+			        	v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+			        	output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
 			        } else {
 					// Field Oriented Control of PMSM 2 - current-controlled
+				    i_dq_ref_Amps_2.d = rc_output.set_out.id_set;
+				    i_dq_ref_Amps_2.q = rc_output.set_out.iq_set;
 					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
 					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
 			        }
@@ -342,8 +347,11 @@ void ISR_Control(void *data)
 					// Field Oriented Control of PMSM 2
 					if (switch_control == control_uind ){
 					// Field Oriented Control of PMSM 2 - current-controlled
-					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_u_ind, v_ind_dq_ref_Volts_2, v_ind_dq_Volts_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+			        	i_dq_ref_Amps_2.q = uz_PI_Controller_sample(PI_instance_ud_ind, v_ind_dq_ref_Volts_2.d, v_ind_dq_Volts_2.d, false);
+			        	i_dq_ref_Amps_2.q = -1.0f * i_dq_ref_Amps_2.q;
+			        	i_dq_ref_Amps_2.d = uz_PI_Controller_sample(PI_instance_uq_ind, v_ind_dq_ref_Volts_2.q, v_ind_dq_Volts_2.q, false);
+						v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+						output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
 					} else {
 					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
 					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
@@ -363,7 +371,9 @@ void ISR_Control(void *data)
 					actual_output.isr_stepcounter = 0.0f;
 					n_ref_rpm_1 = 0.0f;
 					uz_parameterid_rc_reset(rc_meas_instance);
-			    	uz_CurrentControl_reset(CC_instance_u_ind);
+					uz_PI_Controller_reset(PI_instance_ud_ind);
+					uz_PI_Controller_reset(PI_instance_uq_ind);
+			    	//uz_CurrentControl_reset(CC_instance_u_ind);
 					rc_output.mot_rc_d = 0.0f;
 					rc_output.mot_rc_q = 0.0f;
 					rc_output.gen_rc_d = 0.0f;
@@ -411,7 +421,9 @@ void ISR_Control(void *data)
     	//uz_CurrentControl_reset(CC_instance_1);
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
-    	uz_CurrentControl_reset(CC_instance_u_ind);
+    	//uz_CurrentControl_reset(CC_instance_u_ind);
+		uz_PI_Controller_reset(PI_instance_ud_ind);
+		uz_PI_Controller_reset(PI_instance_uq_ind);
 
     }
 

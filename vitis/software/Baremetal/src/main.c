@@ -66,6 +66,8 @@ uz_IIR_Filter_t* LP_instance_rc_d_2;
 uz_IIR_Filter_t* LP_instance_rc_q_2;
 uz_IIR_Filter_t* LP_instance_ud_2;
 uz_IIR_Filter_t* LP_instance_uq_2;
+uz_PI_Controller* PI_instance_ud_ind;
+uz_PI_Controller* PI_instance_uq_ind;
 
 
 // Configuration of PMSM 1 (Hoerner PMSM)
@@ -242,9 +244,9 @@ int main(void)
     };
 
     struct uz_parameterid_rc_config_t config_rc_meas = {
-    	    .id_ref = 0.0f,
-    	    .iq_ref = 1.5f,
-    	    .n_ref = 3000.0f,
+    	    .id_ref = -1.0f,
+    	    .iq_ref = 3.0f,
+    	    .n_ref = 1000.0f,
     	    .wait_time = 5.0f,
     	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
     	    .sample_time = 10.0f,
@@ -295,7 +297,7 @@ int main(void)
       };
 
       // Configuration of induced voltage Controller
-      struct uz_PI_Controller_config config_ud_ind = {
+      struct uz_PI_Controller_config PI_config_ud_ind = {
          .Kp = 0.0f,
          .Ki = 1.0f,
          .samplingTime_sec = 0.0001f,
@@ -303,7 +305,7 @@ int main(void)
          .lower_limit = -10.0f,
  		.type = parallel
        };
-       struct uz_PI_Controller_config config_uq_ind = {
+       struct uz_PI_Controller_config PI_config_uq_ind = {
          .Kp = 0.0f,
          .Ki = 1.0f,
          .samplingTime_sec = 0.0001f,
@@ -311,13 +313,14 @@ int main(void)
  	    .lower_limit = -10.0f,
  		.type = parallel
        };
-       struct uz_CurrentControl_config CC_config_u_ind = {
+
+       /*struct uz_CurrentControl_config CC_config_u_ind = {
          .decoupling_select = linear_decoupling,
          .config_PMSM = config_PMSM_2,
          .config_id = config_ud_ind ,
          .config_iq = config_uq_ind,
          .max_modulation_index = 1.0f / sqrtf(3.0f)
-       };
+       };*/
 
 
       // Encoder offset estimation
@@ -416,7 +419,8 @@ int main(void)
             SC_instance_2 = uz_SpeedControl_init(SC_config_2);
             SP_instance_2 = uz_SetPoint_init(SP_config_2);
             CC_instance_2 = uz_CurrentControl_init(CC_config_2);
-            CC_instance_u_ind = uz_CurrentControl_init(CC_config_u_ind);
+            PI_instance_ud_ind = uz_PI_Controller_init(PI_config_ud_ind);
+            PI_instance_uq_ind = uz_PI_Controller_init(PI_config_uq_ind);
 		    rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
 		    rc_meas_instance = uz_parameterid_rc_init(config_rc_meas);
 //           	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);

@@ -126,6 +126,22 @@ int main(void)
 //				.F1G1_parameter = -2.804045923851899e-04f,
 //				.F2G2_parameter = 0.001571046078979f};
 
+        		//        Hoerner prototyp FEM
+//        		        		.ad1_parameter = 0.026620095524092f,
+//        		        		.ad2_parameter = 0.047133812840564f,
+//        						.ad3_parameter = -27.868596691410815f,
+//        						.ad4_parameter = 0.026771852823277f,
+//        						.ad5_parameter = 0.032335709299499f,
+//        						.ad6_parameter = -27.939757152811232f,
+//        						.aq1_parameter = 0.006639611096337f,
+//        						.aq2_parameter = 0.140324092149110f,
+//        						.aq3_parameter = 6.036938033671378e-04f,
+//        						.aq4_parameter = 0.006818079861355f,
+//        						.aq5_parameter = 0.148494853843815f,
+//        						.aq6_parameter = 6.202760235239144e-04f,
+//        						.F1G1_parameter = -0.005816630245736f,
+//        						.F2G2_parameter = 0.294469757399354f};
+
 //        Hoerner prototyp
         		.ad1_parameter = 0.030483840951002f,
         		.ad2_parameter = 0.040244227373267f,

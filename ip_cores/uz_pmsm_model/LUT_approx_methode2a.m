@@ -216,7 +216,7 @@ psi_dqself_abgeleitet_padded = repmat(psi_dqself_abgeleitet, 1, 20)';
 psiidq_cross_s1_integrated_abgeleitet = psiq_cross_s1; %Wurde ja vorher integriert
 
 %Also ist das eigentlich (1/Fid1_Giq1).*psiid_cross_s1.*psiiq_cross_s1
-psi_dqcross_abgeleitet = (1/Fid1_Giq1).*(psi_dq_cross_s1_abgeleitet').*(psiidq_cross_s1_integrated_abgeleitet);
+psi_dqcross_abgeleitet = (1/Fid1_Giq1).*(psi_dq_cross_s1_abgeleitet).*(psiidq_cross_s1_integrated_abgeleitet);
 
 Ldq_approx_test = psi_dqself_abgeleitet_padded  -  psi_dqcross_abgeleitet;
 
@@ -226,7 +226,7 @@ psi_q_cross_s1_abgeleitet = (aq1.*aq2.*(1./((cosh(aq2.*q_current)).^2))+aq3) - (
 psi_qself_abgeleitet = (aq1.*aq2.*(1./((cosh(aq2.*q_current)).^2))+aq3);
 
 psi_qself_abgeleitet_padded = repmat(psi_qself_abgeleitet, 1, 20);
-psi_qcross_abgeleitet = (1/Fid2_Giq2).*(psi_q_cross_s1_abgeleitet').*(psiid_cross_s1_integrated);
+psi_qcross_abgeleitet = (1/Fid2_Giq2).*(psi_q_cross_s1_abgeleitet).*(psiid_cross_s1_integrated);
 
 Lqq_approx_test = psi_qself_abgeleitet_padded - psi_qcross_abgeleitet;
 

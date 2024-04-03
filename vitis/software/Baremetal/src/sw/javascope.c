@@ -47,6 +47,8 @@ extern struct uz_3ph_dq_t i_dq_Amps_2;
 extern struct uz_3ph_dq_t i_dqn_filtered_5th_Amps_1;
 extern struct uz_3ph_dq_t i_dqn_filtered_7th_Amps_1;
 extern struct uz_3ph_dq_t v_dq_Volts_2;
+extern float K_p_id;
+extern float K_p_iq;
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -104,6 +106,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_Kp_id]			= &K_p_id;
+	js_ch_observable[JSO_Kp_iq]			= &K_p_iq;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

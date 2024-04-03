@@ -144,7 +144,7 @@ int main(void)
     	   .lower_limit = -15.0f
     };
     struct uz_CurrentControl_config CC_config_1 = {
-           .decoupling_select = linear_decoupling,
+           .decoupling_select = static_nonlinear_decoupling,
            .config_PMSM = config_PMSM_1,
            .config_id = config_id_1,
            .config_iq = config_iq_1,
@@ -277,8 +277,8 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             Global_Data.objects.approximate_flux_instance = uz_approximate_flux_init(Hoerner_Fitting);
-            Global_Data.objects.Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(2.0f * UZ_PWM_FREQUENCY);
-            Global_Data.objects.Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(2.0f * UZ_PWM_FREQUENCY);
+            Global_Data.objects.Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(0.5f * UZ_PWM_FREQUENCY);
+            Global_Data.objects.Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(0.5f * UZ_PWM_FREQUENCY);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

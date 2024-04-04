@@ -342,9 +342,9 @@ void ISR_Control(void *data)
     	    v_dq_non_limited_Volts_1.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
     	    v_dq_non_limited_Volts_1.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);
     	    v_dq_limited_Volts_1 = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_1, v_DC_Volts_1, max_modulation_index_1, omega_el_rad_per_sec_1, i_dq_ref_Amps_1, &ext_clamping_1);
-    	    //Introduce double delay of set-voltages because of mistake in DDPG training
-    	    v_dq_limited_Volts_old_old_1 = v_dq_limited_Volts_old_1;
-    	    v_dq_limited_Volts_old_1 = v_dq_limited_Volts_1;
+    	    //Introduce delay
+    	    v_dq_limited_Volts_old_old_1 = v_dq_limited_Volts_1;
+    	    //v_dq_limited_Volts_old_1 = v_dq_limited_Volts_1;
     	    output_1 = uz_Space_Vector_Modulation(v_dq_limited_Volts_1, v_DC_Volts_1, theta_el_rad_1);
 
     	} else {

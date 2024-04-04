@@ -27,28 +27,28 @@ enum JS_OberservableData {
 	JSO_theta_mech_1,
 	JSO_ua_1,
 	JSO_ub_1,
-	JSO_uc_1, // 7
+	JSO_uc_1,
 	JSO_ia_1,
 	JSO_ib_1,
 	JSO_ic_1,
 	JSO_id_1,
-	JSO_iq_1, //12
+	JSO_iq_1,
 	JSO_ud_1,
 	JSO_uq_1,
-	JSO_obs_1,			// 15
-	JSO_obs_2,			// 16
-	JSO_obs_3,			// 17
-	JSO_obs_4,			// 18
-	JSO_obs_5,			// 19
-	JSO_obs_6,			// 20
-	JSO_obs_7,			// 21
-	JSO_obs_8,			// 22
-	JSO_obs_9,			// 23
-	JSO_id_set,			// 24
-	JSO_iq_set,			// 25
-	JSO_enable,			// 26
-	JSO_Speed_rpm_1,		// 27
-	JSO_Torque_Nm,		// 28
+	JSO_obs_1,
+	JSO_obs_2,
+	JSO_obs_3,
+	JSO_obs_4,
+	JSO_obs_5,
+	JSO_obs_6,
+	JSO_obs_7,
+	JSO_obs_8,
+	JSO_obs_9,
+	JSO_id_set,
+	JSO_iq_set,
+	JSO_enable,
+	JSO_Speed_rpm_1,
+	JSO_Torque_Nm,
 	JSO_Theta_el_1,
 	JSO_Theta_mech_1,
 	JSO_Speed_rpm_2,

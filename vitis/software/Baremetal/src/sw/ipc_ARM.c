@@ -37,7 +37,9 @@ extern int mode;
 bool select_automatic_idiq=false;
 uz_3ph_dq_t i_dq_ref_java_Amps_1 = {0};
 extern DS_Data Global_Data;
-bool select_misalignment = true;
+bool select_misalignment = false;
+bool select_DDPG = false;
+bool select_FOC = false;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -295,19 +297,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+		mode = 0;
 			break;
 
 		case (My_Button_4):
-			mode = 0;
+		mode = 1;
 			break;
 
 		case (My_Button_5):
-			mode = 1;
+		if(select_FOC == false) {
+			select_FOC = true;
+		} else {
+			select_FOC = false;
+		}
 			break;
 
 		case (My_Button_6):
-				if(select_misalignment==false){
+				if(select_misalignment == false){
 					select_misalignment = true;
 				} else {
 					select_misalignment = false;
@@ -315,11 +321,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7):
-
+				if(select_DDPG == false) {
+					select_DDPG = true;
+				} else {
+					select_DDPG = false;
+				}
 			break;
 
 		case (My_Button_8):
-				if(select_automatic_idiq==false){
+				if(select_automatic_idiq == false){
 					select_automatic_idiq=true;
 				}
 			break;

@@ -13,7 +13,8 @@
 #include "uz/uz_approximate_flux/uz_approximate_flux.h"
 #include "uz/uz_CurrentControl_Kp_id_adjustment/uz_CurrentControl_Kp_id_adjustment.h"
 #include "uz/uz_CurrentControl_Kp_iq_adjustment/uz_CurrentControl_Kp_iq_adjustment.h"
-
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_matrix/uz_matrix.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -146,6 +147,8 @@ typedef struct{
 	uz_approximate_flux_t* approximate_flux_instance;
 	uz_CurrentControl_Kp_id_adjustment_t* Kp_id_adjustment_instance;
 	uz_CurrentControl_Kp_iq_adjustment_t* Kp_iq_adjustment_instance;
+	uz_matrix_t* matrix_input;
+	uz_nn_t* nn_layer;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

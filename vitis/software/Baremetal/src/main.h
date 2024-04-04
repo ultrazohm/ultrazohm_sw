@@ -63,7 +63,7 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "uz/uz_HarmonicCurrentInjection/uz_HarmonicCurrentInjection.h"
-
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
 
 //----------------------------------------------------
 // FUNCTIONS
@@ -72,7 +72,12 @@
 #include "uz/uz_flux_prediction/uz_flux_prediction.h"
 #include "uz/uz_CurrentControl_Kp_id_adjustment/uz_CurrentControl_Kp_id_adjustment.h"
 #include "uz/uz_CurrentControl_Kp_iq_adjustment/uz_CurrentControl_Kp_iq_adjustment.h"
+#include "sw/nn_7_input_1_64/nn_7_input_1_64.h"
+#include "sw/nn_9_input_1_64/nn_9_input_1_64.h"
 
+// Network definition
+#define NN_7_INPUT_1_64  0U
+#define NN_9_INPUT_1_64  1U
 
 void InitializeDataStructure(DS_Data* data);
 

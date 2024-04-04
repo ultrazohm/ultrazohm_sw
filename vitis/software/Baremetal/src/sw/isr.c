@@ -136,8 +136,26 @@ extern float PMSM_rated_current_1;
 uint32_t Fehlerfall  = 0U;
 extern bool select_misalignment;
 extern uz_3ph_dq_t i_dq_ref_java_Amps_1;
+
 //DDPG Stuff
-float observation_ip_9n[9U] = {0};
+extern bool select_DDPG;
+extern bool select_FOC;
+float observation_ip[9U] = {0};
+#define NUMBER_OF_INPUTS_7N 7U
+#define NUMBER_OF_INPUTS_9N 9U
+uz_matrix_t* matrix_output;
+uz_3ph_dq_t i_dq_integrated_error_Amps_1 = {0};
+uz_3ph_dq_t i_dq_error_Amps_1 = {0};
+float ts = 1.0f / UZ_PWM_FREQUENCY;
+float speed_weight_1 = 1.0f / 1500.0f;
+uz_3ph_dq_t v_dq_non_limited_Volts_1 = {0};
+uz_3ph_dq_t v_dq_limited_Volts_1 = {0};
+uz_3ph_dq_t v_dq_limited_Volts_old_1 = {0};
+uz_3ph_dq_t v_dq_limited_Volts_old_old_1 = {0};
+float U_max_1 = 48.0f / 1.732050808f;
+float Voltage_Scaling_1 = 1.0f / (48.0f / 1.732050808f);
+bool ext_clamping_1 = false;
+float max_modulation_index_1 = 1.0f / 1.732050808f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -191,6 +209,7 @@ void ISR_Control(void *data)
     i_abc_Amps_1.c  = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
     i_DC_Amps_1     = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+
 
     // Read Measurement of Second Inverter
     v_abc_Volts_2.a = Global_Data.aa.A2.me.ADC_B8 * 12.0f;
@@ -248,35 +267,90 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
-    	// Field Oriented Control of PMSM 1
-    	//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
-    	//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
+    	if(select_FOC) {
+    		// Field Oriented Control of PMSM 1
+    		//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
+    		//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
 
-        //Approximate psid and psiq and set new kpd and kpq
-    	flux_approx = uz_approximate_flux_step(Global_Data.objects.approximate_flux_instance, i_dq_Amps_1);
-    	uz_CurrentControl_set_flux_approx(CC_instance_1, flux_approx);
-    	flux_reference = uz_approximate_flux_reference_step(Global_Data.objects.approximate_flux_instance,i_dq_ref_Amps_1,i_dq_Amps_1);
-        K_p_id = uz_CurrentControl_Kp_id_adjustment_step(Global_Data.objects.Kp_id_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
-        K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(Global_Data.objects.Kp_iq_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
-        uz_CurrentControl_set_Kp_id(CC_instance_1, K_p_id);
-        uz_CurrentControl_set_Kp_iq(CC_instance_1, K_p_iq);
-    	v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-    	i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
-    	i_dqn_filtered_7th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_Amps_1, theta_el_rad_1);
-    	uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_1);
-    	uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_1);
-    	switch (mode)
-    	{
-    	default:
-    		output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-    		break;
-		case 1:
-			v_dq_ref_HCI_Volts_1.d = v_dq_ref_Volts_1.d +  v_dq_ref_5th_Volts_1.d + v_dq_ref_7th_Volts_1.d;
-			v_dq_ref_HCI_Volts_1.q = v_dq_ref_Volts_1.q +  v_dq_ref_5th_Volts_1.q + v_dq_ref_7th_Volts_1.q;
-			v_dq_ref_5th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_5th_1, i_dqn_ref_5th_Amps_1, i_dqn_filtered_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
-			v_dq_ref_7th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_7th_1, i_dqn_ref_7th_Amps_1, i_dqn_filtered_7th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
-			output_1 = uz_Space_Vector_Modulation(v_dq_ref_HCI_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-			break;
+    		//Approximate psid and psiq and set new kpd and kpq
+    		flux_approx = uz_approximate_flux_step(Global_Data.objects.approximate_flux_instance, i_dq_Amps_1);
+    		uz_CurrentControl_set_flux_approx(CC_instance_1, flux_approx);
+    		flux_reference = uz_approximate_flux_reference_step(Global_Data.objects.approximate_flux_instance,i_dq_ref_Amps_1,i_dq_Amps_1);
+    		K_p_id = uz_CurrentControl_Kp_id_adjustment_step(Global_Data.objects.Kp_id_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
+    		K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(Global_Data.objects.Kp_iq_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
+    		uz_CurrentControl_set_Kp_id(CC_instance_1, K_p_id);
+    		uz_CurrentControl_set_Kp_iq(CC_instance_1, K_p_iq);
+    		v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+    		i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
+    		i_dqn_filtered_7th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_Amps_1, theta_el_rad_1);
+    		uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_1);
+    		uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_1);
+    		switch (mode)
+    		{
+    		default:
+    			output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+    			break;
+    		case 1:
+    			v_dq_ref_HCI_Volts_1.d = v_dq_ref_Volts_1.d +  v_dq_ref_5th_Volts_1.d + v_dq_ref_7th_Volts_1.d;
+    			v_dq_ref_HCI_Volts_1.q = v_dq_ref_Volts_1.q +  v_dq_ref_5th_Volts_1.q + v_dq_ref_7th_Volts_1.q;
+    			v_dq_ref_5th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_5th_1, i_dqn_ref_5th_Amps_1, i_dqn_filtered_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
+    			v_dq_ref_7th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_7th_1, i_dqn_ref_7th_Amps_1, i_dqn_filtered_7th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
+    			output_1 = uz_Space_Vector_Modulation(v_dq_ref_HCI_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+    			break;
+    		}
+    	} else if(select_DDPG) {
+    		if(ext_clamping_1 == false) {
+    			i_dq_integrated_error_Amps_1.d = (i_dq_integrated_error_Amps_1.d + (i_dq_error_Amps_1.d * ts)); // use Forward-Euler with error of previous timestep for integration
+    			i_dq_integrated_error_Amps_1.q = (i_dq_integrated_error_Amps_1.q + (i_dq_error_Amps_1.q * ts));
+    		} else {
+    			i_dq_integrated_error_Amps_1.d += 0.0f;
+    			i_dq_integrated_error_Amps_1.q += 0.0f;
+    		}
+    		i_dq_error_Amps_1.d = (i_dq_ref_Amps_1.d - i_dq_Amps_1.d) / PMSM_rated_current_1;
+    		i_dq_error_Amps_1.q = (i_dq_ref_Amps_1.q - i_dq_Amps_1.q) / PMSM_rated_current_1;
+
+#if NN_9_INPUT_1_64 == 1
+
+    		observation_ip[0] = i_dq_error_Amps_1.d;
+    		observation_ip[1] = i_dq_integrated_error_Amps_1.d * UZ_PWM_FREQUENCY;
+    		observation_ip[2] = i_dq_error_Amps_1.q;
+    		observation_ip[3] = i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY ;
+    		observation_ip[4] = i_dq_Amps_1.d / PMSM_rated_current_1;
+    		observation_ip[5] = i_dq_Amps_1.q / PMSM_rated_current_1;
+    		observation_ip[6] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
+    		observation_ip[7] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
+    		observation_ip[8] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
+	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
+	  		}
+#elif NN_7_INPUT_1_64 == 1
+			observation_ip[0] = i_dq_error_Amps_1.d;
+			observation_ip[1] = i_dq_error_Amps_1.q;
+			observation_ip[2] = i_dq_Amps_1.d / PMSM_rated_current_1;
+			observation_ip[3] = i_dq_Amps_1.q / PMSM_rated_current_1;
+			observation_ip[4] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
+			observation_ip[5] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
+			observation_ip[6] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_7N; i++) {
+					uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
+			}
+#endif
+
+			uz_nn_ff(Global_Data.objects.nn_layer,Global_Data.objects.matrix_input);
+    	    matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
+    	    uz_matrix_multiply_by_scalar(matrix_output,U_max_1); // scaling layer of nn
+    	    v_dq_non_limited_Volts_1.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
+    	    v_dq_non_limited_Volts_1.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);
+    	    v_dq_limited_Volts_1 = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_1, v_DC_Volts_1, max_modulation_index_1, omega_el_rad_per_sec_1, i_dq_ref_Amps_1, &ext_clamping_1);
+    	    //Introduce double delay of set-voltages because of mistake in DDPG training
+    	    v_dq_limited_Volts_old_old_1 = v_dq_limited_Volts_old_1;
+    	    v_dq_limited_Volts_old_1 = v_dq_limited_Volts_1;
+    	    output_1 = uz_Space_Vector_Modulation(v_dq_limited_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+
+    	} else {
+    		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
     	}
     	Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
     	Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
@@ -303,6 +377,11 @@ void ISR_Control(void *data)
     	uz_CurrentControl_reset(CC_instance_1);
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
+
+    	//Reset DDPG
+    	ext_clamping_1 = false;
+    	i_dq_integrated_error_Amps_1.d = 0.0f;
+    	i_dq_integrated_error_Amps_1.q = 0.0f;
     }
 
     // Set duty cycles for two-level modulator

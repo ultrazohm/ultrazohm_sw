@@ -325,12 +325,12 @@ void ISR_Control(void *data)
 	  		}
 #elif NN_7_INPUT_1_64 == 1
 			observation_ip[0] = i_dq_error_Amps_1.d;
-			observation_ip[1] = i_dq_error_Amps_1.q;
-			observation_ip[2] = i_dq_Amps_1.d / PMSM_rated_current_1;
-			observation_ip[3] = i_dq_Amps_1.q / PMSM_rated_current_1;
-			observation_ip[4] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
-			observation_ip[5] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
-			observation_ip[6] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+			observation_ip[1] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
+			observation_ip[2] = i_dq_error_Amps_1.q;
+			observation_ip[3] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+			observation_ip[4] = i_dq_Amps_1.d / PMSM_rated_current_1;
+			observation_ip[5] = i_dq_Amps_1.q / PMSM_rated_current_1;
+			observation_ip[6] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
 			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_7N; i++) {
 					uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
 			}

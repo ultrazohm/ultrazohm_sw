@@ -134,8 +134,8 @@ float iq_setpoints[22]={
 extern bool select_automatic_idiq;
 extern float PMSM_rated_current_1;
 uint32_t Fehlerfall  = 0U;
-
-
+extern bool select_misalignment;
+extern uz_3ph_dq_t i_dq_ref_java_Amps_1;
 //DDPG Stuff
 float observation_ip_9n[9U] = {0};
 //==============================================================================================================================================================
@@ -174,7 +174,7 @@ void ISR_Control(void *data)
 
     	}
     }else{
-    	i_dq_ref_Amps_1=i_dq_ref_Amps_1;
+    	i_dq_ref_Amps_1=i_dq_ref_java_Amps_1;
     }
 
     // Set tristate to false
@@ -222,9 +222,17 @@ void ISR_Control(void *data)
     omega_el_rad_per_sec_1 = omega_m_rad_per_sec_1*config_PMSM_1.polePairs;
     Global_Data.av.omega_el_1 = omega_el_rad_per_sec_1;
     theta_el_rad_1 = Global_Data.av.theta_elec_1 - Global_Data.av.theta_offset_1;
+    if(select_misalignment==true) {
+    	theta_el_rad_1 += 5.0f * (M_PI / 180.0f);
+    }
+    //Anglelead
+    theta_el_rad_1 += (1.5f * omega_el_rad_per_sec_1 ) / UZ_PWM_FREQUENCY;
     Global_Data.av.theta_mech_1 = theta_el_rad_1 / 4.0f;
     i_dq_Amps_1 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_1, theta_el_rad_1);
     v_dq_Volts_1 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_1, theta_el_rad_1);
+
+
+
     // Calculation of Signals for FOC for PMSM 2
     Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
     Global_Data.av.mechanicalRotorSpeed_2 = Resolver_outputs.n_mech_rpm;
@@ -233,6 +241,8 @@ void ISR_Control(void *data)
     omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2 * config_PMSM_2.polePairs;
     Global_Data.av.omega_el_2 = omega_el_rad_per_sec_2;
     theta_el_rad_2 = Resolver_outputs.position_el_2pi;
+    //Anglelead
+    theta_el_rad_2 += (1.5f * omega_el_rad_per_sec_2 ) / UZ_PWM_FREQUENCY;
     i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
     v_dq_Volts_2 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_2, theta_el_rad_2);
 

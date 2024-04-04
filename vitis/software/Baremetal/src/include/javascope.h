@@ -274,7 +274,7 @@ enum gui_button_mapping {
 	MyButton3,
 	FOC,
 	HCI,
-	MyButton6,
+	Misalignment,
 	MyButton7,
 	Auto_IdIq,
 	MYBUTTONS_LABELS_ENDMARKER

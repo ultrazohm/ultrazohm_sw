@@ -37,6 +37,7 @@ extern int mode;
 bool select_automatic_idiq=false;
 uz_3ph_dq_t i_dq_ref_java_Amps_1 = {0};
 extern DS_Data Global_Data;
+bool select_misalignment = true;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -306,7 +307,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+				if(select_misalignment==false){
+					select_misalignment = true;
+				} else {
+					select_misalignment = false;
+				}
 			break;
 
 		case (My_Button_7):
@@ -383,6 +388,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
+	if (select_misalignment==true) {
+			js_status_BareToRTOS |= 1 << 9;
+			} else {
+				js_status_BareToRTOS &= ~(1 << 9);
+			}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

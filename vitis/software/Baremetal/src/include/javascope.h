@@ -271,7 +271,7 @@ enum gui_button_mapping {
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	MyButton1,
 	MyButton2,
-	FOC,
+	MyButton3,
 	HCI,
 	FOC,
 	Misalignment,

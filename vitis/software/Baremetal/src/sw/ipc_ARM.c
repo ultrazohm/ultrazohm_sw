@@ -297,7 +297,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-		mode = 0;
+
 			break;
 
 		case (My_Button_4):
@@ -307,6 +307,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (My_Button_5):
 		if(select_FOC == false) {
 			select_FOC = true;
+			mode = 0;
 		} else {
 			select_FOC = false;
 		}
@@ -394,21 +395,32 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 7);
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
-
+	if (select_FOC == true) {
+		js_status_BareToRTOS |= 1 << 8;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	}
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
-	if (select_misalignment==true) {
-			js_status_BareToRTOS |= 1 << 9;
-			} else {
-				js_status_BareToRTOS &= ~(1 << 9);
-			}
+	if (select_misalignment == true) {
+		js_status_BareToRTOS |= 1 << 9;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	if (select_DDPG == true) {
+		js_status_BareToRTOS |= 1 << 10;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 10);
+	}
 
 	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
+	if (select_automatic_idiq == true) {
+		js_status_BareToRTOS |= 1 << 10;
+	} else {
+		js_status_BareToRTOS &= ~(1 << 10);
+	}
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

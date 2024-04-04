@@ -5,7 +5,7 @@ format compact
 
 %% settings
 delete_empty_log_files = 0;
-save_all_logged_data = 0; 
+save_all_logged_data = 1; 
 plot_all_channels = 0;
 rename_channels_manually = 0;
 import_data_to_simulink_datainspector = 1;
@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-%file_name = 'Log_2024-03-07_14-38-56.csv';
+file_name = 'Hoerner_FOC_0_to_1000rpm.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

@@ -133,6 +133,11 @@ float iq_setpoints[22]={
 };
 extern bool select_automatic_idiq;
 extern float PMSM_rated_current_1;
+uint32_t Fehlerfall  = 0U;
+
+
+//DDPG Stuff
+float observation_ip_9n[9U] = {0};
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -217,8 +222,9 @@ void ISR_Control(void *data)
     omega_el_rad_per_sec_1 = omega_m_rad_per_sec_1*config_PMSM_1.polePairs;
     Global_Data.av.omega_el_1 = omega_el_rad_per_sec_1;
     theta_el_rad_1 = Global_Data.av.theta_elec_1 - Global_Data.av.theta_offset_1;
+    Global_Data.av.theta_mech_1 = theta_el_rad_1 / 4.0f;
     i_dq_Amps_1 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_1, theta_el_rad_1);
-
+    v_dq_Volts_1 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_1, theta_el_rad_1);
     // Calculation of Signals for FOC for PMSM 2
     Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
     Global_Data.av.mechanicalRotorSpeed_2 = Resolver_outputs.n_mech_rpm;
@@ -300,44 +306,54 @@ void ISR_Control(void *data)
     //Overtemperature for H1
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 1U;
     }
     //Overtemperature for L1
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
-        ultrazohm_state_machine_set_error(true);
+        //ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 2U;
     }
     //Overtemperature for H2
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 3U;
     }
     //Overtemperature for L2
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 4U;
     }
     //Overtemperature for H3
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 5U;
     }
     //Overtemperature for L3
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 6U;
     }
     //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
     //Binding of the signals to the driver is slightly unintuitive
     //Overcurrent for Phase A
     if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 7U;
     }
     //Overcurrent for Phase B
     if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 8U;
     }
     //Overcurrent for Phase C
     if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 9U;
     }
     //Overcurrent for DC-link
     if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 10U;
     }
 
     // Inverter 2 safety
@@ -345,44 +361,54 @@ void ISR_Control(void *data)
     //Overtemperature for H1
     if (!Global_Data.av.inverter_outputs_d2.FAULT_H1) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 11U;
     }
     //Overtemperature for L1
     if (!Global_Data.av.inverter_outputs_d2.FAULT_L1) {
-    	ultrazohm_state_machine_set_error(true);
+    	//ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 12U;
     }
     //Overtemperature for H2
     if (!Global_Data.av.inverter_outputs_d2.FAULT_H2) {
         ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 13U;
     }
     //Overtemperature for L2
     if (!Global_Data.av.inverter_outputs_d2.FAULT_L2) {
         ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 14U;
     }
     //Overtemperature for H3
     if (!Global_Data.av.inverter_outputs_d2.FAULT_H3) {
         ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 15U;
     }
     //Overtemperature for L3
     if (!Global_Data.av.inverter_outputs_d2.FAULT_L3) {
         ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 16U;
     }
     //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
     //Binding of the signals to the driver is slightly unintuitive
     //Overcurrent for Phase A
     if (!Global_Data.av.inverter_outputs_d2.OC_L1) {
     	ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 17U;
     }
     //Overcurrent for Phase B
     if (!Global_Data.av.inverter_outputs_d2.OC_H1) {
         ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 18U;
     }
     //Overcurrent for Phase C
     if (!Global_Data.av.inverter_outputs_d2.OC_L2) {
         ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 19U;
     }
     //Overcurrent for DC-link
     if (!Global_Data.av.inverter_outputs_d2.OC_H2) {
         ultrazohm_state_machine_set_error(true);
+    	Fehlerfall = 20U;
     }
 
     // Read the timer value at the very end of the ISR to minimize measurement error

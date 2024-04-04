@@ -47,9 +47,14 @@ extern struct uz_3ph_dq_t i_dq_Amps_2;
 extern struct uz_3ph_dq_t i_dqn_filtered_5th_Amps_1;
 extern struct uz_3ph_dq_t i_dqn_filtered_7th_Amps_1;
 extern struct uz_3ph_dq_t v_dq_Volts_2;
+extern struct uz_3ph_dq_t v_dq_Volts_1;
+extern struct uz_3ph_abc_t v_abc_Volts_1;
 extern float K_p_id;
 extern float K_p_iq;
-
+extern float observation_ip_9n[9U];
+extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
+extern float start_marker;
+float Torque_placeholder = 0.0f;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -84,9 +89,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ia_2] 			= &i_abc_Amps_2.a;
 	js_ch_observable[JSO_ib_2] 			= &i_abc_Amps_2.b;
 	js_ch_observable[JSO_ic_2] 			= &i_abc_Amps_2.c;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_ua_1] 			= &v_abc_Volts_1.a;
+	js_ch_observable[JSO_ub_1] 			= &v_abc_Volts_1.b;
+	js_ch_observable[JSO_uc_1] 			= &v_abc_Volts_1.c;
 	js_ch_observable[JSO_iq_1] 			= &i_dq_Amps_1.q;
 	js_ch_observable[JSO_iq_2] 			= &i_dq_Amps_2.q;
 	js_ch_observable[JSO_id_1] 			= &i_dq_Amps_1.d;
@@ -99,15 +104,28 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Theta_el_2] 	= &theta_el_rad_2;
 	js_ch_observable[JSO_theta_mech_1] 	= &data->av.theta_mech_1;
 	js_ch_observable[JSO_theta_mech_2] 	= &data->av.theta_mech_2;
-	js_ch_observable[JSO_ud_1]			= &data->av.U_d_1;
+	js_ch_observable[JSO_ud_1]			= &v_dq_Volts_1.d;
 	js_ch_observable[JSO_ud_2]			= &data->av.U_d_2;
-	js_ch_observable[JSO_uq_1]			= &data->av.U_q_1;
+	js_ch_observable[JSO_uq_1]			= &v_dq_Volts_1.q;
 	js_ch_observable[JSO_uq_2]			= &data->av.U_q_2;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 	js_ch_observable[JSO_Kp_id]			= &K_p_id;
 	js_ch_observable[JSO_Kp_iq]			= &K_p_iq;
+	js_ch_observable[JSO_obs_1] 		= &observation_ip_9n[0];
+	js_ch_observable[JSO_obs_2] 		= &observation_ip_9n[1];
+	js_ch_observable[JSO_obs_3] 		= &observation_ip_9n[2];
+	js_ch_observable[JSO_obs_4] 		= &observation_ip_9n[3];
+	js_ch_observable[JSO_obs_5] 		= &observation_ip_9n[4];
+	js_ch_observable[JSO_obs_6] 		= &observation_ip_9n[5];
+	js_ch_observable[JSO_obs_7] 		= &observation_ip_9n[6];
+	js_ch_observable[JSO_obs_8] 		= &observation_ip_9n[7];
+	js_ch_observable[JSO_obs_9] 		= &observation_ip_9n[8];
+	js_ch_observable[JSO_id_set]		= &i_dq_ref_Amps_1.d;
+	js_ch_observable[JSO_iq_set]		= &i_dq_ref_Amps_1.q;
+	js_ch_observable[JSO_enable] 		= &start_marker;
+	js_ch_observable[JSO_Torque_Nm]		= &Torque_placeholder;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

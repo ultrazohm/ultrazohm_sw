@@ -25,38 +25,39 @@ enum JS_OberservableData {
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
 	JSO_theta_mech_1,
-	JSO_theta_mech_2,
-	JSO_ua,
-	JSO_ub,
-	JSO_uc,
+	JSO_ua_1,
+	JSO_ub_1,
+	JSO_uc_1, // 7
 	JSO_ia_1,
 	JSO_ib_1,
 	JSO_ic_1,
-	JSO_ia_2,
-	JSO_ib_2,
-	JSO_ic_2,
 	JSO_id_1,
-	JSO_id_2,
-	JSO_iq_1,
-	JSO_iq_2,
-	JSO_id_5th_1,
-	JSO_id_7th_1,
-	JSO_iq_5th_1,
-	JSO_iq_7th_1,
+	JSO_iq_1, //12
 	JSO_ud_1,
-	JSO_ud_2,
 	JSO_uq_1,
-	JSO_uq_2,
-	JSO_Speed_rpm_1,
+	JSO_obs_1,			// 15
+	JSO_obs_2,			// 16
+	JSO_obs_3,			// 17
+	JSO_obs_4,			// 18
+	JSO_obs_5,			// 19
+	JSO_obs_6,			// 20
+	JSO_obs_7,			// 21
+	JSO_obs_8,			// 22
+	JSO_obs_9,			// 23
+	JSO_id_set,			// 24
+	JSO_iq_set,			// 25
+	JSO_enable,			// 26
+	JSO_Speed_rpm_1,		// 27
+	JSO_Torque_Nm,		// 28
+	JSO_Theta_el_1,
+	JSO_Theta_mech_1,
 	JSO_Speed_rpm_2,
 	JSO_el_Speed_rpm_1,
 	JSO_el_Speed_rpm_2,
 	JSO_LoadSpeed_rpm,
 	JSO_volt_temp,
 	JSO_SoC_init,
-	JSO_Theta_el_1,
 	JSO_Theta_el_2,
-	JSO_Theta_mech_1,
 	JSO_Theta_mech_2,
 	JSO_LoadTheta_mech,
 	JSO_DeltaTheta_mech,
@@ -67,6 +68,18 @@ enum JS_OberservableData {
 	JSO_PsiPM_mVs,
 	JSO_Kp_id,
 	JSO_Kp_iq,
+	JSO_theta_mech_2,
+	JSO_ia_2,
+	JSO_ib_2,
+	JSO_ic_2,
+	JSO_id_2,
+	JSO_iq_2,
+	JSO_id_5th_1,
+	JSO_id_7th_1,
+	JSO_iq_5th_1,
+	JSO_iq_7th_1,
+	JSO_ud_2,
+	JSO_uq_2,
 	JSO_ENDMARKER
 };
 
@@ -150,7 +163,7 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	i_q1,
-	i_dq,
+	i_d1,
 	n2,
 	send_field_4,
 	send_field_5,

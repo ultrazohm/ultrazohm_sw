@@ -7,37 +7,23 @@ extern DS_Data Global_Data;
       .R_ph_Ohm = 0.57,
       .Ld_Henry = 0.002f,
       .Lq_Henry = 0.002f,
-      .Psi_PM_Vs = 0.041f, // LLeff bei 1000rpm mit Multimeter: 20,77 V
+      .Psi_PM_Vs = 0.040f, // LLeff bei 1000rpm mit Multimeter: 20,77 V
 	  .polePairs = 4.0f,
 	  .I_max_Ampere = 20.0f,
 	  .J_kg_m_squared = 0.000108
     };//these parameters are only needed if linear decoupling is selected
     const struct uz_PI_Controller_config config_id_left = {
       .type = parallel,
-//      .Kp = 6.67f,
-//	  .Kp = 20.0f, // 20 kHz
-//	  .Kp = 16.0f, //  16 kHz
-//	  .Kp = 10.0f, // 10 kHz
-//	  .Kp = 8.0f, //  8 kHz
-//	  .Kp = 4.0f, //  4 kHz
-//	  .Kp = 2.0f, //  2 kHz
 	  .Kp = Beckhoff_AM8141.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY_ISR),
-      .Ki = 255.0f,
+      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY_ISR),
       .samplingTime_sec = 1/UZ_PWM_FREQUENCY_ISR,
       .upper_limit = 48.0f,
       .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_iq_left = {
 	  .type = parallel,
-//	  .Kp = 6.67f,
-//	  .Kp = 20.0f, // 20 kHz
-//	  .Kp = 16.0f, //  16 kHz
-//	  .Kp = 10.0f, // 10 kHz
-//	  .Kp = 8.0f, //  8 kHz
-//	  .Kp = 4.0f, //  4 kHz
-//	  .Kp = 2.0f, //  2 kHz
 	  .Kp = Beckhoff_AM8141.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY_ISR),
-      .Ki = 255.0f,
+      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY_ISR),
       .samplingTime_sec = 1/UZ_PWM_FREQUENCY_ISR,
       .upper_limit = 48.0f,
       .lower_limit = -48.0f
@@ -62,7 +48,6 @@ extern DS_Data Global_Data;
    const struct uz_SpeedControl_config config_speed_ctrl_right = {
 		   .config_controller = config_speed_right
    };
-
 
    struct uz_CurrentControl_config config_current_ctrl_left = {
       .config_PMSM = Beckhoff_AM8141,

@@ -90,6 +90,8 @@ enum JS_OberservableData {
 	JSO_q_pred_er_sq_filt_pu,
 	JSO_d_pred_er_sq_pu,
 	JSO_q_pred_er_sq_pu,
+	JSO_d_delay_diff,
+	JSO_q_delay_diff,
 	JSO_ENDMARKER
 };
 

@@ -129,6 +129,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_q_pred_er_sq_filt_pu]	= &data->av.q_pred_error_sq_filt;
 	js_ch_observable[JSO_d_pred_er_sq_pu]	= &data->av.d_pred_error_sq;
 	js_ch_observable[JSO_q_pred_er_sq_pu]	= &data->av.q_pred_error_sq;
+	js_ch_observable[JSO_d_delay_diff]		= &data->av.d_delay_diff;
+	js_ch_observable[JSO_q_delay_diff]		= &data->av.q_delay_diff;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

@@ -64,6 +64,12 @@ struct uz_fixedpoint_definition_t park_fixedpoint_definition = {
 		.fractional_bits = 24
 };
 
+struct uz_fixedpoint_definition_t sfix27_En24 = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 24
+};
+
 // pu output fixed point definition
 struct uz_fixedpoint_definition_t fixedpoint_definition = {
 		.is_signed = true,
@@ -394,6 +400,7 @@ void fcs_mpc_debug(void){
     //read delaycomp_currents
     Global_Data.av.id_delay_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + id_delay_pu_AXI_Data_delay_comp, park_fixedpoint_definition);
     Global_Data.av.iq_delay_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + iq_delay_pu_AXI_Data_delay_comp, park_fixedpoint_definition);
+
 //    Global_Data.av.id_delay_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + id_delay_pu_AXI_Data_delay_comp, park_fixedpoint_definition);
 //    Global_Data.av.iq_delay_pu = uz_fixedpoint_axi_read(XPAR_UZ_USER_FCS_MPC_1_DELAY_COMP_0_BASEADDR + iq_delay_pu_AXI_Data_delay_comp, park_fixedpoint_definition);
     //write pu voltage debug values
@@ -418,6 +425,6 @@ void fcs_mpc_change_Ts_for_delay_and_prediction(float Ts_left_changed) {
 
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_delay_comp, Ts_times_ZB_over_Ld_changed, delay_comp_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_DELAY_COMP_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_delay_comp, Ts_times_ZB_over_Lq_changed, delay_comp_fp_def);
-    uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_prediction, pre_calc_val_left.Ts_times_ZB_over_Ld, delay_comp_fp_def);
+	uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Ld_AXI_Data_prediction, pre_calc_val_left.Ts_times_ZB_over_Ld, delay_comp_fp_def);
     uz_fixedpoint_axi_write(XPAR_UZ_USER_FCS_MPC_0_PREDICTION_0_BASEADDR + Ts_times_ZB_over_Lq_AXI_Data_prediction, pre_calc_val_left.Ts_times_ZB_over_Lq, delay_comp_fp_def);
 }

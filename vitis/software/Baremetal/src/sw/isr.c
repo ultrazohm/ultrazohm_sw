@@ -189,6 +189,9 @@ void ISR_Control(void *data)
     //read axi values from prediction error ip for debug
     fcs_mpc_get_pred_error_pu();
 
+    //read axi values from delay diff ip for debug
+//    fcs_mpc_get_delay_comp_diff();
+
 	//calc average switching frequency of inverters
 	fcs_mpc_calc_f_sw_avg();
 

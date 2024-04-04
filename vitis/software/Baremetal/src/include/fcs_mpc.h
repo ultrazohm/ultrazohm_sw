@@ -144,7 +144,18 @@
 #define  ed_pred_AXI_Data_uz_pred_error   0x100  //data register for Outport ed_pred_AXI
 #define  eq_pred_AXI_Data_uz_pred_error   0x104  //data register for Outport eq_pred_AXI
 
+//diff delay
+#define  IPCore_Reset_diff_delay       0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_diff_delay      0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_diff_delay   0x8  //contains unique IP timestamp (yymmddHHMM): 2403281144
+#define  d_diff_AXI_Data_diff_delay    0x100  //data register for Outport d_diff_AXI
+#define  q_diff_AXI_Data_diff_delay    0x104  //data register for Outport q_diff_AXI
 
+//every nth trig
+#define  IPCore_Reset_every_nth_trig         0x0  //write 0x1 to bit 0 to reset IP core
+#define  IPCore_Enable_every_nth_trig        0x4  //enabled (by default) when bit 0 is 0x1
+#define  IPCore_Timestamp_every_nth_trig     0x8  //contains unique IP timestamp (yymmddHHMM): 2403281105
+#define  every_nth_AXI_Data_every_nth_trig   0x100  //data register for Inport every_nth_AXI
 
 void fcs_mpc_real_or_debug_inputs(bool debug_or_real);
 void fcs_mpc_init_pu_conversion_ip(void);

@@ -139,6 +139,8 @@ typedef struct _actualValues_ {
 	float q_pred_error_sq;
 	float d_pred_error_sq_filt;
 	float q_pred_error_sq_filt;
+	float d_delay_diff;
+	float q_delay_diff;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

@@ -39,7 +39,13 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern struct uz_pmsmModel_inputs_t pmsm_inputs;
+extern struct uz_pmsmModel_outputs_t pmsm_outputs;
+extern struct uz_3ph_dq_t i_dq_ref_Amps;
+extern struct uz_3ph_dq_t i_dq_measured_Amps;
+extern struct uz_3ph_abc_t i_abc_Amps;
+extern struct uz_3ph_dq_t v_dq_ref_Volts;
+extern struct uz_3ph_abc_t v_abc_Volts;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -63,12 +69,12 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
+	js_ch_observable[JSO_ia] 			= &i_abc_Amps.a;
+	js_ch_observable[JSO_ib] 			= &i_abc_Amps.b;
+	js_ch_observable[JSO_ic] 			= &i_abc_Amps.c;
+	js_ch_observable[JSO_ua] 			= &v_abc_Volts.a;
+	js_ch_observable[JSO_ub] 			= &v_abc_Volts.b;
+	js_ch_observable[JSO_uc] 			= &v_abc_Volts.c;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;

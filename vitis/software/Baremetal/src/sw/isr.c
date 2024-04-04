@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -37,7 +38,30 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
-
+struct uz_3ph_abc_t v_abc_Volts = {0};
+struct uz_3ph_abc_t i_abc_Amps = {0};
+struct uz_DutyCycle_t output = {0};
+float v_DC_Volts = 0.0f;
+float i_DC_Amps = 0.0f;
+extern uz_CurrentControl_t* CurrentControl_instance;
+uz_3ph_dq_t reference_currents_Amp = {0};
+uz_3ph_dq_t measured_currents_Amp = {0};
+uz_3ph_dq_t CurrentControl_output_Volts = {0};
+uz_3ph_dq_t setpoint_current = {0};
+bool is_control_state_active = false;
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+   .omega_mech_1_s=0.0f,
+   .v_d_V=0.0f,
+   .v_q_V=0.0f,
+   .load_torque=0.0f
+ };
+struct uz_pmsmModel_outputs_t pmsm_outputs={
+   .i_d_A=0.0f,
+   .i_q_A=0.0f,
+   .torque_Nm=0.0f,
+   .omega_mech_1_s=0.0f
+ };
+struct uz_3ph_abc_t ref_voltage_3ph_abc = {0};
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -52,11 +76,40 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    // Read Measurement Data of Inverter Card/////////////////////////////////////////////////////////////////////
+    v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
+    v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
+    v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
+    v_DC_Volts 	  = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    i_abc_Amps.a  = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
+    i_abc_Amps.b  = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
+    i_abc_Amps.c  = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
+    i_DC_Amps    = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    //Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+
+    //Get current state
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    // Enable Inverter Adapter Hardware///////////////////////////////////////////////////////////////////////////
+        if (current_state == running_state || current_state == control_state) {
+            	// enable inverter adapter hardware
+                uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+        } else {
+            	// disable inverter adapter hardware
+                uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+        }
+
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	Global_Data.rasv.halfBridge1DutyCycle = output.DutyCycle_A;		// Set Duty Cycle A
+    	Global_Data.rasv.halfBridge2DutyCycle = output.DutyCycle_B;	   // Set Duty Cycle B
+    	Global_Data.rasv.halfBridge3DutyCycle = output.DutyCycle_C;	  // Set Duty Cycle C
     }
+    else
+    {
+         Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+         Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+         Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+         }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
@@ -69,6 +122,49 @@ void ISR_Control(void *data)
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
+    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+        //Overtemperature for H1
+//        if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Overtemperature for L1
+//        if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Overtemperature for H2
+//        if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Overtemperature for L2
+//        if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Overtemperature for H3
+//        if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Overtemperature for L3
+//        if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+//        //Binding of the signals to the driver is slightly unintuitive
+//        //Overcurrent for Phase A
+//        if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Overcurrent for Phase B
+//        if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Overcurrent for Phase C
+//        if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
+//        //Overcurrent for DC-link
+//        if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
+//           ultrazohm_state_machine_set_error(true);
+//        }
     uz_SystemTime_ISR_Toc();
 }
 

@@ -54,6 +54,15 @@
 
 #include "include/pwm_init.h"
 
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+
+
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -417,9 +417,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 11 - My_Button_8 */
 	if (select_automatic_idiq == true) {
-		js_status_BareToRTOS |= 1 << 10;
+		js_status_BareToRTOS |= 1 << 11;
 	} else {
-		js_status_BareToRTOS &= ~(1 << 10);
+		js_status_BareToRTOS &= ~(1 << 11);
 	}
 
 	/* Bit 12 - trigger ext. logging */

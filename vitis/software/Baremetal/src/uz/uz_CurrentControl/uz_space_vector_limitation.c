@@ -19,7 +19,7 @@
 
 static uz_3ph_dq_t uz_limit_dq_prio_d_axis(uz_3ph_dq_t v_input_Volts, float V_SV_max, float V_SV_max_squared);
 static uz_3ph_dq_t uz_limit_dq_prio_q_axis(uz_3ph_dq_t v_input_Volts, float V_SV_max, float V_SV_max_squared);
-uz_3ph_dq_t uz_CurrentControl_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, float V_dc_volts, float max_modulation_index, float omega_el_rad_per_sec, uz_3ph_dq_t i_actual_Ampere, bool* ext_clamping){
+uz_3ph_dq_t uz_CurrentControl_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, float V_dc_volts, float max_modulation_index, float omega_el_rad_per_sec, uz_3ph_dq_t i_ref_Ampere, bool* ext_clamping){
 	uz_assert_not_NULL(ext_clamping);
 	uz_assert(V_dc_volts > 0.0f);
 	uz_assert(max_modulation_index > 0.0f);
@@ -27,7 +27,7 @@ uz_3ph_dq_t uz_CurrentControl_SpaceVector_Limitation(uz_3ph_dq_t v_input_Volts, 
   	float V_SV_max = V_dc_volts * max_modulation_index;
 	float V_SV_max_squared = V_SV_max * V_SV_max;
 	float V_SV_abs = sqrtf(v_input_Volts.d * v_input_Volts.d + v_input_Volts.q * v_input_Volts.q);
-	bool if_omega_equal_q_current = (uz_signals_get_sign_of_value(omega_el_rad_per_sec) == uz_signals_get_sign_of_value(i_actual_Ampere.q));
+	bool if_omega_equal_q_current = (uz_signals_get_sign_of_value(omega_el_rad_per_sec) == uz_signals_get_sign_of_value(i_ref_Ampere.q));
 
 	if ( V_SV_abs > V_SV_max ){
 		//ext_clamping is a pointer, because it is needed for future time steps and the return of the function is already of type uz_3ph_dq_t
@@ -70,7 +70,7 @@ static uz_3ph_dq_t uz_limit_dq_prio_q_axis(uz_3ph_dq_t v_input_Volts, float V_SV
 }
 
 
-uz_6ph_dq_t uz_6ph_Space_Vector_Limitation(uz_6ph_dq_t v_input_Volts, float V_dc_volts, float max_modulation_index, float omega_el_rad_per_sec, uz_6ph_dq_t i_actual_Ampere, bool* ext_clamping) {
+uz_6ph_dq_t uz_6ph_Space_Vector_Limitation(uz_6ph_dq_t v_input_Volts, float V_dc_volts, float max_modulation_index, float omega_el_rad_per_sec, uz_6ph_dq_t i_ref_Ampere, bool* ext_clamping) {
 	uz_assert_not_NULL(ext_clamping);
 	uz_assert(V_dc_volts > 0.0f);
 	uz_assert(max_modulation_index > 0.0f);
@@ -106,9 +106,9 @@ uz_6ph_dq_t uz_6ph_Space_Vector_Limitation(uz_6ph_dq_t v_input_Volts, float V_dc
 
 	uz_3ph_dq_t v_input_dq_Volts = {.d = v_input_Volts.d,
 									.q = v_input_Volts.q};
-	uz_3ph_dq_t i_actual_dq_Ampere = {.d = i_actual_Ampere.d,
-									  .q = i_actual_Ampere.q};
-	uz_3ph_dq_t v_output_dq_Volts = uz_CurrentControl_SpaceVector_Limitation(v_input_dq_Volts, V_dc_volts, max_modulation_index_dq, omega_el_rad_per_sec, i_actual_dq_Ampere, &ext_clamping_dq);
+	uz_3ph_dq_t i_ref_dq_Ampere  = {.d = i_ref_Ampere.d,
+									  .q = i_ref_Ampere.q};
+	uz_3ph_dq_t v_output_dq_Volts = uz_CurrentControl_SpaceVector_Limitation(v_input_dq_Volts, V_dc_volts, max_modulation_index_dq, omega_el_rad_per_sec, i_ref_dq_Ampere, &ext_clamping_dq);
 
 	v_output_Volts.d = v_output_dq_Volts.d;
 	v_output_Volts.q = v_output_dq_Volts.q;

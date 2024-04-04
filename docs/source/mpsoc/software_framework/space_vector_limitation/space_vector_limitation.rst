@@ -23,7 +23,7 @@ Example
      uz_3ph_dq_t v_input_Volts = {.d = 5.0f, .q = 8.0f, .zero = 0.0f};
      bool ext_clamping = false;
      float max_modulation_index = 1.0f / sqrtf(3.0f);
-     uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(v_input_Volts, V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+     uz_3ph_dq_t output = uz_CurrentControl_SpaceVector_Limitation(v_input_Volts, V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_reference_Ampere, &ext_clamping);
   }
 
 .. code-block:: c
@@ -38,7 +38,7 @@ Example
      uz_6ph_dq_t v_input_Volts = {.d = 5.0f, .q = 8.0f, .x = 10.0f, .y = 3.0f};
      bool ext_clamping = false;
      float max_modulation_index = 1.0f / sqrtf(3.0f);
-     uz_6ph_dq_t output = uz_6ph_Space_Vector_Limitation(v_input_Volts, V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_actual_Ampere, &ext_clamping);
+     uz_6ph_dq_t output = uz_6ph_Space_Vector_Limitation(v_input_Volts, V_dc_volts, max_modulation_index, omega_el_rad_per_sec, i_reference_Ampere, &ext_clamping);
   }
 
 
@@ -66,7 +66,7 @@ With the max modulation index :math:`m_\mathrm{max}` the following voltages can 
   \usetikzlibrary{shapes,arrows, patterns,calc,shadows};
   \node[draw, drop shadow,rectangle, fill=black!20,align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large](Eval1){$U_{SV,abs} > U_{SV,max}$};
   \node[draw,  drop shadow,rectangle, fill=green!20,align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.east)+(7,0)$)(End5){$u_{d,lim} = u_d$ \\\\ $u_{q,lim} = u_q$};
-  \node[draw,  drop shadow,rectangle, fill=yellow!20, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.south)+(0,-3)$)(Eval2){$sign(\omega_{el}) == sign(i_q)$};
+  \node[draw,  drop shadow,rectangle, fill=yellow!20, align = center, rounded corners=6pt, minimum width=5cm,minimum height = 2.5cm, font=\Large] at ($(Eval1.south)+(0,-3)$)(Eval2){$sign(\omega_{el}) == sign(i_{q,ref})$};
   \draw[-latex](Eval1.east) -- (End5.west);
   \node[font=\Large] at($(Eval1.east)+(2,0.3)$){No};
   \draw[-latex](Eval1.south) -- (Eval2.north);

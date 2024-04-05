@@ -202,7 +202,7 @@ void ISR_Control(void *data)
     // Read Measurement Data of First Inverter
     v_abc_Volts_1.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
     v_abc_Volts_1.b = 11.7657f * Global_Data.aa.A1.me.ADC_B7 + 0.0533f;
-    v_abc_Volts_1.c = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
+    v_abc_Volts_1.c = 11.7657f * Global_Data.aa.A1.me.ADC_B6 + 0.0533f;
     v_DC_Volts_1 	= Global_Data.aa.A1.me.ADC_A1 * 12.0f;
     i_abc_Amps_1.a  = 12.223f * Global_Data.aa.A1.me.ADC_A4 + 0.0164f;
     i_abc_Amps_1.b  = 12.3123f * Global_Data.aa.A1.me.ADC_A3 + 0.0161f;

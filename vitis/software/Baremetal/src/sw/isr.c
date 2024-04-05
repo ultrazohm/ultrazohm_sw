@@ -281,16 +281,16 @@ void ISR_Control(void *data)
     		uz_CurrentControl_set_Kp_id(CC_instance_1, K_p_id);
     		uz_CurrentControl_set_Kp_iq(CC_instance_1, K_p_iq);
     		v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-    		i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
-    		i_dqn_filtered_7th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_Amps_1, theta_el_rad_1);
-    		uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_1);
-    		uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_1);
     		switch (mode)
     		{
     		default:
     			output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
     			break;
     		case 1:
+        		i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
+        		i_dqn_filtered_7th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_Amps_1, theta_el_rad_1);
+        		uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_1);
+        		uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_1);
     			v_dq_ref_HCI_Volts_1.d = v_dq_ref_Volts_1.d +  v_dq_ref_5th_Volts_1.d + v_dq_ref_7th_Volts_1.d;
     			v_dq_ref_HCI_Volts_1.q = v_dq_ref_Volts_1.q +  v_dq_ref_5th_Volts_1.q + v_dq_ref_7th_Volts_1.q;
     			v_dq_ref_5th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_5th_1, i_dqn_ref_5th_Amps_1, i_dqn_filtered_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);

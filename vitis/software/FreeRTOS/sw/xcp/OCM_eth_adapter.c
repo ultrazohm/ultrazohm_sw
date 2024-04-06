@@ -29,8 +29,8 @@
 #define kXcpMaxCTO              32
 #define kXcpMaxDTO              64
 
-#define BUF_SIZE_XCP_RX         (kXcpMaxCTO + XCP_HEADER_LEN)
-#define BUF_SIZE_XCP_TX         (kXcpMaxCTO + XCP_HEADER_LEN)
+#define BUF_SIZE_XCP_RX         (kXcpMaxDTO + XCP_HEADER_LEN)
+#define BUF_SIZE_XCP_TX         (kXcpMaxDTO + XCP_HEADER_LEN)
 
 #define STACKSIZE_XCP           (1024 * 10)
 #define PRIO_XCP_BACKGROUND     7

@@ -156,6 +156,8 @@ float U_max_1 = 48.0f / 1.732050808f;
 float Voltage_Scaling_1 = 1.0f / (48.0f / 1.732050808f);
 bool ext_clamping_1 = false;
 float max_modulation_index_1 = 1.0f / 1.732050808f;
+bool start_angle_found = false;
+float theta_mech_1_old = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -169,31 +171,6 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
-
-    if( (select_automatic_idiq) ){
-    	start_marker=1.0f;
-    	i_dq_ref_Amps_1.d = id_setpoints[setpoint_index];
-    	i_dq_ref_Amps_1.q = iq_setpoints[setpoint_index] * PMSM_rated_current_1;
-
-    	// step throught the array
-    	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-    	if(current_uptime>(old_uptime + 1129 ) ){
-    		old_uptime=current_uptime;
-
-    		if(setpoint_index<21){
-    			setpoint_index++;
-    		}else{
-    			setpoint_index=0;
-    			select_automatic_idiq=false;
-    			start_marker=0.0f;
-    		}
-
-
-
-    	}
-    }else{
-    	i_dq_ref_Amps_1=i_dq_ref_java_Amps_1;
-    }
 
     // Set tristate to false
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
@@ -237,7 +214,7 @@ void ISR_Control(void *data)
     }
 
     // Calculation of Signals for FOC for PMSM 1
-    omega_m_rad_per_sec_1 = Global_Data.av.mechanicalRotorSpeed_filtered_1*(2.0f*M_PI)/60.0f;
+    omega_m_rad_per_sec_1 = Global_Data.av.mechanicalRotorSpeed_filtered_1*(2.0f*UZ_PIf)/60.0f;
     omega_el_rad_per_sec_1 = omega_m_rad_per_sec_1*config_PMSM_1.polePairs;
     Global_Data.av.omega_el_1 = omega_el_rad_per_sec_1;
     theta_el_rad_1 = Global_Data.av.theta_elec_1 - Global_Data.av.theta_offset_1;
@@ -265,6 +242,42 @@ void ISR_Control(void *data)
     i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
     v_dq_Volts_2 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_2, theta_el_rad_2);
 
+    //Automatic evaluation profile
+    if( (select_automatic_idiq) ){
+    	if (((Global_Data.av.theta_mech_1 - theta_mech_1_old) > UZ_PIf) && (!start_angle_found)) {
+    		start_angle_found = true;
+    	}
+
+    	if (start_angle_found) {
+
+    		start_marker=1.0f;
+    		i_dq_ref_Amps_1.d = id_setpoints[setpoint_index];
+    		i_dq_ref_Amps_1.q = iq_setpoints[setpoint_index] * PMSM_rated_current_1;
+
+    		// step throught the array
+    		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
+    		if(current_uptime>(old_uptime + 1129 ) ){
+    			old_uptime=current_uptime;
+
+    			if(setpoint_index<21){
+    				setpoint_index++;
+    			}else{
+    				setpoint_index = 0U;
+    				select_automatic_idiq = false;
+    				start_angle_found = false;
+    				start_marker = 0.0f;
+    			}
+    		}
+    	}
+
+    }else{
+    	i_dq_ref_Amps_1=i_dq_ref_java_Amps_1;
+    }
+    theta_mech_1_old = Global_Data.av.theta_mech_1;
+
+
+
+
     if (current_state==control_state)
     {
     	if(select_FOC) {
@@ -280,7 +293,7 @@ void ISR_Control(void *data)
     		K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(Global_Data.objects.Kp_iq_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
     		uz_CurrentControl_set_Kp_id(CC_instance_1, K_p_id);
     		uz_CurrentControl_set_Kp_iq(CC_instance_1, K_p_iq);
-    		v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
+    		v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, -omega_el_rad_per_sec_2);
     		switch (mode)
     		{
     		default:

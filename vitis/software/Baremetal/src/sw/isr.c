@@ -115,9 +115,7 @@ uz_3ph_dq_t flux_approx             = {0};
 uz_3ph_dq_t flux_reference          = {0};
 float K_p_id                        = 0.0f;
 float K_p_iq                        = 0.0f;
-// Controller Settings
-float Kp_speed_2 					= 0.2f;
-float Ki_speed_2 					= 0.25f;
+
 
 //Stuff
 
@@ -244,7 +242,7 @@ void ISR_Control(void *data)
 
     //Automatic evaluation profile
     if( (select_automatic_idiq) ){
-    	if (((theta_el_1_old - Global_Data.av.theta_elec_1) > UZ_PIf) && (!start_angle_found)) {
+    	if ((((theta_el_1_old - Global_Data.av.theta_elec_1) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_2 < 10.0f))&& (!start_angle_found)) {
     		start_angle_found = true;
     	}
 

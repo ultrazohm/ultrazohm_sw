@@ -136,10 +136,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_u_d_2] 			        = &(data->av.U_d_2);
 	js_slowDataArray[JSSD_FLOAT_u_q_1] 			        = &(data->av.U_q_1);
 	js_slowDataArray[JSSD_FLOAT_u_q_2] 			        = &(data->av.U_q_2);
-	js_slowDataArray[JSSD_FLOAT_i_d_1] 			        = &(data->av.I_d_1);
-	js_slowDataArray[JSSD_FLOAT_i_d_2] 			        = &(data->av.I_d_2);
-	js_slowDataArray[JSSD_FLOAT_i_q_1] 			        = &(data->av.I_q_1);
-	js_slowDataArray[JSSD_FLOAT_i_q_2] 			        = &(data->av.I_q_2);
+	js_slowDataArray[JSSD_FLOAT_i_d_1] 			        = &i_dq_Amps_1.d;
+	js_slowDataArray[JSSD_FLOAT_i_d_2] 			        = &i_dq_Amps_2.d;
+	js_slowDataArray[JSSD_FLOAT_i_q_1] 			        = &i_dq_Amps_1.q;
+	js_slowDataArray[JSSD_FLOAT_i_q_2] 			        = &i_dq_Amps_2.q;
 	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.mechanicalRotorSpeed_1);
 	js_slowDataArray[JSSD_FLOAT_speed_2] 		        = &(data->av.mechanicalRotorSpeed_2);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);

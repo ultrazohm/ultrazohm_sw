@@ -242,7 +242,7 @@ void ISR_Control(void *data)
 
     //Automatic evaluation profile
     if( (select_automatic_idiq) ){
-    	if ((((theta_el_1_old - Global_Data.av.theta_elec_1) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_2 < 10.0f))&& (!start_angle_found)) {
+    	if ((((theta_el_1_old - theta_el_rad_1) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_2 < 10.0f))&& (!start_angle_found)) {
     		start_angle_found = true;
     	}
 
@@ -271,7 +271,7 @@ void ISR_Control(void *data)
     }else{
     	i_dq_ref_Amps_1=i_dq_ref_java_Amps_1;
     }
-    theta_el_1_old = Global_Data.av.theta_elec_1;
+    theta_el_1_old = theta_el_rad_1;
 
 
 

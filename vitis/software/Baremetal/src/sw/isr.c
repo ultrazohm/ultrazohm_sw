@@ -157,7 +157,7 @@ float Voltage_Scaling_1 = 1.0f / (48.0f / 1.732050808f);
 bool ext_clamping_1 = false;
 float max_modulation_index_1 = 1.0f / 1.732050808f;
 bool start_angle_found = false;
-float theta_mech_1_old = 0.0f;
+float theta_el_1_old = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -244,7 +244,7 @@ void ISR_Control(void *data)
 
     //Automatic evaluation profile
     if( (select_automatic_idiq) ){
-    	if (((Global_Data.av.theta_mech_1 - theta_mech_1_old) > UZ_PIf) && (!start_angle_found)) {
+    	if (((theta_el_1_old - Global_Data.av.theta_elec_1) > UZ_PIf) && (!start_angle_found)) {
     		start_angle_found = true;
     	}
 
@@ -273,7 +273,7 @@ void ISR_Control(void *data)
     }else{
     	i_dq_ref_Amps_1=i_dq_ref_java_Amps_1;
     }
-    theta_mech_1_old = Global_Data.av.theta_mech_1;
+    theta_el_1_old = Global_Data.av.theta_elec_1;
 
 
 

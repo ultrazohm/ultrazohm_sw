@@ -312,8 +312,8 @@ int main(void)
         	HCI_instance_5th_1 = uz_HarmonicCurrentInjection_init(HCI_config_5th_1);
         	HCI_instance_7th_1 = uz_HarmonicCurrentInjection_init(HCI_config_7th_1);
             Global_Data.objects.approximate_flux_instance = uz_approximate_flux_init(Hoerner_Fitting);
-            Global_Data.objects.Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(0.5f * UZ_PWM_FREQUENCY);
-            Global_Data.objects.Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(0.5f * UZ_PWM_FREQUENCY);
+            Global_Data.objects.Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(0.666667f * UZ_PWM_FREQUENCY);
+            Global_Data.objects.Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(0.666667f * UZ_PWM_FREQUENCY);
             nn_init();
         	Global_Data.av.theta_offset_2 = 1.4f;
         	initialization_chain = print_msg;

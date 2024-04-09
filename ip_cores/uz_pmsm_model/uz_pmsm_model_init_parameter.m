@@ -82,7 +82,7 @@ static_friction_torque=0.01;
 % % inertia=0.001;
 % friction_coefficient=0;
 % static_friction_torque=0;
-setpoint_step = 1.0;
+setpoint_step = 8.0;
 % omega_mech = 130.8997;
 omega_mech = 50.0;
 % omega_mech = 0.0;
@@ -91,14 +91,14 @@ load_torque = 0;
 
 % Simulation settings
 simulate_mechanical=false;
-simulate_open_loop=true;
+simulate_open_loop=false;
 simulate_nonlinear_modell=true;
 
 parameter_nachfuerung=false;
 
 praediktion_entkopplung_nonlinear=false;
 
-entkopplung_linear=false;
+entkopplung_linear=true;
 entkopplung_static=false;
 entkopplung_dynamic=false;
 

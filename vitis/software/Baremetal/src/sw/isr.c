@@ -254,7 +254,7 @@ void ISR_Control(void *data)
 
     		// step throught the array
     		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-    		if(current_uptime>(old_uptime + 1129 ) ){
+    		if(current_uptime>(old_uptime + 11290 ) ){
     			old_uptime=current_uptime;
 
     			if(setpoint_index<21){

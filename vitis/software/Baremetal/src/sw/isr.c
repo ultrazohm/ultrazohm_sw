@@ -65,7 +65,7 @@ float omega_m_rad_per_sec_1 		= 0.0f;
 float omega_el_rad_per_sec_1 		= 0.0f;
 float theta_el_rad_1 				= 0.0f;
 float theta_el_rad_1_advanced		= 0.0f;
-float theta_el_offset_1 			= 1.1f;
+float theta_el_offset_1 			= 0.85f;
 struct uz_DutyCycle_t output_1 		= {0};
 
 // Controller Settings
@@ -217,7 +217,7 @@ void ISR_Control(void *data)
     omega_m_rad_per_sec_1 = Global_Data.av.mechanicalRotorSpeed_filtered_1*(2.0f*UZ_PIf)/60.0f;
     omega_el_rad_per_sec_1 = omega_m_rad_per_sec_1*config_PMSM_1.polePairs;
     Global_Data.av.omega_el_1 = omega_el_rad_per_sec_1;
-    theta_el_rad_1 = Global_Data.av.theta_elec_1 - Global_Data.av.theta_offset_1;
+    theta_el_rad_1 = Global_Data.av.theta_elec_1 - theta_el_offset_1;
     if(select_misalignment==true) {
     	theta_el_rad_1 += 5.0f * (M_PI / 180.0f);
     }

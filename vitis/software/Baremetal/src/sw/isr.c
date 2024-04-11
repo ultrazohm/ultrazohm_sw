@@ -64,6 +64,7 @@ float M_ref_Nm_1 					= 0.0f;
 float omega_m_rad_per_sec_1 		= 0.0f;
 float omega_el_rad_per_sec_1 		= 0.0f;
 float theta_el_rad_1 				= 0.0f;
+float theta_el_rad_1_advanced		= 0.0f;
 float theta_el_offset_1 			= 1.1f;
 struct uz_DutyCycle_t output_1 		= {0};
 
@@ -109,6 +110,7 @@ float M_ref_Nm_2 					= 0.0f;
 float omega_m_rad_per_sec_2 		= 0.0f;
 float omega_el_rad_per_sec_2 		= 0.0f;
 float theta_el_rad_2 				= 0.0f;
+float theta_el_rad_2_advanced		= 0.0f;
 float theta_el_offset_2 			= 1.4f;
 struct uz_DutyCycle_t output_2 		= {0};
 uz_3ph_dq_t flux_approx             = {0};
@@ -220,7 +222,7 @@ void ISR_Control(void *data)
     	theta_el_rad_1 += 5.0f * (M_PI / 180.0f);
     }
     //Anglelead
-    theta_el_rad_1 += (1.5f * omega_el_rad_per_sec_1 ) / UZ_PWM_FREQUENCY;
+    theta_el_rad_1_advanced = theta_el_rad_1 + (1.5f * omega_el_rad_per_sec_1 ) / UZ_PWM_FREQUENCY;
     Global_Data.av.theta_mech_1 = theta_el_rad_1 / 4.0f;
     i_dq_Amps_1 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_1, theta_el_rad_1);
     v_dq_Volts_1 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_1, theta_el_rad_1);
@@ -236,7 +238,7 @@ void ISR_Control(void *data)
     Global_Data.av.omega_el_2 = omega_el_rad_per_sec_2;
     theta_el_rad_2 = Resolver_outputs.position_el_2pi;
     //Anglelead
-    theta_el_rad_2 += (1.5f * omega_el_rad_per_sec_2 ) / UZ_PWM_FREQUENCY;
+    theta_el_rad_2_advanced = theta_el_rad_2 + (1.5f * omega_el_rad_per_sec_2 ) / UZ_PWM_FREQUENCY;
     i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
     v_dq_Volts_2 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_2, theta_el_rad_2);
 
@@ -295,7 +297,7 @@ void ISR_Control(void *data)
     		switch (mode)
     		{
     		default:
-    			output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+    			output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1_advanced);
     			break;
     		case 1:
         		i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
@@ -306,7 +308,7 @@ void ISR_Control(void *data)
     			v_dq_ref_HCI_Volts_1.q = v_dq_ref_Volts_1.q +  v_dq_ref_5th_Volts_1.q + v_dq_ref_7th_Volts_1.q;
     			v_dq_ref_5th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_5th_1, i_dqn_ref_5th_Amps_1, i_dqn_filtered_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
     			v_dq_ref_7th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_7th_1, i_dqn_ref_7th_Amps_1, i_dqn_filtered_7th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
-    			output_1 = uz_Space_Vector_Modulation(v_dq_ref_HCI_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+    			output_1 = uz_Space_Vector_Modulation(v_dq_ref_HCI_Volts_1, v_DC_Volts_1, theta_el_rad_1_advanced);
     			break;
     		}
     	} else if(select_DDPG) {
@@ -356,7 +358,7 @@ void ISR_Control(void *data)
     	    //Introduce delay
     	    v_dq_limited_Volts_old_old_1 = v_dq_limited_Volts_1;
     	    //v_dq_limited_Volts_old_1 = v_dq_limited_Volts_1;
-    	    output_1 = uz_Space_Vector_Modulation(v_dq_limited_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+    	    output_1 = uz_Space_Vector_Modulation(v_dq_limited_Volts_1, v_DC_Volts_1, theta_el_rad_1_advanced);
 
     	} else {
     		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
@@ -371,7 +373,7 @@ void ISR_Control(void *data)
         M_ref_Nm_2 = uz_SpeedControl_sample(SC_instance_2, omega_m_rad_per_sec_2, n_ref_rpm_2);
         i_dq_ref_Amps_2 = uz_SetPoint_sample(SP_instance_2, omega_m_rad_per_sec_2, M_ref_Nm_2, v_DC_Volts_2, i_dq_Amps_2);
        	v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-       	output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+       	output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2_advanced);
        	Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
        	Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
        	Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;

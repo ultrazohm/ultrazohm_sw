@@ -158,6 +158,7 @@ bool ext_clamping_1 = false;
 float max_modulation_index_1 = 1.0f / 1.732050808f;
 bool start_angle_found = false;
 float theta_el_1_old = 0.0f;
+bool change_speed = false;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -256,16 +257,24 @@ void ISR_Control(void *data)
 
     		// step throught the array
     		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-    		if(current_uptime>(old_uptime + 11290 ) ){
+    		if((current_uptime>(old_uptime + 11290) && (!change_speed)) ){
     			old_uptime=current_uptime;
 
     			if(setpoint_index<21){
     				setpoint_index++;
     			}else{
     				setpoint_index = 0U;
-    				select_automatic_idiq = false;
     				start_angle_found = false;
     				start_marker = 0.0f;
+    				change_speed = true;
+    			}
+
+    		}
+    		if (change_speed) {
+    			if(current_uptime>(old_uptime + 11290)) {
+    				n_ref_rpm_2 = n_ref_rpm_2 - 100.0f;
+    				change_speed = false;
+    				select_automatic_idiq = false;
     			}
     		}
     	}

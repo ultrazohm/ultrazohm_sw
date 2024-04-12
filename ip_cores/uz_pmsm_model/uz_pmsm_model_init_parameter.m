@@ -61,7 +61,7 @@ polepair=4;
 ts=1/5e5; % =2e-6
 
 % Controller parameter
-ts_regler=1/20e3;
+ts_regler=1/10e3;
 tau_d=L_d/R_1;
 tau_q=L_q/R_1;
 tau_sum=2*ts_regler;
@@ -84,7 +84,7 @@ static_friction_torque=0.01;
 % static_friction_torque=0;
 setpoint_step = 8.0;
 % omega_mech = 130.8997;
-omega_mech = 50.0;
+omega_mech = 100.0;
 % omega_mech = 0.0;
 rpm = 1250;
 load_torque = 0;
@@ -98,7 +98,7 @@ parameter_nachfuerung=false;
 
 praediktion_entkopplung_nonlinear=false;
 
-entkopplung_linear=true;
+entkopplung_linear=false;
 entkopplung_static=false;
 entkopplung_dynamic=false;
 

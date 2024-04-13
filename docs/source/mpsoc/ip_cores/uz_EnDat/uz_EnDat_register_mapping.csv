@@ -1,54 +1,50 @@
 Port Name, Port Type, Data Type, Target Platform Interfaces, Function
-DIVIDER, Input, uint8, AXI, Clockdivider from Driver 
-CLK50MHZ, Input, bool, External Signal, Aux-Clock 50 MHz
-CONTROLWORD, Input, uint16, AXI, Controlword from Driver
-DATAIN, Input, bool, External Signal, DATA-RX from Adapter/Sensor
-FKT1DATAFLOW, Input, uint16, AXI, Factor 1 from Driver adjusting Dataflow
-FKT2RECOVERYTIME, Input, uint16, AXI, Factor 2 from Driver adjusting Recoverytime post Telegramm
-FKT3INITIALOFF, Input, uint16, AXI, Factor 3 from Driver adjusting the initialoff time
-FKT4DATACLKSYNC, Input, uint16, AXI, Factor 4 from Driver adjusting Data to CLK phase shift
-FKT5TELEGRAMLEN, Input, uint16, AXI, Factor 5 from Driver adjusting Telegramlength
-FKT6SYNCRESPONSE, Input, uint16, AXI, Factor 6 from Driver adjusting Reponse to CLK phase shift
-FKT7RECOVERYTIME, Input, int8, AXI, Factor 7 from Driver changing bit shift behaviour of position
-CLK_OUT, Output, bool,External Signal, TX-CLK to Adapter/Sensor
+DIVIDER, Input, uint8, AXI, Clockdivider from driver 
+CLK50MHZ, Input, bool, External Signal, AUX-Clock 50 MHz
+CONTROLWORD, Input, uint16, AXI, Controlword from driver
+DATAIN, Input, bool, External Signal, DATA-RX from adapter/aensor
+FKT1DATAFLOW, Input, uint16, AXI, Factor 1 from driver adjusting dataflow
+FKT2RECOVERYTIME, Input, uint16, AXI, Factor 2 from driver adjusting recoverytime post telegramm
+FKT3INITIALOFF, Input, uint16, AXI, Factor 3 from driver adjusting the initialoff time
+FKT4DATACLKSYNC, Input, uint16, AXI, Factor 4 from driver adjusting DATA to CLK phase shift
+FKT5TELEGRAMLEN, Input, uint16, AXI, Factor 5 from driver adjusting telegramlength
+FKT6SYNCRESPONSE, Input, uint16, AXI, Factor 6 from driver adjusting reponse to CLK phase shift
+FKT7RECOVERYTIME, Input, int8, AXI, Factor 7 from driver changing bit shift behaviour of position
+CLK_OUT, Output, bool,External Signal, TX-CLK to adapter/sensor
 STATUSWORD, Output, uint16, AXI, Statusword from the IP-Core
-DATAOUT, Output, bool,External Signal, TX-DATA to Adapter/Sensor
-DATAWR, Output, bool,External Signal, RW-DATA to Adapter/Sensor
-CLKWR, Output, bool,External Signal, RW-CLK to Adapter/Sensor
-CRCEXTRACTED0, Output, uint8,External Signal, CRC Information from Sensor Pos t0
-CRCEXTRACTED1, Output, uint8,External Signal, CRC Information from Sensor Pos t1
-CRCEXTRACTED2, Output, uint8,External Signal, CRC Information from Sensor Pos t2
+DATAOUT, Output, bool,External Signal, TX-DATA to adapter/sensor
+DATAWR, Output, bool,External Signal, RW-DATA to adapter/sensor
+CLKWR, Output, bool,External Signal, RW-CLK to adapter/sensor
+CRCEXTRACTED0, Output, uint8,External Signal, CRC information from sensor Pos t0
+CRCEXTRACTED1, Output, uint8,External Signal, CRC information from sensor Pos t1
+CRCEXTRACTED2, Output, uint8,External Signal, CRC information from sensor Pos t2
 CRCFFSTORED, Output, uint8, AXI, CRC Information calculated by the IP-Core (BETA)
-POS0, Output, uint32,External Signal, Raw positional value from Sensor t0
-POS1, Output, uint32,External Signal, Raw positional value from Sensor t1
-POS2, Output, uint32,External Signal, Raw positional value from Sensor t3
-POS0BUS, Output, uint32, AXI, Raw positional value from Sensor t0
-POS1BUS, Output, uint32, AXI, Raw positional value from Sensor t1
-POS2BUS, Output, uint32, AXI, Raw positional value from Sensor t3
+POS0, Output, uint32,External Signal, Raw positional value from sensor t0
+POS1, Output, uint32,External Signal, Raw positional value from sensor t1
+POS2, Output, uint32,External Signal, Raw positional value from sensor t3
+POS0BUS, Output, uint32, AXI, Raw positional value from sensor t0
+POS1BUS, Output, uint32, AXI, Raw positional value from sensor t1
+POS2BUS, Output, uint32, AXI, Raw positional value from sensor t3
 TIMEELAPSEDT0T1, Output, uint32,External Signal, Time difference between t0 and t1 in ns
 TIMEELAPSEDT0T2, Output, uint32,External Signal, Time difference between t0 and t2 in ns
 TIMEELAPSEDT0T1BUS, Output, uint32, AXI4, Time difference between t0 and t1 in ns
 TIMEELAPSEDT0T2BUS, Output, uint32, AXI4, Time difference between t0 and t2 in ns
-SENSORERROR, Output, bool,External Signal, Errorbit from Sensor
-RESPONSELENBUS, Output, uint8, AXI4, Length of Response from Sensor in bits
+SENSORERROR, Output, bool,External Signal, Errorbit from sensor
+RESPONSELENBUS, Output, uint8, AXI4, Length of Response from sensor in bits
 DIFT0T1BUS, Output, int32, AXI4, Positional difference between t0 and t1
 DIFT0T2BUS, Output, int32, AXI4, Positional difference between t0 and t2
 POSAGET0BUS, Output, uint32, AXI4, Positional age for positional value t0
 SYNCQUALITYBUS, Output, uint16, AXI4, Quality indicator for synchronisation with the sensor
-DBGTIMEELAPSED, ILA, uint32, AXI4, Debug value for Time
-DBGACTIVENUMBER, ILA, uint8, AXI4, Active Number for Slicer Module
+DBGTIMEELAPSED, ILA, uint32, AXI4, Debug value for time
+DBGACTIVENUMBER, ILA, uint8, AXI4, Active number for slicer module
 DBGREADPULSES, ILA, bool, AXI4, Debug pulses for value read in
 DBGWRITEOKPULSE, ILA, bool, AXI4, Debug pulse for new positional value registered
 DBGTOTALBITSREAD, ILA, uint8, AXI4, Debug value for amount of bits read from sensor reply
 DBGPOSRAW, ILA, uint64, AXI4, Debug for raw positional value
 DBGPOSSLICED, ILA, uint32, AXI4, Debug value raw positional value sliced for payload
-DBGDATAIN, ILA, bool, AXI4, Debug pipe for RX-DATA Pulses from sensor
-DBGCLK, ILA, bool, AXI4, Debug pipe for TX-CLK Pulses to sensor
-DBGDATWRITE, ILA, bool, AXI4, Debug pipe for RW-DATA Pulses to sensor
-DBGDATAOUT, ILA, bool, AXI4, Debug pipe for TX-DATA Pulses to sensor
+DBGDATAIN, ILA, bool, AXI4, Debug pipe for RX-DATA pulses from sensor
+DBGCLK, ILA, bool, AXI4, Debug pipe for TX-CLK pulses to sensor
+DBGDATWRITE, ILA, bool, AXI4, Debug pipe for RW-DATA pulses to sensor
+DBGDATAOUT, ILA, bool, AXI4, Debug pipe for TX-DATA pulses to sensor
 Reset, Input, bool, AXI, Resets the IP-Core
 Enable, Input, bool, AXI, Enables the IP-Core
-
-
-
-

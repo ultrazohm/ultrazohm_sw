@@ -1,11 +1,11 @@
 .. _ipCore_EnDat:
 
-===================
-Incremental Encoder
-===================
+=======
+EnDat22
+=======
 
-The incremental encoder IP-Core (``EnDat``) evaluates signals of an incremental encoder and is compatible to :ref:`dig_encoder_v1`.
-It features multiple possibilities to calculate the rotor position and the rotational speed of the encoder.
+The EnDat22 IP-Core (``EnDat``) evaluates signals of an EnDat22 based absolute singleturn encoders and is compatible to :ref:`dig_encoder_v1`.
+It features the positional and speed calculation. 
 
 Position
   Calculates the rotational position of the encoder based on counting rising and falling edges on the A and B-lane of the encoder.
@@ -28,41 +28,22 @@ Rotational speed
 Direction of rotation
   Determines the direction of the rotation (clockwise / counterclockwise)
 
-Configuration
-=============
-
-.. note:: The IP-Core has a bug that results in an error of factor 2 on the speed calculation if ``Timer_FPGA_ms`` is supplied with the same value as done in Simulink. The bug is handled in the software driver by just writing ``Timer_FPGA_ms*2`` to the IP-Core register, no user action is required. That is, the correct speed is read-out by the driver.
-
-Hardware filter of rotational speed
-===================================
-
-Subsystem ``omega_by_measure_time`` outputs :math:`\omega_{raw}`, ``new_measurement`` and oversampling factor :math:`k_{Oversample}`.
-The following calculation is done:
-
-.. math::
-
-  \omega_{scaled}=\frac{1}{\omega_{raw}} \cdot k_{Oversample}
-
-This is fed to the ``Average_linear_Reg`` with the constants :math:`S_{factor}=6` and :math:`S_{invFactor} = \frac{1}{6}` (not used at all).
-Whenever ``new_measurement`` is ``true``, the current value of :math:`\omega_{scaled}` is added to an internal storage that sums up the rotational speed.
-After six (:math:`S_{factor}=6`) measurements the internal storage is reset to zero, restarting the averaging.
-The value of the internal storage is divided by the number of samples that are currently in the internal storage and output.
-
 
 IP-Core Hardware
 ================
 
-The IP-Core is generated using Matlab/Simulink HDL-Coder based on the model ``Encoder_Zynq_V24.slx`` (in ``ultrazohm_sw/ip-cores/IncreEncoder_V24_ip/Simulation/Encoder_Zynq_V24.slx``).
+The IP-Core is generated using Matlab/Simulink HDL-Coder based on the model ``UZ_EnDat.slx`` (in ``ultrazohm_sw/ip_cores/uz_EnDat_IPCore/Simulink_Model/UZ_EnDat.slx``).
 
 
 Vivado integration
 ------------------
 
 .. figure:: uz_EnDat_vivado.png
+  :align: center
 
-  Vivado block design of incremental encoder IP-Core.
+  Vivado block design of EnDat22 IP-Core.
 
-.. warning:: The IP-Core (IPCORE_CLK) has to be sourced by a clock with :math:`50 MHz`! For higher frequencies the timing does not close (negative slack time), for lower frequencies the accuracy of the encoder result is not tested.
+.. warning:: The IP-Core (IPCORE_CLK) has to be sourced by a clock with :math:`100 MHz`! The auxialliary clock (CLK50MHZ) has to be fed with a :math:`50 MHz` Signal
 
 
 Configuration registers (AXI)
@@ -101,9 +82,9 @@ PeriodEnd
   Not recommended, use calculation based on time measurement based on counting edges of the A-lane instead (``omega_AXI``).
 
 
-Table *Interfaces of the incremental encoder IP-Core* lists all input and output ports (AXI and external port) that are present in the IP-Core.
+Table *Interfaces of the EnDat22 IP-Core* lists all input and output ports (AXI and external port) that are present in the IP-Core.
 
-.. csv-table:: Interfaces of the incremental encoder IP-Core
+.. csv-table:: Interfaces of the EnDat22 IP-Core
    :file: uz_EnDat_register_mapping.csv
    :widths: 50 50 50 50 200
    :header-rows: 1
@@ -112,19 +93,36 @@ Table *Interfaces of the incremental encoder IP-Core* lists all input and output
 Software driver
 ===============
 
-The software driver for the IP-Core handles the configuration of the aforementioned registers.
+The software driver for the IP-Core has multiple use cases - with the configuration and calculation beeing the most important ones. 
 
-.
-Driver reference
+Init Functions
 ----------------
-
+.. doxygentypedef:: uz_EnDat_t
 .. doxygentypedef:: controlword
+.. c:type:: uint8_t
 
+.. doxygenfunction:: uz_EnDat_IP_core_init
 
-.. doxygenstruct:: uz_EnDat_t
-  :members:
-
+This function initializes a 25-Bit EnDat22 sensor with default settings. The IP-Core has to be named "uz_EnDat_0" in Vivado and have an operating frequency of 100 MHz.
+Use this function to initialize the sensortype ECN125 without further adjustment necessary. Generally this method is not advised to be used due to its inflexibility.
 
 .. doxygenfunction:: uz_EnDat_IP_core_custom_init
+
+This function initializes a EnDat22 sensor using settings and supporting various sensor resolutions. The IP-Core has to be named "uz_Endat_0" in Vivado and have an operating frequency of 100 MHz.
+For adjusting the configuration of the EnDat22 sensor, please edit the file ``uz_EnDat_IP_core_init.c``. Changes during runtime are prohibited.
+
+.. doxygenfunction:: uz_EnDat_IP_core_expert_init
+
+This function is the most flexible one when it comes to configuration of the IP-Core since every parameter is handed over by the call function. 
+Diese Funktion lasst dem Anwender maximale Flexibilit ¨ at. Sowohl der Name des IP-Cores ¨
+in Vivado, die Betriebsfrequenz als auch die multiple Initialisierung sind hiermit moglich. ¨
+Es wird jedoch ausdrucklich davon abgeraten, eine von 100 MHz abweichende Betriebs- ¨
+frequenz zu verwenden. Bei dieser Initialisierung muss die Basisadresse des IP-Cores auf
+dem AXI4-Bus bekannt sein. Ferner ist jede einzelne Einstellung manuell zwingend vorzu￾nehmen. Zur Initialisierung muss diese Funktion mit allen fur den Betrieb notwendigen ¨
+Parametern aufgerufen werden, es werden hierbei keine Standardeinstellungen an den
+IP-Core ubergeben. 
+
+
+  
 
 

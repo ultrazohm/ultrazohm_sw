@@ -203,13 +203,6 @@ uint16_t uz_EnDat_factor_converter(float in);
 
 /**
  * 
- * @brief This helper function converts a bitfield to a control WORD.
- * @param inp Pointer to a bit array where control word is stored.
- * @return Returns the actual control WORD which can be written to EnDat IP-Core.
- */
-//uint16_t uz_EnDat_controlword_builder(controlword_expanded* inp);
-/**
- * 
  * @brief This helper function converts a frequency setpoint to the appropriate divider. 
  * @param frequency ENUM of selected frequencies. (e.g. uz_EnDat_operatingfrequency_1562500Hz)
  * @return Returns the divider which then can be written to the EnDat IP-Core.

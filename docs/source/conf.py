@@ -150,3 +150,5 @@ nitpick_ignore = [
     ("c:identifier", "uintptr_t"),
     ("c:identifier", "bool"),
 ]
+
+tikz_latex_preamble = "\\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19

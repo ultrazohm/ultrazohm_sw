@@ -41,9 +41,9 @@ steps:
    image: ultrazohm/ultrazohm_remote_container
    depends_on: [ copy_global_config ]
    commands:
-    - cppcheck vitis/software/Baremetal/src 
-    - cppcheck --addon=cert vitis/software/Baremetal/src 
-    - cppcheck --addon=misra --inline-suppr vitis/software/Baremetal/src
+    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
+    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=cert vitis/software/Baremetal/src 
+    - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=misra --inline-suppr vitis/software/Baremetal/src
    when:
      branch:
      - main

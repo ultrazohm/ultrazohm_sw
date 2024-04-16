@@ -96,3 +96,10 @@ void uz_PWM_SS_2L_hw_SetTriangleShift(uint32_t base_address, float triangle_shif
     uz_axi_write_uint32(base_address + triangle_shift_HB2_AXI_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB2_Q17);
     uz_axi_write_uint32(base_address + triangle_shift_HB3_AXI_Data_PWM_and_SS_control_V4_ip, triangle_shift_HB3_Q17);
 }
+
+void uz_PWM_SS_2L_hw_SetTriggerSource(uint32_t base_address, uint32_t trigger_source) {
+    uz_assert_not_zero_uint32(base_address);
+    uz_assert(trigger_source <= 2U); 
+    uz_axi_write_uint32(base_address + PWM_trigger_source_AXI_Data_PWM_and_SS_control_V4_ip, trigger_source);
+    
+}

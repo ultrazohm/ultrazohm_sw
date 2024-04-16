@@ -113,6 +113,9 @@ Compatibility
 -------------
 * Slots D1 to D4 can be used without limitations, if CPLD is programmed correctly
 
+Optical Cables 
+--------------
+* Optical Cables of type **HFBR-RNSxxxZ** are tested and recommended for transmitting the optical signals. The **xxx** determines the length of the cable in meters.
 
 References
 ----------

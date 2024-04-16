@@ -15,6 +15,7 @@ Source
    
     incr_encoder_v1
     incr_encoder_rev02
+    incr_encoder_rev03
 
 
 Functionality

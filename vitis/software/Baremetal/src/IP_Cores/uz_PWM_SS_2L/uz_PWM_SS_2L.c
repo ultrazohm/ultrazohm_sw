@@ -50,6 +50,8 @@ uz_PWM_SS_2L_t* uz_PWM_SS_2L_init(struct uz_PWM_SS_2L_config_t config) {
 
     uz_PWM_SS_2L_hw_SetTriangleShift(self->config.base_address, self->config.triangle_shift_HB1, self->config.triangle_shift_HB2, self->config.triangle_shift_HB3);
 
+    uz_PWM_SS_2L_hw_SetTriggerSource(self->config.base_address, self->config.trigger_source);
+
     return (self);
 }
 

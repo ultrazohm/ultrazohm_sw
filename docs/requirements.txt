@@ -26,3 +26,4 @@ pyarrow
 plotly-resampler
 pygwalker
 streamlit
+trace_updater

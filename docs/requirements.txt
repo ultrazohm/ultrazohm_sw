@@ -24,3 +24,5 @@ starlette # maybe required for sphinx-autobuild
 uvicorn # maybe required for sphinx-autobuild
 pyarrow
 plotly-resampler
+pygwalker
+streamlit

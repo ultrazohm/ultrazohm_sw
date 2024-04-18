@@ -34,7 +34,11 @@ app.layout = html.Div([
 )
 def update_options(filename):
     global df 
-    df = pd.read_parquet(filename)
+    filetype=get_file_extension(filename)
+    if filetype=='parquet':
+        df = pd.read_parquet(filename)
+    else:
+        df = pd.read_csv(filename,sep=';')
     dropdown_options = [{'label': col, 'value': col} for col in df.columns]
     return dropdown_options, [df.columns[0]] if dropdown_options else None  # Select the first column by default if options available
 
@@ -58,6 +62,17 @@ def update_graph(value, filename):
     return fig
 
 fig.register_update_graph_callback(app=app, graph_id="graph-content")
+
+def get_file_extension(filename):
+    # Split the filename by dot
+    parts = filename.split('.')
+    
+    # If there's only one part, there's no extension
+    if len(parts) == 1:
+        return None
+    
+    # Otherwise, return the last part
+    return parts[-1]
 
 if __name__ == '__main__':
     app.run_server(debug=True)

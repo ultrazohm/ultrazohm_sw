@@ -145,64 +145,16 @@ Syllabus
 ********
 
 .. toctree::
-   :hidden:
-   :caption: Repository
+   :maxdepth: 1
+   :caption: Contents:
 
-    ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw>
+   getting_started/getting_started
+   gui/gui
+   hardware/hardware
+   code_generation/code_generation
+   project/project
 
-.. toctree::
-    :maxdepth: 2
-    :caption: Getting-Started
-    
-    getting_started/onboarding/onboarding
-    getting_started/toolchain/index
-    getting_started/ultrazohm_setup/ultrazohm_setup
-    getting_started/tutorials/index
 
-.. toctree::
-    :maxdepth: 2
-    :caption: General
-
-    general/system_overview
-    general/project_structure/project_structure
-    general/infrastructure/infrastructure
-    general/how_to_guides/how_to_guides
-    general/useCases/useCases
-
-.. toctree::
-    :maxdepth: 2
-    :caption: MPSoC Platform
-
-    mpsoc/platform_architecture/platform_architecture
-    mpsoc/rpu_software/rpu_software
-    mpsoc/apu_software/apu_software
-    mpsoc/software_framework/software_framework
-    mpsoc/vivado_framework/vivado_framework
-    mpsoc/ip_cores/ip_cores
-    mpsoc/CPLD/index
-
-.. toctree::
-   :maxdepth: 2
-   :caption: User Software
-
-   software/gui/index
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Codegeneration
-
-   code_generation/hdl_coder/hdl_coder
-   code_generation/vivado_hls/index
-   code_generation/embedded_coder/embedded_coder
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Hardware
-
-   hardware/carrier_board/carrier_board
-   hardware/adapter_cards/adapter_cards
-   hardware/interface_powerelectronics/interface_powerelectronics
-   hardware/altium/altium
 
 Indices and tables
 ==================

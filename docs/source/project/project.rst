@@ -156,3 +156,12 @@ Interfaces of Cabinet
   Communication --> Ethernet
   Communication --> CAN
   Communication --> JTAG
+
+
+.. toctree::
+   :maxdepth: 3
+
+   useCases/useCases
+   project_structure/project_structure
+   infrastructure/infrastructure
+   how_to_guides/how_to_guides

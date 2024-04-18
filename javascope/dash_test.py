@@ -1,60 +1,56 @@
-from dash import Dash, html, dcc, callback, Output, Input, callback_context, no_update
-import plotly.express as px
+from dash import Dash, html, dcc, callback, Output, Input, callback_context
+import plotly.graph_objects as go
 import pandas as pd
-import plotly.graph_objects as go;
-import numpy as np
 from plotly_resampler import FigureResampler
 
-df=pd.read_parquet('Log_2024-04-17_17-17-02.parquet')
-
 app = Dash(__name__)
-fig: FigureResampler = FigureResampler()
+fig = FigureResampler()
 
 app.layout = html.Div([
-    html.H1(children='UltraZohm data viewer', style={'textAlign':'center'}),
-    dcc.Dropdown(df.columns.values.tolist(), 'time', id='dropdown-selection',multi=True,clearable=False),
+    html.H1(children='UltraZohm data viewer', style={'textAlign': 'center'}),
+    dcc.Upload(
+        id='upload-data',
+        children=html.Button('Select File')
+    ),
+    dcc.Dropdown(
+        id='dropdown-selection',
+        multi=True,
+        clearable=False
+    ),
     dcc.Graph(id='graph-content')
 ])
 
-@callback(
-    Output('graph-content', 'figure'),
-    Input('dropdown-selection', 'value')
+@app.callback(
+    Output('dropdown-selection', 'options'),
+    Output('dropdown-selection', 'value'),
+    Input('upload-data', 'filename'),
+    prevent_initial_call=True
 )
-def update_graph(value):
-    ctx = callback_context
+def update_options(filename):
+    df = pd.read_parquet(filename)
+    dropdown_options = [{'label': col, 'value': col} for col in df.columns]
+    return dropdown_options, [df.columns[0]]  # Select the first column by default
+
+@app.callback(
+    Output('graph-content', 'figure'),
+    Input('dropdown-selection', 'value'),
+    Input('upload-data', 'filename'),
+    prevent_initial_call=True
+)
+def update_graph(value, filename):
     global fig
-    if value:
-        if len(fig.data):
-           # Replace the figure with an empty one to clear the graph
-           fig.replace(go.Figure())
-        # dff = df.iloc[:, value]
-        # return px.line(df, x='time', y=value)
-        # return fig.add_trace({"x": df.time,"y":df.iloc[:, 1]})
-        # for x in value:
-        # index=value[0]
-        if isinstance(value, list):
-            # Access the first element of the list
-            first_element = value[0]
-            for x in value:
-                fig.add_trace(go.Scattergl(name="exp"), hf_x=df.time, hf_y=df[x])
+    df = pd.read_parquet(filename)
+    fig.replace(go.Figure())  # Clear the existing figure
+    for col in value:
+        fig.add_trace(go.Scattergl(name=col, x=df['time'], y=df[col]))
 
-        elif isinstance(value, str):
-            # If the variable is a string, just assign it to first_element
-            first_element = value
-            fig.add_trace(go.Scattergl(name="exp"), hf_x=df.time, hf_y=df[first_element])
+    fig.update_layout(template="simple_white")
+    fig.update_layout(xaxis=dict(showgrid=True), yaxis=dict(showgrid=True))
 
-        fig.update_layout(template="simple_white")
-        fig.update_layout(
-            xaxis=dict(showgrid=True), 
-            yaxis=dict(showgrid=True)
-        )
-    else:
-        fig.data=[]
-    
-    
     return fig
 
 fig.register_update_graph_callback(app=app, graph_id="graph-content")
 
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run_server(debug=True)

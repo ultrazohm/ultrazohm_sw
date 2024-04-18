@@ -22,7 +22,7 @@ app.layout = html.Div([
             clearable=False,
             style={'width': '100%', 'margin': '20px auto'}
         ),
-        dcc.Graph(id='graph-content', style={'width': '100%', 'margin': '0 auto'})
+        dcc.Graph(id='graph-content', style={'width': '100%', 'margin': '0 auto','height': '800px'})
     ], style={'width': '90%', 'margin': 'auto'})
 ], style={'max-width': '10000px', 'margin': '0 auto', 'padding': '20px'})
 
@@ -53,7 +53,7 @@ def update_graph(value, filename):
         for col in value:
             fig.add_trace(go.Scattergl(name=col, x=df['time'], y=df[col]))
 
-        fig.update_layout(template="simple_white", xaxis=dict(showgrid=True), yaxis=dict(showgrid=True))
+    fig.update_layout(template="simple_white", xaxis=dict(showgrid=True), yaxis=dict(showgrid=True))
 
     return fig
 

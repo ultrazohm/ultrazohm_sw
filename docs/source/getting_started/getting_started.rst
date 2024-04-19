@@ -116,26 +116,26 @@ Additional information
 
 #. Useful documents include:
   
-     * `Zynq UltraScale+ MPSoCSoftware Developer Guide <https://www.xilinx.com/support/documentation/user_guides/ug1137-zynq-ultrascale-mpsoc-swdev.pdf>`_
-     * `Zynq UltraScale+ Device Technical Reference Manual <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf>`_ 
-     * `UltraScale Architecture Memory Resources User Guide <https://www.xilinx.com/support/documentation/user_guides/ug573-ultrascale-memory-resources.pdf>`_
+* `Zynq UltraScale+ MPSoCSoftware Developer Guide <https://www.xilinx.com/support/documentation/user_guides/ug1137-zynq-ultrascale-mpsoc-swdev.pdf>`_
+* `Zynq UltraScale+ Device Technical Reference Manual <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf>`_ 
+* `UltraScale Architecture Memory Resources User Guide <https://www.xilinx.com/support/documentation/user_guides/ug573-ultrascale-memory-resources.pdf>`_
 
 Syllabus
 ========
 
-..	toctree::
-	:maxdepth: 1
-	:hidden:
-	:caption: Tutorials
+.. toctree::
+    :maxdepth: 1
+    :hidden:
+    :caption: Tutorials
 
-	toolchain/toolchain
-	ultrazohm_setup/ultrazohm_setup
-	tutorials/first_steps/first_steps
-	tutorials/first_changes/first_changes
-	tutorials/modify_GUI/modify_gui
-	tutorials/gate_signals/gate_signals
-	tutorials/CIL_PMSM_FOC/cil_pmsm_foc
-	tutorials/vio_led_optical/vio_led
-	tutorials/encoder/encoder
-	tutorials/adc_loopback/adc_loopback
-	tutorials/simscape_hdl/simscape_hdl
+    toolchain/toolchain
+    ultrazohm_setup/ultrazohm_setup
+    tutorials/first_steps/first_steps
+    tutorials/first_changes/first_changes
+    tutorials/modify_GUI/modify_gui
+    tutorials/gate_signals/gate_signals
+    tutorials/CIL_PMSM_FOC/cil_pmsm_foc
+    tutorials/vio_led_optical/vio_led
+    tutorials/encoder/encoder
+    tutorials/adc_loopback/adc_loopback
+    tutorials/simscape_hdl/simscape_hdl

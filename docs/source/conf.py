@@ -49,7 +49,7 @@ html_theme_options = {
     "navigation_with_keys":"True"
 }
 
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 html_context = {
     "display_bitbucket": True,  # Integrate Bitbucket

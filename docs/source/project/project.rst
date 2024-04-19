@@ -1,8 +1,8 @@
 .. _SystemOverview:
 
-===============
-System Overview
-===============
+=======
+Project
+=======
 
 * UltraZohm is a powerful real-time computation unit
 * The UltraZohm is used to control power electronics and electrical drives
@@ -165,4 +165,4 @@ Interfaces of Cabinet
    project_structure/project_structure
    infrastructure/infrastructure
    how_to_guides/how_to_guides
-   
+   code_generation/code_generation

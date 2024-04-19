@@ -149,11 +149,11 @@ Syllabus
    :caption: Contents:
 
    getting_started/getting_started
+   project/project
    gui/gui
    hardware/hardware
-   code_generation/code_generation
-   project/project
-   mpsoc/mpsoc
+   system/system
+   framework/framework
 
 
 

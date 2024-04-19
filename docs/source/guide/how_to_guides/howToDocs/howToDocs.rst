@@ -412,6 +412,20 @@ Examples in docs:
 
 .. tip:: Note that all types that are used in the function arguments have to be documented, e.g., typedefed variables (see :ref:`AXI_testIP`).
 
+Cards
+=====
+
+.. grid:: 2
+
+    .. grid-item-card:: Hardware
+        :link: hardware
+        :link-type: ref
+
+
+    .. grid-item-card:: Software
+        :link: software_framework
+        :link-type: ref
+
 Known Issues
 ============
 

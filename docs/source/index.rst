@@ -9,18 +9,6 @@ The UltraZohm is a powerful real-time computation platform for research, develop
 Development is driven by researchers for researchers to establish a common control platform.
 Having a common platform enables the active research community to focus on publication and results, while platform development is a shared effort. 
 
-.. grid:: 2
-
-    .. grid-item-card:: Hardware
-        :link: hardware
-        :link-type: ref
-
-
-    .. grid-item-card:: Software
-        :link: software_framework
-        :link-type: ref
-
-
 
 **High Computational power**
 

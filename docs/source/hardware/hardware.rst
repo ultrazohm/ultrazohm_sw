@@ -6,7 +6,7 @@ Hardware
 
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 1
 
     carrier_board/carrier_board
     adapter_cards/adapter_cards
@@ -14,7 +14,7 @@ Hardware
     interface_powerelectronics/interface_powerelectronics
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 1
     :caption: Analog Cards
 
     adapter_cards/analog/LTC2311_16
@@ -22,7 +22,7 @@ Hardware
 
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 1
     :caption: Digital Cards
 
     adapter_cards/digital/optical/optical_general
@@ -36,7 +36,7 @@ Hardware
 
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 1
     :caption: External
 
     adapter_cards/external/uz_per_adc_to_bnc/uz_per_adc_to_bnc_rev01

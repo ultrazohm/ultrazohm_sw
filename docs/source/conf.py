@@ -23,6 +23,7 @@ extensions = [
     "breathe",
     "sphinx_plotly_directive",
     "matplotlib.sphinxext.plot_directive",
+    "sphinx_design"
 ]
 templates_path = ['_templates']
 exclude_patterns = []

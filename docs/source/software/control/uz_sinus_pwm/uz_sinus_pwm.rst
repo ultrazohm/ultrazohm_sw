@@ -50,7 +50,7 @@ Description
 
 Duty cycle generation for three-, six- and nine-phase systems.
 Input is possible with abc values and dq values if electric rotor angle is provided.
-The generated PWM-signals can be directly fed to the :ref:`PWM IP-Core <ipCore_pwm>`.
+The generated PWM-signals can be directly fed to :ref:`uz_pwm_ss_2l`.
 The generation uses the continuous sinusoidal PWM (SPWM) modulation and is scaled to a duty cycle from 0.0 to 1.0. 
 It has an output limitation, so that the values never exceed the given range.
 The more advanced functions for duty cycle generation can be found in :ref:`uz_spacevectormodulation`.

@@ -1,8 +1,8 @@
 .. _SystemOverview:
 
-=======
-Project
-=======
+=====
+Guide
+=====
 
 * UltraZohm is a powerful real-time computation unit
 * The UltraZohm is used to control power electronics and electrical drives
@@ -166,3 +166,13 @@ Interfaces of Cabinet
    infrastructure/infrastructure
    how_to_guides/how_to_guides
    code_generation/code_generation
+
+.. toctree::
+   :maxdepth: 3
+
+   platform_architecture/platform_architecture
+   apu_software/apu_software
+   rpu_software/rpu_software
+   vivado_framework/vivado_framework
+   CPLD/cpld
+   gui/gui

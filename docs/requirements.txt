@@ -28,3 +28,4 @@ plotly-resampler
 pygwalker
 streamlit
 trace_updater
+sphinx-design

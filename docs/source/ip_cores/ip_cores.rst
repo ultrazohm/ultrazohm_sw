@@ -1,7 +1,7 @@
 .. _ip_cores:
 
 ========
-IP Cores
+IP-Cores
 ========
 
 
@@ -9,13 +9,10 @@ IP Cores
     :maxdepth: 2
     :caption: IP Cores
     
-    pwm_and_ss_control
     uz_PWM_SS_2L/uz_pwm_ss_2l
     uz_mux_axi/uz_mux_axi
-    adc_LTC2311
     adc_ltc2311_v3/adc_ltc2311_v3
     uz_incrementalEncoder/uz_IncrementalEncoder
-    interlock
     axi_testIP/axi_testIP
     uz_interlockDeadtime2L/uz_interlockDeadtime2L
     uz_plantModel_pt1/uz_plantModel_pt1

@@ -160,19 +160,52 @@ Interfaces of Cabinet
 
 .. toctree::
    :maxdepth: 3
+   :caption: Project
 
    useCases/useCases
    project_structure/project_structure
    infrastructure/infrastructure
    how_to_guides/how_to_guides
-   code_generation/code_generation
 
 .. toctree::
    :maxdepth: 3
+   :caption: Platform
 
    platform_architecture/platform_architecture
    apu_software/apu_software
    rpu_software/rpu_software
    vivado_framework/vivado_framework
    CPLD/cpld
-   gui/gui
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Code generation
+
+   code_generation/embedded_coder/embedded_coder
+   code_generation/hdl_coder/hdl_coder
+   code_generation/vivado_hls/vivado_hls
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Javascope
+
+   gui/install
+   gui/network
+   gui/javascope
+   gui/dataviewer/dataviewer
+
+.. toctree::
+    :maxdepth: 2
+    :caption: How to guides
+
+    how_to_guides/howToDocs/howToDocs
+    how_to_guides/cil/cil
+    how_to_guides/vivado/vivado
+    how_to_guides/binaryExport/binaryExport
+    how_to_guides/how_to_create_ip_core_driver/how_to_create_ip_core_driver
+    how_to_guides/how_to_debug_ultrazohm/how_to_debug_ultrazohm
+    how_to_guides/vitis/vitis
+    how_to_guides/how_to_multi_axis_foc/how_to_multi_axis_foc
+    how_to_guides/how_to_create_framework_functions_from_embedded_coder/how_to_create_framework_functions_from_embedded_coder
+    how_to_guides/how_to_set_encoder_offset/how_to_set_encoder_offset
+    how_to_guides/Porting_uz_Framework_to_KR260/Porting_uz_Framework_to_KR260

@@ -7,7 +7,6 @@ IP-Cores
 
 ..	toctree::
     :maxdepth: 2
-    :caption: IP Cores
     
     uz_PWM_SS_2L/uz_pwm_ss_2l
     uz_mux_axi/uz_mux_axi

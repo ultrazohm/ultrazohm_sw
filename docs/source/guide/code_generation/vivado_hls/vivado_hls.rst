@@ -5,7 +5,7 @@ Vivado HLS (HDL)
 **Placeholder**
 
 ..	toctree::
-		:maxdepth: 2
+		:maxdepth: 1
 		:hidden:
 		:caption: Vivado HLS (HDL)
 

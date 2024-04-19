@@ -159,7 +159,7 @@ Interfaces of Cabinet
 
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Project
 
    useCases/useCases
@@ -168,7 +168,7 @@ Interfaces of Cabinet
    how_to_guides/how_to_guides
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Platform
 
    platform_architecture/platform_architecture
@@ -178,7 +178,7 @@ Interfaces of Cabinet
    CPLD/cpld
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Code generation
 
    code_generation/embedded_coder/embedded_coder
@@ -186,7 +186,7 @@ Interfaces of Cabinet
    code_generation/vivado_hls/vivado_hls
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 1
    :caption: Javascope
 
    gui/install
@@ -195,7 +195,7 @@ Interfaces of Cabinet
    gui/dataviewer/dataviewer
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: How to guides
 
     how_to_guides/howToDocs/howToDocs

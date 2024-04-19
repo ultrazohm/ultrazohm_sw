@@ -12,7 +12,7 @@ The total amount of 60-Channels (40 on the frontpanel, 20 internal) could be wir
 
 .. _temperature_card_v1_pcb:
 
-.. figure:: temperature_rev02/Overview_tempcard_notes.png
+.. figure:: Overview_tempcard_notes.png
    :width: 800
    :align: center
 
@@ -52,7 +52,7 @@ a good starting point. Use ``Samtec MMSD-15-xxx-x-xx.xx-D-P-LDX`` cables or for 
 
 .. _channel_group_pinout:
 
-.. figure:: temperature_rev02/pinout_overview.png
+.. figure:: pinout_overview.png
    :width: 1000
    :align: center
 
@@ -93,7 +93,7 @@ The not connected pins are for development and debugging purpose only.
 
 .. _user_hierarchy_pins:
 
-.. figure:: temperature_rev02/user_hierarchy_pins.png
+.. figure:: user_hierarchy_pins.png
    :width: 600
    :align: center
 
@@ -106,7 +106,7 @@ reset signal ``LTC_resetn_1``, all other reset signals are left unconnected.
 
 .. _outside_user_ports:
 
-.. figure:: temperature_rev02/outside_user_ports.png
+.. figure:: outside_user_ports.png
    :width: 700
    :align: center
 
@@ -120,7 +120,7 @@ and the adapter board slot is ensured.
 
 .. _temperature_constraints_d4:
 
-.. figure:: Digital_Resolver_rev01/constraints_D4.png
+.. figure:: constraints_D4.png
   :width: 800
   :align: center
 
@@ -131,12 +131,13 @@ Build the bitstream, export the .xsa file, build the UltraZohm workspace in Viti
 
 Customize Wiring
 ----------------
+
 Since there exists many possible configurations for the temperature card, its possible to manage some wiring directly on the PCB. 
 For special applications that are not covered by provided assembly variants and the docs, carefully see the datasheet of the LTC2983.
 
 .. _temperature_wiring:
 
-.. figure:: temperature_rev02/Onboard_Wiring.png
+.. figure:: Onboard_Wiring.png
    :width: 500
    :align: center
 
@@ -148,16 +149,19 @@ For some use-cases ``PT100`` measurements or ``Type K Thermocouple``, dedicated 
 need to reconfigure or resolder the wiring in this section.
 
 References
------------------------
-* :download:`Schematic Rev02 <temperature_rev02/uz_d_temperature_card_LTC2983_all_thermocouple_rev02.pdf>`
+----------
+
+* :download:`Schematic Rev02 <uz_d_temperature_card_LTC2983_all_thermocouple_rev02.pdf>`
 * :ref:`label_cpld_programming`
 
 Known issues
 ------------
+
 * Wrong naming convention on the PCB for the channelgroups: ``Channel A`` on the PCB actually means ``ChannelGroup A``
 * The assembly variant ``All_Thermocouple`` has some lacking parts and some should be removed. REMOVE: ``R55``, ``R61`` and ``R67``. ``R44`` (A-C) to ``R47`` (A-C). ADD: At ``P1`` connect  the ``DC/DC`` labeled pin and the middle pin for power supply. Add ``0 Ohm`` resistors at Channels ``1`` to ``4`` in the ``Filter and Wiring`` section of each channelgroup.
 * Those issues are solved in Rev03 and beyond.
 
 Designed by 
 -----------
+
 Robert Zipprich (Universität Kassel / EMA) // Michael Hoerner (TH Nürnberg) in 01/2023

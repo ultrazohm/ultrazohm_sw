@@ -118,7 +118,7 @@ More Information
 - `Standard Data Structures in the Generated Code <https://de.mathworks.com/help/ecoder/ug/default-representation-of-global-data-in-generated-code.html>`_
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :hidden:
     :caption: Embedded-Coder (C-Code)
 

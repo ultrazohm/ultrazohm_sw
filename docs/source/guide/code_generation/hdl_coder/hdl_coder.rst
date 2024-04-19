@@ -319,7 +319,7 @@ The result of this tutorial is the :ref:`AXI_testIP`.
 
 
 ..	toctree::
-		:maxdepth: 2
+		:maxdepth: 1
 		:hidden:
 		:caption: HDL-Coder
 

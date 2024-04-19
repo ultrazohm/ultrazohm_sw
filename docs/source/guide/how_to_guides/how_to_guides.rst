@@ -5,7 +5,7 @@ How to guides
 =============
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
     :caption: How to guides
 
     howToDocs/howToDocs

@@ -11,3 +11,4 @@ GUI
 	install
 	network
 	javascope
+	dataviewer/dataviewer

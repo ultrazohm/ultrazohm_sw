@@ -1,4 +1,4 @@
-sphinx
+sphinx==7.2.6
 sphinx_rtd_theme
 sphinxcontrib-mermaid
 sphinxcontrib.yt
@@ -23,3 +23,8 @@ watchfiles # maybe required for sphinx-autobuild
 starlette # maybe required for sphinx-autobuild
 uvicorn # maybe required for sphinx-autobuild
 pydata-sphinx-theme
+pyarrow
+plotly-resampler
+pygwalker
+streamlit
+trace_updater

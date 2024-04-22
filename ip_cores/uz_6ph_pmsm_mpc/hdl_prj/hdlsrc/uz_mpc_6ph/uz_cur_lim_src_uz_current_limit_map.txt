@@ -1,0 +1,5 @@
+uz_mpc_6ph/uz_current_limit/Detect Rise Positive --> uz_cur_lim_src_Detect_Rise_Positive
+uz_mpc_6ph/uz_current_limit/Detect Rise Positive1 --> uz_cur_lim_src_Detect_Rise_Positive1
+uz_mpc_6ph/uz_current_limit/Detect Rise Positive2 --> uz_cur_lim_src_Detect_Rise_Positive2
+uz_mpc_6ph/uz_current_limit/RS_flipflop --> uz_cur_lim_src_RS_flipflop
+uz_mpc_6ph/uz_current_limit --> uz_cur_lim_src_uz_current_limit

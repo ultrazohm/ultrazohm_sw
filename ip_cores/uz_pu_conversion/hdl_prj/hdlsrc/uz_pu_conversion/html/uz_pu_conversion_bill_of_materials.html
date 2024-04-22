@@ -1,0 +1,1941 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for uz_pu_conversion
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Multiply_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for uz_pu_conversion
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+32
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+165
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+3749
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+66
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+2596
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pu_conversion:7')" name="code2model" class="code2model">
+uz_pu_conversion
+</a>
+
+</h5>
+<h5>
+Multipliers (32)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+19x27-bit Multiply 							: 32
+</span>
+<span name="Multiply_1_1" id="Multiply_1_1">
+<ul class="SystemdefinedCollapse" id="518eaf46-10b9-4764-a56b-f68005b0ebb2" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:422')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:425')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:431')" name="code2model" class="code2model">
+Product2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:432')" name="code2model" class="code2model">
+Product3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:443')" name="code2model" class="code2model">
+Product4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:444')" name="code2model" class="code2model">
+Product5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:445')" name="code2model" class="code2model">
+Product6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:446')" name="code2model" class="code2model">
+Product7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:467')" name="code2model" class="code2model">
+Product8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:468')" name="code2model" class="code2model">
+Product9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:469')" name="code2model" class="code2model">
+Product10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:470')" name="code2model" class="code2model">
+Product11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:471')" name="code2model" class="code2model">
+Product12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:472')" name="code2model" class="code2model">
+Product13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:473')" name="code2model" class="code2model">
+Product14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:474')" name="code2model" class="code2model">
+Product15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:515')" name="code2model" class="code2model">
+Product16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:516')" name="code2model" class="code2model">
+Product17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:523')" name="code2model" class="code2model">
+Product24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:524')" name="code2model" class="code2model">
+Product25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:525')" name="code2model" class="code2model">
+Product26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:526')" name="code2model" class="code2model">
+Product27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:527')" name="code2model" class="code2model">
+Product28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:528')" name="code2model" class="code2model">
+Product29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:529')" name="code2model" class="code2model">
+Product30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:530')" name="code2model" class="code2model">
+Product31
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:517')" name="code2model" class="code2model">
+Product18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:518')" name="code2model" class="code2model">
+Product19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:519')" name="code2model" class="code2model">
+Product20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:520')" name="code2model" class="code2model">
+Product21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:521')" name="code2model" class="code2model">
+Product22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:522')" name="code2model" class="code2model">
+Product23
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '518eaf46-10b9-4764-a56b-f68005b0ebb2')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><h5>
+Registers (164)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 4
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:770')" name="code2model" class="code2model">
+Delay32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:871')" name="code2model" class="code2model">
+Delay129
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27-bit Register 							: 96
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul class="SystemdefinedCollapse" id="ffac3141-f204-4b72-9acd-d206b6f19263" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:771')" name="code2model" class="code2model">
+Delay33
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:669')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:776')" name="code2model" class="code2model">
+Delay34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:670')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:777')" name="code2model" class="code2model">
+Delay35
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:672')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:778')" name="code2model" class="code2model">
+Delay36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:674')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:779')" name="code2model" class="code2model">
+Delay37
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:676')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:780')" name="code2model" class="code2model">
+Delay38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:678')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:781')" name="code2model" class="code2model">
+Delay39
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:680')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:782')" name="code2model" class="code2model">
+Delay40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:682')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:783')" name="code2model" class="code2model">
+Delay41
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:684')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:784')" name="code2model" class="code2model">
+Delay42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:686')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:785')" name="code2model" class="code2model">
+Delay43
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:688')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:786')" name="code2model" class="code2model">
+Delay44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:690')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:787')" name="code2model" class="code2model">
+Delay45
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:692')" name="code2model" class="code2model">
+Delay12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:788')" name="code2model" class="code2model">
+Delay46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:694')" name="code2model" class="code2model">
+Delay13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:789')" name="code2model" class="code2model">
+Delay47
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:696')" name="code2model" class="code2model">
+Delay14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:790')" name="code2model" class="code2model">
+Delay48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:698')" name="code2model" class="code2model">
+Delay15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:791')" name="code2model" class="code2model">
+Delay49
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:700')" name="code2model" class="code2model">
+Delay16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:792')" name="code2model" class="code2model">
+Delay50
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:702')" name="code2model" class="code2model">
+Delay17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:793')" name="code2model" class="code2model">
+Delay51
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:704')" name="code2model" class="code2model">
+Delay18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:794')" name="code2model" class="code2model">
+Delay52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:706')" name="code2model" class="code2model">
+Delay19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:795')" name="code2model" class="code2model">
+Delay53
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:708')" name="code2model" class="code2model">
+Delay20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:796')" name="code2model" class="code2model">
+Delay54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:710')" name="code2model" class="code2model">
+Delay21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:797')" name="code2model" class="code2model">
+Delay55
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:712')" name="code2model" class="code2model">
+Delay22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:798')" name="code2model" class="code2model">
+Delay56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:714')" name="code2model" class="code2model">
+Delay23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:799')" name="code2model" class="code2model">
+Delay57
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:716')" name="code2model" class="code2model">
+Delay24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:800')" name="code2model" class="code2model">
+Delay58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:718')" name="code2model" class="code2model">
+Delay25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:801')" name="code2model" class="code2model">
+Delay59
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:720')" name="code2model" class="code2model">
+Delay26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:802')" name="code2model" class="code2model">
+Delay60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:722')" name="code2model" class="code2model">
+Delay27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:803')" name="code2model" class="code2model">
+Delay61
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:724')" name="code2model" class="code2model">
+Delay28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:804')" name="code2model" class="code2model">
+Delay62
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:726')" name="code2model" class="code2model">
+Delay29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:805')" name="code2model" class="code2model">
+Delay63
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:728')" name="code2model" class="code2model">
+Delay30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:806')" name="code2model" class="code2model">
+Delay64
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:730')" name="code2model" class="code2model">
+Delay31
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'ffac3141-f204-4b72-9acd-d206b6f19263')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span style="font-family:monospace">
+18-bit Register 							: 64
+</span>
+<br /><h5>
+Multiplexers (64)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 32
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+27-bit 2-to-1 Multiplexer 							: 32
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<ul class="SystemdefinedCollapse" id="a5544bd4-15af-498e-b75e-4f0a27010d65" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:668')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:671')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:673')" name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:675')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:677')" name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:679')" name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:681')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:683')" name="code2model" class="code2model">
+Switch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:685')" name="code2model" class="code2model">
+Switch8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:687')" name="code2model" class="code2model">
+Switch9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:689')" name="code2model" class="code2model">
+Switch10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:691')" name="code2model" class="code2model">
+Switch11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:693')" name="code2model" class="code2model">
+Switch12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:695')" name="code2model" class="code2model">
+Switch13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:697')" name="code2model" class="code2model">
+Switch14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:699')" name="code2model" class="code2model">
+Switch15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:701')" name="code2model" class="code2model">
+Switch16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:703')" name="code2model" class="code2model">
+Switch17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:705')" name="code2model" class="code2model">
+Switch18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:707')" name="code2model" class="code2model">
+Switch19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:709')" name="code2model" class="code2model">
+Switch20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:711')" name="code2model" class="code2model">
+Switch21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:713')" name="code2model" class="code2model">
+Switch22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:715')" name="code2model" class="code2model">
+Switch23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:717')" name="code2model" class="code2model">
+Switch24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:719')" name="code2model" class="code2model">
+Switch25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:721')" name="code2model" class="code2model">
+Switch26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:723')" name="code2model" class="code2model">
+Switch27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:725')" name="code2model" class="code2model">
+Switch28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:727')" name="code2model" class="code2model">
+Switch29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:729')" name="code2model" class="code2model">
+Switch30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:731')" name="code2model" class="code2model">
+Switch31
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'a5544bd4-15af-498e-b75e-4f0a27010d65')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><h5>
+Number of I/O Bits (2596)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 1443
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="bf72b5ae-32e9-42fc-90ba-123d0f3bcdb9" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:359')" name="code2model" class="code2model">
+in0
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:423')" name="code2model" class="code2model">
+in1
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:427')" name="code2model" class="code2model">
+in2
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:428')" name="code2model" class="code2model">
+in3
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:435')" name="code2model" class="code2model">
+in4
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:436')" name="code2model" class="code2model">
+in5
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:437')" name="code2model" class="code2model">
+in6
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:438')" name="code2model" class="code2model">
+in7
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:451')" name="code2model" class="code2model">
+in8
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:452')" name="code2model" class="code2model">
+in9
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:453')" name="code2model" class="code2model">
+in10
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:454')" name="code2model" class="code2model">
+in11
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:455')" name="code2model" class="code2model">
+in12
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:456')" name="code2model" class="code2model">
+in13
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:457')" name="code2model" class="code2model">
+in14
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:458')" name="code2model" class="code2model">
+in15
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:483')" name="code2model" class="code2model">
+in16
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:484')" name="code2model" class="code2model">
+in17
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:485')" name="code2model" class="code2model">
+in18
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:486')" name="code2model" class="code2model">
+in19
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:487')" name="code2model" class="code2model">
+in20
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:488')" name="code2model" class="code2model">
+in21
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:489')" name="code2model" class="code2model">
+in22
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:490')" name="code2model" class="code2model">
+in23
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:495')" name="code2model" class="code2model">
+in24
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:496')" name="code2model" class="code2model">
+in25
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:497')" name="code2model" class="code2model">
+in26
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:498')" name="code2model" class="code2model">
+in27
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:499')" name="code2model" class="code2model">
+in28
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:500')" name="code2model" class="code2model">
+in29
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:501')" name="code2model" class="code2model">
+in30
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:502')" name="code2model" class="code2model">
+in31
+</a>
+: 27 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:360')" name="code2model" class="code2model">
+AXI_pu_conv_in0
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:424')" name="code2model" class="code2model">
+AXI_pu_conv_in1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:429')" name="code2model" class="code2model">
+AXI_pu_conv_in2
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:430')" name="code2model" class="code2model">
+AXI_pu_conv_in3
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:439')" name="code2model" class="code2model">
+AXI_pu_conv_in4
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:440')" name="code2model" class="code2model">
+AXI_pu_conv_in5
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:441')" name="code2model" class="code2model">
+AXI_pu_conv_in6
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:442')" name="code2model" class="code2model">
+AXI_pu_conv_in7
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:463')" name="code2model" class="code2model">
+AXI_pu_conv_in8
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:464')" name="code2model" class="code2model">
+AXI_pu_conv_in9
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:465')" name="code2model" class="code2model">
+AXI_pu_conv_in10
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:466')" name="code2model" class="code2model">
+AXI_pu_conv_in11
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:459')" name="code2model" class="code2model">
+AXI_pu_conv_in12
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:460')" name="code2model" class="code2model">
+AXI_pu_conv_in13
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:461')" name="code2model" class="code2model">
+AXI_pu_conv_in14
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:462')" name="code2model" class="code2model">
+AXI_pu_conv_in15
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:511')" name="code2model" class="code2model">
+AXI_pu_conv_in16
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:512')" name="code2model" class="code2model">
+AXI_pu_conv_in17
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:513')" name="code2model" class="code2model">
+AXI_pu_conv_in18
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:514')" name="code2model" class="code2model">
+AXI_pu_conv_in19
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:491')" name="code2model" class="code2model">
+AXI_pu_conv_in20
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:492')" name="code2model" class="code2model">
+AXI_pu_conv_in21
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:493')" name="code2model" class="code2model">
+AXI_pu_conv_in22
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:494')" name="code2model" class="code2model">
+AXI_pu_conv_in23
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:507')" name="code2model" class="code2model">
+AXI_pu_conv_in24
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:508')" name="code2model" class="code2model">
+AXI_pu_conv_in25
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:509')" name="code2model" class="code2model">
+AXI_pu_conv_in26
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:510')" name="code2model" class="code2model">
+AXI_pu_conv_in27
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:503')" name="code2model" class="code2model">
+AXI_pu_conv_in28
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:504')" name="code2model" class="code2model">
+AXI_pu_conv_in29
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:505')" name="code2model" class="code2model">
+AXI_pu_conv_in30
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:506')" name="code2model" class="code2model">
+AXI_pu_conv_in31
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:663')" name="code2model" class="code2model">
+adc_valid_trigger
+</a>
+: 1 bit
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'bf72b5ae-32e9-42fc-90ba-123d0f3bcdb9')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 1153
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul class="SystemdefinedCollapse" id="0d97831a-eba8-4ac9-ac61-c7eac1995a87" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:361')" name="code2model" class="code2model">
+out0
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:426')" name="code2model" class="code2model">
+out1
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:433')" name="code2model" class="code2model">
+out2
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:434')" name="code2model" class="code2model">
+out3
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:447')" name="code2model" class="code2model">
+out4
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:448')" name="code2model" class="code2model">
+out5
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:449')" name="code2model" class="code2model">
+out6
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:450')" name="code2model" class="code2model">
+out7
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:475')" name="code2model" class="code2model">
+out8
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:476')" name="code2model" class="code2model">
+out9
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:477')" name="code2model" class="code2model">
+out10
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:478')" name="code2model" class="code2model">
+out11
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:479')" name="code2model" class="code2model">
+out12
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:480')" name="code2model" class="code2model">
+out13
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:481')" name="code2model" class="code2model">
+out14
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:482')" name="code2model" class="code2model">
+out15
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:531')" name="code2model" class="code2model">
+out16
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:532')" name="code2model" class="code2model">
+out17
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:533')" name="code2model" class="code2model">
+out18
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:534')" name="code2model" class="code2model">
+out19
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:535')" name="code2model" class="code2model">
+out20
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:536')" name="code2model" class="code2model">
+out21
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:537')" name="code2model" class="code2model">
+out22
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:538')" name="code2model" class="code2model">
+out23
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:539')" name="code2model" class="code2model">
+out24
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:540')" name="code2model" class="code2model">
+out25
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:541')" name="code2model" class="code2model">
+out26
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:542')" name="code2model" class="code2model">
+out27
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:543')" name="code2model" class="code2model">
+out28
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:544')" name="code2model" class="code2model">
+out29
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:545')" name="code2model" class="code2model">
+out30
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:546')" name="code2model" class="code2model">
+out31
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:664')" name="code2model" class="code2model">
+pu_conv_done
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:735')" name="code2model" class="code2model">
+out0_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:736')" name="code2model" class="code2model">
+out1_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:737')" name="code2model" class="code2model">
+out2_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:738')" name="code2model" class="code2model">
+out3_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:739')" name="code2model" class="code2model">
+out4_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:740')" name="code2model" class="code2model">
+out5_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:741')" name="code2model" class="code2model">
+out6_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:742')" name="code2model" class="code2model">
+out7_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:743')" name="code2model" class="code2model">
+out8_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:744')" name="code2model" class="code2model">
+out9_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:745')" name="code2model" class="code2model">
+out10_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:746')" name="code2model" class="code2model">
+out11_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:747')" name="code2model" class="code2model">
+out12_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:748')" name="code2model" class="code2model">
+out13_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:749')" name="code2model" class="code2model">
+out14_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:750')" name="code2model" class="code2model">
+out15_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:751')" name="code2model" class="code2model">
+out16_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:752')" name="code2model" class="code2model">
+out17_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:753')" name="code2model" class="code2model">
+out18_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:754')" name="code2model" class="code2model">
+out19_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:755')" name="code2model" class="code2model">
+out20_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:756')" name="code2model" class="code2model">
+out21_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:757')" name="code2model" class="code2model">
+out22_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:758')" name="code2model" class="code2model">
+out23_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:759')" name="code2model" class="code2model">
+out24_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:760')" name="code2model" class="code2model">
+out25_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:761')" name="code2model" class="code2model">
+out26_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:762')" name="code2model" class="code2model">
+out27_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:763')" name="code2model" class="code2model">
+out28_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:764')" name="code2model" class="code2model">
+out29_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:765')" name="code2model" class="code2model">
+out30_AXI
+</a>
+: 18 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_pu_conversion:766')" name="code2model" class="code2model">
+out31_AXI
+</a>
+: 18 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '0d97831a-eba8-4ac9-ac61-c7eac1995a87')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_pu_conversion:734')" name="code2model" class="code2model">
+Detect Rise
+Positive
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

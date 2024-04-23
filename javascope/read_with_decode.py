@@ -6,7 +6,7 @@ from datetime import datetime
 
 # Define constants
 NETWORK_SEND_FIELD_SIZE = 15
-VARIABLES_PER_TIMESTEP = 21
+VARIABLES_PER_TIMESTEP = 23
 TOTAL_VARIABLES = NETWORK_SEND_FIELD_SIZE * VARIABLES_PER_TIMESTEP
 NETWORK_SEND_STRUCT_SIZE = 4 + 4 * TOTAL_VARIABLES
 
@@ -32,7 +32,9 @@ def main():
         message = "Hello, server!"
         client_socket.send(message.encode())
 
-
+        # Send 64 zeros to the server
+        zeros = b'\x00' * 64
+        client_socket.send(zeros)
 
         # Create a new log file with a unique timestamp
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
@@ -44,8 +46,6 @@ def main():
 
         # Receive data from the server and log it to the new log file
         while True:
-            zeros = b'\x00' * 64
-            client_socket.send(zeros)
             response = client_socket.recv(NETWORK_SEND_STRUCT_SIZE)
             if len(response) == NETWORK_SEND_STRUCT_SIZE:
                 decoded_response = decode_data(response)

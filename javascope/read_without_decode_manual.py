@@ -4,7 +4,7 @@ import pandas as pd
 import pyarrow.parquet as pq
 from datetime import datetime
 import pyarrow as pa
-
+import numpy as np
 
 def decode_floats(data):
     floats = []
@@ -43,7 +43,13 @@ def main():
             client_socket.send(zeros)
             response = client_socket.recv(1324)
             float_values = decode_floats(response)
-            df_tmp = pd.DataFrame([float_values])
+            data = np.array(float_values)
+            data = data[1:]
+            # Reshape the data
+            reshaped_data = np.reshape(data, (-1, 15))
+            # data = np.concatenate(reshaped_data, axis=0).reshape(-1, reshaped_data.shape[0]).T
+            # Convert to DataFrame
+            df_tmp = pd.DataFrame(reshaped_data.T)
             df = pd.concat([df, df_tmp], ignore_index=True)
 
             float_values[0]=0

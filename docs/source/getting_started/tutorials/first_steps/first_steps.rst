@@ -39,7 +39,7 @@ Initial steps
    * The ``main`` branch is the latest stable version. 
    * For further information see :ref:`contribution`. 
 
-#. Create a new local branch with an appropriate name (e.g. *name_tutorial*) on which the changes made throughout the tutorial will be made.
+#. Create a new local branch with an appropriate name (e.g., *name_tutorial*) on which the changes made throughout the tutorial will be made.
 
    .. warning:: 
 
@@ -47,13 +47,19 @@ Initial steps
 
 #. Start **Vitis** and open up the workspace folder ( ``ultrazohm_sw/vitis/workspace`` ) of the UltraZohm repository.
 
-   * Vitis is used, when changes to the code-base on the Processor (PS) have to be made. E.g. if you want to run a control-algorithm on the ARM-Cortex processors of the UltraZohm, you have to make changes in Vitis.
-   * Vivado is used, when changes to the programmable logic (PL) on the FPGA have to be made. 
-  
+   * Vitis is used to change the code for the Processor (PS). E.g. if you want to run a control-algorithm on the ARM-Cortex processors of the UltraZohm, you have to make changes in Vitis.
+   * Vivado is used to change the programmable logic (PL), i.e., the FPGA of the Zynq UltraScale. 
+
+#. Review the contents of ``uz_global_configuration.h`` before building the source code
+
+   * This file is the configuration file for the UltraZohm and has to be adjusted to your specific needs. 
+   * Changes the ``UZ_HARDWARE_VERSION`` to the version  of *your* UltraZohm.
+   * See :ref:`global_configuration` for further details.
+
 #. Build the project by clicking on the red highlighted hammer visible in :numref:`build_workspace`.
 
    * Whenever changes have been made to the code base. This button has to always be pressed.
-   * If this button is not pressed after changes have been made, these changes can't be flashed onto the UltraZohm and the previousely build binary is programmed (without the changes!).
+   * If this button is not pressed after changes have been made, these changes can't be flashed onto the UltraZohm and the previously build binary is programmed (without the changes!).
 
    ..  _build_workspace:
    ..  figure:: ./img/build_workspace.png
@@ -61,7 +67,7 @@ Initial steps
 
        Building the workspace
 
-#. If you haven't made any changes to the code-base after the :ref:`generation of the Vitis workspace <genvitis>`, the build will lead to errors depicted below.
+#. The build can fail, leading to errors as exemplary depicted below.
 
    * Whenever you made changes to the codebase and the build leads to errors, they have to be fixed, otherwise the UltraZohm can **not** be flashed properly. This is because the errors stop the compiler from compiling the entire workspace.
    * Whilst Warnings do not prohibit the UltraZohm from working, they should be fixed nonetheless.
@@ -72,13 +78,7 @@ Initial steps
 
        Errors after building the workspace
 
-#. These errors exist, because the file ``uz_global_configuration.h`` doesn't exist.
-
-   * This file is the configuration file for the UltraZohm and has to be adjusted to your specific needs. 
-   * For how to create this missing file see :ref:`global_configuration`.
-   * After you copied the contents of ``default_uz_global_configuration.h`` into the new file, no changes except the ``UZ_HARDWARE_VERSION`` have to be made. Adjust this number to the version number of *your* UltraZohm.
-
-#. Build the workspace again. No error should pop up anymore.
+#. Our build is successful.
 #. Flash the UltraZohm by either pressing the run icon in the green highlighted area in :numref:`debug_config` and select *Debug Configurations ...*. Vitis will remember the last selection, which means, that for a future flashing operation, the last debug config is already preselected. 
 #. Use for the debug/run selection the ``Run_UltraZohm`` configuration.
 

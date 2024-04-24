@@ -159,6 +159,15 @@ float max_modulation_index_1 = 1.0f / 1.732050808f;
 bool start_angle_found = false;
 float theta_el_1_old = 0.0f;
 bool change_speed = false;
+
+// 3 layer MLP
+
+#if ((NN_9_INPUT_3_64) || (NN_7_INPUT_3_64))
+extern float mlp_ip_output[2U];
+extern uz_matrix_t *p_output_data;
+extern uz_mlp_three_layer_ip_t *mlp_ip_instance;
+#endif
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -331,9 +340,9 @@ void ISR_Control(void *data)
     		i_dq_error_Amps_1.d = (i_dq_ref_Amps_1.d - i_dq_Amps_1.d) / PMSM_rated_current_1;
     		i_dq_error_Amps_1.q = (i_dq_ref_Amps_1.q - i_dq_Amps_1.q) / PMSM_rated_current_1;
 
-#if NN_9_INPUT_1_64 == 1
+#if ((NN_9_INPUT_1_64) || (NN_9_INPUT_3_64)) == 1
 
-    		observation_ip[0] = i_dq_error_Amps_1.d;
+            observation_ip[0] = i_dq_error_Amps_1.d;
     		observation_ip[1] = i_dq_integrated_error_Amps_1.d * UZ_PWM_FREQUENCY;
     		observation_ip[2] = i_dq_error_Amps_1.q;
     		observation_ip[3] = i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY ;
@@ -358,11 +367,18 @@ void ISR_Control(void *data)
 			}
 #endif
 
-			uz_nn_ff(Global_Data.objects.nn_layer,Global_Data.objects.matrix_input);
+#if NN_9_INPUT_3_64 == 1
+            uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input, p_output_data);
+            // IP-Core only calculates with linear, tanh has to be added manually
+            v_dq_non_limited_Volts_1.d = (uz_nn_activation_function_tanh(mlp_ip_output[0])) * U_max_1;
+            v_dq_non_limited_Volts_1.q = (uz_nn_activation_function_tanh(mlp_ip_output[1])) * U_max_1;
+#else
+            uz_nn_ff(Global_Data.objects.nn_layer,Global_Data.objects.matrix_input);
     	    matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
     	    uz_matrix_multiply_by_scalar(matrix_output,U_max_1); // scaling layer of nn
     	    v_dq_non_limited_Volts_1.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
     	    v_dq_non_limited_Volts_1.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);
+#endif
     	    v_dq_limited_Volts_1 = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_1, v_DC_Volts_1, max_modulation_index_1, omega_el_rad_per_sec_1, i_dq_ref_Amps_1, &ext_clamping_1);
     	    //Introduce delay
     	    v_dq_limited_Volts_old_old_1 = v_dq_limited_Volts_1;

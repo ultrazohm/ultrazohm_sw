@@ -15,6 +15,9 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_FOC/uz_FOC.h"
+#include "IP_Cores/uz_pu_conversion/uz_pu_conversion_hwAddresses.h"
+#include "IP_Cores/uz_park_transform/uz_park_transform_hwAddresses.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {

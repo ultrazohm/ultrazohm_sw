@@ -56,7 +56,7 @@ def main():
             table = pa.Table.from_pandas(df)
             pq.write_table(table, filename)
             # print(float_values)
-            print(df.tail(1))
+            # print(df.tail(1))
 
     except ConnectionRefusedError:
         print("Connection was refused.")

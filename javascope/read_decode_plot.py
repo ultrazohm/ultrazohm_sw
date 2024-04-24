@@ -1,10 +1,9 @@
 import socket
 import struct
 import pandas as pd
-import pyarrow.parquet as pq
-from datetime import datetime
-import pyarrow as pa
 import numpy as np
+import matplotlib.pyplot as plt
+from datetime import datetime
 
 def decode_floats(data):
     floats = []
@@ -12,7 +11,10 @@ def decode_floats(data):
         floats.append(struct.unpack('f', data[i:i+4])[0])
     return floats
 
-# Decode binary data to floats
+def plot_data(data):
+    plt.clf()  # Clear the current plot
+    plt.plot(data)
+    plt.pause(0.01)  # Pause for a short time to update the plot
 
 def main():
     # IP address and port
@@ -34,10 +36,12 @@ def main():
         message = "Hello, server!"
         client_socket.send(message.encode())
 
-        # Send 64 zeros to the server
+        # Initialize the plot
+        plt.ion()
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
 
-
-        # Receive data from the server and print continuously
+        # Receive data from the server and plot continuously
         while True:
             zeros = b'\x00' * 64
             client_socket.send(zeros)
@@ -47,16 +51,12 @@ def main():
             data = data[1:]
             # Reshape the data
             reshaped_data = np.reshape(data, (-1, 15))
-            # data = np.concatenate(reshaped_data, axis=0).reshape(-1, reshaped_data.shape[0]).T
             # Convert to DataFrame
             df_tmp = pd.DataFrame(reshaped_data.T)
             df = pd.concat([df, df_tmp], ignore_index=True)
 
-            float_values[0]=0
-            table = pa.Table.from_pandas(df)
-            pq.write_table(table, filename)
-            # print(float_values)
-            # print(df.tail(1))
+            # Plot the last row of data
+            plot_data(df)
 
     except ConnectionRefusedError:
         print("Connection was refused.")

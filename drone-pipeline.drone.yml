@@ -15,7 +15,6 @@ steps:
 
  - name: docs
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
    commands: # Modify the commands below to build your repository.
    - cd docs
    - pip install -r requirements.txt
@@ -26,14 +25,12 @@ steps:
   
  - name: Ceedling unit tests
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
    commands:
    - cd vitis/software/Baremetal
    - ceedling test:all
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
    commands:
     - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
     - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=cert vitis/software/Baremetal/src 
@@ -45,7 +42,6 @@ steps:
 
  - name: Vivado_build_tcl
    image: vivado:2022.2
-   depends_on: [ copy_global_config ]
    commands:
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - cd vivado

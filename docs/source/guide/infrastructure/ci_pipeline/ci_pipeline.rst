@@ -104,11 +104,6 @@ After the rule number, add ``//.`` and write a regular comment stating why this 
 
 .. warning:: Do not use this lightly! The only two places we deviate so far (in new code) is the <stdio.h> for testing and read/write from AXI since the latter requires casting.
 
-Global configuration in CI
-**************************
-
-The CI uses the default :ref:`global_configuration` by renaming the file ``default_uz_global_configuration.h`` to ``uz_global_configuration.h``.
-
 UltraZohm development container
 *******************************
 

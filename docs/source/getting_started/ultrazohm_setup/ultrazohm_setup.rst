@@ -164,14 +164,9 @@ Generate the Vitis workspace
 
 - See pictures below for all steps!
 - Navigate to ``~/ultrazohm/ultrazohm_sw/vitis/software/Baremetal/src/uz``
-- Copy the file ``default_uz_global_configuration.h`` (same folder)
-- Rename the file to ``uz_global_configuration.h``
+- Check that the configuration in ``uz_global_configuration.h`` matches your setup (see :ref:`global_configuration` for details)
 
-.. warning:: Do not rename the file directly! Copy the file and rename the copy!
-
-- Check that the configuration file matches your setup (see :ref:`global_configuration` for details)
-
-.. important:: You probably have to adjust the UltraZohm version in uz_global_configuration.h by setting the define ``UZ_HARDWARE_VERSION`` to your version (e.g., ``2U``, ``3U``, ``4U``, ...)
+.. important:: You might have to adjust the UltraZohm version in ``uz_global_configuration.h`` by setting the define ``UZ_HARDWARE_VERSION`` to your version (e.g., ``2U``, ``3U``, ``4U``, ...)
 
 - Open Vitis or launch Vitis from Vivado (``Tools -> Launch Vitis IDE``)
 - Choose the workspace

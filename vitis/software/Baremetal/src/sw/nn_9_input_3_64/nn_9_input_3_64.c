@@ -17,38 +17,38 @@ extern DS_Data Global_Data;
 // for 9 observations
 float x_9[NUMBER_OF_INPUTS_9N] = {0};
 static float w_1_9[NUMBER_OF_INPUTS_9N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../../ac_layer1_weights.csv"
+#include "ac_layer1_weights.csv"
 };
 
 static float b_1_9[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../../ac_layer1_bias.csv"
+#include "ac_layer1_bias.csv"
 };
 
 static float y_1_9[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 
 float w_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../../ac_layer2_weights.csv"
+#include "ac_layer2_weights.csv"
 };
 float b_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../../ac_layer2_bias.csv"
+#include "ac_layer2_bias.csv"
 };
 float y_2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 
 float w_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../../ac_layer3_weights.csv"
+#include "ac_layer3_weights.csv"
 };
 float b_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../../ac_layer3_bias.csv"
+#include "ac_layer3_bias.csv"
 };
 float y_3[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 
 // output
 static float w_4_9[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
-#include "../../ac_layer_out_weights.csv"
+#include "ac_layer_out_weights.csv"
 };
 
 static float b_4_9[NUMBER_OF_OUTPUTS] = {
-#include "../../ac_layer_out_bias.csv"
+#include "ac_layer_out_bias.csv"
 };
 
 static float y_4_9[NUMBER_OF_OUTPUTS] = {0};

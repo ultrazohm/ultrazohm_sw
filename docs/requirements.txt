@@ -22,8 +22,10 @@ jupyter_bokeh
 watchfiles # maybe required for sphinx-autobuild
 starlette # maybe required for sphinx-autobuild
 uvicorn # maybe required for sphinx-autobuild
+pydata-sphinx-theme
 pyarrow
 plotly-resampler
 pygwalker
 streamlit
 trace_updater
+sphinx-design

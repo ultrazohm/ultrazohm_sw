@@ -4,8 +4,6 @@
 UltraZohm Setup
 ===============
 
-.. toctree::
-   :maxdepth: 2
 
 Requirements
 ************
@@ -256,7 +254,7 @@ Javascope
    IP: 192.168.1.1
    Subnet-Mask: 255.255.255.0
 
-- See :ref:`gui`
+- See :ref:`JavaScope`
 - Go to the folder
 - Start the Javascope
 

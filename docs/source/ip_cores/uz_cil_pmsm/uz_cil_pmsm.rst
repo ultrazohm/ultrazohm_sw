@@ -35,7 +35,6 @@ Individual documentation of the IP-Cores is linked below.
     uz_pmsm_model_multiph_dq/uz_pmsm_model_multiph_dq
     uz_vsd_transformation/uz_vsd_transformation
     ../uz_inverter_3ph/uz_inverter_3ph
-    ../uz_rs_flip_flop/uz_rs_flip_flop
 
 Examples
 ========

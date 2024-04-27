@@ -8,8 +8,8 @@ Sourcetree (git GUI)
 It is recommended to use Sourcetree for convenience and standardization in the community.
 If you are not familiar with Sourcetree please refer to the following resources:
 
-  * `Bitbucket General Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-bitbucket-with-sourcetree-760120235.html>`_
-  * `Bitbucket Pull Request Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-about-bitbucket-pull-requests-774243385.html>`_
+* `Bitbucket General Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-bitbucket-with-sourcetree-760120235.html>`_
+* `Bitbucket Pull Request Tutorial <https://confluence.atlassian.com/bitbucket/tutorial-learn-about-bitbucket-pull-requests-774243385.html>`_
 
 .. note::
 

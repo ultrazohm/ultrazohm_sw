@@ -4,7 +4,7 @@
 
 ip_cores/*/simulation/slprj/*
 
-vitis/software/Baremetal/src/uz/uz_global_configuration.h
+
 
 vitis/software/Baremetal/src/slprj/
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/buildInfo.mat

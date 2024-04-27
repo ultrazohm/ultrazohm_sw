@@ -13,15 +13,8 @@ platform:
 
 steps:
 
- - name: copy_global_config
-   image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ clone ]
-   commands: 
-   - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
-   
  - name: docs
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
    commands: # Modify the commands below to build your repository.
    - cd docs
    - pip install -r requirements.txt
@@ -32,14 +25,12 @@ steps:
   
  - name: Ceedling unit tests
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
    commands:
    - cd vitis/software/Baremetal
    - ceedling test:all
 
  - name: Cppcheck
    image: ultrazohm/ultrazohm_remote_container
-   depends_on: [ copy_global_config ]
    commands:
     - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ vitis/software/Baremetal/src 
     - /../cppcheck-2.12.1/cppcheck vitis/software/Baremetal/src/ --addon=cert vitis/software/Baremetal/src 
@@ -51,7 +42,6 @@ steps:
 
  - name: Vivado_build_tcl
    image: vivado:2022.2
-   depends_on: [ copy_global_config ]
    commands:
    - /bin/bash /opt/Xilinx/Vivado/2022.2/settings64.sh
    - cd vivado
@@ -117,7 +107,6 @@ steps:
    image: vivado:2022.2
    depends_on: [ Vivado_generate_bitstream ]
    commands:
-   - cp -f vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
    - /bin/bash /opt/Xilinx/Vitis/2022.2/settings64.sh
    - /bin/bash /opt/Xilinx/Vitis/2022.2/bin/xsct tcl_scripts/ci_vitis_generate_workspace.tcl
  

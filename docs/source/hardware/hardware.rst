@@ -28,6 +28,7 @@ Hardware
     adapter_cards/digital/optical/optical_general
     adapter_cards/digital/inc_encoder/incr_encoder_general
     adapter_cards/digital/digital_voltage_3u
+    adapter_cards/digital/digital_voltage_3v3_rev01
     adapter_cards/digital/Digital_BreakoutBoard_v1
     adapter_cards/digital/encoder_v1
     adapter_cards/digital/temperature_rev02/temperature_rev02

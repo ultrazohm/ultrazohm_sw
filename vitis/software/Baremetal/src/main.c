@@ -18,6 +18,7 @@
 
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
+#include "include/adc.h"
 
 #define NUMBER_OF_INPUTS 13
 #define NUMBER_OF_OUTPUTS 1

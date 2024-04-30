@@ -15,7 +15,61 @@
 
 // Includes from own files
 #include "main.h"
-static void ReadAllADC();
+
+#include "uz/uz_nn/uz_nn.h"
+#include "uz/uz_matrix/uz_matrix.h"
+
+#define NUMBER_OF_INPUTS 13
+#define NUMBER_OF_OUTPUTS 1
+#define NUMBER_OF_HIDDEN_LAYER 3
+#define NUMBER_OF_NEURONS_IN_FIRST_LAYER 50
+#define NUMBER_OF_NEURONS_IN_SECOND_LAYER 20
+
+float x[NUMBER_OF_INPUTS] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+float w_1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "full_example_weights/layer1_weights.csv"
+};
+float b_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {
+#include "full_example_weights/layer1_bias.csv"
+};
+float y_1[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
+
+float w_2[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "full_example_weights/layer2_weights.csv"
+};
+float b_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {
+#include "full_example_weights/layer2_bias.csv"
+};
+float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] = {0};
+
+float w_3[NUMBER_OF_NEURONS_IN_SECOND_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "full_example_weights/layer3_weights.csv"
+};
+float b_3[NUMBER_OF_OUTPUTS] = {
+#include "full_example_weights/layer3_bias.csv"
+};
+float y_3[NUMBER_OF_OUTPUTS] = {0};
+
+struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
+    [0] = {
+        .activation_function = activation_ReLU,
+        .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
+        .number_of_inputs = NUMBER_OF_INPUTS,
+        .length_of_weights = UZ_MATRIX_SIZE(w_1),
+        .length_of_bias = UZ_MATRIX_SIZE(b_1),
+        .length_of_output = UZ_MATRIX_SIZE(y_1),
+        .weights = w_1,
+        .bias = b_1,
+        .output = y_1},
+    [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_FIRST_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
+    [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3}};
+
+struct uz_matrix_t x_matrix = {0};
+uz_matrix_t *input ;
+uz_nn_t *test;
+
+    static void
+    ReadAllADC();
 bool do_control=false;
 
     // Initialize the global variables
@@ -96,7 +150,8 @@ void control(void);
                 uz_printf("Welcome to the UltraZohm\r\n");
                 uz_printf("----------------------------------------\r\n");
                 uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
-
+                input = uz_matrix_init(&x_matrix, x, UZ_MATRIX_SIZE(x), 1, 13);
+                test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
                 initialization_chain = init_interrupts;
                 break;
             case init_interrupts:
@@ -128,6 +183,7 @@ void control(void);
         platform_state_t current_state = ultrazohm_state_machine_get_state();
         if (current_state == control_state)
         {
+            uz_nn_ff(test, input);
             // Start: Control algorithm - only if ultrazohm is in control state
         }
         uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

@@ -15,7 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-bool use_isr;
 
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
@@ -67,7 +66,11 @@ struct uz_nn_layer_config config[NUMBER_OF_HIDDEN_LAYER] = {
     [2] = {.activation_function = activation_linear, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3}};
 
 struct uz_matrix_t x_matrix = {0};
+uz_matrix_t *input ;
+uz_nn_t *test;
 
+    static void
+    ReadAllADC();
 bool do_control=false;
 
     // Initialize the global variables
@@ -100,7 +103,8 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
-#include "isc_code.h"
+void control(void);
+
 
     int main(void)
     {
@@ -147,8 +151,8 @@ enum init_chain initialization_chain = init_assertions;
                 uz_printf("Welcome to the UltraZohm\r\n");
                 uz_printf("----------------------------------------\r\n");
                 uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
-                Global_Data.objects.input = uz_matrix_init(&x_matrix, x, UZ_MATRIX_SIZE(x), 1, 13);
-                Global_Data.objects.test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+                input = uz_matrix_init(&x_matrix, x, UZ_MATRIX_SIZE(x), 1, 13);
+                test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
                 initialization_chain = init_interrupts;
                 break;
             case init_interrupts:
@@ -158,7 +162,7 @@ enum init_chain initialization_chain = init_assertions;
                 break;
             case infinite_loop:
                 ultrazohm_state_machine_step();
-                if (do_control && (!use_isr))
+                if (do_control)
                 {
                     control();
                     do_control = false;
@@ -171,4 +175,34 @@ enum init_chain initialization_chain = init_assertions;
         return (status);
     }
 
+    void control(void)
+    {
+        uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+        ReadAllADC();
+        update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+        platform_state_t current_state = ultrazohm_state_machine_get_state();
+        if (current_state == control_state)
+        {
+            uz_nn_ff(test, input);
+            // Start: Control algorithm - only if ultrazohm is in control state
+        }
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+        uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+
+        // Set duty cycles for three-level modulator
+        PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+                            Global_Data.rasv.halfBridge2DutyCycle,
+                            Global_Data.rasv.halfBridge3DutyCycle);
+        JavaScope_update(&Global_Data);
+        // Read the timer value at the very end of the ISR to minimize measurement error
+        // This has to be the last function executed in the ISR!
+        uz_SystemTime_ISR_Toc();
+    }
+
+    static void ReadAllADC()
+    {
+        ADC_readCardALL(&Global_Data);
+    };

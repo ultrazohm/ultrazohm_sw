@@ -45,31 +45,14 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 extern bool do_control;
-extern bool use_isr;
-#include "../isc_code.h"
 
 void ISR_Control(void *data)
 {
-    platform_state_t current_state = ultrazohm_state_machine_get_state();
-    if (current_state == control_state)
-    {
-        use_isr = true;
-        control();
-    }
-    {
-    }
-    else
-    {
-        use_isr = false;
-        if (do_control)
-        {
-            uz_assert(0);
-        }
-        else
-        {
-            do_control = true;
-        }
-    }
+	if (do_control){
+		uz_assert(0);
+	}else{
+		do_control=true;
+	}
 }
 
 //==============================================================================================================================================================
@@ -100,13 +83,14 @@ int Initialize_ISR()
     }
 
     // Enable uz_mux_axi for triggering the ADCs and the ISR
-    //    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
-    //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-    //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-    // uz_mux_axi_enable(Global_Data.objects.mux_axi);
+//    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+//    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+//    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    //uz_mux_axi_enable(Global_Data.objects.mux_axi);
 
     return Status;
 }
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------

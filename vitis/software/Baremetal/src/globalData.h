@@ -113,8 +113,6 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
-	uz_matrix_t *input;
-	uz_nn_t *test;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

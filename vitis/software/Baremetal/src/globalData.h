@@ -85,6 +85,9 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
+	uint32_t main_timer;
+	float result_isr;
+	float result_main;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -100,6 +103,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	bool execute_control;
 } referenceAndSetValues;
 
 typedef struct{

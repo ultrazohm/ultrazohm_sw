@@ -16,6 +16,11 @@
 // Includes from own files
 #include "main.h"
 
+//#include "include/adc.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
+#include "uz/uz_SystemTime/uz_AxiTimer64Bit.h"
+//static void ReadAllADC();
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -52,6 +57,21 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+bool execute_control;
+struct uz_movingAverageFilter_config config_SMA = {
+   .filterLength = 100U
+};
+float data [300] = {0};
+uz_array_float_t circularBuffer = {
+   .length = UZ_ARRAY_SIZE(data),
+   .data = &data[0]
+};
+uz_movingAverageFilter_t* SMA_instance;
+
+uint64_t start_tic_main = 0U;
+uint64_t stop_tic_main = 0U;
+float duration_tic_main = 0U;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -72,6 +92,7 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
+            SMA_instance = uz_movingAverageFilter_init(config_SMA, circularBuffer);
             break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
@@ -106,7 +127,16 @@ int main(void)
             initialization_chain = infinite_loop;
             break;
         case infinite_loop:
-            ultrazohm_state_machine_step();
+
+            switch (Global_Data.rasv.execute_control)
+            {
+            case true:
+            	ISR_Control_Main();
+//            	Global_Data.rasv.execute_control = false;
+            default:
+            	ultrazohm_state_machine_step();
+            }
+
             break;
         default:
             break;
@@ -114,3 +144,48 @@ int main(void)
     }
     return (status);
 }
+
+void ISR_Control_Main(void) {
+//	uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+	float tmp_flt = 10000.0f;
+	float tmp_filt = 0.0f;
+
+
+//	update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    if (current_state==control_state)
+    {
+    	start_tic_main = uz_AxiTimer64Bit_ReadValue64Bit();
+        // Start: Control algorithm - only if ultrazohm is in control state
+    	for (int i=0;i<20;i++) {
+		tmp_flt = tmp_flt*sqrt(i*42.0f)*0.42f*i+12.0f;
+    	tmp_filt = uz_movingAverageFilter_sample(SMA_instance, tmp_flt);
+    	}
+    	Global_Data.av.result_main = tmp_filt;
+    	stop_tic_main = uz_AxiTimer64Bit_ReadValue64Bit();
+    	Global_Data.av.main_timer++;
+    	duration_tic_main = (float)(stop_tic_main - start_tic_main);
+    }
+
+//	ReadAllADC();
+
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+//
+//
+//    // Set duty cycles for three-level modulator
+//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//                        Global_Data.rasv.halfBridge2DutyCycle,
+//                        Global_Data.rasv.halfBridge3DutyCycle);
+//	JavaScope_update(&Global_Data);
+	uz_SystemTime_ISR_Toc();
+    Global_Data.rasv.execute_control = false;
+}
+
+//static void ReadAllADC()
+//{
+//    ADC_readCardALL(&Global_Data);
+//};

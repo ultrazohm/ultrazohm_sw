@@ -60,5 +60,6 @@
 //----------------------------------------------------
 
 void InitializeDataStructure(DS_Data* data);
+void ISR_Control_Main(void);
 
 #endif /* main_H_ */

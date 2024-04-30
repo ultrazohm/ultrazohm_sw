@@ -31,6 +31,9 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+#include "../uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
+#include "../uz/uz_SystemTime/uz_AxiTimer64Bit.h"
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -38,6 +41,20 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+uint64_t start_tic_isr = 0U;
+uint64_t stop_tic_isr = 0U;
+float duration_tic_isr = 0U;
+
+struct uz_movingAverageFilter_config config_SMA_isr = {
+   .filterLength = 100U
+};
+float data_isr [300] = {0};
+
+uz_array_float_t circularBuffer_isr = {
+   .length = UZ_ARRAY_SIZE(data_isr),
+   .data = &data_isr[0]
+};
+uz_movingAverageFilter_t* SMA_instance_isr;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -48,15 +65,25 @@ static void ReadAllADC();
 
 void ISR_Control(void *data)
 {
+	float tmp_flt = 10000.0f;
+	float tmp_filt = 0.0f;
+//	static float tmp_flt = 10000.0f;
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+//    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
-    }
+	if (current_state == control_state) {
+		start_tic_isr = uz_AxiTimer64Bit_ReadValue64Bit();
+		// Start: Control algorithm - only if ultrazohm is in control state
+		for (int i = 0; i < 20; i++) {
+			tmp_flt = tmp_flt * sqrt(i*42.0f) * 0.42f * i + 12.0f;
+			tmp_filt = uz_movingAverageFilter_sample(SMA_instance_isr, tmp_flt);
+		}
+		Global_Data.av.result_isr = tmp_filt;
+		stop_tic_isr = uz_AxiTimer64Bit_ReadValue64Bit();
+		duration_tic_isr = (float)(stop_tic_isr - start_tic_isr);
+	}
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
@@ -67,9 +94,15 @@ void ISR_Control(void *data)
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
+
+    // trigger control code in main.c including uz_SystemTime_ISR_Toc(); call
+    Global_Data.rasv.execute_control = true;
+
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
-    uz_SystemTime_ISR_Toc();
+//    uz_SystemTime_ISR_Toc();
+
+
 }
 
 //==============================================================================================================================================================
@@ -104,6 +137,7 @@ int Initialize_ISR()
 //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
 //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
     //uz_mux_axi_enable(Global_Data.objects.mux_axi);
+    SMA_instance_isr = uz_movingAverageFilter_init(config_SMA_isr, circularBuffer_isr);
 
     return Status;
 }

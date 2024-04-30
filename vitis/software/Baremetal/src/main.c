@@ -152,6 +152,12 @@ enum init_chain initialization_chain = init_assertions;
                 uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
                 input = uz_matrix_init(&x_matrix, x, UZ_MATRIX_SIZE(x), 1, 13);
                 test = uz_nn_init(config, NUMBER_OF_HIDDEN_LAYER);
+
+                while(1){
+                    uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+                    uz_nn_ff(test, input);
+                    uz_SystemTime_ISR_Toc();
+                }
                 initialization_chain = init_interrupts;
                 break;
             case init_interrupts:

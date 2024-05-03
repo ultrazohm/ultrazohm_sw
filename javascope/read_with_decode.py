@@ -8,7 +8,8 @@ import numpy as np
 
 def decode_floats(data):
     floats = []
-    for i in range(0, len(data), 4):
+    datalength=len(data)
+    for i in range(0, datalength, 4):
         floats.append(struct.unpack('f', data[i:i+4])[0])
     return floats
 
@@ -41,8 +42,11 @@ def main():
         while True:
             zeros = b'\x00' * 64
             client_socket.send(zeros)
-            response = client_socket.recv(1324)
-            float_values = decode_floats(response)
+            response = client_socket.recv(1446) # receive length is determined using the len functions below to match the sending data which fills one package fully and puts the rest in the second package. 
+            response2 = client_socket.recv(1078)
+            response_length=len(response)
+            response2_length=len(response2)
+            float_values = decode_floats(response+response2)
             data = np.array(float_values)
             data = data[1:]
             # Reshape the data
@@ -52,11 +56,8 @@ def main():
             df_tmp = pd.DataFrame(reshaped_data.T)
             df = pd.concat([df, df_tmp], ignore_index=True)
 
-            float_values[0]=0
             table = pa.Table.from_pandas(df)
             pq.write_table(table, filename)
-            # print(float_values)
-            # print(df.tail(1))
 
     except ConnectionRefusedError:
         print("Connection was refused.")

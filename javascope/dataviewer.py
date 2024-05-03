@@ -55,7 +55,7 @@ def update_graph(value, filename):
     fig.replace(go.Figure())  # Clear the existing figure
     if value:
         for col in value:
-            fig.add_trace(go.Scattergl(name=col, x=df['time'], y=df[col]))
+            fig.add_trace(go.Scattergl(name=col, y=df[col]))
 
     fig.update_layout(template="simple_white", xaxis=dict(showgrid=True), yaxis=dict(showgrid=True))
 

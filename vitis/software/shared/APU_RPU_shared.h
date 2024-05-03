@@ -6,11 +6,11 @@
 // See UG1085 page 533 (https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G20.375357)
 
 #define MEM_SHARED_START 	0xFFFF0000
-#define JS_CHANNELS 		20
+#define JS_CHANNELS 		40
 
 // update by hand when changing JS_CHANNELS
 // Bank 3 of OCM has 64 KB, thus a maximum of 16K float values can be stored
-#define JAVASCOPE_DATA_SIZE_2POW  	128
+#define JAVASCOPE_DATA_SIZE_2POW  	256
 
 
 struct javascope_data_t

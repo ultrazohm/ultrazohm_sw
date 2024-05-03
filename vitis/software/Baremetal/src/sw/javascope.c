@@ -50,7 +50,7 @@ int JavaScope_initialize(DS_Data* data)
 	}
 
 	for(int j=0; j<JS_CHANNELS; j++){
-		js_ch_selected[j] = &zerovalue;
+		js_ch_selected[j] = &lifecheck;
 	}
 
 	for (int j=0; j<JSSD_ENDMARKER; j++){

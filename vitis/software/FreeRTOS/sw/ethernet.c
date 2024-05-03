@@ -92,6 +92,26 @@ void process_request_thread(void *p)
 			nwsend.val_18[i] 	= javascope_data_sending.scope_ch[17];
 			nwsend.val_19[i] 	= javascope_data_sending.scope_ch[18];
 			nwsend.val_20[i] 	= javascope_data_sending.scope_ch[19];
+			nwsend.val_21[i] = javascope_data_sending.scope_ch[20];
+			nwsend.val_22[i] = javascope_data_sending.scope_ch[21];
+			nwsend.val_23[i] = javascope_data_sending.scope_ch[22];
+			nwsend.val_24[i] = javascope_data_sending.scope_ch[23];
+			nwsend.val_25[i] = javascope_data_sending.scope_ch[24];
+			nwsend.val_26[i] = javascope_data_sending.scope_ch[25];
+			nwsend.val_27[i] = javascope_data_sending.scope_ch[26];
+			nwsend.val_28[i] = javascope_data_sending.scope_ch[27];
+			nwsend.val_29[i] = javascope_data_sending.scope_ch[28];
+			nwsend.val_30[i] = javascope_data_sending.scope_ch[29];
+			nwsend.val_31[i] = javascope_data_sending.scope_ch[30];
+			nwsend.val_32[i] = javascope_data_sending.scope_ch[31];
+			nwsend.val_33[i] = javascope_data_sending.scope_ch[32];
+			nwsend.val_34[i] = javascope_data_sending.scope_ch[33];
+			nwsend.val_35[i] = javascope_data_sending.scope_ch[34];
+			nwsend.val_36[i] = javascope_data_sending.scope_ch[35];
+			nwsend.val_37[i] = javascope_data_sending.scope_ch[36];
+			nwsend.val_38[i] = javascope_data_sending.scope_ch[37];
+			nwsend.val_39[i] = javascope_data_sending.scope_ch[38];
+			nwsend.val_40[i] = javascope_data_sending.scope_ch[39];
 			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
 			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
 		}

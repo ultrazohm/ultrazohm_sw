@@ -49,7 +49,7 @@ Table *Interfaces of the EnDat22 IP-Core* lists all input and output ports (AXI 
 Software driver
 ===============
 
-The software driver for the IP-Core has multiple use cases - with the configuration and calculation beeing the most important ones. 
+The software driver for the IP-Core has multiple use cases - with the configuration and calculation being the most important ones. 
 
 Init Functions
 ---------------
@@ -87,7 +87,21 @@ Table *Controlword* shows the content of the controlword to the IP-Core.
 
 An exemplary control word would look like this: *0xB407* for an 25-Bit EnDat22 Sensor.
 
-The sensor operating frequency is set by a divider variable.
+The sensor operating frequency is set by a divider variable. 
 
-.. doxygenenum:: uz_EnDat_frequency_selector
+
+  
+
+The divider enum can be set manually and then transferred by a function to the proper divider.
+
+.. doxygenfunction:: uz_EnDat_get_clk_frequency_divider_from_frequency
+
+bla+#,
+
+
+Test
+
+
+
+
 

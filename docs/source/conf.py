@@ -134,6 +134,7 @@ mathjax_config = {
 mathjax_path="https://cdn.jsdelivr.net/npm/mathjax@2/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
 
 # https://github.com/michaeljones/breathe/issues/696
+# Nikita added a lot of ignores because they all have the same issue... Typedef enum kinda kills that old doxygen version --> To be discussed with software architekt
 nitpick_ignore = [
     ('c:identifier', 'int32_t'),
     ('c:identifier', 'uint32_t'),
@@ -142,4 +143,5 @@ nitpick_ignore = [
     ('c:identifier', 'size_t'),
     ('c:identifier', 'uintptr_t'),
     ('c:identifier', 'bool'),
+    ('c:identifier', 'uz_EnDat_frequency'),
 ]

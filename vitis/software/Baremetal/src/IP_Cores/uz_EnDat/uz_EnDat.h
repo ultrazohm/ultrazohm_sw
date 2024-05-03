@@ -34,14 +34,24 @@
 
 
 
-
+/**
+ * @typedef Controlword
+ *
+ */
 typedef uint16_t controlword;
+/**
+ * @struct Struct for position and age
+ *
+ */
 typedef struct uz_EnDat_pos_with_age_of_pos{
     float pos; /**< Positional Value */
     float age;  /**< Age of this value */
 }uz_EnDat_pos_with_age;
 
-
+/**
+ * @enum EnDat Factors to adjust the IP-Core
+ *
+ */
 typedef enum uz_EnDat_factors {
     uz_EnDat_factor1_dataflow,
     uz_EnDat_factor2_recoverytime,
@@ -51,19 +61,36 @@ typedef enum uz_EnDat_factors {
     uz_EnDat_factor6_responsesync,
     uz_EnDat_factor7_extrashift
 }uz_EnDat_factor;
+/**
+ * @enum Positional values
+ *
+ */
 typedef enum uz_EnDat_position_values {
     uz_EnDat_pos_t0,
     uz_EnDat_pos_t1,
     uz_EnDat_pos_t2
 }uz_EnDat_position;
+/**
+ * @enum Elapsed time inbetween positional values
+ *
+ */
 typedef enum uz_EnDat_time_elapsed_values {
     uz_EnDat_elapsed_t0_t1,
     uz_EnDat_elapsed_t0_t2
-    }uz_EnDat_elapsed;
+}uz_EnDat_elapsed;
+/**
+ * @enum Positional difference for values
+ *
+ */
 typedef enum uz_EnDat_pos_dif_values {
     uz_EnDat_dif_t0_t1,
     uz_EnDat_dif_t0_t2
-    }uz_EnDat_dif;
+}uz_EnDat_dif;
+/**
+ * @typedef Frequency operators
+ * @enum uz_EnDat_frequency_selector
+ * @ref uz_EnDat_frequency
+ */
 typedef enum uz_EnDat_frequency_selector {
     uz_EnDat_operatingfrequency_12500000Hz,
     uz_EnDat_operatingfrequency_6250000Hz,
@@ -72,7 +99,14 @@ typedef enum uz_EnDat_frequency_selector {
     uz_EnDat_operatingfrequency_781250Hz,
     uz_EnDat_operatingfrequency_390625Hz,
     uz_EnDat_operatingfrequency_195312Hz
-  }uz_EnDat_frequency;
+  }/**Foo it with B*/uz_EnDat_frequency;
+
+
+
+ /**
+ * @enum Operating mode enumeration as of HDH documentation
+ *
+ */
 typedef enum uz_EnDat_EnDat_operating_mode {
     uz_EnDat_Encoder_send_position_values,
     uz_EnDat_Encoder_send_position_values_with_additional_data,
@@ -90,13 +124,17 @@ typedef enum uz_EnDat_EnDat_operating_mode {
     uz_EnDat_Encoder_receive_communication_command
 }uz_EnDat_protocol_opmode;
 
+/**
+ * @enum Positional precision setup
+ *
+ */
 typedef enum uz_EnDat_positional_precision {
     uz_EnDat_19_bit,
     uz_EnDat_21_bit,
     uz_EnDat_23_bit,
     uz_EnDat_25_bit,
     uz_EnDat_27_bit
-    }uz_EnDat_precision;
+}uz_EnDat_precision;
 
 
 /**
@@ -124,11 +162,18 @@ struct uz_EnDat_config_t{
     int16_t factor7;
 };
 
+/**
+ * @brief EnDat Status Information
+ *
+ */
 struct uz_EnDat_status_t{
     controlword statusword; /**< statusword stored per instance */
     bool errorbit;  /**< errorbit from sensor stored per instance */
 };
-
+/**
+ * @brief EnDat Object
+ *
+ */
 struct uz_EnDat_t {
     bool is_ready;
     struct uz_EnDat_config_t config;

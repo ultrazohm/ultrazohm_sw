@@ -164,7 +164,7 @@ void application_thread()
 		if ((new_clientfd = lwip_accept(sock, (struct sockaddr *)&remote, (socklen_t *)&size)) > 0) {
 			sys_thread_new("echos", process_request_thread,
 				(void*)new_clientfd,
-				THREAD_STACKSIZE,
+				THREAD_STACKSIZE*10,
 				DEFAULT_THREAD_PRIO);
 		}
 	}

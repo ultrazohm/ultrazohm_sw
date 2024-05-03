@@ -37,7 +37,7 @@ def main():
 
         # Send 64 zeros to the server
         received_data = b''
-        channels=100
+        channels=200
         bytes_to_receive = channels*15*4+2*15*4+4
 
         # Receive data from the server and print continuously

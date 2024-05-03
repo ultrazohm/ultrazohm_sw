@@ -72,46 +72,9 @@ void process_request_thread(void *p)
 			xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
 
 			// copy data into nwsend struct
-			nwsend.val_01[i] 	= javascope_data_sending.scope_ch[0];
-			nwsend.val_02[i] 	= javascope_data_sending.scope_ch[1];
-			nwsend.val_03[i] 	= javascope_data_sending.scope_ch[2];
-			nwsend.val_04[i]  	= javascope_data_sending.scope_ch[3];
-			nwsend.val_05[i]  	= javascope_data_sending.scope_ch[4];
-			nwsend.val_06[i]  	= javascope_data_sending.scope_ch[5];
-			nwsend.val_07[i] 	= javascope_data_sending.scope_ch[6];
-			nwsend.val_08[i] 	= javascope_data_sending.scope_ch[7];
-			nwsend.val_09[i] 	= javascope_data_sending.scope_ch[8];
-			nwsend.val_10[i] 	= javascope_data_sending.scope_ch[9];
-			nwsend.val_11[i]  	= javascope_data_sending.scope_ch[10];
-			nwsend.val_12[i]  	= javascope_data_sending.scope_ch[11];
-			nwsend.val_13[i]  	= javascope_data_sending.scope_ch[12];
-			nwsend.val_14[i] 	= javascope_data_sending.scope_ch[13];
-			nwsend.val_15[i] 	= javascope_data_sending.scope_ch[14];
-			nwsend.val_16[i] 	= javascope_data_sending.scope_ch[15];
-			nwsend.val_17[i] 	= javascope_data_sending.scope_ch[16];
-			nwsend.val_18[i] 	= javascope_data_sending.scope_ch[17];
-			nwsend.val_19[i] 	= javascope_data_sending.scope_ch[18];
-			nwsend.val_20[i] 	= javascope_data_sending.scope_ch[19];
-			nwsend.val_21[i] = javascope_data_sending.scope_ch[20];
-			nwsend.val_22[i] = javascope_data_sending.scope_ch[21];
-			nwsend.val_23[i] = javascope_data_sending.scope_ch[22];
-			nwsend.val_24[i] = javascope_data_sending.scope_ch[23];
-			nwsend.val_25[i] = javascope_data_sending.scope_ch[24];
-			nwsend.val_26[i] = javascope_data_sending.scope_ch[25];
-			nwsend.val_27[i] = javascope_data_sending.scope_ch[26];
-			nwsend.val_28[i] = javascope_data_sending.scope_ch[27];
-			nwsend.val_29[i] = javascope_data_sending.scope_ch[28];
-			nwsend.val_30[i] = javascope_data_sending.scope_ch[29];
-			nwsend.val_31[i] = javascope_data_sending.scope_ch[30];
-			nwsend.val_32[i] = javascope_data_sending.scope_ch[31];
-			nwsend.val_33[i] = javascope_data_sending.scope_ch[32];
-			nwsend.val_34[i] = javascope_data_sending.scope_ch[33];
-			nwsend.val_35[i] = javascope_data_sending.scope_ch[34];
-			nwsend.val_36[i] = javascope_data_sending.scope_ch[35];
-			nwsend.val_37[i] = javascope_data_sending.scope_ch[36];
-			nwsend.val_38[i] = javascope_data_sending.scope_ch[37];
-			nwsend.val_39[i] = javascope_data_sending.scope_ch[38];
-			nwsend.val_40[i] = javascope_data_sending.scope_ch[39];
+			for (size_t j = 0; j < JS_CHANNELS;j++){
+				nwsend.val_01[j][i] = javascope_data_sending.scope_ch[j];
+			}
 			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
 			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
 		}

@@ -62,52 +62,13 @@ extern "C" {
 #define GPIO_CHANNEL 						1								/* GPIO port for GPIOs */
 
 // ========== Structures =========================================================================
-
+#include "APU_RPU_shared.h"
 typedef struct		// status + time + 20 elements (32bit) + 32 bit
 {
 	uint32_t status;
 	float slowDataContent[NETWORK_SEND_FIELD_SIZE];
-	float val_01[NETWORK_SEND_FIELD_SIZE];
-    float val_02[NETWORK_SEND_FIELD_SIZE];
-    float val_03[NETWORK_SEND_FIELD_SIZE];
-    float val_04[NETWORK_SEND_FIELD_SIZE];
-    float val_05[NETWORK_SEND_FIELD_SIZE];
-    float val_06[NETWORK_SEND_FIELD_SIZE];
-    float val_07[NETWORK_SEND_FIELD_SIZE];
-    float val_08[NETWORK_SEND_FIELD_SIZE];
-    float val_09[NETWORK_SEND_FIELD_SIZE];
-    float val_10[NETWORK_SEND_FIELD_SIZE];
-    float val_11[NETWORK_SEND_FIELD_SIZE];
-    float val_12[NETWORK_SEND_FIELD_SIZE];
-    float val_13[NETWORK_SEND_FIELD_SIZE];
-    float val_14[NETWORK_SEND_FIELD_SIZE];
-    float val_15[NETWORK_SEND_FIELD_SIZE];
-    float val_16[NETWORK_SEND_FIELD_SIZE];
-    float val_17[NETWORK_SEND_FIELD_SIZE];
-    float val_18[NETWORK_SEND_FIELD_SIZE];
-    float val_19[NETWORK_SEND_FIELD_SIZE];
-    float val_20[NETWORK_SEND_FIELD_SIZE];
-    float val_21[NETWORK_SEND_FIELD_SIZE];
-    float val_22[NETWORK_SEND_FIELD_SIZE];
-    float val_23[NETWORK_SEND_FIELD_SIZE];
-    float val_24[NETWORK_SEND_FIELD_SIZE];
-    float val_25[NETWORK_SEND_FIELD_SIZE];
-    float val_26[NETWORK_SEND_FIELD_SIZE];
-    float val_27[NETWORK_SEND_FIELD_SIZE];
-    float val_28[NETWORK_SEND_FIELD_SIZE];
-    float val_29[NETWORK_SEND_FIELD_SIZE];
-    float val_30[NETWORK_SEND_FIELD_SIZE];
-    float val_31[NETWORK_SEND_FIELD_SIZE];
-    float val_32[NETWORK_SEND_FIELD_SIZE];
-    float val_33[NETWORK_SEND_FIELD_SIZE];
-    float val_34[NETWORK_SEND_FIELD_SIZE];
-    float val_35[NETWORK_SEND_FIELD_SIZE];
-    float val_36[NETWORK_SEND_FIELD_SIZE];
-    float val_37[NETWORK_SEND_FIELD_SIZE];
-    float val_38[NETWORK_SEND_FIELD_SIZE];
-    float val_39[NETWORK_SEND_FIELD_SIZE];
-    float val_40[NETWORK_SEND_FIELD_SIZE];
-    float slowDataID[NETWORK_SEND_FIELD_SIZE];
+	float val_01[JS_CHANNELS][NETWORK_SEND_FIELD_SIZE];
+	float slowDataID[NETWORK_SEND_FIELD_SIZE];
 } NetworkSendStruct;
 
 

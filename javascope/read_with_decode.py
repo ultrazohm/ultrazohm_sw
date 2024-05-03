@@ -36,17 +36,22 @@ def main():
         client_socket.send(message.encode())
 
         # Send 64 zeros to the server
-
+        received_data = b''
+        bytes_to_receive = 41*15*4+2*15*4+4
 
         # Receive data from the server and print continuously
         while True:
             zeros = b'\x00' * 64
             client_socket.send(zeros)
-            response = client_socket.recv(1446) # receive length is determined using the len functions below to match the sending data which fills one package fully and puts the rest in the second package. 
-            response2 = client_socket.recv(1078)
-            response_length=len(response)
-            response2_length=len(response2)
-            float_values = decode_floats(response+response2)
+            # response = client_socket.recv(1446) # receive length is determined using the len functions below to match the sending data which fills one package fully and puts the rest in the second package. 
+            # response2 = client_socket.recv(1078+60)
+            while len(received_data) < bytes_to_receive:
+                chunk = client_socket.recv(min(1024, bytes_to_receive - len(received_data)))
+                if not chunk:
+                    break
+                received_data += chunk
+            response_length=len(received_data)
+            float_values = decode_floats(received_data)
             data = np.array(float_values)
             data = data[1:]
             # Reshape the data

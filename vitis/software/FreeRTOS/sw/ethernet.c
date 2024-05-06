@@ -48,11 +48,12 @@ void print_echo_app_header()
  *      in the shared RAM. This thread runs always!
  *---------------------------------------------------------------------------*/
 size_t queue_length=0;
+struct javascope_data_t javascope_data_sending = {0};
+NetworkSendStruct nwsend = {0};
 
 void process_request_thread(void *p)
 {
-	struct javascope_data_t javascope_data_sending = {0};
-	NetworkSendStruct nwsend = {0};
+
 	char recv_buf[2048] = {0};
 	struct APU_to_RPU_t* Received_Data = {0};
 
@@ -66,6 +67,7 @@ void process_request_thread(void *p)
 	xQueueReset(js_queue); //purge queue once new connection is established
 
 	while (1) {
+
 
 		queue_length=uxQueueMessagesWaiting(js_queue);
 		if (queue_length > NETWORK_SEND_FIELD_SIZE)

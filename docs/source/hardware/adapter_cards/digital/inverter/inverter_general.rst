@@ -11,21 +11,21 @@ Source
 Functionality
 =============
 
-The UltraZohm digital inverter consists of three half-bridges with MOSFETs. 
-It is equipped with bi-directional current measurement for each phase and the DC-link current, measurements for the phase and DC-link voltages, and temperature measurements for each semiconductor.  
+The UltraZohm digital inverter consists of three MOSFET half-bridges. 
+It is equipped with bi-directional current measurement for each phase and the DC-link current, measurements for the phase and DC-link voltages, and temperature measurement for each semiconductor.  
 The voltage measurement is equipped with a 1st order low-pass filter.
-The current measurement is realized with shunt resistors.
+The current measurement is realised with shunt resistors.
 The inverter has a dedicated PWM enable pin. 
 If the ``PWM_EN`` is set to false, both semiconductors of each half-bridge are disabled. 
-An over current protection for the three phases and the DC-link is included. 
-The OCP is not designed for half-bridge shorts and will only be triggered if the phase or DC-link currents exceed the safe operating window. 
-The OCP, when triggered, only flags a FAULT bit in the corresponding software driver. 
+Overcurrent protection for the three phases and the DC-link is included. 
+The OCP is not designed for half-bridge shorts and will only trip if the phase or DC-link currents exceed the safe operating window. 
+When triggered, the OCP will only flag a FAULT bit in the corresponding software driver. 
 The inverter will not shut down automatically.
 Each half-bridge is designed in a non-bootstrap configuration. 
-Each voltage and current measurement signal of the three phases and the DC-link are converted from single-ended into differential transmission to reduce the susceptibility to interference.
-The measurement signals are transmitted via ethernet cables and are directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
-To increase heat dissipation and keep the switches cooler an additional heatsink can be installed.
-For additional information or an in-depth look into the circuit design, check the schematics in the :ref:`References <dig_si_inverter_references>` section.
+Each voltage and current measurement signal of the three phases and the DC-link are converted from single-ended to differential transmission to reduce the susceptibility to interference.
+The measured signals are transmitted over ethernet cables and are directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`Analog_LTC2311_16_v3` and :ref:`Analog_LTC2311_16_v2` cards.
+An additional heat sink can be fitted to increase heat dissipation and keep the switches cooler.
+For additional information or an in-depth look at the circuit design, please refer to the schematics in the :ref:`References <dig_si_inverter_references>` section.
 
 ..	toctree::
    :caption: Revisions
@@ -49,13 +49,13 @@ Components
 Heatsink
 --------
 
-The PCB is prepared for a heatsink installation. 
-Four holes are placed to allow screws with a maximum of M3 diameter to be used.
-Intended design is, that the heatsink has the appropriate bore holes with threads into which the screws can be screwed.
-For further information about the dimensions of the heatsink and the placement of screw holes check out the schematic below. 
-The dimensions take account the safety margin required in respect to the mounting rails in the UltraZohm. 
+The PCB is prepared for the installation of a heat sink. 
+Four holes have been drilled to allow the use of maximum M3 screws.
+It is intended that the heatsink will have the appropriate holes with threads into which the screws can be screwed.
+For further information on the dimensions of the heatsink and the location of the screw holes, refer to the diagram below. 
+The dimensions take into account the safety margin required for the mounting rails in the UltraZohm. 
 A simple passive heatsink is sufficient for operation. 
-An advanced actively cooled heatsink, either with air or water, can be installed as well if desired.
+An advanced actively cooled heatsink, either air or water cooled, can also be fitted if required.
 
 .. tikz:: Heatsink dimensions
   :align: center

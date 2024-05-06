@@ -22,9 +22,10 @@ def main():
 
     # Create a socket object
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    df = pd.DataFrame()
+    df = []
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"data_{current_time}.parquet"
+    network_send_field_size=15
         
     try:
         # Connect to the server
@@ -37,33 +38,40 @@ def main():
 
         # Send 64 zeros to the server
         received_data = b''
-        channels=1000
-        bytes_to_receive = channels*15*4+2*15*4+4
+        channels=20
+        bytes_to_receive = channels*network_send_field_size*4+2*network_send_field_size*4+4
 
         # Receive data from the server and print continuously
-        while True:
+        i=0
+        while i<1000:
             zeros = b'\x00' * 64
             client_socket.send(zeros)
-            # response = client_socket.recv(1446) # receive length is determined using the len functions below to match the sending data which fills one package fully and puts the rest in the second package. 
+            received_data = client_socket.recv(1446) # receive length is determined using the len functions below to match the sending data which fills one package fully and puts the rest in the second package. 
             # response2 = client_socket.recv(1078+60)
-            while len(received_data) < bytes_to_receive:
-                chunk = client_socket.recv(min(1446, bytes_to_receive - len(received_data)))
-                if not chunk:
-                    break
-                received_data += chunk
+            # while len(received_data) < bytes_to_receive:
+            #     chunk = client_socket.recv(min(1446, bytes_to_receive - len(received_data)))
+            #     if not chunk:
+            #         break
+            #     received_data += chunk
             response_length=len(received_data)
             float_values = decode_floats(received_data)
             data = np.array(float_values)
-            data = data[1:]
+            data = data[1:] # 1:
             # Reshape the data
-            reshaped_data = np.reshape(data, (-1, 15))
+            reshaped_data = np.reshape(data, (-1, network_send_field_size))
             # data = np.concatenate(reshaped_data, axis=0).reshape(-1, reshaped_data.shape[0]).T
             # Convert to DataFrame
-            df_tmp = pd.DataFrame(reshaped_data.T)
-            df = pd.concat([df, df_tmp], ignore_index=True)
-
-            table = pa.Table.from_pandas(df)
-            pq.write_table(table, filename)
+            df_tmp = reshaped_data.T
+            if len(df)==0:
+                df=df_tmp
+            else:
+                df = np.append(df,df_tmp, axis=0)
+            # print(df)
+            i=i+1
+            # print(i)
+            
+        table = pa.Table.from_pandas(pd.DataFrame(df))
+        pq.write_table(table, filename)
 
     except ConnectionRefusedError:
         print("Connection was refused.")

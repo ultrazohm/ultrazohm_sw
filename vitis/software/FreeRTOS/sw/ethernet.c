@@ -47,6 +47,8 @@ void print_echo_app_header()
  *      This thread sends and receives the data, regarding the information
  *      in the shared RAM. This thread runs always!
  *---------------------------------------------------------------------------*/
+size_t queue_length=0;
+
 void process_request_thread(void *p)
 {
 	struct javascope_data_t javascope_data_sending = {0};
@@ -65,63 +67,78 @@ void process_request_thread(void *p)
 
 	while (1) {
 
-		for (size_t i=0; i<NETWORK_SEND_FIELD_SIZE; i++){
+		queue_length=uxQueueMessagesWaiting(js_queue);
+		if (queue_length > NETWORK_SEND_FIELD_SIZE)
+		{
 
-			// Take one element from queue
-			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
-			xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
+			for (size_t i = 0; i < NETWORK_SEND_FIELD_SIZE; i++)
+			{
 
-			// copy data into nwsend struct
-			for (size_t j = 0; j < JS_CHANNELS;j++){
-				nwsend.val_01[j][i] = javascope_data_sending.scope_ch[j];
+				// Take one element from queue
+				// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
+				xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
+
+				// copy data into nwsend struct
+				for (size_t j = 0; j < JS_CHANNELS; j++)
+				{
+					nwsend.val_01[j][i] = javascope_data_sending.scope_ch[j];
+				}
+				nwsend.slowDataContent[i] = javascope_data_sending.slowDataContent;
+				nwsend.slowDataID[i] = javascope_data_sending.slowDataID;
 			}
-			nwsend.slowDataContent[i] 	= javascope_data_sending.slowDataContent;
-			nwsend.slowDataID[i] 		= javascope_data_sending.slowDataID;
-		}
-		nwsend.status = javascope_data_sending.status;
+			nwsend.status = javascope_data_sending.status;
 
-		// At this point, Ethernet Package is full and ready to be sent
-		i_LifeCheck_process_Ethernet++;
-		if(i_LifeCheck_process_Ethernet > 2500){
-			i_LifeCheck_process_Ethernet =0;
-		}
+			// At this point, Ethernet Package is full and ready to be sent
+			i_LifeCheck_process_Ethernet++;
+			if (i_LifeCheck_process_Ethernet > 2500)
+			{
+				i_LifeCheck_process_Ethernet = 0;
+			}
 
-		// write the data -> handle request /
-		// The data is sent here
-		if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0) {
-			uz_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
-			__FUNCTION__, nread, nwrote);
-			uz_printf("APU: Closing socket %d\r\n", clientfd);
-			js_connection_established = 0;
-			break;
-		}
-		asm("nop");
-
-		// read a max of RECV_BUF_SIZE bytes from socket /
-		if (nwrote > 0){
-			// read a max of RECV_BUF_SIZE bytes from socket /
-			nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE);
-			if (nread < 0) {
-				uz_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
+			// write the data -> handle request /
+			// The data is sent here
+			if ((nwrote = write(clientfd, &nwsend, sizeof(nwsend))) < 0)
+			{
+				uz_printf("APU: %s: ERROR responding to client echo request. received = %d, written = %d\r\n",
+						  __FUNCTION__, nread, nwrote);
+				uz_printf("APU: Closing socket %d\r\n", clientfd);
 				js_connection_established = 0;
 				break;
 			}
-			//asm(" nop");
-			if ( nread == sizeof(ControlData) ){
-				Received_Data = ((struct APU_to_RPU_t*)recv_buf); // cast received bytes
-				ControlData.id 		= Received_Data->id;
-				ControlData.value 	= Received_Data->value;
-			}
 
-			// break if client closed connection /
-			if (nread <= 0){
+
+			// read a max of RECV_BUF_SIZE bytes from socket /
+			if (nwrote > 0)
+			{
+				// read a max of RECV_BUF_SIZE bytes from socket /
+				nread = read(clientfd, (char *)recv_buf, TCPPACKETSIZE);
+				if (nread < 0)
+				{
+					uz_printf("APU: %s: error reading from socket %d, closing Javascope socket\r\n", __FUNCTION__, clientfd);
+					js_connection_established = 0;
+					break;
+				}
+				// asm(" nop");
+				if (nread == sizeof(ControlData))
+				{
+					Received_Data = ((struct APU_to_RPU_t *)recv_buf); // cast received bytes
+					ControlData.id = Received_Data->id;
+					ControlData.value = Received_Data->value;
+				}
+
+				// break if client closed connection /
+				if (nread <= 0)
+				{
+					close(clientfd);
+					js_connection_established = 0;
+					break;
+				}
+			}
+			else
+			{
 				close(clientfd);
 				js_connection_established = 0;
-				break;
 			}
-		}else{
-			close(clientfd);
-			js_connection_established = 0;
 		}
 	}
 

@@ -35,9 +35,11 @@ Hardware
     adapter_cards/digital/Digital_SI_Inverter_rev03
 
 
+
 .. toctree::
     :maxdepth: 1
     :caption: External
 
     adapter_cards/external/uz_per_adc_to_bnc/uz_per_adc_to_bnc_rev01
     adapter_cards/external/loopback_PCB/loopback_PCB
+    adapter_cards/external/uz_per_jtag/uz_per_jtag

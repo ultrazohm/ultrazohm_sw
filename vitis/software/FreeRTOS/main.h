@@ -42,11 +42,11 @@ extern "C" {
 
 #define TCPPACKETSIZE 1460 //Maximum TCPPaketSize -> Default: 1460 -> Jumbo-Frames would enable a TCPPACKETSIZE of 8960
 #define TCPPORT 1000	   //Random chosen, but equivalent to the Concerto-OHMrichter
-#define NETWORK_SEND_FIELD_SIZE 60
+#define NETWORK_SEND_FIELD_SIZE 80
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
 // ========== JavaScope-Queue =========================================================================
-#define JS_QUEUE_SIZE_ELEMENTS  	20000
+#define JS_QUEUE_SIZE_ELEMENTS  	30000
 #define JS_QUEUE_RECEIVE_TICKS2WAIT 100  // 1 tick = 100ms, wait (almost) indefinitely
 
 

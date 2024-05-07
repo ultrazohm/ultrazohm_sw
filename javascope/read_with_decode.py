@@ -15,8 +15,9 @@ def main():
     df = []
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename = f"data_{current_time}.parquet"
-    network_send_field_size = 60
-        
+    network_send_field_size = 80
+    channels = 1000
+    
     try:
         # Connect to the server
         client_socket.connect((IP, PORT))
@@ -28,13 +29,12 @@ def main():
 
         # Send 64 zeros to the server
         received_data = b''
-        channels = 500
         bytes_to_receive = channels * network_send_field_size * 4 + 2 * network_send_field_size * 4 + 4
 
         # Receive data from the server and print continuously
         i = 0
         data_list = []
-        while i < 5000:
+        while i < network_send_field_size*200:
             received_data = b''
             while len(received_data) < bytes_to_receive:
                 chunk = client_socket.recv(min(1024, bytes_to_receive - len(received_data)))
@@ -61,7 +61,7 @@ def main():
         b = np.concatenate(b, axis=1)
         b = b.T
         table = pa.Table.from_pandas(pd.DataFrame(b))
-        pq.write_table(table, filename)
+        pq.write_table(table, filename) #, compression = "gzip", compression_level = 5)
 
     except ConnectionRefusedError:
         print("Connection was refused.")

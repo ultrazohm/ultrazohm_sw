@@ -22,12 +22,12 @@ References
 Known issues
 ============
 
-* 2.5V rference voltage source dies on first startup of the inverter. This is traced back to an inexplicable high current demand during start up of the shunt amplifiers.
+* 2.5V reference voltage source dies on first startup of the inverter. This is traced back to an inexplicable high current demand during start up of the shunt amplifiers.
 * Gate resistors of 10 Ohm lead to a unacceptable ringing during switching. Can be fixed with higher gate resistance. 
 
 Inverter Card without the fixes are not working and deprecated. 
 The fixes have been implemented in the Rev03 version.
-See :ref:`dig_si_inverter_rev03` for futher information.
+See :ref:`dig_si_inverter_rev03` for further information.
 
 Designed by 
 ===========

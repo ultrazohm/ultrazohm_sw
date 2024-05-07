@@ -34,7 +34,7 @@ def main():
         # Receive data from the server and print continuously
         i = 0
         data_list = []
-        while i < 20000:
+        while i < 2000:
             received_data = b''
             while len(received_data) < bytes_to_receive:
                 chunk = client_socket.recv(min(1024, bytes_to_receive - len(received_data)))
@@ -50,10 +50,18 @@ def main():
             
         data_array = np.vstack(data_list)
         reshaped_data = np.reshape(data_array, (-1, network_send_field_size))
-        # data = np.concatenate(reshaped_data, axis=0).reshape(-1, reshaped_data.shape[0]).T
-        # Convert to DataFrame
-        df_tmp = reshaped_data.T
-        table = pa.Table.from_pandas(pd.DataFrame(reshaped_data))
+        b = []
+        x, y = reshaped_data.shape
+        y = channels
+        y += 2
+
+        for i in range(0, x, y):
+            end_value = i + y - 1
+            b.append(reshaped_data[i:end_value, :])
+
+        b = np.concatenate(b, axis=1)
+        b = b.T
+        table = pa.Table.from_pandas(pd.DataFrame(b))
         pq.write_table(table, filename)
 
     except ConnectionRefusedError:

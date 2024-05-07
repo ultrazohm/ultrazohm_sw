@@ -14,7 +14,7 @@ On this page a step-by-step upgrade from the original `Trenz TE0790 <https://wik
 Components
 -----------
 
-For the upgrade five components are needed:
+For the upgrade different components are needed:
 
 - IsoJTAG_Adapter :ref:`uz_per_jtag`
 - Ribbon cable with IDC connectors, length 0.3 meter `<https://www.tme.eu/de/details/fc12300-0/flachbandkabel-mit-idc-steckverbinder/amphenol/>`_
@@ -36,26 +36,24 @@ Upgrade procedure
 .. image:: upgrades/addspacer.jpg
     :width: 500
 
-4. Connect cable on carrier near slot D4.
+4. Connect ribbon cable on carrier near slot D4.
 
 .. image:: upgrades/mountcable.jpg
     :width: 500
 
-5. Connect cable on JTAG module.
+5. Connect ribbon cable on JTAG module.
 
 .. image:: upgrades/mountjtag.jpg
     :width: 500
 
-6. Fasten cable with cable ties.
+6. Fasten cable on lower rail with cable ties.
 
 .. image:: upgrades/mountjtag.jpg
     :width: 500
 
-7. JTAG module is installed and ready for programming the CPLD.
+7. JTAG module is installed and ready now for programming the CPLD.
 
 .. image:: upgrades/readymountedjtag.jpg
     :width: 500
 
-8. Open Diamond Programmer, setup right CPLD and get connection.
-
-9. Program CPLD with the needed program.
+8. Programm the CPLD according to :ref:`label_cpld_programming`.

@@ -28,24 +28,22 @@ def main():
 
         # Send 64 zeros to the server
         received_data = b''
-        channels = 200
+        channels = 100
         bytes_to_receive = channels * network_send_field_size * 4 + 2 * network_send_field_size * 4 + 4
 
         # Receive data from the server and print continuously
         i = 0
         data_list = []
-        while i < 2000:
+        while i < 20000:
             received_data = b''
             while len(received_data) < bytes_to_receive:
                 chunk = client_socket.recv(min(1024, bytes_to_receive - len(received_data)))
                 if not chunk:
                     break
                 received_data += chunk
-            response_length = len(received_data)
             client_socket.send(zeros)
             float_values = np.frombuffer(received_data[4:], dtype=np.float32)
-            data = float_values
-            data_list.append(data)
+            data_list.append(float_values)
             i += 1
             
         data_array = np.vstack(data_list)

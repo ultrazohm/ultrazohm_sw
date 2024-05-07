@@ -25,7 +25,7 @@ static float *js_slowDataArray[JSSD_ENDMARKER];
 float *js_ch_observable[JSO_ENDMARKER];
 float *js_ch_selected[JS_CHANNELS];
 
-static float lifecheck;
+static float lifecheck[JS_CHANNELS];
 static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
@@ -50,7 +50,7 @@ int JavaScope_initialize(DS_Data* data)
 	}
 
 	for(int j=0; j<JS_CHANNELS; j++){
-		js_ch_selected[j] = &lifecheck;
+		js_ch_selected[j] = &lifecheck[j];
 	}
 
 	for (int j=0; j<JSSD_ENDMARKER; j++){
@@ -110,7 +110,9 @@ void JavaScope_update(DS_Data* data){
 	int status = XST_SUCCESS;
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
-	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
+	for (size_t i = 0; i < JS_CHANNELS;i++){
+		lifecheck[i] = (float)uz_SystemTime_GetInterruptCounter()+i;
+	}
 	ISR_execution_time_us	= uz_SystemTime_GetIsrExectionTimeInUs();
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();

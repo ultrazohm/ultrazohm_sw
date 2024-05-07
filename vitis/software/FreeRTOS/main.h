@@ -46,7 +46,7 @@ extern "C" {
 //The IP-address, SubNet address-and StandartGateway-address are set in the main-thread in the main.c
 
 // ========== JavaScope-Queue =========================================================================
-#define JS_QUEUE_SIZE_ELEMENTS  	50000
+#define JS_QUEUE_SIZE_ELEMENTS  	20000
 #define JS_QUEUE_RECEIVE_TICKS2WAIT 100  // 1 tick = 100ms, wait (almost) indefinitely
 
 

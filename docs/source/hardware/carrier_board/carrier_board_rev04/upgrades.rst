@@ -48,7 +48,7 @@ Upgrade procedure
 
 6. Fasten cable on lower rail with cable ties.
 
-.. image:: upgrades/mountjtag.jpg
+.. image:: upgrades/zipcable.jpg
     :width: 500
 
 7. JTAG module is installed and ready now for programming the CPLDs (in addition to the Zynq-SoM as before).

@@ -31,9 +31,8 @@ Hardware
     adapter_cards/digital/Digital_BreakoutBoard_v1
     adapter_cards/digital/encoder_v1
     adapter_cards/digital/temperature_rev02/temperature_rev02
-    adapter_cards/digital/Digital_Resolver_rev01 
+    adapter_cards/digital/Digital_Resolver_rev01
     adapter_cards/digital/inverter/inverter_general
-
 
 
 .. toctree::

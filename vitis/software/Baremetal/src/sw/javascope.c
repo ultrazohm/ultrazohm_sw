@@ -108,10 +108,10 @@ void JavaScope_update(DS_Data* data){
 
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
-
+	float time=(float)uz_SystemTime_GetInterruptCounter();
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	for (size_t i = 0; i < JS_CHANNELS;i++){
-		lifecheck[i] = (float)uz_SystemTime_GetInterruptCounter()+i;
+		lifecheck[i] = time+i;
 	}
 	ISR_execution_time_us	= uz_SystemTime_GetIsrExectionTimeInUs();
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();

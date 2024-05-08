@@ -14,8 +14,8 @@ There are two different versions available:
 
 Note that there are two different folders for the CPLD programs in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
 
-Step-by-step
-------------
+Step-by-step for `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 0. Install the Diamond Programmer by Lattice and clone the CPLD repository, see :ref:`install_lattice` for details. 
 
@@ -65,6 +65,36 @@ Note that it is possible to program only one of the CPLDs by the enable check bo
 
 .. image:: cpld_programming/Programmer_Zynq_position.jpg
    :width: 500
+
+
+Step-by-step for :ref:`uz_per_jtag`
+--------------------------------------
+
+0. Install the Diamond Programmer by Lattice and clone the CPLD repository, see :ref:`install_lattice` for details. 
+
+1. Start the Diamond Programmer by Lattice and open the file in the git ``Programm_all5_CPLDs.xcf`` with regard to the installed CPLD. 
+
+.. image:: cpld_programming/LA4128V.png
+
+In this example the `CPLD LA4128V <https://www.mouser.de/ProductDetail/Lattice/LA4128V-75TN100E?qs=k0CM90KAVUoIZqpZ9HTArg%3D%3D>`_ is installed on the carrier board.
+
+2. Chose the proper CPLD software and chose which CPLDs you want to program. The standard configuration is:
+
+   - D1-D4 with **26Tx_with_enable**
+   - D5 for the encoder with **30Rx** 
+   
+Note that it is possible to program only one of the CPLDs by the enable check box in each line.
+
+3. Plug in the USB cable and turn on the power of the UltraZohm. The three green LED's on the programmer should light up.
+
+4. Setup a custom clock divider TCK 3.
+
+.. image:: cpld_programming/clockdivider.png
+
+5. Click on "Program", after successful programming it should look like this:
+
+.. image:: cpld_programming/cpld_programmed.png
+
 
 Known issues
 ------------

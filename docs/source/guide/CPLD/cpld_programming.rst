@@ -4,7 +4,15 @@
 Programming the CPLD 
 ====================
 
+CPLD Versions
+--------------
 
+There are two different versions available:
+
+* `LA4128V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LA4128V/>`_ for old revisions and Rev04 up to UZ2021-001-001-004-0004
+* `LC4256V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LC4256V/>`_ for newer versions
+
+Note that there are two different folders for the CPLD programs in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
 
 Step-by-step
 ------------
@@ -67,8 +75,6 @@ Not possible to find the CPLDs
 .. image:: cpld_programming/error_cannot_find_cplds.png
 
 Close all Vivado and Vitis instances and retry. Restart your PC and retry.
-
-
 
 See also
 --------

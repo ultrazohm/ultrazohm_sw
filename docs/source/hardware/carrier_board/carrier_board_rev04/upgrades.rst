@@ -51,7 +51,7 @@ Upgrade procedure
 .. image:: upgrades/zipcable.jpg
     :width: 500
 
-7. JTAG module is installed and ready now for programming the CPLDs (in addition to the Zynq-SoM as before).
+7. Reconnect the USB Cable between the Front panel and the JTAG module. It is ready now for programming the CPLDs (in addition to the Zynq-SoM as before).
 
 .. image:: upgrades/readymountedjtag.jpg
     :width: 500

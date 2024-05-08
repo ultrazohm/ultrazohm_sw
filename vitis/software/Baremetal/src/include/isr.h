@@ -30,6 +30,47 @@
 #define Interrupt_3L_start			XPS_FPGA4_INT_ID
 #define Interrupt_3L_center			XPS_FPGA5_INT_ID
 #define Interrupt_axi2tcm_write_done	XPS_FPGA6_INT_ID
+#define Interrupt_timer_fcc			XPAR_FABRIC_INTERRUPT_TRIGGER_F_CC_INTERRUPT_INTR
+
+
+typedef struct uz_PMSM__6ph_t {
+	float R_ph_Ohm;/**< phase resitance inductance in Ohm. Must be greater than 0.0f */
+	float Ld_Henry; /**< d-axis inductance in Henry. Must be greater than 0.0f */
+	float Lq_Henry;/**< q-axis inductance in Henry. Must be greater than 0.0f */
+	float Lx_Henry;/**< x-axis inductance in Henry. Must be greater than 0.0f */
+	float Ly_Henry;/**< y-axis inductance in Henry. Must be greater than 0.0f */
+	float Psi_PM_Vs;/**< permanent magnet flux linkage in Volt-seconds. Must be greater or equal than 0.0f */
+	float polePairs; /**< number of polePairs of the machine. Must be greater than 0.0f. Must be no decimal value (i.e. 2.5f is not allowed) */
+	float J_kg_m_squared; /**< inertia of the PMSM. Must be greater than 0.0f */
+	float I_max_Ampere; /**< max allowed current per phase. Must be greater than 0.0f */
+} uz_PMSM_6ph_t;
+
+typedef struct rated_val_t {
+	float VR;
+	float IR;
+	float nR;
+}rated_val_t;
+
+typedef struct base_val_t {
+	float VB;
+	float IB;
+	float omegaB;
+	float ZB;
+	float LB;
+	float psiB;
+}base_val_t;
+
+typedef struct pre_calc_val_t {
+	float Rs_over_ZB;
+	float Ts_times_ZB_over_Ld;
+	float Ts_times_ZB_over_Lq;
+	float Ts_times_ZB_over_Lx;
+	float Ts_times_ZB_over_Ly;
+	float Ld_over_LB;
+	float Lq_over_LB;
+	float psi_pm_over_psiB;
+}pre_calc_val_t;
+
 
 #if INTERRUPT_ISR_SOURCE_USER_CHOICE == 0
 	#define Interrupt_ISR_ID			Interrupt_2L_max_min
@@ -59,6 +100,10 @@
 #define Control_ISR_clear_pending_interrupt_reg		(XPAR_PSU_RCPU_GIC_DIST_BASEADDR + (XSCUGIC_EN_DIS_OFFSET_CALC(XSCUGIC_PENDING_CLR_OFFSET, Interrupt_ISR_ID)) )
 
 void ISR_Control(void *baseaddr_p);
+
+void Transfer_ipc_Intr_Handler(void *baseaddr_p);							// ISR von Timer-Control
+
+int Initialize_Timer(void);													// Init Timer for ISRs
 
 int Initialize_FPGAController(DS_Data* data);								// Init FPGA Control algorithm
 int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorithm

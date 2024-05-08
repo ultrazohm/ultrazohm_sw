@@ -107,6 +107,26 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
 
+	js_ch_observable[JSO_i_c1_pu]	= &data->av.i_c1_pu;
+	js_ch_observable[JSO_i_b1_pu]	= &data->av.i_b1_pu;
+	js_ch_observable[JSO_i_a1_pu]	= &data->av.i_a1_pu;
+	js_ch_observable[JSO_i_c2_pu]	= &data->av.i_c2_pu;
+	js_ch_observable[JSO_i_b2_pu]	= &data->av.i_b2_pu;
+	js_ch_observable[JSO_i_a2_pu]	= &data->av.i_a2_pu;
+	js_ch_observable[JSO_v_dc1_ip]	= &data->av.v_dc1_ip;
+	js_ch_observable[JSO_v_dc2_ip]	= &data->av.v_dc2_ip;
+	js_ch_observable[JSO_i_alpha_ip]	= &data->av.i_alpha_ip;
+	js_ch_observable[JSO_i_beta_ip]	= &data->av.i_beta_ip;
+	js_ch_observable[JSO_i_X_ip]	= &data->av.i_X_ip;
+	js_ch_observable[JSO_i_Y_ip]	= &data->av.i_Y_ip;
+	js_ch_observable[JSO_i_0p_ip]	= &data->av.i_0p_ip;
+	js_ch_observable[JSO_i_0n_ip]	= &data->av.i_0n_ip;
+	js_ch_observable[JSO_i_d_ip]	= &data->av.i_d_ip;
+	js_ch_observable[JSO_i_q_ip]	= &data->av.i_q_ip;
+	js_ch_observable[JSO_omega_ip]	= &data->av.omega_ip;
+
+
+
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

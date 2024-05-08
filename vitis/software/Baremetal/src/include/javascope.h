@@ -72,6 +72,23 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_i_c1_pu,
+	JSO_i_b1_pu,
+	JSO_i_a1_pu,
+	JSO_i_c2_pu,
+	JSO_i_b2_pu,
+	JSO_i_a2_pu,
+	JSO_v_dc1_ip,
+	JSO_v_dc2_ip,
+	JSO_i_alpha_ip,
+	JSO_i_beta_ip,
+	JSO_i_X_ip,
+	JSO_i_Y_ip,
+	JSO_i_0p_ip,
+	JSO_i_0n_ip,
+	JSO_i_d_ip,
+	JSO_i_q_ip,
+	JSO_omega_ip,
 	JSO_ENDMARKER
 };
 

@@ -26,14 +26,28 @@
 #include "../IP_Cores/mux_axi_ip_addr.h"
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
+
+#include "../uz/uz_math_constants.h"
+
 #include "../include/uz_platform_state_machine.h"
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+#include "../uz/uz_Transformation/uz_Transformation.h"
+#include "../uz/uz_fixedpoint/uz_fixedpoint.h"
+#include "../IP_Cores/uz_pu_conversion/uz_pu_conversion_hwAddresses.h"
+#include "../IP_Cores/uz_vsd_6ph_30deg/uz_vsd_6ph_30deg_hwAddresses.h"
+#include "../IP_Cores/uz_park_transform/uz_park_transform_hwAddresses.h"
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
+
+// Initialize the Timer structure
+XTmrCtr Timer_Interrupt;
+
+
 
 // Global variable structure
 extern DS_Data Global_Data;
@@ -74,6 +88,28 @@ uz_3ph_dq_t CIL_i_z1z2_meas = {0};
 uz_3ph_dq_t REAL_i_dq_meas= {0};
 uz_3ph_dq_t REAL_i_xy_meas = {0};
 uz_3ph_dq_t REAL_i_z1z2_meas = {0};
+
+uz_6ph_abc_t six_ph_currents = {0.0f};
+uz_6ph_alphabeta_t six_ph_alphabeta = {0.0f};
+uz_3ph_alphabeta_t three_ph_alphabeta = {0.0f};
+uz_3ph_dq_t rotating_dq = {0};
+
+uz_3ph_dq_t i_dq_ref = {0.0f};
+uz_3ph_dq_t i_dq_actual = {0.0f};
+uz_3ph_dq_t u_dq_ref = {0.0f};
+uz_3ph_alphabeta_t alphabeta_ref_volts = {0.0f};
+uz_6ph_alphabeta_t vsd_ref_volts = {0.0f};
+uz_6ph_abc_t phase_ref_volts = {0.0f};
+
+uz_3ph_abc_t input1 = {0.0f};
+uz_3ph_abc_t input2 = {0.0f};
+struct uz_DutyCycle_t output1 = {0};
+struct uz_DutyCycle_t output2 = {0};
+
+uz_3ph_dq_t speed_ctrl_ref_currents = {0.0f};
+// Global variable structure
+extern DS_Data Global_Data;
+
 struct uz_DutyCycle_2x3ph_t DutyCycle_output = {0};
 float CIL_omega_mech = 100.0f; //fixed speed for the CIL model
 float max_modulation_index = (1.0f / 2.0f) * 0.707106781f;
@@ -132,7 +168,7 @@ float theta_offset = 5.4843f;
 
 
 // software limits
-#define MAX_PHASE_CURRENT_AMP  30.0f
+#define MAX_PHASE_CURRENT_AMP  10.0f
 #define MAX_DC_VOLT 50.0f
 #define MAX_TEMP_DEG 90.0f
 //neutral config
@@ -161,6 +197,124 @@ uint64_t old_uptime=0U;
 uint32_t setpoint_index=0U;
 bool automatic_idiq_lock=false; // hack to only do it once
 float start_marker=0.0f;
+
+
+
+
+// pu output fixed point definition
+struct uz_fixedpoint_definition_t fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 15
+};
+
+
+
+// pu omega output fixed point definition
+struct uz_fixedpoint_definition_t omega_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 13,
+		.fractional_bits = 11
+};
+
+// vsd output fixed point definition
+struct uz_fixedpoint_definition_t vsd_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 7,
+		.fractional_bits = 11
+};
+
+// park transform output fixed point definition
+struct uz_fixedpoint_definition_t park_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 24
+};
+
+// delay comp output fixed point definition
+struct uz_fixedpoint_definition_t delay_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 24
+};
+
+// pu voltages vsd output fixed point definition
+struct uz_fixedpoint_definition_t pu_volts_vsd_fixedpoint_definition = {
+		.is_signed = true,
+		.integer_bits = 3,
+		.fractional_bits = 24
+};
+
+struct uz_fixedpoint_definition_t i_setpoint_isr_fp_def = {
+		.is_signed = true,
+		.integer_bits = 7,
+		.fractional_bits = 11
+};
+
+
+bool first_ISR = false;
+
+
+
+//=============================================================================
+// MPC IP core pre calculations
+
+// 2x3ph PMSM parameters
+const uz_PMSM_6ph_t dengine={
+		.R_ph_Ohm=0.0643f,
+		.Ld_Henry=0.00012516f,
+		.Lq_Henry=0.00012595f,
+		.Lx_Henry=0.000039374f,
+		.Ly_Henry=0.000034854f,
+		.polePairs=5.0f,
+		.Psi_PM_Vs= 0.0047f,
+		.I_max_Ampere=30.0f
+};
+
+
+// 2x3ph PMSM rated values da modificare
+const rated_val_t rated_val={
+		.VR=22.0f, // RMS, line-line Vdc/2*sqrt(3/2)
+		.IR=18.0f, // RMS according to previous data
+		.nR=1100.0f
+};
+
+// p.u. base values
+const base_val_t base_val={
+		.VB=sqrt(2.0f/3.0f)*rated_val.VR,
+		.IB=sqrt(2.0f)*rated_val.IR,
+		.omegaB=rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs,
+		.ZB=(sqrt(2.0f/3.0f)*rated_val.VR)/(sqrt(2.0f)*rated_val.IR),
+		.LB=(sqrt(2.0f/3.0f)*rated_val.VR)/(sqrt(2.0f)*rated_val.IR)/(rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs),
+		.psiB=(sqrt(2.0f/3.0f)*rated_val.VR)/(rated_val.nR*2.0f*UZ_PIf/60.0f*dengine.polePairs)
+};
+
+const float Ts = 1.0f/UZ_PWM_FREQUENCY; //  100 e3 ?
+
+//pre-calculated factors for delay compensation and prediction model
+const pre_calc_val_t pre_calc_val={
+		.Rs_over_ZB = dengine.R_ph_Ohm/base_val.ZB,
+		.Ts_times_ZB_over_Ld = Ts*base_val.ZB/dengine.Ld_Henry,
+		.Ts_times_ZB_over_Lq = Ts*base_val.ZB/dengine.Lq_Henry,
+		.Ts_times_ZB_over_Lx = Ts*base_val.ZB/dengine.Lx_Henry,
+		.Ts_times_ZB_over_Ly = Ts*base_val.ZB/dengine.Ly_Henry,
+		.Ld_over_LB = dengine.Ld_Henry/base_val.LB,
+		.Lq_over_LB = dengine.Lq_Henry/base_val.LB,
+		.psi_pm_over_psiB = dengine.Psi_PM_Vs/base_val.psiB
+};
+
+float sw_cnt_avg_time_sec = 0.0f;
+uint32_t isr_cnt = 0U;
+uint32_T wait_cnt = 0U;
+uint32_t mod_wait_cnt = 0U;
+float f_mod_wait_cnt = 0.0f;
+uint32_t switchNumb = 0U;
+float passed_time_sec = 0.0f;
+float pause_timer_sec = 0.0f;
+float f_sw_avg_Hz = 0.0f;
+
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -168,7 +322,9 @@ float start_marker=0.0f;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+
 static float TEMP_VSI_largest(float H1, float L1, float H2, float L2, float H3, float L3);
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -179,142 +335,189 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
-    if( (select_automatic_idiq) ){
-    	start_marker=1.0f;
-    	i_dq_reference.d=id_setpoints[setpoint_index];
-    	i_dq_reference.q=iq_setpoints[setpoint_index];
-    	i_xy_reference.d=ix_setpoints[setpoint_index];
-		i_xy_reference.q=iy_setpoints[setpoint_index];
-
-    	// step throught the array
-    	uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-    	if(current_uptime>(old_uptime +300 ) ){
-    		old_uptime=current_uptime;
-
-    		if(setpoint_index<21){
-    			setpoint_index++;
-    		}else{
-    			setpoint_index=0;
-    			select_automatic_idiq=false;
-    			start_marker=0.0f;
-    		}
-    	}
-		
-    }else{
        	i_dq_reference.d = i_d_ref;
        	i_dq_reference.q = i_q_ref;
        	i_xy_reference.d = i_X_ref;
        	i_xy_reference.q = i_Y_ref;
-    }
-
 
 
     //Take measurements independent of control_state
     if(select_Real) {
-    	//Read out speed&position
+        //Read out speed&position
         Global_Data.av.theta_elec = Global_Data.av.theta_elec - theta_offset;
         Global_Data.av.omega_mech = (Global_Data.av.mechanicalRotorSpeed / 60.0f) * (2.0f * UZ_PIf);
         Global_Data.av.omega_elec = Global_Data.av.omega_mech * polepairs;
 
-        // Read out and convert ADC readings to currents in Amps
-        Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV_A1 +PHASE_CURRENT_OFFSET_A1;
-        Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV_B1 +PHASE_CURRENT_OFFSET_B1;
-        Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV_C1 +PHASE_CURRENT_OFFSET_C1;
-        Global_Data.av.i_dc1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
-        Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_A4 * PHASE_CURRENT_CONV_A2 +PHASE_CURRENT_OFFSET_A2;
-        Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV_B2 +PHASE_CURRENT_OFFSET_B2;
-        Global_Data.av.i_c2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV_C2 +PHASE_CURRENT_OFFSET_C2;
-        Global_Data.av.i_dc2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+        //read pu IP currents
+		Global_Data.av.i_c1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out0_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+		Global_Data.av.i_b1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out1_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+		Global_Data.av.i_a1_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out2_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+		Global_Data.av.i_c2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out8_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+		Global_Data.av.i_b2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out9_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+		Global_Data.av.i_a2_pu = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out10_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
 
-        // Read out and convert ADC readings to voltages
-        Global_Data.av.v_dc1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_VOLT_CONV;
-        Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_A1 +PHASE_VOLT_OFFSET_A1;
-        Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_B1 +PHASE_VOLT_OFFSET_B1;
-        Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_C1 +PHASE_VOLT_OFFSET_C1;
-        Global_Data.av.v_dc2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_VOLT_CONV;
-        Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV_A2 +PHASE_VOLT_OFFSET_A2;
-        Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2 +PHASE_VOLT_OFFSET_B2;
-        Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2 +PHASE_VOLT_OFFSET_C2;
+		Global_Data.av.omega_ip = uz_fixedpoint_axi_read(XPAR_PU_OMEGA_M_0_BASEADDR + 0x1FC, omega_fixedpoint_definition);
+		//read pu IP voltages
+		Global_Data.av.v_dc1_ip = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out3_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+		Global_Data.av.v_dc2_ip = uz_fixedpoint_axi_read(XPAR_PU_CONVERSION_UZ_PU_CON_IP_0_BASEADDR + out11_AXI_Data_uz_pu_con_ip, fixedpoint_definition);
+		// read VSD IP
+		Global_Data.av.i_alpha_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + alpha_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+		Global_Data.av.i_beta_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + beta_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+		Global_Data.av.i_X_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + x_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+		Global_Data.av.i_Y_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + y_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+		Global_Data.av.i_0p_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + z1_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
+		Global_Data.av.i_0n_ip = uz_fixedpoint_axi_read(XPAR_VSD_6PH_IP_0_BASEADDR + z2_AXI_Data_VSD_6ph_ip, vsd_fixedpoint_definition);
 
-        //Read out inverter temp
-        Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
-        Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
-        Global_Data.av.temp_VSI_1 = TEMP_VSI_largest(Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H1, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L1,
-        		Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H2, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L2,
+	// read park transform ip
+	   Global_Data.av.i_d_ip = uz_fixedpoint_axi_read(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y1_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
+	   Global_Data.av.i_q_ip = uz_fixedpoint_axi_read(XPAR_UZ_PARK_TRANSFORM_IP_0_BASEADDR + y2_AXI_Data_uz_park_transform_ip, park_fixedpoint_definition);
+
+	   Global_Data.av.i_d_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x104, delay_fixedpoint_definition);
+	   Global_Data.av.i_q_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x108, delay_fixedpoint_definition);
+	   Global_Data.av.i_x_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x10C, delay_fixedpoint_definition);
+	   Global_Data.av.i_y_delay = uz_fixedpoint_axi_read(XPAR_MPC_DELAY_COMP_0_BASEADDR + 0x110, delay_fixedpoint_definition);
+
+
+
+   //    //DEBUG write index to pu_voltages ip via AXI
+   //    uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x100, 0U);
+
+	   // read pu_voltages_vsd ip
+	   Global_Data.av.vd_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x108, pu_volts_vsd_fixedpoint_definition);
+	   Global_Data.av.vq_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x10C, pu_volts_vsd_fixedpoint_definition);
+	   Global_Data.av.vx_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x110, pu_volts_vsd_fixedpoint_definition);
+	   Global_Data.av.vy_pu = uz_fixedpoint_axi_read(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x114, pu_volts_vsd_fixedpoint_definition);
+   //
+   //    // save raw angles to variables
+   //    Global_Data.av.theta_mech_rad = Global_Data.av.posVel_mech.position;
+   //    Global_Data.av.theta_elec_rad = Global_Data.av.posVel_el.position;
+   //
+   //    Global_Data.av.theta_mech_calculated = theta_mech_calc_from_resolver-Global_Data.av.theta_mech_offset_rad;
+   //
+   //    // save speeds in rad/s to variables
+   //    Global_Data.av.mechanicalRotorSpeedRADpS = Global_Data.av.posVel_mech.velocity;
+   //    Global_Data.av.electricalRotorSpeedRADpS = Global_Data.av.posVel_el.velocity;
+   //
+   //    // calculate speeds in rpm
+   //    Global_Data.av.mechanicalRotorSpeedRPM = Global_Data.av.mechanicalRotorSpeedRADpS * 30.0f/UZ_PIf;
+   //    Global_Data.av.electricalRotorSpeedRPM = Global_Data.av.electricalRotorSpeedRADpS * 30.0f/UZ_PIf;
+
+	   // Read out and convert ADC readings to currents in Amps
+	   Global_Data.av.i_a1 = Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV_A1 +PHASE_CURRENT_OFFSET_A1;
+	   Global_Data.av.i_b1 = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV_B1 +PHASE_CURRENT_OFFSET_B1;
+	   Global_Data.av.i_c1 = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV_C1 +PHASE_CURRENT_OFFSET_C1;
+	   Global_Data.av.i_dc1 = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
+	   Global_Data.av.i_a2 = Global_Data.aa.A2.me.ADC_A4 * PHASE_CURRENT_CONV_A2 +PHASE_CURRENT_OFFSET_A2;
+	   Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV_B2 +PHASE_CURRENT_OFFSET_B2;
+	   Global_Data.av.i_c2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV_C2 +PHASE_CURRENT_OFFSET_C2;
+	   Global_Data.av.i_dc2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+	   // Read out and convert ADC readings to voltages
+	   Global_Data.av.v_dc1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_VOLT_CONV;
+	   Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_A1 +PHASE_VOLT_OFFSET_A1;
+	   Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_B1 +PHASE_VOLT_OFFSET_B1;
+	   Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_C1 +PHASE_VOLT_OFFSET_C1;
+	   Global_Data.av.v_dc2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_VOLT_CONV;
+	   Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV_A2 +PHASE_VOLT_OFFSET_A2;
+	   Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2 +PHASE_VOLT_OFFSET_B2;
+	   Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2 +PHASE_VOLT_OFFSET_C2;
+
+	   // write measured dc_link voltage to pu_voltages ip
+	   uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x118, uz_convert_float_to_sfixed(Global_Data.av.v_dc1/base_val.VB, 15));
+
+
+		//Read out inverter temp
+		Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+		Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
+		Global_Data.av.temp_VSI_1 = TEMP_VSI_largest(Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H1, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L1,
+				Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H2, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L2,
 				Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H3, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L3);
-        Global_Data.av.temp_VSI_2 = TEMP_VSI_largest(Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H1, Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L1,
-               	Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H2, Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L2,
-       			Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H3, Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L3);
+		Global_Data.av.temp_VSI_2 = TEMP_VSI_largest(Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H1, Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L1,
+				Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H2, Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L2,
+				Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_H3, Global_Data.av.inverter_outputs_d2.ChipTempDegreesCelsius_L3);
 
-        // check current limit
-        if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
-        	fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
-        		uz_assert(0);
-        }
-           // check DC Bus
-           if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
-        	   uz_assert(0);
-           }
-           // check inverter temp
-           if(fabs(Global_Data.av.temp_VSI_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temp_VSI_2) > MAX_TEMP_DEG) {
-        	   uz_assert(0);
-           }
+		// check current limit
+		if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
+			fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
+			//		uz_assert(0);
+					ultrazohm_state_machine_set_stop(true);
+		}
 
-           //write to structs
-           REAL_i_abc_meas.a1 = Global_Data.av.i_a1;
-           REAL_i_abc_meas.b1 = Global_Data.av.i_b1;
-           REAL_i_abc_meas.c1 = Global_Data.av.i_c1;
-           REAL_i_abc_meas.a2 = Global_Data.av.i_a2;
-           REAL_i_abc_meas.b2 = Global_Data.av.i_b2;
-           REAL_i_abc_meas.c2 = Global_Data.av.i_c2;
+	   // check DC Bus
+	   if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
+		   //			uz_assert(0);
+					ultrazohm_state_machine_set_stop(true);
+	   }
+	   // check inverter temp
+	   if(fabs(Global_Data.av.temp_VSI_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temp_VSI_2) > MAX_TEMP_DEG) {
+		   uz_assert(0);
+	   }
 
-           // calc u neutral voltage
-           switch(NEUTRAL_CONFIG){
-           case 1U:{
-           	u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
-           	u_n2 = u_n1;
-           	break;
-           }
-           case 2U:{
-           	u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1)/3.0f;
-           	u_n2 = (Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2)/3.0f;
-           	break;
-           }
-           default: break;
-           }
+    Global_Data.av.i_q_ref_pu = i_dq_reference.q/base_val.IB;
+    Global_Data.av.i_d_ref_pu = i_dq_reference.d/base_val.IB;
 
-           // calc phase voltages with neutral voltage
-           REAL_v_abc_meas.a1 = Global_Data.av.v_a1 - u_n1;
-           REAL_v_abc_meas.b1 = Global_Data.av.v_b1 - u_n1;
-           REAL_v_abc_meas.c1 = Global_Data.av.v_c1 - u_n1;
-           REAL_v_abc_meas.a2 = Global_Data.av.v_a2 - u_n2;
-           REAL_v_abc_meas.b2 = Global_Data.av.v_b2 - u_n2;
-           REAL_v_abc_meas.c2 = Global_Data.av.v_c2 - u_n2;
+	// write reference values to mpc ip
+		uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
+		uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+		uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x108, i_X_ref/base_val.IB, i_setpoint_isr_fp_def);
+		uz_fixedpoint_axi_write(XPAR_MPC_COST_OPT_0_BASEADDR + 0x10C, i_Y_ref/base_val.IB, i_setpoint_isr_fp_def);
 
-           //VSD-Transformation
-           REAL_i_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq_xy(REAL_i_abc_meas, Global_Data.av.theta_elec);
-           Global_Data.av.I_d = REAL_i_dqxy_meas.d;
-           Global_Data.av.I_q = REAL_i_dqxy_meas.q;
-           Global_Data.av.I_X = REAL_i_dqxy_meas.x;
-           Global_Data.av.I_Y = REAL_i_dqxy_meas.y;
 
-           REAL_v_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq_xy(REAL_v_abc_meas, Global_Data.av.theta_elec);
-		   Global_Data.av.U_d = v_dqxy_limited_volts.d;
-		   Global_Data.av.U_q = v_dqxy_limited_volts.q;
-		   Global_Data.av.U_X = v_dqxy_limited_volts.x;
-		   Global_Data.av.U_Y = v_dqxy_limited_volts.y;
+   //write to structs
+   REAL_i_abc_meas.a1 = Global_Data.av.i_a1;
+   REAL_i_abc_meas.b1 = Global_Data.av.i_b1;
+   REAL_i_abc_meas.c1 = Global_Data.av.i_c1;
+   REAL_i_abc_meas.a2 = Global_Data.av.i_a2;
+   REAL_i_abc_meas.b2 = Global_Data.av.i_b2;
+   REAL_i_abc_meas.c2 = Global_Data.av.i_c2;
 
-		   //Only allow enable of inverter, if "select_Real" is true
-           if (current_state == running_state || current_state == control_state) {
-        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
-        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
-           } else {
-        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
-        	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
-           }
-       }
+   // calc u neutral voltage
+   switch(NEUTRAL_CONFIG){
+   case 1U:{
+	u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
+	u_n2 = u_n1;
+	break;
+   }
+   case 2U:{
+	u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1)/3.0f;
+	u_n2 = (Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2)/3.0f;
+	break;
+   }
+   default: break;
+   }
+
+   // calc phase voltages with neutral voltage
+   REAL_v_abc_meas.a1 = Global_Data.av.v_a1 - u_n1;
+   REAL_v_abc_meas.b1 = Global_Data.av.v_b1 - u_n1;
+   REAL_v_abc_meas.c1 = Global_Data.av.v_c1 - u_n1;
+   REAL_v_abc_meas.a2 = Global_Data.av.v_a2 - u_n2;
+   REAL_v_abc_meas.b2 = Global_Data.av.v_b2 - u_n2;
+   REAL_v_abc_meas.c2 = Global_Data.av.v_c2 - u_n2;
+
+   //VSD-Transformation
+   REAL_i_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq_xy(REAL_i_abc_meas, Global_Data.av.theta_elec);
+   Global_Data.av.I_d = REAL_i_dqxy_meas.d;
+   Global_Data.av.I_q = REAL_i_dqxy_meas.q;
+   Global_Data.av.I_X = REAL_i_dqxy_meas.x;
+   Global_Data.av.I_Y = REAL_i_dqxy_meas.y;
+
+   REAL_v_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq_xy(REAL_v_abc_meas, Global_Data.av.theta_elec);
+   Global_Data.av.U_d = v_dqxy_limited_volts.d;
+   Global_Data.av.U_q = v_dqxy_limited_volts.q;
+   Global_Data.av.U_X = v_dqxy_limited_volts.x;
+   Global_Data.av.U_Y = v_dqxy_limited_volts.y;
+
+   //Only allow enable of inverter, if "select_Real" is true
+   if (current_state == running_state || current_state == control_state) {
+	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
+   } else {
+	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+	   uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
+   }
+}
 
 
    //-----------------------------------------------------------------------------------------------------------------------------//
@@ -363,28 +566,6 @@ void ISR_Control(void *data)
            		v_xy_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, CIL_i_xy_meas, V_DC_Volts, Global_Data.av.omega_elec);
 
            	}
-//           	else if(select_DDPG_1_64) {
-//       			if(ext_clamping_dq == false && ext_clamping_xy == false) {
-//       				i_dqxy_integrated_error.d = (i_dqxy_integrated_error.d + (i_dqxy_error.d * ts)); // use Forward-Euler with error of previous timestep for integration
-//       				i_dqxy_integrated_error.q = (i_dqxy_integrated_error.q + (i_dqxy_error.q * ts));
-//       				i_dqxy_integrated_error.x = (i_dqxy_integrated_error.x + (i_dqxy_error.x * ts));
-//       				i_dqxy_integrated_error.y = (i_dqxy_integrated_error.y + (i_dqxy_error.y * ts));
-//       			} else {
-//       				i_dqxy_integrated_error.d += 0.0f;
-//       				i_dqxy_integrated_error.q += 0.0f;
-//       				i_dqxy_integrated_error.x += 0.0f;
-//       				i_dqxy_integrated_error.y += 0.0f;
-//       			}
-//       		i_dqxy_error.d = (i_dq_reference.d - CIL_i_dqxy_meas.d) / rated_current;
-//       		i_dqxy_error.q = (i_dq_reference.q - CIL_i_dqxy_meas.q) / rated_current;
-//       		i_dqxy_error.x = (i_xy_reference.d - CIL_i_dqxy_meas.x) / rated_current;
-//       		i_dqxy_error.y = (i_xy_reference.q - CIL_i_dqxy_meas.y) / rated_current;
-//
-//
-//           	v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, CIL_i_dq_meas, &ext_clamping_dq);
-//   			v_xy_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_xy_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, CIL_i_xy_meas, &ext_clamping_xy);
-//
-//           	}
 
            	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
            	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
@@ -407,50 +588,20 @@ void ISR_Control(void *data)
            	REAL_i_z1z2_meas.d = REAL_i_dqxy_meas.z1;
            	REAL_i_z1z2_meas.q = REAL_i_dqxy_meas.z2;
 
+
+
            	if(select_CurrentControl) {
+
            		v_dq_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, i_dq_reference, REAL_i_dq_meas, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
            		v_xy_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, REAL_i_xy_meas, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-                uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+                //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+                //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
            	}
-//           	else if(select_DDPG_1_64) {
-//       			if(ext_clamping_dq == false && ext_clamping_xy == false) {
-//       				i_dqxy_integrated_error.d = (i_dqxy_integrated_error.d + (i_dqxy_error.d * ts)); // use Forward-Euler with error of previous timestep for integration
-//       				i_dqxy_integrated_error.q = (i_dqxy_integrated_error.q + (i_dqxy_error.q * ts));
-//       				i_dqxy_integrated_error.x = (i_dqxy_integrated_error.x + (i_dqxy_error.x * ts));
-//       				i_dqxy_integrated_error.y = (i_dqxy_integrated_error.y + (i_dqxy_error.y * ts));
-//       			} else {
-//       				i_dqxy_integrated_error.d += 0.0f;
-//       				i_dqxy_integrated_error.q += 0.0f;
-//       				i_dqxy_integrated_error.x += 0.0f;
-//       				i_dqxy_integrated_error.y += 0.0f;
-//       			}
-//           		i_dqxy_error.d = (i_dq_reference.d - REAL_i_dqxy_meas.d) / rated_current;
-//           		i_dqxy_error.q = (i_dq_reference.q - REAL_i_dqxy_meas.q) / rated_current;
-//           		i_dqxy_error.x = (i_xy_reference.d - REAL_i_dqxy_meas.x) / rated_current;
-//           		i_dqxy_error.y = (i_xy_reference.q - REAL_i_dqxy_meas.y) / rated_current;
-//
-//           		v_dq_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_dq_meas, &ext_clamping_dq);
-//           		v_xy_limited_volts = uz_CurrentControl_SpaceVector_Limitation(v_xy_non_limited_volts, V_DC_Volts, max_modulation_index, Global_Data.av.omega_elec, REAL_i_xy_meas, &ext_clamping_xy);
-//
-//           	}
+
+			if (Global_Data.av.debug_ip_off == true) {
+			uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, true);
+			}
 
            	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
            	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
@@ -472,6 +623,7 @@ void ISR_Control(void *data)
        } else {
        	uz_CurrentControl_reset(Global_Data.objects.CC_dq_instance);
        	uz_CurrentControl_reset(Global_Data.objects.CC_xy_instance);
+       	uz_axi_write_bool(XPAR_MPC_MPC_ENB_0_BASEADDR + 0x17C, false); // MPC Enable OFF
        	ext_clamping_dq = false;
        	ext_clamping_xy = false;
        	v_dq_limited_volts.d = 0.0f;
@@ -493,15 +645,96 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
 
-    // Set duty cycles for three-level modulator
+/*    // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
                         Global_Data.rasv.halfBridge2DutyCycle,
                         Global_Data.rasv.halfBridge3DutyCycle);
+*/
+
+
+/*
+    // state machine for automated trade-off curve measurement
+    if(Global_Data.av.pause_timer_sec >= Global_Data.av.pause_time_sec) {
+    	wait_cnt = 0U;
+    	mod_wait_cnt++;
+    	if(mod_wait_cnt > 2U) {
+    		mod_wait_cnt=0U;
+    	}
+
+    }
+
+
+    // count switching actions of 2L-sixphase inverter
+    if(Global_Data.av.mechanicalRotorSpeedRADpS_ip > 1.0f) {
+    sw_cnt_avg_time_sec = 1.0f/(Global_Data.av.mechanicalRotorSpeedRPM_ip / 60.0f * dengine.polePairs) * 20.0f; //calculate averaging time window according to 20x fundamental electric period
+    } else  {
+    	sw_cnt_avg_time_sec = 1.0f;
+    }
+
+    // assign pause time between automated measurements
+    Global_Data.av.pause_time_sec = 10.0f*sw_cnt_avg_time_sec;
+
+
+    if(Global_Data.av.start_trade_off_measurement == true && Global_Data.av.measure_flag == false) {
+    	Global_Data.rasv.req_measure_flag = true;
+    }
+
+    // calculate average switching frequency and control the measure flag
+    if(passed_time_sec >= sw_cnt_avg_time_sec) {
+        	switchNumb = uz_axi_read_uint32(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x104);
+        	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, true);	// reset counter = true
+        	isr_cnt = 0;
+        	Global_Data.av.f_sw_avg_Hz = switchNumb * 0.041667f / passed_time_sec; // 0.041667 = 1/(12*2); 12 switches and each transition is counted (*2)
+        	uz_axi_write_bool(XPAR_MPC_TWO_LEVEL_SIXPHASE_F_0_BASEADDR + 0x100, false); // reset counter false
+        	Global_Data.av.f_sw_measure_flag = !Global_Data.av.f_sw_measure_flag; //toggle every time f_sw is measured
+        	Global_Data.av.f_f_sw_measure_flag = (float)Global_Data.av.f_sw_measure_flag;
+        	// control the measuring flag
+        	if (Global_Data.rasv.req_measure_flag == true && Global_Data.av.f_sw_measure_flag == false && mod_wait_cnt == 2) {
+        	Global_Data.av.measure_flag = true;
+        	Global_Data.av.f_measure_flag = 1.0f;
+        	mod_wait_cnt=0U;
+        	}
+        	if (Global_Data.av.f_sw_measure_flag == true && Global_Data.av.measure_flag == true) {
+        		// clear the measure and req_measure flags
+        		Global_Data.rasv.req_measure_flag = false;
+        		Global_Data.rasv.f_req_measure_flag = 0.0f;
+        		Global_Data.av.measure_flag = false;
+        		Global_Data.av.f_measure_flag = 0.0f;
+        		// increase measuring point counter
+        		Global_Data.rasv.cnt_lambda_u++;
+        		Global_Data.rasv.f_cnt_lambda_u = (float)Global_Data.rasv.cnt_lambda_u;
+        		// set next lamda_u
+        		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_now + Global_Data.rasv.lambda_u_step;
+        		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
+        		uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+        	}
+        }
+
+    f_mod_wait_cnt = (float)mod_wait_cnt;
+
+    if(Global_Data.rasv.cnt_lambda_u > Global_Data.rasv.cnt_lambda_u_end) {
+    	Global_Data.av.start_trade_off_measurement = false;
+    	Global_Data.rasv.cnt_lambda_u = 1U;
+    	Global_Data.rasv.f_cnt_lambda_u = 1.0f;
+		Global_Data.rasv.lambda_u_now = Global_Data.rasv.lambda_u_start;
+		Global_Data.av.lambda_u = Global_Data.rasv.lambda_u_now;
+		uz_axi_write_int32(XPAR_MPC_COST_OPT_0_BASEADDR + 0x124, uz_convert_float_to_unsigned_fixed(Global_Data.av.lambda_u, 17));
+    }
+
+        isr_cnt++;
+        wait_cnt++;
+
+        passed_time_sec = isr_cnt * 1.0f/(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE);
+        Global_Data.av.pause_timer_sec = wait_cnt * 1.0f/(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE);
+*/
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();
+
 }
+
 
 
 static float TEMP_VSI_largest(float H1, float L1, float H2, float L2, float H3, float L3){

@@ -2,10 +2,12 @@
 
 #pragma once
 
-// OCM Bank 3 starts at         0xFFFF0000
-// See UG1085 page 533 (https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G20.375357)
+// OCM Bank Adresses
+// See UG1085 v2.4 table 18-1 OCM Mapping Summary (https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm)
 
-#define MEM_SHARED_START 	0xFFFF0000
+#define MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU 	0xFFFD0000 // bank 1 is for r5->a53 user data
+#define MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU 	0xFFFE0000 // bank 2 is for a53->r5 user data
+#define MEM_SHARED_START_OCM_BANK_3_JAVASCOPE 	0xFFFF0000 // bank 3 is for r5->a53 javascope
 #define JS_CHANNELS 		20
 
 // update by hand when changing JS_CHANNELS
@@ -25,4 +27,14 @@ struct APU_to_RPU_t
 {
 	uint32_t id;
 	float value;
+};
+
+struct APU_to_RPU_user_data_t
+{
+	float		test_apu_to_rpu_val;
+};
+
+struct RPU_to_APU_user_data_t
+{
+	float		test_rpu_to_apu_val;
 };

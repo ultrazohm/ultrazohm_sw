@@ -25,6 +25,7 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
+
 struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
 
@@ -36,6 +37,10 @@ QueueHandle_t js_queue;
 int js_queue_full = 0;
 
 int i_LifeCheck_Transfer_ipc;
+
+float rpu_apu_rcv_test = 0.0f;
+float test = 0.0f;
+float test_ADC = 0.0f;
 
 //Initialize the Interrupt structure
 XScuGic INTCipc;	//Interrupt for IPC
@@ -50,13 +55,21 @@ XScuGic_Config *IntcConfig;
 // Standard isr interrupt from BareMetal -> frequency depends on the Software-interrupt from BareMetal
 void Transfer_ipc_Intr_Handler(void *data)
 {
-	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+	// create pointers to user data variables located in OCM Bank 1 and 2
+	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
+	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	int status;
 	BaseType_t xHigherPriorityTaskWoken;
 
-	// flush cache of shared memory
-	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+//#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+	// invalidate cache of shared memory before read
+	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, sizeof(rpu_to_apu_user_data));
+//#endif
+
+	// flush cache of shared memory for javascope data
+	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
 
 	// if javascope connection is established
 	if(js_connection_established!=0)
@@ -76,6 +89,26 @@ void Transfer_ipc_Intr_Handler(void *data)
 	javascope_data_status = javascope_data->status;
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
+
+//#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+	/* do your computations that you want to accelerate here... */
+
+	// get data from r5 from shared memory
+	rpu_apu_rcv_test = rpu_to_apu_user_data->test_rpu_to_apu_val;
+	test_ADC = 0.0f;
+
+    for (int i=0;i<100;i++)
+    {
+    	test = (i*test)/10000.0f+sqrt(i*test)+i;
+    }
+
+	// write data to r5 in shared memory and flush cache
+	apu_to_rpu_user_data->test_apu_to_rpu_val = rpu_apu_rcv_test;
+	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, sizeof(apu_to_rpu_user_data));
+
+	/* ...until here */
+//#endif
+
 	// Write message for acknowledge of the interrupt to RPU
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 

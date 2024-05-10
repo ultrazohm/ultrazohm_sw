@@ -19,6 +19,9 @@
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
 
+// maximum number of while loops in the polling function for the acknowledge flag
+#define POLL_FOR_ACK_TIMEOUT_COUNT	1000
+
 //Variables for JavaScope
 static float zerovalue = 0.0;
 static float *js_slowDataArray[JSSD_ENDMARKER];
@@ -30,6 +33,11 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+
+
+float apu_to_rpu_rcv_test = 0.0f;
+uint32_t pollError = 0U;
+float fpollError = 0.0f;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status of the four "UltraZohm LEDs" (cf. ipc_ARM.c):
@@ -61,24 +69,24 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
-	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 			= &data->av.I_U;
-	js_ch_observable[JSO_ib] 			= &data->av.I_V;
-	js_ch_observable[JSO_ic] 			= &data->av.I_W;
-	js_ch_observable[JSO_ua] 			= &data->av.U_U;
-	js_ch_observable[JSO_ub] 			= &data->av.U_V;
-	js_ch_observable[JSO_uc] 			= &data->av.U_W;
-	js_ch_observable[JSO_iq] 			= &data->av.I_q;
-	js_ch_observable[JSO_id] 			= &data->av.I_d;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
-	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
-	js_ch_observable[JSO_ud]			= &data->av.U_d;
-	js_ch_observable[JSO_uq]			= &data->av.U_q;
-	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
-	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-
+	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
+	js_ch_observable[JSO_ia] 					= &data->av.I_U;
+	js_ch_observable[JSO_ib] 					= &data->av.I_V;
+	js_ch_observable[JSO_ic] 					= &data->av.I_W;
+	js_ch_observable[JSO_ua] 					= &data->av.U_U;
+	js_ch_observable[JSO_ub] 					= &data->av.U_V;
+	js_ch_observable[JSO_uc] 					= &data->av.U_W;
+	js_ch_observable[JSO_iq] 					= &data->av.I_q;
+	js_ch_observable[JSO_id] 					= &data->av.I_d;
+	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
+	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
+	js_ch_observable[JSO_ud]					= &data->av.U_d;
+	js_ch_observable[JSO_uq]					= &data->av.U_q;
+	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
+	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
+	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_apu_to_rpu_rcv_test] 	= &apu_to_rpu_rcv_test;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -94,6 +102,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_PollError]				= &fpollError;
 
 	return Status;
 }
@@ -102,12 +111,21 @@ int JavaScope_initialize(DS_Data* data)
 
 void JavaScope_update(DS_Data* data){
 
-	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
 	struct APU_to_RPU_t Received_Data_from_A53 = {0};
+	// create pointers to user data variables located in OCM Bank 1 and 2
+	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
+	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
+
+#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+	// write data to a53 in shared memory and flush cache
+	rpu_to_apu_user_data->test_rpu_to_apu_val = (float)js_cnt_slowData;
+	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, sizeof(rpu_to_apu_user_data));
+#endif
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
@@ -125,7 +143,7 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->status 			= js_status_BareToRTOS;
 
 	// flush data cache of shared memory region to make sure shared memory is updated
-	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
 
 	//Send an interrupt to APU
 	status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
@@ -133,9 +151,19 @@ void JavaScope_update(DS_Data* data){
 		xil_printf("RPU: IPI Trigger failed\r\n");
 	}
 
+#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+	//Poll Acknowledgment of IPI
+	status = XIpiPsu_PollForAck(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
+	if(status != (u32)XST_SUCCESS) {
+		pollError++;
+		fpollError = (float)pollError;
+	}
+#endif
+
 	u32 ControlData_length = sizeof(Received_Data_from_A53)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
-	//Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
+	//Afterwards the acknowledge a message from the APU can be read/checked, if a53 is enabled for external calculations of the r5 we wait for the acknowledge flag,
+	//if not, we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
 	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	if(status != (u32)XST_SUCCESS) {
@@ -151,6 +179,12 @@ void JavaScope_update(DS_Data* data){
 	if(i_fetchDataLifeCheck > 10000){
 		i_fetchDataLifeCheck =0;
 	}
+
+#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+	//invalidate cache and read data from a53 shared memory
+	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, sizeof(apu_to_rpu_user_data));
+	apu_to_rpu_rcv_test = apu_to_rpu_user_data->test_apu_to_rpu_val;
+#endif
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
 

@@ -25,6 +25,9 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
+// define the size of the cache to flush. +64U to ensure that at least the whole cache line is flushed
+#define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(rpu_to_apu_user_data)+64U
+#define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(apu_to_rpu_user_data)+64U
 
 struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
@@ -40,7 +43,7 @@ int i_LifeCheck_Transfer_ipc;
 
 float rpu_apu_rcv_test = 0.0f;
 float test = 0.0f;
-float test_ADC = 0.0f;
+float test_ADC[8] = {0.0f};
 
 //Initialize the Interrupt structure
 XScuGic INTCipc;	//Interrupt for IPC
@@ -63,10 +66,6 @@ void Transfer_ipc_Intr_Handler(void *data)
 	int status;
 	BaseType_t xHigherPriorityTaskWoken;
 
-//#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
-	// invalidate cache of shared memory before read
-	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, sizeof(rpu_to_apu_user_data));
-//#endif
 
 	// flush cache of shared memory for javascope data
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
@@ -91,12 +90,24 @@ void Transfer_ipc_Intr_Handler(void *data)
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
 //#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+
 	/* do your computations that you want to accelerate here... */
+
+	// invalidate cache of shared memory before read
+	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 
 	// get data from r5 from shared memory
 	rpu_apu_rcv_test = rpu_to_apu_user_data->test_rpu_to_apu_val;
-	test_ADC = 0.0f;
+	test_ADC[0] = rpu_to_apu_user_data->ADC_value_1;
+	test_ADC[1] = rpu_to_apu_user_data->ADC_value_2;
+	test_ADC[2] = rpu_to_apu_user_data->ADC_value_3;
+	test_ADC[3] = rpu_to_apu_user_data->ADC_value_4;
+	test_ADC[4] = rpu_to_apu_user_data->ADC_value_5;
+	test_ADC[5] = rpu_to_apu_user_data->ADC_value_6;
+	test_ADC[6] = rpu_to_apu_user_data->ADC_value_7;
+	test_ADC[7] = rpu_to_apu_user_data->ADC_value_8;
 
+	// calculate heavy stuff
     for (int i=0;i<100;i++)
     {
     	test = (i*test)/10000.0f+sqrt(i*test)+i;
@@ -104,7 +115,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// write data to r5 in shared memory and flush cache
 	apu_to_rpu_user_data->test_apu_to_rpu_val = rpu_apu_rcv_test;
-	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, sizeof(apu_to_rpu_user_data));
+	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 
 	/* ...until here */
 //#endif

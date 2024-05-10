@@ -21,6 +21,9 @@
 
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
+// define the size of the cache to flush. +64U to ensure that at least the whole cache line is flushed
+#define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(rpu_to_apu_user_data)+64U
+#define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(apu_to_rpu_user_data)+64U
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -108,7 +111,6 @@ int JavaScope_initialize(DS_Data* data)
 }
 
 
-
 void JavaScope_update(DS_Data* data){
 
 	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
@@ -124,7 +126,16 @@ void JavaScope_update(DS_Data* data){
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
 	rpu_to_apu_user_data->test_rpu_to_apu_val = (float)js_cnt_slowData;
-	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, sizeof(rpu_to_apu_user_data));
+	rpu_to_apu_user_data->ADC_value_1 = data->aa.A2.me.ADC_A1;
+	rpu_to_apu_user_data->ADC_value_2 = data->aa.A2.me.ADC_A2;
+	rpu_to_apu_user_data->ADC_value_3 = data->aa.A2.me.ADC_A3;
+	rpu_to_apu_user_data->ADC_value_4 = data->aa.A2.me.ADC_A4;
+	rpu_to_apu_user_data->ADC_value_5 = data->aa.A2.me.ADC_B5;
+	rpu_to_apu_user_data->ADC_value_6 = data->aa.A2.me.ADC_B6;
+	rpu_to_apu_user_data->ADC_value_7 = data->aa.A2.me.ADC_B7;
+	rpu_to_apu_user_data->ADC_value_8 = (float)js_cnt_slowData;
+
+	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
@@ -182,7 +193,7 @@ void JavaScope_update(DS_Data* data){
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	//invalidate cache and read data from a53 shared memory
-	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, sizeof(apu_to_rpu_user_data));
+	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 	apu_to_rpu_rcv_test = apu_to_rpu_user_data->test_apu_to_rpu_val;
 #endif
 

@@ -5,6 +5,8 @@ Known issues
 ============
 
 
+.. _carrier_known_issues_ethrst:
+
 Ethernet PHY Reset pins
 -----------------------
 **Problem description**

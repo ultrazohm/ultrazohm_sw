@@ -75,45 +75,76 @@ Shared header file
 ******************
 In the :ref:`shared header file <datamoverSharedHeader>` are two ``structs``. 
 One for sharing data from the R5 (RPU) to the A53 (APU) ``RPU_to_APU_user_data_t`` and 
-one for data from te A53 to the R5 ``APU_to_RPU_user_data_t``. Use those 
+one for data from the A53 to the R5 ``APU_to_RPU_user_data_t``. Use those 
 ``structs`` and create variables within them as needed.
 
 Send data R5 -> A53
 *******************
+In the R5 project ``sw/javascope.c`` within the function ``Javascope_update`` look for 
+the lines where user data can be assigned to the ``rpu_to_apu_user_data`` struct.
+
+.. code-block:: C
+
+   #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+   // write data to a53 in shared memory and flush cache
+   rpu_to_apu_user_data->your_shared_data = your_local_data_on_r5; //this is just an example
+   //...add further data
+   
+   Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
+   #endif
+   
+   
 
 Crunch the numbers
 ******************
-In the ``isr.c`` on the A53, within the 
+In the A53 FreeRTOS project ``src/sw/isr.c`` within the function ``Transfer_ipc_Intr_Handler`` 
+look for the lines where you get the shared data from the R5 and calculate stuff you want 
+the A53 to calcualte faster.
+
+.. code-block:: C
+
+   // get data from r5 from shared memory
+   local_copy_of_shared_data_from_r5 = rpu_to_apu_user_data->your_shared_data;
+   
+   /* do your computations that you want to accelerate here... */
+   accelerated_computation_result = 2.0f*local_copy_of_shared_data_from_r5; // again just a useless example
+   //...add further heavy calculations here
+   
+
+After that, the interrupt acknowledge flag is set by the A53 to tell the R5 that it can 
+continue with it's own interrupt routine. Always keep in mind, that the R5 processor is waiting for this flag 
+and will not continue until it is set. Therefore, the user can easily crash the system if the overall computational load 
+becomes too high. It is the user's responsibility to make sure that this never happens. This makes the whole feature ``experimantal``. 
 
 Return data A53 -> R5
 *********************
+Still in the same function, write the results of your accelerated computations to the shared memory.
+
+.. code-block:: C
+
+   // write data to r5 in shared memory and flush cache
+   apu_to_rpu_user_data->result_to_share = accelerated_computation_result;
+   //...add further results to share here
+   
+   Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+
+   /* ...until here */
 
 
-Modification on A53
--------------------
+Use the results on the R5
+*************************
+Back on the R5 processor, in the ``Javascope_update`` function, look for the lines where you get the shared results of 
+your calculations from the shared memory.
 
-in ``isr.c``
+.. code-block:: C
 
-.. code-block:: c
-
-   #include "xil_cache.h"
-   #include "APU_RPU_shared.h"
-   // create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
-   static struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
-
-   void Transfer_ipc_Intr_Handler(void *data){
-     // flush data cache to make sure shared memory is updated
-     Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
-     // copy JAVASCOPE_DATA into queue to ethernet thread
-     xQueueSendToBackFromISR(OsziData_queue, JAVASCOPE_DATA, &xHigherPriorityTaskWoken);
-   }
-
+   #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+   // invalidate cache and read data from a53 shared memory
+   Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+   local_results_of_accelerated_calcualtions = apu_to_rpu_user_data->result_to_share; // still just an example
+   #endif
+   
 
 Known issues
----------------
-
-See also
-"""""""""""""""
-
-
-
+------------
+none

@@ -1,0 +1,82 @@
+Changeset
+=========
+
+The upcoming "2025 edition" of the UltraZohm implements various system- and component-level changes.
+Particularly to track the former ones, this page aggregates hyperlinks to the individual issues in the various repositories (that hold affected parts).
+As of 2024Q2, all this (obviously) still is work in progress...
+
+
+Associated repositories w/ toplevel issues
+------------------------------------------
+
+* `CarrierBoard <https://bitbucket.org/ultrazohm/uz_carrierboard/issues?status=new&status=open&status=submitted&is_spam=!spam>`_
+
+  * `Issue #128 (Changeset for Rev05) <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/128/changeset-for-rev05>`_: Detailed overview of (mostly electric?) changes that are scheduled for Rev05 of the carrier board
+  * For technical details, please refer to above link or :ref:`changeset_rev05uzc`
+
+* `FrontPanel <https://bitbucket.org/ultrazohm/uz_frontpanel/issues?status=new&status=open&status=submitted&is_spam=!spam>`_: "Z" PCB with assemblies
+* `Housing <https://bitbucket.org/ultrazohm/housing/issues?status=new&status=open&status=submitted&is_spam=!spam>`_: 3U/6U chassis, slot blinds, etc.
+* `CPLD_Lattice <https://bitbucket.org/ultrazohm/cpld_lattice/issues?status=new&status=open&status=submitted&is_spam=!spam>`_
+* `Assembly_and_Commissioning <https://bitbucket.org/ultrazohm/assembly_and_commissioning/src/master/>`_ (no longer active?)
+
+
+Overview of change issues vs. repositories
+------------------------------------------
+
+.. list-table:: Changeset Rev05-UZC
+   :name: changeset_rev05uzc
+   :widths: 5 1 1
+   :header-rows: 2
+
+   * - Bugfix/
+     -  Issue #
+     -  Further
+   * - Tagline
+     -  carrier
+     -  issue #s
+   * - Fix/Extend supply sequencing (e.g., digital 5V card)
+     - `117 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/117/>`_
+     -
+   * - Optimize DC/DC converters of CAN & SPI (w.r.t. costs)
+     - `121 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/121/>`_
+     -
+   * - Implement resets of Ethernet PHYs
+     - `122 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/122/>`_
+     -
+   * - Improve onboard I²Cs (add mux, unify with MZ, ...)
+     - `123 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/123/>`_, `126 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/126/>`_
+     -
+   * - Add support for adapter card identification
+     - `(uz_sw PR444) <https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/444>`_
+     - `6 (D slot templ.) <https://bitbucket.org/ultrazohm/uz_d_template/issues/6/>`_
+   * - Integrate SSD, EEPROMs, frontpanel GPIO, PCIe, etc.
+     - `124 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/124/>`_
+     - `5 (lilac board) <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/issues/5/overall-design-plan-for-v2#comment-64818326>`_
+   * - Integrated isolated dual-JTAG solution
+     - 
+     - 
+   * - Replace CPLDs
+     - `127 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/127/>`_
+     -
+   * - Redesign front (and back?) panel
+     - `130 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/130/>`_
+     - `FP8 <https://bitbucket.org/ultrazohm/uz_frontpanel/issues/8/>`_, `H16 <https://bitbucket.org/ultrazohm/housing/issues/16/>`_
+   * - Redesign isoGPIOs and make them available on panel
+     - `134 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/134/>`_
+     - 
+   * - Remap ``PS_ANL_shared`` to/and fix CD of the µSD card
+     - `135 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/135/>`_
+     -
+   * - Migrate SoM from TE0808 to TE0818
+     - `131 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/131/>`_
+     -
+   * - Safety
+     - `132 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/132/>`_
+     -
+   * - Move PSU to far-right corner of chassis
+     - `136 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/136/>`_
+     - `branch H repo <https://bitbucket.org/ultrazohm/housing/branch/feature/redesign_rev05>`_
+   * - Make PL MGT transceivers usable
+     - `133 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/133/>`_
+     -
+

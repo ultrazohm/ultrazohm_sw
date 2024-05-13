@@ -41,10 +41,6 @@ int js_queue_full = 0;
 
 int i_LifeCheck_Transfer_ipc;
 
-float rpu_apu_rcv_test = 0.0f;
-float test = 0.0f;
-float test_ADC[8] = {0.0f};
-
 //Initialize the Interrupt structure
 XScuGic INTCipc;	//Interrupt for IPC
 XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -89,36 +85,20 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
-//#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
-
-	/* do your computations that you want to accelerate here... */
-
 	// invalidate cache of shared memory before read
 	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 
 	// get data from r5 from shared memory
-	rpu_apu_rcv_test = rpu_to_apu_user_data->test_rpu_to_apu_val;
-	test_ADC[0] = rpu_to_apu_user_data->ADC_value_1;
-	test_ADC[1] = rpu_to_apu_user_data->ADC_value_2;
-	test_ADC[2] = rpu_to_apu_user_data->ADC_value_3;
-	test_ADC[3] = rpu_to_apu_user_data->ADC_value_4;
-	test_ADC[4] = rpu_to_apu_user_data->ADC_value_5;
-	test_ADC[5] = rpu_to_apu_user_data->ADC_value_6;
-	test_ADC[6] = rpu_to_apu_user_data->ADC_value_7;
-	test_ADC[7] = rpu_to_apu_user_data->ADC_value_8;
+	// some_variable  = rpu_to_apu_user_data->...
 
-	// calculate heavy stuff
-    for (int i=0;i<100;i++)
-    {
-    	test = (i*test)/10000.0f+sqrt(i*test)+i;
-    }
+	/* do your computations that you want to accelerate here... */
 
 	// write data to r5 in shared memory and flush cache
-	apu_to_rpu_user_data->test_apu_to_rpu_val = rpu_apu_rcv_test;
+	// apu_to_rpu_user_data->...
+
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 
 	/* ...until here */
-//#endif
 
 	// Write message for acknowledge of the interrupt to RPU
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);

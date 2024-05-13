@@ -37,10 +37,7 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
-
-float apu_to_rpu_rcv_test = 0.0f;
-uint32_t pollError = 0U;
-float fpollError = 0.0f;
+uint32_t pollErrorCnt = 0U;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status of the four "UltraZohm LEDs" (cf. ipc_ARM.c):
@@ -89,7 +86,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
-	js_ch_observable[JSO_apu_to_rpu_rcv_test] 	= &apu_to_rpu_rcv_test;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -105,7 +101,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-	js_slowDataArray[JSSD_FLOAT_PollError]				= &fpollError;
 
 	return Status;
 }
@@ -125,15 +120,7 @@ void JavaScope_update(DS_Data* data){
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
-	rpu_to_apu_user_data->test_rpu_to_apu_val = (float)js_cnt_slowData;
-	rpu_to_apu_user_data->ADC_value_1 = data->aa.A2.me.ADC_A1;
-	rpu_to_apu_user_data->ADC_value_2 = data->aa.A2.me.ADC_A2;
-	rpu_to_apu_user_data->ADC_value_3 = data->aa.A2.me.ADC_A3;
-	rpu_to_apu_user_data->ADC_value_4 = data->aa.A2.me.ADC_A4;
-	rpu_to_apu_user_data->ADC_value_5 = data->aa.A2.me.ADC_B5;
-	rpu_to_apu_user_data->ADC_value_6 = data->aa.A2.me.ADC_B6;
-	rpu_to_apu_user_data->ADC_value_7 = data->aa.A2.me.ADC_B7;
-	rpu_to_apu_user_data->ADC_value_8 = (float)js_cnt_slowData;
+	// rpu_to_apu_user_data->...
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif
@@ -166,8 +153,7 @@ void JavaScope_update(DS_Data* data){
 	//Poll Acknowledgment of IPI
 	status = XIpiPsu_PollForAck(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
 	if(status != (u32)XST_SUCCESS) {
-		pollError++;
-		fpollError = (float)pollError;
+		pollErrorCnt++;
 	}
 #endif
 
@@ -194,7 +180,8 @@ void JavaScope_update(DS_Data* data){
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	//invalidate cache and read data from a53 shared memory
 	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
-	apu_to_rpu_rcv_test = apu_to_rpu_user_data->test_apu_to_rpu_val;
+	// get data from apu_to_rpu_user_data struct and use it
+	// some_variable = apu_to_rpu_user_data->...
 #endif
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);

@@ -29,26 +29,10 @@ struct APU_to_RPU_t
 
 struct APU_to_RPU_user_data_t
 {
-	float		test_apu_to_rpu_val;
-	struct{
-		float dutyCyc_a;
-		float dutyCyc_b;
-		float dutyCyc_c;
-	};
-//	DS_Data data;
+	// create variables that you want to share from A53 to R5
 };
 
 struct RPU_to_APU_user_data_t
 {
-	float		test_rpu_to_apu_val;
-	struct{
-		float ADC_value_1;
-		float ADC_value_2;
-		float ADC_value_3;
-		float ADC_value_4;
-		float ADC_value_5;
-		float ADC_value_6;
-		float ADC_value_7;
-		float ADC_value_8;
-		};
+	// create variables that you want to share from R5 to A53
 };

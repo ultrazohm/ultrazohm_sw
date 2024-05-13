@@ -62,7 +62,7 @@ The following steps are required in order to use the feature:
 
 Enable the feature
 ******************
-in ``uz_global_configuration.h`` set the respective ``#define`` to ``TRUE``
+In ``APU_RPU_shared.h`` set the respective ``#define`` to ``TRUE``
 
 .. code-block:: C
 
@@ -77,6 +77,13 @@ In the :ref:`shared header file <datamoverSharedHeader>` are two ``structs``.
 One for sharing data from the R5 (RPU) to the A53 (APU) ``RPU_to_APU_user_data_t`` and 
 one for data from the A53 to the R5 ``APU_to_RPU_user_data_t``. Use those 
 ``structs`` and create variables within them as needed.
+
+
+.. warning::
+    Each shared struct is allocated on its own OCM Bank. Each bank has a size
+    of 64 kB. User has to take care that both shared structs do not exceed this 
+    limit
+
 
 Send data R5 -> A53
 *******************
@@ -99,7 +106,7 @@ Crunch the numbers
 ******************
 In the A53 FreeRTOS project ``src/sw/isr.c`` within the function ``Transfer_ipc_Intr_Handler`` 
 look for the lines where you get the shared data from the R5 and calculate stuff you want 
-the A53 to calcualte faster.
+the A53 to calculate faster.
 
 .. code-block:: C
 
@@ -141,10 +148,24 @@ your calculations from the shared memory.
    #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
    // invalidate cache and read data from a53 shared memory
    Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
-   local_results_of_accelerated_calcualtions = apu_to_rpu_user_data->result_to_share; // still just an example
+   local_results_of_accelerated_calculations = apu_to_rpu_user_data->result_to_share; // still just an example
    #endif
    
 
+Hints and best practices
+------------------------
+Here, one can find (and add) some hints and best practices for 
+using the feature for specific applications.
+
+Use uz library functions on the A53 processor
+*********************************************
+All uz library functions are only accessible to the R5 processor and are located 
+in the folder ``\vitis\software\Baremetal\src\uz``. If you need one of them, 
+copy the respective folder to ``\vitis\software\FreeRTOS\uz`` and recreate the 
+vitis workspace via the tcl script. Afterwards the sources are available on the 
+A53 processor.
+
+
 Known issues
 ------------
-none
+It cannot run Crysis ;-)

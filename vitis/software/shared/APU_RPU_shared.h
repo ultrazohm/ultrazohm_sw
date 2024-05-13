@@ -1,5 +1,6 @@
 //APU_RPU_shared.h
 #pragma once
+#include "stdbool.h"
 // OCM Bank Adresses
 // See UG1085 v2.4 table 18-1 OCM Mapping Summary (https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm)
 
@@ -12,6 +13,8 @@
 // Bank 3 of OCM has 64 KB, thus a maximum of 16K float values can be stored
 #define JAVASCOPE_DATA_SIZE_2POW  	128
 
+// Experimental feature - read docs before use
+#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE
 
 struct javascope_data_t
 {
@@ -30,9 +33,11 @@ struct APU_to_RPU_t
 struct APU_to_RPU_user_data_t
 {
 	// create variables that you want to share from A53 to R5
+	bool use_a53_as_accelerator;
 };
 
 struct RPU_to_APU_user_data_t
 {
 	// create variables that you want to share from R5 to A53
+	bool use_a53_as_accelerator;
 };

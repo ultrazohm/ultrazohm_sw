@@ -114,7 +114,6 @@ void JavaScope_update(DS_Data* data){
 	// create pointers to user data variables located in OCM Bank 1 and 2
 	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
-
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
 

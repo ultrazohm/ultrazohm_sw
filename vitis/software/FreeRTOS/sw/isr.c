@@ -85,6 +85,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
+#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// invalidate cache of shared memory before read
 	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 
@@ -99,6 +100,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 
 	/* ...until here */
+#endif
 
 	// Write message for acknowledge of the interrupt to RPU
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);

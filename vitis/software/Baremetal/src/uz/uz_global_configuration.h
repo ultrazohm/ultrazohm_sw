@@ -30,9 +30,6 @@
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
 
-// Experimental feature - read docs before use
-#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE
-
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U

@@ -9,8 +9,8 @@ CPLD Versions
 
 There are two different versions available:
 
-* `LA4128V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LA4128V/>`_ for old revisions and Rev04 up to UZ2021-001-001-004-0004
-* `LC4256V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LC4256V/>`_ for newer versions
+* `LA4128V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LA4128V/>`_ for old revisions and Rev04 with serial number UZ2021-002-001-200-0001 to UZ2021-001-001-004-0004
+* `LC4256V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LC4256V/>`_ for all other Rev04 with serial number UZ2022-001-001-401-0007 up to UZ2024-001-001-0401-0031
 
 Note that there are two different folders for the CPLD programs in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
 
@@ -87,11 +87,15 @@ Note that it is possible to program only one of the CPLDs by the enable check bo
 
 3. Plug in the USB cable and turn on the power of the UltraZohm. The three green LED's on the programmer should light up.
 
-4. Setup a custom clock divider TCK 3.
+4. Click **Detect cable** and set the right port for UltraZohm B Location. Depending on the OS, the mapping can differ (in this case the UltraZohm B Location Port is mapped on FTUSB-0). 
+
+.. image:: cpld_programming/detect_cable.png
+
+5. Setup a custom clock divider TCK 3.
 
 .. image:: cpld_programming/clockdivider.png
 
-5. Click on "Program", after successful programming it should look like this:
+6. Click on "Program", after successful programming it should look like this:
 
 .. image:: cpld_programming/cpld_programmed.png
 

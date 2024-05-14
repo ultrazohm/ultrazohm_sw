@@ -25,9 +25,9 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
-// define the size of the cache to flush. +64U to ensure that at least the whole cache line is flushed
-#define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(rpu_to_apu_user_data)+64U
-#define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(apu_to_rpu_user_data)+64U
+// define the size of the cache to flush
+#define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
+#define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
 
 struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
@@ -95,7 +95,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	/* do your computations that you want to accelerate here... */
 
 	// write data to r5 in shared memory and flush cache
-	// apu_to_rpu_user_data->...
+	apu_to_rpu_user_data->slowDataCounter  = rpu_to_apu_user_data->slowDataCounter; //just an example
 
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 

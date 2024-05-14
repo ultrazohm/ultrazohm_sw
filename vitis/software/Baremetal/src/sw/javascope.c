@@ -21,10 +21,10 @@
 
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
-// define the size of the cache to flush. +64U to ensure that at least the whole cache line is flushed
-#define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(rpu_to_apu_user_data)+64U
-#define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(apu_to_rpu_user_data)+64U
-
+// define the size of the cache to flush
+#define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
+#define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
+uint32_t cache_size_to_flush = 0U;
 //Variables for JavaScope
 static float zerovalue = 0.0;
 static float *js_slowDataArray[JSSD_ENDMARKER];
@@ -119,7 +119,8 @@ void JavaScope_update(DS_Data* data){
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
-	// rpu_to_apu_user_data->...
+	rpu_to_apu_user_data->slowDataCounter = js_cnt_slowData; //just an example
+	// add further data...
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif
@@ -180,7 +181,7 @@ void JavaScope_update(DS_Data* data){
 	//invalidate cache and read data from a53 shared memory
 	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 	// get data from apu_to_rpu_user_data struct and use it
-	// some_variable = apu_to_rpu_user_data->...
+	 data->av.slowDataCounter = apu_to_rpu_user_data->slowDataCounter; //just an example
 #endif
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);

@@ -76,7 +76,9 @@ Shared header file
 In the :ref:`shared header file <datamoverSharedHeader>` are two ``structs``. 
 One for sharing data from the R5 (RPU) to the A53 (APU) ``RPU_to_APU_user_data_t`` and 
 one for data from the A53 to the R5 ``APU_to_RPU_user_data_t``. Use those 
-``structs`` and create variables within them as needed.
+``structs`` and create variables within them as needed. As a basic example, an internal counter of 
+the Javascope is already there and is sent from R5 to A53 and back. It is there for two reasons: 
+First, to have a minimal working example, and second, to avoid empty structs, which is bad coding in C.
 
 
 .. warning::
@@ -121,7 +123,7 @@ the A53 to calculate faster.
 After that, the interrupt acknowledge flag is set by the A53 to tell the R5 that it can 
 continue with it's own interrupt routine. Always keep in mind, that the R5 processor is waiting for this flag 
 and will not continue until it is set. Therefore, the user can easily crash the system if the overall computational load 
-becomes too high. It is the user's responsibility to make sure that this never happens. This makes the whole feature ``experimantal``. 
+becomes too high. It is the user's responsibility to make sure that this never happens. This makes the whole feature ``experimental``. 
 
 Return data A53 -> R5
 *********************
@@ -165,6 +167,12 @@ copy the respective folder to ``\vitis\software\FreeRTOS\uz`` and recreate the
 vitis workspace via the tcl script. Afterwards the sources are available on the 
 A53 processor.
 
+Share data of types that are part of uz library functions
+*********************************************************
+For example, if you want to share data of the type ``uz_3ph_dq_t``, which is part of the ``uz_Transformation`` library function, 
+this will not work. Even if copied to the correct folder as above, the compiler cannot handle the header file ``#include`` 
+within the ``APU_RPU_shared.h`` file and throws an error. The fastest workaround for the example mentioned so far is to share single member of 
+of the ``uz_3ph_dq_t`` struct as separate ``float`` values.
 
 Known issues
 ------------

@@ -171,8 +171,8 @@ Share data of types that are part of uz library functions
 *********************************************************
 For example, if you want to share data of the type ``uz_3ph_dq_t``, which is part of the ``uz_Transformation`` library function, 
 this will not work. Even if copied to the correct folder as above, the compiler cannot handle the header file ``#include`` 
-within the ``APU_RPU_shared.h`` file and throws an error. The fastest workaround for the example mentioned so far is to share single member of 
-of the ``uz_3ph_dq_t`` struct as separate ``float`` values.
+within the ``APU_RPU_shared.h`` file and throws an error. The fastest workaround for the example mentioned so far is to share single members of 
+the ``uz_3ph_dq_t`` struct as separate ``float`` values.
 
 Known issues
 ------------

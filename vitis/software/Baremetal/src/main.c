@@ -244,13 +244,18 @@ int main(void)
     };
 
     struct uz_parameterid_rc_config_t config_rc_meas = {
-    	    .id_ref = -1.0f,
-    	    .iq_ref = 3.0f,
-    	    .n_ref = 1000.0f,
-    	    .wait_time = 5.0f,
-    	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
-    	    .sample_time = 10.0f,
-			.pn = 3.0f
+    	    .id_ref_Amps = 0.0f,
+    	    .iq_ref_Amps = 0.0f,
+    	    .n_ref_rpm = 1000.0f,
+    	    .wait_time_secs = 5.0f,
+    	    .isr_steptime_secs = (1.0f / 10.0e3f) * 1.0f,
+    	    .sample_time_secs = 5.0f,
+			.pn = 3.0f,
+			.multiple_workingpoints = true,
+			.delta_id_Amps = -1.0f,
+			.delta_iq_Amps = 1.0f,
+			.id_steps = 3U,
+			.iq_steps = 3U
     };
 
     //--------- Configs for PMSM 2 (Last) ---------//

@@ -306,7 +306,7 @@ void ISR_Control(void *data)
 
 					// calculation of set-values
 			        rc_output = uz_parameterid_rc_generate_outputs(rc_meas_instance, v_dq_Volts_2.d, v_dq_Volts_2.q, i_dq_Amps_2.d, i_dq_Amps_2.q, Global_Data.av.mechanicalRotorSpeed_filtered_2, M_meas_Nm);
-			        rc_repeat_counter = rc_output.finished;
+			        rc_repeat_counter = rc_output.program_finished;
 
 			        // Field Oriented Control of PMSM 2
 			        if(rc_output.generator_mode){

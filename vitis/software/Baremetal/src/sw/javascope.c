@@ -91,7 +91,8 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_duty_cycle_C]			= &data->av.duty_cycle_C;
 	js_ch_observable[JSO_U_ZK]					= &data->av.U_ZK;
 	js_ch_observable[JSO_U_ZK_filt]				= &data->av.U_ZK_filt;
-	js_ch_observable[JSO_LMG_Switch]			= &data->av.flg_enable_LMG_continues;
+	js_ch_observable[JSO_LMG_Switch_cont]		= &data->av.flg_enable_LMG_continues;
+	js_ch_observable[JSO_LMG_Switch_trans]		= &data->av.flg_enable_LMG_transient;
 	js_ch_observable[JSO_Testsignal]			= &data->av.testsignal;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;

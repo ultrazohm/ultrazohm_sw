@@ -153,7 +153,7 @@ int main(void)
 
             // Zu testen - theta_offset = 4.271849612
 
-            Global_Data.av.theta_offset = 4.291866f; //4.291866f;  //4.3317f;//4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
+            Global_Data.av.theta_offset = 2.21614425f; // 4.291866f; //4.291866f;  //4.3317f;//4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
 
             Global_Data.av.polepairs = 2.0f;
             Global_Data.av.kp_d = 0.0f; //40.0f;
@@ -170,14 +170,14 @@ int main(void)
             Global_Data.rasv.enable_FU = 0U;
             Global_Data.rasv.enable_LMG_continues = 1U;
             Global_Data.rasv.enable_LMG_transient = 2U;
-            Global_Data.rasv.LMG_measurement_typ = 1U;
+            Global_Data.rasv.LMG_measurement_typ = 2U;  // 1U = continues, 2U = transient
 
             Global_Data.rasv.i_d_ref = 0.0f;
             Global_Data.rasv.i_q_ref = 0.0f;
             Global_Data.rasv.n_ref_rpm = 0.0f;
-            Global_Data.rasv.t_delay_controller = 2.0f;
+            Global_Data.rasv.t_delay_controller = 3.0f;
             Global_Data.rasv.t_measurement = 5.0f;
-            Global_Data.rasv.t_set_current = 2.0f;
+            Global_Data.rasv.t_set_current = 3.0f;
 
         	initialization_chain = init_ip_cores;
 			break;

@@ -334,7 +334,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7):
-
+		if(data->rasv.current_ctrl_select == PI_FOC) {
+			data->rasv.current_ctrl_select = IMPL_MOD;
+		} else {
+			data->rasv.current_ctrl_select = PI_FOC;
+		}
 			break;
 
 		case (My_Button_8):
@@ -413,7 +417,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	if (data->rasv.current_ctrl_select == PI_FOC) {
+		js_status_BareToRTOS &= ~(1 << 10);
+	}else{
+		js_status_BareToRTOS |= (1 << 10);
+	}
 
 	/* Bit 11 - My_Button_8 */
 	if (data->av.start_trade_off_measurement == true) {

@@ -44,6 +44,7 @@
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "include/pi_foc.h"
 #include "include/fcs_mpc.h"
+#include "include/impl_mod_mpc.h"
 
 #include "uz/uz_HAL.h"
 #include "uz/uz_LED/uz_LED_facade.h"

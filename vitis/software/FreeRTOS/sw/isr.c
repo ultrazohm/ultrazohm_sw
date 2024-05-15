@@ -25,6 +25,13 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
+#include "../Codegen/uz_codegen.h"
+extern uz_codegen codegenInstance;
+
+// define the size of the cache to flush
+#define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
+#define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
+
 struct APU_to_RPU_t ControlData;
 extern int js_connection_established;
 
@@ -50,13 +57,16 @@ XScuGic_Config *IntcConfig;
 // Standard isr interrupt from BareMetal -> frequency depends on the Software-interrupt from BareMetal
 void Transfer_ipc_Intr_Handler(void *data)
 {
-	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+	// create pointer to javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+	// create pointers to user data variables located in OCM Bank 1 and 2
+	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
+	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	int status;
 	BaseType_t xHigherPriorityTaskWoken;
 
 	// flush cache of shared memory
-	Xil_DCacheFlushRange( MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
 
 	// if javascope connection is established
 	if(js_connection_established!=0)
@@ -76,6 +86,45 @@ void Transfer_ipc_Intr_Handler(void *data)
 	javascope_data_status = javascope_data->status;
 
 	u32_t ControlData_length = sizeof(ControlData)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
+
+
+	// invalidate cache of shared memory before read
+	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
+
+	// get data from r5 from shared memory
+	codegenInstance.input.v_DC_pu = rpu_to_apu_user_data->v_DC_pu;
+	codegenInstance.input.i_dq_pu[0] = rpu_to_apu_user_data->i_dq_pu[0];
+	codegenInstance.input.i_dq_pu[1] = rpu_to_apu_user_data->i_dq_pu[1];
+	codegenInstance.input.i_d_ref_pu = rpu_to_apu_user_data->i_d_ref_pu;
+	codegenInstance.input.i_q_ref_pu = rpu_to_apu_user_data->i_q_ref_pu;
+	codegenInstance.input.omega_el_pu = rpu_to_apu_user_data->omega_el_pu;
+	codegenInstance.input.theta_el = rpu_to_apu_user_data->theta_el;
+
+	/* do your computations that you want to accelerate here... */
+	uz_codegen_step(&codegenInstance);
+
+	// write data to r5 in shared memory and flush cache
+	apu_to_rpu_user_data->unsuited_qp[1] = (float)(codegenInstance.output.unsuited_qp[0]);
+	apu_to_rpu_user_data->unsuited_qp[2] = (float)(codegenInstance.output.unsuited_qp[1]);
+	apu_to_rpu_user_data->unsuited_qp[3] = (float)(codegenInstance.output.unsuited_qp[2]);
+	apu_to_rpu_user_data->unsuited_qp[4] = (float)(codegenInstance.output.unsuited_qp[3]);
+	apu_to_rpu_user_data->unsuited_qp[5] = (float)(codegenInstance.output.unsuited_qp[4]);
+	apu_to_rpu_user_data->unsuited_qp[6] = (float)(codegenInstance.output.unsuited_qp[5]);
+	apu_to_rpu_user_data->iterations_qp[1] = codegenInstance.output.iterations_qp[0];
+	apu_to_rpu_user_data->iterations_qp[2] = codegenInstance.output.iterations_qp[1];
+	apu_to_rpu_user_data->iterations_qp[3] = codegenInstance.output.iterations_qp[2];
+	apu_to_rpu_user_data->iterations_qp[4] = codegenInstance.output.iterations_qp[3];
+	apu_to_rpu_user_data->iterations_qp[5] = codegenInstance.output.iterations_qp[4];
+	apu_to_rpu_user_data->iterations_qp[6] = codegenInstance.output.iterations_qp[5];
+	apu_to_rpu_user_data->CMPA_opt[0] = codegenInstance.output.CMPA_opt[0];
+	apu_to_rpu_user_data->CMPA_opt[1] = codegenInstance.output.CMPA_opt[1];
+	apu_to_rpu_user_data->CMPA_opt[2] = codegenInstance.output.CMPA_opt[2];
+
+	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+
+	/* ...until here */
+
+
 	// Write message for acknowledge of the interrupt to RPU
 	status = XIpiPsu_WriteMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK, (u32_t*)(&ControlData), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 

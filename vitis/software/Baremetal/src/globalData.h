@@ -18,6 +18,7 @@
 enum current_control_select {
 		PI_FOC,
 		FCS_MPC,
+		IMPL_MOD,
 };
 
 // union allows to access the values as array and individual variables
@@ -141,6 +142,10 @@ typedef struct _actualValues_ {
 	float q_pred_error_sq_filt;
 	float d_delay_diff;
 	float q_delay_diff;
+	float unsuited_qp[7];
+	float iterations_qp[7];
+	float CMPA_opt[3];
+	float omega_el_left_pu;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

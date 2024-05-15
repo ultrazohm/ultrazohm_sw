@@ -31,6 +31,7 @@
 #include "include/isr.h"
 #include "uz/uz_PLATFORM/uz_platform.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
+#include "include/impl_mod_mpc.h"
 
 
 size_t lifecheck_mainThread = 0;
@@ -385,6 +386,8 @@ int main_thread()
 	sys_thread_new("i2cio", i2cio_thread, 0,
 			THREAD_STACKSIZE,
 			DEFAULT_THREAD_PRIO);
+
+	impl_mod_mpc_init();
 
     vTaskDelete(NULL);
     return 0;

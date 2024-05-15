@@ -92,6 +92,23 @@ enum JS_OberservableData {
 	JSO_q_pred_er_sq_pu,
 	JSO_d_delay_diff,
 	JSO_q_delay_diff,
+	JSO_CMPA_a,
+	JSO_CMPA_b,
+	JSO_CMPA_c,
+	JSO_unsuited_1,
+	JSO_unsuited_2,
+	JSO_unsuited_3,
+	JSO_unsuited_4,
+	JSO_unsuited_5,
+	JSO_unsuited_6,
+	JSO_unsuited_sum,
+	JSO_iterations_1,
+	JSO_iterations_2,
+	JSO_iterations_3,
+	JSO_iterations_4,
+	JSO_iterations_5,
+	JSO_iterations_6,
+	JSO_omega_el_pu,
 	JSO_ENDMARKER
 };
 
@@ -302,7 +319,7 @@ enum gui_button_mapping {
 	set d4_out_0,
 	clear_d4_out_0,
 	arm_iq_step,
-	MyButton7,
+	sel.curr.ctrl,
 	TradeOff_meas,
 	MYBUTTONS_LABELS_ENDMARKER
 

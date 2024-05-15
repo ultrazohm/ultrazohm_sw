@@ -29,13 +29,14 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_math_constants.h"
-
+#include "../include/fcs_mpc.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 // Global variable structure
 extern DS_Data Global_Data;
+extern uz_codegen codegenInstance;
 
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
@@ -72,6 +73,7 @@ struct uz_DutyCycle_t dutycyc_1 = {0.0f};
 //----------------------------------------------------
 static void ReadAllADC();
 
+//void __attribute__((target("fpu=vfpv3-d16"))) ISR_Control(void *data)
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -102,6 +104,8 @@ void ISR_Control(void *data)
 
 	Global_Data.av.omega_mech_d5_1 = Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s;
 	Global_Data.av.omega_mech_d5_2 = Global_Data.av.resolver_pl_outputs_d5_2.omega_mech_rad_s;
+
+	Global_Data.av.omega_el_left_pu = Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s*Global_Data.av.polepairs_left*0.0023873f;
 
 	// get reference currents from Global_Data
 	i_dq_ref_0 = Global_Data.rasv.i_dq_ref_0;
@@ -141,8 +145,8 @@ void ISR_Control(void *data)
 //	Global_Data.av.v_d_0_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt, Global_Data.av.v_d_0);
 //	Global_Data.av.d_pred_error_sq_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt_d, Global_Data.av.d_pred_error_sq);
 //	Global_Data.av.q_pred_error_sq_filt = uz_movingAverageFilter_sample(Global_Data.objects.movAvgFilt_q, Global_Data.av.q_pred_error_sq);
-	Global_Data.av.d_pred_error_sq_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_pred_error_d, Global_Data.av.d_pred_error_sq);
-	Global_Data.av.q_pred_error_sq_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_pred_error_q, Global_Data.av.q_pred_error_sq);
+//	Global_Data.av.d_pred_error_sq_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_pred_error_d, Global_Data.av.d_pred_error_sq);
+//	Global_Data.av.q_pred_error_sq_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_pred_error_q, Global_Data.av.q_pred_error_sq);
 
 	// inverse transformation of reference currents for detecting zero crossing in phase currents
 	Global_Data.rasv.i_abc_ref_left = uz_transformation_3ph_dq_to_abc(i_dq_ref_0, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
@@ -164,7 +168,7 @@ void ISR_Control(void *data)
 		Global_Data.av.f_trig_flag = 1.0f;
 		uz_axigpio_d4_out_set_pin(0);
 	}
-	// wait until the defined measuring time is over, then reset the flag, the counter and the externaö trigger
+	// wait until the defined measuring time is over, then reset the flag, the counter and the external trigger
 	if (Global_Data.av.trig_flag == true) {
 		trig_cnt++;
 		if(trig_cnt == MEASURING_ISR_TICKS) {
@@ -183,11 +187,21 @@ void ISR_Control(void *data)
     	ultrazohm_state_machine_set_stop(true);
     }
 
+	//implicit modulating mcp
+//	codegenInstance.input.v_DC_pu = Global_Data.av.v_dc_d1*0.0360844f;
+//	codegenInstance.input.i_dq_pu[0] = Global_Data.av.i_d_0*0.088388f;
+//	codegenInstance.input.i_dq_pu[1] = Global_Data.av.i_q_0*0.088388f;
+//	codegenInstance.input.i_d_ref_pu = Global_Data.rasv.i_dq_ref_0.d*0.088388f;
+//	codegenInstance.input.i_q_ref_pu = Global_Data.rasv.i_dq_ref_0.q*0.088388f;
+//	codegenInstance.input.omega_el_pu = Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s*Global_Data.av.polepairs_left*0.0023873f;
+//	codegenInstance.input.theta_el = Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi;
+
+
 	//read axi values from mpc ip for debug
 //	fcs_mpc_debug();
 
     //read axi values from prediction error ip for debug
-    fcs_mpc_get_pred_error_pu();
+//    fcs_mpc_get_pred_error_pu();
 
     //read axi values from delay diff ip for debug
 //    fcs_mpc_get_delay_comp_diff();
@@ -247,9 +261,26 @@ void ISR_Control(void *data)
     	control_right_motor();
 
     	// assign dutycycles to PWM module variables
-    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_0.DutyCycle_A;
-    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_0.DutyCycle_B;
-    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_0.DutyCycle_C;
+
+    	if(Global_Data.rasv.current_ctrl_select == IMPL_MOD) {
+    		// ATTENTION those are actually 1 minus CMPA, see javascope.c
+    		Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.CMPA_opt[0];
+    		Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.CMPA_opt[1];
+    		Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.CMPA_opt[2];
+    		// ATTENTION
+
+    	} else{
+
+
+
+    		Global_Data.rasv.halfBridge1DutyCycle = dutycyc_0.DutyCycle_A;
+    		Global_Data.rasv.halfBridge2DutyCycle = dutycyc_0.DutyCycle_B;
+    		Global_Data.rasv.halfBridge3DutyCycle = dutycyc_0.DutyCycle_C;
+    		}
+
+//    	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_0.DutyCycle_A;
+//    	Global_Data.rasv.halfBridge2DutyCycle = dutycyc_0.DutyCycle_B;
+//    	Global_Data.rasv.halfBridge3DutyCycle = dutycyc_0.DutyCycle_C;
     	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_1.DutyCycle_A;
     	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_1.DutyCycle_B;
     	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_1.DutyCycle_C;
@@ -393,7 +424,6 @@ static void ReadAllADC()
 };
 
 void control_left_motor() {
-
 	// filter speed setpoint signal
 //	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
 	// calculate reference torque from speed ctrl of right motor
@@ -403,11 +433,29 @@ void control_left_motor() {
 	// calculate reference voltages for current control
 	v_dq_ref_0 = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, i_dq_ref_0, i_dq_0, Global_Data.av.v_dc_d1, Global_Data.av.omega_mech_d5_1*Global_Data.av.polepairs_left);
 	// write space vector limitation clamping flag to Global_Data
-	Global_Data.av.svm_clamping_left = uz_CurrentControl_get_ext_clamping(Global_Data.objects.current_ctrl_left);
-	Global_Data.av.f_svm_clamping_left = (float)Global_Data.av.svm_clamping_left;
+//	Global_Data.av.svm_clamping_left = uz_CurrentControl_get_ext_clamping(Global_Data.objects.current_ctrl_left);
+//	Global_Data.av.f_svm_clamping_left = (float)Global_Data.av.svm_clamping_left;
+
+
+//	uz_codegen_step(&codegenInstance);
+
+//	Global_Data.av.unsuited_qp[0] = (float)(codegenInstance.output.unsuited_qp[0]);
+//	Global_Data.av.unsuited_qp[1] = (float)(codegenInstance.output.unsuited_qp[1]);
+//	Global_Data.av.unsuited_qp[2] = (float)(codegenInstance.output.unsuited_qp[2]);
+//	Global_Data.av.unsuited_qp[3] = (float)(codegenInstance.output.unsuited_qp[3]);
+//	Global_Data.av.unsuited_qp[4] = (float)(codegenInstance.output.unsuited_qp[4]);
+//	Global_Data.av.unsuited_qp[5] = (float)(codegenInstance.output.unsuited_qp[5]);
+
+//	Global_Data.av.unsuited_qp[6] = 0.0f;
+//	for (int i=0;i<6;i++) {
+//	Global_Data.av.unsuited_qp[6] += Global_Data.av.unsuited_qp[i];
+//	}
+
+
 
 	// calculate duty cycles from reference dq voltages
 	dutycyc_0 = uz_Space_Vector_Modulation(v_dq_ref_0, Global_Data.av.v_dc_d1, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
+
 	// write measured dc_link voltage to pu_voltages ip
     fcs_mpc_write_axi_v_dc();
 	//write setpoint to MPC

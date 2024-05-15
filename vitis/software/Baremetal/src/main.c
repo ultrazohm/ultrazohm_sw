@@ -139,6 +139,10 @@ int main(void)
             Global_Data.rasv.Ts_minus_Td_over_Ts = 0.94; //0.94 is valid for 150ns deadtime 0.8 is valid for 500ns deadtime
             Global_Data.rasv.Td_over_Ts = 1.0f-Global_Data.rasv.Ts_minus_Td_over_Ts;
             Global_Data.rasv.deadtime_comp_onoff = false;
+
+            //init codegen
+//            impl_mod_mpc_init();
+
 			initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

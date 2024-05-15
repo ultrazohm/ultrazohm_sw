@@ -148,8 +148,8 @@ psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*lo
 %Berechnen von F(i1)*G(i1) (wie im Paper)
 
 %Das sind die Setpoints kann mit gespielt werden um Ergebnis zu verändern müssen oben dann auch geändert werden.  
-q_current_set = q_current(33,1);
-d_current_set = d_current(1,1);
+q_current_set = q_current(33);
+d_current_set = d_current(6);
 
 %Für den Faktor setzte ich einfach in der Formel der Integrierten Terme den Set Strom ein 
 Fid1_Giq1 = (1/2).*(aq3-aq6).*((q_current_set).^2)+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));

@@ -2,7 +2,8 @@
 
 close all;
 %% LUT Fitting
-%LeastSquare Problems
+
+%% Preparation
 options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt');
 d_current = id(1,:);
 q_current = iq(:,1);
@@ -13,18 +14,15 @@ id1 = id_null-1;
 
 % [~,id1] = max(abs(id))
 % [~,id1] = max(id)
-[~,iq1] = max(abs(iq))
-iq1 = iq1+2;
+[~,iq1] = max(abs(q_current))
 
-%Preparation
-%Hier soll mall die Werte für den Fluss gesucht werden
+%% start of the fitting procedure
 
-%% Start der eigentlichen Berechnung 
-
+%LeastSquare Problems
 % 1. Self-axis flux linkage d-axis
 psi_d_iq_null = psi_d(iq_null,:);
 fun0=@(ad) psi_d_iq_null-(ad(1).*tanh(ad(2)*(d_current-ad(3))));
-beta1 =  [1;1;1]; %random starting parameters
+beta1 =  [0.0305;0.0402; -16.4812]; %random starting parameters
 ad_self = lsqnonlin(fun0,beta1,[],[],options);
 %Zuweisung der Parameter
 ad1 = ad_self(1);
@@ -33,6 +31,7 @@ ad3 = ad_self(3);
 
 % 2. Self-axis flux linkage q-axis
 psi_q_id_null = psi_q(:,id_null);
+psi_q_id_null = psi_q(:,9); %für hoeerner
 fun2=@(aq)(psi_q_id_null-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
 beta2 = [1;1;1]; %random starting parameters
 aq_self = lsqnonlin(fun2,beta2,[],[],options);
@@ -43,7 +42,7 @@ aq3 = aq_self(3);
 % 3. flux linkage d-axis with maximum cross-coupling
 psi_d_iq1 = psi_d(iq1,:);
 fun3=@(ad_cross)psi_d_iq1-(ad_cross(1).*(tanh(ad_cross(2)*(d_current-ad_cross(3)))));
-beta3 = [1;1;1]; %random starting parameters
+beta3 =   [0.0305;0.0402; -16.4812];  %random starting parameters
 ad_4_6 = lsqnonlin(fun3,beta3,[],[],options);
 ad4 = ad_4_6(1);
 ad5 = ad_4_6(2);
@@ -67,7 +66,7 @@ psiq_s1 = (aq4.*(tanh(aq5.*q_current)))+(aq6.*q_current);
 psid_cross_s1 = psidself - psid_s1;
 psiq_cross_s1 = psiqself - psiq_s1;
 
-%% Plotten
+%% plot of the fitting results
 figure;
 % Erster Plot
 subplot(4,1,1); 
@@ -80,7 +79,6 @@ legend('show');
 % Zweiter Plot
 subplot(4,1,2); 
 grid on;
-
 plot(q_current, psiqself, 'DisplayName', 'Fluxq_{idnull}_{fitted}');
 hold on;
 plot(q_current, psi_q_id_null,'*', 'DisplayName', 'Fluxq_{idnull}');
@@ -104,8 +102,8 @@ legend('show');
 
 %Berechnen von F(i1)*G(i1) (wie im Paper)
 %Das sind die Setpoints an denen eben die kreuzkopplung berechnet wird
-q_current_set = q_current(1);
-d_current_set = d_current(14);
+q_current_set = q_current(iq1);
+d_current_set = d_current(id1);
 
 %Für den Faktor setzte ich einfach in der Formel der Integrierten Terme den Set Strom ein 
 Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
@@ -120,219 +118,87 @@ Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(d_current_set-ad3))))) - ((ad4./ad5).*(
 psiid_cross_s1_integrated = ((ad1./ad2).*(log(cosh(ad2.*(d_current-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current-ad6)))));
 psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*log(cosh(aq2.*q_current)))-((aq4./aq5).*log(cosh(aq5.*q_current)));
 
-%Kreuzkopplung ist dann
+% Kreuzkopplung ist dann
 psi_d_cross = (1/Fid1_Giq1).*((psid_cross_s1).*(psiiq_cross_s1_integrated));
-psi_q_cross = (1/Fid2_Giq2).*((psiq_cross_s1).*(psiid_cross_s1_integrated'));
+psi_q_cross = (1/Fid2_Giq2).*((psiq_cross_s1).*(psiid_cross_s1_integrated));
 
-%Eigeninduktivität noch "padden"
-psidself_padded = repmat(psidself, 20, 1);
-psiqself_padded = repmat(psiqself, 1, 20);
 
-% psiid_cross_s1_integrated = repmat(psiid_cross_s1_integrated, 20, 1);
-% psiiq_cross_s1_integrated = repmat(psiiq_cross_s1_integrated, 1, 20);
-%"Fertig Approximierter Fluss
+% Eigeninduktivität noch "padden"
+[numRows_psid,numCols_psid] = size(psi_d)
+[numRows_psiq,numCols_psiq] = size(psi_q)
+psidself_padded = repmat(psidself, numRows_psid, 1);
+psiqself_padded = repmat(psiqself, 1, numCols_psiq);
+
+% Fertig Approximierter Fluss
 psi_d_approx = psidself_padded - psi_d_cross;
 psi_q_approx = psiqself_padded - psi_q_cross;
 
 
-%% Berechnung der induktivitäten
-% psi_d_cross_s1_abgeleitet = ((ad1.*ad2.*((sech(ad2.*(d_current-ad3))).^2))-(ad4.*ad5.*((sech(ad2.*(d_current-ad3))).^2)));
-% psi_dself_abgeleitet = (ad1.*ad2.*((sech(ad2.*(d_current-ad3))).^2));
-
-%Ldd
-psi_d_cross_s1_abgeleitet = ((ad1.*ad2.*(1./((cosh(ad2.*(d_current-ad3))).^2)))-(ad4.*ad5.*(1./((cosh(ad5.*(d_current-ad6))).^2))));
-psi_dself_abgeleitet = (ad1.*ad2.*(1./((cosh(ad2.*(d_current-ad3))).^2)));
-
-psi_dself_abgeleitet_padded = repmat(psi_dself_abgeleitet, 20, 1);
-psi_dcross_abgeleitet = (1/Fid1_Giq1).*(psi_d_cross_s1_abgeleitet').*(psiiq_cross_s1_integrated);
-
-Ldd_approx_test = psi_dself_abgeleitet_padded - psi_dcross_abgeleitet;
-
-%Ldq
-%Bleibt Gleich da nach q Abgeleitet
-psi_dq_cross_s1_abgeleitet = psid_cross_s1;
-
-%Wird 0 da nicht abhängig von q
-psi_dqself_abgeleitet = 0;
-psi_dqself_abgeleitet_padded = repmat(psi_dqself_abgeleitet, 1, 20)';
-
-psiidq_cross_s1_integrated_abgeleitet = psiq_cross_s1; %Wurde ja vorher integriert
-
-%Also ist das eigentlich (1/Fid1_Giq1).*psiid_cross_s1.*psiiq_cross_s1
-psi_dqcross_abgeleitet = (1/Fid1_Giq1).*(psi_dq_cross_s1_abgeleitet').*(psiidq_cross_s1_integrated_abgeleitet);
-
-Ldq_approx_test = psi_dqself_abgeleitet_padded  -  psi_dqcross_abgeleitet;
-
-
-%Lqq
-psi_q_cross_s1_abgeleitet = (aq1.*aq2.*(1./((cosh(aq2.*q_current)).^2))+aq3) - (aq4.*aq5.*(1./((cosh(aq5.*q_current)).^2))+aq6);
-psi_qself_abgeleitet = (aq1.*aq2.*(1./((cosh(aq2.*q_current)).^2))+aq3);
-
-psi_qself_abgeleitet_padded = repmat(psi_qself_abgeleitet, 1, 20);
-psi_qcross_abgeleitet = (1/Fid2_Giq2).*(psi_q_cross_s1_abgeleitet').*(psiid_cross_s1_integrated);
-
-Lqq_approx_test = psi_qself_abgeleitet_padded - psi_qcross_abgeleitet;
-
-
-%Lqd
-%Bleibt Gleich da nach d Abgeleitet
-psi_qd_cross_s1_abgeleitet = psiq_cross_s1; 
-
-%Wird 0 da nicht abhängig von d
-psi_qdself_abgeleitet = 0;
-psi_qdself_abgeleitet_padded = repmat(psi_qdself_abgeleitet, 1, 20);
-
-psiiqd_cross_s1_integrated_abgeleitet = psid_cross_s1; %Wurde ja vorher integriert
-
-%Also ist das eigentlich (1/Fid2_Giq2).*psiiq_cross_s1.*psiid_cross_s1
-% psi_qdcross_abgeleitet = (1/Fid2_Giq2).*(psi_qd_cross_s1_abgeleitet).*(psiiqd_cross_s1_integrated_abgeleitet');
-psi_qdcross_abgeleitet = (1/Fid2_Giq2).*(psiq_cross_s1).* (psid_cross_s1');
-% psiid_test = diff(psiid_cross_s1_integrated)
-% psi_qdcross_abgeleitet   = (1/Fid2_Giq2).*(psiq_cross_s1).*(psiid_test')
-
-Lqd_approx_test = -psi_qdcross_abgeleitet;
-
-
-%Induktivitäten aus approximiertem Fluss mit Gradienten
-[Ldd_approx,Ldq_approx]=gradient(psi_d_approx,1.6842,2.5263);
-[Lqd_approx,Lqq_approx]=gradient(psi_q_approx,1.6842,2.5263);
-
-%Induktivitäten aus approximiertem Fluss mit Gradienten (nur als Vergleich für die Simulink Simulation
-[Ldq_simu,Ldd_simu]=gradient(psi_d_approx',2.5263,1.6842);
-[Lqq_simu,Lqd_simu]=gradient(psi_q_approx',2.5263,1.6842);
-
 %% Error berechung zwischen den Flusskarten
 fluxd_real = psi_d; %setting  new name so its clear what is the real flux linkage
 fluxq_real = psi_q; %setting  new name so its clear what is the real flux linkage
+%% Error berechung zwischen den Flusskarten
 fluxd_max = max(fluxd_real, [], 'all');
 fluxq_max = max(fluxq_real, [], 'all');
 
-ed = ((abs(fluxd_real-psi_d_approx))/fluxd_max).*100;
-eq = ((abs(fluxq_real-psi_q_approx))/fluxq_max).*100;
+e_psid = ((abs(fluxd_real-psi_d_approx))/fluxd_max).*100;
+e_psiq = ((abs(fluxq_real-psi_q_approx))/fluxq_max).*100;
 
-Lqq_approx_max = max(Lqq_approx, [], 'all');
-ed_L = ((abs(Lqq_approx-Lqq_approx_test))/Lqq_approx_max).*100;
+%% plot of the final fitting results shown as in 3D 
 
-%% Plotten
+% Approximierte Flüsse
+%Approximierter Fluss psid
 figure;
-% Approximierter Fluss
-% subplot(1,2,1); 
+subplot(2,3,2); 
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
 surf(d_current, q_current,psi_d_approx);
-xlabel('$$i_{d}$$','Interpreter','Latex');
-ylabel('$$i_{q}$$','Interpreter','Latex');
-zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
-% legend;
+xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\hat{\psi}_{d}/Vs$$','FontSize', 18,'Interpreter','Latex');
+%title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
 
-% % Echter Fluss
-% subplot(2,1,2); 
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, fluxd_real);
-% %surf(X, Y, fluxd_real);
-% xlabel('i_{d}');
-% ylabel('i_{q}');
-% zlabel('\psi_{d}');
-% legend;
+%Approximierter Fluss psiq
+subplot(2,3,5);
+grid on;
+surf(d_current, q_current,psi_q_approx);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\hat{\psi}_{q}/Vs$$','FontSize', 18,'Interpreter','Latex');
+%title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
 
-% % figure;
-% % Approximierter Fluss
-% subplot(1,2,2);
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-% surf(d_current, q_current,psi_q_approx);
-% xlabel('$$i_{d}$$','Interpreter','Latex');
-% ylabel('$$i_{q}$$','Interpreter','Latex');
-% zlabel('$$\hat{\psi}_{q}$$','Interpreter','Latex');
-% % title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
-% % legend;
-% 
-% % Echter Fluss
-% subplot(2,1,2); 
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, fluxq_real);
-% %surf(X, Y, fluxd_real);
-% xlabel('D Current');
-% ylabel('Q Current');
-% zlabel('psi_{qreal}');
-% title('Fluss \psi_{d}');
-% legend;
+%Echter Fluss psid
+subplot(2,3,1); 
+grid on;
+surf(d_current, q_current, fluxd_real);
+xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\psi_{d}$$/Vs','FontSize', 18,'Interpreter','Latex');
 
+%Echter Fluss psiq
+subplot(2,3,4); 
+grid on;
+surf(d_current, q_current,fluxq_real);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\psi_{q}/Vs$$','FontSize', 18,'Interpreter','Latex');
 
-% figure;
-% % Error psid zwischen approx und echtem Fluss
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull);
-% surf(d_current, q_current, ed);
-% xlabel('$$i_{d}/A$$','Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','Interpreter','Latex');
-% zlabel('$$\varepsilon_d/\%$$','Interpreter','Latex');
-% % title('error psid');
-% % legend;
-% 
-figure;
+% Error psid zwischen approx und echtem Fluss
+grid on;
+subplot(2,3,3);
+surf(d_current, q_current, e_psid);
+xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+zlabel('$\varepsilon_d/\%$','FontSize', 18,'Interpreter','Latex');
+mittlerer_fehler_psid = mean(mean(e_psid))
+
 % Error psiq zwischen approx und echtem Fluss
 grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current, eq);
-xlabel('$$i_{d}/A$$','Interpreter','Latex');
-ylabel('$$i_{q}/A$$','Interpreter','Latex');
-zlabel('$$\varepsilon_q/\%$$','Interpreter','Latex');
-% title('error psiq');
-% legend;
-% 
-% 
-% figure;
-% % Approximierter Fluss
-% subplot(2,1,1); 
-% grid on;
-% % plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-% surf(d_current, q_current,Ldd_approx_test);
-% xlabel('d Current');
-% ylabel('q Current');
-% zlabel('L');
-% title('Mit Gradient');
-% legend;
-
-% Approximierter Fluss
-figure;
-subplot(2,1,1); 
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull_fitted);
-surf(d_current, q_current,Lqq_approx_test);
-xlabel('d Current');
-ylabel('q Current');
-zlabel('L');
-title('Mit Ableitung');
-legend;
-% 
-% Echter Fluss
-subplot(2,1,2); 
-
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current,Lqq_approx);
-%surf(X, Y, fluxd_real);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('L');
-title('Mit Gradient aus approx. Flusskarte');
-legend;
-% 
-figure;
-% Error psiq zwischen approx und echtem Fluss
-grid on;
-% plot(q_current_q_Flux, Fluxd_iqnull);
-surf(d_current, q_current, ed_L);
-xlabel('D Current');
-ylabel('Q Current');
-zlabel('error %');
-title('error L');
-legend;
-
+subplot(2,3,6);
+surf(d_current, q_current, e_psiq);
+xlabel('$i_d/A$','FontSize', 18,'Interpreter','Latex');
+ylabel('$i_q/A$','FontSize', 18,'Interpreter','Latex');
+zlabel('$\varepsilon_q/\%$','FontSize', 18,'Interpreter','Latex');
+mittlerer_fehler_psiq = mean(mean(e_psiq))
 
 
 

@@ -109,13 +109,12 @@ d_current_set = d_current(14);
 
 %Für den Faktor setzte ich einfach in der Formel der Integrierten Terme den Set Strom ein 
 Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
-%Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(d_current_set-ad3))))) - (((ad1.*ad4)).*(log(cosh(ad5.*(d_current_set-ad6)))./ad5));
 Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(d_current_set-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current_set-ad6)))));
 
 %% fitting only to plot the function and see if the fitting worked
 
-d_current = id;
-q_current = iq;
+% d_current = id;
+% q_current = iq;
 
 %Die beiden werden dann integriert (wieso auch immer) 
 psiid_cross_s1_integrated = ((ad1./ad2).*(log(cosh(ad2.*(d_current-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current-ad6)))));
@@ -135,8 +134,6 @@ psiqself_padded = repmat(psiqself, 1, 20);
 psi_d_approx = psidself_padded - psi_d_cross;
 psi_q_approx = psiqself_padded - psi_q_cross;
 
-fluxd_real = Flux_d';
-fluxq_real = Flux_q';
 
 %% Berechnung der induktivitäten
 % psi_d_cross_s1_abgeleitet = ((ad1.*ad2.*((sech(ad2.*(d_current-ad3))).^2))-(ad4.*ad5.*((sech(ad2.*(d_current-ad3))).^2)));
@@ -150,7 +147,6 @@ psi_dself_abgeleitet_padded = repmat(psi_dself_abgeleitet, 20, 1);
 psi_dcross_abgeleitet = (1/Fid1_Giq1).*(psi_d_cross_s1_abgeleitet').*(psiiq_cross_s1_integrated);
 
 Ldd_approx_test = psi_dself_abgeleitet_padded - psi_dcross_abgeleitet;
-
 
 %Ldq
 %Bleibt Gleich da nach q Abgeleitet
@@ -189,7 +185,7 @@ psi_qdself_abgeleitet_padded = repmat(psi_qdself_abgeleitet, 1, 20);
 psiiqd_cross_s1_integrated_abgeleitet = psid_cross_s1; %Wurde ja vorher integriert
 
 %Also ist das eigentlich (1/Fid2_Giq2).*psiiq_cross_s1.*psiid_cross_s1
-psi_qdcross_abgeleitet = (1/Fid2_Giq2).*(psi_qd_cross_s1_abgeleitet).*(psiiqd_cross_s1_integrated_abgeleitet');
+% psi_qdcross_abgeleitet = (1/Fid2_Giq2).*(psi_qd_cross_s1_abgeleitet).*(psiiqd_cross_s1_integrated_abgeleitet');
 psi_qdcross_abgeleitet = (1/Fid2_Giq2).*(psiq_cross_s1).* (psid_cross_s1');
 % psiid_test = diff(psiid_cross_s1_integrated)
 % psi_qdcross_abgeleitet   = (1/Fid2_Giq2).*(psiq_cross_s1).*(psiid_test')
@@ -206,6 +202,8 @@ Lqd_approx_test = -psi_qdcross_abgeleitet;
 [Lqq_simu,Lqd_simu]=gradient(psi_q_approx',2.5263,1.6842);
 
 %% Error berechung zwischen den Flusskarten
+fluxd_real = psi_d; %setting  new name so its clear what is the real flux linkage
+fluxq_real = psi_q; %setting  new name so its clear what is the real flux linkage
 fluxd_max = max(fluxd_real, [], 'all');
 fluxq_max = max(fluxq_real, [], 'all');
 

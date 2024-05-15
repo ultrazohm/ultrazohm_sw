@@ -64,8 +64,8 @@ psi_q = FluxMapData{108:127,1:20}*(1e-3);
 [Ldq,Ldd]=gradient(psi_d,2.5263,1.6842);
 [Lqq,Lqd]=gradient(psi_q,2.5263,1.6842);
 
-[Ldd_real,Ldq_real]=gradient(Flux_d_test,1.6842,2.5263);
-[Lqd_real,Lqq_real]=gradient(Flux_q_test,1.6842,2.5263);
+[Ldd_real,Ldq_real]=gradient(psi_d_forLUT,1.6842,2.5263);
+[Lqd_real,Lqq_real]=gradient(psi_q_forLUT,1.6842,2.5263);
 
 figure;
 surf(id,iq,psi_d)

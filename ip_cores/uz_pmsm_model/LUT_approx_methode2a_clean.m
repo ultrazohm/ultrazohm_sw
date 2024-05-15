@@ -31,7 +31,6 @@ ad3 = ad_self(3);
 
 % 2. Self-axis flux linkage q-axis
 psi_q_id_null = psi_q(:,id_null);
-psi_q_id_null = psi_q(:,9); %für hoeerner
 fun2=@(aq)(psi_q_id_null-((aq(1).*(tanh(aq(2)*q_current)))+(aq(3).*q_current)));
 beta2 = [1;1;1]; %random starting parameters
 aq_self = lsqnonlin(fun2,beta2,[],[],options);

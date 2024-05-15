@@ -1,17 +1,20 @@
 %Fitting_flux_approximation
+
 close all;
-%LUT Fitting
+%% LUT Fitting
 %LeastSquare Problems
 options = optimoptions(@lsqnonlin,'Algorithm','levenberg-marquardt');
-d_current = id;
-q_current = iq;
-d_current = d_current(1,:);
-q_current = q_current(:,1);
+d_current = id(1,:);
+q_current = iq(:,1);
 [~,id_null] = min(abs(d_current))
 [~,iq_null] = min(abs(q_current))
 
 id1 = id_null-1;
+
+% [~,id1] = max(abs(id))
+% [~,id1] = max(id)
 [~,iq1] = max(abs(iq))
+iq1 = iq1+2;
 
 %Preparation
 %Hier soll mall die Werte für den Fluss gesucht werden
@@ -99,16 +102,6 @@ hold on;
 plot(q_current, psi_q_id1,'*', 'DisplayName', 'Fluxq_{id1}');
 legend('show');
 
-
-%% fitting only to plot the function and see if the fitting worked
-
-d_current = id;
-q_current = iq;
-
-%Die beiden werden dann integriert (wieso auch immer) 
-psiid_cross_s1_integrated = ((ad1./ad2).*(log(cosh(ad2.*(d_current-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current-ad6)))));
-psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*log(cosh(aq2.*q_current)))-((aq4./aq5).*log(cosh(aq5.*q_current)));
-
 %Berechnen von F(i1)*G(i1) (wie im Paper)
 %Das sind die Setpoints an denen eben die kreuzkopplung berechnet wird
 q_current_set = q_current(1);
@@ -118,6 +111,15 @@ d_current_set = d_current(14);
 Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
 %Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(d_current_set-ad3))))) - (((ad1.*ad4)).*(log(cosh(ad5.*(d_current_set-ad6)))./ad5));
 Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(d_current_set-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current_set-ad6)))));
+
+%% fitting only to plot the function and see if the fitting worked
+
+d_current = id;
+q_current = iq;
+
+%Die beiden werden dann integriert (wieso auch immer) 
+psiid_cross_s1_integrated = ((ad1./ad2).*(log(cosh(ad2.*(d_current-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current-ad6)))));
+psiiq_cross_s1_integrated = ((1/2).*(aq3-aq6).*((q_current).^2))+((aq1./aq2).*log(cosh(aq2.*q_current)))-((aq4./aq5).*log(cosh(aq5.*q_current)));
 
 %Kreuzkopplung ist dann
 psi_d_cross = (1/Fid1_Giq1).*((psid_cross_s1).*(psiiq_cross_s1_integrated));
@@ -225,8 +227,6 @@ ylabel('$$i_{q}$$','Interpreter','Latex');
 zlabel('$$\hat{\psi}_{d}$$','Interpreter','Latex');
 % title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
 % legend;
-
-%matlab2tikz('C:\Users\Philipp\MARepository\29-03-2023_hufnagel_doelger_regelung_nichtlinearer_pmsm\Grafiken_Grundlagen\testobsspeichert.tex','width','\figurewidth','height','\figureheight')
 
 % % Echter Fluss
 % subplot(2,1,2); 

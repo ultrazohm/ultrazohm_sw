@@ -216,9 +216,10 @@ psi_dqself_abgeleitet_padded = repmat(psi_dqself_abgeleitet, 1, 20)';
 psiidq_cross_s1_integrated_abgeleitet = psiq_cross_s1; %Wurde ja vorher integriert
 
 %Also ist das eigentlich (1/Fid1_Giq1).*psiid_cross_s1.*psiiq_cross_s1
-psi_dqcross_abgeleitet = (1/Fid1_Giq1).*(psi_dq_cross_s1_abgeleitet).*(psiidq_cross_s1_integrated_abgeleitet);
+psi_dqcross_abgeleitet = (1/Fid1_Giq1).*(psi_dq_cross_s1_abgeleitet').*(psiidq_cross_s1_integrated_abgeleitet);
 
 Ldq_approx_test = psi_dqself_abgeleitet_padded  -  psi_dqcross_abgeleitet;
+
 
 
 %Lqq
@@ -283,30 +284,30 @@ e_Lqq = ((abs(Lqq_diff-Lqq_approx_test))/Lqq_diff_max).*100;
 % Plotten
 % 
 % Approximierte Flüsse
-figure;
+%figure;
 %Approximierter Fluss psid
-%subplot(1,2,1); 
+subplot(2,2,1); 
 grid on;
 surf(d_current, q_current,psi_d_approx);
 xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
 ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
 zlabel('$$\hat{\psi}_{d}/Vs$$','FontSize', 18,'Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
+%title('Approximierter Fluss $$\hat{\psi}_{d}$$','Interpreter','Latex');
 
 %Approximierter Fluss psiq
-figure;
-%subplot(1,2,2);
+%figure;
+subplot(2,2,2);
 grid on;
 surf(d_current, q_current,psi_q_approx);
 xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
 ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
 zlabel('$$\hat{\psi}_{q}/Vs$$','FontSize', 18,'Interpreter','Latex');
-% title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
+%title('Approximierter Fluss $$\hat{\psi}_{q}$$','Interpreter','Latex');
 
 
 %Echter Fluss psid
-figure;
-%subplot(1,2,1); 
+%figure;
+subplot(2,2,3); 
 grid on;
 surf(d_current, q_current, fluxd_real);
 xlabel('$$i_{d}$$/A','FontSize', 18,'Interpreter','Latex');
@@ -314,8 +315,8 @@ ylabel('$$i_{q}$$/A','FontSize', 18,'Interpreter','Latex');
 zlabel('$$\psi_{d}$$/Vs','FontSize', 18,'Interpreter','Latex');
 
 %Echter Fluss psiq
-figure;
-%subplot(1,2,2); 
+%figure;
+subplot(2,2,4); 
 grid on;
 surf(d_current, q_current,fluxq_real);
 xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
@@ -325,117 +326,117 @@ zlabel('$$\psi_{q}/Vs$$','FontSize', 18,'Interpreter','Latex');
 % %% Approximierte Induktivitäten Aus Flusskarten, Approximierte differentielle, approximierte mit Ableitungen
 % 
 % % %------------------Induktivitäen aus Flusskarten--------------------------%
-% % Ldd real
+% Ldd real
+figure;
+subplot(4,3,1);
+grid on;
+surf(d_current, q_current,Ldd_real);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(a)','FontSize', 18,'Interpreter','Latex');
+% Ldq_real
+ subplot(4,3,4);
+%figure;
+grid on;
+surf(d_current, q_current,Ldq_real);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(d)','FontSize', 18,'Interpreter','Latex');
+% Lqd_real
+subplot(4,3,7);
+%figure;
+grid on;
+surf(d_current, q_current,Lqd_real);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(g)','FontSize', 18,'Interpreter','Latex');
+% Lqq_real
+ subplot(4,3,10);
+%figure;
+grid on;
+surf(d_current, q_current,Lqq_real);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(j)','FontSize', 18,'Interpreter','Latex');
+% %------------------Differentielle Induktivitäen--------------------------%
+% Ldd diff
+ subplot(4,3,2);
+%figure;
+grid on;
+surf(d_current, q_current,Ldd_diff);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(b)','FontSize', 18,'Interpreter','Latex');
+% Ldq_real
+ subplot(4,3,5);
+%figure;
+grid on;
+surf(d_current, q_current,Ldq_diff);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(e)','FontSize', 18,'Interpreter','Latex');
+% Lqd_real
+ subplot(4,3,8);
+%figure;
+grid on;
+surf(d_current, q_current,Lqd_diff);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(h)','FontSize', 18,'Interpreter','Latex');
+% Lqq_real
+ subplot(4,3,11);
 % figure;
-% % subplot(4,3,1);
-% grid on;
-% surf(d_current, q_current,Ldd_real);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(a)','FontSize', 18,'Interpreter','Latex');
-% % Ldq_real
-% % subplot(4,3,4);
-% figure;
-% grid on;
-% surf(d_current, q_current,Ldq_real);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(d)','FontSize', 18,'Interpreter','Latex');
-% % Lqd_real
-% % subplot(4,3,7);
-% figure;
-% grid on;
-% surf(d_current, q_current,Lqd_real);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(g)','FontSize', 18,'Interpreter','Latex');
-% % Lqq_real
-% % subplot(4,3,10);
-% figure;
-% grid on;
-% surf(d_current, q_current,Lqq_real);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(j)','FontSize', 18,'Interpreter','Latex');
-% % %------------------Differentielle Induktivitäen--------------------------%
-% % Ldd diff
-% % subplot(4,3,2);
-% figure;
-% grid on;
-% surf(d_current, q_current,Ldd_diff);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(b)','FontSize', 18,'Interpreter','Latex');
-% % Ldq_real
-% % subplot(4,3,5);
-% figure;
-% grid on;
-% surf(d_current, q_current,Ldq_diff);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(e)','FontSize', 18,'Interpreter','Latex');
-% % Lqd_real
-% % subplot(4,3,8);
-% figure;
-% grid on;
-% surf(d_current, q_current,Lqd_diff);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(h)','FontSize', 18,'Interpreter','Latex');
-% % Lqq_real
-% % subplot(4,3,11);
-% figure;
-% grid on;
-% surf(d_current, q_current,Lqq_diff);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(k)','FontSize', 18,'Interpreter','Latex');
+grid on;
+surf(d_current, q_current,Lqq_diff);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(k)','FontSize', 18,'Interpreter','Latex');
 % % 
 % % %---------------------Induktivitäen Abgeleitet--------------------------%
-% % Ldd diff
-% % subplot(4,3,3);
+% Ldd diff
+subplot(4,3,3);
+%figure;
+grid on;
+surf(d_current, q_current,Ldd_approx_test);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(c)','FontSize', 18,'Interpreter','Latex');
+% Ldq_real
+subplot(4,3,6);
+%figure;
+grid on;
+surf(d_current, q_current,Ldq_approx_test);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(f)','FontSize', 18,'Interpreter','Latex');
+% Lqd_real
+subplot(4,3,9);
+%figure;
+grid on;
+surf(d_current, q_current,Lqd_approx_test);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(i)','FontSize', 18,'Interpreter','Latex');
+% Lqq_real
+subplot(4,3,12);
 % figure;
-% grid on;
-% surf(d_current, q_current,Ldd_approx_test);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{dd}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(c)','FontSize', 18,'Interpreter','Latex');
-% % Ldq_real
-% % subplot(4,3,6);
-% figure;
-% grid on;
-% surf(d_current, q_current,Ldq_approx_test);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{dq}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(f)','FontSize', 18,'Interpreter','Latex');
-% % Lqd_real
-% % subplot(4,3,9);
-% figure;
-% grid on;
-% surf(d_current, q_current,Lqd_approx_test);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{qd}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(i)','FontSize', 18,'Interpreter','Latex');
-% % Lqq_real
-% % subplot(4,3,12);
-% figure;
-% grid on;
-% surf(d_current, q_current,Lqq_approx_test);
-% xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
-% ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
-% zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
-% % title('(l)','FontSize', 18,'Interpreter','Latex');
+grid on;
+surf(d_current, q_current,Lqq_approx_test);
+xlabel('$$i_{d}/A$$','FontSize', 18,'Interpreter','Latex');
+ylabel('$$i_{q}/A$$','FontSize', 18,'Interpreter','Latex');
+zlabel('$$\L_{qq}/H$$','FontSize', 18,'Interpreter','Latex');
+% title('(l)','FontSize', 18,'Interpreter','Latex');
 
 %% Fehler der echten und approximierten Flüsse psid und psiq
 

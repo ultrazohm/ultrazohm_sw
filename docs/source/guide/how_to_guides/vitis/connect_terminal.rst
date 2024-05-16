@@ -23,13 +23,14 @@ When connecting to the computer, three new COM channels appear in the windows de
    :width: 500
 
 Usually the channel in the middle is the right one to connect to the serial terminal (in this case COM9). Click the **+** Button on the *Vitis Serial Terminal* section an select the right COM Port.
+The picture displays the connection in windows, in ubuntu the naming can be different see :ref:`linux_com`.
 
 .. image:: images_serial_terminal/connect_com.png
    :width: 500
 
 
 Connection with JTAG module `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_
------------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 The Trenz JTAG Debugger has two channels:
 

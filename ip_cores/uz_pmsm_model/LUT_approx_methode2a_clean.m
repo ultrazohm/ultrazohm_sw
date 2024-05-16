@@ -158,8 +158,8 @@ psi_q_approx = psiqself_padded - psi_q_cross;
 
 %% normalized Error between measured and approximated flux-linkage
 
-fluxd_mea = psi_d; %setting new name so its clear what is the real flux linkage
-fluxq_mea = psi_q; %setting new name so its clear what is the real flux linkage
+fluxd_mea = psi_d; %setting new name so its clear what the measured flux linkage is
+fluxq_mea = psi_q; %setting new name so its clear what the measured flux linkage is
 
 fluxd_max = max(fluxd_mea, [], 'all');
 fluxq_max = max(fluxq_mea, [], 'all');

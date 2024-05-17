@@ -96,27 +96,14 @@ typedef struct _actualValues_ {
 	float omega_mech;                    // in rad/s
 	float omega_elec;                     // in rad/s
 
-	float mechanicalRotorSpeedRADpS;    // New
-	float electricalRotorSpeedRADpS;     // New
-	float mechanicalRotorSpeedRPM; 		// New
-	float electricalRotorSpeedRPM; 		// New
-
-
 
 	float omega_ip; 		// New
-	float theta_ip; 		// New
 
 
 	float mechanicalPosition; 		// in m
-	float theta_elec;			// Add _rad for MC
-	float theta_mech;			// Add _rad for MC
+	float theta_elec;			//
+	float theta_mech;			//
 	float theta_offset; //in rad/s
-
-	float theta_mech_offset_rad;			// New
-	float theta_mech_calculated;			// New
-	float theta_elec_rad;			// New
-	float theta_mech_rad;			// New
-	float theta_offset_rad;			// New
 
 
 	float mechanicalTorque; 			// in Nm
@@ -128,21 +115,12 @@ typedef struct _actualValues_ {
 	float i_beta;  // New
 	float I_X; //
 	float I_Y; //
-	float i_x; // New
-	float i_y; // New
-	float i_z1; // New
-	float i_z2; // New
 	float I_d;
 	float I_q;
 	float U_d;	//
 	float U_q;  //
 	float U_X;
 	float U_Y;
-
-	float v_d;	//New
-	float v_q;  //New
-	float i_d;
-	float i_q;
 
 
 	float temperature;
@@ -156,15 +134,11 @@ typedef struct _actualValues_ {
 
 
 	// All new variables
-	    float polepairs;
+
 		float i_d_ref;
 		float i_q_ref;
 		float i_d_ref_pu;
 		float i_q_ref_pu;
-		float theta_elec_rad_ip;
-		float theta_mech_rad_ip;
-		float mechanicalRotorSpeedRPM_ip;
-		float mechanicalRotorSpeedRADpS_ip;
 		float i_a1_pu;
 		float i_b1_pu;
 		float i_c1_pu;
@@ -185,7 +159,10 @@ typedef struct _actualValues_ {
 		float i_q_delay;
 		float i_x_delay;
 		float i_y_delay;
-		float f_sw_avg_Hz;
+		float i_d_pred;
+		float i_q_pred;
+		float i_x_pred;
+		float i_y_pred;
 		float i_x_ref;
 		float i_y_ref;
 		float lambda_d;
@@ -202,17 +179,7 @@ typedef struct _actualValues_ {
 		float i_max;
 		float i_max_fpga;
 		float torque;
-		bool f_sw_measure_flag;
-		float f_f_sw_measure_flag;
-		bool measure_flag;
-		float f_measure_flag;
-		bool start_trade_off_measurement;
-		float f_start_trade_off_measurement;
-		float pause_timer_sec;
-		float pause_time_sec;
-		bool overcurrent_FPGA;
-		float overcurrent_FPGA_fl;
-		bool lmg_trigger_status;
+
 
 } actualValues;
 
@@ -230,17 +197,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
 
-	// All new variables
-	bool req_measure_flag;
-	float f_req_measure_flag;
-	float lambda_u_start;
-	float lambda_u_stop;
-	float lambda_u_step;
-	float lambda_u_now;
-	uint32_t cnt_lambda_u;
-	float f_cnt_lambda_u;
-	uint32_t cnt_lambda_u_end;
-	float f_cnt_lambda_u_end;
+
 } referenceAndSetValues;
 
 typedef struct{

@@ -29,6 +29,7 @@ float Limitation_saftey_factor = 0.707106781f; //To represent the saftey factor 
         	    .R_ph_Ohm = 0.0643f,
         	    .polePairs = 5.0f
         	};
+        	/*
         	struct uz_pmsm_model6ph_dq_config_t pmsm_CIL_config = {
         			.base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_6PH_DQ_0_BASEADDR,
         			.ip_core_frequency_Hz = 100000000U,
@@ -47,6 +48,7 @@ float Limitation_saftey_factor = 0.707106781f; //To represent the saftey factor 
         			.simulate_mechanical_system = false,
         			.switch_pspl = true
         	};
+        	*/
 
 
 uz_CurrentControl_t* init_xy_FOC(void) {
@@ -71,6 +73,8 @@ uz_CurrentControl_t* init_dq_FOC(void) {
 	return(uz_CurrentControl_init(CC_dq_config));
 }
 
+/*
 uz_pmsm_model6ph_dq_t* init_CIL_6ph_PMSM(void) {
 	return(uz_pmsm_model6ph_dq_init(pmsm_CIL_config));
 }
+*/

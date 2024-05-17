@@ -89,6 +89,18 @@ enum JS_OberservableData {
 	JSO_i_d_ip,
 	JSO_i_q_ip,
 	JSO_omega_ip,
+	JSO_vd_pu,
+	JSO_vq_pu,
+	JSO_vx_pu,
+	JSO_vy_pu,
+	JSO_i_d_delay,
+	JSO_i_q_delay,
+	JSO_i_x_delay,
+	JSO_i_y_delay,
+	JSO_i_d_pred,
+	JSO_i_q_pred,
+	JSO_i_x_pred,
+	JSO_i_y_pred,
 	JSO_ENDMARKER
 };
 
@@ -196,12 +208,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	n_ref_rpm,
-	i_d_ref,
-	i_q_ref,
-	i_X_ref,
-	i_Y_ref,
-	send_field_6,
+	id_ref,
+	iq_ref,
+	lambda_u,
+	i_max,
+	i_max_fpga,
+	Index_manual,
 	SND_FLD_ENDMARKER
 
 
@@ -209,12 +221,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
 	A,
 	A,
+	-,
+	p.u.,
 	A,
-	A,
-	A,
+	-,
 	SND_LABELS_ENDMARKER
 
 
@@ -222,12 +234,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	n_rpm,
+	mech_speed,
 	i_d,
 	i_q,
-	i_X,
-	i_Y,
-	receive_field_6,
+	invTemp1,
+	invTemp2,
+	v_dc,
 	RCV_FLD_ENDMARKER
 
 
@@ -238,17 +250,17 @@ enum gui_button_mapping {
 	RPM,
 	A,
 	A,
-	A,
-	A,
-	A,
+	°C,
+	°C,
+	V,
 	RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
 // Do not change the first (zero) and last (end) entries.
 
 MYBUTTONS_LABELS_ZEROVALUE=0,
-CIL,
-REAL,
+MPC_OFF,
+MPC_ON,
 CurrentControl,
 MyButton4,
 MyButton5,

@@ -31,11 +31,14 @@ static uz_incrementalEncoder_t* encoder_D5;
 
 void initialize_incremental_encoder_ipcore_on_D5(float incrementalEncoderResolution, float motorPolePairNumber){
 	struct uz_incrementalEncoder_config encoder_D5_config={
-		.base_address=XPAR_UZ_DIGITAL_ADAPTER_D5_ADAPTER_INCREENCODER_V24_IP_0_BASEADDR,
+		.base_address=XPAR_INCREMENTAL_ENCODER_V26_0_BASEADDR,
 		.ip_core_frequency_Hz=100000000U,
 		.line_number_per_turn_mech=incrementalEncoderResolution,
 		.OmegaPerOverSample_in_rpm=OMEGA_PER_OVER_SAMPLE_RPM,
-		.drive_pole_pair=motorPolePairNumber
+		.drive_pole_pair=motorPolePairNumber,
+        .Encoder_elec_Offset = 0U,
+        .counting_direction = uz_incrementalEncoder_counting_clock_wise,
+        .Speed_Timeout_ms = 10U //10ms
 	};
 	encoder_D5=uz_incrementalEncoder_init(encoder_D5_config);
 }

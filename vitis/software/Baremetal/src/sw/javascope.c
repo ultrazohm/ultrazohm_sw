@@ -124,7 +124,18 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_i_d_ip]	= &data->av.i_d_ip;
 	js_ch_observable[JSO_i_q_ip]	= &data->av.i_q_ip;
 	js_ch_observable[JSO_omega_ip]	= &data->av.omega_ip;
-
+	js_ch_observable[JSO_vd_pu]	= &data->av.vd_pu;
+	js_ch_observable[JSO_vq_pu]	= &data->av.vq_pu;
+	js_ch_observable[JSO_vx_pu]	= &data->av.vx_pu;
+	js_ch_observable[JSO_vy_pu]	= &data->av.vy_pu;
+	js_ch_observable[JSO_i_d_delay]	= &data->av.i_d_delay;
+	js_ch_observable[JSO_i_q_delay]	= &data->av.i_q_delay;
+	js_ch_observable[JSO_i_x_delay]	= &data->av.i_x_delay;
+	js_ch_observable[JSO_i_y_delay]	= &data->av.i_y_delay;
+	js_ch_observable[JSO_i_d_pred]	= &data->av.i_d_pred;
+	js_ch_observable[JSO_i_q_pred]	= &data->av.i_q_pred;
+	js_ch_observable[JSO_i_x_pred]	= &data->av.i_x_pred;
+	js_ch_observable[JSO_i_y_pred]	= &data->av.i_y_pred;
 
 
 

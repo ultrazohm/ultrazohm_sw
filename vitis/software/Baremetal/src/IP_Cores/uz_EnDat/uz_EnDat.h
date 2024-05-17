@@ -87,9 +87,9 @@ typedef enum uz_EnDat_pos_dif_values {
     uz_EnDat_dif_t0_t2
 }uz_EnDat_dif;
 /**
- * @typedef Frequency operators
+ * 
  * @enum uz_EnDat_frequency_selector
- * @ref uz_EnDat_frequency
+ * 
  */
 typedef enum uz_EnDat_frequency_selector {
     uz_EnDat_operatingfrequency_12500000Hz,
@@ -99,7 +99,7 @@ typedef enum uz_EnDat_frequency_selector {
     uz_EnDat_operatingfrequency_781250Hz,
     uz_EnDat_operatingfrequency_390625Hz,
     uz_EnDat_operatingfrequency_195312Hz
-  }/**Foo it with B*/uz_EnDat_frequency;
+  }uz_EnDat_frequency;
 
 
 
@@ -192,6 +192,7 @@ uz_EnDat_t* uz_EnDat_init(struct uz_EnDat_config_t config);
 /**
  * @param ctrlword converted control word
  * @param divider converted divider
+ * @param self EnDat Object to work with.
  * @brief This function is to write to uz_EnDat - call it with precaution.
  * @return Returns 0 when everything went smooth.
  */
@@ -206,6 +207,7 @@ int uz_EnDat_write_control_and_divider_from_object(uz_EnDat_t *self);
 /**
  * @param factornumber means which Factor you want to write 
  * @param factor value that you want to write 100 e.g. 1.00 is default for factors 1-5, factors 6&7 are absolute hence default is 0.
+ * @param self EnDat Object to work with.
  * @brief The following factors are available as of now;
  * @brief uz_EnDat_factor1_dataflow = adjusts the data flow change timing;
  * @brief uz_EnDat_factor2_recoverytime = adjusts the recovery time after a telegramm;
@@ -221,11 +223,13 @@ int16_t uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor 
 /**
  * @brief This function is to read the status word from the EnDat IP-Core.
  * @return Returns status word as a word from the IP-Core.
+ * @param self EnDat Object to work with.
  */
 uint16_t uz_EnDat_read_statusword(uz_EnDat_t *self);
 
 /**
  * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
+ * @param self EnDat Object to work with.
  * @brief This function fetches positional values from the EnDat IP-Core.
  * @return Returns the actual positional value from the EnDat IP Core.
  */
@@ -235,6 +239,7 @@ uint32_t uz_EnDat_read_pos(uz_EnDat_t *self, uz_EnDat_position t_x);
  * 
  * @brief This function writes default values to the EnDat IP-Core - use in init.
  * @return Returns 0 when everything went smooth. Returns -1 if something went wrong.
+ * @param self EnDat Object to work with.
  */
 int uz_EnDat_write_default_values(uz_EnDat_t *self);
 
@@ -258,6 +263,7 @@ uint8_t uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_frequency fre
  * 
  * @brief This function reads the CRC information from the EnDat IP-Core
  * @return Returns the CRC information.
+ * @param self EnDat Object to work with.
  */
 uint8_t uz_EnDat_read_crc(uz_EnDat_t* self);
 /**
@@ -299,6 +305,7 @@ controlword uz_EnDat_enable_config_evaluation_in_IP(controlword in);
 
 /**
  * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
+ * @param self EnDat Object to work with.
  * @brief This function fetches positional values from the EnDat IP-Core and converts them to rad (2PI) immediately. Precision is auto derived.
  * @return Returns the actual status word from the EnDat IP Core.
  */
@@ -324,6 +331,7 @@ controlword uz_EnDat_reset_output_enable_in_controlword(controlword in);
 
 /**
  * @param tx_ty  means which value you would like to fetch. Time elapsed from t0_t1 to t0_t4
+ * @param self EnDat Object to work with.
  * @brief This function fetches the time elapsed fetching for positional values from the EnDat IP-Core.
  * @return Returns the actual time value from the EnDat IP Core in ns.
  */
@@ -431,7 +439,7 @@ bool uz_EnDat_fetch_errorbit_from_statusword(controlword in);
 void uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(uz_EnDat_t *self);
 
 /**
- * 
+ * @param self EnDat Object to work with.
  * @brief This function reads the Responselength in bits from the EnDat IP-Core and converts it to float
  * @return Returns the Length of the response information.
  */
@@ -457,6 +465,7 @@ float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elap
 
 
 /**
+ * @param self EnDat Object to work with.
  * @param compensation  -1 = auto, 0 = off, > 0 Amount of cycles to compensate. 
  * @brief This function fetches positional value t0 from the EnDat IP-Core, convert it to radiant and delivers the age of that value.
  * @return Returns the actual positional value from the EnDat IP Core and the age of that value in s.
@@ -467,6 +476,7 @@ uz_EnDat_pos_with_age uz_EnDat_read_pos_t0_as_radiant_and_age(uz_EnDat_t *self, 
  * @param compensation  -1 = auto, 0 = off, > 0 Amount of cycles to compensate. 
  * @param posorage true = age, false = pos
  * @param update update the underlying value
+ * @param self EnDat Object to work with.
  * @brief This function fetches positional value t0 from the EnDat IP-Core, convert it to radiant and delivers the age of that value.
  * @return Returns the actual positional value from the EnDat IP Core and the age of that value in s.
  */
@@ -482,6 +492,7 @@ float uz_EnDat_get_clk_frequency_or_period_from_divider(uint8_t divider, bool fr
 
 /**
  * @param valuecalctime Time used to calculate a value.
+ * @param self EnDat Object to work with.
   * @brief This function calculates a quality of sync value based on one second of connection.
  * @return Returnns a precentage value of the sync quality.
  */

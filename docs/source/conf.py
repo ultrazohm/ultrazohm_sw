@@ -143,5 +143,8 @@ nitpick_ignore = [
     ('c:identifier', 'size_t'),
     ('c:identifier', 'uintptr_t'),
     ('c:identifier', 'bool'),
-    ('c:identifier', 'uz_EnDat_frequency'),
+    ('c:identifier', 'uz_EnDat_frequency'), #nikita
+    ('c:identifier', 'uint8_t'),            #nikita
+    ('c:identifier', 'uz_EnDat_factor'),    #nikita
+    
 ]

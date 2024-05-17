@@ -55,7 +55,7 @@ Init Functions
 ---------------
 .. doxygentypedef:: uz_EnDat_t
 .. doxygentypedef:: controlword
-.. c:type:: uint8_t
+
 
 .. doxygenfunction:: uz_EnDat_IP_core_init
 
@@ -77,31 +77,35 @@ Control Functions
 
 There are multiple functions and settings used to control the IP-Core. The most basic way of controlling the IP-Core is the controlword.
 
-Table *Controlword* shows the content of the controlword to the IP-Core.
+Table *Controlword* shows the content of the controlword to 
+
+
 
 .. csv-table:: EnDat22 IP-Core controlword
-   :file: uz_EnDat_controlword.csv
-   :widths: 25 25 75 50
-   :header-rows: 1
-   :align: center
+  :file: ./uz_EnDat_controlword.csv
+  :widths: 25 25 75 50
+  :header-rows: 1
+  :align: center
 
 An exemplary control word would look like this: *0xB407* for an 25-Bit EnDat22 Sensor.
 
-The sensor operating frequency is set by a divider variable. 
+The sensor operating frequency is set by a divider variable, ``uz_EnDat_frequency`` with the alias ``uz_EnDat_frequency_selector``. The following operating frequencies are supported by this IP-Core:
 
-
-  
-
-The divider enum can be set manually and then transferred by a function to the proper divider.
+.. doxygenenum:: uz_EnDat_frequency_selector
+ 
+The divider enum can be set manually or selecting a frequency enum which is then transferred by the following function to the proper divider.
 
 .. doxygenfunction:: uz_EnDat_get_clk_frequency_divider_from_frequency
 
-bla+#,
+With both the control word and the divider setup you are good to go to start using that IP-Core in conjunction with the basic initialization functions: ``uz_EnDat_IP_core_init`` and ``uz_EnDat_IP_core_custom_init.c``.
 
+Additionally there are multiple adjustment settings so called "factors" that you can adjust to establish a connection to the sensor.
 
-Test
+.. doxygenenum:: uz_EnDat_factors
 
+The factors can be set by the following function with the factor enum as selector and the value you want to write.
 
+.. doxygenfunction:: uz_EnDat_write_factor
 
-
+Which leads to blabla.
 

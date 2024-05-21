@@ -93,7 +93,7 @@ The sensor operating frequency is set by a divider variable, ``uz_EnDat_frequenc
 
 .. doxygenenum:: uz_EnDat_frequency_selector
  
-The divider enum can be set manually or selecting a frequency enum which is then transferred by the following function to the proper divider.
+The divider value can be set manually or selecting a frequency enum which is then transferred by the following function to the proper divider.
 
 .. doxygenfunction:: uz_EnDat_get_clk_frequency_divider_from_frequency
 
@@ -107,5 +107,10 @@ The factors can be set by the following function with the factor enum as selecto
 
 .. doxygenfunction:: uz_EnDat_write_factor
 
-Which leads to blabla.
+Experimentally known-good values are to be found in the appendix of this documentation.
+
+An extensive description can be found in the Thesis to the EnDat22 connector. 
+
+A short description follows:
+
 

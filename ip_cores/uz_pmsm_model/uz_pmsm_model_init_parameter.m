@@ -28,7 +28,7 @@ static_friction_torque=0.01;
 % Simulation settings
 simulate_mechanical=true;
 simulate_open_loop=true;
-simulate_nonlinear_modell=true; %Only set this true if the fitting parameter script ran successfully
+simulate_nonlinear=false; %Only set this true if the fitting parameter script ran successfully
 setpoint_step=10.0;
 
 % Fitting parameter are initilized with default values

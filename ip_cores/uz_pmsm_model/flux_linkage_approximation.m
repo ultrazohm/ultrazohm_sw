@@ -7,7 +7,7 @@ set(0,'defaulttextinterpreter','latex')
 %% extract Lookup table data
 %For nonlinear Model to work LUTs have to be implemented
 % Import the data from csv for lookup table
-FluxMapData = readtable('flux_linkage_name');
+FluxMapData = readtable('flux_linkage_csv_name');
 
 % Currents
 id = FluxMapData{1,1:20};
@@ -214,7 +214,6 @@ xlabel('$i_d/A$','FontSize', 18);
 ylabel('$i_q/A$','FontSize', 18);
 zlabel('$\varepsilon_d/\%$','FontSize', 18);
 title('normalized error $\varepsilon_d/\%$','Interpreter','Latex', 'FontSize', 18);
-mean_error_psid = mean(mean(e_psid))    %mean error of flux-linkage in d-axis
 
 % Error of measured and approximated flux-linkage in q-axis
 grid on;
@@ -224,9 +223,3 @@ xlabel('$i_d/A$','FontSize', 18);
 ylabel('$i_q/A$','FontSize', 18);
 zlabel('$\varepsilon_q/\%$','FontSize', 18);
 title('normalized error $\varepsilon_q/\%$','Interpreter','Latex', 'FontSize', 18);
-mean_error_psiq = mean(mean(e_psiq))    %mean error of flux-linkage in q-axis
-
-
-
-
-

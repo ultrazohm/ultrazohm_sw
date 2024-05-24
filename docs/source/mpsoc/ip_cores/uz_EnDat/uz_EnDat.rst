@@ -114,3 +114,51 @@ An extensive description can be found in the Thesis to the EnDat22 connector.
 A short description follows:
 
 
+.. list-table:: Factor description
+  :widths: 25 75 25
+  :header-rows: 1
+  :align: center
+
+  * - Factor
+    - Description
+    - Default
+  
+  * - #1 - DATAFLOW
+    - 2.99
+    - 100 - relative
+  
+  * - #2 - RECOVERYTIME
+    - 1.49
+    - 100 - relative
+    
+  * - #3 - INITIALOFF
+    - 1.99
+    - 100 - relative
+  
+  * - #4 - DATACLKSYNC
+    - 1.49
+    - 100 - relative
+    
+  * - #5 - TELEGRAMLEN
+    - 1.99
+    - 100 - relative
+  
+  * - #6 - SYNCRESPONSE
+    - 1.99
+    - 0 - absolute unsigned
+  
+  * - #7 - EXTRASHIFT
+    - 1.49
+    - 0 - absolute signed
+
+
+Usage Examples
+==============
+
+
+
+.. csv-table:: EnDat22 known-good seetings
+  :file: ./uz_EnDat_known_good_settings.csv
+  :widths: 25 25 25 25 25 25 25 25 25 25
+  :header-rows: 1
+  :align: center

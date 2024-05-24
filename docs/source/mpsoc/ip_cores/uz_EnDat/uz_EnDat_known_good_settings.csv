@@ -1,17 +1,25 @@
-Bit, Default, Description, Target
-0, 1, EnDat22 mode command, EnDat22 sensor
-1, 1, EnDat22 mode command, EnDat22 sensor
-2, 1, EnDat22 mode command, EnDat22 sensor
-3, 0, EnDat22 mode command, EnDat22 sensor
-4, 0, EnDat22 mode command, EnDat22 sensor
-5, 0, EnDat22 mode command, EnDat22 sensor
-6, 0, altenative positional age mode, IP-Core
-7, 0, sensor resoluton = 19 bit, IP-Core
-8, 0, sensor resoluton = 21 bit, IP-Core
-9, 0, sensor resoluton = 23 bit, IP-Core
-10, 1, sensor resoluton = 25 bit, IP-Core
-11, 0, sensor resoluton = 27 bit, IP-Core
-12, 0, output enable, IP-Core
-13, 1, continous operation mode, IP-Core
-14, 0, reserved, IP-Core
-15, 0, apply configuration, IP-Core
+Type, Sensor Frequency in MHz, Profile, Fct. 1, Fct. 2, Fct. 3, Fct. 4, Fct. 5, Fct. 6, Fct. 7 
+ECN125, 1.5625, Default, default, default, default, default, default, default, default
+ECN125, 1.5625, Good Effort, default, 65, default, default, default, default, default
+ECN125, 1.5625, Extreme, default, 55, default, default, 85, default, default
+ECN125, 3.125, Default, default, default, default, default, default, default, 2
+ECN125, 3.125, Good Effort, default, 65, default, default, default, default, 2
+ECN125, 3.125, Extreme, default, 55, default, default, 91, default, 2
+ECN125, 6.25, Default, default, default, default, default, default, default, default
+ECN125, 6.25, Good Effort, default, 65, default, default, default, default, default
+ECN125, 6.25, Extreme, default, 55, default, default, default, default, default
+ECN125, 12.5, Default, default, default, default, default, 155, default, default
+ECN125, 12.5, Good Effort, default, 90, default, default, 155, default, default
+ECN125, 12.5, Extreme, default, 83, default, default, 155, default, default
+ECN1123, 1.5625, Default, default, default, default, default, default, default, default
+ECN1123, 1.5625, Good Effort, default, 63, default, default, default, default, default
+ECN1123, 1.5625, Extreme, default, 53, default, default, default, default, default
+ECN1123, 3.125, Default, default, default, default, default, default, default, 2
+ECN1123, 3.125, Good Effort, default, 63, default, default, default, default, 2
+ECN1123, 3.125, Extreme, default, 53, default, default, 88, default, 2
+ECN1123, 6.25, Default, default, default, default, default, default, 1, 2
+ECN1123, 6.25, Good Effort, default, 62, default, default, default, 1, 2
+ECN1123, 6.25, Extreme, default, 52, default, default, default, 1, 2
+ECN1123, 12.5, Default, default, default, default, default, 155, default, default
+ECN1123, 12.5, Good Effort, default, 89, default, default, 155, default, default
+ECN1123, 12.5, Extreme, default, 79, default, default, 155, default, default

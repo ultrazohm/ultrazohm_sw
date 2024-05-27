@@ -432,7 +432,7 @@ bool uz_EnDat_fetch_errorbit_from_statusword(controlword in);
 
 /**
  * 
- * @brief This function gets the precision from the object of the EnDat IP-Core.  
+ * @brief This function gets the statusword and the errobit from the IP-Core and updates it into the object of the EnDat IP-Core.  
  * @param self EnDat Object to work with.
  *
  */
@@ -494,7 +494,7 @@ float uz_EnDat_get_clk_frequency_or_period_from_divider(uint8_t divider, bool fr
  * @param valuecalctime Time used to calculate a value.
  * @param self EnDat Object to work with.
   * @brief This function calculates a quality of sync value based on one second of connection.
- * @return Returnns a precentage value of the sync quality.
+ * @return Returns a precentage value of the sync quality.
  */
 float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecalctime);
 

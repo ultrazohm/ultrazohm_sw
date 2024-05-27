@@ -124,41 +124,193 @@ A short description follows:
     - Default
   
   * - #1 - DATAFLOW
-    - 2.99
+    - This factor changes the timing where the RS485 data line transceiver is set from Read to Write mode.
     - 100 - relative
   
   * - #2 - RECOVERYTIME
-    - 1.49
+    - This factor changes the bus pause period after a telegram. Per default it is set to about 30 microseconds regardless of the operating frequency. By adjusting this value you can change the absolute time from 0 to about 415 micro seconds.
     - 100 - relative
     
   * - #3 - INITIALOFF
-    - 1.99
+    - This factor shortens or adds to the time which is waited upon a full cold boot of the FPGA before attempting to communicate to the sensor. Default ist about 5 miliseconds. 
     - 100 - relative
   
   * - #4 - DATACLKSYNC
-    - 1.49
+    - This factor changes the relative position of the DATA-TX to the CLK-TX line. With that you can granularly adjust the offset inbetween those related lines.
     - 100 - relative
     
   * - #5 - TELEGRAMLEN
-    - 1.99
+    - This factor adjusts the total telegram length excluding the bus pause period. Default is about 48 clocks which is enough for a 25-bit sensor.
     - 100 - relative
   
   * - #6 - SYNCRESPONSE
-    - 1.99
+    - This factor changes the relative position of the DATA - RX line to the internal clock. With that you can adjust the response if is on the edge of the internal clock leading to undefined states.
     - 0 - absolute unsigned
   
   * - #7 - EXTRASHIFT
-    - 1.49
+    - This factor changes the internal alignment inside the FPGA to ensure that the right part of the answer is interpreted as the payload. Use this factor if you have n-cycles indicated whereas physically there was only one turn.
     - 0 - absolute signed
 
+Fetching positional values
+--------------------------
+
+With the factors and the control function set the basic set-up is complete. Now there are two possibilities to fetch the positional information. One is the basic one just returning the position value:
+
+.. doxygenfunction:: uz_EnDat_read_pos_and_return_radiant
+
+You can also fetch an extended positional information which also incorporates the age of the position. With this function you can only fetch the most recent position. Its important to only call the function once with the update bit set to high.
+
+.. doxygenfunction:: uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper
+  
+
+Fetching rotational speed values
+--------------------------------
+
+For fetching the rotational speed the following function is most suited. It will return the revolution of the sensor in RPM.
+
+.. doxygenfunction:: uz_EnDat_calc_revs_from_fpga_pos_dif_and_time
+
+If RPMs are not suiting you - feel free to use this converter function to change it to rad/s.
+
+.. doxygenfunction:: uz_EnDat_rpm_to_rad_per_second_converter
+
+
+Filter function
+---------------
+
+To filter some noises from any signal you like (intended for speed though) you can use this function which will filter with a parameter.
+
+.. doxygenfunction:: uz_EnDat_rpm_smoothening
+
+
+Diagnose functions
+------------------
+
+There are multiple diagnostic functions that provide interesting insights.
+
+This function will read the length of the actual response. It should never be lower then the total amount of bytes need to read in the answer (2 + 5 + Sensor precision)
+
+.. doxygenfunction:: uz_EnDat_read_reponselength_and_convert_to_float
+
+This factor is an indicator about the quality of the connection with values smaller then 99 indicating a faulty sync.
+
+.. doxygenfunction:: uz_EnDat_calculate_sync_quality_indicator
+
+This function updates the statusword (which is mostly a readback copy of the control word) and the errorbit provided by the sensor.
+
+.. doxygenfunction:: uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object
 
 Usage Examples
 ==============
 
+The following examples provide a valid suggestion how to set up for usage of this IP-Core.
+
+Init in Main
+------------
+
+.. code-block:: c
+
+  Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_custom_init();
+
+  //or.. if you are a true expert :o)
+
+  Global_Data.objects.EnDat_master_pointer = uz_EnDat_IP_core_expert_init(XPAR_UZ_USER_UZ_ENDAT_0_BASEADDR, 100000000U, 100, 100, 100, 100, 100, 0, 0, uz_EnDat_set_output_enable_in_controlword(uz_EnDat_enable_config_evaluation_in_IP(uz_EnDat_set_sensor_precision_in_controlword( uz_EnDat_set_operation_mode(ENDAT_CONTROLWORD_DEFAULT, uz_EnDat_Encoder_send_position_values), uz_EnDat_25_bit))), 1);
 
 
-.. csv-table:: EnDat22 known-good seetings
+Readout Sensor in fast cycle (e.g. ISR)
+---------------------------------------
+
+Fetching positional information with age:
+
+.. code-block:: c
+
+    Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, -1, false, true);
+    Global_Data.av.EnDat_pos_age = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 0, true, false);
+
+Fetching positional information simple way:
+
+.. code-block:: c
+  
+    Global_Data.av.theta_mech = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.EnDat_master_pointer,uz_EnDat_pos_t0); 
+
+
+Fetch status in slow cycle (e.g. slow ISR)
+------------------------------------------
+
+.. code-block:: c
+
+    Global_Data.av.EnDat_value_calc_time = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1));
+    Global_Data.av.EnDat_value_response_length = uz_EnDat_read_reponselength_and_convert_to_float(Global_Data.objects.EnDat_master_pointer);
+    Global_Data.av.EnDat_sync_quality = uz_EnDat_calculate_sync_quality_indicator(Global_Data.objects.EnDat_master_pointer, Global_Data.av.EnDat_value_calc_time);
+    uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(Global_Data.objects.EnDat_master_pointer);
+
+
+
+
+
+Appendix
+=========
+
+known-good values
+-----------------
+
+.. csv-table:: EnDat22 known-good settings
   :file: ./uz_EnDat_known_good_settings.csv
   :widths: 25 25 25 25 25 25 25 25 25 25
   :header-rows: 1
   :align: center
+
+
+proposed slow async clock function
+----------------------------------
+
+If not implemented by the time you read the documentation, feel free to add this function. Call then "async_slow_clk_cycle_100ms();" inside "case infinite_loop:".
+
+.. doxygenfile:: slow_cycle.h
+
+
+.. code-block:: c
+
+  #include <stdint.h>
+  #include <stdbool.h>
+  #include "../globalData.h"
+  #include "../IP_Cores/uz_EnDat/uz_EnDat.h"
+  #include "../uz/uz_global_configuration.h"
+  #include "../uz/uz_SystemTime/uz_SystemTime.h"
+
+  void async_slow_clk_cycle_100ms(void);
+  void async_slow_clk_cycle_100ms_wrapper(void);
+
+
+
+.. code-block:: c
+
+  #include "../include/slow_cycle.h"
+
+  extern DS_Data Global_Data;
+
+  void async_slow_clk_cycle_100ms(void) {
+    unsigned long int act;
+    static unsigned long int old;
+    static bool skip = false;
+    act = uz_SystemTime_GetUptimeInMs();
+
+    if (!skip && (act % (100) < 50)) {
+        async_slow_clk_cycle_100ms_wrapper();
+        skip = true;
+        Global_Data.av.slow_cycle_period_ms = (float)(act - old);
+        old = act;
+    }
+    if (((old + 99) < act) || (act < old)) {
+        skip = false; 
+    }
+  }
+
+  void async_slow_clk_cycle_100ms_wrapper(void) {
+    //EXECUTE HERE
+    Global_Data.av.EnDat_value_calc_time = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1));
+    Global_Data.av.EnDat_value_response_length = uz_EnDat_read_reponselength_and_convert_to_float(Global_Data.objects.EnDat_master_pointer);
+    Global_Data.av.EnDat_sync_quality = uz_EnDat_calculate_sync_quality_indicator(Global_Data.objects.EnDat_master_pointer, Global_Data.av.EnDat_value_calc_time);
+    uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(Global_Data.objects.EnDat_master_pointer);
+  }
+

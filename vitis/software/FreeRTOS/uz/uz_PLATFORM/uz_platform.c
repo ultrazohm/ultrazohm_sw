@@ -429,20 +429,19 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 
 	//// Create I²C devices: EEPROM
 	uint8_t cardaddr;
-	cardaddr = UZ_PLATFORM_I2CADDR_CARDEEPROM_BASE + slot;
-	uz_assert(cardaddr <= UZ_PLATFORM_I2CADDR_CARDEEPROM_LAST);
+	cardaddr = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + slot;
+	uz_assert(cardaddr <= UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST);
 
 	uz_iic cardeeprom;
 	uz_iic_initdev(&cardeeprom, UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, cardaddr);
 
 	uint32_t status;
 	uz_platform_eeprom cardeeprom_data;
-	status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_CARDEEPROM_INFOOFFSET, (uint8_t*) &cardeeprom_data, sizeof(cardeeprom_data));
+	status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET, (uint8_t*) &cardeeprom_data, sizeof(cardeeprom_data));
 
-	// Option: Check whether group matches?
 	// Option: Check whether model is known?
 
-	if ( UZ_SUCCESS == status ) {
+	if ( (UZ_SUCCESS == status) && (UZP_HWGROUP_ADCARD == cardeeprom_data.hw_group) ) {
 		*model_p = cardeeprom_data.hw_model;
 		*revision_p = cardeeprom_data.hw_revision;
 		*serial_p = cardeeprom_data.serialdata.hw_batchandserial.serial;

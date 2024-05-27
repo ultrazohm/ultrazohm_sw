@@ -83,7 +83,7 @@ int main()
 
 #if (UZ_PLATFORM_CARDID==1)
  {
-	const uint8_t card_slots = UZ_PLATFORM_I2CADDR_CARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_CARDEEPROM_BASE + 1;
+	const uint8_t card_slots = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + 1;
 
 	uz_printf("\r\n--- Adapter Card ID:\r\n\r\n");
 
@@ -92,9 +92,9 @@ int main()
 		int revision, serial;
 
 		if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) )
-			uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i)\r\n", i, model, revision, serial);
+			uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i\r\n", i, model, revision, serial);
 		else
-			uz_printf("Identification of adapter card in slot %i failed (no card or EEPROM)\r\n", i);
+			uz_printf("Identification of adapter card in slot %i failed (no PCB or EEPROM)\r\n", i);
 
 		uz_printf("\r\n");
 	}

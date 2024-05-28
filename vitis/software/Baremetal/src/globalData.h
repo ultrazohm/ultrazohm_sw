@@ -12,6 +12,8 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
+#include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -108,6 +110,8 @@ typedef struct _actualValues_ {
 	float temp_VSI_2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
+	float snd_fld[21];
+	uint32_t slowDataCounter;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -134,6 +138,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
+	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_pmsm_model6ph_dq_t* CIL_pmsm;
 	uz_CurrentControl_t* CC_dq_instance;

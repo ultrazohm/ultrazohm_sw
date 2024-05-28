@@ -37,12 +37,17 @@ pipelines:
          script:
           - apt-get update && apt-get -y install --no-install-recommends texlive
           - apt-get -y install --no-install-recommends texlive-latex-extra
+          - apt-get -y install --no-install-recommends texlive-lang-german
           - apt-get -y install --no-install-recommends texlive-pictures
           - apt-get -y install --no-install-recommends texlive-science
+          - apt-get -y install --no-install-recommends texlive-luatex
+          - apt-get -y install --no-install-recommends texlive-plain-generic
           - apt-get -y install --no-install-recommends ghostscript
+          - apt-get -y install --no-install-recommends pdf2svg
           - apt-get -y install --no-install-recommends doxygen
+          - apt-get -y install --no-install-recommends libpcre3
+          - apt-get -y install --no-install-recommends libpcre3-dev
           - python -m pip install -U pip
-          - mv vitis/software/Baremetal/src/uz/default_uz_global_configuration.h vitis/software/Baremetal/src/uz/uz_global_configuration.h
           - ls
           - cd docs
           - ls

@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="61" Path="/home/hufnagelde/ultrazohm_sw/vivado/project/ultrazohm.xpr">
+<Project Version="7" Minor="61" Path="/home/ts/Documents/ultrazohm_sw/vivado/project/ultrazohm.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="d7f78b38e2a749d89196a1901c0b231b"/>
@@ -385,12 +385,12 @@
       </File>
       <File Path="$PPRDIR/../constraints/te0808/adc_ltc2311_debug.xdc">
         <FileInfo>
+          <Attr Name="UserDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
         </FileInfo>
       </File>
       <Config>
-        <Option Name="TargetConstrsFile" Val="$PPRDIR/../constraints/te0808/adc_ltc2311_debug.xdc"/>
         <Option Name="ConstrsType" Val="XDC"/>
       </Config>
     </FileSet>
@@ -576,7 +576,7 @@
     </FileSet>
     <FileSet Name="zusys_Interrupt_Start_Center_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_Interrupt_Start_Center_0" RelGenDir="$PGENDIR/zusys_Interrupt_Start_Center_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_Interrupt_Start_Center_0"/>
+        <Option Name="TopModule" Val="zusys_vio_D3_test_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -618,7 +618,7 @@
     </FileSet>
     <FileSet Name="zusys_clk_wiz_0_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/zusys_clk_wiz_0_0" RelGenDir="$PGENDIR/zusys_clk_wiz_0_0">
       <Config>
-        <Option Name="TopModule" Val="zusys_clk_wiz_0_0"/>
+        <Option Name="TopModule" Val="zusys_uz_axi_testIP_0_0"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>

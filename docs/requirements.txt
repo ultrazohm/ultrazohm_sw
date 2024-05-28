@@ -1,10 +1,31 @@
-sphinx
-sphinx_rtd_theme==1.1.1
+sphinx==7.2.6
+sphinx_rtd_theme
 sphinxcontrib-mermaid
 sphinxcontrib.yt
 six
-sphinx-autobuild
+sphinx-autobuild==2024.2.4 # 2024.4.13 does not work as of 15.4.24 for some reason
 sphinx-issues
 sphinx-copybutton
 sphinxcontrib-tikz
 breathe
+matplotlib
+sphinx-plotly-directive
+jupyterlab
+jupyter-dash
+ipywidgets
+pandas
+plotly
+dash
+matplotlib
+bokeh
+jupyter_bokeh
+watchfiles # maybe required for sphinx-autobuild
+starlette # maybe required for sphinx-autobuild
+uvicorn # maybe required for sphinx-autobuild
+pydata-sphinx-theme
+pyarrow
+plotly-resampler
+pygwalker
+streamlit
+trace_updater
+sphinx-design

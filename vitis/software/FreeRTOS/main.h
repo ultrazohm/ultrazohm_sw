@@ -30,6 +30,21 @@ extern "C" {
 #include "math.h"										//Include for math operations
 #include "uz/uz_HAL.h"
 
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_math_constants.h"
+#include "uz/uz_nn/uz_nn.h"
+#include "sw/nn_15_input_1_64/nn_15_input_1_64.h"
+#include "sw/nn_17_input_1_64/nn_17_input_1_64.h"
+#include "sw/init_FOC/init_FOC.h"
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
+#include "uz/uz_spwm/uz_spwm.h"
+
+// Network definition
+#define NN_15_INPUT_1_64  0
+#define NN_17_INPUT_1_64  1
+
+
+
 // ========== Threads =========================================================================
 #define THREAD_STACKSIZE 1024
 

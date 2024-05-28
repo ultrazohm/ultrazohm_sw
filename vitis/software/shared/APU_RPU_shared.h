@@ -11,8 +11,9 @@
 #define JAVASCOPE_DATA_SIZE_2POW  	128
 
 // Experimental feature - read docs before use
-#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE
+#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		TRUE
 
+#include <stdbool.h>
 struct javascope_data_t
 {
 	uint32_t    status;
@@ -37,4 +38,19 @@ struct RPU_to_APU_user_data_t
 {
 	// create variables that you want to share from R5 to A53
 	uint32_t slowDataCounter;
+	bool control_state;
+	bool select_CIL;
+	bool select_CurrentControl;
+	bool select_DDPG_1_64;
+	bool select_Real;
+	float omega_elec;
+	float mechanicalRotorSpeed;
+	float v_dc1;
+	float theta_elec;
+	float DutyCycle_A1;
+	float DutyCycle_B1;
+	float DutyCycle_C1;
+	float DutyCycle_A2;
+	float DutyCycle_B2;
+	float DutyCycle_C2;
 };

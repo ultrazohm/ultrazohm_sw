@@ -39,6 +39,13 @@ size_t lifeCheck_networkThread = 0;
 // APU-local "mirror" of RPU status word: Written in isr.c, read below in i2cio_thread
 uint32_t javascope_data_status = 0;
 
+uz_CurrentControl_t* CC_dq_instance = NULL;
+uz_CurrentControl_t* CC_xy_instance = NULL;
+uz_matrix_t* matrix_input_17n = NULL;
+uz_nn_t* nn_layer_17n = NULL;
+uz_matrix_t* matrix_input_15n = NULL;
+uz_nn_t* nn_layer_15n = NULL;
+
 #if LWIP_DHCP==1
  extern volatile int dhcp_timoutcntr;
  err_t dhcp_start(struct netif *netif);

@@ -372,6 +372,8 @@ void ISR_Control(void *data)
                       	REAL_i_z1z2_meas.d = REAL_i_dqxy_meas.z1;
                       	REAL_i_z1z2_meas.q = REAL_i_dqxy_meas.z2;
            }
+       } else {
+    	   control_state_active = false;
        }
 
 //           	if(select_CurrentControl) {

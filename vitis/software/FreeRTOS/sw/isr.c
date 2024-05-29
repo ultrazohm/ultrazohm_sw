@@ -170,6 +170,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// get data from r5 from shared memory
 	control_state_active  = rpu_to_apu_user_data->control_state_active;
+	select_CurrentControl = rpu_to_apu_user_data->select_CurrentControl;
+	select_CIL = rpu_to_apu_user_data->select_CIL;
+	select_Real = rpu_to_apu_user_data->select_Real;
+	select_DDPG_1_64 = rpu_to_apu_user_data->select_DDPG_1_64;
 	i_dq_reference.d = rpu_to_apu_user_data->i_dq_reference_d;
 	i_dq_reference.q = rpu_to_apu_user_data->i_dq_reference_q;
 	i_xy_reference.d = rpu_to_apu_user_data->i_xy_reference_x;
@@ -184,6 +188,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 	REAL_i_dq_meas.q = rpu_to_apu_user_data->REAL_i_dq_meas_q;
 	REAL_i_xy_meas.d = rpu_to_apu_user_data->REAL_i_xy_meas_x;
 	REAL_i_xy_meas.q = rpu_to_apu_user_data->REAL_i_xy_meas_y;
+
 
 	/* do your computations that you want to accelerate here... */
 	 if (control_state_active)

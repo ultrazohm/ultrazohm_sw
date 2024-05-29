@@ -205,6 +205,7 @@ enum gui_button_mapping {
 	-,
 	-,
 	-,
+	-,
 	SND_LABELS_ENDMARKER
 
 
@@ -244,6 +245,7 @@ enum gui_button_mapping {
 	A,
 	V,
 	V,
+	-,
 	-,
 	-,
 	-,

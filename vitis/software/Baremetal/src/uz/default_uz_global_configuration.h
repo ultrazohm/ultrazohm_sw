@@ -77,6 +77,7 @@
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               1U
 #define UZ_CURRENTCONTROL_KP_ADJUSTMENT_MAX_INSTANCES   1U
 #define UZ_FLUX_PREDICTION_MAX_INSTANCES                1U
+#define UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES             1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

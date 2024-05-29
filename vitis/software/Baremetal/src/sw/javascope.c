@@ -48,6 +48,15 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 extern uz_3ph_dq_t i_dq_reference; 
 extern uz_3ph_dq_t i_xy_reference; 
+extern uz_3ph_dq_t CIL_i_dq_meas;
+extern uz_3ph_dq_t CIL_i_xy_meas;
+extern uz_6ph_dq_t v_dqxy_limited_volts;
+extern bool control_state_active;
+extern bool select_CIL;
+extern bool select_CurrentControl;
+extern bool select_DDPG_1_64;
+extern bool select_Real;
+extern struct uz_DutyCycle_2x3ph_t DutyCycle_output;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float start_marker;
@@ -158,7 +167,24 @@ void JavaScope_update(DS_Data* data){
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
-	rpu_to_apu_user_data->slowDataCounter = js_cnt_slowData; //just an example
+	rpu_to_apu_user_data->slowDataCounter = js_cnt_slowData;
+	rpu_to_apu_user_data->control_state_active = control_state_active;
+	rpu_to_apu_user_data->select_CIL = select_CIL;
+	rpu_to_apu_user_data->select_CurrentControl = select_CurrentControl;
+	rpu_to_apu_user_data->select_DDPG_1_64 = select_DDPG_1_64;
+	rpu_to_apu_user_data->select_Real = select_Real;
+	rpu_to_apu_user_data->omega_elec = data->av.omega_elec;
+	rpu_to_apu_user_data->mechanicalRotorSpeed = data->av.mechanicalRotorSpeed;
+	rpu_to_apu_user_data->v_dc1 = data->av.v_dc1;
+	rpu_to_apu_user_data->theta_elec = data->av.theta_elec;
+	rpu_to_apu_user_data->i_dq_reference_d = i_dq_reference.d;
+	rpu_to_apu_user_data->i_dq_reference_q = i_dq_reference.q;
+	rpu_to_apu_user_data->i_xy_reference_x = i_xy_reference.d;
+	rpu_to_apu_user_data->i_xy_reference_y = i_xy_reference.q;
+	rpu_to_apu_user_data->CIL_i_dq_meas_d = CIL_i_dq_meas.d;
+	rpu_to_apu_user_data->CIL_i_dq_meas_q = CIL_i_dq_meas.q;
+	rpu_to_apu_user_data->CIL_i_xy_meas_x = CIL_i_xy_meas.d;
+	rpu_to_apu_user_data->CIL_i_xy_meas_y = CIL_i_xy_meas.q;
 	// add further data...
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
@@ -221,6 +247,17 @@ void JavaScope_update(DS_Data* data){
 	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 	// get data from apu_to_rpu_user_data struct and use it
 	 data->av.slowDataCounter = apu_to_rpu_user_data->slowDataCounter; //just an example
+	 DutyCycle_output.system1.DutyCycle_A = apu_to_rpu_user_data->DutyCycle_A1;
+	 DutyCycle_output.system1.DutyCycle_B = apu_to_rpu_user_data->DutyCycle_B1;
+	 DutyCycle_output.system1.DutyCycle_C = apu_to_rpu_user_data->DutyCycle_C1;
+	 DutyCycle_output.system2.DutyCycle_A = apu_to_rpu_user_data->DutyCycle_A2;
+	 DutyCycle_output.system2.DutyCycle_B = apu_to_rpu_user_data->DutyCycle_B2;
+	 DutyCycle_output.system2.DutyCycle_C = apu_to_rpu_user_data->DutyCycle_C2;
+	 v_dqxy_limited_volts.d = apu_to_rpu_user_data->v_dqxy_limited_volts_d;
+	 v_dqxy_limited_volts.q = apu_to_rpu_user_data->v_dqxy_limited_volts_q;
+	 v_dqxy_limited_volts.x = apu_to_rpu_user_data->v_dqxy_limited_volts_x;
+	 v_dqxy_limited_volts.y = apu_to_rpu_user_data->v_dqxy_limited_volts_y;
+
 #endif
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);

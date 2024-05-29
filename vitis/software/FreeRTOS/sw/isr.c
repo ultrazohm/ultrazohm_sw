@@ -50,7 +50,7 @@ XScuGic_Config *IntcConfig;
 
 
 //************************************************************
-bool control_state = false;
+bool control_state_active = false;
 bool select_CIL = false;
 bool select_CurrentControl = false;
 bool select_DDPG_1_64 = false;
@@ -169,10 +169,24 @@ void Transfer_ipc_Intr_Handler(void *data)
 	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 
 	// get data from r5 from shared memory
-	control_state  = rpu_to_apu_user_data->control_state;
+	control_state_active  = rpu_to_apu_user_data->control_state_active;
+	i_dq_reference.d = rpu_to_apu_user_data->i_dq_reference_d;
+	i_dq_reference.q = rpu_to_apu_user_data->i_dq_reference_q;
+	i_xy_reference.d = rpu_to_apu_user_data->i_xy_reference_x;
+	i_xy_reference.q = rpu_to_apu_user_data->i_xy_reference_y;
+	CIL_i_dq_meas.d = rpu_to_apu_user_data->CIL_i_dq_meas_d;
+	CIL_i_dq_meas.q = rpu_to_apu_user_data->CIL_i_dq_meas_q;
+	CIL_i_xy_meas.d = rpu_to_apu_user_data->CIL_i_xy_meas_x;
+	CIL_i_xy_meas.q = rpu_to_apu_user_data->CIL_i_xy_meas_y;
+	omega_elec = rpu_to_apu_user_data->omega_elec;
+	mechanicalRotorSpeed = rpu_to_apu_user_data->mechanicalRotorSpeed;
+	REAL_i_dq_meas.d = rpu_to_apu_user_data->REAL_i_dq_meas_d;
+	REAL_i_dq_meas.q = rpu_to_apu_user_data->REAL_i_dq_meas_q;
+	REAL_i_xy_meas.d = rpu_to_apu_user_data->REAL_i_xy_meas_x;
+	REAL_i_xy_meas.q = rpu_to_apu_user_data->REAL_i_xy_meas_y;
 
 	/* do your computations that you want to accelerate here... */
-	 if (control_state)
+	 if (control_state_active)
 	       {
 	           if(select_CIL) {
 
@@ -192,17 +206,17 @@ void Transfer_ipc_Intr_Handler(void *data)
 	       				i_dqxy_integrated_error.x += 0.0f;
 	       				i_dqxy_integrated_error.y += 0.0f;
 	       			}
-	       		i_dqxy_error.d = (i_dq_reference.d - CIL_i_dqxy_meas.d) / rated_current;
-	       		i_dqxy_error.q = (i_dq_reference.q - CIL_i_dqxy_meas.q) / rated_current;
-	       		i_dqxy_error.x = (i_xy_reference.d - CIL_i_dqxy_meas.x) / rated_current;
-	       		i_dqxy_error.y = (i_xy_reference.q - CIL_i_dqxy_meas.y) / rated_current;
+	       		i_dqxy_error.d = (i_dq_reference.d - CIL_i_dq_meas.d) / rated_current;
+	       		i_dqxy_error.q = (i_dq_reference.q - CIL_i_dq_meas.q) / rated_current;
+	       		i_dqxy_error.x = (i_xy_reference.d - CIL_i_xy_meas.d) / rated_current;
+	       		i_dqxy_error.y = (i_xy_reference.q - CIL_i_xy_meas.q) / rated_current;
 	#if NN_15_INPUT_1_64==1
 	       		observation_ip_15n[0] = i_dqxy_error.d;
 	       		observation_ip_15n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
 	       		observation_ip_15n[2] = i_dqxy_error.q;
 	       		observation_ip_15n[3] = i_dqxy_integrated_error.q * UZ_ISR_FREQUENCY;
-	       		observation_ip_15n[4] = CIL_i_dqxy_meas.d / rated_current;
-	       		observation_ip_15n[5] = CIL_i_dqxy_meas.q / rated_current;
+	       		observation_ip_15n[4] = CIL_i_dq_meas.d / rated_current;
+	       		observation_ip_15n[5] = CIL_i_dq_meas.q / rated_current;
 	       		observation_ip_15n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
 	       		observation_ip_15n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
 	       		observation_ip_15n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
@@ -228,8 +242,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 	       		observation_ip_17n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
 	       		observation_ip_17n[2] = i_dqxy_error.q;
 	       		observation_ip_17n[3] = i_dqxy_integrated_error.q * UZ_ISR_FREQUENCY;
-	       		observation_ip_17n[4] = CIL_i_dqxy_meas.d / rated_current;
-	       		observation_ip_17n[5] = CIL_i_dqxy_meas.q / rated_current;
+	       		observation_ip_17n[4] = CIL_i_dq_meas.d / rated_current;
+	       		observation_ip_17n[5] = CIL_i_dq_meas.q / rated_current;
 	       		observation_ip_17n[6] = mechanicalRotorSpeed * speed_weight;
 	       		observation_ip_17n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
 	       		observation_ip_17n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
@@ -237,8 +251,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 	       		observation_ip_17n[10] = i_dqxy_integrated_error.x * UZ_ISR_FREQUENCY;
 	       		observation_ip_17n[11] = i_dqxy_error.y;
 	       		observation_ip_17n[12] = i_dqxy_integrated_error.y * UZ_ISR_FREQUENCY;
-	       		observation_ip_17n[13] = CIL_i_dqxy_meas.x / rated_current;
-	       		observation_ip_17n[14] = CIL_i_dqxy_meas.y / rated_current;
+	       		observation_ip_17n[13] = CIL_i_xy_meas.d / rated_current;
+	       		observation_ip_17n[14] = CIL_i_xy_meas.q / rated_current;
 	       		observation_ip_17n[15] = v_dqxy_limited_volts.x * Voltage_Scaling;
 	       		observation_ip_17n[16] = v_dqxy_limited_volts.y * Voltage_Scaling;
 	   	        for (uint32_t i = 0; i < NUMBER_OF_INPUTS_17N; i++) {
@@ -268,13 +282,6 @@ void Transfer_ipc_Intr_Handler(void *data)
 	           }
 
 	           if(select_Real) {
-	           	REAL_i_dq_meas.d = REAL_i_dqxy_meas.d;
-	           	REAL_i_dq_meas.q = REAL_i_dqxy_meas.q;
-	           	REAL_i_xy_meas.d = REAL_i_dqxy_meas.x;
-	           	REAL_i_xy_meas.q = REAL_i_dqxy_meas.y;
-	           	REAL_i_z1z2_meas.d = REAL_i_dqxy_meas.z1;
-	           	REAL_i_z1z2_meas.q = REAL_i_dqxy_meas.z2;
-
 	           	if(select_CurrentControl) {
 	           		v_dq_limited_volts = uz_CurrentControl_sample(CC_dq_instance, i_dq_reference, REAL_i_dq_meas, v_dc1, omega_elec);
 	           		v_xy_limited_volts = uz_CurrentControl_sample(CC_xy_instance, i_xy_reference, REAL_i_xy_meas, v_dc1, omega_elec);
@@ -290,18 +297,18 @@ void Transfer_ipc_Intr_Handler(void *data)
 	       				i_dqxy_integrated_error.x += 0.0f;
 	       				i_dqxy_integrated_error.y += 0.0f;
 	       			}
-	           		i_dqxy_error.d = (i_dq_reference.d - REAL_i_dqxy_meas.d) / rated_current;
-	           		i_dqxy_error.q = (i_dq_reference.q - REAL_i_dqxy_meas.q) / rated_current;
-	           		i_dqxy_error.x = (i_xy_reference.d - REAL_i_dqxy_meas.x) / rated_current;
-	           		i_dqxy_error.y = (i_xy_reference.q - REAL_i_dqxy_meas.y) / rated_current;
+	           		i_dqxy_error.d = (i_dq_reference.d - REAL_i_dq_meas.d) / rated_current;
+	           		i_dqxy_error.q = (i_dq_reference.q - REAL_i_dq_meas.q) / rated_current;
+	           		i_dqxy_error.x = (i_xy_reference.d - REAL_i_xy_meas.d) / rated_current;
+	           		i_dqxy_error.y = (i_xy_reference.q - REAL_i_xy_meas.q) / rated_current;
 	#if NN_15_INPUT_1_64==1
 	           		observation_ip_15n[0] = i_dqxy_error.d;
 	           		observation_ip_15n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
 	           		observation_ip_15n[2] = i_dqxy_error.q;
 	           		observation_ip_15n[3] = i_dqxy_integrated_error.q * UZ_ISR_FREQUENCY;
-	           		observation_ip_15n[4] = REAL_i_dqxy_meas.d / rated_current;
-	           		observation_ip_15n[5] = REAL_i_dqxy_meas.q / rated_current;
-	           		observation_ip_15n[6] = Global_Data.av.mechanicalRotorSpeed * speed_weight;
+	           		observation_ip_15n[4] = REAL_i_dq_meas.d / rated_current;
+	           		observation_ip_15n[5] = REAL_i_dq_meas.q / rated_current;
+	           		observation_ip_15n[6] = mechanicalRotorSpeed * speed_weight;
 	           		observation_ip_15n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
 	           		observation_ip_15n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
 	           		observation_ip_15n[9] = i_dqxy_error.x;
@@ -327,8 +334,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 	           		observation_ip_17n[1] = i_dqxy_integrated_error.d * UZ_ISR_FREQUENCY;
 	           		observation_ip_17n[2] = i_dqxy_error.q;
 	           		observation_ip_17n[3] = i_dqxy_integrated_error.q * UZ_ISR_FREQUENCY;
-	           		observation_ip_17n[4] = REAL_i_dqxy_meas.d / rated_current;
-	           		observation_ip_17n[5] = REAL_i_dqxy_meas.q / rated_current;
+	           		observation_ip_17n[4] = REAL_i_dq_meas.d / rated_current;
+	           		observation_ip_17n[5] = REAL_i_dq_meas.q / rated_current;
 	           		observation_ip_17n[6] = mechanicalRotorSpeed * speed_weight;
 	           		observation_ip_17n[7] = v_dqxy_limited_volts.d * Voltage_Scaling;
 	           		observation_ip_17n[8] = v_dqxy_limited_volts.q * Voltage_Scaling;
@@ -336,8 +343,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 	           		observation_ip_17n[10] = i_dqxy_integrated_error.x * UZ_ISR_FREQUENCY;
 	           		observation_ip_17n[11] = i_dqxy_error.y;
 	           		observation_ip_17n[12] = i_dqxy_integrated_error.y * UZ_ISR_FREQUENCY;
-	           		observation_ip_17n[13] = REAL_i_dqxy_meas.x / rated_current;
-	           		observation_ip_17n[14] = REAL_i_dqxy_meas.y / rated_current;
+	           		observation_ip_17n[13] = REAL_i_xy_meas.d / rated_current;
+	           		observation_ip_17n[14] = REAL_i_xy_meas.q / rated_current;
 	           		observation_ip_17n[15] = v_dqxy_limited_volts.x * Voltage_Scaling;
 	           		observation_ip_17n[16] = v_dqxy_limited_volts.y * Voltage_Scaling;
 	           		for (uint32_t i = 0; i < NUMBER_OF_INPUTS_17N; i++) {
@@ -397,6 +404,16 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// write data to r5 in shared memory and flush cache
 	apu_to_rpu_user_data->slowDataCounter  = rpu_to_apu_user_data->slowDataCounter; //just an example
+	apu_to_rpu_user_data->DutyCycle_A1 = DutyCycle_A1;
+	apu_to_rpu_user_data->DutyCycle_B1 = DutyCycle_B1;
+	apu_to_rpu_user_data->DutyCycle_C1 = DutyCycle_C1;
+	apu_to_rpu_user_data->DutyCycle_A2 = DutyCycle_A2;
+	apu_to_rpu_user_data->DutyCycle_B2 = DutyCycle_B2;
+	apu_to_rpu_user_data->DutyCycle_C2 = DutyCycle_C2;
+	apu_to_rpu_user_data->v_dqxy_limited_volts_d = v_dqxy_limited_volts.d;
+	apu_to_rpu_user_data->v_dqxy_limited_volts_q = v_dqxy_limited_volts.q;
+	apu_to_rpu_user_data->v_dqxy_limited_volts_x = v_dqxy_limited_volts.x;
+	apu_to_rpu_user_data->v_dqxy_limited_volts_y = v_dqxy_limited_volts.y;
 
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 

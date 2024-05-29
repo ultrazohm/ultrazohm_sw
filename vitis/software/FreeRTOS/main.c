@@ -91,6 +91,16 @@ int main()
 	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 	Initialize_InterruptHandler();
 
+	CC_dq_instance = init_dq_FOC();
+	CC_xy_instance = init_xy_FOC();
+#if NN_17_INPUT_1_64==1
+	matrix_input_17n = nn_17_input_1_64_init();
+	nn_layer_17n = nn_17_input_layer_1_64_init();
+#endif
+#if NN_15_INPUT_1_64==1
+	matrix_input_15n = nn_15_input_1_64_init();
+	nn_layer_15n = nn_15_input_layer_1_64_init();
+#endif
 	//Start the main-threat
 	sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
 	                THREAD_STACKSIZE,

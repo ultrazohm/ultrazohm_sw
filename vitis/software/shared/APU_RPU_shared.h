@@ -32,13 +32,23 @@ struct APU_to_RPU_user_data_t
 {
 	// create variables that you want to share from A53 to R5
 	uint32_t slowDataCounter;
+	float DutyCycle_A1;
+	float DutyCycle_B1;
+	float DutyCycle_C1;
+	float DutyCycle_A2;
+	float DutyCycle_B2;
+	float DutyCycle_C2;
+	float v_dqxy_limited_volts_d;
+	float v_dqxy_limited_volts_q;
+	float v_dqxy_limited_volts_x;
+	float v_dqxy_limited_volts_y;
 };
 
 struct RPU_to_APU_user_data_t
 {
 	// create variables that you want to share from R5 to A53
 	uint32_t slowDataCounter;
-	bool control_state;
+	bool control_state_active;
 	bool select_CIL;
 	bool select_CurrentControl;
 	bool select_DDPG_1_64;
@@ -47,10 +57,16 @@ struct RPU_to_APU_user_data_t
 	float mechanicalRotorSpeed;
 	float v_dc1;
 	float theta_elec;
-	float DutyCycle_A1;
-	float DutyCycle_B1;
-	float DutyCycle_C1;
-	float DutyCycle_A2;
-	float DutyCycle_B2;
-	float DutyCycle_C2;
+	float i_dq_reference_d;
+	float i_dq_reference_q;
+	float i_xy_reference_x;
+	float i_xy_reference_y;
+	float CIL_i_dq_meas_d;
+	float CIL_i_dq_meas_q;
+	float CIL_i_xy_meas_x;
+	float CIL_i_xy_meas_y;
+	float REAL_i_dq_meas_d;
+	float REAL_i_dq_meas_q;
+	float REAL_i_xy_meas_x;
+	float REAL_i_xy_meas_y;
 };

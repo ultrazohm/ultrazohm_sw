@@ -441,7 +441,7 @@ void uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_objec
 /**
  * @param self EnDat Object to work with.
  * @brief This function reads the Responselength in bits from the EnDat IP-Core and converts it to float
- * @return Returns the Length of the response information.
+ * @return Returns the length of the response information.
  */
 float uz_EnDat_read_reponselength_and_convert_to_float(uz_EnDat_t* self);
 
@@ -505,8 +505,6 @@ float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecal
  * @return Returns the speed in radiant per second.
  */
 float uz_EnDat_easy_speedreadout_radiant_per_second(uz_EnDat_t *self);
-
-
 
 /**
  * 

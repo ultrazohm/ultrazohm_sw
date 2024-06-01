@@ -951,16 +951,16 @@ float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecal
 
 }
 
-float uz_EnDat_easy_speedreaodout_radiant_per_second(uz_EnDat_t *self) {
+float uz_EnDat_easy_speedreadout_radiant_per_second(uz_EnDat_t *self) {
     uz_assert_not_NULL(self);
     float ret = 0.0f;
 
-    ret = uz_EnDat_rpm_to_rad_per_second_converter(uz_EnDat_easy_speedreaodout_revolutions_per_minute(self));
+    ret = uz_EnDat_rpm_to_rad_per_second_converter(uz_EnDat_easy_speedreadout_revolutions_per_minute(self));
 
     return (ret);
 }
 
-float uz_EnDat_easy_speedreaodout_revolutions_per_minute(uz_EnDat_t *self) {
+float uz_EnDat_easy_speedreadout_revolutions_per_minute(uz_EnDat_t *self) {
     uz_assert_not_NULL(self);
     float ret = 0.0f;
 

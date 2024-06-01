@@ -307,7 +307,7 @@ controlword uz_EnDat_enable_config_evaluation_in_IP(controlword in);
  * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t2;
  * @param self EnDat Object to work with.
  * @brief This function fetches positional values from the EnDat IP-Core and converts them to rad (2PI) immediately. Precision is auto derived.
- * @return Returns the actual status word from the EnDat IP Core.
+ * @return Return the position in radiant from the IP-Core.
  */
 float uz_EnDat_read_pos_and_return_radiant(uz_EnDat_t *self, uz_EnDat_position t_x);
 
@@ -502,7 +502,7 @@ float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecal
  * 
  * @param self EnDat Object to work with.
  * @brief This function is an easy way to reed the speed of the sensor.
- * @return Returns the speed in radiant per seconds.
+ * @return Returns the speed in radiant per second.
  */
 float uz_EnDat_easy_speedreadout_radiant_per_second(uz_EnDat_t *self);
 

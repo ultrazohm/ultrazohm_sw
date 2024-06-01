@@ -228,7 +228,7 @@ int16_t uz_EnDat_write_factor(uz_EnDat_t *self, int16_t factor, uz_EnDat_factor 
 uint16_t uz_EnDat_read_statusword(uz_EnDat_t *self);
 
 /**
- * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
+ * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t2;
  * @param self EnDat Object to work with.
  * @brief This function fetches positional values from the EnDat IP-Core.
  * @return Returns the actual positional value from the EnDat IP Core.
@@ -304,7 +304,7 @@ controlword uz_EnDat_enable_config_evaluation_in_IP(controlword in);
 
 
 /**
- * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t4;
+ * @param t_x  means which value you would like to fetch. uz_EnDat_pos_t0 to *_t2;
  * @param self EnDat Object to work with.
  * @brief This function fetches positional values from the EnDat IP-Core and converts them to rad (2PI) immediately. Precision is auto derived.
  * @return Returns the actual status word from the EnDat IP Core.
@@ -330,7 +330,7 @@ controlword uz_EnDat_reset_output_enable_in_controlword(controlword in);
 
 
 /**
- * @param tx_ty  means which value you would like to fetch. Time elapsed from t0_t1 to t0_t4
+ * @param tx_ty  means which value you would like to fetch. Time elapsed from t0_t1 to t0_t2
  * @param self EnDat Object to work with.
  * @brief This function fetches the time elapsed fetching for positional values from the EnDat IP-Core.
  * @return Returns the actual time value from the EnDat IP Core in ns.
@@ -494,9 +494,27 @@ float uz_EnDat_get_clk_frequency_or_period_from_divider(uint8_t divider, bool fr
  * @param valuecalctime Time used to calculate a value.
  * @param self EnDat Object to work with.
   * @brief This function calculates a quality of sync value based on one second of connection.
- * @return Returns a precentage value of the sync quality.
+ * @return Returns a percentage value of the sync quality.
  */
 float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecalctime);
+
+/**
+ * 
+ * @param self EnDat Object to work with.
+ * @brief This function is an easy way to reed the speed of the sensor.
+ * @return Returns the speed in radiant per seconds.
+ */
+float uz_EnDat_easy_speedreadout_radiant_per_second(uz_EnDat_t *self);
+
+
+
+/**
+ * 
+ * @param self EnDat Object to work with.
+ * @brief This function is an easy way to reed the speed of the sensor.
+ * @return Returns the speed in revolutions per minute.
+ */
+float uz_EnDat_easy_speedreadout_revolutions_per_minute(uz_EnDat_t *self);
 
 
 

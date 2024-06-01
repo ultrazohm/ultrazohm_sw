@@ -412,5 +412,12 @@ void test_uz_EnDat_fail_assert_if_uz_EnDat_calculate_sync_quality_indicator_is_c
     TEST_ASSERT_FAIL_ASSERT(uz_EnDat_calculate_sync_quality_indicator(NULL, 0.0f));
 }
 
+void test_uz_EnDat_fail_assert_if_easy_speedreadout_radiant_per_second_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_easy_speedreadout_radiant_per_second(NULL));
+}
+
+void test_uz_EnDat_fail_assert_if_easy_speedreadout_revolutions_per_minute_is_called_with_NULL_pointer(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_EnDat_easy_speedreadout_revolutions_per_minute(NULL));
+}
 
 #endif  // TEST

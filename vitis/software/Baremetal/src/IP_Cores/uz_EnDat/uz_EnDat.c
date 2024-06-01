@@ -951,5 +951,25 @@ float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecal
 
 }
 
+float uz_EnDat_easy_speedreaodout_radiant_per_second(uz_EnDat_t *self) {
+    uz_assert_not_NULL(self);
+    float ret = 0.0f;
+
+    ret = uz_EnDat_rpm_to_rad_per_second_converter(uz_EnDat_easy_speedreaodout_revolutions_per_minute(self));
+
+    return (ret);
+}
+
+float uz_EnDat_easy_speedreaodout_revolutions_per_minute(uz_EnDat_t *self) {
+    uz_assert_not_NULL(self);
+    float ret = 0.0f;
+
+    ret = uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(uz_EnDat_read_pos_dif(self, uz_EnDat_dif_t0_t1), uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(self, uz_EnDat_elapsed_t0_t1)), 0x0U, uz_EnDat_fetch_sensor_precision_from_EnDat_object(self), 0U);
+
+    return (ret);
+}
+
+
+
 #endif  // NOLINT
 

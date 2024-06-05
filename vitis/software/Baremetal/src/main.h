@@ -55,6 +55,16 @@
 #include "include/pwm_init.h"
 
 
+// ADDED:
+#include "IP_Cores/uz_pmsm_model_6ph_dq/uz_pmsm_model6ph_dq.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_math_constants.h"
+#include "sw/init_CC/init_CC.h"
+#include "uz/uz_CurrentControl/uz_space_vector_limitation.h"
+#include "sw/init_Inverters/init_inverter.h"
+#include "uz/uz_spwm/uz_spwm.h"
+
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

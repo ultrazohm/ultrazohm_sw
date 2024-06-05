@@ -187,22 +187,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		data->rasv.n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
+		data->rasv.i_d_ref = value;
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
+		data->rasv.i_q_ref = value;
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
+		data->rasv.i_X_ref = value;
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		data->rasv.i_Y_ref = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -278,19 +283,21 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			data->rasv.select_Real = false;
+			data->rasv.select_CIL = true;
 			break;
 
 		case (My_Button_5):
-
+			data->rasv.select_Real = true;
+			data->rasv.select_CIL = false;
 			break;
 
 		case (My_Button_6):
-
+			data->rasv.select_CurrentControl = true;
 			break;
 
 		case (My_Button_7):
-
+		data->rasv.select_CurrentControl = false;
 			break;
 
 		case (My_Button_8):
@@ -355,16 +362,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
-
+	if (data->rasv.select_CIL == true) {
+		js_status_BareToRTOS |= (1 << 7);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	if (data->rasv.select_Real == true) {
+		js_status_BareToRTOS |= (1 << 8);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	}
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+	if (data->rasv.select_CurrentControl == true) {
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
 
 	/* Bit 10 - My_Button_7 */
-	// js_status_BareToRTOS &= ~(1 << 10);
+	//js_status_BareToRTOS &= ~(1 << 10);
 
 	/* Bit 11 - My_Button_8 */
 	// js_status_BareToRTOS &= ~(1 << 11);

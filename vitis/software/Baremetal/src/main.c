@@ -16,6 +16,9 @@
 // Includes from own files
 #include "main.h"
 
+
+extern const struct uz_PMSM_6ph_t pmsm_6ph_config;
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -30,14 +33,25 @@ DS_Data Global_Data = {
 		.halfBridge9DutyCycle = 0.0f,
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
+		.halfBridge12DutyCycle = 0.0f,
+		.select_Real = false,
+		.select_CIL = false,
+		.select_automatic_idiq = false,
+		.select_CurrentControl = false,
+		.n_ref_rpm = 0.0f,
+		.i_d_ref = 0.0f,
+		.i_q_ref = 0.0f,
+		.i_X_ref = 0.0f,
+		.i_Y_ref = 0.0f,
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
+    },
+	.av.theta_offset = 5.4843f,
+
 };
 
 enum init_chain
@@ -45,6 +59,7 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_CurrentControl,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -71,6 +86,13 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            initialization_chain = init_CurrentControl;
+            break;
+
+        case init_CurrentControl:
+        	Global_Data.objects.CC_dq_instance = init_dq_FOC();
+        	Global_Data.objects.CC_xy_instance = init_xy_FOC();
+        	writePMSMValues_globalData(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -79,6 +101,9 @@ int main(void)
             Global_Data.objects.deadtime_interlock_d1_pin_6_to_11 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_6_to_11();
             Global_Data.objects.deadtime_interlock_d1_pin_12_to_17 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_12_to_17();
             Global_Data.objects.deadtime_interlock_d1_pin_18_to_23 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_18_to_23();
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+            Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
+            Global_Data.objects.CIL_pmsm = init_CIL_6ph_PMSM();
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_0_to_5, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);

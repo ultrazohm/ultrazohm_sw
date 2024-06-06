@@ -21,7 +21,11 @@ Electrical System
 
 The model assumes a symmetric machine with a sinusoidal input voltage as well as the common assumptions for the dq-transformation (neglecting the zero-component).
 Small letter values indicate time dependency without explicitly stating it.
-The PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
+
+Linear model
+------------
+
+In the simplified linear case, the PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
 
 .. math:: 
 
@@ -62,6 +66,79 @@ This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 109
 .. math::
 
     T_I=\frac{3}{2} p \big(i_q \psi_{pm} + i_d i_q (L_d -L_q) \big)
+
+Model with Non-linear effects
+-----------------------------
+
+This model takes saturation and cross-coupling effects into consideration. The flux-linkage is now dependent on the dq-currrents. 
+
+.. math::
+
+    \frac{d\psi_d}{dt} = \frac{\partial \psi_d}{\partial i_d}\frac{di_d}{dt}+ \frac{\partial \psi_d}{\partial i_q}\frac{di_q}{dt}
+
+    \frac{d\psi_q}{dt} = \frac{\partial \psi_q}{\partial i_d}\frac{di_d}{dt}+ \frac{\partial \psi_q}{\partial i_q}\frac{di_q}{dt}
+
+For the partial derivatives of the flux with respect to the currents, abbreviations are introduced. These are called differential self-inductances :math:`L_[dd}` and :math:`L_{qq}`, as well as the differential cross-coupling inductances :math:`L_{dq}` and :math:`L_{qd}`.
+
+.. math::
+  
+    L_dd = \frac{\partial \psi_{d}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}}
+    
+    L_{qq} = \frac{\partial \psi_{q}^{\left(i_{d},i_{q}\right)}}{\partial i_{q}}
+    
+    L_{dq} = \frac{\partial \psi_{d}^{\left(i_{d},i_{q}\right)}}{\partial i_{q}}
+    
+    L_{qd} = \frac{\partial \psi_{q}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}} 
+
+Rearranging the equations again to calculate the current from the flux-linkage:
+
+.. math::
+
+    \frac{di_{d}}{dt}=\frac{u_{d}-R_{s}\cdot i_{d}-L_{dq} \frac{di_{q}}{dt}+\omega_{el} \psi_{q}}{L_{dd}}
+    
+    \frac{di_{q}}{dt}=\frac{u_{q}-R_{s} \cdot i_{q}-L_{qd} \frac{di_{d}}{dt}-\omega_{el} \psi_{d}}{L_{qq}}
+
+The inner torque :math:`T_I` changes in the regard that the flux-linkages are now dependent on the dq-currents.
+This does not change the way it is implemented. 
+
+.. math::
+
+    T_I=\frac{3}{2}p(\psi_d(id,iq) i_q - \psi_q(id,iq) i_d)
+
+Flux approximation
+------------------
+
+The implementation of Flux-maps is generally done by using Lookup-Tables. With these a dynamic implementation of the IP-Core for different Motors, can not be guaranteed.
+To enable this dynamic implementation the flux-linkages are approximated using analytic-Prototype functions.
+This is based on the approach and findings from [[#Shih_Wei_Su_flux_approximation]].
+The flux-linkages can be approximated using the following equations. 
+
+.. math::
+
+    \hat{\psi}_{d}(i_{d},i_{q}) = \hat{\psi}_{self}^{d}(i_{d}) - \hat{\psi}_{cross}^{d}(i_{d},i_{q})
+ 
+    \hat{\psi}_{q}(i_{d},i_{q}) = \hat{\psi}_{self}^{q}(i_{q})-\hat{\psi}_{cross}^{q}(i_{d},i_{q})
+
+For the self-axis saturation prototype function a hyperbolic tangent function and a linear function to mimic the saturation effect in a single axis can be employed [[#Shih_Wei_Su_flux_approximation]].
+
+.. math::
+
+    \hat\psi_{self}^{d} = \hat\psi_{d}(i_{d},i_{q}=0) = a_{d1} \cdot \tanh(a_{d2} \cdot (i_{d}-a_{d3}))
+
+    \hat\psi_{self}^{q} = \hat\psi_{q}(i_{d}=0,i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_{q3}
+
+To find the fitting-Parameter the following nonlinear-square Problems have to be minimized. 
+For that the MATLAB nonlinear-regression function lsqnonlin with the Levenberg-Marquart algorithm is used.
+
+.. math::
+
+    \min_\mathrm{a_\mathrm{d1},a_\mathrm{d2},a_\mathrm{d3}} \sum_{j=1}^{m} \left[ \psi_\mathrm{d} \left(i_{d,j}, 0\right) - \hat{\psi}_\mathrm{d,self}\left(i_\mathrm{d,j},a_\mathrm{d1},a_\mathrm{d2},a_\mathrm{d3}\right) \right]^2 
+
+    \min_{a_\mathrm{q1},a_\mathrm{q2},a_\mathrm{q3}} \sum_{k=1}^{n} \left[ \psi_\mathrm{q} \left( 0, i_\mathrm{q,k}\right) - \hat{\psi}_\mathrm{q,self}\left(i_\mathrm{q,k},a_\mathrm{q1},a_\mathrm{q2},a_\mathrm{q3}\right) \right]^2 
+
+    \min_{a_\mathrm{d4},a_\mathrm{d5},a_\mathrm{d6}} \sum_{j=1}^{m} \left[ \psi_\mathrm{d} \left(i_\mathrm{d,j}, I_\mathrm{q1}\right) - \hat{\psi}_\mathrm{d,s1}\left(i_\mathrm{d,j},a_\mathrm{d4},a_\mathrm{d5},a_\mathrm{d6}\right) \right]^2 
+
+    \min_{a_\mathrm{q4},a_\mathrm{q5},a_\mathrm{q6}} \sum_{k=1}^{n} \left[ \psi_\mathrm{d} \left(I_\mathrm{d1}, i_\mathrm{q,k}\right) - \hat{\psi}_\mathrm{q,s1}\left(i_\mathrm{d},a_\mathrm{q4},a_\mathrm{q5},a_\mathrm{q6}\right) \right]^2 
 
 Mechanical system
 -----------------
@@ -433,3 +510,4 @@ Sources
 .. [#Ruderman_ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
 .. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, Elías Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219
+.. [#Shih_Wei_Su_flux_approximation] Analytical Prototype Functions for Flux Linkage Approximation in Synchronous Machines, Shih-Wei Su, Christoph M. Hackl, and Ralph Kennel, IEEE Open Journal of the Industrial Electronics Society, vol. 3, pp. 265-282, 2022, doi: 10.1109/OJIES.2022.3162336

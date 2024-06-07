@@ -63,6 +63,14 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]		= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]		= &data->av.electricalRotorSpeed;
+	js_ch_observable[JSO_1] 			= &data->aa.A1.me.ADC_A1;
+	js_ch_observable[JSO_2] 			= &data->aa.A1.me.ADC_A2;
+	js_ch_observable[JSO_3] 			= &data->aa.A1.me.ADC_A3;
+	js_ch_observable[JSO_4] 			= &data->aa.A1.me.ADC_A4;
+	js_ch_observable[JSO_5] 			= &data->aa.A1.me.ADC_B5;
+	js_ch_observable[JSO_6] 			= &data->aa.A1.me.ADC_B6;
+	js_ch_observable[JSO_7] 			= &data->aa.A1.me.ADC_B7;
+	js_ch_observable[JSO_8] 			= &data->aa.A1.me.ADC_B8;
 	js_ch_observable[JSO_ia] 			= &data->av.I_U;
 	js_ch_observable[JSO_ib] 			= &data->av.I_V;
 	js_ch_observable[JSO_ic] 			= &data->av.I_W;

@@ -52,6 +52,17 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+
+#include "IP_Cores/uz_dac_interface/uz_dac_interface.h"
+#include "xparameters.h"
+
+struct uz_dac_interface_config_t dac_config={
+    .base_address=XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR, // Depends on xparameters.h!
+    .ip_clk_frequency_Hz=100000000,
+    .gain={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
+};
+uz_dac_interface_t* dac_instance;
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -90,6 +101,7 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            dac_instance=uz_dac_interface_init(dac_config);
             initialization_chain = print_msg;
             break;
 	    case print_msg:

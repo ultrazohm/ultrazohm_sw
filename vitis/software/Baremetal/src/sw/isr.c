@@ -69,6 +69,9 @@ uz_3ph_dq_t CIL_i_z1z2_meas = {0};
 uz_3ph_dq_t REAL_i_dq_meas= {0};
 uz_3ph_dq_t REAL_i_xy_meas = {0};
 uz_3ph_dq_t REAL_i_z1z2_meas = {0};
+uz_3ph_alphabeta_t temp_CIL_XY = {0};
+uz_3ph_dq_t temp_CIL_xy = {0};
+uz_3ph_alphabeta_t v_XY_limited_volts = {0};
 
 struct uz_DutyCycle_2x3ph_t DutyCycle_output = {0};
 
@@ -166,14 +169,17 @@ void ISR_Control(void *data)
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
+    // get reference values from Global_Data, written over the JavaScope
 	i_dq_reference.d = Global_Data.rasv.i_d_ref;
 	i_dq_reference.q = Global_Data.rasv.i_q_ref;
 	i_xy_reference.d = Global_Data.rasv.i_X_ref;
 	i_xy_reference.q = Global_Data.rasv.i_Y_ref;
 
-    //Take measurements independent of control_state
+
+
+    //Take measurements independent of control_state, but only if Real is selected
     if(Global_Data.rasv.select_Real) {
-    	//Read out speed&position
+    	//Read out speed & position
         Global_Data.av.theta_elec = Global_Data.av.theta_elec - Global_Data.av.theta_offset;
         Global_Data.av.omega_mech = (Global_Data.av.mechanicalRotorSpeed / 60.0f) * (2.0f * UZ_PIf);
         Global_Data.av.omega_elec = Global_Data.av.omega_mech * Global_Data.av.pmsm_6ph.polePairs;
@@ -198,7 +204,7 @@ void ISR_Control(void *data)
         Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2 +PHASE_VOLT_OFFSET_B2;
         Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2 +PHASE_VOLT_OFFSET_C2;
 
-        //Read out inverter temp
+        //Read out inverter temperature
         Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
         Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
         Global_Data.av.temp_VSI_1 = TEMP_VSI_largest(Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H1, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L1,
@@ -217,7 +223,7 @@ void ISR_Control(void *data)
            if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
         	   uz_assert(0);
            }
-           // check inverter temp
+           // check inverter temperature
            if(fabs(Global_Data.av.temp_VSI_1) > MAX_TEMP_DEG || fabs(Global_Data.av.temp_VSI_2) > MAX_TEMP_DEG) {
         	   uz_assert(0);
            }
@@ -277,10 +283,15 @@ void ISR_Control(void *data)
        }
 
 
+
    //-----------------------------------------------------------------------------------------------------------------------------//
 
        if (current_state==control_state)
        {
+
+
+    	   // CIL // --------------------------
+
            if(Global_Data.rasv.select_CIL) {
            	CIL_omega_mech = (Global_Data.rasv.n_ref_rpm / 60.0f) * 2.0f * UZ_PIf;
            	if(reset) {
@@ -292,6 +303,19 @@ void ISR_Control(void *data)
            	CIL_i_dqxy_meas = uz_pmsm_model6ph_dq_get_output_currents(Global_Data.objects.CIL_pmsm);   // read out actual currents
            	Global_Data.av.mechanicalRotorSpeed = (CIL_out_general.omega_mech * 60.0f) / (2.0f * UZ_PIf);
            	Global_Data.av.omega_elec = CIL_out_general.omega_mech * Global_Data.av.pmsm_6ph.polePairs;
+
+           	// the psms model uses stationary XY System for the model
+           	// -> transformation to rotating
+           	temp_CIL_XY.alpha = CIL_i_dqxy_meas.x;
+           	temp_CIL_XY.beta = CIL_i_dqxy_meas.y;
+           	temp_CIL_XY.beta = 0.0f;
+           	// dq-Transformation für das xy-System
+           	temp_CIL_xy = uz_transformation_3ph_alphabeta_to_dq(temp_CIL_XY,  - CIL_out_general.theta_el);
+
+           	CIL_i_dqxy_meas.x = temp_CIL_xy.d;
+			CIL_i_dqxy_meas.y = temp_CIL_xy.q;
+
+
            	CIL_i_dq_meas.d = CIL_i_dqxy_meas.d;
            	CIL_i_dq_meas.q = CIL_i_dqxy_meas.q;
            	CIL_i_xy_meas.d = CIL_i_dqxy_meas.x;
@@ -319,11 +343,17 @@ void ISR_Control(void *data)
            		v_dq_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, i_dq_reference, CIL_i_dq_meas, V_DC_Volts, Global_Data.av.omega_elec);
            		v_xy_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, CIL_i_xy_meas, V_DC_Volts, Global_Data.av.omega_elec);
 
+				// transformation to stationary frame because of CIL-Model equations
+				v_XY_limited_volts = uz_transformation_3ph_dq_to_alphabeta(v_xy_limited_volts, - CIL_out_general.theta_el);
+
            	}
+
+
+
            	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
            	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
-           	v_dqxy_limited_volts.x = v_xy_limited_volts.d;
-           	v_dqxy_limited_volts.y = v_xy_limited_volts.q;
+           	v_dqxy_limited_volts.x = v_XY_limited_volts.alpha;
+           	v_dqxy_limited_volts.y = v_XY_limited_volts.beta;
            	v_dqxy_limited_volts.z1 = 0.0f;
            	v_dqxy_limited_volts.z2 = 0.0f;
            	uz_pmsm_model6ph_dq_set_inputs_general(Global_Data.objects.CIL_pmsm,CIL_omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
@@ -333,6 +363,10 @@ void ISR_Control(void *data)
            	uz_pmsm_model6ph_dq_reset(Global_Data.objects.CIL_pmsm);  // use reset variable to reset integrators from Expressions
            }
 
+           // END CIL // --------------------------
+
+
+           // REAL // --------------------------
            if(Global_Data.rasv.select_Real) {
            	REAL_i_dq_meas.d = REAL_i_dqxy_meas.d;
            	REAL_i_dq_meas.q = REAL_i_dqxy_meas.q;
@@ -345,6 +379,7 @@ void ISR_Control(void *data)
            		v_dq_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, i_dq_reference, REAL_i_dq_meas, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
            		v_xy_limited_volts = uz_CurrentControl_sample(Global_Data.objects.CC_xy_instance, i_xy_reference, REAL_i_xy_meas, Global_Data.av.v_dc1, Global_Data.av.omega_elec);
            	}
+           	// TODO: Überlegen ob hier ein else-Zweig sinnvoll ist -> ausschalten oder sowas?
 
            	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
            	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
@@ -362,6 +397,9 @@ void ISR_Control(void *data)
            	Global_Data.rasv.halfBridge6DutyCycle = DutyCycle_output.system2.DutyCycle_C;
 
            }
+
+           // END REAL // --------------------------
+
 
        } else {
        	uz_CurrentControl_reset(Global_Data.objects.CC_dq_instance);

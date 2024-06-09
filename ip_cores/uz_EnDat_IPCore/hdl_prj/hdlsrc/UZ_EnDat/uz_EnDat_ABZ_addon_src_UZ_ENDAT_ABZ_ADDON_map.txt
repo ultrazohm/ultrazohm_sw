@@ -2,6 +2,7 @@
 UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Compare To Constant --> uz_EnDat_ABZ_addon_src_Compare_To_Constant
 UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Compare To Constant1 --> uz_EnDat_ABZ_addon_src_Compare_To_Constant1
 UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Compare To Constant2 --> uz_EnDat_ABZ_addon_src_Compare_To_Constant2
+UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Divide --> uz_EnDat_ABZ_addon_src_Divide
 UZ_EnDat/UZ_ENDAT_ABZ_ADDON/nfp_convert_fix_32_En0_to_single --> uz_EnDat_ABZ_addon_src_nfp_convert_fix_32_En0_to_single
 UZ_EnDat/UZ_ENDAT_ABZ_ADDON/nfp_convert_single_to_fix_8_En0 --> uz_EnDat_ABZ_addon_src_nfp_convert_single_to_fix_8_En0
 UZ_EnDat/UZ_ENDAT_ABZ_ADDON/nfp_rem_single --> uz_EnDat_ABZ_addon_src_nfp_rem_single

@@ -3,6 +3,7 @@ cs.ForegroundColor = 'black';
 cs.BackgroundColor = 'red';
 set_param(0, 'HiliteAncestorsData', cs);
 hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant8','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Memory7','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Switch8','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/CONTROLWORDRAW/WORDTOBOOL/Data Type Conversion1','user1');
@@ -38,3 +39,9 @@ hilite_system('UZ_EnDat/UZ_ENDAT/ManualSerializeWrap/ManualSerializer/WORDTOBOOL
 hilite_system('UZ_EnDat/UZ_ENDAT/ManualSerializeWrap/ManualSerializer/WORDTOBOOL/Demux','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant8/Compare','user1');
 hilite_system('UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant8/Constant','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer/FixPt Data Type Duplicate','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/CLKCNTER_ACT/Positional_Counter/Increment Stored Integer/FixPt Data Type Propagation','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/ManualSerializeWrap/ManualSerializer/ramwatcher/Increment Stored Integer/FixPt Data Type Duplicate','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/ManualSerializeWrap/ManualSerializer/ramwatcher/Increment Stored Integer/FixPt Data Type Propagation','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/ramselektor/Increment Stored Integer/FixPt Data Type Duplicate','user1');
+hilite_system('UZ_EnDat/UZ_ENDAT/ramselektor/Increment Stored Integer/FixPt Data Type Propagation','user1');

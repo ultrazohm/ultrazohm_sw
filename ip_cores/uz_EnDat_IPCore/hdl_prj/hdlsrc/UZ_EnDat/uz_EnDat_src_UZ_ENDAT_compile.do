@@ -22,7 +22,9 @@ vcom  uz_EnDat_src_Compare_To_Constant_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant2_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant3.vhd
+vcom  uz_EnDat_src_Divide.vhd
 vcom  uz_EnDat_src_DATA2CLOCKSYNCER.vhd
+vcom  uz_EnDat_src_Divide_block.vhd
 vcom  uz_EnDat_src_DATAFLOWCHGER.vhd
 vcom  uz_EnDat_src_DIFFBUILDER.vhd
 vcom  uz_EnDat_src_Detect_Change.vhd
@@ -49,6 +51,7 @@ vcom  uz_EnDat_src_Increment_Stored_Integer.vhd
 vcom  uz_EnDat_src_ramwatcher.vhd
 vcom  uz_EnDat_src_ManualSerializer.vhd
 vcom  uz_EnDat_src_ManualSerializeWrap.vhd
+vcom  uz_EnDat_src_Divide_block1.vhd
 vcom  uz_EnDat_src_RECOVERYTIMESELECTOR.vhd
 vcom  uz_EnDat_src_responseslicer.vhd
 vcom  uz_EnDat_src_19BITSLICER.vhd
@@ -67,6 +70,7 @@ vcom  uz_EnDat_src_SetZeroBool3.vhd
 vcom  uz_EnDat_src_SetZeroBool4.vhd
 vcom  uz_EnDat_src_SetZeroBool5.vhd
 vcom  uz_EnDat_src_Subsystem1.vhd
+vcom  uz_EnDat_src_Divide_block2.vhd
 vcom  uz_EnDat_src_Subsystem6_block.vhd
 vcom  uz_EnDat_src_Detect_Increase1_block.vhd
 vcom  uz_EnDat_src_ageprovider.vhd

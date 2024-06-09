@@ -28,6 +28,7 @@ uz_EnDat_t* uz_EnDat_IP_core_custom_init(void) {
     uz_EnDat_t* EnDat_temp_ptr = uz_EnDat_IP_core_init();
 
     EnDat_temp_ptr->config.control = uz_EnDat_set_operation_mode(EnDat_temp_ptr->config.control, uz_EnDat_Encoder_send_position_values);
+    //start adjustment if necessary here:
     EnDat_temp_ptr->config.control = uz_EnDat_set_sensor_precision_in_controlword(EnDat_temp_ptr->config.control, uz_EnDat_25_bit);
     EnDat_temp_ptr->config.divider = uz_EnDat_get_clk_frequency_divider_from_frequency(uz_EnDat_operatingfrequency_1562500Hz);
     EnDat_temp_ptr->config.factor1 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_1_DEFAULT, uz_EnDat_factor1_dataflow);
@@ -36,7 +37,8 @@ uz_EnDat_t* uz_EnDat_IP_core_custom_init(void) {
     EnDat_temp_ptr->config.factor4 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_4_DEFAULT, uz_EnDat_factor4_data2clksync);
     EnDat_temp_ptr->config.factor5 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_5_DEFAULT, uz_EnDat_factor5_telegrammlength);
     EnDat_temp_ptr->config.factor6 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_6_DEFAULT, uz_EnDat_factor6_responsesync);
-    EnDat_temp_ptr->config.factor7 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_7_DEFAULT, uz_EnDat_factor7_extrashift); //+2 should usually work for most odd behaviours
+    EnDat_temp_ptr->config.factor7 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_7_DEFAULT, uz_EnDat_factor7_extrashift); //+2 should usually work for most odd behaviour
+    //stop adjustment above this statement
     EnDat_temp_ptr->config.control = uz_EnDat_enable_config_evaluation_in_IP(EnDat_temp_ptr->config.control);
     EnDat_temp_ptr->config.control = uz_EnDat_set_output_enable_in_controlword(EnDat_temp_ptr->config.control);
     uz_EnDat_write_control_and_divider_from_object(EnDat_temp_ptr);
@@ -45,7 +47,7 @@ uz_EnDat_t* uz_EnDat_IP_core_custom_init(void) {
 
 
 /*////////////////////////////////////////*/
-/*////////////FOR EXPERTS ONLY///////////*/
+/*//////////FOR MULTI SENSOR ONLY/////////*/
 /*///////////////////////////////////////*/
 uz_EnDat_t* uz_EnDat_IP_core_expert_init(uint32_t baseaddress, uint32_t ipcorefreq, int16_t fct1, int16_t fct2, int16_t fct3, int16_t fct4, int16_t fct5, int16_t fct6, int16_t fct7, controlword ctrl, uint8_t dvder) {
     uz_EnDat_t* EnDat_temp_ptr = uz_EnDat_IP_core_init_helper(baseaddress, ipcorefreq);

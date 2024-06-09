@@ -466,19 +466,19 @@ float uz_EnDat_calc_revs_from_fpga_pos_dif_and_time(int32_t dif, float time_elap
 
 /**
  * @param self EnDat Object to work with.
- * @param compensation  -1 = auto, 0 = off, > 0 Amount of cycles to compensate. 
+ * @param compensation  -1 = auto, 0 = off, > 0 count of cycles to compensate. 
  * @brief This function fetches positional value t0 from the EnDat IP-Core, convert it to radiant and delivers the age of that value.
- * @return Returns the actual positional value from the EnDat IP Core and the age of that value in s.
+ * @return Returns the actual positional value from the EnDat IP-Core and the age of that value in s.
  */
 uz_EnDat_pos_with_age uz_EnDat_read_pos_t0_as_radiant_and_age(uz_EnDat_t *self, int8_t compensation);
 
 /**
- * @param compensation  -1 = auto, 0 = off, > 0 Amount of cycles to compensate. 
- * @param posorage true = age, false = pos
- * @param update update the underlying value
+ * @param compensation  -1 = auto, 0 = off, > 0 count of cycles to compensate. 
+ * @param posorage the function will return: true = age information in s, false = positional value
+ * @param update update the underlying value (set to "1" once per ISR cycle)
  * @param self EnDat Object to work with.
  * @brief This function fetches positional value t0 from the EnDat IP-Core, convert it to radiant and delivers the age of that value.
- * @return Returns the actual positional value from the EnDat IP Core and the age of that value in s.
+ * @return Returns the actual positional value in radiant from the EnDat IP-Core and the age of that value in s.
  */
 float uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(uz_EnDat_t *self, int8_t compensation, bool posorage, bool update);
 
@@ -501,7 +501,7 @@ float uz_EnDat_calculate_sync_quality_indicator(uz_EnDat_t *self, float valuecal
 /**
  * 
  * @param self EnDat Object to work with.
- * @brief This function is an easy way to reed the speed of the sensor.
+ * @brief This function is an easy way to read the speed of the sensor.
  * @return Returns the speed in radiant per second.
  */
 float uz_EnDat_easy_speedreadout_radiant_per_second(uz_EnDat_t *self);
@@ -509,7 +509,7 @@ float uz_EnDat_easy_speedreadout_radiant_per_second(uz_EnDat_t *self);
 /**
  * 
  * @param self EnDat Object to work with.
- * @brief This function is an easy way to reed the speed of the sensor.
+ * @brief This function is an easy way to read the speed of the sensor.
  * @return Returns the speed in revolutions per minute.
  */
 float uz_EnDat_easy_speedreadout_revolutions_per_minute(uz_EnDat_t *self);

@@ -150,4 +150,8 @@ nitpick_ignore = [
     ('c:identifier', 'int8_t'),             #nikita
     ('c:identifier', 'uz_EnDat_precision'), #nikita
     ('cpp:identifier', 'DS_Data'),          #nikita
+    ('c:identifier', 'uz_EnDat_elapsed'),   #nikita
+    ('c:identifier', 'uz_EnDat_dif'),       #nikita
+    
+
 ]

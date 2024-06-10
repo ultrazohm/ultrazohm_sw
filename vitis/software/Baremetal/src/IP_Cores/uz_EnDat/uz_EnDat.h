@@ -453,8 +453,8 @@ float uz_EnDat_read_reponselength_and_convert_to_float(uz_EnDat_t* self);
 int32_t uz_EnDat_read_pos_dif(uz_EnDat_t *self, uz_EnDat_dif dif);
 
 /**
- * @param dif Positional difference value from EnDat IP Core.
- * @param time_elapsed Time between both positions.
+ * @param dif Positional (raw) difference value from EnDat IP Core.
+ * @param time_elapsed Time between both positions in seconds.
  * @param invert Inverts the RPM to negative or positive.
  * @param rawmode Write a 1U for ceedling test - because it disables singularity mitigations.
  * @param sensorprecision Which kind of EnDat sensor do you connect?

@@ -67,7 +67,7 @@ This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 109
 
     T_I=\frac{3}{2} p \big(i_q \psi_{pm} + i_d i_q (L_d -L_q) \big)
 
-Model with Non-linear effects
+Model with non-linear effects
 -----------------------------
 
 This model takes saturation and cross-coupling effects into consideration. The flux-linkage is now dependent on the dq-currrents. 
@@ -78,7 +78,7 @@ This model takes saturation and cross-coupling effects into consideration. The f
 
     \frac{d\psi_q}{dt} = \frac{\partial \psi_q}{\partial i_d}\frac{di_d}{dt}+ \frac{\partial \psi_q}{\partial i_q}\frac{di_q}{dt}
 
-For the partial derivatives of the flux with respect to the currents, abbreviations are introduced. These are called differential self-inductances :math:`L_[dd}` and :math:`L_{qq}`, as well as the differential cross-coupling inductances :math:`L_{dq}` and :math:`L_{qd}`.
+For the partial derivatives of the flux with respect to the currents, abbreviations are introduced. These are called differential self-inductances :math:`L_{dd}` and :math:`L_{qq}`, as well as the differential cross-coupling inductances :math:`L_{dq}` and :math:`L_{qd}`.
 
 .. math::
   
@@ -110,7 +110,7 @@ Flux approximation
 
 The implementation of Flux-maps is generally done by using Lookup-Tables. With these a dynamic implementation of the IP-Core for different Motors, can not be guaranteed.
 To enable this dynamic implementation the flux-linkages are approximated using analytic-Prototype functions.
-This is based on the approach and findings from [[#Shih_Wei_Su_flux_approximation]].
+This is based on the approach and findings from [#Shih_Wei_Su_flux_approximation]_.
 The flux-linkages can be approximated using the following equations. 
 
 .. math::
@@ -127,19 +127,59 @@ For the self-axis saturation prototype function a hyperbolic tangent function an
 
     \hat\psi_{self}^{q} = \hat\psi_{q}(i_{d}=0,i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_{q3}
 
+The cross-coupling saturation terms can be found if the the flux-linkages are evaluated at their maximum cross-coupling currents :math:`I_{d1}` and :math:`I_{d1}`.
+
+.. math::
+
+    \hat{\psi}_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) = \hat{\psi}_{self}^{d}(i_{d})-\psi_{d,s1}(i_{d},I_{q1})
+
+    \hat{\psi}_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) = \hat{\psi}_{self}^{q}(i_{q})-\psi_{q,s1}(I_{d1},i_{q})
+
+The flux-linkages in these points can be approximated with the following equations [#Shih_Wei_Su_flux_approximation]_: 
+
+.. math:: 
+
+    \hat\psi_{d,s1}(i_{d}) = \hat\psi_{d}(i_{d},i_{q}=I_{q1}) = a_{d4} \cdot \tanh(a_{d5} \cdot (i_{d}-a_{d6}))
+
+    \hat\psi_{q,s1}(i_{q}) = \hat\psi_{q}(i_{d}=I_{d1},i_{q}) = a_{q4} \cdot \tanh(a_{q5} \cdot i_{q})+ i_{q} \cdot a_{q6}
+
+With that the cross-coupling terms are resulting.
+
+.. math:: 
+
+    \hat\psi_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) = a_{d1} \cdot \tanh(a_{d2} \cdot (i_{d}-a_{d3})) - a_{d4} \cdot \tanh(a_{d5} \cdot (i_{d}-a_{d6}))
+
+    \hat\psi_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_q3} - a_{q4} \cdot \tanh(a{q5} \cdot i_{q})- i_{q} \cdot a_{q6}
+
+These have to be integrated [#Shih_Wei_Su_flux_approximation]_ , which yields.
+
+.. math::
+
+    \int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d} &= \frac{a_{d1}}{a_{d2}} \cdot \log(\cosh(a_{d2}(i_{d}-a_{d3}))) - \frac{a_{d4}}{a_{d5}} \cdot \log(\cosh(a_{d5}(i_{d}-a_{d6})))
+
+    \int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q} &= \frac{1}{2}(a_{q3}-a_{q6}) \cdot i_{q}^2 + \frac{a_{q1}}{a_{q2}} \cdot \log(\cosh(a_{q2}i_{q})) - \frac{a_{q4}}{a_{q5}} \cdot \log(\cosh(a_{q5}i_{d}))
+
+With that the entire range of the flux-linkage is found. Note that the terms :math:`\int \hat{\psi}_{cross}^{q,s1}(I_{q1}) di_{q}` and :math:`\int \hat{\psi}_{cross}^{d,s1}(I_{d1}) di_{d}` are constant values and will be used in the fitting parameters.
+
+.. math::
+
+    \hat{\psi}_{d}(i_{d},i_{q}) = \hat{\psi}_{d,self}(i_{d}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q}} \left( \hat{\psi}_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) \right) \left( \int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q} \right)}_{=\hat{\psi}_{cross}^{d}(i_{d},i_{q})}
+
+    \hat{\psi}_{q}(i_{d},i_{q}) = \hat{\psi}_{q,self}(i_{q}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d}} \left( \hat{\psi}_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) \right) \left( \int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d} \right)}_{=\hat{\psi}_{cross}^{q}(i_{d},i_{q})}
+
 To find the fitting-Parameter the following nonlinear-square Problems have to be minimized. 
 For that the MATLAB nonlinear-regression function lsqnonlin with the Levenberg-Marquart algorithm is used.
 
 .. math::
 
-    \min_\mathrm{a_\mathrm{d1},a_\mathrm{d2},a_\mathrm{d3}} \sum_{j=1}^{m} \left[ \psi_\mathrm{d} \left(i_{d,j}, 0\right) - \hat{\psi}_\mathrm{d,self}\left(i_\mathrm{d,j},a_\mathrm{d1},a_\mathrm{d2},a_\mathrm{d3}\right) \right]^2 
+    \min_{a_{d1},a_{d2},a_{d3}} \sum_{j=1}^{m} \left[ \psi_{d} \left(i_{d,j}, 0\right) - \hat{\psi}_{d,self}\left(i_{d,j},a_{d1},a_{d2},a_{d3}\right) \right]^2 
 
-    \min_{a_\mathrm{q1},a_\mathrm{q2},a_\mathrm{q3}} \sum_{k=1}^{n} \left[ \psi_\mathrm{q} \left( 0, i_\mathrm{q,k}\right) - \hat{\psi}_\mathrm{q,self}\left(i_\mathrm{q,k},a_\mathrm{q1},a_\mathrm{q2},a_\mathrm{q3}\right) \right]^2 
+    \min_{a_{q1},a_{q2},a_{q3}} \sum_{k=1}^{n} \left[ \psi_{q} \left( 0, i_{q,k}\right) - \hat{\psi}_{q,self}\left(i_{q,k},a_{q1},a_{q2},a_{q3}\right) \right]^2 
 
-    \min_{a_\mathrm{d4},a_\mathrm{d5},a_\mathrm{d6}} \sum_{j=1}^{m} \left[ \psi_\mathrm{d} \left(i_\mathrm{d,j}, I_\mathrm{q1}\right) - \hat{\psi}_\mathrm{d,s1}\left(i_\mathrm{d,j},a_\mathrm{d4},a_\mathrm{d5},a_\mathrm{d6}\right) \right]^2 
+    \min_{a_{d4},a_{d5},a_{d6}} \sum_{j=1}^{m} \left[ \psi_{d} \left(i_{d,j}, I_{q1}\right) - \hat{\psi}_{d,s1}\left(i_{d,j},a_{d4},a_{d5},a_{d6}\right) \right]^2 
 
-    \min_{a_\mathrm{q4},a_\mathrm{q5},a_\mathrm{q6}} \sum_{k=1}^{n} \left[ \psi_\mathrm{d} \left(I_\mathrm{d1}, i_\mathrm{q,k}\right) - \hat{\psi}_\mathrm{q,s1}\left(i_\mathrm{d},a_\mathrm{q4},a_\mathrm{q5},a_\mathrm{q6}\right) \right]^2 
-
+    \min_{a_{q4},a_{q5},a_{q6}} \sum_{k=1}^{n} \left[ \psi_{d} \left(I_{d1}, i_{q,k}\right) - \hat{\psi}_{q,s1}\left(i_{d},a_{q4},a_{q5},a_{q6}\right) \right]^2 
+.. 
 Mechanical system
 -----------------
 

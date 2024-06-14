@@ -44,4 +44,6 @@ struct RPU_to_APU_user_data_t
 	float i_q_ref_pu;
 	float omega_el_pu;
 	float theta_el;
+	float lambda_impl_mod;
+	float all_or_deadbeat;
 };

@@ -15,7 +15,8 @@
 ******************************************************************************/
 //#include "uz_codegen0_ert_rtw/uz_codegen0.h"
 //#include "impl_modul_mpc_ert_rtw/impl_modul_mpc.h"
-#include "impl_modul_mpc1_ert_rtw/impl_modul_mpc1.h"
+//#include "impl_modul_mpc1_ert_rtw/impl_modul_mpc1.h"
+#include "impl_modul_mpc_all_and_deadbeat_ert_rtw/impl_modul_mpc_all_and_deadbeat.h"
 
 typedef struct{
 	ExtY output;

@@ -126,6 +126,11 @@ void ISR_Control(void *data)
     v_abc_1.b = Global_Data.av.v_b_d2;
     v_abc_1.c = Global_Data.av.v_c_d2;
 
+    // angle deviation and compensation caused by delay time
+    Global_Data.av.delay_angle_el = Global_Data.av.delay_steps*UZ_TIME_ISR*Global_Data.av.resolver_pl_outputs_d5_1.omega_mech_rad_s*Global_Data.av.polepairs_left;
+    Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi+=Global_Data.av.delay_angle_el;
+
+
 	// park transformation of measured currents
 	i_dq_0 = uz_transformation_3ph_abc_to_dq(i_abc_0, Global_Data.av.resolver_pl_outputs_d5_1.position_el_2pi);
 	i_dq_1 = uz_transformation_3ph_abc_to_dq(i_abc_1, Global_Data.av.resolver_pl_outputs_d5_2.position_el_2pi);
@@ -264,9 +269,9 @@ void ISR_Control(void *data)
 
     	if(Global_Data.rasv.current_ctrl_select == IMPL_MOD) {
     		// ATTENTION those are actually 1 minus CMPA, see javascope.c
-    		Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.CMPA_opt[0];
-    		Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.CMPA_opt[1];
-    		Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.CMPA_opt[2];
+    	    Global_Data.rasv.halfBridge1DutyCycle = uz_signals_saturation(Global_Data.av.CMPA_opt[0], 1.0f, 0.0f);
+    	    Global_Data.rasv.halfBridge2DutyCycle = uz_signals_saturation(Global_Data.av.CMPA_opt[1], 1.0f, 0.0f);
+    	    Global_Data.rasv.halfBridge3DutyCycle = uz_signals_saturation(Global_Data.av.CMPA_opt[2], 1.0f, 0.0f);
     		// ATTENTION
 
     	} else{
@@ -446,9 +451,9 @@ void control_left_motor() {
 //	Global_Data.av.unsuited_qp[4] = (float)(codegenInstance.output.unsuited_qp[4]);
 //	Global_Data.av.unsuited_qp[5] = (float)(codegenInstance.output.unsuited_qp[5]);
 
-//	Global_Data.av.unsuited_qp[6] = 0.0f;
-//	for (int i=0;i<6;i++) {
-//	Global_Data.av.unsuited_qp[6] += Global_Data.av.unsuited_qp[i];
+//	Global_Data.av.unsuited_qp[0] = 0.0f;
+//	for (int i=1;i=6;i++) {
+//	Global_Data.av.unsuited_qp[0] += Global_Data.av.unsuited_qp[i];
 //	}
 
 

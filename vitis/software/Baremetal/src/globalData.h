@@ -146,6 +146,10 @@ typedef struct _actualValues_ {
 	float iterations_qp[7];
 	float CMPA_opt[3];
 	float omega_el_left_pu;
+	float lambda_impl_mod;
+	float delay_angle_el;
+	float delay_steps;
+	float all_or_deadbeat;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

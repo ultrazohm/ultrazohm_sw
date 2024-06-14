@@ -218,14 +218,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
+		data->av.lambda_impl_mod = value;
 			break;
 
 		case (Set_Send_Field_9):
 		data->av.snd_fld[9] = value;
+		uz_resolver_pl_interface_set_theta_m_offset_rad(data->objects.resolver_pl_interface_d5_1, value);
 			break;
 
 		case (Set_Send_Field_10):
 		data->av.snd_fld[10] = value;
+		data->av.delay_steps = value;
 			break;
 
 		case (Set_Send_Field_11):
@@ -315,10 +318,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (My_Button_2):
 			ultrazohm_state_machine_set_userLED(true);
+			data->av.all_or_deadbeat = 1.0f;
 			break;
 
 		case (My_Button_3):
 			ultrazohm_state_machine_set_userLED(false);
+			data->av.all_or_deadbeat = 0.0f;
 			break;
 
 		case (My_Button_4):

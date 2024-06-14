@@ -32,8 +32,8 @@ extern DS_Data Global_Data;
 		   .Kp = 0.2f,
 		   .Ki = 2.0f,
 		   .samplingTime_sec = 1/UZ_PWM_FREQUENCY_ISR,
-		   .upper_limit = 3.4f,
-		   .lower_limit = -3.4f
+		   .upper_limit = 6.0f,
+		   .lower_limit = -6.0f
    };
 
    const struct uz_SetPoint_config config_setpoint_right = {

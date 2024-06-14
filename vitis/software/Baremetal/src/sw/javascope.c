@@ -144,13 +144,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_CMPA_a]			= &data->av.CMPA_opt[0];
 	js_ch_observable[JSO_CMPA_b]			= &data->av.CMPA_opt[1];
 	js_ch_observable[JSO_CMPA_c]			= &data->av.CMPA_opt[2];
-	js_ch_observable[JSO_unsuited_1]		= &data->av.unsuited_qp[0];
-	js_ch_observable[JSO_unsuited_2]		= &data->av.unsuited_qp[1];
-	js_ch_observable[JSO_unsuited_3]		= &data->av.unsuited_qp[2];
-	js_ch_observable[JSO_unsuited_4]		= &data->av.unsuited_qp[3];
-	js_ch_observable[JSO_unsuited_5]		= &data->av.unsuited_qp[4];
-	js_ch_observable[JSO_unsuited_6]		= &data->av.unsuited_qp[5];
-	js_ch_observable[JSO_unsuited_sum]		= &data->av.unsuited_qp[6];
+	js_ch_observable[JSO_unsuited_1]		= &data->av.unsuited_qp[1];
+	js_ch_observable[JSO_unsuited_2]		= &data->av.unsuited_qp[2];
+	js_ch_observable[JSO_unsuited_3]		= &data->av.unsuited_qp[3];
+	js_ch_observable[JSO_unsuited_4]		= &data->av.unsuited_qp[4];
+	js_ch_observable[JSO_unsuited_5]		= &data->av.unsuited_qp[5];
+	js_ch_observable[JSO_unsuited_6]		= &data->av.unsuited_qp[6];
+	js_ch_observable[JSO_unsuited_sum]		= &data->av.unsuited_qp[0];
 	js_ch_observable[JSO_iterations_1]		= &data->av.iterations_qp[1];
 	js_ch_observable[JSO_iterations_2]		= &data->av.iterations_qp[2];
 	js_ch_observable[JSO_iterations_3]		= &data->av.iterations_qp[3];
@@ -223,6 +223,8 @@ void JavaScope_update(DS_Data* data){
 	rpu_to_apu_user_data->i_q_ref_pu = data->rasv.i_dq_ref_0.q*0.088388f;
 	rpu_to_apu_user_data->omega_el_pu = data->av.resolver_pl_outputs_d5_1.omega_mech_rad_s*data->av.polepairs_left*0.0023873f;
 	rpu_to_apu_user_data->theta_el = data->av.resolver_pl_outputs_d5_1.position_el_2pi;
+	rpu_to_apu_user_data->lambda_impl_mod = data->av.lambda_impl_mod;
+	rpu_to_apu_user_data->all_or_deadbeat = data->av.all_or_deadbeat;
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif

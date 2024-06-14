@@ -99,6 +99,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 	codegenInstance.input.i_q_ref_pu = rpu_to_apu_user_data->i_q_ref_pu;
 	codegenInstance.input.omega_el_pu = rpu_to_apu_user_data->omega_el_pu;
 	codegenInstance.input.theta_el = rpu_to_apu_user_data->theta_el;
+	codegenInstance.input.lambda = rpu_to_apu_user_data->lambda_impl_mod;
+	codegenInstance.input.all_or_deadbeat = rpu_to_apu_user_data->all_or_deadbeat;
 
 	/* do your computations that you want to accelerate here... */
 	uz_codegen_step(&codegenInstance);

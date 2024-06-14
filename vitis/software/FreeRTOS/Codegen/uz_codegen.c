@@ -24,5 +24,6 @@ void uz_codegen_init(uz_codegen *self){
 
 void uz_codegen_step(uz_codegen *self){
 //	uz_codegen0_step(self->PtrToModelData);
-	impl_modul_mpc1_step(self->PtrToModelData);
+//	impl_modul_mpc1_step(self->PtrToModelData);
+	impl_modul_mpc_all_and_deadbeat_step(self->PtrToModelData);
 }

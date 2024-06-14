@@ -96,6 +96,7 @@ void impl_mod_mpc_init() {
 	codegenInstance.input.lambda = 10.0f;
 	codegenInstance.input.max_iter = 25.0f;
 	codegenInstance.input.tolerance = 1e-6;
+	codegenInstance.input.all_or_deadbeat = 0.0f;
 
 	uz_codegen_init(&codegenInstance);
 

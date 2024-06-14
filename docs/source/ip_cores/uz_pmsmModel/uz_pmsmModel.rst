@@ -304,6 +304,9 @@ The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core, and the input value of the rotational speed has no effect.
 When the flag ``simulate_mechanical_system`` is false, the rotational speed in the output struct is equal to the rotational speed of the input.
 This behavior is implemented in the hardware of the IP-Core with switches.
+The IP-Core also has a mode regarding saturation and cross-coupling effects
+When the flag ``simulate_nonlinear`` is true, the flux-linkages :math:`\psi_d` and :math:`\psi_q` are dependent on the currents with the equations in `Model with non-linear effects`_.
+When the flag ``simulate_nonlinear`` is false, the flux-linkages are used as state values with the equations in `Linear model`_.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
 
 In addition to the time-dependent values, the PMSM model parameters are configured by AXI.

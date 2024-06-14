@@ -8,10 +8,10 @@ PMSM Model
 - Simulates a PMSM on the FPGA
 - Intended for controller-in-the-loop (CIL) on the UltraZohm
 - Time discrete transformation is done by *zero order hold* transformation
-- Sample frequency of the integrator is :math:`T_s=\frac{1}{2\,MHz}`
+- Sample frequency of the integrator is :math:`T_s=\frac{1}{500\,kHz}`
 - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 - IP-Core has single precision AXI ports
-- All calculations in the IP-Core are done in double precision!
+- All calculations in the IP-Core are done in single precision!
 
 System description
 ==================
@@ -109,21 +109,25 @@ Flux approximation
 ------------------
 
 The implementation of Flux-maps is generally done by using Lookup-Tables. With these a dynamic implementation of the IP-Core for different Motors, can not be guaranteed.
-To enable this dynamic implementation the flux-linkages are approximated using analytic-Prototype functions.
+To enable this dynamic implementation, the flux-linkages are approximated using analytic-Prototype functions.
 This is based on the approach and findings from [#Shih_Wei_Su_flux_approximation]_.
 The flux-linkages can be approximated using the following equations. 
 
 .. math::
-
+  
     \hat{\psi}_{d}(i_{d},i_{q}) = \hat{\psi}_{self}^{d}(i_{d}) - \hat{\psi}_{cross}^{d}(i_{d},i_{q})
+
+.. math::
  
     \hat{\psi}_{q}(i_{d},i_{q}) = \hat{\psi}_{self}^{q}(i_{q})-\hat{\psi}_{cross}^{q}(i_{d},i_{q})
 
-For the self-axis saturation prototype function a hyperbolic tangent function and a linear function to mimic the saturation effect in a single axis can be employed [[#Shih_Wei_Su_flux_approximation]].
+For the self-axis saturation prototype function a hyperbolic tangent function and a linear function to mimic the saturation effect in a single axis can be employed [#Shih_Wei_Su_flux_approximation]_.
 
 .. math::
 
     \hat\psi_{self}^{d} = \hat\psi_{d}(i_{d},i_{q}=0) = a_{d1} \cdot \tanh(a_{d2} \cdot (i_{d}-a_{d3}))
+
+.. math::
 
     \hat\psi_{self}^{q} = \hat\psi_{q}(i_{d}=0,i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_{q3}
 
@@ -132,6 +136,8 @@ The cross-coupling saturation terms can be found if the the flux-linkages are ev
 .. math::
 
     \hat{\psi}_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) = \hat{\psi}_{self}^{d}(i_{d})-\psi_{d,s1}(i_{d},I_{q1})
+  
+.. math::
 
     \hat{\psi}_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) = \hat{\psi}_{self}^{q}(i_{q})-\psi_{q,s1}(I_{d1},i_{q})
 
@@ -141,23 +147,29 @@ The flux-linkages in these points can be approximated with the following equatio
 
     \hat\psi_{d,s1}(i_{d}) = \hat\psi_{d}(i_{d},i_{q}=I_{q1}) = a_{d4} \cdot \tanh(a_{d5} \cdot (i_{d}-a_{d6}))
 
+.. math::
+
     \hat\psi_{q,s1}(i_{q}) = \hat\psi_{q}(i_{d}=I_{d1},i_{q}) = a_{q4} \cdot \tanh(a_{q5} \cdot i_{q})+ i_{q} \cdot a_{q6}
 
 With that the cross-coupling terms are resulting.
 
 .. math:: 
 
-    \hat\psi_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) = a_{d1} \cdot \tanh(a_{d2} \cdot (i_{d}-a_{d3})) - a_{d4} \cdot \tanh(a_{d5} \cdot (i_{d}-a_{d6}))
+    \hat\psi_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) = a_{d1} \cdot \tanh(a_{d2} \cdot (i_{d}-a_{d3})) - a_{d4} \cdot \tanh(a_{d5} \cdot (i_{d}-a_{d6})
 
-    \hat\psi_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_q3} - a_{q4} \cdot \tanh(a{q5} \cdot i_{q})- i_{q} \cdot a_{q6}
+.. math::
+
+    \hat\psi_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) = a_{q1} \cdot \tanh(a_{q2} \cdot i_{q})+ i_{q} \cdot a_{q3} - a_{q4} \cdot \tanh(a{q5} \cdot i_{q})- i_{q} \cdot a_{q6}
 
 These have to be integrated [#Shih_Wei_Su_flux_approximation]_ , which yields.
 
 .. math::
 
-    \int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d} &= \frac{a_{d1}}{a_{d2}} \cdot \log(\cosh(a_{d2}(i_{d}-a_{d3}))) - \frac{a_{d4}}{a_{d5}} \cdot \log(\cosh(a_{d5}(i_{d}-a_{d6})))
+    \int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d} = \frac{a_{d1}}{a_{d2}} \cdot \log(\cosh(a_{d2}(i_{d}-a_{d3}))) - \frac{a_{d4}}{a_{d5}} \cdot \log(\cosh(a_{d5}(i_{d}-a_{d6})))
 
-    \int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q} &= \frac{1}{2}(a_{q3}-a_{q6}) \cdot i_{q}^2 + \frac{a_{q1}}{a_{q2}} \cdot \log(\cosh(a_{q2}i_{q})) - \frac{a_{q4}}{a_{q5}} \cdot \log(\cosh(a_{q5}i_{d}))
+.. math::
+
+    \int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q} = \frac{1}{2}(a_{q3}-a_{q6}) \cdot i_{q}^2 + \frac{a_{q1}}{a_{q2}} \cdot \log(\cosh(a_{q2}i_{q})) - \frac{a_{q4}}{a_{q5}} \cdot \log(\cosh(a_{q5}i_{q}))
 
 With that the entire range of the flux-linkage is found. Note that the terms :math:`\int \hat{\psi}_{cross}^{q,s1}(I_{q1}) di_{q}` and :math:`\int \hat{\psi}_{cross}^{d,s1}(I_{d1}) di_{d}` are constant values and will be used in the fitting parameters.
 
@@ -165,21 +177,29 @@ With that the entire range of the flux-linkage is found. Note that the terms :ma
 
     \hat{\psi}_{d}(i_{d},i_{q}) = \hat{\psi}_{d,self}(i_{d}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q}} \left( \hat{\psi}_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) \right) \left( \int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q} \right)}_{=\hat{\psi}_{cross}^{d}(i_{d},i_{q})}
 
+.. math::
+
     \hat{\psi}_{q}(i_{d},i_{q}) = \hat{\psi}_{q,self}(i_{q}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d}} \left( \hat{\psi}_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) \right) \left( \int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d} \right)}_{=\hat{\psi}_{cross}^{q}(i_{d},i_{q})}
 
 To find the fitting-Parameter the following nonlinear-square Problems have to be minimized. 
-For that the MATLAB nonlinear-regression function lsqnonlin with the Levenberg-Marquart algorithm is used.
+For that the MATLAB  nonlinear-regression function lsqnonlin with the Levenberg-Marquart algorithm is used.
 
 .. math::
 
     \min_{a_{d1},a_{d2},a_{d3}} \sum_{j=1}^{m} \left[ \psi_{d} \left(i_{d,j}, 0\right) - \hat{\psi}_{d,self}\left(i_{d,j},a_{d1},a_{d2},a_{d3}\right) \right]^2 
 
+.. math::
+
     \min_{a_{q1},a_{q2},a_{q3}} \sum_{k=1}^{n} \left[ \psi_{q} \left( 0, i_{q,k}\right) - \hat{\psi}_{q,self}\left(i_{q,k},a_{q1},a_{q2},a_{q3}\right) \right]^2 
 
+.. math::
+  
     \min_{a_{d4},a_{d5},a_{d6}} \sum_{j=1}^{m} \left[ \psi_{d} \left(i_{d,j}, I_{q1}\right) - \hat{\psi}_{d,s1}\left(i_{d,j},a_{d4},a_{d5},a_{d6}\right) \right]^2 
 
+.. math::
+  
     \min_{a_{q4},a_{q5},a_{q6}} \sum_{k=1}^{n} \left[ \psi_{d} \left(I_{d1}, i_{q,k}\right) - \hat{\psi}_{q,s1}\left(i_{d},a_{q4},a_{q5},a_{q6}\right) \right]^2 
-.. 
+
 Mechanical system
 -----------------
 
@@ -270,7 +290,7 @@ That is, :math:`u_d`, :math:`u_q`, :math:`\omega_{mech}`, and :math:`M_L` are in
 Furthermore, :math:`i_d`, :math:`i_q`, :math:`M_I`, and :math:`\omega_{mech}` are outputs.
 The IP-Core inputs :math:`\boldsymbol{u}(k)=[{v}_{d} ~ v_{q} ~ T_{L}]` and outputs :math:`\boldsymbol{y}(k)=[i_{d} ~ i_{q} ~ T_{L} ~ \omega_{m}]` are accessible by AXI4 (including burst transactions).
 Furthermore, all machine parameters, e.g., stator resistance, can be written by AXI at runtime.
-All AXI-transactions use single-precision variables, which the IP-Core converts to and from double precision.
+All AXI-transactions use single-precision variables.
 The inputs :math:`\boldsymbol{u}(k)` and outputs :math:`\boldsymbol{y}(k)` use a shadow register that holds the value of the register until a sample signal is triggered.
 Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP-Core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
 The shadow registers can be triggered according to the requirements of the controller in the loop and ensure synchronous read/write operations. 
@@ -310,13 +330,12 @@ For the mechanical system:
 IP-Core Hardware
 ----------------
 
-- The module takes all inputs and converts them from single precision to double precision.
-- The output is converted from double precision to single precision (using rounding to the nearest value in both cases).
+- The module uses single precision. 
 - All input values are adjustable at run-time
 - The sample time is fixed!
 - The IP-Core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
 - Several parameters are written as their reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
-- The IP-Core uses an oversampling factor of 50
+- The IP-Core uses an oversampling factor of 200
 - Floating Point latency Strategy is set to ``MIN``
 - Handle denormals is activated 
 

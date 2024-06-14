@@ -308,7 +308,7 @@ void ISR_Control(void *data)
            	// -> transformation to rotating
            	temp_CIL_XY.alpha = CIL_i_dqxy_meas.x;
            	temp_CIL_XY.beta = CIL_i_dqxy_meas.y;
-           	temp_CIL_XY.beta = 0.0f;
+           	temp_CIL_XY.gamma = 0.0f;
            	// dq-Transformation für das xy-System
            	temp_CIL_xy = uz_transformation_3ph_alphabeta_to_dq(temp_CIL_XY,  - CIL_out_general.theta_el);
 

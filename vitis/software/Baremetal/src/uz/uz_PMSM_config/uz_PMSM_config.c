@@ -12,7 +12,7 @@ void uz_PMSM_config_assert(uz_PMSM_t config){
     uz_assert(config.I_max_Ampere > 0.0f);
 }
 
-void uz_PMSM_flux_fitting_parameter_config_assert(uz_PMSM_flux_fitting_parameter_config_t fitting_config){
+void uz_PMSM_fitting_parameter_config_assert(uz_PMSM_flux_fitting_parameter_config_t fitting_config){
     uz_assert(fitting_config.ad1_parameter != 0.0f);
     uz_assert(fitting_config.ad2_parameter != 0.0f);
 	uz_assert(fitting_config.ad3_parameter != 0.0f);

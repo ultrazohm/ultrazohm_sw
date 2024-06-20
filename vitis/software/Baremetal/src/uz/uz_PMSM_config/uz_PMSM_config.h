@@ -44,8 +44,8 @@ void uz_PMSM_config_assert(uz_PMSM_t config);
 /**
  * @brief Asserts all input values
  *
- * @param config uz_PMSM_t config struct
+ * @param fitting_config uz_PMSM_t fitting parameter config struct
  */
-void uz_fitting_parameter_config_assert(uz_PMSM_flux_fitting_parameter_config_t fitting_config);
+void uz_PMSM_fitting_parameter_config_assert(uz_PMSM_flux_fitting_parameter_config_t fitting_config);
 
 #endif // UZ_PMSM_CONFIG_H

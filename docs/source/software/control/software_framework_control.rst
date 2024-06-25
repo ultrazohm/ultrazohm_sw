@@ -10,6 +10,7 @@ Control
     CurrentControl/CurrentControl
     encoder_offset_estimation/encoder_offset_estimation
     linear_decoupling/linear_decoupling
+    static_nonlinear_decoupling/static_nonlinear_decoupling
     movingAverage/movingAverage
     ParameterID/ParameterID
     piController/piController

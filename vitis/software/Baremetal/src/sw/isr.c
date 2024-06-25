@@ -103,23 +103,50 @@ uint32_t counter_Torque_points = 0U;
 //		154.0f, 156.0f, 158.0f, 160.0f, 162.0f, 164.0f, 166.0f, 168.0f, 170.0f, 172.0f, 174.0f, 176.0f, 178.0f, 180.0f,
 //};
 
-static float i_peak[2] = { 10.0f, 20.0f};
-static float angle[2] = {45.0f, 50.0f};
+// Induzierte Spannung
+//static uint32_t n_currents_max = 34U;
+//static uint32_t n_angles_max = 1U;
+//static float i_peak[34] = { 0.0f, 2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f, 20.0f, 22.0f, 24.0f,
+//		26.0f, 28.0f, 30.0f, 32.0f, 34.0f, 36.0f, 38.0f, 40.0f, 42.0f, 44.0f, 46.0f, 48.0f, 50.0f,
+//		52.0f, 54.0f, 56.0f, 58.0f, 60.0f, 62.0f, 64.0f, 66.0f };
+//static float angle[34] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+//		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+//		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
 // Currents and Angles for torque current characteristic
 static uint32_t n_currents_max = 1U;
 static uint32_t n_angles_max = 20U;
-//static float i_peak[1] = { 10.0f };
-//static float angle[20] = {0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f,
-//		52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f};
+static float i_peak[1] = { 25.0f };
+static float angle[20] = {	0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f,
+							52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f
+						 };
 
 // Currents and Angles for measurement the Efficiency Map
-static uint32_t n_Torque_points_max = 2U;
-//static float i_peak[21] = {0.0f, 11.929f, 16.545f, 20.530f, 24.024f, 27.164f, 30.088f, 32.914f,
-//		35.681f, 38.410f, 41.112f, 43.781f, 46.411f, 49.013f, 51.614f,
-//		54.236f, 56.854f, 59.420f, 61.900f, 64.385f, 67.019f};
-//static float angle[21] = {45.0f, 44.996f, 45.687f, 46.356f, 47.028f, 47.730f, 48.485f, 49.308f,
-//		50.167f, 51.022f, 51.848f, 52.644f, 53.408f, 54.141f, 54.843f,
-//		55.512f, 56.146f, 56.741f, 57.298f, 57.835f, 58.385f};
+static uint32_t n_Torque_points_max = 11U;
+static float i_peak_T[11] = {	11.438f,
+								16.035f,
+								23.381f,
+								29.406f,
+								34.977f,
+								40.291f,
+								45.519f,
+								50.707f,
+								55.846f,
+								60.988f,
+								66.155f
+							};
+
+static float angle_T[11] = {	46.625f,
+								47.163f,
+								48.724f,
+								50.326f,
+								51.775f,
+								53.525f,
+								54.931f,
+								56.481f,
+								57.884f,
+								58.871f,
+								59.727f
+							};
 
 //==============================================================================================================================================================
 
@@ -438,8 +465,8 @@ void ISR_Control(void *data)
 		        }
 
 		        // FOC - get U_d and U_q as controlled variables
-//		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
-		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
+		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
+//		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
 		        Global_Data.rasv.U_d_ref = dq_reference_voltage.d;
 		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
 
@@ -540,8 +567,8 @@ void ISR_Control(void *data)
 					if((state_stop_current_angle == false) && (counter_Torque_points < n_Torque_points_max)){
 						id_last = id_soll;
 						iq_last = iq_soll;
-						id_soll = i_peak[counter_Torque_points] * cos(angle[counter_Torque_points] * M_PI / 180.0f);
-						iq_soll = i_peak[counter_Torque_points] * sin(angle[counter_Torque_points] * M_PI / 180.0f);
+						id_soll = i_peak_T[counter_Torque_points] * cos(angle_T[counter_Torque_points] * M_PI / 180.0f);
+						iq_soll = i_peak_T[counter_Torque_points] * sin(angle_T[counter_Torque_points] * M_PI / 180.0f);
 						counter_Torque_points = counter_Torque_points + 1U;
 						//Global_Data.av.testsignal = Global_Data.av.testsignal + 1.0f;
 					}
@@ -598,8 +625,8 @@ void ISR_Control(void *data)
 		        }
 
 			        // FOC - get U_d and U_q as controlled variables
-	//		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
-		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
+			        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK_filt, omega_el_rad_per_sec);
+//		        dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.CurrentControl_instance, dq_reference_current, dq_measurement_current, 30.0f, omega_el_rad_per_sec);
 		        Global_Data.rasv.U_d_ref = dq_reference_voltage.d;
 		        Global_Data.rasv.U_q_ref = dq_reference_voltage.q;
 

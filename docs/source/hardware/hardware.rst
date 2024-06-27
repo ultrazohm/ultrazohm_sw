@@ -31,7 +31,7 @@ Hardware
     adapter_cards/digital/Digital_BreakoutBoard_v1
     adapter_cards/digital/encoder_v1
     adapter_cards/digital/temperature_rev02/temperature_rev02
-    adapter_cards/digital/Digital_Resolver_rev01 
+    adapter_cards/digital/Digital_Resolver_rev01
     adapter_cards/digital/inverter/inverter_general
 
 
@@ -41,3 +41,9 @@ Hardware
 
     adapter_cards/external/uz_per_adc_to_bnc/uz_per_adc_to_bnc_rev01
     adapter_cards/external/loopback_PCB/loopback_PCB
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Internal
+
+    adapter_cards/internal/uz_per_jtag/uz_per_jtag

@@ -241,6 +241,9 @@ proc vitis_main {} {
   app config -name FreeRTOS -set compiler-optimization {Optimize most (-O3)}
   app config -name Baremetal -set compiler-optimization {Optimize more (-O2)}
 
+  # add math library to linker option
+  app config -name FreeRTOS -add libraries m
+
   ##Application FSBL (Standalone) A53_0
   #####################################################
   #puts "Info (UltraZohm): create FSBL Application"

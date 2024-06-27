@@ -11,4 +11,4 @@ APU runs FreeRTOS to read and write data to/from RPU and transfer it to a host-p
     :caption: APU Software
 
     datamover_a53
-
+    a53_accelerator

@@ -159,6 +159,34 @@ A short description follows:
     - This factor changes the internal alignment inside the FPGA to ensure that the right part of the answer is interpreted as the payload. Use this factor if you have n-cycles indicated whereas physically there was only one turn.
     - 0 - absolute signed
 
+The following figures indicates the influence of some factors:
+
+.. figure:: FKT1.pdf
+  :align: center
+
+  Factor 1 influence on the signal lines.
+
+
+.. figure:: FKT4.pdf
+  :align: center
+
+  Factor 4 influence on the signal lines.
+
+
+.. figure:: FKT5.pdf
+  :align: center
+
+  Factor 5 influence on the signal lines.
+
+
+
+.. figure:: FKT6.pdf
+  :align: center
+
+  Factor 6 influence on the signal lines.
+
+
+
 Fetching positional values
 --------------------------
 

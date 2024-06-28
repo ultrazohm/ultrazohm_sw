@@ -15,7 +15,6 @@
 
 // Includes from own files
 #include "main.h"
-
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -46,11 +45,15 @@ enum init_chain
     init_gpios,
     init_software,
     init_ip_cores,
+	init_CurrentControl_pmsm,
     print_msg,
     init_interrupts,
     infinite_loop
 };
+uz_pmsmModel_t *pmsm=NULL;
+uz_CurrentControl_t* CurrentControl_instance = NULL;
 enum init_chain initialization_chain = init_assertions;
+
 
 int main(void)
 {
@@ -90,8 +93,47 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
-            initialization_chain = print_msg;
+            initialization_chain = init_CurrentControl_pmsm;
             break;
+        case init_CurrentControl_pmsm:;
+                       struct uz_PMSM_t config_PMSM = {
+                           .Ld_Henry = 3.00e-04f,
+                           .Lq_Henry = 3.00e-04f,
+                           .Psi_PM_Vs = 0.0075f};
+                       struct uz_PI_Controller_config config_id = {
+                           .Kp = 0.25f,
+                           .Ki = 158.8f,
+                           .samplingTime_sec = 0.00005f,
+                           .upper_limit = 10.0f,
+                           .lower_limit = -10.0f};
+                       struct uz_PI_Controller_config config_iq = {
+                           .Kp = 0.25f,
+                           .Ki = 158.8f,
+                           .samplingTime_sec = 0.00005f,
+                           .upper_limit = 10.0f,
+                           .lower_limit = -10.0f};
+                       struct uz_CurrentControl_config config_CurrentControl = {
+                           .decoupling_select = linear_decoupling,
+                           .config_PMSM = config_PMSM,
+                           .config_id = config_id,
+                           .config_iq = config_iq,
+                           .max_modulation_index = 1.0f / sqrtf(3.0f)};
+                       CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+                       struct uz_pmsmModel_config_t pmsm_config={
+                           .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+                           .ip_core_frequency_Hz=100000000,
+                           .simulate_mechanical_system = true,
+                           .r_1 = 0.085f,
+                           .L_d = 3.00e-04f,
+                           .L_q = 3.00e-04f,
+                           .psi_pm = 0.0075f,
+                           .polepairs = 4.0f,
+                           .inertia = 3.24e-05f,
+                           .coulomb_friction_constant = 0.01f,
+                           .friction_coefficient = 0.001f};
+                       pmsm=uz_pmsmModel_init(pmsm_config);
+        	initialization_chain = print_msg;
+        	break;
 	    case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");

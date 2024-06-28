@@ -28,7 +28,7 @@
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-#define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_PWM_FREQUENCY                        20.0e3f
 
 
 // Configuration defines for the number of used instances
@@ -41,7 +41,7 @@
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
 #define UZ_NN_MAX_INSTANCES                             0U
-#define UZ_PMSMMODEL_MAX_INSTANCES                      0U
+#define UZ_PMSMMODEL_MAX_INSTANCES                      1U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U

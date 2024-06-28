@@ -1,0 +1,1658 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for UZ_EnDat
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Adder_1_1');hdlTableShrink(this, 'Subtractor_1_1');hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Register_1_4');hdlTableShrink(this, 'Register_1_5');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Multiplexer_3_1');hdlTableShrink(this, 'Multiplexer_4_1');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for UZ_EnDat
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+151
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+497
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+9093
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+441
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+39
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+19
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+6
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_EnDat:12068')" name="code2model" class="code2model">
+UZ_ENDAT_ABZ_ADDON
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (151)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+35x35-bit Adder 							: 32
+</span>
+<span name="Adder_1_1" id="Adder_1_1">
+<ul class="SystemdefinedCollapse" id="42317d7c-5064-4915-b444-b5c694098423" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_3_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_4_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_5_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_6_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_7_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_8_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_9_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_10_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_11_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_12_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_13_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_14_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_15_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_16_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_17_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_18_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_19_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_20_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_21_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_22_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_23_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_24_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_25_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_26_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_27_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_28_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_29_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_30_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_31_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+temp_32_1
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '42317d7c-5064-4915-b444-b5c694098423')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span style="font-family:monospace">
+8x8-bit Adder 							: 4
+</span>
+<br /><span style="font-family:monospace">
+10x10-bit Adder 							: 1
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Adder 							: 68
+</span>
+<br /><span style="font-family:monospace">
+8x1-bit Adder 							: 0
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Subtractor_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+36-bit Subtractor 							: 32
+</span>
+<span name="Subtractor_1_1" id="Subtractor_1_1">
+<ul class="SystemdefinedCollapse" id="968a5b8e-1b37-4c9f-a24c-f9d676a64e5d" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_50
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_60
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_neg_62
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '968a5b8e-1b37-4c9f-a24c-f9d676a64e5d')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+9x9-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 6
+</span>
+<br /><span style="font-family:monospace">
+29-bit Subtractor 							: 3
+</span>
+<br /><span style="font-family:monospace">
+10-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+34-bit Subtractor 							: 1
+</span>
+<br /><h5>
+Registers (497)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 142
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+initFlagDelay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('gm_UZ_EnDat:42')" name="code2model" class="code2model">
+delayMatch
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 7
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+z_p
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+qtempExt_p
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+q
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+66-bit Register 							: 33
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul class="SystemdefinedCollapse" id="ff6dff86-6003-47b6-9e4e-194ed68a8f40" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+corrected_z_p
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+r_reg_31
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'ff6dff86-6003-47b6-9e4e-194ed68a8f40')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_4')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+8-bit Register 							: 64
+</span>
+<span name="Register_1_4" id="Register_1_4">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_p
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_5')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+35-bit Register 							: 32
+</span>
+<span name="Register_1_5" id="Register_1_5">
+<ul class="SystemdefinedCollapse" id="c8503cf6-cc83-449c-88bc-b13717f48b19" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+corrected_d_p
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_17
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_19
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_21
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_23
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_25
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_27
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_29
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+d_reg_30
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, 'c8503cf6-cc83-449c-88bc-b13717f48b19')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span style="font-family:monospace">
+9-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+128-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+60-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+23-bit Register 							: 39
+</span>
+<br /><span style="font-family:monospace">
+10-bit Register 							: 69
+</span>
+<br /><span style="font-family:monospace">
+24-bit Register 							: 6
+</span>
+<br /><span style="font-family:monospace">
+28-bit Register 							: 95
+</span>
+<br /><span style="font-family:monospace">
+25-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+5-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (438)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 87
+</span>
+<span name="Multiplexer_1_1" id="Multiplexer_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16091')" name="code2model" class="code2model">
+Compare To Zero
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+35-bit 2-to-1 Multiplexer 							: 31
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<ul class="SystemdefinedCollapse" id="47cd87db-9809-4b2a-8f23-5380c79c51b1" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_8
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_16
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_18
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_20
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_22
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_24
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_26
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_28
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_30
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_32
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_34
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_36
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_38
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_40
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_42
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_44
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_46
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_48
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_50
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_52
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_54
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_56
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_58
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+y_60
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '47cd87db-9809-4b2a-8f23-5380c79c51b1')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 3
+</span>
+<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16109')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 223
+</span>
+<br /><span style="font-family:monospace">
+9-bit 2-to-1 Multiplexer 							: 6
+</span>
+<br /><span style="font-family:monospace">
+23-bit 2-to-1 Multiplexer 							: 8
+</span>
+<br /><span style="font-family:monospace">
+10-bit 2-to-1 Multiplexer 							: 7
+</span>
+<br /><span style="font-family:monospace">
+28-bit 2-to-1 Multiplexer 							: 67
+</span>
+<br /><span style="font-family:monospace">
+25-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span style="font-family:monospace">
+24-bit 2-to-1 Multiplexer 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (25)
+</h5>
+<span style="font-family:monospace">
+Static Shift Left 							: 18
+</span>
+<br /><span style="font-family:monospace">
+Static Shift Right 							: 1
+</span>
+<br /><span style="font-family:monospace">
+128-bit Dynamic Shift Left 							: 1
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Left 							: 1
+</span>
+<br /><span style="font-family:monospace">
+25-bit Dynamic Shift Left 							: 1
+</span>
+<br /><span style="font-family:monospace">
+32-bit Dynamic Shift Left 							: 1
+</span>
+<br /><span style="font-family:monospace">
+28-bit Dynamic Shift Right 							: 1
+</span>
+<br /><span style="font-family:monospace">
+32-bit Dynamic Shift Right 							: 1
+</span>
+<br /><h5>
+Number of I/O Bits (39)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 35
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul>
+<li>
+clk: 1 bit
+</li>
+<li>
+reset_x: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16027')" name="code2model" class="code2model">
+POS
+</a>
+: 32 bits
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 4
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul>
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16030')" name="code2model" class="code2model">
+ATRACK
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16032')" name="code2model" class="code2model">
+BTRACK
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16033')" name="code2model" class="code2model">
+ZTRACK
+</a>
+: 1 bit
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_EnDat:16125')" name="code2model" class="code2model">
+Compare
+To Constant2
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_2_1" id="Multiplexer_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16125:2')" name="code2model" class="code2model">
+Compare
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_EnDat:16122')" name="code2model" class="code2model">
+Compare
+To Constant1
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_3_1" id="Multiplexer_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16122:2')" name="code2model" class="code2model">
+Compare
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('UZ_EnDat:16121')" name="code2model" class="code2model">
+Compare
+To Constant
+</a>
+
+</h5>
+<h5>
+Multiplexers (1)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_4_1" id="Multiplexer_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('UZ_EnDat:16121:2')" name="code2model" class="code2model">
+Compare
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

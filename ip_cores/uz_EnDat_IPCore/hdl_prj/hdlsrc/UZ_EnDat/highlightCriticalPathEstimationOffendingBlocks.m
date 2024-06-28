@@ -1,0 +1,18 @@
+open_system('UZ_EnDat');
+open_system('gm_UZ_EnDat');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Data Type Conversion', 'user2');
+annotate_port('gm_UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Data Type Conversion', 1, 1, 'Block not characterized for this configuration');
+hilite_system('UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Data Type Conversion', 'user2');
+annotate_port('UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Data Type Conversion', 1, 1, 'Block not characterized for this configuration');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Data Type Conversion1', 'user2');
+annotate_port('gm_UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Data Type Conversion1', 1, 1, 'Block not characterized for this configuration');
+hilite_system('UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Data Type Conversion1', 'user2');
+annotate_port('UZ_EnDat/UZ_ENDAT_ABZ_ADDON/Data Type Conversion1', 1, 1, 'Block not characterized for this configuration');

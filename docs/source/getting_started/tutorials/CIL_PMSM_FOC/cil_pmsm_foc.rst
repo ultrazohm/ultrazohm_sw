@@ -112,7 +112,7 @@ Initial steps
                        JavaScope_initalize(&Global_Data);
                        initialization_chain = init_CurrentControl_pmsm;
                        break;
-                   case init_CurrentControl_pmsm:
+                   case init_CurrentControl_pmsm:;
                        struct uz_PMSM_t config_PMSM = {
                            .Ld_Henry = 3.00e-04f,
                            .Lq_Henry = 3.00e-04f,

@@ -52,3 +52,4 @@ void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update 
 			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }
+

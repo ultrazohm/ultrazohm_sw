@@ -86,21 +86,30 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_Speed_rpm_filtered]	= &data->av.mechanicalRotorSpeed_filtered;
+	js_ch_observable[JSO_omega_mech]			= &data->av.omega_mech;
+	js_ch_observable[JSO_omega_mech_filtered]	= &data->av.omega_mech_filtered;
+	js_ch_observable[JSO_positional_age]		= &data->av.EnDat_pos_age;
+	
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
-	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
-	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
-	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
-	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
-	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
-	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_u_d] 			        	= &(data->av.U_d);
+	js_slowDataArray[JSSD_FLOAT_u_q] 			        	= &(data->av.U_q);
+	js_slowDataArray[JSSD_FLOAT_i_d] 			        	= &(data->av.I_d);
+	js_slowDataArray[JSSD_FLOAT_i_q] 			        	= &(data->av.I_q);
+	js_slowDataArray[JSSD_FLOAT_speed] 		         		= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        	= &(data->av.mechanicalTorqueObserved);
+	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]	= &System_UpTime_seconds;
+	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 			= &ISR_execution_time_us;
+	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 				= &ISR_period_us;
+	js_slowDataArray[JSSD_FLOAT_Milliseconds]				= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_EnDat_Value_Calc_Time]		= &data->av.EnDat_value_calc_time;
+	js_slowDataArray[JSSD_FLOAT_EnDat_responselength_bits]	= &data->av.EnDat_value_response_length;
+	js_slowDataArray[JSSD_FLOAT_slow_cycle_period_ms]		= &data->av.slow_cycle_period_ms;
+	js_slowDataArray[JSSD_FLOAT_EnDat_sync_quality]			= &data->av.EnDat_sync_quality;
 
 	return Status;
 }

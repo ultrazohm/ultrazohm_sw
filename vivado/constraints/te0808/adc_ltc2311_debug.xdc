@@ -19,6 +19,112 @@ connect_debug_port u_ila_0/probe36 [get_nets [list {zusys_i/A1_ADC_LTC2311/U0/GE
 connect_debug_port u_ila_0/probe37 [get_nets [list {zusys_i/A2_ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_SPI_ENABLE}]]
 connect_debug_port u_ila_0/probe38 [get_nets [list {zusys_i/A3_ADC_LTC2311/U0/GEN_ADC_CONT[0].inst_adc/S_SPI_ENABLE}]]
 
+
+
+
+connect_debug_port u_ila_0/probe0 [get_nets [list zusys_i/uz_user/CLK_1_1]]
+connect_debug_port u_ila_0/probe1 [get_nets [list zusys_i/uz_user/CLK_OUT]]
+
+
+
+
+
+
+
+
+
+
+connect_debug_port u_ila_0/probe0 [get_nets [list zusys_i/Dig_18_Ch4_1]]
+
+
+connect_debug_port u_ila_0/probe0 [get_nets [list zusys_i/uz_user/uz_EnDat_0_CLK_OUT]]
+
+
+
+connect_debug_port u_ila_0/probe4 [get_nets [list Dig_18_Ch4_IBUF]]
+
+
+
+
+
+connect_debug_port u_ila_0/probe0 [get_nets [list {zusys_i/uz_user/CRCDBG[0]} {zusys_i/uz_user/CRCDBG[1]} {zusys_i/uz_user/CRCDBG[2]} {zusys_i/uz_user/CRCDBG[3]} {zusys_i/uz_user/CRCDBG[4]} {zusys_i/uz_user/CRCDBG[5]} {zusys_i/uz_user/CRCDBG[6]} {zusys_i/uz_user/CRCDBG[7]}]]
+connect_debug_port u_ila_0/probe2 [get_nets [list {zusys_i/uz_user/payload[0]} {zusys_i/uz_user/payload[1]} {zusys_i/uz_user/payload[2]} {zusys_i/uz_user/payload[3]} {zusys_i/uz_user/payload[4]} {zusys_i/uz_user/payload[5]} {zusys_i/uz_user/payload[6]} {zusys_i/uz_user/payload[7]} {zusys_i/uz_user/payload[8]} {zusys_i/uz_user/payload[9]} {zusys_i/uz_user/payload[10]} {zusys_i/uz_user/payload[11]} {zusys_i/uz_user/payload[12]} {zusys_i/uz_user/payload[13]} {zusys_i/uz_user/payload[14]} {zusys_i/uz_user/payload[15]} {zusys_i/uz_user/payload[16]} {zusys_i/uz_user/payload[17]} {zusys_i/uz_user/payload[18]} {zusys_i/uz_user/payload[19]} {zusys_i/uz_user/payload[20]} {zusys_i/uz_user/payload[21]} {zusys_i/uz_user/payload[22]} {zusys_i/uz_user/payload[23]} {zusys_i/uz_user/payload[24]} {zusys_i/uz_user/payload[25]} {zusys_i/uz_user/payload[26]} {zusys_i/uz_user/payload[27]} {zusys_i/uz_user/payload[28]} {zusys_i/uz_user/payload[29]} {zusys_i/uz_user/payload[30]} {zusys_i/uz_user/payload[31]}]]
+connect_debug_port u_ila_0/probe3 [get_nets [list {zusys_i/uz_user/upperecieve[0]} {zusys_i/uz_user/upperecieve[1]} {zusys_i/uz_user/upperecieve[2]} {zusys_i/uz_user/upperecieve[3]} {zusys_i/uz_user/upperecieve[4]} {zusys_i/uz_user/upperecieve[5]} {zusys_i/uz_user/upperecieve[6]} {zusys_i/uz_user/upperecieve[7]}]]
+connect_debug_port u_ila_0/probe4 [get_nets [list {zusys_i/uz_user/payloadswapped[0]} {zusys_i/uz_user/payloadswapped[1]} {zusys_i/uz_user/payloadswapped[2]} {zusys_i/uz_user/payloadswapped[3]} {zusys_i/uz_user/payloadswapped[4]} {zusys_i/uz_user/payloadswapped[5]} {zusys_i/uz_user/payloadswapped[6]} {zusys_i/uz_user/payloadswapped[7]} {zusys_i/uz_user/payloadswapped[8]} {zusys_i/uz_user/payloadswapped[9]} {zusys_i/uz_user/payloadswapped[10]} {zusys_i/uz_user/payloadswapped[11]} {zusys_i/uz_user/payloadswapped[12]} {zusys_i/uz_user/payloadswapped[13]} {zusys_i/uz_user/payloadswapped[14]} {zusys_i/uz_user/payloadswapped[15]} {zusys_i/uz_user/payloadswapped[16]} {zusys_i/uz_user/payloadswapped[17]} {zusys_i/uz_user/payloadswapped[18]} {zusys_i/uz_user/payloadswapped[19]} {zusys_i/uz_user/payloadswapped[20]} {zusys_i/uz_user/payloadswapped[21]} {zusys_i/uz_user/payloadswapped[22]} {zusys_i/uz_user/payloadswapped[23]} {zusys_i/uz_user/payloadswapped[24]} {zusys_i/uz_user/payloadswapped[25]} {zusys_i/uz_user/payloadswapped[26]} {zusys_i/uz_user/payloadswapped[27]} {zusys_i/uz_user/payloadswapped[28]} {zusys_i/uz_user/payloadswapped[29]} {zusys_i/uz_user/payloadswapped[30]} {zusys_i/uz_user/payloadswapped[31]}]]
+connect_debug_port u_ila_0/probe5 [get_nets [list {zusys_i/uz_user/dbgjnklower[0]} {zusys_i/uz_user/dbgjnklower[1]} {zusys_i/uz_user/dbgjnklower[2]} {zusys_i/uz_user/dbgjnklower[3]} {zusys_i/uz_user/dbgjnklower[4]} {zusys_i/uz_user/dbgjnklower[5]} {zusys_i/uz_user/dbgjnklower[6]} {zusys_i/uz_user/dbgjnklower[7]} {zusys_i/uz_user/dbgjnklower[8]} {zusys_i/uz_user/dbgjnklower[9]} {zusys_i/uz_user/dbgjnklower[10]} {zusys_i/uz_user/dbgjnklower[11]} {zusys_i/uz_user/dbgjnklower[12]} {zusys_i/uz_user/dbgjnklower[13]} {zusys_i/uz_user/dbgjnklower[14]} {zusys_i/uz_user/dbgjnklower[15]}]]
+connect_debug_port u_ila_0/probe6 [get_nets [list {zusys_i/uz_user/dbgjnkupper[0]} {zusys_i/uz_user/dbgjnkupper[1]} {zusys_i/uz_user/dbgjnkupper[2]} {zusys_i/uz_user/dbgjnkupper[3]} {zusys_i/uz_user/dbgjnkupper[4]} {zusys_i/uz_user/dbgjnkupper[5]} {zusys_i/uz_user/dbgjnkupper[6]} {zusys_i/uz_user/dbgjnkupper[7]} {zusys_i/uz_user/dbgjnkupper[8]} {zusys_i/uz_user/dbgjnkupper[9]} {zusys_i/uz_user/dbgjnkupper[10]} {zusys_i/uz_user/dbgjnkupper[11]} {zusys_i/uz_user/dbgjnkupper[12]} {zusys_i/uz_user/dbgjnkupper[13]} {zusys_i/uz_user/dbgjnkupper[14]} {zusys_i/uz_user/dbgjnkupper[15]}]]
+
+
+
+
+
+
+
+
+
+
+
+
+connect_debug_port u_ila_0/probe5 [get_nets [list zusys_i/uz_user/dbg2]]
+
+
+
+
+
+create_debug_core u_ila_0 ila
+set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0]
+set_property ALL_PROBE_SAME_MU_CNT 1 [get_debug_cores u_ila_0]
+set_property C_ADV_TRIGGER false [get_debug_cores u_ila_0]
+set_property C_DATA_DEPTH 65536 [get_debug_cores u_ila_0]
+set_property C_EN_STRG_QUAL false [get_debug_cores u_ila_0]
+set_property C_INPUT_PIPE_STAGES 0 [get_debug_cores u_ila_0]
+set_property C_TRIGIN_EN false [get_debug_cores u_ila_0]
+set_property C_TRIGOUT_EN false [get_debug_cores u_ila_0]
+set_property port_width 1 [get_debug_ports u_ila_0/clk]
+connect_debug_port u_ila_0/clk [get_nets [list zusys_i/zynq_ultra_ps_e_0/U0/pl_clk0]]
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe0]
+set_property port_width 8 [get_debug_ports u_ila_0/probe0]
+connect_debug_port u_ila_0/probe0 [get_nets [list {zusys_i/uz_user/DBGACTIVENUMBER[0]} {zusys_i/uz_user/DBGACTIVENUMBER[1]} {zusys_i/uz_user/DBGACTIVENUMBER[2]} {zusys_i/uz_user/DBGACTIVENUMBER[3]} {zusys_i/uz_user/DBGACTIVENUMBER[4]} {zusys_i/uz_user/DBGACTIVENUMBER[5]} {zusys_i/uz_user/DBGACTIVENUMBER[6]} {zusys_i/uz_user/DBGACTIVENUMBER[7]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe1]
+set_property port_width 8 [get_debug_ports u_ila_0/probe1]
+connect_debug_port u_ila_0/probe1 [get_nets [list {zusys_i/uz_user/DBGTOTALBITSREAD[0]} {zusys_i/uz_user/DBGTOTALBITSREAD[1]} {zusys_i/uz_user/DBGTOTALBITSREAD[2]} {zusys_i/uz_user/DBGTOTALBITSREAD[3]} {zusys_i/uz_user/DBGTOTALBITSREAD[4]} {zusys_i/uz_user/DBGTOTALBITSREAD[5]} {zusys_i/uz_user/DBGTOTALBITSREAD[6]} {zusys_i/uz_user/DBGTOTALBITSREAD[7]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe2]
+set_property port_width 64 [get_debug_ports u_ila_0/probe2]
+connect_debug_port u_ila_0/probe2 [get_nets [list {zusys_i/uz_user/DBGPOSRAW[0]} {zusys_i/uz_user/DBGPOSRAW[1]} {zusys_i/uz_user/DBGPOSRAW[2]} {zusys_i/uz_user/DBGPOSRAW[3]} {zusys_i/uz_user/DBGPOSRAW[4]} {zusys_i/uz_user/DBGPOSRAW[5]} {zusys_i/uz_user/DBGPOSRAW[6]} {zusys_i/uz_user/DBGPOSRAW[7]} {zusys_i/uz_user/DBGPOSRAW[8]} {zusys_i/uz_user/DBGPOSRAW[9]} {zusys_i/uz_user/DBGPOSRAW[10]} {zusys_i/uz_user/DBGPOSRAW[11]} {zusys_i/uz_user/DBGPOSRAW[12]} {zusys_i/uz_user/DBGPOSRAW[13]} {zusys_i/uz_user/DBGPOSRAW[14]} {zusys_i/uz_user/DBGPOSRAW[15]} {zusys_i/uz_user/DBGPOSRAW[16]} {zusys_i/uz_user/DBGPOSRAW[17]} {zusys_i/uz_user/DBGPOSRAW[18]} {zusys_i/uz_user/DBGPOSRAW[19]} {zusys_i/uz_user/DBGPOSRAW[20]} {zusys_i/uz_user/DBGPOSRAW[21]} {zusys_i/uz_user/DBGPOSRAW[22]} {zusys_i/uz_user/DBGPOSRAW[23]} {zusys_i/uz_user/DBGPOSRAW[24]} {zusys_i/uz_user/DBGPOSRAW[25]} {zusys_i/uz_user/DBGPOSRAW[26]} {zusys_i/uz_user/DBGPOSRAW[27]} {zusys_i/uz_user/DBGPOSRAW[28]} {zusys_i/uz_user/DBGPOSRAW[29]} {zusys_i/uz_user/DBGPOSRAW[30]} {zusys_i/uz_user/DBGPOSRAW[31]} {zusys_i/uz_user/DBGPOSRAW[32]} {zusys_i/uz_user/DBGPOSRAW[33]} {zusys_i/uz_user/DBGPOSRAW[34]} {zusys_i/uz_user/DBGPOSRAW[35]} {zusys_i/uz_user/DBGPOSRAW[36]} {zusys_i/uz_user/DBGPOSRAW[37]} {zusys_i/uz_user/DBGPOSRAW[38]} {zusys_i/uz_user/DBGPOSRAW[39]} {zusys_i/uz_user/DBGPOSRAW[40]} {zusys_i/uz_user/DBGPOSRAW[41]} {zusys_i/uz_user/DBGPOSRAW[42]} {zusys_i/uz_user/DBGPOSRAW[43]} {zusys_i/uz_user/DBGPOSRAW[44]} {zusys_i/uz_user/DBGPOSRAW[45]} {zusys_i/uz_user/DBGPOSRAW[46]} {zusys_i/uz_user/DBGPOSRAW[47]} {zusys_i/uz_user/DBGPOSRAW[48]} {zusys_i/uz_user/DBGPOSRAW[49]} {zusys_i/uz_user/DBGPOSRAW[50]} {zusys_i/uz_user/DBGPOSRAW[51]} {zusys_i/uz_user/DBGPOSRAW[52]} {zusys_i/uz_user/DBGPOSRAW[53]} {zusys_i/uz_user/DBGPOSRAW[54]} {zusys_i/uz_user/DBGPOSRAW[55]} {zusys_i/uz_user/DBGPOSRAW[56]} {zusys_i/uz_user/DBGPOSRAW[57]} {zusys_i/uz_user/DBGPOSRAW[58]} {zusys_i/uz_user/DBGPOSRAW[59]} {zusys_i/uz_user/DBGPOSRAW[60]} {zusys_i/uz_user/DBGPOSRAW[61]} {zusys_i/uz_user/DBGPOSRAW[62]} {zusys_i/uz_user/DBGPOSRAW[63]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe3]
+set_property port_width 32 [get_debug_ports u_ila_0/probe3]
+connect_debug_port u_ila_0/probe3 [get_nets [list {zusys_i/uz_user/DBGPOSSLICED[0]} {zusys_i/uz_user/DBGPOSSLICED[1]} {zusys_i/uz_user/DBGPOSSLICED[2]} {zusys_i/uz_user/DBGPOSSLICED[3]} {zusys_i/uz_user/DBGPOSSLICED[4]} {zusys_i/uz_user/DBGPOSSLICED[5]} {zusys_i/uz_user/DBGPOSSLICED[6]} {zusys_i/uz_user/DBGPOSSLICED[7]} {zusys_i/uz_user/DBGPOSSLICED[8]} {zusys_i/uz_user/DBGPOSSLICED[9]} {zusys_i/uz_user/DBGPOSSLICED[10]} {zusys_i/uz_user/DBGPOSSLICED[11]} {zusys_i/uz_user/DBGPOSSLICED[12]} {zusys_i/uz_user/DBGPOSSLICED[13]} {zusys_i/uz_user/DBGPOSSLICED[14]} {zusys_i/uz_user/DBGPOSSLICED[15]} {zusys_i/uz_user/DBGPOSSLICED[16]} {zusys_i/uz_user/DBGPOSSLICED[17]} {zusys_i/uz_user/DBGPOSSLICED[18]} {zusys_i/uz_user/DBGPOSSLICED[19]} {zusys_i/uz_user/DBGPOSSLICED[20]} {zusys_i/uz_user/DBGPOSSLICED[21]} {zusys_i/uz_user/DBGPOSSLICED[22]} {zusys_i/uz_user/DBGPOSSLICED[23]} {zusys_i/uz_user/DBGPOSSLICED[24]} {zusys_i/uz_user/DBGPOSSLICED[25]} {zusys_i/uz_user/DBGPOSSLICED[26]} {zusys_i/uz_user/DBGPOSSLICED[27]} {zusys_i/uz_user/DBGPOSSLICED[28]} {zusys_i/uz_user/DBGPOSSLICED[29]} {zusys_i/uz_user/DBGPOSSLICED[30]} {zusys_i/uz_user/DBGPOSSLICED[31]}]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe4]
+set_property port_width 1 [get_debug_ports u_ila_0/probe4]
+connect_debug_port u_ila_0/probe4 [get_nets [list zusys_i/uz_user/DBGCLK]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe5]
+set_property port_width 1 [get_debug_ports u_ila_0/probe5]
+connect_debug_port u_ila_0/probe5 [get_nets [list zusys_i/uz_user/DBGDATAIN]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe6]
+set_property port_width 1 [get_debug_ports u_ila_0/probe6]
+connect_debug_port u_ila_0/probe6 [get_nets [list zusys_i/uz_user/DBGDATAOUT]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe7]
+set_property port_width 1 [get_debug_ports u_ila_0/probe7]
+connect_debug_port u_ila_0/probe7 [get_nets [list zusys_i/uz_user/DBGDATWRITE]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe8]
+set_property port_width 1 [get_debug_ports u_ila_0/probe8]
+connect_debug_port u_ila_0/probe8 [get_nets [list zusys_i/uz_user/DBGREADPULSES]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe9]
+set_property port_width 1 [get_debug_ports u_ila_0/probe9]
+connect_debug_port u_ila_0/probe9 [get_nets [list zusys_i/uz_user/DBGWRITEOKPULSE]]
+create_debug_port u_ila_0 probe
+set_property PROBE_TYPE DATA_AND_TRIGGER [get_debug_ports u_ila_0/probe10]
+set_property port_width 1 [get_debug_ports u_ila_0/probe10]
+connect_debug_port u_ila_0/probe10 [get_nets [list zusys_i/uz_user/SENSORERROR]]
 set_property C_CLK_INPUT_FREQ_HZ 300000000 [get_debug_cores dbg_hub]
 set_property C_ENABLE_CLK_DIVIDER false [get_debug_cores dbg_hub]
 set_property C_USER_SCAN_CHAIN 1 [get_debug_cores dbg_hub]

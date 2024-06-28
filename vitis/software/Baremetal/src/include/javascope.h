@@ -49,6 +49,10 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_Speed_rpm_filtered,
+	JSO_omega_mech,
+	JSO_omega_mech_filtered,
+	JSO_positional_age,
 	JSO_ENDMARKER
 };
 
@@ -72,6 +76,10 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_slow_cycle_period_ms,
+	JSSD_FLOAT_EnDat_Value_Calc_Time,
+	JSSD_FLOAT_EnDat_responselength_bits,
+	JSSD_FLOAT_EnDat_sync_quality,
 	JSSD_ENDMARKER
 };
 

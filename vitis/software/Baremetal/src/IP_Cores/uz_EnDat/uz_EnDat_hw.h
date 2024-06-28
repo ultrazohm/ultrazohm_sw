@@ -1,0 +1,29 @@
+#ifndef UZ_ENDAT_HW_H
+#define UZ_ENDAT_HW_H
+
+
+#include <stdint.h>
+void uz_EnDat_hw_write_divider(uint32_t base_address, uint8_t divider);
+void uz_EnDat_hw_write_FKT1DATAFLOW(uint32_t base_address, uint16_t FKT1DATAFLOW);
+void uz_EnDat_hw_write_FKT2RECOVERYTIME(uint32_t base_address, uint16_t FKT2RECOVERYTIME);
+void uz_EnDat_hw_write_FKT3INITIALOFF(uint32_t base_address, uint16_t FKT3INITIALOFF);
+void uz_EnDat_hw_write_FKT4DATACLKSYNC(uint32_t base_address, uint16_t FKT4DATACLKSYNC);
+void uz_EnDat_hw_write_FKT5TELEGRAMLEN(uint32_t base_address, uint16_t FKT5TELEGRAMLEN);
+void uz_EnDat_hw_write_FKT6SYNCRESPONSE(uint32_t base_address, uint16_t FKT6SYNCRESPONSE);
+void uz_EnDat_hw_write_FKT7EXTRASHIFT(uint32_t base_address, int8_t FKT7EXTRASHIFT);
+void uz_EnDat_hw_write_controlword(uint32_t base_address, uint16_t controlword);
+uint16_t uz_EnDat_hw_read_statusword(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_POS0BUS(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_POS1BUS(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_POS2BUS(uint32_t base_address);
+int32_t uz_EnDat_hw_read_DIFT0T1BUS(uint32_t base_address);
+int32_t uz_EnDat_hw_read_DIFT0T2BUS(uint32_t base_address);
+uint8_t uz_EnDat_hw_read_CRCFFSTORED(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T1BUS(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_TIMEELASPEDT0T2BUS(uint32_t base_address);
+uint8_t uz_EnDat_hw_read_RESPONSELENBUS(uint32_t base_address);
+uint32_t uz_EnDat_hw_read_POSAGET0BUS(uint32_t base_address);
+uint16_t uz_EnDat_hw_read_SYNCQUALITYBUS(uint32_t base_address);
+
+
+#endif // UZ_ENDAT_HW_H

@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_EnDat/uz_EnDat.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -80,13 +81,24 @@ typedef struct _actualValues_ {
 	float U_q;
 	float theta_elec;
 	float theta_mech;
+	float omega_mech;
+	float omega_mech_filtered;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+<<<<<<< HEAD
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 } actualValues;
+=======
+	float slow_cycle_period_ms;
+	float EnDat_value_calc_time;
+	float EnDat_value_response_length;
+	float EnDat_pos_age;
+	float EnDat_sync_quality;
+	} actualValues;
+>>>>>>> feature/uz_EnDat_IPCore
 
 typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;
@@ -114,6 +126,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	uz_EnDat_t* EnDat_master_pointer;
+	uz_EnDat_t* EnDat_master_pointer_2;
+	uz_EnDat_t* EnDat_master_pointer_3;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

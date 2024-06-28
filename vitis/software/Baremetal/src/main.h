@@ -19,6 +19,7 @@
 #include <math.h>										//Include for math operations
 #include <stdbool.h>
 
+
 // Xilinx library functions
 #include "xscugic.h"									//Include for Interrupt handler (necessary for all GIC interrupts)
 #include "xipipsu.h"									//Include for Interrupt handler (necessary for all IPI interrupts)
@@ -30,6 +31,8 @@
 #include "include/uz_adcLtc2311_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
+#include "IP_Cores/uz_EnDat/uz_EnDat.h"
+#include "include/uz_EnDat_IP_Core_init.h"
 
 
 // UltraZohm includes
@@ -53,12 +56,15 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "include/slow_cycle.h"
 
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------
 
 void InitializeDataStructure(DS_Data* data);
+
+
+
 
 #endif /* main_H_ */

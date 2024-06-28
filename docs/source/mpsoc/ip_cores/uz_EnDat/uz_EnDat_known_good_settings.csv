@@ -1,0 +1,25 @@
+Type, Sensor Frequency in MHz, Profile, Fct. 1, Fct. 2, Fct. 3, Fct. 4, Fct. 5, Fct. 6, Fct. 7 
+ECN125, 1.5625, Default, default, default, default, default, default, default, default
+ECN125, 1.5625, Good Effort, default, 65, default, default, default, default, default
+ECN125, 1.5625, Extreme, default, 55, default, default, 85, default, default
+ECN125, 3.125, Default, default, default, default, default, default, default, 2
+ECN125, 3.125, Good Effort, default, 65, default, default, default, default, 2
+ECN125, 3.125, Extreme, default, 55, default, default, 91, default, 2
+ECN125, 6.25, Default, default, default, default, default, default, default, default
+ECN125, 6.25, Good Effort, default, 65, default, default, default, default, default
+ECN125, 6.25, Extreme, default, 55, default, default, default, default, default
+ECN125, 12.5, Default, default, default, default, default, 155, default, default
+ECN125, 12.5, Good Effort, default, 90, default, default, 155, default, default
+ECN125, 12.5, Extreme, default, 83, default, default, 155, default, default
+ECN1123, 1.5625, Default, default, default, default, default, default, default, default
+ECN1123, 1.5625, Good Effort, default, 63, default, default, default, default, default
+ECN1123, 1.5625, Extreme, default, 53, default, default, default, default, default
+ECN1123, 3.125, Default, default, default, default, default, default, default, 2
+ECN1123, 3.125, Good Effort, default, 63, default, default, default, default, 2
+ECN1123, 3.125, Extreme, default, 53, default, default, 88, default, 2
+ECN1123, 6.25, Default, default, default, default, default, default, 1, 2
+ECN1123, 6.25, Good Effort, default, 62, default, default, default, 1, 2
+ECN1123, 6.25, Extreme, default, 52, default, default, default, 1, 2
+ECN1123, 12.5, Default, default, default, default, default, 155, default, default
+ECN1123, 12.5, Good Effort, default, 89, default, default, 155, default, default
+ECN1123, 12.5, Extreme, default, 79, default, default, 155, default, default

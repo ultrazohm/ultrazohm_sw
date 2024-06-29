@@ -36,6 +36,30 @@ Vivado integration
 
 .. warning:: The IP-Core (IPCORE_CLK) has to be sourced by a clock with :math:`100 MHz`! The auxialliary clock (CLK50MHZ) has to be fed with a :math:`50 MHz` Signal
 
+Usual connection for the Digital Encoder Adapter Card (use D4 NON packed):
+
+.. list-table:: Adapter card (Encoder V1) vivado port mapping
+  :widths: 25 25
+  :header-rows: 1
+  :align: center
+
+  * - EnDat-IP-Core Port
+    - Vivado Port
+  
+  * - CLK_OUT
+    - "Dig_21_Ch4" - OUTPORT
+
+  * - DATAOUT
+    - "Dig_18_Ch4" - OUTPORT
+
+  * - CLKWR
+    - "Dig_22_Ch4 - OUTPORT  
+  
+  * - DATAWR
+    - "Dig_19_Ch4" - OUTPORT
+  
+  * - DATAIN
+    - "Dig_17_Ch4" - INPORT
 
 Table *Interfaces of the EnDat22 IP-Core* lists all input and output ports (AXI and external port) that are present in the IP-Core.
 

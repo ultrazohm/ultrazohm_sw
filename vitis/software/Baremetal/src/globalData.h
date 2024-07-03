@@ -87,18 +87,14 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
-<<<<<<< HEAD
 	float snd_fld[21];
 	uint32_t slowDataCounter;
-} actualValues;
-=======
 	float slow_cycle_period_ms;
 	float EnDat_value_calc_time;
 	float EnDat_value_response_length;
 	float EnDat_pos_age;
 	float EnDat_sync_quality;
-	} actualValues;
->>>>>>> feature/uz_EnDat_IPCore
+} actualValues;
 
 typedef struct _referenceAndSetValues_ {
 	float halfBridge1DutyCycle;

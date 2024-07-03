@@ -4,10 +4,18 @@
 Programming the CPLD 
 ====================
 
+CPLD Versions
+--------------
 
+There are two different versions available:
 
-Step-by-step
-------------
+* `LA4128V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LA4128V/>`_ for old revisions and Rev04 with serial number UZ2021-002-001-200-0001 to UZ2021-001-001-004-0004
+* `LC4256V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LC4256V/>`_ for all other Rev04 with serial number UZ2022-001-001-401-0007 up to UZ2024-001-001-0401-0031
+
+Note that there are two different folders for the CPLD programs in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
+
+Step-by-step for `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 0. Install the Diamond Programmer by Lattice and clone the CPLD repository, see :ref:`install_lattice` for details. 
 
@@ -58,6 +66,40 @@ Note that it is possible to program only one of the CPLDs by the enable check bo
 .. image:: cpld_programming/Programmer_Zynq_position.jpg
    :width: 500
 
+
+Step-by-step for :ref:`uz_per_jtag`
+--------------------------------------
+
+0. Install the Diamond Programmer by Lattice and clone the CPLD repository, see :ref:`install_lattice` for details. 
+
+1. Start the Diamond Programmer by Lattice and open the file in the git ``Programm_all5_CPLDs.xcf`` with regard to the installed CPLD. 
+
+.. image:: cpld_programming/LA4128V.png
+
+In this example the `CPLD LA4128V <https://www.mouser.de/ProductDetail/Lattice/LA4128V-75TN100E?qs=k0CM90KAVUoIZqpZ9HTArg%3D%3D>`_ is installed on the carrier board.
+
+2. Chose the proper CPLD software and chose which CPLDs you want to program. The standard configuration is:
+
+   - D1-D4 with **26Tx_with_enable**
+   - D5 for the encoder with **30Rx** 
+   
+Note that it is possible to program only one of the CPLDs by the enable check box in each line.
+
+3. Plug in the USB cable and turn on the power of the UltraZohm. The three green LED's on the programmer should light up.
+
+4. Click **Detect cable** and set the right port for UltraZohm B Location. Depending on the OS, the mapping can differ (in this case the UltraZohm B Location Port is mapped on FTUSB-0). 
+
+.. image:: cpld_programming/detect_cable.png
+
+5. Setup a custom clock divider TCK 3.
+
+.. image:: cpld_programming/clockdivider.png
+
+6. Click on "Program", after successful programming it should look like this:
+
+.. image:: cpld_programming/cpld_programmed.png
+
+
 Known issues
 ------------
 
@@ -67,8 +109,6 @@ Not possible to find the CPLDs
 .. image:: cpld_programming/error_cannot_find_cplds.png
 
 Close all Vivado and Vitis instances and retry. Restart your PC and retry.
-
-
 
 See also
 --------

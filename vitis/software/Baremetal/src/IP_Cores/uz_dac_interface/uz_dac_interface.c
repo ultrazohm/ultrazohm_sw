@@ -38,15 +38,28 @@ uz_dac_interface_t *uz_dac_interface_init(struct uz_dac_interface_config_t confi
     }
     uz_dac_interface_t *self = uz_dac_interface_allocation();
     self->config = config;
+    uz_dac_interface_set_reset_value(self, config.reset_value);
+    uz_dac_interface_reset(self, false);
+     return (self);
+}
 
-    return (self);
+void uz_dac_interface_set_reset_value(uz_dac_interface_t *self, float reset_value)
+{
+    uz_assert_not_NULL(self);
+    uz_dac_interface_hw_write_reset_value(self->config.base_address, convert_voltage_to_int(reset_value, self->config.gain[0]));
+}
+
+void uz_dac_interface_reset(uz_dac_interface_t *self, bool reset)
+{
+    uz_assert_not_NULL(self);
+    uz_dac_interface_hw_write_reset_output(self->config.base_address, reset);
 }
 
 void uz_dac_interface_set_ouput_values(uz_dac_interface_t *self, uz_array_float_t *output_values)
 {
     uz_assert_not_NULL(self);
     uz_assert_not_NULL(output_values);
-    uz_assert(output_values->length==UZ_DAC_INTERFACE_OUTPUT_CHANNELS);
+    uz_assert(output_values->length == UZ_DAC_INTERFACE_OUTPUT_CHANNELS);
 
     uz_dac_interface_hw_write_dac1(self->config.base_address, convert_voltage_to_int(output_values->data[0], self->config.gain[0]));
     uz_dac_interface_hw_write_dac2(self->config.base_address, convert_voltage_to_int(output_values->data[1], self->config.gain[1]));

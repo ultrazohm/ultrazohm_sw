@@ -26,6 +26,27 @@ void test_uz_dac_interface_hw_trigger_send_data(void)
     uz_dac_interface_hw_write_trigger(TEST_BASE_ADDRESS,enable);
 }
 
+void test_uz_dac_interface_hw_write_use_axi_inputs(void)
+{
+    bool use_axi_inputs = true;
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + use_input_from_axi_Data_uz_dac_spi_interface, use_axi_inputs);
+    uz_dac_interface_hw_write_use_axi_inputs(TEST_BASE_ADDRESS, use_axi_inputs);
+}
+
+void test_uz_dac_interface_hw_write_reset_output(void)
+{
+    bool reset = true;
+    uz_axi_write_bool_Expect(TEST_BASE_ADDRESS + reset_dac_output_Data_uz_dac_spi_interface, reset);
+    uz_dac_interface_hw_write_reset_output(TEST_BASE_ADDRESS, reset);
+}
+
+void test_uz_dac_interface_hw_write_reset_value(void)
+{
+    int32_t value = 100;
+    uz_axi_write_int32_Expect(TEST_BASE_ADDRESS + reset_value_Data_uz_dac_spi_interface, value);
+    uz_dac_interface_hw_write_reset_value(TEST_BASE_ADDRESS, value);
+}
+
 void test_uz_dac_interface_hw_write_dac1(void)
 {
     int32_t value=100;

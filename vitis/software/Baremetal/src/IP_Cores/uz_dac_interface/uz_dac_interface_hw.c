@@ -70,6 +70,25 @@ void uz_dac_interface_hw_write_dac8(uint32_t base_address, int32_t dac_value)
     uz_axi_write_int32(base_address + dac_data_8_Data_uz_dac_spi_interface, dac_value);
 }
 
+void uz_dac_interface_hw_write_use_axi_inputs(uint32_t base_address, bool use_axi_inputs)
+{
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address + use_input_from_axi_Data_uz_dac_spi_interface, use_axi_inputs);
+}
+
+void uz_dac_interface_hw_write_reset_output(uint32_t base_address, bool reset_output)
+{
+    uz_assert_not_zero_uint32(base_address);
+    uz_axi_write_bool(base_address + reset_dac_output_Data_uz_dac_spi_interface, reset_output);
+}
+
+void uz_dac_interface_hw_write_reset_value(uint32_t base_address, int32_t dac_value_if_reset)
+{
+    uz_assert_not_zero_uint32(base_address);
+    dac_value_if_reset = saturate_to_int16(dac_value_if_reset);
+    uz_axi_write_int32(base_address + reset_value_Data_uz_dac_spi_interface, dac_value_if_reset);
+}
+
 static int32_t saturate_to_int16(int32_t input)
 {
     int32_t output=input;

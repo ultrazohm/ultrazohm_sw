@@ -23,6 +23,7 @@ typedef struct uz_dac_interface_t uz_dac_interface_t;
 struct uz_dac_interface_config_t{
     uint32_t base_address; /**< Base address of the IP-Core instance to which the driver is coupled */
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of IP-Core */
+    float reset_value;
     float gain[UZ_DAC_INTERFACE_OUTPUT_CHANNELS]; /**< Gain of the output OpAMPs of the DAC card. Usually set to 2.0f, but can be fine-tuned to match actual hardware. */
 };
 
@@ -42,5 +43,6 @@ uz_dac_interface_t* uz_dac_interface_init(struct uz_dac_interface_config_t confi
  */
 void uz_dac_interface_set_ouput_values(uz_dac_interface_t* self,uz_array_float_t* output_values);
 
+void uz_dac_interface_set_reset_value(uz_dac_interface_t *self, float reset_value);
 
 #endif // UZ_DAC_INTERFACE_H

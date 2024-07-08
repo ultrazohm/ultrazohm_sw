@@ -14,5 +14,8 @@ void uz_dac_interface_hw_write_dac5(uint32_t base_address,int32_t dac_value);
 void uz_dac_interface_hw_write_dac6(uint32_t base_address,int32_t dac_value);
 void uz_dac_interface_hw_write_dac7(uint32_t base_address,int32_t dac_value);
 void uz_dac_interface_hw_write_dac8(uint32_t base_address,int32_t dac_value);
+void uz_dac_interface_hw_write_use_axi_inputs(uint32_t base_address, bool use_axi_inputs);
+void uz_dac_interface_hw_write_reset_output(uint32_t base_address, bool reset_output);
+void uz_dac_interface_hw_write_reset_value(uint32_t base_address, int32_t dac_value_if_reset);
 
 #endif // UZ_DAC_INTERFACE_HW_H

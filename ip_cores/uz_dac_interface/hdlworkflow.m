@@ -1,8 +1,8 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.12 (R2022a) at 10:02:39 on 17/05/2022
+% Generated with MATLAB 9.14 (R2023a) at 11:20:52 on 08/07/2024
 % This script was generated using the following parameter values:
-%     Filename  : '/home/ts/Dokumente/ultrazohm_testbench/fix_alloc/ultrazohm_sw/ip_cores/uz_dac_interface/hdlworkflow.m'
+%     Filename  : '/home/ts/Documents/ultrazohm_sw/ip_cores/uz_dac_interface/hdlworkflow.m'
 %     Overwrite : true
 %     Comments  : true
 %     Headers   : true
@@ -22,6 +22,7 @@ load_system('uz_dac_spi_interface');
 hdlset_param('uz_dac_spi_interface', 'CriticalPathEstimation', 'on');
 hdlset_param('uz_dac_spi_interface', 'HDLSubsystem', 'uz_dac_spi_interface/uz_dac_spi_interface');
 hdlset_param('uz_dac_spi_interface', 'OptimizationReport', 'on');
+hdlset_param('uz_dac_spi_interface', 'ResetInputPort', 'reset_x');
 hdlset_param('uz_dac_spi_interface', 'ResetType', 'Synchronous');
 hdlset_param('uz_dac_spi_interface', 'ResourceReport', 'on');
 hdlset_param('uz_dac_spi_interface', 'SynthesisTool', 'Xilinx Vivado');
@@ -30,6 +31,7 @@ hdlset_param('uz_dac_spi_interface', 'SynthesisToolDeviceName', 'xazu11eg-ffvf15
 hdlset_param('uz_dac_spi_interface', 'SynthesisToolPackageName', '');
 hdlset_param('uz_dac_spi_interface', 'SynthesisToolSpeedValue', '');
 hdlset_param('uz_dac_spi_interface', 'TargetDirectory', 'hdl_prj/hdlsrc');
+hdlset_param('uz_dac_spi_interface', 'TargetFrequency', 100);
 hdlset_param('uz_dac_spi_interface', 'TargetPlatform', 'Generic Xilinx Platform');
 hdlset_param('uz_dac_spi_interface', 'Workflow', 'IP Core Generation');
 
@@ -73,6 +75,59 @@ hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_7', 'IOInterfac
 % Set Inport HDL parameters
 hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_8', 'IOInterface', 'AXI4');
 hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_8', 'IOInterfaceMapping', 'x"120"');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_1_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_1_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_2_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_2_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_3_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_3_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_4_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_4_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_5_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_5_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_6_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_6_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_7_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_7_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_8_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/dac_data_8_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/trigger_write_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/trigger_write_pl', 'IOInterfaceMapping', '');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/use_input_from_axi', 'IOInterface', 'AXI4');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/use_input_from_axi', 'IOInterfaceMapping', 'x"148"');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/use_input_from_axi', 'IOInterfaceOptions', {'RegisterInitialValue','0','EnableReadback','inherit'});
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/reset_value', 'IOInterface', 'AXI4');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/reset_value', 'IOInterfaceMapping', 'x"14C"');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/reset_dac_output', 'IOInterface', 'AXI4');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/reset_dac_output', 'IOInterfaceMapping', 'x"150"');
+
+% Set Inport HDL parameters
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/reset_dac_output_pl', 'IOInterface', 'External Port');
+hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/reset_dac_output_pl', 'IOInterfaceMapping', '');
 
 % Set Outport HDL parameters
 hdlset_param('uz_dac_spi_interface/uz_dac_spi_interface/spi_clk_out', 'IOInterface', 'External Port');
@@ -121,6 +176,7 @@ hWC = hdlcoder.WorkflowConfig('SynthesisTool','Xilinx Vivado','TargetWorkflow','
 
 % Specify the top level project directory
 hWC.ProjectFolder = 'hdl_prj';
+hWC.AllowUnsupportedToolVersion = true;
 hWC.ReferenceDesignToolVersion = '';
 hWC.IgnoreToolVersionMismatch = false;
 
@@ -141,7 +197,7 @@ hWC.AdditionalProjectCreationTclFiles = '';
 hWC.EnableIPCaching = false;
 
 % Set properties related to 'RunTaskGenerateSoftwareInterface' Task
-hWC.GenerateSoftwareInterfaceModel = true;
+hWC.GenerateSoftwareInterfaceModel = false;
 hWC.OperatingSystem = '';
 hWC.HostTargetInterface = '';
 hWC.GenerateHostInterfaceModel = false;

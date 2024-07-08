@@ -5,7 +5,7 @@ High-level Resource Utilization Report for uz_dac_spi_interface
 </title>
 
 </head>
-<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Register_1_3');hdlTableShrink(this, 'Multiplexer_1_1');hdlTableShrink(this, 'Multiplexer_1_3');hdlTableShrink(this, 'Multiplexer_1_4');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');">
 <script>
 <!--
 function hdlTableShrink(o,tagNameStr)
@@ -161,7 +161,7 @@ Multipliers
 Adders/Subtractors
 </td>
 <td align="center" valign="top" style="border-style: none">
-8
+9
 </td>
 
 </tr>
@@ -170,7 +170,7 @@ Adders/Subtractors
 Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-275
+291
 </td>
 
 </tr>
@@ -179,7 +179,7 @@ Registers
 Total 1-Bit Registers
 </td>
 <td align="center" valign="top" style="border-style: none">
-459
+599
 </td>
 
 </tr>
@@ -197,7 +197,7 @@ RAMs
 Multiplexers
 </td>
 <td align="center" valign="top" style="border-style: none">
-44
+72
 </td>
 
 </tr>
@@ -206,7 +206,7 @@ Multiplexers
 I/O Bits
 </td>
 <td align="center" valign="top" style="border-style: none">
-143
+291
 </td>
 
 </tr>
@@ -246,22 +246,49 @@ uz_dac_spi_interface
 
 </h5>
 <h5>
-Adders/Subtractors (8)
+Adders/Subtractors (9)
 </h5>
 <span style="font-family:monospace">
-5x5-bit Adder 							: 8
+5x5-bit Adder 							: 9
 </span>
 <br /><h5>
-Registers (274)
+Registers (289)
 </h5>
-<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+<span style="font-family:monospace">
+5-bit Register 							: 17
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit Register 							: 250
+1-bit Register 							: 256
 </span>
-<span name="Register_1_1" id="Register_1_1">
-<ul>
+<span name="Register_1_2" id="Register_1_2">
+<ul class="SystemdefinedCollapse" id="23f044a9-f9d2-4379-9ca0-5961b4a10166" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:404')" name="code2model" class="code2model">
+Delay10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:382')" name="code2model" class="code2model">
+Delay9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:423')" name="code2model" class="code2model">
+Delay11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:422')" name="code2model" class="code2model">
+Rate Transition10
+</a>
+
+</li>
 <li>
 <a href="matlab:coder.internal.code2model('uz_dac_spi_interface:74')" name="code2model" class="code2model">
 Delay
@@ -318,25 +345,88 @@ Serializer1D7
 </li>
 
 </ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '23f044a9-f9d2-4379-9ca0-5961b4a10166')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+16-bit Register 							: 16
+</span>
+<span name="Register_1_3" id="Register_1_3">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:357')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:373')" name="code2model" class="code2model">
+Delay2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:374')" name="code2model" class="code2model">
+Delay3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:375')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:376')" name="code2model" class="code2model">
+Delay5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:377')" name="code2model" class="code2model">
+Delay6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:378')" name="code2model" class="code2model">
+Delay7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:379')" name="code2model" class="code2model">
+Delay8
+</a>
+
+</li>
+
+</ul>
 
 </span>
-<br /><span style="font-family:monospace">
-5-bit Register 							: 16
-</span>
-<br /><span style="font-family:monospace">
-16-bit Register 							: 8
-</span>
 <br /><h5>
-Multiplexers (42)
+Multiplexers (68)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_1')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-1-bit 2-to-1 Multiplexer 							: 18
+1-bit 2-to-1 Multiplexer 							: 28
 </span>
 <span name="Multiplexer_1_1" id="Multiplexer_1_1">
 <ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:380')" name="code2model" class="code2model">
+Switch8
+</a>
+
+</li>
 <li>
 <a href="matlab:coder.internal.code2model('uz_dac_spi_interface:74')" name="code2model" class="code2model">
 Delay
@@ -398,8 +488,116 @@ Serializer1D7
 <br /><span style="font-family:monospace">
 5-bit 2-to-1 Multiplexer 							: 8
 </span>
-<br /><span style="font-family:monospace">
-16-bit 2-to-1 Multiplexer 							: 8
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_3')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+16-bit 2-to-1 Multiplexer 							: 24
+</span>
+<span name="Multiplexer_1_3" id="Multiplexer_1_3">
+<ul class="SystemdefinedCollapse" id="8eeba81d-a28d-4624-a5db-4a5370c509ab" dataCollapse="off">
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:356')" name="code2model" class="code2model">
+Switch
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:393')" name="code2model" class="code2model">
+Switch9
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:366')" name="code2model" class="code2model">
+Switch1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:395')" name="code2model" class="code2model">
+Switch10
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:367')" name="code2model" class="code2model">
+Switch2
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:396')" name="code2model" class="code2model">
+Switch11
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:368')" name="code2model" class="code2model">
+Switch3
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:397')" name="code2model" class="code2model">
+Switch12
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:369')" name="code2model" class="code2model">
+Switch4
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:398')" name="code2model" class="code2model">
+Switch13
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:370')" name="code2model" class="code2model">
+Switch5
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:399')" name="code2model" class="code2model">
+Switch14
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:371')" name="code2model" class="code2model">
+Switch6
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:400')" name="code2model" class="code2model">
+Switch15
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:372')" name="code2model" class="code2model">
+Switch7
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:401')" name="code2model" class="code2model">
+Switch16
+</a>
+
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '8eeba81d-a28d-4624-a5db-4a5370c509ab')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
 </span>
 <br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_4')" onmouseover="this.style.cursor = 'pointer'">
 [+]
@@ -462,21 +660,21 @@ Serializer1D7
 
 </span>
 <br /><h5>
-Number of I/O Bits (143)
+Number of I/O Bits (291)
 </h5>
 <span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
 [+]
 </span>
 <span style="font-family:monospace">
-Number of Input Bits: 132
+Number of Input Bits: 280
 </span>
 <span name="Input_Port" id="Input_Port">
-<ul class="SystemdefinedCollapse" id="cfe10c11-a007-449a-844a-c76e8ae86d71" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="16c3b50e-89d7-4551-9b63-ab9ad756df26" dataCollapse="off">
 <li>
 clk: 1 bit
 </li>
 <li>
-reset: 1 bit
+reset_x: 1 bit
 </li>
 <li>
 clk_enable: 1 bit
@@ -535,9 +733,87 @@ dac_data_8
 </a>
 : 16 bits
 </li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:358')" name="code2model" class="code2model">
+dac_data_1_pl
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:359')" name="code2model" class="code2model">
+dac_data_2_pl
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:360')" name="code2model" class="code2model">
+dac_data_3_pl
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:361')" name="code2model" class="code2model">
+dac_data_4_pl
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:362')" name="code2model" class="code2model">
+dac_data_5_pl
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:363')" name="code2model" class="code2model">
+dac_data_6_pl
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:364')" name="code2model" class="code2model">
+dac_data_7_pl
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:365')" name="code2model" class="code2model">
+dac_data_8_pl
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:381')" name="code2model" class="code2model">
+trigger_write_pl
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:383')" name="code2model" class="code2model">
+use_input_from_axi
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:394')" name="code2model" class="code2model">
+reset_value
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:402')" name="code2model" class="code2model">
+reset_dac_output
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_dac_spi_interface:405')" name="code2model" class="code2model">
+reset_dac_output_pl
+</a>
+: 1 bit
+</li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'cfe10c11-a007-449a-844a-c76e8ae86d71')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, '16c3b50e-89d7-4551-9b63-ab9ad756df26')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
@@ -549,7 +825,7 @@ dac_data_8
 Number of Output Bits: 11
 </span>
 <span name="Output_Port" id="Output_Port">
-<ul class="SystemdefinedCollapse" id="c691d09d-a1c5-48be-85cb-1a5046c901c8" dataCollapse="off">
+<ul class="SystemdefinedCollapse" id="bfc2061b-9207-4f17-a4fe-01e6a0e9e4fc" dataCollapse="off">
 <li>
 ce_out: 1 bit
 </li>
@@ -615,10 +891,29 @@ data_out_8
 </li>
 
 </ul>
-<span class="SDCollapseControl" onclick="collapseSD(this, 'c691d09d-a1c5-48be-85cb-1a5046c901c8')" onmouseover="this.style.cursor = 'pointer'">
+<span class="SDCollapseControl" onclick="collapseSD(this, 'bfc2061b-9207-4f17-a4fe-01e6a0e9e4fc')" onmouseover="this.style.cursor = 'pointer'">
 &#8743; Less
 </span>
 <br />
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_dac_spi_interface:420')" name="code2model" class="code2model">
+Detect Rise
+Positive1
+</a>
+
+</h5>
+<h5>
+Registers (1)
+</h5>
+<span style="font-family:monospace">
+1-bit Register 							: 1
+</span>
+<br /><h5>
+Multiplexers (2)
+</h5>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 2
 </span>
 <br /><p><hr /></p><h5>
 Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_dac_spi_interface:62')" name="code2model" class="code2model">

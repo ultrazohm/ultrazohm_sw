@@ -1,10 +1,7 @@
 SLStudio.Utils.RemoveHighlighting(get_param('uz_dac_spi_interface', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_dac_spi_interface', 'handle'));
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive', 1, 1, '');
-annotate_port('uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive', 1, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Delay', 0, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Delay', 1, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D', 0, 2, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Delay10', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Rate Transition2', 1, 1, '');
 annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D', 1, 1, '');
 annotate_port('uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D', 1, 1, '');
 annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D1', 1, 1, '');
@@ -21,5 +18,7 @@ annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D6', 1, 1
 annotate_port('uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D6', 1, 1, '');
 annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D7', 1, 1, '');
 annotate_port('uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D7', 1, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/AND1', 0, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/AND2', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/OR', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/OR1', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/OR3', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/OR4', 0, 1, '');

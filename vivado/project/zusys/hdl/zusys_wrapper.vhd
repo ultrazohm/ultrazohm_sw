@@ -1,8 +1,8 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (lin64) Build 3671981 Fri Oct 14 04:59:54 MDT 2022
---Date        : Tue Apr 16 14:54:42 2024
---Host        : TS-WS running 64-bit Ubuntu 22.04.4 LTS
+--Date        : Sat May 25 11:46:20 2024
+--Host        : ts-laptop running 64-bit Ubuntu 23.10
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -21,10 +21,6 @@ entity zusys_wrapper is
     A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
     D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -45,6 +41,26 @@ entity zusys_wrapper is
     D4_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D4_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D4_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_CLK_N_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_CLK_P_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_CVN_N_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_CVN_P_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N1_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N2_A4 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N3_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N4_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N5_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N6_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N7_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N8_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P1_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P2_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P3_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P4_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P5_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P6_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P7_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P8_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_09_Ch5 : in STD_LOGIC;
     Dig_10_Ch5 : in STD_LOGIC;
     Dig_11_Ch5 : in STD_LOGIC;
@@ -75,10 +91,6 @@ architecture STRUCTURE of zusys_wrapper is
     A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT : out STD_LOGIC_VECTOR ( 23 downto 0 );
     D1_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -114,7 +126,27 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_8_Ch5 : in STD_LOGIC;
+    DAC_CLK_N_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_CLK_P_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_CVN_P_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_CVN_N_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P1_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N1_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P2_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P3_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N2_A4 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N3_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P4_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N4_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P5_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N5_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N6_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N7_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_N8_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P6_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P7_A3 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    DAC_IN_P8_A3 : out STD_LOGIC_VECTOR ( 0 to 0 )
   );
   end component zusys;
 begin
@@ -128,10 +160,6 @@ zusys_i: component zusys
       A2_OUT_CLK(1 downto 0) => A2_OUT_CLK(1 downto 0),
       A2_OUT_CNV_0(0) => A2_OUT_CNV_0(0),
       A2_OUT_CNV_1(0) => A2_OUT_CNV_1(0),
-      A3_IN(15 downto 0) => A3_IN(15 downto 0),
-      A3_OUT_CLK(1 downto 0) => A3_OUT_CLK(1 downto 0),
-      A3_OUT_CNV_0(0) => A3_OUT_CNV_0(0),
-      A3_OUT_CNV_1(0) => A3_OUT_CNV_1(0),
       D1_OUT(23 downto 0) => D1_OUT(23 downto 0),
       D1_OUT_26(0) => D1_OUT_26(0),
       D1_OUT_27(0) => D1_OUT_27(0),
@@ -152,6 +180,26 @@ zusys_i: component zusys
       D4_OUT_27(0) => D4_OUT_27(0),
       D4_OUT_28(0) => D4_OUT_28(0),
       D4_OUT_29(0) => D4_OUT_29(0),
+      DAC_CLK_N_A3(0) => DAC_CLK_N_A3(0),
+      DAC_CLK_P_A3(0) => DAC_CLK_P_A3(0),
+      DAC_CVN_N_A3(0) => DAC_CVN_N_A3(0),
+      DAC_CVN_P_A3(0) => DAC_CVN_P_A3(0),
+      DAC_IN_N1_A3(0) => DAC_IN_N1_A3(0),
+      DAC_IN_N2_A4(0) => DAC_IN_N2_A4(0),
+      DAC_IN_N3_A3(0) => DAC_IN_N3_A3(0),
+      DAC_IN_N4_A3(0) => DAC_IN_N4_A3(0),
+      DAC_IN_N5_A3(0) => DAC_IN_N5_A3(0),
+      DAC_IN_N6_A3(0) => DAC_IN_N6_A3(0),
+      DAC_IN_N7_A3(0) => DAC_IN_N7_A3(0),
+      DAC_IN_N8_A3(0) => DAC_IN_N8_A3(0),
+      DAC_IN_P1_A3(0) => DAC_IN_P1_A3(0),
+      DAC_IN_P2_A3(0) => DAC_IN_P2_A3(0),
+      DAC_IN_P3_A3(0) => DAC_IN_P3_A3(0),
+      DAC_IN_P4_A3(0) => DAC_IN_P4_A3(0),
+      DAC_IN_P5_A3(0) => DAC_IN_P5_A3(0),
+      DAC_IN_P6_A3(0) => DAC_IN_P6_A3(0),
+      DAC_IN_P7_A3(0) => DAC_IN_P7_A3(0),
+      DAC_IN_P8_A3(0) => DAC_IN_P8_A3(0),
       Dig_09_Ch5 => Dig_09_Ch5,
       Dig_10_Ch5 => Dig_10_Ch5,
       Dig_11_Ch5 => Dig_11_Ch5,

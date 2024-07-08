@@ -48,29 +48,33 @@ extern uz_dac_interface_t* dac_instance;
 //----------------------------------------------------
 static void ReadAllADC();
 #include "../uz/uz_wavegen/uz_wavegen.h"
+bool use_pl=false;
+float reset_value=0.0f;
 
-void ISR_Control(void *data)
+    void
+    ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    float output=0.0f;
     float amplitude = 5.0f;
     float frequency_Hz = 50.0f;
-    if (current_state==control_state)
+    float output = uz_wavegen_sawtooth(amplitude, frequency_Hz);
+    uz_dac_interface_use_axi_inputs(dac_instance,use_pl);
+    uz_dac_interface_set_reset_value(dac_instance,reset_value);
+     if (current_state == control_state)
     {
-        output = uz_wavegen_sawtooth(amplitude, frequency_Hz);
     }else{
-    	output=0.0f;
+        uz_dac_interface_reset(dac_instance,true);
     }
-     	float dac_input[8]={output,output,output,output,output,output,output,output};
-     	    uz_array_float_t dac_input_array={
-     	    .data=&dac_input[0],
-     	    .length=UZ_ARRAY_SIZE(dac_input)
-     	};
-     	uz_dac_interface_set_ouput_values(dac_instance,&dac_input_array);
+    float dac_input[8]={output,output,output,output,output,output,output,output};
+        uz_array_float_t dac_input_array={
+        .data=&dac_input[0],
+        .length=UZ_ARRAY_SIZE(dac_input)
+    };
+    uz_dac_interface_set_ouput_values(dac_instance,&dac_input_array);
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
@@ -150,7 +154,7 @@ int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId)
     /* Enable interrupts in the processor */
     Xil_ExceptionEnable(); // Enable interrupts in the ARM
 
-    // setting interrupt trigger sensitivity
+    // setting interrupt trigger sensitivityuz_dac
     // b01	Active HIGH level sensitive
     // b11 	Rising edge sensitive
     // XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)

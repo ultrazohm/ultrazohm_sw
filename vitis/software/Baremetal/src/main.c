@@ -59,8 +59,11 @@ enum init_chain initialization_chain = init_assertions;
 struct uz_dac_interface_config_t dac_config={
     .base_address=XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR, // Depends on xparameters.h!
     .ip_clk_frequency_Hz=100000000,
+    .reset_value=0.0f,
+    .use_axi_inputs=false,
     .gain={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
 };
+
 uz_dac_interface_t* dac_instance;
 
 int main(void)

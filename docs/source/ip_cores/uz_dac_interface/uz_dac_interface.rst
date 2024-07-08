@@ -11,6 +11,13 @@ On a rising edge on the trigger conversion register (only possible by AXI), all 
 The SPI clk frequency can not be changed during runtime and is hard-coded to :math:`f_{SPI}=0.5 \cdot f_{IP-Core}`.
 The software driver features a conversion factor for each of the DAC channels to account for different gains in the OpAMP circuit of the card.
 
+The output data for the DAC can either be supplied by AXI4 or from PL ports using.
+The source of the trigger conversion (AXI4 or PL pin) always matches the data source.
+The IP-Core features a ``reset_dac_output`` signal in PL and AXI4, which is combined by a logic OR.
+I.e., if ``reset_dac_output`` or ``reset_dac_output_PL`` is ``true``, the IP-Core continuously writes the specified ``reset_value`` to all DAC channels (using the conversion factor of channel 1).
+The ``reset_value`` is set by AXI and has to be set such that the reset signal outputs a signal that is a safe state in the specific application.
+
+
 Software interface
 ==================
 
@@ -48,6 +55,7 @@ However, supplying out of range values does not trigger an assertion to be able 
 .. warning::
     The DAC always outputs the last value present in the DAC latch register. The user has to take care of safe DAC output states for the application 
     before stopping control algorithms in the ISR or before flashing the MPSoC during testing.
+    Use the reset functionality to set the output to a defined value!
 
 Driver reference
 ----------------
@@ -63,6 +71,12 @@ Driver reference
 
 .. doxygenfunction:: uz_dac_interface_set_ouput_values
 
+.. doxygenfunction:: uz_dac_interface_set_reset_value
+    
+.. doxygenfunction:: uz_dac_interface_reset
+
+.. doxygenfunction:: uz_dac_interface_use_axi_inputs
+
 IP-Core interface (Vivado)
 ==========================
 
@@ -71,6 +85,7 @@ Therefore, additional ``Utility Buffers`` (with ``C Buf Type`` set to ``OBUFDS``
 Constraints for using the DAC card :ref:`uz_dac8831_pcb` in the slot A3 are supplied in the constraints folder (``uz_dac8831_A3.xdc``).
 The SPI clk frequency of the IP-Core output is always half of the ``IP_CORE_CLK``.
 The IP-Core is only tested with ``IPCORE_CLK`` and ``AXI_ACLK`` connected to 100 MHz clock!
+
 
 .. figure:: uz_user_dac.png
    :width: 500

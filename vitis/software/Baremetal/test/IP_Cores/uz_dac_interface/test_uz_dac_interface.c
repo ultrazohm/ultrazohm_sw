@@ -27,12 +27,14 @@ void test_uz_dac_interface_set_values(void)
         .base_address = TEST_BASE_ADDRESS,
         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
         .reset_value=0.0f,
+        .use_axi_inputs=true,
         .gain = {2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f}
     };
 
     uz_dac_interface_hw_write_reset_value_Expect(TEST_BASE_ADDRESS, convert_voltage_to_int(0.0f, config.gain[0]));
     uz_dac_interface_hw_write_reset_output_Expect(TEST_BASE_ADDRESS,false);
-        uz_dac_interface_t *test = uz_dac_interface_init(config);
+    uz_dac_interface_hw_write_use_axi_inputs_Expect(TEST_BASE_ADDRESS,true);
+     uz_dac_interface_t *test = uz_dac_interface_init(config);
     float output[8] = {1, 2, 3, 4, 5, 6, 7, 8};
 
     uz_array_float_t output_values = {
@@ -53,6 +55,77 @@ void test_uz_dac_interface_set_values(void)
 
     uz_dac_interface_set_ouput_values(test, &output_values);
 }
+
+void test_uz_dac_use_pl(void){
+    struct uz_dac_interface_config_t config = {
+        .base_address = TEST_BASE_ADDRESS,
+        .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
+        .reset_value = 0.0f,
+        .use_axi_inputs = true,
+        .gain = {2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f}};
+
+    uz_dac_interface_hw_write_reset_value_Expect(TEST_BASE_ADDRESS, convert_voltage_to_int(0.0f, config.gain[0]));
+    uz_dac_interface_hw_write_reset_output_Expect(TEST_BASE_ADDRESS, false);
+    uz_dac_interface_hw_write_use_axi_inputs_Expect(TEST_BASE_ADDRESS, true);
+    uz_dac_interface_t *test = uz_dac_interface_init(config);
+    uz_dac_interface_hw_write_use_axi_inputs_Expect(TEST_BASE_ADDRESS, false);
+
+    uz_dac_interface_use_axi_inputs(test, false);
+}
+
+void test_uz_dac_reset(void)
+{
+    struct uz_dac_interface_config_t config = {
+        .base_address = TEST_BASE_ADDRESS,
+        .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
+        .reset_value = 0.0f,
+        .use_axi_inputs = true,
+        .gain = {2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f}};
+
+    uz_dac_interface_hw_write_reset_value_Expect(TEST_BASE_ADDRESS, convert_voltage_to_int(0.0f, config.gain[0]));
+    uz_dac_interface_hw_write_reset_output_Expect(TEST_BASE_ADDRESS, false);
+    uz_dac_interface_hw_write_use_axi_inputs_Expect(TEST_BASE_ADDRESS, true);
+    uz_dac_interface_t *test = uz_dac_interface_init(config);
+
+    uz_dac_interface_hw_write_reset_output_Expect(TEST_BASE_ADDRESS, true);
+    uz_dac_interface_reset(test, true);
+}
+
+void test_uz_dac_set_reset_value(void)
+{
+    struct uz_dac_interface_config_t config = {
+        .base_address = TEST_BASE_ADDRESS,
+        .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
+        .reset_value = 0.0f,
+        .use_axi_inputs = true,
+        .gain = {2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f}};
+    uz_dac_interface_hw_write_reset_value_Expect(TEST_BASE_ADDRESS, convert_voltage_to_int(0.0f, config.gain[0]));
+    uz_dac_interface_hw_write_reset_output_Expect(TEST_BASE_ADDRESS, false);
+    uz_dac_interface_hw_write_use_axi_inputs_Expect(TEST_BASE_ADDRESS, true);
+    uz_dac_interface_t *test = uz_dac_interface_init(config);
+
+    uz_dac_interface_hw_write_reset_value_Expect(TEST_BASE_ADDRESS, convert_voltage_to_int(2.0f, config.gain[0]));
+    uz_dac_interface_set_reset_value(test, 2.0f);
+}
+
+// void test_uz_dac_reset(void)
+// {
+//     struct uz_dac_interface_config_t config = {
+//         .base_address = TEST_BASE_ADDRESS,
+//         .ip_clk_frequency_Hz = TEST_IP_CORE_FRQ,
+//         .reset_value = 0.0f,
+//         .use_axi_inputs = true,
+//         .gain = {2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f, 2.0f}};
+
+//     uz_dac_interface_hw_write_reset_value_Expect(TEST_BASE_ADDRESS, convert_voltage_to_int(0.0f, config.gain[0]));
+//     uz_dac_interface_hw_write_reset_output_Expect(TEST_BASE_ADDRESS, false);
+//     uz_dac_interface_hw_write_use_axi_inputs_Expect(TEST_BASE_ADDRESS, true);
+//     uz_dac_interface_t *test = uz_dac_interface_init(config);
+//     uz_dac_interface_hw_write_reset_output_Expect(TEST_BASE_ADDRESS, false);
+
+//     uz_dac_interface_reset(test, true);
+// }
+
 
 static int32_t convert_voltage_to_int(float input, float gain)
 {

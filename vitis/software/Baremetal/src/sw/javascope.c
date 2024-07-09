@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink
+* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Lï¿½hdefink
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -48,10 +48,10 @@ extern struct uz_3ph_abc_t v_abc_Volts_1;
 extern float DC_A;
 extern float DC_B;
 extern float DC_C;
+extern float torque_cil;
 
-
-//Data of PMSM 2
-extern float n_ref_rpm_2;
+	// Data of PMSM 2
+	extern float n_ref_rpm_2;
 extern float theta_el_rad_2;
 extern float theta_el_offset_2;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
@@ -140,7 +140,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id_ref_2] 		= &i_dq_ref_Amps_2.d;
 	js_ch_observable[JSO_n_ref_1]		= &n_ref_rpm_1;
 	js_ch_observable[JSO_n_ref_2]		= &n_ref_rpm_2;
-	js_ch_observable[JSO_M_meas]		= &M_meas_Nm;
+	js_ch_observable[JSO_M_meas] = &torque_cil;
 	js_ch_observable[JSO_Theta_el_1] 	= &data->av.theta_elec_1;
 	js_ch_observable[JSO_Theta_el_2] 	= &data->av.theta_elec_2;
 	js_ch_observable[JSO_Theta_el_3] 	= &data->av.theta_elec_3;

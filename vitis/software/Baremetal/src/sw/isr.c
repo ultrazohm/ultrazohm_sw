@@ -33,8 +33,14 @@
 #include "../uz/uz_parameterid_rs/uz_parameterid_rs.h"
 #include "../uz/uz_parameterid_rc/uz_parameterid_rc.h"
 #include "stdbool.h"
+#include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 
 
+float PMSM_rated_current_1 = 4.2f;
+float rated_Speed_rpm = 3000.0f;
+
+float speed_weight_1 = 1.0f / 3000.0f;
+float ts = 1.0f / UZ_PWM_FREQUENCY;
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -71,7 +77,7 @@ struct uz_3ph_dq_t i_dq_ref_Amps_1 				= {0};
 struct uz_3ph_dq_t 	v_dq_ref_Volts_1 			= {0};
 struct uz_DutyCycle_t output_1 					= {0};
 
-
+bool ext_clamping_1 = false;
 
 // ------------------- Wavegen Chirp -------------------- //
 bool enable_excitation 							= false;
@@ -91,7 +97,6 @@ struct uz_3ph_abc_t v_abc_Volts_2 				= {0};
 float v_DC_Volts_2 								= 48.0f;
 struct uz_3ph_abc_t i_abc_Amps_2 				= {0};
 float i_DC_Amps_2 								= 0.0f;
-
 // --------- Field Oriented Control and Signals --------- //
 float omega_m_rad_per_sec_2 					= 0.0f;
 float omega_el_rad_per_sec_2 					= 0.0f;
@@ -105,8 +110,11 @@ struct uz_3ph_dq_t v_dq_ref_Volts_2 			= {0};
 struct uz_3ph_dq_t i_dq_ref_Amps_2 				= {0};
 struct uz_DutyCycle_t output_2 					= {0};
 
+uz_matrix_t *matrix_output;
+float max_modulation_index_1 = 1.0f / 1.732050808f;
 
-
+uz_3ph_dq_t i_dq_integrated_error_Amps_1 = {0};
+uz_3ph_dq_t i_dq_error_Amps_1 = {0};
 // ---------------- induced voltage ----------------- //
 struct uz_3ph_dq_t v_ind_dq_Volts_2 			= {0};
 struct uz_3ph_dq_t v_ind_dq_filt_Volts_2 			= {0};
@@ -141,7 +149,13 @@ float rc_repeat_counter = 0.0f;
 
 // ======================= CIL ======================= //
 
-extern uz_pmsmModel_t *pmsm;
+uz_3ph_dq_t v_dq_non_limited_Volts_1 = {0};
+uz_3ph_dq_t v_dq_limited_Volts_1 = {0};
+uz_3ph_dq_t v_dq_limited_Volts_old_1 = {0};
+uz_3ph_dq_t v_dq_limited_Volts_old_old_1 = {0};
+float torque_cil=0.0f;
+
+    extern uz_pmsmModel_t *pmsm;
 extern uz_CurrentControl_t* CurrentControl_instance;
 uz_3ph_dq_t reference_currents_Amp = {0};
 uz_3ph_dq_t measured_currents_Amp = {0};
@@ -167,7 +181,10 @@ struct uz_3ph_dq_t cil_u_ind_Volts 			= {0};
 struct uz_3ph_dq_t cil_u_ind_ref_Volts 			= {0};
 struct uz_3ph_dq_t v_dq_filt_Volts_2 			= {0};
 
+float observation_ip[6U] = {0};
 
+float U_max_1 = 48.0f / 1.732050808f;
+float Voltage_Scaling_1 = 1.0f / (48.0f / 1.732050808f);
 
 enum running_mode run_state = normal;
 
@@ -180,6 +197,9 @@ enum switch_control switch_control = control_idq;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+
+bool cil=true;
+bool foc = false;
 
 void ISR_Control(void *data)
 {
@@ -233,14 +253,6 @@ void ISR_Control(void *data)
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
     }
 
-    // Calculation of Signals for FOC of PMSM 1
-    /*omega_m_rad_per_sec_1 = Global_Data.av.mechanicalRotorSpeed_filtered_1*(2.0f*M_PI)/60.0f;
-    omega_el_rad_per_sec_1 = omega_m_rad_per_sec_1*config_PMSM_1.polePairs;
-    Global_Data.av.omega_el_1 = omega_el_rad_per_sec_1;
-    theta_el_rad_1 = Global_Data.av.theta_elec_1 - Global_Data.av.theta_offset_1;
-    i_dq_Amps_1 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_1, theta_el_rad_1);
-    v_dq_Volts_1 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_1, theta_el_rad_1);*/
-
     // Calculation of Signals for FOC of PMSM 2
     omega_m_rad_per_sec_2 = Global_Data.av.mechanicalRotorSpeed_filtered_2*(2.0f*M_PI)/60.0f;
     omega_el_rad_per_sec_2 = omega_m_rad_per_sec_2*config_PMSM_2.polePairs;
@@ -248,167 +260,78 @@ void ISR_Control(void *data)
     theta_el_rad_2 = Global_Data.av.theta_elec_2 - theta_el_offset_2;
     i_dq_Amps_2 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_2, theta_el_rad_2);
     v_dq_Volts_2 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_2, theta_el_rad_2);
-
     v_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_2, v_dq_Volts_2.d);
     v_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_2, v_dq_Volts_2.q);
+
 
     // Enable Control
     if (current_state==control_state)
     {
+        // Tristate OFF
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
+        // Field Oriented Control of PMSM 2 - current-controlled
 
-    		r_s_2 = (1.28e-8f * Global_Data.av.mechanicalRotorSpeed_filtered_2 * Global_Data.av.mechanicalRotorSpeed_filtered_2 - 2.353e-6f * Global_Data.av.mechanicalRotorSpeed_filtered_2 + 0.539f);
-    		v_ind_dq_Volts_2.d = v_dq_Volts_2.d - (r_s_2 * i_dq_Amps_2.d);
-    		v_ind_dq_Volts_2.q = v_dq_Volts_2.q - (r_s_2 * i_dq_Amps_2.q);
-    		v_ind_dq_filt_Volts_2.d = uz_signals_IIR_Filter_sample(LP_instance_ud_ind_2, v_ind_dq_Volts_2.d);
-    	    v_ind_dq_filt_Volts_2.q = uz_signals_IIR_Filter_sample(LP_instance_uq_ind_2, v_ind_dq_Volts_2.q);
-
-    	    switch(run_state) {
-				case rs_measurement_Heidrive:
-					// Field Oriented Control of PMSM 1 - speed-controlled
-		    		/*M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, actual_output.n_sample);
-		    		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
-					v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-					output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-
-					// Set DutyCycles of PMSM 1
-					Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
-					Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
-					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;*/
-
-					// calculation of set-values
-			        actual_output = uz_parameterid_rs_generate_outputs(rs_meas_instance, v_dq_Volts_2.d, i_dq_Amps_2.d);
-			        i_dq_ref_Amps_2.d = actual_output.i_sample;
-			        i_dq_ref_Amps_2.q = 0.0f;
-			        n_ref_rpm_1 = actual_output.n_sample;
-
-					// Field Oriented Control of PMSM 2 - current-controlled
-					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-
-					// Set DutyCycles of PMSM 2
-					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
-					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
-					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
-					break;
+    if(cil){
+        uz_pmsmModel_trigger_input_strobe(pmsm);
+        uz_pmsmModel_trigger_output_strobe(pmsm);
+        pmsm_outputs = uz_pmsmModel_get_outputs(pmsm);
+        torque_cil = pmsm_outputs.torque_Nm;
+        i_dq_Amps_2.d = pmsm_outputs.i_d_A;
+        i_dq_Amps_2.q = pmsm_outputs.i_q_A;
+        omega_el_rad_per_sec_2 = pmsm_outputs.omega_mech_1_s * 3.0f;
+        v_DC_Volts_2=48;
+    }
 
 
-				case rc_measurement_Heidrive:
-					// Field Oriented Control of PMSM 1 - speed-controlled
-		    		/*M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, rc_output.set_out.n_set);
-		    		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
-					v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-					output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
+        if(foc){
+        v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
+        }else{
+            if (ext_clamping_1 == false)
+            {
+                i_dq_integrated_error_Amps_1.d = (i_dq_integrated_error_Amps_1.d + (i_dq_error_Amps_1.d * ts)); // use Forward-Euler with error of previous timestep for integration
+                i_dq_integrated_error_Amps_1.q = (i_dq_integrated_error_Amps_1.q + (i_dq_error_Amps_1.q * ts));
+            }
+            else
+            {
+                i_dq_integrated_error_Amps_1.d += 0.0f;
+                i_dq_integrated_error_Amps_1.q += 0.0f;
+            }
+            i_dq_error_Amps_1.d = (i_dq_ref_Amps_2.d - i_dq_Amps_2.d) / PMSM_rated_current_1;
+            i_dq_error_Amps_1.q = (i_dq_ref_Amps_2.q - i_dq_Amps_2.q) / PMSM_rated_current_1;
 
-					// Set DutyCycles of PMSM 1
-					Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
-					Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
-					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;*/
+            observation_ip[0] = M_ref_Nm_2 / 0.34f;; // Torque
+            observation_ip[1] = i_dq_Amps_2.d / PMSM_rated_current_1;
+            observation_ip[2] = i_dq_Amps_2.q / PMSM_rated_current_1;
+            observation_ip[3] = omega_el_rad_per_sec_2 * speed_weight_1 * 2*M_PI;
+            observation_ip[4] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
+            observation_ip[5] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+            for (uint32_t i = 0; i < 6; i++)
+            {
+                uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input, observation_ip[i], 0U, i);
+            }
+            uz_nn_ff(Global_Data.objects.nn_layer, Global_Data.objects.matrix_input);
+            matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
+            uz_matrix_multiply_by_scalar(matrix_output, U_max_1); // scaling layer of nn
+            v_dq_non_limited_Volts_1.d = uz_matrix_get_element_zero_based(matrix_output, 0U, 0U);
+            v_dq_non_limited_Volts_1.q = uz_matrix_get_element_zero_based(matrix_output, 0U, 1U);
+            v_dq_ref_Volts_2 = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_1, v_DC_Volts_2, max_modulation_index_1, omega_el_rad_per_sec_2, i_dq_ref_Amps_2, &ext_clamping_1);
+            // Introduce delay
+            v_dq_limited_Volts_old_old_1 = v_dq_ref_Volts_2;
+        }
 
-					// calculation of set-values
-			        rc_output = uz_parameterid_rc_generate_outputs(rc_meas_instance, v_dq_Volts_2.d, v_dq_Volts_2.q, i_dq_Amps_2.d, i_dq_Amps_2.q, Global_Data.av.mechanicalRotorSpeed_filtered_2, M_meas_Nm);
-			        rc_repeat_counter = rc_output.program_finished;
-
-			        // Field Oriented Control of PMSM 2
-			        if(rc_output.generator_mode){
-						// Field Oriented Control of PMSM 2 - u_ind-controlled
-			        	v_ind_dq_ref_Volts_2.d = rc_output.set_out.id_set;
-			        	v_ind_dq_ref_Volts_2.q = rc_output.set_out.iq_set;
-			        	i_dq_ref_Amps_2.q = uz_PI_Controller_sample(PI_instance_ud_ind, v_ind_dq_ref_Volts_2.d, v_ind_dq_Volts_2.d, false);
-			        	i_dq_ref_Amps_2.q = -1.0f * i_dq_ref_Amps_2.q;
-			        	i_dq_ref_Amps_2.d = uz_PI_Controller_sample(PI_instance_uq_ind, v_ind_dq_ref_Volts_2.q, v_ind_dq_Volts_2.q, false);
-			        	v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-			        	output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-			        } else {
-					// Field Oriented Control of PMSM 2 - current-controlled
-				    i_dq_ref_Amps_2.d = rc_output.set_out.id_set;
-				    i_dq_ref_Amps_2.q = rc_output.set_out.iq_set;
-					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-			        }
-
-					// Set DutyCycles of PMSM 2
-					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
-					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
-					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
-					break;
-
-				case normal:
-					// Field Oriented Control of PMSM 1 - speed-controlled
-		    		/*M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
-		    		i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
-					v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-					output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-
-					// Set DutyCycles of PMSM 1
-					Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
-					Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
-					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;*/
-
-					// Field Oriented Control of PMSM 2
-					if (switch_control == control_uind ){
-					// Field Oriented Control of PMSM 2 - current-controlled
-			        	i_dq_ref_Amps_2.q = uz_PI_Controller_sample(PI_instance_ud_ind, v_ind_dq_ref_Volts_2.d, v_ind_dq_Volts_2.d, false);
-			        	i_dq_ref_Amps_2.q = -1.0f * i_dq_ref_Amps_2.q;
-			        	i_dq_ref_Amps_2.d = uz_PI_Controller_sample(PI_instance_uq_ind, v_ind_dq_ref_Volts_2.q, v_ind_dq_Volts_2.q, false);
-						v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-						output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-					} else {
-					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-					}
-
-
-					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
-					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
-					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
-					break;
-
-
-				case reset:
-					uz_parameterid_rs_reset(rs_meas_instance);
-					actual_output.i_sample = 0.0f;
-					actual_output.n_sample = 0.0f;
-					actual_output.isr_stepcounter = 0.0f;
-					n_ref_rpm_1 = 0.0f;
-					uz_parameterid_rc_reset(rc_meas_instance);
-					uz_PI_Controller_reset(PI_instance_ud_ind);
-					uz_PI_Controller_reset(PI_instance_uq_ind);
-			    	//uz_CurrentControl_reset(CC_instance_u_ind);
-					rc_output.mot_rc_d = 0.0f;
-					rc_output.mot_rc_q = 0.0f;
-					rc_output.gen_rc_d = 0.0f;
-					rc_output.gen_rc_q = 0.0f;
-					rc_output.set_out.id_set = 0.0f;
-					rc_output.set_out.iq_set = 0.0f;
-					i_dq_ref_Amps_1.d = 0.0f;
-					i_dq_ref_Amps_1.q = 0.0f;
-					i_dq_ref_Amps_2.d = 0.0f;
-					i_dq_ref_Amps_2.q = 0.0f;
-					switch_control = control_idq;
-
-					// Set DutyCycles of PMSM 1 and 2
-					/*v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1);
-					output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1);
-					Global_Data.rasv.halfBridge1DutyCycle = output_1.DutyCycle_A;
-					Global_Data.rasv.halfBridge2DutyCycle = output_1.DutyCycle_B;
-					Global_Data.rasv.halfBridge3DutyCycle = output_1.DutyCycle_C;*/
-
-					v_dq_ref_Volts_2 = uz_CurrentControl_sample(CC_instance_2, i_dq_ref_Amps_2, i_dq_Amps_2, v_DC_Volts_2, omega_el_rad_per_sec_2);
-					output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
-					Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
-					Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
-					Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
-
-				    // Tristate OFF
-				    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
-				    uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
-					break;
-
-				default:
-					break;
-			}
-
-
+        if(cil){
+            pmsm_inputs.v_d_V = v_dq_ref_Volts_2.d;
+            pmsm_inputs.v_q_V = v_dq_ref_Volts_2.q;
+            pmsm_inputs.omega_mech_1_s = (n_ref_rpm_2 / 60.0f) * 2.0f * M_PI;
+            uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+        }else{
+            output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+            // Set DutyCycles of PMSM 2
+            Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
+            Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;
+            Global_Data.rasv.halfBridge6DutyCycle = output_2.DutyCycle_C;
+        }
     }
     else
     {
@@ -424,7 +347,7 @@ void ISR_Control(void *data)
     	//uz_CurrentControl_reset(CC_instance_u_ind);
 		uz_PI_Controller_reset(PI_instance_ud_ind);
 		uz_PI_Controller_reset(PI_instance_uq_ind);
-
+        uz_pmsmModel_reset(pmsm);
     }
 
     // Set duty cycles for two-level modulator
@@ -440,115 +363,115 @@ void ISR_Control(void *data)
     // Update JavaScope
     JavaScope_update(&Global_Data);
 
-    // ------ Inverter 1 ------ //
-    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
-    //Overtemperature for H1
-    if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
-        error_type = 1.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for L1
-    if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
-    	error_type = 2.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for H2
-    if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
-    	error_type = 3.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for L2
-    if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
-    	error_type = 4.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for H3
-    if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
-    	error_type = 5.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for L3
-    if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
-    	error_type = 6.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
-    //Binding of the signals to the driver is slightly unintuitive
-    //Overcurrent for Phase A
-    if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
-    	error_type = 7.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overcurrent for Phase B
-    if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
-    	error_type = 8.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overcurrent for Phase C
-    if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
-    	error_type = 9.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overcurrent for DC-link
-    if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
-    	error_type = 10.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-
-    // ------ Inverter 2 ------ //
-    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
-    //Overtemperature for H1
-    if (!Global_Data.av.inverter_outputs_d2.FAULT_H1) {
-        error_type = 11.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for L1
-   /* if (!Global_Data.av.inverter_outputs_d2.FAULT_L1) {
-     	error_type = 12.0f;
-       ultrazohm_state_machine_set_error(true);
-    }*/
-    //Overtemperature for H2
-    if (!Global_Data.av.inverter_outputs_d2.FAULT_H2) {
-     	error_type = 13.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for L2
-    if (!Global_Data.av.inverter_outputs_d2.FAULT_L2) {
-    	error_type = 14.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for H3
-    if (!Global_Data.av.inverter_outputs_d2.FAULT_H3) {
-      	error_type = 15.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overtemperature for L3
-    if (!Global_Data.av.inverter_outputs_d2.FAULT_L3) {
-      	error_type = 16.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
-    //Binding of the signals to the driver is slightly unintuitive
-    //Overcurrent for Phase A
-    if (!Global_Data.av.inverter_outputs_d2.OC_L1) {
-      	error_type = 17.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overcurrent for Phase B
-    if (!Global_Data.av.inverter_outputs_d2.OC_H1) {
-     	error_type = 18.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
-    //Overcurrent for Phase C
-    if (!Global_Data.av.inverter_outputs_d2.OC_L2) {
-      	error_type = 19.0f;
-       ultrazohm_state_machine_set_error(true);
-     }
-    //Overcurrent for DC-link
-    if (!Global_Data.av.inverter_outputs_d2.OC_H2) {
-      	error_type = 20.0f;
-       ultrazohm_state_machine_set_error(true);
-    }
+//    // ------ Inverter 1 ------ //
+//    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+//    //Overtemperature for H1
+//    if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
+//        error_type = 1.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for L1
+//    if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
+//    	error_type = 2.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for H2
+//    if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
+//    	error_type = 3.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for L2
+//    if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
+//    	error_type = 4.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for H3
+//    if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
+//    	error_type = 5.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for L3
+//    if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
+//    	error_type = 6.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+//    //Binding of the signals to the driver is slightly unintuitive
+//    //Overcurrent for Phase A
+//    if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
+//    	error_type = 7.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overcurrent for Phase B
+//    if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
+//    	error_type = 8.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overcurrent for Phase C
+//    if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
+//    	error_type = 9.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overcurrent for DC-link
+//    if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
+//    	error_type = 10.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//
+//    // ------ Inverter 2 ------ //
+//    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+//    //Overtemperature for H1
+//    if (!Global_Data.av.inverter_outputs_d2.FAULT_H1) {
+//        error_type = 11.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for L1
+//   /* if (!Global_Data.av.inverter_outputs_d2.FAULT_L1) {
+//     	error_type = 12.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }*/
+//    //Overtemperature for H2
+//    if (!Global_Data.av.inverter_outputs_d2.FAULT_H2) {
+//     	error_type = 13.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for L2
+//    if (!Global_Data.av.inverter_outputs_d2.FAULT_L2) {
+//    	error_type = 14.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for H3
+//    if (!Global_Data.av.inverter_outputs_d2.FAULT_H3) {
+//      	error_type = 15.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overtemperature for L3
+//    if (!Global_Data.av.inverter_outputs_d2.FAULT_L3) {
+//      	error_type = 16.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+//    //Binding of the signals to the driver is slightly unintuitive
+//    //Overcurrent for Phase A
+//    if (!Global_Data.av.inverter_outputs_d2.OC_L1) {
+//      	error_type = 17.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overcurrent for Phase B
+//    if (!Global_Data.av.inverter_outputs_d2.OC_H1) {
+//     	error_type = 18.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
+//    //Overcurrent for Phase C
+//    if (!Global_Data.av.inverter_outputs_d2.OC_L2) {
+//      	error_type = 19.0f;
+//       ultrazohm_state_machine_set_error(true);
+//     }
+//    //Overcurrent for DC-link
+//    if (!Global_Data.av.inverter_outputs_d2.OC_H2) {
+//      	error_type = 20.0f;
+//       ultrazohm_state_machine_set_error(true);
+//    }
 
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

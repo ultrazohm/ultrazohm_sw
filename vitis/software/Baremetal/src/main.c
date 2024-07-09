@@ -376,23 +376,12 @@ int main(void)
                 .lower_limit = -10.0f};
             struct uz_CurrentControl_config config_CurrentControl = {
                 .decoupling_select = linear_decoupling,
-                .config_PMSM = config_PMSM,
+                .config_PMSM = config_PMSM_2,
                 .config_id = config_id,
                 .config_iq = config_iq,
                 .max_modulation_index = 1.0f / sqrtf(3.0f)};
             CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
-            struct uz_pmsmModel_config_t pmsm_config={
-                .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
-                .ip_core_frequency_Hz=100000000,
-                .simulate_mechanical_system = false,
-                .r_1 = 0.03f,
-                .L_d = 3.00e-05f,
-                .L_q = 5.00e-05f,
-                .psi_pm = 0.007f,
-                .polepairs = 5.0f,
-                .inertia = 3.24e-05f,
-                .coulomb_friction_constant = 0.01f,
-                .friction_coefficient = 0.001f};
+
             initialization_chain = init_ip_cores;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
@@ -415,6 +404,23 @@ int main(void)
             initialize_incremental_encoder_ipcore_on_D5_3(UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_3_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
             Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
+            //////////////////
+            struct uz_pmsmModel_config_t pmsm_IPCore_config = {
+                .base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+                .ip_core_frequency_Hz = 100000000,
+                .simulate_mechanical_system = false,
+                .r_1 = config_PMSM_2.R_ph_Ohm,
+                .L_d = config_PMSM_2.Ld_Henry,
+                .L_q = config_PMSM_2.Lq_Henry,
+                .psi_pm = config_PMSM_2.Psi_PM_Vs,
+                .polepairs = config_PMSM_2.polePairs,
+                .inertia = 1.48e-05f,
+                .coulomb_friction_constant = 0.01f,
+                .friction_coefficient = 0.001f
+            };
+            pmsm = uz_pmsmModel_init(pmsm_IPCore_config);
+            nn_init();
+            ////////////////////////////////////////////
             initialization_chain = init_control;
             break;
         case init_control:

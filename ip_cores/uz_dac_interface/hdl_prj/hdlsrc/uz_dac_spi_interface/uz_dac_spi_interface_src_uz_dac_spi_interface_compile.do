@@ -2,6 +2,7 @@ vlib work
 vcom  uz_dac_spi_interface_src_uz_dac_spi_interface_tc.vhd
 vcom  uz_dac_spi_interface_src_Detect_Rise_Positive.vhd
 vcom  uz_dac_spi_interface_src_Detect_Rise_Positive1.vhd
+vcom  uz_dac_spi_interface_src_Detect_Rise_Positive2.vhd
 vcom  uz_dac_spi_interface_src_Subsystem.vhd
 vcom  uz_dac_spi_interface_src_Subsystem1.vhd
 vcom  uz_dac_spi_interface_src_Subsystem2.vhd
@@ -10,4 +11,13 @@ vcom  uz_dac_spi_interface_src_Subsystem4.vhd
 vcom  uz_dac_spi_interface_src_Subsystem5.vhd
 vcom  uz_dac_spi_interface_src_Subsystem6.vhd
 vcom  uz_dac_spi_interface_src_Subsystem7.vhd
+vcom  uz_dac_spi_interface_src_keep_high.vhd
+vcom  uz_dac_spi_interface_src_shadow_register.vhd
+vcom  uz_dac_spi_interface_src_shadow_register1.vhd
+vcom  uz_dac_spi_interface_src_shadow_register2.vhd
+vcom  uz_dac_spi_interface_src_shadow_register3.vhd
+vcom  uz_dac_spi_interface_src_shadow_register4.vhd
+vcom  uz_dac_spi_interface_src_shadow_register5.vhd
+vcom  uz_dac_spi_interface_src_shadow_register6.vhd
+vcom  uz_dac_spi_interface_src_shadow_register7.vhd
 vcom  uz_dac_spi_interface_src_uz_dac_spi_interface.vhd

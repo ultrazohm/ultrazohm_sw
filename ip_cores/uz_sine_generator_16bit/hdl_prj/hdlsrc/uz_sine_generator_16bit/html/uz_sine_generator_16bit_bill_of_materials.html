@@ -1,0 +1,2132 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+High-level Resource Utilization Report for uz_sine_generator_16bit
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666" onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdBillOfMaterials'); else local_onload();}} catch(err) {};hdlTableShrink(this, 'Register_1_1');hdlTableShrink(this, 'Register_1_2');hdlTableShrink(this, 'Multiplexer_1_2');hdlTableShrink(this, 'Input_Port');hdlTableShrink(this, 'Output_Port');hdlTableShrink(this, 'Multiply_2_1');hdlTableShrink(this, 'Adder_2_1');hdlTableShrink(this, 'Adder_2_2');hdlTableShrink(this, 'Register_2_1');hdlTableShrink(this, 'Multiplexer_2_1');hdlTableShrink(this, 'Multiply_3_1');hdlTableShrink(this, 'Adder_3_1');hdlTableShrink(this, 'Adder_3_2');hdlTableShrink(this, 'Register_3_1');hdlTableShrink(this, 'Multiplexer_3_1');hdlTableShrink(this, 'Multiply_4_1');hdlTableShrink(this, 'Adder_4_1');hdlTableShrink(this, 'Adder_4_2');hdlTableShrink(this, 'Register_4_1');hdlTableShrink(this, 'Multiplexer_4_1');hdlTableShrink(this, 'Multiply_5_1');hdlTableShrink(this, 'Adder_5_1');hdlTableShrink(this, 'Adder_5_2');hdlTableShrink(this, 'Register_5_1');hdlTableShrink(this, 'Multiplexer_5_1');hdlTableShrink(this, 'Multiply_6_1');hdlTableShrink(this, 'Adder_6_1');hdlTableShrink(this, 'Adder_6_2');hdlTableShrink(this, 'Register_6_1');hdlTableShrink(this, 'Multiplexer_6_1');hdlTableShrink(this, 'Multiply_7_1');hdlTableShrink(this, 'Adder_7_1');hdlTableShrink(this, 'Adder_7_2');hdlTableShrink(this, 'Register_7_1');hdlTableShrink(this, 'Multiplexer_7_1');hdlTableShrink(this, 'Multiply_8_1');hdlTableShrink(this, 'Adder_8_1');hdlTableShrink(this, 'Adder_8_2');hdlTableShrink(this, 'Register_8_1');hdlTableShrink(this, 'Multiplexer_8_1');hdlTableShrink(this, 'Multiply_9_1');hdlTableShrink(this, 'Adder_9_1');hdlTableShrink(this, 'Adder_9_2');hdlTableShrink(this, 'Register_9_1');hdlTableShrink(this, 'Multiplexer_9_1');">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Generic Resource Report for uz_sine_generator_16bit
+</font>
+<br /><br /><br /><a name="Summary">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary
+</b>
+
+</font>
+
+</a>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Multipliers
+</td>
+<td align="center" valign="top" style="border-style: none">
+48
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Adders/Subtractors
+</td>
+<td align="center" valign="top" style="border-style: none">
+577
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+810
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Total 1-Bit Registers
+</td>
+<td align="center" valign="top" style="border-style: none">
+22705
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+RAMs
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Multiplexers
+</td>
+<td align="center" valign="top" style="border-style: none">
+811
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+I/O Bits
+</td>
+<td align="center" valign="top" style="border-style: none">
+775
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+Static Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+152
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+Dynamic Shift operators
+</td>
+<td align="center" valign="top" style="border-style: none">
+0
+</td>
+
+</tr>
+
+</table>
+<br /><br /><a name="Detailed Report">
+<font size="+1" color="#000066">
+<b class="midprod">
+Detailed Report
+</b>
+
+</font>
+
+</a>
+<br /><br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:7')" name="code2model" class="code2model">
+uz_sine_generator_16bit 
+</a>
+
+</h5>
+<h5>
+Adders/Subtractors (1)
+</h5>
+<span style="font-family:monospace">
+8x8-bit Adder 							: 1
+</span>
+<br /><h5>
+Registers (18)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+8-bit Register 							: 1
+</span>
+<span name="Register_1_1" id="Register_1_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:528')" name="code2model" class="code2model">
+HDL Counter1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit Register 							: 17
+</span>
+<span name="Register_1_2" id="Register_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:732')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Multiplexers (3)
+</h5>
+<span style="font-family:monospace">
+8-bit 2-to-1 Multiplexer 							: 2
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_1_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 1
+</span>
+<span name="Multiplexer_1_2" id="Multiplexer_1_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:508')" name="code2model" class="code2model">
+Compare To Zero
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><h5>
+Number of I/O Bits (775)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Input_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Input Bits: 645
+</span>
+<span name="Input_Port" id="Input_Port">
+<ul class="SystemdefinedCollapse" id="2fbfcfcd-4263-42bc-9139-3825779ac61b" dataCollapse="off">
+<li>
+clk: 1 bit
+</li>
+<li>
+reset_x: 1 bit
+</li>
+<li>
+clk_enable: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:551')" name="code2model" class="code2model">
+amplitude_1
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:728')" name="code2model" class="code2model">
+phase_shift_1
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:729')" name="code2model" class="code2model">
+frequency_1
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:730')" name="code2model" class="code2model">
+enable_sine
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:731')" name="code2model" class="code2model">
+reset_sine
+</a>
+: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:733')" name="code2model" class="code2model">
+amplitude_2
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:734')" name="code2model" class="code2model">
+phase_shift_2
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:735')" name="code2model" class="code2model">
+frequency_2
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:762')" name="code2model" class="code2model">
+amplitude_3
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:763')" name="code2model" class="code2model">
+phase_shift_3
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:764')" name="code2model" class="code2model">
+frequency_3
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:791')" name="code2model" class="code2model">
+amplitude_4
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:792')" name="code2model" class="code2model">
+phase_shift_4
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:793')" name="code2model" class="code2model">
+frequency_4
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:820')" name="code2model" class="code2model">
+amplitude_5
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:821')" name="code2model" class="code2model">
+phase_shift_5
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:822')" name="code2model" class="code2model">
+frequency_5
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:849')" name="code2model" class="code2model">
+amplitude_6
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:850')" name="code2model" class="code2model">
+phase_shift_6
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:851')" name="code2model" class="code2model">
+frequency_6
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:878')" name="code2model" class="code2model">
+amplitude_7
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:879')" name="code2model" class="code2model">
+phase_shift_7
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:880')" name="code2model" class="code2model">
+frequency_7
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:907')" name="code2model" class="code2model">
+amplitude_8
+</a>
+: 32 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:908')" name="code2model" class="code2model">
+phase_shift_8
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:909')" name="code2model" class="code2model">
+frequency_8
+</a>
+: 32 bits
+</li>
+
+</ul>
+<span class="SDCollapseControl" onclick="collapseSD(this, '2fbfcfcd-4263-42bc-9139-3825779ac61b')" onmouseover="this.style.cursor = 'pointer'">
+&#8743; Less
+</span>
+<br />
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Output_Port')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+Number of Output Bits: 130
+</span>
+<span name="Output_Port" id="Output_Port">
+<ul>
+<li>
+ce_out: 1 bit
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:10')" name="code2model" class="code2model">
+data_out_1
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:761')" name="code2model" class="code2model">
+data_out_2
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:790')" name="code2model" class="code2model">
+data_out_3
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:819')" name="code2model" class="code2model">
+data_out_4
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:848')" name="code2model" class="code2model">
+data_out_5
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:877')" name="code2model" class="code2model">
+data_out_6
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:906')" name="code2model" class="code2model">
+data_out_7
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:935')" name="code2model" class="code2model">
+data_out_8
+</a>
+: 16 bits
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:936')" name="code2model" class="code2model">
+cnv_trigger
+</a>
+: 1 bit
+</li>
+
+</ul>
+
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1491')" name="code2model" class="code2model">
+sine_gen_8
+</a>
+
+</h5>
+<h5>
+Multipliers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 4
+</span>
+<span name="Multiply_2_1" id="Multiply_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1513')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1508')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1514')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1511')" name="code2model" class="code2model">
+Multiply
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+33x40-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3x51-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (72)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 35
+</span>
+<span name="Adder_2_1" id="Adder_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1517')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_2_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<span name="Adder_2_2" id="Adder_2_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1516')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+54x54-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><h5>
+Registers (99)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 65
+</span>
+<span name="Register_2_1" id="Register_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1509')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1502')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1501')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1505')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (101)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_2_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 40
+</span>
+<span name="Multiplexer_2_1" id="Multiplexer_2_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1515')" name="code2model" class="code2model">
+Reciprocal1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (19)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 19
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1274')" name="code2model" class="code2model">
+sine_gen_7
+</a>
+
+</h5>
+<h5>
+Multipliers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 4
+</span>
+<span name="Multiply_3_1" id="Multiply_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1290')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1285')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1291')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1288')" name="code2model" class="code2model">
+Multiply
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+33x40-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3x51-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (72)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 35
+</span>
+<span name="Adder_3_1" id="Adder_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1294')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_3_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<span name="Adder_3_2" id="Adder_3_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1293')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+54x54-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><h5>
+Registers (99)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 65
+</span>
+<span name="Register_3_1" id="Register_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1286')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1300')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1299')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1303')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (101)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_3_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 40
+</span>
+<span name="Multiplexer_3_1" id="Multiplexer_3_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1292')" name="code2model" class="code2model">
+Reciprocal1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (19)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 19
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1460')" name="code2model" class="code2model">
+sine_gen_6
+</a>
+
+</h5>
+<h5>
+Multipliers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 4
+</span>
+<span name="Multiply_4_1" id="Multiply_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1482')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1477')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1483')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1480')" name="code2model" class="code2model">
+Multiply
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+33x40-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3x51-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (72)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 35
+</span>
+<span name="Adder_4_1" id="Adder_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1486')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_4_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<span name="Adder_4_2" id="Adder_4_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1485')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+54x54-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><h5>
+Registers (99)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 65
+</span>
+<span name="Register_4_1" id="Register_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1478')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1471')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1470')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1474')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (101)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_4_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 40
+</span>
+<span name="Multiplexer_4_1" id="Multiplexer_4_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1484')" name="code2model" class="code2model">
+Reciprocal1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (19)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 19
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1429')" name="code2model" class="code2model">
+sine_gen_5
+</a>
+
+</h5>
+<h5>
+Multipliers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 4
+</span>
+<span name="Multiply_5_1" id="Multiply_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1451')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1446')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1452')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1449')" name="code2model" class="code2model">
+Multiply
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+33x40-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3x51-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (72)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 35
+</span>
+<span name="Adder_5_1" id="Adder_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1455')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_5_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<span name="Adder_5_2" id="Adder_5_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1454')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+54x54-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><h5>
+Registers (99)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 65
+</span>
+<span name="Register_5_1" id="Register_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1447')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1440')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1439')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1443')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (101)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_5_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 40
+</span>
+<span name="Multiplexer_5_1" id="Multiplexer_5_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1453')" name="code2model" class="code2model">
+Reciprocal1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (19)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 19
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1398')" name="code2model" class="code2model">
+sine_gen_4
+</a>
+
+</h5>
+<h5>
+Multipliers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 4
+</span>
+<span name="Multiply_6_1" id="Multiply_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1420')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1415')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1421')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1418')" name="code2model" class="code2model">
+Multiply
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+33x40-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3x51-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (72)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 35
+</span>
+<span name="Adder_6_1" id="Adder_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1424')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_6_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<span name="Adder_6_2" id="Adder_6_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1423')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+54x54-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><h5>
+Registers (99)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 65
+</span>
+<span name="Register_6_1" id="Register_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1416')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1409')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1408')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1412')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (101)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_6_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 40
+</span>
+<span name="Multiplexer_6_1" id="Multiplexer_6_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1422')" name="code2model" class="code2model">
+Reciprocal1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (19)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 19
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1367')" name="code2model" class="code2model">
+sine_gen_3
+</a>
+
+</h5>
+<h5>
+Multipliers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 4
+</span>
+<span name="Multiply_7_1" id="Multiply_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1389')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1384')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1390')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1387')" name="code2model" class="code2model">
+Multiply
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+33x40-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3x51-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (72)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 35
+</span>
+<span name="Adder_7_1" id="Adder_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1393')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_7_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<span name="Adder_7_2" id="Adder_7_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1392')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+54x54-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><h5>
+Registers (99)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 65
+</span>
+<span name="Register_7_1" id="Register_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1385')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1378')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1377')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1381')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (101)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_7_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 40
+</span>
+<span name="Multiplexer_7_1" id="Multiplexer_7_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1391')" name="code2model" class="code2model">
+Reciprocal1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (19)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 19
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1336')" name="code2model" class="code2model">
+sine_gen_2
+</a>
+
+</h5>
+<h5>
+Multipliers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 4
+</span>
+<span name="Multiply_8_1" id="Multiply_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1358')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1353')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1359')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1356')" name="code2model" class="code2model">
+Multiply
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+33x40-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3x51-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (72)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 35
+</span>
+<span name="Adder_8_1" id="Adder_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1362')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_8_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<span name="Adder_8_2" id="Adder_8_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1361')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+54x54-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><h5>
+Registers (99)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 65
+</span>
+<span name="Register_8_1" id="Register_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1354')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1347')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1346')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1350')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (101)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_8_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 40
+</span>
+<span name="Multiplexer_8_1" id="Multiplexer_8_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1360')" name="code2model" class="code2model">
+Reciprocal1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (19)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 19
+</span>
+<br /><p><hr /></p><h5>
+Report for Subsystem:    <a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1305')" name="code2model" class="code2model">
+sine_gen_1
+</a>
+
+</h5>
+<h5>
+Multipliers (6)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiply_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Multiply 							: 4
+</span>
+<span name="Multiply_9_1" id="Multiply_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1327')" name="code2model" class="code2model">
+Product
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1322')" name="code2model" class="code2model">
+Gain
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1328')" name="code2model" class="code2model">
+Product1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1325')" name="code2model" class="code2model">
+Multiply
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+33x40-bit Multiply 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3x51-bit Multiply 							: 1
+</span>
+<br /><h5>
+Adders/Subtractors (72)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32x32-bit Adder 							: 35
+</span>
+<span name="Adder_9_1" id="Adder_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1331')" name="code2model" class="code2model">
+Sum1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Adder_9_2')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+33x33-bit Adder 							: 1
+</span>
+<span name="Adder_9_2" id="Adder_9_2">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1330')" name="code2model" class="code2model">
+Sum
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+54x54-bit Subtractor 							: 1
+</span>
+<br /><span style="font-family:monospace">
+33-bit Subtractor 							: 2
+</span>
+<br /><span style="font-family:monospace">
+32x32-bit Subtractor 							: 33
+</span>
+<br /><h5>
+Registers (99)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Register_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit Register 							: 65
+</span>
+<span name="Register_9_1" id="Register_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1323')" name="code2model" class="code2model">
+HDL Counter
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1316')" name="code2model" class="code2model">
+Delay1
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1315')" name="code2model" class="code2model">
+Delay
+</a>
+
+</li>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1319')" name="code2model" class="code2model">
+Delay4
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+16-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+33-bit Register 							: 10
+</span>
+<br /><span style="font-family:monospace">
+39-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+72-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+3-bit Register 							: 2
+</span>
+<br /><span style="font-family:monospace">
+53-bit Register 							: 3
+</span>
+<br /><span style="font-family:monospace">
+50-bit Register 							: 1
+</span>
+<br /><span style="font-family:monospace">
+1-bit Register 							: 12
+</span>
+<br /><h5>
+Multiplexers (101)
+</h5>
+<span name="collapsible" id="collapsible" style="font-family:monospace" onclick="hdlTableShrink(this, 'Multiplexer_9_1')" onmouseover="this.style.cursor = 'pointer'">
+[+]
+</span>
+<span style="font-family:monospace">
+32-bit 2-to-1 Multiplexer 							: 40
+</span>
+<span name="Multiplexer_9_1" id="Multiplexer_9_1">
+<ul>
+<li>
+<a href="matlab:coder.internal.code2model('uz_sine_generator_16bit:1329')" name="code2model" class="code2model">
+Reciprocal1
+</a>
+
+</li>
+
+</ul>
+
+</span>
+<br /><span style="font-family:monospace">
+1-bit 2-to-1 Multiplexer 							: 60
+</span>
+<br /><span style="font-family:monospace">
+39-bit 2-to-1 Multiplexer 							: 1
+</span>
+<br /><h5>
+Number of Shift operators (19)
+</h5>
+<span style="font-family:monospace">
+Static Shift Right 							: 19
+</span>
+<br /><p><hr /></p>
+</body>
+
+</html>

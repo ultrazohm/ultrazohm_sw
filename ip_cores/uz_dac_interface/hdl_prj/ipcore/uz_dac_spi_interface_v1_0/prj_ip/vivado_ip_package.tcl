@@ -5,6 +5,7 @@ set_property ip_repo_paths {../../} [current_fileset]
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_uz_dac_spi_interface_tc.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_Detect_Rise_Positive.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_Detect_Rise_Positive1.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_Detect_Rise_Positive2.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_Subsystem.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_Subsystem1.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_Subsystem2.vhd}
@@ -13,6 +14,15 @@ add_files -norecurse {../hdl/uz_dac_spi_interface_src_Subsystem4.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_Subsystem5.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_Subsystem6.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_Subsystem7.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_keep_high.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_shadow_register.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_shadow_register1.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_shadow_register2.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_shadow_register3.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_shadow_register4.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_shadow_register5.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_shadow_register6.vhd}
+add_files -norecurse {../hdl/uz_dac_spi_interface_src_shadow_register7.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_src_uz_dac_spi_interface.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_reset_sync.vhd}
 add_files -norecurse {../hdl/uz_dac_spi_interface_dut.vhd}
@@ -44,7 +54,7 @@ foreach family $Families {append IPSupportedFamily "{$family} {Production} "}
 set_property supported_families $IPSupportedFamily [ipx::current_core]
 set_property taxonomy {{/HDL Coder Generated IP}} [ipx::current_core]
 set_property description {HDL Coder generated IP} [ipx::current_core]
-set_property core_revision 2113636407 [ipx::current_core]
+set_property core_revision 2113637873 [ipx::current_core]
 
 # Add HDL source files to IP
 ipx::add_file {hdl/uz_dac_spi_interface_src_uz_dac_spi_interface_tc.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
@@ -59,6 +69,10 @@ ipx::add_file {hdl/uz_dac_spi_interface_src_Detect_Rise_Positive1.vhd} [ipx::get
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_dac_spi_interface_src_Detect_Rise_Positive1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_Detect_Rise_Positive1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_Detect_Rise_Positive2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_Detect_Rise_Positive2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_dac_spi_interface_src_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_Subsystem.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_dac_spi_interface_src_Subsystem.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
@@ -91,6 +105,42 @@ ipx::add_file {hdl/uz_dac_spi_interface_src_Subsystem7.vhd} [ipx::get_file_group
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_Subsystem7.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_dac_spi_interface_src_Subsystem7.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_Subsystem7.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_keep_high.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_keep_high.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_keep_high.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_keep_high.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register1.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register1.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register1.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register2.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register2.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register2.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register3.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register3.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register3.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register4.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register4.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register4.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register5.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register5.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register5.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register5.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register6.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register6.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register6.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register6.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register7.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register7.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
+ipx::add_file {hdl/uz_dac_spi_interface_src_shadow_register7.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]
+set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_shadow_register7.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_dac_spi_interface_src_uz_dac_spi_interface.vhd} [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]
 set_property type {{vhdlSource}} [ipx::get_files {hdl/uz_dac_spi_interface_src_uz_dac_spi_interface.vhd} -of_objects [ipx::get_file_groups xilinx_anylanguagesynthesis -of_objects [ipx::current_core]]]
 ipx::add_file {hdl/uz_dac_spi_interface_src_uz_dac_spi_interface.vhd} [ipx::get_file_groups xilinx_anylanguagebehavioralsimulation -of_objects [ipx::current_core]]

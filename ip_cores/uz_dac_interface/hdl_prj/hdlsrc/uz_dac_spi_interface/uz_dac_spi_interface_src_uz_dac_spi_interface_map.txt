@@ -1,6 +1,7 @@
 uz_dac_spi_interface_tc --> uz_dac_spi_interface_src_uz_dac_spi_interface_tc
 uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive --> uz_dac_spi_interface_src_Detect_Rise_Positive
 uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive1 --> uz_dac_spi_interface_src_Detect_Rise_Positive1
+uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive2 --> uz_dac_spi_interface_src_Detect_Rise_Positive2
 uz_dac_spi_interface/uz_dac_spi_interface/Subsystem --> uz_dac_spi_interface_src_Subsystem
 uz_dac_spi_interface/uz_dac_spi_interface/Subsystem1 --> uz_dac_spi_interface_src_Subsystem1
 uz_dac_spi_interface/uz_dac_spi_interface/Subsystem2 --> uz_dac_spi_interface_src_Subsystem2
@@ -9,4 +10,13 @@ uz_dac_spi_interface/uz_dac_spi_interface/Subsystem4 --> uz_dac_spi_interface_sr
 uz_dac_spi_interface/uz_dac_spi_interface/Subsystem5 --> uz_dac_spi_interface_src_Subsystem5
 uz_dac_spi_interface/uz_dac_spi_interface/Subsystem6 --> uz_dac_spi_interface_src_Subsystem6
 uz_dac_spi_interface/uz_dac_spi_interface/Subsystem7 --> uz_dac_spi_interface_src_Subsystem7
+uz_dac_spi_interface/uz_dac_spi_interface/keep_high --> uz_dac_spi_interface_src_keep_high
+uz_dac_spi_interface/uz_dac_spi_interface/shadow_register --> uz_dac_spi_interface_src_shadow_register
+uz_dac_spi_interface/uz_dac_spi_interface/shadow_register1 --> uz_dac_spi_interface_src_shadow_register1
+uz_dac_spi_interface/uz_dac_spi_interface/shadow_register2 --> uz_dac_spi_interface_src_shadow_register2
+uz_dac_spi_interface/uz_dac_spi_interface/shadow_register3 --> uz_dac_spi_interface_src_shadow_register3
+uz_dac_spi_interface/uz_dac_spi_interface/shadow_register4 --> uz_dac_spi_interface_src_shadow_register4
+uz_dac_spi_interface/uz_dac_spi_interface/shadow_register5 --> uz_dac_spi_interface_src_shadow_register5
+uz_dac_spi_interface/uz_dac_spi_interface/shadow_register6 --> uz_dac_spi_interface_src_shadow_register6
+uz_dac_spi_interface/uz_dac_spi_interface/shadow_register7 --> uz_dac_spi_interface_src_shadow_register7
 uz_dac_spi_interface/uz_dac_spi_interface --> uz_dac_spi_interface_src_uz_dac_spi_interface

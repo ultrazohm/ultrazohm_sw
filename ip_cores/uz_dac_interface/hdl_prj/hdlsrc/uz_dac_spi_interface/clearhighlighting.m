@@ -1,7 +1,11 @@
 SLStudio.Utils.RemoveHighlighting(get_param('uz_dac_spi_interface', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_dac_spi_interface', 'handle'));
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Delay10', 0, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Rate Transition2', 1, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive1', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive2', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/keep_high', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/shadow_register', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Delay9', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Rate Transition1', 1, 1, '');
 annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D', 1, 1, '');
 annotate_port('uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D', 1, 1, '');
 annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D1', 1, 1, '');
@@ -18,7 +22,10 @@ annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D6', 1, 1
 annotate_port('uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D6', 1, 1, '');
 annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D7', 1, 1, '');
 annotate_port('uz_dac_spi_interface/uz_dac_spi_interface/Serializer1D7', 1, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/OR', 0, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/OR1', 0, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/OR3', 0, 1, '');
-annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/OR4', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Switch8', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive1/FixPt Relational Operator', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive1/Positive', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive2/FixPt Relational Operator', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/Detect Rise Positive2/Positive', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/keep_high/Switch17', 0, 1, '');
+annotate_port('gm_uz_dac_spi_interface/uz_dac_spi_interface/shadow_register/Switch17', 0, 1, '');

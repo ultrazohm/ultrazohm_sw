@@ -1,6 +1,6 @@
 %--------------------------------------------------------------------------
 % HDL Workflow Script
-% Generated with MATLAB 9.14 (R2023a) at 11:20:52 on 08/07/2024
+% Generated with MATLAB 9.14 (R2023a) at 18:33:26 on 08/07/2024
 % This script was generated using the following parameter values:
 %     Filename  : '/home/ts/Documents/ultrazohm_sw/ip_cores/uz_dac_interface/hdlworkflow.m'
 %     Overwrite : true
@@ -19,7 +19,10 @@ load_system('uz_dac_spi_interface');
 
 %% Model HDL Parameters
 %% Set Model 'uz_dac_spi_interface' HDL parameters
+hdlset_param('uz_dac_spi_interface', 'BalanceDelaysForTunableParam', 'off');
+hdlset_param('uz_dac_spi_interface', 'ClockRatePipelining', 'off');
 hdlset_param('uz_dac_spi_interface', 'CriticalPathEstimation', 'on');
+hdlset_param('uz_dac_spi_interface', 'GenDUTPortForTunableParam', 'off');
 hdlset_param('uz_dac_spi_interface', 'HDLSubsystem', 'uz_dac_spi_interface/uz_dac_spi_interface');
 hdlset_param('uz_dac_spi_interface', 'OptimizationReport', 'on');
 hdlset_param('uz_dac_spi_interface', 'ResetInputPort', 'reset_x');
@@ -31,7 +34,6 @@ hdlset_param('uz_dac_spi_interface', 'SynthesisToolDeviceName', 'xazu11eg-ffvf15
 hdlset_param('uz_dac_spi_interface', 'SynthesisToolPackageName', '');
 hdlset_param('uz_dac_spi_interface', 'SynthesisToolSpeedValue', '');
 hdlset_param('uz_dac_spi_interface', 'TargetDirectory', 'hdl_prj/hdlsrc');
-hdlset_param('uz_dac_spi_interface', 'TargetFrequency', 100);
 hdlset_param('uz_dac_spi_interface', 'TargetPlatform', 'Generic Xilinx Platform');
 hdlset_param('uz_dac_spi_interface', 'Workflow', 'IP Core Generation');
 

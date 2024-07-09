@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 04:59:54 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Tue Jul  9 16:13:02 2024
+# Process ID: 3022953
+# Current directory: /home/ts/Documents/ultrazohm_sw/ip_cores/uz_sine_generator_16bit/hdl_prj/ipcore/uz_sine_generator_16bit_v1_0/prj_ip
+# Command line: vivado -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: /home/ts/Documents/ultrazohm_sw/ip_cores/uz_sine_generator_16bit/hdl_prj/ipcore/uz_sine_generator_16bit_v1_0/prj_ip/vivado.log
+# Journal file: /home/ts/Documents/ultrazohm_sw/ip_cores/uz_sine_generator_16bit/hdl_prj/ipcore/uz_sine_generator_16bit_v1_0/prj_ip/vivado.jou
+# Running On: TS-WS, OS: Linux, CPU Frequency: 3500.000 MHz, CPU Physical cores: 32, Host memory: 67357 MB
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

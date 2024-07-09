@@ -112,7 +112,6 @@
       "uz_user": {
         "smartconnect_1": "",
         "uz_axi_testIP_0": "",
-        "uz_dac_spi_interface_0": "",
         "util_ds_buf_0": "",
         "util_ds_buf_1": "",
         "util_ds_buf_2": "",
@@ -122,7 +121,9 @@
         "util_ds_buf_6": "",
         "util_ds_buf_7": "",
         "util_ds_buf_8": "",
-        "util_ds_buf_9": ""
+        "util_ds_buf_9": "",
+        "uz_dac_spi_interface_0": "",
+        "vio_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5593,6 +5594,9 @@
             "direction": "O",
             "left": "0",
             "right": "0"
+          },
+          "trigger_write_pl": {
+            "direction": "I"
           }
         },
         "components": {
@@ -5697,12 +5701,6 @@
             "xci_path": "ip/zusys_uz_axi_testIP_0_0/zusys_uz_axi_testIP_0_0.xci",
             "inst_hier_path": "uz_user/uz_axi_testIP_0"
           },
-          "uz_dac_spi_interface_0": {
-            "vlnv": "user.org:ip:uz_dac_spi_interface:1.0",
-            "xci_name": "zusys_uz_dac_spi_interface_0_0",
-            "xci_path": "ip/zusys_uz_dac_spi_interface_0_0/zusys_uz_dac_spi_interface_0_0.xci",
-            "inst_hier_path": "uz_user/uz_dac_spi_interface_0"
-          },
           "util_ds_buf_0": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
             "xci_name": "zusys_util_ds_buf_0_0",
@@ -5716,8 +5714,8 @@
           },
           "util_ds_buf_1": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "xci_name": "zusys_util_ds_buf_0_1",
-            "xci_path": "ip/zusys_util_ds_buf_0_1/zusys_util_ds_buf_0_1.xci",
+            "xci_name": "zusys_util_ds_buf_1_0",
+            "xci_path": "ip/zusys_util_ds_buf_1_0_1/zusys_util_ds_buf_1_0.xci",
             "inst_hier_path": "uz_user/util_ds_buf_1",
             "parameters": {
               "C_BUF_TYPE": {
@@ -5727,8 +5725,8 @@
           },
           "util_ds_buf_2": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "xci_name": "zusys_util_ds_buf_0_3",
-            "xci_path": "ip/zusys_util_ds_buf_0_3/zusys_util_ds_buf_0_3.xci",
+            "xci_name": "zusys_util_ds_buf_2_0",
+            "xci_path": "ip/zusys_util_ds_buf_2_0_1/zusys_util_ds_buf_2_0.xci",
             "inst_hier_path": "uz_user/util_ds_buf_2",
             "parameters": {
               "C_BUF_TYPE": {
@@ -5738,8 +5736,8 @@
           },
           "util_ds_buf_3": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "xci_name": "zusys_util_ds_buf_0_4",
-            "xci_path": "ip/zusys_util_ds_buf_0_4/zusys_util_ds_buf_0_4.xci",
+            "xci_name": "zusys_util_ds_buf_3_1",
+            "xci_path": "ip/zusys_util_ds_buf_3_1/zusys_util_ds_buf_3_1.xci",
             "inst_hier_path": "uz_user/util_ds_buf_3",
             "parameters": {
               "C_BUF_TYPE": {
@@ -5771,8 +5769,8 @@
           },
           "util_ds_buf_6": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "xci_name": "zusys_util_ds_buf_4_1",
-            "xci_path": "ip/zusys_util_ds_buf_4_1/zusys_util_ds_buf_4_1.xci",
+            "xci_name": "zusys_util_ds_buf_6_0",
+            "xci_path": "ip/zusys_util_ds_buf_6_0_1/zusys_util_ds_buf_6_0.xci",
             "inst_hier_path": "uz_user/util_ds_buf_6",
             "parameters": {
               "C_BUF_TYPE": {
@@ -5782,8 +5780,8 @@
           },
           "util_ds_buf_7": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "xci_name": "zusys_util_ds_buf_4_2",
-            "xci_path": "ip/zusys_util_ds_buf_4_2/zusys_util_ds_buf_4_2.xci",
+            "xci_name": "zusys_util_ds_buf_7_0",
+            "xci_path": "ip/zusys_util_ds_buf_7_0_1/zusys_util_ds_buf_7_0.xci",
             "inst_hier_path": "uz_user/util_ds_buf_7",
             "parameters": {
               "C_BUF_TYPE": {
@@ -5793,8 +5791,8 @@
           },
           "util_ds_buf_8": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "xci_name": "zusys_util_ds_buf_4_3",
-            "xci_path": "ip/zusys_util_ds_buf_4_3/zusys_util_ds_buf_4_3.xci",
+            "xci_name": "zusys_util_ds_buf_8_0",
+            "xci_path": "ip/zusys_util_ds_buf_8_0_1/zusys_util_ds_buf_8_0.xci",
             "inst_hier_path": "uz_user/util_ds_buf_8",
             "parameters": {
               "C_BUF_TYPE": {
@@ -5804,12 +5802,56 @@
           },
           "util_ds_buf_9": {
             "vlnv": "xilinx.com:ip:util_ds_buf:2.2",
-            "xci_name": "zusys_util_ds_buf_4_4",
-            "xci_path": "ip/zusys_util_ds_buf_4_4/zusys_util_ds_buf_4_4.xci",
+            "xci_name": "zusys_util_ds_buf_9_0",
+            "xci_path": "ip/zusys_util_ds_buf_9_0_1/zusys_util_ds_buf_9_0.xci",
             "inst_hier_path": "uz_user/util_ds_buf_9",
             "parameters": {
               "C_BUF_TYPE": {
                 "value": "OBUFDS"
+              }
+            }
+          },
+          "uz_dac_spi_interface_0": {
+            "vlnv": "user.org:ip:uz_dac_spi_interface:1.0",
+            "xci_name": "zusys_uz_dac_spi_interface_0_0",
+            "xci_path": "ip/zusys_uz_dac_spi_interface_0_0/zusys_uz_dac_spi_interface_0_0.xci",
+            "inst_hier_path": "uz_user/uz_dac_spi_interface_0"
+          },
+          "vio_0": {
+            "vlnv": "xilinx.com:ip:vio:3.0",
+            "xci_name": "zusys_vio_0_0",
+            "xci_path": "ip/zusys_vio_0_0/zusys_vio_0_0.xci",
+            "inst_hier_path": "uz_user/vio_0",
+            "parameters": {
+              "C_NUM_PROBE_IN": {
+                "value": "0"
+              },
+              "C_NUM_PROBE_OUT": {
+                "value": "9"
+              },
+              "C_PROBE_OUT0_WIDTH": {
+                "value": "16"
+              },
+              "C_PROBE_OUT1_WIDTH": {
+                "value": "16"
+              },
+              "C_PROBE_OUT2_WIDTH": {
+                "value": "16"
+              },
+              "C_PROBE_OUT3_WIDTH": {
+                "value": "16"
+              },
+              "C_PROBE_OUT4_WIDTH": {
+                "value": "16"
+              },
+              "C_PROBE_OUT5_WIDTH": {
+                "value": "16"
+              },
+              "C_PROBE_OUT6_WIDTH": {
+                "value": "16"
+              },
+              "C_PROBE_OUT7_WIDTH": {
+                "value": "16"
               }
             }
           }
@@ -5841,8 +5883,14 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "uz_dac_spi_interface_0/AXI4_ARESETN",
-              "uz_dac_spi_interface_0/IPCORE_RESETN"
+              "uz_dac_spi_interface_0/IPCORE_RESETN",
+              "uz_dac_spi_interface_0/AXI4_ARESETN"
+            ]
+          },
+          "trigger_write_pl_1": {
+            "ports": [
+              "trigger_write_pl",
+              "uz_dac_spi_interface_0/trigger_write_pl"
             ]
           },
           "util_ds_buf_0_OBUF_DS_N": {
@@ -6025,6 +6073,60 @@
               "util_ds_buf_0/OBUF_IN"
             ]
           },
+          "vio_0_probe_out0": {
+            "ports": [
+              "vio_0/probe_out0",
+              "uz_dac_spi_interface_0/dac_data_1_pl"
+            ]
+          },
+          "vio_0_probe_out1": {
+            "ports": [
+              "vio_0/probe_out1",
+              "uz_dac_spi_interface_0/dac_data_2_pl"
+            ]
+          },
+          "vio_0_probe_out2": {
+            "ports": [
+              "vio_0/probe_out2",
+              "uz_dac_spi_interface_0/dac_data_3_pl"
+            ]
+          },
+          "vio_0_probe_out3": {
+            "ports": [
+              "vio_0/probe_out3",
+              "uz_dac_spi_interface_0/dac_data_4_pl"
+            ]
+          },
+          "vio_0_probe_out4": {
+            "ports": [
+              "vio_0/probe_out4",
+              "uz_dac_spi_interface_0/dac_data_5_pl"
+            ]
+          },
+          "vio_0_probe_out5": {
+            "ports": [
+              "vio_0/probe_out5",
+              "uz_dac_spi_interface_0/dac_data_6_pl"
+            ]
+          },
+          "vio_0_probe_out6": {
+            "ports": [
+              "vio_0/probe_out6",
+              "uz_dac_spi_interface_0/dac_data_7_pl"
+            ]
+          },
+          "vio_0_probe_out7": {
+            "ports": [
+              "vio_0/probe_out7",
+              "uz_dac_spi_interface_0/dac_data_8_pl"
+            ]
+          },
+          "vio_0_probe_out8": {
+            "ports": [
+              "vio_0/probe_out8",
+              "uz_dac_spi_interface_0/reset_dac_output_pl"
+            ]
+          },
           "zynq_ultra_ps_e_0_pl_clk1": {
             "ports": [
               "aclk",
@@ -6032,7 +6134,8 @@
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
               "uz_dac_spi_interface_0/IPCORE_CLK",
-              "uz_dac_spi_interface_0/AXI4_ACLK"
+              "uz_dac_spi_interface_0/AXI4_ACLK",
+              "vio_0/clk"
             ]
           }
         }
@@ -7222,7 +7325,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__ACT_FREQMHZ": {
-            "value": "250.000000"
+            "value": "250"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__FREQMHZ": {
             "value": "250"
@@ -8149,16 +8252,16 @@
             "value": "100.000000"
           },
           "PSU__IOU_SLCR__TTC1__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC1__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC3__ACT_FREQMHZ": {
             "value": "100.000000"
@@ -9222,7 +9325,8 @@
       "A1_adapter_probe4": {
         "ports": [
           "uz_analog_adapter/probe4",
-          "uz_system/Trigger_AXI2TCM"
+          "uz_system/Trigger_AXI2TCM",
+          "uz_user/trigger_write_pl"
         ]
       },
       "A2_IN_1": {

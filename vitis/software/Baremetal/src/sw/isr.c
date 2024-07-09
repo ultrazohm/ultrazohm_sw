@@ -48,7 +48,7 @@ extern uz_dac_interface_t* dac_instance;
 //----------------------------------------------------
 static void ReadAllADC();
 #include "../uz/uz_wavegen/uz_wavegen.h"
-bool use_pl=false;
+bool use_axi=true;
 float reset_value=0.0f;
 
     void
@@ -62,10 +62,12 @@ float reset_value=0.0f;
     float amplitude = 5.0f;
     float frequency_Hz = 50.0f;
     float output = uz_wavegen_sawtooth(amplitude, frequency_Hz);
-    uz_dac_interface_use_axi_inputs(dac_instance,use_pl);
+    uz_dac_interface_use_axi_inputs(dac_instance,use_axi);
     uz_dac_interface_set_reset_value(dac_instance,reset_value);
      if (current_state == control_state)
     {
+         uz_dac_interface_reset(dac_instance,false);
+
     }else{
         uz_dac_interface_reset(dac_instance,true);
     }

@@ -38,6 +38,8 @@ However, supplying out of range values does not trigger an assertion to be able 
     struct uz_dac_interface_config_t dac_config={
         .base_address=XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR, // Depends on xparameters.h!
         .ip_clk_frequency_Hz=100000000,
+        .reset_value = 0.0f,
+        .use_axi_inputs = true,
         .gain={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
     };
     uz_dac_interface_t* dac_instance=uz_dac_interface_init(dac_config);
@@ -72,7 +74,7 @@ Driver reference
 .. doxygenfunction:: uz_dac_interface_set_ouput_values
 
 .. doxygenfunction:: uz_dac_interface_set_reset_value
-    
+
 .. doxygenfunction:: uz_dac_interface_reset
 
 .. doxygenfunction:: uz_dac_interface_use_axi_inputs

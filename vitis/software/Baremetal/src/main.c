@@ -55,12 +55,13 @@ enum init_chain initialization_chain = init_assertions;
 
 #include "IP_Cores/uz_dac_interface/uz_dac_interface.h"
 #include "xparameters.h"
+#include "IP_Cores/uz_uz_sine_generator_16bit/uz_sine_generator_16bit.h"
 
 struct uz_dac_interface_config_t dac_config={
     .base_address=XPAR_UZ_USER_UZ_DAC_SPI_INTERFACE_0_BASEADDR, // Depends on xparameters.h!
     .ip_clk_frequency_Hz=100000000,
     .reset_value=0.0f,
-    .use_axi_inputs=false,
+    .use_axi_inputs=true,
     .gain={2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f,2.0f}
 };
 
@@ -102,6 +103,15 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            struct uz_sine_generator_16bit_config_t config =
+                {
+                    .base_address = XPAR_UZ_USER_UZ_SINE_GENERATOR_16_0_BASEADDR,
+                    .ip_clk_frequency_Hz = 100000000,
+                    .amplitude = {1, 1.1, 1.2, 1.3, 1.4, 1.4, 1.5, 1.6},
+                    .phase = {0, 0, 0, 0, 0, 0, 0, 0},
+                    .frequency = {10000, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000, 10000000}};
+
+            uz_sine_generator_16bit_t *test=uz_sine_generator_16bit_init(config);
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             dac_instance=uz_dac_interface_init(dac_config);

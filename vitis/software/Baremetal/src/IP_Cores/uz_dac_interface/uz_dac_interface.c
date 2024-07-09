@@ -40,7 +40,7 @@ uz_dac_interface_t *uz_dac_interface_init(struct uz_dac_interface_config_t confi
     self->config = config;
     uz_dac_interface_set_reset_value(self, config.reset_value);
     uz_dac_interface_reset(self, false);
-    uz_dac_interface_use_axi_inputs(self,true);
+    uz_dac_interface_use_axi_inputs(self,config.use_axi_inputs);
      return (self);
 }
 
@@ -54,6 +54,9 @@ void uz_dac_interface_reset(uz_dac_interface_t *self, bool reset)
 {
     uz_assert_not_NULL(self);
     uz_dac_interface_hw_write_reset_output(self->config.base_address, reset);
+    uz_dac_interface_hw_write_trigger(self->config.base_address, false);
+    uz_dac_interface_hw_write_trigger(self->config.base_address, true);
+    uz_dac_interface_hw_write_trigger(self->config.base_address, false);
 }
 
 void uz_dac_interface_use_axi_inputs(uz_dac_interface_t *self, bool use_axi)

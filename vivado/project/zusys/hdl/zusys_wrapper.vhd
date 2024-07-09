@@ -1,8 +1,8 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (lin64) Build 3671981 Fri Oct 14 04:59:54 MDT 2022
---Date        : Sat May 25 11:46:20 2024
---Host        : ts-laptop running 64-bit Ubuntu 23.10
+--Date        : Mon Jul  8 16:38:32 2024
+--Host        : TS-WS running 64-bit Ubuntu 22.04.4 LTS
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist

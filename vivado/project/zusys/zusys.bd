@@ -122,8 +122,9 @@
         "util_ds_buf_7": "",
         "util_ds_buf_8": "",
         "util_ds_buf_9": "",
+        "vio_0": "",
         "uz_dac_spi_interface_0": "",
-        "vio_0": ""
+        "uz_sine_generator_16_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5594,9 +5595,6 @@
             "direction": "O",
             "left": "0",
             "right": "0"
-          },
-          "trigger_write_pl": {
-            "direction": "I"
           }
         },
         "components": {
@@ -5607,7 +5605,7 @@
             "inst_hier_path": "uz_user/smartconnect_1",
             "parameters": {
               "NUM_MI": {
-                "value": "2"
+                "value": "3"
               },
               "NUM_SI": {
                 "value": "1"
@@ -5628,7 +5626,8 @@
                 },
                 "bridges": [
                   "M00_AXI",
-                  "M01_AXI"
+                  "M01_AXI",
+                  "M02_AXI"
                 ]
               },
               "M00_AXI": {
@@ -5669,6 +5668,37 @@
                 "parameters": {
                   "MAX_BURST_LENGTH": {
                     "value": "256"
+                  },
+                  "NUM_READ_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1"
+                  },
+                  "NUM_WRITE_OUTSTANDING": {
+                    "value": "8"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  },
+                  "SUPPORTS_NARROW_BURST": {
+                    "value": "0"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0"
+                  }
+                }
+              },
+              "M02_AXI": {
+                "mode": "Master",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+                "parameters": {
+                  "MAX_BURST_LENGTH": {
+                    "value": "1"
                   },
                   "NUM_READ_OUTSTANDING": {
                     "value": "8"
@@ -5811,12 +5841,6 @@
               }
             }
           },
-          "uz_dac_spi_interface_0": {
-            "vlnv": "user.org:ip:uz_dac_spi_interface:1.0",
-            "xci_name": "zusys_uz_dac_spi_interface_0_0",
-            "xci_path": "ip/zusys_uz_dac_spi_interface_0_0/zusys_uz_dac_spi_interface_0_0.xci",
-            "inst_hier_path": "uz_user/uz_dac_spi_interface_0"
-          },
           "vio_0": {
             "vlnv": "xilinx.com:ip:vio:3.0",
             "xci_name": "zusys_vio_0_0",
@@ -5827,10 +5851,10 @@
                 "value": "0"
               },
               "C_NUM_PROBE_OUT": {
-                "value": "9"
+                "value": "1"
               },
               "C_PROBE_OUT0_WIDTH": {
-                "value": "16"
+                "value": "1"
               },
               "C_PROBE_OUT1_WIDTH": {
                 "value": "16"
@@ -5854,6 +5878,18 @@
                 "value": "16"
               }
             }
+          },
+          "uz_dac_spi_interface_0": {
+            "vlnv": "user.org:ip:uz_dac_spi_interface:1.0",
+            "xci_name": "zusys_uz_dac_spi_interface_0_0",
+            "xci_path": "ip/zusys_uz_dac_spi_interface_0_0/zusys_uz_dac_spi_interface_0_0.xci",
+            "inst_hier_path": "uz_user/uz_dac_spi_interface_0"
+          },
+          "uz_sine_generator_16_0": {
+            "vlnv": "user.org:ip:uz_sine_generator_16bit:1.0",
+            "xci_name": "zusys_uz_sine_generator_16_0_0",
+            "xci_path": "ip/zusys_uz_sine_generator_16_0_0/zusys_uz_sine_generator_16_0_0.xci",
+            "inst_hier_path": "uz_user/uz_sine_generator_16_0"
           }
         },
         "interface_nets": {
@@ -5874,6 +5910,12 @@
               "uz_dac_spi_interface_0/AXI4",
               "smartconnect_1/M01_AXI"
             ]
+          },
+          "smartconnect_1_M02_AXI": {
+            "interface_ports": [
+              "uz_sine_generator_16_0/AXI4_Lite",
+              "smartconnect_1/M02_AXI"
+            ]
           }
         },
         "nets": {
@@ -5884,13 +5926,9 @@
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
               "uz_dac_spi_interface_0/IPCORE_RESETN",
-              "uz_dac_spi_interface_0/AXI4_ARESETN"
-            ]
-          },
-          "trigger_write_pl_1": {
-            "ports": [
-              "trigger_write_pl",
-              "uz_dac_spi_interface_0/trigger_write_pl"
+              "uz_dac_spi_interface_0/AXI4_ARESETN",
+              "uz_sine_generator_16_0/IPCORE_RESETN",
+              "uz_sine_generator_16_0/AXI4_Lite_ARESETN"
             ]
           },
           "util_ds_buf_0_OBUF_DS_N": {
@@ -6073,57 +6111,63 @@
               "util_ds_buf_0/OBUF_IN"
             ]
           },
-          "vio_0_probe_out0": {
+          "uz_sine_generator_16_0_cnv_trigger": {
             "ports": [
-              "vio_0/probe_out0",
+              "uz_sine_generator_16_0/cnv_trigger",
+              "uz_dac_spi_interface_0/trigger_write_pl"
+            ]
+          },
+          "uz_sine_generator_16_0_data_out_1": {
+            "ports": [
+              "uz_sine_generator_16_0/data_out_1",
               "uz_dac_spi_interface_0/dac_data_1_pl"
             ]
           },
-          "vio_0_probe_out1": {
+          "uz_sine_generator_16_0_data_out_2": {
             "ports": [
-              "vio_0/probe_out1",
+              "uz_sine_generator_16_0/data_out_2",
               "uz_dac_spi_interface_0/dac_data_2_pl"
             ]
           },
-          "vio_0_probe_out2": {
+          "uz_sine_generator_16_0_data_out_3": {
             "ports": [
-              "vio_0/probe_out2",
+              "uz_sine_generator_16_0/data_out_3",
               "uz_dac_spi_interface_0/dac_data_3_pl"
             ]
           },
-          "vio_0_probe_out3": {
+          "uz_sine_generator_16_0_data_out_4": {
             "ports": [
-              "vio_0/probe_out3",
+              "uz_sine_generator_16_0/data_out_4",
               "uz_dac_spi_interface_0/dac_data_4_pl"
             ]
           },
-          "vio_0_probe_out4": {
+          "uz_sine_generator_16_0_data_out_5": {
             "ports": [
-              "vio_0/probe_out4",
+              "uz_sine_generator_16_0/data_out_5",
               "uz_dac_spi_interface_0/dac_data_5_pl"
             ]
           },
-          "vio_0_probe_out5": {
+          "uz_sine_generator_16_0_data_out_6": {
             "ports": [
-              "vio_0/probe_out5",
+              "uz_sine_generator_16_0/data_out_6",
               "uz_dac_spi_interface_0/dac_data_6_pl"
             ]
           },
-          "vio_0_probe_out6": {
+          "uz_sine_generator_16_0_data_out_7": {
             "ports": [
-              "vio_0/probe_out6",
+              "uz_sine_generator_16_0/data_out_7",
               "uz_dac_spi_interface_0/dac_data_7_pl"
             ]
           },
-          "vio_0_probe_out7": {
+          "uz_sine_generator_16_0_data_out_8": {
             "ports": [
-              "vio_0/probe_out7",
+              "uz_sine_generator_16_0/data_out_8",
               "uz_dac_spi_interface_0/dac_data_8_pl"
             ]
           },
           "vio_0_probe_out8": {
             "ports": [
-              "vio_0/probe_out8",
+              "vio_0/probe_out0",
               "uz_dac_spi_interface_0/reset_dac_output_pl"
             ]
           },
@@ -6133,9 +6177,11 @@
               "smartconnect_1/aclk",
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
+              "vio_0/clk",
               "uz_dac_spi_interface_0/IPCORE_CLK",
               "uz_dac_spi_interface_0/AXI4_ACLK",
-              "vio_0/clk"
+              "uz_sine_generator_16_0/IPCORE_CLK",
+              "uz_sine_generator_16_0/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -9325,8 +9371,7 @@
       "A1_adapter_probe4": {
         "ports": [
           "uz_analog_adapter/probe4",
-          "uz_system/Trigger_AXI2TCM",
-          "uz_user/trigger_write_pl"
+          "uz_system/Trigger_AXI2TCM"
         ]
       },
       "A2_IN_1": {
@@ -9775,6 +9820,11 @@
               "SEG_uz_interlockDeadtime_3_reg0": {
                 "address_block": "/uz_digital_adapter/D1_adapter/Gates/uz_interlockDeadtime_3/AXI4/reg0",
                 "offset": "0x00800A0000",
+                "range": "64K"
+              },
+              "SEG_uz_sine_generator_16_0_reg0": {
+                "address_block": "/uz_user/uz_sine_generator_16_0/AXI4_Lite/reg0",
+                "offset": "0x0080130000",
                 "range": "64K"
               }
             }

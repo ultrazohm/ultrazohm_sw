@@ -106,8 +106,10 @@ struct uz_3ph_dq_t i_dq_Amps_2 					= {0};
 struct uz_3ph_dq_t v_dq_Volts_2 				= {0};
 float n_ref_rpm_2 								= 0.0f;
 float M_ref_Nm_2 								= 0.0f;
+float M_ref_Nm_2_javascope 								= 0.0f;
 struct uz_3ph_dq_t v_dq_ref_Volts_2 			= {0};
 struct uz_3ph_dq_t i_dq_ref_Amps_2 				= {0};
+struct uz_3ph_dq_t i_dq_ref_Amps_2_javascope 	= {0};
 struct uz_DutyCycle_t output_2 					= {0};
 
 uz_matrix_t *matrix_output;
@@ -190,6 +192,14 @@ enum running_mode run_state = normal;
 
 enum switch_control switch_control = control_idq;
 
+uint32_t setpoint_index = 0;
+float setpoint_index_float = 0;
+float start_marker = 0.0f;
+extern bool select_automatic_idiq;
+
+float setpoints[10] = {
+#include "setpoints.csv"
+};
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -211,6 +221,42 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_3(&Global_Data);
+    setpoint_index_float=(float)setpoint_index;
+     if ((select_automatic_idiq))
+    {
+        start_marker = 1.0f;
+        if (foc){
+            i_dq_ref_Amps_2.d = 0.0f;
+            i_dq_ref_Amps_2.q = 5.9f*setpoints[setpoint_index]; // q-current required to generate rated torque multiplied by fraction of torque set point
+        }else{
+            // Torque control to be implemented
+            M_ref_Nm_2 = 0.34f*setpoints[setpoint_index]; // 0.34 Nm is rated torque, setpoints holds fraction of that
+        }
+
+        // step throught the array
+        uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
+        if (current_uptime > (old_uptime + 1000))
+        {
+            old_uptime = current_uptime;
+
+            if (setpoint_index < 9)
+            {
+                setpoint_index++;
+            }
+            else
+            {
+                setpoint_index = 0;
+                select_automatic_idiq = false;
+                start_marker = 0.0f;
+            }
+        }
+    }
+    else
+    {
+        i_dq_ref_Amps_2 = i_dq_ref_Amps_2_javascope;
+        M_ref_Nm_2 = M_ref_Nm_2_javascope;
+    }
+
     M_meas_Nm = Global_Data.aa.A3.me.ADC_A1;// * 2.0f - 0.02f;
     M_meas_Nm2 = -1.0f * M_meas_Nm*torque_factor;
     torque_cil=M_meas_Nm2;

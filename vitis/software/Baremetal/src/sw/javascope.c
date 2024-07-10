@@ -84,6 +84,8 @@ extern float omega_el_rad_per_sec;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+extern float setpoint_index_float;
+extern float start_marker;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -178,9 +180,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_cil_u_ind_ref_Volts_q]	 = &cil_u_ind_ref_Volts.q;
 	js_ch_observable[JSO_u_ind_ref_Volts_d]		= &v_ind_dq_ref_Volts_2.d;
 	js_ch_observable[JSO_u_ind_ref_Volts_q]		= &v_ind_dq_ref_Volts_2.q;
-
-
-
+	js_ch_observable[JSO_enable] = &start_marker;
+	js_ch_observable[JSO_setpoint_index] = &setpoint_index_float;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

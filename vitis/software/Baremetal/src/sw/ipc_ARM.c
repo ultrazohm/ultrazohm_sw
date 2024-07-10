@@ -38,11 +38,11 @@ extern float excitation_amplitude;
 
 // --------- Field Oriented Control and Signals --------- //
 extern float n_ref_rpm_2;
-extern float M_ref_Nm_2;
+extern float M_ref_Nm_2_javascope;
 extern float theta_el_offset_2;
-extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
+extern struct uz_3ph_dq_t i_dq_ref_Amps_2_javascope;
 extern struct uz_3ph_dq_t v_ind_dq_ref_Volts_2;
-
+bool select_automatic_idiq = false;
 
 // ======================= Others ======================= //
 extern int option;
@@ -224,15 +224,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-		i_dq_ref_Amps_2.d = value;
+			i_dq_ref_Amps_2_javascope.d = value;
 			break;
 
 		case (Set_Send_Field_3):
-		i_dq_ref_Amps_2.q = value;
+			i_dq_ref_Amps_2_javascope.q = value;
 			break;
 
 		case (Set_Send_Field_4):
-			M_ref_Nm_2=value; 
+			M_ref_Nm_2_javascope = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -305,7 +305,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-
+			if (select_automatic_idiq == false)
+			{
+				select_automatic_idiq = true;
+			}
 			break;
 
 		case (My_Button_4):

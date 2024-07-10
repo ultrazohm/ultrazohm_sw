@@ -109,6 +109,8 @@ enum JS_OberservableData {
 	JSO_DC_A,
 	JSO_DC_B,
 	JSO_DC_C,
+	JSO_enable,
+	JSO_setpoint_index,
 	JSO_ENDMARKER
 };
 

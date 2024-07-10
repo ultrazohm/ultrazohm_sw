@@ -29,7 +29,7 @@ static uz_incrementalEncoder_t* encoder_D5_3;
 //----------------------------------------------------
 
 #define OMEGA_PER_OVER_SAMPLE_RPM 500.0f
-#define IncEncoderLPF_freq 1000.0f
+#define IncEncoderLPF_freq 100.0f
 
 void initialize_incremental_encoder_ipcore_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber){
 	struct uz_incrementalEncoder_config encoder_D5_1_config = {

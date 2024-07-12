@@ -185,26 +185,26 @@ A short description follows:
 
 The following figures indicates the influence of some factors:
 
-.. figure:: FKT1.pdf
+.. figure:: FKT1.svg
   :align: center
 
   Factor 1 influence on the signal lines.
 
 
-.. figure:: FKT4.pdf
+.. figure:: FKT4.svg
   :align: center
 
   Factor 4 influence on the signal lines.
 
 
-.. figure:: FKT5.pdf
+.. figure:: FKT5.svg
   :align: center
 
   Factor 5 influence on the signal lines.
 
 
 
-.. figure:: FKT6.pdf
+.. figure:: FKT6.svg
   :align: center
 
   Factor 6 influence on the signal lines.

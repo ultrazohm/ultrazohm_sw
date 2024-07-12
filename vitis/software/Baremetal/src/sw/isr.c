@@ -86,6 +86,13 @@ struct uz_3ph_dq_t i_dqn_filtered_7th_Amps_1 = {0};
 struct uz_3ph_dq_t v_dq_ref_5th_Volts_1 = {0};
 struct uz_3ph_dq_t v_dq_ref_7th_Volts_1 = {0};
 struct uz_3ph_dq_t v_dq_ref_HCI_Volts_1 = {0};
+struct uz_3ph_dq_t i_dq_ref_5th_Amps_1 = {0};
+struct uz_3ph_dq_t i_dq_ref_7th_Amps_1 = {0};
+struct uz_3ph_dq_t i_dq_ref_5th_advanced_Amps_1 = {0};
+struct uz_3ph_dq_t i_dq_ref_7th_advanced_Amps_1 = {0};
+struct uz_3ph_dq_t i_dq_ref_rlc_Amps_1 = {0};
+struct uz_3ph_dq_t i_dq_ref_rlc_advanced_Amps_1 = {0};
+struct uz_3ph_dq_t i_dq_ref_rlc_change_Amps_1 = {0};
 
 // =============== Declares for PMSM 2 =============== //
 
@@ -154,6 +161,7 @@ float iq7_setpoints[4]={
 
 extern bool select_automatic_idiq;
 extern float PMSM_rated_current_1;
+float harmonic_rated_current_1 = 2.0f;
 uint32_t Fehlerfall  = 0U;
 extern bool select_misalignment;
 extern uz_3ph_dq_t i_dq_ref_java_Amps_1;
@@ -161,9 +169,10 @@ extern uz_3ph_dq_t i_dq_ref_java_Amps_1;
 // ==================== DDPG Stuff ==================== //
 extern bool select_DDPG;
 extern bool select_FOC;
-float observation_ip[9U] = {0};
+float observation_ip[15U] = {0};
 #define NUMBER_OF_INPUTS_7N 7U
 #define NUMBER_OF_INPUTS_9N 9U
+#define NUMBER_OF_INPUTS_15N 15U
 uz_matrix_t* matrix_output;
 uz_3ph_dq_t i_dq_integrated_error_Amps_1 = {0};
 uz_3ph_dq_t i_dq_error_Amps_1 = {0};
@@ -285,22 +294,52 @@ void ISR_Control(void *data)
     		default:
     			samples = 11290;
     			measurement_steps = 20;
+
+    			// Normale HCI Sollwerte
 				i_dq_ref_Amps_1.d = id_setpoints[setpoint_index];
 				i_dq_ref_Amps_1.q = iq_setpoints[setpoint_index] * PMSM_rated_current_1;
 				i_dqn_ref_5th_Amps_1.d = 0.0f;
 				i_dqn_ref_5th_Amps_1.q = 0.0f;
 				i_dqn_ref_7th_Amps_1.d = 0.0f;
 				i_dqn_ref_7th_Amps_1.q = 0.0f;
+
+				// RL HCI Sollwerte
+				i_dq_ref_5th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1, -5.0f);
+				i_dq_ref_7th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1, 7.0f);
+				i_dq_ref_rlc_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_Amps_1.d + i_dq_ref_7th_Amps_1.d;
+				i_dq_ref_rlc_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_Amps_1.q + i_dq_ref_7th_Amps_1.q;
+
+				// RL HCI Folge-Sollwerte
+				i_dq_ref_5th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1_advanced, -5.0f);
+				i_dq_ref_7th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1_advanced, 7.0f);
+				i_dq_ref_rlc_advanced_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_advanced_Amps_1.d + i_dq_ref_7th_advanced_Amps_1.d;
+				i_dq_ref_rlc_advanced_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_advanced_Amps_1.q + i_dq_ref_7th_advanced_Amps_1.q;
+
 				break;
     		case 1:
     			samples = 20000;
     			measurement_steps = 4;
+
+    			// Normale HCI
     			i_dq_ref_Amps_1.d = -1.0f;
     			i_dq_ref_Amps_1.q = 5.0f;
     			i_dqn_ref_5th_Amps_1.d = id5_setpoints[setpoint_index];
     			i_dqn_ref_5th_Amps_1.q = iq5_setpoints[setpoint_index];
     			i_dqn_ref_7th_Amps_1.d = id7_setpoints[setpoint_index];
     			i_dqn_ref_7th_Amps_1.q = iq7_setpoints[setpoint_index];
+
+    			// RL HCI Sollwerte
+    			i_dq_ref_5th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1, -5.0f);
+    			i_dq_ref_7th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1, 7.0f);
+    			i_dq_ref_rlc_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_Amps_1.d + i_dq_ref_7th_Amps_1.d;
+    			i_dq_ref_rlc_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_Amps_1.q + i_dq_ref_7th_Amps_1.q;
+
+    			// RL HCI Folge-Sollwerte
+    			i_dq_ref_5th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1_advanced, -5.0f);
+    			i_dq_ref_7th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1_advanced, 7.0f);
+    			i_dq_ref_rlc_advanced_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_advanced_Amps_1.d + i_dq_ref_7th_advanced_Amps_1.d;
+    			i_dq_ref_rlc_advanced_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_advanced_Amps_1.q + i_dq_ref_7th_advanced_Amps_1.q;
+
     		}
 
     		// step throught the array
@@ -383,21 +422,27 @@ void ISR_Control(void *data)
     			i_dq_integrated_error_Amps_1.d += 0.0f;
     			i_dq_integrated_error_Amps_1.q += 0.0f;
     		}
-    		i_dq_error_Amps_1.d = (i_dq_ref_Amps_1.d - i_dq_Amps_1.d) / PMSM_rated_current_1;
-    		i_dq_error_Amps_1.q = (i_dq_ref_Amps_1.q - i_dq_Amps_1.q) / PMSM_rated_current_1;
+    		i_dq_error_Amps_1.d = (i_dq_ref_rlc_Amps_1.d - i_dq_Amps_1.d) / PMSM_rated_current_1;
+    		i_dq_error_Amps_1.q = (i_dq_ref_rlc_Amps_1.q - i_dq_Amps_1.q) / PMSM_rated_current_1;
 
 #if ((NN_9_INPUT_1_64) || (NN_9_INPUT_3_64)) == 1
 
             observation_ip[0] = i_dq_error_Amps_1.d;
     		observation_ip[1] = i_dq_integrated_error_Amps_1.d * UZ_PWM_FREQUENCY;
-    		observation_ip[2] = i_dq_error_Amps_1.q;
-    		observation_ip[3] = i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY ;
-    		observation_ip[4] = i_dq_Amps_1.d / PMSM_rated_current_1;
-    		observation_ip[5] = i_dq_Amps_1.q / PMSM_rated_current_1;
-    		observation_ip[6] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
-    		observation_ip[7] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
-    		observation_ip[8] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
-			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
+    		observation_ip[2] = i_dq_Amps_1.d / PMSM_rated_current_1;
+    		observation_ip[3] = (i_dq_ref_rlc_advanced_Amps_1.d - i_dq_ref_rlc_Amps_1.d) / harmonic_rated_current_1;
+    		observation_ip[4] = i_dq_error_Amps_1.q;
+    		observation_ip[5] = i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY ;
+    		observation_ip[6] = i_dq_Amps_1.q / PMSM_rated_current_1;
+    		observation_ip[7] = (i_dq_ref_rlc_advanced_Amps_1.q - i_dq_ref_rlc_Amps_1.q) / harmonic_rated_current_1;
+    		observation_ip[8] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
+    		observation_ip[9] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
+    		observation_ip[10] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+    		observation_ip[11] = cosf(theta_el_rad_1);
+    		observation_ip[12] = sinf(theta_el_rad_1);
+    		observation_ip[13] = cosf(6 * theta_el_rad_1);
+    		observation_ip[14] = sinf(6 * theta_el_rad_1);
+			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_15N; i++) {
 	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
 	  		}
 #elif NN_7_INPUT_1_64 == 1

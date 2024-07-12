@@ -5629,6 +5629,136 @@
               "uz_EnDat_0/CLK50MHZ"
             ]
           },
+          "DBGCLK": {
+            "ports": [
+              "uz_EnDat_0/DBGCLK"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGDATAIN": {
+            "ports": [
+              "uz_EnDat_0/DBGDATAIN"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGDATAOUT": {
+            "ports": [
+              "uz_EnDat_0/DBGDATAOUT"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGDATWRITE": {
+            "ports": [
+              "uz_EnDat_0/DBGDATWRITE"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGPOSRAW": {
+            "ports": [
+              "uz_EnDat_0/DBGPOSRAW"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGPOSSLICED": {
+            "ports": [
+              "uz_EnDat_0/DBGPOSSLICED"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGREADPULSES": {
+            "ports": [
+              "uz_EnDat_0/DBGREADPULSES"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGTIMEELAPSED": {
+            "ports": [
+              "uz_EnDat_0/DBGTIMEELAPSED"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGTOTALBITSREAD": {
+            "ports": [
+              "uz_EnDat_0/DBGTOTALBITSREAD"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
+          "DBGWRITEOKPULSE": {
+            "ports": [
+              "uz_EnDat_0/DBGWRITEOKPULSE"
+            ],
+            "hdl_attributes": {
+              "DEBUG": {
+                "value": "true"
+              },
+              "MARK_DEBUG": {
+                "value": "true"
+              }
+            }
+          },
           "Dig_17_Ch4": {
             "ports": [
               "Dig_17_Ch4",
@@ -5639,8 +5769,8 @@
             "ports": [
               "aresetn",
               "smartconnect_1/aresetn",
-              "uz_EnDat_0/AXI4_Lite_ARESETN",
-              "uz_EnDat_0/IPCORE_RESETN"
+              "uz_EnDat_0/IPCORE_RESETN",
+              "uz_EnDat_0/AXI4_Lite_ARESETN"
             ]
           },
           "uz_EnDat_0_CLKWR": {
@@ -6862,7 +6992,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__ACT_FREQMHZ": {
-            "value": "250.000000"
+            "value": "250"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__FREQMHZ": {
             "value": "250"
@@ -7789,16 +7919,16 @@
             "value": "100.000000"
           },
           "PSU__IOU_SLCR__TTC1__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC1__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC3__ACT_FREQMHZ": {
             "value": "100.000000"
@@ -9217,6 +9347,11 @@
               "SEG_timer_uptime_64bit_Reg": {
                 "address_block": "/uz_system/timer_uptime_64bit/S_AXI/Reg",
                 "offset": "0x00800E0000",
+                "range": "64K"
+              },
+              "SEG_uz_EnDat_0_reg0": {
+                "address_block": "/uz_user/uz_EnDat_0/AXI4_Lite/reg0",
+                "offset": "0x0080100000",
                 "range": "64K"
               },
               "SEG_uz_interlockDeadtime_0_reg0": {

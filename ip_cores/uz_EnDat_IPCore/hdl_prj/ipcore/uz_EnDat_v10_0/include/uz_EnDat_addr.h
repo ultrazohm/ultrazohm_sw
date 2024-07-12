@@ -1,7 +1,7 @@
 /*
  * File Name:         C:\Users\ELSYS_PC\Documents\repos\ultrazohm_sw\ip_cores\uz_EnDat_IPCore\hdl_prj\ipcore\uz_EnDat_v10_0\include\uz_EnDat_addr.h
  * Description:       C Header File
- * Created:           2024-06-28 10:57:20
+ * Created:           2024-07-06 12:05:29
 */
 
 #ifndef UZ_ENDAT_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_EnDat              0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_EnDat             0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_EnDat          0x8  //contains unique IP timestamp (yymmddHHMM): 2406281057
+#define  IPCore_Timestamp_uz_EnDat          0x8  //contains unique IP timestamp (yymmddHHMM): 2407061155: 2407061205
 #define  DIVIDER_Data_uz_EnDat              0x800  //data register for Inport DIVIDER
 #define  FKT1DATAFLOW_Data_uz_EnDat         0x804  //data register for Inport FKT1DATAFLOW
 #define  CONTROLWORD_Data_uz_EnDat          0x808  //data register for Inport CONTROLWORD

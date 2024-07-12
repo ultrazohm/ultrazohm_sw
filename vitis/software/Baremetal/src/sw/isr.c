@@ -210,7 +210,8 @@ static void ReadAllADC();
 
 bool cil=false;
 bool foc = true;
-float torque_factor=1.0f/5.0f; // 4.28f
+float torque_factor=1.0f/4.28f; // 5.0f; // 4.28f
+uint64_t old_uptime=0;
 
 void ISR_Control(void *data)
 {
@@ -228,14 +229,16 @@ void ISR_Control(void *data)
         if (foc){
             i_dq_ref_Amps_2.d = 0.0f;
             i_dq_ref_Amps_2.q = 5.9f*setpoints[setpoint_index]; // q-current required to generate rated torque multiplied by fraction of torque set point
+            M_ref_Nm_2 = 0.48f*setpoints[setpoint_index];
         }else{
             // Torque control to be implemented
-            M_ref_Nm_2 = 0.34f*setpoints[setpoint_index]; // 0.34 Nm is rated torque, setpoints holds fraction of that
+        	// change to 0.48f as well?
+            M_ref_Nm_2 = 0.48f*setpoints[setpoint_index]; // 0.34 Nm is rated torque, setpoints holds fraction of that
         }
 
         // step throught the array
         uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
-        if (current_uptime > (old_uptime + 1000))
+        if (current_uptime > (old_uptime + 20000))
         {
             old_uptime = current_uptime;
 
@@ -348,10 +351,10 @@ void ISR_Control(void *data)
             i_dq_error_Amps_1.d = (i_dq_ref_Amps_2.d - i_dq_Amps_2.d) / PMSM_rated_current_1;
             i_dq_error_Amps_1.q = (i_dq_ref_Amps_2.q - i_dq_Amps_2.q) / PMSM_rated_current_1;
             M_ref_Nm_2=uz_signals_saturation(M_ref_Nm_2, 0.5f, 0.0f);
-            observation_ip[0] = M_ref_Nm_2 / 0.34f;; // Torque
+            observation_ip[0] = M_ref_Nm_2 / 0.34f; // Torque
             observation_ip[1] = i_dq_Amps_2.d / PMSM_rated_current_1;
             observation_ip[2] = i_dq_Amps_2.q / PMSM_rated_current_1;
-            observation_ip[3] = omega_el_rad_per_sec_2 * speed_weight_1 * 2*M_PI;
+            observation_ip[3] = Global_Data.av.mechanicalRotorSpeed_filtered_2 * speed_weight_1;
             observation_ip[4] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
             observation_ip[5] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
             for (uint32_t i = 0; i < 6; i++)
@@ -374,7 +377,8 @@ void ISR_Control(void *data)
             pmsm_inputs.omega_mech_1_s = (n_ref_rpm_2 / 60.0f) * 2.0f * M_PI;
             uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
         }else{
-            output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_rad_2);
+            float theta_el_advanced = theta_el_rad_2 + 1.5f * ts * omega_el_rad_per_sec_2;
+            output_2 = uz_Space_Vector_Modulation(v_dq_ref_Volts_2, v_DC_Volts_2, theta_el_advanced);
             // Set DutyCycles of PMSM 2
             Global_Data.rasv.halfBridge4DutyCycle = output_2.DutyCycle_A;
             Global_Data.rasv.halfBridge5DutyCycle = output_2.DutyCycle_B;

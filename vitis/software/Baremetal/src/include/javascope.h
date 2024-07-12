@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink, Michael Hoerner
+* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Lï¿½hdefink, Michael Hoerner
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -111,6 +111,8 @@ enum JS_OberservableData {
 	JSO_DC_C,
 	JSO_enable,
 	JSO_setpoint_index,
+	JSO_i_dc,
+	JSO_M_ref,
 	JSO_ENDMARKER
 };
 

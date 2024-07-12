@@ -208,32 +208,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-		i_dq_ref_java_Amps_1.d = value;
+				i_dq_ref_java_Amps_1.d = value;
 				//M_ref_Nm_2 = value;
 			break;
 
 		case (Set_Send_Field_3):
-		n_ref_rpm_2 = value;
+				n_ref_rpm_2 = value;
 			break;
 
 		case (Set_Send_Field_4):
-		i_dqn_ref_5th_Amps_1.d = value;
-
+				i_dqn_ref_5th_Amps_1.d = value;
 			break;
 
 		case (Set_Send_Field_5):
-		i_dqn_ref_5th_Amps_1.q = value;
-
+				i_dqn_ref_5th_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_6):
-		i_dqn_ref_7th_Amps_1.d = value;
-
+				i_dqn_ref_7th_Amps_1.d = value;
 			break;
 
 		case (Set_Send_Field_7):
-		i_dqn_ref_7th_Amps_1.q = value;
-
+				i_dqn_ref_7th_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_8):
@@ -301,7 +297,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-		mode = 1;
+		if(mode == 0) {
+			mode = 1;
+		} else {
+			mode = 0;
+		}
 			break;
 
 		case (My_Button_5):
@@ -392,7 +392,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 6);
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	if(mode == 1) {
+		js_status_BareToRTOS |= (1 << 7);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 
 	/* Bit 8 - My_Button_5 */
 	if (select_FOC == true) {

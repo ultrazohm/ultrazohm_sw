@@ -120,10 +120,13 @@ float K_p_id                        = 0.0f;
 float K_p_iq                        = 0.0f;
 
 
-//Stuff
+// ====================== Mode ====================== //
 
 uint32_t setpoint_index				= 0U;
 uint64_t old_uptime					= 0U;
+int samples 						= 11290;
+int measurement_mode 				= 1;
+int measurement_steps				= 0;
 float start_marker					= 0.0f;
 float id_setpoints[22]={
 #include "id_setpoints.csv"
@@ -132,13 +135,30 @@ float id_setpoints[22]={
 float iq_setpoints[22]={
 #include "iq_setpoints.csv"
 };
+
+float id5_setpoints[4]={
+#include "id5_setpoints.csv"
+};
+
+float iq5_setpoints[4]={
+#include "iq5_setpoints.csv"
+};
+
+float id7_setpoints[4]={
+#include "id7_setpoints.csv"
+};
+
+float iq7_setpoints[4]={
+#include "iq7_setpoints.csv"
+};
+
 extern bool select_automatic_idiq;
 extern float PMSM_rated_current_1;
 uint32_t Fehlerfall  = 0U;
 extern bool select_misalignment;
 extern uz_3ph_dq_t i_dq_ref_java_Amps_1;
 
-//DDPG Stuff
+// ==================== DDPG Stuff ==================== //
 extern bool select_DDPG;
 extern bool select_FOC;
 float observation_ip[9U] = {0};
@@ -161,7 +181,7 @@ bool start_angle_found = false;
 float theta_el_1_old = 0.0f;
 bool change_speed = false;
 
-// 3 layer MLP
+// ==================== 3 layer MLP ==================== //
 
 #if ((NN_9_INPUT_3_64) || (NN_7_INPUT_3_64))
 extern float mlp_ip_output[2U];
@@ -238,8 +258,6 @@ void ISR_Control(void *data)
     i_dq_Amps_1 = uz_transformation_3ph_abc_to_dq(i_abc_Amps_1, theta_el_rad_1);
     v_dq_Volts_1 = uz_transformation_3ph_abc_to_dq(v_abc_Volts_1, theta_el_rad_1);
 
-
-
     // Calculation of Signals for FOC for PMSM 2
     Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
     Global_Data.av.mechanicalRotorSpeed_2 = Resolver_outputs.n_mech_rpm;
@@ -262,15 +280,35 @@ void ISR_Control(void *data)
     	if (start_angle_found) {
 
     		start_marker=1.0f;
-    		i_dq_ref_Amps_1.d = id_setpoints[setpoint_index];
-    		i_dq_ref_Amps_1.q = iq_setpoints[setpoint_index] * PMSM_rated_current_1;
+
+    		switch (measurement_mode) {
+    		default:
+    			samples = 11290;
+    			measurement_steps = 20;
+				i_dq_ref_Amps_1.d = id_setpoints[setpoint_index];
+				i_dq_ref_Amps_1.q = iq_setpoints[setpoint_index] * PMSM_rated_current_1;
+				i_dqn_ref_5th_Amps_1.d = 0.0f;
+				i_dqn_ref_5th_Amps_1.q = 0.0f;
+				i_dqn_ref_7th_Amps_1.d = 0.0f;
+				i_dqn_ref_7th_Amps_1.q = 0.0f;
+				break;
+    		case 1:
+    			samples = 20000;
+    			measurement_steps = 4;
+    			i_dq_ref_Amps_1.d = -1.0f;
+    			i_dq_ref_Amps_1.q = 5.0f;
+    			i_dqn_ref_5th_Amps_1.d = id5_setpoints[setpoint_index];
+    			i_dqn_ref_5th_Amps_1.q = iq5_setpoints[setpoint_index];
+    			i_dqn_ref_7th_Amps_1.d = id7_setpoints[setpoint_index];
+    			i_dqn_ref_7th_Amps_1.q = iq7_setpoints[setpoint_index];
+    		}
 
     		// step throught the array
     		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-    		if((current_uptime>(old_uptime + 11290) && (!change_speed)) ){
+    		if((current_uptime>(old_uptime + samples) && (!change_speed)) ){
     			old_uptime=current_uptime;
 
-    			if(setpoint_index<21){
+    			if(setpoint_index<measurement_steps+1){
     				setpoint_index++;
     			}else{
     				setpoint_index = 0U;
@@ -281,7 +319,7 @@ void ISR_Control(void *data)
 
     		}
     		if (change_speed) {
-    			if(current_uptime>(old_uptime + 11290)) {
+    			if(current_uptime>(old_uptime + samples)) {
     				n_ref_rpm_2 = n_ref_rpm_2 - 100.0f;
     				change_speed = false;
     				select_automatic_idiq = false;
@@ -294,15 +332,11 @@ void ISR_Control(void *data)
     }
     theta_el_1_old = Global_Data.av.theta_elec_1;
 
-
-
-
+    // FOC, HCI and DDPG control
     if (current_state==control_state)
     {
+    	// FOC und HCI control
     	if(select_FOC) {
-    		// Field Oriented Control of PMSM 1
-    		//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
-    		//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
 
     		//Approximate psid and psiq and set new kpd and kpq
     		flux_approx = uz_approximate_flux_step(Global_Data.objects.approximate_flux_instance, i_dq_Amps_1);
@@ -312,24 +346,35 @@ void ISR_Control(void *data)
     		K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(Global_Data.objects.Kp_iq_adjustment_instance,i_dq_ref_Amps_1, i_dq_Amps_1, flux_reference, flux_approx);
     		uz_CurrentControl_set_Kp_id(CC_instance_1, K_p_id);
     		uz_CurrentControl_set_Kp_iq(CC_instance_1, K_p_iq);
+
+    		// Field Oriented Control of PMSM 1
+    		//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
+    		//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
     		v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, -omega_el_rad_per_sec_2);
+
+    		// Filter Harmonics
+    		uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_1);
+        	uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_1);
+        	i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
+        	i_dqn_filtered_7th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_Amps_1, theta_el_rad_1);
+
     		switch (mode)
     		{
     		default:
     			output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1_advanced);
     			break;
     		case 1:
-        		i_dqn_filtered_5th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_5th_1, i_abc_Amps_1, theta_el_rad_1);
-        		i_dqn_filtered_7th_Amps_1 = uz_HarmonicCurrentInjection_filter(HCI_instance_7th_1, i_abc_Amps_1, theta_el_rad_1);
-        		uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_1);
-        		uz_HarmonicCurrentInjection_set_filters(HCI_instance_7th_1, omega_el_rad_per_sec_1);
-    			v_dq_ref_HCI_Volts_1.d = v_dq_ref_Volts_1.d +  v_dq_ref_5th_Volts_1.d + v_dq_ref_7th_Volts_1.d;
-    			v_dq_ref_HCI_Volts_1.q = v_dq_ref_Volts_1.q +  v_dq_ref_5th_Volts_1.q + v_dq_ref_7th_Volts_1.q;
+    			//uz_HarmonicCurrentInjection_set_controllers(HCI_instance_5th_1, config_PMSM_1, omega_el_rad_per_sec_1);
+    			//uz_HarmonicCurrentInjection_set_controllers(HCI_instance_7th_1, config_PMSM_1, omega_el_rad_per_sec_1);
     			v_dq_ref_5th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_5th_1, i_dqn_ref_5th_Amps_1, i_dqn_filtered_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
     			v_dq_ref_7th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_7th_1, i_dqn_ref_7th_Amps_1, i_dqn_filtered_7th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
+    			v_dq_ref_HCI_Volts_1.d = v_dq_ref_Volts_1.d +  v_dq_ref_5th_Volts_1.d + v_dq_ref_7th_Volts_1.d;
+    			v_dq_ref_HCI_Volts_1.q = v_dq_ref_Volts_1.q +  v_dq_ref_5th_Volts_1.q + v_dq_ref_7th_Volts_1.q;
     			output_1 = uz_Space_Vector_Modulation(v_dq_ref_HCI_Volts_1, v_DC_Volts_1, theta_el_rad_1_advanced);
     			break;
     		}
+
+    	// DDPG Control
     	} else if(select_DDPG) {
     		if(ext_clamping_1 == false) {
     			i_dq_integrated_error_Amps_1.d = (i_dq_integrated_error_Amps_1.d + (i_dq_error_Amps_1.d * ts)); // use Forward-Euler with error of previous timestep for integration
@@ -426,6 +471,7 @@ void ISR_Control(void *data)
     // Set duty cycles for two-level modulator
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+
     // Update Javascope
     JavaScope_update(&Global_Data);
 

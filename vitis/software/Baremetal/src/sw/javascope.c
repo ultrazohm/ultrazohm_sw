@@ -51,7 +51,7 @@ extern struct uz_3ph_dq_t v_dq_Volts_1;
 extern struct uz_3ph_abc_t v_abc_Volts_1;
 extern float K_p_id;
 extern float K_p_iq;
-extern float observation_ip[9U];
+extern float observation_ip[15U];
 extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
 extern float start_marker;
 float Torque_placeholder = 0.0f;

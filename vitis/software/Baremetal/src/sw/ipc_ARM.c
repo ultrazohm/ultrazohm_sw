@@ -40,6 +40,7 @@ extern DS_Data Global_Data;
 bool select_misalignment = false;
 bool select_DDPG = false;
 bool select_FOC = false;
+extern int measurement_mode;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -202,9 +203,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
+				i_dq_ref_java_Amps_1.q = value;
 				//n_ref_rpm_1 = value;
 				//M_ref_Nm_1 = value;
-				i_dq_ref_java_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -217,27 +218,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-				i_dqn_ref_5th_Amps_1.d = value;
+				measurement_mode = value;
 			break;
 
 		case (Set_Send_Field_5):
-				i_dqn_ref_5th_Amps_1.q = value;
+				i_dqn_ref_5th_Amps_1.d = value;
 			break;
 
 		case (Set_Send_Field_6):
-				i_dqn_ref_7th_Amps_1.d = value;
+				i_dqn_ref_5th_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_7):
-				i_dqn_ref_7th_Amps_1.q = value;
+				i_dqn_ref_7th_Amps_1.d = value;
+
 			break;
 
 		case (Set_Send_Field_8):
-		Global_Data.av.theta_offset_2 = value;
+				i_dqn_ref_7th_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+				Global_Data.av.theta_offset_2 = value;
 			break;
 
 		case (Set_Send_Field_10):
@@ -297,20 +299,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-		if(mode == 0) {
-			mode = 1;
-		} else {
-			mode = 0;
-		}
+			if(mode == 0) {
+				mode = 1;
+			} else {
+				mode = 0;
+			}
 			break;
 
 		case (My_Button_5):
-		if(select_FOC == false) {
-			select_FOC = true;
-			mode = 0;
-		} else {
-			select_FOC = false;
-		}
+			if(select_FOC == false) {
+				select_FOC = true;
+				mode = 0;
+			} else {
+				select_FOC = false;
+			}
 			break;
 
 		case (My_Button_6):

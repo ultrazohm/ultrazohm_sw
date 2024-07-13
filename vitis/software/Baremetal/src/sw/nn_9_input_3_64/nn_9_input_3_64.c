@@ -1,6 +1,6 @@
 
 // configuration of neural network
-#define NUMBER_OF_INPUTS_9N 13
+#define NUMBER_OF_INPUTS_9N 15
 #define NUMBER_OF_OUTPUTS 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 

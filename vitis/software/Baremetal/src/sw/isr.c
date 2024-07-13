@@ -132,7 +132,7 @@ float K_p_iq                        = 0.0f;
 uint32_t setpoint_index				= 0U;
 uint64_t old_uptime					= 0U;
 int samples 						= 11290;
-int measurement_mode 				= 1;
+int measurement_mode 				= 0;
 int measurement_steps				= 0;
 float start_marker					= 0.0f;
 float id_setpoints[22]={
@@ -171,7 +171,7 @@ extern bool select_DDPG;
 extern bool select_FOC;
 float observation_ip[15U] = {0};
 #define NUMBER_OF_INPUTS_7N 7U
-#define NUMBER_OF_INPUTS_9N 9U
+#define NUMBER_OF_INPUTS_9N 15U
 #define NUMBER_OF_INPUTS_15N 15U
 uz_matrix_t* matrix_output;
 uz_3ph_dq_t i_dq_integrated_error_Amps_1 = {0};
@@ -303,42 +303,18 @@ void ISR_Control(void *data)
 				i_dqn_ref_7th_Amps_1.d = 0.0f;
 				i_dqn_ref_7th_Amps_1.q = 0.0f;
 
-				// RL HCI Sollwerte
-				i_dq_ref_5th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1, -5.0f);
-				i_dq_ref_7th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1, 7.0f);
-				i_dq_ref_rlc_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_Amps_1.d + i_dq_ref_7th_Amps_1.d;
-				i_dq_ref_rlc_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_Amps_1.q + i_dq_ref_7th_Amps_1.q;
-
-				// RL HCI Folge-Sollwerte
-				i_dq_ref_5th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1_advanced, -5.0f);
-				i_dq_ref_7th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1_advanced, 7.0f);
-				i_dq_ref_rlc_advanced_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_advanced_Amps_1.d + i_dq_ref_7th_advanced_Amps_1.d;
-				i_dq_ref_rlc_advanced_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_advanced_Amps_1.q + i_dq_ref_7th_advanced_Amps_1.q;
-
 				break;
     		case 1:
     			samples = 20000;
     			measurement_steps = 4;
 
     			// Normale HCI
-    			i_dq_ref_Amps_1.d = -1.0f;
-    			i_dq_ref_Amps_1.q = 5.0f;
+    			i_dq_ref_Amps_1.d = -3.2f;
+    			i_dq_ref_Amps_1.q = 6.4f;
     			i_dqn_ref_5th_Amps_1.d = id5_setpoints[setpoint_index];
     			i_dqn_ref_5th_Amps_1.q = iq5_setpoints[setpoint_index];
     			i_dqn_ref_7th_Amps_1.d = id7_setpoints[setpoint_index];
     			i_dqn_ref_7th_Amps_1.q = iq7_setpoints[setpoint_index];
-
-    			// RL HCI Sollwerte
-    			i_dq_ref_5th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1, -5.0f);
-    			i_dq_ref_7th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1, 7.0f);
-    			i_dq_ref_rlc_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_Amps_1.d + i_dq_ref_7th_Amps_1.d;
-    			i_dq_ref_rlc_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_Amps_1.q + i_dq_ref_7th_Amps_1.q;
-
-    			// RL HCI Folge-Sollwerte
-    			i_dq_ref_5th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1_advanced, -5.0f);
-    			i_dq_ref_7th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1_advanced, 7.0f);
-    			i_dq_ref_rlc_advanced_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_advanced_Amps_1.d + i_dq_ref_7th_advanced_Amps_1.d;
-    			i_dq_ref_rlc_advanced_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_advanced_Amps_1.q + i_dq_ref_7th_advanced_Amps_1.q;
 
     		}
 
@@ -368,8 +344,21 @@ void ISR_Control(void *data)
 
     }else{
     	i_dq_ref_Amps_1=i_dq_ref_java_Amps_1;
+
     }
     theta_el_1_old = Global_Data.av.theta_elec_1;
+
+    // RL HCI Sollwerte
+    i_dq_ref_5th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1, -5.0f);
+	i_dq_ref_7th_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1, 7.0f);
+	i_dq_ref_rlc_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_Amps_1.d + i_dq_ref_7th_Amps_1.d;
+	i_dq_ref_rlc_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_Amps_1.q + i_dq_ref_7th_Amps_1.q;
+
+	// RL HCI Folge-Sollwerte
+	i_dq_ref_5th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_5th_Amps_1, theta_el_rad_1_advanced, -5.0f);
+	i_dq_ref_7th_advanced_Amps_1 = uz_transformation_3ph_harmonic_dqn_to_dq(i_dqn_ref_7th_Amps_1, theta_el_rad_1_advanced, 7.0f);
+	i_dq_ref_rlc_advanced_Amps_1.d = i_dq_ref_Amps_1.d + i_dq_ref_5th_advanced_Amps_1.d + i_dq_ref_7th_advanced_Amps_1.d;
+	i_dq_ref_rlc_advanced_Amps_1.q = i_dq_ref_Amps_1.q + i_dq_ref_5th_advanced_Amps_1.q + i_dq_ref_7th_advanced_Amps_1.q;
 
     // FOC, HCI and DDPG control
     if (current_state==control_state)
@@ -389,7 +378,6 @@ void ISR_Control(void *data)
     		// Field Oriented Control of PMSM 1
     		//M_ref_Nm_1 = uz_SpeedControl_sample(SC_instance_1, omega_m_rad_per_sec_1, n_ref_rpm_1);
     		//i_dq_ref_Amps_1 = uz_SetPoint_sample(SP_instance_1, omega_m_rad_per_sec_1, M_ref_Nm_1, v_DC_Volts_1, i_dq_Amps_1);
-    		v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, -omega_el_rad_per_sec_2);
 
     		// Filter Harmonics
     		uz_HarmonicCurrentInjection_set_filters(HCI_instance_5th_1, omega_el_rad_per_sec_1);
@@ -400,11 +388,13 @@ void ISR_Control(void *data)
     		switch (mode)
     		{
     		default:
+        		v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_rlc_Amps_1, i_dq_Amps_1, v_DC_Volts_1, -omega_el_rad_per_sec_2);
     			output_1 = uz_Space_Vector_Modulation(v_dq_ref_Volts_1, v_DC_Volts_1, theta_el_rad_1_advanced);
     			break;
     		case 1:
-    			//uz_HarmonicCurrentInjection_set_controllers(HCI_instance_5th_1, config_PMSM_1, omega_el_rad_per_sec_1);
-    			//uz_HarmonicCurrentInjection_set_controllers(HCI_instance_7th_1, config_PMSM_1, omega_el_rad_per_sec_1);
+        		v_dq_ref_Volts_1 = uz_CurrentControl_sample(CC_instance_1, i_dq_ref_Amps_1, i_dq_Amps_1, v_DC_Volts_1, -omega_el_rad_per_sec_2);
+    			uz_HarmonicCurrentInjection_set_controllers(HCI_instance_5th_1, config_PMSM_1, omega_el_rad_per_sec_1);
+    			uz_HarmonicCurrentInjection_set_controllers(HCI_instance_7th_1, config_PMSM_1, omega_el_rad_per_sec_1);
     			v_dq_ref_5th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_5th_1, i_dqn_ref_5th_Amps_1, i_dqn_filtered_5th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
     			v_dq_ref_7th_Volts_1 = uz_HarmonicCurrentInjection_sample(HCI_instance_7th_1, i_dqn_ref_7th_Amps_1, i_dqn_filtered_7th_Amps_1, v_DC_Volts_1, omega_el_rad_per_sec_1, theta_el_rad_1);
     			v_dq_ref_HCI_Volts_1.d = v_dq_ref_Volts_1.d +  v_dq_ref_5th_Volts_1.d + v_dq_ref_7th_Volts_1.d;
@@ -415,6 +405,7 @@ void ISR_Control(void *data)
 
     	// DDPG Control
     	} else if(select_DDPG) {
+
     		if(ext_clamping_1 == false) {
     			i_dq_integrated_error_Amps_1.d = (i_dq_integrated_error_Amps_1.d + (i_dq_error_Amps_1.d * ts)); // use Forward-Euler with error of previous timestep for integration
     			i_dq_integrated_error_Amps_1.q = (i_dq_integrated_error_Amps_1.q + (i_dq_error_Amps_1.q * ts));
@@ -442,7 +433,7 @@ void ISR_Control(void *data)
     		observation_ip[12] = sinf(theta_el_rad_1);
     		observation_ip[13] = cosf(6 * theta_el_rad_1);
     		observation_ip[14] = sinf(6 * theta_el_rad_1);
-			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_15N; i++) {
+			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
 	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
 	  		}
 #elif NN_7_INPUT_1_64 == 1

@@ -166,11 +166,15 @@ void uz_HarmonicCurrentInjection_set_filters(uz_HarmonicCurrentInjection_t* self
 void uz_HarmonicCurrentInjection_set_controllers(uz_HarmonicCurrentInjection_t* self, struct uz_PMSM_t config_PMSM, float omega_el_rad_per_sec){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
+	uz_assert(self->config.sampling_frequency_Hz>1.0f);
+	if (fabsf(omega_el_rad_per_sec)<10.0f){
+		omega_el_rad_per_sec=10.0f;
+	}
 	float T_N = 10.0f / fabsf(omega_el_rad_per_sec);
 	float T_V = 0.0f;
 	float V_s = 1.0f / config_PMSM.R_ph_Ohm;
-	float T_sigma_d = config_PMSM.Ld_Henry / config_PMSM.R_ph_Ohm + 2 * 1.0f / self->config.sampling_frequency_Hz;
-	float T_sigma_q = config_PMSM.Lq_Henry / config_PMSM.R_ph_Ohm + 2 * 1.0f / self->config.sampling_frequency_Hz;
+	float T_sigma_d = config_PMSM.Ld_Henry / config_PMSM.R_ph_Ohm + 2.0f / self->config.sampling_frequency_Hz;
+	float T_sigma_q = config_PMSM.Lq_Henry / config_PMSM.R_ph_Ohm + 2.0f / self->config.sampling_frequency_Hz;
 	switch (self->config.selection)
 	{
 	case abc_to_dqn:
@@ -178,6 +182,9 @@ void uz_HarmonicCurrentInjection_set_controllers(uz_HarmonicCurrentInjection_t* 
 		break;
 	case dq_to_dqn:
 		T_V = 1.0f / fabsf(0.05f * omega_el_rad_per_sec * (self->config.order_harmonic - 1.0f));
+		break;
+	default:
+		uz_assert(false);
 		break;
 	}
 	float Kp_id = (T_N + T_V) / (2.0f * T_sigma_d * V_s);

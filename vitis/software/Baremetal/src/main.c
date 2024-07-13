@@ -211,14 +211,16 @@ int main(void)
 			.selection = dq_to_dqn,
 			.config_bandpass_dq = BP_config_1,
 			.config_lowpass_dq = LP_config_1,
-			.config_currentcontroller = CC_config_5th_1
+			.config_currentcontroller = CC_config_5th_1,
+			.sampling_frequency_Hz = 10000.0f
     };
     struct uz_HarmonicCurrentInjection_config HCI_config_7th_1 = {
         	.order_harmonic = 7.0f,
     		.selection = dq_to_dqn,
     		.config_bandpass_dq = BP_config_1,
     		.config_lowpass_dq = LP_config_1,
-    		.config_currentcontroller = CC_config_7th_1
+    		.config_currentcontroller = CC_config_7th_1,
+			.sampling_frequency_Hz = 10000.0f
     };
 
     // ***************** PMSM 2 ***************** //

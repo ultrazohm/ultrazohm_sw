@@ -49,6 +49,13 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_SKAI_nERROUT,
+	JSO_flg_reset_SKAI,
+	JSO_SKAI_reset_counter,
+	JSO_DutyCycle_1,
+	JSO_DutyCycle_2,
+	JSO_DutyCycle_3,
+	JSO_U_DC,
 	JSO_ENDMARKER
 };
 
@@ -126,9 +133,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
+	DutyCycle1,
+	DutyCycle2,
+	DutyCycle3,
 	send_field_4,
 	send_field_5,
 	send_field_6,

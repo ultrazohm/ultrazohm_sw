@@ -88,8 +88,22 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
-            PWM_3L_Initialize(&Global_Data); // three-level modulator
+            //PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            struct uz_axi_gpio_config_t config_input = {
+                        		.base_address = XPAR_GPIO_0_BASEADDR ,
+                        		.device_id = XPAR_GPIO_0_DEVICE_ID,
+                        		.number_of_pins = 4,
+                        		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_INPUT
+                        };
+            struct uz_axi_gpio_config_t config_output = {
+                        		.base_address = XPAR_GPIO_1_BASEADDR ,
+                        		.device_id = XPAR_GPIO_1_DEVICE_ID,
+                        		.number_of_pins = 8,
+                        		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+                        };
+            Global_Data.objects.input_gpio = uz_axi_gpio_init(config_input);
+            Global_Data.objects.output_gpio = uz_axi_gpio_init(config_output);
             initialization_chain = print_msg;
             break;
 	    case print_msg:

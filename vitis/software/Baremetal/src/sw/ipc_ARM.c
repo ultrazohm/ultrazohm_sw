@@ -186,15 +186,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		data->rasv.halfBridge1DutyCycle = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		data->rasv.halfBridge2DutyCycle = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		data->rasv.halfBridge3DutyCycle = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -278,11 +278,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.halfBridge1DutyCycle = 0.4;
 			break;
 
 		case (My_Button_5):
-
+			ultrazohm_state_machine_set_userLED(false);
+			data->rasv.halfBridge1DutyCycle = 0.0;
 			break;
 
 		case (My_Button_6):

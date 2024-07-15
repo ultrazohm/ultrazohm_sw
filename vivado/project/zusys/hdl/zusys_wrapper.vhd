@@ -1,8 +1,8 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
---Tool Version: Vivado v.2022.2 (lin64) Build 3671981 Fri Oct 14 04:59:54 MDT 2022
---Date        : Wed Jul  3 08:23:03 2024
---Host        : 6ba3771b70c1 running 64-bit unknown
+--Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
+--Date        : Wed Jul 10 12:37:28 2024
+--Host        : LAPTOP-GLAIOUMT running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
 --Purpose     : IP block netlist
@@ -30,7 +30,8 @@ entity zusys_wrapper is
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
+    D2_IN : in STD_LOGIC_VECTOR ( 3 downto 0 );
+    D2_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
     D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -84,7 +85,7 @@ architecture STRUCTURE of zusys_wrapper is
     D1_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D1_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D2_OUT : out STD_LOGIC_VECTOR ( 11 downto 0 );
+    D2_OUT : out STD_LOGIC_VECTOR ( 7 downto 0 );
     D2_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
@@ -114,7 +115,8 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_21_Ch5 : in STD_LOGIC;
     Dig_22_Ch5 : in STD_LOGIC;
     Dig_23_Ch5 : in STD_LOGIC;
-    Dig_8_Ch5 : in STD_LOGIC
+    Dig_8_Ch5 : in STD_LOGIC;
+    D2_IN : in STD_LOGIC_VECTOR ( 3 downto 0 )
   );
   end component zusys;
 begin
@@ -137,7 +139,8 @@ zusys_i: component zusys
       D1_OUT_27(0) => D1_OUT_27(0),
       D1_OUT_28(0) => D1_OUT_28(0),
       D1_OUT_29(0) => D1_OUT_29(0),
-      D2_OUT(11 downto 0) => D2_OUT(11 downto 0),
+      D2_IN(3 downto 0) => D2_IN(3 downto 0),
+      D2_OUT(7 downto 0) => D2_OUT(7 downto 0),
       D2_OUT_26(0) => D2_OUT_26(0),
       D2_OUT_27(0) => D2_OUT_27(0),
       D2_OUT_28(0) => D2_OUT_28(0),

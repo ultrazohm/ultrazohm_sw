@@ -38,6 +38,48 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+#define PHASE_CURRENT_CONV_U 		1000/11.211;
+#define PHASE_CURRENT_CONV_V 		1000/11.211;
+#define PHASE_CURRENT_CONV_W 		1000/11.211;
+#define PHASE_CURRENT_OFFSET_VOLT 	2.5
+
+#define DC_LINK_VOLT_CONV 			1/0.0546		// DC-Voltage 0...5 V -> 0...91.5 V
+#define PHASE_VOLT_CONV_U 			1/0.0546		// Voltage DC_GND to Phase U
+#define PHASE_VOLT_CONV_V 			1/0.0546
+#define PHASE_VOLT_CONV_W 			1/0.0546
+#define MOSFET_TEMP_CONV_U 			1
+
+#define MAX_CURRENT_ASSERTION 		300.0f
+#define MAX_SPEED_ASSERTION			500.0f
+#define MAX_TEMP_ASSERTION			80.0f
+
+bool SKAI_nERROUT = 0U;			// Start in error-mode
+bool flg_reset_SKAI = 0U;
+platform_state_t last_state;
+platform_state_t current_state;
+int reset_counter=0;
+
+// Variables for Current Control and Speed Control
+/*
+struct uz_3ph_abc_t measurement_current = {.a = 0.0f, .b = 0.0f, .c = 0.0f};
+struct uz_3ph_abc_t measurement_voltage = {.a = 0.0f, .b = 0.0f, .c = 0.0f};
+
+struct uz_3ph_dq_t dq_measurement_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_measurement_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_reference_current = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+struct uz_3ph_dq_t dq_reference_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
+struct uz_3ph_dq_t dq_decoup_voltage = {.d = 0.0f, .q = 0.0f, .zero = 0.0f};
+
+
+struct uz_DutyCycle_t output = {
+		.DutyCycle_A = 0.0f,
+		.DutyCycle_B = 0.0f,
+		.DutyCycle_C = 0.0f,
+};
+*/
+
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -50,22 +92,76 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    //update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    Global_Data.av.I_U = (Global_Data.aa.A1.me.ADC_A4 - 0.075f) * PHASE_CURRENT_CONV_U;
+    Global_Data.av.I_V = (Global_Data.aa.A1.me.ADC_A3 - 0.155f) * PHASE_CURRENT_CONV_V;
+    Global_Data.av.I_W = (Global_Data.aa.A1.me.ADC_A2 - 0.02f) * PHASE_CURRENT_CONV_W;
+
+    Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A1 * DC_LINK_VOLT_CONV;
+    Global_Data.av.U_U = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_U;
+    Global_Data.av.U_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_V;
+    Global_Data.av.U_W = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_W;
+
+    Global_Data.av.temperature = Global_Data.aa.A1.me.ADC_B5 * MOSFET_TEMP_CONV_U;
+
+    // Assertion check
+    if (fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION | fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION | fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION | fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION | fabs(Global_Data.av.temperature) >= MAX_TEMP_ASSERTION){
+    	// Assertion to Stop Machine if max. Current or max. Speed
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	ultrazohm_state_machine_set_stop(true);
+    	// Set reset-gpio to zero
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio, 2, 0U);
+    }
+
+    SKAI_nERROUT = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio, 0);
+
+    last_state = current_state;
+    current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
+    	//uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+    	//uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
         // Start: Control algorithm - only if ultrazohm is in control state
-    }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    	if(current_state != last_state){
+    		// First step in control-loop
+    		flg_reset_SKAI = 1U;
+    		reset_counter = 0;
+    		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+    	}
+    	if (flg_reset_SKAI){
+    		// Check if control loop is enabled for one period
+    		if(reset_counter > 0){
+    			uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio, 2, 1U);
+    			if (SKAI_nERROUT == 1U){
+    				flg_reset_SKAI = 0;
+    				uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+    			}
+    		}
+    		reset_counter++;
+    	} else{
+    		// Begin of control algorithm
 
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+
+    	    // Set Dutycycle
+    	    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+    	}
+    } else{
+    	// Jumped out of control state --> Reset has to be low for 1 ms
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio, 2, 0U);
+    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+    }
+
+
+    Global_Data.rasv.SKAI_nERROUT = SKAI_nERROUT;
+    Global_Data.rasv.flg_reset_SKAI = flg_reset_SKAI;
+    Global_Data.rasv.SKAI_reset_counter = reset_counter;
+
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

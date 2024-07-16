@@ -143,19 +143,19 @@ float iq_setpoints[22]={
 #include "iq_setpoints.csv"
 };
 
-float id5_setpoints[4]={
+float id5_setpoints[20]={
 #include "id5_setpoints.csv"
 };
 
-float iq5_setpoints[4]={
+float iq5_setpoints[20]={
 #include "iq5_setpoints.csv"
 };
 
-float id7_setpoints[4]={
+float id7_setpoints[20]={
 #include "id7_setpoints.csv"
 };
 
-float iq7_setpoints[4]={
+float iq7_setpoints[20]={
 #include "iq7_setpoints.csv"
 };
 
@@ -252,7 +252,7 @@ void ISR_Control(void *data)
 			uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
 
 			// Set tristate to false
-			//uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
 			uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
 //    	}
     } else {
@@ -311,8 +311,8 @@ void ISR_Control(void *data)
 
 				break;
     		case 1:
-    			samples = 20000;
-    			measurement_steps = 4;
+    			samples = 11290;
+    			measurement_steps = 20;
 
     			// Normale HCI
     			i_dq_ref_Amps_1.d = -3.2f;
@@ -351,6 +351,7 @@ void ISR_Control(void *data)
     }else{
     	i_dq_ref_Amps_1=i_dq_ref_java_Amps_1;
 
+
     }
     theta_el_1_old = Global_Data.av.theta_elec_1;
 
@@ -370,34 +371,34 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
 
-//    	if(ext_clamping_1 == false) {
-//    	    			i_dq_integrated_error_Amps_1.d = (i_dq_integrated_error_Amps_1.d + (i_dq_error_Amps_1.d * ts)); // use Forward-Euler with error of previous timestep for integration
-//    	    			i_dq_integrated_error_Amps_1.q = (i_dq_integrated_error_Amps_1.q + (i_dq_error_Amps_1.q * ts));
-//    	    		} else {
-//    	    			i_dq_integrated_error_Amps_1.d += 0.0f;
-//    	    			i_dq_integrated_error_Amps_1.q += 0.0f;
-//    	    		}
-//    	    		i_dq_error_Amps_1.d = (i_dq_ref_rlc_Amps_1.d - i_dq_Amps_1.d) / PMSM_rated_current_1;
-//    	    		i_dq_error_Amps_1.q = (i_dq_ref_rlc_Amps_1.q - i_dq_Amps_1.q) / PMSM_rated_current_1;
-//
-//    	observation_ip[0] = i_dq_error_Amps_1.d;
-//		observation_ip[1] = i_dq_integrated_error_Amps_1.d * UZ_PWM_FREQUENCY;
-//		observation_ip[2] = i_dq_Amps_1.d / PMSM_rated_current_1;
-//		observation_ip[3] = (i_dq_ref_rlc_advanced_Amps_1.d - i_dq_ref_rlc_Amps_1.d) / harmonic_rated_current_1;
-//		observation_ip[4] = i_dq_error_Amps_1.q;
-//		observation_ip[5] = i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY ;
-//		observation_ip[6] = i_dq_Amps_1.q / PMSM_rated_current_1;
-//		observation_ip[7] = (i_dq_ref_rlc_advanced_Amps_1.q - i_dq_ref_rlc_Amps_1.q) / harmonic_rated_current_1;
-//		observation_ip[8] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
-//		observation_ip[9] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
-//		observation_ip[10] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
-//		observation_ip[11] = cosf(theta_el_rad_1);
-//		observation_ip[12] = sinf(theta_el_rad_1);
-//		observation_ip[13] = cosf(6.0f * theta_el_rad_1);
-//		observation_ip[14] = sinf(6.0f * theta_el_rad_1);
-//		for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
-//			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
-//		}
+    	if(ext_clamping_1 == false) {
+    	    			i_dq_integrated_error_Amps_1.d = (i_dq_integrated_error_Amps_1.d + (i_dq_error_Amps_1.d * ts)); // use Forward-Euler with error of previous timestep for integration
+    	    			i_dq_integrated_error_Amps_1.q = (i_dq_integrated_error_Amps_1.q + (i_dq_error_Amps_1.q * ts));
+    	    		} else {
+    	    			i_dq_integrated_error_Amps_1.d += 0.0f;
+    	    			i_dq_integrated_error_Amps_1.q += 0.0f;
+    	    		}
+    	    		i_dq_error_Amps_1.d = (i_dq_ref_rlc_Amps_1.d - i_dq_Amps_1.d) / PMSM_rated_current_1;
+    	    		i_dq_error_Amps_1.q = (i_dq_ref_rlc_Amps_1.q - i_dq_Amps_1.q) / PMSM_rated_current_1;
+
+    	observation_ip[0] = i_dq_error_Amps_1.d;
+		observation_ip[1] = i_dq_integrated_error_Amps_1.d * UZ_PWM_FREQUENCY;
+		observation_ip[2] = i_dq_Amps_1.d / PMSM_rated_current_1;
+		observation_ip[3] = (i_dq_ref_rlc_advanced_Amps_1.d - i_dq_ref_rlc_Amps_1.d) / harmonic_rated_current_1;
+		observation_ip[4] = i_dq_error_Amps_1.q;
+		observation_ip[5] = i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY ;
+		observation_ip[6] = i_dq_Amps_1.q / PMSM_rated_current_1;
+		observation_ip[7] = (i_dq_ref_rlc_advanced_Amps_1.q - i_dq_ref_rlc_Amps_1.q) / harmonic_rated_current_1;
+		observation_ip[8] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
+		observation_ip[9] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
+		observation_ip[10] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+		observation_ip[11] = cosf(theta_el_rad_1);
+		observation_ip[12] = sinf(theta_el_rad_1);
+		observation_ip[13] = cosf(6.0f * theta_el_rad_1);
+		observation_ip[14] = sinf(6.0f * theta_el_rad_1);
+		for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
+			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
+		}
 
     	// FOC und HCI control
     	if(select_FOC) {
@@ -472,7 +473,7 @@ void ISR_Control(void *data)
 	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
 	  		}
 
-            uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input, p_output_data);
+            uz_mlp_three_layer_ff_blocking_unsafe(mlp_ip_instance, Global_Data.objects.matrix_input, p_output_data);
             // IP-Core only calculates with linear, tanh has to be added manually
             v_dq_non_limited_Volts_1.d = (uz_nn_activation_function_tanh(mlp_ip_output[0])) * U_max_1;
             v_dq_non_limited_Volts_1.q = (uz_nn_activation_function_tanh(mlp_ip_output[1])) * U_max_1;
@@ -482,7 +483,7 @@ void ISR_Control(void *data)
     	    v_dq_limited_Volts_old_old_1 = v_dq_limited_Volts_1;
     	    //v_dq_limited_Volts_old_1 = v_dq_limited_Volts_1;
     	    output_1 = uz_Space_Vector_Modulation(v_dq_limited_Volts_1, v_DC_Volts_1, theta_el_rad_1_advanced);
-    		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+    	    //uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
 
     	} else {
     		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);

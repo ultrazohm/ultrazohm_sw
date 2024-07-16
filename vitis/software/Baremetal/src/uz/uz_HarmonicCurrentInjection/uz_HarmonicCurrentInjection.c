@@ -141,6 +141,9 @@ uz_3ph_dq_t uz_HarmonicCurrentInjection_sample(uz_HarmonicCurrentInjection_t* se
 void uz_HarmonicCurrentInjection_set_filters(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
+	if (fabsf(omega_el_rad_per_sec)<20.0f){
+			omega_el_rad_per_sec=20.0f;
+		}
 	float cutoff_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf * 10.0f));
 	float pass_frequency_Hz = 0.0f;
     switch (self->config.selection)
@@ -158,9 +161,9 @@ void uz_HarmonicCurrentInjection_set_filters(uz_HarmonicCurrentInjection_t* self
        	break;
     default:
         break;
+    }
     uz_signals_IIR_Filter_set_lowpass(self->Lowpass_d_axis, cutoff_frequency_Hz);
     uz_signals_IIR_Filter_set_lowpass(self->Lowpass_q_axis, cutoff_frequency_Hz);
-    }
 }
 
 void uz_HarmonicCurrentInjection_set_controllers(uz_HarmonicCurrentInjection_t* self, struct uz_PMSM_t config_PMSM, float omega_el_rad_per_sec){

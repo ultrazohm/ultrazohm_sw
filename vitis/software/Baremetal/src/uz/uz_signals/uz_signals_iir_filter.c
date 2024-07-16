@@ -185,7 +185,7 @@ float uz_signals_IIR_Filter_reverse_sample(uz_IIR_Filter_t *self, float input)
 void uz_signals_IIR_Filter_set_lowpass(uz_IIR_Filter_t* self, float cutoff_frequency_Hz){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-    uz_assert(cutoff_frequency_Hz + 1.0f > 0.0f);
+    uz_assert(cutoff_frequency_Hz > 0.0f);
     uz_assert(self->config.sample_frequency_Hz > (2.0f * cutoff_frequency_Hz));
     self->RC = 1.0f / (cutoff_frequency_Hz * 2.0f * UZ_PIf);
     self->dt = 1.0f / self->config.sample_frequency_Hz;
@@ -195,7 +195,7 @@ void uz_signals_IIR_Filter_set_lowpass(uz_IIR_Filter_t* self, float cutoff_frequ
 void uz_signals_IIR_Filter_set_bandpass(uz_IIR_Filter_t* self, float pass_frequency_Hz, float damping){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-    uz_assert(pass_frequency_Hz + 1.0f > 0.0f);
+    uz_assert(pass_frequency_Hz > 0.0f);
     uz_assert(self->config.sample_frequency_Hz > (2.0f * pass_frequency_Hz));
     uz_assert(damping > 0.0f);
     self->config.pass_frequency_Hz = pass_frequency_Hz;

@@ -59,6 +59,20 @@ platform_state_t last_state;
 platform_state_t current_state;
 int reset_counter=0;
 
+float polycoef_a = 1999.3f;
+float polycoef_b = -5468.4f;
+float polycoef_c = 6334.4f;
+float polycoef_d = -2043.7f;
+float resistor_temp = 1000.0f;
+float resistor_ref = 1000.0f;
+float temp_ref = 25.0f;
+
+float temp_coef_a = 0.0173f;
+float temp_coef_b = 7.64f;
+float temp_coef_c = 0;
+
+
+
 // Variables for Current Control and Speed Control
 /*
 struct uz_3ph_abc_t measurement_current = {.a = 0.0f, .b = 0.0f, .c = 0.0f};
@@ -94,16 +108,19 @@ void ISR_Control(void *data)
     ReadAllADC();
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    Global_Data.av.I_U = (Global_Data.aa.A1.me.ADC_A4 - 0.075f) * PHASE_CURRENT_CONV_U;
-    Global_Data.av.I_V = (Global_Data.aa.A1.me.ADC_A3 - 0.155f) * PHASE_CURRENT_CONV_V;
-    Global_Data.av.I_W = (Global_Data.aa.A1.me.ADC_A2 - 0.02f) * PHASE_CURRENT_CONV_W;
+    Global_Data.av.I_U = (Global_Data.aa.A1.me.ADC_A4 - 0.077469f) * PHASE_CURRENT_CONV_U;
+    Global_Data.av.I_V = (Global_Data.aa.A1.me.ADC_A3 - 0.15645f) * PHASE_CURRENT_CONV_V;
+    Global_Data.av.I_W = (Global_Data.aa.A1.me.ADC_A2 - 0.02604f) * PHASE_CURRENT_CONV_W;
 
     Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A1 * DC_LINK_VOLT_CONV;
     Global_Data.av.U_U = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_U;
     Global_Data.av.U_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_V;
     Global_Data.av.U_W = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_W;
 
-    Global_Data.av.temperature = Global_Data.aa.A1.me.ADC_B5 * MOSFET_TEMP_CONV_U;
+    float volt_temp = Global_Data.aa.A1.me.ADC_B5 * MOSFET_TEMP_CONV_U;
+    resistor_temp = polycoef_a * pow(volt_temp, 3) + polycoef_b * pow(volt_temp, 2) + polycoef_c * volt_temp + polycoef_d;
+    temp_coef_c = resistor_ref - resistor_temp;
+    Global_Data.av.temperature = temp_ref + (-temp_coef_b + sqrt(temp_coef_b*temp_coef_b - (4*temp_coef_a*temp_coef_c)))/(2*temp_coef_a);
 
     // Assertion check
     if (fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION | fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION | fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION | fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION | fabs(Global_Data.av.temperature) >= MAX_TEMP_ASSERTION){

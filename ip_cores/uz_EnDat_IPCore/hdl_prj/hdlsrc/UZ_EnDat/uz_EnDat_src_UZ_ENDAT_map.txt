@@ -21,6 +21,7 @@ UZ_EnDat/UZ_ENDAT/Compare To Constant --> uz_EnDat_src_Compare_To_Constant_block
 UZ_EnDat/UZ_ENDAT/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block
 UZ_EnDat/UZ_ENDAT/Compare To Constant2 --> uz_EnDat_src_Compare_To_Constant2_block
 UZ_EnDat/UZ_ENDAT/Compare To Constant3 --> uz_EnDat_src_Compare_To_Constant3
+UZ_EnDat/UZ_ENDAT/Compare To Constant4 --> uz_EnDat_src_Compare_To_Constant4
 UZ_EnDat/UZ_ENDAT/DATA2CLOCKSYNCER/Divide --> uz_EnDat_src_Divide
 UZ_EnDat/UZ_ENDAT/DATA2CLOCKSYNCER --> uz_EnDat_src_DATA2CLOCKSYNCER
 UZ_EnDat/UZ_ENDAT/DATAFLOWCHGER/Divide --> uz_EnDat_src_Divide_block
@@ -97,7 +98,7 @@ UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant --> uz_EnDat_src_Compare_To_
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant1 --> uz_EnDat_src_Compare_To_Constant1_block5
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant2 --> uz_EnDat_src_Compare_To_Constant2_block2
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant3 --> uz_EnDat_src_Compare_To_Constant3_block
-UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant4 --> uz_EnDat_src_Compare_To_Constant4
+UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant4 --> uz_EnDat_src_Compare_To_Constant4_block
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant5 --> uz_EnDat_src_Compare_To_Constant5
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant6 --> uz_EnDat_src_Compare_To_Constant6
 UZ_EnDat/UZ_ENDAT/8BIT_SPLITTER/Compare To Constant7 --> uz_EnDat_src_Compare_To_Constant7

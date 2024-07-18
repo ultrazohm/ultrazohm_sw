@@ -22,6 +22,7 @@ vcom  uz_EnDat_src_Compare_To_Constant_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant2_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant3.vhd
+vcom  uz_EnDat_src_Compare_To_Constant4.vhd
 vcom  uz_EnDat_src_Divide.vhd
 vcom  uz_EnDat_src_DATA2CLOCKSYNCER.vhd
 vcom  uz_EnDat_src_Divide_block.vhd
@@ -98,7 +99,7 @@ vcom  uz_EnDat_src_Compare_To_Constant_block3.vhd
 vcom  uz_EnDat_src_Compare_To_Constant1_block5.vhd
 vcom  uz_EnDat_src_Compare_To_Constant2_block2.vhd
 vcom  uz_EnDat_src_Compare_To_Constant3_block.vhd
-vcom  uz_EnDat_src_Compare_To_Constant4.vhd
+vcom  uz_EnDat_src_Compare_To_Constant4_block.vhd
 vcom  uz_EnDat_src_Compare_To_Constant5.vhd
 vcom  uz_EnDat_src_Compare_To_Constant6.vhd
 vcom  uz_EnDat_src_Compare_To_Constant7.vhd

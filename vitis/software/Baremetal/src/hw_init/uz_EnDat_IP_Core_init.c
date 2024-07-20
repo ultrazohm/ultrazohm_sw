@@ -35,8 +35,8 @@ uz_EnDat_t* uz_EnDat_IP_core_custom_init(void) {
     EnDat_temp_ptr->config.factor2 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_2_DEFAULT, uz_EnDat_factor2_recoverytime);
     EnDat_temp_ptr->config.factor3 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_3_DEFAULT, uz_EnDat_factor3_initialoff);
     EnDat_temp_ptr->config.factor4 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_4_DEFAULT, uz_EnDat_factor4_data2clksync);
-    EnDat_temp_ptr->config.factor5 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_5_DEFAULT+3, uz_EnDat_factor5_telegrammlength);
-    EnDat_temp_ptr->config.factor6 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_6_DEFAULT+2, uz_EnDat_factor6_responsesync);
+    EnDat_temp_ptr->config.factor5 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_5_DEFAULT, uz_EnDat_factor5_telegrammlength);
+    EnDat_temp_ptr->config.factor6 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_6_DEFAULT, uz_EnDat_factor6_responsesync);
     EnDat_temp_ptr->config.factor7 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_7_DEFAULT, uz_EnDat_factor7_extrashift); //+2 should usually work for most odd behaviour
     //stop adjustment above this statement
     EnDat_temp_ptr->config.control = uz_EnDat_enable_config_evaluation_in_IP(EnDat_temp_ptr->config.control);

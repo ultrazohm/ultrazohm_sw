@@ -5602,7 +5602,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:10.2",
+            "vlnv": "xilinx.com:ip:uz_EnDat:10.3",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0_1\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"

@@ -29,9 +29,9 @@ vcom  uz_EnDat_src_Divide_block.vhd
 vcom  uz_EnDat_src_DATAFLOWCHGER.vhd
 vcom  uz_EnDat_src_DIFFBUILDER.vhd
 vcom  uz_EnDat_src_Detect_Change.vhd
-vcom  uz_EnDat_src_Subsystem.vhd
 vcom  uz_EnDat_src_Compare_To_Constant_block1.vhd
 vcom  uz_EnDat_src_Subsystem6.vhd
+vcom  uz_EnDat_src_Subsystem.vhd
 vcom  uz_EnDat_src_INITIALOFF.vhd
 vcom  uz_EnDat_src_Compare_To_Constant_block2.vhd
 vcom  uz_EnDat_src_Detect_Increase1.vhd

@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_fixedpoint/uz_fixedpoint.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -40,6 +41,7 @@ DS_Data Global_Data = {
     }
 };
 
+
 enum init_chain
 {
     init_assertions = 0,
@@ -55,6 +57,13 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    struct uz_fixedpoint_definition_t current_limit_SI = {
+    		.is_signed = true,
+    		.integer_bits = 12,
+    		.fractional_bits = 15
+    };
+
     while (1)
     {
         switch (initialization_chain)
@@ -71,6 +80,9 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.av.i_max_cur_lim_ip_SI = 12.0f;
+            Global_Data.av.polepairs = 5.0f;
+            Global_Data.objects.foc_current = init_FOC_CurrentControl();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -89,7 +101,17 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.tempMeasurement1 = init_InverterTempMeasurement1();
+            Global_Data.objects.tempMeasurement2 = init_InverterTempMeasurement2();
+            Global_Data.objects.resolver_d5_1 = init_resolver_at_d5_1();
+            Global_Data.objects.resolver_pl_interface = initialize_resolver_pl_interface();
+            Global_Data.objects.temperature_card_d4 = initialize_temperature_card_d4();
+            uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);
+            uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d4);
+            Global_Data.objects.inv_fault_in = init_inverter_fault_axi_gpio();
+            // current limit detection ip
+            uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_CUR_LIM_0_BASEADDR + 0x100, Global_Data.av.i_max_cur_lim_ip_SI, current_limit_SI);
+
             initialization_chain = print_msg;
             break;
 	    case print_msg:
@@ -107,6 +129,16 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+
+        	// read temperature values from inverters
+        	Global_Data.av.tempPWMoutputs1 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);
+        	Global_Data.av.tempPWMoutputs2 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement2);
+        	Global_Data.av.temperature_inv_1 = Global_Data.av.tempPWMoutputs1.TempDegreesCelsius;
+        	Global_Data.av.temperature_inv_2 = Global_Data.av.tempPWMoutputs2.TempDegreesCelsius;
+        	// read temperature values from winding
+            Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
+            Global_Data.av.average_winding_temp = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 3U, 13U);
+
             break;
         default:
             break;

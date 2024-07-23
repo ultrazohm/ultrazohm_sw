@@ -60,12 +60,17 @@ enum JS_SlowData {
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Error_Code,
+	JSSD_FLOAT_theta_el,
 	JSSD_FLOAT_v_dc1,
 	JSSD_FLOAT_v_dc2,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_torque,
+	JSSD_FLOAT_overcurrent,
+	JSSD_FLOAT_inv1Temp,
+	JSSD_FLOAT_inv2Temp,
+	JSSD_FLOAT_winding_temp,
 	JSSD_ENDMARKER
 };
 

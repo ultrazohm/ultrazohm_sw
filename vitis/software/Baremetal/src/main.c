@@ -136,6 +136,7 @@ int main(void)
         	Global_Data.av.temperature_inv_1 = Global_Data.av.tempPWMoutputs1.TempDegreesCelsius;
         	Global_Data.av.temperature_inv_2 = Global_Data.av.tempPWMoutputs2.TempDegreesCelsius;
         	// read temperature values from winding
+        	uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
             Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
             Global_Data.av.average_winding_temp = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 3U, 13U);
 

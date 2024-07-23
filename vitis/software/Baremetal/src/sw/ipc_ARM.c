@@ -187,10 +187,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		data->av.i_d_ref = value;
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
+		data->av.i_q_ref = value;
 			break;
 
 		case (Set_Send_Field_3):

@@ -101,6 +101,11 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_overcurrent]			= &(data->av.overcurrent_FPGA_fl);
+	js_slowDataArray[JSSD_FLOAT_inv1Temp]				= &(data->av.temperature_inv_1);
+	js_slowDataArray[JSSD_FLOAT_inv2Temp]				= &(data->av.temperature_inv_2);
+	js_slowDataArray[JSSD_FLOAT_winding_temp]			= &(data->av.average_winding_temp);
+	js_slowDataArray[JSSD_FLOAT_theta_el]				=&(data->av.theta_elec_rad_ip);
 
 	return Status;
 }

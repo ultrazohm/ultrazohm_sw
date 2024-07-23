@@ -123,7 +123,7 @@ void ISR_Control(void *data)
 	}
 
 	// check fast fpga current limit violation
-	if (uz_axi_read_bool(XPAR_UZ_USER_UZ_CUR_LIM_0_BASEADDR + 0x104) == true) {
+	if (uz_axi_read_bool(XPAR_UZ_USER_UZ_CUR_LIM_0_BASEADDR + 0x108) == true) {
 		ultrazohm_state_machine_set_stop(true);
 		Global_Data.av.overcurrent_FPGA = true;
 		Global_Data.av.overcurrent_FPGA_fl = 1.0f;
@@ -177,6 +177,7 @@ void ISR_Control(void *data)
     if (current_state==idle_state)
     {
     	uz_CurrentControl_reset(Global_Data.objects.foc_current);
+    	uz_axi_write_bool(XPAR_UZ_CUR_LIM_0_BASEADDR + 0x104, true);
 
     	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;

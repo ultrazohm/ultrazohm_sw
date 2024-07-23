@@ -15,8 +15,6 @@ const struct uz_PI_Controller_config config_id = {
 		.Ki = 1500.0f, //159.0f
 		.samplingTime_sec = 0.0001f,
 		.type = ideal,
-		.upper_limit = 326.0f,
-		.lower_limit = -326.0f
 };
 
 const struct uz_PI_Controller_config config_iq = {
@@ -24,15 +22,14 @@ const struct uz_PI_Controller_config config_iq = {
 		.Ki = 1500.0f, //71.0f
 		.samplingTime_sec = 0.0001f,
 		.type = ideal,
-		.upper_limit = 326.0f,
-		.lower_limit = -326.0f
 };
 
 struct uz_CurrentControl_config current_control_config = {
 		.config_PMSM = config_PMSM,
 		.config_id = config_id,
 		.config_iq = config_iq,
-		.decoupling_select = no_decoupling
+		.decoupling_select = no_decoupling,
+		.max_modulation_index = 0.5f
 };
 
 uz_CurrentControl_t* init_FOC_CurrentControl() {

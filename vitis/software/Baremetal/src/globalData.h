@@ -14,6 +14,12 @@
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
+
+enum current_control_select {
+		PI_FOC,
+		FCS_MPC,
+		IMPL_MOD,
+};
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -108,10 +114,27 @@ typedef struct _actualValues_ {
 	float i_z2;
 	float i_d;
 	float i_q;
+	float i_x;
+	float i_y;
+	float i_d_pu;
+	float i_q_pu;
+	float i_x_pu;
+	float i_y_pu;
+	float omega_mech_pu;
 	float i_d_ref;
 	float i_q_ref;
 	float i_x_ref;
 	float i_y_ref;
+	float i_d_ref_pu;
+	float i_q_ref_pu;
+	float i_x_ref_pu;
+	float i_y_ref_pu;
+	float lambda;
+	float solver_tolerance;
+	float max_iter;
+	bool HC_off_on;
+	float dutycyc[6];
+	float iterations;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -127,6 +150,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge10DutyCycle;
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
+	enum current_control_select current_ctrl_select;
 } referenceAndSetValues;
 
 typedef struct{

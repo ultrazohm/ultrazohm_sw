@@ -1,5 +1,7 @@
 //APU_RPU_shared.h
 #pragma once
+#include "stdbool.h"
+
 // OCM Bank Adresses
 // See UG1085 v2.4 table 18-1 OCM Mapping Summary (https://docs.amd.com/r/en-US/ug1085-zynq-ultrascale-trm)
 #define MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU 	0xFFFD0000 // bank 1 is for r5->a53 user data
@@ -11,7 +13,7 @@
 #define JAVASCOPE_DATA_SIZE_2POW  	128
 
 // Experimental feature - read docs before use
-#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		FALSE
+#define USE_A53_AS_ACCELERATOR_FOR_R5_ISR		TRUE
 
 struct javascope_data_t
 {
@@ -30,11 +32,36 @@ struct APU_to_RPU_t
 struct APU_to_RPU_user_data_t
 {
 	// create variables that you want to share from A53 to R5
-	uint32_t slowDataCounter;
+	float dutycyc[6];
+	float iterations;
 };
 
 struct RPU_to_APU_user_data_t
 {
 	// create variables that you want to share from R5 to A53
-	uint32_t slowDataCounter;
+	float v_DC_pu;
+	float theta_el;
+	float Ts_times_ZB_over_Ld;
+	float Ts_times_ZB_over_Lq;
+	float Ts_times_ZB_over_Lx;
+	float Ts_times_ZB_over_Ly;
+	float Rs_over_ZB;
+	float Ld_over_LB;
+	float Lq_over_LB;
+	float Lx_over_LB;
+	float Ly_over_LB;
+	float psi_pm_over_psiB;
+	float omega_m_pu;
+	float i_d_pu;
+	float i_q_pu;
+	float i_x_pu;
+	float i_y_pu;
+	float i_d_ref_pu;
+	float i_q_ref_pu;
+	float i_x_ref_pu;
+	float i_y_ref_pu;
+	float lambda;
+	float solver_tolerance;
+	float max_iter;
+	bool HC_off_on;
 };

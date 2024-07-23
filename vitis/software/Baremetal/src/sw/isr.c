@@ -31,6 +31,9 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_Transformation/uz_Transformation.h"
 #include "../uz/uz_spwm/uz_spwm.h"
+#include "../uz/uz_math_constants.h"
+#include "../include/FOC.h"
+#include "../uz/uz_signals/uz_signals.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -38,12 +41,15 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
+extern base_val_t inverse_base_val;
 
 
 uz_6ph_abc_t six_ph_currents = {0.0f};
 uz_6ph_alphabeta_t six_ph_alphabeta = {0.0f};
 uz_3ph_alphabeta_t three_ph_alphabeta = {0.0f};
 uz_3ph_dq_t rotating_dq = {0};
+uz_3ph_dq_t rotating_xy = {0};
+uz_6ph_dq_t six_ph_dq = {0};
 
 uz_3ph_dq_t i_dq_ref = {0.0f};
 uz_3ph_dq_t i_dq_actual = {0.0f};
@@ -157,11 +163,29 @@ void ISR_Control(void *data)
     Global_Data.av.i_Y = six_ph_alphabeta.y;
 
     // Park transform alpha/beta currents
-    three_ph_alphabeta.alpha = six_ph_alphabeta.alpha;
-    three_ph_alphabeta.beta = six_ph_alphabeta.beta;
-    rotating_dq = uz_transformation_3ph_alphabeta_to_dq(three_ph_alphabeta, Global_Data.av.theta_elec_rad_ip);
-    Global_Data.av.i_d = rotating_dq.d;
-    Global_Data.av.i_q = rotating_dq.q;
+//    three_ph_alphabeta.alpha = six_ph_alphabeta.alpha;
+//    three_ph_alphabeta.beta = six_ph_alphabeta.beta;
+//    rotating_dq = uz_transformation_3ph_alphabeta_to_dq(three_ph_alphabeta, Global_Data.av.theta_elec_rad_ip);
+//    Global_Data.av.i_d = rotating_dq.d;
+//    Global_Data.av.i_q = rotating_dq.q;
+
+    // Park transform alpha/beta currents with positive turning, and XY currents with negative turning angle
+    six_ph_dq = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta, Global_Data.av.theta_mech_rad_ip, 2*UZ_PIf-Global_Data.av.theta_mech_rad_ip);
+    Global_Data.av.i_d = six_ph_dq.d;
+    Global_Data.av.i_q = six_ph_dq.q;
+    Global_Data.av.i_x = six_ph_dq.x;
+    Global_Data.av.i_y = six_ph_dq.y;
+
+    // p.u. convert currents for control
+    Global_Data.av.i_d_pu = Global_Data.av.i_d*inverse_base_val.IB;
+    Global_Data.av.i_q_pu = Global_Data.av.i_q*inverse_base_val.IB;
+    Global_Data.av.i_x_pu = Global_Data.av.i_x*inverse_base_val.IB;
+    Global_Data.av.i_y_pu = Global_Data.av.i_y*inverse_base_val.IB;
+    Global_Data.av.omega_mech_pu = Global_Data.av.mechanicalRotorSpeedRADpS_ip*inverse_base_val.omegaB;
+    Global_Data.av.i_d_ref_pu = Global_Data.av.i_d_ref*inverse_base_val.IB;
+    Global_Data.av.i_q_ref_pu = Global_Data.av.i_q_ref*inverse_base_val.IB;
+    Global_Data.av.i_x_ref_pu = Global_Data.av.i_x_ref*inverse_base_val.IB;
+    Global_Data.av.i_y_ref_pu = Global_Data.av.i_y_ref*inverse_base_val.IB;
 
     // assign to structs
     i_dq_actual.d = Global_Data.av.i_d;
@@ -206,12 +230,25 @@ void ISR_Control(void *data)
     	output1 = uz_spwm_abc(input1, Global_Data.av.v_dc1);
     	output2 = uz_spwm_abc(input2, Global_Data.av.v_dc2);
 
-    	Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_A;
-    	Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_B;
-    	Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_C;
-    	Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_A;
-    	Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_B;
-    	Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_C;
+    	if(Global_Data.rasv.current_ctrl_select == IMPL_MOD) {
+    		// ATTENTION those are actually 1 minus dutycyc, see javascope.c
+    	    Global_Data.rasv.halfBridge1DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[0], 1.0f, 0.0f);
+    	    Global_Data.rasv.halfBridge2DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[1], 1.0f, 0.0f);
+    	    Global_Data.rasv.halfBridge3DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[2], 1.0f, 0.0f);
+    	    Global_Data.rasv.halfBridge4DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[3], 1.0f, 0.0f);
+    	    Global_Data.rasv.halfBridge5DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[4], 1.0f, 0.0f);
+    	    Global_Data.rasv.halfBridge6DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[5], 1.0f, 0.0f);
+    		// ATTENTION
+
+    	} else {
+    		Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_A;
+    		Global_Data.rasv.halfBridge2DutyCycle = output1.DutyCycle_B;
+    		Global_Data.rasv.halfBridge3DutyCycle = output1.DutyCycle_C;
+    		Global_Data.rasv.halfBridge4DutyCycle = output2.DutyCycle_A;
+    		Global_Data.rasv.halfBridge5DutyCycle = output2.DutyCycle_B;
+    		Global_Data.rasv.halfBridge6DutyCycle = output2.DutyCycle_C;
+    	}
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

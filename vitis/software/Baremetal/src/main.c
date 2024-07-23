@@ -83,6 +83,10 @@ int main(void)
             Global_Data.av.i_max_cur_lim_ip_SI = 12.0f;
             Global_Data.av.polepairs = 5.0f;
             Global_Data.objects.foc_current = init_FOC_CurrentControl();
+            Global_Data.av.lambda = 10.0f;
+            Global_Data.av.solver_tolerance = 1e-6f;
+            Global_Data.av.max_iter = 10.0f;
+            Global_Data.rasv.current_ctrl_select = PI_FOC;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

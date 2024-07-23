@@ -386,6 +386,8 @@ int main_thread()
 			THREAD_STACKSIZE,
 			DEFAULT_THREAD_PRIO);
 
+	impl_mod_mpc_init();
+
     vTaskDelete(NULL);
     return 0;
 }

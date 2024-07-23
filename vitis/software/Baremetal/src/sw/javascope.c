@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../include/FOC.h"
 
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
@@ -47,7 +48,7 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern pre_calc_val_t pre_calc_val;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -79,11 +80,20 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_i_beta]				= &data->av.i_beta;
 	js_ch_observable[JSO_i_X]					= &data->av.i_X;
 	js_ch_observable[JSO_i_Y]					= &data->av.i_Y;
-	js_ch_observable[JSO_i_q] 					= &data->av.i_q;
 	js_ch_observable[JSO_i_d] 					= &data->av.i_d;
+	js_ch_observable[JSO_i_q] 					= &data->av.i_q;
+	js_ch_observable[JSO_i_x] 					= &data->av.i_x;
+	js_ch_observable[JSO_i_y] 					= &data->av.i_y;
 	js_ch_observable[JSO_theta_el] 				= &data->av.theta_elec_rad_ip;
 	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech_rad_ip;
 	js_ch_observable[JSO_speed_rpm]				= &data->av.mechanicalRotorSpeedRPM_ip;
+	js_ch_observable[JSO_dutycyc_MPC_a1]		= &data->av.dutycyc[0];
+	js_ch_observable[JSO_dutycyc_MPC_b1]		= &data->av.dutycyc[1];
+	js_ch_observable[JSO_dutycyc_MPC_c1]		= &data->av.dutycyc[2];
+	js_ch_observable[JSO_dutycyc_MPC_a2]		= &data->av.dutycyc[3];
+	js_ch_observable[JSO_dutycyc_MPC_b2]		= &data->av.dutycyc[4];
+	js_ch_observable[JSO_dutycyc_MPC_c2]		= &data->av.dutycyc[5];
+	js_ch_observable[JSO_iterations]			= &data->av.iterations;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -124,8 +134,31 @@ void JavaScope_update(DS_Data* data){
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
-	rpu_to_apu_user_data->slowDataCounter = js_cnt_slowData; //just an example
-	// add further data...
+	rpu_to_apu_user_data->v_DC_pu = data->av.v_dc1;
+	rpu_to_apu_user_data->theta_el = data->av.theta_elec_rad_ip;
+	rpu_to_apu_user_data->Ts_times_ZB_over_Ld = pre_calc_val.Ts_times_ZB_over_Ld;
+	rpu_to_apu_user_data->Ts_times_ZB_over_Lq = pre_calc_val.Ts_times_ZB_over_Lq;
+	rpu_to_apu_user_data->Ts_times_ZB_over_Lx = pre_calc_val.Ts_times_ZB_over_Lx;
+	rpu_to_apu_user_data->Ts_times_ZB_over_Ly = pre_calc_val.Ts_times_ZB_over_Ly;
+	rpu_to_apu_user_data->Rs_over_ZB = pre_calc_val.Rs_over_ZB;
+	rpu_to_apu_user_data->Ld_over_LB = pre_calc_val.Ld_over_LB;
+	rpu_to_apu_user_data->Lq_over_LB = pre_calc_val.Lq_over_LB;
+	rpu_to_apu_user_data->Lx_over_LB = pre_calc_val.Lx_over_LB;
+	rpu_to_apu_user_data->Ly_over_LB = pre_calc_val.Ly_over_LB;
+	rpu_to_apu_user_data->psi_pm_over_psiB = pre_calc_val.psi_pm_over_psiB;
+	rpu_to_apu_user_data->omega_m_pu = data->av.omega_mech_pu;
+	rpu_to_apu_user_data->i_d_pu = data->av.i_d_pu;
+	rpu_to_apu_user_data->i_q_pu = data->av.i_q_pu;
+	rpu_to_apu_user_data->i_x_pu = data->av.i_x_pu;
+	rpu_to_apu_user_data->i_y_pu = data->av.i_y_pu;
+	rpu_to_apu_user_data->i_d_ref_pu = data->av.i_d_ref_pu;
+	rpu_to_apu_user_data->i_q_ref_pu = data->av.i_q_ref_pu;
+	rpu_to_apu_user_data->i_x_ref_pu = data->av.i_x_ref_pu;
+	rpu_to_apu_user_data->i_y_ref_pu = data->av.i_y_ref_pu;
+	rpu_to_apu_user_data->lambda = data->av.lambda;
+	rpu_to_apu_user_data->solver_tolerance = data->av.solver_tolerance;
+	rpu_to_apu_user_data->max_iter = data->av.max_iter;
+	rpu_to_apu_user_data->HC_off_on = data->av.HC_off_on;
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif
@@ -186,7 +219,15 @@ void JavaScope_update(DS_Data* data){
 	//invalidate cache and read data from a53 shared memory
 	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 	// get data from apu_to_rpu_user_data struct and use it
-	 data->av.slowDataCounter = apu_to_rpu_user_data->slowDataCounter; //just an example
+	data->av.dutycyc[0] = 1.0f-apu_to_rpu_user_data->dutycyc[0];
+	data->av.dutycyc[1] = 1.0f-apu_to_rpu_user_data->dutycyc[1];
+	data->av.dutycyc[2] = 1.0f-apu_to_rpu_user_data->dutycyc[2];
+	data->av.dutycyc[3] = 1.0f-apu_to_rpu_user_data->dutycyc[3];
+	data->av.dutycyc[4] = 1.0f-apu_to_rpu_user_data->dutycyc[4];
+	data->av.dutycyc[5] = 1.0f-apu_to_rpu_user_data->dutycyc[5];
+
+	data->av.iterations = apu_to_rpu_user_data->iterations;
+
 #endif
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);

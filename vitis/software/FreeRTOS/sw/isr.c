@@ -90,12 +90,23 @@ void Transfer_ipc_Intr_Handler(void *data)
 	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 
 	// get data from r5 from shared memory
-	// some_variable  = rpu_to_apu_user_data->...
+//		codegenInstance.input.v_DC_pu = rpu_to_apu_user_data->v_DC_pu;
+//		codegenInstance.input.i_dq_pu[0] = rpu_to_apu_user_data->i_dq_pu[0];
+//		codegenInstance.input.i_dq_pu[1] = rpu_to_apu_user_data->i_dq_pu[1];
+//		codegenInstance.input.i_d_ref_pu = rpu_to_apu_user_data->i_d_ref_pu;
+//		codegenInstance.input.i_q_ref_pu = rpu_to_apu_user_data->i_q_ref_pu;
+//		codegenInstance.input.omega_el_pu = rpu_to_apu_user_data->omega_el_pu;
+//		codegenInstance.input.theta_el = rpu_to_apu_user_data->theta_el;
+//		codegenInstance.input.lambda = rpu_to_apu_user_data->lambda_impl_mod;
+//		codegenInstance.input.all_or_deadbeat = rpu_to_apu_user_data->all_or_deadbeat;
 
-	/* do your computations that you want to accelerate here... */
+		/* do your computations that you want to accelerate here... */
+//		uz_codegen_step(&codegenInstance);
 
-	// write data to r5 in shared memory and flush cache
-	apu_to_rpu_user_data->slowDataCounter  = rpu_to_apu_user_data->slowDataCounter; //just an example
+		// write data to r5 in shared memory and flush cache
+//		apu_to_rpu_user_data->CMPA_opt[0] = codegenInstance.output.CMPA_opt[0];
+//		apu_to_rpu_user_data->CMPA_opt[1] = codegenInstance.output.CMPA_opt[1];
+//		apu_to_rpu_user_data->CMPA_opt[2] = codegenInstance.output.CMPA_opt[2];
 
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 

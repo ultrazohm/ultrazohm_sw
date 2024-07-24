@@ -142,7 +142,7 @@ enum gui_button_mapping {
 	SND_FLD_ZEROVALUE=0,
 	i_d_ref,
 	i_q_ref,
-	send_field_3,
+	angle_lead_factor,
 	send_field_4,
 	send_field_5,
 	send_field_6,

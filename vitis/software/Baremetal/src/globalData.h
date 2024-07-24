@@ -138,6 +138,7 @@ typedef struct _actualValues_ {
 	bool HC_off_on;
 	float dutycyc[6];
 	float iterations;
+	float angle_lead_factor;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

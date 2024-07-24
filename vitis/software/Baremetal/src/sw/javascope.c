@@ -141,7 +141,7 @@ void JavaScope_update(DS_Data* data){
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
 	rpu_to_apu_user_data->v_DC_pu = data->av.v_dc1_pu;
-	rpu_to_apu_user_data->theta_el = data->av.theta_elec_rad_ip;
+	rpu_to_apu_user_data->theta_el = data->av.theta_elec_rad_ip + data->av.angle_lead_factor*data->av.omega_el_pu*UZ_TIME_ISR;
 	rpu_to_apu_user_data->Ts_times_ZB_over_Ld = pre_calc_val.Ts_times_ZB_over_Ld;
 	rpu_to_apu_user_data->Ts_times_ZB_over_Lq = pre_calc_val.Ts_times_ZB_over_Lq;
 	rpu_to_apu_user_data->Ts_times_ZB_over_Lx = pre_calc_val.Ts_times_ZB_over_Lx;

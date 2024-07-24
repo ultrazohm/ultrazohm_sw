@@ -203,7 +203,6 @@ void ISR_Control(void *data)
     if (current_state==idle_state)
     {
     	uz_CurrentControl_reset(Global_Data.objects.foc_current);
-//    	uz_axi_write_bool(XPAR_UZ_CUR_LIM_0_BASEADDR + 0x104, true); //reset overcurrent IP
 
     	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;

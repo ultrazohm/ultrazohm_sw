@@ -24,6 +24,10 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
+extern float dutycycle_hb1;
+extern float dutycycle_hb2;
+extern float dutycycle_hb3;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -186,15 +190,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		dutycycle_hb1 = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		dutycycle_hb2 = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		dutycycle_hb3 = value;
 			break;
 
 		case (Set_Send_Field_4):

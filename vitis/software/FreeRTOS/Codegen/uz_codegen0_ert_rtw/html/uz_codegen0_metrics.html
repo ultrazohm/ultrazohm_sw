@@ -1,0 +1,4020 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><script language="JavaScript" type="text/javascript" src="rtwshrink.js"></script><title>
+Static Code Metrics Report
+</title>
+
+</head>
+<body onload="try {if (top) {if (top.rtwPageOnLoad) top.rtwPageOnLoad('rtwIdCodeMetrics'); else local_onload();}} catch(err) {};">
+<h1>
+Static Code Metrics Report
+</h1>
+<div>
+<p>
+The static code metrics report provides statistics of the generated code. Metrics are estimated from static analysis of the generated code using the C data types specified in the 'Device details' section of the <b>Configuration Parameter > Hardware Implementation</b> pane: <b>char</b> 8, <b>short</b> 16, <b>int</b> 32, <b>long</b> 32, <b>float</b> 32, <b>double</b> 64, <b>pointer</b> 32 bits. If your model contains a Variant block, the Static Code Metrics Report does not contain data for the inactive variant. Actual object code metrics might differ due to target specific compiler and platform settings. Consult the <b>Code Generation Advisor</b><a name="MATLAB_link" style="text-decoration: none" href="matlab:helpview([docroot '/toolbox/ecoder/helptargets.map'], 'code_gen_advisor')">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADhElEQVQ4T2WTe0yTBxTFz/fRIn2AqS1LC4gplIcFYYkTxjTpiMQRJo50KhYmexkkIWwsTMtIFCWMAZuFoc7nXNiWbLhibdMtA4oL7hFskI7KoxOGLbRCulEeK5Ty9WsXMRDn7p8355zc3PwOgaenuI8pkW7MO7RtY9GuaJbEF4DfMO62tA+4WieVSbqn5cSTi6jGUdnp3YK6otSwDEYQSbioAB4JeEwCbq8vcM00a6i/7aqaUib2rfnWA5LPjR/WFkRejOEFsz8d9UE37oGXpkHSfoTSfsjj2XhbyoZpyuPKuzzy+sSp7fpHIasBz9SNZPSWxHSFhQZzXjYsYnZuGY3Pc5AVtQEEAvjJ6oGy8y9s3hSCm/lCmBxLrqzSK5mLunIzgVMBsiV71lCWzsuUdbhx1+rG4CE+ojlBqNRPgiQInM6JhGOeQkLjKOTPhaPtoBAV6kG96npNHiFssGSOlscZ9HaKVKj/xr4YEtr9IpzpcuB9zTSw4kfbUTEO7hBgZ/09/Gal0XMsHtGbyBXpca2MeK3dfukreWSxXDcDjdmNcCYFRSwTavM8Hs74IYsNwY2jEix5KGw/2Q/nAgOlOSKcK4hGuqqvgWi+47pVtoOXmXbJjrt2D+CngYVlgKKRFcdCe2k8Vrw0Xm0w4baNApgbkJMchu+PJaLgG4uGqP3F2VG1M3zPC83j6P1zEQjCqpnj88JckwIBJwh7ThpxZ8IH8EMBD41XUrm4WSHFgdYhNfFSq/XDH4u2VB1pteFzgxPgkAAVQDjLj5GPnsXX3ZMov/YAEPEAkgRcS6iWR6A6X4yEyh9OENwTvyfdq9hqnHZ62Rm1w0Aw4/EVHi8U29iw2BdhmiEAbsjqQ9nLbgydSYdjhZ7bVViXvcpBic5x5UJuxBHltzY0ahwAi4FYAQMDtakwjs1jd/0wAkwmMLOAprckKM8TI/fjzi/1LVdLHpN4vD/iuzfjevYnciXV1634RGeHj6Jw/g0xzA8WcFYzAb6AhWpFDMr2idHSM2F5t7KpEL3N/esoc9/pSP6sUNp2OC1KOjblQdvPDzF43wWCCCBtKx/5skiI+CFQ3bIOKeu+eM/XXdO1jvJaMdjF7aLsFOEHZXtTFC9u4QrW9jSArvvz003qX7Wd2u4LMKoG/lem/9Q0V5WUtJknSxCyRQE/yOGpf5x/jNmMsM31Y+ys90ntv6Qkblq/pPiXAAAAAElFTkSuQmCC" title="Open Code Generation Advisor help" style="border:none;cursor:pointer;max-width:100%;" alt="help.png">
+
+</img>
+
+</a>
+ for options to improve code efficiency.
+</p>
+
+</div>
+<div>
+<h3>
+Table of Contents
+</h3>
+<ol>
+<li>
+<a href="#sec_file_info" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdCodeMetrics_table_001_control'), 'rtwIdCodeMetrics_table_001')">
+File Information
+</a>
+
+</li>
+<li>
+<a href="#sec_globalvar_info" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdCodeMetrics_table_002_control'), 'rtwIdCodeMetrics_table_002')">
+Global Variables
+</a>
+
+</li>
+<li>
+<a href="#sec_fcn_info" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdCodeMetrics_table_054_control'), 'rtwIdCodeMetrics_table_054')">
+Function Information
+</a>
+
+</li>
+
+</ol>
+
+</div>
+<h3 name="sec_File_Information" id="sec_file_info">
+1. File Information <span title="Click to shrink or expand section" style="cursor:pointer;font-weight:normal;" id="rtwIdCodeMetrics_table_001_control" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, 'rtwIdCodeMetrics_table_001', false)"><span class="shrink-button">[<u>hide</u>]</span></span>
+</h3>
+<table width="100%" name="rtwIdCodeMetrics_table_001" id="rtwIdCodeMetrics_table_001" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" border="0">
+<tr>
+<td align="left" valign="top">
+<p>
+<span name="button_fileInfo_summary_table" id="button_fileInfo_summary_table" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, 'fileInfo_summary_table', true)"><span class="shrink-button">[-]</span></span> Summary
+</p>
+<table width="50%" cellpadding="0" name="fileInfo_summary_table" id="fileInfo_summary_table" border="0">
+<tr>
+<td width="4%" align="left" valign="top">
+<span style="white-space:nowrap" title="Number of source files excluding ert_main.c.">Number of .c files</span>
+</td>
+<td width="4%" align="left" valign="top">
+:
+</td>
+<td width="4%" align="right" valign="top">
+1
+</td>
+<td width="86%" align="right" valign="top">
+&#160;
+</td>
+
+</tr>
+<tr>
+<td width="4%" align="left" valign="top">
+<span style="white-space:nowrap" title="Number of header files.">Number of .h files</span>
+</td>
+<td width="4%" align="left" valign="top">
+:
+</td>
+<td width="4%" align="right" valign="top">
+3
+</td>
+<td width="86%" align="right" valign="top">
+&#160;
+</td>
+
+</tr>
+<tr>
+<td width="4%" align="left" valign="top">
+<span title="Lines of code excluding comments and blank lines">Lines of code</span>
+</td>
+<td width="4%" align="left" valign="top">
+:
+</td>
+<td width="4%" align="right" valign="top">
+2,513
+</td>
+<td width="86%" align="right" valign="top">
+&#160;
+</td>
+
+</tr>
+<tr>
+<td width="4%" align="left" valign="top">
+<span style="white-space:nowrap" title="Lines including source code, comments, and blank lines.">Lines</span>
+</td>
+<td width="4%" align="left" valign="top">
+:
+</td>
+<td width="4%" align="right" valign="top">
+3,547
+</td>
+<td width="86%" align="right" valign="top">
+&#160;
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<p>
+<span name="button_fileInfo_detail_table" id="button_fileInfo_detail_table" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, 'fileInfo_detail_table', true)"><span class="shrink-button">[-]</span></span> File details
+</p>
+<table width="100%" cellpadding="2" name="fileInfo_detail_table" id="fileInfo_detail_table" border="1">
+<tr style="background-color: #eeeeff">
+<td width="33%" align="left" valign="top" style="border-style: none">
+<b>
+<span style="white-space:nowrap" title="Files sorted in descending order by number of lines of code.">File Name</span>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Lines of code excluding comments and blank lines.">Lines of Code</span>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+<span style="white-space:nowrap" title="Lines including source code, comments, and blank lines.">Lines</span>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+<span style="white-space:nowrap" title="Timestamp of the file">Generated On</span>
+</b>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="33%" align="left" valign="top" style="border-style: none">
+uz_codegen0.c
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+2,221
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+3,042
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+07/23/2024  1:47 PM
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="33%" align="left" valign="top" style="border-style: none">
+uz_codegen0.h
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+181
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+270
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+07/23/2024  1:47 PM
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="33%" align="left" valign="top" style="border-style: none">
+rtwtypes.h
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+97
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+183
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+07/23/2024  1:47 PM
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="33%" align="left" valign="top" style="border-style: none">
+rtmodel.h
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+14
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+52
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+07/23/2024  1:47 PM
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+<h3 name="sec_Global_Variables" id="sec_globalvar_info">
+2. Global Variables <span title="Click to shrink or expand section" style="cursor:pointer;font-weight:normal;" id="rtwIdCodeMetrics_table_002_control" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, 'rtwIdCodeMetrics_table_002', false)"><span class="shrink-button">[<u>hide</u>]</span></span>
+</h3>
+<table width="100%" name="rtwIdCodeMetrics_table_002" id="rtwIdCodeMetrics_table_002" border="0">
+<tr>
+<td align="left" valign="top">
+Global variables defined in the generated code.
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" name="globalvarInfo_table" id="globalvarInfo_table" border="1">
+<tr style="background-color: #ffffff">
+<td width="100%" align="left" valign="top" style="border-style: none">
+<table class="treeTable" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="33%" align="left" valign="top" style="border-style: none">
+<b>
+<span title="Global variables sorted by the maximum size in bytes.">Global Variable</span>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Global variable size in bytes.">Size (bytes)</span>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Total number of potential reads and writes for this global variable">Reads / Writes</span>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Maximum number of potential reads and writes in a function">Reads / Writes in a Function</span>
+</b>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="33%" align="left" valign="top" style="border-style: none">
+<b>
+<b>Total</b>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+<b>0</b>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+<b>0<span style="font-family:Courier">&#160;</span></b>
+</b>
+
+</td>
+<td width="22%" align="right" valign="top" style="border-style: none">
+<b>
+ 
+</b>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+<h3 name="sec_Function_Information" id="sec_fcn_info">
+3. Function Information <span title="Click to shrink or expand section" style="cursor:pointer;font-weight:normal;" id="rtwIdCodeMetrics_table_054_control" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, 'rtwIdCodeMetrics_table_054', false)"><span class="shrink-button">[<u>hide</u>]</span></span>
+</h3>
+<table width="100%" name="rtwIdCodeMetrics_table_054" id="rtwIdCodeMetrics_table_054" border="0">
+<tr>
+<td align="left" valign="top">
+View function metrics in a call tree format or table format. Accumulated stack numbers include the estimated stack size of the function plus the maximum of the accumulated stack size of the subroutines that the function calls.
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" name="fcnInfo_calltree" id="fcnInfo_calltree" border="0">
+<tr>
+<td align="left" valign="top">
+View:Call Tree | <a href="javascript:if (rtwSwitchView) rtwSwitchView(window.document,'fcnInfo_calltree', 'fcnInfo_table')" title="List of functions in alphabetical order. The second column includes the callers of the functions.">
+Table
+</a>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" border="1">
+<tr style="background-color: #ffffff">
+<td width="100%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="0" cellspacing="0" class="treeTable" id="fcnTreeView" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<b>
+<span title="Function name sorted by the maximum accumulated stack size.">Function Name</span>
+</b>
+
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Estimated stack size of the function plus the maximum of the accumulated stack size of its subroutines.">Accumulated Stack Size (bytes)</span>
+</b>
+
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Size of local variables in the function.">Self Stack Size (bytes)</span>
+</b>
+
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Lines of code excluding comments and blank lines.">Lines of Code</span>
+</b>
+
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<b>
+<span style="white-space:nowrap" title="Lines including source code, comments, and blank lines.">Lines</span>
+</b>
+
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<b>
+<span style="white-space:nowrap" title="Cyclomatic complexity">Complexity</span>
+</b>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="border-style: none" width="100%" cellpadding="0" cellspacing="0" name="" id="" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap"><span name="button_3" id="button_3" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '3', true)"><span class="shrink-button">[+]</span></span>&#160;<b><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</b></span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+102
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+16
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+943
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+1,546
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+115
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_4" id="button_4" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '4', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+86
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+25
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+491
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+562
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+99
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_5" id="button_5" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '5', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_KWIKfactor" title="KWIKfactor is a static function in uz_codegen0.c." class="code2code">
+KWIKfactor
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+61
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+215
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+256
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+42
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="5" id="5" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_6" id="button_6" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '6', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_xgeqrf" title="xgeqrf is a static function in uz_codegen0.c." class="code2code">
+xgeqrf
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+49
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+21
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+134
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+157
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="6" id="6" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_xgemv" title="xgemv is a static function in uz_codegen0.c." class="code2code">
+xgemv
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+27
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+34
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="6" id="6" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_xgerc" title="xgerc is a static function in uz_codegen0.c." class="code2code">
+xgerc
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+24
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+29
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="6" id="6" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_9" id="button_9" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '9', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_xnrm2" title="xnrm2 is a static function in uz_codegen0.c." class="code2code">
+xnrm2
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+24
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+24
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+33
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="9" id="9" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fabsf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="9" id="9" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+sqrtf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="6" id="6" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_12" id="button_12" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '12', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_rt_hypotf" title="rt_hypotf" class="code2code">
+rt_hypotf
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+19
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+3
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="12" id="12" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fabsf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="12" id="12" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+sqrtf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="6" id="6" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+memset
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="6" id="6" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fabsf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="5" id="5" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_17" id="button_17" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '17', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_xorgqr" title="xorgqr is a static function in uz_codegen0.c." class="code2code">
+xorgqr
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+49
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+21
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+86
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+100
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+18
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="17" id="17" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_xgemv" title="xgemv is a static function in uz_codegen0.c." class="code2code">
+xgemv
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+27
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+34
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="17" id="17" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_xgerc" title="xgerc is a static function in uz_codegen0.c." class="code2code">
+xgerc
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+24
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+29
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="17" id="17" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+memset
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="5" id="5" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_mtimes" title="mtimes is a static function in uz_codegen0.c." class="code2code">
+mtimes
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+16
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+16
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+20
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="5" id="5" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+memcpy
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="5" id="5" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fabsf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_24" id="button_24" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '24', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_norm" title="norm is a static function in uz_codegen0.c." class="code2code">
+norm
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+20
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+20
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+33
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="24" id="24" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fabsf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="24" id="24" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+sqrtf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_mtimes" title="mtimes is a static function in uz_codegen0.c." class="code2code">
+mtimes
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+16
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+16
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+20
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_Unconstrained" title="Unconstrained is a static function in uz_codegen0.c." class="code2code">
+Unconstrained
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+10
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+3
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_maximum" title="maximum is a static function in uz_codegen0.c." class="code2code">
+maximum
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+11
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+3
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_mtimes_j" title="mtimes_j is a static function in uz_codegen0.c." class="code2code">
+mtimes_j
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+8
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+8
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+7
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+11
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_DropConstraint" title="DropConstraint is a static function in uz_codegen0.c." class="code2code">
+DropConstraint
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+6
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+6
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+18
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+25
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_ResetToColdStart" title="ResetToColdStart is a static function in uz_codegen0.c." class="code2code">
+ResetToColdStart
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+7
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+11
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_33" id="button_33" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '33', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_abs_p" title="abs_p is a static function in uz_codegen0.c." class="code2code">
+abs_p
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+7
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="33" id="33" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fabsf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span name="button_35" id="button_35" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '35', true)"><span class="shrink-button">[+]</span></span>&#160;<a href="uz_codegen0_c.html#fcn_maximum2" title="maximum2 is a static function in uz_codegen0.c." class="code2code">
+maximum2
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+7
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="35" id="35" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fmaxf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+memset
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+memcpy
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fmaxf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fminf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="4" id="4" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fabsf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<a href="uz_codegen0_c.html#fcn_trisolve" title="trisolve is a static function in uz_codegen0.c." class="code2code">
+trisolve
+</a>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+40
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+40
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+36
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+42
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+sinf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+cosf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+atan2f
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fmodf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+fabsf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+floorf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+sqrtf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+memset
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="3" id="3" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+roundf
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="border-style: none" width="100%" cellpadding="0" cellspacing="0" name="" id="" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #eeeeff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap"><span name="button_52" id="button_52" title="Click to shrink or expand tree" style="cursor:pointer;font-family:monospace;font-weight:normal;" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, '52', true)"><span class="shrink-button">[+]</span></span>&#160;<b><a href="uz_codegen0_c.html#fcn_uz_codegen0_initialize" title="uz_codegen0_initialize" class="code2code">
+uz_codegen0_initialize
+</a>
+</b></span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+8
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+8
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+5
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+14
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table style="display: none; border-style: none" width="100%" cellpadding="0" cellspacing="0" name="52" id="52" border="0">
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" border="0">
+<tr style="background-color: #ffffff">
+<td width="37%" align="left" valign="top" style="border-style: none">
+<span style="white-space:nowrap">&#160;&#160;&#160;&#160;&#160;&#160;&#160;<span style="font-family:monospace">&#160;&#160;</span>&#160;&#160;<span>
+memset
+</span>
+</span>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="12%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" name="fcnInfo_table" id="fcnInfo_table" style="display: none" border="0">
+<tr>
+<td align="left" valign="top">
+View: <a href="javascript:if (rtwSwitchView) rtwSwitchView(window.document,'fcnInfo_table', 'fcnInfo_calltree')" title="Browse call graph in a call tree format.">
+Call Tree
+</a>
+ | Table
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<table width="100%" cellpadding="2" class="treeTable" id="fcnTableView" border="1">
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<b>
+<span title="Function name sorted alphabetically">Function Name</span>
+</b>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<b>
+<span title="List of functions calling the function in the corresponding first column. The number of call sites is included in parentheses.">Called By (number of call sites)</span>
+</b>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Estimated stack size of the function plus the maximum of the accumulated stack size of its subroutines.">Accumulated Stack Size (bytes)</span>
+</b>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Size of local variables in the function.">Self Stack Size (bytes)</span>
+</b>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<b>
+<span title="Lines of code excluding comments and blank lines.">Lines of Code</span>
+</b>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<b>
+<span style="white-space:nowrap" title="Lines including source code, comments, and blank lines.">Lines</span>
+</b>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<b>
+<span style="white-space:nowrap" title="Cyclomatic complexity">Complexity</span>
+</b>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+atan2f
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has one call site of atan2f."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+cosf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has 3 call sites of cosf."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+ (3)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+fabsf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has 2 call sites of fabsf."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+ (2)</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="rt_hypotf has 2 call sites of fabsf."><a href="uz_codegen0_c.html#fcn_rt_hypotf" title="rt_hypotf" class="code2code">
+rt_hypotf
+</a>
+ (2)</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:norm has 2 call sites of fabsf."><a href="uz_codegen0_c.html#fcn_norm" title="norm is a static function in uz_codegen0.c." class="code2code">
+norm
+</a>
+ (2)</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:abs_p has one call site of fabsf."><a href="uz_codegen0_c.html#fcn_abs_p" title="abs_p is a static function in uz_codegen0.c." class="code2code">
+abs_p
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xnrm2 has 2 call sites of fabsf."><a href="uz_codegen0_c.html#fcn_xnrm2" title="xnrm2 is a static function in uz_codegen0.c." class="code2code">
+xnrm2
+</a>
+ (2)</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xgeqrf has 2 call sites of fabsf."><a href="uz_codegen0_c.html#fcn_xgeqrf" title="xgeqrf is a static function in uz_codegen0.c." class="code2code">
+xgeqrf
+</a>
+ (2)</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:KWIKfactor has one call site of fabsf."><a href="uz_codegen0_c.html#fcn_KWIKfactor" title="KWIKfactor is a static function in uz_codegen0.c." class="code2code">
+KWIKfactor
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has one call site of fabsf."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+floorf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has one call site of floorf."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+fmaxf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:maximum2 has one call site of fmaxf."><a href="uz_codegen0_c.html#fcn_maximum2" title="maximum2 is a static function in uz_codegen0.c." class="code2code">
+maximum2
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has one call site of fmaxf."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+fminf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has one call site of fminf."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+fmodf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has one call site of fmodf."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+memcpy
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:KWIKfactor has one call site of memcpy."><a href="uz_codegen0_c.html#fcn_KWIKfactor" title="KWIKfactor is a static function in uz_codegen0.c." class="code2code">
+KWIKfactor
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has one call site of memcpy."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+memset
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_initialize has 2 call sites of memset."><a href="uz_codegen0_c.html#fcn_uz_codegen0_initialize" title="uz_codegen0_initialize" class="code2code">
+uz_codegen0_initialize
+</a>
+ (2)</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has one call site of memset."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xgeqrf has 3 call sites of memset."><a href="uz_codegen0_c.html#fcn_xgeqrf" title="xgeqrf is a static function in uz_codegen0.c." class="code2code">
+xgeqrf
+</a>
+ (3)</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xorgqr has one call site of memset."><a href="uz_codegen0_c.html#fcn_xorgqr" title="xorgqr is a static function in uz_codegen0.c." class="code2code">
+xorgqr
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has 4 call sites of memset."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+ (4)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+roundf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has one call site of roundf."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_rt_hypotf" title="rt_hypotf" class="code2code">
+rt_hypotf
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xgeqrf has 2 call sites of rt_hypotf."><a href="uz_codegen0_c.html#fcn_xgeqrf" title="xgeqrf is a static function in uz_codegen0.c." class="code2code">
+xgeqrf
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+19
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+3
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+sinf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has 3 call sites of sinf."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+ (3)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+sqrtf
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has one call site of sqrtf."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="rt_hypotf has 2 call sites of sqrtf."><a href="uz_codegen0_c.html#fcn_rt_hypotf" title="rt_hypotf" class="code2code">
+rt_hypotf
+</a>
+ (2)</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:norm has one call site of sqrtf."><a href="uz_codegen0_c.html#fcn_norm" title="norm is a static function in uz_codegen0.c." class="code2code">
+norm
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xnrm2 has one call site of sqrtf."><a href="uz_codegen0_c.html#fcn_xnrm2" title="xnrm2 is a static function in uz_codegen0.c." class="code2code">
+xnrm2
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+<i title="Definition of this function is not found.">Not available</i>
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+-
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_DropConstraint" title="DropConstraint is a static function in uz_codegen0.c." class="code2code">
+DropConstraint
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has 2 call sites of uz_codegen0.c:DropConstraint."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+6
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+6
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+18
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+25
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_KWIKfactor" title="KWIKfactor is a static function in uz_codegen0.c." class="code2code">
+KWIKfactor
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has 2 call sites of uz_codegen0.c:KWIKfactor."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+61
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+215
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+256
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+42
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_ResetToColdStart" title="ResetToColdStart is a static function in uz_codegen0.c." class="code2code">
+ResetToColdStart
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has 2 call sites of uz_codegen0.c:ResetToColdStart."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+7
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+11
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_Unconstrained" title="Unconstrained is a static function in uz_codegen0.c." class="code2code">
+Unconstrained
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has 2 call sites of uz_codegen0.c:Unconstrained."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+10
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+3
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_abs_p" title="abs_p is a static function in uz_codegen0.c." class="code2code">
+abs_p
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has one call site of uz_codegen0.c:abs_p."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+7
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_maximum" title="maximum is a static function in uz_codegen0.c." class="code2code">
+maximum
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has one call site of uz_codegen0.c:maximum."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+12
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+11
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+3
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_maximum2" title="maximum2 is a static function in uz_codegen0.c." class="code2code">
+maximum2
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has one call site of uz_codegen0.c:maximum2."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+7
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_mtimes" title="mtimes is a static function in uz_codegen0.c." class="code2code">
+mtimes
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:KWIKfactor has one call site of uz_codegen0.c:mtimes."><a href="uz_codegen0_c.html#fcn_KWIKfactor" title="KWIKfactor is a static function in uz_codegen0.c." class="code2code">
+KWIKfactor
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has 2 call sites of uz_codegen0.c:mtimes."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+16
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+16
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+15
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+20
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+4
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_mtimes_j" title="mtimes_j is a static function in uz_codegen0.c." class="code2code">
+mtimes_j
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has one call site of uz_codegen0.c:mtimes_j."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+8
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+8
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+7
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+11
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+2
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_norm" title="norm is a static function in uz_codegen0.c." class="code2code">
+norm
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:qpkwik has 2 call sites of uz_codegen0.c:norm."><a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+20
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+20
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+33
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_qpkwik" title="qpkwik is a static function in uz_codegen0.c." class="code2code">
+qpkwik
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has one call site of uz_codegen0.c:qpkwik."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+86
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+25
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+491
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+562
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+99
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_trisolve" title="trisolve is a static function in uz_codegen0.c." class="code2code">
+trisolve
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0_step has one call site of uz_codegen0.c:trisolve."><a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+40
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+40
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+36
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+42
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+8
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_xgemv" title="xgemv is a static function in uz_codegen0.c." class="code2code">
+xgemv
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xgeqrf has one call site of uz_codegen0.c:xgemv."><a href="uz_codegen0_c.html#fcn_xgeqrf" title="xgeqrf is a static function in uz_codegen0.c." class="code2code">
+xgeqrf
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xorgqr has one call site of uz_codegen0.c:xgemv."><a href="uz_codegen0_c.html#fcn_xorgqr" title="xorgqr is a static function in uz_codegen0.c." class="code2code">
+xorgqr
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+27
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+34
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_xgeqrf" title="xgeqrf is a static function in uz_codegen0.c." class="code2code">
+xgeqrf
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:KWIKfactor has 2 call sites of uz_codegen0.c:xgeqrf."><a href="uz_codegen0_c.html#fcn_KWIKfactor" title="KWIKfactor is a static function in uz_codegen0.c." class="code2code">
+KWIKfactor
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+49
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+21
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+134
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+157
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+28
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_xgerc" title="xgerc is a static function in uz_codegen0.c." class="code2code">
+xgerc
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xgeqrf has one call site of uz_codegen0.c:xgerc."><a href="uz_codegen0_c.html#fcn_xgeqrf" title="xgeqrf is a static function in uz_codegen0.c." class="code2code">
+xgeqrf
+</a>
+</span>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xorgqr has one call site of uz_codegen0.c:xgerc."><a href="uz_codegen0_c.html#fcn_xorgqr" title="xorgqr is a static function in uz_codegen0.c." class="code2code">
+xorgqr
+</a>
+</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+24
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+29
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_xnrm2" title="xnrm2 is a static function in uz_codegen0.c." class="code2code">
+xnrm2
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:xgeqrf has 2 call sites of uz_codegen0.c:xnrm2."><a href="uz_codegen0_c.html#fcn_xgeqrf" title="xgeqrf is a static function in uz_codegen0.c." class="code2code">
+xgeqrf
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+24
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+24
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+28
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+33
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+5
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_xorgqr" title="xorgqr is a static function in uz_codegen0.c." class="code2code">
+xorgqr
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+<table width="100%" cellpadding="1" cellspacing="0" border="0">
+<tr>
+<td align="left" valign="top">
+<span style="white-space:nowrap" title="uz_codegen0.c:KWIKfactor has 2 call sites of uz_codegen0.c:xorgqr."><a href="uz_codegen0_c.html#fcn_KWIKfactor" title="KWIKfactor is a static function in uz_codegen0.c." class="code2code">
+KWIKfactor
+</a>
+ (2)</span>
+</td>
+
+</tr>
+
+</table>
+
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+49
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+21
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+86
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+100
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+18
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_uz_codegen0_initialize" title="uz_codegen0_initialize" class="code2code">
+uz_codegen0_initialize
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+&#160;
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+8
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+8
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+5
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+14
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+1
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="22%" align="left" valign="top" style="border-style: none">
+<a href="uz_codegen0_c.html#fcn_uz_codegen0_step" title="uz_codegen0_step" class="code2code">
+uz_codegen0_step
+</a>
+
+</td>
+<td width="22%" align="left" valign="top" style="border-style: none">
+&#160;
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+102
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+16
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+943
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+1546
+</td>
+<td width="11%" align="right" valign="top" style="border-style: none">
+115
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>

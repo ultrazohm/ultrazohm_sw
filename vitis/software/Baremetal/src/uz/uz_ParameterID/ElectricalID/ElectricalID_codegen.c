@@ -910,25 +910,25 @@ static real32_T SinusGenerator(real32_T Amp, real32_T Freq, real32_T sampleTime,
   return y;
 }
 
-//real32_T rt_hypotf(real32_T u0, real32_T u1)
-//{
-//  real32_T a;
-//  real32_T b;
-//  real32_T y;
-//  a = fabsf(u0);
-//  b = fabsf(u1);
-//  if (a < b) {
-//    a /= b;
-//    y = sqrtf(a * a + 1.0F) * b;
-//  } else if (a > b) {
-//    b /= a;
-//    y = sqrtf(b * b + 1.0F) * a;
-//  } else {
-//    y = a * 1.41421354F;
-//  }
-//
-//  return y;
-//}
+real32_T rt_hypotf(real32_T u0, real32_T u1)
+{
+  real32_T a;
+  real32_T b;
+  real32_T y;
+  a = fabsf(u0);
+  b = fabsf(u1);
+  if (a < b) {
+    a /= b;
+    y = sqrtf(a * a + 1.0F) * b;
+  } else if (a > b) {
+    b /= a;
+    y = sqrtf(b * b + 1.0F) * a;
+  } else {
+    y = a * 1.41421354F;
+  }
+
+  return y;
+}
 
 /*
  * Function for Chart: '<Root>/ElectricalID'

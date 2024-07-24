@@ -28,7 +28,7 @@
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-#define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_PWM_FREQUENCY                        4.0e3f
 
 #define UZ_PWM_FREQUENCY_ISR					(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)
 #define UZ_TIME_ISR								1.0f/UZ_PWM_FREQUENCY_ISR
@@ -48,7 +48,7 @@
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
 #define UZ_IIR_FILTER_MAX_INSTANCES                     1U
-#define UZ_PARAMETERID_MAX_INSTANCES					1U
+#define UZ_PARAMETERID_MAX_INSTANCES					0U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
 #define UZ_PMSM6PH_TRANSFORMATION_MAX_INSTANCES         1U

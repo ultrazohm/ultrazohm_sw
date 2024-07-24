@@ -25,6 +25,9 @@
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
+#include "../Codegen/uz_codegen.h"
+extern uz_codegen codegenInstance;
+
 // define the size of the cache to flush
 #define CACHE_FLUSH_SIZE_RPU_TO_APU sizeof(*rpu_to_apu_user_data)
 #define CACHE_FLUSH_SIZE_APU_TO_RPU sizeof(*apu_to_rpu_user_data)
@@ -90,23 +93,43 @@ void Transfer_ipc_Intr_Handler(void *data)
 	Xil_DCacheInvalidateRange( MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 
 	// get data from r5 from shared memory
-//		codegenInstance.input.v_DC_pu = rpu_to_apu_user_data->v_DC_pu;
-//		codegenInstance.input.i_dq_pu[0] = rpu_to_apu_user_data->i_dq_pu[0];
-//		codegenInstance.input.i_dq_pu[1] = rpu_to_apu_user_data->i_dq_pu[1];
-//		codegenInstance.input.i_d_ref_pu = rpu_to_apu_user_data->i_d_ref_pu;
-//		codegenInstance.input.i_q_ref_pu = rpu_to_apu_user_data->i_q_ref_pu;
-//		codegenInstance.input.omega_el_pu = rpu_to_apu_user_data->omega_el_pu;
-//		codegenInstance.input.theta_el = rpu_to_apu_user_data->theta_el;
-//		codegenInstance.input.lambda = rpu_to_apu_user_data->lambda_impl_mod;
-//		codegenInstance.input.all_or_deadbeat = rpu_to_apu_user_data->all_or_deadbeat;
+		codegenInstance.input.v_DC_pu = rpu_to_apu_user_data->v_DC_pu;
+		codegenInstance.input.theta_el = rpu_to_apu_user_data->theta_el;
+		codegenInstance.input.Ts_times_ZB_over_Ld = rpu_to_apu_user_data->Ts_times_ZB_over_Ld;
+		codegenInstance.input.Ts_times_ZB_over_Lq = rpu_to_apu_user_data->Ts_times_ZB_over_Lq;
+		codegenInstance.input.Ts_times_ZB_over_Lx = rpu_to_apu_user_data->Ts_times_ZB_over_Lx;
+		codegenInstance.input.Ts_times_ZB_over_Ly = rpu_to_apu_user_data->Ts_times_ZB_over_Ly;
+		codegenInstance.input.Rs_over_ZB = rpu_to_apu_user_data->Rs_over_ZB;
+		codegenInstance.input.Ld_over_LB = rpu_to_apu_user_data->Ld_over_LB;
+		codegenInstance.input.Lq_over_LB = rpu_to_apu_user_data->Lq_over_LB;
+		codegenInstance.input.Lx_over_LB = rpu_to_apu_user_data->Lx_over_LB;
+		codegenInstance.input.Ly_over_LB = rpu_to_apu_user_data->Ly_over_LB;
+		codegenInstance.input.psi_pm_over_psiB = rpu_to_apu_user_data->psi_pm_over_psiB;
+		codegenInstance.input.omega_el_pu = rpu_to_apu_user_data->omega_el_pu;
+		codegenInstance.input.i_dq_pu[0] = rpu_to_apu_user_data->i_d_pu;
+		codegenInstance.input.i_dq_pu[1] = rpu_to_apu_user_data->i_q_pu;
+		codegenInstance.input.i_xy_pu[0] = rpu_to_apu_user_data->i_x_pu;
+		codegenInstance.input.i_xy_pu[1] = rpu_to_apu_user_data->i_y_pu;
+		codegenInstance.input.i_d_ref_pu = rpu_to_apu_user_data->i_d_ref_pu;
+		codegenInstance.input.i_q_ref_pu = rpu_to_apu_user_data->i_q_ref_pu;
+		codegenInstance.input.i_x_ref_pu = rpu_to_apu_user_data->i_x_ref_pu;
+		codegenInstance.input.i_y_ref_pu = rpu_to_apu_user_data->i_y_ref_pu;
+		codegenInstance.input.lambda = rpu_to_apu_user_data->lambda;
+		codegenInstance.input.tolerance = rpu_to_apu_user_data->solver_tolerance;
+		codegenInstance.input.max_iter = rpu_to_apu_user_data->max_iter;
+		codegenInstance.input.HC_off_on = rpu_to_apu_user_data->HC_off_on;
 
 		/* do your computations that you want to accelerate here... */
-//		uz_codegen_step(&codegenInstance);
+		uz_codegen_step(&codegenInstance);
 
 		// write data to r5 in shared memory and flush cache
-//		apu_to_rpu_user_data->CMPA_opt[0] = codegenInstance.output.CMPA_opt[0];
-//		apu_to_rpu_user_data->CMPA_opt[1] = codegenInstance.output.CMPA_opt[1];
-//		apu_to_rpu_user_data->CMPA_opt[2] = codegenInstance.output.CMPA_opt[2];
+		apu_to_rpu_user_data->dutycyc[0] = codegenInstance.output.d_opt[0];
+		apu_to_rpu_user_data->dutycyc[1] = codegenInstance.output.d_opt[1];
+		apu_to_rpu_user_data->dutycyc[2] = codegenInstance.output.d_opt[2];
+		apu_to_rpu_user_data->dutycyc[3] = codegenInstance.output.d_opt[3];
+		apu_to_rpu_user_data->dutycyc[4] = codegenInstance.output.d_opt[4];
+		apu_to_rpu_user_data->dutycyc[5] = codegenInstance.output.d_opt[5];
+		apu_to_rpu_user_data->iterations = codegenInstance.output.iterations_qp;
 
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 

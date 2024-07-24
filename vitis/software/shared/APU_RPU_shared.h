@@ -51,7 +51,7 @@ struct RPU_to_APU_user_data_t
 	float Lx_over_LB;
 	float Ly_over_LB;
 	float psi_pm_over_psiB;
-	float omega_m_pu;
+	float omega_el_pu;
 	float i_d_pu;
 	float i_q_pu;
 	float i_x_pu;

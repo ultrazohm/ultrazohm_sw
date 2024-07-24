@@ -170,7 +170,7 @@ void ISR_Control(void *data)
 //    Global_Data.av.i_q = rotating_dq.q;
 
     // Park transform alpha/beta currents with positive turning, and XY currents with negative turning angle
-    six_ph_dq = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta, Global_Data.av.theta_mech_rad_ip, 2*UZ_PIf-Global_Data.av.theta_mech_rad_ip);
+    six_ph_dq = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta, Global_Data.av.theta_elec_rad_ip, 2*UZ_PIf-Global_Data.av.theta_elec_rad_ip);
     Global_Data.av.i_d = six_ph_dq.d;
     Global_Data.av.i_q = six_ph_dq.q;
     Global_Data.av.i_x = six_ph_dq.x;
@@ -182,10 +182,12 @@ void ISR_Control(void *data)
     Global_Data.av.i_x_pu = Global_Data.av.i_x*inverse_base_val.IB;
     Global_Data.av.i_y_pu = Global_Data.av.i_y*inverse_base_val.IB;
     Global_Data.av.omega_mech_pu = Global_Data.av.mechanicalRotorSpeedRADpS_ip*inverse_base_val.omegaB;
+    Global_Data.av.omega_el_pu = Global_Data.av.electricalRotorSpeedRADpS*inverse_base_val.omegaB;
     Global_Data.av.i_d_ref_pu = Global_Data.av.i_d_ref*inverse_base_val.IB;
     Global_Data.av.i_q_ref_pu = Global_Data.av.i_q_ref*inverse_base_val.IB;
     Global_Data.av.i_x_ref_pu = Global_Data.av.i_x_ref*inverse_base_val.IB;
     Global_Data.av.i_y_ref_pu = Global_Data.av.i_y_ref*inverse_base_val.IB;
+    Global_Data.av.v_dc1_pu = Global_Data.av.v_dc1*inverse_base_val.VB;
 
     // assign to structs
     i_dq_actual.d = Global_Data.av.i_d;
@@ -201,7 +203,7 @@ void ISR_Control(void *data)
     if (current_state==idle_state)
     {
     	uz_CurrentControl_reset(Global_Data.objects.foc_current);
-    	uz_axi_write_bool(XPAR_UZ_CUR_LIM_0_BASEADDR + 0x104, true);
+//    	uz_axi_write_bool(XPAR_UZ_CUR_LIM_0_BASEADDR + 0x104, true); //reset overcurrent IP
 
     	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;

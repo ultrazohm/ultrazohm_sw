@@ -17,17 +17,17 @@ const float Ly_Henry = 0.0027f;
 
 // PI controllers
 const struct uz_PI_Controller_config config_id = {
-		.Kp = 10.0f,
-		.Ki = 1500.0f,
-		.samplingTime_sec = 0.0001f,
-		.type = ideal,
+		.Kp = config_PMSM.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Ki = config_PMSM.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.samplingTime_sec = UZ_TIME_ISR,
+		.type = parallel,
 };
 
 const struct uz_PI_Controller_config config_iq = {
-		.Kp = 10.0f,
-		.Ki = 1500.0f,
-		.samplingTime_sec = 0.0001f,
-		.type = ideal,
+		.Kp = config_PMSM.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Ki = config_PMSM.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.samplingTime_sec = UZ_TIME_ISR,
+		.type = parallel,
 };
 
 struct uz_CurrentControl_config current_control_config = {

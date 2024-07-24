@@ -121,6 +121,9 @@ typedef struct _actualValues_ {
 	float i_x_pu;
 	float i_y_pu;
 	float omega_mech_pu;
+	float omega_el_pu;
+	float v_dc1_pu;
+	float v_dc2_pu;
 	float i_d_ref;
 	float i_q_ref;
 	float i_x_ref;

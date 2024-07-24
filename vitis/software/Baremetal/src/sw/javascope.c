@@ -93,6 +93,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dutycyc_MPC_a2]		= &data->av.dutycyc[3];
 	js_ch_observable[JSO_dutycyc_MPC_b2]		= &data->av.dutycyc[4];
 	js_ch_observable[JSO_dutycyc_MPC_c2]		= &data->av.dutycyc[5];
+	js_ch_observable[JSO_dutycyc_out_a1]		= &data->rasv.halfBridge1DutyCycle;
+	js_ch_observable[JSO_dutycyc_out_b1]		= &data->rasv.halfBridge2DutyCycle;
+	js_ch_observable[JSO_dutycyc_out_c1]		= &data->rasv.halfBridge3DutyCycle;
+	js_ch_observable[JSO_dutycyc_out_a2]		= &data->rasv.halfBridge4DutyCycle;
+	js_ch_observable[JSO_dutycyc_out_b2]		= &data->rasv.halfBridge5DutyCycle;
+	js_ch_observable[JSO_dutycyc_out_c2]		= &data->rasv.halfBridge6DutyCycle;
 	js_ch_observable[JSO_iterations]			= &data->av.iterations;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
@@ -134,7 +140,7 @@ void JavaScope_update(DS_Data* data){
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
-	rpu_to_apu_user_data->v_DC_pu = data->av.v_dc1;
+	rpu_to_apu_user_data->v_DC_pu = data->av.v_dc1_pu;
 	rpu_to_apu_user_data->theta_el = data->av.theta_elec_rad_ip;
 	rpu_to_apu_user_data->Ts_times_ZB_over_Ld = pre_calc_val.Ts_times_ZB_over_Ld;
 	rpu_to_apu_user_data->Ts_times_ZB_over_Lq = pre_calc_val.Ts_times_ZB_over_Lq;
@@ -146,7 +152,7 @@ void JavaScope_update(DS_Data* data){
 	rpu_to_apu_user_data->Lx_over_LB = pre_calc_val.Lx_over_LB;
 	rpu_to_apu_user_data->Ly_over_LB = pre_calc_val.Ly_over_LB;
 	rpu_to_apu_user_data->psi_pm_over_psiB = pre_calc_val.psi_pm_over_psiB;
-	rpu_to_apu_user_data->omega_m_pu = data->av.omega_mech_pu;
+	rpu_to_apu_user_data->omega_el_pu = data->av.omega_el_pu;
 	rpu_to_apu_user_data->i_d_pu = data->av.i_d_pu;
 	rpu_to_apu_user_data->i_q_pu = data->av.i_q_pu;
 	rpu_to_apu_user_data->i_x_pu = data->av.i_x_pu;

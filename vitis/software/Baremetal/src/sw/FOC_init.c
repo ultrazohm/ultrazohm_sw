@@ -43,7 +43,7 @@ struct uz_CurrentControl_config current_control_config = {
 // rated values
 const rated_val_t rated_values={
 		.IR=10.0f/sqrt(2),
-		.VR=565.0f/sqrt(2),
+		.VR=400.0f/sqrt(2),
 		.nR=3000.0f
 };
 

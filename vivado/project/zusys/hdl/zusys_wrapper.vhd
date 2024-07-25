@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Thu Jul 25 11:30:25 2024
+--Date        : Thu Jul 25 14:26:34 2024
 --Host        : LAPTOP-1OLGUFKM running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -139,66 +139,6 @@ end zusys_wrapper;
 architecture STRUCTURE of zusys_wrapper is
   component zusys is
   port (
-    A1_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
-    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
-    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT : out STD_LOGIC_VECTOR ( 25 downto 0 );
-    D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    Dig_09_Ch5 : in STD_LOGIC;
-    Dig_10_Ch5 : in STD_LOGIC;
-    Dig_11_Ch5 : in STD_LOGIC;
-    Dig_12_Ch5 : in STD_LOGIC;
-    Dig_13_Ch5 : in STD_LOGIC;
-    Dig_14_Ch5 : in STD_LOGIC;
-    Dig_15_Ch5 : in STD_LOGIC;
-    Dig_16_Ch5 : in STD_LOGIC;
-    Dig_17_Ch5 : in STD_LOGIC;
-    Dig_18_Ch5 : in STD_LOGIC;
-    Dig_19_Ch5 : in STD_LOGIC;
-    Dig_20_Ch5 : in STD_LOGIC;
-    Dig_21_Ch5 : in STD_LOGIC;
-    Dig_22_Ch5 : in STD_LOGIC;
-    Dig_23_Ch5 : in STD_LOGIC;
-    Dig_08_Ch5 : in STD_LOGIC;
-    Dig_08_Ch4 : in STD_LOGIC;
-    Dig_17_Ch4 : in STD_LOGIC;
-    Dig_26_Ch4 : in STD_LOGIC;
-    Dig_00_Ch4 : out STD_LOGIC;
-    Dig_01_Ch4 : out STD_LOGIC;
-    Dig_02_Ch4 : out STD_LOGIC;
-    Dig_03_Ch4 : out STD_LOGIC;
-    Dig_04_Ch4 : out STD_LOGIC;
-    Dig_05_Ch4 : out STD_LOGIC;
-    Dig_06_Ch4 : out STD_LOGIC;
-    Dig_07_Ch4 : out STD_LOGIC;
-    Dig_09_Ch4 : out STD_LOGIC;
-    Dig_10_Ch4 : out STD_LOGIC;
-    Dig_11_Ch4 : out STD_LOGIC;
-    Dig_12_Ch4 : out STD_LOGIC;
-    Dig_13_Ch4 : out STD_LOGIC;
-    Dig_14_Ch4 : out STD_LOGIC;
-    Dig_15_Ch4 : out STD_LOGIC;
-    Dig_16_Ch4 : out STD_LOGIC;
-    Dig_18_Ch4 : out STD_LOGIC;
-    Dig_19_Ch4 : out STD_LOGIC;
-    Dig_20_Ch4 : out STD_LOGIC;
-    Dig_21_Ch4 : out STD_LOGIC;
-    Dig_22_Ch4 : out STD_LOGIC;
-    Dig_23_Ch4 : out STD_LOGIC;
-    Dig_24_Ch4 : out STD_LOGIC;
-    Dig_25_Ch4 : out STD_LOGIC;
     D1_l1_fault : in STD_LOGIC;
     D1_h2_oc : in STD_LOGIC;
     D1_h3_fault : in STD_LOGIC;
@@ -258,7 +198,67 @@ architecture STRUCTURE of zusys_wrapper is
     D2_i2_diag : in STD_LOGIC;
     D2_h1_temp : in STD_LOGIC;
     D2_l2_oc : in STD_LOGIC;
-    D2_l2_temp : in STD_LOGIC
+    D2_l2_temp : in STD_LOGIC;
+    A1_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    A1_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    A1_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A1_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A2_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    A2_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    A2_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A2_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A3_IN : in STD_LOGIC_VECTOR ( 15 downto 0 );
+    A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
+    A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_OUT : out STD_LOGIC_VECTOR ( 25 downto 0 );
+    D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    D3_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_09_Ch5 : in STD_LOGIC;
+    Dig_10_Ch5 : in STD_LOGIC;
+    Dig_11_Ch5 : in STD_LOGIC;
+    Dig_12_Ch5 : in STD_LOGIC;
+    Dig_13_Ch5 : in STD_LOGIC;
+    Dig_14_Ch5 : in STD_LOGIC;
+    Dig_15_Ch5 : in STD_LOGIC;
+    Dig_16_Ch5 : in STD_LOGIC;
+    Dig_17_Ch5 : in STD_LOGIC;
+    Dig_18_Ch5 : in STD_LOGIC;
+    Dig_19_Ch5 : in STD_LOGIC;
+    Dig_20_Ch5 : in STD_LOGIC;
+    Dig_21_Ch5 : in STD_LOGIC;
+    Dig_22_Ch5 : in STD_LOGIC;
+    Dig_23_Ch5 : in STD_LOGIC;
+    Dig_08_Ch5 : in STD_LOGIC;
+    Dig_08_Ch4 : in STD_LOGIC;
+    Dig_17_Ch4 : in STD_LOGIC;
+    Dig_26_Ch4 : in STD_LOGIC;
+    Dig_00_Ch4 : out STD_LOGIC;
+    Dig_01_Ch4 : out STD_LOGIC;
+    Dig_02_Ch4 : out STD_LOGIC;
+    Dig_03_Ch4 : out STD_LOGIC;
+    Dig_04_Ch4 : out STD_LOGIC;
+    Dig_05_Ch4 : out STD_LOGIC;
+    Dig_06_Ch4 : out STD_LOGIC;
+    Dig_07_Ch4 : out STD_LOGIC;
+    Dig_09_Ch4 : out STD_LOGIC;
+    Dig_10_Ch4 : out STD_LOGIC;
+    Dig_11_Ch4 : out STD_LOGIC;
+    Dig_12_Ch4 : out STD_LOGIC;
+    Dig_13_Ch4 : out STD_LOGIC;
+    Dig_14_Ch4 : out STD_LOGIC;
+    Dig_15_Ch4 : out STD_LOGIC;
+    Dig_16_Ch4 : out STD_LOGIC;
+    Dig_18_Ch4 : out STD_LOGIC;
+    Dig_19_Ch4 : out STD_LOGIC;
+    Dig_20_Ch4 : out STD_LOGIC;
+    Dig_21_Ch4 : out STD_LOGIC;
+    Dig_22_Ch4 : out STD_LOGIC;
+    Dig_23_Ch4 : out STD_LOGIC;
+    Dig_24_Ch4 : out STD_LOGIC;
+    Dig_25_Ch4 : out STD_LOGIC
   );
   end component zusys;
 begin

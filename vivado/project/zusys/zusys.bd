@@ -5518,9 +5518,6 @@
             "type": "rst",
             "direction": "I"
           },
-          "CLK50MHZ": {
-            "direction": "I"
-          },
           "Dig_17_Ch4": {
             "direction": "I"
           },
@@ -5602,7 +5599,7 @@
             }
           },
           "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:10.3",
+            "vlnv": "xilinx.com:ip:uz_EnDat:10.4",
             "xci_name": "zusys_uz_EnDat_0_0",
             "xci_path": "ip\\zusys_uz_EnDat_0_0_1\\zusys_uz_EnDat_0_0.xci",
             "inst_hier_path": "uz_user/uz_EnDat_0"
@@ -5623,12 +5620,6 @@
           }
         },
         "nets": {
-          "CLK50MHZ_1": {
-            "ports": [
-              "CLK50MHZ",
-              "uz_EnDat_0/CLK50MHZ"
-            ]
-          },
           "DBGCLK": {
             "ports": [
               "uz_EnDat_0/DBGCLK"
@@ -9162,12 +9153,6 @@
           "uz_analog_adapter/s00_axi_aresetn",
           "uz_digital_adapter/RESETN",
           "uz_user/aresetn"
-        ]
-      },
-      "uz_system_clk_50MHz": {
-        "ports": [
-          "uz_system/clk_50MHz",
-          "uz_user/CLK50MHZ"
         ]
       },
       "uz_system_wdt_interrupt": {

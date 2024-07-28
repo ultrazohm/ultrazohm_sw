@@ -17,6 +17,15 @@
 #include "../IP_Cores/uz_dataMover/uz_dataMover.h"
 #include "../uz/uz_HAL.h"
 
+uint16_t TestVar = 0;
+uint32_t Max11ConfigSPI =0;
+uint32_t Max11ConfigBiPo =0;
+uint32_t Max11ConfigUniPo =0;
+uint32_t Max11ConfigAdcSelFORCEINIT =0;
+uint32_t Max11ConfigStatus =0;
+uint32_t Max11ConfigErrorCounter =0;
+uint32_t FORCEINIT;
+
 void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data)
 {
     // bitshift operation of -16 digits, because it is an 16-bit ADC, scaling the value to +/- 0.5
@@ -54,6 +63,14 @@ void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
     data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q12) * data->aa.A3.cf.ADC_B6;
     data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q12) * data->aa.A3.cf.ADC_B7;
     data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q12) * data->aa.A3.cf.ADC_B8;
+//	TestVar = (adc_data.data[16]);
+//    data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]);
+//    data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]);
+//    data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]);
+//    data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]);
+//    data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]);
+//    data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]);
+//    data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]);
 };
 
 void ADC_readCardA3_MAX11(DS_Data *data, uz_array_int16_t adc_data)
@@ -86,4 +103,14 @@ void ADC_readCardALL(DS_Data *data)
     ADC_readCardA2(data, adc_data);
     ADC_readCardA3(data, adc_data);
     ADC_readCardA3_MAX11(data, adc_data);
+
+
+    Max11ConfigSPI = uz_adcMax11331_hw_read_spi_cfgr(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR);
+    Max11ConfigBiPo = uz_adcMax11331_hw_read_EchoBipolar(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR);
+    Max11ConfigUniPo = uz_adcMax11331_hw_read_EchoUnipolar(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR);
+    Max11ConfigAdcSelFORCEINIT = uz_adcMax11331_hw_read_master_channel(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR);
+    Max11ConfigStatus = uz_adcMax11331_hw_read_Status(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR);
+    Max11ConfigErrorCounter = uz_adcMax11331_hw_read_ErrorCounter(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR);
+    uz_adcMax11331_hw_write_master_channel(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR,FORCEINIT);
+
 }

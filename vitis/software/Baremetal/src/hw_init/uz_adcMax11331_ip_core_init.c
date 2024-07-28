@@ -30,7 +30,7 @@ void uz_adcMax11331_ip_core_init(void)
         .cpha = 1U,
         .master_select = UZ_ADCMAX11331_MASTER1,
         .channel_select = UZ_ADCMAX11331_CH1 | UZ_ADCMAX11331_CH2 | UZ_ADCMAX11331_CH3 | UZ_ADCMAX11331_CH4 | UZ_ADCMAX11331_CH5 | UZ_ADCMAX11331_CH6 | UZ_ADCMAX11331_CH7 | UZ_ADCMAX11331_CH8 | UZ_ADCMAX11331_CH9 | UZ_ADCMAX11331_CH10 | UZ_ADCMAX11331_CH11 | UZ_ADCMAX11331_CH12 | UZ_ADCMAX11331_CH13 | UZ_ADCMAX11331_CH14 | UZ_ADCMAX11331_CH15 | UZ_ADCMAX11331_CH16,
-        .clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ};
+        .clk_div = UZ_ADCMAX11331_SPI_CLK_6_25MHZ};
 
    //1.) Create the instance of the first Max11331 adapter board with one or may several master = several physical Max11331 chips
     uz_adcMax11331_t *instance_1 = uz_adcMax11331_init(default_configuration);

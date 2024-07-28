@@ -31,3 +31,27 @@ uint32_t uz_adcMax11331_hw_read_master_channel(uint32_t base_address)
 	return (uz_axi_read_uint32(base_address + ADC_MAX11331_ADCSELECTOR_FORCEINIT));
 }
 
+uint32_t uz_adcMax11331_hw_read_EchoBipolar(uint32_t base_address)
+{
+	uz_assert_not_zero(base_address);
+	return (uz_axi_read_uint32(base_address + ADC_MAX11331_ECHOED_BIPOLAR_12));
+}
+
+uint32_t uz_adcMax11331_hw_read_EchoUnipolar(uint32_t base_address)
+{
+	uz_assert_not_zero(base_address);
+	return (uz_axi_read_uint32(base_address + ADC_MAX11331_ECHOED_UNIPOLAR_12));
+}
+
+uint32_t uz_adcMax11331_hw_read_Status(uint32_t base_address)
+{
+	uz_assert_not_zero(base_address);
+	return (uz_axi_read_uint32(base_address + ADC_MAX11331_STATUS));
+}
+
+uint32_t uz_adcMax11331_hw_read_ErrorCounter(uint32_t base_address)
+{
+	uz_assert_not_zero(base_address);
+	return (uz_axi_read_uint32(base_address + ADC_MAX11331_ERROR_COUNTER));
+}
+

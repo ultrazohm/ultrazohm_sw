@@ -40,6 +40,13 @@ uz_adcMax11331_t *uz_adcMax11331_init(struct uz_adcMax11331_config_t config)
     // assemble the content of SPI configuration register and write it
     uz_adcMax11331_hw_write_spi_cfgr(self->config.base_address, self->config.clk_div);
 
+    //Init the MAX11 Chip with: 32 Bit are 2x 16 Bit register where
+    	//ForceInit = 00000000 00010000 (8th Bit to force ReInit) or = 00000000 00000000 (default)
+    	//ADC Selector = 00000000 00000111 (where each 1 represents one additional ADC chip -> here 3 chips on adapter board)
+    uz_adcMax11331_hw_write_master_channel(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR,0x107);
+    usleep(1000000); //wait to be sure Init has happened
+    uz_adcMax11331_hw_write_master_channel(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR,0x7);
+
     //Start MAX11331 ADC in continuous sampling mode
    // uz_axigpio_enable_MAX11331(); // not defined yet
 

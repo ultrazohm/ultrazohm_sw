@@ -36,9 +36,9 @@ DS_Data Global_Data = {
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-		   .A3 = {.cf.ADC_A1 = 1.0f, .cf.ADC_A2 = 1.0f, .cf.ADC_A3 = 1.0f, .cf.ADC_A4 = 1.0f, .cf.ADC_B5 = 1.0f, .cf.ADC_B6 = 1.0f, .cf.ADC_B7 = 1.0f, .cf.ADC_B8 = 1.0f},
-		   .A3_Max11_ADC2 = {.cf.ADC_A1 = 1.0f, .cf.ADC_A2 = 1.0f, .cf.ADC_A3 = 1.0f, .cf.ADC_A4 = 1.0f, .cf.ADC_B5 = 1.0f, .cf.ADC_B6 = 1.0f, .cf.ADC_B7 = 1.0f, .cf.ADC_B8 = 1.0f},
-		   .A3_Max11_ADC3 = {.cf.ADC_A1 = 1.0f, .cf.ADC_A2 = 1.0f, .cf.ADC_A3 = 1.0f, .cf.ADC_A4 = 1.0f, .cf.ADC_B5 = 1.0f, .cf.ADC_B6 = 1.0f, .cf.ADC_B7 = 1.0f, .cf.ADC_B8 = 1.0f}
+		   .A3 = {.cf.ADC_A1 = 3.3f, .cf.ADC_A2 = 3.3f, .cf.ADC_A3 = 3.3f, .cf.ADC_A4 = 3.3f, .cf.ADC_B5 = 3.3f, .cf.ADC_B6 = 3.3f, .cf.ADC_B7 = 3.3f, .cf.ADC_B8 = 3.3f},
+		   .A3_Max11_ADC2 = {.cf.ADC_A1 = 3.3f, .cf.ADC_A2 = 3.3f, .cf.ADC_A3 = 3.3f, .cf.ADC_A4 = 3.3f, .cf.ADC_B5 = 3.3f, .cf.ADC_B6 = 3.3f, .cf.ADC_B7 = 3.3f, .cf.ADC_B8 = 3.3f},
+		   .A3_Max11_ADC3 = {.cf.ADC_A1 = 3.3f, .cf.ADC_A2 = 3.3f, .cf.ADC_A3 = 3.3f, .cf.ADC_A4 = 3.3f, .cf.ADC_B5 = 3.3f, .cf.ADC_B6 = 3.3f, .cf.ADC_B7 = 3.3f, .cf.ADC_B8 = 3.3f}
     }
 };
 

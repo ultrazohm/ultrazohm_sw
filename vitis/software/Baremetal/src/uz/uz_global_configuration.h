@@ -30,7 +30,6 @@
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
 
-
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U

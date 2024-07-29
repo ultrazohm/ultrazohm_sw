@@ -15,7 +15,7 @@ struct uz_resolverIP_config_t resolver_config_left={
      };
 
 struct uz_resolverIP_config_t resolver_config_right={
-        .base_address=XPAR_UZ_USER_RESOLVER_D4_RESOLVER_INTERFACE_V_1_BASEADDR,
+        .base_address=XPAR_UZ_USER_RESOLVER_D4_RESOLVER_INTERFACE_V_2_BASEADDR,
         .ip_clk_frequency_Hz=100000000U,
         .resolution = 16,
         .freq_clockin = 8192000,
@@ -45,7 +45,7 @@ struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left = {
 };
 
 struct uz_resolver_pl_interface_config_t resolver_pl_config_right = {
-               .base_address = XPAR_UZ_RESOLVER_PL_INTERFACE_1_BASEADDR,
+               .base_address = XPAR_UZ_RESOLVER_PL_INTERFACE_2_BASEADDR,
                .bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
                .ip_clk_frequency_Hz = 100000000U,
                .machine_polepairs = 4,

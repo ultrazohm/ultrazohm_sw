@@ -54,6 +54,7 @@ enum JS_OberservableData {
 	JSO_theta_mech_right,
 	JSO_mech_Speed_rpm_left,
 	JSO_mech_Speed_rpm_right,
+	JSO_torque,
 	JSO_ENDMARKER
 };
 

@@ -91,24 +91,27 @@ void ISR_Control(void *data)
     Global_Data.av.inverter_left_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_left);
     Global_Data.av.inverter_right_status = uz_inverter_adapter_get_outputs(Global_Data.objects.uz_d_inverter_right);
 
-	// assign measurements to Global_Data
-	Global_Data.av.i_a_left = Global_Data.aa.A1.me.ADC_A4 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_b_left = Global_Data.aa.A1.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_c_left = Global_Data.aa.A1.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_dc_left = Global_Data.aa.A1.me.ADC_B5 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.v_a_left = Global_Data.aa.A1.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_b_left = Global_Data.aa.A1.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_c_left = Global_Data.aa.A1.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_dc_left = Global_Data.aa.A1.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+	// Torque Sensor measurements
+	Global_Data.av.torque = Global_Data.aa.A1.me.ADC_A1;
 
-	Global_Data.av.i_a_right = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_b_right = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_c_right = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.i_dc_right = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
-	Global_Data.av.v_a_right = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_b_right = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_c_right = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
-	Global_Data.av.v_dc_right = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+	// assign inverter measurements
+	Global_Data.av.i_a_left = Global_Data.aa.A2.me.ADC_A4 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_b_left = Global_Data.aa.A2.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_c_left = Global_Data.aa.A2.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_dc_left = Global_Data.aa.A2.me.ADC_B5 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.v_a_left = Global_Data.aa.A2.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_b_left = Global_Data.aa.A2.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_c_left = Global_Data.aa.A2.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_dc_left = Global_Data.aa.A2.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
+
+	Global_Data.av.i_a_right = Global_Data.aa.A3.me.ADC_A4 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_b_right = Global_Data.aa.A3.me.ADC_A3 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_c_right = Global_Data.aa.A3.me.ADC_A2 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.i_dc_right = Global_Data.aa.A3.me.ADC_B5 * CURRENT_2_SI_AMPERE;
+	Global_Data.av.v_a_right = Global_Data.aa.A3.me.ADC_B8 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_b_right = Global_Data.aa.A3.me.ADC_B7 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_c_right = Global_Data.aa.A3.me.ADC_B6 * VOLTAGE_2_SI_VOLTS;
+	Global_Data.av.v_dc_right = Global_Data.aa.A3.me.ADC_A1 * VOLTAGE_2_SI_VOLTS;
 
 	// assign measurements from global_data to motor control structs
     i_abc_left.a = Global_Data.av.i_a_left;

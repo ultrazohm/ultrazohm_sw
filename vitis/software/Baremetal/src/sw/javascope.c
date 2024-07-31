@@ -95,6 +95,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_vq_left]			= &data->av.v_q_left;
 	js_ch_observable[JSO_vd_right]			= &data->av.v_d_right;
 	js_ch_observable[JSO_vq_right]			= &data->av.v_q_right;
+	js_ch_observable[JSO_torque]			= &data->av.torque;
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;

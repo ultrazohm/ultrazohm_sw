@@ -37,7 +37,7 @@ uz_EnDat_t* uz_EnDat_IP_core_custom_init(void) {
     EnDat_temp_ptr->config.factor4 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_4_DEFAULT, uz_EnDat_factor4_data2clksync);
     EnDat_temp_ptr->config.factor5 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_5_DEFAULT, uz_EnDat_factor5_telegrammlength);
     EnDat_temp_ptr->config.factor6 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_6_DEFAULT, uz_EnDat_factor6_responsesync);
-    EnDat_temp_ptr->config.factor7 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_7_DEFAULT, uz_EnDat_factor7_extrashift); //+2 should usually work for most odd behaviour
+    EnDat_temp_ptr->config.factor7 = uz_EnDat_write_factor(EnDat_temp_ptr, ENDAT_FACTOR_7_DEFAULT+2, uz_EnDat_factor7_extrashift); //+2 should usually work for most odd behaviour
     //stop adjustment above this statement
     EnDat_temp_ptr->config.control = uz_EnDat_enable_config_evaluation_in_IP(EnDat_temp_ptr->config.control);
     EnDat_temp_ptr->config.control = uz_EnDat_set_output_enable_in_controlword(EnDat_temp_ptr->config.control);

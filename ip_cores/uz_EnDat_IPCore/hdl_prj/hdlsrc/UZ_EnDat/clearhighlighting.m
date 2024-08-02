@@ -69,8 +69,6 @@ annotate_port('gm_UZ_EnDat/UZ_ENDAT/Logical Operator4', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/Logical Operator4', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/Logical Operator4', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/Logical Operator4', 0, 1, '');
-annotate_port('gm_UZ_EnDat/UZ_ENDAT/Logical Operator5', 0, 1, '');
-annotate_port('UZ_EnDat/UZ_ENDAT/Logical Operator5', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/ramselektor', 0, 1, '');
 annotate_port('UZ_EnDat/UZ_ENDAT/ramselektor', 0, 1, '');
 annotate_port('gm_UZ_EnDat/UZ_ENDAT/CONTROLWORDSTORED', 0, 1, '');

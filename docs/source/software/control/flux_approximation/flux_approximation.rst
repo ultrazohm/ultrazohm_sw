@@ -4,6 +4,8 @@
 Flux approximation
 ==================
 
+This 
+
 Setup
 -----
 
@@ -23,20 +25,20 @@ In order to configure the flux approximation, the fitting parameter struct has t
   #include "uz_approximate_flux.h"
   int main(void) {
     struct uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
-        .ad1_parameter = 0.030483840951002f,
-        .ad2_parameter = 0.040244227373267f,
-				.ad3_parameter = -16.481195185733903f,
-				.ad4_parameter = 1.296438633344970f,
-				.ad5_parameter = 6.183163374457993e-04f,
-				.ad6_parameter = -12.275586044862504f,
-				.aq1_parameter = 0.004816670542863f,
-				.aq2_parameter = 0.171595254784258f,
-				.aq3_parameter = 9.262938633610718e-04f,
-				.aq4_parameter = 0.005001870975338f,
-				.aq5_parameter = 0.170521235710151f,
-				.aq6_parameter = 9.186084507499523e-04f,
-				.F1G1_parameter = -0.001356794026337f,
-				.F2G2_parameter = 0.078813850391713f
+      .ad1_parameter = 0.030483840951002f,
+      .ad2_parameter = 0.040244227373267f,
+			.ad3_parameter = -16.481195185733903f,
+		  .ad4_parameter = 1.296438633344970f,
+			.ad5_parameter = 6.183163374457993e-04f,
+			.ad6_parameter = -12.275586044862504f,
+			.aq1_parameter = 0.004816670542863f,
+			.aq2_parameter = 0.171595254784258f,
+			.aq3_parameter = 9.262938633610718e-04f,
+			.aq4_parameter = 0.005001870975338f,
+			.aq5_parameter = 0.170521235710151f,
+			.aq6_parameter = 9.186084507499523e-04f,
+			.F1G1_parameter = -0.001356794026337f,
+			.F2G2_parameter = 0.078813850391713f
     };
   }
 
@@ -86,20 +88,20 @@ Step function
     #include "../../../src/uz/uz_approximate_flux/approximate_flux_ert_rtw/approximate_flux.h"
     int main(void) {
     uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
-    .ad1_parameter = 0.030483840951002f;
-	  .ad2_parameter = 0.040244227373267f;
-	  .ad3_parameter = -16.481195185733903f;
-	  .ad4_parameter = 1.296438633344970f;
-	  .ad5_parameter = 6.183163374457993e-04f;
-	  .ad6_parameter = -12.275586044862504f;
-	  .aq1_parameter = 0.004816670542863f;
-	  .aq2_parameter = 0.171595254784258f;
-	  .aq3_parameter = 9.262938633610718e-04f;
-	  .aq4_parameter = 0.005001870975338f;
-	  .aq5_parameter = 0.170521235710151f;
-	  .aq6_parameter = 9.186084507499523e-04f;
-	  .F1G1_parameter = -0.001356794026337f;
-	  .F2G2_parameter = 0.078813850391713f;
+      .ad1_parameter = 0.030483840951002f;
+	    .ad2_parameter = 0.040244227373267f;
+	    .ad3_parameter = -16.481195185733903f;
+	    .ad4_parameter = 1.296438633344970f;
+	    .ad5_parameter = 6.183163374457993e-04f;
+	    .ad6_parameter = -12.275586044862504f;
+	    .aq1_parameter = 0.004816670542863f;
+	    .aq2_parameter = 0.171595254784258f;
+	    .aq3_parameter = 9.262938633610718e-04f;
+	    .aq4_parameter = 0.005001870975338f;
+	    .aq5_parameter = 0.170521235710151f;
+	    .aq6_parameter = 9.186084507499523e-04f;
+	    .F1G1_parameter = -0.001356794026337f;
+	    .F2G2_parameter = 0.078813850391713f;
     };
     uz_approximate_flux_t* test_instance = uz_approximate_flux_init(fitting_config);
     struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
@@ -126,20 +128,20 @@ Reference step function
     #include "../../../src/uz/uz_approximate_flux/approximate_flux_ert_rtw/approximate_flux.h"
     int main(void) {
     uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
-    .ad1_parameter = 0.030483840951002f;
-	  .ad2_parameter = 0.040244227373267f;
-	  .ad3_parameter = -16.481195185733903f;
-	  .ad4_parameter = 1.296438633344970f;
-	  .ad5_parameter = 6.183163374457993e-04f;
-	  .ad6_parameter = -12.275586044862504f;
-	  .aq1_parameter = 0.004816670542863f;
-	  .aq2_parameter = 0.171595254784258f;
-	  .aq3_parameter = 9.262938633610718e-04f;
-	  .aq4_parameter = 0.005001870975338f;
-	  .aq5_parameter = 0.170521235710151f;
-	  .aq6_parameter = 9.186084507499523e-04f;
-	  .F1G1_parameter = -0.001356794026337f;
-	  .F2G2_parameter = 0.078813850391713f;
+      .ad1_parameter = 0.030483840951002f;
+	    .ad2_parameter = 0.040244227373267f;
+	    .ad3_parameter = -16.481195185733903f;
+	    .ad4_parameter = 1.296438633344970f;
+	    .ad5_parameter = 6.183163374457993e-04f;
+	    .ad6_parameter = -12.275586044862504f;
+	    .aq1_parameter = 0.004816670542863f;
+	    .aq2_parameter = 0.171595254784258f;
+	    .aq3_parameter = 9.262938633610718e-04f;
+	    .aq4_parameter = 0.005001870975338f;
+	    .aq5_parameter = 0.170521235710151f;
+	    .aq6_parameter = 9.186084507499523e-04f;
+	    .F1G1_parameter = -0.001356794026337f;
+	    .F2G2_parameter = 0.078813850391713f;
     };
     uz_approximate_flux_t* test_instance = uz_approximate_flux_init(fitting_config);
     struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};

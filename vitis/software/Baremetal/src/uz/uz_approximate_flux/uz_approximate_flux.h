@@ -19,13 +19,13 @@ typedef struct uz_approximate_flux_t uz_approximate_flux_t;
 uz_approximate_flux_t* uz_approximate_flux_init(uz_PMSM_flux_fitting_parameter_config_t fitting_config);
 /**
  * @brief approximate flux-linkages
- * @return approximated flux-linkages for d- and q-axis
+ * @return uz_dq_t approximated flux-linkages for d- and q-axis
  */
 uz_3ph_dq_t uz_approximate_flux_step(uz_approximate_flux_t* self, uz_3ph_dq_t i_actual_Ampere);
 
 /**
  * @brief approximate reference flux-linkages.
- * @return approximated reference flux-linkages for a specified reference ampere.
+ * @return uz_dq_t approximated reference flux-linkages for a specified reference ampere.
  */
 uz_3ph_dq_t uz_approximate_flux_reference_step(uz_approximate_flux_t* self,  uz_3ph_dq_t i_reference_Ampere,uz_3ph_dq_t i_actual_Ampere);
 

@@ -4,7 +4,7 @@
 Flux approximation
 ==================
 
-This 
+This module implements a method to approximate flux-linkages using the approach described in [[#Shih_Wei_Su_flux_approx]_].
 
 Setup
 -----
@@ -15,6 +15,7 @@ Configuration
 -------------
 
 In order to configure the flux approximation, the fitting parameter struct has to be initialized.
+
 
 .. doxygenstruct:: uz_PMSM_flux_fitting_parameter_config_t
 
@@ -47,6 +48,7 @@ Description
 
 With this fitting config struct one can approximate the flux-linkages for a specific machine.
 The fitting parameter can be found solving the nonlinear-square problems discribed in [[#Shih_Wei_Su_flux_approx]_].
+For more information of how to get the fitting parameter see :ref:`uz_flux_approximation_script`.
 
 .. _uz_flux_approximation_init:
 

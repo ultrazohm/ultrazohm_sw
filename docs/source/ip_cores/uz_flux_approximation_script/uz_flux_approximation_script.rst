@@ -103,9 +103,6 @@ In this example usage, flux-linkages of a example motor are getting approximated
 
 - There needs to be a Excel data sheet in the same directory as the PMSM IP-Core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
 
-.. figure:: flux_linkage_LUT.jpg
-  :align: center
-
 - The naming in the script has to be adjusted. 
 
 .. code-block:: matlab

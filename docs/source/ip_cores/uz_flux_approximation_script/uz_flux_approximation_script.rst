@@ -99,7 +99,7 @@ For that the MATLAB  nonlinear-regression function lsqnonlin with the Levenberg-
 Example usage
 =============
 
-In this example usage, flux-linkages of a example motor are getting approximated.
+In this example usage, flux-linkages of an example motor are getting approximated.
 
 - There needs to be a Excel data sheet in the same directory as the PMSM IP-Core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
 

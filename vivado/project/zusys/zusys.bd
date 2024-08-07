@@ -1924,8 +1924,8 @@
                   },
                   "util_vector_logic_0": {
                     "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-                    "xci_name": "zusys_util_vector_logic_0_2",
-                    "xci_path": "ip\\zusys_util_vector_logic_0_2_1\\zusys_util_vector_logic_0_2.xci",
+                    "xci_name": "zusys_util_vector_logic_0_0",
+                    "xci_path": "ip\\zusys_util_vector_logic_0_0\\zusys_util_vector_logic_0_0.xci",
                     "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/util_vector_logic_0",
                     "parameters": {
                       "C_OPERATION": {
@@ -1976,8 +1976,8 @@
                   },
                   "xlconcat_0": {
                     "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                    "xci_name": "zusys_xlconcat_0_3",
-                    "xci_path": "ip\\zusys_xlconcat_0_3_1\\zusys_xlconcat_0_3.xci",
+                    "xci_name": "zusys_xlconcat_0_0",
+                    "xci_path": "ip\\zusys_xlconcat_0_0\\zusys_xlconcat_0_0.xci",
                     "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/xlconcat_0",
                     "parameters": {
                       "NUM_PORTS": {
@@ -2736,8 +2736,8 @@
                   },
                   "system_ila_0": {
                     "vlnv": "xilinx.com:ip:system_ila:1.1",
-                    "xci_name": "zusys_system_ila_0_5",
-                    "xci_path": "ip\\zusys_system_ila_0_5_1\\zusys_system_ila_0_5.xci",
+                    "xci_name": "zusys_system_ila_0_1",
+                    "xci_path": "ip\\zusys_system_ila_0_1\\zusys_system_ila_0_1.xci",
                     "inst_hier_path": "uz_digital_adapter/D2_adapter/Gates_3L/system_ila_0",
                     "parameters": {
                       "C_DATA_DEPTH": {
@@ -2876,8 +2876,8 @@
                   },
                   "xlconcat_0": {
                     "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                    "xci_name": "zusys_xlconcat_0_4",
-                    "xci_path": "ip\\zusys_xlconcat_0_4_1\\zusys_xlconcat_0_4.xci",
+                    "xci_name": "zusys_xlconcat_0_1",
+                    "xci_path": "ip\\zusys_xlconcat_0_1\\zusys_xlconcat_0_1.xci",
                     "inst_hier_path": "uz_digital_adapter/D2_adapter/Gates_3L/xlconcat_0",
                     "parameters": {
                       "NUM_PORTS": {
@@ -6138,26 +6138,26 @@
           },
           "Resolver_Interface_v_1": {
             "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
-            "xci_name": "zusys_Resolver_Interface_v_0_1",
-            "xci_path": "ip\\zusys_Resolver_Interface_v_0_1\\zusys_Resolver_Interface_v_0_1.xci",
+            "xci_name": "zusys_Resolver_Interface_v_1_0",
+            "xci_path": "ip\\zusys_Resolver_Interface_v_1_0\\zusys_Resolver_Interface_v_1_0.xci",
             "inst_hier_path": "uz_user/Resolver_Interface_v_1"
           },
           "uz_resolver_pl_inter_1": {
             "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
-            "xci_name": "zusys_uz_resolver_pl_inter_0_1",
-            "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_1\\zusys_uz_resolver_pl_inter_0_1.xci",
+            "xci_name": "zusys_uz_resolver_pl_inter_1_0",
+            "xci_path": "ip\\zusys_uz_resolver_pl_inter_1_0\\zusys_uz_resolver_pl_inter_1_0.xci",
             "inst_hier_path": "uz_user/uz_resolver_pl_inter_1"
           },
           "Resolver_Interface_v_2": {
             "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
-            "xci_name": "zusys_Resolver_Interface_v_0_2",
-            "xci_path": "ip\\zusys_Resolver_Interface_v_0_2\\zusys_Resolver_Interface_v_0_2.xci",
+            "xci_name": "zusys_Resolver_Interface_v_2_0",
+            "xci_path": "ip\\zusys_Resolver_Interface_v_2_0\\zusys_Resolver_Interface_v_2_0.xci",
             "inst_hier_path": "uz_user/Resolver_Interface_v_2"
           },
           "uz_resolver_pl_inter_2": {
             "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
-            "xci_name": "zusys_uz_resolver_pl_inter_0_2",
-            "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_2\\zusys_uz_resolver_pl_inter_0_2.xci",
+            "xci_name": "zusys_uz_resolver_pl_inter_2_0",
+            "xci_path": "ip\\zusys_uz_resolver_pl_inter_2_0\\zusys_uz_resolver_pl_inter_2_0.xci",
             "inst_hier_path": "uz_user/uz_resolver_pl_inter_2"
           },
           "axi_gpio_0": {
@@ -6177,7 +6177,7 @@
           "xlslice_0": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
             "xci_name": "zusys_xlslice_0_0",
-            "xci_path": "ip\\zusys_xlslice_0_0_1\\zusys_xlslice_0_0.xci",
+            "xci_path": "ip\\zusys_xlslice_0_0\\zusys_xlslice_0_0.xci",
             "inst_hier_path": "uz_user/xlslice_0",
             "parameters": {
               "DIN_WIDTH": {
@@ -6187,8 +6187,8 @@
           },
           "xlslice_1": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_1",
-            "xci_path": "ip\\zusys_xlslice_0_1_1\\zusys_xlslice_0_1.xci",
+            "xci_name": "zusys_xlslice_1_0",
+            "xci_path": "ip\\zusys_xlslice_1_0\\zusys_xlslice_1_0.xci",
             "inst_hier_path": "uz_user/xlslice_1",
             "parameters": {
               "DIN_FROM": {
@@ -6204,8 +6204,8 @@
           },
           "xlslice_2": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_2",
-            "xci_path": "ip\\zusys_xlslice_0_2\\zusys_xlslice_0_2.xci",
+            "xci_name": "zusys_xlslice_2_1",
+            "xci_path": "ip\\zusys_xlslice_2_1\\zusys_xlslice_2_1.xci",
             "inst_hier_path": "uz_user/xlslice_2",
             "parameters": {
               "DIN_FROM": {
@@ -6221,8 +6221,8 @@
           },
           "xlslice_3": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_3",
-            "xci_path": "ip\\zusys_xlslice_0_3\\zusys_xlslice_0_3.xci",
+            "xci_name": "zusys_xlslice_3_1",
+            "xci_path": "ip\\zusys_xlslice_3_1\\zusys_xlslice_3_1.xci",
             "inst_hier_path": "uz_user/xlslice_3",
             "parameters": {
               "DIN_FROM": {
@@ -6238,8 +6238,8 @@
           },
           "xlslice_4": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_4",
-            "xci_path": "ip\\zusys_xlslice_0_4\\zusys_xlslice_0_4.xci",
+            "xci_name": "zusys_xlslice_4_1",
+            "xci_path": "ip\\zusys_xlslice_4_1\\zusys_xlslice_4_1.xci",
             "inst_hier_path": "uz_user/xlslice_4",
             "parameters": {
               "DIN_TO": {
@@ -6252,10 +6252,16 @@
           },
           "xlslice_5": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_5",
-            "xci_path": "ip\\zusys_xlslice_0_5\\zusys_xlslice_0_5.xci",
+            "xci_name": "zusys_xlslice_5_1",
+            "xci_path": "ip\\zusys_xlslice_5_1\\zusys_xlslice_5_1.xci",
             "inst_hier_path": "uz_user/xlslice_5",
             "parameters": {
+              "DIN_FROM": {
+                "value": "5"
+              },
+              "DIN_TO": {
+                "value": "5"
+              },
               "DIN_WIDTH": {
                 "value": "24"
               }
@@ -6263,8 +6269,8 @@
           },
           "xlslice_6": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_6",
-            "xci_path": "ip\\zusys_xlslice_0_6\\zusys_xlslice_0_6.xci",
+            "xci_name": "zusys_xlslice_6_1",
+            "xci_path": "ip\\zusys_xlslice_6_1\\zusys_xlslice_6_1.xci",
             "inst_hier_path": "uz_user/xlslice_6",
             "parameters": {
               "DIN_WIDTH": {
@@ -9736,8 +9742,8 @@
       },
       "xlconcat_0": {
         "vlnv": "xilinx.com:ip:xlconcat:2.1",
-        "xci_name": "zusys_xlconcat_0_5",
-        "xci_path": "ip\\zusys_xlconcat_0_5\\zusys_xlconcat_0_5.xci",
+        "xci_name": "zusys_xlconcat_0_3",
+        "xci_path": "ip\\zusys_xlconcat_0_3\\zusys_xlconcat_0_3.xci",
         "inst_hier_path": "xlconcat_0",
         "parameters": {
           "NUM_PORTS": {

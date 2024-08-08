@@ -152,8 +152,12 @@ int main(void)
             // Initialize Global actualValues
 
             // Zu testen - theta_offset = 4.271849612
+            // Offset V3.1 vor der Lackierung theta_offset = 4.291866f;
+            // Offset V3.1 nach der Lackierung theta_offset = 2.21614425f;
+            // Offset V3.2 theta_offset = 2.61286595f;
+            // Offset V3.3 theta_offset = 3.095875684f;
 
-            Global_Data.av.theta_offset = 2.21614425f; // 4.291866f; //4.291866f;  //4.3317f;//4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
+            Global_Data.av.theta_offset = 2.762601667f; //5.870765333f; //2.762601667f; //2.762601667f;  // 3.104602333f; // 2.450550333f; // 4.291866f; //4.291866f;  //4.3317f;//4.291866f; //4.327050f; 4.291866; 4.306316; 1.183702; 1.152288; 4.291238;
 
             Global_Data.av.polepairs = 2.0f;
             Global_Data.av.kp_d = 0.0f; //40.0f;
@@ -171,6 +175,7 @@ int main(void)
             Global_Data.rasv.enable_LMG_continues = 1U;
             Global_Data.rasv.enable_LMG_transient = 2U;
             Global_Data.rasv.LMG_measurement_typ = 2U;  // 1U = continues, 2U = transient
+            Global_Data.rasv.LMG_measure = false;		// First set LMG measure is disable
 
             Global_Data.rasv.i_d_ref = 0.0f;
             Global_Data.rasv.i_q_ref = 0.0f;

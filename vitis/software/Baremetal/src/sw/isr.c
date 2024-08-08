@@ -59,8 +59,6 @@ float omega_el_rad_per_sec = 0.0f;
 float omega_m_rad_per_sec = 0.0f;
 
 float unfiltered_signal = 0.0f;
-
-bool state_LMG_measure = false;
 bool state_controller_delay = false;
 bool state_slow_current_set = false;
 bool state_set_next_point = true;
@@ -85,67 +83,68 @@ uint32_t counter_Torque_points = 0U;
 
 //==============================================================================================================================================================
 // Currents and Angles for measurement the Torque Current Angle characteristic
-// Example
-//static float angle[37] = {0.0f, 2.5f, 5.0f, 7.5f, 10.0f, 12.5f, 15.0f, 17.5f, 20.0f, 22.5f, 25.0f, 27.5f,
-//		 30.0f, 32.5f, 35.0f, 37.5f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f, 52.5f, 55.0f, 57.5f, 60.0f, 62.5f,
-//		 65.0f, 67.5f, 70.0f, 72.5f, 75.0f, 77.5f, 80.0f, 82.5f, 85.0f, 87.5f, 90.0f};
 
-//static float angle[20] = {0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f,
-//				52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f};
+// ------------------------------------ Ermittlung Rfe in d- und q- achse ----------------------------------------------
+//static uint32_t n_currents_max = 1U;
+//static uint32_t n_angles_max = 37U;
+//static float i_peak[1] = { 15.0f };
+//
+//static float angle[37] = {
+//		90.0f, 85.0f, 80.0f, 75.0f, 70.0f, 65.0f,
+//		60.0f, 55.0f, 50.0f, 45.0f, 40.0f, 35.0f,
+//		30.0f, 25.0f, 20.0f, 15.0f, 10.0f, 5.0f,
+//		0.0f, -5.0f, -10.0f, -15.0f, -20.0f, -25.0f,
+//		-30.0f, -35.0f, -40.0f, -45.0f, -50.0f,
+//		-55.0f, -60.0f, -65.0f, -70.0f, -75.0f,
+//		-80.0f, -85.0f, -90.0f
+//						 };
 
 
-//static float angle[91] = {
-//		0.0f, 2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f, 20.0f, 22.0f, 24.0f, 26.0f, 28.0f, 30.0f, 32.0f,
-//		34.0f, 36.0f, 38.0f, 40.0f, 42.0f, 44.0f, 46.0f, 48.0f, 50.0f, 52.0f, 54.0f, 56.0f, 58.0f, 60.0f, 62.0f, 64.0f,
-//		66.0f, 68.0f, 70.0f, 72.0f, 74.0f, 76.0f, 78.0f, 80.0f, 82.0f, 84.0f, 86.0f, 88.0f, 90.0f, 92.0f, 94.0f, 96.0f,
-//		98.0f, 100.0f, 102.0f, 104.0f, 106.0f, 108.0f, 110.0f, 112.0f, 114.0f, 116.0f, 118.0f, 120.0f, 122.0f, 124.0f,
-//		126.0f, 128.0f, 130.0f, 132.0f, 134.0f, 136.0f, 138.0f, 140.0f, 142.0f, 144.0f, 146.0f, 148.0f, 150.0f, 152.0f,
-//		154.0f, 156.0f, 158.0f, 160.0f, 162.0f, 164.0f, 166.0f, 168.0f, 170.0f, 172.0f, 174.0f, 176.0f, 178.0f, 180.0f,
-//};
-
-// Induzierte Spannung
+// ------------------------------------ Induzierte Spannung ----------------------------------------------
 //static uint32_t n_currents_max = 34U;
 //static uint32_t n_angles_max = 1U;
 //static float i_peak[34] = { 0.0f, 2.0f, 4.0f, 6.0f, 8.0f, 10.0f, 12.0f, 14.0f, 16.0f, 18.0f, 20.0f, 22.0f, 24.0f,
 //		26.0f, 28.0f, 30.0f, 32.0f, 34.0f, 36.0f, 38.0f, 40.0f, 42.0f, 44.0f, 46.0f, 48.0f, 50.0f,
 //		52.0f, 54.0f, 56.0f, 58.0f, 60.0f, 62.0f, 64.0f, 66.0f };
+//
 //static float angle[34] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 //		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 //		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
-// Currents and Angles for torque current characteristic
+
+// ------------------------------------ Currents and Angles for torque current characteristic ----------------------------------------------
 static uint32_t n_currents_max = 1U;
 static uint32_t n_angles_max = 20U;
-static float i_peak[1] = { 25.0f };
+static float i_peak[1] = { 30.0f };
 static float angle[20] = {	0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f,
 							52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f
 						 };
 
-// Currents and Angles for measurement the Efficiency Map
+// ------------------------------------ Currents and Angles for measurement the Efficiency Map ---------------------------------------------
 static uint32_t n_Torque_points_max = 11U;
-static float i_peak_T[11] = {	11.438f,
-								16.035f,
-								23.381f,
-								29.406f,
-								34.977f,
-								40.291f,
-								45.519f,
-								50.707f,
-								55.846f,
-								60.988f,
-								66.155f
+static float i_peak_T[11] = {	11.983f,
+								16.518f,
+								23.700f,
+								29.825f,
+								35.496f,
+								40.945f,
+								46.283f,
+								51.504f,
+								56.715f,
+								61.966f,
+								67.182f
 							};
 
-static float angle_T[11] = {	46.625f,
-								47.163f,
-								48.724f,
-								50.326f,
-								51.775f,
-								53.525f,
-								54.931f,
-								56.481f,
-								57.884f,
-								58.871f,
-								59.727f
+static float angle_T[11] = {	45.560f,
+								47.668f,
+								48.071f,
+								50.206f,
+								51.657f,
+								53.586f,
+								54.800f,
+								56.102f,
+								57.358f,
+								58.678f,
+								59.676f
 							};
 
 //==============================================================================================================================================================
@@ -419,7 +418,7 @@ void ISR_Control(void *data)
 					state_set_next_point = false;
 					state_slow_current_set = true;
 					state_controller_delay = false;
-					state_LMG_measure = false;
+					Global_Data.rasv.LMG_measure = false;
 
 				}
 
@@ -443,7 +442,7 @@ void ISR_Control(void *data)
 							state_set_next_point = false;
 							state_slow_current_set = false;
 							state_controller_delay = true;
-							state_LMG_measure = false;
+							Global_Data.rasv.LMG_measure = false;
 						}
 					}
 				}
@@ -490,36 +489,36 @@ void ISR_Control(void *data)
 
 					} else {
 	//					state_controller_delay = false;
-	//					state_LMG_measure = true;
+	//					Global_Data.rasv.LMG_measure = true;
 
 						state_set_next_point = false;
 						state_slow_current_set = false;
 						state_controller_delay = false;
-						state_LMG_measure = true;
+						Global_Data.rasv.LMG_measure = true;
 					}
     			}
 
 				// Counter for continues measurement
-				if((state_LMG_measure == true) && (state_stop_current_angle == false)){
+				if((Global_Data.rasv.LMG_measure == true) && (state_stop_current_angle == false)){
 					if(counter_n_measurements <= n_measurements)
 					{
 						counter_n_measurements = counter_n_measurements + 1.0f;
 //						Global_Data.av.testsignal = counter_n_measurements;
 					} else {
-//						state_LMG_measure = false;
+//						Global_Data.rasv.LMG_measure = false;
 //						state_set_next_point = true;
 
 						state_set_next_point = true;
 						state_slow_current_set = false;
 						state_controller_delay = false;
-						state_LMG_measure = false;
+						Global_Data.rasv.LMG_measure = false;
 
 					}
 				}
 
 				switch (Global_Data.rasv.LMG_measurement_typ) {
 					case 1U: // Continues
-						if((state_LMG_measure == true) && (state_stop_current_angle == false)) {
+						if((Global_Data.rasv.LMG_measure == true) && (state_stop_current_angle == false)) {
 							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 1);
 							Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
 
@@ -536,7 +535,7 @@ void ISR_Control(void *data)
 						break;
 
 					case 2U: // Transient
-						if((state_LMG_measure == true) && (state_stop_current_angle == false)) {
+						if((Global_Data.rasv.LMG_measure == true) && (state_stop_current_angle == false)) {
 							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient, 1);
 							Global_Data.av.flg_enable_LMG_transient = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient);
 
@@ -580,7 +579,7 @@ void ISR_Control(void *data)
 					state_set_next_point = false;
 					state_slow_current_set = true;
 					state_controller_delay = false;
-					state_LMG_measure = false;
+					Global_Data.rasv.LMG_measure = false;
 
 				}
 
@@ -604,7 +603,7 @@ void ISR_Control(void *data)
 							state_set_next_point = false;
 							state_slow_current_set = false;
 							state_controller_delay = true;
-							state_LMG_measure = false;
+							Global_Data.rasv.LMG_measure = false;
 						}
 					}
 				}
@@ -649,36 +648,36 @@ void ISR_Control(void *data)
 						counter_n_delay_controller = counter_n_delay_controller + 1.0f;
 					} else {
 	//					state_controller_delay = false;
-	//					state_LMG_measure = true;
+	//					Global_Data.rasv.LMG_measure = true;
 
 						state_set_next_point = false;
 						state_slow_current_set = false;
 						state_controller_delay = false;
-						state_LMG_measure = true;
+						Global_Data.rasv.LMG_measure = true;
 					}
     			}
 
 				// Counter for continues measurement
-				if((state_LMG_measure == true) && (state_stop_current_angle == false)){
+				if((Global_Data.rasv.LMG_measure == true) && (state_stop_current_angle == false)){
 					if(counter_n_measurements <= n_measurements)
 					{
 						counter_n_measurements = counter_n_measurements + 1.0f;
 //						Global_Data.av.testsignal = counter_n_measurements;
 					} else {
-//						state_LMG_measure = false;
+//						Global_Data.rasv.LMG_measure = false;
 //						state_set_next_point = true;
 
 						state_set_next_point = true;
 						state_slow_current_set = false;
 						state_controller_delay = false;
-						state_LMG_measure = false;
+						Global_Data.rasv.LMG_measure = false;
 
 					}
 				}
 
 				switch (Global_Data.rasv.LMG_measurement_typ) {
 					case 1U: // Continues
-						if((state_LMG_measure == true) && (state_stop_current_angle == false)) {
+						if((Global_Data.rasv.LMG_measure == true) && (state_stop_current_angle == false)) {
 							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues, 1);
 							Global_Data.av.flg_enable_LMG_continues = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_continues);
 
@@ -695,7 +694,7 @@ void ISR_Control(void *data)
 						break;
 
 					case 2U: // Transient
-						if((state_LMG_measure == true) && (state_stop_current_angle == false)) {
+						if((Global_Data.rasv.LMG_measure == true) && (state_stop_current_angle == false)) {
 							uz_axi_gpio_write_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient, 1);
 							Global_Data.av.flg_enable_LMG_transient = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.Output_instance, Global_Data.rasv.enable_LMG_transient);
 

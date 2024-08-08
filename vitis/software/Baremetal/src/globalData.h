@@ -141,6 +141,7 @@ typedef struct _referenceAndSetValues_ {
 	uint32_t enable_FU;				// Pin 0 for enable frequenz converter
 	uint32_t enable_LMG_continues;	// Pin 1 for start/stop continues measurement on LMG
 	uint32_t enable_LMG_transient;	// Pin 2 for start/stop transient measurement on LMG
+	bool LMG_measure;				// Flag to enable or disable the LMG measurement
 
 	uint32_t LMG_measurement_typ;
 

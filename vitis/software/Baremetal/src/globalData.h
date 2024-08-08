@@ -7,6 +7,12 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_Transformation/uz_Transformation.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "uz/uz_signals/uz_signals.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -58,9 +64,12 @@ typedef struct _actualValues_ {
 	float U_L1; 		// Grid side voltage in V
 	float U_L2; 		// Grid side voltage in V
 	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
+	float i_a1; 		// Machine side current in A
+	float i_b1; 		// Machine side current in A
+	float i_c1; 		// Machine side current in A
+	float i_a1_filt;
+	float i_b1_filt;
+	float i_c1_filt;
 	float U_U; 		// Machine side voltage in V
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V
@@ -86,6 +95,22 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	struct uz_resolver_pl_interface_outputs_t resolver_d4_0;
+	struct uz_resolver_pl_interface_outputs_t resolver_d4_1;
+	struct uz_resolver_pl_interface_outputs_t resolver_d4_2;
+	float angle_el_rad;
+	float angle_mech_rad;
+	float angle_offset_mech_rad;
+	float dutyCyc;
+	struct uz_3ph_abc_t i_phase;
+	struct uz_3ph_abc_t v_phase;
+	struct uz_3ph_dq_t i_dq;
+	struct uz_3ph_dq_t v_dq;
+	struct uz_3ph_dq_t i_dq_ref;
+	struct uz_3ph_dq_t v_dq_ref;
+	float angle_lead_factor;
+	struct uz_DutyCycle_t dutycyc_svm_ref;
+	float v_dc;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -114,6 +139,16 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	uz_resolverIP_t* resolver_d4_0;
+	uz_resolverIP_t* resolver_d4_1;
+	uz_resolverIP_t* resolver_d4_2;
+	uz_resolver_pl_interface_t* resolver_pl_interf_d4_0;
+	uz_resolver_pl_interface_t* resolver_pl_interf_d4_1;
+	uz_resolver_pl_interface_t* resolver_pl_interf_d4_2;
+	uz_CurrentControl_t* CurrentControl;
+	uz_IIR_Filter_t* iir_i_a1;
+	uz_IIR_Filter_t* iir_i_b1;
+	uz_IIR_Filter_t* iir_i_c1;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

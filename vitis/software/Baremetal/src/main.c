@@ -71,6 +71,13 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.av.v_dc = 60.0f;
+            Global_Data.av.dutyCyc = 0.5f;
+            Global_Data.av.angle_lead_factor = 1.5f;
+            Global_Data.objects.CurrentControl = init_FOC_CurrentControl();
+            Global_Data.objects.iir_i_a1 = IIR_current_init_i_a1();
+            Global_Data.objects.iir_i_b1 = IIR_current_init_i_b1();
+            Global_Data.objects.iir_i_c1 = IIR_current_init_i_c1();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -89,6 +96,12 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
+            Global_Data.objects.resolver_d4_0 = init_uz_d_resolverIP_d4_0();
+            Global_Data.objects.resolver_d4_1 = init_uz_d_resolverIP_d4_1();
+            Global_Data.objects.resolver_d4_2 = init_uz_d_resolverIP_d4_2();
+            Global_Data.objects.resolver_pl_interf_d4_0 = init_uz_d_resolver_pl_interf_d4_0();
+            Global_Data.objects.resolver_pl_interf_d4_1 = init_uz_d_resolver_pl_interf_d4_1();
+            Global_Data.objects.resolver_pl_interf_d4_2 = init_uz_d_resolver_pl_interf_d4_2();
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = print_msg;
             break;

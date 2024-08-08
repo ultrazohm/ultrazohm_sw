@@ -187,18 +187,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		data->av.i_dq_ref.d = value;
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
+		data->av.i_dq_ref.q = value;
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
+		data->av.dutyCyc = value;
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
+		data->av.angle_offset_mech_rad = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -266,18 +270,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			data->rasv.halfBridge1DutyCycle = 0.5f+data->av.dutyCyc;
+			data->rasv.halfBridge2DutyCycle = 0.5f;
+			data->rasv.halfBridge3DutyCycle = 0.5f;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.halfBridge1DutyCycle = 0.5f;
+			data->rasv.halfBridge2DutyCycle = 0.5f+data->av.dutyCyc;
+			data->rasv.halfBridge3DutyCycle = 0.5f;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			data->rasv.halfBridge1DutyCycle = 0.5f;
+			data->rasv.halfBridge2DutyCycle = 0.5f;
+			data->rasv.halfBridge3DutyCycle = 0.5f+data->av.dutyCyc;
 			break;
 
 		case (My_Button_4):
+			data->rasv.halfBridge1DutyCycle = 0.5f;
+			data->rasv.halfBridge2DutyCycle = 0.5f;
+			data->rasv.halfBridge3DutyCycle = 0.5f;
 
 			break;
 

@@ -7,7 +7,7 @@ set(0,'defaulttextinterpreter','latex')
 %% extract Lookup table data
 %For nonlinear Model to work LUTs have to be implemented
 % Import the data from csv for lookup table
-FluxMapData = readtable('flux_linkage_csv_name');
+FluxMapData = readtable('FluxMapData_Prototyp_1000rpm_D');
 
 % Currents
 id = FluxMapData{1,1:20};
@@ -82,6 +82,9 @@ d_current_set = d_current(id1);
 
 Fid1_Giq1 = ((1/2).*(aq3-aq6).*((q_current_set).^2))+((aq1./aq2).*log(cosh(aq2.*q_current_set)))-((aq4/aq5).*log(cosh(aq5.*q_current_set)));
 Fid2_Giq2 = ((ad1./ad2).*(log(cosh(ad2.*(d_current_set-ad3))))) - ((ad4./ad5).*(log(cosh(ad5.*(d_current_set-ad6)))));
+
+%Saving Variables in .mat file
+save('fitting_parameter','ad1','ad2','ad3','ad4','ad5','ad6','aq1','aq2','aq3','aq4','aq5','aq6','Fid1_Giq1','Fid2_Giq2');
 
 % inserting the parameters to get the resulting flux-linkages 
 psidself = ad1.*(tanh(ad2*(d_current-ad3)));

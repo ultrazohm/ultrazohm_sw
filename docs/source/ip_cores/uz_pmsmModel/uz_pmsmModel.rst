@@ -98,22 +98,11 @@ Rearranging the equations again to calculate the current from the flux-linkage:
     
     \frac{di_{q}}{dt}=\frac{u_{q}-R_{s} \cdot i_{q}-L_{qd} \frac{di_{d}}{dt}-\omega_{el} \psi_{d}}{L_{qq}}
 
-The inner torque :math:`T_I` changes in the regard that the flux-linkages are now dependent on the dq-currents.
-This does not change the way it is implemented. 
+The inner torque :math:`T_I`  is calculated using the flux-linkages.
 
 .. math::
 
     T_I=\frac{3}{2}p(\psi_d(id,iq) i_q - \psi_q(id,iq) i_d)
-
-Flux approximation
-------------------
-
-the dependency of the flux-linkages can be done with Flux-maps.
-The implementation of it is generally done by using Lookup-Tables. 
-Since the :ref:`hdl_coder` does not support a dynamic implementation it is not possible to use the same IP-Core for different Motors. 
-To enable this dynamic implementation, one approach is to approximate the flux-linkages using analytic-Prototype functions.
-This is based on the approach and findings from [#Shih_Wei_Su_flux_approximation]_.
-For a better understanding of the equations used and how the fitting script works, check :ref:`uz_flux_approximation_script`.
 
 Mechanical system
 -----------------
@@ -219,7 +208,7 @@ The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core, and the input value of the rotational speed has no effect.
 When the flag ``simulate_mechanical_system`` is false, the rotational speed in the output struct is equal to the rotational speed of the input.
 This behavior is implemented in the hardware of the IP-Core with switches.
-The IP-Core also has a mode regarding saturation and cross-coupling effects
+The IP-Core also has a mode regarding saturation and cross-coupling effects.
 When the flag ``simulate_nonlinear`` is true, the flux-linkages :math:`\psi_d` and :math:`\psi_q` are dependent on the currents with the equations in `Model with non-linear effects`_.
 When the flag ``simulate_nonlinear`` is false, the flux-linkages are used as state values with the equations in `Linear model`_.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
@@ -420,6 +409,62 @@ Javascope
 - Make sure that in ``properties.ini``, ``smallestTimeStepUSEC = 50`` is set
 
 
+Flux approximation
+------------------
+
+The flux-linkages are approximated using analytic-Prototype functions.
+This is based on the approach and findings from [#Shih_Wei_Su_flux_approximation]_.
+For a more in depth look at the derivation, see [ [#Philipp_Doelger_MA]_, p. 30 ].
+
+The entire range of the flux-linkages can be approximated with the following equations. 
+Note that the terms :math:`\int \hat{\psi}_{cross}^{q,s1}(I_{q1}) di_{q}` and :math:`\int \hat{\psi}_{cross}^{d,s1}(I_{d1}) di_{d}` are constant values and will be used in the fitting parameters.
+
+.. math::
+
+    \hat{\psi}_{d}(i_{d},i_{q}) = \hat{\psi}_{d,self}(i_{d}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q}} \left( \hat{\psi}_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) \right) \left( \int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q} \right)}_{=\hat{\psi}_{cross}^{d}(i_{d},i_{q})}
+
+.. math::
+
+    \hat{\psi}_{q}(i_{d},i_{q}) = \hat{\psi}_{q,self}(i_{q}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d}} \left( \hat{\psi}_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) \right) \left( \int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d} \right)}_{=\hat{\psi}_{cross}^{q}(i_{d},i_{q})}
+
+
+Approximation Example usage
+---------------------------
+
+In this example usage, flux-linkages of an example motor are getting approximated.
+
+- There needs to be a Excel data sheet in the same directory as the PMSM IP-Core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
+
+- The naming in the script has to be adjusted. 
+
+.. code-block:: matlab
+    :linenos:
+    :caption: Example to get data out of a Excel data sheet.
+
+    ...
+    FluxMapData = readtable('FluxMapData_Prototyp_1000rpm_');
+    ...
+
+- Afterwards the area where the Array is in the excel sheet has to be specified. 
+  
+.. code-block:: matlab
+    :linenos:
+    :caption: Example to specify array location and size.
+
+    ...
+    % Currents
+    id = FluxMapData{1,1:20};
+    iq = FluxMapData{22:41,1};
+    %Psi_d
+    psi_d = FluxMapData{43:62,1:20}*(1e-3);
+    %Psi_q
+    psi_q = FluxMapData{108:127,1:20}*(1e-3);
+    ...
+
+- To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be ran.
+- If the the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP-Core for nonlinear behavior or for different use in the sw-framework. 
+
+
 Comparison between reference and IP-Core
 ----------------------------------------
 
@@ -488,3 +533,4 @@ Sources
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
 .. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, Elías Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219
 .. [#Shih_Wei_Su_flux_approximation] Analytical Prototype Functions for Flux Linkage Approximation in Synchronous Machines, Shih-Wei Su, Christoph M. Hackl, and Ralph Kennel, IEEE Open Journal of the Industrial Electronics Society, vol. 3, pp. 265-282, 2022, doi: 10.1109/OJIES.2022.3162336
+.. [#Philipp_Doelger_MA] Feldorientierte Regelung von hoch ausgenutzten permanenterregten Synchronmaschinen, Philipp Dölger (German)

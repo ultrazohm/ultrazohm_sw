@@ -61,7 +61,7 @@
 // PMSM IP Core
 #include "xparameters.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
-
+#include "uz/uz_sysmon_ps/uz_sysmon_ps.h"
 
 //----------------------------------------------------
 // FUNCTIONS

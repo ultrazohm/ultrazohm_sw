@@ -48,8 +48,6 @@ extern DS_Data Global_Data;
 #define		MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
 #define		MAX_VOLTAGE			(DC_VOLTAGE * MAX_MODULATION_INDEX)
 #define		RATED_SPEED			1000.0f
-#define		TS_TRAINING			0.0001f
-#define		NUMBER_OF_INPUTS_NN 9U
 
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_left = {0.0f};
@@ -57,10 +55,6 @@ struct uz_3ph_abc_t i_abc_right = {0.0f};
 struct uz_3ph_dq_t i_dq_left = {0.0f};
 struct uz_3ph_dq_t i_dq_right = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_right = {0.0f};
-struct uz_3ph_dq_t i_dq_error_left = {0.0f};
-struct uz_3ph_dq_t i_dq_error_right = {0.0f};
-struct uz_3ph_dq_t i_dq_integrated_error_left = {0.0f};
-struct uz_3ph_dq_t i_dq_integrated_error_right = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_non_limited_left = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_non_limited_right = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_left = {0.0f};
@@ -77,10 +71,16 @@ struct uz_DutyCycle_t dutycyc_right = {0.0f};
 static void ReadAllADC();
 static void control_left_motor();
 static void control_right_motor();
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
+    //check sysmon
+    Global_Data.av.temp = uz_sysmon_ps_read_temperature_degree_celsius(Global_Data.objects.sysmon);
+    Global_Data.av.vcc_lp =  uz_sysmon_ps_read_vcc_psint_lp_volt(Global_Data.objects.sysmon);
+    Global_Data.av.vcc_fp =  uz_sysmon_ps_read_vcc_psint_fp_volt(Global_Data.objects.sysmon);
+    Global_Data.av.fcc_aux = uz_sysmon_ps_read_vcc_psaux_volt(Global_Data.objects.sysmon);
     // update speed and position of resolvers
     Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
     Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
@@ -150,11 +150,6 @@ void ISR_Control(void *data)
 		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
-
-		i_dq_integrated_error_right.d = 0.0f;
-		i_dq_integrated_error_right.q = 0.0f;
-		i_dq_integrated_error_left.d = 0.0f;
-		i_dq_integrated_error_left.q = 0.0f;
     }
 
     // if "ENABLE SYSTEM"
@@ -177,6 +172,7 @@ void ISR_Control(void *data)
 	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
 	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
 	Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
+	Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
 	Global_Data.av.i_d_left = i_dq_left.d;
 	Global_Data.av.i_q_left = i_dq_left.q;
 	Global_Data.av.i_d_right = i_dq_right.d;
@@ -337,6 +333,11 @@ static void control_left_motor() {
 	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
 	// calculate current setpoints i_dq_ref for left motor
 	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
+	// calculate reference voltages for current control
+	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, DC_VOLTAGE, Global_Data.av.omega_mech_left*Global_Data.av.polepairs_left);
+	Global_Data.av.v_d_left = v_dq_ref_left.d;
+	Global_Data.av.v_q_left = v_dq_ref_left.q;
+	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, DC_VOLTAGE, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
 };
 
 static void control_right_motor() {

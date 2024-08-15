@@ -48,7 +48,6 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
-
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -99,7 +98,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;
-
+	js_ch_observable[JSO_temp_som]			= &data->av.temp;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

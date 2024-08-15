@@ -32,8 +32,8 @@ extern DS_Data Global_Data;
 		   .Kp = 0.008f,
 		   .Ki = 0.8f,
 		   .samplingTime_sec = 0.0001f,
-		   .upper_limit = 2.4f,
-		   .lower_limit = -2.4f
+		   .upper_limit = 3.5f,
+		   .lower_limit = -3.5f
    };
 
    const struct uz_SetPoint_config config_setpoint_left = {

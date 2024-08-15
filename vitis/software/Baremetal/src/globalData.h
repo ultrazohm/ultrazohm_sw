@@ -12,6 +12,7 @@
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "uz/uz_sysmon_ps/uz_sysmon_ps.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -87,8 +88,13 @@ typedef struct _actualValues_ {
 	float v_d_right;
 	float v_q_right;
 	float omega_mech_right;
+	float omega_mech_left;
 	float speed_rpm_left;
 	float speed_rpm_right;
+	float temp;
+	float vcc_lp;
+	float vcc_fp;
+	float fcc_aux;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
 	struct uz_inverter_adapter_outputs_t inverter_left_status;
@@ -138,6 +144,7 @@ typedef struct{
 	uz_inverter_adapter_t* uz_d_inverter_left;
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
+	uz_sysmon_ps_t * sysmon;
 	}object_pointers_t;
 
 

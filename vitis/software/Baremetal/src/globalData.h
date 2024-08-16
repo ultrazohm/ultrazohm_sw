@@ -12,7 +12,8 @@
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
-#include "uz/uz_sysmon_ps/uz_sysmon_ps.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -66,6 +67,8 @@ typedef struct _actualValues_ {
 	float i_a_left;
 	float i_b_left;
 	float i_c_left;
+	float i_dc_left;
+	float i_dc_right;
 	float i_a_right;
 	float i_b_right;
 	float i_c_right;
@@ -77,8 +80,6 @@ typedef struct _actualValues_ {
 	float v_c_right;
 	float v_dc_left;
 	float v_dc_right;
-	float i_dc_left;
-	float i_dc_right;
 	float i_d_left;
 	float i_q_left;
 	float i_d_right;
@@ -120,6 +121,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	float M_ref_left;
 	float n_ref_left;
+	float n_ref_left_filt;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
 } referenceAndSetValues;
@@ -144,7 +146,7 @@ typedef struct{
 	uz_inverter_adapter_t* uz_d_inverter_left;
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
-	uz_sysmon_ps_t * sysmon;
+	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 	}object_pointers_t;
 
 

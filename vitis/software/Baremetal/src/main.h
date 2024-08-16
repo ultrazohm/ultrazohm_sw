@@ -57,11 +57,10 @@
 #include "include/resolver.h"
 #include "include/pi_foc.h"
 #include "include/inverter.h"
-
-// PMSM IP Core
 #include "xparameters.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
-#include "uz/uz_sysmon_ps/uz_sysmon_ps.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -15,25 +15,27 @@ extern DS_Data Global_Data;
 	  .J_kg_m_squared = 0.000108
     };//these parameters are only needed if linear decoupling is selected
     const struct uz_PI_Controller_config config_id_left = {
-      .Kp = 5.0f,
-      .Ki = 255.0f,
-      .samplingTime_sec = 0.0001f,
-      .upper_limit = 48.0f,
-      .lower_limit = -48.0f
+    	      .type = parallel,
+    		  .Kp = Beckhoff_AM8141.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+    	      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+    	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
+    	      .upper_limit = 48.0f,
+			  .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_iq_left = {
-      .Kp = 5.0f,
-      .Ki = 255.0f,
-      .samplingTime_sec = 0.0001f,
-      .upper_limit = 48.0f,
-      .lower_limit = -48.0f
+			  .type = parallel,
+			  .Kp = Beckhoff_AM8141.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+		      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+		      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
+		      .upper_limit = 48.0f,
+		      .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_speed_left = {
-		   .Kp = 0.008f,
-		   .Ki = 0.8f,
-		   .samplingTime_sec = 0.0001f,
-		   .upper_limit = 3.5f,
-		   .lower_limit = -3.5f
+		   .Kp = 0.2f,
+		   .Ki = 2.0f,
+		   .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
+		   .upper_limit = 6.0f,
+		   .lower_limit = -6.0f
    };
 
    const struct uz_SetPoint_config config_setpoint_left = {
@@ -50,18 +52,20 @@ extern DS_Data Global_Data;
    };
 
    const struct uz_PI_Controller_config config_id_right = {
-     .Kp = 5.0f,
-     .Ki = 255.0f,
-     .samplingTime_sec = 0.0001f,
-     .upper_limit = 48.0f,
-     .lower_limit = -48.0f
+ 	      .type = parallel,
+ 		  .Kp = Beckhoff_AM8141.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+ 	      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+ 	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
+ 	      .upper_limit = 48.0f,
+			  .lower_limit = -48.0f
   };
   const struct uz_PI_Controller_config config_iq_right = {
-     .Kp = 5.0f,
-     .Ki = 255.0f,
-     .samplingTime_sec = 0.0001f,
-     .upper_limit = 48.0f,
-     .lower_limit = -48.0f
+		  .type = parallel,
+		  .Kp = Beckhoff_AM8141.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+	      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
+	      .upper_limit = 48.0f,
+	      .lower_limit = -48.0f
   };
 
    struct uz_CurrentControl_config config_current_ctrl_left = {
@@ -80,6 +84,10 @@ extern DS_Data Global_Data;
 	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
    };
 
+
+   struct uz_IIR_Filter_config config_IIR = { .selection = LowPass_first_order,
+   		.cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
+
    uz_CurrentControl_t* current_ctrl_left_init(void) {
 	   return(uz_CurrentControl_init(config_current_ctrl_left));
    }
@@ -94,4 +102,8 @@ extern DS_Data Global_Data;
 
    uz_CurrentControl_t* current_ctrl_right_init(void) {
 	   return(uz_CurrentControl_init(config_current_ctrl_right));
+   }
+
+   uz_IIR_Filter_t* speed_filt_left_init(void) {
+	   return(uz_signals_IIR_Filter_init(config_IIR));
    }

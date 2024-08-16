@@ -21,15 +21,13 @@
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {
 	JSO_ZEROVALUE=0,
-	JSO_ISR_ExecTime_us,
-	JSO_ISR_Period_us,
-	JSO_lifecheck,
 	JSO_ia_left,
 	JSO_ib_left,
 	JSO_ic_left,
 	JSO_ia_right,
 	JSO_ib_right,
 	JSO_ic_right,
+	JSO_torque,
 	JSO_id_left,
 	JSO_iq_left,
 	JSO_id_right,
@@ -54,8 +52,9 @@ enum JS_OberservableData {
 	JSO_theta_mech_right,
 	JSO_mech_Speed_rpm_left,
 	JSO_mech_Speed_rpm_right,
-	JSO_temp_som,
-	JSO_torque,
+	JSO_ISR_ExecTime_us,
+	JSO_ISR_Period_us,
+	JSO_lifecheck,
 	JSO_ENDMARKER
 };
 

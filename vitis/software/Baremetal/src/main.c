@@ -78,7 +78,7 @@ int main(void)
             Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
             Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
-            Global_Data.objects.sysmon = uz_sysmon_ps_init(XPAR_XSYSMONPSU_0_DEVICE_ID);
+			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

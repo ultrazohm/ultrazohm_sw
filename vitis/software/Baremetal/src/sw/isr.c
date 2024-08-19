@@ -43,12 +43,7 @@ extern DS_Data Global_Data;
 //defines and limits
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
-#define		MAX_CURRENT			15.0f
-#define		RATED_CURRENT		8.0f
-#define		MAX_MODULATION_INDEX (1.0f / sqrtf(3.0f))
-#define 	DC_VOLTAGE			48.0f
-#define		MAX_VOLTAGE			(DC_VOLTAGE * MAX_MODULATION_INDEX)
-#define		RATED_SPEED			1000.0f
+#define		MAX_CURRENT_AMP		15.0f
 
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_left = {0.0f};
@@ -116,8 +111,8 @@ void ISR_Control(void *data)
     i_abc_right.c = Global_Data.av.i_c_right;
 
     // check for current limit
-    if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT || fabs(Global_Data.av.i_b_left) > MAX_CURRENT || fabs(Global_Data.av.i_c_left) > MAX_CURRENT ||
-   		fabs(Global_Data.av.i_a_right) > MAX_CURRENT || fabs(Global_Data.av.i_b_right) > MAX_CURRENT || fabs(Global_Data.av.i_c_right) > MAX_CURRENT) {
+    if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_b_left) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_c_left) > MAX_CURRENT_AMP ||
+   		fabs(Global_Data.av.i_a_right) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_b_right) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_c_right) > MAX_CURRENT_AMP) {
     	ultrazohm_state_machine_set_stop(true);
     }
 
@@ -181,7 +176,7 @@ void ISR_Control(void *data)
 	// calculate control (speed and current) of left motor
 	control_left_motor();
 
-	// calculate selected control algorithm for right motor
+	// calculate control algorithm for right motor
 	control_right_motor();
 
 	// set dutycycles

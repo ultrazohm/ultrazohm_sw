@@ -167,6 +167,7 @@ void ISR_Control(void *data)
 	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
 	Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
 	Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
+	Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);
 	Global_Data.av.i_d_left = i_dq_left.d;
 	Global_Data.av.i_q_left = i_dq_left.q;
 	Global_Data.av.i_d_right = i_dq_right.d;

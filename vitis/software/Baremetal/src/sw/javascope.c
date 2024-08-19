@@ -107,7 +107,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_vq_left] 			    = &(data->av.v_q_left);
 	js_slowDataArray[JSSD_FLOAT_id_left] 			    = &(data->av.i_d_left);
 	js_slowDataArray[JSSD_FLOAT_iq_left] 			    = &(data->av.i_q_left);
-	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.resolver_pl_outputs_left.n_mech_rpm);
+	js_slowDataArray[JSSD_FLOAT_speed_left] 		    = &(data->av.speed_rpm_left);
+	js_slowDataArray[JSSD_FLOAT_torque_right] 		    = &(data->av.torque);
 	js_slowDataArray[JSSD_FLOAT_v_dc_left]				= &(data->av.v_dc_left);
 	js_slowDataArray[JSSD_FLOAT_temp_inv_left]			= &(data->av.mean_temp_inv_left);
 	js_slowDataArray[JSSD_FLOAT_temp_inv_right]			= &(data->av.mean_temp_inv_right);

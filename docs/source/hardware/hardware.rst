@@ -47,3 +47,9 @@ Hardware
     :caption: Internal
 
     adapter_cards/internal/uz_per_jtag/uz_per_jtag
+
+.. toctree::
+    :maxdepth: 1
+    :caption: Deskbench
+
+    deskbench/deskbench

@@ -46,6 +46,6 @@ The control structure is divided into three parts. There are two static function
 The third part is the readout and conversion from measurement data, e.g. phase currents. All Initializing is in the external file  ``pi_foc_init.c``. 
 The controller settings can be adjusted there. The controller adjustment is also possible during operation in the Javascope GUI in the ``MoreSendAndReceive`` section.
 
-.. .. image:: Deskbench/controller_adjustment.png
-..   :height: 500
-..   :align: center
+.. image:: Deskbench/controller_adjustment.png
+  :height: 500
+  :align: center

@@ -6,7 +6,7 @@ Assembly
 
 In this example the assembly instructions for the setting up the connection between UZ and the Deskbench are explained in detail.
 
-1. Setup the UltraZohm, the power Supply and the deskbench for your needs.
+1. Setup the UltraZohm, the power supply and the deskbench for your needs.
 
 .. image:: Deskbench/1st_step.jpg
   :height: 350
@@ -30,7 +30,7 @@ In this example the assembly instructions for the setting up the connection betw
   :height: 350
   :align: center
 
-4. Connect Phase A-C of both inverters to the Deskbench.
+4. Connect Phase A-C of both inverters to the Deskbench terminal boxes.
 
 .. image:: Deskbench/4th_step.jpg
   :height: 350
@@ -51,7 +51,7 @@ In this example the assembly instructions for the setting up the connection betw
 
 6. Connect the OUT Slot from the external uz_per_toque_box to A1 A. 
 Connect the power supply with the delivered Samtec cable with the Box with the ADC A1 Slot.
-Connect the torque sensor  D-SUB 15 cable with the UZ_per_toque_box.
+Connect the torque sensor D-SUB 15 cable with the UZ_per_torque_box.
 
 .. image:: Deskbench/6th_step.jpg
   :height: 350

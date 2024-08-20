@@ -1,0 +1,27 @@
+\documentclass[crop,tikz,convert={outext=.svg,command=\unexpanded{pdf2svg \infile\space\outfile}},multi=false]{standalone}[2012/04/13]
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\begin{document}
+
+\begin{tikzpicture}
+	\node [anchor=west] (ENC) at (10,8)  {\includegraphics[angle=90,width=0.27\textwidth]{3_inc_Enc.JPEG}};
+	\node [anchor=west] (ADC) at (0,8) {\includegraphics[angle=90,width=0.3\textwidth]{3_inc_Enc.JPEG}};
+	\node [anchor=west] (DV) at (5,8) {\includegraphics[angle=90,width=0.35\textwidth]{3_inc_Enc.JPEG}};
+	\node[red,ultra thick,anchor=south] at (11,4.2) {\Huge c};
+	\node[green,ultra thick,anchor=south] at (1.5,4.2) {\Huge a};
+	\node[blue,ultra thick,anchor=south] at (6.5,4.2) {\Huge b};
+	\begin{scope}
+		\node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\textwidth]{uz_front.png}};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]
+			\draw[red,ultra thick,rounded corners] (0.85,0.10) rectangle (0.92,0.95);
+			\draw [-latex, ultra thick, red] (ENC) to[out=-90, in=60] (0.92,0.95);
+			\draw[green,ultra thick,rounded corners] (0.40,0.10) rectangle (0.48,0.95);
+			\draw [-latex, ultra thick, green] (ADC) to[out=-90, in=120] (0.40,0.95);
+			\draw[blue,ultra thick,rounded corners] (0.60,0.10) rectangle (0.68,0.95);
+			\draw [-latex, ultra thick, blue] (DV) to[out=-90, in=120] (0.60,0.95);
+		\end{scope}
+	\end{scope}
+\end{tikzpicture}%
+\end{document}

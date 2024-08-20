@@ -38,14 +38,14 @@ The currents have an offset of +-5A for better visibility,
 
 Now everything is properly setup and the deskbench can be extended with various algorithms.
 
-===================
 Control structure
-===================
+==================
 
-The control structure is divided into three parts. There are two static functions in ``isr.c`` that are responsible for the control of the left and the right motor.
-The third part is the readout and conversion from measurement data, e.g. phase currents. All Initializing is in the external file  ``pi_foc_init.c``. 
-The controller settings can be adjusted there. The controller adjustment is also possible during operation in the Javascope GUI in the ``MoreSendAndReceive`` section.
+The control structure is organized into three components. Two static functions in ``isr.c`` handle the control of the left and right motors. The third component is responsible for reading and converting measurement data, such as phase currents. 
+Initialization is managed in the external file  ``pi_foc_init.c``, where the controller settings can also be configured. 
+Additionally, controller adjustments can be made in real-time during operation using the Javascope GUI within the ``MoreSendAndReceive`` section.
 
 .. image:: Deskbench/controller_adjustment.png
   :height: 500
   :align: center
+

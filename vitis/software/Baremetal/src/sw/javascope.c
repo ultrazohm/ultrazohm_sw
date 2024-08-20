@@ -48,7 +48,6 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-extern pre_calc_val_t pre_calc_val;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -100,6 +99,23 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dutycyc_out_b2]		= &data->rasv.halfBridge5DutyCycle;
 	js_ch_observable[JSO_dutycyc_out_c2]		= &data->rasv.halfBridge6DutyCycle;
 	js_ch_observable[JSO_iterations]			= &data->av.iterations;
+	js_ch_observable[JSO_iq_ref]				= &data->av.i_q_ref;
+	js_ch_observable[JSO_v_d_ref]				= &data->av.u_dq_ref.d;
+	js_ch_observable[JSO_v_q_ref]				= &data->av.u_dq_ref.q;
+	js_ch_observable[JSO_v_d]					= &data->av.v_d;
+	js_ch_observable[JSO_v_q]					= &data->av.v_q;
+	js_ch_observable[JSO_v_x]					= &data->av.v_x;
+	js_ch_observable[JSO_v_y]					= &data->av.v_y;
+	js_ch_observable[JSO_v_a1]					= &data->av.v_a1;
+	js_ch_observable[JSO_pos_mech]				= &data->av.pos_mech;
+	js_ch_observable[JSO_pos_elec]				= &data->av.pos_elec;
+	js_ch_observable[JSO_artif_angle]			= &data->av.theta_mech_calc_from_resolver;
+	js_ch_observable[JSO_v_d_comp]				= &data->av.v_d_comp;
+	js_ch_observable[JSO_v_q_comp]				= &data->av.v_q_comp;
+	js_ch_observable[JSO_compensation]			= &data->av.compensation;
+	js_ch_observable[JSO_sawtooth]				= &data->av.sawtooth;
+	js_ch_observable[JSO_error_sawtooth]		= &data->av.error_sawtooth;
+	js_ch_observable[JSO_error]					= &data->av.error;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -123,6 +139,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_winding_temp]			= &(data->av.average_winding_temp);
 	js_slowDataArray[JSSD_FLOAT_theta_el]				=&(data->av.theta_elec_rad_ip);
 	js_slowDataArray[JSSD_FLOAT_w_el]					= &(data->av.electricalRotorSpeedRADpS);
+	js_slowDataArray[JSSD_FLOAT_Kp_id]					= &data->av.Kp_id;
+	js_slowDataArray[JSSD_FLOAT_Ki_id]					= &data->av.Ki_id;
+	js_slowDataArray[JSSD_FLOAT_Kp_iq]					= &data->av.Kp_iq;
+	js_slowDataArray[JSSD_FLOAT_Ki_iq]					= &data->av.Ki_iq;
+	js_slowDataArray[JSSD_FLOAT_Kp_speed]				= &data->av.Kp_speed;
+	js_slowDataArray[JSSD_FLOAT_Ki_speed]				= &data->av.Ki_speed;
 
 	return Status;
 }
@@ -142,17 +164,17 @@ void JavaScope_update(DS_Data* data){
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
 	rpu_to_apu_user_data->v_DC_pu = data->av.v_dc1_pu;
-	rpu_to_apu_user_data->theta_el = (data->av.theta_elec_rad_ip + (data->av.angle_lead_factor*data->av.electricalRotorSpeedRADpS*UZ_TIME_ISR));
-	rpu_to_apu_user_data->Ts_times_ZB_over_Ld = pre_calc_val.Ts_times_ZB_over_Ld;
-	rpu_to_apu_user_data->Ts_times_ZB_over_Lq = pre_calc_val.Ts_times_ZB_over_Lq;
-	rpu_to_apu_user_data->Ts_times_ZB_over_Lx = pre_calc_val.Ts_times_ZB_over_Lx;
-	rpu_to_apu_user_data->Ts_times_ZB_over_Ly = pre_calc_val.Ts_times_ZB_over_Ly;
-	rpu_to_apu_user_data->Rs_over_ZB = pre_calc_val.Rs_over_ZB;
-	rpu_to_apu_user_data->Ld_over_LB = pre_calc_val.Ld_over_LB;
-	rpu_to_apu_user_data->Lq_over_LB = pre_calc_val.Lq_over_LB;
-	rpu_to_apu_user_data->Lx_over_LB = pre_calc_val.Lx_over_LB;
-	rpu_to_apu_user_data->Ly_over_LB = pre_calc_val.Ly_over_LB;
-	rpu_to_apu_user_data->psi_pm_over_psiB = pre_calc_val.psi_pm_over_psiB;
+	rpu_to_apu_user_data->theta_el = (data->av.pos_elec + (data->av.angle_lead_factor*data->av.electricalRotorSpeedRADpS*UZ_TIME_ISR));
+	rpu_to_apu_user_data->Ts_times_ZB_over_Ld = data->av.Ts_times_ZB_over_Ld;
+	rpu_to_apu_user_data->Ts_times_ZB_over_Lq = data->av.Ts_times_ZB_over_Lq;
+	rpu_to_apu_user_data->Ts_times_ZB_over_Lx = data->av.Ts_times_ZB_over_Lx;
+	rpu_to_apu_user_data->Ts_times_ZB_over_Ly = data->av.Ts_times_ZB_over_Ly;
+	rpu_to_apu_user_data->Rs_over_ZB = data->av.Rs_over_ZB;
+	rpu_to_apu_user_data->Ld_over_LB = data->av.Ld_over_LB;
+	rpu_to_apu_user_data->Lq_over_LB = data->av.Lq_over_LB;
+	rpu_to_apu_user_data->Lx_over_LB = data->av.Lx_over_LB;
+	rpu_to_apu_user_data->Ly_over_LB = data->av.Ly_over_LB;
+	rpu_to_apu_user_data->psi_pm_over_psiB = data->av.psi_pm_over_psiB;
 	rpu_to_apu_user_data->omega_el_pu = data->av.omega_el_pu;
 	rpu_to_apu_user_data->i_d_pu = data->av.i_d_pu;
 	rpu_to_apu_user_data->i_q_pu = data->av.i_q_pu;
@@ -166,6 +188,10 @@ void JavaScope_update(DS_Data* data){
 	rpu_to_apu_user_data->solver_tolerance = data->av.solver_tolerance;
 	rpu_to_apu_user_data->max_iter = data->av.max_iter;
 	rpu_to_apu_user_data->HC_off_on = data->av.HC_off_on;
+	rpu_to_apu_user_data->psiPM_h_pu[0] = data->av.psi_pm_h_pu_over_psiB[0];
+	rpu_to_apu_user_data->psiPM_h_pu[1] = data->av.psi_pm_h_pu_over_psiB[1];
+	rpu_to_apu_user_data->phiPM_h[0] = data->av.phiPM_h[0];
+	rpu_to_apu_user_data->phiPM_h[1] = data->av.phiPM_h[1];
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif

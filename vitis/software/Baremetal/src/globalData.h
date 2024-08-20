@@ -13,6 +13,9 @@
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_signals/uz_signals.h"
 
 
 enum current_control_select {
@@ -139,6 +142,56 @@ typedef struct _actualValues_ {
 	float dutycyc[6];
 	float iterations;
 	float angle_lead_factor;
+	float psiPM_h_pu[2];
+	float phiPM_h[2];
+	float Rs;
+	float Ld;
+	float Lq;
+	float Lx;
+	float Ly;
+	float psi_pm;
+	float Rs_over_ZB;
+	float Ts_times_ZB_over_Ld;
+	float Ts_times_ZB_over_Lq;
+	float Ts_times_ZB_over_Lx;
+	float Ts_times_ZB_over_Ly;
+	float Ld_over_LB;
+	float Lq_over_LB;
+	float Lx_over_LB;
+	float Ly_over_LB;
+	float psi_pm_over_psiB;
+	float psi_pm_h_pu_over_psiB[2];
+	float phi_pm_h_over_psiB[2];
+	uz_3ph_dq_t u_dq_ref;
+	float v_d;
+	float v_q;
+	float v_x;
+	float v_y;
+	struct uz_resolverIP_position_velocity_t posVel;
+	float pos_mech;
+	float pos_elec;
+	float overflow;
+	float artif_angle;
+	float v_d_comp;
+	float v_q_comp;
+	float theta_mech_calc_from_resolver;
+	float compensation;
+	float theta_mech_rad_ip_old;
+	float sawtooth;
+	bool sawtooth_start;
+	float error_sawtooth;
+	float offset;
+	float error;
+	bool comp_off_on;
+	float Kp_id;
+	float Ki_id;
+	float Kp_iq;
+	float Ki_iq;
+	float Kp_speed;
+	float Ki_speed;
+	float M_ref;
+	float speed_ref_rpm;
+	float speed_ref_rpm_filt;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -175,6 +228,9 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* tempMeasurement2;
 	uz_temperaturecard_t* temperature_card_d4;
 	uz_CurrentControl_t* foc_current;
+	uz_IIR_Filter_t* speed_ref_filt;
+	uz_SetPoint_t* setpoint;
+	uz_SpeedControl_t* speed_control;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

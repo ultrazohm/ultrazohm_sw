@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.2
+ * Model version                  : 2.7
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Tue Jul 23 13:47:08 2024
+ * C/C++ source code generated on : Mon Jul 29 14:01:24 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -63,6 +63,13 @@ typedef struct tag_RTM RT_MODEL;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
+  real32_T Delay1_DSTATE[7];           /* '<S1>/Delay1' */
+  real32_T Delay3_DSTATE[4];           /* '<S1>/Delay3' */
+  real32_T Delay4_DSTATE[4];           /* '<S1>/Delay4' */
+  real32_T Delay5_DSTATE[4];           /* '<S1>/Delay5' */
+  real32_T Delay6_DSTATE[4];           /* '<S1>/Delay6' */
+  real32_T Delay7_DSTATE[4];           /* '<S1>/Delay7' */
+  real32_T Delay8_DSTATE[4];           /* '<S1>/Delay8' */
   real32_T M[196];                     /* '<S1>/formulate_qp' */
   real32_T Linv_data[49];
   real32_T Hinv_data[49];
@@ -112,8 +119,6 @@ typedef struct {
   real32_T w6theta_el;
   real32_T SinCos1_o1;                 /* '<S1>/SinCos1' */
   real32_T SinCos1_o2;                 /* '<S1>/SinCos1' */
-  real32_T x_tmp;
-  real32_T x_tmp_g;
   real32_T rMin;
   real32_T Xnorm0;
   real32_T cMin;
@@ -140,10 +145,10 @@ typedef struct {
   int32_T sector_ref;                  /* '<S1>/deadbeat_solution' */
   int32_T i;
   int32_T x_size;
-  int32_T i_m;
+  int32_T i_g;
   int32_T H;
   int32_T loop_ub;
-  int32_T i_n;
+  int32_T i_m;
   int32_T i1;
   int32_T lambda_tmp_tmp;
   int32_T z_size;
@@ -154,15 +159,15 @@ typedef struct {
   int32_T tau_size;
   int32_T R_size_idx_0;
   int32_T TL_size_idx_0;
-  int32_T m_p;
+  int32_T m_n;
   int32_T n;
   int32_T minmana;
   int32_T minmn;
   int32_T ii;
   int32_T mmi;
   int32_T mmip1;
+  int32_T i_p;
   int32_T i_l;
-  int32_T i_j;
   int32_T itau;
   int32_T iaii;
   int32_T c_c;
@@ -174,6 +179,13 @@ typedef struct {
   int8_T act_sw_3[24];                 /* '<S1>/seq_2_act_sw_all' */
   int8_T act_sw_4[24];                 /* '<S1>/seq_2_act_sw_all' */
   int8_T act_sw_5[24];                 /* '<S1>/seq_2_act_sw_all' */
+  boolean_T icLoad;                    /* '<S1>/Delay1' */
+  boolean_T icLoad_a;                  /* '<S1>/Delay3' */
+  boolean_T icLoad_f;                  /* '<S1>/Delay4' */
+  boolean_T icLoad_k;                  /* '<S1>/Delay5' */
+  boolean_T icLoad_n;                  /* '<S1>/Delay6' */
+  boolean_T icLoad_l;                  /* '<S1>/Delay7' */
+  boolean_T icLoad_ly;                 /* '<S1>/Delay8' */
 } DW;
 
 /* External inputs (root inport signals with default storage) */
@@ -225,6 +237,7 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
+ * Block '<S1>/Data Type Conversion1' : Eliminate redundant data type conversion
  * Block '<S1>/Data Type Conversion2' : Eliminate redundant data type conversion
  */
 
@@ -249,12 +262,13 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  * '<S1>'   : 'uz_codegen/uz_codegen'
  * '<S2>'   : 'uz_codegen/uz_codegen/act_sw_2_dqxy_volts_all'
  * '<S3>'   : 'uz_codegen/uz_codegen/deadbeat_solution'
- * '<S4>'   : 'uz_codegen/uz_codegen/formulate_qp'
- * '<S5>'   : 'uz_codegen/uz_codegen/qp_solver'
- * '<S6>'   : 'uz_codegen/uz_codegen/seq_2_act_sw_all'
- * '<S7>'   : 'uz_codegen/uz_codegen/state_space_mdl'
- * '<S8>'   : 'uz_codegen/uz_codegen/tz'
- * '<S9>'   : 'uz_codegen/uz_codegen/tz_2_tph'
+ * '<S4>'   : 'uz_codegen/uz_codegen/delay_compensation_currents'
+ * '<S5>'   : 'uz_codegen/uz_codegen/formulate_qp'
+ * '<S6>'   : 'uz_codegen/uz_codegen/qp_solver'
+ * '<S7>'   : 'uz_codegen/uz_codegen/seq_2_act_sw_all'
+ * '<S8>'   : 'uz_codegen/uz_codegen/state_space_mdl'
+ * '<S9>'   : 'uz_codegen/uz_codegen/tz'
+ * '<S10>'  : 'uz_codegen/uz_codegen/tz_2_tph'
  */
 
 /*-

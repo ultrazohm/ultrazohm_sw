@@ -64,4 +64,6 @@ struct RPU_to_APU_user_data_t
 	float solver_tolerance;
 	float max_iter;
 	bool HC_off_on;
+	float psiPM_h_pu[2];
+	float phiPM_h[2];
 };

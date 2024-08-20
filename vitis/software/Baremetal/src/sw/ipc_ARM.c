@@ -18,11 +18,15 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../include/FOC.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
+
+extern const base_val_t inverse_base_val;
+extern const base_val_t base_val;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -202,38 +206,57 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
+		data->av.theta_offset = value;
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		data->av.speed_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+		data->av.offset = value;
 			break;
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
+		data->av.Rs = value;
+		data->av.Rs_over_ZB = value*inverse_base_val.ZB;
 			break;
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
+		data->av.Ld = value;
+		data->av.Ts_times_ZB_over_Ld = UZ_TIME_ISR*base_val.ZB/value;
+		data->av.Ld_over_LB = value*inverse_base_val.LB;
 			break;
 
 		case (Set_Send_Field_9):
 		data->av.snd_fld[9] = value;
+		data->av.Lq = value;
+		data->av.Ts_times_ZB_over_Lq = UZ_TIME_ISR*base_val.ZB/value;
+		data->av.Lq_over_LB = value*inverse_base_val.LB;
 			break;
 
 		case (Set_Send_Field_10):
 		data->av.snd_fld[10] = value;
+		data->av.Lx = value;
+		data->av.Ts_times_ZB_over_Lx = UZ_TIME_ISR*base_val.ZB/value;
+		data->av.Lx_over_LB = value*inverse_base_val.LB;
 			break;
 
 		case (Set_Send_Field_11):
 		data->av.snd_fld[11] = value;
+		data->av.Ly = value;
+		data->av.Ts_times_ZB_over_Ly = UZ_TIME_ISR*base_val.ZB/value;
+		data->av.Ly_over_LB = value*inverse_base_val.LB;
 			break;
 
 		case (Set_Send_Field_12):
 		data->av.snd_fld[12] = value;
+		data->av.psi_pm = value;
+		data->av.psi_pm_over_psiB = value*inverse_base_val.psiB;
 			break;
 
 		case (Set_Send_Field_13):
@@ -246,26 +269,38 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_15):
 		data->av.snd_fld[15] = value;
+		uz_SpeedControl_set_Kp(data->objects.speed_control, value);
+		data->av.Kp_speed = value;;
 			break;
 
 		case (Set_Send_Field_16):
 		data->av.snd_fld[16] = value;
+		uz_SpeedControl_set_Ki(data->objects.speed_control, value);
+		data->av.Ki_speed = value;
 			break;
 
 		case (Set_Send_Field_17):
 		data->av.snd_fld[17] = value;
+		uz_CurrentControl_set_Kp_id(data->objects.foc_current, value);
+		data->av.Kp_id = value;
 			break;
 
 		case (Set_Send_Field_18):
 		data->av.snd_fld[18] = value;
+		uz_CurrentControl_set_Ki_id(data->objects.foc_current, value);
+		data->av.Ki_id = value;
 			break;
 
 		case (Set_Send_Field_19):
 		data->av.snd_fld[19] = value;
+		uz_CurrentControl_set_Kp_iq(data->objects.foc_current, value);
+		data->av.Kp_iq = value;
 			break;
 
 		case (Set_Send_Field_20):
 		data->av.snd_fld[20] = value;
+		uz_CurrentControl_set_Ki_iq(data->objects.foc_current, value);
+		data->av.Ki_iq = value;
 			break;
 
 		case (My_Button_1):
@@ -303,6 +338,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.5f;
 //			data->rasv.halfBridge5DutyCycle = 0.5f;
 //			data->rasv.halfBridge6DutyCycle = 0.5f;
+			data->av.comp_off_on = true;
 			break;
 
 		case (My_Button_4):
@@ -312,6 +348,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.55f;
 //			data->rasv.halfBridge5DutyCycle = 0.5f;
 //			data->rasv.halfBridge6DutyCycle = 0.5f;
+			data->av.comp_off_on = false;
 			break;
 
 		case (My_Button_5):

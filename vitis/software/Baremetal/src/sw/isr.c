@@ -34,6 +34,7 @@
 #include "../uz/uz_math_constants.h"
 #include "../include/FOC.h"
 #include "../uz/uz_signals/uz_signals.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -45,11 +46,15 @@ extern base_val_t inverse_base_val;
 
 
 uz_6ph_abc_t six_ph_currents = {0.0f};
+uz_6ph_abc_t six_ph_voltages = {0.0f};
 uz_6ph_alphabeta_t six_ph_alphabeta = {0.0f};
+uz_6ph_alphabeta_t six_ph_alphabeta_volts = {0.0f};
 uz_3ph_alphabeta_t three_ph_alphabeta = {0.0f};
 uz_3ph_dq_t rotating_dq = {0};
 uz_3ph_dq_t rotating_xy = {0};
 uz_6ph_dq_t six_ph_dq = {0};
+uz_6ph_dq_t six_ph_dq_volts = {0};
+uz_6ph_dq_t six_ph_dq_volts_compensated = {0};
 
 uz_3ph_dq_t i_dq_ref = {0.0f};
 uz_3ph_dq_t i_dq_actual = {0.0f};
@@ -61,6 +66,18 @@ uz_3ph_abc_t input1 = {0.0f};
 uz_3ph_abc_t input2 = {0.0f};
 struct uz_DutyCycle_t output1 = {0};
 struct uz_DutyCycle_t output2 = {0};
+
+// Data for determination of mechanical resolver angle
+float theta_mech_old=0.0f;
+int32_t cnt = 0U;
+bool cnt_reset = 0;
+float cnt_float=0.0f;
+float cnt_reset_float=0.0f;
+float theta_m_max = 0.0f;
+float theta_m_min = 0.0f;
+bool first_ISR = true;
+void calc_angle_from_resolver_IP();
+
 
 // conversion defines for ADC readings
 //#define PHASE_CURRENT_CONV	16.75f
@@ -77,6 +94,7 @@ struct uz_DutyCycle_t output2 = {0};
 #define MAX_PHASE_CURRENT_AMP  12.0f
 #define MAX_DC_VOLT 590.0f
 
+bool start = false;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -98,6 +116,43 @@ void ISR_Control(void *data)
     Global_Data.av.mechanicalRotorSpeedRADpS_ip = Global_Data.av.resolver_pl_interface.omega_mech_rad_s;
 //    Global_Data.av.electricalRotorSpeedRPM = Global_Data.av.mechanicalRotorSpeedRPM_ip*Global_Data.av.polepairs;
     Global_Data.av.electricalRotorSpeedRADpS = Global_Data.av.mechanicalRotorSpeedRADpS_ip*Global_Data.av.polepairs;
+
+    // create a sawtooth like angle signal of ideal shape based on measured mechanical speed
+    Global_Data.av.sawtooth = SawTooth(2*UZ_PIf, Global_Data.av.mechanicalRotorSpeedRPM_ip/60.0f, UZ_TIME_ISR, fabs(Global_Data.av.pos_mech - Global_Data.av.theta_mech_rad_ip_old));
+
+
+    Global_Data.av.compensation = CompensateResolverError(Global_Data.av.sawtooth);
+
+    if (Global_Data.av.comp_off_on == true)
+    {
+    Global_Data.av.pos_mech = uz_signals_wrap(Global_Data.av.theta_mech_rad_ip + Global_Data.av.offset - Global_Data.av.compensation, 2.0f*UZ_PIf);
+    } else {
+    Global_Data.av.pos_mech = uz_signals_wrap(Global_Data.av.theta_mech_rad_ip + Global_Data.av.offset, 2.0f*UZ_PIf);
+    }
+
+    Global_Data.av.pos_elec = uz_signals_wrap(Global_Data.av.pos_mech * Global_Data.av.polepairs, 2*UZ_PIf);
+
+
+//    // create a sawtooth like angle signal of ideal shape based on measured mechanical speed
+//    Global_Data.av.sawtooth = SawTooth(2*UZ_PIf, Global_Data.av.mechanicalRotorSpeedRPM_ip/60.0f, UZ_TIME_ISR, fabs(Global_Data.av.pos_mech - Global_Data.av.theta_mech_rad_ip_old));
+
+    Global_Data.av.error = Global_Data.av.pos_mech - Global_Data.av.sawtooth;
+
+//    if(Global_Data.av.sawtooth_start == true) {
+//
+//    	if((fabs(Global_Data.av.theta_mech_rad_ip - Global_Data.av.theta_mech_rad_ip_old) > 4.0f)) {
+//    		start = true;
+//    	}
+//
+//    }
+//
+//    if (start == true) {
+//    	Global_Data.av.sawtooth = SawTooth(2*UZ_PIf, Global_Data.av.mechanicalRotorSpeedRPM_ip/60.0f, UZ_TIME_ISR);
+//    }
+//
+//    Global_Data.av.error_sawtooth = Global_Data.av.sawtooth - Global_Data.av.theta_mech_rad_ip;
+//
+    Global_Data.av.theta_mech_rad_ip_old = Global_Data.av.pos_mech;
 
     //get ADC data
     // convert ADC readings to currents in Amps
@@ -162,6 +217,15 @@ void ISR_Control(void *data)
     Global_Data.av.i_X = six_ph_alphabeta.x;
     Global_Data.av.i_Y = six_ph_alphabeta.y;
 
+    // VSD transform phase voltages
+    six_ph_voltages.a1 = Global_Data.av.v_a1;
+    six_ph_voltages.b1 = Global_Data.av.v_b1;
+    six_ph_voltages.c1 = Global_Data.av.v_c1;
+    six_ph_voltages.a2 = Global_Data.av.v_a2;
+    six_ph_voltages.b2 = Global_Data.av.v_b2;
+    six_ph_voltages.c2 = Global_Data.av.v_c2;
+    six_ph_alphabeta_volts = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_voltages);
+
     // Park transform alpha/beta currents
 //    three_ph_alphabeta.alpha = six_ph_alphabeta.alpha;
 //    three_ph_alphabeta.beta = six_ph_alphabeta.beta;
@@ -170,11 +234,22 @@ void ISR_Control(void *data)
 //    Global_Data.av.i_q = rotating_dq.q;
 
     // Park transform alpha/beta currents with positive turning, and XY currents with negative turning angle
-    six_ph_dq = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta, Global_Data.av.theta_elec_rad_ip, 2*UZ_PIf-Global_Data.av.theta_elec_rad_ip);
+    six_ph_dq = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta, Global_Data.av.pos_elec, 2*UZ_PIf-Global_Data.av.pos_elec);
     Global_Data.av.i_d = six_ph_dq.d;
     Global_Data.av.i_q = six_ph_dq.q;
     Global_Data.av.i_x = six_ph_dq.x;
     Global_Data.av.i_y = six_ph_dq.y;
+
+    // Park transform alpha/beta voltages with positive turning, and XY voltages with negative turning angle
+    six_ph_dq_volts = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta_volts, Global_Data.av.pos_elec, 2*UZ_PIf-Global_Data.av.pos_elec);
+//    six_ph_dq_volts_compensated = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta_volts, Global_Data.av.pos_elec, 2*UZ_PIf-Global_Data.av.pos_elec);
+    Global_Data.av.v_d = six_ph_dq_volts.d;
+    Global_Data.av.v_q = six_ph_dq_volts.q;
+    Global_Data.av.v_x = six_ph_dq_volts.x;
+    Global_Data.av.v_y = six_ph_dq_volts.y;
+
+//    Global_Data.av.v_d_comp = six_ph_dq_volts_compensated.d;
+//    Global_Data.av.v_q_comp = six_ph_dq_volts_compensated.q;
 
     // p.u. convert currents for control
     Global_Data.av.i_d_pu = Global_Data.av.i_d*inverse_base_val.IB;
@@ -215,8 +290,13 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	Global_Data.av.speed_ref_rpm_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_ref_filt, Global_Data.av.speed_ref_rpm);
+    	Global_Data.av.M_ref = uz_SpeedControl_sample(Global_Data.objects.speed_control, Global_Data.av.mechanicalRotorSpeedRADpS_ip, Global_Data.av.speed_ref_rpm_filt);
+    	i_dq_ref = uz_SetPoint_sample(Global_Data.objects.setpoint, Global_Data.av.mechanicalRotorSpeedRADpS_ip, Global_Data.av.M_ref, Global_Data.av.v_dc1, i_dq_actual);
+
     	u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
-    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_elec_rad_ip);
+    	Global_Data.av.u_dq_ref = u_dq_ref;
+    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.pos_elec+(Global_Data.av.angle_lead_factor*Global_Data.av.electricalRotorSpeedRADpS*UZ_TIME_ISR));
     	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
     	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
     	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
@@ -232,6 +312,7 @@ void ISR_Control(void *data)
     	output2 = uz_spwm_abc(input2, Global_Data.av.v_dc2);
 
     	if(Global_Data.rasv.current_ctrl_select == IMPL_MOD) {
+    		uz_CurrentControl_reset(Global_Data.objects.foc_current);
     		// ATTENTION those are actually 1 minus dutycyc, see javascope.c
     	    Global_Data.rasv.halfBridge1DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[0], 1.0f, 0.0f);
     	    Global_Data.rasv.halfBridge2DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[1], 1.0f, 0.0f);
@@ -384,3 +465,87 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+//void calc_angle_from_resolver_IP()
+//{
+//	    // Determine mechanical angle of resolver
+//	    if(theta_mech_old-Global_Data.av.pos_mech > 4.0f) {
+//	    	cnt++;
+//	    	cnt_float=(float)cnt;
+//	    } else if (theta_mech_old-Global_Data.av.pos_mech < -4.0f) {
+//	    	cnt--;
+//	    	cnt_float=(float)cnt;
+//	    }
+//
+//	    if(cnt > 1 || cnt < -1) {
+//	    	cnt = 0;
+//	    	cnt_float = 0.0f;
+//	    }
+//
+//	    if(cnt_reset == 1) {
+//	    	cnt = 0;
+//	    	cnt_float = 0;
+//	    	cnt_reset = 0;
+//	    	cnt_reset_float=0;
+//	    }
+//
+//
+//	    if(cnt >= 0){
+//	    	Global_Data.av.theta_mech_calc_from_resolver = Global_Data.av.pos_mech/2.0f + cnt*2*UZ_PIf/2.0f;
+//	    } else {
+//	    	Global_Data.av.theta_mech_calc_from_resolver = Global_Data.av.pos_mech/2.0f + (2+cnt)*2*UZ_PIf/2.0f;
+//	    }
+//
+//	    theta_mech_old = Global_Data.av.pos_mech;
+//
+//	    // reset SW and FPGA resolver calculation counter for having defined init state
+//		if (first_ISR == true) {
+//			cnt = 0;
+//			cnt_float = 0.0f;
+//			first_ISR = false;
+//		}
+//
+//	    if (Global_Data.av.pos_mech <= theta_m_min) {
+//	    	theta_m_min = Global_Data.av.pos_mech;
+//	    }
+//
+//	    if (Global_Data.av.pos_mech >= theta_m_max) {
+//	    	theta_m_max = Global_Data.av.pos_mech;
+//	    }
+//}
+
+float CompensateResolverError(float angle)
+{
+	float a1 = 0.09871;
+	float b1 = 1.933;
+	float c1 = 3.931;
+	float a2 = 0.09424;
+	float b2 = 1.985;
+	float c2 = 0.8079;
+	float a3 = 0.00745;
+	float b3 = 3.653;
+	float c3 = 3.169;
+	float a4 = 0.006413;
+	float b4 = 4.264;
+	float c4 = 5.643;
+//	float a5 = 0.01335;
+//	float b5 = 3.915;
+//	float c5 = -6.021;
+//	float offset = 0.015;
+
+	return(a1*sin(b1*angle+c1)+a2*sin(b2*angle+c2)+a3*sin(b3*angle+c3)+a4*sin(b4*angle+c4));
+}
+
+float SawTooth(float ampl, float freq, float isr_time, float angle_diff)
+{
+	static uint32_t sample_tick = 1U;
+	float sample = 0.0f;
+
+	sample = fmodf(sample_tick*isr_time, 1.0f/freq);
+	sample_tick += 1U;
+	if(sample_tick > (1.0f/freq/isr_time) || (angle_diff > 4.0f)) {
+		sample_tick = 1U;
+	}
+
+	return(ampl*sample*freq);
+}

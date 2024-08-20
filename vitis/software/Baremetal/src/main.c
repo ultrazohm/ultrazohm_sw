@@ -82,12 +82,25 @@ int main(void)
             JavaScope_initialize(&Global_Data);
             Global_Data.av.i_max_cur_lim_ip_SI = 12.0f;
             Global_Data.av.polepairs = 5.0f;
-            Global_Data.objects.foc_current = init_FOC_CurrentControl();
-            Global_Data.av.lambda = 15.0f;
+            Global_Data.av.offset = 0.147f;
+            Global_Data.av.lambda = 10.0f;
             Global_Data.av.solver_tolerance = 1e-6f;
             Global_Data.av.max_iter = 20.0f;
             Global_Data.rasv.current_ctrl_select = PI_FOC;
-            Global_Data.av.angle_lead_factor = 0.0f;
+            Global_Data.av.angle_lead_factor = 1.5f;
+//            Global_Data.av.theta_offset = -0.105; //measured for FOC at +-600 rpm
+            Global_Data.av.phiPM_h[0] = -0.1349143;
+            Global_Data.av.phiPM_h[1] = -1.7723498;
+            Global_Data.av.Rs = 0.27;
+            Global_Data.av.Ld = 1.7e-3;
+            Global_Data.av.Lq = 3.8e-3;
+            Global_Data.av.Lx = 2.7e-3;
+            Global_Data.av.Ly = 2.7e-3;
+            Global_Data.av.psi_pm = 0.19;
+            Global_Data.objects.foc_current = init_FOC_CurrentControl();
+            Global_Data.objects.speed_ref_filt = speed_ref_filt_init();
+            Global_Data.objects.setpoint = setpoint_init();
+            Global_Data.objects.speed_control = speed_control_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

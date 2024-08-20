@@ -118,6 +118,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 		codegenInstance.input.tolerance = rpu_to_apu_user_data->solver_tolerance;
 		codegenInstance.input.max_iter = rpu_to_apu_user_data->max_iter;
 		codegenInstance.input.HC_off_on = rpu_to_apu_user_data->HC_off_on;
+		codegenInstance.input.psiPM_h_pu[0] = rpu_to_apu_user_data->psiPM_h_pu[0];
+		codegenInstance.input.psiPM_h_pu[1] = rpu_to_apu_user_data->psiPM_h_pu[1];
+		codegenInstance.input.phiPM_h[0] = rpu_to_apu_user_data->phiPM_h[0];
+		codegenInstance.input.phiPM_h[1] = rpu_to_apu_user_data->phiPM_h[1];
 
 		/* do your computations that you want to accelerate here... */
 		uz_codegen_step(&codegenInstance);

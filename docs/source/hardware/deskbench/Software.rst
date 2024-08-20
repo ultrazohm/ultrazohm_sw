@@ -4,7 +4,7 @@
 Software 
 ==========
 
-In this example the step-by-step Software implementation is shown, to successfully commission the deskbench.
+Following, the step-by-step setup of the software implementation is shown, to successfully commission the deskbench.
 
 1. Make sure you complete the whole :ref:`getting_started` section, to guarantee you can flash the UZ and connect to the :ref:`JavaScope`.
 
@@ -17,32 +17,32 @@ In this example the step-by-step Software implementation is shown, to successful
 
 3. Open vitis and create the workspace, see :ref:`genvitis`.
 
-4. Power up UZ, set up power supply to 48V and try to debug the UZ and get a connection to the :ref:`JavaScope` GUI.
+4. Power up UZ, set the power supply to 48V and a 5A current limit and try to debug the UZ and get a connection to the :ref:`JavaScope` GUI.
 
 .. image:: Deskbench/connected_1.png
   :height: 500
   :align: center
 
-5. Send a speed e.g. 500 rpm with the GUI to the UZ and now after Enable System and Enable Control the load machine should turn with 500rpm.
+5. Press ``Enable System`` and ``Enable Control``, set a reference speed for the left motor ,e.g. 500 rpm, in the respective input field of the GUI and press ``set``. Now the load machine should spin at 500 rpm.
 
 .. image:: Deskbench/connected_2.png
   :height: 500
   :align: center
 
-6. Set up a current, e.g. 4A with the GUI and check the phase currents and the torque (should be around 1 Nm).
-The currents have an offset of +-5A for better visibility, 
+6. Set a q-current reference, e.g. 4A, in the respective input field of the GUI and press ``set``. Now the phase currents, dq-currents and the torque (should be around 1 Nm) are visible in the scope.
+For better visibility, the currents have an offset of +-5A. 
 
 .. image:: Deskbench/connected_3.png
   :height: 500
   :align: center
 
-Now everything is properly setup and the deskbench can be extended with various algorithms.
+Now everything is properly setup and the deskbench the user can extend functionality with own algorithms or simply investigate the performance of the implemented control algorithm.
 
 Control structure
 ==================
 
-The control structure is organized into three components. Two static functions in ``isr.c`` handle the control of the left and right motors. The third component is responsible for reading and converting measurement data, such as phase currents. 
-Initialization is managed in the external file  ``pi_foc_init.c``, where the controller settings can also be configured. 
+The control structure in software is organized into three components. Two static functions in ``isr.c`` handle the control of the left and right motors. The third component is responsible for reading and converting measurement data, such as phase currents. 
+Initialization of controller parameters is managed in ``pi_foc_init.c``. 
 Additionally, controller adjustments can be made in real-time during operation using the Javascope GUI within the ``MoreSendAndReceive`` section.
 
 .. image:: Deskbench/controller_adjustment.png

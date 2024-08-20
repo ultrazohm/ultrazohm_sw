@@ -26,8 +26,9 @@ General description
 This PCB is designed to supply external torque sensor `Burster 8656 Torque Sensor <https://www.burster.com/en/torque-sensors/p/detail/8656/>`_  and send the signals to the :ref:`Analog_LTC2311_16` Card
 The supply is taken from the voltage interface connector of an :ref:`Analog_LTC2311_16` board.
 The torque signal (+-10V) is reduced to a level of +-5V and low-pass filtered. 
-The torque signal is connected to ADC1 channel of LTC2311 and the remaining 3 Channels ADC2-ADC 4 can still be used via the Application Input Port
-.. _ADC_Loopback_Layout:
+The torque signal is connected to ADC1 channel of LTC2311 and the remaining 3 Channels ADC2-ADC 4 can still be used without limitations.
+
+.. _torque_box_function:
 
 .. figure:: uz_per_torque_functional.svg
 
@@ -36,7 +37,7 @@ The torque signal is connected to ADC1 channel of LTC2311 and the remaining 3 Ch
 Layout
 ------
 
-The PCB is structured by functional areas as shown in the :numref:`ADC_Loopback_Layout` on the right.
+The PCB is structured by functional areas as shown in the :numref:`torque_box_function` on the right.
 
 
 1. Double Ethernet connector to the ADC adapter board
@@ -46,8 +47,8 @@ The PCB is structured by functional areas as shown in the :numref:`ADC_Loopback_
 
 A lot of details, as well as the pin configuration are described in the schematic (see download section below).
 
-Assembly
-********
+Assembly and Connection
+*************************
 
 A 3D-printable housing and an engraved aluminum cover designed for the uz_per_torque_box PCB. 
 The assembly with all necessary parts is shown below, including a bill of materials (BOM). The PCB can be used without the housing, 
@@ -63,7 +64,15 @@ but it is more rugged and much more beautiful with the housing.
    :widths: 25 150 100 30 100
    :header-rows: 1
 
+After the assembly the PCB can be connected to the UZ, e.g. to Slot A from ADC A1
 
+|Cover| |Connection to UZ|
+
+.. |Cover| image:: torque_box_cover.jpg
+   :width: 49%
+
+.. |Connection to UZ| image:: torque_box_connect.jpg
+   :width: 49%
 
 Downloads
 *********

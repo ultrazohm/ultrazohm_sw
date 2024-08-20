@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Mon Jul 22 11:34:50 2024
+--Date        : Tue Aug 20 13:59:13 2024
 --Host        : enc177112 running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -52,11 +52,14 @@ entity zusys_wrapper is
     Dig_10_Ch4 : in STD_LOGIC;
     Dig_10_Ch5 : out STD_LOGIC;
     Dig_11_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_11_Ch3 : in STD_LOGIC;
     Dig_11_Ch5 : out STD_LOGIC;
     Dig_12_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_12_Ch3 : in STD_LOGIC;
     Dig_12_Ch4 : out STD_LOGIC;
     Dig_12_Ch5 : out STD_LOGIC;
     Dig_13_Ch1 : out STD_LOGIC_VECTOR ( 0 to 0 );
+    Dig_13_Ch3 : in STD_LOGIC;
     Dig_13_Ch4 : out STD_LOGIC;
     Dig_13_Ch5 : out STD_LOGIC;
     Dig_14_Ch1 : in STD_LOGIC;
@@ -128,7 +131,10 @@ architecture STRUCTURE of zusys_wrapper is
     Dig_15_Ch4 : out STD_LOGIC;
     Dig_07_Ch4 : out STD_LOGIC;
     Dig_06_Ch4 : out STD_LOGIC;
-    Dig_09_Ch4 : out STD_LOGIC
+    Dig_09_Ch4 : out STD_LOGIC;
+    Dig_12_Ch3 : in STD_LOGIC;
+    Dig_13_Ch3 : in STD_LOGIC;
+    Dig_11_Ch3 : in STD_LOGIC
   );
   end component zusys;
 begin
@@ -173,11 +179,14 @@ zusys_i: component zusys
       Dig_10_Ch4 => Dig_10_Ch4,
       Dig_10_Ch5 => Dig_10_Ch5,
       Dig_11_Ch1(0) => Dig_11_Ch1(0),
+      Dig_11_Ch3 => Dig_11_Ch3,
       Dig_11_Ch5 => Dig_11_Ch5,
       Dig_12_Ch1(0) => Dig_12_Ch1(0),
+      Dig_12_Ch3 => Dig_12_Ch3,
       Dig_12_Ch4 => Dig_12_Ch4,
       Dig_12_Ch5 => Dig_12_Ch5,
       Dig_13_Ch1(0) => Dig_13_Ch1(0),
+      Dig_13_Ch3 => Dig_13_Ch3,
       Dig_13_Ch4 => Dig_13_Ch4,
       Dig_13_Ch5 => Dig_13_Ch5,
       Dig_14_Ch1 => Dig_14_Ch1,

@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x2B1E3C24BE496B89",
+      "boundary_crc": "0x2F673CF1BF74E1E5",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -133,7 +133,6 @@
         "xlslice_10": "",
         "xlslice_11": ""
       },
-      "xlconstant_0": "",
       "invEN_logic": {
         "util_vector_logic_0": "",
         "util_vector_logic_2": ""
@@ -382,6 +381,15 @@
       },
       "Dig_09_Ch4": {
         "direction": "O"
+      },
+      "Dig_12_Ch3": {
+        "direction": "I"
+      },
+      "Dig_13_Ch3": {
+        "direction": "I"
+      },
+      "Dig_11_Ch3": {
+        "direction": "I"
       }
     },
     "components": {
@@ -1329,13 +1337,13 @@
             "left": "25",
             "right": "0"
           },
-          "Dig_11_Ch5": {
+          "IncreEnc_I": {
             "direction": "I"
           },
-          "Dig_12_Ch5": {
+          "IncreEnc_A": {
             "direction": "I"
           },
-          "Dig_13_Ch5": {
+          "IncreEnc_B": {
             "direction": "I"
           },
           "Enable_Gate": {
@@ -2884,13 +2892,13 @@
               }
             },
             "ports": {
-              "Dig_11_Ch5": {
+              "IncreEnc_I": {
                 "direction": "I"
               },
-              "Dig_12_Ch5": {
+              "IncreEnc_A": {
                 "direction": "I"
               },
-              "Dig_13_Ch5": {
+              "IncreEnc_B": {
                 "direction": "I"
               },
               "PeriodEnd": {
@@ -2941,21 +2949,21 @@
             "nets": {
               "Dig_11_Ch5_1": {
                 "ports": [
-                  "Dig_11_Ch5",
+                  "IncreEnc_I",
                   "Incremental_Encoder_0/I",
                   "system_ila_0/probe2"
                 ]
               },
               "Dig_12_Ch5_1": {
                 "ports": [
-                  "Dig_12_Ch5",
+                  "IncreEnc_A",
                   "Incremental_Encoder_0/A",
                   "system_ila_0/probe0"
                 ]
               },
               "Dig_13_Ch5_1": {
                 "ports": [
-                  "Dig_13_Ch5",
+                  "IncreEnc_B",
                   "Incremental_Encoder_0/B",
                   "system_ila_0/probe1"
                 ]
@@ -3074,20 +3082,20 @@
         "nets": {
           "Dig_11_Ch5_1": {
             "ports": [
-              "Dig_11_Ch5",
-              "D5_adapter/Dig_11_Ch5"
+              "IncreEnc_I",
+              "D5_adapter/IncreEnc_I"
             ]
           },
           "Dig_12_Ch5_1": {
             "ports": [
-              "Dig_12_Ch5",
-              "D5_adapter/Dig_12_Ch5"
+              "IncreEnc_A",
+              "D5_adapter/IncreEnc_A"
             ]
           },
           "Dig_13_Ch5_1": {
             "ports": [
-              "Dig_13_Ch5",
-              "D5_adapter/Dig_13_Ch5"
+              "IncreEnc_B",
+              "D5_adapter/IncreEnc_B"
             ]
           },
           "Gates_3L_Gate_Signals_3L": {
@@ -9717,17 +9725,6 @@
           }
         }
       },
-      "xlconstant_0": {
-        "vlnv": "xilinx.com:ip:xlconstant:1.1",
-        "xci_name": "zusys_xlconstant_0_1",
-        "xci_path": "ip\\zusys_xlconstant_0_1\\zusys_xlconstant_0_1.xci",
-        "inst_hier_path": "xlconstant_0",
-        "parameters": {
-          "CONST_VAL": {
-            "value": "0"
-          }
-        }
-      },
       "invEN_logic": {
         "ports": {
           "InvEN1": {
@@ -9987,6 +9984,24 @@
         "ports": [
           "Dig_10_Ch4",
           "uz_user/Dig_10_Ch4"
+        ]
+      },
+      "Dig_11_Ch3_1": {
+        "ports": [
+          "Dig_11_Ch3",
+          "uz_digital_adapter/IncreEnc_I"
+        ]
+      },
+      "Dig_12_Ch3_1": {
+        "ports": [
+          "Dig_12_Ch3",
+          "uz_digital_adapter/IncreEnc_A"
+        ]
+      },
+      "Dig_13_Ch3_1": {
+        "ports": [
+          "Dig_13_Ch3",
+          "uz_digital_adapter/IncreEnc_B"
         ]
       },
       "Dig_14_Ch1_1": {
@@ -10333,14 +10348,6 @@
         "ports": [
           "uz_system/D4_OUT",
           "zynq_ultra_ps_e_0/pl_ps_irq0"
-        ]
-      },
-      "xlconstant_0_dout": {
-        "ports": [
-          "xlconstant_0/dout",
-          "uz_digital_adapter/Dig_12_Ch5",
-          "uz_digital_adapter/Dig_13_Ch5",
-          "uz_digital_adapter/Dig_11_Ch5"
         ]
       },
       "xlslice_Enable_Inverter_Dout": {

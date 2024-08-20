@@ -26,7 +26,7 @@ General description
 This PCB is designed to supply external torque sensor `Burster 8656 Torque Sensor <https://www.burster.com/en/torque-sensors/p/detail/8656/>`_  and send the signals to the :ref:`Analog_LTC2311_16` Card
 The supply is taken from the voltage interface connector of an :ref:`Analog_LTC2311_16` board.
 The torque signal (+-10V) is reduced to a level of +-5V and low-pass filtered. 
-The torque signal is connected to ADC1 channel of LTC2311 and the remaining 3 Channels ADC2-ADC 4 can still be used without limitations.
+The torque signal is connected to ADC1 channel of LTC2311 and the remaining 3 Channels ADC2-ADC4 can still be used without limitations.
 
 .. _torque_box_function:
 
@@ -64,7 +64,7 @@ but it is more rugged and much more beautiful with the housing.
    :widths: 25 150 100 30 100
    :header-rows: 1
 
-After the assembly the PCB can be connected to the UZ, e.g. to Slot A from ADC A1
+After the assembly the PCB can be connected to the UZ, e.g. to Slot A from ADC A1 as shown in the picture below.
 
 |Cover| |Connection to UZ|
 

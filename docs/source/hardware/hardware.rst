@@ -41,6 +41,7 @@ Hardware
 
     adapter_cards/external/uz_per_adc_to_bnc/uz_per_adc_to_bnc_rev01
     adapter_cards/external/loopback_PCB/loopback_PCB
+    adapter_cards/external/uz_per_torque_box/uz_per_torque_box
 
 .. toctree::
     :maxdepth: 1

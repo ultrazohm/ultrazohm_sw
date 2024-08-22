@@ -41,11 +41,14 @@ Now everything is properly setup and the deskbench the user can extend functiona
 Control structure
 ==================
 
-The control structure in software is organized into three components. Two static functions in ``isr.c`` handle the control of the left and right motors. The third component is responsible for reading and converting measurement data, such as phase currents. 
-Initialization of controller parameters is managed in ``pi_foc_init.c``. 
+The control structure in software is organized into three components. Two static functions in ``isr.c`` handle the control of the left and right motors.
+Therefore, the left motor is speed-controlled and serves as the load machine, while the right motor is used for testing algorithms.
+The third component is responsible for reading and converting measurement data, such as phase currents.
+Several safety features are implemented, such as monitoring current limits and inverter temperatures. 
+If any of these conditions are met, the UZ transitions into ``idle_state``, resetting all instances and reference values.
+Allocation and assigning controller parameters, filters and motor parameter is managed in ``pi_foc_init.c``. 
 Additionally, controller adjustments can be made in real-time during operation using the Javascope GUI within the ``MoreSendAndReceive`` section.
 
 .. image:: Deskbench/controller_adjustment.png
   :height: 500
   :align: center
-

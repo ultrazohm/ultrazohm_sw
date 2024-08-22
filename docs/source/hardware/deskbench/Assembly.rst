@@ -49,15 +49,15 @@ Below, the assembly instructions for the setting up the connection between UZ an
     :header-rows: 1
     :align: center
 
-6. Connect the ``OUT to ADC`` connector from the external uz_per_toque_box to A1 A with a RJ45 cable. 
+6. Connect the ``OUT to ADC`` connector from the :ref:`torque_box` to A1 A with a RJ45 cable. 
 Connect the ``Supply IN`` connector of the box with the ADC A1 supply connector, using the delivered Samtec cable ``MMSD-08-28-F-xx.xx-D-K-LDX``.
-Connect the torque sensor D-SUB 15 cable with the UZ_per_torque_box ``IN Torque Sensor connector``.
+Connect the torque sensor D-SUB 15 cable with the :ref:`torque_box` ``IN Torque Sensor connector``.
 
 .. image:: Deskbench/6th_step.jpg
   :height: 350
   :align: center
 
-7. Connect the torque sensor Cable with the torque sensor of the deskbench.
+7. Connect the torque sensor cable with the torque sensor of the deskbench.
 
 .. image:: Deskbench/7th_step.jpg
   :height: 350

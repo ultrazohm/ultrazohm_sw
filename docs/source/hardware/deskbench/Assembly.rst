@@ -63,7 +63,13 @@ Connect the torque sensor D-SUB 15 cable with the UZ_per_torque_box ``IN Torque 
   :height: 350
   :align: center
 
-8. Connect the UltraZohm to your host computer.
+8. Make sure that the deskbench is proper grounded. There is a fastener for the connection to ground in the top left-hand corner.
+
+.. image:: Deskbench/grounding_desk.jpg
+  :height: 350
+  :align: center
+
+9. Connect the UltraZohm to your host computer.
 
 The physical and electrical connections have been successfully completed. 
 The next step is to setup the :ref:`deskbench_software` implementation.

@@ -1,0 +1,7 @@
+﻿Color, Pin Terminal, PIN Inverter
+Black, A, Phase A
+Grey, B, Phase B
+Brown, C, Phase C
+Green-yellow, PE, NC
+Red, Brake+, NC
+Black, Brake-, NC

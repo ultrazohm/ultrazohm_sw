@@ -1,0 +1,7 @@
+﻿Color, Pin Terminal, PIN DSUB 9
+Yellow,COS-, 4
+Green,COS, 3
+Brown,SIN-, 2
+White,SIN, 1
+Pink,EXC-, 6
+Grey,EXC, 5

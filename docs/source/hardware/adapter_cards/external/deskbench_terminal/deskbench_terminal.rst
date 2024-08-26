@@ -59,7 +59,7 @@ The PCB is structured by functional areas as shown in :ref:`deskbench_terminal_f
 Downloads
 *********
 
-.. * :download:`Schematics <SCH_uz_per_torque_box_Default_Rev01.pdf>`
+ * :download:`Schematics <SCH_UZ_PER_deskbench_terminal_Differential_Input_Rev01a.pdf>`
 
 Designer
 ********

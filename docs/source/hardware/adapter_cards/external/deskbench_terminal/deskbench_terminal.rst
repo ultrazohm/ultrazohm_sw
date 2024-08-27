@@ -5,7 +5,7 @@ uz_per_deskbench_terminal PCB
 ===============================
       
 
-.. figure:: uz_per_deskbench_terminal.jpg
+.. figure:: anschluss_terminal.jpg
    :width: 60%
 
    uz_per_deskbench_terminal PCB

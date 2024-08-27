@@ -5,14 +5,14 @@
 \begin{document}
 \begin{tikzpicture}
 	\begin{scope}
-		\node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\textwidth]{uz_per_deskbench_terminal.jpg}};
+		\node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\textwidth]{anschluss_terminal.jpg}};
 		\begin{scope}[x={(image.south east)},y={(image.north west)}]
-			\draw[blue,ultra thick,rounded corners] (0.37,0.5) rectangle (0.47,0.75);
-			\draw[orange,ultra thick,rounded corners] (0.37,0.2) rectangle (0.47,0.47);
+			\draw[blue,ultra thick,rounded corners] (0.45,0.5) rectangle (0.55,0.75);
+			\draw[orange,ultra thick,rounded corners] (0.45,0.25) rectangle (0.55,0.5);
 			\draw[purple,ultra thick,rounded corners] (0.7,0.55) rectangle (0.9,0.8);
-			\draw[black,ultra thick,rounded corners] (0.62,0.17) rectangle (0.99,0.52);
-			\node[blue,ultra thick,fill=white,anchor=south] at (0.425,0.65) {\Huge 1};
-			\node[orange,ultra thick,fill=white,anchor=south] at (0.425,0.3) {\Huge 2};
+			\draw[black,ultra thick,rounded corners] (0.62,0.17) rectangle (0.999999,0.52);
+			\node[blue,ultra thick,fill=white,anchor=south] at (0.5,0.65) {\Huge 1};
+			\node[orange,ultra thick,fill=white,anchor=south] at (0.5,0.35) {\Huge 2};
 			\node[purple,ultra thick,fill=white,anchor=south] at (0.8,0.65) {\Huge 3};
 			\node[black,ultra thick,fill=white,anchor=south] at (0.8,0.3) {\Huge 4};
 		\end{scope}

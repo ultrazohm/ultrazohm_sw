@@ -201,12 +201,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
-		data->av.angle_lead_factor = value;
+		data->av.angle_lead_factor_FOC = value;
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
-		data->av.theta_offset = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -216,7 +215,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
-		data->av.offset = value;
+		data->av.offset_el_incre = value;
+		uz_incrementalEncoder_set_electrical_Offset(data->objects.encoder_D3, (uint32_t)(value));
 			break;
 
 		case (Set_Send_Field_7):
@@ -260,17 +260,20 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+//		data->av.snd_fld[13] = value;
+		data->av.kalman_R = value;
 			break;
 
 		case (Set_Send_Field_14):
-		data->av.snd_fld[14] = value;
+//		data->av.snd_fld[14] = value;
+		data->av.kalman_Q1 = value;
 			break;
 
 		case (Set_Send_Field_15):
-		data->av.snd_fld[15] = value;
-		uz_SpeedControl_set_Kp(data->objects.speed_control, value);
-		data->av.Kp_speed = value;;
+//		data->av.snd_fld[15] = value;
+//		uz_SpeedControl_set_Kp(data->objects.speed_control, value);
+//		data->av.Kp_speed = value;;
+		data->av.kalman_Q2 = value;
 			break;
 
 		case (Set_Send_Field_16):
@@ -338,7 +341,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.5f;
 //			data->rasv.halfBridge5DutyCycle = 0.5f;
 //			data->rasv.halfBridge6DutyCycle = 0.5f;
-			data->av.comp_off_on = true;
 			break;
 
 		case (My_Button_4):
@@ -348,7 +350,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.55f;
 //			data->rasv.halfBridge5DutyCycle = 0.5f;
 //			data->rasv.halfBridge6DutyCycle = 0.5f;
-			data->av.comp_off_on = false;
 			break;
 
 		case (My_Button_5):
@@ -358,6 +359,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.5f;
 //			data->rasv.halfBridge5DutyCycle = 0.55f;
 //			data->rasv.halfBridge6DutyCycle = 0.5f;
+			data->av.kalman_off_on = false;
 			break;
 
 		case (My_Button_6):
@@ -367,6 +369,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.5f;
 //			data->rasv.halfBridge5DutyCycle = 0.5f;
 //			data->rasv.halfBridge6DutyCycle = 0.55f;
+			data->av.kalman_off_on = true;
 			break;
 
 		case (My_Button_7):

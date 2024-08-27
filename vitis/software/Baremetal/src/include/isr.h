@@ -65,7 +65,6 @@ int Initialize_ARMController(DS_Data* data);								// Init ARM Control algorith
 int Initialize_ISR(void);
 int Rpu_GicInit(XScuGic *IntcInstPtr, u16 DeviceId);	//Init Hardware for ISR
 u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
-float CompensateResolverError(float angle);
-float SawTooth(float ampl, float freq, float isr_time, float angle_diff);
+float SawTooth(float ampl, float freq, float isr_time);
 
 #endif /* ISR_H_ */

@@ -33,11 +33,11 @@ fs_leg = 18;
 
 
 % current axis
-i_min = -12.5;
+i_min = -6.5;
 i_max = -i_min;
 
 num_of_measured_points = 1;
-max_num_of_samples_in_this_batch = 80*30;
+max_num_of_samples_in_this_batch = 40*30;
 start=1000;
 stop=start+max_num_of_samples_in_this_batch;
 

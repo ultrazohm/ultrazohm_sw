@@ -82,14 +82,17 @@ int main(void)
             JavaScope_initialize(&Global_Data);
             Global_Data.av.i_max_cur_lim_ip_SI = 12.0f;
             Global_Data.av.polepairs = 5.0f;
-            Global_Data.av.offset = 0.147f;
+            Global_Data.av.offset_el_incre = 945U;
             Global_Data.av.lambda = 10.0f;
             Global_Data.av.solver_tolerance = 1e-6f;
             Global_Data.av.max_iter = 20.0f;
             Global_Data.rasv.current_ctrl_select = PI_FOC;
-            Global_Data.av.angle_lead_factor = 1.5f;
-//            Global_Data.av.theta_offset = -0.105; //measured for FOC at +-600 rpm
-            Global_Data.av.phiPM_h[0] = -0.1349143;
+            Global_Data.av.angle_lead_factor_FOC = 1.5f;
+            Global_Data.av.angle_lead_factor_MPC = 2.5f;
+            Global_Data.av.kalman_R = 1.0f;
+            Global_Data.av.kalman_Q1 = 100.0f;
+            Global_Data.av.kalman_Q2 = 1.0f;
+            Global_Data.av.phiPM_h[0] = -0.1349143; //psi pm initialized in FOC_init.c
             Global_Data.av.phiPM_h[1] = -1.7723498;
             Global_Data.av.Rs = 0.27;
             Global_Data.av.Ld = 1.7e-3;
@@ -127,6 +130,8 @@ int main(void)
             uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d4);
             uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d4);
             Global_Data.objects.inv_fault_in = init_inverter_fault_axi_gpio();
+            Global_Data.objects.encoder_D3 = initialize_incremental_encoder_ipcore_on_D3(UZ_D3_INCREMENTAL_ENCODER_RESOLUTION, UZ_D3_MOTOR_POLE_PAIR_NUMBER);
+            uz_incrementalEncoder_set_electrical_Offset(Global_Data.objects.encoder_D3, Global_Data.av.offset_el_incre);
             // current limit detection ip
             uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_CUR_LIM_0_BASEADDR + 0x100, Global_Data.av.i_max_cur_lim_ip_SI, current_limit_SI);
 

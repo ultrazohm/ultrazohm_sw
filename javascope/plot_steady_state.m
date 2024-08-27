@@ -26,14 +26,14 @@ rgb_ic2 = '#ff6666';
 
 % define interval to plot
 start = 1;
-finish = start+300;
+finish = start+1200;
 
 % time axis
 t_start = 0.0;
 t_finish = 0.05;
 
 % current axis
-i_min = -12.5;
+i_min = -6.5;
 i_max = -i_min;
 
 % spectrum plot axis
@@ -281,8 +281,8 @@ xlabel('Time / s')
 ylabel('Solver Iterations');
 
 subplot(326)
-% hBar = bar(freq(1,:)*0.001,FFT_sig_withoutFundamental(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
-hBar = bar(freq(1,:)*0.001,FFT_sig(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
+hBar = bar(freq(1,:)*0.001,FFT_sig_withoutFundamental(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
+% hBar = bar(freq(1,:)*0.001,FFT_sig(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
 set(gca,'FontSize',fs);
 grid on
 axis([0 f_max 0 THD_max]);

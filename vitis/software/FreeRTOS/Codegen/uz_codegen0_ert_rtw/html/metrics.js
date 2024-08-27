@@ -46,14 +46,14 @@ function CodeMetrics() {
 	stackTotal: 6};
 	 this.metricsArray.fcn["uz_codegen0.c:KWIKfactor"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 12,
-	stackTotal: 61};
+	stackTotal: 57};
 	 this.metricsArray.fcn["uz_codegen0.c:ResetToColdStart"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 4,
 	stackTotal: 4};
 	 this.metricsArray.fcn["uz_codegen0.c:Unconstrained"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 12,
 	stackTotal: 12};
-	 this.metricsArray.fcn["uz_codegen0.c:abs_d"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
+	 this.metricsArray.fcn["uz_codegen0.c:abs_i"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 4,
 	stackTotal: 4};
 	 this.metricsArray.fcn["uz_codegen0.c:maximum"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
@@ -65,7 +65,7 @@ function CodeMetrics() {
 	 this.metricsArray.fcn["uz_codegen0.c:mtimes"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 16,
 	stackTotal: 16};
-	 this.metricsArray.fcn["uz_codegen0.c:mtimes_k"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
+	 this.metricsArray.fcn["uz_codegen0.c:mtimes_l"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 8,
 	stackTotal: 8};
 	 this.metricsArray.fcn["uz_codegen0.c:norm"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
@@ -73,7 +73,7 @@ function CodeMetrics() {
 	stackTotal: 20};
 	 this.metricsArray.fcn["uz_codegen0.c:qpkwik"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 25,
-	stackTotal: 86};
+	stackTotal: 82};
 	 this.metricsArray.fcn["uz_codegen0.c:trisolve"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 40,
 	stackTotal: 40};
@@ -81,8 +81,8 @@ function CodeMetrics() {
 	stack: 28,
 	stackTotal: 28};
 	 this.metricsArray.fcn["uz_codegen0.c:xgeqrf"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
-	stack: 21,
-	stackTotal: 49};
+	stack: 17,
+	stackTotal: 45};
 	 this.metricsArray.fcn["uz_codegen0.c:xgerc"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 28,
 	stackTotal: 28};
@@ -90,14 +90,14 @@ function CodeMetrics() {
 	stack: 24,
 	stackTotal: 24};
 	 this.metricsArray.fcn["uz_codegen0.c:xorgqr"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
-	stack: 21,
-	stackTotal: 49};
+	stack: 17,
+	stackTotal: 45};
 	 this.metricsArray.fcn["uz_codegen0_initialize"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
-	stack: 12,
-	stackTotal: 12};
-	 this.metricsArray.fcn["uz_codegen0_step"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
 	stack: 16,
-	stackTotal: 102};
+	stackTotal: 16};
+	 this.metricsArray.fcn["uz_codegen0_step"] = {file: "C:\\GIT\\UltraZohm\\software\\ultrazohm_sw_DepEng_ImplMod\\vitis\\software\\Baremetal\\src\\Codegen\\uz_codegen0_ert_rtw\\uz_codegen0.c",
+	stack: 17,
+	stackTotal: 99};
 	 this.getMetrics = function(token) { 
 		 var data;
 		 data = this.metricsArray.var[token];

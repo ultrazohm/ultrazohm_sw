@@ -6,7 +6,8 @@ uz_codegen codegenInstance;
 void impl_mod_mpc_init() {
 
 	codegenInstance.input.v_DC_pu = 565.0f;
-	codegenInstance.input.theta_el = 0.0f;
+	codegenInstance.input.theta_el_pos = 0.0f;
+	codegenInstance.input.theta_el_neg = 0.0f;
 	codegenInstance.input.Ts_times_ZB_over_Ld = 0.0f;
 	codegenInstance.input.Ts_times_ZB_over_Lq = 0.0f;
 	codegenInstance.input.Ts_times_ZB_over_Lx = 0.0f;

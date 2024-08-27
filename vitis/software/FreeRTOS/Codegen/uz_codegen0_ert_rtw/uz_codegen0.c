@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.7
+ * Model version                  : 2.11
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Mon Jul 29 14:01:24 2024
+ * C/C++ source code generated on : Tue Aug 27 18:00:10 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -29,7 +29,7 @@ static void trisolve(const real32_T A_data[], const int32_T A_size[2], real32_T
 static void Unconstrained(const real32_T Hinv_data[], const int32_T Hinv_size[2],
   const real32_T f[7], real32_T x_data[], int16_T n);
 static real32_T norm(const real32_T x_data[], const int32_T *x_size);
-static void abs_d(const real32_T x[7], real32_T y[7]);
+static void abs_i(const real32_T x[7], real32_T y[7]);
 static real32_T maximum(const real32_T x[7]);
 static void maximum2(const real32_T x[8], real32_T ex[8]);
 static real32_T xnrm2(int32_T n, const real32_T x_data[], int32_T ix0);
@@ -49,7 +49,7 @@ static real32_T KWIKfactor(const int16_T iC[8], int16_T nA, const real32_T
   Linv_data[], const int32_T Linv_size[2], real32_T RLinv_data[], const int32_T
   RLinv_size[2], real32_T D_data[], const int32_T D_size[2], real32_T H_data[],
   const int32_T H_size[2], int16_T n, DW *rtDW);
-static real32_T mtimes_k(const real32_T A_data[], const real32_T B_1[7]);
+static real32_T mtimes_l(const real32_T A_data[], const real32_T B_1[7]);
 static void DropConstraint(int16_T kDrop, int16_T iA[8], int16_T *nA, int16_T
   iC[8]);
 static void ResetToColdStart(int16_T iA[8], int16_T iC[8]);
@@ -156,7 +156,7 @@ static real32_T norm(const real32_T x_data[], const int32_T *x_size)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void abs_d(const real32_T x[7], real32_T y[7])
+static void abs_i(const real32_T x[7], real32_T y[7])
 {
   int32_T k;
   for (k = 0; k < 7; k++) {
@@ -320,9 +320,8 @@ static void xgeqrf(real32_T A_data[], const int32_T A_size[2], real32_T
   int32_T c_k;
   int32_T exitg1;
   int32_T knt;
-  real32_T beta1;
   boolean_T exitg2;
-  rtDW->m_n = A_size[0];
+  rtDW->m_j = A_size[0];
   rtDW->n = A_size[1];
   if (A_size[0] < A_size[1]) {
     rtDW->minmana = A_size[0];
@@ -353,22 +352,22 @@ static void xgeqrf(real32_T A_data[], const int32_T A_size[2], real32_T
       memset(&rtDW->work_data[0], 0, rtDW->ii * sizeof(real32_T));
     }
 
-    rtDW->i_p = 0;
-    while (rtDW->i_p <= rtDW->minmn - 1) {
-      rtDW->ii = rtDW->i_p * rtDW->minmana + rtDW->i_p;
-      rtDW->mmi = rtDW->m_n - rtDW->i_p;
-      if (rtDW->i_p + 1 < rtDW->m_n) {
+    rtDW->i_d = 0;
+    while (rtDW->i_d <= rtDW->minmn - 1) {
+      rtDW->ii = rtDW->i_d * rtDW->minmana + rtDW->i_d;
+      rtDW->mmi = rtDW->m_j - rtDW->i_d;
+      if (rtDW->i_d + 1 < rtDW->m_j) {
         rtDW->b_atmp = A_data[rtDW->ii];
-        tau_data[rtDW->i_p] = 0.0F;
+        tau_data[rtDW->i_d] = 0.0F;
         if (rtDW->mmi > 0) {
-          beta1 = xnrm2(rtDW->mmi - 1, A_data, rtDW->ii + 2);
-          if (beta1 != 0.0F) {
-            beta1 = rt_hypotf(A_data[rtDW->ii], beta1);
+          rtDW->beta1 = xnrm2(rtDW->mmi - 1, A_data, rtDW->ii + 2);
+          if (rtDW->beta1 != 0.0F) {
+            rtDW->beta1 = rt_hypotf(A_data[rtDW->ii], rtDW->beta1);
             if (A_data[rtDW->ii] >= 0.0F) {
-              beta1 = -beta1;
+              rtDW->beta1 = -rtDW->beta1;
             }
 
-            if (fabsf(beta1) < 9.86076132E-32F) {
+            if (fabsf(rtDW->beta1) < 9.86076132E-32F) {
               knt = -1;
               b_k = rtDW->ii + rtDW->mmi;
               do {
@@ -377,58 +376,59 @@ static void xgeqrf(real32_T A_data[], const int32_T A_size[2], real32_T
                   A_data[c_k] *= 1.01412048E+31F;
                 }
 
-                beta1 *= 1.01412048E+31F;
+                rtDW->beta1 *= 1.01412048E+31F;
                 rtDW->b_atmp *= 1.01412048E+31F;
-              } while (fabsf(beta1) < 9.86076132E-32F);
+              } while (fabsf(rtDW->beta1) < 9.86076132E-32F);
 
-              beta1 = rt_hypotf(rtDW->b_atmp, xnrm2(rtDW->mmi - 1, A_data,
+              rtDW->beta1 = rt_hypotf(rtDW->b_atmp, xnrm2(rtDW->mmi - 1, A_data,
                 rtDW->ii + 2));
               if (rtDW->b_atmp >= 0.0F) {
-                beta1 = -beta1;
+                rtDW->beta1 = -rtDW->beta1;
               }
 
-              tau_data[rtDW->i_p] = (beta1 - rtDW->b_atmp) / beta1;
-              rtDW->b_atmp = 1.0F / (rtDW->b_atmp - beta1);
+              tau_data[rtDW->i_d] = (rtDW->beta1 - rtDW->b_atmp) / rtDW->beta1;
+              rtDW->b_atmp = 1.0F / (rtDW->b_atmp - rtDW->beta1);
               b_k = rtDW->ii + rtDW->mmi;
               for (c_k = rtDW->ii + 1; c_k < b_k; c_k++) {
                 A_data[c_k] *= rtDW->b_atmp;
               }
 
               for (c_k = 0; c_k <= knt; c_k++) {
-                beta1 *= 9.86076132E-32F;
+                rtDW->beta1 *= 9.86076132E-32F;
               }
 
-              rtDW->b_atmp = beta1;
+              rtDW->b_atmp = rtDW->beta1;
             } else {
-              tau_data[rtDW->i_p] = (beta1 - A_data[rtDW->ii]) / beta1;
-              rtDW->b_atmp = 1.0F / (A_data[rtDW->ii] - beta1);
+              tau_data[rtDW->i_d] = (rtDW->beta1 - A_data[rtDW->ii]) /
+                rtDW->beta1;
+              rtDW->b_atmp = 1.0F / (A_data[rtDW->ii] - rtDW->beta1);
               knt = rtDW->ii + rtDW->mmi;
               for (b_k = rtDW->ii + 1; b_k < knt; b_k++) {
                 A_data[b_k] *= rtDW->b_atmp;
               }
 
-              rtDW->b_atmp = beta1;
+              rtDW->b_atmp = rtDW->beta1;
             }
           }
         }
 
         A_data[rtDW->ii] = rtDW->b_atmp;
       } else {
-        tau_data[rtDW->i_p] = 0.0F;
+        tau_data[rtDW->i_d] = 0.0F;
       }
 
-      if (rtDW->i_p + 1 < rtDW->n) {
+      if (rtDW->i_d + 1 < rtDW->n) {
         rtDW->b_atmp = A_data[rtDW->ii];
         A_data[rtDW->ii] = 1.0F;
         c_k = (rtDW->ii + rtDW->minmana) + 1;
-        if (tau_data[rtDW->i_p] != 0.0F) {
+        if (tau_data[rtDW->i_d] != 0.0F) {
           rtDW->mmip1 = (rtDW->ii + rtDW->mmi) - 1;
           while ((rtDW->mmi > 0) && (A_data[rtDW->mmip1] == 0.0F)) {
             rtDW->mmi--;
             rtDW->mmip1--;
           }
 
-          rtDW->mmip1 = (rtDW->n - rtDW->i_p) - 1;
+          rtDW->mmip1 = (rtDW->n - rtDW->i_d) - 1;
           exitg2 = false;
           while ((!exitg2) && (rtDW->mmip1 > 0)) {
             knt = (rtDW->mmip1 - 1) * rtDW->minmana + c_k;
@@ -459,14 +459,14 @@ static void xgeqrf(real32_T A_data[], const int32_T A_size[2], real32_T
         if (rtDW->mmi > 0) {
           xgemv(rtDW->mmi, rtDW->mmip1, A_data, c_k, rtDW->minmana, A_data,
                 rtDW->ii + 1, rtDW->work_data);
-          xgerc(rtDW->mmi, rtDW->mmip1, -tau_data[rtDW->i_p], rtDW->ii + 1,
+          xgerc(rtDW->mmi, rtDW->mmip1, -tau_data[rtDW->i_d], rtDW->ii + 1,
                 rtDW->work_data, A_data, c_k, rtDW->minmana);
         }
 
         A_data[rtDW->ii] = rtDW->b_atmp;
       }
 
-      rtDW->i_p++;
+      rtDW->i_d++;
     }
   }
 }
@@ -480,19 +480,18 @@ static void xorgqr(int32_T m, int32_T n, int32_T k, real32_T A_data[], const
   int32_T exitg1;
   int32_T ia;
   int32_T lastc;
-  int32_T lastv;
   boolean_T exitg2;
   if (n >= 1) {
     rtDW->itau = k;
     while (rtDW->itau <= n - 1) {
-      rtDW->i_l = rtDW->itau * lda;
+      rtDW->i_g = rtDW->itau * lda;
       rtDW->iaii = 0;
       while (rtDW->iaii <= m - 1) {
-        A_data[rtDW->i_l + rtDW->iaii] = 0.0F;
+        A_data[rtDW->i_g + rtDW->iaii] = 0.0F;
         rtDW->iaii++;
       }
 
-      A_data[rtDW->i_l + rtDW->itau] = 1.0F;
+      A_data[rtDW->i_g + rtDW->itau] = 1.0F;
       rtDW->itau++;
     }
 
@@ -502,29 +501,29 @@ static void xorgqr(int32_T m, int32_T n, int32_T k, real32_T A_data[], const
       memset(&rtDW->work_data_f[0], 0, rtDW->iaii * sizeof(real32_T));
     }
 
-    rtDW->i_l = k;
-    while (rtDW->i_l >= 1) {
-      rtDW->iaii = (rtDW->i_l - 1) * lda + rtDW->i_l;
-      if (rtDW->i_l < n) {
+    rtDW->i_g = k;
+    while (rtDW->i_g >= 1) {
+      rtDW->iaii = (rtDW->i_g - 1) * lda + rtDW->i_g;
+      if (rtDW->i_g < n) {
         A_data[rtDW->iaii - 1] = 1.0F;
-        lastc = (m - rtDW->i_l) - 1;
+        lastc = (m - rtDW->i_g) - 1;
         rtDW->c_c = rtDW->iaii + lda;
         if (tau_data[rtDW->itau] != 0.0F) {
-          lastv = lastc + 2;
+          rtDW->lastv = lastc + 2;
           lastc += rtDW->iaii;
-          while ((lastv > 0) && (A_data[lastc] == 0.0F)) {
-            lastv--;
+          while ((rtDW->lastv > 0) && (A_data[lastc] == 0.0F)) {
+            rtDW->lastv--;
             lastc--;
           }
 
-          lastc = n - rtDW->i_l;
+          lastc = n - rtDW->i_g;
           exitg2 = false;
           while ((!exitg2) && (lastc > 0)) {
             coltop = (lastc - 1) * lda + rtDW->c_c;
             ia = coltop;
             do {
               exitg1 = 0;
-              if (ia <= (coltop + lastv) - 1) {
+              if (ia <= (coltop + rtDW->lastv) - 1) {
                 if (A_data[ia - 1] != 0.0F) {
                   exitg1 = 1;
                 } else {
@@ -541,34 +540,36 @@ static void xorgqr(int32_T m, int32_T n, int32_T k, real32_T A_data[], const
             }
           }
         } else {
-          lastv = 0;
+          rtDW->lastv = 0;
           lastc = 0;
         }
 
-        if (lastv > 0) {
-          xgemv(lastv, lastc, A_data, rtDW->c_c, lda, A_data, rtDW->iaii,
+        if (rtDW->lastv > 0) {
+          xgemv(rtDW->lastv, lastc, A_data, rtDW->c_c, lda, A_data, rtDW->iaii,
                 rtDW->work_data_f);
-          xgerc(lastv, lastc, -tau_data[rtDW->itau], rtDW->iaii,
+          xgerc(rtDW->lastv, lastc, -tau_data[rtDW->itau], rtDW->iaii,
                 rtDW->work_data_f, A_data, rtDW->c_c, lda);
         }
       }
 
-      if (rtDW->i_l < m) {
-        rtDW->c_c = (rtDW->iaii + m) - rtDW->i_l;
-        for (lastv = rtDW->iaii; lastv < rtDW->c_c; lastv++) {
-          A_data[lastv] *= -tau_data[rtDW->itau];
+      if (rtDW->i_g < m) {
+        rtDW->c_c = (rtDW->iaii + m) - rtDW->i_g;
+        rtDW->lastv = rtDW->iaii;
+        while (rtDW->lastv + 1 <= rtDW->c_c) {
+          A_data[rtDW->lastv] *= -tau_data[rtDW->itau];
+          rtDW->lastv++;
         }
       }
 
       A_data[rtDW->iaii - 1] = 1.0F - tau_data[rtDW->itau];
       rtDW->c_c = 0;
-      while (rtDW->c_c <= rtDW->i_l - 2) {
+      while (rtDW->c_c <= rtDW->i_g - 2) {
         A_data[(rtDW->iaii - rtDW->c_c) - 2] = 0.0F;
         rtDW->c_c++;
       }
 
       rtDW->itau--;
-      rtDW->i_l--;
+      rtDW->i_g--;
     }
   }
 }
@@ -854,7 +855,7 @@ static real32_T KWIKfactor(const int16_T iC[8], int16_T nA, const real32_T
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static real32_T mtimes_k(const real32_T A_data[], const real32_T B_1[7])
+static real32_T mtimes_l(const real32_T A_data[], const real32_T B_1[7])
 {
   int32_T k;
   real32_T C;
@@ -937,9 +938,9 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
   boolean_T guard1 = false;
   boolean_T guard2 = false;
   *status = 1.0F;
-  for (rtDW->i_g = 0; rtDW->i_g < 8; rtDW->i_g++) {
-    iA[rtDW->i_g] = h[rtDW->i_g];
-    lambda[rtDW->i_g] = 0.0F;
+  for (rtDW->i_p = 0; rtDW->i_p < 8; rtDW->i_p++) {
+    iA[rtDW->i_p] = h[rtDW->i_p];
+    lambda[rtDW->i_p] = 0.0F;
   }
 
   *x_size = n;
@@ -962,21 +963,21 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
   rtDW->H_size[1] = Linv_size[1];
   rtDW->U_size[0] = Linv_size[0];
   cTolComputed = false;
-  for (rtDW->i_g = 0; rtDW->i_g < 8; rtDW->i_g++) {
-    rtDW->cTol[rtDW->i_g] = 1.0F;
-    rtDW->iC[rtDW->i_g] = 0;
+  for (rtDW->i_p = 0; rtDW->i_p < 8; rtDW->i_p++) {
+    rtDW->cTol[rtDW->i_p] = 1.0F;
+    rtDW->iC[rtDW->i_p] = 0;
   }
 
   nA = 0;
-  for (rtDW->i_g = 0; rtDW->i_g < 8; rtDW->i_g++) {
-    if (iA[rtDW->i_g] == 1) {
+  for (rtDW->i_p = 0; rtDW->i_p < 8; rtDW->i_p++) {
+    if (iA[rtDW->i_p] == 1) {
       rtDW->lambda_tmp_tmp = nA + 1;
       if (nA + 1 > 32767) {
         rtDW->lambda_tmp_tmp = 32767;
       }
 
       nA = (int16_T)rtDW->lambda_tmp_tmp;
-      rtDW->iC[(int16_T)rtDW->lambda_tmp_tmp - 1] = (int16_T)(rtDW->i_g + 1);
+      rtDW->iC[(int16_T)rtDW->lambda_tmp_tmp - 1] = (int16_T)(rtDW->i_p + 1);
     }
   }
 
@@ -990,9 +991,9 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
       tmp = (int16_T)(n << 1);
     }
 
-    rtDW->i_g = tmp;
-    if (0 <= rtDW->i_g - 1) {
-      memset(&rtDW->Opt_data[0], 0, rtDW->i_g * sizeof(real32_T));
+    rtDW->i_p = tmp;
+    if (0 <= rtDW->i_p - 1) {
+      memset(&rtDW->Opt_data[0], 0, rtDW->i_p * sizeof(real32_T));
     }
 
     for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
@@ -1023,9 +1024,9 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
             ColdReset = true;
           }
         } else {
-          rtDW->i_g = 1;
-          while (rtDW->i_g - 1 <= nA - 1) {
-            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_g;
+          rtDW->i_p = 1;
+          while (rtDW->i_p - 1 <= nA - 1) {
+            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_p;
             if (rtDW->lambda_tmp_tmp > 32767) {
               rtDW->lambda_tmp_tmp = 32767;
             } else if (rtDW->lambda_tmp_tmp < -32768) {
@@ -1033,39 +1034,39 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
             }
 
             rtDW->Rhs_data[rtDW->lambda_tmp_tmp - 1] = h[rtDW->iC[(int16_T)
-              rtDW->i_g - 1] - 1];
-            for (kNext = (int16_T)rtDW->i_g; kNext <= nA; kNext++) {
+              rtDW->i_p - 1] - 1];
+            for (kNext = (int16_T)rtDW->i_p; kNext <= nA; kNext++) {
               rtDW->lambda_tmp_tmp = (kNext + rtDW->U_size[0] * ((int16_T)
-                rtDW->i_g - 1)) - 1;
+                rtDW->i_p - 1)) - 1;
               rtDW->U_data[rtDW->lambda_tmp_tmp] = 0.0F;
               rtDW->H = 1;
               while (rtDW->H - 1 <= nA - 1) {
                 rtDW->loop_ub = rtDW->RLinv_size[0] * ((int16_T)rtDW->H - 1);
                 rtDW->U_data[rtDW->lambda_tmp_tmp] += rtDW->RLinv_data[(kNext +
-                  rtDW->loop_ub) - 1] * rtDW->RLinv_data[((int16_T)rtDW->i_g +
+                  rtDW->loop_ub) - 1] * rtDW->RLinv_data[((int16_T)rtDW->i_p +
                   rtDW->loop_ub) - 1];
                 rtDW->H++;
               }
 
-              rtDW->U_data[((int16_T)rtDW->i_g + rtDW->U_size[0] * (kNext - 1))
+              rtDW->U_data[((int16_T)rtDW->i_p + rtDW->U_size[0] * (kNext - 1))
                 - 1] = rtDW->U_data[rtDW->lambda_tmp_tmp];
             }
 
-            rtDW->i_g++;
+            rtDW->i_p++;
           }
 
-          rtDW->i_g = 1;
-          while (rtDW->i_g - 1 <= n - 1) {
+          rtDW->i_p = 1;
+          while (rtDW->i_p - 1 <= n - 1) {
             rtDW->loop_ub = rtDW->H_size[1];
             rtDW->Xnorm0 = 0.0F;
             for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < rtDW->loop_ub;
                  rtDW->lambda_tmp_tmp++) {
-              rtDW->Xnorm0 += rtDW->H_data[((int16_T)rtDW->i_g + rtDW->H_size[0]
+              rtDW->Xnorm0 += rtDW->H_data[((int16_T)rtDW->i_p + rtDW->H_size[0]
                 * rtDW->lambda_tmp_tmp) - 1] * rtDW->Rhs_data
                 [rtDW->lambda_tmp_tmp];
             }
 
-            rtDW->Opt_data[(int16_T)rtDW->i_g - 1] = rtDW->Xnorm0;
+            rtDW->Opt_data[(int16_T)rtDW->i_p - 1] = rtDW->Xnorm0;
             rtDW->H = 1;
             while (rtDW->H - 1 <= nA - 1) {
               rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->H;
@@ -1075,27 +1076,27 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
                 rtDW->lambda_tmp_tmp = -32768;
               }
 
-              rtDW->Opt_data[(int16_T)rtDW->i_g - 1] += rtDW->D_data[((int16_T)
-                rtDW->i_g + rtDW->D_size[0] * ((int16_T)rtDW->H - 1)) - 1] *
+              rtDW->Opt_data[(int16_T)rtDW->i_p - 1] += rtDW->D_data[((int16_T)
+                rtDW->i_p + rtDW->D_size[0] * ((int16_T)rtDW->H - 1)) - 1] *
                 rtDW->Rhs_data[rtDW->lambda_tmp_tmp - 1];
               rtDW->H++;
             }
 
-            rtDW->i_g++;
+            rtDW->i_p++;
           }
 
-          rtDW->i_g = 1;
-          while (rtDW->i_g - 1 <= nA - 1) {
+          rtDW->i_p = 1;
+          while (rtDW->i_p - 1 <= nA - 1) {
             rtDW->loop_ub = rtDW->D_size[0];
             rtDW->Xnorm0 = 0.0F;
             for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < rtDW->loop_ub;
                  rtDW->lambda_tmp_tmp++) {
               rtDW->Xnorm0 += rtDW->D_data[rtDW->lambda_tmp_tmp + rtDW->D_size[0]
-                * ((int16_T)rtDW->i_g - 1)] * rtDW->Rhs_data
+                * ((int16_T)rtDW->i_p - 1)] * rtDW->Rhs_data
                 [rtDW->lambda_tmp_tmp];
             }
 
-            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_g;
+            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_p;
             rtDW->loop_ub = rtDW->lambda_tmp_tmp;
             if (rtDW->lambda_tmp_tmp > 32767) {
               rtDW->loop_ub = 32767;
@@ -1113,11 +1114,11 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
                 rtDW->loop_ub = -32768;
               }
 
-              rtDW->i_m = rtDW->lambda_tmp_tmp;
+              rtDW->i_l = rtDW->lambda_tmp_tmp;
               if (rtDW->lambda_tmp_tmp > 32767) {
-                rtDW->i_m = 32767;
+                rtDW->i_l = 32767;
               } else if (rtDW->lambda_tmp_tmp < -32768) {
-                rtDW->i_m = -32768;
+                rtDW->i_l = -32768;
               }
 
               rtDW->i1 = n + (int16_T)rtDW->H;
@@ -1128,19 +1129,19 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
               }
 
               rtDW->Opt_data[rtDW->loop_ub - 1] = rtDW->U_data[((int16_T)
-                rtDW->i_g + rtDW->U_size[0] * ((int16_T)rtDW->H - 1)) - 1] *
-                rtDW->Rhs_data[rtDW->i1 - 1] + rtDW->Opt_data[rtDW->i_m - 1];
+                rtDW->i_p + rtDW->U_size[0] * ((int16_T)rtDW->H - 1)) - 1] *
+                rtDW->Rhs_data[rtDW->i1 - 1] + rtDW->Opt_data[rtDW->i_l - 1];
               rtDW->H++;
             }
 
-            rtDW->i_g++;
+            rtDW->i_p++;
           }
 
           rtDW->Xnorm0 = -1.0E-12F;
           kDrop = 0;
-          rtDW->i_g = 1;
-          while (rtDW->i_g - 1 <= nA - 1) {
-            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_g;
+          rtDW->i_p = 1;
+          while (rtDW->i_p - 1 <= nA - 1) {
+            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_p;
             rtDW->loop_ub = rtDW->lambda_tmp_tmp;
             if (rtDW->lambda_tmp_tmp > 32767) {
               rtDW->loop_ub = 32767;
@@ -1148,7 +1149,7 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
               rtDW->loop_ub = -32768;
             }
 
-            lambda[rtDW->iC[(int16_T)rtDW->i_g - 1] - 1] = rtDW->Opt_data
+            lambda[rtDW->iC[(int16_T)rtDW->i_p - 1] - 1] = rtDW->Opt_data
               [rtDW->loop_ub - 1];
             rtDW->loop_ub = rtDW->lambda_tmp_tmp;
             if (rtDW->lambda_tmp_tmp > 32767) {
@@ -1158,8 +1159,8 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
             }
 
             if ((rtDW->Opt_data[rtDW->loop_ub - 1] < rtDW->Xnorm0) && ((int16_T)
-                 rtDW->i_g <= nA - 1)) {
-              kDrop = (int16_T)rtDW->i_g;
+                 rtDW->i_p <= nA - 1)) {
+              kDrop = (int16_T)rtDW->i_p;
               if (rtDW->lambda_tmp_tmp > 32767) {
                 rtDW->lambda_tmp_tmp = 32767;
               } else if (rtDW->lambda_tmp_tmp < -32768) {
@@ -1169,7 +1170,7 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
               rtDW->Xnorm0 = rtDW->Opt_data[rtDW->lambda_tmp_tmp - 1];
             }
 
-            rtDW->i_g++;
+            rtDW->i_p++;
           }
 
           if (kDrop <= 0) {
@@ -1199,8 +1200,8 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
         }
       } else {
         if (nA <= 0) {
-          for (rtDW->i_g = 0; rtDW->i_g < 8; rtDW->i_g++) {
-            lambda[rtDW->i_g] = 0.0F;
+          for (rtDW->i_p = 0; rtDW->i_p < 8; rtDW->i_p++) {
+            lambda[rtDW->i_p] = 0.0F;
           }
 
           Unconstrained(Hinv_data, Hinv_size, f, x_data, n);
@@ -1224,35 +1225,35 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
     while ((!exitg2) && ((int32_T)*status <= maxiter)) {
       rtDW->cMin = -1.0E-6F;
       kNext = 0;
-      for (rtDW->i_g = 0; rtDW->i_g < 7; rtDW->i_g++) {
-        rtDW->t_g = rtDW->cTol[rtDW->i_g];
+      for (rtDW->i_p = 0; rtDW->i_p < 7; rtDW->i_p++) {
+        rtDW->t_n = rtDW->cTol[rtDW->i_p];
         if (!cTolComputed) {
           for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
                rtDW->lambda_tmp_tmp++) {
-            rtDW->AcRow[rtDW->lambda_tmp_tmp] = (real32_T)Ac[rtDW->i_g +
+            rtDW->AcRow[rtDW->lambda_tmp_tmp] = (real32_T)Ac[rtDW->i_p +
               (rtDW->lambda_tmp_tmp << 3)] * x_data[rtDW->lambda_tmp_tmp];
           }
 
-          abs_d(rtDW->AcRow, rtDW->z_data);
-          rtDW->t_g = fmaxf(rtDW->t_g, maximum(rtDW->z_data));
+          abs_i(rtDW->AcRow, rtDW->z_data);
+          rtDW->t_n = fmaxf(rtDW->t_n, maximum(rtDW->z_data));
         }
 
-        if (iA[rtDW->i_g] == 0) {
+        if (iA[rtDW->i_p] == 0) {
           rtDW->cVal = 0.0F;
           for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
                rtDW->lambda_tmp_tmp++) {
-            rtDW->cVal += (real32_T)Ac[rtDW->i_g + (rtDW->lambda_tmp_tmp << 3)] *
+            rtDW->cVal += (real32_T)Ac[rtDW->i_p + (rtDW->lambda_tmp_tmp << 3)] *
               x_data[rtDW->lambda_tmp_tmp];
           }
 
-          rtDW->cVal /= rtDW->t_g;
+          rtDW->cVal /= rtDW->t_n;
           if (rtDW->cVal < rtDW->cMin) {
             rtDW->cMin = rtDW->cVal;
-            kNext = (int16_T)(rtDW->i_g + 1);
+            kNext = (int16_T)(rtDW->i_p + 1);
           }
         }
 
-        rtDW->cTol[rtDW->i_g] = rtDW->t_g;
+        rtDW->cTol[rtDW->i_p] = rtDW->t_n;
       }
 
       cTolComputed = true;
@@ -1295,18 +1296,18 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
 
                 mtimes(rtDW->U_data, rtDW->U_size, rtDW->AcRow, rtDW->z_data,
                        &rtDW->z_size);
-                rtDW->i_g = 1;
-                while (rtDW->i_g - 1 <= nA - 1) {
-                  rtDW->t_g = 0.0F;
+                rtDW->i_p = 1;
+                while (rtDW->i_p - 1 <= nA - 1) {
+                  rtDW->t_n = 0.0F;
                   for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
                        rtDW->lambda_tmp_tmp++) {
-                    rtDW->t_g += rtDW->D_data[rtDW->lambda_tmp_tmp +
-                      rtDW->D_size[0] * ((int16_T)rtDW->i_g - 1)] * rtDW->
+                    rtDW->t_n += rtDW->D_data[rtDW->lambda_tmp_tmp +
+                      rtDW->D_size[0] * ((int16_T)rtDW->i_p - 1)] * rtDW->
                       AcRow[rtDW->lambda_tmp_tmp];
                   }
 
-                  rtDW->r_data[(int16_T)rtDW->i_g - 1] = rtDW->t_g;
-                  rtDW->i_g++;
+                  rtDW->r_data[(int16_T)rtDW->i_p - 1] = rtDW->t_n;
+                  rtDW->i_p++;
                 }
 
                 guard2 = true;
@@ -1319,14 +1320,14 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
               DualFeasible = true;
               ColdReset = true;
               if (nA > 1) {
-                rtDW->i_g = 0;
+                rtDW->i_p = 0;
                 exitg4 = false;
-                while ((!exitg4) && (rtDW->i_g <= nA - 2)) {
-                  if (rtDW->r_data[rtDW->i_g] >= 1.0E-12F) {
+                while ((!exitg4) && (rtDW->i_p <= nA - 2)) {
+                  if (rtDW->r_data[rtDW->i_p] >= 1.0E-12F) {
                     ColdReset = false;
                     exitg4 = true;
                   } else {
-                    rtDW->i_g++;
+                    rtDW->i_p++;
                   }
                 }
               }
@@ -1337,19 +1338,19 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
                   rtDW->lambda_tmp_tmp = -32768;
                 }
 
-                rtDW->i_g = 1;
-                while (rtDW->i_g - 1 <= (int16_T)rtDW->lambda_tmp_tmp - 1) {
-                  rtDW->cVal = rtDW->r_data[(int16_T)rtDW->i_g - 1];
+                rtDW->i_p = 1;
+                while (rtDW->i_p - 1 <= (int16_T)rtDW->lambda_tmp_tmp - 1) {
+                  rtDW->cVal = rtDW->r_data[(int16_T)rtDW->i_p - 1];
                   if (rtDW->cVal > 1.0E-12F) {
-                    rtDW->cVal = lambda[rtDW->iC[(int16_T)rtDW->i_g - 1] - 1] /
+                    rtDW->cVal = lambda[rtDW->iC[(int16_T)rtDW->i_p - 1] - 1] /
                       rtDW->cVal;
                     if ((kDrop == 0) || (rtDW->cVal < rtDW->rMin)) {
                       rtDW->rMin = rtDW->cVal;
-                      kDrop = (int16_T)rtDW->i_g;
+                      kDrop = (int16_T)rtDW->i_p;
                     }
                   }
 
-                  rtDW->i_g++;
+                  rtDW->i_p++;
                 }
 
                 if (kDrop > 0) {
@@ -1358,19 +1359,19 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
                 }
               }
 
-              rtDW->cVal = mtimes_k(rtDW->z_data, rtDW->AcRow);
+              rtDW->cVal = mtimes_l(rtDW->z_data, rtDW->AcRow);
               if (rtDW->cVal <= 0.0F) {
                 rtDW->cVal = 0.0F;
                 ColdReset = true;
               } else {
-                rtDW->t_g = 0.0F;
+                rtDW->t_n = 0.0F;
                 for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
                      rtDW->lambda_tmp_tmp++) {
-                  rtDW->t_g += rtDW->AcRow[rtDW->lambda_tmp_tmp] * x_data
+                  rtDW->t_n += rtDW->AcRow[rtDW->lambda_tmp_tmp] * x_data
                     [rtDW->lambda_tmp_tmp];
                 }
 
-                rtDW->cVal = (-0.0F - rtDW->t_g) / rtDW->cVal;
+                rtDW->cVal = (-0.0F - rtDW->t_n) / rtDW->cVal;
                 ColdReset = false;
               }
 
@@ -1379,28 +1380,28 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
                 exitg1 = 1;
               } else {
                 if (ColdReset) {
-                  rtDW->t_g = rtDW->cMin;
+                  rtDW->t_n = rtDW->cMin;
                 } else if (DualFeasible) {
-                  rtDW->t_g = rtDW->cVal;
+                  rtDW->t_n = rtDW->cVal;
                 } else {
-                  rtDW->t_g = fminf(rtDW->cMin, rtDW->cVal);
+                  rtDW->t_n = fminf(rtDW->cMin, rtDW->cVal);
                 }
 
-                rtDW->i_g = 1;
-                while (rtDW->i_g - 1 <= nA - 1) {
-                  rtDW->lambda_tmp_tmp = rtDW->iC[(int16_T)rtDW->i_g - 1];
+                rtDW->i_p = 1;
+                while (rtDW->i_p - 1 <= nA - 1) {
+                  rtDW->lambda_tmp_tmp = rtDW->iC[(int16_T)rtDW->i_p - 1];
                   lambda[rtDW->lambda_tmp_tmp - 1] -= rtDW->r_data[(int16_T)
-                    rtDW->i_g - 1] * rtDW->t_g;
+                    rtDW->i_p - 1] * rtDW->t_n;
                   if ((rtDW->lambda_tmp_tmp <= 7) && (lambda
                        [rtDW->lambda_tmp_tmp - 1] < 0.0F)) {
                     lambda[rtDW->lambda_tmp_tmp - 1] = 0.0F;
                   }
 
-                  rtDW->i_g++;
+                  rtDW->i_p++;
                 }
 
-                lambda[kNext - 1] += rtDW->t_g;
-                if (rtDW->t_g == rtDW->cMin) {
+                lambda[kNext - 1] += rtDW->t_n;
+                if (rtDW->t_n == rtDW->cMin) {
                   DropConstraint(kDrop, iA, &nA, rtDW->iC);
                 }
 
@@ -1408,11 +1409,11 @@ static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
                   rtDW->loop_ub = *x_size;
                   for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp <
                        rtDW->loop_ub; rtDW->lambda_tmp_tmp++) {
-                    x_data[rtDW->lambda_tmp_tmp] += rtDW->t_g * rtDW->
+                    x_data[rtDW->lambda_tmp_tmp] += rtDW->t_n * rtDW->
                       z_data[rtDW->lambda_tmp_tmp];
                   }
 
-                  if (rtDW->t_g == rtDW->cVal) {
+                  if (rtDW->t_n == rtDW->cVal) {
                     if (nA == n) {
                       *status = -1.0F;
                       exitg1 = 1;
@@ -1477,7 +1478,22 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   ExtU *rtU = (ExtU *) rtM->inputs;
   ExtY *rtY = (ExtY *) rtM->outputs;
   int16_T tmp;
+  int8_T ipiv;
   boolean_T rEQ0;
+  static const int8_T h[8] = { 0, 0, 0, 0, 1, 0, 0, 0 };
+
+  static const int8_T g[8] = { 0, 0, 0, 0, 0, 1, 0, 0 };
+
+  static const int8_T f[8] = { 0, 0, 0, 0, 0, 0, 1, 0 };
+
+  static const int8_T e[8] = { 0, 0, 0, 0, 0, 0, 0, 1 };
+
+  static const int8_T l[32] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0,
+    0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0 };
+
+  static const int8_T m[32] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
   static const int8_T tmp_0[24] = { 8, 1, 1, 8, 8, 2, 2, 16, 16, 2, 2, 16, 16, 4,
     4, 32, 32, 4, 4, 32, 32, 1, 1, 8 };
 
@@ -1551,461 +1567,65 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 
   boolean_T exitg1;
 
-  /* Trigonometry: '<S1>/SinCos1' incorporates:
-   *  Inport: '<Root>/theta_el'
-   */
-  rtDW->SinCos1_o1 = sinf(rtU->theta_el);
-  rtDW->SinCos1_o2 = cosf(rtU->theta_el);
-
-  /* MATLAB Function: '<S1>/seq_2_act_sw_all' */
-  for (rtDW->i = 0; rtDW->i < 24; rtDW->i++) {
-    rtDW->act_sw_1[rtDW->i] = tmp_0[rtDW->i];
-    rtDW->act_sw_2[rtDW->i] = tmp_1[rtDW->i];
-    rtDW->act_sw_3[rtDW->i] = tmp_2[rtDW->i];
-    rtDW->act_sw_4[rtDW->i] = tmp_3[rtDW->i];
-    rtDW->act_sw_5[rtDW->i] = tmp_4[rtDW->i];
-  }
-
-  /* End of MATLAB Function: '<S1>/seq_2_act_sw_all' */
-
-  /* MATLAB Function: '<S1>/deadbeat_solution' incorporates:
-   *  Inport: '<Root>/Ld_over_LB'
-   *  Inport: '<Root>/Lq_over_LB'
-   *  Inport: '<Root>/Rs_over_ZB'
-   *  Inport: '<Root>/Ts_times_ZB_over_Ld'
-   *  Inport: '<Root>/Ts_times_ZB_over_Lq'
-   *  Inport: '<Root>/i_d_ref_pu'
-   *  Inport: '<Root>/i_dq_pu'
-   *  Inport: '<Root>/i_q_ref_pu'
-   *  Inport: '<Root>/omega_el_pu'
-   *  Inport: '<Root>/psi_pm_over_psiB'
-   *  Inport: '<Root>/theta_el'
-   */
-  /* MATLAB Function 'uz_codegen/seq_2_act_sw_all': '<S7>:1' */
-  /* '<S7>:1:3' act_sw_1 = single(zeros(24,1)); */
-  /* '<S7>:1:4' act_sw_2 = single(zeros(24,1)); */
-  /* '<S7>:1:5' act_sw_3 = single(zeros(24,1)); */
-  /* '<S7>:1:6' act_sw_4 = single(zeros(24,1)); */
-  /* '<S7>:1:7' act_sw_5 = single(zeros(24,1)); */
-  /*  columns=sequence, rows=active switch postion               */
-  /* '<S7>:1:10' seq_table_svm24 = single([   8, 9,41,43,47; */
-  /* '<S7>:1:11'                              1, 9,11,43,59; */
-  /* '<S7>:1:12'                              1, 9,11,27,59; */
-  /* '<S7>:1:13'                              8, 9,11,27,31; */
-  /* '<S7>:1:14'                              8,10,11,27,31; */
-  /* '<S7>:1:15'                              2,10,26,27,59; */
-  /* '<S7>:1:16'                              2,18,26,27,59; */
-  /* '<S7>:1:17'                             16,18,26,27,31; */
-  /* '<S7>:1:18'                             16,18,26,30,31; */
-  /* '<S7>:1:19'                              2,18,22,30,62; */
-  /* '<S7>:1:20'                              2,18,22,54,62; */
-  /* '<S7>:1:21'                             16,18,22,54,55; */
-  /* '<S7>:1:22'                             16,20,22,54,55; */
-  /* '<S7>:1:23'                              4,20,52,54,62; */
-  /* '<S7>:1:24'                              4,36,52,54,62; */
-  /* '<S7>:1:25'                             32,36,52,54,55; */
-  /* '<S7>:1:26'                             32,36,52,53,55; */
-  /* '<S7>:1:27'                              4,36,37,53,61; */
-  /* '<S7>:1:28'                              4,36,37,45,61; */
-  /* '<S7>:1:29'                             32,36,37,45,47; */
-  /* '<S7>:1:30'                             32,33,37,45,47; */
-  /* '<S7>:1:31'                              1,33,41,45,61; */
-  /* '<S7>:1:32'                              1, 9,41,45,61; */
-  /* '<S7>:1:33'                              8, 9,41,45,47]); */
-  /* '<S7>:1:35' act_sw_1 = seq_table_svm24(:,1); */
-  /* '<S7>:1:36' act_sw_2 = seq_table_svm24(:,2); */
-  /* '<S7>:1:37' act_sw_3 = seq_table_svm24(:,3); */
-  /* '<S7>:1:38' act_sw_4 = seq_table_svm24(:,4); */
-  /* '<S7>:1:39' act_sw_5 = seq_table_svm24(:,5); */
-  /* MATLAB Function 'uz_codegen/deadbeat_solution': '<S3>:1' */
-  /* '<S3>:1:4' v_d_ref_pu = (i_d_ref_pu-i_d_pu)/(Ts_times_ZB_over_Ld) + i_d_pu*Rs_over_ZB - omega_el*Lq_over_LB*i_q_pu; */
-  /* '<S3>:1:5' v_q_ref_pu = (i_q_ref_pu-i_q_pu)/(Ts_times_ZB_over_Lq) + i_q_pu*Rs_over_ZB + omega_el*(Ld_over_LB*i_d_pu+psi_pm_over_psiB); */
-  /* '<S3>:1:7' angle_ref = mod(atan2(v_q_ref_pu, v_d_ref_pu) + theta_el, 2*pi); */
-  rtDW->x = atan2f(((rtU->i_q_ref_pu - rtU->i_dq_pu[1]) /
-                    rtU->Ts_times_ZB_over_Lq + rtU->i_dq_pu[1] * rtU->Rs_over_ZB)
-                   + (rtU->Ld_over_LB * rtU->i_dq_pu[0] + rtU->psi_pm_over_psiB)
-                   * rtU->omega_el_pu, ((rtU->i_d_ref_pu - rtU->i_dq_pu[0]) /
-    rtU->Ts_times_ZB_over_Ld + rtU->i_dq_pu[0] * rtU->Rs_over_ZB) -
-                   rtU->omega_el_pu * rtU->Lq_over_LB * rtU->i_dq_pu[1]) +
-    rtU->theta_el;
-  if (rtDW->x == 0.0F) {
-    rtDW->w6theta_el = 0.0F;
-  } else {
-    rtDW->w6theta_el = fmodf(rtDW->x, 6.28318548F);
-    rEQ0 = (rtDW->w6theta_el == 0.0F);
-    if (!rEQ0) {
-      rtDW->q = fabsf(rtDW->x / 6.28318548F);
-      rEQ0 = (fabsf(rtDW->q - floorf(rtDW->q + 0.5F)) <= 1.1920929E-7F * rtDW->q);
-    }
-
-    if (rEQ0) {
-      rtDW->w6theta_el = 0.0F;
-    } else if (rtDW->x < 0.0F) {
-      rtDW->w6theta_el += 6.28318548F;
+  /* Delay: '<S1>/Delay13' */
+  if (rtDW->icLoad) {
+    for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
+      rtDW->Delay13_DSTATE[rtDW->i] = 0.14F;
     }
   }
 
-  /* '<S3>:1:9' sector_ref = 0.0; */
-  rtDW->sector_ref = 0;
-
-  /* '<S3>:1:10' if (angle_ref >= 0.0 && angle_ref < pi/180*15) */
-  if ((rtDW->w6theta_el >= 0.0F) && (rtDW->w6theta_el < 0.26179938779914941)) {
-    /* '<S3>:1:11' sector_ref = 1.0; */
-    rtDW->sector_ref = 1;
-  } else if ((rtDW->w6theta_el >= 0.26179938779914941) && (rtDW->w6theta_el <
-              0.52359877559829882)) {
-    /* '<S3>:1:12' elseif (angle_ref >= pi/180*15 && angle_ref < pi/180*30) */
-    /* '<S3>:1:13' sector_ref = 2.0; */
-    rtDW->sector_ref = 2;
-  } else if ((rtDW->w6theta_el >= 0.52359877559829882) && (rtDW->w6theta_el <
-              0.78539816339744828)) {
-    /* '<S3>:1:14' elseif (angle_ref >= pi/180*30 && angle_ref < pi/180*45) */
-    /* '<S3>:1:15' sector_ref = 3.0; */
-    rtDW->sector_ref = 3;
-  } else if ((rtDW->w6theta_el >= 0.78539816339744828) && (rtDW->w6theta_el <
-              1.0471975511965976)) {
-    /* '<S3>:1:16' elseif (angle_ref >= pi/180*45 && angle_ref < pi/180*60) */
-    /* '<S3>:1:17' sector_ref = 4.0; */
-    rtDW->sector_ref = 4;
-  } else if ((rtDW->w6theta_el >= 1.0471975511965976) && (rtDW->w6theta_el <
-              1.3089969389957472)) {
-    /* '<S3>:1:18' elseif (angle_ref >= pi/180*60 && angle_ref < pi/180*75) */
-    /* '<S3>:1:19' sector_ref = 5.0; */
-    rtDW->sector_ref = 5;
-  } else if ((rtDW->w6theta_el >= 1.3089969389957472) && (rtDW->w6theta_el <
-              1.5707963267948966)) {
-    /* '<S3>:1:20' elseif (angle_ref >= pi/180*75 && angle_ref < pi/180*90) */
-    /* '<S3>:1:21' sector_ref = 6.0; */
-    rtDW->sector_ref = 6;
-  } else if ((rtDW->w6theta_el >= 1.5707963267948966) && (rtDW->w6theta_el <
-              1.8325957145940461)) {
-    /* '<S3>:1:22' elseif (angle_ref >= pi/180*90 && angle_ref < pi/180*105) */
-    /* '<S3>:1:23' sector_ref = 7.0; */
-    rtDW->sector_ref = 7;
-  } else if ((rtDW->w6theta_el >= 1.8325957145940461) && (rtDW->w6theta_el <
-              2.0943951023931953)) {
-    /* '<S3>:1:24' elseif (angle_ref >= pi/180*105 && angle_ref < pi/180*120) */
-    /* '<S3>:1:25' sector_ref = 8.0; */
-    rtDW->sector_ref = 8;
-  } else if ((rtDW->w6theta_el >= 2.0943951023931953) && (rtDW->w6theta_el <
-              2.3561944901923448)) {
-    /* '<S3>:1:26' elseif (angle_ref >= pi/180*120 && angle_ref < pi/180*135) */
-    /* '<S3>:1:27' sector_ref = 9.0; */
-    rtDW->sector_ref = 9;
-  } else if ((rtDW->w6theta_el >= 2.3561944901923448) && (rtDW->w6theta_el <
-              2.6179938779914944)) {
-    /* '<S3>:1:28' elseif (angle_ref >= pi/180*135 && angle_ref < pi/180*150) */
-    /* '<S3>:1:29' sector_ref = 10.0; */
-    rtDW->sector_ref = 10;
-  } else if ((rtDW->w6theta_el >= 2.6179938779914944) && (rtDW->w6theta_el <
-              2.8797932657906435)) {
-    /* '<S3>:1:30' elseif (angle_ref >= pi/180*150 && angle_ref < pi/180*165) */
-    /* '<S3>:1:31' sector_ref = 11.0; */
-    rtDW->sector_ref = 11;
-  } else if ((rtDW->w6theta_el >= 2.8797932657906435) && (rtDW->w6theta_el <
-              3.1415926535897931)) {
-    /* '<S3>:1:32' elseif (angle_ref >= pi/180*165 && angle_ref < pi/180*180) */
-    /* '<S3>:1:33' sector_ref = 12.0; */
-    rtDW->sector_ref = 12;
-  } else if ((rtDW->w6theta_el >= 3.1415926535897931) && (rtDW->w6theta_el <
-              3.4033920413889427)) {
-    /* '<S3>:1:34' elseif (angle_ref >= pi/180*180 && angle_ref < pi/180*195) */
-    /* '<S3>:1:35' sector_ref = 13.0; */
-    rtDW->sector_ref = 13;
-  } else if ((rtDW->w6theta_el >= 3.4033920413889427) && (rtDW->w6theta_el <
-              3.6651914291880923)) {
-    /* '<S3>:1:36' elseif (angle_ref >= pi/180*195 && angle_ref < pi/180*210) */
-    /* '<S3>:1:37' sector_ref = 14.0; */
-    rtDW->sector_ref = 14;
-  } else if ((rtDW->w6theta_el >= 3.6651914291880923) && (rtDW->w6theta_el <
-              3.9269908169872414)) {
-    /* '<S3>:1:38' elseif (angle_ref >= pi/180*210 && angle_ref < pi/180*225) */
-    /* '<S3>:1:39' sector_ref = 15.0; */
-    rtDW->sector_ref = 15;
-  } else if ((rtDW->w6theta_el >= 3.9269908169872414) && (rtDW->w6theta_el <
-              4.1887902047863905)) {
-    /* '<S3>:1:40' elseif (angle_ref >= pi/180*225 && angle_ref < pi/180*240) */
-    /* '<S3>:1:41' sector_ref = 16.0; */
-    rtDW->sector_ref = 16;
-  } else if ((rtDW->w6theta_el >= 4.1887902047863905) && (rtDW->w6theta_el <
-              4.4505895925855405)) {
-    /* '<S3>:1:42' elseif (angle_ref >= pi/180*240 && angle_ref < pi/180*255) */
-    /* '<S3>:1:43' sector_ref = 17.0; */
-    rtDW->sector_ref = 17;
-  } else if ((rtDW->w6theta_el >= 4.4505895925855405) && (rtDW->w6theta_el <
-              4.71238898038469)) {
-    /* '<S3>:1:44' elseif (angle_ref >= pi/180*255 && angle_ref < pi/180*270) */
-    /* '<S3>:1:45' sector_ref = 18.0; */
-    rtDW->sector_ref = 18;
-  } else if ((rtDW->w6theta_el >= 4.71238898038469) && (rtDW->w6theta_el <
-              4.9741883681838388)) {
-    /* '<S3>:1:46' elseif (angle_ref >= pi/180*270 && angle_ref < pi/180*285) */
-    /* '<S3>:1:47' sector_ref = 19.0; */
-    rtDW->sector_ref = 19;
-  } else if ((rtDW->w6theta_el >= 4.9741883681838388) && (rtDW->w6theta_el <
-              5.2359877559829888)) {
-    /* '<S3>:1:48' elseif (angle_ref >= pi/180*285 && angle_ref < pi/180*300) */
-    /* '<S3>:1:49' sector_ref = 20.0; */
-    rtDW->sector_ref = 20;
-  } else if ((rtDW->w6theta_el >= 5.2359877559829888) && (rtDW->w6theta_el <
-              5.497787143782138)) {
-    /* '<S3>:1:50' elseif (angle_ref >= pi/180*300 && angle_ref < pi/180*315) */
-    /* '<S3>:1:51' sector_ref = 21.0; */
-    rtDW->sector_ref = 21;
-  } else if ((rtDW->w6theta_el >= 5.497787143782138) && (rtDW->w6theta_el <
-              5.7595865315812871)) {
-    /* '<S3>:1:52' elseif (angle_ref >= pi/180*315 && angle_ref < pi/180*330) */
-    /* '<S3>:1:53' sector_ref = 22.0; */
-    rtDW->sector_ref = 22;
-  } else if ((rtDW->w6theta_el >= 5.7595865315812871) && (rtDW->w6theta_el <
-              6.0213859193804371)) {
-    /* '<S3>:1:54' elseif (angle_ref >= pi/180*330 && angle_ref < pi/180*345) */
-    /* '<S3>:1:55' sector_ref = 23.0; */
-    rtDW->sector_ref = 23;
-  } else if ((rtDW->w6theta_el >= 6.0213859193804371) && (rtDW->w6theta_el <
-              6.2831853071795862)) {
-    /* '<S3>:1:56' elseif (angle_ref >= pi/180*345 && angle_ref < pi/180*360) */
-    /* '<S3>:1:57' sector_ref = 24.0; */
-    rtDW->sector_ref = 24;
+  /* MATLAB Function: '<S1>/v_dqxy' incorporates:
+   *  Delay: '<S1>/Delay'
+   *  Delay: '<S1>/Delay10'
+   *  Delay: '<S1>/Delay11'
+   *  Delay: '<S1>/Delay12'
+   *  Delay: '<S1>/Delay13'
+   *  Delay: '<S1>/Delay9'
+   */
+  /* MATLAB Function 'uz_codegen/v_dqxy': '<S13>:1' */
+  /* '<S13>:1:3' v0 = [single(0.0);single(0.0);single(0.0);single(0.0)]; */
+  /* '<S13>:1:5' v_opt = [v0, v1, v2, v3, v4, v5, v0]; */
+  /* delay compensation */
+  /* '<S13>:1:7' v_t0 = v_opt * x_opt; */
+  rtDW->r[0] = 0.0F;
+  rtDW->r[4] = rtDW->Delay_DSTATE[0];
+  rtDW->r[8] = rtDW->Delay9_DSTATE[0];
+  rtDW->r[12] = rtDW->Delay10_DSTATE[0];
+  rtDW->r[16] = rtDW->Delay11_DSTATE[0];
+  rtDW->r[20] = rtDW->Delay12_DSTATE[0];
+  rtDW->r[24] = 0.0F;
+  rtDW->r[1] = 0.0F;
+  rtDW->r[5] = rtDW->Delay_DSTATE[1];
+  rtDW->r[9] = rtDW->Delay9_DSTATE[1];
+  rtDW->r[13] = rtDW->Delay10_DSTATE[1];
+  rtDW->r[17] = rtDW->Delay11_DSTATE[1];
+  rtDW->r[21] = rtDW->Delay12_DSTATE[1];
+  rtDW->r[25] = 0.0F;
+  rtDW->r[2] = 0.0F;
+  rtDW->r[6] = rtDW->Delay_DSTATE[2];
+  rtDW->r[10] = rtDW->Delay9_DSTATE[2];
+  rtDW->r[14] = rtDW->Delay10_DSTATE[2];
+  rtDW->r[18] = rtDW->Delay11_DSTATE[2];
+  rtDW->r[22] = rtDW->Delay12_DSTATE[2];
+  rtDW->r[26] = 0.0F;
+  rtDW->r[3] = 0.0F;
+  rtDW->r[7] = rtDW->Delay_DSTATE[3];
+  rtDW->r[11] = rtDW->Delay9_DSTATE[3];
+  rtDW->r[15] = rtDW->Delay10_DSTATE[3];
+  rtDW->r[19] = rtDW->Delay11_DSTATE[3];
+  rtDW->r[23] = rtDW->Delay12_DSTATE[3];
+  rtDW->r[27] = 0.0F;
+  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+    rtDW->v_t0[rtDW->ijA] = 0.0F;
+    for (rtDW->c = 0; rtDW->c < 7; rtDW->c++) {
+      rtDW->v_t0[rtDW->ijA] += rtDW->r[(rtDW->c << 2) + rtDW->ijA] *
+        rtDW->Delay13_DSTATE[rtDW->c];
+    }
   }
 
-  /* End of MATLAB Function: '<S1>/deadbeat_solution' */
+  /* End of MATLAB Function: '<S1>/v_dqxy' */
 
-  /* MATLAB Function: '<S1>/act_sw_2_dqxy_volts_all' incorporates:
-   *  Inport: '<Root>/v_DC_pu'
-   */
-  /*  voltage lookup factors alpha/beta */
-  /* MATLAB Function 'uz_codegen/act_sw_2_dqxy_volts_all': '<S2>:1' */
-  /*  since zero voltages for switch position 0 and 63 is not needed */
-  /*  and matlab does use one based indexing, i simply removed entrys 1  */
-  /*  and 64. Therefore, the voltage LUTs below correspond again  */
-  /*  to index 1 beeing the voltages for respective switch position  */
-  /*  1 (000001b)  */
-  /* '<S2>:1:12' v_alpha_beta_pu = single([ %0.0,0.0; */
-  /* '<S2>:1:13' 0.333333, -0.000000; */
-  /* '<S2>:1:14' -0.166667, 0.288675; */
-  /* '<S2>:1:15' 0.166667, 0.288675; */
-  /* '<S2>:1:16' -0.166667, -0.288675; */
-  /* '<S2>:1:17' 0.166667, -0.288675; */
-  /* '<S2>:1:18' -0.333333, 0.000000; */
-  /* '<S2>:1:19' 0.000000, 0.000000; */
-  /* '<S2>:1:20' 0.288675, 0.166667; */
-  /* '<S2>:1:21' 0.622008, 0.166667; */
-  /* '<S2>:1:22' 0.122008, 0.455342; */
-  /* '<S2>:1:23' 0.455342, 0.455342; */
-  /* '<S2>:1:24' 0.122008, -0.122008; */
-  /* '<S2>:1:25' 0.455342, -0.122008; */
-  /* '<S2>:1:26' -0.044658, 0.166667; */
-  /* '<S2>:1:27' 0.288675, 0.166667; */
-  /* '<S2>:1:28' -0.288675, 0.166667; */
-  /* '<S2>:1:29' 0.044658, 0.166667; */
-  /* '<S2>:1:30' -0.455342, 0.455342; */
-  /* '<S2>:1:31' -0.122008, 0.455342; */
-  /* '<S2>:1:32' -0.455342, -0.122008; */
-  /* '<S2>:1:33' -0.122008, -0.122008; */
-  /* '<S2>:1:34' -0.622008, 0.166667; */
-  /* '<S2>:1:35' -0.288675, 0.166667; */
-  /* '<S2>:1:36' 0.000000, 0.333333; */
-  /* '<S2>:1:37' 0.333333, 0.333333; */
-  /* '<S2>:1:38' -0.166667, 0.622008; */
-  /* '<S2>:1:39' 0.166667, 0.622008; */
-  /* '<S2>:1:40' -0.166667, 0.044658; */
-  /* '<S2>:1:41' 0.166667, 0.044658; */
-  /* '<S2>:1:42' -0.333333, 0.333333; */
-  /* '<S2>:1:43' 0.000000, 0.333333; */
-  /* '<S2>:1:44' -0.000000, -0.333333; */
-  /* '<S2>:1:45' 0.333333, -0.333333; */
-  /* '<S2>:1:46' -0.166667, -0.044658; */
-  /* '<S2>:1:47' 0.166667, -0.044658; */
-  /* '<S2>:1:48' -0.166667, -0.622008; */
-  /* '<S2>:1:49' 0.166667, -0.622008; */
-  /* '<S2>:1:50' -0.333333, -0.333333; */
-  /* '<S2>:1:51' -0.000000, -0.333333; */
-  /* '<S2>:1:52' 0.288675, -0.166667; */
-  /* '<S2>:1:53' 0.622008, -0.166667; */
-  /* '<S2>:1:54' 0.122008, 0.122008; */
-  /* '<S2>:1:55' 0.455342, 0.122008; */
-  /* '<S2>:1:56' 0.122008, -0.455342; */
-  /* '<S2>:1:57' 0.455342, -0.455342; */
-  /* '<S2>:1:58' -0.044658, -0.166667; */
-  /* '<S2>:1:59' 0.288675, -0.166667; */
-  /* '<S2>:1:60' -0.288675, -0.166667; */
-  /* '<S2>:1:61' 0.044658, -0.166667; */
-  /* '<S2>:1:62' -0.455342, 0.122008; */
-  /* '<S2>:1:63' -0.122008, 0.122008; */
-  /* '<S2>:1:64' -0.455342, -0.455342; */
-  /* '<S2>:1:65' -0.122008, -0.455342; */
-  /* '<S2>:1:66' -0.622008, -0.166667; */
-  /* '<S2>:1:67' -0.288675, -0.166667; */
-  /* '<S2>:1:68' -0.000000, -0.000000; */
-  /* '<S2>:1:69' 0.333333, -0.000000; */
-  /* '<S2>:1:70' -0.166667, 0.288675; */
-  /* '<S2>:1:71' 0.166667, 0.288675; */
-  /* '<S2>:1:72' -0.166667, -0.288675; */
-  /* '<S2>:1:73' 0.166667, -0.288675; */
-  /* '<S2>:1:74' -0.333333, 0.000000]); */
-  /* 0.0,0.0; */
-  /*  0.0, 0.0 */
-  /* '<S2>:1:77' v_X_Y_pu = single([% 0.0, 0.0; */
-  /* '<S2>:1:78' 0.333333,0; */
-  /* '<S2>:1:79' -0.166667,-0.288675; */
-  /* '<S2>:1:80' 0.166667,-0.288675; */
-  /* '<S2>:1:81' -0.166667,0.288675; */
-  /* '<S2>:1:82' 0.166667,0.288675; */
-  /* '<S2>:1:83' -0.333333,0; */
-  /* '<S2>:1:84' 0,0; */
-  /* '<S2>:1:85' -0.288675,0.166667; */
-  /* '<S2>:1:86' 0.0446580,0.166667; */
-  /* '<S2>:1:87' -0.455342,-0.122008; */
-  /* '<S2>:1:88' -0.122008,-0.122008; */
-  /* '<S2>:1:89' -0.455342,0.455342; */
-  /* '<S2>:1:90' -0.122008,0.455342; */
-  /* '<S2>:1:91' -0.622008,0.166667; */
-  /* '<S2>:1:92' -0.288675,0.166667; */
-  /* '<S2>:1:93' 0.288675,0.166667; */
-  /* '<S2>:1:94' 0.622008,0.166667; */
-  /* '<S2>:1:95' 0.122008,-0.122008; */
-  /* '<S2>:1:96' 0.455342,-0.122008; */
-  /* '<S2>:1:97' 0.122008,0.455342; */
-  /* '<S2>:1:98' 0.455342,0.455342; */
-  /* '<S2>:1:99' -0.0446580,0.166667; */
-  /* '<S2>:1:100' 0.288675,0.166667; */
-  /* '<S2>:1:101' 0,0.333333; */
-  /* '<S2>:1:102' 0.333333,0.333333; */
-  /* '<S2>:1:103' -0.166667,0.0446580; */
-  /* '<S2>:1:104' 0.166667,0.0446580; */
-  /* '<S2>:1:105' -0.166667,0.622008; */
-  /* '<S2>:1:106' 0.166667,0.622008; */
-  /* '<S2>:1:107' -0.333333,0.333333; */
-  /* '<S2>:1:108' 0,0.333333;0,-0.333333; */
-  /* '<S2>:1:109' 0.333333,-0.333333; */
-  /* '<S2>:1:110' -0.166667,-0.622008; */
-  /* '<S2>:1:111' 0.166667,-0.622008; */
-  /* '<S2>:1:112' -0.166667,-0.0446580; */
-  /* '<S2>:1:113' 0.166667,-0.0446580; */
-  /* '<S2>:1:114' -0.333333,-0.333333; */
-  /* '<S2>:1:115' 0,-0.333333; */
-  /* '<S2>:1:116' -0.288675,-0.166667; */
-  /* '<S2>:1:117' 0.0446580,-0.166667; */
-  /* '<S2>:1:118' -0.455342,-0.455342; */
-  /* '<S2>:1:119' -0.122008,-0.455342; */
-  /* '<S2>:1:120' -0.455342,0.122008; */
-  /* '<S2>:1:121' -0.122008,0.122008; */
-  /* '<S2>:1:122' -0.622008,-0.166667; */
-  /* '<S2>:1:123' -0.288675,-0.166667; */
-  /* '<S2>:1:124' 0.288675,-0.166667; */
-  /* '<S2>:1:125' 0.622008,-0.166667; */
-  /* '<S2>:1:126' 0.122008,-0.455342; */
-  /* '<S2>:1:127' 0.455342,-0.455342; */
-  /* '<S2>:1:128' 0.122008,0.122008; */
-  /* '<S2>:1:129' 0.455342,0.122008; */
-  /* '<S2>:1:130' -0.0446580,-0.166667; */
-  /* '<S2>:1:131' 0.288675,-0.166667; */
-  /* '<S2>:1:132' 0,0;0.333333,0; */
-  /* '<S2>:1:133' -0.166667,-0.288675; */
-  /* '<S2>:1:134' 0.166667,-0.288675; */
-  /* '<S2>:1:135' -0.166667,0.288675; */
-  /* '<S2>:1:136' 0.166667,0.288675; */
-  /* '<S2>:1:137' -0.333333,0]); */
-  /*  0.0, 0.0; */
-  /*  0.0, 0.0 */
-  /* '<S2>:1:141' vd_1_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_1(idx_opt),1) *  cos_angle + v_alpha_beta_pu(act_sw_1(idx_opt),2) * sin_angle); */
-  /* '<S2>:1:142' vq_1_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_1(idx_opt),1) * -sin_angle + v_alpha_beta_pu(act_sw_1(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:143' vx_1_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_1(idx_opt),1) * cos_angle + v_X_Y_pu(act_sw_1(idx_opt),2) * -sin_angle); */
-  /* '<S2>:1:144' vy_1_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_1(idx_opt),1) * sin_angle + v_X_Y_pu(act_sw_1(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:146' vd_2_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_2(idx_opt),1) *  cos_angle + v_alpha_beta_pu(act_sw_2(idx_opt),2) * sin_angle); */
-  /* '<S2>:1:147' vq_2_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_2(idx_opt),1) * -sin_angle + v_alpha_beta_pu(act_sw_2(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:148' vx_2_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_2(idx_opt),1) * cos_angle + v_X_Y_pu(act_sw_2(idx_opt),2) * -sin_angle); */
-  /* '<S2>:1:149' vy_2_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_2(idx_opt),1) * sin_angle + v_X_Y_pu(act_sw_2(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:151' vd_3_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_3(idx_opt),1) *  cos_angle + v_alpha_beta_pu(act_sw_3(idx_opt),2) * sin_angle); */
-  /* '<S2>:1:152' vq_3_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_3(idx_opt),1) * -sin_angle + v_alpha_beta_pu(act_sw_3(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:153' vx_3_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_3(idx_opt),1) * cos_angle + v_X_Y_pu(act_sw_3(idx_opt),2) * -sin_angle); */
-  /* '<S2>:1:154' vy_3_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_3(idx_opt),1) * sin_angle + v_X_Y_pu(act_sw_3(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:156' vd_4_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_4(idx_opt),1) *  cos_angle + v_alpha_beta_pu(act_sw_4(idx_opt),2) * sin_angle); */
-  /* '<S2>:1:157' vq_4_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_4(idx_opt),1) * -sin_angle + v_alpha_beta_pu(act_sw_4(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:158' vx_4_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_4(idx_opt),1) * cos_angle + v_X_Y_pu(act_sw_4(idx_opt),2) * -sin_angle); */
-  /* '<S2>:1:159' vy_4_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_4(idx_opt),1) * sin_angle + v_X_Y_pu(act_sw_4(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:161' vd_5_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_5(idx_opt),1) *  cos_angle + v_alpha_beta_pu(act_sw_5(idx_opt),2) * sin_angle); */
-  /* '<S2>:1:162' vq_5_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_5(idx_opt),1) * -sin_angle + v_alpha_beta_pu(act_sw_5(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:163' vx_5_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_5(idx_opt),1) * cos_angle + v_X_Y_pu(act_sw_5(idx_opt),2) * -sin_angle); */
-  /* '<S2>:1:164' vy_5_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_5(idx_opt),1) * sin_angle + v_X_Y_pu(act_sw_5(idx_opt),2) * cos_angle); */
-  /* '<S2>:1:166' v_1_idx_pu = [vd_1_idx_pu; vq_1_idx_pu; vx_1_idx_pu; vy_1_idx_pu]; */
-  rtDW->iy = rtDW->act_sw_1[rtDW->sector_ref - 1];
-  rtDW->x = v_alpha_beta_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_alpha_beta_pu[rtDW->iy + 61];
-  rtDW->v_1_idx_pu[0] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_1_idx_pu[1] = (rtDW->x * -rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->x = v_X_Y_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_X_Y_pu[rtDW->iy + 61];
-  rtDW->v_1_idx_pu[2] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    -rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_1_idx_pu[3] = (rtDW->x * rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-
-  /* '<S2>:1:167' v_2_idx_pu = [vd_2_idx_pu; vq_2_idx_pu; vx_2_idx_pu; vy_2_idx_pu]; */
-  rtDW->iy = rtDW->act_sw_2[rtDW->sector_ref - 1];
-  rtDW->x = v_alpha_beta_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_alpha_beta_pu[rtDW->iy + 61];
-  rtDW->v_2_idx_pu[0] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_2_idx_pu[1] = (rtDW->x * -rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->x = v_X_Y_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_X_Y_pu[rtDW->iy + 61];
-  rtDW->v_2_idx_pu[2] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    -rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_2_idx_pu[3] = (rtDW->x * rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-
-  /* '<S2>:1:168' v_3_idx_pu = [vd_3_idx_pu; vq_3_idx_pu; vx_3_idx_pu; vy_3_idx_pu]; */
-  rtDW->iy = rtDW->act_sw_3[rtDW->sector_ref - 1];
-  rtDW->x = v_alpha_beta_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_alpha_beta_pu[rtDW->iy + 61];
-  rtDW->v_3_idx_pu[0] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_3_idx_pu[1] = (rtDW->x * -rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->x = v_X_Y_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_X_Y_pu[rtDW->iy + 61];
-  rtDW->v_3_idx_pu[2] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    -rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_3_idx_pu[3] = (rtDW->x * rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-
-  /* '<S2>:1:169' v_4_idx_pu = [vd_4_idx_pu; vq_4_idx_pu; vx_4_idx_pu; vy_4_idx_pu]; */
-  rtDW->iy = rtDW->act_sw_4[rtDW->sector_ref - 1];
-  rtDW->x = v_alpha_beta_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_alpha_beta_pu[rtDW->iy + 61];
-  rtDW->v_4_idx_pu[0] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_4_idx_pu[1] = (rtDW->x * -rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->x = v_X_Y_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_X_Y_pu[rtDW->iy + 61];
-  rtDW->v_4_idx_pu[2] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    -rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_4_idx_pu[3] = (rtDW->x * rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-
-  /* '<S2>:1:170' v_5_idx_pu = [vd_5_idx_pu; vq_5_idx_pu; vx_5_idx_pu; vy_5_idx_pu]; */
-  rtDW->iy = rtDW->act_sw_5[rtDW->sector_ref - 1];
-  rtDW->x = v_alpha_beta_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_alpha_beta_pu[rtDW->iy + 61];
-  rtDW->v_5_idx_pu[0] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_5_idx_pu[1] = (rtDW->x * -rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->x = v_X_Y_pu[rtDW->iy - 1];
-  rtDW->w6theta_el = v_X_Y_pu[rtDW->iy + 61];
-  rtDW->v_5_idx_pu[2] = (rtDW->x * rtDW->SinCos1_o2 + rtDW->w6theta_el *
-    -rtDW->SinCos1_o1) * rtU->v_DC_pu;
-  rtDW->v_5_idx_pu[3] = (rtDW->x * rtDW->SinCos1_o1 + rtDW->w6theta_el *
-    rtDW->SinCos1_o2) * rtU->v_DC_pu;
-
-  /* MATLAB Function: '<S1>/state_space_mdl' incorporates:
-   *  Inport: '<Root>/HC_off_on'
+  /* MATLAB Function: '<S1>/Observer' incorporates:
    *  Inport: '<Root>/Ld_over_LB'
    *  Inport: '<Root>/Lq_over_LB'
    *  Inport: '<Root>/Lx_over_LB'
@@ -2015,542 +1635,546 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/Ts_times_ZB_over_Lq'
    *  Inport: '<Root>/Ts_times_ZB_over_Lx'
    *  Inport: '<Root>/Ts_times_ZB_over_Ly'
-   *  Inport: '<Root>/i_dq_pu'
-   *  Inport: '<Root>/i_xy_pu'
    *  Inport: '<Root>/omega_el_pu'
-   *  Inport: '<Root>/phiPM_h'
-   *  Inport: '<Root>/psiPM_h_pu'
    *  Inport: '<Root>/psi_pm_over_psiB'
-   *  Inport: '<Root>/theta_el'
+   *  MATLAB Function: '<S1>/state_space_mdl'
    */
-  /* MATLAB Function 'uz_codegen/state_space_mdl': '<S8>:1' */
-  /* '<S8>:1:3' A = [ -Ts_times_ZB_over_Ld*Rs_over_ZB            Ts_times_ZB_over_Ld*Lq_over_LB*w_e_pu   0                                      0                               0; */
-  /* '<S8>:1:4'       -Ts_times_ZB_over_Lq*Ld_over_LB*w_e_pu    -Ts_times_ZB_over_Lq*Rs_over_ZB          0                                      0                               -Ts_times_ZB_over_Lq*psi_pm_over_psiB; */
-  /* '<S8>:1:5'       0                                          0                                       -Ts_times_ZB_over_Lx*Rs_over_ZB        -Ly_over_LB*w_e_pu              0; */
-  /* '<S8>:1:6'       0                                          0                                        Lx_over_LB*w_e_pu                     -Ts_times_ZB_over_Ly*Rs_over_ZB 0]; */
-  rtDW->A[0] = -rtU->Ts_times_ZB_over_Ld * rtU->Rs_over_ZB;
-  rtDW->A[4] = rtU->Ts_times_ZB_over_Ld * rtU->Lq_over_LB * rtU->omega_el_pu;
-  rtDW->A[8] = 0.0F;
-  rtDW->A[12] = 0.0F;
+  /* MATLAB Function 'uz_codegen/MATLAB Function': '<S2>:1' */
+  /* '<S2>:1:4' R = single([kalman_R 0 0 0; 0 kalman_R 0 0; 0 0 kalman_R 0; 0 0 0 kalman_R]); */
+  /* '<S2>:1:5' Q = single([kalman_Q1 0 0 0 0 0 0 0; 0 kalman_Q1 0 0 0 0 0 0; 0 0 kalman_Q1 0 0 0 0 0; 0 0 0 kalman_Q1 0 0 0 0; 0 0 0 0 kalman_Q2 0 0 0; 0 0 0 0 0 kalman_Q2 0 0; 0 0 0 0 0 0 kalman_Q2 0; 0 0 0 0 0 0 0 kalman_Q2]); */
+  /* MATLAB Function 'uz_codegen/Observer': '<S3>:1' */
+  /* '<S3>:1:3' i_dq_obs = single([0;0]); */
+  /* '<S3>:1:4' i_xy_obs = single([0;0]); */
+  /* '<S3>:1:5' e_dq_obs = single([0;0]); */
+  /* '<S3>:1:6' e_xy_obs = single([0;0]); */
+  /*  system model */
+  /* '<S3>:1:9' A = [ 1-Ts_times_ZB_over_Ld*Rs_over_ZB            Ts_times_ZB_over_Ld*Lq_over_LB*w_e_pu   0                                      0                                1 0 0 0; */
+  /* '<S3>:1:10'       -Ts_times_ZB_over_Lq*Ld_over_LB*w_e_pu     1-Ts_times_ZB_over_Lq*Rs_over_ZB          0                                      0                               0 1 0 0; */
+  /* '<S3>:1:11'       0                                          0                                        1-Ts_times_ZB_over_Lx*Rs_over_ZB        -Ly_over_LB*w_e_pu              0 0 1 0; */
+  /* '<S3>:1:12'       0                                          0                                        Lx_over_LB*w_e_pu                      1-Ts_times_ZB_over_Ly*Rs_over_ZB 0 0 0 1; */
+  /* '<S3>:1:13'       0 0 0 0 1 0 0 0; */
+  /* '<S3>:1:14'       0 0 0 0 0 1 0 0; */
+  /* '<S3>:1:15'       0 0 0 0 0 0 1 0; */
+  /* '<S3>:1:16'       0 0 0 0 0 0 0 1]; */
+  rtDW->A[0] = 1.0F - rtU->Ts_times_ZB_over_Ld * rtU->Rs_over_ZB;
+  rtDW->x0_idx_0 = rtU->Ts_times_ZB_over_Ld * rtU->Lq_over_LB * rtU->omega_el_pu;
+  rtDW->A[8] = rtDW->x0_idx_0;
   rtDW->A[16] = 0.0F;
-  rtDW->A[1] = -rtU->Ts_times_ZB_over_Lq * rtU->Ld_over_LB * rtU->omega_el_pu;
-  rtDW->A[5] = -rtU->Ts_times_ZB_over_Lq * rtU->Rs_over_ZB;
-  rtDW->A[9] = 0.0F;
-  rtDW->A[13] = 0.0F;
-  rtDW->A[17] = -rtU->Ts_times_ZB_over_Lq * rtU->psi_pm_over_psiB;
+  rtDW->A[24] = 0.0F;
+  rtDW->A[32] = 1.0F;
+  rtDW->A[40] = 0.0F;
+  rtDW->A[48] = 0.0F;
+  rtDW->A[56] = 0.0F;
+  rtDW->x0_idx_1 = -rtU->Ts_times_ZB_over_Lq * rtU->Ld_over_LB *
+    rtU->omega_el_pu;
+  rtDW->A[1] = rtDW->x0_idx_1;
+  rtDW->A[9] = 1.0F - rtU->Ts_times_ZB_over_Lq * rtU->Rs_over_ZB;
+  rtDW->A[17] = 0.0F;
+  rtDW->A[25] = 0.0F;
+  rtDW->A[33] = 0.0F;
+  rtDW->A[41] = 1.0F;
+  rtDW->A[49] = 0.0F;
+  rtDW->A[57] = 0.0F;
   rtDW->A[2] = 0.0F;
-  rtDW->A[6] = 0.0F;
-  rtDW->A[10] = -rtU->Ts_times_ZB_over_Lx * rtU->Rs_over_ZB;
-  rtDW->A[14] = -rtU->Ly_over_LB * rtU->omega_el_pu;
-  rtDW->A[18] = 0.0F;
+  rtDW->A[10] = 0.0F;
+  rtDW->A[18] = 1.0F - rtU->Ts_times_ZB_over_Lx * rtU->Rs_over_ZB;
+  rtDW->x0_idx_2 = -rtU->Ly_over_LB * rtU->omega_el_pu;
+  rtDW->A[26] = rtDW->x0_idx_2;
+  rtDW->A[34] = 0.0F;
+  rtDW->A[42] = 0.0F;
+  rtDW->A[50] = 1.0F;
+  rtDW->A[58] = 0.0F;
   rtDW->A[3] = 0.0F;
-  rtDW->A[7] = 0.0F;
-  rtDW->A[11] = rtU->Lx_over_LB * rtU->omega_el_pu;
-  rtDW->A[15] = -rtU->Ts_times_ZB_over_Ly * rtU->Rs_over_ZB;
-  rtDW->A[19] = 0.0F;
-
-  /* '<S8>:1:8' psiPM5 = psiPM_h_pu(1); */
-  /* '<S8>:1:9' psiPM7 = psiPM_h_pu(2); */
-  /* '<S8>:1:11' phi5 = phiPM_h(1); */
-  /* '<S8>:1:12' phi7 = phiPM_h(2); */
-  /*  w3theta_el = single(3*theta_el); */
-  /* '<S8>:1:15' w6theta_el = single(6*theta_el); */
-  rtDW->w6theta_el = 6.0F * rtU->theta_el;
-
-  /*  w9theta_el = single(9*theta_el); */
-  /*  w12theta_el = single(12*theta_el); */
-  /* '<S8>:1:19' B = [Ts_times_ZB_over_Ld    0                       0                       0                       0; */
-  /* '<S8>:1:20'      0                      Ts_times_ZB_over_Lq     0                       0                       0; */
-  /* '<S8>:1:21'      0                      0                       Ts_times_ZB_over_Lx     0                       0; */
-  /* '<S8>:1:22'      0                      0                       0                       Ts_times_ZB_over_Ly     0]; */
-  rtDW->B_m[0] = rtU->Ts_times_ZB_over_Ld;
-  rtDW->B_m[4] = 0.0F;
-  rtDW->B_m[8] = 0.0F;
-  rtDW->B_m[12] = 0.0F;
-  rtDW->B_m[16] = 0.0F;
-  rtDW->B_m[1] = 0.0F;
-  rtDW->B_m[5] = rtU->Ts_times_ZB_over_Lq;
-  rtDW->B_m[9] = 0.0F;
-  rtDW->B_m[13] = 0.0F;
-  rtDW->B_m[17] = 0.0F;
-  rtDW->B_m[2] = 0.0F;
-  rtDW->B_m[6] = 0.0F;
-  rtDW->B_m[10] = rtU->Ts_times_ZB_over_Lx;
-  rtDW->B_m[14] = 0.0F;
-  rtDW->B_m[18] = 0.0F;
-  rtDW->B_m[3] = 0.0F;
-  rtDW->B_m[7] = 0.0F;
-  rtDW->B_m[11] = 0.0F;
-  rtDW->B_m[15] = rtU->Ts_times_ZB_over_Ly;
-  rtDW->B_m[19] = 0.0F;
-
-  /* '<S8>:1:24' C = [1   0   0   0; */
-  /* '<S8>:1:25'      0   1   0   0; */
-  /* '<S8>:1:26'      0   0   1   0; */
-  /* '<S8>:1:27'      0   0   0   1]; */
-  /* '<S8>:1:29' E = [    0; */
-  /* '<S8>:1:30'          0; */
-  /* '<S8>:1:31'          -w_e_pu*(psiPM5*sin(w6theta_el+phi5) - psiPM7*sin(w6theta_el+phi7)-psiPM5*6*sin(w6theta_el+phi5) - psiPM7*6*sin(w6theta_el+phi7)); */
-  /* '<S8>:1:32'          -w_e_pu*(psiPM5*cos(w6theta_el+phi5) + psiPM7*cos(w6theta_el+phi7) + psiPM5*6*cos(w6theta_el+phi5) - psiPM7*6*cos(w6theta_el+phi7))]; */
-  rtDW->x = rtDW->w6theta_el + rtU->phiPM_h[0];
-  rtDW->SinCos1_o1 = sinf(rtDW->x);
-  rtDW->w6theta_el += rtU->phiPM_h[1];
-  rtDW->SinCos1_o2 = sinf(rtDW->w6theta_el);
-  rtDW->x = cosf(rtDW->x);
-  rtDW->w6theta_el = cosf(rtDW->w6theta_el);
-  rtDW->E[0] = 0.0F;
-  rtDW->E[1] = 0.0F;
-  rtDW->E[2] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos1_o1 - rtU->psiPM_h_pu[1] *
-                  rtDW->SinCos1_o2) - rtU->psiPM_h_pu[0] * 6.0F *
-                 rtDW->SinCos1_o1) - rtU->psiPM_h_pu[1] * 6.0F *
-                rtDW->SinCos1_o2) * -rtU->omega_el_pu;
-  rtDW->E[3] = (((rtU->psiPM_h_pu[0] * rtDW->x + rtU->psiPM_h_pu[1] *
-                  rtDW->w6theta_el) + rtU->psiPM_h_pu[0] * 6.0F * rtDW->x) -
-                rtU->psiPM_h_pu[1] * 6.0F * rtDW->w6theta_el) *
-    -rtU->omega_el_pu;
-
-  /* '<S8>:1:34' x0 = [id_pu; iq_pu; ix_pu; iy_pu; w_e_pu]; */
-  rtDW->x0[0] = rtU->i_dq_pu[0];
-  rtDW->x0[1] = rtU->i_dq_pu[1];
-  rtDW->x0[2] = rtU->i_xy_pu[0];
-  rtDW->x0[3] = rtU->i_xy_pu[1];
-  rtDW->x0[4] = rtU->omega_el_pu;
-
-  /* '<S8>:1:36' u0 = [0;0;0;0;0]; */
-  /*  zero voltage applied */
-  /* '<S8>:1:37' u1 = [v_1_pu(1); v_1_pu(2); v_1_pu(3); v_1_pu(4); 0]; */
-  /*  first active vector */
-  /* '<S8>:1:38' u2 = [v_2_pu(1); v_2_pu(2); v_2_pu(3); v_2_pu(4); 0]; */
-  /*  second active vector */
-  /* '<S8>:1:39' u3 = [v_3_pu(1); v_3_pu(2); v_3_pu(3); v_3_pu(4); 0]; */
-  /*  third active vector */
-  /* '<S8>:1:40' u4 = [v_4_pu(1); v_4_pu(2); v_4_pu(3); v_4_pu(4); 0]; */
-  /*  fourth active vector */
-  /* '<S8>:1:41' u5 = [v_5_pu(1); v_5_pu(2); v_5_pu(3); v_5_pu(4); 0]; */
-  /*  fifth active vector */
-  /*  calculate the gradients */
-  /*  .*2 because we calculate current evolution only for half of the */
-  /*  period and mirror it???  */
-  /* '<S8>:1:46' switch HC_off_on */
-  if (!rtU->HC_off_on) {
-    rtDW->iy = 0;
-  } else if (rtU->HC_off_on) {
-    rtDW->iy = 1;
-  } else {
-    rtDW->iy = -1;
+  rtDW->A[11] = 0.0F;
+  rtDW->x0_idx_3 = rtU->Lx_over_LB * rtU->omega_el_pu;
+  rtDW->A[19] = rtDW->x0_idx_3;
+  rtDW->A[27] = 1.0F - rtU->Ts_times_ZB_over_Ly * rtU->Rs_over_ZB;
+  rtDW->A[35] = 0.0F;
+  rtDW->A[43] = 0.0F;
+  rtDW->A[51] = 0.0F;
+  rtDW->A[59] = 1.0F;
+  for (rtDW->ijA = 0; rtDW->ijA < 8; rtDW->ijA++) {
+    rtDW->sector_ref = rtDW->ijA << 3;
+    rtDW->A[rtDW->sector_ref + 4] = h[rtDW->ijA];
+    rtDW->A[rtDW->sector_ref + 5] = g[rtDW->ijA];
+    rtDW->A[rtDW->sector_ref + 6] = f[rtDW->ijA];
+    rtDW->A[rtDW->sector_ref + 7] = e[rtDW->ijA];
   }
 
-  switch (rtDW->iy) {
-   case 0:
-    /* '<S8>:1:47' case false */
-    /* '<S8>:1:48' m0 = C*(A*x0+B*u0).*2; */
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->E_c[rtDW->iy] += rtDW->A[(rtDW->b_j << 2) + rtDW->iy] * rtDW->
-          x0[rtDW->b_j];
+  /* '<S3>:1:18' B = [Ts_times_ZB_over_Ld    0                       0                       0                       ; */
+  /* '<S3>:1:19'      0                      Ts_times_ZB_over_Lq     0                       0                       ; */
+  /* '<S3>:1:20'      0                      0                       Ts_times_ZB_over_Lx     0                       ; */
+  /* '<S3>:1:21'      0                      0                       0                       Ts_times_ZB_over_Ly     ; */
+  /* '<S3>:1:22'      0 0 0 0; */
+  /* '<S3>:1:23'      0 0 0 0; */
+  /* '<S3>:1:24'      0 0 0 0; */
+  /* '<S3>:1:25'      0 0 0 0]; */
+  /* '<S3>:1:27' C = [1   0   0   0   0   0   0   0; */
+  /* '<S3>:1:28'      0   1   0   0   0   0   0   0; */
+  /* '<S3>:1:29'      0   0   1   0   0   0   0   0; */
+  /* '<S3>:1:30'      0   0   0   1   0   0   0   0]; */
+  /* '<S3>:1:32' D = [0; -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB; 0; 0; 0; 0; 0; 0]; */
+  /*  parameters for kalman */
+  /* '<S3>:1:35' u = [v_d; v_q; v_x; v_y]; */
+  /* '<S3>:1:39' if isempty(x_e) */
+  /* '<S3>:1:44' x = x_e; */
+  /* '<S3>:1:46' x_p = A * x + B * u + D; */
+  rtDW->b_A_tmp[0] = rtU->Ts_times_ZB_over_Ld;
+  rtDW->b_A_tmp[8] = 0.0F;
+  rtDW->b_A_tmp[16] = 0.0F;
+  rtDW->b_A_tmp[24] = 0.0F;
+  rtDW->b_A_tmp[1] = 0.0F;
+  rtDW->b_A_tmp[9] = rtU->Ts_times_ZB_over_Lq;
+  rtDW->b_A_tmp[17] = 0.0F;
+  rtDW->b_A_tmp[25] = 0.0F;
+  rtDW->b_A_tmp[2] = 0.0F;
+  rtDW->b_A_tmp[10] = 0.0F;
+  rtDW->b_A_tmp[18] = rtU->Ts_times_ZB_over_Lx;
+  rtDW->b_A_tmp[26] = 0.0F;
+  rtDW->b_A_tmp[3] = 0.0F;
+  rtDW->b_A_tmp[11] = 0.0F;
+  rtDW->b_A_tmp[19] = 0.0F;
+  rtDW->b_A_tmp[27] = rtU->Ts_times_ZB_over_Ly;
+  rtDW->b_A_tmp[4] = 0.0F;
+  rtDW->b_A_tmp[5] = 0.0F;
+  rtDW->b_A_tmp[6] = 0.0F;
+  rtDW->b_A_tmp[7] = 0.0F;
+  rtDW->b_A_tmp[12] = 0.0F;
+  rtDW->b_A_tmp[13] = 0.0F;
+  rtDW->b_A_tmp[14] = 0.0F;
+  rtDW->b_A_tmp[15] = 0.0F;
+  rtDW->b_A_tmp[20] = 0.0F;
+  rtDW->b_A_tmp[21] = 0.0F;
+  rtDW->b_A_tmp[22] = 0.0F;
+  rtDW->b_A_tmp[23] = 0.0F;
+  rtDW->b_A_tmp[28] = 0.0F;
+  rtDW->b_A_tmp[29] = 0.0F;
+  rtDW->b_A_tmp[30] = 0.0F;
+  rtDW->b_A_tmp[31] = 0.0F;
+  rtDW->rtb_i_dq_obs_idx_0 = rtDW->v_t0[0];
+  rtDW->rtb_v_1_idx_pu_idx_1 = rtDW->v_t0[1];
+  rtDW->q = rtDW->v_t0[2];
+  rtDW->rtb_v_1_idx_pu_idx_3 = rtDW->v_t0[3];
+  rtDW->fv1[0] = 0.0F;
+  rtDW->A_me = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
+    rtU->psi_pm_over_psiB;
+  rtDW->fv1[1] = rtDW->A_me;
+  rtDW->fv1[2] = 0.0F;
+  rtDW->fv1[3] = 0.0F;
+  rtDW->fv1[4] = 0.0F;
+  rtDW->fv1[5] = 0.0F;
+  rtDW->fv1[6] = 0.0F;
+  rtDW->fv1[7] = 0.0F;
+
+  /* '<S3>:1:48' P_p = A*P_e*A'+Q; */
+  for (rtDW->ijA = 0; rtDW->ijA < 8; rtDW->ijA++) {
+    rtDW->A_b[rtDW->ijA] = 0.0F;
+    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+      rtDW->i = rtDW->c << 3;
+      rtDW->sector_ref = rtDW->i + rtDW->ijA;
+      rtDW->A_m[rtDW->sector_ref] = 0.0F;
+      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
+        rtDW->A_m[rtDW->sector_ref] += rtDW->A[(rtDW->b_ix << 3) + rtDW->ijA] *
+          rtDW->P_e[rtDW->i + rtDW->b_ix];
       }
 
-      rtDW->E_cv[rtDW->iy] = rtDW->E_c[rtDW->iy];
+      rtDW->A_c[rtDW->sector_ref] = 0.0F;
+      rtDW->A_b[rtDW->ijA] += rtDW->A[rtDW->sector_ref] * rtDW->x_e[rtDW->c];
     }
 
-    /* '<S8>:1:49' m1 = C*(A*x0+B*u1).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_1_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_1_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_1_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_1_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->m6[rtDW->iy] = ((real32_T)b[rtDW->iy + 12] * rtDW->E_cv[3] +
-                            ((real32_T)b[rtDW->iy + 8] * rtDW->E_cv[2] +
-        ((real32_T)b[rtDW->iy + 4] * rtDW->E_cv[1] + (real32_T)b[rtDW->iy] *
-         rtDW->E_cv[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
+    rtDW->x_p[rtDW->ijA] = (rtDW->A_b[rtDW->ijA] + (rtDW->b_A_tmp[rtDW->ijA + 24]
+      * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->b_A_tmp[rtDW->ijA + 16] * rtDW->q +
+      (rtDW->b_A_tmp[rtDW->ijA + 8] * rtDW->rtb_v_1_idx_pu_idx_1 + rtDW->
+       b_A_tmp[rtDW->ijA] * rtDW->rtb_i_dq_obs_idx_0)))) + rtDW->fv1[rtDW->ijA];
+    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
+        rtDW->sector_ref = rtDW->b_ix << 3;
+        rtDW->i = (rtDW->c << 3) + rtDW->ijA;
+        rtDW->A_c[rtDW->i] += rtDW->A_m[rtDW->sector_ref + rtDW->ijA] * rtDW->
+          A[rtDW->sector_ref + rtDW->c];
       }
-
-      rtDW->A_p[rtDW->iy] = rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy];
     }
+  }
 
-    /* '<S8>:1:50' m2 = C*(A*x0+B*u2).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_2_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_2_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_2_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_2_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->m1[rtDW->iy] = ((real32_T)b[rtDW->iy + 12] * rtDW->A_p[3] +
-                            ((real32_T)b[rtDW->iy + 8] * rtDW->A_p[2] +
-        ((real32_T)b[rtDW->iy + 4] * rtDW->A_p[1] + (real32_T)b[rtDW->iy] *
-         rtDW->A_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
+  /* MATLAB Function: '<S1>/MATLAB Function' incorporates:
+   *  Inport: '<Root>/kalman_Q1'
+   *  Inport: '<Root>/kalman_Q2'
+   */
+  rtDW->A_m[0] = rtU->kalman_Q1;
+  rtDW->A_m[8] = 0.0F;
+  rtDW->A_m[16] = 0.0F;
+  rtDW->A_m[24] = 0.0F;
+  rtDW->A_m[32] = 0.0F;
+  rtDW->A_m[40] = 0.0F;
+  rtDW->A_m[48] = 0.0F;
+  rtDW->A_m[56] = 0.0F;
+  rtDW->A_m[1] = 0.0F;
+  rtDW->A_m[9] = rtU->kalman_Q1;
+  rtDW->A_m[17] = 0.0F;
+  rtDW->A_m[25] = 0.0F;
+  rtDW->A_m[33] = 0.0F;
+  rtDW->A_m[41] = 0.0F;
+  rtDW->A_m[49] = 0.0F;
+  rtDW->A_m[57] = 0.0F;
+  rtDW->A_m[2] = 0.0F;
+  rtDW->A_m[10] = 0.0F;
+  rtDW->A_m[18] = rtU->kalman_Q1;
+  rtDW->A_m[26] = 0.0F;
+  rtDW->A_m[34] = 0.0F;
+  rtDW->A_m[42] = 0.0F;
+  rtDW->A_m[50] = 0.0F;
+  rtDW->A_m[58] = 0.0F;
+  rtDW->A_m[3] = 0.0F;
+  rtDW->A_m[11] = 0.0F;
+  rtDW->A_m[19] = 0.0F;
+  rtDW->A_m[27] = rtU->kalman_Q1;
+  rtDW->A_m[35] = 0.0F;
+  rtDW->A_m[43] = 0.0F;
+  rtDW->A_m[51] = 0.0F;
+  rtDW->A_m[59] = 0.0F;
+  rtDW->A_m[4] = 0.0F;
+  rtDW->A_m[12] = 0.0F;
+  rtDW->A_m[20] = 0.0F;
+  rtDW->A_m[28] = 0.0F;
+  rtDW->A_m[36] = rtU->kalman_Q2;
+  rtDW->A_m[44] = 0.0F;
+  rtDW->A_m[52] = 0.0F;
+  rtDW->A_m[60] = 0.0F;
+  rtDW->A_m[5] = 0.0F;
+  rtDW->A_m[13] = 0.0F;
+  rtDW->A_m[21] = 0.0F;
+  rtDW->A_m[29] = 0.0F;
+  rtDW->A_m[37] = 0.0F;
+  rtDW->A_m[45] = rtU->kalman_Q2;
+  rtDW->A_m[53] = 0.0F;
+  rtDW->A_m[61] = 0.0F;
+  rtDW->A_m[6] = 0.0F;
+  rtDW->A_m[14] = 0.0F;
+  rtDW->A_m[22] = 0.0F;
+  rtDW->A_m[30] = 0.0F;
+  rtDW->A_m[38] = 0.0F;
+  rtDW->A_m[46] = 0.0F;
+  rtDW->A_m[54] = rtU->kalman_Q2;
+  rtDW->A_m[62] = 0.0F;
+  rtDW->A_m[7] = 0.0F;
+  rtDW->A_m[15] = 0.0F;
+  rtDW->A_m[23] = 0.0F;
+  rtDW->A_m[31] = 0.0F;
+  rtDW->A_m[39] = 0.0F;
+  rtDW->A_m[47] = 0.0F;
+  rtDW->A_m[55] = 0.0F;
+  rtDW->A_m[63] = rtU->kalman_Q2;
 
-      rtDW->E_cv[rtDW->iy] = rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy];
-    }
+  /* MATLAB Function: '<S1>/Observer' */
+  for (rtDW->ijA = 0; rtDW->ijA < 64; rtDW->ijA++) {
+    rtDW->A[rtDW->ijA] = rtDW->A_c[rtDW->ijA] + rtDW->A_m[rtDW->ijA];
+  }
 
-    /* '<S8>:1:51' m3 = C*(A*x0+B*u3).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_3_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_3_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_3_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_3_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_1_idx_pu[rtDW->iy] = ((real32_T)b[rtDW->iy + 12] * rtDW->E_cv[3] +
-        ((real32_T)b[rtDW->iy + 8] * rtDW->E_cv[2] + ((real32_T)b[rtDW->iy + 4] *
-        rtDW->E_cv[1] + (real32_T)b[rtDW->iy] * rtDW->E_cv[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
+  /* '<S3>:1:50' K = P_p*C'/(C*P_p*C'+R); */
+  for (rtDW->ijA = 0; rtDW->ijA < 32; rtDW->ijA++) {
+    rtDW->b_A_tmp_l[rtDW->ijA] = l[rtDW->ijA];
+    rtDW->b_A_tmp_d[rtDW->ijA] = m[rtDW->ijA];
+  }
 
-      rtDW->A_p[rtDW->iy] = rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy];
-    }
-
-    /* '<S8>:1:52' m4 = C*(A*x0+B*u4).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_4_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_4_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_4_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_4_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_2_idx_pu[rtDW->iy] = ((real32_T)b[rtDW->iy + 12] * rtDW->A_p[3] +
-        ((real32_T)b[rtDW->iy + 8] * rtDW->A_p[2] + ((real32_T)b[rtDW->iy + 4] *
-        rtDW->A_p[1] + (real32_T)b[rtDW->iy] * rtDW->A_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
-
-      rtDW->E_cv[rtDW->iy] = rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy];
-    }
-
-    /* '<S8>:1:53' m5 = C*(A*x0+B*u5).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_5_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_5_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_5_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_5_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_3_idx_pu[rtDW->iy] = ((real32_T)b[rtDW->iy + 12] * rtDW->E_cv[3] +
-        ((real32_T)b[rtDW->iy + 8] * rtDW->E_cv[2] + ((real32_T)b[rtDW->iy + 4] *
-        rtDW->E_cv[1] + (real32_T)b[rtDW->iy] * rtDW->E_cv[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
-
-      rtDW->A_p[rtDW->iy] = rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy];
-    }
-
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_4_idx_pu[rtDW->iy] = ((real32_T)b[rtDW->iy + 12] * rtDW->A_p[3] +
-        ((real32_T)b[rtDW->iy + 8] * rtDW->A_p[2] + ((real32_T)b[rtDW->iy + 4] *
-        rtDW->A_p[1] + (real32_T)b[rtDW->iy] * rtDW->A_p[0]))) * 2.0F;
-    }
-
-    /* '<S8>:1:54' m6 = m0; */
-    break;
-
-   case 1:
-    /* '<S8>:1:55' case true */
-    /* '<S8>:1:56' m0 = C*(A*x0+B*u0+E).*2; */
-    for (rtDW->iy = 0; rtDW->iy < 16; rtDW->iy++) {
-      rtDW->lam[rtDW->iy] = b[rtDW->iy];
-    }
-
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->E_c[rtDW->iy] += rtDW->A[(rtDW->b_j << 2) + rtDW->iy] * rtDW->
-          x0[rtDW->b_j];
-      }
-
-      rtDW->E_cv[rtDW->iy] = rtDW->E_c[rtDW->iy] + rtDW->E[rtDW->iy];
-    }
-
-    /* '<S8>:1:57' m1 = C*(A*x0+B*u1+E).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_1_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_1_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_1_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_1_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->m6[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_cv[3] +
-                            (rtDW->lam[rtDW->iy + 8] * rtDW->E_cv[2] +
-        (rtDW->lam[rtDW->iy + 4] * rtDW->E_cv[1] + rtDW->lam[rtDW->iy] *
-         rtDW->E_cv[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
-
-      rtDW->A_p[rtDW->iy] = (rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy]) +
-        rtDW->E[rtDW->iy];
-    }
-
-    /* '<S8>:1:58' m2 = C*(A*x0+B*u2+E).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_2_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_2_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_2_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_2_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->m1[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->A_p[3] + (rtDW->
-        lam[rtDW->iy + 8] * rtDW->A_p[2] + (rtDW->lam[rtDW->iy + 4] * rtDW->A_p
-        [1] + rtDW->lam[rtDW->iy] * rtDW->A_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
-
-      rtDW->E_cv[rtDW->iy] = (rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy]) +
-        rtDW->E[rtDW->iy];
-    }
-
-    /* '<S8>:1:59' m3 = C*(A*x0+B*u3+E).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_3_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_3_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_3_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_3_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_1_idx_pu[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_cv[3] +
-        (rtDW->lam[rtDW->iy + 8] * rtDW->E_cv[2] + (rtDW->lam[rtDW->iy + 4] *
-        rtDW->E_cv[1] + rtDW->lam[rtDW->iy] * rtDW->E_cv[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
-
-      rtDW->A_p[rtDW->iy] = (rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy]) +
-        rtDW->E[rtDW->iy];
-    }
-
-    /* '<S8>:1:60' m4 = C*(A*x0+B*u4+E).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_4_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_4_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_4_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_4_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_2_idx_pu[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->A_p[3] +
-        (rtDW->lam[rtDW->iy + 8] * rtDW->A_p[2] + (rtDW->lam[rtDW->iy + 4] *
-        rtDW->A_p[1] + rtDW->lam[rtDW->iy] * rtDW->A_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
-
-      rtDW->E_cv[rtDW->iy] = (rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy]) +
-        rtDW->E[rtDW->iy];
-    }
-
-    /* '<S8>:1:61' m5 = C*(A*x0+B*u5+E).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_5_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_5_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_5_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_5_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_3_idx_pu[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_cv[3] +
-        (rtDW->lam[rtDW->iy + 8] * rtDW->E_cv[2] + (rtDW->lam[rtDW->iy + 4] *
-        rtDW->E_cv[1] + rtDW->lam[rtDW->iy] * rtDW->E_cv[0]))) * 2.0F;
-      rtDW->E_c[rtDW->iy] = 0.0F;
-      rtDW->B_b[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->i = (rtDW->b_j << 2) + rtDW->iy;
-        rtDW->E_c[rtDW->iy] += rtDW->A[rtDW->i] * rtDW->x0[rtDW->b_j];
-        rtDW->B_b[rtDW->iy] += rtDW->B_m[rtDW->i] * rtDW->rtb_v_1_idx_pu_k
-          [rtDW->b_j];
-      }
-
-      rtDW->A_p[rtDW->iy] = (rtDW->E_c[rtDW->iy] + rtDW->B_b[rtDW->iy]) +
-        rtDW->E[rtDW->iy];
-    }
-
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_4_idx_pu[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->A_p[3] +
-        (rtDW->lam[rtDW->iy + 8] * rtDW->A_p[2] + (rtDW->lam[rtDW->iy + 4] *
-        rtDW->A_p[1] + rtDW->lam[rtDW->iy] * rtDW->A_p[0]))) * 2.0F;
-    }
-
-    /* '<S8>:1:62' m6 = m0; */
-    break;
-
-   default:
-    /* '<S8>:1:63' otherwise */
-    /* '<S8>:1:64' m0 = C*(A*x0+B*u0).*2; */
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->E[rtDW->iy] = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->E[rtDW->iy] += rtDW->A[(rtDW->b_j << 2) + rtDW->iy] * rtDW->
-          x0[rtDW->b_j];
+  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+      rtDW->sector_ref = rtDW->ijA + (rtDW->c << 2);
+      rtDW->b_A_tmp[rtDW->sector_ref] = 0.0F;
+      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
+        rtDW->b_A_tmp[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_d[(rtDW->b_ix
+          << 2) + rtDW->ijA] * rtDW->A[(rtDW->c << 3) + rtDW->b_ix];
       }
     }
 
-    for (rtDW->iy = 0; rtDW->iy < 16; rtDW->iy++) {
-      rtDW->lam[rtDW->iy] = b[rtDW->iy];
+    for (rtDW->c = 0; rtDW->c < 4; rtDW->c++) {
+      rtDW->sector_ref = rtDW->ijA + (rtDW->c << 2);
+      rtDW->B_c[rtDW->sector_ref] = 0.0F;
+      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
+        rtDW->B_c[rtDW->sector_ref] += rtDW->b_A_tmp[(rtDW->b_ix << 2) +
+          rtDW->ijA] * (real32_T)rtDW->b_A_tmp_l[(rtDW->c << 3) + rtDW->b_ix];
+      }
     }
+  }
 
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->E_c[rtDW->iy] = rtDW->E[rtDW->iy];
-    }
+  /* MATLAB Function: '<S1>/MATLAB Function' incorporates:
+   *  Inport: '<Root>/kalman_R'
+   */
+  rtDW->fv[0] = rtU->kalman_R;
+  rtDW->fv[4] = 0.0F;
+  rtDW->fv[8] = 0.0F;
+  rtDW->fv[12] = 0.0F;
+  rtDW->fv[1] = 0.0F;
+  rtDW->fv[5] = rtU->kalman_R;
+  rtDW->fv[9] = 0.0F;
+  rtDW->fv[13] = 0.0F;
+  rtDW->fv[2] = 0.0F;
+  rtDW->fv[6] = 0.0F;
+  rtDW->fv[10] = rtU->kalman_R;
+  rtDW->fv[14] = 0.0F;
+  rtDW->fv[3] = 0.0F;
+  rtDW->fv[7] = 0.0F;
+  rtDW->fv[11] = 0.0F;
+  rtDW->fv[15] = rtU->kalman_R;
 
-    /* '<S8>:1:65' m1 = C*(A*x0+B*u1).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_1_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_1_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_1_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_1_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->m6[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_c[3] + (rtDW->
-        lam[rtDW->iy + 8] * rtDW->E_c[2] + (rtDW->lam[rtDW->iy + 4] * rtDW->E_c
-        [1] + rtDW->lam[rtDW->iy] * rtDW->E_c[0]))) * 2.0F;
-      rtDW->SinCos1_o1 = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->SinCos1_o1 += rtDW->B_m[(rtDW->b_j << 2) + rtDW->iy] *
-          rtDW->rtb_v_1_idx_pu_k[rtDW->b_j];
+  /* MATLAB Function: '<S1>/Observer' incorporates:
+   *  Inport: '<Root>/i_dq_pu'
+   *  Inport: '<Root>/i_xy_pu'
+   */
+  for (rtDW->ijA = 0; rtDW->ijA < 16; rtDW->ijA++) {
+    rtDW->A_k[rtDW->ijA] = rtDW->B_c[rtDW->ijA] + rtDW->fv[rtDW->ijA];
+  }
+
+  rtDW->ipiv[0] = 1;
+  rtDW->ipiv[1] = 2;
+  rtDW->ipiv[2] = 3;
+  rtDW->ipiv[3] = 4;
+  for (rtDW->i = 0; rtDW->i < 3; rtDW->i++) {
+    rtDW->c = rtDW->i * 5;
+    rtDW->iy = 0;
+    rtDW->ix = rtDW->c;
+    rtDW->smax = fabsf(rtDW->A_k[rtDW->c]);
+    rtDW->b_ix = 2;
+    while (rtDW->b_ix <= 4 - rtDW->i) {
+      rtDW->ix++;
+      rtDW->SinCos1_o2 = fabsf(rtDW->A_k[rtDW->ix]);
+      if (rtDW->SinCos1_o2 > rtDW->smax) {
+        rtDW->iy = rtDW->b_ix - 1;
+        rtDW->smax = rtDW->SinCos1_o2;
       }
 
-      rtDW->E_cv[rtDW->iy] = rtDW->E[rtDW->iy] + rtDW->SinCos1_o1;
+      rtDW->b_ix++;
     }
 
-    /* '<S8>:1:66' m2 = C*(A*x0+B*u2).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_2_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_2_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_2_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_2_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->m1[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_cv[3] +
-                            (rtDW->lam[rtDW->iy + 8] * rtDW->E_cv[2] +
-        (rtDW->lam[rtDW->iy + 4] * rtDW->E_cv[1] + rtDW->lam[rtDW->iy] *
-         rtDW->E_cv[0]))) * 2.0F;
-      rtDW->SinCos1_o1 = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->SinCos1_o1 += rtDW->B_m[(rtDW->b_j << 2) + rtDW->iy] *
-          rtDW->rtb_v_1_idx_pu_k[rtDW->b_j];
+    if (rtDW->A_k[rtDW->c + rtDW->iy] != 0.0F) {
+      if (rtDW->iy != 0) {
+        rtDW->sector_ref = rtDW->i + rtDW->iy;
+        rtDW->ipiv[rtDW->i] = (int8_T)(rtDW->sector_ref + 1);
+        rtDW->smax = rtDW->A_k[rtDW->i];
+        rtDW->A_k[rtDW->i] = rtDW->A_k[rtDW->sector_ref];
+        rtDW->A_k[rtDW->sector_ref] = rtDW->smax;
+        rtDW->smax = rtDW->A_k[rtDW->i + 4];
+        rtDW->A_k[rtDW->i + 4] = rtDW->A_k[rtDW->sector_ref + 4];
+        rtDW->A_k[rtDW->sector_ref + 4] = rtDW->smax;
+        rtDW->smax = rtDW->A_k[rtDW->i + 8];
+        rtDW->A_k[rtDW->i + 8] = rtDW->A_k[rtDW->sector_ref + 8];
+        rtDW->A_k[rtDW->sector_ref + 8] = rtDW->smax;
+        rtDW->smax = rtDW->A_k[rtDW->i + 12];
+        rtDW->A_k[rtDW->i + 12] = rtDW->A_k[rtDW->sector_ref + 12];
+        rtDW->A_k[rtDW->sector_ref + 12] = rtDW->smax;
       }
 
-      rtDW->E_c[rtDW->iy] = rtDW->E[rtDW->iy] + rtDW->SinCos1_o1;
+      rtDW->ix = (rtDW->c - rtDW->i) + 4;
+      rtDW->b_ix = rtDW->c + 1;
+      while (rtDW->b_ix + 1 <= rtDW->ix) {
+        rtDW->A_k[rtDW->b_ix] /= rtDW->A_k[rtDW->c];
+        rtDW->b_ix++;
+      }
     }
 
-    /* '<S8>:1:67' m3 = C*(A*x0+B*u3).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_3_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_3_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_3_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_3_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_1_idx_pu[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_c[3] +
-        (rtDW->lam[rtDW->iy + 8] * rtDW->E_c[2] + (rtDW->lam[rtDW->iy + 4] *
-        rtDW->E_c[1] + rtDW->lam[rtDW->iy] * rtDW->E_c[0]))) * 2.0F;
-      rtDW->SinCos1_o1 = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->SinCos1_o1 += rtDW->B_m[(rtDW->b_j << 2) + rtDW->iy] *
-          rtDW->rtb_v_1_idx_pu_k[rtDW->b_j];
+    rtDW->ix = rtDW->c;
+    rtDW->iy = rtDW->c + 4;
+    rtDW->kBcol = 0;
+    while (rtDW->kBcol <= 2 - rtDW->i) {
+      if (rtDW->A_k[rtDW->iy] != 0.0F) {
+        rtDW->smax = -rtDW->A_k[rtDW->iy];
+        rtDW->c_ix = rtDW->c + 1;
+        rtDW->b_ix = (rtDW->ix - rtDW->i) + 8;
+        rtDW->ijA = rtDW->ix + 5;
+        while (rtDW->ijA + 1 <= rtDW->b_ix) {
+          rtDW->A_k[rtDW->ijA] += rtDW->A_k[rtDW->c_ix] * rtDW->smax;
+          rtDW->c_ix++;
+          rtDW->ijA++;
+        }
       }
 
-      rtDW->E_cv[rtDW->iy] = rtDW->E[rtDW->iy] + rtDW->SinCos1_o1;
+      rtDW->iy += 4;
+      rtDW->ix += 4;
+      rtDW->kBcol++;
     }
+  }
 
-    /* '<S8>:1:68' m4 = C*(A*x0+B*u4).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_4_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_4_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_4_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_4_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_2_idx_pu[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_cv[3] +
-        (rtDW->lam[rtDW->iy + 8] * rtDW->E_cv[2] + (rtDW->lam[rtDW->iy + 4] *
-        rtDW->E_cv[1] + rtDW->lam[rtDW->iy] * rtDW->E_cv[0]))) * 2.0F;
-      rtDW->SinCos1_o1 = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->SinCos1_o1 += rtDW->B_m[(rtDW->b_j << 2) + rtDW->iy] *
-          rtDW->rtb_v_1_idx_pu_k[rtDW->b_j];
+  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+      rtDW->sector_ref = rtDW->ijA << 3;
+      rtDW->i = rtDW->c + rtDW->sector_ref;
+      rtDW->b_A_tmp[rtDW->i] = 0.0F;
+      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
+        rtDW->b_A_tmp[rtDW->i] += rtDW->A[(rtDW->b_ix << 3) + rtDW->c] *
+          (real32_T)rtDW->b_A_tmp_l[rtDW->sector_ref + rtDW->b_ix];
+      }
+    }
+  }
+
+  for (rtDW->i = 0; rtDW->i < 4; rtDW->i++) {
+    rtDW->ix = rtDW->i << 3;
+    rtDW->iy = rtDW->i << 2;
+    rtDW->b_ix = 0;
+    while (rtDW->b_ix <= rtDW->i - 1) {
+      rtDW->kBcol = rtDW->b_ix << 3;
+      rtDW->rtb_i_dq_obs_idx_0 = rtDW->A_k[rtDW->b_ix + rtDW->iy];
+      if (rtDW->rtb_i_dq_obs_idx_0 != 0.0F) {
+        for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+          rtDW->sector_ref = rtDW->c + rtDW->ix;
+          rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->rtb_i_dq_obs_idx_0 *
+            rtDW->b_A_tmp[rtDW->c + rtDW->kBcol];
+        }
       }
 
-      rtDW->E_c[rtDW->iy] = rtDW->E[rtDW->iy] + rtDW->SinCos1_o1;
+      rtDW->b_ix++;
     }
 
-    /* '<S8>:1:69' m5 = C*(A*x0+B*u5).*2; */
-    rtDW->rtb_v_1_idx_pu_k[0] = rtDW->v_5_idx_pu[0];
-    rtDW->rtb_v_1_idx_pu_k[1] = rtDW->v_5_idx_pu[1];
-    rtDW->rtb_v_1_idx_pu_k[2] = rtDW->v_5_idx_pu[2];
-    rtDW->rtb_v_1_idx_pu_k[3] = rtDW->v_5_idx_pu[3];
-    rtDW->rtb_v_1_idx_pu_k[4] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_3_idx_pu[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_c[3] +
-        (rtDW->lam[rtDW->iy + 8] * rtDW->E_c[2] + (rtDW->lam[rtDW->iy + 4] *
-        rtDW->E_c[1] + rtDW->lam[rtDW->iy] * rtDW->E_c[0]))) * 2.0F;
-      rtDW->SinCos1_o1 = 0.0F;
-      for (rtDW->b_j = 0; rtDW->b_j < 5; rtDW->b_j++) {
-        rtDW->SinCos1_o1 += rtDW->B_m[(rtDW->b_j << 2) + rtDW->iy] *
-          rtDW->rtb_v_1_idx_pu_k[rtDW->b_j];
+    rtDW->smax = 1.0F / rtDW->A_k[rtDW->i + rtDW->iy];
+    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+      rtDW->sector_ref = rtDW->c + rtDW->ix;
+      rtDW->b_A_tmp[rtDW->sector_ref] *= rtDW->smax;
+    }
+  }
+
+  for (rtDW->i = 3; rtDW->i >= 0; rtDW->i--) {
+    rtDW->b_ix = rtDW->i << 3;
+    rtDW->iy = (rtDW->i << 2) - 1;
+    rtDW->ix = rtDW->i + 2;
+    while (rtDW->ix < 5) {
+      rtDW->kBcol = (rtDW->ix - 1) << 3;
+      if (rtDW->A_k[rtDW->ix + rtDW->iy] != 0.0F) {
+        for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+          rtDW->sector_ref = rtDW->c + rtDW->b_ix;
+          rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->A_k[rtDW->ix + rtDW->iy] *
+            rtDW->b_A_tmp[rtDW->c + rtDW->kBcol];
+        }
       }
 
-      rtDW->E_cv[rtDW->iy] = rtDW->E[rtDW->iy] + rtDW->SinCos1_o1;
+      rtDW->ix++;
+    }
+  }
+
+  for (rtDW->i = 2; rtDW->i >= 0; rtDW->i--) {
+    ipiv = rtDW->ipiv[rtDW->i];
+    if (rtDW->i + 1 != ipiv) {
+      for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+        rtDW->ijA = (rtDW->i << 3) + rtDW->c;
+        rtDW->smax = rtDW->b_A_tmp[rtDW->ijA];
+        rtDW->sector_ref = ((ipiv - 1) << 3) + rtDW->c;
+        rtDW->b_A_tmp[rtDW->ijA] = rtDW->b_A_tmp[rtDW->sector_ref];
+        rtDW->b_A_tmp[rtDW->sector_ref] = rtDW->smax;
+      }
+    }
+  }
+
+  /* '<S3>:1:52' y=[i_d; i_q; i_x; i_y]; */
+  /* '<S3>:1:54' x_e = x_p+K*(y-C*x_p); */
+  rtDW->m6[0] = rtU->i_dq_pu[0];
+  rtDW->m6[1] = rtU->i_dq_pu[1];
+  rtDW->m6[2] = rtU->i_xy_pu[0];
+  rtDW->m6[3] = rtU->i_xy_pu[1];
+  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+    rtDW->v_t0[rtDW->ijA] = 0.0F;
+    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+      rtDW->v_t0[rtDW->ijA] += (real32_T)rtDW->b_A_tmp_d[(rtDW->c << 2) +
+        rtDW->ijA] * rtDW->x_p[rtDW->c];
     }
 
-    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-      rtDW->v_4_idx_pu[rtDW->iy] = (rtDW->lam[rtDW->iy + 12] * rtDW->E_cv[3] +
-        (rtDW->lam[rtDW->iy + 8] * rtDW->E_cv[2] + (rtDW->lam[rtDW->iy + 4] *
-        rtDW->E_cv[1] + rtDW->lam[rtDW->iy] * rtDW->E_cv[0]))) * 2.0F;
+    rtDW->m2[rtDW->ijA] = rtDW->m6[rtDW->ijA] - rtDW->v_t0[rtDW->ijA];
+  }
+
+  /* '<S3>:1:56' P_e = P_p-K*C*P_p; */
+  for (rtDW->ijA = 0; rtDW->ijA < 8; rtDW->ijA++) {
+    rtDW->rtb_i_dq_obs_idx_0 = rtDW->b_A_tmp[rtDW->ijA + 8];
+    rtDW->rtb_v_1_idx_pu_idx_1 = rtDW->b_A_tmp[rtDW->ijA + 16];
+    rtDW->q = rtDW->b_A_tmp[rtDW->ijA + 24];
+    rtDW->x_e[rtDW->ijA] = (((rtDW->rtb_i_dq_obs_idx_0 * rtDW->m2[1] +
+      rtDW->b_A_tmp[rtDW->ijA] * rtDW->m2[0]) + rtDW->rtb_v_1_idx_pu_idx_1 *
+      rtDW->m2[2]) + rtDW->q * rtDW->m2[3]) + rtDW->x_p[rtDW->ijA];
+    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+      rtDW->sector_ref = rtDW->ijA + (rtDW->c << 3);
+      rtDW->A_c[rtDW->sector_ref] = 0.0F;
+      rtDW->i = rtDW->c << 2;
+      rtDW->A_c[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_d[rtDW->i] *
+        rtDW->b_A_tmp[rtDW->ijA];
+      rtDW->A_c[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_d[rtDW->i + 1] *
+        rtDW->rtb_i_dq_obs_idx_0;
+      rtDW->A_c[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_d[rtDW->i + 2] *
+        rtDW->rtb_v_1_idx_pu_idx_1;
+      rtDW->A_c[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_d[rtDW->i + 3] *
+        rtDW->q;
     }
 
-    /* '<S8>:1:70' m6 = m0; */
-    break;
+    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+      rtDW->rtb_i_dq_obs_idx_0 = 0.0F;
+      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
+        rtDW->rtb_i_dq_obs_idx_0 += rtDW->A_c[(rtDW->b_ix << 3) + rtDW->ijA] *
+          rtDW->A[(rtDW->c << 3) + rtDW->b_ix];
+      }
+
+      rtDW->sector_ref = (rtDW->c << 3) + rtDW->ijA;
+      rtDW->P_e[rtDW->sector_ref] = rtDW->A[rtDW->sector_ref] -
+        rtDW->rtb_i_dq_obs_idx_0;
+    }
+  }
+
+  /* MATLAB Function: '<S1>/delay_compensation_currents' incorporates:
+   *  MATLAB Function: '<S1>/Observer'
+   *  Switch: '<S1>/Switch1'
+   */
+  /* '<S3>:1:58' i_dq_obs(1) = x_e(1); */
+  /* '<S3>:1:59' i_dq_obs(2) = x_e(2); */
+  /* '<S3>:1:60' i_xy_obs(1) = x_e(3); */
+  /* '<S3>:1:61' i_xy_obs(2) = x_e(4); */
+  /* '<S3>:1:62' e_dq_obs(1) = x_e(5); */
+  /* '<S3>:1:63' e_dq_obs(2) = x_e(6); */
+  /* '<S3>:1:64' e_xy_obs(1) = x_e(7); */
+  /* '<S3>:1:65' e_xy_obs(2) = x_e(8); */
+  rtDW->m1[2] = rtDW->x_e[2];
+
+  /* Switch: '<S1>/Switch' incorporates:
+   *  Inport: '<Root>/i_dq_pu'
+   *  Inport: '<Root>/kalman_off_on'
+   *  MATLAB Function: '<S1>/Observer'
+   *  Switch: '<S1>/Switch1'
+   */
+  rtDW->rtb_i_dq_obs_idx_0 = rtDW->x_e[0];
+  if (!rtU->kalman_off_on) {
+    rtDW->rtb_i_dq_obs_idx_0 = rtU->i_dq_pu[0];
+
+    /* MATLAB Function: '<S1>/delay_compensation_currents' incorporates:
+     *  Inport: '<Root>/i_dq_pu'
+     *  Inport: '<Root>/i_xy_pu'
+     */
+    rtDW->m1[2] = rtU->i_xy_pu[0];
+  }
+
+  /* MATLAB Function: '<S1>/delay_compensation_currents' incorporates:
+   *  MATLAB Function: '<S1>/Observer'
+   */
+  rtDW->m1[3] = rtDW->x_e[3];
+
+  /* MATLAB Function: '<S1>/Observer' */
+  rtDW->rtb_v_1_idx_pu_idx_1 = rtDW->x_e[1];
+
+  /* Switch: '<S1>/Switch' incorporates:
+   *  Inport: '<Root>/i_dq_pu'
+   *  Inport: '<Root>/kalman_off_on'
+   *  Switch: '<S1>/Switch1'
+   */
+  if (!rtU->kalman_off_on) {
+    rtDW->rtb_v_1_idx_pu_idx_1 = rtU->i_dq_pu[1];
+
+    /* MATLAB Function: '<S1>/delay_compensation_currents' incorporates:
+     *  Inport: '<Root>/i_dq_pu'
+     *  Inport: '<Root>/i_xy_pu'
+     */
+    rtDW->m1[3] = rtU->i_xy_pu[1];
   }
 
   /* Delay: '<S1>/Delay1' */
-  if (rtDW->icLoad) {
+  if (rtDW->icLoad_p) {
     for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
       rtDW->Delay1_DSTATE[rtDW->i] = 0.14F;
     }
   }
 
   /* Delay: '<S1>/Delay3' */
-  if (rtDW->icLoad_a) {
+  if (rtDW->icLoad_l) {
     rtDW->Delay3_DSTATE[0] = 0.0F;
     rtDW->Delay3_DSTATE[1] = 0.0F;
     rtDW->Delay3_DSTATE[2] = 0.0F;
@@ -2558,7 +2182,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay4' */
-  if (rtDW->icLoad_f) {
+  if (rtDW->icLoad_h) {
     rtDW->Delay4_DSTATE[0] = 0.0F;
     rtDW->Delay4_DSTATE[1] = 0.0F;
     rtDW->Delay4_DSTATE[2] = 0.0F;
@@ -2566,7 +2190,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay5' */
-  if (rtDW->icLoad_k) {
+  if (rtDW->icLoad_b) {
     rtDW->Delay5_DSTATE[0] = 0.0F;
     rtDW->Delay5_DSTATE[1] = 0.0F;
     rtDW->Delay5_DSTATE[2] = 0.0F;
@@ -2582,7 +2206,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay7' */
-  if (rtDW->icLoad_l) {
+  if (rtDW->icLoad_bq) {
     rtDW->Delay7_DSTATE[0] = 0.0F;
     rtDW->Delay7_DSTATE[1] = 0.0F;
     rtDW->Delay7_DSTATE[2] = 0.0F;
@@ -2590,7 +2214,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay8' */
-  if (rtDW->icLoad_ly) {
+  if (rtDW->icLoad_d) {
     rtDW->Delay8_DSTATE[0] = 0.0F;
     rtDW->Delay8_DSTATE[1] = 0.0F;
     rtDW->Delay8_DSTATE[2] = 0.0F;
@@ -2605,14 +2229,13 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Delay: '<S1>/Delay6'
    *  Delay: '<S1>/Delay7'
    *  Delay: '<S1>/Delay8'
-   *  Inport: '<Root>/i_dq_pu'
-   *  Inport: '<Root>/i_xy_pu'
    */
-  /* MATLAB Function 'uz_codegen/delay_compensation_currents': '<S4>:1' */
-  /* '<S4>:1:3' i_t0 = [id0 iq0 ix0 iy0]'; */
-  /* '<S4>:1:5' m_opt = [m0, m1, m2, m3, m4, m5, m0]; */
+  /* MATLAB Function 'uz_codegen/delay_compensation_currents': '<S6>:1' */
+  /* '<S6>:1:3' i_t0 = single([id0 iq0 ix0 iy0])'; */
+  /* '<S6>:1:5' m_opt = single([m0, m1, m2, m3, m4, m5, m0]); */
   /* delay compensation */
-  /* '<S4>:1:7' i_t0_delay_comp = i_t0 + 0.5 * m_opt * x_opt; */
+  /*  i_t0_delay_comp = single(i_t0 + 1.0 * m_opt * x_opt); */
+  /* '<S6>:1:8' i_t0_delay_comp = single(i_t0 + 0.5 * m_opt * x_opt); */
   rtDW->r[0] = 0.5F * rtDW->Delay3_DSTATE[0];
   rtDW->r[4] = 0.5F * rtDW->Delay4_DSTATE[0];
   rtDW->r[8] = 0.5F * rtDW->Delay5_DSTATE[0];
@@ -2641,21 +2264,957 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->r[19] = 0.5F * rtDW->Delay7_DSTATE[3];
   rtDW->r[23] = 0.5F * rtDW->Delay8_DSTATE[3];
   rtDW->r[27] = 0.5F * rtDW->Delay3_DSTATE[3];
-  rtDW->E_c[0] = rtU->i_dq_pu[0];
-  rtDW->E_c[1] = rtU->i_dq_pu[1];
-  rtDW->E_c[2] = rtU->i_xy_pu[0];
-  rtDW->E_c[3] = rtU->i_xy_pu[1];
-  for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-    rtDW->E_cv[rtDW->iy] = 0.0F;
-    for (rtDW->b_j = 0; rtDW->b_j < 7; rtDW->b_j++) {
-      rtDW->E_cv[rtDW->iy] += rtDW->r[(rtDW->b_j << 2) + rtDW->iy] *
-        rtDW->Delay1_DSTATE[rtDW->b_j];
+  rtDW->m1[0] = rtDW->rtb_i_dq_obs_idx_0;
+  rtDW->m1[1] = rtDW->rtb_v_1_idx_pu_idx_1;
+  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+    rtDW->m6[rtDW->ijA] = 0.0F;
+    for (rtDW->c = 0; rtDW->c < 7; rtDW->c++) {
+      rtDW->m6[rtDW->ijA] += rtDW->r[(rtDW->c << 2) + rtDW->ijA] *
+        rtDW->Delay1_DSTATE[rtDW->c];
     }
 
-    rtDW->v_5_idx_pu[rtDW->iy] = rtDW->E_c[rtDW->iy] + rtDW->E_cv[rtDW->iy];
+    rtDW->v_t0[rtDW->ijA] = rtDW->m1[rtDW->ijA] + rtDW->m6[rtDW->ijA];
   }
 
-  /* End of MATLAB Function: '<S1>/delay_compensation_currents' */
+  /* Switch: '<S1>/Switch3' incorporates:
+   *  MATLAB Function: '<S1>/Observer'
+   */
+  rtDW->rtb_e_xy_obs_idx_0 = rtDW->x_e[6];
+
+  /* Switch: '<S1>/Switch2' incorporates:
+   *  MATLAB Function: '<S1>/Observer'
+   */
+  rtDW->rtb_e_dq_obs_idx_0 = rtDW->x_e[4];
+
+  /* MATLAB Function: '<S1>/Observer' */
+  rtDW->rtb_e_xy_obs_g = rtDW->x_e[7];
+  rtDW->rtb_e_dq_obs_g = rtDW->x_e[5];
+
+  /* Switch: '<S1>/Switch2' incorporates:
+   *  Inport: '<Root>/kalman_off_on'
+   *  Switch: '<S1>/Switch3'
+   */
+  if (!rtU->kalman_off_on) {
+    rtDW->rtb_e_dq_obs_idx_0 = 0.0F;
+    rtDW->rtb_e_xy_obs_idx_0 = 0.0F;
+    rtDW->rtb_e_dq_obs_g = 0.0F;
+    rtDW->rtb_e_xy_obs_g = 0.0F;
+  }
+
+  /* Trigonometry: '<S1>/SinCos1' incorporates:
+   *  Inport: '<Root>/theta_el_pos'
+   */
+  rtDW->smax = sinf(rtU->theta_el_pos);
+  rtDW->SinCos1_o2 = cosf(rtU->theta_el_pos);
+
+  /* Trigonometry: '<S1>/SinCos2' incorporates:
+   *  Inport: '<Root>/theta_el_neg'
+   */
+  rtDW->SinCos2_o1 = sinf(rtU->theta_el_neg);
+  rtDW->SinCos2_o2 = cosf(rtU->theta_el_neg);
+
+  /* MATLAB Function: '<S1>/seq_2_act_sw_all' */
+  for (rtDW->i = 0; rtDW->i < 24; rtDW->i++) {
+    rtDW->act_sw_1[rtDW->i] = tmp_0[rtDW->i];
+    rtDW->act_sw_2[rtDW->i] = tmp_1[rtDW->i];
+    rtDW->act_sw_3[rtDW->i] = tmp_2[rtDW->i];
+    rtDW->act_sw_4[rtDW->i] = tmp_3[rtDW->i];
+    rtDW->act_sw_5[rtDW->i] = tmp_4[rtDW->i];
+  }
+
+  /* End of MATLAB Function: '<S1>/seq_2_act_sw_all' */
+
+  /* MATLAB Function: '<S1>/deadbeat_solution' incorporates:
+   *  Inport: '<Root>/Ld_over_LB'
+   *  Inport: '<Root>/Lq_over_LB'
+   *  Inport: '<Root>/Rs_over_ZB'
+   *  Inport: '<Root>/Ts_times_ZB_over_Ld'
+   *  Inport: '<Root>/Ts_times_ZB_over_Lq'
+   *  Inport: '<Root>/i_d_ref_pu'
+   *  Inport: '<Root>/i_q_ref_pu'
+   *  Inport: '<Root>/omega_el_pu'
+   *  Inport: '<Root>/psi_pm_over_psiB'
+   *  Inport: '<Root>/theta_el_pos'
+   */
+  /* MATLAB Function 'uz_codegen/seq_2_act_sw_all': '<S9>:1' */
+  /* '<S9>:1:3' act_sw_1 = single(zeros(24,1)); */
+  /* '<S9>:1:4' act_sw_2 = single(zeros(24,1)); */
+  /* '<S9>:1:5' act_sw_3 = single(zeros(24,1)); */
+  /* '<S9>:1:6' act_sw_4 = single(zeros(24,1)); */
+  /* '<S9>:1:7' act_sw_5 = single(zeros(24,1)); */
+  /*  columns=sequence, rows=active switch postion               */
+  /* '<S9>:1:10' seq_table_svm24 = single([   8, 9,41,43,47; */
+  /* '<S9>:1:11'                              1, 9,11,43,59; */
+  /* '<S9>:1:12'                              1, 9,11,27,59; */
+  /* '<S9>:1:13'                              8, 9,11,27,31; */
+  /* '<S9>:1:14'                              8,10,11,27,31; */
+  /* '<S9>:1:15'                              2,10,26,27,59; */
+  /* '<S9>:1:16'                              2,18,26,27,59; */
+  /* '<S9>:1:17'                             16,18,26,27,31; */
+  /* '<S9>:1:18'                             16,18,26,30,31; */
+  /* '<S9>:1:19'                              2,18,22,30,62; */
+  /* '<S9>:1:20'                              2,18,22,54,62; */
+  /* '<S9>:1:21'                             16,18,22,54,55; */
+  /* '<S9>:1:22'                             16,20,22,54,55; */
+  /* '<S9>:1:23'                              4,20,52,54,62; */
+  /* '<S9>:1:24'                              4,36,52,54,62; */
+  /* '<S9>:1:25'                             32,36,52,54,55; */
+  /* '<S9>:1:26'                             32,36,52,53,55; */
+  /* '<S9>:1:27'                              4,36,37,53,61; */
+  /* '<S9>:1:28'                              4,36,37,45,61; */
+  /* '<S9>:1:29'                             32,36,37,45,47; */
+  /* '<S9>:1:30'                             32,33,37,45,47; */
+  /* '<S9>:1:31'                              1,33,41,45,61; */
+  /* '<S9>:1:32'                              1, 9,41,45,61; */
+  /* '<S9>:1:33'                              8, 9,41,45,47]); */
+  /* '<S9>:1:35' act_sw_1 = seq_table_svm24(:,1); */
+  /* '<S9>:1:36' act_sw_2 = seq_table_svm24(:,2); */
+  /* '<S9>:1:37' act_sw_3 = seq_table_svm24(:,3); */
+  /* '<S9>:1:38' act_sw_4 = seq_table_svm24(:,4); */
+  /* '<S9>:1:39' act_sw_5 = seq_table_svm24(:,5); */
+  /* MATLAB Function 'uz_codegen/deadbeat_solution': '<S5>:1' */
+  /* '<S5>:1:3' i_d_pu = i_d_pu + single(e_dq_obs(1)); */
+  rtDW->rtb_i_dq_obs_idx_0 += rtDW->rtb_e_dq_obs_idx_0;
+
+  /* '<S5>:1:4' i_q_pu = i_q_pu + single(e_dq_obs(2)); */
+  rtDW->rtb_v_1_idx_pu_idx_1 += rtDW->rtb_e_dq_obs_g;
+
+  /* '<S5>:1:6' v_d_ref_pu = (i_d_ref_pu-i_d_pu)/(Ts_times_ZB_over_Ld) + i_d_pu*Rs_over_ZB - omega_el*Lq_over_LB*i_q_pu; */
+  /* '<S5>:1:7' v_q_ref_pu = (i_q_ref_pu-i_q_pu)/(Ts_times_ZB_over_Lq) + i_q_pu*Rs_over_ZB + omega_el*(Ld_over_LB*i_d_pu+psi_pm_over_psiB); */
+  /*  v_x_ref_pu = (i_x_ref_pu-i_x_pu)/(Ts_times_ZB_over_Lx) + i_x_pu*Rs_over_ZB; */
+  /*  v_y_ref_pu = (i_y_ref_pu-i_y_pu)/(Ts_times_ZB_over_Ly) + i_y_pu*Rs_over_ZB; */
+  /* '<S5>:1:10' v_x_ref_pu = single(0.0); */
+  /* '<S5>:1:11' v_y_ref_pu = single(0.0); */
+  /* '<S5>:1:13' angle_ref = mod(atan2(v_q_ref_pu, v_d_ref_pu) + theta_el, 2*pi); */
+  rtDW->rtb_i_dq_obs_idx_0 = atan2f(((rtU->i_q_ref_pu -
+    rtDW->rtb_v_1_idx_pu_idx_1) / rtU->Ts_times_ZB_over_Lq +
+    rtDW->rtb_v_1_idx_pu_idx_1 * rtU->Rs_over_ZB) + (rtU->Ld_over_LB *
+    rtDW->rtb_i_dq_obs_idx_0 + rtU->psi_pm_over_psiB) * rtU->omega_el_pu,
+    ((rtU->i_d_ref_pu - rtDW->rtb_i_dq_obs_idx_0) / rtU->Ts_times_ZB_over_Ld +
+     rtDW->rtb_i_dq_obs_idx_0 * rtU->Rs_over_ZB) - rtU->omega_el_pu *
+    rtU->Lq_over_LB * rtDW->rtb_v_1_idx_pu_idx_1) + rtU->theta_el_pos;
+  if (rtDW->rtb_i_dq_obs_idx_0 == 0.0F) {
+    rtDW->rtb_v_1_idx_pu_idx_1 = 0.0F;
+  } else {
+    rtDW->rtb_v_1_idx_pu_idx_1 = fmodf(rtDW->rtb_i_dq_obs_idx_0, 6.28318548F);
+    rEQ0 = (rtDW->rtb_v_1_idx_pu_idx_1 == 0.0F);
+    if (!rEQ0) {
+      rtDW->q = fabsf(rtDW->rtb_i_dq_obs_idx_0 / 6.28318548F);
+      rEQ0 = (fabsf(rtDW->q - floorf(rtDW->q + 0.5F)) <= 1.1920929E-7F * rtDW->q);
+    }
+
+    if (rEQ0) {
+      rtDW->rtb_v_1_idx_pu_idx_1 = 0.0F;
+    } else if (rtDW->rtb_i_dq_obs_idx_0 < 0.0F) {
+      rtDW->rtb_v_1_idx_pu_idx_1 += 6.28318548F;
+    }
+  }
+
+  /* '<S5>:1:15' sector_ref = 0.0; */
+  rtDW->sector_ref = 0;
+
+  /* '<S5>:1:16' if (angle_ref >= 0.0 && angle_ref < pi/180*15) */
+  if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 0.0F) && (rtDW->rtb_v_1_idx_pu_idx_1 <
+       0.26179938779914941)) {
+    /* '<S5>:1:17' sector_ref = 1.0; */
+    rtDW->sector_ref = 1;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 0.26179938779914941) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 0.52359877559829882)) {
+    /* '<S5>:1:18' elseif (angle_ref >= pi/180*15 && angle_ref < pi/180*30) */
+    /* '<S5>:1:19' sector_ref = 2.0; */
+    rtDW->sector_ref = 2;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 0.52359877559829882) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 0.78539816339744828)) {
+    /* '<S5>:1:20' elseif (angle_ref >= pi/180*30 && angle_ref < pi/180*45) */
+    /* '<S5>:1:21' sector_ref = 3.0; */
+    rtDW->sector_ref = 3;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 0.78539816339744828) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 1.0471975511965976)) {
+    /* '<S5>:1:22' elseif (angle_ref >= pi/180*45 && angle_ref < pi/180*60) */
+    /* '<S5>:1:23' sector_ref = 4.0; */
+    rtDW->sector_ref = 4;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 1.0471975511965976) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 1.3089969389957472)) {
+    /* '<S5>:1:24' elseif (angle_ref >= pi/180*60 && angle_ref < pi/180*75) */
+    /* '<S5>:1:25' sector_ref = 5.0; */
+    rtDW->sector_ref = 5;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 1.3089969389957472) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 1.5707963267948966)) {
+    /* '<S5>:1:26' elseif (angle_ref >= pi/180*75 && angle_ref < pi/180*90) */
+    /* '<S5>:1:27' sector_ref = 6.0; */
+    rtDW->sector_ref = 6;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 1.5707963267948966) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 1.8325957145940461)) {
+    /* '<S5>:1:28' elseif (angle_ref >= pi/180*90 && angle_ref < pi/180*105) */
+    /* '<S5>:1:29' sector_ref = 7.0; */
+    rtDW->sector_ref = 7;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 1.8325957145940461) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 2.0943951023931953)) {
+    /* '<S5>:1:30' elseif (angle_ref >= pi/180*105 && angle_ref < pi/180*120) */
+    /* '<S5>:1:31' sector_ref = 8.0; */
+    rtDW->sector_ref = 8;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 2.0943951023931953) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 2.3561944901923448)) {
+    /* '<S5>:1:32' elseif (angle_ref >= pi/180*120 && angle_ref < pi/180*135) */
+    /* '<S5>:1:33' sector_ref = 9.0; */
+    rtDW->sector_ref = 9;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 2.3561944901923448) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 2.6179938779914944)) {
+    /* '<S5>:1:34' elseif (angle_ref >= pi/180*135 && angle_ref < pi/180*150) */
+    /* '<S5>:1:35' sector_ref = 10.0; */
+    rtDW->sector_ref = 10;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 2.6179938779914944) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 2.8797932657906435)) {
+    /* '<S5>:1:36' elseif (angle_ref >= pi/180*150 && angle_ref < pi/180*165) */
+    /* '<S5>:1:37' sector_ref = 11.0; */
+    rtDW->sector_ref = 11;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 2.8797932657906435) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 3.1415926535897931)) {
+    /* '<S5>:1:38' elseif (angle_ref >= pi/180*165 && angle_ref < pi/180*180) */
+    /* '<S5>:1:39' sector_ref = 12.0; */
+    rtDW->sector_ref = 12;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 3.1415926535897931) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 3.4033920413889427)) {
+    /* '<S5>:1:40' elseif (angle_ref >= pi/180*180 && angle_ref < pi/180*195) */
+    /* '<S5>:1:41' sector_ref = 13.0; */
+    rtDW->sector_ref = 13;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 3.4033920413889427) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 3.6651914291880923)) {
+    /* '<S5>:1:42' elseif (angle_ref >= pi/180*195 && angle_ref < pi/180*210) */
+    /* '<S5>:1:43' sector_ref = 14.0; */
+    rtDW->sector_ref = 14;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 3.6651914291880923) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 3.9269908169872414)) {
+    /* '<S5>:1:44' elseif (angle_ref >= pi/180*210 && angle_ref < pi/180*225) */
+    /* '<S5>:1:45' sector_ref = 15.0; */
+    rtDW->sector_ref = 15;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 3.9269908169872414) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 4.1887902047863905)) {
+    /* '<S5>:1:46' elseif (angle_ref >= pi/180*225 && angle_ref < pi/180*240) */
+    /* '<S5>:1:47' sector_ref = 16.0; */
+    rtDW->sector_ref = 16;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 4.1887902047863905) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 4.4505895925855405)) {
+    /* '<S5>:1:48' elseif (angle_ref >= pi/180*240 && angle_ref < pi/180*255) */
+    /* '<S5>:1:49' sector_ref = 17.0; */
+    rtDW->sector_ref = 17;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 4.4505895925855405) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 4.71238898038469)) {
+    /* '<S5>:1:50' elseif (angle_ref >= pi/180*255 && angle_ref < pi/180*270) */
+    /* '<S5>:1:51' sector_ref = 18.0; */
+    rtDW->sector_ref = 18;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 4.71238898038469) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 4.9741883681838388)) {
+    /* '<S5>:1:52' elseif (angle_ref >= pi/180*270 && angle_ref < pi/180*285) */
+    /* '<S5>:1:53' sector_ref = 19.0; */
+    rtDW->sector_ref = 19;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 4.9741883681838388) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 5.2359877559829888)) {
+    /* '<S5>:1:54' elseif (angle_ref >= pi/180*285 && angle_ref < pi/180*300) */
+    /* '<S5>:1:55' sector_ref = 20.0; */
+    rtDW->sector_ref = 20;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 5.2359877559829888) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 5.497787143782138)) {
+    /* '<S5>:1:56' elseif (angle_ref >= pi/180*300 && angle_ref < pi/180*315) */
+    /* '<S5>:1:57' sector_ref = 21.0; */
+    rtDW->sector_ref = 21;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 5.497787143782138) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 5.7595865315812871)) {
+    /* '<S5>:1:58' elseif (angle_ref >= pi/180*315 && angle_ref < pi/180*330) */
+    /* '<S5>:1:59' sector_ref = 22.0; */
+    rtDW->sector_ref = 22;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 5.7595865315812871) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 6.0213859193804371)) {
+    /* '<S5>:1:60' elseif (angle_ref >= pi/180*330 && angle_ref < pi/180*345) */
+    /* '<S5>:1:61' sector_ref = 23.0; */
+    rtDW->sector_ref = 23;
+  } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 6.0213859193804371) &&
+             (rtDW->rtb_v_1_idx_pu_idx_1 < 6.2831853071795862)) {
+    /* '<S5>:1:62' elseif (angle_ref >= pi/180*345 && angle_ref < pi/180*360) */
+    /* '<S5>:1:63' sector_ref = 24.0; */
+    rtDW->sector_ref = 24;
+  }
+
+  /* End of MATLAB Function: '<S1>/deadbeat_solution' */
+
+  /* MATLAB Function: '<S1>/act_sw_2_dqxy_volts_all' incorporates:
+   *  Inport: '<Root>/v_DC_pu'
+   */
+  /*  voltage lookup factors alpha/beta */
+  /* MATLAB Function 'uz_codegen/act_sw_2_dqxy_volts_all': '<S4>:1' */
+  /*  since zero voltages for switch position 0 and 63 is not needed */
+  /*  and matlab does use one based indexing, i simply removed entrys 1  */
+  /*  and 64. Therefore, the voltage LUTs below correspond again  */
+  /*  to index 1 beeing the voltages for respective switch position  */
+  /*  1 (000001b)  */
+  /* '<S4>:1:12' v_alpha_beta_pu = single([ %0.0,0.0; */
+  /* '<S4>:1:13' 0.333333, -0.000000; */
+  /* '<S4>:1:14' -0.166667, 0.288675; */
+  /* '<S4>:1:15' 0.166667, 0.288675; */
+  /* '<S4>:1:16' -0.166667, -0.288675; */
+  /* '<S4>:1:17' 0.166667, -0.288675; */
+  /* '<S4>:1:18' -0.333333, 0.000000; */
+  /* '<S4>:1:19' 0.000000, 0.000000; */
+  /* '<S4>:1:20' 0.288675, 0.166667; */
+  /* '<S4>:1:21' 0.622008, 0.166667; */
+  /* '<S4>:1:22' 0.122008, 0.455342; */
+  /* '<S4>:1:23' 0.455342, 0.455342; */
+  /* '<S4>:1:24' 0.122008, -0.122008; */
+  /* '<S4>:1:25' 0.455342, -0.122008; */
+  /* '<S4>:1:26' -0.044658, 0.166667; */
+  /* '<S4>:1:27' 0.288675, 0.166667; */
+  /* '<S4>:1:28' -0.288675, 0.166667; */
+  /* '<S4>:1:29' 0.044658, 0.166667; */
+  /* '<S4>:1:30' -0.455342, 0.455342; */
+  /* '<S4>:1:31' -0.122008, 0.455342; */
+  /* '<S4>:1:32' -0.455342, -0.122008; */
+  /* '<S4>:1:33' -0.122008, -0.122008; */
+  /* '<S4>:1:34' -0.622008, 0.166667; */
+  /* '<S4>:1:35' -0.288675, 0.166667; */
+  /* '<S4>:1:36' 0.000000, 0.333333; */
+  /* '<S4>:1:37' 0.333333, 0.333333; */
+  /* '<S4>:1:38' -0.166667, 0.622008; */
+  /* '<S4>:1:39' 0.166667, 0.622008; */
+  /* '<S4>:1:40' -0.166667, 0.044658; */
+  /* '<S4>:1:41' 0.166667, 0.044658; */
+  /* '<S4>:1:42' -0.333333, 0.333333; */
+  /* '<S4>:1:43' 0.000000, 0.333333; */
+  /* '<S4>:1:44' -0.000000, -0.333333; */
+  /* '<S4>:1:45' 0.333333, -0.333333; */
+  /* '<S4>:1:46' -0.166667, -0.044658; */
+  /* '<S4>:1:47' 0.166667, -0.044658; */
+  /* '<S4>:1:48' -0.166667, -0.622008; */
+  /* '<S4>:1:49' 0.166667, -0.622008; */
+  /* '<S4>:1:50' -0.333333, -0.333333; */
+  /* '<S4>:1:51' -0.000000, -0.333333; */
+  /* '<S4>:1:52' 0.288675, -0.166667; */
+  /* '<S4>:1:53' 0.622008, -0.166667; */
+  /* '<S4>:1:54' 0.122008, 0.122008; */
+  /* '<S4>:1:55' 0.455342, 0.122008; */
+  /* '<S4>:1:56' 0.122008, -0.455342; */
+  /* '<S4>:1:57' 0.455342, -0.455342; */
+  /* '<S4>:1:58' -0.044658, -0.166667; */
+  /* '<S4>:1:59' 0.288675, -0.166667; */
+  /* '<S4>:1:60' -0.288675, -0.166667; */
+  /* '<S4>:1:61' 0.044658, -0.166667; */
+  /* '<S4>:1:62' -0.455342, 0.122008; */
+  /* '<S4>:1:63' -0.122008, 0.122008; */
+  /* '<S4>:1:64' -0.455342, -0.455342; */
+  /* '<S4>:1:65' -0.122008, -0.455342; */
+  /* '<S4>:1:66' -0.622008, -0.166667; */
+  /* '<S4>:1:67' -0.288675, -0.166667; */
+  /* '<S4>:1:68' -0.000000, -0.000000; */
+  /* '<S4>:1:69' 0.333333, -0.000000; */
+  /* '<S4>:1:70' -0.166667, 0.288675; */
+  /* '<S4>:1:71' 0.166667, 0.288675; */
+  /* '<S4>:1:72' -0.166667, -0.288675; */
+  /* '<S4>:1:73' 0.166667, -0.288675; */
+  /* '<S4>:1:74' -0.333333, 0.000000]); */
+  /* 0.0,0.0; */
+  /*  0.0, 0.0 */
+  /* '<S4>:1:77' v_X_Y_pu = single([% 0.0, 0.0; */
+  /* '<S4>:1:78' 0.333333,0; */
+  /* '<S4>:1:79' -0.166667,-0.288675; */
+  /* '<S4>:1:80' 0.166667,-0.288675; */
+  /* '<S4>:1:81' -0.166667,0.288675; */
+  /* '<S4>:1:82' 0.166667,0.288675; */
+  /* '<S4>:1:83' -0.333333,0; */
+  /* '<S4>:1:84' 0,0; */
+  /* '<S4>:1:85' -0.288675,0.166667; */
+  /* '<S4>:1:86' 0.0446580,0.166667; */
+  /* '<S4>:1:87' -0.455342,-0.122008; */
+  /* '<S4>:1:88' -0.122008,-0.122008; */
+  /* '<S4>:1:89' -0.455342,0.455342; */
+  /* '<S4>:1:90' -0.122008,0.455342; */
+  /* '<S4>:1:91' -0.622008,0.166667; */
+  /* '<S4>:1:92' -0.288675,0.166667; */
+  /* '<S4>:1:93' 0.288675,0.166667; */
+  /* '<S4>:1:94' 0.622008,0.166667; */
+  /* '<S4>:1:95' 0.122008,-0.122008; */
+  /* '<S4>:1:96' 0.455342,-0.122008; */
+  /* '<S4>:1:97' 0.122008,0.455342; */
+  /* '<S4>:1:98' 0.455342,0.455342; */
+  /* '<S4>:1:99' -0.0446580,0.166667; */
+  /* '<S4>:1:100' 0.288675,0.166667; */
+  /* '<S4>:1:101' 0,0.333333; */
+  /* '<S4>:1:102' 0.333333,0.333333; */
+  /* '<S4>:1:103' -0.166667,0.0446580; */
+  /* '<S4>:1:104' 0.166667,0.0446580; */
+  /* '<S4>:1:105' -0.166667,0.622008; */
+  /* '<S4>:1:106' 0.166667,0.622008; */
+  /* '<S4>:1:107' -0.333333,0.333333; */
+  /* '<S4>:1:108' 0,0.333333;0,-0.333333; */
+  /* '<S4>:1:109' 0.333333,-0.333333; */
+  /* '<S4>:1:110' -0.166667,-0.622008; */
+  /* '<S4>:1:111' 0.166667,-0.622008; */
+  /* '<S4>:1:112' -0.166667,-0.0446580; */
+  /* '<S4>:1:113' 0.166667,-0.0446580; */
+  /* '<S4>:1:114' -0.333333,-0.333333; */
+  /* '<S4>:1:115' 0,-0.333333; */
+  /* '<S4>:1:116' -0.288675,-0.166667; */
+  /* '<S4>:1:117' 0.0446580,-0.166667; */
+  /* '<S4>:1:118' -0.455342,-0.455342; */
+  /* '<S4>:1:119' -0.122008,-0.455342; */
+  /* '<S4>:1:120' -0.455342,0.122008; */
+  /* '<S4>:1:121' -0.122008,0.122008; */
+  /* '<S4>:1:122' -0.622008,-0.166667; */
+  /* '<S4>:1:123' -0.288675,-0.166667; */
+  /* '<S4>:1:124' 0.288675,-0.166667; */
+  /* '<S4>:1:125' 0.622008,-0.166667; */
+  /* '<S4>:1:126' 0.122008,-0.455342; */
+  /* '<S4>:1:127' 0.455342,-0.455342; */
+  /* '<S4>:1:128' 0.122008,0.122008; */
+  /* '<S4>:1:129' 0.455342,0.122008; */
+  /* '<S4>:1:130' -0.0446580,-0.166667; */
+  /* '<S4>:1:131' 0.288675,-0.166667; */
+  /* '<S4>:1:132' 0,0;0.333333,0; */
+  /* '<S4>:1:133' -0.166667,-0.288675; */
+  /* '<S4>:1:134' 0.166667,-0.288675; */
+  /* '<S4>:1:135' -0.166667,0.288675; */
+  /* '<S4>:1:136' 0.166667,0.288675; */
+  /* '<S4>:1:137' -0.333333,0]); */
+  /*  0.0, 0.0; */
+  /*  0.0, 0.0 */
+  /* '<S4>:1:141' vd_1_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_1(idx_opt),1) *  cos_angle_pos + v_alpha_beta_pu(act_sw_1(idx_opt),2) * sin_angle_pos); */
+  /* '<S4>:1:142' vq_1_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_1(idx_opt),1) * -sin_angle_pos + v_alpha_beta_pu(act_sw_1(idx_opt),2) * cos_angle_pos); */
+  /* '<S4>:1:143' vx_1_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_1(idx_opt),1) * cos_angle_neg + v_X_Y_pu(act_sw_1(idx_opt),2) * sin_angle_neg); */
+  /* '<S4>:1:144' vy_1_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_1(idx_opt),1) * -sin_angle_neg + v_X_Y_pu(act_sw_1(idx_opt),2) * cos_angle_neg); */
+  /* '<S4>:1:146' vd_2_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_2(idx_opt),1) *  cos_angle_pos + v_alpha_beta_pu(act_sw_2(idx_opt),2) * sin_angle_pos); */
+  /* '<S4>:1:147' vq_2_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_2(idx_opt),1) * -sin_angle_pos + v_alpha_beta_pu(act_sw_2(idx_opt),2) * cos_angle_pos); */
+  /* '<S4>:1:148' vx_2_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_2(idx_opt),1) * cos_angle_neg + v_X_Y_pu(act_sw_2(idx_opt),2) * sin_angle_neg); */
+  /* '<S4>:1:149' vy_2_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_2(idx_opt),1) * -sin_angle_neg + v_X_Y_pu(act_sw_2(idx_opt),2) * cos_angle_neg); */
+  /* '<S4>:1:151' vd_3_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_3(idx_opt),1) *  cos_angle_pos + v_alpha_beta_pu(act_sw_3(idx_opt),2) * sin_angle_pos); */
+  /* '<S4>:1:152' vq_3_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_3(idx_opt),1) * -sin_angle_pos + v_alpha_beta_pu(act_sw_3(idx_opt),2) * cos_angle_pos); */
+  /* '<S4>:1:153' vx_3_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_3(idx_opt),1) * cos_angle_neg + v_X_Y_pu(act_sw_3(idx_opt),2) * sin_angle_neg); */
+  /* '<S4>:1:154' vy_3_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_3(idx_opt),1) * -sin_angle_neg + v_X_Y_pu(act_sw_3(idx_opt),2) * cos_angle_neg); */
+  /* '<S4>:1:156' vd_4_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_4(idx_opt),1) *  cos_angle_pos + v_alpha_beta_pu(act_sw_4(idx_opt),2) * sin_angle_pos); */
+  /* '<S4>:1:157' vq_4_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_4(idx_opt),1) * -sin_angle_pos + v_alpha_beta_pu(act_sw_4(idx_opt),2) * cos_angle_pos); */
+  /* '<S4>:1:158' vx_4_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_4(idx_opt),1) * cos_angle_neg + v_X_Y_pu(act_sw_4(idx_opt),2) * sin_angle_neg); */
+  /* '<S4>:1:159' vy_4_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_4(idx_opt),1) * -sin_angle_neg + v_X_Y_pu(act_sw_4(idx_opt),2) * cos_angle_neg); */
+  /* '<S4>:1:161' vd_5_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_5(idx_opt),1) *  cos_angle_pos + v_alpha_beta_pu(act_sw_5(idx_opt),2) * sin_angle_pos); */
+  /* '<S4>:1:162' vq_5_idx_pu = v_DC_pu * (v_alpha_beta_pu(act_sw_5(idx_opt),1) * -sin_angle_pos + v_alpha_beta_pu(act_sw_5(idx_opt),2) * cos_angle_pos); */
+  /* '<S4>:1:163' vx_5_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_5(idx_opt),1) * cos_angle_neg + v_X_Y_pu(act_sw_5(idx_opt),2) * sin_angle_neg); */
+  /* '<S4>:1:164' vy_5_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_5(idx_opt),1) * -sin_angle_neg + v_X_Y_pu(act_sw_5(idx_opt),2) * cos_angle_neg); */
+  /* '<S4>:1:166' v_1_idx_pu = [vd_1_idx_pu; vq_1_idx_pu; vx_1_idx_pu; vy_1_idx_pu]; */
+  rtDW->ijA = rtDW->act_sw_1[rtDW->sector_ref - 1];
+  rtDW->rtb_v_1_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
+  rtDW->q = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->rtb_i_dq_obs_idx_0 = (rtDW->rtb_v_1_idx_pu_idx_1 * rtDW->SinCos1_o2 +
+    rtDW->q * rtDW->smax) * rtU->v_DC_pu;
+  rtDW->rtb_v_1_idx_pu_idx_1 = (rtDW->rtb_v_1_idx_pu_idx_1 * -rtDW->smax +
+    rtDW->q * rtDW->SinCos1_o2) * rtU->v_DC_pu;
+  rtDW->rtb_v_1_idx_pu_idx_3 = v_X_Y_pu[rtDW->ijA - 1];
+  rtDW->rtb_v_2_idx_pu_idx_0 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->q = (rtDW->rtb_v_1_idx_pu_idx_3 * rtDW->SinCos2_o2 +
+             rtDW->rtb_v_2_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
+  rtDW->rtb_v_1_idx_pu_idx_3 = (rtDW->rtb_v_1_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
+    rtDW->rtb_v_2_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
+
+  /* '<S4>:1:167' v_2_idx_pu = [vd_2_idx_pu; vq_2_idx_pu; vx_2_idx_pu; vy_2_idx_pu]; */
+  rtDW->ijA = rtDW->act_sw_2[rtDW->sector_ref - 1];
+  rtDW->rtb_v_2_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
+  rtDW->rtb_v_2_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_2_idx_pu_idx_0 = (rtDW->rtb_v_2_idx_pu_idx_1 * rtDW->SinCos1_o2 +
+    rtDW->rtb_v_2_idx_pu_idx_2 * rtDW->smax) * rtU->v_DC_pu;
+  rtDW->rtb_v_2_idx_pu_idx_1 = (rtDW->rtb_v_2_idx_pu_idx_1 * -rtDW->smax +
+    rtDW->rtb_v_2_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
+  rtDW->rtb_v_2_idx_pu_idx_3 = v_X_Y_pu[rtDW->ijA - 1];
+  rtDW->rtb_v_3_idx_pu_idx_0 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_2_idx_pu_idx_2 = (rtDW->rtb_v_2_idx_pu_idx_3 * rtDW->SinCos2_o2 +
+    rtDW->rtb_v_3_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
+  rtDW->rtb_v_2_idx_pu_idx_3 = (rtDW->rtb_v_2_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
+    rtDW->rtb_v_3_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
+
+  /* '<S4>:1:168' v_3_idx_pu = [vd_3_idx_pu; vq_3_idx_pu; vx_3_idx_pu; vy_3_idx_pu]; */
+  rtDW->ijA = rtDW->act_sw_3[rtDW->sector_ref - 1];
+  rtDW->rtb_v_3_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
+  rtDW->rtb_v_3_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_3_idx_pu_idx_0 = (rtDW->rtb_v_3_idx_pu_idx_1 * rtDW->SinCos1_o2 +
+    rtDW->rtb_v_3_idx_pu_idx_2 * rtDW->smax) * rtU->v_DC_pu;
+  rtDW->rtb_v_3_idx_pu_idx_1 = (rtDW->rtb_v_3_idx_pu_idx_1 * -rtDW->smax +
+    rtDW->rtb_v_3_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
+  rtDW->rtb_v_3_idx_pu_idx_3 = v_X_Y_pu[rtDW->ijA - 1];
+  rtDW->rtb_v_4_idx_pu_idx_0 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_3_idx_pu_idx_2 = (rtDW->rtb_v_3_idx_pu_idx_3 * rtDW->SinCos2_o2 +
+    rtDW->rtb_v_4_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
+  rtDW->rtb_v_3_idx_pu_idx_3 = (rtDW->rtb_v_3_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
+    rtDW->rtb_v_4_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
+
+  /* '<S4>:1:169' v_4_idx_pu = [vd_4_idx_pu; vq_4_idx_pu; vx_4_idx_pu; vy_4_idx_pu]; */
+  rtDW->ijA = rtDW->act_sw_4[rtDW->sector_ref - 1];
+  rtDW->rtb_v_4_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
+  rtDW->rtb_v_4_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_4_idx_pu_idx_0 = (rtDW->rtb_v_4_idx_pu_idx_1 * rtDW->SinCos1_o2 +
+    rtDW->rtb_v_4_idx_pu_idx_2 * rtDW->smax) * rtU->v_DC_pu;
+  rtDW->rtb_v_4_idx_pu_idx_1 = (rtDW->rtb_v_4_idx_pu_idx_1 * -rtDW->smax +
+    rtDW->rtb_v_4_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
+  rtDW->rtb_v_4_idx_pu_idx_3 = v_X_Y_pu[rtDW->ijA - 1];
+  rtDW->rtb_v_5_idx_pu_idx_0 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_4_idx_pu_idx_2 = (rtDW->rtb_v_4_idx_pu_idx_3 * rtDW->SinCos2_o2 +
+    rtDW->rtb_v_5_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
+  rtDW->rtb_v_4_idx_pu_idx_3 = (rtDW->rtb_v_4_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
+    rtDW->rtb_v_5_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
+
+  /* '<S4>:1:170' v_5_idx_pu = [vd_5_idx_pu; vq_5_idx_pu; vx_5_idx_pu; vy_5_idx_pu]; */
+  rtDW->ijA = rtDW->act_sw_5[rtDW->sector_ref - 1];
+  rtDW->rtb_v_5_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
+  rtDW->rtb_v_5_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_5_idx_pu_idx_0 = (rtDW->rtb_v_5_idx_pu_idx_1 * rtDW->SinCos1_o2 +
+    rtDW->rtb_v_5_idx_pu_idx_2 * rtDW->smax) * rtU->v_DC_pu;
+  rtDW->rtb_v_5_idx_pu_idx_1 = (rtDW->rtb_v_5_idx_pu_idx_1 * -rtDW->smax +
+    rtDW->rtb_v_5_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
+  rtDW->smax = v_X_Y_pu[rtDW->ijA - 1];
+  rtDW->SinCos1_o2 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_5_idx_pu_idx_2 = (rtDW->smax * rtDW->SinCos2_o2 + rtDW->SinCos1_o2
+    * rtDW->SinCos2_o1) * rtU->v_DC_pu;
+  rtDW->rtb_v_5_idx_pu_idx_3 = (rtDW->smax * -rtDW->SinCos2_o1 +
+    rtDW->SinCos1_o2 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
+
+  /* MATLAB Function: '<S1>/state_space_mdl' incorporates:
+   *  Inport: '<Root>/HC_off_on'
+   *  Inport: '<Root>/Rs_over_ZB'
+   *  Inport: '<Root>/Ts_times_ZB_over_Ld'
+   *  Inport: '<Root>/Ts_times_ZB_over_Lq'
+   *  Inport: '<Root>/Ts_times_ZB_over_Lx'
+   *  Inport: '<Root>/Ts_times_ZB_over_Ly'
+   *  Inport: '<Root>/omega_el_pu'
+   *  Inport: '<Root>/phiPM_h'
+   *  Inport: '<Root>/psiPM_h_pu'
+   *  Inport: '<Root>/theta_el_neg'
+   */
+  /* MATLAB Function 'uz_codegen/state_space_mdl': '<S10>:1' */
+  /* '<S10>:1:3' A = [ -Ts_times_ZB_over_Ld*Rs_over_ZB            Ts_times_ZB_over_Ld*Lq_over_LB*w_e_pu   0                                      0                               ; */
+  /* '<S10>:1:4'       -Ts_times_ZB_over_Lq*Ld_over_LB*w_e_pu    -Ts_times_ZB_over_Lq*Rs_over_ZB          0                                      0                               ; */
+  /* '<S10>:1:5'       0                                          0                                       -Ts_times_ZB_over_Lx*Rs_over_ZB        -Ly_over_LB*w_e_pu              ; */
+  /* '<S10>:1:6'       0                                          0                                        Lx_over_LB*w_e_pu                     -Ts_times_ZB_over_Ly*Rs_over_ZB]; */
+  rtDW->A_k[0] = -rtU->Ts_times_ZB_over_Ld * rtU->Rs_over_ZB;
+  rtDW->A_k[4] = rtDW->x0_idx_0;
+  rtDW->A_k[8] = 0.0F;
+  rtDW->A_k[12] = 0.0F;
+  rtDW->A_k[1] = rtDW->x0_idx_1;
+  rtDW->A_k[5] = -rtU->Ts_times_ZB_over_Lq * rtU->Rs_over_ZB;
+  rtDW->A_k[9] = 0.0F;
+  rtDW->A_k[13] = 0.0F;
+  rtDW->A_k[2] = 0.0F;
+  rtDW->A_k[6] = 0.0F;
+  rtDW->A_k[10] = -rtU->Ts_times_ZB_over_Lx * rtU->Rs_over_ZB;
+  rtDW->A_k[14] = rtDW->x0_idx_2;
+  rtDW->A_k[3] = 0.0F;
+  rtDW->A_k[7] = 0.0F;
+  rtDW->A_k[11] = rtDW->x0_idx_3;
+  rtDW->A_k[15] = -rtU->Ts_times_ZB_over_Ly * rtU->Rs_over_ZB;
+
+  /* '<S10>:1:8' psiPM5 = psiPM_h_pu(1); */
+  /* '<S10>:1:9' psiPM7 = psiPM_h_pu(2); */
+  /* '<S10>:1:11' phi5 = phiPM_h(1); */
+  /* '<S10>:1:12' phi7 = phiPM_h(2); */
+  /*  w3theta_el = single(3*theta_el); */
+  /* '<S10>:1:15' w6theta_el = single(6*theta_el); */
+  rtDW->SinCos2_o2 = 6.0F * rtU->theta_el_neg;
+
+  /*  w9theta_el = single(9*theta_el); */
+  /*  w12theta_el = single(12*theta_el); */
+  /* '<S10>:1:19' B = [Ts_times_ZB_over_Ld    0                       0                       0                       ; */
+  /* '<S10>:1:20'      0                      Ts_times_ZB_over_Lq     0                       0                       ; */
+  /* '<S10>:1:21'      0                      0                       Ts_times_ZB_over_Lx     0                       ; */
+  /* '<S10>:1:22'      0                      0                       0                       Ts_times_ZB_over_Ly     ]; */
+  rtDW->B_c[0] = rtU->Ts_times_ZB_over_Ld;
+  rtDW->B_c[4] = 0.0F;
+  rtDW->B_c[8] = 0.0F;
+  rtDW->B_c[12] = 0.0F;
+  rtDW->B_c[1] = 0.0F;
+  rtDW->B_c[5] = rtU->Ts_times_ZB_over_Lq;
+  rtDW->B_c[9] = 0.0F;
+  rtDW->B_c[13] = 0.0F;
+  rtDW->B_c[2] = 0.0F;
+  rtDW->B_c[6] = 0.0F;
+  rtDW->B_c[10] = rtU->Ts_times_ZB_over_Lx;
+  rtDW->B_c[14] = 0.0F;
+  rtDW->B_c[3] = 0.0F;
+  rtDW->B_c[7] = 0.0F;
+  rtDW->B_c[11] = 0.0F;
+  rtDW->B_c[15] = rtU->Ts_times_ZB_over_Ly;
+
+  /* '<S10>:1:24' C = [1   0   0   0; */
+  /* '<S10>:1:25'      0   1   0   0; */
+  /* '<S10>:1:26'      0   0   1   0; */
+  /* '<S10>:1:27'      0   0   0   1]; */
+  /* '<S10>:1:29' D = [    e_dq_obs(1); */
+  /* '<S10>:1:30'          -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB + e_dq_obs(2); */
+  /* '<S10>:1:31'          e_xy_obs(1); */
+  /* '<S10>:1:32'          e_xy_obs(2)]; */
+  rtDW->D[0] = rtDW->rtb_e_dq_obs_idx_0;
+  rtDW->x0_idx_0 = rtDW->A_me + rtDW->rtb_e_dq_obs_g;
+  rtDW->D[1] = rtDW->x0_idx_0;
+  rtDW->D[2] = rtDW->rtb_e_xy_obs_idx_0;
+  rtDW->D[3] = rtDW->rtb_e_xy_obs_g;
+
+  /* '<S10>:1:34' E = [    e_dq_obs(1); */
+  /* '<S10>:1:35'          -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB + e_dq_obs(2); */
+  /* '<S10>:1:36'          -w_e_pu*(psiPM5*sin(w6theta_el+phi5) - psiPM7*sin(w6theta_el+phi7)-psiPM5*6*sin(w6theta_el+phi5) - psiPM7*6*sin(w6theta_el+phi7)) + e_xy_obs(1); */
+  /* '<S10>:1:37'          -w_e_pu*(psiPM5*cos(w6theta_el+phi5) + psiPM7*cos(w6theta_el+phi7) + psiPM5*6*cos(w6theta_el+phi5) - psiPM7*6*cos(w6theta_el+phi7)) + e_xy_obs(2)]; */
+  rtDW->x0_idx_1 = rtDW->SinCos2_o2 + rtU->phiPM_h[0];
+  rtDW->smax = sinf(rtDW->x0_idx_1);
+  rtDW->x0_idx_2 = rtDW->SinCos2_o2 + rtU->phiPM_h[1];
+  rtDW->SinCos1_o2 = sinf(rtDW->x0_idx_2);
+  rtDW->SinCos2_o1 = cosf(rtDW->x0_idx_1);
+  rtDW->SinCos2_o2 = cosf(rtDW->x0_idx_2);
+  rtDW->E[0] = rtDW->rtb_e_dq_obs_idx_0;
+  rtDW->E[1] = rtDW->x0_idx_0;
+  rtDW->E[2] = (((rtU->psiPM_h_pu[0] * rtDW->smax - rtU->psiPM_h_pu[1] *
+                  rtDW->SinCos1_o2) - rtU->psiPM_h_pu[0] * 6.0F * rtDW->smax) -
+                rtU->psiPM_h_pu[1] * 6.0F * rtDW->SinCos1_o2) *
+    -rtU->omega_el_pu + rtDW->rtb_e_xy_obs_idx_0;
+  rtDW->E[3] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos2_o1 + rtU->psiPM_h_pu[1] *
+                  rtDW->SinCos2_o2) + rtU->psiPM_h_pu[0] * 6.0F *
+                 rtDW->SinCos2_o1) - rtU->psiPM_h_pu[1] * 6.0F *
+                rtDW->SinCos2_o2) * -rtU->omega_el_pu + rtDW->rtb_e_xy_obs_g;
+
+  /* '<S10>:1:39' x0 = [id_pu; iq_pu; ix_pu; iy_pu]; */
+  rtDW->x0_idx_0 = rtDW->v_t0[0];
+  rtDW->x0_idx_1 = rtDW->v_t0[1];
+  rtDW->x0_idx_2 = rtDW->v_t0[2];
+  rtDW->x0_idx_3 = rtDW->v_t0[3];
+
+  /* '<S10>:1:41' u0 = [0;0;0;0]; */
+  /*  zero voltage applied */
+  /* '<S10>:1:42' u1 = [v_1_pu(1); v_1_pu(2); v_1_pu(3); v_1_pu(4)]; */
+  /*  first active vector */
+  /* '<S10>:1:43' u2 = [v_2_pu(1); v_2_pu(2); v_2_pu(3); v_2_pu(4)]; */
+  /*  second active vector */
+  /* '<S10>:1:44' u3 = [v_3_pu(1); v_3_pu(2); v_3_pu(3); v_3_pu(4)]; */
+  /*  third active vector */
+  /* '<S10>:1:45' u4 = [v_4_pu(1); v_4_pu(2); v_4_pu(3); v_4_pu(4)]; */
+  /*  fourth active vector */
+  /* '<S10>:1:46' u5 = [v_5_pu(1); v_5_pu(2); v_5_pu(3); v_5_pu(4)]; */
+  /*  fifth active vector */
+  /*  calculate the gradients */
+  /*  .*2 because we calculate current evolution only for half of the */
+  /*  period and mirror it???  */
+  /* '<S10>:1:51' switch HC_off_on */
+  if (!rtU->HC_off_on) {
+    rtDW->ijA = 0;
+  } else if (rtU->HC_off_on) {
+    rtDW->ijA = 1;
+  } else {
+    rtDW->ijA = -1;
+  }
+
+  switch (rtDW->ijA) {
+   case 0:
+    /* '<S10>:1:52' case false */
+    /* '<S10>:1:53' m0 = C*(A*x0+B*u0+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->E_p[rtDW->ijA] = (rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + rtDW->D
+        [rtDW->ijA];
+    }
+
+    /* '<S10>:1:54' m1 = C*(A*x0+B*u1+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m6[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_p[3] +
+        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_p[2] + ((real32_T)b[rtDW->ijA + 4]
+        * rtDW->E_p[1] + (real32_T)b[rtDW->ijA] * rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->q + (rtDW->B_c[rtDW->ijA + 4] * rtDW->rtb_v_1_idx_pu_idx_1
+                          + rtDW->B_c[rtDW->ijA] * rtDW->rtb_i_dq_obs_idx_0))))
+        + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:55' m2 = C*(A*x0+B*u2+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m1[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_c[3] +
+        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_c[2] + ((real32_T)b[rtDW->ijA + 4]
+        * rtDW->E_c[1] + (real32_T)b[rtDW->ijA] * rtDW->E_c[0]))) * 2.0F;
+      rtDW->E_p[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_2_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->rtb_v_2_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_2_idx_pu_idx_0)))) + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:56' m3 = C*(A*x0+B*u3+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m2[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_p[3] +
+        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_p[2] + ((real32_T)b[rtDW->ijA + 4]
+        * rtDW->E_p[1] + (real32_T)b[rtDW->ijA] * rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_3_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->rtb_v_3_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_3_idx_pu_idx_0)))) + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:57' m4 = C*(A*x0+B*u4+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m3[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_c[3] +
+        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_c[2] + ((real32_T)b[rtDW->ijA + 4]
+        * rtDW->E_c[1] + (real32_T)b[rtDW->ijA] * rtDW->E_c[0]))) * 2.0F;
+      rtDW->E_p[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_4_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->rtb_v_4_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_4_idx_pu_idx_0)))) + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:58' m5 = C*(A*x0+B*u5+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m4[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_p[3] +
+        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_p[2] + ((real32_T)b[rtDW->ijA + 4]
+        * rtDW->E_p[1] + (real32_T)b[rtDW->ijA] * rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_5_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->rtb_v_5_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_5_idx_pu_idx_0)))) + rtDW->D[rtDW->ijA];
+    }
+
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->E[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_c[3] +
+                            ((real32_T)b[rtDW->ijA + 8] * rtDW->E_c[2] +
+        ((real32_T)b[rtDW->ijA + 4] * rtDW->E_c[1] + (real32_T)b[rtDW->ijA] *
+         rtDW->E_c[0]))) * 2.0F;
+    }
+
+    /* '<S10>:1:59' m6 = m0; */
+    /*  m0 = C*(A*x0+B*u0+D);  */
+    /*  m1 = C*(A*x0+B*u1+D); */
+    /*  m2 = C*(A*x0+B*u2+D); */
+    /*  m3 = C*(A*x0+B*u3+D); */
+    /*  m4 = C*(A*x0+B*u4+D); */
+    /*  m5 = C*(A*x0+B*u5+D); */
+    /*  m6 = m0; */
+    break;
+
+   case 1:
+    /* '<S10>:1:67' case true */
+    /* '<S10>:1:68' m0 = C*(A*x0+B*u0+E).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 16; rtDW->ijA++) {
+      rtDW->rtb_m6_tmp[rtDW->ijA] = b[rtDW->ijA];
+    }
+
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->E_p[rtDW->ijA] = (rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + rtDW->E
+        [rtDW->ijA];
+    }
+
+    /* '<S10>:1:69' m1 = C*(A*x0+B*u1+E).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m6[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->q + (rtDW->B_c[rtDW->ijA + 4] * rtDW->rtb_v_1_idx_pu_idx_1
+                          + rtDW->B_c[rtDW->ijA] * rtDW->rtb_i_dq_obs_idx_0))))
+        + rtDW->E[rtDW->ijA];
+    }
+
+    /* '<S10>:1:70' m2 = C*(A*x0+B*u2+E).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m1[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_c[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_c[0]))) * 2.0F;
+      rtDW->E_p[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_2_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->rtb_v_2_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_2_idx_pu_idx_0)))) + rtDW->E[rtDW->ijA];
+    }
+
+    /* '<S10>:1:71' m3 = C*(A*x0+B*u3+E).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m2[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_3_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->rtb_v_3_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_3_idx_pu_idx_0)))) + rtDW->E[rtDW->ijA];
+    }
+
+    /* '<S10>:1:72' m4 = C*(A*x0+B*u4+E).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m3[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_c[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_c[0]))) * 2.0F;
+      rtDW->E_p[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_4_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->rtb_v_4_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_4_idx_pu_idx_0)))) + rtDW->E[rtDW->ijA];
+    }
+
+    /* '<S10>:1:73' m5 = C*(A*x0+B*u5+E).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m4[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
+        B_c[rtDW->ijA + 12] * rtDW->rtb_v_5_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
+        + 8] * rtDW->rtb_v_5_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_5_idx_pu_idx_0)))) + rtDW->E[rtDW->ijA];
+    }
+
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->E[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+                            rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA
+        + 8] * rtDW->E_c[2] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] *
+        rtDW->E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] * rtDW->E_c[0]))) *
+        2.0F;
+    }
+
+    /* '<S10>:1:74' m6 = m0; */
+    /*  m0 = C*(A*x0+B*u0+E);  */
+    /*  m1 = C*(A*x0+B*u1+E); */
+    /*  m2 = C*(A*x0+B*u2+E); */
+    /*  m3 = C*(A*x0+B*u3+E); */
+    /*  m4 = C*(A*x0+B*u4+E); */
+    /*  m5 = C*(A*x0+B*u5+E); */
+    /*  m6 = m0; */
+    break;
+
+   default:
+    /* '<S10>:1:82' otherwise */
+    /* '<S10>:1:83' m0 = C*(A*x0+B*u0+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->E[rtDW->ijA] = rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
+          rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0));
+    }
+
+    for (rtDW->ijA = 0; rtDW->ijA < 16; rtDW->ijA++) {
+      rtDW->rtb_m6_tmp[rtDW->ijA] = b[rtDW->ijA];
+    }
+
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->E_p[rtDW->ijA] = rtDW->E[rtDW->ijA] + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:84' m1 = C*(A*x0+B*u1+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m6[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_1_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_i_dq_obs_idx_0) + rtDW->B_c[rtDW->ijA + 8] * rtDW->q) +
+        rtDW->B_c[rtDW->ijA + 12] * rtDW->rtb_v_1_idx_pu_idx_3) + rtDW->E
+        [rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:85' m2 = C*(A*x0+B*u2+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m1[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_c[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_c[0]))) * 2.0F;
+      rtDW->E_p[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_2_idx_pu_idx_0) + rtDW->B_c[rtDW->ijA + 8] *
+        rtDW->rtb_v_2_idx_pu_idx_2) + rtDW->B_c[rtDW->ijA + 12] *
+        rtDW->rtb_v_2_idx_pu_idx_3) + rtDW->E[rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:86' m3 = C*(A*x0+B*u3+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m2[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_3_idx_pu_idx_0) + rtDW->B_c[rtDW->ijA + 8] *
+        rtDW->rtb_v_3_idx_pu_idx_2) + rtDW->B_c[rtDW->ijA + 12] *
+        rtDW->rtb_v_3_idx_pu_idx_3) + rtDW->E[rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:87' m4 = C*(A*x0+B*u4+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m3[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_c[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_c[0]))) * 2.0F;
+      rtDW->E_p[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_4_idx_pu_idx_0) + rtDW->B_c[rtDW->ijA + 8] *
+        rtDW->rtb_v_4_idx_pu_idx_2) + rtDW->B_c[rtDW->ijA + 12] *
+        rtDW->rtb_v_4_idx_pu_idx_3) + rtDW->E[rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    }
+
+    /* '<S10>:1:88' m5 = C*(A*x0+B*u5+D).*2; */
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->m4[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
+                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
+                           rtDW->E_p[0]))) * 2.0F;
+      rtDW->E_c[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
+        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
+        rtDW->rtb_v_5_idx_pu_idx_0) + rtDW->B_c[rtDW->ijA + 8] *
+        rtDW->rtb_v_5_idx_pu_idx_2) + rtDW->B_c[rtDW->ijA + 12] *
+        rtDW->rtb_v_5_idx_pu_idx_3) + rtDW->E[rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    }
+
+    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+      rtDW->E[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
+                            rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA
+        + 8] * rtDW->E_c[2] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] *
+        rtDW->E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] * rtDW->E_c[0]))) *
+        2.0F;
+    }
+
+    /* '<S10>:1:89' m6 = m0; */
+    /*  m0 = C*(A*x0+B*u0+D);  */
+    /*  m1 = C*(A*x0+B*u1+D); */
+    /*  m2 = C*(A*x0+B*u2+D); */
+    /*  m3 = C*(A*x0+B*u3+D); */
+    /*  m4 = C*(A*x0+B*u4+D); */
+    /*  m5 = C*(A*x0+B*u5+D); */
+    /*  m6 = m0; */
+    break;
+  }
 
   /* MATLAB Function: '<S1>/formulate_qp' incorporates:
    *  Inport: '<Root>/i_d_ref_pu'
@@ -2665,171 +3224,166 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/lambda'
    *  MATLAB Function: '<S1>/state_space_mdl'
    */
-  /* MATLAB Function 'uz_codegen/formulate_qp': '<S5>:1' */
-  /* '<S5>:1:4' lam = [ lambda  0       0       0; */
-  /* '<S5>:1:5'         0       lambda  0       0; */
-  /* '<S5>:1:6'         0       0       lambda       0; */
-  /* '<S5>:1:7'         0       0       0       lambda]; */
-  rtDW->lam[0] = rtU->lambda;
-  rtDW->lam[4] = 0.0F;
-  rtDW->lam[8] = 0.0F;
-  rtDW->lam[12] = 0.0F;
-  rtDW->lam[1] = 0.0F;
-  rtDW->lam[5] = rtU->lambda;
-  rtDW->lam[9] = 0.0F;
-  rtDW->lam[13] = 0.0F;
-  rtDW->lam[2] = 0.0F;
-  rtDW->lam[6] = 0.0F;
-  rtDW->lam[10] = rtU->lambda;
-  rtDW->lam[14] = 0.0F;
-  rtDW->lam[3] = 0.0F;
-  rtDW->lam[7] = 0.0F;
-  rtDW->lam[11] = 0.0F;
-  rtDW->lam[15] = rtU->lambda;
+  /* MATLAB Function 'uz_codegen/formulate_qp': '<S7>:1' */
+  /* '<S7>:1:4' lam = [ lambda  0       0       0; */
+  /* '<S7>:1:5'         0       lambda  0       0; */
+  /* '<S7>:1:6'         0       0       lambda  0; */
+  /* '<S7>:1:7'         0       0       0       lambda]; */
+  rtDW->A_k[0] = rtU->lambda;
+  rtDW->A_k[4] = 0.0F;
+  rtDW->A_k[8] = 0.0F;
+  rtDW->A_k[12] = 0.0F;
+  rtDW->A_k[1] = 0.0F;
+  rtDW->A_k[5] = rtU->lambda;
+  rtDW->A_k[9] = 0.0F;
+  rtDW->A_k[13] = 0.0F;
+  rtDW->A_k[2] = 0.0F;
+  rtDW->A_k[6] = 0.0F;
+  rtDW->A_k[10] = rtU->lambda;
+  rtDW->A_k[14] = 0.0F;
+  rtDW->A_k[3] = 0.0F;
+  rtDW->A_k[7] = 0.0F;
+  rtDW->A_k[11] = 0.0F;
+  rtDW->A_k[15] = rtU->lambda;
 
-  /* '<S5>:1:9' i_t0 = [id0 iq0 ix0 iy0]'; */
-  /* '<S5>:1:10' i_ref = [id_ref iq_ref ix_ref iy_ref]'; */
-  /*  e_i = i_ref - i_t0; */
-  /* '<S5>:1:12' e_i = i_ref - i_delay; */
-  rtDW->E[0] = rtU->i_d_ref_pu - rtDW->v_5_idx_pu[0];
-  rtDW->E[1] = rtU->i_q_ref_pu - rtDW->v_5_idx_pu[1];
-  rtDW->E[2] = rtU->i_x_ref_pu - rtDW->v_5_idx_pu[2];
-  rtDW->E[3] = rtU->i_y_ref_pu - rtDW->v_5_idx_pu[3];
+  /* '<S7>:1:9' i_ref = [id_ref iq_ref ix_ref iy_ref]'; */
+  /* '<S7>:1:10' e_i = i_ref - i_delay; */
+  rtDW->D[0] = rtU->i_d_ref_pu - rtDW->v_t0[0];
+  rtDW->D[1] = rtU->i_q_ref_pu - rtDW->v_t0[1];
+  rtDW->D[2] = rtU->i_x_ref_pu - rtDW->v_t0[2];
+  rtDW->D[3] = rtU->i_y_ref_pu - rtDW->v_t0[3];
 
-  /* '<S5>:1:14' r = [e_i; e_i; e_i; e_i; e_i; e_i; lam*e_i]; */
-  /* '<S5>:1:16' zer = zeros(4,1); */
-  /* '<S5>:1:17' m0_lam = lam*m0; */
-  /* '<S5>:1:18' m1_lam = lam*m1; */
-  /* '<S5>:1:19' m2_lam = lam*m2; */
-  /* '<S5>:1:20' m3_lam = lam*m3; */
-  /* '<S5>:1:21' m4_lam = lam*m4; */
-  /* '<S5>:1:22' m5_lam = lam*m5; */
-  /* '<S5>:1:23' m6_lam = m0_lam; */
-  /* '<S5>:1:25' M = [m0     zer     zer     zer     zer     zer     zer; */
-  /* '<S5>:1:26'      m0     m1      zer     zer     zer     zer     zer; */
-  /* '<S5>:1:27'      m0     m1      m2      zer     zer     zer     zer; */
-  /* '<S5>:1:28'      m0     m1      m2      m3      zer     zer     zer; */
-  /* '<S5>:1:29'      m0     m1      m2      m3      m4      zer     zer; */
-  /* '<S5>:1:30'      m0     m1      m2      m3      m4      m5      zer; */
-  /* '<S5>:1:31'      m0_lam m1_lam  m2_lam  m3_lam  m4_lam  m5_lam  m6_lam]; */
-  for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
-    rtDW->r[rtDW->iy] = rtDW->E[rtDW->iy];
-    rtDW->r[rtDW->iy + 4] = rtDW->E[rtDW->iy];
-    rtDW->r[rtDW->iy + 8] = rtDW->E[rtDW->iy];
-    rtDW->r[rtDW->iy + 12] = rtDW->E[rtDW->iy];
-    rtDW->r[rtDW->iy + 16] = rtDW->E[rtDW->iy];
-    rtDW->r[rtDW->iy + 20] = rtDW->E[rtDW->iy];
-    rtDW->x = rtDW->lam[rtDW->iy + 4];
-    rtDW->w6theta_el = rtDW->lam[rtDW->iy + 8];
-    rtDW->q = rtDW->lam[rtDW->iy + 12];
-    rtDW->r[rtDW->iy + 24] = rtDW->q * rtDW->E[3] + (rtDW->w6theta_el * rtDW->E
-      [2] + (rtDW->x * rtDW->E[1] + rtDW->lam[rtDW->iy] * rtDW->E[0]));
-    rtDW->SinCos1_o1 = rtDW->lam[rtDW->iy];
-    rtDW->SinCos1_o2 = rtDW->q * rtDW->m6[3] + (rtDW->w6theta_el * rtDW->m6[2] +
-      (rtDW->x * rtDW->m6[1] + rtDW->SinCos1_o1 * rtDW->m6[0]));
-    rtDW->M[rtDW->iy] = rtDW->m6[rtDW->iy];
-    rtDW->M[rtDW->iy + 28] = 0.0F;
-    rtDW->M[rtDW->iy + 56] = 0.0F;
-    rtDW->M[rtDW->iy + 84] = 0.0F;
-    rtDW->M[rtDW->iy + 112] = 0.0F;
-    rtDW->M[rtDW->iy + 140] = 0.0F;
-    rtDW->M[rtDW->iy + 168] = 0.0F;
-    rtDW->M[rtDW->iy + 4] = rtDW->m6[rtDW->iy];
-    rtDW->M[rtDW->iy + 32] = rtDW->m1[rtDW->iy];
-    rtDW->M[rtDW->iy + 60] = 0.0F;
-    rtDW->M[rtDW->iy + 88] = 0.0F;
-    rtDW->M[rtDW->iy + 116] = 0.0F;
-    rtDW->M[rtDW->iy + 144] = 0.0F;
-    rtDW->M[rtDW->iy + 172] = 0.0F;
-    rtDW->M[rtDW->iy + 8] = rtDW->m6[rtDW->iy];
-    rtDW->M[rtDW->iy + 36] = rtDW->m1[rtDW->iy];
-    rtDW->M[rtDW->iy + 64] = rtDW->v_1_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 92] = 0.0F;
-    rtDW->M[rtDW->iy + 120] = 0.0F;
-    rtDW->M[rtDW->iy + 148] = 0.0F;
-    rtDW->M[rtDW->iy + 176] = 0.0F;
-    rtDW->M[rtDW->iy + 12] = rtDW->m6[rtDW->iy];
-    rtDW->M[rtDW->iy + 40] = rtDW->m1[rtDW->iy];
-    rtDW->M[rtDW->iy + 68] = rtDW->v_1_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 96] = rtDW->v_2_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 124] = 0.0F;
-    rtDW->M[rtDW->iy + 152] = 0.0F;
-    rtDW->M[rtDW->iy + 180] = 0.0F;
-    rtDW->M[rtDW->iy + 16] = rtDW->m6[rtDW->iy];
-    rtDW->M[rtDW->iy + 44] = rtDW->m1[rtDW->iy];
-    rtDW->M[rtDW->iy + 72] = rtDW->v_1_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 100] = rtDW->v_2_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 128] = rtDW->v_3_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 156] = 0.0F;
-    rtDW->M[rtDW->iy + 184] = 0.0F;
-    rtDW->M[rtDW->iy + 20] = rtDW->m6[rtDW->iy];
-    rtDW->M[rtDW->iy + 48] = rtDW->m1[rtDW->iy];
-    rtDW->M[rtDW->iy + 76] = rtDW->v_1_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 104] = rtDW->v_2_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 132] = rtDW->v_3_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 160] = rtDW->v_4_idx_pu[rtDW->iy];
-    rtDW->M[rtDW->iy + 188] = 0.0F;
-    rtDW->M[rtDW->iy + 24] = rtDW->SinCos1_o2;
-    rtDW->M[rtDW->iy + 52] = rtDW->q * rtDW->m1[3] + (rtDW->w6theta_el *
-      rtDW->m1[2] + (rtDW->x * rtDW->m1[1] + rtDW->SinCos1_o1 * rtDW->m1[0]));
-    rtDW->M[rtDW->iy + 80] = rtDW->q * rtDW->v_1_idx_pu[3] + (rtDW->w6theta_el *
-      rtDW->v_1_idx_pu[2] + (rtDW->x * rtDW->v_1_idx_pu[1] + rtDW->SinCos1_o1 *
-      rtDW->v_1_idx_pu[0]));
-    rtDW->M[rtDW->iy + 108] = rtDW->q * rtDW->v_2_idx_pu[3] + (rtDW->w6theta_el *
-      rtDW->v_2_idx_pu[2] + (rtDW->x * rtDW->v_2_idx_pu[1] + rtDW->SinCos1_o1 *
-      rtDW->v_2_idx_pu[0]));
-    rtDW->M[rtDW->iy + 136] = rtDW->q * rtDW->v_3_idx_pu[3] + (rtDW->w6theta_el *
-      rtDW->v_3_idx_pu[2] + (rtDW->x * rtDW->v_3_idx_pu[1] + rtDW->SinCos1_o1 *
-      rtDW->v_3_idx_pu[0]));
-    rtDW->M[rtDW->iy + 164] = rtDW->q * rtDW->v_4_idx_pu[3] + (rtDW->w6theta_el *
-      rtDW->v_4_idx_pu[2] + (rtDW->x * rtDW->v_4_idx_pu[1] + rtDW->SinCos1_o1 *
-      rtDW->v_4_idx_pu[0]));
-    rtDW->M[rtDW->iy + 192] = rtDW->SinCos1_o2;
+  /* '<S7>:1:12' r = [e_i; e_i; e_i; e_i; e_i; e_i; lam*e_i]; */
+  /* '<S7>:1:14' zer = zeros(4,1); */
+  /* '<S7>:1:15' m0_lam = lam*m0; */
+  /* '<S7>:1:16' m1_lam = lam*m1; */
+  /* '<S7>:1:17' m2_lam = lam*m2; */
+  /* '<S7>:1:18' m3_lam = lam*m3; */
+  /* '<S7>:1:19' m4_lam = lam*m4; */
+  /* '<S7>:1:20' m5_lam = lam*m5; */
+  /* '<S7>:1:21' m6_lam = m0_lam; */
+  /* '<S7>:1:23' M = [m0     zer     zer     zer     zer     zer     zer; */
+  /* '<S7>:1:24'      m0     m1      zer     zer     zer     zer     zer; */
+  /* '<S7>:1:25'      m0     m1      m2      zer     zer     zer     zer; */
+  /* '<S7>:1:26'      m0     m1      m2      m3      zer     zer     zer; */
+  /* '<S7>:1:27'      m0     m1      m2      m3      m4      zer     zer; */
+  /* '<S7>:1:28'      m0     m1      m2      m3      m4      m5      zer; */
+  /* '<S7>:1:29'      m0_lam m1_lam  m2_lam  m3_lam  m4_lam  m5_lam  m6_lam]; */
+  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
+    rtDW->r[rtDW->ijA] = rtDW->D[rtDW->ijA];
+    rtDW->r[rtDW->ijA + 4] = rtDW->D[rtDW->ijA];
+    rtDW->r[rtDW->ijA + 8] = rtDW->D[rtDW->ijA];
+    rtDW->r[rtDW->ijA + 12] = rtDW->D[rtDW->ijA];
+    rtDW->r[rtDW->ijA + 16] = rtDW->D[rtDW->ijA];
+    rtDW->r[rtDW->ijA + 20] = rtDW->D[rtDW->ijA];
+    rtDW->x0_idx_2 = rtDW->A_k[rtDW->ijA + 4];
+    rtDW->x0_idx_3 = rtDW->A_k[rtDW->ijA + 8];
+    rtDW->A_me = rtDW->A_k[rtDW->ijA + 12];
+    rtDW->r[rtDW->ijA + 24] = rtDW->A_me * rtDW->D[3] + (rtDW->x0_idx_3 *
+      rtDW->D[2] + (rtDW->x0_idx_2 * rtDW->D[1] + rtDW->A_k[rtDW->ijA] * rtDW->
+                    D[0]));
+    rtDW->x0_idx_0 = rtDW->A_k[rtDW->ijA];
+    rtDW->x0_idx_1 = rtDW->A_me * rtDW->m6[3] + (rtDW->x0_idx_3 * rtDW->m6[2] +
+      (rtDW->x0_idx_2 * rtDW->m6[1] + rtDW->x0_idx_0 * rtDW->m6[0]));
+    rtDW->M[rtDW->ijA] = rtDW->m6[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 28] = 0.0F;
+    rtDW->M[rtDW->ijA + 56] = 0.0F;
+    rtDW->M[rtDW->ijA + 84] = 0.0F;
+    rtDW->M[rtDW->ijA + 112] = 0.0F;
+    rtDW->M[rtDW->ijA + 140] = 0.0F;
+    rtDW->M[rtDW->ijA + 168] = 0.0F;
+    rtDW->M[rtDW->ijA + 4] = rtDW->m6[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 32] = rtDW->m1[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 60] = 0.0F;
+    rtDW->M[rtDW->ijA + 88] = 0.0F;
+    rtDW->M[rtDW->ijA + 116] = 0.0F;
+    rtDW->M[rtDW->ijA + 144] = 0.0F;
+    rtDW->M[rtDW->ijA + 172] = 0.0F;
+    rtDW->M[rtDW->ijA + 8] = rtDW->m6[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 36] = rtDW->m1[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 64] = rtDW->m2[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 92] = 0.0F;
+    rtDW->M[rtDW->ijA + 120] = 0.0F;
+    rtDW->M[rtDW->ijA + 148] = 0.0F;
+    rtDW->M[rtDW->ijA + 176] = 0.0F;
+    rtDW->M[rtDW->ijA + 12] = rtDW->m6[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 40] = rtDW->m1[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 68] = rtDW->m2[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 96] = rtDW->m3[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 124] = 0.0F;
+    rtDW->M[rtDW->ijA + 152] = 0.0F;
+    rtDW->M[rtDW->ijA + 180] = 0.0F;
+    rtDW->M[rtDW->ijA + 16] = rtDW->m6[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 44] = rtDW->m1[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 72] = rtDW->m2[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 100] = rtDW->m3[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 128] = rtDW->m4[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 156] = 0.0F;
+    rtDW->M[rtDW->ijA + 184] = 0.0F;
+    rtDW->M[rtDW->ijA + 20] = rtDW->m6[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 48] = rtDW->m1[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 76] = rtDW->m2[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 104] = rtDW->m3[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 132] = rtDW->m4[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 160] = rtDW->E[rtDW->ijA];
+    rtDW->M[rtDW->ijA + 188] = 0.0F;
+    rtDW->M[rtDW->ijA + 24] = rtDW->x0_idx_1;
+    rtDW->M[rtDW->ijA + 52] = rtDW->A_me * rtDW->m1[3] + (rtDW->x0_idx_3 *
+      rtDW->m1[2] + (rtDW->x0_idx_2 * rtDW->m1[1] + rtDW->x0_idx_0 * rtDW->m1[0]));
+    rtDW->M[rtDW->ijA + 80] = rtDW->A_me * rtDW->m2[3] + (rtDW->x0_idx_3 *
+      rtDW->m2[2] + (rtDW->x0_idx_2 * rtDW->m2[1] + rtDW->x0_idx_0 * rtDW->m2[0]));
+    rtDW->M[rtDW->ijA + 108] = rtDW->A_me * rtDW->m3[3] + (rtDW->x0_idx_3 *
+      rtDW->m3[2] + (rtDW->x0_idx_2 * rtDW->m3[1] + rtDW->x0_idx_0 * rtDW->m3[0]));
+    rtDW->M[rtDW->ijA + 136] = rtDW->A_me * rtDW->m4[3] + (rtDW->x0_idx_3 *
+      rtDW->m4[2] + (rtDW->x0_idx_2 * rtDW->m4[1] + rtDW->x0_idx_0 * rtDW->m4[0]));
+    rtDW->M[rtDW->ijA + 164] = rtDW->A_me * rtDW->E[3] + (rtDW->x0_idx_3 *
+      rtDW->E[2] + (rtDW->x0_idx_2 * rtDW->E[1] + rtDW->x0_idx_0 * rtDW->E[0]));
+    rtDW->M[rtDW->ijA + 192] = rtDW->x0_idx_1;
   }
 
-  /* '<S5>:1:33' H = 2*(M'*M); */
-  /* '<S5>:1:34' f = 2*M'*r; */
-  /* MATLAB Function 'uz_codegen/qp_solver': '<S6>:1' */
-  /* '<S6>:1:3' x_opt = single([0.5 0 0 0 0 0 0.5]'); */
-  /* '<S6>:1:5' iter = single(0); */
+  /* '<S7>:1:31' H = 2*(M'*M); */
+  /* '<S7>:1:32' f = 2*M'*r; */
+  /* MATLAB Function 'uz_codegen/qp_solver': '<S8>:1' */
+  /* '<S8>:1:3' x_opt = single([0.5 0 0 0 0 0 0.5]'); */
+  /* '<S8>:1:5' iter = single(0); */
   /*  contraints */
   /*             t1 t2 t3 t4 t5 t6 t7 */
-  /* '<S6>:1:9' A = single([-1  0  0  0  0  0  0;   % t>=0 is converted to -1<=0 */
-  /* '<S6>:1:10'              0 -1  0  0  0  0  0;   % no row=no of ineq constraints */
-  /* '<S6>:1:11'              0  0 -1  0  0  0  0;   % no columns=no of optimization variables */
-  /* '<S6>:1:12'              0  0  0 -1  0  0  0; */
-  /* '<S6>:1:13'              0  0  0  0 -1  0  0; */
-  /* '<S6>:1:14'              0  0  0  0  0 -1  0; */
-  /* '<S6>:1:15'              0  0  0  0  0  0 -1]); */
+  /* '<S8>:1:9' A = single([-1  0  0  0  0  0  0;   % t>=0 is converted to -1<=0 */
+  /* '<S8>:1:10'              0 -1  0  0  0  0  0;   % no row=no of ineq constraints */
+  /* '<S8>:1:11'              0  0 -1  0  0  0  0;   % no columns=no of optimization variables */
+  /* '<S8>:1:12'              0  0  0 -1  0  0  0; */
+  /* '<S8>:1:13'              0  0  0  0 -1  0  0; */
+  /* '<S8>:1:14'              0  0  0  0  0 -1  0; */
+  /* '<S8>:1:15'              0  0  0  0  0  0 -1]); */
   /*  t>=0 is converted to -1<=0 */
   /*  no row=no of ineq constraints */
   /*  no columns=no of optimization variables */
-  /* '<S6>:1:17' b = single(zeros(7,1)); */
-  /* '<S6>:1:19' Aeq = single([1 1 1 1 1 1 1]); */
-  /* '<S6>:1:20' beq =  single([1]); */
+  /* '<S8>:1:17' b = single(zeros(7,1)); */
+  /* '<S8>:1:19' Aeq = single([1 1 1 1 1 1 1]); */
+  /* '<S8>:1:20' beq =  single([1]); */
   /*  sum of all duration times  */
   /*  define cold start for active-set solver */
-  /* '<S6>:1:23' iA0 = false(size(b)); */
-  /* '<S6>:1:25' [x_opt,iter] = mpc_solve(H,f,A,b,Aeq,beq,iA0,max_iter,tol); */
-  /* '<S6>:1:30' x = single([0 0 0 0 0 0 0]'); */
-  /* '<S6>:1:31' iter = single(0); */
+  /* '<S8>:1:23' iA0 = false(size(b)); */
+  /* '<S8>:1:25' [x_opt,iter] = mpc_solve(H,f,A,b,Aeq,beq,iA0,max_iter,tol); */
+  /* '<S8>:1:30' x = single([0 0 0 0 0 0 0]'); */
+  /* '<S8>:1:31' iter = single(0); */
   /*  set up solver */
-  /* '<S6>:1:33' options = mpcActiveSetOptions('single'); */
-  /* '<S6>:1:34' options.MaxIterations = max_iter; */
-  /* '<S6>:1:35' options.ConstriantTolerance = tol; */
-  /* '<S6>:1:36' options.UseHessianAsInput = false; */
-  /* '<S6>:1:37' options.IntegrityChecks = false; */
-  /* '<S6>:1:40' x_tmp = single([0.5 0 0 0 0 0 0.5]'); */
-  /* '<S6>:1:41' exitflag = single(0); */
+  /* '<S8>:1:33' options = mpcActiveSetOptions('single'); */
+  /* '<S8>:1:34' options.MaxIterations = max_iter; */
+  /* '<S8>:1:35' options.ConstriantTolerance = tol; */
+  /* '<S8>:1:36' options.UseHessianAsInput = false; */
+  /* '<S8>:1:37' options.IntegrityChecks = false; */
+  /* '<S8>:1:40' x_tmp = single([0.5 0 0 0 0 0 0.5]'); */
+  /* '<S8>:1:41' exitflag = single(0); */
   /*  calculate inverse of H */
-  /* '<S6>:1:43' [L,~] = chol(H,'lower'); */
-  for (rtDW->iy = 0; rtDW->iy < 7; rtDW->iy++) {
-    for (rtDW->b_j = 0; rtDW->b_j < 7; rtDW->b_j++) {
-      rtDW->i = rtDW->iy + 7 * rtDW->b_j;
+  /* '<S8>:1:43' [L,~] = chol(H,'lower'); */
+  for (rtDW->ijA = 0; rtDW->ijA < 7; rtDW->ijA++) {
+    for (rtDW->c = 0; rtDW->c < 7; rtDW->c++) {
+      rtDW->i = rtDW->ijA + 7 * rtDW->c;
       rtDW->Linv_data[rtDW->i] = 0.0F;
-      for (rtDW->idxAjj = 0; rtDW->idxAjj < 28; rtDW->idxAjj++) {
-        rtDW->Linv_data[rtDW->i] += rtDW->M[28 * rtDW->iy + rtDW->idxAjj] *
-          rtDW->M[28 * rtDW->b_j + rtDW->idxAjj];
+      for (rtDW->b_ix = 0; rtDW->b_ix < 28; rtDW->b_ix++) {
+        rtDW->Linv_data[rtDW->i] += rtDW->M[28 * rtDW->ijA + rtDW->b_ix] *
+          rtDW->M[28 * rtDW->c + rtDW->b_ix];
       }
     }
   }
@@ -2838,206 +3392,203 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/max_iter'
    *  MATLAB Function: '<S1>/formulate_qp'
    */
-  for (rtDW->iy = 0; rtDW->iy < 49; rtDW->iy++) {
-    rtDW->Hinv_data[rtDW->iy] = rtDW->Linv_data[rtDW->iy] * 2.0F;
+  for (rtDW->ijA = 0; rtDW->ijA < 49; rtDW->ijA++) {
+    rtDW->Hinv_data[rtDW->ijA] = rtDW->Linv_data[rtDW->ijA] * 2.0F;
   }
 
+  rtDW->c = 0;
   rtDW->i = 0;
-  rtDW->b_j = 0;
   exitg1 = false;
-  while ((!exitg1) && (rtDW->b_j < 7)) {
-    rtDW->idxAjj = rtDW->b_j * 7 + rtDW->b_j;
-    rtDW->SinCos1_o1 = 0.0F;
-    if (rtDW->b_j >= 1) {
-      rtDW->b_ix = rtDW->b_j;
-      rtDW->b_iy = rtDW->b_j;
-      rtDW->b_k = 0;
-      while (rtDW->b_k <= rtDW->b_j - 1) {
-        rtDW->SinCos1_o1 += rtDW->Hinv_data[rtDW->b_ix] * rtDW->Hinv_data
-          [rtDW->b_iy];
+  while ((!exitg1) && (rtDW->i < 7)) {
+    rtDW->kBcol = rtDW->i * 7 + rtDW->i;
+    rtDW->smax = 0.0F;
+    if (rtDW->i >= 1) {
+      rtDW->b_ix = rtDW->i;
+      rtDW->iy = rtDW->i;
+      rtDW->ix = 0;
+      while (rtDW->ix <= rtDW->i - 1) {
+        rtDW->smax += rtDW->Hinv_data[rtDW->b_ix] * rtDW->Hinv_data[rtDW->iy];
         rtDW->b_ix += 7;
-        rtDW->b_iy += 7;
-        rtDW->b_k++;
+        rtDW->iy += 7;
+        rtDW->ix++;
       }
     }
 
-    rtDW->SinCos1_o1 = rtDW->Hinv_data[rtDW->idxAjj] - rtDW->SinCos1_o1;
-    if (rtDW->SinCos1_o1 > 0.0F) {
-      rtDW->SinCos1_o1 = sqrtf(rtDW->SinCos1_o1);
-      rtDW->Hinv_data[rtDW->idxAjj] = rtDW->SinCos1_o1;
-      if (rtDW->b_j + 1 < 7) {
-        if (rtDW->b_j != 0) {
-          rtDW->b_ix = rtDW->b_j;
-          rtDW->b_iy = ((rtDW->b_j - 1) * 7 + rtDW->b_j) + 2;
-          rtDW->b_k = rtDW->b_j + 2;
-          while (rtDW->b_k <= rtDW->b_iy) {
-            rtDW->SinCos1_o2 = -rtDW->Hinv_data[rtDW->b_ix];
-            rtDW->iy = rtDW->idxAjj + 1;
-            rtDW->e = (rtDW->b_k - rtDW->b_j) + 5;
-            rtDW->ia = rtDW->b_k;
-            while (rtDW->ia <= rtDW->e) {
+    rtDW->smax = rtDW->Hinv_data[rtDW->kBcol] - rtDW->smax;
+    if (rtDW->smax > 0.0F) {
+      rtDW->smax = sqrtf(rtDW->smax);
+      rtDW->Hinv_data[rtDW->kBcol] = rtDW->smax;
+      if (rtDW->i + 1 < 7) {
+        if (rtDW->i != 0) {
+          rtDW->ix = rtDW->i;
+          rtDW->b_ix = ((rtDW->i - 1) * 7 + rtDW->i) + 2;
+          rtDW->c_ix = rtDW->i + 2;
+          while (rtDW->c_ix <= rtDW->b_ix) {
+            rtDW->SinCos1_o2 = -rtDW->Hinv_data[rtDW->ix];
+            rtDW->iy = rtDW->kBcol + 1;
+            rtDW->ijA = (rtDW->c_ix - rtDW->i) + 5;
+            rtDW->ia = rtDW->c_ix;
+            while (rtDW->ia <= rtDW->ijA) {
               rtDW->Hinv_data[rtDW->iy] += rtDW->Hinv_data[rtDW->ia - 1] *
                 rtDW->SinCos1_o2;
               rtDW->iy++;
               rtDW->ia++;
             }
 
-            rtDW->b_ix += 7;
-            rtDW->b_k += 7;
+            rtDW->ix += 7;
+            rtDW->c_ix += 7;
           }
         }
 
-        rtDW->SinCos1_o1 = 1.0F / rtDW->SinCos1_o1;
-        rtDW->b_ix = (rtDW->idxAjj - rtDW->b_j) + 7;
-        rtDW->idxAjj++;
-        while (rtDW->idxAjj + 1 <= rtDW->b_ix) {
-          rtDW->Hinv_data[rtDW->idxAjj] *= rtDW->SinCos1_o1;
-          rtDW->idxAjj++;
+        rtDW->smax = 1.0F / rtDW->smax;
+        rtDW->ix = (rtDW->kBcol - rtDW->i) + 7;
+        rtDW->b_ix = rtDW->kBcol + 1;
+        while (rtDW->b_ix + 1 <= rtDW->ix) {
+          rtDW->Hinv_data[rtDW->b_ix] *= rtDW->smax;
+          rtDW->b_ix++;
         }
       }
 
-      rtDW->b_j++;
+      rtDW->i++;
     } else {
-      rtDW->Hinv_data[rtDW->idxAjj] = rtDW->SinCos1_o1;
-      rtDW->i = rtDW->b_j + 1;
+      rtDW->Hinv_data[rtDW->kBcol] = rtDW->smax;
+      rtDW->c = rtDW->i + 1;
       exitg1 = true;
     }
   }
 
-  if (rtDW->i == 0) {
-    rtDW->i = 7;
+  if (rtDW->c == 0) {
+    rtDW->b_ix = 7;
   } else {
-    rtDW->i--;
+    rtDW->b_ix = rtDW->c - 1;
   }
 
-  rtDW->b_j = 1;
-  while (rtDW->b_j + 1 <= rtDW->i) {
-    rtDW->idxAjj = 0;
-    while (rtDW->idxAjj <= rtDW->b_j - 1) {
-      rtDW->Hinv_data[rtDW->idxAjj + 7 * rtDW->b_j] = 0.0F;
-      rtDW->idxAjj++;
+  rtDW->i = 1;
+  while (rtDW->i + 1 <= rtDW->b_ix) {
+    rtDW->c = 0;
+    while (rtDW->c <= rtDW->i - 1) {
+      rtDW->Hinv_data[rtDW->c + 7 * rtDW->i] = 0.0F;
+      rtDW->c++;
     }
 
-    rtDW->b_j++;
+    rtDW->i++;
   }
 
-  if (1 > rtDW->i) {
+  if (1 > rtDW->b_ix) {
+    rtDW->ijA = -1;
+    rtDW->c = -1;
     rtDW->iy = -1;
-    rtDW->b_j = -1;
-    rtDW->b_ix = -1;
   } else {
-    rtDW->iy = rtDW->i - 1;
-    rtDW->b_j = rtDW->i - 1;
-    rtDW->b_ix = rtDW->i - 1;
+    rtDW->ijA = rtDW->b_ix - 1;
+    rtDW->c = rtDW->b_ix - 1;
+    rtDW->iy = rtDW->b_ix - 1;
   }
 
-  rtDW->b_iy = rtDW->b_j + 1;
-  for (rtDW->idxAjj = 0; rtDW->idxAjj <= rtDW->b_ix; rtDW->idxAjj++) {
-    for (rtDW->i = 0; rtDW->i < rtDW->b_iy; rtDW->i++) {
-      rtDW->Hinv_data[rtDW->i + (rtDW->iy + 1) * rtDW->idxAjj] = rtDW->
-        Hinv_data[rtDW->i + 7 * rtDW->idxAjj];
+  rtDW->ix = rtDW->c + 1;
+  for (rtDW->b_ix = 0; rtDW->b_ix <= rtDW->iy; rtDW->b_ix++) {
+    for (rtDW->i = 0; rtDW->i < rtDW->ix; rtDW->i++) {
+      rtDW->Hinv_data[rtDW->i + (rtDW->ijA + 1) * rtDW->b_ix] = rtDW->
+        Hinv_data[rtDW->i + 7 * rtDW->b_ix];
     }
   }
 
-  rtDW->Hinv_size[0] = rtDW->iy + 1;
-  rtDW->Hinv_size[1] = rtDW->b_ix + 1;
+  rtDW->Hinv_size[0] = rtDW->ijA + 1;
+  rtDW->Hinv_size[1] = rtDW->iy + 1;
 
-  /* '<S6>:1:44' Linv = linsolve(L,eye(size(L)),struct('LT',true)); */
-  if ((int8_T)(rtDW->b_j + 1) < (int8_T)(rtDW->b_ix + 1)) {
-    rtDW->i = (int8_T)(rtDW->b_j + 1);
+  /* '<S8>:1:44' Linv = linsolve(L,eye(size(L)),struct('LT',true)); */
+  if ((int8_T)(rtDW->c + 1) < (int8_T)(rtDW->iy + 1)) {
+    rtDW->i = (int8_T)(rtDW->c + 1);
   } else {
-    rtDW->i = (int8_T)(rtDW->b_ix + 1);
+    rtDW->i = (int8_T)(rtDW->iy + 1);
   }
 
-  rtDW->b_k = (int8_T)(rtDW->iy + 1);
-  rtDW->b_iy = (int8_T)(rtDW->iy + 1) * (int8_T)(rtDW->b_ix + 1) - 1;
-  if (0 <= rtDW->b_iy) {
-    memset(&rtDW->b_I_data[0], 0, (rtDW->b_iy + 1) * sizeof(int8_T));
+  rtDW->kBcol = (int8_T)(rtDW->ijA + 1);
+  rtDW->ix = (int8_T)(rtDW->ijA + 1) * (int8_T)(rtDW->iy + 1) - 1;
+  if (0 <= rtDW->ix) {
+    memset(&rtDW->b_I_data[0], 0, (rtDW->ix + 1) * sizeof(int8_T));
   }
 
   if (rtDW->i > 0) {
-    rtDW->b_j = 0;
-    while (rtDW->b_j <= rtDW->i - 1) {
-      rtDW->b_I_data[rtDW->b_j + (int8_T)(rtDW->iy + 1) * rtDW->b_j] = 1;
-      rtDW->b_j++;
+    rtDW->b_ix = 0;
+    while (rtDW->b_ix <= rtDW->i - 1) {
+      rtDW->b_I_data[rtDW->b_ix + (int8_T)(rtDW->ijA + 1) * rtDW->b_ix] = 1;
+      rtDW->b_ix++;
     }
   }
 
-  if (rtDW->iy + 1 < rtDW->b_ix + 1) {
-    rtDW->iy++;
+  if (rtDW->ijA + 1 < rtDW->iy + 1) {
+    rtDW->ijA++;
   } else {
-    rtDW->iy = rtDW->b_ix + 1;
+    rtDW->ijA = rtDW->iy + 1;
   }
 
-  rtDW->Linv_size[0] = (int8_T)(rtDW->b_ix + 1);
-  rtDW->Linv_size[1] = (int8_T)(rtDW->b_ix + 1);
-  rtDW->b_j = 0;
-  while (rtDW->b_j <= (int8_T)(rtDW->b_ix + 1) - 1) {
-    rtDW->idxAjj = 0;
-    while (rtDW->idxAjj <= rtDW->iy - 1) {
-      rtDW->Linv_data[rtDW->idxAjj + (int8_T)(rtDW->b_ix + 1) * rtDW->b_j] =
-        rtDW->b_I_data[rtDW->idxAjj + rtDW->b_k * rtDW->b_j];
-      rtDW->idxAjj++;
+  rtDW->Linv_size[0] = (int8_T)(rtDW->iy + 1);
+  rtDW->Linv_size[1] = (int8_T)(rtDW->iy + 1);
+  rtDW->i = 0;
+  while (rtDW->i <= (int8_T)(rtDW->iy + 1) - 1) {
+    rtDW->c = 0;
+    while (rtDW->c <= rtDW->ijA - 1) {
+      rtDW->Linv_data[rtDW->c + (int8_T)(rtDW->iy + 1) * rtDW->i] =
+        rtDW->b_I_data[rtDW->c + rtDW->kBcol * rtDW->i];
+      rtDW->c++;
     }
 
-    rtDW->idxAjj = rtDW->iy;
-    while (rtDW->idxAjj + 1 <= rtDW->b_ix + 1) {
-      rtDW->Linv_data[rtDW->idxAjj + (int8_T)(rtDW->b_ix + 1) * rtDW->b_j] =
-        0.0F;
-      rtDW->idxAjj++;
+    rtDW->c = rtDW->ijA;
+    while (rtDW->c + 1 <= rtDW->iy + 1) {
+      rtDW->Linv_data[rtDW->c + (int8_T)(rtDW->iy + 1) * rtDW->i] = 0.0F;
+      rtDW->c++;
     }
 
-    rtDW->b_j++;
+    rtDW->i++;
   }
 
   trisolve(rtDW->Hinv_data, rtDW->Hinv_size, rtDW->Linv_data, rtDW->Linv_size);
 
   /*  solve QP */
-  /* '<S6>:1:46' [x_tmp, exitflag] = mpcActiveSetSolver(Linv,-f,A,b,Aeq,beq,iA0,options); */
-  rtDW->i = rtDW->Linv_size[1];
+  /* '<S8>:1:46' [x_tmp, exitflag] = mpcActiveSetSolver(Linv,-f,A,b,Aeq,beq,iA0,options); */
+  rtDW->iy = rtDW->Linv_size[1];
   rtDW->Hinv_size[0] = rtDW->Linv_size[1];
   rtDW->Hinv_size[1] = rtDW->Linv_size[1];
-  rtDW->b_j = 0;
-  while (rtDW->b_j <= rtDW->Linv_size[1] - 1) {
-    rtDW->idxAjj = rtDW->b_j * rtDW->i;
-    rtDW->b_ix = rtDW->b_j * rtDW->Linv_size[0];
-    rtDW->b_iy = 0;
-    while (rtDW->b_iy <= rtDW->i - 1) {
-      rtDW->Hinv_data[rtDW->idxAjj + rtDW->b_iy] = 0.0F;
-      rtDW->b_iy++;
+  rtDW->i = 0;
+  while (rtDW->i <= rtDW->Linv_size[1] - 1) {
+    rtDW->kBcol = rtDW->i * rtDW->iy;
+    rtDW->c_ix = rtDW->i * rtDW->Linv_size[0];
+    rtDW->c = 0;
+    while (rtDW->c <= rtDW->iy - 1) {
+      rtDW->Hinv_data[rtDW->kBcol + rtDW->c] = 0.0F;
+      rtDW->c++;
     }
 
-    rtDW->b_iy = 0;
-    while (rtDW->b_iy <= rtDW->Linv_size[0] - 1) {
-      rtDW->SinCos1_o1 = rtDW->Linv_data[rtDW->b_ix + rtDW->b_iy];
-      rtDW->b_k = 0;
-      while (rtDW->b_k <= rtDW->i - 1) {
-        rtDW->iy = rtDW->idxAjj + rtDW->b_k;
-        rtDW->Hinv_data[rtDW->iy] += rtDW->Linv_data[rtDW->b_k * rtDW->
-          Linv_size[0] + rtDW->b_iy] * rtDW->SinCos1_o1;
-        rtDW->b_k++;
+    rtDW->ix = 0;
+    while (rtDW->ix <= rtDW->Linv_size[0] - 1) {
+      rtDW->smax = rtDW->Linv_data[rtDW->c_ix + rtDW->ix];
+      rtDW->b_ix = 0;
+      while (rtDW->b_ix <= rtDW->iy - 1) {
+        rtDW->ijA = rtDW->kBcol + rtDW->b_ix;
+        rtDW->Hinv_data[rtDW->ijA] += rtDW->Linv_data[rtDW->b_ix *
+          rtDW->Linv_size[0] + rtDW->ix] * rtDW->smax;
+        rtDW->b_ix++;
       }
 
-      rtDW->b_iy++;
+      rtDW->ix++;
     }
 
-    rtDW->b_j++;
+    rtDW->i++;
   }
 
-  for (rtDW->iy = 0; rtDW->iy < 7; rtDW->iy++) {
-    rtDW->SinCos1_o1 = 0.0F;
-    for (rtDW->b_j = 0; rtDW->b_j < 28; rtDW->b_j++) {
-      rtDW->SinCos1_o1 += rtDW->M[28 * rtDW->iy + rtDW->b_j] * 2.0F * rtDW->
-        r[rtDW->b_j];
+  for (rtDW->ijA = 0; rtDW->ijA < 7; rtDW->ijA++) {
+    rtDW->A_me = 0.0F;
+    for (rtDW->c = 0; rtDW->c < 28; rtDW->c++) {
+      rtDW->A_me += rtDW->M[28 * rtDW->ijA + rtDW->c] * 2.0F * rtDW->r[rtDW->c];
     }
 
-    rtDW->fv[rtDW->iy] = -rtDW->SinCos1_o1;
+    rtDW->fv2[rtDW->ijA] = -rtDW->A_me;
   }
 
-  rtDW->SinCos1_o1 = roundf(rtU->max_iter);
-  if (rtDW->SinCos1_o1 < 32768.0F) {
-    if (rtDW->SinCos1_o1 >= -32768.0F) {
-      tmp = (int16_T)rtDW->SinCos1_o1;
+  rtDW->A_me = roundf(rtU->max_iter);
+  if (rtDW->A_me < 32768.0F) {
+    if (rtDW->A_me >= -32768.0F) {
+      tmp = (int16_T)rtDW->A_me;
     } else {
       tmp = MIN_int16_T;
     }
@@ -3049,56 +3600,56 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  MATLAB Function: '<S1>/qp_solver'
    */
   qpkwik(rtDW->Linv_data, rtDW->Linv_size, rtDW->Hinv_data, rtDW->Hinv_size,
-         rtDW->fv, tmp, (int16_T)rtDW->Linv_size[0], rtDW->x_data, &rtDW->x_size,
-         rtDW->lam_c, &rtY->iterations_qp, rtDW->iA1, rtDW);
+         rtDW->fv2, tmp, (int16_T)rtDW->Linv_size[0], rtDW->x_data,
+         &rtDW->x_size, rtDW->x_p, &rtY->iterations_qp, rtDW->iA1, rtDW);
 
-  /* '<S6>:1:47' x = single(x_tmp(1:7,1)); */
-  /* '<S6>:1:48' iter = single(exitflag); */
+  /* '<S8>:1:47' x = single(x_tmp(1:7,1)); */
+  /* '<S8>:1:48' iter = single(exitflag); */
   /*  J1 = x1'*(M1'*M1)*x1-2*r1'*M1*x1; */
-  /* MATLAB Function 'uz_codegen/tz': '<S9>:1' */
-  /* '<S9>:1:3' I = single([1 0 0 0 0 0; */
-  /* '<S9>:1:4'             1 1 0 0 0 0; */
-  /* '<S9>:1:5'             1 1 1 0 0 0; */
-  /* '<S9>:1:6'             1 1 1 1 0 0; */
-  /* '<S9>:1:7'             1 1 1 1 1 0; */
-  /* '<S9>:1:8'             1 1 1 1 1 1]); */
-  /* '<S9>:1:10' zer6 = single(zeros(6,1)); */
-  /* '<S9>:1:12' T = single([I zer6]); */
-  /* '<S9>:1:14' tz=single(T*x); */
-  /* MATLAB Function 'uz_codegen/tz_2_tph': '<S10>:1' */
-  /* '<S10>:1:3' seq_order_table = single([4,1,6,2,3,5; */
-  /* '<S10>:1:4'     1,4,2,6,5,3; */
-  /* '<S10>:1:5'     1,4,2,5,6,3; */
-  /* '<S10>:1:6'     4,1,2,5,3,6; */
-  /* '<S10>:1:7'     4,2,1,5,3,6; */
-  /* '<S10>:1:8'     2,4,5,1,6,3; */
-  /* '<S10>:1:9'     2,5,4,1,6,3; */
-  /* '<S10>:1:10'     5,2,4,1,3,6; */
-  /* '<S10>:1:11'     5,2,4,3,1,6; */
-  /* '<S10>:1:12'     2,5,3,4,6,1; */
-  /* '<S10>:1:13'     2,5,3,6,4,1; */
-  /* '<S10>:1:14'     5,2,3,6,1,4; */
-  /* '<S10>:1:15'     5,3,2,6,1,4; */
-  /* '<S10>:1:16'     3,5,6,2,4,1; */
-  /* '<S10>:1:17'     3,6,5,2,4,1; */
-  /* '<S10>:1:18'     6,3,5,2,1,4; */
-  /* '<S10>:1:19'     6,3,5,1,2,4; */
-  /* '<S10>:1:20'     3,6,1,5,4,2; */
-  /* '<S10>:1:21'     3,6,1,4,5,2; */
-  /* '<S10>:1:22'     6,3,1,4,2,5; */
-  /* '<S10>:1:23'     6,1,3,4,2,5; */
-  /* '<S10>:1:24'     1,6,4,3,5,2; */
-  /* '<S10>:1:25'     1,4,6,3,5,2; */
-  /* '<S10>:1:26'     4,1,6,3,2,5]); */
-  /* '<S10>:1:28' t = single(zeros(6,1)); */
+  /* MATLAB Function 'uz_codegen/tz': '<S11>:1' */
+  /* '<S11>:1:3' I = single([1 0 0 0 0 0; */
+  /* '<S11>:1:4'             1 1 0 0 0 0; */
+  /* '<S11>:1:5'             1 1 1 0 0 0; */
+  /* '<S11>:1:6'             1 1 1 1 0 0; */
+  /* '<S11>:1:7'             1 1 1 1 1 0; */
+  /* '<S11>:1:8'             1 1 1 1 1 1]); */
+  /* '<S11>:1:10' zer6 = single(zeros(6,1)); */
+  /* '<S11>:1:12' T = single([I zer6]); */
+  /* '<S11>:1:14' tz=single(T*x); */
+  /* MATLAB Function 'uz_codegen/tz_2_tph': '<S12>:1' */
+  /* '<S12>:1:3' seq_order_table = single([4,1,6,2,3,5; */
+  /* '<S12>:1:4'     1,4,2,6,5,3; */
+  /* '<S12>:1:5'     1,4,2,5,6,3; */
+  /* '<S12>:1:6'     4,1,2,5,3,6; */
+  /* '<S12>:1:7'     4,2,1,5,3,6; */
+  /* '<S12>:1:8'     2,4,5,1,6,3; */
+  /* '<S12>:1:9'     2,5,4,1,6,3; */
+  /* '<S12>:1:10'     5,2,4,1,3,6; */
+  /* '<S12>:1:11'     5,2,4,3,1,6; */
+  /* '<S12>:1:12'     2,5,3,4,6,1; */
+  /* '<S12>:1:13'     2,5,3,6,4,1; */
+  /* '<S12>:1:14'     5,2,3,6,1,4; */
+  /* '<S12>:1:15'     5,3,2,6,1,4; */
+  /* '<S12>:1:16'     3,5,6,2,4,1; */
+  /* '<S12>:1:17'     3,6,5,2,4,1; */
+  /* '<S12>:1:18'     6,3,5,2,1,4; */
+  /* '<S12>:1:19'     6,3,5,1,2,4; */
+  /* '<S12>:1:20'     3,6,1,5,4,2; */
+  /* '<S12>:1:21'     3,6,1,4,5,2; */
+  /* '<S12>:1:22'     6,3,1,4,2,5; */
+  /* '<S12>:1:23'     6,1,3,4,2,5; */
+  /* '<S12>:1:24'     1,6,4,3,5,2; */
+  /* '<S12>:1:25'     1,4,6,3,5,2; */
+  /* '<S12>:1:26'     4,1,6,3,2,5]); */
+  /* '<S12>:1:28' t = single(zeros(6,1)); */
   for (rtDW->i = 0; rtDW->i < 6; rtDW->i++) {
     /* MATLAB Function: '<S1>/tz' incorporates:
      *  MATLAB Function: '<S1>/qp_solver'
      */
     rtDW->tz[rtDW->i] = 0.0F;
-    for (rtDW->iy = 0; rtDW->iy < 7; rtDW->iy++) {
-      rtDW->tz[rtDW->i] += (real32_T)a[6 * rtDW->iy + rtDW->i] * rtDW->
-        x_data[rtDW->iy];
+    for (rtDW->ijA = 0; rtDW->ijA < 7; rtDW->ijA++) {
+      rtDW->tz[rtDW->i] += (real32_T)a[6 * rtDW->ijA + rtDW->i] * rtDW->
+        x_data[rtDW->ijA];
     }
 
     /* End of MATLAB Function: '<S1>/tz' */
@@ -3108,22 +3659,22 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* MATLAB Function: '<S1>/tz_2_tph' */
-  /* '<S10>:1:30' for i=1:6 */
-  for (rtDW->idxAjj = 0; rtDW->idxAjj < 6; rtDW->idxAjj++) {
-    /* '<S10>:1:31' t(seq_order_table(seq_no,i),1) = tz(i); */
-    rtDW->t[seq_order_table[(rtDW->sector_ref + 24 * rtDW->idxAjj) - 1] - 1] =
-      rtDW->tz[rtDW->idxAjj];
+  /* '<S12>:1:30' for i=1:6 */
+  for (rtDW->c = 0; rtDW->c < 6; rtDW->c++) {
+    /* '<S12>:1:31' t(seq_order_table(seq_no,i),1) = tz(i); */
+    rtDW->t[seq_order_table[(rtDW->sector_ref + 24 * rtDW->c) - 1] - 1] =
+      rtDW->tz[rtDW->c];
   }
 
   /* Outport: '<Root>/d_opt' incorporates:
    *  MATLAB Function: '<S1>/tz_2_tph'
    */
-  /* '<S10>:1:34' ta_1 = t(1); */
-  /* '<S10>:1:35' tb_1 = t(2); */
-  /* '<S10>:1:36' tc_1 = t(3); */
-  /* '<S10>:1:37' ta_2 = t(4); */
-  /* '<S10>:1:38' tb_2 = t(5); */
-  /* '<S10>:1:39' tc_2 = t(6); */
+  /* '<S12>:1:34' ta_1 = t(1); */
+  /* '<S12>:1:35' tb_1 = t(2); */
+  /* '<S12>:1:36' tc_1 = t(3); */
+  /* '<S12>:1:37' ta_2 = t(4); */
+  /* '<S12>:1:38' tb_2 = t(5); */
+  /* '<S12>:1:39' tc_2 = t(6); */
   rtY->d_opt[0] = rtDW->t[0];
   rtY->d_opt[1] = rtDW->t[1];
   rtY->d_opt[2] = rtDW->t[2];
@@ -3131,33 +3682,103 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtY->d_opt[4] = rtDW->t[4];
   rtY->d_opt[5] = rtDW->t[5];
 
-  /* Update for Delay: '<S1>/Delay1' incorporates:
-   *  MATLAB Function: '<S1>/qp_solver'
-   */
+  /* Update for Delay: '<S1>/Delay13' */
   rtDW->icLoad = false;
-  for (rtDW->iy = 0; rtDW->iy < 7; rtDW->iy++) {
-    rtDW->Delay1_DSTATE[rtDW->iy] = rtDW->x_data[rtDW->iy];
+
+  /* Update for Delay: '<S1>/Delay' */
+  rtDW->Delay_DSTATE[0] = rtDW->rtb_i_dq_obs_idx_0;
+
+  /* Update for Delay: '<S1>/Delay9' */
+  rtDW->Delay9_DSTATE[0] = rtDW->rtb_v_2_idx_pu_idx_0;
+
+  /* Update for Delay: '<S1>/Delay10' */
+  rtDW->Delay10_DSTATE[0] = rtDW->rtb_v_3_idx_pu_idx_0;
+
+  /* Update for Delay: '<S1>/Delay11' */
+  rtDW->Delay11_DSTATE[0] = rtDW->rtb_v_4_idx_pu_idx_0;
+
+  /* Update for Delay: '<S1>/Delay12' */
+  rtDW->Delay12_DSTATE[0] = rtDW->rtb_v_5_idx_pu_idx_0;
+
+  /* Update for Delay: '<S1>/Delay' */
+  rtDW->Delay_DSTATE[1] = rtDW->rtb_v_1_idx_pu_idx_1;
+
+  /* Update for Delay: '<S1>/Delay9' */
+  rtDW->Delay9_DSTATE[1] = rtDW->rtb_v_2_idx_pu_idx_1;
+
+  /* Update for Delay: '<S1>/Delay10' */
+  rtDW->Delay10_DSTATE[1] = rtDW->rtb_v_3_idx_pu_idx_1;
+
+  /* Update for Delay: '<S1>/Delay11' */
+  rtDW->Delay11_DSTATE[1] = rtDW->rtb_v_4_idx_pu_idx_1;
+
+  /* Update for Delay: '<S1>/Delay12' */
+  rtDW->Delay12_DSTATE[1] = rtDW->rtb_v_5_idx_pu_idx_1;
+
+  /* Update for Delay: '<S1>/Delay' */
+  rtDW->Delay_DSTATE[2] = rtDW->q;
+
+  /* Update for Delay: '<S1>/Delay9' */
+  rtDW->Delay9_DSTATE[2] = rtDW->rtb_v_2_idx_pu_idx_2;
+
+  /* Update for Delay: '<S1>/Delay10' */
+  rtDW->Delay10_DSTATE[2] = rtDW->rtb_v_3_idx_pu_idx_2;
+
+  /* Update for Delay: '<S1>/Delay11' */
+  rtDW->Delay11_DSTATE[2] = rtDW->rtb_v_4_idx_pu_idx_2;
+
+  /* Update for Delay: '<S1>/Delay12' */
+  rtDW->Delay12_DSTATE[2] = rtDW->rtb_v_5_idx_pu_idx_2;
+
+  /* Update for Delay: '<S1>/Delay' */
+  rtDW->Delay_DSTATE[3] = rtDW->rtb_v_1_idx_pu_idx_3;
+
+  /* Update for Delay: '<S1>/Delay9' */
+  rtDW->Delay9_DSTATE[3] = rtDW->rtb_v_2_idx_pu_idx_3;
+
+  /* Update for Delay: '<S1>/Delay10' */
+  rtDW->Delay10_DSTATE[3] = rtDW->rtb_v_3_idx_pu_idx_3;
+
+  /* Update for Delay: '<S1>/Delay11' */
+  rtDW->Delay11_DSTATE[3] = rtDW->rtb_v_4_idx_pu_idx_3;
+
+  /* Update for Delay: '<S1>/Delay12' */
+  rtDW->Delay12_DSTATE[3] = rtDW->rtb_v_5_idx_pu_idx_3;
+
+  /* Update for Delay: '<S1>/Delay1' */
+  rtDW->icLoad_p = false;
+  for (rtDW->ijA = 0; rtDW->ijA < 7; rtDW->ijA++) {
+    /* MATLAB Function: '<S1>/qp_solver' */
+    rtDW->rtb_i_dq_obs_idx_0 = rtDW->x_data[rtDW->ijA];
+
+    /* Update for Delay: '<S1>/Delay13' incorporates:
+     *  MATLAB Function: '<S1>/qp_solver'
+     */
+    rtDW->Delay13_DSTATE[rtDW->ijA] = rtDW->rtb_i_dq_obs_idx_0;
+
+    /* Update for Delay: '<S1>/Delay1' incorporates:
+     *  MATLAB Function: '<S1>/qp_solver'
+     */
+    rtDW->Delay1_DSTATE[rtDW->ijA] = rtDW->rtb_i_dq_obs_idx_0;
   }
 
-  /* End of Update for Delay: '<S1>/Delay1' */
-
   /* Update for Delay: '<S1>/Delay3' */
-  rtDW->icLoad_a = false;
+  rtDW->icLoad_l = false;
 
   /* Update for Delay: '<S1>/Delay4' */
-  rtDW->icLoad_f = false;
+  rtDW->icLoad_h = false;
 
   /* Update for Delay: '<S1>/Delay5' */
-  rtDW->icLoad_k = false;
+  rtDW->icLoad_b = false;
 
   /* Update for Delay: '<S1>/Delay6' */
   rtDW->icLoad_n = false;
 
   /* Update for Delay: '<S1>/Delay7' */
-  rtDW->icLoad_l = false;
+  rtDW->icLoad_bq = false;
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->icLoad_ly = false;
+  rtDW->icLoad_d = false;
 
   /* Update for Delay: '<S1>/Delay3' incorporates:
    *  MATLAB Function: '<S1>/state_space_mdl'
@@ -3168,16 +3789,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay4_DSTATE[0] = rtDW->m1[0];
 
   /* Update for Delay: '<S1>/Delay5' */
-  rtDW->Delay5_DSTATE[0] = rtDW->v_1_idx_pu[0];
+  rtDW->Delay5_DSTATE[0] = rtDW->m2[0];
 
   /* Update for Delay: '<S1>/Delay6' */
-  rtDW->Delay6_DSTATE[0] = rtDW->v_2_idx_pu[0];
+  rtDW->Delay6_DSTATE[0] = rtDW->m3[0];
 
   /* Update for Delay: '<S1>/Delay7' */
-  rtDW->Delay7_DSTATE[0] = rtDW->v_3_idx_pu[0];
+  rtDW->Delay7_DSTATE[0] = rtDW->m4[0];
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->Delay8_DSTATE[0] = rtDW->v_4_idx_pu[0];
+  rtDW->Delay8_DSTATE[0] = rtDW->E[0];
 
   /* Update for Delay: '<S1>/Delay3' incorporates:
    *  MATLAB Function: '<S1>/state_space_mdl'
@@ -3188,16 +3809,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay4_DSTATE[1] = rtDW->m1[1];
 
   /* Update for Delay: '<S1>/Delay5' */
-  rtDW->Delay5_DSTATE[1] = rtDW->v_1_idx_pu[1];
+  rtDW->Delay5_DSTATE[1] = rtDW->m2[1];
 
   /* Update for Delay: '<S1>/Delay6' */
-  rtDW->Delay6_DSTATE[1] = rtDW->v_2_idx_pu[1];
+  rtDW->Delay6_DSTATE[1] = rtDW->m3[1];
 
   /* Update for Delay: '<S1>/Delay7' */
-  rtDW->Delay7_DSTATE[1] = rtDW->v_3_idx_pu[1];
+  rtDW->Delay7_DSTATE[1] = rtDW->m4[1];
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->Delay8_DSTATE[1] = rtDW->v_4_idx_pu[1];
+  rtDW->Delay8_DSTATE[1] = rtDW->E[1];
 
   /* Update for Delay: '<S1>/Delay3' incorporates:
    *  MATLAB Function: '<S1>/state_space_mdl'
@@ -3208,16 +3829,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay4_DSTATE[2] = rtDW->m1[2];
 
   /* Update for Delay: '<S1>/Delay5' */
-  rtDW->Delay5_DSTATE[2] = rtDW->v_1_idx_pu[2];
+  rtDW->Delay5_DSTATE[2] = rtDW->m2[2];
 
   /* Update for Delay: '<S1>/Delay6' */
-  rtDW->Delay6_DSTATE[2] = rtDW->v_2_idx_pu[2];
+  rtDW->Delay6_DSTATE[2] = rtDW->m3[2];
 
   /* Update for Delay: '<S1>/Delay7' */
-  rtDW->Delay7_DSTATE[2] = rtDW->v_3_idx_pu[2];
+  rtDW->Delay7_DSTATE[2] = rtDW->m4[2];
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->Delay8_DSTATE[2] = rtDW->v_4_idx_pu[2];
+  rtDW->Delay8_DSTATE[2] = rtDW->E[2];
 
   /* Update for Delay: '<S1>/Delay3' incorporates:
    *  MATLAB Function: '<S1>/state_space_mdl'
@@ -3228,16 +3849,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay4_DSTATE[3] = rtDW->m1[3];
 
   /* Update for Delay: '<S1>/Delay5' */
-  rtDW->Delay5_DSTATE[3] = rtDW->v_1_idx_pu[3];
+  rtDW->Delay5_DSTATE[3] = rtDW->m2[3];
 
   /* Update for Delay: '<S1>/Delay6' */
-  rtDW->Delay6_DSTATE[3] = rtDW->v_2_idx_pu[3];
+  rtDW->Delay6_DSTATE[3] = rtDW->m3[3];
 
   /* Update for Delay: '<S1>/Delay7' */
-  rtDW->Delay7_DSTATE[3] = rtDW->v_3_idx_pu[3];
+  rtDW->Delay7_DSTATE[3] = rtDW->m4[3];
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->Delay8_DSTATE[3] = rtDW->v_4_idx_pu[3];
+  rtDW->Delay8_DSTATE[3] = rtDW->E[3];
 }
 
 /* Model initialize function */
@@ -3260,26 +3881,53 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
   (void) memset((void *)rtY, 0,
                 sizeof(ExtY));
 
-  /* InitializeConditions for Delay: '<S1>/Delay1' */
-  rtDW->icLoad = true;
+  {
+    int32_T i;
+    static const real_T b[8] = { 0.1, 0.1, 0.1, 0.1, 100.0, 100.0, 100.0, 100.0
+    };
 
-  /* InitializeConditions for Delay: '<S1>/Delay3' */
-  rtDW->icLoad_a = true;
+    /* InitializeConditions for Delay: '<S1>/Delay13' */
+    rtDW->icLoad = true;
 
-  /* InitializeConditions for Delay: '<S1>/Delay4' */
-  rtDW->icLoad_f = true;
+    /* InitializeConditions for Delay: '<S1>/Delay1' */
+    rtDW->icLoad_p = true;
 
-  /* InitializeConditions for Delay: '<S1>/Delay5' */
-  rtDW->icLoad_k = true;
+    /* InitializeConditions for Delay: '<S1>/Delay3' */
+    rtDW->icLoad_l = true;
 
-  /* InitializeConditions for Delay: '<S1>/Delay6' */
-  rtDW->icLoad_n = true;
+    /* InitializeConditions for Delay: '<S1>/Delay4' */
+    rtDW->icLoad_h = true;
 
-  /* InitializeConditions for Delay: '<S1>/Delay7' */
-  rtDW->icLoad_l = true;
+    /* InitializeConditions for Delay: '<S1>/Delay5' */
+    rtDW->icLoad_b = true;
 
-  /* InitializeConditions for Delay: '<S1>/Delay8' */
-  rtDW->icLoad_ly = true;
+    /* InitializeConditions for Delay: '<S1>/Delay6' */
+    rtDW->icLoad_n = true;
+
+    /* InitializeConditions for Delay: '<S1>/Delay7' */
+    rtDW->icLoad_bq = true;
+
+    /* InitializeConditions for Delay: '<S1>/Delay8' */
+    rtDW->icLoad_d = true;
+
+    /* SystemInitialize for MATLAB Function: '<S1>/Observer' */
+    /* '<S3>:1:40' x_e = single([0;0;0;0;0;0;0;0]); */
+    for (i = 0; i < 8; i++) {
+      rtDW->x_e[i] = 0.0F;
+    }
+
+    /* '<S3>:1:41' P_e = single(diag([0.1 0.1 0.1 0.1 100 100 100 100])); */
+    memset(&rtDW->d[0], 0, sizeof(real_T) << 6U);
+    for (i = 0; i < 8; i++) {
+      rtDW->d[i + (i << 3)] = b[i];
+    }
+
+    for (i = 0; i < 64; i++) {
+      rtDW->P_e[i] = (real32_T)rtDW->d[i];
+    }
+
+    /* End of SystemInitialize for MATLAB Function: '<S1>/Observer' */
+  }
 }
 
 /*

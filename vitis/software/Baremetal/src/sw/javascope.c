@@ -83,9 +83,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_i_q] 					= &data->av.i_q;
 	js_ch_observable[JSO_i_x] 					= &data->av.i_x;
 	js_ch_observable[JSO_i_y] 					= &data->av.i_y;
-	js_ch_observable[JSO_theta_el] 				= &data->av.theta_elec_rad_ip;
-	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech_rad_ip;
-	js_ch_observable[JSO_speed_rpm]				= &data->av.mechanicalRotorSpeedRPM_ip;
+	js_ch_observable[JSO_speed_rpm]				= &data->av.mechanicalRotorSpeedRPM;
 	js_ch_observable[JSO_dutycyc_MPC_a1]		= &data->av.dutycyc[0];
 	js_ch_observable[JSO_dutycyc_MPC_b1]		= &data->av.dutycyc[1];
 	js_ch_observable[JSO_dutycyc_MPC_c1]		= &data->av.dutycyc[2];
@@ -109,13 +107,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_v_a1]					= &data->av.v_a1;
 	js_ch_observable[JSO_pos_mech]				= &data->av.pos_mech;
 	js_ch_observable[JSO_pos_elec]				= &data->av.pos_elec;
-	js_ch_observable[JSO_artif_angle]			= &data->av.theta_mech_calc_from_resolver;
-	js_ch_observable[JSO_v_d_comp]				= &data->av.v_d_comp;
-	js_ch_observable[JSO_v_q_comp]				= &data->av.v_q_comp;
-	js_ch_observable[JSO_compensation]			= &data->av.compensation;
-	js_ch_observable[JSO_sawtooth]				= &data->av.sawtooth;
-	js_ch_observable[JSO_error_sawtooth]		= &data->av.error_sawtooth;
-	js_ch_observable[JSO_error]					= &data->av.error;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -128,7 +119,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_v_dc2] 			        = &(data->av.v_dc2);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.i_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.i_q);
-	js_slowDataArray[JSSD_FLOAT_speed]					= &(data->av.mechanicalRotorSpeedRPM_ip);
+	js_slowDataArray[JSSD_FLOAT_speed]					= &(data->av.mechanicalRotorSpeedRPM);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
@@ -137,14 +128,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_inv1Temp]				= &(data->av.temperature_inv_1);
 	js_slowDataArray[JSSD_FLOAT_inv2Temp]				= &(data->av.temperature_inv_2);
 	js_slowDataArray[JSSD_FLOAT_winding_temp]			= &(data->av.average_winding_temp);
-	js_slowDataArray[JSSD_FLOAT_theta_el]				=&(data->av.theta_elec_rad_ip);
+	js_slowDataArray[JSSD_FLOAT_theta_el]				= &(data->av.theta_elec_rad_ip);
 	js_slowDataArray[JSSD_FLOAT_w_el]					= &(data->av.electricalRotorSpeedRADpS);
 	js_slowDataArray[JSSD_FLOAT_Kp_id]					= &data->av.Kp_id;
 	js_slowDataArray[JSSD_FLOAT_Ki_id]					= &data->av.Ki_id;
 	js_slowDataArray[JSSD_FLOAT_Kp_iq]					= &data->av.Kp_iq;
 	js_slowDataArray[JSSD_FLOAT_Ki_iq]					= &data->av.Ki_iq;
-	js_slowDataArray[JSSD_FLOAT_Kp_speed]				= &data->av.Kp_speed;
-	js_slowDataArray[JSSD_FLOAT_Ki_speed]				= &data->av.Ki_speed;
+	js_slowDataArray[JSSD_FLOAT_Kalman_R]				= &data->av.kalman_R;
+	js_slowDataArray[JSSD_FLOAT_Kalman_Q1]				= &data->av.kalman_Q1;
+	js_slowDataArray[JSSD_FLOAT_Kalman_Q2]				= &data->av.kalman_Q2;
 
 	return Status;
 }
@@ -164,7 +156,8 @@ void JavaScope_update(DS_Data* data){
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
 	rpu_to_apu_user_data->v_DC_pu = data->av.v_dc1_pu;
-	rpu_to_apu_user_data->theta_el = (data->av.pos_elec + (data->av.angle_lead_factor*data->av.electricalRotorSpeedRADpS*UZ_TIME_ISR));
+	rpu_to_apu_user_data->theta_el_pos = (data->av.theta_el_pos_MPC);
+	rpu_to_apu_user_data->theta_el_neg = (data->av.theta_el_neg_MPC);
 	rpu_to_apu_user_data->Ts_times_ZB_over_Ld = data->av.Ts_times_ZB_over_Ld;
 	rpu_to_apu_user_data->Ts_times_ZB_over_Lq = data->av.Ts_times_ZB_over_Lq;
 	rpu_to_apu_user_data->Ts_times_ZB_over_Lx = data->av.Ts_times_ZB_over_Lx;
@@ -192,6 +185,10 @@ void JavaScope_update(DS_Data* data){
 	rpu_to_apu_user_data->psiPM_h_pu[1] = data->av.psi_pm_h_pu_over_psiB[1];
 	rpu_to_apu_user_data->phiPM_h[0] = data->av.phiPM_h[0];
 	rpu_to_apu_user_data->phiPM_h[1] = data->av.phiPM_h[1];
+	rpu_to_apu_user_data->kalman_off_on = data->av.kalman_off_on;
+	rpu_to_apu_user_data->kalman_R = data->av.kalman_R;
+	rpu_to_apu_user_data->kalman_Q1 = data->av.kalman_Q1;
+	rpu_to_apu_user_data->kalman_Q2 = data->av.kalman_Q2;
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif

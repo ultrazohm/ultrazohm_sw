@@ -53,6 +53,7 @@
 
 #include "include/pwm_init.h"
 #include "include/resolver.h"
+#include "include/encoder.h"
 #include "include/InverterTempMeasurement.h"
 #include "include/uz_temperature_card.h"
 #include "include/inverter_fault_axi_gpio.h"

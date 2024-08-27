@@ -128,8 +128,8 @@ uz_CurrentControl_t* init_FOC_CurrentControl() {
 	Global_Data.av.Lx_over_LB = Global_Data.av.Lx/base_val.LB;
 	Global_Data.av.Ly_over_LB = Global_Data.av.Ly/base_val.LB;
 	Global_Data.av.psi_pm_over_psiB = Global_Data.av.psi_pm/base_val.psiB;
-	Global_Data.av.psi_pm_h_pu_over_psiB[0] = Global_Data.av.psiPM_h_pu[0]/base_val.psiB;
-	Global_Data.av.psi_pm_h_pu_over_psiB[1] = Global_Data.av.psiPM_h_pu[1]/base_val.psiB;
+	Global_Data.av.psi_pm_h_pu_over_psiB[0] = psi_pm_5/base_val.psiB;
+	Global_Data.av.psi_pm_h_pu_over_psiB[1] = psi_pm_7/base_val.psiB;
 
 	Global_Data.av.Kp_id = current_control_config.config_id.Kp;
 	Global_Data.av.Ki_id = current_control_config.config_id.Ki;

@@ -1,0 +1,34 @@
+%implements "chartSource" "C"
+%function ChartConfig(block, system) void
+  %createrecord chartConfiguration { ...
+          executeAtInitialization  0 ...
+  }
+  %return chartConfiguration
+%endfunction
+%function ChartDataMap(block, system) void
+  %createrecord ChartDataElements {\
+    NumChartData   2 \
+    ChartDataDefaults {\
+      RecordType   "ChartData"\
+      Dimensions   []\
+      IsTestPoint  0\
+    }\
+    ChartData {\
+      Name         "x_e"\
+      Description  "EmlPersistent"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  "uz_codegen0:2680:1937-1940"\
+      Dimensions   [8]\
+    }\
+    ChartData {\
+      Name         "P_e"\
+      Description  "EmlPersistent"\
+      SFName       ""\
+      Path         ""\
+      SrcLocation  "uz_codegen0:2680:1953-1956"\
+      Dimensions   [8,8]\
+    }\
+  }
+  %return ChartDataElements
+%endfunction

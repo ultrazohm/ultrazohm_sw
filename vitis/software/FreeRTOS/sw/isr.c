@@ -94,7 +94,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 	// get data from r5 from shared memory
 		codegenInstance.input.v_DC_pu = rpu_to_apu_user_data->v_DC_pu;
-		codegenInstance.input.theta_el = rpu_to_apu_user_data->theta_el;
+		codegenInstance.input.theta_el_pos = rpu_to_apu_user_data->theta_el_pos;
+		codegenInstance.input.theta_el_neg = rpu_to_apu_user_data->theta_el_neg;
 		codegenInstance.input.Ts_times_ZB_over_Ld = rpu_to_apu_user_data->Ts_times_ZB_over_Ld;
 		codegenInstance.input.Ts_times_ZB_over_Lq = rpu_to_apu_user_data->Ts_times_ZB_over_Lq;
 		codegenInstance.input.Ts_times_ZB_over_Lx = rpu_to_apu_user_data->Ts_times_ZB_over_Lx;
@@ -122,6 +123,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 		codegenInstance.input.psiPM_h_pu[1] = rpu_to_apu_user_data->psiPM_h_pu[1];
 		codegenInstance.input.phiPM_h[0] = rpu_to_apu_user_data->phiPM_h[0];
 		codegenInstance.input.phiPM_h[1] = rpu_to_apu_user_data->phiPM_h[1];
+		codegenInstance.input.kalman_off_on = rpu_to_apu_user_data->kalman_off_on;
+		codegenInstance.input.kalman_R = rpu_to_apu_user_data->kalman_R;
+		codegenInstance.input.kalman_Q1 = rpu_to_apu_user_data->kalman_Q1;
+		codegenInstance.input.kalman_Q2 = rpu_to_apu_user_data->kalman_Q2;
 
 		/* do your computations that you want to accelerate here... */
 		uz_codegen_step(&codegenInstance);

@@ -29,11 +29,11 @@
 <tr name="9" id="9">
 <td><a id="l9" class='ln'>9</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="10" id="10">
-<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version                  : 2.7</span></td></tr>
+<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version                  : 2.11</span></td></tr>
 <tr name="11" id="11">
 <td><a id="l11" class='ln'>11</a></td><td><span class="ct"> * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020</span></td></tr>
 <tr name="12" id="12">
-<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C/C++ source code generated on : Mon Jul 29 14:01:24 2024</span></td></tr>
+<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C/C++ source code generated on : Tue Aug 27 18:00:10 2024</span></td></tr>
 <tr name="13" id="13">
 <td><a id="l13" class='ln'>13</a></td><td><span class="ct"> *</span></td></tr>
 <tr name="14" id="14">
@@ -141,443 +141,563 @@
 <tr name="65" id="65">
 <td><a id="l65" class='ln'>65</a></td><td><span class="kw">typedef</span> <span class="kw">struct</span> <span class="br">{</span></td></tr>
 <tr name="66" id="66">
-<td><a id="l66" class='ln'>66</a></td><td>  <a id="66c3" class="tk">real32_T</a> <a id="66c12" class="tk">Delay1_DSTATE</a>[7];           <span class="ct">/* '<a class="ct blk" blk_line="66">&lt;S1&gt;/Delay1</a>' */</span></td></tr>
+<td><a id="l66" class='ln'>66</a></td><td>  <a id="66c3" class="tk">real_T</a> <a id="66c10" class="tk">d</a>[64];</td></tr>
 <tr name="67" id="67">
-<td><a id="l67" class='ln'>67</a></td><td>  <a id="67c3" class="tk">real32_T</a> <a id="67c12" class="tk">Delay3_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="67">&lt;S1&gt;/Delay3</a>' */</span></td></tr>
+<td><a id="l67" class='ln'>67</a></td><td>  <a id="67c3" class="tk">real32_T</a> <a id="67c12" class="tk">Delay13_DSTATE</a>[7];          <span class="ct">/* '<a class="ct blk" blk_line="67">&lt;S1&gt;/Delay13</a>' */</span></td></tr>
 <tr name="68" id="68">
-<td><a id="l68" class='ln'>68</a></td><td>  <a id="68c3" class="tk">real32_T</a> <a id="68c12" class="tk">Delay4_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="68">&lt;S1&gt;/Delay4</a>' */</span></td></tr>
+<td><a id="l68" class='ln'>68</a></td><td>  <a id="68c3" class="tk">real32_T</a> <a id="68c12" class="tk">Delay_DSTATE</a>[4];            <span class="ct">/* '<a class="ct blk" blk_line="68">&lt;S1&gt;/Delay</a>' */</span></td></tr>
 <tr name="69" id="69">
-<td><a id="l69" class='ln'>69</a></td><td>  <a id="69c3" class="tk">real32_T</a> <a id="69c12" class="tk">Delay5_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="69">&lt;S1&gt;/Delay5</a>' */</span></td></tr>
+<td><a id="l69" class='ln'>69</a></td><td>  <a id="69c3" class="tk">real32_T</a> <a id="69c12" class="tk">Delay9_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="69">&lt;S1&gt;/Delay9</a>' */</span></td></tr>
 <tr name="70" id="70">
-<td><a id="l70" class='ln'>70</a></td><td>  <a id="70c3" class="tk">real32_T</a> <a id="70c12" class="tk">Delay6_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="70">&lt;S1&gt;/Delay6</a>' */</span></td></tr>
+<td><a id="l70" class='ln'>70</a></td><td>  <a id="70c3" class="tk">real32_T</a> <a id="70c12" class="tk">Delay10_DSTATE</a>[4];          <span class="ct">/* '<a class="ct blk" blk_line="70">&lt;S1&gt;/Delay10</a>' */</span></td></tr>
 <tr name="71" id="71">
-<td><a id="l71" class='ln'>71</a></td><td>  <a id="71c3" class="tk">real32_T</a> <a id="71c12" class="tk">Delay7_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="71">&lt;S1&gt;/Delay7</a>' */</span></td></tr>
+<td><a id="l71" class='ln'>71</a></td><td>  <a id="71c3" class="tk">real32_T</a> <a id="71c12" class="tk">Delay11_DSTATE</a>[4];          <span class="ct">/* '<a class="ct blk" blk_line="71">&lt;S1&gt;/Delay11</a>' */</span></td></tr>
 <tr name="72" id="72">
-<td><a id="l72" class='ln'>72</a></td><td>  <a id="72c3" class="tk">real32_T</a> <a id="72c12" class="tk">Delay8_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="72">&lt;S1&gt;/Delay8</a>' */</span></td></tr>
+<td><a id="l72" class='ln'>72</a></td><td>  <a id="72c3" class="tk">real32_T</a> <a id="72c12" class="tk">Delay12_DSTATE</a>[4];          <span class="ct">/* '<a class="ct blk" blk_line="72">&lt;S1&gt;/Delay12</a>' */</span></td></tr>
 <tr name="73" id="73">
-<td><a id="l73" class='ln'>73</a></td><td>  <a id="73c3" class="tk">real32_T</a> <a id="73c12" class="tk">M</a>[196];                     <span class="ct">/* '<a class="ct blk" blk_line="73">&lt;S1&gt;/formulate_qp</a>' */</span></td></tr>
+<td><a id="l73" class='ln'>73</a></td><td>  <a id="73c3" class="tk">real32_T</a> <a id="73c12" class="tk">Delay1_DSTATE</a>[7];           <span class="ct">/* '<a class="ct blk" blk_line="73">&lt;S1&gt;/Delay1</a>' */</span></td></tr>
 <tr name="74" id="74">
-<td><a id="l74" class='ln'>74</a></td><td>  <a id="74c3" class="tk">real32_T</a> <a id="74c12" class="tk">Linv_data</a>[49];</td></tr>
+<td><a id="l74" class='ln'>74</a></td><td>  <a id="74c3" class="tk">real32_T</a> <a id="74c12" class="tk">Delay3_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="74">&lt;S1&gt;/Delay3</a>' */</span></td></tr>
 <tr name="75" id="75">
-<td><a id="l75" class='ln'>75</a></td><td>  <a id="75c3" class="tk">real32_T</a> <a id="75c12" class="tk">Hinv_data</a>[49];</td></tr>
+<td><a id="l75" class='ln'>75</a></td><td>  <a id="75c3" class="tk">real32_T</a> <a id="75c12" class="tk">Delay4_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="75">&lt;S1&gt;/Delay4</a>' */</span></td></tr>
 <tr name="76" id="76">
-<td><a id="l76" class='ln'>76</a></td><td>  <a id="76c3" class="tk">real32_T</a> <a id="76c12" class="tk">RLinv_data</a>[49];</td></tr>
+<td><a id="l76" class='ln'>76</a></td><td>  <a id="76c3" class="tk">real32_T</a> <a id="76c12" class="tk">Delay5_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="76">&lt;S1&gt;/Delay5</a>' */</span></td></tr>
 <tr name="77" id="77">
-<td><a id="l77" class='ln'>77</a></td><td>  <a id="77c3" class="tk">real32_T</a> <a id="77c12" class="tk">D_data</a>[49];</td></tr>
+<td><a id="l77" class='ln'>77</a></td><td>  <a id="77c3" class="tk">real32_T</a> <a id="77c12" class="tk">Delay6_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="77">&lt;S1&gt;/Delay6</a>' */</span></td></tr>
 <tr name="78" id="78">
-<td><a id="l78" class='ln'>78</a></td><td>  <a id="78c3" class="tk">real32_T</a> <a id="78c12" class="tk">H_data</a>[49];</td></tr>
+<td><a id="l78" class='ln'>78</a></td><td>  <a id="78c3" class="tk">real32_T</a> <a id="78c12" class="tk">Delay7_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="78">&lt;S1&gt;/Delay7</a>' */</span></td></tr>
 <tr name="79" id="79">
-<td><a id="l79" class='ln'>79</a></td><td>  <a id="79c3" class="tk">real32_T</a> <a id="79c12" class="tk">U_data</a>[49];</td></tr>
+<td><a id="l79" class='ln'>79</a></td><td>  <a id="79c3" class="tk">real32_T</a> <a id="79c12" class="tk">Delay8_DSTATE</a>[4];           <span class="ct">/* '<a class="ct blk" blk_line="79">&lt;S1&gt;/Delay8</a>' */</span></td></tr>
 <tr name="80" id="80">
-<td><a id="l80" class='ln'>80</a></td><td>  <a id="80c3" class="tk">real32_T</a> <a id="80c12" class="tk">TL_data</a>[49];</td></tr>
+<td><a id="l80" class='ln'>80</a></td><td>  <a id="80c3" class="tk">real32_T</a> <a id="80c12" class="tk">x_e</a>[8];                     <span class="ct">/* '<a class="ct blk" blk_line="80">&lt;S1&gt;/Observer</a>' */</span></td></tr>
 <tr name="81" id="81">
-<td><a id="l81" class='ln'>81</a></td><td>  <a id="81c3" class="tk">real32_T</a> <a id="81c12" class="tk">Q_data</a>[49];</td></tr>
+<td><a id="l81" class='ln'>81</a></td><td>  <a id="81c3" class="tk">real32_T</a> <a id="81c12" class="tk">P_e</a>[64];                    <span class="ct">/* '<a class="ct blk" blk_line="81">&lt;S1&gt;/Observer</a>' */</span></td></tr>
 <tr name="82" id="82">
-<td><a id="l82" class='ln'>82</a></td><td>  <a id="82c3" class="tk">real32_T</a> <a id="82c12" class="tk">R_data</a>[49];</td></tr>
+<td><a id="l82" class='ln'>82</a></td><td>  <a id="82c3" class="tk">real32_T</a> <a id="82c12" class="tk">M</a>[196];                     <span class="ct">/* '<a class="ct blk" blk_line="82">&lt;S1&gt;/formulate_qp</a>' */</span></td></tr>
 <tr name="83" id="83">
-<td><a id="l83" class='ln'>83</a></td><td>  <a id="83c3" class="tk">real32_T</a> <a id="83c12" class="tk">A_data</a>[49];</td></tr>
+<td><a id="l83" class='ln'>83</a></td><td>  <a id="83c3" class="tk">real32_T</a> <a id="83c12" class="tk">A</a>[64];</td></tr>
 <tr name="84" id="84">
-<td><a id="l84" class='ln'>84</a></td><td>  <a id="84c3" class="tk">real32_T</a> <a id="84c12" class="tk">r</a>[28];                      <span class="ct">/* '<a class="ct blk" blk_line="84">&lt;S1&gt;/formulate_qp</a>' */</span></td></tr>
+<td><a id="l84" class='ln'>84</a></td><td>  <a id="84c3" class="tk">real32_T</a> <a id="84c12" class="tk">A_m</a>[64];</td></tr>
 <tr name="85" id="85">
-<td><a id="l85" class='ln'>85</a></td><td>  <a id="85c3" class="tk">real32_T</a> <a id="85c12" class="tk">A</a>[20];</td></tr>
+<td><a id="l85" class='ln'>85</a></td><td>  <a id="85c3" class="tk">real32_T</a> <a id="85c12" class="tk">A_c</a>[64];</td></tr>
 <tr name="86" id="86">
-<td><a id="l86" class='ln'>86</a></td><td>  <a id="86c3" class="tk">real32_T</a> <a id="86c12" class="tk">B_m</a>[20];</td></tr>
+<td><a id="l86" class='ln'>86</a></td><td>  <a id="86c3" class="tk">real32_T</a> <a id="86c12" class="tk">Linv_data</a>[49];</td></tr>
 <tr name="87" id="87">
-<td><a id="l87" class='ln'>87</a></td><td>  <a id="87c3" class="tk">real32_T</a> <a id="87c12" class="tk">lam</a>[16];</td></tr>
+<td><a id="l87" class='ln'>87</a></td><td>  <a id="87c3" class="tk">real32_T</a> <a id="87c12" class="tk">Hinv_data</a>[49];</td></tr>
 <tr name="88" id="88">
-<td><a id="l88" class='ln'>88</a></td><td>  <a id="88c3" class="tk">real32_T</a> <a id="88c12" class="tk">Opt_data</a>[14];</td></tr>
+<td><a id="l88" class='ln'>88</a></td><td>  <a id="88c3" class="tk">real32_T</a> <a id="88c12" class="tk">RLinv_data</a>[49];</td></tr>
 <tr name="89" id="89">
-<td><a id="l89" class='ln'>89</a></td><td>  <a id="89c3" class="tk">real32_T</a> <a id="89c12" class="tk">Rhs_data</a>[14];</td></tr>
+<td><a id="l89" class='ln'>89</a></td><td>  <a id="89c3" class="tk">real32_T</a> <a id="89c12" class="tk">D_data</a>[49];</td></tr>
 <tr name="90" id="90">
-<td><a id="l90" class='ln'>90</a></td><td>  <a id="90c3" class="tk">real32_T</a> <a id="90c12" class="tk">lam_c</a>[8];</td></tr>
+<td><a id="l90" class='ln'>90</a></td><td>  <a id="90c3" class="tk">real32_T</a> <a id="90c12" class="tk">H_data</a>[49];</td></tr>
 <tr name="91" id="91">
-<td><a id="l91" class='ln'>91</a></td><td>  <a id="91c3" class="tk">real32_T</a> <a id="91c12" class="tk">cTol</a>[8];</td></tr>
+<td><a id="l91" class='ln'>91</a></td><td>  <a id="91c3" class="tk">real32_T</a> <a id="91c12" class="tk">U_data</a>[49];</td></tr>
 <tr name="92" id="92">
-<td><a id="l92" class='ln'>92</a></td><td>  <a id="92c3" class="tk">real32_T</a> <a id="92c12" class="tk">x_data</a>[7];</td></tr>
+<td><a id="l92" class='ln'>92</a></td><td>  <a id="92c3" class="tk">real32_T</a> <a id="92c12" class="tk">TL_data</a>[49];</td></tr>
 <tr name="93" id="93">
-<td><a id="l93" class='ln'>93</a></td><td>  <a id="93c3" class="tk">real32_T</a> <a id="93c12" class="tk">fv</a>[7];</td></tr>
+<td><a id="l93" class='ln'>93</a></td><td>  <a id="93c3" class="tk">real32_T</a> <a id="93c12" class="tk">Q_data</a>[49];</td></tr>
 <tr name="94" id="94">
-<td><a id="l94" class='ln'>94</a></td><td>  <a id="94c3" class="tk">real32_T</a> <a id="94c12" class="tk">r_data</a>[7];</td></tr>
+<td><a id="l94" class='ln'>94</a></td><td>  <a id="94c3" class="tk">real32_T</a> <a id="94c12" class="tk">R_data</a>[49];</td></tr>
 <tr name="95" id="95">
-<td><a id="l95" class='ln'>95</a></td><td>  <a id="95c3" class="tk">real32_T</a> <a id="95c12" class="tk">AcRow</a>[7];</td></tr>
+<td><a id="l95" class='ln'>95</a></td><td>  <a id="95c3" class="tk">real32_T</a> <a id="95c12" class="tk">A_data</a>[49];</td></tr>
 <tr name="96" id="96">
-<td><a id="l96" class='ln'>96</a></td><td>  <a id="96c3" class="tk">real32_T</a> <a id="96c12" class="tk">z_data</a>[7];</td></tr>
+<td><a id="l96" class='ln'>96</a></td><td>  <a id="96c3" class="tk">real32_T</a> <a id="96c12" class="tk">b_A_tmp</a>[32];</td></tr>
 <tr name="97" id="97">
-<td><a id="l97" class='ln'>97</a></td><td>  <a id="97c3" class="tk">real32_T</a> <a id="97c12" class="tk">tau_data</a>[7];</td></tr>
+<td><a id="l97" class='ln'>97</a></td><td>  <a id="97c3" class="tk">real32_T</a> <a id="97c12" class="tk">r</a>[28];                      <span class="ct">/* '<a class="ct blk" blk_line="97">&lt;S1&gt;/formulate_qp</a>' */</span></td></tr>
 <tr name="98" id="98">
-<td><a id="l98" class='ln'>98</a></td><td>  <a id="98c3" class="tk">real32_T</a> <a id="98c12" class="tk">Ac</a>[7];</td></tr>
+<td><a id="l98" class='ln'>98</a></td><td>  <a id="98c3" class="tk">real32_T</a> <a id="98c12" class="tk">A_k</a>[16];</td></tr>
 <tr name="99" id="99">
-<td><a id="l99" class='ln'>99</a></td><td>  <a id="99c3" class="tk">real32_T</a> <a id="99c12" class="tk">work_data</a>[7];</td></tr>
+<td><a id="l99" class='ln'>99</a></td><td>  <a id="99c3" class="tk">real32_T</a> <a id="99c12" class="tk">B_c</a>[16];</td></tr>
 <tr name="100" id="100">
-<td><a id="l100" class='ln'>100</a></td><td>  <a id="100c3" class="tk">real32_T</a> <a id="100c12" class="tk">t</a>[6];</td></tr>
+<td><a id="l100" class='ln'>100</a></td><td>  <a id="100c3" class="tk">real32_T</a> <a id="100c12" class="tk">fv</a>[16];</td></tr>
 <tr name="101" id="101">
-<td><a id="l101" class='ln'>101</a></td><td>  <a id="101c3" class="tk">real32_T</a> <a id="101c12" class="tk">tz</a>[6];                      <span class="ct">/* '<a class="ct blk" blk_line="101">&lt;S1&gt;/tz</a>' */</span></td></tr>
+<td><a id="l101" class='ln'>101</a></td><td>  <a id="101c3" class="tk">real32_T</a> <a id="101c12" class="tk">Opt_data</a>[14];</td></tr>
 <tr name="102" id="102">
-<td><a id="l102" class='ln'>102</a></td><td>  <a id="102c3" class="tk">real32_T</a> <a id="102c12" class="tk">x0</a>[5];</td></tr>
+<td><a id="l102" class='ln'>102</a></td><td>  <a id="102c3" class="tk">real32_T</a> <a id="102c12" class="tk">Rhs_data</a>[14];</td></tr>
 <tr name="103" id="103">
-<td><a id="l103" class='ln'>103</a></td><td>  <a id="103c3" class="tk">real32_T</a> <a id="103c12" class="tk">rtb_v_1_idx_pu_k</a>[5];</td></tr>
+<td><a id="l103" class='ln'>103</a></td><td>  <a id="103c3" class="tk">real32_T</a> <a id="103c12" class="tk">x_p</a>[8];</td></tr>
 <tr name="104" id="104">
-<td><a id="l104" class='ln'>104</a></td><td>  <a id="104c3" class="tk">real32_T</a> <a id="104c12" class="tk">E</a>[4];</td></tr>
+<td><a id="l104" class='ln'>104</a></td><td>  <a id="104c3" class="tk">real32_T</a> <a id="104c12" class="tk">A_b</a>[8];</td></tr>
 <tr name="105" id="105">
-<td><a id="l105" class='ln'>105</a></td><td>  <a id="105c3" class="tk">real32_T</a> <a id="105c12" class="tk">v_1_idx_pu</a>[4];              <span class="ct">/* '<a class="ct blk" blk_line="105">&lt;S1&gt;/act_sw_2_dqxy_volts_all</a>' */</span></td></tr>
+<td><a id="l105" class='ln'>105</a></td><td>  <a id="105c3" class="tk">real32_T</a> <a id="105c12" class="tk">fv1</a>[8];</td></tr>
 <tr name="106" id="106">
-<td><a id="l106" class='ln'>106</a></td><td>  <a id="106c3" class="tk">real32_T</a> <a id="106c12" class="tk">v_2_idx_pu</a>[4];              <span class="ct">/* '<a class="ct blk" blk_line="106">&lt;S1&gt;/act_sw_2_dqxy_volts_all</a>' */</span></td></tr>
+<td><a id="l106" class='ln'>106</a></td><td>  <a id="106c3" class="tk">real32_T</a> <a id="106c12" class="tk">cTol</a>[8];</td></tr>
 <tr name="107" id="107">
-<td><a id="l107" class='ln'>107</a></td><td>  <a id="107c3" class="tk">real32_T</a> <a id="107c12" class="tk">v_3_idx_pu</a>[4];              <span class="ct">/* '<a class="ct blk" blk_line="107">&lt;S1&gt;/act_sw_2_dqxy_volts_all</a>' */</span></td></tr>
+<td><a id="l107" class='ln'>107</a></td><td>  <a id="107c3" class="tk">real32_T</a> <a id="107c12" class="tk">x_data</a>[7];</td></tr>
 <tr name="108" id="108">
-<td><a id="l108" class='ln'>108</a></td><td>  <a id="108c3" class="tk">real32_T</a> <a id="108c12" class="tk">v_4_idx_pu</a>[4];              <span class="ct">/* '<a class="ct blk" blk_line="108">&lt;S1&gt;/act_sw_2_dqxy_volts_all</a>' */</span></td></tr>
+<td><a id="l108" class='ln'>108</a></td><td>  <a id="108c3" class="tk">real32_T</a> <a id="108c12" class="tk">fv2</a>[7];</td></tr>
 <tr name="109" id="109">
-<td><a id="l109" class='ln'>109</a></td><td>  <a id="109c3" class="tk">real32_T</a> <a id="109c12" class="tk">v_5_idx_pu</a>[4];              <span class="ct">/* '<a class="ct blk" blk_line="109">&lt;S1&gt;/act_sw_2_dqxy_volts_all</a>' */</span></td></tr>
+<td><a id="l109" class='ln'>109</a></td><td>  <a id="109c3" class="tk">real32_T</a> <a id="109c12" class="tk">r_data</a>[7];</td></tr>
 <tr name="110" id="110">
-<td><a id="l110" class='ln'>110</a></td><td>  <a id="110c3" class="tk">real32_T</a> <a id="110c12" class="tk">m6</a>[4];                      <span class="ct">/* '<a class="ct blk" blk_line="110">&lt;S1&gt;/state_space_mdl</a>' */</span></td></tr>
+<td><a id="l110" class='ln'>110</a></td><td>  <a id="110c3" class="tk">real32_T</a> <a id="110c12" class="tk">AcRow</a>[7];</td></tr>
 <tr name="111" id="111">
-<td><a id="l111" class='ln'>111</a></td><td>  <a id="111c3" class="tk">real32_T</a> <a id="111c12" class="tk">m1</a>[4];                      <span class="ct">/* '<a class="ct blk" blk_line="111">&lt;S1&gt;/state_space_mdl</a>' */</span></td></tr>
+<td><a id="l111" class='ln'>111</a></td><td>  <a id="111c3" class="tk">real32_T</a> <a id="111c12" class="tk">z_data</a>[7];</td></tr>
 <tr name="112" id="112">
-<td><a id="l112" class='ln'>112</a></td><td>  <a id="112c3" class="tk">real32_T</a> <a id="112c12" class="tk">E_c</a>[4];</td></tr>
+<td><a id="l112" class='ln'>112</a></td><td>  <a id="112c3" class="tk">real32_T</a> <a id="112c12" class="tk">tau_data</a>[7];</td></tr>
 <tr name="113" id="113">
-<td><a id="l113" class='ln'>113</a></td><td>  <a id="113c3" class="tk">real32_T</a> <a id="113c12" class="tk">B_b</a>[4];</td></tr>
+<td><a id="l113" class='ln'>113</a></td><td>  <a id="113c3" class="tk">real32_T</a> <a id="113c12" class="tk">Ac</a>[7];</td></tr>
 <tr name="114" id="114">
-<td><a id="l114" class='ln'>114</a></td><td>  <a id="114c3" class="tk">real32_T</a> <a id="114c12" class="tk">A_p</a>[4];</td></tr>
+<td><a id="l114" class='ln'>114</a></td><td>  <a id="114c3" class="tk">real32_T</a> <a id="114c12" class="tk">work_data</a>[7];</td></tr>
 <tr name="115" id="115">
-<td><a id="l115" class='ln'>115</a></td><td>  <a id="115c3" class="tk">real32_T</a> <a id="115c12" class="tk">E_cv</a>[4];</td></tr>
+<td><a id="l115" class='ln'>115</a></td><td>  <a id="115c3" class="tk">real32_T</a> <a id="115c12" class="tk">t</a>[6];</td></tr>
 <tr name="116" id="116">
-<td><a id="l116" class='ln'>116</a></td><td>  <a id="116c3" class="tk">real32_T</a> <a id="116c12" class="tk">work_data_f</a>[7];</td></tr>
+<td><a id="l116" class='ln'>116</a></td><td>  <a id="116c3" class="tk">real32_T</a> <a id="116c12" class="tk">tz</a>[6];                      <span class="ct">/* '<a class="ct blk" blk_line="116">&lt;S1&gt;/tz</a>' */</span></td></tr>
 <tr name="117" id="117">
-<td><a id="l117" class='ln'>117</a></td><td>  <a id="117c3" class="tk">real32_T</a> <a id="117c12" class="tk">x</a>;</td></tr>
+<td><a id="l117" class='ln'>117</a></td><td>  <a id="117c3" class="tk">real32_T</a> <a id="117c12" class="tk">D</a>[4];</td></tr>
 <tr name="118" id="118">
-<td><a id="l118" class='ln'>118</a></td><td>  <a id="118c3" class="tk">real32_T</a> <a id="118c12" class="tk">q</a>;</td></tr>
+<td><a id="l118" class='ln'>118</a></td><td>  <a id="118c3" class="tk">real32_T</a> <a id="118c12" class="tk">E</a>[4];</td></tr>
 <tr name="119" id="119">
-<td><a id="l119" class='ln'>119</a></td><td>  <a id="119c3" class="tk">real32_T</a> <a id="119c12" class="tk">w6theta_el</a>;</td></tr>
+<td><a id="l119" class='ln'>119</a></td><td>  <a id="119c3" class="tk">real32_T</a> <a id="119c12" class="tk">v_t0</a>[4];                    <span class="ct">/* '<a class="ct blk" blk_line="119">&lt;S1&gt;/v_dqxy</a>' */</span></td></tr>
 <tr name="120" id="120">
-<td><a id="l120" class='ln'>120</a></td><td>  <a id="120c3" class="tk">real32_T</a> <a id="120c12" class="tk">SinCos1_o1</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="120">&lt;S1&gt;/SinCos1</a>' */</span></td></tr>
+<td><a id="l120" class='ln'>120</a></td><td>  <a id="120c3" class="tk">real32_T</a> <a id="120c12" class="tk">m6</a>[4];                      <span class="ct">/* '<a class="ct blk" blk_line="120">&lt;S1&gt;/state_space_mdl</a>' */</span></td></tr>
 <tr name="121" id="121">
-<td><a id="l121" class='ln'>121</a></td><td>  <a id="121c3" class="tk">real32_T</a> <a id="121c12" class="tk">SinCos1_o2</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="121">&lt;S1&gt;/SinCos1</a>' */</span></td></tr>
+<td><a id="l121" class='ln'>121</a></td><td>  <a id="121c3" class="tk">real32_T</a> <a id="121c12" class="tk">m1</a>[4];                      <span class="ct">/* '<a class="ct blk" blk_line="121">&lt;S1&gt;/state_space_mdl</a>' */</span></td></tr>
 <tr name="122" id="122">
-<td><a id="l122" class='ln'>122</a></td><td>  <a id="122c3" class="tk">real32_T</a> <a id="122c12" class="tk">rMin</a>;</td></tr>
+<td><a id="l122" class='ln'>122</a></td><td>  <a id="122c3" class="tk">real32_T</a> <a id="122c12" class="tk">m2</a>[4];                      <span class="ct">/* '<a class="ct blk" blk_line="122">&lt;S1&gt;/state_space_mdl</a>' */</span></td></tr>
 <tr name="123" id="123">
-<td><a id="l123" class='ln'>123</a></td><td>  <a id="123c3" class="tk">real32_T</a> <a id="123c12" class="tk">Xnorm0</a>;</td></tr>
+<td><a id="l123" class='ln'>123</a></td><td>  <a id="123c3" class="tk">real32_T</a> <a id="123c12" class="tk">m3</a>[4];                      <span class="ct">/* '<a class="ct blk" blk_line="123">&lt;S1&gt;/state_space_mdl</a>' */</span></td></tr>
 <tr name="124" id="124">
-<td><a id="l124" class='ln'>124</a></td><td>  <a id="124c3" class="tk">real32_T</a> <a id="124c12" class="tk">cMin</a>;</td></tr>
+<td><a id="l124" class='ln'>124</a></td><td>  <a id="124c3" class="tk">real32_T</a> <a id="124c12" class="tk">m4</a>[4];                      <span class="ct">/* '<a class="ct blk" blk_line="124">&lt;S1&gt;/state_space_mdl</a>' */</span></td></tr>
 <tr name="125" id="125">
-<td><a id="l125" class='ln'>125</a></td><td>  <a id="125c3" class="tk">real32_T</a> <a id="125c12" class="tk">cVal</a>;</td></tr>
+<td><a id="l125" class='ln'>125</a></td><td>  <a id="125c3" class="tk">real32_T</a> <a id="125c12" class="tk">E_p</a>[4];</td></tr>
 <tr name="126" id="126">
-<td><a id="l126" class='ln'>126</a></td><td>  <a id="126c3" class="tk">real32_T</a> <a id="126c12" class="tk">t_g</a>;</td></tr>
+<td><a id="l126" class='ln'>126</a></td><td>  <a id="126c3" class="tk">real32_T</a> <a id="126c12" class="tk">E_c</a>[4];</td></tr>
 <tr name="127" id="127">
-<td><a id="l127" class='ln'>127</a></td><td>  <a id="127c3" class="tk">real32_T</a> <a id="127c12" class="tk">Linv</a>;</td></tr>
+<td><a id="l127" class='ln'>127</a></td><td>  <a id="127c3" class="tk">real32_T</a> <a id="127c12" class="tk">work_data_f</a>[7];</td></tr>
 <tr name="128" id="128">
-<td><a id="l128" class='ln'>128</a></td><td>  <a id="128c3" class="tk">real32_T</a> <a id="128c12" class="tk">b_atmp</a>;</td></tr>
+<td><a id="l128" class='ln'>128</a></td><td>  <a id="128c3" class="tk">real32_T</a> <a id="128c12" class="tk">smax</a>;</td></tr>
 <tr name="129" id="129">
-<td><a id="l129" class='ln'>129</a></td><td>  <a id="129c3" class="tk">int32_T</a> <a id="129c11" class="tk">Linv_size</a>[2];</td></tr>
+<td><a id="l129" class='ln'>129</a></td><td>  <a id="129c3" class="tk">real32_T</a> <a id="129c12" class="tk">q</a>;</td></tr>
 <tr name="130" id="130">
-<td><a id="l130" class='ln'>130</a></td><td>  <a id="130c3" class="tk">int32_T</a> <a id="130c11" class="tk">Hinv_size</a>[2];</td></tr>
+<td><a id="l130" class='ln'>130</a></td><td>  <a id="130c3" class="tk">real32_T</a> <a id="130c12" class="tk">SinCos1_o2</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="130">&lt;S1&gt;/SinCos1</a>' */</span></td></tr>
 <tr name="131" id="131">
-<td><a id="l131" class='ln'>131</a></td><td>  <a id="131c3" class="tk">int32_T</a> <a id="131c11" class="tk">RLinv_size</a>[2];</td></tr>
+<td><a id="l131" class='ln'>131</a></td><td>  <a id="131c3" class="tk">real32_T</a> <a id="131c12" class="tk">SinCos2_o1</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="131">&lt;S1&gt;/SinCos2</a>' */</span></td></tr>
 <tr name="132" id="132">
-<td><a id="l132" class='ln'>132</a></td><td>  <a id="132c3" class="tk">int32_T</a> <a id="132c11" class="tk">D_size</a>[2];</td></tr>
+<td><a id="l132" class='ln'>132</a></td><td>  <a id="132c3" class="tk">real32_T</a> <a id="132c12" class="tk">SinCos2_o2</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="132">&lt;S1&gt;/SinCos2</a>' */</span></td></tr>
 <tr name="133" id="133">
-<td><a id="l133" class='ln'>133</a></td><td>  <a id="133c3" class="tk">int32_T</a> <a id="133c11" class="tk">H_size</a>[2];</td></tr>
+<td><a id="l133" class='ln'>133</a></td><td>  <a id="133c3" class="tk">real32_T</a> <a id="133c12" class="tk">rtb_e_dq_obs_g</a>;</td></tr>
 <tr name="134" id="134">
-<td><a id="l134" class='ln'>134</a></td><td>  <a id="134c3" class="tk">int32_T</a> <a id="134c11" class="tk">U_size</a>[2];</td></tr>
+<td><a id="l134" class='ln'>134</a></td><td>  <a id="134c3" class="tk">real32_T</a> <a id="134c12" class="tk">rtb_e_xy_obs_g</a>;</td></tr>
 <tr name="135" id="135">
-<td><a id="l135" class='ln'>135</a></td><td>  <a id="135c3" class="tk">int32_T</a> <a id="135c11" class="tk">Q_size</a>[2];</td></tr>
+<td><a id="l135" class='ln'>135</a></td><td>  <a id="135c3" class="tk">real32_T</a> <a id="135c12" class="tk">rtb_i_dq_obs_idx_0</a>;</td></tr>
 <tr name="136" id="136">
-<td><a id="l136" class='ln'>136</a></td><td>  <a id="136c3" class="tk">int32_T</a> <a id="136c11" class="tk">A_size</a>[2];</td></tr>
+<td><a id="l136" class='ln'>136</a></td><td>  <a id="136c3" class="tk">real32_T</a> <a id="136c12" class="tk">rtb_e_dq_obs_idx_0</a>;</td></tr>
 <tr name="137" id="137">
-<td><a id="l137" class='ln'>137</a></td><td>  <a id="137c3" class="tk">int32_T</a> <a id="137c11" class="tk">idxAjj</a>;</td></tr>
+<td><a id="l137" class='ln'>137</a></td><td>  <a id="137c3" class="tk">real32_T</a> <a id="137c12" class="tk">rtb_e_xy_obs_idx_0</a>;</td></tr>
 <tr name="138" id="138">
-<td><a id="l138" class='ln'>138</a></td><td>  <a id="138c3" class="tk">int32_T</a> <a id="138c11" class="tk">b_j</a>;</td></tr>
+<td><a id="l138" class='ln'>138</a></td><td>  <a id="138c3" class="tk">real32_T</a> <a id="138c12" class="tk">rtb_v_1_idx_pu_idx_1</a>;</td></tr>
 <tr name="139" id="139">
-<td><a id="l139" class='ln'>139</a></td><td>  <a id="139c3" class="tk">int32_T</a> <a id="139c11" class="tk">iy</a>;</td></tr>
+<td><a id="l139" class='ln'>139</a></td><td>  <a id="139c3" class="tk">real32_T</a> <a id="139c12" class="tk">rtb_v_1_idx_pu_idx_3</a>;</td></tr>
 <tr name="140" id="140">
-<td><a id="l140" class='ln'>140</a></td><td>  <a id="140c3" class="tk">int32_T</a> <a id="140c11" class="tk">e</a>;</td></tr>
+<td><a id="l140" class='ln'>140</a></td><td>  <a id="140c3" class="tk">real32_T</a> <a id="140c12" class="tk">rtb_v_2_idx_pu_idx_0</a>;</td></tr>
 <tr name="141" id="141">
-<td><a id="l141" class='ln'>141</a></td><td>  <a id="141c3" class="tk">int32_T</a> <a id="141c11" class="tk">ia</a>;</td></tr>
+<td><a id="l141" class='ln'>141</a></td><td>  <a id="141c3" class="tk">real32_T</a> <a id="141c12" class="tk">rtb_v_2_idx_pu_idx_1</a>;</td></tr>
 <tr name="142" id="142">
-<td><a id="l142" class='ln'>142</a></td><td>  <a id="142c3" class="tk">int32_T</a> <a id="142c11" class="tk">b_ix</a>;</td></tr>
+<td><a id="l142" class='ln'>142</a></td><td>  <a id="142c3" class="tk">real32_T</a> <a id="142c12" class="tk">rtb_v_2_idx_pu_idx_2</a>;</td></tr>
 <tr name="143" id="143">
-<td><a id="l143" class='ln'>143</a></td><td>  <a id="143c3" class="tk">int32_T</a> <a id="143c11" class="tk">b_iy</a>;</td></tr>
+<td><a id="l143" class='ln'>143</a></td><td>  <a id="143c3" class="tk">real32_T</a> <a id="143c12" class="tk">rtb_v_2_idx_pu_idx_3</a>;</td></tr>
 <tr name="144" id="144">
-<td><a id="l144" class='ln'>144</a></td><td>  <a id="144c3" class="tk">int32_T</a> <a id="144c11" class="tk">b_k</a>;</td></tr>
+<td><a id="l144" class='ln'>144</a></td><td>  <a id="144c3" class="tk">real32_T</a> <a id="144c12" class="tk">rtb_v_3_idx_pu_idx_0</a>;</td></tr>
 <tr name="145" id="145">
-<td><a id="l145" class='ln'>145</a></td><td>  <a id="145c3" class="tk">int32_T</a> <a id="145c11" class="tk">sector_ref</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="145">&lt;S1&gt;/deadbeat_solution</a>' */</span></td></tr>
+<td><a id="l145" class='ln'>145</a></td><td>  <a id="145c3" class="tk">real32_T</a> <a id="145c12" class="tk">rtb_v_3_idx_pu_idx_1</a>;</td></tr>
 <tr name="146" id="146">
-<td><a id="l146" class='ln'>146</a></td><td>  <a id="146c3" class="tk">int32_T</a> <a id="146c11" class="tk">i</a>;</td></tr>
+<td><a id="l146" class='ln'>146</a></td><td>  <a id="146c3" class="tk">real32_T</a> <a id="146c12" class="tk">rtb_v_3_idx_pu_idx_2</a>;</td></tr>
 <tr name="147" id="147">
-<td><a id="l147" class='ln'>147</a></td><td>  <a id="147c3" class="tk">int32_T</a> <a id="147c11" class="tk">x_size</a>;</td></tr>
+<td><a id="l147" class='ln'>147</a></td><td>  <a id="147c3" class="tk">real32_T</a> <a id="147c12" class="tk">rtb_v_3_idx_pu_idx_3</a>;</td></tr>
 <tr name="148" id="148">
-<td><a id="l148" class='ln'>148</a></td><td>  <a id="148c3" class="tk">int32_T</a> <a id="148c11" class="tk">i_g</a>;</td></tr>
+<td><a id="l148" class='ln'>148</a></td><td>  <a id="148c3" class="tk">real32_T</a> <a id="148c12" class="tk">rtb_v_4_idx_pu_idx_0</a>;</td></tr>
 <tr name="149" id="149">
-<td><a id="l149" class='ln'>149</a></td><td>  <a id="149c3" class="tk">int32_T</a> <a id="149c11" class="tk">H</a>;</td></tr>
+<td><a id="l149" class='ln'>149</a></td><td>  <a id="149c3" class="tk">real32_T</a> <a id="149c12" class="tk">rtb_v_4_idx_pu_idx_1</a>;</td></tr>
 <tr name="150" id="150">
-<td><a id="l150" class='ln'>150</a></td><td>  <a id="150c3" class="tk">int32_T</a> <a id="150c11" class="tk">loop_ub</a>;</td></tr>
+<td><a id="l150" class='ln'>150</a></td><td>  <a id="150c3" class="tk">real32_T</a> <a id="150c12" class="tk">rtb_v_4_idx_pu_idx_2</a>;</td></tr>
 <tr name="151" id="151">
-<td><a id="l151" class='ln'>151</a></td><td>  <a id="151c3" class="tk">int32_T</a> <a id="151c11" class="tk">i_m</a>;</td></tr>
+<td><a id="l151" class='ln'>151</a></td><td>  <a id="151c3" class="tk">real32_T</a> <a id="151c12" class="tk">rtb_v_4_idx_pu_idx_3</a>;</td></tr>
 <tr name="152" id="152">
-<td><a id="l152" class='ln'>152</a></td><td>  <a id="152c3" class="tk">int32_T</a> <a id="152c11" class="tk">i1</a>;</td></tr>
+<td><a id="l152" class='ln'>152</a></td><td>  <a id="152c3" class="tk">real32_T</a> <a id="152c12" class="tk">rtb_v_5_idx_pu_idx_0</a>;</td></tr>
 <tr name="153" id="153">
-<td><a id="l153" class='ln'>153</a></td><td>  <a id="153c3" class="tk">int32_T</a> <a id="153c11" class="tk">lambda_tmp_tmp</a>;</td></tr>
+<td><a id="l153" class='ln'>153</a></td><td>  <a id="153c3" class="tk">real32_T</a> <a id="153c12" class="tk">rtb_v_5_idx_pu_idx_1</a>;</td></tr>
 <tr name="154" id="154">
-<td><a id="l154" class='ln'>154</a></td><td>  <a id="154c3" class="tk">int32_T</a> <a id="154c11" class="tk">z_size</a>;</td></tr>
+<td><a id="l154" class='ln'>154</a></td><td>  <a id="154c3" class="tk">real32_T</a> <a id="154c12" class="tk">rtb_v_5_idx_pu_idx_2</a>;</td></tr>
 <tr name="155" id="155">
-<td><a id="l155" class='ln'>155</a></td><td>  <a id="155c3" class="tk">int32_T</a> <a id="155c11" class="tk">m</a>;</td></tr>
+<td><a id="l155" class='ln'>155</a></td><td>  <a id="155c3" class="tk">real32_T</a> <a id="155c12" class="tk">rtb_v_5_idx_pu_idx_3</a>;</td></tr>
 <tr name="156" id="156">
-<td><a id="l156" class='ln'>156</a></td><td>  <a id="156c3" class="tk">int32_T</a> <a id="156c11" class="tk">b_n</a>;</td></tr>
+<td><a id="l156" class='ln'>156</a></td><td>  <a id="156c3" class="tk">real32_T</a> <a id="156c12" class="tk">x0_idx_0</a>;</td></tr>
 <tr name="157" id="157">
-<td><a id="l157" class='ln'>157</a></td><td>  <a id="157c3" class="tk">int32_T</a> <a id="157c11" class="tk">h_j</a>;</td></tr>
+<td><a id="l157" class='ln'>157</a></td><td>  <a id="157c3" class="tk">real32_T</a> <a id="157c12" class="tk">x0_idx_1</a>;</td></tr>
 <tr name="158" id="158">
-<td><a id="l158" class='ln'>158</a></td><td>  <a id="158c3" class="tk">int32_T</a> <a id="158c11" class="tk">RLinv</a>;</td></tr>
+<td><a id="l158" class='ln'>158</a></td><td>  <a id="158c3" class="tk">real32_T</a> <a id="158c12" class="tk">x0_idx_2</a>;</td></tr>
 <tr name="159" id="159">
-<td><a id="l159" class='ln'>159</a></td><td>  <a id="159c3" class="tk">int32_T</a> <a id="159c11" class="tk">tau_size</a>;</td></tr>
+<td><a id="l159" class='ln'>159</a></td><td>  <a id="159c3" class="tk">real32_T</a> <a id="159c12" class="tk">x0_idx_3</a>;</td></tr>
 <tr name="160" id="160">
-<td><a id="l160" class='ln'>160</a></td><td>  <a id="160c3" class="tk">int32_T</a> <a id="160c11" class="tk">R_size_idx_0</a>;</td></tr>
+<td><a id="l160" class='ln'>160</a></td><td>  <a id="160c3" class="tk">real32_T</a> <a id="160c12" class="tk">A_me</a>;</td></tr>
 <tr name="161" id="161">
-<td><a id="l161" class='ln'>161</a></td><td>  <a id="161c3" class="tk">int32_T</a> <a id="161c11" class="tk">TL_size_idx_0</a>;</td></tr>
+<td><a id="l161" class='ln'>161</a></td><td>  <a id="161c3" class="tk">real32_T</a> <a id="161c12" class="tk">rMin</a>;</td></tr>
 <tr name="162" id="162">
-<td><a id="l162" class='ln'>162</a></td><td>  <a id="162c3" class="tk">int32_T</a> <a id="162c11" class="tk">m_n</a>;</td></tr>
+<td><a id="l162" class='ln'>162</a></td><td>  <a id="162c3" class="tk">real32_T</a> <a id="162c12" class="tk">Xnorm0</a>;</td></tr>
 <tr name="163" id="163">
-<td><a id="l163" class='ln'>163</a></td><td>  <a id="163c3" class="tk">int32_T</a> <a id="163c11" class="tk">n</a>;</td></tr>
+<td><a id="l163" class='ln'>163</a></td><td>  <a id="163c3" class="tk">real32_T</a> <a id="163c12" class="tk">cMin</a>;</td></tr>
 <tr name="164" id="164">
-<td><a id="l164" class='ln'>164</a></td><td>  <a id="164c3" class="tk">int32_T</a> <a id="164c11" class="tk">minmana</a>;</td></tr>
+<td><a id="l164" class='ln'>164</a></td><td>  <a id="164c3" class="tk">real32_T</a> <a id="164c12" class="tk">cVal</a>;</td></tr>
 <tr name="165" id="165">
-<td><a id="l165" class='ln'>165</a></td><td>  <a id="165c3" class="tk">int32_T</a> <a id="165c11" class="tk">minmn</a>;</td></tr>
+<td><a id="l165" class='ln'>165</a></td><td>  <a id="165c3" class="tk">real32_T</a> <a id="165c12" class="tk">t_n</a>;</td></tr>
 <tr name="166" id="166">
-<td><a id="l166" class='ln'>166</a></td><td>  <a id="166c3" class="tk">int32_T</a> <a id="166c11" class="tk">ii</a>;</td></tr>
+<td><a id="l166" class='ln'>166</a></td><td>  <a id="166c3" class="tk">real32_T</a> <a id="166c12" class="tk">Linv</a>;</td></tr>
 <tr name="167" id="167">
-<td><a id="l167" class='ln'>167</a></td><td>  <a id="167c3" class="tk">int32_T</a> <a id="167c11" class="tk">mmi</a>;</td></tr>
+<td><a id="l167" class='ln'>167</a></td><td>  <a id="167c3" class="tk">real32_T</a> <a id="167c12" class="tk">b_atmp</a>;</td></tr>
 <tr name="168" id="168">
-<td><a id="l168" class='ln'>168</a></td><td>  <a id="168c3" class="tk">int32_T</a> <a id="168c11" class="tk">mmip1</a>;</td></tr>
+<td><a id="l168" class='ln'>168</a></td><td>  <a id="168c3" class="tk">real32_T</a> <a id="168c12" class="tk">beta1</a>;</td></tr>
 <tr name="169" id="169">
-<td><a id="l169" class='ln'>169</a></td><td>  <a id="169c3" class="tk">int32_T</a> <a id="169c11" class="tk">i_p</a>;</td></tr>
+<td><a id="l169" class='ln'>169</a></td><td>  <a id="169c3" class="tk">int32_T</a> <a id="169c11" class="tk">Linv_size</a>[2];</td></tr>
 <tr name="170" id="170">
-<td><a id="l170" class='ln'>170</a></td><td>  <a id="170c3" class="tk">int32_T</a> <a id="170c11" class="tk">i_l</a>;</td></tr>
+<td><a id="l170" class='ln'>170</a></td><td>  <a id="170c3" class="tk">int32_T</a> <a id="170c11" class="tk">Hinv_size</a>[2];</td></tr>
 <tr name="171" id="171">
-<td><a id="l171" class='ln'>171</a></td><td>  <a id="171c3" class="tk">int32_T</a> <a id="171c11" class="tk">itau</a>;</td></tr>
+<td><a id="l171" class='ln'>171</a></td><td>  <a id="171c3" class="tk">int32_T</a> <a id="171c11" class="tk">RLinv_size</a>[2];</td></tr>
 <tr name="172" id="172">
-<td><a id="l172" class='ln'>172</a></td><td>  <a id="172c3" class="tk">int32_T</a> <a id="172c11" class="tk">iaii</a>;</td></tr>
+<td><a id="l172" class='ln'>172</a></td><td>  <a id="172c3" class="tk">int32_T</a> <a id="172c11" class="tk">D_size</a>[2];</td></tr>
 <tr name="173" id="173">
-<td><a id="l173" class='ln'>173</a></td><td>  <a id="173c3" class="tk">int32_T</a> <a id="173c11" class="tk">c_c</a>;</td></tr>
+<td><a id="l173" class='ln'>173</a></td><td>  <a id="173c3" class="tk">int32_T</a> <a id="173c11" class="tk">H_size</a>[2];</td></tr>
 <tr name="174" id="174">
-<td><a id="l174" class='ln'>174</a></td><td>  <a id="174c3" class="tk">int16_T</a> <a id="174c11" class="tk">iA1</a>[8];</td></tr>
+<td><a id="l174" class='ln'>174</a></td><td>  <a id="174c3" class="tk">int32_T</a> <a id="174c11" class="tk">U_size</a>[2];</td></tr>
 <tr name="175" id="175">
-<td><a id="l175" class='ln'>175</a></td><td>  <a id="175c3" class="tk">int16_T</a> <a id="175c11" class="tk">iC</a>[8];</td></tr>
+<td><a id="l175" class='ln'>175</a></td><td>  <a id="175c3" class="tk">int32_T</a> <a id="175c11" class="tk">Q_size</a>[2];</td></tr>
 <tr name="176" id="176">
-<td><a id="l176" class='ln'>176</a></td><td>  <a id="176c3" class="tk">int8_T</a> <a id="176c10" class="tk">b_I_data</a>[49];</td></tr>
+<td><a id="l176" class='ln'>176</a></td><td>  <a id="176c3" class="tk">int32_T</a> <a id="176c11" class="tk">A_size</a>[2];</td></tr>
 <tr name="177" id="177">
-<td><a id="l177" class='ln'>177</a></td><td>  <a id="177c3" class="tk">int8_T</a> <a id="177c10" class="tk">act_sw_1</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="177">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
+<td><a id="l177" class='ln'>177</a></td><td>  <a id="177c3" class="tk">int32_T</a> <a id="177c11" class="tk">kBcol</a>;</td></tr>
 <tr name="178" id="178">
-<td><a id="l178" class='ln'>178</a></td><td>  <a id="178c3" class="tk">int8_T</a> <a id="178c10" class="tk">act_sw_2</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="178">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
+<td><a id="l178" class='ln'>178</a></td><td>  <a id="178c3" class="tk">int32_T</a> <a id="178c11" class="tk">c</a>;</td></tr>
 <tr name="179" id="179">
-<td><a id="l179" class='ln'>179</a></td><td>  <a id="179c3" class="tk">int8_T</a> <a id="179c10" class="tk">act_sw_3</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="179">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
+<td><a id="l179" class='ln'>179</a></td><td>  <a id="179c3" class="tk">int32_T</a> <a id="179c11" class="tk">ix</a>;</td></tr>
 <tr name="180" id="180">
-<td><a id="l180" class='ln'>180</a></td><td>  <a id="180c3" class="tk">int8_T</a> <a id="180c10" class="tk">act_sw_4</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="180">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
+<td><a id="l180" class='ln'>180</a></td><td>  <a id="180c3" class="tk">int32_T</a> <a id="180c11" class="tk">b_ix</a>;</td></tr>
 <tr name="181" id="181">
-<td><a id="l181" class='ln'>181</a></td><td>  <a id="181c3" class="tk">int8_T</a> <a id="181c10" class="tk">act_sw_5</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="181">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
+<td><a id="l181" class='ln'>181</a></td><td>  <a id="181c3" class="tk">int32_T</a> <a id="181c11" class="tk">iy</a>;</td></tr>
 <tr name="182" id="182">
-<td><a id="l182" class='ln'>182</a></td><td>  <a id="182c3" class="tk">boolean_T</a> <a id="182c13" class="tk">icLoad</a>;                    <span class="ct">/* '<a class="ct blk" blk_line="182">&lt;S1&gt;/Delay1</a>' */</span></td></tr>
+<td><a id="l182" class='ln'>182</a></td><td>  <a id="182c3" class="tk">int32_T</a> <a id="182c11" class="tk">c_ix</a>;</td></tr>
 <tr name="183" id="183">
-<td><a id="l183" class='ln'>183</a></td><td>  <a id="183c3" class="tk">boolean_T</a> <a id="183c13" class="tk">icLoad_a</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="183">&lt;S1&gt;/Delay3</a>' */</span></td></tr>
+<td><a id="l183" class='ln'>183</a></td><td>  <a id="183c3" class="tk">int32_T</a> <a id="183c11" class="tk">ijA</a>;</td></tr>
 <tr name="184" id="184">
-<td><a id="l184" class='ln'>184</a></td><td>  <a id="184c3" class="tk">boolean_T</a> <a id="184c13" class="tk">icLoad_f</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="184">&lt;S1&gt;/Delay4</a>' */</span></td></tr>
+<td><a id="l184" class='ln'>184</a></td><td>  <a id="184c3" class="tk">int32_T</a> <a id="184c11" class="tk">ia</a>;</td></tr>
 <tr name="185" id="185">
-<td><a id="l185" class='ln'>185</a></td><td>  <a id="185c3" class="tk">boolean_T</a> <a id="185c13" class="tk">icLoad_k</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="185">&lt;S1&gt;/Delay5</a>' */</span></td></tr>
+<td><a id="l185" class='ln'>185</a></td><td>  <a id="185c3" class="tk">int32_T</a> <a id="185c11" class="tk">sector_ref</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="185">&lt;S1&gt;/deadbeat_solution</a>' */</span></td></tr>
 <tr name="186" id="186">
-<td><a id="l186" class='ln'>186</a></td><td>  <a id="186c3" class="tk">boolean_T</a> <a id="186c13" class="tk">icLoad_n</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="186">&lt;S1&gt;/Delay6</a>' */</span></td></tr>
+<td><a id="l186" class='ln'>186</a></td><td>  <a id="186c3" class="tk">int32_T</a> <a id="186c11" class="tk">i</a>;</td></tr>
 <tr name="187" id="187">
-<td><a id="l187" class='ln'>187</a></td><td>  <a id="187c3" class="tk">boolean_T</a> <a id="187c13" class="tk">icLoad_l</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="187">&lt;S1&gt;/Delay7</a>' */</span></td></tr>
+<td><a id="l187" class='ln'>187</a></td><td>  <a id="187c3" class="tk">int32_T</a> <a id="187c11" class="tk">x_size</a>;</td></tr>
 <tr name="188" id="188">
-<td><a id="l188" class='ln'>188</a></td><td>  <a id="188c3" class="tk">boolean_T</a> <a id="188c13" class="tk">icLoad_ly</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="188">&lt;S1&gt;/Delay8</a>' */</span></td></tr>
+<td><a id="l188" class='ln'>188</a></td><td>  <a id="188c3" class="tk">int32_T</a> <a id="188c11" class="tk">i_p</a>;</td></tr>
 <tr name="189" id="189">
-<td><a id="l189" class='ln'>189</a></td><td><span class="br">}</span> <a id="189c3" class="tk">DW</a>;</td></tr>
+<td><a id="l189" class='ln'>189</a></td><td>  <a id="189c3" class="tk">int32_T</a> <a id="189c11" class="tk">H</a>;</td></tr>
 <tr name="190" id="190">
-<td><a id="l190" class='ln'>190</a></td><td></td></tr>
+<td><a id="l190" class='ln'>190</a></td><td>  <a id="190c3" class="tk">int32_T</a> <a id="190c11" class="tk">loop_ub</a>;</td></tr>
 <tr name="191" id="191">
-<td><a id="l191" class='ln'>191</a></td><td><span class="ct">/* External inputs (root inport signals with default storage) */</span></td></tr>
+<td><a id="l191" class='ln'>191</a></td><td>  <a id="191c3" class="tk">int32_T</a> <a id="191c11" class="tk">i_l</a>;</td></tr>
 <tr name="192" id="192">
-<td><a id="l192" class='ln'>192</a></td><td><span class="kw">typedef</span> <span class="kw">struct</span> <span class="br">{</span></td></tr>
+<td><a id="l192" class='ln'>192</a></td><td>  <a id="192c3" class="tk">int32_T</a> <a id="192c11" class="tk">i1</a>;</td></tr>
 <tr name="193" id="193">
-<td><a id="l193" class='ln'>193</a></td><td>  <a id="193c3" class="tk">real32_T</a> <a id="193c12" class="tk">v_DC_pu</a>;                    <span class="ct">/* '<a class="ct blk" blk_line="193">&lt;Root&gt;/v_DC_pu</a>' */</span></td></tr>
+<td><a id="l193" class='ln'>193</a></td><td>  <a id="193c3" class="tk">int32_T</a> <a id="193c11" class="tk">lambda_tmp_tmp</a>;</td></tr>
 <tr name="194" id="194">
-<td><a id="l194" class='ln'>194</a></td><td>  <a id="194c3" class="tk">real32_T</a> <a id="194c12" class="tk">theta_el</a>;                   <span class="ct">/* '<a class="ct blk" blk_line="194">&lt;Root&gt;/theta_el</a>' */</span></td></tr>
+<td><a id="l194" class='ln'>194</a></td><td>  <a id="194c3" class="tk">int32_T</a> <a id="194c11" class="tk">z_size</a>;</td></tr>
 <tr name="195" id="195">
-<td><a id="l195" class='ln'>195</a></td><td>  <a id="195c3" class="tk">real32_T</a> <a id="195c12" class="tk">Ts_times_ZB_over_Ld</a>;        <span class="ct">/* '<a class="ct blk" blk_line="195">&lt;Root&gt;/Ts_times_ZB_over_Ld</a>' */</span></td></tr>
+<td><a id="l195" class='ln'>195</a></td><td>  <a id="195c3" class="tk">int32_T</a> <a id="195c11" class="tk">m</a>;</td></tr>
 <tr name="196" id="196">
-<td><a id="l196" class='ln'>196</a></td><td>  <a id="196c3" class="tk">real32_T</a> <a id="196c12" class="tk">Ts_times_ZB_over_Lq</a>;        <span class="ct">/* '<a class="ct blk" blk_line="196">&lt;Root&gt;/Ts_times_ZB_over_Lq</a>' */</span></td></tr>
+<td><a id="l196" class='ln'>196</a></td><td>  <a id="196c3" class="tk">int32_T</a> <a id="196c11" class="tk">b_n</a>;</td></tr>
 <tr name="197" id="197">
-<td><a id="l197" class='ln'>197</a></td><td>  <a id="197c3" class="tk">real32_T</a> <a id="197c12" class="tk">Ts_times_ZB_over_Lx</a>;        <span class="ct">/* '<a class="ct blk" blk_line="197">&lt;Root&gt;/Ts_times_ZB_over_Lx</a>' */</span></td></tr>
+<td><a id="l197" class='ln'>197</a></td><td>  <a id="197c3" class="tk">int32_T</a> <a id="197c11" class="tk">h_j</a>;</td></tr>
 <tr name="198" id="198">
-<td><a id="l198" class='ln'>198</a></td><td>  <a id="198c3" class="tk">real32_T</a> <a id="198c12" class="tk">Ts_times_ZB_over_Ly</a>;        <span class="ct">/* '<a class="ct blk" blk_line="198">&lt;Root&gt;/Ts_times_ZB_over_Ly</a>' */</span></td></tr>
+<td><a id="l198" class='ln'>198</a></td><td>  <a id="198c3" class="tk">int32_T</a> <a id="198c11" class="tk">RLinv</a>;</td></tr>
 <tr name="199" id="199">
-<td><a id="l199" class='ln'>199</a></td><td>  <a id="199c3" class="tk">real32_T</a> <a id="199c12" class="tk">Rs_over_ZB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="199">&lt;Root&gt;/Rs_over_ZB</a>' */</span></td></tr>
+<td><a id="l199" class='ln'>199</a></td><td>  <a id="199c3" class="tk">int32_T</a> <a id="199c11" class="tk">tau_size</a>;</td></tr>
 <tr name="200" id="200">
-<td><a id="l200" class='ln'>200</a></td><td>  <a id="200c3" class="tk">real32_T</a> <a id="200c12" class="tk">Ld_over_LB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="200">&lt;Root&gt;/Ld_over_LB</a>' */</span></td></tr>
+<td><a id="l200" class='ln'>200</a></td><td>  <a id="200c3" class="tk">int32_T</a> <a id="200c11" class="tk">R_size_idx_0</a>;</td></tr>
 <tr name="201" id="201">
-<td><a id="l201" class='ln'>201</a></td><td>  <a id="201c3" class="tk">real32_T</a> <a id="201c12" class="tk">Lq_over_LB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="201">&lt;Root&gt;/Lq_over_LB</a>' */</span></td></tr>
+<td><a id="l201" class='ln'>201</a></td><td>  <a id="201c3" class="tk">int32_T</a> <a id="201c11" class="tk">TL_size_idx_0</a>;</td></tr>
 <tr name="202" id="202">
-<td><a id="l202" class='ln'>202</a></td><td>  <a id="202c3" class="tk">real32_T</a> <a id="202c12" class="tk">Lx_over_LB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="202">&lt;Root&gt;/Lx_over_LB</a>' */</span></td></tr>
+<td><a id="l202" class='ln'>202</a></td><td>  <a id="202c3" class="tk">int32_T</a> <a id="202c11" class="tk">m_j</a>;</td></tr>
 <tr name="203" id="203">
-<td><a id="l203" class='ln'>203</a></td><td>  <a id="203c3" class="tk">real32_T</a> <a id="203c12" class="tk">Ly_over_LB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="203">&lt;Root&gt;/Ly_over_LB</a>' */</span></td></tr>
+<td><a id="l203" class='ln'>203</a></td><td>  <a id="203c3" class="tk">int32_T</a> <a id="203c11" class="tk">n</a>;</td></tr>
 <tr name="204" id="204">
-<td><a id="l204" class='ln'>204</a></td><td>  <a id="204c3" class="tk">real32_T</a> <a id="204c12" class="tk">psi_pm_over_psiB</a>;           <span class="ct">/* '<a class="ct blk" blk_line="204">&lt;Root&gt;/psi_pm_over_psiB</a>' */</span></td></tr>
+<td><a id="l204" class='ln'>204</a></td><td>  <a id="204c3" class="tk">int32_T</a> <a id="204c11" class="tk">minmana</a>;</td></tr>
 <tr name="205" id="205">
-<td><a id="l205" class='ln'>205</a></td><td>  <a id="205c3" class="tk">real32_T</a> <a id="205c12" class="tk">omega_el_pu</a>;                <span class="ct">/* '<a class="ct blk" blk_line="205">&lt;Root&gt;/omega_el_pu</a>' */</span></td></tr>
+<td><a id="l205" class='ln'>205</a></td><td>  <a id="205c3" class="tk">int32_T</a> <a id="205c11" class="tk">minmn</a>;</td></tr>
 <tr name="206" id="206">
-<td><a id="l206" class='ln'>206</a></td><td>  <a id="206c3" class="tk">real32_T</a> <a id="206c12" class="tk">i_dq_pu</a>[2];                 <span class="ct">/* '<a class="ct blk" blk_line="206">&lt;Root&gt;/i_dq_pu</a>' */</span></td></tr>
+<td><a id="l206" class='ln'>206</a></td><td>  <a id="206c3" class="tk">int32_T</a> <a id="206c11" class="tk">ii</a>;</td></tr>
 <tr name="207" id="207">
-<td><a id="l207" class='ln'>207</a></td><td>  <a id="207c3" class="tk">real32_T</a> <a id="207c12" class="tk">i_xy_pu</a>[2];                 <span class="ct">/* '<a class="ct blk" blk_line="207">&lt;Root&gt;/i_xy_pu</a>' */</span></td></tr>
+<td><a id="l207" class='ln'>207</a></td><td>  <a id="207c3" class="tk">int32_T</a> <a id="207c11" class="tk">mmi</a>;</td></tr>
 <tr name="208" id="208">
-<td><a id="l208" class='ln'>208</a></td><td>  <a id="208c3" class="tk">real32_T</a> <a id="208c12" class="tk">i_d_ref_pu</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="208">&lt;Root&gt;/i_d_ref_pu</a>' */</span></td></tr>
+<td><a id="l208" class='ln'>208</a></td><td>  <a id="208c3" class="tk">int32_T</a> <a id="208c11" class="tk">mmip1</a>;</td></tr>
 <tr name="209" id="209">
-<td><a id="l209" class='ln'>209</a></td><td>  <a id="209c3" class="tk">real32_T</a> <a id="209c12" class="tk">i_q_ref_pu</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="209">&lt;Root&gt;/i_q_ref_pu</a>' */</span></td></tr>
+<td><a id="l209" class='ln'>209</a></td><td>  <a id="209c3" class="tk">int32_T</a> <a id="209c11" class="tk">i_d</a>;</td></tr>
 <tr name="210" id="210">
-<td><a id="l210" class='ln'>210</a></td><td>  <a id="210c3" class="tk">real32_T</a> <a id="210c12" class="tk">i_x_ref_pu</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="210">&lt;Root&gt;/i_x_ref_pu</a>' */</span></td></tr>
+<td><a id="l210" class='ln'>210</a></td><td>  <a id="210c3" class="tk">int32_T</a> <a id="210c11" class="tk">i_g</a>;</td></tr>
 <tr name="211" id="211">
-<td><a id="l211" class='ln'>211</a></td><td>  <a id="211c3" class="tk">real32_T</a> <a id="211c12" class="tk">i_y_ref_pu</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="211">&lt;Root&gt;/i_y_ref_pu</a>' */</span></td></tr>
+<td><a id="l211" class='ln'>211</a></td><td>  <a id="211c3" class="tk">int32_T</a> <a id="211c11" class="tk">itau</a>;</td></tr>
 <tr name="212" id="212">
-<td><a id="l212" class='ln'>212</a></td><td>  <a id="212c3" class="tk">real32_T</a> <a id="212c12" class="tk">lambda</a>;                     <span class="ct">/* '<a class="ct blk" blk_line="212">&lt;Root&gt;/lambda</a>' */</span></td></tr>
+<td><a id="l212" class='ln'>212</a></td><td>  <a id="212c3" class="tk">int32_T</a> <a id="212c11" class="tk">iaii</a>;</td></tr>
 <tr name="213" id="213">
-<td><a id="l213" class='ln'>213</a></td><td>  <a id="213c3" class="tk">real32_T</a> <a id="213c12" class="tk">tolerance</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="213">&lt;Root&gt;/tolerance</a>' */</span></td></tr>
+<td><a id="l213" class='ln'>213</a></td><td>  <a id="213c3" class="tk">int32_T</a> <a id="213c11" class="tk">c_c</a>;</td></tr>
 <tr name="214" id="214">
-<td><a id="l214" class='ln'>214</a></td><td>  <a id="214c3" class="tk">real32_T</a> <a id="214c12" class="tk">max_iter</a>;                   <span class="ct">/* '<a class="ct blk" blk_line="214">&lt;Root&gt;/max_iter</a>' */</span></td></tr>
+<td><a id="l214" class='ln'>214</a></td><td>  <a id="214c3" class="tk">int32_T</a> <a id="214c11" class="tk">lastv</a>;</td></tr>
 <tr name="215" id="215">
-<td><a id="l215" class='ln'>215</a></td><td>  <a id="215c3" class="tk">real32_T</a> <a id="215c12" class="tk">psiPM_h_pu</a>[2];              <span class="ct">/* '<a class="ct blk" blk_line="215">&lt;Root&gt;/psiPM_h_pu</a>' */</span></td></tr>
+<td><a id="l215" class='ln'>215</a></td><td>  <a id="215c3" class="tk">int16_T</a> <a id="215c11" class="tk">iA1</a>[8];</td></tr>
 <tr name="216" id="216">
-<td><a id="l216" class='ln'>216</a></td><td>  <a id="216c3" class="tk">real32_T</a> <a id="216c12" class="tk">phiPM_h</a>[2];                 <span class="ct">/* '<a class="ct blk" blk_line="216">&lt;Root&gt;/phiPM_h</a>' */</span></td></tr>
+<td><a id="l216" class='ln'>216</a></td><td>  <a id="216c3" class="tk">int16_T</a> <a id="216c11" class="tk">iC</a>[8];</td></tr>
 <tr name="217" id="217">
-<td><a id="l217" class='ln'>217</a></td><td>  <a id="217c3" class="tk">boolean_T</a> <a id="217c13" class="tk">HC_off_on</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="217">&lt;Root&gt;/HC_off_on</a>' */</span></td></tr>
+<td><a id="l217" class='ln'>217</a></td><td>  <a id="217c3" class="tk">int8_T</a> <a id="217c10" class="tk">b_I_data</a>[49];</td></tr>
 <tr name="218" id="218">
-<td><a id="l218" class='ln'>218</a></td><td><span class="br">}</span> <a id="218c3" class="tk">ExtU</a>;</td></tr>
+<td><a id="l218" class='ln'>218</a></td><td>  <a id="218c3" class="tk">int8_T</a> <a id="218c10" class="tk">b_A_tmp_l</a>[32];</td></tr>
 <tr name="219" id="219">
-<td><a id="l219" class='ln'>219</a></td><td></td></tr>
+<td><a id="l219" class='ln'>219</a></td><td>  <a id="219c3" class="tk">int8_T</a> <a id="219c10" class="tk">b_A_tmp_d</a>[32];</td></tr>
 <tr name="220" id="220">
-<td><a id="l220" class='ln'>220</a></td><td><span class="ct">/* External outputs (root outports fed by signals with default storage) */</span></td></tr>
+<td><a id="l220" class='ln'>220</a></td><td>  <a id="220c3" class="tk">int8_T</a> <a id="220c10" class="tk">act_sw_1</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="220">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
 <tr name="221" id="221">
-<td><a id="l221" class='ln'>221</a></td><td><span class="kw">typedef</span> <span class="kw">struct</span> <span class="br">{</span></td></tr>
+<td><a id="l221" class='ln'>221</a></td><td>  <a id="221c3" class="tk">int8_T</a> <a id="221c10" class="tk">act_sw_2</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="221">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
 <tr name="222" id="222">
-<td><a id="l222" class='ln'>222</a></td><td>  <a id="222c3" class="tk">real32_T</a> <a id="222c12" class="tk">d_opt</a>[6];                   <span class="ct">/* '<a class="ct blk" blk_line="222">&lt;Root&gt;/d_opt</a>' */</span></td></tr>
+<td><a id="l222" class='ln'>222</a></td><td>  <a id="222c3" class="tk">int8_T</a> <a id="222c10" class="tk">act_sw_3</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="222">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
 <tr name="223" id="223">
-<td><a id="l223" class='ln'>223</a></td><td>  <a id="223c3" class="tk">real32_T</a> <a id="223c12" class="tk">iterations_qp</a>;              <span class="ct">/* '<a class="ct blk" blk_line="223">&lt;Root&gt;/iterations_qp</a>' */</span></td></tr>
+<td><a id="l223" class='ln'>223</a></td><td>  <a id="223c3" class="tk">int8_T</a> <a id="223c10" class="tk">act_sw_4</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="223">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
 <tr name="224" id="224">
-<td><a id="l224" class='ln'>224</a></td><td><span class="br">}</span> <a id="224c3" class="tk">ExtY</a>;</td></tr>
+<td><a id="l224" class='ln'>224</a></td><td>  <a id="224c3" class="tk">int8_T</a> <a id="224c10" class="tk">act_sw_5</a>[24];                 <span class="ct">/* '<a class="ct blk" blk_line="224">&lt;S1&gt;/seq_2_act_sw_all</a>' */</span></td></tr>
 <tr name="225" id="225">
-<td><a id="l225" class='ln'>225</a></td><td></td></tr>
+<td><a id="l225" class='ln'>225</a></td><td>  <a id="225c3" class="tk">int8_T</a> <a id="225c10" class="tk">rtb_m6_tmp</a>[16];</td></tr>
 <tr name="226" id="226">
-<td><a id="l226" class='ln'>226</a></td><td><span class="ct">/* Real-time Model Data Structure */</span></td></tr>
+<td><a id="l226" class='ln'>226</a></td><td>  <a id="226c3" class="tk">int8_T</a> <a id="226c10" class="tk">ipiv</a>[4];</td></tr>
 <tr name="227" id="227">
-<td><a id="l227" class='ln'>227</a></td><td><span class="kw">struct</span> <a id="227c8" class="tk">tag_RTM</a> <span class="br">{</span></td></tr>
+<td><a id="l227" class='ln'>227</a></td><td>  <a id="227c3" class="tk">boolean_T</a> <a id="227c13" class="tk">icLoad</a>;                    <span class="ct">/* '<a class="ct blk" blk_line="227">&lt;S1&gt;/Delay13</a>' */</span></td></tr>
 <tr name="228" id="228">
-<td><a id="l228" class='ln'>228</a></td><td>  <a id="228c3" class="tk">ExtU</a> <a id="228c8" class="tk">*</a><a id="228c9" class="tk">inputs</a>;</td></tr>
+<td><a id="l228" class='ln'>228</a></td><td>  <a id="228c3" class="tk">boolean_T</a> <a id="228c13" class="tk">icLoad_p</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="228">&lt;S1&gt;/Delay1</a>' */</span></td></tr>
 <tr name="229" id="229">
-<td><a id="l229" class='ln'>229</a></td><td>  <a id="229c3" class="tk">ExtY</a> <a id="229c8" class="tk">*</a><a id="229c9" class="tk">outputs</a>;</td></tr>
+<td><a id="l229" class='ln'>229</a></td><td>  <a id="229c3" class="tk">boolean_T</a> <a id="229c13" class="tk">icLoad_l</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="229">&lt;S1&gt;/Delay3</a>' */</span></td></tr>
 <tr name="230" id="230">
-<td><a id="l230" class='ln'>230</a></td><td>  <a id="230c3" class="tk">DW</a> <a id="230c6" class="tk">*</a><a id="230c7" class="tk">dwork</a>;</td></tr>
+<td><a id="l230" class='ln'>230</a></td><td>  <a id="230c3" class="tk">boolean_T</a> <a id="230c13" class="tk">icLoad_h</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="230">&lt;S1&gt;/Delay4</a>' */</span></td></tr>
 <tr name="231" id="231">
-<td><a id="l231" class='ln'>231</a></td><td><span class="br">}</span>;</td></tr>
+<td><a id="l231" class='ln'>231</a></td><td>  <a id="231c3" class="tk">boolean_T</a> <a id="231c13" class="tk">icLoad_b</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="231">&lt;S1&gt;/Delay5</a>' */</span></td></tr>
 <tr name="232" id="232">
-<td><a id="l232" class='ln'>232</a></td><td></td></tr>
+<td><a id="l232" class='ln'>232</a></td><td>  <a id="232c3" class="tk">boolean_T</a> <a id="232c13" class="tk">icLoad_n</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="232">&lt;S1&gt;/Delay6</a>' */</span></td></tr>
 <tr name="233" id="233">
-<td><a id="l233" class='ln'>233</a></td><td><span class="ct">/* Model entry point functions */</span></td></tr>
+<td><a id="l233" class='ln'>233</a></td><td>  <a id="233c3" class="tk">boolean_T</a> <a id="233c13" class="tk">icLoad_bq</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="233">&lt;S1&gt;/Delay7</a>' */</span></td></tr>
 <tr name="234" id="234">
-<td><a id="l234" class='ln'>234</a></td><td><span class="kw">extern</span> <span class="kw">void</span> <a id="234c13" class="tk">uz_codegen0_initialize</a>(<a id="234c36" class="tk">RT_MODEL</a> <a id="234c45" class="tk">*</a><span class="kw">const</span> <a id="234c52" class="tk">rtM</a>);</td></tr>
+<td><a id="l234" class='ln'>234</a></td><td>  <a id="234c3" class="tk">boolean_T</a> <a id="234c13" class="tk">icLoad_d</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="234">&lt;S1&gt;/Delay8</a>' */</span></td></tr>
 <tr name="235" id="235">
-<td><a id="l235" class='ln'>235</a></td><td><span class="kw">extern</span> <span class="kw">void</span> <a id="235c13" class="tk">uz_codegen0_step</a>(<a id="235c30" class="tk">RT_MODEL</a> <a id="235c39" class="tk">*</a><span class="kw">const</span> <a id="235c46" class="tk">rtM</a>);</td></tr>
+<td><a id="l235" class='ln'>235</a></td><td><span class="br">}</span> <a id="235c3" class="tk">DW</a>;</td></tr>
 <tr name="236" id="236">
 <td><a id="l236" class='ln'>236</a></td><td></td></tr>
 <tr name="237" id="237">
-<td><a id="l237" class='ln'>237</a></td><td><span class="ct">/*-</span></td></tr>
+<td><a id="l237" class='ln'>237</a></td><td><span class="ct">/* External inputs (root inport signals with default storage) */</span></td></tr>
 <tr name="238" id="238">
-<td><a id="l238" class='ln'>238</a></td><td><span class="ct"> * These blocks were eliminated from the model due to optimizations:</span></td></tr>
+<td><a id="l238" class='ln'>238</a></td><td><span class="kw">typedef</span> <span class="kw">struct</span> <span class="br">{</span></td></tr>
 <tr name="239" id="239">
-<td><a id="l239" class='ln'>239</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l239" class='ln'>239</a></td><td>  <a id="239c3" class="tk">real32_T</a> <a id="239c12" class="tk">v_DC_pu</a>;                    <span class="ct">/* '<a class="ct blk" blk_line="239">&lt;Root&gt;/v_DC_pu</a>' */</span></td></tr>
 <tr name="240" id="240">
-<td><a id="l240" class='ln'>240</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="240">&lt;S1&gt;/Data Type Conversion1</a>' : Eliminate redundant data type conversion</span></td></tr>
+<td><a id="l240" class='ln'>240</a></td><td>  <a id="240c3" class="tk">real32_T</a> <a id="240c12" class="tk">theta_el_pos</a>;               <span class="ct">/* '<a class="ct blk" blk_line="240">&lt;Root&gt;/theta_el_pos</a>' */</span></td></tr>
 <tr name="241" id="241">
-<td><a id="l241" class='ln'>241</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="241">&lt;S1&gt;/Data Type Conversion2</a>' : Eliminate redundant data type conversion</span></td></tr>
+<td><a id="l241" class='ln'>241</a></td><td>  <a id="241c3" class="tk">real32_T</a> <a id="241c12" class="tk">theta_el_neg</a>;               <span class="ct">/* '<a class="ct blk" blk_line="241">&lt;Root&gt;/theta_el_neg</a>' */</span></td></tr>
 <tr name="242" id="242">
-<td><a id="l242" class='ln'>242</a></td><td><span class="ct"> */</span></td></tr>
+<td><a id="l242" class='ln'>242</a></td><td>  <a id="242c3" class="tk">real32_T</a> <a id="242c12" class="tk">Ts_times_ZB_over_Ld</a>;        <span class="ct">/* '<a class="ct blk" blk_line="242">&lt;Root&gt;/Ts_times_ZB_over_Ld</a>' */</span></td></tr>
 <tr name="243" id="243">
-<td><a id="l243" class='ln'>243</a></td><td></td></tr>
+<td><a id="l243" class='ln'>243</a></td><td>  <a id="243c3" class="tk">real32_T</a> <a id="243c12" class="tk">Ts_times_ZB_over_Lq</a>;        <span class="ct">/* '<a class="ct blk" blk_line="243">&lt;Root&gt;/Ts_times_ZB_over_Lq</a>' */</span></td></tr>
 <tr name="244" id="244">
-<td><a id="l244" class='ln'>244</a></td><td><span class="ct">/*-</span></td></tr>
+<td><a id="l244" class='ln'>244</a></td><td>  <a id="244c3" class="tk">real32_T</a> <a id="244c12" class="tk">Ts_times_ZB_over_Lx</a>;        <span class="ct">/* '<a class="ct blk" blk_line="244">&lt;Root&gt;/Ts_times_ZB_over_Lx</a>' */</span></td></tr>
 <tr name="245" id="245">
-<td><a id="l245" class='ln'>245</a></td><td><span class="ct"> * The generated code includes comments that allow you to trace directly</span></td></tr>
+<td><a id="l245" class='ln'>245</a></td><td>  <a id="245c3" class="tk">real32_T</a> <a id="245c12" class="tk">Ts_times_ZB_over_Ly</a>;        <span class="ct">/* '<a class="ct blk" blk_line="245">&lt;Root&gt;/Ts_times_ZB_over_Ly</a>' */</span></td></tr>
 <tr name="246" id="246">
-<td><a id="l246" class='ln'>246</a></td><td><span class="ct"> * back to the appropriate location in the model.  The basic format</span></td></tr>
+<td><a id="l246" class='ln'>246</a></td><td>  <a id="246c3" class="tk">real32_T</a> <a id="246c12" class="tk">Rs_over_ZB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="246">&lt;Root&gt;/Rs_over_ZB</a>' */</span></td></tr>
 <tr name="247" id="247">
-<td><a id="l247" class='ln'>247</a></td><td><span class="ct"> * is &lt;system&gt;/block_name, where system is the system number (uniquely</span></td></tr>
+<td><a id="l247" class='ln'>247</a></td><td>  <a id="247c3" class="tk">real32_T</a> <a id="247c12" class="tk">Ld_over_LB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="247">&lt;Root&gt;/Ld_over_LB</a>' */</span></td></tr>
 <tr name="248" id="248">
-<td><a id="l248" class='ln'>248</a></td><td><span class="ct"> * assigned by Simulink) and block_name is the name of the block.</span></td></tr>
+<td><a id="l248" class='ln'>248</a></td><td>  <a id="248c3" class="tk">real32_T</a> <a id="248c12" class="tk">Lq_over_LB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="248">&lt;Root&gt;/Lq_over_LB</a>' */</span></td></tr>
 <tr name="249" id="249">
-<td><a id="l249" class='ln'>249</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l249" class='ln'>249</a></td><td>  <a id="249c3" class="tk">real32_T</a> <a id="249c12" class="tk">Lx_over_LB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="249">&lt;Root&gt;/Lx_over_LB</a>' */</span></td></tr>
 <tr name="250" id="250">
-<td><a id="l250" class='ln'>250</a></td><td><span class="ct"> * Note that this particular code originates from a subsystem build,</span></td></tr>
+<td><a id="l250" class='ln'>250</a></td><td>  <a id="250c3" class="tk">real32_T</a> <a id="250c12" class="tk">Ly_over_LB</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="250">&lt;Root&gt;/Ly_over_LB</a>' */</span></td></tr>
 <tr name="251" id="251">
-<td><a id="l251" class='ln'>251</a></td><td><span class="ct"> * and has its own system numbers different from the parent model.</span></td></tr>
+<td><a id="l251" class='ln'>251</a></td><td>  <a id="251c3" class="tk">real32_T</a> <a id="251c12" class="tk">psi_pm_over_psiB</a>;           <span class="ct">/* '<a class="ct blk" blk_line="251">&lt;Root&gt;/psi_pm_over_psiB</a>' */</span></td></tr>
 <tr name="252" id="252">
-<td><a id="l252" class='ln'>252</a></td><td><span class="ct"> * Refer to the system hierarchy for this subsystem below, and use the</span></td></tr>
+<td><a id="l252" class='ln'>252</a></td><td>  <a id="252c3" class="tk">real32_T</a> <a id="252c12" class="tk">omega_el_pu</a>;                <span class="ct">/* '<a class="ct blk" blk_line="252">&lt;Root&gt;/omega_el_pu</a>' */</span></td></tr>
 <tr name="253" id="253">
-<td><a id="l253" class='ln'>253</a></td><td><span class="ct"> * MATLAB hilite_system command to trace the generated code back</span></td></tr>
+<td><a id="l253" class='ln'>253</a></td><td>  <a id="253c3" class="tk">real32_T</a> <a id="253c12" class="tk">i_dq_pu</a>[2];                 <span class="ct">/* '<a class="ct blk" blk_line="253">&lt;Root&gt;/i_dq_pu</a>' */</span></td></tr>
 <tr name="254" id="254">
-<td><a id="l254" class='ln'>254</a></td><td><span class="ct"> * to the parent model.  For example,</span></td></tr>
+<td><a id="l254" class='ln'>254</a></td><td>  <a id="254c3" class="tk">real32_T</a> <a id="254c12" class="tk">i_xy_pu</a>[2];                 <span class="ct">/* '<a class="ct blk" blk_line="254">&lt;Root&gt;/i_xy_pu</a>' */</span></td></tr>
 <tr name="255" id="255">
-<td><a id="l255" class='ln'>255</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l255" class='ln'>255</a></td><td>  <a id="255c3" class="tk">real32_T</a> <a id="255c12" class="tk">i_d_ref_pu</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="255">&lt;Root&gt;/i_d_ref_pu</a>' */</span></td></tr>
 <tr name="256" id="256">
-<td><a id="l256" class='ln'>256</a></td><td><span class="ct"> * hilite_system('uz_codegen/uz_codegen')    - opens subsystem uz_codegen/uz_codegen</span></td></tr>
+<td><a id="l256" class='ln'>256</a></td><td>  <a id="256c3" class="tk">real32_T</a> <a id="256c12" class="tk">i_q_ref_pu</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="256">&lt;Root&gt;/i_q_ref_pu</a>' */</span></td></tr>
 <tr name="257" id="257">
-<td><a id="l257" class='ln'>257</a></td><td><span class="ct"> * hilite_system('uz_codegen/uz_codegen/Kp') - opens and selects block Kp</span></td></tr>
+<td><a id="l257" class='ln'>257</a></td><td>  <a id="257c3" class="tk">real32_T</a> <a id="257c12" class="tk">i_x_ref_pu</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="257">&lt;Root&gt;/i_x_ref_pu</a>' */</span></td></tr>
 <tr name="258" id="258">
-<td><a id="l258" class='ln'>258</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l258" class='ln'>258</a></td><td>  <a id="258c3" class="tk">real32_T</a> <a id="258c12" class="tk">i_y_ref_pu</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="258">&lt;Root&gt;/i_y_ref_pu</a>' */</span></td></tr>
 <tr name="259" id="259">
-<td><a id="l259" class='ln'>259</a></td><td><span class="ct"> * Here is the system hierarchy for this model</span></td></tr>
+<td><a id="l259" class='ln'>259</a></td><td>  <a id="259c3" class="tk">real32_T</a> <a id="259c12" class="tk">lambda</a>;                     <span class="ct">/* '<a class="ct blk" blk_line="259">&lt;Root&gt;/lambda</a>' */</span></td></tr>
 <tr name="260" id="260">
-<td><a id="l260" class='ln'>260</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l260" class='ln'>260</a></td><td>  <a id="260c3" class="tk">real32_T</a> <a id="260c12" class="tk">tolerance</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="260">&lt;Root&gt;/tolerance</a>' */</span></td></tr>
 <tr name="261" id="261">
-<td><a id="l261" class='ln'>261</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="261">&lt;Root&gt;</a>' : 'uz_codegen'</span></td></tr>
+<td><a id="l261" class='ln'>261</a></td><td>  <a id="261c3" class="tk">real32_T</a> <a id="261c12" class="tk">max_iter</a>;                   <span class="ct">/* '<a class="ct blk" blk_line="261">&lt;Root&gt;/max_iter</a>' */</span></td></tr>
 <tr name="262" id="262">
-<td><a id="l262" class='ln'>262</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="262">&lt;S1&gt;</a>'   : 'uz_codegen/uz_codegen'</span></td></tr>
+<td><a id="l262" class='ln'>262</a></td><td>  <a id="262c3" class="tk">real32_T</a> <a id="262c12" class="tk">psiPM_h_pu</a>[2];              <span class="ct">/* '<a class="ct blk" blk_line="262">&lt;Root&gt;/psiPM_h_pu</a>' */</span></td></tr>
 <tr name="263" id="263">
-<td><a id="l263" class='ln'>263</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="263">&lt;S2&gt;</a>'   : 'uz_codegen/uz_codegen/act_sw_2_dqxy_volts_all'</span></td></tr>
+<td><a id="l263" class='ln'>263</a></td><td>  <a id="263c3" class="tk">real32_T</a> <a id="263c12" class="tk">phiPM_h</a>[2];                 <span class="ct">/* '<a class="ct blk" blk_line="263">&lt;Root&gt;/phiPM_h</a>' */</span></td></tr>
 <tr name="264" id="264">
-<td><a id="l264" class='ln'>264</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="264">&lt;S3&gt;</a>'   : 'uz_codegen/uz_codegen/deadbeat_solution'</span></td></tr>
+<td><a id="l264" class='ln'>264</a></td><td>  <a id="264c3" class="tk">boolean_T</a> <a id="264c13" class="tk">HC_off_on</a>;                 <span class="ct">/* '<a class="ct blk" blk_line="264">&lt;Root&gt;/HC_off_on</a>' */</span></td></tr>
 <tr name="265" id="265">
-<td><a id="l265" class='ln'>265</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="265">&lt;S4&gt;</a>'   : 'uz_codegen/uz_codegen/delay_compensation_currents'</span></td></tr>
+<td><a id="l265" class='ln'>265</a></td><td>  <a id="265c3" class="tk">boolean_T</a> <a id="265c13" class="tk">kalman_off_on</a>;             <span class="ct">/* '<a class="ct blk" blk_line="265">&lt;Root&gt;/kalman_off_on</a>' */</span></td></tr>
 <tr name="266" id="266">
-<td><a id="l266" class='ln'>266</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="266">&lt;S5&gt;</a>'   : 'uz_codegen/uz_codegen/formulate_qp'</span></td></tr>
+<td><a id="l266" class='ln'>266</a></td><td>  <a id="266c3" class="tk">real32_T</a> <a id="266c12" class="tk">kalman_R</a>;                   <span class="ct">/* '<a class="ct blk" blk_line="266">&lt;Root&gt;/kalman_R</a>' */</span></td></tr>
 <tr name="267" id="267">
-<td><a id="l267" class='ln'>267</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="267">&lt;S6&gt;</a>'   : 'uz_codegen/uz_codegen/qp_solver'</span></td></tr>
+<td><a id="l267" class='ln'>267</a></td><td>  <a id="267c3" class="tk">real32_T</a> <a id="267c12" class="tk">kalman_Q1</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="267">&lt;Root&gt;/kalman_Q1</a>' */</span></td></tr>
 <tr name="268" id="268">
-<td><a id="l268" class='ln'>268</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="268">&lt;S7&gt;</a>'   : 'uz_codegen/uz_codegen/seq_2_act_sw_all'</span></td></tr>
+<td><a id="l268" class='ln'>268</a></td><td>  <a id="268c3" class="tk">real32_T</a> <a id="268c12" class="tk">kalman_Q2</a>;                  <span class="ct">/* '<a class="ct blk" blk_line="268">&lt;Root&gt;/kalman_Q2</a>' */</span></td></tr>
 <tr name="269" id="269">
-<td><a id="l269" class='ln'>269</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="269">&lt;S8&gt;</a>'   : 'uz_codegen/uz_codegen/state_space_mdl'</span></td></tr>
+<td><a id="l269" class='ln'>269</a></td><td><span class="br">}</span> <a id="269c3" class="tk">ExtU</a>;</td></tr>
 <tr name="270" id="270">
-<td><a id="l270" class='ln'>270</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="270">&lt;S9&gt;</a>'   : 'uz_codegen/uz_codegen/tz'</span></td></tr>
+<td><a id="l270" class='ln'>270</a></td><td></td></tr>
 <tr name="271" id="271">
-<td><a id="l271" class='ln'>271</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="271">&lt;S10&gt;</a>'  : 'uz_codegen/uz_codegen/tz_2_tph'</span></td></tr>
+<td><a id="l271" class='ln'>271</a></td><td><span class="ct">/* External outputs (root outports fed by signals with default storage) */</span></td></tr>
 <tr name="272" id="272">
-<td><a id="l272" class='ln'>272</a></td><td><span class="ct"> */</span></td></tr>
+<td><a id="l272" class='ln'>272</a></td><td><span class="kw">typedef</span> <span class="kw">struct</span> <span class="br">{</span></td></tr>
 <tr name="273" id="273">
-<td><a id="l273" class='ln'>273</a></td><td></td></tr>
+<td><a id="l273" class='ln'>273</a></td><td>  <a id="273c3" class="tk">real32_T</a> <a id="273c12" class="tk">d_opt</a>[6];                   <span class="ct">/* '<a class="ct blk" blk_line="273">&lt;Root&gt;/d_opt</a>' */</span></td></tr>
 <tr name="274" id="274">
-<td><a id="l274" class='ln'>274</a></td><td><span class="ct">/*-</span></td></tr>
+<td><a id="l274" class='ln'>274</a></td><td>  <a id="274c3" class="tk">real32_T</a> <a id="274c12" class="tk">iterations_qp</a>;              <span class="ct">/* '<a class="ct blk" blk_line="274">&lt;Root&gt;/iterations_qp</a>' */</span></td></tr>
 <tr name="275" id="275">
-<td><a id="l275" class='ln'>275</a></td><td><span class="ct"> * Requirements for '<a class="ct blk" blk_line="275">&lt;Root&gt;</a>': uz_codegen0</span></td></tr>
+<td><a id="l275" class='ln'>275</a></td><td><span class="br">}</span> <a id="275c3" class="tk">ExtY</a>;</td></tr>
 <tr name="276" id="276">
-<td><a id="l276" class='ln'>276</a></td><td><span class="ct"> */</span></td></tr>
+<td><a id="l276" class='ln'>276</a></td><td></td></tr>
 <tr name="277" id="277">
-<td><a id="l277" class='ln'>277</a></td><td><span class="pp">#endif</span>                                 <span class="ct">/* RTW_HEADER_uz_codegen0_h_ */</span></td></tr>
+<td><a id="l277" class='ln'>277</a></td><td><span class="ct">/* Real-time Model Data Structure */</span></td></tr>
 <tr name="278" id="278">
-<td><a id="l278" class='ln'>278</a></td><td></td></tr>
+<td><a id="l278" class='ln'>278</a></td><td><span class="kw">struct</span> <a id="278c8" class="tk">tag_RTM</a> <span class="br">{</span></td></tr>
 <tr name="279" id="279">
-<td><a id="l279" class='ln'>279</a></td><td><span class="ct">/*</span></td></tr>
+<td><a id="l279" class='ln'>279</a></td><td>  <a id="279c3" class="tk">ExtU</a> <a id="279c8" class="tk">*</a><a id="279c9" class="tk">inputs</a>;</td></tr>
 <tr name="280" id="280">
-<td><a id="l280" class='ln'>280</a></td><td><span class="ct"> * File trailer for generated code.</span></td></tr>
+<td><a id="l280" class='ln'>280</a></td><td>  <a id="280c3" class="tk">ExtY</a> <a id="280c8" class="tk">*</a><a id="280c9" class="tk">outputs</a>;</td></tr>
 <tr name="281" id="281">
-<td><a id="l281" class='ln'>281</a></td><td><span class="ct"> *</span></td></tr>
+<td><a id="l281" class='ln'>281</a></td><td>  <a id="281c3" class="tk">DW</a> <a id="281c6" class="tk">*</a><a id="281c7" class="tk">dwork</a>;</td></tr>
 <tr name="282" id="282">
-<td><a id="l282" class='ln'>282</a></td><td><span class="ct"> * [EOF]</span></td></tr>
+<td><a id="l282" class='ln'>282</a></td><td><span class="br">}</span>;</td></tr>
 <tr name="283" id="283">
-<td><a id="l283" class='ln'>283</a></td><td><span class="ct"> */</span></td></tr>
+<td><a id="l283" class='ln'>283</a></td><td></td></tr>
 <tr name="284" id="284">
-<td><a id="l284" class='ln'>284</a></td><td></td></tr>
+<td><a id="l284" class='ln'>284</a></td><td><span class="ct">/* Model entry point functions */</span></td></tr>
+<tr name="285" id="285">
+<td><a id="l285" class='ln'>285</a></td><td><span class="kw">extern</span> <span class="kw">void</span> <a id="285c13" class="tk">uz_codegen0_initialize</a>(<a id="285c36" class="tk">RT_MODEL</a> <a id="285c45" class="tk">*</a><span class="kw">const</span> <a id="285c52" class="tk">rtM</a>);</td></tr>
+<tr name="286" id="286">
+<td><a id="l286" class='ln'>286</a></td><td><span class="kw">extern</span> <span class="kw">void</span> <a id="286c13" class="tk">uz_codegen0_step</a>(<a id="286c30" class="tk">RT_MODEL</a> <a id="286c39" class="tk">*</a><span class="kw">const</span> <a id="286c46" class="tk">rtM</a>);</td></tr>
+<tr name="287" id="287">
+<td><a id="l287" class='ln'>287</a></td><td></td></tr>
+<tr name="288" id="288">
+<td><a id="l288" class='ln'>288</a></td><td><span class="ct">/*-</span></td></tr>
+<tr name="289" id="289">
+<td><a id="l289" class='ln'>289</a></td><td><span class="ct"> * These blocks were eliminated from the model due to optimizations:</span></td></tr>
+<tr name="290" id="290">
+<td><a id="l290" class='ln'>290</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="291" id="291">
+<td><a id="l291" class='ln'>291</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="291">&lt;S1&gt;/Kalman_Observer</a>' : Unused code path elimination</span></td></tr>
+<tr name="292" id="292">
+<td><a id="l292" class='ln'>292</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="292">&lt;S1&gt;/Scope1</a>' : Unused code path elimination</span></td></tr>
+<tr name="293" id="293">
+<td><a id="l293" class='ln'>293</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="293">&lt;S1&gt;/Scope2</a>' : Unused code path elimination</span></td></tr>
+<tr name="294" id="294">
+<td><a id="l294" class='ln'>294</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="294">&lt;S1&gt;/e_obs</a>' : Unused code path elimination</span></td></tr>
+<tr name="295" id="295">
+<td><a id="l295" class='ln'>295</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="295">&lt;S1&gt;/Data Type Conversion</a>' : Eliminate redundant data type conversion</span></td></tr>
+<tr name="296" id="296">
+<td><a id="l296" class='ln'>296</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="296">&lt;S1&gt;/Data Type Conversion1</a>' : Eliminate redundant data type conversion</span></td></tr>
+<tr name="297" id="297">
+<td><a id="l297" class='ln'>297</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="297">&lt;S1&gt;/Data Type Conversion2</a>' : Eliminate redundant data type conversion</span></td></tr>
+<tr name="298" id="298">
+<td><a id="l298" class='ln'>298</a></td><td><span class="ct"> * Block '<a class="ct blk" blk_line="298">&lt;S1&gt;/Data Type Conversion3</a>' : Eliminate redundant data type conversion</span></td></tr>
+<tr name="299" id="299">
+<td><a id="l299" class='ln'>299</a></td><td><span class="ct"> */</span></td></tr>
+<tr name="300" id="300">
+<td><a id="l300" class='ln'>300</a></td><td></td></tr>
+<tr name="301" id="301">
+<td><a id="l301" class='ln'>301</a></td><td><span class="ct">/*-</span></td></tr>
+<tr name="302" id="302">
+<td><a id="l302" class='ln'>302</a></td><td><span class="ct"> * The generated code includes comments that allow you to trace directly</span></td></tr>
+<tr name="303" id="303">
+<td><a id="l303" class='ln'>303</a></td><td><span class="ct"> * back to the appropriate location in the model.  The basic format</span></td></tr>
+<tr name="304" id="304">
+<td><a id="l304" class='ln'>304</a></td><td><span class="ct"> * is &lt;system&gt;/block_name, where system is the system number (uniquely</span></td></tr>
+<tr name="305" id="305">
+<td><a id="l305" class='ln'>305</a></td><td><span class="ct"> * assigned by Simulink) and block_name is the name of the block.</span></td></tr>
+<tr name="306" id="306">
+<td><a id="l306" class='ln'>306</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="307" id="307">
+<td><a id="l307" class='ln'>307</a></td><td><span class="ct"> * Note that this particular code originates from a subsystem build,</span></td></tr>
+<tr name="308" id="308">
+<td><a id="l308" class='ln'>308</a></td><td><span class="ct"> * and has its own system numbers different from the parent model.</span></td></tr>
+<tr name="309" id="309">
+<td><a id="l309" class='ln'>309</a></td><td><span class="ct"> * Refer to the system hierarchy for this subsystem below, and use the</span></td></tr>
+<tr name="310" id="310">
+<td><a id="l310" class='ln'>310</a></td><td><span class="ct"> * MATLAB hilite_system command to trace the generated code back</span></td></tr>
+<tr name="311" id="311">
+<td><a id="l311" class='ln'>311</a></td><td><span class="ct"> * to the parent model.  For example,</span></td></tr>
+<tr name="312" id="312">
+<td><a id="l312" class='ln'>312</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="313" id="313">
+<td><a id="l313" class='ln'>313</a></td><td><span class="ct"> * hilite_system('uz_codegen/uz_codegen')    - opens subsystem uz_codegen/uz_codegen</span></td></tr>
+<tr name="314" id="314">
+<td><a id="l314" class='ln'>314</a></td><td><span class="ct"> * hilite_system('uz_codegen/uz_codegen/Kp') - opens and selects block Kp</span></td></tr>
+<tr name="315" id="315">
+<td><a id="l315" class='ln'>315</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="316" id="316">
+<td><a id="l316" class='ln'>316</a></td><td><span class="ct"> * Here is the system hierarchy for this model</span></td></tr>
+<tr name="317" id="317">
+<td><a id="l317" class='ln'>317</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="318" id="318">
+<td><a id="l318" class='ln'>318</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="318">&lt;Root&gt;</a>' : 'uz_codegen'</span></td></tr>
+<tr name="319" id="319">
+<td><a id="l319" class='ln'>319</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="319">&lt;S1&gt;</a>'   : 'uz_codegen/uz_codegen'</span></td></tr>
+<tr name="320" id="320">
+<td><a id="l320" class='ln'>320</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="320">&lt;S2&gt;</a>'   : 'uz_codegen/uz_codegen/MATLAB Function'</span></td></tr>
+<tr name="321" id="321">
+<td><a id="l321" class='ln'>321</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="321">&lt;S3&gt;</a>'   : 'uz_codegen/uz_codegen/Observer'</span></td></tr>
+<tr name="322" id="322">
+<td><a id="l322" class='ln'>322</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="322">&lt;S4&gt;</a>'   : 'uz_codegen/uz_codegen/act_sw_2_dqxy_volts_all'</span></td></tr>
+<tr name="323" id="323">
+<td><a id="l323" class='ln'>323</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="323">&lt;S5&gt;</a>'   : 'uz_codegen/uz_codegen/deadbeat_solution'</span></td></tr>
+<tr name="324" id="324">
+<td><a id="l324" class='ln'>324</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="324">&lt;S6&gt;</a>'   : 'uz_codegen/uz_codegen/delay_compensation_currents'</span></td></tr>
+<tr name="325" id="325">
+<td><a id="l325" class='ln'>325</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="325">&lt;S7&gt;</a>'   : 'uz_codegen/uz_codegen/formulate_qp'</span></td></tr>
+<tr name="326" id="326">
+<td><a id="l326" class='ln'>326</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="326">&lt;S8&gt;</a>'   : 'uz_codegen/uz_codegen/qp_solver'</span></td></tr>
+<tr name="327" id="327">
+<td><a id="l327" class='ln'>327</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="327">&lt;S9&gt;</a>'   : 'uz_codegen/uz_codegen/seq_2_act_sw_all'</span></td></tr>
+<tr name="328" id="328">
+<td><a id="l328" class='ln'>328</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="328">&lt;S10&gt;</a>'  : 'uz_codegen/uz_codegen/state_space_mdl'</span></td></tr>
+<tr name="329" id="329">
+<td><a id="l329" class='ln'>329</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="329">&lt;S11&gt;</a>'  : 'uz_codegen/uz_codegen/tz'</span></td></tr>
+<tr name="330" id="330">
+<td><a id="l330" class='ln'>330</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="330">&lt;S12&gt;</a>'  : 'uz_codegen/uz_codegen/tz_2_tph'</span></td></tr>
+<tr name="331" id="331">
+<td><a id="l331" class='ln'>331</a></td><td><span class="ct"> * '<a class="ct blk" blk_line="331">&lt;S13&gt;</a>'  : 'uz_codegen/uz_codegen/v_dqxy'</span></td></tr>
+<tr name="332" id="332">
+<td><a id="l332" class='ln'>332</a></td><td><span class="ct"> */</span></td></tr>
+<tr name="333" id="333">
+<td><a id="l333" class='ln'>333</a></td><td></td></tr>
+<tr name="334" id="334">
+<td><a id="l334" class='ln'>334</a></td><td><span class="ct">/*-</span></td></tr>
+<tr name="335" id="335">
+<td><a id="l335" class='ln'>335</a></td><td><span class="ct"> * Requirements for '<a class="ct blk" blk_line="335">&lt;Root&gt;</a>': uz_codegen0</span></td></tr>
+<tr name="336" id="336">
+<td><a id="l336" class='ln'>336</a></td><td><span class="ct"> */</span></td></tr>
+<tr name="337" id="337">
+<td><a id="l337" class='ln'>337</a></td><td><span class="pp">#endif</span>                                 <span class="ct">/* RTW_HEADER_uz_codegen0_h_ */</span></td></tr>
+<tr name="338" id="338">
+<td><a id="l338" class='ln'>338</a></td><td></td></tr>
+<tr name="339" id="339">
+<td><a id="l339" class='ln'>339</a></td><td><span class="ct">/*</span></td></tr>
+<tr name="340" id="340">
+<td><a id="l340" class='ln'>340</a></td><td><span class="ct"> * File trailer for generated code.</span></td></tr>
+<tr name="341" id="341">
+<td><a id="l341" class='ln'>341</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="342" id="342">
+<td><a id="l342" class='ln'>342</a></td><td><span class="ct"> * [EOF]</span></td></tr>
+<tr name="343" id="343">
+<td><a id="l343" class='ln'>343</a></td><td><span class="ct"> */</span></td></tr>
+<tr name="344" id="344">
+<td><a id="l344" class='ln'>344</a></td><td></td></tr>
 </table>
 </pre>
 </body>

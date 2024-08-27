@@ -14,12 +14,12 @@ fs=24;
 barWidth = 1.5;
 
 % CHOOSE TIME SEGMENT OF SIGNAL IN THE LOG CHANNEL
-start = 205;
-stop = start+(20*400)-1; %2400
+start = 1;
+stop = start+(10*80)-1; %2400
 
 % CHOOSE LOG CHANNEL TO BE FOURIER TRANSFORMED
 time = log.time(start:stop);
-signal = log.CH20(start:stop);
+signal = log.CH2(start:stop);
 
 % Sawtooth test signal for demonstration
 % time = test_time(start:stop);

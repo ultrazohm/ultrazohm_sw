@@ -67,12 +67,8 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float theta_elec;
-	float theta_mech;
-	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
-	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	uz_temperaturecard_OneGroup channel_A_data;
@@ -88,8 +84,8 @@ typedef struct _actualValues_ {
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_interface;
 	float theta_elec_rad_ip;
 	float theta_mech_rad_ip;
-	float mechanicalRotorSpeedRPM_ip;
-	float mechanicalRotorSpeedRADpS_ip;
+	float mechanicalRotorSpeedRPM;
+	float mechanicalRotorSpeedRADpS;
 	float electricalRotorSpeedRADpS;
 	float i_a1;
 	float i_b1;
@@ -141,7 +137,8 @@ typedef struct _actualValues_ {
 	bool HC_off_on;
 	float dutycyc[6];
 	float iterations;
-	float angle_lead_factor;
+	float angle_lead_factor_FOC;
+	float angle_lead_factor_MPC;
 	float psiPM_h_pu[2];
 	float phiPM_h[2];
 	float Rs;
@@ -167,22 +164,8 @@ typedef struct _actualValues_ {
 	float v_q;
 	float v_x;
 	float v_y;
-	struct uz_resolverIP_position_velocity_t posVel;
 	float pos_mech;
 	float pos_elec;
-	float overflow;
-	float artif_angle;
-	float v_d_comp;
-	float v_q_comp;
-	float theta_mech_calc_from_resolver;
-	float compensation;
-	float theta_mech_rad_ip_old;
-	float sawtooth;
-	bool sawtooth_start;
-	float error_sawtooth;
-	float offset;
-	float error;
-	bool comp_off_on;
 	float Kp_id;
 	float Ki_id;
 	float Kp_iq;
@@ -192,6 +175,18 @@ typedef struct _actualValues_ {
 	float M_ref;
 	float speed_ref_rpm;
 	float speed_ref_rpm_filt;
+	float theta_elec_incre;
+	float mechanicalRotorSpeed_incre;
+	float mechanicalRotorSpeed_filtered_incre;
+	uint32_t offset_el_incre;
+	bool kalman_off_on;
+	float kalman_R;
+	float kalman_Q1;
+	float kalman_Q2;
+	float theta_el_pos_FOC;
+	float theta_el_neg_FOC;
+	float theta_el_pos_MPC;
+	float theta_el_neg_MPC;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -219,7 +214,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_6_to_11;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_12_to_17;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
-	uz_incrementalEncoder_t* encoder_D5;
+	uz_incrementalEncoder_t* encoder_D3;
 	uz_mux_axi_t* mux_axi;
 	uz_resolverIP_t* resolver_d5_1;
 	uz_resolver_pl_interface_t* resolver_pl_interface;

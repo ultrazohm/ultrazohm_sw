@@ -40,7 +40,8 @@ struct RPU_to_APU_user_data_t
 {
 	// create variables that you want to share from R5 to A53
 	float v_DC_pu;
-	float theta_el;
+	float theta_el_pos;
+	float theta_el_neg;
 	float Ts_times_ZB_over_Ld;
 	float Ts_times_ZB_over_Lq;
 	float Ts_times_ZB_over_Lx;
@@ -66,4 +67,8 @@ struct RPU_to_APU_user_data_t
 	bool HC_off_on;
 	float psiPM_h_pu[2];
 	float phiPM_h[2];
+	bool kalman_off_on;
+	float kalman_R;
+	float kalman_Q1;
+	float kalman_Q2;
 };

@@ -11,15 +11,15 @@ lw=2;
 %Fontsize
 fs=24;
 % bar width in FFT plot
-barWidth = 1.5;
+barWidth = 0.5;
 
 % CHOOSE TIME SEGMENT OF SIGNAL IN THE LOG CHANNEL
-start = 1;
+start = 27;
 stop = start+(10*80)-1; %2400
 
 % CHOOSE LOG CHANNEL TO BE FOURIER TRANSFORMED
 time = log.time(start:stop);
-signal = log.CH2(start:stop);
+signal = log.CH4(start:stop);
 
 % Sawtooth test signal for demonstration
 % time = test_time(start:stop);
@@ -44,9 +44,12 @@ freq=d.*1/(time(2)-time(1))/Fs;                 % Rückskalieren, wenn die x-Ach
 % Find maximum amplitude in spectrum, 
 % assuming it is the fundamental of the signal
 [FundamentalSignalAmplitude ,VectorNumber] = max(FFT_sig)
+
+% Calculate angle of frequency components
+phi = angle(Y(1:L/2+1));
 %% Plot
 figure
-subplot(211)
+subplot(311)
 plot(time,signal,'LineWidth',lw);
 hold on
 plot(time,signal,'LineWidth',lw);
@@ -54,10 +57,15 @@ set(gca,'FontSize',fs);
 grid on
 xlabel('Time / s')
 ylabel('signal(t)')
-subplot(212)
+subplot(312)
 hBar = bar(freq(1,:)*0.001,FFT_sig(:,1), 'BarWidth', barWidth);
 set(gca,'FontSize',fs);
 grid on
 axis([0 1.01*f_max_kHz 0 1.2*FundamentalSignalAmplitude]);
-xlabel('Frequency / kHz')
 ylabel('signal(f)');
+subplot(313)
+hBar = bar(freq(1,:)*0.001,phi(:,1), 'BarWidth', barWidth);
+set(gca,'FontSize',fs);
+grid on
+axis([0 1.01*f_max_kHz -pi pi]);
+xlabel('Frequency / kHz')

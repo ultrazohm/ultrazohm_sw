@@ -92,6 +92,9 @@ FFT_sig_withoutFundamental(VectorNumber,:)=0; %Eliminate fundamental in order to
 % remove dc value
 FFT_sig_withoutFundamental(1,:)=0;
 
+% Calculate angle of frequency components
+phi = angle(Y(1:L/2+1));
+
 %bsxfun() multipliziert den Vektor in jeder spalte/zeile mit sich selbst,
 %dadurch erreiche ich, das jeder Wert im urpsrünglichen Vektor quadriert
 %wird.
@@ -288,3 +291,20 @@ grid on
 axis([0 f_max 0 THD_max]);
 xlabel('Frequency / kHz')
 ylabel('i_a_1 (f) / %');
+
+%% only fft but with angle
+figure
+subplot(211)
+% hBar = bar(freq(1,:)*0.001,FFT_sig_withoutFundamental(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
+hBar = bar(freq(1,:)*0.001,FFT_sig(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
+set(gca,'FontSize',fs);
+grid on
+axis([0 f_max 0 THD_max]);
+ylabel('i_a_1 (f) / %');
+subplot(212)
+hBar = bar(freq(1,:)*0.001,phi(1,:), 'BarWidth', barWidth);
+set(gca,'FontSize',fs);
+grid on
+axis([0 f_max -pi pi]);
+xlabel('Frequency / kHz')
+ylabel('angle (f) / rad');

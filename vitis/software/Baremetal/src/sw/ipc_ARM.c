@@ -201,16 +201,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
-		data->av.angle_lead_factor_FOC = value;
+		data->av.angle_lead_factor_MPC = value;
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
+		data->av.phiPM_h[0] = value;
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		data->av.speed_ref_rpm = value;
+		data->av.phiPM_h[1] = value;
+//		data->av.speed_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -221,15 +223,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
-		data->av.Rs = value;
-		data->av.Rs_over_ZB = value*inverse_base_val.ZB;
+//		data->av.Rs = value;
+//		data->av.Rs_over_ZB = value*inverse_base_val.ZB;
+		data->av.psi_pm_h_pu_over_psiB[0] = value*inverse_base_val.psiB;
 			break;
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
-		data->av.Ld = value;
-		data->av.Ts_times_ZB_over_Ld = UZ_TIME_ISR*base_val.ZB/value;
-		data->av.Ld_over_LB = value*inverse_base_val.LB;
+//		data->av.Ld = value;
+//		data->av.Ts_times_ZB_over_Ld = UZ_TIME_ISR*base_val.ZB/value;
+//		data->av.Ld_over_LB = value*inverse_base_val.LB;
+		data->av.psi_pm_h_pu_over_psiB[1] = value*inverse_base_val.psiB;
 			break;
 
 		case (Set_Send_Field_9):

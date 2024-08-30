@@ -38,7 +38,7 @@ i_max = -i_min;
 
 num_of_measured_points = 1;
 max_num_of_samples_in_this_batch = 40*30;
-start=1000;
+start=1;
 stop=start+max_num_of_samples_in_this_batch;
 
 %% Prepare data structure to store the measured points

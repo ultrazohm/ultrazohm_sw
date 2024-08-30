@@ -137,6 +137,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Kalman_R]				= &data->av.kalman_R;
 	js_slowDataArray[JSSD_FLOAT_Kalman_Q1]				= &data->av.kalman_Q1;
 	js_slowDataArray[JSSD_FLOAT_Kalman_Q2]				= &data->av.kalman_Q2;
+	js_slowDataArray[JSSD_FLOAT_phi_pm_5th]				= &data->av.phiPM_h[0];
+	js_slowDataArray[JSSD_FLOAT_phi_pm_7th]				= &data->av.phiPM_h[1];
 
 	return Status;
 }

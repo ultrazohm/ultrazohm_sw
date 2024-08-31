@@ -143,6 +143,7 @@ struct uz_adcMax11331_config_t{
     uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured. This corresponds to the physical chip. 1 is the first chip, 2 the second chip, ... The original UZ adapter board from Chile has e.g. 6 chips. */
 	uint32_t channel_select; /**< One hot encoded variable to select the channels of the selected SPI masters shall be configured. In case of MAX11331, there are 16 channels in case of single-ended and 8 channels in case of differential mode. */
 	enum uz_adcMax11331_trigger_mode trigger_mode;
+	uint32_t adc_delay_offset;
 
     /* SPI */
 	uint32_t clk_div; /**< See the SPI configuration register for explanation */

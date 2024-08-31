@@ -11,6 +11,7 @@
 #define ADC_MAX11331_ECHOED_UNIPOLAR_56 	0x1CU // Read: Data sent by ADC connected to MISO, corresponding to echo of unipolar register value 5 and 6
 #define ADC_MAX11331_ADCSELECTOR_FORCEINIT	0x20U // Write/Read: ADC_selector and Force_init function
 #define ADC_MAX11331_CLK_DIVISION    		0x24U // Write/Read: The sck is generated internally based on the clock divider and provided input clock
+#define ADC_MAX11331_DELAY_OFFSET    		0x28U // Write/Read: Extends the sampling period by this amount of clock cycles
 
 #endif
 

@@ -5,6 +5,7 @@
 #include "../../uz/uz_HAL.h"
 #include "uz_adcMax11331.h"
 #include "uz_adcMax11331_hw.h"
+#include "uz_adcMax11331_hwAdresses.h"
 
 struct uz_adcMax11331_t
 {
@@ -91,21 +92,10 @@ void uz_adcMax11331_check_echo_of_master(uz_adcMax11331_t *self)
 
 }
 
-void uz_adcMax11331_set_delay_offset(uz_adcMax11331_t *self, uint32_t value)
-{
-	// for later integration into init function , todo: add part in init function
-	/*
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
-    uz_assert(
-        uz_adcMax11331_check_32_bit_int_if_not_more_sign_bits_set_than_spec(
-            value,
-            UZ_ADCMAX11331_SPI_CFGR_CLK_DIV_WIDTH));
-    self->config.adc_delay_offset = value;
-*/
-	// for debugging purpose
-    uz_adcMax11331_hw_write_master_channel(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR + ADC_MAX11331_DELAY_OFFSET, value);
 
+void uz_adcMax11331_set_delay_offset(uint32_t value)
+{
+    uz_adcMax11331_hw_write_master_channel(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR + ADC_MAX11331_DELAY_OFFSET, value);
 }
 
 

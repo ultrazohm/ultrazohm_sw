@@ -187,6 +187,7 @@ uz_adcMax11331_t* uz_adcMax11331_init(struct uz_adcMax11331_config_t config);
  */
 void uz_adcMax11331_set_clk_div(uz_adcMax11331_t* self, uint32_t value);
 
+void uz_adcMax11331_set_delay_offset(uint32_t value);
 
 // get functions
 uint32_t uz_adcMax11331_get_error_code(uz_adcMax11331_t* self);

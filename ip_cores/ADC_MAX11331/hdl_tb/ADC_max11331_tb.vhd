@@ -232,9 +232,15 @@ timulus: process
     -- Put initialisation code here
 	stop_the_clock <= false;
 	reset_n <= '0';
+	s_axi_lite_aresetn <= '0'; 
     wait for 20 ns;
     reset_n <= '1';
-	
+    s_axi_lite_aresetn <= '1';
+    
+    wait for 20ns;
+	s_axi_lite_aresetn <= '0';
+	wait for 20ns;
+	s_axi_lite_aresetn <= '1';
     wait;
   end process;
   
@@ -476,6 +482,7 @@ timulus: process
 	begin
 		while not stop_the_clock loop
 		  clk <= '1', '0' after clock_period / 2;
+		  s_axi_lite_aclk <= '1', '0' after clock_period / 2;
 		  wait for clock_period;
 		end loop;
 		wait;

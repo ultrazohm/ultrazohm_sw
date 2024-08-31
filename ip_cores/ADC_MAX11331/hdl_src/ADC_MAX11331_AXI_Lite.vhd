@@ -36,6 +36,7 @@ entity ADC_MAX11331_AXI_Lite is
 		data_echo_unipolar_6		: in STD_LOGIC_VECTOR (15 downto 0);	
 		adc_selector				: out STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1);
 		force_init 					: out STD_LOGIC;
+		delay_offset                : out STD_LOGIC_VECTOR(15 DOWNTO 0);
 		-- User ports ends
 		-- Do not modify the ports beyond this line
 
@@ -123,6 +124,10 @@ architecture arch_imp of ADC_MAX11331_AXI_Lite is
 	-- ADDR_LSB = 3 for 64 bits (n downto 3)
 	constant ADDR_LSB  : integer := (C_S_AXI_DATA_WIDTH/32)+ 1;
 	constant OPT_MEM_ADDR_BITS : integer := 3;
+	
+	-- initialize adc_selector to 1, assuming that at least 1 adc is connected
+	-- this ensures that an error is thrown if the adc is not properly initialized without using "force_init" 
+	constant slv_reg8_init : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0) := (0 => '1', others => '0');  
 	------------------------------------------------
 	---- Signals for user logic register space example
 	--------------------------------------------------
@@ -262,7 +267,8 @@ begin
 	      slv_reg5 <= (others => '0');
 	      slv_reg6 <= (others => '0');
 	      slv_reg7 <= (others => '0');
-	      slv_reg8 <= (others => '0');
+	      --- slv_reg8 <= (others => '0');
+	      slv_reg8 <= slv_reg8_init;
 	      slv_reg9 <= (others => '0');
 	      slv_reg10 <= (others => '0');
 	      slv_reg11 <= (others => '0');
@@ -582,6 +588,7 @@ begin
 	adc_selector		<=	slv_reg8(NUMBER_OF_ADCS-1 downto 0);
 	force_init			<=  slv_reg8(8);
 	clk_division		<=  slv_reg9(3 downto 0);
+	delay_offset        <=  slv_reg10(15 downto 0);
 	-- User logic ends
 
 end arch_imp;

@@ -109,6 +109,7 @@ architecture arch_imp of ADC_MAX11331_top is
 		data_echo_unipolar_6		: in STD_LOGIC_VECTOR (15 downto 0);	
 		adc_selector				: out STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1);	
 		force_init 					: out STD_LOGIC;			
+        delay_offset                : out STD_LOGIC_VECTOR(15 DOWNTO 0);
 		S_AXI_ACLK	: in std_logic;
 		S_AXI_ARESETN	: in std_logic;
 		S_AXI_AWADDR	: in std_logic_vector(C_S_AXI_ADDR_WIDTH-1 downto 0);
@@ -158,6 +159,7 @@ architecture arch_imp of ADC_MAX11331_top is
 		error_counter				: out STD_LOGIC_VECTOR (31 downto 0);
 		adc_selector				: in STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1);	
 		force_init 					: in STD_LOGIC;		
+        delay_offset		        : in STD_LOGIC_VECTOR(15 DOWNTO 0);
 
 		data_echo_bipolar       : out t_array_message(NUMBER_OF_ADCS downto 1);
 		data_echo_unipolar      : out t_array_message(NUMBER_OF_ADCS downto 1);
@@ -189,6 +191,8 @@ architecture arch_imp of ADC_MAX11331_top is
 	signal	error_S					:	STD_LOGIC := '0';
 	signal	error_counter_S			:	STD_LOGIC_VECTOR (31 downto 0) := (others=>'0'); 
 	signal	force_init_S			:	STD_LOGIC := '0'; 
+	signal	delay_offset_S			:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
+
 
 	signal  data_echo_bipolar_1_S	:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
 	signal  data_echo_bipolar_2_S	:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
@@ -248,6 +252,7 @@ begin
 		error					=> error_S,
 		error_counter			=> error_counter_S,
 		force_init				=> force_init_S,
+		delay_offset		    => delay_offset_S,  
 		adc_selector			=> adc_selector_spi,
 
 		data_echo_bipolar		=> data_echo_bipolar,
@@ -318,6 +323,7 @@ begin
 			data_echo_unipolar_6	=> data_echo_unipolar_6_S,
 			adc_selector			=> adc_selector_AXI,
 			force_init				=> force_init_S,	
+			delay_offset            => delay_offset_S,
 			S_AXI_ACLK	=> s_axi_lite_aclk,
 			S_AXI_ARESETN	=> s_axi_lite_aresetn,
 			S_AXI_AWADDR	=> s_axi_lite_awaddr,

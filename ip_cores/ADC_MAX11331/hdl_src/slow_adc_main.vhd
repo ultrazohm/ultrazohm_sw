@@ -58,6 +58,8 @@ entity Slow_ADC_Memory_main is
 		error_counter			: out STD_LOGIC_VECTOR (31 downto 0);
 		adc_selector			: in STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1);
 		force_init 				: in STD_LOGIC;
+--	differential_sampling_input   : in STD_LOGIC;
+    	delay_offset		    : in STD_LOGIC_VECTOR(15 DOWNTO 0); 
 		data_echo_bipolar       : out t_array_message(NUMBER_OF_ADCS downto 1);
 		data_echo_unipolar      : out t_array_message(NUMBER_OF_ADCS downto 1);
 		
@@ -243,7 +245,7 @@ begin
 	MSG_INIT_2 <= MSG_INIT_2_DIFF when(DIFFERENTIAL_SAMPLING) else MSG_INIT_2_SING;
 	 
 	-- HANDLE DELAY_SIGNAL 
-	DELAY <= to_integer(unsigned(clk_division));
+	DELAY <= to_integer(unsigned(clk_division)) + to_integer(unsigned(delay_offset)); 
 	
     -- Slow ADC State Machine - Mealy / Moore
 	State_Machine : PROCESS (clk, reset_n) IS

@@ -223,6 +223,10 @@ architecture arch_imp of ADC_MAX11331_top is
 	signal	adc_selector_AXI		:	STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1) := (others=>'0'); 
 	constant adc_selector_debug		:	STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1) := (others=>'1'); 
 
+	signal	delay_offset_spi		:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
+	signal	delay_offset_AXI		:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
+	constant delay_offset_debug		:	STD_LOGIC_VECTOR (15 downto 0) :=  X"000A"; 
+
 begin
 
 	
@@ -252,8 +256,8 @@ begin
 		error					=> error_S,
 		error_counter			=> error_counter_S,
 		force_init				=> force_init_S,
-		delay_offset		    => delay_offset_S,  
 		adc_selector			=> adc_selector_spi,
+		delay_offset            => delay_offset_spi,
 
 		data_echo_bipolar		=> data_echo_bipolar,
 		data_echo_unipolar		=> data_echo_unipolar,
@@ -282,6 +286,8 @@ begin
 	  
 	clk_division_spi <= clk_division_debug when(SIMULATION_DEBUG) else clk_division_AXI;
 	adc_selector_spi <= adc_selector_debug when(SIMULATION_DEBUG) else adc_selector_AXI;
+	delay_offset_spi <= delay_offset_debug when(SIMULATION_DEBUG) else delay_offset_AXI;
+
 
 	init_done			<= init_done_S;
 	meas_done			<= meas_done_S;
@@ -323,7 +329,7 @@ begin
 			data_echo_unipolar_6	=> data_echo_unipolar_6_S,
 			adc_selector			=> adc_selector_AXI,
 			force_init				=> force_init_S,	
-			delay_offset            => delay_offset_S,
+			delay_offset            => delay_offset_AXI,
 			S_AXI_ACLK	=> s_axi_lite_aclk,
 			S_AXI_ARESETN	=> s_axi_lite_aresetn,
 			S_AXI_AWADDR	=> s_axi_lite_awaddr,

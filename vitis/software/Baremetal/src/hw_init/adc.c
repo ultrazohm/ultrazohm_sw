@@ -25,6 +25,7 @@ uint32_t Max11ConfigAdcSelFORCEINIT =0;
 uint32_t Max11ConfigStatus =0;
 uint32_t Max11ConfigErrorCounter =0;
 uint32_t FORCEINIT;
+uint32_t TEst=0;
 
 void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data)
 {
@@ -55,22 +56,65 @@ void ADC_readCardA2(DS_Data *data, uz_array_int16_t adc_data)
 
 void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
 {
-    data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q12) * data->aa.A3.cf.ADC_A1;
-    data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q12) * data->aa.A3.cf.ADC_A2;
-    data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q12) * data->aa.A3.cf.ADC_A3;
-    data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q12) * data->aa.A3.cf.ADC_A4;
-    data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q12) * data->aa.A3.cf.ADC_B5;
-    data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q12) * data->aa.A3.cf.ADC_B6;
-    data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q12) * data->aa.A3.cf.ADC_B7;
-    data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q12) * data->aa.A3.cf.ADC_B8;
-//	TestVar = (adc_data.data[16]);
-//    data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]);
-//    data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]);
-//    data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]);
-//    data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]);
-//    data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]);
-//    data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]);
-//    data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]);
+
+	TestVar = (uint16_t)(1*(adc_data.data[16]));
+	//if ((adc_data.data[16] && 0b100000000000)==0b1){//neg. value
+	//if (TestVar & (1<<12)){
+//	if (TestVar >= (2^11)){
+//		data->aa.A3.me.ADC_array[0] = -1.0*(((float)((uint16_t)(2^12)-(uint16_t)adc_data.data[16]))/((float)(2^11))) * data->aa.A3.cf.ADC_A1;
+//		TEst =1;
+//	}else{
+//		data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q11) * data->aa.A3.cf.ADC_A1;
+//	}
+	if (adc_data.data[16] >= 2048){
+		data->aa.A3.me.ADC_array[0] = -1.0*(((4096.0-(float)adc_data.data[16])/2048.0) * data->aa.A3.cf.ADC_A1);
+	}else{
+		data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q11) * data->aa.A3.cf.ADC_A1;
+	}
+	if (adc_data.data[17] >= 2048){
+		data->aa.A3.me.ADC_array[1] = -1.0*(((4096.0-(float)adc_data.data[17])/2048.0) * data->aa.A3.cf.ADC_A2);
+	}else{
+		data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q11) * data->aa.A3.cf.ADC_A2;
+	}
+	if (adc_data.data[18] >= 2048){
+		data->aa.A3.me.ADC_array[2] = -1.0*(((4096.0-(float)adc_data.data[18])/2048.0) * data->aa.A3.cf.ADC_A3);
+	}else{
+		data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q11) * data->aa.A3.cf.ADC_A3;
+	}
+	if (adc_data.data[19] >= 2048){
+		data->aa.A3.me.ADC_array[3] = -1.0*(((4096.0-(float)adc_data.data[19])/2048.0) * data->aa.A3.cf.ADC_A4);
+	}else{
+		data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q11) * data->aa.A3.cf.ADC_A4;
+	}
+	if (adc_data.data[20] >= 2048){
+		data->aa.A3.me.ADC_array[4] = -1.0*(((4096.0-(float)adc_data.data[20])/2048.0) * data->aa.A3.cf.ADC_B5);
+	}else{
+		data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q11) * data->aa.A3.cf.ADC_B5;
+	}
+	if (adc_data.data[21] >= 2048){
+		data->aa.A3.me.ADC_array[5] = -1.0*(((4096.0-(float)adc_data.data[21])/2048.0) * data->aa.A3.cf.ADC_B6);
+	}else{
+		data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q11) * data->aa.A3.cf.ADC_B6;
+	}
+	if (adc_data.data[22] >= 2048){
+		data->aa.A3.me.ADC_array[6] = -1.0*(((4096.0-(float)adc_data.data[22])/2048.0) * data->aa.A3.cf.ADC_B7);
+	}else{
+		data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q11) * data->aa.A3.cf.ADC_B7;
+	}
+	if (adc_data.data[23] >= 2048){
+		data->aa.A3.me.ADC_array[7] = -1.0*(((4096.0-(float)adc_data.data[23])/2048.0) * data->aa.A3.cf.ADC_B8);
+	}else{
+		data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q11) * data->aa.A3.cf.ADC_B8;
+	}
+
+//    data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q12) * data->aa.A3.cf.ADC_A2;
+//    data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q12) * data->aa.A3.cf.ADC_A3;
+//    data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q12) * data->aa.A3.cf.ADC_A4;
+//    data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q12) * data->aa.A3.cf.ADC_B5;
+//    data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q12) * data->aa.A3.cf.ADC_B6;
+//    data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q12) * data->aa.A3.cf.ADC_B7;
+//    data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q12) * data->aa.A3.cf.ADC_B8;
+
 };
 
 void ADC_readCardA3_MAX11(DS_Data *data, uz_array_int16_t adc_data)

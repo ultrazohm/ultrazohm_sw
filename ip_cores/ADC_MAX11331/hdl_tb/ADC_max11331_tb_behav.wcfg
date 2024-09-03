@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="22610000fs"></ZoomStartTime>
-      <ZoomEndTime time="38890001fs"></ZoomEndTime>
-      <Cursor1Time time="23800000fs"></Cursor1Time>
+      <ZoomStartTime time="12210000fs"></ZoomStartTime>
+      <ZoomEndTime time="12794001fs"></ZoomEndTime>
+      <Cursor1Time time="12520000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="592"></NameColumnWidth>
-      <ValueColumnWidth column_width="279"></ValueColumnWidth>
+      <ValueColumnWidth column_width="231"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="20" />
+   <WVObjectSize size="31" />
    <wvobject fp_name="/ADC_max11331_tb/uut/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -123,6 +123,10 @@
    <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/spi_master_multi_slave_0/miso" type="array">
       <obj_property name="ElementShortName">miso[2:1]</obj_property>
       <obj_property name="ObjectShortName">miso[2:1]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/mosi" type="logic">
+      <obj_property name="ElementShortName">mosi</obj_property>
+      <obj_property name="ObjectShortName">mosi</obj_property>
    </wvobject>
    <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/spi_master_multi_slave_0/rx_data" type="array">
       <obj_property name="ElementShortName">rx_data[2:1][15:0]</obj_property>
@@ -249,26 +253,50 @@
    <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/adc_channels" type="array">
       <obj_property name="ElementShortName">adc_channels[2:1,7:0][15:0]</obj_property>
       <obj_property name="ObjectShortName">adc_channels[2:1,7:0][15:0]</obj_property>
-      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/adc_channels[2]" type="array">
-         <obj_property name="ElementShortName">[2,7:0][15:0]</obj_property>
-         <obj_property name="ObjectShortName">[2,7:0][15:0]</obj_property>
-         <obj_property name="isExpanded"></obj_property>
-      </wvobject>
-      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/adc_channels[1]" type="array">
-         <obj_property name="ElementShortName">[1,7:0][15:0]</obj_property>
-         <obj_property name="ObjectShortName">[1,7:0][15:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/adc_channels[2]" type="array">
-         <obj_property name="ElementShortName">[2,7:0][15:0]</obj_property>
-         <obj_property name="ObjectShortName">[2,7:0][15:0]</obj_property>
-      </wvobject>
-      <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/adc_channels[1]" type="array">
-         <obj_property name="ElementShortName">[1,7:0][15:0]</obj_property>
-         <obj_property name="ObjectShortName">[1,7:0][15:0]</obj_property>
-      </wvobject>
    </wvobject>
    <wvobject fp_name="/ADC_max11331_tb/uut/raw_measured_data" type="array">
       <obj_property name="ElementShortName">raw_measured_data[255:0]</obj_property>
       <obj_property name="ObjectShortName">raw_measured_data[255:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/ADC_MAX11331_AXI_Lite_inst/S_AXI_ARESETN" type="logic">
+      <obj_property name="ElementShortName">S_AXI_ARESETN</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_ARESETN</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/ADC_MAX11331_AXI_Lite_inst/slv_reg8" type="array">
+      <obj_property name="ElementShortName">slv_reg8[31:0]</obj_property>
+      <obj_property name="ObjectShortName">slv_reg8[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/ADC_MAX11331_AXI_Lite_inst/S_AXI_ACLK" type="logic">
+      <obj_property name="ElementShortName">S_AXI_ACLK</obj_property>
+      <obj_property name="ObjectShortName">S_AXI_ACLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/delay_offset" type="array">
+      <obj_property name="ElementShortName">delay_offset[15:0]</obj_property>
+      <obj_property name="ObjectShortName">delay_offset[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/Slow_ADC_Memory_main_inst/DELAY" type="other">
+      <obj_property name="ElementShortName">DELAY</obj_property>
+      <obj_property name="ObjectShortName">DELAY</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/ADC_MAX11331_AXI_Lite_inst/slv_reg10" type="array">
+      <obj_property name="ElementShortName">slv_reg10[31:0]</obj_property>
+      <obj_property name="ObjectShortName">slv_reg10[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/ADC_MAX11331_AXI_Lite_inst/delay_offset" type="array">
+      <obj_property name="ElementShortName">delay_offset[15:0]</obj_property>
+      <obj_property name="ObjectShortName">delay_offset[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/delay_offset_out" type="array">
+      <obj_property name="ElementShortName">delay_offset_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">delay_offset_out[15:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/clk_division_out" type="array">
+      <obj_property name="ElementShortName">clk_division_out[3:0]</obj_property>
+      <obj_property name="ObjectShortName">clk_division_out[3:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/ADC_max11331_tb/uut/adc_selector_out" type="array">
+      <obj_property name="ElementShortName">adc_selector_out[2:1]</obj_property>
+      <obj_property name="ObjectShortName">adc_selector_out[2:1]</obj_property>
    </wvobject>
 </wave_config>

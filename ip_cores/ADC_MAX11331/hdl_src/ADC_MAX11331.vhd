@@ -32,6 +32,9 @@ entity ADC_MAX11331_top is
 		meas_done 						: out STD_LOGIC;
 		new_data 						: out STD_LOGIC;
 		error 							: out STD_LOGIC;
+        delay_offset_out                : out STD_LOGIC_VECTOR(15 DOWNTO 0);
+        clk_division_out                : out STD_LOGIC_VECTOR (3 downto 0);
+        adc_selector_out                : out STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1);
 		raw_measured_data     			: out STD_LOGIC_VECTOR(NUMBER_OF_ADCS * C_NUM_CHANNELS * OUTPUT_WORD_WIDTH -1 downto 0);
 		ch0	: out STD_LOGIC_VECTOR (OUTPUT_WORD_WIDTH-1 downto 0);
 		ch1	: out STD_LOGIC_VECTOR (OUTPUT_WORD_WIDTH-1 downto 0);
@@ -191,8 +194,6 @@ architecture arch_imp of ADC_MAX11331_top is
 	signal	error_S					:	STD_LOGIC := '0';
 	signal	error_counter_S			:	STD_LOGIC_VECTOR (31 downto 0) := (others=>'0'); 
 	signal	force_init_S			:	STD_LOGIC := '0'; 
-	signal	delay_offset_S			:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
-
 
 	signal  data_echo_bipolar_1_S	:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
 	signal  data_echo_bipolar_2_S	:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
@@ -225,7 +226,8 @@ architecture arch_imp of ADC_MAX11331_top is
 
 	signal	delay_offset_spi		:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
 	signal	delay_offset_AXI		:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
-	constant delay_offset_debug		:	STD_LOGIC_VECTOR (15 downto 0) :=  X"000A"; 
+	constant delay_offset_debug		:	STD_LOGIC_VECTOR (15 downto 0) :=  X"0003"; 
+
 
 begin
 
@@ -258,7 +260,6 @@ begin
 		force_init				=> force_init_S,
 		adc_selector			=> adc_selector_spi,
 		delay_offset            => delay_offset_spi,
-
 		data_echo_bipolar		=> data_echo_bipolar,
 		data_echo_unipolar		=> data_echo_unipolar,
 		
@@ -287,8 +288,12 @@ begin
 	clk_division_spi <= clk_division_debug when(SIMULATION_DEBUG) else clk_division_AXI;
 	adc_selector_spi <= adc_selector_debug when(SIMULATION_DEBUG) else adc_selector_AXI;
 	delay_offset_spi <= delay_offset_debug when(SIMULATION_DEBUG) else delay_offset_AXI;
-
-
+    
+    -- output axi signals for debugging to ila
+    delay_offset_out <= delay_offset_spi;
+    clk_division_out <= clk_division_spi;
+    adc_selector_out <= adc_selector_spi;
+    
 	init_done			<= init_done_S;
 	meas_done			<= meas_done_S;
 	error				<= error_S;

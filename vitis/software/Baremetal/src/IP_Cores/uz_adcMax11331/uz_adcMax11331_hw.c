@@ -17,6 +17,12 @@ void uz_adcMax11331_hw_write_master_channel(uint32_t base_address, uint32_t valu
 	uz_axi_write_uint32(base_address + ADC_MAX11331_ADCSELECTOR_FORCEINIT, value);
 }
 
+void uz_adcMax11331_hw_write_delay_offset(uint32_t base_address, uint32_t value)
+{
+	uz_assert_not_zero(base_address);
+	uz_axi_write_uint32(base_address + ADC_MAX11331_DELAY_OFFSET, value);
+}
+
 // read functions
 
 uint32_t uz_adcMax11331_hw_read_spi_cfgr(uint32_t base_address)
@@ -30,6 +36,11 @@ uint32_t uz_adcMax11331_hw_read_master_channel(uint32_t base_address)
 	uz_assert_not_zero(base_address);
 	return (uz_axi_read_uint32(base_address + ADC_MAX11331_ADCSELECTOR_FORCEINIT));
 }
+
+uint32_t uz_adcMax11331_hw_read_delay_offset(uint32_t base_address){
+	uz_assert_not_zero(base_address);
+	return (uz_axi_read_uint32(base_address + ADC_MAX11331_DELAY_OFFSET));
+};
 
 uint32_t uz_adcMax11331_hw_read_EchoBipolar(uint32_t base_address)
 {

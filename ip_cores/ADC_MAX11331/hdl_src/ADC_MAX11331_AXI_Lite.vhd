@@ -128,7 +128,7 @@ architecture arch_imp of ADC_MAX11331_AXI_Lite is
 	-- initialize adc_selector to 1, assuming that at least 1 adc is connected
 	-- this ensures that an error is thrown if the adc is not properly initialized without using "force_init" 
 	constant slv_reg8_init : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0) := (0 => '1', others => '0');
-	--- constant slv_reg10_init : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0) := X"0000000F";   
+	constant slv_reg10_init : std_logic_vector(C_S_AXI_DATA_WIDTH-1 downto 0) := X"0000000A";   
 	------------------------------------------------
 	---- Signals for user logic register space example
 	--------------------------------------------------
@@ -271,8 +271,8 @@ begin
 	      --- slv_reg8 <= (others => '0');
 	      slv_reg8 <= slv_reg8_init;
 	      slv_reg9 <= (others => '0');
-	      slv_reg10 <= (others => '0');
-	      -- slv_reg10 <= slv_reg10_init;
+	      -- slv_reg10 <= (others => '0');
+	      slv_reg10 <= slv_reg10_init;
 	      slv_reg11 <= (others => '0');
 	      slv_reg12 <= (others => '0');
 	      slv_reg13 <= (others => '0');

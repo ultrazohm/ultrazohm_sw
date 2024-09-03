@@ -24,7 +24,7 @@ uint32_t Max11ConfigUniPo =0;
 uint32_t Max11ConfigAdcSelFORCEINIT =0;
 uint32_t Max11ConfigStatus =0;
 uint32_t Max11ConfigErrorCounter =0;
-uint32_t FORCEINIT;
+uint32_t FORCEINIT = 7;
 uint32_t TEst=0;
 
 void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data)

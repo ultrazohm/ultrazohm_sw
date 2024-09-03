@@ -50,7 +50,7 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
-uint32_t max11_debug_delay_offset = 0;
+int max11_debug_delay_offset = 0;
 
 void ISR_Control(void *data)
 {

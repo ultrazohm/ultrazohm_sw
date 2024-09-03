@@ -11,9 +11,12 @@
 
 void uz_adcMax11331_hw_write_spi_cfgr(uint32_t base_address,uint32_t value);
 void uz_adcMax11331_hw_write_master_channel(uint32_t base_address,uint32_t value);
+void uz_adcMax11331_hw_write_delay_offset(uint32_t base_address, uint32_t value);
+
 
 uint32_t uz_adcMax11331_hw_read_spi_cfgr(uint32_t base_address);
 uint32_t uz_adcMax11331_hw_read_master_channel(uint32_t base_address);
+uint32_t uz_adcMax11331_hw_read_delay_offset(uint32_t base_address);
 uint32_t uz_adcMax11331_hw_read_EchoBipolar(uint32_t base_address);
 uint32_t uz_adcMax11331_hw_read_EchoUnipolar(uint32_t base_address);
 uint32_t uz_adcMax11331_hw_read_Status(uint32_t base_address);

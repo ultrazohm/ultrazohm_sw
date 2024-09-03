@@ -95,7 +95,7 @@ void uz_adcMax11331_check_echo_of_master(uz_adcMax11331_t *self)
 
 void uz_adcMax11331_set_delay_offset(uint32_t value)
 {
-    uz_adcMax11331_hw_write_master_channel(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR + ADC_MAX11331_DELAY_OFFSET, value);
+	uz_adcMax11331_hw_write_delay_offset(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR, value);
 }
 
 

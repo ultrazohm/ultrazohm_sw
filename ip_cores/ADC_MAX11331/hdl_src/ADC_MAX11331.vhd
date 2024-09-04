@@ -226,7 +226,7 @@ architecture arch_imp of ADC_MAX11331_top is
 
 	signal	delay_offset_spi		:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
 	signal	delay_offset_AXI		:	STD_LOGIC_VECTOR (15 downto 0) := (others=>'0'); 
-	constant delay_offset_debug		:	STD_LOGIC_VECTOR (15 downto 0) :=  X"0003"; 
+	constant delay_offset_debug		:	STD_LOGIC_VECTOR (15 downto 0) :=  X"000A"; 
 
 
 begin

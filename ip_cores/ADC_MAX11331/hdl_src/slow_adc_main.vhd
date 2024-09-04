@@ -141,7 +141,7 @@ architecture Behavioral of Slow_ADC_Memory_main is
 	signal adc_channels_single   : t_matrix_message(NUMBER_OF_ADCS downto 1, C_NUM_CHANNELS-1 downto 0) := (others=> (others => (others => '0')));
 	
  
-	SIGNAL   DELAY				: INTEGER RANGE 0 TO 31; --Delay count from main clock (100MHz) between SPI transfers. 
+	SIGNAL   DELAY				: INTEGER RANGE 0 TO 255; --Delay count from main clock (100MHz) between SPI transfers. 
 	CONSTANT DELAY_ERROR       : INTEGER := 49;	-- delay count from main clock (100MHz) between error state and restart initialization. Consider delay - 1.
 	CONSTANT MSG_RESET	       : STD_LOGIC_VECTOR(15 downto 0) := "0000000001000000";	-- ADC Mode Control: 	Reset entire chip (Table 2) 
 	CONSTANT MSG_INIT_1	       : STD_LOGIC_VECTOR(15 downto 0) := "1000000000000100";	-- ADC Configuration: 	activate echo (Table 6)

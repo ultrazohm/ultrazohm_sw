@@ -91,7 +91,7 @@ BEGIN
 
         WHEN ready =>
           busy <= '0';             --clock out not busy signal
-          ss_n_S <= '1'; --set all slave select outputs high
+          ss_n_S <= '0'; --set all slave select outputs high
           mosi <= 'Z';             --set mosi output high impedance
 
           --user input to initiate transaction
@@ -114,6 +114,7 @@ BEGIN
           ELSE
             state <= ready;          --remain in ready state
           END IF;
+
 
         WHEN execute =>
           busy <= '1';        --set busy signal

@@ -84,15 +84,15 @@ int main(void)
              };//these parameters are only needed if linear decoupling is selected
 
              struct uz_PI_Controller_config config_id = {
-               .Kp = 0.0f,
-               .Ki = 0.0f,
+               .Kp = 0.12f,
+               .Ki = 50.0f,
 			   .type = parallel,
                .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY
             };
 
             struct uz_PI_Controller_config config_iq = {
-               .Kp = 0.0f,
-               .Ki = 0.0f,
+               .Kp = 0.12f,
+               .Ki = 50.0f,
 			   .type = parallel,
                .samplingTime_sec = 1.0f/UZ_PWM_FREQUENCY
             };

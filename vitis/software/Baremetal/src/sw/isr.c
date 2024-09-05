@@ -77,7 +77,7 @@ float temp_coef_b = 7.64f;
 float temp_coef_c = 0;
 
 bool flg_compensate_age = 1U;
-bool flg_pred_theta_el = 0U;
+bool flg_pred_theta_el = 1U;
 
 float theta_elec_pred = 0.0f;
 
@@ -122,13 +122,13 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, -1, false, true) - 1.04f;
+    Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, -1, false, true) - 1.04f + (Global_Data.av.theta_offset/21.0f);
     Global_Data.av.EnDat_pos_age = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 0, true, false);
     Global_Data.av.mechanicalRotorSpeed = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.EnDat_master_pointer);
 	Global_Data.av.mechanicalRotorSpeed_filtered = uz_EnDat_rpm_smoothening(Global_Data.av.mechanicalRotorSpeed, 256U);
 	Global_Data.av.omega_mech = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed);
 	Global_Data.av.omega_mech_filtered = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed_filtered);
-    Global_Data.av.omega_el = Global_Data.av.omega_mech * 21.0f;
+    Global_Data.av.omega_el = Global_Data.av.omega_mech_filtered * 21.0f;
 	if(flg_compensate_age == true){
     	// compensation of delay time
     	Global_Data.av.theta_mech_comp = Global_Data.av.theta_mech + Global_Data.av.omega_mech * Global_Data.av.EnDat_pos_age;
@@ -141,12 +141,12 @@ void ISR_Control(void *data)
     Global_Data.av.I_V = (Global_Data.aa.A1.me.ADC_A3 - 0.092072175f - 0.067266) * PHASE_CURRENT_CONV_V;
     Global_Data.av.I_W = (Global_Data.aa.A1.me.ADC_A2 - 0.091379816f + 0.067266) * PHASE_CURRENT_CONV_W;
 
-
-
     Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A1 * DC_LINK_VOLT_CONV;
     Global_Data.av.U_U = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_U;
     Global_Data.av.U_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_V;
     Global_Data.av.U_W = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_W;
+
+    Global_Data.av.torque_meas = Global_Data.aa.A2.me.ADC_A1 * 10.0f;
 
     float volt_temp = Global_Data.aa.A1.me.ADC_B5 * MOSFET_TEMP_CONV_U;
     resistor_temp = polycoef_a * pow(volt_temp, 3) + polycoef_b * pow(volt_temp, 2) + polycoef_c * volt_temp + polycoef_d;
@@ -155,8 +155,6 @@ void ISR_Control(void *data)
 
     uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d3);
     Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'A');
-    //Global_Data.av.channel_B_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'B');
-    //Global_Data.av.channel_C_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'C');
     Global_Data.av.temperature_motor = Global_Data.av.channel_A_data.temperature[19] +20.0f;
 
     // Assertion check
@@ -175,9 +173,9 @@ void ISR_Control(void *data)
     measurement_current.a = Global_Data.av.I_U;
     measurement_current.b = Global_Data.av.I_V;
     measurement_current.c = Global_Data.av.I_W;
-    measurement_voltage.a = Global_Data.av.U_L1;
-    measurement_voltage.b = Global_Data.av.U_L2;
-    measurement_voltage.c = Global_Data.av.U_L3;
+    measurement_voltage.a = Global_Data.av.U_U;
+    measurement_voltage.b = Global_Data.av.U_V;
+    measurement_voltage.c = Global_Data.av.U_W;
 
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
     dq_measurement_voltage = uz_transformation_3ph_abc_to_dq(measurement_voltage, Global_Data.av.theta_elec);
@@ -251,14 +249,9 @@ void ISR_Control(void *data)
 				Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
 				Global_Data.rasv.halfBridge2DutyCycle = output_dutycycle.DutyCycle_B;
 				Global_Data.rasv.halfBridge3DutyCycle = output_dutycycle.DutyCycle_C;
-		    	//Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
-		    	//Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
-		    	//Global_Data.rasv.halfBridge3DutyCycle = 0.5f;
 				uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
 				break;
 			}
-
-    	    // Set Dutycycle
 
     	}
     } else{

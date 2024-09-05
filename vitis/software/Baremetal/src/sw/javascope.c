@@ -82,6 +82,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id] 					= &data->av.I_d;
 	js_ch_observable[JSO_theta_el] 				= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
+	js_ch_observable[JSO_omega_mech] 			= &data->av.omega_mech_filtered;
+	js_ch_observable[JSO_omega_el] 				= &data->av.omega_el;
+	js_ch_observable[JSO_torque_meas] 			= &data->av.torque_meas;
 	js_ch_observable[JSO_ud]					= &data->av.U_d;
 	js_ch_observable[JSO_uq]					= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
@@ -114,6 +117,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_temp_mosfet] 			= &(data->av.temperature_mosfet);
 	js_slowDataArray[JSSD_FLOAT_temp_motor] 		    = &(data->av.temperature_motor);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.torque_meas);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

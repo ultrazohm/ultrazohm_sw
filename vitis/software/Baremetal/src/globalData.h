@@ -98,6 +98,7 @@ typedef struct _actualValues_ {
 	uz_temperaturecard_OneGroup channel_A_data;
 	uz_temperaturecard_OneGroup channel_B_data;
 	uz_temperaturecard_OneGroup channel_C_data;
+	float torque_meas;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

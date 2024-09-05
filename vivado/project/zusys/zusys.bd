@@ -116,10 +116,10 @@
       "uz_user": {
         "smartconnect_1": "",
         "uz_axi_testIP_0": "",
-        "uz_EnDat_0": "",
         "xlconcat_0": "",
         "Temperature_Card_Int_0": "",
-        "xlconcat_1": ""
+        "xlconcat_1": "",
+        "uz_EnDat_0": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlslice_0": "",
@@ -5747,9 +5747,6 @@
             "type": "rst",
             "direction": "I"
           },
-          "CLK50MHZ": {
-            "direction": "I"
-          },
           "D4_IN_17_ENDAT": {
             "direction": "I"
           },
@@ -5884,12 +5881,6 @@
             "xci_path": "ip\\zusys_uz_axi_testIP_0_0\\zusys_uz_axi_testIP_0_0.xci",
             "inst_hier_path": "uz_user/uz_axi_testIP_0"
           },
-          "uz_EnDat_0": {
-            "vlnv": "xilinx.com:ip:uz_EnDat:10.3",
-            "xci_name": "zusys_uz_EnDat_0_1",
-            "xci_path": "ip\\zusys_uz_EnDat_0_1\\zusys_uz_EnDat_0_1.xci",
-            "inst_hier_path": "uz_user/uz_EnDat_0"
-          },
           "xlconcat_0": {
             "vlnv": "xilinx.com:ip:xlconcat:2.1",
             "xci_name": "zusys_xlconcat_0_4",
@@ -5917,6 +5908,12 @@
                 "value": "10"
               }
             }
+          },
+          "uz_EnDat_0": {
+            "vlnv": "xilinx.com:ip:uz_EnDat:10.7",
+            "xci_name": "zusys_uz_EnDat_0_4",
+            "xci_path": "ip\\zusys_uz_EnDat_0_4\\zusys_uz_EnDat_0_4.xci",
+            "inst_hier_path": "uz_user/uz_EnDat_0"
           }
         },
         "interface_nets": {
@@ -5946,12 +5943,6 @@
           }
         },
         "nets": {
-          "CLK50MHZ_1": {
-            "ports": [
-              "CLK50MHZ",
-              "uz_EnDat_0/CLK50MHZ"
-            ]
-          },
           "D3_IN_10_1": {
             "ports": [
               "D3_IN_10",
@@ -6060,9 +6051,9 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
+              "Temperature_Card_Int_0/s00_axi_aresetn",
               "uz_EnDat_0/IPCORE_RESETN",
-              "uz_EnDat_0/AXI4_Lite_ARESETN",
-              "Temperature_Card_Int_0/s00_axi_aresetn"
+              "uz_EnDat_0/AXI4_Lite_ARESETN"
             ]
           },
           "uz_EnDat_0_CLKWR": {
@@ -6107,9 +6098,9 @@
               "smartconnect_1/aclk",
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
+              "Temperature_Card_Int_0/s00_axi_aclk",
               "uz_EnDat_0/IPCORE_CLK",
-              "uz_EnDat_0/AXI4_Lite_ACLK",
-              "Temperature_Card_Int_0/s00_axi_aclk"
+              "uz_EnDat_0/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -9549,12 +9540,6 @@
         "ports": [
           "uz_system/Dout1",
           "xlconcat_0/In2"
-        ]
-      },
-      "uz_system_clk_50MHz": {
-        "ports": [
-          "uz_system/clk_50MHz",
-          "uz_user/CLK50MHZ"
         ]
       },
       "uz_system_wdt_interrupt": {

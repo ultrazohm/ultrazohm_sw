@@ -30,6 +30,10 @@
 #include "include/uz_adcLtc2311_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
+#include "IP_Cores/uz_EnDat/uz_EnDat.h"
+#include "include/uz_EnDat_IP_Core_init.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "include/uz_temperature_card_init.h"
 
 
 // UltraZohm includes

@@ -8,6 +8,9 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
+#include "IP_Cores/uz_EnDat/uz_EnDat.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -66,7 +69,6 @@ typedef struct _actualValues_ {
 	float U_V; 		// Machine side voltage in V
 	float U_W; 		// Machine side voltage in V
 	float U_ZK; 		// DC-Link voltage in V
-	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed; 		// in rpm
@@ -82,11 +84,20 @@ typedef struct _actualValues_ {
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
-	float temperature;
+	float temperature_mosfet;
+	float temperature_motor;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	float EnDat_pos_age;
+	float omega_mech;
+	float omega_mech_filtered;
+	float omega_el;
+	float theta_mech_comp;
+	uz_temperaturecard_OneGroup channel_A_data;
+	uz_temperaturecard_OneGroup channel_B_data;
+	uz_temperaturecard_OneGroup channel_C_data;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -105,6 +116,10 @@ typedef struct _referenceAndSetValues_ {
 	float SKAI_nERROUT;
 	float flg_reset_SKAI;
 	float SKAI_reset_counter;
+	float Iq_ref;
+	float Id_ref;
+	float Ud_ref;
+	float Uq_ref;
 } referenceAndSetValues;
 
 typedef struct{
@@ -120,6 +135,9 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_axi_gpio_t* output_gpio;
 	uz_axi_gpio_t* input_gpio;
+	uz_EnDat_t* EnDat_master_pointer;
+	uz_CurrentControl_t* FOC_instance;
+	uz_temperaturecard_t* temperature_card_d3;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

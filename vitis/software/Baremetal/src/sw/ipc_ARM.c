@@ -198,31 +198,43 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		// theta offset
+		//data->av.snd_fld[4] = value;
+		data->av.theta_offset = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		// Iq_ref
+		data->rasv.Iq_ref = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		// Id_ref
+		data->rasv.Id_ref = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		// Kp_Iq
+		uz_CurrentControl_set_Kp_iq(data->objects.FOC_instance, value);
+		uz_CurrentControl_reset(data->objects.FOC_instance);
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		// Ki_Iq
+		uz_CurrentControl_set_Ki_iq(data->objects.FOC_instance, value);
+		uz_CurrentControl_reset(data->objects.FOC_instance);
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		// Kp_Id
+		uz_CurrentControl_set_Kp_id(data->objects.FOC_instance, value);
+		uz_CurrentControl_reset(data->objects.FOC_instance);
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+		// Ki_Id
+		uz_CurrentControl_set_Ki_id(data->objects.FOC_instance, value);
+		uz_CurrentControl_reset(data->objects.FOC_instance);
 			break;
 
 		case (Set_Send_Field_11):
@@ -278,21 +290,30 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-			ultrazohm_state_machine_set_userLED(true);
-			data->rasv.halfBridge1DutyCycle = 0.4;
+//			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.halfBridge1DutyCycle = 0.5;
+			data->rasv.halfBridge2DutyCycle = 0.5;
+			data->rasv.halfBridge3DutyCycle = 0.5;
 			break;
 
 		case (My_Button_5):
-			ultrazohm_state_machine_set_userLED(false);
-			data->rasv.halfBridge1DutyCycle = 0.0;
+//			ultrazohm_state_machine_set_userLED(false);
+			//data->rasv.halfBridge1DutyCycle = 0.0;
+		data->rasv.halfBridge1DutyCycle = 0.53;
+					data->rasv.halfBridge2DutyCycle = 0.5;
+					data->rasv.halfBridge3DutyCycle = 0.5;
 			break;
 
 		case (My_Button_6):
-
+		data->rasv.halfBridge1DutyCycle = 0.5;
+					data->rasv.halfBridge2DutyCycle = 0.53;
+					data->rasv.halfBridge3DutyCycle = 0.5;
 			break;
 
 		case (My_Button_7):
-
+		data->rasv.halfBridge1DutyCycle = 0.5;
+					data->rasv.halfBridge2DutyCycle = 0.5;
+					data->rasv.halfBridge3DutyCycle = 0.53;
 			break;
 
 		case (My_Button_8):

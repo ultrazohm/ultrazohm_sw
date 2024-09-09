@@ -41,8 +41,6 @@ DS_Data Global_Data = {
 		.n_ref_rpm = 0.0f,
 		.i_d_ref = 0.0f,
 		.i_q_ref = 0.0f,
-		.i_X_ref = 0.0f,
-		.i_Y_ref = 0.0f,
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
@@ -50,7 +48,26 @@ DS_Data Global_Data = {
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     },
-	.av.theta_offset = 5.4843f,
+
+	//.av.theta_offset = 4.624f,
+	//.av.theta_offset = 4.26f,
+	//.av.theta_offset = 2.711f,
+	//.av.theta_offset = 6.0005f,
+	//.av.theta_offset = 4.2814f,
+
+	.av.theta_offset = 2.828f,
+
+	//.av.theta_offset = 5.4843f,
+	.av.sector = 1,
+	.av.U_ZK = 13.0f,
+	.av.errorcode = 0.0f,
+	.rasv.d_a1_ref = 0.0f,
+	.rasv.d_b1_ref = 0.0f,
+	.rasv.d_c1_ref = 0.0f,
+	.rasv.i_step = 0.0f,
+	.rasv.offsetBestimmung = false,
+	.rasv.inc_dec = 0.0f,
+	.av.theta_offset2 = 0.0f // wird überschrieben aus der GUI!!!
 
 };
 
@@ -92,6 +109,10 @@ int main(void)
         case init_CurrentControl:
         	Global_Data.objects.CC_dq_instance = init_dq_FOC();
         	Global_Data.objects.CC_xy_instance = init_xy_FOC();
+
+        	Global_Data.objects.I_control_BLDC = init_I_control_BLDC();
+        	Global_Data.objects.Speed_control_BLDC = init_Speed_control_BLDC();
+
         	writePMSMValues_globalData(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

@@ -192,7 +192,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
-		data->rasv.i_d_ref = value;
+		data->rasv.i_step = value;
 			break;
 
 		case (Set_Send_Field_3):
@@ -202,20 +202,28 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
-		data->rasv.i_X_ref = value;
+
+		data->rasv.d_a1_ref = value;
+
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		data->rasv.i_Y_ref = value;
+
+		data->rasv.d_b1_ref = value;
+
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+
+		data->rasv.d_c1_ref = value;
+
 			break;
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
+		data->av.theta_offset2 = value;
 			break;
 
 		case (Set_Send_Field_8):
@@ -283,25 +291,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-			data->rasv.select_Real = false;
-			data->rasv.select_CIL = true;
+			data->av.errorcode = 0.0f;
 			break;
 
 		case (My_Button_5):
-			data->rasv.select_Real = true;
-			data->rasv.select_CIL = false;
+				// increment ref value by 1 step
+				data->rasv.inc_dec = 1;
 			break;
 
 		case (My_Button_6):
-			data->rasv.select_CurrentControl = true;
+				// decrement ref value by 1 step
+				data->rasv.inc_dec = -1;
 			break;
 
 		case (My_Button_7):
-		data->rasv.select_CurrentControl = false;
+				data->rasv.offsetBestimmung = true;
 			break;
 
 		case (My_Button_8):
-
+				data->rasv.offsetBestimmung = false;
 			break;
 
 		case (Error_Reset):

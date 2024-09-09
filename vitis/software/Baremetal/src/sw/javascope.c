@@ -81,8 +81,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_vb2] 			= &data->av.v_b2;
 	js_ch_observable[JSO_vc2] 			= &data->av.v_c2;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
-	js_ch_observable[JSO_iX]			= &data->av.I_X;
-	js_ch_observable[JSO_iY]			= &data->av.I_Y;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
 	js_ch_observable[JSO_v_d_lim] 		= &v_dq_limited_volts.d;//k
 	js_ch_observable[JSO_v_q_lim] 		= &v_dq_limited_volts.q;
@@ -90,9 +88,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_v_y_lim] 		= &v_xy_limited_volts.q;
 	js_ch_observable[JSO_id_ref] 		= &i_dq_reference.d;
 	js_ch_observable[JSO_iq_ref] 		= &i_dq_reference.q;
-	js_ch_observable[JSO_iX_ref] 		= &i_xy_reference.d;
-	js_ch_observable[JSO_iY_ref] 		= &i_xy_reference.q;
-	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
+	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec2;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]			= &data->av.U_d;//k-1
 	js_ch_observable[JSO_uq]			= &data->av.U_q;
@@ -101,6 +97,24 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+
+
+	js_ch_observable[JSO_d_BLDC]			= &data->av.d_BLDC;
+	js_ch_observable[JSO_u_BLDC_ref]			= &data->av.u_BLDC_ref;
+	js_ch_observable[JSO_I_ph_Ref]			= &data->av.I_ph_ref;
+	js_ch_observable[JSO_I_ph_m]			= &data->av.I_ph_m;
+	js_ch_observable[JSO_sector]			= &data->av.sector;
+
+	js_ch_observable[JSO_duty_a]			= &data->rasv.halfBridge1DutyCycle;
+	js_ch_observable[JSO_duty_b]			= &data->rasv.halfBridge2DutyCycle;
+	js_ch_observable[JSO_duty_c]			= &data->rasv.halfBridge3DutyCycle;
+
+	js_ch_observable[JSO_n_rpm]				= &data->av.n_act_rpm;
+
+	js_ch_observable[JSO_errorcode]			= &data->av.errorcode;
+
+	js_ch_observable[JSO_i_ref_kaskade] = &data->av.i_ref_kaskade;
+
 
 
 
@@ -128,6 +142,13 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_ErrorCode]				= &(data->av.errorcode);
+
+	js_slowDataArray[JSSD_FLOAT_I_ph_Ref]				= &data->rasv.i_q_ref;
+	js_slowDataArray[JSSD_FLOAT_I_ph_m]					= &data->av.I_ph_m;
+
+	js_slowDataArray[JSSD_FLOAT_THETA_OFFSET_2] 		= &data->av.theta_offset2;
+	js_slowDataArray[JSSD_FLOAT_OFFSET_ON]				= &data->rasv.offsetBestimmungOn;
 
 	return Status;
 }

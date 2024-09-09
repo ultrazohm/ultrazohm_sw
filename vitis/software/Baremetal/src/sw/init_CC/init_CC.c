@@ -32,7 +32,8 @@ struct uz_PI_Controller_config config_id = {
         		.Lz2_Henry = 0.0000863f,
         		.Psi_PM_Vs = 0.0047f,
         		.R_ph_Ohm = 0.0643f,
-        		.polePairs = 5.0f,
+        		//.polePairs = 5.0f,
+				.polePairs = 6.0f,  // BLDC
         	};
 
 

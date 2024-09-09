@@ -90,6 +90,7 @@ typedef struct _actualValues_ {
 	float U_X;
 	float U_Y;
 	float theta_elec;
+	float theta_elec2;
 	float theta_mech;
 
 	float temperature;
@@ -107,6 +108,23 @@ typedef struct _actualValues_ {
 
 	struct uz_PMSM_6ph_t pmsm_6ph;
 	float theta_offset;
+
+	float theta_offset2;	// für einen zusätzlichen offset direkt aus der GUI
+
+	float sector;
+	float I_ph_m;;
+	float I_ph_ref;
+
+	float i_ref_kaskade;
+
+	float u_BLDC_ref;
+
+	float d_BLDC;
+
+	float n_act_rpm;
+
+	float errorcode;
+
 
 } actualValues;
 
@@ -131,9 +149,17 @@ typedef struct _referenceAndSetValues_ {
 	float n_ref_rpm;
 	float i_d_ref;
 	float i_q_ref;
-	float i_X_ref;
-	float i_Y_ref;
 
+	float d_a1_ref;
+	float d_b1_ref;
+	float d_c1_ref;
+
+	float i_step;
+
+	float inc_dec;
+
+	bool offsetBestimmung;
+	float offsetBestimmungOn;
 
 } referenceAndSetValues;
 
@@ -156,6 +182,9 @@ typedef struct{
 
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
+
+	uz_PI_Controller* I_control_BLDC;
+	uz_PI_Controller* Speed_control_BLDC;
 
 }object_pointers_t;
 

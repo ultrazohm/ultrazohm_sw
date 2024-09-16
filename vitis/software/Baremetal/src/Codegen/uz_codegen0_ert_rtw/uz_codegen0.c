@@ -7,527 +7,674 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.13
+ * Model version                  : 2.15
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Aug 28 17:00:06 2024
+ * C/C++ source code generated on : Mon Sep 16 13:52:28 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (10), Warnings (2), Error (0)
+ * Validation result: Passed (11), Warning (1), Error (0)
  */
 
 #include "uz_codegen0.h"
 
-extern real32_T rt_hypotf(real32_T u0, real32_T u1);
+extern real_T rt_hypotd(real_T u0, real_T u1);
 
 /* Forward declaration for local functions */
-static void trisolve(const real32_T A_data[], const int32_T A_size[2], real32_T
-                     B_data[], const int32_T B_size[2]);
-static void Unconstrained(const real32_T Hinv_data[], const int32_T Hinv_size[2],
-  const real32_T f[7], real32_T x_data[], int16_T n);
-static real32_T norm(const real32_T x_data[], const int32_T *x_size);
-static void abs_b(const real32_T x[7], real32_T y[7]);
-static real32_T maximum(const real32_T x[7]);
-static void maximum2(const real32_T x[8], real32_T ex[8]);
-static real32_T xnrm2(int32_T n, const real32_T x_data[], int32_T ix0);
-static void xgemv(int32_T m, int32_T n, const real32_T A_data[], int32_T ia0,
-                  int32_T lda, const real32_T x_data[], int32_T ix0, real32_T
-                  y_data[]);
-static void xgerc(int32_T m, int32_T n, real32_T alpha1, int32_T ix0, const
-                  real32_T y_data[], real32_T A_data[], int32_T ia0, int32_T lda);
-static void xgeqrf(real32_T A_data[], const int32_T A_size[2], real32_T
-                   tau_data[], int32_T *tau_size, DW *rtDW);
-static void xorgqr(int32_T m, int32_T n, int32_T k, real32_T A_data[], const
-                   int32_T A_size[2], int32_T lda, const real32_T tau_data[], DW
-                   *rtDW);
-static void mtimes(const real32_T A_data[], const int32_T A_size[2], const
-                   real32_T B_0[7], real32_T C_data[], int32_T *C_size);
-static real32_T KWIKfactor(const int16_T iC[8], int16_T nA, const real32_T
-  Linv_data[], const int32_T Linv_size[2], real32_T RLinv_data[], const int32_T
-  RLinv_size[2], real32_T D_data[], const int32_T D_size[2], real32_T H_data[],
-  const int32_T H_size[2], int16_T n, DW *rtDW);
-static real32_T mtimes_f(const real32_T A_data[], const real32_T B_1[7]);
-static void DropConstraint(int16_T kDrop, int16_T iA[8], int16_T *nA, int16_T
-  iC[8]);
-static void ResetToColdStart(int16_T iA[8], int16_T iC[8]);
-static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
-                   real32_T Hinv_data[], const int32_T Hinv_size[2], const
-                   real32_T f[7], int16_T maxiter, int16_T n, real32_T x_data[],
-                   int32_T *x_size, real32_T lambda[8], real32_T *status,
-                   int16_T iA[8], DW *rtDW);
+static void factoryConstruct(s1hK3o0EyOqKKjEgDlbhqfF *obj);
+static real_T xnrm2(int32_T n, const real_T x[72], int32_T ix0, DW *rtDW);
+static real_T xzlarfg(int32_T n, real_T *alpha1, real_T x[72], int32_T ix0, DW
+                      *rtDW);
+static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[72],
+                   int32_T ic0, real_T work[9], DW *rtDW);
+static void qrf(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
+                real_T tau[8], DW *rtDW);
+static void xzgeqp3(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T
+                    jpvt[9], real_T tau[8], DW *rtDW);
+static void computeQ_(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T nrows, DW *rtDW);
+static int32_T ComputeNumDependentEq_(sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
+  *rtDW);
+static void countsort(int32_T x[9], int32_T xLen, int32_T workspace[9], int32_T
+                      xMin, int32_T xMax);
+static void moveConstraint_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
+  idx_global_start, int32_T idx_global_dest);
+static void removeEqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T idx_global);
+static void RemoveDependentEq_(s9NoAX0P67ji2P1ZBafS3UG *memspace, int32_T
+  *nDepInd, swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD
+  *qrmanager, DW *rtDW);
+static void removeAllIneqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj);
+static void RemoveDependentIneq_(swcr9qLPQBiG4lNhaNdYq5G *workingset,
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s9NoAX0P67ji2P1ZBafS3UG *memspace, real_T
+  tolfactor, DW *rtDW);
+static void factorQR_f(sQyCFUyu0YXOk1LARsZMzaD *obj, const real_T A[72], int32_T
+  mrows, int32_T ncols, int32_T ldA, DW *rtDW);
+static void factorQR(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T mrows, int32_T ncols,
+                     DW *rtDW);
+static void xgemv(int32_T m, int32_T n, const real_T A[56], int32_T lda, const
+                  real_T x[72], real_T y[9], DW *rtDW);
+static void xgemv_n(int32_T m, int32_T n, const real_T A[8], int32_T lda, const
+                    real_T x[72], real_T y[9], DW *rtDW);
+static real_T maxConstraintViolation(swcr9qLPQBiG4lNhaNdYq5G *obj, const real_T
+  x[72], DW *rtDW);
+static void xgemv_nh(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+                     const real_T x[72], real_T y[9], DW *rtDW);
+static void xgemv_nhu(int32_T m, int32_T n, const real_T A[8], int32_T lda,
+                      const real_T x[72], real_T y[9], DW *rtDW);
+static real_T maxConstraintViolation_e(swcr9qLPQBiG4lNhaNdYq5G *obj, const
+  real_T x[72], DW *rtDW);
+static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
+  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
+  *rtDW);
+static void xgemv_nhum(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+  const real_T x[8], real_T y[9], DW *rtDW);
+static void xgemv_nhumt(int32_T m, int32_T n, const real_T A[8], int32_T lda,
+  const real_T x[8], real_T y[9], DW *rtDW);
+static real_T maxConstraintViolation_eo(swcr9qLPQBiG4lNhaNdYq5G *obj, const
+  real_T x[8], DW *rtDW);
+static void PresolveWorkingSet(svV6yPD1e8CTJu8b18IprLB *solution,
+  s9NoAX0P67ji2P1ZBafS3UG *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW *rtDW);
+static void modifyOverheadPhaseOne_(swcr9qLPQBiG4lNhaNdYq5G *obj);
+static void setProblemType(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T PROBLEM_TYPE);
+static void linearForm_(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
+  workspace[72], const real_T H[49], const real_T f[7], const real_T x[8]);
+static real_T computeFval(const shohwUBaOGHF036TMzc1KEH *obj, real_T workspace
+  [72], const real_T H[49], const real_T f[7], const real_T x[8]);
+static void xgemv_nhumth(int32_T m, int32_T n, const real_T A[49], int32_T lda,
+  const real_T x[8], real_T y[7]);
+static void computeGrad_StoreHx(shohwUBaOGHF036TMzc1KEH *obj, const real_T H[49],
+  const real_T f[7], const real_T x[8]);
+static real_T computeFval_ReuseHx(const shohwUBaOGHF036TMzc1KEH *obj, real_T
+  workspace[72], const real_T f[7], const real_T x[8]);
+static void printHeader(void);
+static void printInitialInfo(int32_T PROBLEM_TYPE, real_T solution_fstar,
+  int32_T solution_iterations, int32_T workingset_nActiveConstr);
+static void xrotg(real_T *a, real_T *b, real_T *c, real_T *s, DW *rtDW);
+static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW);
+static void computeProjectedHessian(const real_T H[49], s1hK3o0EyOqKKjEgDlbhqfF *
+  cholmanager, const sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s9NoAX0P67ji2P1ZBafS3UG
+  *memspace, DW *rtDW);
+static int32_T ixamax(int32_T n, const real_T x[64], int32_T incx);
+static void fullColLDL2_(s1hK3o0EyOqKKjEgDlbhqfF *obj, int32_T LD_offset,
+  int32_T NColsRemain, real_T REG_PRIMAL);
+static void xgemv_nhumtht(int32_T m, int32_T n, const real_T A[64], int32_T ia0,
+  int32_T lda, const real_T x[72], real_T y[8]);
+static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution,
+  s9NoAX0P67ji2P1ZBafS3UG *memspace, const sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+  s1hK3o0EyOqKKjEgDlbhqfF *cholmanager, const shohwUBaOGHF036TMzc1KEH *objective,
+  DW *rtDW);
+static real_T xnrm2_l(int32_T n, const real_T x[8]);
+static void xgemv_nhumthtw(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+  const real_T x[8], real_T y[72]);
+static void xgemv_nhumthtwu(int32_T m, int32_T n, const real_T A[56], int32_T
+  lda, const real_T x[8], real_T y[72]);
+static void ratiotest(const real_T solution_xstar[8], const real_T
+                      solution_searchDir[8], real_T workspace[72], int32_T
+                      workingset_nVar, int32_T workingset_ldA, const real_T
+                      workingset_Aineq[56], const real_T workingset_bineq[7],
+                      const real_T workingset_lb[8], const real_T workingset_ub
+                      [8], const int32_T workingset_indexLB[8], const int32_T
+                      workingset_indexUB[8], const int32_T workingset_sizes[5],
+                      const int32_T workingset_isActiveIdx[6], const boolean_T
+                      workingset_isActiveConstr[9], const int32_T
+                      workingset_nWConstr[5], boolean_T isPhaseOne, real_T
+                      tolcon, real_T *toldelta, real_T toltau, real_T *alpha,
+                      boolean_T *newBlocking, int32_T *constrType, int32_T
+                      *constrIdx, DW *rtDW);
+static void feasibleratiotest(const real_T solution_xstar[8], const real_T
+  solution_searchDir[8], real_T workspace[72], int32_T workingset_nVar, int32_T
+  workingset_ldA, const real_T workingset_Aineq[56], const real_T
+  workingset_bineq[7], const real_T workingset_lb[8], const real_T
+  workingset_ub[8], const int32_T workingset_indexLB[8], const int32_T
+  workingset_indexUB[8], const int32_T workingset_sizes[5], const int32_T
+  workingset_isActiveIdx[6], const boolean_T workingset_isActiveConstr[9], const
+  int32_T workingset_nWConstr[5], boolean_T isPhaseOne, real_T tolcon, real_T
+  *alpha, boolean_T *newBlocking, int32_T *constrType, int32_T *constrIdx, DW
+  *rtDW);
+static void checkUnboundedOrIllPosed(svV6yPD1e8CTJu8b18IprLB *solution, const
+  shohwUBaOGHF036TMzc1KEH *objective);
+static void addBoundToActiveSetMatrix_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
+  TYPE, int32_T idx_local);
+static void compute_lambda(real_T workspace[72], svV6yPD1e8CTJu8b18IprLB
+  *solution, const shohwUBaOGHF036TMzc1KEH *objective, const
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager);
+static void checkStoppingAndUpdateFval(int32_T *activeSetChangeID, const real_T
+  f[7], svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *memspace,
+  const shohwUBaOGHF036TMzc1KEH *objective, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, real_T options_ObjectiveLimit, real_T
+  options_ConstraintTolerance, int32_T runTimeOptions_MaxIterations, real_T
+  runTimeOptions_ConstrRelTolFact, boolean_T updateFval, DW *rtDW);
+static void computeFirstOrderOpt(svV6yPD1e8CTJu8b18IprLB *solution, const
+  shohwUBaOGHF036TMzc1KEH *objective, int32_T workingset_nVar, int32_T
+  workingset_ldA, const real_T workingset_ATwset[72], int32_T
+  workingset_nActiveConstr, real_T workspace[72]);
+static void printInfo(boolean_T newBlocking, int32_T PROBLEM_TYPE, real_T alpha,
+                      real_T stepNorm, int32_T activeConstrChangedType, int32_T
+                      localActiveConstrIdx, int32_T activeSetChangeID, real_T
+                      solution_fstar, real_T solution_firstorderopt, real_T
+                      solution_maxConstr, int32_T solution_iterations, const
+                      int32_T workingset_indexLB[8], const int32_T
+                      workingset_indexUB[8], int32_T workingset_nActiveConstr);
+static void iterate(const real_T H[49], const real_T f[7],
+                    svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG
+                    *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+                    sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s1hK3o0EyOqKKjEgDlbhqfF *
+                    cholmanager, shohwUBaOGHF036TMzc1KEH *objective, boolean_T
+                    options_IterDisplayQP, real_T options_PricingTolerance,
+                    real_T options_ObjectiveLimit, real_T
+                    options_ConstraintTolerance, real_T options_StepTolerance,
+                    const sL9bDKomAYkxZSVrG9w6En runTimeOptions, DW *rtDW);
+static void phaseone(const real_T H[49], const real_T f[7],
+                     svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *
+                     memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+                     sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s1hK3o0EyOqKKjEgDlbhqfF
+                     *cholmanager, const sL9bDKomAYkxZSVrG9w6En *runTimeOptions,
+                     shohwUBaOGHF036TMzc1KEH *objective, s4lHOiXA0GHbse0IgoBY6ZF
+                     *options, DW *rtDW);
+static int32_T ComputeNumDependentEq__j(sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+  const real_T beqf[9], int32_T mConstr, int32_T nVar, real_T tolfactor, DW
+  *rtDW);
+static int32_T RemoveDependentEq__a(s9NoAX0P67ji2P1ZBafS3UG *memspace,
+  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+  real_T tolfactor, DW *rtDW);
+static void PresolveWorkingSet_m(svV6yPD1e8CTJu8b18IprLB *solution,
+  s9NoAX0P67ji2P1ZBafS3UG *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, const s4lHOiXA0GHbse0IgoBY6ZF *options, DW
+  *rtDW);
+static boolean_T strcmp_o(const char_T a[8]);
+static void phaseone_k(const real_T H[49], const real_T f[7],
+  svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *memspace,
+  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+  s1hK3o0EyOqKKjEgDlbhqfF *cholmanager, shohwUBaOGHF036TMzc1KEH *objective,
+  s4lHOiXA0GHbse0IgoBY6ZF *options, const sL9bDKomAYkxZSVrG9w6En *runTimeOptions,
+  DW *rtDW);
+static void driver(const real_T H[49], const real_T f[7],
+                   svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG
+                   *memspace, s1hK3o0EyOqKKjEgDlbhqfF *cholmanager,
+                   sL9bDKomAYkxZSVrG9w6En runTimeOptions,
+                   swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *
+                   qrmanager, shohwUBaOGHF036TMzc1KEH *objective, DW *rtDW);
+static void linearForm__e(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
+  workspace[8], const real_T H[49], const real_T f[7], const real_T x[8]);
+static void quadprog(const real_T H[49], const real_T f[7], const real_T x0[7],
+                     real_T x[7], real_T *fval, real_T *exitflag, char_T
+                     output_algorithm[10], real_T *output_firstorderopt, real_T *
+                     output_constrviolation, real_T *output_iterations, DW *rtDW);
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void trisolve(const real32_T A_data[], const int32_T A_size[2], real32_T
-                     B_data[], const int32_T B_size[2])
+static void factoryConstruct(s1hK3o0EyOqKKjEgDlbhqfF *obj)
 {
-  int32_T i;
-  int32_T j;
-  int32_T jBcol;
-  int32_T k;
-  int32_T kAcol;
-  int32_T mB;
-  int32_T n;
-  int32_T nB;
-  int32_T tmp;
-  int32_T tmp_0;
-  mB = B_size[0];
-  nB = B_size[1] - 1;
-  if (A_size[0] < A_size[1]) {
-    n = A_size[0];
-  } else {
-    n = A_size[1];
-  }
-
-  if (n >= B_size[0]) {
-    n = B_size[0];
-  }
-
-  if ((B_size[1] != 0) && ((B_size[0] != 0) && (B_size[1] != 0))) {
-    for (j = 0; j <= nB; j++) {
-      jBcol = mB * j - 1;
-      for (k = 1; k - 1 < n; k++) {
-        kAcol = (k - 1) * A_size[0] - 1;
-        tmp = k + jBcol;
-        if (B_data[tmp] != 0.0F) {
-          B_data[tmp] /= A_data[k + kAcol];
-          for (i = k + 1; i <= n; i++) {
-            tmp_0 = i + jBcol;
-            B_data[tmp_0] -= B_data[tmp] * A_data[i + kAcol];
-          }
-        }
-      }
-    }
-  }
+  obj->ldm = 8;
+  obj->ndims = 0;
+  obj->info = 0;
+  obj->scaleFactor = 1.0;
+  obj->ConvexCheck = true;
+  obj->regTol_ = 0.0;
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void Unconstrained(const real32_T Hinv_data[], const int32_T Hinv_size[2],
-  const real32_T f[7], real32_T x_data[], int16_T n)
+static real_T xnrm2(int32_T n, const real_T x[72], int32_T ix0, DW *rtDW)
 {
-  int32_T i;
-  int32_T i_0;
-  real32_T Hinv;
-  for (i = 1; i - 1 < n; i++) {
-    Hinv = 0.0F;
-    for (i_0 = 0; i_0 < 7; i_0++) {
-      Hinv += -Hinv_data[((int16_T)i + Hinv_size[0] * i_0) - 1] * f[i_0];
-    }
-
-    x_data[(int16_T)i - 1] = Hinv;
-  }
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static real32_T norm(const real32_T x_data[], const int32_T *x_size)
-{
-  int32_T k;
-  real32_T absxk;
-  real32_T scale;
-  real32_T t;
-  real32_T y;
-  if (*x_size == 0) {
-    y = 0.0F;
-  } else {
-    y = 0.0F;
-    if (*x_size == 1) {
-      y = fabsf(x_data[0]);
-    } else {
-      scale = 1.29246971E-26F;
-      for (k = 0; k < *x_size; k++) {
-        absxk = fabsf(x_data[k]);
-        if (absxk > scale) {
-          t = scale / absxk;
-          y = y * t * t + 1.0F;
-          scale = absxk;
-        } else {
-          t = absxk / scale;
-          y += t * t;
-        }
-      }
-
-      y = scale * sqrtf(y);
-    }
-  }
-
-  return y;
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static void abs_b(const real32_T x[7], real32_T y[7])
-{
-  int32_T k;
-  for (k = 0; k < 7; k++) {
-    y[k] = fabsf(x[k]);
-  }
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static real32_T maximum(const real32_T x[7])
-{
-  int32_T k;
-  real32_T ex;
-  real32_T tmp;
-  ex = x[0];
-  for (k = 0; k < 6; k++) {
-    tmp = x[k + 1];
-    if (ex < tmp) {
-      ex = tmp;
-    }
-  }
-
-  return ex;
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static void maximum2(const real32_T x[8], real32_T ex[8])
-{
-  int32_T k;
-  for (k = 0; k < 8; k++) {
-    ex[k] = fmaxf(x[k], 1.0F);
-  }
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static real32_T xnrm2(int32_T n, const real32_T x_data[], int32_T ix0)
-{
+  real_T y;
   int32_T k;
   int32_T kend;
-  real32_T absxk;
-  real32_T scale;
-  real32_T t;
-  real32_T y;
-  y = 0.0F;
+  y = 0.0;
   if (n >= 1) {
     if (n == 1) {
-      y = fabsf(x_data[ix0 - 1]);
+      y = fabs(x[ix0 - 1]);
     } else {
-      scale = 1.29246971E-26F;
+      rtDW->scale = 3.3121686421112381E-170;
       kend = (ix0 + n) - 1;
       for (k = ix0; k <= kend; k++) {
-        absxk = fabsf(x_data[k - 1]);
-        if (absxk > scale) {
-          t = scale / absxk;
-          y = y * t * t + 1.0F;
-          scale = absxk;
+        rtDW->absxk = fabs(x[k - 1]);
+        if (rtDW->absxk > rtDW->scale) {
+          rtDW->t = rtDW->scale / rtDW->absxk;
+          y = y * rtDW->t * rtDW->t + 1.0;
+          rtDW->scale = rtDW->absxk;
         } else {
-          t = absxk / scale;
-          y += t * t;
+          rtDW->t = rtDW->absxk / rtDW->scale;
+          y += rtDW->t * rtDW->t;
         }
       }
 
-      y = scale * sqrtf(y);
+      y = rtDW->scale * sqrt(y);
     }
   }
 
   return y;
 }
 
-real32_T rt_hypotf(real32_T u0, real32_T u1)
+real_T rt_hypotd(real_T u0, real_T u1)
 {
-  real32_T a;
-  real32_T b;
-  real32_T y;
-  a = fabsf(u0);
-  b = fabsf(u1);
+  real_T a;
+  real_T b;
+  real_T y;
+  a = fabs(u0);
+  b = fabs(u1);
   if (a < b) {
     a /= b;
-    y = sqrtf(a * a + 1.0F) * b;
+    y = sqrt(a * a + 1.0) * b;
   } else if (a > b) {
     b /= a;
-    y = sqrtf(b * b + 1.0F) * a;
+    y = sqrt(b * b + 1.0) * a;
   } else {
-    y = a * 1.41421354F;
+    y = a * 1.4142135623730951;
   }
 
   return y;
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv(int32_T m, int32_T n, const real32_T A_data[], int32_T ia0,
-                  int32_T lda, const real32_T x_data[], int32_T ix0, real32_T
-                  y_data[])
+static real_T xzlarfg(int32_T n, real_T *alpha1, real_T x[72], int32_T ix0, DW
+                      *rtDW)
 {
-  int32_T b;
-  int32_T b_iy;
+  real_T tau;
+  int32_T b_k;
+  int32_T c_k;
+  int32_T knt;
+  tau = 0.0;
+  if (n > 0) {
+    rtDW->xnorm = xnrm2(n - 1, x, ix0, rtDW);
+    if (rtDW->xnorm != 0.0) {
+      rtDW->xnorm = rt_hypotd(*alpha1, rtDW->xnorm);
+      if (*alpha1 >= 0.0) {
+        rtDW->xnorm = -rtDW->xnorm;
+      }
+
+      if (fabs(rtDW->xnorm) < 1.0020841800044864E-292) {
+        knt = -1;
+        c_k = (ix0 + n) - 2;
+        do {
+          knt++;
+          for (b_k = ix0; b_k <= c_k; b_k++) {
+            x[b_k - 1] *= 9.9792015476736E+291;
+          }
+
+          rtDW->xnorm *= 9.9792015476736E+291;
+          *alpha1 *= 9.9792015476736E+291;
+        } while (fabs(rtDW->xnorm) < 1.0020841800044864E-292);
+
+        rtDW->xnorm = rt_hypotd(*alpha1, xnrm2(n - 1, x, ix0, rtDW));
+        if (*alpha1 >= 0.0) {
+          rtDW->xnorm = -rtDW->xnorm;
+        }
+
+        tau = (rtDW->xnorm - *alpha1) / rtDW->xnorm;
+        *alpha1 = 1.0 / (*alpha1 - rtDW->xnorm);
+        for (b_k = ix0; b_k <= c_k; b_k++) {
+          x[b_k - 1] *= *alpha1;
+        }
+
+        for (c_k = 0; c_k <= knt; c_k++) {
+          rtDW->xnorm *= 1.0020841800044864E-292;
+        }
+
+        *alpha1 = rtDW->xnorm;
+      } else {
+        tau = (rtDW->xnorm - *alpha1) / rtDW->xnorm;
+        *alpha1 = 1.0 / (*alpha1 - rtDW->xnorm);
+        knt = (ix0 + n) - 2;
+        for (c_k = ix0; c_k <= knt; c_k++) {
+          x[c_k - 1] *= *alpha1;
+        }
+
+        *alpha1 = rtDW->xnorm;
+      }
+    }
+  }
+
+  return tau;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[72],
+                   int32_T ic0, real_T work[9], DW *rtDW)
+{
+  int32_T coltop;
   int32_T d;
+  int32_T exitg1;
   int32_T ia;
   int32_T iac;
   int32_T ix;
-  real32_T c;
-  if (n != 0) {
-    for (b_iy = 0; b_iy < n; b_iy++) {
-      y_data[b_iy] = 0.0F;
-    }
-
-    b_iy = 0;
-    b = (n - 1) * lda + ia0;
-    iac = ia0;
-    while (((lda > 0) && (iac <= b)) || ((lda < 0) && (iac >= b))) {
-      ix = ix0;
-      c = 0.0F;
-      d = (iac + m) - 1;
-      for (ia = iac; ia <= d; ia++) {
-        c += A_data[ia - 1] * x_data[ix - 1];
-        ix++;
-      }
-
-      y_data[b_iy] += c;
-      b_iy++;
-      iac += lda;
-    }
-  }
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgerc(int32_T m, int32_T n, real32_T alpha1, int32_T ix0, const
-                  real32_T y_data[], real32_T A_data[], int32_T ia0, int32_T lda)
-{
-  int32_T b;
-  int32_T ijA;
-  int32_T ix;
-  int32_T j;
-  int32_T jA;
   int32_T jy;
-  real32_T temp;
-  if (alpha1 != 0.0F) {
-    jA = ia0 - 1;
-    jy = 0;
-    for (j = 0; j < n; j++) {
-      if (y_data[jy] != 0.0F) {
-        temp = y_data[jy] * alpha1;
-        ix = ix0;
-        b = m + jA;
-        for (ijA = jA; ijA < b; ijA++) {
-          A_data[ijA] += A_data[ix - 1] * temp;
-          ix++;
-        }
-      }
-
-      jy++;
-      jA += lda;
-    }
-  }
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgeqrf(real32_T A_data[], const int32_T A_size[2], real32_T
-                   tau_data[], int32_T *tau_size, DW *rtDW)
-{
-  int32_T b_k;
-  int32_T c_k;
-  int32_T exitg1;
-  int32_T knt;
+  int32_T lastc;
+  int32_T lastv;
   boolean_T exitg2;
-  rtDW->m_l = A_size[0];
-  rtDW->n = A_size[1];
-  if (A_size[0] < A_size[1]) {
-    rtDW->minmana = A_size[0];
-  } else {
-    rtDW->minmana = A_size[1];
-  }
-
-  if (A_size[0] < A_size[1]) {
-    rtDW->minmn = A_size[0];
-  } else {
-    rtDW->minmn = A_size[1];
-  }
-
-  *tau_size = rtDW->minmana;
-  if (0 <= rtDW->minmana - 1) {
-    memset(&tau_data[0], 0, rtDW->minmana * sizeof(real32_T));
-  }
-
-  if ((A_size[0] != 0) && (A_size[1] != 0) && (rtDW->minmn >= 1)) {
-    *tau_size = rtDW->minmana;
-    if (0 <= rtDW->minmana - 1) {
-      memset(&tau_data[0], 0, rtDW->minmana * sizeof(real32_T));
+  if (tau != 0.0) {
+    lastv = m;
+    lastc = iv0 + m;
+    while ((lastv > 0) && (C[lastc - 2] == 0.0)) {
+      lastv--;
+      lastc--;
     }
 
-    rtDW->minmana = A_size[0];
-    rtDW->ii = A_size[1];
-    if (0 <= rtDW->ii - 1) {
-      memset(&rtDW->work_data[0], 0, rtDW->ii * sizeof(real32_T));
-    }
-
-    rtDW->i_j = 0;
-    while (rtDW->i_j <= rtDW->minmn - 1) {
-      rtDW->ii = rtDW->i_j * rtDW->minmana + rtDW->i_j;
-      rtDW->mmi = rtDW->m_l - rtDW->i_j;
-      if (rtDW->i_j + 1 < rtDW->m_l) {
-        rtDW->b_atmp = A_data[rtDW->ii];
-        tau_data[rtDW->i_j] = 0.0F;
-        if (rtDW->mmi > 0) {
-          rtDW->beta1 = xnrm2(rtDW->mmi - 1, A_data, rtDW->ii + 2);
-          if (rtDW->beta1 != 0.0F) {
-            rtDW->beta1 = rt_hypotf(A_data[rtDW->ii], rtDW->beta1);
-            if (A_data[rtDW->ii] >= 0.0F) {
-              rtDW->beta1 = -rtDW->beta1;
-            }
-
-            if (fabsf(rtDW->beta1) < 9.86076132E-32F) {
-              knt = -1;
-              b_k = rtDW->ii + rtDW->mmi;
-              do {
-                knt++;
-                for (c_k = rtDW->ii + 1; c_k < b_k; c_k++) {
-                  A_data[c_k] *= 1.01412048E+31F;
-                }
-
-                rtDW->beta1 *= 1.01412048E+31F;
-                rtDW->b_atmp *= 1.01412048E+31F;
-              } while (fabsf(rtDW->beta1) < 9.86076132E-32F);
-
-              rtDW->beta1 = rt_hypotf(rtDW->b_atmp, xnrm2(rtDW->mmi - 1, A_data,
-                rtDW->ii + 2));
-              if (rtDW->b_atmp >= 0.0F) {
-                rtDW->beta1 = -rtDW->beta1;
-              }
-
-              tau_data[rtDW->i_j] = (rtDW->beta1 - rtDW->b_atmp) / rtDW->beta1;
-              rtDW->b_atmp = 1.0F / (rtDW->b_atmp - rtDW->beta1);
-              b_k = rtDW->ii + rtDW->mmi;
-              for (c_k = rtDW->ii + 1; c_k < b_k; c_k++) {
-                A_data[c_k] *= rtDW->b_atmp;
-              }
-
-              for (c_k = 0; c_k <= knt; c_k++) {
-                rtDW->beta1 *= 9.86076132E-32F;
-              }
-
-              rtDW->b_atmp = rtDW->beta1;
-            } else {
-              tau_data[rtDW->i_j] = (rtDW->beta1 - A_data[rtDW->ii]) /
-                rtDW->beta1;
-              rtDW->b_atmp = 1.0F / (A_data[rtDW->ii] - rtDW->beta1);
-              knt = rtDW->ii + rtDW->mmi;
-              for (b_k = rtDW->ii + 1; b_k < knt; b_k++) {
-                A_data[b_k] *= rtDW->b_atmp;
-              }
-
-              rtDW->b_atmp = rtDW->beta1;
-            }
-          }
-        }
-
-        A_data[rtDW->ii] = rtDW->b_atmp;
-      } else {
-        tau_data[rtDW->i_j] = 0.0F;
-      }
-
-      if (rtDW->i_j + 1 < rtDW->n) {
-        rtDW->b_atmp = A_data[rtDW->ii];
-        A_data[rtDW->ii] = 1.0F;
-        c_k = (rtDW->ii + rtDW->minmana) + 1;
-        if (tau_data[rtDW->i_j] != 0.0F) {
-          rtDW->mmip1 = (rtDW->ii + rtDW->mmi) - 1;
-          while ((rtDW->mmi > 0) && (A_data[rtDW->mmip1] == 0.0F)) {
-            rtDW->mmi--;
-            rtDW->mmip1--;
-          }
-
-          rtDW->mmip1 = (rtDW->n - rtDW->i_j) - 1;
-          exitg2 = false;
-          while ((!exitg2) && (rtDW->mmip1 > 0)) {
-            knt = (rtDW->mmip1 - 1) * rtDW->minmana + c_k;
-            b_k = knt;
-            do {
-              exitg1 = 0;
-              if (b_k <= (knt + rtDW->mmi) - 1) {
-                if (A_data[b_k - 1] != 0.0F) {
-                  exitg1 = 1;
-                } else {
-                  b_k++;
-                }
-              } else {
-                rtDW->mmip1--;
-                exitg1 = 2;
-              }
-            } while (exitg1 == 0);
-
-            if (exitg1 == 1) {
-              exitg2 = true;
-            }
+    lastc = n - 1;
+    exitg2 = false;
+    while ((!exitg2) && (lastc + 1 > 0)) {
+      coltop = (lastc << 3) + ic0;
+      jy = coltop;
+      do {
+        exitg1 = 0;
+        if (jy <= (coltop + lastv) - 1) {
+          if (C[jy - 1] != 0.0) {
+            exitg1 = 1;
+          } else {
+            jy++;
           }
         } else {
-          rtDW->mmi = 0;
-          rtDW->mmip1 = 0;
+          lastc--;
+          exitg1 = 2;
         }
+      } while (exitg1 == 0);
 
-        if (rtDW->mmi > 0) {
-          xgemv(rtDW->mmi, rtDW->mmip1, A_data, c_k, rtDW->minmana, A_data,
-                rtDW->ii + 1, rtDW->work_data);
-          xgerc(rtDW->mmi, rtDW->mmip1, -tau_data[rtDW->i_j], rtDW->ii + 1,
-                rtDW->work_data, A_data, c_k, rtDW->minmana);
-        }
+      if (exitg1 == 1) {
+        exitg2 = true;
+      }
+    }
+  } else {
+    lastv = 0;
+    lastc = -1;
+  }
 
-        A_data[rtDW->ii] = rtDW->b_atmp;
+  if (lastv > 0) {
+    if (lastc + 1 != 0) {
+      for (coltop = 0; coltop <= lastc; coltop++) {
+        work[coltop] = 0.0;
       }
 
-      rtDW->i_j++;
+      coltop = 0;
+      jy = (lastc << 3) + ic0;
+      for (iac = ic0; iac <= jy; iac += 8) {
+        ix = iv0;
+        rtDW->c_c = 0.0;
+        d = (iac + lastv) - 1;
+        for (ia = iac; ia <= d; ia++) {
+          rtDW->c_c += C[ia - 1] * C[ix - 1];
+          ix++;
+        }
+
+        work[coltop] += rtDW->c_c;
+        coltop++;
+      }
+    }
+
+    if (-tau != 0.0) {
+      coltop = ic0 - 1;
+      jy = 0;
+      for (iac = 0; iac <= lastc; iac++) {
+        if (work[jy] != 0.0) {
+          rtDW->c_c = work[jy] * -tau;
+          ix = iv0;
+          d = lastv + coltop;
+          for (ia = coltop; ia < d; ia++) {
+            C[ia] += C[ix - 1] * rtDW->c_c;
+            ix++;
+          }
+        }
+
+        jy++;
+        coltop += 8;
+      }
     }
   }
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xorgqr(int32_T m, int32_T n, int32_T k, real32_T A_data[], const
-                   int32_T A_size[2], int32_T lda, const real32_T tau_data[], DW
-                   *rtDW)
+static void qrf(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
+                real_T tau[8], DW *rtDW)
 {
-  int32_T coltop;
-  int32_T exitg1;
-  int32_T ia;
-  int32_T lastc;
-  boolean_T exitg2;
-  if (n >= 1) {
-    rtDW->itau = k;
-    while (rtDW->itau <= n - 1) {
-      rtDW->i_d = rtDW->itau * lda;
-      rtDW->iaii = 0;
-      while (rtDW->iaii <= m - 1) {
-        A_data[rtDW->i_d + rtDW->iaii] = 0.0F;
-        rtDW->iaii++;
+  int32_T i;
+  int32_T ii;
+  int32_T mmi;
+  memset(&rtDW->work[0], 0, 9U * sizeof(real_T));
+  for (i = 0; i < nfxd; i++) {
+    ii = (((i << 3) + ia0) + i) - 1;
+    mmi = m - i;
+    if (i + 1 < m) {
+      rtDW->b_atmp = A[ii];
+      tau[i] = xzlarfg(mmi, &rtDW->b_atmp, A, ii + 2, rtDW);
+      A[ii] = rtDW->b_atmp;
+    } else {
+      tau[i] = 0.0;
+    }
+
+    if (i + 1 < n) {
+      rtDW->b_atmp = A[ii];
+      A[ii] = 1.0;
+      xzlarf(mmi, (n - i) - 1, ii + 1, tau[i], A, ii + 9, rtDW->work, rtDW);
+      A[ii] = rtDW->b_atmp;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xzgeqp3(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T
+                    jpvt[9], real_T tau[8], DW *rtDW)
+{
+  int32_T b_iy;
+  int32_T i;
+  int32_T ii_tmp;
+  int32_T minmn_tmp;
+  if (m < n) {
+    minmn_tmp = m;
+  } else {
+    minmn_tmp = n;
+  }
+
+  memset(&tau[0], 0, sizeof(real_T) << 3U);
+  if (minmn_tmp < 1) {
+    for (minmn_tmp = 0; minmn_tmp < n; minmn_tmp++) {
+      jpvt[minmn_tmp] = minmn_tmp + 1;
+    }
+  } else {
+    rtDW->nfxd = -1;
+    for (i = 0; i < n; i++) {
+      if (jpvt[i] != 0) {
+        rtDW->nfxd++;
+        if (i + 1 != rtDW->nfxd + 1) {
+          rtDW->nmi = ((i << 3) + ia0) - 1;
+          rtDW->pvt = ((rtDW->nfxd << 3) + ia0) - 1;
+          rtDW->b_ix_j = 0;
+          while (rtDW->b_ix_j <= m - 1) {
+            rtDW->smax = A[rtDW->nmi];
+            A[rtDW->nmi] = A[rtDW->pvt];
+            A[rtDW->pvt] = rtDW->smax;
+            rtDW->nmi++;
+            rtDW->pvt++;
+            rtDW->b_ix_j++;
+          }
+
+          jpvt[i] = jpvt[rtDW->nfxd];
+          jpvt[rtDW->nfxd] = i + 1;
+        } else {
+          jpvt[i] = i + 1;
+        }
+      } else {
+        jpvt[i] = i + 1;
+      }
+    }
+
+    if (rtDW->nfxd + 1 < minmn_tmp) {
+      rtDW->nfxd++;
+    } else {
+      rtDW->nfxd = minmn_tmp;
+    }
+
+    qrf(A, ia0, m, n, rtDW->nfxd, tau, rtDW);
+    if (rtDW->nfxd < minmn_tmp) {
+      memset(&rtDW->work_c[0], 0, 9U * sizeof(real_T));
+      memset(&rtDW->vn1[0], 0, 9U * sizeof(real_T));
+      memset(&rtDW->vn2[0], 0, 9U * sizeof(real_T));
+      i = ia0 + rtDW->nfxd;
+      rtDW->ii = rtDW->nfxd;
+      while (rtDW->ii + 1 <= n) {
+        rtDW->vn1[rtDW->ii] = xnrm2(m - rtDW->nfxd, A, (rtDW->ii << 3) + i, rtDW);
+        rtDW->vn2[rtDW->ii] = rtDW->vn1[rtDW->ii];
+        rtDW->ii++;
       }
 
-      A_data[rtDW->i_d + rtDW->itau] = 1.0F;
-      rtDW->itau++;
+      while (rtDW->nfxd + 1 <= minmn_tmp) {
+        ii_tmp = (rtDW->nfxd << 3) + ia0;
+        rtDW->ii = (ii_tmp + rtDW->nfxd) - 1;
+        rtDW->nmi = n - rtDW->nfxd;
+        i = m - rtDW->nfxd;
+        if (rtDW->nmi < 1) {
+          rtDW->pvt = -1;
+        } else {
+          rtDW->pvt = 0;
+          if (rtDW->nmi > 1) {
+            rtDW->b_ix_j = rtDW->nfxd;
+            rtDW->smax = fabs(rtDW->vn1[rtDW->nfxd]);
+            for (b_iy = 2; b_iy <= rtDW->nmi; b_iy++) {
+              rtDW->b_ix_j++;
+              rtDW->temp2 = fabs(rtDW->vn1[rtDW->b_ix_j]);
+              if (rtDW->temp2 > rtDW->smax) {
+                rtDW->pvt = b_iy - 1;
+                rtDW->smax = rtDW->temp2;
+              }
+            }
+          }
+        }
+
+        rtDW->pvt += rtDW->nfxd;
+        if (rtDW->pvt + 1 != rtDW->nfxd + 1) {
+          rtDW->b_ix_j = ((rtDW->pvt << 3) + ia0) - 1;
+          b_iy = ii_tmp - 1;
+          for (ii_tmp = 0; ii_tmp < m; ii_tmp++) {
+            rtDW->smax = A[rtDW->b_ix_j];
+            A[rtDW->b_ix_j] = A[b_iy];
+            A[b_iy] = rtDW->smax;
+            rtDW->b_ix_j++;
+            b_iy++;
+          }
+
+          rtDW->b_ix_j = jpvt[rtDW->pvt];
+          jpvt[rtDW->pvt] = jpvt[rtDW->nfxd];
+          jpvt[rtDW->nfxd] = rtDW->b_ix_j;
+          rtDW->vn1[rtDW->pvt] = rtDW->vn1[rtDW->nfxd];
+          rtDW->vn2[rtDW->pvt] = rtDW->vn2[rtDW->nfxd];
+        }
+
+        if (rtDW->nfxd + 1 < m) {
+          rtDW->smax = A[rtDW->ii];
+          tau[rtDW->nfxd] = xzlarfg(i, &rtDW->smax, A, rtDW->ii + 2, rtDW);
+          A[rtDW->ii] = rtDW->smax;
+        } else {
+          tau[rtDW->nfxd] = 0.0;
+        }
+
+        if (rtDW->nfxd + 1 < n) {
+          rtDW->smax = A[rtDW->ii];
+          A[rtDW->ii] = 1.0;
+          xzlarf(i, rtDW->nmi - 1, rtDW->ii + 1, tau[rtDW->nfxd], A, rtDW->ii +
+                 9, rtDW->work_c, rtDW);
+          A[rtDW->ii] = rtDW->smax;
+        }
+
+        rtDW->ii = rtDW->nfxd + 1;
+        while (rtDW->ii + 1 <= n) {
+          rtDW->nmi = (ia0 + rtDW->nfxd) + (rtDW->ii << 3);
+          if (rtDW->vn1[rtDW->ii] != 0.0) {
+            rtDW->smax = fabs(A[rtDW->nmi - 1]) / rtDW->vn1[rtDW->ii];
+            rtDW->smax = 1.0 - rtDW->smax * rtDW->smax;
+            if (rtDW->smax < 0.0) {
+              rtDW->smax = 0.0;
+            }
+
+            rtDW->temp2 = rtDW->vn1[rtDW->ii] / rtDW->vn2[rtDW->ii];
+            rtDW->temp2 = rtDW->temp2 * rtDW->temp2 * rtDW->smax;
+            if (rtDW->temp2 <= 1.4901161193847656E-8) {
+              if (rtDW->nfxd + 1 < m) {
+                rtDW->vn1[rtDW->ii] = xnrm2(i - 1, A, rtDW->nmi + 1, rtDW);
+                rtDW->vn2[rtDW->ii] = rtDW->vn1[rtDW->ii];
+              } else {
+                rtDW->vn1[rtDW->ii] = 0.0;
+                rtDW->vn2[rtDW->ii] = 0.0;
+              }
+            } else {
+              rtDW->vn1[rtDW->ii] *= sqrt(rtDW->smax);
+            }
+          }
+
+          rtDW->ii++;
+        }
+
+        rtDW->nfxd++;
+      }
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void computeQ_(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T nrows, DW *rtDW)
+{
+  int32_T b_ia;
+  int32_T b_ix;
+  int32_T coltop;
+  int32_T e;
+  int32_T exitg1;
+  int32_T i;
+  int32_T iQR0;
+  int32_T ia;
+  int32_T iaii;
+  int32_T idx;
+  int32_T itau;
+  int32_T ix;
+  int32_T jA;
+  int32_T lastc;
+  int32_T lastv;
+  boolean_T exitg2;
+  for (idx = 0; idx < obj->minRowCol; idx++) {
+    iQR0 = obj->ldq * idx + idx;
+    itau = obj->mrows - idx;
+    for (i = 1; i - 1 <= itau - 2; i++) {
+      iaii = iQR0 + i;
+      obj->Q[iaii] = obj->QR[iaii];
+    }
+  }
+
+  idx = obj->mrows;
+  iQR0 = obj->ldq;
+  if (nrows >= 1) {
+    for (itau = obj->minRowCol; itau < nrows; itau++) {
+      i = itau * iQR0;
+      for (iaii = 0; iaii < idx; iaii++) {
+        obj->Q[i + iaii] = 0.0;
+      }
+
+      obj->Q[i + itau] = 1.0;
     }
 
-    rtDW->itau = k - 1;
-    rtDW->iaii = (int8_T)A_size[1];
-    if (0 <= rtDW->iaii - 1) {
-      memset(&rtDW->work_data_f[0], 0, rtDW->iaii * sizeof(real32_T));
-    }
-
-    rtDW->i_d = k;
-    while (rtDW->i_d >= 1) {
-      rtDW->iaii = (rtDW->i_d - 1) * lda + rtDW->i_d;
-      if (rtDW->i_d < n) {
-        A_data[rtDW->iaii - 1] = 1.0F;
-        lastc = (m - rtDW->i_d) - 1;
-        rtDW->c_c = rtDW->iaii + lda;
-        if (tau_data[rtDW->itau] != 0.0F) {
-          rtDW->lastv = lastc + 2;
-          lastc += rtDW->iaii;
-          while ((rtDW->lastv > 0) && (A_data[lastc] == 0.0F)) {
-            rtDW->lastv--;
+    itau = obj->minRowCol - 1;
+    memset(&rtDW->work_k[0], 0, sizeof(real_T) << 3U);
+    for (i = obj->minRowCol; i >= 1; i--) {
+      iaii = ((i - 1) * iQR0 + i) - 1;
+      if (i < nrows) {
+        obj->Q[iaii] = 1.0;
+        lastv = idx - i;
+        jA = (iaii + iQR0) + 1;
+        if (obj->tau[itau] != 0.0) {
+          lastc = iaii + lastv;
+          while ((lastv + 1 > 0) && (obj->Q[lastc] == 0.0)) {
+            lastv--;
             lastc--;
           }
 
-          lastc = n - rtDW->i_d;
+          lastc = (nrows - i) - 1;
           exitg2 = false;
-          while ((!exitg2) && (lastc > 0)) {
-            coltop = (lastc - 1) * lda + rtDW->c_c;
-            ia = coltop;
+          while ((!exitg2) && (lastc + 1 > 0)) {
+            coltop = lastc * iQR0 + jA;
+            b_ia = coltop;
             do {
               exitg1 = 0;
-              if (ia <= (coltop + rtDW->lastv) - 1) {
-                if (A_data[ia - 1] != 0.0F) {
+              if (b_ia <= coltop + lastv) {
+                if (obj->Q[b_ia - 1] != 0.0) {
                   exitg1 = 1;
                 } else {
-                  ia++;
+                  b_ia++;
                 }
               } else {
                 lastc--;
@@ -540,935 +687,4421 @@ static void xorgqr(int32_T m, int32_T n, int32_T k, real32_T A_data[], const
             }
           }
         } else {
-          rtDW->lastv = 0;
-          lastc = 0;
+          lastv = -1;
+          lastc = -1;
         }
 
-        if (rtDW->lastv > 0) {
-          xgemv(rtDW->lastv, lastc, A_data, rtDW->c_c, lda, A_data, rtDW->iaii,
-                rtDW->work_data_f);
-          xgerc(rtDW->lastv, lastc, -tau_data[rtDW->itau], rtDW->iaii,
-                rtDW->work_data_f, A_data, rtDW->c_c, lda);
-        }
-      }
-
-      if (rtDW->i_d < m) {
-        rtDW->c_c = (rtDW->iaii + m) - rtDW->i_d;
-        rtDW->lastv = rtDW->iaii;
-        while (rtDW->lastv + 1 <= rtDW->c_c) {
-          A_data[rtDW->lastv] *= -tau_data[rtDW->itau];
-          rtDW->lastv++;
-        }
-      }
-
-      A_data[rtDW->iaii - 1] = 1.0F - tau_data[rtDW->itau];
-      rtDW->c_c = 0;
-      while (rtDW->c_c <= rtDW->i_d - 2) {
-        A_data[(rtDW->iaii - rtDW->c_c) - 2] = 0.0F;
-        rtDW->c_c++;
-      }
-
-      rtDW->itau--;
-      rtDW->i_d--;
-    }
-  }
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static void mtimes(const real32_T A_data[], const int32_T A_size[2], const
-                   real32_T B_0[7], real32_T C_data[], int32_T *C_size)
-{
-  int32_T aoffset;
-  int32_T b_i;
-  int32_T i;
-  int32_T m;
-  m = A_size[0] - 1;
-  *C_size = A_size[0];
-  for (i = 0; i <= m; i++) {
-    C_data[i] = 0.0F;
-  }
-
-  for (i = 0; i < A_size[1]; i++) {
-    aoffset = i * A_size[0];
-    for (b_i = 0; b_i <= m; b_i++) {
-      C_data[b_i] += A_data[aoffset + b_i] * B_0[i];
-    }
-  }
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static real32_T KWIKfactor(const int16_T iC[8], int16_T nA, const real32_T
-  Linv_data[], const int32_T Linv_size[2], real32_T RLinv_data[], const int32_T
-  RLinv_size[2], real32_T D_data[], const int32_T D_size[2], real32_T H_data[],
-  const int32_T H_size[2], int16_T n, DW *rtDW)
-{
-  real32_T Status;
-  int16_T b_j;
-  int16_T c_k;
-  static const int8_T Ac[56] = { 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1,
-    0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0,
-    0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1 };
-
-  int32_T exitg1;
-  rtDW->TL_size_idx_0 = Linv_size[0];
-  Status = 1.0F;
-  rtDW->b_n = RLinv_size[0];
-  rtDW->RLinv = RLinv_size[1];
-  for (rtDW->h_j = 0; rtDW->h_j < rtDW->RLinv; rtDW->h_j++) {
-    for (rtDW->m = 0; rtDW->m < rtDW->b_n; rtDW->m++) {
-      RLinv_data[rtDW->m + RLinv_size[0] * rtDW->h_j] = 0.0F;
-    }
-  }
-
-  rtDW->m = 1;
-  while (rtDW->m - 1 <= nA - 1) {
-    rtDW->b_n = iC[(int16_T)rtDW->m - 1];
-    for (rtDW->h_j = 0; rtDW->h_j < 7; rtDW->h_j++) {
-      rtDW->Ac[rtDW->h_j] = Ac[((rtDW->h_j << 3) + rtDW->b_n) - 1];
-    }
-
-    mtimes(Linv_data, Linv_size, rtDW->Ac, rtDW->tau_data, &rtDW->tau_size);
-    rtDW->RLinv = rtDW->tau_size;
-    for (rtDW->h_j = 0; rtDW->h_j < rtDW->RLinv; rtDW->h_j++) {
-      RLinv_data[rtDW->h_j + RLinv_size[0] * ((int16_T)rtDW->m - 1)] =
-        rtDW->tau_data[rtDW->h_j];
-    }
-
-    rtDW->m++;
-  }
-
-  rtDW->m = RLinv_size[0] - 1;
-  rtDW->b_n = RLinv_size[1];
-  rtDW->Q_size[0] = (int8_T)RLinv_size[0];
-  rtDW->Q_size[1] = (int8_T)RLinv_size[0];
-  rtDW->R_size_idx_0 = RLinv_size[0];
-  if (RLinv_size[0] > RLinv_size[1]) {
-    rtDW->h_j = 0;
-    while (rtDW->h_j <= rtDW->b_n - 1) {
-      rtDW->RLinv = 0;
-      while (rtDW->RLinv <= rtDW->m) {
-        rtDW->Q_data[rtDW->RLinv + rtDW->Q_size[0] * rtDW->h_j] =
-          RLinv_data[rtDW->RLinv + RLinv_size[0] * rtDW->h_j];
-        rtDW->RLinv++;
-      }
-
-      rtDW->h_j++;
-    }
-
-    rtDW->h_j = RLinv_size[1];
-    while (rtDW->h_j + 1 <= rtDW->m + 1) {
-      rtDW->RLinv = 0;
-      while (rtDW->RLinv <= rtDW->m) {
-        rtDW->Q_data[rtDW->RLinv + rtDW->Q_size[0] * rtDW->h_j] = 0.0F;
-        rtDW->RLinv++;
-      }
-
-      rtDW->h_j++;
-    }
-
-    xgeqrf(rtDW->Q_data, rtDW->Q_size, rtDW->tau_data, &rtDW->tau_size, rtDW);
-    rtDW->h_j = 0;
-    while (rtDW->h_j <= rtDW->b_n - 1) {
-      rtDW->RLinv = 0;
-      while (rtDW->RLinv <= rtDW->h_j) {
-        rtDW->R_data[rtDW->RLinv + rtDW->R_size_idx_0 * rtDW->h_j] =
-          rtDW->Q_data[rtDW->RLinv + rtDW->Q_size[0] * rtDW->h_j];
-        rtDW->RLinv++;
-      }
-
-      rtDW->RLinv = rtDW->h_j + 1;
-      while (rtDW->RLinv + 1 <= rtDW->m + 1) {
-        rtDW->R_data[rtDW->RLinv + rtDW->R_size_idx_0 * rtDW->h_j] = 0.0F;
-        rtDW->RLinv++;
-      }
-
-      rtDW->h_j++;
-    }
-
-    xorgqr(RLinv_size[0], RLinv_size[0], RLinv_size[1], rtDW->Q_data,
-           rtDW->Q_size, RLinv_size[0], rtDW->tau_data, rtDW);
-  } else {
-    rtDW->A_size[0] = RLinv_size[0];
-    rtDW->A_size[1] = RLinv_size[1];
-    rtDW->RLinv = RLinv_size[0] * RLinv_size[1];
-    if (0 <= rtDW->RLinv - 1) {
-      memcpy(&rtDW->A_data[0], &RLinv_data[0], rtDW->RLinv * sizeof(real32_T));
-    }
-
-    xgeqrf(rtDW->A_data, rtDW->A_size, rtDW->tau_data, &rtDW->tau_size, rtDW);
-    rtDW->h_j = 0;
-    while (rtDW->h_j <= rtDW->m) {
-      rtDW->RLinv = 0;
-      while (rtDW->RLinv <= rtDW->h_j) {
-        rtDW->R_data[rtDW->RLinv + rtDW->R_size_idx_0 * rtDW->h_j] =
-          rtDW->A_data[rtDW->RLinv + rtDW->A_size[0] * rtDW->h_j];
-        rtDW->RLinv++;
-      }
-
-      rtDW->RLinv = rtDW->h_j + 1;
-      while (rtDW->RLinv + 1 <= rtDW->m + 1) {
-        rtDW->R_data[rtDW->RLinv + rtDW->R_size_idx_0 * rtDW->h_j] = 0.0F;
-        rtDW->RLinv++;
-      }
-
-      rtDW->h_j++;
-    }
-
-    rtDW->h_j = RLinv_size[0];
-    while (rtDW->h_j + 1 <= rtDW->b_n) {
-      rtDW->RLinv = 0;
-      while (rtDW->RLinv <= rtDW->m) {
-        rtDW->R_data[rtDW->RLinv + rtDW->R_size_idx_0 * rtDW->h_j] =
-          rtDW->A_data[rtDW->RLinv + rtDW->A_size[0] * rtDW->h_j];
-        rtDW->RLinv++;
-      }
-
-      rtDW->h_j++;
-    }
-
-    xorgqr(RLinv_size[0], RLinv_size[0], RLinv_size[0], rtDW->A_data,
-           rtDW->A_size, RLinv_size[0], rtDW->tau_data, rtDW);
-    rtDW->b_n = 0;
-    while (rtDW->b_n <= rtDW->m) {
-      rtDW->h_j = 0;
-      while (rtDW->h_j <= rtDW->m) {
-        rtDW->Q_data[rtDW->h_j + rtDW->Q_size[0] * rtDW->b_n] = rtDW->
-          A_data[rtDW->h_j + rtDW->A_size[0] * rtDW->b_n];
-        rtDW->h_j++;
-      }
-
-      rtDW->b_n++;
-    }
-  }
-
-  rtDW->m = 1;
-  do {
-    exitg1 = 0;
-    if (rtDW->m - 1 <= nA - 1) {
-      if (fabsf(rtDW->R_data[((int16_T)rtDW->m + rtDW->R_size_idx_0 * ((int16_T)
-             rtDW->m - 1)) - 1]) < 1.0E-12F) {
-        Status = -2.0F;
-        exitg1 = 1;
-      } else {
-        rtDW->m++;
-      }
-    } else {
-      rtDW->m = 1;
-      while (rtDW->m - 1 <= n - 1) {
-        rtDW->b_n = 1;
-        while (rtDW->b_n - 1 <= n - 1) {
-          rtDW->RLinv = Linv_size[0];
-          rtDW->Linv = 0.0F;
-          for (rtDW->h_j = 0; rtDW->h_j < rtDW->RLinv; rtDW->h_j++) {
-            rtDW->Linv += Linv_data[rtDW->h_j + Linv_size[0] * ((int16_T)rtDW->m
-              - 1)] * rtDW->Q_data[rtDW->h_j + rtDW->Q_size[0] * ((int16_T)
-              rtDW->b_n - 1)];
-          }
-
-          rtDW->TL_data[((int16_T)rtDW->m + rtDW->TL_size_idx_0 * ((int16_T)
-            rtDW->b_n - 1)) - 1] = rtDW->Linv;
-          rtDW->b_n++;
-        }
-
-        rtDW->m++;
-      }
-
-      rtDW->b_n = RLinv_size[0];
-      rtDW->RLinv = RLinv_size[1];
-      for (rtDW->h_j = 0; rtDW->h_j < rtDW->RLinv; rtDW->h_j++) {
-        for (rtDW->m = 0; rtDW->m < rtDW->b_n; rtDW->m++) {
-          RLinv_data[rtDW->m + RLinv_size[0] * rtDW->h_j] = 0.0F;
-        }
-      }
-
-      for (b_j = nA; b_j > 0; b_j--) {
-        RLinv_data[(b_j + RLinv_size[0] * (b_j - 1)) - 1] = 1.0F;
-        for (c_k = b_j; c_k <= nA; c_k++) {
-          rtDW->RLinv = (b_j + RLinv_size[0] * (c_k - 1)) - 1;
-          RLinv_data[rtDW->RLinv] /= rtDW->R_data[(b_j + rtDW->R_size_idx_0 *
-            (b_j - 1)) - 1];
-        }
-
-        if (b_j > 1) {
-          rtDW->m = 1;
-          while (rtDW->m - 1 <= b_j - 2) {
-            for (c_k = b_j; c_k <= nA; c_k++) {
-              rtDW->RLinv = RLinv_size[0] * (c_k - 1);
-              rtDW->h_j = ((int16_T)rtDW->m + rtDW->RLinv) - 1;
-              RLinv_data[rtDW->h_j] -= rtDW->R_data[((int16_T)rtDW->m +
-                rtDW->R_size_idx_0 * (b_j - 1)) - 1] * RLinv_data[(b_j +
-                rtDW->RLinv) - 1];
+        if (lastv + 1 > 0) {
+          if (lastc + 1 != 0) {
+            for (coltop = 0; coltop <= lastc; coltop++) {
+              rtDW->work_k[coltop] = 0.0;
             }
 
-            rtDW->m++;
+            coltop = 0;
+            b_ia = iQR0 * lastc + jA;
+            b_ix = jA;
+            while (((iQR0 > 0) && (b_ix <= b_ia)) || ((iQR0 < 0) && (b_ix >=
+                     b_ia))) {
+              ix = iaii;
+              rtDW->d_c = 0.0;
+              e = b_ix + lastv;
+              for (ia = b_ix; ia <= e; ia++) {
+                rtDW->d_c += obj->Q[ia - 1] * obj->Q[ix];
+                ix++;
+              }
+
+              rtDW->work_k[coltop] += rtDW->d_c;
+              coltop++;
+              b_ix += iQR0;
+            }
+          }
+
+          if (-obj->tau[itau] != 0.0) {
+            coltop = 0;
+            for (b_ia = 0; b_ia <= lastc; b_ia++) {
+              if (rtDW->work_k[coltop] != 0.0) {
+                rtDW->d_c = rtDW->work_k[coltop] * -obj->tau[itau];
+                b_ix = iaii;
+                ix = lastv + jA;
+                for (e = jA; e <= ix; e++) {
+                  obj->Q[e - 1] += obj->Q[b_ix] * rtDW->d_c;
+                  b_ix++;
+                }
+              }
+
+              coltop++;
+              jA += iQR0;
+            }
           }
         }
       }
 
-      rtDW->m = 1;
-      while (rtDW->m - 1 <= n - 1) {
-        for (b_j = (int16_T)rtDW->m; b_j <= n; b_j++) {
-          rtDW->RLinv = ((int16_T)rtDW->m + H_size[0] * (b_j - 1)) - 1;
-          H_data[rtDW->RLinv] = 0.0F;
-          rtDW->h_j = nA + 1;
-          if (nA + 1 > 32767) {
-            rtDW->h_j = 32767;
-          }
-
-          for (c_k = (int16_T)rtDW->h_j; c_k <= n; c_k++) {
-            rtDW->h_j = rtDW->TL_size_idx_0 * (c_k - 1);
-            H_data[rtDW->RLinv] -= rtDW->TL_data[((int16_T)rtDW->m + rtDW->h_j)
-              - 1] * rtDW->TL_data[(b_j + rtDW->h_j) - 1];
-          }
-
-          H_data[(b_j + H_size[0] * ((int16_T)rtDW->m - 1)) - 1] = H_data
-            [rtDW->RLinv];
+      if (i < idx) {
+        lastv = ((iaii + idx) - i) + 1;
+        for (jA = iaii + 1; jA < lastv; jA++) {
+          obj->Q[jA] *= -obj->tau[itau];
         }
-
-        rtDW->m++;
       }
 
-      rtDW->m = 1;
-      while (rtDW->m - 1 <= nA - 1) {
-        rtDW->b_n = 1;
-        while (rtDW->b_n - 1 <= n - 1) {
-          rtDW->RLinv = ((int16_T)rtDW->b_n + D_size[0] * ((int16_T)rtDW->m - 1))
-            - 1;
-          D_data[rtDW->RLinv] = 0.0F;
-          for (b_j = (int16_T)rtDW->m; b_j <= nA; b_j++) {
-            D_data[rtDW->RLinv] += rtDW->TL_data[((int16_T)rtDW->b_n +
-              rtDW->TL_size_idx_0 * (b_j - 1)) - 1] * RLinv_data[((int16_T)
-              rtDW->m + RLinv_size[0] * (b_j - 1)) - 1];
-          }
+      obj->Q[iaii] = 1.0 - obj->tau[itau];
+      for (lastv = 0; lastv <= i - 2; lastv++) {
+        obj->Q[(iaii - lastv) - 1] = 0.0;
+      }
 
-          rtDW->b_n++;
+      itau--;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static int32_T ComputeNumDependentEq_(sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
+  *rtDW)
+{
+  int32_T numDependent;
+  boolean_T exitg1;
+  numDependent = 0;
+  for (rtDW->idxDiag = 0; rtDW->idxDiag < 7; rtDW->idxDiag++) {
+    qrmanager->jpvt[rtDW->idxDiag] = 0;
+  }
+
+  qrmanager->usedPivoting = true;
+  qrmanager->mrows = 1;
+  qrmanager->ncols = 7;
+  qrmanager->minRowCol = 1;
+  xzgeqp3(qrmanager->QR, 1, 1, 7, qrmanager->jpvt, qrmanager->tau, rtDW);
+  rtDW->idxDiag = 1;
+  while ((rtDW->idxDiag > 0) && (fabs(qrmanager->QR[rtDW->idxDiag - 1]) <
+          1.5543122344752192E-13)) {
+    rtDW->idxDiag = (rtDW->idxDiag - qrmanager->ldq) - 1;
+    numDependent++;
+  }
+
+  if (numDependent > 0) {
+    computeQ_(qrmanager, qrmanager->mrows, rtDW);
+    rtDW->idxDiag = 0;
+    exitg1 = false;
+    while ((!exitg1) && (rtDW->idxDiag <= numDependent - 1)) {
+      if (fabs(qrmanager->Q[qrmanager->ldq * -rtDW->idxDiag]) >=
+          1.5543122344752192E-13) {
+        numDependent = -1;
+        exitg1 = true;
+      } else {
+        rtDW->idxDiag++;
+      }
+    }
+  }
+
+  return numDependent;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void countsort(int32_T x[9], int32_T xLen, int32_T workspace[9], int32_T
+                      xMin, int32_T xMax)
+{
+  int32_T b_idxW;
+  int32_T idxEnd;
+  int32_T idxStart;
+  int32_T maxOffset_tmp;
+  if ((xLen > 1) && (xMax > xMin)) {
+    maxOffset_tmp = xMax - xMin;
+    for (idxStart = 0; idxStart <= maxOffset_tmp; idxStart++) {
+      workspace[idxStart] = 0;
+    }
+
+    for (idxStart = 0; idxStart < xLen; idxStart++) {
+      idxEnd = x[idxStart] - xMin;
+      workspace[idxEnd]++;
+    }
+
+    for (idxStart = 1; idxStart < maxOffset_tmp + 1; idxStart++) {
+      workspace[idxStart] += workspace[idxStart - 1];
+    }
+
+    idxStart = 0;
+    idxEnd = workspace[0];
+    for (b_idxW = 0; b_idxW < maxOffset_tmp; b_idxW++) {
+      while (idxStart + 1 <= idxEnd) {
+        x[idxStart] = b_idxW + xMin;
+        idxStart++;
+      }
+
+      idxStart = workspace[b_idxW];
+      idxEnd = workspace[b_idxW + 1];
+    }
+
+    while (idxStart + 1 <= idxEnd) {
+      x[idxStart] = xMax;
+      idxStart++;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void moveConstraint_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
+  idx_global_start, int32_T idx_global_dest)
+{
+  int32_T b_idx;
+  obj->Wid[idx_global_dest - 1] = obj->Wid[idx_global_start - 1];
+  obj->Wlocalidx[idx_global_dest - 1] = obj->Wlocalidx[idx_global_start - 1];
+  for (b_idx = 0; b_idx < obj->nVar; b_idx++) {
+    obj->ATwset[b_idx + obj->ldA * (idx_global_dest - 1)] = obj->ATwset
+      [(idx_global_start - 1) * obj->ldA + b_idx];
+  }
+
+  obj->bwset[idx_global_dest - 1] = obj->bwset[idx_global_start - 1];
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void removeEqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T idx_global)
+{
+  int32_T TYPE_tmp_tmp;
+  int32_T totalEq;
+  totalEq = obj->nWConstr[0] + obj->nWConstr[1];
+  if ((totalEq != 0) && (idx_global <= totalEq)) {
+    if ((obj->nActiveConstr == totalEq) || (idx_global == totalEq)) {
+      obj->mEqRemoved++;
+      obj->indexEqRemoved = obj->Wlocalidx[idx_global - 1];
+      totalEq = obj->Wid[idx_global - 1] - 1;
+      obj->isActiveConstr[(obj->isActiveIdx[totalEq] + obj->Wlocalidx[idx_global
+                           - 1]) - 2] = false;
+      moveConstraint_(obj, obj->nActiveConstr, idx_global);
+      obj->nActiveConstr--;
+      obj->nWConstr[totalEq]--;
+    } else {
+      obj->mEqRemoved++;
+      TYPE_tmp_tmp = obj->Wid[idx_global - 1] - 1;
+      obj->indexEqRemoved = obj->Wlocalidx[idx_global - 1];
+      obj->isActiveConstr[(obj->isActiveIdx[obj->Wid[idx_global - 1] - 1] +
+                           obj->Wlocalidx[idx_global - 1]) - 2] = false;
+      moveConstraint_(obj, totalEq, idx_global);
+      moveConstraint_(obj, obj->nActiveConstr, totalEq);
+      obj->nActiveConstr--;
+      obj->nWConstr[TYPE_tmp_tmp]--;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void RemoveDependentEq_(s9NoAX0P67ji2P1ZBafS3UG *memspace, int32_T
+  *nDepInd, swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD
+  *qrmanager, DW *rtDW)
+{
+  static const int8_T b_workingset_Aineq[56] = { -1, 0, 0, 0, 0, 0, 0, 0, 0, -1,
+    0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
+    0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0 };
+
+  static const int8_T b_workingset_Aeq[8] = { 1, 1, 1, 1, 1, 1, 1, 0 };
+
+  static const int8_T b_workingset_ATwset[72] = { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  static const int8_T b_workingset_bwset[9] = { 1, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  static const int8_T b_workingset_sizes[5] = { 0, 1, 7, 0, 0 };
+
+  static const int8_T b_workingset_isActiveIdx[6] = { 1, 1, 2, 9, 9, 9 };
+
+  static const int8_T b_workingset_sizesPhaseOne[5] = { 0, 1, 7, 1, 0 };
+
+  static const int8_T b_workingset_sizesRegularized[5] = { 0, 1, 7, 9, 0 };
+
+  static const boolean_T b_workingset_isActiveConstr[9] = { true, false, false,
+    false, false, false, false, false, false };
+
+  static const int8_T b_workingset_isActiveIdxPhaseOn[6] = { 1, 1, 2, 9, 10, 10
+  };
+
+  static const int8_T b_workingset_sizesRegPhaseOne[5] = { 0, 1, 7, 10, 0 };
+
+  static const int8_T b_workingset_Wid[9] = { 2, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+  static const int8_T b_workingset_isActiveIdxRegular[6] = { 1, 1, 2, 9, 18, 18
+  };
+
+  static const int8_T b_workingset_nWConstr[5] = { 0, 1, 0, 0, 0 };
+
+  static const int8_T b_workingset_isActiveIdxRegPhas[6] = { 1, 1, 2, 9, 19, 19
+  };
+
+  qrmanager->ldq = 8;
+  memset(&qrmanager->QR[0], 0, 72U * sizeof(real_T));
+  memset(&qrmanager->Q[0], 0, sizeof(real_T) << 6U);
+  for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
+    qrmanager->jpvt[rtDW->i_c] = 0;
+  }
+
+  qrmanager->mrows = 0;
+  qrmanager->ncols = 0;
+  memset(&qrmanager->tau[0], 0, sizeof(real_T) << 3U);
+  qrmanager->minRowCol = 0;
+  qrmanager->usedPivoting = false;
+  workingset->mConstr = 8;
+  workingset->mConstrOrig = 8;
+  workingset->mConstrMax = 9;
+  workingset->nVar = 7;
+  workingset->nVarOrig = 7;
+  workingset->nVarMax = 8;
+  workingset->ldA = 8;
+  for (rtDW->i_c = 0; rtDW->i_c < 56; rtDW->i_c++) {
+    workingset->Aineq[rtDW->i_c] = b_workingset_Aineq[rtDW->i_c];
+  }
+
+  for (rtDW->i_c = 0; rtDW->i_c < 7; rtDW->i_c++) {
+    workingset->bineq[rtDW->i_c] = 0.0;
+  }
+
+  workingset->beq = 1.0;
+  for (rtDW->i_c = 0; rtDW->i_c < 8; rtDW->i_c++) {
+    workingset->Aeq[rtDW->i_c] = b_workingset_Aeq[rtDW->i_c];
+    workingset->lb[rtDW->i_c] = 0.0;
+    workingset->ub[rtDW->i_c] = 0.0;
+    workingset->indexLB[rtDW->i_c] = 0;
+    workingset->indexUB[rtDW->i_c] = 0;
+    workingset->indexFixed[rtDW->i_c] = 0;
+  }
+
+  workingset->mEqRemoved = 0;
+  workingset->indexEqRemoved = 0;
+  for (rtDW->i_c = 0; rtDW->i_c < 72; rtDW->i_c++) {
+    workingset->ATwset[rtDW->i_c] = b_workingset_ATwset[rtDW->i_c];
+  }
+
+  workingset->nActiveConstr = 1;
+  for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
+    workingset->bwset[rtDW->i_c] = b_workingset_bwset[rtDW->i_c];
+    workingset->maxConstrWorkspace[rtDW->i_c] = 0.0;
+  }
+
+  for (rtDW->i_c = 0; rtDW->i_c < 5; rtDW->i_c++) {
+    workingset->sizes[rtDW->i_c] = b_workingset_sizes[rtDW->i_c];
+    workingset->sizesNormal[rtDW->i_c] = b_workingset_sizes[rtDW->i_c];
+    workingset->sizesPhaseOne[rtDW->i_c] = b_workingset_sizesPhaseOne[rtDW->i_c];
+    workingset->sizesRegularized[rtDW->i_c] = b_workingset_sizesRegularized
+      [rtDW->i_c];
+    workingset->sizesRegPhaseOne[rtDW->i_c] = b_workingset_sizesRegPhaseOne
+      [rtDW->i_c];
+  }
+
+  for (rtDW->i_c = 0; rtDW->i_c < 6; rtDW->i_c++) {
+    workingset->isActiveIdx[rtDW->i_c] = b_workingset_isActiveIdx[rtDW->i_c];
+    workingset->isActiveIdxNormal[rtDW->i_c] = b_workingset_isActiveIdx
+      [rtDW->i_c];
+    workingset->isActiveIdxPhaseOne[rtDW->i_c] =
+      b_workingset_isActiveIdxPhaseOn[rtDW->i_c];
+    workingset->isActiveIdxRegularized[rtDW->i_c] =
+      b_workingset_isActiveIdxRegular[rtDW->i_c];
+    workingset->isActiveIdxRegPhaseOne[rtDW->i_c] =
+      b_workingset_isActiveIdxRegPhas[rtDW->i_c];
+  }
+
+  for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
+    workingset->isActiveConstr[rtDW->i_c] = b_workingset_isActiveConstr
+      [rtDW->i_c];
+    workingset->Wid[rtDW->i_c] = b_workingset_Wid[rtDW->i_c];
+    workingset->Wlocalidx[rtDW->i_c] = b_workingset_bwset[rtDW->i_c];
+  }
+
+  for (rtDW->i_c = 0; rtDW->i_c < 5; rtDW->i_c++) {
+    workingset->nWConstr[rtDW->i_c] = b_workingset_nWConstr[rtDW->i_c];
+  }
+
+  workingset->probType = 3;
+  workingset->SLACK0 = 0.0;
+  for (rtDW->i_c = 0; rtDW->i_c < 7; rtDW->i_c++) {
+    qrmanager->QR[rtDW->i_c << 3] = b_workingset_ATwset[rtDW->i_c];
+  }
+
+  *nDepInd = ComputeNumDependentEq_(qrmanager, rtDW);
+  if (*nDepInd > 0) {
+    for (rtDW->i_c = 0; rtDW->i_c < 7; rtDW->i_c++) {
+      qrmanager->QR[rtDW->i_c] = b_workingset_ATwset[rtDW->i_c];
+    }
+
+    qrmanager->jpvt[0] = 0;
+    qrmanager->usedPivoting = true;
+    qrmanager->mrows = 7;
+    qrmanager->ncols = 1;
+    qrmanager->minRowCol = 1;
+    for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
+      rtDW->jpvt_j[rtDW->i_c] = qrmanager->jpvt[rtDW->i_c];
+    }
+
+    xzgeqp3(qrmanager->QR, 1, 7, 1, rtDW->jpvt_j, qrmanager->tau, rtDW);
+    for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
+      qrmanager->jpvt[rtDW->i_c] = rtDW->jpvt_j[rtDW->i_c];
+    }
+
+    rtDW->i_c = 0;
+    while (rtDW->i_c <= *nDepInd - 1) {
+      memspace->workspace_int[rtDW->i_c] = rtDW->jpvt_j[(rtDW->i_c - *nDepInd) +
+        1];
+      rtDW->i_c++;
+    }
+
+    for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
+      rtDW->jpvt_j[rtDW->i_c] = memspace->workspace_sort[rtDW->i_c];
+    }
+
+    countsort(memspace->workspace_int, *nDepInd, rtDW->jpvt_j, 1, 1);
+    for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
+      memspace->workspace_sort[rtDW->i_c] = rtDW->jpvt_j[rtDW->i_c];
+    }
+
+    rtDW->i_c = *nDepInd;
+    while (rtDW->i_c > 0) {
+      removeEqConstr(workingset, memspace->workspace_int[rtDW->i_c - 1]);
+      rtDW->i_c--;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void removeAllIneqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj)
+{
+  int32_T idx_global;
+  for (idx_global = obj->nWConstr[0] + obj->nWConstr[1]; idx_global <
+       obj->nActiveConstr; idx_global++) {
+    obj->isActiveConstr[(obj->isActiveIdx[obj->Wid[idx_global] - 1] +
+                         obj->Wlocalidx[idx_global]) - 2] = false;
+  }
+
+  obj->nWConstr[2] = 0;
+  obj->nWConstr[3] = 0;
+  obj->nWConstr[4] = 0;
+  obj->nActiveConstr = obj->nWConstr[0] + obj->nWConstr[1];
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void RemoveDependentIneq_(swcr9qLPQBiG4lNhaNdYq5G *workingset,
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s9NoAX0P67ji2P1ZBafS3UG *memspace, real_T
+  tolfactor, DW *rtDW)
+{
+  rtDW->nFixedConstr = workingset->nWConstr[0] + workingset->nWConstr[1];
+  rtDW->nVar_o = workingset->nVar;
+  if ((workingset->nWConstr[2] + workingset->nWConstr[3]) + workingset->
+      nWConstr[4] > 0) {
+    rtDW->tol_g = tolfactor * (real_T)workingset->nVar * 2.2204460492503131E-16;
+    rtDW->nDepIneq = 0;
+    while (rtDW->nDepIneq <= rtDW->nFixedConstr - 1) {
+      qrmanager->jpvt[rtDW->nDepIneq] = 1;
+      rtDW->nDepIneq++;
+    }
+
+    rtDW->nDepIneq = rtDW->nFixedConstr + 1;
+    while (rtDW->nDepIneq <= workingset->nActiveConstr) {
+      qrmanager->jpvt[rtDW->nDepIneq - 1] = 0;
+      rtDW->nDepIneq++;
+    }
+
+    rtDW->nDepIneq = 0;
+    while (rtDW->nDepIneq <= workingset->nActiveConstr - 1) {
+      rtDW->i_f = qrmanager->ldq * rtDW->nDepIneq;
+      rtDW->idxPosATwset = workingset->ldA * rtDW->nDepIneq;
+      rtDW->k_i = 1;
+      while (rtDW->k_i - 1 <= rtDW->nVar_o - 1) {
+        qrmanager->QR[(rtDW->i_f + rtDW->k_i) - 1] = workingset->ATwset
+          [(rtDW->idxPosATwset + rtDW->k_i) - 1];
+        rtDW->k_i++;
+      }
+
+      rtDW->nDepIneq++;
+    }
+
+    if (workingset->nVar * workingset->nActiveConstr == 0) {
+      qrmanager->mrows = workingset->nVar;
+      qrmanager->ncols = workingset->nActiveConstr;
+      qrmanager->minRowCol = 0;
+    } else {
+      qrmanager->usedPivoting = true;
+      qrmanager->mrows = workingset->nVar;
+      qrmanager->ncols = workingset->nActiveConstr;
+      if (workingset->nVar < workingset->nActiveConstr) {
+        qrmanager->minRowCol = workingset->nVar;
+      } else {
+        qrmanager->minRowCol = workingset->nActiveConstr;
+      }
+
+      for (rtDW->i_f = 0; rtDW->i_f < 9; rtDW->i_f++) {
+        rtDW->jpvt_f[rtDW->i_f] = qrmanager->jpvt[rtDW->i_f];
+      }
+
+      xzgeqp3(qrmanager->QR, 1, workingset->nVar, workingset->nActiveConstr,
+              rtDW->jpvt_f, qrmanager->tau, rtDW);
+      for (rtDW->i_f = 0; rtDW->i_f < 9; rtDW->i_f++) {
+        qrmanager->jpvt[rtDW->i_f] = rtDW->jpvt_f[rtDW->i_f];
+      }
+    }
+
+    rtDW->nDepIneq = -1;
+    rtDW->i_f = workingset->nActiveConstr - 1;
+    while (rtDW->i_f + 1 > rtDW->nVar_o) {
+      rtDW->nDepIneq++;
+      memspace->workspace_int[rtDW->nDepIneq] = qrmanager->jpvt[rtDW->i_f];
+      rtDW->i_f--;
+    }
+
+    if (rtDW->i_f + 1 <= workingset->nVar) {
+      rtDW->nVar_o = qrmanager->ldq * rtDW->i_f + rtDW->i_f;
+      while ((rtDW->i_f + 1 > rtDW->nFixedConstr) && (fabs(qrmanager->QR
+               [rtDW->nVar_o]) < rtDW->tol_g)) {
+        rtDW->nDepIneq++;
+        memspace->workspace_int[rtDW->nDepIneq] = qrmanager->jpvt[rtDW->i_f];
+        rtDW->i_f--;
+        rtDW->nVar_o = (rtDW->nVar_o - qrmanager->ldq) - 1;
+      }
+    }
+
+    for (rtDW->i_f = 0; rtDW->i_f < 9; rtDW->i_f++) {
+      rtDW->jpvt_f[rtDW->i_f] = memspace->workspace_int[rtDW->i_f];
+    }
+
+    countsort(rtDW->jpvt_f, rtDW->nDepIneq + 1, memspace->workspace_sort,
+              rtDW->nFixedConstr + 1, workingset->nActiveConstr);
+    for (rtDW->i_f = 0; rtDW->i_f < 9; rtDW->i_f++) {
+      memspace->workspace_int[rtDW->i_f] = rtDW->jpvt_f[rtDW->i_f];
+    }
+
+    while (rtDW->nDepIneq + 1 > 0) {
+      rtDW->nFixedConstr = workingset->Wid[rtDW->jpvt_f[rtDW->nDepIneq] - 1] - 1;
+      workingset->isActiveConstr[(workingset->isActiveIdx[rtDW->nFixedConstr] +
+        workingset->Wlocalidx[rtDW->jpvt_f[rtDW->nDepIneq] - 1]) - 2] = false;
+      moveConstraint_(workingset, workingset->nActiveConstr, rtDW->jpvt_f
+                      [rtDW->nDepIneq]);
+      workingset->nActiveConstr--;
+      workingset->nWConstr[rtDW->nFixedConstr]--;
+      rtDW->nDepIneq--;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void factorQR_f(sQyCFUyu0YXOk1LARsZMzaD *obj, const real_T A[72], int32_T
+  mrows, int32_T ncols, int32_T ldA, DW *rtDW)
+{
+  int32_T b_idx;
+  int32_T i;
+  int32_T k;
+  boolean_T guard1 = false;
+  b_idx = mrows * ncols;
+  guard1 = false;
+  if (b_idx > 0) {
+    for (b_idx = 0; b_idx < ncols; b_idx++) {
+      i = ldA * b_idx;
+      rtDW->iQR0_i = obj->ldq * b_idx;
+      for (k = 1; k - 1 < mrows; k++) {
+        obj->QR[(rtDW->iQR0_i + k) - 1] = A[(i + k) - 1];
+      }
+    }
+
+    guard1 = true;
+  } else if (b_idx == 0) {
+    obj->mrows = mrows;
+    obj->ncols = ncols;
+    obj->minRowCol = 0;
+  } else {
+    guard1 = true;
+  }
+
+  if (guard1) {
+    obj->usedPivoting = false;
+    obj->mrows = mrows;
+    obj->ncols = ncols;
+    for (b_idx = 0; b_idx < ncols; b_idx++) {
+      obj->jpvt[b_idx] = b_idx + 1;
+    }
+
+    if (mrows < ncols) {
+      b_idx = mrows;
+    } else {
+      b_idx = ncols;
+    }
+
+    obj->minRowCol = b_idx;
+    memset(&obj->tau[0], 0, sizeof(real_T) << 3U);
+    if (b_idx >= 1) {
+      qrf(obj->QR, 1, mrows, ncols, b_idx, obj->tau, rtDW);
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void factorQR(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T mrows, int32_T ncols,
+                     DW *rtDW)
+{
+  int32_T idx;
+  if (mrows * ncols == 0) {
+    obj->mrows = mrows;
+    obj->ncols = ncols;
+    obj->minRowCol = 0;
+  } else {
+    obj->usedPivoting = false;
+    obj->mrows = mrows;
+    obj->ncols = ncols;
+    for (idx = 0; idx < ncols; idx++) {
+      obj->jpvt[idx] = idx + 1;
+    }
+
+    if (mrows < ncols) {
+      idx = mrows;
+    } else {
+      idx = ncols;
+    }
+
+    obj->minRowCol = idx;
+    memset(&obj->tau[0], 0, sizeof(real_T) << 3U);
+    if (idx >= 1) {
+      qrf(obj->QR, 1, mrows, ncols, idx, obj->tau, rtDW);
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv(int32_T m, int32_T n, const real_T A[56], int32_T lda, const
+                  real_T x[72], real_T y[9], DW *rtDW)
+{
+  int32_T b;
+  int32_T b_iy;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = -y[b_iy];
+    }
+
+    iy = 0;
+    b_iy = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
+      ix = 0;
+      rtDW->c_l = 0.0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        rtDW->c_l += A[ia - 1] * x[ix];
+        ix++;
+      }
+
+      y[iy] += rtDW->c_l;
+      iy++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_n(int32_T m, int32_T n, const real_T A[8], int32_T lda, const
+                    real_T x[72], real_T y[9], DW *rtDW)
+{
+  int32_T b;
+  int32_T b_iy;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = -y[b_iy];
+    }
+
+    iy = 0;
+    b_iy = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
+      ix = 0;
+      rtDW->c_g = 0.0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        rtDW->c_g += A[ia - 1] * x[ix];
+        ix++;
+      }
+
+      y[iy] += rtDW->c_g;
+      iy++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static real_T maxConstraintViolation(swcr9qLPQBiG4lNhaNdYq5G *obj, const real_T
+  x[72], DW *rtDW)
+{
+  real_T v;
+  int32_T b_mIneq;
+  int32_T h_idx;
+  int32_T mEq;
+  int32_T mFixed;
+  int32_T mIneq;
+  int32_T mLB;
+  int32_T mUB;
+  mLB = obj->sizes[3];
+  mUB = obj->sizes[4];
+  mFixed = obj->sizes[0];
+  if (obj->probType == 2) {
+    v = 0.0;
+    b_mIneq = obj->sizes[2] - 1;
+    mEq = obj->sizes[1] - 1;
+    for (mIneq = 0; mIneq <= b_mIneq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->bineq[mIneq];
+    }
+
+    xgemv(obj->nVarOrig, obj->sizes[2], obj->Aineq, obj->ldA, x,
+          obj->maxConstrWorkspace, rtDW);
+    for (mIneq = 0; mIneq <= b_mIneq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] -= x[obj->nVarOrig + mIneq];
+      v = fmax(v, obj->maxConstrWorkspace[mIneq]);
+    }
+
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->beq;
+    }
+
+    xgemv_n(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
+            obj->maxConstrWorkspace, rtDW);
+    b_mIneq = obj->nVarOrig + obj->sizes[2];
+    mIneq = b_mIneq + obj->sizes[1];
+    for (h_idx = 0; h_idx <= mEq; h_idx++) {
+      obj->maxConstrWorkspace[h_idx] = (obj->maxConstrWorkspace[h_idx] -
+        x[b_mIneq + h_idx]) + x[mIneq + h_idx];
+      v = fmax(v, fabs(obj->maxConstrWorkspace[h_idx]));
+    }
+  } else {
+    v = 0.0;
+    mIneq = obj->sizes[2] - 1;
+    mEq = obj->sizes[1] - 1;
+    for (b_mIneq = 0; b_mIneq <= mIneq; b_mIneq++) {
+      obj->maxConstrWorkspace[b_mIneq] = obj->bineq[b_mIneq];
+    }
+
+    xgemv(obj->nVar, obj->sizes[2], obj->Aineq, obj->ldA, x,
+          obj->maxConstrWorkspace, rtDW);
+    for (b_mIneq = 0; b_mIneq <= mIneq; b_mIneq++) {
+      v = fmax(v, obj->maxConstrWorkspace[b_mIneq]);
+    }
+
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->beq;
+    }
+
+    xgemv_n(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
+            obj->maxConstrWorkspace, rtDW);
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      v = fmax(v, fabs(obj->maxConstrWorkspace[mIneq]));
+    }
+  }
+
+  if (mLB > 0) {
+    for (mEq = 0; mEq < mLB; mEq++) {
+      v = fmax(v, -x[obj->indexLB[mEq] - 1] - obj->lb[obj->indexLB[mEq] - 1]);
+    }
+  }
+
+  if (mUB > 0) {
+    for (mLB = 0; mLB < mUB; mLB++) {
+      v = fmax(v, x[obj->indexUB[mLB] - 1] - obj->ub[obj->indexUB[mLB] - 1]);
+    }
+  }
+
+  if (mFixed > 0) {
+    for (mUB = 0; mUB < mFixed; mUB++) {
+      v = fmax(v, fabs(x[obj->indexFixed[mUB] - 1] - obj->ub[obj->indexFixed[mUB]
+                       - 1]));
+    }
+  }
+
+  return v;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_nh(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+                     const real_T x[72], real_T y[9], DW *rtDW)
+{
+  int32_T b;
+  int32_T b_iy;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = -y[b_iy];
+    }
+
+    iy = 0;
+    b_iy = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
+      ix = 9;
+      rtDW->c_d = 0.0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        rtDW->c_d += A[ia - 1] * x[ix];
+        ix++;
+      }
+
+      y[iy] += rtDW->c_d;
+      iy++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_nhu(int32_T m, int32_T n, const real_T A[8], int32_T lda,
+                      const real_T x[72], real_T y[9], DW *rtDW)
+{
+  int32_T b;
+  int32_T b_iy;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = -y[b_iy];
+    }
+
+    iy = 0;
+    b_iy = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
+      ix = 9;
+      rtDW->c_j = 0.0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        rtDW->c_j += A[ia - 1] * x[ix];
+        ix++;
+      }
+
+      y[iy] += rtDW->c_j;
+      iy++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static real_T maxConstraintViolation_e(swcr9qLPQBiG4lNhaNdYq5G *obj, const
+  real_T x[72], DW *rtDW)
+{
+  real_T v;
+  int32_T b_mIneq;
+  int32_T h_idx;
+  int32_T mEq;
+  int32_T mFixed;
+  int32_T mIneq;
+  int32_T mLB;
+  int32_T mUB;
+  mLB = obj->sizes[3];
+  mUB = obj->sizes[4];
+  mFixed = obj->sizes[0];
+  if (obj->probType == 2) {
+    v = 0.0;
+    b_mIneq = obj->sizes[2] - 1;
+    mEq = obj->sizes[1] - 1;
+    for (mIneq = 0; mIneq <= b_mIneq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->bineq[mIneq];
+    }
+
+    xgemv_nh(obj->nVarOrig, obj->sizes[2], obj->Aineq, obj->ldA, x,
+             obj->maxConstrWorkspace, rtDW);
+    for (mIneq = 0; mIneq <= b_mIneq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] -= x[(obj->nVarOrig + mIneq) + 9];
+      v = fmax(v, obj->maxConstrWorkspace[mIneq]);
+    }
+
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->beq;
+    }
+
+    xgemv_nhu(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
+              obj->maxConstrWorkspace, rtDW);
+    b_mIneq = (obj->nVarOrig + obj->sizes[2]) + 8;
+    mIneq = (b_mIneq + obj->sizes[1]) + 1;
+    for (h_idx = 0; h_idx <= mEq; h_idx++) {
+      obj->maxConstrWorkspace[h_idx] = (obj->maxConstrWorkspace[h_idx] - x
+        [(b_mIneq + h_idx) + 1]) + x[mIneq + h_idx];
+      v = fmax(v, fabs(obj->maxConstrWorkspace[h_idx]));
+    }
+  } else {
+    v = 0.0;
+    mIneq = obj->sizes[2] - 1;
+    mEq = obj->sizes[1] - 1;
+    for (b_mIneq = 0; b_mIneq <= mIneq; b_mIneq++) {
+      obj->maxConstrWorkspace[b_mIneq] = obj->bineq[b_mIneq];
+    }
+
+    xgemv_nh(obj->nVar, obj->sizes[2], obj->Aineq, obj->ldA, x,
+             obj->maxConstrWorkspace, rtDW);
+    for (b_mIneq = 0; b_mIneq <= mIneq; b_mIneq++) {
+      v = fmax(v, obj->maxConstrWorkspace[b_mIneq]);
+    }
+
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->beq;
+    }
+
+    xgemv_nhu(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
+              obj->maxConstrWorkspace, rtDW);
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      v = fmax(v, fabs(obj->maxConstrWorkspace[mIneq]));
+    }
+  }
+
+  if (mLB > 0) {
+    for (mEq = 0; mEq < mLB; mEq++) {
+      v = fmax(v, -x[obj->indexLB[mEq] + 8] - obj->lb[obj->indexLB[mEq] - 1]);
+    }
+  }
+
+  if (mUB > 0) {
+    for (mLB = 0; mLB < mUB; mLB++) {
+      v = fmax(v, x[obj->indexUB[mLB] + 8] - obj->ub[obj->indexUB[mLB] - 1]);
+    }
+  }
+
+  if (mFixed > 0) {
+    for (mUB = 0; mUB < mFixed; mUB++) {
+      v = fmax(v, fabs(x[obj->indexFixed[mUB] + 8] - obj->ub[obj->indexFixed[mUB]
+                       - 1]));
+    }
+  }
+
+  return v;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
+  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
+  *rtDW)
+{
+  rtDW->mWConstr = workingset->nActiveConstr - 1;
+  rtDW->nVar_j = workingset->nVar;
+  if (workingset->nActiveConstr != 0) {
+    rtDW->ldq = 0;
+    while (rtDW->ldq <= rtDW->mWConstr) {
+      workspace[rtDW->ldq] = workingset->bwset[rtDW->ldq];
+      workspace[rtDW->ldq + 9] = workingset->bwset[rtDW->ldq];
+      rtDW->ldq++;
+    }
+
+    rtDW->ldq = workingset->ldA;
+    if ((workingset->nVar != 0) && (workingset->nActiveConstr != 0)) {
+      rtDW->iy_n = 0;
+      rtDW->jBcol = (workingset->nActiveConstr - 1) * workingset->ldA + 1;
+      rtDW->ar = 1;
+      while (((rtDW->ldq > 0) && (rtDW->ar <= rtDW->jBcol)) || ((rtDW->ldq < 0) &&
+              (rtDW->ar >= rtDW->jBcol))) {
+        rtDW->ix_o = 0;
+        rtDW->c = 0.0;
+        rtDW->b_i = (rtDW->ar + rtDW->nVar_j) - 1;
+        rtDW->b_ia = rtDW->ar;
+        while (rtDW->b_ia <= rtDW->b_i) {
+          rtDW->c += workingset->ATwset[rtDW->b_ia - 1] * xCurrent[rtDW->ix_o];
+          rtDW->ix_o++;
+          rtDW->b_ia++;
         }
 
-        rtDW->m++;
+        workspace[rtDW->iy_n] += -rtDW->c;
+        rtDW->iy_n++;
+        rtDW->ar += rtDW->ldq;
+      }
+    }
+
+    if (workingset->nActiveConstr >= workingset->nVar) {
+      rtDW->ldq = 0;
+      while (rtDW->ldq <= rtDW->nVar_j - 1) {
+        rtDW->jBcol = qrmanager->ldq * rtDW->ldq;
+        rtDW->ar = 0;
+        while (rtDW->ar <= rtDW->mWConstr) {
+          qrmanager->QR[rtDW->ar + rtDW->jBcol] = workingset->ATwset
+            [workingset->ldA * rtDW->ar + rtDW->ldq];
+          rtDW->ar++;
+        }
+
+        rtDW->ldq++;
+      }
+
+      factorQR(qrmanager, workingset->nActiveConstr, workingset->nVar, rtDW);
+      computeQ_(qrmanager, qrmanager->mrows, rtDW);
+      rtDW->ldq = qrmanager->ldq;
+      memcpy(&rtDW->B_m[0], &workspace[0], 72U * sizeof(real_T));
+      if (workingset->nVar != 0) {
+        rtDW->ar = 0;
+        while (rtDW->ar + 1 <= rtDW->nVar_j) {
+          workspace[rtDW->ar] = 0.0;
+          rtDW->ar++;
+        }
+
+        rtDW->ar = 9;
+        while (rtDW->ar + 1 <= rtDW->nVar_j + 9) {
+          workspace[rtDW->ar] = 0.0;
+          rtDW->ar++;
+        }
+
+        rtDW->ar = -1;
+        rtDW->b_i = 0;
+        while (rtDW->b_i + 1 <= rtDW->nVar_j) {
+          rtDW->c = 0.0;
+          rtDW->b_ia = 1;
+          while (rtDW->b_ia - 1 <= rtDW->mWConstr) {
+            rtDW->c += qrmanager->Q[rtDW->b_ia + rtDW->ar] * rtDW->B_m
+              [rtDW->b_ia + -1];
+            rtDW->b_ia++;
+          }
+
+          workspace[rtDW->b_i] += rtDW->c;
+          rtDW->ar += rtDW->ldq;
+          rtDW->b_i++;
+        }
+
+        rtDW->ar = -1;
+        rtDW->b_i = 9;
+        while (rtDW->b_i + 1 <= rtDW->nVar_j + 9) {
+          rtDW->c = 0.0;
+          rtDW->b_ia = 1;
+          while (rtDW->b_ia - 1 <= rtDW->mWConstr) {
+            rtDW->c += qrmanager->Q[rtDW->b_ia + rtDW->ar] * rtDW->B_m
+              [rtDW->b_ia + 8];
+            rtDW->b_ia++;
+          }
+
+          workspace[rtDW->b_i] += rtDW->c;
+          rtDW->ar += rtDW->ldq;
+          rtDW->b_i++;
+        }
+      }
+
+      rtDW->jBcol = workingset->nVar;
+      while (rtDW->jBcol > 0) {
+        rtDW->ar = (rtDW->jBcol - 1) * rtDW->ldq - 1;
+        if (workspace[rtDW->jBcol + -1] != 0.0) {
+          workspace[rtDW->jBcol + -1] /= qrmanager->QR[rtDW->jBcol + rtDW->ar];
+          rtDW->ix_o = 1;
+          while (rtDW->ix_o - 1 <= rtDW->jBcol - 2) {
+            workspace[rtDW->ix_o + -1] -= workspace[rtDW->jBcol + -1] *
+              qrmanager->QR[rtDW->ix_o + rtDW->ar];
+            rtDW->ix_o++;
+          }
+        }
+
+        rtDW->jBcol--;
+      }
+
+      rtDW->jBcol = workingset->nVar;
+      while (rtDW->jBcol > 0) {
+        rtDW->ar = (rtDW->jBcol - 1) * rtDW->ldq - 1;
+        rtDW->c = workspace[rtDW->jBcol + 8];
+        if (rtDW->c != 0.0) {
+          workspace[rtDW->jBcol + 8] = rtDW->c / qrmanager->QR[rtDW->jBcol +
+            rtDW->ar];
+          rtDW->ix_o = 1;
+          while (rtDW->ix_o - 1 <= rtDW->jBcol - 2) {
+            workspace[rtDW->ix_o + 8] -= workspace[rtDW->jBcol + 8] *
+              qrmanager->QR[rtDW->ix_o + rtDW->ar];
+            rtDW->ix_o++;
+          }
+        }
+
+        rtDW->jBcol--;
+      }
+    } else {
+      factorQR_f(qrmanager, workingset->ATwset, workingset->nVar,
+                 workingset->nActiveConstr, workingset->ldA, rtDW);
+      computeQ_(qrmanager, qrmanager->minRowCol, rtDW);
+      rtDW->ldq = qrmanager->ldq;
+      rtDW->ar = 1;
+      while (rtDW->ar - 1 <= rtDW->mWConstr) {
+        rtDW->ix_o = (rtDW->ar - 1) * rtDW->ldq - 1;
+        rtDW->c = workspace[rtDW->ar + -1];
+        rtDW->b_i = 1;
+        while (rtDW->b_i - 1 <= rtDW->ar - 2) {
+          rtDW->c -= qrmanager->QR[rtDW->b_i + rtDW->ix_o] * workspace[rtDW->b_i
+            + -1];
+          rtDW->b_i++;
+        }
+
+        workspace[rtDW->ar + -1] = rtDW->c / qrmanager->QR[rtDW->ar + rtDW->ix_o];
+        rtDW->ar++;
+      }
+
+      rtDW->ar = 1;
+      while (rtDW->ar - 1 <= rtDW->mWConstr) {
+        rtDW->ix_o = (rtDW->ar - 1) * rtDW->ldq - 1;
+        rtDW->c = workspace[rtDW->ar + 8];
+        rtDW->b_i = 1;
+        while (rtDW->b_i - 1 <= rtDW->ar - 2) {
+          rtDW->c -= qrmanager->QR[rtDW->b_i + rtDW->ix_o] * workspace[rtDW->b_i
+            + 8];
+          rtDW->b_i++;
+        }
+
+        workspace[rtDW->ar + 8] = rtDW->c / qrmanager->QR[rtDW->ar + rtDW->ix_o];
+        rtDW->ar++;
+      }
+
+      memcpy(&rtDW->B_m[0], &workspace[0], 72U * sizeof(real_T));
+      if (workingset->nVar != 0) {
+        rtDW->ar = 0;
+        while (rtDW->ar + 1 <= rtDW->nVar_j) {
+          workspace[rtDW->ar] = 0.0;
+          rtDW->ar++;
+        }
+
+        rtDW->ar = 9;
+        while (rtDW->ar + 1 <= rtDW->nVar_j + 9) {
+          workspace[rtDW->ar] = 0.0;
+          rtDW->ar++;
+        }
+
+        rtDW->ar = -1;
+        rtDW->b_i = 1;
+        while (rtDW->b_i <= rtDW->mWConstr + 1) {
+          rtDW->b_ia = rtDW->ar;
+          rtDW->iy_n = 0;
+          while (rtDW->iy_n + 1 <= rtDW->nVar_j) {
+            rtDW->b_ia++;
+            workspace[rtDW->iy_n] += rtDW->B_m[rtDW->b_i - 1] * qrmanager->
+              Q[rtDW->b_ia];
+            rtDW->iy_n++;
+          }
+
+          rtDW->ar += rtDW->ldq;
+          rtDW->b_i++;
+        }
+
+        rtDW->ar = -1;
+        rtDW->b_i = 10;
+        while (rtDW->b_i <= rtDW->mWConstr + 10) {
+          rtDW->b_ia = rtDW->ar;
+          rtDW->iy_n = 9;
+          while (rtDW->iy_n + 1 <= rtDW->nVar_j + 9) {
+            rtDW->b_ia++;
+            workspace[rtDW->iy_n] += rtDW->B_m[rtDW->b_i - 1] * qrmanager->
+              Q[rtDW->b_ia];
+            rtDW->iy_n++;
+          }
+
+          rtDW->ar += rtDW->ldq;
+          rtDW->b_i++;
+        }
+      }
+    }
+
+    if (workingset->nVar >= 1) {
+      rtDW->mWConstr = 0;
+      while (rtDW->mWConstr <= workingset->nVar - 1) {
+        workspace[rtDW->mWConstr] += xCurrent[rtDW->mWConstr];
+        rtDW->mWConstr++;
+      }
+    }
+
+    rtDW->c = maxConstraintViolation(workingset, workspace, rtDW);
+    rtDW->constrViolation_basicX = maxConstraintViolation_e(workingset,
+      workspace, rtDW);
+    if ((rtDW->c <= 2.2204460492503131E-16) || (rtDW->c <
+         rtDW->constrViolation_basicX)) {
+      rtDW->mWConstr = 0;
+      while (rtDW->mWConstr <= rtDW->nVar_j - 1) {
+        xCurrent[rtDW->mWConstr] = workspace[rtDW->mWConstr];
+        rtDW->mWConstr++;
+      }
+    } else {
+      rtDW->mWConstr = 0;
+      while (rtDW->mWConstr <= rtDW->nVar_j - 1) {
+        xCurrent[rtDW->mWConstr] = workspace[rtDW->mWConstr + 9];
+        rtDW->mWConstr++;
+      }
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_nhum(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+  const real_T x[8], real_T y[9], DW *rtDW)
+{
+  int32_T b;
+  int32_T b_iy;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = -y[b_iy];
+    }
+
+    iy = 0;
+    b_iy = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
+      ix = 0;
+      rtDW->c_dy = 0.0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        rtDW->c_dy += A[ia - 1] * x[ix];
+        ix++;
+      }
+
+      y[iy] += rtDW->c_dy;
+      iy++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_nhumt(int32_T m, int32_T n, const real_T A[8], int32_T lda,
+  const real_T x[8], real_T y[9], DW *rtDW)
+{
+  int32_T b;
+  int32_T b_iy;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = -y[b_iy];
+    }
+
+    iy = 0;
+    b_iy = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
+      ix = 0;
+      rtDW->c_dh = 0.0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        rtDW->c_dh += A[ia - 1] * x[ix];
+        ix++;
+      }
+
+      y[iy] += rtDW->c_dh;
+      iy++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static real_T maxConstraintViolation_eo(swcr9qLPQBiG4lNhaNdYq5G *obj, const
+  real_T x[8], DW *rtDW)
+{
+  real_T v;
+  int32_T b_mIneq;
+  int32_T h_idx;
+  int32_T mEq;
+  int32_T mFixed;
+  int32_T mIneq;
+  int32_T mLB;
+  int32_T mUB;
+  mLB = obj->sizes[3];
+  mUB = obj->sizes[4];
+  mFixed = obj->sizes[0];
+  if (obj->probType == 2) {
+    v = 0.0;
+    b_mIneq = obj->sizes[2] - 1;
+    mEq = obj->sizes[1] - 1;
+    for (mIneq = 0; mIneq <= b_mIneq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->bineq[mIneq];
+    }
+
+    xgemv_nhum(obj->nVarOrig, obj->sizes[2], obj->Aineq, obj->ldA, x,
+               obj->maxConstrWorkspace, rtDW);
+    for (mIneq = 0; mIneq <= b_mIneq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] -= x[obj->nVarOrig + mIneq];
+      v = fmax(v, obj->maxConstrWorkspace[mIneq]);
+    }
+
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->beq;
+    }
+
+    xgemv_nhumt(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
+                obj->maxConstrWorkspace, rtDW);
+    b_mIneq = obj->nVarOrig + obj->sizes[2];
+    mIneq = b_mIneq + obj->sizes[1];
+    for (h_idx = 0; h_idx <= mEq; h_idx++) {
+      obj->maxConstrWorkspace[h_idx] = (obj->maxConstrWorkspace[h_idx] -
+        x[b_mIneq + h_idx]) + x[mIneq + h_idx];
+      v = fmax(v, fabs(obj->maxConstrWorkspace[h_idx]));
+    }
+  } else {
+    v = 0.0;
+    mIneq = obj->sizes[2] - 1;
+    mEq = obj->sizes[1] - 1;
+    for (b_mIneq = 0; b_mIneq <= mIneq; b_mIneq++) {
+      obj->maxConstrWorkspace[b_mIneq] = obj->bineq[b_mIneq];
+    }
+
+    xgemv_nhum(obj->nVar, obj->sizes[2], obj->Aineq, obj->ldA, x,
+               obj->maxConstrWorkspace, rtDW);
+    for (b_mIneq = 0; b_mIneq <= mIneq; b_mIneq++) {
+      v = fmax(v, obj->maxConstrWorkspace[b_mIneq]);
+    }
+
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      obj->maxConstrWorkspace[mIneq] = obj->beq;
+    }
+
+    xgemv_nhumt(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
+                obj->maxConstrWorkspace, rtDW);
+    for (mIneq = 0; mIneq <= mEq; mIneq++) {
+      v = fmax(v, fabs(obj->maxConstrWorkspace[mIneq]));
+    }
+  }
+
+  if (mLB > 0) {
+    for (mEq = 0; mEq < mLB; mEq++) {
+      v = fmax(v, -x[obj->indexLB[mEq] - 1] - obj->lb[obj->indexLB[mEq] - 1]);
+    }
+  }
+
+  if (mUB > 0) {
+    for (mLB = 0; mLB < mUB; mLB++) {
+      v = fmax(v, x[obj->indexUB[mLB] - 1] - obj->ub[obj->indexUB[mLB] - 1]);
+    }
+  }
+
+  if (mFixed > 0) {
+    for (mUB = 0; mUB < mFixed; mUB++) {
+      v = fmax(v, fabs(x[obj->indexFixed[mUB] - 1] - obj->ub[obj->indexFixed[mUB]
+                       - 1]));
+    }
+  }
+
+  return v;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void PresolveWorkingSet(svV6yPD1e8CTJu8b18IprLB *solution,
+  s9NoAX0P67ji2P1ZBafS3UG *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW *rtDW)
+{
+  solution->state = 82;
+  RemoveDependentEq_(memspace, &rtDW->b_h, workingset, qrmanager, rtDW);
+  if ((rtDW->b_h != -1) && (workingset->nActiveConstr <= qrmanager->ldq)) {
+    RemoveDependentIneq_(workingset, qrmanager, memspace, 100.0, rtDW);
+    feasibleX0ForWorkingSet(memspace->workspace_double, solution->xstar,
+      workingset, qrmanager, rtDW);
+    if (workingset->nWConstr[0] + workingset->nWConstr[1] == workingset->nVar) {
+      rtDW->constrViolation_f = maxConstraintViolation_eo(workingset,
+        solution->xstar, rtDW);
+      if (rtDW->constrViolation_f > 1.0E-8) {
+        solution->state = -2;
+      }
+    }
+  } else {
+    solution->state = -3;
+    removeAllIneqConstr(workingset);
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void modifyOverheadPhaseOne_(swcr9qLPQBiG4lNhaNdYq5G *obj)
+{
+  int32_T idx;
+  int32_T idxEq;
+  for (idx = 0; idx < obj->sizes[0]; idx++) {
+    obj->ATwset[(obj->nVar + obj->ldA * idx) - 1] = 0.0;
+  }
+
+  for (idx = 0; idx < obj->sizes[1]; idx++) {
+    idxEq = (obj->ldA * idx + obj->nVar) - 1;
+    obj->Aeq[idxEq] = 0.0;
+    obj->ATwset[idxEq + obj->ldA * (obj->isActiveIdx[1] - 1)] = 0.0;
+  }
+
+  for (idx = 0; idx < obj->sizes[2]; idx++) {
+    obj->Aineq[(obj->nVar + obj->ldA * idx) - 1] = -1.0;
+  }
+
+  obj->indexLB[obj->sizes[3] - 1] = obj->nVar;
+  obj->lb[obj->nVar - 1] = obj->SLACK0;
+  for (idx = obj->isActiveIdx[2]; idx <= obj->nActiveConstr; idx++) {
+    obj->ATwset[(obj->nVar + obj->ldA * (idx - 1)) - 1] = -1.0;
+  }
+
+  if (obj->nWConstr[4] > 0) {
+    for (idx = 0; idx <= obj->sizesNormal[4]; idx++) {
+      obj->isActiveConstr[(obj->isActiveIdx[4] + idx) - 1] = false;
+    }
+  }
+
+  obj->isActiveConstr[obj->isActiveIdx[4] - 2] = false;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void setProblemType(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T PROBLEM_TYPE)
+{
+  int32_T colOffsetATw;
+  int32_T colOffsetAeq;
+  int32_T colOffsetAineq;
+  int32_T d_idx_row;
+  int32_T offsetEq1;
+  int32_T offsetEq1_tmp;
+  int32_T offsetEq2;
+  int32_T offsetIneq;
+  switch (PROBLEM_TYPE) {
+   case 3:
+    obj->nVar = obj->nVarOrig;
+    obj->mConstr = obj->mConstrOrig;
+    if (obj->nWConstr[4] > 0) {
+      for (offsetIneq = -1; offsetIneq < obj->sizesNormal[4] - 1; offsetIneq++)
+      {
+        obj->isActiveConstr[obj->isActiveIdxNormal[4] + offsetIneq] =
+          obj->isActiveConstr[obj->isActiveIdx[4] + offsetIneq];
+      }
+    }
+
+    for (offsetEq1 = 0; offsetEq1 < 5; offsetEq1++) {
+      obj->sizes[offsetEq1] = obj->sizesNormal[offsetEq1];
+    }
+
+    for (offsetEq1 = 0; offsetEq1 < 6; offsetEq1++) {
+      obj->isActiveIdx[offsetEq1] = obj->isActiveIdxNormal[offsetEq1];
+    }
+    break;
+
+   case 1:
+    obj->nVar = obj->nVarOrig + 1;
+    obj->mConstr = obj->mConstrOrig + 1;
+    for (offsetEq1 = 0; offsetEq1 < 5; offsetEq1++) {
+      obj->sizes[offsetEq1] = obj->sizesPhaseOne[offsetEq1];
+    }
+
+    for (offsetEq1 = 0; offsetEq1 < 6; offsetEq1++) {
+      obj->isActiveIdx[offsetEq1] = obj->isActiveIdxPhaseOne[offsetEq1];
+    }
+
+    modifyOverheadPhaseOne_(obj);
+    break;
+
+   case 2:
+    obj->nVar = obj->nVarMax - 1;
+    obj->mConstr = obj->mConstrMax - 1;
+    for (offsetEq1 = 0; offsetEq1 < 5; offsetEq1++) {
+      obj->sizes[offsetEq1] = obj->sizesRegularized[offsetEq1];
+    }
+
+    if (obj->probType != 4) {
+      offsetIneq = obj->nVarOrig + 1;
+      offsetEq1_tmp = obj->nVarOrig + obj->sizes[2];
+      offsetEq2 = offsetEq1_tmp + obj->sizes[1];
+      for (colOffsetAineq = 0; colOffsetAineq < obj->sizes[0]; colOffsetAineq++)
+      {
+        colOffsetATw = obj->ldA * colOffsetAineq;
+        for (colOffsetAeq = obj->nVarOrig + 1; colOffsetAeq <= obj->nVar;
+             colOffsetAeq++) {
+          obj->ATwset[(colOffsetAeq + colOffsetATw) - 1] = 0.0;
+        }
+      }
+
+      for (colOffsetATw = -1; colOffsetATw < obj->sizes[2] - 1; colOffsetATw++)
+      {
+        colOffsetAineq = (colOffsetATw + 1) * obj->ldA - 1;
+        colOffsetAeq = colOffsetATw + offsetIneq;
+        for (offsetEq1 = offsetIneq; offsetEq1 <= colOffsetAeq; offsetEq1++) {
+          obj->Aineq[offsetEq1 + colOffsetAineq] = 0.0;
+        }
+
+        obj->Aineq[(colOffsetAeq + colOffsetAineq) + 1] = -1.0;
+        for (colOffsetAeq += 2; colOffsetAeq <= obj->nVar; colOffsetAeq++) {
+          obj->Aineq[colOffsetAeq + colOffsetAineq] = 0.0;
+        }
+      }
+
+      for (colOffsetAineq = 1; colOffsetAineq - 1 < obj->sizes[1];
+           colOffsetAineq++) {
+        colOffsetAeq = (colOffsetAineq - 1) * obj->ldA - 1;
+        colOffsetATw = (obj->isActiveIdx[1] - 1) * obj->ldA + colOffsetAeq;
+        for (d_idx_row = offsetIneq; d_idx_row <= offsetEq1_tmp; d_idx_row++) {
+          obj->Aeq[d_idx_row + colOffsetAeq] = 0.0;
+          obj->ATwset[d_idx_row + colOffsetATw] = 0.0;
+        }
+
+        d_idx_row = (offsetEq1_tmp + colOffsetAineq) - 1;
+        for (offsetEq1 = offsetEq1_tmp + 1; offsetEq1 <= d_idx_row; offsetEq1++)
+        {
+          obj->Aeq[offsetEq1 + colOffsetAeq] = 0.0;
+          obj->ATwset[offsetEq1 + colOffsetATw] = 0.0;
+        }
+
+        obj->Aeq[(offsetEq1_tmp + colOffsetAineq) + colOffsetAeq] = -1.0;
+        offsetEq1 = offsetEq1_tmp + colOffsetAineq;
+        obj->ATwset[offsetEq1 + colOffsetATw] = -1.0;
+        for (d_idx_row = offsetEq1 + 1; d_idx_row <= offsetEq2; d_idx_row++) {
+          obj->Aeq[d_idx_row + colOffsetAeq] = 0.0;
+          obj->ATwset[d_idx_row + colOffsetATw] = 0.0;
+        }
+
+        d_idx_row = (offsetEq2 + colOffsetAineq) - 1;
+        for (offsetEq1 = offsetEq2 + 1; offsetEq1 <= d_idx_row; offsetEq1++) {
+          obj->Aeq[offsetEq1 + colOffsetAeq] = 0.0;
+          obj->ATwset[offsetEq1 + colOffsetATw] = 0.0;
+        }
+
+        offsetEq1 = offsetEq2 + colOffsetAineq;
+        obj->Aeq[offsetEq1 + colOffsetAeq] = 1.0;
+        obj->ATwset[offsetEq1 + colOffsetATw] = 1.0;
+        for (d_idx_row = (offsetEq2 + colOffsetAineq) + 1; d_idx_row <=
+             obj->nVar; d_idx_row++) {
+          obj->Aeq[d_idx_row + colOffsetAeq] = 0.0;
+          obj->ATwset[d_idx_row + colOffsetATw] = 0.0;
+        }
+      }
+
+      offsetEq1 = obj->nVarOrig;
+      for (offsetEq2 = obj->sizesNormal[3]; offsetEq2 < obj->sizesRegularized[3];
+           offsetEq2++) {
+        offsetEq1++;
+        obj->indexLB[offsetEq2] = offsetEq1;
+      }
+
+      if (obj->nWConstr[4] > 0) {
+        for (offsetEq1 = -1; offsetEq1 < obj->sizesRegularized[4] - 1; offsetEq1
+             ++) {
+          obj->isActiveConstr[(obj->isActiveIdxRegularized[4] + offsetEq1) + 1] =
+            obj->isActiveConstr[obj->isActiveIdx[4] + offsetEq1];
+        }
+      }
+
+      for (offsetEq1 = obj->isActiveIdx[4]; offsetEq1 <
+           obj->isActiveIdxRegularized[4]; offsetEq1++) {
+        obj->isActiveConstr[offsetEq1 - 1] = false;
+      }
+
+      offsetEq1 = (obj->nVarOrig + obj->sizes[2]) + (obj->sizes[1] << 1);
+      for (offsetEq2 = obj->nVarOrig; offsetEq2 < offsetEq1; offsetEq2++) {
+        obj->lb[offsetEq2] = 0.0;
+      }
+
+      for (offsetEq1 = obj->isActiveIdx[2] - 1; offsetEq1 < obj->nActiveConstr;
+           offsetEq1++) {
+        colOffsetATw = obj->ldA * offsetEq1 - 1;
+        if (obj->Wid[offsetEq1] == 3) {
+          offsetEq2 = offsetIneq + obj->Wlocalidx[offsetEq1];
+          for (colOffsetAineq = offsetIneq; colOffsetAineq <= offsetEq2 - 2;
+               colOffsetAineq++) {
+            obj->ATwset[colOffsetAineq + colOffsetATw] = 0.0;
+          }
+
+          obj->ATwset[((offsetIneq + obj->Wlocalidx[offsetEq1]) + colOffsetATw)
+            - 1] = -1.0;
+          for (offsetEq2 = offsetIneq + obj->Wlocalidx[offsetEq1]; offsetEq2 <=
+               obj->nVar; offsetEq2++) {
+            obj->ATwset[offsetEq2 + colOffsetATw] = 0.0;
+          }
+        } else {
+          for (offsetEq2 = offsetIneq; offsetEq2 <= obj->nVar; offsetEq2++) {
+            obj->ATwset[offsetEq2 + colOffsetATw] = 0.0;
+          }
+        }
+      }
+    }
+
+    for (offsetEq1 = 0; offsetEq1 < 6; offsetEq1++) {
+      obj->isActiveIdx[offsetEq1] = obj->isActiveIdxRegularized[offsetEq1];
+    }
+    break;
+
+   default:
+    obj->nVar = obj->nVarMax;
+    obj->mConstr = obj->mConstrMax;
+    for (offsetEq1 = 0; offsetEq1 < 5; offsetEq1++) {
+      obj->sizes[offsetEq1] = obj->sizesRegPhaseOne[offsetEq1];
+    }
+
+    for (offsetEq1 = 0; offsetEq1 < 6; offsetEq1++) {
+      obj->isActiveIdx[offsetEq1] = obj->isActiveIdxRegPhaseOne[offsetEq1];
+    }
+
+    modifyOverheadPhaseOne_(obj);
+    break;
+  }
+
+  obj->probType = PROBLEM_TYPE;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void linearForm_(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
+  workspace[72], const real_T H[49], const real_T f[7], const real_T x[8])
+{
+  real_T c;
+  int32_T b;
+  int32_T b_c;
+  int32_T fMultiplier;
+  int32_T ia;
+  int32_T iac;
+  int32_T iy;
+  fMultiplier = 0;
+  if (obj_hasLinear) {
+    while (fMultiplier <= obj_nvar - 1) {
+      workspace[fMultiplier] = f[fMultiplier];
+      fMultiplier++;
+    }
+
+    fMultiplier = 1;
+  }
+
+  if (obj_nvar != 0) {
+    if (fMultiplier != 1) {
+      while (fMultiplier <= obj_nvar - 1) {
+        workspace[fMultiplier] = 0.0;
+        fMultiplier++;
+      }
+    }
+
+    fMultiplier = 0;
+    b_c = (obj_nvar - 1) * obj_nvar + 1;
+    iac = 1;
+    while (((obj_nvar > 0) && (iac <= b_c)) || ((obj_nvar < 0) && (iac >= b_c)))
+    {
+      c = 0.5 * x[fMultiplier];
+      iy = 0;
+      b = (iac + obj_nvar) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        workspace[iy] += H[ia - 1] * c;
+        iy++;
+      }
+
+      fMultiplier++;
+      iac += obj_nvar;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static real_T computeFval(const shohwUBaOGHF036TMzc1KEH *obj, real_T workspace
+  [72], const real_T H[49], const real_T f[7], const real_T x[8])
+{
+  real_T val;
+  int32_T b_k;
+  val = 0.0;
+  switch (obj->objtype) {
+   case 5:
+    val = x[obj->nvar - 1] * obj->gammaScalar;
+    break;
+
+   case 3:
+    linearForm_(obj->hasLinear, obj->nvar, workspace, H, f, x);
+    if (obj->nvar >= 1) {
+      for (b_k = 0; b_k < obj->nvar; b_k++) {
+        val += x[b_k] * workspace[b_k];
+      }
+    }
+    break;
+
+   case 4:
+    linearForm_(obj->hasLinear, obj->nvar, workspace, H, f, x);
+    for (b_k = obj->nvar; b_k < obj->maxVar - 1; b_k++) {
+      workspace[b_k] = 0.5 * obj->beta * x[b_k] + obj->rho;
+    }
+
+    if (obj->maxVar - 1 >= 1) {
+      for (b_k = 0; b_k <= obj->maxVar - 2; b_k++) {
+        val += x[b_k] * workspace[b_k];
+      }
+    }
+    break;
+  }
+
+  return val;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_nhumth(int32_T m, int32_T n, const real_T A[49], int32_T lda,
+  const real_T x[8], real_T y[7])
+{
+  int32_T b;
+  int32_T c;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (ix = 0; ix < m; ix++) {
+      y[ix] = 0.0;
+    }
+
+    ix = 0;
+    c = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= c)) || ((lda < 0) && (iac >= c))) {
+      iy = 0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        y[iy] += A[ia - 1] * x[ix];
+        iy++;
+      }
+
+      ix++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void computeGrad_StoreHx(shohwUBaOGHF036TMzc1KEH *obj, const real_T H[49],
+  const real_T f[7], const real_T x[8])
+{
+  int32_T b_i;
+  int32_T d_i;
+  int32_T maxRegVar;
+  switch (obj->objtype) {
+   case 5:
+    for (b_i = 0; b_i <= obj->nvar - 2; b_i++) {
+      obj->grad[b_i] = 0.0;
+    }
+
+    obj->grad[obj->nvar - 1] = obj->gammaScalar;
+    break;
+
+   case 3:
+    xgemv_nhumth(obj->nvar, obj->nvar, H, obj->nvar, x, obj->Hx);
+    for (maxRegVar = 0; maxRegVar < obj->nvar; maxRegVar++) {
+      obj->grad[maxRegVar] = obj->Hx[maxRegVar];
+    }
+
+    if (obj->hasLinear && (obj->nvar >= 1)) {
+      b_i = obj->nvar - 1;
+      for (maxRegVar = 0; maxRegVar <= b_i; maxRegVar++) {
+        obj->grad[maxRegVar] += f[maxRegVar];
+      }
+    }
+    break;
+
+   case 4:
+    maxRegVar = obj->maxVar - 1;
+    xgemv_nhumth(obj->nvar, obj->nvar, H, obj->nvar, x, obj->Hx);
+    for (b_i = obj->nvar; b_i < maxRegVar; b_i++) {
+      obj->Hx[b_i] = obj->beta * x[b_i];
+    }
+
+    for (d_i = 0; d_i < maxRegVar; d_i++) {
+      obj->grad[d_i] = obj->Hx[d_i];
+    }
+
+    if (obj->hasLinear && (obj->nvar >= 1)) {
+      b_i = obj->nvar - 1;
+      for (maxRegVar = 0; maxRegVar <= b_i; maxRegVar++) {
+        obj->grad[maxRegVar] += f[maxRegVar];
+      }
+    }
+
+    b_i = (obj->maxVar - obj->nvar) - 1;
+    if (b_i >= 1) {
+      maxRegVar = obj->nvar;
+      for (d_i = 0; d_i < b_i; d_i++) {
+        obj->grad[maxRegVar] += obj->rho;
+        maxRegVar++;
+      }
+    }
+    break;
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static real_T computeFval_ReuseHx(const shohwUBaOGHF036TMzc1KEH *obj, real_T
+  workspace[72], const real_T f[7], const real_T x[8])
+{
+  real_T val;
+  int32_T c_k;
+  int32_T k;
+  int32_T maxRegVar;
+  val = 0.0;
+  switch (obj->objtype) {
+   case 5:
+    val = x[obj->nvar - 1] * obj->gammaScalar;
+    break;
+
+   case 3:
+    if (obj->hasLinear) {
+      for (maxRegVar = 0; maxRegVar < obj->nvar; maxRegVar++) {
+        workspace[maxRegVar] = 0.5 * obj->Hx[maxRegVar] + f[maxRegVar];
+      }
+
+      if (obj->nvar >= 1) {
+        for (maxRegVar = 0; maxRegVar < obj->nvar; maxRegVar++) {
+          val += x[maxRegVar] * workspace[maxRegVar];
+        }
+      }
+    } else {
+      if (obj->nvar >= 1) {
+        for (maxRegVar = 0; maxRegVar < obj->nvar; maxRegVar++) {
+          val += x[maxRegVar] * obj->Hx[maxRegVar];
+        }
+      }
+
+      val *= 0.5;
+    }
+    break;
+
+   case 4:
+    maxRegVar = obj->maxVar - 1;
+    if (obj->hasLinear) {
+      for (c_k = 0; c_k < obj->nvar; c_k++) {
+        workspace[c_k] = f[c_k];
+      }
+
+      k = obj->maxVar - obj->nvar;
+      for (c_k = 0; c_k <= k - 2; c_k++) {
+        workspace[obj->nvar + c_k] = obj->rho;
+      }
+
+      for (c_k = 0; c_k < maxRegVar; c_k++) {
+        workspace[c_k] += 0.5 * obj->Hx[c_k];
+      }
+
+      if (obj->maxVar - 1 >= 1) {
+        for (maxRegVar = 0; maxRegVar <= obj->maxVar - 2; maxRegVar++) {
+          val += x[maxRegVar] * workspace[maxRegVar];
+        }
+      }
+    } else {
+      if (obj->maxVar - 1 >= 1) {
+        for (k = 0; k <= obj->maxVar - 2; k++) {
+          val += x[k] * obj->Hx[k];
+        }
+      }
+
+      val *= 0.5;
+      for (k = obj->nvar; k < maxRegVar; k++) {
+        val += x[k] * obj->rho;
+      }
+    }
+    break;
+  }
+
+  return val;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void printHeader(void)
+{
+  printf("                          First-order                                                                          Active\n");
+  fflush(stdout);
+  printf(" Iter            Fval      Optimality     Feasibility           alpha    Norm of step           Action     Constraints    Step Type\n");
+  fflush(stdout);
+  printf("\n");
+  fflush(stdout);
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void printInitialInfo(int32_T PROBLEM_TYPE, real_T solution_fstar,
+  int32_T solution_iterations, int32_T workingset_nActiveConstr)
+{
+  int32_T i;
+  char_T varargin_4[14];
+  char_T stepType_str[13];
+  static const char_T b[13] = { 'N', 'o', 'r', 'm', 'a', 'l', ' ', ' ', ' ', ' ',
+    ' ', ' ', ' ' };
+
+  static const char_T c[13] = { 'P', 'h', 'a', 's', 'e', ' ', 'O', 'n', 'e', ' ',
+    ' ', ' ', ' ' };
+
+  static const char_T d[13] = { 'R', 'e', 'g', 'u', 'l', 'a', 'r', 'i', 'z', 'e',
+    'd', ' ', ' ' };
+
+  static const char_T e[13] = { 'P', 'h', 'a', 's', 'e', ' ', 'O', 'n', 'e', ' ',
+    'R', 'e', 'g' };
+
+  switch (PROBLEM_TYPE) {
+   case 1:
+    for (i = 0; i < 13; i++) {
+      stepType_str[i] = c[i];
+    }
+    break;
+
+   case 2:
+    for (i = 0; i < 13; i++) {
+      stepType_str[i] = d[i];
+    }
+    break;
+
+   case 4:
+    for (i = 0; i < 13; i++) {
+      stepType_str[i] = e[i];
+    }
+    break;
+
+   default:
+    for (i = 0; i < 13; i++) {
+      stepType_str[i] = b[i];
+    }
+    break;
+  }
+
+  for (i = 0; i < 13; i++) {
+    varargin_4[i] = stepType_str[i];
+  }
+
+  varargin_4[13] = '\x00';
+  printf("%5i  %14.6e                                                                                            %5i    %s",
+         solution_iterations, solution_fstar, workingset_nActiveConstr,
+         &varargin_4[0]);
+  fflush(stdout);
+  printf("\n");
+  fflush(stdout);
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xrotg(real_T *a, real_T *b, real_T *c, real_T *s, DW *rtDW)
+{
+  real_T ads;
+  real_T bds;
+  real_T scale;
+  rtDW->roe = *b;
+  rtDW->absa = fabs(*a);
+  rtDW->absb = fabs(*b);
+  if (rtDW->absa > rtDW->absb) {
+    rtDW->roe = *a;
+  }
+
+  scale = rtDW->absa + rtDW->absb;
+  if (scale == 0.0) {
+    *s = 0.0;
+    *c = 1.0;
+    *b = 0.0;
+  } else {
+    ads = rtDW->absa / scale;
+    bds = rtDW->absb / scale;
+    scale *= sqrt(ads * ads + bds * bds);
+    if (rtDW->roe < 0.0) {
+      scale = -scale;
+    }
+
+    *c = *a / scale;
+    *s = *b / scale;
+    if (rtDW->absa > rtDW->absb) {
+      *b = *s;
+    } else if (*c != 0.0) {
+      *b = 1.0 / *c;
+    } else {
+      *b = 1.0;
+    }
+  }
+
+  *a = scale;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW)
+{
+  int32_T QRk0;
+  int32_T b_ix;
+  int32_T d_k;
+  int32_T i;
+  int32_T idxRotGCol;
+  int32_T ix;
+  int32_T k;
+  if (obj->usedPivoting) {
+    i = 1;
+    while ((i <= obj->ncols) && (obj->jpvt[i - 1] != idx)) {
+      i++;
+    }
+
+    idx = i;
+  }
+
+  if (idx >= obj->ncols) {
+    obj->ncols--;
+  } else {
+    obj->jpvt[idx - 1] = obj->jpvt[obj->ncols - 1];
+    for (i = 0; i < obj->minRowCol; i++) {
+      obj->QR[i + obj->ldq * (idx - 1)] = obj->QR[(obj->ncols - 1) * obj->ldq +
+        i];
+    }
+
+    obj->ncols--;
+    if (obj->mrows < obj->ncols) {
+      obj->minRowCol = obj->mrows;
+    } else {
+      obj->minRowCol = obj->ncols;
+    }
+
+    if (idx < obj->mrows) {
+      if (obj->mrows - 1 < obj->ncols) {
+        i = obj->mrows - 1;
+      } else {
+        i = obj->ncols;
+      }
+
+      k = i;
+      idxRotGCol = (idx - 1) * obj->ldq;
+      while (k >= idx) {
+        QRk0 = k + idxRotGCol;
+        rtDW->b_temp_m = obj->QR[QRk0 - 1];
+        rtDW->e = obj->QR[QRk0];
+        xrotg(&rtDW->b_temp_m, &rtDW->e, &rtDW->c_c_g, &rtDW->b_s, rtDW);
+        obj->QR[QRk0 - 1] = rtDW->b_temp_m;
+        obj->QR[QRk0] = rtDW->e;
+        obj->QR[k + obj->ldq * (k - 1)] = 0.0;
+        QRk0 = obj->ldq * idx + k;
+        b_ix = obj->ncols - idx;
+        if (b_ix >= 1) {
+          ix = QRk0 - 1;
+          for (d_k = 0; d_k < b_ix; d_k++) {
+            rtDW->b_temp_m = rtDW->c_c_g * obj->QR[ix] + rtDW->b_s * obj->
+              QR[QRk0];
+            obj->QR[QRk0] = rtDW->c_c_g * obj->QR[QRk0] - rtDW->b_s * obj->QR[ix];
+            obj->QR[ix] = rtDW->b_temp_m;
+            QRk0 += obj->ldq;
+            ix += obj->ldq;
+          }
+        }
+
+        b_ix = (k - 1) * obj->ldq;
+        if (obj->mrows >= 1) {
+          QRk0 = obj->ldq + b_ix;
+          for (ix = 0; ix < obj->mrows; ix++) {
+            rtDW->b_temp_m = rtDW->c_c_g * obj->Q[b_ix] + rtDW->b_s * obj->
+              Q[QRk0];
+            obj->Q[QRk0] = rtDW->c_c_g * obj->Q[QRk0] - rtDW->b_s * obj->Q[b_ix];
+            obj->Q[b_ix] = rtDW->b_temp_m;
+            QRk0++;
+            b_ix++;
+          }
+        }
+
+        k--;
+      }
+
+      for (k = idx + 1; k <= i; k++) {
+        QRk0 = k + (k - 1) * obj->ldq;
+        rtDW->b_temp_m = obj->QR[QRk0 - 1];
+        rtDW->e = obj->QR[QRk0];
+        xrotg(&rtDW->b_temp_m, &rtDW->e, &rtDW->c_c_g, &rtDW->b_s, rtDW);
+        obj->QR[QRk0 - 1] = rtDW->b_temp_m;
+        obj->QR[QRk0] = rtDW->e;
+        QRk0 = (obj->ldq + 1) * k;
+        idxRotGCol = obj->ncols - k;
+        if (idxRotGCol >= 1) {
+          b_ix = QRk0 - 1;
+          for (ix = 0; ix < idxRotGCol; ix++) {
+            rtDW->b_temp_m = rtDW->c_c_g * obj->QR[b_ix] + rtDW->b_s * obj->
+              QR[QRk0];
+            obj->QR[QRk0] = rtDW->c_c_g * obj->QR[QRk0] - rtDW->b_s * obj->
+              QR[b_ix];
+            obj->QR[b_ix] = rtDW->b_temp_m;
+            QRk0 += obj->ldq;
+            b_ix += obj->ldq;
+          }
+        }
+
+        idxRotGCol = (k - 1) * obj->ldq;
+        if (obj->mrows >= 1) {
+          QRk0 = obj->ldq + idxRotGCol;
+          for (b_ix = 0; b_ix < obj->mrows; b_ix++) {
+            rtDW->b_temp_m = rtDW->c_c_g * obj->Q[idxRotGCol] + rtDW->b_s *
+              obj->Q[QRk0];
+            obj->Q[QRk0] = rtDW->c_c_g * obj->Q[QRk0] - rtDW->b_s * obj->
+              Q[idxRotGCol];
+            obj->Q[idxRotGCol] = rtDW->b_temp_m;
+            QRk0++;
+            idxRotGCol++;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void computeProjectedHessian(const real_T H[49], s1hK3o0EyOqKKjEgDlbhqfF *
+  cholmanager, const sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s9NoAX0P67ji2P1ZBafS3UG
+  *memspace, DW *rtDW)
+{
+  int32_T ar;
+  int32_T b_c;
+  int32_T b_cr;
+  int32_T b_ic;
+  int32_T br;
+  int32_T c;
+  int32_T d;
+  int32_T ia;
+  int32_T ib;
+  int32_T ldQ;
+  int32_T ldm;
+  int32_T mNull;
+  int32_T nVars;
+  int32_T nullStart;
+  nVars = qrmanager->mrows;
+  mNull = qrmanager->mrows - qrmanager->ncols;
+  ldm = cholmanager->ldm;
+  ldQ = qrmanager->ldq;
+  nullStart = qrmanager->ldq * qrmanager->ncols;
+  if ((qrmanager->mrows != 0) && (mNull != 0)) {
+    b_c = (mNull - 1) * 9;
+    for (br = 0; br <= b_c; br += 9) {
+      b_cr = br + nVars;
+      for (ar = br; ar < b_cr; ar++) {
+        memspace->workspace_double[ar] = 0.0;
+      }
+    }
+
+    br = nullStart;
+    for (b_cr = 0; b_cr <= b_c; b_cr += 9) {
+      ar = -1;
+      c = br + nVars;
+      for (ib = br; ib < c; ib++) {
+        ia = ar;
+        d = b_cr + nVars;
+        for (b_ic = b_cr; b_ic < d; b_ic++) {
+          ia++;
+          memspace->workspace_double[b_ic] += qrmanager->Q[ib] * H[ia];
+        }
+
+        ar += nVars;
+      }
+
+      br += ldQ;
+    }
+  }
+
+  if (mNull != 0) {
+    b_c = (mNull - 1) * cholmanager->ldm;
+    br = 0;
+    while (((ldm > 0) && (br <= b_c)) || ((ldm < 0) && (br >= b_c))) {
+      b_cr = br + mNull;
+      for (ar = br; ar < b_cr; ar++) {
+        cholmanager->FMat[ar] = 0.0;
+      }
+
+      br += ldm;
+    }
+
+    br = -1;
+    b_cr = 0;
+    while (((ldm > 0) && (b_cr <= b_c)) || ((ldm < 0) && (b_cr >= b_c))) {
+      ar = nullStart;
+      c = b_cr + mNull;
+      for (ib = b_cr; ib < c; ib++) {
+        rtDW->b_temp = 0.0;
+        for (ia = 1; ia - 1 < nVars; ia++) {
+          rtDW->b_temp += qrmanager->Q[(ia + ar) - 1] *
+            memspace->workspace_double[ia + br];
+        }
+
+        cholmanager->FMat[ib] += rtDW->b_temp;
+        ar += ldQ;
+      }
+
+      br += 9;
+      b_cr += ldm;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static int32_T ixamax(int32_T n, const real_T x[64], int32_T incx)
+{
+  real_T smax;
+  real_T y;
+  int32_T idxmax;
+  int32_T ix;
+  int32_T k;
+  if ((n < 1) || (incx < 1)) {
+    idxmax = 0;
+  } else {
+    idxmax = 1;
+    if (n > 1) {
+      ix = 0;
+      smax = fabs(x[0]);
+      for (k = 2; k <= n; k++) {
+        ix += incx;
+        y = fabs(x[ix]);
+        if (y > smax) {
+          idxmax = k;
+          smax = y;
+        }
+      }
+    }
+  }
+
+  return idxmax;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void fullColLDL2_(s1hK3o0EyOqKKjEgDlbhqfF *obj, int32_T LD_offset,
+  int32_T NColsRemain, real_T REG_PRIMAL)
+{
+  real_T neg_D;
+  real_T temp;
+  int32_T LD_diagOffset;
+  int32_T LDimSizeP1;
+  int32_T b;
+  int32_T ijA;
+  int32_T ix;
+  int32_T j;
+  int32_T jA;
+  int32_T jy;
+  int32_T k;
+  int32_T subMatrixDim;
+  LDimSizeP1 = obj->ldm;
+  for (k = 0; k < NColsRemain; k++) {
+    LD_diagOffset = ((LDimSizeP1 + 1) * k + LD_offset) - 1;
+    if (fabs(obj->FMat[LD_diagOffset]) <= obj->regTol_) {
+      obj->FMat[LD_diagOffset] += REG_PRIMAL;
+    }
+
+    neg_D = -1.0 / obj->FMat[LD_diagOffset];
+    subMatrixDim = (NColsRemain - k) - 2;
+    for (jA = 0; jA <= subMatrixDim; jA++) {
+      obj->workspace_[jA] = obj->FMat[(LD_diagOffset + jA) + 1];
+    }
+
+    if (neg_D != 0.0) {
+      jA = (LD_diagOffset + LDimSizeP1) + 1;
+      jy = 0;
+      for (j = 0; j <= subMatrixDim; j++) {
+        if (obj->workspace_[jy] != 0.0) {
+          temp = obj->workspace_[jy] * neg_D;
+          ix = 0;
+          b = subMatrixDim + jA;
+          for (ijA = jA; ijA < b + 1; ijA++) {
+            obj->FMat[ijA] += obj->workspace_[ix] * temp;
+            ix++;
+          }
+        }
+
+        jy++;
+        jA += obj->ldm;
+      }
+    }
+
+    for (jA = 1; jA - 1 <= subMatrixDim; jA++) {
+      jy = LD_diagOffset + jA;
+      obj->FMat[jy] /= obj->FMat[LD_diagOffset];
+    }
+  }
+
+  LDimSizeP1 = ((obj->ldm + 1) * (NColsRemain - 1) + LD_offset) - 1;
+  if (fabs(obj->FMat[LDimSizeP1]) <= obj->regTol_) {
+    obj->FMat[LDimSizeP1] += REG_PRIMAL;
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_nhumtht(int32_T m, int32_T n, const real_T A[64], int32_T ia0,
+  int32_T lda, const real_T x[72], real_T y[8])
+{
+  int32_T b;
+  int32_T c;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (ix = 0; ix < m; ix++) {
+      y[ix] = 0.0;
+    }
+
+    ix = 0;
+    b = (n - 1) * lda + ia0;
+    iac = ia0;
+    while (((lda > 0) && (iac <= b)) || ((lda < 0) && (iac >= b))) {
+      iy = 0;
+      c = (iac + m) - 1;
+      for (ia = iac; ia <= c; ia++) {
+        y[iy] += A[ia - 1] * x[ix];
+        iy++;
+      }
+
+      ix++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution,
+  s9NoAX0P67ji2P1ZBafS3UG *memspace, const sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+  s1hK3o0EyOqKKjEgDlbhqfF *cholmanager, const shohwUBaOGHF036TMzc1KEH *objective,
+  DW *rtDW)
+{
+  int32_T exitg1;
+  rtDW->nVar_a = qrmanager->mrows - 1;
+  rtDW->mNull = qrmanager->mrows - qrmanager->ncols;
+  if (rtDW->mNull <= 0) {
+    rtDW->mNull = 0;
+    while (rtDW->mNull <= rtDW->nVar_a) {
+      solution->searchDir[rtDW->mNull] = 0.0;
+      rtDW->mNull++;
+    }
+  } else {
+    rtDW->nullStartIdx = 0;
+    while (rtDW->nullStartIdx <= rtDW->nVar_a) {
+      solution->searchDir[rtDW->nullStartIdx] = -objective->grad
+        [rtDW->nullStartIdx];
+      rtDW->nullStartIdx++;
+    }
+
+    if (qrmanager->ncols <= 0) {
+      if (objective->objtype == 3) {
+        rtDW->b_SCALED_REG_PRIMAL = 1.4901161193847656E-8 *
+          cholmanager->scaleFactor * (real_T)qrmanager->mrows;
+        cholmanager->ndims = qrmanager->mrows;
+        rtDW->mNull = 0;
+        while (rtDW->mNull <= rtDW->nVar_a) {
+          rtDW->nullStartIdx = (rtDW->nVar_a + 1) * rtDW->mNull;
+          rtDW->b_A_maxDiag_idx = cholmanager->ldm * rtDW->mNull;
+          rtDW->b_jjA = 1;
+          while (rtDW->b_jjA - 1 <= rtDW->nVar_a) {
+            cholmanager->FMat[(rtDW->b_A_maxDiag_idx + rtDW->b_jjA) - 1] = H
+              [(rtDW->nullStartIdx + rtDW->b_jjA) - 1];
+            rtDW->b_jjA++;
+          }
+
+          rtDW->mNull++;
+        }
+
+        rtDW->mNull = ixamax(qrmanager->mrows, cholmanager->FMat,
+                             cholmanager->ldm + 1) - 1;
+        cholmanager->regTol_ = fmax(fabs(cholmanager->FMat[cholmanager->ldm *
+          rtDW->mNull + rtDW->mNull]) * 2.2204460492503131E-16, fabs
+          (rtDW->b_SCALED_REG_PRIMAL));
+        fullColLDL2_(cholmanager, 1, qrmanager->mrows, rtDW->b_SCALED_REG_PRIMAL);
+        if (cholmanager->ConvexCheck) {
+          rtDW->mNull = 0;
+          do {
+            exitg1 = 0;
+            if (rtDW->mNull <= rtDW->nVar_a) {
+              if (cholmanager->FMat[cholmanager->ldm * rtDW->mNull + rtDW->mNull]
+                  <= 0.0) {
+                cholmanager->info = -rtDW->mNull - 1;
+                exitg1 = 1;
+              } else {
+                rtDW->mNull++;
+              }
+            } else {
+              cholmanager->ConvexCheck = false;
+              exitg1 = 1;
+            }
+          } while (exitg1 == 0);
+        }
+
+        if (cholmanager->info != 0) {
+          solution->state = -6;
+        } else {
+          rtDW->iac = cholmanager->ndims - 1;
+          if (cholmanager->ndims != 0) {
+            rtDW->nullStartIdx = 0;
+            while (rtDW->nullStartIdx <= rtDW->iac) {
+              rtDW->nVar_a = rtDW->nullStartIdx * cholmanager->ldm +
+                rtDW->nullStartIdx;
+              rtDW->b_A_maxDiag_idx = rtDW->iac - rtDW->nullStartIdx;
+              rtDW->b_jjA = 1;
+              while (rtDW->b_jjA - 1 <= rtDW->b_A_maxDiag_idx - 1) {
+                rtDW->b_ix_o = rtDW->nullStartIdx + rtDW->b_jjA;
+                solution->searchDir[rtDW->b_ix_o] -= cholmanager->FMat
+                  [rtDW->nVar_a + rtDW->b_jjA] * solution->searchDir
+                  [rtDW->nullStartIdx];
+                rtDW->b_jjA++;
+              }
+
+              rtDW->nullStartIdx++;
+            }
+          }
+
+          rtDW->mNull = 0;
+          while (rtDW->mNull <= rtDW->iac) {
+            solution->searchDir[rtDW->mNull] /= cholmanager->FMat
+              [cholmanager->ldm * rtDW->mNull + rtDW->mNull];
+            rtDW->mNull++;
+          }
+
+          if (cholmanager->ndims != 0) {
+            rtDW->mNull = cholmanager->ndims - 1;
+            while (rtDW->mNull + 1 > 0) {
+              rtDW->nullStartIdx = rtDW->mNull * cholmanager->ldm;
+              rtDW->b_SCALED_REG_PRIMAL = solution->searchDir[rtDW->mNull];
+              rtDW->nVar_a = cholmanager->ndims;
+              while (rtDW->nVar_a >= rtDW->mNull + 2) {
+                rtDW->b_SCALED_REG_PRIMAL -= cholmanager->FMat
+                  [(rtDW->nullStartIdx + rtDW->nVar_a) - 1] *
+                  solution->searchDir[rtDW->nVar_a - 1];
+                rtDW->nVar_a--;
+              }
+
+              solution->searchDir[rtDW->mNull] = rtDW->b_SCALED_REG_PRIMAL;
+              rtDW->mNull--;
+            }
+          }
+        }
+      }
+    } else {
+      rtDW->nullStartIdx = qrmanager->ldq * qrmanager->ncols + 1;
+      if (objective->objtype == 5) {
+        rtDW->b_A_maxDiag_idx = 0;
+        while (rtDW->b_A_maxDiag_idx <= rtDW->mNull - 1) {
+          memspace->workspace_double[rtDW->b_A_maxDiag_idx] = -qrmanager->Q
+            [(qrmanager->ncols + rtDW->b_A_maxDiag_idx) * qrmanager->ldq +
+            rtDW->nVar_a];
+          rtDW->b_A_maxDiag_idx++;
+        }
+
+        xgemv_nhumtht(qrmanager->mrows, rtDW->mNull, qrmanager->Q,
+                      rtDW->nullStartIdx, qrmanager->ldq,
+                      memspace->workspace_double, solution->searchDir);
+      } else {
+        if (objective->objtype == 3) {
+          computeProjectedHessian(H, cholmanager, qrmanager, memspace, rtDW);
+        }
+
+        rtDW->b_SCALED_REG_PRIMAL = 1.4901161193847656E-8 *
+          cholmanager->scaleFactor * (real_T)rtDW->mNull;
+        cholmanager->ndims = rtDW->mNull;
+        rtDW->b_A_maxDiag_idx = ixamax(rtDW->mNull, cholmanager->FMat,
+          cholmanager->ldm + 1) - 1;
+        cholmanager->regTol_ = fmax(fabs(cholmanager->FMat[cholmanager->ldm *
+          rtDW->b_A_maxDiag_idx + rtDW->b_A_maxDiag_idx]) *
+          2.2204460492503131E-16, fabs(rtDW->b_SCALED_REG_PRIMAL));
+        fullColLDL2_(cholmanager, 1, rtDW->mNull, rtDW->b_SCALED_REG_PRIMAL);
+        if (cholmanager->ConvexCheck) {
+          rtDW->b_A_maxDiag_idx = 0;
+          do {
+            exitg1 = 0;
+            if (rtDW->b_A_maxDiag_idx <= rtDW->mNull - 1) {
+              if (cholmanager->FMat[cholmanager->ldm * rtDW->b_A_maxDiag_idx +
+                  rtDW->b_A_maxDiag_idx] <= 0.0) {
+                cholmanager->info = -rtDW->b_A_maxDiag_idx - 1;
+                exitg1 = 1;
+              } else {
+                rtDW->b_A_maxDiag_idx++;
+              }
+            } else {
+              cholmanager->ConvexCheck = false;
+              exitg1 = 1;
+            }
+          } while (exitg1 == 0);
+        }
+
+        if (cholmanager->info != 0) {
+          solution->state = -6;
+        } else {
+          rtDW->b_A_maxDiag_idx = qrmanager->ldq;
+          if (qrmanager->mrows != 0) {
+            rtDW->b_jjA = 0;
+            while (rtDW->b_jjA <= rtDW->mNull - 1) {
+              memspace->workspace_double[rtDW->b_jjA] = 0.0;
+              rtDW->b_jjA++;
+            }
+
+            rtDW->b_jjA = 0;
+            rtDW->b_ix_o = (rtDW->mNull - 1) * qrmanager->ldq +
+              rtDW->nullStartIdx;
+            rtDW->iac = rtDW->nullStartIdx;
+            while (((rtDW->b_A_maxDiag_idx > 0) && (rtDW->iac <= rtDW->b_ix_o)) ||
+                   ((rtDW->b_A_maxDiag_idx < 0) && (rtDW->iac >= rtDW->b_ix_o)))
+            {
+              rtDW->ix_a = 0;
+              rtDW->b_SCALED_REG_PRIMAL = 0.0;
+              rtDW->d_i = rtDW->iac + rtDW->nVar_a;
+              rtDW->ia_l = rtDW->iac;
+              while (rtDW->ia_l <= rtDW->d_i) {
+                rtDW->b_SCALED_REG_PRIMAL += qrmanager->Q[rtDW->ia_l - 1] *
+                  objective->grad[rtDW->ix_a];
+                rtDW->ix_a++;
+                rtDW->ia_l++;
+              }
+
+              memspace->workspace_double[rtDW->b_jjA] +=
+                -rtDW->b_SCALED_REG_PRIMAL;
+              rtDW->b_jjA++;
+              rtDW->iac += rtDW->b_A_maxDiag_idx;
+            }
+          }
+
+          rtDW->d_i = cholmanager->ndims - 1;
+          if (cholmanager->ndims != 0) {
+            rtDW->b_A_maxDiag_idx = 0;
+            while (rtDW->b_A_maxDiag_idx <= rtDW->d_i) {
+              rtDW->b_jjA = rtDW->b_A_maxDiag_idx * cholmanager->ldm +
+                rtDW->b_A_maxDiag_idx;
+              rtDW->b_ix_o = rtDW->d_i - rtDW->b_A_maxDiag_idx;
+              rtDW->iac = 1;
+              while (rtDW->iac - 1 <= rtDW->b_ix_o - 1) {
+                rtDW->ix_a = rtDW->b_A_maxDiag_idx + rtDW->iac;
+                memspace->workspace_double[rtDW->ix_a] -= cholmanager->FMat
+                  [rtDW->b_jjA + rtDW->iac] * memspace->workspace_double
+                  [rtDW->b_A_maxDiag_idx];
+                rtDW->iac++;
+              }
+
+              rtDW->b_A_maxDiag_idx++;
+            }
+          }
+
+          rtDW->nVar_a = 0;
+          while (rtDW->nVar_a <= rtDW->d_i) {
+            memspace->workspace_double[rtDW->nVar_a] /= cholmanager->
+              FMat[cholmanager->ldm * rtDW->nVar_a + rtDW->nVar_a];
+            rtDW->nVar_a++;
+          }
+
+          if (cholmanager->ndims != 0) {
+            rtDW->nVar_a = cholmanager->ndims - 1;
+            while (rtDW->nVar_a + 1 > 0) {
+              rtDW->b_A_maxDiag_idx = rtDW->nVar_a * cholmanager->ldm;
+              rtDW->b_SCALED_REG_PRIMAL = memspace->workspace_double
+                [rtDW->nVar_a];
+              rtDW->b_jjA = cholmanager->ndims;
+              while (rtDW->b_jjA >= rtDW->nVar_a + 2) {
+                rtDW->b_SCALED_REG_PRIMAL -= cholmanager->FMat
+                  [(rtDW->b_A_maxDiag_idx + rtDW->b_jjA) - 1] *
+                  memspace->workspace_double[rtDW->b_jjA - 1];
+                rtDW->b_jjA--;
+              }
+
+              memspace->workspace_double[rtDW->nVar_a] =
+                rtDW->b_SCALED_REG_PRIMAL;
+              rtDW->nVar_a--;
+            }
+          }
+
+          xgemv_nhumtht(qrmanager->mrows, rtDW->mNull, qrmanager->Q,
+                        rtDW->nullStartIdx, qrmanager->ldq,
+                        memspace->workspace_double, solution->searchDir);
+        }
+      }
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static real_T xnrm2_l(int32_T n, const real_T x[8])
+{
+  real_T absxk;
+  real_T scale;
+  real_T t;
+  real_T y;
+  int32_T k;
+  y = 0.0;
+  if (n >= 1) {
+    if (n == 1) {
+      y = fabs(x[0]);
+    } else {
+      scale = 3.3121686421112381E-170;
+      for (k = 0; k < n; k++) {
+        absxk = fabs(x[k]);
+        if (absxk > scale) {
+          t = scale / absxk;
+          y = y * t * t + 1.0;
+          scale = absxk;
+        } else {
+          t = absxk / scale;
+          y += t * t;
+        }
+      }
+
+      y = scale * sqrt(y);
+    }
+  }
+
+  return y;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_nhumthtw(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+  const real_T x[8], real_T y[72])
+{
+  real_T c;
+  int32_T b;
+  int32_T b_iy;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (b_iy = 0; b_iy < n; b_iy++) {
+      y[b_iy] = -y[b_iy];
+    }
+
+    iy = 0;
+    b_iy = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
+      ix = 0;
+      c = 0.0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        c += A[ia - 1] * x[ix];
+        ix++;
+      }
+
+      y[iy] += c;
+      iy++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void xgemv_nhumthtwu(int32_T m, int32_T n, const real_T A[56], int32_T
+  lda, const real_T x[8], real_T y[72])
+{
+  real_T c;
+  int32_T b;
+  int32_T b_c;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  if ((m != 0) && (n != 0)) {
+    for (iy = 10; iy <= n + 9; iy++) {
+      y[iy - 1] = 0.0;
+    }
+
+    iy = 9;
+    b_c = (n - 1) * lda + 1;
+    iac = 1;
+    while (((lda > 0) && (iac <= b_c)) || ((lda < 0) && (iac >= b_c))) {
+      ix = 0;
+      c = 0.0;
+      b = (iac + m) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        c += A[ia - 1] * x[ix];
+        ix++;
+      }
+
+      y[iy] += c;
+      iy++;
+      iac += lda;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void ratiotest(const real_T solution_xstar[8], const real_T
+                      solution_searchDir[8], real_T workspace[72], int32_T
+                      workingset_nVar, int32_T workingset_ldA, const real_T
+                      workingset_Aineq[56], const real_T workingset_bineq[7],
+                      const real_T workingset_lb[8], const real_T workingset_ub
+                      [8], const int32_T workingset_indexLB[8], const int32_T
+                      workingset_indexUB[8], const int32_T workingset_sizes[5],
+                      const int32_T workingset_isActiveIdx[6], const boolean_T
+                      workingset_isActiveConstr[9], const int32_T
+                      workingset_nWConstr[5], boolean_T isPhaseOne, real_T
+                      tolcon, real_T *toldelta, real_T toltau, real_T *alpha,
+                      boolean_T *newBlocking, int32_T *constrType, int32_T
+                      *constrIdx, DW *rtDW)
+{
+  real_T ratio;
+  real_T ratio_tmp;
+  int32_T b_k;
+  int32_T totalIneq;
+  totalIneq = workingset_sizes[2] - 1;
+  *alpha = 1.0E+30;
+  *newBlocking = false;
+  *constrType = 0;
+  *constrIdx = 0;
+  rtDW->p_max = 0.0;
+  rtDW->denomTol = 2.2204460492503131E-13 * xnrm2_l(workingset_nVar,
+    solution_searchDir);
+  if (workingset_nWConstr[2] < workingset_sizes[2]) {
+    for (b_k = 0; b_k <= totalIneq; b_k++) {
+      workspace[b_k] = workingset_bineq[b_k];
+    }
+
+    xgemv_nhumthtw(workingset_nVar, workingset_sizes[2], workingset_Aineq,
+                   workingset_ldA, solution_xstar, workspace);
+    xgemv_nhumthtwu(workingset_nVar, workingset_sizes[2], workingset_Aineq,
+                    workingset_ldA, solution_searchDir, workspace);
+    for (b_k = 0; b_k <= totalIneq; b_k++) {
+      rtDW->phaseOneCorrectionX = workspace[b_k + 9];
+      if ((rtDW->phaseOneCorrectionX > rtDW->denomTol) &&
+          (!workingset_isActiveConstr[(workingset_isActiveIdx[2] + b_k) - 1])) {
+        ratio_tmp = tolcon - workspace[b_k];
+        ratio = fmin(fabs(workspace[b_k] - *toldelta), ratio_tmp + *toldelta) /
+          rtDW->phaseOneCorrectionX;
+        if ((ratio <= *alpha) && (fabs(rtDW->phaseOneCorrectionX) > rtDW->p_max))
+        {
+          *alpha = ratio;
+          *constrType = 3;
+          *constrIdx = b_k + 1;
+          *newBlocking = true;
+        }
+
+        ratio = fmin(fabs(workspace[b_k]), ratio_tmp) /
+          rtDW->phaseOneCorrectionX;
+        if (ratio < *alpha) {
+          *alpha = ratio;
+          *constrType = 3;
+          *constrIdx = b_k + 1;
+          *newBlocking = true;
+          rtDW->p_max = fabs(workspace[b_k + 9]);
+        }
+      }
+    }
+  }
+
+  if (workingset_nWConstr[3] < workingset_sizes[3]) {
+    rtDW->phaseOneCorrectionX = solution_xstar[workingset_nVar - 1] * (real_T)
+      isPhaseOne;
+    rtDW->phaseOneCorrectionP = solution_searchDir[workingset_nVar - 1] *
+      (real_T)isPhaseOne;
+    for (totalIneq = 0; totalIneq <= workingset_sizes[3] - 2; totalIneq++) {
+      rtDW->pk_corrected = -solution_searchDir[workingset_indexLB[totalIneq] - 1]
+        - rtDW->phaseOneCorrectionP;
+      if ((rtDW->pk_corrected > rtDW->denomTol) && (!workingset_isActiveConstr
+           [(workingset_isActiveIdx[3] + totalIneq) - 1])) {
+        ratio_tmp = -solution_xstar[workingset_indexLB[totalIneq] - 1] -
+          workingset_lb[workingset_indexLB[totalIneq] - 1];
+        ratio = (ratio_tmp - *toldelta) - rtDW->phaseOneCorrectionX;
+        ratio = fmin(fabs(ratio), tolcon - ratio) / rtDW->pk_corrected;
+        if ((ratio <= *alpha) && (fabs(rtDW->pk_corrected) > rtDW->p_max)) {
+          *alpha = ratio;
+          *constrType = 4;
+          *constrIdx = totalIneq + 1;
+          *newBlocking = true;
+        }
+
+        ratio = ratio_tmp - rtDW->phaseOneCorrectionX;
+        ratio = fmin(fabs(ratio), tolcon - ratio) / rtDW->pk_corrected;
+        if (ratio < *alpha) {
+          *alpha = ratio;
+          *constrType = 4;
+          *constrIdx = totalIneq + 1;
+          *newBlocking = true;
+          rtDW->p_max = fabs(rtDW->pk_corrected);
+        }
+      }
+    }
+
+    totalIneq = workingset_indexLB[workingset_sizes[3] - 1] - 1;
+    rtDW->phaseOneCorrectionX = solution_searchDir[totalIneq];
+    if ((-rtDW->phaseOneCorrectionX > rtDW->denomTol) &&
+        (!workingset_isActiveConstr[(workingset_isActiveIdx[3] +
+          workingset_sizes[3]) - 2])) {
+      ratio_tmp = -solution_xstar[totalIneq] - workingset_lb[totalIneq];
+      ratio = ratio_tmp - *toldelta;
+      ratio = fmin(fabs(ratio), tolcon - ratio) / -rtDW->phaseOneCorrectionX;
+      if ((ratio <= *alpha) && (fabs(rtDW->phaseOneCorrectionX) > rtDW->p_max))
+      {
+        *alpha = ratio;
+        *constrType = 4;
+        *constrIdx = workingset_sizes[3];
+        *newBlocking = true;
+      }
+
+      ratio = fmin(fabs(ratio_tmp), tolcon - ratio_tmp) /
+        -rtDW->phaseOneCorrectionX;
+      if (ratio < *alpha) {
+        *alpha = ratio;
+        *constrType = 4;
+        *constrIdx = workingset_sizes[3];
+        *newBlocking = true;
+        rtDW->p_max = fabs(solution_searchDir[totalIneq]);
+      }
+    }
+  }
+
+  if (workingset_nWConstr[4] < workingset_sizes[4]) {
+    rtDW->phaseOneCorrectionX = solution_xstar[workingset_nVar - 1] * (real_T)
+      isPhaseOne;
+    rtDW->phaseOneCorrectionP = solution_searchDir[workingset_nVar - 1] *
+      (real_T)isPhaseOne;
+    for (totalIneq = 0; totalIneq < workingset_sizes[4]; totalIneq++) {
+      rtDW->pk_corrected = solution_searchDir[workingset_indexUB[totalIneq] - 1]
+        - rtDW->phaseOneCorrectionP;
+      if ((rtDW->pk_corrected > rtDW->denomTol) && (!workingset_isActiveConstr
+           [(workingset_isActiveIdx[4] + totalIneq) - 1])) {
+        ratio_tmp = solution_xstar[workingset_indexUB[totalIneq] - 1] -
+          workingset_ub[workingset_indexUB[totalIneq] - 1];
+        ratio = (ratio_tmp - *toldelta) - rtDW->phaseOneCorrectionX;
+        ratio = fmin(fabs(ratio), tolcon - ratio) / rtDW->pk_corrected;
+        if ((ratio <= *alpha) && (fabs(rtDW->pk_corrected) > rtDW->p_max)) {
+          *alpha = ratio;
+          *constrType = 5;
+          *constrIdx = totalIneq + 1;
+          *newBlocking = true;
+        }
+
+        ratio = ratio_tmp - rtDW->phaseOneCorrectionX;
+        ratio = fmin(fabs(ratio), tolcon - ratio) / rtDW->pk_corrected;
+        if (ratio < *alpha) {
+          *alpha = ratio;
+          *constrType = 5;
+          *constrIdx = totalIneq + 1;
+          *newBlocking = true;
+          rtDW->p_max = fabs(rtDW->pk_corrected);
+        }
+      }
+    }
+  }
+
+  *toldelta += toltau;
+  if (rtDW->p_max > 0.0) {
+    *alpha = fmax(*alpha, toltau / rtDW->p_max);
+  }
+
+  if (isPhaseOne) {
+    *newBlocking = (((!*newBlocking) || (*alpha <= 1.7976931348623157E+308)) &&
+                    (*newBlocking));
+    *alpha = fmin(*alpha, 1.7976931348623157E+308);
+  } else {
+    *newBlocking = (((!*newBlocking) || (*alpha <= 1.0)) && (*newBlocking));
+    *alpha = fmin(*alpha, 1.0);
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void feasibleratiotest(const real_T solution_xstar[8], const real_T
+  solution_searchDir[8], real_T workspace[72], int32_T workingset_nVar, int32_T
+  workingset_ldA, const real_T workingset_Aineq[56], const real_T
+  workingset_bineq[7], const real_T workingset_lb[8], const real_T
+  workingset_ub[8], const int32_T workingset_indexLB[8], const int32_T
+  workingset_indexUB[8], const int32_T workingset_sizes[5], const int32_T
+  workingset_isActiveIdx[6], const boolean_T workingset_isActiveConstr[9], const
+  int32_T workingset_nWConstr[5], boolean_T isPhaseOne, real_T tolcon, real_T
+  *alpha, boolean_T *newBlocking, int32_T *constrType, int32_T *constrIdx, DW
+  *rtDW)
+{
+  real_T pk_corrected;
+  real_T ratio;
+  int32_T b_k;
+  int32_T totalIneq;
+  totalIneq = workingset_sizes[2] - 1;
+  *alpha = 1.0E+30;
+  *newBlocking = false;
+  *constrType = 0;
+  *constrIdx = 0;
+  rtDW->denomTol_n = 2.2204460492503131E-13 * xnrm2_l(workingset_nVar,
+    solution_searchDir);
+  if (workingset_nWConstr[2] < workingset_sizes[2]) {
+    for (b_k = 0; b_k <= totalIneq; b_k++) {
+      workspace[b_k] = workingset_bineq[b_k];
+    }
+
+    xgemv_nhumthtw(workingset_nVar, workingset_sizes[2], workingset_Aineq,
+                   workingset_ldA, solution_xstar, workspace);
+    xgemv_nhumthtwu(workingset_nVar, workingset_sizes[2], workingset_Aineq,
+                    workingset_ldA, solution_searchDir, workspace);
+    for (b_k = 0; b_k <= totalIneq; b_k++) {
+      rtDW->phaseOneCorrectionX_p = workspace[b_k + 9];
+      if ((rtDW->phaseOneCorrectionX_p > rtDW->denomTol_n) &&
+          (!workingset_isActiveConstr[(workingset_isActiveIdx[2] + b_k) - 1])) {
+        ratio = fmin(fabs(workspace[b_k]), tolcon - workspace[b_k]) /
+          rtDW->phaseOneCorrectionX_p;
+        if (ratio < *alpha) {
+          *alpha = ratio;
+          *constrType = 3;
+          *constrIdx = b_k + 1;
+          *newBlocking = true;
+        }
+      }
+    }
+  }
+
+  if (workingset_nWConstr[3] < workingset_sizes[3]) {
+    rtDW->phaseOneCorrectionX_p = solution_xstar[workingset_nVar - 1] * (real_T)
+      isPhaseOne;
+    rtDW->phaseOneCorrectionP_l = solution_searchDir[workingset_nVar - 1] *
+      (real_T)isPhaseOne;
+    for (totalIneq = 0; totalIneq <= workingset_sizes[3] - 2; totalIneq++) {
+      pk_corrected = -solution_searchDir[workingset_indexLB[totalIneq] - 1] -
+        rtDW->phaseOneCorrectionP_l;
+      if ((pk_corrected > rtDW->denomTol_n) && (!workingset_isActiveConstr
+           [(workingset_isActiveIdx[3] + totalIneq) - 1])) {
+        ratio = (-solution_xstar[workingset_indexLB[totalIneq] - 1] -
+                 workingset_lb[workingset_indexLB[totalIneq] - 1]) -
+          rtDW->phaseOneCorrectionX_p;
+        ratio = fmin(fabs(ratio), tolcon - ratio) / pk_corrected;
+        if (ratio < *alpha) {
+          *alpha = ratio;
+          *constrType = 4;
+          *constrIdx = totalIneq + 1;
+          *newBlocking = true;
+        }
+      }
+    }
+
+    totalIneq = workingset_indexLB[workingset_sizes[3] - 1] - 1;
+    rtDW->phaseOneCorrectionX_p = -solution_searchDir[totalIneq];
+    if ((rtDW->phaseOneCorrectionX_p > rtDW->denomTol_n) &&
+        (!workingset_isActiveConstr[(workingset_isActiveIdx[3] +
+          workingset_sizes[3]) - 2])) {
+      ratio = -solution_xstar[totalIneq] - workingset_lb[totalIneq];
+      ratio = fmin(fabs(ratio), tolcon - ratio) / rtDW->phaseOneCorrectionX_p;
+      if (ratio < *alpha) {
+        *alpha = ratio;
+        *constrType = 4;
+        *constrIdx = workingset_sizes[3];
+        *newBlocking = true;
+      }
+    }
+  }
+
+  if (workingset_nWConstr[4] < workingset_sizes[4]) {
+    rtDW->phaseOneCorrectionX_p = solution_xstar[workingset_nVar - 1] * (real_T)
+      isPhaseOne;
+    rtDW->phaseOneCorrectionP_l = solution_searchDir[workingset_nVar - 1] *
+      (real_T)isPhaseOne;
+    for (totalIneq = 0; totalIneq < workingset_sizes[4]; totalIneq++) {
+      pk_corrected = solution_searchDir[workingset_indexUB[totalIneq] - 1] -
+        rtDW->phaseOneCorrectionP_l;
+      if ((pk_corrected > rtDW->denomTol_n) && (!workingset_isActiveConstr
+           [(workingset_isActiveIdx[4] + totalIneq) - 1])) {
+        ratio = (solution_xstar[workingset_indexUB[totalIneq] - 1] -
+                 workingset_ub[workingset_indexUB[totalIneq] - 1]) -
+          rtDW->phaseOneCorrectionX_p;
+        ratio = fmin(fabs(ratio), tolcon - ratio) / pk_corrected;
+        if (ratio < *alpha) {
+          *alpha = ratio;
+          *constrType = 5;
+          *constrIdx = totalIneq + 1;
+          *newBlocking = true;
+        }
+      }
+    }
+  }
+
+  if (!isPhaseOne) {
+    *newBlocking = (((!*newBlocking) || (*alpha <= 1.0)) && (*newBlocking));
+    *alpha = fmin(*alpha, 1.0);
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void checkUnboundedOrIllPosed(svV6yPD1e8CTJu8b18IprLB *solution, const
+  shohwUBaOGHF036TMzc1KEH *objective)
+{
+  if (objective->objtype == 5) {
+    if (xnrm2_l(objective->nvar, solution->searchDir) > 100.0 * (real_T)
+        objective->nvar * 1.4901161193847656E-8) {
+      solution->state = 3;
+    } else {
+      solution->state = 4;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void addBoundToActiveSetMatrix_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
+  TYPE, int32_T idx_local)
+{
+  int32_T colOffset;
+  int32_T idx;
+  int32_T idx_bnd_local;
+  obj->nWConstr[TYPE - 1]++;
+  obj->isActiveConstr[(obj->isActiveIdx[TYPE - 1] + idx_local) - 2] = true;
+  obj->nActiveConstr++;
+  obj->Wid[obj->nActiveConstr - 1] = TYPE;
+  obj->Wlocalidx[obj->nActiveConstr - 1] = idx_local;
+  colOffset = (obj->nActiveConstr - 1) * obj->ldA - 1;
+  if (TYPE == 5) {
+    idx_bnd_local = obj->indexUB[idx_local - 1];
+    obj->bwset[obj->nActiveConstr - 1] = obj->ub[idx_bnd_local - 1];
+  } else {
+    idx_bnd_local = obj->indexLB[idx_local - 1];
+    obj->bwset[obj->nActiveConstr - 1] = obj->lb[idx_bnd_local - 1];
+  }
+
+  for (idx = 0; idx <= idx_bnd_local - 2; idx++) {
+    obj->ATwset[(idx + colOffset) + 1] = 0.0;
+  }
+
+  obj->ATwset[idx_bnd_local + colOffset] = (real_T)(TYPE == 5) * 2.0 - 1.0;
+  for (idx_bnd_local++; idx_bnd_local <= obj->nVar; idx_bnd_local++) {
+    obj->ATwset[idx_bnd_local + colOffset] = 0.0;
+  }
+
+  switch (obj->probType) {
+   case 3:
+   case 2:
+    break;
+
+   default:
+    obj->ATwset[obj->nVar + colOffset] = -1.0;
+    break;
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void compute_lambda(real_T workspace[72], svV6yPD1e8CTJu8b18IprLB
+  *solution, const shohwUBaOGHF036TMzc1KEH *objective, const
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager)
+{
+  real_T tol;
+  int32_T b;
+  int32_T c_idx;
+  int32_T ia;
+  int32_T iac;
+  int32_T idxQR;
+  int32_T ix;
+  int32_T jjA;
+  boolean_T guard1 = false;
+  boolean_T guard2 = false;
+  boolean_T nonDegenerate;
+  if (qrmanager->ncols > 0) {
+    guard1 = false;
+    if (objective->objtype != 4) {
+      tol = 100.0 * (real_T)qrmanager->mrows * 2.2204460492503131E-16;
+      nonDegenerate = ((qrmanager->mrows > 0) && (qrmanager->ncols > 0));
+      if (nonDegenerate) {
+        c_idx = qrmanager->ncols;
+        guard2 = false;
+        if (qrmanager->mrows < qrmanager->ncols) {
+          idxQR = (qrmanager->ncols - 1) * qrmanager->ldq + qrmanager->mrows;
+          while ((c_idx > qrmanager->mrows) && (fabs(qrmanager->QR[idxQR - 1]) >=
+                  tol)) {
+            c_idx--;
+            idxQR -= qrmanager->ldq;
+          }
+
+          nonDegenerate = (c_idx == qrmanager->mrows);
+          if (!nonDegenerate) {
+          } else {
+            guard2 = true;
+          }
+        } else {
+          guard2 = true;
+        }
+
+        if (guard2) {
+          idxQR = (c_idx - 1) * qrmanager->ldq + c_idx;
+          while ((c_idx >= 1) && (fabs(qrmanager->QR[idxQR - 1]) >= tol)) {
+            c_idx--;
+            idxQR = (idxQR - qrmanager->ldq) - 1;
+          }
+
+          nonDegenerate = (c_idx == 0);
+        }
+      }
+
+      if (!nonDegenerate) {
+        solution->state = -7;
+      } else {
+        guard1 = true;
+      }
+    } else {
+      guard1 = true;
+    }
+
+    if (guard1) {
+      c_idx = qrmanager->ldq;
+      if ((qrmanager->mrows != 0) && (qrmanager->ncols != 0)) {
+        for (idxQR = 0; idxQR < qrmanager->ncols; idxQR++) {
+          workspace[idxQR] = 0.0;
+        }
+
+        idxQR = 0;
+        jjA = (qrmanager->ncols - 1) * qrmanager->ldq + 1;
+        iac = 1;
+        while (((c_idx > 0) && (iac <= jjA)) || ((c_idx < 0) && (iac >= jjA))) {
+          ix = 0;
+          tol = 0.0;
+          b = (iac + qrmanager->mrows) - 1;
+          for (ia = iac; ia <= b; ia++) {
+            tol += qrmanager->Q[ia - 1] * objective->grad[ix];
+            ix++;
+          }
+
+          workspace[idxQR] += tol;
+          idxQR++;
+          iac += c_idx;
+        }
+      }
+
+      if (qrmanager->ncols != 0) {
+        for (idxQR = qrmanager->ncols - 1; idxQR + 1 > 0; idxQR--) {
+          jjA = idxQR * c_idx + idxQR;
+          workspace[idxQR] /= qrmanager->QR[jjA];
+          for (iac = 1; iac - 1 < idxQR; iac++) {
+            ix = idxQR - iac;
+            workspace[ix] -= qrmanager->QR[jjA - iac] * workspace[idxQR];
+          }
+        }
+      }
+
+      for (c_idx = 0; c_idx < qrmanager->ncols; c_idx++) {
+        solution->lambda[c_idx] = -workspace[c_idx];
+      }
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void checkStoppingAndUpdateFval(int32_T *activeSetChangeID, const real_T
+  f[7], svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *memspace,
+  const shohwUBaOGHF036TMzc1KEH *objective, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, real_T options_ObjectiveLimit, real_T
+  options_ConstraintTolerance, int32_T runTimeOptions_MaxIterations, real_T
+  runTimeOptions_ConstrRelTolFact, boolean_T updateFval, DW *rtDW)
+{
+  solution->iterations++;
+  rtDW->nVar_tmp_tmp = objective->nvar - 1;
+  if ((solution->iterations >= runTimeOptions_MaxIterations) &&
+      ((solution->state != 1) || (objective->objtype == 5))) {
+    solution->state = 0;
+  }
+
+  if (solution->iterations - solution->iterations / 50 * 50 == 0) {
+    rtDW->b_p = maxConstraintViolation_eo(workingset, solution->xstar, rtDW);
+    solution->maxConstr = rtDW->b_p;
+    rtDW->tempMaxConstr = rtDW->b_p;
+    if (objective->objtype == 5) {
+      rtDW->tempMaxConstr = rtDW->b_p - solution->xstar[objective->nvar - 1];
+    }
+
+    if (rtDW->tempMaxConstr > options_ConstraintTolerance *
+        runTimeOptions_ConstrRelTolFact) {
+      rtDW->b_k = 0;
+      while (rtDW->b_k <= rtDW->nVar_tmp_tmp) {
+        solution->searchDir[rtDW->b_k] = solution->xstar[rtDW->b_k];
+        rtDW->b_k++;
+      }
+
+      feasibleX0ForWorkingSet(memspace->workspace_double, solution->searchDir,
+        workingset, qrmanager, rtDW);
+      *activeSetChangeID = 0;
+      rtDW->tempMaxConstr = maxConstraintViolation_eo(workingset,
+        solution->searchDir, rtDW);
+      if (rtDW->tempMaxConstr < rtDW->b_p) {
+        rtDW->b_k = 0;
+        while (rtDW->b_k <= rtDW->nVar_tmp_tmp) {
+          solution->xstar[rtDW->b_k] = solution->searchDir[rtDW->b_k];
+          rtDW->b_k++;
+        }
+
+        solution->maxConstr = rtDW->tempMaxConstr;
+      }
+    }
+  }
+
+  if (updateFval) {
+    rtDW->b_p = computeFval_ReuseHx(objective, memspace->workspace_double, f,
+      solution->xstar);
+    solution->fstar = rtDW->b_p;
+    if ((rtDW->b_p < options_ObjectiveLimit) && ((solution->state != 0) ||
+         (objective->objtype != 5))) {
+      solution->state = 2;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void computeFirstOrderOpt(svV6yPD1e8CTJu8b18IprLB *solution, const
+  shohwUBaOGHF036TMzc1KEH *objective, int32_T workingset_nVar, int32_T
+  workingset_ldA, const real_T workingset_ATwset[72], int32_T
+  workingset_nActiveConstr, real_T workspace[72])
+{
+  real_T smax;
+  real_T y;
+  int32_T b;
+  int32_T b_ix;
+  int32_T ia;
+  int32_T iac;
+  int32_T ix;
+  int32_T iy;
+  for (ix = 0; ix < workingset_nVar; ix++) {
+    workspace[ix] = objective->grad[ix];
+  }
+
+  if ((workingset_nVar != 0) && (workingset_nActiveConstr != 0)) {
+    ix = 0;
+    b_ix = (workingset_nActiveConstr - 1) * workingset_ldA + 1;
+    iac = 1;
+    while (((workingset_ldA > 0) && (iac <= b_ix)) || ((workingset_ldA < 0) &&
+            (iac >= b_ix))) {
+      iy = 0;
+      b = iac + workingset_nVar;
+      for (ia = iac; ia < b; ia++) {
+        workspace[iy] += workingset_ATwset[ia - 1] * solution->lambda[ix];
+        iy++;
+      }
+
+      ix++;
+      iac += workingset_ldA;
+    }
+  }
+
+  if (workingset_nVar < 1) {
+    ix = 0;
+  } else {
+    ix = 1;
+    if (workingset_nVar > 1) {
+      b_ix = 0;
+      smax = fabs(workspace[0]);
+      for (iac = 2; iac <= workingset_nVar; iac++) {
+        b_ix++;
+        y = fabs(workspace[b_ix]);
+        if (y > smax) {
+          ix = iac;
+          smax = y;
+        }
+      }
+    }
+  }
+
+  solution->firstorderopt = fabs(workspace[ix - 1]);
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void printInfo(boolean_T newBlocking, int32_T PROBLEM_TYPE, real_T alpha,
+                      real_T stepNorm, int32_T activeConstrChangedType, int32_T
+                      localActiveConstrIdx, int32_T activeSetChangeID, real_T
+                      solution_fstar, real_T solution_firstorderopt, real_T
+                      solution_maxConstr, int32_T solution_iterations, const
+                      int32_T workingset_indexLB[8], const int32_T
+                      workingset_indexUB[8], int32_T workingset_nActiveConstr)
+{
+  int32_T b_localActiveConstrIdx;
+  printf("%5i  %14.6e  %14.6e  %14.6e", solution_iterations, solution_fstar,
+         solution_firstorderopt, solution_maxConstr);
+  fflush(stdout);
+  printf("  ");
+  fflush(stdout);
+  printf("%14.6e", alpha);
+  fflush(stdout);
+  printf("  ");
+  fflush(stdout);
+  printf("%14.6e", stepNorm);
+  fflush(stdout);
+  printf("    ");
+  fflush(stdout);
+  if (newBlocking || (activeSetChangeID == -1)) {
+    if (newBlocking) {
+      activeSetChangeID = 1;
+    }
+
+    b_localActiveConstrIdx = localActiveConstrIdx;
+    switch (activeSetChangeID) {
+     case -1:
+      printf("-");
+      fflush(stdout);
+      break;
+
+     case 1:
+      printf("+");
+      fflush(stdout);
+      break;
+
+     default:
+      printf(" ");
+      fflush(stdout);
+      break;
+    }
+
+    switch (activeConstrChangedType) {
+     case 3:
+      printf("AINEQ");
+      fflush(stdout);
+      break;
+
+     case 4:
+      printf("LOWER");
+      fflush(stdout);
+      b_localActiveConstrIdx = workingset_indexLB[localActiveConstrIdx - 1];
+      break;
+
+     case 5:
+      printf("UPPER");
+      fflush(stdout);
+      b_localActiveConstrIdx = workingset_indexUB[localActiveConstrIdx - 1];
+      break;
+
+     default:
+      printf("SAME ");
+      fflush(stdout);
+      b_localActiveConstrIdx = -1;
+      break;
+    }
+
+    printf("(%-5i)", b_localActiveConstrIdx);
+    fflush(stdout);
+  } else {
+    printf(" SAME ");
+    fflush(stdout);
+    printf("(%-5i)", -1);
+    fflush(stdout);
+  }
+
+  printf("           ");
+  fflush(stdout);
+  printf("%5i", workingset_nActiveConstr);
+  fflush(stdout);
+  printf("    ");
+  fflush(stdout);
+  switch (PROBLEM_TYPE) {
+   case 1:
+    printf("Phase One");
+    fflush(stdout);
+    break;
+
+   case 2:
+    printf("Regularized");
+    fflush(stdout);
+    break;
+
+   case 4:
+    printf("Phase One Reg");
+    fflush(stdout);
+    break;
+
+   default:
+    printf("Normal");
+    fflush(stdout);
+    break;
+  }
+
+  printf("\n");
+  fflush(stdout);
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void iterate(const real_T H[49], const real_T f[7],
+                    svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG
+                    *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+                    sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s1hK3o0EyOqKKjEgDlbhqfF *
+                    cholmanager, shohwUBaOGHF036TMzc1KEH *objective, boolean_T
+                    options_IterDisplayQP, real_T options_PricingTolerance,
+                    real_T options_ObjectiveLimit, real_T
+                    options_ConstraintTolerance, real_T options_StepTolerance,
+                    const sL9bDKomAYkxZSVrG9w6En runTimeOptions, DW *rtDW)
+{
+  int32_T exitg1;
+  boolean_T guard1 = false;
+  boolean_T newBlocking;
+  boolean_T subProblemChanged;
+  boolean_T updateFval;
+  subProblemChanged = true;
+  updateFval = true;
+  rtDW->activeSetChangeID = 0;
+  rtDW->TYPE = objective->objtype;
+  rtDW->tolDelta = 6.7434957617430445E-7;
+  rtDW->nVar = workingset->nVar;
+  rtDW->activeConstrChangedType = 1;
+  rtDW->localActiveConstrIdx = 0;
+  rtDW->globalActiveConstrIdx = 0;
+  computeGrad_StoreHx(objective, H, f, solution->xstar);
+  solution->fstar = computeFval_ReuseHx(objective, memspace->workspace_double, f,
+    solution->xstar);
+  if (solution->iterations < runTimeOptions.MaxIterations) {
+    solution->state = -5;
+  } else {
+    solution->state = 0;
+  }
+
+  rtDW->workingIdx = 0;
+  while (rtDW->workingIdx <= workingset->mConstrMax - 1) {
+    solution->lambda[rtDW->workingIdx] = 0.0;
+    rtDW->workingIdx++;
+  }
+
+  if ((solution->iterations == 0) && options_IterDisplayQP) {
+    printHeader();
+    printInitialInfo(workingset->probType, solution->fstar, solution->iterations,
+                     workingset->nActiveConstr);
+  }
+
+  do {
+    exitg1 = 0;
+    if (solution->state == -5) {
+      newBlocking = false;
+      guard1 = false;
+      if (subProblemChanged) {
+        switch (rtDW->activeSetChangeID) {
+         case 1:
+          rtDW->workingIdx = (workingset->nActiveConstr - 1) * workingset->ldA;
+          if (qrmanager->mrows < qrmanager->ncols + 1) {
+            qrmanager->minRowCol = qrmanager->mrows;
+          } else {
+            qrmanager->minRowCol = qrmanager->ncols + 1;
+          }
+
+          rtDW->iQR0 = qrmanager->ldq * qrmanager->ncols;
+          rtDW->Qk0 = qrmanager->ldq;
+          if (qrmanager->mrows != 0) {
+            rtDW->iyend = rtDW->iQR0 + qrmanager->mrows;
+            rtDW->c_iy = rtDW->iQR0;
+            while (rtDW->c_iy + 1 <= rtDW->iyend) {
+              qrmanager->QR[rtDW->c_iy] = 0.0;
+              rtDW->c_iy++;
+            }
+
+            rtDW->iyend = (qrmanager->mrows - 1) * qrmanager->ldq + 1;
+            rtDW->c_iy = 1;
+            while (((rtDW->Qk0 > 0) && (rtDW->c_iy <= rtDW->iyend)) ||
+                   ((rtDW->Qk0 < 0) && (rtDW->c_iy >= rtDW->iyend))) {
+              rtDW->b_ix = rtDW->workingIdx;
+              rtDW->normDelta = 0.0;
+              rtDW->o = (rtDW->c_iy + qrmanager->mrows) - 1;
+              rtDW->ia = rtDW->c_iy;
+              while (rtDW->ia <= rtDW->o) {
+                rtDW->normDelta += qrmanager->Q[rtDW->ia - 1] *
+                  workingset->ATwset[rtDW->b_ix];
+                rtDW->b_ix++;
+                rtDW->ia++;
+              }
+
+              qrmanager->QR[rtDW->iQR0] += rtDW->normDelta;
+              rtDW->iQR0++;
+              rtDW->c_iy += rtDW->Qk0;
+            }
+          }
+
+          qrmanager->ncols++;
+          qrmanager->jpvt[qrmanager->ncols - 1] = qrmanager->ncols;
+          rtDW->workingIdx = qrmanager->mrows - 2;
+          while (rtDW->workingIdx + 2 > qrmanager->ncols) {
+            rtDW->iQR0 = (qrmanager->ncols - 1) * qrmanager->ldq;
+            rtDW->Qk0 = rtDW->workingIdx + rtDW->iQR0;
+            rtDW->temp = qrmanager->QR[rtDW->Qk0];
+            rtDW->n = qrmanager->QR[rtDW->Qk0 + 1];
+            xrotg(&rtDW->temp, &rtDW->n, &rtDW->normDelta, &rtDW->alpha, rtDW);
+            qrmanager->QR[rtDW->Qk0] = rtDW->temp;
+            qrmanager->QR[(rtDW->workingIdx + rtDW->iQR0) + 1] = rtDW->n;
+            rtDW->Qk0 = qrmanager->ldq * rtDW->workingIdx;
+            if (qrmanager->mrows >= 1) {
+              rtDW->iQR0 = rtDW->Qk0;
+              rtDW->Qk0 += qrmanager->ldq;
+              rtDW->iyend = 0;
+              while (rtDW->iyend <= qrmanager->mrows - 1) {
+                rtDW->temp = rtDW->normDelta * qrmanager->Q[rtDW->iQR0] +
+                  rtDW->alpha * qrmanager->Q[rtDW->Qk0];
+                qrmanager->Q[rtDW->Qk0] = rtDW->normDelta * qrmanager->Q
+                  [rtDW->Qk0] - rtDW->alpha * qrmanager->Q[rtDW->iQR0];
+                qrmanager->Q[rtDW->iQR0] = rtDW->temp;
+                rtDW->Qk0++;
+                rtDW->iQR0++;
+                rtDW->iyend++;
+              }
+            }
+
+            rtDW->workingIdx--;
+          }
+          break;
+
+         case -1:
+          deleteColMoveEnd(qrmanager, rtDW->globalActiveConstrIdx, rtDW);
+          break;
+
+         default:
+          factorQR_f(qrmanager, workingset->ATwset, rtDW->nVar,
+                     workingset->nActiveConstr, workingset->ldA, rtDW);
+          computeQ_(qrmanager, qrmanager->mrows, rtDW);
+          break;
+        }
+
+        compute_deltax(H, solution, memspace, qrmanager, cholmanager, objective,
+                       rtDW);
+        if (solution->state != -5) {
+          exitg1 = 1;
+        } else {
+          rtDW->normDelta = xnrm2_l(rtDW->nVar, solution->searchDir);
+          guard1 = true;
+        }
+      } else {
+        rtDW->workingIdx = 0;
+        while (rtDW->workingIdx <= rtDW->nVar - 1) {
+          solution->searchDir[rtDW->workingIdx] = 0.0;
+          rtDW->workingIdx++;
+        }
+
+        rtDW->normDelta = 0.0;
+        guard1 = true;
+      }
+
+      if (guard1) {
+        if ((!subProblemChanged) || (rtDW->normDelta < options_StepTolerance) ||
+            (workingset->nActiveConstr >= rtDW->nVar)) {
+          compute_lambda(memspace->workspace_double, solution, objective,
+                         qrmanager);
+          if ((solution->state != -7) || (workingset->nActiveConstr > rtDW->nVar))
+          {
+            rtDW->workingIdx = -1;
+            rtDW->alpha = options_PricingTolerance *
+              runTimeOptions.ProbRelTolFactor * (real_T)(rtDW->TYPE != 5);
+            rtDW->iQR0 = workingset->nWConstr[0] + workingset->nWConstr[1];
+            while (rtDW->iQR0 + 1 <= workingset->nActiveConstr) {
+              if (solution->lambda[rtDW->iQR0] < rtDW->alpha) {
+                rtDW->alpha = solution->lambda[rtDW->iQR0];
+                rtDW->workingIdx = rtDW->iQR0;
+              }
+
+              rtDW->iQR0++;
+            }
+
+            if (rtDW->workingIdx + 1 == 0) {
+              solution->state = 1;
+            } else {
+              rtDW->activeSetChangeID = -1;
+              rtDW->globalActiveConstrIdx = rtDW->workingIdx + 1;
+              subProblemChanged = true;
+              rtDW->activeConstrChangedType = workingset->Wid[rtDW->workingIdx];
+              rtDW->localActiveConstrIdx = workingset->Wlocalidx
+                [rtDW->workingIdx];
+              rtDW->iQR0 = workingset->Wid[rtDW->workingIdx] - 1;
+              workingset->isActiveConstr[(workingset->isActiveIdx
+                [workingset->Wid[rtDW->workingIdx] - 1] + workingset->
+                Wlocalidx[rtDW->workingIdx]) - 2] = false;
+              moveConstraint_(workingset, workingset->nActiveConstr,
+                              rtDW->workingIdx + 1);
+              workingset->nActiveConstr--;
+              workingset->nWConstr[rtDW->iQR0]--;
+              solution->lambda[rtDW->workingIdx] = 0.0;
+            }
+          } else {
+            rtDW->workingIdx = workingset->nActiveConstr;
+            rtDW->activeSetChangeID = 0;
+            rtDW->globalActiveConstrIdx = workingset->nActiveConstr;
+            subProblemChanged = true;
+            rtDW->activeConstrChangedType = workingset->Wid
+              [workingset->nActiveConstr - 1];
+            rtDW->localActiveConstrIdx = workingset->Wlocalidx
+              [workingset->nActiveConstr - 1];
+            workingset->isActiveConstr[(workingset->isActiveIdx
+              [rtDW->activeConstrChangedType - 1] + rtDW->localActiveConstrIdx)
+              - 2] = false;
+            moveConstraint_(workingset, workingset->nActiveConstr,
+                            rtDW->workingIdx);
+            workingset->nActiveConstr--;
+            workingset->nWConstr[rtDW->activeConstrChangedType - 1]--;
+            solution->lambda[rtDW->workingIdx - 1] = 0.0;
+          }
+
+          updateFval = false;
+          rtDW->alpha = 0.0;
+        } else {
+          updateFval = (rtDW->TYPE == 5);
+          if (updateFval || runTimeOptions.RemainFeasible) {
+            feasibleratiotest(solution->xstar, solution->searchDir,
+                              memspace->workspace_double, workingset->nVar,
+                              workingset->ldA, workingset->Aineq,
+                              workingset->bineq, workingset->lb, workingset->ub,
+                              workingset->indexLB, workingset->indexUB,
+                              workingset->sizes, workingset->isActiveIdx,
+                              workingset->isActiveConstr, workingset->nWConstr,
+                              updateFval, options_ConstraintTolerance,
+                              &rtDW->alpha, &newBlocking,
+                              &rtDW->activeConstrChangedType,
+                              &rtDW->localActiveConstrIdx, rtDW);
+          } else {
+            ratiotest(solution->xstar, solution->searchDir,
+                      memspace->workspace_double, workingset->nVar,
+                      workingset->ldA, workingset->Aineq, workingset->bineq,
+                      workingset->lb, workingset->ub, workingset->indexLB,
+                      workingset->indexUB, workingset->sizes,
+                      workingset->isActiveIdx, workingset->isActiveConstr,
+                      workingset->nWConstr, false, options_ConstraintTolerance,
+                      &rtDW->tolDelta, 6.608625846508183E-7, &rtDW->alpha,
+                      &newBlocking, &rtDW->activeConstrChangedType,
+                      &rtDW->localActiveConstrIdx, rtDW);
+          }
+
+          if (newBlocking) {
+            switch (rtDW->activeConstrChangedType) {
+             case 3:
+              workingset->nWConstr[2]++;
+              workingset->isActiveConstr[(workingset->isActiveIdx[2] +
+                rtDW->localActiveConstrIdx) - 2] = true;
+              workingset->nActiveConstr++;
+              workingset->Wid[workingset->nActiveConstr - 1] = 3;
+              workingset->Wlocalidx[workingset->nActiveConstr - 1] =
+                rtDW->localActiveConstrIdx;
+              rtDW->activeSetChangeID = (rtDW->localActiveConstrIdx - 1) *
+                workingset->ldA;
+              rtDW->workingIdx = (workingset->nActiveConstr - 1) *
+                workingset->ldA;
+              rtDW->iQR0 = 0;
+              while (rtDW->iQR0 <= workingset->nVar - 1) {
+                workingset->ATwset[rtDW->workingIdx + rtDW->iQR0] =
+                  workingset->Aineq[rtDW->activeSetChangeID + rtDW->iQR0];
+                rtDW->iQR0++;
+              }
+
+              workingset->bwset[workingset->nActiveConstr - 1] =
+                workingset->bineq[rtDW->localActiveConstrIdx - 1];
+              break;
+
+             case 4:
+              addBoundToActiveSetMatrix_(workingset, 4,
+                rtDW->localActiveConstrIdx);
+              break;
+
+             default:
+              addBoundToActiveSetMatrix_(workingset, 5,
+                rtDW->localActiveConstrIdx);
+              break;
+            }
+
+            rtDW->activeSetChangeID = 1;
+          } else {
+            checkUnboundedOrIllPosed(solution, objective);
+            subProblemChanged = false;
+            if (workingset->nActiveConstr == 0) {
+              solution->state = 1;
+            }
+          }
+
+          if ((rtDW->nVar >= 1) && (rtDW->alpha != 0.0)) {
+            rtDW->workingIdx = 0;
+            while (rtDW->workingIdx <= rtDW->nVar - 1) {
+              solution->xstar[rtDW->workingIdx] += rtDW->alpha *
+                solution->searchDir[rtDW->workingIdx];
+              rtDW->workingIdx++;
+            }
+          }
+
+          computeGrad_StoreHx(objective, H, f, solution->xstar);
+          updateFval = true;
+        }
+
+        checkStoppingAndUpdateFval(&rtDW->activeSetChangeID, f, solution,
+          memspace, objective, workingset, qrmanager, options_ObjectiveLimit,
+          options_ConstraintTolerance, runTimeOptions.MaxIterations,
+          runTimeOptions.ConstrRelTolFactor, updateFval, rtDW);
+        if (options_IterDisplayQP) {
+          if (solution->iterations - solution->iterations / 50 * 50 == 0) {
+            printHeader();
+          } else {
+            solution->maxConstr = maxConstraintViolation_eo(workingset,
+              solution->xstar, rtDW);
+          }
+
+          computeFirstOrderOpt(solution, objective, workingset->nVar,
+                               workingset->ldA, workingset->ATwset,
+                               workingset->nActiveConstr,
+                               memspace->workspace_double);
+          printInfo(newBlocking, workingset->probType, rtDW->alpha,
+                    rtDW->normDelta, rtDW->activeConstrChangedType,
+                    rtDW->localActiveConstrIdx, rtDW->activeSetChangeID,
+                    solution->fstar, solution->firstorderopt,
+                    solution->maxConstr, solution->iterations,
+                    workingset->indexLB, workingset->indexUB,
+                    workingset->nActiveConstr);
+        }
+      }
+    } else {
+      if (!updateFval) {
+        solution->fstar = computeFval_ReuseHx(objective,
+          memspace->workspace_double, f, solution->xstar);
       }
 
       exitg1 = 1;
     }
   } while (exitg1 == 0);
-
-  return Status;
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static real32_T mtimes_f(const real32_T A_data[], const real32_T B_1[7])
+static void phaseone(const real_T H[49], const real_T f[7],
+                     svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *
+                     memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+                     sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s1hK3o0EyOqKKjEgDlbhqfF
+                     *cholmanager, const sL9bDKomAYkxZSVrG9w6En *runTimeOptions,
+                     shohwUBaOGHF036TMzc1KEH *objective, s4lHOiXA0GHbse0IgoBY6ZF
+                     *options, DW *rtDW)
 {
-  int32_T k;
-  real32_T C;
-  C = 0.0F;
-  for (k = 0; k < 7; k++) {
-    C += A_data[k] * B_1[k];
+  static const char_T d_FiniteDifferenceType[7] = { 'f', 'o', 'r', 'w', 'a', 'r',
+    'd' };
+
+  static const char_T d_Algorithm[10] = { 'a', 'c', 't', 'i', 'v', 'e', '-', 's',
+    'e', 't' };
+
+  static const char_T d_SolverName[8] = { 'q', 'u', 'a', 'd', 'p', 'r', 'o', 'g'
+  };
+
+  static const char_T d_Display[5] = { 'f', 'i', 'n', 'a', 'l' };
+
+  boolean_T exitg1;
+  options->InitDamping = 0.01;
+  for (rtDW->i_p = 0; rtDW->i_p < 7; rtDW->i_p++) {
+    options->FiniteDifferenceType[rtDW->i_p] = d_FiniteDifferenceType[rtDW->i_p];
   }
 
-  return C;
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static void DropConstraint(int16_T kDrop, int16_T iA[8], int16_T *nA, int16_T
-  iC[8])
-{
-  int32_T tmp;
-  int16_T i;
-  iA[iC[kDrop - 1] - 1] = 0;
-  if (kDrop < *nA) {
-    tmp = *nA - 1;
-    if (*nA - 1 < -32768) {
-      tmp = -32768;
-    }
-
-    for (i = kDrop; i <= (int16_T)tmp; i++) {
-      iC[i - 1] = iC[i];
-    }
+  options->SpecifyObjectiveGradient = false;
+  options->ScaleProblem = false;
+  options->SpecifyConstraintGradient = false;
+  options->NonFiniteSupport = true;
+  options->IterDisplaySQP = false;
+  options->FiniteDifferenceStepSize = -1.0;
+  options->MaxFunctionEvaluations = -1.0;
+  options->IterDisplayQP = false;
+  options->PricingTolerance = 0.0;
+  for (rtDW->i_p = 0; rtDW->i_p < 10; rtDW->i_p++) {
+    options->Algorithm[rtDW->i_p] = d_Algorithm[rtDW->i_p];
   }
 
-  iC[*nA - 1] = 0;
-  tmp = *nA - 1;
-  if (*nA - 1 < -32768) {
-    tmp = -32768;
+  options->ConstraintTolerance = 1.0E-8;
+  options->OptimalityTolerance = 1.0E-6;
+  options->MaxIterations = 20.0;
+  options->FunctionTolerance = 1.7976931348623157E+308;
+  for (rtDW->i_p = 0; rtDW->i_p < 8; rtDW->i_p++) {
+    options->SolverName[rtDW->i_p] = d_SolverName[rtDW->i_p];
   }
 
-  *nA = (int16_T)tmp;
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static void ResetToColdStart(int16_T iA[8], int16_T iC[8])
-{
-  int32_T i;
-  for (i = 0; i < 8; i++) {
-    iA[i] = 0;
-    iC[i] = 0;
+  options->CheckGradients = false;
+  options->Diagnostics[0] = 'o';
+  options->Diagnostics[1] = 'f';
+  options->Diagnostics[2] = 'f';
+  options->DiffMaxChange = 1.7976931348623157E+308;
+  options->DiffMinChange = 0.0;
+  for (rtDW->i_p = 0; rtDW->i_p < 5; rtDW->i_p++) {
+    options->Display[rtDW->i_p] = d_Display[rtDW->i_p];
   }
 
-  iA[7] = 1;
-  iC[0] = 8;
-}
-
-/* Function for MATLAB Function: '<S1>/qp_solver' */
-static void qpkwik(const real32_T Linv_data[], const int32_T Linv_size[2], const
-                   real32_T Hinv_data[], const int32_T Hinv_size[2], const
-                   real32_T f[7], int16_T maxiter, int16_T n, real32_T x_data[],
-                   int32_T *x_size, real32_T lambda[8], real32_T *status,
-                   int16_T iA[8], DW *rtDW)
-{
-  int16_T kDrop;
-  int16_T kNext;
-  int16_T nA;
-  int16_T tmp;
-  int16_T tmp_0;
-  boolean_T ColdReset;
-  boolean_T DualFeasible;
-  boolean_T cTolComputed;
-  static const int8_T h[8] = { 0, 0, 0, 0, 0, 0, 0, 1 };
-
-  static const int8_T Ac[56] = { 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1,
-    0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0,
-    0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1 };
-
-  static const real32_T varargin_1[8] = { 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F,
-    0.0F, 1.0F };
-
-  int32_T exitg1;
-  int32_T exitg3;
-  boolean_T exitg2;
-  boolean_T exitg4;
-  boolean_T guard1 = false;
-  boolean_T guard2 = false;
-  *status = 1.0F;
-  for (rtDW->i_n = 0; rtDW->i_n < 8; rtDW->i_n++) {
-    iA[rtDW->i_n] = h[rtDW->i_n];
-    lambda[rtDW->i_n] = 0.0F;
+  options->FunValCheck[0] = 'o';
+  options->FunValCheck[1] = 'f';
+  options->FunValCheck[2] = 'f';
+  options->UseParallel = false;
+  options->LinearSolver[0] = 'a';
+  options->LinearSolver[1] = 'u';
+  options->LinearSolver[2] = 't';
+  options->LinearSolver[3] = 'o';
+  options->SubproblemAlgorithm[0] = 'c';
+  options->SubproblemAlgorithm[1] = 'g';
+  rtDW->PROBTYPE_ORIG_c = workingset->probType;
+  rtDW->nVar_tmp_a = workingset->nVar;
+  solution->xstar[workingset->nVar] = solution->maxConstr + 1.0;
+  if (workingset->probType == 3) {
+    rtDW->i_p = 1;
+  } else {
+    rtDW->i_p = 4;
   }
 
-  *x_size = n;
-  rtDW->loop_ub = n;
-  if (0 <= rtDW->loop_ub - 1) {
-    memset(&x_data[0], 0, rtDW->loop_ub * sizeof(real32_T));
+  setProblemType(workingset, rtDW->i_p);
+  removeAllIneqConstr(workingset);
+  memset(&objective->grad[0], 0, sizeof(real_T) << 3U);
+  for (rtDW->i_p = 0; rtDW->i_p < 7; rtDW->i_p++) {
+    objective->Hx[rtDW->i_p] = 0.0;
   }
 
-  rtDW->loop_ub = n;
-  if (0 <= rtDW->loop_ub - 1) {
-    memset(&rtDW->r_data[0], 0, rtDW->loop_ub * sizeof(real32_T));
-  }
-
-  rtDW->rMin = 0.0F;
-  rtDW->RLinv_size[0] = Linv_size[0];
-  rtDW->RLinv_size[1] = Linv_size[1];
-  rtDW->D_size[0] = Linv_size[0];
-  rtDW->D_size[1] = Linv_size[1];
-  rtDW->H_size[0] = Linv_size[0];
-  rtDW->H_size[1] = Linv_size[1];
-  rtDW->U_size[0] = Linv_size[0];
-  cTolComputed = false;
-  for (rtDW->i_n = 0; rtDW->i_n < 8; rtDW->i_n++) {
-    rtDW->cTol[rtDW->i_n] = 1.0F;
-    rtDW->iC[rtDW->i_n] = 0;
-  }
-
-  nA = 0;
-  for (rtDW->i_n = 0; rtDW->i_n < 8; rtDW->i_n++) {
-    if (iA[rtDW->i_n] == 1) {
-      rtDW->lambda_tmp_tmp = nA + 1;
-      if (nA + 1 > 32767) {
-        rtDW->lambda_tmp_tmp = 32767;
-      }
-
-      nA = (int16_T)rtDW->lambda_tmp_tmp;
-      rtDW->iC[(int16_T)rtDW->lambda_tmp_tmp - 1] = (int16_T)(rtDW->i_n + 1);
-    }
-  }
-
-  guard1 = false;
-  if (nA > 0) {
-    if (n > 16383) {
-      tmp = MAX_int16_T;
-    } else if (n <= -16384) {
-      tmp = MIN_int16_T;
-    } else {
-      tmp = (int16_T)(n << 1);
-    }
-
-    rtDW->i_n = tmp;
-    if (0 <= rtDW->i_n - 1) {
-      memset(&rtDW->Opt_data[0], 0, rtDW->i_n * sizeof(real32_T));
-    }
-
-    for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
-         rtDW->lambda_tmp_tmp++) {
-      rtDW->Rhs_data[rtDW->lambda_tmp_tmp] = f[rtDW->lambda_tmp_tmp];
-    }
-
-    rtDW->loop_ub = n;
-    if (0 <= rtDW->loop_ub - 1) {
-      memset(&rtDW->Rhs_data[7], 0, rtDW->loop_ub * sizeof(real32_T));
-    }
-
-    DualFeasible = false;
-    ColdReset = false;
-    do {
-      exitg3 = 0;
-      if ((!DualFeasible) && (nA > 0) && ((int32_T)*status <= maxiter)) {
-        rtDW->Xnorm0 = KWIKfactor(rtDW->iC, nA, Linv_data, Linv_size,
-          rtDW->RLinv_data, rtDW->RLinv_size, rtDW->D_data, rtDW->D_size,
-          rtDW->H_data, rtDW->H_size, n, rtDW);
-        if (rtDW->Xnorm0 < 0.0F) {
-          if (ColdReset) {
-            *status = -2.0F;
-            exitg3 = 2;
-          } else {
-            ResetToColdStart(iA, rtDW->iC);
-            nA = 1;
-            ColdReset = true;
-          }
-        } else {
-          rtDW->i_n = 1;
-          while (rtDW->i_n - 1 <= nA - 1) {
-            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_n;
-            if (rtDW->lambda_tmp_tmp > 32767) {
-              rtDW->lambda_tmp_tmp = 32767;
-            } else if (rtDW->lambda_tmp_tmp < -32768) {
-              rtDW->lambda_tmp_tmp = -32768;
-            }
-
-            rtDW->Rhs_data[rtDW->lambda_tmp_tmp - 1] = h[rtDW->iC[(int16_T)
-              rtDW->i_n - 1] - 1];
-            for (kNext = (int16_T)rtDW->i_n; kNext <= nA; kNext++) {
-              rtDW->lambda_tmp_tmp = (kNext + rtDW->U_size[0] * ((int16_T)
-                rtDW->i_n - 1)) - 1;
-              rtDW->U_data[rtDW->lambda_tmp_tmp] = 0.0F;
-              rtDW->H = 1;
-              while (rtDW->H - 1 <= nA - 1) {
-                rtDW->loop_ub = rtDW->RLinv_size[0] * ((int16_T)rtDW->H - 1);
-                rtDW->U_data[rtDW->lambda_tmp_tmp] += rtDW->RLinv_data[(kNext +
-                  rtDW->loop_ub) - 1] * rtDW->RLinv_data[((int16_T)rtDW->i_n +
-                  rtDW->loop_ub) - 1];
-                rtDW->H++;
-              }
-
-              rtDW->U_data[((int16_T)rtDW->i_n + rtDW->U_size[0] * (kNext - 1))
-                - 1] = rtDW->U_data[rtDW->lambda_tmp_tmp];
-            }
-
-            rtDW->i_n++;
-          }
-
-          rtDW->i_n = 1;
-          while (rtDW->i_n - 1 <= n - 1) {
-            rtDW->loop_ub = rtDW->H_size[1];
-            rtDW->Xnorm0 = 0.0F;
-            for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < rtDW->loop_ub;
-                 rtDW->lambda_tmp_tmp++) {
-              rtDW->Xnorm0 += rtDW->H_data[((int16_T)rtDW->i_n + rtDW->H_size[0]
-                * rtDW->lambda_tmp_tmp) - 1] * rtDW->Rhs_data
-                [rtDW->lambda_tmp_tmp];
-            }
-
-            rtDW->Opt_data[(int16_T)rtDW->i_n - 1] = rtDW->Xnorm0;
-            rtDW->H = 1;
-            while (rtDW->H - 1 <= nA - 1) {
-              rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->H;
-              if (rtDW->lambda_tmp_tmp > 32767) {
-                rtDW->lambda_tmp_tmp = 32767;
-              } else if (rtDW->lambda_tmp_tmp < -32768) {
-                rtDW->lambda_tmp_tmp = -32768;
-              }
-
-              rtDW->Opt_data[(int16_T)rtDW->i_n - 1] += rtDW->D_data[((int16_T)
-                rtDW->i_n + rtDW->D_size[0] * ((int16_T)rtDW->H - 1)) - 1] *
-                rtDW->Rhs_data[rtDW->lambda_tmp_tmp - 1];
-              rtDW->H++;
-            }
-
-            rtDW->i_n++;
-          }
-
-          rtDW->i_n = 1;
-          while (rtDW->i_n - 1 <= nA - 1) {
-            rtDW->loop_ub = rtDW->D_size[0];
-            rtDW->Xnorm0 = 0.0F;
-            for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < rtDW->loop_ub;
-                 rtDW->lambda_tmp_tmp++) {
-              rtDW->Xnorm0 += rtDW->D_data[rtDW->lambda_tmp_tmp + rtDW->D_size[0]
-                * ((int16_T)rtDW->i_n - 1)] * rtDW->Rhs_data
-                [rtDW->lambda_tmp_tmp];
-            }
-
-            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_n;
-            rtDW->loop_ub = rtDW->lambda_tmp_tmp;
-            if (rtDW->lambda_tmp_tmp > 32767) {
-              rtDW->loop_ub = 32767;
-            } else if (rtDW->lambda_tmp_tmp < -32768) {
-              rtDW->loop_ub = -32768;
-            }
-
-            rtDW->Opt_data[rtDW->loop_ub - 1] = rtDW->Xnorm0;
-            rtDW->H = 1;
-            while (rtDW->H - 1 <= nA - 1) {
-              rtDW->loop_ub = rtDW->lambda_tmp_tmp;
-              if (rtDW->lambda_tmp_tmp > 32767) {
-                rtDW->loop_ub = 32767;
-              } else if (rtDW->lambda_tmp_tmp < -32768) {
-                rtDW->loop_ub = -32768;
-              }
-
-              rtDW->i_p = rtDW->lambda_tmp_tmp;
-              if (rtDW->lambda_tmp_tmp > 32767) {
-                rtDW->i_p = 32767;
-              } else if (rtDW->lambda_tmp_tmp < -32768) {
-                rtDW->i_p = -32768;
-              }
-
-              rtDW->i1 = n + (int16_T)rtDW->H;
-              if (rtDW->i1 > 32767) {
-                rtDW->i1 = 32767;
-              } else if (rtDW->i1 < -32768) {
-                rtDW->i1 = -32768;
-              }
-
-              rtDW->Opt_data[rtDW->loop_ub - 1] = rtDW->U_data[((int16_T)
-                rtDW->i_n + rtDW->U_size[0] * ((int16_T)rtDW->H - 1)) - 1] *
-                rtDW->Rhs_data[rtDW->i1 - 1] + rtDW->Opt_data[rtDW->i_p - 1];
-              rtDW->H++;
-            }
-
-            rtDW->i_n++;
-          }
-
-          rtDW->Xnorm0 = -1.0E-12F;
-          kDrop = 0;
-          rtDW->i_n = 1;
-          while (rtDW->i_n - 1 <= nA - 1) {
-            rtDW->lambda_tmp_tmp = n + (int16_T)rtDW->i_n;
-            rtDW->loop_ub = rtDW->lambda_tmp_tmp;
-            if (rtDW->lambda_tmp_tmp > 32767) {
-              rtDW->loop_ub = 32767;
-            } else if (rtDW->lambda_tmp_tmp < -32768) {
-              rtDW->loop_ub = -32768;
-            }
-
-            lambda[rtDW->iC[(int16_T)rtDW->i_n - 1] - 1] = rtDW->Opt_data
-              [rtDW->loop_ub - 1];
-            rtDW->loop_ub = rtDW->lambda_tmp_tmp;
-            if (rtDW->lambda_tmp_tmp > 32767) {
-              rtDW->loop_ub = 32767;
-            } else if (rtDW->lambda_tmp_tmp < -32768) {
-              rtDW->loop_ub = -32768;
-            }
-
-            if ((rtDW->Opt_data[rtDW->loop_ub - 1] < rtDW->Xnorm0) && ((int16_T)
-                 rtDW->i_n <= nA - 1)) {
-              kDrop = (int16_T)rtDW->i_n;
-              if (rtDW->lambda_tmp_tmp > 32767) {
-                rtDW->lambda_tmp_tmp = 32767;
-              } else if (rtDW->lambda_tmp_tmp < -32768) {
-                rtDW->lambda_tmp_tmp = -32768;
-              }
-
-              rtDW->Xnorm0 = rtDW->Opt_data[rtDW->lambda_tmp_tmp - 1];
-            }
-
-            rtDW->i_n++;
-          }
-
-          if (kDrop <= 0) {
-            DualFeasible = true;
-            if (1 > n) {
-              rtDW->loop_ub = -1;
-            } else {
-              rtDW->loop_ub = n - 1;
-            }
-
-            *x_size = rtDW->loop_ub + 1;
-            if (0 <= rtDW->loop_ub) {
-              memcpy(&x_data[0], &rtDW->Opt_data[0], (rtDW->loop_ub + 1) *
-                     sizeof(real32_T));
-            }
-          } else {
-            (*status)++;
-            if (*status > 5.0F) {
-              ResetToColdStart(iA, rtDW->iC);
-              nA = 1;
-              ColdReset = true;
-            } else {
-              lambda[rtDW->iC[kDrop - 1] - 1] = 0.0F;
-              DropConstraint(kDrop, iA, &nA, rtDW->iC);
-            }
-          }
-        }
+  objective->maxVar = 8;
+  objective->beta = 0.0;
+  objective->rho = 0.0;
+  objective->prev_objtype = 3;
+  objective->prev_nvar = 7;
+  objective->prev_hasLinear = true;
+  objective->objtype = 5;
+  objective->nvar = rtDW->nVar_tmp_a + 1;
+  objective->gammaScalar = 1.0;
+  objective->hasLinear = true;
+  options->ObjectiveLimit = 1.0E-8 * runTimeOptions->ConstrRelTolFactor;
+  solution->fstar = computeFval(objective, memspace->workspace_double, H, f,
+    solution->xstar);
+  solution->state = 5;
+  iterate(H, f, solution, memspace, workingset, qrmanager, cholmanager,
+          objective, false, 0.0, options->ObjectiveLimit, 1.0E-8,
+          1.4901161193847657E-10, *runTimeOptions, rtDW);
+  if (workingset->isActiveConstr[(workingset->isActiveIdx[3] + workingset->
+       sizes[3]) - 2]) {
+    rtDW->i_p = workingset->sizes[0] + workingset->sizes[1];
+    exitg1 = false;
+    while ((!exitg1) && (rtDW->i_p + 1 <= workingset->nActiveConstr)) {
+      if ((workingset->Wid[rtDW->i_p] == 4) && (workingset->Wlocalidx[rtDW->i_p]
+           == workingset->sizes[3])) {
+        rtDW->b_TYPE_p = workingset->Wid[rtDW->i_p] - 1;
+        workingset->isActiveConstr[(workingset->isActiveIdx[workingset->Wid
+          [rtDW->i_p] - 1] + workingset->Wlocalidx[rtDW->i_p]) - 2] = false;
+        moveConstraint_(workingset, workingset->nActiveConstr, rtDW->i_p + 1);
+        workingset->nActiveConstr--;
+        workingset->nWConstr[rtDW->b_TYPE_p]--;
+        exitg1 = true;
       } else {
-        if (nA <= 0) {
-          for (rtDW->i_n = 0; rtDW->i_n < 8; rtDW->i_n++) {
-            lambda[rtDW->i_n] = 0.0F;
-          }
+        rtDW->i_p++;
+      }
+    }
+  }
 
-          Unconstrained(Hinv_data, Hinv_size, f, x_data, n);
+  rtDW->i_p = workingset->nActiveConstr;
+  rtDW->b_TYPE_p = workingset->sizes[0] + workingset->sizes[1];
+  while ((rtDW->i_p > rtDW->b_TYPE_p) && (rtDW->i_p > rtDW->nVar_tmp_a)) {
+    rtDW->TYPE_tmp_e = workingset->Wid[rtDW->i_p - 1] - 1;
+    workingset->isActiveConstr[(workingset->isActiveIdx[rtDW->TYPE_tmp_e] +
+      workingset->Wlocalidx[rtDW->i_p - 1]) - 2] = false;
+    moveConstraint_(workingset, workingset->nActiveConstr, rtDW->i_p);
+    workingset->nActiveConstr--;
+    workingset->nWConstr[rtDW->TYPE_tmp_e]--;
+    rtDW->i_p--;
+  }
+
+  solution->maxConstr = solution->xstar[rtDW->nVar_tmp_a];
+  setProblemType(workingset, rtDW->PROBTYPE_ORIG_c);
+  objective->objtype = objective->prev_objtype;
+  objective->nvar = objective->prev_nvar;
+  objective->hasLinear = objective->prev_hasLinear;
+  options->ObjectiveLimit = -1.0E+20;
+  options->StepTolerance = 1.0E-8;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static int32_T ComputeNumDependentEq__j(sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+  const real_T beqf[9], int32_T mConstr, int32_T nVar, real_T tolfactor, DW
+  *rtDW)
+{
+  int32_T numDependent;
+  boolean_T exitg1;
+  numDependent = mConstr - nVar;
+  if (0 > numDependent) {
+    numDependent = 0;
+  }
+
+  rtDW->totalRank = 0;
+  while (rtDW->totalRank <= nVar - 1) {
+    qrmanager->jpvt[rtDW->totalRank] = 0;
+    rtDW->totalRank++;
+  }
+
+  if (mConstr * nVar == 0) {
+    qrmanager->mrows = mConstr;
+    qrmanager->ncols = nVar;
+    qrmanager->minRowCol = 0;
+  } else {
+    qrmanager->usedPivoting = true;
+    qrmanager->mrows = mConstr;
+    qrmanager->ncols = nVar;
+    if (mConstr < nVar) {
+      qrmanager->minRowCol = mConstr;
+    } else {
+      qrmanager->minRowCol = nVar;
+    }
+
+    xzgeqp3(qrmanager->QR, 1, mConstr, nVar, qrmanager->jpvt, qrmanager->tau,
+            rtDW);
+  }
+
+  rtDW->tol = tolfactor * (real_T)nVar * 2.2204460492503131E-16;
+  if (nVar < mConstr) {
+    rtDW->totalRank = nVar;
+  } else {
+    rtDW->totalRank = mConstr;
+  }
+
+  rtDW->totalRank += (rtDW->totalRank - 1) * qrmanager->ldq;
+  while ((rtDW->totalRank > 0) && (fabs(qrmanager->QR[rtDW->totalRank - 1]) <
+          rtDW->tol)) {
+    rtDW->totalRank = (rtDW->totalRank - qrmanager->ldq) - 1;
+    numDependent++;
+  }
+
+  if (numDependent > 0) {
+    computeQ_(qrmanager, qrmanager->mrows, rtDW);
+    rtDW->totalRank = 0;
+    exitg1 = false;
+    while ((!exitg1) && (rtDW->totalRank <= numDependent - 1)) {
+      rtDW->qtb = 0.0;
+      if (mConstr >= 1) {
+        rtDW->ix_c = ((mConstr - rtDW->totalRank) - 1) * qrmanager->ldq;
+        rtDW->iy_m = 0;
+        rtDW->k_m = 0;
+        while (rtDW->k_m <= mConstr - 1) {
+          rtDW->qtb += qrmanager->Q[rtDW->ix_c] * beqf[rtDW->iy_m];
+          rtDW->ix_c++;
+          rtDW->iy_m++;
+          rtDW->k_m++;
+        }
+      }
+
+      if (fabs(rtDW->qtb) >= rtDW->tol) {
+        numDependent = -1;
+        exitg1 = true;
+      } else {
+        rtDW->totalRank++;
+      }
+    }
+  }
+
+  return numDependent;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static int32_T RemoveDependentEq__a(s9NoAX0P67ji2P1ZBafS3UG *memspace,
+  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+  real_T tolfactor, DW *rtDW)
+{
+  int32_T nDepInd;
+  rtDW->nVar_n = workingset->nVar - 1;
+  rtDW->mTotalWorkingEq = workingset->nWConstr[0] + workingset->nWConstr[1];
+  nDepInd = 0;
+  if (rtDW->mTotalWorkingEq > 0) {
+    rtDW->idx_row_m = 0;
+    while (rtDW->idx_row_m <= rtDW->mTotalWorkingEq - 1) {
+      rtDW->offsetQR = 0;
+      while (rtDW->offsetQR <= rtDW->nVar_n) {
+        qrmanager->QR[rtDW->idx_row_m + qrmanager->ldq * rtDW->offsetQR] =
+          workingset->ATwset[workingset->ldA * rtDW->idx_row_m + rtDW->offsetQR];
+        rtDW->offsetQR++;
+      }
+
+      rtDW->idx_row_m++;
+    }
+
+    nDepInd = ComputeNumDependentEq__j(qrmanager, workingset->bwset,
+      rtDW->mTotalWorkingEq, workingset->nVar, tolfactor, rtDW);
+    if (nDepInd > 0) {
+      rtDW->idx_row_m = 0;
+      while (rtDW->idx_row_m <= rtDW->mTotalWorkingEq - 1) {
+        rtDW->offsetQR = qrmanager->ldq * rtDW->idx_row_m;
+        rtDW->offsetATw = workingset->ldA * rtDW->idx_row_m;
+        rtDW->k = 1;
+        while (rtDW->k - 1 <= rtDW->nVar_n) {
+          qrmanager->QR[(rtDW->offsetQR + rtDW->k) - 1] = workingset->ATwset
+            [(rtDW->offsetATw + rtDW->k) - 1];
+          rtDW->k++;
         }
 
-        exitg3 = 1;
+        rtDW->idx_row_m++;
       }
-    } while (exitg3 == 0);
 
-    if (exitg3 == 1) {
-      guard1 = true;
+      rtDW->nVar_n = 0;
+      while (rtDW->nVar_n <= workingset->nWConstr[0] - 1) {
+        qrmanager->jpvt[rtDW->nVar_n] = 1;
+        rtDW->nVar_n++;
+      }
+
+      rtDW->nVar_n = workingset->nWConstr[0];
+      while (rtDW->nVar_n + 1 <= rtDW->mTotalWorkingEq) {
+        qrmanager->jpvt[rtDW->nVar_n] = 0;
+        rtDW->nVar_n++;
+      }
+
+      if (workingset->nVar * rtDW->mTotalWorkingEq == 0) {
+        qrmanager->mrows = workingset->nVar;
+        qrmanager->ncols = rtDW->mTotalWorkingEq;
+        qrmanager->minRowCol = 0;
+      } else {
+        qrmanager->usedPivoting = true;
+        qrmanager->mrows = workingset->nVar;
+        qrmanager->ncols = rtDW->mTotalWorkingEq;
+        if (workingset->nVar < rtDW->mTotalWorkingEq) {
+          qrmanager->minRowCol = workingset->nVar;
+        } else {
+          qrmanager->minRowCol = rtDW->mTotalWorkingEq;
+        }
+
+        for (rtDW->nVar_n = 0; rtDW->nVar_n < 9; rtDW->nVar_n++) {
+          rtDW->jpvt[rtDW->nVar_n] = qrmanager->jpvt[rtDW->nVar_n];
+        }
+
+        xzgeqp3(qrmanager->QR, 1, workingset->nVar, rtDW->mTotalWorkingEq,
+                rtDW->jpvt, qrmanager->tau, rtDW);
+        for (rtDW->nVar_n = 0; rtDW->nVar_n < 9; rtDW->nVar_n++) {
+          qrmanager->jpvt[rtDW->nVar_n] = rtDW->jpvt[rtDW->nVar_n];
+        }
+      }
+
+      rtDW->nVar_n = 0;
+      while (rtDW->nVar_n <= nDepInd - 1) {
+        memspace->workspace_int[rtDW->nVar_n] = qrmanager->jpvt
+          [(rtDW->mTotalWorkingEq - nDepInd) + rtDW->nVar_n];
+        rtDW->nVar_n++;
+      }
+
+      for (rtDW->nVar_n = 0; rtDW->nVar_n < 9; rtDW->nVar_n++) {
+        rtDW->jpvt[rtDW->nVar_n] = memspace->workspace_sort[rtDW->nVar_n];
+      }
+
+      countsort(memspace->workspace_int, nDepInd, rtDW->jpvt, 1,
+                rtDW->mTotalWorkingEq);
+      for (rtDW->nVar_n = 0; rtDW->nVar_n < 9; rtDW->nVar_n++) {
+        memspace->workspace_sort[rtDW->nVar_n] = rtDW->jpvt[rtDW->nVar_n];
+      }
+
+      rtDW->mTotalWorkingEq = nDepInd;
+      while (rtDW->mTotalWorkingEq > 0) {
+        removeEqConstr(workingset, memspace->workspace_int[rtDW->mTotalWorkingEq
+                       - 1]);
+        rtDW->mTotalWorkingEq--;
+      }
+    }
+  }
+
+  return nDepInd;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void PresolveWorkingSet_m(svV6yPD1e8CTJu8b18IprLB *solution,
+  s9NoAX0P67ji2P1ZBafS3UG *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
+  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, const s4lHOiXA0GHbse0IgoBY6ZF *options, DW
+  *rtDW)
+{
+  solution->state = 82;
+  rtDW->b_o = RemoveDependentEq__a(memspace, workingset, qrmanager, 100.0, rtDW);
+  if ((rtDW->b_o != -1) && (workingset->nActiveConstr <= qrmanager->ldq)) {
+    RemoveDependentIneq_(workingset, qrmanager, memspace, 100.0, rtDW);
+    feasibleX0ForWorkingSet(memspace->workspace_double, solution->xstar,
+      workingset, qrmanager, rtDW);
+    if (workingset->nWConstr[0] + workingset->nWConstr[1] == workingset->nVar) {
+      rtDW->constrViolation = maxConstraintViolation_eo(workingset,
+        solution->xstar, rtDW);
+      if (rtDW->constrViolation > options->ConstraintTolerance) {
+        solution->state = -2;
+      }
     }
   } else {
-    Unconstrained(Hinv_data, Hinv_size, f, x_data, n);
-    guard1 = true;
+    solution->state = -3;
+    removeAllIneqConstr(workingset);
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static boolean_T strcmp_o(const char_T a[8])
+{
+  int32_T kstr;
+  boolean_T b_bool;
+  static const char_T b[128] = { '\x00', '\x01', '\x02', '\x03', '\x04', '\x05',
+    '\x06', '\x07', '\x08', '	', '\x0a', '\x0b', '\x0c', '\x0d', '\x0e', '\x0f',
+    '\x10', '\x11', '\x12', '\x13', '\x14', '\x15', '\x16', '\x17', '\x18',
+    '\x19', '\x1a', '\x1b', '\x1c', '\x1d', '\x1e', '\x1f', ' ', '!', '\"', '#',
+    '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', '0', '1', '2',
+    '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?', '@', 'a',
+    'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+    'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '[', '\\', ']', '^', '_',
+    '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
+    'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}',
+    '~', '\x7f' };
+
+  static const char_T c[8] = { 'q', 'u', 'a', 'd', 'p', 'r', 'o', 'g' };
+
+  int32_T exitg1;
+  b_bool = false;
+  kstr = 0;
+  do {
+    exitg1 = 0;
+    if (kstr < 8) {
+      if (b[(uint8_T)a[kstr] & 127] != b[(int32_T)c[kstr]]) {
+        exitg1 = 1;
+      } else {
+        kstr++;
+      }
+    } else {
+      b_bool = true;
+      exitg1 = 1;
+    }
+  } while (exitg1 == 0);
+
+  return b_bool;
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void phaseone_k(const real_T H[49], const real_T f[7],
+  svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *memspace,
+  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+  s1hK3o0EyOqKKjEgDlbhqfF *cholmanager, shohwUBaOGHF036TMzc1KEH *objective,
+  s4lHOiXA0GHbse0IgoBY6ZF *options, const sL9bDKomAYkxZSVrG9w6En *runTimeOptions,
+  DW *rtDW)
+{
+  boolean_T exitg1;
+  rtDW->PROBTYPE_ORIG = workingset->probType;
+  rtDW->nVar_tmp = workingset->nVar;
+  solution->xstar[workingset->nVar] = solution->maxConstr + 1.0;
+  if (workingset->probType == 3) {
+    rtDW->mConstr = 1;
+  } else {
+    rtDW->mConstr = 4;
   }
 
-  if (guard1) {
-    rtDW->Xnorm0 = norm(x_data, x_size);
-    exitg2 = false;
-    while ((!exitg2) && ((int32_T)*status <= maxiter)) {
-      rtDW->cMin = -1.0E-6F;
-      kNext = 0;
-      for (rtDW->i_n = 0; rtDW->i_n < 7; rtDW->i_n++) {
-        rtDW->t_m = rtDW->cTol[rtDW->i_n];
-        if (!cTolComputed) {
-          for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
-               rtDW->lambda_tmp_tmp++) {
-            rtDW->AcRow[rtDW->lambda_tmp_tmp] = (real32_T)Ac[rtDW->i_n +
-              (rtDW->lambda_tmp_tmp << 3)] * x_data[rtDW->lambda_tmp_tmp];
-          }
-
-          abs_b(rtDW->AcRow, rtDW->z_data);
-          rtDW->t_m = fmaxf(rtDW->t_m, maximum(rtDW->z_data));
-        }
-
-        if (iA[rtDW->i_n] == 0) {
-          rtDW->cVal = 0.0F;
-          for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
-               rtDW->lambda_tmp_tmp++) {
-            rtDW->cVal += (real32_T)Ac[rtDW->i_n + (rtDW->lambda_tmp_tmp << 3)] *
-              x_data[rtDW->lambda_tmp_tmp];
-          }
-
-          rtDW->cVal /= rtDW->t_m;
-          if (rtDW->cVal < rtDW->cMin) {
-            rtDW->cMin = rtDW->cVal;
-            kNext = (int16_T)(rtDW->i_n + 1);
-          }
-        }
-
-        rtDW->cTol[rtDW->i_n] = rtDW->t_m;
-      }
-
-      cTolComputed = true;
-      if (kNext <= 0) {
-        exitg2 = true;
-      } else if ((int32_T)*status == maxiter) {
-        *status = 0.0F;
-        exitg2 = true;
+  setProblemType(workingset, rtDW->mConstr);
+  removeAllIneqConstr(workingset);
+  objective->prev_objtype = objective->objtype;
+  objective->prev_nvar = objective->nvar;
+  objective->prev_hasLinear = objective->hasLinear;
+  objective->objtype = 5;
+  objective->nvar = rtDW->nVar_tmp + 1;
+  objective->gammaScalar = 1.0;
+  objective->hasLinear = true;
+  rtDW->oldObjLim = options->ObjectiveLimit;
+  rtDW->oldTolX = options->StepTolerance;
+  options->ObjectiveLimit = options->ConstraintTolerance *
+    runTimeOptions->ConstrRelTolFactor;
+  options->StepTolerance = 1.4901161193847657E-10;
+  solution->fstar = computeFval(objective, memspace->workspace_double, H, f,
+    solution->xstar);
+  solution->state = 5;
+  iterate(H, f, solution, memspace, workingset, qrmanager, cholmanager,
+          objective, options->IterDisplayQP, options->PricingTolerance,
+          options->ObjectiveLimit, options->ConstraintTolerance,
+          options->StepTolerance, *runTimeOptions, rtDW);
+  if (workingset->isActiveConstr[(workingset->isActiveIdx[3] + workingset->
+       sizes[3]) - 2]) {
+    rtDW->mConstr = workingset->sizes[0] + workingset->sizes[1];
+    exitg1 = false;
+    while ((!exitg1) && (rtDW->mConstr + 1 <= workingset->nActiveConstr)) {
+      if ((workingset->Wid[rtDW->mConstr] == 4) && (workingset->Wlocalidx
+           [rtDW->mConstr] == workingset->sizes[3])) {
+        rtDW->b_TYPE = workingset->Wid[rtDW->mConstr] - 1;
+        workingset->isActiveConstr[(workingset->isActiveIdx[workingset->Wid
+          [rtDW->mConstr] - 1] + workingset->Wlocalidx[rtDW->mConstr]) - 2] =
+          false;
+        moveConstraint_(workingset, workingset->nActiveConstr, rtDW->mConstr + 1);
+        workingset->nActiveConstr--;
+        workingset->nWConstr[rtDW->b_TYPE]--;
+        exitg1 = true;
       } else {
-        do {
-          exitg1 = 0;
-          if ((kNext > 0) && ((int32_T)*status <= maxiter)) {
-            for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
-                 rtDW->lambda_tmp_tmp++) {
-              rtDW->AcRow[rtDW->lambda_tmp_tmp] = Ac[((rtDW->lambda_tmp_tmp << 3)
-                + kNext) - 1];
-            }
+        rtDW->mConstr++;
+      }
+    }
+  }
 
-            guard2 = false;
-            if (nA == 0) {
-              mtimes(Hinv_data, Hinv_size, rtDW->AcRow, rtDW->z_data,
-                     &rtDW->z_size);
-              guard2 = true;
-            } else {
-              rtDW->cMin = KWIKfactor(rtDW->iC, nA, Linv_data, Linv_size,
-                rtDW->RLinv_data, rtDW->RLinv_size, rtDW->D_data, rtDW->D_size,
-                rtDW->H_data, rtDW->H_size, n, rtDW);
-              if (rtDW->cMin <= 0.0F) {
-                *status = -2.0F;
-                exitg1 = 1;
-              } else {
-                rtDW->U_size[0] = rtDW->H_size[0];
-                rtDW->U_size[1] = rtDW->H_size[1];
-                rtDW->loop_ub = rtDW->H_size[0] * rtDW->H_size[1];
-                for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp <
-                     rtDW->loop_ub; rtDW->lambda_tmp_tmp++) {
-                  rtDW->U_data[rtDW->lambda_tmp_tmp] = -rtDW->H_data
-                    [rtDW->lambda_tmp_tmp];
-                }
+  rtDW->mConstr = workingset->nActiveConstr;
+  rtDW->b_TYPE = workingset->sizes[0] + workingset->sizes[1];
+  while ((rtDW->mConstr > rtDW->b_TYPE) && (rtDW->mConstr > rtDW->nVar_tmp)) {
+    rtDW->TYPE_tmp = workingset->Wid[rtDW->mConstr - 1] - 1;
+    workingset->isActiveConstr[(workingset->isActiveIdx[rtDW->TYPE_tmp] +
+      workingset->Wlocalidx[rtDW->mConstr - 1]) - 2] = false;
+    moveConstraint_(workingset, workingset->nActiveConstr, rtDW->mConstr);
+    workingset->nActiveConstr--;
+    workingset->nWConstr[rtDW->TYPE_tmp]--;
+    rtDW->mConstr--;
+  }
 
-                mtimes(rtDW->U_data, rtDW->U_size, rtDW->AcRow, rtDW->z_data,
-                       &rtDW->z_size);
-                rtDW->i_n = 1;
-                while (rtDW->i_n - 1 <= nA - 1) {
-                  rtDW->t_m = 0.0F;
-                  for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
-                       rtDW->lambda_tmp_tmp++) {
-                    rtDW->t_m += rtDW->D_data[rtDW->lambda_tmp_tmp +
-                      rtDW->D_size[0] * ((int16_T)rtDW->i_n - 1)] * rtDW->
-                      AcRow[rtDW->lambda_tmp_tmp];
-                  }
+  solution->maxConstr = solution->xstar[rtDW->nVar_tmp];
+  setProblemType(workingset, rtDW->PROBTYPE_ORIG);
+  objective->objtype = objective->prev_objtype;
+  objective->nvar = objective->prev_nvar;
+  objective->hasLinear = objective->prev_hasLinear;
+  options->ObjectiveLimit = rtDW->oldObjLim;
+  options->StepTolerance = rtDW->oldTolX;
+}
 
-                  rtDW->r_data[(int16_T)rtDW->i_n - 1] = rtDW->t_m;
-                  rtDW->i_n++;
-                }
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void driver(const real_T H[49], const real_T f[7],
+                   svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG
+                   *memspace, s1hK3o0EyOqKKjEgDlbhqfF *cholmanager,
+                   sL9bDKomAYkxZSVrG9w6En runTimeOptions,
+                   swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *
+                   qrmanager, shohwUBaOGHF036TMzc1KEH *objective, DW *rtDW)
+{
+  static const char_T m_FiniteDifferenceType[7] = { 'f', 'o', 'r', 'w', 'a', 'r',
+    'd' };
 
-                guard2 = true;
-              }
-            }
+  static const char_T m_Algorithm[10] = { 'a', 'c', 't', 'i', 'v', 'e', '-', 's',
+    'e', 't' };
 
-            if (guard2) {
-              kDrop = 0;
-              rtDW->cMin = 0.0F;
-              DualFeasible = true;
-              ColdReset = true;
-              if (nA > 1) {
-                rtDW->i_n = 0;
-                exitg4 = false;
-                while ((!exitg4) && (rtDW->i_n <= nA - 2)) {
-                  if (rtDW->r_data[rtDW->i_n] >= 1.0E-12F) {
-                    ColdReset = false;
-                    exitg4 = true;
-                  } else {
-                    rtDW->i_n++;
-                  }
-                }
-              }
+  static const char_T m_SolverName[8] = { 'q', 'u', 'a', 'd', 'p', 'r', 'o', 'g'
+  };
 
-              if ((nA != 1) && (!ColdReset)) {
-                rtDW->lambda_tmp_tmp = nA - 1;
-                if (nA - 1 < -32768) {
-                  rtDW->lambda_tmp_tmp = -32768;
-                }
+  static const char_T m_Display[5] = { 'f', 'i', 'n', 'a', 'l' };
 
-                rtDW->i_n = 1;
-                while (rtDW->i_n - 1 <= (int16_T)rtDW->lambda_tmp_tmp - 1) {
-                  rtDW->cVal = rtDW->r_data[(int16_T)rtDW->i_n - 1];
-                  if (rtDW->cVal > 1.0E-12F) {
-                    rtDW->cVal = lambda[rtDW->iC[(int16_T)rtDW->i_n - 1] - 1] /
-                      rtDW->cVal;
-                    if ((kDrop == 0) || (rtDW->cVal < rtDW->rMin)) {
-                      rtDW->rMin = rtDW->cVal;
-                      kDrop = (int16_T)rtDW->i_n;
-                    }
-                  }
+  boolean_T guard1 = false;
+  memset(&objective->grad[0], 0, sizeof(real_T) << 3U);
+  for (rtDW->i_j = 0; rtDW->i_j < 7; rtDW->i_j++) {
+    objective->Hx[rtDW->i_j] = 0.0;
+  }
 
-                  rtDW->i_n++;
-                }
+  objective->hasLinear = true;
+  objective->nvar = 7;
+  objective->maxVar = 8;
+  objective->beta = 0.0;
+  objective->rho = 0.0;
+  objective->objtype = 3;
+  objective->prev_objtype = 3;
+  objective->prev_nvar = 0;
+  objective->prev_hasLinear = false;
+  objective->gammaScalar = 0.0;
+  solution->iterations = 0;
+  runTimeOptions.RemainFeasible = true;
+  PresolveWorkingSet(solution, memspace, workingset, qrmanager, rtDW);
+  rtDW->options.InitDamping = 0.01;
+  for (rtDW->i_j = 0; rtDW->i_j < 7; rtDW->i_j++) {
+    rtDW->options.FiniteDifferenceType[rtDW->i_j] = m_FiniteDifferenceType
+      [rtDW->i_j];
+  }
 
-                if (kDrop > 0) {
-                  rtDW->cMin = rtDW->rMin;
-                  DualFeasible = false;
-                }
-              }
+  rtDW->options.SpecifyObjectiveGradient = false;
+  rtDW->options.ScaleProblem = false;
+  rtDW->options.SpecifyConstraintGradient = false;
+  rtDW->options.NonFiniteSupport = true;
+  rtDW->options.IterDisplaySQP = false;
+  rtDW->options.FiniteDifferenceStepSize = -1.0;
+  rtDW->options.MaxFunctionEvaluations = -1.0;
+  rtDW->options.IterDisplayQP = false;
+  rtDW->options.PricingTolerance = 0.0;
+  for (rtDW->i_j = 0; rtDW->i_j < 10; rtDW->i_j++) {
+    rtDW->options.Algorithm[rtDW->i_j] = m_Algorithm[rtDW->i_j];
+  }
 
-              rtDW->cVal = mtimes_f(rtDW->z_data, rtDW->AcRow);
-              if (rtDW->cVal <= 0.0F) {
-                rtDW->cVal = 0.0F;
-                ColdReset = true;
-              } else {
-                rtDW->t_m = 0.0F;
-                for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp < 7;
-                     rtDW->lambda_tmp_tmp++) {
-                  rtDW->t_m += rtDW->AcRow[rtDW->lambda_tmp_tmp] * x_data
-                    [rtDW->lambda_tmp_tmp];
-                }
+  rtDW->options.ObjectiveLimit = -1.0E+20;
+  rtDW->options.ConstraintTolerance = 1.0E-8;
+  rtDW->options.OptimalityTolerance = 1.0E-6;
+  rtDW->options.StepTolerance = 1.0E-8;
+  rtDW->options.MaxIterations = 20.0;
+  rtDW->options.FunctionTolerance = 1.7976931348623157E+308;
+  for (rtDW->i_j = 0; rtDW->i_j < 8; rtDW->i_j++) {
+    rtDW->options.SolverName[rtDW->i_j] = m_SolverName[rtDW->i_j];
+  }
 
-                rtDW->cVal = (-0.0F - rtDW->t_m) / rtDW->cVal;
-                ColdReset = false;
-              }
+  rtDW->options.CheckGradients = false;
+  rtDW->options.Diagnostics[0] = 'o';
+  rtDW->options.Diagnostics[1] = 'f';
+  rtDW->options.Diagnostics[2] = 'f';
+  rtDW->options.DiffMaxChange = 1.7976931348623157E+308;
+  rtDW->options.DiffMinChange = 0.0;
+  for (rtDW->i_j = 0; rtDW->i_j < 5; rtDW->i_j++) {
+    rtDW->options.Display[rtDW->i_j] = m_Display[rtDW->i_j];
+  }
 
-              if (DualFeasible && ColdReset) {
-                *status = -1.0F;
-                exitg1 = 1;
-              } else {
-                if (ColdReset) {
-                  rtDW->t_m = rtDW->cMin;
-                } else if (DualFeasible) {
-                  rtDW->t_m = rtDW->cVal;
-                } else {
-                  rtDW->t_m = fminf(rtDW->cMin, rtDW->cVal);
-                }
-
-                rtDW->i_n = 1;
-                while (rtDW->i_n - 1 <= nA - 1) {
-                  rtDW->lambda_tmp_tmp = rtDW->iC[(int16_T)rtDW->i_n - 1];
-                  lambda[rtDW->lambda_tmp_tmp - 1] -= rtDW->r_data[(int16_T)
-                    rtDW->i_n - 1] * rtDW->t_m;
-                  if ((rtDW->lambda_tmp_tmp <= 7) && (lambda
-                       [rtDW->lambda_tmp_tmp - 1] < 0.0F)) {
-                    lambda[rtDW->lambda_tmp_tmp - 1] = 0.0F;
-                  }
-
-                  rtDW->i_n++;
-                }
-
-                lambda[kNext - 1] += rtDW->t_m;
-                if (rtDW->t_m == rtDW->cMin) {
-                  DropConstraint(kDrop, iA, &nA, rtDW->iC);
-                }
-
-                if (!ColdReset) {
-                  rtDW->loop_ub = *x_size;
-                  for (rtDW->lambda_tmp_tmp = 0; rtDW->lambda_tmp_tmp <
-                       rtDW->loop_ub; rtDW->lambda_tmp_tmp++) {
-                    x_data[rtDW->lambda_tmp_tmp] += rtDW->t_m * rtDW->
-                      z_data[rtDW->lambda_tmp_tmp];
-                  }
-
-                  if (rtDW->t_m == rtDW->cVal) {
-                    if (nA == n) {
-                      *status = -1.0F;
-                      exitg1 = 1;
-                    } else {
-                      rtDW->lambda_tmp_tmp = nA + 1;
-                      if (nA + 1 > 32767) {
-                        rtDW->lambda_tmp_tmp = 32767;
-                      }
-
-                      nA = (int16_T)rtDW->lambda_tmp_tmp;
-                      rtDW->iC[(int16_T)rtDW->lambda_tmp_tmp - 1] = kNext;
-                      kDrop = (int16_T)rtDW->lambda_tmp_tmp;
-                      exitg4 = false;
-                      while ((!exitg4) && (kDrop > 1)) {
-                        tmp = rtDW->iC[kDrop - 1];
-                        tmp_0 = rtDW->iC[kDrop - 2];
-                        if (tmp > tmp_0) {
-                          exitg4 = true;
-                        } else {
-                          rtDW->iC[kDrop - 1] = tmp_0;
-                          rtDW->iC[kDrop - 2] = tmp;
-                          kDrop--;
-                        }
-                      }
-
-                      iA[kNext - 1] = 1;
-                      kNext = 0;
-                      (*status)++;
-                    }
-                  } else {
-                    (*status)++;
-                  }
-                } else {
-                  (*status)++;
-                }
-              }
-            }
-          } else {
-            rtDW->cMin = norm(x_data, x_size);
-            if (fabsf(rtDW->cMin - rtDW->Xnorm0) > 0.001F) {
-              rtDW->Xnorm0 = rtDW->cMin;
-              maximum2(varargin_1, rtDW->cTol);
-              cTolComputed = false;
-            }
-
-            exitg1 = 2;
+  rtDW->options.FunValCheck[0] = 'o';
+  rtDW->options.FunValCheck[1] = 'f';
+  rtDW->options.FunValCheck[2] = 'f';
+  rtDW->options.UseParallel = false;
+  rtDW->options.LinearSolver[0] = 'a';
+  rtDW->options.LinearSolver[1] = 'u';
+  rtDW->options.LinearSolver[2] = 't';
+  rtDW->options.LinearSolver[3] = 'o';
+  rtDW->options.SubproblemAlgorithm[0] = 'c';
+  rtDW->options.SubproblemAlgorithm[1] = 'g';
+  if (solution->state >= 0) {
+    solution->iterations = 0;
+    rtDW->b = maxConstraintViolation_eo(workingset, solution->xstar, rtDW);
+    solution->maxConstr = rtDW->b;
+    guard1 = false;
+    if (rtDW->b > 1.0E-8 * runTimeOptions.ConstrRelTolFactor) {
+      phaseone(H, f, solution, memspace, workingset, qrmanager, cholmanager,
+               &runTimeOptions, objective, &rtDW->options, rtDW);
+      if (solution->state == 0) {
+      } else {
+        rtDW->b = maxConstraintViolation_eo(workingset, solution->xstar, rtDW);
+        solution->maxConstr = rtDW->b;
+        if (rtDW->b > rtDW->options.ConstraintTolerance *
+            runTimeOptions.ConstrRelTolFactor) {
+          rtDW->i_j = 0;
+          while (rtDW->i_j <= workingset->mConstrMax - 1) {
+            solution->lambda[rtDW->i_j] = 0.0;
+            rtDW->i_j++;
           }
-        } while (exitg1 == 0);
 
-        if (exitg1 == 1) {
-          exitg2 = true;
+          solution->fstar = computeFval(objective, memspace->workspace_double, H,
+            f, solution->xstar);
+          solution->state = -2;
+        } else {
+          if (rtDW->b > 0.0) {
+            for (rtDW->i_j = 0; rtDW->i_j < 7; rtDW->i_j++) {
+              solution->searchDir[rtDW->i_j] = solution->xstar[rtDW->i_j];
+            }
+
+            PresolveWorkingSet_m(solution, memspace, workingset, qrmanager,
+                                 &rtDW->options, rtDW);
+            rtDW->b = maxConstraintViolation_eo(workingset, solution->xstar,
+              rtDW);
+            if (rtDW->b >= solution->maxConstr) {
+              solution->maxConstr = rtDW->b;
+              for (rtDW->i_j = 0; rtDW->i_j < 7; rtDW->i_j++) {
+                solution->xstar[rtDW->i_j] = solution->searchDir[rtDW->i_j];
+              }
+            }
+          }
+
+          guard1 = true;
+        }
+      }
+    } else {
+      guard1 = true;
+    }
+
+    if (guard1) {
+      iterate(H, f, solution, memspace, workingset, qrmanager, cholmanager,
+              objective, rtDW->options.IterDisplayQP,
+              rtDW->options.PricingTolerance, rtDW->options.ObjectiveLimit,
+              rtDW->options.ConstraintTolerance, rtDW->options.StepTolerance,
+              runTimeOptions, rtDW);
+      if (strcmp_o(rtDW->options.SolverName) && (solution->state != -6)) {
+        solution->maxConstr = maxConstraintViolation_eo(workingset,
+          solution->xstar, rtDW);
+        computeFirstOrderOpt(solution, objective, workingset->nVar,
+                             workingset->ldA, workingset->ATwset,
+                             workingset->nActiveConstr,
+                             memspace->workspace_double);
+        runTimeOptions.RemainFeasible = false;
+        while ((solution->iterations < runTimeOptions.MaxIterations) &&
+               ((solution->state == -7) || ((solution->state == 1) &&
+                 ((solution->maxConstr > rtDW->options.ConstraintTolerance *
+                   runTimeOptions.ConstrRelTolFactor) ||
+                  (solution->firstorderopt > rtDW->options.OptimalityTolerance *
+                   runTimeOptions.ProbRelTolFactor))))) {
+          feasibleX0ForWorkingSet(memspace->workspace_double, solution->xstar,
+            workingset, qrmanager, rtDW);
+          PresolveWorkingSet_m(solution, memspace, workingset, qrmanager,
+                               &rtDW->options, rtDW);
+          phaseone_k(H, f, solution, memspace, workingset, qrmanager,
+                     cholmanager, objective, &rtDW->options, &runTimeOptions,
+                     rtDW);
+          iterate(H, f, solution, memspace, workingset, qrmanager, cholmanager,
+                  objective, rtDW->options.IterDisplayQP,
+                  rtDW->options.PricingTolerance, rtDW->options.ObjectiveLimit,
+                  rtDW->options.ConstraintTolerance, rtDW->options.StepTolerance,
+                  runTimeOptions, rtDW);
+          solution->maxConstr = maxConstraintViolation_eo(workingset,
+            solution->xstar, rtDW);
+          computeFirstOrderOpt(solution, objective, workingset->nVar,
+                               workingset->ldA, workingset->ATwset,
+                               workingset->nActiveConstr,
+                               memspace->workspace_double);
         }
       }
     }
   }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void linearForm__e(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
+  workspace[8], const real_T H[49], const real_T f[7], const real_T x[8])
+{
+  int32_T b;
+  int32_T c;
+  int32_T fMultiplier;
+  int32_T ia;
+  int32_T iac;
+  int32_T iy;
+  fMultiplier = 0;
+  if (obj_hasLinear) {
+    while (fMultiplier <= obj_nvar - 1) {
+      workspace[fMultiplier] = f[fMultiplier];
+      fMultiplier++;
+    }
+
+    fMultiplier = 1;
+  }
+
+  if (obj_nvar != 0) {
+    if (fMultiplier != 1) {
+      while (fMultiplier <= obj_nvar - 1) {
+        workspace[fMultiplier] = 0.0;
+        fMultiplier++;
+      }
+    }
+
+    fMultiplier = 0;
+    c = (obj_nvar - 1) * obj_nvar + 1;
+    iac = 1;
+    while (((obj_nvar > 0) && (iac <= c)) || ((obj_nvar < 0) && (iac >= c))) {
+      iy = 0;
+      b = (iac + obj_nvar) - 1;
+      for (ia = iac; ia <= b; ia++) {
+        workspace[iy] += H[ia - 1] * x[fMultiplier];
+        iy++;
+      }
+
+      fMultiplier++;
+      iac += obj_nvar;
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void quadprog(const real_T H[49], const real_T f[7], const real_T x0[7],
+                     real_T x[7], real_T *fval, real_T *exitflag, char_T
+                     output_algorithm[10], real_T *output_firstorderopt, real_T *
+                     output_constrviolation, real_T *output_iterations, DW *rtDW)
+{
+  static const char_T e[10] = { 'a', 'c', 't', 'i', 'v', 'e', '-', 's', 'e', 't'
+  };
+
+  rtDW->solution.fstar = 0.0;
+  rtDW->solution.firstorderopt = 0.0;
+  memset(&rtDW->solution.lambda[0], 0, 9U * sizeof(real_T));
+  rtDW->solution.state = 0;
+  rtDW->solution.maxConstr = 0.0;
+  rtDW->solution.iterations = 0;
+  memset(&rtDW->solution.searchDir[0], 0, sizeof(real_T) << 3U);
+  factoryConstruct(&rtDW->CholRegManager);
+  rtDW->CholRegManager.scaleFactor = 100.0;
+  rtDW->H_infnrm = 0.0;
+  rtDW->f_infnrm = 0.0;
+  for (rtDW->i_a = 0; rtDW->i_a < 7; rtDW->i_a++) {
+    rtDW->solution.xstar[rtDW->i_a] = x0[rtDW->i_a];
+    rtDW->colSum = 0.0;
+    for (rtDW->idx_row = 0; rtDW->idx_row < 7; rtDW->idx_row++) {
+      rtDW->colSum += fabs(H[7 * rtDW->i_a + rtDW->idx_row]);
+    }
+
+    rtDW->H_infnrm = fmax(rtDW->H_infnrm, rtDW->colSum);
+    rtDW->f_infnrm = fmax(rtDW->f_infnrm, fabs(f[rtDW->i_a]));
+  }
+
+  rtDW->expl_temp.RemainFeasible = false;
+  rtDW->expl_temp.ProbRelTolFactor = fmax(fmax(7.0, rtDW->f_infnrm),
+    rtDW->H_infnrm);
+  rtDW->expl_temp.ConstrRelTolFactor = 7.0;
+  rtDW->expl_temp.MaxIterations = 20;
+  driver(H, f, &rtDW->solution, &rtDW->memspace, &rtDW->CholRegManager,
+         rtDW->expl_temp, &rtDW->WorkingSet, &rtDW->QRManager,
+         &rtDW->QPObjective, rtDW);
+  for (rtDW->i_a = 0; rtDW->i_a < 7; rtDW->i_a++) {
+    x[rtDW->i_a] = rtDW->solution.xstar[rtDW->i_a];
+  }
+
+  if (rtDW->solution.state > 0) {
+    *fval = rtDW->solution.fstar;
+  } else {
+    *fval = computeFval(&rtDW->QPObjective, rtDW->memspace.workspace_double, H,
+                        f, rtDW->solution.xstar);
+  }
+
+  switch (rtDW->solution.state) {
+   case 2:
+    rtDW->solution.state = -3;
+    break;
+
+   case -3:
+    rtDW->solution.state = -2;
+    break;
+
+   case 4:
+    rtDW->solution.state = -2;
+    break;
+  }
+
+  *exitflag = rtDW->solution.state;
+  if (rtDW->solution.state == -2) {
+    rtDW->solution.firstorderopt = 1.7976931348623157E+308;
+  } else if (rtDW->solution.state <= 0) {
+    rtDW->H_infnrm = maxConstraintViolation_eo(&rtDW->WorkingSet,
+      rtDW->solution.xstar, rtDW);
+    rtDW->solution.maxConstr = rtDW->H_infnrm;
+    if (rtDW->H_infnrm <= 7.0E-8) {
+      switch (rtDW->QPObjective.objtype) {
+       case 5:
+        rtDW->i_a = 0;
+        while (rtDW->i_a <= rtDW->QPObjective.nvar - 2) {
+          rtDW->QPObjective.grad[rtDW->i_a] = 0.0;
+          rtDW->i_a++;
+        }
+
+        rtDW->QPObjective.grad[rtDW->QPObjective.nvar - 1] =
+          rtDW->QPObjective.gammaScalar;
+        break;
+
+       case 3:
+        linearForm__e(rtDW->QPObjective.hasLinear, rtDW->QPObjective.nvar,
+                      rtDW->QPObjective.grad, H, f, rtDW->solution.xstar);
+        break;
+
+       case 4:
+        linearForm__e(rtDW->QPObjective.hasLinear, rtDW->QPObjective.nvar,
+                      rtDW->QPObjective.grad, H, f, rtDW->solution.xstar);
+        rtDW->i_a = rtDW->QPObjective.nvar;
+        while (rtDW->i_a + 1 <= rtDW->QPObjective.maxVar - 1) {
+          rtDW->QPObjective.grad[rtDW->i_a] = rtDW->QPObjective.beta *
+            rtDW->solution.xstar[rtDW->i_a] + rtDW->QPObjective.rho;
+          rtDW->i_a++;
+        }
+        break;
+      }
+
+      computeFirstOrderOpt(&rtDW->solution, &rtDW->QPObjective,
+                           rtDW->WorkingSet.nVar, rtDW->WorkingSet.ldA,
+                           rtDW->WorkingSet.ATwset,
+                           rtDW->WorkingSet.nActiveConstr,
+                           rtDW->memspace.workspace_double);
+    } else {
+      rtDW->solution.firstorderopt = 1.7976931348623157E+308;
+    }
+  }
+
+  for (rtDW->i_a = 0; rtDW->i_a < 10; rtDW->i_a++) {
+    output_algorithm[rtDW->i_a] = e[rtDW->i_a];
+  }
+
+  *output_firstorderopt = rtDW->solution.firstorderopt;
+  *output_constrviolation = fmax(0.0, rtDW->solution.maxConstr);
+  *output_iterations = rtDW->solution.iterations;
 }
 
 /* Model step function */
@@ -1477,7 +5110,6 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   DW *rtDW = rtM->dwork;
   ExtU *rtU = (ExtU *) rtM->inputs;
   ExtY *rtY = (ExtY *) rtM->outputs;
-  int16_T tmp;
   int8_T ipiv;
   boolean_T rEQ0;
   static const int8_T h[8] = { 0, 0, 0, 0, 1, 0, 0, 0 };
@@ -1494,19 +5126,19 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   static const int8_T m[32] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-  static const int8_T tmp_0[24] = { 8, 1, 1, 8, 8, 2, 2, 16, 16, 2, 2, 16, 16, 4,
+  static const int8_T tmp[24] = { 8, 1, 1, 8, 8, 2, 2, 16, 16, 2, 2, 16, 16, 4,
     4, 32, 32, 4, 4, 32, 32, 1, 1, 8 };
 
-  static const int8_T tmp_1[24] = { 9, 9, 9, 9, 10, 10, 18, 18, 18, 18, 18, 18,
+  static const int8_T tmp_0[24] = { 9, 9, 9, 9, 10, 10, 18, 18, 18, 18, 18, 18,
     20, 20, 36, 36, 36, 36, 36, 36, 33, 33, 9, 9 };
 
-  static const int8_T tmp_2[24] = { 41, 11, 11, 11, 11, 26, 26, 26, 26, 22, 22,
+  static const int8_T tmp_1[24] = { 41, 11, 11, 11, 11, 26, 26, 26, 26, 22, 22,
     22, 22, 52, 52, 52, 52, 37, 37, 37, 37, 41, 41, 41 };
 
-  static const int8_T tmp_3[24] = { 43, 43, 27, 27, 27, 27, 27, 27, 30, 30, 54,
+  static const int8_T tmp_2[24] = { 43, 43, 27, 27, 27, 27, 27, 27, 30, 30, 54,
     54, 54, 54, 54, 54, 53, 53, 45, 45, 45, 45, 45, 45 };
 
-  static const int8_T tmp_4[24] = { 47, 59, 59, 31, 31, 59, 59, 31, 31, 62, 62,
+  static const int8_T tmp_3[24] = { 47, 59, 59, 31, 31, 59, 59, 31, 31, 62, 62,
     55, 55, 62, 62, 55, 55, 61, 61, 47, 47, 61, 61, 47 };
 
   static const real32_T v_alpha_beta_pu[124] = { 0.333333F, -0.166667F,
@@ -1565,8 +5197,6 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     2, 2, 5, 5, 2, 5, 3, 3, 6, 6, 3, 3, 6, 6, 1, 1, 4, 4, 1, 1, 4, 4, 2, 2, 5, 5,
     2, 2, 5 };
 
-  boolean_T exitg1;
-
   /* Delay: '<S1>/Delay13' */
   if (rtDW->icLoad) {
     for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
@@ -1615,11 +5245,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->r[19] = rtDW->Delay11_DSTATE[3];
   rtDW->r[23] = rtDW->Delay12_DSTATE[3];
   rtDW->r[27] = 0.0F;
-  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-    rtDW->v_t0[rtDW->ijA] = 0.0F;
-    for (rtDW->c = 0; rtDW->c < 7; rtDW->c++) {
-      rtDW->v_t0[rtDW->ijA] += rtDW->r[(rtDW->c << 2) + rtDW->ijA] *
-        rtDW->Delay13_DSTATE[rtDW->c];
+  for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+    rtDW->v_t0[rtDW->d_j] = 0.0F;
+    for (rtDW->iy = 0; rtDW->iy < 7; rtDW->iy++) {
+      rtDW->v_t0[rtDW->d_j] += rtDW->r[(rtDW->iy << 2) + rtDW->d_j] *
+        rtDW->Delay13_DSTATE[rtDW->iy];
     }
   }
 
@@ -1696,12 +5326,12 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->A[43] = 0.0F;
   rtDW->A[51] = 0.0F;
   rtDW->A[59] = 1.0F;
-  for (rtDW->ijA = 0; rtDW->ijA < 8; rtDW->ijA++) {
-    rtDW->sector_ref = rtDW->ijA << 3;
-    rtDW->A[rtDW->sector_ref + 4] = h[rtDW->ijA];
-    rtDW->A[rtDW->sector_ref + 5] = g[rtDW->ijA];
-    rtDW->A[rtDW->sector_ref + 6] = f[rtDW->ijA];
-    rtDW->A[rtDW->sector_ref + 7] = e[rtDW->ijA];
+  for (rtDW->d_j = 0; rtDW->d_j < 8; rtDW->d_j++) {
+    rtDW->sector_ref = rtDW->d_j << 3;
+    rtDW->A[rtDW->sector_ref + 4] = h[rtDW->d_j];
+    rtDW->A[rtDW->sector_ref + 5] = g[rtDW->d_j];
+    rtDW->A[rtDW->sector_ref + 6] = f[rtDW->d_j];
+    rtDW->A[rtDW->sector_ref + 7] = e[rtDW->d_j];
   }
 
   /* '<S3>:1:18' psiPM5 = psiPM_h_pu(1); */
@@ -1801,31 +5431,32 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->fv1[7] = 0.0F;
 
   /* '<S3>:1:70' P_p = A*P_e*A'+Q; */
-  for (rtDW->ijA = 0; rtDW->ijA < 8; rtDW->ijA++) {
-    rtDW->A_b[rtDW->ijA] = 0.0F;
-    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-      rtDW->i = rtDW->c << 3;
-      rtDW->sector_ref = rtDW->i + rtDW->ijA;
-      rtDW->A_m[rtDW->sector_ref] = 0.0F;
-      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
-        rtDW->A_m[rtDW->sector_ref] += rtDW->A[(rtDW->b_ix << 3) + rtDW->ijA] *
-          rtDW->P_e[rtDW->i + rtDW->b_ix];
+  for (rtDW->d_j = 0; rtDW->d_j < 8; rtDW->d_j++) {
+    rtDW->A_ln[rtDW->d_j] = 0.0F;
+    for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
+      rtDW->ix = rtDW->iy << 3;
+      rtDW->sector_ref = rtDW->ix + rtDW->d_j;
+      rtDW->A_l[rtDW->sector_ref] = 0.0F;
+      for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
+        rtDW->A_l[rtDW->sector_ref] += rtDW->A[(rtDW->i << 3) + rtDW->d_j] *
+          rtDW->P_e[rtDW->ix + rtDW->i];
       }
 
-      rtDW->A_c[rtDW->sector_ref] = 0.0F;
-      rtDW->A_b[rtDW->ijA] += rtDW->A[rtDW->sector_ref] * rtDW->x_e[rtDW->c];
+      rtDW->A_o[rtDW->sector_ref] = 0.0F;
+      rtDW->A_ln[rtDW->d_j] += rtDW->A[rtDW->sector_ref] * rtDW->x_e[rtDW->iy];
     }
 
-    rtDW->x_p[rtDW->ijA] = (rtDW->A_b[rtDW->ijA] + (rtDW->b_A_tmp[rtDW->ijA + 24]
-      * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->b_A_tmp[rtDW->ijA + 16] * rtDW->q +
-      (rtDW->b_A_tmp[rtDW->ijA + 8] * rtDW->rtb_v_1_idx_pu_idx_1 + rtDW->
-       b_A_tmp[rtDW->ijA] * rtDW->rtb_i_dq_obs_idx_0)))) + rtDW->fv1[rtDW->ijA];
-    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
-        rtDW->sector_ref = rtDW->b_ix << 3;
-        rtDW->i = (rtDW->c << 3) + rtDW->ijA;
-        rtDW->A_c[rtDW->i] += rtDW->A_m[rtDW->sector_ref + rtDW->ijA] * rtDW->
-          A[rtDW->sector_ref + rtDW->c];
+    rtDW->x_p[rtDW->d_j] = (rtDW->A_ln[rtDW->d_j] + (rtDW->b_A_tmp[rtDW->d_j +
+      24] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->b_A_tmp[rtDW->d_j + 16] *
+      rtDW->q + (rtDW->b_A_tmp[rtDW->d_j + 8] * rtDW->rtb_v_1_idx_pu_idx_1 +
+                 rtDW->b_A_tmp[rtDW->d_j] * rtDW->rtb_i_dq_obs_idx_0)))) +
+      rtDW->fv1[rtDW->d_j];
+    for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
+      for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
+        rtDW->sector_ref = rtDW->i << 3;
+        rtDW->ix = (rtDW->iy << 3) + rtDW->d_j;
+        rtDW->A_o[rtDW->ix] += rtDW->A_l[rtDW->sector_ref + rtDW->d_j] * rtDW->
+          A[rtDW->sector_ref + rtDW->iy];
       }
     }
   }
@@ -1834,98 +5465,98 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/kalman_Q1'
    *  Inport: '<Root>/kalman_Q2'
    */
-  rtDW->A_m[0] = rtU->kalman_Q1;
-  rtDW->A_m[8] = 0.0F;
-  rtDW->A_m[16] = 0.0F;
-  rtDW->A_m[24] = 0.0F;
-  rtDW->A_m[32] = 0.0F;
-  rtDW->A_m[40] = 0.0F;
-  rtDW->A_m[48] = 0.0F;
-  rtDW->A_m[56] = 0.0F;
-  rtDW->A_m[1] = 0.0F;
-  rtDW->A_m[9] = rtU->kalman_Q1;
-  rtDW->A_m[17] = 0.0F;
-  rtDW->A_m[25] = 0.0F;
-  rtDW->A_m[33] = 0.0F;
-  rtDW->A_m[41] = 0.0F;
-  rtDW->A_m[49] = 0.0F;
-  rtDW->A_m[57] = 0.0F;
-  rtDW->A_m[2] = 0.0F;
-  rtDW->A_m[10] = 0.0F;
-  rtDW->A_m[18] = rtU->kalman_Q1;
-  rtDW->A_m[26] = 0.0F;
-  rtDW->A_m[34] = 0.0F;
-  rtDW->A_m[42] = 0.0F;
-  rtDW->A_m[50] = 0.0F;
-  rtDW->A_m[58] = 0.0F;
-  rtDW->A_m[3] = 0.0F;
-  rtDW->A_m[11] = 0.0F;
-  rtDW->A_m[19] = 0.0F;
-  rtDW->A_m[27] = rtU->kalman_Q1;
-  rtDW->A_m[35] = 0.0F;
-  rtDW->A_m[43] = 0.0F;
-  rtDW->A_m[51] = 0.0F;
-  rtDW->A_m[59] = 0.0F;
-  rtDW->A_m[4] = 0.0F;
-  rtDW->A_m[12] = 0.0F;
-  rtDW->A_m[20] = 0.0F;
-  rtDW->A_m[28] = 0.0F;
-  rtDW->A_m[36] = rtU->kalman_Q2;
-  rtDW->A_m[44] = 0.0F;
-  rtDW->A_m[52] = 0.0F;
-  rtDW->A_m[60] = 0.0F;
-  rtDW->A_m[5] = 0.0F;
-  rtDW->A_m[13] = 0.0F;
-  rtDW->A_m[21] = 0.0F;
-  rtDW->A_m[29] = 0.0F;
-  rtDW->A_m[37] = 0.0F;
-  rtDW->A_m[45] = rtU->kalman_Q2;
-  rtDW->A_m[53] = 0.0F;
-  rtDW->A_m[61] = 0.0F;
-  rtDW->A_m[6] = 0.0F;
-  rtDW->A_m[14] = 0.0F;
-  rtDW->A_m[22] = 0.0F;
-  rtDW->A_m[30] = 0.0F;
-  rtDW->A_m[38] = 0.0F;
-  rtDW->A_m[46] = 0.0F;
-  rtDW->A_m[54] = rtU->kalman_Q2;
-  rtDW->A_m[62] = 0.0F;
-  rtDW->A_m[7] = 0.0F;
-  rtDW->A_m[15] = 0.0F;
-  rtDW->A_m[23] = 0.0F;
-  rtDW->A_m[31] = 0.0F;
-  rtDW->A_m[39] = 0.0F;
-  rtDW->A_m[47] = 0.0F;
-  rtDW->A_m[55] = 0.0F;
-  rtDW->A_m[63] = rtU->kalman_Q2;
+  rtDW->A_l[0] = rtU->kalman_Q1;
+  rtDW->A_l[8] = 0.0F;
+  rtDW->A_l[16] = 0.0F;
+  rtDW->A_l[24] = 0.0F;
+  rtDW->A_l[32] = 0.0F;
+  rtDW->A_l[40] = 0.0F;
+  rtDW->A_l[48] = 0.0F;
+  rtDW->A_l[56] = 0.0F;
+  rtDW->A_l[1] = 0.0F;
+  rtDW->A_l[9] = rtU->kalman_Q1;
+  rtDW->A_l[17] = 0.0F;
+  rtDW->A_l[25] = 0.0F;
+  rtDW->A_l[33] = 0.0F;
+  rtDW->A_l[41] = 0.0F;
+  rtDW->A_l[49] = 0.0F;
+  rtDW->A_l[57] = 0.0F;
+  rtDW->A_l[2] = 0.0F;
+  rtDW->A_l[10] = 0.0F;
+  rtDW->A_l[18] = rtU->kalman_Q1;
+  rtDW->A_l[26] = 0.0F;
+  rtDW->A_l[34] = 0.0F;
+  rtDW->A_l[42] = 0.0F;
+  rtDW->A_l[50] = 0.0F;
+  rtDW->A_l[58] = 0.0F;
+  rtDW->A_l[3] = 0.0F;
+  rtDW->A_l[11] = 0.0F;
+  rtDW->A_l[19] = 0.0F;
+  rtDW->A_l[27] = rtU->kalman_Q1;
+  rtDW->A_l[35] = 0.0F;
+  rtDW->A_l[43] = 0.0F;
+  rtDW->A_l[51] = 0.0F;
+  rtDW->A_l[59] = 0.0F;
+  rtDW->A_l[4] = 0.0F;
+  rtDW->A_l[12] = 0.0F;
+  rtDW->A_l[20] = 0.0F;
+  rtDW->A_l[28] = 0.0F;
+  rtDW->A_l[36] = rtU->kalman_Q2;
+  rtDW->A_l[44] = 0.0F;
+  rtDW->A_l[52] = 0.0F;
+  rtDW->A_l[60] = 0.0F;
+  rtDW->A_l[5] = 0.0F;
+  rtDW->A_l[13] = 0.0F;
+  rtDW->A_l[21] = 0.0F;
+  rtDW->A_l[29] = 0.0F;
+  rtDW->A_l[37] = 0.0F;
+  rtDW->A_l[45] = rtU->kalman_Q2;
+  rtDW->A_l[53] = 0.0F;
+  rtDW->A_l[61] = 0.0F;
+  rtDW->A_l[6] = 0.0F;
+  rtDW->A_l[14] = 0.0F;
+  rtDW->A_l[22] = 0.0F;
+  rtDW->A_l[30] = 0.0F;
+  rtDW->A_l[38] = 0.0F;
+  rtDW->A_l[46] = 0.0F;
+  rtDW->A_l[54] = rtU->kalman_Q2;
+  rtDW->A_l[62] = 0.0F;
+  rtDW->A_l[7] = 0.0F;
+  rtDW->A_l[15] = 0.0F;
+  rtDW->A_l[23] = 0.0F;
+  rtDW->A_l[31] = 0.0F;
+  rtDW->A_l[39] = 0.0F;
+  rtDW->A_l[47] = 0.0F;
+  rtDW->A_l[55] = 0.0F;
+  rtDW->A_l[63] = rtU->kalman_Q2;
 
   /* MATLAB Function: '<S1>/Observer' */
-  for (rtDW->ijA = 0; rtDW->ijA < 64; rtDW->ijA++) {
-    rtDW->A[rtDW->ijA] = rtDW->A_c[rtDW->ijA] + rtDW->A_m[rtDW->ijA];
+  for (rtDW->d_j = 0; rtDW->d_j < 64; rtDW->d_j++) {
+    rtDW->A[rtDW->d_j] = rtDW->A_o[rtDW->d_j] + rtDW->A_l[rtDW->d_j];
   }
 
   /* '<S3>:1:72' K = P_p*C'/(C*P_p*C'+R); */
-  for (rtDW->ijA = 0; rtDW->ijA < 32; rtDW->ijA++) {
-    rtDW->b_A_tmp_g[rtDW->ijA] = l[rtDW->ijA];
-    rtDW->b_A_tmp_l[rtDW->ijA] = m[rtDW->ijA];
+  for (rtDW->d_j = 0; rtDW->d_j < 32; rtDW->d_j++) {
+    rtDW->b_A_tmp_g[rtDW->d_j] = l[rtDW->d_j];
+    rtDW->b_A_tmp_c[rtDW->d_j] = m[rtDW->d_j];
   }
 
-  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-      rtDW->sector_ref = rtDW->ijA + (rtDW->c << 2);
+  for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+    for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
+      rtDW->sector_ref = rtDW->d_j + (rtDW->iy << 2);
       rtDW->b_A_tmp[rtDW->sector_ref] = 0.0F;
-      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
-        rtDW->b_A_tmp[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_l[(rtDW->b_ix
-          << 2) + rtDW->ijA] * rtDW->A[(rtDW->c << 3) + rtDW->b_ix];
+      for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
+        rtDW->b_A_tmp[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[(rtDW->i <<
+          2) + rtDW->d_j] * rtDW->A[(rtDW->iy << 3) + rtDW->i];
       }
     }
 
-    for (rtDW->c = 0; rtDW->c < 4; rtDW->c++) {
-      rtDW->sector_ref = rtDW->ijA + (rtDW->c << 2);
-      rtDW->B_c[rtDW->sector_ref] = 0.0F;
-      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
-        rtDW->B_c[rtDW->sector_ref] += rtDW->b_A_tmp[(rtDW->b_ix << 2) +
-          rtDW->ijA] * (real32_T)rtDW->b_A_tmp_g[(rtDW->c << 3) + rtDW->b_ix];
+    for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
+      rtDW->sector_ref = rtDW->d_j + (rtDW->iy << 2);
+      rtDW->B_b[rtDW->sector_ref] = 0.0F;
+      for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
+        rtDW->B_b[rtDW->sector_ref] += rtDW->b_A_tmp[(rtDW->i << 2) + rtDW->d_j]
+          * (real32_T)rtDW->b_A_tmp_g[(rtDW->iy << 3) + rtDW->i];
       }
     }
   }
@@ -1954,127 +5585,128 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/i_dq_pu'
    *  Inport: '<Root>/i_xy_pu'
    */
-  for (rtDW->ijA = 0; rtDW->ijA < 16; rtDW->ijA++) {
-    rtDW->A_k[rtDW->ijA] = rtDW->B_c[rtDW->ijA] + rtDW->fv[rtDW->ijA];
+  for (rtDW->d_j = 0; rtDW->d_j < 16; rtDW->d_j++) {
+    rtDW->A_n[rtDW->d_j] = rtDW->B_b[rtDW->d_j] + rtDW->fv[rtDW->d_j];
   }
 
   rtDW->ipiv[0] = 1;
   rtDW->ipiv[1] = 2;
   rtDW->ipiv[2] = 3;
   rtDW->ipiv[3] = 4;
-  for (rtDW->i = 0; rtDW->i < 3; rtDW->i++) {
-    rtDW->c = rtDW->i * 5;
+  for (rtDW->d_j = 0; rtDW->d_j < 3; rtDW->d_j++) {
+    rtDW->i = rtDW->d_j * 5;
     rtDW->iy = 0;
-    rtDW->ix = rtDW->c;
-    rtDW->w6theta_el = fabsf(rtDW->A_k[rtDW->c]);
-    rtDW->b_ix = 2;
-    while (rtDW->b_ix <= 4 - rtDW->i) {
+    rtDW->ix = rtDW->i;
+    rtDW->w6theta_el = fabsf(rtDW->A_n[rtDW->i]);
+    rtDW->kBcol = 2;
+    while (rtDW->kBcol <= 4 - rtDW->d_j) {
       rtDW->ix++;
-      rtDW->SinCos1_o2 = fabsf(rtDW->A_k[rtDW->ix]);
+      rtDW->SinCos1_o2 = fabsf(rtDW->A_n[rtDW->ix]);
       if (rtDW->SinCos1_o2 > rtDW->w6theta_el) {
-        rtDW->iy = rtDW->b_ix - 1;
+        rtDW->iy = rtDW->kBcol - 1;
         rtDW->w6theta_el = rtDW->SinCos1_o2;
       }
 
-      rtDW->b_ix++;
+      rtDW->kBcol++;
     }
 
-    if (rtDW->A_k[rtDW->c + rtDW->iy] != 0.0F) {
+    if (rtDW->A_n[rtDW->i + rtDW->iy] != 0.0F) {
       if (rtDW->iy != 0) {
-        rtDW->sector_ref = rtDW->i + rtDW->iy;
-        rtDW->ipiv[rtDW->i] = (int8_T)(rtDW->sector_ref + 1);
-        rtDW->w6theta_el = rtDW->A_k[rtDW->i];
-        rtDW->A_k[rtDW->i] = rtDW->A_k[rtDW->sector_ref];
-        rtDW->A_k[rtDW->sector_ref] = rtDW->w6theta_el;
-        rtDW->w6theta_el = rtDW->A_k[rtDW->i + 4];
-        rtDW->A_k[rtDW->i + 4] = rtDW->A_k[rtDW->sector_ref + 4];
-        rtDW->A_k[rtDW->sector_ref + 4] = rtDW->w6theta_el;
-        rtDW->w6theta_el = rtDW->A_k[rtDW->i + 8];
-        rtDW->A_k[rtDW->i + 8] = rtDW->A_k[rtDW->sector_ref + 8];
-        rtDW->A_k[rtDW->sector_ref + 8] = rtDW->w6theta_el;
-        rtDW->w6theta_el = rtDW->A_k[rtDW->i + 12];
-        rtDW->A_k[rtDW->i + 12] = rtDW->A_k[rtDW->sector_ref + 12];
-        rtDW->A_k[rtDW->sector_ref + 12] = rtDW->w6theta_el;
+        rtDW->iy += rtDW->d_j;
+        rtDW->ipiv[rtDW->d_j] = (int8_T)(rtDW->iy + 1);
+        rtDW->w6theta_el = rtDW->A_n[rtDW->d_j];
+        rtDW->A_n[rtDW->d_j] = rtDW->A_n[rtDW->iy];
+        rtDW->A_n[rtDW->iy] = rtDW->w6theta_el;
+        rtDW->w6theta_el = rtDW->A_n[rtDW->d_j + 4];
+        rtDW->A_n[rtDW->d_j + 4] = rtDW->A_n[rtDW->iy + 4];
+        rtDW->A_n[rtDW->iy + 4] = rtDW->w6theta_el;
+        rtDW->w6theta_el = rtDW->A_n[rtDW->d_j + 8];
+        rtDW->A_n[rtDW->d_j + 8] = rtDW->A_n[rtDW->iy + 8];
+        rtDW->A_n[rtDW->iy + 8] = rtDW->w6theta_el;
+        rtDW->w6theta_el = rtDW->A_n[rtDW->d_j + 12];
+        rtDW->A_n[rtDW->d_j + 12] = rtDW->A_n[rtDW->iy + 12];
+        rtDW->A_n[rtDW->iy + 12] = rtDW->w6theta_el;
       }
 
-      rtDW->ix = (rtDW->c - rtDW->i) + 4;
-      rtDW->b_ix = rtDW->c + 1;
-      while (rtDW->b_ix + 1 <= rtDW->ix) {
-        rtDW->A_k[rtDW->b_ix] /= rtDW->A_k[rtDW->c];
-        rtDW->b_ix++;
+      rtDW->iy = (rtDW->i - rtDW->d_j) + 4;
+      rtDW->ix = rtDW->i + 1;
+      while (rtDW->ix + 1 <= rtDW->iy) {
+        rtDW->A_n[rtDW->ix] /= rtDW->A_n[rtDW->i];
+        rtDW->ix++;
       }
     }
 
-    rtDW->ix = rtDW->c;
-    rtDW->iy = rtDW->c + 4;
+    rtDW->iy = rtDW->i;
+    rtDW->ix = rtDW->i + 4;
     rtDW->kBcol = 0;
-    while (rtDW->kBcol <= 2 - rtDW->i) {
-      if (rtDW->A_k[rtDW->iy] != 0.0F) {
-        rtDW->w6theta_el = -rtDW->A_k[rtDW->iy];
-        rtDW->c_ix = rtDW->c + 1;
-        rtDW->b_ix = (rtDW->ix - rtDW->i) + 8;
-        rtDW->ijA = rtDW->ix + 5;
-        while (rtDW->ijA + 1 <= rtDW->b_ix) {
-          rtDW->A_k[rtDW->ijA] += rtDW->A_k[rtDW->c_ix] * rtDW->w6theta_el;
+    while (rtDW->kBcol <= 2 - rtDW->d_j) {
+      if (rtDW->A_n[rtDW->ix] != 0.0F) {
+        rtDW->w6theta_el = -rtDW->A_n[rtDW->ix];
+        rtDW->c_ix = rtDW->i + 1;
+        rtDW->sector_ref = (rtDW->iy - rtDW->d_j) + 8;
+        rtDW->ijA = rtDW->iy + 5;
+        while (rtDW->ijA + 1 <= rtDW->sector_ref) {
+          rtDW->A_n[rtDW->ijA] += rtDW->A_n[rtDW->c_ix] * rtDW->w6theta_el;
           rtDW->c_ix++;
           rtDW->ijA++;
         }
       }
 
-      rtDW->iy += 4;
       rtDW->ix += 4;
+      rtDW->iy += 4;
       rtDW->kBcol++;
     }
   }
 
-  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-      rtDW->sector_ref = rtDW->ijA << 3;
-      rtDW->i = rtDW->c + rtDW->sector_ref;
-      rtDW->b_A_tmp[rtDW->i] = 0.0F;
-      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
-        rtDW->b_A_tmp[rtDW->i] += rtDW->A[(rtDW->b_ix << 3) + rtDW->c] *
-          (real32_T)rtDW->b_A_tmp_g[rtDW->sector_ref + rtDW->b_ix];
+  for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+    for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
+      rtDW->sector_ref = rtDW->d_j << 3;
+      rtDW->ix = rtDW->iy + rtDW->sector_ref;
+      rtDW->b_A_tmp[rtDW->ix] = 0.0F;
+      for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
+        rtDW->b_A_tmp[rtDW->ix] += rtDW->A[(rtDW->i << 3) + rtDW->iy] *
+          (real32_T)rtDW->b_A_tmp_g[rtDW->sector_ref + rtDW->i];
       }
     }
   }
 
-  for (rtDW->i = 0; rtDW->i < 4; rtDW->i++) {
-    rtDW->ix = rtDW->i << 3;
-    rtDW->iy = rtDW->i << 2;
-    rtDW->b_ix = 0;
-    while (rtDW->b_ix <= rtDW->i - 1) {
-      rtDW->kBcol = rtDW->b_ix << 3;
-      rtDW->rtb_i_dq_obs_idx_0 = rtDW->A_k[rtDW->b_ix + rtDW->iy];
+  for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+    rtDW->i = rtDW->d_j << 3;
+    rtDW->iy = rtDW->d_j << 2;
+    rtDW->ix = 0;
+    while (rtDW->ix <= rtDW->d_j - 1) {
+      rtDW->kBcol = rtDW->ix << 3;
+      rtDW->rtb_i_dq_obs_idx_0 = rtDW->A_n[rtDW->ix + rtDW->iy];
       if (rtDW->rtb_i_dq_obs_idx_0 != 0.0F) {
-        for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-          rtDW->sector_ref = rtDW->c + rtDW->ix;
+        for (rtDW->c_ix = 0; rtDW->c_ix < 8; rtDW->c_ix++) {
+          rtDW->sector_ref = rtDW->c_ix + rtDW->i;
           rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->rtb_i_dq_obs_idx_0 *
-            rtDW->b_A_tmp[rtDW->c + rtDW->kBcol];
+            rtDW->b_A_tmp[rtDW->c_ix + rtDW->kBcol];
         }
       }
 
-      rtDW->b_ix++;
+      rtDW->ix++;
     }
 
-    rtDW->w6theta_el = 1.0F / rtDW->A_k[rtDW->i + rtDW->iy];
-    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-      rtDW->sector_ref = rtDW->c + rtDW->ix;
+    rtDW->w6theta_el = 1.0F / rtDW->A_n[rtDW->d_j + rtDW->iy];
+    for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
+      rtDW->sector_ref = rtDW->iy + rtDW->i;
       rtDW->b_A_tmp[rtDW->sector_ref] *= rtDW->w6theta_el;
     }
   }
 
-  for (rtDW->i = 3; rtDW->i >= 0; rtDW->i--) {
-    rtDW->b_ix = rtDW->i << 3;
-    rtDW->iy = (rtDW->i << 2) - 1;
-    rtDW->ix = rtDW->i + 2;
+  for (rtDW->d_j = 3; rtDW->d_j >= 0; rtDW->d_j--) {
+    rtDW->i = rtDW->d_j << 3;
+    rtDW->iy = (rtDW->d_j << 2) - 1;
+    rtDW->ix = rtDW->d_j + 2;
     while (rtDW->ix < 5) {
       rtDW->kBcol = (rtDW->ix - 1) << 3;
-      if (rtDW->A_k[rtDW->ix + rtDW->iy] != 0.0F) {
-        for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-          rtDW->sector_ref = rtDW->c + rtDW->b_ix;
-          rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->A_k[rtDW->ix + rtDW->iy] *
-            rtDW->b_A_tmp[rtDW->c + rtDW->kBcol];
+      rtDW->rtb_i_dq_obs_idx_0 = rtDW->A_n[rtDW->ix + rtDW->iy];
+      if (rtDW->rtb_i_dq_obs_idx_0 != 0.0F) {
+        for (rtDW->c_ix = 0; rtDW->c_ix < 8; rtDW->c_ix++) {
+          rtDW->sector_ref = rtDW->c_ix + rtDW->i;
+          rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->rtb_i_dq_obs_idx_0 *
+            rtDW->b_A_tmp[rtDW->c_ix + rtDW->kBcol];
         }
       }
 
@@ -2082,14 +5714,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     }
   }
 
-  for (rtDW->i = 2; rtDW->i >= 0; rtDW->i--) {
-    ipiv = rtDW->ipiv[rtDW->i];
-    if (rtDW->i + 1 != ipiv) {
-      for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-        rtDW->ijA = (rtDW->i << 3) + rtDW->c;
-        rtDW->w6theta_el = rtDW->b_A_tmp[rtDW->ijA];
-        rtDW->sector_ref = ((ipiv - 1) << 3) + rtDW->c;
-        rtDW->b_A_tmp[rtDW->ijA] = rtDW->b_A_tmp[rtDW->sector_ref];
+  for (rtDW->d_j = 2; rtDW->d_j >= 0; rtDW->d_j--) {
+    ipiv = rtDW->ipiv[rtDW->d_j];
+    if (rtDW->d_j + 1 != ipiv) {
+      for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
+        rtDW->i = (rtDW->d_j << 3) + rtDW->iy;
+        rtDW->w6theta_el = rtDW->b_A_tmp[rtDW->i];
+        rtDW->sector_ref = ((ipiv - 1) << 3) + rtDW->iy;
+        rtDW->b_A_tmp[rtDW->i] = rtDW->b_A_tmp[rtDW->sector_ref];
         rtDW->b_A_tmp[rtDW->sector_ref] = rtDW->w6theta_el;
       }
     }
@@ -2101,46 +5733,46 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->m6[1] = rtU->i_dq_pu[1];
   rtDW->m6[2] = rtU->i_xy_pu[0];
   rtDW->m6[3] = rtU->i_xy_pu[1];
-  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-    rtDW->v_t0[rtDW->ijA] = 0.0F;
-    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-      rtDW->v_t0[rtDW->ijA] += (real32_T)rtDW->b_A_tmp_l[(rtDW->c << 2) +
-        rtDW->ijA] * rtDW->x_p[rtDW->c];
+  for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+    rtDW->v_t0[rtDW->d_j] = 0.0F;
+    for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
+      rtDW->v_t0[rtDW->d_j] += (real32_T)rtDW->b_A_tmp_c[(rtDW->iy << 2) +
+        rtDW->d_j] * rtDW->x_p[rtDW->iy];
     }
 
-    rtDW->m2[rtDW->ijA] = rtDW->m6[rtDW->ijA] - rtDW->v_t0[rtDW->ijA];
+    rtDW->m2[rtDW->d_j] = rtDW->m6[rtDW->d_j] - rtDW->v_t0[rtDW->d_j];
   }
 
   /* '<S3>:1:78' P_e = P_p-K*C*P_p; */
-  for (rtDW->ijA = 0; rtDW->ijA < 8; rtDW->ijA++) {
-    rtDW->rtb_i_dq_obs_idx_0 = rtDW->b_A_tmp[rtDW->ijA + 8];
-    rtDW->SinCos2_o1 = rtDW->b_A_tmp[rtDW->ijA + 16];
-    rtDW->rtb_v_1_idx_pu_idx_1 = rtDW->b_A_tmp[rtDW->ijA + 24];
-    rtDW->x_e[rtDW->ijA] = (((rtDW->rtb_i_dq_obs_idx_0 * rtDW->m2[1] +
-      rtDW->b_A_tmp[rtDW->ijA] * rtDW->m2[0]) + rtDW->SinCos2_o1 * rtDW->m2[2])
-      + rtDW->rtb_v_1_idx_pu_idx_1 * rtDW->m2[3]) + rtDW->x_p[rtDW->ijA];
-    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
-      rtDW->sector_ref = rtDW->ijA + (rtDW->c << 3);
-      rtDW->A_c[rtDW->sector_ref] = 0.0F;
-      rtDW->i = rtDW->c << 2;
-      rtDW->A_c[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_l[rtDW->i] *
-        rtDW->b_A_tmp[rtDW->ijA];
-      rtDW->A_c[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_l[rtDW->i + 1] *
+  for (rtDW->d_j = 0; rtDW->d_j < 8; rtDW->d_j++) {
+    rtDW->rtb_i_dq_obs_idx_0 = rtDW->b_A_tmp[rtDW->d_j + 8];
+    rtDW->SinCos2_o1 = rtDW->b_A_tmp[rtDW->d_j + 16];
+    rtDW->rtb_v_1_idx_pu_idx_1 = rtDW->b_A_tmp[rtDW->d_j + 24];
+    rtDW->x_e[rtDW->d_j] = (((rtDW->rtb_i_dq_obs_idx_0 * rtDW->m2[1] +
+      rtDW->b_A_tmp[rtDW->d_j] * rtDW->m2[0]) + rtDW->SinCos2_o1 * rtDW->m2[2])
+      + rtDW->rtb_v_1_idx_pu_idx_1 * rtDW->m2[3]) + rtDW->x_p[rtDW->d_j];
+    for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
+      rtDW->sector_ref = rtDW->d_j + (rtDW->iy << 3);
+      rtDW->A_o[rtDW->sector_ref] = 0.0F;
+      rtDW->ix = rtDW->iy << 2;
+      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[rtDW->ix] *
+        rtDW->b_A_tmp[rtDW->d_j];
+      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[rtDW->ix + 1] *
         rtDW->rtb_i_dq_obs_idx_0;
-      rtDW->A_c[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_l[rtDW->i + 2] *
+      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[rtDW->ix + 2] *
         rtDW->SinCos2_o1;
-      rtDW->A_c[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_l[rtDW->i + 3] *
+      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[rtDW->ix + 3] *
         rtDW->rtb_v_1_idx_pu_idx_1;
     }
 
-    for (rtDW->c = 0; rtDW->c < 8; rtDW->c++) {
+    for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
       rtDW->rtb_i_dq_obs_idx_0 = 0.0F;
-      for (rtDW->b_ix = 0; rtDW->b_ix < 8; rtDW->b_ix++) {
-        rtDW->rtb_i_dq_obs_idx_0 += rtDW->A_c[(rtDW->b_ix << 3) + rtDW->ijA] *
-          rtDW->A[(rtDW->c << 3) + rtDW->b_ix];
+      for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
+        rtDW->rtb_i_dq_obs_idx_0 += rtDW->A_o[(rtDW->i << 3) + rtDW->d_j] *
+          rtDW->A[(rtDW->iy << 3) + rtDW->i];
       }
 
-      rtDW->sector_ref = (rtDW->c << 3) + rtDW->ijA;
+      rtDW->sector_ref = (rtDW->iy << 3) + rtDW->d_j;
       rtDW->P_e[rtDW->sector_ref] = rtDW->A[rtDW->sector_ref] -
         rtDW->rtb_i_dq_obs_idx_0;
     }
@@ -2201,14 +5833,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay1' */
-  if (rtDW->icLoad_j) {
+  if (rtDW->icLoad_e) {
     for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
       rtDW->Delay1_DSTATE[rtDW->i] = 0.14F;
     }
   }
 
   /* Delay: '<S1>/Delay3' */
-  if (rtDW->icLoad_a) {
+  if (rtDW->icLoad_b) {
     rtDW->Delay3_DSTATE[0] = 0.0F;
     rtDW->Delay3_DSTATE[1] = 0.0F;
     rtDW->Delay3_DSTATE[2] = 0.0F;
@@ -2216,7 +5848,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay4' */
-  if (rtDW->icLoad_g) {
+  if (rtDW->icLoad_h) {
     rtDW->Delay4_DSTATE[0] = 0.0F;
     rtDW->Delay4_DSTATE[1] = 0.0F;
     rtDW->Delay4_DSTATE[2] = 0.0F;
@@ -2224,7 +5856,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay5' */
-  if (rtDW->icLoad_k) {
+  if (rtDW->icLoad_c) {
     rtDW->Delay5_DSTATE[0] = 0.0F;
     rtDW->Delay5_DSTATE[1] = 0.0F;
     rtDW->Delay5_DSTATE[2] = 0.0F;
@@ -2232,7 +5864,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay6' */
-  if (rtDW->icLoad_m) {
+  if (rtDW->icLoad_bb) {
     rtDW->Delay6_DSTATE[0] = 0.0F;
     rtDW->Delay6_DSTATE[1] = 0.0F;
     rtDW->Delay6_DSTATE[2] = 0.0F;
@@ -2240,7 +5872,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay7' */
-  if (rtDW->icLoad_d) {
+  if (rtDW->icLoad_o) {
     rtDW->Delay7_DSTATE[0] = 0.0F;
     rtDW->Delay7_DSTATE[1] = 0.0F;
     rtDW->Delay7_DSTATE[2] = 0.0F;
@@ -2248,7 +5880,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay8' */
-  if (rtDW->icLoad_kw) {
+  if (rtDW->icLoad_d) {
     rtDW->Delay8_DSTATE[0] = 0.0F;
     rtDW->Delay8_DSTATE[1] = 0.0F;
     rtDW->Delay8_DSTATE[2] = 0.0F;
@@ -2300,14 +5932,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->r[27] = 0.5F * rtDW->Delay3_DSTATE[3];
   rtDW->m1[0] = rtDW->rtb_i_dq_obs_idx_0;
   rtDW->m1[1] = rtDW->rtb_v_1_idx_pu_idx_1;
-  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-    rtDW->m6[rtDW->ijA] = 0.0F;
-    for (rtDW->c = 0; rtDW->c < 7; rtDW->c++) {
-      rtDW->m6[rtDW->ijA] += rtDW->r[(rtDW->c << 2) + rtDW->ijA] *
-        rtDW->Delay1_DSTATE[rtDW->c];
+  for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+    rtDW->m6[rtDW->d_j] = 0.0F;
+    for (rtDW->iy = 0; rtDW->iy < 7; rtDW->iy++) {
+      rtDW->m6[rtDW->d_j] += rtDW->r[(rtDW->iy << 2) + rtDW->d_j] *
+        rtDW->Delay1_DSTATE[rtDW->iy];
     }
 
-    rtDW->v_t0[rtDW->ijA] = rtDW->m1[rtDW->ijA] + rtDW->m6[rtDW->ijA];
+    rtDW->v_t0[rtDW->d_j] = rtDW->m1[rtDW->d_j] + rtDW->m6[rtDW->d_j];
   }
 
   /* Switch: '<S1>/Switch3' incorporates:
@@ -2321,8 +5953,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->rtb_e_dq_obs_idx_0 = rtDW->x_e[4];
 
   /* MATLAB Function: '<S1>/Observer' */
-  rtDW->rtb_e_xy_obs_g = rtDW->x_e[7];
-  rtDW->rtb_e_dq_obs_g = rtDW->x_e[5];
+  rtDW->rtb_e_xy_obs_b = rtDW->x_e[7];
+  rtDW->rtb_e_dq_obs_e = rtDW->x_e[5];
 
   /* Switch: '<S1>/Switch2' incorporates:
    *  Inport: '<Root>/kalman_off_on'
@@ -2331,8 +5963,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   if (!rtU->kalman_off_on) {
     rtDW->rtb_e_dq_obs_idx_0 = 0.0F;
     rtDW->rtb_e_xy_obs_idx_0 = 0.0F;
-    rtDW->rtb_e_dq_obs_g = 0.0F;
-    rtDW->rtb_e_xy_obs_g = 0.0F;
+    rtDW->rtb_e_dq_obs_e = 0.0F;
+    rtDW->rtb_e_xy_obs_b = 0.0F;
   }
 
   /* Trigonometry: '<S1>/SinCos1' incorporates:
@@ -2349,11 +5981,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 
   /* MATLAB Function: '<S1>/seq_2_act_sw_all' */
   for (rtDW->i = 0; rtDW->i < 24; rtDW->i++) {
-    rtDW->act_sw_1[rtDW->i] = tmp_0[rtDW->i];
-    rtDW->act_sw_2[rtDW->i] = tmp_1[rtDW->i];
-    rtDW->act_sw_3[rtDW->i] = tmp_2[rtDW->i];
-    rtDW->act_sw_4[rtDW->i] = tmp_3[rtDW->i];
-    rtDW->act_sw_5[rtDW->i] = tmp_4[rtDW->i];
+    rtDW->act_sw_1[rtDW->i] = tmp[rtDW->i];
+    rtDW->act_sw_2[rtDW->i] = tmp_0[rtDW->i];
+    rtDW->act_sw_3[rtDW->i] = tmp_1[rtDW->i];
+    rtDW->act_sw_4[rtDW->i] = tmp_2[rtDW->i];
+    rtDW->act_sw_5[rtDW->i] = tmp_3[rtDW->i];
   }
 
   /* End of MATLAB Function: '<S1>/seq_2_act_sw_all' */
@@ -2411,7 +6043,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->rtb_i_dq_obs_idx_0 += rtDW->rtb_e_dq_obs_idx_0;
 
   /* '<S5>:1:4' i_q_pu = i_q_pu + single(e_dq_obs(2)); */
-  rtDW->rtb_v_1_idx_pu_idx_1 += rtDW->rtb_e_dq_obs_g;
+  rtDW->rtb_v_1_idx_pu_idx_1 += rtDW->rtb_e_dq_obs_e;
 
   /* '<S5>:1:6' v_d_ref_pu = (i_d_ref_pu-i_d_pu)/(Ts_times_ZB_over_Ld) + i_d_pu*Rs_over_ZB - omega_el*Lq_over_LB*i_q_pu; */
   /* '<S5>:1:7' v_q_ref_pu = (i_q_ref_pu-i_q_pu)/(Ts_times_ZB_over_Lq) + i_q_pu*Rs_over_ZB + omega_el*(Ld_over_LB*i_d_pu+psi_pm_over_psiB); */
@@ -2730,75 +6362,75 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S4>:1:163' vx_5_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_5(idx_opt),1) * cos_angle_neg + v_X_Y_pu(act_sw_5(idx_opt),2) * sin_angle_neg); */
   /* '<S4>:1:164' vy_5_idx_pu = v_DC_pu * (v_X_Y_pu(act_sw_5(idx_opt),1) * -sin_angle_neg + v_X_Y_pu(act_sw_5(idx_opt),2) * cos_angle_neg); */
   /* '<S4>:1:166' v_1_idx_pu = [vd_1_idx_pu; vq_1_idx_pu; vx_1_idx_pu; vy_1_idx_pu]; */
-  rtDW->ijA = rtDW->act_sw_1[rtDW->sector_ref - 1];
-  rtDW->rtb_v_1_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
-  rtDW->q = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->d_j = rtDW->act_sw_1[rtDW->sector_ref - 1];
+  rtDW->rtb_v_1_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
+  rtDW->q = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_i_dq_obs_idx_0 = (rtDW->rtb_v_1_idx_pu_idx_1 * rtDW->SinCos1_o2 +
     rtDW->q * rtDW->w6theta_el) * rtU->v_DC_pu;
   rtDW->rtb_v_1_idx_pu_idx_1 = (rtDW->rtb_v_1_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->q * rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->rtb_v_1_idx_pu_idx_3 = v_X_Y_pu[rtDW->ijA - 1];
-  rtDW->rtb_v_2_idx_pu_idx_0 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_1_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_2_idx_pu_idx_0 = v_X_Y_pu[rtDW->d_j + 61];
   rtDW->q = (rtDW->rtb_v_1_idx_pu_idx_3 * rtDW->SinCos2_o2 +
              rtDW->rtb_v_2_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_1_idx_pu_idx_3 = (rtDW->rtb_v_1_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
     rtDW->rtb_v_2_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
   /* '<S4>:1:167' v_2_idx_pu = [vd_2_idx_pu; vq_2_idx_pu; vx_2_idx_pu; vy_2_idx_pu]; */
-  rtDW->ijA = rtDW->act_sw_2[rtDW->sector_ref - 1];
-  rtDW->rtb_v_2_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
-  rtDW->rtb_v_2_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->d_j = rtDW->act_sw_2[rtDW->sector_ref - 1];
+  rtDW->rtb_v_2_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_2_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_v_2_idx_pu_idx_0 = (rtDW->rtb_v_2_idx_pu_idx_1 * rtDW->SinCos1_o2 +
     rtDW->rtb_v_2_idx_pu_idx_2 * rtDW->w6theta_el) * rtU->v_DC_pu;
   rtDW->rtb_v_2_idx_pu_idx_1 = (rtDW->rtb_v_2_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->rtb_v_2_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->rtb_v_2_idx_pu_idx_3 = v_X_Y_pu[rtDW->ijA - 1];
-  rtDW->rtb_v_3_idx_pu_idx_0 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_2_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_3_idx_pu_idx_0 = v_X_Y_pu[rtDW->d_j + 61];
   rtDW->rtb_v_2_idx_pu_idx_2 = (rtDW->rtb_v_2_idx_pu_idx_3 * rtDW->SinCos2_o2 +
     rtDW->rtb_v_3_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_2_idx_pu_idx_3 = (rtDW->rtb_v_2_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
     rtDW->rtb_v_3_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
   /* '<S4>:1:168' v_3_idx_pu = [vd_3_idx_pu; vq_3_idx_pu; vx_3_idx_pu; vy_3_idx_pu]; */
-  rtDW->ijA = rtDW->act_sw_3[rtDW->sector_ref - 1];
-  rtDW->rtb_v_3_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
-  rtDW->rtb_v_3_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->d_j = rtDW->act_sw_3[rtDW->sector_ref - 1];
+  rtDW->rtb_v_3_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_3_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_v_3_idx_pu_idx_0 = (rtDW->rtb_v_3_idx_pu_idx_1 * rtDW->SinCos1_o2 +
     rtDW->rtb_v_3_idx_pu_idx_2 * rtDW->w6theta_el) * rtU->v_DC_pu;
   rtDW->rtb_v_3_idx_pu_idx_1 = (rtDW->rtb_v_3_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->rtb_v_3_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->rtb_v_3_idx_pu_idx_3 = v_X_Y_pu[rtDW->ijA - 1];
-  rtDW->rtb_v_4_idx_pu_idx_0 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_3_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_4_idx_pu_idx_0 = v_X_Y_pu[rtDW->d_j + 61];
   rtDW->rtb_v_3_idx_pu_idx_2 = (rtDW->rtb_v_3_idx_pu_idx_3 * rtDW->SinCos2_o2 +
     rtDW->rtb_v_4_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_3_idx_pu_idx_3 = (rtDW->rtb_v_3_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
     rtDW->rtb_v_4_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
   /* '<S4>:1:169' v_4_idx_pu = [vd_4_idx_pu; vq_4_idx_pu; vx_4_idx_pu; vy_4_idx_pu]; */
-  rtDW->ijA = rtDW->act_sw_4[rtDW->sector_ref - 1];
-  rtDW->rtb_v_4_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
-  rtDW->rtb_v_4_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->d_j = rtDW->act_sw_4[rtDW->sector_ref - 1];
+  rtDW->rtb_v_4_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_4_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_v_4_idx_pu_idx_0 = (rtDW->rtb_v_4_idx_pu_idx_1 * rtDW->SinCos1_o2 +
     rtDW->rtb_v_4_idx_pu_idx_2 * rtDW->w6theta_el) * rtU->v_DC_pu;
   rtDW->rtb_v_4_idx_pu_idx_1 = (rtDW->rtb_v_4_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->rtb_v_4_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->rtb_v_4_idx_pu_idx_3 = v_X_Y_pu[rtDW->ijA - 1];
-  rtDW->rtb_v_5_idx_pu_idx_0 = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->rtb_v_4_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_5_idx_pu_idx_0 = v_X_Y_pu[rtDW->d_j + 61];
   rtDW->rtb_v_4_idx_pu_idx_2 = (rtDW->rtb_v_4_idx_pu_idx_3 * rtDW->SinCos2_o2 +
     rtDW->rtb_v_5_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_4_idx_pu_idx_3 = (rtDW->rtb_v_4_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
     rtDW->rtb_v_5_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
   /* '<S4>:1:170' v_5_idx_pu = [vd_5_idx_pu; vq_5_idx_pu; vx_5_idx_pu; vy_5_idx_pu]; */
-  rtDW->ijA = rtDW->act_sw_5[rtDW->sector_ref - 1];
-  rtDW->rtb_v_5_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->ijA - 1];
-  rtDW->rtb_v_5_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->ijA + 61];
+  rtDW->d_j = rtDW->act_sw_5[rtDW->sector_ref - 1];
+  rtDW->rtb_v_5_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_5_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_v_5_idx_pu_idx_0 = (rtDW->rtb_v_5_idx_pu_idx_1 * rtDW->SinCos1_o2 +
     rtDW->rtb_v_5_idx_pu_idx_2 * rtDW->w6theta_el) * rtU->v_DC_pu;
   rtDW->rtb_v_5_idx_pu_idx_1 = (rtDW->rtb_v_5_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->rtb_v_5_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->SinCos1_o2 = v_X_Y_pu[rtDW->ijA - 1];
-  rtDW->w6theta_el = v_X_Y_pu[rtDW->ijA + 61];
+  rtDW->SinCos1_o2 = v_X_Y_pu[rtDW->d_j - 1];
+  rtDW->w6theta_el = v_X_Y_pu[rtDW->d_j + 61];
   rtDW->rtb_v_5_idx_pu_idx_2 = (rtDW->SinCos1_o2 * rtDW->SinCos2_o2 +
     rtDW->w6theta_el * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_5_idx_pu_idx_3 = (rtDW->SinCos1_o2 * -rtDW->SinCos2_o1 +
@@ -2819,22 +6451,22 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S10>:1:4'       -Ts_times_ZB_over_Lq*Ld_over_LB*w_e_pu    -Ts_times_ZB_over_Lq*Rs_over_ZB          0                                      0                               ; */
   /* '<S10>:1:5'       0                                          0                                       -Ts_times_ZB_over_Lx*Rs_over_ZB        -Ly_over_LB*w_e_pu              ; */
   /* '<S10>:1:6'       0                                          0                                        Lx_over_LB*w_e_pu                     -Ts_times_ZB_over_Ly*Rs_over_ZB]; */
-  rtDW->A_k[0] = -rtU->Ts_times_ZB_over_Ld * rtU->Rs_over_ZB;
-  rtDW->A_k[4] = rtDW->x0_idx_1;
-  rtDW->A_k[8] = 0.0F;
-  rtDW->A_k[12] = 0.0F;
-  rtDW->A_k[1] = rtDW->x0_idx_2;
-  rtDW->A_k[5] = -rtU->Ts_times_ZB_over_Lq * rtU->Rs_over_ZB;
-  rtDW->A_k[9] = 0.0F;
-  rtDW->A_k[13] = 0.0F;
-  rtDW->A_k[2] = 0.0F;
-  rtDW->A_k[6] = 0.0F;
-  rtDW->A_k[10] = -rtU->Ts_times_ZB_over_Lx * rtU->Rs_over_ZB;
-  rtDW->A_k[14] = rtDW->x0_idx_3;
-  rtDW->A_k[3] = 0.0F;
-  rtDW->A_k[7] = 0.0F;
-  rtDW->A_k[11] = rtDW->A_tmp;
-  rtDW->A_k[15] = -rtU->Ts_times_ZB_over_Ly * rtU->Rs_over_ZB;
+  rtDW->A_n[0] = -rtU->Ts_times_ZB_over_Ld * rtU->Rs_over_ZB;
+  rtDW->A_n[4] = rtDW->x0_idx_1;
+  rtDW->A_n[8] = 0.0F;
+  rtDW->A_n[12] = 0.0F;
+  rtDW->A_n[1] = rtDW->x0_idx_2;
+  rtDW->A_n[5] = -rtU->Ts_times_ZB_over_Lq * rtU->Rs_over_ZB;
+  rtDW->A_n[9] = 0.0F;
+  rtDW->A_n[13] = 0.0F;
+  rtDW->A_n[2] = 0.0F;
+  rtDW->A_n[6] = 0.0F;
+  rtDW->A_n[10] = -rtU->Ts_times_ZB_over_Lx * rtU->Rs_over_ZB;
+  rtDW->A_n[14] = rtDW->x0_idx_3;
+  rtDW->A_n[3] = 0.0F;
+  rtDW->A_n[7] = 0.0F;
+  rtDW->A_n[11] = rtDW->A_tmp;
+  rtDW->A_n[15] = -rtU->Ts_times_ZB_over_Ly * rtU->Rs_over_ZB;
 
   /* '<S10>:1:8' psiPM5 = psiPM_h_pu(1); */
   /* '<S10>:1:9' psiPM7 = psiPM_h_pu(2); */
@@ -2848,22 +6480,22 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S10>:1:20'      0                      Ts_times_ZB_over_Lq     0                       0                       ; */
   /* '<S10>:1:21'      0                      0                       Ts_times_ZB_over_Lx     0                       ; */
   /* '<S10>:1:22'      0                      0                       0                       Ts_times_ZB_over_Ly     ]; */
-  rtDW->B_c[0] = rtU->Ts_times_ZB_over_Ld;
-  rtDW->B_c[4] = 0.0F;
-  rtDW->B_c[8] = 0.0F;
-  rtDW->B_c[12] = 0.0F;
-  rtDW->B_c[1] = 0.0F;
-  rtDW->B_c[5] = rtU->Ts_times_ZB_over_Lq;
-  rtDW->B_c[9] = 0.0F;
-  rtDW->B_c[13] = 0.0F;
-  rtDW->B_c[2] = 0.0F;
-  rtDW->B_c[6] = 0.0F;
-  rtDW->B_c[10] = rtU->Ts_times_ZB_over_Lx;
-  rtDW->B_c[14] = 0.0F;
-  rtDW->B_c[3] = 0.0F;
-  rtDW->B_c[7] = 0.0F;
-  rtDW->B_c[11] = 0.0F;
-  rtDW->B_c[15] = rtU->Ts_times_ZB_over_Ly;
+  rtDW->B_b[0] = rtU->Ts_times_ZB_over_Ld;
+  rtDW->B_b[4] = 0.0F;
+  rtDW->B_b[8] = 0.0F;
+  rtDW->B_b[12] = 0.0F;
+  rtDW->B_b[1] = 0.0F;
+  rtDW->B_b[5] = rtU->Ts_times_ZB_over_Lq;
+  rtDW->B_b[9] = 0.0F;
+  rtDW->B_b[13] = 0.0F;
+  rtDW->B_b[2] = 0.0F;
+  rtDW->B_b[6] = 0.0F;
+  rtDW->B_b[10] = rtU->Ts_times_ZB_over_Lx;
+  rtDW->B_b[14] = 0.0F;
+  rtDW->B_b[3] = 0.0F;
+  rtDW->B_b[7] = 0.0F;
+  rtDW->B_b[11] = 0.0F;
+  rtDW->B_b[15] = rtU->Ts_times_ZB_over_Ly;
 
   /* '<S10>:1:24' C = [1   0   0   0; */
   /* '<S10>:1:25'      0   1   0   0; */
@@ -2874,10 +6506,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S10>:1:31'          e_xy_obs(1); */
   /* '<S10>:1:32'          e_xy_obs(2)]; */
   rtDW->D[0] = rtDW->rtb_e_dq_obs_idx_0;
-  rtDW->x0_idx_1 = rtDW->rtb_SinCos2_o1_tmp + rtDW->rtb_e_dq_obs_g;
+  rtDW->x0_idx_1 = rtDW->rtb_SinCos2_o1_tmp + rtDW->rtb_e_dq_obs_e;
   rtDW->D[1] = rtDW->x0_idx_1;
   rtDW->D[2] = rtDW->rtb_e_xy_obs_idx_0;
-  rtDW->D[3] = rtDW->rtb_e_xy_obs_g;
+  rtDW->D[3] = rtDW->rtb_e_xy_obs_b;
 
   /* '<S10>:1:34' E = [    e_dq_obs(1); */
   /* '<S10>:1:35'          -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB + e_dq_obs(2); */
@@ -2896,7 +6528,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->E[3] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos2_o2 + rtU->psiPM_h_pu[1] *
                   rtDW->w6theta_el) + rtU->psiPM_h_pu[0] * 6.0F *
                  rtDW->SinCos2_o2) - rtU->psiPM_h_pu[1] * 6.0F *
-                rtDW->w6theta_el) * -rtU->omega_el_pu + rtDW->rtb_e_xy_obs_g;
+                rtDW->w6theta_el) * -rtU->omega_el_pu + rtDW->rtb_e_xy_obs_b;
 
   /* '<S10>:1:39' x0 = [id_pu; iq_pu; ix_pu; iy_pu]; */
   rtDW->x0_idx_0 = rtDW->v_t0[0];
@@ -2921,99 +6553,99 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /*  period and mirror it???  */
   /* '<S10>:1:51' switch HC_off_on */
   if (!rtU->HC_off_on) {
-    rtDW->ijA = 0;
+    rtDW->d_j = 0;
   } else if (rtU->HC_off_on) {
-    rtDW->ijA = 1;
+    rtDW->d_j = 1;
   } else {
-    rtDW->ijA = -1;
+    rtDW->d_j = -1;
   }
 
-  switch (rtDW->ijA) {
+  switch (rtDW->d_j) {
    case 0:
     /* '<S10>:1:52' case false */
     /* '<S10>:1:53' m0 = C*(A*x0+B*u0+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->E_p[rtDW->ijA] = (rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + rtDW->D
-        [rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->E_b[rtDW->d_j] = (rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + rtDW->D
+        [rtDW->d_j];
     }
 
     /* '<S10>:1:54' m1 = C*(A*x0+B*u1+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m6[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_p[3] +
-        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_p[2] + ((real32_T)b[rtDW->ijA + 4]
-        * rtDW->E_p[1] + (real32_T)b[rtDW->ijA] * rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->q + (rtDW->B_c[rtDW->ijA + 4] * rtDW->rtb_v_1_idx_pu_idx_1
-                          + rtDW->B_c[rtDW->ijA] * rtDW->rtb_i_dq_obs_idx_0))))
-        + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m6[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_b[3] +
+        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_b[2] + ((real32_T)b[rtDW->d_j + 4]
+        * rtDW->E_b[1] + (real32_T)b[rtDW->d_j] * rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->q + (rtDW->B_b[rtDW->d_j + 4] * rtDW->rtb_v_1_idx_pu_idx_1
+                          + rtDW->B_b[rtDW->d_j] * rtDW->rtb_i_dq_obs_idx_0))))
+        + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:55' m2 = C*(A*x0+B*u2+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m1[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_c[3] +
-        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_c[2] + ((real32_T)b[rtDW->ijA + 4]
-        * rtDW->E_c[1] + (real32_T)b[rtDW->ijA] * rtDW->E_c[0]))) * 2.0F;
-      rtDW->E_p[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_2_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->rtb_v_2_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_2_idx_pu_idx_0)))) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m1[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_d[3] +
+        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_d[2] + ((real32_T)b[rtDW->d_j + 4]
+        * rtDW->E_d[1] + (real32_T)b[rtDW->d_j] * rtDW->E_d[0]))) * 2.0F;
+      rtDW->E_b[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_2_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->rtb_v_2_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_2_idx_pu_idx_0)))) + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:56' m3 = C*(A*x0+B*u3+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m2[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_p[3] +
-        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_p[2] + ((real32_T)b[rtDW->ijA + 4]
-        * rtDW->E_p[1] + (real32_T)b[rtDW->ijA] * rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_3_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->rtb_v_3_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_3_idx_pu_idx_0)))) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m2[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_b[3] +
+        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_b[2] + ((real32_T)b[rtDW->d_j + 4]
+        * rtDW->E_b[1] + (real32_T)b[rtDW->d_j] * rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_3_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->rtb_v_3_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_3_idx_pu_idx_0)))) + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:57' m4 = C*(A*x0+B*u4+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m3[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_c[3] +
-        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_c[2] + ((real32_T)b[rtDW->ijA + 4]
-        * rtDW->E_c[1] + (real32_T)b[rtDW->ijA] * rtDW->E_c[0]))) * 2.0F;
-      rtDW->E_p[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_4_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->rtb_v_4_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_4_idx_pu_idx_0)))) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m3[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_d[3] +
+        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_d[2] + ((real32_T)b[rtDW->d_j + 4]
+        * rtDW->E_d[1] + (real32_T)b[rtDW->d_j] * rtDW->E_d[0]))) * 2.0F;
+      rtDW->E_b[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_4_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->rtb_v_4_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_4_idx_pu_idx_0)))) + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:58' m5 = C*(A*x0+B*u5+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m4[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_p[3] +
-        ((real32_T)b[rtDW->ijA + 8] * rtDW->E_p[2] + ((real32_T)b[rtDW->ijA + 4]
-        * rtDW->E_p[1] + (real32_T)b[rtDW->ijA] * rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_5_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->rtb_v_5_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_5_idx_pu_idx_0)))) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m4[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_b[3] +
+        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_b[2] + ((real32_T)b[rtDW->d_j + 4]
+        * rtDW->E_b[1] + (real32_T)b[rtDW->d_j] * rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_5_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->rtb_v_5_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_5_idx_pu_idx_0)))) + rtDW->D[rtDW->d_j];
     }
 
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->E[rtDW->ijA] = ((real32_T)b[rtDW->ijA + 12] * rtDW->E_c[3] +
-                            ((real32_T)b[rtDW->ijA + 8] * rtDW->E_c[2] +
-        ((real32_T)b[rtDW->ijA + 4] * rtDW->E_c[1] + (real32_T)b[rtDW->ijA] *
-         rtDW->E_c[0]))) * 2.0F;
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->E[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_d[3] +
+                            ((real32_T)b[rtDW->d_j + 8] * rtDW->E_d[2] +
+        ((real32_T)b[rtDW->d_j + 4] * rtDW->E_d[1] + (real32_T)b[rtDW->d_j] *
+         rtDW->E_d[0]))) * 2.0F;
     }
 
     /* '<S10>:1:59' m6 = m0; */
@@ -3029,102 +6661,102 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    case 1:
     /* '<S10>:1:67' case true */
     /* '<S10>:1:68' m0 = C*(A*x0+B*u0+E).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 16; rtDW->ijA++) {
-      rtDW->rtb_m6_tmp[rtDW->ijA] = b[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 16; rtDW->d_j++) {
+      rtDW->rtb_m6_tmp[rtDW->d_j] = b[rtDW->d_j];
     }
 
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->E_p[rtDW->ijA] = (rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + rtDW->E
-        [rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->E_b[rtDW->d_j] = (rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + rtDW->E
+        [rtDW->d_j];
     }
 
     /* '<S10>:1:69' m1 = C*(A*x0+B*u1+E).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m6[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->q + (rtDW->B_c[rtDW->ijA + 4] * rtDW->rtb_v_1_idx_pu_idx_1
-                          + rtDW->B_c[rtDW->ijA] * rtDW->rtb_i_dq_obs_idx_0))))
-        + rtDW->E[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m6[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_b[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_b[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_b[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->q + (rtDW->B_b[rtDW->d_j + 4] * rtDW->rtb_v_1_idx_pu_idx_1
+                          + rtDW->B_b[rtDW->d_j] * rtDW->rtb_i_dq_obs_idx_0))))
+        + rtDW->E[rtDW->d_j];
     }
 
     /* '<S10>:1:70' m2 = C*(A*x0+B*u2+E).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m1[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_c[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_c[0]))) * 2.0F;
-      rtDW->E_p[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_2_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->rtb_v_2_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_2_idx_pu_idx_0)))) + rtDW->E[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m1[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_d[0]))) * 2.0F;
+      rtDW->E_b[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_2_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->rtb_v_2_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_2_idx_pu_idx_0)))) + rtDW->E[rtDW->d_j];
     }
 
     /* '<S10>:1:71' m3 = C*(A*x0+B*u3+E).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m2[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_3_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->rtb_v_3_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_3_idx_pu_idx_0)))) + rtDW->E[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m2[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_b[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_b[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_b[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_3_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->rtb_v_3_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_3_idx_pu_idx_0)))) + rtDW->E[rtDW->d_j];
     }
 
     /* '<S10>:1:72' m4 = C*(A*x0+B*u4+E).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m3[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_c[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_c[0]))) * 2.0F;
-      rtDW->E_p[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_4_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->rtb_v_4_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_4_idx_pu_idx_0)))) + rtDW->E[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m3[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_d[0]))) * 2.0F;
+      rtDW->E_b[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_4_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->rtb_v_4_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_4_idx_pu_idx_0)))) + rtDW->E[rtDW->d_j];
     }
 
     /* '<S10>:1:73' m5 = C*(A*x0+B*u5+E).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m4[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-        rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0))) + (rtDW->
-        B_c[rtDW->ijA + 12] * rtDW->rtb_v_5_idx_pu_idx_3 + (rtDW->B_c[rtDW->ijA
-        + 8] * rtDW->rtb_v_5_idx_pu_idx_2 + (rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_5_idx_pu_idx_0)))) + rtDW->E[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m4[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_b[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_b[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_b[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
+        B_b[rtDW->d_j + 12] * rtDW->rtb_v_5_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
+        + 8] * rtDW->rtb_v_5_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_5_idx_pu_idx_0)))) + rtDW->E[rtDW->d_j];
     }
 
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->E[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-                            rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA
-        + 8] * rtDW->E_c[2] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] *
-        rtDW->E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] * rtDW->E_c[0]))) *
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->E[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+                            rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j
+        + 8] * rtDW->E_d[2] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] *
+        rtDW->E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] * rtDW->E_d[0]))) *
         2.0F;
     }
 
@@ -3141,95 +6773,95 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    default:
     /* '<S10>:1:82' otherwise */
     /* '<S10>:1:83' m0 = C*(A*x0+B*u0+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->E[rtDW->ijA] = rtDW->A_k[rtDW->ijA + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_k[rtDW->ijA + 8] * rtDW->x0_idx_2 + (rtDW->A_k[rtDW->ijA + 4] *
-          rtDW->x0_idx_1 + rtDW->A_k[rtDW->ijA] * rtDW->x0_idx_0));
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->E[rtDW->d_j] = rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
+          rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0));
     }
 
-    for (rtDW->ijA = 0; rtDW->ijA < 16; rtDW->ijA++) {
-      rtDW->rtb_m6_tmp[rtDW->ijA] = b[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 16; rtDW->d_j++) {
+      rtDW->rtb_m6_tmp[rtDW->d_j] = b[rtDW->d_j];
     }
 
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->E_p[rtDW->ijA] = rtDW->E[rtDW->ijA] + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->E_b[rtDW->d_j] = rtDW->E[rtDW->d_j] + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:84' m1 = C*(A*x0+B*u1+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m6[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_1_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_i_dq_obs_idx_0) + rtDW->B_c[rtDW->ijA + 8] * rtDW->q) +
-        rtDW->B_c[rtDW->ijA + 12] * rtDW->rtb_v_1_idx_pu_idx_3) + rtDW->E
-        [rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m6[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_b[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_b[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_b[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_1_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_i_dq_obs_idx_0) + rtDW->B_b[rtDW->d_j + 8] * rtDW->q) +
+        rtDW->B_b[rtDW->d_j + 12] * rtDW->rtb_v_1_idx_pu_idx_3) + rtDW->E
+        [rtDW->d_j]) + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:85' m2 = C*(A*x0+B*u2+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m1[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_c[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_c[0]))) * 2.0F;
-      rtDW->E_p[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_2_idx_pu_idx_0) + rtDW->B_c[rtDW->ijA + 8] *
-        rtDW->rtb_v_2_idx_pu_idx_2) + rtDW->B_c[rtDW->ijA + 12] *
-        rtDW->rtb_v_2_idx_pu_idx_3) + rtDW->E[rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m1[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_d[0]))) * 2.0F;
+      rtDW->E_b[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_2_idx_pu_idx_0) + rtDW->B_b[rtDW->d_j + 8] *
+        rtDW->rtb_v_2_idx_pu_idx_2) + rtDW->B_b[rtDW->d_j + 12] *
+        rtDW->rtb_v_2_idx_pu_idx_3) + rtDW->E[rtDW->d_j]) + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:86' m3 = C*(A*x0+B*u3+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m2[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_3_idx_pu_idx_0) + rtDW->B_c[rtDW->ijA + 8] *
-        rtDW->rtb_v_3_idx_pu_idx_2) + rtDW->B_c[rtDW->ijA + 12] *
-        rtDW->rtb_v_3_idx_pu_idx_3) + rtDW->E[rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m2[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_b[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_b[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_b[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_3_idx_pu_idx_0) + rtDW->B_b[rtDW->d_j + 8] *
+        rtDW->rtb_v_3_idx_pu_idx_2) + rtDW->B_b[rtDW->d_j + 12] *
+        rtDW->rtb_v_3_idx_pu_idx_3) + rtDW->E[rtDW->d_j]) + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:87' m4 = C*(A*x0+B*u4+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m3[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_c[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_c[0]))) * 2.0F;
-      rtDW->E_p[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_4_idx_pu_idx_0) + rtDW->B_c[rtDW->ijA + 8] *
-        rtDW->rtb_v_4_idx_pu_idx_2) + rtDW->B_c[rtDW->ijA + 12] *
-        rtDW->rtb_v_4_idx_pu_idx_3) + rtDW->E[rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m3[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_d[0]))) * 2.0F;
+      rtDW->E_b[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_4_idx_pu_idx_0) + rtDW->B_b[rtDW->d_j + 8] *
+        rtDW->rtb_v_4_idx_pu_idx_2) + rtDW->B_b[rtDW->d_j + 12] *
+        rtDW->rtb_v_4_idx_pu_idx_3) + rtDW->E[rtDW->d_j]) + rtDW->D[rtDW->d_j];
     }
 
     /* '<S10>:1:88' m5 = C*(A*x0+B*u5+D).*2; */
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->m4[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-        rtDW->E_p[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 8] * rtDW->E_p[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] * rtDW->
-                           E_p[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] *
-                           rtDW->E_p[0]))) * 2.0F;
-      rtDW->E_c[rtDW->ijA] = ((((rtDW->B_c[rtDW->ijA + 4] *
-        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_c[rtDW->ijA] *
-        rtDW->rtb_v_5_idx_pu_idx_0) + rtDW->B_c[rtDW->ijA + 8] *
-        rtDW->rtb_v_5_idx_pu_idx_2) + rtDW->B_c[rtDW->ijA + 12] *
-        rtDW->rtb_v_5_idx_pu_idx_3) + rtDW->E[rtDW->ijA]) + rtDW->D[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->m4[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+        rtDW->E_b[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_b[2]
+                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
+                           E_b[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
+                           rtDW->E_b[0]))) * 2.0F;
+      rtDW->E_d[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
+        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
+        rtDW->rtb_v_5_idx_pu_idx_0) + rtDW->B_b[rtDW->d_j + 8] *
+        rtDW->rtb_v_5_idx_pu_idx_2) + rtDW->B_b[rtDW->d_j + 12] *
+        rtDW->rtb_v_5_idx_pu_idx_3) + rtDW->E[rtDW->d_j]) + rtDW->D[rtDW->d_j];
     }
 
-    for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-      rtDW->E[rtDW->ijA] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 12] *
-                            rtDW->E_c[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA
-        + 8] * rtDW->E_c[2] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->ijA + 4] *
-        rtDW->E_c[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->ijA] * rtDW->E_c[0]))) *
+    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+      rtDW->E[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
+                            rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j
+        + 8] * rtDW->E_d[2] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] *
+        rtDW->E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] * rtDW->E_d[0]))) *
         2.0F;
     }
 
@@ -3257,22 +6889,22 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S7>:1:5'         0       lambda  0       0; */
   /* '<S7>:1:6'         0       0       lambda  0; */
   /* '<S7>:1:7'         0       0       0       lambda]; */
-  rtDW->A_k[0] = rtU->lambda;
-  rtDW->A_k[4] = 0.0F;
-  rtDW->A_k[8] = 0.0F;
-  rtDW->A_k[12] = 0.0F;
-  rtDW->A_k[1] = 0.0F;
-  rtDW->A_k[5] = rtU->lambda;
-  rtDW->A_k[9] = 0.0F;
-  rtDW->A_k[13] = 0.0F;
-  rtDW->A_k[2] = 0.0F;
-  rtDW->A_k[6] = 0.0F;
-  rtDW->A_k[10] = rtU->lambda;
-  rtDW->A_k[14] = 0.0F;
-  rtDW->A_k[3] = 0.0F;
-  rtDW->A_k[7] = 0.0F;
-  rtDW->A_k[11] = 0.0F;
-  rtDW->A_k[15] = rtU->lambda;
+  rtDW->A_n[0] = rtU->lambda;
+  rtDW->A_n[4] = 0.0F;
+  rtDW->A_n[8] = 0.0F;
+  rtDW->A_n[12] = 0.0F;
+  rtDW->A_n[1] = 0.0F;
+  rtDW->A_n[5] = rtU->lambda;
+  rtDW->A_n[9] = 0.0F;
+  rtDW->A_n[13] = 0.0F;
+  rtDW->A_n[2] = 0.0F;
+  rtDW->A_n[6] = 0.0F;
+  rtDW->A_n[10] = rtU->lambda;
+  rtDW->A_n[14] = 0.0F;
+  rtDW->A_n[3] = 0.0F;
+  rtDW->A_n[7] = 0.0F;
+  rtDW->A_n[11] = 0.0F;
+  rtDW->A_n[15] = rtU->lambda;
 
   /* '<S7>:1:9' i_ref = [id_ref iq_ref ix_ref iy_ref]'; */
   /* '<S7>:1:10' e_i = i_ref - i_delay; */
@@ -3297,76 +6929,76 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S7>:1:27'      m0     m1      m2      m3      m4      zer     zer; */
   /* '<S7>:1:28'      m0     m1      m2      m3      m4      m5      zer; */
   /* '<S7>:1:29'      m0_lam m1_lam  m2_lam  m3_lam  m4_lam  m5_lam  m6_lam]; */
-  for (rtDW->ijA = 0; rtDW->ijA < 4; rtDW->ijA++) {
-    rtDW->r[rtDW->ijA] = rtDW->D[rtDW->ijA];
-    rtDW->r[rtDW->ijA + 4] = rtDW->D[rtDW->ijA];
-    rtDW->r[rtDW->ijA + 8] = rtDW->D[rtDW->ijA];
-    rtDW->r[rtDW->ijA + 12] = rtDW->D[rtDW->ijA];
-    rtDW->r[rtDW->ijA + 16] = rtDW->D[rtDW->ijA];
-    rtDW->r[rtDW->ijA + 20] = rtDW->D[rtDW->ijA];
-    rtDW->x0_idx_2 = rtDW->A_k[rtDW->ijA + 4];
-    rtDW->x0_idx_3 = rtDW->A_k[rtDW->ijA + 8];
-    rtDW->A_tmp = rtDW->A_k[rtDW->ijA + 12];
-    rtDW->r[rtDW->ijA + 24] = rtDW->A_tmp * rtDW->D[3] + (rtDW->x0_idx_3 *
-      rtDW->D[2] + (rtDW->x0_idx_2 * rtDW->D[1] + rtDW->A_k[rtDW->ijA] * rtDW->
+  for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
+    rtDW->r[rtDW->d_j] = rtDW->D[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 4] = rtDW->D[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 8] = rtDW->D[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 12] = rtDW->D[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 16] = rtDW->D[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 20] = rtDW->D[rtDW->d_j];
+    rtDW->x0_idx_2 = rtDW->A_n[rtDW->d_j + 4];
+    rtDW->x0_idx_3 = rtDW->A_n[rtDW->d_j + 8];
+    rtDW->A_tmp = rtDW->A_n[rtDW->d_j + 12];
+    rtDW->r[rtDW->d_j + 24] = rtDW->A_tmp * rtDW->D[3] + (rtDW->x0_idx_3 *
+      rtDW->D[2] + (rtDW->x0_idx_2 * rtDW->D[1] + rtDW->A_n[rtDW->d_j] * rtDW->
                     D[0]));
-    rtDW->x0_idx_0 = rtDW->A_k[rtDW->ijA];
+    rtDW->x0_idx_0 = rtDW->A_n[rtDW->d_j];
     rtDW->x0_idx_1 = rtDW->A_tmp * rtDW->m6[3] + (rtDW->x0_idx_3 * rtDW->m6[2] +
       (rtDW->x0_idx_2 * rtDW->m6[1] + rtDW->x0_idx_0 * rtDW->m6[0]));
-    rtDW->M[rtDW->ijA] = rtDW->m6[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 28] = 0.0F;
-    rtDW->M[rtDW->ijA + 56] = 0.0F;
-    rtDW->M[rtDW->ijA + 84] = 0.0F;
-    rtDW->M[rtDW->ijA + 112] = 0.0F;
-    rtDW->M[rtDW->ijA + 140] = 0.0F;
-    rtDW->M[rtDW->ijA + 168] = 0.0F;
-    rtDW->M[rtDW->ijA + 4] = rtDW->m6[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 32] = rtDW->m1[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 60] = 0.0F;
-    rtDW->M[rtDW->ijA + 88] = 0.0F;
-    rtDW->M[rtDW->ijA + 116] = 0.0F;
-    rtDW->M[rtDW->ijA + 144] = 0.0F;
-    rtDW->M[rtDW->ijA + 172] = 0.0F;
-    rtDW->M[rtDW->ijA + 8] = rtDW->m6[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 36] = rtDW->m1[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 64] = rtDW->m2[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 92] = 0.0F;
-    rtDW->M[rtDW->ijA + 120] = 0.0F;
-    rtDW->M[rtDW->ijA + 148] = 0.0F;
-    rtDW->M[rtDW->ijA + 176] = 0.0F;
-    rtDW->M[rtDW->ijA + 12] = rtDW->m6[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 40] = rtDW->m1[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 68] = rtDW->m2[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 96] = rtDW->m3[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 124] = 0.0F;
-    rtDW->M[rtDW->ijA + 152] = 0.0F;
-    rtDW->M[rtDW->ijA + 180] = 0.0F;
-    rtDW->M[rtDW->ijA + 16] = rtDW->m6[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 44] = rtDW->m1[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 72] = rtDW->m2[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 100] = rtDW->m3[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 128] = rtDW->m4[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 156] = 0.0F;
-    rtDW->M[rtDW->ijA + 184] = 0.0F;
-    rtDW->M[rtDW->ijA + 20] = rtDW->m6[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 48] = rtDW->m1[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 76] = rtDW->m2[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 104] = rtDW->m3[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 132] = rtDW->m4[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 160] = rtDW->E[rtDW->ijA];
-    rtDW->M[rtDW->ijA + 188] = 0.0F;
-    rtDW->M[rtDW->ijA + 24] = rtDW->x0_idx_1;
-    rtDW->M[rtDW->ijA + 52] = rtDW->A_tmp * rtDW->m1[3] + (rtDW->x0_idx_3 *
+    rtDW->M[rtDW->d_j] = rtDW->m6[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 28] = 0.0F;
+    rtDW->M[rtDW->d_j + 56] = 0.0F;
+    rtDW->M[rtDW->d_j + 84] = 0.0F;
+    rtDW->M[rtDW->d_j + 112] = 0.0F;
+    rtDW->M[rtDW->d_j + 140] = 0.0F;
+    rtDW->M[rtDW->d_j + 168] = 0.0F;
+    rtDW->M[rtDW->d_j + 4] = rtDW->m6[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 32] = rtDW->m1[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 60] = 0.0F;
+    rtDW->M[rtDW->d_j + 88] = 0.0F;
+    rtDW->M[rtDW->d_j + 116] = 0.0F;
+    rtDW->M[rtDW->d_j + 144] = 0.0F;
+    rtDW->M[rtDW->d_j + 172] = 0.0F;
+    rtDW->M[rtDW->d_j + 8] = rtDW->m6[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 36] = rtDW->m1[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 64] = rtDW->m2[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 92] = 0.0F;
+    rtDW->M[rtDW->d_j + 120] = 0.0F;
+    rtDW->M[rtDW->d_j + 148] = 0.0F;
+    rtDW->M[rtDW->d_j + 176] = 0.0F;
+    rtDW->M[rtDW->d_j + 12] = rtDW->m6[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 40] = rtDW->m1[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 68] = rtDW->m2[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 96] = rtDW->m3[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 124] = 0.0F;
+    rtDW->M[rtDW->d_j + 152] = 0.0F;
+    rtDW->M[rtDW->d_j + 180] = 0.0F;
+    rtDW->M[rtDW->d_j + 16] = rtDW->m6[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 44] = rtDW->m1[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 72] = rtDW->m2[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 100] = rtDW->m3[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 128] = rtDW->m4[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 156] = 0.0F;
+    rtDW->M[rtDW->d_j + 184] = 0.0F;
+    rtDW->M[rtDW->d_j + 20] = rtDW->m6[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 48] = rtDW->m1[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 76] = rtDW->m2[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 104] = rtDW->m3[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 132] = rtDW->m4[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 160] = rtDW->E[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 188] = 0.0F;
+    rtDW->M[rtDW->d_j + 24] = rtDW->x0_idx_1;
+    rtDW->M[rtDW->d_j + 52] = rtDW->A_tmp * rtDW->m1[3] + (rtDW->x0_idx_3 *
       rtDW->m1[2] + (rtDW->x0_idx_2 * rtDW->m1[1] + rtDW->x0_idx_0 * rtDW->m1[0]));
-    rtDW->M[rtDW->ijA + 80] = rtDW->A_tmp * rtDW->m2[3] + (rtDW->x0_idx_3 *
+    rtDW->M[rtDW->d_j + 80] = rtDW->A_tmp * rtDW->m2[3] + (rtDW->x0_idx_3 *
       rtDW->m2[2] + (rtDW->x0_idx_2 * rtDW->m2[1] + rtDW->x0_idx_0 * rtDW->m2[0]));
-    rtDW->M[rtDW->ijA + 108] = rtDW->A_tmp * rtDW->m3[3] + (rtDW->x0_idx_3 *
+    rtDW->M[rtDW->d_j + 108] = rtDW->A_tmp * rtDW->m3[3] + (rtDW->x0_idx_3 *
       rtDW->m3[2] + (rtDW->x0_idx_2 * rtDW->m3[1] + rtDW->x0_idx_0 * rtDW->m3[0]));
-    rtDW->M[rtDW->ijA + 136] = rtDW->A_tmp * rtDW->m4[3] + (rtDW->x0_idx_3 *
+    rtDW->M[rtDW->d_j + 136] = rtDW->A_tmp * rtDW->m4[3] + (rtDW->x0_idx_3 *
       rtDW->m4[2] + (rtDW->x0_idx_2 * rtDW->m4[1] + rtDW->x0_idx_0 * rtDW->m4[0]));
-    rtDW->M[rtDW->ijA + 164] = rtDW->A_tmp * rtDW->E[3] + (rtDW->x0_idx_3 *
+    rtDW->M[rtDW->d_j + 164] = rtDW->A_tmp * rtDW->E[3] + (rtDW->x0_idx_3 *
       rtDW->E[2] + (rtDW->x0_idx_2 * rtDW->E[1] + rtDW->x0_idx_0 * rtDW->E[0]));
-    rtDW->M[rtDW->ijA + 192] = rtDW->x0_idx_1;
+    rtDW->M[rtDW->d_j + 192] = rtDW->x0_idx_1;
   }
 
   /* '<S7>:1:31' H = 2*(M'*M); */
@@ -3392,250 +7024,65 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /*  sum of all duration times  */
   /*  define cold start for active-set solver */
   /* '<S8>:1:23' iA0 = false(size(b)); */
-  /* '<S8>:1:25' [x_opt,iter] = mpc_solve(H,f,A,b,Aeq,beq,iA0,max_iter,tol); */
-  /* '<S8>:1:30' x = single([0 0 0 0 0 0 0]'); */
-  /* '<S8>:1:31' iter = single(0); */
-  /*  set up solver */
-  /* '<S8>:1:33' options = mpcActiveSetOptions('single'); */
-  /* '<S8>:1:34' options.MaxIterations = max_iter; */
-  /* '<S8>:1:35' options.ConstriantTolerance = tol; */
-  /* '<S8>:1:36' options.UseHessianAsInput = false; */
-  /* '<S8>:1:37' options.IntegrityChecks = false; */
-  /* '<S8>:1:40' x_tmp = single([0.5 0 0 0 0 0 0.5]'); */
-  /* '<S8>:1:41' exitflag = single(0); */
-  /*  calculate inverse of H */
-  /* '<S8>:1:43' [L,~] = chol(H,'lower'); */
-  for (rtDW->ijA = 0; rtDW->ijA < 7; rtDW->ijA++) {
-    for (rtDW->c = 0; rtDW->c < 7; rtDW->c++) {
-      rtDW->i = rtDW->ijA + 7 * rtDW->c;
-      rtDW->Linv_data[rtDW->i] = 0.0F;
-      for (rtDW->b_ix = 0; rtDW->b_ix < 28; rtDW->b_ix++) {
-        rtDW->Linv_data[rtDW->i] += rtDW->M[28 * rtDW->ijA + rtDW->b_ix] *
-          rtDW->M[28 * rtDW->c + rtDW->b_ix];
+  /*  [x_opt,iter] = mpc_solve(H,f,A,b,Aeq,beq,iA0,max_iter,tol); */
+  /* '<S8>:1:26' [x_opt,iter] = mpc_quadprog(H,f,A,b,Aeq,beq,max_iter,tol,x0); */
+  /*  set up quadprog solver */
+  /* '<S8>:1:59' quadprog_options = optimoptions('quadprog','Algorithm','active-set','OptimalityTolerance',1e-6,'MaxIterations',20); */
+  /*  make variables double */
+  /* '<S8>:1:62' H_d = double(H); */
+  /* '<S8>:1:63' f_d = double(f); */
+  /* '<S8>:1:64' A_d = double(A); */
+  /* '<S8>:1:65' b_d = double(b); */
+  /* '<S8>:1:66' Aeq_d = double(Aeq); */
+  /* '<S8>:1:67' beq_d = double(beq); */
+  /* '<S8>:1:68' x0_d = double(x0); */
+  /* '<S8>:1:70' [x_tmp, fval, exitflag, output] = quadprog(H_d,-f_d,A_d,b_d,Aeq_d,beq_d,[],[],x0_d,quadprog_options); */
+  for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
+    /* Delay: '<S1>/Delay2' */
+    if (rtDW->icLoad_p) {
+      rtDW->Delay2_DSTATE[rtDW->i] = 0.14F;
+    }
+
+    /* MATLAB Function: '<S1>/formulate_qp' */
+    for (rtDW->d_j = 0; rtDW->d_j < 7; rtDW->d_j++) {
+      rtDW->ix = rtDW->i + 7 * rtDW->d_j;
+      rtDW->rtb_M_b[rtDW->ix] = 0.0F;
+      for (rtDW->iy = 0; rtDW->iy < 28; rtDW->iy++) {
+        rtDW->rtb_M_b[rtDW->ix] += rtDW->M[28 * rtDW->i + rtDW->iy] * rtDW->M[28
+          * rtDW->d_j + rtDW->iy];
       }
     }
   }
 
   /* MATLAB Function: '<S1>/qp_solver' incorporates:
-   *  Inport: '<Root>/max_iter'
+   *  Delay: '<S1>/Delay2'
    *  MATLAB Function: '<S1>/formulate_qp'
    */
-  for (rtDW->ijA = 0; rtDW->ijA < 49; rtDW->ijA++) {
-    rtDW->Hinv_data[rtDW->ijA] = rtDW->Linv_data[rtDW->ijA] * 2.0F;
+  for (rtDW->d_j = 0; rtDW->d_j < 49; rtDW->d_j++) {
+    rtDW->dv[rtDW->d_j] = 2.0F * rtDW->rtb_M_b[rtDW->d_j];
   }
 
-  rtDW->c = 0;
-  rtDW->i = 0;
-  exitg1 = false;
-  while ((!exitg1) && (rtDW->i < 7)) {
-    rtDW->kBcol = rtDW->i * 7 + rtDW->i;
-    rtDW->w6theta_el = 0.0F;
-    if (rtDW->i >= 1) {
-      rtDW->b_ix = rtDW->i;
-      rtDW->iy = rtDW->i;
-      rtDW->ix = 0;
-      while (rtDW->ix <= rtDW->i - 1) {
-        rtDW->w6theta_el += rtDW->Hinv_data[rtDW->b_ix] * rtDW->Hinv_data
-          [rtDW->iy];
-        rtDW->b_ix += 7;
-        rtDW->iy += 7;
-        rtDW->ix++;
-      }
-    }
-
-    rtDW->w6theta_el = rtDW->Hinv_data[rtDW->kBcol] - rtDW->w6theta_el;
-    if (rtDW->w6theta_el > 0.0F) {
-      rtDW->w6theta_el = sqrtf(rtDW->w6theta_el);
-      rtDW->Hinv_data[rtDW->kBcol] = rtDW->w6theta_el;
-      if (rtDW->i + 1 < 7) {
-        if (rtDW->i != 0) {
-          rtDW->ix = rtDW->i;
-          rtDW->b_ix = ((rtDW->i - 1) * 7 + rtDW->i) + 2;
-          rtDW->c_ix = rtDW->i + 2;
-          while (rtDW->c_ix <= rtDW->b_ix) {
-            rtDW->SinCos1_o2 = -rtDW->Hinv_data[rtDW->ix];
-            rtDW->iy = rtDW->kBcol + 1;
-            rtDW->ijA = (rtDW->c_ix - rtDW->i) + 5;
-            rtDW->ia = rtDW->c_ix;
-            while (rtDW->ia <= rtDW->ijA) {
-              rtDW->Hinv_data[rtDW->iy] += rtDW->Hinv_data[rtDW->ia - 1] *
-                rtDW->SinCos1_o2;
-              rtDW->iy++;
-              rtDW->ia++;
-            }
-
-            rtDW->ix += 7;
-            rtDW->c_ix += 7;
-          }
-        }
-
-        rtDW->w6theta_el = 1.0F / rtDW->w6theta_el;
-        rtDW->ix = (rtDW->kBcol - rtDW->i) + 7;
-        rtDW->b_ix = rtDW->kBcol + 1;
-        while (rtDW->b_ix + 1 <= rtDW->ix) {
-          rtDW->Hinv_data[rtDW->b_ix] *= rtDW->w6theta_el;
-          rtDW->b_ix++;
-        }
-      }
-
-      rtDW->i++;
-    } else {
-      rtDW->Hinv_data[rtDW->kBcol] = rtDW->w6theta_el;
-      rtDW->c = rtDW->i + 1;
-      exitg1 = true;
-    }
-  }
-
-  if (rtDW->c == 0) {
-    rtDW->b_ix = 7;
-  } else {
-    rtDW->b_ix = rtDW->c - 1;
-  }
-
-  rtDW->i = 1;
-  while (rtDW->i + 1 <= rtDW->b_ix) {
-    rtDW->c = 0;
-    while (rtDW->c <= rtDW->i - 1) {
-      rtDW->Hinv_data[rtDW->c + 7 * rtDW->i] = 0.0F;
-      rtDW->c++;
-    }
-
-    rtDW->i++;
-  }
-
-  if (1 > rtDW->b_ix) {
-    rtDW->ijA = -1;
-    rtDW->c = -1;
-    rtDW->iy = -1;
-  } else {
-    rtDW->ijA = rtDW->b_ix - 1;
-    rtDW->c = rtDW->b_ix - 1;
-    rtDW->iy = rtDW->b_ix - 1;
-  }
-
-  rtDW->ix = rtDW->c + 1;
-  for (rtDW->b_ix = 0; rtDW->b_ix <= rtDW->iy; rtDW->b_ix++) {
-    for (rtDW->i = 0; rtDW->i < rtDW->ix; rtDW->i++) {
-      rtDW->Hinv_data[rtDW->i + (rtDW->ijA + 1) * rtDW->b_ix] = rtDW->
-        Hinv_data[rtDW->i + 7 * rtDW->b_ix];
-    }
-  }
-
-  rtDW->Hinv_size[0] = rtDW->ijA + 1;
-  rtDW->Hinv_size[1] = rtDW->iy + 1;
-
-  /* '<S8>:1:44' Linv = linsolve(L,eye(size(L)),struct('LT',true)); */
-  if ((int8_T)(rtDW->c + 1) < (int8_T)(rtDW->iy + 1)) {
-    rtDW->i = (int8_T)(rtDW->c + 1);
-  } else {
-    rtDW->i = (int8_T)(rtDW->iy + 1);
-  }
-
-  rtDW->kBcol = (int8_T)(rtDW->ijA + 1);
-  rtDW->ix = (int8_T)(rtDW->ijA + 1) * (int8_T)(rtDW->iy + 1) - 1;
-  if (0 <= rtDW->ix) {
-    memset(&rtDW->b_I_data[0], 0, (rtDW->ix + 1) * sizeof(int8_T));
-  }
-
-  if (rtDW->i > 0) {
-    rtDW->b_ix = 0;
-    while (rtDW->b_ix <= rtDW->i - 1) {
-      rtDW->b_I_data[rtDW->b_ix + (int8_T)(rtDW->ijA + 1) * rtDW->b_ix] = 1;
-      rtDW->b_ix++;
-    }
-  }
-
-  if (rtDW->ijA + 1 < rtDW->iy + 1) {
-    rtDW->ijA++;
-  } else {
-    rtDW->ijA = rtDW->iy + 1;
-  }
-
-  rtDW->Linv_size[0] = (int8_T)(rtDW->iy + 1);
-  rtDW->Linv_size[1] = (int8_T)(rtDW->iy + 1);
-  rtDW->i = 0;
-  while (rtDW->i <= (int8_T)(rtDW->iy + 1) - 1) {
-    rtDW->c = 0;
-    while (rtDW->c <= rtDW->ijA - 1) {
-      rtDW->Linv_data[rtDW->c + (int8_T)(rtDW->iy + 1) * rtDW->i] =
-        rtDW->b_I_data[rtDW->c + rtDW->kBcol * rtDW->i];
-      rtDW->c++;
-    }
-
-    rtDW->c = rtDW->ijA;
-    while (rtDW->c + 1 <= rtDW->iy + 1) {
-      rtDW->Linv_data[rtDW->c + (int8_T)(rtDW->iy + 1) * rtDW->i] = 0.0F;
-      rtDW->c++;
-    }
-
-    rtDW->i++;
-  }
-
-  trisolve(rtDW->Hinv_data, rtDW->Hinv_size, rtDW->Linv_data, rtDW->Linv_size);
-
-  /*  solve QP */
-  /* '<S8>:1:46' [x_tmp, exitflag] = mpcActiveSetSolver(Linv,-f,A,b,Aeq,beq,iA0,options); */
-  rtDW->iy = rtDW->Linv_size[1];
-  rtDW->Hinv_size[0] = rtDW->Linv_size[1];
-  rtDW->Hinv_size[1] = rtDW->Linv_size[1];
-  rtDW->i = 0;
-  while (rtDW->i <= rtDW->Linv_size[1] - 1) {
-    rtDW->kBcol = rtDW->i * rtDW->iy;
-    rtDW->c_ix = rtDW->i * rtDW->Linv_size[0];
-    rtDW->c = 0;
-    while (rtDW->c <= rtDW->iy - 1) {
-      rtDW->Hinv_data[rtDW->kBcol + rtDW->c] = 0.0F;
-      rtDW->c++;
-    }
-
-    rtDW->ix = 0;
-    while (rtDW->ix <= rtDW->Linv_size[0] - 1) {
-      rtDW->w6theta_el = rtDW->Linv_data[rtDW->c_ix + rtDW->ix];
-      rtDW->b_ix = 0;
-      while (rtDW->b_ix <= rtDW->iy - 1) {
-        rtDW->ijA = rtDW->kBcol + rtDW->b_ix;
-        rtDW->Hinv_data[rtDW->ijA] += rtDW->Linv_data[rtDW->b_ix *
-          rtDW->Linv_size[0] + rtDW->ix] * rtDW->w6theta_el;
-        rtDW->b_ix++;
-      }
-
-      rtDW->ix++;
-    }
-
-    rtDW->i++;
-  }
-
-  for (rtDW->ijA = 0; rtDW->ijA < 7; rtDW->ijA++) {
+  for (rtDW->d_j = 0; rtDW->d_j < 7; rtDW->d_j++) {
     rtDW->rtb_SinCos2_o1_tmp = 0.0F;
-    for (rtDW->c = 0; rtDW->c < 28; rtDW->c++) {
-      rtDW->rtb_SinCos2_o1_tmp += rtDW->M[28 * rtDW->ijA + rtDW->c] * 2.0F *
-        rtDW->r[rtDW->c];
+    for (rtDW->iy = 0; rtDW->iy < 28; rtDW->iy++) {
+      rtDW->rtb_SinCos2_o1_tmp += rtDW->M[28 * rtDW->d_j + rtDW->iy] * 2.0F *
+        rtDW->r[rtDW->iy];
     }
 
-    rtDW->fv2[rtDW->ijA] = -rtDW->rtb_SinCos2_o1_tmp;
+    rtDW->dv1[rtDW->d_j] = -(real_T)rtDW->rtb_SinCos2_o1_tmp;
+    rtDW->dv2[rtDW->d_j] = rtDW->Delay2_DSTATE[rtDW->d_j];
   }
 
-  rtDW->rtb_SinCos2_o1_tmp = roundf(rtU->max_iter);
-  if (rtDW->rtb_SinCos2_o1_tmp < 32768.0F) {
-    if (rtDW->rtb_SinCos2_o1_tmp >= -32768.0F) {
-      tmp = (int16_T)rtDW->rtb_SinCos2_o1_tmp;
-    } else {
-      tmp = MIN_int16_T;
-    }
-  } else {
-    tmp = MAX_int16_T;
+  quadprog(rtDW->dv, rtDW->dv1, rtDW->dv2, rtDW->x_tmp, &rtDW->fval,
+           &rtDW->exitflag, rtDW->expl_temp_f, &rtDW->expl_temp_c,
+           &rtDW->expl_temp_b, &rtDW->output_iterations, rtDW);
+
+  /* '<S8>:1:72' x = single(x_tmp(1:7,1)); */
+  /* '<S8>:1:73' iter = single(output.iterations); */
+  for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
+    rtDW->x_opt[rtDW->i] = (real32_T)rtDW->x_tmp[rtDW->i];
   }
 
-  /* Outport: '<Root>/iterations_qp' incorporates:
-   *  MATLAB Function: '<S1>/qp_solver'
-   */
-  qpkwik(rtDW->Linv_data, rtDW->Linv_size, rtDW->Hinv_data, rtDW->Hinv_size,
-         rtDW->fv2, tmp, (int16_T)rtDW->Linv_size[0], rtDW->x_data,
-         &rtDW->x_size, rtDW->x_p, &rtY->iterations_qp, rtDW->iA1, rtDW);
-
-  /* '<S8>:1:47' x = single(x_tmp(1:7,1)); */
-  /* '<S8>:1:48' iter = single(exitflag); */
-  /*  J1 = x1'*(M1'*M1)*x1-2*r1'*M1*x1; */
   /* MATLAB Function 'uz_codegen/tz': '<S11>:1' */
   /* '<S11>:1:3' I = single([1 0 0 0 0 0; */
   /* '<S11>:1:4'             1 1 0 0 0 0; */
@@ -3673,27 +7120,25 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S12>:1:26'     4,1,6,3,2,5]); */
   /* '<S12>:1:28' t = single(zeros(6,1)); */
   for (rtDW->i = 0; rtDW->i < 6; rtDW->i++) {
-    /* MATLAB Function: '<S1>/tz' incorporates:
-     *  MATLAB Function: '<S1>/qp_solver'
-     */
+    /* MATLAB Function: '<S1>/tz' */
     rtDW->tz[rtDW->i] = 0.0F;
-    for (rtDW->ijA = 0; rtDW->ijA < 7; rtDW->ijA++) {
-      rtDW->tz[rtDW->i] += (real32_T)a[6 * rtDW->ijA + rtDW->i] * rtDW->
-        x_data[rtDW->ijA];
+    for (rtDW->d_j = 0; rtDW->d_j < 7; rtDW->d_j++) {
+      rtDW->tz[rtDW->i] += (real32_T)a[6 * rtDW->d_j + rtDW->i] * rtDW->
+        x_opt[rtDW->d_j];
     }
 
     /* End of MATLAB Function: '<S1>/tz' */
 
     /* MATLAB Function: '<S1>/tz_2_tph' */
-    rtDW->t[rtDW->i] = 0.0F;
+    rtDW->t_h[rtDW->i] = 0.0F;
   }
 
   /* MATLAB Function: '<S1>/tz_2_tph' */
   /* '<S12>:1:30' for i=1:6 */
-  for (rtDW->c = 0; rtDW->c < 6; rtDW->c++) {
+  for (rtDW->iy = 0; rtDW->iy < 6; rtDW->iy++) {
     /* '<S12>:1:31' t(seq_order_table(seq_no,i),1) = tz(i); */
-    rtDW->t[seq_order_table[(rtDW->sector_ref + 24 * rtDW->c) - 1] - 1] =
-      rtDW->tz[rtDW->c];
+    rtDW->t_h[seq_order_table[(rtDW->sector_ref + 24 * rtDW->iy) - 1] - 1] =
+      rtDW->tz[rtDW->iy];
   }
 
   /* Outport: '<Root>/d_opt' incorporates:
@@ -3705,12 +7150,17 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S12>:1:37' ta_2 = t(4); */
   /* '<S12>:1:38' tb_2 = t(5); */
   /* '<S12>:1:39' tc_2 = t(6); */
-  rtY->d_opt[0] = rtDW->t[0];
-  rtY->d_opt[1] = rtDW->t[1];
-  rtY->d_opt[2] = rtDW->t[2];
-  rtY->d_opt[3] = rtDW->t[3];
-  rtY->d_opt[4] = rtDW->t[4];
-  rtY->d_opt[5] = rtDW->t[5];
+  rtY->d_opt[0] = rtDW->t_h[0];
+  rtY->d_opt[1] = rtDW->t_h[1];
+  rtY->d_opt[2] = rtDW->t_h[2];
+  rtY->d_opt[3] = rtDW->t_h[3];
+  rtY->d_opt[4] = rtDW->t_h[4];
+  rtY->d_opt[5] = rtDW->t_h[5];
+
+  /* Outport: '<Root>/iterations_qp' incorporates:
+   *  MATLAB Function: '<S1>/qp_solver'
+   */
+  rtY->iterations_qp = (real32_T)rtDW->output_iterations;
 
   /* Update for Delay: '<S1>/Delay13' */
   rtDW->icLoad = false;
@@ -3776,39 +7226,25 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay12_DSTATE[3] = rtDW->rtb_v_5_idx_pu_idx_3;
 
   /* Update for Delay: '<S1>/Delay1' */
-  rtDW->icLoad_j = false;
-  for (rtDW->ijA = 0; rtDW->ijA < 7; rtDW->ijA++) {
-    /* MATLAB Function: '<S1>/qp_solver' */
-    rtDW->x0_idx_0 = rtDW->x_data[rtDW->ijA];
-
-    /* Update for Delay: '<S1>/Delay13' incorporates:
-     *  MATLAB Function: '<S1>/qp_solver'
-     */
-    rtDW->Delay13_DSTATE[rtDW->ijA] = rtDW->x0_idx_0;
-
-    /* Update for Delay: '<S1>/Delay1' incorporates:
-     *  MATLAB Function: '<S1>/qp_solver'
-     */
-    rtDW->Delay1_DSTATE[rtDW->ijA] = rtDW->x0_idx_0;
-  }
+  rtDW->icLoad_e = false;
 
   /* Update for Delay: '<S1>/Delay3' */
-  rtDW->icLoad_a = false;
+  rtDW->icLoad_b = false;
 
   /* Update for Delay: '<S1>/Delay4' */
-  rtDW->icLoad_g = false;
+  rtDW->icLoad_h = false;
 
   /* Update for Delay: '<S1>/Delay5' */
-  rtDW->icLoad_k = false;
+  rtDW->icLoad_c = false;
 
   /* Update for Delay: '<S1>/Delay6' */
-  rtDW->icLoad_m = false;
+  rtDW->icLoad_bb = false;
 
   /* Update for Delay: '<S1>/Delay7' */
-  rtDW->icLoad_d = false;
+  rtDW->icLoad_o = false;
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->icLoad_kw = false;
+  rtDW->icLoad_d = false;
 
   /* Update for Delay: '<S1>/Delay3' incorporates:
    *  MATLAB Function: '<S1>/state_space_mdl'
@@ -3889,6 +7325,20 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 
   /* Update for Delay: '<S1>/Delay8' */
   rtDW->Delay8_DSTATE[3] = rtDW->E[3];
+
+  /* Update for Delay: '<S1>/Delay2' */
+  rtDW->icLoad_p = false;
+  for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
+    /* Update for Delay: '<S1>/Delay13' */
+    rtDW->x0_idx_0 = rtDW->x_opt[rtDW->i];
+    rtDW->Delay13_DSTATE[rtDW->i] = rtDW->x0_idx_0;
+
+    /* Update for Delay: '<S1>/Delay1' */
+    rtDW->Delay1_DSTATE[rtDW->i] = rtDW->x0_idx_0;
+
+    /* Update for Delay: '<S1>/Delay2' */
+    rtDW->Delay2_DSTATE[rtDW->i] = rtDW->x0_idx_0;
+  }
 }
 
 /* Model initialize function */
@@ -3920,25 +7370,28 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
     rtDW->icLoad = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay1' */
-    rtDW->icLoad_j = true;
+    rtDW->icLoad_e = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay3' */
-    rtDW->icLoad_a = true;
+    rtDW->icLoad_b = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay4' */
-    rtDW->icLoad_g = true;
+    rtDW->icLoad_h = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay5' */
-    rtDW->icLoad_k = true;
+    rtDW->icLoad_c = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay6' */
-    rtDW->icLoad_m = true;
+    rtDW->icLoad_bb = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay7' */
-    rtDW->icLoad_d = true;
+    rtDW->icLoad_o = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay8' */
-    rtDW->icLoad_kw = true;
+    rtDW->icLoad_d = true;
+
+    /* InitializeConditions for Delay: '<S1>/Delay2' */
+    rtDW->icLoad_p = true;
 
     /* SystemInitialize for MATLAB Function: '<S1>/Observer' */
     /* '<S3>:1:61' x_e = single([0;0;0;0;0;0;0;0]); */

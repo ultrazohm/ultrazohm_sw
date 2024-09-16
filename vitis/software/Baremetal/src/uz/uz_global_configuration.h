@@ -28,7 +28,7 @@
 
 #define UZ_D3_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D3_MOTOR_POLE_PAIR_NUMBER            5.0f
-#define UZ_PWM_FREQUENCY                        4.0e3f
+#define UZ_PWM_FREQUENCY                        8.0e3f
 
 #define UZ_PWM_FREQUENCY_ISR					(UZ_PWM_FREQUENCY/INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)
 #define UZ_TIME_ISR								1.0f/UZ_PWM_FREQUENCY_ISR

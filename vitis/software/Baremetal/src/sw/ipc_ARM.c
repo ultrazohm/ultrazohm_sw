@@ -288,25 +288,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_17):
 		data->av.snd_fld[17] = value;
-		uz_CurrentControl_set_Kp_id(data->objects.foc_current, value);
+		uz_CurrentControl_set_Kp_id(data->objects.foc_current_dq, value);
 		data->av.Kp_id = value;
 			break;
 
 		case (Set_Send_Field_18):
 		data->av.snd_fld[18] = value;
-		uz_CurrentControl_set_Ki_id(data->objects.foc_current, value);
+		uz_CurrentControl_set_Ki_id(data->objects.foc_current_dq, value);
 		data->av.Ki_id = value;
 			break;
 
 		case (Set_Send_Field_19):
 		data->av.snd_fld[19] = value;
-		uz_CurrentControl_set_Kp_iq(data->objects.foc_current, value);
+		uz_CurrentControl_set_Kp_iq(data->objects.foc_current_dq, value);
 		data->av.Kp_iq = value;
 			break;
 
 		case (Set_Send_Field_20):
 		data->av.snd_fld[20] = value;
-		uz_CurrentControl_set_Ki_iq(data->objects.foc_current, value);
+		uz_CurrentControl_set_Ki_iq(data->objects.foc_current_dq, value);
 		data->av.Ki_iq = value;
 			break;
 
@@ -317,11 +317,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.5f;
 //			data->rasv.halfBridge5DutyCycle = 0.5f;
 //			data->rasv.halfBridge6DutyCycle = 0.5f;
-				if(data->rasv.current_ctrl_select == PI_FOC) {
-					data->rasv.current_ctrl_select = IMPL_MOD;
-				} else {
-					data->rasv.current_ctrl_select = PI_FOC;
-				}
+			data->rasv.current_ctrl_select = IMPL_MOD;
+			data->rasv.a53_ctrl_off_on = true;
+
 			break;
 
 		case (My_Button_2):
@@ -345,6 +343,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.5f;
 //			data->rasv.halfBridge5DutyCycle = 0.5f;
 //			data->rasv.halfBridge6DutyCycle = 0.5f;
+			data->rasv.current_ctrl_select = PI_FOC;
+			data->rasv.a53_ctrl_off_on = false;
 			break;
 
 		case (My_Button_4):
@@ -354,6 +354,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 //			data->rasv.halfBridge4DutyCycle = 0.55f;
 //			data->rasv.halfBridge5DutyCycle = 0.5f;
 //			data->rasv.halfBridge6DutyCycle = 0.5f;
+			data->rasv.current_ctrl_select = PI_R_FOC;
+			data->rasv.a53_ctrl_off_on = false;
 			break;
 
 		case (My_Button_5):
@@ -436,10 +438,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	if (data->rasv.current_ctrl_select == PI_FOC) {
-		js_status_BareToRTOS &= ~(1 << 4);
-	}else{
+	if (data->rasv.current_ctrl_select == IMPL_MOD) {
 		js_status_BareToRTOS |= (1 << 4);
+	}else{
+		js_status_BareToRTOS &= ~(1 << 4);
 	}
 
 	/* Bit 5 - My_Button_2 */
@@ -450,16 +452,32 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
-
+	if (data->rasv.current_ctrl_select == PI_FOC) {
+		js_status_BareToRTOS |=  (1 << 6);
+	}else{
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	if (data->rasv.current_ctrl_select == PI_R_FOC) {
+		js_status_BareToRTOS |=  (1 << 7);
+	}else{
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+		if (data->av.kalman_off_on == false) {
+			js_status_BareToRTOS |=  (1 << 8);
+		}else{
+			js_status_BareToRTOS &= ~(1 << 8);
+		}
 
 	/* Bit 9 - My_Button_6 */
-	// js_status_BareToRTOS &= ~(1 << 9);
+			if (data->av.kalman_off_on == true) {
+				js_status_BareToRTOS |=  (1 << 9);
+			}else{
+				js_status_BareToRTOS &= ~(1 << 9);
+			}
+
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

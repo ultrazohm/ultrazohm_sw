@@ -37,7 +37,7 @@ i_min = -6.5;
 i_max = -i_min;
 
 num_of_measured_points = 1;
-max_num_of_samples_in_this_batch = 40*30;
+max_num_of_samples_in_this_batch = 160*10;
 start=1;
 stop=start+max_num_of_samples_in_this_batch;
 

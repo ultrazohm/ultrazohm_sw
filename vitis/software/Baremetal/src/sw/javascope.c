@@ -191,6 +191,7 @@ void JavaScope_update(DS_Data* data){
 	rpu_to_apu_user_data->kalman_R = data->av.kalman_R;
 	rpu_to_apu_user_data->kalman_Q1 = data->av.kalman_Q1;
 	rpu_to_apu_user_data->kalman_Q2 = data->av.kalman_Q2;
+	rpu_to_apu_user_data->a53_ctrl_off_on = data->rasv.a53_ctrl_off_on;
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif

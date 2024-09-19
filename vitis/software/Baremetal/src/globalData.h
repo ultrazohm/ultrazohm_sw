@@ -16,12 +16,14 @@
 #include "uz/uz_setpoint/uz_setpoint.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 
 
 enum current_control_select {
 		PI_FOC,
 		FCS_MPC,
 		IMPL_MOD,
+		PI_R_FOC,
 };
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -160,6 +162,7 @@ typedef struct _actualValues_ {
 	float psi_pm_h_pu_over_psiB[2];
 	float phi_pm_h_over_psiB[2];
 	uz_3ph_dq_t u_dq_ref;
+	uz_3ph_dq_t u_xy_ref;
 	float v_d;
 	float v_q;
 	float v_x;
@@ -203,6 +206,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
 	enum current_control_select current_ctrl_select;
+	bool a53_ctrl_off_on;
 } referenceAndSetValues;
 
 typedef struct{
@@ -222,7 +226,11 @@ typedef struct{
 	uz_PWM_duty_freq_detection_t* tempMeasurement1;
 	uz_PWM_duty_freq_detection_t* tempMeasurement2;
 	uz_temperaturecard_t* temperature_card_d4;
-	uz_CurrentControl_t* foc_current;
+	uz_CurrentControl_t* foc_current_dq;
+	uz_CurrentControl_t* foc_current_xy;
+	uz_subspace_resonant_control* resonant_dq2;
+	uz_subspace_resonant_control* resonant_xy2;
+	uz_subspace_resonant_control* resonant_xy6;
 	uz_IIR_Filter_t* speed_ref_filt;
 	uz_SetPoint_t* setpoint;
 	uz_SpeedControl_t* speed_control;

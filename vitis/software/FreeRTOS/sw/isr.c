@@ -129,7 +129,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 		codegenInstance.input.kalman_Q2 = rpu_to_apu_user_data->kalman_Q2;
 
 		/* do your computations that you want to accelerate here... */
+		if (rpu_to_apu_user_data->a53_ctrl_off_on == true) {
 		uz_codegen_step(&codegenInstance);
+		}
 
 		// write data to r5 in shared memory and flush cache
 		apu_to_rpu_user_data->dutycyc[0] = codegenInstance.output.d_opt[0];

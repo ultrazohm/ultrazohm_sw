@@ -6,6 +6,7 @@
 #include "../uz/uz_setpoint/uz_setpoint.h"
 #include "../uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "../uz/uz_signals/uz_signals.h"
+//#include "../uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
 
 extern DS_Data Global_Data;
 
@@ -25,7 +26,7 @@ const float Ly_Henry = 0.0027f;
 const float psi_pm_5 = 0.00080f;
 const float psi_pm_7 = 0.00047f;
 
-// PI controllers
+// PI controllers dq-subspace
 const struct uz_PI_Controller_config config_id = {
 		.Kp = config_PMSM.Ld_Henry/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
 		.Ki = config_PMSM.R_ph_Ohm/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
@@ -46,6 +47,59 @@ struct uz_CurrentControl_config current_control_config = {
 		.config_iq = config_iq,
 		.decoupling_select = no_decoupling,
 		.max_modulation_index = 0.5f
+};
+
+// PI controllers xy-subspace
+const struct uz_PI_Controller_config config_ix = {
+		.Kp = Lx_Henry/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Ki = config_PMSM.R_ph_Ohm/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.samplingTime_sec = UZ_TIME_ISR,
+		.type = parallel,
+};
+
+const struct uz_PI_Controller_config config_iy = {
+		.Kp = Ly_Henry/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Ki = config_PMSM.R_ph_Ohm/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.samplingTime_sec = UZ_TIME_ISR,
+		.type = parallel,
+};
+
+struct uz_CurrentControl_config current_control_config_xy = {
+		.config_PMSM = config_PMSM,
+		.config_id = config_ix,
+		.config_iq = config_iy,
+		.decoupling_select = no_decoupling,
+		.max_modulation_index = 0.5f
+};
+
+struct uz_subspace_resonant_control_config dq_2_config = {
+		.antiwindup_gain = 10.0f,
+		.gain_1 = 1000.0f,
+		.gain_2 = 1000.0f,
+		.harmonic_order = 2.0f,
+		.lower_limit = -5.0f,
+		.upper_limit = 5.0f,
+		.sampling_time = UZ_TIME_ISR
+};
+
+struct uz_subspace_resonant_control_config xy_2_config = {
+		.antiwindup_gain = 10.0f,
+		.gain_1 = 1000.0f,
+		.gain_2 = 1000.0f,
+		.harmonic_order = 2.0f,
+		.lower_limit = -5.0f,
+		.upper_limit = 5.0f,
+		.sampling_time = UZ_TIME_ISR
+};
+
+struct uz_subspace_resonant_control_config xy_6_config = {
+		.antiwindup_gain = 10.0f,
+		.gain_1 = 1000.0f,
+		.gain_2 = 1000.0f,
+		.harmonic_order = 6.0f,
+		.lower_limit = -5.0f,
+		.upper_limit = 5.0f,
+		.sampling_time = UZ_TIME_ISR
 };
 
 // MPC controller
@@ -138,6 +192,27 @@ uz_CurrentControl_t* init_FOC_CurrentControl() {
 
 	return(uz_CurrentControl_init(current_control_config));
 }
+
+uz_CurrentControl_t* init_FOC_xy_control() {
+
+	return(uz_CurrentControl_init(current_control_config_xy));
+}
+
+uz_subspace_resonant_control* init_resonant_control_dq_2() {
+
+	return(uz_subspace_resonant_control_init(dq_2_config));
+}
+
+uz_subspace_resonant_control* init_resonant_control_xy_2() {
+
+	return(uz_subspace_resonant_control_init(xy_2_config));
+}
+
+uz_subspace_resonant_control* init_resonant_control_xy_6() {
+
+	return(uz_subspace_resonant_control_init(xy_6_config));
+}
+
 
 uz_SetPoint_t* setpoint_init(void) {
 	return(uz_SetPoint_init(config_setpoint));

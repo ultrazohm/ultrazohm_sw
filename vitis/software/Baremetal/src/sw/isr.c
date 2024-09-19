@@ -58,9 +58,19 @@ uz_6ph_dq_t six_ph_dq_volts = {0};
 uz_6ph_dq_t six_ph_dq_volts_compensated = {0};
 
 uz_3ph_dq_t i_dq_ref = {0.0f};
+uz_3ph_dq_t i_dq_r2_ref = {0.0f};
 uz_3ph_dq_t i_dq_actual = {0.0f};
+uz_3ph_dq_t i_xy_ref = {0.0f};
+uz_3ph_dq_t i_xy_r2_ref = {0.0f};
+uz_3ph_dq_t i_xy_r6_ref = {0.0f};
+uz_3ph_dq_t i_xy_actual = {0.0f};
 uz_3ph_dq_t u_dq_ref = {0.0f};
+uz_3ph_dq_t u_dq_r2_ref = {0.0f};
+uz_3ph_dq_t u_xy_ref = {0.0f};
+uz_3ph_dq_t u_xy_r2_ref = {0.0f};
+uz_3ph_dq_t u_xy_r6_ref = {0.0f};
 uz_3ph_alphabeta_t alphabeta_ref_volts = {0.0f};
+uz_3ph_alphabeta_t XY_ref_volts = {0.0f};
 uz_6ph_alphabeta_t vsd_ref_volts = {0.0f};
 uz_6ph_abc_t phase_ref_volts = {0.0f};
 uz_3ph_abc_t input1 = {0.0f};
@@ -233,9 +243,13 @@ void ISR_Control(void *data)
     // assign to structs
     i_dq_actual.d = Global_Data.av.i_d;
     i_dq_actual.q = Global_Data.av.i_q;
+    i_xy_actual.d = Global_Data.av.i_x;
+    i_xy_actual.q = Global_Data.av.i_y;
 
 	i_dq_ref.d = Global_Data.av.i_d_ref;
 	i_dq_ref.q = Global_Data.av.i_q_ref;
+	i_xy_ref.d = Global_Data.av.i_x_ref;
+	i_xy_ref.q = Global_Data.av.i_y_ref;
 
 
 
@@ -243,7 +257,11 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==idle_state)
     {
-    	uz_CurrentControl_reset(Global_Data.objects.foc_current);
+    	uz_CurrentControl_reset(Global_Data.objects.foc_current_dq);
+    	uz_subspace_resonant_control_reset(Global_Data.objects.resonant_dq2);
+		uz_CurrentControl_reset(Global_Data.objects.foc_current_xy);
+		uz_subspace_resonant_control_reset(Global_Data.objects.resonant_xy2);
+		uz_subspace_resonant_control_reset(Global_Data.objects.resonant_xy6);
 
     	Global_Data.rasv.halfBridge1DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.5f;
@@ -260,11 +278,45 @@ void ISR_Control(void *data)
 //    	Global_Data.av.M_ref = uz_SpeedControl_sample(Global_Data.objects.speed_control, Global_Data.av.mechanicalRotorSpeedRADpS_ip, Global_Data.av.speed_ref_rpm_filt);
 //    	i_dq_ref = uz_SetPoint_sample(Global_Data.objects.setpoint, Global_Data.av.mechanicalRotorSpeedRADpS_ip, Global_Data.av.M_ref, Global_Data.av.v_dc1, i_dq_actual);
 
-    	u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.foc_current, i_dq_ref, i_dq_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+    	// dq PI current control
+    	u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.foc_current_dq, i_dq_ref, i_dq_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
     	Global_Data.av.u_dq_ref = u_dq_ref;
-    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(u_dq_ref, Global_Data.av.theta_el_pos_FOC);
+
+
+    	// PI-R CONTROL
+    	if (Global_Data.rasv.current_ctrl_select == PI_R_FOC) {
+    	// dq R2 current control
+    	u_dq_r2_ref = uz_subspace_resonant_control_step_dq(Global_Data.objects.resonant_dq2, i_dq_r2_ref, i_dq_actual, Global_Data.av.electricalRotorSpeedRADpS);
+    	// sum up all dq reference voltages
+    	Global_Data.av.u_dq_ref.d = u_dq_ref.d + u_dq_r2_ref.d;
+    	Global_Data.av.u_dq_ref.q = u_dq_ref.q + u_dq_r2_ref.q;
+    	// xy PI current control
+    	u_xy_ref = uz_CurrentControl_sample(Global_Data.objects.foc_current_xy, i_xy_ref, i_xy_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
+    	// xy R2 current control
+    	u_xy_r2_ref = uz_subspace_resonant_control_step_dq(Global_Data.objects.resonant_xy2, i_xy_r2_ref, i_xy_actual, Global_Data.av.electricalRotorSpeedRADpS);
+    	// xy R6 current control
+    	u_xy_r6_ref = uz_subspace_resonant_control_step_dq(Global_Data.objects.resonant_xy6, i_xy_r6_ref, i_xy_actual, Global_Data.av.electricalRotorSpeedRADpS);
+    	// sum up all xy reference voltages
+    	Global_Data.av.u_xy_ref.d = u_xy_ref.d + u_xy_r2_ref.d + u_xy_r6_ref.d;
+    	Global_Data.av.u_xy_ref.q = u_xy_ref.q + u_xy_r2_ref.q + u_xy_r6_ref.q;
+
+    	XY_ref_volts = uz_transformation_3ph_dq_to_alphabeta(Global_Data.av.u_xy_ref, Global_Data.av.theta_el_neg_FOC);
+    	vsd_ref_volts.x = XY_ref_volts.alpha;
+    	vsd_ref_volts.y = XY_ref_volts.beta;
+    	} else {
+    		uz_CurrentControl_reset(Global_Data.objects.foc_current_xy);
+    		uz_subspace_resonant_control_reset(Global_Data.objects.resonant_dq2);
+    		uz_subspace_resonant_control_reset(Global_Data.objects.resonant_xy2);
+    		uz_subspace_resonant_control_reset(Global_Data.objects.resonant_xy6);
+    		vsd_ref_volts.x = 0.0f;
+    		vsd_ref_volts.y = 0.0f;
+    	}
+
+
+    	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(Global_Data.av.u_dq_ref, Global_Data.av.theta_el_pos_FOC);
     	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
     	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
+
     	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
 
     	input1.a = phase_ref_volts.a1;
@@ -278,7 +330,7 @@ void ISR_Control(void *data)
     	output2 = uz_spwm_abc(input2, Global_Data.av.v_dc2);
 
     	if(Global_Data.rasv.current_ctrl_select == IMPL_MOD) {
-    		uz_CurrentControl_reset(Global_Data.objects.foc_current);
+    		uz_CurrentControl_reset(Global_Data.objects.foc_current_dq);
     		// ATTENTION those are actually 1 minus dutycyc, see javascope.c
     	    Global_Data.rasv.halfBridge1DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[0], 1.0f, 0.0f);
     	    Global_Data.rasv.halfBridge2DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[1], 1.0f, 0.0f);

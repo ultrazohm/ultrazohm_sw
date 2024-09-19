@@ -87,6 +87,7 @@ int main(void)
             Global_Data.av.solver_tolerance = 1e-6f;
             Global_Data.av.max_iter = 20.0f;
             Global_Data.rasv.current_ctrl_select = PI_FOC;
+            Global_Data.rasv.a53_ctrl_off_on = false;
             Global_Data.av.angle_lead_factor_FOC = 1.5f;
             Global_Data.av.angle_lead_factor_MPC = 2.5f;
             Global_Data.av.kalman_R = 1.0f;
@@ -100,7 +101,11 @@ int main(void)
             Global_Data.av.Lx = 2.7e-3;
             Global_Data.av.Ly = 2.7e-3;
             Global_Data.av.psi_pm = 0.19;
-            Global_Data.objects.foc_current = init_FOC_CurrentControl();
+            Global_Data.objects.foc_current_dq = init_FOC_CurrentControl();
+            Global_Data.objects.foc_current_xy = init_FOC_xy_control();
+            Global_Data.objects.resonant_dq2 = init_resonant_control_dq_2();
+            Global_Data.objects.resonant_xy2 = init_resonant_control_xy_2();
+            Global_Data.objects.resonant_xy6 = init_resonant_control_xy_6();
             Global_Data.objects.speed_ref_filt = speed_ref_filt_init();
             Global_Data.objects.setpoint = setpoint_init();
             Global_Data.objects.speed_control = speed_control_init();

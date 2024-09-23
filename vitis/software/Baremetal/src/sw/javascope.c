@@ -49,7 +49,7 @@ extern float DC_A;
 extern float DC_B;
 extern float DC_C;
 extern float torque_cil;
-
+extern float observation_ip[9U];
 	// Data of PMSM 2
 	extern float n_ref_rpm_2;
 extern float theta_el_rad_2;
@@ -103,8 +103,30 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm_filtered_1] = &data->av.mechanicalRotorSpeed_filtered_1;
+	// log_names = {'time', 'enable', 'n', 'ia', 'ib', 'ic', 'id', 'iq', 'ud', 'uq', 'obs1', 'obs2', 'obs3', 'obs4', 'obs5', 'obs6', 'obs7', 'obs8', 'obs9', 'id_ref', 'iq_ref'};
+	// Channel numbers: x,101,55,20,21,22,26,25,38,39,27,28,29,30,31,32,33,34,35,42,43
+	js_ch_observable[JSO_enable] = &start_marker;
+	js_ch_observable[JSO_setpoint_index] = &setpoint_index_float;
 	js_ch_observable[JSO_Speed_rpm_filtered_2] = &data->av.mechanicalRotorSpeed_filtered_2;
+	js_ch_observable[JSO_ia_2] = &i_abc_Amps_2.a;
+	js_ch_observable[JSO_ib_2] = &i_abc_Amps_2.b;
+	js_ch_observable[JSO_ic_2] = &i_abc_Amps_2.c;
+	js_ch_observable[JSO_iq_2] = &i_dq_Amps_2.q;
+	js_ch_observable[JSO_id_2] = &i_dq_Amps_2.d;
+	js_ch_observable[JSO_uq_ref_2] = &v_dq_ref_Volts_2.q;
+	js_ch_observable[JSO_ud_ref_2] = &v_dq_ref_Volts_2.d;
+	js_ch_observable[JSO_obs_1] = &observation_ip[0];
+	js_ch_observable[JSO_obs_2] = &observation_ip[1];
+	js_ch_observable[JSO_obs_3] = &observation_ip[2];
+	js_ch_observable[JSO_obs_4] = &observation_ip[3];
+	js_ch_observable[JSO_obs_5] = &observation_ip[4];
+	js_ch_observable[JSO_obs_6] = &observation_ip[5];
+	js_ch_observable[JSO_obs_7] = &observation_ip[6];
+	js_ch_observable[JSO_obs_8] = &observation_ip[7];
+	js_ch_observable[JSO_obs_9] = &observation_ip[8];
+	js_ch_observable[JSO_iq_ref_2] 		= &i_dq_ref_Amps_2.q;
+	js_ch_observable[JSO_id_ref_2] 		= &i_dq_ref_Amps_2.d;
+	js_ch_observable[JSO_Speed_rpm_filtered_1] = &data->av.mechanicalRotorSpeed_filtered_1;
 	js_ch_observable[JSO_Speed_rpm_filtered_3] = &data->av.mechanicalRotorSpeed_filtered_3;
 	js_ch_observable[JSO_Speed_rpm_1] 	= &data->av.mechanicalRotorSpeed_1;
 	js_ch_observable[JSO_Speed_rpm_2] 	= &data->av.mechanicalRotorSpeed_2;
@@ -115,9 +137,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ia_1] 			= &i_abc_Amps_1.a;
 	js_ch_observable[JSO_ib_1] 			= &i_abc_Amps_1.b;
 	js_ch_observable[JSO_ic_1] 			= &i_abc_Amps_1.c;
-	js_ch_observable[JSO_ia_2] 			= &i_abc_Amps_2.a;
-	js_ch_observable[JSO_ib_2] 			= &i_abc_Amps_2.b;
-	js_ch_observable[JSO_ic_2] 			= &i_abc_Amps_2.c;
 	js_ch_observable[JSO_ua_1] 			= &v_abc_Volts_1.a;
 	js_ch_observable[JSO_ub_1] 			= &v_abc_Volts_1.b;
 	js_ch_observable[JSO_uc_1] 			= &v_abc_Volts_1.c;
@@ -126,16 +145,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uc_2] 			= &v_abc_Volts_2.c;
 	js_ch_observable[JSO_iq_1] 			= &i_dq_Amps_1.q;
 	js_ch_observable[JSO_id_1] 			= &i_dq_Amps_1.d;
-	js_ch_observable[JSO_iq_2] 			= &i_dq_Amps_2.q;
-	js_ch_observable[JSO_id_2] 			= &i_dq_Amps_2.d;
 	js_ch_observable[JSO_uq_ref_1]		= &v_dq_ref_Volts_1.q;
 	js_ch_observable[JSO_ud_ref_1]		= &v_dq_ref_Volts_1.d;
-	js_ch_observable[JSO_uq_ref_2]		= &v_dq_ref_Volts_2.q;
-	js_ch_observable[JSO_ud_ref_2]		= &v_dq_ref_Volts_2.d;
 	js_ch_observable[JSO_iq_ref_1] 		= &i_dq_ref_Amps_1.q;
 	js_ch_observable[JSO_id_ref_1] 		= &i_dq_ref_Amps_1.d;
-	js_ch_observable[JSO_iq_ref_2] 		= &i_dq_ref_Amps_2.q;
-	js_ch_observable[JSO_id_ref_2] 		= &i_dq_ref_Amps_2.d;
 	js_ch_observable[JSO_n_ref_1]		= &n_ref_rpm_1;
 	js_ch_observable[JSO_n_ref_2]		= &n_ref_rpm_2;
 	js_ch_observable[JSO_M_meas] = &torque_cil;
@@ -170,12 +183,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_cil_u_ind_ref_Volts_q]	 = &cil_u_ind_ref_Volts.q;
 	js_ch_observable[JSO_u_ind_ref_Volts_d]		= &v_ind_dq_ref_Volts_2.d;
 	js_ch_observable[JSO_u_ind_ref_Volts_q]		= &v_ind_dq_ref_Volts_2.q;
-	js_ch_observable[JSO_enable] = &start_marker;
-	js_ch_observable[JSO_setpoint_index] = &setpoint_index_float;
 	js_ch_observable[JSO_i_dc] = &i_DC_Amps_2;
 	js_ch_observable[JSO_M_ref] = &M_ref_Nm_2;
-
-
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

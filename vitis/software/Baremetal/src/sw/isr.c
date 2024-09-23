@@ -170,8 +170,12 @@ float setpoint_index_float = 0;
 float start_marker = 0.0f;
 extern bool select_automatic_idiq;
 
-float setpoints[10] = {
-#include "setpoints.csv"
+float id_setpoints[22] = {
+#include "id_setpoints.csv"
+};
+
+float iq_setpoints[22] = {
+#include "iq_setpoints.csv"
 };
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -196,26 +200,19 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_3(&Global_Data);
     setpoint_index_float=(float)setpoint_index;
-     if ((select_automatic_idiq))
+    if ((select_automatic_idiq))
     {
         start_marker = 1.0f;
-        if (foc){
-            i_dq_ref_Amps_2.d = 0.0f;
-            i_dq_ref_Amps_2.q = 5.9f*setpoints[setpoint_index]; // q-current required to generate rated torque multiplied by fraction of torque set point
-            M_ref_Nm_2 = 0.48f*setpoints[setpoint_index];
-        }else{
-            // Torque control to be implemented
-        	// change to 0.48f as well?
-            M_ref_Nm_2 = 0.48f*setpoints[setpoint_index]; // 0.34 Nm is rated torque, setpoints holds fraction of that
-        }
+        i_dq_ref_Amps_2.d = id_setpoints[setpoint_index];
+        i_dq_ref_Amps_2.q = iq_setpoints[setpoint_index];
 
         // step throught the array
         uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
-        if (current_uptime > (old_uptime + 20000))
+        if (current_uptime > (old_uptime + 300))
         {
             old_uptime = current_uptime;
 
-            if (setpoint_index < 9)
+            if (setpoint_index < 21)
             {
                 setpoint_index++;
             }
@@ -229,8 +226,7 @@ void ISR_Control(void *data)
     }
     else
     {
-        i_dq_ref_Amps_2 = i_dq_ref_Amps_2_javascope;
-        M_ref_Nm_2 = M_ref_Nm_2_javascope;
+    	i_dq_ref_Amps_2 = i_dq_ref_Amps_2_javascope;
     }
 
     M_meas_Nm = Global_Data.aa.A3.me.ADC_A1;// * 2.0f - 0.02f;
@@ -323,13 +319,16 @@ void ISR_Control(void *data)
             }
             i_dq_error_Amps_1.d = (i_dq_ref_Amps_2.d - i_dq_Amps_2.d) / PMSM_rated_current_1;
             i_dq_error_Amps_1.q = (i_dq_ref_Amps_2.q - i_dq_Amps_2.q) / PMSM_rated_current_1;
-            M_ref_Nm_2=uz_signals_saturation(M_ref_Nm_2, 0.5f, 0.0f);
-            observation_ip[0] = M_ref_Nm_2 / 0.34f; // Torque
-            observation_ip[1] = i_dq_Amps_2.d / PMSM_rated_current_1;
-            observation_ip[2] = i_dq_Amps_2.q / PMSM_rated_current_1;
-            observation_ip[3] = Global_Data.av.mechanicalRotorSpeed_filtered_2 * speed_weight_1;
-            observation_ip[4] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
-            observation_ip[5] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+            observation_ip[0] = i_dq_error_Amps_1.d;
+            observation_ip[1] = i_dq_integrated_error_Amps_1.d * UZ_PWM_FREQUENCY;
+            observation_ip[2] = i_dq_error_Amps_1.q;
+            observation_ip[3] = i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY;
+            observation_ip[4] = i_dq_Amps_2.d / PMSM_rated_current_1;
+            observation_ip[5] = i_dq_Amps_2.q / PMSM_rated_current_1;
+            observation_ip[6] = Global_Data.av.mechanicalRotorSpeed_filtered_2 * speed_weight_1;
+            observation_ip[7] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
+            observation_ip[8] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+
             for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++)
             {
                 uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input, observation_ip[i], 0U, i);
@@ -369,7 +368,6 @@ void ISR_Control(void *data)
     	//uz_CurrentControl_reset(CC_instance_1);
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
-    	//uz_CurrentControl_reset(CC_instance_u_ind);
         uz_pmsmModel_reset(pmsm);
     }
 

@@ -79,11 +79,6 @@ struct uz_DutyCycle_t output_1 					= {0};
 
 bool ext_clamping_1 = false;
 
-// ------------------- Wavegen Chirp -------------------- //
-bool enable_excitation 							= false;
-float excitation_amplitude 						= 0.0f;
-float sampling_time 							= 1.0f/25.0e3f;
-
 // ======================= PMSM 2 ======================= //
 // --------------- Pointers to instances ---------------- //
 extern struct uz_PMSM_t config_PMSM_2;
@@ -123,10 +118,6 @@ struct uz_3ph_dq_t v_ind_dq_filt_Volts_2 			= {0};
 struct uz_3ph_dq_t v_ind_dq_ref_Volts_2 			= {0};
 struct uz_3ph_dq_t v_dq_SOS_Volts_2 			= {0};
 float r_s_2 									= 0.030f;
-extern uz_IIR_Filter_t* LP_instance_ud_ind_2;
-extern uz_IIR_Filter_t* LP_instance_uq_ind_2;
-extern uz_IIR_Filter_t* LP_instance_rc_d_2;
-extern uz_IIR_Filter_t* LP_instance_rc_q_2;
 extern uz_IIR_Filter_t* LP_instance_ud_2;
 extern uz_IIR_Filter_t* LP_instance_uq_2;
 //extern uz_CurrentControl_t* CC_instance_u_ind;

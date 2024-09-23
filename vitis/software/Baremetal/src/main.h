@@ -86,4 +86,10 @@
 
 void InitializeDataStructure(DS_Data* data);
 
+// configuration of neural network
+#define NUMBER_OF_INPUTS_9N 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NN_9_INPUT_1_64 1
+
 #endif /* main_H_ */

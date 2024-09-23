@@ -48,9 +48,6 @@ uz_SpeedControl_t* SC_instance_1;
 uz_SetPoint_t* SP_instance_1;
 uz_CurrentControl_t* CC_instance_1;
 uz_encoder_offset_estimation_t* encoder_offset_obj_1;
-uz_wavegen_chirp* chirp_instance_1;
-uz_parameterid_rs_t* rs_meas_instance;
-uz_parameterid_rc_t* rc_meas_instance;
 
 
 // Declare Pointer for FOC of PMSM 2
@@ -62,8 +59,6 @@ uz_encoder_offset_estimation_t* encoder_offset_obj_2;
 uz_subspace_resonant_control* RC_instance_6th_2;
 uz_IIR_Filter_t* LP_instance_ud_2;
 uz_IIR_Filter_t* LP_instance_uq_2;
-uz_PI_Controller* PI_instance_ud_ind;
-uz_PI_Controller* PI_instance_uq_ind;
 
 
 // Configuration of PMSM 1 (Hoerner PMSM)
@@ -426,12 +421,6 @@ int main(void)
             SC_instance_2 = uz_SpeedControl_init(SC_config_2);
             SP_instance_2 = uz_SetPoint_init(SP_config_2);
             CC_instance_2 = uz_CurrentControl_init(CC_config_2);
-            PI_instance_ud_ind = uz_PI_Controller_init(PI_config_ud_ind);
-            PI_instance_uq_ind = uz_PI_Controller_init(PI_config_uq_ind);
-		    rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
-		    rc_meas_instance = uz_parameterid_rc_init(config_rc_meas);
-//           	chirp_instance_1 = uz_wavegen_chirp_init(config_chirp_1);
-//           	encoder_offset_obj_1 = uz_encoder_offset_estimation_init(encoder_offset_cfg_1);
            	encoder_offset_obj_2 = uz_encoder_offset_estimation_init(encoder_offset_cfg_2);
            	LP_instance_ud_2 = uz_signals_IIR_Filter_init(LP_config_ud_2);
            	LP_instance_uq_2 = uz_signals_IIR_Filter_init(LP_config_uq_2);

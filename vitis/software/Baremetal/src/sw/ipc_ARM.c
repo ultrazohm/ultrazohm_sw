@@ -53,10 +53,8 @@ extern uint32_t js_status_BareToRTOS;
 extern enum running_mode run_state;
 extern enum switch_control switch_control;
 extern uz_parameterid_rs_t* test_instance;
-extern struct uz_parameterid_output actual_output;
 extern struct uz_3ph_dq_t cil_u_ind_Volts;
 extern struct uz_3ph_dq_t cil_u_ind_ref_Volts;
-extern float r_s_2;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {

@@ -55,7 +55,6 @@ extern uz_SpeedControl_t* SC_instance_1;
 extern uz_SetPoint_t* SP_instance_1;
 extern uz_CurrentControl_t* CC_instance_1;
 extern uz_encoder_offset_estimation_t* encoder_offset_obj_1;
-extern uz_wavegen_chirp* chirp_instance_1;
 
 // ---------------- Inverter Measurement ---------------- //
 struct uz_3ph_abc_t v_abc_Volts_1				= {0};
@@ -117,20 +116,8 @@ struct uz_3ph_dq_t v_ind_dq_Volts_2 			= {0};
 struct uz_3ph_dq_t v_ind_dq_filt_Volts_2 			= {0};
 struct uz_3ph_dq_t v_ind_dq_ref_Volts_2 			= {0};
 struct uz_3ph_dq_t v_dq_SOS_Volts_2 			= {0};
-float r_s_2 									= 0.030f;
 extern uz_IIR_Filter_t* LP_instance_ud_2;
 extern uz_IIR_Filter_t* LP_instance_uq_2;
-//extern uz_CurrentControl_t* CC_instance_u_ind;
-extern uz_PI_Controller* PI_instance_ud_ind;
-extern uz_PI_Controller* PI_instance_uq_ind;
-struct uz_3ph_dq_t psi_dq_mVoltseconds_2 			= {0};
-struct uz_3ph_dq_t rc_dq_Ohm 			= {0};
-struct uz_3ph_dq_t rc_dq_filt_Ohm 			= {0};
-struct uz_3ph_dq_t rc_para_dq 			= {0};
-float Ld2 = 30.0e-6f;
-float Lq2 = 50.0e-6f;
-float Psi_PM = 7.0e-3f;
-
 
 // ======================= Others ======================= //
 float error_type = 0.0f;
@@ -138,7 +125,6 @@ int counter = 1;
 float M_meas_Nm = 0.0f;
 float M_meas_Nm2 = 0.0f;
 int control_induced_voltages = 0;
-float rc_repeat_counter = 0.0f;
 
 // ======================= CIL ======================= //
 
@@ -148,7 +134,7 @@ uz_3ph_dq_t v_dq_limited_Volts_old_1 = {0};
 uz_3ph_dq_t v_dq_limited_Volts_old_old_1 = {0};
 float torque_cil=0.0f;
 
-    extern uz_pmsmModel_t *pmsm;
+extern uz_pmsmModel_t *pmsm;
 extern uz_CurrentControl_t* CurrentControl_instance;
 uz_3ph_dq_t reference_currents_Amp = {0};
 uz_3ph_dq_t measured_currents_Amp = {0};
@@ -166,15 +152,11 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
   .torque_Nm=0.0f,
   .omega_mech_1_s=0.0f
 };
-extern uz_parameterid_rs_t* rs_meas_instance;
-extern uz_parameterid_rc_t* rc_meas_instance;
-struct uz_parameterid_output actual_output;
-struct uz_parameterid_rc_meas_out_t rc_output;
 struct uz_3ph_dq_t cil_u_ind_Volts 			= {0};
 struct uz_3ph_dq_t cil_u_ind_ref_Volts 			= {0};
 struct uz_3ph_dq_t v_dq_filt_Volts_2 			= {0};
 
-float observation_ip[6U] = {0};
+float observation_ip[NUMBER_OF_INPUTS_9N] = {0};
 
 float U_max_1 = 48.0f / 1.732050808f;
 float Voltage_Scaling_1 = 1.0f / (48.0f / 1.732050808f);
@@ -348,7 +330,7 @@ void ISR_Control(void *data)
             observation_ip[3] = Global_Data.av.mechanicalRotorSpeed_filtered_2 * speed_weight_1;
             observation_ip[4] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
             observation_ip[5] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
-            for (uint32_t i = 0; i < 6; i++)
+            for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++)
             {
                 uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input, observation_ip[i], 0U, i);
             }
@@ -388,8 +370,6 @@ void ISR_Control(void *data)
     	uz_SpeedControl_reset(SC_instance_2);
     	uz_CurrentControl_reset(CC_instance_2);
     	//uz_CurrentControl_reset(CC_instance_u_ind);
-		uz_PI_Controller_reset(PI_instance_ud_ind);
-		uz_PI_Controller_reset(PI_instance_uq_ind);
         uz_pmsmModel_reset(pmsm);
     }
 

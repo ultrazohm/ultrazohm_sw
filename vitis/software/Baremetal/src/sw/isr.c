@@ -197,8 +197,9 @@ void ISR_Control(void *data)
     	i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
     	//overwrite q-current ref with trajectory
     	if (Global_Data.rasv.reference_select == TRAJECTORY) {
-    	i_dq_ref_right.q = Global_Data.av.traj_current_ref;
-    	}
+    		i_dq_ref_right.q = Global_Data.av.traj_current_ref;
+			Global_Data.rasv.n_ref_left = Global_Data.av.traj_speed_ref;
+		}
     	if (Global_Data.rasv.ctrl_plant_select == CIL) {
     		// calculations necessary for all control algorithms
     		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);
@@ -383,10 +384,6 @@ static void ReadAllADC()
 void control_left_motor() {
 	//enable MPC
 	fcs_mpc_enable(true);
-	//overwrite speed ref with trajectory if selected
-	if (Global_Data.rasv.reference_select == TRAJECTORY) {
-	Global_Data.rasv.n_ref_left = Global_Data.av.traj_speed_ref;
-	}
 	// calculate reference torque from speed ctrl of left motor
 	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
 	// calculate current setpoints i_dq_ref for left motor

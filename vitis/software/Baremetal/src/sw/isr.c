@@ -300,6 +300,7 @@ void ISR_Control(void *data)
         i_dq_Amps_2.d = pmsm_outputs.i_d_A;
         i_dq_Amps_2.q = pmsm_outputs.i_q_A;
         omega_el_rad_per_sec_2 = pmsm_outputs.omega_mech_1_s * 3.0f;
+        Global_Data.av.mechanicalRotorSpeed_filtered_2 =60.0f*pmsm_outputs.omega_mech_1_s / (2.0f*M_PI);
         v_DC_Volts_2=48;
     }
 
@@ -346,7 +347,7 @@ void ISR_Control(void *data)
         if(cil){
             pmsm_inputs.v_d_V = v_dq_ref_Volts_2.d;
             pmsm_inputs.v_q_V = v_dq_ref_Volts_2.q;
-            pmsm_inputs.omega_mech_1_s = (n_ref_rpm_2 / 60.0f) * 2.0f * M_PI;
+            pmsm_inputs.omega_mech_1_s = (n_ref_rpm_1 / 60.0f) * 2.0f * M_PI;
             uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
         }else{
             float theta_el_advanced = theta_el_rad_2 + 1.5f * ts * omega_el_rad_per_sec_2;

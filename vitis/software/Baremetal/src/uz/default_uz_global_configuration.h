@@ -24,12 +24,12 @@
  * 6 for Interrupt_timer_fcc
 */
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
-#define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
+#define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	10U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
 #define UZ_PWM_FREQUENCY_RIGHT                  10.0e3f
-#define UZ_PWM_FREQUENCY_LEFT                   10.0e3f
+#define UZ_PWM_FREQUENCY_LEFT                   100.0e3f
 
 
 // Configuration defines for the number of used instances

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Product Version: Vivado v2020.1.1 (64-bit)              -->
+<!-- Product Version: Vivado v2020.1 (64-bit)              -->
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="49" Path="C:/Users/ga92wum/git/UltraZohm/Software/uz_sw2/ip_cores/ADC_MAX11331/simulation/ADC_MAX11331_project.xpr">
+<Project Version="7" Minor="49" Path="E:/030_ZohmControl_GmbH/Max11Test_OrigV2/ultrazohm_sw/ip_cores/ADC_MAX11331/simulation/ADC_MAX11331_project.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="715e1a1106c94e8485cfe42e04dd1298"/>
@@ -40,7 +40,7 @@
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSABoardId" Val="te0808_9eg_1e"/>
-    <Option Name="WTXSimLaunchSim" Val="256"/>
+    <Option Name="WTXSimLaunchSim" Val="277"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>

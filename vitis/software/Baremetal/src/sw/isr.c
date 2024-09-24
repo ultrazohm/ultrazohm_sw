@@ -91,6 +91,12 @@ bool ddpg_ext_clamping = false;
 //----------------------------------------------------
 static void ReadAllADC();
 
+uint32_t setpoint_index = 0;
+float setpoint_index_float = 0;
+float start_marker = 0.0f;
+uint64_t old_uptime = 0;
+
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -147,8 +153,8 @@ void ISR_Control(void *data)
 //	fcs_mpc_debug();
 
     //calculate given trajectory
-    Global_Data.av.traj_speed_ref = uz_Trajectory_Step(Global_Data.objects.speed_traj);
-    Global_Data.av.traj_current_ref = uz_Trajectory_Step(Global_Data.objects.current_traj);
+    // Global_Data.av.traj_speed_ref = uz_Trajectory_Step(Global_Data.objects.speed_traj);
+    // Global_Data.av.traj_current_ref = uz_Trajectory_Step(Global_Data.objects.current_traj);
 
     // check platform state machine
     platform_state_t current_state=ultrazohm_state_machine_get_state();
@@ -194,12 +200,43 @@ void ISR_Control(void *data)
     	// Start: Control algorithm - only if ultrazohm is in control state
 
     	// get reference currents from Global_Data
-    	i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
     	//overwrite q-current ref with trajectory
-    	if (Global_Data.rasv.reference_select == TRAJECTORY) {
-    		i_dq_ref_right.q = Global_Data.av.traj_current_ref;
-			Global_Data.rasv.n_ref_left = Global_Data.av.traj_speed_ref;
+    	// if (Global_Data.rasv.reference_select == TRAJECTORY) {
+    	// 	i_dq_ref_right.q = Global_Data.av.traj_current_ref;
+		// 	Global_Data.rasv.n_ref_left = Global_Data.av.traj_speed_ref;
+		// }
+
+		setpoint_index_float = (float)setpoint_index;
+		if ((Global_Data.rasv.reference_select == TRAJECTORY))
+		{
+			start_marker = 1.0f;
+			i_dq_ref_right.d = id_setpoints[setpoint_index];
+			i_dq_ref_right.q = iq_setpoints[setpoint_index];
+
+			// step throught the array
+			uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
+			if (current_uptime > (old_uptime + 1000))
+			{
+				old_uptime = current_uptime;
+
+				if (setpoint_index < 21)
+				{
+					setpoint_index++;
+				}
+				else
+				{
+					setpoint_index = 0;
+					Global_Data.rasv.reference_select = MANUAL;
+					start_marker = 0.0f;
+				}
+			}
 		}
+		else
+		{
+			i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
+		}
+
+		//////////////////////////////////////////////////////////////////////////////////
     	if (Global_Data.rasv.ctrl_plant_select == CIL) {
     		// calculations necessary for all control algorithms
     		uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_cil);

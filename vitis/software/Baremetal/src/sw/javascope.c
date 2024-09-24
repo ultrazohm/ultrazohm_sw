@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../uz/uz_Transformation/uz_Transformation.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -37,8 +38,10 @@ uint32_t js_status_BareToRTOS=0;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+extern float start_marker;
+struct uz_3ph_dq_t i_dq_ref_right;
 
-int JavaScope_initialize(DS_Data* data)
+int JavaScope_initialize(DS_Data *data)
 {
 	int Status = 0;
 	//Initialize all variables with zero
@@ -58,9 +61,12 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
+	// log_names = {'time', 'enable', 'n', 'ia', 'ib', 'ic', 'id', 'iq', 'ud', 'uq', 'obs1', 'obs2', 'obs3', 'obs4', 'obs5', 'obs6', 'obs7', 'obs8', 'obs9', 'id_ref', 'iq_ref'};
+	// Channel numbers: x, JSO_enable,JSO_mech_Speed_rpm_right,JSO_ia_right,JSO_ib_right,JSO_ic_right,JSO_id_right,JSO_iq_right,JSO_vd_right,JSO_vq_right,...,JSO_id_right_ref,JSO_iq_right_ref
 	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.resolver_pl_outputs_left.n_mech_rpm;
 	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av.resolver_pl_outputs_right.n_mech_rpm;
 	js_ch_observable[JSO_ia_left] 			= &data->av.i_a_left;
+	js_ch_observable[JSO_enable] 			= &start_marker;
 	js_ch_observable[JSO_ib_left] 			= &data->av.i_b_left;
 	js_ch_observable[JSO_ic_left] 			= &data->av.i_c_left;
 	js_ch_observable[JSO_ia_right] 			= &data->av.i_a_right;
@@ -76,6 +82,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq_left] 			= &data->av.i_q_left;
 	js_ch_observable[JSO_id_right] 			= &data->av.i_d_right;
 	js_ch_observable[JSO_iq_right] 			= &data->av.i_q_right;
+	js_ch_observable[JSO_iq_right_ref] 		= &i_dq_ref_right.q;
+	js_ch_observable[JSO_id_right_ref] 		= &i_dq_ref_right.d;
 	js_ch_observable[JSO_theta_el_left] 	= &data->av.resolver_pl_outputs_left.position_el_2pi;
 	js_ch_observable[JSO_theta_el_right] 	= &data->av.resolver_pl_outputs_right.position_el_2pi;
 	js_ch_observable[JSO_theta_mech_left] 	= &data->av.resolver_pl_outputs_left.position_mech_2pi;

@@ -33,6 +33,7 @@
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_fixedpoint/uz_fixedpoint.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
+#include "../uz/uz_signals/uz_signals.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -434,7 +435,8 @@ void control_left_motor() {
 	//enable MPC
 	fcs_mpc_enable(true);
 	// calculate reference torque from speed ctrl of left motor
-	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
+	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
+	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.rasv.n_ref_left_filt, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
 	// calculate current setpoints i_dq_ref for left motor
 	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
     // write measured dc_link voltage to pu_voltages ip

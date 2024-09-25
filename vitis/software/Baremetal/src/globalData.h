@@ -16,6 +16,7 @@
 #include "uz/uz_matrix/uz_matrix.h"
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "uz/uz_Trajectory/uz_Trajectory.h"
+#include "uz/uz_signals/uz_signals.h"
 
 enum current_control_select {
 		PI_FOC,
@@ -149,6 +150,7 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	float M_ref_left;
 	float n_ref_left;
+	float n_ref_left_filt;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
 	enum current_control_select current_ctrl_select;

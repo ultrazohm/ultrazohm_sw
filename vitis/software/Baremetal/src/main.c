@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_signals/uz_signals.h"
 
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables
@@ -88,6 +89,7 @@ int main(void)
             Global_Data.rasv.current_ctrl_select = PI_FOC;
             Global_Data.objects.speed_traj = uz_trajectory_speed_init();
             Global_Data.objects.current_traj = uz_trajectory_current_init();
+            Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

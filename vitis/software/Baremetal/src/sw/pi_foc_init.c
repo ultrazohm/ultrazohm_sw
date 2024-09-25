@@ -5,6 +5,7 @@
 #include "../uz/uz_signals/uz_signals.h" 
 
 extern DS_Data Global_Data;
+const float tau_sig_coefficent=2.0f;
 
 const struct uz_PMSM_t Beckhoff_AM8141 = {
     .R_ph_Ohm = 0.51,
@@ -45,14 +46,14 @@ const struct uz_SpeedControl_config config_speed_ctrl_left = {
     .config_controller = config_speed_left};
 
 const struct uz_PI_Controller_config config_id_right = {
-    .Kp = 5.83f,
-    .Ki = 1500.0f,
+    .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*tau_sig_coefficent/UZ_PWM_FREQUENCY_RIGHT),
+	.Kp = Beckhoff_AM8141.Ld_Henry/(2.0f*tau_sig_coefficent/UZ_PWM_FREQUENCY_RIGHT),
     .samplingTime_sec = 0.0001f,
     .upper_limit = 48.0f,
     .lower_limit = -48.0f};
 const struct uz_PI_Controller_config config_iq_right = {
-    .Kp = 5.83f,
-    .Ki = 1500.0f,
+	    .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*tau_sig_coefficent/UZ_PWM_FREQUENCY_RIGHT),
+		.Kp = Beckhoff_AM8141.Lq_Henry/(2.0f*tau_sig_coefficent/UZ_PWM_FREQUENCY_RIGHT),
     .samplingTime_sec = 0.0001f,
     .upper_limit = 48.0f,
     .lower_limit = -48.0f};
@@ -109,7 +110,7 @@ uz_CurrentControl_t *current_ctrl_left_init(void)
 
    struct uz_IIR_Filter_config config_IIR = {.selection = LowPass_first_order,
                                              .cutoff_frequency_Hz = 0.5f,
-                                             .sample_frequency_Hz = UZ_PWM_FREQUENCY};
+                                             .sample_frequency_Hz = UZ_PWM_FREQUENCY_RIGHT};
 
    uz_IIR_Filter_t *speed_filt_left_init(void)
    {

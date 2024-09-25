@@ -184,6 +184,7 @@ typedef struct{
 	uz_pmsmModel_t* pmsm_cil;
 	uz_Trajectory_t* speed_traj;
 	uz_Trajectory_t* current_traj;
+	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 }object_pointers_t;
 
 

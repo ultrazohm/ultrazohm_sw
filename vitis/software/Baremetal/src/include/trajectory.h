@@ -1,3 +1,4 @@
+#pragma once
 #include "../main.h"
 
 uz_Trajectory_t* uz_trajectory_speed_init(void);

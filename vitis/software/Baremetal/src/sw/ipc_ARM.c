@@ -302,9 +302,6 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			if (data->rasv.reference_select == MANUAL) {
 				data->rasv.reference_select = TRAJECTORY;
 			}
-			else if (data->rasv.reference_select == TRAJECTORY) {
-						data->rasv.reference_select = MANUAL;
-					}
 			break;
 
 		case (My_Button_3):

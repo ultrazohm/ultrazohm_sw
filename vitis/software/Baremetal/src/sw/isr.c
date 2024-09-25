@@ -109,6 +109,7 @@ float iq_setpoints[22]={
 
 };
 
+float n_ref_left=0.0f;
 
 void ISR_Control(void *data)
 {
@@ -182,6 +183,7 @@ void ISR_Control(void *data)
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_left);
 		uz_CurrentControl_reset(Global_Data.objects.current_ctrl_right);
 		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left);
+		uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, 0.0f);
 		// write zero dutycycle
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -220,6 +222,7 @@ void ISR_Control(void *data)
 		// }
 
 		setpoint_index_float = (float)setpoint_index;
+
 		if ((Global_Data.rasv.reference_select == TRAJECTORY))
 		{
 			start_marker = 1.0f;
@@ -241,12 +244,17 @@ void ISR_Control(void *data)
 					setpoint_index = 0;
 					Global_Data.rasv.reference_select = MANUAL;
 					start_marker = 0.0f;
+					n_ref_left=n_ref_left-100.0f;
+					if(n_ref_left<-1000.0f){
+						n_ref_left=0.0f;
+					}
 				}
 			}
 		}
 		else
 		{
 			i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
+			//n_ref_left=Global_Data.rasv.n_ref_left;
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////
@@ -435,8 +443,8 @@ void control_left_motor() {
 	//enable MPC
 	fcs_mpc_enable(true);
 	// calculate reference torque from speed ctrl of left motor
-	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
-	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.rasv.n_ref_left_filt, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left);
+	Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, n_ref_left);
+	Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.n_ref_left_filt);
 	// calculate current setpoints i_dq_ref for left motor
 	Global_Data.rasv.i_dq_ref_left = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_left, i_dq_left);
     // write measured dc_link voltage to pu_voltages ip
@@ -460,7 +468,7 @@ void control_right_motor() {
     		// write inputs into CIL model
     		pmsm_cil_inputs.v_d_V = v_dq_ref_right.d;
     		pmsm_cil_inputs.v_q_V = v_dq_ref_right.q;
-    		pmsm_cil_inputs.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.n_ref_left / 60.0f;
+    		pmsm_cil_inputs.omega_mech_1_s = 2.0f * UZ_PIf * n_ref_left / 60.0f;
     		uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil, pmsm_cil_inputs);
     	}
 	}
@@ -508,7 +516,7 @@ void control_right_motor() {
     		// write inputs into CIL model
     		pmsm_cil_inputs.v_d_V = v_dq_ref_right.d;
     		pmsm_cil_inputs.v_q_V = v_dq_ref_right.q;
-    		pmsm_cil_inputs.omega_mech_1_s = 2.0f * UZ_PIf * Global_Data.rasv.n_ref_left / 60.0f;
+    		pmsm_cil_inputs.omega_mech_1_s = 2.0f * UZ_PIf * n_ref_left / 60.0f;
     		uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_cil, pmsm_cil_inputs);
     	}
 	}

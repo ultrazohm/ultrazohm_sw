@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "include/trajectory.h"
 
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables

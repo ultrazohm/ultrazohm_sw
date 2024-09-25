@@ -460,5 +460,6 @@ If not implemented by the time you read the documentation, feel free to add this
     Global_Data.av.EnDat_value_response_length = uz_EnDat_read_reponselength_and_convert_to_float(Global_Data.objects.EnDat_master_pointer);
     Global_Data.av.EnDat_sync_quality = uz_EnDat_calculate_sync_quality_indicator(Global_Data.objects.EnDat_master_pointer, Global_Data.av.EnDat_value_calc_time);
     uz_EnDat_fetch_statusword_and_errorbit_from_EnDat_object_and_write_to_object(Global_Data.objects.EnDat_master_pointer);
+    //END EXECUTE
   }
 

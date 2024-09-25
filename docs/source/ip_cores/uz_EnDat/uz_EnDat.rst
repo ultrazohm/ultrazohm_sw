@@ -23,7 +23,7 @@ Rotational Speed
 IP-Core Hardware
 ================
 
-The IP-Core is generated using Matlab/Simulink HDL-Coder based on the model ``UZ_EnDat.slx`` (in ``ultrazohm_sw/ip_cores/uz_EnDat_IPCore/Simulink_Model/UZ_EnDat.slx``).
+The IP-Core is generated using Matlab/Simulink R2024a HDL-Coder based on the model ``UZ_EnDat.slx`` (in ``ultrazohm_sw/ip_cores/uz_EnDat_IPCore/Simulink_Model/UZ_EnDat.slx``).
 
 
 Vivado integration

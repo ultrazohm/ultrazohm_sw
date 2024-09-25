@@ -96,6 +96,18 @@ float setpoint_index_float = 0;
 float start_marker = 0.0f;
 uint64_t old_uptime = 0;
 
+float id_setpoints[22]={
+
+#include "id_setpoints.csv"
+
+};
+
+float iq_setpoints[22]={
+
+#include "iq_setpoints.csv"
+
+};
+
 
 void ISR_Control(void *data)
 {
@@ -215,7 +227,7 @@ void ISR_Control(void *data)
 
 			// step throught the array
 			uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
-			if (current_uptime > (old_uptime + 1000))
+			if (current_uptime > (old_uptime + 5000))
 			{
 				old_uptime = current_uptime;
 

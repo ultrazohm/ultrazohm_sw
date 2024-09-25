@@ -29,8 +29,8 @@ extern DS_Data Global_Data;
       .lower_limit = -48.0f
    };
    const struct uz_PI_Controller_config config_speed_left = {
-		   .Kp = 0.008f,
-		   .Ki = 0.8f,
+		   .Kp = 0.1f,
+		   .Ki = 0.08f,
 		   .samplingTime_sec = 0.0001f,
 		   .upper_limit = 2.4f,
 		   .lower_limit = -2.4f
@@ -50,15 +50,15 @@ extern DS_Data Global_Data;
    };
 
    const struct uz_PI_Controller_config config_id_right = {
-     .Kp = 5.0f,
-     .Ki = 255.0f,
+     .Kp = 5.83f,
+     .Ki = 1500.0f,
      .samplingTime_sec = 0.0001f,
      .upper_limit = 48.0f,
      .lower_limit = -48.0f
   };
   const struct uz_PI_Controller_config config_iq_right = {
-     .Kp = 5.0f,
-     .Ki = 255.0f,
+     .Kp = 5.83f,
+     .Ki = 1500.0f,
      .samplingTime_sec = 0.0001f,
      .upper_limit = 48.0f,
      .lower_limit = -48.0f
@@ -68,7 +68,7 @@ extern DS_Data Global_Data;
       .config_PMSM = Beckhoff_AM8141,
 	  .config_id = config_id_left,
 	  .config_iq = config_iq_left,
-	  .decoupling_select = no_decoupling,
+	  .decoupling_select = linear_decoupling,
 	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
    };
 
@@ -76,7 +76,7 @@ extern DS_Data Global_Data;
       .config_PMSM = Beckhoff_AM8141,
 	  .config_id = config_id_right,
 	  .config_iq = config_iq_right,
-	  .decoupling_select = no_decoupling,
+	  .decoupling_select = linear_decoupling,
 	  .max_modulation_index = 0.57735 //=1.0f/sqrt(3.0f)
    };
 

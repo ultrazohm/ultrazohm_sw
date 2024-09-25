@@ -39,7 +39,7 @@ uint32_t js_status_BareToRTOS=0;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
 extern float start_marker;
-struct uz_3ph_dq_t i_dq_ref_right;
+extern struct uz_3ph_dq_t i_dq_ref_right;
 
 int JavaScope_initialize(DS_Data *data)
 {
@@ -63,6 +63,7 @@ int JavaScope_initialize(DS_Data *data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	// log_names = {'time', 'enable', 'n', 'ia', 'ib', 'ic', 'id', 'iq', 'ud', 'uq', 'obs1', 'obs2', 'obs3', 'obs4', 'obs5', 'obs6', 'obs7', 'obs8', 'obs9', 'id_ref', 'iq_ref'};
 	// Channel numbers: x, JSO_enable,JSO_mech_Speed_rpm_right,JSO_ia_right,JSO_ib_right,JSO_ic_right,JSO_id_right,JSO_iq_right,JSO_vd_right,JSO_vq_right,...,JSO_id_right_ref,JSO_iq_right_ref
+	// Channel numbers for prop: 4;47;8;9;10;13;14;27;26;4;4;4;4;4;4;4;4;4;15;16
 	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.resolver_pl_outputs_left.n_mech_rpm;
 	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av.resolver_pl_outputs_right.n_mech_rpm;
 	js_ch_observable[JSO_ia_left] 			= &data->av.i_a_left;
@@ -108,6 +109,7 @@ int JavaScope_initialize(DS_Data *data)
 	js_ch_observable[JSO_traj_current]		= &data->av.traj_current_ref;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;
+	js_ch_observable[JSO_torque_ref_left] = &data->rasv.M_ref_left;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

@@ -243,4 +243,25 @@ void test_uz_PWM_SS_2L_hw_SetTriangleShift(void)
     uz_PWM_SS_2L_hw_SetTriangleShift(TEST_BASE_ADDRESS, triangle_shift_HB1, triangle_shift_HB2, triangle_shift_HB3);
 }
 
+void test_uz_PWM_SS_2L_hw_SetTriggerSource_assert(void)
+{
+    uint32_t trigger_source = 3U; //only 0->2 are defined as trigger source inputs
+    TEST_ASSERT_FAIL_ASSERT(uz_PWM_SS_2L_hw_SetTriggerSource(TEST_BASE_ADDRESS, trigger_source));
+    //uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + PWM_trigger_source_AXI_Data_PWM_and_SS_control_V4_ip, trigger_source);
+    
+}
+
+void test_uz_PWM_SS_2L_hw_SetTriggerSource(void)
+{
+    uint32_t trigger_source = 0U; //MIN
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + PWM_trigger_source_AXI_Data_PWM_and_SS_control_V4_ip, trigger_source);   
+    uz_PWM_SS_2L_hw_SetTriggerSource(TEST_BASE_ADDRESS, trigger_source);
+    trigger_source = 1U; //MAX
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + PWM_trigger_source_AXI_Data_PWM_and_SS_control_V4_ip, trigger_source);   
+    uz_PWM_SS_2L_hw_SetTriggerSource(TEST_BASE_ADDRESS, trigger_source);
+    trigger_source = 2U; //Either
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + PWM_trigger_source_AXI_Data_PWM_and_SS_control_V4_ip, trigger_source);   
+    uz_PWM_SS_2L_hw_SetTriggerSource(TEST_BASE_ADDRESS, trigger_source);
+}
+
 #endif // TEST

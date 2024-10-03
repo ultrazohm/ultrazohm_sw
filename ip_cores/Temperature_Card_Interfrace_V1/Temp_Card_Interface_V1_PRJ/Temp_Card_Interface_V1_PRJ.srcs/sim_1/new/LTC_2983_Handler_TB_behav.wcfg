@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="LTC_2983_Handler_TB_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="LTC_2983_Handler_TB" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="5.315405 us"></ZoomStartTime>
+      <ZoomEndTime time="45.712484 us"></ZoomEndTime>
+      <Cursor1Time time="17.520365 us"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="245"></NameColumnWidth>
+      <ValueColumnWidth column_width="135"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="27" />
+   <wvobject type="divider" fp_name="divider60">
+      <obj_property name="label">TB</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/clock_tb" type="logic">
+      <obj_property name="ElementShortName">clock_tb</obj_property>
+      <obj_property name="ObjectShortName">clock_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/reset_n_tb" type="logic">
+      <obj_property name="ElementShortName">reset_n_tb</obj_property>
+      <obj_property name="ObjectShortName">reset_n_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/enable_tb" type="logic">
+      <obj_property name="ElementShortName">enable_tb</obj_property>
+      <obj_property name="ObjectShortName">enable_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/go_sig_tb" type="logic">
+      <obj_property name="ElementShortName">go_sig_tb</obj_property>
+      <obj_property name="ObjectShortName">go_sig_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/busy_tb" type="logic">
+      <obj_property name="ElementShortName">busy_tb</obj_property>
+      <obj_property name="ObjectShortName">busy_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/ready_tb" type="logic">
+      <obj_property name="ElementShortName">ready_tb</obj_property>
+      <obj_property name="ObjectShortName">ready_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/error_flag_tb" type="logic">
+      <obj_property name="ElementShortName">error_flag_tb</obj_property>
+      <obj_property name="ObjectShortName">error_flag_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/LTC_Interrupt_tb" type="logic">
+      <obj_property name="ElementShortName">LTC_Interrupt_tb</obj_property>
+      <obj_property name="ObjectShortName">LTC_Interrupt_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/LTC_resetn_tb" type="logic">
+      <obj_property name="ElementShortName">LTC_resetn_tb</obj_property>
+      <obj_property name="ObjectShortName">LTC_resetn_tb</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider61">
+      <obj_property name="label">SPI</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/SPI_MOSI_tb" type="logic">
+      <obj_property name="ElementShortName">SPI_MOSI_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_MOSI_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/SPI_MISO_tb" type="logic">
+      <obj_property name="ElementShortName">SPI_MISO_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_MISO_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/SPI_SCLK_tb" type="logic">
+      <obj_property name="ElementShortName">SPI_SCLK_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_SCLK_tb</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/SPI_SS_tb" type="logic">
+      <obj_property name="ElementShortName">SPI_SS_tb</obj_property>
+      <obj_property name="ObjectShortName">SPI_SS_tb</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider63">
+      <obj_property name="label">Data</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/LTC_Global_config_tb" type="array">
+      <obj_property name="ElementShortName">LTC_Global_config_tb[7:0]</obj_property>
+      <obj_property name="ObjectShortName">LTC_Global_config_tb[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/LTC_Mux_config_tb" type="array">
+      <obj_property name="ElementShortName">LTC_Mux_config_tb[7:0]</obj_property>
+      <obj_property name="ObjectShortName">LTC_Mux_config_tb[7:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="group58" type="group">
+      <obj_property name="label">Channel_Configs</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/LTC_2983_Handler_TB/PERIOD_Trigger" type="other">
+         <obj_property name="ElementShortName">PERIOD_Trigger</obj_property>
+         <obj_property name="ObjectShortName">PERIOD_Trigger</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_0_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_0_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_0_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_1_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_1_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_1_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_2_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_2_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_2_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_3_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_3_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_3_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_4_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_4_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_4_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_5_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_5_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_5_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_6_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_6_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_6_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_7_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_7_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_7_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_8_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_8_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_8_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_9_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_9_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_9_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_10_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_10_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_10_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_11_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_11_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_11_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_12_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_12_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_12_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_13_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_13_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_13_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_14_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_14_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_14_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_15_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_15_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_15_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_16_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_16_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_16_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_17_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_17_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_17_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_18_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_18_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_18_config_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/LTC_CH_19_config_tb" type="array">
+         <obj_property name="ElementShortName">LTC_CH_19_config_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">LTC_CH_19_config_tb[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject fp_name="group59" type="group">
+      <obj_property name="label">Channel_Results</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_00_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_00_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_00_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_01_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_01_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_01_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_02_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_02_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_02_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_03_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_03_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_03_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_04_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_04_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_04_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_05_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_05_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_05_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_06_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_06_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_06_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_07_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_07_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_07_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_08_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_08_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_08_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_09_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_09_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_09_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_10_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_10_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_10_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_11_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_11_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_11_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_12_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_12_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_12_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_13_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_13_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_13_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_14_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_14_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_14_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_15_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_15_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_15_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_16_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_16_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_16_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_17_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_17_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_17_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_18_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_18_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_18_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+      <wvobject fp_name="/LTC_2983_Handler_TB/Temp_19_out_LTC_tb" type="array">
+         <obj_property name="ElementShortName">Temp_19_out_LTC_tb[31:0]</obj_property>
+         <obj_property name="ObjectShortName">Temp_19_out_LTC_tb[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider64">
+      <obj_property name="label">Interna</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/DUT/state_LTC_Interface" type="other">
+      <obj_property name="ElementShortName">state_LTC_Interface</obj_property>
+      <obj_property name="ObjectShortName">state_LTC_Interface</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/DUT/laststate_LTC_Interface" type="other">
+      <obj_property name="ElementShortName">laststate_LTC_Interface</obj_property>
+      <obj_property name="ObjectShortName">laststate_LTC_Interface</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/DUT/SPI_enable" type="logic">
+      <obj_property name="ElementShortName">SPI_enable</obj_property>
+      <obj_property name="ObjectShortName">SPI_enable</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/DUT/SPI_busy" type="logic">
+      <obj_property name="ElementShortName">SPI_busy</obj_property>
+      <obj_property name="ObjectShortName">SPI_busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/DUT/SPI_TX_Data" type="array">
+      <obj_property name="ElementShortName">SPI_TX_Data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SPI_TX_Data[31:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/LTC_2983_Handler_TB/DUT/SPI_RX_Data" type="array">
+      <obj_property name="ElementShortName">SPI_RX_Data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">SPI_RX_Data[31:0]</obj_property>
+   </wvobject>
+</wave_config>

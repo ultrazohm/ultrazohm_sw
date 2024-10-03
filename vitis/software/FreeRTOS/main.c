@@ -1,5 +1,5 @@
 /******************************************************************************
-* Copyright 2021 Sebastian Wendel, Eyke Liegmann
+* Copyright 2021-2023 Sebastian Wendel, Eyke Liegmann, Martin Geier
 * 
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@
 
 //Includes for Ethernet
 #if LWIP_DHCP==1
-#include "lwip/dhcp.h"
+ #include "lwip/dhcp.h"
 #endif
 
 //Includes for CAN
@@ -29,15 +29,24 @@
 #include "main.h"
 #include "defines.h"
 #include "include/isr.h"
+#include "uz/uz_PLATFORM/uz_platform.h"
 #include "uz/uz_PHY_reset/uz_phy_reset.h"
 
 
 size_t lifecheck_mainThread = 0;
 size_t lifeCheck_networkThread = 0;
 
+// APU-local "mirror" of RPU status word: Written in isr.c, read below in i2cio_thread
+uint32_t javascope_data_status = 0;
+
 #if LWIP_DHCP==1
-extern volatile int dhcp_timoutcntr;
-err_t dhcp_start(struct netif *netif);
+ extern volatile int dhcp_timoutcntr;
+ err_t dhcp_start(struct netif *netif);
+ #if ( DHCP_FINE_TIMER_MSECS != NETWORK_LOOPPERIOD_MS )
+  #warning Unexpected value in DHCP_FINE_TIMER_MSECS, you might want to check this and adapt NETWORK_LOOPPERIOD_MS afterwards
+ #endif
+#else
+ #define DHCP_FINE_TIMER_MSECS NETWORK_LOOPPERIOD_MS
 #endif
 
 static struct netif server_netif;
@@ -68,6 +77,10 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
  *---------------------------------------------------------------------------*/
 int main()
 {
+#if (UZ_PLATFORM_ENABLE==1)
+	uz_assert( UZ_SUCCESS == uz_platform_init() );
+#endif
+
 	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 	Initialize_InterruptHandler();
 
@@ -101,6 +114,9 @@ void network_thread(void *p)
     struct netif *netif;
     /* the mac address of the board. this should be unique per board */
     unsigned char mac_ethernet_address[] = { 0x00, 0x0a, 0x35, 0x00, 0x01, 0x02 };
+    if ( XST_SUCCESS != uz_platform_macread_primary(mac_ethernet_address) )
+        uz_printf("APU: Error fetching MAC address from EEPROM, using default\r\n");
+
 #if LWIP_IPV6==0
     ip_addr_t ipaddr, netmask, gw;
 #if LWIP_DHCP==1
@@ -137,8 +153,8 @@ void network_thread(void *p)
 
     /* Add network interface to the netif_list, and set it as default */
     if (!xemac_add(netif, &ipaddr, &netmask, &gw, mac_ethernet_address, PLATFORM_EMAC_BASEADDR)) {
-	uz_printf("APU: Error adding N/W interface\r\n");
-	return;
+		uz_printf("APU: Error adding N/W interface\r\n");
+		return;
     }
 
     netif_set_default(netif);
@@ -159,45 +175,22 @@ void network_thread(void *p)
 	can_frame_t can_frame_rx; //CAN interface
 #endif
 
+/*	// Enable (currently not required for I²C-based GPOs)
+	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_MZD10GREEN, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_MZD11RED, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_MZD12YELLOW, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_MZD13BLUE, UZP_GPO_ENABLE2PUSHPULLED);
+*/
+	// Set
+	uz_platform_gposet(I2CLED_FPRING, UZP_GPO_ASSERT_QUEUED);
+	uint8_t mz_lscan = 0;
+	uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_DEASSERT_QUEUED);
+	uz_platform_gposet(I2CLED_MZD13BLUE,	UZP_GPO_DEASSERT_QUEUED);
+
 #if LWIP_DHCP==1
     dhcp_start(netif);
-    while (1) {
-    	lifeCheck_networkThread++;
-      	if(lifeCheck_networkThread > 2500){
-      		lifeCheck_networkThread =0;
-      	}
-
-		#if CAN_ACTIVE==1
-			if( ! hal_can_is_rx_empty() ){
-				hal_can_receive_frame_blocking(&can_frame_rx);
-				if(can_frame_rx.std_id == 0x22) {
-				//	XcpCommand( (uint32_t *) can_frame_rx.data );
-					can_send_2();
-				} else {
-
-					//hal_can_debug_print_frame(&can_frame_rx);
-					//uz_printf("received a not XCP related CAN frame \n\r");
-				}
-				//usleep(1000 * 500);
-			}else{
-				can_send_1();
-				//usleep(1000 * 500);
-			}
-
-			// no tx message pending
-			if( hal_can_is_tx_done()) {
-				//XcpSendCallBack();
-			}
-		#endif
-
-		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
-		dhcp_fine_tmr();
-		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
-			dhcp_coarse_tmr();
-			mscnt = 0;
-		}
-	}
+    // Remaining DHCP handling (apart from its periodic timers, cf. below) and start of application_thread are performed in main_thread
 #else
     uz_printf("\r\n");
     uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
@@ -208,12 +201,110 @@ void network_thread(void *p)
     sys_thread_new("echod", application_thread, 0,
 		THREAD_STACKSIZE,
 		DEFAULT_THREAD_PRIO);
-    vTaskDelete(NULL);
 #endif
+
+    // Periodic (cf. DHCP_FINE_TIMER_MSECS) loop for "all things networking" (i.e., Ethernet DHCP and CAN demo)
+    while (1) {
+
+#if LWIP_DHCP==1
+    	lifeCheck_networkThread++;
+      	if(lifeCheck_networkThread > 2500){
+      		lifeCheck_networkThread =0;
+      	}
+
+		dhcp_fine_tmr();
+		mscnt += DHCP_FINE_TIMER_MSECS;
+		if (mscnt >= DHCP_COARSE_TIMER_SECS*1000) {
+			dhcp_coarse_tmr();
+			mscnt = 0;
+		}
+#endif
+
+#if CAN_ACTIVE==1
+		if( ! hal_can_is_rx_empty() ){
+			hal_can_receive_frame_blocking(&can_frame_rx);
+			if(can_frame_rx.std_id == 0x22) {
+			//	XcpCommand( (uint32_t *) can_frame_rx.data );
+				can_send_2();
+			} else {
+
+				//hal_can_debug_print_frame(&can_frame_rx);
+				//uz_printf("received a not XCP related CAN frame \n\r");
+			}
+			//usleep(1000 * 500);
+		}else{
+			can_send_1();
+			//usleep(1000 * 500);
+		}
+
+		// no tx message pending
+		if( hal_can_is_tx_done()) {
+			//XcpSendCallBack();
+		}
+#endif
+
+		uz_platform_gposet(I2CLED_FPRING, UZP_GPO_TOGGLE_QUEUED);
+
+		// Toggle LEDs on MZ sequentially
+		switch(mz_lscan)
+		{
+			default:
+				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD10GREEN,	UZP_GPO_ASSERT_QUEUED);
+				mz_lscan = 0;
+				break;
+			case 1:
+				uz_platform_gposet(I2CLED_MZD10GREEN,	UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_ASSERT_QUEUED);
+				break;
+			case 2:
+				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_ASSERT_QUEUED);
+				break;
+			case 3:
+				uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD13BLUE,	UZP_GPO_ASSERT_QUEUED);
+				break;
+			case 4:
+				uz_platform_gposet(I2CLED_MZD13BLUE,	UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_ASSERT_QUEUED);
+				break;
+			case 5:
+				uz_platform_gposet(I2CLED_MZD12YELLOW,	UZP_GPO_DEASSERT_QUEUED);
+				uz_platform_gposet(I2CLED_MZD11RED,		UZP_GPO_ASSERT_QUEUED);
+				break;
+		}
+		mz_lscan++;
+
+		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+
+	}	// endless while(1)
 
     return;
 }
 
+void i2cio_thread()
+{
+/*	// Enable
+	uz_platform_gposet(I2CLED_FP1RDY, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_FP2RUN, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_FP3ERR, UZP_GPO_ENABLE2PUSHPULLED);
+	uz_platform_gposet(I2CLED_FP4USR, UZP_GPO_ENABLE2PUSHPULLED);
+*/
+	while(1) {
+		// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
+		uz_platform_gposet(I2CLED_FP1RDY, (javascope_data_status & (1<<0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_FP2RUN, (javascope_data_status & (1<<1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_FP3ERR, (javascope_data_status & (1<<2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		uz_platform_gposet(I2CLED_FP4USR, (javascope_data_status & (1<<3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+
+		// Push all (I²C-)GPO changes to hardware
+		uz_platform_gpoupdate();
+
+		vTaskDelay(I2CIO_THREAD_TIMER_MS / portTICK_RATE_MS);
+
+	}	// endless while(1)
+}
 
 //==============================================================================================================================================================
 /*---------------------------------------------------------------------------*
@@ -253,24 +344,21 @@ int main_thread()
 #if LWIP_DHCP==1
     while (1) {
 
-	lifecheck_mainThread++;
-	if(lifecheck_mainThread > 2500){
-		lifecheck_mainThread =0;
-	}
+		lifecheck_mainThread++;
+		if(lifecheck_mainThread > 2500){
+			lifecheck_mainThread =0;
+		}
 
-	vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+		vTaskDelay(DHCP_FINE_TIMER_MSECS / portTICK_RATE_MS);
+
 		if (server_netif.ip_addr.addr) {
 			uz_printf("APU: DHCP request success\r\n");
 			print_ip_settings(&(server_netif.ip_addr), &(server_netif.netmask), &(server_netif.gw));
-			print_echo_app_header();
-			uz_printf("\r\n");
-			sys_thread_new("echod", application_thread, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
+
 			break;
 		}
 		mscnt += DHCP_FINE_TIMER_MSECS;
-		if (mscnt >=1000) { // define timeout time here
+		if (mscnt >=7500) { // define timeout time here
 			uz_printf("APU: DHCP request timed out\r\n");
 			uz_printf("APU: Configuring default IP of 192.168.1.233\r\n");
 			IP4_ADDR(&(server_netif.ip_addr),  192, 168, 1, 233);
@@ -282,15 +370,21 @@ int main_thread()
 			uz_printf("%20s %6s %s\r\n", "Server", "Port", "Connect With..");
 			uz_printf("%20s %6s %s\r\n", "--------------------", "------", "--------------------");
 
-			print_echo_app_header();
-			uz_printf("\r\n");
-			sys_thread_new("echod", application_thread, 0,
-					THREAD_STACKSIZE,
-					DEFAULT_THREAD_PRIO);
 			break;
 		}
-	}
+	}	// while(1)
+
+	print_echo_app_header();
+	uz_printf("\r\n");
+
+	sys_thread_new("echod", application_thread, 0,
+			THREAD_STACKSIZE,
+			DEFAULT_THREAD_PRIO);
 #endif
+
+	sys_thread_new("i2cio", i2cio_thread, 0,
+			THREAD_STACKSIZE,
+			DEFAULT_THREAD_PRIO);
 
     vTaskDelete(NULL);
     return 0;

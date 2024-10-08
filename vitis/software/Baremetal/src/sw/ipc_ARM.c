@@ -26,20 +26,23 @@ extern uint32_t js_status_BareToRTOS;
 
 // External includes
 extern float n_ref_rpm_1;
-extern float n_ref_rpm_2;
+extern float n_ref_rpm_beckhoff;
 extern float M_ref_Nm_1;
-extern float M_ref_Nm_2;
-extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
-extern struct uz_3ph_dq_t i_dqn_ref_5th_Amps_1;
-extern struct uz_3ph_dq_t i_dqn_ref_7th_Amps_1;
-extern struct uz_3ph_dq_t i_dq_ref_Amps_2;
+extern float M_ref_Nm_beckhoff;
+extern struct uz_3ph_dq_t i_dq_ref_Amps_hoerner;
+extern struct uz_3ph_dq_t i_dqn_ref_5th_Amps_hoerner;
+extern struct uz_3ph_dq_t i_dqn_ref_7th_Amps_hoerner;
+extern struct uz_3ph_dq_t i_dq_ref_Amps_beckhoff;
 extern int mode;
 bool select_automatic_idiq=false;
-uz_3ph_dq_t i_dq_ref_java_Amps_1 = {0};
+uz_3ph_dq_t i_dq_ref_java_Amps_hoerner = {0};
 extern DS_Data Global_Data;
 bool select_misalignment = false;
 bool select_DDPG = false;
 bool select_FOC = false;
+
+extern float theta_el_offset_hoerner;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -204,35 +207,35 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_1):
 				//n_ref_rpm_1 = value;
 				//M_ref_Nm_1 = value;
-				i_dq_ref_java_Amps_1.q = value;
+				i_dq_ref_java_Amps_hoerner.q = value;
 			break;
 
 		case (Set_Send_Field_2):
-		i_dq_ref_java_Amps_1.d = value;
-				//M_ref_Nm_2 = value;
+		i_dq_ref_java_Amps_hoerner.d = value;
+				//M_ref_Nm_beckhoff = value;
 			break;
 
 		case (Set_Send_Field_3):
-		n_ref_rpm_2 = value;
+		n_ref_rpm_beckhoff = value;
 			break;
 
 		case (Set_Send_Field_4):
-		i_dqn_ref_5th_Amps_1.d = value;
+		i_dqn_ref_5th_Amps_hoerner.d = value;
 
 			break;
 
 		case (Set_Send_Field_5):
-		i_dqn_ref_5th_Amps_1.q = value;
+		i_dqn_ref_5th_Amps_hoerner.q = value;
 
 			break;
 
 		case (Set_Send_Field_6):
-		i_dqn_ref_7th_Amps_1.d = value;
-
+				 i_dqn_ref_7th_Amps_hoerner.d = value;
+		theta_el_offset_hoerner=value;
 			break;
 
 		case (Set_Send_Field_7):
-		i_dqn_ref_7th_Amps_1.q = value;
+		i_dqn_ref_7th_Amps_hoerner.q = value;
 
 			break;
 

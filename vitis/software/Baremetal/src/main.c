@@ -43,14 +43,14 @@ DS_Data Global_Data = {
 // ***************** PMSM 1 ***************** //
 
 // Declare Pointer for FOC of PMSM 1
-uz_SpeedControl_t* SC_instance_1;
+uz_SpeedControl_t* speed_controller_hoerner;
 uz_SetPoint_t* SP_instance_1;
-uz_CurrentControl_t* CC_instance_1;
-uz_HarmonicCurrentInjection_t* HCI_instance_5th_1;
-uz_HarmonicCurrentInjection_t* HCI_instance_7th_1;
+uz_CurrentControl_t* current_controller_hoerner;
+uz_HarmonicCurrentInjection_t* hci_5th_hoerner;
+uz_HarmonicCurrentInjection_t* hci_7th_hoerner;
 
 // Configuration of PMSM 1 (Hoerner PMSM)
-struct uz_PMSM_t config_PMSM_1 = {
+struct uz_PMSM_t config_PMSM_hoerner = {
 		.R_ph_Ohm = 0.249f,
 		.Ld_Henry = 0.00044f,
 		.Lq_Henry = 0.00245f,
@@ -59,7 +59,7 @@ struct uz_PMSM_t config_PMSM_1 = {
 		.J_kg_m_squared = 0.000084f,
 		.I_max_Ampere = 10.0f
 };
-float PMSM_rated_current_1 = 15.0f;
+float PMSM_rated_current_hoerner = 15.0f;
 
 struct uz_PMSM_flux_fitting_parameter_config_t Hoerner_Fitting = {
     .ad1_parameter = 0.026620095524092f,
@@ -80,9 +80,9 @@ struct uz_PMSM_flux_fitting_parameter_config_t Hoerner_Fitting = {
 // ***************** PMSM 2 ***************** //
 
 // Declare Pointer for FOC of PMSM 2
-uz_SpeedControl_t* SC_instance_2;
-uz_SetPoint_t* SP_instance_2;
-uz_CurrentControl_t* CC_instance_2;
+uz_SpeedControl_t* speed_controller_beckhoff;
+uz_SetPoint_t* setpoint_instance_beckhoff;
+uz_CurrentControl_t* current_controller_beckhoff;
 
 // Configuration of PMSM 2 (Brose PMSM)
 struct uz_PMSM_t config_PMSM_2 = {
@@ -123,7 +123,7 @@ int main(void)
     		.config_controller.lower_limit = -2.0f,
     };
     struct uz_SetPoint_config SP_config_1 = {
-           .config_PMSM = config_PMSM_1,
+           .config_PMSM = config_PMSM_hoerner,
            .control_type = FOC,
            .motor_type = IPMSM,
            .is_field_weakening_enabled = false,
@@ -146,7 +146,7 @@ int main(void)
     };
     struct uz_CurrentControl_config CC_config_1 = {
            .decoupling_select = static_nonlinear_decoupling,
-           .config_PMSM = config_PMSM_1,
+           .config_PMSM = config_PMSM_hoerner,
            .config_id = config_id_1,
            .config_iq = config_iq_1,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
@@ -180,7 +180,7 @@ int main(void)
     };
     struct uz_CurrentControl_config CC_config_5th_1 = {
            .decoupling_select = no_decoupling,
-           .config_PMSM = config_PMSM_1,
+           .config_PMSM = config_PMSM_hoerner,
            .config_id = config_id_5th_1,
            .config_iq = config_iq_5th_1,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
@@ -201,7 +201,7 @@ int main(void)
     };
     struct uz_CurrentControl_config CC_config_7th_1 = {
            .decoupling_select = no_decoupling,
-           .config_PMSM = config_PMSM_1,
+           .config_PMSM = config_PMSM_hoerner,
            .config_id = config_id_7th_1,
            .config_iq = config_iq_7th_1,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
@@ -289,13 +289,13 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
-            Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
+            Global_Data.objects.pwm_d1_hoerner = initialize_pwm_2l_on_D1_pin_0_to_5();
+            Global_Data.objects.pwm_d2_beckhoff = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
-            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
-            Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
+            Global_Data.objects.inverter_d1_hoerner = initialize_uz_inverter_adapter_on_D1();
+            Global_Data.objects.inverter_d2_beckhoff = initialize_uz_inverter_adapter_on_D2();
             Global_Data.objects.resolver_d4 = initialize_resolver_d4();
             Global_Data.objects.resolver_pl_d4 = initialize_resolver_pl_d4();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
@@ -303,14 +303,14 @@ int main(void)
             initialization_chain = init_control;
             break;
         case init_control:
-        	SC_instance_1 = uz_SpeedControl_init(SC_config_1);
+        	speed_controller_hoerner = uz_SpeedControl_init(SC_config_1);
         	SP_instance_1 = uz_SetPoint_init(SP_config_1);
-        	CC_instance_1 = uz_CurrentControl_init(CC_config_1);
-        	SC_instance_2 = uz_SpeedControl_init(SC_config_2);
-        	SP_instance_2 = uz_SetPoint_init(SP_config_2);
-        	CC_instance_2 = uz_CurrentControl_init(CC_config_2);
-        	HCI_instance_5th_1 = uz_HarmonicCurrentInjection_init(HCI_config_5th_1);
-        	HCI_instance_7th_1 = uz_HarmonicCurrentInjection_init(HCI_config_7th_1);
+        	current_controller_hoerner = uz_CurrentControl_init(CC_config_1);
+        	speed_controller_beckhoff = uz_SpeedControl_init(SC_config_2);
+        	setpoint_instance_beckhoff = uz_SetPoint_init(SP_config_2);
+        	current_controller_beckhoff = uz_CurrentControl_init(CC_config_2);
+        	hci_5th_hoerner = uz_HarmonicCurrentInjection_init(HCI_config_5th_1);
+        	hci_7th_hoerner = uz_HarmonicCurrentInjection_init(HCI_config_7th_1);
             Global_Data.objects.approximate_flux_instance = uz_approximate_flux_init(Hoerner_Fitting);
             Global_Data.objects.Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(0.666667f * UZ_PWM_FREQUENCY);
             Global_Data.objects.Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(0.666667f * UZ_PWM_FREQUENCY);

@@ -93,7 +93,7 @@ struct uz_3ph_dq_t v_dq_ref_HCI_Volts_hoerner = {0};
 extern uz_SpeedControl_t* speed_controller_beckhoff;
 extern uz_SetPoint_t* setpoint_instance_beckhoff;
 extern uz_CurrentControl_t* current_controller_beckhoff;
-extern struct uz_PMSM_t config_PMSM_2;
+extern struct uz_PMSM_t config_PMSM_beckhoff;
 
 // Inverter Measurement
 struct uz_3ph_abc_t v_abc_Volts_beckhoff 	= {0};
@@ -151,12 +151,11 @@ float ts = 1.0f / UZ_PWM_FREQUENCY;
 float speed_weight_hoerner = 1.0f / 1500.0f;
 uz_3ph_dq_t v_dq_non_limited_Volts_hoerner = {0};
 uz_3ph_dq_t v_dq_limited_Volts_hoerner = {0};
-uz_3ph_dq_t v_dq_limited_Volts_old_1 = {0};
 uz_3ph_dq_t v_dq_limited_Volts_old_old_hoerner = {0};
-float U_max_1 = 48.0f / 1.732050808f;
+float U_max_hoerner = 48.0f / 1.732050808f;
 float Voltage_Scaling_hoerner = 1.0f / (48.0f / 1.732050808f);
 bool ext_clamping_hoerner = false;
-float max_modulation_index_1 = 1.0f / 1.732050808f;
+float max_modulation_index_hoerner = 1.0f / 1.732050808f;
 bool start_angle_found = false;
 float theta_el_old_hoerner = 0.0f;
 bool change_speed = false;
@@ -204,7 +203,7 @@ void ISR_Control(void *data)
     v_abc_Volts_beckhoff.b = 11.7657f * Global_Data.aa.A2.me.ADC_B7 + 0.0533f;
     v_abc_Volts_beckhoff.c = 11.7657f * Global_Data.aa.A2.me.ADC_B6 + 0.0533f;
     v_DC_Volts_beckhoff 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
-    i_abc_Amps_beckhoff.a  = 12.2889f * Global_Data.aa.A2.me.ADC_A4 + 0.0802f;
+    i_abc_Amps_beckhoff.a  = 12.2889f * Global_Data.e.ADC_A4 + 0.0802f;
     i_abc_Amps_beckhoff.b  = 11.8330f * Global_Data.aa.A2.me.ADC_A3 + 0.1344f;
     i_abc_Amps_beckhoff.c  = 11.7894f * Global_Data.aa.A2.me.ADC_A2 + 0.1197f;
     i_DC_Amps_beckhoff     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
@@ -245,7 +244,7 @@ void ISR_Control(void *data)
     Global_Data.av.mechanicalRotorSpeed_beckhoff = Resolver_outputs.n_mech_rpm;
     Global_Data.av.mechanicalRotorSpeed_filtered_beckhoff = Resolver_outputs.n_mech_rpm;
     omega_m_rad_per_sec_beckhoff = Resolver_outputs.omega_mech_rad_s;
-    omega_el_rad_per_sec_beckhoff = omega_m_rad_per_sec_beckhoff * config_PMSM_2.polePairs;
+    omega_el_rad_per_sec_beckhoff = omega_m_rad_per_sec_beckhoff * config_PMSM_beckhoff.polePairs;
     Global_Data.av.omega_el_beckhoff = omega_el_rad_per_sec_beckhoff;
     theta_el_rad_beckhoff = Resolver_outputs.position_el_2pi;
     //Anglelead
@@ -312,8 +311,8 @@ void ISR_Control(void *data)
     		K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(Global_Data.objects.Kp_iq_adjustment_instance,i_dq_ref_Amps_hoerner, i_dq_Amps_hoerner, flux_reference, flux_approx);
     		uz_CurrentControl_set_Kp_id(current_controller_hoerner, K_p_id);
     		uz_CurrentControl_set_Kp_iq(current_controller_hoerner, K_p_iq);
-    		v_dq_ref_Volts_hoerner = uz_CurrentControl_sample(current_controller_hoerner, i_dq_ref_Amps_hoerner, i_dq_Amps_hoerner, v_DC_Volts_hoerner, -omega_el_rad_per_sec_beckhoff);
-    		switch (mode)
+            v_dq_ref_Volts_hoerner = uz_CurrentControl_sample(current_controller_hoerner, i_dq_ref_Amps_hoerner, i_dq_Amps_hoerner, v_DC_Volts_hoerner, omega_el_rad_per_sec_hoerner);
+            switch (mode)
     		{
     		default:
     			duty_cycle_hoerner = uz_Space_Vector_Modulation(v_dq_ref_Volts_hoerner, v_DC_Volts_hoerner, theta_el_rad_hoerner_advanced);
@@ -371,19 +370,18 @@ void ISR_Control(void *data)
 #if NN_9_INPUT_3_64 == 1
             uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input, p_output_data);
             // IP-Core only calculates with linear, tanh has to be added manually
-            v_dq_non_limited_Volts_hoerner.d = (uz_nn_activation_function_tanh(mlp_ip_output[0])) * U_max_1;
-            v_dq_non_limited_Volts_hoerner.q = (uz_nn_activation_function_tanh(mlp_ip_output[1])) * U_max_1;
+            v_dq_non_limited_Volts_hoerner.d = (uz_nn_activation_function_tanh(mlp_ip_output[0])) * U_max_hoerner;
+            v_dq_non_limited_Volts_hoerner.q = (uz_nn_activation_function_tanh(mlp_ip_output[1])) * U_max_hoerner;
 #else
             uz_nn_ff(Global_Data.objects.nn_layer,Global_Data.objects.matrix_input);
     	    matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
-    	    uz_matrix_multiply_by_scalar(matrix_output,U_max_1); // scaling layer of nn
+    	    uz_matrix_multiply_by_scalar(matrix_output,U_max_hoerner); // scaling layer of nn
     	    v_dq_non_limited_Volts_hoerner.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
     	    v_dq_non_limited_Volts_hoerner.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);
 #endif
-    	    v_dq_limited_Volts_hoerner = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_hoerner, v_DC_Volts_hoerner, max_modulation_index_1, omega_el_rad_per_sec_hoerner, i_dq_ref_Amps_hoerner, &ext_clamping_hoerner);
+    	    v_dq_limited_Volts_hoerner = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_hoerner, v_DC_Volts_hoerner, max_modulation_index_hoerner, omega_el_rad_per_sec_hoerner, i_dq_ref_Amps_hoerner, &ext_clamping_hoerner);
     	    //Introduce delay
     	    v_dq_limited_Volts_old_old_hoerner = v_dq_limited_Volts_hoerner;
-    	    //v_dq_limited_Volts_old_1 = v_dq_limited_Volts_hoerner;
     	    duty_cycle_hoerner = uz_Space_Vector_Modulation(v_dq_limited_Volts_hoerner, v_DC_Volts_hoerner, theta_el_rad_hoerner_advanced);
 
     	} else {

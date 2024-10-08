@@ -85,7 +85,7 @@ uz_SetPoint_t* setpoint_instance_beckhoff;
 uz_CurrentControl_t* current_controller_beckhoff;
 
 // Configuration of PMSM 2 (Brose PMSM)
-struct uz_PMSM_t config_PMSM_2 = {
+struct uz_PMSM_t config_PMSM_beckhoff = {
 		.R_ph_Ohm = 0.51f,
 		.Ld_Henry = 0.002f,
 		.Lq_Henry = 0.002f,
@@ -115,14 +115,14 @@ int main(void)
     // ***************** PMSM 1 ***************** //
 
     // Configuration of FOC
-    struct uz_SpeedControl_config SC_config_1 = {
+    struct uz_SpeedControl_config speed_controller_config_hoerner = {
     		.config_controller.Kp = 0.02f, //0.001f
     		.config_controller.Ki = 0.5f,  //0.05f
     		.config_controller.samplingTime_sec = 0.0001f,
     		.config_controller.upper_limit = 2.0f,
     		.config_controller.lower_limit = -2.0f,
     };
-    struct uz_SetPoint_config SP_config_1 = {
+    struct uz_SetPoint_config setpoint_config_hoerner = {
            .config_PMSM = config_PMSM_hoerner,
            .control_type = FOC,
            .motor_type = IPMSM,
@@ -232,7 +232,7 @@ int main(void)
     		.config_controller.lower_limit = -2.0f
     };
     struct uz_SetPoint_config SP_config_2 = {
-           .config_PMSM = config_PMSM_2,
+           .config_PMSM = config_PMSM_beckhoff,
            .control_type = FOC,
            .motor_type = SMPMSM,
            .is_field_weakening_enabled = false,
@@ -255,7 +255,7 @@ int main(void)
     };
     struct uz_CurrentControl_config CC_config_2 = {
            .decoupling_select = linear_decoupling,
-           .config_PMSM = config_PMSM_2,
+           .config_PMSM = config_PMSM_beckhoff,
            .config_id = config_id_2,
            .config_iq = config_iq_2,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
@@ -303,8 +303,8 @@ int main(void)
             initialization_chain = init_control;
             break;
         case init_control:
-        	speed_controller_hoerner = uz_SpeedControl_init(SC_config_1);
-        	SP_instance_1 = uz_SetPoint_init(SP_config_1);
+        	speed_controller_hoerner = uz_SpeedControl_init(speed_controller_config_hoerner);
+        	SP_instance_1 = uz_SetPoint_init(setpoint_config_hoerner);
         	current_controller_hoerner = uz_CurrentControl_init(CC_config_1);
         	speed_controller_beckhoff = uz_SpeedControl_init(SC_config_2);
         	setpoint_instance_beckhoff = uz_SetPoint_init(SP_config_2);

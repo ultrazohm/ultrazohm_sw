@@ -46,6 +46,7 @@ enum JS_OberservableData {
 	JSO_DeltaTheta_mech,
 	JSO_Wtemp,
 	JSO_Rs_mOhm,
+	JSO_v_DC_Volts,
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
@@ -72,6 +73,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_v_DC_Volts,
 	JSSD_ENDMARKER
 };
 

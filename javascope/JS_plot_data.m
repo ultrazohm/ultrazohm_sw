@@ -5,7 +5,7 @@ format compact
 
 %% settings
 delete_empty_log_files = 0;
-save_all_logged_data = 0; 
+save_all_logged_data = 1; 
 plot_all_channels = 0;
 rename_channels_manually = 0;
 import_data_to_simulink_datainspector = 1;

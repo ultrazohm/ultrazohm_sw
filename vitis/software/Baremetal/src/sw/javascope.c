@@ -46,6 +46,7 @@ extern struct uz_3ph_dq_t i_dq_measured_Amps;
 extern struct uz_3ph_abc_t i_abc_Amps;
 extern struct uz_3ph_dq_t v_dq_ref_Volts;
 extern struct uz_3ph_abc_t v_abc_Volts;
+extern float  v_DC_Volts;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -73,6 +74,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ib] 			= &i_abc_Amps.b;
 	js_ch_observable[JSO_ic] 			= &i_abc_Amps.c;
 	js_ch_observable[JSO_ua] 			= &v_abc_Volts.a;
+	js_ch_observable[JSO_v_DC_Volts] 	= &v_DC_Volts;
 	js_ch_observable[JSO_ub] 			= &v_abc_Volts.b;
 	js_ch_observable[JSO_uc] 			= &v_abc_Volts.c;
 	js_ch_observable[JSO_iq] 			= &data->av.I_q;
@@ -96,6 +98,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+	js_slowDataArray[JSSD_FLOAT_v_DC_Volts] 		    = &(v_DC_Volts);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

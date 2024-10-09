@@ -77,14 +77,14 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     // Read Measurement Data of Inverter Card/////////////////////////////////////////////////////////////////////
-    v_abc_Volts.a = Global_Data.aa.A1.me.ADC_B8 * 12.0f;
-    v_abc_Volts.b = Global_Data.aa.A1.me.ADC_B7 * 12.0f;
-    v_abc_Volts.c = Global_Data.aa.A1.me.ADC_B6 * 12.0f;
-    v_DC_Volts 	  = Global_Data.aa.A1.me.ADC_A1 * 12.0f;
-    i_abc_Amps.a  = Global_Data.aa.A1.me.ADC_A4 * 12.5f;
-    i_abc_Amps.b  = Global_Data.aa.A1.me.ADC_A3 * 12.5f;
-    i_abc_Amps.c  = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
-    i_DC_Amps    = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    v_abc_Volts.a = Global_Data.aa.A2.me.ADC_B8 * 12.0f;
+    v_abc_Volts.b = Global_Data.aa.A2.me.ADC_B7 * 12.0f;
+    v_abc_Volts.c = Global_Data.aa.A2.me.ADC_B6 * 12.0f;
+    v_DC_Volts 	  = Global_Data.aa.A2.me.ADC_A1 * 12.0f;
+    i_abc_Amps.a  = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
+    i_abc_Amps.b  = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
+    i_abc_Amps.c  = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
+    i_DC_Amps    = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
     //Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
 
     //Get current state

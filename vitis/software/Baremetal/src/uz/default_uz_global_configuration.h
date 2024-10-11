@@ -27,11 +27,11 @@
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION    2000.0f
-#define UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
+#define UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION    256.0f
 #define UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION    2000.0f
-#define UZ_D5_1_MOTOR_POLE_PAIR_NUMBER            4.0f
-#define UZ_D5_2_MOTOR_POLE_PAIR_NUMBER            5.0f
-#define UZ_D5_3_MOTOR_POLE_PAIR_NUMBER            4.0f
+#define UZ_D5_1_MOTOR_POLE_PAIR_NUMBER            4.0f // Hoerner is 4, Brose is 5,
+#define UZ_D5_2_MOTOR_POLE_PAIR_NUMBER            3.0f // Heidrive is 3
+#define UZ_D5_3_MOTOR_POLE_PAIR_NUMBER            4.0f // Reserved for EBM and Buehler
 #define UZ_PWM_FREQUENCY                          10.0e3f
 
 
@@ -49,7 +49,7 @@
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   4U
-#define UZ_IIR_FILTER_MAX_INSTANCES                     22U
+#define UZ_IIR_FILTER_MAX_INSTANCES                     24U
 #define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U

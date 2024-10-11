@@ -77,11 +77,11 @@ typedef struct _actualValues_ {
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed_hoerner; 		// in rpm
-	float mechanicalRotorSpeed_beckhoff; 		// in rpm
+	float mechanicalRotorSpeed_brose; 		// in rpm
+	float mechanicalRotorSpeed_heidrive; 		// in rpm
 	float mechanicalRotorSpeed_3; 		// in rpm
-	float mechanicalRotorSpeed_filtered_hoerner; // in rpm
-	float mechanicalRotorSpeed_filtered_beckhoff; // in rpm
+	float mechanicalRotorSpeed_filtered_brose; // in rpm
+	float mechanicalRotorSpeed_filtered_heidrive; // in rpm
 	float mechanicalRotorSpeed_filtered_3; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm
@@ -93,16 +93,16 @@ typedef struct _actualValues_ {
 	float I_q_2;
 	float U_d_1;
 	float U_q_1;
-	float theta_elec_hoerner;
-	float theta_elec_2;
+	float theta_elec_brose;
+	float theta_elec_heidrive;
 	float theta_elec_3;
-	float theta_mech_hoerner;
+	float theta_mech_brose;
 	float theta_offset_1; //in rad/s
 	float theta_offset_2; //in rad/s
-	float omega_el_hoerner;
-	float omega_el_beckhoff;
-	struct uz_inverter_adapter_outputs_t inverter_outputs_d1_hoerner;
-	struct uz_inverter_adapter_outputs_t inverter_outputs_d2_beckhoff;
+	float omega_el_brose;
+	float omega_el_heidrive;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1_brose;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d2_heidrive;
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed_1;
@@ -126,8 +126,8 @@ typedef struct _referenceAndSetValues_ {
 } referenceAndSetValues;
 
 typedef struct{
-	uz_PWM_SS_2L_t* pwm_d1_hoerner;
-	uz_PWM_SS_2L_t* pwm_d2_beckhoff;
+	uz_PWM_SS_2L_t* pwm_d1_brose;
+	uz_PWM_SS_2L_t* pwm_d2_heidrive;
 	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
 	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
@@ -138,8 +138,8 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5_2;
 	uz_incrementalEncoder_t* encoder_D5_3;
 	uz_mux_axi_t* mux_axi;
-	uz_inverter_adapter_t* inverter_d1_hoerner;
-	uz_inverter_adapter_t* inverter_d2_beckhoff;
+	uz_inverter_adapter_t* inverter_d1_brose;
+	uz_inverter_adapter_t* inverter_d2_heidrive;
 	uz_resolver_pl_interface_t* resolver_pl_d4;
 	uz_resolverIP_t* resolver_d4;
 	uz_approximate_flux_t* approximate_flux_instance;
@@ -147,8 +147,8 @@ typedef struct{
 	uz_CurrentControl_Kp_iq_adjustment_t* Kp_iq_adjustment_instance;
 	uz_matrix_t* matrix_input;
 	uz_nn_t* nn_layer;
-	uz_IIR_Filter_t* speed_setpoint_filter_beckhoff;
-	uz_IIR_Filter_t* tracking_error_filter_beckhoff;
+	uz_IIR_Filter_t* speed_setpoint_filter_heidrive;
+	uz_IIR_Filter_t* tracking_error_filter_heidrive;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

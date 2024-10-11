@@ -70,13 +70,24 @@ uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5_3(float inc
 }
 
 void update_speed_and_position_of_encoder_on_D5_1(DS_Data* const data){	// update speed and position in global data struct
-	data->av.theta_elec_hoerner=uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5_1);
-	data->av.mechanicalRotorSpeed_hoerner = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D5_1) * 60.0f / (2.0f*M_PI);
+	data->av.theta_elec_brose=uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5_1);
+	data->av.mechanicalRotorSpeed_brose = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D5_1) * 60.0f / (2.0f*M_PI);
 
-	//low-pass filter of mechanical speed
+	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
-	data->av.mechanicalRotorSpeed_filtered_hoerner = LPF1(	data->av.mechanicalRotorSpeed_hoerner, &speed_lpf_mem_in, &speed_lpf_mem_out,
+	data->av.mechanicalRotorSpeed_filtered_brose = LPF1(	data->av.mechanicalRotorSpeed_brose, &speed_lpf_mem_in, &speed_lpf_mem_out,
 			data->av.isr_samplerate_s, IncEncoderLPF_freq);
+}
 
+void update_speed_and_position_of_encoder_on_D5_2(DS_Data *const data)
+{ // update speed and position in global data struct
+	data->av.theta_elec_heidrive = uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5_2);
+	data->av.mechanicalRotorSpeed_heidrive = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D5_2) * 60.0f / (2.0f * M_PI);
+
+	// low-pass filter of mechanical speed
+	static float speed_lpf_mem_in = 0.0f;
+	static float speed_lpf_mem_out = 0.0f;
+	data->av.mechanicalRotorSpeed_filtered_heidrive = LPF1(data->av.mechanicalRotorSpeed_heidrive, &speed_lpf_mem_in, &speed_lpf_mem_out,
+														data->av.isr_samplerate_s, IncEncoderLPF_freq);
 }

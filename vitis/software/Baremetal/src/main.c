@@ -43,23 +43,22 @@ DS_Data Global_Data = {
 // ***************** PMSM 1 ***************** //
 
 // Declare Pointer for FOC of PMSM 1
-uz_SpeedControl_t* speed_controller_hoerner;
+uz_SpeedControl_t* speed_controller_brose;
 uz_SetPoint_t* SP_instance_1;
-uz_CurrentControl_t* current_controller_hoerner;
-uz_HarmonicCurrentInjection_t* hci_5th_hoerner;
-uz_HarmonicCurrentInjection_t* hci_7th_hoerner;
+uz_CurrentControl_t* current_controller_brose;
+uz_HarmonicCurrentInjection_t* hci_5th_brose;
+uz_HarmonicCurrentInjection_t* hci_7th_brose;
 
 // Configuration of PMSM 1 (Hoerner PMSM)
-struct uz_PMSM_t config_PMSM_hoerner = {
-		.R_ph_Ohm = 0.249f,
-		.Ld_Henry = 0.00044f,
-		.Lq_Henry = 0.00245f,
-		.Psi_PM_Vs = 0.0194f,
-		.polePairs = 4.0f,
-		.J_kg_m_squared = 0.000084f,
-		.I_max_Ampere = 10.0f
-};
-float PMSM_rated_current_hoerner = 15.0f;
+struct uz_PMSM_t config_PMSM_brose = {
+    .R_ph_Ohm = 0.023f,
+    .Ld_Henry = 3e-5f,
+    .Lq_Henry = 6e-5f,
+    .Psi_PM_Vs = 0.007f,
+    .polePairs = 5.0f,
+    .J_kg_m_squared = 0.000084f,
+    .I_max_Ampere = 35.0f};
+float PMSM_rated_current_brose = 28.3f;
 
 struct uz_PMSM_flux_fitting_parameter_config_t Hoerner_Fitting = {
     .ad1_parameter = 0.026620095524092f,
@@ -80,20 +79,19 @@ struct uz_PMSM_flux_fitting_parameter_config_t Hoerner_Fitting = {
 // ***************** PMSM 2 ***************** //
 
 // Declare Pointer for FOC of PMSM 2
-uz_SpeedControl_t* speed_controller_beckhoff;
-uz_SetPoint_t* setpoint_instance_beckhoff;
-uz_CurrentControl_t* current_controller_beckhoff;
+uz_SpeedControl_t* speed_controller_heidrive;
+uz_SetPoint_t* setpoint_instance_heidrive;
+uz_CurrentControl_t* current_controller_heidrive;
 
 // Configuration of PMSM 2 (Brose PMSM)
-struct uz_PMSM_t config_PMSM_beckhoff = {
-		.R_ph_Ohm = 0.51f,
-		.Ld_Henry = 0.002f,
-		.Lq_Henry = 0.002f,
-		.Psi_PM_Vs = 0.042f,
-		.polePairs = 4.0f,
-		.J_kg_m_squared = 0.000108f,
-		.I_max_Ampere = 12.0f
-};
+struct uz_PMSM_t config_PMSM_heidrive = {
+    .R_ph_Ohm = 0.543f,
+    .Ld_Henry = 0.00113f,
+    .Lq_Henry = 0.00142f,
+    .Psi_PM_Vs = 0.0169f,
+    .polePairs = 3.0f,
+    .J_kg_m_squared = 0.000108f,
+    .I_max_Ampere = 10.8f};
 
 enum init_chain
 {
@@ -115,50 +113,49 @@ int main(void)
     // ***************** PMSM 1 ***************** //
 
     // Configuration of FOC
-    struct uz_SpeedControl_config speed_controller_config_hoerner = {
+    struct uz_SpeedControl_config speed_controller_config_brose = {
     		.config_controller.Kp = 0.02f, //0.001f
     		.config_controller.Ki = 0.5f,  //0.05f
     		.config_controller.samplingTime_sec = 0.0001f,
     		.config_controller.upper_limit = 2.0f,
     		.config_controller.lower_limit = -2.0f,
     };
-    struct uz_SetPoint_config setpoint_config_hoerner = {
-           .config_PMSM = config_PMSM_hoerner,
+    struct uz_SetPoint_config setpoint_config_brose = {
+           .config_PMSM = config_PMSM_brose,
            .control_type = FOC,
            .motor_type = IPMSM,
            .is_field_weakening_enabled = false,
            .id_ref_Ampere = 0.0f,
      	   .relative_torque_tolerance = 0.1f
     };
-    struct uz_PI_Controller_config config_id_1 = {
-    		.Kp = 1.1f, //1.47f, // nach BO
-    		.Ki = 622.5f, //830.0f, //nach BO
+    struct uz_PI_Controller_config config_id_brose = {
+    		.Kp = 0.1f, //1.47f, // nach BO
+    		.Ki = 76.6f, //830.0f, //nach BO
     		.samplingTime_sec = 0.0001f,
     		.upper_limit = 15.0f,
     		.lower_limit = -15.0f
     };
-    struct uz_PI_Controller_config config_iq_1 = {
-           .Kp = 6.125f, //8.17f, // nach BO
-           .Ki = 622.5f, //830.0f, // nach BO
-           .samplingTime_sec = 0.0001f,
-      	   .upper_limit = 15.0f,
-    	   .lower_limit = -15.0f
-    };
+    struct uz_PI_Controller_config config_iq_brose = {
+        .Kp = 0.2f,  // 1.47f, // nach BO
+        .Ki = 76.6f, // 830.0f, //nach BO
+        .samplingTime_sec = 0.0001f,
+        .upper_limit = 15.0f,
+        .lower_limit = -15.0f};
     struct uz_CurrentControl_config CC_config_1 = {
            .decoupling_select = static_nonlinear_decoupling,
-           .config_PMSM = config_PMSM_hoerner,
-           .config_id = config_id_1,
-           .config_iq = config_iq_1,
+           .config_PMSM = config_PMSM_brose,
+           .config_id = config_id_brose,
+           .config_iq = config_iq_brose,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
     };
 
     	// Setpointfilter for speed control
-    struct uz_IIR_Filter_config speed_setpoint_filter_beckhoff_config = {
+    struct uz_IIR_Filter_config speed_setpoint_filter_heidrive_config = {
       	   .selection = LowPass_first_order,
            .cutoff_frequency_Hz = 0.5f,
            .sample_frequency_Hz = 10000.0f,
     };
-    struct uz_IIR_Filter_config tracking_error_filter_beckhoff_config = {
+    struct uz_IIR_Filter_config tracking_error_filter_heidrive_config = {
       	   .selection = LowPass_first_order,
            .cutoff_frequency_Hz = 0.3f,
            .sample_frequency_Hz = 10000.0f,
@@ -192,7 +189,7 @@ int main(void)
     };
     struct uz_CurrentControl_config CC_config_5th_1 = {
            .decoupling_select = no_decoupling,
-           .config_PMSM = config_PMSM_hoerner,
+           .config_PMSM = config_PMSM_brose,
            .config_id = config_id_5th_1,
            .config_iq = config_iq_5th_1,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
@@ -213,7 +210,7 @@ int main(void)
     };
     struct uz_CurrentControl_config CC_config_7th_1 = {
            .decoupling_select = no_decoupling,
-           .config_PMSM = config_PMSM_hoerner,
+           .config_PMSM = config_PMSM_brose,
            .config_id = config_id_7th_1,
            .config_iq = config_iq_7th_1,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
@@ -236,7 +233,7 @@ int main(void)
     // ***************** PMSM 2 ***************** //
 
     // Configuration FOC
-    struct uz_SpeedControl_config SC_config_2 = {
+    struct uz_SpeedControl_config SC_config_heidrive = {
     		.config_controller.Kp = 0.1f, //
     		.config_controller.Ki = 2.0f,
     		.config_controller.samplingTime_sec = 0.0001f,
@@ -244,33 +241,31 @@ int main(void)
     		.config_controller.lower_limit = -2.0f,
 			.config_controller.type=parallel
     };
-    struct uz_SetPoint_config SP_config_2 = {
-           .config_PMSM = config_PMSM_beckhoff,
+    struct uz_SetPoint_config SP_config_heidrive = {
+           .config_PMSM = config_PMSM_heidrive,
            .control_type = FOC,
-           .motor_type = SMPMSM,
+           .motor_type = IPMSM,
            .is_field_weakening_enabled = false,
            .id_ref_Ampere = 0.0f,
            .relative_torque_tolerance = 0.1f
     };
-    struct uz_PI_Controller_config config_id_2 = {
-           .Kp = 6.67f, // nach BO
-           .Ki = 1700.0f, //nach BO
-           .samplingTime_sec = 0.0001f,
-           .upper_limit = 15.0f,
-           .lower_limit = -15.0f
-    };
-    struct uz_PI_Controller_config config_iq_2 = {
-           .Kp = 6.67f, // nach BO
-           .Ki = 1700.0f, // nach BO
-           .samplingTime_sec = 0.0001f,
-           .upper_limit = 15.0f,
-    	   .lower_limit = -15.0f
-    };
-    struct uz_CurrentControl_config CC_config_2 = {
+    struct uz_PI_Controller_config config_id_heidrive = {
+        .Kp = 3.77f,   // nach BO
+        .Ki = 1810.0f, // nach BO
+        .samplingTime_sec = 0.0001f,
+        .upper_limit = 15.0f,
+        .lower_limit = -15.0f};
+    struct uz_PI_Controller_config config_iq_heidrive = {
+        .Kp = 4.73f,   // nach BO
+        .Ki = 1810.0f, // nach BO
+        .samplingTime_sec = 0.0001f,
+        .upper_limit = 15.0f,
+        .lower_limit = -15.0f};
+    struct uz_CurrentControl_config CC_config_heidrive = {
            .decoupling_select = linear_decoupling,
-           .config_PMSM = config_PMSM_beckhoff,
-           .config_id = config_id_2,
-           .config_iq = config_iq_2,
+           .config_PMSM = config_PMSM_heidrive,
+           .config_id = config_id_heidrive,
+           .config_iq = config_iq_heidrive,
            .max_modulation_index = 1.0f / sqrtf(3.0f)
     };
 
@@ -302,32 +297,34 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            Global_Data.objects.pwm_d1_hoerner = initialize_pwm_2l_on_D1_pin_0_to_5();
-            Global_Data.objects.pwm_d2_beckhoff = initialize_pwm_2l_on_D1_pin_6_to_11();
+            Global_Data.objects.pwm_d1_brose = initialize_pwm_2l_on_D1_pin_0_to_5();
+            Global_Data.objects.pwm_d2_heidrive = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
-            Global_Data.objects.inverter_d1_hoerner = initialize_uz_inverter_adapter_on_D1();
-            Global_Data.objects.inverter_d2_beckhoff = initialize_uz_inverter_adapter_on_D2();
+            Global_Data.objects.inverter_d1_brose = initialize_uz_inverter_adapter_on_D1();
+            Global_Data.objects.inverter_d2_heidrive = initialize_uz_inverter_adapter_on_D2();
             Global_Data.objects.resolver_d4 = initialize_resolver_d4();
             Global_Data.objects.resolver_pl_d4 = initialize_resolver_pl_d4();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5_1 = initialize_incremental_encoder_ipcore_on_D5_1(UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_1_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.encoder_D5_2 = initialize_incremental_encoder_ipcore_on_D5_2(UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_2_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.encoder_D5_3 = initialize_incremental_encoder_ipcore_on_D5_3(UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_3_MOTOR_POLE_PAIR_NUMBER);
             initialization_chain = init_control;
             break;
         case init_control:
-        	speed_controller_hoerner = uz_SpeedControl_init(speed_controller_config_hoerner);
-        	SP_instance_1 = uz_SetPoint_init(setpoint_config_hoerner);
-        	current_controller_hoerner = uz_CurrentControl_init(CC_config_1);
-        	speed_controller_beckhoff = uz_SpeedControl_init(SC_config_2);
-        	setpoint_instance_beckhoff = uz_SetPoint_init(SP_config_2);
-        	current_controller_beckhoff = uz_CurrentControl_init(CC_config_2);
-        	hci_5th_hoerner = uz_HarmonicCurrentInjection_init(HCI_config_5th_1);
+        	speed_controller_brose = uz_SpeedControl_init(speed_controller_config_brose);
+        	SP_instance_1 = uz_SetPoint_init(setpoint_config_brose);
+        	current_controller_brose = uz_CurrentControl_init(CC_config_1);
+        	speed_controller_heidrive = uz_SpeedControl_init(SC_config_heidrive);
+        	setpoint_instance_heidrive = uz_SetPoint_init(SP_config_heidrive);
+        	current_controller_heidrive = uz_CurrentControl_init(CC_config_heidrive);
+        	hci_5th_brose = uz_HarmonicCurrentInjection_init(HCI_config_5th_1);
 
-        	// speed_setpoint_filter_beckhoff_config
-			Global_Data.objects.speed_setpoint_filter_beckhoff=uz_signals_IIR_Filter_init(speed_setpoint_filter_beckhoff_config);
-			Global_Data.objects.tracking_error_filter_beckhoff=uz_signals_IIR_Filter_init(tracking_error_filter_beckhoff_config);
-        	hci_7th_hoerner = uz_HarmonicCurrentInjection_init(HCI_config_7th_1);
+        	// speed_setpoint_filter_heidrive_config
+			Global_Data.objects.speed_setpoint_filter_heidrive=uz_signals_IIR_Filter_init(speed_setpoint_filter_heidrive_config);
+			Global_Data.objects.tracking_error_filter_heidrive=uz_signals_IIR_Filter_init(tracking_error_filter_heidrive_config);
+        	hci_7th_brose = uz_HarmonicCurrentInjection_init(HCI_config_7th_1);
             Global_Data.objects.approximate_flux_instance = uz_approximate_flux_init(Hoerner_Fitting);
             Global_Data.objects.Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(0.666667f * UZ_PWM_FREQUENCY);
             Global_Data.objects.Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(0.666667f * UZ_PWM_FREQUENCY);

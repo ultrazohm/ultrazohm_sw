@@ -66,7 +66,7 @@ float omega_m_rad_per_sec_hoerner 		= 0.0f;
 float omega_el_rad_per_sec_hoerner 		= 0.0f;
 float theta_el_rad_hoerner 				= 0.0f;
 float theta_el_rad_hoerner_advanced		= 0.0f;
-float theta_el_offset_hoerner 			= 0.0;
+float theta_el_offset_hoerner 			= 1.63f; // 5.85f
 struct uz_DutyCycle_t duty_cycle_hoerner 		= {0};
 
 // Controller Settings
@@ -107,6 +107,9 @@ float i_DC_Amps_beckhoff 					= 0.0f;
 
 // FOC Variables
 float n_ref_rpm_beckhoff 					= 0.0f;
+float n_ref_rpm_beckhoff_javascope=0.0f;
+float n_ref_rpm_beckhoff_filtered= 0.0f;
+
 float M_ref_Nm_beckhoff 					= 0.0f;
 float omega_m_rad_per_sec_beckhoff 		= 0.0f;
 float omega_el_rad_per_sec_beckhoff 		= 0.0f;
@@ -123,6 +126,8 @@ float K_p_iq                        = 0.0f;
 //Stuff
 
 uint32_t setpoint_index				= 0U;
+uint32_t n_ref_setpoint_index=0U;
+
 uint64_t old_uptime					= 0U;
 float start_marker					= 0.0f;
 float id_setpoints[22]={
@@ -132,6 +137,9 @@ float id_setpoints[22]={
 float iq_setpoints[22]={
 #include "iq_setpoints.csv"
 };
+
+float speed_setpoints[8]={-100,-200,-300,-500,-600,-700,-900,-1000};
+
 extern bool select_automatic_idiq;
 extern float PMSM_rated_current_hoerner;
 uint32_t Fehlerfall  = 0U;
@@ -160,6 +168,12 @@ bool start_angle_found = false;
 float theta_el_old_hoerner = 0.0f;
 bool change_speed = false;
 
+float M_meas_Nm=0.0f;
+float speed_tracking_error=0.0f;
+
+bool speed_setpoint_reached=false;
+bool wait_for_n_ref=true;
+
 // 3 layer MLP
 
 #if ((NN_9_INPUT_3_64) || (NN_7_INPUT_3_64))
@@ -176,11 +190,21 @@ extern uz_mlp_three_layer_ip_t *mlp_ip_instance;
 //----------------------------------------------------
 static void ReadAllADC();
 
+#define PROFILE_SETPOINT_DURATION  5000U // 11290U
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
+    // Calculation of Signals for FOC for PMSM 2
+    Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
+    Global_Data.av.mechanicalRotorSpeed_beckhoff = Resolver_outputs.n_mech_rpm;
+    Global_Data.av.mechanicalRotorSpeed_filtered_beckhoff = uz_signals_IIR_Filter_sample(Global_Data.objects.tracking_error_filter_beckhoff, Global_Data.av.mechanicalRotorSpeed_beckhoff);
+    omega_m_rad_per_sec_beckhoff = Resolver_outputs.omega_mech_rad_s;
+    omega_el_rad_per_sec_beckhoff = omega_m_rad_per_sec_beckhoff * config_PMSM_beckhoff.polePairs;
+    Global_Data.av.omega_el_beckhoff = omega_el_rad_per_sec_beckhoff;
+    theta_el_rad_beckhoff = Resolver_outputs.position_el_2pi;
 
     // Set tristate to false
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_hoerner, false, false, false);
@@ -190,7 +214,7 @@ void ISR_Control(void *data)
     v_abc_Volts_hoerner.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
     v_abc_Volts_hoerner.b = 11.7657f * Global_Data.aa.A1.me.ADC_B7 + 0.0533f;
     v_abc_Volts_hoerner.c = 11.7657f * Global_Data.aa.A1.me.ADC_B6 + 0.0533f;
-    v_DC_Volts_hoerner 	= Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    v_DC_Volts_hoerner 	= 48.0f; // Global_Data.aa.A1.me.ADC_A1 * 12.0f;
     i_abc_Amps_hoener.a  = 12.223f * Global_Data.aa.A1.me.ADC_A4 + 0.0164f;
     i_abc_Amps_hoener.b  = 12.3123f * Global_Data.aa.A1.me.ADC_A3 + 0.0161f;
     i_abc_Amps_hoener.c  = 12.4303f * Global_Data.aa.A1.me.ADC_A2 - 0.0184f;
@@ -202,13 +226,14 @@ void ISR_Control(void *data)
     v_abc_Volts_beckhoff.a = 11.6798f * Global_Data.aa.A2.me.ADC_B8 - 0.3648f;
     v_abc_Volts_beckhoff.b = 11.7657f * Global_Data.aa.A2.me.ADC_B7 + 0.0533f;
     v_abc_Volts_beckhoff.c = 11.7657f * Global_Data.aa.A2.me.ADC_B6 + 0.0533f;
-    v_DC_Volts_beckhoff 	= Global_Data.aa.A2.me.ADC_A1 * 12.0f;
-    i_abc_Amps_beckhoff.a  = 12.2889f * Global_Data.e.ADC_A4 + 0.0802f;
+    v_DC_Volts_beckhoff 	= 48.0f; // Global_Data.aa.A2.me.ADC_A1 * 12.0f;
+    i_abc_Amps_beckhoff.a  = 12.2889f * Global_Data.aa.A2.me.ADC_A4 + 0.0802f;
     i_abc_Amps_beckhoff.b  = 11.8330f * Global_Data.aa.A2.me.ADC_A3 + 0.1344f;
     i_abc_Amps_beckhoff.c  = 11.7894f * Global_Data.aa.A2.me.ADC_A2 + 0.1197f;
     i_DC_Amps_beckhoff     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d2_beckhoff = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_beckhoff);
 
+    M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f;// - 0.02f;
     // Get current state
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
@@ -225,9 +250,13 @@ void ISR_Control(void *data)
 
     // Calculation of Signals for FOC for PMSM 1
     omega_m_rad_per_sec_hoerner = Global_Data.av.mechanicalRotorSpeed_filtered_hoerner*(2.0f*UZ_PIf)/60.0f;
-    omega_el_rad_per_sec_hoerner = omega_m_rad_per_sec_hoerner*config_PMSM_hoerner.polePairs;
+//    omega_m_rad_per_sec_hoerner = -1.0f*omega_m_rad_per_sec_beckhoff;
+    // omega_el_rad_per_sec_hoerner = omega_m_rad_per_sec_hoerner*config_PMSM_hoerner.polePairs;
+    omega_el_rad_per_sec_hoerner = -1.0f*omega_el_rad_per_sec_beckhoff;
+
     Global_Data.av.omega_el_hoerner = omega_el_rad_per_sec_hoerner;
     theta_el_rad_hoerner = Global_Data.av.theta_elec_hoerner - theta_el_offset_hoerner;
+//    theta_el_rad_hoerner = (2.0f*UZ_PIf-theta_el_rad_beckhoff) - theta_el_offset_hoerner;
     if(select_misalignment==true) {
     	theta_el_rad_hoerner += 5.0f * (M_PI / 180.0f);
     }
@@ -237,61 +266,71 @@ void ISR_Control(void *data)
     i_dq_Amps_hoerner = uz_transformation_3ph_abc_to_dq(i_abc_Amps_hoener, theta_el_rad_hoerner);
     v_dq_Volts_hoerner = uz_transformation_3ph_abc_to_dq(v_abc_Volts_hoerner, theta_el_rad_hoerner);
 
-
-
-    // Calculation of Signals for FOC for PMSM 2
-    Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
-    Global_Data.av.mechanicalRotorSpeed_beckhoff = Resolver_outputs.n_mech_rpm;
-    Global_Data.av.mechanicalRotorSpeed_filtered_beckhoff = Resolver_outputs.n_mech_rpm;
-    omega_m_rad_per_sec_beckhoff = Resolver_outputs.omega_mech_rad_s;
-    omega_el_rad_per_sec_beckhoff = omega_m_rad_per_sec_beckhoff * config_PMSM_beckhoff.polePairs;
-    Global_Data.av.omega_el_beckhoff = omega_el_rad_per_sec_beckhoff;
-    theta_el_rad_beckhoff = Resolver_outputs.position_el_2pi;
     //Anglelead
     theta_el_rad_beckhoff_advanced = theta_el_rad_beckhoff + (1.5f * omega_el_rad_per_sec_beckhoff ) / UZ_PWM_FREQUENCY;
     i_dq_Amps_beckhoff = uz_transformation_3ph_abc_to_dq(i_abc_Amps_beckhoff, theta_el_rad_beckhoff);
     v_dq_Volts_beckhoff = uz_transformation_3ph_abc_to_dq(v_abc_Volts_beckhoff, theta_el_rad_beckhoff);
 
+    //
+    //
     //Automatic evaluation profile
     if( (select_automatic_idiq) ){
-    	if ((((theta_el_old_hoerner - Global_Data.av.theta_elec_hoerner) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_beckhoff < 10.0f))&& (!start_angle_found)) {
-    		start_angle_found = true;
+
+    	n_ref_rpm_beckhoff=speed_setpoints[n_ref_setpoint_index];
+        speed_tracking_error=fabsf(n_ref_rpm_beckhoff-Global_Data.av.mechanicalRotorSpeed_filtered_beckhoff);
+
+    	if(speed_tracking_error<1.0f && wait_for_n_ref){
+    		speed_setpoint_reached=true;
+    		wait_for_n_ref=false;
     	}
 
-    	if (start_angle_found) {
-
+    	if ((((theta_el_old_hoerner - Global_Data.av.theta_elec_hoerner) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_beckhoff < 10.0f))&& (!start_angle_found) && (speed_setpoint_reached) ) {
+    		start_angle_found = true;
     		start_marker=1.0f;
+    		speed_setpoint_reached=false;
+    	}
+    	if (start_angle_found) {
     		i_dq_ref_Amps_hoerner.d = id_setpoints[setpoint_index];
     		i_dq_ref_Amps_hoerner.q = iq_setpoints[setpoint_index] * PMSM_rated_current_hoerner;
 
     		// step throught the array
     		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-    		if((current_uptime>(old_uptime + 11290) && (!change_speed)) ){
+    		if((current_uptime>(old_uptime + PROFILE_SETPOINT_DURATION) && (!change_speed)) ){
     			old_uptime=current_uptime;
 
     			if(setpoint_index<21){
     				setpoint_index++;
     			}else{
     				setpoint_index = 0U;
-    				start_angle_found = false;
-    				start_marker = 0.0f;
     				change_speed = true;
     			}
-
     		}
     		if (change_speed) {
-    			if(current_uptime>(old_uptime + 11290)) {
-    				n_ref_rpm_beckhoff = n_ref_rpm_beckhoff - 100.0f;
+    			if(current_uptime>(old_uptime + PROFILE_SETPOINT_DURATION)) {
+    				start_marker=0.0f;
+    				//n_ref_rpm_beckhoff = n_ref_rpm_beckhoff - 100.0f;
+    				start_angle_found = false;
+    				wait_for_n_ref=true;
     				change_speed = false;
-    				select_automatic_idiq = false;
+    				if(n_ref_setpoint_index<7U){
+    					n_ref_setpoint_index++; //=n_ref_setpoint_index+1U;
+    				}else{
+    					// stop
+        				select_automatic_idiq = false;
+        				n_ref_setpoint_index=0U;
+    				}
+    		    	n_ref_rpm_beckhoff=speed_setpoints[n_ref_setpoint_index];
     			}
     		}
     	}
 
     }else{
-    	i_dq_ref_Amps_hoerner=i_dq_ref_java_Amps_hoerner;
+    	i_dq_ref_Amps_hoerner.d=i_dq_ref_java_Amps_hoerner.d;
+    	i_dq_ref_Amps_hoerner.q=i_dq_ref_java_Amps_hoerner.q;
+    	n_ref_rpm_beckhoff=n_ref_rpm_beckhoff_javascope;
     }
     theta_el_old_hoerner = Global_Data.av.theta_elec_hoerner;
+   // speed_tracking_error=fabsf(n_ref_rpm_beckhoff-Global_Data.av.mechanicalRotorSpeed_filtered_beckhoff);
 
 
 
@@ -394,7 +433,9 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge3DutyCycle = duty_cycle_hoerner.DutyCycle_C;
 
     	// Field Oriented Control of PMSM 2
-        M_ref_Nm_beckhoff = uz_SpeedControl_sample(speed_controller_beckhoff, omega_m_rad_per_sec_beckhoff, n_ref_rpm_beckhoff);
+    	n_ref_rpm_beckhoff_filtered=uz_signals_IIR_Filter_sample(Global_Data.objects.speed_setpoint_filter_beckhoff,n_ref_rpm_beckhoff);
+        float M_ref_Nm_beckhoff_without = uz_SpeedControl_sample(speed_controller_beckhoff, omega_m_rad_per_sec_beckhoff, n_ref_rpm_beckhoff_filtered);
+		M_ref_Nm_beckhoff=0.11f*i_dq_ref_Amps_hoerner.q+M_ref_Nm_beckhoff_without;
         i_dq_ref_Amps_beckhoff = uz_SetPoint_sample(setpoint_instance_beckhoff, omega_m_rad_per_sec_beckhoff, M_ref_Nm_beckhoff, v_DC_Volts_beckhoff, i_dq_Amps_beckhoff);
        	v_dq_ref_Volts_beckhoff = uz_CurrentControl_sample(current_controller_beckhoff, i_dq_ref_Amps_beckhoff, i_dq_Amps_beckhoff, v_DC_Volts_beckhoff, omega_el_rad_per_sec_beckhoff);
        	duty_cycle_beckhoff = uz_Space_Vector_Modulation(v_dq_ref_Volts_beckhoff, v_DC_Volts_beckhoff, theta_el_rad_beckhoff_advanced);

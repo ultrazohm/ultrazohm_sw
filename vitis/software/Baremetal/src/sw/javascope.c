@@ -59,6 +59,11 @@ float Torque_placeholder = 0.0f;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern struct uz_3ph_dq_t v_dq_ref_Volts_hoerner;
 
+extern float n_ref_rpm_beckhoff_filtered;
+extern float M_ref_Nm_beckhoff;
+extern float M_meas_Nm;
+extern float speed_tracking_error;
+
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -81,6 +86,8 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm_hoerner]		= &data->av.mechanicalRotorSpeed_hoerner;
 	js_ch_observable[JSO_Speed_rpm_beckhoff]		= &data->av.mechanicalRotorSpeed_beckhoff;
+	js_ch_observable[JSO_n_rpm_beckhoff_filtered]		= &data->av.mechanicalRotorSpeed_filtered_beckhoff;
+	js_ch_observable[JSO_speed_tracking_error]		= &speed_tracking_error;
 	js_ch_observable[JSO_ia_hoerner] 			= &i_abc_Amps_hoener.a;
 	js_ch_observable[JSO_ib_hoerner] 			= &i_abc_Amps_hoener.b;
 	js_ch_observable[JSO_ic_hoerner] 			= &i_abc_Amps_hoener.c;
@@ -122,7 +129,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id_set]		= &i_dq_ref_Amps_hoerner.d;
 	js_ch_observable[JSO_iq_set]		= &i_dq_ref_Amps_hoerner.q;
 	js_ch_observable[JSO_enable] 		= &start_marker;
-	js_ch_observable[JSO_Torque_Nm]		= &Torque_placeholder;
+	js_ch_observable[JSO_Torque_Nm_beckhoff]		= &M_ref_Nm_beckhoff;
+	js_ch_observable[JSO_torque_measured_Nm]		= &M_meas_Nm;
+
+
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

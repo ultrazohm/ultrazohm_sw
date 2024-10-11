@@ -152,6 +152,18 @@ int main(void)
            .max_modulation_index = 1.0f / sqrtf(3.0f)
     };
 
+    	// Setpointfilter for speed control
+    struct uz_IIR_Filter_config speed_setpoint_filter_beckhoff_config = {
+      	   .selection = LowPass_first_order,
+           .cutoff_frequency_Hz = 0.5f,
+           .sample_frequency_Hz = 10000.0f,
+    };
+    struct uz_IIR_Filter_config tracking_error_filter_beckhoff_config = {
+      	   .selection = LowPass_first_order,
+           .cutoff_frequency_Hz = 0.3f,
+           .sample_frequency_Hz = 10000.0f,
+    };
+
     // Configuration of HCI
     struct uz_IIR_Filter_config BP_config_1 = {
       	   .selection = BandPass_second_order,
@@ -225,11 +237,12 @@ int main(void)
 
     // Configuration FOC
     struct uz_SpeedControl_config SC_config_2 = {
-    		.config_controller.Kp = 0.2f,
-    		.config_controller.Ki = 0.25f,
+    		.config_controller.Kp = 0.1f, //
+    		.config_controller.Ki = 2.0f,
     		.config_controller.samplingTime_sec = 0.0001f,
     		.config_controller.upper_limit = 2.0f,
-    		.config_controller.lower_limit = -2.0f
+    		.config_controller.lower_limit = -2.0f,
+			.config_controller.type=parallel
     };
     struct uz_SetPoint_config SP_config_2 = {
            .config_PMSM = config_PMSM_beckhoff,
@@ -310,6 +323,10 @@ int main(void)
         	setpoint_instance_beckhoff = uz_SetPoint_init(SP_config_2);
         	current_controller_beckhoff = uz_CurrentControl_init(CC_config_2);
         	hci_5th_hoerner = uz_HarmonicCurrentInjection_init(HCI_config_5th_1);
+
+        	// speed_setpoint_filter_beckhoff_config
+			Global_Data.objects.speed_setpoint_filter_beckhoff=uz_signals_IIR_Filter_init(speed_setpoint_filter_beckhoff_config);
+			Global_Data.objects.tracking_error_filter_beckhoff=uz_signals_IIR_Filter_init(tracking_error_filter_beckhoff_config);
         	hci_7th_hoerner = uz_HarmonicCurrentInjection_init(HCI_config_7th_1);
             Global_Data.objects.approximate_flux_instance = uz_approximate_flux_init(Hoerner_Fitting);
             Global_Data.objects.Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(0.666667f * UZ_PWM_FREQUENCY);

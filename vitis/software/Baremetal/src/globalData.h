@@ -15,6 +15,7 @@
 #include "uz/uz_CurrentControl_Kp_iq_adjustment/uz_CurrentControl_Kp_iq_adjustment.h"
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
+#include "uz/uz_signals/uz_signals.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -146,6 +147,8 @@ typedef struct{
 	uz_CurrentControl_Kp_iq_adjustment_t* Kp_iq_adjustment_instance;
 	uz_matrix_t* matrix_input;
 	uz_nn_t* nn_layer;
+	uz_IIR_Filter_t* speed_setpoint_filter_beckhoff;
+	uz_IIR_Filter_t* tracking_error_filter_beckhoff;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

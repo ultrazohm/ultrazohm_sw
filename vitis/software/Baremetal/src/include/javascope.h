@@ -47,7 +47,8 @@ enum JS_OberservableData {
 	JSO_iq_set,
 	JSO_enable,
 	JSO_Speed_rpm_hoerner,
-	JSO_Torque_Nm,
+	JSO_Torque_Nm_beckhoff,
+	JSO_torque_measured_Nm,
 	JSO_Theta_el_hoerner,
 	JSO_theta_mech_hoerner,
 	JSO_Speed_rpm_beckhoff,
@@ -77,6 +78,9 @@ enum JS_OberservableData {
 	JSO_iq_7th_hoerner,
 	JSO_ud_2,
 	JSO_uq_2,
+	JSO_n_ref_rpm_beckhoff_filtered,
+	JSO_n_rpm_beckhoff_filtered,
+	JSO_speed_tracking_error,
 	JSO_ENDMARKER
 };
 

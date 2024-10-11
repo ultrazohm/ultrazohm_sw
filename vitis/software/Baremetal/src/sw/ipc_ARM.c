@@ -26,7 +26,7 @@ extern uint32_t js_status_BareToRTOS;
 
 // External includes
 extern float n_ref_rpm_1;
-extern float n_ref_rpm_beckhoff;
+extern float n_ref_rpm_beckhoff_javascope;
 extern float M_ref_Nm_1;
 extern float M_ref_Nm_beckhoff;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_hoerner;
@@ -216,7 +216,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-		n_ref_rpm_beckhoff = value;
+		n_ref_rpm_beckhoff_javascope = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -230,7 +230,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_6):
-				 i_dqn_ref_7th_Amps_hoerner.d = value;
+				// i_dqn_ref_7th_Amps_hoerner.d = value;
 		theta_el_offset_hoerner=value;
 			break;
 

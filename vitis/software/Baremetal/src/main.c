@@ -50,6 +50,8 @@ struct uz_pmsm_control_configuration_t config = {
     .current_offsets = {.a = -0.3648f, .b = +0.0533f, .c = +0.0533f},
     .v_dc_in_V_conversion_factor = 12.0f,
     .v_dc_in_V_offset = 0.0f,
+    .i_dc_in_V_conversion_factor = 12.5f,
+    .i_dc_in_V_offset=0.0f,
     .theta_el_offset = 0.0f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = false,
@@ -60,11 +62,22 @@ struct uz_pmsm_control_configuration_t config = {
     .current_controller_d_ki = 1810.0f,
     .current_controller_q_kp = 4.73f,
     .current_controller_q_ki = 1810.0f,
+    .setpoint_lower_bound_i_d_in_A=-5.0f,
+    .setpoint_upper_bound_i_d_in_A=0.5f,
+    .setpoint_lower_bound_i_q_in_A=-5.0f,
+    .setpoint_upper_bound_i_q_in_A=5.0f,
+    .setpoint_upper_bound_speed_in_rpm=500.0f,
+    .setpoint_lower_bound_speed_in_rpm=-500.0f,
+    .error_upper_bound_speed_in_rpm=3500.0f,
+    .error_lower_bound_speed_in_rpm=-3500.0f,
+    .disturbance_input_lower_bound_in_Nm=0.0f, // disable disturbance input for now
+    .disturbance_input_upper_bound_in_Nm=0.0f,
     .decoupling_method = linear_decoupling,
     .motor_type = IPMSM,
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
-    .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f}};
+    .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
+};
 
 // Configuration of PMSM 2 (Brose PMSM)
 struct uz_PMSM_t config_PMSM_heidrive = {

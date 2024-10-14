@@ -37,32 +37,8 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 												//  This is probably it?
 												// Is sent to APU (and PC) by means of javascope_data->status in JavaScope_update (below)
 
-// External
-extern float theta_el_rad_brose;
-extern float theta_el_rad_heidrive;
-extern struct uz_3ph_abc_t i_abc_Amps_hoener;
-extern struct uz_3ph_abc_t i_abc_Amps_heidrive;
-extern struct uz_3ph_dq_t i_dq_Amps_brose;
-extern struct uz_3ph_dq_t i_dq_Amps_heidrive;
-extern struct uz_3ph_dq_t i_dqn_filtered_5th_Amps_brose;
-extern struct uz_3ph_dq_t i_dqn_filtered_7th_Amps_brose;
-extern struct uz_3ph_dq_t v_dq_Volts_heidrive;
-extern struct uz_3ph_dq_t v_dq_Volts_brose;
-extern struct uz_3ph_abc_t v_abc_Volts_brose;
-extern float K_p_id;
-extern float K_p_iq;
-extern float observation_ip[9U];
-extern struct uz_3ph_dq_t i_dq_ref_Amps_brose;
-extern float start_marker;
-float Torque_placeholder = 0.0f;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-extern struct uz_3ph_dq_t v_dq_ref_Volts_brose;
-
-extern float n_ref_rpm_heidrive_filtered;
-extern float M_ref_Nm_heidrive;
-extern float M_meas_Nm;
-extern float speed_tracking_error;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -87,50 +63,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Speed_rpm_brose]		= &data->av.mechanicalRotorSpeed_brose;
 	js_ch_observable[JSO_Speed_rpm_heidrive]		= &data->av.mechanicalRotorSpeed_heidrive;
 	js_ch_observable[JSO_n_rpm_heidrive_filtered]		= &data->av.mechanicalRotorSpeed_filtered_heidrive;
-	js_ch_observable[JSO_speed_tracking_error]		= &speed_tracking_error;
-	js_ch_observable[JSO_ia_brose] 			= &i_abc_Amps_hoener.a;
-	js_ch_observable[JSO_ib_brose] 			= &i_abc_Amps_hoener.b;
-	js_ch_observable[JSO_ic_brose] 			= &i_abc_Amps_hoener.c;
-	js_ch_observable[JSO_ia_heidrive] 			= &i_abc_Amps_heidrive.a;
-	js_ch_observable[JSO_ib_heidrive] 			= &i_abc_Amps_heidrive.b;
-	js_ch_observable[JSO_ic_heidrive] 			= &i_abc_Amps_heidrive.c;
-	js_ch_observable[JSO_ua_brose] 			= &v_abc_Volts_brose.a;
-	js_ch_observable[JSO_ub_brose] 			= &v_abc_Volts_brose.b;
-	js_ch_observable[JSO_uc_brose] 			= &v_abc_Volts_brose.c;
-	js_ch_observable[JSO_iq_brose] 			= &i_dq_Amps_brose.q;
-	js_ch_observable[JSO_iq_heidrive] 			= &i_dq_Amps_heidrive.q;
-	js_ch_observable[JSO_id_brose] 			= &i_dq_Amps_brose.d;
-	js_ch_observable[JSO_id_heidrive] 			= &i_dq_Amps_heidrive.d;
-	js_ch_observable[JSO_id_5th_brose] 		= &i_dqn_filtered_5th_Amps_brose.d;
-	js_ch_observable[JSO_iq_5th_brose] 		= &i_dqn_filtered_5th_Amps_brose.q;
-	js_ch_observable[JSO_id_7th_brose] 		= &i_dqn_filtered_7th_Amps_brose.d;
-	js_ch_observable[JSO_iq_7th_brose] 		= &i_dqn_filtered_7th_Amps_brose.q;
-	js_ch_observable[JSO_Theta_el_brose] 	= &theta_el_rad_brose;
-	js_ch_observable[JSO_Theta_el_heidrive] 	= &theta_el_rad_heidrive;
-	js_ch_observable[JSO_theta_mech_brose] 	= &data->av.theta_mech_brose;
-	js_ch_observable[JSO_ud_brose]			= &v_dq_Volts_brose.d;
-	js_ch_observable[JSO_uq_brose]			= &v_dq_Volts_brose.q;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	js_ch_observable[JSO_Kp_id]			= &K_p_id;
-	js_ch_observable[JSO_Kp_iq]			= &K_p_iq;
-	js_ch_observable[JSO_ud_brose]			= &v_dq_ref_Volts_brose.d;
-	js_ch_observable[JSO_uq_brose]			= &v_dq_ref_Volts_brose.q;
-	js_ch_observable[JSO_obs_1] 		= &observation_ip[0];
-	js_ch_observable[JSO_obs_2] 		= &observation_ip[1];
-	js_ch_observable[JSO_obs_3] 		= &observation_ip[2];
-	js_ch_observable[JSO_obs_4] 		= &observation_ip[3];
-	js_ch_observable[JSO_obs_5] 		= &observation_ip[4];
-	js_ch_observable[JSO_obs_6] 		= &observation_ip[5];
-	js_ch_observable[JSO_obs_7] 		= &observation_ip[6];
-	js_ch_observable[JSO_obs_8] 		= &observation_ip[7];
-	js_ch_observable[JSO_obs_9] 		= &observation_ip[8];
-	js_ch_observable[JSO_id_set]		= &i_dq_ref_Amps_brose.d;
-	js_ch_observable[JSO_iq_set]		= &i_dq_ref_Amps_brose.q;
-	js_ch_observable[JSO_enable] 		= &start_marker;
-	js_ch_observable[JSO_Torque_Nm_heidrive]		= &M_ref_Nm_heidrive;
-	js_ch_observable[JSO_torque_measured_Nm]		= &M_meas_Nm;
+
 
 
 
@@ -141,10 +77,6 @@ int JavaScope_initialize(DS_Data* data)
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_u_d_1] 			        = &(data->av.U_d_1);
 	js_slowDataArray[JSSD_FLOAT_u_q_1] 			        = &(data->av.U_q_1);
-	js_slowDataArray[JSSD_FLOAT_i_d_1] 			        = &i_dq_Amps_brose.d;
-	js_slowDataArray[JSSD_FLOAT_i_d_2] 			        = &i_dq_Amps_heidrive.d;
-	js_slowDataArray[JSSD_FLOAT_i_q_1] 			        = &i_dq_Amps_brose.q;
-	js_slowDataArray[JSSD_FLOAT_i_q_2] 			        = &i_dq_Amps_heidrive.q;
 	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.mechanicalRotorSpeed_brose);
 	js_slowDataArray[JSSD_FLOAT_speed_2] 		        = &(data->av.mechanicalRotorSpeed_heidrive);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);

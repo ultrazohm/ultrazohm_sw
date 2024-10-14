@@ -40,33 +40,31 @@ DS_Data Global_Data = {
     }
 };
 
-// ***************** PMSM 1 ***************** //
-
-// Declare Pointer for FOC of PMSM 1
-uz_SpeedControl_t* speed_controller_brose;
-uz_SetPoint_t* SP_instance_1;
-uz_CurrentControl_t* current_controller_brose;
-uz_HarmonicCurrentInjection_t* hci_5th_brose;
-uz_HarmonicCurrentInjection_t* hci_7th_brose;
-
-// Configuration of PMSM 1 (Hoerner PMSM)
-struct uz_PMSM_t config_PMSM_brose = {
-    .R_ph_Ohm = 0.023f,
-    .Ld_Henry = 3e-5f,
-    .Lq_Henry = 6e-5f,
-    .Psi_PM_Vs = 0.007f,
-    .polePairs = 5.0f,
-    .J_kg_m_squared = 0.000084f,
-    .I_max_Ampere = 35.0f};
-float PMSM_rated_current_brose = 28.3f;
-
-
 // ***************** PMSM 2 ***************** //
 
-// Declare Pointer for FOC of PMSM 2
-uz_SpeedControl_t* speed_controller_heidrive;
-uz_SetPoint_t* setpoint_instance_heidrive;
-uz_CurrentControl_t* current_controller_heidrive;
+struct uz_pmsm_control_configuration_t config = {
+    .current_conversion_factors = {
+        .a = 11.6798f,
+        .b = 11.7657f,
+        .c = 11.7657f},
+    .current_offsets = {.a = -0.3648f, .b = +0.0533f, .c = +0.0533f},
+    .v_dc_in_V_conversion_factor = 12.0f,
+    .v_dc_in_V_offset = 0.0f,
+    .theta_el_offset = 0.0f,
+    .sample_time = 1.0f / 10000.0f,
+    .enable_speed_control = false,
+    .speed_controller_max_torque = 0.5f,
+    .speed_controller_kp = 0.1f,
+    .speed_controller_ki = 0.0f,
+    .current_controller_d_kp = 3.77f,
+    .current_controller_d_ki = 1810.0f,
+    .current_controller_q_kp = 4.73f,
+    .current_controller_q_ki = 1810.0f,
+    .decoupling_method = linear_decoupling,
+    .motor_type = IPMSM,
+    .enable_field_weakening = false,
+    .relative_torque_tolerance = 0.1f,
+    .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f}};
 
 // Configuration of PMSM 2 (Brose PMSM)
 struct uz_PMSM_t config_PMSM_heidrive = {
@@ -91,94 +89,10 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+
 int main(void)
 {
     int status = UZ_SUCCESS;
-
-    // ***************** PMSM 1 ***************** //
-
-    // Configuration of FOC
-    struct uz_SpeedControl_config speed_controller_config_brose = {
-    		.config_controller.Kp = 0.02f, //0.001f
-    		.config_controller.Ki = 0.5f,  //0.05f
-    		.config_controller.samplingTime_sec = 0.0001f,
-    		.config_controller.upper_limit = 2.0f,
-    		.config_controller.lower_limit = -2.0f,
-    };
-    struct uz_SetPoint_config setpoint_config_brose = {
-           .config_PMSM = config_PMSM_brose,
-           .control_type = FOC,
-           .motor_type = IPMSM,
-           .is_field_weakening_enabled = false,
-           .id_ref_Ampere = 0.0f,
-     	   .relative_torque_tolerance = 0.1f
-    };
-    struct uz_CurrentControl_config CC_config_brose = {
-        .decoupling_select = static_nonlinear_decoupling,
-        .config_PMSM = config_PMSM_brose,
-        .config_id = {
-            .Kp = 0.1f,  // 1.47f, // nach BO
-            .Ki = 76.6f, // 830.0f, //nach BO
-            .samplingTime_sec = 0.0001f,
-            .upper_limit = 15.0f,
-            .lower_limit = -15.0f},
-        .config_iq = {.Kp = 0.2f,  // 1.47f, // nach BO
-                      .Ki = 76.6f, // 830.0f, //nach BO
-                      .samplingTime_sec = 0.0001f,
-                      .upper_limit = 15.0f,
-                      .lower_limit = -15.0f},
-        .max_modulation_index = 1.0f / sqrtf(3.0f)};
-
-    // Setpointfilter for speed control
-    struct uz_IIR_Filter_config speed_setpoint_filter_heidrive_config = {
-      	   .selection = LowPass_first_order,
-           .cutoff_frequency_Hz = 0.5f,
-           .sample_frequency_Hz = 10000.0f,
-    };
-    struct uz_IIR_Filter_config tracking_error_filter_heidrive_config = {
-      	   .selection = LowPass_first_order,
-           .cutoff_frequency_Hz = 0.3f,
-           .sample_frequency_Hz = 10000.0f,
-    };
-
-    // ***************** PMSM 2 ***************** //
-    // Configuration FOC
-    struct uz_SpeedControl_config SC_config_heidrive = {
-    		.config_controller.Kp = 0.1f, //
-    		.config_controller.Ki = 2.0f,
-    		.config_controller.samplingTime_sec = 0.0001f,
-    		.config_controller.upper_limit = 2.0f,
-    		.config_controller.lower_limit = -2.0f,
-			.config_controller.type=parallel
-    };
-    struct uz_SetPoint_config SP_config_heidrive = {
-           .config_PMSM = config_PMSM_heidrive,
-           .control_type = FOC,
-           .motor_type = IPMSM,
-           .is_field_weakening_enabled = false,
-           .id_ref_Ampere = 0.0f,
-           .relative_torque_tolerance = 0.1f
-    };
-    struct uz_PI_Controller_config config_id_heidrive = {
-        .Kp = 3.77f,   // nach BO
-        .Ki = 1810.0f, // nach BO
-        .samplingTime_sec = 0.0001f,
-        .upper_limit = 15.0f,
-        .lower_limit = -15.0f};
-    struct uz_PI_Controller_config config_iq_heidrive = {
-        .Kp = 4.73f,   // nach BO
-        .Ki = 1810.0f, // nach BO
-        .samplingTime_sec = 0.0001f,
-        .upper_limit = 15.0f,
-        .lower_limit = -15.0f};
-    struct uz_CurrentControl_config CC_config_heidrive = {
-           .decoupling_select = linear_decoupling,
-           .config_PMSM = config_PMSM_heidrive,
-           .config_id = config_id_heidrive,
-           .config_iq = config_iq_heidrive,
-           .max_modulation_index = 1.0f / sqrtf(3.0f)
-    };
-
     while (1)
     {
         switch (initialization_chain)
@@ -223,18 +137,16 @@ int main(void)
             initialization_chain = init_control;
             break;
         case init_control:
-        	speed_controller_brose = uz_SpeedControl_init(speed_controller_config_brose);
-        	SP_instance_1 = uz_SetPoint_init(setpoint_config_brose);
-        	current_controller_brose = uz_CurrentControl_init(CC_config_brose);
-        	speed_controller_heidrive = uz_SpeedControl_init(SC_config_heidrive);
-        	setpoint_instance_heidrive = uz_SetPoint_init(SP_config_heidrive);
-        	current_controller_heidrive = uz_CurrentControl_init(CC_config_heidrive);
+            Global_Data.objects.heidrive_controller = uz_pmsm_control_init(config, config_PMSM_heidrive);
+            Global_Data.heidrive_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.heidrive_controller);
+            Global_Data.heidrive_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.heidrive_controller);
+            Global_Data.heidrive_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.heidrive_controller);
 
-        	// speed_setpoint_filter_heidrive_config
-			Global_Data.objects.speed_setpoint_filter_heidrive=uz_signals_IIR_Filter_init(speed_setpoint_filter_heidrive_config);
-			Global_Data.objects.tracking_error_filter_heidrive=uz_signals_IIR_Filter_init(tracking_error_filter_heidrive_config);
+            // speed_setpoint_filter_heidrive_config
+            // Global_Data.objects.speed_setpoint_filter_heidrive=uz_signals_IIR_Filter_init(speed_setpoint_filter_heidrive_config);
+            // Global_Data.objects.tracking_error_filter_heidrive=uz_signals_IIR_Filter_init(tracking_error_filter_heidrive_config);
             nn_init();
-        	initialization_chain = print_msg;
+            initialization_chain = print_msg;
         	break;
 	    case print_msg:
             uz_printf("\r\n\r\n");

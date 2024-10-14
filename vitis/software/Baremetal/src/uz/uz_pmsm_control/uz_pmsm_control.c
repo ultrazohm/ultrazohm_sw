@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "../uz_HAL.h"
 #include "uz_pmsm_control.h"
-#include "uz_math_constants.h"
+#include "../uz_math_constants.h"
 #include "../uz_signals/uz_signals.h"
 
 struct uz_pmsm_control_t
@@ -42,7 +42,7 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
     uz_pmsm_control_t *self = uz_pmsm_control_allocation();
     self->config = config;
     self->machine_data = machine_data;
-    self->enable=false;
+    self->enable = false;
 
     struct uz_CurrentControl_config current_controller_configuration = {
         .decoupling_select = config.decoupling_method,
@@ -51,9 +51,9 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
             .Kp = config.current_controller_d_kp,
             .Ki = config.current_controller_d_ki,
             .samplingTime_sec = config.sample_time,
-            .upper_limit = config.current_controller_max_current,
-            .lower_limit = -1.0f * config.current_controller_max_current},
-        .config_iq = {.Kp = config.current_controller_q_kp, .Ki = config.current_controller_q_ki, .samplingTime_sec = config.sample_time, .upper_limit = config.current_controller_max_current, .lower_limit = -1.0f * config.current_controller_max_current},
+            .upper_limit = 1.0f,
+            .lower_limit = -1.0f},
+        .config_iq = {.Kp = config.current_controller_q_kp, .Ki = config.current_controller_q_ki, .samplingTime_sec = config.sample_time, .upper_limit = 1.0f, .lower_limit = -1.0f},
         .max_modulation_index = 1.0f / sqrtf(3.0f)};
 
     struct uz_SpeedControl_config speed_controller_configuration = {
@@ -79,9 +79,19 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
     return (self);
 }
 
-struct uz_pmsm_actual_data const *const uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self)
+struct uz_pmsm_actual_data * uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self)
 {
     return &self->actual_values; // is this a good idea?
+}
+
+struct uz_pmsm_reference_values  * uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self)
+{
+    return &self->reference_values; // is this a good idea?
+}
+
+struct uz_pmsm_measurement_values  * uz_pmsm_control_get_uz_pmsm_measurement_values(uz_pmsm_control_t *self)
+{
+    return &self->measurement; // is this a good idea?
 }
 
 void uz_pmsm_controller_reset(uz_pmsm_control_t *self)
@@ -91,18 +101,20 @@ void uz_pmsm_controller_reset(uz_pmsm_control_t *self)
     uz_SpeedControl_reset(self->speed_controller);
 }
 
-void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable){
+void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable)
+{
     uz_assert(self->is_ready);
-    self->enable=enable;
+    self->enable = enable;
 }
 
-    struct uz_DutyCycle_t
-    uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, uz_3ph_dq_t reference_currents)
+struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents)
 {
+    uz_assert(self->is_ready);
     self->actual_values.i_abc_in_A.a = (self->config.current_conversion_factors.a * measurements.phase_currents_from_adc_ampere_per_volt.a) + self->config.current_conversion_factors.a;
     self->actual_values.i_abc_in_A.b = (self->config.current_conversion_factors.b * measurements.phase_currents_from_adc_ampere_per_volt.b) + self->config.current_conversion_factors.b;
     self->actual_values.i_abc_in_A.c = (self->config.current_conversion_factors.c * measurements.phase_currents_from_adc_ampere_per_volt.c) + self->config.current_conversion_factors.c;
     self->actual_values.v_dc_in_V = (self->config.v_dc_in_V_conversion_factor * measurements.v_dc_from_adc_volt_per_volt) + self->config.v_dc_in_V_offset;
+    self->actual_values.i_dc_in_A = (self->config.v_dc_in_V_conversion_factor * measurements.i_dc_from_adc_ampere_per_volt) + self->config.v_dc_in_V_offset;
 
     self->actual_values.omega_el_rad_per_sec = measurements.omega_mech_rad_per_sec * self->machine_data.polePairs;
     float theta_el_without_offset = uz_signals_wrap(measurements.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
@@ -116,6 +128,7 @@ void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable){
     {
         if (self->config.enable_speed_control)
         {
+            self->reference_values.speed_in_rpm = reference_speed_in_rpm;
             self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
             // M_ref_Nm_heidrive=0.11f*i_dq_in_A_ref_Amps_brose.q+M_ref_Nm_heidrive_without; // Vorsteuerung Lastmoment
             self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->actual_values.v_dc_in_V, self->actual_values.i_dq_in_A);

@@ -17,6 +17,7 @@
 #define INCLUDE_JAVASCOPE_H_
 
 #include "APU_RPU_shared.h"
+#include "../uz/uz_pmsm_control/uz_pmsm_control.h"
 
 // Do not change the first (zero) and last (end) entries.
 enum JS_OberservableData {

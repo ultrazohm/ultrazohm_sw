@@ -37,7 +37,6 @@ struct uz_pmsm_control_configuration_t config = {
     .current_controller_d_ki = 2,
     .current_controller_q_kp = 3,
     .current_controller_q_ki = 4,
-    .current_controller_max_current = 20,
     .decoupling_method = linear_decoupling,
     .motor_type = IPMSM,
     .enable_field_weakening = false,

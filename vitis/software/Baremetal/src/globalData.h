@@ -16,6 +16,7 @@
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -95,6 +96,7 @@ typedef struct _actualValues_ {
 	float U_q_1;
 	float theta_elec_brose;
 	float theta_elec_heidrive;
+	float omega_mech_rad_per_sed ;
 	float theta_elec_3;
 	float theta_mech_brose;
 	float theta_offset_1; //in rad/s
@@ -146,14 +148,17 @@ typedef struct{
 	uz_nn_t* nn_layer;
 	uz_IIR_Filter_t* speed_setpoint_filter_heidrive;
 	uz_IIR_Filter_t* tracking_error_filter_heidrive;
+	uz_pmsm_control_t *heidrive_controller;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {
 	referenceAndSetValues rasv;
 	actualValues av;
 	AnalogAdapters aa;
+	struct uz_pmsm_actual_data * heidrive_actual_data;
+	struct uz_pmsm_measurement_values *heidrive_measurement_values;
+	struct uz_pmsm_reference_values *heidrive_reference_values;
 	object_pointers_t objects;
 } DS_Data;
 
 #endif
-

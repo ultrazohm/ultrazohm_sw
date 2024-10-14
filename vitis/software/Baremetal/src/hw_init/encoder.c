@@ -83,7 +83,8 @@ void update_speed_and_position_of_encoder_on_D5_1(DS_Data* const data){	// updat
 void update_speed_and_position_of_encoder_on_D5_2(DS_Data *const data)
 { // update speed and position in global data struct
 	data->av.theta_elec_heidrive = uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5_2);
-	data->av.mechanicalRotorSpeed_heidrive = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D5_2) * 60.0f / (2.0f * M_PI);
+	data->av.omega_mech_rad_per_sed = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D5_2) * 60.0f / (2.0f * M_PI);
+	data->av.mechanicalRotorSpeed_heidrive = data->av.omega_mech_rad_per_sed * 60.0f / (2.0f * M_PI);
 
 	// low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;

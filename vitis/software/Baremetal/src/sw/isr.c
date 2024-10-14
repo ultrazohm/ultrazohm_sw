@@ -53,6 +53,7 @@ uint32_t Fehlerfall = 0U;
 extern uz_3ph_dq_t i_dq_ref_java_Amps_brose;
 
 struct uz_pmsm_measurement_values heidrive_measurements = {0.0f};
+
 float heidrive_reference_speed_in_rpm = 0.0f;
 uz_3ph_dq_t heidrive_reference_currents_in_A = {0.0f};
 

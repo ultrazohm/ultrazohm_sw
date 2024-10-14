@@ -42,40 +42,42 @@ extern DS_Data Global_Data;
 // =============== Declares for PMSM 1 =============== //
 struct uz_resolver_pl_interface_outputs_t Resolver_outputs = {0};
 // FOC Instances and Configs
-extern uz_SpeedControl_t* speed_controller_brose;
-extern uz_SetPoint_t* SP_instance_1;
-extern uz_CurrentControl_t* current_controller_brose;
+extern uz_SpeedControl_t *speed_controller_brose;
+extern uz_SetPoint_t *SP_instance_1;
+extern uz_CurrentControl_t *current_controller_brose;
 extern struct uz_PMSM_t config_PMSM_brose;
-extern uz_HarmonicCurrentInjection_t* hci_5th_brose;
-extern uz_HarmonicCurrentInjection_t* hci_7th_brose;
+extern uz_HarmonicCurrentInjection_t *hci_5th_brose;
+extern uz_HarmonicCurrentInjection_t *hci_7th_brose;
 
 // Inverter Measurement
-struct uz_3ph_abc_t v_abc_Volts_brose 	= {0};
-struct uz_3ph_dq_t v_dq_Volts_brose 	= {0};
+struct uz_3ph_abc_t v_abc_Volts_brose = {0};
+struct uz_3ph_dq_t v_dq_Volts_brose = {0};
 struct uz_3ph_dq_t v_dq_ref_Volts_brose = {0};
-struct uz_3ph_abc_t i_abc_Amps_hoener 	= {0};
-struct uz_3ph_dq_t i_dq_Amps_brose 		= {0};
-struct uz_3ph_dq_t i_dq_ref_Amps_brose 	= {0};
-float v_DC_Volts_brose 					= 24.0f;
-float i_DC_Amps_brose 					= 0.0f;
+struct uz_3ph_abc_t i_abc_Amps_hoener = {0};
+struct uz_3ph_dq_t i_dq_Amps_brose = {0};
+struct uz_3ph_dq_t i_dq_ref_Amps_brose = {0};
+float v_DC_Volts_brose = 24.0f;
+float i_DC_Amps_brose = 0.0f;
 
 // FOC Variables
-float n_ref_rpm_1 					= 0.0f;
-float M_ref_Nm_1 					= 0.0f;
-float omega_m_rad_per_sec_brose 		= 0.0f;
-float omega_el_rad_per_sec_brose 		= 0.0f;
-float theta_el_rad_brose 				= 0.0f;
-float theta_el_rad_brose_advanced		= 0.0f;
-float theta_el_offset_brose 			= 1.63f; // 5.85f
-struct uz_DutyCycle_t duty_cycle_brose 		= {0};
+float n_ref_rpm_1 = 0.0f;
+float M_ref_Nm_1 = 0.0f;
+float omega_m_rad_per_sec_brose = 0.0f;
+float omega_el_rad_per_sec_brose = 0.0f;
+float theta_el_rad_brose = 0.0f;
+float theta_el_rad_brose_advanced = 0.0f;
+float theta_el_offset_brose = 1.63f;    // 5.85f
+float theta_el_offset_heidrive = 1.63f; // 5.85f
+
+struct uz_DutyCycle_t duty_cycle_brose = {0};
 
 // Controller Settings
-float Kp_speed_1 					= 0.005f;
-float Ki_speed_1 					= 0.01f;
-//float Kp_id_1 = 0.3f;
-//float Ki_id_1 = 230.0f;
-//float Kp_iq_1 = 0.5f;
-//float Ki_iq_1 = 230.0f;
+float Kp_speed_1 = 0.005f;
+float Ki_speed_1 = 0.01f;
+// float Kp_id_1 = 0.3f;
+// float Ki_id_1 = 230.0f;
+// float Kp_iq_1 = 0.5f;
+// float Ki_iq_1 = 230.0f;
 
 // Harmonic Current Injection
 int mode = 0;
@@ -90,73 +92,74 @@ struct uz_3ph_dq_t v_dq_ref_HCI_Volts_brose = {0};
 // =============== Declares for PMSM 2 =============== //
 
 // FOC Instances and Configs
-extern uz_SpeedControl_t* speed_controller_heidrive;
-extern uz_SetPoint_t* setpoint_instance_heidrive;
-extern uz_CurrentControl_t* current_controller_heidrive;
+extern uz_SpeedControl_t *speed_controller_heidrive;
+extern uz_SetPoint_t *setpoint_instance_heidrive;
+extern uz_CurrentControl_t *current_controller_heidrive;
 extern struct uz_PMSM_t config_PMSM_heidrive;
 
 // Inverter Measurement
-struct uz_3ph_abc_t v_abc_Volts_heidrive 	= {0};
-struct uz_3ph_dq_t v_dq_Volts_heidrive 	= {0};
+struct uz_3ph_abc_t v_abc_Volts_heidrive = {0};
+struct uz_3ph_dq_t v_dq_Volts_heidrive = {0};
 struct uz_3ph_dq_t v_dq_ref_Volts_heidrive = {0};
-struct uz_3ph_abc_t i_abc_Amps_heidrive 	= {0};
-struct uz_3ph_dq_t i_dq_Amps_heidrive 		= {0};
-struct uz_3ph_dq_t i_dq_ref_Amps_heidrive 	= {0};
-float v_DC_Volts_heidrive 					= 12.0f;
-float i_DC_Amps_heidrive 					= 0.0f;
+struct uz_3ph_abc_t i_abc_Amps_heidrive = {0};
+struct uz_3ph_dq_t i_dq_Amps_heidrive = {0};
+struct uz_3ph_dq_t i_dq_ref_Amps_heidrive = {0};
+float v_DC_Volts_heidrive = 12.0f;
+float i_DC_Amps_heidrive = 0.0f;
 
 // FOC Variables
-float n_ref_rpm_heidrive 					= 0.0f;
-float n_ref_rpm_heidrive_javascope=0.0f;
-float n_ref_rpm_heidrive_filtered= 0.0f;
+float n_ref_rpm_heidrive = 0.0f;
+float n_ref_rpm_brose = 0.0f;
 
-float M_ref_Nm_heidrive 					= 0.0f;
-float omega_m_rad_per_sec_heidrive 		= 0.0f;
-float omega_el_rad_per_sec_heidrive 		= 0.0f;
-float theta_el_rad_heidrive 				= 0.0f;
-float theta_el_rad_heidrive_advanced		= 0.0f;
-float theta_el_offset_2 			= 1.4f;
-struct uz_DutyCycle_t duty_cycle_heidrive 		= {0};
-uz_3ph_dq_t flux_approx             = {0};
-uz_3ph_dq_t flux_reference          = {0};
-float K_p_id                        = 0.0f;
-float K_p_iq                        = 0.0f;
+float n_ref_rpm_heidrive_javascope = 0.0f;
+float n_ref_rpm_heidrive_filtered = 0.0f;
 
+float M_ref_Nm_heidrive = 0.0f;
+float omega_m_rad_per_sec_heidrive = 0.0f;
+float omega_el_rad_per_sec_heidrive = 0.0f;
+float theta_el_rad_heidrive = 0.0f;
+float theta_el_rad_heidrive_advanced = 0.0f;
+float theta_el_offset_2 = 1.4f;
+struct uz_DutyCycle_t duty_cycle_heidrive = {0};
+uz_3ph_dq_t flux_approx = {0};
+uz_3ph_dq_t flux_reference = {0};
+float K_p_id = 0.0f;
+float K_p_iq = 0.0f;
 
-//Stuff
+// Stuff
 
-uint32_t setpoint_index				= 0U;
-uint32_t n_ref_setpoint_index=0U;
+uint32_t setpoint_index = 0U;
+uint32_t n_ref_setpoint_index = 0U;
 
-uint64_t old_uptime					= 0U;
-float start_marker					= 0.0f;
-float id_setpoints[22]={
+uint64_t old_uptime = 0U;
+float start_marker = 0.0f;
+float id_setpoints[22] = {
 #include "id_setpoints.csv"
 };
 
-float iq_setpoints[22]={
+float iq_setpoints[22] = {
 #include "iq_setpoints.csv"
 };
 
-float speed_setpoints[8]={-100,-200,-300,-500,-600,-700,-900,-1000};
+float speed_setpoints[8] = {-100, -200, -300, -500, -600, -700, -900, -1000};
 
 extern bool select_automatic_idiq;
 extern float PMSM_rated_current_brose;
-uint32_t Fehlerfall  = 0U;
+uint32_t Fehlerfall = 0U;
 extern bool select_misalignment;
 extern uz_3ph_dq_t i_dq_ref_java_Amps_brose;
 
-//DDPG Stuff
+// DDPG Stuff
 extern bool select_DDPG;
 extern bool select_FOC;
 float observation_ip[9U] = {0};
 #define NUMBER_OF_INPUTS_7N 7U
 #define NUMBER_OF_INPUTS_9N 9U
-uz_matrix_t* matrix_output;
+uz_matrix_t *matrix_output;
 uz_3ph_dq_t i_dq_integrated_error_Amps_brose = {0};
 uz_3ph_dq_t i_dq_error_Amps_brose = {0};
 float ts = 1.0f / UZ_PWM_FREQUENCY;
-float speed_weight_brose = 1.0f / 1500.0f;
+float speed_weight_brose = 1.0f / 4000.0f;
 uz_3ph_dq_t v_dq_non_limited_Volts_brose = {0};
 uz_3ph_dq_t v_dq_limited_Volts_brose = {0};
 uz_3ph_dq_t v_dq_limited_Volts_old_old_brose = {0};
@@ -168,18 +171,18 @@ bool start_angle_found = false;
 float theta_el_old_brose = 0.0f;
 bool change_speed = false;
 
-float M_meas_Nm=0.0f;
-float speed_tracking_error=0.0f;
+float M_meas_Nm = 0.0f;
+float speed_tracking_error = 0.0f;
 
-bool speed_setpoint_reached=false;
-bool wait_for_n_ref=true;
-bool manual_mode_heidrive=false;
-bool manual_mode_brose=false;
+bool speed_setpoint_reached = false;
+bool wait_for_n_ref = true;
+bool manual_mode_heidrive = false;
+bool manual_mode_brose = false;
 
 // 3 layer MLP
 
 #if ((NN_9_INPUT_3_64) || (NN_7_INPUT_3_64))
-    extern float mlp_ip_output[2U];
+extern float mlp_ip_output[2U];
 extern uz_matrix_t *p_output_data;
 extern uz_mlp_three_layer_ip_t *mlp_ip_instance;
 #endif
@@ -192,7 +195,13 @@ extern uz_mlp_three_layer_ip_t *mlp_ip_instance;
 //----------------------------------------------------
 static void ReadAllADC();
 
-#define PROFILE_SETPOINT_DURATION  5000U // 11290U
+#define PROFILE_SETPOINT_DURATION 5000U // 11290U
+
+
+
+
+
+//struct uz_pmsm_actual_data heidrive_actual_data = {0.0f};
 
 void ISR_Control(void *data)
 {
@@ -202,7 +211,7 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
     // Calculation of Signals for FOC for PMSM 2
     Global_Data.av.mechanicalRotorSpeed_heidrive = Resolver_outputs.n_mech_rpm;
-    //Global_Data.av.mechanicalRotorSpeed_filtered_heidrive = uz_signals_IIR_Filter_sample(Global_Data.objects.tracking_error_filter_heidrive, Global_Data.av.mechanicalRotorSpeed_heidrive);
+    // Global_Data.av.mechanicalRotorSpeed_filtered_heidrive = uz_signals_IIR_Filter_sample(Global_Data.objects.tracking_error_filter_heidrive, Global_Data.av.mechanicalRotorSpeed_heidrive);
     omega_m_rad_per_sec_heidrive = Global_Data.av.mechanicalRotorSpeed_filtered_heidrive * (2.0f * UZ_PIf) / 60.0f;
     omega_el_rad_per_sec_heidrive = omega_m_rad_per_sec_heidrive * config_PMSM_heidrive.polePairs;
     Global_Data.av.omega_el_heidrive = omega_el_rad_per_sec_heidrive;
@@ -213,162 +222,193 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, false, false, false);
 
     // Read Measurement Data of First Inverter
+
+    // heidrive_actual_data.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_B8;
+    // heidrive_actual_data.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_B7;
+    // heidrive_actual_data.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_B6;
+    // heidrive_actual_data.v_dc = 48.0f;
+
     v_abc_Volts_brose.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
     v_abc_Volts_brose.b = 11.7657f * Global_Data.aa.A1.me.ADC_B7 + 0.0533f;
     v_abc_Volts_brose.c = 11.7657f * Global_Data.aa.A1.me.ADC_B6 + 0.0533f;
-    v_DC_Volts_brose 	= 48.0f; // Global_Data.aa.A1.me.ADC_A1 * 12.0f;
-    i_abc_Amps_hoener.a  = 12.223f * Global_Data.aa.A1.me.ADC_A4 + 0.0164f;
-    i_abc_Amps_hoener.b  = 12.3123f * Global_Data.aa.A1.me.ADC_A3 + 0.0161f;
-    i_abc_Amps_hoener.c  = 12.4303f * Global_Data.aa.A1.me.ADC_A2 - 0.0184f;
-    i_DC_Amps_brose     = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+    v_DC_Volts_brose = 48.0f; // Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+    i_abc_Amps_hoener.a = 12.223f * Global_Data.aa.A1.me.ADC_A4 + 0.0164f;
+    i_abc_Amps_hoener.b = 12.3123f * Global_Data.aa.A1.me.ADC_A3 + 0.0161f;
+    i_abc_Amps_hoener.c = 12.4303f * Global_Data.aa.A1.me.ADC_A2 - 0.0184f;
+    i_DC_Amps_brose = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d1_brose = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_brose);
-
 
     // Read Measurement of Second Inverter
     v_abc_Volts_heidrive.a = 11.6798f * Global_Data.aa.A2.me.ADC_B8 - 0.3648f;
     v_abc_Volts_heidrive.b = 11.7657f * Global_Data.aa.A2.me.ADC_B7 + 0.0533f;
     v_abc_Volts_heidrive.c = 11.7657f * Global_Data.aa.A2.me.ADC_B6 + 0.0533f;
-    v_DC_Volts_heidrive 	= 48.0f; // Global_Data.aa.A2.me.ADC_A1 * 12.0f;
-    i_abc_Amps_heidrive.a  = 12.2889f * Global_Data.aa.A2.me.ADC_A4 + 0.0802f;
-    i_abc_Amps_heidrive.b  = 11.8330f * Global_Data.aa.A2.me.ADC_A3 + 0.1344f;
-    i_abc_Amps_heidrive.c  = 11.7894f * Global_Data.aa.A2.me.ADC_A2 + 0.1197f;
-    i_DC_Amps_heidrive     = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
+    v_DC_Volts_heidrive = 48.0f; // Global_Data.aa.A2.me.ADC_A1 * 12.0f;
+    i_abc_Amps_heidrive.a = 12.2889f * Global_Data.aa.A2.me.ADC_A4 + 0.0802f;
+    i_abc_Amps_heidrive.b = 11.8330f * Global_Data.aa.A2.me.ADC_A3 + 0.1344f;
+    i_abc_Amps_heidrive.c = 11.7894f * Global_Data.aa.A2.me.ADC_A2 + 0.1197f;
+    i_DC_Amps_heidrive = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d2_heidrive = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_heidrive);
 
-    M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f;// - 0.02f;
+    M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f; // - 0.02f;
     // Get current state
-    platform_state_t current_state=ultrazohm_state_machine_get_state();
+    platform_state_t current_state = ultrazohm_state_machine_get_state();
 
     // Enable Inverter Adapter Hardware
-    if (current_state == running_state || current_state == control_state) {
-    	// enable inverter adapter hardware
+    if (current_state == running_state || current_state == control_state)
+    {
+        // enable inverter adapter hardware
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_brose, true);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_heidrive, true);
-    } else {
+    }
+    else
+    {
         // disable inverter adapter hardware
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_brose, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_heidrive, false);
     }
 
     // Calculation of Signals for FOC for PMSM 1
-    omega_m_rad_per_sec_brose = Global_Data.av.mechanicalRotorSpeed_filtered_brose*(2.0f*UZ_PIf)/60.0f;
-    omega_el_rad_per_sec_brose = omega_m_rad_per_sec_brose*config_PMSM_brose.polePairs;
+    omega_m_rad_per_sec_brose = Global_Data.av.mechanicalRotorSpeed_filtered_brose * (2.0f * UZ_PIf) / 60.0f;
+    omega_el_rad_per_sec_brose = omega_m_rad_per_sec_brose * config_PMSM_brose.polePairs;
     Global_Data.av.omega_el_brose = omega_el_rad_per_sec_brose;
     theta_el_rad_brose = Global_Data.av.theta_elec_brose - theta_el_offset_brose;
 
-    if(select_misalignment==true) {
-    	theta_el_rad_brose += 5.0f * (M_PI / 180.0f);
+    if (select_misalignment == true)
+    {
+        theta_el_rad_brose += 5.0f * (M_PI / 180.0f);
     }
-    //Anglelead
-    theta_el_rad_brose_advanced = theta_el_rad_brose + (1.5f * omega_el_rad_per_sec_brose ) / UZ_PWM_FREQUENCY;
+    // Anglelead
+    theta_el_rad_brose_advanced = theta_el_rad_brose + (1.5f * omega_el_rad_per_sec_brose) / UZ_PWM_FREQUENCY;
     Global_Data.av.theta_mech_brose = theta_el_rad_brose / 4.0f;
     i_dq_Amps_brose = uz_transformation_3ph_abc_to_dq(i_abc_Amps_hoener, theta_el_rad_brose);
     v_dq_Volts_brose = uz_transformation_3ph_abc_to_dq(v_abc_Volts_brose, theta_el_rad_brose);
 
-    //Anglelead
-    theta_el_rad_heidrive_advanced = theta_el_rad_heidrive + (1.5f * omega_el_rad_per_sec_heidrive ) / UZ_PWM_FREQUENCY;
+    // Anglelead
+    theta_el_rad_heidrive_advanced = theta_el_rad_heidrive + (1.5f * omega_el_rad_per_sec_heidrive) / UZ_PWM_FREQUENCY;
     i_dq_Amps_heidrive = uz_transformation_3ph_abc_to_dq(i_abc_Amps_heidrive, theta_el_rad_heidrive);
     v_dq_Volts_heidrive = uz_transformation_3ph_abc_to_dq(v_abc_Volts_heidrive, theta_el_rad_heidrive);
 
-    //Automatic evaluation profile
-    if( (select_automatic_idiq) ){
+    // Automatic evaluation profile
+    if ((select_automatic_idiq))
+    {
 
-    	n_ref_rpm_heidrive=speed_setpoints[n_ref_setpoint_index];
-        speed_tracking_error=fabsf(n_ref_rpm_heidrive-Global_Data.av.mechanicalRotorSpeed_filtered_heidrive);
+        n_ref_rpm_heidrive = speed_setpoints[n_ref_setpoint_index];
+        speed_tracking_error = fabsf(n_ref_rpm_heidrive - Global_Data.av.mechanicalRotorSpeed_filtered_heidrive);
 
-    	if(speed_tracking_error<1.0f && wait_for_n_ref){
-    		speed_setpoint_reached=true;
-    		wait_for_n_ref=false;
-    	}
+        if (speed_tracking_error < 1.0f && wait_for_n_ref)
+        {
+            speed_setpoint_reached = true;
+            wait_for_n_ref = false;
+        }
 
-    	if ((((theta_el_old_brose - Global_Data.av.theta_elec_brose) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_heidrive < 10.0f))&& (!start_angle_found) && (speed_setpoint_reached) ) {
-    		start_angle_found = true;
-    		start_marker=1.0f;
-    		speed_setpoint_reached=false;
-    	}
-    	if (start_angle_found) {
-    		i_dq_ref_Amps_brose.d = id_setpoints[setpoint_index];
-    		i_dq_ref_Amps_brose.q = iq_setpoints[setpoint_index] * PMSM_rated_current_brose;
+        if ((((theta_el_old_brose - Global_Data.av.theta_elec_brose) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_heidrive < 10.0f)) && (!start_angle_found) && (speed_setpoint_reached))
+        {
+            start_angle_found = true;
+            start_marker = 1.0f;
+            speed_setpoint_reached = false;
+        }
+        if (start_angle_found)
+        {
+            i_dq_ref_Amps_brose.d = id_setpoints[setpoint_index];
+            i_dq_ref_Amps_brose.q = iq_setpoints[setpoint_index] * PMSM_rated_current_brose;
 
-    		// step throught the array
-    		uint64_t current_uptime=uz_SystemTime_GetInterruptCounter();
-    		if((current_uptime>(old_uptime + PROFILE_SETPOINT_DURATION) && (!change_speed)) ){
-    			old_uptime=current_uptime;
+            // step thought the array
+            uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
+            if ((current_uptime > (old_uptime + PROFILE_SETPOINT_DURATION) && (!change_speed)))
+            {
+                old_uptime = current_uptime;
 
-    			if(setpoint_index<21){
-    				setpoint_index++;
-    			}else{
-    				setpoint_index = 0U;
-    				change_speed = true;
-    			}
-    		}
-    		if (change_speed) {
-    			if(current_uptime>(old_uptime + PROFILE_SETPOINT_DURATION)) {
-    				start_marker=0.0f;
-    				//n_ref_rpm_heidrive = n_ref_rpm_heidrive - 100.0f;
-    				start_angle_found = false;
-    				wait_for_n_ref=true;
-    				change_speed = false;
-    				if(n_ref_setpoint_index<7U){
-    					n_ref_setpoint_index++; //=n_ref_setpoint_index+1U;
-    				}else{
-    					// stop
-        				select_automatic_idiq = false;
-        				n_ref_setpoint_index=0U;
-    				}
-    		    	n_ref_rpm_heidrive=speed_setpoints[n_ref_setpoint_index];
-    			}
-    		}
-    	}
-
-    }else{
-    	i_dq_ref_Amps_brose.d=i_dq_ref_java_Amps_brose.d;
-    	i_dq_ref_Amps_brose.q=i_dq_ref_java_Amps_brose.q;
-    	n_ref_rpm_heidrive=n_ref_rpm_heidrive_javascope;
+                if (setpoint_index < 21)
+                {
+                    setpoint_index++;
+                }
+                else
+                {
+                    setpoint_index = 0U;
+                    change_speed = true;
+                }
+            }
+            if (change_speed)
+            {
+                if (current_uptime > (old_uptime + PROFILE_SETPOINT_DURATION))
+                {
+                    start_marker = 0.0f;
+                    // n_ref_rpm_heidrive = n_ref_rpm_heidrive - 100.0f;
+                    start_angle_found = false;
+                    wait_for_n_ref = true;
+                    change_speed = false;
+                    if (n_ref_setpoint_index < 7U)
+                    {
+                        n_ref_setpoint_index++; //=n_ref_setpoint_index+1U;
+                    }
+                    else
+                    {
+                        // stop
+                        select_automatic_idiq = false;
+                        n_ref_setpoint_index = 0U;
+                    }
+                    n_ref_rpm_heidrive = speed_setpoints[n_ref_setpoint_index];
+                }
+            }
+        }
+    }
+    else
+    {
+        i_dq_ref_Amps_brose.d = i_dq_ref_java_Amps_brose.d;
+        i_dq_ref_Amps_brose.q = i_dq_ref_java_Amps_brose.q;
+        n_ref_rpm_heidrive = n_ref_rpm_heidrive_javascope;
     }
     theta_el_old_brose = Global_Data.av.theta_elec_brose;
 
-    if (current_state==control_state)
+    if (current_state == control_state)
     {
-    	if(select_FOC) {
+        if (select_FOC)
+        {
             v_dq_ref_Volts_brose = uz_CurrentControl_sample(current_controller_brose, i_dq_ref_Amps_brose, i_dq_Amps_brose, v_DC_Volts_brose, omega_el_rad_per_sec_brose);
-    		duty_cycle_brose = uz_Space_Vector_Modulation(v_dq_ref_Volts_brose, v_DC_Volts_brose, theta_el_rad_brose_advanced);
-    	} else if(select_DDPG) {
-    		if(ext_clamping_brose == false) {
-    			i_dq_integrated_error_Amps_brose.d = (i_dq_integrated_error_Amps_brose.d + (i_dq_error_Amps_brose.d * ts)); // use Forward-Euler with error of previous timestep for integration
-    			i_dq_integrated_error_Amps_brose.q = (i_dq_integrated_error_Amps_brose.q + (i_dq_error_Amps_brose.q * ts));
-    		} else {
-    			i_dq_integrated_error_Amps_brose.d += 0.0f;
-    			i_dq_integrated_error_Amps_brose.q += 0.0f;
-    		}
-    		i_dq_error_Amps_brose.d = (i_dq_ref_Amps_brose.d - i_dq_Amps_brose.d) / PMSM_rated_current_brose;
-    		i_dq_error_Amps_brose.q = (i_dq_ref_Amps_brose.q - i_dq_Amps_brose.q) / PMSM_rated_current_brose;
+            duty_cycle_brose = uz_Space_Vector_Modulation(v_dq_ref_Volts_brose, v_DC_Volts_brose, theta_el_rad_brose_advanced);
+        }
+        else if (select_DDPG)
+        {
+            if (ext_clamping_brose == false)
+            {
+                i_dq_integrated_error_Amps_brose.d = (i_dq_integrated_error_Amps_brose.d + (i_dq_error_Amps_brose.d * ts)); // use Forward-Euler with error of previous timestep for integration
+                i_dq_integrated_error_Amps_brose.q = (i_dq_integrated_error_Amps_brose.q + (i_dq_error_Amps_brose.q * ts));
+            }
+            else
+            {
+                i_dq_integrated_error_Amps_brose.d += 0.0f;
+                i_dq_integrated_error_Amps_brose.q += 0.0f;
+            }
+            i_dq_error_Amps_brose.d = (i_dq_ref_Amps_brose.d - i_dq_Amps_brose.d) / PMSM_rated_current_brose;
+            i_dq_error_Amps_brose.q = (i_dq_ref_Amps_brose.q - i_dq_Amps_brose.q) / PMSM_rated_current_brose;
 
 #if ((NN_9_INPUT_1_64) || (NN_9_INPUT_3_64)) == 1
 
             observation_ip[0] = i_dq_error_Amps_brose.d;
-    		observation_ip[1] = i_dq_integrated_error_Amps_brose.d * UZ_PWM_FREQUENCY;
-    		observation_ip[2] = i_dq_error_Amps_brose.q;
-    		observation_ip[3] = i_dq_integrated_error_Amps_brose.q * UZ_PWM_FREQUENCY ;
-    		observation_ip[4] = i_dq_Amps_brose.d / PMSM_rated_current_brose;
-    		observation_ip[5] = i_dq_Amps_brose.q / PMSM_rated_current_brose;
-    		observation_ip[6] = n_ref_rpm_brose * speed_weight_brose; //Global_Data.av.mechanicalRotorSpeed_filtered_brose * speed_weight_brose;
-    		observation_ip[7] = v_dq_limited_Volts_old_old_brose.d * Voltage_Scaling_brose;
-    		observation_ip[8] = v_dq_limited_Volts_old_old_brose.q * Voltage_Scaling_brose;
-			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
-	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
-	  		}
+            observation_ip[1] = i_dq_integrated_error_Amps_brose.d * UZ_PWM_FREQUENCY;
+            observation_ip[2] = i_dq_error_Amps_brose.q;
+            observation_ip[3] = i_dq_integrated_error_Amps_brose.q * UZ_PWM_FREQUENCY;
+            observation_ip[4] = i_dq_Amps_brose.d / PMSM_rated_current_brose;
+            observation_ip[5] = i_dq_Amps_brose.q / PMSM_rated_current_brose;
+            observation_ip[6] = n_ref_rpm_brose * speed_weight_brose; // Global_Data.av.mechanicalRotorSpeed_filtered_brose * speed_weight_brose;
+            observation_ip[7] = v_dq_limited_Volts_old_old_brose.d * Voltage_Scaling_brose;
+            observation_ip[8] = v_dq_limited_Volts_old_old_brose.q * Voltage_Scaling_brose;
+            for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++)
+            {
+                uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input, observation_ip[i], 0U, i);
+            }
 #elif NN_7_INPUT_1_64 == 1
-			observation_ip[0] = i_dq_error_Amps_brose.d;
-			observation_ip[1] = v_dq_limited_Volts_old_old_brose.d * Voltage_Scaling_brose;
-			observation_ip[2] = i_dq_error_Amps_brose.q;
-			observation_ip[3] = v_dq_limited_Volts_old_old_brose.q * Voltage_Scaling_brose;
-			observation_ip[4] = i_dq_Amps_brose.d / PMSM_rated_current_brose;
-			observation_ip[5] = i_dq_Amps_brose.q / PMSM_rated_current_brose;
-			observation_ip[6] = Global_Data.av.mechanicalRotorSpeed_filtered_brose * speed_weight_brose;
-			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_7N; i++) {
-					uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
-			}
+            observation_ip[0] = i_dq_error_Amps_brose.d;
+            observation_ip[1] = v_dq_limited_Volts_old_old_brose.d * Voltage_Scaling_brose;
+            observation_ip[2] = i_dq_error_Amps_brose.q;
+            observation_ip[3] = v_dq_limited_Volts_old_old_brose.q * Voltage_Scaling_brose;
+            observation_ip[4] = i_dq_Amps_brose.d / PMSM_rated_current_brose;
+            observation_ip[5] = i_dq_Amps_brose.q / PMSM_rated_current_brose;
+            observation_ip[6] = Global_Data.av.mechanicalRotorSpeed_filtered_brose * speed_weight_brose;
+            for (uint32_t i = 0; i < NUMBER_OF_INPUTS_7N; i++)
+            {
+                uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input, observation_ip[i], 0U, i);
+            }
 #endif
 
 #if NN_9_INPUT_3_64 == 1
@@ -377,56 +417,58 @@ void ISR_Control(void *data)
             v_dq_non_limited_Volts_brose.d = (uz_nn_activation_function_tanh(mlp_ip_output[0])) * U_max_brose;
             v_dq_non_limited_Volts_brose.q = (uz_nn_activation_function_tanh(mlp_ip_output[1])) * U_max_brose;
 #else
-            uz_nn_ff(Global_Data.objects.nn_layer,Global_Data.objects.matrix_input);
-    	    matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
-    	    uz_matrix_multiply_by_scalar(matrix_output,U_max_brose); // scaling layer of nn
-    	    v_dq_non_limited_Volts_brose.d = uz_matrix_get_element_zero_based(matrix_output,0U,0U);
-    	    v_dq_non_limited_Volts_brose.q = uz_matrix_get_element_zero_based(matrix_output,0U,1U);
+            uz_nn_ff(Global_Data.objects.nn_layer, Global_Data.objects.matrix_input);
+            matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
+            uz_matrix_multiply_by_scalar(matrix_output, U_max_brose); // scaling layer of nn
+            v_dq_non_limited_Volts_brose.d = uz_matrix_get_element_zero_based(matrix_output, 0U, 0U);
+            v_dq_non_limited_Volts_brose.q = uz_matrix_get_element_zero_based(matrix_output, 0U, 1U);
 #endif
-    	    v_dq_limited_Volts_brose = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_brose, v_DC_Volts_brose, max_modulation_index_brose, omega_el_rad_per_sec_brose, i_dq_ref_Amps_brose, &ext_clamping_brose);
-    	    //Introduce delay
-    	    v_dq_limited_Volts_old_old_brose = v_dq_limited_Volts_brose;
-    	    duty_cycle_brose = uz_Space_Vector_Modulation(v_dq_limited_Volts_brose, v_DC_Volts_brose, theta_el_rad_brose_advanced);
+            v_dq_limited_Volts_brose = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_brose, v_DC_Volts_brose, max_modulation_index_brose, omega_el_rad_per_sec_brose, i_dq_ref_Amps_brose, &ext_clamping_brose);
+            // Introduce delay
+            v_dq_limited_Volts_old_old_brose = v_dq_limited_Volts_brose;
+            duty_cycle_brose = uz_Space_Vector_Modulation(v_dq_limited_Volts_brose, v_DC_Volts_brose, theta_el_rad_brose_advanced);
+        }
+        else
+        {
+            //		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+            //		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+            //		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+        }
+        //	Global_Data.rasv.halfBridge1DutyCycle = duty_cycle_brose.DutyCycle_A;
+        //	Global_Data.rasv.halfBridge2DutyCycle = duty_cycle_brose.DutyCycle_B;
+        //	Global_Data.rasv.halfBridge3DutyCycle = duty_cycle_brose.DutyCycle_C;
 
-    	} else {
-    //		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-    //		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-    //		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-    	}
-    //	Global_Data.rasv.halfBridge1DutyCycle = duty_cycle_brose.DutyCycle_A;
-    //	Global_Data.rasv.halfBridge2DutyCycle = duty_cycle_brose.DutyCycle_B;
-    //	Global_Data.rasv.halfBridge3DutyCycle = duty_cycle_brose.DutyCycle_C;
-
-    	// Field Oriented Control of PMSM 2
-    	n_ref_rpm_heidrive_filtered=uz_signals_IIR_Filter_sample(Global_Data.objects.speed_setpoint_filter_heidrive,n_ref_rpm_heidrive);
+        // Field Oriented Control of PMSM 2
+        n_ref_rpm_heidrive_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_setpoint_filter_heidrive, n_ref_rpm_heidrive);
         M_ref_Nm_heidrive = uz_SpeedControl_sample(speed_controller_heidrive, omega_m_rad_per_sec_heidrive, n_ref_rpm_heidrive_filtered);
-       // M_ref_Nm_heidrive=0.11f*i_dq_ref_Amps_brose.q+M_ref_Nm_heidrive_without; // Vorsteuerung Lastmoment
+        // M_ref_Nm_heidrive=0.11f*i_dq_ref_Amps_brose.q+M_ref_Nm_heidrive_without; // Vorsteuerung Lastmoment
         i_dq_ref_Amps_heidrive = uz_SetPoint_sample(setpoint_instance_heidrive, omega_m_rad_per_sec_heidrive, M_ref_Nm_heidrive, v_DC_Volts_heidrive, i_dq_Amps_heidrive);
-       	v_dq_ref_Volts_heidrive = uz_CurrentControl_sample(current_controller_heidrive, i_dq_ref_Amps_heidrive, i_dq_Amps_heidrive, v_DC_Volts_heidrive, omega_el_rad_per_sec_heidrive);
-       	duty_cycle_heidrive = uz_Space_Vector_Modulation(v_dq_ref_Volts_heidrive, v_DC_Volts_heidrive, theta_el_rad_heidrive_advanced);
-      // 	Global_Data.rasv.halfBridge4DutyCycle = duty_cycle_heidrive.DutyCycle_A;
-      // 	Global_Data.rasv.halfBridge5DutyCycle = duty_cycle_heidrive.DutyCycle_B;
-      // 	Global_Data.rasv.halfBridge6DutyCycle = duty_cycle_heidrive.DutyCycle_C;
+        v_dq_ref_Volts_heidrive = uz_CurrentControl_sample(current_controller_heidrive, i_dq_ref_Amps_heidrive, i_dq_Amps_heidrive, v_DC_Volts_heidrive, omega_el_rad_per_sec_heidrive);
+        duty_cycle_heidrive = uz_Space_Vector_Modulation(v_dq_ref_Volts_heidrive, v_DC_Volts_heidrive, theta_el_rad_heidrive_advanced);
+        // 	Global_Data.rasv.halfBridge4DutyCycle = duty_cycle_heidrive.DutyCycle_A;
+        // 	Global_Data.rasv.halfBridge5DutyCycle = duty_cycle_heidrive.DutyCycle_B;
+        // 	Global_Data.rasv.halfBridge6DutyCycle = duty_cycle_heidrive.DutyCycle_C;
     }
     else
     {
-    	// Set tristate
-    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
-    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, true, true, true);
+        // Set tristate
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, true, true, true);
 
-    	// Reset speed and current control
-    	uz_SpeedControl_reset(speed_controller_brose);
-    	uz_CurrentControl_reset(current_controller_brose);
-    	uz_SpeedControl_reset(speed_controller_heidrive);
-    	uz_CurrentControl_reset(current_controller_heidrive);
+        // Reset speed and current control
+        uz_SpeedControl_reset(speed_controller_brose);
+        uz_CurrentControl_reset(current_controller_brose);
+        uz_SpeedControl_reset(speed_controller_heidrive);
+        uz_CurrentControl_reset(current_controller_heidrive);
 
-    	//Reset DDPG
-    	ext_clamping_brose = false;
-    	i_dq_integrated_error_Amps_brose.d = 0.0f;
-    	i_dq_integrated_error_Amps_brose.q = 0.0f;
+        // Reset DDPG
+        ext_clamping_brose = false;
+        i_dq_integrated_error_Amps_brose.d = 0.0f;
+        i_dq_integrated_error_Amps_brose.q = 0.0f;
     }
 
-    if (manual_mode_brose){
+    if (manual_mode_brose)
+    {
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, true, true, true);
     }
@@ -444,113 +486,133 @@ void ISR_Control(void *data)
     JavaScope_update(&Global_Data);
 
     // Inverter 1 safety
-    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
-    //Overtemperature for H1
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H1) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 1U;
+    // Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+    // Overtemperature for H1
+    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H1)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 1U;
     }
-    //Overtemperature for L1
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L1) {
-        //ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 2U;
+    // Overtemperature for L1
+    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L1)
+    {
+        // ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 2U;
     }
-    //Overtemperature for H2
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H2) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 3U;
+    // Overtemperature for H2
+    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H2)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 3U;
     }
-    //Overtemperature for L2
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L2) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 4U;
+    // Overtemperature for L2
+    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L2)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 4U;
     }
-    //Overtemperature for H3
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H3) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 5U;
+    // Overtemperature for H3
+    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H3)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 5U;
     }
-    //Overtemperature for L3
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L3) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 6U;
+    // Overtemperature for L3
+    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L3)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 6U;
     }
-    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
-    //Binding of the signals to the driver is slightly unintuitive
-    //Overcurrent for Phase A
-    if (!Global_Data.av.inverter_outputs_d1_brose.OC_L1) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 7U;
+    // Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+    // Binding of the signals to the driver is slightly unintuitive
+    // Overcurrent for Phase A
+    if (!Global_Data.av.inverter_outputs_d1_brose.OC_L1)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 7U;
     }
-    //Overcurrent for Phase B
-    if (!Global_Data.av.inverter_outputs_d1_brose.OC_H1) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 8U;
+    // Overcurrent for Phase B
+    if (!Global_Data.av.inverter_outputs_d1_brose.OC_H1)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 8U;
     }
-    //Overcurrent for Phase C
-    if (!Global_Data.av.inverter_outputs_d1_brose.OC_L2) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 9U;
+    // Overcurrent for Phase C
+    if (!Global_Data.av.inverter_outputs_d1_brose.OC_L2)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 9U;
     }
-    //Overcurrent for DC-link
-    if (!Global_Data.av.inverter_outputs_d1_brose.OC_H2) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 10U;
+    // Overcurrent for DC-link
+    if (!Global_Data.av.inverter_outputs_d1_brose.OC_H2)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 10U;
     }
 
     // Inverter 2 safety
-    //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
-    //Overtemperature for H1
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H1) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 11U;
-    }
-    //Overtemperature for L1
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L1) {
-    	//ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 12U;
-    }
-    //Overtemperature for H2
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H2) {
+    // Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+    // Overtemperature for H1
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H1)
+    {
         ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 13U;
+        Fehlerfall = 11U;
     }
-    //Overtemperature for L2
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L2) {
+    // Overtemperature for L1
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L1)
+    {
+        // ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 12U;
+    }
+    // Overtemperature for H2
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H2)
+    {
         ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 14U;
+        Fehlerfall = 13U;
     }
-    //Overtemperature for H3
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H3) {
+    // Overtemperature for L2
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L2)
+    {
         ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 15U;
+        Fehlerfall = 14U;
     }
-    //Overtemperature for L3
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L3) {
+    // Overtemperature for H3
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H3)
+    {
         ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 16U;
+        Fehlerfall = 15U;
     }
-    //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
-    //Binding of the signals to the driver is slightly unintuitive
-    //Overcurrent for Phase A
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_L1) {
-    	ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 17U;
-    }
-    //Overcurrent for Phase B
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_H1) {
+    // Overtemperature for L3
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L3)
+    {
         ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 18U;
+        Fehlerfall = 16U;
     }
-    //Overcurrent for Phase C
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_L2) {
+    // Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+    // Binding of the signals to the driver is slightly unintuitive
+    // Overcurrent for Phase A
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_L1)
+    {
         ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 19U;
+        Fehlerfall = 17U;
     }
-    //Overcurrent for DC-link
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_H2) {
+    // Overcurrent for Phase B
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_H1)
+    {
         ultrazohm_state_machine_set_error(true);
-    	Fehlerfall = 20U;
+        Fehlerfall = 18U;
+    }
+    // Overcurrent for Phase C
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_L2)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 19U;
+    }
+    // Overcurrent for DC-link
+    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_H2)
+    {
+        ultrazohm_state_machine_set_error(true);
+        Fehlerfall = 20U;
     }
 
     // Read the timer value at the very end of the ISR to minimize measurement error
@@ -586,14 +648,13 @@ int Initialize_ISR()
     }
 
     // Enable uz_mux_axi for triggering the ADCs and the ISR
-//    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
-//    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-//    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-    //uz_mux_axi_enable(Global_Data.objects.mux_axi);
+    //    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+    //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+    // uz_mux_axi_enable(Global_Data.objects.mux_axi);
 
     return Status;
 }
-
 
 //==============================================================================================================================================================
 //----------------------------------------------------

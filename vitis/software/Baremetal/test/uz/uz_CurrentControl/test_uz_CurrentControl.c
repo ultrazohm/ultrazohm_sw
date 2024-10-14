@@ -7,6 +7,7 @@
 #include "../uz_signals/uz_signals.h"
 #include "uz_linear_decoupling.h"
 #include "../uz_Transformation/uz_Transformation.h"
+#include "mock_uz_static_nonlinear_decoupling.h"
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 

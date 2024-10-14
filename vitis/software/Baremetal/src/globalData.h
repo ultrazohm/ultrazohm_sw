@@ -142,9 +142,6 @@ typedef struct{
 	uz_inverter_adapter_t* inverter_d2_heidrive;
 	uz_resolver_pl_interface_t* resolver_pl_d4;
 	uz_resolverIP_t* resolver_d4;
-	uz_approximate_flux_t* approximate_flux_instance;
-	uz_CurrentControl_Kp_id_adjustment_t* Kp_id_adjustment_instance;
-	uz_CurrentControl_Kp_iq_adjustment_t* Kp_iq_adjustment_instance;
 	uz_matrix_t* matrix_input;
 	uz_nn_t* nn_layer;
 	uz_IIR_Filter_t* speed_setpoint_filter_heidrive;

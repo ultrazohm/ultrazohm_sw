@@ -34,6 +34,7 @@
 #include "include/uz_EnDat_IP_Core_init.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "include/uz_temperature_card_init.h"
+#include "uz/uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
 
 
 // UltraZohm includes
@@ -46,6 +47,7 @@
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
 #include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
+#include "uz/uz_signals/uz_signals.h"
 
 #include "uz/uz_HAL.h"
 

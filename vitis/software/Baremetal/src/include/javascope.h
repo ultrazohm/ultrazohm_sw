@@ -29,6 +29,8 @@ enum JS_OberservableData {
 	JSO_theta_el,
 	JSO_omega_mech,
 	JSO_omega_el,
+	JSO_omega_mech_filtered,
+	JSO_omega_el_filtered,
 	JSO_U_DC,
 	JSO_ua,
 	JSO_ub,
@@ -56,6 +58,8 @@ enum JS_OberservableData {
 	JSO_temp_mosfet,
 	JSO_temp_motor,
 	JSO_torque_meas,
+	JSO_theta_elec_pred,
+	JSO_FLOAT_EnDat_responselength_bits,
 	JSO_ENDMARKER
 };
 
@@ -81,6 +85,10 @@ enum JS_SlowData {
 	JSSD_FLOAT_u_q_ref,
 	JSSD_FLOAT_temp_mosfet,
 	JSSD_FLOAT_temp_motor,
+	JSSD_FLOAT_EnDat_Value_Calc_Time,
+	JSSD_FLOAT_EnDat_responselength_bits,
+	JSSD_FLOAT_EnDat_sync_quality,
+	JSSD_FLOAT_Error_Num,
 	JSSD_ENDMARKER
 };
 
@@ -138,7 +146,7 @@ enum gui_button_mapping {
 	DutyCycle1,
 	DutyCycle2,
 	DutyCycle3,
-	theta_mech_offset,
+	theta_el_offset,
 	Iq_ref,
 	Id_ref,
 	Kp_Iq,

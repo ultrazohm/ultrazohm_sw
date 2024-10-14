@@ -11,6 +11,8 @@
 #include "IP_Cores/uz_EnDat/uz_EnDat.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -91,14 +93,20 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float EnDat_pos_age;
+	float EnDat_value_calc_time;
+	float EnDat_value_response_length;
+	float EnDat_sync_quality;
 	float omega_mech;
 	float omega_mech_filtered;
 	float omega_el;
+	float omega_el_filtered;
 	float theta_mech_comp;
 	uz_temperaturecard_OneGroup channel_A_data;
 	uz_temperaturecard_OneGroup channel_B_data;
 	uz_temperaturecard_OneGroup channel_C_data;
 	float torque_meas;
+	float theta_elec_pred;
+	float error_num;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -139,6 +147,8 @@ typedef struct{
 	uz_EnDat_t* EnDat_master_pointer;
 	uz_CurrentControl_t* FOC_instance;
 	uz_temperaturecard_t* temperature_card_d3;
+	uz_IIR_Filter_t*	torque_meas_filter_LP;
+	uz_dq_setpoint_filter* dq_setpoint_filter;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

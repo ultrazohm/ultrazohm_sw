@@ -51,10 +51,12 @@ extern DS_Data Global_Data;
 #define PHASE_VOLT_CONV_W 			1/0.0546
 #define MOSFET_TEMP_CONV_U 			1
 
-#define MAX_CURRENT_ASSERTION 		100.0f
-#define MAX_SPEED_ASSERTION			500.0f
-#define MAX_TEMP_ASSERTION			60.0f
-#define MAX_MOTOR_TEMP_ASSERTION	60.0f
+#define ISR_SAMPLE_FREQ				40000
+
+#define MAX_CURRENT_ASSERTION 		280.0f
+#define MAX_SPEED_ASSERTION			2300.0f
+#define MAX_TEMP_ASSERTION			80.0f
+#define MAX_MOTOR_TEMP_ASSERTION	100.0f
 
 bool SKAI_nERROUT = 0U;			// Start in error-mode
 bool flg_reset_SKAI = 0U;
@@ -80,6 +82,7 @@ bool flg_compensate_age = 1U;
 bool flg_pred_theta_el = 1U;
 
 float theta_elec_pred = 0.0f;
+float torque_meas_raw = 0.0f;
 
 enum control_state_list
 {
@@ -108,7 +111,6 @@ struct uz_DutyCycle_t output_dutycycle = {
 };
 
 
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -122,13 +124,14 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, -1, false, true) - 1.04f + (Global_Data.av.theta_offset/21.0f);
-    Global_Data.av.EnDat_pos_age = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 0, true, false);
+    Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 32, false, true) - 0.64f + (Global_Data.av.theta_offset/21.0f);
+    Global_Data.av.EnDat_pos_age = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 32, true, false);
     Global_Data.av.mechanicalRotorSpeed = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.EnDat_master_pointer);
 	Global_Data.av.mechanicalRotorSpeed_filtered = uz_EnDat_rpm_smoothening(Global_Data.av.mechanicalRotorSpeed, 256U);
 	Global_Data.av.omega_mech = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed);
-	Global_Data.av.omega_mech_filtered = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed_filtered);
-    Global_Data.av.omega_el = Global_Data.av.omega_mech_filtered * 21.0f;
+	//Global_Data.av.omega_mech_filtered = uz_EnDat_rpm_to_rad_per_second_converter(Global_Data.av.mechanicalRotorSpeed_filtered);
+    Global_Data.av.omega_el = Global_Data.av.omega_mech * 21.0f;
+    //Global_Data.av.omega_el_filtered = Global_Data.av.omega_mech_filtered * 21.0f;
 	if(flg_compensate_age == true){
     	// compensation of delay time
     	Global_Data.av.theta_mech_comp = Global_Data.av.theta_mech + Global_Data.av.omega_mech * Global_Data.av.EnDat_pos_age;
@@ -136,6 +139,10 @@ void ISR_Control(void *data)
     } else{
     	Global_Data.av.theta_elec = Global_Data.av.theta_mech * 21.0f;
     }
+
+    //Global_Data.av.EnDat_value_calc_time = uz_EnDat_time_elapsed_ns_to_s_converter(uz_EnDat_read_time_elapsed(Global_Data.objects.EnDat_master_pointer, uz_EnDat_elapsed_t0_t1));
+    //Global_Data.av.EnDat_value_response_length = uz_EnDat_read_reponselength_and_convert_to_float(Global_Data.objects.EnDat_master_pointer);
+    //Global_Data.av.EnDat_sync_quality = uz_EnDat_calculate_sync_quality_indicator(Global_Data.objects.EnDat_master_pointer, Global_Data.av.EnDat_value_calc_time);
 
     Global_Data.av.I_U = (Global_Data.aa.A1.me.ADC_A4 - 0.253424806f + 0.179376f) * PHASE_CURRENT_CONV_U;
     Global_Data.av.I_V = (Global_Data.aa.A1.me.ADC_A3 - 0.092072175f - 0.067266) * PHASE_CURRENT_CONV_V;
@@ -146,7 +153,8 @@ void ISR_Control(void *data)
     Global_Data.av.U_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_V;
     Global_Data.av.U_W = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_W;
 
-    Global_Data.av.torque_meas = Global_Data.aa.A2.me.ADC_A1 * 10.0f;
+    //torque_meas_raw = Global_Data.aa.A2.me.ADC_A1 * 20.0f;
+    //Global_Data.av.torque_meas = uz_signals_IIR_Filter_sample(Global_Data.objects.torque_meas_filter_LP, torque_meas_raw);
 
     float volt_temp = Global_Data.aa.A1.me.ADC_B5 * MOSFET_TEMP_CONV_U;
     resistor_temp = polycoef_a * pow(volt_temp, 3) + polycoef_b * pow(volt_temp, 2) + polycoef_c * volt_temp + polycoef_d;
@@ -159,11 +167,16 @@ void ISR_Control(void *data)
 
     // Assertion check
     //
-    if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION) || (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION) ) {
+    if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed_filtered) >= MAX_SPEED_ASSERTION) || (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION) ) {
     	// Assertion to Stop Machine if max. Current or max. Speed
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	SKAI_nERROUT = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio, 0);
+    	if (SKAI_nERROUT == 1U){
+    		// Umrichter noch nicht im Fehlerfall
+    		Global_Data.av.error_num = 1.0f;
+    	}
     	ultrazohm_state_machine_set_stop(true);
     	// Set reset-gpio to zero
     	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio, 2, 0U);
@@ -215,10 +228,11 @@ void ISR_Control(void *data)
     					uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
     				}
     				// Precharge for minimum 1 ms -> Set bottom gate to high
-    				if ((flg_precharge_SKAI == 1U) && ((reset_counter - delta_counter) <= 2.0f*0.001f*UZ_PWM_FREQUENCY) ){
+    				if ((flg_precharge_SKAI == 1U) && ((reset_counter - delta_counter) <= 2.0f*0.001f*ISR_SAMPLE_FREQ) ){
     					Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 						Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
 						Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+						Global_Data.av.error_num = 0.0f;
 						uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     				} else{
     					flg_reset_SKAI = 0U;
@@ -228,31 +242,47 @@ void ISR_Control(void *data)
     		}
     		reset_counter++;
     	} else{
-    		// Begin of control algorithm
-			switch(control_mode){
-			case manual:
-				// control of dutycycles with GUI
-				uz_CurrentControl_reset(Global_Data.objects.FOC_instance);
-				uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-				break;
-			case FOC:
-				dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, dq_reference_current, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
-				Global_Data.rasv.Ud_ref = dq_reference_voltage.d;
-				Global_Data.rasv.Uq_ref = dq_reference_voltage.q;
+    		if (SKAI_nERROUT == 1U){
+				// Begin of control algorithm
+				switch(control_mode){
+				case manual:
+					// control of dutycycles with GUI
+					uz_CurrentControl_reset(Global_Data.objects.FOC_instance);
+					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+					break;
+				case FOC:
+					uz_3ph_dq_t current_setpoints_filtered = uz_signals_IIR_Filter_dq_setpoint(Global_Data.objects.dq_setpoint_filter, dq_reference_current);
+					//uz_3ph_dq_t current_setpoints_filtered = dq_reference_current;
+					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, current_setpoints_filtered, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
+					//Global_Data.rasv.Id_ref = current_setpoints_filtered.d;
+					//Global_Data.rasv.Iq_ref = current_setpoints_filtered.q;
+					Global_Data.rasv.Ud_ref = dq_reference_voltage.d;
+					Global_Data.rasv.Uq_ref = dq_reference_voltage.q;
 
-				if (flg_pred_theta_el){
-					theta_elec_pred = Global_Data.av.theta_elec + (1.5f*1.0f/UZ_PWM_FREQUENCY*Global_Data.av.omega_el);
-					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, theta_elec_pred);
-				} else{
-					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+					if (flg_pred_theta_el){
+						Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/UZ_PWM_FREQUENCY)*Global_Data.av.omega_el);
+						output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
+					} else{
+						output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+					}
+					Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
+					Global_Data.rasv.halfBridge2DutyCycle = output_dutycycle.DutyCycle_B;
+					Global_Data.rasv.halfBridge3DutyCycle = output_dutycycle.DutyCycle_C;
+					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+					break;
 				}
-				Global_Data.rasv.halfBridge1DutyCycle = output_dutycycle.DutyCycle_A;
-				Global_Data.rasv.halfBridge2DutyCycle = output_dutycycle.DutyCycle_B;
-				Global_Data.rasv.halfBridge3DutyCycle = output_dutycycle.DutyCycle_C;
-				uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-				break;
-			}
-
+    		} else{
+    			// Umrichter in Fehlermodus
+    	    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio, 2, 0U);
+    	    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    	    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	    	uz_CurrentControl_reset(Global_Data.objects.FOC_instance);
+    	        dq_reference_current.d = 0.0f;
+    	        dq_reference_current.q = 0.0f;
+    	        dq_reference_current.zero = 0.0f;
+    			ultrazohm_state_machine_set_stop(true);
+    		}
     	}
     } else{
     	// Jumped out of control state --> Reset has to be low for 1 ms

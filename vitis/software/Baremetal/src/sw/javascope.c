@@ -82,8 +82,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id] 					= &data->av.I_d;
 	js_ch_observable[JSO_theta_el] 				= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
-	js_ch_observable[JSO_omega_mech] 			= &data->av.omega_mech_filtered;
+	js_ch_observable[JSO_omega_mech] 			= &data->av.omega_mech;
 	js_ch_observable[JSO_omega_el] 				= &data->av.omega_el;
+	js_ch_observable[JSO_omega_mech_filtered] 	= &data->av.omega_mech_filtered;
+	js_ch_observable[JSO_omega_el_filtered] 	= &data->av.omega_el_filtered;
 	js_ch_observable[JSO_torque_meas] 			= &data->av.torque_meas;
 	js_ch_observable[JSO_ud]					= &data->av.U_d;
 	js_ch_observable[JSO_uq]					= &data->av.U_q;
@@ -104,6 +106,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ud_ref] 				= &data->rasv.Ud_ref;
 	js_ch_observable[JSO_temp_mosfet] 			= &data->av.temperature_mosfet;
 	js_ch_observable[JSO_temp_motor] 			= &data->av.temperature_motor;
+	js_ch_observable[JSO_theta_elec_pred] 		= &data->av.theta_elec_pred;
+	js_ch_observable[JSO_FLOAT_EnDat_responselength_bits] 		= &data->av.EnDat_value_response_length;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -118,10 +122,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_temp_mosfet] 			= &(data->av.temperature_mosfet);
 	js_slowDataArray[JSSD_FLOAT_temp_motor] 		    = &(data->av.temperature_motor);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.torque_meas);
+	js_slowDataArray[JSSD_FLOAT_EnDat_Value_Calc_Time]	= &data->av.EnDat_value_calc_time;
+	js_slowDataArray[JSSD_FLOAT_EnDat_responselength_bits]	= &data->av.EnDat_value_response_length;
+	js_slowDataArray[JSSD_FLOAT_EnDat_sync_quality]		= &data->av.EnDat_sync_quality;
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_Error_Num]				= &(data->av.error_num);
 
 	return Status;
 }

@@ -20,10 +20,13 @@ struct uz_pmsm_control_t
     uz_SetPoint_t *setpoint_module;
     uz_PMSM_t machine_data;
     bool enable;
+    bool safe_operating_region_violation;
 };
 
 static uint32_t instance_counter = 0U;
 static uz_pmsm_control_t instances[UZ_PMSM_CONTROL_MAX_INSTANCES] = {0};
+
+void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self);
 
 static uz_pmsm_control_t *uz_pmsm_control_allocation(void);
 
@@ -79,17 +82,17 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
     return (self);
 }
 
-struct uz_pmsm_actual_data * uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self)
+struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self)
 {
     return &self->actual_values; // is this a good idea?
 }
 
-struct uz_pmsm_reference_values  * uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self)
+struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self)
 {
     return &self->reference_values; // is this a good idea?
 }
 
-struct uz_pmsm_measurement_values  * uz_pmsm_control_get_uz_pmsm_measurement_values(uz_pmsm_control_t *self)
+struct uz_pmsm_measurement_values *uz_pmsm_control_get_uz_pmsm_measurement_values(uz_pmsm_control_t *self)
 {
     return &self->measurement; // is this a good idea?
 }
@@ -107,30 +110,84 @@ void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable)
     self->enable = enable;
 }
 
-struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents)
+void uz_pmsm_controller_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements)
 {
     uz_assert(self->is_ready);
-    self->actual_values.i_abc_in_A.a = (self->config.current_conversion_factors.a * measurements.phase_currents_from_adc_ampere_per_volt.a) + self->config.current_conversion_factors.a;
-    self->actual_values.i_abc_in_A.b = (self->config.current_conversion_factors.b * measurements.phase_currents_from_adc_ampere_per_volt.b) + self->config.current_conversion_factors.b;
-    self->actual_values.i_abc_in_A.c = (self->config.current_conversion_factors.c * measurements.phase_currents_from_adc_ampere_per_volt.c) + self->config.current_conversion_factors.c;
-    self->actual_values.v_dc_in_V = (self->config.v_dc_in_V_conversion_factor * measurements.v_dc_from_adc_volt_per_volt) + self->config.v_dc_in_V_offset;
-    self->actual_values.i_dc_in_A = (self->config.v_dc_in_V_conversion_factor * measurements.i_dc_from_adc_ampere_per_volt) + self->config.v_dc_in_V_offset;
+    self->measurement = measurements;
+    self->safe_operating_region_violation = false;
+    uz_pmsm_controller_check_safe_operating_region(self);
+}
 
-    self->actual_values.omega_el_rad_per_sec = measurements.omega_mech_rad_per_sec * self->machine_data.polePairs;
-    float theta_el_without_offset = uz_signals_wrap(measurements.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
+void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
+{
+    self->actual_values.i_abc_in_A.a = (self->config.current_conversion_factors.a * self->measurement.phase_currents_from_adc_ampere_per_volt.a) + self->config.current_conversion_factors.a;
+    self->actual_values.i_abc_in_A.b = (self->config.current_conversion_factors.b * self->measurement.phase_currents_from_adc_ampere_per_volt.b) + self->config.current_conversion_factors.b;
+    self->actual_values.i_abc_in_A.c = (self->config.current_conversion_factors.c * self->measurement.phase_currents_from_adc_ampere_per_volt.c) + self->config.current_conversion_factors.c;
+    self->actual_values.v_dc_in_V = (self->config.v_dc_in_V_conversion_factor * self->measurement.v_dc_from_adc_volt_per_volt) + self->config.v_dc_in_V_offset;
+    self->actual_values.i_dc_in_A = (self->config.i_dc_in_V_conversion_factor * self->measurement.i_dc_from_adc_ampere_per_volt) + self->config.i_dc_in_V_offset;
+
+    self->actual_values.omega_el_rad_per_sec = self->measurement.omega_mech_rad_per_sec * self->machine_data.polePairs;
+    float theta_el_without_offset = uz_signals_wrap(self->measurement.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
     self->actual_values.theta_el = theta_el_without_offset - self->config.theta_el_offset;
     self->actual_values.theta_el_advanced = self->actual_values.theta_el + (1.5f * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
 
     self->actual_values.i_dq_in_A = uz_transformation_3ph_abc_to_dq(self->actual_values.i_abc_in_A, self->actual_values.theta_el);
+}
+
+void uz_pmsm_controller_check_safe_operating_region(uz_pmsm_control_t *self)
+{
+    uz_assert(self->is_ready);
+    if (self->actual_values.i_abc_in_A.a > self->machine_data.I_max_Ampere)
+    {
+        self->safe_operating_region_violation = true;
+    }
+    if (self->actual_values.i_abc_in_A.b > self->machine_data.I_max_Ampere)
+    {
+        self->safe_operating_region_violation = true;
+    }
+    if (self->actual_values.i_abc_in_A.c > self->machine_data.I_max_Ampere)
+    {
+        self->safe_operating_region_violation = true;
+    }
+    if (self->actual_values.speed_in_rpm > self->config.error_upper_bound_speed_in_rpm)
+    {
+        // Too fast
+        self->safe_operating_region_violation = true;
+    }
+    if (self->actual_values.speed_in_rpm < self->config.error_lower_bound_speed_in_rpm)
+    {
+        // Too slow
+        self->safe_operating_region_violation = true;
+    }
+}
+
+struct uz_DutyCycle_t
+uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
+{
+    uz_assert(self->is_ready);
+    reference_speed_in_rpm = uz_signals_saturation(reference_speed_in_rpm, self->config.setpoint_upper_bound_speed_in_rpm, self->config.setpoint_lower_bound_speed_in_rpm);
+    reference_currents.d = uz_signals_saturation(reference_currents.d, self->config.setpoint_upper_bound_i_d_in_A, self->config.setpoint_lower_bound_i_d_in_A);
+    reference_currents.q = uz_signals_saturation(reference_currents.q, self->config.setpoint_upper_bound_i_q_in_A, self->config.setpoint_lower_bound_i_q_in_A);
+    disturbance_input_in_Nm = uz_signals_saturation(disturbance_input_in_Nm, self->config.disturbance_input_upper_bound_in_Nm, self->config.disturbance_input_lower_bound_in_Nm);
+
+    self->measurement = measurements;
+    uz_pmsm_controller_measured_to_actual_values(self);
+    uz_pmsm_controller_check_safe_operating_region(self);
     // n_ref_rpm_heidrive_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_setpoint_filter_heidrive, n_ref_rpm_heidrive);
 
-    if (self->enable)
+    if (self->enable && (!self->safe_operating_region_violation))
     {
         if (self->config.enable_speed_control)
         {
             self->reference_values.speed_in_rpm = reference_speed_in_rpm;
             self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
-            // M_ref_Nm_heidrive=0.11f*i_dq_in_A_ref_Amps_brose.q+M_ref_Nm_heidrive_without; // Vorsteuerung Lastmoment
+            float ref_plus_disturbance_input = disturbance_input_in_Nm + self->reference_values.M_in_Nm;
+            if ( fabsf(ref_plus_disturbance_input)>self->config.speed_controller_max_torque){
+                uz_SpeedControl_set_ext_clamping(self->speed_controller,true);
+            }else{
+                uz_SpeedControl_set_ext_clamping(self->speed_controller,false);
+            }
+            self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.speed_controller_max_torque, -1.0f * self->config.speed_controller_max_torque);
             self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->actual_values.v_dc_in_V, self->actual_values.i_dq_in_A);
         }
         else

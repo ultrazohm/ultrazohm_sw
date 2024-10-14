@@ -15,6 +15,8 @@ struct uz_pmsm_control_configuration_t
     uz_3ph_abc_t current_offsets;
     float v_dc_in_V_conversion_factor;
     float v_dc_in_V_offset;
+    float i_dc_in_V_conversion_factor;
+    float i_dc_in_V_offset;
     float theta_el_offset;
     float sample_time; // typically 1/PWM
     bool enable_speed_control;
@@ -25,6 +27,16 @@ struct uz_pmsm_control_configuration_t
     float current_controller_d_ki;
     float current_controller_q_kp;
     float current_controller_q_ki;
+    float setpoint_upper_bound_i_d_in_A;
+    float setpoint_lower_bound_i_d_in_A;
+    float setpoint_upper_bound_i_q_in_A;
+    float setpoint_lower_bound_i_q_in_A;
+    float setpoint_upper_bound_speed_in_rpm;
+    float setpoint_lower_bound_speed_in_rpm;
+    float error_upper_bound_speed_in_rpm;
+    float error_lower_bound_speed_in_rpm;
+    float disturbance_input_lower_bound_in_Nm;
+    float disturbance_input_upper_bound_in_Nm;
     enum uz_CurrentControl_decoupling_select decoupling_method;
     enum uz_Setpoint_motor_type motor_type;
     bool enable_field_weakening;
@@ -69,7 +81,5 @@ struct uz_pmsm_measurement_values  * uz_pmsm_control_get_uz_pmsm_measurement_val
 
 
 void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable);
-struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents);
-
-
+struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
 #endif // UZ_PMSM_CONTROL_H

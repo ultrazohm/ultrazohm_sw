@@ -52,14 +52,14 @@ uint32_t n_ref_setpoint_index = 0U;
 uint32_t Fehlerfall = 0U;
 extern uz_3ph_dq_t i_dq_ref_java_Amps_brose;
 
-struct uz_pmsm_measurement_values heidrive_measurements = {0.0f};
+struct uz_pmsm_measurement_values heidrive_measurements = {0};
 
 float heidrive_reference_speed_in_rpm = 0.0f;
 uz_3ph_dq_t heidrive_reference_currents_in_A = {0.0f};
 
 static void ReadAllADC();
 bool enable_controller = false;
-bool manual_dutycycle=true;
+bool manual_dutycycle=false;
 
 // // First inverter
 // v_abc_Volts_brose.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
@@ -90,15 +90,15 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
 
-    // i_dq_ref_Amps_brose.d = i_dq_ref_java_Amps_brose.d;
-    // i_dq_ref_Amps_brose.q = i_dq_ref_java_Amps_brose.q;
+    heidrive_reference_currents_in_A.d = i_dq_ref_java_Amps_brose.d;
+    heidrive_reference_currents_in_A.q = i_dq_ref_java_Amps_brose.q;
     // n_ref_rpm_heidrive = n_ref_rpm_heidrive_javascope;
 
     heidrive_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A2.me.ADC_B5;
     heidrive_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
-    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A2.me.ADC_B8;
-    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A2.me.ADC_B7;
-    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A2.me.ADC_B6;
+    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A2.me.ADC_A4;
+    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A2.me.ADC_A3;
+    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A2.me.ADC_A2;
     heidrive_measurements.omega_mech_rad_per_sec = Global_Data.av.omega_mech_rad_per_sed;
     heidrive_measurements.theta_mech = Global_Data.av.theta_elec_heidrive;
 
@@ -124,15 +124,17 @@ void ISR_Control(void *data)
 
     if (current_state == control_state)
     {
-        uz_pmsm_controller_enable(Global_Data.objects.heidrive_controller, enable_controller);
+    	enable_controller=true;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, false, false, false);
     }
     else
     {
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
+    	enable_controller=false;
+    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, true, true, true);
     }
+    uz_pmsm_controller_enable(Global_Data.objects.heidrive_controller, enable_controller);
     struct uz_DutyCycle_t duty = uz_pmsm_controller_sample(Global_Data.objects.heidrive_controller, heidrive_measurements, heidrive_reference_speed_in_rpm, heidrive_reference_currents_in_A,0.0f);
 
     if(!manual_dutycycle){

@@ -41,18 +41,18 @@ DS_Data Global_Data = {
 };
 
 // ***************** PMSM 2 ***************** //
-
+// 1.362164
 struct uz_pmsm_control_configuration_t config = {
     .current_conversion_factors = {
-        .a = 11.6798f,
-        .b = 11.7657f,
-        .c = 11.7657f},
-    .current_offsets = {.a = -0.3648f, .b = +0.0533f, .c = +0.0533f},
+        .a = 12.2889f,
+        .b = 11.8330f,
+        .c = 11.7894f},
+    .current_offsets = {.a = 0.0164f, .b = 0.0161f, .c = 0.0184f},
     .v_dc_in_V_conversion_factor = 12.0f,
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 0.0f,
+    .theta_el_offset = 1.362164f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = false,
     .speed_controller_max_torque = 0.5f,
@@ -123,7 +123,6 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -156,6 +155,7 @@ int main(void)
             Global_Data.heidrive_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.heidrive_controller);
             Global_Data.heidrive_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.heidrive_controller);
             Global_Data.heidrive_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.heidrive_controller);
+            JavaScope_initialize(&Global_Data);
 
             // speed_setpoint_filter_heidrive_config
             // Global_Data.objects.speed_setpoint_filter_heidrive=uz_signals_IIR_Filter_init(speed_setpoint_filter_heidrive_config);

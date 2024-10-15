@@ -199,11 +199,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_1):
 				//n_ref_rpm_1 = value;
 				//M_ref_Nm_1 = value;
-				//i_dq_ref_java_Amps_brose.q = value;
+				i_dq_ref_java_Amps_brose.q = value;
 			break;
 
 		case (Set_Send_Field_2):
-		//i_dq_ref_java_Amps_brose.d = value;
+				i_dq_ref_java_Amps_brose.d = value;
 				//M_ref_Nm_heidrive = value;
 			break;
 

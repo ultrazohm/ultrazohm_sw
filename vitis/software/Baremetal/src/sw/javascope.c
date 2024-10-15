@@ -53,13 +53,16 @@ extern struct uz_3ph_dq_t i_dqn_ref_5th_Amps_1;
 extern struct uz_3ph_dq_t i_dqn_ref_7th_Amps_1;
 extern struct uz_3ph_dq_t v_dq_Volts_2;
 extern struct uz_3ph_dq_t v_dq_Volts_1;
+extern struct uz_3ph_dq_t v_dq_limited_Volts_old_old_1;
 extern struct uz_3ph_abc_t v_abc_Volts_1;
 extern float K_p_id;
 extern float K_p_iq;
 extern float observation_ip[15U];
 extern struct uz_3ph_dq_t i_dq_ref_Amps_1;
 extern float start_marker;
-float Torque_placeholder = 0.0f;
+extern int control_mode;
+extern float M_meas_Nm;
+
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
@@ -110,8 +113,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_theta_mech_1] 	= &data->av.theta_mech_1;
 	js_ch_observable[JSO_theta_mech_2] 	= &data->av.theta_mech_2;
 	js_ch_observable[JSO_ud_1]			= &v_dq_Volts_1.d;
+	js_ch_observable[JSO_ud_lim_1]		= &v_dq_limited_Volts_old_old_1.d;
 	js_ch_observable[JSO_ud_2]			= &data->av.U_d_2;
 	js_ch_observable[JSO_uq_1]			= &v_dq_Volts_1.q;
+	js_ch_observable[JSO_uq_lim_1]		= &v_dq_limited_Volts_old_old_1.q;
 	js_ch_observable[JSO_uq_2]			= &data->av.U_q_2;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
@@ -146,7 +151,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id_7th_rlc_ref]	= &i_dq_ref_7th_Amps_1.d;
 	js_ch_observable[JSO_iq_7th_rlc_ref]	= &i_dq_ref_7th_Amps_1.q;
 	js_ch_observable[JSO_enable] 		= &start_marker;
-	js_ch_observable[JSO_Torque_Nm]		= &Torque_placeholder;
+	js_ch_observable[JSO_Torque_Nm]		= &M_meas_Nm;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

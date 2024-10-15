@@ -41,6 +41,7 @@ bool select_misalignment = false;
 bool select_DDPG = false;
 bool select_FOC = false;
 extern int measurement_mode;
+extern int control_mode;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -222,28 +223,27 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-				i_dqn_ref_5th_Amps_1.d = value;
+				control_mode = value;
 			break;
 
 		case (Set_Send_Field_6):
-				i_dqn_ref_5th_Amps_1.q = value;
+				i_dqn_ref_5th_Amps_1.d = value;
 			break;
 
 		case (Set_Send_Field_7):
-				i_dqn_ref_7th_Amps_1.d = value;
-
+				i_dqn_ref_5th_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_8):
-				i_dqn_ref_7th_Amps_1.q = value;
+				i_dqn_ref_7th_Amps_1.d = value;
 			break;
 
 		case (Set_Send_Field_9):
-				Global_Data.av.theta_offset_2 = value;
+				i_dqn_ref_7th_Amps_1.q = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+				Global_Data.av.theta_offset_2 = value;
 			break;
 
 		case (Set_Send_Field_11):

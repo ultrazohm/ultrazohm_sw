@@ -56,7 +56,7 @@ struct uz_3ph_dq_t v_dq_ref_Volts_1 = {0};
 struct uz_3ph_abc_t i_abc_Amps_1 	= {0};
 struct uz_3ph_dq_t i_dq_Amps_1 		= {0};
 struct uz_3ph_dq_t i_dq_ref_Amps_1 	= {0};
-float v_DC_Volts_1 					= 24.0f;
+float v_DC_Volts_1 					= 48.0f;
 float i_DC_Amps_1 					= 0.0f;
 
 // FOC Variables
@@ -109,7 +109,7 @@ struct uz_3ph_dq_t v_dq_ref_Volts_2 = {0};
 struct uz_3ph_abc_t i_abc_Amps_2 	= {0};
 struct uz_3ph_dq_t i_dq_Amps_2 		= {0};
 struct uz_3ph_dq_t i_dq_ref_Amps_2 	= {0};
-float v_DC_Volts_2 					= 12.0f;
+float v_DC_Volts_2 					= 48.0f;
 float i_DC_Amps_2 					= 0.0f;
 
 // FOC Variables
@@ -135,29 +135,63 @@ int samples 						= 11290;
 int measurement_mode 				= 0;
 int measurement_steps				= 0;
 float start_marker					= 0.0f;
-float id_setpoints[22]={
+
+float id_setpoints[23]={
 #include "id_setpoints.csv"
 };
 
-float iq_setpoints[22]={
+float id_setpoints_2[23]={
+#include "id_setpoints_2.csv"
+};
+
+float id_setpoints_3[22]={
+#include "id_setpoints_3.csv"
+};
+
+float iq_setpoints[23]={
 #include "iq_setpoints.csv"
 };
 
-float id5_setpoints[20]={
+float iq_setpoints_2[23]={
+#include "iq_setpoints_2.csv"
+};
+
+float iq_setpoints_3[22]={
+#include "iq_setpoints_3.csv"
+};
+
+float id5_setpoints[23]={
 #include "id5_setpoints.csv"
 };
 
-float iq5_setpoints[20]={
+float id5_setpoints_2[23]={
+#include "id5_setpoints_2.csv"
+};
+
+float iq5_setpoints[23]={
 #include "iq5_setpoints.csv"
 };
 
-float id7_setpoints[20]={
+float iq5_setpoints_2[23]={
+#include "iq5_setpoints_2.csv"
+};
+
+float id7_setpoints[23]={
 #include "id7_setpoints.csv"
 };
 
-float iq7_setpoints[20]={
+float id7_setpoints_2[23]={
+#include "id7_setpoints_2.csv"
+};
+
+float iq7_setpoints[23]={
 #include "iq7_setpoints.csv"
 };
+
+float iq7_setpoints_2[23]={
+#include "iq7_setpoints_2.csv"
+};
+
 
 extern bool select_automatic_idiq;
 extern float PMSM_rated_current_1;
@@ -190,6 +224,8 @@ bool start_angle_found = false;
 float theta_el_1_old = 0.0f;
 bool change_speed = false;
 bool inverter_is_enabled=false;
+int control_mode = 0;
+float M_meas_Nm = 0.0f;
 
 // ==================== 3 layer MLP ==================== //
 
@@ -212,7 +248,7 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
-
+    M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f;
 
     // Read Measurement Data of First Inverter
     v_abc_Volts_1.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
@@ -224,7 +260,6 @@ void ISR_Control(void *data)
     i_abc_Amps_1.c  = 12.4303f * Global_Data.aa.A1.me.ADC_A2 - 0.0184f;
     i_DC_Amps_1     = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
-
 
     // Read Measurement of Second Inverter
     v_abc_Volts_2.a = 11.6798f * Global_Data.aa.A2.me.ADC_B8 - 0.3648f;
@@ -298,30 +333,45 @@ void ISR_Control(void *data)
 
     		switch (measurement_mode) {
     		default:
-    			samples = 11290;
-    			measurement_steps = 20;
+    			samples = 45000;
+    			measurement_steps = 23;
 
     			// Normale HCI Sollwerte
 				i_dq_ref_Amps_1.d = id_setpoints[setpoint_index];
-				i_dq_ref_Amps_1.q = iq_setpoints[setpoint_index] * PMSM_rated_current_1;
+				i_dq_ref_Amps_1.q = iq_setpoints[setpoint_index];
+				i_dqn_ref_5th_Amps_1.d = id5_setpoints[setpoint_index];
+				i_dqn_ref_5th_Amps_1.q = iq5_setpoints[setpoint_index];
+				i_dqn_ref_7th_Amps_1.d = id7_setpoints[setpoint_index];
+				i_dqn_ref_7th_Amps_1.q = iq7_setpoints[setpoint_index];
+
+				break;
+    		case 1:
+    			samples = 2000;
+    			measurement_steps = 23;
+
+    			// Normale HCI
+    			i_dq_ref_Amps_1.d = id_setpoints_2[setpoint_index];
+				i_dq_ref_Amps_1.q = iq_setpoints_2[setpoint_index];
+				i_dqn_ref_5th_Amps_1.d = id5_setpoints_2[setpoint_index];
+				i_dqn_ref_5th_Amps_1.q = iq5_setpoints_2[setpoint_index];
+				i_dqn_ref_7th_Amps_1.d = id7_setpoints_2[setpoint_index];
+				i_dqn_ref_7th_Amps_1.q = iq7_setpoints_2[setpoint_index];
+
+    			break;
+
+    		case 2:
+				samples = 2000;
+				measurement_steps = 22;
+
+				// Normale HCI
+				i_dq_ref_Amps_1.d = id_setpoints_3[setpoint_index];
+				i_dq_ref_Amps_1.q = iq_setpoints_3[setpoint_index];
 				i_dqn_ref_5th_Amps_1.d = 0.0f;
 				i_dqn_ref_5th_Amps_1.q = 0.0f;
 				i_dqn_ref_7th_Amps_1.d = 0.0f;
 				i_dqn_ref_7th_Amps_1.q = 0.0f;
 
 				break;
-    		case 1:
-    			samples = 11290;
-    			measurement_steps = 20;
-
-    			// Normale HCI
-    			i_dq_ref_Amps_1.d = -3.2f;
-    			i_dq_ref_Amps_1.q = 6.4f;
-    			i_dqn_ref_5th_Amps_1.d = id5_setpoints[setpoint_index];
-    			i_dqn_ref_5th_Amps_1.q = iq5_setpoints[setpoint_index];
-    			i_dqn_ref_7th_Amps_1.d = id7_setpoints[setpoint_index];
-    			i_dqn_ref_7th_Amps_1.q = iq7_setpoints[setpoint_index];
-
     		}
 
     		// step throught the array
@@ -329,7 +379,7 @@ void ISR_Control(void *data)
     		if((current_uptime>(old_uptime + samples) && (!change_speed)) ){
     			old_uptime=current_uptime;
 
-    			if(setpoint_index<measurement_steps+1){
+    			if(setpoint_index<measurement_steps-1){
     				setpoint_index++;
     			}else{
     				setpoint_index = 0U;
@@ -400,6 +450,30 @@ void ISR_Control(void *data)
 			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
 		}
 
+    	// Chose control
+    	switch (control_mode) {
+    		default:
+    			select_FOC = false;
+    			select_DDPG = false;
+    			mode = 0;
+    			break;
+    		case 1:
+    			select_FOC = true;
+    			select_DDPG = false;
+    			mode = 0;
+    			break;
+    		case 2:
+    			select_FOC = true;
+    			select_DDPG = false;
+    			mode = 1;
+    			break;
+    		case 3:
+    			select_FOC = false;
+    			select_DDPG = true;
+    			mode = 0;
+    			break;
+    	}
+
     	// FOC und HCI control
     	if(select_FOC) {
 
@@ -443,35 +517,35 @@ void ISR_Control(void *data)
     	// DDPG Control
     	} else if(select_DDPG) {
 
-    		if(ext_clamping_1 == false) {
-    			i_dq_integrated_error_Amps_1.d = (i_dq_integrated_error_Amps_1.d + (i_dq_error_Amps_1.d * ts)); // use Forward-Euler with error of previous timestep for integration
-    			i_dq_integrated_error_Amps_1.q = (i_dq_integrated_error_Amps_1.q + (i_dq_error_Amps_1.q * ts));
-    		} else {
-    			i_dq_integrated_error_Amps_1.d += 0.0f;
-    			i_dq_integrated_error_Amps_1.q += 0.0f;
-    		}
-    		i_dq_error_Amps_1.d = (i_dq_ref_rlc_Amps_1.d - i_dq_Amps_1.d) / PMSM_rated_current_1;
-    		i_dq_error_Amps_1.q = (i_dq_ref_rlc_Amps_1.q - i_dq_Amps_1.q) / PMSM_rated_current_1;
-
-    		//  DDPG
-            observation_ip[0] = i_dq_error_Amps_1.d;
-    		observation_ip[1] = i_dq_integrated_error_Amps_1.d * UZ_PWM_FREQUENCY;
-    		observation_ip[2] = i_dq_Amps_1.d / PMSM_rated_current_1;
-    		observation_ip[3] = (i_dq_ref_rlc_advanced_Amps_1.d - i_dq_ref_rlc_Amps_1.d) / harmonic_rated_current_1;
-    		observation_ip[4] = i_dq_error_Amps_1.q;
-    		observation_ip[5] = i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY ;
-    		observation_ip[6] = i_dq_Amps_1.q / PMSM_rated_current_1;
-    		observation_ip[7] = (i_dq_ref_rlc_advanced_Amps_1.q - i_dq_ref_rlc_Amps_1.q) / harmonic_rated_current_1;
-    		observation_ip[8] = Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
-    		observation_ip[9] = v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
-    		observation_ip[10] = v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
-    		observation_ip[11] = cosf(theta_el_rad_1);
-    		observation_ip[12] = sinf(theta_el_rad_1);
-    		observation_ip[13] = cosf(6.0f * theta_el_rad_1);
-    		observation_ip[14] = sinf(6.0f * theta_el_rad_1);
-			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
-	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
-	  		}
+//    		if(ext_clamping_1 == false) {
+//    			i_dq_integrated_error_Amps_1.d = (i_dq_integrated_error_Amps_1.d + (i_dq_error_Amps_1.d * ts)); // use Forward-Euler with error of previous timestep for integration
+//    			i_dq_integrated_error_Amps_1.q = (i_dq_integrated_error_Amps_1.q + (i_dq_error_Amps_1.q * ts));
+//    		} else {
+//    			i_dq_integrated_error_Amps_1.d += 0.0f;
+//    			i_dq_integrated_error_Amps_1.q += 0.0f;
+//    		}
+//    		i_dq_error_Amps_1.d = (i_dq_ref_rlc_Amps_1.d - i_dq_Amps_1.d) / PMSM_rated_current_1;
+//    		i_dq_error_Amps_1.q = (i_dq_ref_rlc_Amps_1.q - i_dq_Amps_1.q) / PMSM_rated_current_1;
+//
+//    		//  DDPG
+//            observation_ip[0] = 0.0f; //i_dq_error_Amps_1.d;
+//    		observation_ip[1] = 0.0f; //i_dq_integrated_error_Amps_1.d * UZ_PWM_FREQUENCY * 1.0f/1000.0f;
+//    		observation_ip[2] = 0.0f; //i_dq_Amps_1.d / PMSM_rated_current_1;
+//    		observation_ip[3] = 0.0f; //(i_dq_ref_rlc_advanced_Amps_1.d - i_dq_ref_rlc_Amps_1.d) / harmonic_rated_current_1;
+//    		observation_ip[4] = 0.0f; //i_dq_error_Amps_1.q;
+//    		observation_ip[5] = 0.0f; //i_dq_integrated_error_Amps_1.q * UZ_PWM_FREQUENCY * 1.0f/1000.0f;
+//    		observation_ip[6] = 0.0f; //i_dq_Amps_1.q / PMSM_rated_current_1;
+//    		observation_ip[7] = 0.0f; //(i_dq_ref_rlc_advanced_Amps_1.q - i_dq_ref_rlc_Amps_1.q) / harmonic_rated_current_1;
+//    		observation_ip[8] = 0.0f; //Global_Data.av.mechanicalRotorSpeed_filtered_1 * speed_weight_1;
+//    		observation_ip[9] = 0.0f; //v_dq_limited_Volts_old_old_1.d * Voltage_Scaling_1;
+//    		observation_ip[10] = 0.0f; //v_dq_limited_Volts_old_old_1.q * Voltage_Scaling_1;
+//    		observation_ip[11] = cosf(theta_el_rad_1);
+//    		observation_ip[12] = sinf(theta_el_rad_1);
+//    		observation_ip[13] = cosf(6.0f * theta_el_rad_1);
+//    		observation_ip[14] = sinf(6.0f * theta_el_rad_1);
+//			for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++) {
+//	  			uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input,observation_ip[i],0U,i);
+//	  		}
 
             uz_mlp_three_layer_ff_blocking_unsafe(mlp_ip_instance, Global_Data.objects.matrix_input, p_output_data);
             // IP-Core only calculates with linear, tanh has to be added manually

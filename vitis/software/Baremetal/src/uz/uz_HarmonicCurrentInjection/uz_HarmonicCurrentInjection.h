@@ -9,8 +9,8 @@
 
 /*! enum for readable configuring for the mode of the HarmonicCurrentInjection sample function */
 enum uz_HarmonicCurrentInjection_mode_select {
-    abc_to_dq=0,
-    dq_to_dqn    
+    abc_to_dqn=0,
+    dq_to_dqn
 };
 
 /**
@@ -18,6 +18,7 @@ enum uz_HarmonicCurrentInjection_mode_select {
  */
 struct uz_HarmonicCurrentInjection_config {
     float order_harmonic; /**< Selected order of harmonic */
+    float sampling_frequency_Hz; /**< Sampling frequency in Hz */
     enum uz_HarmonicCurrentInjection_mode_select selection; /**< HarmonicCurrentInjection mode selector \n
 													 abc_to_dq \n
 													 dq_to_dqn */
@@ -55,7 +56,7 @@ uz_HarmonicCurrentInjection_t* uz_HarmonicCurrentInjection_init(struct uz_Harmon
 
 // /**
 //  * @brief calculates last sample and transforms the dq-output voltage into the abc-system
-//  * 
+//  *
 //  * @param self uz_HarmonicCurrentInjection_t instance
 //  * @param i_ref_first_harmonic_Ampere uz_3ph_dq_t struct for reference dq-currents of first harmonic in Ampere
 //  * @param i_ref_second_harmonic_Ampere uz_3ph_dq_t struct for reference dq-currents of second hamornic in Ampere
@@ -69,31 +70,43 @@ uz_HarmonicCurrentInjection_t* uz_HarmonicCurrentInjection_init(struct uz_Harmon
 
 /**
  * @brief calculates last sample and transforms the dq-output voltage into the abc-system
- * 
+ *
+ * @param self uz_HarmonicCurrentInjection_t instance
+ * @param i_actual_Ampere uz_3ph_abc_t struct for measured abc-currents in Ampere
+ * @param theta_el_rad electrical rotor angle in rad
+ * @return uz_3ph_dq_t Output filtered dqn currents in Ampere
+ */
+uz_3ph_dq_t uz_HarmonicCurrentInjection_filter(uz_HarmonicCurrentInjection_t* self, uz_3ph_abc_t i_abc_actual_Ampere, float theta_el_rad);
+
+/**
+ * @brief calculates last sample and transforms the dq-output voltage into the abc-system
+ *
  * @param self uz_HarmonicCurrentInjection_t instance
  * @param i_ref_harmonic_Ampere uz_3ph_dq_t struct for reference dq-currents of harmonic in Ampere
- * @param i_actual_Ampere uz_3ph_abc_t struct for measured abc-currents in Ampere
+ * @param i_dqn_filtered_Ampere uz_3ph_abc_t struct for filtered dqn currents in Ampere
  * @param V_dc_volts DC link voltage. Must be greater than 0.0f
  * @param omega_el_rad_per_sec electrical rotational speed in rad/s
  * @param theta_el_rad electrical rotor angle in rad
- * @return uz_3ph_dq_t Output abc-voltage struct
+ * @return uz_3ph_dq_t Output dq-voltage struct
  */
-uz_3ph_dq_t uz_HarmonicCurrentInjection_sample(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_harmonic_Ampere, uz_3ph_abc_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
+uz_3ph_dq_t uz_HarmonicCurrentInjection_sample(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_harmonic_Ampere, uz_3ph_dq_t i_dqn_filtered_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad);
 
 /**
- * @brief Updates the abc-bandpasses and dqn-lowpasses for a given electrical rotational speed
- * 
+ * @brief Updates the bandpasses and lowpasses for a given electrical rotational speed
+ *
  * @param self uz_HarmonicCurrentInjection_t instance
  * @param omega_el_ref_rad_per_sec Electrical rotational speed in rad/s
  */
-void uz_HarmonicCurrentInjection_set_filters_abc(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec);
+void uz_HarmonicCurrentInjection_set_filters(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec);
 
 /**
- * @brief Updates the dq-bandpasses and dqn-lowpasses for a given electrical rotational speed
- * 
+ * @brief Updates the current controllers for a given electrical rotational speed
+ *
  * @param self uz_HarmonicCurrentInjection_t instance
+ * @param config_PMSM PMSM config struct
  * @param omega_el_ref_rad_per_sec Electrical rotational speed in rad/s
  */
-void uz_HarmonicCurrentInjection_set_filters_dq(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec);
+void uz_HarmonicCurrentInjection_set_controllers(uz_HarmonicCurrentInjection_t* self, struct uz_PMSM_t config_PMSM, float omega_el_rad_per_sec);
+
 
 #endif // UZ_HARMONICCURRENTINJECTION_H

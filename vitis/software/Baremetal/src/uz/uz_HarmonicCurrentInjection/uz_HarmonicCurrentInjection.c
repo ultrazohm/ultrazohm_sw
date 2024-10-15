@@ -1,13 +1,13 @@
 /******************************************************************************
 * Copyright Contributors to the UltraZohm project.
 * Copyright 2024 Benedikt Hofmann
-* 
+*
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
 * You may obtain a copy of the License at
-* 
+*
 *     http://www.apache.org/licenses/LICENSE-2.0
-* 
+*
 * Unless required by applicable law or agreed to in writing, software
 * distributed under the License is distributed on an "AS IS" BASIS,
 * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,31 +17,13 @@
 #include "uz_HarmonicCurrentInjection.h"
 #include "../uz_global_configuration.h"
 #include "../uz_signals/uz_signals.h"
+#include "../uz_piController/uz_piController.h"
 #include "../uz_HAL.h"
-#include <stdbool.h> 
+#include <stdbool.h>
 #include "math.h"
 #include <stdlib.h>
 
 #if UZ_HARMONICCURRENTINJECTION_MAX_INSTANCES > 0U
-
-// typedef struct uz_HarmonicCurrentInjection_t {
-//     bool is_ready;
-//     struct uz_HarmonicCurrentInjection_config config;
-//     struct uz_CurrentControl_t* CurrentControl_first_harmonic;
-//     struct uz_CurrentControl_t* CurrentControl_second_harmonic;
-//     struct uz_IIR_Filter_t* Bandpass_first_harmonic_phase_a;
-//     struct uz_IIR_Filter_t* Bandpass_first_harmonic_phase_b;
-//     struct uz_IIR_Filter_t* Bandpass_first_harmonic_phase_c;
-//     struct uz_IIR_Filter_t* Bandpass_second_harmonic_phase_a;
-//     struct uz_IIR_Filter_t* Bandpass_second_harmonic_phase_b;
-//     struct uz_IIR_Filter_t* Bandpass_second_harmonic_phase_c;
-//     struct uz_IIR_Filter_t* Bandpass_harmonic_d_axis;
-//     struct uz_IIR_Filter_t* Bandpass_harmonic_q_axis;
-//     struct uz_IIR_Filter_t* Lowpass_first_harmonic_d_axis;
-//     struct uz_IIR_Filter_t* Lowpass_first_harmonic_q_axis;
-//     struct uz_IIR_Filter_t* Lowpass_second_harmonic_d_axis;
-//     struct uz_IIR_Filter_t* Lowpass_second_harmonic_q_axis;
-// } uz_HarmonicCurrentInjection_t;
 
 typedef struct uz_HarmonicCurrentInjection_t {
     bool is_ready;
@@ -74,6 +56,175 @@ uz_HarmonicCurrentInjection_t* uz_HarmonicCurrentInjection_allocation(void){
     self->is_ready = true;
     return (self);
 }
+
+uz_HarmonicCurrentInjection_t* uz_HarmonicCurrentInjection_init(struct uz_HarmonicCurrentInjection_config config) {
+    uz_HarmonicCurrentInjection_t* self = uz_HarmonicCurrentInjection_allocation();
+    uz_assert(fabsf(config.order_harmonic) != 1.0f);
+    self->Controller_harmonic = uz_CurrentControl_init(config.config_currentcontroller);
+    self->config = config;
+    switch (config.selection)
+    {
+    case abc_to_dqn:
+        self->Bandpass_phase_a = uz_signals_IIR_Filter_init(config.config_bandpass_abc);
+        self->Bandpass_phase_b = uz_signals_IIR_Filter_init(config.config_bandpass_abc);
+        self->Bandpass_phase_c = uz_signals_IIR_Filter_init(config.config_bandpass_abc);
+        self->Lowpass_d_axis = uz_signals_IIR_Filter_init(config.config_lowpass_dq);
+        self->Lowpass_q_axis = uz_signals_IIR_Filter_init(config.config_lowpass_dq);
+        break;
+    case dq_to_dqn:
+        self->Bandpass_d_axis = uz_signals_IIR_Filter_init(config.config_bandpass_dq);
+        self->Bandpass_q_axis = uz_signals_IIR_Filter_init(config.config_bandpass_dq);
+        self->Lowpass_d_axis = uz_signals_IIR_Filter_init(config.config_lowpass_dq);
+        self->Lowpass_q_axis = uz_signals_IIR_Filter_init(config.config_lowpass_dq);
+        break;
+    default:
+        break;
+    }
+    return (self);
+}
+
+uz_3ph_dq_t uz_HarmonicCurrentInjection_filter(uz_HarmonicCurrentInjection_t* self, uz_3ph_abc_t i_abc_actual_Ampere, float theta_el_rad){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+    uz_3ph_dq_t i_dq_actual_Ampere = { 0 };
+    uz_3ph_abc_t i_abc_bp_filtered_Ampere = { 0 };
+    uz_3ph_dq_t i_dq_bp_filtered_Ampere = { 0 };
+    uz_3ph_dq_t i_dqn_bp_filtered_Ampere = { 0 };
+    uz_3ph_dq_t i_dqn_lp_filtered_Ampere = { 0 };
+    switch (self->config.selection)
+    {
+    case abc_to_dqn:
+        i_abc_bp_filtered_Ampere.a = uz_signals_IIR_Filter_sample(self->Bandpass_phase_a, i_abc_actual_Ampere.a);
+        i_abc_bp_filtered_Ampere.b = uz_signals_IIR_Filter_sample(self->Bandpass_phase_b, i_abc_actual_Ampere.b);
+        i_abc_bp_filtered_Ampere.c = uz_signals_IIR_Filter_sample(self->Bandpass_phase_c, i_abc_actual_Ampere.c);
+        i_dqn_bp_filtered_Ampere = uz_transformation_3ph_harmonic_abc_to_dqn(i_abc_bp_filtered_Ampere, theta_el_rad, self->config.order_harmonic);
+        i_dqn_lp_filtered_Ampere.d = uz_signals_IIR_Filter_sample(self->Lowpass_d_axis, i_dqn_bp_filtered_Ampere.d);
+        i_dqn_lp_filtered_Ampere.q = uz_signals_IIR_Filter_sample(self->Lowpass_q_axis, i_dqn_bp_filtered_Ampere.q);
+        break;
+    case dq_to_dqn: ;
+        i_dq_actual_Ampere = uz_transformation_3ph_abc_to_dq(i_abc_actual_Ampere, theta_el_rad);
+        i_dq_bp_filtered_Ampere.d = uz_signals_IIR_Filter_sample(self->Bandpass_d_axis, i_dq_actual_Ampere.d);
+        i_dq_bp_filtered_Ampere.q = uz_signals_IIR_Filter_sample(self->Bandpass_q_axis, i_dq_actual_Ampere.q);
+        i_dqn_bp_filtered_Ampere = uz_transformation_3ph_harmonic_dq_to_dqn(i_dq_bp_filtered_Ampere, theta_el_rad, self->config.order_harmonic);
+        i_dqn_lp_filtered_Ampere.d = uz_signals_IIR_Filter_sample(self->Lowpass_d_axis, i_dqn_bp_filtered_Ampere.d);
+        i_dqn_lp_filtered_Ampere.q = uz_signals_IIR_Filter_sample(self->Lowpass_q_axis, i_dqn_bp_filtered_Ampere.q);
+        break;
+    default: ;
+        break;
+    }
+    return(i_dqn_lp_filtered_Ampere);
+}
+
+uz_3ph_dq_t uz_HarmonicCurrentInjection_sample(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_harmonic_Ampere, uz_3ph_dq_t i_dqn_filtered_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+    uz_3ph_dq_t v_dqn_Volts = { 0 };
+    uz_3ph_abc_t v_abc_Volts = { 0 };
+    uz_3ph_dq_t v_dq_Volts = { 0 };
+    switch (self->config.selection)
+    {
+    case abc_to_dqn:
+        v_dqn_Volts = uz_CurrentControl_sample(self->Controller_harmonic, i_ref_harmonic_Ampere, i_dqn_filtered_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        v_abc_Volts = uz_transformation_3ph_harmonic_dqn_to_abc(v_dqn_Volts, theta_el_rad, self->config.order_harmonic);
+        v_dq_Volts = uz_transformation_3ph_abc_to_dq(v_abc_Volts, theta_el_rad);
+        break;
+    case dq_to_dqn:
+        v_dqn_Volts = uz_CurrentControl_sample(self->Controller_harmonic, i_ref_harmonic_Ampere, i_dqn_filtered_Ampere, V_dc_volts, omega_el_rad_per_sec);
+        v_dq_Volts = uz_transformation_3ph_harmonic_dqn_to_dq(v_dqn_Volts, theta_el_rad, self->config.order_harmonic);
+        break;
+    default:
+        break;
+    }
+    return(v_dq_Volts);
+}
+
+void uz_HarmonicCurrentInjection_set_filters(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec){
+    uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	if (fabsf(omega_el_rad_per_sec)<1.0f){
+			omega_el_rad_per_sec=1.0f;
+		}
+	float cutoff_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf * 10.0f));
+	float pass_frequency_Hz = 0.0f;
+    switch (self->config.selection)
+    {
+    case abc_to_dqn:
+       	pass_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf) * self->config.order_harmonic);
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_a, pass_frequency_Hz, 0.05f);
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_b, pass_frequency_Hz, 0.05f);
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_c, pass_frequency_Hz, 0.05f);
+       	break;
+    case dq_to_dqn:
+       	pass_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf) * (self->config.order_harmonic - 1.0f));
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_d_axis, pass_frequency_Hz, 0.05f);
+       	uz_signals_IIR_Filter_set_bandpass(self->Bandpass_q_axis, pass_frequency_Hz, 0.05f);
+       	break;
+    default:
+        break;
+    }
+    uz_signals_IIR_Filter_set_lowpass(self->Lowpass_d_axis, cutoff_frequency_Hz);
+    uz_signals_IIR_Filter_set_lowpass(self->Lowpass_q_axis, cutoff_frequency_Hz);
+}
+
+void uz_HarmonicCurrentInjection_set_controllers(uz_HarmonicCurrentInjection_t* self, struct uz_PMSM_t config_PMSM, float omega_el_rad_per_sec){
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	uz_assert(self->config.sampling_frequency_Hz>1.0f);
+	if (fabsf(omega_el_rad_per_sec)<10.0f){
+		omega_el_rad_per_sec=10.0f;
+	}
+	float T_N = 10.0f / fabsf(omega_el_rad_per_sec);
+	float T_V = 0.0f;
+	float V_s = 1.0f / config_PMSM.R_ph_Ohm;
+	float T_sigma_d = config_PMSM.Ld_Henry / config_PMSM.R_ph_Ohm + 2.0f / self->config.sampling_frequency_Hz;
+	float T_sigma_q = config_PMSM.Lq_Henry / config_PMSM.R_ph_Ohm + 2.0f / self->config.sampling_frequency_Hz;
+	switch (self->config.selection)
+	{
+	case abc_to_dqn:
+		T_V = 1.0f / fabsf(0.05f * omega_el_rad_per_sec * self->config.order_harmonic);
+		break;
+	case dq_to_dqn:
+		T_V = 1.0f / fabsf(0.05f * omega_el_rad_per_sec * (self->config.order_harmonic - 1.0f));
+		break;
+	default:
+		uz_assert(false);
+		break;
+	}
+	float Kp_id = (T_N + T_V) / (2.0f * T_sigma_d * V_s);
+	float Ki_id = 1.0f / (2.0f * T_sigma_d * V_s);
+	float Kp_iq = (T_N + T_V) / (2.0f * T_sigma_q * V_s);
+	float Ki_iq = 1.0f / (2.0f * T_sigma_d * V_s);
+	uz_assert(Kp_id >= 0.0f);
+	uz_assert(Ki_id >= 0.0f);
+	uz_assert(Kp_iq >= 0.0f);
+	uz_assert(Ki_iq >= 0.0f);
+	uz_CurrentControl_set_Kp_id(self->Controller_harmonic, Kp_id);
+	uz_CurrentControl_set_Ki_id(self->Controller_harmonic, Ki_id);
+	uz_CurrentControl_set_Kp_iq(self->Controller_harmonic, Kp_iq);
+	uz_CurrentControl_set_Ki_iq(self->Controller_harmonic, Ki_iq);
+}
+
+#endif
+
+
+// typedef struct uz_HarmonicCurrentInjection_t {
+//     bool is_ready;
+//     struct uz_HarmonicCurrentInjection_config config;
+//     struct uz_CurrentControl_t* CurrentControl_first_harmonic;
+//     struct uz_CurrentControl_t* CurrentControl_second_harmonic;
+//     struct uz_IIR_Filter_t* Bandpass_first_harmonic_phase_a;
+//     struct uz_IIR_Filter_t* Bandpass_first_harmonic_phase_b;
+//     struct uz_IIR_Filter_t* Bandpass_first_harmonic_phase_c;
+//     struct uz_IIR_Filter_t* Bandpass_second_harmonic_phase_a;
+//     struct uz_IIR_Filter_t* Bandpass_second_harmonic_phase_b;
+//     struct uz_IIR_Filter_t* Bandpass_second_harmonic_phase_c;
+//     struct uz_IIR_Filter_t* Bandpass_harmonic_d_axis;
+//     struct uz_IIR_Filter_t* Bandpass_harmonic_q_axis;
+//     struct uz_IIR_Filter_t* Lowpass_first_harmonic_d_axis;
+//     struct uz_IIR_Filter_t* Lowpass_first_harmonic_q_axis;
+//     struct uz_IIR_Filter_t* Lowpass_second_harmonic_d_axis;
+//     struct uz_IIR_Filter_t* Lowpass_second_harmonic_q_axis;
+// } uz_HarmonicCurrentInjection_t;
 
 // uz_HarmonicCurrentInjection_t* _init(struct uz_HarmonicCurrentInjection_config config) {
 //     uz_HarmonicCurrentInjection_t* self = uz_HarmonicCurrentInjection_allocation();
@@ -117,7 +268,6 @@ uz_HarmonicCurrentInjection_t* uz_HarmonicCurrentInjection_allocation(void){
 //     }
 //     return (self);
 // }
-
 // uz_3ph_dq_t uz_HarmonicCurrentInjection_sample_abc(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_first_harmonic_Ampere, uz_3ph_dq_t i_ref_second_harmonic_Ampere, uz_3ph_abc_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad){
 //     uz_assert_not_NULL(self);
 // 	uz_assert(self->is_ready);
@@ -144,32 +294,6 @@ uz_HarmonicCurrentInjection_t* uz_HarmonicCurrentInjection_allocation(void){
 //     uz_3ph_abc_t v_abc_second_harmonic_Ampere = uz_transformation_3ph_harmonic_dqn_to_abc(v_dqn_second_harmonic_Volts, theta_el_rad, self->config.order_second_harmonic);
 //     uz_3ph_dq_t v_dq_second_harmonic_Volts = uz_transformation_3ph_abc_to_dq(v_abc__harmonic_Volts, theta_el_rad);
 // }
-
-uz_HarmonicCurrentInjection_t* uz_HarmonicCurrentInjection_init(struct uz_HarmonicCurrentInjection_config config) {
-    uz_HarmonicCurrentInjection_t* self = uz_HarmonicCurrentInjection_allocation();
-    uz_assert(fabsf(config.order_harmonic) != 1.0f);
-    self->Controller_harmonic = uz_CurrentControl_init(config.config_currentcontroller);
-    self->config = config;
-    switch (config.selection)
-    {
-    case abc_to_dq:
-        self->Bandpass_phase_a = uz_signals_IIR_Filter_init(config.config_bandpass_abc);
-        self->Bandpass_phase_b = uz_signals_IIR_Filter_init(config.config_bandpass_abc);
-        self->Bandpass_phase_c = uz_signals_IIR_Filter_init(config.config_bandpass_abc);
-        self->Lowpass_d_axis = uz_signals_IIR_Filter_init(config.config_lowpass_dq);
-        self->Lowpass_q_axis = uz_signals_IIR_Filter_init(config.config_lowpass_dq);
-        break;
-    case dq_to_dqn:
-        self->Bandpass_d_axis = uz_signals_IIR_Filter_init(config.config_bandpass_dq);
-        self->Bandpass_q_axis = uz_signals_IIR_Filter_init(config.config_bandpass_dq);
-        self->Lowpass_d_axis = uz_signals_IIR_Filter_init(config.config_lowpass_dq);
-        self->Lowpass_q_axis = uz_signals_IIR_Filter_init(config.config_lowpass_dq);
-        break;
-    default:
-        break;
-    }
-    return (self);
-}
 
 // uz_3ph_dq_t uz_HarmonicCurrentInjection_sample_abc(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_first_harmonic_Ampere, uz_3ph_dq_t i_ref_second_harmonic_Ampere, uz_3ph_abc_t i_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad){
 //     uz_assert_not_NULL(self);
@@ -201,68 +325,3 @@ uz_HarmonicCurrentInjection_t* uz_HarmonicCurrentInjection_init(struct uz_Harmon
 //     v_dq_Volts.q = v_dq_first_harmonic_Volts.q + v_dq_second_harmonic_Volts.q;
 //     return (v_dq_Volts);
 // }
-
-uz_3ph_dq_t uz_HarmonicCurrentInjection_sample(uz_HarmonicCurrentInjection_t* self, uz_3ph_dq_t i_ref_harmonic_Ampere, uz_3ph_abc_t i_abc_actual_Ampere, float V_dc_volts, float omega_el_rad_per_sec, float theta_el_rad){
-    uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-    uz_3ph_dq_t i_dq_actual_Ampere = { 0 };
-    uz_3ph_abc_t i_abc_bp_filtered_Ampere = { 0 };
-    uz_3ph_dq_t i_dq_bp_filtered_Ampere = { 0 };
-    uz_3ph_dq_t i_dqn_bp_filtered_Ampere = { 0 };
-    uz_3ph_dq_t i_dqn_lp_filtered_Ampere = { 0 };
-    uz_3ph_dq_t v_dqn_Volts = { 0 };
-    uz_3ph_abc_t v_abc_Volts = { 0 };
-    uz_3ph_dq_t v_dq_Volts = { 0 };
-    switch (self->config.selection)
-    {
-    case abc_to_dq:
-        i_abc_bp_filtered_Ampere.a = uz_signals_IIR_Filter_sample(self->Bandpass_phase_a, i_abc_actual_Ampere.a);
-        i_abc_bp_filtered_Ampere.b = uz_signals_IIR_Filter_sample(self->Bandpass_phase_b, i_abc_actual_Ampere.b);
-        i_abc_bp_filtered_Ampere.c = uz_signals_IIR_Filter_sample(self->Bandpass_phase_c, i_abc_actual_Ampere.c);
-        i_dqn_bp_filtered_Ampere = uz_transformation_3ph_harmonic_abc_to_dqn(i_abc_bp_filtered_Ampere, theta_el_rad, self->config.order_harmonic);
-        i_dqn_lp_filtered_Ampere.d = uz_signals_IIR_Filter_sample(self->Lowpass_d_axis, i_dqn_bp_filtered_Ampere.d);
-        i_dqn_lp_filtered_Ampere.q = uz_signals_IIR_Filter_sample(self->Lowpass_q_axis, i_dqn_bp_filtered_Ampere.q);
-        v_dqn_Volts = uz_CurrentControl_sample(self->Controller_harmonic, i_ref_harmonic_Ampere, i_dqn_lp_filtered_Ampere, V_dc_volts, omega_el_rad_per_sec);
-        v_abc_Volts = uz_transformation_3ph_harmonic_dqn_to_abc(v_dqn_Volts, theta_el_rad, self->config.order_harmonic);
-        v_dq_Volts = uz_transformation_3ph_abc_to_dq(v_abc_Volts, theta_el_rad);
-        break;
-    case dq_to_dqn: ;
-        i_dq_actual_Ampere = uz_transformation_3ph_abc_to_dq(i_abc_actual_Ampere, theta_el_rad);
-        i_dq_bp_filtered_Ampere.d = uz_signals_IIR_Filter_sample(self->Bandpass_d_axis, i_dq_actual_Ampere.d);
-        i_dq_bp_filtered_Ampere.q = uz_signals_IIR_Filter_sample(self->Bandpass_q_axis, i_dq_actual_Ampere.q);
-        i_dqn_bp_filtered_Ampere = uz_transformation_3ph_harmonic_dq_to_dqn(i_dq_bp_filtered_Ampere, theta_el_rad, self->config.order_harmonic);
-        i_dqn_lp_filtered_Ampere.d = uz_signals_IIR_Filter_sample(self->Lowpass_d_axis, i_dqn_bp_filtered_Ampere.d);
-        i_dqn_lp_filtered_Ampere.q = uz_signals_IIR_Filter_sample(self->Lowpass_q_axis, i_dqn_bp_filtered_Ampere.q);
-        v_dqn_Volts = uz_CurrentControl_sample(self->Controller_harmonic, i_ref_harmonic_Ampere, i_dqn_lp_filtered_Ampere, V_dc_volts, omega_el_rad_per_sec);
-        v_dq_Volts = uz_transformation_3ph_harmonic_dqn_to_dq(v_dqn_Volts, theta_el_rad, self->config.order_harmonic);
-        break;
-    default: ;
-        break;
-    }
-    return(v_dq_Volts);
-}
-
-void uz_HarmonicCurrentInjection_set_filters_abc(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec){
-    uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-    float pass_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf) * self->config.order_harmonic);
-    float cutoff_frequency_Hz = omega_el_rad_per_sec / (2.0f * UZ_PIf * 10.0f);
-    uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_a, pass_frequency_Hz, 0.05f);
-    uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_b, pass_frequency_Hz, 0.05f);
-    uz_signals_IIR_Filter_set_bandpass(self->Bandpass_phase_c, pass_frequency_Hz, 0.05f);
-    uz_signals_IIR_Filter_set_lowpass(self->Lowpass_d_axis, cutoff_frequency_Hz);
-    uz_signals_IIR_Filter_set_lowpass(self->Lowpass_q_axis, cutoff_frequency_Hz);
-} 
-
-void uz_HarmonicCurrentInjection_set_filters_dq(uz_HarmonicCurrentInjection_t* self, float omega_el_rad_per_sec){
-    uz_assert_not_NULL(self);
-	uz_assert(self->is_ready);
-    float pass_frequency_Hz = fabsf(omega_el_rad_per_sec / (2.0f * UZ_PIf) * (self->config.order_harmonic - 1.0f));
-    float cutoff_frequency_Hz = omega_el_rad_per_sec / (2.0f * UZ_PIf * 10.0f);
-    uz_signals_IIR_Filter_set_bandpass(self->Bandpass_d_axis, pass_frequency_Hz, 0.05f);
-    uz_signals_IIR_Filter_set_bandpass(self->Bandpass_q_axis, pass_frequency_Hz, 0.05f);
-    uz_signals_IIR_Filter_set_lowpass(self->Lowpass_d_axis, cutoff_frequency_Hz);
-    uz_signals_IIR_Filter_set_lowpass(self->Lowpass_q_axis, cutoff_frequency_Hz);
-} 
-
-#endif

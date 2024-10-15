@@ -51,6 +51,7 @@ enum JS_OberservableData {
 	JSO_n_rpm_heidrive,
 	JSO_omega_el_rad_per_sec,
 	JSO_speed_tracking_error,
+	JSO_theta_offset,
 	JSO_ENDMARKER
 };
 

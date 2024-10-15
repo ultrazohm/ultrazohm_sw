@@ -77,6 +77,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq_heidrive]	= &Global_Data.heidrive_actual_data->i_dq_in_A.q;
 	js_ch_observable[JSO_id_ref_heidrive]	= &Global_Data.heidrive_reference_values->i_dq_in_A.d;
 	js_ch_observable[JSO_iq_ref_heidrive]	= &Global_Data.heidrive_reference_values->i_dq_in_A.q;
+	js_ch_observable[JSO_theta_offset]	= Global_Data.heidrive_theta_offset;
 
 
 

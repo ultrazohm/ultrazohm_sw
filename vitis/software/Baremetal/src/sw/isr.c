@@ -31,7 +31,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
-
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 #include "../uz/uz_pmsm_control/uz_pmsm_control.h"
 
 // Initialize the Interrupt structure
@@ -82,6 +82,8 @@ bool manual_dutycycle=false;
 // i_DC_Amps_heidrive = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
 
 // struct uz_pmsm_actual_data heidrive_actual_data = {0.0f};
+struct uz_encoder_offset_estimation_status status={0};
+
 
 void ISR_Control(void *data)
 {
@@ -107,7 +109,7 @@ void ISR_Control(void *data)
 
     // Get current state
     platform_state_t current_state = ultrazohm_state_machine_get_state();
-
+    status = uz_encoder_offset_estimation_get_status(Global_Data.objects.offset_estimation); // get encode offset status and progress
     // Enable Inverter Adapter Hardware
     if (current_state == running_state || current_state == control_state)
     {
@@ -125,6 +127,15 @@ void ISR_Control(void *data)
     if (current_state == control_state)
     {
     	enable_controller=true;
+        if (!uz_encoder_offset_estimation_get_finished(Global_Data.objects.offset_estimation))
+        {                                                                             // if not finished
+            heidrive_reference_currents_in_A = uz_encoder_offset_estimation_step(Global_Data.objects.offset_estimation); // receive current controller setpoint current from stepping function
+        }
+        else
+        {
+            heidrive_reference_currents_in_A.d = 0.0f; // else: it is finished, setpoints are 0
+            heidrive_reference_currents_in_A.q = 0.0f;
+        }
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, false, false, false);
     }

@@ -15,6 +15,7 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -25,23 +26,18 @@ DS_Data Global_Data = {
         .halfBridge4DutyCycle = 0.0f,
         .halfBridge5DutyCycle = 0.0f,
         .halfBridge6DutyCycle = 0.0f,
-		.halfBridge7DutyCycle = 0.0f,
-		.halfBridge8DutyCycle = 0.0f,
-		.halfBridge9DutyCycle = 0.0f,
-		.halfBridge10DutyCycle = 0.0f,
-		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
-    },
+        .halfBridge7DutyCycle = 0.0f,
+        .halfBridge8DutyCycle = 0.0f,
+        .halfBridge9DutyCycle = 0.0f,
+        .halfBridge10DutyCycle = 0.0f,
+        .halfBridge11DutyCycle = 0.0f,
+        .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
-};
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 // ***************** PMSM 2 ***************** //
-// 1.362164
+// 1.362164. Mit Valentins Softwaremodul: 1.532164
 struct uz_pmsm_control_configuration_t config = {
     .current_conversion_factors = {
         .a = 12.2889f,
@@ -97,13 +93,12 @@ enum init_chain
     init_gpios,
     init_software,
     init_ip_cores,
-	init_control,
+    init_control,
     print_msg,
     init_interrupts,
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
-
 
 int main(void)
 {
@@ -155,6 +150,19 @@ int main(void)
             Global_Data.heidrive_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.heidrive_controller);
             Global_Data.heidrive_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.heidrive_controller);
             Global_Data.heidrive_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.heidrive_controller);
+
+            Global_Data.heidrive_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.heidrive_controller);
+            struct uz_encoder_offset_estimation_config uz_encoder_offset_estimation_config = {
+                .min_omega_el = 200.0f,
+                .ptr_actual_omega_el = &Global_Data.heidrive_actual_data->omega_el_rad_per_sec,
+                .ptr_actual_u_q_V = &Global_Data.heidrive_reference_values->v_dq_in_V.q,
+                .ptr_measured_rotor_angle = &Global_Data.heidrive_actual_data->theta_el,
+                .ptr_offset_angle = Global_Data.heidrive_theta_offset,
+                .setpoint_current = 1.5f,
+            };
+
+            Global_Data.objects.offset_estimation = uz_encoder_offset_estimation_init(uz_encoder_offset_estimation_config);
+
             JavaScope_initialize(&Global_Data);
 
             // speed_setpoint_filter_heidrive_config
@@ -162,12 +170,12 @@ int main(void)
             // Global_Data.objects.tracking_error_filter_heidrive=uz_signals_IIR_Filter_init(tracking_error_filter_heidrive_config);
             nn_init();
             initialization_chain = print_msg;
-        	break;
-	    case print_msg:
+            break;
+        case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
+            uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
 
             initialization_chain = init_interrupts;
             break;

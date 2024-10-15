@@ -17,6 +17,7 @@
 #include "uz/uz_matrix/uz_matrix.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -139,7 +140,8 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5_1;
 	uz_incrementalEncoder_t* encoder_D5_2;
 	uz_incrementalEncoder_t* encoder_D5_3;
-	uz_mux_axi_t* mux_axi;
+	uz_encoder_offset_estimation_t * offset_estimation;
+	uz_mux_axi_t *mux_axi;
 	uz_inverter_adapter_t* inverter_d1_brose;
 	uz_inverter_adapter_t* inverter_d2_heidrive;
 	uz_resolver_pl_interface_t* resolver_pl_d4;
@@ -158,6 +160,7 @@ typedef struct _DS_Data_ {
 	struct uz_pmsm_actual_data * heidrive_actual_data;
 	struct uz_pmsm_measurement_values *heidrive_measurement_values;
 	struct uz_pmsm_reference_values *heidrive_reference_values;
+	float* heidrive_theta_offset;
 	object_pointers_t objects;
 } DS_Data;
 

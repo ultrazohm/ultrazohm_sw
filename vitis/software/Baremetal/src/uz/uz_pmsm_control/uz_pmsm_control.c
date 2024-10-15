@@ -132,6 +132,10 @@ struct uz_pmsm_measurement_values *uz_pmsm_control_get_uz_pmsm_measurement_value
     return &self->measurement; // is this a good idea?
 }
 
+float* uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self){
+    return &self->config.theta_el_offset;
+}
+
 void uz_pmsm_controller_reset(uz_pmsm_control_t *self)
 {
     uz_assert(self->is_ready);

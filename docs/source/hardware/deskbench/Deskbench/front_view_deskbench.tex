@@ -1,0 +1,26 @@
+\documentclass[crop,tikz,convert={outext=.svg,command=\unexpanded{pdf2svg \infile\space\outfile}},multi=false]{standalone}[2012/04/13]
+\usepackage{tikz}
+\usepackage{pgfplots}
+
+\usetikzlibrary{arrows,shapes,positioning}
+\begin{document}
+
+\begin{tikzpicture}
+	\begin{scope}
+		\node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\textwidth]{Front_view.jpg}};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]
+			\draw[red,ultra thick,rounded corners] (0.05,0.45) rectangle (0.3,0.65);
+			\draw[red,ultra thick,rounded corners] (0.43,0.45) rectangle (0.5,0.65);
+			\draw[red,ultra thick,rounded corners] (0.65,0.45) rectangle (0.9,0.65);
+			\node[red,ultra thick,fill=white,anchor=south] at (0.2,0.65) {\Huge load machine};
+			\node[red,ultra thick,fill=white,anchor=south] at (0.45,0.25) {\Huge torque sensor};
+			\node[red,ultra thick,fill=white,anchor=south] at (0.75,0.65) {\Huge test machine};
+			% \draw [-latex, ultra thick, red] (ENC) to[out=-90, in=60] (0.92,0.95);
+			% \draw[green,ultra thick,rounded corners] (0.40,0.10) rectangle (0.48,0.95);
+			% \draw [-latex, ultra thick, green] (ADC) to[out=-90, in=120] (0.40,0.95);
+			% \draw[blue,ultra thick,rounded corners] (0.60,0.10) rectangle (0.68,0.95);
+			% \draw [-latex, ultra thick, blue] (DV) to[out=-90, in=120] (0.60,0.95);
+		\end{scope}
+	\end{scope}
+\end{tikzpicture}%
+\end{document}

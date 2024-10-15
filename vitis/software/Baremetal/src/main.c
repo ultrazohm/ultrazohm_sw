@@ -48,12 +48,12 @@ struct uz_pmsm_control_configuration_t config = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 1.362164f,
+    .theta_el_offset = 1.532164f,
     .sample_time = 1.0f / 10000.0f,
-    .enable_speed_control = false,
+    .enable_speed_control = true,
     .speed_controller_max_torque = 0.5f,
-    .speed_controller_kp = 0.1f,
-    .speed_controller_ki = 0.0f,
+    .speed_controller_kp = 0.01f,
+    .speed_controller_ki = 1.0f,
     .current_controller_d_kp = 3.77f,
     .current_controller_d_ki = 1810.0f,
     .current_controller_q_kp = 4.73f,
@@ -77,7 +77,45 @@ struct uz_pmsm_control_configuration_t config = {
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
-// Configuration of PMSM 2 (Brose PMSM)
+struct uz_pmsm_control_configuration_t config_brose = {
+    .current_conversion_factors = {
+        .a = 12.223f,
+        .b = 12.3123f,
+        .c = 12.4303f},
+    .current_offsets = {.a = +0.0164f, .b = +0.0161f, .c = -0.0184f},
+    .v_dc_in_V_conversion_factor = 12.0f,
+    .v_dc_in_V_offset = 0.0f,
+    .i_dc_in_V_conversion_factor = 12.5f,
+    .i_dc_in_V_offset = 0.0f,
+    .theta_el_offset = 1.642250f,
+    .sample_time = 1.0f / 10000.0f,
+    .enable_speed_control = false,
+    .speed_controller_max_torque = 0.5f,
+    .speed_controller_kp = 0.1f,
+    .speed_controller_ki = 1.0f,
+    .current_controller_d_kp = 0.1f,
+    .current_controller_d_ki = 76.0f,
+    .current_controller_q_kp = 0.2f,
+    .current_controller_q_ki = 76.0f,
+    .setpoint_lower_bound_i_d_in_A = -15.0f,
+    .setpoint_upper_bound_i_d_in_A = 0.5f,
+    .setpoint_lower_bound_i_q_in_A = -15.0f,
+    .setpoint_upper_bound_i_q_in_A = 15.0f,
+    .setpoint_upper_bound_speed_in_rpm = 500.0f,
+    .setpoint_lower_bound_speed_in_rpm = -500.0f,
+    .error_upper_bound_speed_in_rpm = 1500.0f,
+    .error_lower_bound_speed_in_rpm = -1500.0f,
+    .disturbance_input_lower_bound_in_Nm = 0.0f, // disable disturbance input for now
+    .disturbance_input_upper_bound_in_Nm = 0.0f,
+    .decoupling_method = linear_decoupling,
+    .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
+    .setpoint_filter_speed_cutoff_frequency = 0.0f,
+    .motor_type = IPMSM,
+    .enable_field_weakening = false,
+    .relative_torque_tolerance = 0.1f,
+    .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
+};
+
 struct uz_PMSM_t config_PMSM_heidrive = {
     .R_ph_Ohm = 0.543f,
     .Ld_Henry = 0.00113f,
@@ -86,6 +124,16 @@ struct uz_PMSM_t config_PMSM_heidrive = {
     .polePairs = 3.0f,
     .J_kg_m_squared = 0.000108f,
     .I_max_Ampere = 10.8f};
+
+struct uz_PMSM_t config_PMSM_brose = {
+    .R_ph_Ohm = 0.023f,
+    .Ld_Henry = 3e-5f,
+    .Lq_Henry = 6e-5f,
+    .Psi_PM_Vs = 0.007f,
+    .polePairs = 5.0f,
+    .J_kg_m_squared = 0.000084f,
+    .I_max_Ampere = 35.0f};
+float PMSM_rated_current_brose = 28.3f;
 
 enum init_chain
 {
@@ -147,18 +195,24 @@ int main(void)
             break;
         case init_control:
             Global_Data.objects.heidrive_controller = uz_pmsm_control_init(config, config_PMSM_heidrive);
+            Global_Data.objects.brose_controller = uz_pmsm_control_init(config_brose, config_PMSM_brose);
             Global_Data.heidrive_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.heidrive_controller);
             Global_Data.heidrive_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.heidrive_controller);
             Global_Data.heidrive_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.heidrive_controller);
 
+            Global_Data.brose_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.brose_controller);
+            Global_Data.brose_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.brose_controller);
+            Global_Data.brose_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.brose_controller);
+
             Global_Data.heidrive_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.heidrive_controller);
+            Global_Data.brose_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.brose_controller);
             struct uz_encoder_offset_estimation_config uz_encoder_offset_estimation_config = {
-                .min_omega_el = 200.0f,
-                .ptr_actual_omega_el = &Global_Data.heidrive_actual_data->omega_el_rad_per_sec,
-                .ptr_actual_u_q_V = &Global_Data.heidrive_reference_values->v_dq_in_V.q,
-                .ptr_measured_rotor_angle = &Global_Data.heidrive_actual_data->theta_el,
-                .ptr_offset_angle = Global_Data.heidrive_theta_offset,
-                .setpoint_current = 1.5f,
+                .min_omega_el = 500.0f,
+                .ptr_actual_omega_el = &Global_Data.brose_actual_data->omega_el_rad_per_sec,
+                .ptr_actual_u_q_V = &Global_Data.brose_reference_values->v_dq_in_V.q,
+                .ptr_measured_rotor_angle = &Global_Data.brose_actual_data->theta_el,
+                .ptr_offset_angle = Global_Data.brose_theta_offset,
+                .setpoint_current = 3.3f,
             };
 
             Global_Data.objects.offset_estimation = uz_encoder_offset_estimation_init(uz_encoder_offset_estimation_config);

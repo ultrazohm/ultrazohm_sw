@@ -50,16 +50,23 @@ uint32_t setpoint_index = 0U;
 uint32_t n_ref_setpoint_index = 0U;
 
 uint32_t Fehlerfall = 0U;
-extern uz_3ph_dq_t i_dq_ref_java_Amps_brose;
+extern uz_3ph_dq_t i_dq_ref_java_Amps_heidrive;
 
 struct uz_pmsm_measurement_values heidrive_measurements = {0};
+struct uz_pmsm_measurement_values brose_measurements = {0};
 
 float heidrive_reference_speed_in_rpm = 0.0f;
 uz_3ph_dq_t heidrive_reference_currents_in_A = {0.0f};
 
+float brose_reference_speed_in_rpm = 0.0f;
+uz_3ph_dq_t brose_reference_currents_in_A = {0.0f};
+
 static void ReadAllADC();
 bool enable_controller = false;
-bool manual_dutycycle=false;
+bool brose_enable_controller = false;
+bool manual_dutycycle = false;
+bool manual_dutycycle_brose = false;
+bool theta_estimation = true;
 
 // // First inverter
 // v_abc_Volts_brose.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
@@ -82,8 +89,7 @@ bool manual_dutycycle=false;
 // i_DC_Amps_heidrive = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
 
 // struct uz_pmsm_actual_data heidrive_actual_data = {0.0f};
-struct uz_encoder_offset_estimation_status status={0};
-
+struct uz_encoder_offset_estimation_status status = {0};
 
 void ISR_Control(void *data)
 {
@@ -92,9 +98,9 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
 
-    heidrive_reference_currents_in_A.d = i_dq_ref_java_Amps_brose.d;
-    heidrive_reference_currents_in_A.q = i_dq_ref_java_Amps_brose.q;
-    // n_ref_rpm_heidrive = n_ref_rpm_heidrive_javascope;
+    brose_reference_currents_in_A.d = i_dq_ref_java_Amps_heidrive.d;
+    brose_reference_currents_in_A.q = i_dq_ref_java_Amps_heidrive.q;
+    brose_reference_speed_in_rpm = n_ref_rpm_heidrive_javascope;
 
     heidrive_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A2.me.ADC_B5;
     heidrive_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
@@ -103,6 +109,14 @@ void ISR_Control(void *data)
     heidrive_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A2.me.ADC_A2;
     heidrive_measurements.omega_mech_rad_per_sec = Global_Data.av.omega_mech_rad_per_sed;
     heidrive_measurements.theta_mech = Global_Data.av.theta_elec_heidrive;
+
+    brose_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A1.me.ADC_B5;
+    brose_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
+    brose_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_A4;
+    brose_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_A3;
+    brose_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_A2;
+    brose_measurements.omega_mech_rad_per_sec = Global_Data.av.omega_mech_rad_per_sec_brose;
+    brose_measurements.theta_mech = Global_Data.av.theta_elec_brose;
 
     Global_Data.av.inverter_outputs_d1_brose = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_brose);
     Global_Data.av.inverter_outputs_d2_heidrive = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_heidrive);
@@ -126,32 +140,47 @@ void ISR_Control(void *data)
 
     if (current_state == control_state)
     {
-    	enable_controller=true;
-        if (!uz_encoder_offset_estimation_get_finished(Global_Data.objects.offset_estimation))
-        {                                                                             // if not finished
-            heidrive_reference_currents_in_A = uz_encoder_offset_estimation_step(Global_Data.objects.offset_estimation); // receive current controller setpoint current from stepping function
-        }
-        else
+       // enable_controller = true;
+        brose_enable_controller=true;
+        if (theta_estimation)
         {
-            heidrive_reference_currents_in_A.d = 0.0f; // else: it is finished, setpoints are 0
-            heidrive_reference_currents_in_A.q = 0.0f;
+
+            if (!uz_encoder_offset_estimation_get_finished(Global_Data.objects.offset_estimation))
+            {                                                                                                                // if not finished
+                brose_reference_currents_in_A = uz_encoder_offset_estimation_step(Global_Data.objects.offset_estimation); // receive current controller setpoint current from stepping function
+            }
+            else
+            {
+                brose_reference_currents_in_A.d = 0.0f; // else: it is finished, setpoints are 0
+                brose_reference_currents_in_A.q = 0.0f;
+            }
         }
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, false, false, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, false, false, false);
     }
     else
     {
-    	enable_controller=false;
-    	uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
+        enable_controller = false;
+        brose_enable_controller=false;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, true, true, true);
     }
     uz_pmsm_controller_enable(Global_Data.objects.heidrive_controller, enable_controller);
-    struct uz_DutyCycle_t duty = uz_pmsm_controller_sample(Global_Data.objects.heidrive_controller, heidrive_measurements, heidrive_reference_speed_in_rpm, heidrive_reference_currents_in_A,0.0f);
+    uz_pmsm_controller_enable(Global_Data.objects.brose_controller, brose_enable_controller);
+    struct uz_DutyCycle_t duty_heidrive = uz_pmsm_controller_sample(Global_Data.objects.heidrive_controller, heidrive_measurements, heidrive_reference_speed_in_rpm, heidrive_reference_currents_in_A, 0.0f);
+    struct uz_DutyCycle_t duty_brose = uz_pmsm_controller_sample(Global_Data.objects.brose_controller, brose_measurements, brose_reference_speed_in_rpm, brose_reference_currents_in_A, 0.0f);
 
-    if(!manual_dutycycle){
-    	Global_Data.rasv.halfBridge4DutyCycle = duty.DutyCycle_A;
-    	Global_Data.rasv.halfBridge5DutyCycle = duty.DutyCycle_B;
-    	Global_Data.rasv.halfBridge6DutyCycle = duty.DutyCycle_C;
+    if (!manual_dutycycle)
+    {
+        Global_Data.rasv.halfBridge4DutyCycle = duty_heidrive.DutyCycle_A;
+        Global_Data.rasv.halfBridge5DutyCycle = duty_heidrive.DutyCycle_B;
+        Global_Data.rasv.halfBridge6DutyCycle = duty_heidrive.DutyCycle_C;
+    }
+    if (!manual_dutycycle_brose)
+    {
+        Global_Data.rasv.halfBridge1DutyCycle = duty_brose.DutyCycle_A;
+        Global_Data.rasv.halfBridge2DutyCycle = duty_brose.DutyCycle_B;
+        Global_Data.rasv.halfBridge3DutyCycle = duty_brose.DutyCycle_C;
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_brose, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d2_heidrive, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

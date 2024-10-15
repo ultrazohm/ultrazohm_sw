@@ -49,9 +49,20 @@ enum JS_OberservableData {
 	JSO_iq_ref_heidrive,
 	JSO_n_ref_rpm_heidrive,
 	JSO_n_rpm_heidrive,
-	JSO_omega_el_rad_per_sec,
+	JSO_omega_el_rad_per_sec_heidrive,
 	JSO_speed_tracking_error,
 	JSO_theta_offset,
+	JSO_n_ref_rpm_brose,
+	JSO_n_rpm_brose,
+	JSO_omega_el_rad_per_sec_brose,
+	JSO_ia_brose,
+	JSO_ib_brose,
+	JSO_ic_brose,
+	JSO_Theta_el_brose,
+	JSO_id_brose,
+	JSO_iq_brose,
+	JSO_id_ref_brose,
+	JSO_iq_ref_brose,
 	JSO_ENDMARKER
 };
 

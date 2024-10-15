@@ -63,12 +63,12 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_n_ref_rpm_heidrive]	= &Global_Data.heidrive_reference_values->speed_in_rpm;
-	js_ch_observable[JSO_n_rpm_heidrive]		= &Global_Data.heidrive_actual_data->speed_in_rpm;
-	js_ch_observable[JSO_omega_el_rad_per_sec]		= &Global_Data.heidrive_actual_data->omega_el_rad_per_sec;
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_n_ref_rpm_heidrive]	= &Global_Data.heidrive_reference_values->speed_in_rpm;
+	js_ch_observable[JSO_n_rpm_heidrive]		= &Global_Data.heidrive_actual_data->speed_in_rpm;
+	js_ch_observable[JSO_omega_el_rad_per_sec_heidrive]		= &Global_Data.heidrive_actual_data->omega_el_rad_per_sec;
 	js_ch_observable[JSO_ia_heidrive]	= &Global_Data.heidrive_actual_data->i_abc_in_A.a;
 	js_ch_observable[JSO_ib_heidrive]	= &Global_Data.heidrive_actual_data->i_abc_in_A.b;
 	js_ch_observable[JSO_ic_heidrive]	= &Global_Data.heidrive_actual_data->i_abc_in_A.c;
@@ -77,13 +77,18 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq_heidrive]	= &Global_Data.heidrive_actual_data->i_dq_in_A.q;
 	js_ch_observable[JSO_id_ref_heidrive]	= &Global_Data.heidrive_reference_values->i_dq_in_A.d;
 	js_ch_observable[JSO_iq_ref_heidrive]	= &Global_Data.heidrive_reference_values->i_dq_in_A.q;
-	js_ch_observable[JSO_theta_offset]	= Global_Data.heidrive_theta_offset;
-
-
-
-
-
-
+	js_ch_observable[JSO_n_ref_rpm_brose] = &Global_Data.brose_reference_values->speed_in_rpm;
+	js_ch_observable[JSO_n_rpm_brose] = &Global_Data.brose_actual_data->speed_in_rpm;
+	js_ch_observable[JSO_omega_el_rad_per_sec_brose] = &Global_Data.brose_actual_data->omega_el_rad_per_sec;
+	js_ch_observable[JSO_ia_brose] = &Global_Data.brose_actual_data->i_abc_in_A.a;
+	js_ch_observable[JSO_ib_brose] = &Global_Data.brose_actual_data->i_abc_in_A.b;
+	js_ch_observable[JSO_ic_brose] = &Global_Data.brose_actual_data->i_abc_in_A.c;
+	js_ch_observable[JSO_Theta_el_brose] = &Global_Data.brose_actual_data->theta_el;
+	js_ch_observable[JSO_id_brose] = &Global_Data.brose_actual_data->i_dq_in_A.d;
+	js_ch_observable[JSO_iq_brose] = &Global_Data.brose_actual_data->i_dq_in_A.q;
+	js_ch_observable[JSO_id_ref_brose] = &Global_Data.brose_reference_values->i_dq_in_A.d;
+	js_ch_observable[JSO_iq_ref_brose] = &Global_Data.brose_reference_values->i_dq_in_A.q;
+	js_ch_observable[JSO_theta_offset] = Global_Data.brose_theta_offset;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

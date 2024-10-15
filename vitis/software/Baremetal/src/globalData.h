@@ -80,6 +80,7 @@ typedef struct _actualValues_ {
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
 	float mechanicalRotorSpeed_brose; 		// in rpm
+	float omega_mech_rad_per_sec_brose;		// in rpm
 	float mechanicalRotorSpeed_heidrive; 		// in rpm
 	float mechanicalRotorSpeed_3; 		// in rpm
 	float mechanicalRotorSpeed_filtered_brose; // in rpm
@@ -97,6 +98,7 @@ typedef struct _actualValues_ {
 	float U_q_1;
 	float theta_elec_brose;
 	float theta_elec_heidrive;
+	float omega_mech_rad_per_sed_unfiltered;
 	float omega_mech_rad_per_sed ;
 	float theta_elec_3;
 	float theta_mech_brose;
@@ -151,6 +153,7 @@ typedef struct{
 	uz_IIR_Filter_t* speed_setpoint_filter_heidrive;
 	uz_IIR_Filter_t* tracking_error_filter_heidrive;
 	uz_pmsm_control_t *heidrive_controller;
+	uz_pmsm_control_t *brose_controller;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {
@@ -160,7 +163,11 @@ typedef struct _DS_Data_ {
 	struct uz_pmsm_actual_data * heidrive_actual_data;
 	struct uz_pmsm_measurement_values *heidrive_measurement_values;
 	struct uz_pmsm_reference_values *heidrive_reference_values;
+	struct uz_pmsm_actual_data *brose_actual_data;
+	struct uz_pmsm_measurement_values *brose_measurement_values;
+	struct uz_pmsm_reference_values *brose_reference_values;
 	float* heidrive_theta_offset;
+	float* brose_theta_offset;
 	object_pointers_t objects;
 } DS_Data;
 

@@ -18,6 +18,8 @@ struct uz_pmsm_control_t
     uz_CurrentControl_t *current_controller;
     uz_SpeedControl_t *speed_controller;
     uz_SetPoint_t *setpoint_module;
+    uz_dq_setpoint_filter *setpoint_filter_i_dq;
+    uz_IIR_Filter_t* setpoint_filter_speed;
     uz_PMSM_t machine_data;
     bool enable;
     bool safe_operating_region_violation;
@@ -27,6 +29,7 @@ static uint32_t instance_counter = 0U;
 static uz_pmsm_control_t instances[UZ_PMSM_CONTROL_MAX_INSTANCES] = {0};
 
 void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self);
+void uz_pmsm_controller_check_safe_operating_region(uz_pmsm_control_t *self);
 
 static uz_pmsm_control_t *uz_pmsm_control_allocation(void);
 
@@ -79,7 +82,39 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
     self->speed_controller = uz_SpeedControl_init(speed_controller_configuration);
     self->setpoint_module = uz_SetPoint_init(setpoint_configuration);
 
-    return (self);
+    // Filter config
+    if (config.setpoint_filter_i_dq_cutoff_frequency != 0.0f)
+    {
+        struct uz_dq_setpoint_filter_config setpoint_filter_config =
+            {
+                .config_filter_d = {
+                    .cutoff_frequency_Hz = config.setpoint_filter_i_dq_cutoff_frequency,
+                    .damping = 0,
+                    .pass_frequency_Hz = 0,
+                    .sample_frequency_Hz = 1.0f / config.sample_time,
+                    .selection = LowPass_first_order,
+                },
+                .config_filter_q = {
+                    .cutoff_frequency_Hz = config.setpoint_filter_i_dq_cutoff_frequency,
+                    .damping = 0,
+                    .pass_frequency_Hz = 0,
+                    .sample_frequency_Hz = 1.0f / config.sample_time,
+                    .selection = LowPass_first_order,
+                }};
+        self->setpoint_filter_i_dq = uz_uz_dq_setpoint_filter_init(setpoint_filter_config);
+    }
+
+    if (config.setpoint_filter_speed_cutoff_frequency != 0.0f){
+        struct uz_IIR_Filter_config setpoint_filter_speed_config = {
+            .selection = LowPass_first_order,
+            .cutoff_frequency_Hz = config.setpoint_filter_speed_cutoff_frequency,
+            .damping = 0,
+            .pass_frequency_Hz = 0,
+            .sample_frequency_Hz = 1.0f / config.sample_time};
+            self->setpoint_filter_speed=uz_signals_IIR_Filter_init(setpoint_filter_speed_config);
+    }
+
+        return (self);
 }
 
 struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self)
@@ -174,27 +209,39 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
     uz_pmsm_controller_measured_to_actual_values(self);
     uz_pmsm_controller_check_safe_operating_region(self);
     // n_ref_rpm_heidrive_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_setpoint_filter_heidrive, n_ref_rpm_heidrive);
-
-    if (self->enable && (!self->safe_operating_region_violation))
+    if (self->config.setpoint_filter_speed_cutoff_frequency != 0.0f)
     {
-        if (self->config.enable_speed_control)
+        self->reference_values.speed_in_rpm = uz_signals_IIR_Filter_sample(self->setpoint_filter_speed, self->reference_values.speed_in_rpm);
+    }
+        if (self->enable && (!self->safe_operating_region_violation))
         {
-            self->reference_values.speed_in_rpm = reference_speed_in_rpm;
-            self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
-            float ref_plus_disturbance_input = disturbance_input_in_Nm + self->reference_values.M_in_Nm;
-            if ( fabsf(ref_plus_disturbance_input)>self->config.speed_controller_max_torque){
-                uz_SpeedControl_set_ext_clamping(self->speed_controller,true);
-            }else{
-                uz_SpeedControl_set_ext_clamping(self->speed_controller,false);
+            if (self->config.enable_speed_control)
+            {
+                self->reference_values.speed_in_rpm = reference_speed_in_rpm;
+                self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
+                float ref_plus_disturbance_input = disturbance_input_in_Nm + self->reference_values.M_in_Nm;
+                if (fabsf(ref_plus_disturbance_input) > self->config.speed_controller_max_torque)
+                {
+                    uz_SpeedControl_set_ext_clamping(self->speed_controller, true);
+                }
+                else
+                {
+                    uz_SpeedControl_set_ext_clamping(self->speed_controller, false);
+                }
+                self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.speed_controller_max_torque, -1.0f * self->config.speed_controller_max_torque);
+                self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->actual_values.v_dc_in_V, self->actual_values.i_dq_in_A);
             }
-            self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.speed_controller_max_torque, -1.0f * self->config.speed_controller_max_torque);
-            self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->actual_values.v_dc_in_V, self->actual_values.i_dq_in_A);
-        }
-        else
-        {
-            self->reference_values.i_dq_in_A = reference_currents;
-        }
-        self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->actual_values.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
+            else
+            {
+                self->reference_values.i_dq_in_A = reference_currents;
+            }
+
+            if (self->config.setpoint_filter_i_dq_cutoff_frequency != 0.0f)
+            {
+                self->reference_values.i_dq_in_A = uz_signals_IIR_Filter_dq_setpoint(self->setpoint_filter_i_dq, self->reference_values.i_dq_in_A);
+            }
+
+            self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->actual_values.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
         self->reference_values.duty_cycle = uz_Space_Vector_Modulation(self->reference_values.v_dq_in_V, self->actual_values.v_dc_in_V, self->actual_values.theta_el_advanced);
     }
     else
@@ -203,6 +250,6 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
         return self->config.default_duty_cycle;
     }
     return self->reference_values.duty_cycle;
-}
+    }
 
 #endif

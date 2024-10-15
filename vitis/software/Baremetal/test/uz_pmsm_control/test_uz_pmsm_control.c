@@ -14,6 +14,7 @@
 #include "uz_space_vector_limitation.h"
 #include "uz_setpoint.h"
 #include "uz_newton_raphson.h"
+#include "uz_controller_setpoint_filter.h"
 
 #include <math.h>
 
@@ -64,7 +65,7 @@ void tearDown(void)
 void test_uz_pmsm_control_NeedToImplement(void)
 {
     uz_pmsm_control_t *test = uz_pmsm_control_init(config, config_PMSM_brose);
-    struct uz_pmsm_actual_data const *const observed_data = uz_pmsm_control_get_actual_data(test);
+    struct uz_pmsm_actual_data* observed_data = uz_pmsm_control_get_actual_data(test);
 }
 
 #endif // TEST

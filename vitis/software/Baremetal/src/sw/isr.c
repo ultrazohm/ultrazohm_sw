@@ -133,7 +133,7 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, true, true, true);
     }
-    struct uz_DutyCycle_t duty = uz_pmsm_controller_sample(Global_Data.objects.heidrive_controller, heidrive_measurements, heidrive_reference_speed_in_rpm, heidrive_reference_currents_in_A);
+    struct uz_DutyCycle_t duty = uz_pmsm_controller_sample(Global_Data.objects.heidrive_controller, heidrive_measurements, heidrive_reference_speed_in_rpm, heidrive_reference_currents_in_A,0.0f);
 
     if(!manual_dutycycle){
     	Global_Data.rasv.halfBridge4DutyCycle = duty.DutyCycle_A;

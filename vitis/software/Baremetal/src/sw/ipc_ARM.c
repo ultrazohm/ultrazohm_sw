@@ -27,14 +27,14 @@ extern uint32_t js_status_BareToRTOS;
 // External includes
 
 bool select_automatic_idiq=false;
-uz_3ph_dq_t i_dq_ref_java_Amps_heidrive = {0};
+uz_3ph_dq_t i_dq_ref_java_Amps_buehler = {0};
 extern DS_Data Global_Data;
 bool select_misalignment = false;
 bool select_DDPG = false;
 bool select_FOC = false;
-extern float n_ref_rpm_heidrive_javascope;
+extern float n_ref_rpm_buehler_javascope;
 
-	extern float theta_el_offset_brose;
+	extern float theta_el_offset_ebm;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -200,35 +200,35 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_1):
 				//n_ref_rpm_1 = value;
 				//M_ref_Nm_1 = value;
-				i_dq_ref_java_Amps_heidrive.q = value;
+				i_dq_ref_java_Amps_buehler.q = value;
 			break;
 
 		case (Set_Send_Field_2):
-				i_dq_ref_java_Amps_heidrive.d = value;
-				//M_ref_Nm_heidrive = value;
+				i_dq_ref_java_Amps_buehler.d = value;
+				//M_ref_Nm_buehler = value;
 			break;
 
 		case (Set_Send_Field_3):
-			n_ref_rpm_heidrive_javascope = value;
+			n_ref_rpm_buehler_javascope = value;
 			break;
 
 		case (Set_Send_Field_4):
-//		i_dqn_ref_5th_Amps_brose.d = value;
+//		i_dqn_ref_5th_Amps_ebm.d = value;
 
 			break;
 
 		case (Set_Send_Field_5):
-	//	i_dqn_ref_5th_Amps_brose.q = value;
+	//	i_dqn_ref_5th_Amps_ebm.q = value;
 
 			break;
 
 		case (Set_Send_Field_6):
-				// i_dqn_ref_7th_Amps_brose.d = value;
-	//	theta_el_offset_brose=value;
+				// i_dqn_ref_7th_Amps_ebm.d = value;
+	//	theta_el_offset_ebm=value;
 			break;
 
 		case (Set_Send_Field_7):
-	//	i_dqn_ref_7th_Amps_brose.q = value;
+	//	i_dqn_ref_7th_Amps_ebm.q = value;
 
 			break;
 

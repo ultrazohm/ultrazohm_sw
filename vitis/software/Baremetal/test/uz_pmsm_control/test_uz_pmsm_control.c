@@ -44,7 +44,7 @@ struct uz_pmsm_control_configuration_t config = {
     .relative_torque_tolerance = 0.1f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f}};
 
-struct uz_PMSM_t config_PMSM_brose = {
+struct uz_PMSM_t config_PMSM_ebm = {
     .R_ph_Ohm = 0.023f,
     .Ld_Henry = 3e-5f,
     .Lq_Henry = 6e-5f,
@@ -64,7 +64,7 @@ void tearDown(void)
 
 void test_uz_pmsm_control_NeedToImplement(void)
 {
-    uz_pmsm_control_t *test = uz_pmsm_control_init(config, config_PMSM_brose);
+    uz_pmsm_control_t *test = uz_pmsm_control_init(config, config_PMSM_ebm);
     struct uz_pmsm_actual_data* observed_data = uz_pmsm_control_get_actual_data(test);
 }
 

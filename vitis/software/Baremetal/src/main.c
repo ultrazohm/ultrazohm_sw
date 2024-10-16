@@ -54,10 +54,10 @@ struct uz_pmsm_control_configuration_t config = {
     .speed_controller_max_torque = 1.3f,
     .speed_controller_kp = 0.01f,
     .speed_controller_ki = 1.0f,
-    .current_controller_d_kp = 3.77f,
-    .current_controller_d_ki = 1810.0f,
-    .current_controller_q_kp = 4.73f,
-    .current_controller_q_ki = 1810.0f,
+    .current_controller_d_kp = 0.83333f,
+    .current_controller_d_ki = 283.33f,
+    .current_controller_q_kp = 0.83333f,
+    .current_controller_q_ki = 283.33f,
     .setpoint_lower_bound_i_d_in_A = -5.0f,
     .setpoint_upper_bound_i_d_in_A = 0.5f,
     .setpoint_lower_bound_i_q_in_A = -5.0f,
@@ -71,13 +71,13 @@ struct uz_pmsm_control_configuration_t config = {
     .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = 100.0f,
-    .motor_type = IPMSM,
+    .motor_type = SMPMSM,
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
-struct uz_pmsm_control_configuration_t config_brose = {
+struct uz_pmsm_control_configuration_t config_ebm = {
     .current_conversion_factors = {
         .a = 12.223f,
         .b = 12.3123f,
@@ -87,16 +87,16 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 1.642250f,
+    .theta_el_offset = 0.0f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = false,
     .speed_controller_max_torque = 0.5f,
     .speed_controller_kp = 0.1f,
     .speed_controller_ki = 1.0f,
-    .current_controller_d_kp = 0.1f,
-    .current_controller_d_ki = 76.0f,
-    .current_controller_q_kp = 0.2f,
-    .current_controller_q_ki = 76.0f,
+    .current_controller_d_kp = 1.4667f,
+    .current_controller_d_ki = 700.0f,
+    .current_controller_q_kp = 1.4667f,
+    .current_controller_q_ki = 700.0f,
     .setpoint_lower_bound_i_d_in_A = -15.0f,
     .setpoint_upper_bound_i_d_in_A = 0.5f,
     .setpoint_lower_bound_i_q_in_A = -15.0f,
@@ -110,30 +110,30 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = 0.0f,
-    .motor_type = IPMSM,
+    .motor_type = SMPMSM,
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
-struct uz_PMSM_t config_PMSM_heidrive = {
-    .R_ph_Ohm = 0.543f,
-    .Ld_Henry = 0.00113f,
-    .Lq_Henry = 0.00142f,
-    .Psi_PM_Vs = 0.0169f,
-    .polePairs = 3.0f,
+struct uz_PMSM_t config_PMSM_buehler = {
+    .R_ph_Ohm = 0.085f,
+    .Ld_Henry = 0.00025f,
+    .Lq_Henry = 0.00025f,
+    .Psi_PM_Vs = 0.006f,
+    .polePairs = 4.0f,
     .J_kg_m_squared = 0.000108f,
-    .I_max_Ampere = 10.8f};
+    .I_max_Ampere = 15.0f};
 
-struct uz_PMSM_t config_PMSM_brose = {
-    .R_ph_Ohm = 0.023f,
-    .Ld_Henry = 3e-5f,
-    .Lq_Henry = 6e-5f,
-    .Psi_PM_Vs = 0.007f,
-    .polePairs = 5.0f,
+struct uz_PMSM_t config_PMSM_ebm = {
+    .R_ph_Ohm = 0.21f,
+    .Ld_Henry = 0.00044f,
+    .Lq_Henry = 0.00044f,
+    .Psi_PM_Vs = 0.0116f,
+    .polePairs = 4.0f,
     .J_kg_m_squared = 0.000084f,
-    .I_max_Ampere = 35.0f};
-float PMSM_rated_current_brose = 28.3f;
+    .I_max_Ampere = 15.0f};
+float PMSM_rated_current_ebm = 8.6f;
 
 enum init_chain
 {
@@ -178,13 +178,13 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            Global_Data.objects.pwm_d1_brose = initialize_pwm_2l_on_D1_pin_0_to_5();
-            Global_Data.objects.pwm_d2_heidrive = initialize_pwm_2l_on_D1_pin_6_to_11();
+            Global_Data.objects.pwm_d1_ebm = initialize_pwm_2l_on_D1_pin_0_to_5();
+            Global_Data.objects.pwm_d2_buehler = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
-            Global_Data.objects.inverter_d1_brose = initialize_uz_inverter_adapter_on_D1();
-            Global_Data.objects.inverter_d2_heidrive = initialize_uz_inverter_adapter_on_D2();
+            Global_Data.objects.inverter_d1_ebm = initialize_uz_inverter_adapter_on_D1();
+            Global_Data.objects.inverter_d2_buehler = initialize_uz_inverter_adapter_on_D2();
             Global_Data.objects.resolver_d4 = initialize_resolver_d4();
             Global_Data.objects.resolver_pl_d4 = initialize_resolver_pl_d4();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
@@ -194,24 +194,24 @@ int main(void)
             initialization_chain = init_control;
             break;
         case init_control:
-            Global_Data.objects.heidrive_controller = uz_pmsm_control_init(config, config_PMSM_heidrive);
-            Global_Data.objects.brose_controller = uz_pmsm_control_init(config_brose, config_PMSM_brose);
-            Global_Data.heidrive_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.heidrive_controller);
-            Global_Data.heidrive_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.heidrive_controller);
-            Global_Data.heidrive_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.heidrive_controller);
+            Global_Data.objects.buehler_controller = uz_pmsm_control_init(config, config_PMSM_buehler);
+            Global_Data.objects.ebm_controller = uz_pmsm_control_init(config_ebm, config_PMSM_ebm);
+            Global_Data.buehler_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.buehler_controller);
+            Global_Data.buehler_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.buehler_controller);
+            Global_Data.buehler_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.buehler_controller);
 
-            Global_Data.brose_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.brose_controller);
-            Global_Data.brose_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.brose_controller);
-            Global_Data.brose_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.brose_controller);
+            Global_Data.ebm_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.ebm_controller);
+            Global_Data.ebm_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.ebm_controller);
+            Global_Data.ebm_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.ebm_controller);
 
-            Global_Data.heidrive_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.heidrive_controller);
-            Global_Data.brose_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.brose_controller);
+            Global_Data.buehler_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.buehler_controller);
+            Global_Data.ebm_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.ebm_controller);
             struct uz_encoder_offset_estimation_config uz_encoder_offset_estimation_config = {
                 .min_omega_el = 500.0f,
-                .ptr_actual_omega_el = &Global_Data.brose_actual_data->omega_el_rad_per_sec,
-                .ptr_actual_u_q_V = &Global_Data.brose_reference_values->v_dq_in_V.q,
-                .ptr_measured_rotor_angle = &Global_Data.brose_actual_data->theta_el,
-                .ptr_offset_angle = Global_Data.brose_theta_offset,
+                .ptr_actual_omega_el = &Global_Data.ebm_actual_data->omega_el_rad_per_sec,
+                .ptr_actual_u_q_V = &Global_Data.ebm_reference_values->v_dq_in_V.q,
+                .ptr_measured_rotor_angle = &Global_Data.ebm_actual_data->theta_el,
+                .ptr_offset_angle = Global_Data.ebm_theta_offset,
                 .setpoint_current = 3.3f,
             };
 
@@ -219,9 +219,9 @@ int main(void)
 
             JavaScope_initialize(&Global_Data);
 
-            // speed_setpoint_filter_heidrive_config
-            // Global_Data.objects.speed_setpoint_filter_heidrive=uz_signals_IIR_Filter_init(speed_setpoint_filter_heidrive_config);
-            // Global_Data.objects.tracking_error_filter_heidrive=uz_signals_IIR_Filter_init(tracking_error_filter_heidrive_config);
+            // speed_setpoint_filter_buehler_config
+            // Global_Data.objects.speed_setpoint_filter_buehler=uz_signals_IIR_Filter_init(speed_setpoint_filter_buehler_config);
+            // Global_Data.objects.tracking_error_filter_buehler=uz_signals_IIR_Filter_init(tracking_error_filter_buehler_config);
             nn_init();
             initialization_chain = print_msg;
             break;

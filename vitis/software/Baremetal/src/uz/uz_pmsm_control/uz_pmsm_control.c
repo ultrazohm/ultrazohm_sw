@@ -213,7 +213,7 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
     self->measurement = measurements;
     uz_pmsm_controller_measured_to_actual_values(self);
     uz_pmsm_controller_check_safe_operating_region(self);
-    // n_ref_rpm_heidrive_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_setpoint_filter_heidrive, n_ref_rpm_heidrive);
+    // n_ref_rpm_buehler_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_setpoint_filter_buehler, n_ref_rpm_buehler);
     if (self->config.setpoint_filter_speed_cutoff_frequency != 0.0f)
     {
         self->reference_values.speed_in_rpm = uz_signals_IIR_Filter_sample(self->setpoint_filter_speed, self->reference_values.speed_in_rpm);

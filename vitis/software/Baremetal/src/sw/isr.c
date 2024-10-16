@@ -42,8 +42,8 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 // =============== Declares for PMSM 1 =============== //
-float n_ref_rpm_heidrive = 0.0f;
-float n_ref_rpm_heidrive_javascope = 0.0f;
+float n_ref_rpm_buehler = 0.0f;
+float n_ref_rpm_buehler_javascope = 0.0f;
 
 struct uz_resolver_pl_interface_outputs_t Resolver_outputs = {0};
 
@@ -52,45 +52,45 @@ uint32_t setpoint_index = 0U;
 uint32_t n_ref_setpoint_index = 0U;
 
 uint32_t Fehlerfall = 0U;
-extern uz_3ph_dq_t i_dq_ref_java_Amps_heidrive;
+extern uz_3ph_dq_t i_dq_ref_java_Amps_buehler;
 
-struct uz_pmsm_measurement_values heidrive_measurements = {0};
-struct uz_pmsm_measurement_values brose_measurements = {0};
+struct uz_pmsm_measurement_values buehler_measurements = {0};
+struct uz_pmsm_measurement_values ebm_measurements = {0};
 
-float heidrive_reference_speed_in_rpm = 0.0f;
-uz_3ph_dq_t heidrive_reference_currents_in_A = {0.0f};
+float buehler_reference_speed_in_rpm = 0.0f;
+uz_3ph_dq_t buehler_reference_currents_in_A = {0.0f};
 
-float brose_reference_speed_in_rpm = 0.0f;
-uz_3ph_dq_t brose_reference_currents_in_A = {0.0f};
+float ebm_reference_speed_in_rpm = 0.0f;
+uz_3ph_dq_t ebm_reference_currents_in_A = {0.0f};
 
 static void ReadAllADC();
 bool enable_controller = false;
-bool brose_enable_controller = false;
+bool ebm_enable_controller = false;
 bool manual_dutycycle = false;
-bool manual_dutycycle_brose = false;
+bool manual_dutycycle_ebm = false;
 bool theta_estimation = false;
 
 // // First inverter
-// v_abc_Volts_brose.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
-// v_abc_Volts_brose.b = 11.7657f * Global_Data.aa.A1.me.ADC_B7 + 0.0533f;
-// v_abc_Volts_brose.c = 11.7657f * Global_Data.aa.A1.me.ADC_B6 + 0.0533f;
-// v_DC_Volts_brose = 48.0f; // Global_Data.aa.A1.me.ADC_A1 * 12.0f;
+// v_abc_Volts_ebm.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
+// v_abc_Volts_ebm.b = 11.7657f * Global_Data.aa.A1.me.ADC_B7 + 0.0533f;
+// v_abc_Volts_ebm.c = 11.7657f * Global_Data.aa.A1.me.ADC_B6 + 0.0533f;
+// v_DC_Volts_ebm = 48.0f; // Global_Data.aa.A1.me.ADC_A1 * 12.0f;
 // i_abc_Amps_hoener.a = 12.223f * Global_Data.aa.A1.me.ADC_A4 + 0.0164f;
 // i_abc_Amps_hoener.b = 12.3123f * Global_Data.aa.A1.me.ADC_A3 + 0.0161f;
 // i_abc_Amps_hoener.c = 12.4303f * Global_Data.aa.A1.me.ADC_A2 - 0.0184f;
-// i_DC_Amps_brose = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
+// i_DC_Amps_ebm = Global_Data.aa.A1.me.ADC_B5 * 12.5f;
 
 // // Read Measurement of Second Inverter
-// v_abc_Volts_heidrive.a = 11.6798f * Global_Data.aa.A2.me.ADC_B8 - 0.3648f;
-// v_abc_Volts_heidrive.b = 11.7657f * Global_Data.aa.A2.me.ADC_B7 + 0.0533f;
-// v_abc_Volts_heidrive.c = 11.7657f * Global_Data.aa.A2.me.ADC_B6 + 0.0533f;
-// v_DC_Volts_heidrive = 48.0f; // Global_Data.aa.A2.me.ADC_A1 * 12.0f;
-// i_abc_Amps_heidrive.a = 12.2889f * Global_Data.aa.A2.me.ADC_A4 + 0.0802f;
-// i_abc_Amps_heidrive.b = 11.8330f * Global_Data.aa.A2.me.ADC_A3 + 0.1344f;
-// i_abc_Amps_heidrive.c = 11.7894f * Global_Data.aa.A2.me.ADC_A2 + 0.1197f;
-// i_DC_Amps_heidrive = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
+// v_abc_Volts_buehler.a = 11.6798f * Global_Data.aa.A2.me.ADC_B8 - 0.3648f;
+// v_abc_Volts_buehler.b = 11.7657f * Global_Data.aa.A2.me.ADC_B7 + 0.0533f;
+// v_abc_Volts_buehler.c = 11.7657f * Global_Data.aa.A2.me.ADC_B6 + 0.0533f;
+// v_DC_Volts_buehler = 48.0f; // Global_Data.aa.A2.me.ADC_A1 * 12.0f;
+// i_abc_Amps_buehler.a = 12.2889f * Global_Data.aa.A2.me.ADC_A4 + 0.0802f;
+// i_abc_Amps_buehler.b = 11.8330f * Global_Data.aa.A2.me.ADC_A3 + 0.1344f;
+// i_abc_Amps_buehler.c = 11.7894f * Global_Data.aa.A2.me.ADC_A2 + 0.1197f;
+// i_DC_Amps_buehler = Global_Data.aa.A2.me.ADC_B5 * 12.5f;
 
-// struct uz_pmsm_actual_data heidrive_actual_data = {0.0f};
+// struct uz_pmsm_actual_data buehler_actual_data = {0.0f};
 struct uz_encoder_offset_estimation_status status = {0};
 
 void ISR_Control(void *data)
@@ -101,28 +101,28 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
     Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
 
-    brose_reference_currents_in_A.d = i_dq_ref_java_Amps_heidrive.d;
-    brose_reference_currents_in_A.q = i_dq_ref_java_Amps_heidrive.q;
-    heidrive_reference_speed_in_rpm = n_ref_rpm_heidrive_javascope;
+    ebm_reference_currents_in_A.d = i_dq_ref_java_Amps_buehler.d;
+    ebm_reference_currents_in_A.q = i_dq_ref_java_Amps_buehler.q;
+    buehler_reference_speed_in_rpm = n_ref_rpm_buehler_javascope;
 
-    heidrive_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A2.me.ADC_B5;
-    heidrive_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
-    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A2.me.ADC_A4;
-    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A2.me.ADC_A3;
-    heidrive_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A2.me.ADC_A2;
-    heidrive_measurements.omega_mech_rad_per_sec = Global_Data.av.omega_mech_rad_per_sed;
-    heidrive_measurements.theta_mech = Global_Data.av.theta_elec_heidrive;
+    buehler_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A2.me.ADC_B5; // heidrive
+    buehler_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
+    buehler_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A2.me.ADC_A4;
+    buehler_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A2.me.ADC_A3;
+    buehler_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A2.me.ADC_A2;
+    buehler_measurements.omega_mech_rad_per_sec = Global_Data.av.omega_mech_rad_per_sed;
+    buehler_measurements.theta_mech = Global_Data.av.theta_elec_buehler;
 
-    brose_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A1.me.ADC_B5;
-    brose_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
-    brose_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_A4;
-    brose_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_A3;
-    brose_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_A2;
-    brose_measurements.omega_mech_rad_per_sec = Global_Data.av.omega_mech_rad_per_sec_brose;
-    brose_measurements.theta_mech = Global_Data.av.theta_elec_brose;
+    ebm_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A1.me.ADC_B5; // brose
+    ebm_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
+    ebm_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_A4;
+    ebm_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_A3;
+    ebm_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_A2;
+    ebm_measurements.omega_mech_rad_per_sec = Global_Data.av.omega_mech_rad_per_sec_ebm;
+    ebm_measurements.theta_mech = Global_Data.av.theta_elec_ebm;
 
-    Global_Data.av.inverter_outputs_d1_brose = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_brose);
-    Global_Data.av.inverter_outputs_d2_heidrive = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_heidrive);
+    Global_Data.av.inverter_outputs_d1_ebm = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1_ebm);
+    Global_Data.av.inverter_outputs_d2_buehler = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2_buehler);
 
     // Get current state
     platform_state_t current_state = ultrazohm_state_machine_get_state();
@@ -130,99 +130,99 @@ void ISR_Control(void *data)
     // Enable Inverter Adapter Hardware
     if (current_state == running_state || current_state == control_state)
     {
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_brose, true);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_heidrive, true);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_ebm, true);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_buehler, true);
     }
     else
     {
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_brose, false);
-        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_heidrive, false);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, true, true, true);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_ebm, false);
+        uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_buehler, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_ebm, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_buehler, true, true, true);
     }
 
     if (current_state == control_state)
     {
         enable_controller = true;
-        brose_enable_controller=true;
+        ebm_enable_controller=true;
         if (theta_estimation)
         {
 
             if (!uz_encoder_offset_estimation_get_finished(Global_Data.objects.offset_estimation))
             {                                                                                                                // if not finished
-                brose_reference_currents_in_A = uz_encoder_offset_estimation_step(Global_Data.objects.offset_estimation); // receive current controller setpoint current from stepping function
+                ebm_reference_currents_in_A = uz_encoder_offset_estimation_step(Global_Data.objects.offset_estimation); // receive current controller setpoint current from stepping function
             }
             else
             {
-                brose_reference_currents_in_A.d = 0.0f; // else: it is finished, setpoints are 0
-                brose_reference_currents_in_A.q = 0.0f;
+                ebm_reference_currents_in_A.d = 0.0f; // else: it is finished, setpoints are 0
+                ebm_reference_currents_in_A.q = 0.0f;
             }
         }
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, false, false, false);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, false, false, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_ebm, false, false, false);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_buehler, false, false, false);
     }
     else
     {
         enable_controller = false;
-        brose_enable_controller=false;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_brose, true, true, true);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_heidrive, true, true, true);
+        ebm_enable_controller=false;
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_ebm, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_buehler, true, true, true);
     }
-    uz_pmsm_controller_enable(Global_Data.objects.heidrive_controller, enable_controller);
-    uz_pmsm_controller_enable(Global_Data.objects.brose_controller, brose_enable_controller);
-    struct uz_DutyCycle_t duty_heidrive = uz_pmsm_controller_sample(Global_Data.objects.heidrive_controller, heidrive_measurements, heidrive_reference_speed_in_rpm, heidrive_reference_currents_in_A, 0.0f);
-    struct uz_DutyCycle_t duty_brose = uz_pmsm_controller_sample(Global_Data.objects.brose_controller, brose_measurements, brose_reference_speed_in_rpm, brose_reference_currents_in_A, 0.0f);
+    uz_pmsm_controller_enable(Global_Data.objects.buehler_controller, enable_controller);
+    uz_pmsm_controller_enable(Global_Data.objects.ebm_controller, ebm_enable_controller);
+    struct uz_DutyCycle_t duty_buehler = uz_pmsm_controller_sample(Global_Data.objects.buehler_controller, buehler_measurements, buehler_reference_speed_in_rpm, buehler_reference_currents_in_A, 0.0f);
+    struct uz_DutyCycle_t duty_ebm = uz_pmsm_controller_sample(Global_Data.objects.ebm_controller, ebm_measurements, ebm_reference_speed_in_rpm, ebm_reference_currents_in_A, 0.0f);
 
     if (!manual_dutycycle)
     {
-        Global_Data.rasv.halfBridge4DutyCycle = duty_heidrive.DutyCycle_A;
-        Global_Data.rasv.halfBridge5DutyCycle = duty_heidrive.DutyCycle_B;
-        Global_Data.rasv.halfBridge6DutyCycle = duty_heidrive.DutyCycle_C;
+        Global_Data.rasv.halfBridge4DutyCycle = duty_buehler.DutyCycle_A;
+        Global_Data.rasv.halfBridge5DutyCycle = duty_buehler.DutyCycle_B;
+        Global_Data.rasv.halfBridge6DutyCycle = duty_buehler.DutyCycle_C;
     }
-    if (!manual_dutycycle_brose)
+    if (!manual_dutycycle_ebm)
     {
-        Global_Data.rasv.halfBridge1DutyCycle = duty_brose.DutyCycle_A;
-        Global_Data.rasv.halfBridge2DutyCycle = duty_brose.DutyCycle_B;
-        Global_Data.rasv.halfBridge3DutyCycle = duty_brose.DutyCycle_C;
+        Global_Data.rasv.halfBridge1DutyCycle = duty_ebm.DutyCycle_A;
+        Global_Data.rasv.halfBridge2DutyCycle = duty_ebm.DutyCycle_B;
+        Global_Data.rasv.halfBridge3DutyCycle = duty_ebm.DutyCycle_C;
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_brose, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d2_heidrive, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_ebm, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d2_buehler, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     JavaScope_update(&Global_Data);
 
     // Inverter 1 safety
     // Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
     // Overtemperature for H1
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H1)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.FAULT_H1)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 1U;
     }
     // Overtemperature for L1
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L1)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.FAULT_L1)
     {
         // ultrazohm_state_machine_set_error(true);
         Fehlerfall = 2U;
     }
     // Overtemperature for H2
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H2)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.FAULT_H2)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 3U;
     }
     // Overtemperature for L2
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L2)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.FAULT_L2)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 4U;
     }
     // Overtemperature for H3
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_H3)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.FAULT_H3)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 5U;
     }
     // Overtemperature for L3
-    if (!Global_Data.av.inverter_outputs_d1_brose.FAULT_L3)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.FAULT_L3)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 6U;
@@ -230,25 +230,25 @@ void ISR_Control(void *data)
     // Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
     // Binding of the signals to the driver is slightly unintuitive
     // Overcurrent for Phase A
-    if (!Global_Data.av.inverter_outputs_d1_brose.OC_L1)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.OC_L1)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 7U;
     }
     // Overcurrent for Phase B
-    if (!Global_Data.av.inverter_outputs_d1_brose.OC_H1)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.OC_H1)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 8U;
     }
     // Overcurrent for Phase C
-    if (!Global_Data.av.inverter_outputs_d1_brose.OC_L2)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.OC_L2)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 9U;
     }
     // Overcurrent for DC-link
-    if (!Global_Data.av.inverter_outputs_d1_brose.OC_H2)
+    if (!Global_Data.av.inverter_outputs_d1_ebm.OC_H2)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 10U;
@@ -257,37 +257,37 @@ void ISR_Control(void *data)
     // Inverter 2 safety
     // Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
     // Overtemperature for H1
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H1)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.FAULT_H1)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 11U;
     }
     // Overtemperature for L1
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L1)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.FAULT_L1)
     {
         // ultrazohm_state_machine_set_error(true);
         Fehlerfall = 12U;
     }
     // Overtemperature for H2
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H2)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.FAULT_H2)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 13U;
     }
     // Overtemperature for L2
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L2)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.FAULT_L2)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 14U;
     }
     // Overtemperature for H3
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_H3)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.FAULT_H3)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 15U;
     }
     // Overtemperature for L3
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.FAULT_L3)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.FAULT_L3)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 16U;
@@ -295,25 +295,25 @@ void ISR_Control(void *data)
     // Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
     // Binding of the signals to the driver is slightly unintuitive
     // Overcurrent for Phase A
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_L1)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.OC_L1)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 17U;
     }
     // Overcurrent for Phase B
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_H1)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.OC_H1)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 18U;
     }
     // Overcurrent for Phase C
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_L2)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.OC_L2)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 19U;
     }
     // Overcurrent for DC-link
-    if (!Global_Data.av.inverter_outputs_d2_heidrive.OC_H2)
+    if (!Global_Data.av.inverter_outputs_d2_buehler.OC_H2)
     {
         ultrazohm_state_machine_set_error(true);
         Fehlerfall = 20U;

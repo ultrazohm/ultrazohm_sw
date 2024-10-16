@@ -66,30 +66,30 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	js_ch_observable[JSO_n_ref_rpm_heidrive]	= &Global_Data.heidrive_reference_values->speed_in_rpm;
-	js_ch_observable[JSO_n_rpm_heidrive]		= &Global_Data.heidrive_actual_data->speed_in_rpm;
-	js_ch_observable[JSO_omega_el_rad_per_sec_heidrive]		= &Global_Data.heidrive_actual_data->omega_el_rad_per_sec;
-	js_ch_observable[JSO_ia_heidrive]	= &Global_Data.heidrive_actual_data->i_abc_in_A.a;
-	js_ch_observable[JSO_ib_heidrive]	= &Global_Data.heidrive_actual_data->i_abc_in_A.b;
-	js_ch_observable[JSO_ic_heidrive]	= &Global_Data.heidrive_actual_data->i_abc_in_A.c;
-	js_ch_observable[JSO_Theta_el_heidrive]	= &Global_Data.heidrive_actual_data->theta_el;
-	js_ch_observable[JSO_id_heidrive]	= &Global_Data.heidrive_actual_data->i_dq_in_A.d;
-	js_ch_observable[JSO_iq_heidrive]	= &Global_Data.heidrive_actual_data->i_dq_in_A.q;
-	js_ch_observable[JSO_id_ref_heidrive]	= &Global_Data.heidrive_reference_values->i_dq_in_A.d;
-	js_ch_observable[JSO_iq_ref_heidrive]	= &Global_Data.heidrive_reference_values->i_dq_in_A.q;
-	js_ch_observable[JSO_n_ref_rpm_brose] = &Global_Data.brose_reference_values->speed_in_rpm;
-	js_ch_observable[JSO_n_rpm_brose] = &Global_Data.brose_actual_data->speed_in_rpm;
-	js_ch_observable[JSO_omega_el_rad_per_sec_brose] = &Global_Data.brose_actual_data->omega_el_rad_per_sec;
-	js_ch_observable[JSO_ia_brose] = &Global_Data.brose_actual_data->i_abc_in_A.a;
-	js_ch_observable[JSO_ib_brose] = &Global_Data.brose_actual_data->i_abc_in_A.b;
-	js_ch_observable[JSO_ic_brose] = &Global_Data.brose_actual_data->i_abc_in_A.c;
-	js_ch_observable[JSO_Theta_el_brose] = &Global_Data.brose_actual_data->theta_el;
-	js_ch_observable[JSO_id_brose] = &Global_Data.brose_actual_data->i_dq_in_A.d;
-	js_ch_observable[JSO_iq_brose] = &Global_Data.brose_actual_data->i_dq_in_A.q;
-	js_ch_observable[JSO_id_ref_brose] = &Global_Data.brose_reference_values->i_dq_in_A.d;
-	js_ch_observable[JSO_iq_ref_brose] = &Global_Data.brose_reference_values->i_dq_in_A.q;
-	js_ch_observable[JSO_theta_offset] = Global_Data.brose_theta_offset;
-	js_ch_observable[JSO_m_ref_heidrive] = &Global_Data.heidrive_reference_values->M_in_Nm;
+	js_ch_observable[JSO_n_ref_rpm_buehler]	= &Global_Data.buehler_reference_values->speed_in_rpm;
+	js_ch_observable[JSO_n_rpm_buehler]		= &Global_Data.buehler_actual_data->speed_in_rpm;
+	js_ch_observable[JSO_omega_el_rad_per_sec_buehler]		= &Global_Data.buehler_actual_data->omega_el_rad_per_sec;
+	js_ch_observable[JSO_ia_buehler]	= &Global_Data.buehler_actual_data->i_abc_in_A.a;
+	js_ch_observable[JSO_ib_buehler]	= &Global_Data.buehler_actual_data->i_abc_in_A.b;
+	js_ch_observable[JSO_ic_buehler]	= &Global_Data.buehler_actual_data->i_abc_in_A.c;
+	js_ch_observable[JSO_Theta_el_buehler]	= &Global_Data.buehler_actual_data->theta_el;
+	js_ch_observable[JSO_id_buehler]	= &Global_Data.buehler_actual_data->i_dq_in_A.d;
+	js_ch_observable[JSO_iq_buehler]	= &Global_Data.buehler_actual_data->i_dq_in_A.q;
+	js_ch_observable[JSO_id_ref_buehler]	= &Global_Data.buehler_reference_values->i_dq_in_A.d;
+	js_ch_observable[JSO_iq_ref_buehler]	= &Global_Data.buehler_reference_values->i_dq_in_A.q;
+	js_ch_observable[JSO_n_ref_rpm_ebm] = &Global_Data.ebm_reference_values->speed_in_rpm;
+	js_ch_observable[JSO_n_rpm_ebm] = &Global_Data.ebm_actual_data->speed_in_rpm;
+	js_ch_observable[JSO_omega_el_rad_per_sec_ebm] = &Global_Data.ebm_actual_data->omega_el_rad_per_sec;
+	js_ch_observable[JSO_ia_ebm] = &Global_Data.ebm_actual_data->i_abc_in_A.a;
+	js_ch_observable[JSO_ib_ebm] = &Global_Data.ebm_actual_data->i_abc_in_A.b;
+	js_ch_observable[JSO_ic_ebm] = &Global_Data.ebm_actual_data->i_abc_in_A.c;
+	js_ch_observable[JSO_Theta_el_ebm] = &Global_Data.ebm_actual_data->theta_el;
+	js_ch_observable[JSO_id_ebm] = &Global_Data.ebm_actual_data->i_dq_in_A.d;
+	js_ch_observable[JSO_iq_ebm] = &Global_Data.ebm_actual_data->i_dq_in_A.q;
+	js_ch_observable[JSO_id_ref_ebm] = &Global_Data.ebm_reference_values->i_dq_in_A.d;
+	js_ch_observable[JSO_iq_ref_ebm] = &Global_Data.ebm_reference_values->i_dq_in_A.q;
+	js_ch_observable[JSO_theta_offset] = Global_Data.ebm_theta_offset;
+	js_ch_observable[JSO_m_ref_buehler] = &Global_Data.buehler_reference_values->M_in_Nm;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
@@ -98,8 +98,8 @@ int JavaScope_initialize(DS_Data* data)
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_u_d_1] 			        = &(data->av.U_d_1);
 	js_slowDataArray[JSSD_FLOAT_u_q_1] 			        = &(data->av.U_q_1);
-	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.mechanicalRotorSpeed_brose);
-	js_slowDataArray[JSSD_FLOAT_speed_2] 		        = &(data->av.mechanicalRotorSpeed_heidrive);
+	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.mechanicalRotorSpeed_ebm);
+	js_slowDataArray[JSSD_FLOAT_speed_2] 		        = &(data->av.mechanicalRotorSpeed_buehler);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;

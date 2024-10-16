@@ -48,7 +48,7 @@ struct uz_pmsm_control_configuration_t config = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 1.532164f,
+    .theta_el_offset = 2.251070, // 2.151070f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = true,
     .speed_controller_max_torque = 1.3f,
@@ -87,9 +87,9 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 0.0f,
+    .theta_el_offset = 2.910038f,// Manual: 3.000038f, second try: 3.020038
     .sample_time = 1.0f / 10000.0f,
-    .enable_speed_control = false,
+    .enable_speed_control = true,
     .speed_controller_max_torque = 0.5f,
     .speed_controller_kp = 0.1f,
     .speed_controller_ki = 1.0f,
@@ -212,7 +212,7 @@ int main(void)
                 .ptr_actual_u_q_V = &Global_Data.ebm_reference_values->v_dq_in_V.q,
                 .ptr_measured_rotor_angle = &Global_Data.ebm_actual_data->theta_el,
                 .ptr_offset_angle = Global_Data.ebm_theta_offset,
-                .setpoint_current = 3.3f,
+                .setpoint_current = 0.5f,
             };
 
             Global_Data.objects.offset_estimation = uz_encoder_offset_estimation_init(uz_encoder_offset_estimation_config);

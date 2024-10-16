@@ -64,7 +64,7 @@ float ebm_reference_speed_in_rpm = 0.0f;
 uz_3ph_dq_t ebm_reference_currents_in_A = {0.0f};
 
 static void ReadAllADC();
-bool enable_controller = false;
+bool enable_controller_buehler = false;
 bool ebm_enable_controller = false;
 bool manual_dutycycle = false;
 bool manual_dutycycle_ebm = false;
@@ -101,8 +101,8 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
     Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
 
-    ebm_reference_currents_in_A.d = i_dq_ref_java_Amps_buehler.d;
-    ebm_reference_currents_in_A.q = i_dq_ref_java_Amps_buehler.q;
+    buehler_reference_currents_in_A.d = i_dq_ref_java_Amps_buehler.d;
+    buehler_reference_currents_in_A.q = i_dq_ref_java_Amps_buehler.q;
     buehler_reference_speed_in_rpm = n_ref_rpm_buehler_javascope;
 
     buehler_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A2.me.ADC_B5; // heidrive
@@ -135,6 +135,8 @@ void ISR_Control(void *data)
     }
     else
     {
+    	uz_pmsm_controller_acknowledge_and_reset_error(Global_Data.objects.buehler_controller,buehler_measurements);
+    	uz_pmsm_controller_acknowledge_and_reset_error(Global_Data.objects.ebm_controller,ebm_measurements);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1_ebm, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2_buehler, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_ebm, true, true, true);
@@ -143,14 +145,14 @@ void ISR_Control(void *data)
 
     if (current_state == control_state)
     {
-        enable_controller = true;
-        ebm_enable_controller=true;
+         enable_controller_buehler = true;
+        //ebm_enable_controller=true;
         if (theta_estimation)
         {
 
             if (!uz_encoder_offset_estimation_get_finished(Global_Data.objects.offset_estimation))
             {                                                                                                                // if not finished
-                ebm_reference_currents_in_A = uz_encoder_offset_estimation_step(Global_Data.objects.offset_estimation); // receive current controller setpoint current from stepping function
+            	ebm_reference_currents_in_A = uz_encoder_offset_estimation_step(Global_Data.objects.offset_estimation); // receive current controller setpoint current from stepping function
             }
             else
             {
@@ -163,12 +165,12 @@ void ISR_Control(void *data)
     }
     else
     {
-        enable_controller = false;
+    	enable_controller_buehler = false;
         ebm_enable_controller=false;
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_ebm, true, true, true);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2_buehler, true, true, true);
     }
-    uz_pmsm_controller_enable(Global_Data.objects.buehler_controller, enable_controller);
+    uz_pmsm_controller_enable(Global_Data.objects.buehler_controller, enable_controller_buehler);
     uz_pmsm_controller_enable(Global_Data.objects.ebm_controller, ebm_enable_controller);
     struct uz_DutyCycle_t duty_buehler = uz_pmsm_controller_sample(Global_Data.objects.buehler_controller, buehler_measurements, buehler_reference_speed_in_rpm, buehler_reference_currents_in_A, 0.0f);
     struct uz_DutyCycle_t duty_ebm = uz_pmsm_controller_sample(Global_Data.objects.ebm_controller, ebm_measurements, ebm_reference_speed_in_rpm, ebm_reference_currents_in_A, 0.0f);

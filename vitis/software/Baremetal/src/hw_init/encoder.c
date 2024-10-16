@@ -78,7 +78,7 @@ void update_speed_and_position_of_encoder_on_D5_1(DS_Data* const data){	// updat
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
 	data->av.mechanicalRotorSpeed_filtered_brose = LPF1(	data->av.mechanicalRotorSpeed_brose, &speed_lpf_mem_in, &speed_lpf_mem_out,
-			data->av.isr_samplerate_s, IncEncoderLPF_freq);
+			1.0f/ data->av.isr_samplerate_s, IncEncoderLPF_freq);
 }
 
 void update_speed_and_position_of_encoder_on_D5_2(DS_Data *const data)
@@ -91,5 +91,5 @@ void update_speed_and_position_of_encoder_on_D5_2(DS_Data *const data)
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
 	data->av.omega_mech_rad_per_sed = LPF1(data->av.omega_mech_rad_per_sed_unfiltered, &speed_lpf_mem_in, &speed_lpf_mem_out,
-														data->av.isr_samplerate_s, IncEncoderLPF_freq);
+														1.0f/ data->av.isr_samplerate_s, IncEncoderLPF_freq);
 }

@@ -45,6 +45,8 @@ extern DS_Data Global_Data;
 float n_ref_rpm_heidrive = 0.0f;
 float n_ref_rpm_heidrive_javascope = 0.0f;
 
+struct uz_resolver_pl_interface_outputs_t Resolver_outputs = {0};
+
 // Stuff
 uint32_t setpoint_index = 0U;
 uint32_t n_ref_setpoint_index = 0U;
@@ -66,7 +68,7 @@ bool enable_controller = false;
 bool brose_enable_controller = false;
 bool manual_dutycycle = false;
 bool manual_dutycycle_brose = false;
-bool theta_estimation = true;
+bool theta_estimation = false;
 
 // // First inverter
 // v_abc_Volts_brose.a = 11.7657f * Global_Data.aa.A1.me.ADC_B8 + 0.0533f;
@@ -97,10 +99,11 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     update_speed_and_position_of_encoder_on_D5_2(&Global_Data);
+    Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
 
     brose_reference_currents_in_A.d = i_dq_ref_java_Amps_heidrive.d;
     brose_reference_currents_in_A.q = i_dq_ref_java_Amps_heidrive.q;
-    brose_reference_speed_in_rpm = n_ref_rpm_heidrive_javascope;
+    heidrive_reference_speed_in_rpm = n_ref_rpm_heidrive_javascope;
 
     heidrive_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A2.me.ADC_B5;
     heidrive_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
@@ -140,7 +143,7 @@ void ISR_Control(void *data)
 
     if (current_state == control_state)
     {
-       // enable_controller = true;
+        enable_controller = true;
         brose_enable_controller=true;
         if (theta_estimation)
         {

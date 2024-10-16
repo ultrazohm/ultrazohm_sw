@@ -63,6 +63,7 @@ enum JS_OberservableData {
 	JSO_iq_brose,
 	JSO_id_ref_brose,
 	JSO_iq_ref_brose,
+	JSO_m_ref_heidrive,
 	JSO_ENDMARKER
 };
 

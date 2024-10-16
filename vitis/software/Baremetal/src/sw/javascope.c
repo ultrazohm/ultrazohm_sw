@@ -84,7 +84,7 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm_hoerner]		= &data->av.mechanicalRotorSpeed_hoerner;
+	js_ch_observable[JSO_Speed_rpm_hoerner]		= &data->av.d5_1_omega_mech_rad_per_sec;
 	js_ch_observable[JSO_Speed_rpm_beckhoff]		= &data->av.mechanicalRotorSpeed_beckhoff;
 	js_ch_observable[JSO_n_rpm_beckhoff_filtered]		= &data->av.mechanicalRotorSpeed_filtered_beckhoff;
 	js_ch_observable[JSO_speed_tracking_error]		= &speed_tracking_error;
@@ -145,7 +145,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_d_2] 			        = &i_dq_Amps_beckhoff.d;
 	js_slowDataArray[JSSD_FLOAT_i_q_1] 			        = &i_dq_Amps_hoerner.q;
 	js_slowDataArray[JSSD_FLOAT_i_q_2] 			        = &i_dq_Amps_beckhoff.q;
-	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.mechanicalRotorSpeed_hoerner);
+	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.d5_1_omega_mech_rad_per_sec);
 	js_slowDataArray[JSSD_FLOAT_speed_2] 		        = &(data->av.mechanicalRotorSpeed_beckhoff);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;

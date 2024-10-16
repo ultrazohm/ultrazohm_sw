@@ -24,6 +24,11 @@
 #define SPEED_BUF_SIZE_INVERS 				1/SPEED_BUF_SIZE
 
 uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber);  // Init Encoder
+uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5_2(float incrementalEncoderResolution, float motorPolePairNumber);  // Init Encoder
+uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5_3(float incrementalEncoderResolution, float motorPolePairNumber);  // Init Encoder
+
 void update_speed_and_position_of_encoder_on_D5_1(DS_Data *const data);	// update speed and position in global data struct
+void update_speed_and_position_of_encoder_on_D5_2(DS_Data *const data);	// update speed and position in global data struct
+void update_speed_and_position_of_encoder_on_D5_3(DS_Data *const data);	// update speed and position in global data struct
 
 #endif /* ENCODER_H_ */

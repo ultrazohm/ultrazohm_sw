@@ -40,7 +40,6 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 
 // =============== Declares for PMSM 1 =============== //
-struct uz_resolver_pl_interface_outputs_t Resolver_outputs = {0};
 // FOC Instances and Configs
 extern uz_SpeedControl_t* speed_controller_hoerner;
 extern uz_SetPoint_t* SP_instance_1;
@@ -198,13 +197,13 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5_1(&Global_Data);
     // Calculation of Signals for FOC for PMSM 2
-    Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
-    Global_Data.av.mechanicalRotorSpeed_beckhoff = Resolver_outputs.n_mech_rpm;
+    Global_Data.av.Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
+    Global_Data.av.mechanicalRotorSpeed_beckhoff = Global_Data.av.Resolver_outputs.n_mech_rpm;
     Global_Data.av.mechanicalRotorSpeed_filtered_beckhoff = uz_signals_IIR_Filter_sample(Global_Data.objects.tracking_error_filter_beckhoff, Global_Data.av.mechanicalRotorSpeed_beckhoff);
-    omega_m_rad_per_sec_beckhoff = Resolver_outputs.omega_mech_rad_s;
+    omega_m_rad_per_sec_beckhoff = Global_Data.av.Resolver_outputs.omega_mech_rad_s;
     omega_el_rad_per_sec_beckhoff = omega_m_rad_per_sec_beckhoff * config_PMSM_beckhoff.polePairs;
     Global_Data.av.omega_el_beckhoff = omega_el_rad_per_sec_beckhoff;
-    theta_el_rad_beckhoff = Resolver_outputs.position_el_2pi;
+    theta_el_rad_beckhoff = Global_Data.av.Resolver_outputs.position_el_2pi;
 
     // Set tristate to false
     uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_hoerner, false, false, false);
@@ -249,13 +248,13 @@ void ISR_Control(void *data)
     }
 
     // Calculation of Signals for FOC for PMSM 1
-    omega_m_rad_per_sec_hoerner = Global_Data.av.mechanicalRotorSpeed_filtered_hoerner*(2.0f*UZ_PIf)/60.0f;
+    omega_m_rad_per_sec_hoerner = Global_Data.av.d5_1_n_rpm_filtered*(2.0f*UZ_PIf)/60.0f;
 //    omega_m_rad_per_sec_hoerner = -1.0f*omega_m_rad_per_sec_beckhoff;
     // omega_el_rad_per_sec_hoerner = omega_m_rad_per_sec_hoerner*config_PMSM_hoerner.polePairs;
     omega_el_rad_per_sec_hoerner = -1.0f*omega_el_rad_per_sec_beckhoff;
 
     Global_Data.av.omega_el_hoerner = omega_el_rad_per_sec_hoerner;
-    theta_el_rad_hoerner = Global_Data.av.theta_elec_hoerner - theta_el_offset_hoerner;
+    theta_el_rad_hoerner = Global_Data.av.d5_1_theta_el - theta_el_offset_hoerner;
 //    theta_el_rad_hoerner = (2.0f*UZ_PIf-theta_el_rad_beckhoff) - theta_el_offset_hoerner;
     if(select_misalignment==true) {
     	theta_el_rad_hoerner += 5.0f * (M_PI / 180.0f);
@@ -284,7 +283,7 @@ void ISR_Control(void *data)
     		wait_for_n_ref=false;
     	}
 
-    	if ((((theta_el_old_hoerner - Global_Data.av.theta_elec_hoerner) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_beckhoff < 10.0f))&& (!start_angle_found) && (speed_setpoint_reached) ) {
+    	if ((((theta_el_old_hoerner - Global_Data.av.d5_1_theta_el) > UZ_PIf) || (Global_Data.av.mechanicalRotorSpeed_beckhoff < 10.0f))&& (!start_angle_found) && (speed_setpoint_reached) ) {
     		start_angle_found = true;
     		start_marker=1.0f;
     		speed_setpoint_reached=false;
@@ -329,7 +328,7 @@ void ISR_Control(void *data)
     	i_dq_ref_Amps_hoerner.q=i_dq_ref_java_Amps_hoerner.q;
     	n_ref_rpm_beckhoff=n_ref_rpm_beckhoff_javascope;
     }
-    theta_el_old_hoerner = Global_Data.av.theta_elec_hoerner;
+    theta_el_old_hoerner = Global_Data.av.d5_1_theta_el;
    // speed_tracking_error=fabsf(n_ref_rpm_beckhoff-Global_Data.av.mechanicalRotorSpeed_filtered_beckhoff);
 
 

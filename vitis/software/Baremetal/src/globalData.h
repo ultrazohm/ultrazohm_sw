@@ -77,10 +77,19 @@ typedef struct _actualValues_ {
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
-	float mechanicalRotorSpeed_hoerner; 		// in rpm
+	float d5_1_omega_mech_rad_per_sec; 		// in rpm
+	float d5_1_n_rpm;
 	float mechanicalRotorSpeed_beckhoff; 		// in rpm
 	float mechanicalRotorSpeed_3; 		// in rpm
-	float mechanicalRotorSpeed_filtered_hoerner; // in rpm
+	float d5_1_n_rpm_filtered; // in rpm
+	float d5_2_theta_el;
+	float d5_2_omega_mech_rad_per_sec;
+	float d5_2_n_rpm;
+	float d5_2_n_rpm_filtered;
+	float d5_3_theta_el;
+	float d5_3_omega_mech_rad_per_sec;
+	float d5_3_n_rpm;
+	float d5_3_n_rpm_filtered;
 	float mechanicalRotorSpeed_filtered_beckhoff; // in rpm
 	float mechanicalRotorSpeed_filtered_3; // in rpm
 	float mechanicalPosition; 		// in m
@@ -93,7 +102,7 @@ typedef struct _actualValues_ {
 	float I_q_2;
 	float U_d_1;
 	float U_q_1;
-	float theta_elec_hoerner;
+	float d5_1_theta_el;
 	float theta_elec_2;
 	float theta_elec_3;
 	float theta_mech_hoerner;
@@ -103,6 +112,7 @@ typedef struct _actualValues_ {
 	float omega_el_beckhoff;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1_hoerner;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2_beckhoff;
+	struct uz_resolver_pl_interface_outputs_t Resolver_outputs;
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed_1;

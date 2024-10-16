@@ -102,7 +102,7 @@ void calc_angle_from_resolver_IP();
 #define DC_VOLT_OFF_2		450.25f
 #define TORQUE_CONV			20.0f // 20Nm/V
 // software current limit
-#define MAX_PHASE_CURRENT_AMP  12.0f
+#define MAX_PHASE_CURRENT_AMP  15.0f
 #define MAX_DC_VOLT 590.0f
 
 bool start = false;

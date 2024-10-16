@@ -107,6 +107,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_v_a1]					= &data->av.v_a1;
 	js_ch_observable[JSO_pos_mech]				= &data->av.pos_mech;
 	js_ch_observable[JSO_pos_elec]				= &data->av.pos_elec;
+	js_ch_observable[JSO_dob_e_est_d]			= &data->av.dob_e_est_d;
+	js_ch_observable[JSO_dob_e_est_q]			= &data->av.dob_e_est_q;
+	js_ch_observable[JSO_dob_e_est_x]			= &data->av.dob_e_est_x;
+	js_ch_observable[JSO_dob_e_est_y]			= &data->av.dob_e_est_y;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -179,7 +183,8 @@ void JavaScope_update(DS_Data* data){
 	rpu_to_apu_user_data->i_q_ref_pu = data->av.i_q_ref_pu;
 	rpu_to_apu_user_data->i_x_ref_pu = data->av.i_x_ref_pu;
 	rpu_to_apu_user_data->i_y_ref_pu = data->av.i_y_ref_pu;
-	rpu_to_apu_user_data->lambda = data->av.lambda;
+	rpu_to_apu_user_data->lambda_dq = data->av.lambda_dq;
+	rpu_to_apu_user_data->lambda_xy = data->av.lambda_xy;
 	rpu_to_apu_user_data->solver_tolerance = data->av.solver_tolerance;
 	rpu_to_apu_user_data->max_iter = data->av.max_iter;
 	rpu_to_apu_user_data->HC_off_on = data->av.HC_off_on;
@@ -258,6 +263,11 @@ void JavaScope_update(DS_Data* data){
 	data->av.dutycyc[3] = 1.0f-apu_to_rpu_user_data->dutycyc[3];
 	data->av.dutycyc[4] = 1.0f-apu_to_rpu_user_data->dutycyc[4];
 	data->av.dutycyc[5] = 1.0f-apu_to_rpu_user_data->dutycyc[5];
+
+	data->av.dob_e_est_d = apu_to_rpu_user_data->dob_error_estimate[0];
+	data->av.dob_e_est_q = apu_to_rpu_user_data->dob_error_estimate[1];
+	data->av.dob_e_est_x = apu_to_rpu_user_data->dob_error_estimate[2];
+	data->av.dob_e_est_y = apu_to_rpu_user_data->dob_error_estimate[3];
 
 	data->av.iterations = apu_to_rpu_user_data->iterations;
 

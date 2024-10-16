@@ -62,6 +62,10 @@ enum JS_OberservableData {
 	JSO_v_x,
 	JSO_v_y,
 	JSO_v_a1,
+	JSO_dob_e_est_d,
+	JSO_dob_e_est_q,
+	JSO_dob_e_est_x,
+	JSO_dob_e_est_y,
 	JSO_ENDMARKER
 };
 
@@ -158,7 +162,7 @@ enum gui_button_mapping {
 	angle_lead_factor_MPC,
 	phi_pm_5th,
 	phi_pm_7th,
-	el_offset_incre,
+	lambda_xy,
 	psi_pm_5th,
 	psi_pm_7th,
 	Lq,
@@ -182,7 +186,7 @@ enum gui_button_mapping {
 	SND_LABELS_ZEROVALUE=0,
 	A,
 	A,
-	rad,
+	-,
 	rad,
 	rad,
 	-,

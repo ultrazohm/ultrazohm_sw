@@ -33,11 +33,11 @@ fs_leg = 18;
 
 
 % current axis
-i_min = -6.5;
+i_min = -12.5;
 i_max = -i_min;
 
 num_of_measured_points = 1;
-max_num_of_samples_in_this_batch = 160*10;
+max_num_of_samples_in_this_batch = 64*10;
 start=1;
 stop=start+max_num_of_samples_in_this_batch;
 
@@ -72,7 +72,7 @@ end
 
 % time axis
 t_start = time(1);
-t_finish = time(1)+0.2;
+t_finish = time(1)+0.08;
 %%
 
 for i=1:num_of_measured_points

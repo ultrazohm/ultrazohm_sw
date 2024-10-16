@@ -34,6 +34,7 @@ struct APU_to_RPU_user_data_t
 	// create variables that you want to share from A53 to R5
 	float dutycyc[6];
 	float iterations;
+	float dob_error_estimate[4];
 };
 
 struct RPU_to_APU_user_data_t
@@ -61,7 +62,8 @@ struct RPU_to_APU_user_data_t
 	float i_q_ref_pu;
 	float i_x_ref_pu;
 	float i_y_ref_pu;
-	float lambda;
+	float lambda_dq;
+	float lambda_xy;
 	float solver_tolerance;
 	float max_iter;
 	bool HC_off_on;

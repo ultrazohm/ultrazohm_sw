@@ -115,7 +115,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 		codegenInstance.input.i_q_ref_pu = rpu_to_apu_user_data->i_q_ref_pu;
 		codegenInstance.input.i_x_ref_pu = rpu_to_apu_user_data->i_x_ref_pu;
 		codegenInstance.input.i_y_ref_pu = rpu_to_apu_user_data->i_y_ref_pu;
-		codegenInstance.input.lambda = rpu_to_apu_user_data->lambda;
+		codegenInstance.input.lambda_dq = rpu_to_apu_user_data->lambda_dq;
+		codegenInstance.input.lambda_xy = rpu_to_apu_user_data->lambda_xy;
 		codegenInstance.input.tolerance = rpu_to_apu_user_data->solver_tolerance;
 		codegenInstance.input.max_iter = rpu_to_apu_user_data->max_iter;
 		codegenInstance.input.HC_off_on = rpu_to_apu_user_data->HC_off_on;
@@ -141,6 +142,10 @@ void Transfer_ipc_Intr_Handler(void *data)
 		apu_to_rpu_user_data->dutycyc[4] = codegenInstance.output.d_opt[4];
 		apu_to_rpu_user_data->dutycyc[5] = codegenInstance.output.d_opt[5];
 		apu_to_rpu_user_data->iterations = codegenInstance.output.iterations_qp;
+		apu_to_rpu_user_data->dob_error_estimate[0] = codegenInstance.output.dob_error_estimate[0];
+		apu_to_rpu_user_data->dob_error_estimate[1] = codegenInstance.output.dob_error_estimate[1];
+		apu_to_rpu_user_data->dob_error_estimate[2] = codegenInstance.output.dob_error_estimate[2];
+		apu_to_rpu_user_data->dob_error_estimate[3] = codegenInstance.output.dob_error_estimate[3];
 
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 

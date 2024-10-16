@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.15
+ * Model version                  : 2.18
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Mon Sep 16 13:52:28 2024
+ * C/C++ source code generated on : Wed Oct 16 15:52:20 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R

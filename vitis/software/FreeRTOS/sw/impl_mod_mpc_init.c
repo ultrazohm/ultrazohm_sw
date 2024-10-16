@@ -27,7 +27,8 @@ void impl_mod_mpc_init() {
 	codegenInstance.input.i_q_ref_pu = 0.0f;
 	codegenInstance.input.i_x_ref_pu = 0.0f;
 	codegenInstance.input.i_y_ref_pu = 0.0f;
-	codegenInstance.input.lambda = 10.0f;
+	codegenInstance.input.lambda_dq = 10.0f;
+	codegenInstance.input.lambda_xy = 10.0f;
 	codegenInstance.input.tolerance = 1e-6;
 	codegenInstance.input.max_iter = 10.0f;
 	codegenInstance.input.HC_off_on = false;

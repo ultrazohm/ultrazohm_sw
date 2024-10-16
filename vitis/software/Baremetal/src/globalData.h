@@ -133,7 +133,8 @@ typedef struct _actualValues_ {
 	float i_q_ref_pu;
 	float i_x_ref_pu;
 	float i_y_ref_pu;
-	float lambda;
+	float lambda_dq;
+	float lambda_xy;
 	float solver_tolerance;
 	float max_iter;
 	bool HC_off_on;
@@ -190,6 +191,10 @@ typedef struct _actualValues_ {
 	float theta_el_neg_FOC;
 	float theta_el_pos_MPC;
 	float theta_el_neg_MPC;
+	float dob_e_est_d;
+	float dob_e_est_q;
+	float dob_e_est_x;
+	float dob_e_est_y;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -234,6 +239,8 @@ typedef struct{
 	uz_IIR_Filter_t* speed_ref_filt;
 	uz_SetPoint_t* setpoint;
 	uz_SpeedControl_t* speed_control;
+	uz_IIR_Filter_t* invTemp1_filter;
+	uz_IIR_Filter_t* invTemp2_filter;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

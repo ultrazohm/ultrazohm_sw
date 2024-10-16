@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.15
+ * Model version                  : 2.18
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Mon Sep 16 13:52:28 2024
+ * C/C++ source code generated on : Wed Oct 16 15:52:20 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -407,29 +407,29 @@ typedef struct {
   real32_T A_n[16];
   real32_T B_b[16];
   real32_T fv[16];
+  real32_T E[8];
   real32_T x_p[8];
   real32_T A_ln[8];
-  real32_T fv1[8];
   real32_T x_opt[7];                   /* '<S1>/qp_solver' */
   real32_T t_h[6];
   real32_T tz[6];                      /* '<S1>/tz' */
   real32_T D[4];
-  real32_T E[4];
+  real32_T E_b[4];
   real32_T v_t0[4];                    /* '<S1>/v_dqxy' */
   real32_T m6[4];                      /* '<S1>/state_space_mdl' */
   real32_T m1[4];                      /* '<S1>/state_space_mdl' */
   real32_T m2[4];                      /* '<S1>/state_space_mdl' */
   real32_T m3[4];                      /* '<S1>/state_space_mdl' */
   real32_T m4[4];                      /* '<S1>/state_space_mdl' */
-  real32_T E_b[4];
   real32_T E_d[4];
+  real32_T E_e[4];
   real32_T w6theta_el;
+  real32_T smax_b;
   real32_T q;
   real32_T SinCos1_o2;                 /* '<S1>/SinCos1' */
   real32_T SinCos2_o1;                 /* '<S1>/SinCos2' */
-  real32_T SinCos2_o2;                 /* '<S1>/SinCos2' */
-  real32_T rtb_e_dq_obs_e;
-  real32_T rtb_e_xy_obs_b;
+  real32_T rtb_v_t0_idx_2;
+  real32_T rtb_v_t0_idx_3;
   real32_T rtb_i_dq_obs_idx_0;
   real32_T rtb_e_dq_obs_idx_0;
   real32_T rtb_e_xy_obs_idx_0;
@@ -455,9 +455,7 @@ typedef struct {
   real32_T x0_idx_1;
   real32_T x0_idx_2;
   real32_T x0_idx_3;
-  real32_T rtb_SinCos2_o1_tmp;
   real32_T A_tmp;
-  real32_T rtb_SinCos2_o2_tmp;
   int32_T jpvt[9];
   int32_T jpvt_j[9];
   int32_T jpvt_f[9];
@@ -553,14 +551,14 @@ typedef struct {
   int8_T rtb_m6_tmp[16];
   int8_T ipiv[4];
   boolean_T icLoad;                    /* '<S1>/Delay13' */
-  boolean_T icLoad_e;                  /* '<S1>/Delay1' */
-  boolean_T icLoad_b;                  /* '<S1>/Delay3' */
-  boolean_T icLoad_h;                  /* '<S1>/Delay4' */
-  boolean_T icLoad_c;                  /* '<S1>/Delay5' */
-  boolean_T icLoad_bb;                 /* '<S1>/Delay6' */
-  boolean_T icLoad_o;                  /* '<S1>/Delay7' */
-  boolean_T icLoad_d;                  /* '<S1>/Delay8' */
-  boolean_T icLoad_p;                  /* '<S1>/Delay2' */
+  boolean_T icLoad_m;                  /* '<S1>/Delay1' */
+  boolean_T icLoad_l;                  /* '<S1>/Delay3' */
+  boolean_T icLoad_lv;                 /* '<S1>/Delay4' */
+  boolean_T icLoad_j;                  /* '<S1>/Delay5' */
+  boolean_T icLoad_o;                  /* '<S1>/Delay6' */
+  boolean_T icLoad_b;                  /* '<S1>/Delay7' */
+  boolean_T icLoad_a;                  /* '<S1>/Delay8' */
+  boolean_T icLoad_oa;                 /* '<S1>/Delay2' */
   char_T expl_temp_f[10];
 } DW;
 
@@ -586,7 +584,8 @@ typedef struct {
   real32_T i_q_ref_pu;                 /* '<Root>/i_q_ref_pu' */
   real32_T i_x_ref_pu;                 /* '<Root>/i_x_ref_pu' */
   real32_T i_y_ref_pu;                 /* '<Root>/i_y_ref_pu' */
-  real32_T lambda;                     /* '<Root>/lambda' */
+  real32_T lambda_dq;                  /* '<Root>/lambda_dq' */
+  real32_T lambda_xy;                  /* '<Root>/lambda_xy' */
   real32_T tolerance;                  /* '<Root>/tolerance' */
   real32_T max_iter;                   /* '<Root>/max_iter' */
   real32_T psiPM_h_pu[2];              /* '<Root>/psiPM_h_pu' */
@@ -602,6 +601,7 @@ typedef struct {
 typedef struct {
   real32_T d_opt[6];                   /* '<Root>/d_opt' */
   real32_T iterations_qp;              /* '<Root>/iterations_qp' */
+  real32_T dob_error_estimate[4];      /* '<Root>/dob_error_estimate' */
 } ExtY;
 
 /* Real-time Model Data Structure */
@@ -620,7 +620,7 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  *
  * Block '<S1>/Kalman_Observer' : Unused code path elimination
  * Block '<S1>/Scope1' : Unused code path elimination
- * Block '<S1>/Scope2' : Unused code path elimination
+ * Block '<S1>/duty_opt' : Unused code path elimination
  * Block '<S1>/e_obs' : Unused code path elimination
  * Block '<S1>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S1>/Data Type Conversion1' : Eliminate redundant data type conversion

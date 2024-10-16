@@ -41,6 +41,8 @@ DS_Data Global_Data = {
     }
 };
 
+struct uz_IIR_Filter_config config_IIR_invTemp = { .selection = LowPass_first_order,
+   		.cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
 enum init_chain
 {
@@ -83,9 +85,10 @@ int main(void)
             Global_Data.av.i_max_cur_lim_ip_SI = 12.0f;
             Global_Data.av.polepairs = 5.0f;
             Global_Data.av.offset_el_incre = 945U;
-            Global_Data.av.lambda = 10.0f;
+            Global_Data.av.lambda_dq = 10.0f;
+            Global_Data.av.lambda_xy = 10.0f;
             Global_Data.av.solver_tolerance = 1e-6f;
-            Global_Data.av.max_iter = 20.0f;
+            Global_Data.av.max_iter = 20.0f; //no effect with quadprog implementation
             Global_Data.rasv.current_ctrl_select = PI_FOC;
             Global_Data.rasv.a53_ctrl_off_on = false;
             Global_Data.av.angle_lead_factor_FOC = 1.5f;
@@ -109,6 +112,8 @@ int main(void)
             Global_Data.objects.speed_ref_filt = speed_ref_filt_init();
             Global_Data.objects.setpoint = setpoint_init();
             Global_Data.objects.speed_control = speed_control_init();
+            Global_Data.objects.invTemp1_filter = uz_signals_IIR_Filter_init(config_IIR_invTemp);
+            Global_Data.objects.invTemp2_filter = uz_signals_IIR_Filter_init(config_IIR_invTemp);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -161,8 +166,8 @@ int main(void)
         	// read temperature values from inverters
         	Global_Data.av.tempPWMoutputs1 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement1);
         	Global_Data.av.tempPWMoutputs2 = uz_PWM_duty_freq_detection_get_outputs(Global_Data.objects.tempMeasurement2);
-        	Global_Data.av.temperature_inv_1 = Global_Data.av.tempPWMoutputs1.TempDegreesCelsius;
-        	Global_Data.av.temperature_inv_2 = Global_Data.av.tempPWMoutputs2.TempDegreesCelsius;
+        	Global_Data.av.temperature_inv_1 = uz_signals_IIR_Filter_sample(Global_Data.objects.invTemp1_filter, Global_Data.av.tempPWMoutputs1.TempDegreesCelsius);
+        	Global_Data.av.temperature_inv_2 = uz_signals_IIR_Filter_sample(Global_Data.objects.invTemp2_filter, Global_Data.av.tempPWMoutputs2.TempDegreesCelsius);
         	// read temperature values from winding
         	uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
             Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');

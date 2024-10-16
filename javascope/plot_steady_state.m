@@ -26,14 +26,14 @@ rgb_ic2 = '#ff6666';
 
 % define interval to plot
 start = 1;
-finish = start+1200;
+finish = start+192;
 
 % time axis
 t_start = 0.0;
-t_finish = 0.05;
+t_finish = 0.024;
 
 % current axis
-i_min = -6.5;
+i_min = -12.5;
 i_max = -i_min;
 
 % spectrum plot axis
@@ -247,14 +247,14 @@ plot(log.time(start:finish),log.CH16(start:finish),'Color',rgb_ic,'LineWidth', l
 % plot(log.time(start:finish),log.CH19(start:finish),'Color',rgb_ic2,'LineWidth', lw);
 set(gca,'FontSize',fs)
 % [leg1, hobj, ~, ~] = legend('d_a_1','d_b_1','d_c_1');
-[leg1, hobj, ~, ~] = legend('d_a_1');
+[leg1, hobj, ~, ~] = legend('d_a_1','d_b_1','d_c_1');
 % leg1.ItemTokenSize = [10,10];
 hl = findobj(hobj,'type','line');
 set(hl,'LineWidth',lw_leg);
 ht = findobj(hobj,'type','text');
 set(ht,'FontSize',fs_leg);
 grid on
-axis([t_start t_finish 0.2 0.8])
+axis([t_start t_finish 0.0 1.0])
 % ylabel('Equiv. mod. signal')
 ylabel('Mod. signal')
 

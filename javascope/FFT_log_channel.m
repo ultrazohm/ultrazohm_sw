@@ -1,6 +1,6 @@
 % Requirement: log file imported via JS_plot_data.m script
-T = 5*(1/50);
-fs = 4000;
+T = 10*(1/200);
+fs = 8000;
 test_time = (0:1/fs:T-1/fs)';
 test_signal = (2*pi*sawtooth(2*pi*50*test_time)*0.5+pi);
 
@@ -19,7 +19,7 @@ stop = start+(10*80)-1; %2400
 
 % CHOOSE LOG CHANNEL TO BE FOURIER TRANSFORMED
 time = log.time(start:stop);
-signal = log.CH4(start:stop);
+signal = log.CH2(start:stop);
 
 % Sawtooth test signal for demonstration
 % time = test_time(start:stop);

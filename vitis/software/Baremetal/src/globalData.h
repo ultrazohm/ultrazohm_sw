@@ -16,6 +16,7 @@
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_pmsm_control/uz_pmsm_control.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -107,11 +108,10 @@ typedef struct _actualValues_ {
 	float theta_elec_3;
 	float theta_mech_hoerner;
 	float theta_offset_1; //in rad/s
-	float theta_offset_2; //in rad/s
 	float omega_el_hoerner;
 	float omega_el_beckhoff;
-	struct uz_inverter_adapter_outputs_t inverter_outputs_d1_hoerner;
-	struct uz_inverter_adapter_outputs_t inverter_outputs_d2_beckhoff;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	struct uz_resolver_pl_interface_outputs_t Resolver_outputs;
 	float temperature;
 	uint32_t  heartbeatframe_content;
@@ -136,8 +136,8 @@ typedef struct _referenceAndSetValues_ {
 } referenceAndSetValues;
 
 typedef struct{
-	uz_PWM_SS_2L_t* pwm_d1_hoerner;
-	uz_PWM_SS_2L_t* pwm_d2_beckhoff;
+	uz_PWM_SS_2L_t* pwm_d1;
+	uz_PWM_SS_2L_t* pwm_d2;
 	uz_PWM_SS_2L_t* pwm_d1_pin_12_to_17;
 	uz_PWM_SS_2L_t* pwm_d1_pin_18_to_23;
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_0_to_5;
@@ -148,8 +148,8 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5_2;
 	uz_incrementalEncoder_t* encoder_D5_3;
 	uz_mux_axi_t* mux_axi;
-	uz_inverter_adapter_t* inverter_d1_hoerner;
-	uz_inverter_adapter_t* inverter_d2_beckhoff;
+	uz_inverter_adapter_t* inverter_d1;
+	uz_inverter_adapter_t* inverter_d2;
 	uz_resolver_pl_interface_t* resolver_pl_d4;
 	uz_resolverIP_t* resolver_d4;
 	uz_approximate_flux_t* approximate_flux_instance;
@@ -157,7 +157,8 @@ typedef struct{
 	uz_CurrentControl_Kp_iq_adjustment_t* Kp_iq_adjustment_instance;
 	uz_matrix_t* matrix_input;
 	uz_nn_t* nn_layer;
-	uz_IIR_Filter_t* speed_setpoint_filter_beckhoff;
+	uz_pmsm_control_t* d1_controller;
+	uz_pmsm_control_t* d2_controller;
 	uz_IIR_Filter_t* tracking_error_filter_beckhoff;
 }object_pointers_t;
 

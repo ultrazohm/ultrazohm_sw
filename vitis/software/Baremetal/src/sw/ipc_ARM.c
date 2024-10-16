@@ -207,40 +207,39 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_1):
 				//n_ref_rpm_1 = value;
 				//M_ref_Nm_1 = value;
-				i_dq_ref_java_Amps_hoerner.q = value;
+	//			i_dq_ref_java_Amps_hoerner.q = value;
 			break;
 
 		case (Set_Send_Field_2):
-		i_dq_ref_java_Amps_hoerner.d = value;
+	//	i_dq_ref_java_Amps_hoerner.d = value;
 				//M_ref_Nm_beckhoff = value;
 			break;
 
 		case (Set_Send_Field_3):
-		n_ref_rpm_beckhoff_javascope = value;
+//		n_ref_rpm_beckhoff_javascope = value;
 			break;
 
 		case (Set_Send_Field_4):
-		i_dqn_ref_5th_Amps_hoerner.d = value;
+	//	i_dqn_ref_5th_Amps_hoerner.d = value;
 
 			break;
 
 		case (Set_Send_Field_5):
-		i_dqn_ref_5th_Amps_hoerner.q = value;
+	//	i_dqn_ref_5th_Amps_hoerner.q = value;
 
 			break;
 
 		case (Set_Send_Field_6):
 				// i_dqn_ref_7th_Amps_hoerner.d = value;
-		theta_el_offset_hoerner=value;
+	//	theta_el_offset_hoerner=value;
 			break;
 
 		case (Set_Send_Field_7):
-		i_dqn_ref_7th_Amps_hoerner.q = value;
+	//	i_dqn_ref_7th_Amps_hoerner.q = value;
 
 			break;
 
 		case (Set_Send_Field_8):
-		Global_Data.av.theta_offset_2 = value;
 			break;
 
 		case (Set_Send_Field_9):
@@ -304,13 +303,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-		mode = 1;
+
 			break;
 
 		case (My_Button_5):
 		if(select_FOC == false) {
 			select_FOC = true;
-			mode = 0;
 		} else {
 			select_FOC = false;
 		}

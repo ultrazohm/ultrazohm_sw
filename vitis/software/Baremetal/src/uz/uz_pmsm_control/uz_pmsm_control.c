@@ -7,6 +7,9 @@
 #include "uz_pmsm_control.h"
 #include "../uz_math_constants.h"
 #include "../uz_signals/uz_signals.h"
+#include "../uz_approximate_flux/uz_approximate_flux.h"
+#include "../uz_CurrentControl_Kp_id_adjustment/uz_CurrentControl_Kp_id_adjustment.h"
+#include "../uz_CurrentControl_Kp_iq_adjustment/uz_CurrentControl_Kp_iq_adjustment.h"
 
 struct uz_pmsm_control_t
 {
@@ -19,7 +22,10 @@ struct uz_pmsm_control_t
     uz_SpeedControl_t *speed_controller;
     uz_SetPoint_t *setpoint_module;
     uz_dq_setpoint_filter *setpoint_filter_i_dq;
-    uz_IIR_Filter_t* setpoint_filter_speed;
+    uz_IIR_Filter_t *setpoint_filter_speed;
+    uz_CurrentControl_Kp_iq_adjustment_t *Kp_id_adjustment_instance;
+    uz_CurrentControl_Kp_iq_adjustment_t *Kp_iq_adjustment_instance;
+    uz_approximate_flux_t *approximate_flux_instance;
     uz_PMSM_t machine_data;
     bool enable;
     bool safe_operating_region_violation;
@@ -43,7 +49,7 @@ static uz_pmsm_control_t *uz_pmsm_control_allocation(void)
     return (self);
 }
 
-uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t config, uz_PMSM_t machine_data)
+uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t config, uz_PMSM_t machine_data, uz_PMSM_flux_fitting_parameter_config_t nonlinear_machine_data)
 {
     uz_pmsm_control_t *self = uz_pmsm_control_allocation();
     self->config = config;
@@ -104,17 +110,24 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
         self->setpoint_filter_i_dq = uz_uz_dq_setpoint_filter_init(setpoint_filter_config);
     }
 
-    if (config.setpoint_filter_speed_cutoff_frequency != 0.0f){
+    if (config.setpoint_filter_speed_cutoff_frequency != 0.0f)
+    {
         struct uz_IIR_Filter_config setpoint_filter_speed_config = {
             .selection = LowPass_first_order,
             .cutoff_frequency_Hz = config.setpoint_filter_speed_cutoff_frequency,
             .damping = 0,
             .pass_frequency_Hz = 0,
             .sample_frequency_Hz = 1.0f / config.sample_time};
-            self->setpoint_filter_speed=uz_signals_IIR_Filter_init(setpoint_filter_speed_config);
+        self->setpoint_filter_speed = uz_signals_IIR_Filter_init(setpoint_filter_speed_config);
     }
 
-        return (self);
+    if (config.nonlinear_machine){
+        self->approximate_flux_instance = uz_approximate_flux_init(nonlinear_machine_data);
+        self->Kp_id_adjustment_instance = uz_CurrentControl_Kp_id_adjustment_init(0.666667f * 1.0f/config.sample_time);
+        self->Kp_iq_adjustment_instance = uz_CurrentControl_Kp_iq_adjustment_init(0.666667f * 1.0f / config.sample_time);
+    }
+
+    return (self);
 }
 
 struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self)
@@ -132,7 +145,8 @@ struct uz_pmsm_measurement_values *uz_pmsm_control_get_uz_pmsm_measurement_value
     return &self->measurement; // is this a good idea?
 }
 
-float* uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self){
+float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self)
+{
     return &self->config.theta_el_offset;
 }
 
@@ -166,7 +180,7 @@ void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
     self->actual_values.i_dc_in_A = (self->config.i_dc_in_V_conversion_factor * self->measurement.i_dc_from_adc_ampere_per_volt) + self->config.i_dc_in_V_offset;
 
     self->actual_values.omega_el_rad_per_sec = self->measurement.omega_mech_rad_per_sec * self->machine_data.polePairs;
-    self->actual_values.speed_in_rpm=self->measurement.omega_mech_rad_per_sec * 60.0f/(2*UZ_PIf);
+    self->actual_values.speed_in_rpm = self->measurement.omega_mech_rad_per_sec * 60.0f / (2 * UZ_PIf);
     float theta_el_without_offset = uz_signals_wrap(self->measurement.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
     self->actual_values.theta_el = theta_el_without_offset - self->config.theta_el_offset;
     self->actual_values.theta_el_advanced = self->actual_values.theta_el + (1.5f * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
@@ -218,35 +232,45 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
     {
         self->reference_values.speed_in_rpm = uz_signals_IIR_Filter_sample(self->setpoint_filter_speed, self->reference_values.speed_in_rpm);
     }
-        if (self->enable && (!self->safe_operating_region_violation))
+    if (self->enable && (!self->safe_operating_region_violation))
+    {
+        if (self->config.enable_speed_control)
         {
-            if (self->config.enable_speed_control)
+            self->reference_values.speed_in_rpm = reference_speed_in_rpm;
+            self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
+            float ref_plus_disturbance_input = disturbance_input_in_Nm + self->reference_values.M_in_Nm;
+            if (fabsf(ref_plus_disturbance_input) > self->config.speed_controller_max_torque)
             {
-                self->reference_values.speed_in_rpm = reference_speed_in_rpm;
-                self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
-                float ref_plus_disturbance_input = disturbance_input_in_Nm + self->reference_values.M_in_Nm;
-                if (fabsf(ref_plus_disturbance_input) > self->config.speed_controller_max_torque)
-                {
-                    uz_SpeedControl_set_ext_clamping(self->speed_controller, true);
-                }
-                else
-                {
-                    uz_SpeedControl_set_ext_clamping(self->speed_controller, false);
-                }
-                self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.speed_controller_max_torque, -1.0f * self->config.speed_controller_max_torque);
-                self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->actual_values.v_dc_in_V, self->actual_values.i_dq_in_A);
+                uz_SpeedControl_set_ext_clamping(self->speed_controller, true);
             }
             else
             {
-                self->reference_values.i_dq_in_A = reference_currents;
+                uz_SpeedControl_set_ext_clamping(self->speed_controller, false);
             }
+            self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.speed_controller_max_torque, -1.0f * self->config.speed_controller_max_torque);
+            self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->actual_values.v_dc_in_V, self->actual_values.i_dq_in_A);
+        }
+        else
+        {
+            self->reference_values.i_dq_in_A = reference_currents;
+        }
 
-            if (self->config.setpoint_filter_i_dq_cutoff_frequency != 0.0f)
-            {
-                self->reference_values.i_dq_in_A = uz_signals_IIR_Filter_dq_setpoint(self->setpoint_filter_i_dq, self->reference_values.i_dq_in_A);
-            }
+        if (self->config.setpoint_filter_i_dq_cutoff_frequency != 0.0f)
+        {
+            self->reference_values.i_dq_in_A = uz_signals_IIR_Filter_dq_setpoint(self->setpoint_filter_i_dq, self->reference_values.i_dq_in_A);
+        }
+        if (self->config.nonlinear_machine)
+        {
+            uz_3ph_dq_t flux_approx = uz_approximate_flux_step(self->approximate_flux_instance, self->actual_values.i_dq_in_A);
+            uz_CurrentControl_set_flux_approx(self->current_controller, flux_approx);
+            uz_3ph_dq_t flux_reference = uz_approximate_flux_reference_step(self->approximate_flux_instance, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A);
+            float K_p_id = uz_CurrentControl_Kp_id_adjustment_step(self->Kp_id_adjustment_instance, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, flux_reference, flux_approx);
+            float K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(self->Kp_iq_adjustment_instance, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, flux_reference, flux_approx);
+            uz_CurrentControl_set_Kp_id(self->current_controller, K_p_id);
+            uz_CurrentControl_set_Kp_iq(self->current_controller, K_p_iq);
+        }
 
-            self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->actual_values.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
+        self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->actual_values.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
         self->reference_values.duty_cycle = uz_Space_Vector_Modulation(self->reference_values.v_dq_in_V, self->actual_values.v_dc_in_V, self->actual_values.theta_el_advanced);
     }
     else
@@ -255,6 +279,6 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
         return self->config.default_duty_cycle;
     }
     return self->reference_values.duty_cycle;
-    }
+}
 
 #endif

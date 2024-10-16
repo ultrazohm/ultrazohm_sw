@@ -20,7 +20,7 @@ struct uz_pmsm_control_configuration_t
     float i_dc_in_V_conversion_factor;
     float i_dc_in_V_offset;
     float theta_el_offset;
-    float sample_time; // typically 1/PWM 
+    float sample_time; // typically 1/PWM
     bool enable_speed_control;
     float speed_controller_max_torque;
     float speed_controller_kp;
@@ -39,12 +39,13 @@ struct uz_pmsm_control_configuration_t
     float error_lower_bound_speed_in_rpm;
     float disturbance_input_lower_bound_in_Nm;
     float disturbance_input_upper_bound_in_Nm;
-    float setpoint_filter_i_dq_cutoff_frequency; // Do not use setpoint filter if 0
+    float setpoint_filter_i_dq_cutoff_frequency;  // Do not use setpoint filter if 0
     float setpoint_filter_speed_cutoff_frequency; // Do not use setpoint filter if 0
     enum uz_CurrentControl_decoupling_select decoupling_method;
     enum uz_Setpoint_motor_type motor_type;
     bool enable_field_weakening;
     float relative_torque_tolerance;
+    bool nonlinear_machine;
     struct uz_DutyCycle_t default_duty_cycle; // returned duty cycle if control is not enabled
 };
 
@@ -78,17 +79,15 @@ struct uz_pmsm_reference_values
     struct uz_DutyCycle_t duty_cycle;
 };
 
-uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t config, uz_PMSM_t machine_data);
-struct uz_pmsm_actual_data * uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self);
-struct uz_pmsm_reference_values  * uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self);
-struct uz_pmsm_measurement_values  * uz_pmsm_control_get_uz_pmsm_measurement_values(uz_pmsm_control_t *self);
-
+uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t config, uz_PMSM_t machine_data, uz_PMSM_flux_fitting_parameter_config_t nonlinear_machine_data);
+struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self);
+struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self);
+struct uz_pmsm_measurement_values *uz_pmsm_control_get_uz_pmsm_measurement_values(uz_pmsm_control_t *self);
 
 void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable);
 struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);
 
 void uz_pmsm_controller_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements);
 float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
-
 
 #endif // UZ_PMSM_CONTROL_H

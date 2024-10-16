@@ -189,7 +189,7 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_3p
         decouple_voltage = uz_CurrentControl_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
      case static_nonlinear_decoupling:
-//     	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(self->flux_approx, omega_el_rad_per_sec);
+     	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(self->flux_approx, omega_el_rad_per_sec);
      	break;
     default:
         break;

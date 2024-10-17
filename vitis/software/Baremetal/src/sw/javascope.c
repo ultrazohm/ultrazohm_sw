@@ -49,19 +49,11 @@ extern struct uz_3ph_dq_t i_dqn_filtered_7th_Amps_hoerner;
 extern struct uz_3ph_dq_t v_dq_Volts_beckhoff;
 extern struct uz_3ph_dq_t v_dq_Volts_hoerner;
 extern struct uz_3ph_abc_t v_abc_Volts_hoerner;
-extern float K_p_id;
-extern float K_p_iq;
 extern float observation_ip[9U];
-extern struct uz_3ph_dq_t i_dq_ref_Amps_hoerner;
 float Torque_placeholder = 0.0f;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-extern struct uz_3ph_dq_t v_dq_ref_Volts_hoerner;
 
-extern float n_ref_rpm_beckhoff_filtered;
-extern float M_ref_Nm_beckhoff;
-extern float M_meas_Nm;
-extern float speed_tracking_error;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -83,70 +75,67 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	// js_ch_observable[JSO_Speed_rpm_hoerner]		= &data->av.d5_1_omega_mech_rad_per_sec;
-	// js_ch_observable[JSO_Speed_rpm_beckhoff]		= &data->av.mechanicalRotorSpeed_beckhoff;
-	// js_ch_observable[JSO_n_rpm_beckhoff_filtered]		= &data->av.mechanicalRotorSpeed_filtered_prime_mover;
-	// js_ch_observable[JSO_speed_tracking_error]		= &speed_tracking_error;
-	// js_ch_observable[JSO_ia_hoerner] 			= &i_abc_Amps_hoener.a;
-	// js_ch_observable[JSO_ib_hoerner] 			= &i_abc_Amps_hoener.b;
-	// js_ch_observable[JSO_ic_hoerner] 			= &i_abc_Amps_hoener.c;
-	// js_ch_observable[JSO_ia_beckhoff] 			= &i_abc_Amps_beckhoff.a;
-	// js_ch_observable[JSO_ib_beckhoff] 			= &i_abc_Amps_beckhoff.b;
-	// js_ch_observable[JSO_ic_beckhoff] 			= &i_abc_Amps_beckhoff.c;
-	// js_ch_observable[JSO_ua_hoerner] 			= &v_abc_Volts_hoerner.a;
-	// js_ch_observable[JSO_ub_hoerner] 			= &v_abc_Volts_hoerner.b;
-	// js_ch_observable[JSO_uc_hoerner] 			= &v_abc_Volts_hoerner.c;
-	// js_ch_observable[JSO_iq_hoerner] 			= &i_dq_Amps_hoerner.q;
-	// js_ch_observable[JSO_iq_beckhoff] 			= &i_dq_Amps_beckhoff.q;
-	// js_ch_observable[JSO_id_hoerner] 			= &i_dq_Amps_hoerner.d;
-	// js_ch_observable[JSO_id_beckhoff] 			= &i_dq_Amps_beckhoff.d;
-	// js_ch_observable[JSO_id_5th_hoerner] 		= &i_dqn_filtered_5th_Amps_hoerner.d;
-	// js_ch_observable[JSO_iq_5th_hoerner] 		= &i_dqn_filtered_5th_Amps_hoerner.q;
-	// js_ch_observable[JSO_id_7th_hoerner] 		= &i_dqn_filtered_7th_Amps_hoerner.d;
-	// js_ch_observable[JSO_iq_7th_hoerner] 		= &i_dqn_filtered_7th_Amps_hoerner.q;
-	// js_ch_observable[JSO_Theta_el_hoerner] 	= &theta_el_rad_hoerner;
-	// js_ch_observable[JSO_Theta_el_beckhoff] 	= &theta_el_rad_beckhoff;
-	// js_ch_observable[JSO_theta_mech_hoerner] 	= &data->av.theta_mech_hoerner;
-	// js_ch_observable[JSO_ud_hoerner]			= &v_dq_Volts_hoerner.d;
-	// js_ch_observable[JSO_uq_hoerner]			= &v_dq_Volts_hoerner.q;
-	// js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-	// js_ch_observable[JSO_lifecheck]   	= &lifecheck;
-	// js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
-	// js_ch_observable[JSO_Kp_id]			= &K_p_id;
-	// js_ch_observable[JSO_Kp_iq]			= &K_p_iq;
-	// js_ch_observable[JSO_ud_hoerner]			= &v_dq_ref_Volts_hoerner.d;
-	// js_ch_observable[JSO_uq_hoerner]			= &v_dq_ref_Volts_hoerner.q;
-	// js_ch_observable[JSO_obs_1] 		= &observation_ip[0];
-	// js_ch_observable[JSO_obs_2] 		= &observation_ip[1];
-	// js_ch_observable[JSO_obs_3] 		= &observation_ip[2];
-	// js_ch_observable[JSO_obs_4] 		= &observation_ip[3];
-	// js_ch_observable[JSO_obs_5] 		= &observation_ip[4];
-	// js_ch_observable[JSO_obs_6] 		= &observation_ip[5];
-	// js_ch_observable[JSO_obs_7] 		= &observation_ip[6];
-	// js_ch_observable[JSO_obs_8] 		= &observation_ip[7];
-	// js_ch_observable[JSO_obs_9] 		= &observation_ip[8];
-	// js_ch_observable[JSO_id_set]		= &i_dq_ref_Amps_hoerner.d;
-	// js_ch_observable[JSO_iq_set]		= &i_dq_ref_Amps_hoerner.q;
-	// js_ch_observable[JSO_enable] 		= &data->javascope.start_marker;
-	// js_ch_observable[JSO_Torque_Nm_beckhoff]		= &M_ref_Nm_beckhoff;
-	js_ch_observable[JSO_torque_measured_Nm]		= &M_meas_Nm;
-
-
-
+	js_ch_observable[JSO_ISR_ExecTime_us]=&ISR_execution_time_us;
+	js_ch_observable[JSO_ISR_Period_us]=&ISR_period_us;
+	js_ch_observable[JSO_lifecheck]=&lifecheck;
+	js_ch_observable[JSO_dut_ia]=&data->dut.actual_data->i_abc_in_A.a;
+	js_ch_observable[JSO_dut_ib]=&data->dut.actual_data->i_abc_in_A.b;
+	js_ch_observable[JSO_dut_ic]=&data->dut.actual_data->i_abc_in_A.c;
+	js_ch_observable[JSO_dut_id]=&data->dut.actual_data->i_dq_in_A.d;
+	js_ch_observable[JSO_dut_iq]=&data->dut.actual_data->i_dq_in_A.q;
+	js_ch_observable[JSO_dut_id_set]=&data->dut.reference_values->i_dq_in_A.d;
+	js_ch_observable[JSO_dut_iq_set]=&data->dut.reference_values->i_dq_in_A.q;
+	js_ch_observable[JSO_dut_vd_ref]=&data->dut.reference_values->v_dq_in_V.d;
+	js_ch_observable[JSO_dut_vq_ref]=&data->dut.reference_values->v_dq_in_V.q;
+	js_ch_observable[JSO_dut_v_dc]=&data->dut.actual_data->v_dc_in_V;
+	js_ch_observable[JSO_dut_i_dc] = &data->dut.actual_data->i_dc_in_A;
+	js_ch_observable[JSO_dut_speed_rpm]=&data->dut.actual_data->speed_in_rpm;
+	js_ch_observable[JSO_dut_speed_rpm_ref]=&data->dut.reference_values->speed_in_rpm;
+	js_ch_observable[JSO_dut_theta_el]=&data->dut.actual_data->theta_el;
+	js_ch_observable[JSO_dut_theta_mech]=&data->dut.measurement_values->theta_mech;
+	js_ch_observable[JSO_dut_torque_setpoint_Nm]=&data->dut.reference_values->M_in_Nm;
+	js_ch_observable[JSO_pm_ia] = &data->prime_mover.actual_data->i_abc_in_A.a;
+	js_ch_observable[JSO_pm_ib] = &data->prime_mover.actual_data->i_abc_in_A.b;
+	js_ch_observable[JSO_pm_ic] = &data->prime_mover.actual_data->i_abc_in_A.c;
+	js_ch_observable[JSO_pm_id] = &data->prime_mover.actual_data->i_dq_in_A.d;
+	js_ch_observable[JSO_pm_iq] = &data->prime_mover.actual_data->i_dq_in_A.q;
+	js_ch_observable[JSO_pm_id_set] = &data->prime_mover.reference_values->i_dq_in_A.d;
+	js_ch_observable[JSO_pm_iq_set] = &data->prime_mover.reference_values->i_dq_in_A.q;
+	js_ch_observable[JSO_pm_vd_ref] = &data->prime_mover.reference_values->v_dq_in_V.d;
+	js_ch_observable[JSO_pm_vq_ref] = &data->prime_mover.reference_values->v_dq_in_V.q;
+	js_ch_observable[JSO_pm_v_dc] = &data->prime_mover.actual_data->v_dc_in_V;
+	js_ch_observable[JSO_pm_i_dc] = &data->prime_mover.actual_data->i_dc_in_A;
+	js_ch_observable[JSO_pm_speed_rpm] = &data->prime_mover.actual_data->speed_in_rpm;
+	js_ch_observable[JSO_pm_speed_rpm_ref] = &data->prime_mover.reference_values->speed_in_rpm;
+	js_ch_observable[JSO_pm_theta_el] = &data->prime_mover.actual_data->theta_el;
+	js_ch_observable[JSO_pm_theta_mech] = &data->prime_mover.measurement_values->theta_mech;
+	js_ch_observable[JSO_pm_torque_setpoint_Nm] = &data->prime_mover.reference_values->M_in_Nm;
+	js_ch_observable[JSO_enable]=&data->javascope.start_marker;
+	js_ch_observable[JSO_ddpg_obs_1]=&observation_ip[0];
+	js_ch_observable[JSO_ddpg_obs_2]=&observation_ip[1];
+	js_ch_observable[JSO_ddpg_obs_3]=&observation_ip[2];
+	js_ch_observable[JSO_ddpg_obs_4]=&observation_ip[3];
+	js_ch_observable[JSO_ddpg_obs_5]=&observation_ip[4];
+	js_ch_observable[JSO_ddpg_obs_6]=&observation_ip[5];
+	js_ch_observable[JSO_ddpg_obs_7]=&observation_ip[6];
+	js_ch_observable[JSO_ddpg_obs_8]=&observation_ip[7];
+	js_ch_observable[JSO_ddpg_obs_9]=&observation_ip[8];
+	js_ch_observable[JSO_torque_measured_Nm]=&data->M_meas_Nm;
+	js_ch_observable[JSO_pm_speed_filtered]=&data->av.mechanicalRotorSpeed_filtered_prime_mover;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d_1] 			        = &(data->av.U_d_1);
-	js_slowDataArray[JSSD_FLOAT_u_q_1] 			        = &(data->av.U_q_1);
+//	js_slowDataArray[JSSD_FLOAT_u_d_1] 			        = &(data->av.U_d_1);
+//	js_slowDataArray[JSSD_FLOAT_u_q_1] 			        = &(data->av.U_q_1);
 //	js_slowDataArray[JSSD_FLOAT_i_d_1] 			        = &i_dq_Amps_hoerner.d;
 //	js_slowDataArray[JSSD_FLOAT_i_d_2] 			        = &i_dq_Amps_beckhoff.d;
 //	js_slowDataArray[JSSD_FLOAT_i_q_1] 			        = &i_dq_Amps_hoerner.q;
 //	js_slowDataArray[JSSD_FLOAT_i_q_2] 			        = &i_dq_Amps_beckhoff.q;
 	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.d5_1_omega_mech_rad_per_sec);
-	js_slowDataArray[JSSD_FLOAT_speed_2] 		        = &(data->av.mechanicalRotorSpeed_beckhoff);
-	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+//	js_slowDataArray[JSSD_FLOAT_speed_2] 		        = &(data->av.mechanicalRotorSpeed_beckhoff);
+//	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;

@@ -86,7 +86,6 @@ float Voltage_Scaling_hoerner = 1.0f / (48.0f / 1.732050808f);
 bool ext_clamping_hoerner = false;
 float max_modulation_index_hoerner = 1.0f / 1.732050808f;
 float theta_el_old_hoerner = 0.0f;
-float M_meas_Nm = 0.0f;
 
 #define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
 
@@ -269,7 +268,7 @@ void all_measurements(void)
         break;
     }
 
-    M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f; // - 0.02f;
+    Global_Data.M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f; // - 0.02f;
 }
 
 void automatic_profile(void)

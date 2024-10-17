@@ -1,6 +1,3 @@
-//// Configuration of PMSM 2 (Brose PMSM)
-
-//
 //// Configuration FOC
 //struct uz_SpeedControl_config SC_config_2 = {
 //    .config_controller.Kp = 0.1f, //
@@ -35,11 +32,10 @@
 //    .config_iq = config_iq_2,
 //    .max_modulation_index = 1.0f / sqrtf(3.0f)};
 
-#include "../uz/uz_pmsm_control/uz_pmsm_control.h"
-#include "../globalData.h"
+#include "../include/init_beckhoff_on_d1.h"
 extern DS_Data Global_Data;
 
-struct uz_pmsm_control_configuration_t config_hoerner_beckhoff = {
+struct uz_pmsm_control_configuration_t config_beckhoff = {
     .current_conversion_factors = {
         .a = 12.2889f,
         .b = 11.8330f,
@@ -49,16 +45,16 @@ struct uz_pmsm_control_configuration_t config_hoerner_beckhoff = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 2.251070, // 2.151070f,
+    .theta_el_offset = 0.0f, // Offset handled in resolver IP core
     .sample_time = 1.0f / 10000.0f,
-    .enable_speed_control = true,
+    .enable_speed_control = D1_IS_PRIME_MOVER,
     .speed_controller_max_torque = 2.0f,
-    .speed_controller_kp = 0.02f,
-    .speed_controller_ki = 0.5f,
-    .current_controller_d_kp = 1.1f,
-    .current_controller_d_ki = 622.5f,
-    .current_controller_q_kp = 6.125f,
-    .current_controller_q_ki = 622.5f,
+    .speed_controller_kp = 0.1f,
+    .speed_controller_ki = 2.0f,
+    .current_controller_d_kp = 6.67f,
+    .current_controller_d_ki = 1700.0f,
+    .current_controller_q_kp = 6.67,
+    .current_controller_q_ki = 1700.0f,
     .setpoint_lower_bound_i_d_in_A = -5.0f,
     .setpoint_upper_bound_i_d_in_A = 0.5f,
     .setpoint_lower_bound_i_q_in_A = -5.0f,
@@ -72,7 +68,7 @@ struct uz_pmsm_control_configuration_t config_hoerner_beckhoff = {
     .decoupling_method = static_nonlinear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = 100.0f,
-    .motor_type = IPMSM,
+    .motor_type = SMPMSM,
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
     .nonlinear_machine = true,
@@ -88,14 +84,21 @@ struct uz_PMSM_t config_PMSM_beckhoff = {
     .J_kg_m_squared = 0.000108f,
     .I_max_Ampere = 12.0f};
 
-float PMSM_rated_current_hoerner = 15.0f;
+float PMSM_rated_current_beckhoff= 15.0f;
 
 struct uz_PMSM_flux_fitting_parameter_config_t beckhoff_fitting = {0};
 
-void init_hoerner_controller()
+void init_beckhoff_on_d1(void)
 {
-    Global_Data.objects.d2_controller = uz_pmsm_control_init(config_hoerner_controller, config_PMSM_beckhoff, beckhoff_fitting);
-    // Global_Data.buehler_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.buehler_controller);
-    // Global_Data.buehler_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.buehler_controller);
-    // Global_Data.buehler_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.buehler_controller);
+    Global_Data.objects.d1_controller = uz_pmsm_control_init(config_beckhoff, config_PMSM_beckhoff, beckhoff_fitting);
+
+    if (D1_IS_PRIME_MOVER){
+        Global_Data.prime_mover.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d1_controller);
+        Global_Data.prime_mover.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
+        Global_Data.prime_mover.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
+    }else{
+        Global_Data.dut.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d1_controller);
+        Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
+        Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
+    }
 }

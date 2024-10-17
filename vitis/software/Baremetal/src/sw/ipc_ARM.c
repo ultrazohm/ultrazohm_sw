@@ -34,7 +34,6 @@ extern struct uz_3ph_dq_t i_dqn_ref_5th_Amps_hoerner;
 extern struct uz_3ph_dq_t i_dqn_ref_7th_Amps_hoerner;
 extern struct uz_3ph_dq_t i_dq_ref_Amps_beckhoff;
 extern int mode;
-bool select_automatic_idiq=false;
 uz_3ph_dq_t i_dq_ref_java_Amps_hoerner = {0};
 extern DS_Data Global_Data;
 bool select_misalignment = false;
@@ -204,19 +203,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
-		case (Set_Send_Field_1):
-				//n_ref_rpm_1 = value;
-				//M_ref_Nm_1 = value;
-	//			i_dq_ref_java_Amps_hoerner.q = value;
+		case (gui_prime_mover_speed):
+				Global_Data.javascope.prime_mover_reference_speed_in_rpm=value;
 			break;
 
-		case (Set_Send_Field_2):
-	//	i_dq_ref_java_Amps_hoerner.d = value;
-				//M_ref_Nm_beckhoff = value;
+		case (gui_dut_d_current):
+			Global_Data.javascope.dut_reference_currents_in_A.d=value;
 			break;
 
-		case (Set_Send_Field_3):
-//		n_ref_rpm_beckhoff_javascope = value;
+		case (gui_dut_q_current):
+			Global_Data.javascope.dut_reference_currents_in_A.q = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -331,8 +327,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
-				if(select_automatic_idiq == false){
-					select_automatic_idiq=true;
+				if(Global_Data.javascope.select_automatic_idiq == false){
+					Global_Data.javascope.select_automatic_idiq=true;
 				}
 			break;
 
@@ -417,7 +413,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 11 - My_Button_8 */
-	if (select_automatic_idiq == true) {
+	if (Global_Data.javascope.select_automatic_idiq == true) {
 		js_status_BareToRTOS |= 1 << 11;
 	} else {
 		js_status_BareToRTOS &= ~(1 << 11);

@@ -75,10 +75,7 @@
 #include "sw/nn_7_input_1_64/nn_7_input_1_64.h"
 #include "sw/nn_9_input_1_64/nn_9_input_1_64.h"
 
-// Network definition
-#define NN_7_INPUT_1_64  0U
-#define NN_9_INPUT_1_64  1U
-#define NN_9_INPUT_3_64 0U
+
 
 void InitializeDataStructure(DS_Data* data);
 

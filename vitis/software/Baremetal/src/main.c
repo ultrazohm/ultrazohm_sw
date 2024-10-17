@@ -15,6 +15,8 @@
 
 // Includes from own files
 #include "main.h"
+#include "include/init_beckhoff_on_d1.h"
+#include "include/init_hoerner_on_d2.h"
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -57,7 +59,7 @@ int main(void)
 {
     int status = UZ_SUCCESS;
 
-    struct uz_IIR_Filter_config tracking_error_filter_beckhoff_config = {
+    struct uz_IIR_Filter_config tracking_error_filter_prime_mover_config = {
       	   .selection = LowPass_first_order,
            .cutoff_frequency_Hz = 0.3f,
            .sample_frequency_Hz = 10000.0f,
@@ -79,7 +81,6 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-            JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -108,8 +109,9 @@ int main(void)
             initialization_chain = init_control;
             break;
         case init_control:
-
-			Global_Data.objects.tracking_error_filter_beckhoff=uz_signals_IIR_Filter_init(tracking_error_filter_beckhoff_config);
+            init_beckhoff_on_d1();
+            init_hoerner_on_d2();
+			Global_Data.objects.tracking_error_filter_prime_mover=uz_signals_IIR_Filter_init(tracking_error_filter_prime_mover_config);
             nn_init();
         	initialization_chain = print_msg;
         	break;
@@ -118,7 +120,7 @@ int main(void)
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
             uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
-
+            JavaScope_initialize(&Global_Data);
             initialization_chain = init_interrupts;
             break;
         case init_interrupts:

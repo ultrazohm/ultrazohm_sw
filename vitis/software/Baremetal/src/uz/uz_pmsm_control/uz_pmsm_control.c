@@ -281,4 +281,76 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
     return self->reference_values.duty_cycle;
 }
 
+struct uz_DutyCycle_t
+uz_pmsm_controller_sample_actual_values(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
+{
+    uz_assert(self->is_ready);
+    self->measurement = measurements;
+    uz_pmsm_controller_measured_to_actual_values(self);
+    uz_pmsm_controller_check_safe_operating_region(self);
+
+}
+
+// Assumes uz_pmsm_controller_sample_actual_values is called before
+struct uz_DutyCycle_t uz_pmsm_controller_sample2(uz_pmsm_control_t *self, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
+{
+    uz_assert(self->is_ready);
+    reference_speed_in_rpm = uz_signals_saturation(reference_speed_in_rpm, self->config.setpoint_upper_bound_speed_in_rpm, self->config.setpoint_lower_bound_speed_in_rpm);
+    reference_currents.d = uz_signals_saturation(reference_currents.d, self->config.setpoint_upper_bound_i_d_in_A, self->config.setpoint_lower_bound_i_d_in_A);
+    reference_currents.q = uz_signals_saturation(reference_currents.q, self->config.setpoint_upper_bound_i_q_in_A, self->config.setpoint_lower_bound_i_q_in_A);
+    disturbance_input_in_Nm = uz_signals_saturation(disturbance_input_in_Nm, self->config.disturbance_input_upper_bound_in_Nm, self->config.disturbance_input_lower_bound_in_Nm);
+
+    if (self->config.setpoint_filter_speed_cutoff_frequency != 0.0f)
+    {
+        self->reference_values.speed_in_rpm = uz_signals_IIR_Filter_sample(self->setpoint_filter_speed, self->reference_values.speed_in_rpm);
+    }
+    if (self->enable && (!self->safe_operating_region_violation))
+    {
+        if (self->config.enable_speed_control)
+        {
+            self->reference_values.speed_in_rpm = reference_speed_in_rpm;
+            self->reference_values.M_in_Nm = uz_SpeedControl_sample(self->speed_controller, self->measurement.omega_mech_rad_per_sec, self->reference_values.speed_in_rpm);
+            float ref_plus_disturbance_input = disturbance_input_in_Nm + self->reference_values.M_in_Nm;
+            if (fabsf(ref_plus_disturbance_input) > self->config.speed_controller_max_torque)
+            {
+                uz_SpeedControl_set_ext_clamping(self->speed_controller, true);
+            }
+            else
+            {
+                uz_SpeedControl_set_ext_clamping(self->speed_controller, false);
+            }
+            self->reference_values.M_in_Nm = uz_signals_saturation(ref_plus_disturbance_input, self->config.speed_controller_max_torque, -1.0f * self->config.speed_controller_max_torque);
+            self->reference_values.i_dq_in_A = uz_SetPoint_sample(self->setpoint_module, self->measurement.omega_mech_rad_per_sec, self->reference_values.M_in_Nm, self->actual_values.v_dc_in_V, self->actual_values.i_dq_in_A);
+        }
+        else
+        {
+            self->reference_values.i_dq_in_A = reference_currents;
+        }
+
+        if (self->config.setpoint_filter_i_dq_cutoff_frequency != 0.0f)
+        {
+            self->reference_values.i_dq_in_A = uz_signals_IIR_Filter_dq_setpoint(self->setpoint_filter_i_dq, self->reference_values.i_dq_in_A);
+        }
+        if (self->config.nonlinear_machine)
+        {
+            uz_3ph_dq_t flux_approx = uz_approximate_flux_step(self->approximate_flux_instance, self->actual_values.i_dq_in_A);
+            uz_CurrentControl_set_flux_approx(self->current_controller, flux_approx);
+            uz_3ph_dq_t flux_reference = uz_approximate_flux_reference_step(self->approximate_flux_instance, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A);
+            float K_p_id = uz_CurrentControl_Kp_id_adjustment_step(self->Kp_id_adjustment_instance, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, flux_reference, flux_approx);
+            float K_p_iq = uz_CurrentControl_Kp_iq_adjustment_step(self->Kp_iq_adjustment_instance, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, flux_reference, flux_approx);
+            uz_CurrentControl_set_Kp_id(self->current_controller, K_p_id);
+            uz_CurrentControl_set_Kp_iq(self->current_controller, K_p_iq);
+        }
+
+        self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->actual_values.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
+        self->reference_values.duty_cycle = uz_Space_Vector_Modulation(self->reference_values.v_dq_in_V, self->actual_values.v_dc_in_V, self->actual_values.theta_el_advanced);
+    }
+    else
+    {
+        uz_pmsm_controller_reset(self);
+        return self->config.default_duty_cycle;
+    }
+    return self->reference_values.duty_cycle;
+}
+
 #endif

@@ -53,7 +53,6 @@ extern float K_p_id;
 extern float K_p_iq;
 extern float observation_ip[9U];
 extern struct uz_3ph_dq_t i_dq_ref_Amps_hoerner;
-extern float start_marker;
 float Torque_placeholder = 0.0f;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -86,7 +85,7 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	// js_ch_observable[JSO_Speed_rpm_hoerner]		= &data->av.d5_1_omega_mech_rad_per_sec;
 	// js_ch_observable[JSO_Speed_rpm_beckhoff]		= &data->av.mechanicalRotorSpeed_beckhoff;
-	// js_ch_observable[JSO_n_rpm_beckhoff_filtered]		= &data->av.mechanicalRotorSpeed_filtered_beckhoff;
+	// js_ch_observable[JSO_n_rpm_beckhoff_filtered]		= &data->av.mechanicalRotorSpeed_filtered_prime_mover;
 	// js_ch_observable[JSO_speed_tracking_error]		= &speed_tracking_error;
 	// js_ch_observable[JSO_ia_hoerner] 			= &i_abc_Amps_hoener.a;
 	// js_ch_observable[JSO_ib_hoerner] 			= &i_abc_Amps_hoener.b;
@@ -128,7 +127,7 @@ int JavaScope_initialize(DS_Data* data)
 	// js_ch_observable[JSO_obs_9] 		= &observation_ip[8];
 	// js_ch_observable[JSO_id_set]		= &i_dq_ref_Amps_hoerner.d;
 	// js_ch_observable[JSO_iq_set]		= &i_dq_ref_Amps_hoerner.q;
-	// js_ch_observable[JSO_enable] 		= &start_marker;
+	// js_ch_observable[JSO_enable] 		= &data->javascope.start_marker;
 	// js_ch_observable[JSO_Torque_Nm_beckhoff]		= &M_ref_Nm_beckhoff;
 	js_ch_observable[JSO_torque_measured_Nm]		= &M_meas_Nm;
 

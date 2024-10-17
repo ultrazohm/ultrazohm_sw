@@ -1,5 +1,4 @@
-#include "../uz/uz_pmsm_control/uz_pmsm_control.h"
-#include "../globalData.h"
+#include "../include/init_hoerner_on_d2.h"
 extern DS_Data Global_Data;
 
 struct uz_pmsm_control_configuration_t config_hoerner_controller = {
@@ -12,9 +11,9 @@ struct uz_pmsm_control_configuration_t config_hoerner_controller = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 2.251070, // 2.151070f,
+    .theta_el_offset = 1.63f,
     .sample_time = 1.0f / 10000.0f,
-    .enable_speed_control = true,
+    .enable_speed_control = D2_IS_PRIME_MOVER,
     .speed_controller_max_torque = 2.0f,
     .speed_controller_kp = 0.02f,
     .speed_controller_ki = 0.5f,
@@ -69,11 +68,20 @@ struct uz_PMSM_flux_fitting_parameter_config_t Hoerner_Fitting = {
     .F1G1_parameter = -0.005816630245736f,
     .F2G2_parameter = 0.294469757399354f};
 
-void init_hoerner_controller(){
+void init_hoerner_on_d2(void)
+{
     Global_Data.objects.d2_controller = uz_pmsm_control_init(config_hoerner_controller, config_PMSM_hoerner, Hoerner_Fitting);
-    // Global_Data.buehler_actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.buehler_controller);
-    // Global_Data.buehler_reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.buehler_controller);
-    // Global_Data.buehler_measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.buehler_controller);
+
+    if (D2_IS_PRIME_MOVER)
+    {
+        Global_Data.prime_mover.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);
+        Global_Data.prime_mover.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
+        Global_Data.prime_mover.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
+    }
+    else
+    {
+        Global_Data.dut.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);
+        Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
+        Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
+    }
 }
-
-

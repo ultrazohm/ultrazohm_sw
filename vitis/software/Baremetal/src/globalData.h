@@ -91,7 +91,7 @@ typedef struct _actualValues_ {
 	float d5_3_omega_mech_rad_per_sec;
 	float d5_3_n_rpm;
 	float d5_3_n_rpm_filtered;
-	float mechanicalRotorSpeed_filtered_beckhoff; // in rpm
+	float mechanicalRotorSpeed_filtered_prime_mover; // in rpm
 	float mechanicalRotorSpeed_filtered_3; // in rpm
 	float mechanicalPosition; 		// in m
 	float mechanicalTorque; 			// in Nm
@@ -159,14 +159,49 @@ typedef struct{
 	uz_nn_t* nn_layer;
 	uz_pmsm_control_t* d1_controller;
 	uz_pmsm_control_t* d2_controller;
-	uz_IIR_Filter_t* tracking_error_filter_beckhoff;
+	uz_IIR_Filter_t* tracking_error_filter_prime_mover;
 }object_pointers_t;
 
-typedef struct _DS_Data_ {
+typedef struct controller_data{
+	struct uz_pmsm_actual_data *actual_data;
+	struct uz_pmsm_measurement_values *measurement_values;
+	struct uz_pmsm_reference_values *reference_values;
+} controller_data;
+
+typedef struct javascope_global
+{
+	float prime_mover_reference_speed_in_rpm;
+	uz_3ph_dq_t dut_reference_currents_in_A;
+	bool select_automatic_idiq;
+	float start_marker;
+} javascope_global;
+
+typedef struct auto_profile
+{
+	float prime_mover_reference_speed_in_rpm;
+	uz_3ph_dq_t dut_reference_currents_in_A;
+	float speed_tracking_error;
+	bool wait_for_n_ref; // needs to be true initially
+	bool speed_setpoint_reached; // needs to be false initially
+	bool start_angle_found; // needs to be fals initially
+	bool change_speed; // false initally
+	uint32_t setpoint_index;	   // init als zero
+	uint32_t n_ref_setpoint_index; // init als zero
+	float theta_mech_dut_old;
+} auto_profile;
+
+	typedef struct _DS_Data_
+{
 	referenceAndSetValues rasv;
 	actualValues av;
 	AnalogAdapters aa;
 	object_pointers_t objects;
+	controller_data dut;
+	controller_data prime_mover;
+	float prime_mover_reference_speed_in_rpm;
+	uz_3ph_dq_t dut_reference_currents_in_A;
+	javascope_global javascope;
+	auto_profile profile;
 } DS_Data;
 
 #endif

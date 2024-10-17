@@ -121,9 +121,9 @@ enum gui_button_mapping {
 	Enable_System,
 	Enable_Control,
 	Stop,
-	Set_Send_Field_1,
-	Set_Send_Field_2,
-	Set_Send_Field_3,
+	gui_prime_mover_speed,
+	gui_dut_d_current,
+	gui_dut_q_current,
 	Set_Send_Field_4,
 	Set_Send_Field_5,
 	Set_Send_Field_6,
@@ -162,9 +162,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	i_q1,
-	i_d1,
-	n2,
+	Speed,
+	i_d,
+	i_q,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -189,9 +189,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	A,
-	A,
 	rpm,
+	A,
+	A,
 	-,
 	-,
 	-,

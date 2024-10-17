@@ -13,5 +13,7 @@ Carrier Board Rev05
 ..	toctree::
 	:maxdepth: 2
 
+	overview
 	changeset
+	s3c
 	arm_pins

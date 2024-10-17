@@ -50,6 +50,7 @@ The drive strength of the FPGA pins is configurable (4, 8, 12 or 16 mA) by softw
 For more information see in `Xilinx documentation <https://www.xilinx.com/support/documentation/user_guides/ug571-ultrascale-selectio.pdf>`_.
 Additionally, there is shared SPI and I2C available on X5.
 
+.. _carrier_board_rev3_slotpower:
 .. csv-table:: X5 - Power connection
   :file: interfaces/x5_pwr.csv
   :widths: 50 50 50

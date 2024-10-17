@@ -61,6 +61,9 @@ Overview of change issues vs. repositories
    * - Redesign front (and back?) panel
      - `130 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/130/>`_, `141 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/141/>`_
      - `FP8 <https://bitbucket.org/ultrazohm/uz_frontpanel/issues/8/>`_ / `9 <https://bitbucket.org/ultrazohm/uz_frontpanel/issues/9/>`_ / `10 <https://bitbucket.org/ultrazohm/uz_frontpanel/issues/10/>`_, `H16 <https://bitbucket.org/ultrazohm/housing/issues/16/>`_
+   * - Add system (fan connectors)
+     -
+     - `H17 <https://bitbucket.org/ultrazohm/housing/issues/17/>`_
    * - Redesign isoGPIOs and make them available on panel
      - `134 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/134/>`_
      - 
@@ -76,6 +79,9 @@ Overview of change issues vs. repositories
    * - Move PSU to far-right corner of chassis
      - `136 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/136/>`_
      - `branch H repo <https://bitbucket.org/ultrazohm/housing/branch/feature/redesign_rev05>`_
+   * - Protect the VIn, 5V and 3V3 rails at the slots (cf. :ref:`spec <carrier_board_rev3_slotpower>`)
+     - `146 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/146/>`_
+     -
    * - Make PL MGT transceivers usable
      - `133 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/133/>`_
      -

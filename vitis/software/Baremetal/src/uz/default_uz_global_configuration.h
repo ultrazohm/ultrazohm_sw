@@ -12,6 +12,22 @@
 #error The UZ_USE_EXTERNAL_STOP_ON_V4 flag must not be used on hardware version 3. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
 #endif
 
+// Network definition
+#define NN_7_INPUT_1_64 0U
+#define NN_9_INPUT_1_64 1U
+#define NN_9_INPUT_3_64 0U
+
+#define BECKHOFF 1
+#define BUEHLER 2
+#define HOERNER 3
+#define BROSE 4
+#define EBM 5
+
+#define D1_MACHINE BECKHOFF // 1: beckhoff, 2:buehler
+#define D2_MACHINE HOERNER  // 3 : hoerner, 4 : brose, 5 : ebm
+#define D1_IS_PRIME_MOVER 1U
+#define D2_IS_PRIME_MOVER !D1_IS_PRIME_MOVER //
+
 /** ISR trigger source
  *
  * chose here which of the above interrupt trigger you want to use:
@@ -26,9 +42,15 @@
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE 1U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE 1U
 
+#if D2_MACHINE == BROSE // Hoerner (2k), EBM (2k), Brose (5k)
+#define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 5000.0f
+#else
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 2000.0f
-#define UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION 256.0f
-#define UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION 2000.0f
+#endif
+
+#define UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION 256.0f  // always heidrive but unused
+#define UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION 5000.0f // always buehler
+
 #define UZ_D5_1_MOTOR_POLE_PAIR_NUMBER 1.0f // handled in uz_pmsm_control
 #define UZ_D5_2_MOTOR_POLE_PAIR_NUMBER 1.0f //
 #define UZ_D5_3_MOTOR_POLE_PAIR_NUMBER 1.0f //

@@ -1,7 +1,7 @@
-#include "../include/init_hoerner_on_d2.h"
+#include "../include/init_heidrive_on_d2.h"
 extern DS_Data Global_Data;
 
-struct uz_pmsm_control_configuration_t config_hoerner_controller = {
+struct uz_pmsm_control_configuration_t config_heidrive = {
     .current_conversion_factors = {
         .a = 12.2889f,
         .b = 11.8330f,
@@ -11,16 +11,16 @@ struct uz_pmsm_control_configuration_t config_hoerner_controller = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 1.63f,
+    .theta_el_offset = 1.532164f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = D2_IS_PRIME_MOVER,
-    .speed_controller_max_torque = 2.0f,
-    .speed_controller_kp = 0.02f,
-    .speed_controller_ki = 0.5f,
-    .current_controller_d_kp = 1.1f,
-    .current_controller_d_ki = 622.5f,
-    .current_controller_q_kp = 6.125f,
-    .current_controller_q_ki = 622.5f,
+    .speed_controller_max_torque = 1.3f,
+    .speed_controller_kp = 0.01f,
+    .speed_controller_ki = 1.0f,
+    .current_controller_d_kp = 3.77f,
+    .current_controller_d_ki = 1810.0f,
+    .current_controller_q_kp = 4.73f,
+    .current_controller_q_ki = 1810.0f,
     .setpoint_lower_bound_i_d_in_A = -5.0f,
     .setpoint_upper_bound_i_d_in_A = 0.5f,
     .setpoint_lower_bound_i_q_in_A = -5.0f,
@@ -31,46 +31,30 @@ struct uz_pmsm_control_configuration_t config_hoerner_controller = {
     .error_lower_bound_speed_in_rpm = -1500.0f,
     .disturbance_input_lower_bound_in_Nm = 0.0f, // disable disturbance input for now
     .disturbance_input_upper_bound_in_Nm = 0.0f,
-    .decoupling_method = static_nonlinear_decoupling,
+    .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = 100.0f,
     .motor_type = IPMSM,
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
-    .nonlinear_machine = true,
+    .nonlinear_machine = false,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
-struct uz_PMSM_t config_PMSM_hoerner = {
-    .R_ph_Ohm = 0.249f,
-    .Ld_Henry = 0.00044f,
-    .Lq_Henry = 0.00245f,
-    .Psi_PM_Vs = 0.0194f,
-    .polePairs = 4.0f,
-    .J_kg_m_squared = 0.000084f,
-    .I_max_Ampere = 10.0f};
+struct uz_PMSM_t config_PMSM_heidrive = {
+    .R_ph_Ohm = 0.543f,
+    .Ld_Henry = 0.00113f,
+    .Lq_Henry = 0.00142f,
+    .Psi_PM_Vs = 0.0169f,
+    .polePairs = 3.0f,
+    .J_kg_m_squared = 0.000108f,
+    .I_max_Ampere = 10.8f};
 
-float PMSM_rated_current_hoerner = 15.0f;
+struct uz_PMSM_flux_fitting_parameter_config_t heidrive_fitting = {0};
 
-struct uz_PMSM_flux_fitting_parameter_config_t Hoerner_Fitting = {
-    .ad1_parameter = 0.026620095524092f,
-    .ad2_parameter = 0.047133812840564f,
-    .ad3_parameter = -27.868596691410815f,
-    .ad4_parameter = 0.026771852823277,
-    .ad5_parameter = 0.032335709299499f,
-    .ad6_parameter = -27.939757152811232f,
-    .aq1_parameter = 0.006639611096337f,
-    .aq2_parameter = 0.140324092149110f,
-    .aq3_parameter = 6.036938033671378e-04f,
-    .aq4_parameter = 0.006818079861355f,
-    .aq5_parameter = 0.148494853843815f,
-    .aq6_parameter = 6.202760235239144e-04f,
-    .F1G1_parameter = -0.005816630245736f,
-    .F2G2_parameter = 0.294469757399354f};
-
-void init_hoerner_on_d2(void)
+void init_heidrive_on_d2(void)
 {
-    Global_Data.objects.d2_controller = uz_pmsm_control_init(config_hoerner_controller, config_PMSM_hoerner, Hoerner_Fitting);
+    Global_Data.objects.d2_controller = uz_pmsm_control_init(config_heidrive, config_PMSM_heidrive, heidrive_fitting);
 
     if (D2_IS_PRIME_MOVER)
     {

@@ -244,29 +244,35 @@ void all_measurements(void)
     d2_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A2.me.ADC_A4;
     d2_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A2.me.ADC_A3;
     d2_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A2.me.ADC_A2;
-    d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_1_omega_mech_rad_per_sec;
-    d2_measurements.theta_mech = Global_Data.av.d5_1_theta_el;
+
+    switch (machine_on_d1)
+    {
+    case BECKHOFF:
+        d2_measurements.omega_mech_rad_per_sec = Global_Data.av.Resolver_outputs.omega_mech_rad_s;
+        d2_measurements.theta_mech = Global_Data.av.Resolver_outputs.position_el_2pi;
+        break;
+    case BUEHLER:
+        d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_3_omega_mech_rad_per_sec;
+        d2_measurements.theta_mech = Global_Data.av.d5_3_theta_el;
+        break;
+    case HEIDRIVE:
+        d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_2_omega_mech_rad_per_sec;
+        d2_measurements.theta_mech = Global_Data.av.d5_2_theta_el;
+        break;
+    default:
+        uz_assert(0);
+        break;
+    }
 
     d1_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A1.me.ADC_B5;
     d1_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
     d1_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_A4;
     d1_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_A3;
     d1_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_A2;
+    d1_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_1_omega_mech_rad_per_sec;
+    d1_measurements.theta_mech = Global_Data.av.d5_1_theta_el;
 
-    switch (machine_on_d1)
-    {
-    case BECKHOFF:
-        d1_measurements.omega_mech_rad_per_sec = Global_Data.av.Resolver_outputs.omega_mech_rad_s;
-        d1_measurements.theta_mech = Global_Data.av.Resolver_outputs.position_el_2pi;
-        break;
-    case BUEHLER:
-        d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_3_omega_mech_rad_per_sec;
-        d2_measurements.theta_mech = Global_Data.av.d5_3_theta_el;
-        break;
-    default:
-        uz_assert(0);
-        break;
-    }
+
 
     Global_Data.M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f; // - 0.02f;
 }

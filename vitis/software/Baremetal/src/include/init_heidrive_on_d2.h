@@ -4,4 +4,4 @@
 #include "../globalData.h"
 #include "../uz/uz_global_configuration.h"
 
-void init_beckhoff_on_d1(void);
+void init_heidrive_on_d2(void);

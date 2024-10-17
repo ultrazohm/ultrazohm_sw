@@ -15,11 +15,16 @@
 
 // Includes from own files
 #include "main.h"
-#include "include/init_beckhoff_on_d1.h"
-#include "include/init_hoerner_on_d2.h"
+#include "include/init_beckhoff_on_d2.h"
+#include "include/init_buehler_on_d2.h"
+#include "include/init_heidrive_on_d2.h"
 
-// Initialize the global variables
-DS_Data Global_Data = {
+#include "include/init_brose_on_d1.h"
+#include "include/init_ebm_on_d1.h"
+#include "include/init_hoerner_on_d1.h"
+
+    // Initialize the global variables
+    DS_Data Global_Data = {
     .rasv = {
         .halfBridge1DutyCycle = 0.0f,
         .halfBridge2DutyCycle = 0.0f,
@@ -27,20 +32,15 @@ DS_Data Global_Data = {
         .halfBridge4DutyCycle = 0.0f,
         .halfBridge5DutyCycle = 0.0f,
         .halfBridge6DutyCycle = 0.0f,
-		.halfBridge7DutyCycle = 0.0f,
-		.halfBridge8DutyCycle = 0.0f,
-		.halfBridge9DutyCycle = 0.0f,
-		.halfBridge10DutyCycle = 0.0f,
-		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
-    },
+        .halfBridge7DutyCycle = 0.0f,
+        .halfBridge8DutyCycle = 0.0f,
+        .halfBridge9DutyCycle = 0.0f,
+        .halfBridge10DutyCycle = 0.0f,
+        .halfBridge11DutyCycle = 0.0f,
+        .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
-		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
-    }
-};
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 enum init_chain
 {
@@ -109,8 +109,41 @@ int main(void)
             initialization_chain = init_control;
             break;
         case init_control:
-            init_beckhoff_on_d1();
-            init_hoerner_on_d2();
+
+
+            switch (D1_MACHINE)
+            {
+            case HOERNER:
+                init_hoerner_on_d1();
+                break;
+            case EBM:
+                init_ebm_on_d1();
+                break;
+            case BROSE:
+            	init_brose_on_d1();
+                break;
+            default:
+                break;
+    }
+
+            switch (D2_MACHINE)
+            {
+            case BUEHLER:
+                init_buehler_on_d2();
+                break;
+            case HEIDRIVE:
+                init_heidrive_on_d2();
+                break;
+            case BECKHOFF:
+                init_beckhoff_on_d2();
+                break;
+            default:
+                break;
+    }
+
+            init_beckhoff_on_d2();
+
+
 			Global_Data.objects.tracking_error_filter_prime_mover=uz_signals_IIR_Filter_init(tracking_error_filter_prime_mover_config);
             nn_init();
         	initialization_chain = print_msg;

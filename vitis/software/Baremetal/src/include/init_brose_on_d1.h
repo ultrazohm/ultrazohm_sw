@@ -4,4 +4,4 @@
 #include "../globalData.h"
 #include "../uz/uz_global_configuration.h"
 
-void init_hoerner_on_d2(void);
+void init_brose_on_d1(void);

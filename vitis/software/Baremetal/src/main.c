@@ -64,6 +64,12 @@ int main(void)
            .cutoff_frequency_Hz = 0.3f,
            .sample_frequency_Hz = 10000.0f,
     };
+    Global_Data.profile.wait_for_n_ref=true;
+    Global_Data.profile.speed_setpoint_reached=false;
+    Global_Data.profile.start_angle_found=false;
+    Global_Data.profile.change_speed=false;
+    Global_Data.profile.setpoint_index=0U;
+    Global_Data.profile.n_ref_setpoint_index=0U;
 
 
     while (1)

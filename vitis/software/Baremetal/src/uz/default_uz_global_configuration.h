@@ -22,6 +22,7 @@
 #define HOERNER 3
 #define BROSE 4
 #define EBM 5
+#define HEIDRIVE 6
 
 #define D1_MACHINE BECKHOFF // 1: beckhoff, 2:buehler
 #define D2_MACHINE HOERNER  // 3 : hoerner, 4 : brose, 5 : ebm

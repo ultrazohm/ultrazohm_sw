@@ -70,6 +70,7 @@
 :cmock:
   :mock_prefix: mock_
   :when_no_prototypes: :warn
+  :when_ptr: :compare_ptr
   :enforce_strict_ordering: TRUE
   :plugins:
     - :ignore

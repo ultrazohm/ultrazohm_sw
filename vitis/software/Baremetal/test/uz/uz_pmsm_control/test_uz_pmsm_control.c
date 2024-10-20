@@ -20,36 +20,36 @@
 #include "mock_uz_approximate_flux.h"
 #include "mock_uz_CurrentControl_Kp_id_adjustment.h"
 #include "mock_uz_CurrentControl_Kp_iq_adjustment.h"
-
-
+#include "mock_uz_rlcc.h"
+#include "uz_matrix.h"
 #include <math.h>
 
-    TEST_FILE("uz_signals_iir_filter.c")
+TEST_FILE("uz_signals_iir_filter.c")
 
-        struct uz_pmsm_control_configuration_t config = {
-            .current_conversion_factors = {
-                .a = 1,
-                .b = 2,
-                .c = 3},
-            .current_offsets = {.a = 1, .b = 2, .c = -1},
-            .v_dc_in_V_conversion_factor = 10,
-            .v_dc_in_V_offset = -1,
-            .theta_el_offset = 0.1f,
-            .sample_time = 1.0f / 10000.0f,
-            .enable_speed_control = true,
-            .speed_controller_max_torque = 10.0f,
-            .speed_controller_kp = 1,
-            .speed_controller_ki = 2,
-            .current_controller_d_kp = 1,
-            .current_controller_d_ki = 2,
-            .current_controller_q_kp = 3,
-            .current_controller_q_ki = 4,
-            .decoupling_method = linear_decoupling,
-            .motor_type = IPMSM,
-            .enable_field_weakening = false,
-            .relative_torque_tolerance = 0.1f,
-            .nonlinear_machine=false,
-            .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f}};
+struct uz_pmsm_control_configuration_t config = {
+    .current_conversion_factors = {
+        .a = 1,
+        .b = 2,
+        .c = 3},
+    .current_offsets = {.a = 1, .b = 2, .c = -1},
+    .v_dc_in_V_conversion_factor = 10,
+    .v_dc_in_V_offset = -1,
+    .theta_el_offset = 0.1f,
+    .sample_time = 1.0f / 10000.0f,
+    .enable_speed_control = true,
+    .speed_controller_max_torque = 10.0f,
+    .speed_controller_kp = 1,
+    .speed_controller_ki = 2,
+    .current_controller_d_kp = 1,
+    .current_controller_d_ki = 2,
+    .current_controller_q_kp = 3,
+    .current_controller_q_ki = 4,
+    .decoupling_method = linear_decoupling,
+    .motor_type = IPMSM,
+    .enable_field_weakening = false,
+    .relative_torque_tolerance = 0.1f,
+    .nonlinear_machine = false,
+    .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f}};
 
 struct uz_PMSM_t config_PMSM_brose = {
     .R_ph_Ohm = 0.023f,
@@ -69,13 +69,12 @@ void tearDown(void)
 {
 }
 
-uz_PMSM_flux_fitting_parameter_config_t nonlinear_config={0};
+uz_PMSM_flux_fitting_parameter_config_t nonlinear_config = {0};
 
-    void
-    test_uz_pmsm_control_NeedToImplement(void)
+void test_uz_pmsm_control_NeedToImplement(void)
 {
     uz_pmsm_control_t *test = uz_pmsm_control_init(config, config_PMSM_brose, nonlinear_config);
-    struct uz_pmsm_actual_data* observed_data = uz_pmsm_control_get_actual_data(test);
+    struct uz_pmsm_actual_data *observed_data = uz_pmsm_control_get_actual_data(test);
 }
 
 #endif // TEST

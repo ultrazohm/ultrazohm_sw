@@ -155,6 +155,9 @@ void uz_pmsm_controller_reset(uz_pmsm_control_t *self)
     uz_assert(self->is_ready);
     uz_CurrentControl_reset(self->current_controller);
     uz_SpeedControl_reset(self->speed_controller);
+    if(self->config.use_rlcc){
+        uz_rlcc_reset(self->config.rlcc);
+    }
 }
 
 void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable)
@@ -260,6 +263,10 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
         {
             self->reference_values.i_dq_in_A = uz_signals_IIR_Filter_dq_setpoint(self->setpoint_filter_i_dq, self->reference_values.i_dq_in_A);
         }
+
+        if(self->config.use_rlcc){
+            self->reference_values.v_dq_in_V = uz_rlcc_sample(self->config.rlcc, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->actual_values.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
+        }else{ // if not, use FOC
         if (self->config.nonlinear_machine)
         {
             uz_3ph_dq_t flux_approx = uz_approximate_flux_step(self->approximate_flux_instance, self->actual_values.i_dq_in_A);
@@ -270,8 +277,10 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
             uz_CurrentControl_set_Kp_id(self->current_controller, K_p_id);
             uz_CurrentControl_set_Kp_iq(self->current_controller, K_p_iq);
         }
-
         self->reference_values.v_dq_in_V = uz_CurrentControl_sample(self->current_controller, self->reference_values.i_dq_in_A, self->actual_values.i_dq_in_A, self->actual_values.v_dc_in_V, self->actual_values.omega_el_rad_per_sec);
+        }
+
+
         self->reference_values.duty_cycle = uz_Space_Vector_Modulation(self->reference_values.v_dq_in_V, self->actual_values.v_dc_in_V, self->actual_values.theta_el_advanced);
     }
     else

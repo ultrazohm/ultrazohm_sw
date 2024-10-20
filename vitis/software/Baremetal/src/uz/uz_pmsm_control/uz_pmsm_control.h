@@ -8,6 +8,7 @@
 #include "../uz_setpoint/uz_setpoint.h"
 #include "../uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
 #include "../uz_signals/uz_signals.h"
+#include "../uz_rlcc/uz_rlcc.h"
 
 typedef struct uz_pmsm_control_t uz_pmsm_control_t;
 
@@ -46,6 +47,8 @@ struct uz_pmsm_control_configuration_t
     bool enable_field_weakening;
     float relative_torque_tolerance;
     bool nonlinear_machine;
+    bool use_rlcc;
+    uz_rlcc_t *rlcc;
     struct uz_DutyCycle_t default_duty_cycle; // returned duty cycle if control is not enabled
 };
 

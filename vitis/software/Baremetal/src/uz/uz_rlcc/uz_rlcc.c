@@ -8,6 +8,8 @@
 
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_CurrentControl/uz_space_vector_limitation.h"
+#include "../IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
+#include "../uz_nn/uz_nn_activation_functions.h"
 
 #define MAX_NUMBER_OF_OBSERVATIONS 9U
 
@@ -26,6 +28,10 @@ struct uz_rlcc_t
     uz_3ph_dq_t v_dq_out_before_limitation;
     uz_3ph_dq_t v_dq_out_limited;
     float observation[MAX_NUMBER_OF_OBSERVATIONS];
+    uz_mlp_three_layer_ip_t* mlp_ip_core;
+    float ipcore_out_array[2];
+    uz_matrix_t *ipcore_out_pointer;
+    struct uz_matrix_t ipcore_out_matrix_t;
 };
 
 static uint32_t instance_counter = 0U;
@@ -63,11 +69,23 @@ uz_rlcc_t *uz_rlcc_init(struct uz_rlcc_config_t config, struct uz_nn_layer_confi
     self->v_dq_out_before_limitation.q = 0.0f;
     self->v_dq_out_limited.q = 0.0f;
     self->config = config;
+
+    if(self->config.use_ip_core){
+        uz_assert_not_zero_uint32(self->config.base_address);
+        struct uz_mlp_three_layer_ip_config_t mlp_ip_config = {
+            .base_address = self->config.base_address,
+            .use_axi_input = true,
+            .software_network = self->software_nn};
+        self->mlp_ip_core = uz_mlp_three_layer_ip_init(mlp_ip_config);
+        self->ipcore_out_pointer = uz_matrix_init(&self->ipcore_out_matrix_t, self->ipcore_out_array, UZ_MATRIX_SIZE(self->ipcore_out_array), 1U, UZ_MATRIX_SIZE(self->ipcore_out_array));
+    }
+
     return (self);
 }
 
-void uz_rlc_reset(uz_rlcc_t *self)
+void uz_rlcc_reset(uz_rlcc_t *self)
 {
+    uz_assert(self->is_ready);
     self->i_dq_integrated_error_A.d = 0.0f;
     self->i_dq_error_A.d = 0.0f;
     self->v_dq_k_minus_one_V.d = 0.0f;
@@ -110,7 +128,7 @@ uz_3ph_dq_t uz_rlcc_sample(uz_rlcc_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3
         self->observation[3] = self->v_dq_k_minus_one_V.q * self->config.voltage_scaling;
         self->observation[4] = i_reference_Ampere.d * self->config.current_scaling_1_by_norminal;
         self->observation[5] = i_reference_Ampere.q * self->config.current_scaling_1_by_norminal;
-        self->observation[6] = omega_el_rad_per_sec * self->config.speed_scaling_1_by_norminal;
+        self->observation[6] = omega_el_rad_per_sec * self->config.speed_scaling_1_by_norminal_omega_el;
         for (uint32_t i = 0; i < self->config.number_of_observations; i++)
         {
             uz_matrix_set_element_zero_based(self->nn_input_matrix, self->observation[i], 0U, i);
@@ -123,7 +141,7 @@ uz_3ph_dq_t uz_rlcc_sample(uz_rlcc_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3
         self->observation[3] = self->i_dq_integrated_error_A.q / self->config.ts_in_second;
         self->observation[4] = i_reference_Ampere.d * self->config.current_scaling_1_by_norminal;
         self->observation[5] = i_reference_Ampere.q * self->config.current_scaling_1_by_norminal;
-        self->observation[6] = omega_el_rad_per_sec * self->config.speed_scaling_1_by_norminal; // Global_Data.av.mechanicalRotorSpeed_filtered_hoerner * speed_weight_hoerner;
+        self->observation[6] = omega_el_rad_per_sec * self->config.speed_scaling_1_by_norminal_omega_el; // Global_Data.av.mechanicalRotorSpeed_filtered_hoerner * speed_weight_hoerner;
         self->observation[7] = self->v_dq_k_minus_one_V.d * self->config.voltage_scaling;
         self->observation[8] = self->v_dq_k_minus_one_V.q * self->config.voltage_scaling;
         for (uint32_t i = 0; i < self->config.number_of_observations; i++)
@@ -136,11 +154,19 @@ uz_3ph_dq_t uz_rlcc_sample(uz_rlcc_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3
         break;
     }
 
-    uz_nn_ff(self->software_nn, self->nn_input_matrix);
-    self->nn_output_matrix = uz_nn_get_output_data(self->software_nn);
-    uz_matrix_multiply_by_scalar(self->nn_output_matrix, self->config.voltage_output_scaling); // scaling layer of nn
-    self->v_dq_out_before_limitation.d = uz_matrix_get_element_zero_based(self->nn_output_matrix, 0U, 0U);
-    self->v_dq_out_before_limitation.q = uz_matrix_get_element_zero_based(self->nn_output_matrix, 0U, 1U);
+    if(self->config.use_ip_core){
+        uz_mlp_three_layer_ff_blocking(self->mlp_ip_core, self->nn_input_matrix, self->ipcore_out_pointer);
+        // IP-Core only calculates with linear, tanh has to be added manually
+        self->v_dq_out_before_limitation.d = (uz_nn_activation_function_tanh(self->ipcore_out_array[0])) * self->config.voltage_output_scaling;
+        self->v_dq_out_before_limitation.q = (uz_nn_activation_function_tanh(self->ipcore_out_array[1])) * self->config.voltage_output_scaling;
+    }else{
+        uz_nn_ff(self->software_nn, self->nn_input_matrix);
+        self->nn_output_matrix = uz_nn_get_output_data(self->software_nn);
+        uz_matrix_multiply_by_scalar(self->nn_output_matrix, self->config.voltage_output_scaling); // scaling layer of nn
+        self->v_dq_out_before_limitation.d = uz_matrix_get_element_zero_based(self->nn_output_matrix, 0U, 0U);
+        self->v_dq_out_before_limitation.q = uz_matrix_get_element_zero_based(self->nn_output_matrix, 0U, 1U);
+    }
+
     self->v_dq_out_limited = uz_CurrentControl_SpaceVector_Limitation(self->v_dq_out_before_limitation, V_dc_volts, self->config.max_modulation_index, omega_el_rad_per_sec, i_reference_Ampere, &self->clamping);
     self->v_dq_k_minus_one_V = self->v_dq_out_limited;
     return self->v_dq_out_limited;

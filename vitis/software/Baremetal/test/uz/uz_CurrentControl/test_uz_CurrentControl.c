@@ -10,6 +10,7 @@
 #include "mock_uz_static_nonlinear_decoupling.h"
 #include "uz_space_vector_limitation.h"
 #include <math.h>
+TEST_FILE(uz_static_nonlinear_decoupling.c)
 
 struct uz_CurrentControl_config config = {0};
 uz_3ph_dq_t i_actual_Ampere = {0};

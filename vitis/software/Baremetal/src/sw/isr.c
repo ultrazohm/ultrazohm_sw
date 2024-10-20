@@ -110,8 +110,8 @@ void all_measurements(void);
 
 struct uz_pmsm_measurement_values d1_measurements = {0};
 struct uz_pmsm_measurement_values d2_measurements = {0};
-const int machine_on_d1 = D2_MACHINE; // 1: beckhoff, 2:buehler
-const int machine_on_d2 = D2_MACHINE; // 3: hoerner, 4: brose, 5:ebm // always the same anyway
+const int machine_on_d1 = D1_MACHINE; //EBM, Brose, Hoerner
+const int machine_on_d2 = D2_MACHINE; // HEIDRIVE, BUEHLER, BECKHOFF
 
 bool enable_d1_controller = false;
 bool enable_d2_controller = false;
@@ -164,7 +164,7 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, true, true, true);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2, true, true, true);
     }
-
+//
     if (current_state == control_state)
     {
         enable_d1_controller = true;
@@ -245,7 +245,7 @@ void all_measurements(void)
     d2_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A2.me.ADC_A3;
     d2_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A2.me.ADC_A2;
 
-    switch (machine_on_d1)
+    switch (machine_on_d2)
     {
     case BECKHOFF:
         d2_measurements.omega_mech_rad_per_sec = Global_Data.av.Resolver_outputs.omega_mech_rad_s;

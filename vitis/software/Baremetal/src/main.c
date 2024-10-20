@@ -147,7 +147,7 @@ int main(void)
                 break;
     }
 
-            init_beckhoff_on_d2();
+//            init_beckhoff_on_d2();
 
 
 			Global_Data.objects.tracking_error_filter_prime_mover=uz_signals_IIR_Filter_init(tracking_error_filter_prime_mover_config);

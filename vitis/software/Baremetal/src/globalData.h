@@ -141,6 +141,7 @@ typedef struct controller_data
 	struct uz_pmsm_actual_data *actual_data;
 	struct uz_pmsm_measurement_values *measurement_values;
 	struct uz_pmsm_reference_values *reference_values;
+	float torque_constant;
 } controller_data;
 
 typedef struct javascope_global
@@ -173,6 +174,7 @@ typedef struct _DS_Data_
 	object_pointers_t objects;
 	controller_data dut;
 	controller_data prime_mover;
+	float noise_added_torque;
 	float prime_mover_reference_speed_in_rpm;
 	float M_meas_Nm;
 	bool d1_operating_region_violation;

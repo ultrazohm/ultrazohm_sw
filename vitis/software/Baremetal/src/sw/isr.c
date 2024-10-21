@@ -32,6 +32,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../IP_Cores/uz_mlp_three_layer/uz_mlp_three_layer.h"
 #include "../uz/uz_pmsm_control/uz_pmsm_control.h"
+#include "../uz/uz_array/uz_array.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -58,9 +59,8 @@ float iq_setpoints[22] = {
 #include "iq_setpoints.csv"
 };
 
-#define NUMBER_OF_SETPOINTS 2U
-// float speed_setpoints[NUMBER_OF_SETPOINTS] = {-100, -200, -300, -500, -600, -700, -900, -1000};
-float speed_setpoints[NUMBER_OF_SETPOINTS] = {-100, -200};
+// float speed_setpoints[] = {-100, -200, -300, -500, -600, -700, -900, -1000};
+float speed_setpoints[] = {-100, -200};
 
 extern float PMSM_rated_current_hoerner;
 extern bool select_misalignment;
@@ -105,6 +105,8 @@ bool enable_d1_controller = false;
 bool enable_d2_controller = false;
 float d1_reference_speed_in_rpm = 0.0f;
 float d2_reference_speed_in_rpm = 0.0f;
+float d1_added_noise = 0.0f;
+float d2_added_noise = 0.0f;
 uz_3ph_dq_t d1_reference_currents_in_A = {0.0f};
 uz_3ph_dq_t d2_reference_currents_in_A = {0.0f};
 bool manual_dutycycle_d2 = false;
@@ -178,6 +180,9 @@ void ISR_Control(void *data)
         d2_reference_currents_in_A.d = Global_Data.dut_reference_currents_in_A.d;
         d2_reference_currents_in_A.q = Global_Data.dut_reference_currents_in_A.q;
         d2_reference_speed_in_rpm = 0.0f;
+        d1_added_noise=0.0f;
+        d2_added_noise=0.0f;
+       // d1_added_noise=Global_Data.dut.torque_constant*d2_reference_currents_in_A.q;
     }
     else
     {
@@ -187,10 +192,13 @@ void ISR_Control(void *data)
         d2_reference_currents_in_A.d = 0.0f;
         d2_reference_currents_in_A.q = 0.0f;
         d2_reference_speed_in_rpm = Global_Data.prime_mover_reference_speed_in_rpm;
+        d1_added_noise = 0.0f;
+        d2_added_noise = 0.0f;
+        // d2_added_noise=Global_Data.dut.torque_constant*d1_reference_currents_in_A.q;
     }
 
-    struct uz_DutyCycle_t duty_d1 = uz_pmsm_controller_sample(Global_Data.objects.d1_controller, d1_measurements, d1_reference_speed_in_rpm, d1_reference_currents_in_A, 0.0f);
-    struct uz_DutyCycle_t duty_d2 = uz_pmsm_controller_sample(Global_Data.objects.d2_controller, d2_measurements, d2_reference_speed_in_rpm, d2_reference_currents_in_A, 0.0f);
+    struct uz_DutyCycle_t duty_d1 = uz_pmsm_controller_sample(Global_Data.objects.d1_controller, d1_measurements, d1_reference_speed_in_rpm, d1_reference_currents_in_A, d1_added_noise);
+    struct uz_DutyCycle_t duty_d2 = uz_pmsm_controller_sample(Global_Data.objects.d2_controller, d2_measurements, d2_reference_speed_in_rpm, d2_reference_currents_in_A, d2_added_noise);
 
     Global_Data.d1_operating_region_violation = uz_pmsm_controller_get_safe_operating_area_violation(Global_Data.objects.d1_controller);
     Global_Data.d2_operating_region_violation = uz_pmsm_controller_get_safe_operating_area_violation(Global_Data.objects.d2_controller);
@@ -218,11 +226,6 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d2, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     JavaScope_update(&Global_Data);
-
-    // Reset DDPG
-    // ext_clamping_hoerner = false;
-    // i_dq_integrated_error_Amps_hoerner.d = 0.0f;
-    // i_dq_integrated_error_Amps_hoerner.q = 0.0f;
 
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
@@ -317,7 +320,7 @@ void automatic_profile(void)
             {
                 old_uptime = current_uptime;
 
-                if (Global_Data.profile.setpoint_index < 21)
+                if (Global_Data.profile.setpoint_index < (UZ_ARRAY_SIZE(id_setpoints)-1U)) 
                 {
                     Global_Data.profile.setpoint_index++;
                 }
@@ -335,7 +338,7 @@ void automatic_profile(void)
                     Global_Data.profile.start_angle_found = false;
                     Global_Data.profile.wait_for_n_ref = true;
                     Global_Data.profile.change_speed = false;
-                    if (Global_Data.profile.n_ref_setpoint_index < (NUMBER_OF_SETPOINTS-1U))
+                    if (Global_Data.profile.n_ref_setpoint_index < (UZ_ARRAY_SIZE(speed_setpoints)-1U))
                     {
                         Global_Data.profile.n_ref_setpoint_index++;
                     }

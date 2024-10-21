@@ -69,5 +69,6 @@ void init_ebm_on_d1(void)
         Global_Data.dut.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d1_controller);
         Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
         Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
+        Global_Data.dut.torque_constant=3.0f/2.0f*config_PMSM_ebm.polePairs*config_PMSM_ebm.Psi_PM_Vs;
     }
 }

@@ -71,5 +71,6 @@ void init_buehler_on_d2(void)
         Global_Data.dut.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);
         Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
         Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
+        Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_buehler.polePairs * config_PMSM_buehler.Psi_PM_Vs;
     }
 }

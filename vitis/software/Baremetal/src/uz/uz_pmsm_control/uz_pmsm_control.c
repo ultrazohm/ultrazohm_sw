@@ -23,6 +23,7 @@ struct uz_pmsm_control_t
     uz_SetPoint_t *setpoint_module;
     uz_dq_setpoint_filter *setpoint_filter_i_dq;
     uz_IIR_Filter_t *setpoint_filter_speed;
+    uz_IIR_Filter_t *speed_filter;
     uz_CurrentControl_Kp_id_adjustment_t *Kp_id_adjustment_instance;
     uz_CurrentControl_Kp_iq_adjustment_t *Kp_iq_adjustment_instance;
     uz_approximate_flux_t *approximate_flux_instance;
@@ -87,6 +88,17 @@ uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t c
     self->current_controller = uz_CurrentControl_init(current_controller_configuration);
     self->speed_controller = uz_SpeedControl_init(speed_controller_configuration);
     self->setpoint_module = uz_SetPoint_init(setpoint_configuration);
+
+    if (config.speed_actual_value_filter_cutoff_frequency != 0.0f)
+    {
+        struct uz_IIR_Filter_config speed_filter_config = {
+            .selection = LowPass_first_order,
+            .cutoff_frequency_Hz = config.speed_actual_value_filter_cutoff_frequency,
+            .damping = 0,
+            .pass_frequency_Hz = 0,
+            .sample_frequency_Hz = 1.0f / config.sample_time};
+        self->speed_filter = uz_signals_IIR_Filter_init(speed_filter_config);
+    }
 
     // Filter config
     if (config.setpoint_filter_i_dq_cutoff_frequency != 0.0f)
@@ -228,14 +240,20 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
     reference_currents.q = uz_signals_saturation(reference_currents.q, self->config.setpoint_upper_bound_i_q_in_A, self->config.setpoint_lower_bound_i_q_in_A);
     disturbance_input_in_Nm = uz_signals_saturation(disturbance_input_in_Nm, self->config.disturbance_input_upper_bound_in_Nm, self->config.disturbance_input_lower_bound_in_Nm);
 
+    if (self->config.speed_actual_value_filter_cutoff_frequency != 0.0f)
+    {
+        measurements.omega_mech_rad_per_sec = uz_signals_IIR_Filter_sample(self->speed_filter, measurements.omega_mech_rad_per_sec);
+    }
+
     self->measurement = measurements;
     uz_pmsm_controller_measured_to_actual_values(self);
     uz_pmsm_controller_check_safe_operating_region(self);
-    // n_ref_rpm_heidrive_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_setpoint_filter_heidrive, n_ref_rpm_heidrive);
-    if (self->config.setpoint_filter_speed_cutoff_frequency != 0.0f)
-    {
-        self->reference_values.speed_in_rpm = uz_signals_IIR_Filter_sample(self->setpoint_filter_speed, self->reference_values.speed_in_rpm);
-    }
+
+
+        if (self->config.setpoint_filter_speed_cutoff_frequency != 0.0f)
+        {
+            self->reference_values.speed_in_rpm = uz_signals_IIR_Filter_sample(self->setpoint_filter_speed, self->reference_values.speed_in_rpm);
+        }
     if (self->enable && (!self->safe_operating_region_violation))
     {
         if (self->config.enable_speed_control)

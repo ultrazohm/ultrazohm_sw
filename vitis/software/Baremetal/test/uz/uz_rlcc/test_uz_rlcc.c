@@ -10,6 +10,8 @@
 #include "mock_uz_space_vector_limitation.h"
 #include "mock_uz_mlp_three_layer.h"
 #include "uz_nn_activation_functions.h"
+#include "uz_math_constants.h"
+
 
 void setUp(void)
 {
@@ -50,12 +52,11 @@ struct uz_nn_layer_config config_nn[2] = {
 // Hoerner machine
 struct uz_rlcc_config_t config = {
     .ts_in_second = 1.0f / 10000.0f,
-    .current_scaling_1_by_norminal = 1.0f / 15.0f,
-    .speed_scaling_1_by_norminal_omega_el = 1.0f / (1500.0f / 60.0f * 2 * M_PI),
-    .voltage_scaling = 1.0f / (48.0f / 1.732050808f),
     .number_of_observations = 9, // 9
-    .voltage_output_scaling = 48.0f / 1.732050808f,
     .max_modulation_index = 1.0f / 1.732050808f,
+    .v_dc_rated_V=48.0f,
+    .i_rated_A=15.0f,
+    .speed_rated_rpm=1500.0f,
     .use_ip_core=false};
 
 void test_uz_rlcc_NeedToImplement(void)

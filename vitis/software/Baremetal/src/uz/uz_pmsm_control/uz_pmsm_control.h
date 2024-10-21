@@ -42,6 +42,7 @@ struct uz_pmsm_control_configuration_t
     float disturbance_input_upper_bound_in_Nm;
     float setpoint_filter_i_dq_cutoff_frequency;  // Do not use setpoint filter if 0
     float setpoint_filter_speed_cutoff_frequency; // Do not use setpoint filter if 0
+    float speed_actual_value_filter_cutoff_frequency; // Do not use filter if 0
     enum uz_CurrentControl_decoupling_select decoupling_method;
     enum uz_Setpoint_motor_type motor_type;
     bool enable_field_weakening;

@@ -38,6 +38,8 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
     .nonlinear_machine = false,
+    .speed_actual_value_filter_cutoff_frequency = 0.0f,
+    .use_rlcc = false,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 

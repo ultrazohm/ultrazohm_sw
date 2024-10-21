@@ -175,6 +175,8 @@ typedef struct _DS_Data_
 	controller_data prime_mover;
 	float prime_mover_reference_speed_in_rpm;
 	float M_meas_Nm;
+	bool d1_operating_region_violation;
+	bool d2_operating_region_violation;
 	uz_3ph_dq_t dut_reference_currents_in_A;
 	javascope_global javascope;
 	auto_profile profile;

@@ -40,6 +40,8 @@ bool select_misalignment = false;
 bool select_DDPG = false;
 bool select_FOC = false;
 
+float test=0.0f;
+
 extern float theta_el_offset_hoerner;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -203,16 +205,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 
-		case (gui_prime_mover_speed):
-				Global_Data.javascope.prime_mover_reference_speed_in_rpm=value;
+		case (Set_Send_Field_1):
+				data->javascope.prime_mover_reference_speed_in_rpm=value;
+		//test=value;
+					break;
+
+		case (Set_Send_Field_2):
+			data->javascope.dut_reference_currents_in_A.d=value;
 			break;
 
-		case (gui_dut_d_current):
-			Global_Data.javascope.dut_reference_currents_in_A.d=value;
-			break;
-
-		case (gui_dut_q_current):
-			Global_Data.javascope.dut_reference_currents_in_A.q = value;
+		case (Set_Send_Field_3):
+			data->javascope.dut_reference_currents_in_A.q = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -222,7 +225,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_5):
 	//	i_dqn_ref_5th_Amps_hoerner.q = value;
-
+		test=value;
 			break;
 
 		case (Set_Send_Field_6):
@@ -291,7 +294,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			ultrazohm_state_machine_set_userLED(false);
 			break;
 
 		case (My_Button_3):

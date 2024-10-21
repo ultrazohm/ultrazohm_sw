@@ -122,6 +122,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ddpg_obs_9]=&observation_ip[8];
 	js_ch_observable[JSO_torque_measured_Nm]=&data->M_meas_Nm;
 	js_ch_observable[JSO_pm_speed_filtered]=&data->av.mechanicalRotorSpeed_filtered_prime_mover;
+	js_ch_observable[JSO_debug_speed_d5_1_filtered] = &data->av.d5_1_n_rpm_filtered;
+	js_ch_observable[JSO_debug_speed_d5_1] = &data->av.d5_1_n_rpm;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

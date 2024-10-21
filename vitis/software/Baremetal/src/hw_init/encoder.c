@@ -24,7 +24,7 @@
 // INITIALIZE & SET THE ENCODER
 //----------------------------------------------------
 
-#define OMEGA_PER_OVER_SAMPLE_RPM 500.0f
+#define OMEGA_PER_OVER_SAMPLE_RPM 5000.0f
 #define IncEncoderLPF_freq 100.0f
 
 uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5_1(float incrementalEncoderResolution, float motorPolePairNumber){
@@ -69,6 +69,7 @@ uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5_3(float inc
 	return(uz_incrementalEncoder_init(encoder_D5_config_3));
 }
 
+
 void update_speed_and_position_of_encoder_on_D5_1(DS_Data* const data){	// update speed and position in global data struct
 	data->av.d5_1_theta_el=uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5_1);
 	data->av.d5_1_omega_mech_rad_per_sec = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D5_1);
@@ -77,8 +78,9 @@ void update_speed_and_position_of_encoder_on_D5_1(DS_Data* const data){	// updat
 	//low-pass filter of mechanical speed
 	static float speed_lpf_mem_in = 0.0f;
 	static float speed_lpf_mem_out = 0.0f;
-	data->av.d5_1_n_rpm_filtered = LPF1(	data->av.d5_1_omega_mech_rad_per_sec, &speed_lpf_mem_in, &speed_lpf_mem_out,
-			1.0f/data->av.isr_samplerate_s, IncEncoderLPF_freq);
+
+	// data->av.d5_1_n_rpm_filtered = data->av.d5_1_n_rpm;
+	data->av.d5_1_n_rpm_filtered = LPF1(	data->av.d5_1_omega_mech_rad_per_sec, &speed_lpf_mem_in, &speed_lpf_mem_out,1.0f/data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }
 

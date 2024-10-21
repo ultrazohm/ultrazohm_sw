@@ -58,12 +58,12 @@ float iq_setpoints[22] = {
 #include "iq_setpoints.csv"
 };
 
-float speed_setpoints[8] = {-100, -200, -300, -500, -600, -700, -900, -1000};
+#define NUMBER_OF_SETPOINTS 2U
+// float speed_setpoints[NUMBER_OF_SETPOINTS] = {-100, -200, -300, -500, -600, -700, -900, -1000};
+float speed_setpoints[NUMBER_OF_SETPOINTS] = {-100, -200};
 
 extern float PMSM_rated_current_hoerner;
 extern bool select_misalignment;
-
-extern uz_3ph_dq_t i_dq_ref_java_Amps_hoerner;
 
 uint32_t Fehlerfall = 0U;
 
@@ -74,17 +74,6 @@ float observation_ip[9U] = {0};
 #define NUMBER_OF_INPUTS_7N 7U
 #define NUMBER_OF_INPUTS_9N 9U
 uz_matrix_t *matrix_output;
-uz_3ph_dq_t i_dq_integrated_error_Amps_hoerner = {0};
-uz_3ph_dq_t i_dq_error_Amps_hoerner = {0};
-float ts = 1.0f / UZ_PWM_FREQUENCY;
-float speed_weight_hoerner = 1.0f / 1500.0f;
-uz_3ph_dq_t v_dq_non_limited_Volts_hoerner = {0};
-uz_3ph_dq_t v_dq_limited_Volts_hoerner = {0};
-uz_3ph_dq_t v_dq_limited_Volts_old_old_hoerner = {0};
-float U_max_hoerner = 48.0f / 1.732050808f;
-float Voltage_Scaling_hoerner = 1.0f / (48.0f / 1.732050808f);
-bool ext_clamping_hoerner = false;
-float max_modulation_index_hoerner = 1.0f / 1.732050808f;
 float theta_el_old_hoerner = 0.0f;
 
 #define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
@@ -104,13 +93,12 @@ extern uz_mlp_three_layer_ip_t *mlp_ip_instance;
 //----------------------------------------------------
 static void ReadAllADC();
 static void check_inverter_errors(void);
-static void ddpg(void);
 void automatic_profile(void);
 void all_measurements(void);
 
 struct uz_pmsm_measurement_values d1_measurements = {0};
 struct uz_pmsm_measurement_values d2_measurements = {0};
-const int machine_on_d1 = D1_MACHINE; //EBM, Brose, Hoerner
+const int machine_on_d1 = D1_MACHINE; // EBM, Brose, Hoerner
 const int machine_on_d2 = D2_MACHINE; // HEIDRIVE, BUEHLER, BECKHOFF
 
 bool enable_d1_controller = false;
@@ -121,7 +109,7 @@ uz_3ph_dq_t d1_reference_currents_in_A = {0.0f};
 uz_3ph_dq_t d2_reference_currents_in_A = {0.0f};
 bool manual_dutycycle_d2 = false;
 bool manual_dutycycle_d1 = false;
-bool reference_source_javascope = true;
+bool reference_source_javascope = false;
 
 void ISR_Control(void *data)
 {
@@ -164,7 +152,7 @@ void ISR_Control(void *data)
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, true, true, true);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2, true, true, true);
     }
-//
+    //
     if (current_state == control_state)
     {
         enable_d1_controller = true;
@@ -203,6 +191,17 @@ void ISR_Control(void *data)
 
     struct uz_DutyCycle_t duty_d1 = uz_pmsm_controller_sample(Global_Data.objects.d1_controller, d1_measurements, d1_reference_speed_in_rpm, d1_reference_currents_in_A, 0.0f);
     struct uz_DutyCycle_t duty_d2 = uz_pmsm_controller_sample(Global_Data.objects.d2_controller, d2_measurements, d2_reference_speed_in_rpm, d2_reference_currents_in_A, 0.0f);
+
+    Global_Data.d1_operating_region_violation = uz_pmsm_controller_get_safe_operating_area_violation(Global_Data.objects.d1_controller);
+    Global_Data.d2_operating_region_violation = uz_pmsm_controller_get_safe_operating_area_violation(Global_Data.objects.d2_controller);
+
+    // What to do if operating region is violated? Hard stop? All tristate? Or just control all controllable quantities to 0?
+    // Currently, enable is stopped so hardstop it is
+    if (Global_Data.d1_operating_region_violation || Global_Data.d2_operating_region_violation)
+    {
+        ultrazohm_state_machine_set_error(true);
+        ultrazohm_state_machine_set_userLED(true);
+    }
 
     if (!manual_dutycycle_d2)
     {
@@ -252,11 +251,19 @@ void all_measurements(void)
         d2_measurements.theta_mech = Global_Data.av.Resolver_outputs.position_el_2pi;
         break;
     case BUEHLER:
-        d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_3_omega_mech_rad_per_sec;
+        if (fabsf(Global_Data.av.d5_3_omega_mech_rad_per_sec - d2_measurements.omega_mech_rad_per_sec) < 50.0f)
+        {
+            d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_3_omega_mech_rad_per_sec;
+        }
+        // d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_3_omega_mech_rad_per_sec;
         d2_measurements.theta_mech = Global_Data.av.d5_3_theta_el;
         break;
     case HEIDRIVE:
-        d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_2_omega_mech_rad_per_sec;
+        if (fabsf(Global_Data.av.d5_2_omega_mech_rad_per_sec - d2_measurements.omega_mech_rad_per_sec) < 50.0f)
+        {
+            d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_2_omega_mech_rad_per_sec;
+        }
+       // d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_2_omega_mech_rad_per_sec;
         d2_measurements.theta_mech = Global_Data.av.d5_2_theta_el;
         break;
     default:
@@ -269,10 +276,12 @@ void all_measurements(void)
     d1_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_A4;
     d1_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_A3;
     d1_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_A2;
-    d1_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_1_omega_mech_rad_per_sec;
+    if (fabsf(Global_Data.av.d5_1_omega_mech_rad_per_sec - d1_measurements.omega_mech_rad_per_sec) < 50.0f)
+    { // only accept new values if the difference between two time steps is below 500
+        d1_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_1_omega_mech_rad_per_sec;
+    }
+    //  d1_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_1_n_rpm_filtered;
     d1_measurements.theta_mech = Global_Data.av.d5_1_theta_el;
-
-
 
     Global_Data.M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f; // - 0.02f;
 }
@@ -300,7 +309,7 @@ void automatic_profile(void)
         if (Global_Data.profile.start_angle_found)
         {
             Global_Data.profile.dut_reference_currents_in_A.d = id_setpoints[Global_Data.profile.setpoint_index];
-            Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index] * PMSM_rated_current_hoerner;
+            Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index]; // * PMSM_rated_current_hoerner;
 
             // step throught the array
             uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
@@ -326,7 +335,7 @@ void automatic_profile(void)
                     Global_Data.profile.start_angle_found = false;
                     Global_Data.profile.wait_for_n_ref = true;
                     Global_Data.profile.change_speed = false;
-                    if (Global_Data.profile.n_ref_setpoint_index < 7U)
+                    if (Global_Data.profile.n_ref_setpoint_index < (NUMBER_OF_SETPOINTS-1U))
                     {
                         Global_Data.profile.n_ref_setpoint_index++;
                     }
@@ -514,78 +523,7 @@ int Initialize_ISR()
     return Status;
 }
 
-void ddpg()
-{
 
-    //        if (ext_clamping_hoerner == false)
-    //        {
-    //            i_dq_integrated_error_Amps_hoerner.d = (i_dq_integrated_error_Amps_hoerner.d + (i_dq_error_Amps_hoerner.d * ts)); // use Forward-Euler with error of previous timestep for integration
-    //            i_dq_integrated_error_Amps_hoerner.q = (i_dq_integrated_error_Amps_hoerner.q + (i_dq_error_Amps_hoerner.q * ts));
-    //        }
-    //        else
-    //        {
-    //            i_dq_integrated_error_Amps_hoerner.d += 0.0f;
-    //            i_dq_integrated_error_Amps_hoerner.q += 0.0f;
-    //        }
-    //        i_dq_error_Amps_hoerner.d = (i_dq_ref_Amps_hoerner.d - i_dq_Amps_hoerner.d) / PMSM_rated_current_hoerner;
-    //        i_dq_error_Amps_hoerner.q = (i_dq_ref_Amps_hoerner.q - i_dq_Amps_hoerner.q) / PMSM_rated_current_hoerner;
-    //
-    // #if ((NN_9_INPUT_1_64) || (NN_9_INPUT_3_64)) == 1
-    //
-    //        observation_ip[0] = i_dq_error_Amps_hoerner.d;
-    //        observation_ip[1] = i_dq_integrated_error_Amps_hoerner.d * UZ_PWM_FREQUENCY;
-    //        observation_ip[2] = i_dq_error_Amps_hoerner.q;
-    //        observation_ip[3] = i_dq_integrated_error_Amps_hoerner.q * UZ_PWM_FREQUENCY;
-    //        observation_ip[4] = i_dq_Amps_hoerner.d / PMSM_rated_current_hoerner;
-    //        observation_ip[5] = i_dq_Amps_hoerner.q / PMSM_rated_current_hoerner;
-    //        observation_ip[6] = -1.0f * n_ref_rpm_beckhoff * speed_weight_hoerner; // Global_Data.av.mechanicalRotorSpeed_filtered_hoerner * speed_weight_hoerner;
-    //        observation_ip[7] = v_dq_limited_Volts_old_old_hoerner.d * Voltage_Scaling_hoerner;
-    //        observation_ip[8] = v_dq_limited_Volts_old_old_hoerner.q * Voltage_Scaling_hoerner;
-    //        for (uint32_t i = 0; i < NUMBER_OF_INPUTS_9N; i++)
-    //        {
-    //            uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input, observation_ip[i], 0U, i);
-    //        }
-    // #elif NN_7_INPUT_1_64 == 1
-    //        observation_ip[0] = i_dq_error_Amps_hoerner.d;
-    //        observation_ip[1] = v_dq_limited_Volts_old_old_hoerner.d * Voltage_Scaling_hoerner;
-    //        observation_ip[2] = i_dq_error_Amps_hoerner.q;
-    //        observation_ip[3] = v_dq_limited_Volts_old_old_hoerner.q * Voltage_Scaling_hoerner;
-    //        observation_ip[4] = i_dq_Amps_hoerner.d / PMSM_rated_current_hoerner;
-    //        observation_ip[5] = i_dq_Amps_hoerner.q / PMSM_rated_current_hoerner;
-    //        observation_ip[6] = Global_Data.av.mechanicalRotorSpeed_filtered_hoerner * speed_weight_hoerner;
-    //        for (uint32_t i = 0; i < NUMBER_OF_INPUTS_7N; i++)
-    //        {
-    //            uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input, observation_ip[i], 0U, i);
-    //        }
-    // #endif
-    //
-    // #if NN_9_INPUT_3_64 == 1
-    //        uz_mlp_three_layer_ff_blocking(mlp_ip_instance, Global_Data.objects.matrix_input, p_output_data);
-    //        // IP-Core only calculates with linear, tanh has to be added manually
-    //        v_dq_non_limited_Volts_hoerner.d = (uz_nn_activation_function_tanh(mlp_ip_output[0])) * U_max_hoerner;
-    //        v_dq_non_limited_Volts_hoerner.q = (uz_nn_activation_function_tanh(mlp_ip_output[1])) * U_max_hoerner;
-    // #else
-    //        uz_nn_ff(Global_Data.objects.nn_layer, Global_Data.objects.matrix_input);
-    //        matrix_output = uz_nn_get_output_data(Global_Data.objects.nn_layer);
-    //        uz_matrix_multiply_by_scalar(matrix_output, U_max_hoerner); // scaling layer of nn
-    //        v_dq_non_limited_Volts_hoerner.d = uz_matrix_get_element_zero_based(matrix_output, 0U, 0U);
-    //        v_dq_non_limited_Volts_hoerner.q = uz_matrix_get_element_zero_based(matrix_output, 0U, 1U);
-    // #endif
-    //        v_dq_limited_Volts_hoerner = uz_CurrentControl_SpaceVector_Limitation(v_dq_non_limited_Volts_hoerner, v_DC_Volts_hoerner, max_modulation_index_hoerner, omega_el_rad_per_sec_hoerner, i_dq_ref_Amps_hoerner, &ext_clamping_hoerner);
-    //        // Introduce delay
-    //        v_dq_limited_Volts_old_old_hoerner = v_dq_limited_Volts_hoerner;
-    //        duty_cycle_hoerner = uz_Space_Vector_Modulation(v_dq_limited_Volts_hoerner, v_DC_Volts_hoerner, theta_el_rad_hoerner_advanced);
-    //    }
-    //
-    //    {
-    //        Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-    //        Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-    //        Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
-    //    }
-    //    Global_Data.rasv.halfBridge1DutyCycle = duty_cycle_hoerner.DutyCycle_A;
-    //    Global_Data.rasv.halfBridge2DutyCycle = duty_cycle_hoerner.DutyCycle_B;
-    //    Global_Data.rasv.halfBridge3DutyCycle = duty_cycle_hoerner.DutyCycle_C;
-}
 
 //==============================================================================================================================================================
 //----------------------------------------------------

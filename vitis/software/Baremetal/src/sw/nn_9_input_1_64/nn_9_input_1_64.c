@@ -11,21 +11,24 @@ extern DS_Data Global_Data;
 // config structs neural network
 // read in weights and bias from .csv
 // for 9 observations
+
+
+
 float x[NUMBER_OF_INPUTS] = {0};
 static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "ac_layer1_weights.csv"
+#include "../../experiments/e113_new_methodology_sigmoid_750k/best_agent/ac_layer1_weights.csv"
 };
 
 static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "ac_layer1_bias.csv"
+#include "../../experiments/e113_new_methodology_sigmoid_750k/best_agent/ac_layer1_bias.csv"
 };
 
 static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
-#include "ac_layer_out_weights.csv"
+#include "../../experiments/e113_new_methodology_sigmoid_750k/best_agent/ac_layer_out_weights.csv"
 };
 static float bias2[NUMBER_OF_OUTPUTS] = {
-#include "ac_layer_out_bias.csv"
+#include "../../experiments/e113_new_methodology_sigmoid_750k/best_agent/ac_layer_out_bias.csv"
 };
 
 static float output2[NUMBER_OF_OUTPUTS] = {0};

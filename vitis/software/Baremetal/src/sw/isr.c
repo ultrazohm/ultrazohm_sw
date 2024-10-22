@@ -60,7 +60,7 @@ float iq_setpoints[22] = {
 };
 
 // float speed_setpoints[] = {-100, -200, -300, -500, -600, -700, -900, -1000};
-float speed_setpoints[] = {-100, -200};
+float speed_setpoints[] = {-100, -200,-500,-1000};
 
 extern float PMSM_rated_current_hoerner;
 extern bool select_misalignment;
@@ -298,7 +298,7 @@ void all_measurements(void)
     {
     case BECKHOFF:
         d2_measurements.omega_mech_rad_per_sec = Global_Data.av.Resolver_outputs.omega_mech_rad_s;
-        d2_measurements.theta_mech = Global_Data.av.Resolver_outputs.position_el_2pi;
+        d2_measurements.theta_mech = Global_Data.av.Resolver_outputs.position_mech_2pi;
         break;
     case BUEHLER:
         if (fabsf(Global_Data.av.d5_3_omega_mech_rad_per_sec - d2_measurements.omega_mech_rad_per_sec) < 50.0f)

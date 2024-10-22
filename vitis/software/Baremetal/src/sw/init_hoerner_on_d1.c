@@ -29,17 +29,17 @@ struct uz_pmsm_control_configuration_t config_hoerner_controller = {
     .setpoint_lower_bound_speed_in_rpm = -1100.0f,
     .error_upper_bound_speed_in_rpm = 1500.0f,
     .error_lower_bound_speed_in_rpm = -1500.0f,
-    .disturbance_input_lower_bound_in_Nm = 0.0f, // disable disturbance input for now
-    .disturbance_input_upper_bound_in_Nm = 0.0f,
+    .disturbance_input_lower_bound_in_Nm = -10.0f,
+    .disturbance_input_upper_bound_in_Nm = 10.0f,
     .decoupling_method = static_nonlinear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
-    .setpoint_filter_speed_cutoff_frequency = 100.0f,
+    .setpoint_filter_speed_cutoff_frequency = PRIME_MOVER_SETPOINT_FILTER_CUTTOFF_FREQUENCY,
     .motor_type = IPMSM,
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
     .nonlinear_machine = true,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
-    .use_rlcc=false,
+    .use_rlcc = false,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 

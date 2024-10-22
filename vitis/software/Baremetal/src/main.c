@@ -149,8 +149,13 @@ int main(void)
 
 //            init_beckhoff_on_d2();
 
-
-			Global_Data.objects.tracking_error_filter_prime_mover=uz_signals_IIR_Filter_init(tracking_error_filter_prime_mover_config);
+    if (D1_IS_PRIME_MOVER)
+    {
+        Global_Data.dut_theta_offset=uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.d2_controller);
+    }else{
+        Global_Data.dut_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.d1_controller);
+    }
+            Global_Data.objects.tracking_error_filter_prime_mover=uz_signals_IIR_Filter_init(tracking_error_filter_prime_mover_config);
             nn_init();
         	initialization_chain = print_msg;
         	break;

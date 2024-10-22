@@ -221,7 +221,7 @@ void ISR_Control(void *data)
         d2_reference_speed_in_rpm = 0.0f;
         // d1_added_noise=0.0f;
         d2_added_noise = 0.0f;
-        d1_added_noise = -1.0f * Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
+        d1_added_noise = Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
     }
     else
     {
@@ -241,7 +241,7 @@ void ISR_Control(void *data)
         d2_reference_speed_in_rpm = Global_Data.prime_mover_reference_speed_in_rpm;
         d1_added_noise = 0.0f;
         // d2_added_noise = 0.0f;
-        d2_added_noise = -1.0f * Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
+        d2_added_noise = Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
     }
 
     struct uz_DutyCycle_t duty_d1 = uz_pmsm_controller_sample(Global_Data.objects.d1_controller, d1_measurements, d1_reference_speed_in_rpm, d1_reference_currents_in_A, d1_added_noise);

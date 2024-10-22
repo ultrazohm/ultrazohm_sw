@@ -199,7 +199,7 @@ enum gui_button_mapping
 	i_q,
 	send_field_4,
 	send_field_5,
-	send_field_6,
+	dut_theta_offset,
 	send_field_7,
 	send_field_8,
 	send_field_9,

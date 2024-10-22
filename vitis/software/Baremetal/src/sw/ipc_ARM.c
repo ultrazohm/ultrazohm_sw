@@ -40,7 +40,7 @@ bool select_misalignment = false;
 bool select_DDPG = false;
 bool select_FOC = false;
 
-float test=0.0f;
+float test = 0.0f;
 
 extern float theta_el_offset_hoerner;
 
@@ -206,12 +206,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-				data->javascope.prime_mover_reference_speed_in_rpm=value;
-		//test=value;
-					break;
+			data->javascope.prime_mover_reference_speed_in_rpm = value;
+			// test=value;
+			break;
 
 		case (Set_Send_Field_2):
-			data->javascope.dut_reference_currents_in_A.d=value;
+			data->javascope.dut_reference_currents_in_A.d = value;
 			break;
 
 		case (Set_Send_Field_3):
@@ -219,22 +219,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-	//	i_dqn_ref_5th_Amps_hoerner.d = value;
+			//	i_dqn_ref_5th_Amps_hoerner.d = value;
 
 			break;
 
 		case (Set_Send_Field_5):
-	//	i_dqn_ref_5th_Amps_hoerner.q = value;
-		test=value;
+			//	i_dqn_ref_5th_Amps_hoerner.q = value;
+			test = value;
 			break;
 
 		case (Set_Send_Field_6):
-				// i_dqn_ref_7th_Amps_hoerner.d = value;
-	//	theta_el_offset_hoerner=value;
+			// i_dqn_ref_7th_Amps_hoerner.d = value;
+			//	theta_el_offset_hoerner=value;
+			*Global_Data.dut_theta_offset = value;
 			break;
 
 		case (Set_Send_Field_7):
-	//	i_dqn_ref_7th_Amps_hoerner.q = value;
+			//	i_dqn_ref_7th_Amps_hoerner.q = value;
 
 			break;
 
@@ -242,51 +243,51 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+			data->av.snd_fld[9] = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+			data->av.snd_fld[10] = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+			data->av.snd_fld[11] = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+			data->av.snd_fld[12] = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+			data->av.snd_fld[13] = value;
 			break;
 
 		case (Set_Send_Field_14):
-		data->av.snd_fld[14] = value;
+			data->av.snd_fld[14] = value;
 			break;
 
 		case (Set_Send_Field_15):
-		data->av.snd_fld[15] = value;
+			data->av.snd_fld[15] = value;
 			break;
 
 		case (Set_Send_Field_16):
-		data->av.snd_fld[16] = value;
+			data->av.snd_fld[16] = value;
 			break;
 
 		case (Set_Send_Field_17):
-		data->av.snd_fld[17] = value;
+			data->av.snd_fld[17] = value;
 			break;
 
 		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+			data->av.snd_fld[18] = value;
 			break;
 
 		case (Set_Send_Field_19):
-		data->av.snd_fld[19] = value;
+			data->av.snd_fld[19] = value;
 			break;
 
 		case (Set_Send_Field_20):
-		data->av.snd_fld[20] = value;
+			data->av.snd_fld[20] = value;
 			break;
 
 		case (My_Button_1):
@@ -306,47 +307,57 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			{
 				Global_Data.javascope.setpoints_from_javascope = false;
 			}
-			 break;
+			break;
 
 		case (My_Button_4):
-				if (Global_Data.javascope.enable_dut == false)
-				{
-					Global_Data.javascope.enable_dut = true;
-				}
-				else
-				{
-					Global_Data.javascope.enable_dut = false;
-				}
+			if (Global_Data.javascope.enable_dut == false)
+			{
+				Global_Data.javascope.enable_dut = true;
+			}
+			else
+			{
+				Global_Data.javascope.enable_dut = false;
+			}
 			break;
 
 		case (My_Button_5):
-		if(select_FOC == false) {
-			select_FOC = true;
-		} else {
-			select_FOC = false;
-		}
+			if (select_FOC == false)
+			{
+				select_FOC = true;
+			}
+			else
+			{
+				select_FOC = false;
+			}
 			break;
 
 		case (My_Button_6):
-				if(Global_Data.javascope.disable_speed_control == false){
-					Global_Data.javascope.disable_speed_control = true;
-				} else {
-					Global_Data.javascope.disable_speed_control = false;
-				}
+			if (Global_Data.javascope.disable_speed_control == false)
+			{
+				Global_Data.javascope.disable_speed_control = true;
+			}
+			else
+			{
+				Global_Data.javascope.disable_speed_control = false;
+			}
 			break;
 
 		case (My_Button_7):
-				if(select_DDPG == false) {
-					select_DDPG = true;
-				} else {
-					select_DDPG = false;
-				}
+			if (select_DDPG == false)
+			{
+				select_DDPG = true;
+			}
+			else
+			{
+				select_DDPG = false;
+			}
 			break;
 
 		case (My_Button_8):
-				if(Global_Data.javascope.select_automatic_idiq == false){
-					Global_Data.javascope.select_automatic_idiq=true;
-				}
+			if (Global_Data.javascope.select_automatic_idiq == false)
+			{
+				Global_Data.javascope.select_automatic_idiq = true;
+			}
 			break;
 
 		case (Error_Reset):
@@ -365,32 +376,44 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	// Feedback bits for controlling the status indicators in the GUI
 	/* Bit 0 - Ready LED */
-	if (ultrazohm_state_get_led_ready()) {
-	js_status_BareToRTOS |= 1 << 0;
-	} else {
+	if (ultrazohm_state_get_led_ready())
+	{
+		js_status_BareToRTOS |= 1 << 0;
+	}
+	else
+	{
 		js_status_BareToRTOS &= ~(1 << 0);
 	}
 
 	/* Bit 1 - Running LED */
-	if (ultrazohm_state_get_led_running()) {
-	js_status_BareToRTOS |= 1 << 1;
-	} else {
+	if (ultrazohm_state_get_led_running())
+	{
+		js_status_BareToRTOS |= 1 << 1;
+	}
+	else
+	{
 		js_status_BareToRTOS &= ~(1 << 1);
 	}
 
 	/* Bit 2 - Error LED */
-	if (ultrazohm_state_get_led_error()) {
+	if (ultrazohm_state_get_led_error())
+	{
 		js_status_BareToRTOS |= 1 << 2;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 2);
-		}
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1 << 2);
+	}
 
 	/* Bit 3 - User LED */
-	if (ultrazohm_state_get_led_user()) {
+	if (ultrazohm_state_get_led_user())
+	{
 		js_status_BareToRTOS |= 1 << 3;
-		} else {
-			js_status_BareToRTOS &= ~(1 << 3);
-		}
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1 << 3);
+	}
 
 	/* Bit 4 - My_Button_1 */
 	// if (your condition == true) {
@@ -403,27 +426,30 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 5);
 
 	/* Bit 6 - My_Button_3 */
-		if (Global_Data.javascope.setpoints_from_javascope == true)
-		{
-			js_status_BareToRTOS |= 1 << 6;
-		}
-		else
-		{
-			js_status_BareToRTOS &= ~(1 << 6);
-		}
+	if (Global_Data.javascope.setpoints_from_javascope == true)
+	{
+		js_status_BareToRTOS |= 1 << 6;
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1 << 6);
+	}
 	/* Bit 7 - My_Button_4 */
-		if (Global_Data.javascope.enable_dut == true)
-		{
-			js_status_BareToRTOS |= 1 << 7;
-		}
-		else
-		{
-			js_status_BareToRTOS &= ~(1 << 7);
-		}
+	if (Global_Data.javascope.enable_dut == true)
+	{
+		js_status_BareToRTOS |= 1 << 7;
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1 << 7);
+	}
 	/* Bit 8 - My_Button_5 */
-	if (select_FOC == true) {
+	if (select_FOC == true)
+	{
 		js_status_BareToRTOS |= 1 << 8;
-	} else {
+	}
+	else
+	{
 		js_status_BareToRTOS &= ~(1 << 8);
 	}
 	/* Bit 9 - My_Button_6 */
@@ -438,16 +464,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 10 - My_Button_7 */
-	if (select_DDPG == true) {
+	if (select_DDPG == true)
+	{
 		js_status_BareToRTOS |= 1 << 10;
-	} else {
+	}
+	else
+	{
 		js_status_BareToRTOS &= ~(1 << 10);
 	}
 
 	/* Bit 11 - My_Button_8 */
-	if (Global_Data.javascope.select_automatic_idiq == true) {
+	if (Global_Data.javascope.select_automatic_idiq == true)
+	{
 		js_status_BareToRTOS |= 1 << 11;
-	} else {
+	}
+	else
+	{
 		js_status_BareToRTOS &= ~(1 << 11);
 	}
 
@@ -457,5 +489,4 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// } else {
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
-
 }

@@ -183,6 +183,7 @@ typedef struct _DS_Data_
 	bool d1_operating_region_violation;
 	bool d2_operating_region_violation;
 	uz_3ph_dq_t dut_reference_currents_in_A;
+	float* dut_theta_offset;
 	javascope_global javascope;
 	auto_profile profile;
 } DS_Data;

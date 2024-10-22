@@ -245,6 +245,12 @@ void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enabl
     self->config.enable_speed_control=enable_speed_control;
 }
 
+void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_offset){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->config.theta_el_offset=theta_offset;
+}
+
 struct uz_DutyCycle_t
 uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
 {

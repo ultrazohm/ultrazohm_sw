@@ -54,8 +54,10 @@ float Torque_placeholder = 0.0f;
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+extern float d1_added_noise;
+extern float d2_added_noise;
 
-int JavaScope_initialize(DS_Data* data)
+int JavaScope_initialize(DS_Data *data)
 {
 	int Status = 0;
 	//Initialize all variables with zero
@@ -124,18 +126,46 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_pm_speed_filtered]=&data->av.mechanicalRotorSpeed_filtered_prime_mover;
 	js_ch_observable[JSO_debug_speed_d5_1_filtered] = &data->av.d5_1_n_rpm_filtered;
 	js_ch_observable[JSO_debug_speed_d5_1] = &data->av.d5_1_n_rpm;
+	js_ch_observable[JSO_torque_added_d1] = &d1_added_noise;
+	js_ch_observable[JSO_torque_added_d2] = &d2_added_noise;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-//	js_slowDataArray[JSSD_FLOAT_u_d_1] 			        = &(data->av.U_d_1);
-//	js_slowDataArray[JSSD_FLOAT_u_q_1] 			        = &(data->av.U_q_1);
-//	js_slowDataArray[JSSD_FLOAT_i_d_1] 			        = &i_dq_Amps_hoerner.d;
-//	js_slowDataArray[JSSD_FLOAT_i_d_2] 			        = &i_dq_Amps_beckhoff.d;
-//	js_slowDataArray[JSSD_FLOAT_i_q_1] 			        = &i_dq_Amps_hoerner.q;
-//	js_slowDataArray[JSSD_FLOAT_i_q_2] 			        = &i_dq_Amps_beckhoff.q;
-	js_slowDataArray[JSSD_FLOAT_speed_1] 		        = &(data->av.d5_1_omega_mech_rad_per_sec);
+	js_slowDataArray[JSSD_FLOAT_dut_ia] = &data->dut.actual_data->i_abc_in_A.a;
+	js_slowDataArray[JSSD_FLOAT_dut_ib] = &data->dut.actual_data->i_abc_in_A.b;
+	js_slowDataArray[JSSD_FLOAT_dut_ic] = &data->dut.actual_data->i_abc_in_A.c;
+	js_slowDataArray[JSSD_FLOAT_dut_id] = &data->dut.actual_data->i_dq_in_A.d;
+	js_slowDataArray[JSSD_FLOAT_dut_iq] = &data->dut.actual_data->i_dq_in_A.q;
+	js_slowDataArray[JSSD_FLOAT_dut_id_set] = &data->dut.reference_values->i_dq_in_A.d;
+	js_slowDataArray[JSSD_FLOAT_dut_iq_set] = &data->dut.reference_values->i_dq_in_A.q;
+	js_slowDataArray[JSSD_FLOAT_dut_vd_ref] = &data->dut.reference_values->v_dq_in_V.d;
+	js_slowDataArray[JSSD_FLOAT_dut_vq_ref] = &data->dut.reference_values->v_dq_in_V.q;
+	js_slowDataArray[JSSD_FLOAT_dut_v_dc] = &data->dut.actual_data->v_dc_in_V;
+	js_slowDataArray[JSSD_FLOAT_dut_i_dc] = &data->dut.actual_data->i_dc_in_A;
+	js_slowDataArray[JSSD_FLOAT_dut_speed_rpm] = &data->dut.actual_data->speed_in_rpm;
+	js_slowDataArray[JSSD_FLOAT_dut_speed_rpm_ref] = &data->dut.reference_values->speed_in_rpm;
+	js_slowDataArray[JSSD_FLOAT_dut_theta_el] = &data->dut.actual_data->theta_el;
+	js_slowDataArray[JSSD_FLOAT_dut_theta_mech] = &data->dut.measurement_values->theta_mech;
+	js_slowDataArray[JSSD_FLOAT_dut_torque_setpoint_Nm] = &data->dut.reference_values->M_in_Nm;
+	js_slowDataArray[JSSD_FLOAT_pm_ia] = &data->prime_mover.actual_data->i_abc_in_A.a;
+	js_slowDataArray[JSSD_FLOAT_pm_ib] = &data->prime_mover.actual_data->i_abc_in_A.b;
+	js_slowDataArray[JSSD_FLOAT_pm_ic] = &data->prime_mover.actual_data->i_abc_in_A.c;
+	js_slowDataArray[JSSD_FLOAT_pm_id] = &data->prime_mover.actual_data->i_dq_in_A.d;
+	js_slowDataArray[JSSD_FLOAT_pm_iq] = &data->prime_mover.actual_data->i_dq_in_A.q;
+	js_slowDataArray[JSSD_FLOAT_pm_id_set] = &data->prime_mover.reference_values->i_dq_in_A.d;
+	js_slowDataArray[JSSD_FLOAT_pm_iq_set] = &data->prime_mover.reference_values->i_dq_in_A.q;
+	js_slowDataArray[JSSD_FLOAT_pm_vd_ref] = &data->prime_mover.reference_values->v_dq_in_V.d;
+	js_slowDataArray[JSSD_FLOAT_pm_vq_ref] = &data->prime_mover.reference_values->v_dq_in_V.q;
+	js_slowDataArray[JSSD_FLOAT_pm_v_dc] = &data->prime_mover.actual_data->v_dc_in_V;
+	js_slowDataArray[JSSD_FLOAT_pm_i_dc] = &data->prime_mover.actual_data->i_dc_in_A;
+	js_slowDataArray[JSSD_FLOAT_pm_speed_rpm] = &data->prime_mover.actual_data->speed_in_rpm;
+	js_slowDataArray[JSSD_FLOAT_pm_speed_rpm_ref] = &data->prime_mover.reference_values->speed_in_rpm;
+	js_slowDataArray[JSSD_FLOAT_pm_theta_el] = &data->prime_mover.actual_data->theta_el;
+	js_slowDataArray[JSSD_FLOAT_pm_theta_mech] = &data->prime_mover.measurement_values->theta_mech;
+	js_slowDataArray[JSSD_FLOAT_pm_torque_setpoint_Nm] = &data->prime_mover.reference_values->M_in_Nm;
+//	js_slowDataArray[JSSD_FLOAT_FLOAT_speed_1] 		        = &(data->av.d5_1_omega_mech_rad_per_sec);
 //	js_slowDataArray[JSSD_FLOAT_speed_2] 		        = &(data->av.mechanicalRotorSpeed_beckhoff);
 //	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;

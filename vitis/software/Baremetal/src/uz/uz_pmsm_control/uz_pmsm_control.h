@@ -94,5 +94,6 @@ struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct 
 void uz_pmsm_controller_acknowledge_and_reset_error(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements);
 float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
 bool uz_pmsm_controller_get_safe_operating_area_violation(uz_pmsm_control_t *self);
+void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
 
 #endif // UZ_PMSM_CONTROL_H

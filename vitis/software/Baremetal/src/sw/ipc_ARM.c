@@ -298,11 +298,25 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-
-			break;
+			if (Global_Data.javascope.setpoints_from_javascope == false)
+			{
+				Global_Data.javascope.setpoints_from_javascope = true;
+			}
+			else
+			{
+				Global_Data.javascope.setpoints_from_javascope = false;
+			}
+			 break;
 
 		case (My_Button_4):
-
+				if (Global_Data.javascope.enable_dut == false)
+				{
+					Global_Data.javascope.enable_dut = true;
+				}
+				else
+				{
+					Global_Data.javascope.enable_dut = false;
+				}
 			break;
 
 		case (My_Button_5):
@@ -314,10 +328,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-				if(select_misalignment == false){
-					select_misalignment = true;
+				if(Global_Data.javascope.disable_speed_control == false){
+					Global_Data.javascope.disable_speed_control = true;
 				} else {
-					select_misalignment = false;
+					Global_Data.javascope.disable_speed_control = false;
 				}
 			break;
 
@@ -389,11 +403,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// js_status_BareToRTOS &= ~(1 << 5);
 
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
-
+		if (Global_Data.javascope.setpoints_from_javascope == true)
+		{
+			js_status_BareToRTOS |= 1 << 6;
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 6);
+		}
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
-
+		if (Global_Data.javascope.enable_dut == true)
+		{
+			js_status_BareToRTOS |= 1 << 7;
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 7);
+		}
 	/* Bit 8 - My_Button_5 */
 	if (select_FOC == true) {
 		js_status_BareToRTOS |= 1 << 8;
@@ -402,9 +428,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
-	if (select_misalignment == true) {
+	if (Global_Data.javascope.disable_speed_control == true)
+	{
 		js_status_BareToRTOS |= 1 << 9;
-	} else {
+	}
+	else
+	{
 		js_status_BareToRTOS &= ~(1 << 9);
 	}
 

@@ -150,6 +150,9 @@ typedef struct javascope_global
 	uz_3ph_dq_t dut_reference_currents_in_A;
 	bool select_automatic_idiq;
 	float start_marker;
+	bool enable_dut;
+	bool setpoints_from_javascope;
+	bool disable_speed_control;
 } javascope_global;
 
 typedef struct auto_profile

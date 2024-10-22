@@ -239,6 +239,12 @@ void uz_pmsm_controller_check_safe_operating_region(uz_pmsm_control_t *self)
     }
 }
 
+void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->config.enable_speed_control=enable_speed_control;
+}
+
 struct uz_DutyCycle_t
 uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm)
 {

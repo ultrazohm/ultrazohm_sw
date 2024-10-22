@@ -111,7 +111,6 @@ uz_3ph_dq_t d1_reference_currents_in_A = {0.0f};
 uz_3ph_dq_t d2_reference_currents_in_A = {0.0f};
 bool manual_dutycycle_d2 = false;
 bool manual_dutycycle_d1 = false;
-bool reference_source_javascope = false;
 
 void ISR_Control(void *data)
 {
@@ -121,11 +120,30 @@ void ISR_Control(void *data)
     Global_Data.av.Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
     automatic_profile();
 
-    if (reference_source_javascope)
+    if (Global_Data.javascope.setpoints_from_javascope)
     {
         Global_Data.prime_mover_reference_speed_in_rpm = Global_Data.javascope.prime_mover_reference_speed_in_rpm;
         Global_Data.dut_reference_currents_in_A.d = Global_Data.javascope.dut_reference_currents_in_A.d;
         Global_Data.dut_reference_currents_in_A.q = Global_Data.javascope.dut_reference_currents_in_A.q;
+        if (D1_IS_PRIME_MOVER) {
+            if (Global_Data.javascope.disable_speed_control)
+            {
+                uz_pmsm_controller_enable_speed_control(Global_Data.objects.d1_controller, false);
+            }
+            else
+            {
+                uz_pmsm_controller_enable_speed_control(Global_Data.objects.d1_controller, true);
+            }
+        }else{
+            if (Global_Data.javascope.disable_speed_control)
+            {
+                uz_pmsm_controller_enable_speed_control(Global_Data.objects.d2_controller, false);
+            }
+            else
+            {
+                uz_pmsm_controller_enable_speed_control(Global_Data.objects.d2_controller, true);
+            }
+        }
     }
     else
     {
@@ -157,10 +175,26 @@ void ISR_Control(void *data)
     //
     if (current_state == control_state)
     {
-        enable_d1_controller = true;
-        enable_d2_controller = true;
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, false, false, false);
-        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2, false, false, false);
+        if (D1_IS_PRIME_MOVER)
+        {
+            enable_d1_controller = true;
+            uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, false, false, false);
+            if (Global_Data.javascope.enable_dut)
+            {
+                enable_d2_controller = true;
+                uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2, false, false, false);
+            }
+        }
+        else
+        {
+            enable_d2_controller = true;
+            uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2, false, false, false);
+            if (Global_Data.javascope.enable_dut)
+            {
+                enable_d1_controller = true;
+                uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, false, false, false);
+            }
+        }
     }
     else
     {
@@ -174,27 +208,40 @@ void ISR_Control(void *data)
 
     if (D1_IS_PRIME_MOVER)
     {
-        d1_reference_currents_in_A.d = 0.0f;
-        d1_reference_currents_in_A.q = 0.0f;
+        if (Global_Data.javascope.disable_speed_control){
+            d1_reference_currents_in_A.d = Global_Data.dut_reference_currents_in_A.d;
+            d1_reference_currents_in_A.q = Global_Data.dut_reference_currents_in_A.q;
+        }else{
+            d1_reference_currents_in_A.d = 0.0f;
+            d1_reference_currents_in_A.q = 0.0f;
+        }
         d1_reference_speed_in_rpm = Global_Data.prime_mover_reference_speed_in_rpm;
         d2_reference_currents_in_A.d = Global_Data.dut_reference_currents_in_A.d;
         d2_reference_currents_in_A.q = Global_Data.dut_reference_currents_in_A.q;
         d2_reference_speed_in_rpm = 0.0f;
-        d1_added_noise=0.0f;
-        d2_added_noise=0.0f;
-       // d1_added_noise=Global_Data.dut.torque_constant*d2_reference_currents_in_A.q;
+        // d1_added_noise=0.0f;
+        d2_added_noise = 0.0f;
+        d1_added_noise = -1.0f * Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
     }
     else
     {
         d1_reference_currents_in_A.d = Global_Data.dut_reference_currents_in_A.d;
         d1_reference_currents_in_A.q = Global_Data.dut_reference_currents_in_A.q;
         d1_reference_speed_in_rpm = 0.0f;
-        d2_reference_currents_in_A.d = 0.0f;
-        d2_reference_currents_in_A.q = 0.0f;
+        if (Global_Data.javascope.disable_speed_control)
+        {
+            d2_reference_currents_in_A.d = Global_Data.dut_reference_currents_in_A.d;
+            d2_reference_currents_in_A.q = Global_Data.dut_reference_currents_in_A.q;
+        }
+        else
+        {
+            d2_reference_currents_in_A.d = 0.0f;
+            d2_reference_currents_in_A.q = 0.0f;
+        }
         d2_reference_speed_in_rpm = Global_Data.prime_mover_reference_speed_in_rpm;
         d1_added_noise = 0.0f;
-        d2_added_noise = 0.0f;
-        // d2_added_noise=Global_Data.dut.torque_constant*d1_reference_currents_in_A.q;
+        // d2_added_noise = 0.0f;
+        d2_added_noise = -1.0f * Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
     }
 
     struct uz_DutyCycle_t duty_d1 = uz_pmsm_controller_sample(Global_Data.objects.d1_controller, d1_measurements, d1_reference_speed_in_rpm, d1_reference_currents_in_A, d1_added_noise);
@@ -266,7 +313,7 @@ void all_measurements(void)
         {
             d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_2_omega_mech_rad_per_sec;
         }
-       // d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_2_omega_mech_rad_per_sec;
+        // d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_2_omega_mech_rad_per_sec;
         d2_measurements.theta_mech = Global_Data.av.d5_2_theta_el;
         break;
     default:
@@ -320,7 +367,7 @@ void automatic_profile(void)
             {
                 old_uptime = current_uptime;
 
-                if (Global_Data.profile.setpoint_index < (UZ_ARRAY_SIZE(id_setpoints)-1U)) 
+                if (Global_Data.profile.setpoint_index < (UZ_ARRAY_SIZE(id_setpoints) - 1U))
                 {
                     Global_Data.profile.setpoint_index++;
                 }
@@ -338,7 +385,7 @@ void automatic_profile(void)
                     Global_Data.profile.start_angle_found = false;
                     Global_Data.profile.wait_for_n_ref = true;
                     Global_Data.profile.change_speed = false;
-                    if (Global_Data.profile.n_ref_setpoint_index < (UZ_ARRAY_SIZE(speed_setpoints)-1U))
+                    if (Global_Data.profile.n_ref_setpoint_index < (UZ_ARRAY_SIZE(speed_setpoints) - 1U))
                     {
                         Global_Data.profile.n_ref_setpoint_index++;
                     }
@@ -525,8 +572,6 @@ int Initialize_ISR()
 
     return Status;
 }
-
-
 
 //==============================================================================================================================================================
 //----------------------------------------------------

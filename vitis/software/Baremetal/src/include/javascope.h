@@ -1,17 +1,17 @@
 /******************************************************************************
-* Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink, Michael Hoerner
-* 
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*     http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and limitations under the License.
-******************************************************************************/
+ * Copyright 2021 Eyke Liegmann, Sebastian Wendel, Philipp Löhdefink, Michael Hoerner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and limitations under the License.
+ ******************************************************************************/
 
 #ifndef INCLUDE_JAVASCOPE_H_
 #define INCLUDE_JAVASCOPE_H_
@@ -73,6 +73,8 @@ enum JS_OberservableData
 	JSO_ddpg_obs_9,
 	JSO_torque_measured_Nm,
 	JSO_debug_speed_d5_1,
+	JSO_torque_added_d1,
+	JSO_torque_added_d2,
 	JSO_debug_speed_d5_1_filtered,
 	JSO_SoC_init,
 	JSO_n_ref_rpm_beckhoff_filtered,
@@ -83,7 +85,8 @@ enum JS_OberservableData
 
 // slowData Naming Convention: Use JSSD_FLOAT_ as prefix
 // Do not change the first (zero) and last (end) entries.
-enum JS_SlowData {
+enum JS_SlowData
+{
 	JSSD_ZEROVALUE=0,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
@@ -92,6 +95,38 @@ enum JS_SlowData {
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Error_Code,
+	JSSD_FLOAT_dut_ia,
+	JSSD_FLOAT_dut_ib,
+	JSSD_FLOAT_dut_ic,
+	JSSD_FLOAT_dut_id,
+	JSSD_FLOAT_dut_iq,
+	JSSD_FLOAT_dut_id_set,
+	JSSD_FLOAT_dut_iq_set,
+	JSSD_FLOAT_dut_vd_ref,
+	JSSD_FLOAT_dut_vq_ref,
+	JSSD_FLOAT_dut_v_dc,
+	JSSD_FLOAT_dut_i_dc,
+	JSSD_FLOAT_dut_speed_rpm,
+	JSSD_FLOAT_dut_speed_rpm_ref,
+	JSSD_FLOAT_dut_theta_el,
+	JSSD_FLOAT_dut_theta_mech,
+	JSSD_FLOAT_dut_torque_setpoint_Nm,
+	JSSD_FLOAT_pm_ia,
+	JSSD_FLOAT_pm_ib,
+	JSSD_FLOAT_pm_ic,
+	JSSD_FLOAT_pm_id,
+	JSSD_FLOAT_pm_iq,
+	JSSD_FLOAT_pm_id_set,
+	JSSD_FLOAT_pm_iq_set,
+	JSSD_FLOAT_pm_vd_ref,
+	JSSD_FLOAT_pm_vq_ref,
+	JSSD_FLOAT_pm_v_dc,
+	JSSD_FLOAT_pm_i_dc,
+	JSSD_FLOAT_pm_speed_rpm,
+	JSSD_FLOAT_pm_speed_rpm_ref,
+	JSSD_FLOAT_pm_theta_el,
+	JSSD_FLOAT_pm_theta_mech,
+	JSSD_FLOAT_pm_torque_setpoint_Nm,
 	JSSD_FLOAT_u_d_1,
 	JSSD_FLOAT_u_q_1,
 	JSSD_FLOAT_u_q_2,
@@ -113,7 +148,8 @@ enum JS_SlowData {
 // numbers in the following enum.
 // Do not change the first (zero) and last (end) entries.
 // Do not change names! They are hard coupled within the GUI!
-enum gui_button_mapping {
+enum gui_button_mapping
+{
 	GUI_BTN_ZEROVALUE=0,
 	Enable_System,
 	Enable_Control,
@@ -149,7 +185,6 @@ enum gui_button_mapping {
 	Error_Reset,
 	GUI_BTN_ENDMARKER
 };
-
 
 /* Visualization Config for GUI*/
 // LEAVE IT COMMENTED OUT AS IT IS, the plain text below is parsed by the GUI!
@@ -213,12 +248,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	i_d1,
-	i_q1,
-	i_d2,
-	i_q2,
-	n2,
-	receive_field_6,
+	dut_id,
+	dut_iq,
+	dut_n,
+	pm_id,
+	pm_iq,
+	pm_n,
 	receive_field_7,
 	receive_field_8,
 	receive_field_9,
@@ -242,10 +277,10 @@ enum gui_button_mapping {
 	RCV_LABELS_ZEROVALUE=0,
 	A,
 	A,
+	rpm,
 	A,
 	A,
 	rpm,
-	-,
 	-,
 	-,
 	-,
@@ -268,10 +303,10 @@ enum gui_button_mapping {
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	MyButton1,
 	MyButton2,
-	MyButton3,
-	HCI,
+	ManualSetpoints,
+	Enable_DUT,
 	FOC,
-	Misalignment,
+	DisableSC,
 	DDPG,
 	Auto_IdIq,
 	MYBUTTONS_LABELS_ENDMARKER
@@ -283,12 +318,12 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_i_d_1,
-	JSSD_FLOAT_i_q_1,
-	JSSD_FLOAT_i_d_2,
-	JSSD_FLOAT_i_q_2,
-	JSSD_FLOAT_speed_2,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_dut_id,
+	JSSD_FLOAT_dut_iq,
+	JSSD_FLOAT_dut_speed_rpm,
+	JSSD_FLOAT_pm_id,
+	JSSD_FLOAT_pm_iq,
+	JSSD_FLOAT_pm_speed_rpm,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
@@ -307,8 +342,7 @@ enum gui_button_mapping {
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 
-
-int JavaScope_initialize(DS_Data* data);
-void JavaScope_update(DS_Data* data);
+int JavaScope_initialize(DS_Data *data);
+void JavaScope_update(DS_Data *data);
 
 #endif /* INCLUDE_JAVASCOPE_H_ */

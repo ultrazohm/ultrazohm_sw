@@ -60,11 +60,10 @@ END spi_master_multi_slave;
 ARCHITECTURE logic OF spi_master_multi_slave IS
   SIGNAL sclk_S : STD_LOGIC; 
   SIGNAL ss_n_S : STD_LOGIC; 
-  TYPE machine IS(convwait, ready, execute);                           --state machine data type
+  TYPE machine IS(ready, execute);                           --state machine data type
   SIGNAL state       : machine;                              --current state
   SIGNAL clk_ratio   : INTEGER RANGE 0 TO 15;                              --current clk_div
   SIGNAL count       : INTEGER RANGE 0 TO 15;                             --counter to trigger sclk from system clock
-  SIGNAL CNVWait     : INTEGER RANGE 0 TO 32;                             --counter to trigger sclk from system clock
   SIGNAL clk_toggles : INTEGER RANGE 0 TO d_width*2 + 1;     --count spi clock toggles
   SIGNAL assert_data : STD_LOGIC;                            --'1' is tx sclk toggle, '0' is rx sclk toggle
   SIGNAL rx_buffer   : t_array_message(NUMBER_OF_PERIPH downto 1)  := (others => (others => '0')); --receive data buffer, array of size NUMBER_OF_PERIPH
@@ -90,31 +89,10 @@ BEGIN
     ELSIF(clock'EVENT AND clock = '1') THEN
       CASE state IS               --state machine
 
-	  	 WHEN convwait =>
-		 	busy <= '0';             --clock out not busy signal
-			mosi <= 'Z';             --set mosi output high impedance
-			sclk_S <= cpol;            --set spi clock polarity
- 
-		  --wait for some cycles in order to have a stable conversion before starting to output data per SPI
-		  IF(CNVWait < 39) THEN                 
-			IF(CNVWait < 10) THEN                 
-				ss_n_S <= '1';           --falling edge of CS to trigger conversion 
-			ELSE
-				ss_n_S <= '0';           --falling edge of CS to trigger conversion 
-			END IF;
-			CNVWait <= CNVWait + 1;  --increment counter
-			state <= convwait;       --remain in CNVWait state
-		  ELSE
-			state <= ready;        --proceed to execute state
-          END IF;
-	  
-	  
-	  
         WHEN ready =>
           busy <= '0';             --clock out not busy signal
           ss_n_S <= '1'; --set all slave select outputs high
           mosi <= 'Z';             --set mosi output high impedance
-		  CNVWait <= 0;        --initiate wait counter
 
           --user input to initiate transaction
           IF(enable = '1') THEN       
@@ -176,7 +154,7 @@ BEGIN
               ss_n_S <= '1'; --set all slave selects high
               mosi <= 'Z';             --set mosi output high impedance
               rx_data  <= rx_buffer;    --clock out received data to output port
-              state <= convwait;          --return to ready state
+              state <= ready;          --return to ready state
             ELSE                       --not end of transaction
               state <= execute;        --remain in execute state
             END IF;

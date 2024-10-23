@@ -47,6 +47,14 @@
 // a216_sidmoid_td3_gaussian_beckhoff
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
 
+// Hoerner
+// e112_new_methodology_750k
+// e113_new_methodology_sigmoid_750k
+// e114_hoerner_non_l1_750k_3hidden - not implemented yet
+// e115_hoerner_non_sigmoid_750k_3hidden - not implemented yet
+// f119_new_methodology_750k
+// f120_new_methodology_sigmoid_750k
+
 #define DUT_MACHINE BROSE
 #define AGENT 252
 #define D1_MACHINE BROSE    // EBM, Brose, Hoerner

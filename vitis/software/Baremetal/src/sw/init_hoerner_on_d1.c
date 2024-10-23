@@ -71,24 +71,90 @@ struct uz_PMSM_flux_fitting_parameter_config_t hoerner_fitting = {
     .F2G2_parameter = 0.294469757399354f};
 
 #if DUT_MACHINE == HOERNER
-#if AGENT == 252
+#if AGENT == 112
 #define NUMBER_OF_INPUTS 9
 #define NUMBER_OF_OUTPUTS 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 #define NUMBER_OF_LAYERS 2
 static float x[NUMBER_OF_INPUTS] = {0};
 static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer1_weights.csv"
+#include "../experiments/e112_new_methodology_750k/best_agent/ac_layer1_weights.csv"
 };
 static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer1_bias.csv"
+#include "../experiments/e112_new_methodology_750k/best_agent/ac_layer1_bias.csv"
 };
 static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
-#include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer_out_weights.csv"
+#include "../experiments/e112_new_methodology_750k/best_agent/ac_layer_out_weights.csv"
 };
 static float bias2[NUMBER_OF_OUTPUTS] = {
-#include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer_out_bias.csv"
+#include "../experiments/e112_new_methodology_750k/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 113
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/e113_new_methodology_sigmoid_750k/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/e113_new_methodology_sigmoid_750k/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/e113_new_methodology_sigmoid_750k/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/e113_new_methodology_sigmoid_750k/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 119
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/f119_new_methodology_750k/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/f119_new_methodology_750k/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/f119_new_methodology_750k/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/f119_new_methodology_750k/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 120
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/f120_new_methodology_sigmoid_750k/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/f120_new_methodology_sigmoid_750k/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/f120_new_methodology_sigmoid_750k/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/f120_new_methodology_sigmoid_750k/best_agent/ac_layer_out_bias.csv"
 };
 static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif

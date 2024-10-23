@@ -12,6 +12,8 @@
 #error The UZ_USE_EXTERNAL_STOP_ON_V4 flag must not be used on hardware version 3. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
 #endif
 
+#define PRIME_MOVER_SETPOINT_FILTER_CUTTOFF_FREQUENCY 5.0f
+
 // Network definition
 #define NN_7_INPUT_1_64 0U
 #define NN_9_INPUT_1_64 1U
@@ -24,10 +26,15 @@
 #define EBM 5
 #define HEIDRIVE 6
 
-#define D1_MACHINE EBM     // EBM, Brose, Hoerner
-#define D2_MACHINE BUEHLER // HEIDRIVE, BUEHLER, BECKHOFF
-#define D1_IS_PRIME_MOVER 1U
+#define D1_MACHINE BROSE    // EBM, Brose, Hoerner
+#define D2_MACHINE BECKHOFF // HEIDRIVE, BUEHLER, BECKHOFF
+#define D1_IS_PRIME_MOVER 0U
 #define D2_IS_PRIME_MOVER !D1_IS_PRIME_MOVER //
+#if D1_IS_PRIME_MOVER
+#define DUT_MACHINE D2_MACHINE
+#else
+#define DUT_MACHINE D1_MACHINE
+#endif
 
 /** ISR trigger source
  *
@@ -43,7 +50,7 @@
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE 1U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE 1U
 
-#if D2_MACHINE == BROSE // Hoerner (2k), EBM (2k), Brose (5k)
+#if D1_MACHINE == BROSE // Hoerner (2k), EBM (2k), Brose (5k)
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 5000.0f
 #else
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 2000.0f
@@ -100,6 +107,8 @@
 #define UZ_FLUX_PREDICTION_MAX_INSTANCES 2U
 #define UZ_MLP_THREE_LAYER_IP_MAX_INSTANCES 2U
 #define UZ_PMSM_CONTROL_MAX_INSTANCES 2U
+#define UZ_RLCC_MAX_INSTANCES 1U
+
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling

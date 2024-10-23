@@ -133,6 +133,18 @@ int JavaScope_initialize(DS_Data *data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
+	js_slowDataArray[JSSD_FLOAT_d1_h1_tmp] = &data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H1;
+	js_slowDataArray[JSSD_FLOAT_d1_h2_tmp] = &data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H2;
+	js_slowDataArray[JSSD_FLOAT_d1_h3_tmp] = &data->av.inverter_outputs_d1.ChipTempDegreesCelsius_H3;
+	js_slowDataArray[JSSD_FLOAT_d1_l1_tmp] = &data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L1;
+	js_slowDataArray[JSSD_FLOAT_d1_l2_tmp] = &data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L2;
+	js_slowDataArray[JSSD_FLOAT_d1_l3_tmp] = &data->av.inverter_outputs_d1.ChipTempDegreesCelsius_L3;
+	js_slowDataArray[JSSD_FLOAT_d2_h1_tmp] = &data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H1;
+	js_slowDataArray[JSSD_FLOAT_d2_h2_tmp] = &data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H2;
+	js_slowDataArray[JSSD_FLOAT_d2_h3_tmp] = &data->av.inverter_outputs_d2.ChipTempDegreesCelsius_H3;
+	js_slowDataArray[JSSD_FLOAT_d2_l1_tmp] = &data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L1;
+	js_slowDataArray[JSSD_FLOAT_d2_l2_tmp] = &data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L2;
+	js_slowDataArray[JSSD_FLOAT_d2_l3_tmp] = &data->av.inverter_outputs_d2.ChipTempDegreesCelsius_L3;
 	js_slowDataArray[JSSD_FLOAT_dut_ia] = &data->dut.actual_data->i_abc_in_A.a;
 	js_slowDataArray[JSSD_FLOAT_dut_ib] = &data->dut.actual_data->i_abc_in_A.b;
 	js_slowDataArray[JSSD_FLOAT_dut_ic] = &data->dut.actual_data->i_abc_in_A.c;

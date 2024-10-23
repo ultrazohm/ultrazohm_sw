@@ -17,6 +17,7 @@
 #include "uz/uz_matrix/uz_matrix.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
+#include "uz/uz_rlcc/uz_rlcc.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -153,10 +154,14 @@ typedef struct javascope_global
 	bool enable_dut;
 	bool setpoints_from_javascope;
 	bool disable_speed_control;
+	bool use_rl;
 } javascope_global;
 
 typedef struct auto_profile
 {
+	float id_scale_in_A;
+	float iq_scale_in_A;
+	float speed_scale_in_rpm;
 	float prime_mover_reference_speed_in_rpm;
 	uz_3ph_dq_t dut_reference_currents_in_A;
 	float speed_tracking_error;
@@ -186,6 +191,7 @@ typedef struct _DS_Data_
 	float* dut_theta_offset;
 	javascope_global javascope;
 	auto_profile profile;
+	uz_rlcc_t* rl_controller;
 } DS_Data;
 
 #endif

@@ -60,7 +60,7 @@ float iq_setpoints[22] = {
 };
 
 // float speed_setpoints[] = {-100, -200, -300, -500, -600, -700, -900, -1000};
-float speed_setpoints[] = {-100, -200,-500,-1000};
+float speed_setpoints[] = {-0.1f,-0.2f,-0.5f,-1.0f};
 
 extern float PMSM_rated_current_hoerner;
 extern bool select_misalignment;
@@ -165,7 +165,12 @@ void ISR_Control(void *data)
     }
     else
     {
-        uz_pmsm_controller_acknowledge_and_reset_error(Global_Data.objects.d1_controller, d1_measurements);
+        if (D1_IS_PRIME_MOVER){
+            uz_pmsm_controller_use_rlcc(Global_Data.objects.d2_controller,Global_Data.javascope.use_rl);
+        }else{
+            uz_pmsm_controller_use_rlcc(Global_Data.objects.d1_controller,Global_Data.javascope.use_rl);
+        }
+                uz_pmsm_controller_acknowledge_and_reset_error(Global_Data.objects.d1_controller, d1_measurements);
         uz_pmsm_controller_acknowledge_and_reset_error(Global_Data.objects.d2_controller, d2_measurements);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
@@ -340,7 +345,7 @@ void automatic_profile(void)
 {
     if ((Global_Data.javascope.select_automatic_idiq))
     {
-        Global_Data.profile.prime_mover_reference_speed_in_rpm = speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
+        Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm* speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
         Global_Data.profile.speed_tracking_error = fabsf(Global_Data.profile.prime_mover_reference_speed_in_rpm - Global_Data.av.mechanicalRotorSpeed_filtered_prime_mover);
 
         if (Global_Data.profile.speed_tracking_error < 1.0f && Global_Data.profile.wait_for_n_ref)
@@ -358,8 +363,8 @@ void automatic_profile(void)
         }
         if (Global_Data.profile.start_angle_found)
         {
-            Global_Data.profile.dut_reference_currents_in_A.d = id_setpoints[Global_Data.profile.setpoint_index];
-            Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index]; // * PMSM_rated_current_hoerner;
+            Global_Data.profile.dut_reference_currents_in_A.d = id_setpoints[Global_Data.profile.setpoint_index] *Global_Data.profile.id_scale_in_A;
+            Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.iq_scale_in_A; // * PMSM_rated_current_hoerner;
 
             // step throught the array
             uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
@@ -394,8 +399,9 @@ void automatic_profile(void)
                         // stop
                         Global_Data.javascope.select_automatic_idiq = false;
                         Global_Data.profile.n_ref_setpoint_index = 0U;
+                        ultrazohm_state_machine_set_stop(true);
                     }
-                    Global_Data.profile.prime_mover_reference_speed_in_rpm = speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
+                    Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm * speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
                 }
             }
         }

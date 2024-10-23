@@ -38,7 +38,6 @@ uz_3ph_dq_t i_dq_ref_java_Amps_hoerner = {0};
 extern DS_Data Global_Data;
 bool select_misalignment = false;
 bool select_DDPG = false;
-bool select_FOC = false;
 
 float test = 0.0f;
 
@@ -219,24 +218,16 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
-			//	i_dqn_ref_5th_Amps_hoerner.d = value;
-
 			break;
 
 		case (Set_Send_Field_5):
-			//	i_dqn_ref_5th_Amps_hoerner.q = value;
-			test = value;
 			break;
 
 		case (Set_Send_Field_6):
-			// i_dqn_ref_7th_Amps_hoerner.d = value;
-			//	theta_el_offset_hoerner=value;
 			*Global_Data.dut_theta_offset = value;
 			break;
 
 		case (Set_Send_Field_7):
-			//	i_dqn_ref_7th_Amps_hoerner.q = value;
-
 			break;
 
 		case (Set_Send_Field_8):
@@ -321,13 +312,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_5):
-			if (select_FOC == false)
+			if (Global_Data.javascope.use_rl == false)
 			{
-				select_FOC = true;
+				Global_Data.javascope.use_rl = true;
 			}
 			else
 			{
-				select_FOC = false;
+				Global_Data.javascope.use_rl = false;
 			}
 			break;
 
@@ -343,14 +334,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7):
-			if (select_DDPG == false)
-			{
-				select_DDPG = true;
-			}
-			else
-			{
-				select_DDPG = false;
-			}
+
 			break;
 
 		case (My_Button_8):
@@ -444,7 +428,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		js_status_BareToRTOS &= ~(1 << 7);
 	}
 	/* Bit 8 - My_Button_5 */
-	if (select_FOC == true)
+	if (Global_Data.javascope.use_rl == true)
 	{
 		js_status_BareToRTOS |= 1 << 8;
 	}

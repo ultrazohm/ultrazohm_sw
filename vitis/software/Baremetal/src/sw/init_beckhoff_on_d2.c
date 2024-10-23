@@ -69,5 +69,8 @@ void init_beckhoff_on_d2(void)
         Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
         Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
         Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_beckhoff.polePairs * config_PMSM_beckhoff.Psi_PM_Vs;
+        Global_Data.profile.id_scale_in_A = 1.0f/4.2f;
+        Global_Data.profile.iq_scale_in_A = 1.0f;
+        Global_Data.profile.speed_scale_in_rpm = 1000.0f;
     }
 }

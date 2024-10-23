@@ -170,6 +170,13 @@ bool uz_pmsm_controller_get_safe_operating_area_violation(uz_pmsm_control_t *sel
     return self->safe_operating_region_violation;
 };
 
+void uz_pmsm_controller_use_rlcc(uz_pmsm_control_t *self, bool use_rlcc)
+{
+uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->config.use_rlcc=use_rlcc;
+}
+
 void uz_pmsm_controller_reset(uz_pmsm_control_t *self)
 {
     uz_assert(self->is_ready);

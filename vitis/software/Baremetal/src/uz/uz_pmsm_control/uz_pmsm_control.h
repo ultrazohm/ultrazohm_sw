@@ -96,5 +96,5 @@ float *uz_pmsm_control_get_pointer_to_theta_offset(uz_pmsm_control_t *self);
 bool uz_pmsm_controller_get_safe_operating_area_violation(uz_pmsm_control_t *self);
 void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
 void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_offset);
-
+void uz_pmsm_controller_use_rlcc(uz_pmsm_control_t *self, bool use_rlcc);
 #endif // UZ_PMSM_CONTROL_H

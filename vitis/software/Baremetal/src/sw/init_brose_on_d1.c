@@ -38,7 +38,7 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
     .nonlinear_machine = false,
-    .speed_actual_value_filter_cutoff_frequency = 1.0f,
+    .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
@@ -147,7 +147,7 @@ static struct uz_rlcc_config_t config_rlc_brose = {
 
 void init_brose_on_d1(void)
 {
-#if DUT_MACHINE == brose
+#if DUT_MACHINE == BROSE
     Global_Data.rl_controller = uz_rlcc_init(config_rlc_brose,
                                              config_nn,
                                              NUMBER_OF_LAYERS,

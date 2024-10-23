@@ -78,13 +78,6 @@ float theta_el_old_hoerner = 0.0f;
 
 #define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
 
-// 3 layer MLP
-#if ((NN_9_INPUT_3_64) || (NN_7_INPUT_3_64))
-extern float mlp_ip_output[2U];
-extern uz_matrix_t *p_output_data;
-extern uz_mlp_three_layer_ip_t *mlp_ip_instance;
-#endif
-
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS

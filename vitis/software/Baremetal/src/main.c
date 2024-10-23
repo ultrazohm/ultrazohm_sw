@@ -23,8 +23,8 @@
 #include "include/init_ebm_on_d1.h"
 #include "include/init_hoerner_on_d1.h"
 
-    // Initialize the global variables
-    DS_Data Global_Data = {
+// Initialize the global variables
+DS_Data Global_Data = {
     .rasv = {
         .halfBridge1DutyCycle = 0.0f,
         .halfBridge2DutyCycle = 0.0f,
@@ -48,7 +48,7 @@ enum init_chain
     init_gpios,
     init_software,
     init_ip_cores,
-	init_control,
+    init_control,
     print_msg,
     init_interrupts,
     infinite_loop
@@ -60,17 +60,16 @@ int main(void)
     int status = UZ_SUCCESS;
 
     struct uz_IIR_Filter_config tracking_error_filter_prime_mover_config = {
-      	   .selection = LowPass_first_order,
-           .cutoff_frequency_Hz = 0.3f,
-           .sample_frequency_Hz = 10000.0f,
+        .selection = LowPass_first_order,
+        .cutoff_frequency_Hz = 0.3f,
+        .sample_frequency_Hz = 10000.0f,
     };
-    Global_Data.profile.wait_for_n_ref=true;
-    Global_Data.profile.speed_setpoint_reached=false;
-    Global_Data.profile.start_angle_found=false;
-    Global_Data.profile.change_speed=false;
-    Global_Data.profile.setpoint_index=0U;
-    Global_Data.profile.n_ref_setpoint_index=0U;
-
+    Global_Data.profile.wait_for_n_ref = true;
+    Global_Data.profile.speed_setpoint_reached = false;
+    Global_Data.profile.start_angle_found = false;
+    Global_Data.profile.change_speed = false;
+    Global_Data.profile.setpoint_index = 0U;
+    Global_Data.profile.n_ref_setpoint_index = 0U;
 
     while (1)
     {
@@ -116,53 +115,38 @@ int main(void)
             break;
         case init_control:
 
+#if D1_MACHINE == HOERNER
+            init_hoerner_on_d1();
+#elif D1_MACHINE == EBM
+            init_ebm_on_d1();
+#elif D1_MACHINE == BROSE
+            init_brose_on_d1();
+#endif
 
-            switch (D1_MACHINE)
+#if D2_MACHINE == BUEHLER
+            init_buehler_on_d2();
+#elif D2_MACHINE == HEIDRIVE
+            init_heidrive_on_d2();
+#elif D2_MACHINE == BECKHOFF
+            init_beckhoff_on_d2();
+#endif
+
+            if (D1_IS_PRIME_MOVER)
             {
-            case HOERNER:
-                init_hoerner_on_d1();
-                break;
-            case EBM:
-                init_ebm_on_d1();
-                break;
-            case BROSE:
-            	init_brose_on_d1();
-                break;
-            default:
-                break;
-    }
-
-            switch (D2_MACHINE)
+                Global_Data.dut_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.d2_controller);
+            }
+            else
             {
-            case BUEHLER:
-                init_buehler_on_d2();
-                break;
-            case HEIDRIVE:
-                init_heidrive_on_d2();
-                break;
-            case BECKHOFF:
-                init_beckhoff_on_d2();
-                break;
-            default:
-                break;
-    }
-
-//            init_beckhoff_on_d2();
-
-    if (D1_IS_PRIME_MOVER)
-    {
-        Global_Data.dut_theta_offset=uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.d2_controller);
-    }else{
-        Global_Data.dut_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.d1_controller);
-    }
-            Global_Data.objects.tracking_error_filter_prime_mover=uz_signals_IIR_Filter_init(tracking_error_filter_prime_mover_config);
-        	initialization_chain = print_msg;
-        	break;
-	    case print_msg:
+                Global_Data.dut_theta_offset = uz_pmsm_control_get_pointer_to_theta_offset(Global_Data.objects.d1_controller);
+            }
+            Global_Data.objects.tracking_error_filter_prime_mover = uz_signals_IIR_Filter_init(tracking_error_filter_prime_mover_config);
+            initialization_chain = print_msg;
+            break;
+        case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
+            uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_interrupts;
             break;

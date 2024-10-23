@@ -14,11 +14,6 @@
 
 #define PRIME_MOVER_SETPOINT_FILTER_CUTTOFF_FREQUENCY 5.0f
 
-// Network definition
-#define NN_7_INPUT_1_64 0U
-#define NN_9_INPUT_1_64 1U
-#define NN_9_INPUT_3_64 0U
-
 #define BECKHOFF 1
 #define BUEHLER 2
 #define HOERNER 3
@@ -26,15 +21,22 @@
 #define EBM 5
 #define HEIDRIVE 6
 
+#define DUT_MACHINE BECKHOFF
+#define AGENT 252
 #define D1_MACHINE BROSE    // EBM, Brose, Hoerner
 #define D2_MACHINE BECKHOFF // HEIDRIVE, BUEHLER, BECKHOFF
-#define D1_IS_PRIME_MOVER 0U
-#define D2_IS_PRIME_MOVER !D1_IS_PRIME_MOVER //
-#if D1_IS_PRIME_MOVER
-#define DUT_MACHINE D2_MACHINE
-#else
-#define DUT_MACHINE D1_MACHINE
+// #define D1_IS_PRIME_MOVER 1U // Auto-calculate this define from DUT_MACHINE?
+
+#if !((DUT_MACHINE == D1_MACHINE) || (DUT_MACHINE == D2_MACHINE))
+#error DUT machine not connected!
 #endif
+
+#if (DUT_MACHINE == HOERNER) || (DUT_MACHINE == BROSE) || (DUT_MACHINE == EBM)
+#define D1_IS_PRIME_MOVER 0U
+#else
+#define D1_IS_PRIME_MOVER 1U
+#endif
+#define D2_IS_PRIME_MOVER !D1_IS_PRIME_MOVER //
 
 /** ISR trigger source
  *

@@ -72,8 +72,7 @@
 #include "uz/uz_flux_prediction/uz_flux_prediction.h"
 #include "uz/uz_CurrentControl_Kp_id_adjustment/uz_CurrentControl_Kp_id_adjustment.h"
 #include "uz/uz_CurrentControl_Kp_iq_adjustment/uz_CurrentControl_Kp_iq_adjustment.h"
-#include "sw/nn_7_input_1_64/nn_7_input_1_64.h"
-#include "sw/nn_9_input_1_64/nn_9_input_1_64.h"
+
 
 
 

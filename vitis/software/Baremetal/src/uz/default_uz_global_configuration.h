@@ -21,7 +21,33 @@
 #define EBM 5
 #define HEIDRIVE 6
 
-#define DUT_MACHINE BECKHOFF
+// Verfügbare agenten
+// Heidrive
+// a202_l1_td3_gaussian_heidrive
+// a201_sidmoid_td3_gaussian_heidrive
+// a277_sidmoid_td3_gaussian_heidrive_500k_30seeds
+
+// Brose
+// a214_l1_td3_gaussian_brose
+// a211_sidmoid_td3_gaussian_brose
+// a252_sidmoid_td3_gaussian_brose_500k_updates
+
+// Buehler
+// a221_l1_td3_gaussian_buehler
+// a234_sigmoid_td3_gaussian_buehler
+// a255_sidmoid_td3_gaussian_buehler_500k_updates
+
+// EBMPabst
+// a217_l1_td3_gaussian_ebmpabst
+// a218_sidmoid_td3_gaussian_ebmpabst
+// a254_sidmoid_td3_gaussian_ebm_500k_updates
+
+// Beckhoff
+// a215_l1_td3_gaussian_beckhoff
+// a216_sidmoid_td3_gaussian_beckhoff
+// a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
+
+#define DUT_MACHINE BROSE
 #define AGENT 252
 #define D1_MACHINE BROSE    // EBM, Brose, Hoerner
 #define D2_MACHINE BECKHOFF // HEIDRIVE, BUEHLER, BECKHOFF

@@ -55,24 +55,68 @@ float PMSM_rated_current_ebm = 8.6f;
 struct uz_PMSM_flux_fitting_parameter_config_t ebm_fitting = {0};
 
 #if DUT_MACHINE == EBM
-#if AGENT == 252
+#if AGENT == 217
 #define NUMBER_OF_INPUTS 9
 #define NUMBER_OF_OUTPUTS 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 #define NUMBER_OF_LAYERS 2
 static float x[NUMBER_OF_INPUTS] = {0};
 static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer1_weights.csv"
+#include "../experiments/a217_l1_td3_gaussian_ebmpabst/best_agent/ac_layer1_weights.csv"
 };
 static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-#include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer1_bias.csv"
+#include "../experiments/a217_l1_td3_gaussian_ebmpabst/best_agent/ac_layer1_bias.csv"
 };
 static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
-#include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer_out_weights.csv"
+#include "../experiments/a217_l1_td3_gaussian_ebmpabst/best_agent/ac_layer_out_weights.csv"
 };
 static float bias2[NUMBER_OF_OUTPUTS] = {
-#include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer_out_bias.csv"
+#include "../experiments/a217_l1_td3_gaussian_ebmpabst/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 218
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a218_sidmoid_td3_gaussian_ebmpabst/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a218_sidmoid_td3_gaussian_ebmpabst/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a218_sidmoid_td3_gaussian_ebmpabst/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a218_sidmoid_td3_gaussian_ebmpabst/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 254
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a254_sidmoid_td3_gaussian_ebm_500k_updates/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a254_sidmoid_td3_gaussian_ebm_500k_updates/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a254_sidmoid_td3_gaussian_ebm_500k_updates/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a254_sidmoid_td3_gaussian_ebm_500k_updates/best_agent/ac_layer_out_bias.csv"
 };
 static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif

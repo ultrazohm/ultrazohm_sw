@@ -19,7 +19,8 @@
 #define HOERNER 3
 #define BROSE 4
 #define EBM 5
-#define HEIDRIVE 6
+#define HEIDRIVE_D2 6
+#define HEIDRIVE_D1 7
 
 // Verfügbare agenten
 // Heidrive
@@ -47,18 +48,10 @@
 // a216_sidmoid_td3_gaussian_beckhoff
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
 
-// Hoerner
-// e112_new_methodology_750k
-// e113_new_methodology_sigmoid_750k
-// e114_hoerner_non_l1_750k_3hidden - not implemented yet
-// e115_hoerner_non_sigmoid_750k_3hidden - not implemented yet
-// f119_new_methodology_750k
-// f120_new_methodology_sigmoid_750k
-
-#define DUT_MACHINE BROSE
-#define AGENT 252
-#define D1_MACHINE BROSE    // EBM, Brose, Hoerner
-#define D2_MACHINE BECKHOFF // HEIDRIVE, BUEHLER, BECKHOFF
+#define DUT_MACHINE HEIDRIVE_D1
+#define AGENT 202
+#define D1_MACHINE HEIDRIVE_D1    // EBM, Brose, Hoerner, HEIDRIVE_D1
+#define D2_MACHINE HEIDRIVE_D2 // HEIDRIVE_D2, BUEHLER, BECKHOFF
 // #define D1_IS_PRIME_MOVER 1U // Auto-calculate this define from DUT_MACHINE?
 
 #if !((DUT_MACHINE == D1_MACHINE) || (DUT_MACHINE == D2_MACHINE))
@@ -88,12 +81,14 @@
 
 #if D1_MACHINE == BROSE // Hoerner (2k), EBM (2k), Brose (5k)
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 5000.0f
+#elif D1_MACHINE==HEIDRIVE_D1
+#define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 256.0f // HEIDRIVE_D1
 #else
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 2000.0f
 #endif
 
-#define UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION 256.0f  // always heidrive but unused
-#define UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION 5000.0f // always buehler
+#define UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION 256.0f  // always HEIDRIVE_D2
+#define UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION 5000.0f // buehler
 
 #define UZ_D5_1_MOTOR_POLE_PAIR_NUMBER 1.0f // handled in uz_pmsm_control
 #define UZ_D5_2_MOTOR_POLE_PAIR_NUMBER 1.0f //

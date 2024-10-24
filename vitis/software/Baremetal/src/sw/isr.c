@@ -92,7 +92,7 @@ void all_measurements(void);
 struct uz_pmsm_measurement_values d1_measurements = {0};
 struct uz_pmsm_measurement_values d2_measurements = {0};
 const int machine_on_d1 = D1_MACHINE; // EBM, Brose, Hoerner
-const int machine_on_d2 = D2_MACHINE; // HEIDRIVE, BUEHLER, BECKHOFF
+const int machine_on_d2 = D2_MACHINE; // HEIDRIVE_D2, BUEHLER, BECKHOFF
 
 bool enable_d1_controller = false;
 bool enable_d2_controller = false;
@@ -306,7 +306,7 @@ void all_measurements(void)
         // d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_3_omega_mech_rad_per_sec;
         d2_measurements.theta_mech = Global_Data.av.d5_3_theta_el;
         break;
-    case HEIDRIVE:
+    case HEIDRIVE_D2:
         if (fabsf(Global_Data.av.d5_2_omega_mech_rad_per_sec - d2_measurements.omega_mech_rad_per_sec) < 50.0f)
         {
             d2_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_2_omega_mech_rad_per_sec;

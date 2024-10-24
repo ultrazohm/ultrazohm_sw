@@ -125,7 +125,7 @@ int main(void)
 
 #if D2_MACHINE == BUEHLER
             init_buehler_on_d2();
-#elif D2_MACHINE == HEIDRIVE
+#elif D2_MACHINE == HEIDRIVE_D2
             init_heidrive_on_d2();
 #elif D2_MACHINE == BECKHOFF
             init_beckhoff_on_d2();

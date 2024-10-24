@@ -1,7 +1,7 @@
-#include "../include/init_heidrive_on_d2.h"
+#include "../include/init_heidrive_on_d1.h"
 extern DS_Data Global_Data;
 
-struct uz_pmsm_control_configuration_t config_heidrive_d2 = {
+struct uz_pmsm_control_configuration_t config_heidrive = {
     .current_conversion_factors = {
         .a = 12.2889f,
         .b = 11.8330f,
@@ -13,7 +13,7 @@ struct uz_pmsm_control_configuration_t config_heidrive_d2 = {
     .i_dc_in_V_offset = 0.0f,
     .theta_el_offset = 1.532164f,
     .sample_time = 1.0f / 10000.0f,
-    .enable_speed_control = D2_IS_PRIME_MOVER,
+    .enable_speed_control = D1_IS_PRIME_MOVER,
     .speed_controller_max_torque = 1.3f,
     .speed_controller_kp = 0.01f,
     .speed_controller_ki = 1.0f,
@@ -43,7 +43,7 @@ struct uz_pmsm_control_configuration_t config_heidrive_d2 = {
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
-static struct uz_PMSM_t config_PMSM_heidrive_d2 = {
+struct uz_PMSM_t config_PMSM_heidrive = {
     .R_ph_Ohm = 0.543f,
     .Ld_Henry = 0.00113f,
     .Lq_Henry = 0.00142f,
@@ -52,9 +52,9 @@ static struct uz_PMSM_t config_PMSM_heidrive_d2 = {
     .J_kg_m_squared = 0.000108f,
     .I_max_Ampere = 10.8f};
 
-static struct uz_PMSM_flux_fitting_parameter_config_t heidrive_fitting_d2 = {0};
+struct uz_PMSM_flux_fitting_parameter_config_t heidrive_fitting = {0};
 
-#if DUT_MACHINE == HEIDRIVE_D2
+#if DUT_MACHINE == HEIDRIVE_D1
 #if AGENT == 202
 #define NUMBER_OF_INPUTS 9
 #define NUMBER_OF_OUTPUTS 2
@@ -123,27 +123,27 @@ static struct uz_rlcc_config_t config_rlc_heidrive = {
     .use_ip_core = false};
 #endif
 
-void init_heidrive_on_d2(void)
+void init_heidrive_on_d1(void)
 {
-#if DUT_MACHINE == HEIDRIVE_D2
+#if DUT_MACHINE == HEIDRIVE_D1
     Global_Data.rl_controller = uz_rlcc_init(config_rlc_heidrive,
                                              config_nn,
                                              NUMBER_OF_LAYERS,
                                              &x[0],
                                              UZ_MATRIX_SIZE(x));
-    config_heidrive_d2.rlcc = Global_Data.rl_controller;
-    Global_Data.objects.d2_controller = uz_pmsm_control_init(config_heidrive_d2, config_PMSM_heidrive_d2, heidrive_fitting_d2);
-    Global_Data.dut.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);
-    Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
-    Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
+    config_heidrive.rlcc = Global_Data.rl_controller;
+    Global_Data.objects.d1_controller = uz_pmsm_control_init(config_heidrive, config_PMSM_heidrive, heidrive_fitting);
+    Global_Data.dut.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d1_controller);
+    Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
+    Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
     Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_heidrive.polePairs * config_PMSM_heidrive.Psi_PM_Vs;
     Global_Data.profile.id_scale_in_A = 1.0f / 4.2f;
     Global_Data.profile.iq_scale_in_A = 1.0f;
     Global_Data.profile.speed_scale_in_rpm = 1000.0f;
 #else
-    Global_Data.objects.d2_controller = uz_pmsm_control_init(config_heidrive_d2, config_PMSM_heidrive_d2, heidrive_fitting_d2);
-    Global_Data.prime_mover.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);
-    Global_Data.prime_mover.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
-    Global_Data.prime_mover.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
+    Global_Data.objects.d1_controller = uz_pmsm_control_init(config_heidrive, config_PMSM_heidrive, heidrive_fitting);
+    Global_Data.prime_mover.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d1_controller);
+    Global_Data.prime_mover.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
+    Global_Data.prime_mover.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
 #endif
 }

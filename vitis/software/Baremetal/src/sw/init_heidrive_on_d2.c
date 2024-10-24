@@ -118,8 +118,8 @@ static struct uz_rlcc_config_t config_rlc_heidrive = {
     .number_of_observations = 9, // 9
     .max_modulation_index = 1.0f / 1.732050808f,
     .v_dc_rated_V = 48.0f,
-    .i_rated_A = 28.0f,
-    .speed_rated_rpm = 1500.0f,
+    .i_rated_A = 4.2f,
+    .speed_rated_rpm = 3000.0f,
     .use_ip_core = false};
 #endif
 

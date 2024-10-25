@@ -83,15 +83,15 @@ Pin configuration
 ===============  ==========  ============
 Package PIN D5   Port        Signal
 ===============  ==========  ============
-J15              Dig_19_Ch5   Encoder_3_I
+J15              Dig_19_Ch5   Encoder_3_B
 A13              Dig_18_Ch5   Encoder_3_A
-K15              Dig_17_Ch5   Encoder_3_B
-B13              Dig_16_Ch5   Encoder_2_I
+K15              Dig_17_Ch5   Encoder_3_I
+B13              Dig_16_Ch5   Encoder_2_B
 G14              Dig_15_Ch5   Encoder_2_A
-A14              Dig_14_Ch5   Encoder_2_B
-G15              Dig_13_Ch5   Encoder_1_I
+A14              Dig_14_Ch5   Encoder_2_I
+G15              Dig_13_Ch5   Encoder_1_B
 B14              Dig_12_Ch5   Encoder_1_A
-E15              Dig_11_Ch5   Encoder_1_B
+E15              Dig_11_Ch5   Encoder_1_I
 ===============  ==========  ============
 
 
@@ -100,8 +100,8 @@ Vivado block design with three IP-Cores on D5
 
 * For using all channels of the card, the user has to change the block design in vivado (three IP-Cores on D5 connected).
 
-.. image:: incr_encoder_rev03/vivado_block.jpg
-   :height: 500
+.. image:: incr_encoder_rev03/vivado_block_inc_enc_rev03.png
+   :height: 700
 
 Compatibility 
 -------------

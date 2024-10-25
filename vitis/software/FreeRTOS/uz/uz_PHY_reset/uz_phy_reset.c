@@ -13,6 +13,7 @@
  #define ENABLE_PIN				1 								//This Pin is enabled
  #define DISABLE_PIN				0 								//This Pin is disabled
 
+// NB: These (rather static) pin definitions are only valid for Rev04 UltraZohm carriers with retrofitted reset wires!
  #define PHY0_RESET_MIO_PIN		26U
  #define PHY1_RESET_MIO_PIN		27U
 

@@ -12,4 +12,5 @@ Vitis
     create_project
     include_math_lib
     gcc_optimization
+    connect_terminal
 

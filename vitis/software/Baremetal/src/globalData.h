@@ -85,6 +85,7 @@ typedef struct _actualValues_ {
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
+	uint32_t slowDataCounter;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

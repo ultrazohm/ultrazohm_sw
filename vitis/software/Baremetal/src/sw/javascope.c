@@ -106,14 +106,25 @@ int JavaScope_initialize(DS_Data* data)
 
 
 
+
 void JavaScope_update(DS_Data* data){
 
-	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START
-	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START;
+	// create pointer of type struct javascope_data_t named javascope_data located at MEM_SHARED_START_OCM_BANK_3_JAVASCOPE
+	struct javascope_data_t volatile * const javascope_data = (struct javascope_data_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
 	struct APU_to_RPU_t Received_Data_from_A53 = {0};
-
+	// create pointers to user data variables located in OCM Bank 1 and 2
+	struct RPU_to_APU_user_data_t volatile * const rpu_to_apu_user_data = (struct RPU_to_APU_user_data_t*)MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU;
+	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
+
+#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+	// write data to a53 in shared memory and flush cache
+	rpu_to_apu_user_data->slowDataCounter = js_cnt_slowData; //just an example
+	// add further data...
+
+	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
+#endif
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
 	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
@@ -131,7 +142,7 @@ void JavaScope_update(DS_Data* data){
 	javascope_data->status 			= js_status_BareToRTOS;
 
 	// flush data cache of shared memory region to make sure shared memory is updated
-	Xil_DCacheFlushRange(MEM_SHARED_START, JAVASCOPE_DATA_SIZE_2POW);
+	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
 
 	//Send an interrupt to APU
 	status = XIpiPsu_TriggerIpi(&INTCInst_IPI,XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK);
@@ -139,9 +150,18 @@ void JavaScope_update(DS_Data* data){
 		xil_printf("RPU: IPI Trigger failed\r\n");
 	}
 
+#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+	//Poll Acknowledgment of IPI
+	status = XIpiPsu_PollForAck(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
+	if(status != (u32)XST_SUCCESS) {
+		pollErrorCnt++;
+	}
+#endif
+
 	u32 ControlData_length = sizeof(Received_Data_from_A53)/sizeof(float); // XIpiPsu_WriteMessage expects number of 32bit values as message length
 
-	//Afterwards an acknowledge and a message from the APU can be read/checked, but we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
+	//Afterwards the acknowledge a message from the APU can be read/checked, if a53 is enabled for external calculations of the r5 we wait for the acknowledge flag,
+	//if not, we don't do it in order to guarantee that the control-ISR never waits and always runs! -> This is due to the Polling of the acknowledge flag.
 	status = XIpiPsu_ReadMessage(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, (u32*)(&Received_Data_from_A53), ControlData_length, XIPIPSU_BUF_TYPE_RESP);
 
 	if(status != (u32)XST_SUCCESS) {
@@ -157,6 +177,13 @@ void JavaScope_update(DS_Data* data){
 	if(i_fetchDataLifeCheck > 10000){
 		i_fetchDataLifeCheck =0;
 	}
+
+#if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
+	//invalidate cache and read data from a53 shared memory
+	Xil_DCacheInvalidateRange(MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
+	// get data from apu_to_rpu_user_data struct and use it
+	 data->av.slowDataCounter = apu_to_rpu_user_data->slowDataCounter; //just an example
+#endif
 
 	ipc_Control_func(Received_Data_from_A53.id, Received_Data_from_A53.value, data);
 

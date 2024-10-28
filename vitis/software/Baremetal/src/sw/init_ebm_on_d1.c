@@ -25,10 +25,10 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .setpoint_upper_bound_i_d_in_A = 0.5f,
     .setpoint_lower_bound_i_q_in_A = -15.0f,
     .setpoint_upper_bound_i_q_in_A = 15.0f,
-    .setpoint_upper_bound_speed_in_rpm = 2500.0f,
-    .setpoint_lower_bound_speed_in_rpm = -2500.0f,
-    .error_upper_bound_speed_in_rpm = 3500.0f,
-    .error_lower_bound_speed_in_rpm = -3500.0f,
+    .setpoint_upper_bound_speed_in_rpm = 4000.0f,
+    .setpoint_lower_bound_speed_in_rpm = -4000.0f,
+    .error_upper_bound_speed_in_rpm = 4500.0f,
+    .error_lower_bound_speed_in_rpm = -4500.0f,
     .disturbance_input_lower_bound_in_Nm = -10.0f, // disable disturbance input for now
     .disturbance_input_upper_bound_in_Nm = 10.0f,
     .decoupling_method = linear_decoupling,
@@ -159,9 +159,9 @@ void init_ebm_on_d1(void)
     Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
     Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
     Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_ebm.polePairs * config_PMSM_ebm.Psi_PM_Vs;
-    Global_Data.profile.id_scale_in_A = 1.0f / 4.2f;
-    Global_Data.profile.iq_scale_in_A = 1.0f;
-    Global_Data.profile.speed_scale_in_rpm = 1000.0f;
+    Global_Data.profile.id_scale_in_A = 2.0f / 4.2f;
+    Global_Data.profile.iq_scale_in_A = 2.0f;
+    Global_Data.profile.speed_scale_in_rpm = 4000.0f;
 #else
     Global_Data.objects.d1_controller = uz_pmsm_control_init(config_ebm, config_PMSM_ebm, ebm_fitting);
     Global_Data.prime_mover.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d1_controller);

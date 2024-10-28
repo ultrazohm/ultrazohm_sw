@@ -41,7 +41,6 @@ bool select_DDPG = false;
 
 float test = 0.0f;
 
-extern float theta_el_offset_hoerner;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {

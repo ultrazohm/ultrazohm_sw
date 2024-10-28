@@ -41,7 +41,6 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
-float theta_el_offset_hoerner = 1.63f; // 5.85f
 struct uz_DutyCycle_t duty_cycle_hoerner = {0};
 
 // =============== Declares for PMSM 2 =============== //
@@ -392,7 +391,7 @@ void automatic_profile(void)
                         // stop
                         Global_Data.javascope.select_automatic_idiq = false;
                         Global_Data.profile.n_ref_setpoint_index = 0U;
-                        ultrazohm_state_machine_set_stop(true);
+                        //ultrazohm_state_machine_set_stop(true);
                     }
                     Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm * speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
                 }

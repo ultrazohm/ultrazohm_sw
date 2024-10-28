@@ -12,7 +12,7 @@
 #error The UZ_USE_EXTERNAL_STOP_ON_V4 flag must not be used on hardware version 3. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
 #endif
 
-#define PRIME_MOVER_SETPOINT_FILTER_CUTTOFF_FREQUENCY 5.0f
+#define PRIME_MOVER_SETPOINT_FILTER_CUTTOFF_FREQUENCY 1.0f
 
 #define BECKHOFF 1
 #define BUEHLER 2
@@ -48,10 +48,10 @@
 // a216_sidmoid_td3_gaussian_beckhoff
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
 
-#define DUT_MACHINE HEIDRIVE_D1
-#define AGENT 202
-#define D1_MACHINE HEIDRIVE_D1    // EBM, Brose, Hoerner, HEIDRIVE_D1
-#define D2_MACHINE HEIDRIVE_D2 // HEIDRIVE_D2, BUEHLER, BECKHOFF
+#define DUT_MACHINE EBM
+#define AGENT 254
+#define D1_MACHINE EBM     // EBM, Brose, Hoerner, HEIDRIVE_D1
+#define D2_MACHINE BUEHLER // HEIDRIVE_D2, BUEHLER, BECKHOFF
 // #define D1_IS_PRIME_MOVER 1U // Auto-calculate this define from DUT_MACHINE?
 
 #if !((DUT_MACHINE == D1_MACHINE) || (DUT_MACHINE == D2_MACHINE))
@@ -81,7 +81,7 @@
 
 #if D1_MACHINE == BROSE // Hoerner (2k), EBM (2k), Brose (5k)
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 5000.0f
-#elif D1_MACHINE==HEIDRIVE_D1
+#elif D1_MACHINE == HEIDRIVE_D1
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 256.0f // HEIDRIVE_D1
 #else
 #define UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION 2000.0f

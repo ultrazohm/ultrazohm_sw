@@ -333,7 +333,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_7):
-
+					if (Global_Data.use_cil == false)
+					{
+						Global_Data.use_cil = true;
+					}
+					else
+					{
+						Global_Data.use_cil = false;
+					}
 			break;
 
 		case (My_Button_8):
@@ -447,7 +454,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 10 - My_Button_7 */
-	if (select_DDPG == true)
+	if (Global_Data.use_cil == true)
 	{
 		js_status_BareToRTOS |= 1 << 10;
 	}

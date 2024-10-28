@@ -319,7 +319,7 @@ enum gui_button_mapping
 	Enable_DUT,
 	UseRL,
 	DisableSC,
-	NC,
+	CIL,
 	Auto_IdIq,
 	MYBUTTONS_LABELS_ENDMARKER
 

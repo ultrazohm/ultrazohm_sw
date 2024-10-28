@@ -148,6 +148,8 @@ static struct uz_rlcc_config_t config_rlc_brose = {
 void init_brose_on_d1(void)
 {
 #if DUT_MACHINE == BROSE
+    Global_Data.dut.pmsm_data = &config_PMSM_brose;
+
     Global_Data.rl_controller = uz_rlcc_init(config_rlc_brose,
                                              config_nn,
                                              NUMBER_OF_LAYERS,

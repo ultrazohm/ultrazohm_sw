@@ -31,7 +31,7 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .error_lower_bound_speed_in_rpm = -4500.0f,
     .disturbance_input_lower_bound_in_Nm = -10.0f, // disable disturbance input for now
     .disturbance_input_upper_bound_in_Nm = 10.0f,
-    .decoupling_method = linear_decoupling,
+    .decoupling_method = linear_decoupling_compensated,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = PRIME_MOVER_SETPOINT_FILTER_CUTTOFF_FREQUENCY,
     .motor_type = SMPMSM,
@@ -148,6 +148,7 @@ static struct uz_rlcc_config_t config_rlc_ebm = {
 void init_ebm_on_d1(void)
 {
 #if DUT_MACHINE == EBM
+    Global_Data.dut.pmsm_data = &config_PMSM_ebm;
     Global_Data.rl_controller = uz_rlcc_init(config_rlc_ebm,
                                              config_nn,
                                              NUMBER_OF_LAYERS,

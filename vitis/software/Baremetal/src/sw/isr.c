@@ -105,11 +105,54 @@ bool manual_dutycycle_d2 = false;
 bool manual_dutycycle_d1 = false;
 struct uz_pmsmModel_outputs_t cil_outputs = {0};
 struct uz_pmsmModel_inputs_t cil_inputs = {0};
+struct uz_3ph_dq_t cil_dq_currents = {0};
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
-    all_measurements();
+    if (Global_Data.use_cil)
+    {
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, true, true, true);
+        uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2, true, true, true);
+        uz_pmsm_controller_use_cil(Global_Data.objects.d1_controller, true);
+        uz_pmsm_controller_use_cil(Global_Data.objects.d2_controller, true);
+
+        uz_pmsmModel_trigger_input_strobe(Global_Data.cil.pmsm_cil);
+        uz_pmsmModel_trigger_output_strobe(Global_Data.cil.pmsm_cil);
+        cil_outputs = uz_pmsmModel_get_outputs(Global_Data.cil.pmsm_cil);
+        cil_dq_currents.d = cil_outputs.i_d_A;
+        cil_dq_currents.q = cil_outputs.i_q_A;
+        struct uz_3ph_abc_t cil_abc_currents = uz_transformation_3ph_dq_to_abc(cil_dq_currents, *Global_Data.dut_theta_offset);
+        Global_Data.av.mechanicalRotorSpeed_filtered_prime_mover = uz_signals_IIR_Filter_sample(Global_Data.objects.tracking_error_filter_prime_mover, Global_Data.prime_mover_reference_speed_in_rpm);
+
+        if (D1_IS_PRIME_MOVER)
+        {
+            d2_measurements.omega_mech_rad_per_sec = cil_outputs.omega_mech_1_s;
+            d2_measurements.phase_currents_from_adc_ampere_per_volt = cil_abc_currents;
+            d2_measurements.i_dc_from_adc_ampere_per_volt = 0.0f;
+            d2_measurements.theta_mech = 0.0f;
+            d2_measurements.v_dc_from_adc_volt_per_volt = 48.0f;
+            d1_measurements.v_dc_from_adc_volt_per_volt = 48.0f;
+        }
+        else
+        {
+            d1_measurements.omega_mech_rad_per_sec = cil_outputs.omega_mech_1_s;
+            d1_measurements.phase_currents_from_adc_ampere_per_volt = cil_abc_currents;
+            d1_measurements.i_dc_from_adc_ampere_per_volt = 0.0f;
+            d1_measurements.theta_mech = 0.0f;
+            d1_measurements.v_dc_from_adc_volt_per_volt = 48.0f;
+            d2_measurements.v_dc_from_adc_volt_per_volt = 48.0f;
+
+        }
+    }
+    else
+    {
+        uz_pmsm_controller_use_cil(Global_Data.objects.d1_controller, false);
+        uz_pmsm_controller_use_cil(Global_Data.objects.d2_controller, false);
+        all_measurements();
+    }
+
+
     check_inverter_errors();
     Global_Data.av.Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
     automatic_profile();
@@ -176,6 +219,7 @@ void ISR_Control(void *data)
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1, true, true, true);
         uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d2, true, true, true);
+      //  uz_pmsmModel_reset(Global_Data.cil.pmsm_cil);
     }
     //
     if (current_state == control_state)
@@ -252,40 +296,16 @@ void ISR_Control(void *data)
         d2_added_noise = Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
     }
 
-    if (Global_Data.use_cil)
-    {
-        uz_pmsm_controller_use_cil(Global_Data.objects.d1_controller, true);
-        uz_pmsm_controller_use_cil(Global_Data.objects.d2_controller, true);
 
-        uz_pmsmModel_trigger_input_strobe(Global_Data.cil.pmsm_cil);
-        uz_pmsmModel_trigger_output_strobe(Global_Data.cil.pmsm_cil);
-        cil_outputs = uz_pmsmModel_get_outputs(Global_Data.cil.pmsm_cil);
-
-        d1_measurements.i_dc_from_adc_ampere_per_volt = 0.0f;
-        d1_measurements.omega_mech_rad_per_sec = cil_outputs.omega_mech_1_s;
-        struct uz_3ph_dq_t cil_dq_currents = {
-            .d = cil_outputs.i_d_A,
-            .q = cil_outputs.i_q_A,
-            .zero = 0.0f};
-        struct uz_3ph_abc_t cil_abc_currents = uz_transformation_3ph_dq_to_abc(cil_dq_currents, 0.0f);
-        d1_measurements.phase_currents_from_adc_ampere_per_volt = cil_abc_currents;
-        d1_measurements.theta_mech = 0.0f;
-        d1_measurements.v_dc_from_adc_volt_per_volt = 48.0f;
-    }
-    else
-    {
-        uz_pmsm_controller_use_cil(Global_Data.objects.d1_controller, false);
-        uz_pmsm_controller_use_cil(Global_Data.objects.d2_controller, false);
-    }
 
     struct uz_DutyCycle_t duty_d1 = uz_pmsm_controller_sample(Global_Data.objects.d1_controller, d1_measurements, d1_reference_speed_in_rpm, d1_reference_currents_in_A, d1_added_noise);
     struct uz_DutyCycle_t duty_d2 = uz_pmsm_controller_sample(Global_Data.objects.d2_controller, d2_measurements, d2_reference_speed_in_rpm, d2_reference_currents_in_A, d2_added_noise);
 
-    if (Global_Data.use_cil)
+    if (Global_Data.use_cil && (current_state == control_state))
     {
         cil_inputs.v_d_V = Global_Data.dut.reference_values->v_dq_in_V.d;
         cil_inputs.v_q_V = Global_Data.dut.reference_values->v_dq_in_V.q;
-        cil_inputs.omega_mech_1_s = Global_Data.prime_mover_reference_speed_in_rpm;
+        cil_inputs.omega_mech_1_s = Global_Data.prime_mover_reference_speed_in_rpm/60.0f*2.0f*UZ_PIf;
         cil_inputs.load_torque = 0.0f;
         uz_pmsmModel_set_inputs(Global_Data.cil.pmsm_cil, cil_inputs);
     }
@@ -379,6 +399,9 @@ void all_measurements(void)
     Global_Data.M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f; // - 0.02f;
 }
 
+float theta_dut_zero_crossing = false;
+bool found_zero_crossing = false;
+
 void automatic_profile(void)
 {
     if ((Global_Data.javascope.select_automatic_idiq))
@@ -392,8 +415,21 @@ void automatic_profile(void)
             Global_Data.profile.wait_for_n_ref = false;
         }
 
-        bool theta_dut_zero_crossing = (Global_Data.profile.theta_mech_dut_old - Global_Data.dut.measurement_values->theta_mech);
-        if (((theta_dut_zero_crossing > UZ_PIf) || (Global_Data.prime_mover.actual_data->speed_in_rpm < 10.0f)) && (!Global_Data.profile.start_angle_found) && (Global_Data.profile.speed_setpoint_reached))
+
+         if (Global_Data.use_cil)
+        {
+            if (found_zero_crossing == false)
+            {
+                found_zero_crossing = true;
+            }
+        }
+        else
+        {
+            theta_dut_zero_crossing = (Global_Data.profile.theta_mech_dut_old - Global_Data.dut.measurement_values->theta_mech);
+            found_zero_crossing = (theta_dut_zero_crossing > UZ_PIf);
+        }
+
+        if ((found_zero_crossing || (Global_Data.prime_mover.actual_data->speed_in_rpm < 10.0f)) && (!Global_Data.profile.start_angle_found) && (Global_Data.profile.speed_setpoint_reached))
         {
             Global_Data.profile.start_angle_found = true;
             Global_Data.javascope.start_marker = 1.0f;

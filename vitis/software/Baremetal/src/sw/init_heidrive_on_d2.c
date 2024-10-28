@@ -126,6 +126,7 @@ static struct uz_rlcc_config_t config_rlc_heidrive = {
 void init_heidrive_on_d2(void)
 {
 #if DUT_MACHINE == HEIDRIVE_D2
+    Global_Data.dut.pmsm_data = &config_PMSM_heidrive_d2;
     Global_Data.rl_controller = uz_rlcc_init(config_rlc_heidrive,
                                              config_nn,
                                              NUMBER_OF_LAYERS,

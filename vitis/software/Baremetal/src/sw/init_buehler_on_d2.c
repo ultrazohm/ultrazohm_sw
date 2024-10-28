@@ -147,20 +147,22 @@ struct uz_PMSM_flux_fitting_parameter_config_t buehler_fitting = {0};
         void init_buehler_on_d2(void)
         {
 #if DUT_MACHINE == BUEHLER
-            Global_Data.rl_controller = uz_rlcc_init(config_rlc_buehler,
-                                                     config_nn,
-                                                     NUMBER_OF_LAYERS,
-                                                     &x[0],
-                                                     UZ_MATRIX_SIZE(x));
-            config_buehler.rlcc = Global_Data.rl_controller;
-            Global_Data.objects.d2_controller = uz_pmsm_control_init(config_buehler, config_PMSM_buehler, buehler_fitting);
-            Global_Data.dut.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);
-            Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
-            Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
-            Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_buehler.polePairs * config_PMSM_buehler.Psi_PM_Vs;
-            Global_Data.profile.id_scale_in_A = 2.0f / 4.2f;
-            Global_Data.profile.iq_scale_in_A = 2.0f;
-            Global_Data.profile.speed_scale_in_rpm = 4000.0f;
+                Global_Data.dut.pmsm_data = &config_PMSM_buehler;
+
+                Global_Data.rl_controller = uz_rlcc_init(config_rlc_buehler,
+                                                         config_nn,
+                                                         NUMBER_OF_LAYERS,
+                                                         &x[0],
+                                                         UZ_MATRIX_SIZE(x));
+                config_buehler.rlcc = Global_Data.rl_controller;
+                Global_Data.objects.d2_controller = uz_pmsm_control_init(config_buehler, config_PMSM_buehler, buehler_fitting);
+                Global_Data.dut.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);
+                Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
+                Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
+                Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_buehler.polePairs * config_PMSM_buehler.Psi_PM_Vs;
+                Global_Data.profile.id_scale_in_A = 2.0f / 4.2f;
+                Global_Data.profile.iq_scale_in_A = 2.0f;
+                Global_Data.profile.speed_scale_in_rpm = 4000.0f;
 #else
     Global_Data.objects.d2_controller = uz_pmsm_control_init(config_buehler, config_PMSM_buehler, buehler_fitting);
     Global_Data.prime_mover.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);

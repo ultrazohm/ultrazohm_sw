@@ -149,6 +149,8 @@ static struct uz_rlcc_config_t config_rlc_beckhoff = {
 void init_beckhoff_on_d2(void)
 {
 #if DUT_MACHINE == BECKHOFF
+    Global_Data.dut.pmsm_data = &config_PMSM_beckhoff;
+
     Global_Data.rl_controller = uz_rlcc_init(config_rlc_beckhoff,
                                              config_nn,
                                              NUMBER_OF_LAYERS,

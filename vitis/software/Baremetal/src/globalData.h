@@ -18,6 +18,7 @@
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_pmsm_control/uz_pmsm_control.h"
 #include "uz/uz_rlcc/uz_rlcc.h"
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -143,6 +144,7 @@ typedef struct controller_data
 	struct uz_pmsm_measurement_values *measurement_values;
 	struct uz_pmsm_reference_values *reference_values;
 	float torque_constant;
+	struct uz_PMSM_t* pmsm_data;
 } controller_data;
 
 typedef struct javascope_global
@@ -156,6 +158,11 @@ typedef struct javascope_global
 	bool disable_speed_control;
 	bool use_rl;
 } javascope_global;
+
+typedef struct cil_data{
+	uz_3ph_dq_t i_ref;
+	uz_pmsmModel_t* pmsm_cil;
+}cil_data;
 
 typedef struct auto_profile
 {
@@ -192,6 +199,8 @@ typedef struct _DS_Data_
 	javascope_global javascope;
 	auto_profile profile;
 	uz_rlcc_t* rl_controller;
+	cil_data cil;
+	bool use_cil;
 } DS_Data;
 
 #endif

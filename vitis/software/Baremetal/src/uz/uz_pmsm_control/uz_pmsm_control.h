@@ -49,6 +49,7 @@ struct uz_pmsm_control_configuration_t
     float relative_torque_tolerance;
     bool nonlinear_machine;
     bool use_rlcc;
+    bool use_cil;
     uz_rlcc_t *rlcc;
     struct uz_DutyCycle_t default_duty_cycle; // returned duty cycle if control is not enabled
 };
@@ -97,4 +98,5 @@ bool uz_pmsm_controller_get_safe_operating_area_violation(uz_pmsm_control_t *sel
 void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control);
 void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_offset);
 void uz_pmsm_controller_use_rlcc(uz_pmsm_control_t *self, bool use_rlcc);
+void uz_pmsm_controller_use_cil(uz_pmsm_control_t *self, bool use_cil);
 #endif // UZ_PMSM_CONTROL_H

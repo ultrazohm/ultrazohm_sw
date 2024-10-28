@@ -39,6 +39,7 @@ struct uz_pmsmModel_outputs_t
     float i_q_A; /**< Current in q-Axis in A */
     float torque_Nm; /**< Inner torque of PMSM in Nm*/
     float omega_mech_1_s; /**< Rotational speed of PMSM in 1/s*/
+    float omega_el_1_s; /**< Rotational speed of electrical system of PMSM in 1/s*/
 };
 
 /**

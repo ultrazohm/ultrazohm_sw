@@ -117,6 +117,7 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self)
     outputs.i_q_A =uz_pmsmModel_hw_read_i_q(self->config.base_address);
     outputs.torque_Nm =uz_pmsmModel_hw_read_torque(self->config.base_address);
     outputs.omega_mech_1_s =uz_pmsmModel_hw_read_omega_mech(self->config.base_address);
+    outputs.omega_el_1_s = outputs.omega_mech_1_s * self->config.polepairs;
     return outputs;
 }
 

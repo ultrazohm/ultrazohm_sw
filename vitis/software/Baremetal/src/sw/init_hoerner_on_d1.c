@@ -183,10 +183,10 @@ static struct uz_rlcc_config_t config_rlc_hoerner = {
     .use_ip_core = false};
 #endif
 
-
 void init_hoerner_on_d2(void)
 {
 #if DUT_MACHINE == HOERNER
+    Global_Data.dut.pmsm_data = &config_PMSM_hoerner;
     Global_Data.rl_controller = uz_rlcc_init(config_rlc_hoerner,
                                              config_nn,
                                              NUMBER_OF_LAYERS,

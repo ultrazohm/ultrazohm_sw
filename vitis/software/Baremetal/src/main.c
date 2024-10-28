@@ -143,6 +143,19 @@ int main(void)
             initialization_chain = print_msg;
             break;
         case print_msg:
+            struct uz_pmsmModel_config_t pmsm_IPCore_config = {
+                .base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+                .ip_core_frequency_Hz = 100000000,
+                .simulate_mechanical_system = false,
+                .r_1 = Global_Data.dut.pmsm_data->R_ph_Ohm,
+                .L_d = Global_Data.dut.pmsm_data->Ld_Henry,
+                .L_q = Global_Data.dut.pmsm_data->Lq_Henry,
+                .psi_pm = Global_Data.dut.pmsm_data->Psi_PM_Vs,
+                .polepairs = Global_Data.dut.pmsm_data->polePairs,
+                .inertia = 1.48e-05f,
+                .coulomb_friction_constant = 0.01f,
+                .friction_coefficient = 0.001f};
+            Global_Data.cil.pmsm_cil = uz_pmsmModel_init(pmsm_IPCore_config);
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");

@@ -172,9 +172,16 @@ bool uz_pmsm_controller_get_safe_operating_area_violation(uz_pmsm_control_t *sel
 
 void uz_pmsm_controller_use_rlcc(uz_pmsm_control_t *self, bool use_rlcc)
 {
-uz_assert_not_NULL(self);
+    uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->config.use_rlcc=use_rlcc;
+    self->config.use_rlcc = use_rlcc;
+}
+
+void uz_pmsm_controller_use_cil(uz_pmsm_control_t *self, bool use_cil)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    self->config.use_cil = use_cil;
 }
 
 void uz_pmsm_controller_reset(uz_pmsm_control_t *self)
@@ -204,17 +211,33 @@ void uz_pmsm_controller_acknowledge_and_reset_error(uz_pmsm_control_t *self, str
 
 void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
 {
-    self->actual_values.i_abc_in_A.a = (self->config.current_conversion_factors.a * self->measurement.phase_currents_from_adc_ampere_per_volt.a) + self->config.current_offsets.a;
-    self->actual_values.i_abc_in_A.b = (self->config.current_conversion_factors.b * self->measurement.phase_currents_from_adc_ampere_per_volt.b) + self->config.current_offsets.b;
-    self->actual_values.i_abc_in_A.c = (self->config.current_conversion_factors.c * self->measurement.phase_currents_from_adc_ampere_per_volt.c) + self->config.current_offsets.c;
-    self->actual_values.v_dc_in_V = (self->config.v_dc_in_V_conversion_factor * self->measurement.v_dc_from_adc_volt_per_volt) + self->config.v_dc_in_V_offset;
-    self->actual_values.i_dc_in_A = (self->config.i_dc_in_V_conversion_factor * self->measurement.i_dc_from_adc_ampere_per_volt) + self->config.i_dc_in_V_offset;
+    if (self->config.use_cil)
+    {
+        self->actual_values.i_abc_in_A.a = self->measurement.phase_currents_from_adc_ampere_per_volt.a;
+        self->actual_values.i_abc_in_A.b = self->measurement.phase_currents_from_adc_ampere_per_volt.b;
+        self->actual_values.i_abc_in_A.c = self->measurement.phase_currents_from_adc_ampere_per_volt.c;
+        self->actual_values.v_dc_in_V =    self->measurement.v_dc_from_adc_volt_per_volt;
+        self->actual_values.i_dc_in_A =    self->measurement.i_dc_from_adc_ampere_per_volt;
+    }
+    else
+    {
+        self->actual_values.i_abc_in_A.a = (self->config.current_conversion_factors.a * self->measurement.phase_currents_from_adc_ampere_per_volt.a) + self->config.current_offsets.a;
+        self->actual_values.i_abc_in_A.b = (self->config.current_conversion_factors.b * self->measurement.phase_currents_from_adc_ampere_per_volt.b) + self->config.current_offsets.b;
+        self->actual_values.i_abc_in_A.c = (self->config.current_conversion_factors.c * self->measurement.phase_currents_from_adc_ampere_per_volt.c) + self->config.current_offsets.c;
+        self->actual_values.v_dc_in_V = (self->config.v_dc_in_V_conversion_factor * self->measurement.v_dc_from_adc_volt_per_volt) + self->config.v_dc_in_V_offset;
+        self->actual_values.i_dc_in_A = (self->config.i_dc_in_V_conversion_factor * self->measurement.i_dc_from_adc_ampere_per_volt) + self->config.i_dc_in_V_offset;
+    }
 
     self->actual_values.omega_el_rad_per_sec = self->measurement.omega_mech_rad_per_sec * self->machine_data.polePairs;
     self->actual_values.speed_in_rpm = self->measurement.omega_mech_rad_per_sec * 60.0f / (2 * UZ_PIf);
     float theta_el_without_offset = uz_signals_wrap(self->measurement.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
     self->actual_values.theta_el = theta_el_without_offset - self->config.theta_el_offset;
+
+    if(self->config.use_cil){
     self->actual_values.theta_el_advanced = self->actual_values.theta_el + (1.5f * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
+    }else{
+        self->actual_values.theta_el_advanced = self->actual_values.theta_el;
+    }
 
     self->actual_values.i_dq_in_A = uz_transformation_3ph_abc_to_dq(self->actual_values.i_abc_in_A, self->actual_values.theta_el);
 }
@@ -246,16 +269,18 @@ void uz_pmsm_controller_check_safe_operating_region(uz_pmsm_control_t *self)
     }
 }
 
-void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control){
+void uz_pmsm_controller_enable_speed_control(uz_pmsm_control_t *self, bool enable_speed_control)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->config.enable_speed_control=enable_speed_control;
+    self->config.enable_speed_control = enable_speed_control;
 }
 
-void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_offset){
+void uz_pmsm_controller_set_theta_offset(uz_pmsm_control_t *self, float theta_offset)
+{
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    self->config.theta_el_offset=theta_offset;
+    self->config.theta_el_offset = theta_offset;
 }
 
 struct uz_DutyCycle_t

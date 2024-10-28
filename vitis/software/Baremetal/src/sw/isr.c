@@ -59,7 +59,7 @@ float iq_setpoints[22] = {
 };
 
 // float speed_setpoints[] = {-100, -200, -300, -500, -600, -700, -900, -1000};
-float speed_setpoints[] = {-0.1f,-0.2f,-0.5f,-1.0f};
+float speed_setpoints[] = {-0.1f, -0.2f, -0.5f, -1.0f};
 
 extern float PMSM_rated_current_hoerner;
 extern bool select_misalignment;
@@ -103,6 +103,8 @@ uz_3ph_dq_t d1_reference_currents_in_A = {0.0f};
 uz_3ph_dq_t d2_reference_currents_in_A = {0.0f};
 bool manual_dutycycle_d2 = false;
 bool manual_dutycycle_d1 = false;
+struct uz_pmsmModel_outputs_t cil_outputs = {0};
+struct uz_pmsmModel_inputs_t cil_inputs = {0};
 
 void ISR_Control(void *data)
 {
@@ -117,7 +119,8 @@ void ISR_Control(void *data)
         Global_Data.prime_mover_reference_speed_in_rpm = Global_Data.javascope.prime_mover_reference_speed_in_rpm;
         Global_Data.dut_reference_currents_in_A.d = Global_Data.javascope.dut_reference_currents_in_A.d;
         Global_Data.dut_reference_currents_in_A.q = Global_Data.javascope.dut_reference_currents_in_A.q;
-        if (D1_IS_PRIME_MOVER) {
+        if (D1_IS_PRIME_MOVER)
+        {
             if (Global_Data.javascope.disable_speed_control)
             {
                 uz_pmsm_controller_enable_speed_control(Global_Data.objects.d1_controller, false);
@@ -126,7 +129,9 @@ void ISR_Control(void *data)
             {
                 uz_pmsm_controller_enable_speed_control(Global_Data.objects.d1_controller, true);
             }
-        }else{
+        }
+        else
+        {
             if (Global_Data.javascope.disable_speed_control)
             {
                 uz_pmsm_controller_enable_speed_control(Global_Data.objects.d2_controller, false);
@@ -157,12 +162,15 @@ void ISR_Control(void *data)
     }
     else
     {
-        if (D1_IS_PRIME_MOVER){
-            uz_pmsm_controller_use_rlcc(Global_Data.objects.d2_controller,Global_Data.javascope.use_rl);
-        }else{
-            uz_pmsm_controller_use_rlcc(Global_Data.objects.d1_controller,Global_Data.javascope.use_rl);
+        if (D1_IS_PRIME_MOVER)
+        {
+            uz_pmsm_controller_use_rlcc(Global_Data.objects.d2_controller, Global_Data.javascope.use_rl);
         }
-                uz_pmsm_controller_acknowledge_and_reset_error(Global_Data.objects.d1_controller, d1_measurements);
+        else
+        {
+            uz_pmsm_controller_use_rlcc(Global_Data.objects.d1_controller, Global_Data.javascope.use_rl);
+        }
+        uz_pmsm_controller_acknowledge_and_reset_error(Global_Data.objects.d1_controller, d1_measurements);
         uz_pmsm_controller_acknowledge_and_reset_error(Global_Data.objects.d2_controller, d2_measurements);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
         uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
@@ -205,10 +213,13 @@ void ISR_Control(void *data)
 
     if (D1_IS_PRIME_MOVER)
     {
-        if (Global_Data.javascope.disable_speed_control){
+        if (Global_Data.javascope.disable_speed_control)
+        {
             d1_reference_currents_in_A.d = Global_Data.dut_reference_currents_in_A.d;
             d1_reference_currents_in_A.q = Global_Data.dut_reference_currents_in_A.q;
-        }else{
+        }
+        else
+        {
             d1_reference_currents_in_A.d = 0.0f;
             d1_reference_currents_in_A.q = 0.0f;
         }
@@ -241,8 +252,43 @@ void ISR_Control(void *data)
         d2_added_noise = Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
     }
 
+    if (Global_Data.use_cil)
+    {
+        uz_pmsm_controller_use_cil(Global_Data.objects.d1_controller, true);
+        uz_pmsm_controller_use_cil(Global_Data.objects.d2_controller, true);
+
+        uz_pmsmModel_trigger_input_strobe(Global_Data.cil.pmsm_cil);
+        uz_pmsmModel_trigger_output_strobe(Global_Data.cil.pmsm_cil);
+        cil_outputs = uz_pmsmModel_get_outputs(Global_Data.cil.pmsm_cil);
+
+        d1_measurements.i_dc_from_adc_ampere_per_volt = 0.0f;
+        d1_measurements.omega_mech_rad_per_sec = cil_outputs.omega_mech_1_s;
+        struct uz_3ph_dq_t cil_dq_currents = {
+            .d = cil_outputs.i_d_A,
+            .q = cil_outputs.i_q_A,
+            .zero = 0.0f};
+        struct uz_3ph_abc_t cil_abc_currents = uz_transformation_3ph_dq_to_abc(cil_dq_currents, 0.0f);
+        d1_measurements.phase_currents_from_adc_ampere_per_volt = cil_abc_currents;
+        d1_measurements.theta_mech = 0.0f;
+        d1_measurements.v_dc_from_adc_volt_per_volt = 48.0f;
+    }
+    else
+    {
+        uz_pmsm_controller_use_cil(Global_Data.objects.d1_controller, false);
+        uz_pmsm_controller_use_cil(Global_Data.objects.d2_controller, false);
+    }
+
     struct uz_DutyCycle_t duty_d1 = uz_pmsm_controller_sample(Global_Data.objects.d1_controller, d1_measurements, d1_reference_speed_in_rpm, d1_reference_currents_in_A, d1_added_noise);
     struct uz_DutyCycle_t duty_d2 = uz_pmsm_controller_sample(Global_Data.objects.d2_controller, d2_measurements, d2_reference_speed_in_rpm, d2_reference_currents_in_A, d2_added_noise);
+
+    if (Global_Data.use_cil)
+    {
+        cil_inputs.v_d_V = Global_Data.dut.reference_values->v_dq_in_V.d;
+        cil_inputs.v_q_V = Global_Data.dut.reference_values->v_dq_in_V.q;
+        cil_inputs.omega_mech_1_s = Global_Data.prime_mover_reference_speed_in_rpm;
+        cil_inputs.load_torque = 0.0f;
+        uz_pmsmModel_set_inputs(Global_Data.cil.pmsm_cil, cil_inputs);
+    }
 
     Global_Data.d1_operating_region_violation = uz_pmsm_controller_get_safe_operating_area_violation(Global_Data.objects.d1_controller);
     Global_Data.d2_operating_region_violation = uz_pmsm_controller_get_safe_operating_area_violation(Global_Data.objects.d2_controller);
@@ -337,7 +383,7 @@ void automatic_profile(void)
 {
     if ((Global_Data.javascope.select_automatic_idiq))
     {
-        Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm* speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
+        Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm * speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
         Global_Data.profile.speed_tracking_error = fabsf(Global_Data.profile.prime_mover_reference_speed_in_rpm - Global_Data.av.mechanicalRotorSpeed_filtered_prime_mover);
 
         if (Global_Data.profile.speed_tracking_error < 1.0f && Global_Data.profile.wait_for_n_ref)
@@ -355,7 +401,7 @@ void automatic_profile(void)
         }
         if (Global_Data.profile.start_angle_found)
         {
-            Global_Data.profile.dut_reference_currents_in_A.d = id_setpoints[Global_Data.profile.setpoint_index] *Global_Data.profile.id_scale_in_A;
+            Global_Data.profile.dut_reference_currents_in_A.d = id_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.id_scale_in_A;
             Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.iq_scale_in_A; // * PMSM_rated_current_hoerner;
 
             // step throught the array
@@ -391,7 +437,7 @@ void automatic_profile(void)
                         // stop
                         Global_Data.javascope.select_automatic_idiq = false;
                         Global_Data.profile.n_ref_setpoint_index = 0U;
-                        //ultrazohm_state_machine_set_stop(true);
+                        // ultrazohm_state_machine_set_stop(true);
                     }
                     Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm * speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
                 }

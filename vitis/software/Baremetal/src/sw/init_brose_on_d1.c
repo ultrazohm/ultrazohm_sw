@@ -3,10 +3,10 @@ extern DS_Data Global_Data;
 
 struct uz_pmsm_control_configuration_t config_brose = {
     .current_conversion_factors = {
-        .a = 12.223f,
-        .b = 12.3123f,
-        .c = 12.4303f},
-    .current_offsets = {.a = +0.0164f, .b = +0.0161f, .c = -0.0184f},
+            .a = 12.262f,
+            .b = 11.808f,
+            .c = 12.125f},
+		    .current_offsets = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
     .v_dc_in_V_conversion_factor = 12.0f,
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
@@ -141,7 +141,7 @@ static struct uz_rlcc_config_t config_rlc_brose = {
     .max_modulation_index = 1.0f / 1.732050808f,
     .v_dc_rated_V = 48.0f,
     .i_rated_A = 28.3f,
-    .speed_rated_rpm = 1100.0f,
+    .speed_rated_rpm = 1100.0f*5.0f,
     .use_ip_core = false};
 #endif
 
@@ -161,8 +161,8 @@ void init_brose_on_d1(void)
     Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
     Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
     Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_brose.polePairs * config_PMSM_brose.Psi_PM_Vs;
-    Global_Data.profile.id_scale_in_A = 1.0f / 4.2f;
-    Global_Data.profile.iq_scale_in_A = 1.0f;
+    Global_Data.profile.id_scale_in_A = 5.0f / 4.2f;
+    Global_Data.profile.iq_scale_in_A = 10.0f;
     Global_Data.profile.speed_scale_in_rpm = 1000.0f;
 #else
     Global_Data.objects.d1_controller = uz_pmsm_control_init(config_brose, config_PMSM_brose, brose_fitting);

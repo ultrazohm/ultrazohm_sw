@@ -229,14 +229,15 @@ void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
     }
 
     self->actual_values.omega_el_rad_per_sec = self->measurement.omega_mech_rad_per_sec * self->machine_data.polePairs;
-    self->actual_values.speed_in_rpm = self->measurement.omega_mech_rad_per_sec * 60.0f / (2 * UZ_PIf);
+    self->actual_values.speed_in_rpm = self->measurement.omega_mech_rad_per_sec * 60.0f / (2.0f * UZ_PIf);
     float theta_el_without_offset = uz_signals_wrap(self->measurement.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
     self->actual_values.theta_el = theta_el_without_offset - self->config.theta_el_offset;
 
     if(self->config.use_cil){
-    self->actual_values.theta_el_advanced = self->actual_values.theta_el + (1.5f * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
-    }else{
         self->actual_values.theta_el_advanced = self->actual_values.theta_el;
+    }else{
+        self->actual_values.theta_el_advanced = self->actual_values.theta_el + (1.5f * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
+
     }
 
     self->actual_values.i_dq_in_A = uz_transformation_3ph_abc_to_dq(self->actual_values.i_abc_in_A, self->actual_values.theta_el);

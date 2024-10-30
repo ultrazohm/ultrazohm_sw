@@ -3,10 +3,10 @@ extern DS_Data Global_Data;
 
 struct uz_pmsm_control_configuration_t config_beckhoff = {
     .current_conversion_factors = {
-        .a = 12.2889f,
-        .b = 11.8330f,
-        .c = 11.7894f},
-    .current_offsets = {.a = 0.0164f, .b = 0.0161f, .c = 0.0184f},
+            .a = 12.216f,
+            .b = 14.083f,
+            .c = 12.073f},
+		    .current_offsets = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
     .v_dc_in_V_conversion_factor = 12.0f,
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
@@ -141,7 +141,7 @@ static struct uz_rlcc_config_t config_rlc_beckhoff = {
     .max_modulation_index = 1.0f / 1.732050808f,
     .v_dc_rated_V = 48.0f,
     .i_rated_A = 8.0f,
-    .speed_rated_rpm = 1000.0f,
+    .speed_rated_rpm = 1000.0f*4.0f,
     .use_ip_core = false};
 #endif
 

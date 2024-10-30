@@ -6,7 +6,7 @@ struct uz_pmsm_control_configuration_t config_heidrive = {
         .a = 12.2889f,
         .b = 11.8330f,
         .c = 11.7894f},
-    .current_offsets = {.a = 0.0164f, .b = 0.0161f, .c = 0.0184f},
+	    .current_offsets = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
     .v_dc_in_V_conversion_factor = 12.0f,
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
@@ -119,7 +119,7 @@ static struct uz_rlcc_config_t config_rlc_heidrive = {
     .max_modulation_index = 1.0f / 1.732050808f,
     .v_dc_rated_V = 48.0f,
     .i_rated_A = 4.2f,
-    .speed_rated_rpm = 3000.0f,
+    .speed_rated_rpm = 3000.0f*3.0f,
     .use_ip_core = false};
 #endif
 

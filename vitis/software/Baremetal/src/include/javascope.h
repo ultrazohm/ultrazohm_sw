@@ -80,6 +80,18 @@ enum JS_OberservableData
 	JSO_n_ref_rpm_beckhoff_filtered,
 	JSO_n_rpm_beckhoff_filtered,
 	JSO_pm_speed_filtered,
+	JSO_dut_ia_raw,
+	JSO_dut_ib_raw,
+	JSO_dut_ic_raw,
+	JSO_cil_out_id,
+	JSO_cil_out_iq,
+	JSO_cil_out_omega_el,
+	JSO_cil_out_omega_mech,
+	JSO_cil_out_torque,
+	JSO_cil_in_load_torque,
+	JSO_cil_in_omega_mech_1_s,
+	JSO_cil_in_v_d_V,
+	JSO_cil_in_v_q_V,
 	JSO_ENDMARKER
 };
 

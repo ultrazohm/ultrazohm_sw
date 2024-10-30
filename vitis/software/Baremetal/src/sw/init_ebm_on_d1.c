@@ -3,10 +3,10 @@ extern DS_Data Global_Data;
 
 struct uz_pmsm_control_configuration_t config_ebm = {
     .current_conversion_factors = {
-        .a = 12.223f,
-        .b = 12.3123f,
-        .c = 12.4303f},
-    .current_offsets = {.a = +0.0164f, .b = +0.0161f, .c = -0.0184f},
+        .a = 12.262f,
+        .b = 11.808f,
+        .c = 12.125f},
+	    .current_offsets = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
     .v_dc_in_V_conversion_factor = 12.0f,
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
@@ -14,7 +14,7 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .theta_el_offset = 2.910038f, // Manual: 3.000038f, second try: 3.020038
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = D1_IS_PRIME_MOVER,
-    .speed_controller_max_torque = 0.5f,
+    .speed_controller_max_torque = 0.6f,
     .speed_controller_kp = 0.005f,
     .speed_controller_ki = 0.01f,
     .current_controller_d_kp = 1.4667f,
@@ -31,7 +31,7 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .error_lower_bound_speed_in_rpm = -4500.0f,
     .disturbance_input_lower_bound_in_Nm = -10.0f, // disable disturbance input for now
     .disturbance_input_upper_bound_in_Nm = 10.0f,
-    .decoupling_method = linear_decoupling_compensated,
+    .decoupling_method = linear_decoupling,
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = PRIME_MOVER_SETPOINT_FILTER_CUTTOFF_FREQUENCY,
     .motor_type = SMPMSM,
@@ -49,7 +49,7 @@ struct uz_PMSM_t config_PMSM_ebm = {
     .Psi_PM_Vs = 0.0116f,
     .polePairs = 4.0f,
     .J_kg_m_squared = 0.000084f,
-    .I_max_Ampere = 15.0f};
+    .I_max_Ampere = 20.0f};
 float PMSM_rated_current_ebm = 8.6f;
 
 struct uz_PMSM_flux_fitting_parameter_config_t ebm_fitting = {0};
@@ -140,8 +140,8 @@ static struct uz_rlcc_config_t config_rlc_ebm = {
     .number_of_observations = 9, // 9
     .max_modulation_index = 1.0f / 1.732050808f,
     .v_dc_rated_V = 48.0f,
-    .i_rated_A = 8.6f,
-    .speed_rated_rpm = 4000.0f,
+    .i_rated_A = 8.6f, // Rated is actually 4.5 A but trained is with 8.6 
+    .speed_rated_rpm = 4000.0f*4.0f,
     .use_ip_core = false};
 #endif
 
@@ -160,8 +160,8 @@ void init_ebm_on_d1(void)
     Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
     Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
     Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_ebm.polePairs * config_PMSM_ebm.Psi_PM_Vs;
-    Global_Data.profile.id_scale_in_A = 2.0f / 4.2f;
-    Global_Data.profile.iq_scale_in_A = 2.0f;
+    Global_Data.profile.id_scale_in_A = 2.25f / 4.2f;
+    Global_Data.profile.iq_scale_in_A = 4.5f;
     Global_Data.profile.speed_scale_in_rpm = 4000.0f;
 #else
     Global_Data.objects.d1_controller = uz_pmsm_control_init(config_ebm, config_PMSM_ebm, ebm_fitting);

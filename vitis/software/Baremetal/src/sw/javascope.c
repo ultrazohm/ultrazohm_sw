@@ -18,6 +18,7 @@
 #include "../include/javascope.h"
 #include "../include/ipc_ARM.h"
 #include "xil_cache.h"
+#include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 
 //Variables for JavaScope
 static float zerovalue = 0.0;
@@ -56,6 +57,8 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 
 extern float d1_added_noise;
 extern float d2_added_noise;
+extern struct uz_pmsmModel_outputs_t cil_outputs;
+extern struct uz_pmsmModel_inputs_t cil_inputs;
 
 int JavaScope_initialize(DS_Data *data)
 {
@@ -80,6 +83,18 @@ int JavaScope_initialize(DS_Data *data)
 	js_ch_observable[JSO_ISR_ExecTime_us]=&ISR_execution_time_us;
 	js_ch_observable[JSO_ISR_Period_us]=&ISR_period_us;
 	js_ch_observable[JSO_lifecheck]=&lifecheck;
+	js_ch_observable[JSO_cil_out_id] = &cil_outputs.i_d_A;
+	js_ch_observable[JSO_cil_out_iq] = &cil_outputs.i_q_A;
+	js_ch_observable[JSO_cil_out_omega_el] = &cil_outputs.omega_el_1_s;
+	js_ch_observable[JSO_cil_out_omega_mech] = &cil_outputs.omega_mech_1_s;
+	js_ch_observable[JSO_cil_out_torque] = &cil_outputs.torque_Nm;
+	js_ch_observable[JSO_cil_in_load_torque] = &cil_inputs.load_torque;
+	js_ch_observable[JSO_cil_in_omega_mech_1_s] = &cil_inputs.omega_mech_1_s;
+	js_ch_observable[JSO_cil_in_v_d_V] = &cil_inputs.v_d_V;
+	js_ch_observable[JSO_cil_in_v_q_V] = &cil_inputs.v_q_V;
+	js_ch_observable[JSO_dut_ia_raw] = &data->dut.measurement_values->phase_currents_from_adc_ampere_per_volt.a;
+	js_ch_observable[JSO_dut_ib_raw] = &data->dut.measurement_values->phase_currents_from_adc_ampere_per_volt.b;
+	js_ch_observable[JSO_dut_ic_raw] = &data->dut.measurement_values->phase_currents_from_adc_ampere_per_volt.c;
 	js_ch_observable[JSO_dut_ia]=&data->dut.actual_data->i_abc_in_A.a;
 	js_ch_observable[JSO_dut_ib]=&data->dut.actual_data->i_abc_in_A.b;
 	js_ch_observable[JSO_dut_ic]=&data->dut.actual_data->i_abc_in_A.c;

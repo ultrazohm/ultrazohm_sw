@@ -1,0 +1,41 @@
+import os
+import pandas as pd
+
+# Define a list of CSV filenames to be converted
+# csv_filenames = [
+#     'ebm_foc_real_flux_prediction_3.csv',
+#     'ebm_foc_real_flux_prediction_2.csv',
+#     'ebm_foc_real_flux_prediction.csv',
+#     'ebm_foc_real_linear_decoupling_3.csv',
+#     'ebm_foc_real_linear_decoupling_2.csv',
+#     'ebm_foc_real_linear_decoupling.csv',
+# ]
+
+csv_filenames = [
+    # 'brose_foc_real_10a_flux_decoupling.csv',
+    # 'brose_foc_real_10a_linear_decoupling.csv',
+    'brose_foc_real_10a_linear_decoupling_half_kp.csv'
+]
+
+# Get the current directory
+current_directory = os.getcwd()
+
+# Define the directory containing CSV files (current directory)
+csv_directory = current_directory
+csv_filenames = [file for file in os.listdir(csv_directory) if file.startswith("buehler_")]
+
+# Loop over each filename in the list
+for csv_filename in csv_filenames:
+    # Read the CSV file into a pandas DataFrame
+    df = pd.read_csv(csv_filename, sep=";")
+    
+    # Drop the last column if it is empty (due to trailing ";")
+    df.drop(df.columns[len(df.columns)-1], axis=1, inplace=True)
+    
+    # Create the output filename by replacing '.csv' with '.parquet'
+    parquet_filename = csv_filename.replace('.csv', '.parquet')
+    
+    # Convert the DataFrame to Parquet format and save it
+    df.to_parquet(parquet_filename)
+    
+    print(f"Converted {csv_filename} to {parquet_filename}")

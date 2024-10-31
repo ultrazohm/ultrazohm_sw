@@ -88,25 +88,25 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             struct uz_PMSM_t config_PMSM = {
-               .Ld_Henry = 0.00003f,
-               .Lq_Henry = 0.00003f,				// 0.000042 fuer seg_rotor
-               .Psi_PM_Vs = 0.0041f,				// Leerlauf 80°C,  0.0071f im Strang --> Umrechnung Sternschaltung fuer Umrichter
+               .Ld_Henry = 0.000027f,
+               .Lq_Henry = 0.000039f,				// 0.000042 fuer seg_rotor
+               .Psi_PM_Vs = 0.0042f,				// Leerlauf 80°C,  0.0071f (SM) oder 0.0073 (SEG) im Strang --> Umrechnung Sternschaltung fuer Umrichter
                .polePairs = 21.0f,
                .J_kg_m_squared = 0.032972f,			// J_motor = 0.00156 kgm2 + J_T40B = 0.0015 + J_Kupplung= 0.005 + J_Last = 0.0249
-               .R_ph_Ohm = 0.013f,					// Only motor at 120°C
+               .R_ph_Ohm = 0.013f,					// Only motor
                .I_max_Ampere = 250.0f
              };//these parameters are only needed if linear decoupling is selected
 
              struct uz_PI_Controller_config config_id = {
-               .Kp = 0.15f,
-               .Ki = 87.0f,
+               .Kp = 0.1f,
+               .Ki = 173.3f,
 			   .type = parallel,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
 
             struct uz_PI_Controller_config config_iq = {
-               .Kp = 0.15f,
-               .Ki = 87.0f,
+               .Kp = 0.2f,
+               .Ki = 173.3f,
 			   .type = parallel,
                .samplingTime_sec = 1.0f/ISR_SAMPLE_FREQ_HZ
             };
@@ -118,9 +118,19 @@ int main(void)
                .max_modulation_index = 1.0f/sqrt(3.0f)
             };
             Global_Data.objects.FOC_instance = uz_CurrentControl_init(FOC_config);
+            struct uz_SetPoint_config SP_config = {
+                  .config_PMSM = config_PMSM,
+                  .motor_type = IPMSM,
+                  .is_field_weakening_enabled = false,
+                  .id_ref_Ampere = 0.0f,
+                  .relative_torque_tolerance = 0.001f
+            };
+            Global_Data.objects.current_setpoint_obj = uz_SetPoint_init(SP_config);
+            Global_Data.rasv.flg_use_setpoint_calculation = 0.0f;
             struct uz_IIR_Filter_config config_torque_filter = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = ISR_SAMPLE_FREQ_HZ};
             Global_Data.objects.torque_meas_filter_LP = uz_signals_IIR_Filter_init(config_torque_filter);
             Global_Data.objects.dq_setpoint_filter = uz_uz_dq_setpoint_filter_init(config);
+            Global_Data.av.theta_offset = 0.245f;
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

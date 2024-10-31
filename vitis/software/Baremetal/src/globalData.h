@@ -13,6 +13,7 @@
 #include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -129,6 +130,10 @@ typedef struct _referenceAndSetValues_ {
 	float Id_ref;
 	float Ud_ref;
 	float Uq_ref;
+	float torque_ref;
+	float flg_use_setpoint_calculation;
+	float Ipeak_ref;
+	float Iphase_ref_deg;
 } referenceAndSetValues;
 
 typedef struct{
@@ -149,6 +154,7 @@ typedef struct{
 	uz_temperaturecard_t* temperature_card_d3;
 	uz_IIR_Filter_t*	torque_meas_filter_LP;
 	uz_dq_setpoint_filter* dq_setpoint_filter;
+	uz_SetPoint_t*	current_setpoint_obj;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

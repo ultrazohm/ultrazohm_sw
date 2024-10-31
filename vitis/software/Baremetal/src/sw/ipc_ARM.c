@@ -187,14 +187,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->rasv.halfBridge1DutyCycle = value;
+
 			break;
 
 		case (Set_Send_Field_2):
-		data->rasv.halfBridge2DutyCycle = value;
+		//data->rasv.halfBridge2DutyCycle = value;
+			data->rasv.Ipeak_ref = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->rasv.halfBridge3DutyCycle = value;
+		//data->rasv.halfBridge3DutyCycle = value;
+			data->rasv.Iphase_ref_deg = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -238,7 +241,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+		// Torque-Ref
+		data->rasv.torque_ref = value;
 			break;
 
 		case (Set_Send_Field_12):
@@ -278,11 +282,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			data->rasv.flg_use_setpoint_calculation = 1.0f;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			data->rasv.flg_use_setpoint_calculation = 0.0f;
 			break;
 
 		case (My_Button_3):

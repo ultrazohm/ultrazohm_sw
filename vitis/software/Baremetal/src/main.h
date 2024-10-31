@@ -35,6 +35,7 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "include/uz_temperature_card_init.h"
 #include "uz/uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
 
 
 // UltraZohm includes

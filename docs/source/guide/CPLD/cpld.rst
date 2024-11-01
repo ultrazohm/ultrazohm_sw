@@ -10,7 +10,7 @@ Additional safety can be implemented, e.g. checking switch combinations or ensur
 ispMACH series (uz_carrier Rev4 and before)
 *******************************************
 
-UltraZohms until ``Rev4`` are equiped with CPLDs of the ispMACH series (LA4128V or LC4256V).
+UltraZohms until ``Rev4`` are equipped with CPLDs of the ispMACH series (LA4128V or LC4256V).
 
 
 
@@ -18,11 +18,13 @@ UltraZohms until ``Rev4`` are equiped with CPLDs of the ispMACH series (LA4128V 
 MachXO2 (uz_carrier Rev5 and later)
 ***********************************
 
-UltraZohms with carrier board ``Rev5`` and later are equiped with CPLDs of MachXO2 series (LCMXO2-2000HC-4TG100C).
+UltraZohms with carrier board ``Rev5`` and later are equipped with CPLDs of MachXO2 series. The D-Slots employ the type ``LCMXO2-2000HC-4TG100C``, 
+whereas the S3C CPLD for overall system control is of type ``LCMXO2-4000HC-4TG144C``. Creating a program for a D-Slot CPLD in the :ref:`label_diamond_create_program` section.
 
 
 ..	toctree::
     lattice_toolchain
     cpld_create_program
+    diamond_create_program
     cpld_programming
  

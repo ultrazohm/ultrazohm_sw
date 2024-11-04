@@ -149,8 +149,8 @@ uz_3ph_dq_t uz_rlcc_sample(uz_rlcc_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3
         self->observation[1] = self->v_dq_k_minus_one_V.d * self->voltage_scaling_observation;
         self->observation[2] = self->i_dq_error_A.q;
         self->observation[3] = self->v_dq_k_minus_one_V.q * self->voltage_scaling_observation;
-        self->observation[4] = i_reference_Ampere.d * self->current_scaling_1_by_nominal;
-        self->observation[5] = i_reference_Ampere.q * self->current_scaling_1_by_nominal;
+        self->observation[4] = i_actual_Ampere.d * self->current_scaling_1_by_nominal;
+        self->observation[5] = i_actual_Ampere.q * self->current_scaling_1_by_nominal;
         self->observation[6] = omega_el_rad_per_sec * self->speed_scaling_1_by_nominal_omega_el;
         for (uint32_t i = 0; i < self->config.number_of_observations; i++)
         {
@@ -162,8 +162,8 @@ uz_3ph_dq_t uz_rlcc_sample(uz_rlcc_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3
         self->observation[1] = self->i_dq_integrated_error_A.d / self->config.ts_in_second;
         self->observation[2] = self->i_dq_error_A.q;
         self->observation[3] = self->i_dq_integrated_error_A.q / self->config.ts_in_second;
-        self->observation[4] = i_reference_Ampere.d * self->current_scaling_1_by_nominal;
-        self->observation[5] = i_reference_Ampere.q * self->current_scaling_1_by_nominal;
+        self->observation[4] = i_actual_Ampere.d * self->current_scaling_1_by_nominal;
+        self->observation[5] = i_actual_Ampere.q * self->current_scaling_1_by_nominal;
         self->observation[6] = omega_el_rad_per_sec * self->speed_scaling_1_by_nominal_omega_el;
         self->observation[7] = self->v_dq_k_minus_one_V.d * self->voltage_scaling_observation;
         self->observation[8] = self->v_dq_k_minus_one_V.q * self->voltage_scaling_observation;

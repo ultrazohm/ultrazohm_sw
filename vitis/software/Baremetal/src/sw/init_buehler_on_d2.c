@@ -3,10 +3,10 @@ extern DS_Data Global_Data;
 
 struct uz_pmsm_control_configuration_t config_buehler = {
     .current_conversion_factors = {
-        .a = 12.216f,
-        .b = 14.083f,
-        .c = 12.073f},
-	    .current_offsets = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .a = D2_A_GAIN,
+        .b = D2_B_GAIN,
+        .c = D2_C_GAIN},
+    .current_offsets = {.a = D2_A_OFFSET, .b = D2_B_OFFSET, .c = D2_C_OFFSET},
     .v_dc_in_V_conversion_factor = 12.0f,
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,

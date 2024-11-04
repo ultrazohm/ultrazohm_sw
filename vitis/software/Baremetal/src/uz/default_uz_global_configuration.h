@@ -4,6 +4,19 @@
 // Hardware version of the UltraZohm
 #define UZ_HARDWARE_VERSION 4U
 
+#define D1_A_GAIN 12.262f
+#define D1_B_GAIN 11.808f
+#define D1_C_GAIN 12.125f
+#define D1_A_OFFSET 0.0f
+#define D1_B_OFFSET 0.0f
+#define D1_C_OFFSET 0.0f
+
+#define D2_A_GAIN 12.216f
+#define D2_B_GAIN 14.083f
+#define D2_C_GAIN 12.073f
+#define D2_A_OFFSET 0.0f
+#define D2_B_OFFSET 0.0f
+#define D2_C_OFFSET 0.0f
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
 #define UZ_USE_EXTERNAL_STOP_ON_V4 1U
@@ -48,8 +61,8 @@
 // a216_sidmoid_td3_gaussian_beckhoff
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
 
-#define DUT_MACHINE EBM
-#define AGENT 254
+#define DUT_MACHINE BUEHLER
+#define AGENT 221
 #define D1_MACHINE EBM     // EBM, Brose, Hoerner, HEIDRIVE_D1
 #define D2_MACHINE BUEHLER // HEIDRIVE_D2, BUEHLER, BECKHOFF
 // #define D1_IS_PRIME_MOVER 1U // Auto-calculate this define from DUT_MACHINE?

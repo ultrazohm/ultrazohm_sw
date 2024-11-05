@@ -1948,9 +1948,6 @@
             "left": "25",
             "right": "0"
           },
-          "Dig_11_Ch5": {
-            "direction": "I"
-          },
           "Dig_12_Ch5": {
             "direction": "I"
           },
@@ -2004,6 +2001,9 @@
             "direction": "I"
           },
           "Dig_19_Ch5": {
+            "direction": "I"
+          },
+          "Dig_20_Ch5": {
             "direction": "I"
           }
         },
@@ -3521,9 +3521,6 @@
               }
             },
             "ports": {
-              "Dig_11_Ch5": {
-                "direction": "I"
-              },
               "Dig_12_Ch5": {
                 "direction": "I"
               },
@@ -3558,13 +3555,16 @@
               },
               "Dig_19_Ch5": {
                 "direction": "I"
+              },
+              "Dig_20_Ch5": {
+                "direction": "I"
               }
             },
             "components": {
               "Incremental_Encoder_D5_1": {
                 "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
-                "xci_name": "zusys_Incremental_Encoder_0_0",
-                "xci_path": "ip\\zusys_Incremental_Encoder_0_0\\zusys_Incremental_Encoder_0_0.xci",
+                "xci_name": "zusys_Incremental_Encoder_D5_1_0",
+                "xci_path": "ip\\zusys_Incremental_Encoder_D5_1_0_1\\zusys_Incremental_Encoder_D5_1_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_D5_1"
               },
               "system_ila_0": {
@@ -3586,14 +3586,14 @@
               },
               "Incremental_Encoder_D5_2": {
                 "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
-                "xci_name": "zusys_Incremental_Encoder_0_2",
-                "xci_path": "ip\\zusys_Incremental_Encoder_0_2_1\\zusys_Incremental_Encoder_0_2.xci",
+                "xci_name": "zusys_Incremental_Encoder_D5_2_0",
+                "xci_path": "ip\\zusys_Incremental_Encoder_D5_2_0_1\\zusys_Incremental_Encoder_D5_2_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_D5_2"
               },
               "Incremental_Encoder_D5_3": {
                 "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
-                "xci_name": "zusys_Incremental_Encoder_0_1",
-                "xci_path": "ip\\zusys_Incremental_Encoder_0_1_1\\zusys_Incremental_Encoder_0_1.xci",
+                "xci_name": "zusys_Incremental_Encoder_D5_3_0",
+                "xci_path": "ip\\zusys_Incremental_Encoder_D5_3_0_1\\zusys_Incremental_Encoder_D5_3_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_D5_3"
               }
             },
@@ -3620,59 +3620,59 @@
             "nets": {
               "Dig_11_Ch5_1": {
                 "ports": [
-                  "Dig_11_Ch5",
+                  "Dig_14_Ch5",
                   "Incremental_Encoder_D5_1/I",
                   "system_ila_0/probe2"
                 ]
               },
               "Dig_12_Ch5_1": {
                 "ports": [
-                  "Dig_12_Ch5",
+                  "Dig_13_Ch5",
                   "Incremental_Encoder_D5_1/A",
                   "system_ila_0/probe0"
                 ]
               },
               "Dig_13_Ch5_1": {
                 "ports": [
-                  "Dig_13_Ch5",
+                  "Dig_12_Ch5",
                   "Incremental_Encoder_D5_1/B",
                   "system_ila_0/probe1"
-                ]
-              },
-              "Dig_14_Ch5_1": {
-                "ports": [
-                  "Dig_14_Ch5",
-                  "Incremental_Encoder_D5_2/I"
                 ]
               },
               "Dig_15_Ch5_1": {
                 "ports": [
                   "Dig_15_Ch5",
-                  "Incremental_Encoder_D5_2/A"
+                  "Incremental_Encoder_D5_2/B"
                 ]
               },
               "Dig_16_Ch5_1": {
                 "ports": [
                   "Dig_16_Ch5",
-                  "Incremental_Encoder_D5_2/B"
+                  "Incremental_Encoder_D5_2/A"
                 ]
               },
               "Dig_17_Ch5_1": {
                 "ports": [
                   "Dig_17_Ch5",
-                  "Incremental_Encoder_D5_3/I"
+                  "Incremental_Encoder_D5_2/I"
                 ]
               },
               "Dig_18_Ch5_1": {
                 "ports": [
                   "Dig_18_Ch5",
-                  "Incremental_Encoder_D5_3/A"
+                  "Incremental_Encoder_D5_3/B"
                 ]
               },
               "Dig_19_Ch5_1": {
                 "ports": [
                   "Dig_19_Ch5",
-                  "Incremental_Encoder_D5_3/B"
+                  "Incremental_Encoder_D5_3/A"
+                ]
+              },
+              "Dig_20_Ch5_1": {
+                "ports": [
+                  "Dig_20_Ch5",
+                  "Incremental_Encoder_D5_3/I"
                 ]
               },
               "Incremental_Encoder_0_OverSamplFactor": {
@@ -3809,12 +3809,6 @@
           }
         },
         "nets": {
-          "Dig_11_Ch5_1": {
-            "ports": [
-              "Dig_11_Ch5",
-              "D5_adapter/Dig_11_Ch5"
-            ]
-          },
           "Dig_12_Ch5_1": {
             "ports": [
               "Dig_12_Ch5",
@@ -3861,6 +3855,12 @@
             "ports": [
               "Dig_19_Ch5",
               "D5_adapter/Dig_19_Ch5"
+            ]
+          },
+          "Dig_20_Ch5_1": {
+            "ports": [
+              "Dig_20_Ch5",
+              "D5_adapter/Dig_20_Ch5"
             ]
           },
           "Gates_3L_Gate_Signals_3L": {
@@ -6766,26 +6766,26 @@
               },
               "Resolver_Interface_v_1": {
                 "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
-                "xci_name": "zusys_Resolver_Interface_v_0_1",
-                "xci_path": "ip\\zusys_Resolver_Interface_v_0_1\\zusys_Resolver_Interface_v_0_1.xci",
+                "xci_name": "zusys_Resolver_Interface_v_1_0",
+                "xci_path": "ip\\zusys_Resolver_Interface_v_1_0_1\\zusys_Resolver_Interface_v_1_0.xci",
                 "inst_hier_path": "uz_user/Resolver_D4/Resolver_Interface_v_1"
               },
               "uz_resolver_pl_inter_1": {
                 "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
-                "xci_name": "zusys_uz_resolver_pl_inter_0_1",
-                "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_1\\zusys_uz_resolver_pl_inter_0_1.xci",
+                "xci_name": "zusys_uz_resolver_pl_inter_1_0",
+                "xci_path": "ip\\zusys_uz_resolver_pl_inter_1_0_1\\zusys_uz_resolver_pl_inter_1_0.xci",
                 "inst_hier_path": "uz_user/Resolver_D4/uz_resolver_pl_inter_1"
               },
               "Resolver_Interface_v_2": {
                 "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
-                "xci_name": "zusys_Resolver_Interface_v_0_2",
-                "xci_path": "ip\\zusys_Resolver_Interface_v_0_2\\zusys_Resolver_Interface_v_0_2.xci",
+                "xci_name": "zusys_Resolver_Interface_v_2_0",
+                "xci_path": "ip\\zusys_Resolver_Interface_v_2_0_1\\zusys_Resolver_Interface_v_2_0.xci",
                 "inst_hier_path": "uz_user/Resolver_D4/Resolver_Interface_v_2"
               },
               "uz_resolver_pl_inter_2": {
                 "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
-                "xci_name": "zusys_uz_resolver_pl_inter_0_2",
-                "xci_path": "ip\\zusys_uz_resolver_pl_inter_0_2\\zusys_uz_resolver_pl_inter_0_2.xci",
+                "xci_name": "zusys_uz_resolver_pl_inter_2_0",
+                "xci_path": "ip\\zusys_uz_resolver_pl_inter_2_0_1\\zusys_uz_resolver_pl_inter_2_0.xci",
                 "inst_hier_path": "uz_user/Resolver_D4/uz_resolver_pl_inter_2"
               }
             },
@@ -7123,14 +7123,14 @@
             "components": {
               "uz_d_inverter_adapter_D1": {
                 "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.0",
-                "xci_name": "zusys_uz_d_inverter_adapter_0_0",
-                "xci_path": "ip\\zusys_uz_d_inverter_adapter_0_0_1\\zusys_uz_d_inverter_adapter_0_0.xci",
+                "xci_name": "zusys_uz_d_inverter_adapter_D1_1",
+                "xci_path": "ip\\zusys_uz_d_inverter_adapter_D1_1\\zusys_uz_d_inverter_adapter_D1_1.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/uz_d_inverter_adapter_D1"
               },
               "uz_inverter_adapter_D1": {
                 "vlnv": "xilinx.com:user:uz_inverter_adapter_mapping:1.0",
-                "xci_name": "zusys_uz_inverter_adapter_0_0",
-                "xci_path": "ip\\zusys_uz_inverter_adapter_0_0\\zusys_uz_inverter_adapter_0_0.xci",
+                "xci_name": "zusys_uz_inverter_adapter_D1_1",
+                "xci_path": "ip\\zusys_uz_inverter_adapter_D1_1\\zusys_uz_inverter_adapter_D1_1.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/uz_inverter_adapter_D1"
               },
               "uz_inverter_adapter_D2": {
@@ -7147,8 +7147,8 @@
               },
               "xlslice_D1": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_xlslice_0_0",
-                "xci_path": "ip\\zusys_xlslice_0_0\\zusys_xlslice_0_0.xci",
+                "xci_name": "zusys_xlslice_D1_0",
+                "xci_path": "ip\\zusys_xlslice_D1_0_1\\zusys_xlslice_D1_0.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/xlslice_D1",
                 "parameters": {
                   "DIN_FROM": {
@@ -7164,8 +7164,8 @@
               },
               "xlslice_D2": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_xlslice_0_1",
-                "xci_path": "ip\\zusys_xlslice_0_1\\zusys_xlslice_0_1.xci",
+                "xci_name": "zusys_xlslice_D2_0",
+                "xci_path": "ip\\zusys_xlslice_D2_0_1\\zusys_xlslice_D2_0.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/xlslice_D2",
                 "parameters": {
                   "DIN_FROM": {
@@ -8763,7 +8763,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__ACT_FREQMHZ": {
-            "value": "250.000000"
+            "value": "250"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__FREQMHZ": {
             "value": "250"
@@ -9690,16 +9690,16 @@
             "value": "100.000000"
           },
           "PSU__IOU_SLCR__TTC1__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC1__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC3__ACT_FREQMHZ": {
             "value": "100.000000"
@@ -10853,12 +10853,6 @@
           "uz_user/Dig_08_Ch4"
         ]
       },
-      "Dig_11_Ch5_1": {
-        "ports": [
-          "Dig_11_Ch5",
-          "uz_digital_adapter/Dig_11_Ch5"
-        ]
-      },
       "Dig_12_Ch5_1": {
         "ports": [
           "Dig_12_Ch5",
@@ -10911,6 +10905,12 @@
         "ports": [
           "Dig_19_Ch5",
           "uz_digital_adapter/Dig_19_Ch5"
+        ]
+      },
+      "Dig_20_Ch5_1": {
+        "ports": [
+          "Dig_20_Ch5",
+          "uz_digital_adapter/Dig_20_Ch5"
         ]
       },
       "Dig_26_Ch4_1": {

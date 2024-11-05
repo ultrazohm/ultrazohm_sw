@@ -12,7 +12,7 @@
 #include "../uz_nn/uz_nn_activation_functions.h"
 #include "../uz_math_constants.h"
 
-#define MAX_NUMBER_OF_OBSERVATIONS 9U
+#define MAX_NUMBER_OF_OBSERVATIONS 13U
 
 struct uz_rlcc_t
 {
@@ -26,6 +26,8 @@ struct uz_rlcc_t
     uz_3ph_dq_t i_dq_integrated_error_A;
     uz_3ph_dq_t i_dq_error_A;
     uz_3ph_dq_t v_dq_k_minus_one_V;
+    uz_3ph_dq_t v_dq_k_minus_two_V;
+    uz_3ph_dq_t i_dq_k_minus_one_A;
     uz_3ph_dq_t v_dq_out_before_limitation;
     uz_3ph_dq_t v_dq_out_limited;
     float observation[MAX_NUMBER_OF_OBSERVATIONS];
@@ -172,6 +174,25 @@ uz_3ph_dq_t uz_rlcc_sample(uz_rlcc_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3
             uz_matrix_set_element_zero_based(self->nn_input_matrix, self->observation[i], 0U, i);
         }
         break;
+    case 13:
+        self->observation[0] = self->i_dq_error_A.d;
+        self->observation[1] = self->i_dq_integrated_error_A.d / self->config.ts_in_second;
+        self->observation[2] = self->i_dq_error_A.q;
+        self->observation[3] = self->i_dq_integrated_error_A.q / self->config.ts_in_second;
+        self->observation[4] = i_actual_Ampere.d * self->current_scaling_1_by_nominal;
+        self->observation[5] = i_actual_Ampere.q * self->current_scaling_1_by_nominal;
+        self->observation[6] = omega_el_rad_per_sec * self->speed_scaling_1_by_nominal_omega_el;
+        self->observation[7] = self->v_dq_k_minus_one_V.d * self->voltage_scaling_observation;
+        self->observation[8] = self->v_dq_k_minus_one_V.q * self->voltage_scaling_observation;
+        self->observation[9] = self->i_dq_k_minus_one_A.q * self->current_scaling_1_by_nominal;
+        self->observation[10] = self->i_dq_k_minus_one_A.d * self->current_scaling_1_by_nominal;
+        self->observation[11] = self->v_dq_k_minus_two_V.d * self->voltage_scaling_observation;
+        self->observation[12] = self->v_dq_k_minus_two_V.q * self->voltage_scaling_observation;
+        for (uint32_t i = 0; i < self->config.number_of_observations; i++)
+        {
+            uz_matrix_set_element_zero_based(self->nn_input_matrix, self->observation[i], 0U, i);
+        }
+        break;
     default:
         uz_assert(0); // Number of observations not implemented, thus assertion triggered to stop everything
         break;
@@ -194,7 +215,9 @@ uz_3ph_dq_t uz_rlcc_sample(uz_rlcc_t *self, uz_3ph_dq_t i_reference_Ampere, uz_3
     }
 
     self->v_dq_out_limited = uz_CurrentControl_SpaceVector_Limitation(self->v_dq_out_before_limitation, V_dc_volts, self->config.max_modulation_index, omega_el_rad_per_sec, i_reference_Ampere, &self->clamping);
+    self->v_dq_k_minus_two_V = self->v_dq_k_minus_one_V;
     self->v_dq_k_minus_one_V = self->v_dq_out_limited;
+    self->i_dq_k_minus_one_A = i_actual_Ampere;
     return self->v_dq_out_limited;
 }
 

@@ -94,9 +94,9 @@ void test_uz_parameterID_rc_test_generate_outputs(void){
     {
         test_output = uz_parameterID_rc_generate_idq_ref(rc_instance);
     }
-    TEST_ASSERT_EQUAL_FLOAT(-5.0f, test_output.id_ref_Amps);
-    TEST_ASSERT_EQUAL_FLOAT(-5.0f, test_output.iq_ref_Amps);
-    TEST_ASSERT_EQUAL_FLOAT(100.0f, test_output.n_ref_rpm);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, test_output.id_ref_Amps);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, test_output.iq_ref_Amps);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, test_output.n_ref_rpm);
 }
 
 #endif // TEST

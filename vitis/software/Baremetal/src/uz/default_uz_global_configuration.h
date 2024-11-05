@@ -40,26 +40,31 @@
 // a202_l1_td3_gaussian_heidrive
 // a201_sidmoid_td3_gaussian_heidrive
 // a277_sidmoid_td3_gaussian_heidrive_500k_30seeds
+// a290_sig_td3_int_more_obs_heidrive_250k_2tau
 
 // Brose
 // a214_l1_td3_gaussian_brose
 // a211_sidmoid_td3_gaussian_brose
 // a252_sidmoid_td3_gaussian_brose_500k_updates
+// a287_sig_td3_int_more_obs_brose_250k_2tau
 
 // Buehler
 // a221_l1_td3_gaussian_buehler
 // a234_sigmoid_td3_gaussian_buehler
 // a255_sidmoid_td3_gaussian_buehler_500k_updates
+// a289_sig_td3_int_more_obs_buehler_250k_2tau
 
 // EBMPabst
 // a217_l1_td3_gaussian_ebmpabst
 // a218_sidmoid_td3_gaussian_ebmpabst
 // a254_sidmoid_td3_gaussian_ebm_500k_updates
+// a288_sig_td3_int_more_obs_ebm_250k_2tau
 
 // Beckhoff
 // a215_l1_td3_gaussian_beckhoff
 // a216_sidmoid_td3_gaussian_beckhoff
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
+// a291_sig_td3_int_more_obs_beckhoff_250k_2tau
 
 #define DUT_MACHINE BUEHLER
 #define AGENT 221

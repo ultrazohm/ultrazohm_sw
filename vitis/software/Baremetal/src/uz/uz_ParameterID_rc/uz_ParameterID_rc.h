@@ -27,6 +27,7 @@ struct uz_parameterID_rc_ref_val_t {
     float iq_ref_Amps;
     float n_ref_rpm;
     bool data_valid;
+    bool motor; 
 };
 
 
@@ -37,14 +38,14 @@ struct uz_parameterID_rc_set_values_t{
 };
 
 struct uz_parameterID_rc_max_steps_t{
-    uint32_t id;
-    uint32_t iq;
+    uint32_t motor;
+    uint32_t generator;
 
 };
 
 struct uz_parameterid_rc_counter_t{
-    uint32_t increment_id;
-    uint32_t increment_iq;
+    float increment_id;
+    float increment_iq;
     uint32_t increment_n;
     uint32_t isr;
     uint32_t wait;
@@ -52,9 +53,9 @@ struct uz_parameterid_rc_counter_t{
 };
 
 struct uz_parameterid_rc_size_increments_t{
-    uint32_t id_Amps;
-    uint32_t iq_Amps;
-    uint32_t n_pm;
+    float id_Amps;
+    float iq_Amps;
+    float n_pm;
 };
 
 enum rc_state{
@@ -66,6 +67,12 @@ enum rc_state{
     rc_sample_on,
     rc_sample_off,
     rc_increment,
+};
+
+
+enum rc_mode{
+    motor,
+    generator,
 };
 
 

@@ -90,12 +90,12 @@ void test_uz_parameterID_rc_test_fun_set_next_workingpoint(void){
 void test_uz_parameterID_rc_test_generate_outputs(void){
     uz_parameterID_rc_t* rc_instance = uz_parameterID_rc_init(test_config);
     struct uz_parameterID_rc_ref_val_t test_output;
-    for (uint32_t i = 0; i < 225; i++)
+    for (uint32_t i = 0; i < 435; i++)
     {
         test_output = uz_parameterID_rc_generate_idq_ref(rc_instance);
     }
-    TEST_ASSERT_EQUAL_FLOAT(-1.0f, test_output.id_ref_Amps);
-    TEST_ASSERT_EQUAL_FLOAT(0.0f, test_output.iq_ref_Amps);
+    TEST_ASSERT_EQUAL_FLOAT(-5.0f, test_output.id_ref_Amps);
+    TEST_ASSERT_EQUAL_FLOAT(-5.0f, test_output.iq_ref_Amps);
     TEST_ASSERT_EQUAL_FLOAT(100.0f, test_output.n_ref_rpm);
 }
 

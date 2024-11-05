@@ -129,10 +129,12 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         
         case rc_increment:
             uz_parameterID_rc_set_next_workingpoint(self);
-            self->rc_state = rc_set_idq;
         break;
 
         case rc_finished:
+        self->set_values.id_set_Amps = 0.0f;
+        self->set_values.iq_set_Amps = 0.0f;
+        self->set_values.n_set_rpm = 0.0f;
             break; 
 
         default:
@@ -150,22 +152,26 @@ return self->output_ref_values;
 void uz_parameterID_rc_set_next_workingpoint(uz_parameterID_rc_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert(self->counter.working_points < self->max_increment_counter.generator);
     self->counter.working_points ++;
-    if (self->counter.working_points == (self->max_increment_counter.motor)){
+    if (self->counter.working_points == self->max_increment_counter.motor){
         self->rc_mode = generator;
         self->rc_state = rc_set_idq;
         self->counter.increment_id = 0U;
         self->counter.increment_iq = 0U;
     } else if (self->counter.working_points == self->max_increment_counter.generator) {
-            self->rc_mode = rc_finished;
+            self->rc_state = rc_finished;
             self->counter.increment_id = 0U;
             self->counter.increment_iq = 0U;
-    } else
+    } else {
         self->counter.increment_id ++;
+        self->rc_state = rc_set_idq;
         if (self->counter.increment_id > self->internal_config.id_steps){
             self->counter.increment_id = 0U;
             self->counter.increment_iq ++;
         }    
+    }
 }
+
 
 #endif

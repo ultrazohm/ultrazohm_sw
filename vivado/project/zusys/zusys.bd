@@ -2182,8 +2182,8 @@
                   },
                   "util_vector_logic_0": {
                     "vlnv": "xilinx.com:ip:util_vector_logic:2.0",
-                    "xci_name": "zusys_util_vector_logic_0_2",
-                    "xci_path": "ip\\zusys_util_vector_logic_0_2\\zusys_util_vector_logic_0_2.xci",
+                    "xci_name": "zusys_util_vector_logic_0_0",
+                    "xci_path": "ip\\zusys_util_vector_logic_0_0\\zusys_util_vector_logic_0_0.xci",
                     "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/util_vector_logic_0",
                     "parameters": {
                       "C_OPERATION": {
@@ -2234,8 +2234,8 @@
                   },
                   "xlconcat_0": {
                     "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                    "xci_name": "zusys_xlconcat_0_3",
-                    "xci_path": "ip\\zusys_xlconcat_0_3\\zusys_xlconcat_0_3.xci",
+                    "xci_name": "zusys_xlconcat_0_0",
+                    "xci_path": "ip\\zusys_xlconcat_0_0\\zusys_xlconcat_0_0.xci",
                     "inst_hier_path": "uz_digital_adapter/D1_adapter/Gates/xlconcat_0",
                     "parameters": {
                       "NUM_PORTS": {
@@ -2994,8 +2994,8 @@
                   },
                   "system_ila_0": {
                     "vlnv": "xilinx.com:ip:system_ila:1.1",
-                    "xci_name": "zusys_system_ila_0_5",
-                    "xci_path": "ip\\zusys_system_ila_0_5\\zusys_system_ila_0_5.xci",
+                    "xci_name": "zusys_system_ila_0_1",
+                    "xci_path": "ip\\zusys_system_ila_0_1\\zusys_system_ila_0_1.xci",
                     "inst_hier_path": "uz_digital_adapter/D2_adapter/Gates_3L/system_ila_0",
                     "parameters": {
                       "C_DATA_DEPTH": {
@@ -3134,8 +3134,8 @@
                   },
                   "xlconcat_0": {
                     "vlnv": "xilinx.com:ip:xlconcat:2.1",
-                    "xci_name": "zusys_xlconcat_0_4",
-                    "xci_path": "ip\\zusys_xlconcat_0_4\\zusys_xlconcat_0_4.xci",
+                    "xci_name": "zusys_xlconcat_0_1",
+                    "xci_path": "ip\\zusys_xlconcat_0_1\\zusys_xlconcat_0_1.xci",
                     "inst_hier_path": "uz_digital_adapter/D2_adapter/Gates_3L/xlconcat_0",
                     "parameters": {
                       "NUM_PORTS": {
@@ -3564,7 +3564,7 @@
               "Incremental_Encoder_D5_1": {
                 "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
                 "xci_name": "zusys_Incremental_Encoder_D5_1_0",
-                "xci_path": "ip\\zusys_Incremental_Encoder_D5_1_0_1\\zusys_Incremental_Encoder_D5_1_0.xci",
+                "xci_path": "ip\\zusys_Incremental_Encoder_D5_1_0\\zusys_Incremental_Encoder_D5_1_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_D5_1"
               },
               "system_ila_0": {
@@ -3587,13 +3587,13 @@
               "Incremental_Encoder_D5_2": {
                 "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
                 "xci_name": "zusys_Incremental_Encoder_D5_2_0",
-                "xci_path": "ip\\zusys_Incremental_Encoder_D5_2_0_1\\zusys_Incremental_Encoder_D5_2_0.xci",
+                "xci_path": "ip\\zusys_Incremental_Encoder_D5_2_0\\zusys_Incremental_Encoder_D5_2_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_D5_2"
               },
               "Incremental_Encoder_D5_3": {
                 "vlnv": "xilinx.com:ip:Incremental_Encoder_v26:26.0",
                 "xci_name": "zusys_Incremental_Encoder_D5_3_0",
-                "xci_path": "ip\\zusys_Incremental_Encoder_D5_3_0_1\\zusys_Incremental_Encoder_D5_3_0.xci",
+                "xci_path": "ip\\zusys_Incremental_Encoder_D5_3_0\\zusys_Incremental_Encoder_D5_3_0.xci",
                 "inst_hier_path": "uz_digital_adapter/D5_adapter/Incremental_Encoder_D5_3"
               }
             },
@@ -6767,25 +6767,25 @@
               "Resolver_Interface_v_1": {
                 "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
                 "xci_name": "zusys_Resolver_Interface_v_1_0",
-                "xci_path": "ip\\zusys_Resolver_Interface_v_1_0_1\\zusys_Resolver_Interface_v_1_0.xci",
+                "xci_path": "ip\\zusys_Resolver_Interface_v_1_0\\zusys_Resolver_Interface_v_1_0.xci",
                 "inst_hier_path": "uz_user/Resolver_D4/Resolver_Interface_v_1"
               },
               "uz_resolver_pl_inter_1": {
                 "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
                 "xci_name": "zusys_uz_resolver_pl_inter_1_0",
-                "xci_path": "ip\\zusys_uz_resolver_pl_inter_1_0_1\\zusys_uz_resolver_pl_inter_1_0.xci",
+                "xci_path": "ip\\zusys_uz_resolver_pl_inter_1_0\\zusys_uz_resolver_pl_inter_1_0.xci",
                 "inst_hier_path": "uz_user/Resolver_D4/uz_resolver_pl_inter_1"
               },
               "Resolver_Interface_v_2": {
                 "vlnv": "ki_power:user:Resolver_Interface_v1_0:1.0",
                 "xci_name": "zusys_Resolver_Interface_v_2_0",
-                "xci_path": "ip\\zusys_Resolver_Interface_v_2_0_1\\zusys_Resolver_Interface_v_2_0.xci",
+                "xci_path": "ip\\zusys_Resolver_Interface_v_2_0\\zusys_Resolver_Interface_v_2_0.xci",
                 "inst_hier_path": "uz_user/Resolver_D4/Resolver_Interface_v_2"
               },
               "uz_resolver_pl_inter_2": {
                 "vlnv": "xilinx.com:ip:uz_resolver_pl_interface:1.0",
                 "xci_name": "zusys_uz_resolver_pl_inter_2_0",
-                "xci_path": "ip\\zusys_uz_resolver_pl_inter_2_0_1\\zusys_uz_resolver_pl_inter_2_0.xci",
+                "xci_path": "ip\\zusys_uz_resolver_pl_inter_2_0\\zusys_uz_resolver_pl_inter_2_0.xci",
                 "inst_hier_path": "uz_user/Resolver_D4/uz_resolver_pl_inter_2"
               }
             },
@@ -7123,39 +7123,36 @@
             "components": {
               "uz_d_inverter_adapter_D1": {
                 "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.0",
-                "xci_name": "zusys_uz_d_inverter_adapter_D1_1",
-                "xci_path": "ip\\zusys_uz_d_inverter_adapter_D1_1\\zusys_uz_d_inverter_adapter_D1_1.xci",
+                "xci_name": "zusys_uz_d_inverter_adapter_D1_0",
+                "xci_path": "ip\\zusys_uz_d_inverter_adapter_D1_0\\zusys_uz_d_inverter_adapter_D1_0.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/uz_d_inverter_adapter_D1"
               },
               "uz_inverter_adapter_D1": {
                 "vlnv": "xilinx.com:user:uz_inverter_adapter_mapping:1.0",
-                "xci_name": "zusys_uz_inverter_adapter_D1_1",
-                "xci_path": "ip\\zusys_uz_inverter_adapter_D1_1\\zusys_uz_inverter_adapter_D1_1.xci",
+                "xci_name": "zusys_uz_inverter_adapter_D1_0",
+                "xci_path": "ip\\zusys_uz_inverter_adapter_D1_0\\zusys_uz_inverter_adapter_D1_0.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/uz_inverter_adapter_D1"
               },
               "uz_inverter_adapter_D2": {
                 "vlnv": "xilinx.com:user:uz_inverter_adapter_mapping:1.0",
-                "xci_name": "zusys_uz_inverter_adapter_D1_0",
-                "xci_path": "ip\\zusys_uz_inverter_adapter_D1_0\\zusys_uz_inverter_adapter_D1_0.xci",
+                "xci_name": "zusys_uz_inverter_adapter_D2_0",
+                "xci_path": "ip\\zusys_uz_inverter_adapter_D2_0\\zusys_uz_inverter_adapter_D2_0.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/uz_inverter_adapter_D2"
               },
               "uz_d_inverter_adapter_D2": {
                 "vlnv": "xilinx.com:ip:uz_d_inverter_adapter:1.0",
-                "xci_name": "zusys_uz_d_inverter_adapter_D1_0",
-                "xci_path": "ip\\zusys_uz_d_inverter_adapter_D1_0\\zusys_uz_d_inverter_adapter_D1_0.xci",
+                "xci_name": "zusys_uz_d_inverter_adapter_D2_0",
+                "xci_path": "ip\\zusys_uz_d_inverter_adapter_D2_0\\zusys_uz_d_inverter_adapter_D2_0.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/uz_d_inverter_adapter_D2"
               },
               "xlslice_D1": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_xlslice_D1_0",
-                "xci_path": "ip\\zusys_xlslice_D1_0_1\\zusys_xlslice_D1_0.xci",
+                "xci_name": "zusys_xlslice_0_0",
+                "xci_path": "ip\\zusys_xlslice_0_0\\zusys_xlslice_0_0.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/xlslice_D1",
                 "parameters": {
                   "DIN_FROM": {
                     "value": "5"
-                  },
-                  "DIN_TO": {
-                    "value": "0"
                   },
                   "DIN_WIDTH": {
                     "value": "24"
@@ -7164,8 +7161,8 @@
               },
               "xlslice_D2": {
                 "vlnv": "xilinx.com:ip:xlslice:1.0",
-                "xci_name": "zusys_xlslice_D2_0",
-                "xci_path": "ip\\zusys_xlslice_D2_0_1\\zusys_xlslice_D2_0.xci",
+                "xci_name": "zusys_xlslice_1_1",
+                "xci_path": "ip\\zusys_xlslice_1_1\\zusys_xlslice_1_1.xci",
                 "inst_hier_path": "uz_user/uz_inverter_adapter_D1_D2/xlslice_D2",
                 "parameters": {
                   "DIN_FROM": {
@@ -7210,8 +7207,8 @@
               "Din_1": {
                 "ports": [
                   "Din",
-                  "xlslice_D1/Din",
-                  "xlslice_D2/Din"
+                  "xlslice_D2/Din",
+                  "xlslice_D1/Din"
                 ]
               },
               "aclk_1": {
@@ -7292,13 +7289,13 @@
                   "uz_d_inverter_adapter_D2/Temp"
                 ]
               },
-              "xlslice_D1_Dout": {
+              "xlslice_0_Dout": {
                 "ports": [
                   "xlslice_D1/Dout",
                   "uz_inverter_adapter_D1/Gates"
                 ]
               },
-              "xlslice_D2_Dout": {
+              "xlslice_1_Dout": {
                 "ports": [
                   "xlslice_D2/Dout",
                   "uz_inverter_adapter_D2/Gates"

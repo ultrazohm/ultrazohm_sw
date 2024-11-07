@@ -92,6 +92,7 @@ proc vitis_main {} {
 
   global uzcfg
 
+  setws [pwd]
   set WS_PATH [getws]
   cd $WS_PATH
   cd ..
@@ -131,10 +132,10 @@ proc vitis_main {} {
 
   puts "Info (UltraZohm): change FreeRTOS BSP settings"
   #add liIP lib to BSP
-  bsp setlib -name lwip211
+  bsp setlib -name lwip213
 
   # get list of configurable parameters for lwip lib
-  #bsp listparams -lib lwip211
+  #bsp listparams -lib lwip213
   bsp config api_mode SOCKET_API
   platform write
   bsp config dhcp_does_arp_check $uzcfg(ENABLE_DHCP)

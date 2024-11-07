@@ -27,8 +27,8 @@ puts "INFO: Context for 'RPU' is selected."
 enable_split_mode
 puts "INFO: Split mode is enabled for R5#1."
 target 1 
-fpga -file FreeRTOS/_ide/bitstream/zusys_wrapper.bit
-puts "INFO: Device configured successfully with 'workspace/FreeRTOS/_ide/bitstream/zusys_wrapper.bit'."
+fpga -file C:/Users/brogh/AppData/Roaming/Xilinx/Vivado/bitstream/vector_add_test.bit
+puts "INFO: Device configured successfully with 'workspace/FreeRTOS/_ide/bitstream/vector_add_test.bit'."
 targets -set -nocase -filter {name =~"APU*"}
 puts "INFO: Context for 'APU' is selected."
 catch {loadhw -hw UltraZohm/export/UltraZohm/hw/zusys_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs}

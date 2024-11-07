@@ -81,3 +81,14 @@ Functions
 		- ``Carrier_PG_3V3``: Enables the DC/DC converter of the isoIO island's 3V3 rail (on frontpanel-main, no pullup/down R)
 - To-be-discussed functionalities
 	- "Request Safe State" signal from S³C to D slots: Potential triggers are supply rail monitors, ``FP_UsrSW3``, ``FrontpanelIO.ExternalSTOP``, ...
+
+
+Statemachine for s3c
+--------------------
+
+.. _ statemachine_s3c.:
+
+.. figure:: pictures/s3c_state_machine.svg
+   :align: center
+
+Statemachine of S3C

@@ -49,13 +49,14 @@ struct uz_parameterid_rc_counter_t{
     uint32_t increment_n;
     uint32_t isr;
     uint32_t wait;
-    uint32_t working_points
+    uint32_t operating_points_idq;
+    uint32_t operating_points_n;
 };
 
 struct uz_parameterid_rc_size_increments_t{
     float id_Amps;
     float iq_Amps;
-    float n_pm;
+    float n_rpm;
 };
 
 enum rc_state{
@@ -66,7 +67,8 @@ enum rc_state{
     rc_idle,
     rc_sample_on,
     rc_sample_off,
-    rc_increment,
+    rc_increment_idq,
+    rc_increment_n,
 };
 
 
@@ -79,6 +81,7 @@ enum rc_mode{
 uz_parameterID_rc_t* uz_parameterID_rc_init(struct uz_parameterID_rc_config_t initial_config);
 struct uz_parameterID_rc_config_t uz_parameterID_rc_get_config(uz_parameterID_rc_t* self);
 struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_parameterID_rc_t* self);
-void uz_parameterID_rc_set_next_workingpoint(uz_parameterID_rc_t* self);
+void uz_parameterID_rc_set_next_operating_point_idq(uz_parameterID_rc_t* self);
+void uz_parameterID_rc_set_next_operating_point_n(uz_parameterID_rc_t* self);
 struct uz_parameterid_rc_counter_t uz_parameterID_rc_get_counter(uz_parameterID_rc_t* self);
 #endif // UZ_PARAMETERID_RC_H

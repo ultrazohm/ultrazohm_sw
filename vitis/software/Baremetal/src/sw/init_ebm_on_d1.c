@@ -122,7 +122,7 @@ static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif
 
 #if AGENT == 288
-#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_INPUTS 13
 #define NUMBER_OF_OUTPUTS 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 #define NUMBER_OF_LAYERS 2

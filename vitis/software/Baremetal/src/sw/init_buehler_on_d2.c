@@ -121,7 +121,7 @@ struct uz_PMSM_flux_fitting_parameter_config_t buehler_fitting = {0};
 #endif
 
 #if AGENT == 289
-#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_INPUTS 13
 #define NUMBER_OF_OUTPUTS 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 #define NUMBER_OF_LAYERS 2

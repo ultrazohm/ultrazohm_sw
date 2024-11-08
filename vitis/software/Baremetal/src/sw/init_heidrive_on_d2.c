@@ -7,6 +7,8 @@ struct uz_pmsm_control_configuration_t config_heidrive_d2 = {
         .b = D2_B_GAIN,
         .c = D2_C_GAIN},
     .current_offsets = {.a = D2_A_OFFSET, .b = D2_B_OFFSET, .c = D2_C_OFFSET},
+    .voltage_conversion_factors = {.a = D2_A_VOLTAGE_GAIN, .b = D2_B_VOLTAGE_GAIN, .c = D2_C_VOLTAGE_GAIN},
+    .voltage_offsets = {.a = D2_A_VOLTAGE_OFFSET, .b = D2_B_VOLTAGE_OFFSET, .c = D2_C_VOLTAGE_OFFSET},
     .v_dc_in_V_conversion_factor = 12.0f,
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,

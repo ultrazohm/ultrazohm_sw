@@ -100,6 +100,8 @@ int JavaScope_initialize(DS_Data *data)
 	js_ch_observable[JSO_dut_ic]=&data->dut.actual_data->i_abc_in_A.c;
 	js_ch_observable[JSO_dut_id]=&data->dut.actual_data->i_dq_in_A.d;
 	js_ch_observable[JSO_dut_iq]=&data->dut.actual_data->i_dq_in_A.q;
+	js_ch_observable[JSO_dut_vd] = &data->dut.actual_data->v_dq_in_V.d;
+	js_ch_observable[JSO_dut_vq] = &data->dut.actual_data->v_dq_in_V.q;
 	js_ch_observable[JSO_dut_id_set]=&data->dut.reference_values->i_dq_in_A.d;
 	js_ch_observable[JSO_dut_iq_set]=&data->dut.reference_values->i_dq_in_A.q;
 	js_ch_observable[JSO_dut_vd_ref]=&data->dut.reference_values->v_dq_in_V.d;

@@ -16,6 +16,8 @@ struct uz_pmsm_control_configuration_t
 {
     uz_3ph_abc_t current_conversion_factors;
     uz_3ph_abc_t current_offsets;
+    uz_3ph_abc_t voltage_conversion_factors;
+    uz_3ph_abc_t voltage_offsets;
     float v_dc_in_V_conversion_factor;
     float v_dc_in_V_offset;
     float i_dc_in_V_conversion_factor;
@@ -57,7 +59,9 @@ struct uz_pmsm_control_configuration_t
 struct uz_pmsm_actual_data
 {
     uz_3ph_abc_t i_abc_in_A;
+    uz_3ph_abc_t v_abc_in_V;
     uz_3ph_dq_t i_dq_in_A;
+    uz_3ph_dq_t v_dq_in_V;
     float v_dc_in_V;
     float i_dc_in_A;
     float omega_el_rad_per_sec;
@@ -69,6 +73,7 @@ struct uz_pmsm_actual_data
 struct uz_pmsm_measurement_values
 {
     uz_3ph_abc_t phase_currents_from_adc_ampere_per_volt; // Values are in V before unit conversion
+    uz_3ph_abc_t phase_voltage_from_adc_voltage_per_volt; // Values are in V before unit conversion
     float omega_mech_rad_per_sec;
     float theta_mech;
     float v_dc_from_adc_volt_per_volt;

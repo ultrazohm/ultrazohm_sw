@@ -359,6 +359,10 @@ void ISR_Control(void *data)
             Global_Data.av.mechanicalRotorSpeed_filtered_prime_mover = uz_signals_IIR_Filter_sample(Global_Data.objects.tracking_error_filter_prime_mover, Global_Data.prime_mover.actual_data->speed_in_rpm);
 
             d2_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A2.me.ADC_B5;
+            d2_measurements.phase_voltage_from_adc_voltage_per_volt.a = Global_Data.aa.A2.me.ADC_B8;
+            d2_measurements.phase_voltage_from_adc_voltage_per_volt.b = Global_Data.aa.A2.me.ADC_B7;
+            d2_measurements.phase_voltage_from_adc_voltage_per_volt.c = Global_Data.aa.A2.me.ADC_B6;
+
             d2_measurements.v_dc_from_adc_volt_per_volt = Global_Data.aa.A2.me.ADC_A1; //48.0f / 12.0f;
             d2_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A2.me.ADC_A4;
             d2_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A2.me.ADC_A3;
@@ -392,10 +396,15 @@ void ISR_Control(void *data)
             }
 
             d1_measurements.i_dc_from_adc_ampere_per_volt = Global_Data.aa.A1.me.ADC_B5;
+            d1_measurements.phase_voltage_from_adc_voltage_per_volt.a = Global_Data.aa.A1.me.ADC_B8;
+            d1_measurements.phase_voltage_from_adc_voltage_per_volt.b = Global_Data.aa.A1.me.ADC_B7;
+            d1_measurements.phase_voltage_from_adc_voltage_per_volt.c = Global_Data.aa.A1.me.ADC_B6;
+
             d1_measurements.v_dc_from_adc_volt_per_volt =Global_Data.aa.A1.me.ADC_A1;
             d1_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_A4;
             d1_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_A3;
             d1_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_A2;
+            
             if (fabsf(Global_Data.av.d5_1_omega_mech_rad_per_sec - d1_measurements.omega_mech_rad_per_sec) < 50.0f)
             { // only accept new values if the difference between two time steps is below 500
                 d1_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_1_omega_mech_rad_per_sec;

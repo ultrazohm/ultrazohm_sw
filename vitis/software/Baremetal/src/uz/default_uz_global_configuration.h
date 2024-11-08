@@ -17,6 +17,20 @@
 #define D2_A_OFFSET 0.0f
 #define D2_B_OFFSET 0.0f
 #define D2_C_OFFSET 0.0f
+
+#define D1_A_VOLTAGE_GAIN 12.0f
+#define D1_B_VOLTAGE_GAIN 12.0f
+#define D1_C_VOLTAGE_GAIN 12.0f
+#define D1_A_VOLTAGE_OFFSET 0.0f
+#define D1_B_VOLTAGE_OFFSET 0.0f
+#define D1_C_VOLTAGE_OFFSET 0.0f
+
+#define D2_A_VOLTAGE_GAIN 12.0f
+#define D2_B_VOLTAGE_GAIN 12.0f
+#define D2_C_VOLTAGE_GAIN 12.0f
+#define D2_A_VOLTAGE_OFFSET 0.0f
+#define D2_B_VOLTAGE_OFFSET 0.0f
+#define D2_C_VOLTAGE_OFFSET 0.0f
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
 #define UZ_USE_EXTERNAL_STOP_ON_V4 1U

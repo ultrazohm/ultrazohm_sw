@@ -104,6 +104,7 @@ uz_3ph_dq_t d2_reference_currents_in_A = {0.0f};
 bool manual_dutycycle_d2 = false;
 bool manual_dutycycle_d1 = false;
 struct uz_pmsmModel_outputs_t cil_outputs = {0};
+struct uz_pmsmModel_outputs_t cil_new_outputs = {0};
 struct uz_pmsmModel_inputs_t cil_inputs = {0};
 struct uz_3ph_dq_t cil_dq_currents = {0};
 
@@ -117,7 +118,10 @@ void ISR_Control(void *data)
 
         uz_pmsmModel_trigger_input_strobe(Global_Data.cil.pmsm_cil);
         uz_pmsmModel_trigger_output_strobe(Global_Data.cil.pmsm_cil);
-        cil_outputs = uz_pmsmModel_get_outputs(Global_Data.cil.pmsm_cil);
+        cil_new_outputs = uz_pmsmModel_get_outputs(Global_Data.cil.pmsm_cil);
+        #if CIL_1_TAU==1
+            cil_outputs = cil_new_outputs;
+        #endif
         cil_dq_currents.d = cil_outputs.i_d_A;
         cil_dq_currents.q = cil_outputs.i_q_A;
         *Global_Data.dut_theta_offset=0.0f;
@@ -343,7 +347,7 @@ void ISR_Control(void *data)
             uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
             uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d2, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
             JavaScope_update(&Global_Data);
-
+            cil_outputs=cil_new_outputs;
             // Read the timer value at the very end of the ISR to minimize measurement error
             // This has to be the last function executed in the ISR!
             uz_SystemTime_ISR_Toc();

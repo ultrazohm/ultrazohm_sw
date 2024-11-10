@@ -80,8 +80,9 @@
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
 // a291_sig_td3_int_more_obs_beckhoff_250k_2tau
 
+#define CIL_1_TAU 0
 #define DUT_MACHINE BROSE
-#define AGENT 252
+#define AGENT 214
 #define D1_MACHINE BROSE    // EBM, Brose, Hoerner, HEIDRIVE_D1
 #define D2_MACHINE BECKHOFF // HEIDRIVE_D2, BUEHLER, BECKHOFF
 // #define D1_IS_PRIME_MOVER 1U // Auto-calculate this define from DUT_MACHINE?

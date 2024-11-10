@@ -70,7 +70,7 @@ int main(void)
     Global_Data.profile.change_speed = false;
     Global_Data.profile.setpoint_index = 0U;
     Global_Data.profile.n_ref_setpoint_index = 0U;
-    // Global_Data.use_cil=true;
+    Global_Data.use_cil=true;
 
     while (1)
     {

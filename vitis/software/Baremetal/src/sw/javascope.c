@@ -145,6 +145,7 @@ int JavaScope_initialize(DS_Data *data)
 	js_ch_observable[JSO_debug_speed_d5_1] = &data->av.d5_1_n_rpm;
 	js_ch_observable[JSO_torque_added_d1] = &d1_added_noise;
 	js_ch_observable[JSO_torque_added_d2] = &d2_added_noise;
+	js_ch_observable[JSO_dut_theta_offset] = data->dut_theta_offset;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

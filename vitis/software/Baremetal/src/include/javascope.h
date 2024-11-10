@@ -92,6 +92,7 @@ enum JS_OberservableData
 	JSO_cil_in_omega_mech_1_s,
 	JSO_cil_in_v_d_V,
 	JSO_cil_in_v_q_V,
+	JSO_dut_theta_offset,
 	JSO_ENDMARKER
 };
 

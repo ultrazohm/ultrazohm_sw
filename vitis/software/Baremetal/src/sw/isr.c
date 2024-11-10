@@ -158,6 +158,10 @@ void ISR_Control(void *data)
     Global_Data.av.Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
     automatic_profile();
 
+    if(Global_Data.javascope.sweep_theta_el){
+        *Global_Data.dut_theta_offset += 1.0f/10000.0f; // Moves the offset slightly in each ISR execution. Slow enought to assume it is still always steady state for evaluation
+    }
+
     if (Global_Data.javascope.setpoints_from_javascope)
     {
         Global_Data.prime_mover_reference_speed_in_rpm = Global_Data.javascope.prime_mover_reference_speed_in_rpm;

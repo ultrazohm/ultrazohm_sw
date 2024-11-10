@@ -285,7 +285,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(false);
+			if (Global_Data.javascope.sweep_theta_el == false)
+			{
+				*Global_Data.dut_theta_offset=0.0f; // Set offset to zero once before sweeping
+				Global_Data.javascope.sweep_theta_el = true;
+			}
+			else
+			{
+				Global_Data.javascope.sweep_theta_el = false;
+			}
 			break;
 
 		case (My_Button_3):

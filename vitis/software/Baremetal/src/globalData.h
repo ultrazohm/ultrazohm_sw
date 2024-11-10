@@ -157,6 +157,7 @@ typedef struct javascope_global
 	bool setpoints_from_javascope;
 	bool disable_speed_control;
 	bool use_rl;
+	bool sweep_theta_el;
 } javascope_global;
 
 typedef struct cil_data{

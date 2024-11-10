@@ -80,7 +80,14 @@
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
 // a291_sig_td3_int_more_obs_beckhoff_250k_2tau
 
-#define CIL_1_TAU 0
+#define CIL_1_TAU 0 // CIL uses 2tau if 0, 1 tau if one
+
+#define SETPOINT_PROFILE_ORIGINAL 1
+#define SETPOINT_PROFILE_RS 2
+#define SETPOINT_PROFILE_PARAID 3
+
+#define SETPOINT_PROFILE SETPOINT_PROFILE_ORIGINAL
+
 #define DUT_MACHINE BROSE
 #define AGENT 214
 #define D1_MACHINE BROSE    // EBM, Brose, Hoerner, HEIDRIVE_D1

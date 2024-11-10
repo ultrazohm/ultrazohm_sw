@@ -50,6 +50,8 @@ extern struct uz_PMSM_t config_PMSM_beckhoff;
 float theta_el_offset_2 = 1.4f;
 
 uint64_t old_uptime = 0U;
+
+#if SETPOINT_PROFILE == SETPOINT_PROFILE_ORIGINAL
 float id_setpoints[22] = {
 #include "id_setpoints.csv"
 };
@@ -58,8 +60,32 @@ float iq_setpoints[22] = {
 #include "iq_setpoints.csv"
 };
 
-// float speed_setpoints[] = {-100, -200, -300, -500, -600, -700, -900, -1000};
+#elif SETPOINT_PROFILE == SETPOINT_PROFILE_RS
+float id_setpoints[] = {
+#include "id_setpoints_rs_ident.csv"
+};
+
+float iq_setpoints[] = {
+#include "iq_setpoints_rs_ident.csv"
+};
+
+#elif SETPOINT_PROFILE == SETPOINT_PROFILE_PARAID
+float id_setpoints[] = {
+#include "id_setpoints_paraid.csv"
+};
+
+float iq_setpoints[] = {
+#include "iq_setpoints_paraid.csv"
+};
+#endif
+
+#if SETPOINT_PROFILE == SETPOINT_PROFILE_ORIGINAL
 float speed_setpoints[] = {-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, -0.6f, -0.7f, -0.8f, -0.9f, -1.0f};
+#elif SETPOINT_PROFILE == SETPOINT_PROFILE_PARAID
+float speed_setpoints[] = {-400};
+#elif SETPOINT_PROFILE == SETPOINT_PROFILE_RS
+float speed_setpoints[] = {-0.05f,-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, -0.6f, -0.7f, -0.8f, -0.9f, -1.0f};
+#endif
 
 extern float PMSM_rated_current_hoerner;
 extern bool select_misalignment;

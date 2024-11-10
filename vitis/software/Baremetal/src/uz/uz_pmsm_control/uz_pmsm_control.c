@@ -224,9 +224,9 @@ void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
         self->actual_values.i_abc_in_A.a = (self->config.current_conversion_factors.a * self->measurement.phase_currents_from_adc_ampere_per_volt.a) + self->config.current_offsets.a;
         self->actual_values.i_abc_in_A.b = (self->config.current_conversion_factors.b * self->measurement.phase_currents_from_adc_ampere_per_volt.b) + self->config.current_offsets.b;
         self->actual_values.i_abc_in_A.c = (self->config.current_conversion_factors.c * self->measurement.phase_currents_from_adc_ampere_per_volt.c) + self->config.current_offsets.c;
-        self->actual_values.v_abc_in_A.a = (self->config.voltage_conversion_factors.a * self->measurement.phase_voltage_from_adc_voltage_per_volt.a) + self->config.voltage_offsets.a;
-        self->actual_values.v_abc_in_A.b = (self->config.voltage_conversion_factors.b * self->measurement.phase_voltage_from_adc_voltage_per_volt.b) + self->config.voltage_offsets.b;
-        self->actual_values.v_abc_in_A.c = (self->config.voltage_conversion_factors.c * self->measurement.phase_voltage_from_adc_voltage_per_volt.c) + self->config.voltage_offsets.c;
+        self->actual_values.v_abc_in_V.a = (self->config.voltage_conversion_factors.a * self->measurement.phase_voltage_from_adc_voltage_per_volt.a) + self->config.voltage_offsets.a;
+        self->actual_values.v_abc_in_V.b = (self->config.voltage_conversion_factors.b * self->measurement.phase_voltage_from_adc_voltage_per_volt.b) + self->config.voltage_offsets.b;
+        self->actual_values.v_abc_in_V.c = (self->config.voltage_conversion_factors.c * self->measurement.phase_voltage_from_adc_voltage_per_volt.c) + self->config.voltage_offsets.c;
         self->actual_values.v_dc_in_V = (self->config.v_dc_in_V_conversion_factor * self->measurement.v_dc_from_adc_volt_per_volt) + self->config.v_dc_in_V_offset;
         self->actual_values.i_dc_in_A = (self->config.i_dc_in_V_conversion_factor * self->measurement.i_dc_from_adc_ampere_per_volt) + self->config.i_dc_in_V_offset;
     }

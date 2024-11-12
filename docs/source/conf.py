@@ -24,6 +24,7 @@ extensions = [
     "sphinx_plotly_directive",
     "matplotlib.sphinxext.plot_directive",
     "sphinx_design"
+    "sphinx-sitemap"
 ]
 templates_path = ['_templates']
 exclude_patterns = []
@@ -89,3 +90,6 @@ nitpick_ignore = [
 ]
 
 tikz_latex_preamble = "\\newcommand\Foo[1]{Z}" # https://github.com/sphinx-contrib/tikz/issues/19
+
+# For sphinx-sitemap: https://sphinx-sitemap.readthedocs.io/en/latest/getting-started.html
+html_baseurl = 'https://docs.ultrazohm.com/'

@@ -1,8 +1,8 @@
 .. _carrier_board_rev5_s3c:
 
-============================
-System Supply & Safety $CPLD
-============================
+====================
+System Supply & S3C
+====================
 
 
 General
@@ -86,9 +86,32 @@ Functions
 Statemachine for s3c
 --------------------
 
-.. _ statemachine_s3c.:
+.. mermaid::
 
-.. figure:: pictures/s3c_state_machine.svg
-   :align: center
+	stateDiagram-v2
+		[*] --> Waiting_for_Powerbutton_pressed
+		Waiting_for_Powerbutton_pressed --> Waiting_for_Powerbutton_released
+		Waiting_for_Powerbutton_released --> EthernetPhy_Reset
+		EthernetPhy_Reset --> Wait_State 
+		Wait_State --> Ready_State
+		Ready_State --> Error_State
+		Error_State --> Ready_State
+		Ready_State --> Powerdown
+		Powerdown --> Waiting_for_Powerbutton_pressed
+		Ready_State --> Shutdown_Extern
+		Shutdown_Extern --> [*]
 
-Statemachine of S3C
+.. mermaid::
+	mindmap
+	root((mindmap))
+		Offene Fragen
+		ExternalStop Verhalten
+			Default mäßig aus? Sonst bräuchte man einen Stecker der die Pins verbindet
+		States
+			British popular psychology author Tony Buzan
+		Fehler Cases
+			Case 1: Stop Taster drücken
+			Case 2: Externen stop drücken
+			Case 3: Interner Fehler ohne irgendein UI
+		Umgang mit DSlots
+			Karte fliegt raus => PowerCycle

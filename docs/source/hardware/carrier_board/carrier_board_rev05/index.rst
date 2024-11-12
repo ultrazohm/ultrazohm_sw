@@ -15,5 +15,6 @@ Carrier Board Rev05
 
 	overview
 	changeset
+	power_distribution
 	s3c
 	arm_pins

@@ -12,7 +12,8 @@
 /*! enum for readable configuring for the decoupling in the CurrentControl sample function */
 enum uz_CurrentControl_decoupling_select {
 	no_decoupling=0, 
-	linear_decoupling
+	linear_decoupling,
+	static_nonlinear_decoupling
 	}; 
 
 /**
@@ -74,12 +75,23 @@ uz_3ph_abc_t uz_CurrentControl_sample_abc(uz_CurrentControl_t* self, uz_3ph_dq_t
 void uz_CurrentControl_reset(uz_CurrentControl_t* self);
 
 /**
+ * @brief Function to change the flux-linkage value during runtime
+ *
+ * @param self uz_CurrentControl_t instance
+ * @param flux_approx new flux-linkage value. Must be greater or equal than 0.0f
+ */
+void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t flux_approx);
+
+void uz_CurrentControl_set_kp_adjustment(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere,  uz_3ph_dq_t i_actual_Ampere, uz_3ph_dq_t flux_ref, float sampling_time, float factor);
+
+/**
  * @brief Function to change the Kp-value of the id-PI-Controller during runtime
  *
  * @param self uz_CurrentControl_t instance
  * @param Kp_id new Kp_id value. Must be greater or equal than 0.0f
+ * @param kp_adjustment_flag flag if the kp adjustment is on or off.
  */
-void uz_CurrentControl_set_Kp_id(uz_CurrentControl_t* self, float Kp_id);
+void uz_CurrentControl_set_Kp_id(uz_CurrentControl_t* self, float Kp_id, bool kp_adjustment_flag);
 
 /**
  * @brief Function to change the Ki-value of the id-PI-Controller during runtime
@@ -94,8 +106,9 @@ void uz_CurrentControl_set_Ki_id(uz_CurrentControl_t* self, float Ki_id);
  *
  * @param self uz_CurrentControl_t instance
  * @param Kp_iq new Kp_iq value. Must be greater or equal than 0.0f
+ * @param kp_adjustment_flag flag if the kp adjustment is on or off. 
  */
-void uz_CurrentControl_set_Kp_iq(uz_CurrentControl_t* self, float Kp_iq);
+void uz_CurrentControl_set_Kp_iq(uz_CurrentControl_t* self, float Kp_iq, bool kp_adjustment_flag);
 
 /**
  * @brief Function to change the Ki-value of the iq-PI-Controller during runtime

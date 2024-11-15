@@ -30,6 +30,8 @@
 #include "uz_piController.h"
 #include "uz_space_vector_limitation.h"
 #include "uz_linear_decoupling.h"
+#include "uz_static_nonlinear_decoupling.h"
+#include "uz_kp_adjustment.h"
 #include "uz_signals.h"
 #include "uz_newton_raphson.h"
 #include "uz_space_vector_modulation.h"

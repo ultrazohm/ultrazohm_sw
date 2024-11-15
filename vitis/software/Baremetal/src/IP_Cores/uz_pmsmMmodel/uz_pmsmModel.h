@@ -27,6 +27,21 @@ struct uz_pmsmModel_config_t
     float coulomb_friction_constant; /**< Static friction constant */
     float inertia; /**< Inertia of the PMSM */
     bool simulate_mechanical_system; /**< Determine if mechanical system is simulated or speed is an input */
+    float ad1; /**< Fitting Parameter for approximation of d- axis self saturation*/
+    float ad2; /**< Fitting Parameter for approximation of d- axis self saturation*/
+    float ad3; /**< Fitting Parameter for approximation of d- axis self saturation*/
+    float ad4; /**< Fitting Parameter for approximation of d- axis cross-coupling saturation*/
+    float ad5; /**< Fitting Parameter for approximation of d- axis cross-coupling saturation*/
+    float ad6; /**< Fitting Parameter for approximation of d- axis cross-coupling saturation*/
+    float aq1; /**< Fitting Parameter for approximation of q- axis self saturation*/
+    float aq2; /**< Fitting Parameter for approximation of q- axis self saturation*/
+    float aq3; /**< Fitting Parameter for approximation of q- axis self saturation*/
+    float aq4; /**< Fitting Parameter for approximation of q- axis cross-coupling saturation*/
+    float aq5; /**< Fitting Parameter for approximation of q- axis cross-coupling saturation*/
+    float aq6; /**< Fitting Parameter for approximation of q- axis cross-coupling saturation*/
+    float F1G1; /**< Fitting Parameter for cross-coupling approximation*/
+    float F2G2; /**< Fitting Parameter for cross-coupling approximation*/
+    bool simulate_nonlinear; /**< true: simulate nonlinear PMSM Model in the PL. Requires fitting parameters*/
 };
 
 /**
@@ -53,6 +68,7 @@ struct uz_pmsmModel_inputs_t
     float load_torque; /**< Applied load torque in Nm */
 };
 
+
 /**
  * @brief Initialize an instance of the driver
  * 
@@ -76,11 +92,19 @@ void uz_pmsmModel_trigger_input_strobe(uz_pmsmModel_t *self);
 void uz_pmsmModel_trigger_output_strobe(uz_pmsmModel_t *self);
 
 /**
- * @brief Set inputs of the model and write them to the PMSM model IP-Core
+ * @brief Takes the values of the shadow register and pass them to the actual AXI register.
  * 
- * @param self Pointer to driver instance
- * @param inputs Inputs to be written to IP-Core
+ * @param self 
  */
+
+void uz_pmsmModel_trigger_fitting_parameter_strobe(uz_pmsmModel_t *self);
+
+/**
+ * @brief Takes the values of the shadow register and pass them to the actual AXI register.
+ * 
+ * @param self 
+ */
+
 void uz_pmsmModel_set_inputs(uz_pmsmModel_t *self,struct uz_pmsmModel_inputs_t inputs);
 
 /**
@@ -96,6 +120,8 @@ struct uz_pmsmModel_outputs_t uz_pmsmModel_get_outputs(uz_pmsmModel_t *self);
  * 
  * @param self Pointer to driver instance
  */
+
+
 void uz_pmsmModel_reset(uz_pmsmModel_t *self);
 
 

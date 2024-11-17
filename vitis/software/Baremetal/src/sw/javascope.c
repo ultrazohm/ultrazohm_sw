@@ -60,6 +60,9 @@ extern float d2_added_noise;
 extern struct uz_pmsmModel_outputs_t cil_outputs;
 extern struct uz_pmsmModel_inputs_t cil_inputs;
 
+extern struct uz_pmsm_measurement_values d1_measurements;
+extern struct uz_pmsm_measurement_values d2_measurements;
+
 int JavaScope_initialize(DS_Data *data)
 {
 	int Status = 0;
@@ -146,6 +149,19 @@ int JavaScope_initialize(DS_Data *data)
 	js_ch_observable[JSO_torque_added_d1] = &d1_added_noise;
 	js_ch_observable[JSO_torque_added_d2] = &d2_added_noise;
 	js_ch_observable[JSO_dut_theta_offset] = data->dut_theta_offset;
+	js_ch_observable[JSO_input] = &data->javascope.input;
+	js_ch_observable[JSO_d1_phase_voltage_a] = &d1_measurements.phase_voltage_from_adc_voltage_per_volt.a;
+	js_ch_observable[JSO_d1_phase_voltage_b] = &d1_measurements.phase_voltage_from_adc_voltage_per_volt.b;
+	js_ch_observable[JSO_d1_phase_voltage_c] = &d1_measurements.phase_voltage_from_adc_voltage_per_volt.c;
+	js_ch_observable[JSO_d2_phase_voltage_a] = &d2_measurements.phase_voltage_from_adc_voltage_per_volt.a;
+	js_ch_observable[JSO_d2_phase_voltage_b] = &d2_measurements.phase_voltage_from_adc_voltage_per_volt.b;
+	js_ch_observable[JSO_d2_phase_voltage_c] = &d2_measurements.phase_voltage_from_adc_voltage_per_volt.c;
+	js_ch_observable[JSO_d1_phase_current_a] = &d1_measurements.phase_currents_from_adc_ampere_per_volt.a;
+	js_ch_observable[JSO_d1_phase_current_b] = &d1_measurements.phase_currents_from_adc_ampere_per_volt.b;
+	js_ch_observable[JSO_d1_phase_current_c] = &d1_measurements.phase_currents_from_adc_ampere_per_volt.c;
+	js_ch_observable[JSO_d2_phase_current_a] = &d2_measurements.phase_currents_from_adc_ampere_per_volt.a;
+	js_ch_observable[JSO_d2_phase_current_b] = &d2_measurements.phase_currents_from_adc_ampere_per_volt.b;
+	js_ch_observable[JSO_d2_phase_current_c] = &d2_measurements.phase_currents_from_adc_ampere_per_volt.c;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

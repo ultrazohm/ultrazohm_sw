@@ -70,7 +70,7 @@ int main(void)
     Global_Data.profile.change_speed = false;
     Global_Data.profile.setpoint_index = 0U;
     Global_Data.profile.n_ref_setpoint_index = 0U;
-    Global_Data.use_cil=true;
+   // Global_Data.use_cil=true;
 
     while (1)
     {
@@ -157,6 +157,7 @@ int main(void)
                 .coulomb_friction_constant = 0.01f,
                 .friction_coefficient = 0.001f};
             Global_Data.cil.pmsm_cil = uz_pmsmModel_init(pmsm_IPCore_config);
+            uz_pmsmModel_reset(Global_Data.cil.pmsm_cil);
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");

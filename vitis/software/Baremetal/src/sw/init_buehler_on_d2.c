@@ -13,7 +13,7 @@ struct uz_pmsm_control_configuration_t config_buehler = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 5.72f, // 3.171, // 2.251070, // 2.151070f,
+    .theta_el_offset = 5.702f, // 3.171, // 2.251070, // 2.151070f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = D2_IS_PRIME_MOVER,
     .speed_controller_max_torque = 0.6f,
@@ -185,7 +185,7 @@ struct uz_PMSM_flux_fitting_parameter_config_t buehler_fitting = {0};
                 Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
                 Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_buehler.polePairs * config_PMSM_buehler.Psi_PM_Vs;
                 Global_Data.profile.id_scale_in_A = 0.5f*8.6f / 4.2f;
-                Global_Data.profile.iq_scale_in_A = 8.6f;
+                Global_Data.profile.iq_scale_in_A = 0.5f*8.6f;
                 Global_Data.profile.speed_scale_in_rpm = 4000.0f;
 #else
     Global_Data.objects.d2_controller = uz_pmsm_control_init(config_buehler, config_PMSM_buehler, buehler_fitting);

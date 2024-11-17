@@ -1,8 +1,9 @@
-number_of_points=10;
+number_of_points=30;
 
 id=linspace(-4.2,0,number_of_points);
 iq=linspace(-1,1,number_of_points);
+iq=[iq,0];
 
-all_combinations=combinations(id,iq);
+all_combinations=combinations(iq,id);
 writematrix(all_combinations.id','id_setpoints_paraid.csv');
 writematrix(all_combinations.iq','iq_setpoints_paraid.csv');

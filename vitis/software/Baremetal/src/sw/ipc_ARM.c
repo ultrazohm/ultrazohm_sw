@@ -217,6 +217,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_4):
+			data->javascope.input = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -421,8 +422,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// }
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
-
+	if (Global_Data.javascope.sweep_theta_el == true)
+	{
+		js_status_BareToRTOS |= 1 << 5;
+	}
+	else
+	{
+		js_status_BareToRTOS &= ~(1 << 5);
+	}
 	/* Bit 6 - My_Button_3 */
 	if (Global_Data.javascope.setpoints_from_javascope == true)
 	{

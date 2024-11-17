@@ -93,6 +93,19 @@ enum JS_OberservableData
 	JSO_cil_in_v_d_V,
 	JSO_cil_in_v_q_V,
 	JSO_dut_theta_offset,
+	JSO_input,
+	JSO_d1_phase_voltage_a,
+	JSO_d1_phase_voltage_b,
+	JSO_d1_phase_voltage_c,
+	JSO_d2_phase_voltage_a,
+	JSO_d2_phase_voltage_b,
+	JSO_d2_phase_voltage_c,
+	JSO_d1_phase_current_a,
+	JSO_d1_phase_current_b,
+	JSO_d1_phase_current_c,
+	JSO_d2_phase_current_a,
+	JSO_d2_phase_current_b,
+	JSO_d2_phase_current_c,
 	JSO_ENDMARKER
 };
 
@@ -327,7 +340,7 @@ enum gui_button_mapping
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
 	MyButton1,
-	MyButton2,
+	ThetaSweep,
 	ManualSetpoints,
 	Enable_DUT,
 	UseRL,

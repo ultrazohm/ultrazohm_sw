@@ -158,6 +158,7 @@ typedef struct javascope_global
 	bool disable_speed_control;
 	bool use_rl;
 	bool sweep_theta_el;
+	float input;
 } javascope_global;
 
 typedef struct cil_data{

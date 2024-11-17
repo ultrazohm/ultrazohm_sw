@@ -41,14 +41,6 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
-struct uz_DutyCycle_t duty_cycle_hoerner = {0};
-
-// =============== Declares for PMSM 2 =============== //
-
-// FOC Instances and Configs
-extern struct uz_PMSM_t config_PMSM_beckhoff;
-float theta_el_offset_2 = 1.4f;
-
 uint64_t old_uptime = 0U;
 
 #if SETPOINT_PROFILE == SETPOINT_PROFILE_ORIGINAL
@@ -80,28 +72,22 @@ float iq_setpoints[] = {
 #endif
 
 #if SETPOINT_PROFILE == SETPOINT_PROFILE_ORIGINAL
-float speed_setpoints[] = {-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, -0.6f, -0.7f, -0.8f, -0.9f, -1.0f};
+float speed_setpoints[] = {-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, -0.6f, -0.7f, -0.8f, -0.9f, -1.0f}; //
 #elif SETPOINT_PROFILE == SETPOINT_PROFILE_PARAID
-float speed_setpoints[] = {-400};
+float speed_setpoints[] = {-0.1};
 #elif SETPOINT_PROFILE == SETPOINT_PROFILE_RS
 float speed_setpoints[] = {-0.05f,-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, -0.6f, -0.7f, -0.8f, -0.9f, -1.0f};
 #endif
 
-extern float PMSM_rated_current_hoerner;
 extern bool select_misalignment;
-
 uint32_t Fehlerfall = 0U;
 
 // DDPG Stuff
-extern bool select_DDPG;
-extern bool select_FOC;
 float observation_ip[9U] = {0};
-#define NUMBER_OF_INPUTS_7N 7U
-#define NUMBER_OF_INPUTS_9N 9U
 uz_matrix_t *matrix_output;
-float theta_el_old_hoerner = 0.0f;
 
-#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
+//#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
+#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 10000U // 11290U
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -185,7 +171,12 @@ void ISR_Control(void *data)
     automatic_profile();
 
     if(Global_Data.javascope.sweep_theta_el){
-        *Global_Data.dut_theta_offset += 1.0f/10000.0f; // Moves the offset slightly in each ISR execution. Slow enought to assume it is still always steady state for evaluation
+        *Global_Data.dut_theta_offset += 0.10f/10000.0f; // Moves the offset slightly in each ISR execution. Slow enought to assume it is still always steady state for evaluation
+        Global_Data.javascope.start_marker = 1.0f;
+        if (*Global_Data.dut_theta_offset > 2*2*UZ_PIf){
+            Global_Data.javascope.start_marker = 0.0f;
+            Global_Data.javascope.sweep_theta_el=false;
+        }
     }
 
     if (Global_Data.javascope.setpoints_from_javascope)
@@ -317,6 +308,7 @@ void ISR_Control(void *data)
                 // d1_added_noise=0.0f;
                 d2_added_noise = 0.0f;
                 d1_added_noise = Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
+  //              d1_added_noise = 0.0f;
             }
             else
             {
@@ -335,7 +327,7 @@ void ISR_Control(void *data)
                 }
                 d2_reference_speed_in_rpm = Global_Data.prime_mover_reference_speed_in_rpm;
                 d1_added_noise = 0.0f;
-                // d2_added_noise = 0.0f;
+                //d2_added_noise = 0.0f;
                 d2_added_noise = Global_Data.dut.torque_constant * Global_Data.dut_reference_currents_in_A.q;
             }
 
@@ -487,7 +479,7 @@ void ISR_Control(void *data)
                 if (Global_Data.profile.start_angle_found)
                 {
                     Global_Data.profile.dut_reference_currents_in_A.d = id_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.id_scale_in_A;
-                    Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.iq_scale_in_A; // * PMSM_rated_current_hoerner;
+                    Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.iq_scale_in_A; 
 
                     // step throught the array
                     uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();

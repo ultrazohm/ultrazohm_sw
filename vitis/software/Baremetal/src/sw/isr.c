@@ -53,10 +53,14 @@ struct uz_pmsmModel_outputs_t pmsm_outputs={
 uz_3ph_dq_t i_ref_Amps = {0};
 uz_3ph_dq_t i_meas_Amps = {0};
 uz_3ph_dq_t v_ref_Volts = {0};
+uz_3ph_dq_t flux_approx = {0};
+uz_3ph_dq_t flux_reference = {0};
+uz_3ph_dq_t new_Kp = {0};
 float V_dc_volts = 48.0f;
 float omega_mech_rad_per_sec = 0.0f;
 float omega_el_rad_per_sec = 0.0f;
 float n_ref = 0.0f;
+bool use_nonlinear = false;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -81,9 +85,16 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
+    	if(use_nonlinear) {
+    		flux_approx = uz_approximate_flux_step(Global_Data.objects.approximate_flux_instance, i_meas_Amps);
+    		flux_reference = uz_approximate_flux_reference_step(Global_Data.objects.approximate_flux_instance, i_ref_Amps, i_meas_Amps);
+    		uz_CurrentControl_set_flux_approx(Global_Data.objects.CC_instance, flux_approx);
+    		new_Kp = uz_CurrentControl_kp_adjustment(Global_Data.objects.CC_instance, i_ref_Amps, flux_approx, flux_reference, 0.0001, 1.0f);
+    	}
         v_ref_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_ref_Amps, i_meas_Amps, V_dc_volts, omega_el_rad_per_sec);
         pmsm_inputs.v_d_V = v_ref_Volts.d;
         pmsm_inputs.v_q_V = v_ref_Volts.q;
+
     } else {
     	pmsm_inputs.v_d_V = 0.0f;
     	pmsm_inputs.v_q_V = 0.0f;

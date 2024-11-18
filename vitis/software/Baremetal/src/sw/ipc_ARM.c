@@ -24,7 +24,7 @@ extern float *js_ch_selected[JS_CHANNELS];
 extern uz_3ph_dq_t i_ref_Amps;
 extern float n_ref;
 extern uint32_t js_status_BareToRTOS;
-
+extern bool use_nonlinear;
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -267,15 +267,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			use_nonlinear = true;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+		use_nonlinear = false;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+
 			break;
 
 		case (My_Button_4):
@@ -343,11 +343,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	 if (use_nonlinear == true) {
+		js_status_BareToRTOS |= (1 << 4);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	 }
 
 	/* Bit 5 - My_Button_2 */
 	// js_status_BareToRTOS &= ~(1 << 5);

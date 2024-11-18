@@ -238,4 +238,9 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_3p
 	return (decouple_voltage);
 }
 
+void uz_CurrentControl_set_Kp_adjustment_flag(uz_CurrentControl_t* self, bool flag) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	self->config.Kp_adjustment_flag = flag;
+}
 #endif

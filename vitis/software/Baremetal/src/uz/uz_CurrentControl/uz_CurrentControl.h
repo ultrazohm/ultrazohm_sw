@@ -26,7 +26,7 @@ struct uz_CurrentControl_config {
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
-	bool Kp_adjustment_flag; /**<Flag to turn the adjustment of Kp via nonlinear flux-maps on or off */
+	bool Kp_adjustment_flag; /**<Flag to turn the adjustment of Kp via nonlinear flux-maps (gain scheduling) on or off */
 	float max_modulation_index; /**< Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation*/
 };
 
@@ -174,4 +174,11 @@ void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
+/**
+ * @brief Sets the value for the Kp_adjustment_flag
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param flag Turn on(true) or off to use gain scheduling during runtime
+ */
+void uz_CurrentControl_set_Kp_adjustment_flag(uz_CurrentControl_t* self, bool flag);
 #endif // UZ_CURRENTCONTROL_H

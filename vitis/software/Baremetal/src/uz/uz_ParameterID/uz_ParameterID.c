@@ -234,8 +234,8 @@ uz_3ph_dq_t uz_ParameterID_Controller(uz_ParameterID_Data_t* Data, struct uz_Par
 		} else if (Data->Controller_Parameters.activeState == 170U) {
 			uz_CurrentControl_set_decoupling_method(objects.CC_instance_dq, linear_decoupling);
 		}
-		uz_CurrentControl_set_Kp_id(objects.CC_instance_dq, Data->Controller_Parameters.Kp_id_out,false);
-		uz_CurrentControl_set_Kp_iq(objects.CC_instance_dq, Data->Controller_Parameters.Kp_iq_out,false);
+		uz_CurrentControl_set_Kp_id(objects.CC_instance_dq, Data->Controller_Parameters.Kp_id_out);
+		uz_CurrentControl_set_Kp_iq(objects.CC_instance_dq, Data->Controller_Parameters.Kp_iq_out);
 		uz_CurrentControl_set_Ki_id(objects.CC_instance_dq, Data->Controller_Parameters.Ki_id_out);
 		uz_CurrentControl_set_Ki_iq(objects.CC_instance_dq, Data->Controller_Parameters.Ki_iq_out);
 		uz_SpeedControl_set_Ki(objects.SC_instance, Data->Controller_Parameters.Ki_n_out);

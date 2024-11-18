@@ -16,8 +16,8 @@ Example
   #include "uz/uz_CurrentControl/uz_static_nonlinear_decoupling.h"
   int main(void) {
      float omega_el_rad_per_sec = 100.0f;
-     struct uz_3ph_dq_t flux_approximation = {.d = 0.016f, .q = 0.010f, .zero = 0.0f};
-     struct uz_3ph_dq_t output = uz_CurrentControl_static_nonlinear_decoupling(flux_approximation, omega_el_rad_per_sec);
+     struct uz_3ph_dq_t flux_approx_real = {.d = 0.016f, .q = 0.010f, .zero = 0.0f};
+     struct uz_3ph_dq_t output = uz_CurrentControl_static_nonlinear_decoupling(flux_approx_real, omega_el_rad_per_sec);
   }
 
 Description

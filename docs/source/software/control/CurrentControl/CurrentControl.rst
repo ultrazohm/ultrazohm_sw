@@ -99,6 +99,7 @@ Example
      };
      struct uz_CurrentControl_config CC_config = {
         .decoupling_select = linear_decoupling,
+        .Kp_adjustment_flag = false,
         .config_PMSM = config_PMSM,
         .config_id = config_id,
         .config_iq = config_iq,

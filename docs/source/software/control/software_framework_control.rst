@@ -10,7 +10,6 @@ Control
     CurrentControl/CurrentControl
     encoder_offset_estimation/encoder_offset_estimation
     flux_approximation/flux_approximation
-    kp_adjustment/kp_adjustment
     linear_decoupling/linear_decoupling
     static_nonlinear_decoupling/static_nonlinear_decoupling
     movingAverage/movingAverage

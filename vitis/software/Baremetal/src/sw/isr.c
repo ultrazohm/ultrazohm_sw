@@ -37,7 +37,26 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+    .omega_mech_1_s=0.0f,
+    .v_d_V=0.0f,
+    .v_q_V=0.0f,
+    .load_torque=0.0f
+};
 
+struct uz_pmsmModel_outputs_t pmsm_outputs={
+    .i_d_A=0.0f,
+    .i_q_A=0.0f,
+    .torque_Nm=0.0f,
+    .omega_mech_1_s=0.0f
+};
+uz_3ph_dq_t i_ref_Amps = {0};
+uz_3ph_dq_t i_meas_Amps = {0};
+uz_3ph_dq_t v_ref_Volts = {0};
+float V_dc_volts = 48.0f;
+float omega_mech_rad_per_sec = 0.0f;
+float omega_el_rad_per_sec = 0.0f;
+float n_ref = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -51,21 +70,34 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
+    uz_pmsmModel_trigger_input_strobe(Global_Data.objects.pmsm_model);
+    uz_pmsmModel_trigger_output_strobe(Global_Data.objects.pmsm_model);
+    pmsm_outputs=uz_pmsmModel_get_outputs(Global_Data.objects.pmsm_model);
+    i_meas_Amps.d = pmsm_outputs.i_d_A;
+    i_meas_Amps.q = pmsm_outputs.i_q_A;
+    omega_mech_rad_per_sec = n_ref / (30.0f * UZ_PIf);
+    omega_el_rad_per_sec = omega_mech_rad_per_sec * 4.0f;
+    pmsm_inputs.omega_mech_1_s = omega_mech_rad_per_sec;
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+        v_ref_Volts = uz_CurrentControl_sample(Global_Data.objects.CC_instance, i_ref_Amps, i_meas_Amps, V_dc_volts, omega_el_rad_per_sec);
+        pmsm_inputs.v_d_V = v_ref_Volts.d;
+        pmsm_inputs.v_q_V = v_ref_Volts.q;
+    } else {
+    	pmsm_inputs.v_d_V = 0.0f;
+    	pmsm_inputs.v_q_V = 0.0f;
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    uz_pmsmModel_set_inputs(Global_Data.objects.pmsm_model, pmsm_inputs);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//                        Global_Data.rasv.halfBridge2DutyCycle,
+//                        Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

@@ -7,7 +7,9 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
-
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "uz/uz_approximate_flux/uz_approximate_flux.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -114,6 +116,9 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	uz_pmsmModel_t *pmsm_model;
+	uz_approximate_flux_t* approximate_flux_instance;
+	uz_CurrentControl_t* CC_instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

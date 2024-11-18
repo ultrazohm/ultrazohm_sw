@@ -126,9 +126,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	send_field_1,
-	send_field_2,
-	send_field_3,
+	i_d,
+	i_q,
+	n,
 	send_field_4,
 	send_field_5,
 	send_field_6,
@@ -153,12 +153,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
-	RPM,
-	Nm,
 	A,
 	A,
-	A,
-	A,
+	rpm,
+	-,
+	-,
+	-,
 	-,
 	-,
 	-,
@@ -180,11 +180,11 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
-	receive_field_5,
+	i_d,
+	i_q,
+	u_d,
+	u_q,
+	n,
 	receive_field_6,
 	receive_field_7,
 	receive_field_8,
@@ -250,11 +250,11 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
+	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_Milliseconds,
+	JSSD_FLOAT_u_d,
+	JSSD_FLOAT_u_q,
+	JSSD_FLOAT_speed,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

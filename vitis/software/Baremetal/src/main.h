@@ -53,7 +53,8 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "include/init_FOC.h"
+#include "uz/uz_math_constants.h"
 
 //----------------------------------------------------
 // FUNCTIONS

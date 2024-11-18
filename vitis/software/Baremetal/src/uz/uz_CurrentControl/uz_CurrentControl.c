@@ -20,7 +20,6 @@
 #include "../uz_signals/uz_signals.h"
 #include "uz_linear_decoupling.h"
 #include "uz_static_nonlinear_decoupling.h"
-#include "uz_kp_adjustment.h"
 #include "uz_space_vector_limitation.h"
 #include <math.h>
 
@@ -33,14 +32,15 @@
 #include "uz_linear_decoupling.h"
 #include "uz_static_nonlinear_decoupling.h"
 #include "uz_space_vector_limitation.h"
-#include "uz_kp_adjustment.h"
+
 typedef struct uz_CurrentControl_t {
 	bool is_ready;
 	bool ext_clamping;
 	struct uz_CurrentControl_config config;
 	struct uz_PI_Controller* Controller_id;
 	struct uz_PI_Controller* Controller_iq;
-	uz_3ph_dq_t flux_approx;
+	uz_3ph_dq_t flux_approx_real;
+	uz_3ph_dq_t flux_approx_reference;
 	uz_3ph_dq_t kp_adjustment_parameter;
 }uz_CurrentControl_t;
 
@@ -119,26 +119,39 @@ void uz_CurrentControl_reset(uz_CurrentControl_t* self){
 	self->ext_clamping = false;
 }
 
-void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t flux_approx){
+void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t flux_approx_real, uz_3ph_dq_t flux_approx_reference){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->flux_approx = flux_approx;
+	self->flux_approx_real = flux_approx_real;
+	self->flux_approx_reference = flux_approx_reference;
 }
 
-void uz_CurrentControl_set_kp_adjustment(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere,  uz_3ph_dq_t i_actual_Ampere, uz_3ph_dq_t flux_ref,float sampling_time, float factor){
+void uz_CurrentControl_adjust_Kp(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere,  uz_3ph_dq_t i_actual_Ampere, float BO_factor){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->kp_adjustment_parameter = uz_CurrentControl_kp_adjustment(i_actual_Ampere, i_reference_Ampere, self->flux_approx, flux_ref, sampling_time, factor);	
-}
-
-void uz_CurrentControl_set_Kp_id(uz_CurrentControl_t* self, float Kp_id, bool kp_adjustment_flag){
-	if(kp_adjustment_flag == true)
-	{
-		Kp_id = self->kp_adjustment_parameter.d;
+	uz_3ph_dq_t kp_adjusted = {0};
+	uz_3ph_dq_t current_error = {0};
+	current_error.d = i_reference_Ampere.d - i_actual_Ampere.d;
+	  if (current_error.d == 0.0f) {
+    	current_error.d = 1.1920929E-7f;
+  		}
+	current_error.q = i_reference_Ampere.q - i_actual_Ampere.q ;
+	  if (current_error.q == 0.0f) {
+    	current_error.q = 1.1920929E-7f;
+  		}
+	kp_adjusted.d = ((self->flux_approx_reference.d - self->flux_approx_real.d)/current_error.d) / (BO_factor * self->config.config_id.samplingTime_sec * 2.0f);
+	kp_adjusted.q = ((self->flux_approx_reference.q - self->flux_approx_real.q)/current_error.q) / (BO_factor * self->config.config_iq.samplingTime_sec * 2.0f);
+	if(self->config.Kp_adjustment_flag) {
+		uz_CurrentControl_set_Kp_id(self, kp_adjusted.d);
+		uz_CurrentControl_set_Kp_iq(self, kp_adjusted.q);
 	}
+}
+
+void uz_CurrentControl_set_Kp_id(uz_CurrentControl_t* self, float Kp_id){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Kp_id >= 0.0f);
+	self->config.config_id.Kp = Kp_id;
 	uz_PI_Controller_set_Kp(self->Controller_id, Kp_id);
 }
 
@@ -146,17 +159,15 @@ void uz_CurrentControl_set_Ki_id(uz_CurrentControl_t* self, float Ki_id){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Ki_id >= 0.0f);
+	self->config.config_id.Ki = Ki_id;
 	uz_PI_Controller_set_Ki(self->Controller_id, Ki_id);
 }
 
-void uz_CurrentControl_set_Kp_iq(uz_CurrentControl_t* self, float Kp_iq, bool kp_adjustment_flag){
-	if(kp_adjustment_flag == true)
-	{
-		Kp_iq = self->kp_adjustment_parameter.q;
-	}
+void uz_CurrentControl_set_Kp_iq(uz_CurrentControl_t* self, float Kp_iq){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Kp_iq >= 0.0f);
+	self->config.config_iq.Kp = Kp_iq;
 	uz_PI_Controller_set_Kp(self->Controller_iq, Kp_iq);
 }
 
@@ -164,7 +175,20 @@ void uz_CurrentControl_set_Ki_iq(uz_CurrentControl_t* self, float Ki_iq){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	uz_assert(Ki_iq >= 0.0f);
+	self->config.config_iq.Ki = Ki_iq;
 	uz_PI_Controller_set_Ki(self->Controller_iq, Ki_iq);
+}
+
+float uz_CurrentControl_get_Kp_id(uz_CurrentControl_t* self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->config.config_id.Kp);
+}
+
+float uz_CurrentControl_get_Kp_iq(uz_CurrentControl_t* self) {
+	uz_assert_not_NULL(self);
+	uz_assert(self->is_ready);
+	return(self->config.config_iq.Kp);
 }
 
 void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float max_modulation_index) {
@@ -206,7 +230,7 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_3p
         decouple_voltage=uz_CurrentControl_linear_decoupling(self->config.config_PMSM, i_actual_Ampere, omega_el_rad_per_sec);
         break;
 	case static_nonlinear_decoupling:
-     	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(self->flux_approx, omega_el_rad_per_sec);
+     	decouple_voltage = uz_CurrentControl_static_nonlinear_decoupling(self->flux_approx_real, omega_el_rad_per_sec);
      	break;
     default:
         break;

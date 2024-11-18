@@ -26,6 +26,7 @@ struct uz_CurrentControl_config {
 	struct uz_PI_Controller_config config_id; /**< Configuration struct for id-Controller */
 	struct uz_PI_Controller_config config_iq; /**< Configuration struct for iq-Controller */
 	uz_PMSM_t config_PMSM; /**< Configuration struct for PMSM parameters */
+	bool Kp_adjustment_flag; /**<Flag to turn the adjustment of Kp via nonlinear flux-maps on or off */
 	float max_modulation_index; /**< Max possible modulation index for the chosen modulation method. I.e. 1/sqrt(3) for Space-Vector-Modulation*/
 };
 
@@ -78,20 +79,42 @@ void uz_CurrentControl_reset(uz_CurrentControl_t* self);
  * @brief Function to change the flux-linkage value during runtime
  *
  * @param self uz_CurrentControl_t instance
- * @param flux_approx new flux-linkage value. Must be greater or equal than 0.0f
+ * @param flux_approx_real new flux-linkage value for measured current. 
+ * @param flux_approx_reference new flux-linkage for reference current. 
  */
-void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t flux_approx);
+void uz_CurrentControl_set_flux_approx(uz_CurrentControl_t* self, uz_3ph_dq_t flux_approx_real, uz_3ph_dq_t flux_approx_reference);
 
-void uz_CurrentControl_set_kp_adjustment(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere,  uz_3ph_dq_t i_actual_Ampere, uz_3ph_dq_t flux_ref, float sampling_time, float factor);
+/**
+ * @brief Function to adjust the Kp parameter of the PI-Controllers during runtime based on nonlinear flux-maps
+ * 
+ * @param self uz_CurrentControl_t instance
+ * @param i_reference_Ampere uz_dq_t struct for reference dq-currents in Ampere
+ * @param i_actual_Ampere uz_dq_t struct for measured dq-currents in Ampere
+ * @param BO_factor factor for magnitude optimum 
+ */
+void uz_CurrentControl_adjust_Kp(uz_CurrentControl_t* self, uz_3ph_dq_t i_reference_Ampere,  uz_3ph_dq_t i_actual_Ampere, float BO_factor);
+
+/**
+ * @brief Function to get the Kp-value of the id-PI-Controller during runtime
+ *
+ * @param self uz_CurrentControl_t instance
+ */
+float uz_CurrentControl_get_Kp_id(uz_CurrentControl_t* self);
+
+/**
+ * @brief Function to get the Kp-value of the iq-PI-Controller during runtime
+ *
+ * @param self uz_CurrentControl_t instance
+ */
+float uz_CurrentControl_get_Kp_iq(uz_CurrentControl_t* self);
 
 /**
  * @brief Function to change the Kp-value of the id-PI-Controller during runtime
  *
  * @param self uz_CurrentControl_t instance
  * @param Kp_id new Kp_id value. Must be greater or equal than 0.0f
- * @param kp_adjustment_flag flag if the kp adjustment is on or off.
  */
-void uz_CurrentControl_set_Kp_id(uz_CurrentControl_t* self, float Kp_id, bool kp_adjustment_flag);
+void uz_CurrentControl_set_Kp_id(uz_CurrentControl_t* self, float Kp_id);
 
 /**
  * @brief Function to change the Ki-value of the id-PI-Controller during runtime
@@ -106,9 +129,8 @@ void uz_CurrentControl_set_Ki_id(uz_CurrentControl_t* self, float Ki_id);
  *
  * @param self uz_CurrentControl_t instance
  * @param Kp_iq new Kp_iq value. Must be greater or equal than 0.0f
- * @param kp_adjustment_flag flag if the kp adjustment is on or off. 
  */
-void uz_CurrentControl_set_Kp_iq(uz_CurrentControl_t* self, float Kp_iq, bool kp_adjustment_flag);
+void uz_CurrentControl_set_Kp_iq(uz_CurrentControl_t* self, float Kp_iq);
 
 /**
  * @brief Function to change the Ki-value of the iq-PI-Controller during runtime

@@ -1,0 +1,21 @@
+\documentclass[crop,tikz,convert={outext=.svg,command=\unexpanded{pdf2svg \infile\space\outfile}},multi=false]{standalone}[2012/04/13]
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usetikzlibrary{arrows,shapes,positioning}
+\begin{document}
+\begin{tikzpicture}
+	\begin{scope}
+		\node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=\textwidth]{torque_pcb.png}};
+		\begin{scope}[x={(image.south east)},y={(image.north west)}]
+			\draw[blue,ultra thick,rounded corners] (0.01,0.45) rectangle (0.35,0.95);
+			\draw[orange,ultra thick,rounded corners] (0.4,0.05) rectangle (0.7,0.75);
+			\draw[purple,ultra thick,rounded corners] (0.01,0.05) rectangle (0.35,0.4);
+			\draw[black,ultra thick,rounded corners] (0.7,0.2) rectangle (0.99,0.77);
+			\node[blue,ultra thick,fill=white,anchor=south] at (0.2,0.65) {\Huge 1};
+			\node[orange,ultra thick,fill=white,anchor=south] at (0.55,0.4) {\Huge 2};
+			\node[purple,ultra thick,fill=white,anchor=south] at (0.1,0.25) {\Huge 3};
+			\node[black,ultra thick,fill=white,anchor=south] at (0.85,0.5) {\Huge 4};
+		\end{scope}
+	\end{scope}
+\end{tikzpicture}%
+\end{document}

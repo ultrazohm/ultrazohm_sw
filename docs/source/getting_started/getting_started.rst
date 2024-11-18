@@ -25,7 +25,7 @@ Please install all of them in the newest version, except for the Xilinx toolchai
 Community & git
 ***************
 
-The UltraZohm project is a community based open source project and the `repository is hosted on Bitucket <https://www.bitbucket.org/ultrazohm/ultrzohm_sw>`_.
+The UltraZohm project is a community based open source project and the `repository is hosted on Bitucket <https://www.bitbucket.org/ultrazohm/ultrazohm_sw>`_.
 We use `Slack <https://slack.com/intl/de-de/>`_ as our primary communication channel.
 Follow these steps to join the community and understand how git works.
 

@@ -460,4 +460,26 @@ void test_uz_CurrentControl_get_Kp_iq(void) {
     float result = uz_CurrentControl_get_Kp_iq(instance);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,3.0f,result);
 }
+
+void test_uz_CurrentControl_set_Kp_adjustment_flag_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_Kp_adjustment_flag(NULL, 2.0f));
+}
+
+void test_uz_CurrentControl_set_Kp_adjustment_flag(void) {
+    //Values for comparision from simulation 
+    config.Kp_adjustment_flag = false;
+    config.config_iq.samplingTime_sec = 0.0001f;
+    config.config_id.samplingTime_sec = 0.0001f;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    flux_approx_reference.q = 0.002f;
+    flux_approx_real.q = 0.0005f;
+    i_reference_Ampere.q = 1.0f;
+    i_actual_Ampere.q = 0.5f;
+    //Enable it after init to test if the enabling worked
+    uz_CurrentControl_set_Kp_adjustment_flag(instance,true);
+    uz_CurrentControl_set_flux_approx(instance,flux_approx_real, flux_approx_reference);
+    uz_CurrentControl_adjust_Kp(instance,i_reference_Ampere,i_actual_Ampere,factor);
+    float result = uz_CurrentControl_get_Kp_iq(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,7.5f,result);
+}
 #endif // TEST

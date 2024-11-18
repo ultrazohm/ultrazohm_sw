@@ -13,7 +13,6 @@ Example
   :linenos:
   :caption: Example function call to calculate kp adjustment parameters.
 
-  #include "uz_kp_adjustment.h"
   int main(void) {
     struct uz_CurrentControl_config config = {
     config_iq.samplingTime_sec = 0.00001f

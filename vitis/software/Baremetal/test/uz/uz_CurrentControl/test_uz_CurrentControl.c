@@ -98,15 +98,6 @@ void test_uz_CurrentControl_set_Ki_iq_negative(void){
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_Ki_iq(instance, Ki_iq));
 }
 
-void test_uz_CurrentControl_get_Kp_id_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_get_Kp_id(NULL));
-}
-
-void test_uz_CurrentControl_get_Kp_iq_NULL(void) {
-    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_get_Kp_iq(NULL));
-}
-
-
 void test_uz_CurrentControl_sample_output(void){
     //Values for comparision from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
@@ -447,4 +438,26 @@ void test_uz_CurrentControl_Kp_q_adjustment_actual_ampere_positive(void){
     float result = uz_CurrentControl_get_Kp_iq(instance);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,7.5f,result);
 } 
+
+void test_uz_CurrentControl_get_Kp_id_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_get_Kp_id(NULL));
+}
+
+void test_uz_CurrentControl_get_Kp_iq_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_get_Kp_iq(NULL));
+}
+
+void test_uz_CurrentControl_get_Kp_id(void) {
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    uz_CurrentControl_set_Kp_id(instance,2.0f);
+    float result = uz_CurrentControl_get_Kp_id(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,2.0f,result);
+}
+
+void test_uz_CurrentControl_get_Kp_iq(void) {
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    uz_CurrentControl_set_Kp_iq(instance,3.0f);
+    float result = uz_CurrentControl_get_Kp_iq(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,3.0f,result);
+}
 #endif // TEST

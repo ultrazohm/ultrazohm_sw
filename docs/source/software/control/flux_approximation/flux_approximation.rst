@@ -107,13 +107,13 @@ Step function
     };
     uz_approximate_flux_t* test_instance = uz_approximate_flux_init(fitting_config);
     struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
-    struct uz_3ph_dq_t flux_approx = uz_approximate_flux_step(test_instance, i_actual_Ampere);
+    struct uz_3ph_dq_t flux_approx_real = uz_approximate_flux_step(test_instance, i_actual_Ampere);
     }
 
 Description
 ^^^^^^^^^^^
 
-Approximates the flux linkages in both axis using analytic prototype functions from [[#Shih_Wei_Su_flux_approx]_]
+Approximates the flux linkages for the measured currents in both axis using analytic prototype functions from [[#Shih_Wei_Su_flux_approx]_]
 
 .. _uz_approximate_flux_reference_step:
 
@@ -148,34 +148,14 @@ Reference step function
     uz_approximate_flux_t* test_instance = uz_approximate_flux_init(fitting_config);
     struct uz_3ph_dq_t i_actual_Ampere = {.d = 1.0f, .q = 2.0f, .zero = 0.0f};
     struct uz_3ph_dq_t i_reference_Ampere = {.d = 2.0f, .q = 4.0f, .zero = 0.0f};
-    struct uz_3ph_dq_t flux_reference = uz_approximate_flux_reference_step(test_instance,i_reference_Ampere,i_actual_Ampere);
+    struct uz_3ph_dq_t flux_approx_reference = uz_approximate_flux_reference_step(test_instance,i_reference_Ampere,i_actual_Ampere);
     }
 
 Description
 ^^^^^^^^^^^
 
 Approximates the flux linkages in both axis using analytic prototype functions from [[#Shih_Wei_Su_flux_approx]_].
-This function is mainly used to adjust the control parameters during runtime. This follows the approach discribed in [[#Schroeder_Regelung]_, p. 913] or [[#Gemassmer_Diss]_, p. 102].
-
-Set flux approximation
-----------------------
-
-.. doxygenfunction:: uz_CurrentControl_set_flux_approx
-
-.. code-block:: c
-  :linenos:
-  :caption: Example function call to set the approximated flux linkages in a CurrentControl instance.
-
-  int main(void) {
-  struct uz_CurrentControl_config config = {0};
-  struct uz_3ph_dq_t flux_approx = {.d = 0.00040f, .q = 0.0019f, .zero = 0.0f};
-  uz_CurrentControl_set_flux_approx(instance,flux_approx);
-  }
-
-Description
-^^^^^^^^^^^
-
-This function sets the parameters of the approximated flux so it can be used in other CurrentControl functions.
+This follows the approach described in [[#Schroeder_Regelung]_, p. 913] or [[#Gemassmer_Diss]_, p. 102].
 
 .. [#Shih_Wei_Su_flux_approx] Analytical Prototype Functions for Flux Linkage Approximation in Synchronous Machines, Shih-Wei Su, Christoph M. Hackl, and Ralph Kennel, IEEE Open Journal of the Industrial Electronics Society, vol. 3, pp. 265-282, 2022, doi: 10.1109/OJIES.2022.3162336
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Joachim Böcker, Springer, 2021, 5. Edition (German)

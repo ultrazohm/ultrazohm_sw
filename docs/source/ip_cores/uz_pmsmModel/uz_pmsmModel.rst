@@ -321,12 +321,28 @@ Vitis
       .polepairs = 2.0f,
       .inertia = 0.001,
       .coulomb_friction_constant = 0.01f,
-      .friction_coefficient = 0.001f};
+      .friction_coefficient = 0.001f,
+      .simulate_nonlinear = false;
+      .ad1 = 0.0f,
+			.ad2 = 0.0f,
+	    .ad3 = 0.0f,
+			.ad4 = 0.0f,
+			.ad5 = 0.0f,
+			.ad6 = 0.0f,
+			.aq1 = 0.0f,
+			.aq2 = 0.0f,
+			.aq3 = 0.0f,
+			.aq4 = 0.0f,
+			.aq5 = 0.0f,
+			.aq6 = 0.0f,
+			.F1G1 = 0.0f,
+			.F2G2 = 0.0f};
   
   pmsm=uz_pmsmModel_init(pmsm_config);
   // before ISR Init!
   // more code of main
 
+- To determine the fitting parameters see :ref:`uz_flux_approximation_script`.
 - Read and write the inputs in ``isr.c``
 - Add before ISR with global scope to use the driver and :ref:`wave_generator`:
 

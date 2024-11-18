@@ -98,6 +98,15 @@ void test_uz_CurrentControl_set_Ki_iq_negative(void){
     TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_set_Ki_iq(instance, Ki_iq));
 }
 
+void test_uz_CurrentControl_get_Kp_id_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_get_Kp_id(NULL));
+}
+
+void test_uz_CurrentControl_get_Kp_iq_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_CurrentControl_get_Kp_iq(NULL));
+}
+
+
 void test_uz_CurrentControl_sample_output(void){
     //Values for comparision from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
@@ -375,5 +384,67 @@ void test_uz_CurrentControl_set_max_modulation_index_check(void){
     TEST_ASSERT_EQUAL_INT(0,uz_CurrentControl_get_ext_clamping(instance));
 }
 
+void test_uz_CurrentControl_Kp_d_adjustment_actual_ampere_zero(void){  
+    //Values for comparision from simulation 
+    config.Kp_adjustment_flag = true;
+    config.config_id.samplingTime_sec = 0.0001f;
+    config.config_iq.samplingTime_sec = 0.0001f;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    flux_approx_reference.d = 0.00045f;
+    flux_approx_real.d = 0.00000f;
+    i_reference_Ampere.d = 1.0f;
+    i_actual_Ampere.d = 0.0f;
+    uz_CurrentControl_set_flux_approx(instance,flux_approx_real, flux_approx_reference);
+    uz_CurrentControl_adjust_Kp(instance,i_reference_Ampere,i_actual_Ampere,factor);
+    float result = uz_CurrentControl_get_Kp_id(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,1.125f,result);
+} 
 
+void test_uz_CurrentControl_Kp_q_adjustment_actual_ampere_zero(void){
+    //Values for comparision from simulation 
+    config.Kp_adjustment_flag = true;
+    config.config_iq.samplingTime_sec = 0.0001f;
+    config.config_id.samplingTime_sec = 0.0001f;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    flux_approx_reference.q = 0.002f;
+    flux_approx_real.q = 0.00000f;
+    i_reference_Ampere.q = 1.0f;
+    i_actual_Ampere.q = 0.0f;
+    uz_CurrentControl_set_flux_approx(instance,flux_approx_real, flux_approx_reference);
+    uz_CurrentControl_adjust_Kp(instance,i_reference_Ampere,i_actual_Ampere,factor);
+    float result = uz_CurrentControl_get_Kp_iq(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,5.0f,result);
+} 
+
+void test_uz_CurrentControl_Kp_d_adjustment_actual_ampere_positive(void){  
+    //Values for comparision from simulation
+    config.Kp_adjustment_flag = true;
+    config.config_id.samplingTime_sec = 0.0001f;
+    config.config_iq.samplingTime_sec = 0.0001f;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    flux_approx_reference.d = 0.00045f;
+    flux_approx_real.d = 0.00025f;
+    i_reference_Ampere.d = 1.0f;
+    i_actual_Ampere.d = 0.5f;
+    uz_CurrentControl_set_flux_approx(instance,flux_approx_real, flux_approx_reference);
+    uz_CurrentControl_adjust_Kp(instance,i_reference_Ampere,i_actual_Ampere,factor);
+    float result = uz_CurrentControl_get_Kp_id(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,1.0f,result);
+} 
+
+void test_uz_CurrentControl_Kp_q_adjustment_actual_ampere_positive(void){   
+    //Values for comparision from simulation 
+    config.Kp_adjustment_flag = true;
+    config.config_iq.samplingTime_sec = 0.0001f;
+    config.config_id.samplingTime_sec = 0.0001f;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    flux_approx_reference.q = 0.002f;
+    flux_approx_real.q = 0.0005f;
+    i_reference_Ampere.q = 1.0f;
+    i_actual_Ampere.q = 0.5f;
+    uz_CurrentControl_set_flux_approx(instance,flux_approx_real, flux_approx_reference);
+    uz_CurrentControl_adjust_Kp(instance,i_reference_Ampere,i_actual_Ampere,factor);
+    float result = uz_CurrentControl_get_Kp_iq(instance);
+    TEST_ASSERT_FLOAT_WITHIN(1e-03f,7.5f,result);
+} 
 #endif // TEST

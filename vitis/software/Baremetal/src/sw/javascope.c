@@ -90,11 +90,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_theta_el_right] 	= &data->av.resolver_pl_outputs_right.position_el_2pi;
 	js_ch_observable[JSO_theta_mech_left] 	= &data->av.resolver_pl_outputs_left.position_mech_2pi;
 	js_ch_observable[JSO_theta_mech_right] 	= &data->av.resolver_pl_outputs_right.position_mech_2pi;
+	js_slowDataArray[JSO_ref_speed_left_filt] 	= &(data->rasv.n_ref_left_filt);
+	js_slowDataArray[JSO_ref_speed_left] 	= &(data->rasv.n_ref_left);
 	js_ch_observable[JSO_vd_left]			= &data->av.v_d_left;
 	js_ch_observable[JSO_vq_left]			= &data->av.v_q_left;
 	js_ch_observable[JSO_vd_right]			= &data->av.v_d_right;
 	js_ch_observable[JSO_vq_right]			= &data->av.v_q_right;
 	js_ch_observable[JSO_torque]			= &data->av.torque;
+	js_ch_observable[JSO_id_ref_left]		= &data->rasv.i_dq_ref_left.d;
+	js_ch_observable[JSO_iq_ref_left]		= &data->rasv.i_dq_ref_left.q;
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;

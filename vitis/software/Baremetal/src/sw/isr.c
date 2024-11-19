@@ -179,6 +179,7 @@ void ISR_Control(void *data)
 
 	// calculate control algorithm for right motor
 	control_right_motor();
+	//uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
 
 	// set dutycycles
 	Global_Data.rasv.halfBridge1DutyCycle = dutycyc_left.DutyCycle_A;
@@ -331,8 +332,14 @@ static void control_left_motor() {
 };
 
 static void control_right_motor() {
+	// filter speed setpoint signal
+	//Global_Data.rasv.n_ref_left_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.iir_filter_ref_speed_left, Global_Data.rasv.n_ref_left);
+	// calculate reference torque from speed ctrl of left motor
+	//Global_Data.rasv.M_ref_left = uz_SpeedControl_sample(Global_Data.objects.speed_ctrl_left, Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s, Global_Data.rasv.n_ref_left_filt);
+	// calculate current setpoints i_dq_ref for left motor
+	//Global_Data.rasv.i_dq_ref_right = uz_SetPoint_sample(Global_Data.objects.setpoint_ctrl_left, Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s, Global_Data.rasv.M_ref_left, Global_Data.av.v_dc_right, i_dq_right);
     // calculate reference voltages for current control
-    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
+    v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, Global_Data.rasv.i_dq_ref_right, i_dq_right, Global_Data.av.v_dc_right, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
     Global_Data.av.v_d_right = v_dq_ref_right.d;
     Global_Data.av.v_q_right = v_dq_ref_right.q;
     // calculate duty cycles from reference dq voltages

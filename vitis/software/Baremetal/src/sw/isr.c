@@ -178,6 +178,8 @@ void ISR_Control(void *data)
 	Global_Data.av.i_q_left = i_dq_left.q;
 	Global_Data.av.i_d_right = i_dq_right.d;
 	Global_Data.av.i_q_right = i_dq_right.q;
+	Global_Data.av.v_d_right_meas = v_dq_meas_right.d;
+	Global_Data.av.v_q_right_meas = v_dq_meas_right.q;
 
 
 	// calculate control (speed and current) of left motor

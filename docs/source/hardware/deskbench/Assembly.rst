@@ -63,7 +63,7 @@ Connect the torque sensor D-SUB 15 cable with the :ref:`torque_box` ``IN Torque 
   :height: 350
   :align: center
 
-8. Make sure that the deskbench is proper grounded. There is a fastener for the connection to ground in the top left-hand corner.
+8. Make sure that the deskbench is properly grounded. There is a fastener for the connection to ground in the top left-hand corner.
 
 .. image:: Deskbench/grounding_desk.jpg
   :height: 350

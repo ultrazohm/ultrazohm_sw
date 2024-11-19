@@ -336,7 +336,8 @@ static void control_left_motor() {
 	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, Global_Data.av.v_dc_left, Global_Data.av.omega_mech_left*Global_Data.av.polepairs_left);
 	Global_Data.av.v_d_left = v_dq_ref_left.d;
 	Global_Data.av.v_q_left = v_dq_ref_left.q;
-	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+	Global_Data.av.theta_el_left_advanced = Global_Data.av.resolver_pl_outputs_left.position_el_2pi + (1.5f * (Global_Data.av.omega_mech_left*Global_Data.av.polepairs_left) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
+	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, Global_Data.av.v_dc_left, Global_Data.av.theta_el_left_advanced);
 };
 
 static void control_right_motor() {
@@ -351,5 +352,6 @@ static void control_right_motor() {
     Global_Data.av.v_d_right = v_dq_ref_right.d;
     Global_Data.av.v_q_right = v_dq_ref_right.q;
     // calculate duty cycles from reference dq voltages
-    dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+	Global_Data.av.theta_el_right_advanced = Global_Data.av.resolver_pl_outputs_right.position_el_2pi + (1.5f * (Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
+    dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.theta_el_right_advanced);
 };

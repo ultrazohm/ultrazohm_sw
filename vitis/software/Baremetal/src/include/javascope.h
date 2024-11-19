@@ -54,6 +54,8 @@ enum JS_OberservableData {
 	JSO_ref_speed_left,
 	JSO_theta_el_left,
 	JSO_theta_el_right,
+	JSO_theta_el_left_advanced,
+	JSO_theta_el_right_advanced,
 	JSO_theta_mech_left,
 	JSO_theta_mech_right,
 	JSO_mech_Speed_rpm_left,

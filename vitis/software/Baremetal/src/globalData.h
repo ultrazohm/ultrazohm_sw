@@ -98,6 +98,8 @@ typedef struct _actualValues_ {
 	float vcc_lp;
 	float vcc_fp;
 	float fcc_aux;
+	float theta_el_right_advanced;
+	float theta_el_left_advanced;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
 	struct uz_inverter_adapter_outputs_t inverter_left_status;

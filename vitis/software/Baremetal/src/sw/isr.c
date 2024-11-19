@@ -48,11 +48,13 @@ extern DS_Data Global_Data;
 // measurement structs for motor control
 struct uz_3ph_abc_t i_abc_left = {0.0f};
 struct uz_3ph_abc_t i_abc_right = {0.0f};
+struct uz_3ph_abc_t v_abc_right = {0.0f};
 struct uz_3ph_dq_t i_dq_left = {0.0f};
 struct uz_3ph_dq_t i_dq_right = {0.0f};
 struct uz_3ph_dq_t i_dq_ref_right = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_left = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_right = {0.0f};
+struct uz_3ph_dq_t v_dq_meas_right = {0.0f};
 struct uz_DutyCycle_t dutycyc_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_right = {0.0f};
 
@@ -109,6 +111,9 @@ void ISR_Control(void *data)
     i_abc_right.a = Global_Data.av.i_a_right;
     i_abc_right.b = Global_Data.av.i_b_right;
     i_abc_right.c = Global_Data.av.i_c_right;
+    v_abc_right.a = Global_Data.av.v_a_right;
+    v_abc_right.b = Global_Data.av.v_b_right;
+    v_abc_right.c = Global_Data.av.v_c_right;
 
     // check for current limit
     if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_b_left) > MAX_CURRENT_AMP || fabs(Global_Data.av.i_c_left) > MAX_CURRENT_AMP ||
@@ -165,6 +170,7 @@ void ISR_Control(void *data)
 	// park transformation of measured currents
 	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
 	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+	v_dq_meas_right = uz_transformation_3ph_abc_to_dq(v_abc_right,Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
 	Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
 	Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
 	Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);

@@ -46,6 +46,8 @@ enum JS_OberservableData {
 	JSO_vq_left,
 	JSO_vd_right,
 	JSO_vq_right,
+	JSO_vd_right_meas,
+	JSO_vq_right_meas,
 	JSO_idc_left,
 	JSO_idc_right,
 	JSO_ref_speed_left_filt,

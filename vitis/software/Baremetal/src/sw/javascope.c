@@ -50,6 +50,7 @@ extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> respo
 extern uz_3ph_dq_t i_meas_Amps;
 extern uz_3ph_dq_t v_ref_Volts;
 extern float n_ref;
+extern uz_3ph_dq_t new_Kp;
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -72,8 +73,8 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	js_ch_observable[JSO_Speed_rpm]				= &(n_ref);
 	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
-	js_ch_observable[JSO_ia] 					= &data->av.I_U;
-	js_ch_observable[JSO_ib] 					= &data->av.I_V;
+	js_ch_observable[JSO_ia] 					= &new_Kp.d;
+	js_ch_observable[JSO_ib] 					= &new_Kp.q;
 	js_ch_observable[JSO_ic] 					= &data->av.I_W;
 	js_ch_observable[JSO_ua] 					= &data->av.U_U;
 	js_ch_observable[JSO_ub] 					= &data->av.U_V;

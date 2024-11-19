@@ -1,18 +1,5 @@
 #include "../include/init_FOC.h"
 #include <math.h>
-struct uz_pmsmModel_config_t pmsm_config={
-  .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
-  .ip_core_frequency_Hz=100000000,
-    .simulate_mechanical_system = false,
-	.simulate_nonlinear = false,
-    .r_1 = 0.27f,
-    .L_d = 0.00049f,
-    .L_q = 0.0021f,
-    .psi_pm = 0.0195f,
-    .polepairs = 4.0f,
-    .inertia = 0.001,
-    .coulomb_friction_constant = 0.01f,
-    .friction_coefficient = 0.001f};
 
 struct uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
 			.ad1_parameter = 0.030483840951002f,
@@ -31,6 +18,36 @@ struct uz_PMSM_flux_fitting_parameter_config_t fitting_config = {
 			.F2G2_parameter = 0.078813850391713f
 
 };
+
+struct uz_pmsmModel_config_t pmsm_config={
+  .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+  .ip_core_frequency_Hz=100000000,
+    .simulate_mechanical_system = false,
+	.simulate_nonlinear = true,
+    .r_1 = 0.27f,
+    .L_d = 0.00049f,
+    .L_q = 0.0021f,
+    .psi_pm = 0.0195f,
+    .polepairs = 4.0f,
+    .inertia = 0.001,
+    .coulomb_friction_constant = 0.01f,
+    .friction_coefficient = 0.001f,
+	.ad1 = 0.030483840951002f,
+				.ad2 = 0.040244227373267f,
+	            .ad3 = -16.481195185733903f,
+				.ad4 = 1.296438633344970f,
+				.ad5 = 6.183163374457993e-04f,
+				.ad6 = -12.275586044862504f,
+				.aq1 = 0.004816670542863f,
+				.aq2 = 0.171595254784258f,
+				.aq3 = 9.262938633610718e-04f,
+				.aq4 = 0.005001870975338f,
+				.aq5 = 0.170521235710151f,
+				.aq6 = 9.186084507499523e-04f,
+				.F1G1 = -0.001356794026337f,
+				.F2G2 = 0.078813850391713f};
+
+
 
 struct uz_PMSM_t config_PMSM = {
       .Ld_Henry = 0.00049f,
@@ -62,7 +79,7 @@ uz_approximate_flux_t* uz_init_approximate_flux(void) {
 
 uz_CurrentControl_t* uz_init_CC(void) {
 	struct uz_CurrentControl_config CC_config = {
-	      .decoupling_select = linear_decoupling,
+	      .decoupling_select = static_nonlinear_decoupling,
 	      .config_PMSM = config_PMSM,
 	      .config_id = config_id,
 	      .config_iq = config_iq,

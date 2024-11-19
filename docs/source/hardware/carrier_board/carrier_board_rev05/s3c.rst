@@ -82,36 +82,24 @@ Functions
 - To-be-discussed functionalities
 	- "Request Safe State" signal from S³C to D slots: Potential triggers are supply rail monitors, ``FP_UsrSW3``, ``FrontpanelIO.ExternalSTOP``, ...
 
-
 Statemachine for s3c
 --------------------
 
 .. mermaid::
 
-	stateDiagram-v2
-		[*] --> Waiting_for_Powerbutton_pressed
-		Waiting_for_Powerbutton_pressed --> Waiting_for_Powerbutton_released
-		Waiting_for_Powerbutton_released --> EthernetPhy_Reset
-		EthernetPhy_Reset --> Wait_State 
-		Wait_State --> Ready_State
-		Ready_State --> Error_State
-		Error_State --> Ready_State
-		Ready_State --> Powerdown
-		Powerdown --> Waiting_for_Powerbutton_pressed
-		Ready_State --> Shutdown_Extern
-		Shutdown_Extern --> [*]
-
-.. mermaid::
-	mindmap
-	root((mindmap))
-		Offene Fragen
-		ExternalStop Verhalten
-			Default mäßig aus? Sonst bräuchte man einen Stecker der die Pins verbindet
-		States
-			British popular psychology author Tony Buzan
-		Fehler Cases
-			Case 1: Stop Taster drücken
-			Case 2: Externen stop drücken
-			Case 3: Interner Fehler ohne irgendein UI
-		Umgang mit DSlots
-			Karte fliegt raus => PowerCycle
+stateDiagram-v2
+    [*] --> Waiting_for_Powerbutton_pressed
+    Waiting_for_Powerbutton_pressed --> Waiting_for_Powerbutton_released
+    Waiting_for_Powerbutton_released --> Wait_State
+    Wait_State --> EthernetPhy_Reset 
+    EthernetPhy_Reset--> Ready_State
+    Ready_State --> Warning
+    Warning --> Ready_State
+    Warning --> Error
+    Ready_State --> SoftPowerOff
+    SoftPowerOff --> Powerdown
+    SoftPowerOff --> Ready_State
+    Powerdown --> Waiting_for_Powerbutton_pressed
+    Ready_State --> Error
+    Error --> Force_Shutdown
+    Force_Shutdown --> [*]

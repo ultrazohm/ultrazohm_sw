@@ -5,7 +5,7 @@ Digital Voltage 3U 2v01
 =======================
 
 
-.. image:: files_digital_voltage_2v01/pcb_second_complete.png
+.. image:: digital_voltage_3u/pcb_second_complete.png
    :width: 500px
 
 Source
@@ -67,7 +67,7 @@ Alternatively, a twisted pair ribbon cable with a 1" pitch can be used. At a cab
 different characteristic impedance, the termination resistor may be tuned. This can be done by connecting an open ended cable of about 2m and by measuring the output signal 
 at the termination resistor. The waveform below shows a typical signal of well compensated signal.
 
-.. image:: files_digital_voltage_2v01/diff_47ohm.png
+.. image:: digital_voltage_3u/diff_47ohm.png
    :width: 500px
 
 It is recommended to use the PCB with a 100Ohm twisted pair cabel (e.g. CAT6). 
@@ -81,7 +81,7 @@ Performance
 -----------
 
 .. csv-table:: Propagation delay and rise and fall times. r.e. = rising edge, f.e. = falling edge
-  :file: files_digital_voltage_2v01/performance.csv
+  :file: digital_voltage_3u/performance.csv
   :widths: 50 30 30 30 30
   :header-rows: 1
 
@@ -90,7 +90,7 @@ Further documentation
 ---------------------
 
 A ZIP file with comprehensive documentation can be downloaded 
-:download:`here <files_digital_voltage_2v01/UltraZohm_DigitalVoltage_2v01_public_docs.zip>`. It contains
+:download:`here <digital_voltage_3u/UltraZohm_DigitalVoltage_2v01_public_docs.zip>`. It contains
 
 - DOC
 
@@ -109,7 +109,7 @@ Technical background
 """"""""""""""""""""
 
 In order to control reflections on the transmission lines between the driver and the receiver, controlled impedance routing has been performed in this project.
-In the draftsman output in the :download:`ZIP file <files_digital_voltage_2v01/UltraZohm_DigitalVoltage_2v01_public_docs.zip>`, the layer stack is shown.
+In the draftsman output in the :download:`ZIP file <digital_voltage_3u/UltraZohm_DigitalVoltage_2v01_public_docs.zip>`, the layer stack is shown.
 The impedance of the traces on th PCB must match the impedance of the cabel that connects the adapter board with the input of the receiver. This is achieved by
 controlling the dimensions of the dielectric material between the signal layer and the ground reference plane.
 
@@ -124,13 +124,13 @@ The output impedance of the driver in series with the termination resistor forms
 signal level. After one round trip the signal adds up to the full level. The two figures below show overcompensated (the termination resistor is too big) and
 undercompensated cases (the termination resistor is too small).
 
-.. figure:: files_digital_voltage_2v01/diff_100ohm.png
+.. figure:: digital_voltage_3u/diff_100ohm.png
 	:width: 500px
 	:alt: Serial termination with a termination resistor that is too big.
 	
 	Serial termination with a termination resistor that is too big.
 	
-.. figure:: files_digital_voltage_2v01/diff_10ohm.png
+.. figure:: digital_voltage_3u/diff_10ohm.png
 	:width: 500px
 	:alt: Serial termination with a termination resistor that is too small.
 	
@@ -156,42 +156,42 @@ Appendix
 
 The following figures show the different assembly variants.
 
-.. figure:: files_digital_voltage_2v01/3V3_to_3V3.png
+.. figure:: digital_voltage_3u/3V3_to_3V3.png
 	:width: 500px
 	:alt: Digital Adapter Board: 3.3V to 3.3V
 	
 	Digital Adapter Board: 3.3V to 3.3V. The signals from the carrier board are just piped through.
 	
 
-.. figure:: files_digital_voltage_2v01/3V3_to_5V.png
+.. figure:: digital_voltage_3u/3V3_to_5V.png
 	:width: 500px
 	:alt: Digital Adapter Board: 3.3V to 5V
 	
 	Digital Adapter Board: 3.3V to 5V
 
 	
-.. figure:: files_digital_voltage_2v01/3V3_to_15V.png
+.. figure:: digital_voltage_3u/3V3_to_15V.png
 	:width: 500px
 	:alt: Digital Adapter Board: 3.3V to 15V
 	
 	Digital Adapter Board: 3.3V to 15V
 	
 	
-.. figure:: files_digital_voltage_2v01/3V3_to_RS422.png
+.. figure:: digital_voltage_3u/3V3_to_RS422.png
 	:width: 500px
 	:alt: Digital Adapter Board: 3.3V to RS422 differential signals (output)
 	
 	Digital Adapter Board: 3.3V to RS422 differential signals (output)
 	
 	
-.. figure:: files_digital_voltage_2v01/RS422_to_3V3.png
+.. figure:: digital_voltage_3u/RS422_to_3V3.png
 	:width: 500px
 	:alt: Digital Adapter Board: RS422 differential signals to 3.3V (input)
 	
 	Digital Adapter Board: RS422 differential signals to 3.3V (input)
 	
 	
-.. figure:: files_digital_voltage_2v01/bottom.png
+.. figure:: digital_voltage_3u/bottom.png
 	:width: 500px
 	:alt: Digital Adapter Board: Table on the bottom side of the PCB.
 	

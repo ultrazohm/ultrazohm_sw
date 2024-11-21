@@ -8,10 +8,10 @@ PMSM Model
 - Simulates a PMSM on the FPGA
 - Intended for controller-in-the-loop (CIL) on the UltraZohm
 - Time discrete transformation is done by *zero order hold* transformation
-- Sample frequency of the integrator is :math:`T_s=\frac{1}{2\,MHz}`
+- Sample frequency of the integrator is :math:`T_s=\frac{1}{500\,kHz}`
 - IP-Core clock frequency **must** be :math:`f_{clk}=100\,MHz`!
 - IP-Core has single precision AXI ports
-- All calculations in the IP-Core are done in double precision!
+- All calculations in the IP-Core are done in single precision!
 
 System description
 ==================
@@ -21,7 +21,11 @@ Electrical System
 
 The model assumes a symmetric machine with a sinusoidal input voltage as well as the common assumptions for the dq-transformation (neglecting the zero-component).
 Small letter values indicate time dependency without explicitly stating it.
-The PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
+
+Linear model
+------------
+
+In the simplified linear case, the PMSM model is based on its differential equation using the flux-linkage as state values in the dq-plane [[#Schroeder_Regelung]_, p. 1092]:
 
 .. math:: 
 
@@ -62,6 +66,43 @@ This can be rearranged to the following equation [[#Schroeder_Regelung]_, p. 109
 .. math::
 
     T_I=\frac{3}{2} p \big(i_q \psi_{pm} + i_d i_q (L_d -L_q) \big)
+
+Model with non-linear effects
+-----------------------------
+
+This model takes saturation and cross-coupling effects into consideration. The flux-linkage is now dependent on the dq-currrents. 
+
+.. math::
+
+    \frac{d\psi_d}{dt} = \frac{\partial \psi_d}{\partial i_d}\frac{di_d}{dt}+ \frac{\partial \psi_d}{\partial i_q}\frac{di_q}{dt}
+
+    \frac{d\psi_q}{dt} = \frac{\partial \psi_q}{\partial i_d}\frac{di_d}{dt}+ \frac{\partial \psi_q}{\partial i_q}\frac{di_q}{dt}
+
+For the partial derivatives of the flux with respect to the currents, abbreviations are introduced. These are called differential self-inductances :math:`L_{dd}` and :math:`L_{qq}`, as well as the differential cross-coupling inductances :math:`L_{dq}` and :math:`L_{qd}`.
+
+.. math::
+  
+    L_dd = \frac{\partial \psi_{d}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}}
+    
+    L_{qq} = \frac{\partial \psi_{q}^{\left(i_{d},i_{q}\right)}}{\partial i_{q}}
+    
+    L_{dq} = \frac{\partial \psi_{d}^{\left(i_{d},i_{q}\right)}}{\partial i_{q}}
+    
+    L_{qd} = \frac{\partial \psi_{q}^{\left(i_{d},i_{q}\right)}}{\partial i_{d}} 
+
+Rearranging the equations again to calculate the current from the flux-linkage:
+
+.. math::
+
+    \frac{di_{d}}{dt}=\frac{u_{d}-R_{s}\cdot i_{d}-L_{dq} \frac{di_{q}}{dt}+\omega_{el} \psi_{q}}{L_{dd}}
+    
+    \frac{di_{q}}{dt}=\frac{u_{q}-R_{s} \cdot i_{q}-L_{qd} \frac{di_{d}}{dt}-\omega_{el} \psi_{d}}{L_{qq}}
+
+The inner torque :math:`T_I`  is calculated using the flux-linkages.
+
+.. math::
+
+    T_I=\frac{3}{2}p(\psi_d(id,iq) i_q - \psi_q(id,iq) i_d)
 
 Mechanical system
 -----------------
@@ -153,7 +194,7 @@ That is, :math:`u_d`, :math:`u_q`, :math:`\omega_{mech}`, and :math:`M_L` are in
 Furthermore, :math:`i_d`, :math:`i_q`, :math:`M_I`, and :math:`\omega_{mech}` are outputs.
 The IP-Core inputs :math:`\boldsymbol{u}(k)=[{v}_{d} ~ v_{q} ~ T_{L}]` and outputs :math:`\boldsymbol{y}(k)=[i_{d} ~ i_{q} ~ T_{L} ~ \omega_{m}]` are accessible by AXI4 (including burst transactions).
 Furthermore, all machine parameters, e.g., stator resistance, can be written by AXI at runtime.
-All AXI-transactions use single-precision variables, which the IP-Core converts to and from double precision.
+All AXI-transactions use single-precision variables.
 The inputs :math:`\boldsymbol{u}(k)` and outputs :math:`\boldsymbol{y}(k)` use a shadow register that holds the value of the register until a sample signal is triggered.
 Upon triggering, the inputs from the shadow register are passed to the actual input registers of the IP-Core, and the current output :math:`\boldsymbol{y}(k)` is stored in the output shadow register (strobe functions of driver).
 The shadow registers can be triggered according to the requirements of the controller in the loop and ensure synchronous read/write operations. 
@@ -167,6 +208,9 @@ The IP-Core has two modes regarding the rotational speed :math:`\omega_{mech}`:
 When the flag ``simulate_mechanical_system`` is true, the rotational speed in the output struct is calculated by the IP-Core, and the input value of the rotational speed has no effect.
 When the flag ``simulate_mechanical_system`` is false, the rotational speed in the output struct is equal to the rotational speed of the input.
 This behavior is implemented in the hardware of the IP-Core with switches.
+The IP-Core also has a mode regarding saturation and cross-coupling effects.
+When the flag ``simulate_nonlinear`` is true, the flux-linkages :math:`\psi_d` and :math:`\psi_q` are dependent on the currents with the equations in `Model with non-linear effects`_.
+When the flag ``simulate_nonlinear`` is false, the flux-linkages are used as state values with the equations in `Linear model`_.
 The input and output values are intended to be written and read in a periodical function, e.g., the ISR.
 
 In addition to the time-dependent values, the PMSM model parameters are configured by AXI.
@@ -193,13 +237,12 @@ For the mechanical system:
 IP-Core Hardware
 ----------------
 
-- The module takes all inputs and converts them from single precision to double precision.
-- The output is converted from double precision to single precision (using rounding to the nearest value in both cases).
+- The module uses single precision. 
 - All input values are adjustable at run-time
 - The sample time is fixed!
 - The IP-Core uses `Native Floating Point of the HDL-Coder <https://de.mathworks.com/help/hdlcoder/native-floating-point.html>`_
 - Several parameters are written as their reciprocal to the AXI register to make the calculations on hardware simple (handled by the driver!)
-- The IP-Core uses an oversampling factor of 50
+- The IP-Core uses an oversampling factor of 200
 - Floating Point latency Strategy is set to ``MIN``
 - Handle denormals is activated 
 
@@ -278,12 +321,28 @@ Vitis
       .polepairs = 2.0f,
       .inertia = 0.001,
       .coulomb_friction_constant = 0.01f,
-      .friction_coefficient = 0.001f};
+      .friction_coefficient = 0.001f,
+      .simulate_nonlinear = false;
+      .ad1 = 0.0f,
+			.ad2 = 0.0f,
+	    .ad3 = 0.0f,
+			.ad4 = 0.0f,
+			.ad5 = 0.0f,
+			.ad6 = 0.0f,
+			.aq1 = 0.0f,
+			.aq2 = 0.0f,
+			.aq3 = 0.0f,
+			.aq4 = 0.0f,
+			.aq5 = 0.0f,
+			.aq6 = 0.0f,
+			.F1G1 = 0.0f,
+			.F2G2 = 0.0f};
   
   pmsm=uz_pmsmModel_init(pmsm_config);
   // before ISR Init!
   // more code of main
 
+- To determine the fitting parameters see :ref:`uz_flux_approximation_script`.
 - Read and write the inputs in ``isr.c``
 - Add before ISR with global scope to use the driver and :ref:`wave_generator`:
 
@@ -366,6 +425,62 @@ Javascope
 - Make sure that in ``properties.ini``, ``smallestTimeStepUSEC = 50`` is set
 
 
+Flux approximation
+------------------
+
+The flux-linkages are approximated using analytic-Prototype functions.
+This is based on the approach and findings from [#Shih_Wei_Su_flux_approximation]_.
+For a more in depth look at the derivation, see [ [#Philipp_Doelger_MA]_, p. 30 ].
+
+The entire range of the flux-linkages can be approximated with the following equations. 
+Note that the terms :math:`\int \hat{\psi}_{cross}^{q,s1}(I_{q1}) di_{q}` and :math:`\int \hat{\psi}_{cross}^{d,s1}(I_{d1}) di_{d}` are constant values and will be used in the fitting parameters.
+
+.. math::
+
+    \hat{\psi}_{d}(i_{d},i_{q}) = \hat{\psi}_{d,self}(i_{d}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q}} \left( \hat{\psi}_{cross}^{d,s1}(i_{d},i_{q}=I_{q1}) \right) \left( \int \hat{\psi}_{cross}^{q,s1}(i_{q}) \, di_{q} \right)}_{=\hat{\psi}_{cross}^{d}(i_{d},i_{q})}
+
+.. math::
+
+    \hat{\psi}_{q}(i_{d},i_{q}) = \hat{\psi}_{q,self}(i_{q}) - \underbrace{\frac{1}{\int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d}} \left( \hat{\psi}_{cross}^{q,s1}(i_{d}=I_{d1},i_{q}) \right) \left( \int \hat{\psi}_{cross}^{d,s1}(i_{d}) \, di_{d} \right)}_{=\hat{\psi}_{cross}^{q}(i_{d},i_{q})}
+
+
+Approximation Example usage
+---------------------------
+
+In this example usage, flux-linkages of an example motor are getting approximated.
+
+- There needs to be a Excel data sheet in the same directory as the PMSM IP-Core at ``ultrazohm_sw\ip_cores\uz_pmsm_model``.
+
+- The naming in the script has to be adjusted. 
+
+.. code-block:: matlab
+    :linenos:
+    :caption: Example to get data out of a Excel data sheet.
+
+    ...
+    FluxMapData = readtable('FluxMapData_Prototyp_1000rpm_');
+    ...
+
+- Afterwards the area where the Array is in the excel sheet has to be specified. 
+  
+.. code-block:: matlab
+    :linenos:
+    :caption: Example to specify array location and size.
+
+    ...
+    % Currents
+    id = FluxMapData{1,1:20};
+    iq = FluxMapData{22:41,1};
+    %Psi_d
+    psi_d = FluxMapData{43:62,1:20}*(1e-3);
+    %Psi_q
+    psi_q = FluxMapData{108:127,1:20}*(1e-3);
+    ...
+
+- To run the approximation script, first the ``uz_pmsm_model_init_parameter.m`` file has to be ran.
+- If the the script ran successfully the fitting parameters are in the MATLAB workspace and can be used in the IP-Core for nonlinear behavior or for different use in the sw-framework. 
+
+
 Comparison between reference and IP-Core
 ----------------------------------------
 
@@ -433,3 +548,5 @@ Sources
 .. [#Ruderman_ZurModellierungReibung] Zur Modellierung und Kompensationdynamischer Reibung in Aktuatorsystemen, Michael Ruderman, Dissertation, 2012, TU Dortmund (German)
 .. [#Schroeder_Regelung] Elektrische Antriebe - Regelung von Antriebssystemen, Dierk Schröder, Springer, 2015, 4. Edition (German)
 .. [#Sanchez_LimitsOfFloat] Exploring the Limits of Floating-Point Resolution for Hardware-In-the-Loop Implemented with FPGAs, Alberto Sanchez, Elías Todorovich, and Angel De Castro, Applications of Power Electronics, https://doi.org/10.3390/electronics7100219
+.. [#Shih_Wei_Su_flux_approximation] Analytical Prototype Functions for Flux Linkage Approximation in Synchronous Machines, Shih-Wei Su, Christoph M. Hackl, and Ralph Kennel, IEEE Open Journal of the Industrial Electronics Society, vol. 3, pp. 265-282, 2022, doi: 10.1109/OJIES.2022.3162336
+.. [#Philipp_Doelger_MA] Feldorientierte Regelung von hoch ausgenutzten permanenterregten Synchronmaschinen, Philipp Dölger (German)

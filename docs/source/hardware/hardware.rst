@@ -27,7 +27,7 @@ Hardware
 
     adapter_cards/digital/optical/optical_general
     adapter_cards/digital/inc_encoder/incr_encoder_general
-    adapter_cards/digital/digital_voltage_3u
+    adapter_cards/digital/digital_voltage/digital_voltage_general
     adapter_cards/digital/Digital_BreakoutBoard_v1
     adapter_cards/digital/encoder_v1
     adapter_cards/digital/temperature_rev02/temperature_rev02
@@ -42,6 +42,9 @@ Hardware
     adapter_cards/external/uz_per_adc_to_bnc/uz_per_adc_to_bnc_rev01
     adapter_cards/external/loopback_PCB/loopback_PCB
     adapter_cards/external/uz_per_torque_box/uz_per_torque_box
+    adapter_cards/external/deskbench_terminal/deskbench_terminal
+    adapter_cards/external/rj_45_breakout/rj45_breakout
+
 
 .. toctree::
     :maxdepth: 1

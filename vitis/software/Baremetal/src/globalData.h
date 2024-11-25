@@ -136,6 +136,13 @@ typedef struct
 	uz_pmsm_control_t *d1_controller;
 	uz_pmsm_control_t *d2_controller;
 	uz_IIR_Filter_t *tracking_error_filter_prime_mover;
+	uz_IIR_Filter_t *phase_a_lowpass;
+	uz_IIR_Filter_t *phase_b_lowpass;
+	uz_IIR_Filter_t *phase_c_lowpass;
+	uz_IIR_Filter_t *d2_phase_a_lowpass;
+	uz_IIR_Filter_t *d2_phase_b_lowpass;
+	uz_IIR_Filter_t *d2_phase_c_lowpass;
+
 } object_pointers_t;
 
 typedef struct controller_data

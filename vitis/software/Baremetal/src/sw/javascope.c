@@ -162,6 +162,24 @@ int JavaScope_initialize(DS_Data *data)
 	js_ch_observable[JSO_d2_phase_current_a] = &d2_measurements.phase_currents_from_adc_ampere_per_volt.a;
 	js_ch_observable[JSO_d2_phase_current_b] = &d2_measurements.phase_currents_from_adc_ampere_per_volt.b;
 	js_ch_observable[JSO_d2_phase_current_c] = &d2_measurements.phase_currents_from_adc_ampere_per_volt.c;
+	js_ch_observable[JSO_duty_1] = &data->rasv.halfBridge1DutyCycle;
+	js_ch_observable[JSO_duty_2] = &data->rasv.halfBridge2DutyCycle;
+	js_ch_observable[JSO_duty_3] = &data->rasv.halfBridge3DutyCycle;
+	js_ch_observable[JSO_duty_4] = &data->rasv.halfBridge4DutyCycle;
+	js_ch_observable[JSO_duty_5] = &data->rasv.halfBridge5DutyCycle;
+	js_ch_observable[JSO_duty_6] = &data->rasv.halfBridge6DutyCycle;
+	js_ch_observable[JSO_dut_v_a_ref] = &data->dut.reference_values->v_abc_in_V.a;
+	js_ch_observable[JSO_dut_v_b_ref] = &data->dut.reference_values->v_abc_in_V.b;
+	js_ch_observable[JSO_dut_v_c_ref] = &data->dut.reference_values->v_abc_in_V.c;
+	js_ch_observable[JSO_pm_v_a_ref] = &data->prime_mover.reference_values->v_abc_in_V.a;
+	js_ch_observable[JSO_pm_v_b_ref] = &data->prime_mover.reference_values->v_abc_in_V.b;
+	js_ch_observable[JSO_pm_v_c_ref] = &data->prime_mover.reference_values->v_abc_in_V.c;
+	js_ch_observable[JSO_dut_v_a] = &data->dut.actual_data->v_abc_in_V.a;
+	js_ch_observable[JSO_dut_v_b] = &data->dut.actual_data->v_abc_in_V.b;
+	js_ch_observable[JSO_dut_v_c] = &data->dut.actual_data->v_abc_in_V.c;
+	js_ch_observable[JSO_pm_v_a] = &data->prime_mover.actual_data->v_abc_in_V.a;
+	js_ch_observable[JSO_pm_v_b] = &data->prime_mover.actual_data->v_abc_in_V.b;
+	js_ch_observable[JSO_pm_v_c] = &data->prime_mover.actual_data->v_abc_in_V.c;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

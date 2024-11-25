@@ -1,4 +1,4 @@
-number_of_points=30;
+number_of_points=10;
 
 id=linspace(-4.2,0,number_of_points);
 iq=linspace(-1,1,number_of_points);

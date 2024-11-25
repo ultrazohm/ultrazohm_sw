@@ -74,9 +74,9 @@ float iq_setpoints[] = {
 #if SETPOINT_PROFILE == SETPOINT_PROFILE_ORIGINAL
 float speed_setpoints[] = {-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, -0.6f, -0.7f, -0.8f, -0.9f, -1.0f}; //
 #elif SETPOINT_PROFILE == SETPOINT_PROFILE_PARAID
-float speed_setpoints[] = {-0.1};
+float speed_setpoints[] = {-0.4, 0.4, -0.8,0.8};
 #elif SETPOINT_PROFILE == SETPOINT_PROFILE_RS
-float speed_setpoints[] = {-0.05f,-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, -0.6f, -0.7f, -0.8f, -0.9f, -1.0f};
+float speed_setpoints[] = {0.05f,0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f,-0.05f,-0.1f, -0.2f, -0.3f, -0.4f, -0.5f, -0.6f, -0.7f, -0.8f, -0.9f, -1.0f};
 #endif
 
 extern bool select_misalignment;
@@ -86,8 +86,7 @@ uint32_t Fehlerfall = 0U;
 float observation_ip[9U] = {0};
 uz_matrix_t *matrix_output;
 
-//#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
-#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 10000U // 11290U
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -123,6 +122,11 @@ struct uz_3ph_dq_t cil_dq_currents = {0};
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
+    // check_inverter_errors();
+    // check_inverter_errors();
+    // check_inverter_errors();
+    // check_inverter_errors();
+
     if (Global_Data.use_cil)
     {
         uz_pmsm_controller_use_cil(Global_Data.objects.d1_controller, true);
@@ -366,6 +370,19 @@ void ISR_Control(void *data)
                 Global_Data.rasv.halfBridge2DutyCycle = duty_d1.DutyCycle_B;
                 Global_Data.rasv.halfBridge3DutyCycle = duty_d1.DutyCycle_C;
             }
+//             if (Global_Data.javascope.sweep_theta_el){
+//                 Global_Data.rasv.halfBridge1DutyCycle = 0.8f;
+//                 Global_Data.rasv.halfBridge2DutyCycle = 0.8f;
+//                 Global_Data.rasv.halfBridge3DutyCycle = 0.8f;
+//             }else{
+// //                Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+// //                Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+// //                Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+// //                Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+// //                Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+// //                Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+//             }
+
             uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
             uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d2, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
             JavaScope_update(&Global_Data);
@@ -388,8 +405,15 @@ void ISR_Control(void *data)
             d2_measurements.phase_voltage_from_adc_voltage_per_volt.a = Global_Data.aa.A2.me.ADC_B8;
             d2_measurements.phase_voltage_from_adc_voltage_per_volt.b = Global_Data.aa.A2.me.ADC_B7;
             d2_measurements.phase_voltage_from_adc_voltage_per_volt.c = Global_Data.aa.A2.me.ADC_B6;
+            d2_measurements.phase_voltage_from_adc_voltage_per_volt.a = uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.d2_phase_a_lowpass, d2_measurements.phase_voltage_from_adc_voltage_per_volt.a);
+            d2_measurements.phase_voltage_from_adc_voltage_per_volt.b = uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.d2_phase_b_lowpass, d2_measurements.phase_voltage_from_adc_voltage_per_volt.b);
+            d2_measurements.phase_voltage_from_adc_voltage_per_volt.c = uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.d2_phase_c_lowpass, d2_measurements.phase_voltage_from_adc_voltage_per_volt.c);
 
+#if READ_VCD==1
             d2_measurements.v_dc_from_adc_volt_per_volt = Global_Data.aa.A2.me.ADC_A1; //48.0f / 12.0f;
+#else
+            d2_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
+#endif
             d2_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A2.me.ADC_A4;
             d2_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A2.me.ADC_A3;
             d2_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A2.me.ADC_A2;
@@ -425,8 +449,15 @@ void ISR_Control(void *data)
             d1_measurements.phase_voltage_from_adc_voltage_per_volt.a = Global_Data.aa.A1.me.ADC_B8;
             d1_measurements.phase_voltage_from_adc_voltage_per_volt.b = Global_Data.aa.A1.me.ADC_B7;
             d1_measurements.phase_voltage_from_adc_voltage_per_volt.c = Global_Data.aa.A1.me.ADC_B6;
+            d1_measurements.phase_voltage_from_adc_voltage_per_volt.a=uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.phase_a_lowpass,d1_measurements.phase_voltage_from_adc_voltage_per_volt.a);
+            d1_measurements.phase_voltage_from_adc_voltage_per_volt.b=uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.phase_b_lowpass,d1_measurements.phase_voltage_from_adc_voltage_per_volt.b);
+            d1_measurements.phase_voltage_from_adc_voltage_per_volt.c=uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.phase_c_lowpass,d1_measurements.phase_voltage_from_adc_voltage_per_volt.c);
 
-            d1_measurements.v_dc_from_adc_volt_per_volt =Global_Data.aa.A1.me.ADC_A1;
+#if READ_VCD==1
+                        d1_measurements.v_dc_from_adc_volt_per_volt = Global_Data.aa.A1.me.ADC_A1;
+#else
+                        d1_measurements.v_dc_from_adc_volt_per_volt = 48.0f / 12.0f;
+#endif
             d1_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_A4;
             d1_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_A3;
             d1_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_A2;
@@ -467,7 +498,12 @@ void ISR_Control(void *data)
                 else
                 {
                     theta_dut_zero_crossing = (Global_Data.profile.theta_mech_dut_old - Global_Data.dut.measurement_values->theta_mech);
-                    found_zero_crossing = (theta_dut_zero_crossing > UZ_PIf);
+                    if (Global_Data.profile.prime_mover_reference_speed_in_rpm <0.0f){
+                    	 found_zero_crossing = (theta_dut_zero_crossing > UZ_PIf);
+                    }else{
+                    	 found_zero_crossing = (theta_dut_zero_crossing < UZ_PIf);
+                    }
+
                 }
 
                 if ((found_zero_crossing || (Global_Data.prime_mover.actual_data->speed_in_rpm < 10.0f)) && (!Global_Data.profile.start_angle_found) && (Global_Data.profile.speed_setpoint_reached))

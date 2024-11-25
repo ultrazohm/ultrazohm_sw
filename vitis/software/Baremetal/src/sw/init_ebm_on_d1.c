@@ -41,6 +41,7 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .relative_torque_tolerance = 0.1f,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
+    .theta_sampling_compensation=0.0f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 

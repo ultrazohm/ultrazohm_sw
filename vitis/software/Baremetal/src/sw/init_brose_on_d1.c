@@ -23,10 +23,10 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .current_controller_d_ki = 140.0f,
     .current_controller_q_kp = 0.2f,
     .current_controller_q_ki = 140.0f,
-    .setpoint_lower_bound_i_d_in_A = -15.0f,
-    .setpoint_upper_bound_i_d_in_A = 10.5f,
-    .setpoint_lower_bound_i_q_in_A = -15.0f,
-    .setpoint_upper_bound_i_q_in_A = 15.0f,
+    .setpoint_lower_bound_i_d_in_A = -15.5f,
+    .setpoint_upper_bound_i_d_in_A = 15.5f,
+    .setpoint_lower_bound_i_q_in_A = -15.5f,
+    .setpoint_upper_bound_i_q_in_A = 15.5f,
     .setpoint_upper_bound_speed_in_rpm = 1100.0f,
     .setpoint_lower_bound_speed_in_rpm = -1100.0f,
     .error_upper_bound_speed_in_rpm = 1500.0f,
@@ -42,6 +42,7 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .nonlinear_machine = false,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
+    .theta_sampling_compensation=-0.2f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
@@ -185,7 +186,7 @@ void init_brose_on_d1(void)
     Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
     Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
     Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_brose.polePairs * config_PMSM_brose.Psi_PM_Vs;
-    Global_Data.profile.id_scale_in_A = 5.0f / 4.2f;
+    Global_Data.profile.id_scale_in_A = 10.0f / 4.2f;
     Global_Data.profile.iq_scale_in_A = 10.0f;
     Global_Data.profile.speed_scale_in_rpm = 1000.0f;
 #else

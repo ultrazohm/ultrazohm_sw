@@ -55,6 +55,11 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+struct uz_IIR_Filter_config reverse_filter_config = {
+    .selection = LowPass_first_order,
+    .cutoff_frequency_Hz = 1700.0f,
+    .sample_frequency_Hz = 10000.0f};
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -70,7 +75,7 @@ int main(void)
     Global_Data.profile.change_speed = false;
     Global_Data.profile.setpoint_index = 0U;
     Global_Data.profile.n_ref_setpoint_index = 0U;
-   // Global_Data.use_cil=true;
+    // Global_Data.use_cil=true;
 
     while (1)
     {
@@ -112,6 +117,13 @@ int main(void)
             Global_Data.objects.encoder_D5_1 = initialize_incremental_encoder_ipcore_on_D5_1(UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_1_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.objects.encoder_D5_2 = initialize_incremental_encoder_ipcore_on_D5_2(UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_2_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.objects.encoder_D5_3 = initialize_incremental_encoder_ipcore_on_D5_3(UZ_D5_3_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_3_MOTOR_POLE_PAIR_NUMBER);
+            // uz_IIR_Filter_t *uz_signals_IIR_Filter_init(struct uz_IIR_Filter_config config)
+            Global_Data.objects.phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
             initialization_chain = init_control;
             break;
         case init_control:

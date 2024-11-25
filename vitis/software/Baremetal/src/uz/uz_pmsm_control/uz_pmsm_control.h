@@ -52,6 +52,7 @@ struct uz_pmsm_control_configuration_t
     bool nonlinear_machine;
     bool use_rlcc;
     bool use_cil;
+    float theta_sampling_compensation; // multiple of sampling time
     uz_rlcc_t *rlcc;
     struct uz_DutyCycle_t default_duty_cycle; // returned duty cycle if control is not enabled
 };
@@ -86,6 +87,7 @@ struct uz_pmsm_reference_values
     float M_in_Nm;
     uz_3ph_dq_t i_dq_in_A;
     uz_3ph_dq_t v_dq_in_V;
+    uz_3ph_abc_t v_abc_in_V;
     struct uz_DutyCycle_t duty_cycle;
 };
 

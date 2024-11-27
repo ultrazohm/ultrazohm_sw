@@ -57,7 +57,7 @@ enum init_chain initialization_chain = init_assertions;
 
 struct uz_IIR_Filter_config reverse_filter_config = {
     .selection = LowPass_first_order,
-    .cutoff_frequency_Hz = 1700.0f,
+    .cutoff_frequency_Hz = 1750.0f,
     .sample_frequency_Hz = 10000.0f};
 
 int main(void)

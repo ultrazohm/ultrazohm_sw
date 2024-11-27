@@ -4,16 +4,16 @@
 // Hardware version of the UltraZohm
 #define UZ_HARDWARE_VERSION 4U
 
-#define D1_A_GAIN  12.555f // 12.2f //12.262f
-#define D1_B_GAIN  12.564f // 12.2f // 11.808f
-#define D1_C_GAIN  12.552f // 12.2f // 12.125f
+#define D1_A_GAIN 12.555f // 12.2f //12.262f
+#define D1_B_GAIN 12.564f // 12.2f // 11.808f
+#define D1_C_GAIN 12.552f // 12.2f // 12.125f
 #define D1_A_OFFSET 0.0078201f
 #define D1_B_OFFSET 0.0029715f
 #define D1_C_OFFSET -0.011468
 
 #define D2_A_GAIN 12.547f // 12.216f
-#define D2_B_GAIN 12.551f //14.083f
-#define D2_C_GAIN 12.544f //12.073f
+#define D2_B_GAIN 12.551f // 14.083f
+#define D2_C_GAIN 12.544f // 12.073f
 #define D2_A_OFFSET -0.014776f
 #define D2_B_OFFSET -0.0052169f
 #define D2_C_OFFSET -0.0027063f
@@ -61,6 +61,8 @@
 // a211_sidmoid_td3_gaussian_brose
 // a252_sidmoid_td3_gaussian_brose_500k_updates
 // a287_sig_td3_int_more_obs_brose_250k_2tau
+// a296_l1_td3_gaussian_brose_fixed_parameters
+// a297_sidmoid_td3_gaussian_brose_fixed_parameters
 
 // Buehler
 // a221_l1_td3_gaussian_buehler
@@ -80,20 +82,21 @@
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
 // a291_sig_td3_int_more_obs_beckhoff_250k_2tau
 
-#define CIL_1_TAU 1 // CIL uses 2tau if 0, 1 tau if one
-#define READ_VCD 1 // Reads V_dc if 1, otherwise 48 V is assumed
+#define CIL_1_TAU 1              // CIL uses 2tau if 0, 1 tau if one
+#define READ_VCD 0               // Reads V_dc if 1, otherwise 48 V is assumed
+#define BROSE_FIXED_PARAMETERS 1 // 0 is l_d=30 uH as was used until the fix, where 1 is L_d=55 uH and L_q=65 uH
 
-//#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
-#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 20000U // 11290U
+#define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
+// #define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 10000U // 11290U
 
 #define SETPOINT_PROFILE_ORIGINAL 1
 #define SETPOINT_PROFILE_RS 2
 #define SETPOINT_PROFILE_PARAID 3
 
-#define SETPOINT_PROFILE SETPOINT_PROFILE_PARAID
+#define SETPOINT_PROFILE SETPOINT_PROFILE_ORIGINAL
 
 #define DUT_MACHINE BROSE
-#define AGENT 214
+#define AGENT 297
 #define D1_MACHINE BROSE    // EBM, Brose, Hoerner, HEIDRIVE_D1
 #define D2_MACHINE BECKHOFF // HEIDRIVE_D2, BUEHLER, BECKHOFF
 // #define D1_IS_PRIME_MOVER 1U // Auto-calculate this define from DUT_MACHINE?
@@ -118,7 +121,7 @@
  * 3 for Interrupt_3L_start_center
  * 4 for Interrupt_3L_start
  * 5 for Interrupt_3L_center
- * 6 for Interrupt_timer_fcc
+ * 6 for Interrupt_axi2tcm_write_done
  */
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE 1U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE 1U

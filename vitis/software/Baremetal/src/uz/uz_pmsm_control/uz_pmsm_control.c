@@ -235,7 +235,10 @@ void uz_pmsm_controller_measured_to_actual_values(uz_pmsm_control_t *self)
     self->actual_values.speed_in_rpm = self->measurement.omega_mech_rad_per_sec * 60.0f / (2.0f * UZ_PIf);
     float theta_el_without_offset = uz_signals_wrap(self->measurement.theta_mech * self->machine_data.polePairs, 2.0f * UZ_PIf);
     self->actual_values.theta_el = theta_el_without_offset - self->config.theta_el_offset;
-    self->actual_values.theta_el = self->actual_values.theta_el + (self->config.theta_sampling_compensation * self->actual_values.omega_el_rad_per_sec * self->config.sample_time);
+    if (!self->config.use_cil)
+    {
+        self->actual_values.theta_el = self->actual_values.theta_el + (self->config.theta_sampling_compensation * self->actual_values.omega_el_rad_per_sec * self->config.sample_time);
+    }
     float angle_for_voltage_measurement = self->actual_values.theta_el - (0.0f * self->actual_values.omega_el_rad_per_sec) * self->config.sample_time;
     self->actual_values.theta_el = uz_signals_wrap(self->actual_values.theta_el, 2.0f * UZ_PIf);
 
@@ -369,9 +372,9 @@ uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_va
         }
 
         self->reference_values.duty_cycle = uz_Space_Vector_Modulation(self->reference_values.v_dq_in_V, self->actual_values.v_dc_in_V, self->actual_values.theta_el_advanced);
-        self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A*self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-        self->reference_values.v_abc_in_V.b = self->reference_values.duty_cycle.DutyCycle_B*self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
-        self->reference_values.v_abc_in_V.c = self->reference_values.duty_cycle.DutyCycle_C*self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+        self->reference_values.v_abc_in_V.a = self->reference_values.duty_cycle.DutyCycle_A * self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+        self->reference_values.v_abc_in_V.b = self->reference_values.duty_cycle.DutyCycle_B * self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
+        self->reference_values.v_abc_in_V.c = self->reference_values.duty_cycle.DutyCycle_C * self->actual_values.v_dc_in_V; // uz_transformation_3ph_dq_to_abc(self->reference_values.v_dq_in_V, self->actual_values.theta_el);
     }
     else
     {

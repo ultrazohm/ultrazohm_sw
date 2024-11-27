@@ -13,16 +13,23 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 1.537f,// 1.537,3.108 // 1.642250f,
+    .theta_el_offset = 1.5380f, // 1.537,3.108 // 1.642250f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = D1_IS_PRIME_MOVER,
     .speed_controller_max_torque = 0.3f,
     .speed_controller_kp = 0.01f,
     .speed_controller_ki = 0.1f,
+#if BROSE_FIXED_PARAMETERS == 1
+    .current_controller_d_kp = 0.18333f,
+    .current_controller_d_ki = 96.667f,
+    .current_controller_q_kp = 0.21667f,
+    .current_controller_q_ki = 96.667f,
+#else
     .current_controller_d_kp = 0.1,
-    .current_controller_d_ki = 140.0f,
+    .current_controller_d_ki = 76.667f,
     .current_controller_q_kp = 0.2f,
-    .current_controller_q_ki = 140.0f,
+    .current_controller_q_ki = 76.667f,
+#endif
     .setpoint_lower_bound_i_d_in_A = -15.5f,
     .setpoint_upper_bound_i_d_in_A = 15.5f,
     .setpoint_lower_bound_i_q_in_A = -15.5f,
@@ -33,7 +40,7 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .error_lower_bound_speed_in_rpm = -1500.0f,
     .disturbance_input_lower_bound_in_Nm = -10.0f,
     .disturbance_input_upper_bound_in_Nm = 10.0f,
-    .decoupling_method = linear_decoupling,
+    .decoupling_method = linear_decoupling, // linear
     .setpoint_filter_i_dq_cutoff_frequency = 0.0f,
     .setpoint_filter_speed_cutoff_frequency = PRIME_MOVER_SETPOINT_FILTER_CUTTOFF_FREQUENCY,
     .motor_type = IPMSM,
@@ -42,10 +49,20 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .nonlinear_machine = false,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
-    .theta_sampling_compensation=-0.2f,
+    .theta_sampling_compensation = -0.05f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
+#if BROSE_FIXED_PARAMETERS==1
+struct uz_PMSM_t config_PMSM_brose = {
+    .R_ph_Ohm = 0.029f,
+    .Ld_Henry = 5.5e-5f,
+    .Lq_Henry = 6.5e-5f,
+    .Psi_PM_Vs = 0.007f,
+    .polePairs = 5.0f,
+    .J_kg_m_squared = 0.000084f,
+    .I_max_Ampere = 35.0f};
+#else
 struct uz_PMSM_t config_PMSM_brose = {
     .R_ph_Ohm = 0.023f,
     .Ld_Henry = 3e-5f,
@@ -54,6 +71,7 @@ struct uz_PMSM_t config_PMSM_brose = {
     .polePairs = 5.0f,
     .J_kg_m_squared = 0.000084f,
     .I_max_Ampere = 35.0f};
+#endif
 
 struct uz_PMSM_flux_fitting_parameter_config_t brose_fitting = {0};
 
@@ -120,6 +138,50 @@ static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
 };
 static float bias2[NUMBER_OF_OUTPUTS] = {
 #include "../experiments/a252_sidmoid_td3_gaussian_brose_500k_updates/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 296
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a296_l1_td3_gaussian_brose_fixed_parameters/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a296_l1_td3_gaussian_brose_fixed_parameters/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a296_l1_td3_gaussian_brose_fixed_parameters/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a296_l1_td3_gaussian_brose_fixed_parameters/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 297
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a297_sidmoid_td3_gaussian_brose_fixed_parameters/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a297_sidmoid_td3_gaussian_brose_fixed_parameters/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a297_sidmoid_td3_gaussian_brose_fixed_parameters/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a297_sidmoid_td3_gaussian_brose_fixed_parameters/best_agent/ac_layer_out_bias.csv"
 };
 static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif

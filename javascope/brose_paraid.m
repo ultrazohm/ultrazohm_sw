@@ -1,30 +1,66 @@
 clc
 clear
-close all
+%close all
 
-rs=0.29; % 29
+rs=0.029; % 29
 psi_pm=0.007;
 
 %log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_paraid_more_current_longer.parquet');
-log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_paraid_more_current_longer_1000rpm.parquet');
+% brose_paraid_low_pass_corrected_400_800_rpm_plus_minus
 
+log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_paraid_1s_steady_state_minus_0_05_theta_shift_low_pass_1750hz_reversed.parquet');
+% brose_paraid_minus_1_shift_only_for_measured_v_dq
 %log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_paraid_100rpm_long_steady_state.parquet');
 
+%
 log=log(log.enable==1,:);
+different_speeds=unique(log.pm_speed_rpm_ref);
+
+log=log(log.pm_speed_rpm_ref==different_speeds(4),:);
+% data = table2array(log);
+% f_sample_in_Hz=10000;
+% f_cuttoff_in_Hz=100;
+% % Design a low-pass filter (e.g., Butterworth filter)
+% Fs = f_sample_in_Hz;  % Sampling frequency (adjust as needed)
+% Fc = f_cuttoff_in_Hz;   % Cutoff frequency
+% [b, a] = butter(4, Fc / (Fs / 2));  % 4th order low-pass Butterworth
+% 
+% % Apply the filter column-wise
+% filteredData = zeros(size(data));
+% for col = 1:size(data, 2)
+%     filteredData(:, col) = filtfilt(b, a, data(:, col));  % Zero-phase filtering
+% end
+% 
+% % Convert filtered data back to table
+% log = array2table(filteredData, 'VariableNames', log.Properties.VariableNames);
+
+
 
 figure
-subplot(2,1,1)
+subplot(4,1,1)
 plot(log.time,log.dut_vd);
 hold on
 plot(log.time,log.dut_vd_ref);
-legend('ud','ud_ref');
+legend('vd','vd_ref');
 
-subplot(2,1,2)
+subplot(4,1,2)
 plot(log.time,log.dut_vq);
 hold on
 plot(log.time,log.dut_vq_ref);
-legend('ud','ud_ref');
+legend('vq','vq_ref');
 
+subplot(4,1,3)
+plot(log.time,log.dut_id);
+hold on
+plot(log.time,log.dut_id_set);
+legend('id','id_ref');
+
+subplot(4,1,4)
+plot(log.time,log.dut_iq);
+hold on
+plot(log.time,log.dut_iq_set);
+legend('iq','iq_ref');
+%%
 log=log(abs(log.dut_id_set-log.dut_id)<0.1,:); % only steady state
 log=log(abs(log.dut_iq_set-log.dut_iq)<0.1,:);
 
@@ -118,7 +154,7 @@ hold off;
 
 %% Plot idinvidual operating points
 
-local_data=log(log.operating_point==700,:);
+local_data=log(log.operating_point==100,:);
 figure
 subplot(6,1,1)
 plot(local_data.time,local_data.dut_vd);

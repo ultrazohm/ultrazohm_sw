@@ -3,21 +3,38 @@ clear
 close all
 
 L_d=0.00005;
-polepairs=5;
-current_value=1;
+polepairs=4;
+current_value=0.3;
 
-% log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_rs_identification2.parquet');
-log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_rs_warm.parquet');
-
+% log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_rs_identification2.parquet'); 
+log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_rsident_15_advanced_40khz_pwm.parquet'); % brose_rs_warm
+% brose_rsident_with_measured_voltages
+% beckhoff_rs_ident_theta_advanced_15tau_1_shift
+% brose_rs_ident_theta_advanced_2_5tau
+% brose_rs_ident_no_changes -> theta_advanced_1_5tau quasi
+% brose_rsident_15_advanced_15shift_but_not_for_v_dq_measured
+% brose_theta_sweep_500rpm_15_thtea_advanced_1_shifted
 log=log(log.enable==1,:);
 log.omega_el=log.dut_speed_rpm/60*2*pi*polepairs; % 5 is pole pair of brose machine
 speeds=unique(log.pm_speed_rpm_ref);
 
+log.v1=sqrt(log.dut_vd.*log.dut_vd+log.dut_vq.*log.dut_vq);
+log.v1_ref=sqrt(log.dut_vd_ref.*log.dut_vd_ref+log.dut_vq_ref.*log.dut_vq_ref);
 
+figure
+plot(log.time,log.pm_iq); % Strom in der Lastmaschine darf nicht springen, wenn der d-Strom springt 
 
 lq_log=log( abs(log.dut_iq_set-log.dut_iq) <0.1,:); % Only steady state
 lq_log=lq_log( abs(lq_log.dut_iq_set) >0.1,:); % Only (1) and (2), i.e., not zero current
+%
+% figure
+% plot(log.time,log.dut_ia);
+% hold on
+% grid on
+%plot(log.time,log.dut_iq);
 
+
+%%
 figure
 tiledlayout(3,1)
 
@@ -29,7 +46,7 @@ plot(log.time,log.dut_iq);
 
 % Second plot
 ax2 = nexttile;
-plot(log.time,log.pm_speed_rpm);
+plot(log.time,log.dut_speed_rpm);
 title('Speed')
 
 
@@ -42,7 +59,7 @@ plot(log.time,log.dut_vq_ref,'--');
 plot(log.time,log.dut_vd_ref,'--');
 title('Voltage, dashed is reference')
 linkaxes([ax1 ax2 ax3],'x')
-
+%%
 log=log(abs(log.dut_iq_set)<0.1,:);
 log=log( abs(log.dut_id_set-log.dut_id) <0.1,:); % Only steady state
 log=log( abs(log.dut_id_set) >0.1,:); % Only (1) and (2), i.e., not zero current
@@ -95,3 +112,15 @@ hold on
 % title('using voltage equations')
 plot(-speeds,L_q_mean,'o--')
 legend('L_d (Kellner)','L_q (Kellner)');
+
+%%
+figure
+subplot(2,1,1)
+plot(log.dut_speed_rpm,log.dut_vd_ref-log.dut_vd,'x');
+grid on
+title('vd')
+
+subplot(2,1,2)
+plot(log.dut_speed_rpm,log.dut_vq_ref-log.dut_vq,'o');
+title('vq');
+grid on

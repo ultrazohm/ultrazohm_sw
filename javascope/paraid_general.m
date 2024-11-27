@@ -2,14 +2,18 @@ clc
 clear
 close all
 
-rs=0.26;
-pole_pairs=4;
+rs=0.029;
+pole_pairs=5;
 number_of_grid_points=30;
 
 %log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_paraid_more_current_longer.parquet');
 %log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/ebm_paraid_3200rpm.parquet');
-log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/ebm_paraid_400rpm.parquet');
+log=parquetread('/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/javascope/brose_paraid_1s_steady_state_minus_0_05_theta_shift_low_pass_1750hz_reversed.parquet');
 
+log=log(log.enable==1,:);
+different_speeds=unique(log.pm_speed_rpm_ref);
+
+log=log(log.pm_speed_rpm_ref==different_speeds(2),:);
 %%
 log=calculate_psi(log,pole_pairs,rs);
 groupedTable=calculate_average_over_operating_points(log);
@@ -17,6 +21,25 @@ groupedTable=groupedTable(groupedTable.mean_dut_iq_set>0,:); % only positive q c
 [flux_map,fitted]=calculate_flux_map(groupedTable);
 plot_measured_flux_map(flux_map);
 
+%%
+fem_q=load('Lenkungsmotor_3ph_Psi_q.mat');
+fem_flux_map_q=fem_q.row_data;
+fem_flux_map_q.Properties.VariableNames={'i_d','i_q','segments','psi_q'};
+
+fem_d=load('Lenkungsmotor_3ph_Psi_d.mat');
+fem_flux_map_d=fem_d.row_data;
+fem_flux_map_d.Properties.VariableNames={'i_d','i_q','segments','psi_d'};
+fem_flux_map_d.psi_q=fem_flux_map_q.psi_q;
+fem_flux_map_d=fem_flux_map_d(fem_flux_map_d.i_d<=0.0,:);
+fem_flux_map_d=fem_flux_map_d(fem_flux_map_d.i_d>=-10.0,:);
+fem_flux_map_d=fem_flux_map_d(fem_flux_map_d.i_q<=11.0,:);
+fem_flux_map_d=fem_flux_map_d(fem_flux_map_d.i_q>=-11.0,:);
+plot_measured_flux_map(fem_flux_map_d);
+measured_fit.psi_d = fit([fem_flux_map_d.i_d, fem_flux_map_d.i_q], fem_flux_map_d.psi_d, 'poly11');  % 'poly11' fits a linear surface
+measured_fit.psi_q = fit([fem_flux_map_d.i_d, fem_flux_map_d.i_q], fem_flux_map_d.psi_q, 'poly11');  % 'poly11' fits a linear surface
+
+
+% 
 flux_map.psi_d_fitted=fitted.psi_d(flux_map.i_d,flux_map.i_q);
 flux_map.psi_q_fitted=fitted.psi_q(flux_map.i_d,flux_map.i_q);
 approx=approximate_flux_map_for_surf(flux_map,fitted);
@@ -136,15 +159,16 @@ tcl = tiledlayout(2,2);
 nexttile
 scatter3(flux_map.i_d,flux_map.i_q,flux_map.psi_d,'filled');
 hold on
-scatter3(flux_map.i_d,flux_map.i_q,flux_map.psi_d_fitted,'filled');
+scatter3(flux_map.i_d,flux_map.i_q,flux_map.psi_d_fitted);
 title('psi_d');
 ylabel('i_q');
 xlabel('i_d');
+legend('measured','fitted');
 
 nexttile
 scatter3(flux_map.i_d,flux_map.i_q,flux_map.psi_q,'filled');
 hold on
-scatter3(flux_map.i_d,flux_map.i_q,flux_map.psi_q_fitted,'filled');
+scatter3(flux_map.i_d,flux_map.i_q,flux_map.psi_q_fitted);
 title('psi_q');
 ylabel('i_q');
 xlabel('i_d');

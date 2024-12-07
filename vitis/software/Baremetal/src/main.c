@@ -18,6 +18,7 @@
 #include "include/init_beckhoff_on_d2.h"
 #include "include/init_buehler_on_d2.h"
 #include "include/init_heidrive_on_d2.h"
+#include "include/init_heidrive_on_d1.h"
 
 #include "include/init_brose_on_d1.h"
 #include "include/init_ebm_on_d1.h"
@@ -134,6 +135,8 @@ int main(void)
             init_ebm_on_d1();
 #elif D1_MACHINE == BROSE
             init_brose_on_d1();
+#elif D1_MACHINE == HEIDRIVE_D1
+            init_heidrive_on_d1();
 #endif
 
 #if D2_MACHINE == BUEHLER
@@ -142,6 +145,8 @@ int main(void)
             init_heidrive_on_d2();
 #elif D2_MACHINE == BECKHOFF
             init_beckhoff_on_d2();
+#elif D2_MACHINE == HEIDRIVE_D2
+            init_heidrive_on_d2();
 #endif
 
             if (D1_IS_PRIME_MOVER)

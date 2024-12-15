@@ -4,14 +4,14 @@
 <title>HDL Check Report for 'inc_enc_v26/IncEnc_V26'</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-<script type="text/javascript" src="file://C:/Program%20Files/MATLAB/R2022b/toolbox/hdlcoder/hdlcommon/js_css/jquery-1.7.1.js"></script>
-<script type="text/javascript" src="file://C:/Program%20Files/MATLAB/R2022b/toolbox/hdlcoder/hdlcommon/js_css/docscripts.js"></script>
+<script type="text/javascript" src="file:///usr/local/MATLAB/R2023a/toolbox/hdlcoder/hdlcommon/js_css/jquery-1.7.1.js"></script>
+<script type="text/javascript" src="file:///usr/local/MATLAB/R2023a/toolbox/hdlcoder/hdlcommon/js_css/docscripts.js"></script>
         
-        <link href="file://C:/Program%20Files/MATLAB/R2022b/toolbox/hdlcoder/hdlcommon/js_css/ice_960.css" rel="stylesheet" type="text/css">
-        <link href="file://C:/Program%20Files/MATLAB/R2022b/toolbox/hdlcoder/hdlcommon/js_css/HDLsite5.css" rel="stylesheet" type="text/css">
-        <link href="file://C:/Program%20Files/MATLAB/R2022b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center.css" rel="stylesheet" type="text/css">
-        <link href="file://C:/Program%20Files/MATLAB/R2022b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_installed.css" rel="stylesheet" type="text/css">
-        <link href="file://C:/Program%20Files/MATLAB/R2022b/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_print.css" rel="stylesheet" type="text/css" media="print">
+        <link href="file:///usr/local/MATLAB/R2023a/toolbox/hdlcoder/hdlcommon/js_css/ice_960.css" rel="stylesheet" type="text/css">
+        <link href="file:///usr/local/MATLAB/R2023a/toolbox/hdlcoder/hdlcommon/js_css/HDLsite5.css" rel="stylesheet" type="text/css">
+        <link href="file:///usr/local/MATLAB/R2023a/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center.css" rel="stylesheet" type="text/css">
+        <link href="file:///usr/local/MATLAB/R2023a/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_installed.css" rel="stylesheet" type="text/css">
+        <link href="file:///usr/local/MATLAB/R2023a/toolbox/hdlcoder/hdlcommon/js_css/ice_doc_center_print.css" rel="stylesheet" type="text/css" media="print">
         <script type="text/javascript">
             if (navigator.appName != "ICEbrowser") {
             var cssStyleSheets = $("link").filter(function(){
@@ -48,8 +48,8 @@
  <div class="page_container"><div class="content_frame">
 <h1>HDL Code Generation Check Report for 'inc_enc_v26/IncEnc_V26'
 <a href="matlab:open_system('inc_enc_v26/IncEnc_V26');">open model 'inc_enc_v26/IncEnc_V26'</a><BR>
-Generated on 2023-09-05 15:42:55</h1>
-<H2>HDL check for 'inc_enc_v26' complete with 0 errors, 4 warnings, and 8 messages.</H2><BR>
+Generated on 2024-12-15 20:51:22</h1>
+<H2>HDL check for 'inc_enc_v26' complete with 0 errors, 6 warnings, and 8 messages.</H2><BR>
 <H3>The following table describes blocks for which errors, warnings or messages were reported.</H3><BR>
 <TABLE>
 <TR><TD> <B>Simulink Blocks and resources</B> </TD><TD> <B>Level</B> </TD><TD> <B>Description</B> </TD></TR><TR bgcolor="#F0F0F0"><TD>
@@ -57,6 +57,18 @@ Generated on 2023-09-05 15:42:55</h1>
 </TD>
 <TD>Warning</TD>
 <TD>The model 'inc_enc_v26' configured with 'Allow tasks to execute concurrently on target' option may introduce numeric mismatches.Consider disabling this option to generate HDL Code that is a bit true and cycle accurate simulation to the input Model.</TD>
+</TR>
+<TR bgcolor="#FFFFFF"><TD>
+<a alt="hdlcoder:validate:blackBoxInDistPipe" href="matlab:hilite(get_param(char([105 110 99 95 101 110 99 95 118 50 54]),'object'),'none');hilite_system(char([105 110 99 95 101 110 99 95 118 50 54 47 73 110 99 69 110 99 95 86 50 54 47 115 112 101 101 100 49 47 79 83 95 102 97 99 116 111 114 95 108 111 103 105 99 47 97 108 105 103 110 95 111 118 101 114 115 97 109 112 108 101 115]))">inc_enc_v26/IncEnc_V26/speed1/OS_factor_logic/align_oversamples</a>
+</TD>
+<TD>Warning</TD>
+<TD>Distributed pipelining will not distribute registers inside the logic of this block.</TD>
+</TR>
+<TR bgcolor="#F0F0F0"><TD>
+<a alt="hdlcoder:validate:blackBoxInDistPipe" href="matlab:hilite(get_param(char([105 110 99 95 101 110 99 95 118 50 54]),'object'),'none');hilite_system(char([105 110 99 95 101 110 99 95 118 50 54 47 73 110 99 69 110 99 95 86 50 54 47 115 112 101 101 100 49 47 79 83 95 102 97 99 116 111 114 95 108 111 103 105 99 47 111 118 101 114 115 97 109 112 108 101 95 102 97 99 116 111 114]))">inc_enc_v26/IncEnc_V26/speed1/OS_factor_logic/oversample_factor</a>
+</TD>
+<TD>Warning</TD>
+<TD>Distributed pipelining will not distribute registers inside the logic of this block.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
 <a alt="hdlcoder:makehdl:SRSDiagnostic" href="matlab:hilite(get_param(char([105 110 99 95 101 110 99 95 118 50 54]),'object'),'none');hilite_system(char([105 110 99 95 101 110 99 95 118 50 54 47 73 110 99 69 110 99 95 86 50 54 47 115 112 101 101 100 49 47 99 97 108 99 95 111 109 101 103 97]))">inc_enc_v26/IncEnc_V26/speed1/calc_omega</a>
@@ -86,7 +98,7 @@ Generated on 2023-09-05 15:42:55</h1>
 <a alt="hdlcoder:validate:NumericsMismatch" href="matlab:hilite(get_param(char([105 110 99 95 101 110 99 95 118 50 54]),'object'),'none');hilite_system(char([105 110 99 95 101 110 99 95 118 50 54 47 73 110 99 69 110 99 95 86 50 54 47 115 112 101 101 100 49 47 99 97 108 99 95 111 109 101 103 97 47 105 110 118 116 95 109 117 108 116 47 72 68 76 32 82 101 99 105 112 114 111 99 97 108]))">inc_enc_v26/IncEnc_V26/speed1/calc_omega/invt_mult/HDL Reciprocal</a>
 </TD>
 <TD>Message</TD>
-<TD>After HDL code generation, block HDL Reciprocal can have numeric differences when compared to the Simulink model. For details, view the generated model. Consider using ULPSetting in testbench panel to accomadate the change.</TD>
+<TD>After HDL code generation, block HDL Reciprocal can have numeric differences when compared to the Simulink model. For details, view the generated model. Consider using ULPSetting in testbench panel to accommodate the change.</TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
 <a alt="hdlcoder:validate:ValidationNumericMismatch" href="matlab:hilite(get_param(char([105 110 99 95 101 110 99 95 118 50 54]),'object'),'none');hilite_system(char([105 110 99 95 101 110 99 95 118 50 54 47 73 110 99 69 110 99 95 86 50 54 47 115 112 101 101 100 49 47 99 97 108 99 95 111 109 101 103 97 47 105 110 118 116 95 109 117 108 116 47 72 68 76 32 82 101 99 105 112 114 111 99 97 108]))">inc_enc_v26/IncEnc_V26/speed1/calc_omega/invt_mult/HDL Reciprocal</a>
@@ -107,22 +119,22 @@ Generated on 2023-09-05 15:42:55</h1>
 <TD><a href="matlab:configset.internal.open('inc_enc_v26','LUTMapToRAM')">'LUTMapToRAM'</a> is set to 'On' for the model. This option is used to map lookup tables to a block RAM in hardware.  To disable pipeline insertion for mapping lookup tables to RAM, please set the option to 'Off'.</TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('hdl_prj\hdlsrc\inc_enc_v26\criticalPathEstimated')">hdl_prj\hdlsrc\inc_enc_v26\criticalPathEstimated.m</a>
+<a alt="hdlcoder:hdldisp:GeneratingCPEHiliteScript" href="matlab:run('hdl_prj/hdlsrc/inc_enc_v26/criticalPathEstimated')">hdl_prj/hdlsrc/inc_enc_v26/criticalPathEstimated.m</a>
 </TD>
 <TD>Message</TD>
-<TD>Estimated critical path for design: <a href="matlab:run('hdl_prj\hdlsrc\inc_enc_v26\criticalPathEstimated')">hdl_prj\hdlsrc\inc_enc_v26\criticalPathEstimated.m</a></TD>
+<TD>Estimated critical path for design: <a href="matlab:run('hdl_prj/hdlsrc/inc_enc_v26/criticalPathEstimated')">hdl_prj/hdlsrc/inc_enc_v26/criticalPathEstimated.m</a></TD>
 </TR>
 <TR bgcolor="#F0F0F0"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingDistributedPipeliningBarriersHiliteScript" href="matlab:run('hdl_prj\hdlsrc\inc_enc_v26\highlightDistributedPipeliningBarriers')">hdl_prj\hdlsrc\inc_enc_v26\highlightDistributedPipeliningBarriers.m</a>
+<a alt="hdlcoder:hdldisp:GeneratingDistributedPipeliningBarriersHiliteScript" href="matlab:run('hdl_prj/hdlsrc/inc_enc_v26/highlightDistributedPipeliningBarriers')">hdl_prj/hdlsrc/inc_enc_v26/highlightDistributedPipeliningBarriers.m</a>
 </TD>
 <TD>Message</TD>
-<TD>To highlight blocks that obstruct distributed pipelining, click the following MATLAB script: <a href="matlab:run('hdl_prj\hdlsrc\inc_enc_v26\highlightDistributedPipeliningBarriers')">hdl_prj\hdlsrc\inc_enc_v26\highlightDistributedPipeliningBarriers.m</a></TD>
+<TD>To highlight blocks that obstruct distributed pipelining, click the following MATLAB script: <a href="matlab:run('hdl_prj/hdlsrc/inc_enc_v26/highlightDistributedPipeliningBarriers')">hdl_prj/hdlsrc/inc_enc_v26/highlightDistributedPipeliningBarriers.m</a></TD>
 </TR>
 <TR bgcolor="#FFFFFF"><TD>
-<a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('hdl_prj\hdlsrc\inc_enc_v26\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\inc_enc_v26\highlightCriticalPathEstimationOffendingBlocks.m</a>
+<a alt="hdlcoder:hdldisp:GeneratingBlocksWithNoCharacterizationHighlightScript" href="matlab:run('hdl_prj/hdlsrc/inc_enc_v26/highlightCriticalPathEstimationOffendingBlocks')">hdl_prj/hdlsrc/inc_enc_v26/highlightCriticalPathEstimationOffendingBlocks.m</a>
 </TD>
 <TD>Message</TD>
-<TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('hdl_prj\hdlsrc\inc_enc_v26\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\inc_enc_v26\highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
+<TD>Blocks that are not characterized for Critical Path Estimation: <a href="matlab:run('hdl_prj/hdlsrc/inc_enc_v26/highlightCriticalPathEstimationOffendingBlocks')">hdl_prj/hdlsrc/inc_enc_v26/highlightCriticalPathEstimationOffendingBlocks.m</a></TD>
 </TR>
 </TABLE>
 <BR><BR> </div></div></div></div>
@@ -130,12 +142,12 @@ Generated on 2023-09-05 15:42:55</h1>
                         <div class="footer_container">
                             <div class="footer">
                                 <ul class="footernav">
-                                    <li class="footernav_trademarks"><a href="C:/Program Files/MATLAB/R2022b/help/acknowledgments.html">Acknowledgments</a></li>
-                                    <li class="footernav_trademarks"><a href="C:/Program%20Files/MATLAB/R2022b/trademarks.txt">Trademarks</a></li>
-                                    <li class="footernav_patents"><a href="C:/Program%20Files/MATLAB/R2022b/patents.txt">Patents</a></li>
-                                    <li class="footernav_help"><a href="C:/Program Files/MATLAB/R2022b/license_agreement.txt">Terms of Use</a></li>
+                                    <li class="footernav_trademarks"><a href="/usr/local/MATLAB/R2023a/help/acknowledgments.html">Acknowledgments</a></li>
+                                    <li class="footernav_trademarks"><a href="/usr/local/MATLAB/R2023a/trademarks.txt">Trademarks</a></li>
+                                    <li class="footernav_patents"><a href="/usr/local/MATLAB/R2023a/patents.txt">Patents</a></li>
+                                    <li class="footernav_help"><a href="/usr/local/MATLAB/R2023a/license_agreement.txt">Terms of Use</a></li>
                                 </ul>
-                                <div class="copyright">&copy; 1994-2023 The MathWorks, Inc.</div>
+                                <div class="copyright">&copy; 1994-2024 The MathWorks, Inc.</div>
                             </div>
                         </div>
                     </div>

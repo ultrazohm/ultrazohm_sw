@@ -1,0 +1,83 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 04:59:54 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Sun Dec 15 20:51:35 2024
+# Process ID: 70228
+# Current directory: /home/ts/Documents/pr_review/hoerner/ultrazohm_sw/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/IncEnc_V2_ip_v1_0/prj_ip
+# Command line: vivado -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: /home/ts/Documents/pr_review/hoerner/ultrazohm_sw/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/IncEnc_V2_ip_v1_0/prj_ip/vivado.log
+# Journal file: /home/ts/Documents/pr_review/hoerner/ultrazohm_sw/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/IncEnc_V2_ip_v1_0/prj_ip/vivado.jou
+# Running On: ts-laptop, OS: Linux, CPU Frequency: 1867.161 MHz, CPU Physical cores: 16, Host memory: 32339 MB
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository '/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository '/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is '/home/ts/Documents/pr_review/hoerner/ultrazohm_sw/ip_cores/IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/IncEnc_V2_ip_v1_0/prj_ip'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/home/ts/Xilinx/Vivado/2022.2/data/ip'.
+INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite' of definition 'xilinx.com:interface:aximm:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite_ARESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'IPCORE_RESETN' of definition 'xilinx.com:signal:reset:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'AXI4_Lite_ACLK' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-5107] Inferred bus interface 'IPCORE_CLK' of definition 'xilinx.com:signal:clock:1.0' (from Xilinx Repository).
+INFO: [IP_Flow 19-4728] Bus Interface 'AXI4_Lite_ARESETN': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'IPCORE_RESETN': Added interface parameter 'POLARITY' with value 'ACTIVE_LOW'.
+INFO: [IP_Flow 19-4728] Bus Interface 'AXI4_Lite_ACLK': Added interface parameter 'ASSOCIATED_BUSIF' with value 'AXI4_Lite'.
+INFO: [IP_Flow 19-4728] Bus Interface 'AXI4_Lite_ACLK': Added interface parameter 'ASSOCIATED_RESET' with value 'AXI4_Lite_ARESETN'.
+INFO: [IP_Flow 19-4728] Bus Interface 'IPCORE_CLK': Added interface parameter 'ASSOCIATED_RESET' with value 'IPCORE_RESETN'.
+WARNING: [IP_Flow 19-5661] Bus Interface 'IPCORE_CLK' does not have any bus interfaces associated with it.
+INFO: [IP_Flow 19-2181] Payment Required is not set for this core.
+INFO: [IP_Flow 19-2187] The Product Guide file is missing.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_IncEnc_V26_pac.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_AB_Line_Switch.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_AB_Line_Switch.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Check_d_Axis_Hit_WithCompare.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter_Theta_el_wOffset.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter_Theta_el_wOffset.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter_position.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Counter_position.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Direction.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Direction.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Index_Latch.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Index_Latch.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_count_lines.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_count_lines.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_align_oversamples.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_align_oversamples.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_oversample_factor.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_oversample_factor.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_OS_factor_logic.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_OS_factor_logic.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Average.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_Average.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_HDL_Reciprocal_core.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_HDL_Reciprocal.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_invt_mult.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_invt_mult.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_calc_omega.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_calc_omega.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_speed1.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_speed1.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/Incremental_Encoder_v26_src_IncEnc_V26.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_reset_sync.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_reset_sync.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_dut.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_dut.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_addr_decoder.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_addr_decoder.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_axi_lite_module.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_axi_lite_module.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip_axi_lite.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip.vhd" already exists in file group "xilinx_anylanguagesynthesis", cannot add it again.
+WARNING: [IP_Flow 19-1971] File named "hdl/IncEnc_V2_ip.vhd" already exists in file group "xilinx_anylanguagebehavioralsimulation", cannot add it again.
+INFO: [Common 17-206] Exiting Vivado at Sun Dec 15 20:51:48 2024...

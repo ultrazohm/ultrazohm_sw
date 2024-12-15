@@ -1,0 +1,26 @@
+ --> IncEnc_V2_ip_src_IncEnc_V26_pac
+inc_enc_v26/IncEnc_V26/AB-Line-Switch --> IncEnc_V2_ip_src_AB_Line_Switch
+inc_enc_v26/IncEnc_V26/Check d-Axis-Hit --> IncEnc_V2_ip_src_Check_d_Axis_Hit
+inc_enc_v26/IncEnc_V26/Check d-Axis-Hit_WithCompare --> IncEnc_V2_ip_src_Check_d_Axis_Hit_WithCompare
+inc_enc_v26/IncEnc_V26/Counter --> IncEnc_V2_ip_src_Counter
+inc_enc_v26/IncEnc_V26/Counter_Theta_el_wOffset --> IncEnc_V2_ip_src_Counter_Theta_el_wOffset
+inc_enc_v26/IncEnc_V26/Counter_position --> IncEnc_V2_ip_src_Counter_position
+inc_enc_v26/IncEnc_V26/Direction --> IncEnc_V2_ip_src_Direction
+inc_enc_v26/IncEnc_V26/Index_Latch --> IncEnc_V2_ip_src_Index_Latch
+inc_enc_v26/IncEnc_V26/count_lines --> IncEnc_V2_ip_src_count_lines
+inc_enc_v26/IncEnc_V26/digital_filter/Subsystem1 --> IncEnc_V2_ip_src_Subsystem1
+inc_enc_v26/IncEnc_V26/digital_filter --> IncEnc_V2_ip_src_digital_filter
+inc_enc_v26/IncEnc_V26/digital_filter1/Subsystem1 --> IncEnc_V2_ip_src_Subsystem1_block
+inc_enc_v26/IncEnc_V26/digital_filter1 --> IncEnc_V2_ip_src_digital_filter1
+inc_enc_v26/IncEnc_V26/digital_filter2/Subsystem1 --> IncEnc_V2_ip_src_Subsystem1_block1
+inc_enc_v26/IncEnc_V26/digital_filter2 --> IncEnc_V2_ip_src_digital_filter2
+inc_enc_v26/IncEnc_V26/speed1/OS_factor_logic/align_oversamples --> IncEnc_V2_ip_src_align_oversamples
+inc_enc_v26/IncEnc_V26/speed1/OS_factor_logic/oversample_factor --> IncEnc_V2_ip_src_oversample_factor
+inc_enc_v26/IncEnc_V26/speed1/OS_factor_logic --> IncEnc_V2_ip_src_OS_factor_logic
+inc_enc_v26/IncEnc_V26/speed1/Average --> IncEnc_V2_ip_src_Average
+inc_enc_v26/IncEnc_V26/speed1/calc_omega/invt_mult/HDL Reciprocal/HDL Reciprocal_core --> IncEnc_V2_ip_src_HDL_Reciprocal_core
+inc_enc_v26/IncEnc_V26/speed1/calc_omega/invt_mult/HDL Reciprocal --> IncEnc_V2_ip_src_HDL_Reciprocal
+inc_enc_v26/IncEnc_V26/speed1/calc_omega/invt_mult --> IncEnc_V2_ip_src_invt_mult
+inc_enc_v26/IncEnc_V26/speed1/calc_omega --> IncEnc_V2_ip_src_calc_omega
+inc_enc_v26/IncEnc_V26/speed1 --> IncEnc_V2_ip_src_speed1
+inc_enc_v26/IncEnc_V26 --> IncEnc_V2_ip_src_IncEnc_V26

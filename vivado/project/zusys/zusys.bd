@@ -6,7 +6,8 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2"
+      "tool_version": "2022.2",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -129,8 +130,8 @@
         "Resolver_Interface_v_1": "",
         "Resolver_Interface_v_2": "",
         "uz_pmsm_model_0": "",
-        "xlslice_0": "",
-        "xlslice_1": ""
+        "xlslice_2": "",
+        "xlslice_3": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -561,7 +562,13 @@
         "direction": "O"
       },
       "Dig_04_Ch4": {
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default_prop"
+          }
+        }
       },
       "Dig_05_Ch4": {
         "direction": "O"
@@ -588,7 +595,13 @@
         "direction": "O"
       },
       "Dig_13_Ch4": {
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default_prop"
+          }
+        }
       },
       "Dig_09_Ch4": {
         "direction": "O"
@@ -612,7 +625,13 @@
         "direction": "O"
       },
       "Dig_22_Ch4": {
-        "direction": "O"
+        "direction": "O",
+        "parameters": {
+          "POLARITY": {
+            "value": "ACTIVE_LOW",
+            "value_src": "default_prop"
+          }
+        }
       },
       "Dig_18_Ch4": {
         "direction": "O"
@@ -6763,25 +6782,11 @@
             "xci_path": "ip/zusys_uz_pmsm_model_0_0/zusys_uz_pmsm_model_0_0.xci",
             "inst_hier_path": "uz_user/uz_pmsm_model_0"
           },
-          "xlslice_0": {
+          "xlslice_2": {
             "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_0_0",
-            "xci_path": "ip/zusys_xlslice_0_0/zusys_xlslice_0_0.xci",
-            "inst_hier_path": "uz_user/xlslice_0",
-            "parameters": {
-              "DIN_FROM": {
-                "value": "5"
-              },
-              "DIN_WIDTH": {
-                "value": "24"
-              }
-            }
-          },
-          "xlslice_1": {
-            "vlnv": "xilinx.com:ip:xlslice:1.0",
-            "xci_name": "zusys_xlslice_1_0",
-            "xci_path": "ip/zusys_xlslice_1_0/zusys_xlslice_1_0.xci",
-            "inst_hier_path": "uz_user/xlslice_1",
+            "xci_name": "zusys_xlslice_2_1",
+            "xci_path": "ip/zusys_xlslice_2_1/zusys_xlslice_2_1.xci",
+            "inst_hier_path": "uz_user/xlslice_2",
             "parameters": {
               "DIN_FROM": {
                 "value": "11"
@@ -6791,9 +6796,23 @@
               },
               "DIN_WIDTH": {
                 "value": "24"
+              }
+            }
+          },
+          "xlslice_3": {
+            "vlnv": "xilinx.com:ip:xlslice:1.0",
+            "xci_name": "zusys_xlslice_2_2",
+            "xci_path": "ip/zusys_xlslice_2_2/zusys_xlslice_2_2.xci",
+            "inst_hier_path": "uz_user/xlslice_3",
+            "parameters": {
+              "DIN_FROM": {
+                "value": "5"
               },
-              "DOUT_WIDTH": {
-                "value": "6"
+              "DIN_TO": {
+                "value": "0"
+              },
+              "DIN_WIDTH": {
+                "value": "24"
               }
             }
           }
@@ -6894,19 +6913,13 @@
           "Din_1": {
             "ports": [
               "Din",
-              "xlslice_0/Din",
-              "xlslice_1/Din"
+              "xlslice_3/Din",
+              "xlslice_2/Din"
             ]
           },
           "Gates_1": {
             "ports": [
-              "xlslice_0/Dout",
-              "uz_inverter_adapter/Gates"
-            ]
-          },
-          "Gates_2": {
-            "ports": [
-              "xlslice_1/Dout",
+              "xlslice_2/Dout",
               "uz_inverter_adapter_1/Gates"
             ]
           },
@@ -7097,6 +7110,12 @@
               "Resolver_Interface_v_0/sample_trigger",
               "Resolver_Interface_v_1/sample_trigger",
               "Resolver_Interface_v_2/sample_trigger"
+            ]
+          },
+          "xlslice_3_Dout": {
+            "ports": [
+              "xlslice_3/Dout",
+              "uz_inverter_adapter/Gates"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {

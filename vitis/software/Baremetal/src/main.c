@@ -130,7 +130,7 @@ int main(void)
             struct uz_IIR_Filter_config config_torque_filter = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = ISR_SAMPLE_FREQ_HZ};
             Global_Data.objects.torque_meas_filter_LP = uz_signals_IIR_Filter_init(config_torque_filter);
             Global_Data.objects.dq_setpoint_filter = uz_uz_dq_setpoint_filter_init(config);
-            Global_Data.av.theta_offset = 0.245f;
+            Global_Data.av.theta_offset = 0.22f; // alt: 0.245f
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

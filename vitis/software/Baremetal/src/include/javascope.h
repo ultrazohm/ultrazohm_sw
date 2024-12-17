@@ -60,6 +60,7 @@ enum JS_OberservableData {
 	JSO_torque_meas,
 	JSO_theta_elec_pred,
 	JSO_FLOAT_EnDat_responselength_bits,
+	JSO_theta_el_offset,
 	JSO_ENDMARKER
 };
 
@@ -154,8 +155,8 @@ enum gui_button_mapping {
 	Kp_Id,
 	Ki_Id,
 	Torque_ref,
-	send_field_12,
-	send_field_13,
+	Ud_ref,
+	Uq_ref,
 	send_field_14,
 	send_field_15,
 	send_field_16,

@@ -107,6 +107,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_temp_mosfet] 			= &data->av.temperature_mosfet;
 	js_ch_observable[JSO_temp_motor] 			= &data->av.temperature_motor;
 	js_ch_observable[JSO_theta_elec_pred] 		= &data->av.theta_elec_pred;
+	js_ch_observable[JSO_theta_el_offset] 		= &data->av.theta_offset;
 	js_ch_observable[JSO_FLOAT_EnDat_responselength_bits] 		= &data->av.EnDat_value_response_length;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

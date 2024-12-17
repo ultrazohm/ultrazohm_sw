@@ -457,6 +457,7 @@ void control_right_motor() {
 
 	if(Global_Data.rasv.current_ctrl_select == PI_FOC) {
     	// calculate reference voltages for current control
+    	uz_nn_ff(Global_Data.objects.nn_layer, Global_Data.objects.matrix_input);
     	v_dq_ref_right = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_right, i_dq_ref_right, i_dq_right, DC_VOLTAGE, Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right);
     	Global_Data.av.v_d_right = v_dq_ref_right.d;
     	Global_Data.av.v_q_right = v_dq_ref_right.q;

@@ -1,8 +1,8 @@
 .. _carrier_board_rev5_s3c:
 
-====================
-System Supply & S3C
-====================
+============================
+System Supply & Safety $CPLD
+============================
 
 
 General
@@ -19,9 +19,11 @@ General
 Unlike in previous revisions of the UltraZohm,
 	- the frontpanel no longer comes with a red power switch (previously located between the 24V power supply and the carrier), and
 	- the various on-board supplies (derived from the incoming 24V) no longer power up automatically after the 24V are switched on.
+
 Instead, there now are
 	- a "first-level" power *switch* on the backpanel (as part of the line-supply connector assembly), and
 	- a "second-level" power *button* on the frontpanel (that replaces the aforementioned red switch).
+
 When the backpanel-side switch is on, the PSU's 24V only power up a newly-added supply rail dedicated to the S³C (3V3_S3C).
 All other rails are ramped up as soon as the user presses the frontpanel-side power button, which is monitored by the S³C.
 Then, the well-known ramp-up sequence of previous carrier boards is started by enabling the now-default-off 3V3_MOD (U10).

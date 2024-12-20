@@ -19,3 +19,5 @@ dash
 matplotlib
 bokeh
 jupyter_bokeh
+pyarrow
+fastparquet

@@ -13,12 +13,12 @@ struct uz_pmsm_control_configuration_t config_heidrive_d2 = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 1.245500f,
+    .theta_el_offset = 1.5446f, // 1.245500f, // 88.5
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = D2_IS_PRIME_MOVER,
     .speed_controller_max_torque = 1.3f,
-    .speed_controller_kp = 0.01f,
-    .speed_controller_ki = 0.05f,
+    .speed_controller_kp = 0.001f,
+    .speed_controller_ki = 0.005f,
     .current_controller_d_kp = 3.77f,
     .current_controller_d_ki = 1810.0f,
     .current_controller_q_kp = 4.73f,
@@ -40,7 +40,7 @@ struct uz_pmsm_control_configuration_t config_heidrive_d2 = {
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
     .nonlinear_machine = false,
-    .speed_actual_value_filter_cutoff_frequency = 50.0f,
+    .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
 	.theta_sampling_compensation=0.0f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
@@ -141,9 +141,9 @@ void init_heidrive_on_d2(void)
     Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d2_controller);
     Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d2_controller);
     Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_heidrive_d2.polePairs * config_PMSM_heidrive_d2.Psi_PM_Vs;
-    Global_Data.profile.id_scale_in_A = 1.0f / 4.2f;
-    Global_Data.profile.iq_scale_in_A = 1.0f;
-    Global_Data.profile.speed_scale_in_rpm = 1000.0f;
+    Global_Data.profile.id_scale_in_A = 4.2f / 2.0f / 4.2f;
+    Global_Data.profile.iq_scale_in_A = 4.2f;
+    Global_Data.profile.speed_scale_in_rpm = 3000.0f;
 #else
     Global_Data.objects.d2_controller = uz_pmsm_control_init(config_heidrive_d2, config_PMSM_heidrive_d2, heidrive_fitting_d2);
     Global_Data.prime_mover.actual_data = uz_pmsm_control_get_actual_data(Global_Data.objects.d2_controller);

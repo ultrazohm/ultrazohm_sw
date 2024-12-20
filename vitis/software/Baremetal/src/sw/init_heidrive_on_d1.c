@@ -13,12 +13,12 @@ struct uz_pmsm_control_configuration_t config_heidrive = {
     .v_dc_in_V_offset = 0.0f,
     .i_dc_in_V_conversion_factor = 12.5f,
     .i_dc_in_V_offset = 0.0f,
-    .theta_el_offset = 3.4728f,
+    .theta_el_offset = 3.6303f,
     .sample_time = 1.0f / 10000.0f,
     .enable_speed_control = D1_IS_PRIME_MOVER,
     .speed_controller_max_torque = 1.3f,
-    .speed_controller_kp = 0.005f,
-    .speed_controller_ki = 0.01f,
+    .speed_controller_kp = 0.01f,
+    .speed_controller_ki = 0.05f,
     .current_controller_d_kp = 3.77f,
     .current_controller_d_ki = 1810.0f,
     .current_controller_q_kp = 4.73f,
@@ -40,7 +40,7 @@ struct uz_pmsm_control_configuration_t config_heidrive = {
     .enable_field_weakening = false,
     .relative_torque_tolerance = 0.1f,
     .nonlinear_machine = false,
-    .speed_actual_value_filter_cutoff_frequency = 50.0f,
+    .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
 	.theta_sampling_compensation=0.0f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
@@ -76,6 +76,94 @@ static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
 };
 static float bias2[NUMBER_OF_OUTPUTS] = {
 #include "../experiments/a202_l1_td3_gaussian_heidrive/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 290
+#define NUMBER_OF_INPUTS 13
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a290_sig_td3_int_more_obs_heidrive_250k_2tau/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a290_sig_td3_int_more_obs_heidrive_250k_2tau/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a290_sig_td3_int_more_obs_heidrive_250k_2tau/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a290_sig_td3_int_more_obs_heidrive_250k_2tau/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 310
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a310_sigmoid_scaled_0_05_td3_heidrive_250k_30seeds/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a310_sigmoid_scaled_0_05_td3_heidrive_250k_30seeds/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a310_sigmoid_scaled_0_05_td3_heidrive_250k_30seeds/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a310_sigmoid_scaled_0_05_td3_heidrive_250k_30seeds/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 277
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a277_sidmoid_td3_gaussian_heidrive_500k_30seeds/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a277_sidmoid_td3_gaussian_heidrive_500k_30seeds/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a277_sidmoid_td3_gaussian_heidrive_500k_30seeds/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a277_sidmoid_td3_gaussian_heidrive_500k_30seeds/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 280
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a280_sidmoid_td3_gaussian_heidrive_750k_30seeds/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a280_sidmoid_td3_gaussian_heidrive_750k_30seeds/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a280_sidmoid_td3_gaussian_heidrive_750k_30seeds/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a280_sidmoid_td3_gaussian_heidrive_750k_30seeds/best_agent/ac_layer_out_bias.csv"
 };
 static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif

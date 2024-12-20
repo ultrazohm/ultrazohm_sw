@@ -171,7 +171,12 @@ void ISR_Control(void *data)
     }
 
     check_inverter_errors();
+#if D2_MACHINE == BECKHOFF_DESKBENCH_D2
+    Global_Data.av.Resolver_outputs_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_1);
+    Global_Data.av.Resolver_outputs_2 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_2);
+    #else
     Global_Data.av.Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
+    #endif
     automatic_profile();
 
     if(Global_Data.javascope.sweep_theta_el){
@@ -424,6 +429,10 @@ void ISR_Control(void *data)
                 d2_measurements.omega_mech_rad_per_sec = Global_Data.av.Resolver_outputs.omega_mech_rad_s;
                 d2_measurements.theta_mech = Global_Data.av.Resolver_outputs.position_mech_2pi;
                 break;
+            case BECKHOFF_DESKBENCH_D2:
+                d2_measurements.omega_mech_rad_per_sec = Global_Data.av.Resolver_outputs_2.omega_mech_rad_s;
+                d2_measurements.theta_mech = Global_Data.av.Resolver_outputs_2.position_mech_2pi;
+                break;
             case BUEHLER:
                 if (fabsf(Global_Data.av.d5_3_omega_mech_rad_per_sec - d2_measurements.omega_mech_rad_per_sec) < 50.0f)
                 {
@@ -461,7 +470,11 @@ void ISR_Control(void *data)
             d1_measurements.phase_currents_from_adc_ampere_per_volt.a = Global_Data.aa.A1.me.ADC_A4;
             d1_measurements.phase_currents_from_adc_ampere_per_volt.b = Global_Data.aa.A1.me.ADC_A3;
             d1_measurements.phase_currents_from_adc_ampere_per_volt.c = Global_Data.aa.A1.me.ADC_A2;
-            
+
+#if D1_MACHINE == BECKHOFF_DESKBENCH_D1
+            d1_measurements.omega_mech_rad_per_sec = Global_Data.av.Resolver_outputs_1.omega_mech_rad_s;
+            d1_measurements.theta_mech = Global_Data.av.Resolver_outputs_1.position_mech_2pi;
+#else
             if (fabsf(Global_Data.av.d5_1_omega_mech_rad_per_sec - d1_measurements.omega_mech_rad_per_sec) < 50.0f)
             { // only accept new values if the difference between two time steps is below 500
                 d1_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_1_omega_mech_rad_per_sec;
@@ -471,349 +484,352 @@ void ISR_Control(void *data)
 
             Global_Data.M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f; // - 0.02f;
         }
+#endif
 
-        float theta_dut_zero_crossing = false;
-        bool found_zero_crossing = false;
+            float theta_dut_zero_crossing = false;
+            bool found_zero_crossing = false;
 
-        void automatic_profile(void)
-        {
-            if ((Global_Data.javascope.select_automatic_idiq))
+            void automatic_profile(void)
             {
-                Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm * speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
-                Global_Data.profile.speed_tracking_error = fabsf(Global_Data.profile.prime_mover_reference_speed_in_rpm - Global_Data.av.mechanicalRotorSpeed_filtered_prime_mover);
-
-                if (Global_Data.profile.speed_tracking_error < 1.0f && Global_Data.profile.wait_for_n_ref)
+                if ((Global_Data.javascope.select_automatic_idiq))
                 {
-                    Global_Data.profile.speed_setpoint_reached = true;
-                    Global_Data.profile.wait_for_n_ref = false;
-                }
+                    Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm * speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
+                    Global_Data.profile.speed_tracking_error = fabsf(Global_Data.profile.prime_mover_reference_speed_in_rpm - Global_Data.av.mechanicalRotorSpeed_filtered_prime_mover);
 
-                if (Global_Data.use_cil)
-                {
-                    if (found_zero_crossing == false)
+                    if (Global_Data.profile.speed_tracking_error < 1.0f && Global_Data.profile.wait_for_n_ref)
                     {
-                        found_zero_crossing = true;
-                    }
-                }
-                else
-                {
-                    theta_dut_zero_crossing = (Global_Data.profile.theta_mech_dut_old - Global_Data.dut.measurement_values->theta_mech);
-                    if (Global_Data.profile.prime_mover_reference_speed_in_rpm <0.0f){
-                    	 found_zero_crossing = (theta_dut_zero_crossing > UZ_PIf);
-                    }else{
-                    	 found_zero_crossing = (theta_dut_zero_crossing < UZ_PIf);
+                        Global_Data.profile.speed_setpoint_reached = true;
+                        Global_Data.profile.wait_for_n_ref = false;
                     }
 
-                }
-
-                if ((found_zero_crossing || (Global_Data.prime_mover.actual_data->speed_in_rpm < 10.0f)) && (!Global_Data.profile.start_angle_found) && (Global_Data.profile.speed_setpoint_reached))
-                {
-                    Global_Data.profile.start_angle_found = true;
-                    Global_Data.javascope.start_marker = 1.0f;
-                    Global_Data.profile.speed_setpoint_reached = false;
-                }
-                if (Global_Data.profile.start_angle_found)
-                {
-                    Global_Data.profile.dut_reference_currents_in_A.d = id_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.id_scale_in_A;
-                    Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.iq_scale_in_A; 
-
-                    // step throught the array
-                    uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
-                    if ((current_uptime > (old_uptime + PROFILE_SETPOINT_DURATION_IN_ISR_TICKS) && (!Global_Data.profile.change_speed)))
+                    if (Global_Data.use_cil)
                     {
-                        old_uptime = current_uptime;
-
-                        if (Global_Data.profile.setpoint_index < (UZ_ARRAY_SIZE(id_setpoints) - 1U))
+                        if (found_zero_crossing == false)
                         {
-                            Global_Data.profile.setpoint_index++;
+                            found_zero_crossing = true;
+                        }
+                    }
+                    else
+                    {
+                        theta_dut_zero_crossing = (Global_Data.profile.theta_mech_dut_old - Global_Data.dut.measurement_values->theta_mech);
+                        if (Global_Data.profile.prime_mover_reference_speed_in_rpm < 0.0f)
+                        {
+                            found_zero_crossing = (theta_dut_zero_crossing > UZ_PIf);
                         }
                         else
                         {
-                            Global_Data.profile.setpoint_index = 0U;
-                            Global_Data.profile.change_speed = true;
+                            found_zero_crossing = (theta_dut_zero_crossing < UZ_PIf);
                         }
                     }
-                    if (Global_Data.profile.change_speed)
+
+                    if ((found_zero_crossing || (Global_Data.prime_mover.actual_data->speed_in_rpm < 10.0f)) && (!Global_Data.profile.start_angle_found) && (Global_Data.profile.speed_setpoint_reached))
                     {
-                        if (current_uptime > (old_uptime + PROFILE_SETPOINT_DURATION_IN_ISR_TICKS))
+                        Global_Data.profile.start_angle_found = true;
+                        Global_Data.javascope.start_marker = 1.0f;
+                        Global_Data.profile.speed_setpoint_reached = false;
+                    }
+                    if (Global_Data.profile.start_angle_found)
+                    {
+                        Global_Data.profile.dut_reference_currents_in_A.d = id_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.id_scale_in_A;
+                        Global_Data.profile.dut_reference_currents_in_A.q = iq_setpoints[Global_Data.profile.setpoint_index] * Global_Data.profile.iq_scale_in_A;
+
+                        // step throught the array
+                        uint64_t current_uptime = uz_SystemTime_GetInterruptCounter();
+                        if ((current_uptime > (old_uptime + PROFILE_SETPOINT_DURATION_IN_ISR_TICKS) && (!Global_Data.profile.change_speed)))
                         {
-                            Global_Data.javascope.start_marker = 0.0f;
-                            Global_Data.profile.start_angle_found = false;
-                            Global_Data.profile.wait_for_n_ref = true;
-                            Global_Data.profile.change_speed = false;
-                            if (Global_Data.profile.n_ref_setpoint_index < (UZ_ARRAY_SIZE(speed_setpoints) - 1U))
+                            old_uptime = current_uptime;
+
+                            if (Global_Data.profile.setpoint_index < (UZ_ARRAY_SIZE(id_setpoints) - 1U))
                             {
-                                Global_Data.profile.n_ref_setpoint_index++;
+                                Global_Data.profile.setpoint_index++;
                             }
                             else
                             {
-                                // stop
-                                Global_Data.javascope.select_automatic_idiq = false;
-                                Global_Data.profile.n_ref_setpoint_index = 0U;
-                                // ultrazohm_state_machine_set_stop(true);
+                                Global_Data.profile.setpoint_index = 0U;
+                                Global_Data.profile.change_speed = true;
                             }
-                            Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm * speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
+                        }
+                        if (Global_Data.profile.change_speed)
+                        {
+                            if (current_uptime > (old_uptime + PROFILE_SETPOINT_DURATION_IN_ISR_TICKS))
+                            {
+                                Global_Data.javascope.start_marker = 0.0f;
+                                Global_Data.profile.start_angle_found = false;
+                                Global_Data.profile.wait_for_n_ref = true;
+                                Global_Data.profile.change_speed = false;
+                                if (Global_Data.profile.n_ref_setpoint_index < (UZ_ARRAY_SIZE(speed_setpoints) - 1U))
+                                {
+                                    Global_Data.profile.n_ref_setpoint_index++;
+                                }
+                                else
+                                {
+                                    // stop
+                                    Global_Data.javascope.select_automatic_idiq = false;
+                                    Global_Data.profile.n_ref_setpoint_index = 0U;
+                                    // ultrazohm_state_machine_set_stop(true);
+                                }
+                                Global_Data.profile.prime_mover_reference_speed_in_rpm = Global_Data.profile.speed_scale_in_rpm * speed_setpoints[Global_Data.profile.n_ref_setpoint_index];
+                            }
                         }
                     }
                 }
-            }
-            Global_Data.profile.theta_mech_dut_old = Global_Data.dut.measurement_values->theta_mech;
-        }
-
-        void check_inverter_errors(void)
-        {
-            // Inverter 1 safety
-            // Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
-            // Overtemperature for H1
-            Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
-            Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
-            if (!Global_Data.av.inverter_outputs_d1.FAULT_H1)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 1U;
-            }
-            // Overtemperature for L1
-            if (!Global_Data.av.inverter_outputs_d1.FAULT_L1)
-            {
-                // ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 2U;
-            }
-            // Overtemperature for H2
-            if (!Global_Data.av.inverter_outputs_d1.FAULT_H2)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 3U;
-            }
-            // Overtemperature for L2
-            if (!Global_Data.av.inverter_outputs_d1.FAULT_L2)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 4U;
-            }
-            // Overtemperature for H3
-            if (!Global_Data.av.inverter_outputs_d1.FAULT_H3)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 5U;
-            }
-            // Overtemperature for L3
-            if (!Global_Data.av.inverter_outputs_d1.FAULT_L3)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 6U;
-            }
-            // Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
-            // Binding of the signals to the driver is slightly unintuitive
-            // Overcurrent for Phase A
-            if (!Global_Data.av.inverter_outputs_d1.OC_L1)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 7U;
-            }
-            // Overcurrent for Phase B
-            if (!Global_Data.av.inverter_outputs_d1.OC_H1)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 8U;
-            }
-            // Overcurrent for Phase C
-            if (!Global_Data.av.inverter_outputs_d1.OC_L2)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 9U;
-            }
-            // Overcurrent for DC-link
-            if (!Global_Data.av.inverter_outputs_d1.OC_H2)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 10U;
+                Global_Data.profile.theta_mech_dut_old = Global_Data.dut.measurement_values->theta_mech;
             }
 
-            // Inverter 2 safety
-            // Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
-            // Overtemperature for H1
-            if (!Global_Data.av.inverter_outputs_d2.FAULT_H1)
+            void check_inverter_errors(void)
             {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 11U;
+                // Inverter 1 safety
+                // Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+                // Overtemperature for H1
+                Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+                Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
+                if (!Global_Data.av.inverter_outputs_d1.FAULT_H1)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 1U;
+                }
+                // Overtemperature for L1
+                if (!Global_Data.av.inverter_outputs_d1.FAULT_L1)
+                {
+                    // ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 2U;
+                }
+                // Overtemperature for H2
+                if (!Global_Data.av.inverter_outputs_d1.FAULT_H2)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 3U;
+                }
+                // Overtemperature for L2
+                if (!Global_Data.av.inverter_outputs_d1.FAULT_L2)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 4U;
+                }
+                // Overtemperature for H3
+                if (!Global_Data.av.inverter_outputs_d1.FAULT_H3)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 5U;
+                }
+                // Overtemperature for L3
+                if (!Global_Data.av.inverter_outputs_d1.FAULT_L3)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 6U;
+                }
+                // Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+                // Binding of the signals to the driver is slightly unintuitive
+                // Overcurrent for Phase A
+                if (!Global_Data.av.inverter_outputs_d1.OC_L1)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 7U;
+                }
+                // Overcurrent for Phase B
+                if (!Global_Data.av.inverter_outputs_d1.OC_H1)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 8U;
+                }
+                // Overcurrent for Phase C
+                if (!Global_Data.av.inverter_outputs_d1.OC_L2)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 9U;
+                }
+                // Overcurrent for DC-link
+                if (!Global_Data.av.inverter_outputs_d1.OC_H2)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 10U;
+                }
+
+                // Inverter 2 safety
+                // Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+                // Overtemperature for H1
+                if (!Global_Data.av.inverter_outputs_d2.FAULT_H1)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 11U;
+                }
+                // Overtemperature for L1
+                if (!Global_Data.av.inverter_outputs_d2.FAULT_L1)
+                {
+                    // ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 12U;
+                }
+                // Overtemperature for H2
+                if (!Global_Data.av.inverter_outputs_d2.FAULT_H2)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 13U;
+                }
+                // Overtemperature for L2
+                if (!Global_Data.av.inverter_outputs_d2.FAULT_L2)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 14U;
+                }
+                // Overtemperature for H3
+                if (!Global_Data.av.inverter_outputs_d2.FAULT_H3)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 15U;
+                }
+                // Overtemperature for L3
+                if (!Global_Data.av.inverter_outputs_d2.FAULT_L3)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 16U;
+                }
+                // Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
+                // Binding of the signals to the driver is slightly unintuitive
+                // Overcurrent for Phase A
+                if (!Global_Data.av.inverter_outputs_d2.OC_L1)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 17U;
+                }
+                // Overcurrent for Phase B
+                if (!Global_Data.av.inverter_outputs_d2.OC_H1)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 18U;
+                }
+                // Overcurrent for Phase C
+                if (!Global_Data.av.inverter_outputs_d2.OC_L2)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 19U;
+                }
+                // Overcurrent for DC-link
+                if (!Global_Data.av.inverter_outputs_d2.OC_H2)
+                {
+                    ultrazohm_state_machine_set_error(true);
+                    Fehlerfall = 20U;
+                }
             }
-            // Overtemperature for L1
-            if (!Global_Data.av.inverter_outputs_d2.FAULT_L1)
+            //==============================================================================================================================================================
+
+            //==============================================================================================================================================================
+            //----------------------------------------------------
+            // INITIALIZE & SET THE INTERRUPTs and ISRs
+            //----------------------------------------------------
+            int Initialize_ISR()
             {
-                // ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 12U;
-            }
-            // Overtemperature for H2
-            if (!Global_Data.av.inverter_outputs_d2.FAULT_H2)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 13U;
-            }
-            // Overtemperature for L2
-            if (!Global_Data.av.inverter_outputs_d2.FAULT_L2)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 14U;
-            }
-            // Overtemperature for H3
-            if (!Global_Data.av.inverter_outputs_d2.FAULT_H3)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 15U;
-            }
-            // Overtemperature for L3
-            if (!Global_Data.av.inverter_outputs_d2.FAULT_L3)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 16U;
-            }
-            // Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
-            // Binding of the signals to the driver is slightly unintuitive
-            // Overcurrent for Phase A
-            if (!Global_Data.av.inverter_outputs_d2.OC_L1)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 17U;
-            }
-            // Overcurrent for Phase B
-            if (!Global_Data.av.inverter_outputs_d2.OC_H1)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 18U;
-            }
-            // Overcurrent for Phase C
-            if (!Global_Data.av.inverter_outputs_d2.OC_L2)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 19U;
-            }
-            // Overcurrent for DC-link
-            if (!Global_Data.av.inverter_outputs_d2.OC_H2)
-            {
-                ultrazohm_state_machine_set_error(true);
-                Fehlerfall = 20U;
-            }
-        }
-        //==============================================================================================================================================================
 
-        //==============================================================================================================================================================
-        //----------------------------------------------------
-        // INITIALIZE & SET THE INTERRUPTs and ISRs
-        //----------------------------------------------------
-        int Initialize_ISR()
-        {
+                int Status = 0;
 
-            int Status = 0;
+                // Initialize interrupt controller for the IPI -> Initialize RPU IPI
+                Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
+                if (Status != XST_SUCCESS)
+                {
+                    xil_printf("RPU: Error: IPI initialization failed\r\n");
+                    return XST_FAILURE;
+                }
 
-            // Initialize interrupt controller for the IPI -> Initialize RPU IPI
-            Status = Rpu_IpiInit(INTERRUPT_ID_IPI);
-            if (Status != XST_SUCCESS)
-            {
-                xil_printf("RPU: Error: IPI initialization failed\r\n");
-                return XST_FAILURE;
-            }
+                // Initialize interrupt controller for the GIC
+                Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG);
+                if (Status != XST_SUCCESS)
+                {
+                    xil_printf("RPU: Error: GIC initialization failed\r\n");
+                    return XST_FAILURE;
+                }
 
-            // Initialize interrupt controller for the GIC
-            Status = Rpu_GicInit(&INTCInst, INTERRUPT_ID_SCUG);
-            if (Status != XST_SUCCESS)
-            {
-                xil_printf("RPU: Error: GIC initialization failed\r\n");
-                return XST_FAILURE;
-            }
+                // Enable uz_mux_axi for triggering the ADCs and the ISR
+                //    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
+                //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+                //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
+                // uz_mux_axi_enable(Global_Data.objects.mux_axi);
 
-            // Enable uz_mux_axi for triggering the ADCs and the ISR
-            //    uz_mux_axi_hw_enable_IP_core(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR);
-            //    uz_mux_axi_hw_set_mux(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-            //    uz_mux_axi_hw_set_n_th_interrupt(XPAR_INTERRUPT_MUX_AXI_IP_1_BASEADDR, 1);
-            // uz_mux_axi_enable(Global_Data.objects.mux_axi);
-
-            return Status;
-        }
-
-        //==============================================================================================================================================================
-        //----------------------------------------------------
-        // Rpu_GicInit() - This function initializes RPU GIC and connects
-        // 					interrupts with the associated handlers
-        // @IntcInstPtr		Pointer to the GIC instance
-        // @IntId			Interrupt ID to be connected and enabled
-        // @Handler			Associated handler for the Interrupt ID
-        // @PeriphInstPtr	Connected interrupt's Peripheral instance pointer
-        //----------------------------------------------------
-        int Rpu_GicInit(XScuGic * IntcInstPtr, u16 DeviceId)
-        {
-            XScuGic_Config *IntcConfig;
-            int status;
-
-            // Interrupt controller initialization
-            IntcConfig = XScuGic_LookupConfig(DeviceId);
-            status = XScuGic_CfgInitialize(IntcInstPtr, IntcConfig, IntcConfig->CpuBaseAddress);
-            if (status != XST_SUCCESS)
-                return XST_FAILURE;
-
-            // Connect the interrupt controller interrupt handler to the hardware interrupt handling logic in the processor
-            Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, IntcInstPtr);
-
-            /* Enable interrupts in the processor */
-            Xil_ExceptionEnable(); // Enable interrupts in the ARM
-
-            // setting interrupt trigger sensitivity
-            // b01	Active HIGH level sensitive
-            // b11 	Rising edge sensitive
-            // XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
-            XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
-            // XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
-
-            // Make the connection between the IntId of the interrupt source and the
-            // associated handler that is to run when the interrupt is recognized.
-            status = XScuGic_Connect(IntcInstPtr,
-                                     Interrupt_ISR_ID,
-                                     (Xil_ExceptionHandler)ISR_Control,
-                                     (void *)IntcInstPtr);
-            if (status != XST_SUCCESS)
-                return XST_FAILURE;
-
-            // Enable GPIO and timer interrupts in the controller
-            XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
-            XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
-
-            xil_printf("RPU: Rpu_GicInit: Done\r\n");
-            return XST_SUCCESS;
-        }
-
-        //==============================================================================================================================================================
-        //----------------------------------------------------
-        // Rpu_IpiInit() - This function initializes RPU IPI and enables IPI interrupts
-        //
-        // @IpiInstPtr		Pointer to the IPI instance
-        //----------------------------------------------------
-        u32 Rpu_IpiInit(u16 DeviceId)
-        {
-            XIpiPsu_Config *IntcConfig_IPI;
-            int status;
-
-            // Interrupt controller configuration
-            IntcConfig_IPI = XIpiPsu_LookupConfig(DeviceId);
-            if (IntcConfig_IPI == NULL)
-            {
-                xil_printf("RPU: Error: Ipi Init failed\r\n");
-                return XST_FAILURE;
-            }
-
-            // Interrupt controller initialization
-            status = XIpiPsu_CfgInitialize(&INTCInst_IPI, IntcConfig_IPI, IntcConfig_IPI->BaseAddress);
-            if (status != XST_SUCCESS)
-            {
-                xil_printf("RPU: Error: IPI Config failed\r\n");
-                return XST_FAILURE;
+                return Status;
             }
 
-            XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+            //==============================================================================================================================================================
+            //----------------------------------------------------
+            // Rpu_GicInit() - This function initializes RPU GIC and connects
+            // 					interrupts with the associated handlers
+            // @IntcInstPtr		Pointer to the GIC instance
+            // @IntId			Interrupt ID to be connected and enabled
+            // @Handler			Associated handler for the Interrupt ID
+            // @PeriphInstPtr	Connected interrupt's Peripheral instance pointer
+            //----------------------------------------------------
+            int Rpu_GicInit(XScuGic * IntcInstPtr, u16 DeviceId)
+            {
+                XScuGic_Config *IntcConfig;
+                int status;
 
-            xil_printf("RPU: RPU_IpiInit: Done\r\n");
-            return XST_SUCCESS;
-        }
+                // Interrupt controller initialization
+                IntcConfig = XScuGic_LookupConfig(DeviceId);
+                status = XScuGic_CfgInitialize(IntcInstPtr, IntcConfig, IntcConfig->CpuBaseAddress);
+                if (status != XST_SUCCESS)
+                    return XST_FAILURE;
 
-        static void ReadAllADC()
-        {
-            ADC_readCardALL(&Global_Data);
-        };
+                // Connect the interrupt controller interrupt handler to the hardware interrupt handling logic in the processor
+                Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, IntcInstPtr);
+
+                /* Enable interrupts in the processor */
+                Xil_ExceptionEnable(); // Enable interrupts in the ARM
+
+                // setting interrupt trigger sensitivity
+                // b01	Active HIGH level sensitive
+                // b11 	Rising edge sensitive
+                // XScuGic_SetPriorityTriggerType(XScuGic *InstancePtr, u32 Int_Id, u8 Priority, u8 Trigger)
+                XScuGic_SetPriorityTriggerType(IntcInstPtr, Interrupt_ISR_ID, 0x0, 0b11); // rising-edge
+                // XScuGic_SetPriorityTriggerType(&INTCInst, Interrupt_ISR_ID, 0x0, 0b01); // active-high - default case
+
+                // Make the connection between the IntId of the interrupt source and the
+                // associated handler that is to run when the interrupt is recognized.
+                status = XScuGic_Connect(IntcInstPtr,
+                                         Interrupt_ISR_ID,
+                                         (Xil_ExceptionHandler)ISR_Control,
+                                         (void *)IntcInstPtr);
+                if (status != XST_SUCCESS)
+                    return XST_FAILURE;
+
+                // Enable GPIO and timer interrupts in the controller
+                XScuGic_Enable(IntcInstPtr, Interrupt_ISR_ID);
+                XScuGic_Enable(IntcInstPtr, INTC_IPC_Shared_INTERRUPT_ID);
+
+                xil_printf("RPU: Rpu_GicInit: Done\r\n");
+                return XST_SUCCESS;
+            }
+
+            //==============================================================================================================================================================
+            //----------------------------------------------------
+            // Rpu_IpiInit() - This function initializes RPU IPI and enables IPI interrupts
+            //
+            // @IpiInstPtr		Pointer to the IPI instance
+            //----------------------------------------------------
+            u32 Rpu_IpiInit(u16 DeviceId)
+            {
+                XIpiPsu_Config *IntcConfig_IPI;
+                int status;
+
+                // Interrupt controller configuration
+                IntcConfig_IPI = XIpiPsu_LookupConfig(DeviceId);
+                if (IntcConfig_IPI == NULL)
+                {
+                    xil_printf("RPU: Error: Ipi Init failed\r\n");
+                    return XST_FAILURE;
+                }
+
+                // Interrupt controller initialization
+                status = XIpiPsu_CfgInitialize(&INTCInst_IPI, IntcConfig_IPI, IntcConfig_IPI->BaseAddress);
+                if (status != XST_SUCCESS)
+                {
+                    xil_printf("RPU: Error: IPI Config failed\r\n");
+                    return XST_FAILURE;
+                }
+
+                XIpiPsu_InterruptEnable(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXR5_0_CH0_MASK);
+
+                xil_printf("RPU: RPU_IpiInit: Done\r\n");
+                return XST_SUCCESS;
+            }
+
+            static void ReadAllADC()
+            {
+                ADC_readCardALL(&Global_Data);
+            };

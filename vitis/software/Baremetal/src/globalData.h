@@ -87,6 +87,8 @@ typedef struct _actualValues_
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	struct uz_resolver_pl_interface_outputs_t Resolver_outputs;
+	struct uz_resolver_pl_interface_outputs_t Resolver_outputs_1;
+	struct uz_resolver_pl_interface_outputs_t Resolver_outputs_2;
 	float temperature;
 	uint32_t heartbeatframe_content;
 	float electricalRotorSpeed_1;
@@ -128,6 +130,10 @@ typedef struct
 	uz_inverter_adapter_t *inverter_d2;
 	uz_resolver_pl_interface_t *resolver_pl_d4;
 	uz_resolverIP_t *resolver_d4;
+	uz_resolver_pl_interface_t *resolver_pl_d4_1;
+	uz_resolverIP_t *resolver_d4_1;
+	uz_resolver_pl_interface_t *resolver_pl_d4_2;
+	uz_resolverIP_t *resolver_d4_2;
 	uz_approximate_flux_t *approximate_flux_instance;
 	uz_CurrentControl_Kp_id_adjustment_t *Kp_id_adjustment_instance;
 	uz_CurrentControl_Kp_iq_adjustment_t *Kp_iq_adjustment_instance;

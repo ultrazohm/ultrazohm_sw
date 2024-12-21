@@ -117,9 +117,7 @@ int main(void)
             Global_Data.objects.resolver_d4 = initialize_resolver_d4();
             Global_Data.objects.resolver_pl_d4 = initialize_resolver_pl_d4();
             Global_Data.objects.resolver_d4_1 = initialize_resolver_d4_1();
-            Global_Data.objects.resolver_pl_d4_1 = initialize_resolver_pl_d4_1();
             Global_Data.objects.resolver_d4_2 = initialize_resolver_d4_2();
-            Global_Data.objects.resolver_pl_d4_2 = initialize_resolver_pl_d4_2();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5_1 = initialize_incremental_encoder_ipcore_on_D5_1(UZ_D5_1_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_1_MOTOR_POLE_PAIR_NUMBER);
             Global_Data.objects.encoder_D5_2 = initialize_incremental_encoder_ipcore_on_D5_2(UZ_D5_2_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_2_MOTOR_POLE_PAIR_NUMBER);
@@ -143,7 +141,7 @@ int main(void)
             init_brose_on_d1();
 #elif D1_MACHINE == HEIDRIVE_D1
             init_heidrive_on_d1();
-#elif D2_MACHINE == BECKHOFF_DESKBENCH_D1
+#elif D1_MACHINE == BECKHOFF_DESKBENCH_D1
             init_beckhoff_deskbench_d1();
 #endif
 

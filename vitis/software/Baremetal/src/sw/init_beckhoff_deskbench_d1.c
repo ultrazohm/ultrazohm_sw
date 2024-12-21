@@ -42,7 +42,7 @@ struct uz_pmsm_control_configuration_t config_beckhoff_deskbench_d1 = {
     .nonlinear_machine = false,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
-    .theta_sampling_compensation = 1.0f,
+    .theta_sampling_compensation = 1.0f, // also required for desk bench setup since there is no "pl interface" ip but resolver ip is read directly?
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 

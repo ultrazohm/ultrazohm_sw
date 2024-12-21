@@ -172,8 +172,16 @@ void ISR_Control(void *data)
 
     check_inverter_errors();
 #if D2_MACHINE == BECKHOFF_DESKBENCH_D2
-    Global_Data.av.Resolver_outputs_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_1);
-    Global_Data.av.Resolver_outputs_2 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_2);
+    struct uz_resolverIP_position_velocity_t d4_1_speedVelocoty={0};
+    d4_1_speedVelocoty=uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.resolver_d4_1);
+    Global_Data.av.Resolver_outputs_1.position_mech_2pi =d4_1_speedVelocoty.position; // uz_resolverIP_readMechanicalPosition(Global_Data.objects.resolver_d4_1);
+    Global_Data.av.Resolver_outputs_1.omega_mech_rad_s = d4_1_speedVelocoty.velocity; // uz_resolverIP_readMechanicalVelocity(Global_Data.objects.resolver_d4_1);
+    struct uz_resolverIP_position_velocity_t d4_2_speedVelocoty={0};
+    d4_2_speedVelocoty=uz_resolverIP_readMechanicalPositionAndVelocity(Global_Data.objects.resolver_d4_2);
+    Global_Data.av.Resolver_outputs_2.position_mech_2pi =d4_2_speedVelocoty.position; // uz_resolverIP_readMechanicalPosition(Global_Data.objects.resolver_d4_1);
+    Global_Data.av.Resolver_outputs_2.omega_mech_rad_s = d4_2_speedVelocoty.velocity; // uz_resolverIP_readMechanicalVelocity(Global_Data.objects.resolver_d4_1);
+   // Global_Data.av.Resolver_outputs_2.position_mech_2pi = uz_resolverIP_readMechanicalPosition(Global_Data.objects.resolver_d4_2);
+   // Global_Data.av.Resolver_outputs_2.omega_mech_rad_s = uz_resolverIP_readMechanicalVelocity(Global_Data.objects.resolver_d4_2);
     #else
     Global_Data.av.Resolver_outputs = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4);
     #endif
@@ -481,10 +489,9 @@ void ISR_Control(void *data)
             }
             //  d1_measurements.omega_mech_rad_per_sec = Global_Data.av.d5_1_n_rpm_filtered;
             d1_measurements.theta_mech = Global_Data.av.d5_1_theta_el;
-
+#endif
             Global_Data.M_meas_Nm = Global_Data.aa.A3.me.ADC_A4 * 2.0f; // - 0.02f;
         }
-#endif
 
             float theta_dut_zero_crossing = false;
             bool found_zero_crossing = false;

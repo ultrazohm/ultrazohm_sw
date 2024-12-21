@@ -80,6 +80,9 @@ static float bias2[NUMBER_OF_OUTPUTS] = {
 static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif
 
+
+
+
 #if AGENT == 216
 #define NUMBER_OF_INPUTS 9
 #define NUMBER_OF_OUTPUTS 2

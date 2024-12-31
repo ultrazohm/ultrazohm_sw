@@ -46,7 +46,7 @@ entity Slow_ADC_Memory_main is
 		clk 					: in STD_LOGIC;
 		reset_n 				: in STD_LOGIC;
 		enable_measure 			: in STD_LOGIC;
-		clk_division 			: IN STD_LOGIC_VECTOR(3 DOWNTO 0); --f_internal = 1/clk_division * f_external 
+		clk_division 			: IN STD_LOGIC_VECTOR(7 DOWNTO 0); --f_internal = 1/clk_division * f_external 
 		sclk 					: out STD_LOGIC;
 		mosi 					: out STD_LOGIC;
 		miso 					: IN STD_LOGIC_VECTOR(NUMBER_OF_ADCS downto 1);
@@ -141,7 +141,7 @@ architecture Behavioral of Slow_ADC_Memory_main is
 	signal adc_channels_single   : t_matrix_message(NUMBER_OF_ADCS downto 1, C_NUM_CHANNELS-1 downto 0) := (others=> (others => (others => '0')));
 	
  
-	SIGNAL   DELAY				: INTEGER RANGE 0 TO 255; --Delay count from main clock (100MHz) between SPI transfers. 
+	SIGNAL   DELAY				: INTEGER RANGE 0 TO 1024; --Delay count from main clock (100MHz) between SPI transfers. 
 	CONSTANT DELAY_ERROR       : INTEGER := 49;	-- delay count from main clock (100MHz) between error state and restart initialization. Consider delay - 1.
 	CONSTANT MSG_RESET	       : STD_LOGIC_VECTOR(15 downto 0) := "0000000001000000";	-- ADC Mode Control: 	Reset entire chip (Table 2) 
 	CONSTANT MSG_INIT_1	       : STD_LOGIC_VECTOR(15 downto 0) := "1000000000000100";	-- ADC Configuration: 	activate echo (Table 6)
@@ -183,7 +183,7 @@ architecture Behavioral of Slow_ADC_Memory_main is
 			clock   : IN     STD_LOGIC;                      --system clock
 			reset_n : IN     STD_LOGIC;                      --asynchronous reset
 			enable  : IN     STD_LOGIC;                      --initiate transaction
-			clk_division : IN STD_LOGIC_VECTOR(3 DOWNTO 0);  --system clock cycles per 1/2 period of sclk
+			clk_division : IN STD_LOGIC_VECTOR(7 DOWNTO 0);  --system clock cycles per 1/2 period of sclk
 			tx_data : IN     STD_LOGIC_VECTOR(15 DOWNTO 0);  --data to transmit
 			miso    : IN     STD_LOGIC_VECTOR(NUMBER_OF_ADCS downto 1);
 			sclk    : OUT    STD_LOGIC;                         --spi clock

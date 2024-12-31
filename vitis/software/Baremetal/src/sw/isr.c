@@ -50,8 +50,6 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
-int max11_debug_delay_offset = 0;
-
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -67,9 +65,6 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-
-
-    uz_adcMax11331_set_delay_offset(max11_debug_delay_offset);
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

@@ -21,7 +21,7 @@ entity ADC_MAX11331_AXI_Lite is
 		meas_done 					: in STD_LOGIC;
 		error 						: in STD_LOGIC;		
 		error_counter				: in STD_LOGIC_VECTOR (31 downto 0);
-		clk_division 				: out STD_LOGIC_VECTOR(3 DOWNTO 0);          --system clock cycles per 1/2 period of sclk		
+		clk_division 				: out STD_LOGIC_VECTOR(7 DOWNTO 0);          --system clock cycles per 1/2 period of sclk		
 		data_echo_bipolar_1			: in STD_LOGIC_VECTOR (15 downto 0);
 		data_echo_bipolar_2			: in STD_LOGIC_VECTOR (15 downto 0);
 		data_echo_bipolar_3			: in STD_LOGIC_VECTOR (15 downto 0);
@@ -589,7 +589,7 @@ begin
 	echoed_unipolar_56	<=	data_echo_unipolar_6 & data_echo_unipolar_5;
 	adc_selector		<=	slv_reg8(NUMBER_OF_ADCS-1 downto 0);
 	force_init			<=  slv_reg8(8);
-	clk_division		<=  slv_reg9(3 downto 0);
+	clk_division		<=  slv_reg9(7 downto 0);
 	delay_offset        <=  slv_reg10(15 downto 0);
 	-- User logic ends
 

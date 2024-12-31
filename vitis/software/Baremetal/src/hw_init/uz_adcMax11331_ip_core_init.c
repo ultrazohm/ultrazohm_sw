@@ -30,19 +30,17 @@ void uz_adcMax11331_ip_core_init(void)
         .cpha = 1U,
         .master_select = UZ_ADCMAX11331_MASTER1,
         .channel_select = UZ_ADCMAX11331_CH1 | UZ_ADCMAX11331_CH2 | UZ_ADCMAX11331_CH3 | UZ_ADCMAX11331_CH4 | UZ_ADCMAX11331_CH5 | UZ_ADCMAX11331_CH6 | UZ_ADCMAX11331_CH7 | UZ_ADCMAX11331_CH8 | UZ_ADCMAX11331_CH9 | UZ_ADCMAX11331_CH10 | UZ_ADCMAX11331_CH11 | UZ_ADCMAX11331_CH12 | UZ_ADCMAX11331_CH13 | UZ_ADCMAX11331_CH14 | UZ_ADCMAX11331_CH15 | UZ_ADCMAX11331_CH16,
-        .clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ};
+        .adc_delay_offset = 0,
+		.clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ};
 
-   //1.) Create the instance of the first Max11331 adapter board with one or may several master = several physical Max11331 chips
+	//1.) Create the instance of the first Max11331 adapter board with one or may several master = several physical Max11331 chips
     uz_adcMax11331_t *instance_1 = uz_adcMax11331_init(default_configuration);
 
     // Apply same configuration to all following instances, despite the base address of the FPGA IP Core
-
-//    //2.) Create the instance of the second Max11331 adapter board with one or may several master = several physical Max11331 chips
-//    default_configuration.base_address = XPAR_A2_ADC_MAX11331_S00_AXI_BASEADDR;
+    //2.) Create the instance of the second Max11331 adapter board with one or may several master = several physical Max11331 chips
+//    default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_MAX11331_BASEADDR;
 //    uz_adcMax11331_t *instance_2 = uz_adcMax11331_init(default_configuration);
-
-//    //3.) Create the instance of the third Max11331 adapter board with one or may several master = several physical Max11331 chips
-//    default_configuration.base_address = XPAR_A3_ADC_MAX11331_S00_AXI_BASEADDR;
+	//3.) Create the instance of the third Max11331 adapter board with one or may several master = several physical Max11331 chips
+//    default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_MAX11331_BASEADDR;
 //    uz_adcMax11331_t *instance_3 = uz_adcMax11331_init(default_configuration);
-
 }

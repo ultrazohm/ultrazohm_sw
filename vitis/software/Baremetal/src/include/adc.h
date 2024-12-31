@@ -18,13 +18,12 @@
 
 #include "../defines.h"
 #include "../globalData.h"
+#include "../uz/uz_global_configuration.h"
 #include "../uz/uz_array/uz_array.h"
 
 void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data);
 void ADC_readCardA2(DS_Data *data, uz_array_int16_t adc_data);
 void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data);
-void ADC_readCardA3_MAX11(DS_Data *data, uz_array_int16_t adc_data);
-
 
 void ADC_readCardALL(DS_Data* data);
 

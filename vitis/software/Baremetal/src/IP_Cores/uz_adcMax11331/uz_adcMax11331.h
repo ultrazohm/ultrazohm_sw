@@ -143,7 +143,7 @@ struct uz_adcMax11331_config_t{
     uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured. This corresponds to the physical chip. 1 is the first chip, 2 the second chip, ... The original UZ adapter board from Chile has e.g. 6 chips. */
 	uint32_t channel_select; /**< One hot encoded variable to select the channels of the selected SPI masters shall be configured. In case of MAX11331, there are 16 channels in case of single-ended and 8 channels in case of differential mode. */
 	enum uz_adcMax11331_trigger_mode trigger_mode;
-	uint32_t adc_delay_offset;
+	uint32_t adc_delay_offset; /**< Offset defined in number of clock cycles. It defines the delay between channel sampling. As more cycles, as longer the ADC waits until the next channel is sampled.*/
 
     /* SPI */
 	uint32_t clk_div; /**< See the SPI configuration register for explanation */
@@ -187,7 +187,7 @@ uz_adcMax11331_t* uz_adcMax11331_init(struct uz_adcMax11331_config_t config);
  */
 void uz_adcMax11331_set_clk_div(uz_adcMax11331_t* self, uint32_t value);
 
-void uz_adcMax11331_set_delay_offset(uint32_t value);
+void uz_adcMax11331_set_delay_offset(uz_adcMax11331_t* self, uint32_t value);
 
 // get functions
 uint32_t uz_adcMax11331_get_error_code(uz_adcMax11331_t* self);
@@ -207,65 +207,5 @@ void uz_adcMax11331_check_echo_of_master(uz_adcMax11331_t *self);
 _Bool uz_adcMax11331_check_32_bit_int_if_msb_not_set(uint32_t value);
 _Bool uz_adcMax11331_check_32_bit_int_if_not_more_sign_bits_set_than_spec(uint32_t value, uint32_t spec);
 
-
-
-// /*********************************************************************
-//  * MAX11331 type definitions, for ADC, daughter board and adapter slot
-//  **********************************************************************/
-// typedef struct max11331 {
-// 	u16 	config_bipolar;
-// 	u16 	config_unipolar;
-// 	int16_t	Data_raw[8];
-// 	float 	Data[8];
-// 	int16_t offset[8];
-// } MAX11331;
-
-// typedef enum SCLK_freq {f_50MHz=0x01,f_25MHz=0x02,f_16_67MHz=0x03,f_12_5MHz=0x04,f_6_25MHz=0x08,f_low=0x0C} SCLK_freq;
-// typedef enum adcstatus {adc_disabled,adc_init,adc_ready,adc_reading_data,adc_error} ADCstatus;
-
-// typedef struct max11331_daughter_board{
-// 	// Slot specific parameter
-// 	//slot_number slot_id;
-// 	const u32 AXI_BASEADDR;
-// 	const u32 RESET_MASK;
-// 	const u32 ENABLE_MASK;
-// 	const u32 TCM_BASEADDR;
-// 	// Status & general parameter
-// 	ADCstatus status;
-// 	SCLK_freq f_clk;
-// 	u32 error_counter;
-// 	u32 ADC_select;
-// 	float conversion_factor;
-// 	// ADC data objects
-// 	MAX11331 ADC1;
-// 	MAX11331 ADC2;
-// 	MAX11331 ADC3;
-// 	MAX11331 ADC4;
-// } MAX11331_Daughter_Board;
-
-// // Declare driver objects to make them globally available
-// extern MAX11331_Daughter_Board slot_1;
-// extern MAX11331_Daughter_Board slot_2;
-// extern MAX11331_Daughter_Board slot_3;
-
-// /*********************************************************************
-//  * MAX11331 interface functions declaration
-//  *********************************************************************/
-// int AnalogAdapter_A2_Initialize();
-// //void Config_Daughter_Board(MAX11331_Daughter_Board* slot,SCLK_freq f,u32 ADC_select);
-// void Config_Daughter_Board_1(SCLK_freq f, u32 ADC_select);
-// void Config_Daughter_Board_2(SCLK_freq f, u32 ADC_select);
-// void Config_Daughter_Board_3(SCLK_freq f, u32 ADC_select);
-// //void Reset_Daughter_Board(MAX11331_Daughter_Board* slot);
-// void Reset_Daughter_Board_1();
-// void Reset_Daughter_Board_2();
-// void Reset_Daughter_Board_3();
-// //void Update_Values(MAX11331_Daughter_Board* slot);
-// void Update_Values_Board_1();
-// void Update_Values_Board_2();
-// void Update_Values_Board_3();
-// ADCstatus Board_1_Status();
-// ADCstatus Board_2_Status();
-// ADCstatus Board_3_Status();
 
 #endif // UZ_ADCMAX11331_H

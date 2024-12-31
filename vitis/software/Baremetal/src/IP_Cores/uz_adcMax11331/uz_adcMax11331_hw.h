@@ -23,6 +23,4 @@ uint32_t uz_adcMax11331_hw_read_Status(uint32_t base_address);
 uint32_t uz_adcMax11331_hw_read_ErrorCounter(uint32_t base_address);
 
 
-
-
 #endif // UZ_ADCMAX11331_HW_H

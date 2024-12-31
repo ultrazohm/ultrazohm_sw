@@ -17,7 +17,6 @@
 #include "../IP_Cores/uz_dataMover/uz_dataMover.h"
 #include "../uz/uz_HAL.h"
 
-uint16_t TestVar = 0;
 uint32_t Max11ConfigSPI =0;
 uint32_t Max11ConfigBiPo =0;
 uint32_t Max11ConfigUniPo =0;
@@ -25,7 +24,6 @@ uint32_t Max11ConfigAdcSelFORCEINIT =0;
 uint32_t Max11ConfigStatus =0;
 uint32_t Max11ConfigErrorCounter =0;
 uint32_t FORCEINIT = 7;
-uint32_t TEst=0;
 
 void ADC_readCardA1(DS_Data *data, uz_array_int16_t adc_data)
 {
@@ -57,87 +55,62 @@ void ADC_readCardA2(DS_Data *data, uz_array_int16_t adc_data)
 void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
 {
 
-	TestVar = (uint16_t)(1*(adc_data.data[16]));
-	//if ((adc_data.data[16] && 0b100000000000)==0b1){//neg. value
-	//if (TestVar & (1<<12)){
-//	if (TestVar >= (2^11)){
-//		data->aa.A3.me.ADC_array[0] = -1.0*(((float)((uint16_t)(2^12)-(uint16_t)adc_data.data[16]))/((float)(2^11))) * data->aa.A3.cf.ADC_A1;
-//		TEst =1;
-//	}else{
-//		data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q11) * data->aa.A3.cf.ADC_A1;
-//	}
-	if (adc_data.data[16] >= 2048){
-		data->aa.A3.me.ADC_array[0] = -1.0*(((4096.0-(float)adc_data.data[16])/2048.0) * data->aa.A3.cf.ADC_A1);
+	if (UZ_MAX11_INPUT_CONFIGURATION == 2U){
+		//Max11 reads 12Bits in Fully Diff.-Mode Bipolar (2’s Complement), see p.28 of datasheet: -5..0..+5V, which equals 2049..4096/0..2048, where -5V=2049, -0V=4096, +0V=0 and +5V=2048.
+		//Changing 2's compl. into integer by: d = -((int)(~(int8_t)d) + 1); -> simplified into: d = (int8_t)d; from "https://stackoverflow.com/questions/72243861/converting-sensor-data-twos-complement-to-signed-integer"
+		//Explanation see also: https://bitbucket.org/ultrazohm/uz_a_max11331/issues/2/first-commissioning-of-pcb
+		data->aa.A3.me.ADC_array[0] = (float)((int16_t)(adc_data.data[16] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A1;
+		data->aa.A3.me.ADC_array[1] = (float)((int16_t)(adc_data.data[17] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A2;
+		data->aa.A3.me.ADC_array[2] = (float)((int16_t)(adc_data.data[18] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A3;
+		data->aa.A3.me.ADC_array[3] = (float)((int16_t)(adc_data.data[19] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A4;
+		data->aa.A3.me.ADC_array[4] = (float)((int16_t)(adc_data.data[20] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_B5;
+		data->aa.A3.me.ADC_array[5] = (float)((int16_t)(adc_data.data[21] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_B6;
+		data->aa.A3.me.ADC_array[6] = (float)((int16_t)(adc_data.data[22] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_B7;
+		data->aa.A3.me.ADC_array[7] = (float)((int16_t)(adc_data.data[23] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_B8;
+		data->aa.A3.me.ADC_array[8] = (float)((int16_t)(adc_data.data[24] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_C9;
+		data->aa.A3.me.ADC_array[9] = (float)((int16_t)(adc_data.data[25] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_C10;
+		data->aa.A3.me.ADC_array[10] = (float)((int16_t)(adc_data.data[26] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_C11;
+		data->aa.A3.me.ADC_array[11] = (float)((int16_t)(adc_data.data[27] << Q4))/ (1 << Q15) *  data->aa.A3.cf.ADC_C12;
+		data->aa.A3.me.ADC_array[12] = (float)((int16_t)(adc_data.data[28] << Q4))/ (1 << Q15) *  data->aa.A3.cf.ADC_D13;
+		data->aa.A3.me.ADC_array[13] = (float)((int16_t)(adc_data.data[29] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_D14;
+		data->aa.A3.me.ADC_array[14] = (float)((int16_t)(adc_data.data[30] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_D15;
+		data->aa.A3.me.ADC_array[15] = (float)((int16_t)(adc_data.data[31] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_D16;
+		data->aa.A3.me.ADC_array[16] = (float)((int16_t)(adc_data.data[32] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_E17;
+		data->aa.A3.me.ADC_array[17] = (float)((int16_t)(adc_data.data[33] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_E18;
+		data->aa.A3.me.ADC_array[18] = (float)((int16_t)(adc_data.data[34] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_E19;
+		data->aa.A3.me.ADC_array[19] = (float)((int16_t)(adc_data.data[35] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_E20;
+		data->aa.A3.me.ADC_array[20] = (float)((int16_t)(adc_data.data[36] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_F21;
+		data->aa.A3.me.ADC_array[21] = (float)((int16_t)(adc_data.data[37] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_F22;
+		data->aa.A3.me.ADC_array[22] = (float)((int16_t)(adc_data.data[38] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_F23;
+		data->aa.A3.me.ADC_array[23] = (float)((int16_t)(adc_data.data[39] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_F24;
 	}else{
-		data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q11) * data->aa.A3.cf.ADC_A1;
+		//MAX11 reads 12 Bits in Single-Ended Unipolar (Binary Coding)
+		data->aa.A3.me.ADC_array[0] = ((float)adc_data.data[16]) / (1 << Q12) * data->aa.A3.cf.ADC_A1;
+		data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q12) * data->aa.A3.cf.ADC_A2;
+		data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q12) * data->aa.A3.cf.ADC_A3;
+		data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q12) * data->aa.A3.cf.ADC_A4;
+		data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q12) * data->aa.A3.cf.ADC_B5;
+		data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q12) * data->aa.A3.cf.ADC_B6;
+		data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q12) * data->aa.A3.cf.ADC_B7;
+		data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q12) * data->aa.A3.cf.ADC_B8;
+		data->aa.A3.me.ADC_array[8] = ((float)adc_data.data[24]) / (1 << Q12) * data->aa.A3.cf.ADC_C9;
+		data->aa.A3.me.ADC_array[9] = ((float)adc_data.data[25]) / (1 << Q12) * data->aa.A3.cf.ADC_C10;
+		data->aa.A3.me.ADC_array[10] = ((float)adc_data.data[26]) / (1 << Q12) * data->aa.A3.cf.ADC_C11;
+		data->aa.A3.me.ADC_array[11] = ((float)adc_data.data[27]) / (1 << Q12) * data->aa.A3.cf.ADC_C12;
+		data->aa.A3.me.ADC_array[12] = ((float)adc_data.data[28]) / (1 << Q12) * data->aa.A3.cf.ADC_D13;
+		data->aa.A3.me.ADC_array[13] = ((float)adc_data.data[29]) / (1 << Q12) * data->aa.A3.cf.ADC_D14;
+		data->aa.A3.me.ADC_array[14] = ((float)adc_data.data[30]) / (1 << Q12) * data->aa.A3.cf.ADC_D15;
+		data->aa.A3.me.ADC_array[15] = ((float)adc_data.data[31]) / (1 << Q12) * data->aa.A3.cf.ADC_D16;
+		data->aa.A3.me.ADC_array[16] = 0;//Channel not available in MicroZohm
+		data->aa.A3.me.ADC_array[17] = 0;//Channel not available in MicroZohm
+		data->aa.A3.me.ADC_array[18] = 0;//Channel not available in MicroZohm
+		data->aa.A3.me.ADC_array[19] = 0;//Channel not available in MicroZohm
+		data->aa.A3.me.ADC_array[20] = 0;//Channel not available in MicroZohm
+		data->aa.A3.me.ADC_array[21] = 0;//Channel not available in MicroZohm
+		data->aa.A3.me.ADC_array[22] = 0;//Channel not available in MicroZohm
+		data->aa.A3.me.ADC_array[23] = 0;//Channel not available in MicroZohm
 	}
-	if (adc_data.data[17] >= 2048){
-		data->aa.A3.me.ADC_array[1] = -1.0*(((4096.0-(float)adc_data.data[17])/2048.0) * data->aa.A3.cf.ADC_A2);
-	}else{
-		data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q11) * data->aa.A3.cf.ADC_A2;
-	}
-	if (adc_data.data[18] >= 2048){
-		data->aa.A3.me.ADC_array[2] = -1.0*(((4096.0-(float)adc_data.data[18])/2048.0) * data->aa.A3.cf.ADC_A3);
-	}else{
-		data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q11) * data->aa.A3.cf.ADC_A3;
-	}
-	if (adc_data.data[19] >= 2048){
-		data->aa.A3.me.ADC_array[3] = -1.0*(((4096.0-(float)adc_data.data[19])/2048.0) * data->aa.A3.cf.ADC_A4);
-	}else{
-		data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q11) * data->aa.A3.cf.ADC_A4;
-	}
-	if (adc_data.data[20] >= 2048){
-		data->aa.A3.me.ADC_array[4] = -1.0*(((4096.0-(float)adc_data.data[20])/2048.0) * data->aa.A3.cf.ADC_B5);
-	}else{
-		data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q11) * data->aa.A3.cf.ADC_B5;
-	}
-	if (adc_data.data[21] >= 2048){
-		data->aa.A3.me.ADC_array[5] = -1.0*(((4096.0-(float)adc_data.data[21])/2048.0) * data->aa.A3.cf.ADC_B6);
-	}else{
-		data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q11) * data->aa.A3.cf.ADC_B6;
-	}
-	if (adc_data.data[22] >= 2048){
-		data->aa.A3.me.ADC_array[6] = -1.0*(((4096.0-(float)adc_data.data[22])/2048.0) * data->aa.A3.cf.ADC_B7);
-	}else{
-		data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q11) * data->aa.A3.cf.ADC_B7;
-	}
-	if (adc_data.data[23] >= 2048){
-		data->aa.A3.me.ADC_array[7] = -1.0*(((4096.0-(float)adc_data.data[23])/2048.0) * data->aa.A3.cf.ADC_B8);
-	}else{
-		data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q11) * data->aa.A3.cf.ADC_B8;
-	}
-
-//    data->aa.A3.me.ADC_array[1] = ((float)adc_data.data[17]) / (1 << Q12) * data->aa.A3.cf.ADC_A2;
-//    data->aa.A3.me.ADC_array[2] = ((float)adc_data.data[18]) / (1 << Q12) * data->aa.A3.cf.ADC_A3;
-//    data->aa.A3.me.ADC_array[3] = ((float)adc_data.data[19]) / (1 << Q12) * data->aa.A3.cf.ADC_A4;
-//    data->aa.A3.me.ADC_array[4] = ((float)adc_data.data[20]) / (1 << Q12) * data->aa.A3.cf.ADC_B5;
-//    data->aa.A3.me.ADC_array[5] = ((float)adc_data.data[21]) / (1 << Q12) * data->aa.A3.cf.ADC_B6;
-//    data->aa.A3.me.ADC_array[6] = ((float)adc_data.data[22]) / (1 << Q12) * data->aa.A3.cf.ADC_B7;
-//    data->aa.A3.me.ADC_array[7] = ((float)adc_data.data[23]) / (1 << Q12) * data->aa.A3.cf.ADC_B8;
-
 };
-
-void ADC_readCardA3_MAX11(DS_Data *data, uz_array_int16_t adc_data)
-{
-    data->aa.A3_Max11_ADC2.me.ADC_array[0] = ((float)adc_data.data[24]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_A1;
-    data->aa.A3_Max11_ADC2.me.ADC_array[1] = ((float)adc_data.data[25]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_A2;
-    data->aa.A3_Max11_ADC2.me.ADC_array[2] = ((float)adc_data.data[26]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_A3;
-    data->aa.A3_Max11_ADC2.me.ADC_array[3] = ((float)adc_data.data[27]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_A4;
-    data->aa.A3_Max11_ADC2.me.ADC_array[4] = ((float)adc_data.data[28]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_B5;
-    data->aa.A3_Max11_ADC2.me.ADC_array[5] = ((float)adc_data.data[29]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_B6;
-    data->aa.A3_Max11_ADC2.me.ADC_array[6] = ((float)adc_data.data[30]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_B7;
-    data->aa.A3_Max11_ADC2.me.ADC_array[7] = ((float)adc_data.data[31]) / (1 << Q12) * data->aa.A3_Max11_ADC2.cf.ADC_B8;
-
-    data->aa.A3_Max11_ADC3.me.ADC_array[0] = ((float)adc_data.data[32]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_A1;
-    data->aa.A3_Max11_ADC3.me.ADC_array[1] = ((float)adc_data.data[33]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_A2;
-    data->aa.A3_Max11_ADC3.me.ADC_array[2] = ((float)adc_data.data[34]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_A3;
-    data->aa.A3_Max11_ADC3.me.ADC_array[3] = ((float)adc_data.data[35]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_A4;
-    data->aa.A3_Max11_ADC3.me.ADC_array[4] = ((float)adc_data.data[36]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_B5;
-    data->aa.A3_Max11_ADC3.me.ADC_array[5] = ((float)adc_data.data[37]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_B6;
-    data->aa.A3_Max11_ADC3.me.ADC_array[6] = ((float)adc_data.data[38]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_B7;
-    data->aa.A3_Max11_ADC3.me.ADC_array[7] = ((float)adc_data.data[39]) / (1 << Q12) * data->aa.A3_Max11_ADC3.cf.ADC_B8;
-};
-
 
 
 void ADC_readCardALL(DS_Data *data)
@@ -146,7 +119,6 @@ void ADC_readCardALL(DS_Data *data)
     ADC_readCardA1(data, adc_data);
     ADC_readCardA2(data, adc_data);
     ADC_readCardA3(data, adc_data);
-    ADC_readCardA3_MAX11(data, adc_data);
 
 
     Max11ConfigSPI = uz_adcMax11331_hw_read_spi_cfgr(XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_A3_ADC_MAX11331_BASEADDR);

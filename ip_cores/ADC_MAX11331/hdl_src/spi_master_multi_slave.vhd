@@ -39,14 +39,14 @@ ENTITY spi_master_multi_slave IS
 		d_width : INTEGER   := C_ADC_MESSAGE_LENGTH;	--data bus width
 		cpol    : STD_LOGIC := '1';         --spi clock polarity
 		cpha    : STD_LOGIC := '1';         --spi clock phase
-      NUMBER_OF_PERIPH: INTEGER := 2     -- number of spi peripherals (former knwon as "slaves") connected
+      NUMBER_OF_PERIPH: INTEGER := 2     -- number of spi peripherals (former known as "slaves") connected
 	); 
   PORT
   (
 		clock		: IN	STD_LOGIC;                             --system clock
 		reset_n	: IN	STD_LOGIC;                             --asynchronous reset
 		enable	: IN	STD_LOGIC;                             --initiate transaction
-		clk_division : IN 	STD_LOGIC_VECTOR(3 DOWNTO 0);          --system clock cycles per 1/2 period of sclk
+		clk_division : IN 	STD_LOGIC_VECTOR(7 DOWNTO 0);          --system clock cycles per 1/2 period of sclk
 		tx_data	: IN	STD_LOGIC_VECTOR(d_width-1 DOWNTO 0);  --data to transmit
 		miso     : IN  STD_LOGIC_VECTOR(NUMBER_OF_PERIPH downto 1); --data received, array of size NUMBER_OF_PERIPH
 		sclk		: OUT	STD_LOGIC;                          	--spi clock

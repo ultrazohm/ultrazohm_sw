@@ -1603,7 +1603,7 @@
                   },
                   "clk_division_out": {
                     "direction": "O",
-                    "left": "3",
+                    "left": "7",
                     "right": "0"
                   },
                   "adc_selector_out": {

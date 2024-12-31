@@ -78,24 +78,24 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_MAX11_ADC1_CH8] = &data->aa.A3.me.ADC_array[7];
 
 // MAX11 ADC2
-	js_ch_observable[JSO_MAX11_ADC2_CH1] = &data->aa.A3_Max11_ADC2.me.ADC_array[0];
-	js_ch_observable[JSO_MAX11_ADC2_CH2] = &data->aa.A3_Max11_ADC2.me.ADC_array[1];
-	js_ch_observable[JSO_MAX11_ADC2_CH3] = &data->aa.A3_Max11_ADC2.me.ADC_array[2];
-	js_ch_observable[JSO_MAX11_ADC2_CH4] = &data->aa.A3_Max11_ADC2.me.ADC_array[3];
-	js_ch_observable[JSO_MAX11_ADC2_CH5] = &data->aa.A3_Max11_ADC2.me.ADC_array[4];
-	js_ch_observable[JSO_MAX11_ADC2_CH6] = &data->aa.A3_Max11_ADC2.me.ADC_array[5];
-	js_ch_observable[JSO_MAX11_ADC2_CH7] = &data->aa.A3_Max11_ADC2.me.ADC_array[6];
-	js_ch_observable[JSO_MAX11_ADC2_CH8] = &data->aa.A3_Max11_ADC2.me.ADC_array[7];
+	js_ch_observable[JSO_MAX11_ADC2_CH1] = &data->aa.A3.me.ADC_array[8];
+	js_ch_observable[JSO_MAX11_ADC2_CH2] = &data->aa.A3.me.ADC_array[9];
+	js_ch_observable[JSO_MAX11_ADC2_CH3] = &data->aa.A3.me.ADC_array[10];
+	js_ch_observable[JSO_MAX11_ADC2_CH4] = &data->aa.A3.me.ADC_array[11];
+	js_ch_observable[JSO_MAX11_ADC2_CH5] = &data->aa.A3.me.ADC_array[12];
+	js_ch_observable[JSO_MAX11_ADC2_CH6] = &data->aa.A3.me.ADC_array[13];
+	js_ch_observable[JSO_MAX11_ADC2_CH7] = &data->aa.A3.me.ADC_array[14];
+	js_ch_observable[JSO_MAX11_ADC2_CH8] = &data->aa.A3.me.ADC_array[15];
 
 // MAX11 ADC3
-	js_ch_observable[JSO_MAX11_ADC3_CH1] = &data->aa.A3_Max11_ADC3.me.ADC_array[0];
-	js_ch_observable[JSO_MAX11_ADC3_CH2] = &data->aa.A3_Max11_ADC3.me.ADC_array[1];
-	js_ch_observable[JSO_MAX11_ADC3_CH3] = &data->aa.A3_Max11_ADC3.me.ADC_array[2];
-	js_ch_observable[JSO_MAX11_ADC3_CH4] = &data->aa.A3_Max11_ADC3.me.ADC_array[3];
-	js_ch_observable[JSO_MAX11_ADC3_CH5] = &data->aa.A3_Max11_ADC3.me.ADC_array[4];
-	js_ch_observable[JSO_MAX11_ADC3_CH6] = &data->aa.A3_Max11_ADC3.me.ADC_array[5];
-	js_ch_observable[JSO_MAX11_ADC3_CH7] = &data->aa.A3_Max11_ADC3.me.ADC_array[6];
-	js_ch_observable[JSO_MAX11_ADC3_CH8] = &data->aa.A3_Max11_ADC3.me.ADC_array[7];
+	js_ch_observable[JSO_MAX11_ADC3_CH1] = &data->aa.A3.me.ADC_array[16];
+	js_ch_observable[JSO_MAX11_ADC3_CH2] = &data->aa.A3.me.ADC_array[17];
+	js_ch_observable[JSO_MAX11_ADC3_CH3] = &data->aa.A3.me.ADC_array[18];
+	js_ch_observable[JSO_MAX11_ADC3_CH4] = &data->aa.A3.me.ADC_array[19];
+	js_ch_observable[JSO_MAX11_ADC3_CH5] = &data->aa.A3.me.ADC_array[20];
+	js_ch_observable[JSO_MAX11_ADC3_CH6] = &data->aa.A3.me.ADC_array[21];
+	js_ch_observable[JSO_MAX11_ADC3_CH7] = &data->aa.A3.me.ADC_array[22];
+	js_ch_observable[JSO_MAX11_ADC3_CH8] = &data->aa.A3.me.ADC_array[23];
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

@@ -42,12 +42,75 @@ typedef struct _ADCcard_ {
 	Measurements		me;
 } ADCcard;
 
+typedef union _ConversionFactorsSlow_ {
+	struct{
+		float ADC_A1;
+		float ADC_A2;
+		float ADC_A3;
+		float ADC_A4;
+		float ADC_B5;
+		float ADC_B6;
+		float ADC_B7;
+		float ADC_B8;
+		float ADC_C9;
+		float ADC_C10;
+		float ADC_C11;
+		float ADC_C12;
+		float ADC_D13;
+		float ADC_D14;
+		float ADC_D15;
+		float ADC_D16;
+		float ADC_E17;
+		float ADC_E18;
+		float ADC_E19;
+		float ADC_E20;
+		float ADC_F21;
+		float ADC_F22;
+		float ADC_F23;
+		float ADC_F24;
+		};
+	float ADC_array[24];
+} ConversionFactorsSlow;
+
+typedef union _MeasurementsSlow_ {
+	struct{
+		float ADC_A1;
+		float ADC_A2;
+		float ADC_A3;
+		float ADC_A4;
+		float ADC_B5;
+		float ADC_B6;
+		float ADC_B7;
+		float ADC_B8;
+		float ADC_C9;
+		float ADC_C10;
+		float ADC_C11;
+		float ADC_C12;
+		float ADC_D13;
+		float ADC_D14;
+		float ADC_D15;
+		float ADC_D16;
+		float ADC_E17;
+		float ADC_E18;
+		float ADC_E19;
+		float ADC_E20;
+		float ADC_F21;
+		float ADC_F22;
+		float ADC_F23;
+		float ADC_F24;
+		};
+	float ADC_array[24];
+} MeasurementsSlow;
+
+typedef struct _ADCcardSlow_ {
+	ConversionFactorsSlow 	cf;
+	MeasurementsSlow		me;
+} ADCcardSlow;
+
 typedef struct _AnalogAdapters_ {
 	ADCcard A1;
 	ADCcard A2;
-	ADCcard A3;
-	ADCcard A3_Max11_ADC2;
-	ADCcard A3_Max11_ADC3;
+	ADCcardSlow A3;
 } AnalogAdapters;
 
 typedef struct _actualValues_ {

@@ -33,7 +33,7 @@ entity ADC_MAX11331_top is
 		new_data 						: out STD_LOGIC;
 		error 							: out STD_LOGIC;
         delay_offset_out                : out STD_LOGIC_VECTOR(15 DOWNTO 0);
-        clk_division_out                : out STD_LOGIC_VECTOR (3 downto 0);
+        clk_division_out                : out STD_LOGIC_VECTOR (7 downto 0);
         adc_selector_out                : out STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1);
 		raw_measured_data     			: out STD_LOGIC_VECTOR(NUMBER_OF_ADCS * C_NUM_CHANNELS * OUTPUT_WORD_WIDTH -1 downto 0);
 		ch0	: out STD_LOGIC_VECTOR (OUTPUT_WORD_WIDTH-1 downto 0);
@@ -96,7 +96,7 @@ architecture arch_imp of ADC_MAX11331_top is
 		meas_done 					: in STD_LOGIC;
 		error 						: in STD_LOGIC;		
 		error_counter				: in STD_LOGIC_VECTOR (31 downto 0);
-		clk_division 				: out STD_LOGIC_VECTOR(3 DOWNTO 0);          --system clock cycles per 1/2 period of sclk	
+		clk_division 				: out STD_LOGIC_VECTOR(7 DOWNTO 0);          --system clock cycles per 1/2 period of sclk	
 		
 		data_echo_bipolar_1			: in STD_LOGIC_VECTOR (15 downto 0);
 		data_echo_bipolar_2			: in STD_LOGIC_VECTOR (15 downto 0);
@@ -150,7 +150,7 @@ architecture arch_imp of ADC_MAX11331_top is
 		clk 								: in STD_LOGIC;
 		reset_n 							: in STD_LOGIC;
 		enable_measure 				        : in STD_LOGIC;
-		clk_division : IN 	STD_LOGIC_VECTOR(3 DOWNTO 0);          --system clock cycles per 1/2 period of sclk				
+		clk_division : IN 	STD_LOGIC_VECTOR(7 DOWNTO 0);          --system clock cycles per 1/2 period of sclk				
 		sclk 								: out STD_LOGIC;
 		mosi 								: out STD_LOGIC;
 		miso 								: in STD_LOGIC_VECTOR (NUMBER_OF_ADCS-1 downto 0);
@@ -216,9 +216,9 @@ architecture arch_imp of ADC_MAX11331_top is
 	signal all_differential_channels : t_matrix_message(NUMBER_OF_ADCS downto 1, C_NUM_CHANNELS-1 downto 0) := (others=> (others => (others => '0')));
 	signal all_single_ended_channels : t_matrix_message(NUMBER_OF_ADCS downto 1, C_NUM_CHANNELS-1 downto 0) := (others=> (others => (others => '0')));
 
-	signal	clk_division_spi		:	STD_LOGIC_VECTOR (3 downto 0) := (others=>'0'); 
-	signal	clk_division_AXI		:	STD_LOGIC_VECTOR (3 downto 0) := (others=>'0'); 
-	constant clk_division_debug     :	STD_LOGIC_VECTOR (3 downto 0) := "0010";
+	signal	clk_division_spi		:	STD_LOGIC_VECTOR (7 downto 0) := (others=>'0'); 
+	signal	clk_division_AXI		:	STD_LOGIC_VECTOR (7 downto 0) := (others=>'0'); 
+	constant clk_division_debug     :	STD_LOGIC_VECTOR (7 downto 0) := "00000010";
 
 	signal	adc_selector_spi		:	STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1) := (others=>'0'); 
 	signal	adc_selector_AXI		:	STD_LOGIC_VECTOR (NUMBER_OF_ADCS downto 1) := (others=>'0'); 

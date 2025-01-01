@@ -28,6 +28,7 @@
 #include "uz/uz_global_configuration.h"
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L_staticAllocator.h"
 #include "include/uz_adcLtc2311_ip_core_init.h"
+#include "include/uz_adcMax11331_ip_core_init.h"
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
 

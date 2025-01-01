@@ -3890,6 +3890,9 @@
                 "xci_path": "ip\\zusys_xlconcat_0_2\\zusys_xlconcat_0_2.xci",
                 "inst_hier_path": "uz_system/DataMover/xlconcat_0",
                 "parameters": {
+                  "IN0_WIDTH": {
+                    "value": "128"
+                  },
                   "NUM_PORTS": {
                     "value": "3"
                   }
@@ -3908,7 +3911,8 @@
               "ADC_A1_1": {
                 "ports": [
                   "ADC_A1",
-                  "xlconcat_0/In0"
+                  "xlconcat_0/In0",
+                  "system_ila_0/probe0"
                 ]
               },
               "ADC_A2_1": {
@@ -3921,13 +3925,6 @@
                 "ports": [
                   "ADC_A3",
                   "xlconcat_0/In2"
-                ]
-              },
-              "ADCs_ADC_values_raw": {
-                "ports": [
-                  "xlconcat_0/dout",
-                  "AXI2TCM_0/DATA_IN",
-                  "system_ila_0/probe0"
                 ]
               },
               "AXI2TCM_0_axi_error": {
@@ -3967,6 +3964,12 @@
                 "ports": [
                   "m00_axi_aresetn",
                   "AXI2TCM_0/m00_axi_aresetn"
+                ]
+              },
+              "xlconcat_0_dout": {
+                "ports": [
+                  "xlconcat_0/dout",
+                  "AXI2TCM_0/DATA_IN"
                 ]
               },
               "zynq_ultra_ps_e_0_pl_clk1": {

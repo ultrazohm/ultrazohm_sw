@@ -3890,9 +3890,6 @@
                 "xci_path": "ip\\zusys_xlconcat_0_2\\zusys_xlconcat_0_2.xci",
                 "inst_hier_path": "uz_system/DataMover/xlconcat_0",
                 "parameters": {
-                  "IN0_WIDTH": {
-                    "value": "128"
-                  },
                   "NUM_PORTS": {
                     "value": "3"
                   }

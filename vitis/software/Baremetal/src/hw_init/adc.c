@@ -48,7 +48,8 @@ void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
 {
 
 	if (UZ_MAX11_INPUT_CONFIGURATION == 2U){
-		//Max11 reads 12Bits in Fully Diff.-Mode Bipolar
+		//Max11 reads 12Bits in Fully Diff.-Mode Bipolar (2nd Complement), see p.28 of MAX11 ADC datasheet.
+		//Explanation see also: https://bitbucket.org/ultrazohm/uz_a_max11331/issues/2/first-commissioning-of-pcb
 		data->aa.A3.me.ADC_array[0] = (float)((int16_t)(adc_data.data[16] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A1;
 		data->aa.A3.me.ADC_array[1] = (float)((int16_t)(adc_data.data[17] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A2;
 		data->aa.A3.me.ADC_array[2] = (float)((int16_t)(adc_data.data[18] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A3;

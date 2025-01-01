@@ -26,6 +26,14 @@
 #define INTERRUPT_ISR_SOURCE_USER_CHOICE        1U
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
+/** MAX11 ADC input configuration
+ *
+ * chose here which of the analog input configuration your hardware is using:
+ * 1 for Single-ended (default at MicroZohm)
+ * 2 for Fully-differential (default at UltraZohm)
+*/
+#define UZ_MAX11_INPUT_CONFIGURATION	        2U
+
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
 #define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
 #define UZ_PWM_FREQUENCY                        10.0e3f
@@ -34,6 +42,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
+#define UZ_ADCMAX11331_MAX_INSTANCES					3U
 #define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
@@ -79,6 +88,7 @@
     #define UZ_MYIP2_MAX_INSTANCES                          5U
     #define UZ_MYIP_MAX_INSTANCES                           5U
     #define UZ_ADCLTC2311_MAX_INSTANCES                     50U
+    #define UZ_ADCMAX11331_MAX_INSTANCES					3U
     #define UZ_PI_CONTROLLER_MAX_INSTANCES                  100U
     #define UZ_CURRENTCONTROL_MAX_INSTANCES                 100U
     #define UZ_INCREMENTALENCODER_MAX_INSTANCES             20U

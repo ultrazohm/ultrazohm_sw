@@ -187,13 +187,21 @@ uz_adcMax11331_t* uz_adcMax11331_init(struct uz_adcMax11331_config_t config);
  */
 void uz_adcMax11331_set_clk_div(uz_adcMax11331_t* self, uint32_t value);
 
+/**
+ * @brief Asserts that not to many MSBs are set and that the value fits in the config register.
+ *
+ * @param self Pointer to driver instance
+ * @param value Offset defined in number of clock cycles. It defines the delay between channel sampling. As more cycles, as longer the ADC waits until the next channel is sampled.
+ */
 void uz_adcMax11331_set_delay_offset(uz_adcMax11331_t* self, uint32_t value);
 
 // get functions
+uint32_t uz_adcMax11331_get_base_address(uz_adcMax11331_t *self);
 uint32_t uz_adcMax11331_get_error_code(uz_adcMax11331_t* self);
 
 // SPI parameters
 uint32_t uz_adcMax11331_get_clk_div(uz_adcMax11331_t* self);
+uint32_t uz_adcMax11331_get_delay_offset(uz_adcMax11331_t *self);
 
 // Echo messages
 /**

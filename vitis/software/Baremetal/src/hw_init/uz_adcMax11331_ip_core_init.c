@@ -33,7 +33,7 @@ void uz_adcMax11331_ip_core_init(void)
         .adc_delay_offset = 0,
 		.clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ};
 
-	//1.) Create the instance of the first Max11331 adapter board with one or may several master = several physical Max11331 chips
+	//1.) Create the instance of the first Max11331 adapter card with one or may several master = several physical Max11331 chips
     uz_adcMax11331_t *instance_1 = uz_adcMax11331_init(default_configuration);
 
     // Apply same configuration to all following instances, despite the base address of the FPGA IP Core

@@ -73,6 +73,13 @@ void uz_adcMax11331_set_delay_offset(uz_adcMax11331_t *self, uint32_t value)
 }
 
 
+uint32_t uz_adcMax11331_get_base_address(uz_adcMax11331_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (self->config.base_address);
+}
+
 uint32_t uz_adcMax11331_get_error_code(uz_adcMax11331_t *self)
 {
     uz_assert_not_NULL(self);
@@ -85,6 +92,13 @@ uint32_t uz_adcMax11331_get_clk_div(uz_adcMax11331_t *self)
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return (self->config.clk_div);
+}
+
+uint32_t uz_adcMax11331_get_delay_offset(uz_adcMax11331_t *self)
+{
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (self->config.adc_delay_offset);
 }
 
 

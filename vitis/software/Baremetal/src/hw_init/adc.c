@@ -48,9 +48,7 @@ void ADC_readCardA3(DS_Data *data, uz_array_int16_t adc_data)
 {
 
 	if (UZ_MAX11_INPUT_CONFIGURATION == 2U){
-		//Max11 reads 12Bits in Fully Diff.-Mode Bipolar (2’s Complement), see p.28 of datasheet: -5..0..+5V, which equals 2049..4096/0..2048, where -5V=2049, -0V=4096, +0V=0 and +5V=2048.
-		//Changing 2's compl. into integer by: d = -((int)(~(int8_t)d) + 1); -> simplified into: d = (int8_t)d; from "https://stackoverflow.com/questions/72243861/converting-sensor-data-twos-complement-to-signed-integer"
-		//Explanation see also: https://bitbucket.org/ultrazohm/uz_a_max11331/issues/2/first-commissioning-of-pcb
+		//Max11 reads 12Bits in Fully Diff.-Mode Bipolar
 		data->aa.A3.me.ADC_array[0] = (float)((int16_t)(adc_data.data[16] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A1;
 		data->aa.A3.me.ADC_array[1] = (float)((int16_t)(adc_data.data[17] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A2;
 		data->aa.A3.me.ADC_array[2] = (float)((int16_t)(adc_data.data[18] << Q4))/ (1 << Q15) * data->aa.A3.cf.ADC_A3;

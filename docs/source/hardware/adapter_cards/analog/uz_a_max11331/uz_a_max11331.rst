@@ -15,34 +15,6 @@ Features
 * Usage of up to three cards possible
 * `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
 
-Revisions
----------
-
-..  toctree::
-   :maxdepth: 1
-   
-   UZ_A_MAX11331 Rev01
-   UZ_A_MAX11331 Rev02
-
-The remainder of this page summarizes the analog input connector and measurement modes which are identical for all revisions of this PCB. 
-
-
-Pinout of Analog Connector 
---------------------------
-
-The pairs of the RJ45 ethernet connector map to the ADCs as follows:
-
-=========      ==========================    ==========================
-Connected                         Pin on RJ45                           
----------      --------------------------------------------------------
- ADC              :math:`V_\mathrm{in,p}`       :math:`V_\mathrm{in,n}`
-=========      ==========================    ==========================
-ADC 1           1                                2                     
-ADC 2           3                                6                     
-ADC 3           4                                5                     
-ADC 4           7                                8                     
-=========      ==========================    ==========================
-
 
 References
 ----------

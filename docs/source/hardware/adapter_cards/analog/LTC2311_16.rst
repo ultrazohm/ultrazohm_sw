@@ -34,7 +34,7 @@ The remainder of this page summarizes the analog input connector and measurement
 Pinout of Analog Connector 
 --------------------------
 
-The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`rj45pinout`.   Moreover, the pinout is flipped compared to the MAX11 analog card.
+The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`rj45pinout`.
 
 .. _rj45pinout:
 

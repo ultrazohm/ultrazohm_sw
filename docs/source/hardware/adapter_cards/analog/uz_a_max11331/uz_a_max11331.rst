@@ -18,8 +18,9 @@ Features
 Revisions
 ---------
 
-..  toctree::
-   :maxdepth: 2
+.. toctree::
+   :maxdepth: 1
+   :caption: Revisions
    
    UZ_A_MAX11331 Rev01
    UZ_A_MAX11331 Rev02

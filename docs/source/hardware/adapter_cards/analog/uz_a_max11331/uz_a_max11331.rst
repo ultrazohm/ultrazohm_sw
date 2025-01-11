@@ -8,7 +8,7 @@ Features
 * Measurement of 24 differential signals
 * Sampling rate per channel up to 1 MSPS 
 * Sampling rate to get all 24 channels sampled of up to 125 kSPS (three MAX11 chips work in parallel, while each of them individually samples 8 channels via multiplexer)
-* Resolution of 12 bit
+* Resolution of 12 bit [MAX11331_productpage]_
 * Input range is +-5V 
 * ADC `MAX11331-12 <https://www.analog.com/media/en/technical-documentation/data-sheets/MAX11329-MAX11332.pdf>`_
 * ADCs are triggered in groups of 3

@@ -33,12 +33,28 @@ The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`
 
    Pinout of the ADC ethernet port.
 
+.. note::
+
+   Note that :numref:`rj45MAXpinout` shows an ethernet cable according to **T568B**!
+
+
 We provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
 
 .. image:: adc_breakout_PN_MAX11.png
    :width: 400
 
 The pairs of the RJ45 ethernet connector map to the ADCs as follows:
+
+=========      ==========================    ==========================
+Connected                         Pin on RJ45                           
+---------      --------------------------------------------------------
+ ADC              :math:`V_\mathrm{in,p}`       :math:`V_\mathrm{in,n}`
+=========      ==========================    ==========================
+ADC 1           1                                2                     
+ADC 2           3                                6                     
+ADC 3           4                                5                     
+ADC 4           7                                8                     
+=========      ==========================    ==========================
 
 
 References

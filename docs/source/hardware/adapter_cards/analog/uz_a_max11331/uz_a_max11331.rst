@@ -18,6 +18,12 @@ Features
 Revisions
 ---------
 
+..  toctree::
+   :maxdepth: 2
+   
+   UZ_A_MAX11331 Rev01
+   UZ_A_MAX11331 Rev02
+
 The remainder of this page summarizes the analog input connector and measurement modes which are identical for all revisions of this PCB. 
 
 

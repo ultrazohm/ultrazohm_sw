@@ -15,6 +15,31 @@ Features
 * Usage of up to three cards possible
 * `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
 
+Revisions
+---------
+
+The remainder of this page summarizes the analog input connector and measurement modes which are identical for all revisions of this PCB. 
+
+
+Pinout of Analog Connector 
+--------------------------
+
+The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`rj45MAXpinout`. Moreover, the pinout is flipped compared to the LTC2311 analog card.
+
+.. _rj45MAXpinout:
+
+.. figure:: rj45_pinout_MAX11.png
+   :width: 700
+
+   Pinout of the ADC ethernet port.
+
+We provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
+
+.. image:: adc_breakout_PN_MAX11.png
+   :width: 400
+
+The pairs of the RJ45 ethernet connector map to the ADCs as follows:
+
 
 References
 ----------

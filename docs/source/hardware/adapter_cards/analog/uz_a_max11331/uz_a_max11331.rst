@@ -18,15 +18,11 @@ Features
 Revisions
 ---------
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Revisions
-   
-   UZ_A_MAX11331 Rev01
-   UZ_A_MAX11331 Rev02
+* UZ_A_MAX11331 Rev02
 
 The remainder of this page summarizes the analog input connector and measurement modes which are identical for all revisions of this PCB. 
 
+.. _Analog_max11331_pinout:
 
 Pinout of Analog Connector 
 --------------------------
@@ -64,10 +60,52 @@ ADC 4           7                                8
 =========      ==========================    ==========================
 
 
+.. _Analog_max11331_meas_modes:
+
+Measurement modes
+-----------------
+
+There are three ways to measure an analog signal with this adapter card
+
+* Single-ended with reference to ground potential (Unipolar)
+* Fully differential (Unipolar) 
+* Fully differential (Bipolar)
+
+.. figure::  measurement_variants.png
+   :width: 250
+
+   Different input voltage forms for measurement [MAX11331_datasheet]_
+
+In all cases, the input range is **+-5V** while the maximum delta is 5V.
+
+1. Single-ended with reference to ground potential (Unipolar) measurement
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+The negative input In_N is set to ground which is preferably transferred over the same cable as the measurement signal In_P.
+
+
+2. Fully differential (Bipolar) measurement
+"""""""""""""""""""""""""""""""""""""""""""
+
+In_P and In_N are fully differential signals, meaning they inverted signals with a common-mode offset of 2.5V e.g. 
+
+* For 0V input voltage, both In_P and In_N are 2.5V
+* For +1V input voltage, In_P is 3V and In_N is 2V
+* For -3V input voltage, In_P is 1V and In_N is 4V 
+
+.. figure:: differential_signal.png
+   :width: 500
+
+   Fully differential measurement input [MAX11331_datasheet]_
+
+This will yield the highest signal-to-noise ratio (SNR) even when using longer cables. 
+
+
 References
 ----------
 
 * :download:`Assembly drawing <ASM_UZ_A_MAX11331_Differential_Input_Rev01.pdf>`
 * :download:`Schematic <SCH_UZ_A_MAX11331_Differential_Input_Rev01-1.pdf>`
-* ADC `MAX11331-12 <https://www.analog.com/media/en/technical-documentation/data-sheets/MAX11329-MAX11332.pdf>`_
-* Product page of MAX11331: https://www.analog.com/en/products/max11331.html
+
+.. [MAX11331_productpage] `Product page MAX11331-12 <https://www.analog.com/en/products/max11331.html>`_
+.. [MAX11331_datasheet] `Data sheet ADC MAX11331-12 <https://www.analog.com/media/en/technical-documentation/data-sheets/MAX11329-MAX11332.pdf>`_

@@ -25,11 +25,10 @@ void uz_adcMax11331_ip_core_init(void)
                 .fractional_bits = DEFAULT_MAX11331_FRACTIONAL_BITS},
             .offset = DEFAULT_MAX11331_OFFSET,
         },
-        .trigger_mode=continuous_trigger,
+        .trigger_mode=pl_trigger,
         .cpol = 1U,
         .cpha = 1U,
-        .master_select = UZ_ADCMAX11331_MASTER1,
-        .channel_select = UZ_ADCMAX11331_CH1 | UZ_ADCMAX11331_CH2 | UZ_ADCMAX11331_CH3 | UZ_ADCMAX11331_CH4 | UZ_ADCMAX11331_CH5 | UZ_ADCMAX11331_CH6 | UZ_ADCMAX11331_CH7 | UZ_ADCMAX11331_CH8 | UZ_ADCMAX11331_CH9 | UZ_ADCMAX11331_CH10 | UZ_ADCMAX11331_CH11 | UZ_ADCMAX11331_CH12 | UZ_ADCMAX11331_CH13 | UZ_ADCMAX11331_CH14 | UZ_ADCMAX11331_CH15 | UZ_ADCMAX11331_CH16,
+        .master_select = UZ_ADCMAX11331_MASTER1 | UZ_ADCMAX11331_MASTER2  | UZ_ADCMAX11331_MASTER3,
         .adc_delay_offset = 0,
 		.clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ};
 

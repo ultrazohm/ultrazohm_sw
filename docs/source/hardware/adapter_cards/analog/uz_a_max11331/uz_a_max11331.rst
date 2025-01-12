@@ -49,7 +49,7 @@ The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`
    Note that :numref:`rj45MAXpinout` shows an ethernet cable according to **T568B**!
 
 
-We provide a breakout board :ref:`RJ45_Breakout_Board` for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
+We provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
 
 .. image:: adc_breakout_PN_MAX11.png
    :width: 400

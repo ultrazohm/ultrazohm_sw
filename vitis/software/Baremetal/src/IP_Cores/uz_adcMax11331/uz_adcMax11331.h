@@ -6,73 +6,10 @@
 
 // #defines
 
-// SPI channel defintions
-#define UZ_ADCMAX11331_CH1  (1U<<0)
-#define UZ_ADCMAX11331_CH2  (1U<<1)
-#define UZ_ADCMAX11331_CH3  (1U<<2)
-#define UZ_ADCMAX11331_CH4  (1U<<3)
-#define UZ_ADCMAX11331_CH5  (1U<<4)
-#define UZ_ADCMAX11331_CH6  (1U<<5)
-#define UZ_ADCMAX11331_CH7  (1U<<6)
-#define UZ_ADCMAX11331_CH8  (1U<<7)
-#define UZ_ADCMAX11331_CH9  (1U<<8)
-#define UZ_ADCMAX11331_CH10 (1U<<9)
-#define UZ_ADCMAX11331_CH11 (1U<<10)
-#define UZ_ADCMAX11331_CH12 (1U<<11)
-#define UZ_ADCMAX11331_CH13 (1U<<12)
-#define UZ_ADCMAX11331_CH14 (1U<<13)
-#define UZ_ADCMAX11331_CH15 (1U<<14)
-#define UZ_ADCMAX11331_CH16 (1U<<15)
-#define UZ_ADCMAX11331_CH17 (1U<<16)
-#define UZ_ADCMAX11331_CH18 (1U<<17)
-#define UZ_ADCMAX11331_CH19 (1U<<18)
-#define UZ_ADCMAX11331_CH20 (1U<<19)
-#define UZ_ADCMAX11331_CH21 (1U<<20)
-#define UZ_ADCMAX11331_CH22 (1U<<21)
-#define UZ_ADCMAX11331_CH23 (1U<<22)
-#define UZ_ADCMAX11331_CH24 (1U<<23)
-#define UZ_ADCMAX11331_CH25 (1U<<24)
-#define UZ_ADCMAX11331_CH26 (1U<<25)
-#define UZ_ADCMAX11331_CH27 (1U<<26)
-#define UZ_ADCMAX11331_CH28 (1U<<27)
-#define UZ_ADCMAX11331_CH29 (1U<<28)
-#define UZ_ADCMAX11331_CH30 (1U<<29)
-#define UZ_ADCMAX11331_CH31 (1U<<30)
-#define UZ_ADCMAX11331_CH32 (1U<<31)
-
 // SPI master definitions
 #define UZ_ADCMAX11331_MASTER1  (1U<<0)
 #define UZ_ADCMAX11331_MASTER2  (1U<<1)
 #define UZ_ADCMAX11331_MASTER3  (1U<<2)
-#define UZ_ADCMAX11331_MASTER4  (1U<<3)
-#define UZ_ADCMAX11331_MASTER5  (1U<<4)
-#define UZ_ADCMAX11331_MASTER6  (1U<<5)
-#define UZ_ADCMAX11331_MASTER7  (1U<<6)
-#define UZ_ADCMAX11331_MASTER8  (1U<<7)
-#define UZ_ADCMAX11331_MASTER9  (1U<<8)
-#define UZ_ADCMAX11331_MASTER10 (1U<<9)
-#define UZ_ADCMAX11331_MASTER11 (1U<<10)
-#define UZ_ADCMAX11331_MASTER12 (1U<<11)
-#define UZ_ADCMAX11331_MASTER13 (1U<<12)
-#define UZ_ADCMAX11331_MASTER14 (1U<<13)
-#define UZ_ADCMAX11331_MASTER15 (1U<<14)
-#define UZ_ADCMAX11331_MASTER16 (1U<<15)
-#define UZ_ADCMAX11331_MASTER17 (1U<<16)
-#define UZ_ADCMAX11331_MASTER18 (1U<<17)
-#define UZ_ADCMAX11331_MASTER19 (1U<<18)
-#define UZ_ADCMAX11331_MASTER20 (1U<<19)
-#define UZ_ADCMAX11331_MASTER21 (1U<<20)
-#define UZ_ADCMAX11331_MASTER22 (1U<<21)
-#define UZ_ADCMAX11331_MASTER23 (1U<<22)
-#define UZ_ADCMAX11331_MASTER24 (1U<<23)
-#define UZ_ADCMAX11331_MASTER25 (1U<<24)
-#define UZ_ADCMAX11331_MASTER26 (1U<<25)
-#define UZ_ADCMAX11331_MASTER27 (1U<<26)
-#define UZ_ADCMAX11331_MASTER28 (1U<<27)
-#define UZ_ADCMAX11331_MASTER29 (1U<<28)
-#define UZ_ADCMAX11331_MASTER30 (1U<<29)
-#define UZ_ADCMAX11331_MASTER31 (1U<<30)
-#define UZ_ADCMAX11331_MASTER32 (1U<<31)
 
 // control register
 #define UZ_ADCMAX11331_CR_MODE (1U<<0)
@@ -117,7 +54,7 @@ typedef struct uz_adcMax11331_t uz_adcMax11331_t;
  *
  */
 enum uz_adcMax11331_trigger_mode{
-    pl_trigger=0, /**< Conversion is only triggered by IP-Core PL port -> toDO: This is not implemented so far! */
+    pl_trigger=0, /**< Conversion is only triggered by IP-Core PL port */
     continuous_trigger, /**< Conversion is triggered continuously with the maximum frequency -> this is the default mode */
 };
 
@@ -140,8 +77,7 @@ struct uz_adcMax11331_config_t{
     uint32_t ip_clk_frequency_Hz; /**< Clock frequency of the IP-Core. No get or set function available */
 
     /* Operation parameter */
-    uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured. This corresponds to the physical chip. 1 is the first chip, 2 the second chip, ... The original UZ adapter board from Chile has e.g. 6 chips. */
-	uint32_t channel_select; /**< One hot encoded variable to select the channels of the selected SPI masters shall be configured. In case of MAX11331, there are 16 channels in case of single-ended and 8 channels in case of differential mode. */
+    uint32_t master_select; /**< One hot encoded variable to select the SPI masters that shall be configured. This corresponds to the physical ADC chip. 1 is the first chip, 2 the second chip, ... The original UZ adapter board has e.g. 3 ADC chips The board from Chile has e.g. 6 ADC chips. */
 	enum uz_adcMax11331_trigger_mode trigger_mode;
 	uint32_t adc_delay_offset; /**< Offset defined in number of clock cycles. It defines the delay between channel sampling. As more cycles, as longer the ADC waits until the next channel is sampled.*/
 

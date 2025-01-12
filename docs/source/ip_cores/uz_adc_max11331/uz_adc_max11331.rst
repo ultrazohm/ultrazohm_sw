@@ -7,10 +7,10 @@ ADC MAX11331 V1
 Introduction
 ============
 
-The IP core ADC_MAX11331 in version 1 is designed to read the ADCs which are located on the :ref:`analog adapter board <Analog_MAX1131_12>` and to further process the values obtained from the ADCs.
+The IP core ADC_MAX11331 in version 1 is designed to read the ADCs which are located on the Analog_MAX1131_12 board and to further process the values obtained from the ADCs.
 The IP core features an AXI4 Lite interface for settings and software control.
 The conversion can be triggered by using the hardware port ``enable_measure`` for real-time control.
-The IP core ADC_MAX11331---in contrast to the :ref:`LTC2311 IP core <ipCore_LTC2311_v3>`---does not process the raw value further (offset and conversion factor) to an SI value, instead it only provides the RAW value ``raw_measured_data``
+The IP core ADC_MAX11331 does not process the raw value further (offset and conversion factor) to an SI value, instead it only provides the RAW value ``raw_measured_data``.
 The raw value from the ADC is a ``std_logic_vector`` at the hardware interface of the IP core.
 
 Features
@@ -204,7 +204,3 @@ Further information
 
 - The state machine inside the IP-Core does not have a graph, however is easy to follow reading the VHDL code of the IP-Core. 
 
-Designed by 
-"""""""""""
-
-Eyke Aufderheide (TUM), ASebastian Wendel (ZC) in 11/2024

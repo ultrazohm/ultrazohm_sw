@@ -63,31 +63,67 @@ Table :ref:`ipCore_adc_max11331_interfaces` lists all input and output ports (AX
 Vitis
 =====
 
-Initialize one driver instance and write the two configurations:
+The test bench function below displays an example of how to configure and use the IP core.
+In this example the hardware trigger in the FPGA is used but instead the continuous sampling can be used as well.
+
+The following settings are set globally for each IP-Core instance and are valid for all three masters (all three ADC chips on one adapter board):
+
+- base_address
+- ip_clk_frequency_Hz
+- trigger mode (either PL triggered or continuous sampling)
+- cpha
+- cpol
+- adc_delay_offset
+- clk_div
+
+The following settings are set on a per channel basis within an IP-Core instance:
+
+- conversion_factor
+- offset
+
+Example initialization of three IP-Core driver instances:
 
 .. code-block:: c
+  :caption: Initialization of IP-Core driver instances
 
-   static struct uz_adcMax11331_config_t config={
-        .base_address = XPAR_MAX11_ADC_MAX11331_TOP_0_BASEADDR,
-        .ip_clk_frequency_Hz = XPAR_A1_ADC_MAX11331_IP_CORE_FREQUENCY,
-        .channel_config = {
-            .conversion_factor = DEFAULT_MAX11331_CONVERSION_FACTOR,
-            .conversion_factor_definition = {
-                .is_signed = true,
-                .integer_bits = DEFAULT_MAX11331_INTEGER_BITS,
-                .fractional_bits = DEFAULT_MAX11331_FRACTIONAL_BITS},
-            .offset = DEFAULT_MAX11331_OFFSET,
-        },
-        .trigger_mode=continuous_trigger,
-        .cpol = 1U,
-        .cpha = 1U,
-        .master_select = UZ_ADCMAX11331_MASTER1,
-        .channel_select = UZ_ADCMAX11331_CH1 | UZ_ADCMAX11331_CH2 | UZ_ADCMAX11331_CH3 | UZ_ADCMAX11331_CH4 | UZ_ADCMAX11331_CH5 | UZ_ADCMAX11331_CH6 | UZ_ADCMAX11331_CH7 | UZ_ADCMAX11331_CH8 | UZ_ADCMAX11331_CH9 | UZ_ADCMAX11331_CH10 | UZ_ADCMAX11331_CH11 | UZ_ADCMAX11331_CH12 | UZ_ADCMAX11331_CH13 | UZ_ADCMAX11331_CH14 | UZ_ADCMAX11331_CH15 | UZ_ADCMAX11331_CH16,
-        .clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ
-   };
+   #define XPAR_A3_ADC_MAX11331_IP_CORE_FREQUENCY 100000000U
+   #define DEFAULT_MAX11331_CONVERSION_FACTOR 1.0f
+   #define DEFAULT_MAX11331_INTEGER_BITS 14
+   #define DEFAULT_MAX11331_FRACTIONAL_BITS 4
+   #define DEFAULT_MAX11331_OFFSET 0
 
-   uz_adcMax11331_t *instance_1 = uz_adcMax11331_init(config);
-   struct uz_dq_t currents = uz_dqIPcore_get_id_iq(test_instance);
+   void uz_adcMax11331_ip_core_init(void)
+   {
+       //Parameter set for one MAX11331 chip, thus one master
+       struct uz_adcMax11331_config_t default_configuration = {
+           .base_address = XPAR_UZ_ANALOG_ADAPTER_A3_ADAPTER_ADC_MAX11331_A3_BASEADDR,
+           .ip_clk_frequency_Hz = XPAR_A3_ADC_MAX11331_IP_CORE_FREQUENCY,
+           .channel_config = {
+               .conversion_factor = DEFAULT_MAX11331_CONVERSION_FACTOR,
+               .conversion_factor_definition = {
+                   .is_signed = true,
+                   .integer_bits = DEFAULT_MAX11331_INTEGER_BITS,
+                   .fractional_bits = DEFAULT_MAX11331_FRACTIONAL_BITS},
+               .offset = DEFAULT_MAX11331_OFFSET,
+           },
+           .trigger_mode=pl_trigger,
+           .cpol = 1U,
+           .cpha = 1U,
+           .master_select = UZ_ADCMAX11331_MASTER1 | UZ_ADCMAX11331_MASTER2  | UZ_ADCMAX11331_MASTER3,
+           .adc_delay_offset = 0,
+		   .clk_div = UZ_ADCMAX11331_SPI_CLK_16_67MHZ};
+
+	   //1.) Create the instance of the first Max11331 adapter card with one or may several master = several physical Max11331 chips
+       uz_adcMax11331_t *instance_1 = uz_adcMax11331_init(default_configuration);
+
+       // Apply same configuration to all following instances, despite the base address of the FPGA IP Core
+       //2.) Create the instance of the second Max11331 adapter board with one or may several master = several physical Max11331 chips
+       default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A1_ADAPTER_A1_ADC_MAX11331_BASEADDR;
+       uz_adcMax11331_t *instance_2 = uz_adcMax11331_init(default_configuration);
+	   //3.) Create the instance of the third Max11331 adapter board with one or may several master = several physical Max11331 chips
+       default_configuration.base_address = XPAR_UZ_ANALOG_ADAPTER_A2_ADAPTER_A2_ADC_MAX11331_BASEADDR;
+       uz_adcMax11331_t *instance_3 = uz_adcMax11331_init(default_configuration);
+   }
 
 .. warning:: The software driver has no way to read the trigger ADC signal ``enable_measure`` nor the output valid signal ``new_data``! Thus, the user has to be sure that a ADC conversion took place and is finished. This means that the driver can mostly be used for debugging control algorithms that are fully implemented in the PL!
 
@@ -132,32 +168,38 @@ Address offset: 0x04
 Echoed bipolar 12 Register
 **************************
 
-Address offset: 0x08
+- Address offset: 0x08
+- Read: Data sent by ADC connected to MISO, corresponding to echo of bipolar register value 1 and 2
 
 Echoed bipolar 34 Register
 **************************
 
-Address offset: 0x0C
+- Address offset: 0x0C
+- Read: Data sent by ADC connected to MISO, corresponding to echo of bipolar register value 3 and 4
 
 Echoed bipolar 56 Register
 **************************
 
-Address offset: 0x10
+- Address offset: 0x10
+- Read: Data sent by ADC connected to MISO, corresponding to echo of bipolar register value 5 and 6
 
 Echoed unibipolar 12 Register
 *****************************
 
-Address offset: 0x14
+- Address offset: 0x14
+- Read: Data sent by ADC connected to MISO, corresponding to echo of unipolar register value 1 and 2
 
 Echoed unibipolar 34 Register
 *****************************
 
-Address offset: 0x18
+- Address offset: 0x18
+- Read: Data sent by ADC connected to MISO, corresponding to echo of unipolar register value 3 and 4
 
 Echoed unibipolar 56 Register
 *****************************
 
-Address offset: 0x1C
+- Address offset: 0x1C
+- Read: Data sent by ADC connected to MISO, corresponding to echo of unipolar register value 5 and 6
   
 ADC Selector ForceInit Register
 *******************************

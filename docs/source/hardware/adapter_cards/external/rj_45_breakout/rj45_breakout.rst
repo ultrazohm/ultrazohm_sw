@@ -1,3 +1,5 @@
+.. _RJ45_Breakout_Board:
+
 =====================
 RJ45 Breakout Board
 =====================

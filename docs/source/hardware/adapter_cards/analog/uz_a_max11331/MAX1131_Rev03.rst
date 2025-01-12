@@ -8,7 +8,7 @@ Analog MAX1131-12 Rev03
 Filters
 -------
 
-1. The front-end filter is necessary to block the subsequent impedance converter from exceeding the voltage rails due to EMC peaks. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the frond-end first-order low-pass filter is formed by the capacitor
+1. The front-end filter is necessary to protect the subsequent impedance converter from exceeding the voltage rails due to EMC peaks. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the frond-end first-order low-pass filter is formed by the capacitor
 :math:`C_\mathrm{pt1}` and the series resistor :math:`{R_\mathrm{pt1}}` with 
 
 .. math:: 
@@ -37,7 +37,7 @@ Filters
 Adjust measurement gains 
 ------------------------
 
-For all types of measurements, described in :ref:`Analog_max11331_meas_modes`, it is recommended to adjust the gains of the differential operational amplifier to utilize the full input range of the ADC, i.e., :math:`{\pm 3.3}` V. Since the input voltage is :math:`{\pm 5}` V and the ADC voltage :math:`{\pm 3.3}` V, the gain is set to
+For all types of measurements, described in :ref:`Analog_max11331_meas_modes`, it is recommended to adjust the gains of the differential operational amplifier to utilize the full input range of the ADC, i.e., :math:`{\pm 3.3}` V. Since the input voltage is :math:`{\pm 5}` V and the ADC voltage :math:`{\pm 3.3}` V, the gain is set in default to
 
 .. math:: 
 
@@ -70,16 +70,17 @@ Known issues
 ------------
 
 .. warning::
-   * for single-ended, but also fully differential measurements the In_N must be referenced to ground of the UltraZohm
+   * for each :ref:`Analog_max11331_meas_modes`, i.e., single-ended and fully differential, the ground of a possible external ADC power supply must be referenced to the ground of the UltraZohm. Otherwise, the analog front-end may be outside the voltage rails, resulting in offsets in the measured values.
 
 Compatibility 
 -------------
 
-* Slots A1 to A3 can be used without limitations
+* Slots A1 to A3 can be used without limitations. However, slot A3 is used for MAX1131 adapter board in the default UltraZohm software project.
  
 References
 ----------
 
+* `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
 * :download:`LTSpice simulation Rev02 <Rev03/ltspice_MAX11331_Rev02.zip>`
 * IP Core ADC :ref:`ipCore_LTC2311_v3`
 

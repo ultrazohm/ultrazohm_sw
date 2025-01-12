@@ -47,14 +47,16 @@ The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`
    Note that :numref:`rj45MAXpinout` shows an ethernet cable according to **T568B**!
 
 
-We provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
+We provide a :ref:`RJ45_Breakout_Board` for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
 
 .. image:: adc_breakout_PN_MAX11.png
    :width: 400
    
+   RJ45 breakout board.
+   
 .. note::
 
-   Note taht due to the flipped connection (compared to the LTC2311 assignment) the colored nomenclature applies for MAX1131 adapter board.
+   Note that due to the flipped connection (compared to the LTC2311 assignment) the colored nomenclature applies for MAX1131 adapter board.
 
 
 The pairs of the RJ45 ethernet connector map to the ADCs as follows:
@@ -70,7 +72,7 @@ ADC 3           4                                5
 ADC 4           7                                8                     
 =========      ==========================    ==========================
 
-The MAX1131 adapter card has six of the RJ45 ports described above (Port A...F), whereby two consecutive RJ45 ports are evaluated by one of the three MAX11 ADC chips.
+The MAX1131 adapter card has six of the RJ45 ports described above (Port A...F), whereby two consecutive RJ45 ports are evaluated by one of the three MAX11 ADC chips. The driver of the IP Core ADC :ref:`ipCore_adc_max11331` shows exactly this nomenclature, i.e., ADC_A1...ADC_F24.  
 
 .. figure:: MAX11_AdapterBoard_Blende.png
    :width: 700
@@ -109,8 +111,8 @@ The IP Core ADC :ref:`ipCore_adc_max11331` interacts hereby with the hardware in
 In_P and In_N are fully differential signals, meaning they inverted signals with a common-mode offset of 2.5V e.g. 
 
 * For 0V input voltage, both In_P and In_N have the same voltage level, e.g. 2.5V
-* For +1V input voltage, e.g. In_P is 3V and In_N is 2V or In_P is 4V and In_N is 3V
-* For -3V input voltage, e.g. In_P is 1V and In_N is 4V or In_P is 2V and In_N is 5V 
+* For +1V input voltage, e.g. In_P is 3V and In_N is 2V or, e.g. In_P is 4V and In_N is 3V
+* For -3V input voltage, e.g. In_P is 1V and In_N is 4V or, e.g. In_P is 2V and In_N is 5V 
 
 .. figure:: differential_signal.png
    :width: 500

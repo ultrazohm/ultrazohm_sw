@@ -40,7 +40,7 @@ Filters
 Adjust measurement gains 
 ------------------------
 
-For all types of measurements, described in :ref:`_Analog_max11331_meas_modes`, it is recommended to adjust the gains of the differential operational amplifier to utilize the full input range of the ADC, i.e., :math:`{\pm 3.3}` V. Since the input voltage is :math:`{\pm 5}` V and the ADC voltage :math:`{\pm 3.3}` V, the gain is set to
+For all types of measurements, described in :ref:`Analog_max11331_meas_modes`, it is recommended to adjust the gains of the differential operational amplifier to utilize the full input range of the ADC, i.e., :math:`{\pm 3.3}` V. Since the input voltage is :math:`{\pm 5}` V and the ADC voltage :math:`{\pm 3.3}` V, the gain is set to
 
 .. math:: 
 
@@ -48,8 +48,9 @@ For all types of measurements, described in :ref:`_Analog_max11331_meas_modes`, 
 
 .. note ::
    **Use a high precision resistor to set the gains**, i.e., 0.1% or better. 
-   **:math:`{C_\mathrm{Diff}}` must have at least 1:math:`{10\,\mathrm{nF}}` so that the voltage does not drop when switching the MAX1131 multiplexer to ensure that the measuring channel remains stable.
 
+.. note ::
+   :math:`{C_\mathrm{Diff}}` must have at least :math:`{10\,\mathrm{nF}}` so that the voltage does not drop when switching the MAX1131 multiplexer. This ensures that the measuring channel remains stable.
 
 **The pre-assembled values are**
 
@@ -85,7 +86,7 @@ References
 
 * :download:`Assembly drawing <Rev02/ASM_UZ_A_MAX11331_Differential_Input_Rev01.pdf>`
 * :download:`Schematic <Rev02/SCH_UZ_A_MAX11331_Differential_Input_Rev01-1.pdf>`
-* :download:`LTSpice simulation Rev02 <Rev02/MAX11331_Rev02.asc>`
+* :download:`LTSpice simulation Rev02 <Rev02/ltspice_MAX11331_Rev02.zip>`
 * IP Core ADC :ref:`ipCore_LTC2311_v3`
 
 Designed by 

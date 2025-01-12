@@ -93,5 +93,5 @@ References
 Designed by 
 """""""""""
 
-Andreas Geiger (ZC), Eyke Liegmann (TUM) in 11/2024
+Andreas Geiger (ZC), Eyke Aufderheide (TUM) in 11/2024
 

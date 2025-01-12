@@ -191,3 +191,8 @@ Further information
 ===================
 
 - The state machine inside the IP-Core does not have a graph, however is easy to follow reading the VHDL code of the IP-Core. 
+
+Designed by
+-----------
+
+`Eyke Aufderheide <mailto:eyke.liegmann@zohm-control.com>`_,`Sebastian Wendel <mailto:sebastian.wendel@zohm-control.com>`_, 01/2025

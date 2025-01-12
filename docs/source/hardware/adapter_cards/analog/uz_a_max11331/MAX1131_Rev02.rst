@@ -73,7 +73,7 @@ Known issues
 ------------
 
 .. warning::
-   * for each :ref:`Analog_max11331_meas_modes`, i.e., single-ended and fully differential, the ground of a possible external ADC power supply must be referenced to the ground of the UltraZohm. Otherwise, the analog front-end may be outside the voltage rails, resulting in offsets in the measured values.
+   * for each measurement mode, i.e., single-ended and fully differential, the ground of a possible external ADC power supply must be referenced to the ground of the UltraZohm. Otherwise, the analog front-end may be outside the voltage rails, resulting in offsets in the measured values.
    * due to missing pull-downs at the channel input of Rev02, unused channels are floating. This will be resolved in Rev03.
 
 Compatibility 

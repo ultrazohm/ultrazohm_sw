@@ -71,7 +71,7 @@ ADC 3           4                                5
 ADC 4           7                                8                     
 =========      ==========================    ==========================
 
-The MAX1131 adapter card has six of the RJ45 ports described above (Port A...F), whereby two consecutive RJ45 ports are evaluated by one of the three MAX11 ADC chips.
+The MAX1131 adapter card has six of the RJ45 ports described above (Port A...F), whereby two consecutive RJ45 ports are evaluated by one of the three MAX11 ADC chips. The driver of the IP Core ADC :ref:`ipCore_adc_max11331` shows exactly this nomenclature, i.e., ADC_A1...ADC_F24.
 
 .. figure:: MAX11_AdapterBoard_Blende.png
    :width: 700

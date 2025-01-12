@@ -2,23 +2,29 @@
 uz_a_max11331
 =============
 
+
+
+
 Features
 --------
 
 * Measurement of 24 differential signals
 * Sampling rate per channel up to 1 MSPS 
-* Sampling rate to get all 24 channels sampled of up to 125 kSPS (three MAX11 chips work in parallel, while each of them individually samples 8 channels via multiplexer)
+* Sampling rate to get all 24 channels sampled of up to 125 kSPS (three MAX11 chips work in parallel, while each of them sequentially samples 8 channels via multiplexer)
 * Resolution of 12 bit [MAX11331_productpage]_
-* Input range is +-5V 
+* Input range is +-5V, while the maximum delta is 5V
 * ADC `MAX11331-12 <https://www.analog.com/media/en/technical-documentation/data-sheets/MAX11329-MAX11332.pdf>`_
-* ADCs are triggered in groups of 3
+* ADCs are triggered in groups of 3 (three MAX11 chips work in parallel, while each of them sequentially samples 8 channels via multiplexer)
 * Usage of up to three cards possible
-* `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
 
 Revisions
 ---------
 
-* UZ_A_MAX11331 Rev02
+..  toctree::
+   :maxdepth: 1
+   
+   MAX1131_Rev02
+   MAX1131_Rev03
 
 The remainder of this page summarizes the analog input connector and measurement modes which are identical for all revisions of this PCB. 
 
@@ -104,8 +110,9 @@ This will yield the highest signal-to-noise ratio (SNR) even when using longer c
 References
 ----------
 
-* :download:`Assembly drawing <ASM_UZ_A_MAX11331_Differential_Input_Rev01.pdf>`
-* :download:`Schematic <SCH_UZ_A_MAX11331_Differential_Input_Rev01-1.pdf>`
-
-.. [MAX11331_productpage] `Product page MAX11331-12 <https://www.analog.com/en/products/max11331.html>`_
-.. [MAX11331_datasheet] `Data sheet ADC MAX11331-12 <https://www.analog.com/media/en/technical-documentation/data-sheets/MAX11329-MAX11332.pdf>`_
+* :download:`Assembly drawing <Rev02/ASM_UZ_A_MAX11331_Differential_Input_Rev01.pdf>`
+* :download:`Schematic <Rev02/SCH_UZ_A_MAX11331_Differential_Input_Rev01-1.pdf>`
+* `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
+* IP Core ADC :ref:`ipCore_adc_max11331`
+* [MAX11331_productpage] `Product page MAX11331-12 <https://www.analog.com/en/products/max11331.html>`_
+* [MAX11331_datasheet] `Data sheet ADC MAX11331-12 <https://www.analog.com/media/en/technical-documentation/data-sheets/MAX11329-MAX11332.pdf>`_

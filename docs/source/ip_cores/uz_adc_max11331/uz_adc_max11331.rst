@@ -1,8 +1,20 @@
 .. _ipCore_adc_max11331:
 
-=========================
-ADC MAX11331 IP-Core
-=========================
+================
+ADC MAX11331 V1
+================
+
+Introduction
+============
+
+The IP core ADC_MAX11331 in version 1 is designed to read the ADCs which are located on the MAX adpater board and to further process the values obtained from the ADCs.
+The IP core features an AXI4 Lite interface for settings and software control.
+The conversion can be triggered by using the hardware port ``enable_measure`` for real-time control.
+The IP core ADC_MAX11331 does not process the raw value further (offset and conversion factor) to an SI value, instead it only provides the RAW value ``raw_measured_data``.
+The raw value from the ADC is a ``std_logic_vector`` at the hardware interface of the IP core.
+
+Features
+--------
 
 - The MAX11331 ADC chip is able to read 16 single-ended or 8 differential channels.
 - The IP-Core for the MAX11331 ADC is capable of processing up to 6 ADC chips, even if only one ADC chip is currently connected.
@@ -192,3 +204,8 @@ Further information
 
 - The state machine inside the IP-Core does not have a graph, however is easy to follow reading the VHDL code of the IP-Core. 
 
+
+Designed by 
+-----------
+
+Eyke Aufderheide (TUM), Sebastian Wendel (ZC) in 11/2024

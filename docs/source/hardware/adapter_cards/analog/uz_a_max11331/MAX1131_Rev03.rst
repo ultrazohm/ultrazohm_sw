@@ -1,11 +1,8 @@
-.. _Analog_MAX1131_12_Rev02:
+.. _Analog_MAX1131_12_Rev03:
 
 =======================
-Analog MAX1131-12 Rev02
+Analog MAX1131-12 Rev03
 =======================
-
-.. image:: Rev02/MAX11_AdapterBoard_V2.png
-   :width: 500
 
 
 Filters
@@ -73,7 +70,6 @@ Known issues
 
 .. warning::
    * for single-ended, but also fully differential measurements the In_N must be referenced to ground of the UltraZohm
-   * due to missing pull-downs at the channel input of Rev02, unused channels are floating. This will be resolved in Rev03.
 
 Compatibility 
 -------------
@@ -83,13 +79,11 @@ Compatibility
 References
 ----------
 
-* :download:`Assembly drawing <Rev02/ASM_UZ_A_MAX11331_Differential_Input_Rev01.pdf>`
-* :download:`Schematic <Rev02/SCH_UZ_A_MAX11331_Differential_Input_Rev01-1.pdf>`
-* :download:`LTSpice simulation Rev02 <Rev02/MAX11331_Rev02.asc>`
+* :download:`LTSpice simulation Rev02 <Rev03/MAX11331_Rev02.asc>`
 * IP Core ADC :ref:`ipCore_LTC2311_v3`
 
 Designed by 
 """""""""""
 
-Andreas Geiger (ZC), Eyke Liegmann (TUM) in 11/2024
+Andreas Geiger (ZC), Eyke Liegmann (TUM) in 01/2025
 

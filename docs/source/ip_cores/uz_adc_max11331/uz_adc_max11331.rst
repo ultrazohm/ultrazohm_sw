@@ -62,8 +62,11 @@ Table :ref:`ipCore_adc_max11331_interfaces` lists all input and output ports (AX
    :widths: 50 50 50 50 50 50 200
    :header-rows: 1
 
-Vitis
-=====
+Software Driver
+===============
+
+Configuration Procedure
+***********************
 
 The test bench function below displays an example of how to configure and use the IP core.
 In this example the hardware trigger in the FPGA is used but instead the continuous sampling can be used as well.
@@ -245,3 +248,8 @@ Further information
 ===================
 
 - The state machine inside the IP-Core does not have a graph, however is easy to follow reading the VHDL code of the IP-Core. 
+
+Designed by 
+***********
+
+Eyke Aufderheide (TUM), Sebastian Wendel (ZC) in 11/2024

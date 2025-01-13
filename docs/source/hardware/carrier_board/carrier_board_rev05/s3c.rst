@@ -104,6 +104,7 @@ Statemachine for s3c
 		Shutdown_Extern --> [*]
 
 .. mermaid::
+
 	mindmap
 	root((mindmap))
 		Offene Fragen

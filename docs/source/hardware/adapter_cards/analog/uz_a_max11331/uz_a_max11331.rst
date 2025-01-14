@@ -107,7 +107,7 @@ The IP Core ADC :ref:`ipCore_adc_max11331` interacts hereby with the hardware in
 1. Fully differential (bipolar) measurement
 """""""""""""""""""""""""""""""""""""""""""
 
-In_P and In_N are fully differential signals, meaning they inverted signals with a common-mode offset of 2.5V e.g. 
+In_P and In_N are fully differential signals, meaning they inverted signals with a common-mode offset of 2.5V e.g. In this case (default ``RANGE register = 1``), all 12 Bits resolution of the ADC are used.
 
 * For 0V input voltage, both In_P and In_N have the same voltage level, e.g. 2.5V
 * For +1V input voltage, e.g. In_P is 3V and In_N is 2V or, e.g. In_P is 4V and In_N is 3V
@@ -123,7 +123,8 @@ This will yield the highest signal-to-noise ratio (SNR) even when using longer c
 2. Single-ended with reference to an offset voltage (bipolar) measurement
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-The negative input In_N is set to a fixed offset voltage, e.g. 2.5V which is often provided by the current sensor. The positive input may vary between 0V to 5V. 
+The negative input In_N is set to a fixed offset voltage, e.g. 2.5V which is often provided by the current sensor. The positive input may vary between 0V to 5V. In this case (default ``RANGE register = 1``), only 11 Bits resolution of the ADC are used. The full 12 Bits could probably used by ``RANGE register = 0`` (tbc).
+
 
 .. note ::
    Both voltages should be transferred over the same twisted-pair cable as the positive input In_P, to get the same common-mode noise on both lines, which is then rejected by the differential amplifier. 
@@ -132,7 +133,7 @@ The negative input In_N is set to a fixed offset voltage, e.g. 2.5V which is oft
 3. Single-ended with reference to ground potential (unipolar) measurement
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-The negative input In_N is set to ground which is preferably transferred over the same cable as the measurement signal In_P.
+The negative input In_N is set to ground which is preferably transferred over the same cable as the measurement signal In_P. In this case (independent of ``RANGE register``), only 11 Bits resolution of the ADC are used.
 
 
 

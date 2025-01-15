@@ -17,4 +17,5 @@ Carrier Board Rev05
 	changeset
 	power_distribution
 	s3c
+	dcplds
 	arm_pins

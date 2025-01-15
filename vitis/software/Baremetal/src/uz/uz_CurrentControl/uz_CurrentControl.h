@@ -139,4 +139,7 @@ void uz_CurrentControl_set_max_modulation_index(uz_CurrentControl_t* self, float
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
+/** my hacky set function **/
+void uz_CurrentControl_set_ext_clamping(uz_CurrentControl_t* self, bool clamping_off_on);
+
 #endif // UZ_CURRENTCONTROL_H

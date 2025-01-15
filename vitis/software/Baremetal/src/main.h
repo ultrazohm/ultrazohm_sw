@@ -57,6 +57,7 @@
 #include "include/InverterTempMeasurement.h"
 #include "include/uz_temperature_card.h"
 #include "include/inverter_fault_axi_gpio.h"
+#include "include/sysmon.h"
 //#include "include/FOC.h"
 
 //----------------------------------------------------

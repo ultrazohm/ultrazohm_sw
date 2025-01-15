@@ -66,6 +66,9 @@ enum JS_OberservableData {
 	JSO_dob_e_est_q,
 	JSO_dob_e_est_x,
 	JSO_dob_e_est_y,
+	JSO_dualsvm_clamped,
+	JSO_xy_r6_ref_d,
+	JSO_xy_r6_ref_q,
 	JSO_ENDMARKER
 };
 
@@ -92,6 +95,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_inv1Temp,
 	JSSD_FLOAT_inv2Temp,
 	JSSD_FLOAT_winding_temp,
+	JSSD_FLOAT_zynq_temp,
 	JSSD_FLOAT_Kp_id,
 	JSSD_FLOAT_Ki_id,
 	JSSD_FLOAT_Kp_iq,

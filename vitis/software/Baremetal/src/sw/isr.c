@@ -36,6 +36,7 @@
 #include "../uz/uz_signals/uz_signals.h"
 #include "../uz/uz_wavegen/uz_wavegen.h"
 #include "../include/encoder.h"
+#include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -56,6 +57,10 @@ uz_3ph_dq_t rotating_xy = {0};
 uz_6ph_dq_t six_ph_dq = {0};
 uz_6ph_dq_t six_ph_dq_volts = {0};
 uz_6ph_dq_t six_ph_dq_volts_compensated = {0};
+uz_6ph_dq_t v_pre_limits_volts = {0.0f};
+uz_6ph_dq_t v_post_limits_volts = {0.0f};
+uz_6ph_dq_t i_ref_Ampere ={0.0f};
+bool dualsvm_clamped = false;
 
 uz_3ph_dq_t i_dq_ref = {0.0f};
 uz_3ph_dq_t i_dq_r2_ref = {0.0f};
@@ -75,8 +80,15 @@ uz_6ph_alphabeta_t vsd_ref_volts = {0.0f};
 uz_6ph_abc_t phase_ref_volts = {0.0f};
 uz_3ph_abc_t input1 = {0.0f};
 uz_3ph_abc_t input2 = {0.0f};
+struct uz_DutyCycle_t output1_spwm = {0};
+struct uz_DutyCycle_t output2_spwm = {0};
+struct uz_DutyCycle_t output1_dualsvm = {0};
+struct uz_DutyCycle_t output2_dualsvm = {0};
 struct uz_DutyCycle_t output1 = {0};
 struct uz_DutyCycle_t output2 = {0};
+
+uz_3ph_dq_t dq_ref_volts_1 = {0.0f};
+uz_3ph_dq_t dq_ref_volts_2 = {0.0f};
 
 // Data for determination of mechanical resolver angle
 float theta_mech_old=0.0f;
@@ -102,7 +114,7 @@ void calc_angle_from_resolver_IP();
 #define DC_VOLT_OFF_2		450.25f
 #define TORQUE_CONV			20.0f // 20Nm/V
 // software current limit
-#define MAX_PHASE_CURRENT_AMP  15.0f
+#define MAX_PHASE_CURRENT_AMP  20.0f
 #define MAX_DC_VOLT 590.0f
 
 bool start = false;
@@ -273,17 +285,20 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
+    	if (Global_Data.rasv.a53_ctrl_off_on == false)
+    	{
         // Start: Control algorithm - only if ultrazohm is in control state
 //    	Global_Data.av.speed_ref_rpm_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_ref_filt, Global_Data.av.speed_ref_rpm);
 //    	Global_Data.av.M_ref = uz_SpeedControl_sample(Global_Data.objects.speed_control, Global_Data.av.mechanicalRotorSpeedRADpS_ip, Global_Data.av.speed_ref_rpm_filt);
 //    	i_dq_ref = uz_SetPoint_sample(Global_Data.objects.setpoint, Global_Data.av.mechanicalRotorSpeedRADpS_ip, Global_Data.av.M_ref, Global_Data.av.v_dc1, i_dq_actual);
 
     	// dq PI current control
+    		//ATTENTION: commenteed out SV Linitation in CurrentControl!!!!
     	u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.foc_current_dq, i_dq_ref, i_dq_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
     	Global_Data.av.u_dq_ref = u_dq_ref;
 
 
-    	// PI-R CONTROL
+    	// dqxy PI-R CONTROL
     	if (Global_Data.rasv.current_ctrl_select == PI_R_FOC) {
     	// dq R2 current control
     	u_dq_r2_ref = uz_subspace_resonant_control_step_dq(Global_Data.objects.resonant_dq2, i_dq_r2_ref, i_dq_actual, Global_Data.av.electricalRotorSpeedRADpS);
@@ -300,22 +315,53 @@ void ISR_Control(void *data)
     	Global_Data.av.u_xy_ref.d = u_xy_ref.d + u_xy_r2_ref.d + u_xy_r6_ref.d;
     	Global_Data.av.u_xy_ref.q = u_xy_ref.q + u_xy_r2_ref.q + u_xy_r6_ref.q;
 
-    	XY_ref_volts = uz_transformation_3ph_dq_to_alphabeta(Global_Data.av.u_xy_ref, Global_Data.av.theta_el_neg_FOC);
-    	vsd_ref_volts.x = XY_ref_volts.alpha;
-    	vsd_ref_volts.y = XY_ref_volts.beta;
-    	} else {
+    	//debug
+    	Global_Data.av.xy_r6_v_d_ref = u_xy_r6_ref.d;
+    	Global_Data.av.xy_r6_v_q_ref = u_xy_r6_ref.q;
+
+    	} else { //no subspace PI-R control
     		uz_CurrentControl_reset(Global_Data.objects.foc_current_xy);
     		uz_subspace_resonant_control_reset(Global_Data.objects.resonant_dq2);
     		uz_subspace_resonant_control_reset(Global_Data.objects.resonant_xy2);
     		uz_subspace_resonant_control_reset(Global_Data.objects.resonant_xy6);
     		vsd_ref_volts.x = 0.0f;
     		vsd_ref_volts.y = 0.0f;
+    		Global_Data.av.u_xy_ref.d = 0.0f;
+    		Global_Data.av.u_xy_ref.q = 0.0f;
     	}
 
 
+    	// 6ph space vector limitation
+    	v_pre_limits_volts.d = Global_Data.av.u_dq_ref.d;
+    	v_pre_limits_volts.q = Global_Data.av.u_dq_ref.q;
+    	v_pre_limits_volts.x = Global_Data.av.u_xy_ref.d;
+    	v_pre_limits_volts.y = Global_Data.av.u_xy_ref.q;
+
+    	i_ref_Ampere.d = i_dq_ref.d;
+    	i_ref_Ampere.q = i_dq_ref.q;
+    	i_ref_Ampere.x = i_xy_ref.d;
+    	i_ref_Ampere.y = i_xy_ref.q;
+
+    	v_post_limits_volts = uz_6ph_Space_Vector_Limitation(v_pre_limits_volts, Global_Data.av.v_dc1, 0.577350, Global_Data.av.electricalRotorSpeedRADpS, i_ref_Ampere, &dualsvm_clamped);
+    	Global_Data.av.dualsvm_clamped = dualsvm_clamped;
+    	Global_Data.av.dualsvm_clamped_f = (float)dualsvm_clamped;
+    	//my hacky clamping set function to force external clamping of current controllers
+    	uz_CurrentControl_set_ext_clamping(Global_Data.objects.foc_current_dq, dualsvm_clamped);
+    	uz_CurrentControl_set_ext_clamping(Global_Data.objects.foc_current_xy, dualsvm_clamped);
+
+    	Global_Data.av.u_dq_ref.d = v_post_limits_volts.d;
+    	Global_Data.av.u_dq_ref.q = v_post_limits_volts.q;
+    	Global_Data.av.u_xy_ref.d = v_post_limits_volts.x;
+    	Global_Data.av.u_xy_ref.q = v_post_limits_volts.y;
+
+
+    	// Transform Ref voltages
     	alphabeta_ref_volts = uz_transformation_3ph_dq_to_alphabeta(Global_Data.av.u_dq_ref, Global_Data.av.theta_el_pos_FOC);
     	vsd_ref_volts.alpha = alphabeta_ref_volts.alpha;
     	vsd_ref_volts.beta = alphabeta_ref_volts.beta;
+    	XY_ref_volts = uz_transformation_3ph_dq_to_alphabeta(Global_Data.av.u_xy_ref, Global_Data.av.theta_el_neg_FOC);
+    	vsd_ref_volts.x = XY_ref_volts.alpha;
+    	vsd_ref_volts.y = XY_ref_volts.beta;
 
     	phase_ref_volts = uz_transformation_asym30deg_6ph_alphabeta_to_abc(vsd_ref_volts);
 
@@ -326,8 +372,24 @@ void ISR_Control(void *data)
     	input2.b = phase_ref_volts.b2;
     	input2.c = phase_ref_volts.c2;
 
-    	output1 = uz_spwm_abc(input1, Global_Data.av.v_dc1);
-    	output2 = uz_spwm_abc(input2, Global_Data.av.v_dc2);
+    	// Dual SVM
+    	dq_ref_volts_1 = uz_transformation_3ph_abc_to_dq(input1, Global_Data.av.theta_el_pos_FOC);
+    	dq_ref_volts_2 = uz_transformation_3ph_abc_to_dq(input2, Global_Data.av.theta_el_pos_FOC+0.5235987756f); // +pi/6
+
+    	output1_dualsvm = uz_Space_Vector_Modulation(dq_ref_volts_1, Global_Data.av.v_dc1, Global_Data.av.theta_el_pos_FOC);
+    	output2_dualsvm = uz_Space_Vector_Modulation(dq_ref_volts_2, Global_Data.av.v_dc2, Global_Data.av.theta_el_pos_FOC+0.5235987756f);
+
+    	// SPWM
+    	output1_spwm = uz_spwm_abc(input1, Global_Data.av.v_dc1);
+    	output2_spwm = uz_spwm_abc(input2, Global_Data.av.v_dc2);
+
+    	// SPWM or DualSVM
+    	//output1 = output1_spwm;
+    	//output2 = output2_spwm;
+    	output1 = output1_dualsvm;
+    	output2 = output2_dualsvm;
+
+    	} // END if a53_ctrl_off_on
 
     	if(Global_Data.rasv.current_ctrl_select == IMPL_MOD) {
     		uz_CurrentControl_reset(Global_Data.objects.foc_current_dq);
@@ -338,7 +400,7 @@ void ISR_Control(void *data)
     	    Global_Data.rasv.halfBridge4DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[3], 1.0f, 0.0f);
     	    Global_Data.rasv.halfBridge5DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[4], 1.0f, 0.0f);
     	    Global_Data.rasv.halfBridge6DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[5], 1.0f, 0.0f);
-    		// ATTENTION
+    		// END ATTENTION
 
     	} else {
     		Global_Data.rasv.halfBridge1DutyCycle = output1.DutyCycle_A;

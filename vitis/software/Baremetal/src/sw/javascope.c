@@ -20,6 +20,8 @@
 #include "xil_cache.h"
 #include "../include/FOC.h"
 
+#include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+
 // maximum number of while loops in the polling function for the acknowledge flag
 #define POLL_FOR_ACK_TIMEOUT_COUNT	1000
 // define the size of the cache to flush
@@ -111,6 +113,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dob_e_est_q]			= &data->av.dob_e_est_q;
 	js_ch_observable[JSO_dob_e_est_x]			= &data->av.dob_e_est_x;
 	js_ch_observable[JSO_dob_e_est_y]			= &data->av.dob_e_est_y;
+	js_ch_observable[JSO_dualsvm_clamped]		= &data->av.dualsvm_clamped_f;
+	js_ch_observable[JSO_xy_r6_ref_d]			= &data->av.xy_r6_v_d_ref;
+	js_ch_observable[JSO_xy_r6_ref_q]			= &data->av.xy_r6_v_q_ref;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -132,6 +137,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_inv1Temp]				= &(data->av.temperature_inv_1);
 	js_slowDataArray[JSSD_FLOAT_inv2Temp]				= &(data->av.temperature_inv_2);
 	js_slowDataArray[JSSD_FLOAT_winding_temp]			= &(data->av.average_winding_temp);
+	js_slowDataArray[JSSD_FLOAT_zynq_temp]				= &(data->av.zynq_temp);
 	js_slowDataArray[JSSD_FLOAT_theta_el]				= &(data->av.theta_elec_rad_ip);
 	js_slowDataArray[JSSD_FLOAT_w_el]					= &(data->av.electricalRotorSpeedRADpS);
 	js_slowDataArray[JSSD_FLOAT_Kp_id]					= &data->av.Kp_id;

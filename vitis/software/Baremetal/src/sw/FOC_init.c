@@ -28,15 +28,15 @@ const float psi_pm_7 = 0.00047f;
 
 // PI controllers dq-subspace
 const struct uz_PI_Controller_config config_id = {
-		.Kp = config_PMSM.Ld_Henry/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
-		.Ki = config_PMSM.R_ph_Ohm/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Kp = config_PMSM.Ld_Henry/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Ki = config_PMSM.R_ph_Ohm/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
 		.samplingTime_sec = UZ_TIME_ISR,
 		.type = parallel,
 };
 
 const struct uz_PI_Controller_config config_iq = {
-		.Kp = config_PMSM.Lq_Henry/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
-		.Ki = config_PMSM.R_ph_Ohm/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Kp = config_PMSM.Lq_Henry/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Ki = config_PMSM.R_ph_Ohm/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
 		.samplingTime_sec = UZ_TIME_ISR,
 		.type = parallel,
 };
@@ -45,21 +45,21 @@ struct uz_CurrentControl_config current_control_config = {
 		.config_PMSM = config_PMSM,
 		.config_id = config_id,
 		.config_iq = config_iq,
-		.decoupling_select = no_decoupling,
+		.decoupling_select = linear_decoupling,
 		.max_modulation_index = 0.5f
 };
 
 // PI controllers xy-subspace
 const struct uz_PI_Controller_config config_ix = {
-		.Kp = Lx_Henry/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
-		.Ki = config_PMSM.R_ph_Ohm/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Kp = Lx_Henry/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Ki = config_PMSM.R_ph_Ohm/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
 		.samplingTime_sec = UZ_TIME_ISR,
 		.type = parallel,
 };
 
 const struct uz_PI_Controller_config config_iy = {
-		.Kp = Ly_Henry/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
-		.Ki = config_PMSM.R_ph_Ohm/(1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Kp = Ly_Henry/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
+		.Ki = config_PMSM.R_ph_Ohm/(2.0f*1.5f*1.0f/UZ_PWM_FREQUENCY_ISR),
 		.samplingTime_sec = UZ_TIME_ISR,
 		.type = parallel,
 };
@@ -74,31 +74,31 @@ struct uz_CurrentControl_config current_control_config_xy = {
 
 struct uz_subspace_resonant_control_config dq_2_config = {
 		.antiwindup_gain = 10.0f,
-		.gain_1 = 1000.0f,
-		.gain_2 = 1000.0f,
+		.gain_1 = 1080.0f,
+		.gain_2 = 1080.0f,
 		.harmonic_order = 2.0f,
-		.lower_limit = -5.0f,
-		.upper_limit = 5.0f,
+		.lower_limit = -25.0f,
+		.upper_limit = 25.0f,
 		.sampling_time = UZ_TIME_ISR
 };
 
 struct uz_subspace_resonant_control_config xy_2_config = {
 		.antiwindup_gain = 10.0f,
-		.gain_1 = 1000.0f,
-		.gain_2 = 1000.0f,
+		.gain_1 = 1080.0f,
+		.gain_2 = 1080.0f,
 		.harmonic_order = 2.0f,
-		.lower_limit = -5.0f,
-		.upper_limit = 5.0f,
+		.lower_limit = -25.0f,
+		.upper_limit = 25.0f,
 		.sampling_time = UZ_TIME_ISR
 };
 
 struct uz_subspace_resonant_control_config xy_6_config = {
 		.antiwindup_gain = 10.0f,
-		.gain_1 = 1000.0f,
-		.gain_2 = 1000.0f,
+		.gain_1 = 1080.0f,
+		.gain_2 = 1080.0f,
 		.harmonic_order = 6.0f,
-		.lower_limit = -5.0f,
-		.upper_limit = 5.0f,
+		.lower_limit = -25.0f,
+		.upper_limit = 25.0f,
 		.sampling_time = UZ_TIME_ISR
 };
 

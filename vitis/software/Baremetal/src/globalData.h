@@ -17,6 +17,7 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_subspace_resonant_control/uz_subspace_resonant_control.h"
+#include "uz/uz_sysmon_ps/uz_sysmon_ps.h"
 
 
 enum current_control_select {
@@ -195,6 +196,11 @@ typedef struct _actualValues_ {
 	float dob_e_est_q;
 	float dob_e_est_x;
 	float dob_e_est_y;
+	float zynq_temp;
+	bool dualsvm_clamped;
+	float dualsvm_clamped_f;
+	float xy_r6_v_d_ref;
+	float xy_r6_v_q_ref;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -241,6 +247,7 @@ typedef struct{
 	uz_SpeedControl_t* speed_control;
 	uz_IIR_Filter_t* invTemp1_filter;
 	uz_IIR_Filter_t* invTemp2_filter;
+	uz_sysmon_ps_t* sysmon;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

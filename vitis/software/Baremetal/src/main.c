@@ -82,7 +82,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            Global_Data.av.i_max_cur_lim_ip_SI = 12.0f;
+            Global_Data.av.i_max_cur_lim_ip_SI = 20.0f;
             Global_Data.av.polepairs = 5.0f;
             Global_Data.av.offset_el_incre = 945U;
             Global_Data.av.lambda_dq = 10.0f;
@@ -96,8 +96,8 @@ int main(void)
             Global_Data.av.kalman_R = 1.0f;
             Global_Data.av.kalman_Q1 = 100.0f;
             Global_Data.av.kalman_Q2 = 1.0f;
-            Global_Data.av.phiPM_h[0] = -0.1349143; //psi pm initialized in FOC_init.c
-            Global_Data.av.phiPM_h[1] = -1.7723498;
+            Global_Data.av.phiPM_h[0] = 4.6f;//-0.1349143; //psi pm initialized in FOC_init.c
+            Global_Data.av.phiPM_h[1] = 2.9f;//-1.7723498;
             Global_Data.av.Rs = 0.27;
             Global_Data.av.Ld = 1.7e-3;
             Global_Data.av.Lq = 3.8e-3;
@@ -114,6 +114,7 @@ int main(void)
             Global_Data.objects.speed_control = speed_control_init();
             Global_Data.objects.invTemp1_filter = uz_signals_IIR_Filter_init(config_IIR_invTemp);
             Global_Data.objects.invTemp2_filter = uz_signals_IIR_Filter_init(config_IIR_invTemp);
+            Global_Data.objects.sysmon = init_sysmon();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -172,6 +173,10 @@ int main(void)
         	uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d4);
             Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d4, 'A');
             Global_Data.av.average_winding_temp = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 3U, 13U);
+//            // reset the error reset flag, to re-arm the error reset button
+//            uz_axi_write_bool(XPAR_UZ_CUR_LIM_0_BASEADDR + 0x104, false);
+            // read zynq temperature from sysmon
+            Global_Data.av.zynq_temp = uz_sysmon_ps_read_temperature_degree_celsius(Global_Data.objects.sysmon);
 
             break;
         default:

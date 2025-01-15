@@ -20,6 +20,8 @@
 #include <stdbool.h>
 #include "../include/FOC.h"
 
+#define DEBUG false
+
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
@@ -312,80 +314,101 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-//			data->rasv.halfBridge1DutyCycle = 0.55f;
-//			data->rasv.halfBridge2DutyCycle = 0.5f;
-//			data->rasv.halfBridge3DutyCycle = 0.5f;
-//			data->rasv.halfBridge4DutyCycle = 0.5f;
-//			data->rasv.halfBridge5DutyCycle = 0.5f;
-//			data->rasv.halfBridge6DutyCycle = 0.5f;
-			data->rasv.current_ctrl_select = IMPL_MOD;
-			data->rasv.a53_ctrl_off_on = true;
-
+			if (DEBUG == true) {
+				data->rasv.halfBridge1DutyCycle = 0.55f;
+				data->rasv.halfBridge2DutyCycle = 0.5f;
+				data->rasv.halfBridge3DutyCycle = 0.5f;
+				data->rasv.halfBridge4DutyCycle = 0.5f;
+				data->rasv.halfBridge5DutyCycle = 0.5f;
+				data->rasv.halfBridge6DutyCycle = 0.5f;
+			} else {
+				data->rasv.current_ctrl_select = IMPL_MOD;
+				data->rasv.a53_ctrl_off_on = true;
+			}
 			break;
 
 		case (My_Button_2):
-//			data->rasv.halfBridge1DutyCycle = 0.5f;
-//			data->rasv.halfBridge2DutyCycle = 0.55f;
-//			data->rasv.halfBridge3DutyCycle = 0.5f;
-//			data->rasv.halfBridge4DutyCycle = 0.5f;
-//			data->rasv.halfBridge5DutyCycle = 0.5f;
-//			data->rasv.halfBridge6DutyCycle = 0.5f;
-				if(data->av.HC_off_on == false) {
+			if (DEBUG == true) {
+				data->rasv.halfBridge1DutyCycle = 0.5f;
+				data->rasv.halfBridge2DutyCycle = 0.55f;
+				data->rasv.halfBridge3DutyCycle = 0.5f;
+				data->rasv.halfBridge4DutyCycle = 0.5f;
+				data->rasv.halfBridge5DutyCycle = 0.5f;
+				data->rasv.halfBridge6DutyCycle = 0.5f;
+			} else {
+				if (data->av.HC_off_on == false) {
 					data->av.HC_off_on = true;
 				} else {
 					data->av.HC_off_on = false;
 				}
+			}
 			break;
 
 		case (My_Button_3):
-//			data->rasv.halfBridge1DutyCycle = 0.5f;
-//			data->rasv.halfBridge2DutyCycle = 0.5f;
-//			data->rasv.halfBridge3DutyCycle = 0.55f;
-//			data->rasv.halfBridge4DutyCycle = 0.5f;
-//			data->rasv.halfBridge5DutyCycle = 0.5f;
-//			data->rasv.halfBridge6DutyCycle = 0.5f;
-			data->rasv.current_ctrl_select = PI_FOC;
-			data->rasv.a53_ctrl_off_on = false;
+			if (DEBUG == true) {
+				data->rasv.halfBridge1DutyCycle = 0.5f;
+				data->rasv.halfBridge2DutyCycle = 0.5f;
+				data->rasv.halfBridge3DutyCycle = 0.55f;
+				data->rasv.halfBridge4DutyCycle = 0.5f;
+				data->rasv.halfBridge5DutyCycle = 0.5f;
+				data->rasv.halfBridge6DutyCycle = 0.5f;
+			} else {
+				data->rasv.current_ctrl_select = PI_FOC;
+				data->rasv.a53_ctrl_off_on = false;
+			}
 			break;
 
 		case (My_Button_4):
-//			data->rasv.halfBridge1DutyCycle = 0.5f;
-//			data->rasv.halfBridge2DutyCycle = 0.5f;
-//			data->rasv.halfBridge3DutyCycle = 0.5f;
-//			data->rasv.halfBridge4DutyCycle = 0.55f;
-//			data->rasv.halfBridge5DutyCycle = 0.5f;
-//			data->rasv.halfBridge6DutyCycle = 0.5f;
-			data->rasv.current_ctrl_select = PI_R_FOC;
-			data->rasv.a53_ctrl_off_on = false;
+			if (DEBUG == true) {
+				data->rasv.halfBridge1DutyCycle = 0.5f;
+				data->rasv.halfBridge2DutyCycle = 0.5f;
+				data->rasv.halfBridge3DutyCycle = 0.5f;
+				data->rasv.halfBridge4DutyCycle = 0.55f;
+				data->rasv.halfBridge5DutyCycle = 0.5f;
+				data->rasv.halfBridge6DutyCycle = 0.5f;
+			} else {
+				data->rasv.current_ctrl_select = PI_R_FOC;
+				data->rasv.a53_ctrl_off_on = false;
+			}
 			break;
 
 		case (My_Button_5):
-//			data->rasv.halfBridge1DutyCycle = 0.5f;
-//			data->rasv.halfBridge2DutyCycle = 0.5f;
-//			data->rasv.halfBridge3DutyCycle = 0.5f;
-//			data->rasv.halfBridge4DutyCycle = 0.5f;
-//			data->rasv.halfBridge5DutyCycle = 0.55f;
-//			data->rasv.halfBridge6DutyCycle = 0.5f;
-			data->av.kalman_off_on = false;
+			if (DEBUG == true) {
+				data->rasv.halfBridge1DutyCycle = 0.5f;
+				data->rasv.halfBridge2DutyCycle = 0.5f;
+				data->rasv.halfBridge3DutyCycle = 0.5f;
+				data->rasv.halfBridge4DutyCycle = 0.5f;
+				data->rasv.halfBridge5DutyCycle = 0.55f;
+				data->rasv.halfBridge6DutyCycle = 0.5f;
+			} else {
+				data->av.kalman_off_on = false;
+			}
 			break;
 
 		case (My_Button_6):
-//			data->rasv.halfBridge1DutyCycle = 0.5f;
-//			data->rasv.halfBridge2DutyCycle = 0.5f;
-//			data->rasv.halfBridge3DutyCycle = 0.5f;
-//			data->rasv.halfBridge4DutyCycle = 0.5f;
-//			data->rasv.halfBridge5DutyCycle = 0.5f;
-//			data->rasv.halfBridge6DutyCycle = 0.55f;
-			data->av.kalman_off_on = true;
+			if (DEBUG == true) {
+				data->rasv.halfBridge1DutyCycle = 0.5f;
+				data->rasv.halfBridge2DutyCycle = 0.5f;
+				data->rasv.halfBridge3DutyCycle = 0.5f;
+				data->rasv.halfBridge4DutyCycle = 0.5f;
+				data->rasv.halfBridge5DutyCycle = 0.5f;
+				data->rasv.halfBridge6DutyCycle = 0.55f;
+			} else {
+				data->av.kalman_off_on = true;
+			}
 			break;
 
 		case (My_Button_7):
-//			data->rasv.halfBridge1DutyCycle = 0.5f;
-//			data->rasv.halfBridge2DutyCycle = 0.5f;
-//			data->rasv.halfBridge3DutyCycle = 0.5f;
-//			data->rasv.halfBridge4DutyCycle = 0.5f;
-//			data->rasv.halfBridge5DutyCycle = 0.5f;
-//			data->rasv.halfBridge6DutyCycle = 0.5f;
+			if (DEBUG == true) {
+				data->rasv.halfBridge1DutyCycle = 0.5f;
+				data->rasv.halfBridge2DutyCycle = 0.5f;
+				data->rasv.halfBridge3DutyCycle = 0.5f;
+				data->rasv.halfBridge4DutyCycle = 0.5f;
+				data->rasv.halfBridge5DutyCycle = 0.5f;
+				data->rasv.halfBridge6DutyCycle = 0.5f;
+			} else {
+
+			}
 			break;
 
 		case (My_Button_8):
@@ -395,7 +418,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Error_Reset):
 		uz_axi_write_bool(XPAR_UZ_CUR_LIM_0_BASEADDR + 0x104, false);
 		uz_axi_write_bool(XPAR_UZ_CUR_LIM_0_BASEADDR + 0x104, true);
-
+//		data->av.overcurrent_FPGA = false;
+//		data->av.overcurrent_FPGA_fl = 0.0f;
 			break;
 
 		case (0xFFFF):

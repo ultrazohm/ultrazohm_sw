@@ -37,7 +37,7 @@ i_min = -12.5;
 i_max = -i_min;
 
 % spectrum plot axis
-f_max = 1.0; % kHz
+f_max = 4.0; % kHz
 THD_max = 10; % per cent 
 barWidth = 1.5;
 
@@ -208,7 +208,7 @@ plot(log.time(start:finish),log.CH4(start:finish),'Color',rgb_ic,'LineWidth', lw
 plot(log.time(start:finish),log.CH5(start:finish),'Color',rgb_ia2,'LineWidth', lw);
 plot(log.time(start:finish),log.CH6(start:finish),'Color',rgb_ib2,'LineWidth', lw);
 plot(log.time(start:finish),log.CH7(start:finish),'Color',rgb_ic2,'LineWidth', lw);
-plot(log.time(start:finish),log.CH1(start:finish));
+% plot(log.time(start:finish),log.CH1(start:finish));
 set(gca,'FontSize',fs)
 [leg1, hobj, ~, ~] = legend('i_a_1','i_b_1','i_c_1','i_a_2','i_b_2','i_c_2');
 % leg1.ItemTokenSize = [10,10];
@@ -220,21 +220,19 @@ grid on
 axis([t_start t_finish i_min i_max])
 ylabel('i / A')
 
-subplot(323)
-plot(log.time(start:finish),log.CH8(start:finish),'LineWidth', lw);
-hold on
-plot(log.time(start:finish),log.CH9(start:finish),'LineWidth', lw);
+subplot(325)
 plot(log.time(start:finish),log.CH10(start:finish),'LineWidth', lw);
+hold on
 plot(log.time(start:finish),log.CH11(start:finish),'LineWidth', lw);
 set(gca,'FontSize',fs)
-[leg1, hobj, ~, ~] = legend('i_\alpha','i_\beta','i_X','i_Y');
+[leg1, hobj, ~, ~] = legend('i_x','i_y');
 % leg1.ItemTokenSize = [10,10];
 hl = findobj(hobj,'type','line');
 set(hl,'LineWidth',lw_leg);
 ht = findobj(hobj,'type','text');
 set(ht,'FontSize',fs_leg);
 grid on
-axis([t_start t_finish i_min i_max])
+axis([t_start t_finish -0.8 0.8])
 ylabel('i / A')
 
 subplot(322)
@@ -242,12 +240,12 @@ plot(log.time(start:finish),log.CH14(start:finish),'Color',rgb_ia,'LineWidth', l
 hold on
 plot(log.time(start:finish),log.CH15(start:finish),'Color',rgb_ib,'LineWidth', lw);
 plot(log.time(start:finish),log.CH16(start:finish),'Color',rgb_ic,'LineWidth', lw);
-% plot(log.time(start:finish),log.CH17(start:finish),'Color',rgb_ia2,'LineWidth', lw);
-% plot(log.time(start:finish),log.CH18(start:finish),'Color',rgb_ib2,'LineWidth', lw);
-% plot(log.time(start:finish),log.CH19(start:finish),'Color',rgb_ic2,'LineWidth', lw);
+plot(log.time(start:finish),log.CH17(start:finish),'Color',rgb_ia2,'LineWidth', lw);
+plot(log.time(start:finish),log.CH18(start:finish),'Color',rgb_ib2,'LineWidth', lw);
+plot(log.time(start:finish),log.CH19(start:finish),'Color',rgb_ic2,'LineWidth', lw);
 set(gca,'FontSize',fs)
 % [leg1, hobj, ~, ~] = legend('d_a_1','d_b_1','d_c_1');
-[leg1, hobj, ~, ~] = legend('d_a_1','d_b_1','d_c_1');
+[leg1, hobj, ~, ~] = legend('d_a_1','d_b_1','d_c_1','d_a_2','d_b_2','d_c_2');
 % leg1.ItemTokenSize = [10,10];
 hl = findobj(hobj,'type','line');
 set(hl,'LineWidth',lw_leg);
@@ -258,7 +256,7 @@ axis([t_start t_finish 0.0 1.0])
 % ylabel('Equiv. mod. signal')
 ylabel('Mod. signal')
 
-subplot(325)
+subplot(323)
 plot(log.time(start:finish),log.CH12(start:finish),'LineWidth', lw);
 hold on
 plot(log.time(start:finish),log.CH13(start:finish),'LineWidth', lw);
@@ -284,8 +282,8 @@ xlabel('Time / s')
 ylabel('Solver Iterations');
 
 subplot(326)
-hBar = bar(freq(1,:)*0.001,FFT_sig_withoutFundamental(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
-% hBar = bar(freq(1,:)*0.001,FFT_sig(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
+% hBar = bar(freq(1,:)*0.001,FFT_sig_withoutFundamental(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
+hBar = bar(freq(1,:)*0.001,FFT_sig(:,1)/FundamentalCurrent(1)*100, 'BarWidth', barWidth);
 set(gca,'FontSize',fs);
 grid on
 axis([0 f_max 0 THD_max]);

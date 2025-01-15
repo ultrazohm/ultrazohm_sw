@@ -19,10 +19,17 @@ struct uz_pmsm_control_configuration_t config_heidrive = {
     .speed_controller_max_torque = 1.3f,
     .speed_controller_kp = 0.01f,
     .speed_controller_ki = 0.05f,
+#if HEIDRIVE_LRC_PARAMETERS==1
+    .current_controller_d_kp = 4.4f,
+    .current_controller_d_ki = 1810.0f,
+    .current_controller_q_kp = 4.4f,
+    .current_controller_q_ki = 1810.0f,
+#else
     .current_controller_d_kp = 3.77f,
     .current_controller_d_ki = 1810.0f,
     .current_controller_q_kp = 4.73f,
     .current_controller_q_ki = 1810.0f,
+#endif
     .setpoint_lower_bound_i_d_in_A = -5.0f,
     .setpoint_upper_bound_i_d_in_A = 5.0f,
     .setpoint_lower_bound_i_q_in_A = -5.0f,
@@ -46,6 +53,16 @@ struct uz_pmsm_control_configuration_t config_heidrive = {
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
+#if HEIDRIVE_LRC_PARAMETERS==1
+struct uz_PMSM_t config_PMSM_heidrive = {
+    .R_ph_Ohm = 0.543f,
+    .Ld_Henry = 0.00132f,
+    .Lq_Henry = 0.00132f,
+    .Psi_PM_Vs = 0.0171f,
+    .polePairs = 3.0f,
+    .J_kg_m_squared = 0.000108f,
+    .I_max_Ampere = 10.8f};
+#else
 struct uz_PMSM_t config_PMSM_heidrive = {
     .R_ph_Ohm = 0.543f,
     .Ld_Henry = 0.00113f,
@@ -54,7 +71,7 @@ struct uz_PMSM_t config_PMSM_heidrive = {
     .polePairs = 3.0f,
     .J_kg_m_squared = 0.000108f,
     .I_max_Ampere = 10.8f};
-
+#endif
 struct uz_PMSM_flux_fitting_parameter_config_t heidrive_fitting = {0};
 
 #if DUT_MACHINE == HEIDRIVE_D1
@@ -98,6 +115,52 @@ static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
 };
 static float bias2[NUMBER_OF_OUTPUTS] = {
 #include "../experiments/a290_sig_td3_int_more_obs_heidrive_250k_2tau/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+
+#if AGENT == 321
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a321_l1_td3_gaussian_heidrive_rlc_parameter/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a321_l1_td3_gaussian_heidrive_rlc_parameter/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a321_l1_td3_gaussian_heidrive_rlc_parameter/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a321_l1_td3_gaussian_heidrive_rlc_parameter/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+
+#if AGENT == 319
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a319_sidmoid_td3_gaussian_heidrive_rlc_parameter/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a319_sidmoid_td3_gaussian_heidrive_rlc_parameter/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a319_sidmoid_td3_gaussian_heidrive_rlc_parameter/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a319_sidmoid_td3_gaussian_heidrive_rlc_parameter/best_agent/ac_layer_out_bias.csv"
 };
 static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif
@@ -229,7 +292,7 @@ void init_heidrive_on_d1(void)
     Global_Data.dut.reference_values = uz_pmsm_control_get_reference_values(Global_Data.objects.d1_controller);
     Global_Data.dut.measurement_values = uz_pmsm_control_get_uz_pmsm_measurement_values(Global_Data.objects.d1_controller);
     Global_Data.dut.torque_constant = 3.0f / 2.0f * config_PMSM_heidrive.polePairs * config_PMSM_heidrive.Psi_PM_Vs;
-    Global_Data.profile.id_scale_in_A = 4.2f/2.0f / 4.2f;
+    Global_Data.profile.id_scale_in_A = 4.2f / 4.2f;
     Global_Data.profile.iq_scale_in_A = 4.2f;
     Global_Data.profile.speed_scale_in_rpm = 3000.0f;
 #else

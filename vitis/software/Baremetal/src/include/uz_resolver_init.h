@@ -4,3 +4,5 @@
 
 uz_resolver_pl_interface_t* initialize_resolver_pl_d4(void);
 uz_resolverIP_t* initialize_resolver_d4(void);
+uz_resolverIP_t *initialize_resolver_d4_1(void);
+uz_resolverIP_t *initialize_resolver_d4_2(void);

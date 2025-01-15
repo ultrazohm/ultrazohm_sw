@@ -19,10 +19,17 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .speed_controller_max_torque = 0.6f,
     .speed_controller_kp = 0.005f,
     .speed_controller_ki = 0.01f,
+#if EBM_LRC_PARAMETERS==1
+    .current_controller_d_kp = 1.0f,
+    .current_controller_d_ki = 753.33f,
+    .current_controller_q_kp = 1.6667f,
+    .current_controller_q_ki = 753.33f,
+#else
     .current_controller_d_kp = 1.4667f,
     .current_controller_d_ki = 700.0f,
     .current_controller_q_kp = 1.4667f,
     .current_controller_q_ki = 700.0f,
+#endif
     .setpoint_lower_bound_i_d_in_A = -15.0f,
     .setpoint_upper_bound_i_d_in_A = 0.5f,
     .setpoint_lower_bound_i_q_in_A = -15.0f,
@@ -45,6 +52,16 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
+#if EBM_LRC_PARAMETERS==1
+struct uz_PMSM_t config_PMSM_ebm = {
+    .R_ph_Ohm = 0.226f,
+    .Ld_Henry = 0.0003f,
+    .Lq_Henry = 0.0005f,
+    .Psi_PM_Vs = 0.0103f,
+    .polePairs = 4.0f,
+    .J_kg_m_squared = 0.000084f,
+    .I_max_Ampere = 20.0f};
+#else
 struct uz_PMSM_t config_PMSM_ebm = {
     .R_ph_Ohm = 0.21f,
     .Ld_Henry = 0.00044f,
@@ -53,6 +70,7 @@ struct uz_PMSM_t config_PMSM_ebm = {
     .polePairs = 4.0f,
     .J_kg_m_squared = 0.000084f,
     .I_max_Ampere = 20.0f};
+#endif
 float PMSM_rated_current_ebm = 8.6f;
 
 struct uz_PMSM_flux_fitting_parameter_config_t ebm_fitting = {0};
@@ -98,6 +116,50 @@ static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
 };
 static float bias2[NUMBER_OF_OUTPUTS] = {
 #include "../experiments/a218_sidmoid_td3_gaussian_ebmpabst/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 320
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a320_l1_td3_gaussian_ebmpabst_rlc_parameter/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a320_l1_td3_gaussian_ebmpabst_rlc_parameter/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a320_l1_td3_gaussian_ebmpabst_rlc_parameter/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a320_l1_td3_gaussian_ebmpabst_rlc_parameter/best_agent/ac_layer_out_bias.csv"
+};
+static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
+
+#if AGENT == 317
+#define NUMBER_OF_INPUTS 9
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+static float x[NUMBER_OF_INPUTS] = {0};
+static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a317_sidmoid_td3_gaussian_ebmpabst_rlc_parameter/best_agent/ac_layer1_weights.csv"
+};
+static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a317_sidmoid_td3_gaussian_ebmpabst_rlc_parameter/best_agent/ac_layer1_bias.csv"
+};
+static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a317_sidmoid_td3_gaussian_ebmpabst_rlc_parameter/best_agent/ac_layer_out_weights.csv"
+};
+static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a317_sidmoid_td3_gaussian_ebmpabst_rlc_parameter/best_agent/ac_layer_out_bias.csv"
 };
 static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif

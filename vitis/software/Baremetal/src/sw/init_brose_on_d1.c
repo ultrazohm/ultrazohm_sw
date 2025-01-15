@@ -20,10 +20,17 @@ struct uz_pmsm_control_configuration_t config_brose = {
     .speed_controller_kp = 0.01f,
     .speed_controller_ki = 0.1f,
 #if BROSE_FIXED_PARAMETERS == 1
+    #if FOC_1_TAU == 1
+    .current_controller_d_kp = 0.275f,
+    .current_controller_d_ki = 145.0f,
+    .current_controller_q_kp = 0.325f,
+    .current_controller_q_ki = 145.0f,
+#else
     .current_controller_d_kp = 0.18333f,
     .current_controller_d_ki = 96.667f,
     .current_controller_q_kp = 0.21667f,
     .current_controller_q_ki = 96.667f,
+    #endif
 #else
     .current_controller_d_kp = 0.1,
     .current_controller_d_ki = 76.667f,

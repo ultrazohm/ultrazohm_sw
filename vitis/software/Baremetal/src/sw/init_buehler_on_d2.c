@@ -19,10 +19,17 @@ struct uz_pmsm_control_configuration_t config_buehler = {
     .speed_controller_max_torque = 0.6f,
     .speed_controller_kp = 0.0025f,
     .speed_controller_ki = 0.01f,
+#if FOC_1_TAU == 1
+    .current_controller_d_kp = 1.25f,
+    .current_controller_d_ki = 425.0f,
+    .current_controller_q_kp = 1.25f,
+    .current_controller_q_ki = 425.0f,
+#else
     .current_controller_d_kp = 0.83333f,
     .current_controller_d_ki = 283.33f,
     .current_controller_q_kp = 0.83333f,
     .current_controller_q_ki = 283.33f,
+#endif
     .setpoint_lower_bound_i_d_in_A = -15.0f,
     .setpoint_upper_bound_i_d_in_A = 0.5f,
     .setpoint_lower_bound_i_q_in_A = -15.0f,

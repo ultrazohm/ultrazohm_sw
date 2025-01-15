@@ -25,10 +25,17 @@ struct uz_pmsm_control_configuration_t config_heidrive = {
     .current_controller_q_kp = 4.4f,
     .current_controller_q_ki = 1810.0f,
 #else
-    .current_controller_d_kp = 3.77f,
-    .current_controller_d_ki = 1810.0f,
-    .current_controller_q_kp = 4.73f,
-    .current_controller_q_ki = 1810.0f,
+    #if FOC_1_TAU == 1
+    .current_controller_d_kp = 5.65f,
+    .current_controller_d_ki = 2715.0f,
+    .current_controller_q_kp = 7.1f,
+    .current_controller_q_ki = 2715.0f,
+    #else
+        .current_controller_d_kp = 3.77f,
+        .current_controller_d_ki = 1810.0f,
+        .current_controller_q_kp = 4.73f,
+        .current_controller_q_ki = 1810.0f,
+#endif
 #endif
     .setpoint_lower_bound_i_d_in_A = -5.0f,
     .setpoint_upper_bound_i_d_in_A = 5.0f,

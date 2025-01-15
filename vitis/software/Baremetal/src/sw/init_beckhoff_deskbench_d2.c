@@ -19,14 +19,21 @@ struct uz_pmsm_control_configuration_t config_beckhoff_deskbench_d2 = {
     .speed_controller_max_torque = 3.0f,
     .speed_controller_kp = 0.1f,
     .speed_controller_ki = 0.5f,
-	//    .current_controller_d_kp = 6.67f, // manual tuning based on 1tau delay
-	//    .current_controller_d_ki = 1700.0f,
-	//    .current_controller_q_kp = 6.67,
-	//    .current_controller_q_ki = 1700.0f,
-	    .current_controller_d_kp = 5.8333f,
-	    .current_controller_d_ki = 1500.0f,
-	    .current_controller_q_kp = 5.8333f,
-	    .current_controller_q_ki = 1500.0f,
+//    .current_controller_d_kp = 6.67f, // manual tuning based on 1tau delay
+//    .current_controller_d_ki = 1700.0f,
+//    .current_controller_q_kp = 6.67,
+//    .current_controller_q_ki = 1700.0f,
+#if FOC_1_TAU == 1
+    .current_controller_d_kp = 8.75f,
+    .current_controller_d_ki = 2250.0f,
+    .current_controller_q_kp = 8.75f,
+    .current_controller_q_ki = 2250.0f,
+#else
+    .current_controller_d_kp = 5.8333f,
+    .current_controller_d_ki = 1500.0f,
+    .current_controller_q_kp = 5.8333f,
+    .current_controller_q_ki = 1500.0f,
+#endif
     .setpoint_lower_bound_i_d_in_A = -10.0f,
     .setpoint_upper_bound_i_d_in_A = 10.0f,
     .setpoint_lower_bound_i_q_in_A = -10.0f,
@@ -46,7 +53,7 @@ struct uz_pmsm_control_configuration_t config_beckhoff_deskbench_d2 = {
     .nonlinear_machine = false,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
-    .theta_sampling_compensation=1.0f,
+    .theta_sampling_compensation = 1.0f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 

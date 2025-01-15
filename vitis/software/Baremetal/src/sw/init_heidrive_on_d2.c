@@ -19,10 +19,17 @@ struct uz_pmsm_control_configuration_t config_heidrive_d2 = {
     .speed_controller_max_torque = 1.3f,
     .speed_controller_kp = 0.001f,
     .speed_controller_ki = 0.005f,
+#if FOC_1_TAU == 1
+    .current_controller_d_kp = 5.65f,
+    .current_controller_d_ki = 2715.0f,
+    .current_controller_q_kp = 7.1f,
+    .current_controller_q_ki = 2715.0f,
+#else
     .current_controller_d_kp = 3.77f,
     .current_controller_d_ki = 1810.0f,
     .current_controller_q_kp = 4.73f,
     .current_controller_q_ki = 1810.0f,
+#endif
     .setpoint_lower_bound_i_d_in_A = -5.0f,
     .setpoint_upper_bound_i_d_in_A = 5.0f,
     .setpoint_lower_bound_i_q_in_A = -5.0f,
@@ -42,7 +49,7 @@ struct uz_pmsm_control_configuration_t config_heidrive_d2 = {
     .nonlinear_machine = false,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
-	.theta_sampling_compensation=0.0f,
+    .theta_sampling_compensation = 0.0f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 

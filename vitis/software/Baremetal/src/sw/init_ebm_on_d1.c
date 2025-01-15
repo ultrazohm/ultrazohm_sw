@@ -25,10 +25,17 @@ struct uz_pmsm_control_configuration_t config_ebm = {
     .current_controller_q_kp = 1.6667f,
     .current_controller_q_ki = 753.33f,
 #else
+    #if FOC_1_TAU == 1
+        .current_controller_d_kp =2.2f,
+        .current_controller_d_ki = 1050.0f,
+        .current_controller_q_kp =2.2f,
+        .current_controller_q_ki = 1050.0f,
+    #else
     .current_controller_d_kp = 1.4667f,
     .current_controller_d_ki = 700.0f,
     .current_controller_q_kp = 1.4667f,
     .current_controller_q_ki = 700.0f,
+#endif
 #endif
     .setpoint_lower_bound_i_d_in_A = -15.0f,
     .setpoint_upper_bound_i_d_in_A = 0.5f,

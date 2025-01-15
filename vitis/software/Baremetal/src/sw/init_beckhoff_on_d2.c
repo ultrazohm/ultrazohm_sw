@@ -23,10 +23,17 @@ struct uz_pmsm_control_configuration_t config_beckhoff = {
 //    .current_controller_d_ki = 1700.0f,
 //    .current_controller_q_kp = 6.67,
 //    .current_controller_q_ki = 1700.0f,
+#if FOC_1_TAU == 1
+    .current_controller_d_kp = 8.75f,
+    .current_controller_d_ki = 2250.0f,
+    .current_controller_q_kp = 8.75f,
+    .current_controller_q_ki = 2250.0f,
+#else
     .current_controller_d_kp = 5.8333f,
     .current_controller_d_ki = 1500.0f,
     .current_controller_q_kp = 5.8333f,
     .current_controller_q_ki = 1500.0f,
+#endif
     .setpoint_lower_bound_i_d_in_A = -5.0f,
     .setpoint_upper_bound_i_d_in_A = 0.5f,
     .setpoint_lower_bound_i_q_in_A = -5.0f,
@@ -46,7 +53,7 @@ struct uz_pmsm_control_configuration_t config_beckhoff = {
     .nonlinear_machine = false,
     .speed_actual_value_filter_cutoff_frequency = 0.0f,
     .use_rlcc = false,
-    .theta_sampling_compensation=1.0f,
+    .theta_sampling_compensation = 1.0f,
     .default_duty_cycle = {.DutyCycle_A = 0.0f, .DutyCycle_B = 0.0f, .DutyCycle_C = 0.0f},
 };
 
@@ -83,9 +90,6 @@ static float bias2[NUMBER_OF_OUTPUTS] = {
 };
 static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif
-
-
-
 
 #if AGENT == 216
 #define NUMBER_OF_INPUTS 9
@@ -151,10 +155,9 @@ static struct uz_rlcc_config_t config_rlc_beckhoff = {
     .max_modulation_index = 1.0f / 1.732050808f,
     .v_dc_rated_V = 48.0f,
     .i_rated_A = 8.0f,
-    .speed_rated_rpm = 1000.0f*4.0f,
+    .speed_rated_rpm = 1000.0f * 4.0f,
     .use_ip_core = false};
 #endif
-
 
 void init_beckhoff_on_d2(void)
 {

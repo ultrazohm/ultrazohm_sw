@@ -11,8 +11,8 @@
 typedef struct uz_parameterID_rc_t uz_parameterID_rc_t;
 
 struct uz_parameterID_rc_config_t {
-    float id_start_Amps;
-    float iq_start_Amps;
+    float abs_id_max_Amps ;
+    float abs_iq_max_Amps ;
     float n_start_rpm;
     float n_stop_rpm;
     uint32_t id_steps;

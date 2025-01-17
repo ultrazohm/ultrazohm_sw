@@ -40,8 +40,8 @@ uz_parameterID_rc_t* uz_parameterID_rc_init(struct uz_parameterID_rc_config_t in
     self->rc_state = rc_idle;
     self->rc_previous_state = rc_idle;
     self->max_increment_counter.operatingpoints_idq = (2U * (self->internal_config.id_steps + 1U) * (self->internal_config.iq_steps + 1U)) - (self->internal_config.id_steps + 1U);
-    self->stepsize_increment.id_Amps = (2U * self->internal_config.id_start_Amps)/self->internal_config.id_steps;  
-    self->stepsize_increment.iq_Amps = (2U * self->internal_config.iq_start_Amps)/self->internal_config.iq_steps;
+    self->stepsize_increment.id_Amps = (self->internal_config.abs_id_max_Amps )/self->internal_config.id_steps;  
+    self->stepsize_increment.iq_Amps = (self->internal_config.abs_iq_max_Amps )/self->internal_config.iq_steps;
     self->stepsize_increment.n_rpm = (self->internal_config.n_stop_rpm - self->internal_config.n_start_rpm)/self->internal_config.n_steps;
     self->counter.increment_id = 0U;
     self->counter.increment_iq = 0U;
@@ -87,8 +87,8 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
 
             // sets values for idq depending on the increment counters, then switches to wait state
         case rc_set_idq:
-            self->set_values.id_set_Amps = self->internal_config.id_start_Amps - self->counter.increment_id * self->stepsize_increment.id_Amps;
-            self->set_values.iq_set_Amps = self->internal_config.iq_start_Amps - self->counter.increment_iq * self->stepsize_increment.iq_Amps;
+            self->set_values.id_set_Amps = 0.0f  - self->counter.increment_id * self->stepsize_increment.id_Amps;
+            self->set_values.iq_set_Amps = self->internal_config.abs_iq_max_Amps  - self->counter.increment_iq * self->stepsize_increment.iq_Amps;
             self->rc_previous_state = self->rc_state;
             self->rc_state = rc_wait;
             break;
@@ -181,10 +181,11 @@ void uz_parameterID_rc_set_next_operating_point_n(uz_parameterID_rc_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    if (self->internal_config.n_steps == 0U)
-    {
+    if (self->internal_config.n_steps == 0U){
         self->rc_state = rc_finished;
-    } else{
+    } else if (self->counter.operating_points_n == self->internal_config.n_steps){
+        self->rc_state = rc_finished;      
+    } else {
         self->counter.operating_points_n ++;
         self->set_values.n_set_rpm = self->internal_config.n_start_rpm + self->counter.operating_points_n * self->stepsize_increment.n_rpm;
         self->set_values.id_set_Amps = 0.0f;

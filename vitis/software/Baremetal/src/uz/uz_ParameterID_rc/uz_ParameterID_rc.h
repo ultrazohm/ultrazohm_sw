@@ -13,8 +13,6 @@ typedef struct uz_parameterID_rc_t uz_parameterID_rc_t;
 struct uz_parameterID_rc_config_t {
     float id_start_Amps;
     float iq_start_Amps;
-    float id_stop_Amps;
-    float iq_stop_Amps;
     float n_start_rpm;
     float n_stop_rpm;
     uint32_t id_steps;
@@ -38,9 +36,8 @@ struct uz_parameterID_rc_set_values_t{
 };
 
 struct uz_parameterID_rc_max_steps_t{
-    uint32_t motor;
-    uint32_t generator;
-
+    uint32_t operatingpoints_idq;
+    uint32_t operatingpoints_n;
 };
 
 struct uz_parameterid_rc_counter_t{
@@ -71,11 +68,6 @@ enum rc_state{
     rc_increment_n,
 };
 
-
-enum rc_mode{
-    motor,
-    generator,
-};
 
 
 uz_parameterID_rc_t* uz_parameterID_rc_init(struct uz_parameterID_rc_config_t initial_config);

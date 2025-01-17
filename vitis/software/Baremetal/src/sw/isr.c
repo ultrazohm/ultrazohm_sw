@@ -32,6 +32,7 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
+#include "../uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -57,6 +58,7 @@ struct uz_3ph_dq_t v_dq_ref_right = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_right = {0.0f};
 struct uz_DutyCycle_t dutycyc_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_right = {0.0f};
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------

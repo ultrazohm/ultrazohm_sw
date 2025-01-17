@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 
+
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -53,9 +54,22 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    const struct uz_parameterID_rc_config_t rc_meas_config = {
+      	.abs_id_max_Amps = 4.0f,
+      	.abs_iq_max_Amps = 4.0f,
+    	.n_start_rpm = 500.0,
+    	.n_stop_rpm = 1000.0,
+    	.id_steps = 4U,
+    	.iq_steps = 4U,
+    	.n_steps = 5U
+      };
+
+
     while (1)
     {
         switch (initialization_chain)
@@ -79,6 +93,7 @@ int main(void)
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
             Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
 			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
+			Global_Data.objects.rc_meas = uz_parameterID_rc_init(rc_meas_config);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

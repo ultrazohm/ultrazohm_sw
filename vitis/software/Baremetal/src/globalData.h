@@ -14,6 +14,7 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
+#include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -128,6 +129,7 @@ typedef struct _referenceAndSetValues_ {
 	float n_ref_left_filt;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
+	struct uz_parameterID_rc_ref_val_t rc_meas_output;
 } referenceAndSetValues;
 
 typedef struct{
@@ -151,6 +153,7 @@ typedef struct{
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
+	uz_parameterID_rc_t* rc_meas;
 	}object_pointers_t;
 
 

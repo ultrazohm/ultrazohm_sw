@@ -1,6 +1,7 @@
 #include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz/uz_setpoint/uz_setpoint.h"
 #include "../uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "../uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "../main.h"
 
 extern DS_Data Global_Data;

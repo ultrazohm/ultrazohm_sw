@@ -13,20 +13,20 @@ void MatrixMultiplication(float *A_input, float *B_input, float *C_output, uint_
 	const uint_fast32_t N = B_rows;
 	const uint_fast32_t K = B_columns;
 
-	float A[5] = {0};
-	float B[25] = {0};
-	float C[5] = {0};
+	float A[2] = {0};
+	float B[32] = {0};
+	float C[16] = {0};
 	//Burst read input
-	for(int i=0; i < 5; i++) {
+	for(int i=0; i < N; i++) {
 		A[i] = A_input[i];
 	}
 
-	for(int i=0; i < 25; i++) {
+	for(int i=0; i < (N*K); i++) {
 		B[i] = B_input[i];
 	}
 
 	for (uint_fast32_t m = 0; m < M; m++) {
-		float acc[25]={0};
+		float acc[32]={0};
 		for (uint_fast32_t k = 0; k < K; k++) {
 			for (uint_fast32_t n = 0; n < N; n++) {
 				acc[n] = A[(N * m) + n] * B[(K * n) + k];
@@ -38,7 +38,7 @@ void MatrixMultiplication(float *A_input, float *B_input, float *C_output, uint_
 	}
 
 	//Burst write output
-	for(int i=0; i < 5; i++) {
+	for(int i=0; i < K; i++) {
 		C_output[i] = C[i];
 	}
 }

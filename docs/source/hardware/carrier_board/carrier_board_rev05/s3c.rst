@@ -84,8 +84,10 @@ Functions
 - To-be-discussed functionalities
 	- "Request Safe State" signal from S³C to D slots: Potential triggers are supply rail monitors, ``FP_UsrSW3``, ``FrontpanelIO.ExternalSTOP``, ...
 
-	
-Statemachine for s3c
+
+.. _carrier_board_rev5_s3cfsm:
+
+Statemachine for S³C
 --------------------
 
 

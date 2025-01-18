@@ -6,7 +6,30 @@ These pages document the ongoing efforts towards the next revision of the UltraZ
 
 An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`label_carrier_board_overview`, whilst the additions of Rev04 are documented :ref:`here <carrier_board_rev04_features>`.
 
-Summary of new features and changes
+"What's different?" for Rev04 Users
+-----------------------------------
+
+* Power-on/off: As long as the power switch on the backpanel is on, the UltraZohm can be
+	* switched on by briefly pushing the "Power" button on the frontpanel, and
+	* switched off by holding the "Power" button for (at least) 2 seconds.
+* Ethernet: Connect your PC running the Javascope to "LAN 0" on the frontpanel
+* Note that the 24V rails sent to the adapter cards are now e-fused; if an overcurrent occurs, the rail of the affected card is disabled and remains so until a powercycle
+* The D-slot CPLDs no longer are programmed via a dedicated debug module and, thus, USB cable; instead, SoM and CPLD JTAGs are integrated, which enables CPLD programming via their :ref:`dedicated channel <label_cpld_programming>` (see :ref:`uz_per_jtag` regarding a retrofit option for Rev04 and older systems)
+
+Hints for Operation and Troubleshooting
+---------------------------------------
+
+* The power button's color indicates the system status as follows
+	* Blue: System is (soft-)powered off - In longer periods of stand-by, it is recommended to fully disconnect the system from mains (by means of the backpanel switch)
+	* Green: System is powered on and operates as known from previous system/carrier revisions
+	* Blue: Warning (currently unused)
+	* Red: Hard (i.e., un-resettable) error - Push power button on frontpanel to acknowledge the error (and to prepare for a later power on the system)
+	* White: Soft (i.e., recoverable) error - Press the "Enable System" on the frontpanel to return to regular operation
+	* Cyan, magenta, white and yellow (also) serve as indicators during state transitions
+* For details on colors and S³C-internal sequencing, see :ref:`carrier_board_rev5_s3cfsm`
+* There now are three (physical) fuses, one in the 230V assembly on the backpanel and two (F1/F2) on the carrier itself (top right corner)
+
+Summary of new Features and Changes
 -----------------------------------
 
 .. figure:: img/rev05uzc-blockdia.png

@@ -6,7 +6,7 @@ Particularly to track the former ones, this page aggregates hyperlinks to the in
 As of 2024Q2, all this (obviously) still is work in progress...
 
 
-Associated repositories w/ toplevel issues
+Associated Repositories w/ toplevel issues
 ------------------------------------------
 
 * `CarrierBoard <https://bitbucket.org/ultrazohm/uz_carrierboard/issues?status=new&status=open&status=submitted&is_spam=!spam>`_
@@ -20,7 +20,7 @@ Associated repositories w/ toplevel issues
 * `Assembly_and_Commissioning <https://bitbucket.org/ultrazohm/assembly_and_commissioning/src/master/>`_ (no longer active?)
 
 
-Overview of change issues vs. repositories
+Overview of Change Issues vs. Repositories
 ------------------------------------------
 
 .. list-table:: Changeset Rev05-UZC
@@ -61,7 +61,7 @@ Overview of change issues vs. repositories
    * - Redesign front (and back?) panel
      - `130 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/130/>`_, `141 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/141/>`_
      - `FP8 <https://bitbucket.org/ultrazohm/uz_frontpanel/issues/8/>`_ / `9 <https://bitbucket.org/ultrazohm/uz_frontpanel/issues/9/>`_ / `10 <https://bitbucket.org/ultrazohm/uz_frontpanel/issues/10/>`_, `H16 <https://bitbucket.org/ultrazohm/housing/issues/16/>`_
-   * - Add system (fan connectors)
+   * - Add system fan (connectors)
      -
      - `H17 <https://bitbucket.org/ultrazohm/housing/issues/17/>`_
    * - Redesign isoGPIOs and make them available on panel

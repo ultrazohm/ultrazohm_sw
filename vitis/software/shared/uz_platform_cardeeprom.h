@@ -42,6 +42,7 @@
 #endif
 #define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
 	ENUMNAME(uz_platform_eeprom_group003models)																	/* Group 3: MZ */ \
+	ENUMITEM( 1,	UZP_HWGROUP_MZ_CARRIER,								"Carrier Board")						/*  */ \
 	ENUMITEM( 2,	UZP_HWGROUP_MZ_BREAKOUT,							"Breakout Board")						/* ... and *no* \ after the end of the last line! */
 #include "uz_enum/uz_numberedenum.h"
 

@@ -24,8 +24,7 @@ struct uz_parameterID_rc_ref_val_t {
     float id_ref_Amps;
     float iq_ref_Amps;
     float n_ref_rpm;
-    bool data_valid;
-    bool motor; 
+    uint32_t data_valid;
 };
 
 

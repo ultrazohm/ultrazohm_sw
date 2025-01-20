@@ -25,6 +25,9 @@ The following tutorial requires:
 - :ref:`Digital voltage card <digitalVoltage>` in slot D1.
 - Some sort of oscilloscope
 
+
+.. _linux_com:
+
 Guideline
 *********
 
@@ -64,6 +67,7 @@ Guideline
       //....
 
 #. Build the changes and flash the UltraZohm.
+
 #. Switch to the *Debug-View* in *Vitis*, select the *Vitis-Serial-Terminal*, click on the green **+**-Symbol and connect the serial port to the USB-port with which your JTAG-cabel is connected to the computer.
 
     * This connects the Vitis serial port with the UltraZohm.

@@ -292,12 +292,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_17):
 		data->av.snd_fld[17] = value;
 		uz_CurrentControl_set_Kp_id(data->objects.foc_current_dq, value);
+//		uz_PI_Controller_set_Kp(data->objects.ph_curr_ctrl, value); //i-sense calibration
 		data->av.Kp_id = value;
 			break;
 
 		case (Set_Send_Field_18):
 		data->av.snd_fld[18] = value;
 		uz_CurrentControl_set_Ki_id(data->objects.foc_current_dq, value);
+//		uz_PI_Controller_set_Ki(data->objects.ph_curr_ctrl, value);//i-sense calibration
 		data->av.Ki_id = value;
 			break;
 

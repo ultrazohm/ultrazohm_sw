@@ -105,6 +105,18 @@ void calc_angle_from_resolver_IP();
 // conversion defines for ADC readings
 //#define PHASE_CURRENT_CONV	16.75f
 #define PHASE_CURRENT_CONV	11.65f
+#define I_A1_GAIN			1.0144f
+#define I_A1_OFFSET			0.0731f
+#define I_B1_GAIN			1.0137f
+#define I_B1_OFFSET			0.1744f
+#define I_C1_GAIN			1.0143f
+#define I_C1_OFFSET			0.0376f
+#define I_A2_GAIN			1.0075f
+#define I_A2_OFFSET			0.1122f
+#define I_B2_GAIN			1.0136f
+#define I_B2_OFFSET			0.1629f
+#define I_C2_GAIN			1.0105f
+#define I_C2_OFFSET			0.1818f
 //#define DC_VOLT_CONV_1	140.27f
 #define DC_VOLT_CONV_1		99.35f
 //#define DC_VOLT_OFF_1		450.25f
@@ -163,6 +175,20 @@ void ISR_Control(void *data)
     Global_Data.av.i_b2 = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV;
     Global_Data.av.i_c2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_CURRENT_CONV;
     Global_Data.av.i_dc2 = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
+    // linear correction according to calibration data
+    Global_Data.av.i_a1_calib = Global_Data.av.i_a1-I_A1_GAIN*Global_Data.av.i_a1-I_A1_OFFSET;
+    Global_Data.av.i_b1_calib = Global_Data.av.i_b1-I_B1_GAIN*Global_Data.av.i_b1-I_B1_OFFSET;
+    Global_Data.av.i_c1_calib = Global_Data.av.i_c1-I_C1_GAIN*Global_Data.av.i_c1-I_C1_OFFSET;
+    Global_Data.av.i_a2_calib = Global_Data.av.i_a2-I_A2_GAIN*Global_Data.av.i_a2-I_A2_OFFSET;
+    Global_Data.av.i_b2_calib = Global_Data.av.i_b2-I_B2_GAIN*Global_Data.av.i_b2-I_B2_OFFSET;
+    Global_Data.av.i_c2_calib = Global_Data.av.i_c2-I_C2_GAIN*Global_Data.av.i_c2-I_C2_OFFSET;
+    Global_Data.av.i_a1 = Global_Data.av.i_a1 - Global_Data.av.i_a1_calib;
+    Global_Data.av.i_b1 = Global_Data.av.i_b1 - Global_Data.av.i_b1_calib;
+    Global_Data.av.i_c1 = Global_Data.av.i_c1 - Global_Data.av.i_c1_calib;
+    Global_Data.av.i_a2 = Global_Data.av.i_a2 - Global_Data.av.i_a2_calib;
+    Global_Data.av.i_b2 = Global_Data.av.i_b2 - Global_Data.av.i_b2_calib;
+    Global_Data.av.i_c2 = Global_Data.av.i_c2 - Global_Data.av.i_c2_calib;
+
     // convert ADC readings to voltages
     Global_Data.av.v_dc1 = Global_Data.aa.A1.me.ADC_A4 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
     Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * DC_VOLT_CONV_1 + DC_VOLT_OFF_1;
@@ -217,13 +243,13 @@ void ISR_Control(void *data)
     Global_Data.av.i_Y = six_ph_alphabeta.y;
 
     // VSD transform phase voltages
-    six_ph_voltages.a1 = Global_Data.av.v_a1;
-    six_ph_voltages.b1 = Global_Data.av.v_b1;
-    six_ph_voltages.c1 = Global_Data.av.v_c1;
-    six_ph_voltages.a2 = Global_Data.av.v_a2;
-    six_ph_voltages.b2 = Global_Data.av.v_b2;
-    six_ph_voltages.c2 = Global_Data.av.v_c2;
-    six_ph_alphabeta_volts = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_voltages);
+//    six_ph_voltages.a1 = Global_Data.av.v_a1;
+//    six_ph_voltages.b1 = Global_Data.av.v_b1;
+//    six_ph_voltages.c1 = Global_Data.av.v_c1;
+//    six_ph_voltages.a2 = Global_Data.av.v_a2;
+//    six_ph_voltages.b2 = Global_Data.av.v_b2;
+//    six_ph_voltages.c2 = Global_Data.av.v_c2;
+//    six_ph_alphabeta_volts = uz_transformation_asym30deg_6ph_abc_to_alphabeta(six_ph_voltages);
 
     // Park transform alpha/beta currents with positive turning, and XY currents with negative turning angle
     six_ph_dq = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta, Global_Data.av.pos_elec, 2*UZ_PIf-Global_Data.av.pos_elec);
@@ -233,11 +259,11 @@ void ISR_Control(void *data)
     Global_Data.av.i_y = six_ph_dq.y;
 
     // Park transform alpha/beta voltages with positive turning, and XY voltages with negative turning angle
-    six_ph_dq_volts = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta_volts, Global_Data.av.pos_elec, 2*UZ_PIf-Global_Data.av.pos_elec);
-    Global_Data.av.v_d = six_ph_dq_volts.d;
-    Global_Data.av.v_q = six_ph_dq_volts.q;
-    Global_Data.av.v_x = six_ph_dq_volts.x;
-    Global_Data.av.v_y = six_ph_dq_volts.y;
+//    six_ph_dq_volts = uz_transformation_asym30deg_6ph_alphabeta_XY_to_dq_xy(six_ph_alphabeta_volts, Global_Data.av.pos_elec, 2*UZ_PIf-Global_Data.av.pos_elec);
+//    Global_Data.av.v_d = six_ph_dq_volts.d;
+//    Global_Data.av.v_q = six_ph_dq_volts.q;
+//    Global_Data.av.v_x = six_ph_dq_volts.x;
+//    Global_Data.av.v_y = six_ph_dq_volts.y;
 
     // p.u. convert currents for control
     Global_Data.av.i_d_pu = Global_Data.av.i_d*inverse_base_val.IB;
@@ -287,13 +313,21 @@ void ISR_Control(void *data)
     {
     	if (Global_Data.rasv.a53_ctrl_off_on == false)
     	{
+
+//    		// i-sense calibration
+//        	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+//        	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+//        	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+//        	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+//        	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+//        	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
         // Start: Control algorithm - only if ultrazohm is in control state
 //    	Global_Data.av.speed_ref_rpm_filt = uz_signals_IIR_Filter_sample(Global_Data.objects.speed_ref_filt, Global_Data.av.speed_ref_rpm);
 //    	Global_Data.av.M_ref = uz_SpeedControl_sample(Global_Data.objects.speed_control, Global_Data.av.mechanicalRotorSpeedRADpS_ip, Global_Data.av.speed_ref_rpm_filt);
 //    	i_dq_ref = uz_SetPoint_sample(Global_Data.objects.setpoint, Global_Data.av.mechanicalRotorSpeedRADpS_ip, Global_Data.av.M_ref, Global_Data.av.v_dc1, i_dq_actual);
 
     	// dq PI current control
-    		//ATTENTION: commenteed out SV Linitation in CurrentControl!!!!
+    		//ATTENTION: commenteed out SV Limitation in CurrentControl!!!!
     	u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.foc_current_dq, i_dq_ref, i_dq_actual, Global_Data.av.v_dc1, Global_Data.av.electricalRotorSpeedRADpS);
     	Global_Data.av.u_dq_ref = u_dq_ref;
 
@@ -388,6 +422,9 @@ void ISR_Control(void *data)
     	//output2 = output2_spwm;
     	output1 = output1_dualsvm;
     	output2 = output2_dualsvm;
+
+    	//i-sense calibration
+//    	Global_Data.rasv.halfBridge6DutyCycle = uz_PI_Controller_sample(Global_Data.objects.ph_curr_ctrl, i_dq_ref.d, Global_Data.av.i_c2, dualsvm_clamped);
 
     	} // END if a53_ctrl_off_on
 

@@ -47,9 +47,9 @@ void update_speed_and_position_of_encoder_on_D3(DS_Data* const data){	// update 
 	data->av.mechanicalRotorSpeed_incre = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D3);
 
 	//low-pass filter of mechanical speed
-	static float speed_lpf_mem_in = 0.0f;
-	static float speed_lpf_mem_out = 0.0f;
-	data->av.mechanicalRotorSpeed_filtered_incre = LPF1(	data->av.mechanicalRotorSpeed_incre, &speed_lpf_mem_in, &speed_lpf_mem_out,
-			data->av.isr_samplerate_s, IncEncoderLPF_freq);
+//	static float speed_lpf_mem_in = 0.0f;
+//	static float speed_lpf_mem_out = 0.0f;
+//	data->av.mechanicalRotorSpeed_filtered_incre = LPF1(	data->av.mechanicalRotorSpeed_incre, &speed_lpf_mem_in, &speed_lpf_mem_out,
+//			data->av.isr_samplerate_s, IncEncoderLPF_freq);
 
 }

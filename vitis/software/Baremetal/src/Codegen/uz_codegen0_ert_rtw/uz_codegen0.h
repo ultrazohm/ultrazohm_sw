@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.18
+ * Model version                  : 2.21
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Oct 16 15:52:20 2024
+ * C/C++ source code generated on : Fri Jan 17 16:34:11 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -64,29 +64,29 @@
 typedef struct tag_RTM RT_MODEL;
 
 /* Custom Type definition for MATLAB Function: '<S1>/qp_solver' */
-#ifndef struct_tag_svV6yPD1e8CTJu8b18IprLB
-#define struct_tag_svV6yPD1e8CTJu8b18IprLB
+#ifndef struct_tag_sVm5xLhdFDU5OIlGg0pTc4E
+#define struct_tag_sVm5xLhdFDU5OIlGg0pTc4E
 
-struct tag_svV6yPD1e8CTJu8b18IprLB
+struct tag_sVm5xLhdFDU5OIlGg0pTc4E
 {
   real_T xstar[8];
   real_T fstar;
   real_T firstorderopt;
-  real_T lambda[9];
+  real_T lambda[10];
   int32_T state;
   real_T maxConstr;
   int32_T iterations;
   real_T searchDir[8];
 };
 
-#endif                                 /* struct_tag_svV6yPD1e8CTJu8b18IprLB */
+#endif                                 /* struct_tag_sVm5xLhdFDU5OIlGg0pTc4E */
 
-#ifndef typedef_svV6yPD1e8CTJu8b18IprLB
-#define typedef_svV6yPD1e8CTJu8b18IprLB
+#ifndef typedef_sVm5xLhdFDU5OIlGg0pTc4E
+#define typedef_sVm5xLhdFDU5OIlGg0pTc4E
 
-typedef struct tag_svV6yPD1e8CTJu8b18IprLB svV6yPD1e8CTJu8b18IprLB;
+typedef struct tag_sVm5xLhdFDU5OIlGg0pTc4E sVm5xLhdFDU5OIlGg0pTc4E;
 
-#endif                                 /* typedef_svV6yPD1e8CTJu8b18IprLB */
+#endif                                 /* typedef_sVm5xLhdFDU5OIlGg0pTc4E */
 
 #ifndef struct_tag_shohwUBaOGHF036TMzc1KEH
 #define struct_tag_shohwUBaOGHF036TMzc1KEH
@@ -116,35 +116,35 @@ typedef struct tag_shohwUBaOGHF036TMzc1KEH shohwUBaOGHF036TMzc1KEH;
 
 #endif                                 /* typedef_shohwUBaOGHF036TMzc1KEH */
 
-#ifndef struct_tag_s1hK3o0EyOqKKjEgDlbhqfF
-#define struct_tag_s1hK3o0EyOqKKjEgDlbhqfF
+#ifndef struct_tag_sSzLoP8tvZHiR1V2perTtWD
+#define struct_tag_sSzLoP8tvZHiR1V2perTtWD
 
-struct tag_s1hK3o0EyOqKKjEgDlbhqfF
+struct tag_sSzLoP8tvZHiR1V2perTtWD
 {
-  real_T FMat[64];
+  real_T FMat[81];
   int32_T ldm;
   int32_T ndims;
   int32_T info;
   real_T scaleFactor;
   boolean_T ConvexCheck;
   real_T regTol_;
-  real_T workspace_[384];
-  real_T workspace2_[384];
+  real_T workspace_[432];
+  real_T workspace2_[432];
 };
 
-#endif                                 /* struct_tag_s1hK3o0EyOqKKjEgDlbhqfF */
+#endif                                 /* struct_tag_sSzLoP8tvZHiR1V2perTtWD */
 
-#ifndef typedef_s1hK3o0EyOqKKjEgDlbhqfF
-#define typedef_s1hK3o0EyOqKKjEgDlbhqfF
+#ifndef typedef_sSzLoP8tvZHiR1V2perTtWD
+#define typedef_sSzLoP8tvZHiR1V2perTtWD
 
-typedef struct tag_s1hK3o0EyOqKKjEgDlbhqfF s1hK3o0EyOqKKjEgDlbhqfF;
+typedef struct tag_sSzLoP8tvZHiR1V2perTtWD sSzLoP8tvZHiR1V2perTtWD;
 
-#endif                                 /* typedef_s1hK3o0EyOqKKjEgDlbhqfF */
+#endif                                 /* typedef_sSzLoP8tvZHiR1V2perTtWD */
 
-#ifndef struct_tag_swcr9qLPQBiG4lNhaNdYq5G
-#define struct_tag_swcr9qLPQBiG4lNhaNdYq5G
+#ifndef struct_tag_stxriBK2jD81NCGacZ0b8HD
+#define struct_tag_stxriBK2jD81NCGacZ0b8HD
 
-struct tag_swcr9qLPQBiG4lNhaNdYq5G
+struct tag_stxriBK2jD81NCGacZ0b8HD
 {
   int32_T mConstr;
   int32_T mConstrOrig;
@@ -155,19 +155,19 @@ struct tag_swcr9qLPQBiG4lNhaNdYq5G
   int32_T ldA;
   real_T Aineq[56];
   real_T bineq[7];
-  real_T Aeq[8];
-  real_T beq;
+  real_T Aeq[16];
+  real_T beq[2];
   real_T lb[8];
   real_T ub[8];
   int32_T indexLB[8];
   int32_T indexUB[8];
   int32_T indexFixed[8];
   int32_T mEqRemoved;
-  int32_T indexEqRemoved;
-  real_T ATwset[72];
-  real_T bwset[9];
+  int32_T indexEqRemoved[2];
+  real_T ATwset[80];
+  real_T bwset[10];
   int32_T nActiveConstr;
-  real_T maxConstrWorkspace[9];
+  real_T maxConstrWorkspace[10];
   int32_T sizes[5];
   int32_T sizesNormal[5];
   int32_T sizesPhaseOne[5];
@@ -178,22 +178,22 @@ struct tag_swcr9qLPQBiG4lNhaNdYq5G
   int32_T isActiveIdxPhaseOne[6];
   int32_T isActiveIdxRegularized[6];
   int32_T isActiveIdxRegPhaseOne[6];
-  boolean_T isActiveConstr[9];
-  int32_T Wid[9];
-  int32_T Wlocalidx[9];
+  boolean_T isActiveConstr[10];
+  int32_T Wid[10];
+  int32_T Wlocalidx[10];
   int32_T nWConstr[5];
   int32_T probType;
   real_T SLACK0;
 };
 
-#endif                                 /* struct_tag_swcr9qLPQBiG4lNhaNdYq5G */
+#endif                                 /* struct_tag_stxriBK2jD81NCGacZ0b8HD */
 
-#ifndef typedef_swcr9qLPQBiG4lNhaNdYq5G
-#define typedef_swcr9qLPQBiG4lNhaNdYq5G
+#ifndef typedef_stxriBK2jD81NCGacZ0b8HD
+#define typedef_stxriBK2jD81NCGacZ0b8HD
 
-typedef struct tag_swcr9qLPQBiG4lNhaNdYq5G swcr9qLPQBiG4lNhaNdYq5G;
+typedef struct tag_stxriBK2jD81NCGacZ0b8HD stxriBK2jD81NCGacZ0b8HD;
 
-#endif                                 /* typedef_swcr9qLPQBiG4lNhaNdYq5G */
+#endif                                 /* typedef_stxriBK2jD81NCGacZ0b8HD */
 
 #ifndef struct_tag_sL9bDKomAYkxZSVrG9w6En
 #define struct_tag_sL9bDKomAYkxZSVrG9w6En
@@ -215,49 +215,49 @@ typedef struct tag_sL9bDKomAYkxZSVrG9w6En sL9bDKomAYkxZSVrG9w6En;
 
 #endif                                 /* typedef_sL9bDKomAYkxZSVrG9w6En */
 
-#ifndef struct_tag_sQyCFUyu0YXOk1LARsZMzaD
-#define struct_tag_sQyCFUyu0YXOk1LARsZMzaD
+#ifndef struct_tag_sCS11Pe0E6xKX8jGoaG4cLG
+#define struct_tag_sCS11Pe0E6xKX8jGoaG4cLG
 
-struct tag_sQyCFUyu0YXOk1LARsZMzaD
+struct tag_sCS11Pe0E6xKX8jGoaG4cLG
 {
   int32_T ldq;
-  real_T QR[72];
-  real_T Q[64];
-  int32_T jpvt[9];
+  real_T QR[90];
+  real_T Q[81];
+  int32_T jpvt[10];
   int32_T mrows;
   int32_T ncols;
-  real_T tau[8];
+  real_T tau[9];
   int32_T minRowCol;
   boolean_T usedPivoting;
 };
 
-#endif                                 /* struct_tag_sQyCFUyu0YXOk1LARsZMzaD */
+#endif                                 /* struct_tag_sCS11Pe0E6xKX8jGoaG4cLG */
 
-#ifndef typedef_sQyCFUyu0YXOk1LARsZMzaD
-#define typedef_sQyCFUyu0YXOk1LARsZMzaD
+#ifndef typedef_sCS11Pe0E6xKX8jGoaG4cLG
+#define typedef_sCS11Pe0E6xKX8jGoaG4cLG
 
-typedef struct tag_sQyCFUyu0YXOk1LARsZMzaD sQyCFUyu0YXOk1LARsZMzaD;
+typedef struct tag_sCS11Pe0E6xKX8jGoaG4cLG sCS11Pe0E6xKX8jGoaG4cLG;
 
-#endif                                 /* typedef_sQyCFUyu0YXOk1LARsZMzaD */
+#endif                                 /* typedef_sCS11Pe0E6xKX8jGoaG4cLG */
 
-#ifndef struct_tag_s9NoAX0P67ji2P1ZBafS3UG
-#define struct_tag_s9NoAX0P67ji2P1ZBafS3UG
+#ifndef struct_tag_snRDwUdgrIx9qNga56nZ8DE
+#define struct_tag_snRDwUdgrIx9qNga56nZ8DE
 
-struct tag_s9NoAX0P67ji2P1ZBafS3UG
+struct tag_snRDwUdgrIx9qNga56nZ8DE
 {
-  real_T workspace_double[72];
-  int32_T workspace_int[9];
-  int32_T workspace_sort[9];
+  real_T workspace_double[80];
+  int32_T workspace_int[10];
+  int32_T workspace_sort[10];
 };
 
-#endif                                 /* struct_tag_s9NoAX0P67ji2P1ZBafS3UG */
+#endif                                 /* struct_tag_snRDwUdgrIx9qNga56nZ8DE */
 
-#ifndef typedef_s9NoAX0P67ji2P1ZBafS3UG
-#define typedef_s9NoAX0P67ji2P1ZBafS3UG
+#ifndef typedef_snRDwUdgrIx9qNga56nZ8DE
+#define typedef_snRDwUdgrIx9qNga56nZ8DE
 
-typedef struct tag_s9NoAX0P67ji2P1ZBafS3UG s9NoAX0P67ji2P1ZBafS3UG;
+typedef struct tag_snRDwUdgrIx9qNga56nZ8DE snRDwUdgrIx9qNga56nZ8DE;
 
-#endif                                 /* typedef_s9NoAX0P67ji2P1ZBafS3UG */
+#endif                                 /* typedef_snRDwUdgrIx9qNga56nZ8DE */
 
 #ifndef struct_tag_s4lHOiXA0GHbse0IgoBY6ZF
 #define struct_tag_s4lHOiXA0GHbse0IgoBY6ZF
@@ -305,25 +305,24 @@ typedef struct tag_s4lHOiXA0GHbse0IgoBY6ZF s4lHOiXA0GHbse0IgoBY6ZF;
 
 /* Block signals and states (default storage) for system '<Root>' */
 typedef struct {
-  s1hK3o0EyOqKKjEgDlbhqfF CholRegManager;
-  swcr9qLPQBiG4lNhaNdYq5G WorkingSet;
-  sQyCFUyu0YXOk1LARsZMzaD QRManager;
-  s9NoAX0P67ji2P1ZBafS3UG memspace;
-  svV6yPD1e8CTJu8b18IprLB solution;
+  sSzLoP8tvZHiR1V2perTtWD CholRegManager;
+  stxriBK2jD81NCGacZ0b8HD WorkingSet;
+  sCS11Pe0E6xKX8jGoaG4cLG QRManager;
+  snRDwUdgrIx9qNga56nZ8DE memspace;
+  sVm5xLhdFDU5OIlGg0pTc4E solution;
   shohwUBaOGHF036TMzc1KEH QPObjective;
   s4lHOiXA0GHbse0IgoBY6ZF options;
   sL9bDKomAYkxZSVrG9w6En expl_temp;
-  real_T B_m[72];
+  real_T B_m[80];
   real_T dv[49];
-  real_T work[9];
+  real_T work[10];
   real_T x_tmp[7];
   real_T dv1[7];
   real_T dv2[7];
-  real_T d[64];
-  real_T work_c[9];
-  real_T vn1[9];
-  real_T vn2[9];
-  real_T work_k[8];
+  real_T work_c[10];
+  real_T vn1[10];
+  real_T vn2[10];
+  real_T work_k[9];
   real_T fval;
   real_T exitflag;
   real_T output_iterations;
@@ -351,19 +350,19 @@ typedef struct {
   real_T t;
   real_T constrViolation;
   real_T tol;
-  real_T qtb;
+  real_T temp_c;
   real_T temp2;
   real_T smax;
-  real_T c_c;
-  real_T constrViolation_f;
+  real_T c_f;
+  real_T tol_g;
+  real_T qtb;
   real_T d_c;
   real_T b_SCALED_REG_PRIMAL;
   real_T b_temp;
-  real_T tol_g;
   real_T e;
-  real_T c_c_g;
+  real_T c_c;
   real_T b_s;
-  real_T b_temp_m;
+  real_T b_temp_g;
   real_T roe;
   real_T absa;
   real_T absb;
@@ -372,6 +371,7 @@ typedef struct {
   real_T phaseOneCorrectionX;
   real_T phaseOneCorrectionP;
   real_T pk_corrected;
+  real_T constrViolation_m;
   real_T denomTol_n;
   real_T phaseOneCorrectionX_p;
   real_T phaseOneCorrectionP_l;
@@ -404,35 +404,35 @@ typedef struct {
   real32_T rtb_M_b[49];
   real32_T b_A_tmp[32];
   real32_T r[28];                      /* '<S1>/formulate_qp' */
-  real32_T A_n[16];
-  real32_T B_b[16];
+  real32_T A_minus_I[16];
+  real32_T B_n[16];
   real32_T fv[16];
-  real32_T E[8];
+  real32_T d_m[8];
   real32_T x_p[8];
-  real32_T A_ln[8];
-  real32_T x_opt[7];                   /* '<S1>/qp_solver' */
-  real32_T t_h[6];
-  real32_T tz[6];                      /* '<S1>/tz' */
-  real32_T D[4];
-  real32_T E_b[4];
+  real32_T A_b[8];
+  real32_T Gain1[7];                   /* '<S1>/Gain1' */
+  real32_T t_l[6];
+  real32_T d[6];                       /* '<S1>/t_to_d' */
+  real32_T d_obs[4];
+  real32_T d_m_h[4];
+  real32_T d_m_HC[4];
   real32_T v_t0[4];                    /* '<S1>/v_dqxy' */
-  real32_T m6[4];                      /* '<S1>/state_space_mdl' */
-  real32_T m1[4];                      /* '<S1>/state_space_mdl' */
-  real32_T m2[4];                      /* '<S1>/state_space_mdl' */
-  real32_T m3[4];                      /* '<S1>/state_space_mdl' */
-  real32_T m4[4];                      /* '<S1>/state_space_mdl' */
-  real32_T E_d[4];
-  real32_T E_e[4];
+  real32_T m6[4];                      /* '<S1>/current_gradient_prediction' */
+  real32_T m1[4];                      /* '<S1>/current_gradient_prediction' */
+  real32_T m2[4];                      /* '<S1>/current_gradient_prediction' */
+  real32_T m3[4];                      /* '<S1>/current_gradient_prediction' */
+  real32_T m4[4];                      /* '<S1>/current_gradient_prediction' */
+  real32_T m5[4];                      /* '<S1>/current_gradient_prediction' */
   real32_T w6theta_el;
-  real32_T smax_b;
   real32_T q;
   real32_T SinCos1_o2;                 /* '<S1>/SinCos1' */
   real32_T SinCos2_o1;                 /* '<S1>/SinCos2' */
+  real32_T SinCos2_o2;                 /* '<S1>/SinCos2' */
   real32_T rtb_v_t0_idx_2;
   real32_T rtb_v_t0_idx_3;
   real32_T rtb_i_dq_obs_idx_0;
-  real32_T rtb_e_dq_obs_idx_0;
-  real32_T rtb_e_xy_obs_idx_0;
+  real32_T rtb_d_dq_obs_idx_0;
+  real32_T rtb_d_xy_obs_idx_0;
   real32_T rtb_v_1_idx_pu_idx_1;
   real32_T rtb_v_1_idx_pu_idx_3;
   real32_T rtb_v_2_idx_pu_idx_0;
@@ -455,10 +455,15 @@ typedef struct {
   real32_T x0_idx_1;
   real32_T x0_idx_2;
   real32_T x0_idx_3;
-  real32_T A_tmp;
-  int32_T jpvt[9];
-  int32_T jpvt_j[9];
-  int32_T jpvt_f[9];
+  real32_T w6theta_el_tmp;
+  real32_T A_minus_I_tmp;
+  real32_T A_minus_I_tmp_b;
+  real32_T B_d;
+  real32_T B_e;
+  real32_T B_b;
+  real32_T B_j;
+  real32_T B_f;
+  int32_T jpvt[10];
   int32_T kBcol;
   int32_T d_j;
   int32_T ix;
@@ -499,66 +504,74 @@ typedef struct {
   int32_T b_i;
   int32_T jBcol;
   int32_T b_o;
+  int32_T nFixedConstr;
   int32_T nVar_n;
+  int32_T idxPosATwset;
+  int32_T nDepIneq;
+  int32_T k;
+  int32_T i_m;
+  int32_T minmn;
+  int32_T c_j_c;
+  int32_T ix_m;
+  int32_T iy_m;
+  int32_T k_j;
+  int32_T i_h;
+  int32_T minmn_c;
+  int32_T ii;
+  int32_T nVar_c;
   int32_T mTotalWorkingEq;
   int32_T offsetQR;
   int32_T offsetATw;
-  int32_T idx_row_m;
-  int32_T k;
+  int32_T idx_row_p;
+  int32_T k_p;
   int32_T totalRank;
-  int32_T ix_c;
-  int32_T iy_m;
-  int32_T k_m;
-  int32_T nfxd;
-  int32_T ii;
-  int32_T nmi;
-  int32_T pvt;
-  int32_T b_ix_j;
-  int32_T b_h;
-  int32_T i_c;
-  int32_T PROBTYPE_ORIG_c;
-  int32_T b_TYPE_p;
-  int32_T i_p;
-  int32_T nVar_tmp_a;
-  int32_T TYPE_tmp_e;
-  int32_T nVar_a;
+  int32_T ix_a;
+  int32_T iy_e;
+  int32_T PROBTYPE_ORIG_a;
+  int32_T b_TYPE_a;
+  int32_T i_i;
+  int32_T nVar_tmp_l;
+  int32_T TYPE_tmp_o;
+  int32_T nVar_o;
   int32_T mNull;
   int32_T nullStartIdx;
   int32_T b_A_maxDiag_idx;
-  int32_T ix_a;
+  int32_T ix_i;
   int32_T iac;
-  int32_T d_i;
-  int32_T ia_l;
-  int32_T b_ix_o;
+  int32_T d_f;
+  int32_T ia_i;
+  int32_T b_ix_f;
   int32_T b_jjA;
-  int32_T nFixedConstr;
-  int32_T nVar_o;
-  int32_T idxPosATwset;
-  int32_T nDepIneq;
-  int32_T k_i;
-  int32_T i_f;
+  int32_T b_g;
+  int32_T offsetQR_c;
+  int32_T offsetATw_o;
+  int32_T idx_col;
+  int32_T i_l;
+  int32_T b_idx;
   int32_T ar;
   int32_T b_ia;
-  int32_T iQR0_i;
+  int32_T iQR0_m;
+  int32_T b_idx_m;
+  int32_T k_c;
   int32_T idxDiag;
-  int8_T b_A_tmp_g[32];
-  int8_T b_A_tmp_c[32];
+  int8_T b_A_tmp_p[32];
+  int8_T b_A_tmp_e[32];
   int8_T act_sw_1[24];                 /* '<S1>/seq_2_act_sw_all' */
   int8_T act_sw_2[24];                 /* '<S1>/seq_2_act_sw_all' */
   int8_T act_sw_3[24];                 /* '<S1>/seq_2_act_sw_all' */
   int8_T act_sw_4[24];                 /* '<S1>/seq_2_act_sw_all' */
   int8_T act_sw_5[24];                 /* '<S1>/seq_2_act_sw_all' */
-  int8_T rtb_m6_tmp[16];
   int8_T ipiv[4];
+  int8_T d_o[64];
   boolean_T icLoad;                    /* '<S1>/Delay13' */
-  boolean_T icLoad_m;                  /* '<S1>/Delay1' */
+  boolean_T icLoad_f;                  /* '<S1>/Delay1' */
   boolean_T icLoad_l;                  /* '<S1>/Delay3' */
-  boolean_T icLoad_lv;                 /* '<S1>/Delay4' */
-  boolean_T icLoad_j;                  /* '<S1>/Delay5' */
-  boolean_T icLoad_o;                  /* '<S1>/Delay6' */
-  boolean_T icLoad_b;                  /* '<S1>/Delay7' */
-  boolean_T icLoad_a;                  /* '<S1>/Delay8' */
-  boolean_T icLoad_oa;                 /* '<S1>/Delay2' */
+  boolean_T icLoad_a;                  /* '<S1>/Delay4' */
+  boolean_T icLoad_f4;                 /* '<S1>/Delay5' */
+  boolean_T icLoad_ag;                 /* '<S1>/Delay6' */
+  boolean_T icLoad_i;                  /* '<S1>/Delay7' */
+  boolean_T icLoad_ik;                 /* '<S1>/Delay8' */
+  boolean_T icLoad_o;                  /* '<S1>/Delay2' */
   char_T expl_temp_f[10];
 } DW;
 
@@ -595,6 +608,8 @@ typedef struct {
   real32_T kalman_R;                   /* '<Root>/kalman_R' */
   real32_T kalman_Q1;                  /* '<Root>/kalman_Q1' */
   real32_T kalman_Q2;                  /* '<Root>/kalman_Q2' */
+  real32_T Ts_over_tB;                 /* '<Root>/Ts_over_tB' */
+  real32_T tB_over_Ts;                 /* '<Root>/tB_over_Ts' */
 } ExtU;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -618,10 +633,17 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
 /*-
  * These blocks were eliminated from the model due to optimizations:
  *
+ * Block '<S1>/Delay14' : Unused code path elimination
+ * Block '<S1>/Display' : Unused code path elimination
  * Block '<S1>/Kalman_Observer' : Unused code path elimination
- * Block '<S1>/Scope1' : Unused code path elimination
+ * Block '<S1>/Sum of Elements' : Unused code path elimination
+ * Block '<S1>/Sum1' : Unused code path elimination
+ * Block '<S1>/d_obs' : Unused code path elimination
+ * Block '<S1>/delay_vs_measured' : Unused code path elimination
+ * Block '<S1>/delta_delay' : Unused code path elimination
  * Block '<S1>/duty_opt' : Unused code path elimination
- * Block '<S1>/e_obs' : Unused code path elimination
+ * Block '<S1>/t_opt' : Unused code path elimination
+ * Block '<S1>/volts' : Unused code path elimination
  * Block '<S1>/Data Type Conversion' : Eliminate redundant data type conversion
  * Block '<S1>/Data Type Conversion1' : Eliminate redundant data type conversion
  * Block '<S1>/Data Type Conversion2' : Eliminate redundant data type conversion
@@ -650,14 +672,14 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  * '<S2>'   : 'uz_codegen/uz_codegen/MATLAB Function'
  * '<S3>'   : 'uz_codegen/uz_codegen/Observer'
  * '<S4>'   : 'uz_codegen/uz_codegen/act_sw_2_dqxy_volts_all'
- * '<S5>'   : 'uz_codegen/uz_codegen/deadbeat_solution'
- * '<S6>'   : 'uz_codegen/uz_codegen/delay_compensation_currents'
- * '<S7>'   : 'uz_codegen/uz_codegen/formulate_qp'
- * '<S8>'   : 'uz_codegen/uz_codegen/qp_solver'
- * '<S9>'   : 'uz_codegen/uz_codegen/seq_2_act_sw_all'
- * '<S10>'  : 'uz_codegen/uz_codegen/state_space_mdl'
- * '<S11>'  : 'uz_codegen/uz_codegen/tz'
- * '<S12>'  : 'uz_codegen/uz_codegen/tz_2_tph'
+ * '<S5>'   : 'uz_codegen/uz_codegen/current_gradient_prediction'
+ * '<S6>'   : 'uz_codegen/uz_codegen/d_2_ph'
+ * '<S7>'   : 'uz_codegen/uz_codegen/deadbeat_solution'
+ * '<S8>'   : 'uz_codegen/uz_codegen/delay_compensation_currents'
+ * '<S9>'   : 'uz_codegen/uz_codegen/formulate_qp'
+ * '<S10>'  : 'uz_codegen/uz_codegen/qp_solver'
+ * '<S11>'  : 'uz_codegen/uz_codegen/seq_2_act_sw_all'
+ * '<S12>'  : 'uz_codegen/uz_codegen/t_to_d'
  * '<S13>'  : 'uz_codegen/uz_codegen/v_dqxy'
  */
 

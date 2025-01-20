@@ -128,6 +128,8 @@ void Transfer_ipc_Intr_Handler(void *data)
 		codegenInstance.input.kalman_R = rpu_to_apu_user_data->kalman_R;
 		codegenInstance.input.kalman_Q1 = rpu_to_apu_user_data->kalman_Q1;
 		codegenInstance.input.kalman_Q2 = rpu_to_apu_user_data->kalman_Q2;
+		codegenInstance.input.Ts_over_tB = rpu_to_apu_user_data->Ts_over_tB;
+		codegenInstance.input.tB_over_Ts = rpu_to_apu_user_data->tB_over_Ts;
 
 		/* do your computations that you want to accelerate here... */
 		if (rpu_to_apu_user_data->a53_ctrl_off_on == true) {

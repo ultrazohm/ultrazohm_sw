@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.18
+ * Model version                  : 2.21
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Wed Oct 16 15:52:20 2024
+ * C/C++ source code generated on : Fri Jan 17 16:34:11 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -24,133 +24,137 @@
 extern real_T rt_hypotd(real_T u0, real_T u1);
 
 /* Forward declaration for local functions */
-static void factoryConstruct(s1hK3o0EyOqKKjEgDlbhqfF *obj);
-static real_T xnrm2(int32_T n, const real_T x[72], int32_T ix0, DW *rtDW);
-static real_T xzlarfg(int32_T n, real_T *alpha1, real_T x[72], int32_T ix0, DW
+static void factoryConstruct(sSzLoP8tvZHiR1V2perTtWD *obj);
+static real_T xnrm2(int32_T n, const real_T x[90], int32_T ix0, DW *rtDW);
+static real_T xzlarfg(int32_T n, real_T *alpha1, real_T x[90], int32_T ix0, DW
                       *rtDW);
-static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[72],
-                   int32_T ic0, real_T work[9], DW *rtDW);
-static void qrf(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
-                real_T tau[8], DW *rtDW);
-static void xzgeqp3(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T
-                    jpvt[9], real_T tau[8], DW *rtDW);
-static void computeQ_(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T nrows, DW *rtDW);
-static int32_T ComputeNumDependentEq_(sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
+static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[90],
+                   int32_T ic0, real_T work[10], DW *rtDW);
+static void qrf(real_T A[90], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
+                real_T tau[9], DW *rtDW);
+static void qrpf(real_T A[90], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
+                 real_T tau[9], int32_T jpvt[10], DW *rtDW);
+static void xzgeqp3(real_T A[90], int32_T ia0, int32_T m, int32_T n, int32_T
+                    jpvt[10], real_T tau[9], DW *rtDW);
+static void computeQ_(sCS11Pe0E6xKX8jGoaG4cLG *obj, int32_T nrows, DW *rtDW);
+static int32_T ComputeNumDependentEq_(sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, DW
   *rtDW);
-static void countsort(int32_T x[9], int32_T xLen, int32_T workspace[9], int32_T
-                      xMin, int32_T xMax);
-static void moveConstraint_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
+static void IndexOfDependentEq_(int32_T depIdx[10], int32_T nDep,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, int32_T mRows, int32_T nCols, DW *rtDW);
+static void countsort(int32_T x[10], int32_T xLen, int32_T workspace[10],
+                      int32_T xMin, int32_T xMax);
+static void moveConstraint_(stxriBK2jD81NCGacZ0b8HD *obj, int32_T
   idx_global_start, int32_T idx_global_dest);
-static void removeEqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T idx_global);
-static void RemoveDependentEq_(s9NoAX0P67ji2P1ZBafS3UG *memspace, int32_T
-  *nDepInd, swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD
+static void removeEqConstr(stxriBK2jD81NCGacZ0b8HD *obj, int32_T idx_global);
+static void RemoveDependentEq_(snRDwUdgrIx9qNga56nZ8DE *memspace, int32_T
+  *nDepInd, stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG
   *qrmanager, DW *rtDW);
-static void removeAllIneqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj);
-static void RemoveDependentIneq_(swcr9qLPQBiG4lNhaNdYq5G *workingset,
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s9NoAX0P67ji2P1ZBafS3UG *memspace, real_T
+static void removeAllIneqConstr(stxriBK2jD81NCGacZ0b8HD *obj);
+static void RemoveDependentIneq_(stxriBK2jD81NCGacZ0b8HD *workingset,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, snRDwUdgrIx9qNga56nZ8DE *memspace, real_T
   tolfactor, DW *rtDW);
-static void factorQR_e(sQyCFUyu0YXOk1LARsZMzaD *obj, const real_T A[72], int32_T
+static void factorQR_f(sCS11Pe0E6xKX8jGoaG4cLG *obj, const real_T A[80], int32_T
   mrows, int32_T ncols, int32_T ldA, DW *rtDW);
-static void factorQR(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T mrows, int32_T ncols,
+static void factorQR(sCS11Pe0E6xKX8jGoaG4cLG *obj, int32_T mrows, int32_T ncols,
                      DW *rtDW);
 static void xgemv(int32_T m, int32_T n, const real_T A[56], int32_T lda, const
-                  real_T x[72], real_T y[9], DW *rtDW);
-static void xgemv_j(int32_T m, int32_T n, const real_T A[8], int32_T lda, const
-                    real_T x[72], real_T y[9], DW *rtDW);
-static real_T maxConstraintViolation(swcr9qLPQBiG4lNhaNdYq5G *obj, const real_T
-  x[72], DW *rtDW);
-static void xgemv_jm(int32_T m, int32_T n, const real_T A[56], int32_T lda,
-                     const real_T x[72], real_T y[9], DW *rtDW);
-static void xgemv_jmu(int32_T m, int32_T n, const real_T A[8], int32_T lda,
-                      const real_T x[72], real_T y[9], DW *rtDW);
-static real_T maxConstraintViolation_b(swcr9qLPQBiG4lNhaNdYq5G *obj, const
-  real_T x[72], DW *rtDW);
-static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
-  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
+                  real_T x[80], real_T y[10], DW *rtDW);
+static void xgemv_p(int32_T m, int32_T n, const real_T A[16], int32_T lda, const
+                    real_T x[80], real_T y[10], DW *rtDW);
+static real_T maxConstraintViolation(stxriBK2jD81NCGacZ0b8HD *obj, const real_T
+  x[80], DW *rtDW);
+static void xgemv_py(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+                     const real_T x[80], real_T y[10], DW *rtDW);
+static void xgemv_pym(int32_T m, int32_T n, const real_T A[16], int32_T lda,
+                      const real_T x[80], real_T y[10], DW *rtDW);
+static real_T maxConstraintViolation_p(stxriBK2jD81NCGacZ0b8HD *obj, const
+  real_T x[80], DW *rtDW);
+static void feasibleX0ForWorkingSet(real_T workspace[80], real_T xCurrent[8],
+  stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, DW
   *rtDW);
-static void xgemv_jmup(int32_T m, int32_T n, const real_T A[56], int32_T lda,
-  const real_T x[8], real_T y[9], DW *rtDW);
-static void xgemv_jmupc(int32_T m, int32_T n, const real_T A[8], int32_T lda,
-  const real_T x[8], real_T y[9], DW *rtDW);
-static real_T maxConstraintViolation_b0(swcr9qLPQBiG4lNhaNdYq5G *obj, const
+static void xgemv_pyma(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+  const real_T x[8], real_T y[10], DW *rtDW);
+static void xgemv_pyma2(int32_T m, int32_T n, const real_T A[16], int32_T lda,
+  const real_T x[8], real_T y[10], DW *rtDW);
+static real_T maxConstraintViolation_pn(stxriBK2jD81NCGacZ0b8HD *obj, const
   real_T x[8], DW *rtDW);
-static void PresolveWorkingSet(svV6yPD1e8CTJu8b18IprLB *solution,
-  s9NoAX0P67ji2P1ZBafS3UG *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW *rtDW);
-static void modifyOverheadPhaseOne_(swcr9qLPQBiG4lNhaNdYq5G *obj);
-static void setProblemType(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T PROBLEM_TYPE);
+static void PresolveWorkingSet(sVm5xLhdFDU5OIlGg0pTc4E *solution,
+  snRDwUdgrIx9qNga56nZ8DE *memspace, stxriBK2jD81NCGacZ0b8HD *workingset,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, DW *rtDW);
+static void modifyOverheadPhaseOne_(stxriBK2jD81NCGacZ0b8HD *obj);
+static void setProblemType(stxriBK2jD81NCGacZ0b8HD *obj, int32_T PROBLEM_TYPE);
 static void linearForm_(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
-  workspace[72], const real_T H[49], const real_T f[7], const real_T x[8]);
+  workspace[80], const real_T H[49], const real_T f[7], const real_T x[8]);
 static real_T computeFval(const shohwUBaOGHF036TMzc1KEH *obj, real_T workspace
-  [72], const real_T H[49], const real_T f[7], const real_T x[8]);
-static void xgemv_jmupcy(int32_T m, int32_T n, const real_T A[49], int32_T lda,
+  [80], const real_T H[49], const real_T f[7], const real_T x[8]);
+static void xgemv_pyma2z(int32_T m, int32_T n, const real_T A[49], int32_T lda,
   const real_T x[8], real_T y[7]);
 static void computeGrad_StoreHx(shohwUBaOGHF036TMzc1KEH *obj, const real_T H[49],
   const real_T f[7], const real_T x[8]);
 static real_T computeFval_ReuseHx(const shohwUBaOGHF036TMzc1KEH *obj, real_T
-  workspace[72], const real_T f[7], const real_T x[8]);
+  workspace[80], const real_T f[7], const real_T x[8]);
 static void printHeader(void);
 static void printInitialInfo(int32_T PROBLEM_TYPE, real_T solution_fstar,
   int32_T solution_iterations, int32_T workingset_nActiveConstr);
 static void xrotg(real_T *a, real_T *b, real_T *c, real_T *s, DW *rtDW);
-static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW);
-static void computeProjectedHessian(const real_T H[49], s1hK3o0EyOqKKjEgDlbhqfF *
-  cholmanager, const sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s9NoAX0P67ji2P1ZBafS3UG
+static void deleteColMoveEnd(sCS11Pe0E6xKX8jGoaG4cLG *obj, int32_T idx, DW *rtDW);
+static void computeProjectedHessian(const real_T H[49], sSzLoP8tvZHiR1V2perTtWD *
+  cholmanager, const sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, snRDwUdgrIx9qNga56nZ8DE
   *memspace, DW *rtDW);
-static int32_T ixamax(int32_T n, const real_T x[64], int32_T incx);
-static void fullColLDL2_(s1hK3o0EyOqKKjEgDlbhqfF *obj, int32_T LD_offset,
+static int32_T ixamax(int32_T n, const real_T x[81], int32_T incx);
+static void fullColLDL2_(sSzLoP8tvZHiR1V2perTtWD *obj, int32_T LD_offset,
   int32_T NColsRemain, real_T REG_PRIMAL);
-static void xgemv_jmupcyx(int32_T m, int32_T n, const real_T A[64], int32_T ia0,
-  int32_T lda, const real_T x[72], real_T y[8]);
-static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution,
-  s9NoAX0P67ji2P1ZBafS3UG *memspace, const sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
-  s1hK3o0EyOqKKjEgDlbhqfF *cholmanager, const shohwUBaOGHF036TMzc1KEH *objective,
+static void xgemv_pyma2zx(int32_T m, int32_T n, const real_T A[81], int32_T ia0,
+  int32_T lda, const real_T x[80], real_T y[8]);
+static void compute_deltax(const real_T H[49], sVm5xLhdFDU5OIlGg0pTc4E *solution,
+  snRDwUdgrIx9qNga56nZ8DE *memspace, const sCS11Pe0E6xKX8jGoaG4cLG *qrmanager,
+  sSzLoP8tvZHiR1V2perTtWD *cholmanager, const shohwUBaOGHF036TMzc1KEH *objective,
   DW *rtDW);
-static real_T xnrm2_g(int32_T n, const real_T x[8]);
-static void xgemv_jmupcyxs(int32_T m, int32_T n, const real_T A[56], int32_T lda,
-  const real_T x[8], real_T y[72]);
-static void xgemv_jmupcyxsk(int32_T m, int32_T n, const real_T A[56], int32_T
-  lda, const real_T x[8], real_T y[72]);
+static real_T xnrm2_j(int32_T n, const real_T x[8]);
+static void xgemv_pyma2zxi(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+  const real_T x[8], real_T y[80]);
+static void xgemv_pyma2zxid(int32_T m, int32_T n, const real_T A[56], int32_T
+  lda, const real_T x[8], real_T y[80]);
 static void ratiotest(const real_T solution_xstar[8], const real_T
-                      solution_searchDir[8], real_T workspace[72], int32_T
+                      solution_searchDir[8], real_T workspace[80], int32_T
                       workingset_nVar, int32_T workingset_ldA, const real_T
                       workingset_Aineq[56], const real_T workingset_bineq[7],
                       const real_T workingset_lb[8], const real_T workingset_ub
                       [8], const int32_T workingset_indexLB[8], const int32_T
                       workingset_indexUB[8], const int32_T workingset_sizes[5],
                       const int32_T workingset_isActiveIdx[6], const boolean_T
-                      workingset_isActiveConstr[9], const int32_T
+                      workingset_isActiveConstr[10], const int32_T
                       workingset_nWConstr[5], boolean_T isPhaseOne, real_T
                       tolcon, real_T *toldelta, real_T toltau, real_T *alpha,
                       boolean_T *newBlocking, int32_T *constrType, int32_T
                       *constrIdx, DW *rtDW);
 static void feasibleratiotest(const real_T solution_xstar[8], const real_T
-  solution_searchDir[8], real_T workspace[72], int32_T workingset_nVar, int32_T
+  solution_searchDir[8], real_T workspace[80], int32_T workingset_nVar, int32_T
   workingset_ldA, const real_T workingset_Aineq[56], const real_T
   workingset_bineq[7], const real_T workingset_lb[8], const real_T
   workingset_ub[8], const int32_T workingset_indexLB[8], const int32_T
   workingset_indexUB[8], const int32_T workingset_sizes[5], const int32_T
-  workingset_isActiveIdx[6], const boolean_T workingset_isActiveConstr[9], const
-  int32_T workingset_nWConstr[5], boolean_T isPhaseOne, real_T tolcon, real_T
-  *alpha, boolean_T *newBlocking, int32_T *constrType, int32_T *constrIdx, DW
-  *rtDW);
-static void checkUnboundedOrIllPosed(svV6yPD1e8CTJu8b18IprLB *solution, const
+  workingset_isActiveIdx[6], const boolean_T workingset_isActiveConstr[10],
+  const int32_T workingset_nWConstr[5], boolean_T isPhaseOne, real_T tolcon,
+  real_T *alpha, boolean_T *newBlocking, int32_T *constrType, int32_T *constrIdx,
+  DW *rtDW);
+static void checkUnboundedOrIllPosed(sVm5xLhdFDU5OIlGg0pTc4E *solution, const
   shohwUBaOGHF036TMzc1KEH *objective);
-static void addBoundToActiveSetMatrix_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
+static void addBoundToActiveSetMatrix_(stxriBK2jD81NCGacZ0b8HD *obj, int32_T
   TYPE, int32_T idx_local);
-static void compute_lambda(real_T workspace[72], svV6yPD1e8CTJu8b18IprLB
+static void compute_lambda(real_T workspace[80], sVm5xLhdFDU5OIlGg0pTc4E
   *solution, const shohwUBaOGHF036TMzc1KEH *objective, const
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager);
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager);
 static void checkStoppingAndUpdateFval(int32_T *activeSetChangeID, const real_T
-  f[7], svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *memspace,
-  const shohwUBaOGHF036TMzc1KEH *objective, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, real_T options_ObjectiveLimit, real_T
+  f[7], sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE *memspace,
+  const shohwUBaOGHF036TMzc1KEH *objective, stxriBK2jD81NCGacZ0b8HD *workingset,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, real_T options_ObjectiveLimit, real_T
   options_ConstraintTolerance, int32_T runTimeOptions_MaxIterations, real_T
   runTimeOptions_ConstrRelTolFact, boolean_T updateFval, DW *rtDW);
-static void computeFirstOrderOpt(svV6yPD1e8CTJu8b18IprLB *solution, const
+static void computeFirstOrderOpt(sVm5xLhdFDU5OIlGg0pTc4E *solution, const
   shohwUBaOGHF036TMzc1KEH *objective, int32_T workingset_nVar, int32_T
-  workingset_ldA, const real_T workingset_ATwset[72], int32_T
-  workingset_nActiveConstr, real_T workspace[72]);
+  workingset_ldA, const real_T workingset_ATwset[80], int32_T
+  workingset_nActiveConstr, real_T workspace[80]);
 static void printInfo(boolean_T newBlocking, int32_T PROBLEM_TYPE, real_T alpha,
                       real_T stepNorm, int32_T activeConstrChangedType, int32_T
                       localActiveConstrIdx, int32_T activeSetChangeID, real_T
@@ -159,45 +163,48 @@ static void printInfo(boolean_T newBlocking, int32_T PROBLEM_TYPE, real_T alpha,
                       int32_T workingset_indexLB[8], const int32_T
                       workingset_indexUB[8], int32_T workingset_nActiveConstr);
 static void iterate(const real_T H[49], const real_T f[7],
-                    svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG
-                    *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-                    sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s1hK3o0EyOqKKjEgDlbhqfF *
+                    sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE
+                    *memspace, stxriBK2jD81NCGacZ0b8HD *workingset,
+                    sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, sSzLoP8tvZHiR1V2perTtWD *
                     cholmanager, shohwUBaOGHF036TMzc1KEH *objective, boolean_T
                     options_IterDisplayQP, real_T options_PricingTolerance,
                     real_T options_ObjectiveLimit, real_T
                     options_ConstraintTolerance, real_T options_StepTolerance,
                     const sL9bDKomAYkxZSVrG9w6En runTimeOptions, DW *rtDW);
 static void phaseone(const real_T H[49], const real_T f[7],
-                     svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *
-                     memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-                     sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s1hK3o0EyOqKKjEgDlbhqfF
+                     sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE *
+                     memspace, stxriBK2jD81NCGacZ0b8HD *workingset,
+                     sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, sSzLoP8tvZHiR1V2perTtWD
                      *cholmanager, const sL9bDKomAYkxZSVrG9w6En *runTimeOptions,
                      shohwUBaOGHF036TMzc1KEH *objective, s4lHOiXA0GHbse0IgoBY6ZF
                      *options, DW *rtDW);
-static int32_T ComputeNumDependentEq__b(sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
-  const real_T beqf[9], int32_T mConstr, int32_T nVar, real_T tolfactor, DW
+static int32_T ComputeNumDependentEq__d(sCS11Pe0E6xKX8jGoaG4cLG *qrmanager,
+  const real_T beqf[10], int32_T mConstr, int32_T nVar, real_T tolfactor, DW
   *rtDW);
-static int32_T RemoveDependentEq__l(s9NoAX0P67ji2P1ZBafS3UG *memspace,
-  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+static void IndexOfDependentEq__i(int32_T depIdx[10], int32_T mFixed, int32_T
+  nDep, sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, int32_T mRows, int32_T nCols, DW
+  *rtDW);
+static int32_T RemoveDependentEq__b(snRDwUdgrIx9qNga56nZ8DE *memspace,
+  stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG *qrmanager,
   real_T tolfactor, DW *rtDW);
-static void PresolveWorkingSet_g(svV6yPD1e8CTJu8b18IprLB *solution,
-  s9NoAX0P67ji2P1ZBafS3UG *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, const s4lHOiXA0GHbse0IgoBY6ZF *options, DW
+static void PresolveWorkingSet_l(sVm5xLhdFDU5OIlGg0pTc4E *solution,
+  snRDwUdgrIx9qNga56nZ8DE *memspace, stxriBK2jD81NCGacZ0b8HD *workingset,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, const s4lHOiXA0GHbse0IgoBY6ZF *options, DW
   *rtDW);
-static boolean_T strcmp_h(const char_T a[8]);
-static void phaseone_e(const real_T H[49], const real_T f[7],
-  svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *memspace,
-  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
-  s1hK3o0EyOqKKjEgDlbhqfF *cholmanager, shohwUBaOGHF036TMzc1KEH *objective,
+static boolean_T strcmp_m(const char_T a[8]);
+static void phaseone_j(const real_T H[49], const real_T f[7],
+  sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE *memspace,
+  stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG *qrmanager,
+  sSzLoP8tvZHiR1V2perTtWD *cholmanager, shohwUBaOGHF036TMzc1KEH *objective,
   s4lHOiXA0GHbse0IgoBY6ZF *options, const sL9bDKomAYkxZSVrG9w6En *runTimeOptions,
   DW *rtDW);
 static void driver(const real_T H[49], const real_T f[7],
-                   svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG
-                   *memspace, s1hK3o0EyOqKKjEgDlbhqfF *cholmanager,
+                   sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE
+                   *memspace, sSzLoP8tvZHiR1V2perTtWD *cholmanager,
                    sL9bDKomAYkxZSVrG9w6En runTimeOptions,
-                   swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *
+                   stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG *
                    qrmanager, shohwUBaOGHF036TMzc1KEH *objective, DW *rtDW);
-static void linearForm__b(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
+static void linearForm__a(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
   workspace[8], const real_T H[49], const real_T f[7], const real_T x[8]);
 static void quadprog(const real_T H[49], const real_T f[7], const real_T x0[7],
                      real_T x[7], real_T *fval, real_T *exitflag, char_T
@@ -205,9 +212,9 @@ static void quadprog(const real_T H[49], const real_T f[7], const real_T x0[7],
                      output_constrviolation, real_T *output_iterations, DW *rtDW);
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void factoryConstruct(s1hK3o0EyOqKKjEgDlbhqfF *obj)
+static void factoryConstruct(sSzLoP8tvZHiR1V2perTtWD *obj)
 {
-  obj->ldm = 8;
+  obj->ldm = 9;
   obj->ndims = 0;
   obj->info = 0;
   obj->scaleFactor = 1.0;
@@ -216,7 +223,7 @@ static void factoryConstruct(s1hK3o0EyOqKKjEgDlbhqfF *obj)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static real_T xnrm2(int32_T n, const real_T x[72], int32_T ix0, DW *rtDW)
+static real_T xnrm2(int32_T n, const real_T x[90], int32_T ix0, DW *rtDW)
 {
   real_T y;
   int32_T k;
@@ -268,7 +275,7 @@ real_T rt_hypotd(real_T u0, real_T u1)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static real_T xzlarfg(int32_T n, real_T *alpha1, real_T x[72], int32_T ix0, DW
+static real_T xzlarfg(int32_T n, real_T *alpha1, real_T x[90], int32_T ix0, DW
                       *rtDW)
 {
   real_T tau;
@@ -330,8 +337,8 @@ static real_T xzlarfg(int32_T n, real_T *alpha1, real_T x[72], int32_T ix0, DW
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[72],
-                   int32_T ic0, real_T work[9], DW *rtDW)
+static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[90],
+                   int32_T ic0, real_T work[10], DW *rtDW)
 {
   int32_T coltop;
   int32_T d;
@@ -354,7 +361,7 @@ static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[72],
     lastc = n - 1;
     exitg2 = false;
     while ((!exitg2) && (lastc + 1 > 0)) {
-      coltop = (lastc << 3) + ic0;
+      coltop = lastc * 9 + ic0;
       jy = coltop;
       do {
         exitg1 = 0;
@@ -386,17 +393,17 @@ static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[72],
       }
 
       coltop = 0;
-      jy = (lastc << 3) + ic0;
-      for (iac = ic0; iac <= jy; iac += 8) {
+      jy = 9 * lastc + ic0;
+      for (iac = ic0; iac <= jy; iac += 9) {
         ix = iv0;
-        rtDW->c_c = 0.0;
+        rtDW->c_f = 0.0;
         d = (iac + lastv) - 1;
         for (ia = iac; ia <= d; ia++) {
-          rtDW->c_c += C[ia - 1] * C[ix - 1];
+          rtDW->c_f += C[ia - 1] * C[ix - 1];
           ix++;
         }
 
-        work[coltop] += rtDW->c_c;
+        work[coltop] += rtDW->c_f;
         coltop++;
       }
     }
@@ -406,32 +413,32 @@ static void xzlarf(int32_T m, int32_T n, int32_T iv0, real_T tau, real_T C[72],
       jy = 0;
       for (iac = 0; iac <= lastc; iac++) {
         if (work[jy] != 0.0) {
-          rtDW->c_c = work[jy] * -tau;
+          rtDW->c_f = work[jy] * -tau;
           ix = iv0;
           d = lastv + coltop;
           for (ia = coltop; ia < d; ia++) {
-            C[ia] += C[ix - 1] * rtDW->c_c;
+            C[ia] += C[ix - 1] * rtDW->c_f;
             ix++;
           }
         }
 
         jy++;
-        coltop += 8;
+        coltop += 9;
       }
     }
   }
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void qrf(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
-                real_T tau[8], DW *rtDW)
+static void qrf(real_T A[90], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
+                real_T tau[9], DW *rtDW)
 {
   int32_T i;
   int32_T ii;
   int32_T mmi;
-  memset(&rtDW->work[0], 0, 9U * sizeof(real_T));
+  memset(&rtDW->work[0], 0, 10U * sizeof(real_T));
   for (i = 0; i < nfxd; i++) {
-    ii = (((i << 3) + ia0) + i) - 1;
+    ii = ((i * 9 + ia0) + i) - 1;
     mmi = m - i;
     if (i + 1 < m) {
       rtDW->b_atmp = A[ii];
@@ -444,172 +451,189 @@ static void qrf(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
     if (i + 1 < n) {
       rtDW->b_atmp = A[ii];
       A[ii] = 1.0;
-      xzlarf(mmi, (n - i) - 1, ii + 1, tau[i], A, ii + 9, rtDW->work, rtDW);
+      xzlarf(mmi, (n - i) - 1, ii + 1, tau[i], A, ii + 10, rtDW->work, rtDW);
       A[ii] = rtDW->b_atmp;
     }
   }
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xzgeqp3(real_T A[72], int32_T ia0, int32_T m, int32_T n, int32_T
-                    jpvt[9], real_T tau[8], DW *rtDW)
+static void qrpf(real_T A[90], int32_T ia0, int32_T m, int32_T n, int32_T nfxd,
+                 real_T tau[9], int32_T jpvt[10], DW *rtDW)
 {
-  int32_T b_iy;
   int32_T i;
   int32_T ii_tmp;
-  int32_T minmn_tmp;
+  int32_T ix;
+  int32_T iy;
+  int32_T mmi;
+  int32_T nmi;
+  int32_T pvt;
   if (m < n) {
-    minmn_tmp = m;
+    rtDW->minmn_c = m;
   } else {
-    minmn_tmp = n;
+    rtDW->minmn_c = n;
   }
 
-  memset(&tau[0], 0, sizeof(real_T) << 3U);
-  if (minmn_tmp < 1) {
-    for (minmn_tmp = 0; minmn_tmp < n; minmn_tmp++) {
-      jpvt[minmn_tmp] = minmn_tmp + 1;
-    }
-  } else {
-    rtDW->nfxd = -1;
-    for (i = 0; i < n; i++) {
-      if (jpvt[i] != 0) {
-        rtDW->nfxd++;
-        if (i + 1 != rtDW->nfxd + 1) {
-          rtDW->nmi = ((i << 3) + ia0) - 1;
-          rtDW->pvt = ((rtDW->nfxd << 3) + ia0) - 1;
-          rtDW->b_ix_j = 0;
-          while (rtDW->b_ix_j <= m - 1) {
-            rtDW->smax = A[rtDW->nmi];
-            A[rtDW->nmi] = A[rtDW->pvt];
-            A[rtDW->pvt] = rtDW->smax;
-            rtDW->nmi++;
-            rtDW->pvt++;
-            rtDW->b_ix_j++;
-          }
+  memset(&rtDW->work_c[0], 0, 10U * sizeof(real_T));
+  memset(&rtDW->vn1[0], 0, 10U * sizeof(real_T));
+  memset(&rtDW->vn2[0], 0, 10U * sizeof(real_T));
+  i = ia0 + nfxd;
+  for (mmi = nfxd; mmi < n; mmi++) {
+    rtDW->vn1[mmi] = xnrm2(m - nfxd, A, mmi * 9 + i, rtDW);
+    rtDW->vn2[mmi] = rtDW->vn1[mmi];
+  }
 
-          jpvt[i] = jpvt[rtDW->nfxd];
-          jpvt[rtDW->nfxd] = i + 1;
-        } else {
-          jpvt[i] = i + 1;
-        }
-      } else {
-        jpvt[i] = i + 1;
-      }
-    }
-
-    if (rtDW->nfxd + 1 < minmn_tmp) {
-      rtDW->nfxd++;
+  for (i = nfxd; i < rtDW->minmn_c; i++) {
+    ii_tmp = i * 9 + ia0;
+    rtDW->ii = (ii_tmp + i) - 1;
+    nmi = n - i;
+    mmi = m - i;
+    if (nmi < 1) {
+      pvt = -1;
     } else {
-      rtDW->nfxd = minmn_tmp;
+      pvt = 0;
+      if (nmi > 1) {
+        ix = i;
+        rtDW->smax = fabs(rtDW->vn1[i]);
+        for (iy = 2; iy <= nmi; iy++) {
+          ix++;
+          rtDW->temp2 = fabs(rtDW->vn1[ix]);
+          if (rtDW->temp2 > rtDW->smax) {
+            pvt = iy - 1;
+            rtDW->smax = rtDW->temp2;
+          }
+        }
+      }
     }
 
-    qrf(A, ia0, m, n, rtDW->nfxd, tau, rtDW);
-    if (rtDW->nfxd < minmn_tmp) {
-      memset(&rtDW->work_c[0], 0, 9U * sizeof(real_T));
-      memset(&rtDW->vn1[0], 0, 9U * sizeof(real_T));
-      memset(&rtDW->vn2[0], 0, 9U * sizeof(real_T));
-      i = ia0 + rtDW->nfxd;
-      rtDW->ii = rtDW->nfxd;
-      while (rtDW->ii + 1 <= n) {
-        rtDW->vn1[rtDW->ii] = xnrm2(m - rtDW->nfxd, A, (rtDW->ii << 3) + i, rtDW);
-        rtDW->vn2[rtDW->ii] = rtDW->vn1[rtDW->ii];
-        rtDW->ii++;
+    pvt += i;
+    if (pvt + 1 != i + 1) {
+      ix = (pvt * 9 + ia0) - 1;
+      iy = ii_tmp - 1;
+      for (ii_tmp = 0; ii_tmp < m; ii_tmp++) {
+        rtDW->smax = A[ix];
+        A[ix] = A[iy];
+        A[iy] = rtDW->smax;
+        ix++;
+        iy++;
       }
 
-      while (rtDW->nfxd + 1 <= minmn_tmp) {
-        ii_tmp = (rtDW->nfxd << 3) + ia0;
-        rtDW->ii = (ii_tmp + rtDW->nfxd) - 1;
-        rtDW->nmi = n - rtDW->nfxd;
-        i = m - rtDW->nfxd;
-        if (rtDW->nmi < 1) {
-          rtDW->pvt = -1;
+      ix = jpvt[pvt];
+      jpvt[pvt] = jpvt[i];
+      jpvt[i] = ix;
+      rtDW->vn1[pvt] = rtDW->vn1[i];
+      rtDW->vn2[pvt] = rtDW->vn2[i];
+    }
+
+    if (i + 1 < m) {
+      rtDW->smax = A[rtDW->ii];
+      tau[i] = xzlarfg(mmi, &rtDW->smax, A, rtDW->ii + 2, rtDW);
+      A[rtDW->ii] = rtDW->smax;
+    } else {
+      tau[i] = 0.0;
+    }
+
+    if (i + 1 < n) {
+      rtDW->smax = A[rtDW->ii];
+      A[rtDW->ii] = 1.0;
+      xzlarf(mmi, nmi - 1, rtDW->ii + 1, tau[i], A, rtDW->ii + 10, rtDW->work_c,
+             rtDW);
+      A[rtDW->ii] = rtDW->smax;
+    }
+
+    rtDW->ii = i + 1;
+    while (rtDW->ii + 1 <= n) {
+      nmi = (ia0 + i) + rtDW->ii * 9;
+      if (rtDW->vn1[rtDW->ii] != 0.0) {
+        rtDW->smax = fabs(A[nmi - 1]) / rtDW->vn1[rtDW->ii];
+        rtDW->smax = 1.0 - rtDW->smax * rtDW->smax;
+        if (rtDW->smax < 0.0) {
+          rtDW->smax = 0.0;
+        }
+
+        rtDW->temp2 = rtDW->vn1[rtDW->ii] / rtDW->vn2[rtDW->ii];
+        rtDW->temp2 = rtDW->temp2 * rtDW->temp2 * rtDW->smax;
+        if (rtDW->temp2 <= 1.4901161193847656E-8) {
+          if (i + 1 < m) {
+            rtDW->vn1[rtDW->ii] = xnrm2(mmi - 1, A, nmi + 1, rtDW);
+            rtDW->vn2[rtDW->ii] = rtDW->vn1[rtDW->ii];
+          } else {
+            rtDW->vn1[rtDW->ii] = 0.0;
+            rtDW->vn2[rtDW->ii] = 0.0;
+          }
         } else {
-          rtDW->pvt = 0;
-          if (rtDW->nmi > 1) {
-            rtDW->b_ix_j = rtDW->nfxd;
-            rtDW->smax = fabs(rtDW->vn1[rtDW->nfxd]);
-            for (b_iy = 2; b_iy <= rtDW->nmi; b_iy++) {
-              rtDW->b_ix_j++;
-              rtDW->temp2 = fabs(rtDW->vn1[rtDW->b_ix_j]);
-              if (rtDW->temp2 > rtDW->smax) {
-                rtDW->pvt = b_iy - 1;
-                rtDW->smax = rtDW->temp2;
-              }
-            }
-          }
+          rtDW->vn1[rtDW->ii] *= sqrt(rtDW->smax);
         }
-
-        rtDW->pvt += rtDW->nfxd;
-        if (rtDW->pvt + 1 != rtDW->nfxd + 1) {
-          rtDW->b_ix_j = ((rtDW->pvt << 3) + ia0) - 1;
-          b_iy = ii_tmp - 1;
-          for (ii_tmp = 0; ii_tmp < m; ii_tmp++) {
-            rtDW->smax = A[rtDW->b_ix_j];
-            A[rtDW->b_ix_j] = A[b_iy];
-            A[b_iy] = rtDW->smax;
-            rtDW->b_ix_j++;
-            b_iy++;
-          }
-
-          rtDW->b_ix_j = jpvt[rtDW->pvt];
-          jpvt[rtDW->pvt] = jpvt[rtDW->nfxd];
-          jpvt[rtDW->nfxd] = rtDW->b_ix_j;
-          rtDW->vn1[rtDW->pvt] = rtDW->vn1[rtDW->nfxd];
-          rtDW->vn2[rtDW->pvt] = rtDW->vn2[rtDW->nfxd];
-        }
-
-        if (rtDW->nfxd + 1 < m) {
-          rtDW->smax = A[rtDW->ii];
-          tau[rtDW->nfxd] = xzlarfg(i, &rtDW->smax, A, rtDW->ii + 2, rtDW);
-          A[rtDW->ii] = rtDW->smax;
-        } else {
-          tau[rtDW->nfxd] = 0.0;
-        }
-
-        if (rtDW->nfxd + 1 < n) {
-          rtDW->smax = A[rtDW->ii];
-          A[rtDW->ii] = 1.0;
-          xzlarf(i, rtDW->nmi - 1, rtDW->ii + 1, tau[rtDW->nfxd], A, rtDW->ii +
-                 9, rtDW->work_c, rtDW);
-          A[rtDW->ii] = rtDW->smax;
-        }
-
-        rtDW->ii = rtDW->nfxd + 1;
-        while (rtDW->ii + 1 <= n) {
-          rtDW->nmi = (ia0 + rtDW->nfxd) + (rtDW->ii << 3);
-          if (rtDW->vn1[rtDW->ii] != 0.0) {
-            rtDW->smax = fabs(A[rtDW->nmi - 1]) / rtDW->vn1[rtDW->ii];
-            rtDW->smax = 1.0 - rtDW->smax * rtDW->smax;
-            if (rtDW->smax < 0.0) {
-              rtDW->smax = 0.0;
-            }
-
-            rtDW->temp2 = rtDW->vn1[rtDW->ii] / rtDW->vn2[rtDW->ii];
-            rtDW->temp2 = rtDW->temp2 * rtDW->temp2 * rtDW->smax;
-            if (rtDW->temp2 <= 1.4901161193847656E-8) {
-              if (rtDW->nfxd + 1 < m) {
-                rtDW->vn1[rtDW->ii] = xnrm2(i - 1, A, rtDW->nmi + 1, rtDW);
-                rtDW->vn2[rtDW->ii] = rtDW->vn1[rtDW->ii];
-              } else {
-                rtDW->vn1[rtDW->ii] = 0.0;
-                rtDW->vn2[rtDW->ii] = 0.0;
-              }
-            } else {
-              rtDW->vn1[rtDW->ii] *= sqrt(rtDW->smax);
-            }
-          }
-
-          rtDW->ii++;
-        }
-
-        rtDW->nfxd++;
       }
+
+      rtDW->ii++;
     }
   }
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void computeQ_(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T nrows, DW *rtDW)
+static void xzgeqp3(real_T A[90], int32_T ia0, int32_T m, int32_T n, int32_T
+                    jpvt[10], real_T tau[9], DW *rtDW)
+{
+  if (m < n) {
+    rtDW->minmn = m;
+  } else {
+    rtDW->minmn = n;
+  }
+
+  memset(&tau[0], 0, 9U * sizeof(real_T));
+  if (rtDW->minmn < 1) {
+    rtDW->minmn = 0;
+    while (rtDW->minmn <= n - 1) {
+      jpvt[rtDW->minmn] = rtDW->minmn + 1;
+      rtDW->minmn++;
+    }
+  } else {
+    rtDW->i_h = -1;
+    rtDW->c_j_c = 0;
+    while (rtDW->c_j_c <= n - 1) {
+      if (jpvt[rtDW->c_j_c] != 0) {
+        rtDW->i_h++;
+        if (rtDW->c_j_c + 1 != rtDW->i_h + 1) {
+          rtDW->ix_m = (rtDW->c_j_c * 9 + ia0) - 1;
+          rtDW->iy_m = (rtDW->i_h * 9 + ia0) - 1;
+          rtDW->k_j = 0;
+          while (rtDW->k_j <= m - 1) {
+            rtDW->temp_c = A[rtDW->ix_m];
+            A[rtDW->ix_m] = A[rtDW->iy_m];
+            A[rtDW->iy_m] = rtDW->temp_c;
+            rtDW->ix_m++;
+            rtDW->iy_m++;
+            rtDW->k_j++;
+          }
+
+          jpvt[rtDW->c_j_c] = jpvt[rtDW->i_h];
+          jpvt[rtDW->i_h] = rtDW->c_j_c + 1;
+        } else {
+          jpvt[rtDW->c_j_c] = rtDW->c_j_c + 1;
+        }
+      } else {
+        jpvt[rtDW->c_j_c] = rtDW->c_j_c + 1;
+      }
+
+      rtDW->c_j_c++;
+    }
+
+    if (rtDW->i_h + 1 < rtDW->minmn) {
+      rtDW->i_h++;
+    } else {
+      rtDW->i_h = rtDW->minmn;
+    }
+
+    qrf(A, ia0, m, n, rtDW->i_h, tau, rtDW);
+    if (rtDW->i_h < rtDW->minmn) {
+      qrpf(A, ia0, m, n, rtDW->i_h, tau, jpvt, rtDW);
+    }
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void computeQ_(sCS11Pe0E6xKX8jGoaG4cLG *obj, int32_T nrows, DW *rtDW)
 {
   int32_T b_ia;
   int32_T b_ix;
@@ -649,7 +673,7 @@ static void computeQ_(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T nrows, DW *rtDW)
     }
 
     itau = obj->minRowCol - 1;
-    memset(&rtDW->work_k[0], 0, sizeof(real_T) << 3U);
+    memset(&rtDW->work_k[0], 0, 9U * sizeof(real_T));
     for (i = obj->minRowCol; i >= 1; i--) {
       iaii = ((i - 1) * iQR0 + i) - 1;
       if (i < nrows) {
@@ -754,7 +778,7 @@ static void computeQ_(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T nrows, DW *rtDW)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static int32_T ComputeNumDependentEq_(sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
+static int32_T ComputeNumDependentEq_(sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, DW
   *rtDW)
 {
   int32_T numDependent;
@@ -765,12 +789,12 @@ static int32_T ComputeNumDependentEq_(sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
   }
 
   qrmanager->usedPivoting = true;
-  qrmanager->mrows = 1;
+  qrmanager->mrows = 2;
   qrmanager->ncols = 7;
-  qrmanager->minRowCol = 1;
-  xzgeqp3(qrmanager->QR, 1, 1, 7, qrmanager->jpvt, qrmanager->tau, rtDW);
-  rtDW->idxDiag = 1;
-  while ((rtDW->idxDiag > 0) && (fabs(qrmanager->QR[rtDW->idxDiag - 1]) <
+  qrmanager->minRowCol = 2;
+  xzgeqp3(qrmanager->QR, 1, 2, 7, qrmanager->jpvt, qrmanager->tau, rtDW);
+  rtDW->idxDiag = qrmanager->ldq + 1;
+  while ((rtDW->idxDiag + 1 > 0) && (fabs(qrmanager->QR[rtDW->idxDiag]) <
           1.5543122344752192E-13)) {
     rtDW->idxDiag = (rtDW->idxDiag - qrmanager->ldq) - 1;
     numDependent++;
@@ -781,7 +805,7 @@ static int32_T ComputeNumDependentEq_(sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
     rtDW->idxDiag = 0;
     exitg1 = false;
     while ((!exitg1) && (rtDW->idxDiag <= numDependent - 1)) {
-      if (fabs(qrmanager->Q[qrmanager->ldq * -rtDW->idxDiag]) >=
+      if (fabs(qrmanager->Q[(1 - rtDW->idxDiag) * qrmanager->ldq] * 0.5) >=
           1.5543122344752192E-13) {
         numDependent = -1;
         exitg1 = true;
@@ -795,8 +819,43 @@ static int32_T ComputeNumDependentEq_(sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void countsort(int32_T x[9], int32_T xLen, int32_T workspace[9], int32_T
-                      xMin, int32_T xMax)
+static void IndexOfDependentEq_(int32_T depIdx[10], int32_T nDep,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, int32_T mRows, int32_T nCols, DW *rtDW)
+{
+  rtDW->b_idx = 0;
+  while (rtDW->b_idx <= nCols - 1) {
+    qrmanager->jpvt[rtDW->b_idx] = 0;
+    rtDW->b_idx++;
+  }
+
+  if (mRows * nCols == 0) {
+    qrmanager->mrows = mRows;
+    qrmanager->ncols = nCols;
+    qrmanager->minRowCol = 0;
+  } else {
+    qrmanager->usedPivoting = true;
+    qrmanager->mrows = mRows;
+    qrmanager->ncols = nCols;
+    if (mRows < nCols) {
+      qrmanager->minRowCol = mRows;
+    } else {
+      qrmanager->minRowCol = nCols;
+    }
+
+    xzgeqp3(qrmanager->QR, 1, mRows, nCols, qrmanager->jpvt, qrmanager->tau,
+            rtDW);
+  }
+
+  rtDW->b_idx = 0;
+  while (rtDW->b_idx <= nDep - 1) {
+    depIdx[rtDW->b_idx] = qrmanager->jpvt[(nCols - nDep) + rtDW->b_idx];
+    rtDW->b_idx++;
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static void countsort(int32_T x[10], int32_T xLen, int32_T workspace[10],
+                      int32_T xMin, int32_T xMax)
 {
   int32_T b_idxW;
   int32_T idxEnd;
@@ -837,7 +896,7 @@ static void countsort(int32_T x[9], int32_T xLen, int32_T workspace[9], int32_T
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void moveConstraint_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
+static void moveConstraint_(stxriBK2jD81NCGacZ0b8HD *obj, int32_T
   idx_global_start, int32_T idx_global_dest)
 {
   int32_T b_idx;
@@ -852,7 +911,7 @@ static void moveConstraint_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void removeEqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T idx_global)
+static void removeEqConstr(stxriBK2jD81NCGacZ0b8HD *obj, int32_T idx_global)
 {
   int32_T TYPE_tmp_tmp;
   int32_T totalEq;
@@ -860,7 +919,7 @@ static void removeEqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T idx_global)
   if ((totalEq != 0) && (idx_global <= totalEq)) {
     if ((obj->nActiveConstr == totalEq) || (idx_global == totalEq)) {
       obj->mEqRemoved++;
-      obj->indexEqRemoved = obj->Wlocalidx[idx_global - 1];
+      obj->indexEqRemoved[obj->mEqRemoved - 1] = obj->Wlocalidx[idx_global - 1];
       totalEq = obj->Wid[idx_global - 1] - 1;
       obj->isActiveConstr[(obj->isActiveIdx[totalEq] + obj->Wlocalidx[idx_global
                            - 1]) - 2] = false;
@@ -870,7 +929,7 @@ static void removeEqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T idx_global)
     } else {
       obj->mEqRemoved++;
       TYPE_tmp_tmp = obj->Wid[idx_global - 1] - 1;
-      obj->indexEqRemoved = obj->Wlocalidx[idx_global - 1];
+      obj->indexEqRemoved[obj->mEqRemoved - 1] = obj->Wlocalidx[idx_global - 1];
       obj->isActiveConstr[(obj->isActiveIdx[obj->Wid[idx_global - 1] - 1] +
                            obj->Wlocalidx[idx_global - 1]) - 2] = false;
       moveConstraint_(obj, totalEq, idx_global);
@@ -882,183 +941,173 @@ static void removeEqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T idx_global)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void RemoveDependentEq_(s9NoAX0P67ji2P1ZBafS3UG *memspace, int32_T
-  *nDepInd, swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD
+static void RemoveDependentEq_(snRDwUdgrIx9qNga56nZ8DE *memspace, int32_T
+  *nDepInd, stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG
   *qrmanager, DW *rtDW)
 {
   static const int8_T b_workingset_Aineq[56] = { -1, 0, 0, 0, 0, 0, 0, 0, 0, -1,
     0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
     0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0 };
 
-  static const int8_T b_workingset_Aeq[8] = { 1, 1, 1, 1, 1, 1, 1, 0 };
+  static const int8_T b_workingset_Aeq[16] = { 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0,
+    0, 0, 0, -1, 0 };
 
-  static const int8_T b_workingset_ATwset[72] = { 1, 1, 1, 1, 1, 1, 1, 0, 0, 0,
+  static const int8_T b_workingset_ATwset[80] = { 1, 1, 1, 1, 1, 1, 1, 0, 1, 0,
+    0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-  static const int8_T b_workingset_bwset[9] = { 1, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const real_T b_workingset_bwset[10] = { 0.5, 0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0 };
 
-  static const int8_T b_workingset_sizes[5] = { 0, 1, 7, 0, 0 };
+  static const int8_T b_workingset_sizes[5] = { 0, 2, 7, 0, 0 };
 
-  static const int8_T b_workingset_isActiveIdx[6] = { 1, 1, 2, 9, 9, 9 };
+  static const int8_T b_workingset_isActiveIdx[6] = { 1, 1, 3, 10, 10, 10 };
 
-  static const int8_T b_workingset_sizesPhaseOne[5] = { 0, 1, 7, 1, 0 };
+  static const int8_T b_workingset_sizesPhaseOne[5] = { 0, 2, 7, 1, 0 };
 
-  static const int8_T b_workingset_sizesRegularized[5] = { 0, 1, 7, 9, 0 };
+  static const int8_T b_workingset_sizesRegularized[5] = { 0, 2, 7, 11, 0 };
 
-  static const boolean_T b_workingset_isActiveConstr[9] = { true, false, false,
-    false, false, false, false, false, false };
+  static const boolean_T b_workingset_isActiveConstr[10] = { true, true, false,
+    false, false, false, false, false, false, false };
 
-  static const int8_T b_workingset_isActiveIdxPhaseOn[6] = { 1, 1, 2, 9, 10, 10
+  static const int8_T b_workingset_isActiveIdxPhaseOn[6] = { 1, 1, 3, 10, 11, 11
   };
 
-  static const int8_T b_workingset_sizesRegPhaseOne[5] = { 0, 1, 7, 10, 0 };
+  static const int8_T b_workingset_sizesRegPhaseOne[5] = { 0, 2, 7, 12, 0 };
 
-  static const int8_T b_workingset_Wid[9] = { 2, 0, 0, 0, 0, 0, 0, 0, 0 };
+  static const int8_T b_workingset_Wid[10] = { 2, 2, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-  static const int8_T b_workingset_isActiveIdxRegular[6] = { 1, 1, 2, 9, 18, 18
+  static const int8_T b_workingset_isActiveIdxRegular[6] = { 1, 1, 3, 10, 21, 21
   };
 
-  static const int8_T b_workingset_nWConstr[5] = { 0, 1, 0, 0, 0 };
+  static const int8_T b_workingset_nWConstr[5] = { 0, 2, 0, 0, 0 };
 
-  static const int8_T b_workingset_isActiveIdxRegPhas[6] = { 1, 1, 2, 9, 19, 19
+  static const int8_T b_workingset_Wlocalidx[10] = { 1, 2, 0, 0, 0, 0, 0, 0, 0,
+    0 };
+
+  static const int8_T b_workingset_isActiveIdxRegPhas[6] = { 1, 1, 3, 10, 22, 22
   };
 
-  qrmanager->ldq = 8;
-  memset(&qrmanager->QR[0], 0, 72U * sizeof(real_T));
-  memset(&qrmanager->Q[0], 0, sizeof(real_T) << 6U);
-  for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
-    qrmanager->jpvt[rtDW->i_c] = 0;
+  qrmanager->ldq = 9;
+  memset(&qrmanager->QR[0], 0, 90U * sizeof(real_T));
+  memset(&qrmanager->Q[0], 0, 81U * sizeof(real_T));
+  for (rtDW->i_l = 0; rtDW->i_l < 10; rtDW->i_l++) {
+    qrmanager->jpvt[rtDW->i_l] = 0;
   }
 
   qrmanager->mrows = 0;
   qrmanager->ncols = 0;
-  memset(&qrmanager->tau[0], 0, sizeof(real_T) << 3U);
+  memset(&qrmanager->tau[0], 0, 9U * sizeof(real_T));
   qrmanager->minRowCol = 0;
   qrmanager->usedPivoting = false;
-  workingset->mConstr = 8;
-  workingset->mConstrOrig = 8;
-  workingset->mConstrMax = 9;
+  workingset->mConstr = 9;
+  workingset->mConstrOrig = 9;
+  workingset->mConstrMax = 10;
   workingset->nVar = 7;
   workingset->nVarOrig = 7;
   workingset->nVarMax = 8;
   workingset->ldA = 8;
-  for (rtDW->i_c = 0; rtDW->i_c < 56; rtDW->i_c++) {
-    workingset->Aineq[rtDW->i_c] = b_workingset_Aineq[rtDW->i_c];
+  for (rtDW->i_l = 0; rtDW->i_l < 56; rtDW->i_l++) {
+    workingset->Aineq[rtDW->i_l] = b_workingset_Aineq[rtDW->i_l];
   }
 
-  for (rtDW->i_c = 0; rtDW->i_c < 7; rtDW->i_c++) {
-    workingset->bineq[rtDW->i_c] = 0.0;
+  for (rtDW->i_l = 0; rtDW->i_l < 7; rtDW->i_l++) {
+    workingset->bineq[rtDW->i_l] = 0.0;
   }
 
-  workingset->beq = 1.0;
-  for (rtDW->i_c = 0; rtDW->i_c < 8; rtDW->i_c++) {
-    workingset->Aeq[rtDW->i_c] = b_workingset_Aeq[rtDW->i_c];
-    workingset->lb[rtDW->i_c] = 0.0;
-    workingset->ub[rtDW->i_c] = 0.0;
-    workingset->indexLB[rtDW->i_c] = 0;
-    workingset->indexUB[rtDW->i_c] = 0;
-    workingset->indexFixed[rtDW->i_c] = 0;
+  for (rtDW->i_l = 0; rtDW->i_l < 16; rtDW->i_l++) {
+    workingset->Aeq[rtDW->i_l] = b_workingset_Aeq[rtDW->i_l];
+  }
+
+  workingset->beq[0] = 0.5;
+  workingset->beq[1] = 0.0;
+  memset(&workingset->lb[0], 0, sizeof(real_T) << 3U);
+  memset(&workingset->ub[0], 0, sizeof(real_T) << 3U);
+  for (rtDW->i_l = 0; rtDW->i_l < 8; rtDW->i_l++) {
+    workingset->indexLB[rtDW->i_l] = 0;
+    workingset->indexUB[rtDW->i_l] = 0;
+    workingset->indexFixed[rtDW->i_l] = 0;
   }
 
   workingset->mEqRemoved = 0;
-  workingset->indexEqRemoved = 0;
-  for (rtDW->i_c = 0; rtDW->i_c < 72; rtDW->i_c++) {
-    workingset->ATwset[rtDW->i_c] = b_workingset_ATwset[rtDW->i_c];
+  workingset->indexEqRemoved[0] = 0;
+  workingset->indexEqRemoved[1] = 0;
+  for (rtDW->i_l = 0; rtDW->i_l < 80; rtDW->i_l++) {
+    workingset->ATwset[rtDW->i_l] = b_workingset_ATwset[rtDW->i_l];
   }
 
-  workingset->nActiveConstr = 1;
-  for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
-    workingset->bwset[rtDW->i_c] = b_workingset_bwset[rtDW->i_c];
-    workingset->maxConstrWorkspace[rtDW->i_c] = 0.0;
+  workingset->nActiveConstr = 2;
+  for (rtDW->i_l = 0; rtDW->i_l < 10; rtDW->i_l++) {
+    workingset->bwset[rtDW->i_l] = b_workingset_bwset[rtDW->i_l];
+    workingset->maxConstrWorkspace[rtDW->i_l] = 0.0;
   }
 
-  for (rtDW->i_c = 0; rtDW->i_c < 5; rtDW->i_c++) {
-    workingset->sizes[rtDW->i_c] = b_workingset_sizes[rtDW->i_c];
-    workingset->sizesNormal[rtDW->i_c] = b_workingset_sizes[rtDW->i_c];
-    workingset->sizesPhaseOne[rtDW->i_c] = b_workingset_sizesPhaseOne[rtDW->i_c];
-    workingset->sizesRegularized[rtDW->i_c] = b_workingset_sizesRegularized
-      [rtDW->i_c];
-    workingset->sizesRegPhaseOne[rtDW->i_c] = b_workingset_sizesRegPhaseOne
-      [rtDW->i_c];
+  for (rtDW->i_l = 0; rtDW->i_l < 5; rtDW->i_l++) {
+    workingset->sizes[rtDW->i_l] = b_workingset_sizes[rtDW->i_l];
+    workingset->sizesNormal[rtDW->i_l] = b_workingset_sizes[rtDW->i_l];
+    workingset->sizesPhaseOne[rtDW->i_l] = b_workingset_sizesPhaseOne[rtDW->i_l];
+    workingset->sizesRegularized[rtDW->i_l] = b_workingset_sizesRegularized
+      [rtDW->i_l];
+    workingset->sizesRegPhaseOne[rtDW->i_l] = b_workingset_sizesRegPhaseOne
+      [rtDW->i_l];
   }
 
-  for (rtDW->i_c = 0; rtDW->i_c < 6; rtDW->i_c++) {
-    workingset->isActiveIdx[rtDW->i_c] = b_workingset_isActiveIdx[rtDW->i_c];
-    workingset->isActiveIdxNormal[rtDW->i_c] = b_workingset_isActiveIdx
-      [rtDW->i_c];
-    workingset->isActiveIdxPhaseOne[rtDW->i_c] =
-      b_workingset_isActiveIdxPhaseOn[rtDW->i_c];
-    workingset->isActiveIdxRegularized[rtDW->i_c] =
-      b_workingset_isActiveIdxRegular[rtDW->i_c];
-    workingset->isActiveIdxRegPhaseOne[rtDW->i_c] =
-      b_workingset_isActiveIdxRegPhas[rtDW->i_c];
+  for (rtDW->i_l = 0; rtDW->i_l < 6; rtDW->i_l++) {
+    workingset->isActiveIdx[rtDW->i_l] = b_workingset_isActiveIdx[rtDW->i_l];
+    workingset->isActiveIdxNormal[rtDW->i_l] = b_workingset_isActiveIdx
+      [rtDW->i_l];
+    workingset->isActiveIdxPhaseOne[rtDW->i_l] =
+      b_workingset_isActiveIdxPhaseOn[rtDW->i_l];
+    workingset->isActiveIdxRegularized[rtDW->i_l] =
+      b_workingset_isActiveIdxRegular[rtDW->i_l];
+    workingset->isActiveIdxRegPhaseOne[rtDW->i_l] =
+      b_workingset_isActiveIdxRegPhas[rtDW->i_l];
   }
 
-  for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
-    workingset->isActiveConstr[rtDW->i_c] = b_workingset_isActiveConstr
-      [rtDW->i_c];
-    workingset->Wid[rtDW->i_c] = b_workingset_Wid[rtDW->i_c];
-    workingset->Wlocalidx[rtDW->i_c] = b_workingset_bwset[rtDW->i_c];
+  for (rtDW->i_l = 0; rtDW->i_l < 10; rtDW->i_l++) {
+    workingset->isActiveConstr[rtDW->i_l] = b_workingset_isActiveConstr
+      [rtDW->i_l];
+    workingset->Wid[rtDW->i_l] = b_workingset_Wid[rtDW->i_l];
+    workingset->Wlocalidx[rtDW->i_l] = b_workingset_Wlocalidx[rtDW->i_l];
   }
 
-  for (rtDW->i_c = 0; rtDW->i_c < 5; rtDW->i_c++) {
-    workingset->nWConstr[rtDW->i_c] = b_workingset_nWConstr[rtDW->i_c];
+  for (rtDW->i_l = 0; rtDW->i_l < 5; rtDW->i_l++) {
+    workingset->nWConstr[rtDW->i_l] = b_workingset_nWConstr[rtDW->i_l];
   }
 
   workingset->probType = 3;
   workingset->SLACK0 = 0.0;
-  for (rtDW->i_c = 0; rtDW->i_c < 7; rtDW->i_c++) {
-    qrmanager->QR[rtDW->i_c << 3] = b_workingset_ATwset[rtDW->i_c];
+  for (rtDW->i_l = 0; rtDW->i_l < 2; rtDW->i_l++) {
+    for (rtDW->idx_col = 0; rtDW->idx_col < 7; rtDW->idx_col++) {
+      qrmanager->QR[rtDW->i_l + 9 * rtDW->idx_col] = b_workingset_ATwset
+        [(rtDW->i_l << 3) + rtDW->idx_col];
+    }
   }
 
   *nDepInd = ComputeNumDependentEq_(qrmanager, rtDW);
   if (*nDepInd > 0) {
-    for (rtDW->i_c = 0; rtDW->i_c < 7; rtDW->i_c++) {
-      qrmanager->QR[rtDW->i_c] = b_workingset_ATwset[rtDW->i_c];
+    for (rtDW->i_l = 0; rtDW->i_l < 2; rtDW->i_l++) {
+      rtDW->offsetQR_c = qrmanager->ldq * rtDW->i_l;
+      rtDW->offsetATw_o = rtDW->i_l << 3;
+      for (rtDW->idx_col = 0; rtDW->idx_col < 7; rtDW->idx_col++) {
+        qrmanager->QR[rtDW->offsetQR_c + rtDW->idx_col] =
+          b_workingset_ATwset[rtDW->offsetATw_o + rtDW->idx_col];
+      }
     }
 
-    qrmanager->jpvt[0] = 0;
-    qrmanager->usedPivoting = true;
-    qrmanager->mrows = 7;
-    qrmanager->ncols = 1;
-    qrmanager->minRowCol = 1;
-    for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
-      rtDW->jpvt_j[rtDW->i_c] = qrmanager->jpvt[rtDW->i_c];
-    }
-
-    xzgeqp3(qrmanager->QR, 1, 7, 1, rtDW->jpvt_j, qrmanager->tau, rtDW);
-    for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
-      qrmanager->jpvt[rtDW->i_c] = rtDW->jpvt_j[rtDW->i_c];
-    }
-
-    rtDW->i_c = 0;
-    while (rtDW->i_c <= *nDepInd - 1) {
-      memspace->workspace_int[rtDW->i_c] = rtDW->jpvt_j[(rtDW->i_c - *nDepInd) +
-        1];
-      rtDW->i_c++;
-    }
-
-    for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
-      rtDW->jpvt_j[rtDW->i_c] = memspace->workspace_sort[rtDW->i_c];
-    }
-
-    countsort(memspace->workspace_int, *nDepInd, rtDW->jpvt_j, 1, 1);
-    for (rtDW->i_c = 0; rtDW->i_c < 9; rtDW->i_c++) {
-      memspace->workspace_sort[rtDW->i_c] = rtDW->jpvt_j[rtDW->i_c];
-    }
-
-    rtDW->i_c = *nDepInd;
-    while (rtDW->i_c > 0) {
-      removeEqConstr(workingset, memspace->workspace_int[rtDW->i_c - 1]);
-      rtDW->i_c--;
+    IndexOfDependentEq_(memspace->workspace_int, *nDepInd, qrmanager, 7, 2, rtDW);
+    countsort(memspace->workspace_int, *nDepInd, memspace->workspace_sort, 1, 2);
+    rtDW->i_l = *nDepInd;
+    while (rtDW->i_l > 0) {
+      removeEqConstr(workingset, memspace->workspace_int[rtDW->i_l - 1]);
+      rtDW->i_l--;
     }
   }
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void removeAllIneqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj)
+static void removeAllIneqConstr(stxriBK2jD81NCGacZ0b8HD *obj)
 {
   int32_T idx_global;
   for (idx_global = obj->nWConstr[0] + obj->nWConstr[1]; idx_global <
@@ -1074,15 +1123,15 @@ static void removeAllIneqConstr(swcr9qLPQBiG4lNhaNdYq5G *obj)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void RemoveDependentIneq_(swcr9qLPQBiG4lNhaNdYq5G *workingset,
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s9NoAX0P67ji2P1ZBafS3UG *memspace, real_T
+static void RemoveDependentIneq_(stxriBK2jD81NCGacZ0b8HD *workingset,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, snRDwUdgrIx9qNga56nZ8DE *memspace, real_T
   tolfactor, DW *rtDW)
 {
   rtDW->nFixedConstr = workingset->nWConstr[0] + workingset->nWConstr[1];
-  rtDW->nVar_o = workingset->nVar;
+  rtDW->nVar_n = workingset->nVar;
   if ((workingset->nWConstr[2] + workingset->nWConstr[3]) + workingset->
       nWConstr[4] > 0) {
-    rtDW->tol_g = tolfactor * (real_T)workingset->nVar * 2.2204460492503131E-16;
+    rtDW->tol = tolfactor * (real_T)workingset->nVar * 2.2204460492503131E-16;
     rtDW->nDepIneq = 0;
     while (rtDW->nDepIneq <= rtDW->nFixedConstr - 1) {
       qrmanager->jpvt[rtDW->nDepIneq] = 1;
@@ -1097,13 +1146,13 @@ static void RemoveDependentIneq_(swcr9qLPQBiG4lNhaNdYq5G *workingset,
 
     rtDW->nDepIneq = 0;
     while (rtDW->nDepIneq <= workingset->nActiveConstr - 1) {
-      rtDW->i_f = qrmanager->ldq * rtDW->nDepIneq;
+      rtDW->i_m = qrmanager->ldq * rtDW->nDepIneq;
       rtDW->idxPosATwset = workingset->ldA * rtDW->nDepIneq;
-      rtDW->k_i = 1;
-      while (rtDW->k_i - 1 <= rtDW->nVar_o - 1) {
-        qrmanager->QR[(rtDW->i_f + rtDW->k_i) - 1] = workingset->ATwset
-          [(rtDW->idxPosATwset + rtDW->k_i) - 1];
-        rtDW->k_i++;
+      rtDW->k = 1;
+      while (rtDW->k - 1 <= rtDW->nVar_n - 1) {
+        qrmanager->QR[(rtDW->i_m + rtDW->k) - 1] = workingset->ATwset
+          [(rtDW->idxPosATwset + rtDW->k) - 1];
+        rtDW->k++;
       }
 
       rtDW->nDepIneq++;
@@ -1123,51 +1172,51 @@ static void RemoveDependentIneq_(swcr9qLPQBiG4lNhaNdYq5G *workingset,
         qrmanager->minRowCol = workingset->nActiveConstr;
       }
 
-      for (rtDW->i_f = 0; rtDW->i_f < 9; rtDW->i_f++) {
-        rtDW->jpvt_f[rtDW->i_f] = qrmanager->jpvt[rtDW->i_f];
+      for (rtDW->i_m = 0; rtDW->i_m < 10; rtDW->i_m++) {
+        rtDW->jpvt[rtDW->i_m] = qrmanager->jpvt[rtDW->i_m];
       }
 
       xzgeqp3(qrmanager->QR, 1, workingset->nVar, workingset->nActiveConstr,
-              rtDW->jpvt_f, qrmanager->tau, rtDW);
-      for (rtDW->i_f = 0; rtDW->i_f < 9; rtDW->i_f++) {
-        qrmanager->jpvt[rtDW->i_f] = rtDW->jpvt_f[rtDW->i_f];
+              rtDW->jpvt, qrmanager->tau, rtDW);
+      for (rtDW->i_m = 0; rtDW->i_m < 10; rtDW->i_m++) {
+        qrmanager->jpvt[rtDW->i_m] = rtDW->jpvt[rtDW->i_m];
       }
     }
 
     rtDW->nDepIneq = -1;
-    rtDW->i_f = workingset->nActiveConstr - 1;
-    while (rtDW->i_f + 1 > rtDW->nVar_o) {
+    rtDW->i_m = workingset->nActiveConstr - 1;
+    while (rtDW->i_m + 1 > rtDW->nVar_n) {
       rtDW->nDepIneq++;
-      memspace->workspace_int[rtDW->nDepIneq] = qrmanager->jpvt[rtDW->i_f];
-      rtDW->i_f--;
+      memspace->workspace_int[rtDW->nDepIneq] = qrmanager->jpvt[rtDW->i_m];
+      rtDW->i_m--;
     }
 
-    if (rtDW->i_f + 1 <= workingset->nVar) {
-      rtDW->nVar_o = qrmanager->ldq * rtDW->i_f + rtDW->i_f;
-      while ((rtDW->i_f + 1 > rtDW->nFixedConstr) && (fabs(qrmanager->QR
-               [rtDW->nVar_o]) < rtDW->tol_g)) {
+    if (rtDW->i_m + 1 <= workingset->nVar) {
+      rtDW->nVar_n = qrmanager->ldq * rtDW->i_m + rtDW->i_m;
+      while ((rtDW->i_m + 1 > rtDW->nFixedConstr) && (fabs(qrmanager->QR
+               [rtDW->nVar_n]) < rtDW->tol)) {
         rtDW->nDepIneq++;
-        memspace->workspace_int[rtDW->nDepIneq] = qrmanager->jpvt[rtDW->i_f];
-        rtDW->i_f--;
-        rtDW->nVar_o = (rtDW->nVar_o - qrmanager->ldq) - 1;
+        memspace->workspace_int[rtDW->nDepIneq] = qrmanager->jpvt[rtDW->i_m];
+        rtDW->i_m--;
+        rtDW->nVar_n = (rtDW->nVar_n - qrmanager->ldq) - 1;
       }
     }
 
-    for (rtDW->i_f = 0; rtDW->i_f < 9; rtDW->i_f++) {
-      rtDW->jpvt_f[rtDW->i_f] = memspace->workspace_int[rtDW->i_f];
+    for (rtDW->i_m = 0; rtDW->i_m < 10; rtDW->i_m++) {
+      rtDW->jpvt[rtDW->i_m] = memspace->workspace_int[rtDW->i_m];
     }
 
-    countsort(rtDW->jpvt_f, rtDW->nDepIneq + 1, memspace->workspace_sort,
+    countsort(rtDW->jpvt, rtDW->nDepIneq + 1, memspace->workspace_sort,
               rtDW->nFixedConstr + 1, workingset->nActiveConstr);
-    for (rtDW->i_f = 0; rtDW->i_f < 9; rtDW->i_f++) {
-      memspace->workspace_int[rtDW->i_f] = rtDW->jpvt_f[rtDW->i_f];
+    for (rtDW->i_m = 0; rtDW->i_m < 10; rtDW->i_m++) {
+      memspace->workspace_int[rtDW->i_m] = rtDW->jpvt[rtDW->i_m];
     }
 
     while (rtDW->nDepIneq + 1 > 0) {
-      rtDW->nFixedConstr = workingset->Wid[rtDW->jpvt_f[rtDW->nDepIneq] - 1] - 1;
+      rtDW->nFixedConstr = workingset->Wid[rtDW->jpvt[rtDW->nDepIneq] - 1] - 1;
       workingset->isActiveConstr[(workingset->isActiveIdx[rtDW->nFixedConstr] +
-        workingset->Wlocalidx[rtDW->jpvt_f[rtDW->nDepIneq] - 1]) - 2] = false;
-      moveConstraint_(workingset, workingset->nActiveConstr, rtDW->jpvt_f
+        workingset->Wlocalidx[rtDW->jpvt[rtDW->nDepIneq] - 1]) - 2] = false;
+      moveConstraint_(workingset, workingset->nActiveConstr, rtDW->jpvt
                       [rtDW->nDepIneq]);
       workingset->nActiveConstr--;
       workingset->nWConstr[rtDW->nFixedConstr]--;
@@ -1177,7 +1226,7 @@ static void RemoveDependentIneq_(swcr9qLPQBiG4lNhaNdYq5G *workingset,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void factorQR_e(sQyCFUyu0YXOk1LARsZMzaD *obj, const real_T A[72], int32_T
+static void factorQR_f(sCS11Pe0E6xKX8jGoaG4cLG *obj, const real_T A[80], int32_T
   mrows, int32_T ncols, int32_T ldA, DW *rtDW)
 {
   int32_T b_idx;
@@ -1189,9 +1238,9 @@ static void factorQR_e(sQyCFUyu0YXOk1LARsZMzaD *obj, const real_T A[72], int32_T
   if (b_idx > 0) {
     for (b_idx = 0; b_idx < ncols; b_idx++) {
       i = ldA * b_idx;
-      rtDW->iQR0_i = obj->ldq * b_idx;
+      rtDW->iQR0_m = obj->ldq * b_idx;
       for (k = 1; k - 1 < mrows; k++) {
-        obj->QR[(rtDW->iQR0_i + k) - 1] = A[(i + k) - 1];
+        obj->QR[(rtDW->iQR0_m + k) - 1] = A[(i + k) - 1];
       }
     }
 
@@ -1219,7 +1268,7 @@ static void factorQR_e(sQyCFUyu0YXOk1LARsZMzaD *obj, const real_T A[72], int32_T
     }
 
     obj->minRowCol = b_idx;
-    memset(&obj->tau[0], 0, sizeof(real_T) << 3U);
+    memset(&obj->tau[0], 0, 9U * sizeof(real_T));
     if (b_idx >= 1) {
       qrf(obj->QR, 1, mrows, ncols, b_idx, obj->tau, rtDW);
     }
@@ -1227,7 +1276,7 @@ static void factorQR_e(sQyCFUyu0YXOk1LARsZMzaD *obj, const real_T A[72], int32_T
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void factorQR(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T mrows, int32_T ncols,
+static void factorQR(sCS11Pe0E6xKX8jGoaG4cLG *obj, int32_T mrows, int32_T ncols,
                      DW *rtDW)
 {
   int32_T idx;
@@ -1250,7 +1299,7 @@ static void factorQR(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T mrows, int32_T ncols,
     }
 
     obj->minRowCol = idx;
-    memset(&obj->tau[0], 0, sizeof(real_T) << 3U);
+    memset(&obj->tau[0], 0, 9U * sizeof(real_T));
     if (idx >= 1) {
       qrf(obj->QR, 1, mrows, ncols, idx, obj->tau, rtDW);
     }
@@ -1259,7 +1308,7 @@ static void factorQR(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T mrows, int32_T ncols,
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static void xgemv(int32_T m, int32_T n, const real_T A[56], int32_T lda, const
-                  real_T x[72], real_T y[9], DW *rtDW)
+                  real_T x[80], real_T y[10], DW *rtDW)
 {
   int32_T b;
   int32_T b_iy;
@@ -1292,8 +1341,8 @@ static void xgemv(int32_T m, int32_T n, const real_T A[56], int32_T lda, const
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_j(int32_T m, int32_T n, const real_T A[8], int32_T lda, const
-                    real_T x[72], real_T y[9], DW *rtDW)
+static void xgemv_p(int32_T m, int32_T n, const real_T A[16], int32_T lda, const
+                    real_T x[80], real_T y[10], DW *rtDW)
 {
   int32_T b;
   int32_T b_iy;
@@ -1326,8 +1375,8 @@ static void xgemv_j(int32_T m, int32_T n, const real_T A[8], int32_T lda, const
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static real_T maxConstraintViolation(swcr9qLPQBiG4lNhaNdYq5G *obj, const real_T
-  x[72], DW *rtDW)
+static real_T maxConstraintViolation(stxriBK2jD81NCGacZ0b8HD *obj, const real_T
+  x[80], DW *rtDW)
 {
   real_T v;
   int32_T b_mIneq;
@@ -1356,10 +1405,10 @@ static real_T maxConstraintViolation(swcr9qLPQBiG4lNhaNdYq5G *obj, const real_T
     }
 
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
-      obj->maxConstrWorkspace[mIneq] = obj->beq;
+      obj->maxConstrWorkspace[mIneq] = obj->beq[mIneq];
     }
 
-    xgemv_j(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
+    xgemv_p(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
             obj->maxConstrWorkspace, rtDW);
     b_mIneq = obj->nVarOrig + obj->sizes[2];
     mIneq = b_mIneq + obj->sizes[1];
@@ -1383,10 +1432,10 @@ static real_T maxConstraintViolation(swcr9qLPQBiG4lNhaNdYq5G *obj, const real_T
     }
 
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
-      obj->maxConstrWorkspace[mIneq] = obj->beq;
+      obj->maxConstrWorkspace[mIneq] = obj->beq[mIneq];
     }
 
-    xgemv_j(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
+    xgemv_p(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
             obj->maxConstrWorkspace, rtDW);
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
       v = fmax(v, fabs(obj->maxConstrWorkspace[mIneq]));
@@ -1416,8 +1465,8 @@ static real_T maxConstraintViolation(swcr9qLPQBiG4lNhaNdYq5G *obj, const real_T
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_jm(int32_T m, int32_T n, const real_T A[56], int32_T lda,
-                     const real_T x[72], real_T y[9], DW *rtDW)
+static void xgemv_py(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+                     const real_T x[80], real_T y[10], DW *rtDW)
 {
   int32_T b;
   int32_T b_iy;
@@ -1434,7 +1483,7 @@ static void xgemv_jm(int32_T m, int32_T n, const real_T A[56], int32_T lda,
     b_iy = (n - 1) * lda + 1;
     iac = 1;
     while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
-      ix = 9;
+      ix = 10;
       rtDW->c_d = 0.0;
       b = (iac + m) - 1;
       for (ia = iac; ia <= b; ia++) {
@@ -1450,8 +1499,8 @@ static void xgemv_jm(int32_T m, int32_T n, const real_T A[56], int32_T lda,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_jmu(int32_T m, int32_T n, const real_T A[8], int32_T lda,
-                      const real_T x[72], real_T y[9], DW *rtDW)
+static void xgemv_pym(int32_T m, int32_T n, const real_T A[16], int32_T lda,
+                      const real_T x[80], real_T y[10], DW *rtDW)
 {
   int32_T b;
   int32_T b_iy;
@@ -1468,7 +1517,7 @@ static void xgemv_jmu(int32_T m, int32_T n, const real_T A[8], int32_T lda,
     b_iy = (n - 1) * lda + 1;
     iac = 1;
     while (((lda > 0) && (iac <= b_iy)) || ((lda < 0) && (iac >= b_iy))) {
-      ix = 9;
+      ix = 10;
       rtDW->c_j = 0.0;
       b = (iac + m) - 1;
       for (ia = iac; ia <= b; ia++) {
@@ -1484,8 +1533,8 @@ static void xgemv_jmu(int32_T m, int32_T n, const real_T A[8], int32_T lda,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static real_T maxConstraintViolation_b(swcr9qLPQBiG4lNhaNdYq5G *obj, const
-  real_T x[72], DW *rtDW)
+static real_T maxConstraintViolation_p(stxriBK2jD81NCGacZ0b8HD *obj, const
+  real_T x[80], DW *rtDW)
 {
   real_T v;
   int32_T b_mIneq;
@@ -1506,20 +1555,20 @@ static real_T maxConstraintViolation_b(swcr9qLPQBiG4lNhaNdYq5G *obj, const
       obj->maxConstrWorkspace[mIneq] = obj->bineq[mIneq];
     }
 
-    xgemv_jm(obj->nVarOrig, obj->sizes[2], obj->Aineq, obj->ldA, x,
+    xgemv_py(obj->nVarOrig, obj->sizes[2], obj->Aineq, obj->ldA, x,
              obj->maxConstrWorkspace, rtDW);
     for (mIneq = 0; mIneq <= b_mIneq; mIneq++) {
-      obj->maxConstrWorkspace[mIneq] -= x[(obj->nVarOrig + mIneq) + 9];
+      obj->maxConstrWorkspace[mIneq] -= x[(obj->nVarOrig + mIneq) + 10];
       v = fmax(v, obj->maxConstrWorkspace[mIneq]);
     }
 
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
-      obj->maxConstrWorkspace[mIneq] = obj->beq;
+      obj->maxConstrWorkspace[mIneq] = obj->beq[mIneq];
     }
 
-    xgemv_jmu(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
+    xgemv_pym(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
               obj->maxConstrWorkspace, rtDW);
-    b_mIneq = (obj->nVarOrig + obj->sizes[2]) + 8;
+    b_mIneq = (obj->nVarOrig + obj->sizes[2]) + 9;
     mIneq = (b_mIneq + obj->sizes[1]) + 1;
     for (h_idx = 0; h_idx <= mEq; h_idx++) {
       obj->maxConstrWorkspace[h_idx] = (obj->maxConstrWorkspace[h_idx] - x
@@ -1534,17 +1583,17 @@ static real_T maxConstraintViolation_b(swcr9qLPQBiG4lNhaNdYq5G *obj, const
       obj->maxConstrWorkspace[b_mIneq] = obj->bineq[b_mIneq];
     }
 
-    xgemv_jm(obj->nVar, obj->sizes[2], obj->Aineq, obj->ldA, x,
+    xgemv_py(obj->nVar, obj->sizes[2], obj->Aineq, obj->ldA, x,
              obj->maxConstrWorkspace, rtDW);
     for (b_mIneq = 0; b_mIneq <= mIneq; b_mIneq++) {
       v = fmax(v, obj->maxConstrWorkspace[b_mIneq]);
     }
 
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
-      obj->maxConstrWorkspace[mIneq] = obj->beq;
+      obj->maxConstrWorkspace[mIneq] = obj->beq[mIneq];
     }
 
-    xgemv_jmu(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
+    xgemv_pym(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
               obj->maxConstrWorkspace, rtDW);
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
       v = fmax(v, fabs(obj->maxConstrWorkspace[mIneq]));
@@ -1553,19 +1602,19 @@ static real_T maxConstraintViolation_b(swcr9qLPQBiG4lNhaNdYq5G *obj, const
 
   if (mLB > 0) {
     for (mEq = 0; mEq < mLB; mEq++) {
-      v = fmax(v, -x[obj->indexLB[mEq] + 8] - obj->lb[obj->indexLB[mEq] - 1]);
+      v = fmax(v, -x[obj->indexLB[mEq] + 9] - obj->lb[obj->indexLB[mEq] - 1]);
     }
   }
 
   if (mUB > 0) {
     for (mLB = 0; mLB < mUB; mLB++) {
-      v = fmax(v, x[obj->indexUB[mLB] + 8] - obj->ub[obj->indexUB[mLB] - 1]);
+      v = fmax(v, x[obj->indexUB[mLB] + 9] - obj->ub[obj->indexUB[mLB] - 1]);
     }
   }
 
   if (mFixed > 0) {
     for (mUB = 0; mUB < mFixed; mUB++) {
-      v = fmax(v, fabs(x[obj->indexFixed[mUB] + 8] - obj->ub[obj->indexFixed[mUB]
+      v = fmax(v, fabs(x[obj->indexFixed[mUB] + 9] - obj->ub[obj->indexFixed[mUB]
                        - 1]));
     }
   }
@@ -1574,8 +1623,8 @@ static real_T maxConstraintViolation_b(swcr9qLPQBiG4lNhaNdYq5G *obj, const
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
-  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW
+static void feasibleX0ForWorkingSet(real_T workspace[80], real_T xCurrent[8],
+  stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, DW
   *rtDW)
 {
   rtDW->mWConstr = workingset->nActiveConstr - 1;
@@ -1584,7 +1633,7 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
     rtDW->ldq = 0;
     while (rtDW->ldq <= rtDW->mWConstr) {
       workspace[rtDW->ldq] = workingset->bwset[rtDW->ldq];
-      workspace[rtDW->ldq + 9] = workingset->bwset[rtDW->ldq];
+      workspace[rtDW->ldq + 10] = workingset->bwset[rtDW->ldq];
       rtDW->ldq++;
     }
 
@@ -1628,7 +1677,7 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
       factorQR(qrmanager, workingset->nActiveConstr, workingset->nVar, rtDW);
       computeQ_(qrmanager, qrmanager->mrows, rtDW);
       rtDW->ldq = qrmanager->ldq;
-      memcpy(&rtDW->B_m[0], &workspace[0], 72U * sizeof(real_T));
+      memcpy(&rtDW->B_m[0], &workspace[0], 80U * sizeof(real_T));
       if (workingset->nVar != 0) {
         rtDW->ar = 0;
         while (rtDW->ar + 1 <= rtDW->nVar_j) {
@@ -1636,8 +1685,8 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
           rtDW->ar++;
         }
 
-        rtDW->ar = 9;
-        while (rtDW->ar + 1 <= rtDW->nVar_j + 9) {
+        rtDW->ar = 10;
+        while (rtDW->ar + 1 <= rtDW->nVar_j + 10) {
           workspace[rtDW->ar] = 0.0;
           rtDW->ar++;
         }
@@ -1659,13 +1708,13 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
         }
 
         rtDW->ar = -1;
-        rtDW->b_i = 9;
-        while (rtDW->b_i + 1 <= rtDW->nVar_j + 9) {
+        rtDW->b_i = 10;
+        while (rtDW->b_i + 1 <= rtDW->nVar_j + 10) {
           rtDW->c = 0.0;
           rtDW->b_ia = 1;
           while (rtDW->b_ia - 1 <= rtDW->mWConstr) {
             rtDW->c += qrmanager->Q[rtDW->b_ia + rtDW->ar] * rtDW->B_m
-              [rtDW->b_ia + 8];
+              [rtDW->b_ia + 9];
             rtDW->b_ia++;
           }
 
@@ -1694,13 +1743,13 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
       rtDW->jBcol = workingset->nVar;
       while (rtDW->jBcol > 0) {
         rtDW->ar = (rtDW->jBcol - 1) * rtDW->ldq - 1;
-        rtDW->c = workspace[rtDW->jBcol + 8];
+        rtDW->c = workspace[rtDW->jBcol + 9];
         if (rtDW->c != 0.0) {
-          workspace[rtDW->jBcol + 8] = rtDW->c / qrmanager->QR[rtDW->jBcol +
+          workspace[rtDW->jBcol + 9] = rtDW->c / qrmanager->QR[rtDW->jBcol +
             rtDW->ar];
           rtDW->ix_o = 1;
           while (rtDW->ix_o - 1 <= rtDW->jBcol - 2) {
-            workspace[rtDW->ix_o + 8] -= workspace[rtDW->jBcol + 8] *
+            workspace[rtDW->ix_o + 9] -= workspace[rtDW->jBcol + 9] *
               qrmanager->QR[rtDW->ix_o + rtDW->ar];
             rtDW->ix_o++;
           }
@@ -1709,7 +1758,7 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
         rtDW->jBcol--;
       }
     } else {
-      factorQR_e(qrmanager, workingset->ATwset, workingset->nVar,
+      factorQR_f(qrmanager, workingset->ATwset, workingset->nVar,
                  workingset->nActiveConstr, workingset->ldA, rtDW);
       computeQ_(qrmanager, qrmanager->minRowCol, rtDW);
       rtDW->ldq = qrmanager->ldq;
@@ -1731,19 +1780,19 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
       rtDW->ar = 1;
       while (rtDW->ar - 1 <= rtDW->mWConstr) {
         rtDW->ix_o = (rtDW->ar - 1) * rtDW->ldq - 1;
-        rtDW->c = workspace[rtDW->ar + 8];
+        rtDW->c = workspace[rtDW->ar + 9];
         rtDW->b_i = 1;
         while (rtDW->b_i - 1 <= rtDW->ar - 2) {
           rtDW->c -= qrmanager->QR[rtDW->b_i + rtDW->ix_o] * workspace[rtDW->b_i
-            + 8];
+            + 9];
           rtDW->b_i++;
         }
 
-        workspace[rtDW->ar + 8] = rtDW->c / qrmanager->QR[rtDW->ar + rtDW->ix_o];
+        workspace[rtDW->ar + 9] = rtDW->c / qrmanager->QR[rtDW->ar + rtDW->ix_o];
         rtDW->ar++;
       }
 
-      memcpy(&rtDW->B_m[0], &workspace[0], 72U * sizeof(real_T));
+      memcpy(&rtDW->B_m[0], &workspace[0], 80U * sizeof(real_T));
       if (workingset->nVar != 0) {
         rtDW->ar = 0;
         while (rtDW->ar + 1 <= rtDW->nVar_j) {
@@ -1751,8 +1800,8 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
           rtDW->ar++;
         }
 
-        rtDW->ar = 9;
-        while (rtDW->ar + 1 <= rtDW->nVar_j + 9) {
+        rtDW->ar = 10;
+        while (rtDW->ar + 1 <= rtDW->nVar_j + 10) {
           workspace[rtDW->ar] = 0.0;
           rtDW->ar++;
         }
@@ -1774,11 +1823,11 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
         }
 
         rtDW->ar = -1;
-        rtDW->b_i = 10;
-        while (rtDW->b_i <= rtDW->mWConstr + 10) {
+        rtDW->b_i = 11;
+        while (rtDW->b_i <= rtDW->mWConstr + 11) {
           rtDW->b_ia = rtDW->ar;
-          rtDW->iy_n = 9;
-          while (rtDW->iy_n + 1 <= rtDW->nVar_j + 9) {
+          rtDW->iy_n = 10;
+          while (rtDW->iy_n + 1 <= rtDW->nVar_j + 10) {
             rtDW->b_ia++;
             workspace[rtDW->iy_n] += rtDW->B_m[rtDW->b_i - 1] * qrmanager->
               Q[rtDW->b_ia];
@@ -1800,7 +1849,7 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
     }
 
     rtDW->c = maxConstraintViolation(workingset, workspace, rtDW);
-    rtDW->constrViolation_basicX = maxConstraintViolation_b(workingset,
+    rtDW->constrViolation_basicX = maxConstraintViolation_p(workingset,
       workspace, rtDW);
     if ((rtDW->c <= 2.2204460492503131E-16) || (rtDW->c <
          rtDW->constrViolation_basicX)) {
@@ -1812,7 +1861,7 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
     } else {
       rtDW->mWConstr = 0;
       while (rtDW->mWConstr <= rtDW->nVar_j - 1) {
-        xCurrent[rtDW->mWConstr] = workspace[rtDW->mWConstr + 9];
+        xCurrent[rtDW->mWConstr] = workspace[rtDW->mWConstr + 10];
         rtDW->mWConstr++;
       }
     }
@@ -1820,8 +1869,8 @@ static void feasibleX0ForWorkingSet(real_T workspace[72], real_T xCurrent[8],
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_jmup(int32_T m, int32_T n, const real_T A[56], int32_T lda,
-  const real_T x[8], real_T y[9], DW *rtDW)
+static void xgemv_pyma(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+  const real_T x[8], real_T y[10], DW *rtDW)
 {
   int32_T b;
   int32_T b_iy;
@@ -1854,8 +1903,8 @@ static void xgemv_jmup(int32_T m, int32_T n, const real_T A[56], int32_T lda,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_jmupc(int32_T m, int32_T n, const real_T A[8], int32_T lda,
-  const real_T x[8], real_T y[9], DW *rtDW)
+static void xgemv_pyma2(int32_T m, int32_T n, const real_T A[16], int32_T lda,
+  const real_T x[8], real_T y[10], DW *rtDW)
 {
   int32_T b;
   int32_T b_iy;
@@ -1888,7 +1937,7 @@ static void xgemv_jmupc(int32_T m, int32_T n, const real_T A[8], int32_T lda,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static real_T maxConstraintViolation_b0(swcr9qLPQBiG4lNhaNdYq5G *obj, const
+static real_T maxConstraintViolation_pn(stxriBK2jD81NCGacZ0b8HD *obj, const
   real_T x[8], DW *rtDW)
 {
   real_T v;
@@ -1910,7 +1959,7 @@ static real_T maxConstraintViolation_b0(swcr9qLPQBiG4lNhaNdYq5G *obj, const
       obj->maxConstrWorkspace[mIneq] = obj->bineq[mIneq];
     }
 
-    xgemv_jmup(obj->nVarOrig, obj->sizes[2], obj->Aineq, obj->ldA, x,
+    xgemv_pyma(obj->nVarOrig, obj->sizes[2], obj->Aineq, obj->ldA, x,
                obj->maxConstrWorkspace, rtDW);
     for (mIneq = 0; mIneq <= b_mIneq; mIneq++) {
       obj->maxConstrWorkspace[mIneq] -= x[obj->nVarOrig + mIneq];
@@ -1918,10 +1967,10 @@ static real_T maxConstraintViolation_b0(swcr9qLPQBiG4lNhaNdYq5G *obj, const
     }
 
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
-      obj->maxConstrWorkspace[mIneq] = obj->beq;
+      obj->maxConstrWorkspace[mIneq] = obj->beq[mIneq];
     }
 
-    xgemv_jmupc(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
+    xgemv_pyma2(obj->nVarOrig, obj->sizes[1], obj->Aeq, obj->ldA, x,
                 obj->maxConstrWorkspace, rtDW);
     b_mIneq = obj->nVarOrig + obj->sizes[2];
     mIneq = b_mIneq + obj->sizes[1];
@@ -1938,17 +1987,17 @@ static real_T maxConstraintViolation_b0(swcr9qLPQBiG4lNhaNdYq5G *obj, const
       obj->maxConstrWorkspace[b_mIneq] = obj->bineq[b_mIneq];
     }
 
-    xgemv_jmup(obj->nVar, obj->sizes[2], obj->Aineq, obj->ldA, x,
+    xgemv_pyma(obj->nVar, obj->sizes[2], obj->Aineq, obj->ldA, x,
                obj->maxConstrWorkspace, rtDW);
     for (b_mIneq = 0; b_mIneq <= mIneq; b_mIneq++) {
       v = fmax(v, obj->maxConstrWorkspace[b_mIneq]);
     }
 
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
-      obj->maxConstrWorkspace[mIneq] = obj->beq;
+      obj->maxConstrWorkspace[mIneq] = obj->beq[mIneq];
     }
 
-    xgemv_jmupc(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
+    xgemv_pyma2(obj->nVar, obj->sizes[1], obj->Aeq, obj->ldA, x,
                 obj->maxConstrWorkspace, rtDW);
     for (mIneq = 0; mIneq <= mEq; mIneq++) {
       v = fmax(v, fabs(obj->maxConstrWorkspace[mIneq]));
@@ -1978,20 +2027,20 @@ static real_T maxConstraintViolation_b0(swcr9qLPQBiG4lNhaNdYq5G *obj, const
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void PresolveWorkingSet(svV6yPD1e8CTJu8b18IprLB *solution,
-  s9NoAX0P67ji2P1ZBafS3UG *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, DW *rtDW)
+static void PresolveWorkingSet(sVm5xLhdFDU5OIlGg0pTc4E *solution,
+  snRDwUdgrIx9qNga56nZ8DE *memspace, stxriBK2jD81NCGacZ0b8HD *workingset,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, DW *rtDW)
 {
   solution->state = 82;
-  RemoveDependentEq_(memspace, &rtDW->b_h, workingset, qrmanager, rtDW);
-  if ((rtDW->b_h != -1) && (workingset->nActiveConstr <= qrmanager->ldq)) {
+  RemoveDependentEq_(memspace, &rtDW->b_g, workingset, qrmanager, rtDW);
+  if ((rtDW->b_g != -1) && (workingset->nActiveConstr <= qrmanager->ldq)) {
     RemoveDependentIneq_(workingset, qrmanager, memspace, 100.0, rtDW);
     feasibleX0ForWorkingSet(memspace->workspace_double, solution->xstar,
       workingset, qrmanager, rtDW);
     if (workingset->nWConstr[0] + workingset->nWConstr[1] == workingset->nVar) {
-      rtDW->constrViolation_f = maxConstraintViolation_b0(workingset,
+      rtDW->constrViolation_m = maxConstraintViolation_pn(workingset,
         solution->xstar, rtDW);
-      if (rtDW->constrViolation_f > 1.0E-8) {
+      if (rtDW->constrViolation_m > 1.0E-8) {
         solution->state = -2;
       }
     }
@@ -2002,7 +2051,7 @@ static void PresolveWorkingSet(svV6yPD1e8CTJu8b18IprLB *solution,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void modifyOverheadPhaseOne_(swcr9qLPQBiG4lNhaNdYq5G *obj)
+static void modifyOverheadPhaseOne_(stxriBK2jD81NCGacZ0b8HD *obj)
 {
   int32_T idx;
   int32_T idxEq;
@@ -2036,7 +2085,7 @@ static void modifyOverheadPhaseOne_(swcr9qLPQBiG4lNhaNdYq5G *obj)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void setProblemType(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T PROBLEM_TYPE)
+static void setProblemType(stxriBK2jD81NCGacZ0b8HD *obj, int32_T PROBLEM_TYPE)
 {
   int32_T colOffsetATw;
   int32_T colOffsetAeq;
@@ -2229,7 +2278,7 @@ static void setProblemType(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T PROBLEM_TYPE)
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static void linearForm_(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
-  workspace[72], const real_T H[49], const real_T f[7], const real_T x[8])
+  workspace[80], const real_T H[49], const real_T f[7], const real_T x[8])
 {
   real_T c;
   int32_T b;
@@ -2277,7 +2326,7 @@ static void linearForm_(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static real_T computeFval(const shohwUBaOGHF036TMzc1KEH *obj, real_T workspace
-  [72], const real_T H[49], const real_T f[7], const real_T x[8])
+  [80], const real_T H[49], const real_T f[7], const real_T x[8])
 {
   real_T val;
   int32_T b_k;
@@ -2314,7 +2363,7 @@ static real_T computeFval(const shohwUBaOGHF036TMzc1KEH *obj, real_T workspace
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_jmupcy(int32_T m, int32_T n, const real_T A[49], int32_T lda,
+static void xgemv_pyma2z(int32_T m, int32_T n, const real_T A[49], int32_T lda,
   const real_T x[8], real_T y[7])
 {
   int32_T b;
@@ -2362,7 +2411,7 @@ static void computeGrad_StoreHx(shohwUBaOGHF036TMzc1KEH *obj, const real_T H[49]
     break;
 
    case 3:
-    xgemv_jmupcy(obj->nvar, obj->nvar, H, obj->nvar, x, obj->Hx);
+    xgemv_pyma2z(obj->nvar, obj->nvar, H, obj->nvar, x, obj->Hx);
     for (maxRegVar = 0; maxRegVar < obj->nvar; maxRegVar++) {
       obj->grad[maxRegVar] = obj->Hx[maxRegVar];
     }
@@ -2377,7 +2426,7 @@ static void computeGrad_StoreHx(shohwUBaOGHF036TMzc1KEH *obj, const real_T H[49]
 
    case 4:
     maxRegVar = obj->maxVar - 1;
-    xgemv_jmupcy(obj->nvar, obj->nvar, H, obj->nvar, x, obj->Hx);
+    xgemv_pyma2z(obj->nvar, obj->nvar, H, obj->nvar, x, obj->Hx);
     for (b_i = obj->nvar; b_i < maxRegVar; b_i++) {
       obj->Hx[b_i] = obj->beta * x[b_i];
     }
@@ -2407,7 +2456,7 @@ static void computeGrad_StoreHx(shohwUBaOGHF036TMzc1KEH *obj, const real_T H[49]
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static real_T computeFval_ReuseHx(const shohwUBaOGHF036TMzc1KEH *obj, real_T
-  workspace[72], const real_T f[7], const real_T x[8])
+  workspace[80], const real_T f[7], const real_T x[8])
 {
   real_T val;
   int32_T c_k;
@@ -2590,7 +2639,7 @@ static void xrotg(real_T *a, real_T *b, real_T *c, real_T *s, DW *rtDW)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW)
+static void deleteColMoveEnd(sCS11Pe0E6xKX8jGoaG4cLG *obj, int32_T idx, DW *rtDW)
 {
   int32_T QRk0;
   int32_T b_ix;
@@ -2635,10 +2684,10 @@ static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW
       idxRotGCol = (idx - 1) * obj->ldq;
       while (k >= idx) {
         QRk0 = k + idxRotGCol;
-        rtDW->b_temp_m = obj->QR[QRk0 - 1];
+        rtDW->b_temp_g = obj->QR[QRk0 - 1];
         rtDW->e = obj->QR[QRk0];
-        xrotg(&rtDW->b_temp_m, &rtDW->e, &rtDW->c_c_g, &rtDW->b_s, rtDW);
-        obj->QR[QRk0 - 1] = rtDW->b_temp_m;
+        xrotg(&rtDW->b_temp_g, &rtDW->e, &rtDW->c_c, &rtDW->b_s, rtDW);
+        obj->QR[QRk0 - 1] = rtDW->b_temp_g;
         obj->QR[QRk0] = rtDW->e;
         obj->QR[k + obj->ldq * (k - 1)] = 0.0;
         QRk0 = obj->ldq * idx + k;
@@ -2646,10 +2695,9 @@ static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW
         if (b_ix >= 1) {
           ix = QRk0 - 1;
           for (d_k = 0; d_k < b_ix; d_k++) {
-            rtDW->b_temp_m = rtDW->c_c_g * obj->QR[ix] + rtDW->b_s * obj->
-              QR[QRk0];
-            obj->QR[QRk0] = rtDW->c_c_g * obj->QR[QRk0] - rtDW->b_s * obj->QR[ix];
-            obj->QR[ix] = rtDW->b_temp_m;
+            rtDW->b_temp_g = rtDW->c_c * obj->QR[ix] + rtDW->b_s * obj->QR[QRk0];
+            obj->QR[QRk0] = rtDW->c_c * obj->QR[QRk0] - rtDW->b_s * obj->QR[ix];
+            obj->QR[ix] = rtDW->b_temp_g;
             QRk0 += obj->ldq;
             ix += obj->ldq;
           }
@@ -2659,10 +2707,9 @@ static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW
         if (obj->mrows >= 1) {
           QRk0 = obj->ldq + b_ix;
           for (ix = 0; ix < obj->mrows; ix++) {
-            rtDW->b_temp_m = rtDW->c_c_g * obj->Q[b_ix] + rtDW->b_s * obj->
-              Q[QRk0];
-            obj->Q[QRk0] = rtDW->c_c_g * obj->Q[QRk0] - rtDW->b_s * obj->Q[b_ix];
-            obj->Q[b_ix] = rtDW->b_temp_m;
+            rtDW->b_temp_g = rtDW->c_c * obj->Q[b_ix] + rtDW->b_s * obj->Q[QRk0];
+            obj->Q[QRk0] = rtDW->c_c * obj->Q[QRk0] - rtDW->b_s * obj->Q[b_ix];
+            obj->Q[b_ix] = rtDW->b_temp_g;
             QRk0++;
             b_ix++;
           }
@@ -2673,21 +2720,20 @@ static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW
 
       for (k = idx + 1; k <= i; k++) {
         QRk0 = k + (k - 1) * obj->ldq;
-        rtDW->b_temp_m = obj->QR[QRk0 - 1];
+        rtDW->b_temp_g = obj->QR[QRk0 - 1];
         rtDW->e = obj->QR[QRk0];
-        xrotg(&rtDW->b_temp_m, &rtDW->e, &rtDW->c_c_g, &rtDW->b_s, rtDW);
-        obj->QR[QRk0 - 1] = rtDW->b_temp_m;
+        xrotg(&rtDW->b_temp_g, &rtDW->e, &rtDW->c_c, &rtDW->b_s, rtDW);
+        obj->QR[QRk0 - 1] = rtDW->b_temp_g;
         obj->QR[QRk0] = rtDW->e;
         QRk0 = (obj->ldq + 1) * k;
         idxRotGCol = obj->ncols - k;
         if (idxRotGCol >= 1) {
           b_ix = QRk0 - 1;
           for (ix = 0; ix < idxRotGCol; ix++) {
-            rtDW->b_temp_m = rtDW->c_c_g * obj->QR[b_ix] + rtDW->b_s * obj->
+            rtDW->b_temp_g = rtDW->c_c * obj->QR[b_ix] + rtDW->b_s * obj->
               QR[QRk0];
-            obj->QR[QRk0] = rtDW->c_c_g * obj->QR[QRk0] - rtDW->b_s * obj->
-              QR[b_ix];
-            obj->QR[b_ix] = rtDW->b_temp_m;
+            obj->QR[QRk0] = rtDW->c_c * obj->QR[QRk0] - rtDW->b_s * obj->QR[b_ix];
+            obj->QR[b_ix] = rtDW->b_temp_g;
             QRk0 += obj->ldq;
             b_ix += obj->ldq;
           }
@@ -2697,11 +2743,11 @@ static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW
         if (obj->mrows >= 1) {
           QRk0 = obj->ldq + idxRotGCol;
           for (b_ix = 0; b_ix < obj->mrows; b_ix++) {
-            rtDW->b_temp_m = rtDW->c_c_g * obj->Q[idxRotGCol] + rtDW->b_s *
-              obj->Q[QRk0];
-            obj->Q[QRk0] = rtDW->c_c_g * obj->Q[QRk0] - rtDW->b_s * obj->
+            rtDW->b_temp_g = rtDW->c_c * obj->Q[idxRotGCol] + rtDW->b_s * obj->
+              Q[QRk0];
+            obj->Q[QRk0] = rtDW->c_c * obj->Q[QRk0] - rtDW->b_s * obj->
               Q[idxRotGCol];
-            obj->Q[idxRotGCol] = rtDW->b_temp_m;
+            obj->Q[idxRotGCol] = rtDW->b_temp_g;
             QRk0++;
             idxRotGCol++;
           }
@@ -2712,8 +2758,8 @@ static void deleteColMoveEnd(sQyCFUyu0YXOk1LARsZMzaD *obj, int32_T idx, DW *rtDW
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void computeProjectedHessian(const real_T H[49], s1hK3o0EyOqKKjEgDlbhqfF *
-  cholmanager, const sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s9NoAX0P67ji2P1ZBafS3UG
+static void computeProjectedHessian(const real_T H[49], sSzLoP8tvZHiR1V2perTtWD *
+  cholmanager, const sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, snRDwUdgrIx9qNga56nZ8DE
   *memspace, DW *rtDW)
 {
   int32_T ar;
@@ -2736,8 +2782,8 @@ static void computeProjectedHessian(const real_T H[49], s1hK3o0EyOqKKjEgDlbhqfF 
   ldQ = qrmanager->ldq;
   nullStart = qrmanager->ldq * qrmanager->ncols;
   if ((qrmanager->mrows != 0) && (mNull != 0)) {
-    b_c = (mNull - 1) * 9;
-    for (br = 0; br <= b_c; br += 9) {
+    b_c = (mNull - 1) * 10;
+    for (br = 0; br <= b_c; br += 10) {
       b_cr = br + nVars;
       for (ar = br; ar < b_cr; ar++) {
         memspace->workspace_double[ar] = 0.0;
@@ -2745,7 +2791,7 @@ static void computeProjectedHessian(const real_T H[49], s1hK3o0EyOqKKjEgDlbhqfF 
     }
 
     br = nullStart;
-    for (b_cr = 0; b_cr <= b_c; b_cr += 9) {
+    for (b_cr = 0; b_cr <= b_c; b_cr += 10) {
       ar = -1;
       c = br + nVars;
       for (ib = br; ib < c; ib++) {
@@ -2791,14 +2837,14 @@ static void computeProjectedHessian(const real_T H[49], s1hK3o0EyOqKKjEgDlbhqfF 
         ar += ldQ;
       }
 
-      br += 9;
+      br += 10;
       b_cr += ldm;
     }
   }
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static int32_T ixamax(int32_T n, const real_T x[64], int32_T incx)
+static int32_T ixamax(int32_T n, const real_T x[81], int32_T incx)
 {
   real_T smax;
   real_T y;
@@ -2827,7 +2873,7 @@ static int32_T ixamax(int32_T n, const real_T x[64], int32_T incx)
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void fullColLDL2_(s1hK3o0EyOqKKjEgDlbhqfF *obj, int32_T LD_offset,
+static void fullColLDL2_(sSzLoP8tvZHiR1V2perTtWD *obj, int32_T LD_offset,
   int32_T NColsRemain, real_T REG_PRIMAL)
 {
   real_T neg_D;
@@ -2887,8 +2933,8 @@ static void fullColLDL2_(s1hK3o0EyOqKKjEgDlbhqfF *obj, int32_T LD_offset,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_jmupcyx(int32_T m, int32_T n, const real_T A[64], int32_T ia0,
-  int32_T lda, const real_T x[72], real_T y[8])
+static void xgemv_pyma2zx(int32_T m, int32_T n, const real_T A[81], int32_T ia0,
+  int32_T lda, const real_T x[80], real_T y[8])
 {
   int32_T b;
   int32_T c;
@@ -2919,23 +2965,23 @@ static void xgemv_jmupcyx(int32_T m, int32_T n, const real_T A[64], int32_T ia0,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution,
-  s9NoAX0P67ji2P1ZBafS3UG *memspace, const sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
-  s1hK3o0EyOqKKjEgDlbhqfF *cholmanager, const shohwUBaOGHF036TMzc1KEH *objective,
+static void compute_deltax(const real_T H[49], sVm5xLhdFDU5OIlGg0pTc4E *solution,
+  snRDwUdgrIx9qNga56nZ8DE *memspace, const sCS11Pe0E6xKX8jGoaG4cLG *qrmanager,
+  sSzLoP8tvZHiR1V2perTtWD *cholmanager, const shohwUBaOGHF036TMzc1KEH *objective,
   DW *rtDW)
 {
   int32_T exitg1;
-  rtDW->nVar_a = qrmanager->mrows - 1;
+  rtDW->nVar_o = qrmanager->mrows - 1;
   rtDW->mNull = qrmanager->mrows - qrmanager->ncols;
   if (rtDW->mNull <= 0) {
     rtDW->mNull = 0;
-    while (rtDW->mNull <= rtDW->nVar_a) {
+    while (rtDW->mNull <= rtDW->nVar_o) {
       solution->searchDir[rtDW->mNull] = 0.0;
       rtDW->mNull++;
     }
   } else {
     rtDW->nullStartIdx = 0;
-    while (rtDW->nullStartIdx <= rtDW->nVar_a) {
+    while (rtDW->nullStartIdx <= rtDW->nVar_o) {
       solution->searchDir[rtDW->nullStartIdx] = -objective->grad
         [rtDW->nullStartIdx];
       rtDW->nullStartIdx++;
@@ -2947,11 +2993,11 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
           cholmanager->scaleFactor * (real_T)qrmanager->mrows;
         cholmanager->ndims = qrmanager->mrows;
         rtDW->mNull = 0;
-        while (rtDW->mNull <= rtDW->nVar_a) {
-          rtDW->nullStartIdx = (rtDW->nVar_a + 1) * rtDW->mNull;
+        while (rtDW->mNull <= rtDW->nVar_o) {
+          rtDW->nullStartIdx = (rtDW->nVar_o + 1) * rtDW->mNull;
           rtDW->b_A_maxDiag_idx = cholmanager->ldm * rtDW->mNull;
           rtDW->b_jjA = 1;
-          while (rtDW->b_jjA - 1 <= rtDW->nVar_a) {
+          while (rtDW->b_jjA - 1 <= rtDW->nVar_o) {
             cholmanager->FMat[(rtDW->b_A_maxDiag_idx + rtDW->b_jjA) - 1] = H
               [(rtDW->nullStartIdx + rtDW->b_jjA) - 1];
             rtDW->b_jjA++;
@@ -2970,7 +3016,7 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
           rtDW->mNull = 0;
           do {
             exitg1 = 0;
-            if (rtDW->mNull <= rtDW->nVar_a) {
+            if (rtDW->mNull <= rtDW->nVar_o) {
               if (cholmanager->FMat[cholmanager->ldm * rtDW->mNull + rtDW->mNull]
                   <= 0.0) {
                 cholmanager->info = -rtDW->mNull - 1;
@@ -2992,14 +3038,14 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
           if (cholmanager->ndims != 0) {
             rtDW->nullStartIdx = 0;
             while (rtDW->nullStartIdx <= rtDW->iac) {
-              rtDW->nVar_a = rtDW->nullStartIdx * cholmanager->ldm +
+              rtDW->nVar_o = rtDW->nullStartIdx * cholmanager->ldm +
                 rtDW->nullStartIdx;
               rtDW->b_A_maxDiag_idx = rtDW->iac - rtDW->nullStartIdx;
               rtDW->b_jjA = 1;
               while (rtDW->b_jjA - 1 <= rtDW->b_A_maxDiag_idx - 1) {
-                rtDW->b_ix_o = rtDW->nullStartIdx + rtDW->b_jjA;
-                solution->searchDir[rtDW->b_ix_o] -= cholmanager->FMat
-                  [rtDW->nVar_a + rtDW->b_jjA] * solution->searchDir
+                rtDW->b_ix_f = rtDW->nullStartIdx + rtDW->b_jjA;
+                solution->searchDir[rtDW->b_ix_f] -= cholmanager->FMat
+                  [rtDW->nVar_o + rtDW->b_jjA] * solution->searchDir
                   [rtDW->nullStartIdx];
                 rtDW->b_jjA++;
               }
@@ -3020,12 +3066,12 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
             while (rtDW->mNull + 1 > 0) {
               rtDW->nullStartIdx = rtDW->mNull * cholmanager->ldm;
               rtDW->b_SCALED_REG_PRIMAL = solution->searchDir[rtDW->mNull];
-              rtDW->nVar_a = cholmanager->ndims;
-              while (rtDW->nVar_a >= rtDW->mNull + 2) {
+              rtDW->nVar_o = cholmanager->ndims;
+              while (rtDW->nVar_o >= rtDW->mNull + 2) {
                 rtDW->b_SCALED_REG_PRIMAL -= cholmanager->FMat
-                  [(rtDW->nullStartIdx + rtDW->nVar_a) - 1] *
-                  solution->searchDir[rtDW->nVar_a - 1];
-                rtDW->nVar_a--;
+                  [(rtDW->nullStartIdx + rtDW->nVar_o) - 1] *
+                  solution->searchDir[rtDW->nVar_o - 1];
+                rtDW->nVar_o--;
               }
 
               solution->searchDir[rtDW->mNull] = rtDW->b_SCALED_REG_PRIMAL;
@@ -3041,11 +3087,11 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
         while (rtDW->b_A_maxDiag_idx <= rtDW->mNull - 1) {
           memspace->workspace_double[rtDW->b_A_maxDiag_idx] = -qrmanager->Q
             [(qrmanager->ncols + rtDW->b_A_maxDiag_idx) * qrmanager->ldq +
-            rtDW->nVar_a];
+            rtDW->nVar_o];
           rtDW->b_A_maxDiag_idx++;
         }
 
-        xgemv_jmupcyx(qrmanager->mrows, rtDW->mNull, qrmanager->Q,
+        xgemv_pyma2zx(qrmanager->mrows, rtDW->mNull, qrmanager->Q,
                       rtDW->nullStartIdx, qrmanager->ldq,
                       memspace->workspace_double, solution->searchDir);
       } else {
@@ -3093,21 +3139,21 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
             }
 
             rtDW->b_jjA = 0;
-            rtDW->b_ix_o = (rtDW->mNull - 1) * qrmanager->ldq +
+            rtDW->b_ix_f = (rtDW->mNull - 1) * qrmanager->ldq +
               rtDW->nullStartIdx;
             rtDW->iac = rtDW->nullStartIdx;
-            while (((rtDW->b_A_maxDiag_idx > 0) && (rtDW->iac <= rtDW->b_ix_o)) ||
-                   ((rtDW->b_A_maxDiag_idx < 0) && (rtDW->iac >= rtDW->b_ix_o)))
+            while (((rtDW->b_A_maxDiag_idx > 0) && (rtDW->iac <= rtDW->b_ix_f)) ||
+                   ((rtDW->b_A_maxDiag_idx < 0) && (rtDW->iac >= rtDW->b_ix_f)))
             {
-              rtDW->ix_a = 0;
+              rtDW->ix_i = 0;
               rtDW->b_SCALED_REG_PRIMAL = 0.0;
-              rtDW->d_i = rtDW->iac + rtDW->nVar_a;
-              rtDW->ia_l = rtDW->iac;
-              while (rtDW->ia_l <= rtDW->d_i) {
-                rtDW->b_SCALED_REG_PRIMAL += qrmanager->Q[rtDW->ia_l - 1] *
-                  objective->grad[rtDW->ix_a];
-                rtDW->ix_a++;
-                rtDW->ia_l++;
+              rtDW->d_f = rtDW->iac + rtDW->nVar_o;
+              rtDW->ia_i = rtDW->iac;
+              while (rtDW->ia_i <= rtDW->d_f) {
+                rtDW->b_SCALED_REG_PRIMAL += qrmanager->Q[rtDW->ia_i - 1] *
+                  objective->grad[rtDW->ix_i];
+                rtDW->ix_i++;
+                rtDW->ia_i++;
               }
 
               memspace->workspace_double[rtDW->b_jjA] +=
@@ -3117,17 +3163,17 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
             }
           }
 
-          rtDW->d_i = cholmanager->ndims - 1;
+          rtDW->d_f = cholmanager->ndims - 1;
           if (cholmanager->ndims != 0) {
             rtDW->b_A_maxDiag_idx = 0;
-            while (rtDW->b_A_maxDiag_idx <= rtDW->d_i) {
+            while (rtDW->b_A_maxDiag_idx <= rtDW->d_f) {
               rtDW->b_jjA = rtDW->b_A_maxDiag_idx * cholmanager->ldm +
                 rtDW->b_A_maxDiag_idx;
-              rtDW->b_ix_o = rtDW->d_i - rtDW->b_A_maxDiag_idx;
+              rtDW->b_ix_f = rtDW->d_f - rtDW->b_A_maxDiag_idx;
               rtDW->iac = 1;
-              while (rtDW->iac - 1 <= rtDW->b_ix_o - 1) {
-                rtDW->ix_a = rtDW->b_A_maxDiag_idx + rtDW->iac;
-                memspace->workspace_double[rtDW->ix_a] -= cholmanager->FMat
+              while (rtDW->iac - 1 <= rtDW->b_ix_f - 1) {
+                rtDW->ix_i = rtDW->b_A_maxDiag_idx + rtDW->iac;
+                memspace->workspace_double[rtDW->ix_i] -= cholmanager->FMat
                   [rtDW->b_jjA + rtDW->iac] * memspace->workspace_double
                   [rtDW->b_A_maxDiag_idx];
                 rtDW->iac++;
@@ -3137,34 +3183,34 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
             }
           }
 
-          rtDW->nVar_a = 0;
-          while (rtDW->nVar_a <= rtDW->d_i) {
-            memspace->workspace_double[rtDW->nVar_a] /= cholmanager->
-              FMat[cholmanager->ldm * rtDW->nVar_a + rtDW->nVar_a];
-            rtDW->nVar_a++;
+          rtDW->nVar_o = 0;
+          while (rtDW->nVar_o <= rtDW->d_f) {
+            memspace->workspace_double[rtDW->nVar_o] /= cholmanager->
+              FMat[cholmanager->ldm * rtDW->nVar_o + rtDW->nVar_o];
+            rtDW->nVar_o++;
           }
 
           if (cholmanager->ndims != 0) {
-            rtDW->nVar_a = cholmanager->ndims - 1;
-            while (rtDW->nVar_a + 1 > 0) {
-              rtDW->b_A_maxDiag_idx = rtDW->nVar_a * cholmanager->ldm;
+            rtDW->nVar_o = cholmanager->ndims - 1;
+            while (rtDW->nVar_o + 1 > 0) {
+              rtDW->b_A_maxDiag_idx = rtDW->nVar_o * cholmanager->ldm;
               rtDW->b_SCALED_REG_PRIMAL = memspace->workspace_double
-                [rtDW->nVar_a];
+                [rtDW->nVar_o];
               rtDW->b_jjA = cholmanager->ndims;
-              while (rtDW->b_jjA >= rtDW->nVar_a + 2) {
+              while (rtDW->b_jjA >= rtDW->nVar_o + 2) {
                 rtDW->b_SCALED_REG_PRIMAL -= cholmanager->FMat
                   [(rtDW->b_A_maxDiag_idx + rtDW->b_jjA) - 1] *
                   memspace->workspace_double[rtDW->b_jjA - 1];
                 rtDW->b_jjA--;
               }
 
-              memspace->workspace_double[rtDW->nVar_a] =
+              memspace->workspace_double[rtDW->nVar_o] =
                 rtDW->b_SCALED_REG_PRIMAL;
-              rtDW->nVar_a--;
+              rtDW->nVar_o--;
             }
           }
 
-          xgemv_jmupcyx(qrmanager->mrows, rtDW->mNull, qrmanager->Q,
+          xgemv_pyma2zx(qrmanager->mrows, rtDW->mNull, qrmanager->Q,
                         rtDW->nullStartIdx, qrmanager->ldq,
                         memspace->workspace_double, solution->searchDir);
         }
@@ -3174,7 +3220,7 @@ static void compute_deltax(const real_T H[49], svV6yPD1e8CTJu8b18IprLB *solution
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static real_T xnrm2_g(int32_T n, const real_T x[8])
+static real_T xnrm2_j(int32_T n, const real_T x[8])
 {
   real_T absxk;
   real_T scale;
@@ -3207,8 +3253,8 @@ static real_T xnrm2_g(int32_T n, const real_T x[8])
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_jmupcyxs(int32_T m, int32_T n, const real_T A[56], int32_T lda,
-  const real_T x[8], real_T y[72])
+static void xgemv_pyma2zxi(int32_T m, int32_T n, const real_T A[56], int32_T lda,
+  const real_T x[8], real_T y[80])
 {
   real_T c;
   int32_T b;
@@ -3242,8 +3288,8 @@ static void xgemv_jmupcyxs(int32_T m, int32_T n, const real_T A[56], int32_T lda
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void xgemv_jmupcyxsk(int32_T m, int32_T n, const real_T A[56], int32_T
-  lda, const real_T x[8], real_T y[72])
+static void xgemv_pyma2zxid(int32_T m, int32_T n, const real_T A[56], int32_T
+  lda, const real_T x[8], real_T y[80])
 {
   real_T c;
   int32_T b;
@@ -3253,11 +3299,11 @@ static void xgemv_jmupcyxsk(int32_T m, int32_T n, const real_T A[56], int32_T
   int32_T ix;
   int32_T iy;
   if ((m != 0) && (n != 0)) {
-    for (iy = 10; iy <= n + 9; iy++) {
+    for (iy = 11; iy <= n + 10; iy++) {
       y[iy - 1] = 0.0;
     }
 
-    iy = 9;
+    iy = 10;
     b_c = (n - 1) * lda + 1;
     iac = 1;
     while (((lda > 0) && (iac <= b_c)) || ((lda < 0) && (iac >= b_c))) {
@@ -3278,14 +3324,14 @@ static void xgemv_jmupcyxsk(int32_T m, int32_T n, const real_T A[56], int32_T
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static void ratiotest(const real_T solution_xstar[8], const real_T
-                      solution_searchDir[8], real_T workspace[72], int32_T
+                      solution_searchDir[8], real_T workspace[80], int32_T
                       workingset_nVar, int32_T workingset_ldA, const real_T
                       workingset_Aineq[56], const real_T workingset_bineq[7],
                       const real_T workingset_lb[8], const real_T workingset_ub
                       [8], const int32_T workingset_indexLB[8], const int32_T
                       workingset_indexUB[8], const int32_T workingset_sizes[5],
                       const int32_T workingset_isActiveIdx[6], const boolean_T
-                      workingset_isActiveConstr[9], const int32_T
+                      workingset_isActiveConstr[10], const int32_T
                       workingset_nWConstr[5], boolean_T isPhaseOne, real_T
                       tolcon, real_T *toldelta, real_T toltau, real_T *alpha,
                       boolean_T *newBlocking, int32_T *constrType, int32_T
@@ -3301,19 +3347,19 @@ static void ratiotest(const real_T solution_xstar[8], const real_T
   *constrType = 0;
   *constrIdx = 0;
   rtDW->p_max = 0.0;
-  rtDW->denomTol = 2.2204460492503131E-13 * xnrm2_g(workingset_nVar,
+  rtDW->denomTol = 2.2204460492503131E-13 * xnrm2_j(workingset_nVar,
     solution_searchDir);
   if (workingset_nWConstr[2] < workingset_sizes[2]) {
     for (b_k = 0; b_k <= totalIneq; b_k++) {
       workspace[b_k] = workingset_bineq[b_k];
     }
 
-    xgemv_jmupcyxs(workingset_nVar, workingset_sizes[2], workingset_Aineq,
+    xgemv_pyma2zxi(workingset_nVar, workingset_sizes[2], workingset_Aineq,
                    workingset_ldA, solution_xstar, workspace);
-    xgemv_jmupcyxsk(workingset_nVar, workingset_sizes[2], workingset_Aineq,
+    xgemv_pyma2zxid(workingset_nVar, workingset_sizes[2], workingset_Aineq,
                     workingset_ldA, solution_searchDir, workspace);
     for (b_k = 0; b_k <= totalIneq; b_k++) {
-      rtDW->phaseOneCorrectionX = workspace[b_k + 9];
+      rtDW->phaseOneCorrectionX = workspace[b_k + 10];
       if ((rtDW->phaseOneCorrectionX > rtDW->denomTol) &&
           (!workingset_isActiveConstr[(workingset_isActiveIdx[2] + b_k) - 1])) {
         ratio_tmp = tolcon - workspace[b_k];
@@ -3334,7 +3380,7 @@ static void ratiotest(const real_T solution_xstar[8], const real_T
           *constrType = 3;
           *constrIdx = b_k + 1;
           *newBlocking = true;
-          rtDW->p_max = fabs(workspace[b_k + 9]);
+          rtDW->p_max = fabs(workspace[b_k + 10]);
         }
       }
     }
@@ -3452,15 +3498,15 @@ static void ratiotest(const real_T solution_xstar[8], const real_T
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static void feasibleratiotest(const real_T solution_xstar[8], const real_T
-  solution_searchDir[8], real_T workspace[72], int32_T workingset_nVar, int32_T
+  solution_searchDir[8], real_T workspace[80], int32_T workingset_nVar, int32_T
   workingset_ldA, const real_T workingset_Aineq[56], const real_T
   workingset_bineq[7], const real_T workingset_lb[8], const real_T
   workingset_ub[8], const int32_T workingset_indexLB[8], const int32_T
   workingset_indexUB[8], const int32_T workingset_sizes[5], const int32_T
-  workingset_isActiveIdx[6], const boolean_T workingset_isActiveConstr[9], const
-  int32_T workingset_nWConstr[5], boolean_T isPhaseOne, real_T tolcon, real_T
-  *alpha, boolean_T *newBlocking, int32_T *constrType, int32_T *constrIdx, DW
-  *rtDW)
+  workingset_isActiveIdx[6], const boolean_T workingset_isActiveConstr[10],
+  const int32_T workingset_nWConstr[5], boolean_T isPhaseOne, real_T tolcon,
+  real_T *alpha, boolean_T *newBlocking, int32_T *constrType, int32_T *constrIdx,
+  DW *rtDW)
 {
   real_T pk_corrected;
   real_T ratio;
@@ -3471,19 +3517,19 @@ static void feasibleratiotest(const real_T solution_xstar[8], const real_T
   *newBlocking = false;
   *constrType = 0;
   *constrIdx = 0;
-  rtDW->denomTol_n = 2.2204460492503131E-13 * xnrm2_g(workingset_nVar,
+  rtDW->denomTol_n = 2.2204460492503131E-13 * xnrm2_j(workingset_nVar,
     solution_searchDir);
   if (workingset_nWConstr[2] < workingset_sizes[2]) {
     for (b_k = 0; b_k <= totalIneq; b_k++) {
       workspace[b_k] = workingset_bineq[b_k];
     }
 
-    xgemv_jmupcyxs(workingset_nVar, workingset_sizes[2], workingset_Aineq,
+    xgemv_pyma2zxi(workingset_nVar, workingset_sizes[2], workingset_Aineq,
                    workingset_ldA, solution_xstar, workspace);
-    xgemv_jmupcyxsk(workingset_nVar, workingset_sizes[2], workingset_Aineq,
+    xgemv_pyma2zxid(workingset_nVar, workingset_sizes[2], workingset_Aineq,
                     workingset_ldA, solution_searchDir, workspace);
     for (b_k = 0; b_k <= totalIneq; b_k++) {
-      rtDW->phaseOneCorrectionX_p = workspace[b_k + 9];
+      rtDW->phaseOneCorrectionX_p = workspace[b_k + 10];
       if ((rtDW->phaseOneCorrectionX_p > rtDW->denomTol_n) &&
           (!workingset_isActiveConstr[(workingset_isActiveIdx[2] + b_k) - 1])) {
         ratio = fmin(fabs(workspace[b_k]), tolcon - workspace[b_k]) /
@@ -3568,11 +3614,11 @@ static void feasibleratiotest(const real_T solution_xstar[8], const real_T
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void checkUnboundedOrIllPosed(svV6yPD1e8CTJu8b18IprLB *solution, const
+static void checkUnboundedOrIllPosed(sVm5xLhdFDU5OIlGg0pTc4E *solution, const
   shohwUBaOGHF036TMzc1KEH *objective)
 {
   if (objective->objtype == 5) {
-    if (xnrm2_g(objective->nvar, solution->searchDir) > 100.0 * (real_T)
+    if (xnrm2_j(objective->nvar, solution->searchDir) > 100.0 * (real_T)
         objective->nvar * 1.4901161193847656E-8) {
       solution->state = 3;
     } else {
@@ -3582,7 +3628,7 @@ static void checkUnboundedOrIllPosed(svV6yPD1e8CTJu8b18IprLB *solution, const
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void addBoundToActiveSetMatrix_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
+static void addBoundToActiveSetMatrix_(stxriBK2jD81NCGacZ0b8HD *obj, int32_T
   TYPE, int32_T idx_local)
 {
   int32_T colOffset;
@@ -3623,9 +3669,9 @@ static void addBoundToActiveSetMatrix_(swcr9qLPQBiG4lNhaNdYq5G *obj, int32_T
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void compute_lambda(real_T workspace[72], svV6yPD1e8CTJu8b18IprLB
+static void compute_lambda(real_T workspace[80], sVm5xLhdFDU5OIlGg0pTc4E
   *solution, const shohwUBaOGHF036TMzc1KEH *objective, const
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager)
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager)
 {
   real_T tol;
   int32_T b;
@@ -3728,9 +3774,9 @@ static void compute_lambda(real_T workspace[72], svV6yPD1e8CTJu8b18IprLB
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static void checkStoppingAndUpdateFval(int32_T *activeSetChangeID, const real_T
-  f[7], svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *memspace,
-  const shohwUBaOGHF036TMzc1KEH *objective, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, real_T options_ObjectiveLimit, real_T
+  f[7], sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE *memspace,
+  const shohwUBaOGHF036TMzc1KEH *objective, stxriBK2jD81NCGacZ0b8HD *workingset,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, real_T options_ObjectiveLimit, real_T
   options_ConstraintTolerance, int32_T runTimeOptions_MaxIterations, real_T
   runTimeOptions_ConstrRelTolFact, boolean_T updateFval, DW *rtDW)
 {
@@ -3742,7 +3788,7 @@ static void checkStoppingAndUpdateFval(int32_T *activeSetChangeID, const real_T
   }
 
   if (solution->iterations - solution->iterations / 50 * 50 == 0) {
-    rtDW->b_p = maxConstraintViolation_b0(workingset, solution->xstar, rtDW);
+    rtDW->b_p = maxConstraintViolation_pn(workingset, solution->xstar, rtDW);
     solution->maxConstr = rtDW->b_p;
     rtDW->tempMaxConstr = rtDW->b_p;
     if (objective->objtype == 5) {
@@ -3760,7 +3806,7 @@ static void checkStoppingAndUpdateFval(int32_T *activeSetChangeID, const real_T
       feasibleX0ForWorkingSet(memspace->workspace_double, solution->searchDir,
         workingset, qrmanager, rtDW);
       *activeSetChangeID = 0;
-      rtDW->tempMaxConstr = maxConstraintViolation_b0(workingset,
+      rtDW->tempMaxConstr = maxConstraintViolation_pn(workingset,
         solution->searchDir, rtDW);
       if (rtDW->tempMaxConstr < rtDW->b_p) {
         rtDW->b_k = 0;
@@ -3786,10 +3832,10 @@ static void checkStoppingAndUpdateFval(int32_T *activeSetChangeID, const real_T
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void computeFirstOrderOpt(svV6yPD1e8CTJu8b18IprLB *solution, const
+static void computeFirstOrderOpt(sVm5xLhdFDU5OIlGg0pTc4E *solution, const
   shohwUBaOGHF036TMzc1KEH *objective, int32_T workingset_nVar, int32_T
-  workingset_ldA, const real_T workingset_ATwset[72], int32_T
-  workingset_nActiveConstr, real_T workspace[72])
+  workingset_ldA, const real_T workingset_ATwset[80], int32_T
+  workingset_nActiveConstr, real_T workspace[80])
 {
   real_T smax;
   real_T y;
@@ -3956,9 +4002,9 @@ static void printInfo(boolean_T newBlocking, int32_T PROBLEM_TYPE, real_T alpha,
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static void iterate(const real_T H[49], const real_T f[7],
-                    svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG
-                    *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-                    sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s1hK3o0EyOqKKjEgDlbhqfF *
+                    sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE
+                    *memspace, stxriBK2jD81NCGacZ0b8HD *workingset,
+                    sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, sSzLoP8tvZHiR1V2perTtWD *
                     cholmanager, shohwUBaOGHF036TMzc1KEH *objective, boolean_T
                     options_IterDisplayQP, real_T options_PricingTolerance,
                     real_T options_ObjectiveLimit, real_T
@@ -4083,7 +4129,7 @@ static void iterate(const real_T H[49], const real_T f[7],
           break;
 
          default:
-          factorQR_e(qrmanager, workingset->ATwset, rtDW->nVar,
+          factorQR_f(qrmanager, workingset->ATwset, rtDW->nVar,
                      workingset->nActiveConstr, workingset->ldA, rtDW);
           computeQ_(qrmanager, qrmanager->mrows, rtDW);
           break;
@@ -4094,7 +4140,7 @@ static void iterate(const real_T H[49], const real_T f[7],
         if (solution->state != -5) {
           exitg1 = 1;
         } else {
-          rtDW->normDelta = xnrm2_g(rtDW->nVar, solution->searchDir);
+          rtDW->normDelta = xnrm2_j(rtDW->nVar, solution->searchDir);
           guard1 = true;
         }
       } else {
@@ -4261,7 +4307,7 @@ static void iterate(const real_T H[49], const real_T f[7],
           if (solution->iterations - solution->iterations / 50 * 50 == 0) {
             printHeader();
           } else {
-            solution->maxConstr = maxConstraintViolation_b0(workingset,
+            solution->maxConstr = maxConstraintViolation_pn(workingset,
               solution->xstar, rtDW);
           }
 
@@ -4291,9 +4337,9 @@ static void iterate(const real_T H[49], const real_T f[7],
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static void phaseone(const real_T H[49], const real_T f[7],
-                     svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *
-                     memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-                     sQyCFUyu0YXOk1LARsZMzaD *qrmanager, s1hK3o0EyOqKKjEgDlbhqfF
+                     sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE *
+                     memspace, stxriBK2jD81NCGacZ0b8HD *workingset,
+                     sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, sSzLoP8tvZHiR1V2perTtWD
                      *cholmanager, const sL9bDKomAYkxZSVrG9w6En *runTimeOptions,
                      shohwUBaOGHF036TMzc1KEH *objective, s4lHOiXA0GHbse0IgoBY6ZF
                      *options, DW *rtDW)
@@ -4311,8 +4357,8 @@ static void phaseone(const real_T H[49], const real_T f[7],
 
   boolean_T exitg1;
   options->InitDamping = 0.01;
-  for (rtDW->i_p = 0; rtDW->i_p < 7; rtDW->i_p++) {
-    options->FiniteDifferenceType[rtDW->i_p] = d_FiniteDifferenceType[rtDW->i_p];
+  for (rtDW->i_i = 0; rtDW->i_i < 7; rtDW->i_i++) {
+    options->FiniteDifferenceType[rtDW->i_i] = d_FiniteDifferenceType[rtDW->i_i];
   }
 
   options->SpecifyObjectiveGradient = false;
@@ -4324,16 +4370,16 @@ static void phaseone(const real_T H[49], const real_T f[7],
   options->MaxFunctionEvaluations = -1.0;
   options->IterDisplayQP = false;
   options->PricingTolerance = 0.0;
-  for (rtDW->i_p = 0; rtDW->i_p < 10; rtDW->i_p++) {
-    options->Algorithm[rtDW->i_p] = d_Algorithm[rtDW->i_p];
+  for (rtDW->i_i = 0; rtDW->i_i < 10; rtDW->i_i++) {
+    options->Algorithm[rtDW->i_i] = d_Algorithm[rtDW->i_i];
   }
 
   options->ConstraintTolerance = 1.0E-8;
   options->OptimalityTolerance = 1.0E-6;
   options->MaxIterations = 7.0;
   options->FunctionTolerance = 1.7976931348623157E+308;
-  for (rtDW->i_p = 0; rtDW->i_p < 8; rtDW->i_p++) {
-    options->SolverName[rtDW->i_p] = d_SolverName[rtDW->i_p];
+  for (rtDW->i_i = 0; rtDW->i_i < 8; rtDW->i_i++) {
+    options->SolverName[rtDW->i_i] = d_SolverName[rtDW->i_i];
   }
 
   options->CheckGradients = false;
@@ -4342,8 +4388,8 @@ static void phaseone(const real_T H[49], const real_T f[7],
   options->Diagnostics[2] = 'f';
   options->DiffMaxChange = 1.7976931348623157E+308;
   options->DiffMinChange = 0.0;
-  for (rtDW->i_p = 0; rtDW->i_p < 5; rtDW->i_p++) {
-    options->Display[rtDW->i_p] = d_Display[rtDW->i_p];
+  for (rtDW->i_i = 0; rtDW->i_i < 5; rtDW->i_i++) {
+    options->Display[rtDW->i_i] = d_Display[rtDW->i_i];
   }
 
   options->FunValCheck[0] = 'o';
@@ -4356,20 +4402,20 @@ static void phaseone(const real_T H[49], const real_T f[7],
   options->LinearSolver[3] = 'o';
   options->SubproblemAlgorithm[0] = 'c';
   options->SubproblemAlgorithm[1] = 'g';
-  rtDW->PROBTYPE_ORIG_c = workingset->probType;
-  rtDW->nVar_tmp_a = workingset->nVar;
+  rtDW->PROBTYPE_ORIG_a = workingset->probType;
+  rtDW->nVar_tmp_l = workingset->nVar;
   solution->xstar[workingset->nVar] = solution->maxConstr + 1.0;
   if (workingset->probType == 3) {
-    rtDW->i_p = 1;
+    rtDW->i_i = 1;
   } else {
-    rtDW->i_p = 4;
+    rtDW->i_i = 4;
   }
 
-  setProblemType(workingset, rtDW->i_p);
+  setProblemType(workingset, rtDW->i_i);
   removeAllIneqConstr(workingset);
   memset(&objective->grad[0], 0, sizeof(real_T) << 3U);
-  for (rtDW->i_p = 0; rtDW->i_p < 7; rtDW->i_p++) {
-    objective->Hx[rtDW->i_p] = 0.0;
+  for (rtDW->i_i = 0; rtDW->i_i < 7; rtDW->i_i++) {
+    objective->Hx[rtDW->i_i] = 0.0;
   }
 
   objective->maxVar = 8;
@@ -4379,7 +4425,7 @@ static void phaseone(const real_T H[49], const real_T f[7],
   objective->prev_nvar = 7;
   objective->prev_hasLinear = true;
   objective->objtype = 5;
-  objective->nvar = rtDW->nVar_tmp_a + 1;
+  objective->nvar = rtDW->nVar_tmp_l + 1;
   objective->gammaScalar = 1.0;
   objective->hasLinear = true;
   options->ObjectiveLimit = 1.0E-8 * runTimeOptions->ConstrRelTolFactor;
@@ -4391,38 +4437,38 @@ static void phaseone(const real_T H[49], const real_T f[7],
           1.4901161193847657E-10, *runTimeOptions, rtDW);
   if (workingset->isActiveConstr[(workingset->isActiveIdx[3] + workingset->
        sizes[3]) - 2]) {
-    rtDW->i_p = workingset->sizes[0] + workingset->sizes[1];
+    rtDW->i_i = workingset->sizes[0] + workingset->sizes[1];
     exitg1 = false;
-    while ((!exitg1) && (rtDW->i_p + 1 <= workingset->nActiveConstr)) {
-      if ((workingset->Wid[rtDW->i_p] == 4) && (workingset->Wlocalidx[rtDW->i_p]
+    while ((!exitg1) && (rtDW->i_i + 1 <= workingset->nActiveConstr)) {
+      if ((workingset->Wid[rtDW->i_i] == 4) && (workingset->Wlocalidx[rtDW->i_i]
            == workingset->sizes[3])) {
-        rtDW->b_TYPE_p = workingset->Wid[rtDW->i_p] - 1;
+        rtDW->b_TYPE_a = workingset->Wid[rtDW->i_i] - 1;
         workingset->isActiveConstr[(workingset->isActiveIdx[workingset->Wid
-          [rtDW->i_p] - 1] + workingset->Wlocalidx[rtDW->i_p]) - 2] = false;
-        moveConstraint_(workingset, workingset->nActiveConstr, rtDW->i_p + 1);
+          [rtDW->i_i] - 1] + workingset->Wlocalidx[rtDW->i_i]) - 2] = false;
+        moveConstraint_(workingset, workingset->nActiveConstr, rtDW->i_i + 1);
         workingset->nActiveConstr--;
-        workingset->nWConstr[rtDW->b_TYPE_p]--;
+        workingset->nWConstr[rtDW->b_TYPE_a]--;
         exitg1 = true;
       } else {
-        rtDW->i_p++;
+        rtDW->i_i++;
       }
     }
   }
 
-  rtDW->i_p = workingset->nActiveConstr;
-  rtDW->b_TYPE_p = workingset->sizes[0] + workingset->sizes[1];
-  while ((rtDW->i_p > rtDW->b_TYPE_p) && (rtDW->i_p > rtDW->nVar_tmp_a)) {
-    rtDW->TYPE_tmp_e = workingset->Wid[rtDW->i_p - 1] - 1;
-    workingset->isActiveConstr[(workingset->isActiveIdx[rtDW->TYPE_tmp_e] +
-      workingset->Wlocalidx[rtDW->i_p - 1]) - 2] = false;
-    moveConstraint_(workingset, workingset->nActiveConstr, rtDW->i_p);
+  rtDW->i_i = workingset->nActiveConstr;
+  rtDW->b_TYPE_a = workingset->sizes[0] + workingset->sizes[1];
+  while ((rtDW->i_i > rtDW->b_TYPE_a) && (rtDW->i_i > rtDW->nVar_tmp_l)) {
+    rtDW->TYPE_tmp_o = workingset->Wid[rtDW->i_i - 1] - 1;
+    workingset->isActiveConstr[(workingset->isActiveIdx[rtDW->TYPE_tmp_o] +
+      workingset->Wlocalidx[rtDW->i_i - 1]) - 2] = false;
+    moveConstraint_(workingset, workingset->nActiveConstr, rtDW->i_i);
     workingset->nActiveConstr--;
-    workingset->nWConstr[rtDW->TYPE_tmp_e]--;
-    rtDW->i_p--;
+    workingset->nWConstr[rtDW->TYPE_tmp_o]--;
+    rtDW->i_i--;
   }
 
-  solution->maxConstr = solution->xstar[rtDW->nVar_tmp_a];
-  setProblemType(workingset, rtDW->PROBTYPE_ORIG_c);
+  solution->maxConstr = solution->xstar[rtDW->nVar_tmp_l];
+  setProblemType(workingset, rtDW->PROBTYPE_ORIG_a);
   objective->objtype = objective->prev_objtype;
   objective->nvar = objective->prev_nvar;
   objective->hasLinear = objective->prev_hasLinear;
@@ -4431,8 +4477,8 @@ static void phaseone(const real_T H[49], const real_T f[7],
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static int32_T ComputeNumDependentEq__b(sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
-  const real_T beqf[9], int32_T mConstr, int32_T nVar, real_T tolfactor, DW
+static int32_T ComputeNumDependentEq__d(sCS11Pe0E6xKX8jGoaG4cLG *qrmanager,
+  const real_T beqf[10], int32_T mConstr, int32_T nVar, real_T tolfactor, DW
   *rtDW)
 {
   int32_T numDependent;
@@ -4466,7 +4512,7 @@ static int32_T ComputeNumDependentEq__b(sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
             rtDW);
   }
 
-  rtDW->tol = tolfactor * (real_T)nVar * 2.2204460492503131E-16;
+  rtDW->tol_g = tolfactor * (real_T)nVar * 2.2204460492503131E-16;
   if (nVar < mConstr) {
     rtDW->totalRank = nVar;
   } else {
@@ -4475,7 +4521,7 @@ static int32_T ComputeNumDependentEq__b(sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
 
   rtDW->totalRank += (rtDW->totalRank - 1) * qrmanager->ldq;
   while ((rtDW->totalRank > 0) && (fabs(qrmanager->QR[rtDW->totalRank - 1]) <
-          rtDW->tol)) {
+          rtDW->tol_g)) {
     rtDW->totalRank = (rtDW->totalRank - qrmanager->ldq) - 1;
     numDependent++;
   }
@@ -4487,18 +4533,18 @@ static int32_T ComputeNumDependentEq__b(sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
     while ((!exitg1) && (rtDW->totalRank <= numDependent - 1)) {
       rtDW->qtb = 0.0;
       if (mConstr >= 1) {
-        rtDW->ix_c = ((mConstr - rtDW->totalRank) - 1) * qrmanager->ldq;
-        rtDW->iy_m = 0;
-        rtDW->k_m = 0;
-        while (rtDW->k_m <= mConstr - 1) {
-          rtDW->qtb += qrmanager->Q[rtDW->ix_c] * beqf[rtDW->iy_m];
-          rtDW->ix_c++;
-          rtDW->iy_m++;
-          rtDW->k_m++;
+        rtDW->ix_a = ((mConstr - rtDW->totalRank) - 1) * qrmanager->ldq;
+        rtDW->iy_e = 0;
+        rtDW->k_c = 0;
+        while (rtDW->k_c <= mConstr - 1) {
+          rtDW->qtb += qrmanager->Q[rtDW->ix_a] * beqf[rtDW->iy_e];
+          rtDW->ix_a++;
+          rtDW->iy_e++;
+          rtDW->k_c++;
         }
       }
 
-      if (fabs(rtDW->qtb) >= rtDW->tol) {
+      if (fabs(rtDW->qtb) >= rtDW->tol_g) {
         numDependent = -1;
         exitg1 = true;
       } else {
@@ -4511,103 +4557,95 @@ static int32_T ComputeNumDependentEq__b(sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static int32_T RemoveDependentEq__l(s9NoAX0P67ji2P1ZBafS3UG *memspace,
-  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
+static void IndexOfDependentEq__i(int32_T depIdx[10], int32_T mFixed, int32_T
+  nDep, sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, int32_T mRows, int32_T nCols, DW
+  *rtDW)
+{
+  rtDW->b_idx_m = 0;
+  while (rtDW->b_idx_m <= mFixed - 1) {
+    qrmanager->jpvt[rtDW->b_idx_m] = 1;
+    rtDW->b_idx_m++;
+  }
+
+  rtDW->b_idx_m = mFixed;
+  while (rtDW->b_idx_m + 1 <= nCols) {
+    qrmanager->jpvt[rtDW->b_idx_m] = 0;
+    rtDW->b_idx_m++;
+  }
+
+  if (mRows * nCols == 0) {
+    qrmanager->mrows = mRows;
+    qrmanager->ncols = nCols;
+    qrmanager->minRowCol = 0;
+  } else {
+    qrmanager->usedPivoting = true;
+    qrmanager->mrows = mRows;
+    qrmanager->ncols = nCols;
+    if (mRows < nCols) {
+      qrmanager->minRowCol = mRows;
+    } else {
+      qrmanager->minRowCol = nCols;
+    }
+
+    xzgeqp3(qrmanager->QR, 1, mRows, nCols, qrmanager->jpvt, qrmanager->tau,
+            rtDW);
+  }
+
+  rtDW->b_idx_m = 0;
+  while (rtDW->b_idx_m <= nDep - 1) {
+    depIdx[rtDW->b_idx_m] = qrmanager->jpvt[(nCols - nDep) + rtDW->b_idx_m];
+    rtDW->b_idx_m++;
+  }
+}
+
+/* Function for MATLAB Function: '<S1>/qp_solver' */
+static int32_T RemoveDependentEq__b(snRDwUdgrIx9qNga56nZ8DE *memspace,
+  stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG *qrmanager,
   real_T tolfactor, DW *rtDW)
 {
   int32_T nDepInd;
-  rtDW->nVar_n = workingset->nVar - 1;
+  rtDW->nVar_c = workingset->nVar - 1;
   rtDW->mTotalWorkingEq = workingset->nWConstr[0] + workingset->nWConstr[1];
   nDepInd = 0;
   if (rtDW->mTotalWorkingEq > 0) {
-    rtDW->idx_row_m = 0;
-    while (rtDW->idx_row_m <= rtDW->mTotalWorkingEq - 1) {
+    rtDW->idx_row_p = 0;
+    while (rtDW->idx_row_p <= rtDW->mTotalWorkingEq - 1) {
       rtDW->offsetQR = 0;
-      while (rtDW->offsetQR <= rtDW->nVar_n) {
-        qrmanager->QR[rtDW->idx_row_m + qrmanager->ldq * rtDW->offsetQR] =
-          workingset->ATwset[workingset->ldA * rtDW->idx_row_m + rtDW->offsetQR];
+      while (rtDW->offsetQR <= rtDW->nVar_c) {
+        qrmanager->QR[rtDW->idx_row_p + qrmanager->ldq * rtDW->offsetQR] =
+          workingset->ATwset[workingset->ldA * rtDW->idx_row_p + rtDW->offsetQR];
         rtDW->offsetQR++;
       }
 
-      rtDW->idx_row_m++;
+      rtDW->idx_row_p++;
     }
 
-    nDepInd = ComputeNumDependentEq__b(qrmanager, workingset->bwset,
+    nDepInd = ComputeNumDependentEq__d(qrmanager, workingset->bwset,
       rtDW->mTotalWorkingEq, workingset->nVar, tolfactor, rtDW);
     if (nDepInd > 0) {
-      rtDW->idx_row_m = 0;
-      while (rtDW->idx_row_m <= rtDW->mTotalWorkingEq - 1) {
-        rtDW->offsetQR = qrmanager->ldq * rtDW->idx_row_m;
-        rtDW->offsetATw = workingset->ldA * rtDW->idx_row_m;
-        rtDW->k = 1;
-        while (rtDW->k - 1 <= rtDW->nVar_n) {
-          qrmanager->QR[(rtDW->offsetQR + rtDW->k) - 1] = workingset->ATwset
-            [(rtDW->offsetATw + rtDW->k) - 1];
-          rtDW->k++;
+      rtDW->idx_row_p = 0;
+      while (rtDW->idx_row_p <= rtDW->mTotalWorkingEq - 1) {
+        rtDW->offsetQR = qrmanager->ldq * rtDW->idx_row_p;
+        rtDW->offsetATw = workingset->ldA * rtDW->idx_row_p;
+        rtDW->k_p = 1;
+        while (rtDW->k_p - 1 <= rtDW->nVar_c) {
+          qrmanager->QR[(rtDW->offsetQR + rtDW->k_p) - 1] = workingset->ATwset
+            [(rtDW->offsetATw + rtDW->k_p) - 1];
+          rtDW->k_p++;
         }
 
-        rtDW->idx_row_m++;
+        rtDW->idx_row_p++;
       }
 
-      rtDW->nVar_n = 0;
-      while (rtDW->nVar_n <= workingset->nWConstr[0] - 1) {
-        qrmanager->jpvt[rtDW->nVar_n] = 1;
-        rtDW->nVar_n++;
-      }
-
-      rtDW->nVar_n = workingset->nWConstr[0];
-      while (rtDW->nVar_n + 1 <= rtDW->mTotalWorkingEq) {
-        qrmanager->jpvt[rtDW->nVar_n] = 0;
-        rtDW->nVar_n++;
-      }
-
-      if (workingset->nVar * rtDW->mTotalWorkingEq == 0) {
-        qrmanager->mrows = workingset->nVar;
-        qrmanager->ncols = rtDW->mTotalWorkingEq;
-        qrmanager->minRowCol = 0;
-      } else {
-        qrmanager->usedPivoting = true;
-        qrmanager->mrows = workingset->nVar;
-        qrmanager->ncols = rtDW->mTotalWorkingEq;
-        if (workingset->nVar < rtDW->mTotalWorkingEq) {
-          qrmanager->minRowCol = workingset->nVar;
-        } else {
-          qrmanager->minRowCol = rtDW->mTotalWorkingEq;
-        }
-
-        for (rtDW->nVar_n = 0; rtDW->nVar_n < 9; rtDW->nVar_n++) {
-          rtDW->jpvt[rtDW->nVar_n] = qrmanager->jpvt[rtDW->nVar_n];
-        }
-
-        xzgeqp3(qrmanager->QR, 1, workingset->nVar, rtDW->mTotalWorkingEq,
-                rtDW->jpvt, qrmanager->tau, rtDW);
-        for (rtDW->nVar_n = 0; rtDW->nVar_n < 9; rtDW->nVar_n++) {
-          qrmanager->jpvt[rtDW->nVar_n] = rtDW->jpvt[rtDW->nVar_n];
-        }
-      }
-
-      rtDW->nVar_n = 0;
-      while (rtDW->nVar_n <= nDepInd - 1) {
-        memspace->workspace_int[rtDW->nVar_n] = qrmanager->jpvt
-          [(rtDW->mTotalWorkingEq - nDepInd) + rtDW->nVar_n];
-        rtDW->nVar_n++;
-      }
-
-      for (rtDW->nVar_n = 0; rtDW->nVar_n < 9; rtDW->nVar_n++) {
-        rtDW->jpvt[rtDW->nVar_n] = memspace->workspace_sort[rtDW->nVar_n];
-      }
-
-      countsort(memspace->workspace_int, nDepInd, rtDW->jpvt, 1,
+      IndexOfDependentEq__i(memspace->workspace_int, workingset->nWConstr[0],
+                            nDepInd, qrmanager, workingset->nVar,
+                            rtDW->mTotalWorkingEq, rtDW);
+      countsort(memspace->workspace_int, nDepInd, memspace->workspace_sort, 1,
                 rtDW->mTotalWorkingEq);
-      for (rtDW->nVar_n = 0; rtDW->nVar_n < 9; rtDW->nVar_n++) {
-        memspace->workspace_sort[rtDW->nVar_n] = rtDW->jpvt[rtDW->nVar_n];
-      }
-
-      rtDW->mTotalWorkingEq = nDepInd;
-      while (rtDW->mTotalWorkingEq > 0) {
-        removeEqConstr(workingset, memspace->workspace_int[rtDW->mTotalWorkingEq
-                       - 1]);
-        rtDW->mTotalWorkingEq--;
+      rtDW->nVar_c = nDepInd;
+      while (rtDW->nVar_c > 0) {
+        removeEqConstr(workingset, memspace->workspace_int[rtDW->nVar_c - 1]);
+        rtDW->nVar_c--;
       }
     }
   }
@@ -4616,19 +4654,19 @@ static int32_T RemoveDependentEq__l(s9NoAX0P67ji2P1ZBafS3UG *memspace,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void PresolveWorkingSet_g(svV6yPD1e8CTJu8b18IprLB *solution,
-  s9NoAX0P67ji2P1ZBafS3UG *memspace, swcr9qLPQBiG4lNhaNdYq5G *workingset,
-  sQyCFUyu0YXOk1LARsZMzaD *qrmanager, const s4lHOiXA0GHbse0IgoBY6ZF *options, DW
+static void PresolveWorkingSet_l(sVm5xLhdFDU5OIlGg0pTc4E *solution,
+  snRDwUdgrIx9qNga56nZ8DE *memspace, stxriBK2jD81NCGacZ0b8HD *workingset,
+  sCS11Pe0E6xKX8jGoaG4cLG *qrmanager, const s4lHOiXA0GHbse0IgoBY6ZF *options, DW
   *rtDW)
 {
   solution->state = 82;
-  rtDW->b_o = RemoveDependentEq__l(memspace, workingset, qrmanager, 100.0, rtDW);
+  rtDW->b_o = RemoveDependentEq__b(memspace, workingset, qrmanager, 100.0, rtDW);
   if ((rtDW->b_o != -1) && (workingset->nActiveConstr <= qrmanager->ldq)) {
     RemoveDependentIneq_(workingset, qrmanager, memspace, 100.0, rtDW);
     feasibleX0ForWorkingSet(memspace->workspace_double, solution->xstar,
       workingset, qrmanager, rtDW);
     if (workingset->nWConstr[0] + workingset->nWConstr[1] == workingset->nVar) {
-      rtDW->constrViolation = maxConstraintViolation_b0(workingset,
+      rtDW->constrViolation = maxConstraintViolation_pn(workingset,
         solution->xstar, rtDW);
       if (rtDW->constrViolation > options->ConstraintTolerance) {
         solution->state = -2;
@@ -4641,7 +4679,7 @@ static void PresolveWorkingSet_g(svV6yPD1e8CTJu8b18IprLB *solution,
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static boolean_T strcmp_h(const char_T a[8])
+static boolean_T strcmp_m(const char_T a[8])
 {
   int32_T kstr;
   boolean_T b_bool;
@@ -4680,10 +4718,10 @@ static boolean_T strcmp_h(const char_T a[8])
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void phaseone_e(const real_T H[49], const real_T f[7],
-  svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG *memspace,
-  swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *qrmanager,
-  s1hK3o0EyOqKKjEgDlbhqfF *cholmanager, shohwUBaOGHF036TMzc1KEH *objective,
+static void phaseone_j(const real_T H[49], const real_T f[7],
+  sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE *memspace,
+  stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG *qrmanager,
+  sSzLoP8tvZHiR1V2perTtWD *cholmanager, shohwUBaOGHF036TMzc1KEH *objective,
   s4lHOiXA0GHbse0IgoBY6ZF *options, const sL9bDKomAYkxZSVrG9w6En *runTimeOptions,
   DW *rtDW)
 {
@@ -4762,10 +4800,10 @@ static void phaseone_e(const real_T H[49], const real_T f[7],
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
 static void driver(const real_T H[49], const real_T f[7],
-                   svV6yPD1e8CTJu8b18IprLB *solution, s9NoAX0P67ji2P1ZBafS3UG
-                   *memspace, s1hK3o0EyOqKKjEgDlbhqfF *cholmanager,
+                   sVm5xLhdFDU5OIlGg0pTc4E *solution, snRDwUdgrIx9qNga56nZ8DE
+                   *memspace, sSzLoP8tvZHiR1V2perTtWD *cholmanager,
                    sL9bDKomAYkxZSVrG9w6En runTimeOptions,
-                   swcr9qLPQBiG4lNhaNdYq5G *workingset, sQyCFUyu0YXOk1LARsZMzaD *
+                   stxriBK2jD81NCGacZ0b8HD *workingset, sCS11Pe0E6xKX8jGoaG4cLG *
                    qrmanager, shohwUBaOGHF036TMzc1KEH *objective, DW *rtDW)
 {
   static const char_T m_FiniteDifferenceType[7] = { 'f', 'o', 'r', 'w', 'a', 'r',
@@ -4849,7 +4887,7 @@ static void driver(const real_T H[49], const real_T f[7],
   rtDW->options.SubproblemAlgorithm[1] = 'g';
   if (solution->state >= 0) {
     solution->iterations = 0;
-    rtDW->b = maxConstraintViolation_b0(workingset, solution->xstar, rtDW);
+    rtDW->b = maxConstraintViolation_pn(workingset, solution->xstar, rtDW);
     solution->maxConstr = rtDW->b;
     guard1 = false;
     if (rtDW->b > 1.0E-8 * runTimeOptions.ConstrRelTolFactor) {
@@ -4857,7 +4895,7 @@ static void driver(const real_T H[49], const real_T f[7],
                &runTimeOptions, objective, &rtDW->options, rtDW);
       if (solution->state == 0) {
       } else {
-        rtDW->b = maxConstraintViolation_b0(workingset, solution->xstar, rtDW);
+        rtDW->b = maxConstraintViolation_pn(workingset, solution->xstar, rtDW);
         solution->maxConstr = rtDW->b;
         if (rtDW->b > rtDW->options.ConstraintTolerance *
             runTimeOptions.ConstrRelTolFactor) {
@@ -4876,9 +4914,9 @@ static void driver(const real_T H[49], const real_T f[7],
               solution->searchDir[rtDW->i_j] = solution->xstar[rtDW->i_j];
             }
 
-            PresolveWorkingSet_g(solution, memspace, workingset, qrmanager,
+            PresolveWorkingSet_l(solution, memspace, workingset, qrmanager,
                                  &rtDW->options, rtDW);
-            rtDW->b = maxConstraintViolation_b0(workingset, solution->xstar,
+            rtDW->b = maxConstraintViolation_pn(workingset, solution->xstar,
               rtDW);
             if (rtDW->b >= solution->maxConstr) {
               solution->maxConstr = rtDW->b;
@@ -4901,8 +4939,8 @@ static void driver(const real_T H[49], const real_T f[7],
               rtDW->options.PricingTolerance, rtDW->options.ObjectiveLimit,
               rtDW->options.ConstraintTolerance, rtDW->options.StepTolerance,
               runTimeOptions, rtDW);
-      if (strcmp_h(rtDW->options.SolverName) && (solution->state != -6)) {
-        solution->maxConstr = maxConstraintViolation_b0(workingset,
+      if (strcmp_m(rtDW->options.SolverName) && (solution->state != -6)) {
+        solution->maxConstr = maxConstraintViolation_pn(workingset,
           solution->xstar, rtDW);
         computeFirstOrderOpt(solution, objective, workingset->nVar,
                              workingset->ldA, workingset->ATwset,
@@ -4917,9 +4955,9 @@ static void driver(const real_T H[49], const real_T f[7],
                    runTimeOptions.ProbRelTolFactor))))) {
           feasibleX0ForWorkingSet(memspace->workspace_double, solution->xstar,
             workingset, qrmanager, rtDW);
-          PresolveWorkingSet_g(solution, memspace, workingset, qrmanager,
+          PresolveWorkingSet_l(solution, memspace, workingset, qrmanager,
                                &rtDW->options, rtDW);
-          phaseone_e(H, f, solution, memspace, workingset, qrmanager,
+          phaseone_j(H, f, solution, memspace, workingset, qrmanager,
                      cholmanager, objective, &rtDW->options, &runTimeOptions,
                      rtDW);
           iterate(H, f, solution, memspace, workingset, qrmanager, cholmanager,
@@ -4927,7 +4965,7 @@ static void driver(const real_T H[49], const real_T f[7],
                   rtDW->options.PricingTolerance, rtDW->options.ObjectiveLimit,
                   rtDW->options.ConstraintTolerance, rtDW->options.StepTolerance,
                   runTimeOptions, rtDW);
-          solution->maxConstr = maxConstraintViolation_b0(workingset,
+          solution->maxConstr = maxConstraintViolation_pn(workingset,
             solution->xstar, rtDW);
           computeFirstOrderOpt(solution, objective, workingset->nVar,
                                workingset->ldA, workingset->ATwset,
@@ -4940,7 +4978,7 @@ static void driver(const real_T H[49], const real_T f[7],
 }
 
 /* Function for MATLAB Function: '<S1>/qp_solver' */
-static void linearForm__b(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
+static void linearForm__a(boolean_T obj_hasLinear, int32_T obj_nvar, real_T
   workspace[8], const real_T H[49], const real_T f[7], const real_T x[8])
 {
   int32_T b;
@@ -4995,7 +5033,7 @@ static void quadprog(const real_T H[49], const real_T f[7], const real_T x0[7],
 
   rtDW->solution.fstar = 0.0;
   rtDW->solution.firstorderopt = 0.0;
-  memset(&rtDW->solution.lambda[0], 0, 9U * sizeof(real_T));
+  memset(&rtDW->solution.lambda[0], 0, 10U * sizeof(real_T));
   rtDW->solution.state = 0;
   rtDW->solution.maxConstr = 0.0;
   rtDW->solution.iterations = 0;
@@ -5052,7 +5090,7 @@ static void quadprog(const real_T H[49], const real_T f[7], const real_T x0[7],
   if (rtDW->solution.state == -2) {
     rtDW->solution.firstorderopt = 1.7976931348623157E+308;
   } else if (rtDW->solution.state <= 0) {
-    rtDW->H_infnrm = maxConstraintViolation_b0(&rtDW->WorkingSet,
+    rtDW->H_infnrm = maxConstraintViolation_pn(&rtDW->WorkingSet,
       rtDW->solution.xstar, rtDW);
     rtDW->solution.maxConstr = rtDW->H_infnrm;
     if (rtDW->H_infnrm <= 7.0E-8) {
@@ -5069,12 +5107,12 @@ static void quadprog(const real_T H[49], const real_T f[7], const real_T x0[7],
         break;
 
        case 3:
-        linearForm__b(rtDW->QPObjective.hasLinear, rtDW->QPObjective.nvar,
+        linearForm__a(rtDW->QPObjective.hasLinear, rtDW->QPObjective.nvar,
                       rtDW->QPObjective.grad, H, f, rtDW->solution.xstar);
         break;
 
        case 4:
-        linearForm__b(rtDW->QPObjective.hasLinear, rtDW->QPObjective.nvar,
+        linearForm__a(rtDW->QPObjective.hasLinear, rtDW->QPObjective.nvar,
                       rtDW->QPObjective.grad, H, f, rtDW->solution.xstar);
         rtDW->i_a = rtDW->QPObjective.nvar;
         while (rtDW->i_a + 1 <= rtDW->QPObjective.maxVar - 1) {
@@ -5183,8 +5221,6 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     0.122008F, -0.166667F, -0.166667F, 0.0F, 0.0F, -0.288675F, -0.288675F,
     0.288675F, 0.288675F, 0.0F };
 
-  static const int8_T b[16] = { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1 };
-
   static const int8_T a[42] = { 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1,
     1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0
   };
@@ -5214,9 +5250,9 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    */
   /* MATLAB Function 'uz_codegen/v_dqxy': '<S13>:1' */
   /* '<S13>:1:3' v0 = [single(0.0);single(0.0);single(0.0);single(0.0)]; */
-  /* '<S13>:1:5' v_opt = [v0, v1, v2, v3, v4, v5, v0]; */
+  /* '<S13>:1:4' v_opt = [v0, v1, v2, v3, v4, v5, v0]; */
   /*  calculate v_dqxy */
-  /* '<S13>:1:7' v_t0 = v_opt * x_opt; */
+  /* '<S13>:1:7' v_t0 = v_opt * t_opt; */
   rtDW->r[0] = 0.0F;
   rtDW->r[4] = rtDW->Delay_DSTATE[0];
   rtDW->r[8] = rtDW->Delay9_DSTATE[0];
@@ -5271,16 +5307,17 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/psiPM_h_pu'
    *  Inport: '<Root>/psi_pm_over_psiB'
    *  Inport: '<Root>/theta_el_pos'
-   *  MATLAB Function: '<S1>/state_space_mdl'
+   *  MATLAB Function: '<S1>/current_gradient_prediction'
    */
+  /*  t_opt already multiplied by 2 */
   /* MATLAB Function 'uz_codegen/MATLAB Function': '<S2>:1' */
   /* '<S2>:1:4' R = single([kalman_R 0 0 0; 0 kalman_R 0 0; 0 0 kalman_R 0; 0 0 0 kalman_R]); */
   /* '<S2>:1:5' Q = single([kalman_Q1 0 0 0 0 0 0 0; 0 kalman_Q1 0 0 0 0 0 0; 0 0 kalman_Q1 0 0 0 0 0; 0 0 0 kalman_Q1 0 0 0 0; 0 0 0 0 kalman_Q2 0 0 0; 0 0 0 0 0 kalman_Q2 0 0; 0 0 0 0 0 0 kalman_Q2 0; 0 0 0 0 0 0 0 kalman_Q2]); */
   /* MATLAB Function 'uz_codegen/Observer': '<S3>:1' */
   /* '<S3>:1:3' i_dq_obs = single([0;0]); */
   /* '<S3>:1:4' i_xy_obs = single([0;0]); */
-  /* '<S3>:1:5' e_dq_obs = single([0;0]); */
-  /* '<S3>:1:6' e_xy_obs = single([0;0]); */
+  /* '<S3>:1:5' d_dq_obs = single([0;0]); */
+  /* '<S3>:1:6' d_xy_obs = single([0;0]); */
   /*  system model */
   /* '<S3>:1:9' A = [ 1-Ts_times_ZB_over_Ld*Rs_over_ZB            Ts_times_ZB_over_Ld*Lq_over_LB*w_e_pu   0                                      0                                                  1 0 0 0; */
   /* '<S3>:1:10'       -Ts_times_ZB_over_Lq*Ld_over_LB*w_e_pu     1-Ts_times_ZB_over_Lq*Rs_over_ZB         0                                      0                                                  0 1 0 0; */
@@ -5291,17 +5328,17 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S3>:1:15'       0 0 0 0 0 0 1 0; */
   /* '<S3>:1:16'       0 0 0 0 0 0 0 1]; */
   rtDW->A[0] = 1.0F - rtU->Ts_times_ZB_over_Ld * rtU->Rs_over_ZB;
-  rtDW->x0_idx_1 = rtU->Ts_times_ZB_over_Ld * rtU->Lq_over_LB * rtU->omega_el_pu;
-  rtDW->A[8] = rtDW->x0_idx_1;
+  rtDW->x0_idx_0 = rtU->Ts_times_ZB_over_Ld * rtU->Lq_over_LB * rtU->omega_el_pu;
+  rtDW->A[8] = rtDW->x0_idx_0;
   rtDW->A[16] = 0.0F;
   rtDW->A[24] = 0.0F;
   rtDW->A[32] = 1.0F;
   rtDW->A[40] = 0.0F;
   rtDW->A[48] = 0.0F;
   rtDW->A[56] = 0.0F;
-  rtDW->x0_idx_2 = -rtU->Ts_times_ZB_over_Lq * rtU->Ld_over_LB *
+  rtDW->x0_idx_1 = -rtU->Ts_times_ZB_over_Lq * rtU->Ld_over_LB *
     rtU->omega_el_pu;
-  rtDW->A[1] = rtDW->x0_idx_2;
+  rtDW->A[1] = rtDW->x0_idx_1;
   rtDW->A[9] = 1.0F - rtU->Ts_times_ZB_over_Lq * rtU->Rs_over_ZB;
   rtDW->A[17] = 0.0F;
   rtDW->A[25] = 0.0F;
@@ -5312,17 +5349,17 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->A[2] = 0.0F;
   rtDW->A[10] = 0.0F;
   rtDW->A[18] = 1.0F - rtU->Ts_times_ZB_over_Lx * rtU->Rs_over_ZB;
-  rtDW->x0_idx_3 = -rtU->Ts_times_ZB_over_Lx * rtU->Ly_over_LB *
+  rtDW->x0_idx_2 = -rtU->Ts_times_ZB_over_Lx * rtU->Ly_over_LB *
     rtU->omega_el_pu;
-  rtDW->A[26] = rtDW->x0_idx_3;
+  rtDW->A[26] = rtDW->x0_idx_2;
   rtDW->A[34] = 0.0F;
   rtDW->A[42] = 0.0F;
   rtDW->A[50] = 1.0F;
   rtDW->A[58] = 0.0F;
   rtDW->A[3] = 0.0F;
   rtDW->A[11] = 0.0F;
-  rtDW->A_tmp = rtU->Ts_times_ZB_over_Ly * rtU->Lx_over_LB * rtU->omega_el_pu;
-  rtDW->A[19] = rtDW->A_tmp;
+  rtDW->x0_idx_3 = rtU->Ts_times_ZB_over_Ly * rtU->Lx_over_LB * rtU->omega_el_pu;
+  rtDW->A[19] = rtDW->x0_idx_3;
   rtDW->A[27] = 1.0F - rtU->Ts_times_ZB_over_Ly * rtU->Rs_over_ZB;
   rtDW->A[35] = 0.0F;
   rtDW->A[43] = 0.0F;
@@ -5342,7 +5379,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S3>:1:22' phi7 = phiPM_h(2); */
   /*  w3theta_el = single(3*theta_el); */
   /* '<S3>:1:25' w6theta_el = single(6*theta_el); */
-  rtDW->x0_idx_0 = 6.0F * rtU->theta_el_pos;
+  rtDW->w6theta_el_tmp = 6.0F * rtU->theta_el_pos;
 
   /*  w9theta_el = single(9*theta_el); */
   /*  w12theta_el = single(12*theta_el);   */
@@ -5370,21 +5407,21 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   switch (rtDW->d_j) {
    case 0:
     /* '<S3>:1:46' case false */
-    /* '<S3>:1:47' E = [0; -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB; 0; 0; 0; 0; 0; 0]; */
-    rtDW->E[0] = 0.0F;
-    rtDW->E[1] = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
+    /* '<S3>:1:47' d_m = [0; -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB; 0; 0; 0; 0; 0; 0]; */
+    rtDW->d_m[0] = 0.0F;
+    rtDW->d_m[1] = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
       rtU->psi_pm_over_psiB;
-    rtDW->E[2] = 0.0F;
-    rtDW->E[3] = 0.0F;
-    rtDW->E[4] = 0.0F;
-    rtDW->E[5] = 0.0F;
-    rtDW->E[6] = 0.0F;
-    rtDW->E[7] = 0.0F;
+    rtDW->d_m[2] = 0.0F;
+    rtDW->d_m[3] = 0.0F;
+    rtDW->d_m[4] = 0.0F;
+    rtDW->d_m[5] = 0.0F;
+    rtDW->d_m[6] = 0.0F;
+    rtDW->d_m[7] = 0.0F;
     break;
 
    case 1:
     /* '<S3>:1:48' case true */
-    /* '<S3>:1:49' E = [     0; */
+    /* '<S3>:1:49' d_m = [     0; */
     /* '<S3>:1:50'          -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB; */
     /* '<S3>:1:51'          -w_e_pu*Ts_times_ZB_over_Lx*(psiPM5*sin(w6theta_el+phi5)-psiPM7*sin(w6theta_el+phi7)-psiPM5*6*sin(w6theta_el+phi5)-psiPM7*6*sin(w6theta_el+phi7)); */
     /* '<S3>:1:52'           w_e_pu*Ts_times_ZB_over_Ly*(psiPM5*cos(w6theta_el+phi5)+psiPM7*cos(w6theta_el+phi7)-psiPM5*6*cos(w6theta_el+phi5)+psiPM7*6*cos(w6theta_el+phi7)); */
@@ -5392,42 +5429,43 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     /* '<S3>:1:54'           0; */
     /* '<S3>:1:55'           0; */
     /* '<S3>:1:56'           0]; */
-    rtDW->SinCos2_o1 = rtDW->x0_idx_0 + rtU->phiPM_h[0];
-    rtDW->smax_b = sinf(rtDW->SinCos2_o1);
-    rtDW->w6theta_el = rtDW->x0_idx_0 + rtU->phiPM_h[1];
-    rtDW->SinCos1_o2 = sinf(rtDW->w6theta_el);
-    rtDW->SinCos2_o1 = cosf(rtDW->SinCos2_o1);
+    rtDW->SinCos2_o2 = rtDW->w6theta_el_tmp + rtU->phiPM_h[0];
+    rtDW->SinCos1_o2 = sinf(rtDW->SinCos2_o2);
+    rtDW->w6theta_el = rtDW->w6theta_el_tmp + rtU->phiPM_h[1];
+    rtDW->SinCos2_o1 = sinf(rtDW->w6theta_el);
+    rtDW->SinCos2_o2 = cosf(rtDW->SinCos2_o2);
     rtDW->w6theta_el = cosf(rtDW->w6theta_el);
-    rtDW->E[0] = 0.0F;
-    rtDW->E[1] = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
+    rtDW->d_m[0] = 0.0F;
+    rtDW->d_m[1] = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
       rtU->psi_pm_over_psiB;
-    rtDW->E[2] = (((rtU->psiPM_h_pu[0] * rtDW->smax_b - rtU->psiPM_h_pu[1] *
-                    rtDW->SinCos1_o2) - rtU->psiPM_h_pu[0] * 6.0F * rtDW->smax_b)
-                  - rtU->psiPM_h_pu[1] * 6.0F * rtDW->SinCos1_o2) *
-      (-rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lx);
-    rtDW->E[3] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos2_o1 + rtU->psiPM_h_pu[1] *
-                    rtDW->w6theta_el) - rtU->psiPM_h_pu[0] * 6.0F *
-                   rtDW->SinCos2_o1) + rtU->psiPM_h_pu[1] * 6.0F *
-                  rtDW->w6theta_el) * (rtU->omega_el_pu *
+    rtDW->d_m[2] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos1_o2 - rtU->psiPM_h_pu[1]
+                      * rtDW->SinCos2_o1) - rtU->psiPM_h_pu[0] * 6.0F *
+                     rtDW->SinCos1_o2) - rtU->psiPM_h_pu[1] * 6.0F *
+                    rtDW->SinCos2_o1) * (-rtU->omega_el_pu *
+      rtU->Ts_times_ZB_over_Lx);
+    rtDW->d_m[3] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos2_o2 + rtU->psiPM_h_pu[1]
+                      * rtDW->w6theta_el) - rtU->psiPM_h_pu[0] * 6.0F *
+                     rtDW->SinCos2_o2) + rtU->psiPM_h_pu[1] * 6.0F *
+                    rtDW->w6theta_el) * (rtU->omega_el_pu *
       rtU->Ts_times_ZB_over_Ly);
-    rtDW->E[4] = 0.0F;
-    rtDW->E[5] = 0.0F;
-    rtDW->E[6] = 0.0F;
-    rtDW->E[7] = 0.0F;
+    rtDW->d_m[4] = 0.0F;
+    rtDW->d_m[5] = 0.0F;
+    rtDW->d_m[6] = 0.0F;
+    rtDW->d_m[7] = 0.0F;
     break;
 
    default:
     /* '<S3>:1:57' otherwise */
-    /* '<S3>:1:58' E = [0; -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB; 0; 0; 0; 0; 0; 0]; */
-    rtDW->E[0] = 0.0F;
-    rtDW->E[1] = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
+    /* '<S3>:1:58' d_m = [0; -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB; 0; 0; 0; 0; 0; 0]; */
+    rtDW->d_m[0] = 0.0F;
+    rtDW->d_m[1] = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
       rtU->psi_pm_over_psiB;
-    rtDW->E[2] = 0.0F;
-    rtDW->E[3] = 0.0F;
-    rtDW->E[4] = 0.0F;
-    rtDW->E[5] = 0.0F;
-    rtDW->E[6] = 0.0F;
-    rtDW->E[7] = 0.0F;
+    rtDW->d_m[2] = 0.0F;
+    rtDW->d_m[3] = 0.0F;
+    rtDW->d_m[4] = 0.0F;
+    rtDW->d_m[5] = 0.0F;
+    rtDW->d_m[6] = 0.0F;
+    rtDW->d_m[7] = 0.0F;
     break;
   }
 
@@ -5438,9 +5476,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /*  input voltages for kalman DOB */
   /* '<S3>:1:70' u = [v_d; v_q; v_x; v_y]; */
   /* '<S3>:1:74' if isempty(x_e) */
-  /* '<S3>:1:79' x = x_e; */
-  /*  x_p = A * x + B * u + D; */
-  /* '<S3>:1:82' x_p = A * x + B * u + E; */
+  /* '<S3>:1:80' x = x_e; */
+  /* '<S3>:1:82' x_p = A * x + B * u + d_m; */
   rtDW->b_A_tmp[0] = rtU->Ts_times_ZB_over_Ld;
   rtDW->b_A_tmp[8] = 0.0F;
   rtDW->b_A_tmp[16] = 0.0F;
@@ -5473,14 +5510,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->b_A_tmp[29] = 0.0F;
   rtDW->b_A_tmp[30] = 0.0F;
   rtDW->b_A_tmp[31] = 0.0F;
-  rtDW->rtb_e_xy_obs_idx_0 = rtDW->v_t0[0];
-  rtDW->rtb_e_dq_obs_idx_0 = rtDW->v_t0[1];
+  rtDW->rtb_d_xy_obs_idx_0 = rtDW->v_t0[0];
+  rtDW->rtb_d_dq_obs_idx_0 = rtDW->v_t0[1];
   rtDW->rtb_v_t0_idx_2 = rtDW->v_t0[2];
   rtDW->rtb_v_t0_idx_3 = rtDW->v_t0[3];
 
-  /* '<S3>:1:84' P_p = A*P_e*A'+Q; */
+  /* '<S3>:1:85' P_p = A*P_e*A'+Q; */
   for (rtDW->d_j = 0; rtDW->d_j < 8; rtDW->d_j++) {
-    rtDW->A_ln[rtDW->d_j] = 0.0F;
+    rtDW->A_b[rtDW->d_j] = 0.0F;
     for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
       rtDW->ix = rtDW->iy << 3;
       rtDW->sector_ref = rtDW->ix + rtDW->d_j;
@@ -5491,14 +5528,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       }
 
       rtDW->A_o[rtDW->sector_ref] = 0.0F;
-      rtDW->A_ln[rtDW->d_j] += rtDW->A[rtDW->sector_ref] * rtDW->x_e[rtDW->iy];
+      rtDW->A_b[rtDW->d_j] += rtDW->A[rtDW->sector_ref] * rtDW->x_e[rtDW->iy];
     }
 
-    rtDW->x_p[rtDW->d_j] = (rtDW->A_ln[rtDW->d_j] + (rtDW->b_A_tmp[rtDW->d_j +
-      24] * rtDW->rtb_v_t0_idx_3 + (rtDW->b_A_tmp[rtDW->d_j + 16] *
+    rtDW->x_p[rtDW->d_j] = (rtDW->A_b[rtDW->d_j] + (rtDW->b_A_tmp[rtDW->d_j + 24]
+      * rtDW->rtb_v_t0_idx_3 + (rtDW->b_A_tmp[rtDW->d_j + 16] *
       rtDW->rtb_v_t0_idx_2 + (rtDW->b_A_tmp[rtDW->d_j + 8] *
-      rtDW->rtb_e_dq_obs_idx_0 + rtDW->b_A_tmp[rtDW->d_j] *
-      rtDW->rtb_e_xy_obs_idx_0)))) + rtDW->E[rtDW->d_j];
+      rtDW->rtb_d_dq_obs_idx_0 + rtDW->b_A_tmp[rtDW->d_j] *
+      rtDW->rtb_d_xy_obs_idx_0)))) + rtDW->d_m[rtDW->d_j];
     for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
       for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
         rtDW->sector_ref = rtDW->i << 3;
@@ -5583,10 +5620,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     rtDW->A[rtDW->d_j] = rtDW->A_o[rtDW->d_j] + rtDW->A_l[rtDW->d_j];
   }
 
-  /* '<S3>:1:86' K = P_p*C'/(C*P_p*C'+R); */
+  /* '<S3>:1:87' K = P_p*C'/(C*P_p*C'+R); */
   for (rtDW->d_j = 0; rtDW->d_j < 32; rtDW->d_j++) {
-    rtDW->b_A_tmp_g[rtDW->d_j] = l[rtDW->d_j];
-    rtDW->b_A_tmp_c[rtDW->d_j] = m[rtDW->d_j];
+    rtDW->b_A_tmp_p[rtDW->d_j] = l[rtDW->d_j];
+    rtDW->b_A_tmp_e[rtDW->d_j] = m[rtDW->d_j];
   }
 
   for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
@@ -5594,17 +5631,17 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       rtDW->sector_ref = rtDW->d_j + (rtDW->iy << 2);
       rtDW->b_A_tmp[rtDW->sector_ref] = 0.0F;
       for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
-        rtDW->b_A_tmp[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[(rtDW->i <<
+        rtDW->b_A_tmp[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_e[(rtDW->i <<
           2) + rtDW->d_j] * rtDW->A[(rtDW->iy << 3) + rtDW->i];
       }
     }
 
     for (rtDW->iy = 0; rtDW->iy < 4; rtDW->iy++) {
       rtDW->sector_ref = rtDW->d_j + (rtDW->iy << 2);
-      rtDW->B_b[rtDW->sector_ref] = 0.0F;
+      rtDW->B_n[rtDW->sector_ref] = 0.0F;
       for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
-        rtDW->B_b[rtDW->sector_ref] += rtDW->b_A_tmp[(rtDW->i << 2) + rtDW->d_j]
-          * (real32_T)rtDW->b_A_tmp_g[(rtDW->iy << 3) + rtDW->i];
+        rtDW->B_n[rtDW->sector_ref] += rtDW->b_A_tmp[(rtDW->i << 2) + rtDW->d_j]
+          * (real32_T)rtDW->b_A_tmp_p[(rtDW->iy << 3) + rtDW->i];
       }
     }
   }
@@ -5634,7 +5671,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/i_xy_pu'
    */
   for (rtDW->d_j = 0; rtDW->d_j < 16; rtDW->d_j++) {
-    rtDW->A_n[rtDW->d_j] = rtDW->B_b[rtDW->d_j] + rtDW->fv[rtDW->d_j];
+    rtDW->A_minus_I[rtDW->d_j] = rtDW->B_n[rtDW->d_j] + rtDW->fv[rtDW->d_j];
   }
 
   rtDW->ipiv[0] = 1;
@@ -5645,41 +5682,41 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     rtDW->i = rtDW->d_j * 5;
     rtDW->iy = 0;
     rtDW->ix = rtDW->i;
-    rtDW->smax_b = fabsf(rtDW->A_n[rtDW->i]);
+    rtDW->w6theta_el = fabsf(rtDW->A_minus_I[rtDW->i]);
     rtDW->kBcol = 2;
     while (rtDW->kBcol <= 4 - rtDW->d_j) {
       rtDW->ix++;
-      rtDW->SinCos1_o2 = fabsf(rtDW->A_n[rtDW->ix]);
-      if (rtDW->SinCos1_o2 > rtDW->smax_b) {
+      rtDW->SinCos1_o2 = fabsf(rtDW->A_minus_I[rtDW->ix]);
+      if (rtDW->SinCos1_o2 > rtDW->w6theta_el) {
         rtDW->iy = rtDW->kBcol - 1;
-        rtDW->smax_b = rtDW->SinCos1_o2;
+        rtDW->w6theta_el = rtDW->SinCos1_o2;
       }
 
       rtDW->kBcol++;
     }
 
-    if (rtDW->A_n[rtDW->i + rtDW->iy] != 0.0F) {
+    if (rtDW->A_minus_I[rtDW->i + rtDW->iy] != 0.0F) {
       if (rtDW->iy != 0) {
         rtDW->iy += rtDW->d_j;
         rtDW->ipiv[rtDW->d_j] = (int8_T)(rtDW->iy + 1);
-        rtDW->smax_b = rtDW->A_n[rtDW->d_j];
-        rtDW->A_n[rtDW->d_j] = rtDW->A_n[rtDW->iy];
-        rtDW->A_n[rtDW->iy] = rtDW->smax_b;
-        rtDW->smax_b = rtDW->A_n[rtDW->d_j + 4];
-        rtDW->A_n[rtDW->d_j + 4] = rtDW->A_n[rtDW->iy + 4];
-        rtDW->A_n[rtDW->iy + 4] = rtDW->smax_b;
-        rtDW->smax_b = rtDW->A_n[rtDW->d_j + 8];
-        rtDW->A_n[rtDW->d_j + 8] = rtDW->A_n[rtDW->iy + 8];
-        rtDW->A_n[rtDW->iy + 8] = rtDW->smax_b;
-        rtDW->smax_b = rtDW->A_n[rtDW->d_j + 12];
-        rtDW->A_n[rtDW->d_j + 12] = rtDW->A_n[rtDW->iy + 12];
-        rtDW->A_n[rtDW->iy + 12] = rtDW->smax_b;
+        rtDW->w6theta_el = rtDW->A_minus_I[rtDW->d_j];
+        rtDW->A_minus_I[rtDW->d_j] = rtDW->A_minus_I[rtDW->iy];
+        rtDW->A_minus_I[rtDW->iy] = rtDW->w6theta_el;
+        rtDW->w6theta_el = rtDW->A_minus_I[rtDW->d_j + 4];
+        rtDW->A_minus_I[rtDW->d_j + 4] = rtDW->A_minus_I[rtDW->iy + 4];
+        rtDW->A_minus_I[rtDW->iy + 4] = rtDW->w6theta_el;
+        rtDW->w6theta_el = rtDW->A_minus_I[rtDW->d_j + 8];
+        rtDW->A_minus_I[rtDW->d_j + 8] = rtDW->A_minus_I[rtDW->iy + 8];
+        rtDW->A_minus_I[rtDW->iy + 8] = rtDW->w6theta_el;
+        rtDW->w6theta_el = rtDW->A_minus_I[rtDW->d_j + 12];
+        rtDW->A_minus_I[rtDW->d_j + 12] = rtDW->A_minus_I[rtDW->iy + 12];
+        rtDW->A_minus_I[rtDW->iy + 12] = rtDW->w6theta_el;
       }
 
       rtDW->iy = (rtDW->i - rtDW->d_j) + 4;
       rtDW->ix = rtDW->i + 1;
       while (rtDW->ix + 1 <= rtDW->iy) {
-        rtDW->A_n[rtDW->ix] /= rtDW->A_n[rtDW->i];
+        rtDW->A_minus_I[rtDW->ix] /= rtDW->A_minus_I[rtDW->i];
         rtDW->ix++;
       }
     }
@@ -5688,13 +5725,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     rtDW->ix = rtDW->i + 4;
     rtDW->kBcol = 0;
     while (rtDW->kBcol <= 2 - rtDW->d_j) {
-      if (rtDW->A_n[rtDW->ix] != 0.0F) {
-        rtDW->smax_b = -rtDW->A_n[rtDW->ix];
+      if (rtDW->A_minus_I[rtDW->ix] != 0.0F) {
+        rtDW->w6theta_el = -rtDW->A_minus_I[rtDW->ix];
         rtDW->c_ix = rtDW->i + 1;
         rtDW->sector_ref = (rtDW->iy - rtDW->d_j) + 8;
         rtDW->ijA = rtDW->iy + 5;
         while (rtDW->ijA + 1 <= rtDW->sector_ref) {
-          rtDW->A_n[rtDW->ijA] += rtDW->A_n[rtDW->c_ix] * rtDW->smax_b;
+          rtDW->A_minus_I[rtDW->ijA] += rtDW->A_minus_I[rtDW->c_ix] *
+            rtDW->w6theta_el;
           rtDW->c_ix++;
           rtDW->ijA++;
         }
@@ -5713,7 +5751,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       rtDW->b_A_tmp[rtDW->ix] = 0.0F;
       for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
         rtDW->b_A_tmp[rtDW->ix] += rtDW->A[(rtDW->i << 3) + rtDW->iy] *
-          (real32_T)rtDW->b_A_tmp_g[rtDW->sector_ref + rtDW->i];
+          (real32_T)rtDW->b_A_tmp_p[rtDW->sector_ref + rtDW->i];
       }
     }
   }
@@ -5724,11 +5762,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     rtDW->ix = 0;
     while (rtDW->ix <= rtDW->d_j - 1) {
       rtDW->kBcol = rtDW->ix << 3;
-      rtDW->SinCos2_o1 = rtDW->A_n[rtDW->ix + rtDW->iy];
-      if (rtDW->SinCos2_o1 != 0.0F) {
+      rtDW->w6theta_el = rtDW->A_minus_I[rtDW->ix + rtDW->iy];
+      if (rtDW->w6theta_el != 0.0F) {
         for (rtDW->c_ix = 0; rtDW->c_ix < 8; rtDW->c_ix++) {
           rtDW->sector_ref = rtDW->c_ix + rtDW->i;
-          rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->SinCos2_o1 * rtDW->
+          rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->w6theta_el * rtDW->
             b_A_tmp[rtDW->c_ix + rtDW->kBcol];
         }
       }
@@ -5736,10 +5774,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
       rtDW->ix++;
     }
 
-    rtDW->smax_b = 1.0F / rtDW->A_n[rtDW->d_j + rtDW->iy];
+    rtDW->w6theta_el = 1.0F / rtDW->A_minus_I[rtDW->d_j + rtDW->iy];
     for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
       rtDW->sector_ref = rtDW->iy + rtDW->i;
-      rtDW->b_A_tmp[rtDW->sector_ref] *= rtDW->smax_b;
+      rtDW->b_A_tmp[rtDW->sector_ref] *= rtDW->w6theta_el;
     }
   }
 
@@ -5749,11 +5787,11 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     rtDW->ix = rtDW->d_j + 2;
     while (rtDW->ix < 5) {
       rtDW->kBcol = (rtDW->ix - 1) << 3;
-      rtDW->SinCos2_o1 = rtDW->A_n[rtDW->ix + rtDW->iy];
-      if (rtDW->SinCos2_o1 != 0.0F) {
+      rtDW->w6theta_el = rtDW->A_minus_I[rtDW->ix + rtDW->iy];
+      if (rtDW->w6theta_el != 0.0F) {
         for (rtDW->c_ix = 0; rtDW->c_ix < 8; rtDW->c_ix++) {
           rtDW->sector_ref = rtDW->c_ix + rtDW->i;
-          rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->SinCos2_o1 * rtDW->
+          rtDW->b_A_tmp[rtDW->sector_ref] -= rtDW->w6theta_el * rtDW->
             b_A_tmp[rtDW->c_ix + rtDW->kBcol];
         }
       }
@@ -5767,16 +5805,16 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     if (rtDW->d_j + 1 != ipiv) {
       for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
         rtDW->i = (rtDW->d_j << 3) + rtDW->iy;
-        rtDW->smax_b = rtDW->b_A_tmp[rtDW->i];
+        rtDW->w6theta_el = rtDW->b_A_tmp[rtDW->i];
         rtDW->sector_ref = ((ipiv - 1) << 3) + rtDW->iy;
         rtDW->b_A_tmp[rtDW->i] = rtDW->b_A_tmp[rtDW->sector_ref];
-        rtDW->b_A_tmp[rtDW->sector_ref] = rtDW->smax_b;
+        rtDW->b_A_tmp[rtDW->sector_ref] = rtDW->w6theta_el;
       }
     }
   }
 
-  /* '<S3>:1:88' y=[i_d; i_q; i_x; i_y]; */
-  /* '<S3>:1:90' x_e = x_p+K*(y-C*x_p); */
+  /* '<S3>:1:89' y=[i_d; i_q; i_x; i_y]; */
+  /* '<S3>:1:91' x_e = x_p+K*(y-C*x_p); */
   rtDW->m6[0] = rtU->i_dq_pu[0];
   rtDW->m6[1] = rtU->i_dq_pu[1];
   rtDW->m6[2] = rtU->i_xy_pu[0];
@@ -5784,44 +5822,44 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
     rtDW->v_t0[rtDW->d_j] = 0.0F;
     for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
-      rtDW->v_t0[rtDW->d_j] += (real32_T)rtDW->b_A_tmp_c[(rtDW->iy << 2) +
+      rtDW->v_t0[rtDW->d_j] += (real32_T)rtDW->b_A_tmp_e[(rtDW->iy << 2) +
         rtDW->d_j] * rtDW->x_p[rtDW->iy];
     }
 
     rtDW->m2[rtDW->d_j] = rtDW->m6[rtDW->d_j] - rtDW->v_t0[rtDW->d_j];
   }
 
-  /* '<S3>:1:92' P_e = P_p-K*C*P_p; */
+  /* '<S3>:1:93' P_e = P_p-K*C*P_p; */
   for (rtDW->d_j = 0; rtDW->d_j < 8; rtDW->d_j++) {
-    rtDW->rtb_e_xy_obs_idx_0 = rtDW->b_A_tmp[rtDW->d_j + 8];
-    rtDW->rtb_e_dq_obs_idx_0 = rtDW->b_A_tmp[rtDW->d_j + 16];
+    rtDW->rtb_d_xy_obs_idx_0 = rtDW->b_A_tmp[rtDW->d_j + 8];
+    rtDW->rtb_d_dq_obs_idx_0 = rtDW->b_A_tmp[rtDW->d_j + 16];
     rtDW->rtb_v_t0_idx_2 = rtDW->b_A_tmp[rtDW->d_j + 24];
-    rtDW->x_e[rtDW->d_j] = (((rtDW->rtb_e_xy_obs_idx_0 * rtDW->m2[1] +
-      rtDW->b_A_tmp[rtDW->d_j] * rtDW->m2[0]) + rtDW->rtb_e_dq_obs_idx_0 *
+    rtDW->x_e[rtDW->d_j] = (((rtDW->rtb_d_xy_obs_idx_0 * rtDW->m2[1] +
+      rtDW->b_A_tmp[rtDW->d_j] * rtDW->m2[0]) + rtDW->rtb_d_dq_obs_idx_0 *
       rtDW->m2[2]) + rtDW->rtb_v_t0_idx_2 * rtDW->m2[3]) + rtDW->x_p[rtDW->d_j];
     for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
       rtDW->sector_ref = rtDW->d_j + (rtDW->iy << 3);
       rtDW->A_o[rtDW->sector_ref] = 0.0F;
       rtDW->ix = rtDW->iy << 2;
-      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[rtDW->ix] *
+      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_e[rtDW->ix] *
         rtDW->b_A_tmp[rtDW->d_j];
-      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[rtDW->ix + 1] *
-        rtDW->rtb_e_xy_obs_idx_0;
-      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[rtDW->ix + 2] *
-        rtDW->rtb_e_dq_obs_idx_0;
-      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_c[rtDW->ix + 3] *
+      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_e[rtDW->ix + 1] *
+        rtDW->rtb_d_xy_obs_idx_0;
+      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_e[rtDW->ix + 2] *
+        rtDW->rtb_d_dq_obs_idx_0;
+      rtDW->A_o[rtDW->sector_ref] += (real32_T)rtDW->b_A_tmp_e[rtDW->ix + 3] *
         rtDW->rtb_v_t0_idx_2;
     }
 
     for (rtDW->iy = 0; rtDW->iy < 8; rtDW->iy++) {
-      rtDW->SinCos2_o1 = 0.0F;
+      rtDW->w6theta_el = 0.0F;
       for (rtDW->i = 0; rtDW->i < 8; rtDW->i++) {
-        rtDW->SinCos2_o1 += rtDW->A_o[(rtDW->i << 3) + rtDW->d_j] * rtDW->A
+        rtDW->w6theta_el += rtDW->A_o[(rtDW->i << 3) + rtDW->d_j] * rtDW->A
           [(rtDW->iy << 3) + rtDW->i];
       }
 
       rtDW->sector_ref = (rtDW->iy << 3) + rtDW->d_j;
-      rtDW->P_e[rtDW->sector_ref] = rtDW->A[rtDW->sector_ref] - rtDW->SinCos2_o1;
+      rtDW->P_e[rtDW->sector_ref] = rtDW->A[rtDW->sector_ref] - rtDW->w6theta_el;
     }
   }
 
@@ -5829,14 +5867,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  MATLAB Function: '<S1>/Observer'
    *  Switch: '<S1>/Switch1'
    */
-  /* '<S3>:1:94' i_dq_obs(1) = x_e(1); */
-  /* '<S3>:1:95' i_dq_obs(2) = x_e(2); */
-  /* '<S3>:1:96' i_xy_obs(1) = x_e(3); */
-  /* '<S3>:1:97' i_xy_obs(2) = x_e(4); */
-  /* '<S3>:1:98' e_dq_obs(1) = x_e(5); */
-  /* '<S3>:1:99' e_dq_obs(2) = x_e(6); */
-  /* '<S3>:1:100' e_xy_obs(1) = x_e(7); */
-  /* '<S3>:1:101' e_xy_obs(2) = x_e(8); */
+  /* '<S3>:1:95' i_dq_obs(1) = x_e(1); */
+  /* '<S3>:1:96' i_dq_obs(2) = x_e(2); */
+  /* '<S3>:1:97' i_xy_obs(1) = x_e(3); */
+  /* '<S3>:1:98' i_xy_obs(2) = x_e(4); */
+  /* '<S3>:1:99' d_dq_obs(1) = x_e(5); */
+  /* '<S3>:1:100' d_dq_obs(2) = x_e(6); */
+  /* '<S3>:1:101' d_xy_obs(1) = x_e(7); */
+  /* '<S3>:1:102' d_xy_obs(2) = x_e(8); */
   rtDW->m1[2] = rtDW->x_e[2];
 
   /* Switch: '<S1>/Switch' incorporates:
@@ -5880,7 +5918,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay1' */
-  if (rtDW->icLoad_m) {
+  if (rtDW->icLoad_f) {
     for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
       rtDW->Delay1_DSTATE[rtDW->i] = 0.14F;
     }
@@ -5895,7 +5933,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay4' */
-  if (rtDW->icLoad_lv) {
+  if (rtDW->icLoad_a) {
     rtDW->Delay4_DSTATE[0] = 0.0F;
     rtDW->Delay4_DSTATE[1] = 0.0F;
     rtDW->Delay4_DSTATE[2] = 0.0F;
@@ -5903,7 +5941,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay5' */
-  if (rtDW->icLoad_j) {
+  if (rtDW->icLoad_f4) {
     rtDW->Delay5_DSTATE[0] = 0.0F;
     rtDW->Delay5_DSTATE[1] = 0.0F;
     rtDW->Delay5_DSTATE[2] = 0.0F;
@@ -5911,7 +5949,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay6' */
-  if (rtDW->icLoad_o) {
+  if (rtDW->icLoad_ag) {
     rtDW->Delay6_DSTATE[0] = 0.0F;
     rtDW->Delay6_DSTATE[1] = 0.0F;
     rtDW->Delay6_DSTATE[2] = 0.0F;
@@ -5919,7 +5957,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay7' */
-  if (rtDW->icLoad_b) {
+  if (rtDW->icLoad_i) {
     rtDW->Delay7_DSTATE[0] = 0.0F;
     rtDW->Delay7_DSTATE[1] = 0.0F;
     rtDW->Delay7_DSTATE[2] = 0.0F;
@@ -5927,7 +5965,7 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   /* Delay: '<S1>/Delay8' */
-  if (rtDW->icLoad_a) {
+  if (rtDW->icLoad_ik) {
     rtDW->Delay8_DSTATE[0] = 0.0F;
     rtDW->Delay8_DSTATE[1] = 0.0F;
     rtDW->Delay8_DSTATE[2] = 0.0F;
@@ -5942,41 +5980,41 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Delay: '<S1>/Delay6'
    *  Delay: '<S1>/Delay7'
    *  Delay: '<S1>/Delay8'
+   *  Inport: '<Root>/Ts_over_tB'
    */
-  /* MATLAB Function 'uz_codegen/delay_compensation_currents': '<S6>:1' */
-  /* '<S6>:1:3' i_t0 = single([id0 iq0 ix0 iy0])'; */
-  /* '<S6>:1:5' m_opt = single([m0, m1, m2, m3, m4, m5, m0]); */
+  /* MATLAB Function 'uz_codegen/delay_compensation_currents': '<S8>:1' */
+  /* '<S8>:1:3' i_t0 = single([id0 iq0 ix0 iy0])'; */
+  /* '<S8>:1:4' m_opt = single([m0, m1, m2, m3, m4, m5, m0]); */
   /* delay compensation */
-  /*  i_t0_delay_comp = single(i_t0 + 1.0 * m_opt * x_opt); */
-  /* '<S6>:1:8' i_t0_delay_comp = single(i_t0 + 0.5 * m_opt * x_opt); */
-  rtDW->r[0] = 0.5F * rtDW->Delay3_DSTATE[0];
-  rtDW->r[4] = 0.5F * rtDW->Delay4_DSTATE[0];
-  rtDW->r[8] = 0.5F * rtDW->Delay5_DSTATE[0];
-  rtDW->r[12] = 0.5F * rtDW->Delay6_DSTATE[0];
-  rtDW->r[16] = 0.5F * rtDW->Delay7_DSTATE[0];
-  rtDW->r[20] = 0.5F * rtDW->Delay8_DSTATE[0];
-  rtDW->r[24] = 0.5F * rtDW->Delay3_DSTATE[0];
-  rtDW->r[1] = 0.5F * rtDW->Delay3_DSTATE[1];
-  rtDW->r[5] = 0.5F * rtDW->Delay4_DSTATE[1];
-  rtDW->r[9] = 0.5F * rtDW->Delay5_DSTATE[1];
-  rtDW->r[13] = 0.5F * rtDW->Delay6_DSTATE[1];
-  rtDW->r[17] = 0.5F * rtDW->Delay7_DSTATE[1];
-  rtDW->r[21] = 0.5F * rtDW->Delay8_DSTATE[1];
-  rtDW->r[25] = 0.5F * rtDW->Delay3_DSTATE[1];
-  rtDW->r[2] = 0.5F * rtDW->Delay3_DSTATE[2];
-  rtDW->r[6] = 0.5F * rtDW->Delay4_DSTATE[2];
-  rtDW->r[10] = 0.5F * rtDW->Delay5_DSTATE[2];
-  rtDW->r[14] = 0.5F * rtDW->Delay6_DSTATE[2];
-  rtDW->r[18] = 0.5F * rtDW->Delay7_DSTATE[2];
-  rtDW->r[22] = 0.5F * rtDW->Delay8_DSTATE[2];
-  rtDW->r[26] = 0.5F * rtDW->Delay3_DSTATE[2];
-  rtDW->r[3] = 0.5F * rtDW->Delay3_DSTATE[3];
-  rtDW->r[7] = 0.5F * rtDW->Delay4_DSTATE[3];
-  rtDW->r[11] = 0.5F * rtDW->Delay5_DSTATE[3];
-  rtDW->r[15] = 0.5F * rtDW->Delay6_DSTATE[3];
-  rtDW->r[19] = 0.5F * rtDW->Delay7_DSTATE[3];
-  rtDW->r[23] = 0.5F * rtDW->Delay8_DSTATE[3];
-  rtDW->r[27] = 0.5F * rtDW->Delay3_DSTATE[3];
+  /* '<S8>:1:7' i_t0_delay_comp = single(i_t0 + m_opt * t_opt * Ts_over_tB); */
+  rtDW->r[0] = rtDW->Delay3_DSTATE[0];
+  rtDW->r[4] = rtDW->Delay4_DSTATE[0];
+  rtDW->r[8] = rtDW->Delay5_DSTATE[0];
+  rtDW->r[12] = rtDW->Delay6_DSTATE[0];
+  rtDW->r[16] = rtDW->Delay7_DSTATE[0];
+  rtDW->r[20] = rtDW->Delay8_DSTATE[0];
+  rtDW->r[24] = rtDW->Delay3_DSTATE[0];
+  rtDW->r[1] = rtDW->Delay3_DSTATE[1];
+  rtDW->r[5] = rtDW->Delay4_DSTATE[1];
+  rtDW->r[9] = rtDW->Delay5_DSTATE[1];
+  rtDW->r[13] = rtDW->Delay6_DSTATE[1];
+  rtDW->r[17] = rtDW->Delay7_DSTATE[1];
+  rtDW->r[21] = rtDW->Delay8_DSTATE[1];
+  rtDW->r[25] = rtDW->Delay3_DSTATE[1];
+  rtDW->r[2] = rtDW->Delay3_DSTATE[2];
+  rtDW->r[6] = rtDW->Delay4_DSTATE[2];
+  rtDW->r[10] = rtDW->Delay5_DSTATE[2];
+  rtDW->r[14] = rtDW->Delay6_DSTATE[2];
+  rtDW->r[18] = rtDW->Delay7_DSTATE[2];
+  rtDW->r[22] = rtDW->Delay8_DSTATE[2];
+  rtDW->r[26] = rtDW->Delay3_DSTATE[2];
+  rtDW->r[3] = rtDW->Delay3_DSTATE[3];
+  rtDW->r[7] = rtDW->Delay4_DSTATE[3];
+  rtDW->r[11] = rtDW->Delay5_DSTATE[3];
+  rtDW->r[15] = rtDW->Delay6_DSTATE[3];
+  rtDW->r[19] = rtDW->Delay7_DSTATE[3];
+  rtDW->r[23] = rtDW->Delay8_DSTATE[3];
+  rtDW->r[27] = rtDW->Delay3_DSTATE[3];
   rtDW->m1[0] = rtDW->rtb_i_dq_obs_idx_0;
   rtDW->m1[1] = rtDW->rtb_v_1_idx_pu_idx_1;
   for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
@@ -5986,18 +6024,19 @@ void uz_codegen0_step(RT_MODEL *const rtM)
         rtDW->Delay1_DSTATE[rtDW->iy];
     }
 
-    rtDW->v_t0[rtDW->d_j] = rtDW->m1[rtDW->d_j] + rtDW->m6[rtDW->d_j];
+    rtDW->v_t0[rtDW->d_j] = rtDW->m6[rtDW->d_j] * rtU->Ts_over_tB + rtDW->
+      m1[rtDW->d_j];
   }
 
   /* Switch: '<S1>/Switch3' incorporates:
    *  MATLAB Function: '<S1>/Observer'
    */
-  rtDW->rtb_e_xy_obs_idx_0 = rtDW->x_e[6];
+  rtDW->rtb_d_xy_obs_idx_0 = rtDW->x_e[6];
 
   /* Switch: '<S1>/Switch2' incorporates:
    *  MATLAB Function: '<S1>/Observer'
    */
-  rtDW->rtb_e_dq_obs_idx_0 = rtDW->x_e[4];
+  rtDW->rtb_d_dq_obs_idx_0 = rtDW->x_e[4];
 
   /* MATLAB Function: '<S1>/Observer' */
   rtDW->rtb_v_t0_idx_2 = rtDW->x_e[7];
@@ -6008,8 +6047,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Switch: '<S1>/Switch3'
    */
   if (!rtU->kalman_off_on) {
-    rtDW->rtb_e_dq_obs_idx_0 = 0.0F;
-    rtDW->rtb_e_xy_obs_idx_0 = 0.0F;
+    rtDW->rtb_d_dq_obs_idx_0 = 0.0F;
+    rtDW->rtb_d_xy_obs_idx_0 = 0.0F;
     rtDW->rtb_v_t0_idx_3 = 0.0F;
     rtDW->rtb_v_t0_idx_2 = 0.0F;
   }
@@ -6017,14 +6056,14 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* Trigonometry: '<S1>/SinCos1' incorporates:
    *  Inport: '<Root>/theta_el_pos'
    */
-  rtDW->smax_b = sinf(rtU->theta_el_pos);
+  rtDW->w6theta_el = sinf(rtU->theta_el_pos);
   rtDW->SinCos1_o2 = cosf(rtU->theta_el_pos);
 
   /* Trigonometry: '<S1>/SinCos2' incorporates:
    *  Inport: '<Root>/theta_el_neg'
    */
   rtDW->SinCos2_o1 = sinf(rtU->theta_el_neg);
-  rtDW->w6theta_el = cosf(rtU->theta_el_neg);
+  rtDW->SinCos2_o2 = cosf(rtU->theta_el_neg);
 
   /* MATLAB Function: '<S1>/seq_2_act_sw_all' */
   for (rtDW->i = 0; rtDW->i < 24; rtDW->i++) {
@@ -6049,56 +6088,56 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/psi_pm_over_psiB'
    *  Inport: '<Root>/theta_el_pos'
    */
-  /* MATLAB Function 'uz_codegen/seq_2_act_sw_all': '<S9>:1' */
-  /* '<S9>:1:3' act_sw_1 = single(zeros(24,1)); */
-  /* '<S9>:1:4' act_sw_2 = single(zeros(24,1)); */
-  /* '<S9>:1:5' act_sw_3 = single(zeros(24,1)); */
-  /* '<S9>:1:6' act_sw_4 = single(zeros(24,1)); */
-  /* '<S9>:1:7' act_sw_5 = single(zeros(24,1)); */
+  /* MATLAB Function 'uz_codegen/seq_2_act_sw_all': '<S11>:1' */
+  /* '<S11>:1:3' act_sw_1 = single(zeros(24,1)); */
+  /* '<S11>:1:4' act_sw_2 = single(zeros(24,1)); */
+  /* '<S11>:1:5' act_sw_3 = single(zeros(24,1)); */
+  /* '<S11>:1:6' act_sw_4 = single(zeros(24,1)); */
+  /* '<S11>:1:7' act_sw_5 = single(zeros(24,1)); */
   /*  row=sequence, columns=active switch postion               */
-  /* '<S9>:1:10' seq_table_svm24 = single([   8, 9,41,43,47; */
-  /* '<S9>:1:11'                              1, 9,11,43,59; */
-  /* '<S9>:1:12'                              1, 9,11,27,59; */
-  /* '<S9>:1:13'                              8, 9,11,27,31; */
-  /* '<S9>:1:14'                              8,10,11,27,31; */
-  /* '<S9>:1:15'                              2,10,26,27,59; */
-  /* '<S9>:1:16'                              2,18,26,27,59; */
-  /* '<S9>:1:17'                             16,18,26,27,31; */
-  /* '<S9>:1:18'                             16,18,26,30,31; */
-  /* '<S9>:1:19'                              2,18,22,30,62; */
-  /* '<S9>:1:20'                              2,18,22,54,62; */
-  /* '<S9>:1:21'                             16,18,22,54,55; */
-  /* '<S9>:1:22'                             16,20,22,54,55; */
-  /* '<S9>:1:23'                              4,20,52,54,62; */
-  /* '<S9>:1:24'                              4,36,52,54,62; */
-  /* '<S9>:1:25'                             32,36,52,54,55; */
-  /* '<S9>:1:26'                             32,36,52,53,55; */
-  /* '<S9>:1:27'                              4,36,37,53,61; */
-  /* '<S9>:1:28'                              4,36,37,45,61; */
-  /* '<S9>:1:29'                             32,36,37,45,47; */
-  /* '<S9>:1:30'                             32,33,37,45,47; */
-  /* '<S9>:1:31'                              1,33,41,45,61; */
-  /* '<S9>:1:32'                              1, 9,41,45,61; */
-  /* '<S9>:1:33'                              8, 9,41,45,47]); */
-  /* '<S9>:1:35' act_sw_1 = seq_table_svm24(:,1); */
-  /* '<S9>:1:36' act_sw_2 = seq_table_svm24(:,2); */
-  /* '<S9>:1:37' act_sw_3 = seq_table_svm24(:,3); */
-  /* '<S9>:1:38' act_sw_4 = seq_table_svm24(:,4); */
-  /* '<S9>:1:39' act_sw_5 = seq_table_svm24(:,5); */
-  /* MATLAB Function 'uz_codegen/deadbeat_solution': '<S5>:1' */
-  /* '<S5>:1:3' i_d_pu = i_d_pu + single(e_dq_obs(1)); */
-  rtDW->rtb_i_dq_obs_idx_0 += rtDW->rtb_e_dq_obs_idx_0;
+  /* '<S11>:1:10' seq_table_svm24 = single([   8, 9,41,43,47; */
+  /* '<S11>:1:11'                              1, 9,11,43,59; */
+  /* '<S11>:1:12'                              1, 9,11,27,59; */
+  /* '<S11>:1:13'                              8, 9,11,27,31; */
+  /* '<S11>:1:14'                              8,10,11,27,31; */
+  /* '<S11>:1:15'                              2,10,26,27,59; */
+  /* '<S11>:1:16'                              2,18,26,27,59; */
+  /* '<S11>:1:17'                             16,18,26,27,31; */
+  /* '<S11>:1:18'                             16,18,26,30,31; */
+  /* '<S11>:1:19'                              2,18,22,30,62; */
+  /* '<S11>:1:20'                              2,18,22,54,62; */
+  /* '<S11>:1:21'                             16,18,22,54,55; */
+  /* '<S11>:1:22'                             16,20,22,54,55; */
+  /* '<S11>:1:23'                              4,20,52,54,62; */
+  /* '<S11>:1:24'                              4,36,52,54,62; */
+  /* '<S11>:1:25'                             32,36,52,54,55; */
+  /* '<S11>:1:26'                             32,36,52,53,55; */
+  /* '<S11>:1:27'                              4,36,37,53,61; */
+  /* '<S11>:1:28'                              4,36,37,45,61; */
+  /* '<S11>:1:29'                             32,36,37,45,47; */
+  /* '<S11>:1:30'                             32,33,37,45,47; */
+  /* '<S11>:1:31'                              1,33,41,45,61; */
+  /* '<S11>:1:32'                              1, 9,41,45,61; */
+  /* '<S11>:1:33'                              8, 9,41,45,47]); */
+  /* '<S11>:1:35' act_sw_1 = seq_table_svm24(:,1); */
+  /* '<S11>:1:36' act_sw_2 = seq_table_svm24(:,2); */
+  /* '<S11>:1:37' act_sw_3 = seq_table_svm24(:,3); */
+  /* '<S11>:1:38' act_sw_4 = seq_table_svm24(:,4); */
+  /* '<S11>:1:39' act_sw_5 = seq_table_svm24(:,5); */
+  /* MATLAB Function 'uz_codegen/deadbeat_solution': '<S7>:1' */
+  /* '<S7>:1:3' i_d_pu = i_d_pu + single(d_dq_obs(1)); */
+  rtDW->rtb_i_dq_obs_idx_0 += rtDW->rtb_d_dq_obs_idx_0;
 
-  /* '<S5>:1:4' i_q_pu = i_q_pu + single(e_dq_obs(2)); */
+  /* '<S7>:1:4' i_q_pu = i_q_pu + single(d_dq_obs(2)); */
   rtDW->rtb_v_1_idx_pu_idx_1 += rtDW->rtb_v_t0_idx_3;
 
-  /* '<S5>:1:6' v_d_ref_pu = (i_d_ref_pu-i_d_pu)/(Ts_times_ZB_over_Ld) + i_d_pu*Rs_over_ZB - omega_el*Lq_over_LB*i_q_pu; */
-  /* '<S5>:1:7' v_q_ref_pu = (i_q_ref_pu-i_q_pu)/(Ts_times_ZB_over_Lq) + i_q_pu*Rs_over_ZB + omega_el*(Ld_over_LB*i_d_pu+psi_pm_over_psiB); */
+  /* '<S7>:1:6' v_d_ref_pu = (i_d_ref_pu-i_d_pu)/(Ts_times_ZB_over_Ld) + i_d_pu*Rs_over_ZB - omega_el*Lq_over_LB*i_q_pu; */
+  /* '<S7>:1:7' v_q_ref_pu = (i_q_ref_pu-i_q_pu)/(Ts_times_ZB_over_Lq) + i_q_pu*Rs_over_ZB + omega_el*(Ld_over_LB*i_d_pu+psi_pm_over_psiB); */
   /*  v_x_ref_pu = (i_x_ref_pu-i_x_pu)/(Ts_times_ZB_over_Lx) + i_x_pu*Rs_over_ZB; */
   /*  v_y_ref_pu = (i_y_ref_pu-i_y_pu)/(Ts_times_ZB_over_Ly) + i_y_pu*Rs_over_ZB; */
-  /* '<S5>:1:10' v_x_ref_pu = single(0.0); */
-  /* '<S5>:1:11' v_y_ref_pu = single(0.0); */
-  /* '<S5>:1:13' angle_ref = mod(atan2(v_q_ref_pu, v_d_ref_pu) + theta_el, 2*pi); */
+  /* '<S7>:1:10' v_x_ref_pu = single(0.0); */
+  /* '<S7>:1:11' v_y_ref_pu = single(0.0); */
+  /* '<S7>:1:13' angle_ref = mod(atan2(v_q_ref_pu, v_d_ref_pu) + theta_el, 2*pi); */
   rtDW->rtb_i_dq_obs_idx_0 = atan2f(((rtU->i_q_ref_pu -
     rtDW->rtb_v_1_idx_pu_idx_1) / rtU->Ts_times_ZB_over_Lq +
     rtDW->rtb_v_1_idx_pu_idx_1 * rtU->Rs_over_ZB) + (rtU->Ld_over_LB *
@@ -6123,128 +6162,128 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     }
   }
 
-  /* '<S5>:1:15' sector_ref = 0.0; */
+  /* '<S7>:1:15' sector_ref = 0.0; */
   rtDW->sector_ref = 0;
 
-  /* '<S5>:1:16' if (angle_ref >= 0.0 && angle_ref < pi/180*15) */
+  /* '<S7>:1:16' if (angle_ref >= 0.0 && angle_ref < pi/180*15) */
   if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 0.0F) && (rtDW->rtb_v_1_idx_pu_idx_1 <
        0.26179938779914941)) {
-    /* '<S5>:1:17' sector_ref = 1.0; */
+    /* '<S7>:1:17' sector_ref = 1.0; */
     rtDW->sector_ref = 1;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 0.26179938779914941) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 0.52359877559829882)) {
-    /* '<S5>:1:18' elseif (angle_ref >= pi/180*15 && angle_ref < pi/180*30) */
-    /* '<S5>:1:19' sector_ref = 2.0; */
+    /* '<S7>:1:18' elseif (angle_ref >= pi/180*15 && angle_ref < pi/180*30) */
+    /* '<S7>:1:19' sector_ref = 2.0; */
     rtDW->sector_ref = 2;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 0.52359877559829882) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 0.78539816339744828)) {
-    /* '<S5>:1:20' elseif (angle_ref >= pi/180*30 && angle_ref < pi/180*45) */
-    /* '<S5>:1:21' sector_ref = 3.0; */
+    /* '<S7>:1:20' elseif (angle_ref >= pi/180*30 && angle_ref < pi/180*45) */
+    /* '<S7>:1:21' sector_ref = 3.0; */
     rtDW->sector_ref = 3;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 0.78539816339744828) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 1.0471975511965976)) {
-    /* '<S5>:1:22' elseif (angle_ref >= pi/180*45 && angle_ref < pi/180*60) */
-    /* '<S5>:1:23' sector_ref = 4.0; */
+    /* '<S7>:1:22' elseif (angle_ref >= pi/180*45 && angle_ref < pi/180*60) */
+    /* '<S7>:1:23' sector_ref = 4.0; */
     rtDW->sector_ref = 4;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 1.0471975511965976) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 1.3089969389957472)) {
-    /* '<S5>:1:24' elseif (angle_ref >= pi/180*60 && angle_ref < pi/180*75) */
-    /* '<S5>:1:25' sector_ref = 5.0; */
+    /* '<S7>:1:24' elseif (angle_ref >= pi/180*60 && angle_ref < pi/180*75) */
+    /* '<S7>:1:25' sector_ref = 5.0; */
     rtDW->sector_ref = 5;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 1.3089969389957472) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 1.5707963267948966)) {
-    /* '<S5>:1:26' elseif (angle_ref >= pi/180*75 && angle_ref < pi/180*90) */
-    /* '<S5>:1:27' sector_ref = 6.0; */
+    /* '<S7>:1:26' elseif (angle_ref >= pi/180*75 && angle_ref < pi/180*90) */
+    /* '<S7>:1:27' sector_ref = 6.0; */
     rtDW->sector_ref = 6;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 1.5707963267948966) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 1.8325957145940461)) {
-    /* '<S5>:1:28' elseif (angle_ref >= pi/180*90 && angle_ref < pi/180*105) */
-    /* '<S5>:1:29' sector_ref = 7.0; */
+    /* '<S7>:1:28' elseif (angle_ref >= pi/180*90 && angle_ref < pi/180*105) */
+    /* '<S7>:1:29' sector_ref = 7.0; */
     rtDW->sector_ref = 7;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 1.8325957145940461) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 2.0943951023931953)) {
-    /* '<S5>:1:30' elseif (angle_ref >= pi/180*105 && angle_ref < pi/180*120) */
-    /* '<S5>:1:31' sector_ref = 8.0; */
+    /* '<S7>:1:30' elseif (angle_ref >= pi/180*105 && angle_ref < pi/180*120) */
+    /* '<S7>:1:31' sector_ref = 8.0; */
     rtDW->sector_ref = 8;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 2.0943951023931953) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 2.3561944901923448)) {
-    /* '<S5>:1:32' elseif (angle_ref >= pi/180*120 && angle_ref < pi/180*135) */
-    /* '<S5>:1:33' sector_ref = 9.0; */
+    /* '<S7>:1:32' elseif (angle_ref >= pi/180*120 && angle_ref < pi/180*135) */
+    /* '<S7>:1:33' sector_ref = 9.0; */
     rtDW->sector_ref = 9;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 2.3561944901923448) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 2.6179938779914944)) {
-    /* '<S5>:1:34' elseif (angle_ref >= pi/180*135 && angle_ref < pi/180*150) */
-    /* '<S5>:1:35' sector_ref = 10.0; */
+    /* '<S7>:1:34' elseif (angle_ref >= pi/180*135 && angle_ref < pi/180*150) */
+    /* '<S7>:1:35' sector_ref = 10.0; */
     rtDW->sector_ref = 10;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 2.6179938779914944) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 2.8797932657906435)) {
-    /* '<S5>:1:36' elseif (angle_ref >= pi/180*150 && angle_ref < pi/180*165) */
-    /* '<S5>:1:37' sector_ref = 11.0; */
+    /* '<S7>:1:36' elseif (angle_ref >= pi/180*150 && angle_ref < pi/180*165) */
+    /* '<S7>:1:37' sector_ref = 11.0; */
     rtDW->sector_ref = 11;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 2.8797932657906435) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 3.1415926535897931)) {
-    /* '<S5>:1:38' elseif (angle_ref >= pi/180*165 && angle_ref < pi/180*180) */
-    /* '<S5>:1:39' sector_ref = 12.0; */
+    /* '<S7>:1:38' elseif (angle_ref >= pi/180*165 && angle_ref < pi/180*180) */
+    /* '<S7>:1:39' sector_ref = 12.0; */
     rtDW->sector_ref = 12;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 3.1415926535897931) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 3.4033920413889427)) {
-    /* '<S5>:1:40' elseif (angle_ref >= pi/180*180 && angle_ref < pi/180*195) */
-    /* '<S5>:1:41' sector_ref = 13.0; */
+    /* '<S7>:1:40' elseif (angle_ref >= pi/180*180 && angle_ref < pi/180*195) */
+    /* '<S7>:1:41' sector_ref = 13.0; */
     rtDW->sector_ref = 13;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 3.4033920413889427) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 3.6651914291880923)) {
-    /* '<S5>:1:42' elseif (angle_ref >= pi/180*195 && angle_ref < pi/180*210) */
-    /* '<S5>:1:43' sector_ref = 14.0; */
+    /* '<S7>:1:42' elseif (angle_ref >= pi/180*195 && angle_ref < pi/180*210) */
+    /* '<S7>:1:43' sector_ref = 14.0; */
     rtDW->sector_ref = 14;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 3.6651914291880923) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 3.9269908169872414)) {
-    /* '<S5>:1:44' elseif (angle_ref >= pi/180*210 && angle_ref < pi/180*225) */
-    /* '<S5>:1:45' sector_ref = 15.0; */
+    /* '<S7>:1:44' elseif (angle_ref >= pi/180*210 && angle_ref < pi/180*225) */
+    /* '<S7>:1:45' sector_ref = 15.0; */
     rtDW->sector_ref = 15;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 3.9269908169872414) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 4.1887902047863905)) {
-    /* '<S5>:1:46' elseif (angle_ref >= pi/180*225 && angle_ref < pi/180*240) */
-    /* '<S5>:1:47' sector_ref = 16.0; */
+    /* '<S7>:1:46' elseif (angle_ref >= pi/180*225 && angle_ref < pi/180*240) */
+    /* '<S7>:1:47' sector_ref = 16.0; */
     rtDW->sector_ref = 16;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 4.1887902047863905) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 4.4505895925855405)) {
-    /* '<S5>:1:48' elseif (angle_ref >= pi/180*240 && angle_ref < pi/180*255) */
-    /* '<S5>:1:49' sector_ref = 17.0; */
+    /* '<S7>:1:48' elseif (angle_ref >= pi/180*240 && angle_ref < pi/180*255) */
+    /* '<S7>:1:49' sector_ref = 17.0; */
     rtDW->sector_ref = 17;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 4.4505895925855405) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 4.71238898038469)) {
-    /* '<S5>:1:50' elseif (angle_ref >= pi/180*255 && angle_ref < pi/180*270) */
-    /* '<S5>:1:51' sector_ref = 18.0; */
+    /* '<S7>:1:50' elseif (angle_ref >= pi/180*255 && angle_ref < pi/180*270) */
+    /* '<S7>:1:51' sector_ref = 18.0; */
     rtDW->sector_ref = 18;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 4.71238898038469) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 4.9741883681838388)) {
-    /* '<S5>:1:52' elseif (angle_ref >= pi/180*270 && angle_ref < pi/180*285) */
-    /* '<S5>:1:53' sector_ref = 19.0; */
+    /* '<S7>:1:52' elseif (angle_ref >= pi/180*270 && angle_ref < pi/180*285) */
+    /* '<S7>:1:53' sector_ref = 19.0; */
     rtDW->sector_ref = 19;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 4.9741883681838388) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 5.2359877559829888)) {
-    /* '<S5>:1:54' elseif (angle_ref >= pi/180*285 && angle_ref < pi/180*300) */
-    /* '<S5>:1:55' sector_ref = 20.0; */
+    /* '<S7>:1:54' elseif (angle_ref >= pi/180*285 && angle_ref < pi/180*300) */
+    /* '<S7>:1:55' sector_ref = 20.0; */
     rtDW->sector_ref = 20;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 5.2359877559829888) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 5.497787143782138)) {
-    /* '<S5>:1:56' elseif (angle_ref >= pi/180*300 && angle_ref < pi/180*315) */
-    /* '<S5>:1:57' sector_ref = 21.0; */
+    /* '<S7>:1:56' elseif (angle_ref >= pi/180*300 && angle_ref < pi/180*315) */
+    /* '<S7>:1:57' sector_ref = 21.0; */
     rtDW->sector_ref = 21;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 5.497787143782138) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 5.7595865315812871)) {
-    /* '<S5>:1:58' elseif (angle_ref >= pi/180*315 && angle_ref < pi/180*330) */
-    /* '<S5>:1:59' sector_ref = 22.0; */
+    /* '<S7>:1:58' elseif (angle_ref >= pi/180*315 && angle_ref < pi/180*330) */
+    /* '<S7>:1:59' sector_ref = 22.0; */
     rtDW->sector_ref = 22;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 5.7595865315812871) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 6.0213859193804371)) {
-    /* '<S5>:1:60' elseif (angle_ref >= pi/180*330 && angle_ref < pi/180*345) */
-    /* '<S5>:1:61' sector_ref = 23.0; */
+    /* '<S7>:1:60' elseif (angle_ref >= pi/180*330 && angle_ref < pi/180*345) */
+    /* '<S7>:1:61' sector_ref = 23.0; */
     rtDW->sector_ref = 23;
   } else if ((rtDW->rtb_v_1_idx_pu_idx_1 >= 6.0213859193804371) &&
              (rtDW->rtb_v_1_idx_pu_idx_1 < 6.2831853071795862)) {
-    /* '<S5>:1:62' elseif (angle_ref >= pi/180*345 && angle_ref < pi/180*360) */
-    /* '<S5>:1:63' sector_ref = 24.0; */
+    /* '<S7>:1:62' elseif (angle_ref >= pi/180*345 && angle_ref < pi/180*360) */
+    /* '<S7>:1:63' sector_ref = 24.0; */
     rtDW->sector_ref = 24;
   }
 
@@ -6421,77 +6460,77 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->rtb_v_1_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
   rtDW->q = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_i_dq_obs_idx_0 = (rtDW->rtb_v_1_idx_pu_idx_1 * rtDW->SinCos1_o2 +
-    rtDW->q * rtDW->smax_b) * rtU->v_DC_pu;
-  rtDW->rtb_v_1_idx_pu_idx_1 = (rtDW->rtb_v_1_idx_pu_idx_1 * -rtDW->smax_b +
+    rtDW->q * rtDW->w6theta_el) * rtU->v_DC_pu;
+  rtDW->rtb_v_1_idx_pu_idx_1 = (rtDW->rtb_v_1_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->q * rtDW->SinCos1_o2) * rtU->v_DC_pu;
   rtDW->rtb_v_1_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
   rtDW->rtb_v_2_idx_pu_idx_0 = v_X_Y_pu[rtDW->d_j + 61];
-  rtDW->q = (rtDW->rtb_v_1_idx_pu_idx_3 * rtDW->w6theta_el +
+  rtDW->q = (rtDW->rtb_v_1_idx_pu_idx_3 * rtDW->SinCos2_o2 +
              rtDW->rtb_v_2_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_1_idx_pu_idx_3 = (rtDW->rtb_v_1_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
-    rtDW->rtb_v_2_idx_pu_idx_0 * rtDW->w6theta_el) * rtU->v_DC_pu;
+    rtDW->rtb_v_2_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
   /* '<S4>:1:173' v_2_idx_pu = [vd_2_idx_pu; vq_2_idx_pu; vx_2_idx_pu; vy_2_idx_pu]; */
   rtDW->d_j = rtDW->act_sw_2[rtDW->sector_ref - 1];
   rtDW->rtb_v_2_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
   rtDW->rtb_v_2_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_v_2_idx_pu_idx_0 = (rtDW->rtb_v_2_idx_pu_idx_1 * rtDW->SinCos1_o2 +
-    rtDW->rtb_v_2_idx_pu_idx_2 * rtDW->smax_b) * rtU->v_DC_pu;
-  rtDW->rtb_v_2_idx_pu_idx_1 = (rtDW->rtb_v_2_idx_pu_idx_1 * -rtDW->smax_b +
+    rtDW->rtb_v_2_idx_pu_idx_2 * rtDW->w6theta_el) * rtU->v_DC_pu;
+  rtDW->rtb_v_2_idx_pu_idx_1 = (rtDW->rtb_v_2_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->rtb_v_2_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
   rtDW->rtb_v_2_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
   rtDW->rtb_v_3_idx_pu_idx_0 = v_X_Y_pu[rtDW->d_j + 61];
-  rtDW->rtb_v_2_idx_pu_idx_2 = (rtDW->rtb_v_2_idx_pu_idx_3 * rtDW->w6theta_el +
+  rtDW->rtb_v_2_idx_pu_idx_2 = (rtDW->rtb_v_2_idx_pu_idx_3 * rtDW->SinCos2_o2 +
     rtDW->rtb_v_3_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_2_idx_pu_idx_3 = (rtDW->rtb_v_2_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
-    rtDW->rtb_v_3_idx_pu_idx_0 * rtDW->w6theta_el) * rtU->v_DC_pu;
+    rtDW->rtb_v_3_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
   /* '<S4>:1:174' v_3_idx_pu = [vd_3_idx_pu; vq_3_idx_pu; vx_3_idx_pu; vy_3_idx_pu]; */
   rtDW->d_j = rtDW->act_sw_3[rtDW->sector_ref - 1];
   rtDW->rtb_v_3_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
   rtDW->rtb_v_3_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_v_3_idx_pu_idx_0 = (rtDW->rtb_v_3_idx_pu_idx_1 * rtDW->SinCos1_o2 +
-    rtDW->rtb_v_3_idx_pu_idx_2 * rtDW->smax_b) * rtU->v_DC_pu;
-  rtDW->rtb_v_3_idx_pu_idx_1 = (rtDW->rtb_v_3_idx_pu_idx_1 * -rtDW->smax_b +
+    rtDW->rtb_v_3_idx_pu_idx_2 * rtDW->w6theta_el) * rtU->v_DC_pu;
+  rtDW->rtb_v_3_idx_pu_idx_1 = (rtDW->rtb_v_3_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->rtb_v_3_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
   rtDW->rtb_v_3_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
   rtDW->rtb_v_4_idx_pu_idx_0 = v_X_Y_pu[rtDW->d_j + 61];
-  rtDW->rtb_v_3_idx_pu_idx_2 = (rtDW->rtb_v_3_idx_pu_idx_3 * rtDW->w6theta_el +
+  rtDW->rtb_v_3_idx_pu_idx_2 = (rtDW->rtb_v_3_idx_pu_idx_3 * rtDW->SinCos2_o2 +
     rtDW->rtb_v_4_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_3_idx_pu_idx_3 = (rtDW->rtb_v_3_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
-    rtDW->rtb_v_4_idx_pu_idx_0 * rtDW->w6theta_el) * rtU->v_DC_pu;
+    rtDW->rtb_v_4_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
   /* '<S4>:1:175' v_4_idx_pu = [vd_4_idx_pu; vq_4_idx_pu; vx_4_idx_pu; vy_4_idx_pu]; */
   rtDW->d_j = rtDW->act_sw_4[rtDW->sector_ref - 1];
   rtDW->rtb_v_4_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
   rtDW->rtb_v_4_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_v_4_idx_pu_idx_0 = (rtDW->rtb_v_4_idx_pu_idx_1 * rtDW->SinCos1_o2 +
-    rtDW->rtb_v_4_idx_pu_idx_2 * rtDW->smax_b) * rtU->v_DC_pu;
-  rtDW->rtb_v_4_idx_pu_idx_1 = (rtDW->rtb_v_4_idx_pu_idx_1 * -rtDW->smax_b +
+    rtDW->rtb_v_4_idx_pu_idx_2 * rtDW->w6theta_el) * rtU->v_DC_pu;
+  rtDW->rtb_v_4_idx_pu_idx_1 = (rtDW->rtb_v_4_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->rtb_v_4_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
   rtDW->rtb_v_4_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
   rtDW->rtb_v_5_idx_pu_idx_0 = v_X_Y_pu[rtDW->d_j + 61];
-  rtDW->rtb_v_4_idx_pu_idx_2 = (rtDW->rtb_v_4_idx_pu_idx_3 * rtDW->w6theta_el +
+  rtDW->rtb_v_4_idx_pu_idx_2 = (rtDW->rtb_v_4_idx_pu_idx_3 * rtDW->SinCos2_o2 +
     rtDW->rtb_v_5_idx_pu_idx_0 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
   rtDW->rtb_v_4_idx_pu_idx_3 = (rtDW->rtb_v_4_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
-    rtDW->rtb_v_5_idx_pu_idx_0 * rtDW->w6theta_el) * rtU->v_DC_pu;
+    rtDW->rtb_v_5_idx_pu_idx_0 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
   /* '<S4>:1:176' v_5_idx_pu = [vd_5_idx_pu; vq_5_idx_pu; vx_5_idx_pu; vy_5_idx_pu]; */
   rtDW->d_j = rtDW->act_sw_5[rtDW->sector_ref - 1];
   rtDW->rtb_v_5_idx_pu_idx_1 = v_alpha_beta_pu[rtDW->d_j - 1];
   rtDW->rtb_v_5_idx_pu_idx_2 = v_alpha_beta_pu[rtDW->d_j + 61];
   rtDW->rtb_v_5_idx_pu_idx_0 = (rtDW->rtb_v_5_idx_pu_idx_1 * rtDW->SinCos1_o2 +
-    rtDW->rtb_v_5_idx_pu_idx_2 * rtDW->smax_b) * rtU->v_DC_pu;
-  rtDW->rtb_v_5_idx_pu_idx_1 = (rtDW->rtb_v_5_idx_pu_idx_1 * -rtDW->smax_b +
+    rtDW->rtb_v_5_idx_pu_idx_2 * rtDW->w6theta_el) * rtU->v_DC_pu;
+  rtDW->rtb_v_5_idx_pu_idx_1 = (rtDW->rtb_v_5_idx_pu_idx_1 * -rtDW->w6theta_el +
     rtDW->rtb_v_5_idx_pu_idx_2 * rtDW->SinCos1_o2) * rtU->v_DC_pu;
-  rtDW->smax_b = v_X_Y_pu[rtDW->d_j - 1];
+  rtDW->rtb_v_5_idx_pu_idx_3 = v_X_Y_pu[rtDW->d_j - 1];
   rtDW->SinCos1_o2 = v_X_Y_pu[rtDW->d_j + 61];
-  rtDW->rtb_v_5_idx_pu_idx_2 = (rtDW->smax_b * rtDW->w6theta_el +
+  rtDW->rtb_v_5_idx_pu_idx_2 = (rtDW->rtb_v_5_idx_pu_idx_3 * rtDW->SinCos2_o2 +
     rtDW->SinCos1_o2 * rtDW->SinCos2_o1) * rtU->v_DC_pu;
-  rtDW->rtb_v_5_idx_pu_idx_3 = (rtDW->smax_b * -rtDW->SinCos2_o1 +
-    rtDW->SinCos1_o2 * rtDW->w6theta_el) * rtU->v_DC_pu;
+  rtDW->rtb_v_5_idx_pu_idx_3 = (rtDW->rtb_v_5_idx_pu_idx_3 * -rtDW->SinCos2_o1 +
+    rtDW->SinCos1_o2 * rtDW->SinCos2_o2) * rtU->v_DC_pu;
 
-  /* MATLAB Function: '<S1>/state_space_mdl' incorporates:
+  /* MATLAB Function: '<S1>/current_gradient_prediction' incorporates:
    *  Inport: '<Root>/HC_off_on'
    *  Inport: '<Root>/Rs_over_ZB'
    *  Inport: '<Root>/Ts_times_ZB_over_Ld'
@@ -6502,121 +6541,124 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/phiPM_h'
    *  Inport: '<Root>/psiPM_h_pu'
    *  Inport: '<Root>/psi_pm_over_psiB'
+   *  Inport: '<Root>/tB_over_Ts'
    */
-  /* MATLAB Function 'uz_codegen/state_space_mdl': '<S10>:1' */
-  /* '<S10>:1:3' A = [ -Ts_times_ZB_over_Ld*Rs_over_ZB            Ts_times_ZB_over_Ld*Lq_over_LB*w_e_pu   0                                      0                               ; */
-  /* '<S10>:1:4'       -Ts_times_ZB_over_Lq*Ld_over_LB*w_e_pu    -Ts_times_ZB_over_Lq*Rs_over_ZB          0                                      0                               ; */
-  /* '<S10>:1:5'       0                                          0                                       -Ts_times_ZB_over_Lx*Rs_over_ZB        -Ts_times_ZB_over_Lx*Ly_over_LB*w_e_pu              ; */
-  /* '<S10>:1:6'       0                                          0                                        Ts_times_ZB_over_Ly*Lx_over_LB*w_e_pu                     -Ts_times_ZB_over_Ly*Rs_over_ZB]; */
-  rtDW->A_n[0] = -rtU->Ts_times_ZB_over_Ld * rtU->Rs_over_ZB;
-  rtDW->A_n[4] = rtDW->x0_idx_1;
-  rtDW->A_n[8] = 0.0F;
-  rtDW->A_n[12] = 0.0F;
-  rtDW->A_n[1] = rtDW->x0_idx_2;
-  rtDW->A_n[5] = -rtU->Ts_times_ZB_over_Lq * rtU->Rs_over_ZB;
-  rtDW->A_n[9] = 0.0F;
-  rtDW->A_n[13] = 0.0F;
-  rtDW->A_n[2] = 0.0F;
-  rtDW->A_n[6] = 0.0F;
-  rtDW->A_n[10] = -rtU->Ts_times_ZB_over_Lx * rtU->Rs_over_ZB;
-  rtDW->A_n[14] = rtDW->x0_idx_3;
-  rtDW->A_n[3] = 0.0F;
-  rtDW->A_n[7] = 0.0F;
-  rtDW->A_n[11] = rtDW->A_tmp;
-  rtDW->A_n[15] = -rtU->Ts_times_ZB_over_Ly * rtU->Rs_over_ZB;
+  /* MATLAB Function 'uz_codegen/current_gradient_prediction': '<S5>:1' */
+  /* '<S5>:1:3' A_minus_I = [ -Ts_times_ZB_over_Ld*Rs_over_ZB            Ts_times_ZB_over_Ld*Lq_over_LB*w_e_pu   0                                      0; */
+  /* '<S5>:1:4'       -Ts_times_ZB_over_Lq*Ld_over_LB*w_e_pu     -Ts_times_ZB_over_Lq*Rs_over_ZB                 0                                      0; */
+  /* '<S5>:1:5'       0                                          0                                        -Ts_times_ZB_over_Lx*Rs_over_ZB       -Ts_times_ZB_over_Lx*Ly_over_LB*w_e_pu; */
+  /* '<S5>:1:6'       0                                          0                                        Ts_times_ZB_over_Ly*Lx_over_LB*w_e_pu  -Ts_times_ZB_over_Ly*Rs_over_ZB]; */
+  rtDW->A_minus_I[0] = -rtU->Ts_times_ZB_over_Ld * rtU->Rs_over_ZB;
+  rtDW->A_minus_I[4] = rtDW->x0_idx_0;
+  rtDW->A_minus_I[8] = 0.0F;
+  rtDW->A_minus_I[12] = 0.0F;
+  rtDW->A_minus_I[1] = rtDW->x0_idx_1;
+  rtDW->A_minus_I[5] = -rtU->Ts_times_ZB_over_Lq * rtU->Rs_over_ZB;
+  rtDW->A_minus_I[9] = 0.0F;
+  rtDW->A_minus_I[13] = 0.0F;
+  rtDW->A_minus_I[2] = 0.0F;
+  rtDW->A_minus_I[6] = 0.0F;
+  rtDW->A_minus_I[10] = -rtU->Ts_times_ZB_over_Lx * rtU->Rs_over_ZB;
+  rtDW->A_minus_I[14] = rtDW->x0_idx_2;
+  rtDW->A_minus_I[3] = 0.0F;
+  rtDW->A_minus_I[7] = 0.0F;
+  rtDW->A_minus_I[11] = rtDW->x0_idx_3;
+  rtDW->A_minus_I[15] = -rtU->Ts_times_ZB_over_Ly * rtU->Rs_over_ZB;
 
-  /* '<S10>:1:8' psiPM5 = psiPM_h_pu(1); */
-  /* '<S10>:1:9' psiPM7 = psiPM_h_pu(2); */
-  /* '<S10>:1:11' phi5 = phiPM_h(1); */
-  /* '<S10>:1:12' phi7 = phiPM_h(2); */
+  /* '<S5>:1:8' psiPM5 = psiPM_h_pu(1); */
+  /* '<S5>:1:9' psiPM7 = psiPM_h_pu(2); */
+  /* '<S5>:1:11' phi5 = phiPM_h(1); */
+  /* '<S5>:1:12' phi7 = phiPM_h(2); */
   /*  w3theta_el = single(3*theta_el); */
-  /* '<S10>:1:15' w6theta_el = single(6*theta_el); */
+  /* '<S5>:1:15' w6theta_el = single(6*theta_el); */
   /*  w9theta_el = single(9*theta_el); */
   /*  w12theta_el = single(12*theta_el); */
-  /* '<S10>:1:19' B = [Ts_times_ZB_over_Ld    0                       0                       0                       ; */
-  /* '<S10>:1:20'      0                      Ts_times_ZB_over_Lq     0                       0                       ; */
-  /* '<S10>:1:21'      0                      0                       Ts_times_ZB_over_Lx     0                       ; */
-  /* '<S10>:1:22'      0                      0                       0                       Ts_times_ZB_over_Ly     ]; */
-  rtDW->B_b[0] = rtU->Ts_times_ZB_over_Ld;
-  rtDW->B_b[4] = 0.0F;
-  rtDW->B_b[8] = 0.0F;
-  rtDW->B_b[12] = 0.0F;
-  rtDW->B_b[1] = 0.0F;
-  rtDW->B_b[5] = rtU->Ts_times_ZB_over_Lq;
-  rtDW->B_b[9] = 0.0F;
-  rtDW->B_b[13] = 0.0F;
-  rtDW->B_b[2] = 0.0F;
-  rtDW->B_b[6] = 0.0F;
-  rtDW->B_b[10] = rtU->Ts_times_ZB_over_Lx;
-  rtDW->B_b[14] = 0.0F;
-  rtDW->B_b[3] = 0.0F;
-  rtDW->B_b[7] = 0.0F;
-  rtDW->B_b[11] = 0.0F;
-  rtDW->B_b[15] = rtU->Ts_times_ZB_over_Ly;
+  /* '<S5>:1:19' B = [Ts_times_ZB_over_Ld    0                       0                       0                       ; */
+  /* '<S5>:1:20'      0                      Ts_times_ZB_over_Lq     0                       0                       ; */
+  /* '<S5>:1:21'      0                      0                       Ts_times_ZB_over_Lx     0                       ; */
+  /* '<S5>:1:22'      0                      0                       0                       Ts_times_ZB_over_Ly     ]; */
+  rtDW->B_n[0] = rtU->Ts_times_ZB_over_Ld;
+  rtDW->B_n[4] = 0.0F;
+  rtDW->B_n[8] = 0.0F;
+  rtDW->B_n[12] = 0.0F;
+  rtDW->B_n[1] = 0.0F;
+  rtDW->B_n[5] = rtU->Ts_times_ZB_over_Lq;
+  rtDW->B_n[9] = 0.0F;
+  rtDW->B_n[13] = 0.0F;
+  rtDW->B_n[2] = 0.0F;
+  rtDW->B_n[6] = 0.0F;
+  rtDW->B_n[10] = rtU->Ts_times_ZB_over_Lx;
+  rtDW->B_n[14] = 0.0F;
+  rtDW->B_n[3] = 0.0F;
+  rtDW->B_n[7] = 0.0F;
+  rtDW->B_n[11] = 0.0F;
+  rtDW->B_n[15] = rtU->Ts_times_ZB_over_Ly;
 
-  /* '<S10>:1:24' C = [1   0   0   0; */
-  /* '<S10>:1:25'      0   1   0   0; */
-  /* '<S10>:1:26'      0   0   1   0; */
-  /* '<S10>:1:27'      0   0   0   1]; */
-  /* '<S10>:1:29' D = [    e_dq_obs(1); */
-  /* '<S10>:1:30'          -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB + e_dq_obs(2); */
-  /* '<S10>:1:31'          e_xy_obs(1); */
-  /* '<S10>:1:32'          e_xy_obs(2)]; */
-  rtDW->D[0] = rtDW->rtb_e_dq_obs_idx_0;
-  rtDW->x0_idx_1 = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
-    rtU->psi_pm_over_psiB + rtDW->rtb_v_t0_idx_3;
-  rtDW->D[1] = rtDW->x0_idx_1;
-  rtDW->D[2] = rtDW->rtb_e_xy_obs_idx_0;
-  rtDW->D[3] = rtDW->rtb_v_t0_idx_2;
+  /*  C = [1   0   0   0; */
+  /*       0   1   0   0; */
+  /*       0   0   1   0; */
+  /*       0   0   0   1]; */
+  /* '<S5>:1:30' d_obs = [d_dq_obs(1);d_dq_obs(2);d_xy_obs(1);d_xy_obs(2)]; */
+  rtDW->d_obs[0] = rtDW->rtb_d_dq_obs_idx_0;
+  rtDW->d_obs[1] = rtDW->rtb_v_t0_idx_3;
+  rtDW->d_obs[2] = rtDW->rtb_d_xy_obs_idx_0;
+  rtDW->d_obs[3] = rtDW->rtb_v_t0_idx_2;
 
-  /* '<S10>:1:35' E = [    e_dq_obs(1); */
-  /* '<S10>:1:36'          -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB+e_dq_obs(2); */
-  /* '<S10>:1:37'          -w_e_pu*Ts_times_ZB_over_Lx*(psiPM5*sin(w6theta_el+phi5)-psiPM7*sin(w6theta_el+phi7)-psiPM5*6*sin(w6theta_el+phi5)-psiPM7*6*sin(w6theta_el+phi7))+e_xy_obs(1); */
-  /* '<S10>:1:38'           w_e_pu*Ts_times_ZB_over_Ly*(psiPM5*cos(w6theta_el+phi5)+psiPM7*cos(w6theta_el+phi7)-psiPM5*6*cos(w6theta_el+phi5)+psiPM7*6*cos(w6theta_el+phi7))+e_xy_obs(2)]; */
-  rtDW->SinCos2_o1 = rtDW->x0_idx_0 + rtU->phiPM_h[0];
-  rtDW->smax_b = sinf(rtDW->SinCos2_o1);
-  rtDW->w6theta_el = rtDW->x0_idx_0 + rtU->phiPM_h[1];
-  rtDW->SinCos1_o2 = sinf(rtDW->w6theta_el);
-  rtDW->SinCos2_o1 = cosf(rtDW->SinCos2_o1);
+  /* '<S5>:1:32' d_m = [0; -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB; 0; 0]; */
+  rtDW->d_m_h[0] = 0.0F;
+  rtDW->x0_idx_0 = -rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lq *
+    rtU->psi_pm_over_psiB;
+  rtDW->d_m_h[1] = rtDW->x0_idx_0;
+  rtDW->d_m_h[2] = 0.0F;
+  rtDW->d_m_h[3] = 0.0F;
+
+  /* '<S5>:1:34' d_m_HC = [     0; */
+  /* '<S5>:1:35'          -w_e_pu*Ts_times_ZB_over_Lq*psi_pm_over_psiB; */
+  /* '<S5>:1:36'          -w_e_pu*Ts_times_ZB_over_Lx*(psiPM5*sin(w6theta_el+phi5)-psiPM7*sin(w6theta_el+phi7)-psiPM5*6*sin(w6theta_el+phi5)-psiPM7*6*sin(w6theta_el+phi7)); */
+  /* '<S5>:1:37'           w_e_pu*Ts_times_ZB_over_Ly*(psiPM5*cos(w6theta_el+phi5)+psiPM7*cos(w6theta_el+phi7)-psiPM5*6*cos(w6theta_el+phi5)+psiPM7*6*cos(w6theta_el+phi7))]; */
+  rtDW->SinCos2_o2 = rtDW->w6theta_el_tmp + rtU->phiPM_h[0];
+  rtDW->SinCos1_o2 = sinf(rtDW->SinCos2_o2);
+  rtDW->w6theta_el = rtDW->w6theta_el_tmp + rtU->phiPM_h[1];
+  rtDW->SinCos2_o1 = sinf(rtDW->w6theta_el);
+  rtDW->SinCos2_o2 = cosf(rtDW->SinCos2_o2);
   rtDW->w6theta_el = cosf(rtDW->w6theta_el);
-  rtDW->E_b[0] = rtDW->rtb_e_dq_obs_idx_0;
-  rtDW->E_b[1] = rtDW->x0_idx_1;
-  rtDW->E_b[2] = (((rtU->psiPM_h_pu[0] * rtDW->smax_b - rtU->psiPM_h_pu[1] *
-                    rtDW->SinCos1_o2) - rtU->psiPM_h_pu[0] * 6.0F * rtDW->smax_b)
-                  - rtU->psiPM_h_pu[1] * 6.0F * rtDW->SinCos1_o2) *
-    (-rtU->omega_el_pu * rtU->Ts_times_ZB_over_Lx) + rtDW->rtb_e_xy_obs_idx_0;
-  rtDW->E_b[3] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos2_o1 + rtU->psiPM_h_pu[1] *
-                    rtDW->w6theta_el) - rtU->psiPM_h_pu[0] * 6.0F *
-                   rtDW->SinCos2_o1) + rtU->psiPM_h_pu[1] * 6.0F *
-                  rtDW->w6theta_el) * (rtU->omega_el_pu *
-    rtU->Ts_times_ZB_over_Ly) + rtDW->rtb_v_t0_idx_2;
+  rtDW->d_m_HC[0] = 0.0F;
+  rtDW->d_m_HC[1] = rtDW->x0_idx_0;
+  rtDW->d_m_HC[2] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos1_o2 - rtU->psiPM_h_pu[1]
+                       * rtDW->SinCos2_o1) - rtU->psiPM_h_pu[0] * 6.0F *
+                      rtDW->SinCos1_o2) - rtU->psiPM_h_pu[1] * 6.0F *
+                     rtDW->SinCos2_o1) * (-rtU->omega_el_pu *
+    rtU->Ts_times_ZB_over_Lx);
+  rtDW->d_m_HC[3] = (((rtU->psiPM_h_pu[0] * rtDW->SinCos2_o2 + rtU->psiPM_h_pu[1]
+                       * rtDW->w6theta_el) - rtU->psiPM_h_pu[0] * 6.0F *
+                      rtDW->SinCos2_o2) + rtU->psiPM_h_pu[1] * 6.0F *
+                     rtDW->w6theta_el) * (rtU->omega_el_pu *
+    rtU->Ts_times_ZB_over_Ly);
 
   /*  original xy harmonic equations without placing factor outside the */
   /*  brackets */
   /*   -w_e_pu*Ts_times_ZB_over_Lx*(psiPM5*sin(w6theta_el+phi5)-psiPM7*sin(w6theta_el+phi7))-Ts_times_ZB_over_Lx*w_e_pu*(-psiPM5*6*sin(w6theta_el+phi5)-psiPM7*6*sin(w6theta_el+phi7))+e_xy_obs(1); */
   /*    w_e_pu*Ts_times_ZB_over_Ly*(psiPM5*cos(w6theta_el+phi5)+psiPM7*cos(w6theta_el+phi7))-Ts_times_ZB_over_Ly*w_e_pu*(+psiPM5*6*cos(w6theta_el+phi5)-psiPM7*6*cos(w6theta_el+phi7))+e_xy_obs(2) */
-  /* '<S10>:1:46' x0 = [id_pu; iq_pu; ix_pu; iy_pu]; */
+  /* '<S5>:1:48' x0 = [id_pu; iq_pu; ix_pu; iy_pu]; */
   rtDW->x0_idx_0 = rtDW->v_t0[0];
   rtDW->x0_idx_1 = rtDW->v_t0[1];
   rtDW->x0_idx_2 = rtDW->v_t0[2];
   rtDW->x0_idx_3 = rtDW->v_t0[3];
 
-  /* '<S10>:1:48' u0 = [0;0;0;0]; */
+  /* '<S5>:1:50' u0 = [0;0;0;0]; */
   /*  zero voltage applied */
-  /* '<S10>:1:49' u1 = [v_1_pu(1); v_1_pu(2); v_1_pu(3); v_1_pu(4)]; */
+  /* '<S5>:1:51' u1 = [v_1_pu(1); v_1_pu(2); v_1_pu(3); v_1_pu(4)]; */
   /*  first active vector */
-  /* '<S10>:1:50' u2 = [v_2_pu(1); v_2_pu(2); v_2_pu(3); v_2_pu(4)]; */
+  /* '<S5>:1:52' u2 = [v_2_pu(1); v_2_pu(2); v_2_pu(3); v_2_pu(4)]; */
   /*  second active vector */
-  /* '<S10>:1:51' u3 = [v_3_pu(1); v_3_pu(2); v_3_pu(3); v_3_pu(4)]; */
+  /* '<S5>:1:53' u3 = [v_3_pu(1); v_3_pu(2); v_3_pu(3); v_3_pu(4)]; */
   /*  third active vector */
-  /* '<S10>:1:52' u4 = [v_4_pu(1); v_4_pu(2); v_4_pu(3); v_4_pu(4)]; */
+  /* '<S5>:1:54' u4 = [v_4_pu(1); v_4_pu(2); v_4_pu(3); v_4_pu(4)]; */
   /*  fourth active vector */
-  /* '<S10>:1:53' u5 = [v_5_pu(1); v_5_pu(2); v_5_pu(3); v_5_pu(4)]; */
+  /* '<S5>:1:55' u5 = [v_5_pu(1); v_5_pu(2); v_5_pu(3); v_5_pu(4)]; */
   /*  fifth active vector */
   /*  calculate the gradients */
-  /*  .*2 because we calculate current evolution only for half of the */
-  /*  period and mirror it???  */
-  /* '<S10>:1:58' switch HC_off_on */
+  /* '<S5>:1:58' switch HC_off_on */
   if (!rtU->HC_off_on) {
     rtDW->d_j = 0;
   } else if (rtU->HC_off_on) {
@@ -6627,316 +6669,178 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 
   switch (rtDW->d_j) {
    case 0:
-    /* '<S10>:1:59' case false */
-    /* '<S10>:1:60' m0 = C*(A*x0+B*u0+D).*2; */
+    /* '<S5>:1:59' case false */
+    /* '<S5>:1:60' m0 = (A_minus_I*x0+B*u0+d_m+d_obs)*tB_over_Ts; */
+    /* In order to save 6*16 multiplications i removed C* */
+    /* '<S5>:1:61' m1 = (A_minus_I*x0+B*u1+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:62' m2 = (A_minus_I*x0+B*u2+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:63' m3 = (A_minus_I*x0+B*u3+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:64' m4 = (A_minus_I*x0+B*u4+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:65' m5 = (A_minus_I*x0+B*u5+d_m+d_obs)*tB_over_Ts; */
     for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->E_d[rtDW->d_j] = (rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + rtDW->D
-        [rtDW->d_j];
+      rtDW->w6theta_el_tmp = rtDW->d_obs[rtDW->d_j];
+      rtDW->SinCos2_o1 = rtDW->d_m_h[rtDW->d_j];
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j];
+      rtDW->w6theta_el = rtDW->A_minus_I[rtDW->d_j] * rtDW->x0_idx_0;
+      rtDW->B_d = rtDW->SinCos2_o2 * rtDW->rtb_i_dq_obs_idx_0;
+      rtDW->B_e = rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_0;
+      rtDW->B_b = rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_0;
+      rtDW->B_j = rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_0;
+      rtDW->B_f = rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_0;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 4];
+      rtDW->SinCos1_o2 = rtDW->A_minus_I[rtDW->d_j + 4] * rtDW->x0_idx_1;
+      rtDW->B_d += rtDW->SinCos2_o2 * rtDW->rtb_v_1_idx_pu_idx_1;
+      rtDW->B_e += rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_1;
+      rtDW->B_b += rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_1;
+      rtDW->B_j += rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_1;
+      rtDW->B_f += rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_1;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 8];
+      rtDW->A_minus_I_tmp = rtDW->A_minus_I[rtDW->d_j + 8] * rtDW->x0_idx_2;
+      rtDW->B_d += rtDW->SinCos2_o2 * rtDW->q;
+      rtDW->B_e += rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_2;
+      rtDW->B_b += rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_2;
+      rtDW->B_j += rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_2;
+      rtDW->B_f += rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_2;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 12];
+      rtDW->A_minus_I_tmp_b = rtDW->A_minus_I[rtDW->d_j + 12] * rtDW->x0_idx_3;
+      rtDW->m6[rtDW->d_j] = (((rtDW->A_minus_I_tmp_b + (rtDW->A_minus_I_tmp +
+        (rtDW->SinCos1_o2 + rtDW->w6theta_el))) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m1[rtDW->d_j] = ((((rtDW->A_minus_I_tmp_b + (rtDW->A_minus_I_tmp +
+        (rtDW->SinCos1_o2 + rtDW->w6theta_el))) + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_1_idx_pu_idx_3 + rtDW->B_d)) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m2[rtDW->d_j] = ((((rtDW->A_minus_I_tmp_b + (rtDW->A_minus_I_tmp +
+        (rtDW->SinCos1_o2 + rtDW->w6theta_el))) + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_2_idx_pu_idx_3 + rtDW->B_e)) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m3[rtDW->d_j] = ((((rtDW->A_minus_I_tmp_b + (rtDW->A_minus_I_tmp +
+        (rtDW->SinCos1_o2 + rtDW->w6theta_el))) + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_3_idx_pu_idx_3 + rtDW->B_b)) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m4[rtDW->d_j] = ((((rtDW->A_minus_I_tmp_b + (rtDW->A_minus_I_tmp +
+        (rtDW->SinCos1_o2 + rtDW->w6theta_el))) + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_4_idx_pu_idx_3 + rtDW->B_j)) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m5[rtDW->d_j] = ((((rtDW->A_minus_I_tmp_b + (rtDW->A_minus_I_tmp +
+        (rtDW->SinCos1_o2 + rtDW->w6theta_el))) + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_5_idx_pu_idx_3 + rtDW->B_f)) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
     }
 
-    /* '<S10>:1:61' m1 = C*(A*x0+B*u1+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m6[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_d[3] +
-        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_d[2] + ((real32_T)b[rtDW->d_j + 4]
-        * rtDW->E_d[1] + (real32_T)b[rtDW->d_j] * rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->q + (rtDW->B_b[rtDW->d_j + 4] * rtDW->rtb_v_1_idx_pu_idx_1
-                          + rtDW->B_b[rtDW->d_j] * rtDW->rtb_i_dq_obs_idx_0))))
-        + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:62' m2 = C*(A*x0+B*u2+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m1[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_e[3] +
-        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_e[2] + ((real32_T)b[rtDW->d_j + 4]
-        * rtDW->E_e[1] + (real32_T)b[rtDW->d_j] * rtDW->E_e[0]))) * 2.0F;
-      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_2_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->rtb_v_2_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_2_idx_pu_idx_0)))) + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:63' m3 = C*(A*x0+B*u3+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m2[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_d[3] +
-        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_d[2] + ((real32_T)b[rtDW->d_j + 4]
-        * rtDW->E_d[1] + (real32_T)b[rtDW->d_j] * rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_3_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->rtb_v_3_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_3_idx_pu_idx_0)))) + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:64' m4 = C*(A*x0+B*u4+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m3[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_e[3] +
-        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_e[2] + ((real32_T)b[rtDW->d_j + 4]
-        * rtDW->E_e[1] + (real32_T)b[rtDW->d_j] * rtDW->E_e[0]))) * 2.0F;
-      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_4_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->rtb_v_4_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_4_idx_pu_idx_0)))) + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:65' m5 = C*(A*x0+B*u5+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m4[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_d[3] +
-        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_d[2] + ((real32_T)b[rtDW->d_j + 4]
-        * rtDW->E_d[1] + (real32_T)b[rtDW->d_j] * rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_5_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->rtb_v_5_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_5_idx_pu_idx_0)))) + rtDW->D[rtDW->d_j];
-    }
-
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->E_b[rtDW->d_j] = ((real32_T)b[rtDW->d_j + 12] * rtDW->E_e[3] +
-        ((real32_T)b[rtDW->d_j + 8] * rtDW->E_e[2] + ((real32_T)b[rtDW->d_j + 4]
-        * rtDW->E_e[1] + (real32_T)b[rtDW->d_j] * rtDW->E_e[0]))) * 2.0F;
-    }
-
-    /* '<S10>:1:66' m6 = m0; */
-    /*  m0 = C*(A*x0+B*u0+D);  */
-    /*  m1 = C*(A*x0+B*u1+D); */
-    /*  m2 = C*(A*x0+B*u2+D); */
-    /*  m3 = C*(A*x0+B*u3+D); */
-    /*  m4 = C*(A*x0+B*u4+D); */
-    /*  m5 = C*(A*x0+B*u5+D); */
-    /*  m6 = m0; */
+    /* '<S5>:1:66' m6 = m0; */
     break;
 
    case 1:
-    /* '<S10>:1:74' case true */
-    /* '<S10>:1:75' m0 = C*(A*x0+B*u0+E).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 16; rtDW->d_j++) {
-      rtDW->rtb_m6_tmp[rtDW->d_j] = b[rtDW->d_j];
-    }
-
+    /* '<S5>:1:67' case true */
+    /* '<S5>:1:68' m0 = (A_minus_I*x0+B*u0+d_m_HC+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:69' m1 = (A_minus_I*x0+B*u1+d_m_HC+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:70' m2 = (A_minus_I*x0+B*u2+d_m_HC+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:71' m3 = (A_minus_I*x0+B*u3+d_m_HC+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:72' m4 = (A_minus_I*x0+B*u4+d_m_HC+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:73' m5 = (A_minus_I*x0+B*u5+d_m_HC+d_obs)*tB_over_Ts; */
     for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->E_d[rtDW->d_j] = (rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + rtDW->
-        E_b[rtDW->d_j];
+      rtDW->w6theta_el_tmp = rtDW->d_obs[rtDW->d_j];
+      rtDW->SinCos1_o2 = rtDW->d_m_HC[rtDW->d_j];
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j];
+      rtDW->B_d = rtDW->SinCos2_o2 * rtDW->rtb_i_dq_obs_idx_0;
+      rtDW->B_e = rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_0;
+      rtDW->B_b = rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_0;
+      rtDW->B_j = rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_0;
+      rtDW->B_f = rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_0;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 4];
+      rtDW->B_d += rtDW->SinCos2_o2 * rtDW->rtb_v_1_idx_pu_idx_1;
+      rtDW->B_e += rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_1;
+      rtDW->B_b += rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_1;
+      rtDW->B_j += rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_1;
+      rtDW->B_f += rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_1;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 8];
+      rtDW->B_d += rtDW->SinCos2_o2 * rtDW->q;
+      rtDW->B_e += rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_2;
+      rtDW->B_b += rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_2;
+      rtDW->B_j += rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_2;
+      rtDW->B_f += rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_2;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 12];
+      rtDW->w6theta_el = rtDW->A_minus_I[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_minus_I[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_minus_I
+          [rtDW->d_j + 4] * rtDW->x0_idx_1 + rtDW->A_minus_I[rtDW->d_j] *
+          rtDW->x0_idx_0));
+      rtDW->m6[rtDW->d_j] = ((rtDW->w6theta_el + rtDW->SinCos1_o2) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m1[rtDW->d_j] = (((rtDW->w6theta_el + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_1_idx_pu_idx_3 + rtDW->B_d)) + rtDW->SinCos1_o2) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m2[rtDW->d_j] = (((rtDW->w6theta_el + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_2_idx_pu_idx_3 + rtDW->B_e)) + rtDW->SinCos1_o2) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m3[rtDW->d_j] = (((rtDW->w6theta_el + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_3_idx_pu_idx_3 + rtDW->B_b)) + rtDW->SinCos1_o2) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m4[rtDW->d_j] = (((rtDW->w6theta_el + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_4_idx_pu_idx_3 + rtDW->B_j)) + rtDW->SinCos1_o2) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m5[rtDW->d_j] = (((rtDW->w6theta_el + (rtDW->SinCos2_o2 *
+        rtDW->rtb_v_5_idx_pu_idx_3 + rtDW->B_f)) + rtDW->SinCos1_o2) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
     }
 
-    /* '<S10>:1:76' m1 = C*(A*x0+B*u1+E).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m6[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_1_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->q + (rtDW->B_b[rtDW->d_j + 4] * rtDW->rtb_v_1_idx_pu_idx_1
-                          + rtDW->B_b[rtDW->d_j] * rtDW->rtb_i_dq_obs_idx_0))))
-        + rtDW->E_b[rtDW->d_j];
-    }
-
-    /* '<S10>:1:77' m2 = C*(A*x0+B*u2+E).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m1[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_e[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_e[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_e[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_e[0]))) * 2.0F;
-      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_2_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->rtb_v_2_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_2_idx_pu_idx_0)))) + rtDW->E_b[rtDW->d_j];
-    }
-
-    /* '<S10>:1:78' m3 = C*(A*x0+B*u3+E).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m2[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_3_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->rtb_v_3_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_3_idx_pu_idx_0)))) + rtDW->E_b[rtDW->d_j];
-    }
-
-    /* '<S10>:1:79' m4 = C*(A*x0+B*u4+E).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m3[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_e[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_e[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_e[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_e[0]))) * 2.0F;
-      rtDW->E_d[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_4_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->rtb_v_4_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_4_idx_pu_idx_0)))) + rtDW->E_b[rtDW->d_j];
-    }
-
-    /* '<S10>:1:80' m5 = C*(A*x0+B*u5+E).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m4[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-        rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0))) + (rtDW->
-        B_b[rtDW->d_j + 12] * rtDW->rtb_v_5_idx_pu_idx_3 + (rtDW->B_b[rtDW->d_j
-        + 8] * rtDW->rtb_v_5_idx_pu_idx_2 + (rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_5_idx_pu_idx_0)))) + rtDW->E_b[rtDW->d_j];
-    }
-
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->E_b[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_e[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_e[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_e[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_e[0]))) * 2.0F;
-    }
-
-    /* '<S10>:1:81' m6 = m0; */
-    /*  m0 = C*(A*x0+B*u0+E);  */
-    /*  m1 = C*(A*x0+B*u1+E); */
-    /*  m2 = C*(A*x0+B*u2+E); */
-    /*  m3 = C*(A*x0+B*u3+E); */
-    /*  m4 = C*(A*x0+B*u4+E); */
-    /*  m5 = C*(A*x0+B*u5+E); */
-    /*  m6 = m0; */
+    /* '<S5>:1:74' m6 = m0; */
     break;
 
    default:
-    /* '<S10>:1:89' otherwise */
-    /* '<S10>:1:90' m0 = C*(A*x0+B*u0+D).*2; */
+    /* '<S5>:1:75' otherwise */
+    /* '<S5>:1:76' m0 = (A_minus_I*x0+B*u0+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:77' m1 = (A_minus_I*x0+B*u1+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:78' m2 = (A_minus_I*x0+B*u2+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:79' m3 = (A_minus_I*x0+B*u3+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:80' m4 = (A_minus_I*x0+B*u4+d_m+d_obs)*tB_over_Ts; */
+    /* '<S5>:1:81' m5 = (A_minus_I*x0+B*u5+d_m+d_obs)*tB_over_Ts; */
     for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->E_b[rtDW->d_j] = rtDW->A_n[rtDW->d_j + 12] * rtDW->x0_idx_3 +
-        (rtDW->A_n[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_n[rtDW->d_j + 4] *
-          rtDW->x0_idx_1 + rtDW->A_n[rtDW->d_j] * rtDW->x0_idx_0));
+      rtDW->w6theta_el_tmp = rtDW->d_obs[rtDW->d_j];
+      rtDW->SinCos2_o1 = rtDW->d_m_h[rtDW->d_j];
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j];
+      rtDW->w6theta_el = rtDW->SinCos2_o2 * rtDW->rtb_i_dq_obs_idx_0;
+      rtDW->B_d = rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_0;
+      rtDW->B_e = rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_0;
+      rtDW->B_b = rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_0;
+      rtDW->B_j = rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_0;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 4];
+      rtDW->w6theta_el += rtDW->SinCos2_o2 * rtDW->rtb_v_1_idx_pu_idx_1;
+      rtDW->B_d += rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_1;
+      rtDW->B_e += rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_1;
+      rtDW->B_b += rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_1;
+      rtDW->B_j += rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_1;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 8];
+      rtDW->w6theta_el += rtDW->SinCos2_o2 * rtDW->q;
+      rtDW->B_d += rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_2;
+      rtDW->B_e += rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_2;
+      rtDW->B_b += rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_2;
+      rtDW->B_j += rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_2;
+      rtDW->SinCos2_o2 = rtDW->B_n[rtDW->d_j + 12];
+      rtDW->SinCos1_o2 = rtDW->A_minus_I[rtDW->d_j + 12] * rtDW->x0_idx_3 +
+        (rtDW->A_minus_I[rtDW->d_j + 8] * rtDW->x0_idx_2 + (rtDW->A_minus_I
+          [rtDW->d_j + 4] * rtDW->x0_idx_1 + rtDW->A_minus_I[rtDW->d_j] *
+          rtDW->x0_idx_0));
+      rtDW->m6[rtDW->d_j] = ((rtDW->SinCos1_o2 + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m1[rtDW->d_j] = ((((rtDW->SinCos2_o2 * rtDW->rtb_v_1_idx_pu_idx_3 +
+        rtDW->w6theta_el) + rtDW->SinCos1_o2) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m2[rtDW->d_j] = ((((rtDW->SinCos2_o2 * rtDW->rtb_v_2_idx_pu_idx_3 +
+        rtDW->B_d) + rtDW->SinCos1_o2) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m3[rtDW->d_j] = ((((rtDW->SinCos2_o2 * rtDW->rtb_v_3_idx_pu_idx_3 +
+        rtDW->B_e) + rtDW->SinCos1_o2) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m4[rtDW->d_j] = ((((rtDW->SinCos2_o2 * rtDW->rtb_v_4_idx_pu_idx_3 +
+        rtDW->B_b) + rtDW->SinCos1_o2) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
+      rtDW->m5[rtDW->d_j] = ((((rtDW->SinCos2_o2 * rtDW->rtb_v_5_idx_pu_idx_3 +
+        rtDW->B_j) + rtDW->SinCos1_o2) + rtDW->SinCos2_o1) +
+        rtDW->w6theta_el_tmp) * rtU->tB_over_Ts;
     }
 
-    for (rtDW->d_j = 0; rtDW->d_j < 16; rtDW->d_j++) {
-      rtDW->rtb_m6_tmp[rtDW->d_j] = b[rtDW->d_j];
-    }
-
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->E_d[rtDW->d_j] = rtDW->E_b[rtDW->d_j] + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:91' m1 = C*(A*x0+B*u1+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m6[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_1_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_i_dq_obs_idx_0) + rtDW->B_b[rtDW->d_j + 8] * rtDW->q) +
-        rtDW->B_b[rtDW->d_j + 12] * rtDW->rtb_v_1_idx_pu_idx_3) + rtDW->E_b
-        [rtDW->d_j]) + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:92' m2 = C*(A*x0+B*u2+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m1[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_e[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_e[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_e[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_e[0]))) * 2.0F;
-      rtDW->E_d[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_2_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_2_idx_pu_idx_0) + rtDW->B_b[rtDW->d_j + 8] *
-        rtDW->rtb_v_2_idx_pu_idx_2) + rtDW->B_b[rtDW->d_j + 12] *
-        rtDW->rtb_v_2_idx_pu_idx_3) + rtDW->E_b[rtDW->d_j]) + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:93' m3 = C*(A*x0+B*u3+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m2[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_3_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_3_idx_pu_idx_0) + rtDW->B_b[rtDW->d_j + 8] *
-        rtDW->rtb_v_3_idx_pu_idx_2) + rtDW->B_b[rtDW->d_j + 12] *
-        rtDW->rtb_v_3_idx_pu_idx_3) + rtDW->E_b[rtDW->d_j]) + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:94' m4 = C*(A*x0+B*u4+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m3[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_e[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_e[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_e[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_e[0]))) * 2.0F;
-      rtDW->E_d[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_4_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_4_idx_pu_idx_0) + rtDW->B_b[rtDW->d_j + 8] *
-        rtDW->rtb_v_4_idx_pu_idx_2) + rtDW->B_b[rtDW->d_j + 12] *
-        rtDW->rtb_v_4_idx_pu_idx_3) + rtDW->E_b[rtDW->d_j]) + rtDW->D[rtDW->d_j];
-    }
-
-    /* '<S10>:1:95' m5 = C*(A*x0+B*u5+D).*2; */
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->m4[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_d[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_d[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_d[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_d[0]))) * 2.0F;
-      rtDW->E_e[rtDW->d_j] = ((((rtDW->B_b[rtDW->d_j + 4] *
-        rtDW->rtb_v_5_idx_pu_idx_1 + rtDW->B_b[rtDW->d_j] *
-        rtDW->rtb_v_5_idx_pu_idx_0) + rtDW->B_b[rtDW->d_j + 8] *
-        rtDW->rtb_v_5_idx_pu_idx_2) + rtDW->B_b[rtDW->d_j + 12] *
-        rtDW->rtb_v_5_idx_pu_idx_3) + rtDW->E_b[rtDW->d_j]) + rtDW->D[rtDW->d_j];
-    }
-
-    for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-      rtDW->E_b[rtDW->d_j] = ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 12] *
-        rtDW->E_e[3] + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 8] * rtDW->E_e[2]
-                        + ((real32_T)rtDW->rtb_m6_tmp[rtDW->d_j + 4] * rtDW->
-                           E_e[1] + (real32_T)rtDW->rtb_m6_tmp[rtDW->d_j] *
-                           rtDW->E_e[0]))) * 2.0F;
-    }
-
-    /* '<S10>:1:96' m6 = m0; */
-    /*  m0 = C*(A*x0+B*u0+D);  */
-    /*  m1 = C*(A*x0+B*u1+D); */
-    /*  m2 = C*(A*x0+B*u2+D); */
-    /*  m3 = C*(A*x0+B*u3+D); */
-    /*  m4 = C*(A*x0+B*u4+D); */
-    /*  m5 = C*(A*x0+B*u5+D); */
-    /*  m6 = m0; */
+    /* '<S5>:1:82' m6 = m0; */
     break;
   }
 
@@ -6947,69 +6851,69 @@ void uz_codegen0_step(RT_MODEL *const rtM)
    *  Inport: '<Root>/i_y_ref_pu'
    *  Inport: '<Root>/lambda_dq'
    *  Inport: '<Root>/lambda_xy'
-   *  MATLAB Function: '<S1>/state_space_mdl'
+   *  MATLAB Function: '<S1>/current_gradient_prediction'
    */
-  /* MATLAB Function 'uz_codegen/formulate_qp': '<S7>:1' */
-  /* '<S7>:1:4' lam = [ lambda_dq  0       0       0; */
-  /* '<S7>:1:5'         0       lambda_dq  0       0; */
-  /* '<S7>:1:6'         0       0       lambda_xy  0; */
-  /* '<S7>:1:7'         0       0       0       lambda_xy]; */
-  rtDW->A_n[0] = rtU->lambda_dq;
-  rtDW->A_n[4] = 0.0F;
-  rtDW->A_n[8] = 0.0F;
-  rtDW->A_n[12] = 0.0F;
-  rtDW->A_n[1] = 0.0F;
-  rtDW->A_n[5] = rtU->lambda_dq;
-  rtDW->A_n[9] = 0.0F;
-  rtDW->A_n[13] = 0.0F;
-  rtDW->A_n[2] = 0.0F;
-  rtDW->A_n[6] = 0.0F;
-  rtDW->A_n[10] = rtU->lambda_xy;
-  rtDW->A_n[14] = 0.0F;
-  rtDW->A_n[3] = 0.0F;
-  rtDW->A_n[7] = 0.0F;
-  rtDW->A_n[11] = 0.0F;
-  rtDW->A_n[15] = rtU->lambda_xy;
+  /* MATLAB Function 'uz_codegen/formulate_qp': '<S9>:1' */
+  /* '<S9>:1:4' lam = [ lambda_dq  0       0       0; */
+  /* '<S9>:1:5'         0       lambda_dq  0       0; */
+  /* '<S9>:1:6'         0       0       lambda_xy  0; */
+  /* '<S9>:1:7'         0       0       0       lambda_xy]; */
+  rtDW->A_minus_I[0] = rtU->lambda_dq;
+  rtDW->A_minus_I[4] = 0.0F;
+  rtDW->A_minus_I[8] = 0.0F;
+  rtDW->A_minus_I[12] = 0.0F;
+  rtDW->A_minus_I[1] = 0.0F;
+  rtDW->A_minus_I[5] = rtU->lambda_dq;
+  rtDW->A_minus_I[9] = 0.0F;
+  rtDW->A_minus_I[13] = 0.0F;
+  rtDW->A_minus_I[2] = 0.0F;
+  rtDW->A_minus_I[6] = 0.0F;
+  rtDW->A_minus_I[10] = rtU->lambda_xy;
+  rtDW->A_minus_I[14] = 0.0F;
+  rtDW->A_minus_I[3] = 0.0F;
+  rtDW->A_minus_I[7] = 0.0F;
+  rtDW->A_minus_I[11] = 0.0F;
+  rtDW->A_minus_I[15] = rtU->lambda_xy;
 
-  /* '<S7>:1:9' i_ref = [id_ref iq_ref ix_ref iy_ref]'; */
-  /* '<S7>:1:10' e_i = i_ref - i_delay; */
-  rtDW->D[0] = rtU->i_d_ref_pu - rtDW->v_t0[0];
-  rtDW->D[1] = rtU->i_q_ref_pu - rtDW->v_t0[1];
-  rtDW->D[2] = rtU->i_x_ref_pu - rtDW->v_t0[2];
-  rtDW->D[3] = rtU->i_y_ref_pu - rtDW->v_t0[3];
+  /* '<S9>:1:9' i_ref = [id_ref iq_ref ix_ref iy_ref]'; */
+  /* '<S9>:1:10' e_i = i_ref - i_delay; */
+  rtDW->d_obs[0] = rtU->i_d_ref_pu - rtDW->v_t0[0];
+  rtDW->d_obs[1] = rtU->i_q_ref_pu - rtDW->v_t0[1];
+  rtDW->d_obs[2] = rtU->i_x_ref_pu - rtDW->v_t0[2];
+  rtDW->d_obs[3] = rtU->i_y_ref_pu - rtDW->v_t0[3];
 
-  /* '<S7>:1:12' r = [e_i; e_i; e_i; e_i; e_i; e_i; lam*e_i]; */
-  /* '<S7>:1:14' zer = zeros(4,1); */
-  /* '<S7>:1:15' m0_lam = lam*m0; */
-  /* '<S7>:1:16' m1_lam = lam*m1; */
-  /* '<S7>:1:17' m2_lam = lam*m2; */
-  /* '<S7>:1:18' m3_lam = lam*m3; */
-  /* '<S7>:1:19' m4_lam = lam*m4; */
-  /* '<S7>:1:20' m5_lam = lam*m5; */
-  /* '<S7>:1:21' m6_lam = m0_lam; */
-  /* '<S7>:1:23' M = [m0     zer     zer     zer     zer     zer     zer; */
-  /* '<S7>:1:24'      m0     m1      zer     zer     zer     zer     zer; */
-  /* '<S7>:1:25'      m0     m1      m2      zer     zer     zer     zer; */
-  /* '<S7>:1:26'      m0     m1      m2      m3      zer     zer     zer; */
-  /* '<S7>:1:27'      m0     m1      m2      m3      m4      zer     zer; */
-  /* '<S7>:1:28'      m0     m1      m2      m3      m4      m5      zer; */
-  /* '<S7>:1:29'      m0_lam m1_lam  m2_lam  m3_lam  m4_lam  m5_lam  m6_lam]; */
+  /* '<S9>:1:12' r = [e_i; e_i; e_i; e_i; e_i; e_i; lam*e_i]; */
+  /* '<S9>:1:14' zer = zeros(4,1); */
+  /* '<S9>:1:15' m0_lam = lam*m0; */
+  /* '<S9>:1:16' m1_lam = lam*m1; */
+  /* '<S9>:1:17' m2_lam = lam*m2; */
+  /* '<S9>:1:18' m3_lam = lam*m3; */
+  /* '<S9>:1:19' m4_lam = lam*m4; */
+  /* '<S9>:1:20' m5_lam = lam*m5; */
+  /* '<S9>:1:21' m6_lam = m0_lam; */
+  /* '<S9>:1:23' M = [m0     zer     zer     zer     zer     zer     zer; */
+  /* '<S9>:1:24'      m0     m1      zer     zer     zer     zer     zer; */
+  /* '<S9>:1:25'      m0     m1      m2      zer     zer     zer     zer; */
+  /* '<S9>:1:26'      m0     m1      m2      m3      zer     zer     zer; */
+  /* '<S9>:1:27'      m0     m1      m2      m3      m4      zer     zer; */
+  /* '<S9>:1:28'      m0     m1      m2      m3      m4      m5      zer; */
+  /* '<S9>:1:29'      m0_lam m1_lam  m2_lam  m3_lam  m4_lam  m5_lam  m6_lam]; */
   for (rtDW->d_j = 0; rtDW->d_j < 4; rtDW->d_j++) {
-    rtDW->r[rtDW->d_j] = rtDW->D[rtDW->d_j];
-    rtDW->r[rtDW->d_j + 4] = rtDW->D[rtDW->d_j];
-    rtDW->r[rtDW->d_j + 8] = rtDW->D[rtDW->d_j];
-    rtDW->r[rtDW->d_j + 12] = rtDW->D[rtDW->d_j];
-    rtDW->r[rtDW->d_j + 16] = rtDW->D[rtDW->d_j];
-    rtDW->r[rtDW->d_j + 20] = rtDW->D[rtDW->d_j];
-    rtDW->x0_idx_2 = rtDW->A_n[rtDW->d_j + 4];
-    rtDW->x0_idx_3 = rtDW->A_n[rtDW->d_j + 8];
-    rtDW->A_tmp = rtDW->A_n[rtDW->d_j + 12];
-    rtDW->r[rtDW->d_j + 24] = rtDW->A_tmp * rtDW->D[3] + (rtDW->x0_idx_3 *
-      rtDW->D[2] + (rtDW->x0_idx_2 * rtDW->D[1] + rtDW->A_n[rtDW->d_j] * rtDW->
-                    D[0]));
-    rtDW->x0_idx_0 = rtDW->A_n[rtDW->d_j];
-    rtDW->x0_idx_1 = rtDW->A_tmp * rtDW->m6[3] + (rtDW->x0_idx_3 * rtDW->m6[2] +
-      (rtDW->x0_idx_2 * rtDW->m6[1] + rtDW->x0_idx_0 * rtDW->m6[0]));
+    rtDW->r[rtDW->d_j] = rtDW->d_obs[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 4] = rtDW->d_obs[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 8] = rtDW->d_obs[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 12] = rtDW->d_obs[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 16] = rtDW->d_obs[rtDW->d_j];
+    rtDW->r[rtDW->d_j + 20] = rtDW->d_obs[rtDW->d_j];
+    rtDW->x0_idx_1 = rtDW->A_minus_I[rtDW->d_j + 4];
+    rtDW->x0_idx_2 = rtDW->A_minus_I[rtDW->d_j + 8];
+    rtDW->x0_idx_3 = rtDW->A_minus_I[rtDW->d_j + 12];
+    rtDW->r[rtDW->d_j + 24] = rtDW->x0_idx_3 * rtDW->d_obs[3] + (rtDW->x0_idx_2 *
+      rtDW->d_obs[2] + (rtDW->x0_idx_1 * rtDW->d_obs[1] + rtDW->A_minus_I
+                        [rtDW->d_j] * rtDW->d_obs[0]));
+    rtDW->x0_idx_0 = rtDW->A_minus_I[rtDW->d_j];
+    rtDW->w6theta_el_tmp = rtDW->x0_idx_3 * rtDW->m6[3] + (rtDW->x0_idx_2 *
+      rtDW->m6[2] + (rtDW->x0_idx_1 * rtDW->m6[1] + rtDW->x0_idx_0 * rtDW->m6[0]));
     rtDW->M[rtDW->d_j] = rtDW->m6[rtDW->d_j];
     rtDW->M[rtDW->d_j + 28] = 0.0F;
     rtDW->M[rtDW->d_j + 56] = 0.0F;
@@ -7050,65 +6954,70 @@ void uz_codegen0_step(RT_MODEL *const rtM)
     rtDW->M[rtDW->d_j + 76] = rtDW->m2[rtDW->d_j];
     rtDW->M[rtDW->d_j + 104] = rtDW->m3[rtDW->d_j];
     rtDW->M[rtDW->d_j + 132] = rtDW->m4[rtDW->d_j];
-    rtDW->M[rtDW->d_j + 160] = rtDW->E_b[rtDW->d_j];
+    rtDW->M[rtDW->d_j + 160] = rtDW->m5[rtDW->d_j];
     rtDW->M[rtDW->d_j + 188] = 0.0F;
-    rtDW->M[rtDW->d_j + 24] = rtDW->x0_idx_1;
-    rtDW->M[rtDW->d_j + 52] = rtDW->A_tmp * rtDW->m1[3] + (rtDW->x0_idx_3 *
-      rtDW->m1[2] + (rtDW->x0_idx_2 * rtDW->m1[1] + rtDW->x0_idx_0 * rtDW->m1[0]));
-    rtDW->M[rtDW->d_j + 80] = rtDW->A_tmp * rtDW->m2[3] + (rtDW->x0_idx_3 *
-      rtDW->m2[2] + (rtDW->x0_idx_2 * rtDW->m2[1] + rtDW->x0_idx_0 * rtDW->m2[0]));
-    rtDW->M[rtDW->d_j + 108] = rtDW->A_tmp * rtDW->m3[3] + (rtDW->x0_idx_3 *
-      rtDW->m3[2] + (rtDW->x0_idx_2 * rtDW->m3[1] + rtDW->x0_idx_0 * rtDW->m3[0]));
-    rtDW->M[rtDW->d_j + 136] = rtDW->A_tmp * rtDW->m4[3] + (rtDW->x0_idx_3 *
-      rtDW->m4[2] + (rtDW->x0_idx_2 * rtDW->m4[1] + rtDW->x0_idx_0 * rtDW->m4[0]));
-    rtDW->M[rtDW->d_j + 164] = rtDW->A_tmp * rtDW->E_b[3] + (rtDW->x0_idx_3 *
-      rtDW->E_b[2] + (rtDW->x0_idx_2 * rtDW->E_b[1] + rtDW->x0_idx_0 * rtDW->
-                      E_b[0]));
-    rtDW->M[rtDW->d_j + 192] = rtDW->x0_idx_1;
+    rtDW->M[rtDW->d_j + 24] = rtDW->w6theta_el_tmp;
+    rtDW->M[rtDW->d_j + 52] = rtDW->x0_idx_3 * rtDW->m1[3] + (rtDW->x0_idx_2 *
+      rtDW->m1[2] + (rtDW->x0_idx_1 * rtDW->m1[1] + rtDW->x0_idx_0 * rtDW->m1[0]));
+    rtDW->M[rtDW->d_j + 80] = rtDW->x0_idx_3 * rtDW->m2[3] + (rtDW->x0_idx_2 *
+      rtDW->m2[2] + (rtDW->x0_idx_1 * rtDW->m2[1] + rtDW->x0_idx_0 * rtDW->m2[0]));
+    rtDW->M[rtDW->d_j + 108] = rtDW->x0_idx_3 * rtDW->m3[3] + (rtDW->x0_idx_2 *
+      rtDW->m3[2] + (rtDW->x0_idx_1 * rtDW->m3[1] + rtDW->x0_idx_0 * rtDW->m3[0]));
+    rtDW->M[rtDW->d_j + 136] = rtDW->x0_idx_3 * rtDW->m4[3] + (rtDW->x0_idx_2 *
+      rtDW->m4[2] + (rtDW->x0_idx_1 * rtDW->m4[1] + rtDW->x0_idx_0 * rtDW->m4[0]));
+    rtDW->M[rtDW->d_j + 164] = rtDW->x0_idx_3 * rtDW->m5[3] + (rtDW->x0_idx_2 *
+      rtDW->m5[2] + (rtDW->x0_idx_1 * rtDW->m5[1] + rtDW->x0_idx_0 * rtDW->m5[0]));
+    rtDW->M[rtDW->d_j + 192] = rtDW->w6theta_el_tmp;
   }
 
-  /* '<S7>:1:31' H = 2*(M'*M); */
-  /* '<S7>:1:32' f = 2*M'*r; */
-  /* MATLAB Function 'uz_codegen/qp_solver': '<S8>:1' */
-  /* '<S8>:1:3' x_opt = single([0.5 0 0 0 0 0 0.5]'); */
-  /* '<S8>:1:5' iter = single(0); */
+  /* '<S9>:1:31' H = 2*(M'*M); */
+  /* '<S9>:1:32' f = 2*M'*r; */
+  /* MATLAB Function 'uz_codegen/qp_solver': '<S10>:1' */
+  /* '<S10>:1:3' t_opt = single([0.25 0 0 0 0 0 0.25]'); */
+  /* '<S10>:1:5' iter = single(0); */
   /*  contraints */
   /*             t1 t2 t3 t4 t5 t6 t7 */
-  /* '<S8>:1:9' A = single([-1  0  0  0  0  0  0;   % t>=0 is converted to -1*t<=0 */
-  /* '<S8>:1:10'              0 -1  0  0  0  0  0;   % no row=no of ineq constraints */
-  /* '<S8>:1:11'              0  0 -1  0  0  0  0;   % no columns=no of optimization variables */
-  /* '<S8>:1:12'              0  0  0 -1  0  0  0; */
-  /* '<S8>:1:13'              0  0  0  0 -1  0  0; */
-  /* '<S8>:1:14'              0  0  0  0  0 -1  0; */
-  /* '<S8>:1:15'              0  0  0  0  0  0 -1]); */
+  /* '<S10>:1:9' A = single([-1  0  0  0  0  0  0;   % t>=0 is converted to -1*t<=0 */
+  /* '<S10>:1:10'              0 -1  0  0  0  0  0;   % no row=no of ineq constraints */
+  /* '<S10>:1:11'              0  0 -1  0  0  0  0;   % no columns=no of optimization variables */
+  /* '<S10>:1:12'              0  0  0 -1  0  0  0; */
+  /* '<S10>:1:13'              0  0  0  0 -1  0  0; */
+  /* '<S10>:1:14'              0  0  0  0  0 -1  0; */
+  /* '<S10>:1:15'              0  0  0  0  0  0 -1]); */
   /*  t>=0 is converted to -1*t<=0 */
   /*  no row=no of ineq constraints */
   /*  no columns=no of optimization variables */
-  /* '<S8>:1:17' b = single(zeros(7,1)); */
-  /* '<S8>:1:19' Aeq = single([1 1 1 1 1 1 1]); */
-  /* '<S8>:1:20' beq =  single([1]); */
+  /* '<S10>:1:17' b = single(zeros(7,1)); */
+  /*  Equality constraints */
+  /*  force symmetrical zero vectors */
+  /* '<S10>:1:22' Aeq = single([1 1 1 1 1 1 1; */
+  /* '<S10>:1:23'               1 0 0 0 0 0 -1]); */
+  /* '<S10>:1:24' beq =  single([0.5;0]); */
   /*  sum of all duration times  */
+  /*  % do not force symmetrical zero vectors */
+  /*  Aeq = single([1 1 1 1 1 1 1]); */
+  /*  beq =  single(0.5);          % sum of all duration times  */
   /*  define cold start for active-set solver */
-  /* '<S8>:1:23' iA0 = false(size(b)); */
+  /* '<S10>:1:31' iA0 = false(size(b)); */
   /*  [x_opt,iter] = mpc_solve(H,f,A,b,Aeq,beq,iA0,max_iter,tol); */
-  /* '<S8>:1:26' [x_opt,iter] = mpc_quadprog(H,f,A,b,Aeq,beq,x0); */
+  /* '<S10>:1:34' [t_opt,iter] = mpc_quadprog(H,f,A,b,Aeq,beq,x0); */
   /*  set up quadprog solver */
-  /* '<S8>:1:57' quadprog_options = optimoptions('quadprog','Algorithm','active-set','OptimalityTolerance',1e-6,'MaxIterations',7); */
+  /* '<S10>:1:65' quadprog_options = optimoptions('quadprog','Algorithm','active-set','OptimalityTolerance',1e-6,'MaxIterations',7); */
   /*  make variables double - quadprog accepts only double */
-  /* '<S8>:1:60' H_d = double(H); */
-  /* '<S8>:1:61' f_d = double(f); */
-  /* '<S8>:1:62' A_d = double(A); */
-  /* '<S8>:1:63' b_d = double(b); */
-  /* '<S8>:1:64' Aeq_d = double(Aeq); */
-  /* '<S8>:1:65' beq_d = double(beq); */
-  /* '<S8>:1:66' x0_d = double(x0); */
+  /* '<S10>:1:68' H_d = double(H); */
+  /* '<S10>:1:69' f_d = double(f); */
+  /* '<S10>:1:70' A_d = double(A); */
+  /* '<S10>:1:71' b_d = double(b); */
+  /* '<S10>:1:72' Aeq_d = double(Aeq); */
+  /* '<S10>:1:73' beq_d = double(beq); */
+  /* '<S10>:1:74' x0_d = double(x0); */
   /*  define warmstart object */
   /*      ws = optimwarmstart(x0_d,quadprog_options,'MaxLinearEqualities',7,'MaxLinearInequalities',7); */
   /*  without warstart */
-  /* '<S8>:1:72' [x_tmp, fval, exitflag, output] = quadprog(H_d,-f_d,A_d,b_d,Aeq_d,beq_d,[],[],x0_d,quadprog_options); */
+  /* '<S10>:1:80' [x_tmp, fval, exitflag, output] = quadprog(H_d,-f_d,A_d,b_d,Aeq_d,beq_d,[],[],x0_d,quadprog_options); */
   for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
     /* Delay: '<S1>/Delay2' */
-    if (rtDW->icLoad_oa) {
+    if (rtDW->icLoad_o) {
       rtDW->Delay2_DSTATE[rtDW->i] = 0.14F;
     }
 
@@ -7132,13 +7041,13 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   }
 
   for (rtDW->d_j = 0; rtDW->d_j < 7; rtDW->d_j++) {
-    rtDW->SinCos2_o1 = 0.0F;
+    rtDW->w6theta_el = 0.0F;
     for (rtDW->iy = 0; rtDW->iy < 28; rtDW->iy++) {
-      rtDW->SinCos2_o1 += rtDW->M[28 * rtDW->d_j + rtDW->iy] * 2.0F * rtDW->
+      rtDW->w6theta_el += rtDW->M[28 * rtDW->d_j + rtDW->iy] * 2.0F * rtDW->
         r[rtDW->iy];
     }
 
-    rtDW->dv1[rtDW->d_j] = -(real_T)rtDW->SinCos2_o1;
+    rtDW->dv1[rtDW->d_j] = -(real_T)rtDW->w6theta_el;
     rtDW->dv2[rtDW->d_j] = rtDW->Delay2_DSTATE[rtDW->d_j];
   }
 
@@ -7146,95 +7055,100 @@ void uz_codegen0_step(RT_MODEL *const rtM)
            &rtDW->exitflag, rtDW->expl_temp_f, &rtDW->expl_temp_c,
            &rtDW->expl_temp_b, &rtDW->output_iterations, rtDW);
 
-  /* '<S8>:1:73' x = single(x_tmp(1:7,1)); */
+  /* Gain: '<S1>/Gain1' incorporates:
+   *  MATLAB Function: '<S1>/qp_solver'
+   */
+  /* '<S10>:1:81' x = single(x_tmp(1:7,1)); */
   /*  with warmstart -> is not faster (actually slower) on embedded target */
   /*  than coldstart */
   /*      [wsout, fval, exitflag, output] = quadprog(H_d,-f_d,A_d,b_d,Aeq_d,beq_d,[],[],ws) */
   /*      x = single(wsout.X(1:7,1)); */
-  /* '<S8>:1:80' iter = single(output.iterations); */
+  /* '<S10>:1:88' iter = single(output.iterations); */
   for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
-    rtDW->x_opt[rtDW->i] = (real32_T)rtDW->x_tmp[rtDW->i];
+    rtDW->Gain1[rtDW->i] = 2.0F * (real32_T)rtDW->x_tmp[rtDW->i];
   }
 
+  /* End of Gain: '<S1>/Gain1' */
+
   /* Outport: '<Root>/dob_error_estimate' */
-  /* MATLAB Function 'uz_codegen/tz': '<S11>:1' */
-  /* '<S11>:1:3' I = single([1 0 0 0 0 0; */
-  /* '<S11>:1:4'             1 1 0 0 0 0; */
-  /* '<S11>:1:5'             1 1 1 0 0 0; */
-  /* '<S11>:1:6'             1 1 1 1 0 0; */
-  /* '<S11>:1:7'             1 1 1 1 1 0; */
-  /* '<S11>:1:8'             1 1 1 1 1 1]); */
-  /* '<S11>:1:10' zer6 = single(zeros(6,1)); */
-  /* '<S11>:1:12' T = single([I zer6]); */
-  /* '<S11>:1:14' tz=single(T*x); */
-  rtY->dob_error_estimate[0] = rtDW->rtb_e_dq_obs_idx_0;
-  rtY->dob_error_estimate[2] = rtDW->rtb_e_xy_obs_idx_0;
+  /* MATLAB Function 'uz_codegen/t_to_d': '<S12>:1' */
+  /* '<S12>:1:3' I = single([1 0 0 0 0 0; */
+  /* '<S12>:1:4'             1 1 0 0 0 0; */
+  /* '<S12>:1:5'             1 1 1 0 0 0; */
+  /* '<S12>:1:6'             1 1 1 1 0 0; */
+  /* '<S12>:1:7'             1 1 1 1 1 0; */
+  /* '<S12>:1:8'             1 1 1 1 1 1]); */
+  /* '<S12>:1:10' zer6 = single(zeros(6,1)); */
+  /* '<S12>:1:12' T = single([I zer6]); */
+  /* '<S12>:1:14' d=single(T*t); */
+  rtY->dob_error_estimate[0] = rtDW->rtb_d_dq_obs_idx_0;
+  rtY->dob_error_estimate[2] = rtDW->rtb_d_xy_obs_idx_0;
   rtY->dob_error_estimate[1] = rtDW->rtb_v_t0_idx_3;
   rtY->dob_error_estimate[3] = rtDW->rtb_v_t0_idx_2;
 
-  /* MATLAB Function 'uz_codegen/tz_2_tph': '<S12>:1' */
-  /* '<S12>:1:3' seq_order_table = single([4,1,6,2,3,5; */
-  /* '<S12>:1:4'     1,4,2,6,5,3; */
-  /* '<S12>:1:5'     1,4,2,5,6,3; */
-  /* '<S12>:1:6'     4,1,2,5,3,6; */
-  /* '<S12>:1:7'     4,2,1,5,3,6; */
-  /* '<S12>:1:8'     2,4,5,1,6,3; */
-  /* '<S12>:1:9'     2,5,4,1,6,3; */
-  /* '<S12>:1:10'     5,2,4,1,3,6; */
-  /* '<S12>:1:11'     5,2,4,3,1,6; */
-  /* '<S12>:1:12'     2,5,3,4,6,1; */
-  /* '<S12>:1:13'     2,5,3,6,4,1; */
-  /* '<S12>:1:14'     5,2,3,6,1,4; */
-  /* '<S12>:1:15'     5,3,2,6,1,4; */
-  /* '<S12>:1:16'     3,5,6,2,4,1; */
-  /* '<S12>:1:17'     3,6,5,2,4,1; */
-  /* '<S12>:1:18'     6,3,5,2,1,4; */
-  /* '<S12>:1:19'     6,3,5,1,2,4; */
-  /* '<S12>:1:20'     3,6,1,5,4,2; */
-  /* '<S12>:1:21'     3,6,1,4,5,2; */
-  /* '<S12>:1:22'     6,3,1,4,2,5; */
-  /* '<S12>:1:23'     6,1,3,4,2,5; */
-  /* '<S12>:1:24'     1,6,4,3,5,2; */
-  /* '<S12>:1:25'     1,4,6,3,5,2; */
-  /* '<S12>:1:26'     4,1,6,3,2,5]); */
-  /* '<S12>:1:28' t = single(zeros(6,1)); */
+  /* MATLAB Function 'uz_codegen/d_2_ph': '<S6>:1' */
+  /* '<S6>:1:3' seq_order_table = single([4,1,6,2,3,5; */
+  /* '<S6>:1:4'     1,4,2,6,5,3; */
+  /* '<S6>:1:5'     1,4,2,5,6,3; */
+  /* '<S6>:1:6'     4,1,2,5,3,6; */
+  /* '<S6>:1:7'     4,2,1,5,3,6; */
+  /* '<S6>:1:8'     2,4,5,1,6,3; */
+  /* '<S6>:1:9'     2,5,4,1,6,3; */
+  /* '<S6>:1:10'     5,2,4,1,3,6; */
+  /* '<S6>:1:11'     5,2,4,3,1,6; */
+  /* '<S6>:1:12'     2,5,3,4,6,1; */
+  /* '<S6>:1:13'     2,5,3,6,4,1; */
+  /* '<S6>:1:14'     5,2,3,6,1,4; */
+  /* '<S6>:1:15'     5,3,2,6,1,4; */
+  /* '<S6>:1:16'     3,5,6,2,4,1; */
+  /* '<S6>:1:17'     3,6,5,2,4,1; */
+  /* '<S6>:1:18'     6,3,5,2,1,4; */
+  /* '<S6>:1:19'     6,3,5,1,2,4; */
+  /* '<S6>:1:20'     3,6,1,5,4,2; */
+  /* '<S6>:1:21'     3,6,1,4,5,2; */
+  /* '<S6>:1:22'     6,3,1,4,2,5; */
+  /* '<S6>:1:23'     6,1,3,4,2,5; */
+  /* '<S6>:1:24'     1,6,4,3,5,2; */
+  /* '<S6>:1:25'     1,4,6,3,5,2; */
+  /* '<S6>:1:26'     4,1,6,3,2,5]); */
+  /* '<S6>:1:28' t = single(zeros(6,1)); */
   for (rtDW->i = 0; rtDW->i < 6; rtDW->i++) {
-    /* MATLAB Function: '<S1>/tz' */
-    rtDW->tz[rtDW->i] = 0.0F;
+    /* MATLAB Function: '<S1>/t_to_d' */
+    rtDW->d[rtDW->i] = 0.0F;
     for (rtDW->d_j = 0; rtDW->d_j < 7; rtDW->d_j++) {
-      rtDW->tz[rtDW->i] += (real32_T)a[6 * rtDW->d_j + rtDW->i] * rtDW->
-        x_opt[rtDW->d_j];
+      rtDW->d[rtDW->i] += (real32_T)a[6 * rtDW->d_j + rtDW->i] * rtDW->
+        Gain1[rtDW->d_j];
     }
 
-    /* End of MATLAB Function: '<S1>/tz' */
+    /* End of MATLAB Function: '<S1>/t_to_d' */
 
-    /* MATLAB Function: '<S1>/tz_2_tph' */
-    rtDW->t_h[rtDW->i] = 0.0F;
+    /* MATLAB Function: '<S1>/d_2_ph' */
+    rtDW->t_l[rtDW->i] = 0.0F;
   }
 
-  /* MATLAB Function: '<S1>/tz_2_tph' */
-  /* '<S12>:1:30' for i=1:6 */
+  /* MATLAB Function: '<S1>/d_2_ph' */
+  /* '<S6>:1:30' for i=1:6 */
   for (rtDW->iy = 0; rtDW->iy < 6; rtDW->iy++) {
-    /* '<S12>:1:31' t(seq_order_table(seq_no,i),1) = tz(i); */
-    rtDW->t_h[seq_order_table[(rtDW->sector_ref + 24 * rtDW->iy) - 1] - 1] =
-      rtDW->tz[rtDW->iy];
+    /* '<S6>:1:31' t(seq_order_table(seq_no,i),1) = d(i); */
+    rtDW->t_l[seq_order_table[(rtDW->sector_ref + 24 * rtDW->iy) - 1] - 1] =
+      rtDW->d[rtDW->iy];
   }
 
   /* Outport: '<Root>/d_opt' incorporates:
-   *  MATLAB Function: '<S1>/tz_2_tph'
+   *  MATLAB Function: '<S1>/d_2_ph'
    */
-  /* '<S12>:1:34' ta_1 = t(1); */
-  /* '<S12>:1:35' tb_1 = t(2); */
-  /* '<S12>:1:36' tc_1 = t(3); */
-  /* '<S12>:1:37' ta_2 = t(4); */
-  /* '<S12>:1:38' tb_2 = t(5); */
-  /* '<S12>:1:39' tc_2 = t(6); */
-  rtY->d_opt[0] = rtDW->t_h[0];
-  rtY->d_opt[1] = rtDW->t_h[1];
-  rtY->d_opt[2] = rtDW->t_h[2];
-  rtY->d_opt[3] = rtDW->t_h[3];
-  rtY->d_opt[4] = rtDW->t_h[4];
-  rtY->d_opt[5] = rtDW->t_h[5];
+  /* '<S6>:1:34' da_1 = t(1); */
+  /* '<S6>:1:35' db_1 = t(2); */
+  /* '<S6>:1:36' dc_1 = t(3); */
+  /* '<S6>:1:37' da_2 = t(4); */
+  /* '<S6>:1:38' db_2 = t(5); */
+  /* '<S6>:1:39' dc_2 = t(6); */
+  rtY->d_opt[0] = rtDW->t_l[0];
+  rtY->d_opt[1] = rtDW->t_l[1];
+  rtY->d_opt[2] = rtDW->t_l[2];
+  rtY->d_opt[3] = rtDW->t_l[3];
+  rtY->d_opt[4] = rtDW->t_l[4];
+  rtY->d_opt[5] = rtDW->t_l[5];
 
   /* Outport: '<Root>/iterations_qp' incorporates:
    *  MATLAB Function: '<S1>/qp_solver'
@@ -7305,28 +7219,28 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay12_DSTATE[3] = rtDW->rtb_v_5_idx_pu_idx_3;
 
   /* Update for Delay: '<S1>/Delay1' */
-  rtDW->icLoad_m = false;
+  rtDW->icLoad_f = false;
 
   /* Update for Delay: '<S1>/Delay3' */
   rtDW->icLoad_l = false;
 
   /* Update for Delay: '<S1>/Delay4' */
-  rtDW->icLoad_lv = false;
-
-  /* Update for Delay: '<S1>/Delay5' */
-  rtDW->icLoad_j = false;
-
-  /* Update for Delay: '<S1>/Delay6' */
-  rtDW->icLoad_o = false;
-
-  /* Update for Delay: '<S1>/Delay7' */
-  rtDW->icLoad_b = false;
-
-  /* Update for Delay: '<S1>/Delay8' */
   rtDW->icLoad_a = false;
 
+  /* Update for Delay: '<S1>/Delay5' */
+  rtDW->icLoad_f4 = false;
+
+  /* Update for Delay: '<S1>/Delay6' */
+  rtDW->icLoad_ag = false;
+
+  /* Update for Delay: '<S1>/Delay7' */
+  rtDW->icLoad_i = false;
+
+  /* Update for Delay: '<S1>/Delay8' */
+  rtDW->icLoad_ik = false;
+
   /* Update for Delay: '<S1>/Delay3' incorporates:
-   *  MATLAB Function: '<S1>/state_space_mdl'
+   *  MATLAB Function: '<S1>/current_gradient_prediction'
    */
   rtDW->Delay3_DSTATE[0] = rtDW->m6[0];
 
@@ -7343,10 +7257,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay7_DSTATE[0] = rtDW->m4[0];
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->Delay8_DSTATE[0] = rtDW->E_b[0];
+  rtDW->Delay8_DSTATE[0] = rtDW->m5[0];
 
   /* Update for Delay: '<S1>/Delay3' incorporates:
-   *  MATLAB Function: '<S1>/state_space_mdl'
+   *  MATLAB Function: '<S1>/current_gradient_prediction'
    */
   rtDW->Delay3_DSTATE[1] = rtDW->m6[1];
 
@@ -7363,10 +7277,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay7_DSTATE[1] = rtDW->m4[1];
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->Delay8_DSTATE[1] = rtDW->E_b[1];
+  rtDW->Delay8_DSTATE[1] = rtDW->m5[1];
 
   /* Update for Delay: '<S1>/Delay3' incorporates:
-   *  MATLAB Function: '<S1>/state_space_mdl'
+   *  MATLAB Function: '<S1>/current_gradient_prediction'
    */
   rtDW->Delay3_DSTATE[2] = rtDW->m6[2];
 
@@ -7383,10 +7297,10 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay7_DSTATE[2] = rtDW->m4[2];
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->Delay8_DSTATE[2] = rtDW->E_b[2];
+  rtDW->Delay8_DSTATE[2] = rtDW->m5[2];
 
   /* Update for Delay: '<S1>/Delay3' incorporates:
-   *  MATLAB Function: '<S1>/state_space_mdl'
+   *  MATLAB Function: '<S1>/current_gradient_prediction'
    */
   rtDW->Delay3_DSTATE[3] = rtDW->m6[3];
 
@@ -7403,20 +7317,20 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   rtDW->Delay7_DSTATE[3] = rtDW->m4[3];
 
   /* Update for Delay: '<S1>/Delay8' */
-  rtDW->Delay8_DSTATE[3] = rtDW->E_b[3];
+  rtDW->Delay8_DSTATE[3] = rtDW->m5[3];
 
   /* Update for Delay: '<S1>/Delay2' */
-  rtDW->icLoad_oa = false;
+  rtDW->icLoad_o = false;
   for (rtDW->i = 0; rtDW->i < 7; rtDW->i++) {
     /* Update for Delay: '<S1>/Delay13' */
-    rtDW->rtb_e_xy_obs_idx_0 = rtDW->x_opt[rtDW->i];
-    rtDW->Delay13_DSTATE[rtDW->i] = rtDW->rtb_e_xy_obs_idx_0;
+    rtDW->rtb_d_xy_obs_idx_0 = rtDW->Gain1[rtDW->i];
+    rtDW->Delay13_DSTATE[rtDW->i] = rtDW->rtb_d_xy_obs_idx_0;
 
     /* Update for Delay: '<S1>/Delay1' */
-    rtDW->Delay1_DSTATE[rtDW->i] = rtDW->rtb_e_xy_obs_idx_0;
+    rtDW->Delay1_DSTATE[rtDW->i] = rtDW->rtb_d_xy_obs_idx_0;
 
     /* Update for Delay: '<S1>/Delay2' */
-    rtDW->Delay2_DSTATE[rtDW->i] = rtDW->rtb_e_xy_obs_idx_0;
+    rtDW->Delay2_DSTATE[rtDW->i] = rtDW->rtb_d_xy_obs_idx_0;
   }
 }
 
@@ -7442,35 +7356,34 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
 
   {
     int32_T i;
-    static const real_T b[8] = { 0.1, 0.1, 0.1, 0.1, 100.0, 100.0, 100.0, 100.0
-    };
+    static const int8_T b[8] = { 100, 100, 100, 100, 1, 1, 1, 1 };
 
     /* InitializeConditions for Delay: '<S1>/Delay13' */
     rtDW->icLoad = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay1' */
-    rtDW->icLoad_m = true;
+    rtDW->icLoad_f = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay3' */
     rtDW->icLoad_l = true;
 
     /* InitializeConditions for Delay: '<S1>/Delay4' */
-    rtDW->icLoad_lv = true;
-
-    /* InitializeConditions for Delay: '<S1>/Delay5' */
-    rtDW->icLoad_j = true;
-
-    /* InitializeConditions for Delay: '<S1>/Delay6' */
-    rtDW->icLoad_o = true;
-
-    /* InitializeConditions for Delay: '<S1>/Delay7' */
-    rtDW->icLoad_b = true;
-
-    /* InitializeConditions for Delay: '<S1>/Delay8' */
     rtDW->icLoad_a = true;
 
+    /* InitializeConditions for Delay: '<S1>/Delay5' */
+    rtDW->icLoad_f4 = true;
+
+    /* InitializeConditions for Delay: '<S1>/Delay6' */
+    rtDW->icLoad_ag = true;
+
+    /* InitializeConditions for Delay: '<S1>/Delay7' */
+    rtDW->icLoad_i = true;
+
+    /* InitializeConditions for Delay: '<S1>/Delay8' */
+    rtDW->icLoad_ik = true;
+
     /* InitializeConditions for Delay: '<S1>/Delay2' */
-    rtDW->icLoad_oa = true;
+    rtDW->icLoad_o = true;
 
     /* SystemInitialize for MATLAB Function: '<S1>/Observer' */
     /* '<S3>:1:75' x_e = single([0;0;0;0;0;0;0;0]); */
@@ -7478,14 +7391,15 @@ void uz_codegen0_initialize(RT_MODEL *const rtM)
       rtDW->x_e[i] = 0.0F;
     }
 
-    /* '<S3>:1:76' P_e = single(diag([0.1 0.1 0.1 0.1 100 100 100 100])); */
-    memset(&rtDW->d[0], 0, sizeof(real_T) << 6U);
+    /*     P_e = single(diag([0.1 0.1 0.1 0.1 100 100 100 100])); */
+    /* '<S3>:1:77' P_e = single(diag([100 100 100 100 1 1 1 1])); */
+    memset(&rtDW->d_o[0], 0, sizeof(int8_T) << 6U);
     for (i = 0; i < 8; i++) {
-      rtDW->d[i + (i << 3)] = b[i];
+      rtDW->d_o[i + (i << 3)] = b[i];
     }
 
     for (i = 0; i < 64; i++) {
-      rtDW->P_e[i] = (real32_T)rtDW->d[i];
+      rtDW->P_e[i] = rtDW->d_o[i];
     }
 
     /* End of SystemInitialize for MATLAB Function: '<S1>/Observer' */

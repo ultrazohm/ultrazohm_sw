@@ -73,5 +73,7 @@ struct RPU_to_APU_user_data_t
 	float kalman_R;
 	float kalman_Q1;
 	float kalman_Q2;
+	float Ts_over_tB;
+	float tB_over_Ts;
 	bool a53_ctrl_off_on;
 };

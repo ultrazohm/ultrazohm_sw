@@ -32,6 +32,8 @@ void impl_mod_mpc_init() {
 	codegenInstance.input.tolerance = 1e-6;
 	codegenInstance.input.max_iter = 10.0f;
 	codegenInstance.input.HC_off_on = false;
+	codegenInstance.input.Ts_over_tB = 0.0f;
+	codegenInstance.input.tB_over_Ts = 0.0f;
 
 	uz_codegen_init(&codegenInstance);
 

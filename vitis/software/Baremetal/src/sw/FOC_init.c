@@ -74,8 +74,8 @@ struct uz_CurrentControl_config current_control_config_xy = {
 
 struct uz_subspace_resonant_control_config dq_2_config = {
 		.antiwindup_gain = 10.0f,
-		.gain_1 = 1080.0f,
-		.gain_2 = 1080.0f,
+		.gain_1 = 1074.0f,
+		.gain_2 = 2400.0f,
 		.harmonic_order = 2.0f,
 		.lower_limit = -25.0f,
 		.upper_limit = 25.0f,
@@ -84,8 +84,8 @@ struct uz_subspace_resonant_control_config dq_2_config = {
 
 struct uz_subspace_resonant_control_config xy_2_config = {
 		.antiwindup_gain = 10.0f,
-		.gain_1 = 1080.0f,
-		.gain_2 = 1080.0f,
+		.gain_1 = 1706.0f,
+		.gain_2 = 1706.0f,
 		.harmonic_order = 2.0f,
 		.lower_limit = -25.0f,
 		.upper_limit = 25.0f,
@@ -94,13 +94,14 @@ struct uz_subspace_resonant_control_config xy_2_config = {
 
 struct uz_subspace_resonant_control_config xy_6_config = {
 		.antiwindup_gain = 10.0f,
-		.gain_1 = 1080.0f,
-		.gain_2 = 1080.0f,
+		.gain_1 = 1706.0f,
+		.gain_2 = 1706.0f,
 		.harmonic_order = 6.0f,
 		.lower_limit = -25.0f,
 		.upper_limit = 25.0f,
 		.sampling_time = UZ_TIME_ISR
 };
+
 
 // MPC controller
 
@@ -184,6 +185,8 @@ uz_CurrentControl_t* init_FOC_CurrentControl() {
 	Global_Data.av.psi_pm_over_psiB = Global_Data.av.psi_pm/base_val.psiB;
 	Global_Data.av.psi_pm_h_pu_over_psiB[0] = psi_pm_5/base_val.psiB;
 	Global_Data.av.psi_pm_h_pu_over_psiB[1] = psi_pm_7/base_val.psiB;
+	Global_Data.av.Ts_over_tB = UZ_TIME_ISR*base_val.omegaB;
+	Global_Data.av.tB_over_Ts = 1/Global_Data.av.Ts_over_tB;
 
 	Global_Data.av.Kp_id = current_control_config.config_id.Kp;
 	Global_Data.av.Ki_id = current_control_config.config_id.Ki;

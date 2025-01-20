@@ -93,10 +93,16 @@ typedef struct _actualValues_ {
 	float i_a1;
 	float i_b1;
 	float i_c1;
+	float i_a1_calib;
+	float i_b1_calib;
+	float i_c1_calib;
 	float i_dc1;
 	float i_a2;
 	float i_b2;
 	float i_c2;
+	float i_a2_calib;
+	float i_b2_calib;
+	float i_c2_calib;
 	float i_dc2;
 	float v_a1;
 	float v_b1;
@@ -188,6 +194,8 @@ typedef struct _actualValues_ {
 	float kalman_R;
 	float kalman_Q1;
 	float kalman_Q2;
+	float Ts_over_tB;
+	float tB_over_Ts;
 	float theta_el_pos_FOC;
 	float theta_el_neg_FOC;
 	float theta_el_pos_MPC;
@@ -248,6 +256,7 @@ typedef struct{
 	uz_IIR_Filter_t* invTemp1_filter;
 	uz_IIR_Filter_t* invTemp2_filter;
 	uz_sysmon_ps_t* sysmon;
+	uz_PI_Controller* ph_curr_ctrl;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

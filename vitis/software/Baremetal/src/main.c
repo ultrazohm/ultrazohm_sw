@@ -44,6 +44,15 @@ DS_Data Global_Data = {
 struct uz_IIR_Filter_config config_IIR_invTemp = { .selection = LowPass_first_order,
    		.cutoff_frequency_Hz = 0.5f, .sample_frequency_Hz = UZ_PWM_FREQUENCY};
 
+struct uz_PI_Controller_config ph_ctrl_conf = {
+	.type = parallel,
+	.Kp= 0.01f,
+	.Ki= 1.0f,
+	.samplingTime_sec= UZ_TIME_ISR,
+	.upper_limit= 1.0f,
+	.lower_limit= 0.0f,
+};
+
 enum init_chain
 {
     init_assertions = 0,
@@ -92,7 +101,7 @@ int main(void)
             Global_Data.rasv.current_ctrl_select = PI_FOC;
             Global_Data.rasv.a53_ctrl_off_on = false;
             Global_Data.av.angle_lead_factor_FOC = 1.5f;
-            Global_Data.av.angle_lead_factor_MPC = 2.5f;
+            Global_Data.av.angle_lead_factor_MPC = 1.5f;
             Global_Data.av.kalman_R = 1.0f;
             Global_Data.av.kalman_Q1 = 100.0f;
             Global_Data.av.kalman_Q2 = 1.0f;
@@ -115,6 +124,7 @@ int main(void)
             Global_Data.objects.invTemp1_filter = uz_signals_IIR_Filter_init(config_IIR_invTemp);
             Global_Data.objects.invTemp2_filter = uz_signals_IIR_Filter_init(config_IIR_invTemp);
             Global_Data.objects.sysmon = init_sysmon();
+            Global_Data.objects.ph_curr_ctrl = uz_PI_Controller_init(ph_ctrl_conf);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

@@ -102,6 +102,53 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 
+	// For ADC Testing below
+	js_ch_observable[JSO_A1_Ch1] = &data->aa.A1.me.ADC_A1;
+	js_ch_observable[JSO_A1_Ch2] = &data->aa.A1.me.ADC_A2;
+	js_ch_observable[JSO_A1_Ch3] = &data->aa.A1.me.ADC_A3;
+	js_ch_observable[JSO_A1_Ch4] = &data->aa.A1.me.ADC_A4;
+	js_ch_observable[JSO_A1_Ch5] = &data->aa.A1.me.ADC_B5;
+	js_ch_observable[JSO_A1_Ch6] = &data->aa.A1.me.ADC_B6;
+	js_ch_observable[JSO_A1_Ch7] = &data->aa.A1.me.ADC_B7;
+	js_ch_observable[JSO_A1_Ch8] = &data->aa.A1.me.ADC_B8;
+
+	js_ch_observable[JSO_A2_Ch1] = &data->aa.A2.me.ADC_A1;
+	js_ch_observable[JSO_A2_Ch2] = &data->aa.A2.me.ADC_A2;
+	js_ch_observable[JSO_A2_Ch3] = &data->aa.A2.me.ADC_A3;
+	js_ch_observable[JSO_A2_Ch4] = &data->aa.A2.me.ADC_A4;
+	js_ch_observable[JSO_A2_Ch5] = &data->aa.A2.me.ADC_B5;
+	js_ch_observable[JSO_A2_Ch6] = &data->aa.A2.me.ADC_B6;
+	js_ch_observable[JSO_A2_Ch7] = &data->aa.A2.me.ADC_B7;
+	js_ch_observable[JSO_A2_Ch8] = &data->aa.A2.me.ADC_B8;
+
+	js_ch_observable[JSO_A3_Ch1]  = &data->aa.A3.me.ADC_A1;
+	js_ch_observable[JSO_A3_Ch2]  = &data->aa.A3.me.ADC_A2;
+	js_ch_observable[JSO_A3_Ch3]  = &data->aa.A3.me.ADC_A3;
+	js_ch_observable[JSO_A3_Ch4]  = &data->aa.A3.me.ADC_A4;
+	js_ch_observable[JSO_A3_Ch5]  = &data->aa.A3.me.ADC_B5;
+	js_ch_observable[JSO_A3_Ch6]  = &data->aa.A3.me.ADC_B6;
+	js_ch_observable[JSO_A3_Ch7]  = &data->aa.A3.me.ADC_B7;
+	js_ch_observable[JSO_A3_Ch8]  = &data->aa.A3.me.ADC_B8;
+
+	// For MAX11 Testing below
+	js_ch_observable[JSO_A3_Ch9]  = &data->aa.A3.me.ADC_C9;
+	js_ch_observable[JSO_A3_Ch10] = &data->aa.A3.me.ADC_C10;
+	js_ch_observable[JSO_A3_Ch11] = &data->aa.A3.me.ADC_C11;
+	js_ch_observable[JSO_A3_Ch12] = &data->aa.A3.me.ADC_C12;
+	js_ch_observable[JSO_A3_Ch13] = &data->aa.A3.me.ADC_D13;
+	js_ch_observable[JSO_A3_Ch14] = &data->aa.A3.me.ADC_D14;
+	js_ch_observable[JSO_A3_Ch15] = &data->aa.A3.me.ADC_D15;
+	js_ch_observable[JSO_A3_Ch16] = &data->aa.A3.me.ADC_D16;
+	js_ch_observable[JSO_A3_Ch17] = &data->aa.A3.me.ADC_E17;
+	js_ch_observable[JSO_A3_Ch18] = &data->aa.A3.me.ADC_E18;
+	js_ch_observable[JSO_A3_Ch19] = &data->aa.A3.me.ADC_E19;
+	js_ch_observable[JSO_A3_Ch20] = &data->aa.A3.me.ADC_E20;
+	js_ch_observable[JSO_A3_Ch21] = &data->aa.A3.me.ADC_F21;
+	js_ch_observable[JSO_A3_Ch22] = &data->aa.A3.me.ADC_F22;
+	js_ch_observable[JSO_A3_Ch23] = &data->aa.A3.me.ADC_F23;
+	js_ch_observable[JSO_A3_Ch24] = &data->aa.A3.me.ADC_F24;
+
+
 	return Status;
 }
 

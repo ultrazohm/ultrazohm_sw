@@ -61,6 +61,9 @@
 // a290_sig_td3_int_more_obs_heidrive_250k_2tau
 // a319_sidmoid_td3_gaussian_heidrive_rlc_parameter
 // a321_l1_td3_gaussian_heidrive_rlc_parameter
+// a338_sigmoid_scaled_0_2_td3_heidrive_250k_30seeds
+// a332_sigmoid_scaled_0_05_td3_heidrive_250k_30seeds_fxd
+// a324_sig_td3_int_more_obs_heidrive_250k_1tau
 
 // Brose wrong parameters
 // a214_l1_td3_gaussian_brose
@@ -75,6 +78,9 @@
 // a303_sigmoid_td3_brose_fixed_para_750k_updates
 // a300_sigmoid_scaled_0_05_td3_brose_250k_30seeds
 // a339_sigmoid_brose_z1_pt1
+// a334_sigmoid_scaled_0_2_td3_brose_250k_30seeds
+// a328_sigmoid_scaled_0_05_td3_brose_250k_30seeds_fxd
+// a323_sig_td3_int_more_obs_brose_fixed_250k_1tau
 
 // Buehler
 // a221_l1_td3_gaussian_buehler
@@ -85,6 +91,9 @@
 // a306_sigmoid_td3_buehler_fixed_para_750k_updates
 // a302_sigmoid_scaled_0_05_td3_ebm_250k_30seeds // ist wirklich buehler, nur falscher Name
 // a341_sigmoid_buehler_z1_pt1
+// a336_sigmoid_scaled_0_2_td3_buehler_250k_30seeds
+// a325_sig_td3_int_more_obs_buehler_250k_1tau
+// a330_sigmoid_scaled_0_05_td3_ebm_250k_30seeds_fxd // Wrong name, this really is buehler!
 
 // EBMPabst
 // a217_l1_td3_gaussian_ebmpabst
@@ -95,6 +104,9 @@
 // a301_sigmoid_scaled_0_05_td3_ebm_250k_30seeds
 // a317_sidmoid_td3_gaussian_ebmpabst_rlc_parameter - cil & real missing
 // a320_l1_td3_gaussian_ebmpabst_rlc_parameter - cil & real missing
+// a335_sigmoid_scaled_0_2_td3_ebm_250k_30seeds
+// a329_sigmoid_scaled_0_05_td3_ebm_250k_30seeds_fxd
+// a326_sig_td3_int_more_obs_ebm_250k_1tau
 
 // Beckhoff
 // a215_l1_td3_gaussian_beckhoff
@@ -104,6 +116,10 @@
 // a291_sig_td3_int_more_obs_beckhoff_250k_2tau
 // a309_sigmoid_scaled_0_05_td3_beckhoff_250k_30seeds
 // a340_sigmoid_beckhoff_z1_pt1
+// a337_sigmoid_scaled_0_2_td3_beckhoff_250k_30seeds
+// a331_sigmoid_scaled_0_05_td3_beckhoff_250k_30seeds_fxd
+// a327_sig_td3_int_more_obs_beckhoff_250k_1tau
+// a345_sigmoid_beckhoff_z1_pt1_moreObs
 
 #define CIL_1_TAU 1              // CIL uses 2tau if 0, 1 tau if one
 #define FOC_1_TAU 0              // If 1, FOC is tuned with 1tau, 1.5 otherwise - only use in CIL and with CIL_1_TAU

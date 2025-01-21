@@ -48,46 +48,69 @@
 #define EBM 5
 #define HEIDRIVE_D2 6
 #define HEIDRIVE_D1 7
-#define BECKHOFF_DESKBENCH_D2 8
-#define BECKHOFF_DESKBENCH_D1 9
+#define BECKHOFF_DESKBENCH_D1 8
+#define BECKHOFF_DESKBENCH_D2 9
 
 // Verfügbare agenten
 // Heidrive
 // a202_l1_td3_gaussian_heidrive
 // a201_sidmoid_td3_gaussian_heidrive
+// a280_sidmoid_td3_gaussian_heidrive_750k_30seeds
 // a277_sidmoid_td3_gaussian_heidrive_500k_30seeds
+// a310_sigmoid_scaled_0_05_td3_heidrive_250k_30seeds
 // a290_sig_td3_int_more_obs_heidrive_250k_2tau
+// a319_sidmoid_td3_gaussian_heidrive_rlc_parameter
+// a321_l1_td3_gaussian_heidrive_rlc_parameter
 
-// Brose
+// Brose wrong parameters
 // a214_l1_td3_gaussian_brose
 // a211_sidmoid_td3_gaussian_brose
 // a252_sidmoid_td3_gaussian_brose_500k_updates
 // a287_sig_td3_int_more_obs_brose_250k_2tau
+
+// Brose correct
 // a296_l1_td3_gaussian_brose_fixed_parameters
 // a297_sidmoid_td3_gaussian_brose_fixed_parameters
+// a304_sigmoid_td3_brose_fixed_para_500k_updates
+// a303_sigmoid_td3_brose_fixed_para_750k_updates
+// a300_sigmoid_scaled_0_05_td3_brose_250k_30seeds
+// a339_sigmoid_brose_z1_pt1
 
 // Buehler
 // a221_l1_td3_gaussian_buehler
 // a234_sigmoid_td3_gaussian_buehler
 // a255_sidmoid_td3_gaussian_buehler_500k_updates
 // a289_sig_td3_int_more_obs_buehler_250k_2tau
+// a311_sigmoid_scaled_0_05_td3_buehler_250k_30seeds_2run --
+// a306_sigmoid_td3_buehler_fixed_para_750k_updates
+// a302_sigmoid_scaled_0_05_td3_ebm_250k_30seeds // ist wirklich buehler, nur falscher Name
+// a341_sigmoid_buehler_z1_pt1
 
 // EBMPabst
 // a217_l1_td3_gaussian_ebmpabst
 // a218_sidmoid_td3_gaussian_ebmpabst
 // a254_sidmoid_td3_gaussian_ebm_500k_updates
 // a288_sig_td3_int_more_obs_ebm_250k_2tau
+// a307_sigmoid_td3_ebm_fixed_para_750k_updates
+// a301_sigmoid_scaled_0_05_td3_ebm_250k_30seeds
+// a317_sidmoid_td3_gaussian_ebmpabst_rlc_parameter - cil & real missing
+// a320_l1_td3_gaussian_ebmpabst_rlc_parameter - cil & real missing
 
 // Beckhoff
 // a215_l1_td3_gaussian_beckhoff
 // a216_sidmoid_td3_gaussian_beckhoff
 // a253_sidmoid_td3_gaussian_beckhoffe_500k_updates
+// a305_sigmoid_td3_beckhoff_fixed_para_750k_updates
 // a291_sig_td3_int_more_obs_beckhoff_250k_2tau
+// a309_sigmoid_scaled_0_05_td3_beckhoff_250k_30seeds
+// a340_sigmoid_beckhoff_z1_pt1
 
 #define CIL_1_TAU 1              // CIL uses 2tau if 0, 1 tau if one
 #define FOC_1_TAU 0              // If 1, FOC is tuned with 1tau, 1.5 otherwise - only use in CIL and with CIL_1_TAU
 #define READ_VCD 0               // Reads V_dc if 1, otherwise 48 V is assumed
 #define BROSE_FIXED_PARAMETERS 1 // 0 is l_d=30 uH as was used until the fix, where 1 is L_d=55 uH and L_q=65 uH
+#define EBM_LRC_PARAMETERS 0     // 0 is l_d=30 uH as was used until the fix, where 1 is L_d=55 uH and L_q=65 uH
+#define HEIDRIVE_LRC_PARAMETERS 0
 
 #define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 5000U // 11290U
 // #define PROFILE_SETPOINT_DURATION_IN_ISR_TICKS 10000U // 11290U
@@ -98,17 +121,17 @@
 
 #define SETPOINT_PROFILE SETPOINT_PROFILE_ORIGINAL
 
-#define DUT_MACHINE HEIDRIVE_D1 // HEIDRIVE_D2
-#define AGENT 202
-#define D1_MACHINE HEIDRIVE_D1 // EBM, Brose, Hoerner, HEIDRIVE_D1
-#define D2_MACHINE HEIDRIVE_D2 // HEIDRIVE_D2, BUEHLER, BECKHOFF
+#define DUT_MACHINE BECKHOFF_DESKBENCH_D1 // HEIDRIVE_D2, BECKHOFF_DESKBENCH_D1
+#define AGENT 340
+#define D1_MACHINE BECKHOFF_DESKBENCH_D1 // EBM, Brose, Hoerner, HEIDRIVE_D1, BECKHOFF_DESKBENCH_D1
+#define D2_MACHINE BECKHOFF_DESKBENCH_D2 // HEIDRIVE_D2, BUEHLER, BECKHOFF, BECKHOFF_DESKBENCH_D2
 // #define D1_IS_PRIME_MOVER 1U // Auto-calculate this define from DUT_MACHINE?
 
 #if !((DUT_MACHINE == D1_MACHINE) || (DUT_MACHINE == D2_MACHINE))
 #error DUT machine not connected!
 #endif
 
-#if (DUT_MACHINE == HOERNER) || (DUT_MACHINE == BROSE) || (DUT_MACHINE == EBM) || (DUT_MACHINE == HEIDRIVE_D1)
+#if (DUT_MACHINE == HOERNER) || (DUT_MACHINE == BROSE) || (DUT_MACHINE == EBM) || (DUT_MACHINE == HEIDRIVE_D1) || (DUT_MACHINE == BECKHOFF_DESKBENCH_D1)
 #define D1_IS_PRIME_MOVER 0U
 #else
 #define D1_IS_PRIME_MOVER 1U

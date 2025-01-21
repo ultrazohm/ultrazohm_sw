@@ -1,9 +1,0 @@
-<pragmas>
-<pragma file="HLS_Project/matrix_multiply.cpp" line="5" pragmaType="interface" parentfunction="MatrixMultiplication" mode="m_axi" port="A_input" bundle="arrays" offset="slave" name="" depth="32" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
-<pragma file="HLS_Project/matrix_multiply.cpp" line="6" pragmaType="interface" parentfunction="MatrixMultiplication" mode="m_axi" port="B_input" bundle="arrays" offset="slave" name="" depth="32" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
-<pragma file="HLS_Project/matrix_multiply.cpp" line="7" pragmaType="interface" parentfunction="MatrixMultiplication" mode="m_axi" port="C_output" bundle="arrays" offset="slave" name="" depth="32" num_read_outstanding="-1" num_write_outstanding="-1" max_burst_read_length="-1" max_burst_write_length="-1" latency="-1" max_widen_bitwidth="-1" channel=""/>
-<pragma file="HLS_Project/matrix_multiply.cpp" line="8" pragmaType="interface" parentfunction="MatrixMultiplication" mode="s_axilite" port="A_rows" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
-<pragma file="HLS_Project/matrix_multiply.cpp" line="9" pragmaType="interface" parentfunction="MatrixMultiplication" mode="s_axilite" port="B_rows" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
-<pragma file="HLS_Project/matrix_multiply.cpp" line="10" pragmaType="interface" parentfunction="MatrixMultiplication" mode="s_axilite" port="B_columns" bundle="" offset="-1" name="" clock="" impl="" register="0"/>
-<pragma file="HLS_Project/matrix_multiply.cpp" line="11" pragmaType="interface" parentfunction="MatrixMultiplication" mode="ap_ctrl_chain" port="return" name=""/>
-</pragmas>

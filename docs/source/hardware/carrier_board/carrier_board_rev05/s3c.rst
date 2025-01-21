@@ -87,7 +87,7 @@ Functions
 
 .. _carrier_board_rev5_s3cfsm:
 
-Statemachine for S³C
+Statemachine for s3c
 --------------------
 
 
@@ -120,3 +120,52 @@ Statemachine for S³C
 	UZ --> HardError
 	HardError --> Acknowledge_Error
 	Acknowledge_Error --> Waiting_for_Powerbutton_released2
+
+Powerbutton functionality
+---------------------------
+
+The powerbutton interacts with the S3C Statemachine and its LED coloring indicates in which state the safety controller currently is.
+When enabling the 230V on the backside of the UZ with the switch, the s3c is supplied an the power button indicates it with a blue ring.
+..
+	_picture: blue ring
+The user have to press the button for the system to turn on. This state is indicated by a red ring.
+..
+	_picture: red ring
+After releasing the button, the system goes into a sequenced powering up procedure.
+After this section - the system is on and the powerbutton ring is green and the stop button ring is blue.
+..
+	_picture: green ring
+	_picture: red ring stop button
+At this stage, the system can be programmed in vitis and used in a usual manner.
+
+.. warning::
+    At this stage, the Javascope GUI and the physical buttons are not synchronized.
+	This means, if the user decides to just use the GUI to enable the system, controlling it and push the stop button, the behavior will be different from pushin the hardware buttons direct.
+	Only the hw buttons remove the hardware release.
+
+	It is also not recommended to mix physical control on the frontpanel with control via the gui.
+	E.g. if the control was stopped with the Frontpanel physical button and the system enabled with the GUI - the hardware is not released.
+
+The user can push the stop button and the powerring will indicate white.
+..
+	picture white ring
+This means the safety controller sends all other digital slots into a safe state.
+To enable the digital slots again there a to possibilities:
+
+1. Press the Enable System button. 
+..
+	picture green ring and enable sys blinking
+2. Press the Powerbutton.
+..
+	picture green ring
+And Emergency can be transferred to the S3C controller via the external stop button. 
+The power button indicates a red light and the S3C gets the system in a safe state.
+..
+	_picture red ring
+After the UZ is in this state, the user have to acknowledge this error with the power button.
+..
+	picture yellow ring
+The S3C gets back into the initial state and the user can be power it on as described above.
+..
+	picture blue ring
+The Powering off is realised with the Power button. It has to be pushed at least 2 seconds to power it off.

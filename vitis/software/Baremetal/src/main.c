@@ -191,7 +191,7 @@ int main(void)
             JavaScope_initalize(&Global_Data);
 //            Global_Data.av.theta_offset = 1.120014f; //!!! if cnt is reset to zero at init we have to add pi to 1.120014 = 4.261607
 //            Global_Data.av.theta_offset = 4.261607f;
-            Global_Data.av.theta_mech_offset_rad = 6.1205; //4.420
+            Global_Data.av.theta_mech_offset_rad = 6.25;//6.1205; //4.420
             Global_Data.av.polepairs = 5.0f;
             Global_Data.objects.foc_current = uz_FOC_init(config);
             //init fpga current limit

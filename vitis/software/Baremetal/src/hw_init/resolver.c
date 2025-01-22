@@ -29,7 +29,7 @@ static struct uz_resolver_pl_interface_config_t pl_config = {
 		.bitToRPS_factor = BIT_TO_RPS_FACTOR_16BIT,
 		.machine_polepairs = 5,
 		.resolver_polepairs = 2,
-		.theta_m_offset_rad = -6.1205f
+		.theta_m_offset_rad = -6.25f
 };
 
 static struct uz_resolver_pl_interface_outputs_t pl_outputs = {

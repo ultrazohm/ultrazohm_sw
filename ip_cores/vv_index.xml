@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests4/ip_cores">
+	<Repository value="d:/GIT/UltraZohm/software/ultrazohm_sw_PullRequests4/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -615,6 +615,122 @@
 				</Part>
 			</Family>
 			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:Incremental_Encoder_v26:26.0">
+		</VLNV>
+		<DisplayName value="Incremental_Encoder_v26">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113194583">
+		</CoreRevision>
+		<ComponentPath value="IncreEncoder_V26_ip/Simulation/hdl_prj/ipcore/Incremental_Encoder_v26_v26_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="aartix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="akintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="artix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="artix7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="aspartan7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="azynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintex7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="kintexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qartix7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qkintex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qkintex7l">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qvirtex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="qzynq">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="spartan7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtex7">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexu">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus58g">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+			<Family name="virtexuplushbm">
 				<Part status="Production" name="ALL">
 				</Part>
 			</Family>
@@ -1733,6 +1849,34 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:conv_theta:1.0">
+		</VLNV>
+		<DisplayName value="conv_theta">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113920019">
+		</CoreRevision>
+		<ComponentPath value="uz_6ph_pmsm_mpc/hdl_prj/ipcore/conv_theta_v1_0/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:cost_opt:1.0">
 		</VLNV>
 		<DisplayName value="cost_opt">
@@ -2049,6 +2193,34 @@
 		</Interfaces>
 	</IP>
 	<IP>
+		<VLNV value="xilinx.com:ip:par_cost_opt:1.2">
+		</VLNV>
+		<DisplayName value="par_cost_opt">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113920032">
+		</CoreRevision>
+		<ComponentPath value="uz_6ph_pmsm_mpc/hdl_prj/ipcore/par_cost_opt_v1_2/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
 		<VLNV value="xilinx.com:ip:par_mpc_enb:1.2">
 		</VLNV>
 		<DisplayName value="par_mpc_enb">
@@ -2248,6 +2420,34 @@
 		<CoreRevision value="2113138412">
 		</CoreRevision>
 		<ComponentPath value="uz_6ph_pmsm_mpc/hdl_prj/ipcore/pu_voltages_vsd_v1_1/component.xml">
+		</ComponentPath>
+		<Families>
+			<Family name="zynquplus">
+				<Part status="Production" name="ALL">
+				</Part>
+			</Family>
+		</Families>
+		<Taxonomies>
+			<Taxonomy value="/HDL Coder Generated IP">
+			</Taxonomy>
+		</Taxonomies>
+		<Interfaces>
+			<Interface value="AXI4">
+			</Interface>
+		</Interfaces>
+	</IP>
+	<IP>
+		<VLNV value="xilinx.com:ip:ref_distributor:1.0">
+		</VLNV>
+		<DisplayName value="ref_distributor">
+		</DisplayName>
+		<Description value="HDL Coder generated IP">
+		</Description>
+		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
+		</ProductGuide>
+		<CoreRevision value="2113920023">
+		</CoreRevision>
+		<ComponentPath value="uz_6ph_pmsm_mpc/hdl_prj/ipcore/ref_distributor_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="zynquplus">

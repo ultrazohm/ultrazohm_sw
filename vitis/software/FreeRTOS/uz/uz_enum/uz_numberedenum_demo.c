@@ -1,6 +1,6 @@
 // Housekeeping (you won't need that!)
 #if !defined(__x86_64__)
- #include "../FreeRTOS/uz/uz_HAL.h"
+ #include "../uz_HAL.h"
 #else
  #include <stdio.h>
  #define uz_printf printf

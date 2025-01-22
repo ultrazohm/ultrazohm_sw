@@ -29,7 +29,7 @@
 	ENUMITEM(12,	UZP_HWGROUP_ADCARD_DAC8831,	 	"DAC TI DAC8831")											/*  */ \
 	ENUMITEM(13,	UZP_HWGROUP_ADCARD_DIGVOLT33, 	"Digital Voltage 3V3")										/*  */ \
 	ENUMITEM(14,	UZP_HWGROUP_ADCARD_DIGVOLT5, 	"Digital Voltage 5V")										/* ... and *no* \ after the end of the last line! */
-#include "uz_enum/uz_numberedenum.h"
+#include "../uz_enum/uz_numberedenum.h"
 
 
 //// EEPROM on MZ-hosting PCB (MZohm)
@@ -44,7 +44,7 @@
 	ENUMNAME(uz_platform_eeprom_group003models)																	/* Group 3: MZ */ \
 	ENUMITEM( 1,	UZP_HWGROUP_MZ_CARRIER,								"Carrier Board")						/*  */ \
 	ENUMITEM( 2,	UZP_HWGROUP_MZ_BREAKOUT,							"Breakout Board")						/* ... and *no* \ after the end of the last line! */
-#include "uz_enum/uz_numberedenum.h"
+#include "../uz_enum/uz_numberedenum.h"
 
 
 #endif

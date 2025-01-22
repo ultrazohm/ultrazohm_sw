@@ -19,6 +19,7 @@
 #include "../include/ipc_ARM.h"
 #include <math.h>
 #include <xtmrctr.h>
+#include <stdbool.h>
 #include "../include/javascope.h"
 #include "../include/pwm_3L_driver.h"
 #include "../include/adc.h"
@@ -58,6 +59,9 @@ struct uz_3ph_dq_t v_dq_ref_right = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_right = {0.0f};
 struct uz_DutyCycle_t dutycyc_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_right = {0.0f};
+struct uz_parameterID_rc_ref_val_t ref_rc_meas;
+
+enum running_mode run_state = normal;
 
 
 //==============================================================================================================================================================
@@ -146,6 +150,10 @@ void ISR_Control(void *data)
 		Global_Data.rasv.i_dq_ref_left.q = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.d = 0.0f;
 		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
+		Global_Data.rasv.rc_meas_output.data_valid = 0.0f;
+		Global_Data.rasv.rc_meas_output.id_ref_Amps = 0.0f;
+		Global_Data.rasv.rc_meas_output.iq_ref_Amps = 0.0f;
+		Global_Data.rasv.rc_meas_output.n_ref_rpm = 0.0f;
 		// write zero dutycycle
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -161,13 +169,13 @@ void ISR_Control(void *data)
     	// enable inverters
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_left, true);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_right, true);
+
     }
 
     if (current_state==control_state)
     {
+
     // Start: Control algorithm - only if ultrazohm is in control state
-    // get reference currents from Global_Data
-    i_dq_ref_right = Global_Data.rasv.i_dq_ref_right;
 
 	// park transformation of measured currents
 	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
@@ -183,6 +191,30 @@ void ISR_Control(void *data)
 	Global_Data.av.v_d_right_meas = v_dq_meas_right.d;
 	Global_Data.av.v_q_right_meas = v_dq_meas_right.q;
 
+    switch(run_state) {
+    	case rc_meas:
+        	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance);
+        	Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
+        	Global_Data.rasv.i_dq_ref_right.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
+        	Global_Data.rasv.n_ref_left = Global_Data.rasv.rc_meas_output.n_ref_rpm * -1.0f;
+        	break;
+
+    	case rs_meas:
+    		Global_Data.rasv.rs_meas_output = uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance, Global_Data.av.v_d_right_meas = v_dq_meas_right.d, Global_Data.av.i_d_left);
+    		Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rs_meas_output.i_sample;
+    		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
+    		Global_Data.rasv.n_ref_left = Global_Data.rasv.rs_meas_output.n_sample;
+    		break;
+
+    	case normal:
+    		Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.js_set_i_dq_ref_right.d;
+    		Global_Data.rasv.i_dq_ref_right.q = Global_Data.rasv.js_set_i_dq_ref_right.q;
+    		Global_Data.rasv.n_ref_left = Global_Data.rasv.js_set_n_ref_left;
+    		break;
+
+    	default:
+    		break;
+    }
 
 	// calculate control (speed and current) of left motor
 	control_left_motor();

@@ -103,6 +103,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_torque]			= &data->av.torque;
 	js_ch_observable[JSO_id_ref_left]		= &data->rasv.i_dq_ref_left.d;
 	js_ch_observable[JSO_iq_ref_left]		= &data->rasv.i_dq_ref_left.q;
+	js_ch_observable[JSO_id_ref_right]		= &data->rasv.i_dq_ref_right.d;
+	js_ch_observable[JSO_iq_ref_right]		= &data->rasv.i_dq_ref_right.q;
+	js_ch_observable[JSO_iq_ref_rc_meas]	= &data->rasv.rc_meas_output.iq_ref_Amps;
+	js_ch_observable[JSO_id_ref_rc_meas]	= &data->rasv.rc_meas_output.id_ref_Amps;
+	js_ch_observable[JSO_n_ref_rc_meas]		= &data->rasv.rc_meas_output.n_ref_rpm;
+	js_ch_observable[JSO_data_valid_rc_meas]	= &data->rasv.rc_meas_output.data_valid;
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;

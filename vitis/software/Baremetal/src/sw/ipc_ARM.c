@@ -22,6 +22,8 @@
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
+extern enum running_mode run_state;
+
 extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -185,7 +187,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 			break;
 		case (Set_Send_Field_1):
-		data->rasv.n_ref_left = value;
+		data->rasv.js_set_n_ref_left = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -193,11 +195,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-		data->rasv.i_dq_ref_right.d = value;
+		data->rasv.js_set_i_dq_ref_right.d = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->rasv.i_dq_ref_right.q = value;
+		data->rasv.js_set_i_dq_ref_right.q = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -275,14 +277,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			run_state = rc_meas;
+			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_2):
+			run_state = rs_meas;
 			ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_3):
+			run_state = normal;
 			ultrazohm_state_machine_set_userLED(false);
 			break;
 
@@ -351,14 +356,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	 if (run_state == rc_meas) {
+		js_status_BareToRTOS |= (1 << 4);
+	 	 } else {
+	 		 js_status_BareToRTOS &= ~(1 << 4);
+	 	 }
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	 if (run_state == rs_meas) {
+		js_status_BareToRTOS |= (1 << 5);
+	 	 } else {
+	 		 js_status_BareToRTOS &= ~(1 << 5);
+	 	}
 
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);

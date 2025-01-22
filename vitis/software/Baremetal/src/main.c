@@ -15,7 +15,7 @@
 
 // Includes from own files
 #include "main.h"
-
+;
 
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables
@@ -62,13 +62,25 @@ int main(void)
     const struct uz_parameterID_rc_config_t rc_meas_config = {
       	.abs_id_max_Amps = 4.0f,
       	.abs_iq_max_Amps = 4.0f,
-    	.n_start_rpm = 500.0,
-    	.n_stop_rpm = 1000.0,
-    	.id_steps = 4U,
-    	.iq_steps = 4U,
-    	.n_steps = 5U
+    	.n_start_rpm = 500.0f,
+    	.n_stop_rpm = 700.0f,
+    	.id_steps = 8U,
+    	.iq_steps = 8U,
+    	.n_steps = 2U
       };
 
+
+    struct uz_parameterid_rs_config_t config_rs_meas = {
+    	.n_start = 0.0f,
+        .n_end = 1000.0f,
+        .n_steps = 10.0f,
+        .i_start = 2.0f,
+        .i_diff = 4.0f,
+        .i_repeats = 10.0f,
+        .i_steptime = 3.0f,
+   	    .wait_time = 3.0f,
+        .isr_steptime = (1.0f / 10.0e3f) * 1.0f
+    };
 
     while (1)
     {
@@ -93,7 +105,8 @@ int main(void)
             Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
             Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
 			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
-			Global_Data.objects.rc_meas = uz_parameterID_rc_init(rc_meas_config);
+			Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
+			Global_Data.objects.rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

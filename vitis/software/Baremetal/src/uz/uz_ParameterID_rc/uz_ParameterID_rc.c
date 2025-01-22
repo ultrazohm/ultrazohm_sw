@@ -97,7 +97,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         // wait function: lets xx isr-cycles pass without changing anything. Switches to the following state after the wait time depending on the previous state
         case rc_wait: 
             self->counter.wait++;
-            if(self->counter.wait == 1U){
+            if(self->counter.wait == 20000U){
                 if (self->rc_previous_state == rc_set_idq){
                     self->rc_state = rc_sample_on;
                 }
@@ -112,14 +112,14 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
 
         // sets a flag that indicates that data is valid, then switches to wait state
         case rc_sample_on:
-            self->output_ref_values.data_valid = true; 
+            self->output_ref_values.data_valid = 1.0f;
             self->rc_previous_state = self->rc_state;
             self->rc_state = rc_wait;
         break;
 
         // resets the data valid flag, then switches to state that increments idq
         case rc_sample_off:
-            self->output_ref_values.data_valid = false; 
+            self->output_ref_values.data_valid = 0.0f;
             self->rc_previous_state = self->rc_state;
             self->rc_state = rc_increment_idq;
         break;

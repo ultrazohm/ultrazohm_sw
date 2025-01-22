@@ -15,6 +15,7 @@
 #include "uz/uz_signals/uz_signals.h"
 #include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
+#include "uz/uz_ParameterID_rs/uz_ParameterID_rs.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -126,10 +127,14 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 	float M_ref_left;
 	float n_ref_left;
+	float js_set_n_ref_left;
 	float n_ref_left_filt;
 	uz_3ph_dq_t i_dq_ref_right;
+	uz_3ph_dq_t js_set_i_dq_ref_right;
+	uz_3ph_dq_t i_dq_ref_rc_meas_right;
 	uz_3ph_dq_t i_dq_ref_left;
 	struct uz_parameterID_rc_ref_val_t rc_meas_output;
+	struct uz_parameterid_output rs_meas_output;
 } referenceAndSetValues;
 
 typedef struct{
@@ -153,7 +158,8 @@ typedef struct{
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
-	uz_parameterID_rc_t* rc_meas;
+	uz_parameterID_rc_t* rc_meas_instance;
+	uz_parameterid_rs_t* rs_meas_instance;
 	}object_pointers_t;
 
 

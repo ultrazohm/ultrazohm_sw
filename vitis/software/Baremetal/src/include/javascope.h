@@ -34,6 +34,8 @@ enum JS_OberservableData {
 	JSO_iq_right,
 	JSO_id_ref_left,
 	JSO_iq_ref_left,
+	JSO_id_ref_right,
+	JSO_iq_ref_right,
 	JSO_va_left,
 	JSO_vb_left,
 	JSO_vc_left,
@@ -63,6 +65,10 @@ enum JS_OberservableData {
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
+	JSO_iq_ref_rc_meas,
+	JSO_id_ref_rc_meas,
+	JSO_n_ref_rc_meas,
+	JSO_data_valid_rc_meas,
 	JSO_ENDMARKER
 };
 
@@ -251,9 +257,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
-	MyButton2,
-	MyButton3,
+	rc_meas,
+	rs_meas,
+	reset,
 	MyButton4,
 	MyButton5,
 	MyButton6,

@@ -3,12 +3,12 @@
 
 
 //// EEPROM data offset (all systems)
-#define UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET	(0xF0)
+#define UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET	(0xF0U)
 
 
 //// EEPROMs of adapter cards (UZohm)
-#define UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE	(0x50)
-#define UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST	(0x57)
+#define UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE	(0x50U)
+#define UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST	(0x57U)
 
 // Define _enum2label() only when included from uz_platform.c
 #ifndef UZ_PLATFORM_C
@@ -34,7 +34,7 @@
 
 //// EEPROM on MZ-hosting PCB (MZohm)
 #define UZ_PLATFORM_I2CADDR_MZHOSTEEPROM_BASE	(UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE)
-#define UZ_PLATFORM_I2CADDR_MZHOSTEEPROM_ADDR	(2)
+#define UZ_PLATFORM_I2CADDR_MZHOSTEEPROM_ADDR	(2U)
 
 // Define _enum2label() only when included from uz_platform.c
 #ifndef UZ_PLATFORM_C

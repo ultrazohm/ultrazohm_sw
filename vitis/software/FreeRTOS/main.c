@@ -83,13 +83,14 @@ int main()
 
 #if (UZ_PLATFORM_CARDID==1)
  {
-	const uint8_t card_slots = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + 1;
+	const uint32_t card_slots = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + 1;
 
 	uz_printf("\r\n--- Adapter Card ID:\r\n\r\n");
 
-	for (int i=0; i<card_slots; i++) {
-		uz_platform_eeprom_group000models_t model;
-		int revision, serial;
+	for (uint32_t i=0; i<card_slots; i++) {
+		uz_platform_eeprom_group000models_t model = 1000;		// Groups are defined up to 999,
+		uint8_t revision = 0;									// whilst revisions and
+		uint16_t serial = 0;									// serials start at one
 
 		if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) )
 			uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i\r\n", i, model, revision, serial);

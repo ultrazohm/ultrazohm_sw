@@ -421,23 +421,22 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
   * @param serial_p Pointer to single-int buffer to be filled with the card's serial number.
   * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
   */
- uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, int* revision_p, int* serial_p) {
+ uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p) {
  #if (UZ_PLATFORM_ENABLE==1)
+	uz_assert(slot < 8);
 	uz_assert_not_NULL(model_p);
 	uz_assert_not_NULL(revision_p);
 	uz_assert_not_NULL(serial_p);
 
 	//// Create I²C devices: EEPROM
-	uint8_t cardaddr;
-	cardaddr = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + slot;
+	uint8_t cardaddr = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + slot;
 	uz_assert(cardaddr <= UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST);
 
 	uz_iic cardeeprom;
 	uz_iic_initdev(&cardeeprom, UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, cardaddr);
 
-	uint32_t status;
 	uz_platform_eeprom cardeeprom_data;
-	status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET, (uint8_t*) &cardeeprom_data, sizeof(cardeeprom_data));
+	uint32_t status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET, (uint8_t*) &cardeeprom_data, sizeof(cardeeprom_data));
 
 	// Option: Check whether model is known?
 

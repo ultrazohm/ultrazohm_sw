@@ -21,7 +21,6 @@
  *            [repeat as often as desired ...]     \
  *       i(last one as above, but no \ at the end)
  *   2. "Call" this file/helper by including it
- * - See uz_numberedenum_demo.c for a usage example
  * - This file is designed to be included multiple times, so no "once" pragmas...
  * - As usual with enums, make sure that your namespace is (as) clean (as needed)
  * - If the definition of the numenum is in a header file, ensure its uniqueness;

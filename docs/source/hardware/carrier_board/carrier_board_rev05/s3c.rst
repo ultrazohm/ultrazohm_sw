@@ -72,77 +72,85 @@ Powerbutton Functionality
 -------------------------
 
 The Power button interacts with the S3C statemachine, and its LED coloring indicates in which state the safety controller currently is.
-In case the 230V are switched off (via the switch on the backside), the frontpanel will look like this:
 
-.. figure:: img/230v_off.jpg
+.. list-table::
    :align: center
+   :widths: 25 75
 
-When enabling the 230V on the backside of the UZ with the switch, the S3C is supplied and the Power button indicates this with a blue ring.
+   * - .. figure:: img/230v_off.jpg
+          :align: center
+          :scale: 25%
+     - In case the 230V are switched off (via the switch on the backside), the frontpanel will look as shown on the left.
 
-.. figure:: img/systemoff.png
-   :align: center
+   * - .. figure:: img/systemoff.png
+          :align: center
+          :scale: 50%
+     - When enabling the 230V on the backside of the UZ with the switch, the S3C is supplied and the Power button indicates this with a blue ring.
 
-The user has to press the button for the system to turn on.
-This state is indicated by a purple ring.
-After releasing the button, the system goes into a sequenced power-up procedure.
+   * - .. figure:: img/powering_up.png
+          :align: center
+          :scale: 50%
+     - The user has to press the button for the system to turn on.
+       This state is indicated by a purple ring.
+       After releasing the button, the system goes into a sequenced power-up procedure.
 
-.. figure:: img/powering_up.png
-   :align: center
+   * - .. figure:: img/system_on.png
+          :align: center
+          :scale: 50%
+     - From now on, the system is fully powered on, and the Powerbutton ring is green and the stop button ring is (flashing) red.
 
-From now on, the system is fully powered on, and the Powerbutton ring is green and the stop button ring is (flashing) red.
+       **At this stage, the system can be programmed in Vitis and used in the usual manner.**
 
-.. figure:: img/system_on.png
-   :align: center
+       .. warning::
+           At this stage, the Javascope GUI and the physical frontpanel buttons are not synchronized.
 
-At this stage, the system can be programmed in Vitis and used in the usual manner.
+       	If the user decides to just use the GUI to enable/control the system and then pushes the stop button there, the behavior will be different to pushing the hardware buttons directly.
+       	Only the hardware buttons affect (i.e., set and reset) the hardware release (i.e., are able to return the S3C statemachine from soft errors or warnings back to the ready state), which drives the output enables of the level shifters on new D adapter cards.
 
-.. warning::
-    At this stage, the Javascope GUI and the physical frontpanel buttons are not synchronized.
-	If the user decides to just use the GUI to enable/control the system and then pushes the stop button there, the behavior will be different to pushing the hardware buttons directly.
-	Only the hardware buttons affect (i.e., set and reset) the hardware release (i.e., are able to return the S3C statemachine from soft errors or warnings back to the ready state), which drives the output enables of the level shifters on new D adapter cards.
+       	It thus is not recommended to mix physical control using the buttons on the frontpanel with control via the GUI.
+       	E.g., if the control was stopped with the frontpanel's physical button and the system is then enabled with the GUI, the hardware is not released - Yielding an inoperative state.
 
-	It thus is not recommended to mix physical control using the buttons on the frontpanel with control via the GUI.
-	E.g., if the control was stopped with the frontpanel's physical button and the system is then enabled with the GUI, the hardware is not released - Yielding an inoperative state.
+   * - .. figure:: img/system_stopped.png
+          :align: center
+          :scale: 50%
+     - The user can push the stop button and the Power ring will indicate white.
 
-The user can push the stop button and the Power ring will indicate white.
+   * - .. figure:: img/enable_again.png
+          :align: center
+          :scale: 50%
+     - This means that the safety controller commands all five digital slots into their respective safe state.
+       To re-enable the digital slots, there are two possibilities:
 
-.. figure:: img/system_stopped.png
-   :align: center
+       1. Press the Enable System button
 
-This means that the safety controller commands all five digital slots into their respective safe state.
-To re-enable the digital slots, there are two possibilities:
+   * - .. figure:: img/enable_via_powerbutton.png
+          :align: center
+          :scale: 50%
+     - Or:
 
-1. Press the Enable System button:
+       2. Press the Power button
 
-.. figure:: img/enable_again.png
-   :align: center
+   * - .. figure:: img/error.png
+          :align: center
+          :scale: 50%
+     - An external emergency can be communicated to the S3C via the external stop connector.
+       The Power button indicates a red light and the S3C brings the system in a safe state.
 
-2. Press the Power button:
+   * - .. figure:: img/error_to_be_confirmed.png
+          :align: center
+          :scale: 50%
+     - Once the system is in this state, the user has to acknowledge this error with the Power button.
 
-.. figure:: img/enable_via_powerbutton.png
-   :align: center
+   * - .. figure:: img/error_confirm_by_user.png
+          :align: center
+          :scale: 50%
+     - The S3C gets back into the initial state and the user can power it on as described above.
 
-An external emergency can be communicated to the S3C via the external stop connector.
-The Power button indicates a red light and the S3C brings the system in a safe state.
-
-.. figure:: img/error.png
-   :align: center
-
-Once the system is in this state, the user has to acknowledge this error with the Power button.
-
-.. figure:: img/error_to_be_confirmed.png
-   :align: center
-
-The S3C gets back into the initial state and the user can power it on as described above.
-
-.. figure:: img/error_confirm_by_user.png
-   :align: center
-   
-Regular power off is realized with the Power button.
-It has to be pushed at least 2 seconds to power off.
-
-.. figure:: img/poweron_user.png
-   :align: center
+   * - .. figure:: img/poweron_user.png
+          :align: center
+          :scale: 50%
+     - Regular power off is realized with the Power button.
+       It has to be pushed at least 2 seconds to power off.
 
 
 Functions (partially draft-level)

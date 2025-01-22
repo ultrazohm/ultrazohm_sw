@@ -15,44 +15,44 @@ Adapter card identification retrofit
 
 The retrofit adds address pins to the A and D connectors between the UltraZohm carrier board and its various A and D adapter cards.
 By doing so, the EEPROMs on current and future adapter cards become reachable, which enables the :ref:`uzpA53` (running on the PS CPUs) to fetch the card identification (model, revision and serial) and hand it over to the user.
-The user then may rely on this to, e.g., select/apply any card-specific calibration datasets as required during system initialization, for instance on ADC or DAC cards to compensate for part-based offsets or other analog differences.
+The user may rely on this too, e.g., select/apply any card-specific calibration datasets as required during system initialization, for instance, on ADC or DAC cards, to compensate for part-based offsets or other analog differences.
 The retrofit requires soldering multiple wires on the carrier board.
 
 .. note::
-  This retrofit only applies to UltraZohm with a carrier board of **Rev04**.
-  Carrier boards with Revision 3 and earlier can not be retrofitted to add the adapter card identification feature.
-  The systems with the serial number (see back of system) 002-001-0400-0002 to 001-001-0401-0016 can be upgraded.
-  Systems with the serial number 00x-001-0401-0017 and higher (e.g., -0030) do not require the upgrade since the feature is added by default.
+ This retrofit only applies to UltraZohm with a carrier board of **Rev04**.
+ Carrier boards with Revision 3 and earlier can not be retrofitted to add the adapter card identification feature.
+ The systems with the serial number (see the back of the system) 002-001-0400-0002 to 001-001-0401-0016 can be upgraded.
+ Systems with the serial number 00x-001-0401-0017 and higher (e.g., -0030) do not require the upgrade since the feature is added by default.
 
 Prerequisites and preparation
 -----------------------------
 
-Requred tools:
+Required tools:
 
 - Screwdrivers
 - Soldering iron
 - Tin solder
 - Thin enameled (copper) wire (magnet wire)
 
-Soldering should take less than ten minutes, the mechanics depend on your specific hardware setup since the carrier board has to be disassembly from the chassis.
+Soldering should take less than ten minutes; the mechanics depend on your specific hardware setup since the carrier board has to be disassembled from the chassis.
 
 .. warning::
-	Given the sensitive nature of the electronics on the carrier board, please deploy the usual ESD prevention methods during disassembly, soldering and reassembly.
+   Given the sensitive nature of the electronics on the carrier board, please deploy the usual ESD prevention methods during disassembly, soldering, and reassembly.
 
 
 Step-by-step PCB instructions
 -----------------------------
 
-The goal of this retrofit is to add slot-specific voltage levels to two/three predefined connector pins (A and D slots, respectively) for the (up to) eight adapter cards that can be connected to the UltraZohm carrier.
+This retrofit aims to add slot-specific voltage levels to two/three predefined connector pins (A and D slots, respectively) for the (up to) eight adapter cards that can be connected to the UltraZohm carrier.
 Due to the design of this feature, selected connector pins have to be connected to only ground (GND), not to any other signal.
-Given that all slots on the carrier are "surrounded" by GND, this greatly simplifies the retrofit (as newly added wires can be kept quite short and do not have to reach any supply rail).
+Given that all slots on the carrier are "surrounded" by GND, this greatly simplifies the retrofit (as newly added wires can be kept short and do not have to reach any supply rail).
 
 Important aspects:
 
 * For A slots, between one and two connector pins (per slot) shall be connected to GND
 * For D slots, between zero and two connector pins (per slot) shall be connected to GND
-* For both types of slots, the connector pins in question are easily accessed by means of test pads close to the connector
-* GND is readily available by means of a large plane surrounding all connectors and "made accessible" by carefully removing the solder mask layer on top
+* For both types of slots, the connector pins in question are easily accessed using test pads close to the connector
+* GND is readily available using a large plane surrounding all connectors and "made accessible" by carefully removing the solder mask layer on top
 * Connections between the individual test pads and the -- potentially shared -- "GND spot" shall be made using enameled wire
 
 The following image shows the individual test pads that have to be connected to GND:
@@ -79,7 +79,7 @@ The following 3D rendering shows the affected slots and test pads (NB: slot D5 t
 
 To connect the above pads to GND:
 
-* select a suitable "GND spot" close to the pad(s), i.e.,
+* Select a suitable "GND spot" close to the pad(s), i.e.,
 
   * one left of A1, A2 and A3 each,
   * one between D1 and D2, and

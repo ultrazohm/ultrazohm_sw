@@ -4,7 +4,7 @@
 Xilinx Toolchain
 ================
 
-#. Install Vivado and Vitis 2022.2: `Download Link <https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vitis/2022-2.html>`_ (Xilinx account required)
+#. Install Vivado and Vitis 2022.2: `Download Link <https://www.xilinx.com/support/download/index.html/content/xilinx/en/downloadNav/vivado-design-tools/archive.html>`_ (Xilinx account required)
 #. Choose ``Xilinx Unified Installer 2022.2: Windows Self Extracting Web Installer`` or ``Xilinx Unified Installer 2022.2: Linux Self Extracting Web Installer`` depending on your operating system
 
     .. image:: ./images_installation/vitis_website1_2022.png

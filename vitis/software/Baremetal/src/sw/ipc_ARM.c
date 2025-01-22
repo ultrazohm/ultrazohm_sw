@@ -231,8 +231,9 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_6):
-			data->av.ref_idx = (uint32_t)value;
+//			data->av.ref_idx = (uint32_t)value;
 //			uz_axi_write_uint32(XPAR_MPC_PU_VOLTAGES_VSD_0_BASEADDR + 0x104, data->av.ref_idx);
+			uz_incrementalEncoder_set_electrical_Offset(data->objects.encoder_D3, (uint32_t)(value));
 			break;
 
 		case (My_Button_1):

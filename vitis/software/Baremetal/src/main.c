@@ -193,6 +193,7 @@ int main(void)
 //            Global_Data.av.theta_offset = 4.261607f;
             Global_Data.av.theta_mech_offset_rad = 6.25;//6.1205; //4.420
             Global_Data.av.polepairs = 5.0f;
+            Global_Data.av.offset_el_incre = 945U;
             Global_Data.objects.foc_current = uz_FOC_init(config);
             //init fpga current limit
             Global_Data.av.i_max_fpga = 1.0f;
@@ -242,6 +243,8 @@ int main(void)
             Global_Data.objects.tempMeasurement1 = init_tempMeasurement1();
             Global_Data.objects.tempMeasurement2 = init_tempMeasurement2();
             Global_Data.objects.lmg_trigger = init_lmg_trigger();
+            Global_Data.objects.encoder_D3 = initialize_incremental_encoder_ipcore_on_D3(UZ_D3_INCREMENTAL_ENCODER_RESOLUTION, UZ_D3_MOTOR_POLE_PAIR_NUMBER);
+            uz_incrementalEncoder_set_electrical_Offset(Global_Data.objects.encoder_D3, Global_Data.av.offset_el_incre);
 //            reconfig_ADC();
             // current limit detection ip
             uz_fixedpoint_axi_write(XPAR_PU_CONVERSION_UZ_CUR_LIM_0_BASEADDR + 0x100, Global_Data.av.i_max_fpga, current_limit_SI);
@@ -399,10 +402,10 @@ int main(void)
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x128, 0U); // offset_index
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_0_BASEADDR + 0x12C, 8U); // index_limit
 
@@ -412,10 +415,10 @@ int main(void)
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x128, 8U); // offset_index
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_1_BASEADDR + 0x12C, 16U); // index_limit
 
@@ -425,10 +428,10 @@ int main(void)
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x128, 16U); // offset_index
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_2_BASEADDR + 0x12C, 24U); // index_limit
 
@@ -438,10 +441,10 @@ int main(void)
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x128, 24U); // offset_index
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_3_BASEADDR + 0x12C, 32U); // index_limit
 
@@ -451,10 +454,10 @@ int main(void)
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x128, 32U); // offset_index
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_4_BASEADDR + 0x12C, 40U); // index_limit
 
@@ -464,10 +467,10 @@ int main(void)
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x128, 40U); // offset_index
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_5_BASEADDR + 0x12C, 48U); // index_limit
 
@@ -477,10 +480,10 @@ int main(void)
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x128, 48U); // offset_index
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_6_BASEADDR + 0x12C, 56U); // index_limit
 
@@ -490,12 +493,18 @@ int main(void)
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x11C, Global_Data.av.lambda_x, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x120, Global_Data.av.lambda_y, cost_fp_def);
             uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x124, Global_Data.av.lambda_u, cost_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
-            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+//            uz_fixedpoint_axi_write(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x128, 56U); // offset_index
             uz_axi_write_uint32(XPAR_MPC_PAR_COST_OPT_7_BASEADDR + 0x12C, 64U); // index_limit
+
+            // current reference distribution IP
+			uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x100, 0.0f/base_val.IB, i_setpoint_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x104, 0.0f/base_val.IB, i_setpoint_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x108, 0.0f/base_val.IB, i_setpoint_fp_def);
+			uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x10C, 0.0f/base_val.IB, i_setpoint_fp_def);
 
             initialization_chain = print_msg;
             break;

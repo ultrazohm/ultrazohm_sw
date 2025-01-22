@@ -78,6 +78,9 @@ enum JS_OberservableData {
 	JSO_f_mod_cnt,
 	JSO_lifecheck,
 	JSO_curr_lim_fpga,
+	JSO_theta_el_incre,
+	JSO_omega_m_incre,
+	JSO_th_el_incre_ip,
 	JSO_ENDMARKER
 };
 

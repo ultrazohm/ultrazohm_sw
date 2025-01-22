@@ -111,6 +111,9 @@ int JavaScope_initalize(DS_Data* data)
 	js_ch_observable[JSO_f_mod_cnt]			= &f_mod_wait_cnt;
 	js_ch_observable[JSO_lambda_u]			= &data->av.lambda_u;
 	js_ch_observable[JSO_curr_lim_fpga]		= &data->av.overcurrent_FPGA_fl;
+	js_ch_observable[JSO_theta_el_incre]	= &data->av.theta_elec_incre;
+	js_ch_observable[JSO_omega_m_incre]		= &data->av.mechanicalRotorSpeed_incre;
+	js_ch_observable[JSO_th_el_incre_ip]	= &data->av.theta_el_incre_ip;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

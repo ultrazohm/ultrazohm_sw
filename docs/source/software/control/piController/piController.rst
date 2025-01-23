@@ -41,7 +41,7 @@ Example
   #include "uz/uz_piController/uz_piController.h"
   int main(void) {
      struct uz_PI_Controller_config config = {
-        .type = parallel,
+        .type = UZ_PI_PARALLEL,
         .Kp = 10.0f,
         .Ki = 10.0f,
         .samplingTime_sec = 0.00005f,

@@ -238,6 +238,8 @@ static uz_3ph_dq_t uz_CurrentControl_decoupling(uz_CurrentControl_t* self, uz_3p
 void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t* self, float tau_sigma_sec)
 {
 	uz_assert_not_NULL(self);
+	uz_assert(self->config.config_id.type == UZ_PI_PARALLEL);
+	uz_assert(self->config.config_iq.type == UZ_PI_PARALLEL);
 	uz_assert(tau_sigma_sec > 0.0f);
 	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
 	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
@@ -255,6 +257,8 @@ void uz_CurrentControl_tune_magnitude_optimum(uz_CurrentControl_t* self, float t
 void uz_CurrentControl_tune_symmetric_optimum(uz_CurrentControl_t* self, float tau_sigma_sec)
 {
 	uz_assert_not_NULL(self);
+	uz_assert(self->config.config_id.type == UZ_PI_PARALLEL);
+	uz_assert(self->config.config_iq.type == UZ_PI_PARALLEL);
 	uz_assert(tau_sigma_sec > 0.0f);
 	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
 	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);
@@ -272,6 +276,8 @@ void uz_CurrentControl_tune_symmetric_optimum(uz_CurrentControl_t* self, float t
 void uz_CurrentControl_tune_bandwidth(uz_CurrentControl_t* self, float bandwidth_rad_per_sec)
 {
 	uz_assert_not_NULL(self);
+	uz_assert(self->config.config_id.type == UZ_PI_PARALLEL);
+	uz_assert(self->config.config_iq.type == UZ_PI_PARALLEL);
 	uz_assert(bandwidth_rad_per_sec > 0.0f);
 	uz_assert(self->config.config_PMSM.R_ph_Ohm > 0.0f);
 	uz_assert(self->config.config_PMSM.Ld_Henry > 0.0f);

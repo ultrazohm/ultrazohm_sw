@@ -24,7 +24,7 @@ Having a common platform enables the active research community to focus on publi
 - More information on [ultrazohm.com](ultrazohm.com)
 - Check the [docs](https://docs.ultrazohm.com/) 
 
-## Research
+## Research 
 
 The primary use of the UltraZohm is the research of modern control algorithms for power electronics and drive systems:
 

@@ -33,7 +33,8 @@ Example
 Description
 ===========
 
-Calculates the values of ``Kp`` and ``Ki`` according to different optimisation criteria and the parameters of the PMSM. 
+This only works for a ``UZ_PI_PARALLEL`` PI-controller configuration.
+Calculates the values of ``Kp`` and ``Ki`` according to different optimization criteria and the parameters of the PMSM. 
 The magnitude optimum provides a good compromise between a fast response to a step change in the reference variable with low overshoot and good disturbance behaviour [[#Gemaßmer]_] (p.94). 
 The controlled system is simplified to a PT2 system consisting of the respective current control loop (PT1 system) and an additional PT1 system representing the dead time due to the measuring process and actuator: 
 

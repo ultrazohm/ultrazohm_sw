@@ -203,17 +203,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
-		data->av.angle_lead_factor_MPC = value;
+		data->av.id_ref_step = value;
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
-		data->av.phiPM_h[0] = value;
+		data->av.iq_ref_step = value;
+
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		data->av.phiPM_h[1] = value;
+		data->av.phiPM_h[0] = value;
 //		data->av.speed_ref_rpm = value;
 			break;
 
@@ -221,7 +222,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.snd_fld[6] = value;
 //		data->av.offset_el_incre = value;
 //		uz_incrementalEncoder_set_electrical_Offset(data->objects.encoder_D3, (uint32_t)(value));
-		data->av.lambda_xy = value;
+		data->av.phiPM_h[1] = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -409,12 +410,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 				data->rasv.halfBridge5DutyCycle = 0.5f;
 				data->rasv.halfBridge6DutyCycle = 0.5f;
 			} else {
-
+				data->av.dq_step_off_on = false;
 			}
 			break;
 
 		case (My_Button_8):
-
+				data->av.dq_step_off_on = true;
 			break;
 
 		case (Error_Reset):
@@ -492,19 +493,31 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	}
 
 	/* Bit 8 - My_Button_5 */
-		if (data->av.kalman_off_on == false) {
-			js_status_BareToRTOS |=  (1 << 8);
-		}else{
-			js_status_BareToRTOS &= ~(1 << 8);
-		}
+	if (data->av.kalman_off_on == false) {
+		js_status_BareToRTOS |= (1 << 8);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 8);
+	}
 
 	/* Bit 9 - My_Button_6 */
-			if (data->av.kalman_off_on == true) {
-				js_status_BareToRTOS |=  (1 << 9);
-			}else{
-				js_status_BareToRTOS &= ~(1 << 9);
-			}
+	if (data->av.kalman_off_on == true) {
+		js_status_BareToRTOS |= (1 << 9);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 9);
+	}
+	/* Bit 10 - My_Button_7 */
+	if (data->av.dq_step_off_on == false) {
+		js_status_BareToRTOS |= (1 << 10);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 10);
+	}
 
+	/* Bit 11 - My_Button_8 */
+	if (data->av.dq_step_off_on == true) {
+		js_status_BareToRTOS |= (1 << 11);
+	} else {
+		js_status_BareToRTOS &= ~(1 << 11);
+	}
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

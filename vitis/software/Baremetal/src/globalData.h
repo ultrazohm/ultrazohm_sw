@@ -90,6 +90,7 @@ typedef struct _actualValues_ {
 	float mechanicalRotorSpeedRPM;
 	float mechanicalRotorSpeedRADpS;
 	float electricalRotorSpeedRADpS;
+	float mechanicalRotorSpeedRADpS_ip;
 	float i_a1;
 	float i_b1;
 	float i_c1;
@@ -191,6 +192,7 @@ typedef struct _actualValues_ {
 	float mechanicalRotorSpeed_filtered_incre;
 	uint32_t offset_el_incre;
 	bool kalman_off_on;
+	bool dq_step_off_on;
 	float kalman_R;
 	float kalman_Q1;
 	float kalman_Q2;
@@ -209,6 +211,13 @@ typedef struct _actualValues_ {
 	float dualsvm_clamped_f;
 	float xy_r6_v_d_ref;
 	float xy_r6_v_q_ref;
+	float v_a1_ref_last_and_present[2];
+	bool v_a1_ref_zero_crossing;
+	float f_v_a1_ref_zero_crossing;
+	float id_ref_step;
+	float iq_ref_step;
+	bool trig_flag;
+	float f_trig_flag;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

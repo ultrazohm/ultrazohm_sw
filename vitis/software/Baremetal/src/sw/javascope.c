@@ -40,6 +40,8 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
+extern uz_3ph_dq_t i_dq_ref;
+
 uint32_t pollErrorCnt = 0U;
 
 uint32_t i_fetchDataLifeCheck=0;
@@ -99,7 +101,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dutycyc_out_b2]		= &data->rasv.halfBridge5DutyCycle;
 	js_ch_observable[JSO_dutycyc_out_c2]		= &data->rasv.halfBridge6DutyCycle;
 	js_ch_observable[JSO_iterations]			= &data->av.iterations;
-	js_ch_observable[JSO_iq_ref]				= &data->av.i_q_ref;
+	js_ch_observable[JSO_id_ref]				= &i_dq_ref.d;
+	js_ch_observable[JSO_iq_ref]				= &i_dq_ref.q;
 	js_ch_observable[JSO_v_d_ref]				= &data->av.u_dq_ref.d;
 	js_ch_observable[JSO_v_q_ref]				= &data->av.u_dq_ref.q;
 	js_ch_observable[JSO_v_d]					= &data->av.v_d;

@@ -272,10 +272,10 @@ void ISR_Control(void *data)
     Global_Data.av.i_y_pu = Global_Data.av.i_y*inverse_base_val.IB;
     Global_Data.av.omega_mech_pu = Global_Data.av.mechanicalRotorSpeedRADpS*inverse_base_val.omegaB;
     Global_Data.av.omega_el_pu = Global_Data.av.electricalRotorSpeedRADpS*inverse_base_val.omegaB;
-    Global_Data.av.i_d_ref_pu = Global_Data.av.i_d_ref*inverse_base_val.IB;
-    Global_Data.av.i_q_ref_pu = Global_Data.av.i_q_ref*inverse_base_val.IB;
-    Global_Data.av.i_x_ref_pu = Global_Data.av.i_x_ref*inverse_base_val.IB;
-    Global_Data.av.i_y_ref_pu = Global_Data.av.i_y_ref*inverse_base_val.IB;
+//    Global_Data.av.i_d_ref_pu = Global_Data.av.i_d_ref*inverse_base_val.IB;
+//    Global_Data.av.i_q_ref_pu = Global_Data.av.i_q_ref*inverse_base_val.IB;
+//    Global_Data.av.i_x_ref_pu = Global_Data.av.i_x_ref*inverse_base_val.IB;
+//    Global_Data.av.i_y_ref_pu = Global_Data.av.i_y_ref*inverse_base_val.IB;
     Global_Data.av.v_dc1_pu = Global_Data.av.v_dc1*inverse_base_val.VB;
 
     // assign to structs
@@ -284,10 +284,16 @@ void ISR_Control(void *data)
     i_xy_actual.d = Global_Data.av.i_x;
     i_xy_actual.q = Global_Data.av.i_y;
 
+    if (Global_Data.av.dq_step_off_on == false) {
 	i_dq_ref.d = Global_Data.av.i_d_ref;
 	i_dq_ref.q = Global_Data.av.i_q_ref;
 	i_xy_ref.d = Global_Data.av.i_x_ref;
 	i_xy_ref.q = Global_Data.av.i_y_ref;
+    Global_Data.av.i_d_ref_pu = Global_Data.av.i_d_ref*inverse_base_val.IB;
+    Global_Data.av.i_q_ref_pu = Global_Data.av.i_q_ref*inverse_base_val.IB;
+    Global_Data.av.i_x_ref_pu = Global_Data.av.i_x_ref*inverse_base_val.IB;
+    Global_Data.av.i_y_ref_pu = Global_Data.av.i_y_ref*inverse_base_val.IB;
+    }
 
 
 
@@ -308,6 +314,30 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge5DutyCycle = 0.5f;
     	Global_Data.rasv.halfBridge6DutyCycle = 0.5f;
     }
+
+	// use reference modulation signal for detecting zero crossing
+	Global_Data.av.v_a1_ref_last_and_present[1] = Global_Data.av.v_a1_ref_last_and_present[0];
+	Global_Data.av.v_a1_ref_last_and_present[0] = Global_Data.rasv.halfBridge1DutyCycle;
+	if (Global_Data.av.v_a1_ref_last_and_present[0] > 0.5f && Global_Data.av.v_a1_ref_last_and_present[1] <= 0.5f) {
+		Global_Data.av.v_a1_ref_zero_crossing = true;
+		Global_Data.av.f_v_a1_ref_zero_crossing = 1.0f;
+	} else {
+		Global_Data.av.v_a1_ref_zero_crossing = false;
+		Global_Data.av.f_v_a1_ref_zero_crossing = 0.0f;
+	}
+
+	// if selected, trigger idq reference step at v_a1_ref zero crossing
+	if (Global_Data.av.dq_step_off_on == true && Global_Data.av.v_a1_ref_zero_crossing == true) {
+		i_dq_ref.d = Global_Data.av.id_ref_step;
+		i_dq_ref.q = Global_Data.av.iq_ref_step;
+		Global_Data.av.i_d_ref_pu = Global_Data.av.id_ref_step*inverse_base_val.IB;
+		Global_Data.av.i_q_ref_pu = Global_Data.av.iq_ref_step*inverse_base_val.IB;
+//		Global_Data.av.dq_step_off_on = false;
+		Global_Data.av.trig_flag = true;
+		Global_Data.av.f_trig_flag = 1.0f;
+		//M = 0.5 p.u. = 14 Nm: id=-0.26 A, iq=4.9 A
+		//M = 1.0 p.u. = 28 Nm: id=-1.03 A, iq=9.71 A
+	}
 
     if (current_state==control_state)
     {

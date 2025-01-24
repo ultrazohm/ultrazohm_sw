@@ -58,8 +58,8 @@ Comprehensive and ever-growing documentation for the Ultrazohm on `docs.ultrazoh
 
 The UltraZohm repositories are split in software and hardware:
 
-- The **main repository**, which includes source code for the processors, FPGA, documentation, and more, can be found in the `ultrazohm_sw repository <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_.
-- Each adapter card has an individual repository containing the **Altium PCB project**. All PCB repositories are listed on the `PCB-Design project <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_. In addition, the documentation page of the PCB links to its respective repository.
+- The `main repository ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_ contains the source code for the processors, FPGA, documentation, CI pipelines and more.
+- The `PCB Designs <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_ lists all adapter card repositories, where each repository contains its Altium PCB project. Additionally, each PCBâ€™s documentation page links to its respective repository.
 
 **Maintained & funded**
 
@@ -115,7 +115,7 @@ Literature about the UltraZohm
 ------------------------------
 
 #. `UltraZohm - a Powerful Real-Time Computation Platform for MPC and Multi-Level Inverters <https://ieeexplore.ieee.org/document/8753306>`_
-#. `UltraZohm—An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
+#. `UltraZohmï¿½An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
 
 
 Literature using the UltraZohm

@@ -54,15 +54,12 @@ We welcome researchers from all around the world with an interest in the control
 
 Comprehensive and ever-growing documentation for the Ultrazohm on `docs.ultrazohm.com <https://docs.ultrazohm.com/>`_.
 
-**Bitbucket**
+**Repositories**
 
-The UltraZohm workspace can be found on `Bitbucket <https://bitbucket.org/ultrazohm/workspace/overview/>`_. 
-The repository for the source-code of the software framework can be found in the `ultrazohm_sw repository <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/>`_.
-The source of the documentation is located in `ultrazohm_sw/docs <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/docs/>`_.
-Additionally, the source files of the PCBs is available in the `PCB-Design project <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_.
-Note that due to the specifics of Bitbucket, this project is only visible to users that are part of the UltraZohm workspace.
-The individual repositories of the PCB projects can be accessed directly if one is not part of the Ultrazohm workspace, e.g. `DAC-Card repository <https://bitbucket.org/ultrazohm/uz_a_dac8831/>`_.
-The documentation pages of the PCB links to their respective repository.
+The UltraZohm repositories are split in software and hardware:
+
+- The **main repository**, which includes source code for the processors, FPGA, documentation, and more, can be found in the `ultrazohm_sw repository <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_.
+- Each adapter card has an individual repository containing the **Altium PCB project**. All PCB repositories are listed on the `PCB-Design project <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_. In addition, the documentation page of the PCB links to its respective repository.
 
 **Maintained & funded**
 
@@ -118,7 +115,7 @@ Literature about the UltraZohm
 ------------------------------
 
 #. `UltraZohm - a Powerful Real-Time Computation Platform for MPC and Multi-Level Inverters <https://ieeexplore.ieee.org/document/8753306>`_
-#. `UltraZohmâ€”An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
+#. `UltraZohm—An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
 
 
 Literature using the UltraZohm

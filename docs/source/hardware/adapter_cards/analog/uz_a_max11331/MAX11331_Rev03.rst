@@ -1,11 +1,8 @@
-.. _Analog_MAX1131_12_Rev02:
+.. _Analog_MAX11331_Rev03:
 
-=======================
-Analog MAX1131-12 Rev02
-=======================
-
-.. image:: Rev02/MAX11_AdapterBoard_V2.png
-   :width: 500
+=====================
+Analog MAX11331 Rev03
+=====================
 
 
 Filters
@@ -50,7 +47,7 @@ For all types of measurements, described in :ref:`Analog_max11331_meas_modes`, i
    **Use a high precision resistor to set the gains**, i.e., 0.1% or better. 
 
 .. note ::
-   :math:`{C_\mathrm{Diff}}` must have at least :math:`{10\,\mathrm{nF}}` so that the voltage does not drop when switching the MAX1131 multiplexer. This ensures that the measuring channel remains stable.
+   :math:`{C_\mathrm{Diff}}` must have at least :math:`{10\,\mathrm{nF}}` so that the voltage does not drop when switching the MAX11331 multiplexer. This ensures that the measuring channel remains stable.
 
 **The pre-assembled values are**
 
@@ -74,24 +71,21 @@ Known issues
 
 .. warning::
    * for each :ref:`Analog_max11331_meas_modes`, i.e., single-ended and fully differential, the ground of a possible external ADC power supply must be referenced to the ground of the UltraZohm. Otherwise, the analog front-end may be outside the voltage rails, resulting in offsets in the measured values.
-   * due to missing pull-downs at the channel input of Rev02, unused channels are floating. This will be resolved in Rev03.
 
 Compatibility 
 -------------
 
-* Slots A1 to A3 can be used without limitations. However, slot A3 is used for MAX1131 adapter board in the default UltraZohm software project.
+* Slots A1 to A3 can be used without limitations. However, slot A3 is used for MAX11331 adapter board in the default UltraZohm software project.
  
 References
 ----------
 
-* :download:`Assembly drawing <Rev02/ASM_UZ_A_MAX11331_Differential_Input_Rev01.pdf>`
-* :download:`Schematic <Rev02/SCH_UZ_A_MAX11331_Differential_Input_Rev01-1.pdf>`
 * `UZ_A_MAX11331 Repository with Altium project <https://bitbucket.org/ultrazohm/uz_a_max11331/src>`_
-* :download:`LTSpice simulation Rev02 <Rev02/ltspice_MAX11331_Rev02.zip>`
-* IP Core ADC :ref:`ipCore_LTC2311_v3`
+* :download:`LTSpice simulation Rev02 <Rev03/ltspice_MAX11331_Rev02.zip>`
+* IP Core ADC :ref:`ipCore_adc_max11331`
 
 Designed by 
 """""""""""
 
-Andreas Geiger (ZC), Eyke Aufderheide (TUM) in 11/2024
+Andreas Geiger (ZC), Eyke Aufderheide (TUM) in 01/2025
 

@@ -15,7 +15,7 @@ An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`
 * Ethernet: Connect your PC running the Javascope to "LAN 0" on the frontpanel
 * The STOP and Enable buttons on the frontpanel now have an effect beyond the UZ software as they cause state transitions in the :ref:`carrier_board_rev5_s3cfsm` - Please refer to :ref:`carrier_board_rev5_s3cpwr` for caveats if both the frontpanel buttons and the Javascope GUI are used at the same time
 * Note that the 24V rails sent to the adapter cards are now e-fused; if an overcurrent occurs, the rail of the affected card is disabled and remains so until a powercycle
-* The D-slot CPLDs no longer are programmed via a dedicated debug module and, thus, USB cable; instead, SoM and CPLD JTAGs are integrated, which enables CPLD programming via their :ref:`dedicated channel <label_cpld_programming>` (see :ref:`uz_per_jtag` regarding a retrofit option for Rev04 and older systems)
+* The D-slot CPLDs no longer are programmed via a dedicated debug module and, thus, USB cable; instead, SoM and CPLD JTAGs are integrated, which enables CPLD programming via their :ref:`dedicated channel <label_cpld_programming_ftdi4ch>` (see :ref:`uz_per_jtag` regarding a retrofit option for Rev04 and older systems)
 
 Hints for Operation and Troubleshooting
 ---------------------------------------

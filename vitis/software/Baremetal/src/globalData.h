@@ -92,6 +92,8 @@ typedef struct _actualValues_ {
 	float v_q_right;
 	float v_d_right_meas;
 	float v_q_right_meas;
+	float v_d_left_meas;
+	float v_q_left_meas;
 	float omega_mech_right;
 	float omega_mech_left;
 	float speed_rpm_left;

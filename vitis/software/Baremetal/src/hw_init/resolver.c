@@ -33,7 +33,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_left = {
                .machine_polepairs = 4,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -0.4f //noch anpassen mit Stromregelung 0A
+               .theta_m_offset_rad = -0.3905f //noch anpassen mit Stromregelung 0A
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left = {
@@ -51,7 +51,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_right = {
                .machine_polepairs = 4,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -0.4f //noch anpassen mit Stromregelung 0A
+               .theta_m_offset_rad = -0.3905f //noch anpassen mit Stromregelung 0A
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right = {

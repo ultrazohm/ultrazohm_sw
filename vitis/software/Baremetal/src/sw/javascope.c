@@ -100,6 +100,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_vq_right]			= &data->av.v_q_right;
 	js_ch_observable[JSO_vd_right_meas]		= &data->av.v_d_right_meas;
 	js_ch_observable[JSO_vq_right_meas]		= &data->av.v_q_right_meas;
+	js_ch_observable[JSO_vd_left_meas]		= &data->av.v_d_left_meas;
+	js_ch_observable[JSO_vq_left_meas]		= &data->av.v_q_left_meas;
 	js_ch_observable[JSO_torque]			= &data->av.torque;
 	js_ch_observable[JSO_id_ref_left]		= &data->rasv.i_dq_ref_left.d;
 	js_ch_observable[JSO_iq_ref_left]		= &data->rasv.i_dq_ref_left.q;

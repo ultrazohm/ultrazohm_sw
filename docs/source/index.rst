@@ -54,11 +54,20 @@ We welcome researchers from all around the world with an interest in the control
 
 Comprehensive and ever-growing documentation for the Ultrazohm on `docs.ultrazohm.com <https://docs.ultrazohm.com/>`_.
 
+**Repositories**
+
+The UltraZohm repositories are split in software and hardware:
+
+- The `main repository ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw>`_ contains the source code for the processors, FPGA, documentation, CI pipelines and more.
+- The `PCB Designs <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_ lists all adapter card repositories, where each repository contains its Altium PCB project. Additionally, each PCB’s documentation page links to its respective repository.
+
 **Maintained & funded**
 
 Project development is funded by the `BMBF with the research grant KI-Power <https://elektronikforschung.de/projekte/ki-power>`_ and is actively maintained by the `Institute ELSYS of TH Nuremberg <https://www.th-nuernberg.de/einrichtungen-gesamt/in-institute/institut-fuer-leistungselektronische-systeme-elsys/>`_ as well as the `Chair of High-Power Converter Systems (HLU) of TU Munich <https://www.epe.ed.tum.de/en/eal/home/>`_.
 In addition, researchers of TH Nuremberg and TU Munich founded the start-up `Zohm Control GmbH <https://zohm-control.com/>`_ to ensure the long term development of the system and to be able to distribute the fully assembled UltraZohm systems.
 
+
+.. _uzslack:
 
 UltraZohm Community Slack
 *************************
@@ -106,7 +115,7 @@ Literature about the UltraZohm
 ------------------------------
 
 #. `UltraZohm - a Powerful Real-Time Computation Platform for MPC and Multi-Level Inverters <https://ieeexplore.ieee.org/document/8753306>`_
-#. `UltraZohm—An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
+#. `UltraZohm�An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
 
 
 Literature using the UltraZohm
@@ -130,13 +139,8 @@ License
 
 The project is licensed under the Apache 2.0 license.
 See `LICENSE <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/LICENSE>`_ for details.
-The source of the documentation is located in `ultrazohm_sw/docs <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/main/docs/>`_.
 
 The hardware is documented in :ref:`carrier_board` and :ref:`adapter_cards` including schematics and assembly files.
-Additionally, the source files of the PCBs is available in the `PCB-Design project <https://bitbucket.org/ultrazohm/workspace/projects/PCB>`_.
-Note that due to the specifics of Bitbucket, this project is only visible to users that are part of the UltraZohm workspace.
-The individual repositories of the PCB projects can be accessed directly if one is not part of the Ultrazohm workspace, e.g. `DAC-Card repository <https://bitbucket.org/ultrazohm/uz_a_dac8831/>`_.
-The documentation pages of the PCB links to their respective repository.
 The preferred license for hardware within the UltraZohm project is the `CERN Open Hardware License Version 2 - Permissive <https://ohwr.org/cern_ohl_p_v2.pdf>`_ (CERN-OHL-P).
 The UltraZohm project uses :ref:`altium` for PCB design.
 

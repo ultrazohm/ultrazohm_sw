@@ -1,8 +1,8 @@
 .. _carrier_known_issues:
 
-============
-Known issues
-============
+=========================
+Known issues and remedies
+=========================
 
 
 .. _carrier_known_issues_ethrst:

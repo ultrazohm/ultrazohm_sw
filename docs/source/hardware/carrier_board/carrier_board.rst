@@ -15,5 +15,6 @@ Carrier Board
 	carrier_board_rev04/index
 	carrier_board_rev05/index
 	known_issues
+	retrofit_options
 
 

@@ -45,11 +45,15 @@ extern DS_Data Global_Data;
 #define PHASE_CURRENT_CONV_W 		1000/11.211;
 #define PHASE_CURRENT_OFFSET_VOLT 	2.5
 
-#define DC_LINK_VOLT_CONV 			1/0.0546		// DC-Voltage 0...5 V -> 0...91.5 V
+#define DC_LINK_VOLT_CONV 			18.27932f		// DC-Voltage 0...5 V -> 0...91.5 V
+#define DC_LINK_VOLT_OFFS			-0.01424f
 // Korrektur des Skaling-Faktoren noch einmal überprüfen/validieren: alt: 1/0.0546
-#define PHASE_VOLT_CONV_U 			0.9358f/0.0546f		// Voltage DC_GND to Phase U
-#define PHASE_VOLT_CONV_V 			0.9358f/0.0546f
-#define PHASE_VOLT_CONV_W 			0.9358f/0.0546f
+#define PHASE_VOLT_CONV_U 			17.2855f		// Voltage DC_GND to Phase U
+#define PHASE_VOLT_CONV_V 			17.2983f
+#define PHASE_VOLT_CONV_W 			17.2741f
+#define PHASE_VOLT_OFFS_U 			-0.0342f
+#define PHASE_VOLT_OFFS_V 			-0.0339f
+#define PHASE_VOLT_OFFS_W 			-0.0358f
 #define MOSFET_TEMP_CONV_U 			1
 
 #define ISR_SAMPLE_FREQ				40000
@@ -154,10 +158,10 @@ void ISR_Control(void *data)
     Global_Data.av.I_V = (Global_Data.aa.A1.me.ADC_A3 - 0.092072175f - 0.067266) * PHASE_CURRENT_CONV_V;
     Global_Data.av.I_W = (Global_Data.aa.A1.me.ADC_A2 - 0.091379816f + 0.067266) * PHASE_CURRENT_CONV_W;
 
-    Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A1 * DC_LINK_VOLT_CONV;
-    Global_Data.av.U_U = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_U;
-    Global_Data.av.U_V = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_V;
-    Global_Data.av.U_W = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_W;
+    Global_Data.av.U_ZK = (Global_Data.aa.A1.me.ADC_A1 * DC_LINK_VOLT_CONV) + DC_LINK_VOLT_OFFS;
+    Global_Data.av.U_U = (Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_U) + PHASE_VOLT_OFFS_U;
+    Global_Data.av.U_V = (Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_V) + PHASE_VOLT_OFFS_V;
+    Global_Data.av.U_W = (Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_W) + PHASE_VOLT_OFFS_W;
 
     //torque_meas_raw = Global_Data.aa.A2.me.ADC_A1 * 20.0f;
     //Global_Data.av.torque_meas = uz_signals_IIR_Filter_sample(Global_Data.objects.torque_meas_filter_LP, torque_meas_raw);

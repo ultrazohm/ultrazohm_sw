@@ -39,19 +39,13 @@
 // 0x30 : reserved
 // 0x34 : Data signal of A_rows
 //        bit 31~0 - A_rows[31:0] (Read/Write)
-// 0x38 : Data signal of A_rows
-//        bit 31~0 - A_rows[63:32] (Read/Write)
-// 0x3c : reserved
-// 0x40 : Data signal of B_rows
+// 0x38 : reserved
+// 0x3c : Data signal of B_rows
 //        bit 31~0 - B_rows[31:0] (Read/Write)
-// 0x44 : Data signal of B_rows
-//        bit 31~0 - B_rows[63:32] (Read/Write)
-// 0x48 : reserved
-// 0x4c : Data signal of B_columns
+// 0x40 : reserved
+// 0x44 : Data signal of B_columns
 //        bit 31~0 - B_columns[31:0] (Read/Write)
-// 0x50 : Data signal of B_columns
-//        bit 31~0 - B_columns[63:32] (Read/Write)
-// 0x54 : reserved
+// 0x48 : reserved
 // (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 #define XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL        0x00
@@ -65,10 +59,12 @@
 #define XMATRIXMULTIPLICATION_CONTROL_ADDR_C_OUTPUT_DATA  0x28
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_C_OUTPUT_DATA  64
 #define XMATRIXMULTIPLICATION_CONTROL_ADDR_A_ROWS_DATA    0x34
-#define XMATRIXMULTIPLICATION_CONTROL_BITS_A_ROWS_DATA    64
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B_ROWS_DATA    0x40
-#define XMATRIXMULTIPLICATION_CONTROL_BITS_B_ROWS_DATA    64
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B_COLUMNS_DATA 0x4c
-#define XMATRIXMULTIPLICATION_CONTROL_BITS_B_COLUMNS_DATA 64
+#define XMATRIXMULTIPLICATION_CONTROL_BITS_A_ROWS_DATA    32
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B_ROWS_DATA    0x3c
+#define XMATRIXMULTIPLICATION_CONTROL_BITS_B_ROWS_DATA    32
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B_COLUMNS_DATA 0x44
+#define XMATRIXMULTIPLICATION_CONTROL_BITS_B_COLUMNS_DATA 32
+
+
 
 #endif

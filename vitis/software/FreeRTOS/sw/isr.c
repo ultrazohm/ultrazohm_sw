@@ -132,9 +132,9 @@ void Transfer_ipc_Intr_Handler(void *data)
 		codegenInstance.input.tB_over_Ts = rpu_to_apu_user_data->tB_over_Ts;
 
 		/* do your computations that you want to accelerate here... */
-		if (rpu_to_apu_user_data->a53_ctrl_off_on == true) {
+//		if (rpu_to_apu_user_data->a53_ctrl_off_on == true) {
 		uz_codegen_step(&codegenInstance);
-		}
+//		}
 
 		// write data to r5 in shared memory and flush cache
 		apu_to_rpu_user_data->dutycyc[0] = codegenInstance.output.d_opt[0];
@@ -148,6 +148,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 		apu_to_rpu_user_data->dob_error_estimate[1] = codegenInstance.output.dob_error_estimate[1];
 		apu_to_rpu_user_data->dob_error_estimate[2] = codegenInstance.output.dob_error_estimate[2];
 		apu_to_rpu_user_data->dob_error_estimate[3] = codegenInstance.output.dob_error_estimate[3];
+		apu_to_rpu_user_data->lifecheck_return = rpu_to_apu_user_data->lifecheck;
 
 	Xil_DCacheFlushRange( MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU, CACHE_FLUSH_SIZE_APU_TO_RPU);
 

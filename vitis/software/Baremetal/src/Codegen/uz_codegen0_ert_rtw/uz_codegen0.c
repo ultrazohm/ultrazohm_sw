@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'uz_codegen0'.
  *
- * Model version                  : 2.21
+ * Model version                  : 2.31
  * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020
- * C/C++ source code generated on : Fri Jan 17 16:34:11 2025
+ * C/C++ source code generated on : Wed Jan 29 18:44:12 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -6994,12 +6994,12 @@ void uz_codegen0_step(RT_MODEL *const rtM)
   /* '<S10>:1:23'               1 0 0 0 0 0 -1]); */
   /* '<S10>:1:24' beq =  single([0.5;0]); */
   /*  sum of all duration times  */
-  /*  % do not force symmetrical zero vectors */
+  /*  do not force symmetrical zero vectors */
   /*  Aeq = single([1 1 1 1 1 1 1]); */
   /*  beq =  single(0.5);          % sum of all duration times  */
   /*  define cold start for active-set solver */
   /* '<S10>:1:31' iA0 = false(size(b)); */
-  /*  [x_opt,iter] = mpc_solve(H,f,A,b,Aeq,beq,iA0,max_iter,tol); */
+  /*  [t_opt,iter] = mpc_solve(H,f,A,b,Aeq,beq,iA0,max_iter,tol); */
   /* '<S10>:1:34' [t_opt,iter] = mpc_quadprog(H,f,A,b,Aeq,beq,x0); */
   /*  set up quadprog solver */
   /* '<S10>:1:65' quadprog_options = optimoptions('quadprog','Algorithm','active-set','OptimalityTolerance',1e-6,'MaxIterations',7); */

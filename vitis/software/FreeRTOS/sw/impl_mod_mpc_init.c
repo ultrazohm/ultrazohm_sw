@@ -5,7 +5,7 @@ uz_codegen codegenInstance;
 
 void impl_mod_mpc_init() {
 
-	codegenInstance.input.v_DC_pu = 565.0f;
+	codegenInstance.input.v_DC_pu = 2.4465f;
 	codegenInstance.input.theta_el_pos = 0.0f;
 	codegenInstance.input.theta_el_neg = 0.0f;
 	codegenInstance.input.Ts_times_ZB_over_Ld = 0.0f;
@@ -32,8 +32,8 @@ void impl_mod_mpc_init() {
 	codegenInstance.input.tolerance = 1e-6;
 	codegenInstance.input.max_iter = 10.0f;
 	codegenInstance.input.HC_off_on = false;
-	codegenInstance.input.Ts_over_tB = 0.0f;
-	codegenInstance.input.tB_over_Ts = 0.0f;
+	codegenInstance.input.Ts_over_tB = 0.3927f;
+	codegenInstance.input.tB_over_Ts = 2.5465f;
 
 	uz_codegen_init(&codegenInstance);
 

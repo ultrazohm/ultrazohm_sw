@@ -38,6 +38,8 @@
 #include "../include/encoder.h"
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 
+//extern uz_codegen codegenInstance;
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -339,6 +341,10 @@ void ISR_Control(void *data)
 		//M = 1.0 p.u. = 28 Nm: id=-1.03 A, iq=9.71 A
 	}
 
+
+	JavaScope_update(&Global_Data);
+
+
     if (current_state==control_state)
     {
     	if (Global_Data.rasv.a53_ctrl_off_on == false)
@@ -458,8 +464,67 @@ void ISR_Control(void *data)
 
     	} // END if a53_ctrl_off_on
 
+//    	JavaScope_update(&Global_Data);
+
     	if(Global_Data.rasv.current_ctrl_select == IMPL_MOD) {
     		uz_CurrentControl_reset(Global_Data.objects.foc_current_dq);
+
+//    		codegenInstance.input.v_DC_pu = Global_Data.av.v_dc1_pu;
+//    			codegenInstance.input.theta_el_pos = (Global_Data.av.theta_el_pos_MPC);
+//    			codegenInstance.input.theta_el_neg = (Global_Data.av.theta_el_neg_MPC);
+//    			codegenInstance.input.Ts_times_ZB_over_Ld = Global_Data.av.Ts_times_ZB_over_Ld;
+//    			codegenInstance.input.Ts_times_ZB_over_Lq = Global_Data.av.Ts_times_ZB_over_Lq;
+//    			codegenInstance.input.Ts_times_ZB_over_Lx = Global_Data.av.Ts_times_ZB_over_Lx;
+//    			codegenInstance.input.Ts_times_ZB_over_Ly = Global_Data.av.Ts_times_ZB_over_Ly;
+//    			codegenInstance.input.Rs_over_ZB = Global_Data.av.Rs_over_ZB;
+//    			codegenInstance.input.Ld_over_LB = Global_Data.av.Ld_over_LB;
+//    			codegenInstance.input.Lq_over_LB = Global_Data.av.Lq_over_LB;
+//    			codegenInstance.input.Lx_over_LB = Global_Data.av.Lx_over_LB;
+//    			codegenInstance.input.Ly_over_LB = Global_Data.av.Ly_over_LB;
+//    			codegenInstance.input.psi_pm_over_psiB = Global_Data.av.psi_pm_over_psiB;
+//    			codegenInstance.input.omega_el_pu = Global_Data.av.omega_el_pu;
+//    			codegenInstance.input.i_dq_pu[0] = Global_Data.av.i_d_pu;
+//    			codegenInstance.input.i_dq_pu[1] = Global_Data.av.i_q_pu;
+//    			codegenInstance.input.i_xy_pu[0] = Global_Data.av.i_x_pu;
+//    			codegenInstance.input.i_xy_pu[1] = Global_Data.av.i_y_pu;
+//    			codegenInstance.input.i_d_ref_pu = Global_Data.av.i_d_ref_pu;
+//    			codegenInstance.input.i_q_ref_pu = Global_Data.av.i_q_ref_pu;
+//    			codegenInstance.input.i_x_ref_pu = Global_Data.av.i_x_ref_pu;
+//    			codegenInstance.input.i_y_ref_pu = Global_Data.av.i_y_ref_pu;
+//    			codegenInstance.input.lambda_dq = Global_Data.av.lambda_dq;
+//    			codegenInstance.input.lambda_xy = Global_Data.av.lambda_xy;
+//    			codegenInstance.input.tolerance = Global_Data.av.solver_tolerance;
+//    			codegenInstance.input.max_iter = Global_Data.av.max_iter;
+//    			codegenInstance.input.HC_off_on = Global_Data.av.HC_off_on;
+//    			codegenInstance.input.psiPM_h_pu[0] = Global_Data.av.psi_pm_h_pu_over_psiB[0];
+//    			codegenInstance.input.psiPM_h_pu[1] = Global_Data.av.psi_pm_h_pu_over_psiB[1];
+//    			codegenInstance.input.phiPM_h[0] = Global_Data.av.phiPM_h[0];
+//    			codegenInstance.input.phiPM_h[1] = Global_Data.av.phiPM_h[1];
+//    			codegenInstance.input.kalman_off_on = Global_Data.av.kalman_off_on;
+//    			codegenInstance.input.kalman_R = Global_Data.av.kalman_R;
+//    			codegenInstance.input.kalman_Q1 = Global_Data.av.kalman_Q1;
+//    			codegenInstance.input.kalman_Q2 = Global_Data.av.kalman_Q2;
+//    			codegenInstance.input.Ts_over_tB = Global_Data.av.Ts_over_tB;
+//    			codegenInstance.input.tB_over_Ts = Global_Data.av.tB_over_Ts;
+
+
+//    		uz_codegen_step(&codegenInstance);
+
+//    		Global_Data.av.dutycyc[0] = 1.0f-codegenInstance.output.d_opt[0];
+//    		Global_Data.av.dutycyc[1] = 1.0f-codegenInstance.output.d_opt[1];
+//    		Global_Data.av.dutycyc[2] = 1.0f-codegenInstance.output.d_opt[2];
+//    		Global_Data.av.dutycyc[3] = 1.0f-codegenInstance.output.d_opt[3];
+//    		Global_Data.av.dutycyc[4] = 1.0f-codegenInstance.output.d_opt[4];
+//    		Global_Data.av.dutycyc[5] = 1.0f-codegenInstance.output.d_opt[5];
+//
+//    		Global_Data.av.iterations = codegenInstance.output.iterations_qp;
+//
+//    		Global_Data.av.dob_e_est_d = codegenInstance.output.dob_error_estimate[0];
+//    		Global_Data.av.dob_e_est_q = codegenInstance.output.dob_error_estimate[1];
+//    		Global_Data.av.dob_e_est_x = codegenInstance.output.dob_error_estimate[2];
+//    		Global_Data.av.dob_e_est_y = codegenInstance.output.dob_error_estimate[3];
+
+
     		// ATTENTION those are actually 1 minus dutycyc, see javascope.c
     	    Global_Data.rasv.halfBridge1DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[0], 1.0f, 0.0f);
     	    Global_Data.rasv.halfBridge2DutyCycle = uz_signals_saturation(Global_Data.av.dutycyc[1], 1.0f, 0.0f);
@@ -482,7 +547,7 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
 
-    JavaScope_update(&Global_Data);
+//    JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!
     uz_SystemTime_ISR_Toc();

@@ -105,8 +105,8 @@ int main(void)
             Global_Data.av.kalman_R = 1.0f;
             Global_Data.av.kalman_Q1 = 100.0f;
             Global_Data.av.kalman_Q2 = 1.0f;
-            Global_Data.av.phiPM_h[0] = 4.6f;//-0.1349143; //psi pm initialized in FOC_init.c
-            Global_Data.av.phiPM_h[1] = 2.9f;//-1.7723498;
+            Global_Data.av.phiPM_h[0] = 4.0f;//4.6f;//-0.1349143; //psi pm initialized in FOC_init.c
+            Global_Data.av.phiPM_h[1] = 2.9f;//2.9f;//-1.7723498;
             Global_Data.av.Rs = 0.27;
             Global_Data.av.Ld = 1.7e-3;
             Global_Data.av.Lq = 3.8e-3;
@@ -125,6 +125,7 @@ int main(void)
             Global_Data.objects.invTemp2_filter = uz_signals_IIR_Filter_init(config_IIR_invTemp);
             Global_Data.objects.sysmon = init_sysmon();
             Global_Data.objects.ph_curr_ctrl = uz_PI_Controller_init(ph_ctrl_conf);
+//            impl_mod_mpc_init();
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

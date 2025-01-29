@@ -43,6 +43,7 @@ static float System_UpTime_ms;
 extern uz_3ph_dq_t i_dq_ref;
 
 uint32_t pollErrorCnt = 0U;
+float f_pollErrorCnt = 0.0f;
 
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status of the four "UltraZohm LEDs" (cf. ipc_ARM.c):
@@ -119,6 +120,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_dualsvm_clamped]		= &data->av.dualsvm_clamped_f;
 	js_ch_observable[JSO_xy_r6_ref_d]			= &data->av.xy_r6_v_d_ref;
 	js_ch_observable[JSO_xy_r6_ref_q]			= &data->av.xy_r6_v_q_ref;
+	js_ch_observable[JSO_lifecheck_return]		= &data->av.lifecheck_return;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
@@ -152,6 +154,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Kalman_Q2]				= &data->av.kalman_Q2;
 	js_slowDataArray[JSSD_FLOAT_phi_pm_5th]				= &data->av.phiPM_h[0];
 	js_slowDataArray[JSSD_FLOAT_phi_pm_7th]				= &data->av.phiPM_h[1];
+	js_slowDataArray[JSSD_FLOAT_pollErrCnt]				= &f_pollErrorCnt;
 
 	return Status;
 }
@@ -208,6 +211,7 @@ void JavaScope_update(DS_Data* data){
 	rpu_to_apu_user_data->Ts_over_tB = data->av.Ts_over_tB;
 	rpu_to_apu_user_data->tB_over_Ts = data->av.tB_over_Ts;
 	rpu_to_apu_user_data->a53_ctrl_off_on = data->rasv.a53_ctrl_off_on;
+	rpu_to_apu_user_data->lifecheck = lifecheck;
 
 	Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_1_RPU_TO_APU, CACHE_FLUSH_SIZE_RPU_TO_APU);
 #endif
@@ -241,6 +245,7 @@ void JavaScope_update(DS_Data* data){
 	status = XIpiPsu_PollForAck(&INTCInst_IPI, XPAR_XIPIPS_TARGET_PSU_CORTEXA53_0_CH0_MASK, POLL_FOR_ACK_TIMEOUT_COUNT);
 	if(status != (u32)XST_SUCCESS) {
 		pollErrorCnt++;
+		f_pollErrorCnt = f_pollErrorCnt + 1.0f;
 	}
 #endif
 
@@ -281,6 +286,8 @@ void JavaScope_update(DS_Data* data){
 	data->av.dob_e_est_y = apu_to_rpu_user_data->dob_error_estimate[3];
 
 	data->av.iterations = apu_to_rpu_user_data->iterations;
+
+	data->av.lifecheck_return = apu_to_rpu_user_data->lifecheck_return;
 
 #endif
 

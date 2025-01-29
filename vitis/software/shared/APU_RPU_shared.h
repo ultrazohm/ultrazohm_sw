@@ -35,6 +35,7 @@ struct APU_to_RPU_user_data_t
 	float dutycyc[6];
 	float iterations;
 	float dob_error_estimate[4];
+	float lifecheck_return;
 };
 
 struct RPU_to_APU_user_data_t
@@ -76,4 +77,5 @@ struct RPU_to_APU_user_data_t
 	float Ts_over_tB;
 	float tB_over_Ts;
 	bool a53_ctrl_off_on;
+	float lifecheck;
 };

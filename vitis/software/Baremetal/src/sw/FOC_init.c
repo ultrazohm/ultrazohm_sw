@@ -23,7 +23,7 @@ const struct uz_PMSM_t config_PMSM = {
 };
 const float Lx_Henry = 0.0027f;
 const float Ly_Henry = 0.0027f;
-const float psi_pm_5 = 0.00080f;
+const float psi_pm_5 = 0.00045f;//0.00080f;
 const float psi_pm_7 = 0.00047f;
 
 // PI controllers dq-subspace

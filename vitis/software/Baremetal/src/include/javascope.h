@@ -70,6 +70,7 @@ enum JS_OberservableData {
 	JSO_dualsvm_clamped,
 	JSO_xy_r6_ref_d,
 	JSO_xy_r6_ref_q,
+	JSO_lifecheck_return,
 	JSO_ENDMARKER
 };
 
@@ -108,6 +109,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_Kalman_Q2,
 	JSSD_FLOAT_phi_pm_5th,
 	JSSD_FLOAT_phi_pm_7th,
+	JSSD_FLOAT_pollErrCnt,
 	JSSD_ENDMARKER
 };
 

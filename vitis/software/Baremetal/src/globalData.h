@@ -218,6 +218,7 @@ typedef struct _actualValues_ {
 	float iq_ref_step;
 	bool trig_flag;
 	float f_trig_flag;
+	float lifecheck_return;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

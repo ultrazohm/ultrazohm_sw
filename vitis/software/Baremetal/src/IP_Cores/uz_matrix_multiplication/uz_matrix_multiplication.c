@@ -32,20 +32,19 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz
 	uz_assert_not_zero_uint32(config.base_address);
 	uz_Matrix_Multi_t* self = uz_Matrix_Multi_allocation();
 	//Current max size allowed for IP-Core
-	uz_assert(config.A_columns <= 5U);
+	uz_assert(config.A_columns <= 2U);
 	uz_assert(config.A_rows == 1U);
-	uz_assert(config.B_columns <= 5U);
-	uz_assert(config.B_columns <= 5U);
-	uz_assert(config.C_columns <= 5U);
-	uz_assert(config.C_rows == 1U);
+	uz_assert(config.B_columns <= 16U);
+	uz_assert(config.C_columns == 1U);
+	uz_assert(config.C_rows <= 16U);
 	self->config = config;
 	self->A_matrix = uz_matrix_init(A_matrix, self->config.A_data, self->config.A_length_of_data, self->config.A_rows, self->config.A_columns);
 	self->B_matrix = uz_matrix_init(B_matrix, self->config.B_data, self->config.B_length_of_data, self->config.B_rows, self->config.B_columns);
 	self->C_out_matrix = uz_matrix_init(C_out_matrix, self->config.C_data, self->config.C_length_of_data, self->config.C_rows, self->config.C_columns);
 	uz_assert_not_zero(self->is_ready);
 	uz_assert(self->A_matrix->columns == self->B_matrix->rows);
-	uz_assert(self->A_matrix->rows == self->C_out_matrix->rows);
-    uz_assert(self->B_matrix->columns == self->C_out_matrix->columns);
+	uz_assert(self->A_matrix->rows == self->C_out_matrix->columns);
+    uz_assert(self->B_matrix->columns == self->C_out_matrix->rows);
 	uz_matrix_multiplication_hw_set_A_matrix(self->config.base_address, self->A_matrix->data);
 	uz_matrix_multiplication_hw_set_A_rows(self->config.base_address, self->A_matrix->rows);
 	uz_matrix_multiplication_hw_set_B_matrix(self->config.base_address, self->B_matrix->data);

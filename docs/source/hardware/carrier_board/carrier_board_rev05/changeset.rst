@@ -1,11 +1,6 @@
 Changeset
 =========
 
-The upcoming "2025 edition" of the UltraZohm implements various system- and component-level changes.
-Particularly to track the former ones, this page aggregates hyperlinks to the individual issues in the various repositories (that hold affected parts).
-As of 2024Q2, all this (obviously) still is work in progress...
-
-
 Associated Repositories w/ toplevel issues
 ------------------------------------------
 

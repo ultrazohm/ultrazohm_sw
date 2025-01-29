@@ -1,8 +1,8 @@
 .. _carrier_board_rev5_s3c:
 
-============================
-System Supply & Safety $CPLD
-============================
+===================
+System Supply & S3C
+===================
 
 
 General
@@ -24,14 +24,14 @@ Instead, there now are
 	- a "first-level" power *switch* on the backpanel (as part of the line-supply connector assembly), and
 	- a "second-level" power *button* on the frontpanel (that replaces the aforementioned red switch).
 
-When the backpanel-side switch is on, the PSU's 24V only power up a newly-added supply rail dedicated to the S³C (3V3_S3C).
-All other rails are ramped up as soon as the user presses the frontpanel-side power button, which is monitored by the S³C.
+When the backpanel-side switch is on, the PSU's 24V only power up a newly-added supply rail dedicated to the S3C (3V3_S3C).
+All other rails are ramped up as soon as the user presses the frontpanel-side power button, which is monitored by the S3C.
 Then, the well-known ramp-up sequence of previous carrier boards is started by enabling the now-default-off 3V3_MOD (U10).
 
 
 .. _carrier_board_rev5_s3cfsm:
 
-Statemachine for S³C
+Statemachine for S3C
 --------------------
 
 
@@ -153,8 +153,8 @@ The Power button interacts with the S3C statemachine, and its LED coloring indic
        It has to be pushed at least 2 seconds to power off.
 
 
-Functions (partially draft-level)
----------------------------------
+Functions
+---------
 
 - Default routes of "pass-through signals"
 	- ``FrontpanelIO.ExternalSTOP`` -debounce-> ``FlexMIOs.61_ExternalSTOP`` (add latch functionality? reset by power cycle?)
@@ -165,18 +165,18 @@ Functions (partially draft-level)
 	- ``SD_SEL``: For the time being, this signal shall be driven to ``'0'``
 	- ``FrontpanelIO.isoCtrl.R̅S̅T̅``: For the time being, this signal shall be driven to ``'1'``
 - Power sequencing
-	- On power-on of the S³C, drive ``Carrier_PwrOn`` low and keep it there, then check whether ``SysSW_Pwr_NC`` is high (delay required, probably)
+	- On power-on of the S3C, drive ``Carrier_PwrOn`` low and keep it there, then check whether ``SysSW_Pwr_NC`` is high (delay required, probably)
 	- On a (debounced, cf. above) falling edge on ``SysSW_Pwr_NC``, initiate the power sequencing (*hem*) sequence by
 		- asserting ``Carrier_PwrOn``,
 		- waiting for ``PG_Module`` to (de?)assert, and then, after some ms-range delay,
 		- switching ``Carrier_PG_1V8`` (cf. below) from ``'Z'`` to ``'0'`` for some time and releasing it again (to ``'Z'``).
 		- Of course, various LEDs are available to signal this process to the user ;-)
-	- For the time being, power-off shall be initiated by a second-long low signal level on ``SysSW_Pwr_NC``, i.e., holding the power button. For any future versions of this bitstream (on the S³C) and ``uz_sw`` (on RPU and APU), a notification to software shall be added (in particular when logging to the SSD is used).
+	- For the time being, power-off shall be initiated by a second-long low signal level on ``SysSW_Pwr_NC``, i.e., holding the power button. For any future versions of this bitstream (on the S3C) and ``uz_sw`` (on RPU and APU), a notification to software shall be added (in particular when logging to the SSD is used).
 	- Current usage of power good (aka not-reset) signals
 		- ``Carrier_PG_1V8``: Connected to ``RESETn`` of the two Ethernet PHYs (carrier and frontpanel-main, 10k pullup on carrier)
 		- ``Carrier_PG_3V3``: Enables the DC/DC converter of the isoIO island's 3V3 rail (on frontpanel-main, no pullup/down R)
-- To-be-discussed functionalities
-	- "Request Safe State" signal from S³C to D slots: Potential triggers are supply rail monitors, ``FP_UsrSW3``, ``FrontpanelIO.ExternalSTOP``, ...
+- Planed features (not implemented, but prepared in hardware):
+	- "Request Safe State" signal from S3C to D slots: Potential triggers are supply rail monitors, ``FP_UsrSW3``, ``FrontpanelIO.ExternalSTOP``, ...
 
 
 I/Os
@@ -201,9 +201,9 @@ I/Os
 		- Pins 105/106 (secondary I²C)
 - Dynamic application-level I/O assignment
 	- ``FrontpanelIO.isoSigs.FlexIO0[1-5]`` can be used to drive the last five isoIOs (i.e., from ``IO09`` onwards) as 2x output, 2x input and 1x output (in that order) -- So the signal directions are fixed, but function is freely programmable
-	- The six ``FlexLIOs[0-5]`` (flexible logic/PL IOs) are available between the S³C (and thus everything reachable from it) and the Zynq's PL
-	- The S³C's twelve ``DIG5_S3C`` signals (00-05, 24-29) complement the SoM's 18 signals that interface slot D5
+	- The six ``FlexLIOs[0-5]`` (flexible logic/PL IOs) are available between the S3C (and thus everything reachable from it) and the Zynq's PL
+	- The S3C's twelve ``DIG5_S3C`` signals (00-05, 24-29) complement the SoM's 18 signals that interface slot D5
 - Input-specific processing requirements
 	- Debounce filtering: ``SysSW_Pwr_NC``, ``FP_UsrSW[1-3]``, ``FrontpanelIO.ExternalSTOP`` -- Note that all the above signals are low-active, i.e., high as long as the corresponding button is not pressed
 - Output-specific processing requirements
-	- Set to ``'Z'`` unless UZ is switched on (i.e., ``Carrier_PwrOn`` is asserted): ``FrontpanelIO.isoSigs.FlexIO0[1-5]``, ``FrontpanelIO.isoCtrl.R̅S̅T̅``, ``FrontpanelIO.FlexMIO52_PCIe-R̅S̅T̅`` -- Note that the above list will get considerably longer if R44 is populated (instead of R43). In that case, care has to be taken w.r.t. S³C bank 2 (i.e., U19C) driving current into powered-off components!
+	- Set to ``'Z'`` unless UZ is switched on (i.e., ``Carrier_PwrOn`` is asserted): ``FrontpanelIO.isoSigs.FlexIO0[1-5]``, ``FrontpanelIO.isoCtrl.R̅S̅T̅``, ``FrontpanelIO.FlexMIO52_PCIe-R̅S̅T̅`` -- Note that the above list will get considerably longer if R44 is populated (instead of R43). In that case, care has to be taken w.r.t. S3C bank 2 (i.e., U19C) driving current into powered-off components!

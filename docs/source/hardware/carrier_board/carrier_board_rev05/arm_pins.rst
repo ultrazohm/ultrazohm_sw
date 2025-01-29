@@ -8,7 +8,7 @@ The connectivity between MIO pins and the frontpanel I/Os -- four user LEDs and 
 
 Itemized list of MIO-related changes next to :ref:`carrier_board_rev4_mio`:
 
-- The retrofitted Ethernet PHY resets on Rev04 (cf. :ref:`carrier_known_issues_ethrst`) are moved from MIO26/27 to the S³C
+- The retrofitted Ethernet PHY resets on Rev04 (cf. :ref:`carrier_known_issues_ethrst`) are moved from MIO26/27 to the S3C
 
 	- MIO26 becomes a PMU spare (with IRQ capability)
 	- MIO27 becomes part of DPaux

@@ -27,7 +27,7 @@ MIO24,CAN_1,phy_tx,J3-81,CAN1_TXD,?P1B-2?,
 MIO25,CAN_1,phy_rx,J3-83,CAN1_RXD,?P1B-1?,
 MIO26²,PMU,gpi[0],J3-88,tbd → tbd,TPtbd,*IRQ*
 MIO27²,DP,aux_data_out,J3-90,tbd → tbd,Xtbd-tbd,Via
-MIO28²,DP,hot_plug_detect,J3-92,tbd,Xtbd-tbd,S³C
+MIO28²,DP,hot_plug_detect,J3-92,tbd,Xtbd-tbd,S3C
 MIO29²,DP,aux_data_oe,J3-94,tbd,Xtbd-tbd,to
 MIO30²,DP,aux_data_in,J3-96,tbd,Xtbd-tbd,FP.
 MIO31²,PMU,gpi[5],J3-98,tbd,TPtbd,*!IRQ*
@@ -38,13 +38,13 @@ MIO35¹,SPI_1,n_ss_out[0],J3-93,tbd → tbd,Xtbd-tbd,SPI
 MIO36¹,SPI_1,miso,J3-95,tbd → tbd,Xtbd-tbd,to
 MIO37¹,SPI_1,mosi,J3-97,tbd → tbd,Xtbd-tbd,FP.
 MIO38,SPI_0,sclk(_out),J3-102,tbd → tbd,,*2x to*
-MIO39,SPI_0,n_ss_out[2],J3-104,tbd → tbd,,*S³C-*
+MIO39,SPI_0,n_ss_out[2],J3-104,tbd → tbd,,*S3C-*
 MIO40,SPI_0,n_ss_out[1],J3-106,tbd → tbd,,*& 5x*
 MIO41,SPI_0,n_ss_out[0],J3-108,tbd → tbd,,*to D-*
 MIO42,SPI_0,miso,J3-110,tbd → tbd,,*CP-*
 MIO43,SPI_0,mosi,J3-112,tbd → tbd,,*LDs.*
 MIO44,GPIO1,gpio1[44],J3-101,tbd → tbd,Xtbd-tbd,SW1 (sys)
-MIO45,SD-Card1,cd_n,J3-103,(via S³C to µSD),,
+MIO45,SD-Card1,cd_n,J3-103,(via S3C to µSD),,
 MIO46,SD-Card1,data_io[0],J3-105,,,
 MIO47,SD-Card1,data_io[1],J3-107,,,
 MIO48,SD-Card1,data_io[2],J3-109,,,

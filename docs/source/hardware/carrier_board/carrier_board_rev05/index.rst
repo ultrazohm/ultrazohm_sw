@@ -1,8 +1,8 @@
-.. _carrier_board_rev4:
+.. _carrier_board_rev5:
 
 
 ===================
-Carrier Board Rev04
+Carrier Board Rev05
 ===================
 
 
@@ -10,6 +10,8 @@ Carrier Board Rev04
 	:maxdepth: 2
 
 	overview
+	changeset
 	power_distribution
+	s3c
+	dcplds
 	arm_pins
-	upgrades

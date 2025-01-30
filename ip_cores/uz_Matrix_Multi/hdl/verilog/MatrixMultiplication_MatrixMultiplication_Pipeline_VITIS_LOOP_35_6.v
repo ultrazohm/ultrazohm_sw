@@ -36,7 +36,7 @@ output   ap_idle;
 output   ap_ready;
 input  [31:0] C_load_1;
 input  [31:0] B_rows;
-output  [4:0] acc_address0;
+output  [10:0] acc_address0;
 output   acc_ce0;
 input  [31:0] acc_q0;
 output  [31:0] add5121_out;
@@ -80,11 +80,11 @@ wire   [31:0] grp_fu_78_p2;
 reg   [31:0] ap_sig_allocacmp_add5121_load;
 wire    ap_block_pp0_stage2;
 wire    ap_loop_init;
-reg   [5:0] n_fu_42;
-wire   [5:0] add_ln35_fu_105_p2;
-reg   [5:0] ap_sig_allocacmp_n_1;
+reg   [4:0] n_fu_42;
+wire   [4:0] add_ln35_fu_105_p2;
+reg   [4:0] ap_sig_allocacmp_n_1;
 wire    ap_block_pp0_stage2_01001;
-wire   [31:0] n_1_cast30_fu_95_p1;
+wire   [31:0] n_1_cast29_fu_95_p1;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -110,7 +110,7 @@ MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1 #(
     .din0_WIDTH( 32 ),
     .din1_WIDTH( 32 ),
     .dout_WIDTH( 32 ))
-fadd_32ns_32ns_32_5_full_dsp_1_U27(
+fadd_32ns_32ns_32_5_full_dsp_1_U22(
     .clk(ap_clk),
     .reset(ap_rst),
     .din0(ap_sig_allocacmp_add5121_load),
@@ -191,7 +191,7 @@ always @ (posedge ap_clk) begin
         if (((icmp_ln35_fu_99_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
             n_fu_42 <= add_ln35_fu_105_p2;
         end else if ((ap_loop_init == 1'b1)) begin
-            n_fu_42 <= 6'd0;
+            n_fu_42 <= 5'd0;
         end
     end
 end
@@ -290,7 +290,7 @@ end
 
 always @ (*) begin
     if (((1'b0 == ap_block_pp0_stage0) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_loop_init == 1'b1))) begin
-        ap_sig_allocacmp_n_1 = 6'd0;
+        ap_sig_allocacmp_n_1 = 5'd0;
     end else begin
         ap_sig_allocacmp_n_1 = n_fu_42;
     end
@@ -338,7 +338,7 @@ assign acc_address0 = n_1_cast_fu_111_p1;
 
 assign add5121_out = add5121_fu_38;
 
-assign add_ln35_fu_105_p2 = (ap_sig_allocacmp_n_1 + 6'd1);
+assign add_ln35_fu_105_p2 = (ap_sig_allocacmp_n_1 + 5'd1);
 
 assign ap_CS_fsm_pp0_stage0 = ap_CS_fsm[32'd0];
 
@@ -386,9 +386,9 @@ assign ap_enable_pp0 = (ap_idle_pp0 ^ 1'b1);
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage2;
 
-assign icmp_ln35_fu_99_p2 = ((n_1_cast30_fu_95_p1 == B_rows) ? 1'b1 : 1'b0);
+assign icmp_ln35_fu_99_p2 = ((n_1_cast29_fu_95_p1 == B_rows) ? 1'b1 : 1'b0);
 
-assign n_1_cast30_fu_95_p1 = ap_sig_allocacmp_n_1;
+assign n_1_cast29_fu_95_p1 = ap_sig_allocacmp_n_1;
 
 assign n_1_cast_fu_111_p1 = ap_sig_allocacmp_n_1;
 

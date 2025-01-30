@@ -6,7 +6,7 @@
 
 `timescale 1 ns / 1 ps
 
-module MatrixMultiplication_mul_4s_4s_4_1_1(din0, din1, dout);
+module MatrixMultiplication_mul_5s_5s_5_1_1(din0, din1, dout);
 parameter ID = 1;
 parameter NUM_STAGE = 0;
 parameter din0_WIDTH = 14;

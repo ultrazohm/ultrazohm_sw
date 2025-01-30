@@ -12,8 +12,8 @@ entity MatrixMultiplication_C_RAM_AUTO_1R1W is
     generic(
         MEM_TYPE        : string    := "auto"; 
         DataWidth       : integer   := 32; 
-        AddressWidth    : integer   := 4;
-        AddressRange    : integer   := 16
+        AddressWidth    : integer   := 6;
+        AddressRange    : integer   := 64
     ); 
     port (
         address0    : in std_logic_vector(AddressWidth-1 downto 0); 

@@ -65,7 +65,7 @@ port (
     m_axi_arrays_BUSER : IN STD_LOGIC_VECTOR (0 downto 0);
     sext_ln25 : IN STD_LOGIC_VECTOR (61 downto 0);
     mul : IN STD_LOGIC_VECTOR (31 downto 0);
-    B_address0 : OUT STD_LOGIC_VECTOR (4 downto 0);
+    B_address0 : OUT STD_LOGIC_VECTOR (10 downto 0);
     B_ce0 : OUT STD_LOGIC;
     B_we0 : OUT STD_LOGIC;
     B_d0 : OUT STD_LOGIC_VECTOR (31 downto 0) );
@@ -85,8 +85,8 @@ architecture behav of MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_L
     constant ap_const_lv3_0 : STD_LOGIC_VECTOR (2 downto 0) := "000";
     constant ap_const_lv2_0 : STD_LOGIC_VECTOR (1 downto 0) := "00";
     constant ap_const_lv4_0 : STD_LOGIC_VECTOR (3 downto 0) := "0000";
-    constant ap_const_lv6_0 : STD_LOGIC_VECTOR (5 downto 0) := "000000";
-    constant ap_const_lv6_1 : STD_LOGIC_VECTOR (5 downto 0) := "000001";
+    constant ap_const_lv11_0 : STD_LOGIC_VECTOR (10 downto 0) := "00000000000";
+    constant ap_const_lv11_1 : STD_LOGIC_VECTOR (10 downto 0) := "00000000001";
 
 attribute shreg_extract : string;
     signal ap_CS_fsm : STD_LOGIC_VECTOR (0 downto 0) := "1";
@@ -110,15 +110,15 @@ attribute shreg_extract : string;
     signal arrays_blk_n_R : STD_LOGIC;
     signal ap_block_pp0_stage0 : BOOLEAN;
     signal ap_block_pp0_stage0_11001 : BOOLEAN;
-    signal i_reg_145 : STD_LOGIC_VECTOR (5 downto 0);
-    signal i_reg_145_pp0_iter1_reg : STD_LOGIC_VECTOR (5 downto 0);
+    signal i_reg_145 : STD_LOGIC_VECTOR (10 downto 0);
+    signal i_reg_145_pp0_iter1_reg : STD_LOGIC_VECTOR (10 downto 0);
     signal arrays_addr_read_reg_154 : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_condition_exit_pp0_iter1_stage0 : STD_LOGIC;
-    signal i_1_cast6_fu_125_p1 : STD_LOGIC_VECTOR (63 downto 0);
-    signal i_1_fu_52 : STD_LOGIC_VECTOR (5 downto 0);
-    signal add_ln25_fu_108_p2 : STD_LOGIC_VECTOR (5 downto 0);
+    signal i_1_cast7_fu_125_p1 : STD_LOGIC_VECTOR (63 downto 0);
+    signal i_1_fu_52 : STD_LOGIC_VECTOR (10 downto 0);
+    signal add_ln25_fu_108_p2 : STD_LOGIC_VECTOR (10 downto 0);
     signal ap_loop_init : STD_LOGIC;
-    signal ap_sig_allocacmp_i : STD_LOGIC_VECTOR (5 downto 0);
+    signal ap_sig_allocacmp_i : STD_LOGIC_VECTOR (10 downto 0);
     signal i_1_cast_fu_98_p1 : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_done_reg : STD_LOGIC := '0';
     signal ap_continue_int : STD_LOGIC;
@@ -232,7 +232,7 @@ begin
                 if (((ap_enable_reg_pp0_iter0 = ap_const_logic_1) and (icmp_ln25_fu_102_p2 = ap_const_lv1_0))) then 
                     i_1_fu_52 <= add_ln25_fu_108_p2;
                 elsif ((ap_loop_init = ap_const_logic_1)) then 
-                    i_1_fu_52 <= ap_const_lv6_0;
+                    i_1_fu_52 <= ap_const_lv11_0;
                 end if;
             end if; 
         end if;
@@ -266,7 +266,7 @@ begin
                 ap_NS_fsm <= "X";
         end case;
     end process;
-    B_address0 <= i_1_cast6_fu_125_p1(5 - 1 downto 0);
+    B_address0 <= i_1_cast7_fu_125_p1(11 - 1 downto 0);
 
     B_ce0_assign_proc : process(ap_enable_reg_pp0_iter2, ap_block_pp0_stage0_11001)
     begin
@@ -288,7 +288,7 @@ begin
         end if; 
     end process;
 
-    add_ln25_fu_108_p2 <= std_logic_vector(unsigned(ap_sig_allocacmp_i) + unsigned(ap_const_lv6_1));
+    add_ln25_fu_108_p2 <= std_logic_vector(unsigned(ap_sig_allocacmp_i) + unsigned(ap_const_lv11_1));
     ap_CS_fsm_pp0_stage0 <= ap_CS_fsm(0);
         ap_block_pp0_stage0 <= not((ap_const_boolean_1 = ap_const_boolean_1));
 
@@ -378,7 +378,7 @@ begin
     ap_sig_allocacmp_i_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_block_pp0_stage0, i_1_fu_52, ap_loop_init)
     begin
         if (((ap_const_boolean_0 = ap_block_pp0_stage0) and (ap_const_logic_1 = ap_CS_fsm_pp0_stage0) and (ap_loop_init = ap_const_logic_1))) then 
-            ap_sig_allocacmp_i <= ap_const_lv6_0;
+            ap_sig_allocacmp_i <= ap_const_lv11_0;
         else 
             ap_sig_allocacmp_i <= i_1_fu_52;
         end if; 
@@ -394,7 +394,7 @@ begin
         end if; 
     end process;
 
-    i_1_cast6_fu_125_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(i_reg_145_pp0_iter1_reg),64));
+    i_1_cast7_fu_125_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(i_reg_145_pp0_iter1_reg),64));
     i_1_cast_fu_98_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(ap_sig_allocacmp_i),32));
     icmp_ln25_fu_102_p2 <= "1" when (i_1_cast_fu_98_p1 = mul) else "0";
     m_axi_arrays_ARADDR <= ap_const_lv64_0;

@@ -17,7 +17,7 @@ port (
     ap_done : OUT STD_LOGIC;
     ap_idle : OUT STD_LOGIC;
     ap_ready : OUT STD_LOGIC;
-    C_address0 : OUT STD_LOGIC_VECTOR (3 downto 0);
+    C_address0 : OUT STD_LOGIC_VECTOR (5 downto 0);
     C_ce0 : OUT STD_LOGIC;
     C_we0 : OUT STD_LOGIC;
     C_d0 : OUT STD_LOGIC_VECTOR (31 downto 0) );
@@ -31,9 +31,9 @@ architecture behav of MatrixMultiplication_MatrixMultiplication_Pipeline_3 is
     constant ap_const_lv32_0 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000000";
     constant ap_const_lv1_1 : STD_LOGIC_VECTOR (0 downto 0) := "1";
     constant ap_const_lv1_0 : STD_LOGIC_VECTOR (0 downto 0) := "0";
-    constant ap_const_lv5_0 : STD_LOGIC_VECTOR (4 downto 0) := "00000";
-    constant ap_const_lv5_10 : STD_LOGIC_VECTOR (4 downto 0) := "10000";
-    constant ap_const_lv5_1 : STD_LOGIC_VECTOR (4 downto 0) := "00001";
+    constant ap_const_lv7_0 : STD_LOGIC_VECTOR (6 downto 0) := "0000000";
+    constant ap_const_lv7_40 : STD_LOGIC_VECTOR (6 downto 0) := "1000000";
+    constant ap_const_lv7_1 : STD_LOGIC_VECTOR (6 downto 0) := "0000001";
     constant ap_const_boolean_1 : BOOLEAN := true;
 
 attribute shreg_extract : string;
@@ -48,10 +48,10 @@ attribute shreg_extract : string;
     signal ap_loop_exit_ready : STD_LOGIC;
     signal ap_ready_int : STD_LOGIC;
     signal p_cast5_fu_64_p1 : STD_LOGIC_VECTOR (63 downto 0);
-    signal empty_fu_26 : STD_LOGIC_VECTOR (4 downto 0);
-    signal empty_32_fu_58_p2 : STD_LOGIC_VECTOR (4 downto 0);
+    signal empty_fu_26 : STD_LOGIC_VECTOR (6 downto 0);
+    signal empty_32_fu_58_p2 : STD_LOGIC_VECTOR (6 downto 0);
     signal ap_loop_init : STD_LOGIC;
-    signal ap_sig_allocacmp_p_load : STD_LOGIC_VECTOR (4 downto 0);
+    signal ap_sig_allocacmp_p_load : STD_LOGIC_VECTOR (6 downto 0);
     signal ap_done_reg : STD_LOGIC := '0';
     signal ap_continue_int : STD_LOGIC;
     signal ap_done_int : STD_LOGIC;
@@ -133,7 +133,7 @@ begin
                 if ((exitcond4413_fu_52_p2 = ap_const_lv1_0)) then 
                     empty_fu_26 <= empty_32_fu_58_p2;
                 elsif ((ap_loop_init = ap_const_logic_1)) then 
-                    empty_fu_26 <= ap_const_lv5_0;
+                    empty_fu_26 <= ap_const_lv7_0;
                 end if;
             end if; 
         end if;
@@ -148,7 +148,7 @@ begin
                 ap_NS_fsm <= "X";
         end case;
     end process;
-    C_address0 <= p_cast5_fu_64_p1(4 - 1 downto 0);
+    C_address0 <= p_cast5_fu_64_p1(6 - 1 downto 0);
 
     C_ce0_assign_proc : process(ap_CS_fsm_state1, ap_start_int)
     begin
@@ -232,13 +232,13 @@ begin
     ap_sig_allocacmp_p_load_assign_proc : process(ap_CS_fsm_state1, empty_fu_26, ap_loop_init)
     begin
         if (((ap_loop_init = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
-            ap_sig_allocacmp_p_load <= ap_const_lv5_0;
+            ap_sig_allocacmp_p_load <= ap_const_lv7_0;
         else 
             ap_sig_allocacmp_p_load <= empty_fu_26;
         end if; 
     end process;
 
-    empty_32_fu_58_p2 <= std_logic_vector(unsigned(ap_sig_allocacmp_p_load) + unsigned(ap_const_lv5_1));
-    exitcond4413_fu_52_p2 <= "1" when (ap_sig_allocacmp_p_load = ap_const_lv5_10) else "0";
+    empty_32_fu_58_p2 <= std_logic_vector(unsigned(ap_sig_allocacmp_p_load) + unsigned(ap_const_lv7_1));
+    exitcond4413_fu_52_p2 <= "1" when (ap_sig_allocacmp_p_load = ap_const_lv7_40) else "0";
     p_cast5_fu_64_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(ap_sig_allocacmp_p_load),64));
 end behav;

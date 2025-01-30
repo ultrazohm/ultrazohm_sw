@@ -13,8 +13,8 @@ module MatrixMultiplication_B_RAM_AUTO_1R1W (
     reset, clk);
 
 parameter DataWidth = 32;
-parameter AddressWidth = 5;
-parameter AddressRange = 32;
+parameter AddressWidth = 11;
+parameter AddressRange = 1280;
  
 input[AddressWidth-1:0] address0;
 input ce0;

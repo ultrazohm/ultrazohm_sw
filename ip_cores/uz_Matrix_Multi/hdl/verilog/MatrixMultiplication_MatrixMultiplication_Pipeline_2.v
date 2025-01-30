@@ -28,7 +28,7 @@ input   ap_start;
 output   ap_done;
 output   ap_idle;
 output   ap_ready;
-output  [4:0] B_address0;
+output  [10:0] B_address0;
 output   B_ce0;
 output   B_we0;
 output  [31:0] B_d0;
@@ -44,11 +44,11 @@ wire   [0:0] exitcond4514_fu_52_p2;
 reg    ap_condition_exit_pp0_iter0_stage0;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
-wire   [63:0] p_cast_fu_64_p1;
-reg   [5:0] empty_fu_26;
-wire   [5:0] empty_34_fu_58_p2;
+wire   [63:0] p_cast4_fu_64_p1;
+reg   [10:0] empty_fu_26;
+wire   [10:0] empty_34_fu_58_p2;
 wire    ap_loop_init;
-reg   [5:0] ap_sig_allocacmp_p_load;
+reg   [10:0] ap_sig_allocacmp_p_load;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -103,7 +103,7 @@ always @ (posedge ap_clk) begin
         if ((exitcond4514_fu_52_p2 == 1'd0)) begin
             empty_fu_26 <= empty_34_fu_58_p2;
         end else if ((ap_loop_init == 1'b1)) begin
-            empty_fu_26 <= 6'd0;
+            empty_fu_26 <= 11'd0;
         end
     end
 end
@@ -166,7 +166,7 @@ end
 
 always @ (*) begin
     if (((ap_loop_init == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
-        ap_sig_allocacmp_p_load = 6'd0;
+        ap_sig_allocacmp_p_load = 11'd0;
     end else begin
         ap_sig_allocacmp_p_load = empty_fu_26;
     end
@@ -183,7 +183,7 @@ always @ (*) begin
     endcase
 end
 
-assign B_address0 = p_cast_fu_64_p1;
+assign B_address0 = p_cast4_fu_64_p1;
 
 assign B_d0 = 32'd0;
 
@@ -195,10 +195,10 @@ end
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign empty_34_fu_58_p2 = (ap_sig_allocacmp_p_load + 6'd1);
+assign empty_34_fu_58_p2 = (ap_sig_allocacmp_p_load + 11'd1);
 
-assign exitcond4514_fu_52_p2 = ((ap_sig_allocacmp_p_load == 6'd32) ? 1'b1 : 1'b0);
+assign exitcond4514_fu_52_p2 = ((ap_sig_allocacmp_p_load == 11'd1280) ? 1'b1 : 1'b0);
 
-assign p_cast_fu_64_p1 = ap_sig_allocacmp_p_load;
+assign p_cast4_fu_64_p1 = ap_sig_allocacmp_p_load;
 
 endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_2

@@ -124,7 +124,7 @@ input  [0:0] m_axi_arrays_BID;
 input  [0:0] m_axi_arrays_BUSER;
 input  [61:0] sext_ln25;
 input  [31:0] mul;
-output  [4:0] B_address0;
+output  [10:0] B_address0;
 output   B_ce0;
 output   B_we0;
 output  [31:0] B_d0;
@@ -152,15 +152,15 @@ reg    ap_ready_int;
 reg    arrays_blk_n_R;
 wire    ap_block_pp0_stage0;
 reg    ap_block_pp0_stage0_11001;
-reg   [5:0] i_reg_145;
-reg   [5:0] i_reg_145_pp0_iter1_reg;
+reg   [10:0] i_reg_145;
+reg   [10:0] i_reg_145_pp0_iter1_reg;
 reg   [31:0] arrays_addr_read_reg_154;
 reg    ap_condition_exit_pp0_iter1_stage0;
-wire   [63:0] i_1_cast6_fu_125_p1;
-reg   [5:0] i_1_fu_52;
-wire   [5:0] add_ln25_fu_108_p2;
+wire   [63:0] i_1_cast7_fu_125_p1;
+reg   [10:0] i_1_fu_52;
+wire   [10:0] add_ln25_fu_108_p2;
 wire    ap_loop_init;
-reg   [5:0] ap_sig_allocacmp_i;
+reg   [10:0] ap_sig_allocacmp_i;
 wire   [31:0] i_1_cast_fu_98_p1;
 reg    ap_done_reg;
 wire    ap_continue_int;
@@ -241,7 +241,7 @@ always @ (posedge ap_clk) begin
         if (((ap_enable_reg_pp0_iter0 == 1'b1) & (icmp_ln25_fu_102_p2 == 1'd0))) begin
             i_1_fu_52 <= add_ln25_fu_108_p2;
         end else if ((ap_loop_init == 1'b1)) begin
-            i_1_fu_52 <= 6'd0;
+            i_1_fu_52 <= 11'd0;
         end
     end
 end
@@ -327,7 +327,7 @@ end
 
 always @ (*) begin
     if (((1'b0 == ap_block_pp0_stage0) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_loop_init == 1'b1))) begin
-        ap_sig_allocacmp_i = 6'd0;
+        ap_sig_allocacmp_i = 11'd0;
     end else begin
         ap_sig_allocacmp_i = i_1_fu_52;
     end
@@ -360,11 +360,11 @@ always @ (*) begin
     endcase
 end
 
-assign B_address0 = i_1_cast6_fu_125_p1;
+assign B_address0 = i_1_cast7_fu_125_p1;
 
 assign B_d0 = arrays_addr_read_reg_154;
 
-assign add_ln25_fu_108_p2 = (ap_sig_allocacmp_i + 6'd1);
+assign add_ln25_fu_108_p2 = (ap_sig_allocacmp_i + 11'd1);
 
 assign ap_CS_fsm_pp0_stage0 = ap_CS_fsm[32'd0];
 
@@ -392,7 +392,7 @@ assign ap_enable_reg_pp0_iter0 = ap_start_int;
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign i_1_cast6_fu_125_p1 = i_reg_145_pp0_iter1_reg;
+assign i_1_cast7_fu_125_p1 = i_reg_145_pp0_iter1_reg;
 
 assign i_1_cast_fu_98_p1 = ap_sig_allocacmp_i;
 

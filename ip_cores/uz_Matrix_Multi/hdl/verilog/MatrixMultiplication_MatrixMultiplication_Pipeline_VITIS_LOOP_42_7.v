@@ -123,7 +123,7 @@ input  [0:0] m_axi_arrays_BID;
 input  [0:0] m_axi_arrays_BUSER;
 input  [61:0] sext_ln42;
 input  [31:0] B_columns;
-output  [3:0] C_address0;
+output  [5:0] C_address0;
 output   C_ce0;
 input  [31:0] C_q0;
 

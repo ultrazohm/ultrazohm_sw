@@ -19,7 +19,7 @@ port (
     ap_ready : OUT STD_LOGIC;
     C_load_1 : IN STD_LOGIC_VECTOR (31 downto 0);
     B_rows : IN STD_LOGIC_VECTOR (31 downto 0);
-    acc_address0 : OUT STD_LOGIC_VECTOR (4 downto 0);
+    acc_address0 : OUT STD_LOGIC_VECTOR (10 downto 0);
     acc_ce0 : OUT STD_LOGIC;
     acc_q0 : IN STD_LOGIC_VECTOR (31 downto 0);
     add5121_out : OUT STD_LOGIC_VECTOR (31 downto 0);
@@ -42,8 +42,8 @@ architecture behav of MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_L
     constant ap_const_lv32_3 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000011";
     constant ap_const_lv1_0 : STD_LOGIC_VECTOR (0 downto 0) := "0";
     constant ap_const_lv32_1 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000001";
-    constant ap_const_lv6_0 : STD_LOGIC_VECTOR (5 downto 0) := "000000";
-    constant ap_const_lv6_1 : STD_LOGIC_VECTOR (5 downto 0) := "000001";
+    constant ap_const_lv5_0 : STD_LOGIC_VECTOR (4 downto 0) := "00000";
+    constant ap_const_lv5_1 : STD_LOGIC_VECTOR (4 downto 0) := "00001";
 
 attribute shreg_extract : string;
     signal ap_CS_fsm : STD_LOGIC_VECTOR (3 downto 0) := "0001";
@@ -86,11 +86,11 @@ attribute shreg_extract : string;
     signal ap_sig_allocacmp_add5121_load : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_block_pp0_stage2 : BOOLEAN;
     signal ap_loop_init : STD_LOGIC;
-    signal n_fu_42 : STD_LOGIC_VECTOR (5 downto 0);
-    signal add_ln35_fu_105_p2 : STD_LOGIC_VECTOR (5 downto 0);
-    signal ap_sig_allocacmp_n_1 : STD_LOGIC_VECTOR (5 downto 0);
+    signal n_fu_42 : STD_LOGIC_VECTOR (4 downto 0);
+    signal add_ln35_fu_105_p2 : STD_LOGIC_VECTOR (4 downto 0);
+    signal ap_sig_allocacmp_n_1 : STD_LOGIC_VECTOR (4 downto 0);
     signal ap_block_pp0_stage2_01001 : BOOLEAN;
-    signal n_1_cast30_fu_95_p1 : STD_LOGIC_VECTOR (31 downto 0);
+    signal n_1_cast29_fu_95_p1 : STD_LOGIC_VECTOR (31 downto 0);
     signal ap_done_reg : STD_LOGIC := '0';
     signal ap_continue_int : STD_LOGIC;
     signal ap_done_int : STD_LOGIC;
@@ -138,7 +138,7 @@ attribute shreg_extract : string;
 
 
 begin
-    fadd_32ns_32ns_32_5_full_dsp_1_U27 : component MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1
+    fadd_32ns_32ns_32_5_full_dsp_1_U22 : component MatrixMultiplication_fadd_32ns_32ns_32_5_full_dsp_1
     generic map (
         ID => 1,
         NUM_STAGE => 5,
@@ -250,7 +250,7 @@ begin
                 if (((icmp_ln35_fu_99_p2 = ap_const_lv1_0) and (ap_enable_reg_pp0_iter0 = ap_const_logic_1))) then 
                     n_fu_42 <= add_ln35_fu_105_p2;
                 elsif ((ap_loop_init = ap_const_logic_1)) then 
-                    n_fu_42 <= ap_const_lv6_0;
+                    n_fu_42 <= ap_const_lv5_0;
                 end if;
             end if; 
         end if;
@@ -305,7 +305,7 @@ begin
                 ap_NS_fsm <= "XXXX";
         end case;
     end process;
-    acc_address0 <= n_1_cast_fu_111_p1(5 - 1 downto 0);
+    acc_address0 <= n_1_cast_fu_111_p1(11 - 1 downto 0);
 
     acc_ce0_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_enable_reg_pp0_iter0, ap_block_pp0_stage0_11001)
     begin
@@ -327,7 +327,7 @@ begin
         end if; 
     end process;
 
-    add_ln35_fu_105_p2 <= std_logic_vector(unsigned(ap_sig_allocacmp_n_1) + unsigned(ap_const_lv6_1));
+    add_ln35_fu_105_p2 <= std_logic_vector(unsigned(ap_sig_allocacmp_n_1) + unsigned(ap_const_lv5_1));
     ap_CS_fsm_pp0_stage0 <= ap_CS_fsm(0);
     ap_CS_fsm_pp0_stage1 <= ap_CS_fsm(1);
     ap_CS_fsm_pp0_stage2 <= ap_CS_fsm(2);
@@ -435,13 +435,13 @@ begin
     ap_sig_allocacmp_n_1_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_block_pp0_stage0, ap_loop_init, n_fu_42)
     begin
         if (((ap_const_boolean_0 = ap_block_pp0_stage0) and (ap_const_logic_1 = ap_CS_fsm_pp0_stage0) and (ap_loop_init = ap_const_logic_1))) then 
-            ap_sig_allocacmp_n_1 <= ap_const_lv6_0;
+            ap_sig_allocacmp_n_1 <= ap_const_lv5_0;
         else 
             ap_sig_allocacmp_n_1 <= n_fu_42;
         end if; 
     end process;
 
-    icmp_ln35_fu_99_p2 <= "1" when (n_1_cast30_fu_95_p1 = B_rows) else "0";
-    n_1_cast30_fu_95_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(ap_sig_allocacmp_n_1),32));
+    icmp_ln35_fu_99_p2 <= "1" when (n_1_cast29_fu_95_p1 = B_rows) else "0";
+    n_1_cast29_fu_95_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(ap_sig_allocacmp_n_1),32));
     n_1_cast_fu_111_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(ap_sig_allocacmp_n_1),64));
 end behav;

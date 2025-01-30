@@ -1192,7 +1192,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c6d61335</spirit:value>
+            <spirit:value>1ec9bf2a</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1211,7 +1211,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>d2738587</spirit:value>
+            <spirit:value>e5e8491d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1230,7 +1230,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>080eabeb</spirit:value>
+            <spirit:value>ce13aac7</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1249,7 +1249,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>225ac865</spirit:value>
+            <spirit:value>c0318f7c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2533,6 +2533,10 @@
         <spirit:userFileType>USED_IN_out_of_context</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_A_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/verilog/MatrixMultiplication_arrays_m_axi.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
@@ -2597,7 +2601,11 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_mul_4s_4s_4_1_1.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_mul_5s_5s_5_1_1.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_mul_6s_6s_6_1_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2622,6 +2630,11 @@
     <spirit:fileSet>
       <spirit:name>xilinx_verilogbehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_A_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/verilog/MatrixMultiplication_arrays_m_axi.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -2702,7 +2715,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_mul_4s_4s_4_1_1.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_mul_5s_5s_5_1_1.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_mul_6s_6s_6_1_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2753,6 +2771,10 @@
         <spirit:userFileType>USED_IN_out_of_context</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_A_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/MatrixMultiplication_arrays_m_axi.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -2817,7 +2839,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_mul_4s_4s_4_1_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_mul_5s_5s_5_1_1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_mul_6s_6s_6_1_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2827,7 +2853,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/MatrixMultiplication.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_980a6dfd</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_4c98f827</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -2843,6 +2869,11 @@
     <spirit:fileSet>
       <spirit:name>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_A_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/MatrixMultiplication_arrays_m_axi.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -2923,7 +2954,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_mul_4s_4s_4_1_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_mul_5s_5s_5_1_1.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_mul_6s_6s_6_1_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3171,8 +3207,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Matrixmultiplication</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2113919953</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-01-21T08:13:25Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113932930</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-01-30T08:30:57Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
@@ -3183,7 +3219,7 @@
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="ab14be2f"/>
       <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="c5f42284"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="989849ec"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="db551b6a"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="e2ae84da"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="44b3c12d"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="a168ef4d"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="5e890b58"/>

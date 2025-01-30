@@ -65,7 +65,7 @@ port (
     m_axi_arrays_BUSER : IN STD_LOGIC_VECTOR (0 downto 0);
     sext_ln42 : IN STD_LOGIC_VECTOR (61 downto 0);
     B_columns : IN STD_LOGIC_VECTOR (31 downto 0);
-    C_address0 : OUT STD_LOGIC_VECTOR (3 downto 0);
+    C_address0 : OUT STD_LOGIC_VECTOR (5 downto 0);
     C_ce0 : OUT STD_LOGIC;
     C_q0 : IN STD_LOGIC_VECTOR (31 downto 0) );
 end;
@@ -261,7 +261,7 @@ begin
                 ap_NS_fsm <= "X";
         end case;
     end process;
-    C_address0 <= i_2_cast_fu_111_p1(4 - 1 downto 0);
+    C_address0 <= i_2_cast_fu_111_p1(6 - 1 downto 0);
 
     C_ce0_assign_proc : process(ap_CS_fsm_pp0_stage0, ap_enable_reg_pp0_iter0, ap_block_pp0_stage0_11001)
     begin

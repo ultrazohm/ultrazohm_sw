@@ -8,7 +8,7 @@ use IEEE.std_logic_1164.all;
 use IEEE.numeric_std.all;
 
 
-entity MatrixMultiplication_mul_4s_4s_4_1_1 is
+entity MatrixMultiplication_mul_5s_5s_5_1_1 is
 generic (
     ID : INTEGER := 1;
     NUM_STAGE : INTEGER := 0;
@@ -21,7 +21,7 @@ port (
     dout: out std_logic_vector(dout_WIDTH - 1 downto 0));
 end entity;
 
-architecture behav of MatrixMultiplication_mul_4s_4s_4_1_1 is
+architecture behav of MatrixMultiplication_mul_5s_5s_5_1_1 is
     signal a_i : std_logic_vector(din0_WIDTH - 1 downto 0);
     signal b_i : std_logic_vector(din1_WIDTH - 1 downto 0);
 begin

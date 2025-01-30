@@ -16,6 +16,8 @@ Overview
 * Analog Sockets (A1-A3) 
 * Digital Sockets (D1-D5)
 
+Note that systems based on :ref:`carrier_board_rev5` integrate all aforementioned communication interfaces and JTAG via a PCB-based front panel (not shown).
+
 
 Useful things to buy
 --------------------

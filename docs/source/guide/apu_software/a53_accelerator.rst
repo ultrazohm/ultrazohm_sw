@@ -161,16 +161,12 @@ using the feature for specific applications.
 
 Delay of one sample for the control signal
 ******************************************
-The A53 accelerator feature uses the Javascope data path. The function ``JavaScope_update``
-in the ``isr.c`` file on the R5 thus initiates all calculations outsourced to the A53. 
-Since this is done by default at the end of the ISR on the R5, but the ``halfBridge$DutyCycle`` 
-variables, i.e. the control signals for the PWM module, are already written in the R5 ISR, 
-an offset of one ISR cycle must be taken into account when a controller is implemented on the A53. 
-To avoid this, the ``Javascope_update`` function call can be moved within ``isr.c`` on the R5, 
-for example to a point before the control signals are written to the PWM module. This means that 
-the controller's control signals are first calculated on the A53 and output at the end of the present ISR cycle. 
-When logging data with the Javascope, it must then be noted that the control signals in the logging 
-now have a time delay of one ISR cycle.
+The A53 accelerator feature uses the Javascope data path. 
+The ``JavaScope_update`` function in the ``isr.c`` file on the R5 thus initiates all calculations outsourced to the A53. 
+As this is done by default at the end of the ISR on the R5, but the ``halfBridge$DutyCycle``  variables, i.e. the control signals for the PWM module, are already written in the R5 ISR,  an offset of one ISR cycle must be taken into account when a controller is implemented on the A53. 
+To avoid this, the call to ``Javascope_update`` can be moved within ``isr.c`` on the R5, e.g. to a point before the control signals are written to the PWM module. 
+This means that the controller's control signals are first calculated on the A53 and output at the end of the current ISR cycle. 
+In this case however, the logging data of the control signals now has a time delay of one ISR cycle.
 
 Use uz library functions on the A53 processor
 *********************************************

@@ -155,8 +155,8 @@ const uz_PMSM_6ph_t dengine={
 		.R_ph_Ohm=0.27f,
 		.Ld_Henry=0.0017f,
 		.Lq_Henry=0.0038f,
-		.Lx_Henry=0.0024f,
-		.Ly_Henry=0.0025f,
+		.Lx_Henry=0.0027f,
+		.Ly_Henry=0.0027f,
 		.polePairs=5.0f,
 		.Psi_PM_Vs=0.19f,
 		.I_max_Ampere=18.0f
@@ -370,8 +370,8 @@ void ISR_Control(void *data)
 
 	// write reference values to mpc ip
 	uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x100, Global_Data.av.i_d_ref_pu, i_setpoint_isr_fp_def);
-	uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
-//	uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
+//	uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_pu, i_setpoint_isr_fp_def);
+	uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x104, Global_Data.av.i_q_ref_PI_out_pu, i_setpoint_isr_fp_def);
 	uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x108, Global_Data.av.i_x_ref/base_val.IB, i_setpoint_isr_fp_def);
 	uz_fixedpoint_axi_write(XPAR_MPC_REF_DISTRIBUTOR_0_BASEADDR + 0x10C, Global_Data.av.i_y_ref/base_val.IB, i_setpoint_isr_fp_def);
 

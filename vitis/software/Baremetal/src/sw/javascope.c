@@ -111,6 +111,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_id_ref_rc_meas]	= &data->rasv.rc_meas_output.id_ref_Amps;
 	js_ch_observable[JSO_n_ref_rc_meas]		= &data->rasv.rc_meas_output.n_ref_rpm;
 	js_ch_observable[JSO_data_valid_rc_meas]	= &data->rasv.rc_meas_output.data_valid;
+	js_ch_observable[JSO_M_ref_left]		= &data->rasv.M_ref_left;
+	js_ch_observable[JSO_op_rc_meas]		= &data->rasv.operatingpoints_rc_meas;
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;

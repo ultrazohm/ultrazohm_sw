@@ -46,6 +46,9 @@ uz_parameterID_rc_t* uz_parameterID_rc_init(struct uz_parameterID_rc_config_t in
     self->counter.increment_id = 0U;
     self->counter.increment_iq = 0U;
     self->counter.increment_n = 0U;
+    self->output_ref_values.operating_points_all = 0.0f;
+    self->counter.operating_points_n = 0U;
+    self->counter.operating_points_idq = 0U;
     // insert assertions
     return (self);
 }
@@ -97,7 +100,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         // wait function: lets xx isr-cycles pass without changing anything. Switches to the following state after the wait time depending on the previous state
         case rc_wait: 
             self->counter.wait++;
-            if(self->counter.wait == 20000U){
+            if(self->counter.wait == 15000U){
                 if (self->rc_previous_state == rc_set_idq){
                     self->rc_state = rc_sample_on;
                 }
@@ -113,6 +116,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         // sets a flag that indicates that data is valid, then switches to wait state
         case rc_sample_on:
             self->output_ref_values.data_valid = 1.0f;
+            self->output_ref_values.operating_points_all++;
             self->rc_previous_state = self->rc_state;
             self->rc_state = rc_wait;
         break;

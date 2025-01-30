@@ -64,8 +64,8 @@ int main(void)
       	.abs_iq_max_Amps = 4.0f,
     	.n_start_rpm = 400.0f,
     	.n_stop_rpm = 800.0f,
-    	.id_steps = 4U,
-    	.iq_steps = 4U,
+    	.id_steps = 8U,
+    	.iq_steps = 8U,
     	.n_steps = 1U
       };
 
@@ -74,11 +74,11 @@ int main(void)
     	.n_start = 0.0f,
         .n_end = 1000.0f,
         .n_steps = 10.0f,
-        .i_start = 2.0f,
+        .i_start = -2.0f,
         .i_diff = 4.0f,
         .i_repeats = 10.0f,
-        .i_steptime = 3.0f,
-   	    .wait_time = 3.0f,
+        .i_steptime = 2.0f,
+   	    .wait_time = 2.0f,
         .isr_steptime = (1.0f / 10.0e3f) * 1.0f
     };
 

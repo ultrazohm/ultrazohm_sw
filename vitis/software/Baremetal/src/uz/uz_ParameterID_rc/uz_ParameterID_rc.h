@@ -25,6 +25,7 @@ struct uz_parameterID_rc_ref_val_t {
     float iq_ref_Amps;
     float n_ref_rpm;
     float data_valid;
+    float operating_points_all;
 };
 
 
@@ -47,6 +48,7 @@ struct uz_parameterid_rc_counter_t{
     uint32_t wait;
     uint32_t operating_points_idq;
     uint32_t operating_points_n;
+    uint32_t operating_points_all;
 };
 
 struct uz_parameterid_rc_size_increments_t{

@@ -131,6 +131,7 @@ typedef struct _referenceAndSetValues_ {
 	float n_ref_left;
 	float js_set_n_ref_left;
 	float n_ref_left_filt;
+	float operatingpoints_rc_meas;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t js_set_i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_rc_meas_right;

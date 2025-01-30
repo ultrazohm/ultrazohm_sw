@@ -71,6 +71,8 @@ enum JS_OberservableData {
 	JSO_id_ref_rc_meas,
 	JSO_n_ref_rc_meas,
 	JSO_data_valid_rc_meas,
+	JSO_M_ref_left,
+	JSO_op_rc_meas,
 	JSO_ENDMARKER
 };
 

@@ -205,13 +205,14 @@ void ISR_Control(void *data)
         	Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
         	Global_Data.rasv.i_dq_ref_right.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
         	Global_Data.rasv.n_ref_left = Global_Data.rasv.rc_meas_output.n_ref_rpm * -1.0f;
+        	Global_Data.rasv.operatingpoints_rc_meas = Global_Data.rasv.rc_meas_output.operating_points_all;
         	break;
 
     	case rs_meas:
     		Global_Data.rasv.rs_meas_output = uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance, Global_Data.av.v_d_right_meas, Global_Data.av.i_d_right);
     		Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rs_meas_output.i_sample;
     		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
-    		Global_Data.rasv.n_ref_left = Global_Data.rasv.rs_meas_output.n_sample;
+    		Global_Data.rasv.n_ref_left = -1.0f*Global_Data.rasv.rs_meas_output.n_sample;
     		break;
 
     	case normal:

@@ -276,9 +276,13 @@ void poll_buttons(void)
 #if (UZ_HARDWARE_VERSION > 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
     ultrazohm_state.enable_system = uz_GetPushButtonEnableSystem();
     ultrazohm_state.enable_control = uz_GetPushButtonEnableControl();
-    ultrazohm_state.stop_flag = !uz_GetPushButtonStop(); // internal stop or external stop are both low-active, either of them sets stop flag
+#if (UZ_HARDWARE_VERSION > 4U)
+    ultrazohm_state.stop_flag = uz_GetPushButtonStop(); 
+#else
+    ultrazohm_state.stop_flag = !uz_GetPushButtonStop(); 
+#endif
 
-#if UZ_USE_EXTERNAL_STOP_ON_V4
+#if UZ_USE_EXTERNAL_STOP
     ultrazohm_state.stop_flag = (ultrazohm_state.stop_flag) || (!uz_GetExternalStop());
 #endif
 

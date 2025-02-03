@@ -32,11 +32,11 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz
 	uz_assert_not_zero_uint32(config.base_address);
 	uz_Matrix_Multi_t* self = uz_Matrix_Multi_allocation();
 	//Current max size allowed for IP-Core
-	uz_assert(config.A_columns <= 2U);
+	uz_assert(config.A_columns <= 20U);
 	uz_assert(config.A_rows == 1U);
-	uz_assert(config.B_columns <= 16U);
+	uz_assert(config.B_columns <= 64U);
 	uz_assert(config.C_columns == 1U);
-	uz_assert(config.C_rows <= 16U);
+	uz_assert(config.C_rows <= 64U);
 	self->config = config;
 	self->A_matrix = uz_matrix_init(A_matrix, self->config.A_data, self->config.A_length_of_data, self->config.A_rows, self->config.A_columns);
 	self->B_matrix = uz_matrix_init(B_matrix, self->config.B_data, self->config.B_length_of_data, self->config.B_rows, self->config.B_columns);

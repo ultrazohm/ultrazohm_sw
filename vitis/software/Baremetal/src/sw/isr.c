@@ -39,7 +39,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 extern DS_Data Global_Data;
 bool done_flag = false;
 uint32_t counter_test = 0U;
-extern float C_matrix[16];
+extern float C_matrix[64];
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS

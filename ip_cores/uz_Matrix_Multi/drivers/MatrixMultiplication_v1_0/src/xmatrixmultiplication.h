@@ -91,16 +91,20 @@ void XMatrixmultiplication_DisableAutoRestart(XMatrixmultiplication *InstancePtr
 
 void XMatrixmultiplication_Set_A_input(XMatrixmultiplication *InstancePtr, u64 Data);
 u64 XMatrixmultiplication_Get_A_input(XMatrixmultiplication *InstancePtr);
-void XMatrixmultiplication_Set_B_input(XMatrixmultiplication *InstancePtr, u64 Data);
-u64 XMatrixmultiplication_Get_B_input(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_B1_input(XMatrixmultiplication *InstancePtr, u64 Data);
+u64 XMatrixmultiplication_Get_B1_input(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_B2_input(XMatrixmultiplication *InstancePtr, u64 Data);
+u64 XMatrixmultiplication_Get_B2_input(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_C_output(XMatrixmultiplication *InstancePtr, u64 Data);
 u64 XMatrixmultiplication_Get_C_output(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_A_rows(XMatrixmultiplication *InstancePtr, u32 Data);
 u32 XMatrixmultiplication_Get_A_rows(XMatrixmultiplication *InstancePtr);
-void XMatrixmultiplication_Set_B_rows(XMatrixmultiplication *InstancePtr, u32 Data);
-u32 XMatrixmultiplication_Get_B_rows(XMatrixmultiplication *InstancePtr);
-void XMatrixmultiplication_Set_B_columns(XMatrixmultiplication *InstancePtr, u32 Data);
-u32 XMatrixmultiplication_Get_B_columns(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_B1_rows(XMatrixmultiplication *InstancePtr, u32 Data);
+u32 XMatrixmultiplication_Get_B1_rows(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_B1_columns(XMatrixmultiplication *InstancePtr, u32 Data);
+u32 XMatrixmultiplication_Get_B1_columns(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_B2_columns(XMatrixmultiplication *InstancePtr, u32 Data);
+u32 XMatrixmultiplication_Get_B2_columns(XMatrixmultiplication *InstancePtr);
 
 void XMatrixmultiplication_InterruptGlobalEnable(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_InterruptGlobalDisable(XMatrixmultiplication *InstancePtr);

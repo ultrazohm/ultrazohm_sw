@@ -8,7 +8,7 @@ library ieee;
 use ieee.std_logic_1164.all; 
 use ieee.std_logic_unsigned.all;
 
-entity MatrixMultiplication_C_RAM_AUTO_1R1W is 
+entity MatrixMultiplication_C1_RAM_AUTO_1R1W is 
     generic(
         MEM_TYPE        : string    := "auto"; 
         DataWidth       : integer   := 32; 
@@ -26,7 +26,7 @@ entity MatrixMultiplication_C_RAM_AUTO_1R1W is
     ); 
 end entity; 
 
-architecture rtl of MatrixMultiplication_C_RAM_AUTO_1R1W is 
+architecture rtl of MatrixMultiplication_C1_RAM_AUTO_1R1W is 
 
 signal address0_tmp : std_logic_vector(AddressWidth-1 downto 0);
 

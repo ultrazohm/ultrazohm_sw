@@ -103,22 +103,41 @@ u64 XMatrixmultiplication_Get_A_input(XMatrixmultiplication *InstancePtr) {
     return Data;
 }
 
-void XMatrixmultiplication_Set_B_input(XMatrixmultiplication *InstancePtr, u64 Data) {
+void XMatrixmultiplication_Set_B1_input(XMatrixmultiplication *InstancePtr, u64 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B_INPUT_DATA, (u32)(Data));
-    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B_INPUT_DATA + 4, (u32)(Data >> 32));
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_INPUT_DATA, (u32)(Data));
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_INPUT_DATA + 4, (u32)(Data >> 32));
 }
 
-u64 XMatrixmultiplication_Get_B_input(XMatrixmultiplication *InstancePtr) {
+u64 XMatrixmultiplication_Get_B1_input(XMatrixmultiplication *InstancePtr) {
     u64 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B_INPUT_DATA);
-    Data += (u64)XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B_INPUT_DATA + 4) << 32;
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_INPUT_DATA);
+    Data += (u64)XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_INPUT_DATA + 4) << 32;
+    return Data;
+}
+
+void XMatrixmultiplication_Set_B2_input(XMatrixmultiplication *InstancePtr, u64 Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_INPUT_DATA, (u32)(Data));
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_INPUT_DATA + 4, (u32)(Data >> 32));
+}
+
+u64 XMatrixmultiplication_Get_B2_input(XMatrixmultiplication *InstancePtr) {
+    u64 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_INPUT_DATA);
+    Data += (u64)XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_INPUT_DATA + 4) << 32;
     return Data;
 }
 
@@ -158,37 +177,54 @@ u32 XMatrixmultiplication_Get_A_rows(XMatrixmultiplication *InstancePtr) {
     return Data;
 }
 
-void XMatrixmultiplication_Set_B_rows(XMatrixmultiplication *InstancePtr, u32 Data) {
+void XMatrixmultiplication_Set_B1_rows(XMatrixmultiplication *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B_ROWS_DATA, Data);
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_ROWS_DATA, Data);
 }
 
-u32 XMatrixmultiplication_Get_B_rows(XMatrixmultiplication *InstancePtr) {
+u32 XMatrixmultiplication_Get_B1_rows(XMatrixmultiplication *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B_ROWS_DATA);
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_ROWS_DATA);
     return Data;
 }
 
-void XMatrixmultiplication_Set_B_columns(XMatrixmultiplication *InstancePtr, u32 Data) {
+void XMatrixmultiplication_Set_B1_columns(XMatrixmultiplication *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B_COLUMNS_DATA, Data);
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_COLUMNS_DATA, Data);
 }
 
-u32 XMatrixmultiplication_Get_B_columns(XMatrixmultiplication *InstancePtr) {
+u32 XMatrixmultiplication_Get_B1_columns(XMatrixmultiplication *InstancePtr) {
     u32 Data;
 
     Xil_AssertNonvoid(InstancePtr != NULL);
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
-    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B_COLUMNS_DATA);
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_COLUMNS_DATA);
+    return Data;
+}
+
+void XMatrixmultiplication_Set_B2_columns(XMatrixmultiplication *InstancePtr, u32 Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_COLUMNS_DATA, Data);
+}
+
+u32 XMatrixmultiplication_Get_B2_columns(XMatrixmultiplication *InstancePtr) {
+    u32 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_COLUMNS_DATA);
     return Data;
 }
 

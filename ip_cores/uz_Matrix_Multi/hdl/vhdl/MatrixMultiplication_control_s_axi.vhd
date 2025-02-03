@@ -34,11 +34,13 @@ port (
     RREADY                :in   STD_LOGIC;
     interrupt             :out  STD_LOGIC;
     A_input               :out  STD_LOGIC_VECTOR(63 downto 0);
-    B_input               :out  STD_LOGIC_VECTOR(63 downto 0);
+    B1_input              :out  STD_LOGIC_VECTOR(63 downto 0);
+    B2_input              :out  STD_LOGIC_VECTOR(63 downto 0);
     C_output              :out  STD_LOGIC_VECTOR(63 downto 0);
     A_rows                :out  STD_LOGIC_VECTOR(31 downto 0);
-    B_rows                :out  STD_LOGIC_VECTOR(31 downto 0);
-    B_columns             :out  STD_LOGIC_VECTOR(31 downto 0);
+    B1_rows               :out  STD_LOGIC_VECTOR(31 downto 0);
+    B1_columns            :out  STD_LOGIC_VECTOR(31 downto 0);
+    B2_columns            :out  STD_LOGIC_VECTOR(31 downto 0);
     ap_start              :out  STD_LOGIC;
     ap_done               :in   STD_LOGIC;
     ap_ready              :in   STD_LOGIC;
@@ -73,25 +75,33 @@ end entity MatrixMultiplication_control_s_axi;
 -- 0x14 : Data signal of A_input
 --        bit 31~0 - A_input[63:32] (Read/Write)
 -- 0x18 : reserved
--- 0x1c : Data signal of B_input
---        bit 31~0 - B_input[31:0] (Read/Write)
--- 0x20 : Data signal of B_input
---        bit 31~0 - B_input[63:32] (Read/Write)
+-- 0x1c : Data signal of B1_input
+--        bit 31~0 - B1_input[31:0] (Read/Write)
+-- 0x20 : Data signal of B1_input
+--        bit 31~0 - B1_input[63:32] (Read/Write)
 -- 0x24 : reserved
--- 0x28 : Data signal of C_output
---        bit 31~0 - C_output[31:0] (Read/Write)
--- 0x2c : Data signal of C_output
---        bit 31~0 - C_output[63:32] (Read/Write)
+-- 0x28 : Data signal of B2_input
+--        bit 31~0 - B2_input[31:0] (Read/Write)
+-- 0x2c : Data signal of B2_input
+--        bit 31~0 - B2_input[63:32] (Read/Write)
 -- 0x30 : reserved
--- 0x34 : Data signal of A_rows
+-- 0x34 : Data signal of C_output
+--        bit 31~0 - C_output[31:0] (Read/Write)
+-- 0x38 : Data signal of C_output
+--        bit 31~0 - C_output[63:32] (Read/Write)
+-- 0x3c : reserved
+-- 0x40 : Data signal of A_rows
 --        bit 31~0 - A_rows[31:0] (Read/Write)
--- 0x38 : reserved
--- 0x3c : Data signal of B_rows
---        bit 31~0 - B_rows[31:0] (Read/Write)
--- 0x40 : reserved
--- 0x44 : Data signal of B_columns
---        bit 31~0 - B_columns[31:0] (Read/Write)
--- 0x48 : reserved
+-- 0x44 : reserved
+-- 0x48 : Data signal of B1_rows
+--        bit 31~0 - B1_rows[31:0] (Read/Write)
+-- 0x4c : reserved
+-- 0x50 : Data signal of B1_columns
+--        bit 31~0 - B1_columns[31:0] (Read/Write)
+-- 0x54 : reserved
+-- 0x58 : Data signal of B2_columns
+--        bit 31~0 - B2_columns[31:0] (Read/Write)
+-- 0x5c : reserved
 -- (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 architecture behave of MatrixMultiplication_control_s_axi is
@@ -99,25 +109,30 @@ architecture behave of MatrixMultiplication_control_s_axi is
     signal wstate  : states := wrreset;
     signal rstate  : states := rdreset;
     signal wnext, rnext: states;
-    constant ADDR_AP_CTRL          : INTEGER := 16#00#;
-    constant ADDR_GIE              : INTEGER := 16#04#;
-    constant ADDR_IER              : INTEGER := 16#08#;
-    constant ADDR_ISR              : INTEGER := 16#0c#;
-    constant ADDR_A_INPUT_DATA_0   : INTEGER := 16#10#;
-    constant ADDR_A_INPUT_DATA_1   : INTEGER := 16#14#;
-    constant ADDR_A_INPUT_CTRL     : INTEGER := 16#18#;
-    constant ADDR_B_INPUT_DATA_0   : INTEGER := 16#1c#;
-    constant ADDR_B_INPUT_DATA_1   : INTEGER := 16#20#;
-    constant ADDR_B_INPUT_CTRL     : INTEGER := 16#24#;
-    constant ADDR_C_OUTPUT_DATA_0  : INTEGER := 16#28#;
-    constant ADDR_C_OUTPUT_DATA_1  : INTEGER := 16#2c#;
-    constant ADDR_C_OUTPUT_CTRL    : INTEGER := 16#30#;
-    constant ADDR_A_ROWS_DATA_0    : INTEGER := 16#34#;
-    constant ADDR_A_ROWS_CTRL      : INTEGER := 16#38#;
-    constant ADDR_B_ROWS_DATA_0    : INTEGER := 16#3c#;
-    constant ADDR_B_ROWS_CTRL      : INTEGER := 16#40#;
-    constant ADDR_B_COLUMNS_DATA_0 : INTEGER := 16#44#;
-    constant ADDR_B_COLUMNS_CTRL   : INTEGER := 16#48#;
+    constant ADDR_AP_CTRL           : INTEGER := 16#00#;
+    constant ADDR_GIE               : INTEGER := 16#04#;
+    constant ADDR_IER               : INTEGER := 16#08#;
+    constant ADDR_ISR               : INTEGER := 16#0c#;
+    constant ADDR_A_INPUT_DATA_0    : INTEGER := 16#10#;
+    constant ADDR_A_INPUT_DATA_1    : INTEGER := 16#14#;
+    constant ADDR_A_INPUT_CTRL      : INTEGER := 16#18#;
+    constant ADDR_B1_INPUT_DATA_0   : INTEGER := 16#1c#;
+    constant ADDR_B1_INPUT_DATA_1   : INTEGER := 16#20#;
+    constant ADDR_B1_INPUT_CTRL     : INTEGER := 16#24#;
+    constant ADDR_B2_INPUT_DATA_0   : INTEGER := 16#28#;
+    constant ADDR_B2_INPUT_DATA_1   : INTEGER := 16#2c#;
+    constant ADDR_B2_INPUT_CTRL     : INTEGER := 16#30#;
+    constant ADDR_C_OUTPUT_DATA_0   : INTEGER := 16#34#;
+    constant ADDR_C_OUTPUT_DATA_1   : INTEGER := 16#38#;
+    constant ADDR_C_OUTPUT_CTRL     : INTEGER := 16#3c#;
+    constant ADDR_A_ROWS_DATA_0     : INTEGER := 16#40#;
+    constant ADDR_A_ROWS_CTRL       : INTEGER := 16#44#;
+    constant ADDR_B1_ROWS_DATA_0    : INTEGER := 16#48#;
+    constant ADDR_B1_ROWS_CTRL      : INTEGER := 16#4c#;
+    constant ADDR_B1_COLUMNS_DATA_0 : INTEGER := 16#50#;
+    constant ADDR_B1_COLUMNS_CTRL   : INTEGER := 16#54#;
+    constant ADDR_B2_COLUMNS_DATA_0 : INTEGER := 16#58#;
+    constant ADDR_B2_COLUMNS_CTRL   : INTEGER := 16#5c#;
     constant ADDR_BITS         : INTEGER := 7;
 
     signal waddr               : UNSIGNED(ADDR_BITS-1 downto 0);
@@ -148,11 +163,13 @@ architecture behave of MatrixMultiplication_control_s_axi is
     signal int_ier             : UNSIGNED(1 downto 0) := (others => '0');
     signal int_isr             : UNSIGNED(1 downto 0) := (others => '0');
     signal int_A_input         : UNSIGNED(63 downto 0) := (others => '0');
-    signal int_B_input         : UNSIGNED(63 downto 0) := (others => '0');
+    signal int_B1_input        : UNSIGNED(63 downto 0) := (others => '0');
+    signal int_B2_input        : UNSIGNED(63 downto 0) := (others => '0');
     signal int_C_output        : UNSIGNED(63 downto 0) := (others => '0');
     signal int_A_rows          : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_B_rows          : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_B_columns       : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_B1_rows         : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_B1_columns      : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_B2_columns      : UNSIGNED(31 downto 0) := (others => '0');
 
 
 begin
@@ -286,20 +303,26 @@ begin
                         rdata_data <= RESIZE(int_A_input(31 downto 0), 32);
                     when ADDR_A_INPUT_DATA_1 =>
                         rdata_data <= RESIZE(int_A_input(63 downto 32), 32);
-                    when ADDR_B_INPUT_DATA_0 =>
-                        rdata_data <= RESIZE(int_B_input(31 downto 0), 32);
-                    when ADDR_B_INPUT_DATA_1 =>
-                        rdata_data <= RESIZE(int_B_input(63 downto 32), 32);
+                    when ADDR_B1_INPUT_DATA_0 =>
+                        rdata_data <= RESIZE(int_B1_input(31 downto 0), 32);
+                    when ADDR_B1_INPUT_DATA_1 =>
+                        rdata_data <= RESIZE(int_B1_input(63 downto 32), 32);
+                    when ADDR_B2_INPUT_DATA_0 =>
+                        rdata_data <= RESIZE(int_B2_input(31 downto 0), 32);
+                    when ADDR_B2_INPUT_DATA_1 =>
+                        rdata_data <= RESIZE(int_B2_input(63 downto 32), 32);
                     when ADDR_C_OUTPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_C_output(31 downto 0), 32);
                     when ADDR_C_OUTPUT_DATA_1 =>
                         rdata_data <= RESIZE(int_C_output(63 downto 32), 32);
                     when ADDR_A_ROWS_DATA_0 =>
                         rdata_data <= RESIZE(int_A_rows(31 downto 0), 32);
-                    when ADDR_B_ROWS_DATA_0 =>
-                        rdata_data <= RESIZE(int_B_rows(31 downto 0), 32);
-                    when ADDR_B_COLUMNS_DATA_0 =>
-                        rdata_data <= RESIZE(int_B_columns(31 downto 0), 32);
+                    when ADDR_B1_ROWS_DATA_0 =>
+                        rdata_data <= RESIZE(int_B1_rows(31 downto 0), 32);
+                    when ADDR_B1_COLUMNS_DATA_0 =>
+                        rdata_data <= RESIZE(int_B1_columns(31 downto 0), 32);
+                    when ADDR_B2_COLUMNS_DATA_0 =>
+                        rdata_data <= RESIZE(int_B2_columns(31 downto 0), 32);
                     when others =>
                         NULL;
                     end case;
@@ -315,11 +338,13 @@ begin
     task_ap_ready        <= ap_ready and not int_auto_restart;
     ap_continue          <= int_ap_continue or auto_restart_status;
     A_input              <= STD_LOGIC_VECTOR(int_A_input);
-    B_input              <= STD_LOGIC_VECTOR(int_B_input);
+    B1_input             <= STD_LOGIC_VECTOR(int_B1_input);
+    B2_input             <= STD_LOGIC_VECTOR(int_B2_input);
     C_output             <= STD_LOGIC_VECTOR(int_C_output);
     A_rows               <= STD_LOGIC_VECTOR(int_A_rows);
-    B_rows               <= STD_LOGIC_VECTOR(int_B_rows);
-    B_columns            <= STD_LOGIC_VECTOR(int_B_columns);
+    B1_rows              <= STD_LOGIC_VECTOR(int_B1_rows);
+    B1_columns           <= STD_LOGIC_VECTOR(int_B1_columns);
+    B2_columns           <= STD_LOGIC_VECTOR(int_B2_columns);
 
     process (ACLK)
     begin
@@ -547,8 +572,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_B_INPUT_DATA_0) then
-                    int_B_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B_input(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_B1_INPUT_DATA_0) then
+                    int_B1_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B1_input(31 downto 0));
                 end if;
             end if;
         end if;
@@ -558,8 +583,30 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_B_INPUT_DATA_1) then
-                    int_B_input(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B_input(63 downto 32));
+                if (w_hs = '1' and waddr = ADDR_B1_INPUT_DATA_1) then
+                    int_B1_input(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B1_input(63 downto 32));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_B2_INPUT_DATA_0) then
+                    int_B2_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B2_input(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_B2_INPUT_DATA_1) then
+                    int_B2_input(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B2_input(63 downto 32));
                 end if;
             end if;
         end if;
@@ -602,8 +649,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_B_ROWS_DATA_0) then
-                    int_B_rows(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B_rows(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_B1_ROWS_DATA_0) then
+                    int_B1_rows(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B1_rows(31 downto 0));
                 end if;
             end if;
         end if;
@@ -613,8 +660,19 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_B_COLUMNS_DATA_0) then
-                    int_B_columns(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B_columns(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_B1_COLUMNS_DATA_0) then
+                    int_B1_columns(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B1_columns(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_B2_COLUMNS_DATA_0) then
+                    int_B2_columns(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B2_columns(31 downto 0));
                 end if;
             end if;
         end if;

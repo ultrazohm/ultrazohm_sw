@@ -13,10 +13,14 @@ struct uz_Matrix_Multi_config{
 	 uint32_t A_rows;
 	 uint32_t A_columns;
 	 float *A_data;
-	 uint32_t B_length_of_data;
-	 uint32_t B_rows;
-	 uint32_t B_columns;
-	 float *B_data;
+	 uint32_t B1_length_of_data;
+	 uint32_t B1_rows;
+	 uint32_t B1_columns;
+	 float *B1_data;
+	 uint32_t B2_length_of_data;
+	 uint32_t B2_rows;
+	 uint32_t B2_columns;
+	 float *B2_data;
 	 uint32_t C_length_of_data;
 	 uint32_t C_rows;
 	 uint32_t C_columns;
@@ -24,7 +28,7 @@ struct uz_Matrix_Multi_config{
 };
 
 
-uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz_matrix_t *A_matrix, uz_matrix_t *B_matrix, uz_matrix_t *C_out_matrix);
+uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz_matrix_t *A_matrix, uz_matrix_t *B1_matrix, uz_matrix_t *B2_matrix, uz_matrix_t *C_out_matrix);
 void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self);
 bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self);
 void uz_Matrix_Multi_continue_calculation(uz_Matrix_Multi_t* self);

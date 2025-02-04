@@ -11,4 +11,5 @@ Carrier Board Rev04
 
 	overview
 	power_distribution
+	arm_pins
 	upgrades

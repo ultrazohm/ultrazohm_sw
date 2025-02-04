@@ -164,3 +164,8 @@ Sources
 =======
 
 .. [#Quang] Vector Control of Three-Phase AC Machines, Nguyen Phung Quang, Jörg-Andreas Dittrich, Springer, ISBN 978-3-662-46914-9
+
+Designed by
+===========
+
+The Limitation for six phases was designed by Dennis Hufnagel.

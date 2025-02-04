@@ -99,7 +99,7 @@ void test_uz_CurrentControl_set_Ki_iq_negative(void){
 }
 
 void test_uz_CurrentControl_sample_output(void){
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     float values_iq[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.76f, 0.819f, 0.863f, 0.895f, 0.919f, 0.937f};
     float values_id[11]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f, 0.761f, 0.82f, 0.865f, 0.899f, 0.924f, 0.943f};
@@ -117,7 +117,7 @@ void test_uz_CurrentControl_sample_output(void){
 }
 
 void test_uz_CurrentControl_sample_abc_output(void) {
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     float theta_el_rad = (float)M_PI;
     uz_3ph_abc_t output = uz_CurrentControl_sample_abc(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec, theta_el_rad);
@@ -134,7 +134,7 @@ void test_uz_CurrentControl_sample_abc_output(void) {
 
 void test_uz_CurrentControl_sample_output_SVLimitation_active(void){
     V_dc_volts = 10.0f;
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     float values_iq[11]={0.874f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f, 0.871f};
     float values_id[11]={1.0f, 0.998f, 0.997f, 0.996f, 0.995f, 0.995f, 0.994f, 0.994f, 0.994f, 0.994f, 0.993f};
@@ -152,7 +152,7 @@ void test_uz_CurrentControl_sample_output_SVLimitation_active(void){
 }
 
 void test_uz_CurrentControl_reset(void){
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     float values_iq[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
     float values_id[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
@@ -181,7 +181,7 @@ void test_uz_CurrentControl_reset(void){
 void test_uz_CurrentControl_set_Kp_and_Ki_id(void){
     //Tests, if the new values are properly written into the CurrentControl instance
     uz_3ph_dq_t output = {0};
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     for(int i=0;i<11;i++){
         output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
@@ -201,7 +201,7 @@ void test_uz_CurrentControl_set_Kp_and_Ki_id(void){
 void test_uz_CurrentControl_set_Kp_and_Ki_iq(void){
     //Tests, if the new values are properly written into the CurrentControl instance
     uz_3ph_dq_t output = {0};
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     for(int i=0;i<11;i++){
         output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
@@ -278,7 +278,7 @@ void test_uz_CurrentControl_get_ext_clamping_NULL(void){
 }
 
 void test_uz_CurrentControl_get_ext_clamping_output(void){
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     i_actual_Ampere.q = 0.0f;
     i_actual_Ampere.d = 0.0f;
@@ -313,7 +313,7 @@ void test_uz_CurrentControl_set_decoupling_method(void) {
 }
 
 void test_uz_CurrentControl_sample_output_PI_Controller_limit_deactivated(void){
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     //Limit of the PI-Controllers are "deactivated" and should not limit the signal
     config.config_id.lower_limit = 0.0f;
     config.config_id.upper_limit = 0.0f;
@@ -356,7 +356,7 @@ void test_uz_CurrentControl_set_max_modulation_index_negative_assert(void){
 }
 
 void test_uz_CurrentControl_set_max_modulation_index_check(void){
-    //Values for comparision from simulation
+    //Values for comparison from simulation
     uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
     i_actual_Ampere.q = 0.0f;
     i_actual_Ampere.d = 0.0f;
@@ -482,4 +482,76 @@ void test_uz_CurrentControl_set_Kp_adjustment_flag(void) {
     float result = uz_CurrentControl_get_Kp_iq(instance);
     TEST_ASSERT_FLOAT_WITHIN(1e-03f,7.5f,result);
 }
+
+void test_uz_CurrentControl_tune_magnitude_optimum(void){
+    //Values for comparison from simulation
+    config.config_PMSM.Ld_Henry = 0.0001f;
+    config.config_PMSM.Lq_Henry = 0.0002f;
+    config.config_PMSM.R_ph_Ohm = 0.008f;
+    config.decoupling_select = no_decoupling;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    float values_iq[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
+    float values_id[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
+	float values_omega[5]={0.0f, 0.0f, 0.0178f, 0.0876f, 0.264f};
+    float ud_out[5]={0.5f, 0.376f,	0.283f,	0.212f,	0.16f};
+    float uq_out[5]={1.0f, 0.751f,	0.565f,	0.424f,	0.319f}; 
+    float tau_sigma_sec = 0.0001f;
+    uz_CurrentControl_tune_magnitude_optimum(instance, tau_sigma_sec); 
+    for(int i=0;i<5;i++){
+        i_actual_Ampere.q = values_iq[i];
+        i_actual_Ampere.d = values_id[i];
+        omega_el_rad_per_sec = values_omega[i];
+        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
+    }
+}
+
+void test_uz_CurrentControl_tune_symmetric_optimum(void){
+    config.config_PMSM.Ld_Henry = 0.0001f;
+    config.config_PMSM.Lq_Henry = 0.0002f;
+    config.config_PMSM.R_ph_Ohm = 0.008f;
+    config.decoupling_select = no_decoupling;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    float values_iq[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
+    float values_id[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
+	float values_omega[5]={0.0f, 0.0f, 0.0178f, 0.0876f, 0.264f};
+    float ud_out[5]={0.5f,	0.388f,	0.304f, 0.24f, 0.193f};
+    float uq_out[5]={1.0f,	0.776f,	0.608f,	0.481f,	0.386f}; 
+    float tau_sigma_sec = 0.0001f;
+    uz_CurrentControl_tune_symmetric_optimum(instance, tau_sigma_sec);
+    uz_CurrentControl_reset(instance);
+    for(int i=0;i<5;i++){
+        i_actual_Ampere.q = values_iq[i];
+        i_actual_Ampere.d = values_id[i];
+        omega_el_rad_per_sec = values_omega[i];
+        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
+    }
+}
+
+void test_uz_CurrentControl_tune_bandwidth(void){
+    config.config_PMSM.Ld_Henry = 0.0001f;
+    config.config_PMSM.Lq_Henry = 0.0002f;
+    config.config_PMSM.R_ph_Ohm = 0.008f;
+    config.decoupling_select = no_decoupling;
+    uz_CurrentControl_t* instance = uz_CurrentControl_init(config);
+    float values_iq[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
+    float values_id[5]={0.0f, 0.249f, 0.436f, 0.577f, 0.682f};
+	float values_omega[5]={0.0f, 0.0f, 0.0178f, 0.0876f, 0.264f};
+    float ud_out[5]={0.25f,	0.188f,	0.141f, 0.106f, 0.08f};
+    float uq_out[5]={0.5f, 0.376f, 0.282f, 0.212f, 0.16f}; 
+    float bandwidth_rad_per_sec = 2500;
+    uz_CurrentControl_tune_bandwidth(instance, bandwidth_rad_per_sec); 
+    for(int i=0;i<5;i++){
+        i_actual_Ampere.q = values_iq[i];
+        i_actual_Ampere.d = values_id[i];
+        omega_el_rad_per_sec = values_omega[i];
+        uz_3ph_dq_t output = uz_CurrentControl_sample(instance, i_reference_Ampere, i_actual_Ampere, V_dc_volts, omega_el_rad_per_sec);
+		TEST_ASSERT_FLOAT_WITHIN(1e-02f, ud_out[i], output.d);
+	    TEST_ASSERT_FLOAT_WITHIN(1e-02f, uq_out[i], output.q);
+    }
+}
+
 #endif // TEST

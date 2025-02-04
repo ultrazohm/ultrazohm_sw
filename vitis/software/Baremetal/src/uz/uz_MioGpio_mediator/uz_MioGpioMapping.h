@@ -7,8 +7,10 @@
 
 #define GPIO_CHANNEL 1 /* GPIO port for GPIOs */
 
+
+
 // Defines that map the number of the MIO PIN of the PS to the signal name of the signal on the carrier board (X13)
-#if UZ_HARDWARE_VERSION < 4U
+#if (UZ_HARDWARE_VERSION < 4U)
 #define PS_DIG_GPIO_01 	30
 #define PS_DIG_GPIO_02 	31
 #define PS_ANL_GPIO_01 	44
@@ -41,9 +43,10 @@
 #define SW_control 			FrontPanel_switch7
 #define SW_stop 			FrontPanel_switch5
 #define SW_external_stop 	FrontPanel_switch7
-#endif
 
-#if UZ_HARDWARE_VERSION > 3U
+
+
+#elif (UZ_HARDWARE_VERSION == 4U)
 // Defines for PS_GPIO mapping based on carrier board v4 - schematic page 5
 #define PS_1V8_GPIO1 	13
 #define PS_1V8_GPIO2 	33
@@ -75,4 +78,37 @@
 #define SW_control	FrontPanel_switch7
 #define SW_stop 	FrontPanel_switch5
 #define SW_external_stop 	FrontPanel_switch8
+
+
+
+#elif (UZ_HARDWARE_VERSION == 5U)
+// Defines for GPIO mapping based on carrier board v5 (harness "UsrFP-MIOs" on schematic sheet J3)
+#define FrontPanel_LED1 13
+#define FrontPanel_LED2 56
+#define FrontPanel_LED3 57
+#define FrontPanel_LED4 58
+
+#define FrontPanel_switch3 60
+#define FrontPanel_switch1 44
+#define FrontPanel_switch2 59
+#define FrontPanel_switchS 61
+
+// Names of LEDs on frontpanel - fp-ff v1 (schematic sheet TopSheet)
+#define LED_ready 	FrontPanel_LED1
+#define LED_running FrontPanel_LED2
+#define LED_error 	FrontPanel_LED3
+#define LED_user 	FrontPanel_LED4
+
+// Names of buttons on frontpanel - fp-bb v1 (TopSheet) and fp-main v1 (PCB-ButtonBoard)
+#define SW_system	FrontPanel_switch1
+#define SW_control	FrontPanel_switch2
+#define SW_stop 	FrontPanel_switch3
+
+// External STOP input - fp-main v1 (FPC-isoIOs)
+#define SW_external_stop 	FrontPanel_switchS
+
+
+
+#else
+#error Unsupported carrier revision
 #endif

@@ -92,6 +92,36 @@ typedef struct uz_platform_ {
 		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_MZBB_USER
 	}
  };
+ static uz_platform_iomap uzp_iomap_UltraZohmRev05prt = {
+	{
+		// Cf. uz_platform_gpo_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP1RDY
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP2RUN
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP3ERR
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP4USR
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FPRING
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// RST_PHY0		- NB: Via S³C
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// RST_PHY1		- NB: Via S³C
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED10
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED11
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED12
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_BEEP1
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_BEEP2
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD10GREEN
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD11RED
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD12YELLOW
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD13BLUE
+	},{
+		// Cf. uz_platform_gpi_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP5ENABLESYS
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP6ENABLECTL
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP7EMERGENCYSTOP
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP8
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_UZEXT_SW1
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_UZEXT_SW2
+		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_MZBB_USER
+	}
+ };
  static uz_platform_iomap uzp_iomap_MicroZohmRev01onBreakoutBoardRev01 = {
 	{
 		// Cf. uz_platform_gpo_id in uz_platform.h:
@@ -159,12 +189,21 @@ uint32_t uz_platform_init() {
 	// Populate IO map
 	switch(uzp.data.hw_group) {
 		case UZP_HWGROUP_UZOHM3:
-			uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
-			uzp.maceeprom_primary = 1;
-			break;
 		case UZP_HWGROUP_UZOHM6:
-			uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
-			uzp.maceeprom_primary = 1;
+			switch(uzp.data.hw_revision) {
+				case 4U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
+					uzp.maceeprom_primary = 1;
+					break;
+				case 5U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev05prt;
+					uzp.maceeprom_primary = 1;
+					break;
+				default:
+					uz_printf("APU: Carrier revision not supported!\r\n");
+					return(UZ_FAILURE);
+					break;
+			}
 			break;
 		case UZP_HWGROUP_MZOHM:
 			uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;

@@ -40,6 +40,7 @@ extern DS_Data Global_Data;
 bool done_flag = false;
 uint32_t counter_test = 0U;
 extern float C_matrix[4];
+extern float A_matrix[20];
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -49,6 +50,7 @@ extern float C_matrix[4];
 static void ReadAllADC();
 
 bool continue_calculation = false;
+bool is_done = false;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -56,12 +58,39 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*200.0f + 2.5f;
+    A_matrix[1] = Global_Data.aa.A1.me.ADC_A1*200.0f;
+    A_matrix[2] = Global_Data.aa.A1.me.ADC_A2*200.0f;
+    A_matrix[3] = Global_Data.aa.A1.me.ADC_A3*200.0f;
+    A_matrix[4] = Global_Data.aa.A1.me.ADC_A4*200.0f;
+    A_matrix[5] = Global_Data.aa.A1.me.ADC_B5*200.0f;
+    A_matrix[6] = Global_Data.aa.A1.me.ADC_B6*200.0f;
+    A_matrix[7] = Global_Data.aa.A1.me.ADC_B7*200.0f;
+    A_matrix[8] = Global_Data.aa.A1.me.ADC_B8*200.0f;
+    A_matrix[9] = Global_Data.aa.A1.me.ADC_A1*200.0f + 1.0f;
+    A_matrix[10] = Global_Data.aa.A1.me.ADC_A2*200.0f + 2.0f;
+    A_matrix[11] = Global_Data.aa.A1.me.ADC_A3*200.0f + 3.0f;
+    A_matrix[12] = Global_Data.aa.A1.me.ADC_A4*200.0f + 4.0f;
+    A_matrix[13] = Global_Data.aa.A1.me.ADC_B5*200.0f + 5.0f;
+    A_matrix[14] = Global_Data.aa.A1.me.ADC_B6*200.0f + 6.0f;
+    A_matrix[15] = Global_Data.aa.A1.me.ADC_B7*200.0f + 7.0f;
+    A_matrix[16] = Global_Data.aa.A1.me.ADC_B8*200.0f + 8.0f;
+    A_matrix[17] = Global_Data.aa.A1.me.ADC_B5*200.0f + 9.0f;
+    A_matrix[18] = Global_Data.aa.A1.me.ADC_B6*200.0f + 10.0f;
+    A_matrix[19] = Global_Data.aa.A1.me.ADC_B7*200.0f + 11.0f;
     if (current_state==control_state)
     {
     	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance);
     	if(continue_calculation) {
     		uz_Matrix_Multi_continue_calculation(Global_Data.objects.matrix_instance);
     	}
+    	while(1) {
+    		is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
+    		if (is_done == true) {
+    			break;
+    		}
+    	}
+
     }
     Xil_DCacheFlushRange(C_matrix,sizeof(C_matrix));
 

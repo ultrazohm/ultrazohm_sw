@@ -1,10 +1,10 @@
 .. _label_cpld_create_program:
 
 ================================
-Create a CPLD program using ABEL
+Create a CPLD program using ABEL 
 ================================
 
-The main goal of this section is to describe the necessary steps for creating a simple program for the CPLDs on the UltraZohm. 
+The main goal of this section is to describe the necessary steps for creating a simple program for the CPLDs on the UltraZohm :math:`\leq` Rev04. 
 All signals from the FPGA to the Digital Adapter cards have to pass through the CPLDs. 
 
 Everything is programmed inside the .abl file. Here we can set which ports are inputs or outputs and use logic combinations to create the desired behavior. 

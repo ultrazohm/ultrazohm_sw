@@ -2,10 +2,12 @@
 Overview
 ========
 
-An overview about interfaces is shown in chapter  :ref:`label_carrier_board_overview`.
+An overview about interfaces is shown in chapter :ref:`label_carrier_board_overview`.
 
-Short summary of new features:
-------------------------------------------------------
+.. _carrier_board_rev04_features:
+
+Short summary of new features
+-----------------------------
 
 * New connector for front panel buttons and LEDs to provide the isolated GPIO interface available for other purposes (e.g. interaction with external systems)
 * External stop circuitry integrated on isolated GPIO interface. It is for the default UltraZohm system software usage not neccessary any more to connect the dummy connector to keep the safety loop closed. The external stop function now can be used independantly of the front panel button.

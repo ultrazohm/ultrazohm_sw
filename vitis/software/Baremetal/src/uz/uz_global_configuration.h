@@ -6,10 +6,10 @@
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
-#define UZ_USE_EXTERNAL_STOP_ON_V4 0U
+#define UZ_USE_EXTERNAL_STOP 0U
 
-#if (UZ_HARDWARE_VERSION != 4U) && (UZ_USE_EXTERNAL_STOP_ON_V4 == 1U)
-#error The UZ_USE_EXTERNAL_STOP_ON_V4 flag must not be used on hardware version 3. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
+#if (UZ_HARDWARE_VERSION < 4U) && (UZ_USE_EXTERNAL_STOP == 1U)
+#error The UZ_USE_EXTERNAL_STOP flag must not be used on hardware version 3 or earlier. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
 #endif
 
 /** ISR trigger source
@@ -69,6 +69,7 @@
 #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
+#define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -117,4 +118,5 @@
     #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             10U
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
+    #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
 #endif

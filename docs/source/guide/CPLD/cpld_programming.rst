@@ -67,6 +67,8 @@ Note that it is possible to program only one of the CPLDs by the enable check bo
    :width: 500
 
 
+.. _label_cpld_programming_ftdi4ch:
+
 Step-by-step for :ref:`uz_per_jtag`
 --------------------------------------
 

@@ -29,3 +29,4 @@ pygwalker
 streamlit
 trace_updater
 sphinx-design
+sphinx-sitemap

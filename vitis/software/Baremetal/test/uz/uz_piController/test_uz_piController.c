@@ -14,7 +14,7 @@ void setUp(void)
     config.samplingTime_sec = 0.001f;
     config.upper_limit = 10.0f;
     config.lower_limit = -10.0f;
-    config.type = parallel;
+    config.type = UZ_PI_PARALLEL;
 }
 
 void test_uz_PI_Controller_init_assert_Ki_negative(void){
@@ -175,7 +175,7 @@ void test_uz_PI_Controller_sample_ideal_output(void){
     config.Kp = 11.54f;
     config.upper_limit = 20.0f;
     config.lower_limit = -20.0f;
-    config.type = ideal;
+    config.type = UZ_PI_IDEAL;
     uz_PI_Controller* variables = uz_PI_Controller_init(config);
     float referenceValue = 12.0f;
     float actualValue = 2.0f;

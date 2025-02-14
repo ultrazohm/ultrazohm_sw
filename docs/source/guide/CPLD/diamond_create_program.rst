@@ -12,7 +12,7 @@ D-Slot CPLDs
 ######################
 
 Everything is programmed inside the project ``uz_d_slots.ldf`` . Here we can create additional ``implementations`` for the CPLD. 
-The advantage of having all CPLD programs within one project is that u can use vhdl code from other files, but every file has its own constraints.
+The advantage of having all CPLD programs within one project is that VHDL code from other files can be used, but every file has its own constraints (e.g. all signals function as inputs versus all signals function as outputs).
 
 Step-by-step
 ------------
@@ -96,9 +96,13 @@ constraints by opening the ``Spreadsheet View``.
 S3C
 #####
 
-.. warning::
+The same procedure can be applied to create a program for the S3C.
+
+.. danger::
   Modifying the bitstream of the S3C fundamentally alters the startup and power-down behavior of the UZ. 
   Such changes may render the carrier board inoperative, requiring physical recovery through soldering.
-  Exercise caution in your actions within this context.
+  Exercise caution in your actions within this context. 
 
-
+.. note::
+  Check the schematic from the Carrierboard to see, which signals are inputs/outputs or bidirectional.
+  The Pins have a dedicated direction and cannot be freely configured.

@@ -1,5 +1,6 @@
 #pragma once
 #include <stdbool.h>
+#include <stdint.h>
 
 /**
  * @brief Enum for the available states of the UltraZohm

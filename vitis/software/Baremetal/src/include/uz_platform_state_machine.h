@@ -117,3 +117,5 @@ bool ultrazohm_state_get_led_error(void);
  * @return false
  */
 bool ultrazohm_state_get_led_user(void);
+
+void ultrazohm_state_machine_init(uint32_t ultrazohm_revision);

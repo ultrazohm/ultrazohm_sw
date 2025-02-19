@@ -51,6 +51,11 @@ enum init_chain
     infinite_loop
 };
 enum init_chain initialization_chain = init_assertions;
+#include "APU_RPU_shared.h"
+#include "xil_cache.h"
+
+uint32_t apu_version_final=0;
+uint32_t rpu_version_final=0;
 
 int main(void)
 {
@@ -61,9 +66,34 @@ int main(void)
         {
         case init_assertions:
             uz_assert_configuration(); // This has to be the first line of code in main.c
+
+
+            // Read memory location until it is read as zero
+            // Write uz_default into the same memory location
+            // Read other memory location until a non zero value is read
+            // THis non zero value is the revision
+            uint32_t volatile * apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+            uint32_t volatile * rpu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE+64U;
+            Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+            *rpu_version = UZ_HARDWARE_VERSION;
+            do{
+                Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+            } while (! (*apu_version==100U));
+            *rpu_version = UZ_HARDWARE_VERSION;
+
+            Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+            do
+            {
+            	uz_sleep_useconds(1);
+                Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+            } while (!(*apu_version < 100U));
+            // From here on, default_verion_from_apu is the value the APU read from IIC
+          	 apu_version_final=*apu_version;
+          	 rpu_version_final=*rpu_version;
             initialization_chain = init_gpios;
             break;
         case init_gpios:
+
             Initialize_AXI_GPIO();               // This has to be the second line of code in main.c since the assertion callback uses the AXI_GPIO to disable the system
             uz_frontplane_button_and_led_init(); // This has to be the third line of code since the assertion callback uses the LEDs to indicate an error
             initialization_chain = init_software;

@@ -53,8 +53,10 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addr);
 uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p);
 
+uint32_t uz_platform_get_hw_revision(void);
+
 #if (UZ_PLATFORM_CARDID==1)
- uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p);
+	uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t *model_p, uint8_t *revision_p, uint16_t *serial_p);
 #endif
 
 #endif

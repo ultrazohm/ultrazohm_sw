@@ -38,3 +38,10 @@ struct RPU_to_APU_user_data_t
 	// create variables that you want to share from R5 to A53
 	uint32_t slowDataCounter;
 };
+
+struct ultrazohm_version_t
+{
+	uint32_t    rpu_version;
+	uint32_t    apu_version;
+
+};

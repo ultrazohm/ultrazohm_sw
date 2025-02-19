@@ -153,33 +153,41 @@ typedef struct uz_platform_ {
 	}
  };
 
- static uz_platform uzp;
 #endif
 
-uint32_t uz_platform_init() {
-#if (UZ_PLATFORM_ENABLE==1)
-	uz_assert_false(uzp.is_ready);
+ static uz_platform uzp;
 
-	//// Primary I²C bus used by UZP (we might need a secondary for mixed-old/new combinations of UZC Rev<=04 and SoM)
-	uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID, XPAR_PSU_I2C_1_BASEADDR, XPAR_PSU_I2C_1_DEVICE_ID, XPAR_PSU_I2C_1_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
+ uint32_t uz_platform_get_hw_revision(void)
+ {
+	 uz_assert(uzp.is_ready);
+	 return (uint32_t)uzp.data.hw_revision;
+ }
 
-	//// Create I²C devices: EEPROM
-	uz_iic_initdev(&uzp.eeprom, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_EEPROM);
+	 uint32_t uz_platform_init()
+	 {
+#if (UZ_PLATFORM_ENABLE == 1)
+		 uz_assert_false(uzp.is_ready);
 
-	int status;
-	// Fetch platform data
-	status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
-	if ( XST_SUCCESS != status ) {
-		uz_printf("APU: Error reading platform EEPROM!\r\n");
-		return(UZ_FAILURE);
-	}
+		 //// Primary I²C bus used by UZP (we might need a secondary for mixed-old/new combinations of UZC Rev<=04 and SoM)
+		 uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID, XPAR_PSU_I2C_1_BASEADDR, XPAR_PSU_I2C_1_DEVICE_ID, XPAR_PSU_I2C_1_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
 
-	if (
-			( uzp.data.hw_group == UZ_PLATFORM_HWGROUP_MAX ) &&
-			( uzp.data.hw_model == UZ_PLATFORM_HWMODEL_MAX ) &&
-			( uzp.data.hw_revision == UZ_PLATFORM_HWREVISION_MAX ) &&
-			( uzp.data.serialdata.hw_externalserial.extserial == UZ_PLATFORM_EXTSERIAL_MAX )
-	   ) {
+		 //// Create I²C devices: EEPROM
+		 uz_iic_initdev(&uzp.eeprom, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_EEPROM);
+
+		 int status;
+		 // Fetch platform data
+		 status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t *)&uzp.data, sizeof(uzp.data));
+		 if (XST_SUCCESS != status)
+		 {
+			 uz_printf("APU: Error reading platform EEPROM!\r\n");
+			 return (UZ_FAILURE);
+		 }
+
+		 if (
+			 (uzp.data.hw_group == UZ_PLATFORM_HWGROUP_MAX) &&
+			 (uzp.data.hw_model == UZ_PLATFORM_HWMODEL_MAX) &&
+			 (uzp.data.hw_revision == UZ_PLATFORM_HWREVISION_MAX) &&
+			 (uzp.data.serialdata.hw_externalserial.extserial == UZ_PLATFORM_EXTSERIAL_MAX)) {
 		uz_printf("APU: Platform EEPROM is unconfigured!\r\n");
 		return(UZ_FAILURE);
 	} else {

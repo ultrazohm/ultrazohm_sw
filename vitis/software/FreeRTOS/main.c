@@ -75,10 +75,26 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
  *      Starts only the main thread "main_thread()" with priority
  *      "DEFAULT_THREAD_PRIO". Afterwards nothing will happen here.
  *---------------------------------------------------------------------------*/
+#include "APU_RPU_shared.h"
+#include "xil_cache.h"
+
+
+enum init_chain
+{
+	initialization_handshake = 0,
+	initialization_rest
+};
+enum init_chain initialization_chain = initialization_handshake;
+
 int main()
 {
+
 #if (UZ_PLATFORM_ENABLE==1)
+
 	uz_assert( UZ_SUCCESS == uz_platform_init() );
+
+
+
 #endif
 
 #if (UZ_PLATFORM_CARDID==1)
@@ -104,14 +120,58 @@ int main()
  }
 #endif
 
-	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
-	Initialize_InterruptHandler();
+uint32_t volatile apu_version_final=0;
+uint32_t volatile rpu_version_final=0;
 
-	//Start the main-threat
-	sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
-	                THREAD_STACKSIZE,
-	                DEFAULT_THREAD_PRIO);
-	vTaskStartScheduler();
+uint32_t volatile * apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+uint32_t volatile * rpu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE+64U;
+
+ switch (initialization_chain)
+ {
+ case initialization_handshake:
+		// Set memory location to zero
+		// Read from other memory location until non-zero is read (this is uz_default from R5)
+		// read from IIC which platform
+		// Write result of read platform or uz_default to memory region (which is read by r5)
+		// Start normal operation
+
+		// struct javascope_data_t volatile *const javascope_data = (struct javascope_data_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+		// Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+
+		Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+		*apu_version = 100U;
+		do
+		{
+			Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+		} while ((*rpu_version == 0U));
+		Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+		*apu_version = 10U; // uz_platform_get_hw_revision();
+		do
+		{
+			Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+		} while (!(*rpu_version == 0U));
+
+//		Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+		 apu_version_final=*apu_version;
+		 rpu_version_final=*rpu_version;
+		while(1){
+			initialization_chain=initialization_handshake;
+
+		}
+
+ case initialization_rest:
+
+		//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
+		Initialize_InterruptHandler();
+
+		//Start the main-threat
+		sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
+		                THREAD_STACKSIZE,
+		                DEFAULT_THREAD_PRIO);
+		vTaskStartScheduler();
+     break;
+
+ }
 
 	uz_printf("APU: Error in scheduler");
 

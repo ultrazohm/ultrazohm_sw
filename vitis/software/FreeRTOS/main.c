@@ -123,8 +123,6 @@ int main()
 uint32_t volatile apu_version_final=0;
 uint32_t volatile rpu_version_final=0;
 
-uint32_t volatile * apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
-uint32_t volatile * rpu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE+64U;
 
  switch (initialization_chain)
  {
@@ -137,27 +135,32 @@ uint32_t volatile * rpu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASC
 
 		// struct javascope_data_t volatile *const javascope_data = (struct javascope_data_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
 		// Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
+	 uint32_t volatile * apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+	 uint32_t volatile * rpu_version = (uint32_t *)((uint8_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + 64U);
 
-		Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-		*apu_version = 100U;
-		do
-		{
-			Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-		} while ((*rpu_version == 0U));
-		Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-		*apu_version = 10U; // uz_platform_get_hw_revision();
-		do
-		{
-			Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-		} while (!(*rpu_version == 0U));
+	 *apu_version = 100U;
+	 Xil_DCacheFlushRange((uintptr_t)apu_version, sizeof(uint32_t));  // Flush APU write
 
-//		Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-		 apu_version_final=*apu_version;
-		 rpu_version_final=*rpu_version;
-		while(1){
-			initialization_chain=initialization_handshake;
+	 // Wait for RPU to write to rpu_version
+	 do {
+	     Xil_DCacheInvalidateRange((uintptr_t)rpu_version, sizeof(uint32_t)); // Invalidate before read
+	 } while (*rpu_version == 0U);
 
-		}
+	 // Now update apu_version
+	 *apu_version = 10U; // uz_platform_get_hw_revision();
+	 Xil_DCacheFlushRange((uintptr_t)apu_version, sizeof(uint32_t));
+
+	 // Wait for RPU to acknowledge
+	 do {
+	     Xil_DCacheInvalidateRange((uintptr_t)rpu_version, sizeof(uint32_t));
+	 } while (*rpu_version != 0U);
+
+	 // Final values
+	 apu_version_final = *apu_version;
+	 rpu_version_final = *rpu_version;
+
+	while(1) { initialization_chain = initialization_handshake; }
+		//}
 
  case initialization_rest:
 

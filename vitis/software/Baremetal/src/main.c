@@ -72,24 +72,30 @@ int main(void)
             // Write uz_default into the same memory location
             // Read other memory location until a non zero value is read
             // THis non zero value is the revision
-            uint32_t volatile * apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
-            uint32_t volatile * rpu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE+64U;
-            Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-            *rpu_version = UZ_HARDWARE_VERSION;
-            do{
-                Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-            } while (! (*apu_version==100U));
-            *rpu_version = UZ_HARDWARE_VERSION;
+            // Invalidate before reading
+            uint32_t volatile *apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+            uint32_t volatile *rpu_version = (uint32_t *)((uint8_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + 64U);
 
-            Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-            do
-            {
-            	uz_sleep_useconds(1);
-                Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-            } while (!(*apu_version < 100U));
-            // From here on, default_verion_from_apu is the value the APU read from IIC
-          	 apu_version_final=*apu_version;
-          	 rpu_version_final=*rpu_version;
+            Xil_DCacheInvalidateRange((uintptr_t)apu_version, sizeof(uint32_t));
+
+            // Wait for APU to set apu_version to 100
+            do {
+                Xil_DCacheInvalidateRange((uintptr_t)apu_version, sizeof(uint32_t));
+            } while (*apu_version != 100U);
+
+            // Set rpu_version
+            *rpu_version = UZ_HARDWARE_VERSION;
+            Xil_DCacheFlushRange((uintptr_t)rpu_version, sizeof(uint32_t));
+
+            // Wait for APU to change apu_version
+            do {
+                uz_sleep_useconds(1); // Small delay to prevent excessive cache invalidation
+                Xil_DCacheInvalidateRange((uintptr_t)apu_version, sizeof(uint32_t));
+            } while (*apu_version >= 100U);
+
+            // Final values
+            apu_version_final = *apu_version;
+            rpu_version_final = *rpu_version;
             initialization_chain = init_gpios;
             break;
         case init_gpios:

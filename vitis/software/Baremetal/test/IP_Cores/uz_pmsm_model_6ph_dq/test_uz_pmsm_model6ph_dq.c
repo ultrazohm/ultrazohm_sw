@@ -4,6 +4,7 @@
 #include "test_assert_with_exception.h"
 #include "uz_pmsm_model6ph_dq.h"
 #include "mock_uz_pmsm_model6ph_dq_hw.h"
+#include "uz_pmsm_model3ph_dq.h"
 
 #define BASE_ADDRESS 0x0000000FU
 #define IP_FRQ 100000000U
@@ -11,8 +12,8 @@
 struct uz_pmsm_model6ph_dq_config_t config = {
     .base_address = BASE_ADDRESS,
     .ip_core_frequency_Hz = IP_FRQ,
-    .simulate_mechanical_system = true,
-    .switch_pspl = true,
+    .simulate_mechanical_system = set_load_torque,
+    .switch_pspl = src_PS,
     .r_1 = 2.1f,
     .inductance.d = 0.00005f,
     .inductance.q = 0.00005f,
@@ -55,7 +56,7 @@ uz_pmsm_model6ph_dq_t *successful_init(struct uz_pmsm_model6ph_dq_config_t confi
     uz_pmsm_model6ph_hw_write_L_y_Expect(BASE_ADDRESS, configuration.inductance.y);
     uz_pmsm_model6ph_hw_write_L_z1_Expect(BASE_ADDRESS, configuration.inductance.z1);
     uz_pmsm_model6ph_hw_write_L_z2_Expect(BASE_ADDRESS, configuration.inductance.z2);
-    if (configuration.simulate_mechanical_system)
+    if (configuration.simulate_mechanical_system == set_load_torque)
     {
         uz_pmsm_model6ph_hw_write_friction_coefficient_Expect(BASE_ADDRESS, configuration.friction_coefficient);
         uz_pmsm_model6ph_hw_write_coulomb_friction_constant_Expect(BASE_ADDRESS, configuration.coulomb_friction_constant);
@@ -68,8 +69,8 @@ uz_pmsm_model6ph_dq_t *successful_init(struct uz_pmsm_model6ph_dq_config_t confi
         uz_pmsm_model6ph_hw_write_coulomb_friction_constant_Expect(BASE_ADDRESS, 0.0f);
         uz_pmsm_model6ph_hw_write_inertia_Expect(BASE_ADDRESS, 1.0f);
     }
-    uz_pmsm_model6ph_hw_write_simulate_mechanical_Expect(BASE_ADDRESS, configuration.simulate_mechanical_system);
-    uz_pmsm_model6ph_hw_write_switch_pspl_Expect(BASE_ADDRESS, configuration.switch_pspl);
+    uz_pmsm_model6ph_hw_write_simulate_mechanical_Expect(BASE_ADDRESS, true);
+    uz_pmsm_model6ph_hw_write_switch_pspl_Expect(BASE_ADDRESS, true);
     uz_pmsm_model6ph_dq_t *instance = uz_pmsm_model6ph_dq_init(configuration);
     return (instance);
 }
@@ -103,8 +104,8 @@ void test_uz_pmsm_model6ph_dq_reset(void){
     uz_pmsm_model6ph_dq_reset(test_instance);
 
     // set pspl false
-    uz_pmsm_model6ph_hw_write_switch_pspl_Expect(BASE_ADDRESS, false);
-    uz_pmsm_model6ph_dq_set_use_axi_input(test_instance,false);
+    uz_pmsm_model6ph_hw_write_switch_pspl_Expect(BASE_ADDRESS, 0);
+    uz_pmsm_model6ph_dq_set_use_axi_input(test_instance,src_PL);
 
     // pspl: false -> voltages will not be set to zero
 
@@ -118,7 +119,7 @@ void test_uz_pmsm_model6ph_dq_reset(void){
 
     // set pspl true
     uz_pmsm_model6ph_hw_write_switch_pspl_Expect(BASE_ADDRESS, true);
-    uz_pmsm_model6ph_dq_set_use_axi_input(test_instance,true);
+    uz_pmsm_model6ph_dq_set_use_axi_input(test_instance,src_PS);
 }
 
 // Testing uz_pmsm_model6ph_dq_set_inputs_general and uz_pmsm_model6ph_dq_set_voltage

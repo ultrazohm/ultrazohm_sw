@@ -1,14 +1,14 @@
-﻿Port Name,Port Type,Data Type,Interface,Range,Description,Six-phase,Nine-phase
-theta_el,Input,sfix18_En14,External Signal,-8 to +7,electric rotor angle,y,y
-theta_el_axi,Output,sfix18_En14,AXI 0x100,-8 to +7,electric rotor angle,y,y
-trigger_new_values,Input,boolean,External Signal,,trigger to update outputs,y,y
-x_abc1_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 1 for transformation as line-to-line,y,y
-x_abc2_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 2 for transformation as line-to-line,y,y
-x_abc3_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 3 for transformation as line-to-line,n,y
-x_out_dq,Output,sfix27_En16 (6/9),External Signal,-1024 to +1023,output transfomed values,y,y
-x_in_dq,Input,sfix27_En18 (6/9),External Signal,-256 to +255,input dq values for inverse transformation,y,y
-x_abc_out_axi,Output,sfix27_En18 (6/9),AXI 0x140,-256 to +255,output inverse transformed abc values to AXI,y,y
-x_abc_1,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 1 values,y,y
-x_abc_2,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 2 values,y,y
-x_abc_3,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 3 values,n,y
-refresh_values,Output,boolean,External Signal,,feedback signal that trigger_new_values input has been acknowledged and outputs are updated,y,y
+﻿Port Name,Port Type,Data Type,Interface,Range,Description,Three-phase,Six-phase,Nine-phase
+theta_el,Input,sfix18_En14,External Signal,-8 to +7,electric rotor angle,y,y,y
+theta_el_axi,Output,sfix18_En14,AXI 0x100,-8 to +7,electric rotor angle,y,y,y
+trigger_new_values,Input,boolean,External Signal,,trigger to update outputs,y,y,y
+x_abc1_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 1 for transformation as line-to-line,y,y,y
+x_abc2_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 2 for transformation as line-to-line,n,y,y
+x_abc3_ll_pl,Input,sfix27_En16 (3),External Signal,-1024 to +1023,input phase values subset 3 for transformation as line-to-line,n,n,y
+x_out_dq,Output,sfix27_En16 (2/6/9),External Signal,-1024 to +1023,output transfomed values,y,y,y
+x_in_dq,Input,sfix27_En18 (2/6/9),External Signal,-256 to +255,input dq values for inverse transformation,y,y,y
+x_abc_out_axi,Output,sfix27_En18 (3/6/9),AXI 0x140,-256 to +255,output inverse transformed abc values to AXI,y,y,y
+x_abc_1,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 1 values,y,y,y
+x_abc_2,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 2 values,n,y,y
+x_abc_3,Output,sfix27_En18 (3),External Signal,-256 to +255,output inverse transformed abc subset 3 values,n,n,y
+refresh_values,Output,boolean,External Signal,,feedback signal that trigger_new_values input has been acknowledged and outputs are updated,y,y,y

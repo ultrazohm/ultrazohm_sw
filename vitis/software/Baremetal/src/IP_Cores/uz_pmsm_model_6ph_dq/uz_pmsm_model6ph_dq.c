@@ -60,8 +60,11 @@ uz_pmsm_model6ph_dq_t *uz_pmsm_model6ph_dq_init(struct uz_pmsm_model6ph_dq_confi
     uz_assert(config.inductance.z2 > 0.0f);
     uz_assert(config.psi_pm >= 0.0f);
     uz_assert(config.polepairs > 0.0f);
+    uz_assert(config.simulate_mechanical_system >= 0 && config.simulate_mechanical_system < 2);
+    uz_assert(config.switch_pspl >= 0 && config.switch_pspl < 2);
+
     // If the mechanical system is not simulated, set default values
-    if (!config.simulate_mechanical_system)
+    if (config.simulate_mechanical_system == set_fixed_rpm)
     {
         config.inertia = 1.0f;              // If mechanical system is not simulated, set inertia to 1.0 to prevent division by zero
         config.friction_coefficient = 1.0f; // Random default values
@@ -85,7 +88,7 @@ void uz_pmsm_model6ph_dq_reset(uz_pmsm_model6ph_dq_t *self)
     // Then resets the integrators
     uz_pmsm_model6ph_dq_set_inputs_general(self, 0.0f, 0.0f);
     // if voltages are set from PS: also reset them
-    if(self->config.switch_pspl){
+    if(self->config.switch_pspl == src_PS){
         uz_6ph_dq_t zero_voltages = {0};
         uz_pmsm_model6ph_dq_set_voltage(self, zero_voltages);
     }
@@ -96,11 +99,16 @@ void uz_pmsm_model6ph_dq_reset(uz_pmsm_model6ph_dq_t *self)
     uz_pmsm_model6ph_hw_write_reset(self->config.base_address, false);
 }
 
-void uz_pmsm_model6ph_dq_set_use_axi_input(uz_pmsm_model6ph_dq_t *self, bool use_axi){
+void uz_pmsm_model6ph_dq_set_use_axi_input(uz_pmsm_model6ph_dq_t *self, enum uz_cil_pmsm_input_source src){
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->config.switch_pspl=use_axi;
-    uz_pmsm_model6ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
+    self->config.switch_pspl=src;
+    uz_assert(self->config.switch_pspl >= 0 && self->config.switch_pspl < 2);
+    if(self->config.switch_pspl == src_PS){
+        uz_pmsm_model6ph_hw_write_switch_pspl(self->config.base_address, true);
+    }else{
+        uz_pmsm_model6ph_hw_write_switch_pspl(self->config.base_address, false);
+    }
 }
 
 void uz_pmsm_model6ph_dq_set_inputs_general(uz_pmsm_model6ph_dq_t *self, float omega_mech, float load_torque){
@@ -197,8 +205,16 @@ static void write_config_to_pl(uz_pmsm_model6ph_dq_t *self)
     uz_pmsm_model6ph_hw_write_friction_coefficient(self->config.base_address, self->config.friction_coefficient);
     uz_pmsm_model6ph_hw_write_coulomb_friction_constant(self->config.base_address, self->config.coulomb_friction_constant);
     uz_pmsm_model6ph_hw_write_inertia(self->config.base_address, self->config.inertia);
-    uz_pmsm_model6ph_hw_write_simulate_mechanical(self->config.base_address, self->config.simulate_mechanical_system);
-    uz_pmsm_model6ph_hw_write_switch_pspl(self->config.base_address, self->config.switch_pspl);
+    if(self->config.simulate_mechanical_system == set_fixed_rpm){
+        uz_pmsm_model6ph_hw_write_simulate_mechanical(self->config.base_address, false);
+    }else{
+        uz_pmsm_model6ph_hw_write_simulate_mechanical(self->config.base_address, true);       
+    }
+    if(self->config.switch_pspl == src_PS){
+        uz_pmsm_model6ph_hw_write_switch_pspl(self->config.base_address, true);
+    }else{
+        uz_pmsm_model6ph_hw_write_switch_pspl(self->config.base_address, false);
+    }
 }
 
 void uz_pmsm_model6ph_trigger_voltage_input_strobe(uz_pmsm_model6ph_dq_t *self){

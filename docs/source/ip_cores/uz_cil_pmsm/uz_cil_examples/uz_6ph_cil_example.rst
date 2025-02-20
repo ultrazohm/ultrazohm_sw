@@ -22,6 +22,8 @@ The trigger and refresh signals of the Transformation are connected with the RS-
    To use this, open the Vivado block design in a clean project and run the following commands seperately in the TCL-console.
    "cd [ get_property DIRECTORY [current_project] ]" 
    "source ../../docs/source/mpsoc/ip_cores/uz_cil_pmsm/uz_cil_examples/sixphase_cil.tcl"
+   Do not forget to assign the addresses afterwards, as this is not included in the tcl-script!
+   During the validation in Vivado, a warning for the unconnected PWM IP-core's inputs will show up, which can be ignored.
 
 
 .. figure:: vivado_6ph.jpg
@@ -68,8 +70,8 @@ The init functions are called during the init process of all IP-cores.
       .friction_coefficient = 0.001f,
       .coulomb_friction_constant = 0.001f,
       .inertia = 0.001f,
-      .simulate_mechanical_system = true,
-      .switch_pspl = false};
+      .simulate_mechanical_system = set_load_torque,
+      .switch_pspl = src_PL};
 
   // Transformation
   uz_pmsm6ph_transformation_t *transformation = NULL;

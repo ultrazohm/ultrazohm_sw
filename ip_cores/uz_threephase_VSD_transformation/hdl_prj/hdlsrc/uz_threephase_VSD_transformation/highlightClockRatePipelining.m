@@ -1,0 +1,10 @@
+open_system('uz_threephase_VSD_transformation');
+open_system('gm_uz_threephase_VSD_transformation');
+cs.HiliteType = 'user2';
+cs.ForegroundColor = 'black';
+cs.BackgroundColor = 'gray';
+set_param(0, 'HiliteAncestorsData', cs);
+hilite_system('gm_uz_threephase_VSD_transformation/abc_to_dq/Unit Delay', 'user2');
+annotate_port('gm_uz_threephase_VSD_transformation/abc_to_dq/Unit Delay', 1, 1, 'Obstacle to clock-rate pipelining');
+hilite_system('uz_threephase_VSD_transformation/abc_to_dq/Unit Delay', 'user2');
+annotate_port('uz_threephase_VSD_transformation/abc_to_dq/Unit Delay', 1, 1, 'Obstacle to clock-rate pipelining');

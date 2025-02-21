@@ -129,4 +129,12 @@ void uz_CurrentControl_set_decoupling_method(uz_CurrentControl_t* self, enum uz_
  */
 bool uz_CurrentControl_get_ext_clamping(uz_CurrentControl_t* self);
 
+/**
+ * @brief Sets the current value of the external clamping signal
+ *
+ * @param self uz_CurrentControl_t instance
+ * @return current value as bool
+ */
+void uz_CurrentControl_set_ext_clamping(uz_CurrentControl_t* self, bool ext_clamping);
+
 #endif // UZ_CURRENTCONTROL_H

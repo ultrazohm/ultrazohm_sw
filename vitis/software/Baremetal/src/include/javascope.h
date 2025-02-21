@@ -210,7 +210,7 @@ enum gui_button_mapping {
 	i_q,
 	i_X,
 	i_Y,
-	receive_field_6,
+	theta_offset,
 	RCV_FLD_ENDMARKER
 
 

@@ -4,6 +4,9 @@
 // Hardware version of the UltraZohm
 #define UZ_HARDWARE_VERSION 4U
 
+// Auto-identification of platform version
+#define UZ_PLATFORM_ENABLE_R5 1U
+
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
 #define UZ_USE_EXTERNAL_STOP 0U

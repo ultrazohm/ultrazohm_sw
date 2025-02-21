@@ -69,29 +69,19 @@ int main(void)
         case init_assertions:
             uz_assert_configuration(); // This has to be the first line of code in main.c
 
-
-            // Read memory location until it is read as zero
-            // Write uz_default into the same memory location
-            // Read other memory location until a non zero value is read
-            // THis non zero value is the revision
-            // Invalidate before reading
-//            do {
-//                Xil_DCacheInvalidateRange((uintptr_t)apu_version, sizeof(uint32_t));
-//            } while (! (*apu_version == expected_value) );
-
-            // Final values
+#if (UZ_PLATFORM_ENABLE_R5==1)
     	    write_rpu_version(0U);
     	    do {
     	    	apu_version_final=read_apu_version();
-    	    } while ( !(apu_version_final == 100U) );
+    	    } while ( !(apu_version_final == 257U) );
     	    write_rpu_version(UZ_HARDWARE_VERSION);
     	    do {
     	    	apu_version_final=read_apu_version();
-    	    } while ( (apu_version_final == 100U) );
+    	    } while ( (apu_version_final == 257U) );
     	    write_rpu_version(apu_version_final);
+#endif
 
-
-while(1){            initialization_chain = init_gpios;};
+ initialization_chain = init_gpios;
             break;
         case init_gpios:
 

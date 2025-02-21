@@ -49,7 +49,6 @@ struct ultrazohm_version_t
 #include "xil_cache.h"
 
 static inline uint32_t read_rpu_version(void){
-    uint32_t volatile *apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
     uint32_t volatile *rpu_version = (uint32_t *)((uint8_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + 64U);
     Xil_DCacheInvalidateRange((uintptr_t)rpu_version, sizeof(uint32_t));
     return *rpu_version;
@@ -57,20 +56,17 @@ static inline uint32_t read_rpu_version(void){
 
 static inline uint32_t read_apu_version(void){
     uint32_t volatile *apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
-    uint32_t volatile *rpu_version = (uint32_t *)((uint8_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + 64U);
     Xil_DCacheInvalidateRange((uintptr_t)apu_version, sizeof(uint32_t));
     return *apu_version;
 }
 
 static inline void write_apu_version(uint32_t version){
     uint32_t volatile *apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
-    uint32_t volatile *rpu_version = (uint32_t *)((uint8_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + 64U);
     *apu_version=version;
     Xil_DCacheFlushRange((uintptr_t)apu_version, sizeof(uint32_t));
 }
 
 static inline void write_rpu_version(uint32_t version){
-    uint32_t volatile *apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
     uint32_t volatile *rpu_version = (uint32_t *)((uint8_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + 64U);
     *rpu_version=version;
     Xil_DCacheFlushRange((uintptr_t)rpu_version, sizeof(uint32_t));

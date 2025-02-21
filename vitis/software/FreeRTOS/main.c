@@ -82,23 +82,44 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
 enum init_chain
 {
 	initialization_handshake = 0,
-	initialization_rest
+	initialization_rtos
 };
 enum init_chain initialization_chain = initialization_handshake;
 
-uint32_t volatile apu_version_final=0;
-uint32_t volatile rpu_version_final=0;
-uint32_t rpu_default_version=0;
-
+uint32_t apu_version_final=0U;
+uint32_t rpu_version_final=0U;
+uint32_t rpu_default_version=0U;
 
 int main()
 {
 
+
+
+
+ switch (initialization_chain)
+ {
+ case initialization_handshake:
 #if (UZ_PLATFORM_ENABLE==1)
 
-	uz_assert( UZ_SUCCESS == uz_platform_init() );
+	 write_apu_version(257U);
+	    do {
+	    	rpu_version_final=read_rpu_version();
+	    } while ( !(rpu_version_final == 0U) );
 
+	    do {
+	    	rpu_version_final=read_rpu_version();
+	    } while ( (rpu_version_final == 0U) );
 
+	    rpu_default_version=rpu_version_final;
+
+		//uz_assert( UZ_SUCCESS == uz_platform_init() );
+		 //apu_version_final=1U; // needs to come from uz_platform
+		 apu_version_final=uz_platform_read_revision(rpu_default_version);
+		 write_apu_version(apu_version_final);
+
+		    do {
+		    	rpu_version_final=read_rpu_version();
+		    } while (! (apu_version_final == rpu_version_final) );
 
 #endif
 
@@ -125,37 +146,9 @@ int main()
  }
 #endif
 
+		    initialization_chain = initialization_rtos;
 
- switch (initialization_chain)
- {
- case initialization_handshake:
-		// Set memory location to zero
-		// Read from other memory location until non-zero is read (this is uz_default from R5)
-		// read from IIC which platform
-		// Write result of 	 uint32_t volatile * apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
-	 apu_version_final=10U;
-	 write_apu_version(100U);
-	    do {
-	    	rpu_version_final=read_rpu_version();
-	    } while ( !(rpu_version_final == 0U) );
-
-	    do {
-	    	rpu_version_final=read_rpu_version();
-	    } while ( (rpu_version_final == 0U) );
-
-	    rpu_default_version=rpu_version_final;
-		 write_apu_version(apu_version_final);
-
-		    do {
-		    	rpu_version_final=read_rpu_version();
-		    } while (! (apu_version_final == rpu_version_final) );
-
-	 // Final values
-
-	while(1) { initialization_chain = initialization_handshake; }
-		//}
-
- case initialization_rest:
+ case initialization_rtos:
 
 		//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
 		Initialize_InterruptHandler();

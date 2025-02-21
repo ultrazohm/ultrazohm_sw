@@ -86,6 +86,11 @@ enum init_chain
 };
 enum init_chain initialization_chain = initialization_handshake;
 
+uint32_t volatile apu_version_final=0;
+uint32_t volatile rpu_version_final=0;
+uint32_t rpu_default_version=0;
+
+
 int main()
 {
 
@@ -120,9 +125,6 @@ int main()
  }
 #endif
 
-uint32_t volatile apu_version_final=0;
-uint32_t volatile rpu_version_final=0;
-
 
  switch (initialization_chain)
  {
@@ -130,34 +132,25 @@ uint32_t volatile rpu_version_final=0;
 		// Set memory location to zero
 		// Read from other memory location until non-zero is read (this is uz_default from R5)
 		// read from IIC which platform
-		// Write result of read platform or uz_default to memory region (which is read by r5)
-		// Start normal operation
+		// Write result of 	 uint32_t volatile * apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
+	 apu_version_final=10U;
+	 write_apu_version(100U);
+	    do {
+	    	rpu_version_final=read_rpu_version();
+	    } while ( !(rpu_version_final == 0U) );
 
-		// struct javascope_data_t volatile *const javascope_data = (struct javascope_data_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
-		// Xil_DCacheFlushRange(MEM_SHARED_START_OCM_BANK_3_JAVASCOPE, JAVASCOPE_DATA_SIZE_2POW);
-	 uint32_t volatile * apu_version = (uint32_t *)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE;
-	 uint32_t volatile * rpu_version = (uint32_t *)((uint8_t*)MEM_SHARED_START_OCM_BANK_3_JAVASCOPE + 64U);
+	    do {
+	    	rpu_version_final=read_rpu_version();
+	    } while ( (rpu_version_final == 0U) );
 
-	 *apu_version = 100U;
-	 Xil_DCacheFlushRange((uintptr_t)apu_version, sizeof(uint32_t));  // Flush APU write
+	    rpu_default_version=rpu_version_final;
+		 write_apu_version(apu_version_final);
 
-	 // Wait for RPU to write to rpu_version
-	 do {
-	     Xil_DCacheInvalidateRange((uintptr_t)rpu_version, sizeof(uint32_t)); // Invalidate before read
-	 } while (*rpu_version == 0U);
-
-	 // Now update apu_version
-	 *apu_version = 10U; // uz_platform_get_hw_revision();
-	 Xil_DCacheFlushRange((uintptr_t)apu_version, sizeof(uint32_t));
-
-	 // Wait for RPU to acknowledge
-	 do {
-	     Xil_DCacheInvalidateRange((uintptr_t)rpu_version, sizeof(uint32_t));
-	 } while (*rpu_version != 0U);
+		    do {
+		    	rpu_version_final=read_rpu_version();
+		    } while (! (apu_version_final == rpu_version_final) );
 
 	 // Final values
-	 apu_version_final = *apu_version;
-	 rpu_version_final = *rpu_version;
 
 	while(1) { initialization_chain = initialization_handshake; }
 		//}

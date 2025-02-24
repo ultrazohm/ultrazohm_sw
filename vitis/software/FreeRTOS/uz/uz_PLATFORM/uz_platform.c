@@ -170,36 +170,33 @@ uint32_t uz_platform_get_hw_revision(void)
 uint32_t uz_platform_read_revision(uint32_t default_version)
 {
 	uz_assert_false(uzp.is_ready);
-
+	uz_assert(default_version > 0U);
+	uz_assert(default_version < 256U);
+	uint32_t revision = default_version;
 	//// Primary I²C bus used by UZP (we might need a secondary for mixed-old/new combinations of UZC Rev<=04 and SoM)
 	uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID, XPAR_PSU_I2C_1_BASEADDR, XPAR_PSU_I2C_1_DEVICE_ID, XPAR_PSU_I2C_1_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
 
 	//// Create I²C devices: EEPROM
 	uz_iic_initdev(&uzp.eeprom, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_EEPROM);
-
 	int status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t *)&uzp.data, sizeof(uzp.data));
 	if (XST_SUCCESS != status)
 	{
 		uz_printf("APU: Error reading platform EEPROM assuming default revision!\r\n");
-		uz_assert(default_version > 0U);
-		uz_assert(default_version < 256U);
-		return (default_version);
 	}
-
-	if (
+	else if (
 		(uzp.data.hw_group == UZ_PLATFORM_HWGROUP_MAX) &&
 		(uzp.data.hw_model == UZ_PLATFORM_HWMODEL_MAX) &&
 		(uzp.data.hw_revision == UZ_PLATFORM_HWREVISION_MAX) &&
 		(uzp.data.serialdata.hw_externalserial.extserial == UZ_PLATFORM_EXTSERIAL_MAX))
 	{
-		uz_printf("APU: Platform EEPROM is unconfigured!\r\n");
-		return (UZ_FAILURE);
+		uz_printf("APU: Platform EEPROM is unconfigured assuming default revision!!\r\n");
 	}
 	else
 	{
 		uz_platform_printinfo(&uzp.data);
-		return (uint32_t)uzp.data.hw_revision;
+		revision = (uint32_t)uzp.data.hw_revision;
 	}
+	return revision;
 }
 
 uint32_t uz_platform_init(uint32_t default_version)

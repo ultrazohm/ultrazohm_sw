@@ -62,10 +62,11 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz
 	return(self);
 }
 
-void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self) {
+void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self, bool flag) {
 	uz_assert_not_NULL(self);
-	uz_matrix_multiplication_hw_set_start(self->config.base_address);
+	uz_matrix_multiplication_hw_set_start(self->config.base_address, flag);
 }
+
 
 bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self) {
 	uz_assert_not_NULL(self);
@@ -73,9 +74,20 @@ bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self) {
 	return(is_done);
 }
 
+bool uz_Matrix_Multi_get_idle_flag(uz_Matrix_Multi_t* self) {
+	uz_assert_not_NULL(self);
+	bool is_idle = uz_matrix_multiplication_hw_get_is_idle_output(self->config.base_address);
+	return(is_idle);
+}
+
 void uz_Matrix_Multi_continue_calculation(uz_Matrix_Multi_t* self) {
 	uz_assert_not_NULL(self);
 	uz_matrix_multiplication_hw_set_continue(self->config.base_address);
+}
+
+void uz_Matrix_Multi_set_auto_restart(uz_Matrix_Multi_t* self, bool auto_restart) {
+	uz_assert_not_NULL(self);
+	uz_matrix_multiplication_hw_set_auto_restart(self->config.base_address, auto_restart);
 }
 
 #endif

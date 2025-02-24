@@ -72,6 +72,10 @@ enum JS_SlowData {
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
 	JSSD_FLOAT_u_q_ref,
+	JSSD_FLOAT_A_0,
+	JSSD_FLOAT_A_1,
+	JSSD_FLOAT_A_2,
+	JSSD_FLOAT_A_3,
 	JSSD_ENDMARKER
 };
 
@@ -250,10 +254,10 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_A_0,
+	JSSD_FLOAT_A_1,
+	JSSD_FLOAT_A_2,
+	JSSD_FLOAT_A_3,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,

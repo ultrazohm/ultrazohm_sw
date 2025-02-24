@@ -78,21 +78,21 @@ void ISR_Control(void *data)
     A_matrix[17] = Global_Data.aa.A1.me.ADC_B5*200.0f + 9.0f;
     A_matrix[18] = Global_Data.aa.A1.me.ADC_B6*200.0f + 10.0f;
     A_matrix[19] = Global_Data.aa.A1.me.ADC_B7*200.0f + 11.0f;
+    Xil_DCacheFlushRange(A_matrix,sizeof(A_matrix));//->Flush wenn der R5 schreibt
     if (current_state==control_state)
     {
-    	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance);
-    	if(continue_calculation) {
-    		uz_Matrix_Multi_continue_calculation(Global_Data.objects.matrix_instance);
-    	}
+    	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);
     	while(1) {
     		is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
     		if (is_done == true) {
+    			uz_Matrix_Multi_set_auto_restart(Global_Data.objects.matrix_instance, true);
     			break;
+
     		}
     	}
 
     }
-    Xil_DCacheFlushRange(C_matrix,sizeof(C_matrix));
+    Xil_DCacheInvalidateRange(C_matrix,sizeof(C_matrix));//->Invalidate wenn R5 liesst
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

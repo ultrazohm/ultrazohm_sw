@@ -43,7 +43,6 @@ struct ultrazohm_version_t
 {
 	uint32_t    rpu_version;
 	uint32_t    apu_version;
-
 };
 
 #include "xil_cache.h"

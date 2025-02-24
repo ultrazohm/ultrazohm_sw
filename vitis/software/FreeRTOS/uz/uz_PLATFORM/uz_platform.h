@@ -2,6 +2,7 @@
 #define UZ_PLATFORM_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "uz_platform_cardeeprom.h"		// models_t → API; Header located in same directory as uz_platform_eeprom.h (cf. include in uz_platform.c)
 
@@ -15,7 +16,7 @@
 //  NB: To use this, increase UZ_IIC_MAX_BUSINSTANCES in uz_iic.c to 2!
 #define UZ_PLATFORM_CARDID	(0U)
 
-uint32_t uz_platform_init();
+uint32_t uz_platform_init(void);
 uint32_t uz_platform_read_revision(uint32_t default_version);
 
 // GPOs supported by this framework
@@ -54,7 +55,7 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addr);
 uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p);
 
-uint32_t uz_platform_get_hw_revision(void);
+bool uz_platform_get_use_iomap(void);
 
 #if (UZ_PLATFORM_CARDID==1)
 	uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t *model_p, uint8_t *revision_p, uint16_t *serial_p);

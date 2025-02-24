@@ -51,6 +51,7 @@ typedef struct uz_platform_iomap_
 typedef struct uz_platform_
 {
 	_Bool is_ready;
+	_Bool use_iomap;
 
 	uz_platform_iomap *iomap;
 
@@ -161,10 +162,10 @@ static uz_platform_iomap uzp_iomap_MicroZohmRev01onBreakoutBoardRev01 = {
 
 static uz_platform uzp;
 
-uint32_t uz_platform_get_hw_revision(void)
+bool uz_platform_get_use_iomap(void)
 {
 	uz_assert(uzp.is_ready);
-	return (uint32_t)uzp.data.hw_revision;
+	return uzp.use_iomap;
 }
 
 uint32_t uz_platform_read_revision(uint32_t default_version)
@@ -173,6 +174,7 @@ uint32_t uz_platform_read_revision(uint32_t default_version)
 	uz_assert(default_version > 0U);
 	uz_assert(default_version < 256U);
 	uint32_t revision = default_version;
+	uzp.use_iomap = false;
 	//// Primary I²C bus used by UZP (we might need a secondary for mixed-old/new combinations of UZC Rev<=04 and SoM)
 	uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID, XPAR_PSU_I2C_1_BASEADDR, XPAR_PSU_I2C_1_DEVICE_ID, XPAR_PSU_I2C_1_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
 
@@ -195,144 +197,143 @@ uint32_t uz_platform_read_revision(uint32_t default_version)
 	{
 		uz_platform_printinfo(&uzp.data);
 		revision = (uint32_t)uzp.data.hw_revision;
+		uzp.use_iomap = false; // Change to true here to enable uz_platfom iomapon all systems that support it
 	}
+	uzp.is_ready = true;
+
 	return revision;
 }
 
-uint32_t uz_platform_init(uint32_t default_version)
+uint32_t uz_platform_init(void)
 {
-	uint32_t hardware_reivsion = uz_platform_read_revision(default_version);
-
-
-	// Populate IO map
-	switch (uzp.data.hw_group)
-	{
-	case UZP_HWGROUP_UZOHM3:
-	case UZP_HWGROUP_UZOHM6:
-		switch (uzp.data.hw_revision)
+	uz_assert(uzp.is_ready);
+	if(uzp.use_iomap){
+		// Populate IO map
+		switch (uzp.data.hw_group)
 		{
-		case 4U:
-			uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
-			uzp.maceeprom_primary = 1;
+		case UZP_HWGROUP_UZOHM3:
+		case UZP_HWGROUP_UZOHM6:
+			switch (uzp.data.hw_revision)
+			{
+			case 4U:
+				uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
+				uzp.maceeprom_primary = 1;
+				break;
+			case 5U:
+				uzp.iomap = &uzp_iomap_UltraZohmRev05prt;
+				uzp.maceeprom_primary = 1;
+				break;
+			default:
+				uz_printf("APU: Carrier revision not supported!\r\n");
+				return (UZ_FAILURE);
+				break;
+			}
 			break;
-		case 5U:
-			uzp.iomap = &uzp_iomap_UltraZohmRev05prt;
-			uzp.maceeprom_primary = 1;
+		case UZP_HWGROUP_MZOHM:
+			uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;
+			uzp.maceeprom_primary = 0;
 			break;
 		default:
-			uz_printf("APU: Carrier revision not supported!\r\n");
+			uz_printf("APU: Platform not supported!\r\n");
 			return (UZ_FAILURE);
 			break;
 		}
-		break;
-	case UZP_HWGROUP_MZOHM:
-		uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;
-		uzp.maceeprom_primary = 0;
-		break;
-	default:
-		uz_printf("APU: Platform not supported!\r\n");
-		return (UZ_FAILURE);
-		break;
-	}
 
-	int status = 0;
-	int i;
+		int status = 0;
+		int i;
 
-	// Enumerate, initialize and configure GPIOs
-	{
-		uint8_t gpiotype_usage[UZP_GPIOTYPE_CNT] = {0};
-
-		// [gpiodrv] I²C-GPIO
-		uint16_t gpioi2c_confreg = 0xFFFF; // All input
-		// [gpiodrv] PS-GPIO
-		uz_platform_gpiops_initxlnxcfg(&uzp.gpiops, XPAR_PSU_GPIO_0_BASEADDR, XPAR_PSU_GPIO_0_DEVICE_ID);
-
-		// Enumerate GPOs
-		for (i = 0; i < UZP_GPO_CNT; i++)
+		// Enumerate, initialize and configure GPIOs
 		{
-			uint8_t pin = uzp.iomap->gpo[i].gpX2pin;
+			uint8_t gpiotype_usage[UZP_GPIOTYPE_CNT] = {0};
 
-			if (UZ_NOGPO == pin)
-				continue;
+			// [gpiodrv] I²C-GPIO
+			uint16_t gpioi2c_confreg = 0xFFFF; // All input
+			// [gpiodrv] PS-GPIO
+			uz_platform_gpiops_initxlnxcfg(&uzp.gpiops, XPAR_PSU_GPIO_0_BASEADDR, XPAR_PSU_GPIO_0_DEVICE_ID);
 
-			enum uz_platform_gpiodrv_ drv = uzp.iomap->gpo[i].gpX2drv;
-
-			// Count
-			gpiotype_usage[drv]++;
-
-			// Configure
-			switch (drv)
+			// Enumerate GPOs
+			for (i = 0; i < UZP_GPO_CNT; i++)
 			{
-			case UZP_GPIOTYPE_I2C:
-				//// [gpiodrv] I²C GPIO: Determine how to configure hardware (see below for the actual register write)
-				gpioi2c_confreg &= ~(1 << pin);
-				break;
-			case UZP_GPIOTYPE_PS:
-				//// [gpiodrv] PS GPIO: Configure hardware
-				XGpioPs_SetDirectionPin(&uzp.gpiops, pin, GPIOPS_DIRECTION_OUT);
-				break;
-			case UZP_GPIOTYPE_CNT:
-				break;
-			case UZP_GPIOTYPE_NOGPIO:
-				break;
+				uint8_t pin = uzp.iomap->gpo[i].gpX2pin;
+
+				if (UZ_NOGPO == pin)
+					continue;
+
+				enum uz_platform_gpiodrv_ drv = uzp.iomap->gpo[i].gpX2drv;
+
+				// Count
+				gpiotype_usage[drv]++;
+
+				// Configure
+				switch (drv)
+				{
+				case UZP_GPIOTYPE_I2C:
+					//// [gpiodrv] I²C GPIO: Determine how to configure hardware (see below for the actual register write)
+					gpioi2c_confreg &= ~(1 << pin);
+					break;
+				case UZP_GPIOTYPE_PS:
+					//// [gpiodrv] PS GPIO: Configure hardware
+					XGpioPs_SetDirectionPin(&uzp.gpiops, pin, GPIOPS_DIRECTION_OUT);
+					break;
+				case UZP_GPIOTYPE_CNT:
+					break;
+				case UZP_GPIOTYPE_NOGPIO:
+					break;
+				}
+			}
+			// Enumerate GPIs
+			for (i = 0; i < UZP_GPI_CNT; i++)
+			{
+				uint8_t pin = uzp.iomap->gpi[i].gpX2pin;
+
+				if (UZ_NOGPI == pin)
+					continue;
+
+				enum uz_platform_gpiodrv_ drv = uzp.iomap->gpi[i].gpX2drv;
+
+				// Count
+				gpiotype_usage[drv]++;
+
+				// Configure
+				switch (drv)
+				{
+				case UZP_GPIOTYPE_I2C:
+					// Nothing to do here, as all pins not used as outputs (cf. above) have been pre-set as inputs (cf. gpioi2c_confreg)
+					break;
+				case UZP_GPIOTYPE_CNT:
+					break;
+				case UZP_GPIOTYPE_NOGPIO:
+					break;
+				}
+			}
+
+			//// [gpiodrv] I²C GPIO: Configure hardware if used
+			if (gpiotype_usage[UZP_GPIOTYPE_I2C] > 0)
+			{
+				// Create I²C device: GPIO
+				uz_iic_initdev(&uzp.gpioi2c, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_GPIO);
+
+				// Populate (APU-)local mirror of output registers
+				uzp.gpioi2c_outmirror = 0x0000;
+
+				// Configure input/output direction according to iomap
+				const uint8_t pca9535a9655e_regaddr_conf0 = 6;
+				status += uz_iic_write_reg16(&uzp.gpioi2c, pca9535a9655e_regaddr_conf0, gpioi2c_confreg);
 			}
 		}
-		// Enumerate GPIs
-		for (i = 0; i < UZP_GPI_CNT; i++)
-		{
-			uint8_t pin = uzp.iomap->gpi[i].gpX2pin;
 
-			if (UZ_NOGPI == pin)
-				continue;
+		//// Create I²C devices: MAC-EEPROMs (could be based on iomap, if needed)
+		uz_iic_initdev(&uzp.maceeprom[0], UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_MACEE0);
+		uz_iic_initdev(&uzp.maceeprom[1], UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_MACEE1);
 
-			enum uz_platform_gpiodrv_ drv = uzp.iomap->gpi[i].gpX2drv;
-
-			// Count
-			gpiotype_usage[drv]++;
-
-			// Configure
-			switch (drv)
-			{
-			case UZP_GPIOTYPE_I2C:
-				// Nothing to do here, as all pins not used as outputs (cf. above) have been pre-set as inputs (cf. gpioi2c_confreg)
-				break;
-			case UZP_GPIOTYPE_CNT:
-				break;
-			case UZP_GPIOTYPE_NOGPIO:
-				break;
-			}
-		}
-
-		//// [gpiodrv] I²C GPIO: Configure hardware if used
-		if (gpiotype_usage[UZP_GPIOTYPE_I2C] > 0)
-		{
-			// Create I²C device: GPIO
-			uz_iic_initdev(&uzp.gpioi2c, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_GPIO);
-
-			// Populate (APU-)local mirror of output registers
-			uzp.gpioi2c_outmirror = 0x0000;
-
-			// Configure input/output direction according to iomap
-			const uint8_t pca9535a9655e_regaddr_conf0 = 6;
-			status += uz_iic_write_reg16(&uzp.gpioi2c, pca9535a9655e_regaddr_conf0, gpioi2c_confreg);
-		}
-	}
-
-	//// Create I²C devices: MAC-EEPROMs (could be based on iomap, if needed)
-	uz_iic_initdev(&uzp.maceeprom[0], UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_MACEE0);
-	uz_iic_initdev(&uzp.maceeprom[1], UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_MACEE1);
-
-	uz_printf("Platform IIC at %d kHz and with sum-status=%i\r\n", UZ_PLATFORM_SCLK_RATEKHZ, status);
-
-	uzp.is_ready = true;
+		uz_printf("Platform IIC at %d kHz and with sum-status=%i\r\n", UZ_PLATFORM_SCLK_RATEKHZ, status);
 
 #if (UZ_PLATFORM_CARDID == 1)
-	//// Secondary I²C bus used by UZP
-	uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, XPAR_PSU_I2C_0_BASEADDR, XPAR_PSU_I2C_0_DEVICE_ID, XPAR_PSU_I2C_0_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
+		//// Secondary I²C bus used by UZP
+		uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, XPAR_PSU_I2C_0_BASEADDR, XPAR_PSU_I2C_0_DEVICE_ID, XPAR_PSU_I2C_0_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
 #endif
-
+	}
 	return (UZ_SUCCESS);
-
 }
 
 /**
@@ -342,9 +343,14 @@ uint32_t uz_platform_init(uint32_t default_version)
  */
 uint32_t uz_platform_gpoupdate()
 {
-	const uint8_t pca9535a9655e_regaddr_out0 = 2;
-	return (uz_iic_write_reg16(&uzp.gpioi2c, pca9535a9655e_regaddr_out0, uzp.gpioi2c_outmirror));
-
+	uz_assert(uzp.is_ready);
+	if (uzp.use_iomap)
+	{
+		const uint8_t pca9535a9655e_regaddr_out0 = 2;
+		return (uz_iic_write_reg16(&uzp.gpioi2c, pca9535a9655e_regaddr_out0, uzp.gpioi2c_outmirror));
+	}else{
+		return (UZ_FAILURE);
+	}
 }
 
 /**
@@ -358,7 +364,7 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 {
 
 	uz_assert(uzp.is_ready);
-
+	if(uzp.use_iomap){
 	// Look up GPO and map to pin
 	uz_assert(uzpgpo_id < UZP_GPO_CNT);
 	uint8_t pin = uzp.iomap->gpo[uzpgpo_id].gpX2pin;
@@ -434,7 +440,9 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 		break;
 	}
 	return (UZ_SUCCESS);
-
+	}else{
+		return (UZ_FAILURE);
+	}
 }
 
 /**
@@ -447,13 +455,15 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p)
 {
 	uz_assert(uzp.is_ready);
-	uz_assert(eeprom < sizeof(uzp.maceeprom) / sizeof(uzp.maceeprom[0]));
-
-	const uint8_t maceeprom_addroffset = 0xFA;
-	const uint8_t maceeprom_addrlength = 6;
-
-	return (uz_iic_a8read_data(&uzp.maceeprom[eeprom], maceeprom_addroffset, addrbuf_p, maceeprom_addrlength));
-
+	if (uzp.use_iomap)
+	{
+		uz_assert(eeprom < sizeof(uzp.maceeprom) / sizeof(uzp.maceeprom[0]));
+		const uint8_t maceeprom_addroffset = 0xFA;
+		const uint8_t maceeprom_addrlength = 6;
+		return (uz_iic_a8read_data(&uzp.maceeprom[eeprom], maceeprom_addroffset, addrbuf_p, maceeprom_addrlength));
+	}else{
+	return (UZ_FAILURE);
+	}
 }
 
 /**
@@ -464,7 +474,13 @@ uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p)
  */
 uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p)
 {
-	return (uz_platform_macread(uzp.maceeprom_primary, addrbuf_p));
+	uz_assert(uzp.is_ready);
+	if (uzp.use_iomap)
+	{
+		return (uz_platform_macread(uzp.maceeprom_primary, addrbuf_p));
+	}else{
+		return (UZ_FAILURE);
+	}
 }
 
 #if (UZ_PLATFORM_CARDID == 1)
@@ -479,32 +495,35 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p)
  */
 uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t *model_p, uint8_t *revision_p, uint16_t *serial_p)
 {
-
-	uz_assert(slot < 8);
-	uz_assert_not_NULL(model_p);
-	uz_assert_not_NULL(revision_p);
-	uz_assert_not_NULL(serial_p);
-
-	//// Create I²C devices: EEPROM
-	uint8_t cardaddr = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + slot;
-	uz_assert(cardaddr <= UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST);
-
-	uz_iic cardeeprom;
-	uz_iic_initdev(&cardeeprom, UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, cardaddr);
-
-	uz_platform_eeprom cardeeprom_data;
-	uint32_t status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET, (uint8_t *)&cardeeprom_data, sizeof(cardeeprom_data));
-
-	// Option: Check whether model is known?
-
-	if ((UZ_SUCCESS == status) && (UZP_HWGROUP_ADCARD == cardeeprom_data.hw_group))
+	uz_assert(uzp.is_ready);
+	if (uzp.use_iomap)
 	{
-		*model_p = cardeeprom_data.hw_model;
-		*revision_p = cardeeprom_data.hw_revision;
-		*serial_p = cardeeprom_data.serialdata.hw_batchandserial.serial;
+		uz_assert(slot < 8);
+		uz_assert_not_NULL(model_p);
+		uz_assert_not_NULL(revision_p);
+		uz_assert_not_NULL(serial_p);
+
+		//// Create I²C devices: EEPROM
+		uint8_t cardaddr = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + slot;
+		uz_assert(cardaddr <= UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST);
+
+		uz_iic cardeeprom;
+		uz_iic_initdev(&cardeeprom, UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, cardaddr);
+
+		uz_platform_eeprom cardeeprom_data;
+		uint32_t status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET, (uint8_t *)&cardeeprom_data, sizeof(cardeeprom_data));
+
+		// Option: Check whether model is known?
+
+		if ((UZ_SUCCESS == status) && (UZP_HWGROUP_ADCARD == cardeeprom_data.hw_group))
+		{
+			*model_p = cardeeprom_data.hw_model;
+			*revision_p = cardeeprom_data.hw_revision;
+			*serial_p = cardeeprom_data.serialdata.hw_batchandserial.serial;
+		}
+
+		return (status);
+	}else{
+		return (UZ_FAILURE);
 	}
-
-	return (status);
-
-}
 #endif

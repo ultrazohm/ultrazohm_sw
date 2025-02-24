@@ -401,7 +401,13 @@ int main_thread()
 	uz_printf("APU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
 
 	// reset phy
-	uz_phy_reset();
+	uint32_t hardware_revision=uz_platform_get_hw_revision();
+	if (hardware_revision<5U){ // does not handle version 4 with extension board yet
+		uz_phy_reset(false);
+	}else{
+		uz_phy_reset(true);
+	}
+
 
 	/* initialize lwIP before calling sys_thread_new */
     lwip_init();

@@ -30,7 +30,7 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
-
+extern float C_matrix[4];
 uint32_t i_fetchDataLifeCheck=0;
 uint32_t js_status_BareToRTOS=0;
 
@@ -91,6 +91,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_A_0]					= &C_matrix[0];
+	js_slowDataArray[JSSD_FLOAT_A_1]					= &C_matrix[1];
+	js_slowDataArray[JSSD_FLOAT_A_2]					= &C_matrix[2];
+	js_slowDataArray[JSSD_FLOAT_A_3]					= &C_matrix[3];
 
 	return Status;
 }

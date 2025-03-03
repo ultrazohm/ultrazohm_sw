@@ -18,6 +18,7 @@
 ;
 
 extern const struct uz_PMSM_t Beckhoff_AM8141;
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -36,6 +37,7 @@ DS_Data Global_Data = {
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
+	.av.theta_el_offset_right = 0.43f,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
@@ -68,7 +70,6 @@ int main(void)
     	.iq_steps = 8U,
     	.n_steps = 1U
       };
-
 
     struct uz_parameterid_rs_config_t config_rs_meas = {
     	.n_start = 0.0f,
@@ -129,6 +130,7 @@ int main(void)
             Global_Data.objects.resolver_right = initialize_resolver_right();
             Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();
             Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
+            Global_Data.objects.encoder_right = initialize_encoder_right();
             Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
             Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
             initialization_chain = print_msg;

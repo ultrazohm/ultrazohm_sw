@@ -15,6 +15,17 @@ extern DS_Data Global_Data;
 	  .I_max_Ampere = 12.0f,
 	  .J_kg_m_squared = 0.000108
     };//these parameters are only needed if linear decoupling is selected
+
+    const struct uz_PMSM_t Voestalpine = {
+      .R_ph_Ohm = 0.157,
+      .Ld_Henry = 332e-6f,
+      .Lq_Henry = 332e-6f,
+      .Psi_PM_Vs = 0.0181f,
+	  .polePairs = 4.0f,
+	  .I_max_Ampere = 8.0f,
+	  .J_kg_m_squared = 0.000108
+    };//these parameters are only needed if linear decoupling is selected
+
     const struct uz_PI_Controller_config config_id_left = {
     	      .type = parallel,
     		  .Kp = Beckhoff_AM8141.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
@@ -53,20 +64,21 @@ extern DS_Data Global_Data;
    };
 
    const struct uz_PI_Controller_config config_id_right = {
- 	      .type = parallel,
- 		  .Kp = Beckhoff_AM8141.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
- 	      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+		  .type = parallel,
+		  .Kp = Voestalpine.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+ 	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
- 	      .upper_limit = 48.0f,
-			  .lower_limit = -48.0f
+ 	      .upper_limit = 10.0f,
+		  .lower_limit = -10.0f
   };
+
   const struct uz_PI_Controller_config config_iq_right = {
 		  .type = parallel,
-		  .Kp = Beckhoff_AM8141.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
-	      .Ki = Beckhoff_AM8141.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+		  .Kp = Voestalpine.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
+	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
-	      .upper_limit = 48.0f,
-	      .lower_limit = -48.0f
+	      .upper_limit = 10.0f,
+	      .lower_limit = -10.0f
   };
 
    struct uz_CurrentControl_config config_current_ctrl_left = {
@@ -78,7 +90,7 @@ extern DS_Data Global_Data;
    };
 
    struct uz_CurrentControl_config config_current_ctrl_right = {
-      .config_PMSM = Beckhoff_AM8141,
+      .config_PMSM = Voestalpine,
 	  .config_id = config_id_right,
 	  .config_iq = config_iq_right,
 	  .decoupling_select = no_decoupling,

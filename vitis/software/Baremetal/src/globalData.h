@@ -16,6 +16,7 @@
 #include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "uz/uz_ParameterID_rs/uz_ParameterID_rs.h"
+#include "IP_Cores/uz_IncrementalEncoder/uz_incrementalEncoder.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -103,6 +104,8 @@ typedef struct _actualValues_ {
 	float vcc_fp;
 	float fcc_aux;
 	float theta_el_right_advanced;
+	float theta_el_right;
+	float theta_el_offset_right;
 	float theta_el_left_advanced;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
@@ -151,6 +154,7 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_resolverIP_t* resolver_left;
 	uz_resolverIP_t* resolver_right;
+	uz_incrementalEncoder_t* encoder_right;
 	uz_resolver_pl_interface_t* resolver_pl_interface_left;
 	uz_resolver_pl_interface_t* resolver_pl_interface_right;
 	uz_CurrentControl_t* current_ctrl_left;

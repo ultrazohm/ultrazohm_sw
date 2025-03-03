@@ -62,6 +62,9 @@ struct uz_3ph_dq_t v_dq_meas_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_right = {0.0f};
 struct uz_parameterID_rc_ref_val_t ref_rc_meas;
+float thetal_el_right_unwrapped = 0.0f;
+
+
 
 enum running_mode run_state = normal;
 
@@ -82,7 +85,10 @@ void ISR_Control(void *data)
     ReadAllADC();
     // update speed and position of resolvers
     Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
-    Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
+    //Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
+    Global_Data.av.omega_mech_right = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.encoder_right);
+    thetal_el_right_unwrapped = uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_right) + Global_Data.av.theta_el_offset_right;
+    Global_Data.av.theta_el_right = uz_signals_wrap(thetal_el_right_unwrapped, 2.0f*UZ_PIf);
     // update status of both inverters
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_left);
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_right);
@@ -159,7 +165,9 @@ void ISR_Control(void *data)
 		Global_Data.rasv.rc_meas_output.id_ref_Amps = 0.0f;
 		Global_Data.rasv.rc_meas_output.iq_ref_Amps = 0.0f;
 		Global_Data.rasv.rc_meas_output.n_ref_rpm = 0.0f;
-		// write zero dutycycle
+		// set dutycycle
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, true, true);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, true, true, true);
 		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
 		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
@@ -174,6 +182,9 @@ void ISR_Control(void *data)
     	// enable inverters
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_left, true);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.uz_d_inverter_right, true);
+    	// reset tristate
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, false);
+		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_6_to_11, false, false, false);
 
     }
 
@@ -184,12 +195,13 @@ void ISR_Control(void *data)
 
 	// park transformation of measured currents
 	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
-	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
-	v_dq_meas_right = uz_transformation_3ph_abc_to_dq(v_abc_right,Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.theta_el_right);
+	v_dq_meas_right = uz_transformation_3ph_abc_to_dq(v_abc_right,Global_Data.av.theta_el_right);
 	v_dq_meas_left = uz_transformation_3ph_abc_to_dq(v_abc_left,Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
-	Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
+	//Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
 	Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
 	Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);
+	Global_Data.av.speed_rpm_right = (Global_Data.av.omega_mech_right*60.0f)/(2.0f*UZ_PIf);
 	Global_Data.av.i_d_left = i_dq_left.d;
 	Global_Data.av.i_q_left = i_dq_left.q;
 	Global_Data.av.i_d_right = i_dq_right.d;
@@ -395,6 +407,6 @@ static void control_right_motor() {
     Global_Data.av.v_d_right = v_dq_ref_right.d;
     Global_Data.av.v_q_right = v_dq_ref_right.q;
     // calculate duty cycles from reference dq voltages
-	Global_Data.av.theta_el_right_advanced = Global_Data.av.resolver_pl_outputs_right.position_el_2pi + (1.5f * (Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
+	Global_Data.av.theta_el_right_advanced = Global_Data.av.theta_el_right + (1.5f * (Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
     dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.theta_el_right_advanced);
 };

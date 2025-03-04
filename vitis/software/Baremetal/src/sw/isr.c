@@ -51,6 +51,7 @@ static void ReadAllADC();
 
 bool continue_calculation = false;
 bool is_done = false;
+bool is_idle=  false;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -58,27 +59,28 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*200.0f + 2.5f;
-    A_matrix[1] = Global_Data.aa.A1.me.ADC_A1*200.0f;
-    A_matrix[2] = Global_Data.aa.A1.me.ADC_A2*200.0f;
-    A_matrix[3] = Global_Data.aa.A1.me.ADC_A3*200.0f;
-    A_matrix[4] = Global_Data.aa.A1.me.ADC_A4*200.0f;
-    A_matrix[5] = Global_Data.aa.A1.me.ADC_B5*200.0f;
-    A_matrix[6] = Global_Data.aa.A1.me.ADC_B6*200.0f;
-    A_matrix[7] = Global_Data.aa.A1.me.ADC_B7*200.0f;
-    A_matrix[8] = Global_Data.aa.A1.me.ADC_B8*200.0f;
-    A_matrix[9] = Global_Data.aa.A1.me.ADC_A1*200.0f + 1.0f;
-    A_matrix[10] = Global_Data.aa.A1.me.ADC_A2*200.0f + 2.0f;
-    A_matrix[11] = Global_Data.aa.A1.me.ADC_A3*200.0f + 3.0f;
-    A_matrix[12] = Global_Data.aa.A1.me.ADC_A4*200.0f + 4.0f;
-    A_matrix[13] = Global_Data.aa.A1.me.ADC_B5*200.0f + 5.0f;
-    A_matrix[14] = Global_Data.aa.A1.me.ADC_B6*200.0f + 6.0f;
-    A_matrix[15] = Global_Data.aa.A1.me.ADC_B7*200.0f + 7.0f;
-    A_matrix[16] = Global_Data.aa.A1.me.ADC_B8*200.0f + 8.0f;
-    A_matrix[17] = Global_Data.aa.A1.me.ADC_B5*200.0f + 9.0f;
-    A_matrix[18] = Global_Data.aa.A1.me.ADC_B6*200.0f + 10.0f;
-    A_matrix[19] = Global_Data.aa.A1.me.ADC_B7*200.0f + 11.0f;
+    A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*10000.0f + 15.0f;
+    A_matrix[1] = Global_Data.aa.A1.me.ADC_A1*200.0f + 15.0f;
+    A_matrix[2] = Global_Data.aa.A1.me.ADC_A2*200.0f + 15.0f;
+    A_matrix[3] = Global_Data.aa.A1.me.ADC_A3*200.0f + 15.0f;
+    A_matrix[4] = Global_Data.aa.A1.me.ADC_A4*200.0f + 15.0f;
+    A_matrix[5] = Global_Data.aa.A1.me.ADC_B5*200.0f + 15.0f;
+    A_matrix[6] = Global_Data.aa.A1.me.ADC_B6*200.0f + 15.0f;
+    A_matrix[7] = Global_Data.aa.A1.me.ADC_B7*200.0f + 15.0f;
+    A_matrix[8] = Global_Data.aa.A1.me.ADC_B8*200.0f + 15.0f;
+    A_matrix[9] = Global_Data.aa.A1.me.ADC_A1*200.0f + 13.0f;
+    A_matrix[10] = Global_Data.aa.A1.me.ADC_A2*200.0f + 21.0f;
+    A_matrix[11] = Global_Data.aa.A1.me.ADC_A3*200.0f + 31.0f;
+    A_matrix[12] = Global_Data.aa.A1.me.ADC_A4*200.0f + 41.0f;
+    A_matrix[13] = Global_Data.aa.A1.me.ADC_B5*200.0f + 51.0f;
+    A_matrix[14] = Global_Data.aa.A1.me.ADC_B6*200.0f + 61.0f;
+    A_matrix[15] = Global_Data.aa.A1.me.ADC_B7*200.0f + 71.0f;
+    A_matrix[16] = Global_Data.aa.A1.me.ADC_B8*200.0f + 81.0f;
+    A_matrix[17] = Global_Data.aa.A1.me.ADC_B5*200.0f + 91.0f;
+    A_matrix[18] = Global_Data.aa.A1.me.ADC_B6*200.0f + 101.0f;
+    A_matrix[19] = Global_Data.aa.A1.me.ADC_B7*200.0f + 111.0f;
     Xil_DCacheFlushRange(A_matrix,sizeof(A_matrix));//->Flush wenn der R5 schreibt
+    //is_idle = uz_Matrix_Multi_get_idle_flag(Global_Data.objects.matrix_instance);
     if (current_state==control_state)
     {
     	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);

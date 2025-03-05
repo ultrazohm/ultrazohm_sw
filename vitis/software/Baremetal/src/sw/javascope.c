@@ -70,9 +70,9 @@ int JavaScope_initialize(DS_Data* data)
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	//----------eigene Variablen und berechnete Werte
-	js_ch_observable[JSO_V_DC] 			= &data->av.V_DC;
-	js_ch_observable[JSO_V_DC_max] 		= &data->av.V_DC_max;
-	js_ch_observable[JSO_V_DC_min] 		= &data->av.V_DC_min;
+	js_ch_observable[JSO_U_DC] 			= &data->av.U_DC;
+	js_ch_observable[JSO_U_DC_max] 		= &data->av.U_DC_max;
+	js_ch_observable[JSO_U_DC_min] 		= &data->av.U_DC_min;
 	js_ch_observable[JSO_I_DC] 			= &data->av.I_DC;
 	js_ch_observable[JSO_I_DC_max] 		= &data->av.I_DC_max;
 	js_ch_observable[JSO_I_DC_min] 		= &data->av.I_DC_min;
@@ -88,9 +88,9 @@ int JavaScope_initialize(DS_Data* data)
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_V_DC]		= &data->av.V_DC;
-	js_slowDataArray[JSSD_FLOAT_V_DC_min]	= &data->av.V_DC_min;
-	js_slowDataArray[JSSD_FLOAT_V_DC_max]	= &data->av.V_DC_max;
+	js_slowDataArray[JSSD_FLOAT_U_DC]		= &data->av.U_DC;
+	js_slowDataArray[JSSD_FLOAT_U_DC_min]	= &data->av.U_DC_min;
+	js_slowDataArray[JSSD_FLOAT_U_DC_max]	= &data->av.U_DC_max;
 	js_slowDataArray[JSSD_FLOAT_I_DC]		= &data->av.I_DC;
 	js_slowDataArray[JSSD_FLOAT_I_DC_min]	= &data->av.I_DC_min;
 	js_slowDataArray[JSSD_FLOAT_I_DC_max]	= &data->av.I_DC_max;
@@ -101,7 +101,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-
 
 	return Status;
 }

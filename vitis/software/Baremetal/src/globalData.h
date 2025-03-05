@@ -52,9 +52,9 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 //--------------------------------------
 //Variable for calculated DC Voltage
-	float V_DC;
-	float V_DC_max;
-	float V_DC_min;
+	float U_DC;
+	float U_DC_max;
+	float U_DC_min;
 //Variable for calculated DC Current
 	float I_DC;
 	float I_DC_max;
@@ -64,7 +64,6 @@ typedef struct _actualValues_ {
 	float P_DC_max;
 	float P_DC_min;
 //--------------------------------------
-
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
 	float I_L1; 		// Grid side current in A

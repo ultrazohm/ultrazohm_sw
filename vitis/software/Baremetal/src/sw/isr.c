@@ -67,22 +67,22 @@ void ISR_Control(void *data)
 //***************** Berechnung Strom und Spannung *****************************************
 // Zuweisung des entsprechenden ADCs und Berechnung von V und I mit k_regression und b_offset
 // Voltage Measurement
-	Global_Data.av.V_DC 			=  (Global_Data.aa.A1.me.ADC_A3 * k_regression_voltage) + b_offset_voltage;
+	Global_Data.av.U_DC 			=  (Global_Data.aa.A1.me.ADC_A3 * k_regression_voltage) + b_offset_voltage;
 //current Measurement
 	Global_Data.av.I_DC 			=  (Global_Data.aa.A1.me.ADC_A4 * k_regression_current) + b_offset_current;
 //------------------------------------------------------------------------------------------------------------
 // Berechnung der Systemleistung aus Strom und Spannung
-	Global_Data.av.P_DC				= Global_Data.av.V_DC * Global_Data.av.I_DC;
+	Global_Data.av.P_DC				= Global_Data.av.U_DC * Global_Data.av.I_DC;
 //------------------------------------------------------------------------------------------------------------
 // Berechnung der max und min Spannung durch Messungenauigkeit
-	Global_Data.av.V_DC_max	=	Global_Data.av.V_DC + A_abs_voltage;
-	Global_Data.av.V_DC_min	=	Global_Data.av.V_DC - A_abs_voltage;
+	Global_Data.av.U_DC_max	=	Global_Data.av.U_DC + A_abs_voltage;
+	Global_Data.av.U_DC_min	=	Global_Data.av.U_DC - A_abs_voltage;
 // Berechnung des max und min Strom durch Messungenauigkeit
 	Global_Data.av.I_DC_max	=	Global_Data.av.I_DC + A_abs_current;
 	Global_Data.av.I_DC_min	=	Global_Data.av.I_DC - A_abs_current;
 // Berechnung der max und min Leistung durch Messungenauigkeit
-	Global_Data.av.P_DC_max = 	Global_Data.av.V_DC_max  * Global_Data.av.I_DC_max;
-	Global_Data.av.P_DC_min =	Global_Data.av.V_DC_min  * Global_Data.av.I_DC_min;
+	Global_Data.av.P_DC_max = 	Global_Data.av.U_DC_max  * Global_Data.av.I_DC_max;
+	Global_Data.av.P_DC_min =	Global_Data.av.U_DC_min  * Global_Data.av.I_DC_min;
 //*********************************************************************
 
 	platform_state_t current_state=ultrazohm_state_machine_get_state();

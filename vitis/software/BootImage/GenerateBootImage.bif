@@ -1,8 +1,8 @@
-//arch = zynq; split = false; format = BIN
+//arch = zynqmp; split = false; format = BIN
 the_ROM_image:
 {
-	[bootloader]..\..\..\vitis\software\BootImage\FSBL.elf
-	..\..\..\vitis\workspace\UltraZohm\hw\zusys_wrapper.bit
-	..\..\..\vitis\workspace\FreeRTOS\Debug\FreeRTOS.elf
-	..\..\..\vitis\workspace\Baremetal\Debug\Baremetal.elf
+	[bootloader, destination_cpu = a53-0]..\..\..\vitis\software\BootImage\FSBL.elf
+	[destination_device = pl]..\..\..\vitis\workspace\UltraZohm\hw\zusys_wrapper.bit
+	[destination_cpu = a53-0]..\..\..\vitis\workspace\FreeRTOS\Debug\FreeRTOS.elf
+	[destination_cpu = a53-0]..\..\..\vitis\workspace\Baremetal\Debug\Baremetal.elf
 }

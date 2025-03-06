@@ -22,6 +22,7 @@
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 extern bool continue_calculation;
+extern bool PS_calculation;
 extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -274,11 +275,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
+		PS_calculation  = true;
 
 			break;
 
 		case (My_Button_4):
-
+		PS_calculation = false;
 			break;
 
 		case (My_Button_5):

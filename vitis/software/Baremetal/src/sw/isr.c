@@ -40,7 +40,9 @@ extern DS_Data Global_Data;
 bool done_flag = false;
 uint32_t counter_test = 0U;
 extern float C_matrix[4];
+float C_PS_matrix[4] = {0};
 extern float A_matrix[20];
+uz_matrix_t* matrix_output_20n;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -52,11 +54,12 @@ static void ReadAllADC();
 bool continue_calculation = false;
 bool is_done = false;
 bool is_idle=  false;
+bool PS_calculation = false;
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    //update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*10000.0f + 15.0f;
@@ -92,19 +95,31 @@ void ISR_Control(void *data)
 
     		}
     	}
+    	if (PS_calculation) {
+   	        for (uint32_t i = 0; i < 20U; i++) {
+   	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_20n,A_matrix[i],0U,i);
+   	        }
+   	        uz_nn_ff(Global_Data.objects.nn_layer_20n,Global_Data.objects.matrix_input_20n);
+   	        matrix_output_20n = uz_nn_get_output_data(Global_Data.objects.nn_layer_20n);
+   	     C_PS_matrix[0] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,0U);
+   	     C_PS_matrix[1] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,1U);
+   	     C_PS_matrix[2] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,2U);
+   	     C_PS_matrix[3] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,3U);
+
+    	}
 
     }
     Xil_DCacheInvalidateRange(C_matrix,sizeof(C_matrix));//->Invalidate wenn R5 liesst
 
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-
-    // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+//
+//    // Set duty cycles for three-level modulator
+//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//                        Global_Data.rasv.halfBridge2DutyCycle,
+//                        Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

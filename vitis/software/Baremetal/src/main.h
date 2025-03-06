@@ -54,7 +54,9 @@
 
 #include "include/pwm_init.h"
 #include "IP_Cores/uz_matrix_multiplication/uz_matrix_multiplication.h"
+#include "sw/nn_20_input_1_64/nn_20_input_1_64.h"
 
+#define NN_20_INPUT_1_64 1
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

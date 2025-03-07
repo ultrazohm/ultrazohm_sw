@@ -517,17 +517,17 @@ wire  signed [4:0] trunc_ln4_4_fu_504_p1;
 reg  signed [4:0] trunc_ln4_4_reg_946;
 reg   [61:0] trunc_ln_reg_951;
 wire    ap_CS_fsm_state73;
-wire   [7:0] trunc_ln4_fu_528_p1;
-reg   [7:0] trunc_ln4_reg_985;
-wire   [10:0] trunc_ln4_1_fu_532_p1;
-reg   [10:0] trunc_ln4_1_reg_990;
-wire  signed [1:0] trunc_ln4_2_fu_536_p1;
-reg  signed [1:0] trunc_ln4_2_reg_995;
-wire  signed [5:0] trunc_ln4_3_fu_540_p1;
-reg  signed [5:0] trunc_ln4_3_reg_1000;
-wire   [0:0] icmp_ln32_fu_556_p2;
-reg   [0:0] icmp_ln32_reg_1018;
 wire   [0:0] copy_mats_flag_read_read_fu_288_p2;
+wire   [7:0] trunc_ln4_fu_528_p1;
+reg   [7:0] trunc_ln4_reg_989;
+wire   [10:0] trunc_ln4_1_fu_532_p1;
+reg   [10:0] trunc_ln4_1_reg_994;
+wire  signed [1:0] trunc_ln4_2_fu_536_p1;
+reg  signed [1:0] trunc_ln4_2_reg_999;
+wire  signed [5:0] trunc_ln4_3_fu_540_p1;
+reg  signed [5:0] trunc_ln4_3_reg_1004;
+wire   [0:0] icmp_ln32_fu_556_p2;
+reg   [0:0] icmp_ln32_reg_1022;
 wire   [31:0] mul_fu_561_p2;
 reg   [31:0] mul_reg_1026;
 reg   [61:0] trunc_ln1_reg_1032;
@@ -870,11 +870,11 @@ reg   [31:0] p_reg_345;
 wire    ap_CS_fsm_state226;
 wire    ap_CS_fsm_state231;
 reg    grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg;
-reg    ap_block_state1_ignore_call57;
-reg    grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg;
 reg    ap_block_state1_ignore_call58;
-reg    grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg;
+reg    grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg;
 reg    ap_block_state1_ignore_call59;
+reg    grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg;
+reg    ap_block_state1_ignore_call60;
 reg    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1_fu_376_ap_start_reg;
 wire    ap_CS_fsm_state72;
 reg    grp_MatrixMultiplication_Pipeline_burst_B1mat_fu_385_ap_start_reg;
@@ -1607,7 +1607,7 @@ MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4 grp_MatrixMul
     .A_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_A_address0),
     .A_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_A_ce0),
     .A_q0(A_q0),
-    .trunc_ln4_1(trunc_ln4_1_reg_990),
+    .trunc_ln4_1(trunc_ln4_1_reg_994),
     .k_cast(empty_52_reg_1132),
     .acc1_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_acc1_address0),
     .acc1_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_acc1_ce0),
@@ -1668,7 +1668,7 @@ MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8 grp_MatrixMul
     .C1_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8_fu_436_C1_address0),
     .C1_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8_fu_436_C1_ce0),
     .C1_q0(C1_q0),
-    .trunc_ln4(trunc_ln4_reg_985),
+    .trunc_ln4(trunc_ln4_reg_989),
     .p_cast(empty_53_reg_1179),
     .acc2_address0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8_fu_436_acc2_address0),
     .acc2_ce0(grp_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8_fu_436_acc2_ce0),
@@ -1942,7 +1942,7 @@ MatrixMultiplication_mul_6s_6s_6_1_1 #(
     .dout_WIDTH( 6 ))
 mul_6s_6s_6_1_1_U59(
     .din0(mul_ln62_fu_640_p0),
-    .din1(trunc_ln4_3_reg_1000),
+    .din1(trunc_ln4_3_reg_1004),
     .dout(mul_ln62_fu_640_p2)
 );
 
@@ -1954,7 +1954,7 @@ MatrixMultiplication_mul_6s_6s_6_1_1 #(
     .dout_WIDTH( 6 ))
 mul_6s_6s_6_1_1_U60(
     .din0(mul89_fu_731_p0),
-    .din1(trunc_ln4_3_reg_1000),
+    .din1(trunc_ln4_3_reg_1004),
     .dout(mul89_fu_731_p2)
 );
 
@@ -1966,7 +1966,7 @@ MatrixMultiplication_mul_2s_2s_2_1_1 #(
     .dout_WIDTH( 2 ))
 mul_2s_2s_2_1_1_U61(
     .din0(mul110_fu_736_p0),
-    .din1(trunc_ln4_2_reg_995),
+    .din1(trunc_ln4_2_reg_999),
     .dout(mul110_fu_736_p2)
 );
 
@@ -2344,11 +2344,11 @@ end
 
 always @ (posedge ap_clk) begin
     if ((1'b1 == ap_CS_fsm_state73)) begin
-        icmp_ln32_reg_1018 <= icmp_ln32_fu_556_p2;
-        trunc_ln4_1_reg_990 <= trunc_ln4_1_fu_532_p1;
-        trunc_ln4_2_reg_995 <= trunc_ln4_2_fu_536_p1;
-        trunc_ln4_3_reg_1000 <= trunc_ln4_3_fu_540_p1;
-        trunc_ln4_reg_985 <= trunc_ln4_fu_528_p1;
+        icmp_ln32_reg_1022 <= icmp_ln32_fu_556_p2;
+        trunc_ln4_1_reg_994 <= trunc_ln4_1_fu_532_p1;
+        trunc_ln4_2_reg_999 <= trunc_ln4_2_fu_536_p1;
+        trunc_ln4_3_reg_1004 <= trunc_ln4_3_fu_540_p1;
+        trunc_ln4_reg_989 <= trunc_ln4_fu_528_p1;
     end
 end
 
@@ -2548,7 +2548,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((icmp_ln32_reg_1018 == 1'd0) & (1'b1 == ap_CS_fsm_state224))) begin
+    if (((icmp_ln32_reg_1022 == 1'd0) & (1'b1 == ap_CS_fsm_state224))) begin
         C1_we0 = 1'b1;
     end else if ((1'b1 == ap_CS_fsm_state2)) begin
         C1_we0 = grp_MatrixMultiplication_Pipeline_2_fu_362_C1_we0;
@@ -4288,9 +4288,9 @@ always @ (*) begin
             end
         end
         ap_ST_fsm_state221 : begin
-            if (((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_ap_done == 1'b1) & (icmp_ln32_reg_1018 == 1'd1) & (1'b1 == ap_CS_fsm_state221))) begin
+            if (((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_ap_done == 1'b1) & (icmp_ln32_reg_1022 == 1'd1) & (1'b1 == ap_CS_fsm_state221))) begin
                 ap_NS_fsm = ap_ST_fsm_state224;
-            end else if (((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_ap_done == 1'b1) & (icmp_ln32_reg_1018 == 1'd0) & (1'b1 == ap_CS_fsm_state221))) begin
+            end else if (((grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_ap_done == 1'b1) & (icmp_ln32_reg_1022 == 1'd0) & (1'b1 == ap_CS_fsm_state221))) begin
                 ap_NS_fsm = ap_ST_fsm_state222;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state221;
@@ -4660,15 +4660,15 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    ap_block_state1_ignore_call57 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
-end
-
-always @ (*) begin
     ap_block_state1_ignore_call58 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
 end
 
 always @ (*) begin
     ap_block_state1_ignore_call59 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
+end
+
+always @ (*) begin
+    ap_block_state1_ignore_call60 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
 end
 
 always @ (*) begin

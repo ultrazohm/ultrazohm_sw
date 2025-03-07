@@ -7,6 +7,13 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -52,19 +59,14 @@ typedef struct _AnalogAdapters_ {
 typedef struct _actualValues_ {
 	float pwm_frequency_hz;
 	float isr_samplerate_s;
-	float I_L1; 		// Grid side current in A
-	float I_L2; 		// Grid side current in A
-	float I_L3; 		// Grid side current in A
-	float U_L1; 		// Grid side voltage in V
-	float U_L2; 		// Grid side voltage in V
-	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
+	float i_a;
+	float i_b;
+	float i_c;
+	float u_a;
+	float u_b;
+	float u_c;
 	float U_ZK; 		// DC-Link voltage in V
+	float I_ZK;			// DC-Link current in A
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
 	float Res2; 		// Reserveeingang 2 - X50 (normiert auf 0...1 --> 0...4095)
@@ -85,8 +87,27 @@ typedef struct _actualValues_ {
 	float temperature;
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
+	float omega_mech;
+	float omega_elec;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	float errorcode;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+
+	uz_3ph_abc_t i_abc_m;
+	uz_3ph_abc_t u_abc_m;
+	uz_3ph_dq_t i_dq_m;
+	uz_3ph_dq_t u_dq_m;
+	uz_3ph_dq_t i_dq_ref;
+	uz_3ph_dq_t u_dq_ref;
+
+	struct uz_DutyCycle_t output_Dutycycle;
+
+	struct uz_pmsmModel_outputs_t pmsmModel_output;
+	struct uz_pmsmModel_inputs_t pmsmModel_input;
+
+	bool select_CIL
+
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -115,6 +136,13 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	uz_inverter_adapter_t* inverter_d1;
+
+	uz_CurrentControl_t* current_control;
+	uz_SpeedControl_t* speed_control;
+
+	uz_pmsmModel_t *pmsmModel;
+
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

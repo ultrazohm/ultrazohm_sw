@@ -27,8 +27,8 @@
 #define INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE	1U
 
 #define UZ_D5_INCREMENTAL_ENCODER_RESOLUTION    5000.0f
-#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            4.0f
-#define UZ_PWM_FREQUENCY                        10.0e3f
+#define UZ_D5_MOTOR_POLE_PAIR_NUMBER            1.0f
+#define UZ_PWM_FREQUENCY                        20.0e3f
 
 // Configuration defines for the number of used instances
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
@@ -40,7 +40,7 @@
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
 #define UZ_NN_LAYER_MAX_INSTANCES                       0U
 #define UZ_NN_MAX_INSTANCES                             0U
-#define UZ_PMSMMODEL_MAX_INSTANCES                      0U
+#define UZ_PMSMMODEL_MAX_INSTANCES                      1U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
@@ -63,7 +63,7 @@
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
 #define UZ_AXI_GPIO_MAX_INSTANCES                       0U
-#define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
+#define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               0U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U
 #define UZ_DQ_SETPOINT_FILTER_MAX_INSTANCES             0U

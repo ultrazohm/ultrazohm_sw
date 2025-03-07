@@ -187,10 +187,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		data->av.i_dq_ref.d = value;
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
+		data->av.i_dq_ref.q = value;
 			break;
 
 		case (Set_Send_Field_3):
@@ -278,11 +280,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			data->av.select_CIL = true;
 			break;
 
 		case (My_Button_5):
-
+			data->av.select_CIL = false;
 			break;
 
 		case (My_Button_6):

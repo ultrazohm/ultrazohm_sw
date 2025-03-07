@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_52_10 (
+module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8 (
         ap_clk,
         ap_rst,
         ap_start,
@@ -15,23 +15,23 @@ module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_52_10 (
         ap_idle,
         ap_ready,
         B1_columns,
-        mul88,
+        mul89,
         C1_address0,
         C1_ce0,
         C1_q0,
         trunc_ln4,
         p_cast,
-        B2_address0,
-        B2_ce0,
-        B2_q0,
         acc2_address0,
         acc2_ce0,
         acc2_we0,
         acc2_d0,
-        grp_fu_1162_p_din0,
-        grp_fu_1162_p_din1,
-        grp_fu_1162_p_dout0,
-        grp_fu_1162_p_ce
+        B2_address0,
+        B2_ce0,
+        B2_q0,
+        grp_fu_1202_p_din0,
+        grp_fu_1202_p_din1,
+        grp_fu_1202_p_dout0,
+        grp_fu_1202_p_ce
 );
 
 parameter    ap_ST_fsm_pp0_stage0 = 1'd1;
@@ -43,29 +43,29 @@ output   ap_done;
 output   ap_idle;
 output   ap_ready;
 input  [31:0] B1_columns;
-input  [5:0] mul88;
+input  [5:0] mul89;
 output  [5:0] C1_address0;
 output   C1_ce0;
 input  [31:0] C1_q0;
 input  [7:0] trunc_ln4;
 input  [7:0] p_cast;
-output  [7:0] B2_address0;
-output   B2_ce0;
-input  [31:0] B2_q0;
 output  [7:0] acc2_address0;
 output   acc2_ce0;
 output   acc2_we0;
 output  [31:0] acc2_d0;
-output  [31:0] grp_fu_1162_p_din0;
-output  [31:0] grp_fu_1162_p_din1;
-input  [31:0] grp_fu_1162_p_dout0;
-output   grp_fu_1162_p_ce;
+output  [7:0] B2_address0;
+output   B2_ce0;
+input  [31:0] B2_q0;
+output  [31:0] grp_fu_1202_p_din0;
+output  [31:0] grp_fu_1202_p_din1;
+input  [31:0] grp_fu_1202_p_dout0;
+output   grp_fu_1202_p_ce;
 
 reg ap_idle;
 reg C1_ce0;
-reg B2_ce0;
 reg acc2_ce0;
 reg acc2_we0;
+reg B2_ce0;
 
 (* fsm_encoding = "none" *) reg   [0:0] ap_CS_fsm;
 wire    ap_CS_fsm_pp0_stage0;
@@ -81,7 +81,7 @@ wire    ap_block_state3_pp0_stage0_iter2;
 wire    ap_block_state4_pp0_stage0_iter3;
 wire    ap_block_state5_pp0_stage0_iter4;
 wire    ap_block_pp0_stage0_subdone;
-wire   [0:0] icmp_ln52_fu_137_p2;
+wire   [0:0] icmp_ln74_fu_137_p2;
 reg    ap_condition_exit_pp0_iter0_stage0;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
@@ -90,21 +90,21 @@ wire    ap_block_pp0_stage0_11001;
 reg   [8:0] k_reg_212_pp0_iter1_reg;
 reg   [8:0] k_reg_212_pp0_iter2_reg;
 reg   [8:0] k_reg_212_pp0_iter3_reg;
-wire   [63:0] zext_ln53_fu_162_p1;
+wire   [63:0] zext_ln75_fu_162_p1;
 wire    ap_block_pp0_stage0;
-wire   [63:0] zext_ln53_1_fu_179_p1;
-wire   [63:0] k_1_cast30_fu_194_p1;
+wire   [63:0] zext_ln75_1_fu_179_p1;
+wire   [63:0] k_1_cast28_fu_194_p1;
 reg   [7:0] phi_mul1_fu_42;
-wire   [7:0] add_ln53_2_fu_167_p2;
+wire   [7:0] add_ln75_2_fu_167_p2;
 wire    ap_loop_init;
 reg   [7:0] ap_sig_allocacmp_phi_mul1_load;
 reg   [8:0] k_1_fu_46;
-wire   [8:0] add_ln52_fu_143_p2;
+wire   [8:0] add_ln74_fu_143_p2;
 reg   [8:0] ap_sig_allocacmp_k;
 wire   [31:0] k_1_cast_fu_133_p1;
-wire   [5:0] trunc_ln53_fu_152_p1;
-wire   [5:0] add_ln53_fu_156_p2;
-wire   [7:0] add_ln53_1_fu_173_p2;
+wire   [5:0] trunc_ln75_fu_152_p1;
+wire   [5:0] add_ln75_fu_156_p2;
+wire   [7:0] add_ln75_1_fu_173_p2;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -205,8 +205,8 @@ end
 
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        if (((icmp_ln52_fu_137_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
-            k_1_fu_46 <= add_ln52_fu_143_p2;
+        if (((icmp_ln74_fu_137_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
+            k_1_fu_46 <= add_ln74_fu_143_p2;
         end else if ((ap_loop_init == 1'b1)) begin
             k_1_fu_46 <= 9'd0;
         end
@@ -215,8 +215,8 @@ end
 
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        if (((icmp_ln52_fu_137_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
-            phi_mul1_fu_42 <= add_ln53_2_fu_167_p2;
+        if (((icmp_ln74_fu_137_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
+            phi_mul1_fu_42 <= add_ln75_2_fu_167_p2;
         end else if ((ap_loop_init == 1'b1)) begin
             phi_mul1_fu_42 <= 8'd0;
         end
@@ -273,7 +273,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((icmp_ln52_fu_137_p2 == 1'd1) & (1'b0 == ap_block_pp0_stage0_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+    if (((icmp_ln74_fu_137_p2 == 1'd1) & (1'b0 == ap_block_pp0_stage0_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b1;
     end else begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b0;
@@ -339,21 +339,21 @@ always @ (*) begin
     endcase
 end
 
-assign B2_address0 = zext_ln53_1_fu_179_p1;
+assign B2_address0 = zext_ln75_1_fu_179_p1;
 
-assign C1_address0 = zext_ln53_fu_162_p1;
+assign C1_address0 = zext_ln75_fu_162_p1;
 
-assign acc2_address0 = k_1_cast30_fu_194_p1;
+assign acc2_address0 = k_1_cast28_fu_194_p1;
 
-assign acc2_d0 = grp_fu_1162_p_dout0;
+assign acc2_d0 = grp_fu_1202_p_dout0;
 
-assign add_ln52_fu_143_p2 = (ap_sig_allocacmp_k + 9'd1);
+assign add_ln74_fu_143_p2 = (ap_sig_allocacmp_k + 9'd1);
 
-assign add_ln53_1_fu_173_p2 = (ap_sig_allocacmp_phi_mul1_load + p_cast);
+assign add_ln75_1_fu_173_p2 = (ap_sig_allocacmp_phi_mul1_load + p_cast);
 
-assign add_ln53_2_fu_167_p2 = (ap_sig_allocacmp_phi_mul1_load + trunc_ln4);
+assign add_ln75_2_fu_167_p2 = (ap_sig_allocacmp_phi_mul1_load + trunc_ln4);
 
-assign add_ln53_fu_156_p2 = (trunc_ln53_fu_152_p1 + mul88);
+assign add_ln75_fu_156_p2 = (trunc_ln75_fu_152_p1 + mul89);
 
 assign ap_CS_fsm_pp0_stage0 = ap_CS_fsm[32'd0];
 
@@ -379,22 +379,22 @@ assign ap_enable_reg_pp0_iter0 = ap_start_int;
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign grp_fu_1162_p_ce = 1'b1;
+assign grp_fu_1202_p_ce = 1'b1;
 
-assign grp_fu_1162_p_din0 = C1_q0;
+assign grp_fu_1202_p_din0 = C1_q0;
 
-assign grp_fu_1162_p_din1 = B2_q0;
+assign grp_fu_1202_p_din1 = B2_q0;
 
-assign icmp_ln52_fu_137_p2 = ((k_1_cast_fu_133_p1 == B1_columns) ? 1'b1 : 1'b0);
+assign icmp_ln74_fu_137_p2 = ((k_1_cast_fu_133_p1 == B1_columns) ? 1'b1 : 1'b0);
 
-assign k_1_cast30_fu_194_p1 = k_reg_212_pp0_iter3_reg;
+assign k_1_cast28_fu_194_p1 = k_reg_212_pp0_iter3_reg;
 
 assign k_1_cast_fu_133_p1 = ap_sig_allocacmp_k;
 
-assign trunc_ln53_fu_152_p1 = ap_sig_allocacmp_k[5:0];
+assign trunc_ln75_fu_152_p1 = ap_sig_allocacmp_k[5:0];
 
-assign zext_ln53_1_fu_179_p1 = add_ln53_1_fu_173_p2;
+assign zext_ln75_1_fu_179_p1 = add_ln75_1_fu_173_p2;
 
-assign zext_ln53_fu_162_p1 = add_ln53_fu_156_p2;
+assign zext_ln75_fu_162_p1 = add_ln75_fu_156_p2;
 
-endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_52_10
+endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8

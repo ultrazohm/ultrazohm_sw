@@ -33,7 +33,8 @@ signal address0_tmp : std_logic_vector(AddressWidth-1 downto 0);
 
 type mem_array is array (0 to AddressRange-1) of std_logic_vector (DataWidth-1 downto 0); 
 -- Init 
-shared variable ram : mem_array;
+shared variable ram : mem_array := (
+    others=>(others=>'0')); -- 
 attribute syn_ramstyle : string;
 attribute syn_ramstyle of ram : variable is "auto";
 attribute ram_style : string;

@@ -17,10 +17,10 @@ port (
     ap_done : OUT STD_LOGIC;
     ap_idle : OUT STD_LOGIC;
     ap_ready : OUT STD_LOGIC;
-    B1_address0 : OUT STD_LOGIC_VECTOR (10 downto 0);
-    B1_ce0 : OUT STD_LOGIC;
-    B1_we0 : OUT STD_LOGIC;
-    B1_d0 : OUT STD_LOGIC_VECTOR (31 downto 0) );
+    C1_address0 : OUT STD_LOGIC_VECTOR (5 downto 0);
+    C1_ce0 : OUT STD_LOGIC;
+    C1_we0 : OUT STD_LOGIC;
+    C1_d0 : OUT STD_LOGIC_VECTOR (31 downto 0) );
 end;
 
 
@@ -31,9 +31,9 @@ architecture behav of MatrixMultiplication_MatrixMultiplication_Pipeline_2 is
     constant ap_const_lv32_0 : STD_LOGIC_VECTOR (31 downto 0) := "00000000000000000000000000000000";
     constant ap_const_lv1_1 : STD_LOGIC_VECTOR (0 downto 0) := "1";
     constant ap_const_lv1_0 : STD_LOGIC_VECTOR (0 downto 0) := "0";
-    constant ap_const_lv11_0 : STD_LOGIC_VECTOR (10 downto 0) := "00000000000";
-    constant ap_const_lv11_500 : STD_LOGIC_VECTOR (10 downto 0) := "10100000000";
-    constant ap_const_lv11_1 : STD_LOGIC_VECTOR (10 downto 0) := "00000000001";
+    constant ap_const_lv7_0 : STD_LOGIC_VECTOR (6 downto 0) := "0000000";
+    constant ap_const_lv7_40 : STD_LOGIC_VECTOR (6 downto 0) := "1000000";
+    constant ap_const_lv7_1 : STD_LOGIC_VECTOR (6 downto 0) := "0000001";
     constant ap_const_boolean_1 : BOOLEAN := true;
 
 attribute shreg_extract : string;
@@ -43,15 +43,15 @@ attribute shreg_extract : string;
     signal ap_CS_fsm_state1 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state1 : signal is "none";
     signal ap_block_state1_pp0_stage0_iter0 : BOOLEAN;
-    signal exitcond8224_fu_52_p2 : STD_LOGIC_VECTOR (0 downto 0);
+    signal exitcond7622_fu_52_p2 : STD_LOGIC_VECTOR (0 downto 0);
     signal ap_condition_exit_pp0_iter0_stage0 : STD_LOGIC;
     signal ap_loop_exit_ready : STD_LOGIC;
     signal ap_ready_int : STD_LOGIC;
     signal p_cast21_fu_64_p1 : STD_LOGIC_VECTOR (63 downto 0);
-    signal empty_fu_26 : STD_LOGIC_VECTOR (10 downto 0);
-    signal empty_46_fu_58_p2 : STD_LOGIC_VECTOR (10 downto 0);
+    signal empty_fu_26 : STD_LOGIC_VECTOR (6 downto 0);
+    signal empty_45_fu_58_p2 : STD_LOGIC_VECTOR (6 downto 0);
     signal ap_loop_init : STD_LOGIC;
-    signal ap_sig_allocacmp_p_load : STD_LOGIC_VECTOR (10 downto 0);
+    signal ap_sig_allocacmp_p_load : STD_LOGIC_VECTOR (6 downto 0);
     signal ap_done_reg : STD_LOGIC := '0';
     signal ap_continue_int : STD_LOGIC;
     signal ap_done_int : STD_LOGIC;
@@ -130,10 +130,10 @@ begin
     begin
         if (ap_clk'event and ap_clk = '1') then
             if (((ap_start_int = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then
-                if ((exitcond8224_fu_52_p2 = ap_const_lv1_0)) then 
-                    empty_fu_26 <= empty_46_fu_58_p2;
+                if ((exitcond7622_fu_52_p2 = ap_const_lv1_0)) then 
+                    empty_fu_26 <= empty_45_fu_58_p2;
                 elsif ((ap_loop_init = ap_const_logic_1)) then 
-                    empty_fu_26 <= ap_const_lv11_0;
+                    empty_fu_26 <= ap_const_lv7_0;
                 end if;
             end if; 
         end if;
@@ -148,25 +148,25 @@ begin
                 ap_NS_fsm <= "X";
         end case;
     end process;
-    B1_address0 <= p_cast21_fu_64_p1(11 - 1 downto 0);
+    C1_address0 <= p_cast21_fu_64_p1(6 - 1 downto 0);
 
-    B1_ce0_assign_proc : process(ap_CS_fsm_state1, ap_start_int)
+    C1_ce0_assign_proc : process(ap_CS_fsm_state1, ap_start_int)
     begin
         if (((ap_start_int = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
-            B1_ce0 <= ap_const_logic_1;
+            C1_ce0 <= ap_const_logic_1;
         else 
-            B1_ce0 <= ap_const_logic_0;
+            C1_ce0 <= ap_const_logic_0;
         end if; 
     end process;
 
-    B1_d0 <= ap_const_lv32_0;
+    C1_d0 <= ap_const_lv32_0;
 
-    B1_we0_assign_proc : process(ap_CS_fsm_state1, exitcond8224_fu_52_p2, ap_start_int)
+    C1_we0_assign_proc : process(ap_CS_fsm_state1, exitcond7622_fu_52_p2, ap_start_int)
     begin
-        if (((ap_start_int = ap_const_logic_1) and (exitcond8224_fu_52_p2 = ap_const_lv1_0) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
-            B1_we0 <= ap_const_logic_1;
+        if (((ap_start_int = ap_const_logic_1) and (exitcond7622_fu_52_p2 = ap_const_lv1_0) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
+            C1_we0 <= ap_const_logic_1;
         else 
-            B1_we0 <= ap_const_logic_0;
+            C1_we0 <= ap_const_logic_0;
         end if; 
     end process;
 
@@ -188,9 +188,9 @@ begin
     end process;
 
 
-    ap_condition_exit_pp0_iter0_stage0_assign_proc : process(ap_CS_fsm_state1, exitcond8224_fu_52_p2, ap_start_int)
+    ap_condition_exit_pp0_iter0_stage0_assign_proc : process(ap_CS_fsm_state1, exitcond7622_fu_52_p2, ap_start_int)
     begin
-        if (((ap_start_int = ap_const_logic_1) and (exitcond8224_fu_52_p2 = ap_const_lv1_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
+        if (((ap_start_int = ap_const_logic_1) and (exitcond7622_fu_52_p2 = ap_const_lv1_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
             ap_condition_exit_pp0_iter0_stage0 <= ap_const_logic_1;
         else 
             ap_condition_exit_pp0_iter0_stage0 <= ap_const_logic_0;
@@ -232,13 +232,13 @@ begin
     ap_sig_allocacmp_p_load_assign_proc : process(ap_CS_fsm_state1, empty_fu_26, ap_loop_init)
     begin
         if (((ap_loop_init = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
-            ap_sig_allocacmp_p_load <= ap_const_lv11_0;
+            ap_sig_allocacmp_p_load <= ap_const_lv7_0;
         else 
             ap_sig_allocacmp_p_load <= empty_fu_26;
         end if; 
     end process;
 
-    empty_46_fu_58_p2 <= std_logic_vector(unsigned(ap_sig_allocacmp_p_load) + unsigned(ap_const_lv11_1));
-    exitcond8224_fu_52_p2 <= "1" when (ap_sig_allocacmp_p_load = ap_const_lv11_500) else "0";
+    empty_45_fu_58_p2 <= std_logic_vector(unsigned(ap_sig_allocacmp_p_load) + unsigned(ap_const_lv7_1));
+    exitcond7622_fu_52_p2 <= "1" when (ap_sig_allocacmp_p_load = ap_const_lv7_40) else "0";
     p_cast21_fu_64_p1 <= std_logic_vector(IEEE.numeric_std.resize(unsigned(ap_sig_allocacmp_p_load),64));
 end behav;

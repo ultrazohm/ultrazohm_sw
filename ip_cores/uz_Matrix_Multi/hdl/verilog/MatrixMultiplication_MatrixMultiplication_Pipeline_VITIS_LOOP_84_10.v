@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_62_12 (
+module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_84_10 (
         ap_clk,
         ap_rst,
         ap_start,
@@ -60,7 +60,7 @@ module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_62_12 (
         m_axi_arrays_BRESP,
         m_axi_arrays_BID,
         m_axi_arrays_BUSER,
-        sext_ln62,
+        sext_ln84,
         B2_columns,
         C2_0_21,
         C2_1_2,
@@ -122,7 +122,7 @@ output   m_axi_arrays_BREADY;
 input  [1:0] m_axi_arrays_BRESP;
 input  [0:0] m_axi_arrays_BID;
 input  [0:0] m_axi_arrays_BUSER;
-input  [61:0] sext_ln62;
+input  [61:0] sext_ln84;
 input  [31:0] B2_columns;
 input  [31:0] C2_0_21;
 input  [31:0] C2_1_2;
@@ -140,7 +140,7 @@ reg    ap_idle_pp0;
 wire    ap_block_state1_pp0_stage0_iter0;
 wire    ap_block_state2_pp0_stage0_iter1;
 reg    ap_block_pp0_stage0_subdone;
-wire   [0:0] icmp_ln62_fu_124_p2;
+wire   [0:0] icmp_ln84_fu_124_p2;
 reg    ap_condition_exit_pp0_iter0_stage0;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
@@ -151,9 +151,9 @@ wire   [31:0] tmp_1_fu_140_p6;
 reg   [31:0] tmp_1_reg_178;
 wire    ap_block_pp0_stage0_01001;
 reg   [31:0] i_fu_58;
-wire   [31:0] add_ln62_fu_130_p2;
+wire   [31:0] add_ln84_fu_130_p2;
 wire    ap_loop_init;
-reg   [31:0] ap_sig_allocacmp_i_1;
+reg   [31:0] ap_sig_allocacmp_i_2;
 wire   [1:0] tmp_1_fu_140_p5;
 reg    ap_done_reg;
 wire    ap_continue_int;
@@ -179,7 +179,7 @@ MatrixMultiplication_mux_42_32_1_1 #(
     .din3_WIDTH( 32 ),
     .din4_WIDTH( 2 ),
     .dout_WIDTH( 32 ))
-mux_42_32_1_1_U49(
+mux_42_32_1_1_U47(
     .din0(C2_0_21),
     .din1(C2_1_2),
     .din2(C2_2_2),
@@ -237,8 +237,8 @@ end
 
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        if (((icmp_ln62_fu_124_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
-            i_fu_58 <= add_ln62_fu_130_p2;
+        if (((icmp_ln84_fu_124_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
+            i_fu_58 <= add_ln84_fu_130_p2;
         end else if ((ap_loop_init == 1'b1)) begin
             i_fu_58 <= 32'd0;
         end
@@ -246,13 +246,13 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((icmp_ln62_fu_124_p2 == 1'd0) & (1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+    if (((icmp_ln84_fu_124_p2 == 1'd0) & (1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         tmp_1_reg_178 <= tmp_1_fu_140_p6;
     end
 end
 
 always @ (*) begin
-    if (((icmp_ln62_fu_124_p2 == 1'd1) & (1'b0 == ap_block_pp0_stage0_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+    if (((icmp_ln84_fu_124_p2 == 1'd1) & (1'b0 == ap_block_pp0_stage0_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b1;
     end else begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b0;
@@ -293,9 +293,9 @@ end
 
 always @ (*) begin
     if (((1'b0 == ap_block_pp0_stage0) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_loop_init == 1'b1))) begin
-        ap_sig_allocacmp_i_1 = 32'd0;
+        ap_sig_allocacmp_i_2 = 32'd0;
     end else begin
-        ap_sig_allocacmp_i_1 = i_fu_58;
+        ap_sig_allocacmp_i_2 = i_fu_58;
     end
 end
 
@@ -326,7 +326,7 @@ always @ (*) begin
     endcase
 end
 
-assign add_ln62_fu_130_p2 = (ap_sig_allocacmp_i_1 + 32'd1);
+assign add_ln84_fu_130_p2 = (ap_sig_allocacmp_i_2 + 32'd1);
 
 assign ap_CS_fsm_pp0_stage0 = ap_CS_fsm[32'd0];
 
@@ -352,7 +352,7 @@ assign ap_enable_reg_pp0_iter0 = ap_start_int;
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign icmp_ln62_fu_124_p2 = ((ap_sig_allocacmp_i_1 == B2_columns) ? 1'b1 : 1'b0);
+assign icmp_ln84_fu_124_p2 = ((ap_sig_allocacmp_i_2 == B2_columns) ? 1'b1 : 1'b0);
 
 assign m_axi_arrays_ARADDR = 64'd0;
 
@@ -416,6 +416,6 @@ assign m_axi_arrays_WSTRB = 4'd15;
 
 assign m_axi_arrays_WUSER = 1'd0;
 
-assign tmp_1_fu_140_p5 = ap_sig_allocacmp_i_1[1:0];
+assign tmp_1_fu_140_p5 = ap_sig_allocacmp_i_2[1:0];
 
-endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_62_12
+endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_84_10

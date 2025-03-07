@@ -4,7 +4,7 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
-module MatrixMultiplication_B1_RAM_AUTO_1R1W (
+module MatrixMultiplication_acc2_RAM_AUTO_1R1W (
      
     address0, ce0,
     d0, we0, 
@@ -13,8 +13,8 @@ module MatrixMultiplication_B1_RAM_AUTO_1R1W (
     reset, clk);
 
 parameter DataWidth = 32;
-parameter AddressWidth = 11;
-parameter AddressRange = 1280;
+parameter AddressWidth = 8;
+parameter AddressRange = 256;
  
 input[AddressWidth-1:0] address0;
 input ce0;
@@ -27,9 +27,6 @@ input clk;
 
 (* ram_style = "auto"  *)reg [DataWidth-1:0] ram[0:AddressRange-1];
 
-initial begin
-    $readmemh("./MatrixMultiplication_B1_RAM_AUTO_1R1W.dat", ram);
-end 
 
  
 

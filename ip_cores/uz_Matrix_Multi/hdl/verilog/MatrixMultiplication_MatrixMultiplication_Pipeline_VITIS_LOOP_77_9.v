@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_55_11 (
+module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_77_9 (
         ap_clk,
         ap_rst,
         ap_start,
@@ -21,11 +21,11 @@ module MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_55_11 (
         acc2_q0,
         C2_3_out,
         C2_3_out_ap_vld,
-        grp_fu_1166_p_din0,
-        grp_fu_1166_p_din1,
-        grp_fu_1166_p_opcode,
-        grp_fu_1166_p_dout0,
-        grp_fu_1166_p_ce
+        grp_fu_1206_p_din0,
+        grp_fu_1206_p_din1,
+        grp_fu_1206_p_opcode,
+        grp_fu_1206_p_dout0,
+        grp_fu_1206_p_ce
 );
 
 parameter    ap_ST_fsm_pp0_stage0 = 4'd1;
@@ -46,11 +46,11 @@ output   acc2_ce0;
 input  [31:0] acc2_q0;
 output  [31:0] C2_3_out;
 output   C2_3_out_ap_vld;
-output  [31:0] grp_fu_1166_p_din0;
-output  [31:0] grp_fu_1166_p_din1;
-output  [1:0] grp_fu_1166_p_opcode;
-input  [31:0] grp_fu_1166_p_dout0;
-output   grp_fu_1166_p_ce;
+output  [31:0] grp_fu_1206_p_din0;
+output  [31:0] grp_fu_1206_p_din1;
+output  [1:0] grp_fu_1206_p_opcode;
+input  [31:0] grp_fu_1206_p_dout0;
+output   grp_fu_1206_p_ce;
 
 reg ap_idle;
 reg acc2_ce0;
@@ -65,7 +65,7 @@ wire    ap_CS_fsm_pp0_stage2;
 wire    ap_block_state3_pp0_stage2_iter0;
 wire    ap_block_state7_pp0_stage2_iter1;
 wire    ap_block_pp0_stage2_subdone;
-reg   [0:0] icmp_ln55_reg_149;
+reg   [0:0] icmp_ln77_reg_149;
 reg    ap_condition_exit_pp0_iter0_stage2;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
@@ -75,7 +75,7 @@ wire    ap_block_pp0_stage3_subdone;
 wire    ap_block_state1_pp0_stage0_iter0;
 wire    ap_block_state5_pp0_stage0_iter1;
 wire    ap_block_pp0_stage0_11001;
-wire   [0:0] icmp_ln55_fu_99_p2;
+wire   [0:0] icmp_ln77_fu_99_p2;
 reg   [31:0] acc2_load_reg_158;
 wire    ap_CS_fsm_pp0_stage1;
 wire    ap_block_state2_pp0_stage1_iter0;
@@ -90,10 +90,10 @@ reg   [31:0] ap_sig_allocacmp_C2_3_load;
 wire    ap_block_pp0_stage2;
 wire    ap_loop_init;
 reg   [8:0] k_fu_42;
-wire   [8:0] add_ln55_fu_105_p2;
+wire   [8:0] add_ln77_fu_105_p2;
 reg   [8:0] ap_sig_allocacmp_k_1;
 wire    ap_block_pp0_stage2_01001;
-wire   [31:0] k_2_cast70_fu_95_p1;
+wire   [31:0] k_2_cast66_fu_95_p1;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -177,14 +177,14 @@ always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_loop_init == 1'b1))) begin
         C2_3_fu_38 <= tmp_2;
     end else if (((1'b0 == ap_block_pp0_stage2_11001) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage2))) begin
-        C2_3_fu_38 <= grp_fu_1166_p_dout0;
+        C2_3_fu_38 <= grp_fu_1206_p_dout0;
     end
 end
 
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        if (((icmp_ln55_fu_99_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
-            k_fu_42 <= add_ln55_fu_105_p2;
+        if (((icmp_ln77_fu_99_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
+            k_fu_42 <= add_ln77_fu_105_p2;
         end else if ((ap_loop_init == 1'b1)) begin
             k_fu_42 <= 9'd0;
         end
@@ -192,19 +192,19 @@ always @ (posedge ap_clk) begin
 end
 
 always @ (posedge ap_clk) begin
-    if (((icmp_ln55_reg_149 == 1'd0) & (1'b0 == ap_block_pp0_stage1_11001) & (1'b1 == ap_CS_fsm_pp0_stage1))) begin
+    if (((icmp_ln77_reg_149 == 1'd0) & (1'b0 == ap_block_pp0_stage1_11001) & (1'b1 == ap_CS_fsm_pp0_stage1))) begin
         acc2_load_reg_158 <= acc2_q0;
     end
 end
 
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        icmp_ln55_reg_149 <= icmp_ln55_fu_99_p2;
+        icmp_ln77_reg_149 <= icmp_ln77_fu_99_p2;
     end
 end
 
 always @ (*) begin
-    if (((icmp_ln55_reg_149 == 1'd1) & (1'b0 == ap_block_pp0_stage2_11001) & (1'b1 == ap_CS_fsm_pp0_stage2))) begin
+    if (((icmp_ln77_reg_149 == 1'd1) & (1'b0 == ap_block_pp0_stage2_11001) & (1'b1 == ap_CS_fsm_pp0_stage2))) begin
         C2_3_out_ap_vld = 1'b1;
     end else begin
         C2_3_out_ap_vld = 1'b0;
@@ -220,7 +220,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((icmp_ln55_reg_149 == 1'd1) & (1'b0 == ap_block_pp0_stage2_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage2))) begin
+    if (((icmp_ln77_reg_149 == 1'd1) & (1'b0 == ap_block_pp0_stage2_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage2))) begin
         ap_condition_exit_pp0_iter0_stage2 = 1'b1;
     end else begin
         ap_condition_exit_pp0_iter0_stage2 = 1'b0;
@@ -277,7 +277,7 @@ end
 
 always @ (*) begin
     if (((1'b0 == ap_block_pp0_stage2) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage2))) begin
-        ap_sig_allocacmp_C2_3_load = grp_fu_1166_p_dout0;
+        ap_sig_allocacmp_C2_3_load = grp_fu_1206_p_dout0;
     end else begin
         ap_sig_allocacmp_C2_3_load = C2_3_fu_38;
     end
@@ -333,7 +333,7 @@ assign C2_3_out = C2_3_fu_38;
 
 assign acc2_address0 = k_2_cast_fu_111_p1;
 
-assign add_ln55_fu_105_p2 = (ap_sig_allocacmp_k_1 + 9'd1);
+assign add_ln77_fu_105_p2 = (ap_sig_allocacmp_k_1 + 9'd1);
 
 assign ap_CS_fsm_pp0_stage0 = ap_CS_fsm[32'd0];
 
@@ -383,18 +383,18 @@ assign ap_enable_pp0 = (ap_idle_pp0 ^ 1'b1);
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage2;
 
-assign grp_fu_1166_p_ce = 1'b1;
+assign grp_fu_1206_p_ce = 1'b1;
 
-assign grp_fu_1166_p_din0 = ap_sig_allocacmp_C2_3_load;
+assign grp_fu_1206_p_din0 = ap_sig_allocacmp_C2_3_load;
 
-assign grp_fu_1166_p_din1 = acc2_load_reg_158;
+assign grp_fu_1206_p_din1 = acc2_load_reg_158;
 
-assign grp_fu_1166_p_opcode = 2'd0;
+assign grp_fu_1206_p_opcode = 2'd0;
 
-assign icmp_ln55_fu_99_p2 = ((k_2_cast70_fu_95_p1 == B1_columns) ? 1'b1 : 1'b0);
+assign icmp_ln77_fu_99_p2 = ((k_2_cast66_fu_95_p1 == B1_columns) ? 1'b1 : 1'b0);
 
-assign k_2_cast70_fu_95_p1 = ap_sig_allocacmp_k_1;
+assign k_2_cast66_fu_95_p1 = ap_sig_allocacmp_k_1;
 
 assign k_2_cast_fu_111_p1 = ap_sig_allocacmp_k_1;
 
-endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_55_11
+endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_77_9

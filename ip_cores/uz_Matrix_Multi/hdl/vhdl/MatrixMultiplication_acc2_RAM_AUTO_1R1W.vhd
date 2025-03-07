@@ -8,7 +8,7 @@ library ieee;
 use ieee.std_logic_1164.all; 
 use ieee.std_logic_unsigned.all;
 
-entity MatrixMultiplication_B2_RAM_AUTO_1R1W is 
+entity MatrixMultiplication_acc2_RAM_AUTO_1R1W is 
     generic(
         MEM_TYPE        : string    := "auto"; 
         DataWidth       : integer   := 32; 
@@ -26,15 +26,14 @@ entity MatrixMultiplication_B2_RAM_AUTO_1R1W is
     ); 
 end entity; 
 
-architecture rtl of MatrixMultiplication_B2_RAM_AUTO_1R1W is 
+architecture rtl of MatrixMultiplication_acc2_RAM_AUTO_1R1W is 
 
 signal address0_tmp : std_logic_vector(AddressWidth-1 downto 0);
 
 
 type mem_array is array (0 to AddressRange-1) of std_logic_vector (DataWidth-1 downto 0); 
 -- Init 
-shared variable ram : mem_array := (
-    others=>(others=>'0')); -- 
+shared variable ram : mem_array;
 attribute syn_ramstyle : string;
 attribute syn_ramstyle of ram : variable is "auto";
 attribute ram_style : string;

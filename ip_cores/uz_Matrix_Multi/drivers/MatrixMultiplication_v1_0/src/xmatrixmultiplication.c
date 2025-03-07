@@ -160,6 +160,23 @@ u64 XMatrixmultiplication_Get_C_output(XMatrixmultiplication *InstancePtr) {
     return Data;
 }
 
+void XMatrixmultiplication_Set_copy_mats_flag(XMatrixmultiplication *InstancePtr, u32 Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_MATS_FLAG_DATA, Data);
+}
+
+u32 XMatrixmultiplication_Get_copy_mats_flag(XMatrixmultiplication *InstancePtr) {
+    u32 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_MATS_FLAG_DATA);
+    return Data;
+}
+
 void XMatrixmultiplication_Set_A_rows(XMatrixmultiplication *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -225,6 +242,26 @@ u32 XMatrixmultiplication_Get_B2_columns(XMatrixmultiplication *InstancePtr) {
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
     Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_COLUMNS_DATA);
+    return Data;
+}
+
+u32 XMatrixmultiplication_Get_copy_flag_out(XMatrixmultiplication *InstancePtr) {
+    u32 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_FLAG_OUT_DATA);
+    return Data;
+}
+
+u32 XMatrixmultiplication_Get_matrices_updated_out(XMatrixmultiplication *InstancePtr) {
+    u32 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_MATRICES_UPDATED_OUT_DATA);
     return Data;
 }
 

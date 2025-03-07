@@ -1150,10 +1150,46 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
+          <spirit:name>copy_mats_flag</spirit:name>
+          <spirit:displayName>copy_mats_flag</spirit:displayName>
+          <spirit:description>Data signal of copy_mats_flag</spirit:description>
+          <spirit:addressOffset>64</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>copy_mats_flag</spirit:name>
+            <spirit:description>Bit 0 to 0 of copy_mats_flag</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+          <spirit:field>
+            <spirit:name>RESERVED</spirit:name>
+            <spirit:description>Reserved.  0s on read.</spirit:description>
+            <spirit:bitOffset>1</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">31</spirit:bitWidth>
+            <spirit:access>read-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:readAction>modify</spirit:readAction>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
           <spirit:name>A_rows</spirit:name>
           <spirit:displayName>A_rows</spirit:displayName>
           <spirit:description>Data signal of A_rows</spirit:description>
-          <spirit:addressOffset>64</spirit:addressOffset>
+          <spirit:addressOffset>72</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1176,7 +1212,7 @@
           <spirit:name>B1_rows</spirit:name>
           <spirit:displayName>B1_rows</spirit:displayName>
           <spirit:description>Data signal of B1_rows</spirit:description>
-          <spirit:addressOffset>72</spirit:addressOffset>
+          <spirit:addressOffset>80</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1199,7 +1235,7 @@
           <spirit:name>B1_columns</spirit:name>
           <spirit:displayName>B1_columns</spirit:displayName>
           <spirit:description>Data signal of B1_columns</spirit:description>
-          <spirit:addressOffset>80</spirit:addressOffset>
+          <spirit:addressOffset>88</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1222,7 +1258,7 @@
           <spirit:name>B2_columns</spirit:name>
           <spirit:displayName>B2_columns</spirit:displayName>
           <spirit:description>Data signal of B2_columns</spirit:description>
-          <spirit:addressOffset>88</spirit:addressOffset>
+          <spirit:addressOffset>96</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1238,6 +1274,80 @@
               <spirit:minimum>0</spirit:minimum>
               <spirit:maximum>0</spirit:maximum>
             </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>copy_flag_out</spirit:name>
+          <spirit:displayName>copy_flag_out</spirit:displayName>
+          <spirit:description>Data signal of copy_flag_out</spirit:description>
+          <spirit:addressOffset>104</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>read-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>copy_flag_out</spirit:name>
+            <spirit:description>Bit 0 to 0 of copy_flag_out</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
+            <spirit:access>read-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:readAction>modify</spirit:readAction>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+          <spirit:field>
+            <spirit:name>RESERVED</spirit:name>
+            <spirit:description>Reserved.  0s on read.</spirit:description>
+            <spirit:bitOffset>1</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">31</spirit:bitWidth>
+            <spirit:access>read-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:readAction>modify</spirit:readAction>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>matrices_updated_out</spirit:name>
+          <spirit:displayName>matrices_updated_out</spirit:displayName>
+          <spirit:description>Data signal of matrices_updated_out</spirit:description>
+          <spirit:addressOffset>120</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>read-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>matrices_updated_out</spirit:name>
+            <spirit:description>Bit 0 to 0 of matrices_updated_out</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
+            <spirit:access>read-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:readAction>modify</spirit:readAction>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+          <spirit:field>
+            <spirit:name>RESERVED</spirit:name>
+            <spirit:description>Reserved.  0s on read.</spirit:description>
+            <spirit:bitOffset>1</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">31</spirit:bitWidth>
+            <spirit:access>read-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:readAction>modify</spirit:readAction>
             <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
           </spirit:field>
         </spirit:register>
@@ -1261,7 +1371,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>55256b97</spirit:value>
+            <spirit:value>d3869f53</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1280,7 +1390,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c326e4c5</spirit:value>
+            <spirit:value>c19e6498</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1299,7 +1409,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>32b4d8c0</spirit:value>
+            <spirit:value>7f3de8ef</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1318,7 +1428,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e71f577b</spirit:value>
+            <spirit:value>2fcee7ee</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1332,7 +1442,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>4003f6c9</spirit:value>
+            <spirit:value>acda285c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2606,12 +2716,28 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_acc1_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_acc2_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/verilog/MatrixMultiplication_arrays_m_axi.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_B1_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:userFileType>mif</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/verilog/MatrixMultiplication_B1_RAM_AUTO_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_B2_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/verilog/MatrixMultiplication_B2_RAM_AUTO_1R1W.v</spirit:name>
@@ -2650,51 +2776,43 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_4.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_7.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_5.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_10.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_9.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_burst_B1mat.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_12.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_burst_B2mat.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_26_1.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_30_2.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_34_3.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_66_5.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_41_6.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_44_7.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_77_9.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_52_10.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_55_11.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_62_12.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_84_10.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2740,14 +2858,32 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_acc1_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_acc2_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/verilog/MatrixMultiplication_arrays_m_axi.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_B1_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:userFileType>mif</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/verilog/MatrixMultiplication_B1_RAM_AUTO_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/MatrixMultiplication_B2_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/verilog/MatrixMultiplication_B2_RAM_AUTO_1R1W.v</spirit:name>
@@ -2795,62 +2931,52 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_4.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_7.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_5.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_10.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_9.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_burst_B1mat.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_12.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_burst_B2mat.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_26_1.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_30_2.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_34_3.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_66_5.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_41_6.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_44_7.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_77_9.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_52_10.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_55_11.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_62_12.v</spirit:name>
+        <spirit:name>hdl/verilog/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_84_10.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2925,6 +3051,14 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_acc1_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_acc2_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
         <spirit:name>hdl/vhdl/MatrixMultiplication_arrays_m_axi.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -2969,51 +3103,43 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_4.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_7.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_5.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_10.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_9.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_burst_B1mat.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_12.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_burst_B2mat.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_26_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_30_2.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_34_3.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_66_5.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_41_6.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_44_7.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_77_9.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_52_10.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_55_11.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_62_12.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_84_10.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3039,7 +3165,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/MatrixMultiplication.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_744f2e1f</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_c7b574b3</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -3056,6 +3182,16 @@
       <spirit:name>xilinx_vhdlbehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
         <spirit:name>hdl/vhdl/MatrixMultiplication_A_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_acc1_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:fileType>vhdlSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_acc2_RAM_AUTO_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3115,62 +3251,52 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_4.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_7.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_5.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_10.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_9.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_burst_B1mat.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_12.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_burst_B2mat.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_26_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_30_2.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_34_3.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_66_5.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_41_6.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_44_7.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_77_9.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_52_10.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_55_11.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_62_12.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/MatrixMultiplication_MatrixMultiplication_Pipeline_VITIS_LOOP_84_10.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3438,8 +3564,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Matrixmultiplication</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2113939006</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-02-03T13:46:41Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113985018</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-03-07T12:39:09Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
@@ -3449,8 +3575,8 @@
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="ab14be2f"/>
       <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="c5f42284"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="10632456"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="7db72c25"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="dcb21055"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="52776f56"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="44b3c12d"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="a168ef4d"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="5e890b58"/>

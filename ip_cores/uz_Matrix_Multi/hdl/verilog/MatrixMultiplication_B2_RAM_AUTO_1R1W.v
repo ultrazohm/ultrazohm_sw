@@ -27,6 +27,9 @@ input clk;
 
 (* ram_style = "auto"  *)reg [DataWidth-1:0] ram[0:AddressRange-1];
 
+initial begin
+    $readmemh("./MatrixMultiplication_B2_RAM_AUTO_1R1W.dat", ram);
+end 
 
  
 

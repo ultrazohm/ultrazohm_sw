@@ -97,6 +97,8 @@ void XMatrixmultiplication_Set_B2_input(XMatrixmultiplication *InstancePtr, u64 
 u64 XMatrixmultiplication_Get_B2_input(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_C_output(XMatrixmultiplication *InstancePtr, u64 Data);
 u64 XMatrixmultiplication_Get_C_output(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_copy_mats_flag(XMatrixmultiplication *InstancePtr, u32 Data);
+u32 XMatrixmultiplication_Get_copy_mats_flag(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_A_rows(XMatrixmultiplication *InstancePtr, u32 Data);
 u32 XMatrixmultiplication_Get_A_rows(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_B1_rows(XMatrixmultiplication *InstancePtr, u32 Data);
@@ -105,6 +107,8 @@ void XMatrixmultiplication_Set_B1_columns(XMatrixmultiplication *InstancePtr, u3
 u32 XMatrixmultiplication_Get_B1_columns(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_B2_columns(XMatrixmultiplication *InstancePtr, u32 Data);
 u32 XMatrixmultiplication_Get_B2_columns(XMatrixmultiplication *InstancePtr);
+u32 XMatrixmultiplication_Get_copy_flag_out(XMatrixmultiplication *InstancePtr);
+u32 XMatrixmultiplication_Get_matrices_updated_out(XMatrixmultiplication *InstancePtr);
 
 void XMatrixmultiplication_InterruptGlobalEnable(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_InterruptGlobalDisable(XMatrixmultiplication *InstancePtr);

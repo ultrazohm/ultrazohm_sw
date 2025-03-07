@@ -34,10 +34,13 @@ module MatrixMultiplication_control_s_axi
     output wire [63:0]                   B1_input,
     output wire [63:0]                   B2_input,
     output wire [63:0]                   C_output,
+    output wire [0:0]                    copy_mats_flag,
     output wire [31:0]                   A_rows,
     output wire [31:0]                   B1_rows,
     output wire [31:0]                   B1_columns,
     output wire [31:0]                   B2_columns,
+    input  wire [0:0]                    copy_flag_out,
+    input  wire [0:0]                    matrices_updated_out,
     output wire                          ap_start,
     input  wire                          ap_done,
     input  wire                          ap_ready,
@@ -85,53 +88,71 @@ module MatrixMultiplication_control_s_axi
 // 0x38 : Data signal of C_output
 //        bit 31~0 - C_output[63:32] (Read/Write)
 // 0x3c : reserved
-// 0x40 : Data signal of A_rows
-//        bit 31~0 - A_rows[31:0] (Read/Write)
+// 0x40 : Data signal of copy_mats_flag
+//        bit 0  - copy_mats_flag[0] (Read/Write)
+//        others - reserved
 // 0x44 : reserved
-// 0x48 : Data signal of B1_rows
-//        bit 31~0 - B1_rows[31:0] (Read/Write)
+// 0x48 : Data signal of A_rows
+//        bit 31~0 - A_rows[31:0] (Read/Write)
 // 0x4c : reserved
-// 0x50 : Data signal of B1_columns
-//        bit 31~0 - B1_columns[31:0] (Read/Write)
+// 0x50 : Data signal of B1_rows
+//        bit 31~0 - B1_rows[31:0] (Read/Write)
 // 0x54 : reserved
-// 0x58 : Data signal of B2_columns
-//        bit 31~0 - B2_columns[31:0] (Read/Write)
+// 0x58 : Data signal of B1_columns
+//        bit 31~0 - B1_columns[31:0] (Read/Write)
 // 0x5c : reserved
+// 0x60 : Data signal of B2_columns
+//        bit 31~0 - B2_columns[31:0] (Read/Write)
+// 0x64 : reserved
+// 0x68 : Data signal of copy_flag_out
+//        bit 0  - copy_flag_out[0] (Read)
+//        others - reserved
+// 0x6c : reserved
+// 0x78 : Data signal of matrices_updated_out
+//        bit 0  - matrices_updated_out[0] (Read)
+//        others - reserved
+// 0x7c : reserved
 // (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 //------------------------Parameter----------------------
 localparam
-    ADDR_AP_CTRL           = 7'h00,
-    ADDR_GIE               = 7'h04,
-    ADDR_IER               = 7'h08,
-    ADDR_ISR               = 7'h0c,
-    ADDR_A_INPUT_DATA_0    = 7'h10,
-    ADDR_A_INPUT_DATA_1    = 7'h14,
-    ADDR_A_INPUT_CTRL      = 7'h18,
-    ADDR_B1_INPUT_DATA_0   = 7'h1c,
-    ADDR_B1_INPUT_DATA_1   = 7'h20,
-    ADDR_B1_INPUT_CTRL     = 7'h24,
-    ADDR_B2_INPUT_DATA_0   = 7'h28,
-    ADDR_B2_INPUT_DATA_1   = 7'h2c,
-    ADDR_B2_INPUT_CTRL     = 7'h30,
-    ADDR_C_OUTPUT_DATA_0   = 7'h34,
-    ADDR_C_OUTPUT_DATA_1   = 7'h38,
-    ADDR_C_OUTPUT_CTRL     = 7'h3c,
-    ADDR_A_ROWS_DATA_0     = 7'h40,
-    ADDR_A_ROWS_CTRL       = 7'h44,
-    ADDR_B1_ROWS_DATA_0    = 7'h48,
-    ADDR_B1_ROWS_CTRL      = 7'h4c,
-    ADDR_B1_COLUMNS_DATA_0 = 7'h50,
-    ADDR_B1_COLUMNS_CTRL   = 7'h54,
-    ADDR_B2_COLUMNS_DATA_0 = 7'h58,
-    ADDR_B2_COLUMNS_CTRL   = 7'h5c,
-    WRIDLE                 = 2'd0,
-    WRDATA                 = 2'd1,
-    WRRESP                 = 2'd2,
-    WRRESET                = 2'd3,
-    RDIDLE                 = 2'd0,
-    RDDATA                 = 2'd1,
-    RDRESET                = 2'd2,
+    ADDR_AP_CTRL                     = 7'h00,
+    ADDR_GIE                         = 7'h04,
+    ADDR_IER                         = 7'h08,
+    ADDR_ISR                         = 7'h0c,
+    ADDR_A_INPUT_DATA_0              = 7'h10,
+    ADDR_A_INPUT_DATA_1              = 7'h14,
+    ADDR_A_INPUT_CTRL                = 7'h18,
+    ADDR_B1_INPUT_DATA_0             = 7'h1c,
+    ADDR_B1_INPUT_DATA_1             = 7'h20,
+    ADDR_B1_INPUT_CTRL               = 7'h24,
+    ADDR_B2_INPUT_DATA_0             = 7'h28,
+    ADDR_B2_INPUT_DATA_1             = 7'h2c,
+    ADDR_B2_INPUT_CTRL               = 7'h30,
+    ADDR_C_OUTPUT_DATA_0             = 7'h34,
+    ADDR_C_OUTPUT_DATA_1             = 7'h38,
+    ADDR_C_OUTPUT_CTRL               = 7'h3c,
+    ADDR_COPY_MATS_FLAG_DATA_0       = 7'h40,
+    ADDR_COPY_MATS_FLAG_CTRL         = 7'h44,
+    ADDR_A_ROWS_DATA_0               = 7'h48,
+    ADDR_A_ROWS_CTRL                 = 7'h4c,
+    ADDR_B1_ROWS_DATA_0              = 7'h50,
+    ADDR_B1_ROWS_CTRL                = 7'h54,
+    ADDR_B1_COLUMNS_DATA_0           = 7'h58,
+    ADDR_B1_COLUMNS_CTRL             = 7'h5c,
+    ADDR_B2_COLUMNS_DATA_0           = 7'h60,
+    ADDR_B2_COLUMNS_CTRL             = 7'h64,
+    ADDR_COPY_FLAG_OUT_DATA_0        = 7'h68,
+    ADDR_COPY_FLAG_OUT_CTRL          = 7'h6c,
+    ADDR_MATRICES_UPDATED_OUT_DATA_0 = 7'h78,
+    ADDR_MATRICES_UPDATED_OUT_CTRL   = 7'h7c,
+    WRIDLE                           = 2'd0,
+    WRDATA                           = 2'd1,
+    WRRESP                           = 2'd2,
+    WRRESET                          = 2'd3,
+    RDIDLE                           = 2'd0,
+    RDDATA                           = 2'd1,
+    RDRESET                          = 2'd2,
     ADDR_BITS                = 7;
 
 //------------------------Local signal-------------------
@@ -166,10 +187,13 @@ localparam
     reg  [63:0]                   int_B1_input = 'b0;
     reg  [63:0]                   int_B2_input = 'b0;
     reg  [63:0]                   int_C_output = 'b0;
+    reg  [0:0]                    int_copy_mats_flag = 'b0;
     reg  [31:0]                   int_A_rows = 'b0;
     reg  [31:0]                   int_B1_rows = 'b0;
     reg  [31:0]                   int_B1_columns = 'b0;
     reg  [31:0]                   int_B2_columns = 'b0;
+    reg  [0:0]                    int_copy_flag_out = 'b0;
+    reg  [0:0]                    int_matrices_updated_out = 'b0;
 
 //------------------------Instantiation------------------
 
@@ -304,6 +328,9 @@ always @(posedge ACLK) begin
                 ADDR_C_OUTPUT_DATA_1: begin
                     rdata <= int_C_output[63:32];
                 end
+                ADDR_COPY_MATS_FLAG_DATA_0: begin
+                    rdata <= int_copy_mats_flag[0:0];
+                end
                 ADDR_A_ROWS_DATA_0: begin
                     rdata <= int_A_rows[31:0];
                 end
@@ -316,6 +343,12 @@ always @(posedge ACLK) begin
                 ADDR_B2_COLUMNS_DATA_0: begin
                     rdata <= int_B2_columns[31:0];
                 end
+                ADDR_COPY_FLAG_OUT_DATA_0: begin
+                    rdata <= int_copy_flag_out[0:0];
+                end
+                ADDR_MATRICES_UPDATED_OUT_DATA_0: begin
+                    rdata <= int_matrices_updated_out[0:0];
+                end
             endcase
         end
     end
@@ -323,19 +356,20 @@ end
 
 
 //------------------------Register logic-----------------
-assign interrupt     = int_interrupt;
-assign ap_start      = int_ap_start;
-assign task_ap_done  = (ap_done && !auto_restart_status) || auto_restart_done;
-assign task_ap_ready = ap_ready && !int_auto_restart;
-assign ap_continue   = int_ap_continue || auto_restart_status;
-assign A_input       = int_A_input;
-assign B1_input      = int_B1_input;
-assign B2_input      = int_B2_input;
-assign C_output      = int_C_output;
-assign A_rows        = int_A_rows;
-assign B1_rows       = int_B1_rows;
-assign B1_columns    = int_B1_columns;
-assign B2_columns    = int_B2_columns;
+assign interrupt      = int_interrupt;
+assign ap_start       = int_ap_start;
+assign task_ap_done   = (ap_done && !auto_restart_status) || auto_restart_done;
+assign task_ap_ready  = ap_ready && !int_auto_restart;
+assign ap_continue    = int_ap_continue || auto_restart_status;
+assign A_input        = int_A_input;
+assign B1_input       = int_B1_input;
+assign B2_input       = int_B2_input;
+assign C_output       = int_C_output;
+assign copy_mats_flag = int_copy_mats_flag;
+assign A_rows         = int_A_rows;
+assign B1_rows        = int_B1_rows;
+assign B1_columns     = int_B1_columns;
+assign B2_columns     = int_B2_columns;
 // int_interrupt
 always @(posedge ACLK) begin
     if (ARESET)
@@ -569,6 +603,16 @@ always @(posedge ACLK) begin
     end
 end
 
+// int_copy_mats_flag[0:0]
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_copy_mats_flag[0:0] <= 0;
+    else if (ACLK_EN) begin
+        if (w_hs && waddr == ADDR_COPY_MATS_FLAG_DATA_0)
+            int_copy_mats_flag[0:0] <= (WDATA[31:0] & wmask) | (int_copy_mats_flag[0:0] & ~wmask);
+    end
+end
+
 // int_A_rows[31:0]
 always @(posedge ACLK) begin
     if (ARESET)
@@ -606,6 +650,26 @@ always @(posedge ACLK) begin
     else if (ACLK_EN) begin
         if (w_hs && waddr == ADDR_B2_COLUMNS_DATA_0)
             int_B2_columns[31:0] <= (WDATA[31:0] & wmask) | (int_B2_columns[31:0] & ~wmask);
+    end
+end
+
+// int_copy_flag_out
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_copy_flag_out <= 0;
+    else if (ACLK_EN) begin
+        if (ap_done)
+            int_copy_flag_out <= copy_flag_out;
+    end
+end
+
+// int_matrices_updated_out
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_matrices_updated_out <= 0;
+    else if (ACLK_EN) begin
+        if (ap_done)
+            int_matrices_updated_out <= matrices_updated_out;
     end
 end
 

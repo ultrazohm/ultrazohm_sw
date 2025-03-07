@@ -50,12 +50,19 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
+    // update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+
+    Global_Data.av.theta_elec=uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_D5);
+
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+
+    	Global_Data.av.theta_elec2=uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_D5);
+
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

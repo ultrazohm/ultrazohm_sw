@@ -79,6 +79,7 @@ typedef struct _actualValues_ {
 	float U_d;
 	float U_q;
 	float theta_elec;
+	float theta_elec2;
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;

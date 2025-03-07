@@ -2913,7 +2913,7 @@
                         "native_ports": [
                             {
                                 "name": "probe0",
-                                "connectedBus": "Dig_12_Ch5",
+                                "connectedBus": "Dig_13_Ch5",
                                 "protocol": "PROBE",
                                 "port_maps": [
                                     {
@@ -2929,7 +2929,7 @@
                             },
                             {
                                 "name": "probe1",
-                                "connectedBus": "Dig_13_Ch5",
+                                "connectedBus": "Dig_12_Ch5",
                                 "protocol": "PROBE",
                                 "port_maps": [
                                     {
@@ -2945,7 +2945,7 @@
                             },
                             {
                                 "name": "probe2",
-                                "connectedBus": "Dig_11_Ch5",
+                                "connectedBus": "Dig_14_Ch5",
                                 "protocol": "PROBE",
                                 "port_maps": [
                                     {
@@ -4779,6 +4779,106 @@
                                     {
                                         "name": "zusys_i/uz_system/Interrupt/vio_0_probe_out0",
                                         "isBus": false
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "ILA_V3",
+                        "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/ila_lib",
+                        "spec": "labtools_ila_v6",
+                        "ipName": "ila",
+                        "core_location": {
+                            "user_chain": 1,
+                            "slave_index": 11,
+                            "bscan_switch_index": 0
+                        },
+                        "uuid": "A38652B937445ED098C0EBAA4609A85C",
+                        "pins": [
+                            {
+                                "name": "probe0",
+                                "id": 76,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": false,
+                                "leftIndex": 0,
+                                "rightIndex": 0,
+                                "portIndex": 0,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/probe0_1",
+                                        "isBus": false
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe1",
+                                "id": 77,
+                                "type": "DATA_TRIGGER",
+                                "direction": "IN",
+                                "isVector": true,
+                                "leftIndex": 0,
+                                "rightIndex": 5,
+                                "portIndex": 1,
+                                "nets": [
+                                    {
+                                        "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/probe1_1",
+                                        "isBus": true,
+                                        "subnets": [
+                                            {
+                                                "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/probe1_1[5]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/probe1_1[4]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/probe1_1[3]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/probe1_1[2]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/probe1_1[1]"
+                                            },
+                                            {
+                                                "name": "zusys_i/uz_user/uz_inverter_adapter/system_ila_0/U0/probe1_1[0]"
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ],
+                        "native_ports": [
+                            {
+                                "name": "probe0",
+                                "connectedBus": "uz_d_inverter_adapter_0_PWM_EN",
+                                "protocol": "PROBE",
+                                "port_maps": [
+                                    {
+                                        "logical_port": "probe0",
+                                        "physical_pin": {
+                                            "id": 76,
+                                            "name": "probe0",
+                                            "leftBit": 0,
+                                            "width": 1
+                                        }
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "probe1",
+                                "connectedBus": "Gates",
+                                "protocol": "PROBE",
+                                "port_maps": [
+                                    {
+                                        "logical_port": "probe1",
+                                        "physical_pin": {
+                                            "id": 77,
+                                            "name": "probe1",
+                                            "leftBit": 0,
+                                            "width": 6
+                                        }
                                     }
                                 ]
                             }

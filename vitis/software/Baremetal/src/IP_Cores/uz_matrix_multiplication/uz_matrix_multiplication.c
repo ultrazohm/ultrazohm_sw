@@ -13,6 +13,7 @@ struct uz_Matrix_Multi_t {
 	uz_matrix_t* B1_matrix;
 	uz_matrix_t* B2_matrix;
 	uz_matrix_t* C_out_matrix;
+	bool copy_mats_flag;
 };
 
 static uint32_t instance_counter = 0U;
@@ -59,6 +60,19 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz
 	uz_matrix_multiplication_hw_set_B2_matrix(self->config.base_address, self->B2_matrix->data);
 	uz_matrix_multiplication_hw_set_B2_columns(self->config.base_address, self->B2_matrix->columns);
 	uz_matrix_multiplication_hw_set_C_out_matrix(self->config.base_address, self->C_out_matrix->data);
+	self->copy_mats_flag = true;
+	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, self->copy_mats_flag);
+	uz_matrix_multiplication_hw_set_start(self->config.base_address, true);
+	while(1) {
+		bool copy_flag_out = uz_matrix_multiplication_hw_get_copy_flag_out(self->config.base_address);
+		bool matrices_updated_out = uz_matrix_multiplication_hw_get_matrices_updated_out(self->config.base_address);
+				if(matrices_updated_out && copy_flag_out) {
+					break;
+				}
+	}
+//	self->copy_mats_flag = false;
+//	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, false);
+	//uz_matrix_multiplication_hw_set_start(self->config.base_address, true);
 	return(self);
 }
 
@@ -88,6 +102,29 @@ void uz_Matrix_Multi_continue_calculation(uz_Matrix_Multi_t* self) {
 void uz_Matrix_Multi_set_auto_restart(uz_Matrix_Multi_t* self, bool auto_restart) {
 	uz_assert_not_NULL(self);
 	uz_matrix_multiplication_hw_set_auto_restart(self->config.base_address, auto_restart);
+}
+
+void uz_Matrix_Multi_set_copy_mats_flag(uz_Matrix_Multi_t* self, bool copy_mats_flag) {
+	uz_assert_not_NULL(self);
+	self->copy_mats_flag = copy_mats_flag;
+	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, self->copy_mats_flag);
+}
+
+bool uz_Matrix_Multi_get_copy_mats_flag(uz_Matrix_Multi_t* self) {
+	uz_assert_not_NULL(self);
+	bool copy_mats_flag = uz_matrix_multiplication_hw_get_copy_flag_out(self->config.base_address);
+	return(copy_mats_flag);
+}
+
+bool uz_Matrix_Multi_get_copy_flag_out(uz_Matrix_Multi_t* self) {
+	uz_assert_not_NULL(self);
+	bool copy_flag_out = uz_matrix_multiplication_hw_get_copy_flag_out(self->config.base_address);
+	return(copy_flag_out);
+}
+bool uz_Matrix_Multi_get_matrices_updated_out(uz_Matrix_Multi_t* self) {
+	uz_assert_not_NULL(self);
+	bool matrices_updated_out = uz_matrix_multiplication_hw_get_matrices_updated_out(self->config.base_address);
+	return(matrices_updated_out);
 }
 
 #endif

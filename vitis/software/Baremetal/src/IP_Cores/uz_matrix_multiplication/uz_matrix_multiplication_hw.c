@@ -63,7 +63,6 @@ void uz_matrix_multiplication_hw_set_start(uint32_t base_address, bool flag) {
 		uint32_t status = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL) & 0x80);
 		uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, (status | 0x01U));
 	} else {
-		uint32_t status = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL) & 0x80);
 		uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, 0x00U);
 	}
 
@@ -88,6 +87,29 @@ void uz_matrix_multiplication_hw_set_continue(uint32_t base_address) {
 
 }
 
+void uz_matrix_multiplication_hw_set_copy_mats_flag(uint32_t base_address, bool copy_mats_flag) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_MATS_FLAG_DATA, copy_mats_flag);
+}
+
+bool uz_matrix_multiplication_hw_get_copy_mats_flag(uint32_t base_address) {
+	uz_assert_not_zero_uint32(base_address);
+	bool copy_mats_flag = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_MATS_FLAG_DATA));
+	return(copy_mats_flag);
+}
+
+bool uz_matrix_multiplication_hw_get_copy_flag_out(uint32_t base_address) {
+	uz_assert_not_zero_uint32(base_address);
+	bool copy_flag_out = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_FLAG_OUT_DATA));
+	return(copy_flag_out);
+}
+
+bool uz_matrix_multiplication_hw_get_matrices_updated_out(uint32_t base_address) {
+	uz_assert_not_zero_uint32(base_address);
+	bool matrices_updated_out = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_MATRICES_UPDATED_OUT_DATA));
+	return(matrices_updated_out);
+}
+
 void uz_matrix_multiplication_hw_set_auto_restart(uint32_t base_address, bool auto_restart) {
 	uz_assert_not_zero_uint32(base_address);
 	if (auto_restart) {
@@ -95,6 +117,4 @@ void uz_matrix_multiplication_hw_set_auto_restart(uint32_t base_address, bool au
 	} else {
 		uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, 0x0U);
 	}
-
-
 }

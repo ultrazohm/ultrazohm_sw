@@ -54,6 +54,7 @@ static void ReadAllADC();
 bool continue_calculation = false;
 bool is_done = false;
 bool is_idle=  false;
+uint32_t test = 0U;
 bool PS_calculation = false;
 void ISR_Control(void *data)
 {
@@ -87,14 +88,20 @@ void ISR_Control(void *data)
     if (current_state==control_state)
     {
     	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);
+    	//uz_Matrix_Multi_set_auto_restart(Global_Data.objects.matrix_instance, true);
     	while(1) {
     		is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
     		if (is_done == true) {
-    			uz_Matrix_Multi_set_auto_restart(Global_Data.objects.matrix_instance, true);
+    			uz_Matrix_Multi_continue_calculation(Global_Data.objects.matrix_instance);
     			break;
 
     		}
     	}
+        if(continue_calculation) {
+            		//uz_Matrix_Multi_set_copy_mats_flag(Global_Data.objects.matrix_instance, false);
+            		//uz_Matrix_Multi_continue_calculation(Global_Data.objects.matrix_instance);
+           }
+    	//test = uz_Matrix_Multi_get_copy_flag_out(Global_Data.objects.matrix_instance);
     	if (PS_calculation) {
    	        for (uint32_t i = 0; i < 20U; i++) {
    	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_20n,A_matrix[i],0U,i);
@@ -105,7 +112,6 @@ void ISR_Control(void *data)
    	     C_PS_matrix[1] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,1U);
    	     C_PS_matrix[2] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,2U);
    	     C_PS_matrix[3] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,3U);
-
     	}
 
     }

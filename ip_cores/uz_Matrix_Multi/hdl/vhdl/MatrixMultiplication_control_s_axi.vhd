@@ -47,7 +47,6 @@ port (
     ap_start              :out  STD_LOGIC;
     ap_done               :in   STD_LOGIC;
     ap_ready              :in   STD_LOGIC;
-    ap_continue           :out  STD_LOGIC;
     ap_idle               :in   STD_LOGIC
 );
 end entity MatrixMultiplication_control_s_axi;
@@ -55,10 +54,9 @@ end entity MatrixMultiplication_control_s_axi;
 -- ------------------------Address Info-------------------
 -- 0x00 : Control signals
 --        bit 0  - ap_start (Read/Write/COH)
---        bit 1  - ap_done (Read)
+--        bit 1  - ap_done (Read/COR)
 --        bit 2  - ap_idle (Read)
 --        bit 3  - ap_ready (Read/COR)
---        bit 4  - ap_continue (Read/Write/SC)
 --        bit 7  - auto_restart (Read/Write)
 --        bit 9  - interrupt (Read)
 --        others - reserved
@@ -169,7 +167,6 @@ architecture behave of MatrixMultiplication_control_s_axi is
     signal RVALID_t            : STD_LOGIC;
     -- internal registers
     signal int_ap_idle         : STD_LOGIC := '0';
-    signal int_ap_continue     : STD_LOGIC;
     signal int_ap_ready        : STD_LOGIC := '0';
     signal task_ap_ready       : STD_LOGIC;
     signal int_ap_done         : STD_LOGIC := '0';
@@ -179,7 +176,7 @@ architecture behave of MatrixMultiplication_control_s_axi is
     signal int_interrupt       : STD_LOGIC := '0';
     signal int_auto_restart    : STD_LOGIC := '0';
     signal auto_restart_status : STD_LOGIC := '0';
-    signal auto_restart_done   : STD_LOGIC := '0';
+    signal auto_restart_done   : STD_LOGIC;
     signal int_gie             : STD_LOGIC := '0';
     signal int_ier             : UNSIGNED(1 downto 0) := (others => '0');
     signal int_isr             : UNSIGNED(1 downto 0) := (others => '0');
@@ -312,7 +309,6 @@ begin
                     when ADDR_AP_CTRL =>
                         rdata_data(9) <= int_interrupt;
                         rdata_data(7) <= int_auto_restart;
-                        rdata_data(4) <= int_ap_continue;
                         rdata_data(3) <= int_ap_ready;
                         rdata_data(2) <= int_ap_idle;
                         rdata_data(1) <= int_task_ap_done;
@@ -366,7 +362,7 @@ begin
     ap_start             <= int_ap_start;
     task_ap_done         <= (ap_done and not auto_restart_status) or auto_restart_done;
     task_ap_ready        <= ap_ready and not int_auto_restart;
-    ap_continue          <= int_ap_continue or auto_restart_status;
+    auto_restart_done    <= auto_restart_status and (ap_idle and not int_ap_idle);
     A_input              <= STD_LOGIC_VECTOR(int_A_input);
     B1_input             <= STD_LOGIC_VECTOR(int_B1_input);
     B2_input             <= STD_LOGIC_VECTOR(int_B2_input);
@@ -426,10 +422,10 @@ begin
             if (ARESET = '1') then
                 int_task_ap_done <= '0';
             elsif (ACLK_EN = '1') then
-                if (int_ap_continue = '1') then
-                    int_task_ap_done <= '0';
-                elsif (task_ap_done = '1') then
+                if (task_ap_done = '1') then
                     int_task_ap_done <= '1';
+                elsif (ar_hs = '1' and raddr = ADDR_AP_CTRL) then
+                    int_task_ap_done <= '0'; -- clear on read
                 end if;
             end if;
         end if;
@@ -467,21 +463,6 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ARESET = '1') then
-                int_ap_continue <= '0';
-            elsif (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_AP_CTRL and WSTRB(0) = '1' and WDATA(4) = '1') then
-                    int_ap_continue <= '1';
-                else
-                    int_ap_continue <= '0'; -- self clear
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
                 int_auto_restart <= '0';
             elsif (ACLK_EN = '1') then
                 if (w_hs = '1' and waddr = ADDR_AP_CTRL and WSTRB(0) = '1') then
@@ -501,21 +482,6 @@ begin
                     auto_restart_status <= '1';
                 elsif (ap_idle = '1') then
                     auto_restart_status <= '0';
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ARESET = '1') then
-                auto_restart_done <= '0';
-            elsif (ACLK_EN = '1') then
-                if (auto_restart_status = '1' and (ap_idle = '1' and int_ap_idle = '0')) then
-                    auto_restart_done <= '1';
-                elsif (int_ap_continue = '1') then
-                    auto_restart_done <= '0';
                 end if;
             end if;
         end if;

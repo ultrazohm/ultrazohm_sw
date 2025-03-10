@@ -44,16 +44,14 @@ module MatrixMultiplication_control_s_axi
     output wire                          ap_start,
     input  wire                          ap_done,
     input  wire                          ap_ready,
-    output wire                          ap_continue,
     input  wire                          ap_idle
 );
 //------------------------Address Info-------------------
 // 0x00 : Control signals
 //        bit 0  - ap_start (Read/Write/COH)
-//        bit 1  - ap_done (Read)
+//        bit 1  - ap_done (Read/COR)
 //        bit 2  - ap_idle (Read)
 //        bit 3  - ap_ready (Read/COR)
-//        bit 4  - ap_continue (Read/Write/SC)
 //        bit 7  - auto_restart (Read/Write)
 //        bit 9  - interrupt (Read)
 //        others - reserved
@@ -169,7 +167,6 @@ localparam
     wire [ADDR_BITS-1:0]          raddr;
     // internal registers
     reg                           int_ap_idle;
-    reg                           int_ap_continue;
     reg                           int_ap_ready = 1'b0;
     wire                          task_ap_ready;
     reg                           int_ap_done = 1'b0;
@@ -179,7 +176,7 @@ localparam
     reg                           int_interrupt = 1'b0;
     reg                           int_auto_restart = 1'b0;
     reg                           auto_restart_status = 1'b0;
-    reg                           auto_restart_done = 1'b0;
+    wire                          auto_restart_done;
     reg                           int_gie = 1'b0;
     reg  [1:0]                    int_ier = 2'b0;
     reg  [1:0]                    int_isr = 2'b0;
@@ -291,7 +288,6 @@ always @(posedge ACLK) begin
                     rdata[1] <= int_task_ap_done;
                     rdata[2] <= int_ap_idle;
                     rdata[3] <= int_ap_ready;
-                    rdata[4] <= int_ap_continue;
                     rdata[7] <= int_auto_restart;
                     rdata[9] <= int_interrupt;
                 end
@@ -356,20 +352,20 @@ end
 
 
 //------------------------Register logic-----------------
-assign interrupt      = int_interrupt;
-assign ap_start       = int_ap_start;
-assign task_ap_done   = (ap_done && !auto_restart_status) || auto_restart_done;
-assign task_ap_ready  = ap_ready && !int_auto_restart;
-assign ap_continue    = int_ap_continue || auto_restart_status;
-assign A_input        = int_A_input;
-assign B1_input       = int_B1_input;
-assign B2_input       = int_B2_input;
-assign C_output       = int_C_output;
-assign copy_mats_flag = int_copy_mats_flag;
-assign A_rows         = int_A_rows;
-assign B1_rows        = int_B1_rows;
-assign B1_columns     = int_B1_columns;
-assign B2_columns     = int_B2_columns;
+assign interrupt         = int_interrupt;
+assign ap_start          = int_ap_start;
+assign task_ap_done      = (ap_done && !auto_restart_status) || auto_restart_done;
+assign task_ap_ready     = ap_ready && !int_auto_restart;
+assign auto_restart_done = auto_restart_status && (ap_idle && !int_ap_idle);
+assign A_input           = int_A_input;
+assign B1_input          = int_B1_input;
+assign B2_input          = int_B2_input;
+assign C_output          = int_C_output;
+assign copy_mats_flag    = int_copy_mats_flag;
+assign A_rows            = int_A_rows;
+assign B1_rows           = int_B1_rows;
+assign B1_columns        = int_B1_columns;
+assign B2_columns        = int_B2_columns;
 // int_interrupt
 always @(posedge ACLK) begin
     if (ARESET)
@@ -408,7 +404,10 @@ always @(posedge ACLK) begin
     if (ARESET)
         int_task_ap_done <= 1'b0;
     else if (ACLK_EN) begin
-            int_task_ap_done <= task_ap_done && !int_ap_continue;
+        if (task_ap_done)
+            int_task_ap_done <= 1'b1;
+        else if (ar_hs && raddr == ADDR_AP_CTRL)
+            int_task_ap_done <= 1'b0; // clear on read
     end
 end
 
@@ -433,18 +432,6 @@ always @(posedge ACLK) begin
     end
 end
 
-// int_ap_continue
-always @(posedge ACLK) begin
-    if (ARESET)
-        int_ap_continue <= 1'b0;
-    else if (ACLK_EN) begin
-        if (w_hs && waddr == ADDR_AP_CTRL && WSTRB[0] && WDATA[4])
-            int_ap_continue <= 1'b1;
-        else
-            int_ap_continue <= 1'b0; // self clear
-    end
-end
-
 // int_auto_restart
 always @(posedge ACLK) begin
     if (ARESET)
@@ -464,18 +451,6 @@ always @(posedge ACLK) begin
             auto_restart_status <= 1'b1;
         else if (ap_idle)
             auto_restart_status <= 1'b0;
-    end
-end
-
-// auto_restart_done
-always @(posedge ACLK) begin
-    if (ARESET)
-        auto_restart_done <= 1'b0;
-    else if (ACLK_EN) begin
-        if (auto_restart_status && (ap_idle && !int_ap_idle))
-            auto_restart_done <= 1'b1;
-        else if (int_ap_continue)
-            auto_restart_done <= 1'b0;
     end
 end
 

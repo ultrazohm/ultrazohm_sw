@@ -60,16 +60,6 @@ u32 XMatrixmultiplication_IsReady(XMatrixmultiplication *InstancePtr) {
     return !(Data & 0x1);
 }
 
-void XMatrixmultiplication_Continue(XMatrixmultiplication *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertVoid(InstancePtr != NULL);
-    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL) & 0x80;
-    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, Data | 0x10);
-}
-
 void XMatrixmultiplication_EnableAutoRestart(XMatrixmultiplication *InstancePtr) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);

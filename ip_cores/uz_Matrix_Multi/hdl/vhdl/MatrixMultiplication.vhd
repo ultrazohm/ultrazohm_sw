@@ -96,7 +96,7 @@ end;
 architecture behav of MatrixMultiplication is 
     attribute CORE_GENERATION_INFO : STRING;
     attribute CORE_GENERATION_INFO of behav : architecture is
-    "MatrixMultiplication_MatrixMultiplication,hls_ip_2022_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu9eg-ffvc900-1-e,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=7.300000,HLS_SYN_LAT=-1,HLS_SYN_TPT=none,HLS_SYN_MEM=11,HLS_SYN_DSP=0,HLS_SYN_FF=3712,HLS_SYN_LUT=6641,HLS_VERSION=2022_2}";
+    "MatrixMultiplication_MatrixMultiplication,hls_ip_2022_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu9eg-ffvc900-1-e,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=7.300000,HLS_SYN_LAT=-1,HLS_SYN_TPT=none,HLS_SYN_MEM=11,HLS_SYN_DSP=0,HLS_SYN_FF=3711,HLS_SYN_LUT=6630,HLS_VERSION=2022_2}";
     constant ap_const_logic_1 : STD_LOGIC := '1';
     constant ap_const_logic_0 : STD_LOGIC := '0';
     constant ap_ST_fsm_state1 : STD_LOGIC_VECTOR (301 downto 0) := "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001";
@@ -451,8 +451,6 @@ attribute shreg_extract of ap_rst_reg_1 : signal is "no";
 attribute shreg_extract of ap_rst_n_inv : signal is "no";
     signal ap_start : STD_LOGIC;
     signal ap_done : STD_LOGIC;
-    signal ap_continue : STD_LOGIC;
-    signal ap_done_reg : STD_LOGIC := '0';
     signal ap_idle : STD_LOGIC;
     signal ap_CS_fsm : STD_LOGIC_VECTOR (301 downto 0) := "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001";
     attribute fsm_encoding : string;
@@ -871,11 +869,8 @@ attribute shreg_extract of ap_rst_n_inv : signal is "no";
     signal ap_CS_fsm_state231 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state231 : signal is "none";
     signal grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg : STD_LOGIC := '0';
-    signal ap_block_state1_ignore_call58 : BOOLEAN;
     signal grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg : STD_LOGIC := '0';
-    signal ap_block_state1_ignore_call59 : BOOLEAN;
     signal grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg : STD_LOGIC := '0';
-    signal ap_block_state1_ignore_call60 : BOOLEAN;
     signal grp_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1_fu_376_ap_start_reg : STD_LOGIC := '0';
     signal ap_CS_fsm_state72 : STD_LOGIC;
     attribute fsm_encoding of ap_CS_fsm_state72 : signal is "none";
@@ -921,7 +916,6 @@ attribute shreg_extract of ap_rst_n_inv : signal is "no";
     signal C2_0_5_fu_831_p3 : STD_LOGIC_VECTOR (31 downto 0);
     signal C2_0_4_fu_222 : STD_LOGIC_VECTOR (31 downto 0);
     signal C2_0_fu_823_p3 : STD_LOGIC_VECTOR (31 downto 0);
-    signal ap_block_state1 : BOOLEAN;
     signal matrices_updated_out_preg : STD_LOGIC := '0';
     signal copy_flag_out_preg : STD_LOGIC := '0';
     signal trunc_ln4_4_fu_504_p0 : STD_LOGIC_VECTOR (31 downto 0);
@@ -1939,7 +1933,6 @@ attribute shreg_extract of ap_rst_n_inv : signal is "no";
         interrupt : OUT STD_LOGIC;
         ap_ready : IN STD_LOGIC;
         ap_done : IN STD_LOGIC;
-        ap_continue : OUT STD_LOGIC;
         ap_idle : IN STD_LOGIC );
     end component;
 
@@ -2571,7 +2564,6 @@ begin
         interrupt => interrupt,
         ap_ready => ap_ready,
         ap_done => ap_done,
-        ap_continue => ap_continue,
         ap_idle => ap_idle);
 
     arrays_m_axi_U : component MatrixMultiplication_arrays_m_axi
@@ -2800,22 +2792,6 @@ begin
     end process;
 
 
-    ap_done_reg_assign_proc : process(ap_clk)
-    begin
-        if (ap_clk'event and ap_clk =  '1') then
-            if (ap_rst_n_inv = '1') then
-                ap_done_reg <= ap_const_logic_0;
-            else
-                if ((ap_continue = ap_const_logic_1)) then 
-                    ap_done_reg <= ap_const_logic_0;
-                elsif (((ap_const_logic_1 = ap_CS_fsm_state302) and (arrays_BVALID = ap_const_logic_1))) then 
-                    ap_done_reg <= ap_const_logic_1;
-                end if; 
-            end if;
-        end if;
-    end process;
-
-
     copy_flag_out_preg_assign_proc : process(ap_clk)
     begin
         if (ap_clk'event and ap_clk =  '1') then
@@ -2854,7 +2830,7 @@ begin
             if (ap_rst_n_inv = '1') then
                 grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg <= ap_const_logic_0;
             else
-                if ((not(((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0))) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
+                if (((ap_start = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
                     grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg <= ap_const_logic_1;
                 elsif ((grp_MatrixMultiplication_Pipeline_1_fu_356_ap_ready = ap_const_logic_1)) then 
                     grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg <= ap_const_logic_0;
@@ -2870,7 +2846,7 @@ begin
             if (ap_rst_n_inv = '1') then
                 grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg <= ap_const_logic_0;
             else
-                if ((not(((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0))) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
+                if (((ap_start = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
                     grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg <= ap_const_logic_1;
                 elsif ((grp_MatrixMultiplication_Pipeline_2_fu_362_ap_ready = ap_const_logic_1)) then 
                     grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg <= ap_const_logic_0;
@@ -2886,7 +2862,7 @@ begin
             if (ap_rst_n_inv = '1') then
                 grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg <= ap_const_logic_0;
             else
-                if ((not(((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0))) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
+                if (((ap_start = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
                     grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg <= ap_const_logic_1;
                 elsif ((grp_MatrixMultiplication_Pipeline_3_fu_368_ap_ready = ap_const_logic_1)) then 
                     grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg <= ap_const_logic_0;
@@ -3048,7 +3024,7 @@ begin
             else
                 if (((copy_mats_flag_read_read_fu_288_p2 = ap_const_lv1_1) and (ap_const_logic_1 = ap_CS_fsm_state217) and (ap_const_boolean_0 = ap_block_state217_on_subcall_done))) then 
                     matrices_updated_out_preg <= ap_const_logic_1;
-                elsif ((not(((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0))) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
+                elsif (((ap_start = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
                     matrices_updated_out_preg <= ap_const_logic_0;
                 end if; 
             end if;
@@ -3318,11 +3294,11 @@ begin
         end if;
     end process;
 
-    ap_NS_fsm_assign_proc : process (ap_start, ap_done_reg, ap_CS_fsm, ap_CS_fsm_state1, ap_CS_fsm_state2, ap_CS_fsm_state74, ap_CS_fsm_state146, ap_CS_fsm_state232, ap_CS_fsm_state302, ap_CS_fsm_state73, copy_mats_flag_read_read_fu_288_p2, icmp_ln32_reg_1022, ap_CS_fsm_state145, ap_CS_fsm_state218, icmp_ln60_fu_616_p2, cmp8611_reg_1120, ap_CS_fsm_state220, icmp_ln62_fu_671_p2, ap_CS_fsm_state225, icmp_ln71_fu_712_p2, ap_CS_fsm_state227, icmp_ln73_fu_750_p2, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1_fu_376_ap_done, grp_MatrixMultiplication_Pipeline_burst_B1mat_fu_385_ap_done, grp_MatrixMultiplication_Pipeline_7_fu_405_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_66_5_fu_422_ap_done, grp_MatrixMultiplication_Pipeline_10_fu_431_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8_fu_436_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_77_9_fu_448_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_84_10_fu_456_ap_done, arrays_AWREADY, arrays_ARREADY, arrays_BVALID, ap_CS_fsm_state219, ap_CS_fsm_state226, ap_CS_fsm_state217, ap_CS_fsm_state221, ap_CS_fsm_state223, ap_CS_fsm_state228, ap_CS_fsm_state230, ap_CS_fsm_state234, ap_block_state2_on_subcall_done, ap_block_state217_on_subcall_done)
+    ap_NS_fsm_assign_proc : process (ap_start, ap_CS_fsm, ap_CS_fsm_state1, ap_CS_fsm_state2, ap_CS_fsm_state74, ap_CS_fsm_state146, ap_CS_fsm_state232, ap_CS_fsm_state302, ap_CS_fsm_state73, copy_mats_flag_read_read_fu_288_p2, icmp_ln32_reg_1022, ap_CS_fsm_state145, ap_CS_fsm_state218, icmp_ln60_fu_616_p2, cmp8611_reg_1120, ap_CS_fsm_state220, icmp_ln62_fu_671_p2, ap_CS_fsm_state225, icmp_ln71_fu_712_p2, ap_CS_fsm_state227, icmp_ln73_fu_750_p2, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1_fu_376_ap_done, grp_MatrixMultiplication_Pipeline_burst_B1mat_fu_385_ap_done, grp_MatrixMultiplication_Pipeline_7_fu_405_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_63_4_fu_410_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_66_5_fu_422_ap_done, grp_MatrixMultiplication_Pipeline_10_fu_431_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_74_8_fu_436_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_77_9_fu_448_ap_done, grp_MatrixMultiplication_Pipeline_VITIS_LOOP_84_10_fu_456_ap_done, arrays_AWREADY, arrays_ARREADY, arrays_BVALID, ap_CS_fsm_state219, ap_CS_fsm_state226, ap_CS_fsm_state217, ap_CS_fsm_state221, ap_CS_fsm_state223, ap_CS_fsm_state228, ap_CS_fsm_state230, ap_CS_fsm_state234, ap_block_state2_on_subcall_done, ap_block_state217_on_subcall_done)
     begin
         case ap_CS_fsm is
             when ap_ST_fsm_state1 => 
-                if ((not(((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0))) and (ap_const_logic_1 = ap_CS_fsm_state1))) then
+                if (((ap_start = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then
                     ap_NS_fsm <= ap_ST_fsm_state2;
                 else
                     ap_NS_fsm <= ap_ST_fsm_state1;
@@ -4464,9 +4440,9 @@ begin
     ap_ST_fsm_state199_blk <= ap_const_logic_0;
     ap_ST_fsm_state19_blk <= ap_const_logic_0;
 
-    ap_ST_fsm_state1_blk_assign_proc : process(ap_start, ap_done_reg)
+    ap_ST_fsm_state1_blk_assign_proc : process(ap_start)
     begin
-        if (((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0))) then 
+        if ((ap_start = ap_const_logic_0)) then 
             ap_ST_fsm_state1_blk <= ap_const_logic_1;
         else 
             ap_ST_fsm_state1_blk <= ap_const_logic_0;
@@ -4782,30 +4758,6 @@ begin
     ap_ST_fsm_state99_blk <= ap_const_logic_0;
     ap_ST_fsm_state9_blk <= ap_const_logic_0;
 
-    ap_block_state1_assign_proc : process(ap_start, ap_done_reg)
-    begin
-                ap_block_state1 <= ((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0));
-    end process;
-
-
-    ap_block_state1_ignore_call58_assign_proc : process(ap_start, ap_done_reg)
-    begin
-                ap_block_state1_ignore_call58 <= ((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0));
-    end process;
-
-
-    ap_block_state1_ignore_call59_assign_proc : process(ap_start, ap_done_reg)
-    begin
-                ap_block_state1_ignore_call59 <= ((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0));
-    end process;
-
-
-    ap_block_state1_ignore_call60_assign_proc : process(ap_start, ap_done_reg)
-    begin
-                ap_block_state1_ignore_call60 <= ((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0));
-    end process;
-
-
     ap_block_state217_on_subcall_done_assign_proc : process(copy_mats_flag_read_read_fu_288_p2, grp_MatrixMultiplication_Pipeline_burst_B2mat_fu_395_ap_done)
     begin
                 ap_block_state217_on_subcall_done <= ((grp_MatrixMultiplication_Pipeline_burst_B2mat_fu_395_ap_done = ap_const_logic_0) and (copy_mats_flag_read_read_fu_288_p2 = ap_const_lv1_1));
@@ -4818,12 +4770,12 @@ begin
     end process;
 
 
-    ap_done_assign_proc : process(ap_done_reg, ap_CS_fsm_state302, arrays_BVALID)
+    ap_done_assign_proc : process(ap_CS_fsm_state302, arrays_BVALID)
     begin
         if (((ap_const_logic_1 = ap_CS_fsm_state302) and (arrays_BVALID = ap_const_logic_1))) then 
             ap_done <= ap_const_logic_1;
         else 
-            ap_done <= ap_done_reg;
+            ap_done <= ap_const_logic_0;
         end if; 
     end process;
 
@@ -5123,11 +5075,11 @@ begin
     m_4_fu_621_p2 <= std_logic_vector(unsigned(m_fu_202) + unsigned(ap_const_lv32_1));
     m_5_fu_717_p2 <= std_logic_vector(unsigned(m_1_fu_206) + unsigned(ap_const_lv32_1));
 
-    matrices_updated_out_assign_proc : process(ap_start, ap_done_reg, ap_CS_fsm_state1, copy_mats_flag_read_read_fu_288_p2, ap_CS_fsm_state217, ap_block_state217_on_subcall_done, matrices_updated_out_preg)
+    matrices_updated_out_assign_proc : process(ap_start, ap_CS_fsm_state1, copy_mats_flag_read_read_fu_288_p2, ap_CS_fsm_state217, ap_block_state217_on_subcall_done, matrices_updated_out_preg)
     begin
         if (((copy_mats_flag_read_read_fu_288_p2 = ap_const_lv1_1) and (ap_const_logic_1 = ap_CS_fsm_state217) and (ap_const_boolean_0 = ap_block_state217_on_subcall_done))) then 
             matrices_updated_out <= ap_const_logic_1;
-        elsif ((not(((ap_done_reg = ap_const_logic_1) or (ap_start = ap_const_logic_0))) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
+        elsif (((ap_start = ap_const_logic_1) and (ap_const_logic_1 = ap_CS_fsm_state1))) then 
             matrices_updated_out <= ap_const_logic_0;
         else 
             matrices_updated_out <= matrices_updated_out_preg;

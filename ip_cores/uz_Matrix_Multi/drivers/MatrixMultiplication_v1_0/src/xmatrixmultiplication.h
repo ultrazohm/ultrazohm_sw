@@ -85,7 +85,6 @@ void XMatrixmultiplication_Start(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_IsDone(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_IsIdle(XMatrixmultiplication *InstancePtr);
 u32 XMatrixmultiplication_IsReady(XMatrixmultiplication *InstancePtr);
-void XMatrixmultiplication_Continue(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_EnableAutoRestart(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_DisableAutoRestart(XMatrixmultiplication *InstancePtr);
 

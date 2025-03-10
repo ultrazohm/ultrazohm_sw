@@ -748,23 +748,10 @@
             <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
           </spirit:field>
           <spirit:field>
-            <spirit:name>AP_CONTINUE</spirit:name>
-            <spirit:description>Control signal Register for &apos;ap_continue&apos;.</spirit:description>
-            <spirit:bitOffset>4</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
-            <spirit:access>read-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:readAction>modify</spirit:readAction>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-          <spirit:field>
             <spirit:name>RESERVED_1</spirit:name>
             <spirit:description>Reserved.  0s on read.</spirit:description>
-            <spirit:bitOffset>5</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">2</spirit:bitWidth>
+            <spirit:bitOffset>4</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">3</spirit:bitWidth>
             <spirit:access>read-only</spirit:access>
             <spirit:writeValueConstraint>
               <spirit:minimum>0</spirit:minimum>
@@ -1371,7 +1358,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>294c385e</spirit:value>
+            <spirit:value>bdabe18f</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1390,7 +1377,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3fcc3d38</spirit:value>
+            <spirit:value>fafe8526</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1409,7 +1396,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>bf5e69f3</spirit:value>
+            <spirit:value>c6d6b079</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1428,7 +1415,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a3cf3968</spirit:value>
+            <spirit:value>c80fd343</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1442,7 +1429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>acda285c</spirit:value>
+            <spirit:value>16e282b6</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -3165,7 +3152,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/MatrixMultiplication.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_07d6f5af</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_915c80af</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -3564,8 +3551,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Matrixmultiplication</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2113985148</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-03-07T14:48:47Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2113989432</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-03-10T14:12:39Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
@@ -3575,8 +3562,8 @@
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="ab14be2f"/>
       <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="c5f42284"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="dcb21055"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="41766862"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="d90ceff2"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="04bfde7c"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="44b3c12d"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="a168ef4d"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="5e890b58"/>

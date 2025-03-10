@@ -7,7 +7,7 @@
 
 `timescale 1 ns / 1 ps 
 
-(* CORE_GENERATION_INFO="MatrixMultiplication_MatrixMultiplication,hls_ip_2022_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu9eg-ffvc900-1-e,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=7.300000,HLS_SYN_LAT=-1,HLS_SYN_TPT=none,HLS_SYN_MEM=11,HLS_SYN_DSP=0,HLS_SYN_FF=3712,HLS_SYN_LUT=6641,HLS_VERSION=2022_2}" *)
+(* CORE_GENERATION_INFO="MatrixMultiplication_MatrixMultiplication,hls_ip_2022_2,{HLS_INPUT_TYPE=cxx,HLS_INPUT_FLOAT=0,HLS_INPUT_FIXED=0,HLS_INPUT_PART=xczu9eg-ffvc900-1-e,HLS_INPUT_CLOCK=10.000000,HLS_INPUT_ARCH=others,HLS_SYN_CLOCK=7.300000,HLS_SYN_LAT=-1,HLS_SYN_TPT=none,HLS_SYN_MEM=11,HLS_SYN_DSP=0,HLS_SYN_FF=3711,HLS_SYN_LUT=6630,HLS_VERSION=2022_2}" *)
 
 module MatrixMultiplication (
         ap_clk,
@@ -471,8 +471,6 @@ output   interrupt;
 (* shreg_extract = "no" *) reg    ap_rst_n_inv;
 wire    ap_start;
 reg    ap_done;
-wire    ap_continue;
-reg    ap_done_reg;
 reg    ap_idle;
 (* fsm_encoding = "none" *) reg   [301:0] ap_CS_fsm;
 wire    ap_CS_fsm_state1;
@@ -870,11 +868,8 @@ reg   [31:0] p_reg_345;
 wire    ap_CS_fsm_state226;
 wire    ap_CS_fsm_state231;
 reg    grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg;
-reg    ap_block_state1_ignore_call58;
 reg    grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg;
-reg    ap_block_state1_ignore_call59;
 reg    grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg;
-reg    ap_block_state1_ignore_call60;
 reg    grp_MatrixMultiplication_Pipeline_VITIS_LOOP_32_1_fu_376_ap_start_reg;
 wire    ap_CS_fsm_state72;
 reg    grp_MatrixMultiplication_Pipeline_burst_B1mat_fu_385_ap_start_reg;
@@ -911,7 +906,6 @@ reg   [31:0] C2_0_3_fu_218;
 wire   [31:0] C2_0_5_fu_831_p3;
 reg   [31:0] C2_0_4_fu_222;
 wire   [31:0] C2_0_fu_823_p3;
-reg    ap_block_state1;
 reg    matrices_updated_out_preg;
 reg    copy_flag_out_preg;
 wire  signed [31:0] trunc_ln4_4_fu_504_p0;
@@ -1253,7 +1247,6 @@ initial begin
 #0 ap_rst_reg_2 = 1'b1;
 #0 ap_rst_reg_1 = 1'b1;
 #0 ap_rst_n_inv = 1'b1;
-#0 ap_done_reg = 1'b0;
 #0 ap_CS_fsm = 302'd1;
 #0 grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg = 1'b0;
 #0 grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg = 1'b0;
@@ -1804,7 +1797,6 @@ control_s_axi_U(
     .interrupt(interrupt),
     .ap_ready(ap_ready),
     .ap_done(ap_done),
-    .ap_continue(ap_continue),
     .ap_idle(ap_idle)
 );
 
@@ -2028,18 +2020,6 @@ end
 
 always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
-        ap_done_reg <= 1'b0;
-    end else begin
-        if ((ap_continue == 1'b1)) begin
-            ap_done_reg <= 1'b0;
-        end else if (((1'b1 == ap_CS_fsm_state302) & (arrays_BVALID == 1'b1))) begin
-            ap_done_reg <= 1'b1;
-        end
-    end
-end
-
-always @ (posedge ap_clk) begin
-    if (ap_rst_n_inv == 1'b1) begin
         copy_flag_out_preg <= 1'b0;
     end else begin
         if (((copy_mats_flag_read_read_fu_288_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state217) & (1'b0 == ap_block_state217_on_subcall_done))) begin
@@ -2066,7 +2046,7 @@ always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
         grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg <= 1'b0;
     end else begin
-        if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
+        if (((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
             grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg <= 1'b1;
         end else if ((grp_MatrixMultiplication_Pipeline_1_fu_356_ap_ready == 1'b1)) begin
             grp_MatrixMultiplication_Pipeline_1_fu_356_ap_start_reg <= 1'b0;
@@ -2078,7 +2058,7 @@ always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
         grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg <= 1'b0;
     end else begin
-        if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
+        if (((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
             grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg <= 1'b1;
         end else if ((grp_MatrixMultiplication_Pipeline_2_fu_362_ap_ready == 1'b1)) begin
             grp_MatrixMultiplication_Pipeline_2_fu_362_ap_start_reg <= 1'b0;
@@ -2090,7 +2070,7 @@ always @ (posedge ap_clk) begin
     if (ap_rst_n_inv == 1'b1) begin
         grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg <= 1'b0;
     end else begin
-        if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
+        if (((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
             grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg <= 1'b1;
         end else if ((grp_MatrixMultiplication_Pipeline_3_fu_368_ap_ready == 1'b1)) begin
             grp_MatrixMultiplication_Pipeline_3_fu_368_ap_start_reg <= 1'b0;
@@ -2212,7 +2192,7 @@ always @ (posedge ap_clk) begin
     end else begin
         if (((copy_mats_flag_read_read_fu_288_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state217) & (1'b0 == ap_block_state217_on_subcall_done))) begin
             matrices_updated_out_preg <= 1'd1;
-        end else if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
+        end else if (((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
             matrices_updated_out_preg <= 1'd0;
         end
     end
@@ -2878,7 +2858,7 @@ assign ap_ST_fsm_state199_blk = 1'b0;
 assign ap_ST_fsm_state19_blk = 1'b0;
 
 always @ (*) begin
-    if (((ap_done_reg == 1'b1) | (ap_start == 1'b0))) begin
+    if ((ap_start == 1'b0)) begin
         ap_ST_fsm_state1_blk = 1'b1;
     end else begin
         ap_ST_fsm_state1_blk = 1'b0;
@@ -3349,7 +3329,7 @@ always @ (*) begin
     if (((1'b1 == ap_CS_fsm_state302) & (arrays_BVALID == 1'b1))) begin
         ap_done = 1'b1;
     end else begin
-        ap_done = ap_done_reg;
+        ap_done = 1'b0;
     end
 end
 
@@ -3576,7 +3556,7 @@ end
 always @ (*) begin
     if (((copy_mats_flag_read_read_fu_288_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state217) & (1'b0 == ap_block_state217_on_subcall_done))) begin
         matrices_updated_out = 1'd1;
-    end else if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
+    end else if (((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
         matrices_updated_out = 1'd0;
     end else begin
         matrices_updated_out = matrices_updated_out_preg;
@@ -3586,7 +3566,7 @@ end
 always @ (*) begin
     case (ap_CS_fsm)
         ap_ST_fsm_state1 : begin
-            if ((~((ap_done_reg == 1'b1) | (ap_start == 1'b0)) & (1'b1 == ap_CS_fsm_state1))) begin
+            if (((ap_start == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
                 ap_NS_fsm = ap_ST_fsm_state2;
             end else begin
                 ap_NS_fsm = ap_ST_fsm_state1;
@@ -4654,22 +4634,6 @@ assign ap_CS_fsm_state72 = ap_CS_fsm[32'd71];
 assign ap_CS_fsm_state73 = ap_CS_fsm[32'd72];
 
 assign ap_CS_fsm_state74 = ap_CS_fsm[32'd73];
-
-always @ (*) begin
-    ap_block_state1 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
-end
-
-always @ (*) begin
-    ap_block_state1_ignore_call58 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
-end
-
-always @ (*) begin
-    ap_block_state1_ignore_call59 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
-end
-
-always @ (*) begin
-    ap_block_state1_ignore_call60 = ((ap_done_reg == 1'b1) | (ap_start == 1'b0));
-end
 
 always @ (*) begin
     ap_block_state217_on_subcall_done = ((grp_MatrixMultiplication_Pipeline_burst_B2mat_fu_395_ap_done == 1'b0) & (copy_mats_flag_read_read_fu_288_p2 == 1'd1));

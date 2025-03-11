@@ -63,6 +63,7 @@
 #include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "uz/uz_ParameterID_rs/uz_ParameterID_rs.h"
+#include "include/uz_temperature_card_init.h"
 
 //----------------------------------------------------
 // FUNCTIONS

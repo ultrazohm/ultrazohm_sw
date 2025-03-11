@@ -116,6 +116,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] 	= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   		= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]		= &ISR_period_us;
+	js_ch_observable[JSO_avg_temp_right]	= &data->av.average_temp_right;
+	js_ch_observable[JSO_avg_temp_left]		= &data->av.average_temp_left;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

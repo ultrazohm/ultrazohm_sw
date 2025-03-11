@@ -1,7 +1,7 @@
 --Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 ----------------------------------------------------------------------------------
 --Tool Version: Vivado v.2022.2 (win64) Build 3671981 Fri Oct 14 05:00:03 MDT 2022
---Date        : Wed Mar  5 13:09:30 2025
+--Date        : Thu Mar  6 13:27:54 2025
 --Host        : DESKTOP-URCAD6E running 64-bit major release  (build 9200)
 --Command     : generate_target zusys_wrapper.bd
 --Design      : zusys_wrapper
@@ -85,11 +85,6 @@ entity zusys_wrapper is
     D2_pwm_l1 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_pwm_l2 : out STD_LOGIC_VECTOR ( 0 to 0 );
     D2_pwm_l3 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT : out STD_LOGIC_VECTOR ( 25 downto 0 );
-    D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_00_Ch3 : out STD_LOGIC;
     Dig_00_Ch4 : out STD_LOGIC;
     Dig_01_Ch3 : out STD_LOGIC;
@@ -227,11 +222,6 @@ architecture STRUCTURE of zusys_wrapper is
     A3_OUT_CLK : out STD_LOGIC_VECTOR ( 1 downto 0 );
     A3_OUT_CNV_0 : out STD_LOGIC_VECTOR ( 0 to 0 );
     A3_OUT_CNV_1 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT : out STD_LOGIC_VECTOR ( 25 downto 0 );
-    D3_OUT_26 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_27 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_28 : out STD_LOGIC_VECTOR ( 0 to 0 );
-    D3_OUT_29 : out STD_LOGIC_VECTOR ( 0 to 0 );
     Dig_09_Ch5 : in STD_LOGIC;
     Dig_10_Ch5 : in STD_LOGIC;
     Dig_11_Ch5 : in STD_LOGIC;
@@ -368,11 +358,6 @@ zusys_i: component zusys
       D2_pwm_l1(0) => D2_pwm_l1(0),
       D2_pwm_l2(0) => D2_pwm_l2(0),
       D2_pwm_l3(0) => D2_pwm_l3(0),
-      D3_OUT(25 downto 0) => D3_OUT(25 downto 0),
-      D3_OUT_26(0) => D3_OUT_26(0),
-      D3_OUT_27(0) => D3_OUT_27(0),
-      D3_OUT_28(0) => D3_OUT_28(0),
-      D3_OUT_29(0) => D3_OUT_29(0),
       Dig_00_Ch3 => Dig_00_Ch3,
       Dig_00_Ch4 => Dig_00_Ch4,
       Dig_01_Ch3 => Dig_01_Ch3,

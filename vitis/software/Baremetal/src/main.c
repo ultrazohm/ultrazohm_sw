@@ -38,6 +38,8 @@ DS_Data Global_Data = {
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
 	.av.theta_el_offset_right = 0.43f,
+	.av.average_temp_right = 1.0f,
+	.av.average_temp_left = 0.0f,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
@@ -64,17 +66,17 @@ int main(void)
     const struct uz_parameterID_rc_config_t rc_meas_config = {
       	.abs_id_max_Amps = 4.0f,
       	.abs_iq_max_Amps = 4.0f,
-    	.n_start_rpm = 400.0f,
+    	.n_start_rpm = 800.0f,
     	.n_stop_rpm = 800.0f,
     	.id_steps = 8U,
     	.iq_steps = 8U,
-    	.n_steps = 1U
+    	.n_steps = 0U
       };
 
     struct uz_parameterid_rs_config_t config_rs_meas = {
     	.n_start = 0.0f,
-        .n_end = 1000.0f,
-        .n_steps = 10.0f,
+        .n_end = 800.0f,
+        .n_steps = 8.0f,
         .i_start = -2.0f,
         .i_diff = 4.0f,
         .i_repeats = 10.0f,
@@ -134,6 +136,9 @@ int main(void)
             Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
             Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
             initialization_chain = print_msg;
+            Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
+            uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
+            uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
             break;
 	    case print_msg:
             uz_printf("\r\n\r\n");
@@ -150,6 +155,11 @@ int main(void)
             break;
         case infinite_loop:
             ultrazohm_state_machine_step();
+            // read temperature values from windings
+            uz_TempCard_IF_MeasureTemps_cyclic(Global_Data.objects.temperature_card_d3);
+            Global_Data.av.channel_A_data = uz_TempCard_IF_get_channel_group(Global_Data.objects.temperature_card_d3, 'A');
+            Global_Data.av.average_temp_right = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 3U, 8U);
+            Global_Data.av.average_temp_left = uz_TempCard_IF_average_temperature_for_valid(Global_Data.av.channel_A_data, 9U, 14U);
             break;
         default:
             break;

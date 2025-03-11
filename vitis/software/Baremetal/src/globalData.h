@@ -17,6 +17,7 @@
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "uz/uz_ParameterID_rs/uz_ParameterID_rs.h"
 #include "IP_Cores/uz_IncrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_temperaturecard/uz_temperaturecard.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -115,6 +116,9 @@ typedef struct _actualValues_ {
 	float mean_temp_inv_right;
 	float polepairs_left;
 	float polepairs_right;
+	uz_temperaturecard_OneGroup channel_A_data;
+	float average_temp_right;
+	float average_temp_left;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -167,6 +171,7 @@ typedef struct{
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 	uz_parameterID_rc_t* rc_meas_instance;
 	uz_parameterid_rs_t* rs_meas_instance;
+	uz_temperaturecard_t* temperature_card_d3;
 	}object_pointers_t;
 
 

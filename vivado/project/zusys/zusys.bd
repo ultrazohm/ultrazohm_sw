@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xB945C8BA8DB56FB",
+      "boundary_crc": "0xD2A32704867D93D8",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -473,31 +473,6 @@
         "right": "0"
       },
       "A3_OUT_CNV_1": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D3_OUT": {
-        "direction": "O",
-        "left": "25",
-        "right": "0"
-      },
-      "D3_OUT_26": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D3_OUT_27": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D3_OUT_28": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D3_OUT_29": {
         "direction": "O",
         "left": "0",
         "right": "0"
@@ -11209,19 +11184,6 @@
           "uz_user/Dig_26_Ch4"
         ]
       },
-      "Enable_Gates_CPLD_High_dout": {
-        "ports": [
-          "uz_system/D1_OUT_28",
-          "D3_OUT_28"
-        ]
-      },
-      "Enable_Gates_CPLD_Low_dout": {
-        "ports": [
-          "uz_system/D1_OUT_26",
-          "D3_OUT_26",
-          "D3_OUT_27"
-        ]
-      },
       "Gates_3L_Interrupt_Center": {
         "ports": [
           "uz_digital_adapter/Interrupt_Center",
@@ -11508,22 +11470,10 @@
           "Dig_09_Ch3"
         ]
       },
-      "vio_D2_test_probe_out0": {
-        "ports": [
-          "uz_digital_adapter/D3_OUT",
-          "D3_OUT"
-        ]
-      },
       "xlconcat_0_dout": {
         "ports": [
           "uz_system/D4_OUT",
           "zynq_ultra_ps_e_0/pl_ps_irq0"
-        ]
-      },
-      "xlslice_Enable_Gate_Dout": {
-        "ports": [
-          "uz_system/D1_OUT_29",
-          "D3_OUT_29"
         ]
       },
       "xlslice_Enable_Inverter_Dout": {

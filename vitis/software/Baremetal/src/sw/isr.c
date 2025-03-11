@@ -63,6 +63,8 @@ struct uz_DutyCycle_t dutycyc_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_right = {0.0f};
 struct uz_parameterID_rc_ref_val_t ref_rc_meas;
 float thetal_el_right_unwrapped = 0.0f;
+float average_temp_right = 0.0f;
+float average_temp_left = 0.0f;
 
 
 
@@ -156,6 +158,10 @@ void ISR_Control(void *data)
 		uz_SpeedControl_reset(Global_Data.objects.speed_ctrl_left);
 		Global_Data.rasv.n_ref_left = 0.0f;
 		Global_Data.rasv.n_ref_left_filt = 0.0f;
+		Global_Data.rasv.js_set_n_ref_left = 0.0f;
+		Global_Data.rasv.n_ref_left_filt = 0.0f;
+		Global_Data.rasv.js_set_i_dq_ref_right.d = 0.0f;
+		Global_Data.rasv.js_set_i_dq_ref_right.q = 0.0f;
 		Global_Data.rasv.M_ref_left = 0.0f;
 		Global_Data.rasv.i_dq_ref_left.d = 0.0f;
 		Global_Data.rasv.i_dq_ref_left.q = 0.0f;

@@ -280,17 +280,18 @@ void poll_buttons(void)
     {
         ultrazohm_state.enable_control = uz_GetPushButtonEnableControl();
         ultrazohm_state.enable_system = uz_GetPushButtonEnableSystem();
-    }
-    if (ultrazohm_state.platform_revision > 4U)
-    {
+        if (ultrazohm_state.platform_revision > 4U)
+        {
 
-        ultrazohm_state.stop_flag = uz_GetPushButtonStop();
-    }
-    else
-    {
+            ultrazohm_state.stop_flag = uz_GetPushButtonStop();
+        }
+        else
+        {
 
-        ultrazohm_state.stop_flag = !uz_GetPushButtonStop();
+            ultrazohm_state.stop_flag = !uz_GetPushButtonStop();
+        }
     }
+
 
 #if UZ_USE_EXTERNAL_STOP
     ultrazohm_state.stop_flag = (ultrazohm_state.stop_flag) || (!uz_GetExternalStop());

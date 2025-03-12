@@ -5694,8 +5694,8 @@
           },
           "MatrixMultiplication_0": {
             "vlnv": "xilinx.com:hls:MatrixMultiplication:1.0",
-            "xci_name": "zusys_MatrixMultiplication_0_3",
-            "xci_path": "ip\\zusys_MatrixMultiplication_0_3\\zusys_MatrixMultiplication_0_3.xci",
+            "xci_name": "zusys_MatrixMultiplication_0_4",
+            "xci_path": "ip\\zusys_MatrixMultiplication_0_4\\zusys_MatrixMultiplication_0_4.xci",
             "inst_hier_path": "uz_user/MatrixMultiplication_0",
             "interface_ports": {
               "m_axi_arrays": {

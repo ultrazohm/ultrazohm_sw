@@ -245,10 +245,14 @@ static uz_platform_iomap uzp_iomap_MicroZohmRev01onBreakoutBoardRev01 = {
 		{UZP_GPIOTYPE_I2C, 9},		  // I2CKEY_MZBB_USER
 	}};
 
-static uz_platform uzp;
+static uz_platform uzp={0};
 
+uint32_t uz_platform_get_hw_revision(void){
+	uz_assert(uzp.is_ready);
+	return (uint32_t)uzp.data.hw_revision;
+}
 
-uint32_t uz_platform_init() {
+uint32_t uz_platform_init(uint32_t default_revision) {
 
 	uz_assert_false(uzp.is_ready);
 
@@ -258,12 +262,15 @@ uint32_t uz_platform_init() {
 	//// Create I²C devices: EEPROM
 	uz_iic_initdev(&uzp.eeprom, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_EEPROM);
 
-	int status;
+	
 	// Fetch platform data
-	status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
+	int status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
 	if ( XST_SUCCESS != status ) {
-		uz_printf("APU: Error reading platform EEPROM!\r\n");
-		return(UZ_FAILURE);
+		uz_printf("APU: Error reading platform EEPROM, assuming default configuration as UltraZohm with default revision given by RPU define!\r\n");
+		uzp.data.hw_group = UZP_HWGROUP_UZOHM3;
+		uzp.data.hw_model = 1U;
+		uzp.data.hw_revision = (uint8_t)default_revision;
+		uzp.data.serialdata.hw_externalserial.extserial = 1U;
 	}
 
 	if (

@@ -15,7 +15,8 @@
 //  NB: To use this, increase UZ_IIC_MAX_BUSINSTANCES in uz_iic.c to 2!
 #define UZ_PLATFORM_CARDID	(0U)
 
-uint32_t uz_platform_init();
+uint32_t uz_platform_init(uint32_t default_revision);
+uint32_t uz_platform_get_hw_revision(void);
 
 // GPOs supported by this framework
 enum uz_platform_gpo_id {

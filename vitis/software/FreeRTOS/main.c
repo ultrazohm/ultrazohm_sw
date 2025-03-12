@@ -77,7 +77,8 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
  *---------------------------------------------------------------------------*/
 int main()
 {
-	uz_assert( UZ_SUCCESS == uz_platform_init() );
+	uint32_t default_revision = 4U;
+	uz_assert( UZ_SUCCESS == uz_platform_init(default_revision) );
 
 #if (UZ_PLATFORM_CARDID==1)
  {

@@ -67,18 +67,43 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
 	print_ip("Gateway : ", gw);
 }
 
-//==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  main
- *---------------------------------------------------------------------------*
- * Description:
- *      Starts only the main thread "main_thread()" with priority
- *      "DEFAULT_THREAD_PRIO". Afterwards nothing will happen here.
- *---------------------------------------------------------------------------*/
+
+#include "APU_RPU_shared.h"
+#include "xil_cache.h"
+
+enum init_chain
+{
+	initialization_handshake = 0,
+	initialization_rtos
+};
+enum init_chain initialization_chain = initialization_handshake;
+
+uint32_t apu_version_final = 0U;
+uint32_t rpu_version_final = 0U;
+uint32_t rpu_default_version = 0U;
+
 int main()
 {
-	uint32_t default_revision = 4U;
-	uz_assert( UZ_SUCCESS == uz_platform_init(default_revision) );
+	switch (initialization_chain)
+	{
+	case initialization_handshake:
+		write_apu_version(257U);
+		do
+		{
+			rpu_version_final = read_rpu_version();
+		} while (!(rpu_version_final == 0U));
+		do
+		{
+			rpu_version_final = read_rpu_version();
+		} while ((rpu_version_final == 0U));
+		rpu_default_version = rpu_version_final;
+		uz_assert( UZ_SUCCESS == uz_platform_init(rpu_default_version) );
+		apu_version_final = uz_platform_get_hw_revision();
+		write_apu_version(apu_version_final);
+		do
+		{
+			rpu_version_final = read_rpu_version();
+		} while (!(apu_version_final == rpu_version_final));
 
 #if (UZ_PLATFORM_CARDID==1)
  {
@@ -102,16 +127,20 @@ int main()
 	uz_printf("---\r\n\r\n");
  }
 #endif
+	initialization_chain = initialization_rtos;
 
-	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
-	Initialize_InterruptHandler();
 
-	//Start the main-threat
-	sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
-	                THREAD_STACKSIZE,
-	                DEFAULT_THREAD_PRIO);
-	vTaskStartScheduler();
+	case initialization_rtos:
+		// SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
+		Initialize_InterruptHandler();
 
+		// Start the main-threat
+		sys_thread_new("main_thrd", (void (*)(void *))main_thread, 0,
+					   THREAD_STACKSIZE,
+					   DEFAULT_THREAD_PRIO);
+		vTaskStartScheduler();
+		break;
+	}
 	uz_printf("APU: Error in scheduler");
 
 	return 0;

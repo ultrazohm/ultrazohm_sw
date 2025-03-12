@@ -63,45 +63,46 @@ Please check all MAX_INSTANCE defines, including the amount of PWM instances, if
   #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 
   const uz_PMSM_t pmsm_struct = {
-    .I_max_Ampere = 10.0f,
+    .R_ph_Ohm = 0.570f,
+    .Ld_Henry = 0.002f,
+    .Lq_Henry = 0.002f,
+    .Psi_PM_Vs = 0.040f,
+    .polePairs = 4.0f,
     .J_kg_m_squared = 0.001f,
-    .Ld_Henry = 0.3f,
-    .Lq_Henry = 0.3f,
-    .Psi_PM_Vs = 0.08f,
-    .R_ph_Ohm = 0.3f,
-    .polePairs = 4.0f};
+    .I_max_Ampere = 10.0f,
+  };
 
   // PMSM
   uz_pmsm_model3ph_t *pmsm = NULL;
   const struct uz_pmsm_model3ph_config_t cil_pmsm_comfig = {
     .base_address = XPAR_UZ_USER_UZ_PMSM_MODEL_3PH_DQ_0_BASEADDR,
-    .ip_core_frequency_Hz = 100000000.0f,
+    .ip_core_frequency_Hz = 100000000,
     .pmsm = pmsm_struct,
     .friction_coefficient = 0.001f,
     .coulomb_friction_constant = 0.001f,
     .simulate_mechanical_system = set_fixed_rpm,
-    .switch_pspl = src_PS};
+    .switch_pspl = src_PL};
 
   // Transformation
   uz_pmsm3ph_transformation_t *transformation = NULL;
   struct uz_pmsm3ph_config_t cil_transformation_config = {
     .base_address = XPAR_UZ_USER_UZ_THREEPHASE_VSD_TR_0_BASEADDR,
-    .ip_core_frequency_Hz = 100000000.0f};
+    .ip_core_frequency_Hz = 100000000};
 
   // Inverter
   uz_inverter_3ph_t *inverter = NULL;
   struct uz_inverter_3ph_config_t cil_inverter_config = {
     .base_address = XPAR_UZ_USER_UZ_INVERTER_3PH_0_BASEADDR,
-    .ip_core_frequency_Hz = 100000000.0f,
+    .ip_core_frequency_Hz = 100000000,
     .switch_pspl_abc = false,
     .switch_pspl_gate = false,
-    .udc = 100.0f};
+    .udc = 48.0f};
 
   // PWM (optional, only necessary if default PWM blocks are not used)
   uz_PWM_SS_2L_t *PWM = NULL;
   struct uz_PWM_SS_2L_config_t cil_pwm_config = {
     .base_address= XPAR_UZ_USER_PWM_AND_SS_CONTROL_V_0_BASEADDR,
-    .ip_clk_frequency_Hz=100000000.0f,
+    .ip_clk_frequency_Hz=100000000,
     .Tristate_HB1 = false,
     .Tristate_HB2 = false,
     .Tristate_HB3 = false,
@@ -113,11 +114,11 @@ Please check all MAX_INSTANCE defines, including the amount of PWM instances, if
 
   // FOC (optional)
   const struct uz_PI_Controller_config cil_pi_config = {
-          .Kp = 1250.0f,
-      .Ki = 78250.0f,
-          .samplingTime_sec = 0.0001f,
-          .upper_limit = 100.0f,
-          .lower_limit = -100.0f};
+    .Kp = 6.6f,
+    .Ki = 1660.0f,
+    .samplingTime_sec = 0.0001f,
+    .upper_limit = 100.0f,
+    .lower_limit = -100.0f};
 
   uz_CurrentControl_t *cc_instance = NULL;
   struct uz_CurrentControl_config cil_cc_config = {
@@ -199,3 +200,29 @@ Depending on the used controller, this might not be necessary.
     duty_cycle = uz_Space_Vector_Modulation(out_controller, V_dc_volts, theta_el);                               // create Duty-Cycles
     uz_PWM_SS_2L_set_duty_cycle(PWM, duty_cycle.DutyCycle_A, duty_cycle.DutyCycle_B, duty_cycle.DutyCycle_C);    // write Duty-Cycles to PWM module
     //..
+
+
+To observe the variables in the JavaScope the following snippet can be used in ``javascope.c``.
+
+.. code-block:: c
+  :caption: Changes in ``javascope.c`` (R5)
+  
+  extern uz_3ph_dq_t transformed_currents ;
+  extern uz_3ph_dq_t out_controller ;
+  extern uz_3ph_abc_t transformation_currents_abc;
+  extern float theta_el;
+
+  //..
+
+  int JavaScope_initialize(DS_Data* data)
+  {
+    //..
+    js_ch_observable[JSO_ia] 					= &transformation_currents_abc.a;
+    js_ch_observable[JSO_ib] 					= &transformation_currents_abc.b;
+    js_ch_observable[JSO_ic] 					= &transformation_currents_abc.c;
+    js_ch_observable[JSO_iq] 					= &transformed_currents.q;
+    js_ch_observable[JSO_id] 					= &transformed_currents.d;
+    js_ch_observable[JSO_ud]					= &out_controller.d;
+    js_ch_observable[JSO_uq]					= &out_controller.q;
+    //..
+  }

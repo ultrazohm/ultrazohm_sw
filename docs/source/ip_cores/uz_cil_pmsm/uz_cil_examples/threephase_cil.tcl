@@ -11,7 +11,7 @@ startgroup
 create_bd_cell -type ip -vlnv xilinx.com:ip:uz_pmsm_model_3ph_dq:1.0 uz_user/uz_pmsm_model_3ph_dq_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:uz_threephase_VSD_transformation:1.0 uz_user/uz_threephase_VSD_tr_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:uz_inverter_3ph:1.0 uz_user/uz_inverter_3ph_0
-create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.1 uz_user/PWM_and_SS_control_V_0
+create_bd_cell -type ip -vlnv xilinx.com:ip:PWM_and_SS_control_V4_ip:4.3 uz_user/PWM_and_SS_control_V_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 uz_user/xlconcat_0
 create_bd_cell -type ip -vlnv xilinx.com:ip:uz_rs_flip_flop:1.0 uz_user/uz_rs_flip_flop_0
 endgroup

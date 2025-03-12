@@ -270,7 +270,7 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 		uzp.data.hw_group = UZP_HWGROUP_UZOHM3;
 		uzp.data.hw_model = 1U;
 		uzp.data.hw_revision = (uint8_t)default_revision;
-		uzp.data.serialdata.hw_externalserial.extserial = 1U;
+		uzp.data.serialdata.hw_externalserial.extserial = UZ_PLATFORM_EXTSERIAL_MAX;
 	}
 
 	if (

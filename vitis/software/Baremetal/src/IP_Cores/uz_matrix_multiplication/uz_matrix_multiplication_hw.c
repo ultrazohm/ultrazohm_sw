@@ -80,12 +80,12 @@ bool uz_matrix_multiplication_hw_get_is_idle_output(uint32_t base_address) {
 	return (is_done);
 }
 
-void uz_matrix_multiplication_hw_set_continue(uint32_t base_address) {
-	uz_assert_not_zero_uint32(base_address);
-	uint32_t status = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL) & 0x80);
-	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, (status | 0x10U));
-
-}
+//void uz_matrix_multiplication_hw_set_continue(uint32_t base_address) {
+//	uz_assert_not_zero_uint32(base_address);
+//	uint32_t status = (uz_axi_read_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL) & 0x80);
+//	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL, (status | 0x10U));
+//
+//}
 
 void uz_matrix_multiplication_hw_set_copy_mats_flag(uint32_t base_address, bool copy_mats_flag) {
 	uz_assert_not_zero_uint32(base_address);

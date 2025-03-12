@@ -15,7 +15,7 @@ void uz_matrix_multiplication_hw_set_C_out_matrix(uint32_t base_address, float *
 void uz_matrix_multiplication_hw_set_start(uint32_t base_address, bool flag);
 bool uz_matrix_multiplication_hw_get_is_done_output(uint32_t base_address);
 bool uz_matrix_multiplication_hw_get_is_idle_output(uint32_t base_address);
-void uz_matrix_multiplication_hw_set_continue(uint32_t base_address);
+//void uz_matrix_multiplication_hw_set_continue(uint32_t base_address);
 void uz_matrix_multiplication_hw_set_auto_restart(uint32_t base_address, bool auto_restart);
 void uz_matrix_multiplication_hw_set_copy_mats_flag(uint32_t base_address, bool copy_mats_flag);
 bool uz_matrix_multiplication_hw_get_copy_mats_flag(uint32_t base_address);

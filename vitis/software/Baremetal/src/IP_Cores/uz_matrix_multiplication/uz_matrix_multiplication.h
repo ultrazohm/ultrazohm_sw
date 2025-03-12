@@ -32,7 +32,7 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz
 void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self, bool flag);
 bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self);
 bool uz_Matrix_Multi_get_idle_flag(uz_Matrix_Multi_t* self);
-void uz_Matrix_Multi_continue_calculation(uz_Matrix_Multi_t* self);
+//void uz_Matrix_Multi_continue_calculation(uz_Matrix_Multi_t* self);
 void uz_Matrix_Multi_set_auto_restart(uz_Matrix_Multi_t* self, bool auto_restart);
 void uz_Matrix_Multi_set_copy_mats_flag(uz_Matrix_Multi_t* self, bool copy_mats_flag);
 bool uz_Matrix_Multi_get_copy_mats_flag(uz_Matrix_Multi_t* self);

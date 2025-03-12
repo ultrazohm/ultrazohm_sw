@@ -4,10 +4,9 @@
 // control
 // 0x00 : Control signals
 //        bit 0  - ap_start (Read/Write/COH)
-//        bit 1  - ap_done (Read)
+//        bit 1  - ap_done (Read/COR)
 //        bit 2  - ap_idle (Read)
 //        bit 3  - ap_ready (Read/COR)
-//        bit 4  - ap_continue (Read/Write/SC)
 //        bit 7  - auto_restart (Read/Write)
 //        bit 9  - interrupt (Read)
 //        others - reserved

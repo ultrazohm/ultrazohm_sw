@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Index Version="1" Minor="0">
-	<Repository value="c:/Users/valen/Documents/repos/UZ/ultrazohm_sw/ip_cores">
+	<Repository value="c:/Users/ga92wum/git/uz/sw_cil_merge/ip_cores">
 	</Repository>
 	<IP>
 		<VLNV value="UltraZohm:user:ADC_LTC2311:3.0">
@@ -2081,58 +2081,6 @@
 		</Interfaces>
 	</IP>
 	<IP>
-		<VLNV value="xilinx.com:ip:uz_ninephase_VSD_transformation:1.1">
-		</VLNV>
-		<DisplayName value="uz_ninephase_VSD_transformation">
-		</DisplayName>
-		<Description value="HDL Coder generated IP">
-		</Description>
-		<ProductGuide value="doc/InBitPacking.jpg">
-		</ProductGuide>
-		<CoreRevision value="2112661726">
-		</CoreRevision>
-		<ComponentPath value="uz_ninephase_VSD_transformation/hdlsrc/ipcore/uz_ninephase_VSD_transformation_v1_1/component.xml">
-		</ComponentPath>
-		<Families>
-			<Family name="azynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="kintexu">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="qzynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="virtexuplushbm">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynq">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-			<Family name="zynquplus">
-				<Part status="Production" name="ALL">
-				</Part>
-			</Family>
-		</Families>
-		<Taxonomies>
-			<Taxonomy value="/HDL Coder Generated IP">
-			</Taxonomy>
-		</Taxonomies>
-		<Interfaces>
-			<Interface value="AXI4">
-			</Interface>
-		</Interfaces>
-	</IP>
-	<IP>
 		<VLNV value="xilinx.com:ip:uz_ninephase_VSD_transformation:1.0">
 		</VLNV>
 		<DisplayName value="uz_ninephase_VSD_transformation">
@@ -2141,9 +2089,9 @@
 		</Description>
 		<ProductGuide value="doc/InBitPacking.jpg">
 		</ProductGuide>
-		<CoreRevision value="2112572499">
+		<CoreRevision value="2112729185">
 		</CoreRevision>
-		<ComponentPath value="uz_ninephase_VSD_transformation/ipcore/uz_ninephase_VSD_transformation_v1_0/component.xml">
+		<ComponentPath value="uz_ninephase_VSD_transformation/hdl_proj/ipcore/uz_ninephase_VSD_transformation_v1_0/component.xml">
 		</ComponentPath>
 		<Families>
 			<Family name="azynq">

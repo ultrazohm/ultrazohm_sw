@@ -35,7 +35,7 @@ On newer UltraZohm systems, no external hardware is (going to be) needed, as the
  As of early 2024, the extension board is not publicly available.
  Please get in touch on the :ref:`uzslack` for the current state of this matter and the (already existing) short-term options for early access.
 
-Furthermore, only for Rev04 UltraZohm systems and older versions, the adapter card identification feature depends on the PCB tweak described in ref:`carrier_retrofits_cardid`, which users can apply themselves.
+Furthermore, only for Rev04 UltraZohm systems and older versions, the adapter card identification feature depends on the PCB tweak described in :ref:`carrier_retrofits_cardid`, which users can apply themselves.
 Please note that Rev04 UltraZohm *systems built in 2024 already have been retrofitted* before shipping -- Please get in touch to determine whether the retrofit is needed on your system(s).
 
 Given these dependencies, the UZP is disabled by default and has to be activated manually (cf. below).

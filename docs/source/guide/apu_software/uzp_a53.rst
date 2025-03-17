@@ -4,7 +4,7 @@
 Platform Framework
 ==================
 
-.. warning:: The UltraZohm Platform Framework is currently under development! Additionally, the hardware mentioned, such as the I²C/SSD extension Board, is unavailable.
+.. warning:: The UltraZohm Platform Framework requires UltraZohm revision 5 or revision 4 including the IIC/SSD extension board for the automatic identification of the platform versions. For other systems, the hardware revision is passed by using the ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`). Additionally, identification of adapter cards in A- and D-Slot is only possible for adapter cards that feature an EEPROM. For older adapter cards, the identification is not possible.
 
 Overview
 --------
@@ -14,36 +14,38 @@ In other words, its various functions can route the desired operation to whateve
 This simplifies, e.g., writing to an output pin "RST_PHY" during the bring-up of, in this case, the Ethernet PHY,  which is connected to an IIC or GPIO, depending on the hardware revision.
 It thus loosens the need to precisely specify the underlying platform *during compile time* and thus, eventually, will make the CPU binaries independent of, e.g., the exact revision of the carrier card they are loaded to.
 
-For this and beyond, it adds crucial functionalities in conjunction with the upcoming I²C/SSD Extension Board for Rev04 UltraZohm carrier cards - such as
+For this and beyond, it adds the following functionalities for UltraZohm Rev04 with IIC/SSD Extension Board, UltraZohm Rev05, and newer systems:
 
-* retrieval of
-
- * a platform information dataset containing model, revision, serial number, and other details about the underlying hardware platform, i.e., the UltraZohm carrier card (even though, on Rev04 systems, the EEPROM containing this information has to reside on a carrier-external extension board, cf. below),
- * per-slot adapter card identification from a (hopefully) (pre-)programmed EEPROM that is included on an increasing number of new A and D PCBs and
- * per-carrier, per-port Ethernet MAC addresses (so that multiple UltraZohm systems can coexist on one network segment without a manual tweak), and
-
-* pulsing the emergency stop's ring LED on the front panel (due to popular demand).
-
+* a platform information dataset containing model, revision, serial number, and other details about the underlying hardware platform, i.e., the UltraZohm carrier card
+* per-slot adapter card identification from a (pre-)programmed EEPROM that is included on newer adapter cards
+* per-carrier, per-port Ethernet MAC addresses (so that multiple UltraZohm systems can coexist on one network segment without a manual tweak)
+* pulsing the emergency stop's ring LED on the front panel (due to popular demand)
 
 Prerequisites and activation
 ----------------------------
 
-On Rev04 UltraZohm systems and older, the UZP relies on the external "I²C/SSD Extension Board" (either in Rev02 with EEPROM retrofit or in Rev03 ff.).
-On newer UltraZohm systems, no external hardware is (going to be) needed, as the various EEPROMs, SSD etc. are part of the `Rev05 changeset <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/128/changeset-for-rev05>`_.
+The UZP behaves differently depending on the UltraZohm version:
 
-.. note::
- As of early 2024, the extension board is not publicly available.
- Please get in touch on the :ref:`uzslack` for the current state of this matter and the (already existing) short-term options for early access.
+- Rev04 or older
 
-Furthermore, only for Rev04 UltraZohm systems and older versions, the adapter card identification feature depends on the PCB tweak described in ref:`carrier_retrofits_cardid`, which users can apply themselves.
-Please note that Rev04 UltraZohm *systems built in 2024 already have been retrofitted* before shipping -- Please get in touch to determine whether the retrofit is needed on your system(s).
+  - UZP features are not available, the UZP uses a default version set by the ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`)
 
-Given these dependencies, the UZP is disabled by default and has to be activated manually (cf. below).
-If enabled on a non-retrofitted UltraZohm system,
+- Rev04 build before *2024* with IIC/SSD extension board
 
-* initialization will fail due to the missing I²C/SSD extension board (and halt the APU), whereas
-* the adapter card identification feature will yield incorrect results due to address collisions.
+  - UZP features are available but depend on the external IIC/SSD Extension Board
+  - Adapter card identification feature depends on the PCB tweak described in :ref:`carrier_retrofits_cardid`
 
+- Rev04 build in *2024* with IIC/SSD extension board
+
+  - UZP features a re fully available but depend on the external IIC/SSD Extension Board
+
+- Rev05 or newer
+
+  - UZP features are fully available
+
+
+Given these dependencies, the adapter card identification UZP is disabled by default and has to be activated manually (cf. below).
+The other UZP features are enabled by default but depend on ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`) for systems that have no full UZP features available (see list above).
 
 API functions and data types
 ----------------------------
@@ -51,10 +53,10 @@ API functions and data types
 Initialization
 """"""""""""""
 
-The framework is automatically initialized on the APU by a call to ``uz_platform_init()`` before FreeRTOS threading starts in ``main()`` (already in existence).
-Whether and to what extent the framework becomes active depends on the following two ``#define``-s in ``/FreeRTOS/src/uz/uz_PLATFORM/uz_platform.h``:
+The framework is automatically initialized on the APU by a call to ``uz_platform_init()`` before FreeRTOS threading starts in ``main()``.
+The activation of the adapter card identification depends on the ``UZ_PLATFORM_CARDID`` ``#define`` in ``/FreeRTOS/src/uz/uz_PLATFORM/uz_platform.h``:
 
-* ``UZ_PLATFORM_ENABLE``: If set, ``uz_platform_init()`` is called at bootup to
+* At bootup to
 
  * initialize the I²C bus to the extension board (and, optionally, initialize the I²C bus between carrier and adapter cards),
  * retrieve the platform identification from the external EEPROM,
@@ -65,7 +67,7 @@ Whether and to what extent the framework becomes active depends on the following
 
 .. note::
  Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
- Otherwise, the I²C subsystem will ``assert()`` during initialization due to a lack of available bus instances.
+ Otherwise, the IIC subsystem will ``assert()`` during initialization due to a lack of available bus instances.
 
 Adapter Card Identification
 """""""""""""""""""""""""""
@@ -95,7 +97,7 @@ If enabled (cf. ``UZ_PLATFORM_CARDID`` above), the following API is available to
  * ``UZP_HWGROUP_ADCARD_DAC8831``
 
  that should be used in comparisons.
- Note that the underlying definitions can be found in ``/shared/uz_platform_cardeeprom.h``, if needed.
+ Note that the underlying definitions can be found in ``/shared/uz_platform_cardeeprom.h``.
 
  Furthermore, an "enum-to-string" helper (``uz_platform_eeprom_group000models_enum2label(uz_platform_eeprom_group000models_t model)``) is available to convert the enum integer into a user-readable string in case such functionality is required.
 
@@ -149,9 +151,7 @@ Examples:
 * ``uz_platform_gposet(I2CLED_FPRING, UZP_GPO_TOGGLE_QUEUED);`` to toggle the output on the next update,
 * ``uz_platform_gpoupdate();`` to flush all queued output changes to hardware.
 
-If enabled, the UZP replaces the uz_gpio-based PHY reset in ``FreeRTOS/uz/uz_PHY_reset/uz_phy_reset.c``, making it portable between boards.
-
-Predefined inputs on an UltraZohm Rev04 with I²C/SSD extension (enum ``uz_platform_gpi_id``:
+Predefined inputs on an UltraZohm Rev04 with IIC/SSD extension (enum ``uz_platform_gpi_id``:
 
 * ``I2CKEY_FP5ENABLESYS``
 * ``I2CKEY_FP6ENABLECTL``
@@ -166,7 +166,7 @@ NB:
 Ethernet MAC addresses
 """"""""""""""""""""""
 
-MAC addresses are accessible by means of ``uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p)`` and ``uz_platform_macread_primary(uint8_t *addrbuf_p)``, although for neither there is any necessity for the user to *aehm* use these functions explicitly.
+MAC addresses are accessible by means of ``uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p)`` and ``uz_platform_macread_primary(uint8_t *addrbuf_p)``, although for neither there is any necessity for the user to use these functions explicitly.
 
 
 See also

@@ -282,12 +282,10 @@ void poll_buttons(void)
         ultrazohm_state.enable_system = uz_GetPushButtonEnableSystem();
         if (ultrazohm_state.platform_revision > 4U)
         {
-
             ultrazohm_state.stop_flag = uz_GetPushButtonStop();
         }
         else
         {
-
             ultrazohm_state.stop_flag = !uz_GetPushButtonStop();
         }
     }

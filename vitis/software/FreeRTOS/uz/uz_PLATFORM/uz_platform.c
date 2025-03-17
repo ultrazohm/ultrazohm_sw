@@ -253,7 +253,6 @@ uint32_t uz_platform_get_hw_revision(void){
 }
 
 uint32_t uz_platform_init(uint32_t default_revision) {
-
 	uz_assert_false(uzp.is_ready);
 
 	//// Primary I²C bus used by UZP (we might need a secondary for mixed-old/new combinations of UZC Rev<=04 and SoM)
@@ -290,32 +289,35 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 		case UZP_HWGROUP_UZOHM3:
 		case UZP_HWGROUP_UZOHM6:
 			switch(uzp.data.hw_revision) {
-			case 2U:
-				uzp.iomap = &uzp_iomap_UltraZohmRev02;
-				uzp.maceeprom_primary = 1;
-				break;
-			case 3U:
-				uzp.iomap = &uzp_iomap_UltraZohmRev03;
-				uzp.maceeprom_primary = 1;
-				break;
-			case 4U:
-				uzp.iomap = &uzp_iomap_UltraZohmRev04;
-				uzp.maceeprom_primary = 1;
-				break;
-			case 5U:
-				uzp.iomap = &uzp_iomap_UltraZohmRev05prt;
-				uzp.maceeprom_primary = 1;
-				break;
-			default:
-				uz_printf("APU: Carrier revision not supported!\r\n");
-				return (UZ_FAILURE);
-				break;
+				case 2U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev02;
+					uzp.maceeprom_primary = 1;
+					break;
+				case 3U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev03;
+					uzp.maceeprom_primary = 1;
+					break;
+				case 4U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev04;
+					uzp.maceeprom_primary = 1;
+					break;
+				case 5U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev05prt;
+					uzp.maceeprom_primary = 1;
+					break;
+				default:
+					uz_printf("APU: Carrier revision not supported!\r\n");
+					return (UZ_FAILURE);
+					break;
 			}
 			break;
 		case UZP_HWGROUP_MZOHM:
 			uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;
 			uzp.maceeprom_primary = 0;
 			break;
+
+		// FIXME: Re-add uzp_iomap_UltraZohmRev04withExtensionBoardRev02 by looking for extension board - Details tbd.
+
 		default:
 			uz_printf("APU: Platform not supported!\r\n");
 			return(UZ_FAILURE);
@@ -414,7 +416,6 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 #endif
 
 	return(UZ_SUCCESS);
-
 }
 
 /**
@@ -423,13 +424,9 @@ uint32_t uz_platform_init(uint32_t default_revision) {
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
 uint32_t uz_platform_gpoupdate() {
-
 	const uint8_t pca9535a9655e_regaddr_out0 = 2;
 
 	return( uz_iic_write_reg16(&uzp.gpioi2c, pca9535a9655e_regaddr_out0, uzp.gpioi2c_outmirror) );
-
-
-
 }
 
 /**
@@ -440,7 +437,6 @@ uint32_t uz_platform_gpoupdate() {
  * @return UZ_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
 uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_gpo_op uzpgpo_op) {
-
 	uz_assert(uzp.is_ready);
 
 	// Look up GPO and map to pin
@@ -515,9 +511,6 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 			break;
 	}
 	return(UZ_SUCCESS);
-
-
-
 }
 
 /**
@@ -528,7 +521,6 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
 uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
-
 	uz_assert(uzp.is_ready);
 	uz_assert(eeprom < sizeof(uzp.maceeprom)/sizeof(uzp.maceeprom[0]));
 
@@ -536,7 +528,6 @@ uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
 	const uint8_t maceeprom_addrlength = 6;
 
 	return( uz_iic_a8read_data(&uzp.maceeprom[eeprom], maceeprom_addroffset, addrbuf_p, maceeprom_addrlength) );
-
 }
 
 /**
@@ -560,7 +551,6 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
   * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
   */
  uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p) {
-
 	uz_assert(slot < 8);
 	uz_assert_not_NULL(model_p);
 	uz_assert_not_NULL(revision_p);
@@ -585,6 +575,5 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 	}
 
 	return(status);
-
  }
 #endif

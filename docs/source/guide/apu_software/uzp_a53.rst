@@ -11,7 +11,7 @@ Overview
 
 The UltraZohm Platform Framework (or, in short, UZP) is a subsystem that aims to make the current I/O HAL *dynamically* aware of the underlying hardware platform during runtime.
 In other words, its various functions can route the desired operation to whatever I/O device/pin based on which hardware (carrier, revision, etc.) the code is *currently* running.
-This simplifies, e.g., writing to an output pin "RST_PHY" during the bring-up of, in this case, the Ethernet PHY,  which is connected to an IIC or GPIO, depending on the hardware revision.
+This simplifies, e.g., writing to an output pin "RST_PHY" during the bring-up of, in this case, the Ethernet PHY,  which is connected to an I²C or GPIO, depending on the hardware revision.
 It thus loosens the need to precisely specify the underlying platform *during compile time* and thus, eventually, will make the CPU binaries independent of, e.g., the exact revision of the carrier card they are loaded to.
 
 For this and beyond, it adds the following functionalities for UltraZohm Rev04 with IIC/SSD Extension Board, UltraZohm Rev05, and newer systems:
@@ -47,6 +47,22 @@ The UZP behaves differently depending on the UltraZohm version:
 Given these dependencies, the adapter card identification UZP is disabled by default and has to be activated manually (cf. below).
 The other UZP features are enabled by default but depend on ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`) for systems that have no full UZP features available (see list above).
 
+WIP text:
+
+On Rev04 UltraZohm systems and older, the UZP relies on the external "I²C/SSD Extension Board" (either in Rev02 with `EEPROM retrofit <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/issues/10/>`_ or in Rev03 ff.).
+If such older systems are used without the external board (i.e., as shipped), the software defaults to the revision hard-coded in the RPU software, i.e., the known integer value ``UZ_HARDWARE_VERSION`` in ``/Baremetal/src/uz/uz_global_configuration.h``.
+On newer UltraZohm systems, no external hardware is (going to be) needed, as the various EEPROMs, SSD etc. are part of the `Rev05 changeset <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/128/changeset-for-rev05>`_.
+
+.. note::
+ As of early 2025, the extension board is not publicly available.
+ Please get in touch on the :ref:`uzslack` for the current state of this matter and the (already existing) short-term options for early access.
+
+Furthermore, only for Rev04 UltraZohm systems and older versions, the adapter card identification feature depends on the PCB tweak described in :ref:`carrier_retrofits_cardid`, which users can apply themselves.
+Please note that Rev04 UltraZohm *systems built in 2024 already have been retrofitted* before shipping -- Please get in touch to determine whether the retrofit is needed on your system(s).
+
+
+If the adapter card identification feature is enabled on a non-retrofitted UltraZohm system, it will yield incorrect results due to address collisions.
+
 API functions and data types
 ----------------------------
 
@@ -56,12 +72,14 @@ Initialization
 The framework is automatically initialized on the APU by a call to ``uz_platform_init()`` before FreeRTOS threading starts in ``main()``.
 The activation of the adapter card identification depends on the ``UZ_PLATFORM_CARDID`` ``#define`` in ``/FreeRTOS/src/uz/uz_PLATFORM/uz_platform.h``:
 
-* At bootup to
+* In all cases, ``uz_platform_init()`` is called at bootup to
 
  * initialize the I²C bus to the extension board (and, optionally, initialize the I²C bus between carrier and adapter cards),
  * retrieve the platform identification from the external EEPROM,
+ * communicates the result (or, in case of no EEPROM, the RPU default) to the RPU (cf. states ``init_assertions`` on the RPU and ``initialization_handshake`` on the APU),
  * initialize internal data structures (for instance, the I/O map for the given platform), and
  * configure internal (e.g., the GPIO controllers of the PS) and external (e.g., the I²C port expander on the extension board) I/O controllers according to the I/O map.
+ * Note that earlier software revisions relied on ``UZ_PLATFORM_ENABLE`` to enable the then disabled-by-default framework
 
 * ``UZ_PLATFORM_CARDID``: If set, ``uz_platform_cardread()`` is made available to the user, and a small demo in ``main()`` performs adapter card identification that shows card model, revision, and serial for each slot on the serial console.
 

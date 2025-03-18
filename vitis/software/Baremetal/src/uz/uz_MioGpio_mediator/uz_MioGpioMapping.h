@@ -19,7 +19,6 @@
 #define UZ_REV_3_EXT_GPIO_6 		52
 #define UZ_REV_3_EXT_GPIO_7 		53
 
-// Page 24 of carrier board v4, mapping of MIO GPIO to LEDs
 #define UZ_REV_3_FrontPanel_LED1 UZ_REV_3_EXT_GPIO_1
 #define UZ_REV_3_FrontPanel_LED2 UZ_REV_3_EXT_GPIO_2
 #define UZ_REV_3_FrontPanel_LED3 UZ_REV_3_EXT_GPIO_3
@@ -29,7 +28,6 @@
 #define UZ_REV_3_FrontPanel_switch6 UZ_REV_3_EXT_GPIO_6
 #define UZ_REV_3_FrontPanel_switch7 UZ_REV_3_EXT_GPIO_7
 
-// Names of LED on frontpanel - carrier v4 X18, schematic sheet 24
 #define UZ_REV_3_LED_ready 	UZ_REV_3_FrontPanel_LED1
 #define UZ_REV_3_LED_running UZ_REV_3_FrontPanel_LED2
 #define UZ_REV_3_LED_error 	UZ_REV_3_FrontPanel_LED3

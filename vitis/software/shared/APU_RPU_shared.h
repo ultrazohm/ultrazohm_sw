@@ -39,12 +39,8 @@ struct RPU_to_APU_user_data_t
 	uint32_t slowDataCounter;
 };
 
-struct ultrazohm_version_t
-{
-	uint32_t    rpu_version;
-	uint32_t    apu_version;
-};
 
+// Used for communicating the ultrazohm revision between RPU default define and what APU reads from EEPROM is present
 #include "xil_cache.h"
 
 static inline uint32_t read_rpu_version(void){

@@ -50,6 +50,8 @@ static void error_during(void);
 
 void ultrazohm_state_machine_init(uint32_t ultrazohm_revision)
 {
+    uz_assert(ultrazohm_state.platform_revision > 0U);
+    uz_assert(ultrazohm_state.platform_revision <= UZ_HARDWARE_VERSION_MAX);
     ultrazohm_state.platform_revision = ultrazohm_revision;
 }
 
@@ -276,6 +278,8 @@ static void ready_LED_blink_slow(void)
 
 void poll_buttons(void)
 {
+    uz_assert(ultrazohm_state.platform_revision > 0U);
+    uz_assert(ultrazohm_state.platform_revision <= UZ_HARDWARE_VERSION_MAX);
     if (ultrazohm_state.platform_revision > 2U) // in CarrierBoard_v2 there are no buttons, therefore they are not polled.
     {
         ultrazohm_state.enable_control = uz_GetPushButtonEnableControl();

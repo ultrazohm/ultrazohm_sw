@@ -37,7 +37,7 @@ DS_Data Global_Data = {
 
 enum init_chain
 {
-    init_assertions = 0,
+    init_assertions_and_wait_for_apu_handshake = 0,
     init_gpios,
     init_software,
     init_ip_cores,
@@ -45,7 +45,7 @@ enum init_chain
     init_interrupts,
     infinite_loop
 };
-enum init_chain initialization_chain = init_assertions;
+enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshake;
 #include "APU_RPU_shared.h"
 #include "xil_cache.h"
 
@@ -59,7 +59,7 @@ int main(void)
     {
         switch (initialization_chain)
         {
-        case init_assertions:
+        case init_assertions_and_wait_for_apu_handshake:
             uz_assert_configuration(); 
             write_rpu_version(0U);
             do
@@ -76,7 +76,7 @@ int main(void)
             break;
         case init_gpios:
             Initialize_AXI_GPIO();
-            uz_assert((apu_version_final > 0U) && (apu_version_final < 6U));
+            uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
             uz_frontplane_button_and_led_init(apu_version_final); 
             ultrazohm_state_machine_init(apu_version_final);
             initialization_chain = init_software;

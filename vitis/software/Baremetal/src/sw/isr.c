@@ -69,7 +69,8 @@ float CIL_omega_elec = 0.0f;
 float CIL_U_ZK = 0.0f;
 
 bool theta_offset_bestimmung = false;
-float theta_offest = -3.3f;
+float theta_offest = 0.0f;
+//float theta_offest = -3.3f;
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -95,8 +96,14 @@ void ISR_Control(void *data)
 
     Global_Data.av.omega_mech = -1*((Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * (2.0f * (float)M_PI));
     Global_Data.av.omega_elec = Global_Data.av.omega_mech * UZ_D5_MOTOR_POLE_PAIR_NUMBER;
-    Global_Data.av.theta_elec = -(Global_Data.av.theta_elec + theta_offest) + 2*M_PI;
+    Global_Data.av.theta_elec = (Global_Data.av.theta_elec + Global_Data.av.theta_offset);
     Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec,  (2* M_PI));
+
+
+   // Global_Data.av.omega_mech = -1*((Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * (2.0f * (float)M_PI));
+    //Global_Data.av.omega_elec = Global_Data.av.omega_mech * UZ_D5_MOTOR_POLE_PAIR_NUMBER;
+    //Global_Data.av.theta_elec = -(Global_Data.av.theta_elec + theta_offest) + 2*M_PI;
+    //Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec,  (2* M_PI));
 
     //Global_Data.av.theta_elec=uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_D5);
 

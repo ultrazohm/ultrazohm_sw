@@ -80,12 +80,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uc] 					= &data->av.u_c;
 	js_ch_observable[JSO_ualpha_ref] 				= &data->av.u_alphabeta_ref.alpha;
 	js_ch_observable[JSO_ubeta_ref] 				= &data->av.u_alphabeta_ref.beta;
-	js_ch_observable[JSO_uab]					= &data->av.u_ab;
-	js_ch_observable[JSO_ubc]					= &data->av.u_bc;
-	js_ch_observable[JSO_uca]					= &data->av.u_ca;
-	js_ch_observable[JSO_uph1]					= &data->av.u_ph1;
-	js_ch_observable[JSO_uph2]					= &data->av.u_ph2;
-	js_ch_observable[JSO_uph3]					= &data->av.u_ph3;
 	js_ch_observable[JSO_iq] 					= &data->av.i_dq_m.q;
 	js_ch_observable[JSO_id] 					= &data->av.i_dq_m.d;
 	js_ch_observable[JSO_iq_ref] 					= &data->av.i_dq_ref.q;
@@ -107,6 +101,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_psi_alpha]		= &data->av.FS_output.psi_alpha;
 	js_ch_observable[JSO_psi_beta]		= &data->av.FS_output.psi_beta;
 	js_ch_observable[JSO_theta_elec_FS_east]		= &data->av.FS_output.theta_el_est;
+	js_ch_observable[JSO_i_alpha_m] = &data->av.i_alphabeta_m.alpha;
+	js_ch_observable[JSO_i_beta_m] = &data->av.i_alphabeta_m.beta;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

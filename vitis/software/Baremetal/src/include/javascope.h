@@ -16,6 +16,13 @@
 #ifndef INCLUDE_JAVASCOPE_H_
 #define INCLUDE_JAVASCOPE_H_
 
+
+//JSO_uab,
+//	JSO_ubc,
+//	JSO_uca,
+//	JSO_uph1,
+//	JSO_uph2,
+//	JSO_uph3,
 #include "APU_RPU_shared.h"
 
 // Do not change the first (zero) and last (end) entries.
@@ -40,12 +47,6 @@ enum JS_OberservableData {
 	JSO_uc,
 	JSO_ualpha_ref,
 	JSO_ubeta_ref,
-	JSO_uab,
-	JSO_ubc,
-	JSO_uca,
-	JSO_uph1,
-	JSO_uph2,
-	JSO_uph3,
 	JSO_ud,
 	JSO_uq,
 	JSO_ud_ref,
@@ -70,6 +71,8 @@ enum JS_OberservableData {
 	JSO_psi_alpha,
 	JSO_psi_beta,
 	JSO_theta_elec_FS_east,
+	JSO_i_alpha_m,
+	JSO_i_beta_m,
 	JSO_ENDMARKER
 };
 

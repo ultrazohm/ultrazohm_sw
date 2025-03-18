@@ -22,6 +22,7 @@
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
+
 extern uint32_t js_status_BareToRTOS;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
@@ -217,6 +218,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
+		data->av.theta_offset = value;
 			break;
 
 		case (Set_Send_Field_8):

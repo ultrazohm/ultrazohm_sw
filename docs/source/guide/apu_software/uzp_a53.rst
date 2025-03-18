@@ -46,12 +46,8 @@ The UZP behaves differently depending on the UltraZohm version:
 
 Given these dependencies, the adapter card identification UZP is disabled by default and has to be activated manually (cf. below).
 The other UZP features are enabled by default but depend on ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`) for systems that have no full UZP features available (see list above).
-
-WIP text:
-
 On Rev04 UltraZohm systems and older, the UZP relies on the external "I²C/SSD Extension Board" (either in Rev02 with `EEPROM retrofit <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/issues/10/>`_ or in Rev03 ff.).
 If such older systems are used without the external board (i.e., as shipped), the software defaults to the revision hard-coded in the RPU software, i.e., the known integer value ``UZ_HARDWARE_VERSION`` in ``/Baremetal/src/uz/uz_global_configuration.h``.
-On newer UltraZohm systems, no external hardware is (going to be) needed, as the various EEPROMs, SSD etc. are part of the `Rev05 changeset <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/128/changeset-for-rev05>`_.
 
 .. note::
  As of early 2025, the extension board is not publicly available.

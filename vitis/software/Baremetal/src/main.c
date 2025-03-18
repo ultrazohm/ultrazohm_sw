@@ -35,6 +35,11 @@ DS_Data Global_Data = {
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
 	.av.i_dq_ref = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
+	.av.d_a_ref = 0.0f,
+	.av.d_b_ref = 0.0f,
+	.av.d_c_ref = 0.0f,
+	.av.n_ref_rpm = 0.0f,
+    .av.select_speed_control = false,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
@@ -49,7 +54,7 @@ const struct uz_PMSM_t config_PMSM = {
    .R_ph_Ohm = 7.3f,
    .polePairs = 1.0f,
    //.J_kg_m_squared = ,
-   .I_max_Ampere = 1.2f
+   .I_max_Ampere = 1.72f
  };
 
 const struct uz_PI_Controller_config config_id = {
@@ -74,11 +79,11 @@ const struct uz_CurrentControl_config config_current_control = {
 };
 
 struct uz_SpeedControl_config config_speed = {
-   .config_controller.Kp = 0.1f,
-   .config_controller.Ki = 100.0f,
+   .config_controller.Kp = 0.01f,
+   .config_controller.Ki = 0.1f,
    .config_controller.samplingTime_sec = 0.00005f,
-   .config_controller.upper_limit = 1.0f,
-   .config_controller.lower_limit = -1.0f
+   .config_controller.upper_limit = 3.0f,
+   .config_controller.lower_limit = -3.0f
 };
 
 
@@ -96,7 +101,7 @@ struct uz_pmsmModel_config_t model_pmsm_config={
     .coulomb_friction_constant = 0.01f,
     .friction_coefficient = 0.001f
 };
-
+struct uz_Flussschaetzer_config Flussschaetzer_config={};
 
 
 enum init_chain
@@ -133,8 +138,7 @@ int main(void)
 
             Global_Data.objects.current_control = uz_CurrentControl_init(config_current_control);
             Global_Data.objects.speed_control = uz_SpeedControl_init(config_speed);
-
-
+            Global_Data.objects.Flussschaetzer = uz_Flussschaetzer_init(Flussschaetzer_config) ;
             Global_Data.objects.pmsmModel = uz_pmsmModel_init(model_pmsm_config);;
 
             initialization_chain = init_ip_cores;

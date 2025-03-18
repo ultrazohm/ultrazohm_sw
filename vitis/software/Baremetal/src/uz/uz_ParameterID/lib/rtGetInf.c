@@ -15,7 +15,7 @@
 #include "rtwtypes.h"
 #include "rtGetInf.h"
 #include <stddef.h>
-#include "rt_nonfinite.h"
+#include "../../../Codegen/lib/rt_nonfinite.h"
 #define NumBitsPerChar                 8U
 
 /*

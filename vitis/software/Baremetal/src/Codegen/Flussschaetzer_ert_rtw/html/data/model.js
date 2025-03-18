@@ -1,0 +1,1 @@
+var modelInfo = {model:"Flussschaetzer"};var modelHierarchy=[{model:"Flussschaetzer",relativePath:"_internal.html",parent:"null"},];var AddCode = true;var ProtectedModel = false;

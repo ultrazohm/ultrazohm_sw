@@ -14,6 +14,7 @@
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "Codegen/uz_flussschaetzer.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -93,6 +94,8 @@ typedef struct _actualValues_ {
 	uint32_t slowDataCounter;
 	float errorcode;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+	float n_ref_rpm;
+	bool select_speed_control;
 
 	uz_3ph_abc_t i_abc_m;
 	uz_3ph_abc_t u_abc_m;
@@ -100,13 +103,28 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t u_dq_m;
 	uz_3ph_dq_t i_dq_ref;
 	uz_3ph_dq_t u_dq_ref;
+	Flussschaetzer_output_data FS_output;
+	uz_3ph_alphabeta_t i_alphabeta_m;
+	uz_3ph_alphabeta_t u_alphabeta_ref;
 
 	struct uz_DutyCycle_t output_Dutycycle;
 
 	struct uz_pmsmModel_outputs_t pmsmModel_output;
 	struct uz_pmsmModel_inputs_t pmsmModel_input;
 
-	bool select_CIL
+	bool select_CIL;
+
+
+	float d_a_ref;
+	float d_b_ref;
+	float d_c_ref;
+	float u_ab;
+	float u_bc;
+	float u_ca;
+	float u_n;
+	float u_ph1;
+	float u_ph2;
+	float u_ph3;
 
 } actualValues;
 
@@ -142,6 +160,7 @@ typedef struct{
 	uz_SpeedControl_t* speed_control;
 
 	uz_pmsmModel_t *pmsmModel;
+	uz_Flussschaetzer_t *Flussschaetzer;
 
 }object_pointers_t;
 

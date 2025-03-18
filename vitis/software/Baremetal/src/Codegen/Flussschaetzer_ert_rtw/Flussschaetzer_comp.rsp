@@ -1,0 +1,8 @@
+-IC:/Users/ELSYS/ultrazohm/ultrazohm_sw/vitis/software/Baremetal/src/Codegen
+-IC:/Users/ELSYS/ultrazohm/ultrazohm_sw/vitis/software/Baremetal/src/Codegen/Flussschaetzer_ert_rtw
+-I"C:/Program Files/MATLAB/R2024b/extern/include"
+-I"C:/Program Files/MATLAB/R2024b/simulink/include"
+-I"C:/Program Files/MATLAB/R2024b/rtw/c/src"
+-I"C:/Program Files/MATLAB/R2024b/rtw/c/src/ext_mode/common"
+-I"C:/Program Files/MATLAB/R2024b/rtw/c/ert"
+-IC:/Users/ELSYS/ultrazohm/ultrazohm_sw/vitis/software/Baremetal/src/Codegen/slprj/ert/_sharedutils

@@ -27,7 +27,7 @@
 #include "xtime_l.h"
 #include "../uz/uz_SystemTime/uz_SystemTime.h"
 #include "../include/uz_platform_state_machine.h"
-#include "../Codegen/uz_codegen.h"
+
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
@@ -37,13 +37,13 @@
 #define PHASE_CURRENT_CONV 12.5f
 #define PHASE_VOLT_CONV	12.0f
 
-#define PHASE_CURRENT_CONV_a	12.5f
-#define PHASE_CURRENT_CONV_b	12.5f
-#define PHASE_CURRENT_CONV_c	12.5f
+#define PHASE_CURRENT_CONV_a	12.5f * 0.988f
+#define PHASE_CURRENT_CONV_b	12.5f * 0.996f
+#define PHASE_CURRENT_CONV_c	12.5f * 1.001f
 
-#define PHASE_CURRENT_OFFSET_a	0.0f
-#define PHASE_CURRENT_OFFSET_b	0.0f
-#define PHASE_CURRENT_OFFSET_c 0.0f
+#define PHASE_CURRENT_OFFSET_a	0.0f + 0.006f
+#define PHASE_CURRENT_OFFSET_b	0.0f - 0.005f
+#define PHASE_CURRENT_OFFSET_c 0.0f + 0.009f
 
 #define PHASE_VOLT_CONV_a	12.0f
 #define PHASE_VOLT_CONV_b	12.0f
@@ -53,7 +53,9 @@
 #define PHASE_VOLT_OFFSET_b	0.0f
 #define PHASE_VOLT_OFFSET_c	0.0f
 
-#define MAX_PHASE_CURRENT_AMP 30
+#define MAX_MOTOR_SPEED_RPM 1000.0f
+#define MAX_PHASE_CURRENT_AMP 1.74f
+#define MAX2_PHASE_CURRENT_AMP 6.0f
 #define MAX_DC_VOLT 50.0f
 #define MAX_SECONDS_MAX_PHASE_CURRENT_AMP_1 1.0f
 #define MAX_COUNT_MAX_PHASE_CURRENT_AMP_1 UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE * MAX_SECONDS_MAX_PHASE_CURRENT_AMP_1
@@ -65,6 +67,9 @@ float CIL_omega_mech = 0.0f;
 float CIL_n_ref_rpm = 1000.0f;
 float CIL_omega_elec = 0.0f;
 float CIL_U_ZK = 0.0f;
+
+bool theta_offset_bestimmung = false;
+float theta_offest = -3.3f;
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -88,8 +93,10 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    Global_Data.av.omega_mech = (Global_Data.av.mechanicalRotorSpeed / 60.0f) * (2.0f * (float)M_PI);
+    Global_Data.av.omega_mech = -1*((Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * (2.0f * (float)M_PI));
     Global_Data.av.omega_elec = Global_Data.av.omega_mech * UZ_D5_MOTOR_POLE_PAIR_NUMBER;
+    Global_Data.av.theta_elec = -(Global_Data.av.theta_elec + theta_offest) + 2*M_PI;
+    Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec,  (2* M_PI));
 
     //Global_Data.av.theta_elec=uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_D5);
 
@@ -113,16 +120,22 @@ void ISR_Control(void *data)
 
     // Read out measured currents and voltages:
 
-    Global_Data.av.u_a = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_a +PHASE_VOLT_OFFSET_a;
-    Global_Data.av.u_b = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_b +PHASE_VOLT_OFFSET_b;
-    Global_Data.av.u_c = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_c +PHASE_VOLT_OFFSET_c;
-    Global_Data.av.U_ZK = Global_Data.aa.A1.me.ADC_A1 * PHASE_VOLT_CONV;
-    Global_Data.av.i_a = Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV_a +PHASE_CURRENT_OFFSET_a;
-    Global_Data.av.i_b = Global_Data.aa.A1.me.ADC_A3 * PHASE_CURRENT_CONV_b +PHASE_CURRENT_OFFSET_b;
-    Global_Data.av.i_c = Global_Data.aa.A1.me.ADC_A2 * PHASE_CURRENT_CONV_c +PHASE_CURRENT_OFFSET_c;
-    Global_Data.av.I_ZK = Global_Data.aa.A1.me.ADC_B5 * PHASE_CURRENT_CONV;
+    Global_Data.av.u_a = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV_a +PHASE_VOLT_OFFSET_a;
+    Global_Data.av.u_b = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_b +PHASE_VOLT_OFFSET_b;
+    Global_Data.av.u_c = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_c +PHASE_VOLT_OFFSET_c;
+    Global_Data.av.U_ZK = Global_Data.aa.A2.me.ADC_A1 * PHASE_VOLT_CONV;
+    Global_Data.av.i_a = Global_Data.aa.A2.me.ADC_A4 * PHASE_CURRENT_CONV_a +PHASE_CURRENT_OFFSET_a;
+    Global_Data.av.i_b = Global_Data.aa.A2.me.ADC_A3 * PHASE_CURRENT_CONV_b +PHASE_CURRENT_OFFSET_b;
+    Global_Data.av.i_c = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV_c +PHASE_CURRENT_OFFSET_c;
+    Global_Data.av.I_ZK = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
 
-
+    Global_Data.av.u_ab =    Global_Data.av.u_a -   Global_Data.av.u_b;
+    Global_Data.av.u_bc =    Global_Data.av.u_b -   Global_Data.av.u_c;
+    Global_Data.av.u_ca =    Global_Data.av.u_c -   Global_Data.av.u_a;
+    Global_Data.av.u_n =    (Global_Data.av.u_a + Global_Data.av.u_b + Global_Data.av.u_c)/3;
+    Global_Data.av.u_ph1 =   Global_Data.av.u_a - Global_Data.av.u_n;
+    Global_Data.av.u_ph2 =   Global_Data.av.u_b - Global_Data.av.u_n;
+    Global_Data.av.u_ph3 =   Global_Data.av.u_c - Global_Data.av.u_n;
 
     // over current and over temperature protection:
 
@@ -171,12 +184,22 @@ void ISR_Control(void *data)
     }
 
 
+    if(fabs(Global_Data.av.mechanicalRotorSpeed_filtered) > MAX_MOTOR_SPEED_RPM ){
+        	ultrazohm_state_machine_set_stop(true);
+        				   Global_Data.av.errorcode = 4.0f;
+        }
 
+
+    if(fabs(Global_Data.av.i_a) > MAX2_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b) > MAX2_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c) > MAX2_PHASE_CURRENT_AMP ){
+    	ultrazohm_state_machine_set_stop(true);
+    				   Global_Data.av.errorcode = 3.0f;
+    }
 
 
 
     // Software current limit
     if(fabs(Global_Data.av.i_a) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c) > MAX_PHASE_CURRENT_AMP ){
+
 
     	currentlimit_counter = currentlimit_counter + 1;
 
@@ -215,8 +238,11 @@ void ISR_Control(void *data)
     Global_Data.av.i_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.i_abc_m, Global_Data.av.theta_elec);
     Global_Data.av.u_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.u_abc_m, Global_Data.av.theta_elec);
 
+    // abc-alphabeta Transformation
+    Global_Data.av.i_alphabeta_m =  uz_transformation_3ph_abc_to_alphabeta(Global_Data.av.i_abc_m);
+    Global_Data.av.u_alphabeta_ref = uz_transformation_3ph_dq_to_alphabeta(Global_Data.av.u_dq_ref, Global_Data.av.theta_elec);
 
-
+    Global_Data.av.FS_output = uz_Flussschaetzer_step(Global_Data.objects.Flussschaetzer,Global_Data.av.u_alphabeta_ref,Global_Data.av.i_alphabeta_m);
 
 
 
@@ -250,8 +276,11 @@ void ISR_Control(void *data)
     		Global_Data.av.output_Dutycycle.DutyCycle_C = 0.0f;
     	}else{
 
-
-    		Global_Data.av.u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.current_control, Global_Data.av.i_dq_ref, Global_Data.av.i_dq_m, Global_Data.av.U_ZK, Global_Data.av. omega_elec);
+    		if (Global_Data.av.select_speed_control == true){
+    		Global_Data.av.i_dq_ref.q = uz_SpeedControl_sample(Global_Data.objects.speed_control, Global_Data.av.omega_mech, Global_Data.av.n_ref_rpm);
+				Global_Data.av.i_dq_ref.d = 0.0f;
+    		}
+    			Global_Data.av.u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.current_control, Global_Data.av.i_dq_ref, Global_Data.av.i_dq_m, Global_Data.av.U_ZK, Global_Data.av. omega_elec);
     		   //output_Dutycycle = uz_Space_Vector_Modulation(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
 
     		   Global_Data.av.output_Dutycycle = uz_spwm_dq(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
@@ -269,9 +298,16 @@ void ISR_Control(void *data)
     	uz_CurrentControl_reset(Global_Data.objects.current_control);
     	uz_SpeedControl_reset(Global_Data.objects.speed_control);
 
-    	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
-    	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
-    	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	if(theta_offset_bestimmung){
+        	Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.d_a_ref;
+        	Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.d_b_ref;
+        	Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.d_c_ref;
+    	}else{
+			Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+			Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+			Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	}
+
 
     }
 

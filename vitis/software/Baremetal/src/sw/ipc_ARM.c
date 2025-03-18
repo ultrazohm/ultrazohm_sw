@@ -197,18 +197,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
+		data->av.n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
+		data->av.d_a_ref = value;
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		data->av.d_b_ref = value;
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+		data->av.d_c_ref = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -288,11 +292,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+		data->av.select_speed_control = true;
+		 js_status_BareToRTOS |= (1 << 9);
 			break;
 
 		case (My_Button_7):
-
+		data->av.select_speed_control = false;
+		 js_status_BareToRTOS &= ~(1 << 9);
 			break;
 
 		case (My_Button_8):
@@ -300,6 +306,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Error_Reset):
+		data->av.errorcode = 0.0f;
 
 			break;
 
@@ -364,6 +371,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 	/* Bit 9 - My_Button_6 */
 	// js_status_BareToRTOS &= ~(1 << 9);
+
 
 	/* Bit 10 - My_Button_7 */
 	// js_status_BareToRTOS &= ~(1 << 10);

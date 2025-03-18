@@ -172,7 +172,7 @@ if(import_data_to_simulink_datainspector ~= 0)
             Simulink.sdi.addToRun(runID,'vars',Series);
         end
     end
-    Simulink.sdi.view
+    % Simulink.sdi.view
     
 end
 

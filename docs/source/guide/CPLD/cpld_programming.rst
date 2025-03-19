@@ -5,7 +5,7 @@ Programming the CPLD
 ====================
 
 CPLD Versions
---------------
+-------------
 
 There are different versions available - for :math:`\leq` ``Rev04``:
 
@@ -18,8 +18,17 @@ For UZ  :math:`\geq`  ``Rev05``:
 * `MachXO2 LCMXO2-4000HC <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/MachXO2/S3C_CPLD_LCMXO2-4000HC-4TG144C/>`_ 1x S3C
 
 
-Note that there different folders for the CPLD programs in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
-Before programming, make sure  the Diamond Programmer by Lattice is installed and clone the CPLD repository, see :ref:`install_lattice` for details. 
+Note that there are different folders for the CPLD programs in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
+Before programming, make sure the Diamond Programmer by Lattice is installed and clone the CPLD repository, see :ref:`install_lattice` for details. 
+
+.. mermaid::
+    :align: center
+    :caption: JTAG programmer workflow guide
+
+    flowchart TD;
+    A[JTAG programmer] -->|Carrier board revisions below Rev04 and some Rev04|B[Trenz TE0790 <br> for LA4128V or LC4256V] ;
+    A -->|Some Rev04 carrier board revisions|C[IsoJTAG <br> for LA4128V or LC4256V];
+    A -->|Carrier board revisions Rev05 and later|D[Onboard USB-C <br> for MachXO2];
 
 Step-by-step for `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
@@ -74,8 +83,8 @@ Note that it is possible to program only one of the CPLDs by the enable check bo
 
 .. _label_cpld_programming_ftdi4ch:
 
-Step-by-step for :ref:`uz_per_jtag`
---------------------------------------
+Step-by-step for IsoJTAG :ref:`uz_per_jtag`
+-------------------------------------------
 
 1. Start the Diamond Programmer by Lattice and open the file in the git repository ``Programm_all5_CPLDs.xcf`` with regard to the installed CPLD. 
 
@@ -85,7 +94,7 @@ In this example the `CPLD LA4128V <https://www.mouser.de/ProductDetail/Lattice/L
 
 2. Chose the proper CPLD software and chose which CPLDs you want to program. The standard configuration is:
 
-   - D1-D4 with **26Tx_with_enable**
+   - D1-D4 with **30Tx**
    - D5 for the encoder with **30Rx** 
    
 Note that it is possible to program only one of the CPLDs by the enable check box in each line.

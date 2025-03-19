@@ -54,6 +54,7 @@ Initial steps
 
    * This file is the configuration file for the UltraZohm and has to be adjusted to your specific needs. 
    * Change the ``UZ_HARDWARE_VERSION`` to the version of *your* UltraZohm.
+   * Note that on hardware version 5 or newer, potential mismatches between the define and the actual hardware version are handled by the software
    * See :ref:`global_configuration` for further details.
 
 #. Build the project by clicking on the red highlighted hammer visible in :numref:`build_workspace`.

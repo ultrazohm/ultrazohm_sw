@@ -26,7 +26,7 @@ The path depends on your install location (e.g. ``/opt/`` instead of ``/tools/``
 
   source /tools/Xilinx/Vivado/2020.1/settings64.sh
 
-The Vitis scripts can be called from the XSCT console from Vitis (see ref:`vitis_gen_workspace_tcl`) or from the command line:
+The Vitis scripts can be called from the XSCT console from Vitis (see :ref:`vitis_gen_workspace_tcl`) or from the command line:
 
 ::
 

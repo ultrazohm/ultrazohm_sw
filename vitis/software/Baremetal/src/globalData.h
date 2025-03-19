@@ -172,6 +172,13 @@ typedef struct{
 	uz_parameterID_rc_t* rc_meas_instance;
 	uz_parameterid_rs_t* rs_meas_instance;
 	uz_temperaturecard_t* temperature_card_d3;
+	uz_IIR_Filter_t *tracking_error_filter_prime_mover;
+	uz_IIR_Filter_t *phase_a_lowpass;
+	uz_IIR_Filter_t *phase_b_lowpass;
+	uz_IIR_Filter_t *phase_c_lowpass;
+	uz_IIR_Filter_t *d2_phase_a_lowpass;
+	uz_IIR_Filter_t *d2_phase_b_lowpass;
+	uz_IIR_Filter_t *d2_phase_c_lowpass;
 	}object_pointers_t;
 
 

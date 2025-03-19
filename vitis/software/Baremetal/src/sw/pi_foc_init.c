@@ -68,8 +68,8 @@ extern DS_Data Global_Data;
 		  .Kp = Voestalpine.Ld_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
  	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
- 	      .upper_limit = 10.0f,
-		  .lower_limit = -10.0f
+ 	      .upper_limit = 48.0f,
+		  .lower_limit = -48.0f
   };
 
   const struct uz_PI_Controller_config config_iq_right = {
@@ -77,8 +77,8 @@ extern DS_Data Global_Data;
 		  .Kp = Voestalpine.Lq_Henry/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      .Ki = Voestalpine.R_ph_Ohm/(2.0f*1.0f/UZ_PWM_FREQUENCY),
 	      .samplingTime_sec = 1/UZ_PWM_FREQUENCY,
-	      .upper_limit = 10.0f,
-	      .lower_limit = -10.0f
+	      .upper_limit = 48.0f,
+	      .lower_limit = -48.0f
   };
 
    struct uz_CurrentControl_config config_current_ctrl_left = {

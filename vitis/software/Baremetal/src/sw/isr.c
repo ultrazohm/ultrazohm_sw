@@ -51,6 +51,7 @@ extern DS_Data Global_Data;
 struct uz_3ph_abc_t i_abc_left = {0.0f};
 struct uz_3ph_abc_t i_abc_right = {0.0f};
 struct uz_3ph_abc_t v_abc_right = {0.0f};
+struct uz_3ph_abc_t v_abc_right_rev_filter = {0.0f};
 struct uz_3ph_abc_t v_abc_left = {0.0f};
 struct uz_3ph_dq_t i_dq_left = {0.0f};
 struct uz_3ph_dq_t i_dq_right = {0.0f};
@@ -65,7 +66,7 @@ struct uz_parameterID_rc_ref_val_t ref_rc_meas;
 float thetal_el_right_unwrapped = 0.0f;
 float average_temp_right = 0.0f;
 float average_temp_left = 0.0f;
-
+struct uz_3ph_abc_t dc_motor_right = {0.0f};
 
 
 enum running_mode run_state = normal;
@@ -89,7 +90,7 @@ void ISR_Control(void *data)
     Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
     //Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
     Global_Data.av.omega_mech_right = uz_incrementalEncoder_get_omega_mech(Global_Data.objects.encoder_right);
-    thetal_el_right_unwrapped = uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_right) + Global_Data.av.theta_el_offset_right;
+    thetal_el_right_unwrapped = uz_incrementalEncoder_get_theta_el(Global_Data.objects.encoder_right) - Global_Data.av.theta_el_offset_right;
     Global_Data.av.theta_el_right = uz_signals_wrap(thetal_el_right_unwrapped, 2.0f*UZ_PIf);
     // update status of both inverters
     uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_left);
@@ -130,6 +131,9 @@ void ISR_Control(void *data)
     v_abc_right.a = Global_Data.av.v_a_right;
     v_abc_right.b = Global_Data.av.v_b_right;
     v_abc_right.c = Global_Data.av.v_c_right;
+    v_abc_right_rev_filter.a =  uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.d2_phase_a_lowpass, v_abc_right.a);
+    v_abc_right_rev_filter.b =  uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.d2_phase_b_lowpass, v_abc_right.b);
+    v_abc_right_rev_filter.c =  uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.d2_phase_c_lowpass, v_abc_right.c);
     v_abc_left.a = Global_Data.av.v_a_left;
     v_abc_left.b = Global_Data.av.v_b_left;
     v_abc_left.c = Global_Data.av.v_c_left;
@@ -202,7 +206,7 @@ void ISR_Control(void *data)
 	// park transformation of measured currents
 	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
 	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.theta_el_right);
-	v_dq_meas_right = uz_transformation_3ph_abc_to_dq(v_abc_right,Global_Data.av.theta_el_right);
+	v_dq_meas_right = uz_transformation_3ph_abc_to_dq(v_abc_right_rev_filter,Global_Data.av.theta_el_right);
 	v_dq_meas_left = uz_transformation_3ph_abc_to_dq(v_abc_left,Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
 	//Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
 	Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
@@ -257,6 +261,9 @@ void ISR_Control(void *data)
 	Global_Data.rasv.halfBridge4DutyCycle = dutycyc_right.DutyCycle_A;
 	Global_Data.rasv.halfBridge5DutyCycle = dutycyc_right.DutyCycle_B;
 	Global_Data.rasv.halfBridge6DutyCycle = dutycyc_right.DutyCycle_C;
+	/*Global_Data.rasv.halfBridge4DutyCycle = dc_motor_right.a;
+	Global_Data.rasv.halfBridge5DutyCycle = dc_motor_right.b;
+	Global_Data.rasv.halfBridge6DutyCycle = dc_motor_right.c;*/
     }
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

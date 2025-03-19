@@ -37,7 +37,7 @@ DS_Data Global_Data = {
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-	.av.theta_el_offset_right = 0.43f,
+	.av.theta_el_offset_right = 1.14f,
 	.av.average_temp_right = 1.0f,
 	.av.average_temp_left = 0.0f,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
@@ -58,6 +58,10 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions;
 
+struct uz_IIR_Filter_config reverse_filter_config = {
+    .selection = LowPass_first_order,
+    .cutoff_frequency_Hz = 1750.0f,
+    .sample_frequency_Hz = 10000.0f};
 
 int main(void)
 {
@@ -66,11 +70,11 @@ int main(void)
     const struct uz_parameterID_rc_config_t rc_meas_config = {
       	.abs_id_max_Amps = 4.0f,
       	.abs_iq_max_Amps = 4.0f,
-    	.n_start_rpm = 800.0f,
+    	.n_start_rpm = 700.0f,
     	.n_stop_rpm = 800.0f,
-    	.id_steps = 8U,
-    	.iq_steps = 8U,
-    	.n_steps = 0U
+    	.id_steps = 4U,
+    	.iq_steps = 4U,
+    	.n_steps = 1U
       };
 
     struct uz_parameterid_rs_config_t config_rs_meas = {
@@ -139,6 +143,12 @@ int main(void)
             Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
             uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
             uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
+            Global_Data.objects.phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.d2_phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
             break;
 	    case print_msg:
             uz_printf("\r\n\r\n");

@@ -9,8 +9,8 @@ CPLD Versions
 
 There are different versions available - for :math:`\leq` ``Rev04``:
 
-* `LA4128V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LA4128V/>`_ for old revisions and Rev04 with serial number UZ2021-002-001-200-0001 to UZ2021-001-001-004-0004
-* `LC4256V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/LC4256V/>`_ for all other Rev04 with serial number UZ2022-001-001-401-0007 up to UZ2024-001-001-0401-0031
+* `LA4128V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/ispMACH/LA4128V/>`_ for old revisions and Rev04 with serial number UZ2021-002-001-200-0001 to UZ2021-001-001-004-0004
+* `LC4256V <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/ispMACH/LC4256V/>`_ for all other Rev04 with serial number UZ2022-001-001-401-0007 up to UZ2024-001-001-0401-0031
 
 For UZ  :math:`\geq`  ``Rev05``:
 
@@ -18,22 +18,37 @@ For UZ  :math:`\geq`  ``Rev05``:
 * `MachXO2 LCMXO2-4000HC <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/MachXO2/S3C_CPLD_LCMXO2-4000HC-4TG144C/>`_ 1x S3C
 
 
-Note that there are different folders for the CPLD programs in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
+**CPLD programs** 
+
+Note that there are separate CPLD programs for each series and type in the `repository <https://bitbucket.org/ultrazohm/cpld_lattice/src/master/>`_.
+The folders are structured and named accordingly.
 Before programming, make sure the Diamond Programmer by Lattice is installed and clone the CPLD repository, see :ref:`install_lattice` for details. 
+
+**JTAG programmers** 
+
+Different JTAG programmers are used throughout the hardware revisions of the carrier board. The following diagram will help you determine which of 
+the following step-by-step guides is appropriate for your UltraZohm system.
 
 .. mermaid::
     :align: center
-    :caption: JTAG programmer workflow guide
+    :caption: JTAG programmer guide
 
     flowchart TD;
-    A[JTAG programmer] -->|Carrier board revisions below Rev04 and some Rev04|B[Trenz TE0790 <br> for LA4128V or LC4256V] ;
+    A[JTAG programmer] -->|Carrier board revisions below Rev04 and most Rev04|B[Trenz TE0790 <br> for LA4128V or LC4256V] ;
     A -->|Some Rev04 carrier board revisions|C[IsoJTAG <br> for LA4128V or LC4256V];
     A -->|Carrier board revisions Rev05 and later|D[Onboard USB-C <br> for MachXO2];
 
-Step-by-step for `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+If you are not sure whether your UltraZohm is equipped with the TE0790 or an IsoJTAG, 
+simply remove the bottom cover of the UltraZohm case and take a look at the JTAG programmer board. 
+If it is a green PCB, as shown in the figures in the Trenz TE0790 section below, it is a 
+TE0790. If the PCB is purple, as shown in the IsoJTAG section below, it is an IsoJTAG.
+
+Step-by-step for Trenz TE0790
+-----------------------------
 
 1. Remove the programmer (normally used for programming the Zynq) from X8 of the Carrier Board.
+   The best way to access the programmer is to remove the bottom cover of the UltraZohm case (4 screws).
+   The TE0790 is the small green PCB with the four dip switches in the figure below.
 
 .. image:: cpld_programming/Programmer_Zynq_position.jpg
    :width: 500
@@ -62,7 +77,7 @@ Step-by-step for `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attach
 
 6. Chose the proper CPLD software and chose which CPLDs you want to program. The standard configuration is:
 
-   - D1-D4 with **26Tx_with_enable**
+   - D1-D4 with **30Tx**
    - D5 for the encoder with **30Rx** 
    
 Note that it is possible to program only one of the CPLDs by the enable check box in each line.
@@ -84,32 +99,40 @@ Note that it is possible to program only one of the CPLDs by the enable check bo
 .. _label_cpld_programming_ftdi4ch:
 
 Step-by-step for IsoJTAG :ref:`uz_per_jtag`
--------------------------------------------
+--------------------------------------------
 
-1. Start the Diamond Programmer by Lattice and open the file in the git repository ``Programm_all5_CPLDs.xcf`` with regard to the installed CPLD. 
+1. The IsoJTAG programmer is permanently connected to the SoM and the D-slot CPLDs.
+
+.. image:: images_jtag/isojtag.png
+   :width: 300
+   
+2. Plug the USB cable into JTAG connector on the UltraZohm front panel.
+   Start the Diamond Programmer by Lattice and open the file in the git repository ``Programm_all5_CPLDs.xcf`` with regard to the installed CPLD. 
 
 .. image:: cpld_programming/LA4128V.png
 
 In this example the `CPLD LA4128V <https://www.mouser.de/ProductDetail/Lattice/LA4128V-75TN100E?qs=k0CM90KAVUoIZqpZ9HTArg%3D%3D>`_ is installed on the carrier board.
 
-2. Chose the proper CPLD software and chose which CPLDs you want to program. The standard configuration is:
+3. Chose the proper CPLD software and chose which CPLDs you want to program. The standard configuration is:
 
    - D1-D4 with **30Tx**
    - D5 for the encoder with **30Rx** 
    
 Note that it is possible to program only one of the CPLDs by the enable check box in each line.
 
-3. Plug in the USB cable and turn on the power of the UltraZohm. The three green LED's on the programmer should light up.
+.. image:: cpld_programming/diamond_programmer_settings.jpg
 
-4. Click **Detect cable** and set the right port for **UltraZohm B Location**. Depending on the OS, the mapping can differ (in this case the UltraZohm B Location Port is mapped on FTUSB-0). 
-**
+4. Turn on the power of the UltraZohm. 
+
+5. Click **Detect cable** and set the right port for **UltraZohm B Location**. Depending on the OS, the mapping can differ (in this case the UltraZohm B Location Port is mapped on FTUSB-0). 
+
 .. image:: cpld_programming/detect_cable.png
 
-5. Setup a custom clock divider TCK 3.
+6. Setup a custom clock divider TCK 3.
 
 .. image:: cpld_programming/clockdivider.png
 
-6. Click on "Program", after successful programming it should look like this:
+7. Click on "Program", after successful programming it should look like this:
 
 .. image:: cpld_programming/cpld_programmed.png
 
@@ -117,15 +140,15 @@ Step-by-step for MachXO2
 -------------------------
 
 For programming MachXO2 CPLDS, the settings must be equivalent to :ref:`label_cpld_programming_ftdi4ch`
-* Setup a custom clock divider TCK 3. 
-* Click **Detect cable** and set the right port for **UltraZohm B Location**. 
-* Depending on the OS, the mapping can differ (in this case the UltraZohm B Location Port is mapped on FTUSB-1). 
+   * Setup a custom clock divider TCK 3. 
+   * Click **Detect cable** and set the right port for **UltraZohm B Location**. 
+   * Depending on the OS, the mapping can differ (in this case the UltraZohm B Location Port is mapped on FTUSB-1). 
 
 .. image:: images_diamond/scan_blocation.png  
    :width: 1000
 
 D-Slot CPLD
-############
+"""""""""""
 
 1. Powering On the UZ
 
@@ -153,7 +176,7 @@ D-Slot CPLD
    :width: 1000
    
 S3C
-####
+"""
 
 1. Powering On the UZ
 

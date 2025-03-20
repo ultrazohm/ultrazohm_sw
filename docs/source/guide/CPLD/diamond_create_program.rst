@@ -4,14 +4,17 @@
 Create a CPLD program using Lattice Diamond 
 ===========================================
 
-The main goal of this section is to describe the necessary steps for creating a simple program for the CPLDs on the UltraZohm :math:`\geq` Rev05. 
-All signals from the FPGA to the Digital Adapter cards have to pass through the CPLDs. 
+The main goal of this section is to describe the necessary steps for creating a simple program for the 
+``MACHXO2`` CPLDs on the UltraZohm :math:`\geq` Rev05. 
+All signals from the FPGA to the digital adapter cards have to pass through the CPLDs. 
 
 
 D-Slot CPLDs
-######################
+############
 
-Everything is programmed inside the project ``uz_d_slots.ldf`` . Here we can create additional ``implementations`` for the CPLD. 
+Everything is programmed inside the project ``uz_d_slots.ldf``. 
+It is located in the repository at ``MACHXO2/D_Slot_CPLD_LCMXO2-2000HC-4TG100C/uz_d_slots/``. 
+Here we can create additional ``implementations`` for the CPLD. 
 The advantage of having all CPLD programs within one project is that VHDL code from other files can be used, but every file has its own constraints (e.g. all signals function as inputs versus all signals function as outputs).
 
 Step-by-step
@@ -94,9 +97,11 @@ constraints by opening the ``Spreadsheet View``.
   :width: 1000   
 
 S3C
-#####
+###
 
-The same procedure can be applied to create a program for the S3C.
+The same procedure can be applied to create a program for the S3C. 
+Everything is programmed inside the project ``UZ_Rev05_S3C.ldf``. 
+It is located in the repository at ``MACHXO2/S3C_CPLD_LCMXO2-4000HC-4TG144C/``. 
 
 .. danger::
   Modifying the bitstream of the S3C fundamentally alters the startup and power-down behavior of the UZ. 

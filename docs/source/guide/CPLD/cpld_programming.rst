@@ -206,7 +206,7 @@ Known issues
 ------------
 
 Not possible to find the CPLDs
-###############################
+""""""""""""""""""""""""""""""
 
 .. image:: cpld_programming/error_cannot_find_cplds.png
 

@@ -1,11 +1,12 @@
 .. _label_cpld_create_program:
 
 ================================
-Create a CPLD program using ABEL
+Create a CPLD program using ABEL 
 ================================
 
-The main goal of this section is to describe the necessary steps for creating a simple program for the CPLDs on the UltraZohm. 
-All signals from the FPGA to the Digital Adapter cards have to pass through the CPLDs. 
+The main goal of this section is to describe the necessary steps for creating a simple program for the 
+ispMACH ``LA4128V`` or ``LC4256V`` CPLDs on the UltraZohm :math:`\leq` Rev04. 
+All signals from the FPGA to the digital adapter cards have to pass through the CPLDs. 
 
 Everything is programmed inside the .abl file. Here we can set which ports are inputs or outputs and use logic combinations to create the desired behavior. 
 
@@ -16,7 +17,7 @@ Step-by-step
 
 #. Create a new branch in the repository, e.g. ``feature/project_name``. 
 
-#. Inside the CPLD repository, create a copy of an existing project folder, e.g. ``optical_14tx_4rx``.
+#. Inside the CPLD repository ``ispMACH/LA4128V/`` or ``ispMACH/LC4256V/``, create a copy of an existing project folder, e.g. ``optical_14tx_4rx``.
 
 #. Rename the folder to your project name, try to use a meaningful name.
 

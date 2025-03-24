@@ -1,0 +1,408 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><link rel="stylesheet" type="text/css" href="rtwreport.css" /><script language="JavaScript" type="text/javascript" src="rtwshrink.js"></script><script>function postParentWindowMessage(message) {window.parent.postMessage(message, "*");}</script><style> h3 { margin-bottom: 1ex; } h4.function {   font-size: larger; font-weight: normal;   color: #c05709;	margin-bottom: 0ex; } .description {	border-style: none;	color: DimGray; } .footnote { margin-top: 0.5ex; font-size: small; color: DimGray;} a:link { color: #0076a8 } a:visited, a:hover { color: #004b87 } ul.services { margin-top: 0.5ex; } .include { color: #992211 } a.include:link { color:inherit; text-decoration: none } a.include:hover { text-decoration: underline } a.fcn:link { color:inherit; text-decoration: none } a.fcn:hover { text-decoration: underline } code.usage { white-space: pre-wrap; } .programlisting {   margin-left: 4ex; margin-right: 4ex;   margin-top: 2ex;  margin-bottom: 2ex; } .tooltip { position: relative; display: inline-block; } .tooltip .tooltip-text {   visibility: hidden;   position: absolute;   top: 110%;   left: 0;   background-color: white;   z-index: 1;   box-shadow: 5px 5px 10px 5px Gainsboro;   border-radius: 10px;   padding: 10px 15px 0px; } .tooltip:hover .tooltip-text { visibility: visible; } .tooltip-text .footnote { white-space: nowrap;} </style><title>
+Code Interface Report for Resonant_Controller
+</title>
+
+</head>
+<body>
+<h1>
+Code Interface Report for Resonant_Controller
+</h1>
+<div>
+
+</div>
+<div id="table_of_contents">
+<h3>
+Table of Contents
+</h3>
+<ol>
+<li>
+<a href="#sec_introduction" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_001_control'), 'rtwIdDataInterface_table_001')">
+Introduction
+</a>
+
+</li>
+<li>
+<span>
+<a href="#sec_execution" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_002_control'), 'rtwIdDataInterface_table_002')">
+Function Interfaces
+</a>
+<ul>
+<li>
+<a href="#sec_initialize_functions" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_002_control'), 'rtwIdDataInterface_table_002')">
+Initialize Functions
+</a>
+
+</li>
+<li>
+<a href="#sec_terminate_functions" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_002_control'), 'rtwIdDataInterface_table_002')">
+Terminate Functions
+</a>
+
+</li>
+<li>
+<a href="#sec_periodic_functions" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_002_control'), 'rtwIdDataInterface_table_002')">
+Periodic Functions
+</a>
+
+</li>
+<li>
+<a href="#sec_aperiodic_functions" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_002_control'), 'rtwIdDataInterface_table_002')">
+Aperiodic Functions
+</a>
+
+</li>
+
+</ul>
+</span>
+
+</li>
+<li>
+<span>
+<a href="#sec_data_interfaces" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_003_control'), 'rtwIdDataInterface_table_003')">
+Data Interfaces
+</a>
+<ul>
+<li>
+<a href="#sec_inports" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_003_control'), 'rtwIdDataInterface_table_003')">
+Inports
+</a>
+
+</li>
+<li>
+<a href="#sec_outports" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_003_control'), 'rtwIdDataInterface_table_003')">
+Outports
+</a>
+
+</li>
+<li>
+<a href="#sec_interface_parameters" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_003_control'), 'rtwIdDataInterface_table_003')">
+Parameters
+</a>
+
+</li>
+<li>
+<a href="#sec_data_stores" onclick="rtwTableExpand(window.document, window.document.getElementById('rtwIdDataInterface_table_003_control'), 'rtwIdDataInterface_table_003')">
+Internal data
+</a>
+
+</li>
+
+</ul>
+</span>
+
+</li>
+
+</ol>
+
+</div>
+<h2 name="sec_Introduction" id="sec_introduction">
+1. Introduction <span title="Click to shrink or expand section" style="cursor:pointer;font-weight:normal;" id="rtwIdDataInterface_table_001_control" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, 'rtwIdDataInterface_table_001', false)"><span class="shrink-button">[<u>show</u>]</span></span>
+</h2>
+<table width="100%" style="display: none" name="rtwIdDataInterface_table_001" id="rtwIdDataInterface_table_001" border="0">
+<tr>
+<td align="left" valign="top">
+<p>
+The code generator produced a data code interface for the model. The code interface report summarizes the interface code for model callable entry-point functions and data interface elements, such as root-level inports and outports.
+</p>
+
+</td>
+
+</tr>
+
+</table>
+<h2 name="sec_Function_Interfaces" id="sec_execution">
+2. Function Interfaces <span title="Click to shrink or expand section" style="cursor:pointer;font-weight:normal;" id="rtwIdDataInterface_table_002_control" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, 'rtwIdDataInterface_table_002', false)"><span class="shrink-button">[<u>hide</u>]</span></span>
+</h2>
+<table width="100%" name="rtwIdDataInterface_table_002" id="rtwIdDataInterface_table_002" border="0">
+<tr>
+<td align="left" valign="top">
+External code initiates execution of the generated code by calling entry-point functions generated for the model. The type of function code that the code generator produces for a model depends on the modelling style and periodic rates represented in the model. For more information, see <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'helpview(fullfile(docroot,\'toolbox\',\'ecoder\',\'helptargets.map\'),\'model_entry_points\')'})" >Configure Generated C Function Interface for Model Entry-Point Functions</a><br><br>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<section id="sec_initialize_functions">
+<h3>
+2.1 Initialize Functions
+</h3>
+<p>
+Initialize entry-point functions implement startup behavior. In a model, Initialize Function blocks represent startup behavior explicitly.
+</p>
+<div id="fcn_Resonant_Controller_initialize">
+<h4 class="function">
+Resonant_Controller_initialize
+</h4>
+<span class="description">
+Initialization entry point of generated code
+</span>
+<div class="programlisting">
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'Resonant_Controller.h'})" class="include">Resonant_Controller.h</a>"</span>
+void <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'Resonant_Controller_initialize'})" class="fcn">Resonant_Controller_initialize</a>(RT_MODEL *const rtM)</code>
+</div>
+</div>
+</section>
+<section id="sec_terminate_functions">
+<h3>
+2.2 Terminate Functions
+</h3>
+<p>
+Terminate entry-point functions implement shutdown behavior. In a model, Terminate Function blocks represent shutdown behavior explicitly.
+</p>
+<p>
+No terminate functions represented in model.
+</p>
+</section>
+<section id="sec_periodic_functions">
+<h3>
+2.3 Periodic Functions
+</h3>
+<p>
+Periodic entry-point functions implement model behavior that occurs at a fixed sampling rate. For a rate-based model, the code generator produces a periodic entry-point function for each rate used in the model. In a function-call (export-function) model, Function Call Subsystem blocks that specify a sampling rate represent periodic functions.
+</p>
+<div id="fcn_Resonant_Controller_step">
+<h4 class="function">
+Resonant_Controller_step
+</h4>
+<span class="description">
+Output entry point of generated code. Must be called periodically, every 0.0001 seconds. 
+</span>
+<div class="programlisting">
+<code class="usage"><span class="include">#include "<a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'Resonant_Controller.h'})" class="include">Resonant_Controller.h</a>"</span>
+void <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'jumpToCode',location:'Resonant_Controller_step'})" class="fcn">Resonant_Controller_step</a>(RT_MODEL *const rtM)</code>
+</div>
+</div>
+</section>
+<section id="sec_aperiodic_functions">
+<h3>
+2.4 Aperiodic Functions
+</h3>
+<p>
+Aperiodic (asynchronous) entry-point functions implement component behavior occurring asynchronously. In a function-call (export-function) model, Function Call Subsystem blocks that do not specify a sampling rate represent aperiodic functions.
+</p>
+<p>
+No aperiodic functions represented in model.
+</p>
+</section>
+
+</td>
+
+</tr>
+
+</table>
+<h2 name="sec_Data_Interfaces" id="sec_data_interfaces">
+3. Data Interfaces <span title="Click to shrink or expand section" style="cursor:pointer;font-weight:normal;" id="rtwIdDataInterface_table_003_control" onclick ="if (rtwTableShrink) rtwTableShrink(window.document, this, 'rtwIdDataInterface_table_003', false)"><span class="shrink-button">[<u>hide</u>]</span></span>
+</h2>
+<table width="100%" name="rtwIdDataInterface_table_003" id="rtwIdDataInterface_table_003" border="0">
+<tr>
+<td align="left" valign="top">
+A data code interface maps model data interface elements, such as root-level inports and outports, to storage classes. A storage class specifies the appearance and placement of data elements in the generated code. Storage classes apply direct-access data communication. The list of storage classes available for mapping is determined by the Embedded Coder Dictionary that is associated with the model. You map model interface elements to storage classes in the model code mappings.<br><br>
+</td>
+
+</tr>
+<tr>
+<td align="left" valign="top">
+<section id="sec_inports">
+<h3>
+3.1 Inports
+</h3>
+Variables that are generated in the code based on storage class specifications for model root-level inports.<div id="fcn_rtU.in_ref">
+<h4 class="function">
+rtU.in_ref
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:222\')'})"  name="code2model" class="code2model">&lt;S1&gt;/in_ref</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T in_ref;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.in_m">
+<h4 class="function">
+rtU.in_m
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:257\')'})"  name="code2model" class="code2model">&lt;S1&gt;/in_m</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T in_m;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.omega_el">
+<h4 class="function">
+rtU.omega_el
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:223\')'})"  name="code2model" class="code2model">&lt;S1&gt;/omega_el</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T omega_el;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.h">
+<h4 class="function">
+rtU.h
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:224\')'})"  name="code2model" class="code2model">&lt;S1&gt;/h</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T h;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.T_sw">
+<h4 class="function">
+rtU.T_sw
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:225\')'})"  name="code2model" class="code2model">&lt;S1&gt;/T_sw</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T T_sw;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.VR">
+<h4 class="function">
+rtU.VR
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:255\')'})"  name="code2model" class="code2model">&lt;S1&gt;/VR</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T VR;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.Klim">
+<h4 class="function">
+rtU.Klim
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:266\')'})"  name="code2model" class="code2model">&lt;S1&gt;/Klim</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T Klim;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.upper_limit">
+<h4 class="function">
+rtU.upper_limit
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:268\')'})"  name="code2model" class="code2model">&lt;S1&gt;/upper_limit</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T upper_limit;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.lower_limit">
+<h4 class="function">
+rtU.lower_limit
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:269\')'})"  name="code2model" class="code2model">&lt;S1&gt;/lower_limit</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T lower_limit;
+  ...
+} rtU;</code>
+</div>
+</div>
+<div id="fcn_rtU.Reset">
+<h4 class="function">
+rtU.Reset
+</h4>
+<span class="description">
+Input data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:283\')'})"  name="code2model" class="code2model">&lt;S1&gt;/Reset</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T Reset;
+  ...
+} rtU;</code>
+</div>
+</div>
+</section>
+<section id="sec_outports">
+<h3>
+3.2 Outports
+</h3>
+Variables that are generated in the code based on storage class specifications for model root-level outports.<div id="fcn_rtY.out">
+<h4 class="function">
+rtY.out
+</h4>
+<span class="description">
+Output data for <a href="javascript: void(0)" onclick="postParentWindowMessage({message:'legacyMCall', expr:'coder.internal.code2model(\'uz_ResonantController:250\')'})"  name="code2model" class="code2model">&lt;S1&gt;/out</a>
+</span>
+<div class="programlisting">
+<code class="usage">struct {
+  ...
+  real32_T out;
+  ...
+} rtY;</code>
+</div>
+</div>
+</section>
+<section id="sec_interface_parameters">
+<h3>
+3.3 Parameters
+</h3>
+Variables in the generated code that represent model parameters and model parameter arguments that are generated in the code based on a storage class specification and flagged to be tunable or not tunable while the model code executes in the target environment.<p>
+No interface/tunable parameters in model.
+</p>
+</section>
+<section id="sec_data_stores">
+<h3>
+3.4 Internal data
+</h3>
+Variables in the generated code that represent signal data, blocks that have internal state, and data stores that are generated in the code based on a storage class specification and flagged to be measured or not measured while the model code executes in the target environment.<p>
+No data stores in model; note that this report lists only data stores with non-auto default storage class and global data stores
+</p>
+</section>
+
+</td>
+
+</tr>
+
+</table>
+
+<script>function postParentWindowMessage(message) {window.parent.postMessage(message, "*");}</script>
+</body>
+
+</html>

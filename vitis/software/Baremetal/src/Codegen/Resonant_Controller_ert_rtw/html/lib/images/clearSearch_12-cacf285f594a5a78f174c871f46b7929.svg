@@ -1,0 +1,4 @@
+<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M9.5 1.5L5.5 5.5M5.5 5.5L1.5 9.5M5.5 5.5L1.5 1.5M5.5 5.5L9.5 9.5" stroke="var(--mw-icon-object-primary, #616160)" stroke-linecap="round" stroke-linejoin="round"/>
+<use href="#clearSearch" />
+</svg>

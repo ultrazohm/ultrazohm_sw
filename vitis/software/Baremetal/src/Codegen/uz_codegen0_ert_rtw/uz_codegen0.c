@@ -8,21 +8,50 @@
  * Code generated for Simulink model 'uz_codegen0'.
  *
  * Model version                  : 1.29
- * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Thu Oct 13 09:55:19 2022
+ * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
+ * C/C++ source code generated on : Thu Mar 13 14:57:33 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (12), Warning (1), Error (0)
+ * Validation result: Not run
  */
 
 #include "uz_codegen0.h"
 #include <math.h>
 #include "rtwtypes.h"
-#include <string.h>
+
+/*===========*
+ * Constants *
+ *===========*/
+#define RT_PI                          3.14159265358979323846
+#define RT_PIF                         3.1415927F
+#define RT_LN_10                       2.30258509299404568402
+#define RT_LN_10F                      2.3025851F
+#define RT_LOG10E                      0.43429448190325182765
+#define RT_LOG10EF                     0.43429449F
+#define RT_E                           2.7182818284590452354
+#define RT_EF                          2.7182817F
+
+/*
+ * UNUSED_PARAMETER(x)
+ *   Used to specify that a function parameter (argument) is required but not
+ *   accessed by the function body.
+ */
+#ifndef UNUSED_PARAMETER
+#if defined(__LCC__)
+#define UNUSED_PARAMETER(x)                                      /* do nothing */
+#else
+
+/*
+ * This is the semi-ANSI standard way of indicating that an
+ * unused function parameter is required.
+ */
+#define UNUSED_PARAMETER(x)            (void) (x)
+#endif
+#endif
 
 /* Model step function */
 void uz_codegen0_step(RT_MODEL *const rtM)
@@ -104,27 +133,8 @@ void uz_codegen0_step(RT_MODEL *const rtM)
 /* Model initialize function */
 void uz_codegen0_initialize(RT_MODEL *const rtM)
 {
-  DW *rtDW = rtM->dwork;
-  ExtU *rtU = (ExtU *) rtM->inputs;
-  ExtY *rtY = (ExtY *) rtM->outputs;
-
-  /* Registration code */
-
-  /* states (dwork) */
-  (void) memset((void *)rtDW, 0,
-                sizeof(DW));
-
-  /* external inputs */
-  (void)memset(rtU, 0, sizeof(ExtU));
-
-  /* external outputs */
-  (void)memset(rtY, 0, sizeof(ExtY));
-
-  /* InitializeConditions for DiscreteIntegrator: '<S1>/Discrete-Time Integrator' */
-  rtDW->DiscreteTimeIntegrator_PrevRese = 0;
-
-  /* InitializeConditions for DiscreteIntegrator: '<S1>/Discrete-Time Integrator2' */
-  rtDW->DiscreteTimeIntegrator2_PrevRes = 0;
+  /* (no initialization code required) */
+  UNUSED_PARAMETER(rtM);
 }
 
 /*

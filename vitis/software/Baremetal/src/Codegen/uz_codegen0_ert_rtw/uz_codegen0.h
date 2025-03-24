@@ -8,26 +8,26 @@
  * Code generated for Simulink model 'uz_codegen0'.
  *
  * Model version                  : 1.29
- * Simulink Coder version         : 9.8 (R2022b) 13-May-2022
- * C/C++ source code generated on : Thu Oct 13 09:55:19 2022
+ * Simulink Coder version         : 24.1 (R2024a) 19-Nov-2023
+ * C/C++ source code generated on : Thu Mar 13 14:57:33 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
  * Code generation objectives:
  *    1. Execution efficiency
  *    2. Traceability
- * Validation result: Passed (12), Warning (1), Error (0)
+ * Validation result: Not run
  */
 
-#ifndef RTW_HEADER_uz_codegen0_h_
-#define RTW_HEADER_uz_codegen0_h_
+#ifndef uz_codegen0_h_
+#define uz_codegen0_h_
 #ifndef uz_codegen0_COMMON_INCLUDES_
 #define uz_codegen0_COMMON_INCLUDES_
 #include "rtwtypes.h"
+#include "math.h"
 #endif                                 /* uz_codegen0_COMMON_INCLUDES_ */
 
 #include <stddef.h>
-#include <string.h>
 
 /* Macros for accessing real-time model data structure */
 #ifndef rtmGetRootDWork
@@ -52,6 +52,14 @@
 
 #ifndef rtmSetY
 #define rtmSetY(rtm, val)              ((rtm)->outputs = (val))
+#endif
+
+#ifndef rtmGetErrorStatus
+#define rtmGetErrorStatus(rtm)         ((rtm)->errorStatus)
+#endif
+
+#ifndef rtmSetErrorStatus
+#define rtmSetErrorStatus(rtm, val)    ((rtm)->errorStatus = (val))
 #endif
 
 #define uz_codegen0_M                  (rtM)
@@ -88,6 +96,7 @@ typedef struct {
 
 /* Real-time Model Data Structure */
 struct tag_RTM {
+  const char_T * volatile errorStatus;
   ExtU *inputs;
   ExtY *outputs;
   DW *dwork;
@@ -122,7 +131,7 @@ extern void uz_codegen0_step(RT_MODEL *const rtM);
  * Requirements for '<Root>': uz_codegen0
 
  */
-#endif                                 /* RTW_HEADER_uz_codegen0_h_ */
+#endif                                 /* uz_codegen0_h_ */
 
 /*
  * File trailer for generated code.

@@ -18,9 +18,9 @@ extern DS_Data Global_Data;
 
     const struct uz_PMSM_t Voestalpine = {
       .R_ph_Ohm = 0.157,
-      .Ld_Henry = 332e-6f,
-      .Lq_Henry = 332e-6f,
-      .Psi_PM_Vs = 0.0181f,
+      .Ld_Henry = 585e-6f,
+      .Lq_Henry = 770e-6f,
+      .Psi_PM_Vs = 0.0167f,
 	  .polePairs = 4.0f,
 	  .I_max_Ampere = 8.0f,
 	  .J_kg_m_squared = 0.000108

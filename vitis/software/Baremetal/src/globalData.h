@@ -76,6 +76,7 @@ typedef struct _actualValues_ {
 	float i_a_right;
 	float i_b_right;
 	float i_c_right;
+	float i_c_right_CD;
 	float v_a_left;
 	float v_b_left;
 	float v_c_left;

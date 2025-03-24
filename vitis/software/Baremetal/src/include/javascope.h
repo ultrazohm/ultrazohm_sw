@@ -74,6 +74,7 @@ enum JS_OberservableData {
 	JSO_op_rc_meas,
 	JSO_avg_temp_right,
 	JSO_avg_temp_left,
+	JSO_ic_right_CD,
 	JSO_ENDMARKER
 };
 

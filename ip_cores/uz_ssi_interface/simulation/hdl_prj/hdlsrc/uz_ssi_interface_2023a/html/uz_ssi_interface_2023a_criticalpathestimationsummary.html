@@ -1,0 +1,359 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="rtwreport.css" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>
+Critical Path Summary Report
+</title>
+
+</head>
+<body bgcolor="#ffffff" link="0033CC" vlink="#666666">
+<script>
+<!--
+function hdlTableShrink(o,tagNameStr)
+{
+var temp = document.getElementsByName(tagNameStr);
+if (temp[0].style.display == "")
+{
+	temp[0].style.display = "none";
+	o.innerHTML = '<span style="font-family:monospace">[+]</span>';
+}
+else
+{
+	temp[0].style.display = "";
+	o.innerHTML = '<span style="font-family:monospace">[-]</span>';
+}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableCollapseAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "none";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[+]</span>';
+	}
+}
+// -->
+</script>
+<script>
+<!--
+function hdlTableExpandAll(o, numNtks, numComps)
+{
+	var id = "";
+	for (i = 1; i <= numNtks; i++)
+	{
+		for (j = 1; j <= numComps; j++)
+		{
+			id = "Multiply" + "_" + i + "_" + j;
+			var temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Adder" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Subtractor" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Register" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "RAM" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+			id = "Multiplexer" + "_" + i + "_" + j;
+			temp = document.getElementsByName(id);
+			if (temp != null && temp.length > 0)
+			{
+				temp[0].style.display = "";
+			}
+		}
+	}
+	var collapsibles = document.getElementsByName('collapsible');
+	for (i = 0; i < collapsibles.length; i++)
+	{
+		collapsibles[i].innerHTML = '<span style="font-family:monospace">[-]</span>';
+	}
+}
+// -->
+</script>
+<font SIZE="+2" COLOR="#000066">
+Critical Path Report for uz_ssi_interface_2023a/uz_ssi_interface
+</font>
+<br /><br /><br /><a name="Summary Section">
+<font size="+1" color="#000066">
+<b class="midprod">
+Summary Section
+</b>
+
+</font>
+
+</a>
+<hr>Critical Path Delay : 4.878 ns<br>Critical Path Begin : <a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:53')" name="code2model" class="code2model">
+base_counter
+</a>
+<br>Critical Path End : <a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:133')" name="code2model" class="code2model">
+Delay13
+</a>
+<br>Highlight Critical Path: <a href="matlab:run('hdl_prj\hdlsrc\uz_ssi_interface_2023a\criticalPathEstimated')">hdl_prj\hdlsrc\uz_ssi_interface_2023a\criticalPathEstimated.m</a><br>Highlight Uncharacterized blocks: <a href="matlab:run('hdl_prj\hdlsrc\uz_ssi_interface_2023a\highlightCriticalPathEstimationOffendingBlocks')">hdl_prj\hdlsrc\uz_ssi_interface_2023a\highlightCriticalPathEstimationOffendingBlocks.m</a><br><br /><br /><a name="Critical Path Details">
+<font size="+1" color="#000066">
+<b class="midprod">
+Critical Path Details
+</b>
+
+</font>
+
+</a>
+<hr><table width="100%" border="1">
+<tr style="background-color: #eeeeee">
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Id
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Propagation (ns)
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Delay (ns)
+</b>
+
+</th>
+<th width="25%" align="left" valign="top" style="border-style: none">
+<b>
+Block Path
+</b>
+
+</th>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+1
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3300
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.3300
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:53')" name="code2model" class="code2model">
+base_counter
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+2
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.1610
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.8310
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:44:4')" name="code2model" class="code2model">
+Positive
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+3
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+1.8480
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.6870
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:44:3')" name="code2model" class="code2model">
+FixPt Relational Operator
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+4
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+2.7360
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.8880
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:57')" name="code2model" class="code2model">
+AND
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+5
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+3.7290
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.9930
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:58')" name="code2model" class="code2model">
+OR
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+6
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+4.6170
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.8880
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:131')" name="code2model" class="code2model">
+AND
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+7
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+4.6170
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:132')" name="code2model" class="code2model">
+Goto1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #eeeeff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+8
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+4.6170
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.0000
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:130')" name="code2model" class="code2model">
+From1
+</a>
+
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td width="25%" align="left" valign="top" style="border-style: none">
+9
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+4.8780
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+0.2610
+</td>
+<td width="25%" align="left" valign="top" style="border-style: none">
+<a href="matlab:coder.internal.code2model('gm_uz_ssi_interface_2023a:133')" name="code2model" class="code2model">
+Delay13
+</a>
+
+</td>
+
+</tr>
+
+</table>
+<br /><br />
+</body>
+
+</html>

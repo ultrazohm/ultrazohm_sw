@@ -72,6 +72,12 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_DutycycleA1,
+	JSO_DutycycleB1,
+	JSO_DutycycleC1,
+	JSO_DutycycleA2,
+	JSO_DutycycleB2,
+	JSO_DutycycleC2,
 	JSO_ENDMARKER
 };
 
@@ -233,9 +239,9 @@ MYBUTTONS_LABELS_ZEROVALUE=0,
 CIL,
 REAL,
 CurrentControl,
-DDPG_1_64,
-DDPG_3_64,
-Enable Current Sweep,
+CurrentControlOff,
+MyButton5,
+MyButton6,
 MyButton7,
 MyButton8,
 MYBUTTONS_LABELS_ENDMARKER

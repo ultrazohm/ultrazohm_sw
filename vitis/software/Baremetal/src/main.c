@@ -34,6 +34,43 @@ DS_Data Global_Data = {
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
+	.av.select_CurrentControl = false,
+    .av.select_Real = false,
+	.av.select_CIL = false,
+	.av.n_ref_rpm = 0.0f,
+	.av.i_d_ref = 0.0f,
+	.av.i_q_ref = 0.0f,
+	.av.i_X_ref = 0.0f,
+	.av.i_Y_ref = 0.0f,
+	.av.v_dqxy_limited_volts = {0},
+    .av.v_dq_limited_volts = {0},
+	.av.v_xy_limited_volts = {0},
+	.av.v_dq_non_limited_volts = {0},
+	.av.v_xy_non_limited_volts = {0},
+	.av.v_dqxy_limited_volts_k_old = {0},
+	.av.v_dqxy_non_limited_volts = {0},
+	.av.CIL_i_dqxy_meas = {0},
+	.av.REAL_i_abc_meas = {0},
+	.av.REAL_v_abc_meas = {0},
+	.av.REAL_v_abc_ref = {0},
+	.av.REAL_i_dqxy_meas = {0},
+	.av.REAL_v_dqxy_meas = {0},
+	.av.CIL_v_dq_reference = {0},
+	.av.CIL_v_xy_reference = {0},
+	.av.CIL_v_z1z2_reference = {0},
+	.av.REAL_v_dq_reference = {0},
+	.av.REAL_v_xy_reference = {0},
+	.av.REAL_v_z1z2_reference = {0},
+	.av.i_dq_reference = {0},
+	.av.i_xy_reference = {0},
+	.av.i_z1z2_reference = {0},
+	.av.CIL_i_dq_meas= {0},
+	.av.CIL_i_xy_meas = {0},
+	.av.CIL_i_z1z2_meas = {0},
+	.av.REAL_i_dq_meas= {0},
+	.av.REAL_i_xy_meas = {0},
+	.av.REAL_i_z1z2_meas = {0},
+	.av.DutyCycle_output = {0},
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
@@ -46,7 +83,6 @@ enum init_chain
     init_gpios,
     init_software,
 	init_CurrentControl,
-	init_nn,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -79,18 +115,8 @@ int main(void)
         case init_CurrentControl:
         	Global_Data.objects.CC_dq_instance = init_dq_FOC();
         	Global_Data.objects.CC_xy_instance = init_xy_FOC();
-        	initialization_chain = init_nn;
+        	initialization_chain = init_ip_cores;
         	break;
-
-        case init_nn:
-#if NN_15_INPUT_1_64==1
-        	nn_15_input_1_64_init();
-#endif
-#if NN_17_INPUT_1_64==1
-        	nn_17_input_1_64_init();
-#endif
-            initialization_chain = init_ip_cores;
-            break;
 
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();

@@ -12,6 +12,8 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_nn/uz_nn.h"
 #include "uz/uz_matrix/uz_matrix.h"
+#include "uz/uz_space_vector_modulation/uz_space_vector_modulation.h"
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -100,7 +102,6 @@ typedef struct _actualValues_ {
 	float theta_mech;
 	float theta_offset; //in rad/s
 	float temperature;
-	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float omega_mech;
 	float omega_elec;
@@ -108,6 +109,48 @@ typedef struct _actualValues_ {
 	float temp_VSI_2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
+
+	bool select_CurrentControl;
+	bool select_Real;
+	bool select_CIL;
+	float n_ref_rpm;
+	float i_d_ref;
+	float i_q_ref;
+	float i_X_ref;
+	float i_Y_ref;
+
+
+	uz_6ph_dq_t v_dqxy_limited_volts;
+	uz_3ph_dq_t v_dq_limited_volts;
+	uz_3ph_dq_t v_xy_limited_volts;
+	uz_3ph_dq_t v_dq_non_limited_volts;
+	uz_3ph_dq_t v_xy_non_limited_volts;
+	uz_6ph_dq_t v_dqxy_limited_volts_k_old;
+	uz_6ph_dq_t v_dqxy_non_limited_volts;
+	uz_6ph_dq_t CIL_i_dqxy_meas;
+	uz_6ph_abc_t REAL_i_abc_meas;
+	uz_6ph_abc_t REAL_v_abc_meas;
+	uz_6ph_abc_t REAL_v_abc_ref;
+	uz_6ph_alphabeta_t REAL_v_vsd_ref;
+	uz_6ph_dq_t REAL_i_dqxy_meas;
+	uz_6ph_dq_t REAL_v_dqxy_meas;
+	uz_3ph_dq_t CIL_v_dq_reference;
+	uz_3ph_dq_t CIL_v_xy_reference;
+	uz_3ph_dq_t CIL_v_z1z2_reference;
+	uz_3ph_dq_t REAL_v_dq_reference;
+	uz_3ph_dq_t REAL_v_xy_reference;
+	uz_3ph_dq_t REAL_v_z1z2_reference;
+	uz_3ph_dq_t i_dq_reference;
+	uz_3ph_dq_t i_xy_reference;
+	uz_3ph_dq_t i_z1z2_reference;
+	uz_3ph_dq_t CIL_i_dq_meas;
+	uz_3ph_dq_t CIL_i_xy_meas;
+	uz_3ph_dq_t CIL_i_z1z2_meas;
+	uz_3ph_dq_t REAL_i_dq_meas;
+	uz_3ph_dq_t REAL_i_xy_meas;
+	uz_3ph_dq_t REAL_i_z1z2_meas;
+	struct uz_DutyCycle_2x3ph_t DutyCycle_output;
+
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -138,10 +181,6 @@ typedef struct{
 	uz_pmsm_model6ph_dq_t* CIL_pmsm;
 	uz_CurrentControl_t* CC_dq_instance;
 	uz_CurrentControl_t* CC_xy_instance;
-	uz_matrix_t* matrix_input_15n;
-	uz_nn_t* nn_layer_15n;
-	uz_matrix_t* matrix_input_17n;
-	uz_nn_t* nn_layer_17n;
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
 }object_pointers_t;

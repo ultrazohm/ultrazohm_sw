@@ -104,6 +104,11 @@ struct uz_DutyCycle_2x3ph_t  uz_CSVPWM_24_2L_1ML_1M_v2_INJ(uz_6ph_alphabeta_t u_
 	float u_min1 = uz_getmin_3ph_abc(u_abc_sys1);
 	float u_mid1 = uz_getmid_3ph_abc(u_abc_sys1);
 
+	float u_max2 = uz_getmax_3ph_abc(u_abc_sys2);
+	float u_min2 = uz_getmin_3ph_abc(u_abc_sys2);
+	float u_mid2 = uz_getmid_3ph_abc(u_abc_sys2);
+
+
 	if (sector_24_sys1 <= 1){
 	    u_n1 = u_max1 * (sqrt(3)/2-1);
 	}
@@ -121,6 +126,26 @@ struct uz_DutyCycle_2x3ph_t  uz_CSVPWM_24_2L_1ML_1M_v2_INJ(uz_6ph_alphabeta_t u_
 	}
 	else if (sector_24_sys1 >= 8){
 	    u_n1 = u_max1 * (SQRT_3_HALF-1.0f);
+	}
+
+
+	if (sector_24_sys2 <= 1){
+	    u_n2 = u_max2 * (sqrt(3)/2-1);
+	}
+	else if (sector_24_sys2 == 2){
+	    u_n2 = u_mid2/2;
+	}
+	else if (sector_24_sys2 == 3){
+	    u_n2 = u_mid2/2;
+	}
+	else if (sector_24_sys2 == 4 || sector_24_sys2 == 5){
+	    u_n2 = u_min2 * (SQRT_3_HALF-1.0f);
+	}
+	else if (sector_24_sys2 == 6 || sector_24_sys2 == 7){
+	    u_n2 = u_mid2/2;
+	}
+	else if (sector_24_sys2 >= 8){
+	    u_n2 = u_max2 * (SQRT_3_HALF-1.0f);
 	}
 
 

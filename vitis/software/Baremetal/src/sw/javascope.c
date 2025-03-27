@@ -41,12 +41,6 @@ extern uz_3ph_dq_t i_xy_reference;
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 extern float start_marker;
 
-extern uz_3ph_dq_t v_dq_non_limited_volts;
-extern uz_3ph_dq_t v_xy_non_limited_volts;
-extern uz_3ph_dq_t v_dq_limited_volts;
-extern uz_3ph_dq_t v_xy_limited_volts;
-extern uz_6ph_dq_t v_dqxy_non_limited_volts;
-extern uz_6ph_dq_t v_dqxy_limited_volts;
 int JavaScope_initialize(DS_Data* data)
 {
 	int Status = 0;
@@ -85,18 +79,18 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iX]			= &data->av.I_X;
 	js_ch_observable[JSO_iY]			= &data->av.I_Y;
 	js_ch_observable[JSO_id] 			= &data->av.I_d;
-	js_ch_observable[JSO_v_d_non] 			= &v_dqxy_non_limited_volts.d;
-	js_ch_observable[JSO_v_q_non] 			= &v_dqxy_non_limited_volts.q;
-	js_ch_observable[JSO_v_x_non] 			= &v_dqxy_non_limited_volts.x;
-	js_ch_observable[JSO_v_y_non] 			= &v_dqxy_non_limited_volts.y;
-	js_ch_observable[JSO_v_d_lim] = &v_dqxy_limited_volts.d;//k
-	js_ch_observable[JSO_v_q_lim] = &v_dqxy_limited_volts.q;
-	js_ch_observable[JSO_v_x_lim] = &v_dqxy_limited_volts.x;
-	js_ch_observable[JSO_v_y_lim] = &v_dqxy_limited_volts.y;
-	js_ch_observable[JSO_id_ref] = &i_dq_reference.d;
-	js_ch_observable[JSO_iq_ref] = &i_dq_reference.q;
-	js_ch_observable[JSO_iX_ref] = &i_xy_reference.d;
-	js_ch_observable[JSO_iY_ref] = &i_xy_reference.q;
+	js_ch_observable[JSO_v_d_non] 			= &data->av.v_dqxy_non_limited_volts.d;
+	js_ch_observable[JSO_v_q_non] 			= &data->av.v_dqxy_non_limited_volts.q;
+	js_ch_observable[JSO_v_x_non] 			= &data->av.v_dqxy_non_limited_volts.x;
+	js_ch_observable[JSO_v_y_non] 			= &data->av.v_dqxy_non_limited_volts.y;
+	js_ch_observable[JSO_v_d_lim] = &data->av.v_dqxy_limited_volts.d;//k
+	js_ch_observable[JSO_v_q_lim] = &data->av.v_dqxy_limited_volts.q;
+	js_ch_observable[JSO_v_x_lim] = &data->av.v_dqxy_limited_volts.x;
+	js_ch_observable[JSO_v_y_lim] = &data->av.v_dqxy_limited_volts.y;
+	js_ch_observable[JSO_id_ref] = &data->av.i_dq_reference.d;
+	js_ch_observable[JSO_iq_ref] = &data->av.i_dq_reference.q;
+	js_ch_observable[JSO_iX_ref] = &data->av.i_xy_reference.d;
+	js_ch_observable[JSO_iY_ref] = &data->av.i_xy_reference.q;
 	js_ch_observable[JSO_start_marker] 			= &start_marker;
 	js_ch_observable[JSO_Theta_el] 		= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 	= &data->av.theta_mech;
@@ -107,6 +101,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   	= &lifecheck;
 	js_ch_observable[JSO_ISR_Period_us]	= &ISR_period_us;
+	js_ch_observable[JSO_DutycycleA1] = &data->av.DutyCycle_output.system1.DutyCycle_A;
+	js_ch_observable[JSO_DutycycleB1] = &data->av.DutyCycle_output.system1.DutyCycle_B;
+	js_ch_observable[JSO_DutycycleC1] = &data->av.DutyCycle_output.system1.DutyCycle_C;
+	js_ch_observable[JSO_DutycycleA2] = &data->av.DutyCycle_output.system2.DutyCycle_A;
+	js_ch_observable[JSO_DutycycleB2] = &data->av.DutyCycle_output.system2.DutyCycle_B;
+	js_ch_observable[JSO_DutycycleC2] = &data->av.DutyCycle_output.system2.DutyCycle_C;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

@@ -25,6 +25,7 @@ enum JS_OberservableData {
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
 	JSO_theta_mech,
+	JSO_ssi0_si_angle,
 	JSO_ua,
 	JSO_ub,
 	JSO_uc,

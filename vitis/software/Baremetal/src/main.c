@@ -15,6 +15,8 @@
 
 // Includes from own files
 #include "main.h"
+#include "uz/uz_math_constants.h"
+void init_ssi_interface();
 
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -77,7 +79,7 @@ int main(void)
         case init_gpios:
             Initialize_AXI_GPIO();
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
-            uz_frontplane_button_and_led_init(apu_version_final); 
+            uz_frontplane_button_and_led_init(apu_version_final);
             ultrazohm_state_machine_init(apu_version_final);
             initialization_chain = init_software;
             break;
@@ -103,6 +105,8 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            // ssi init for testing
+            init_ssi_interface();
             initialization_chain = print_msg;
             break;
         case print_msg:
@@ -126,4 +130,16 @@ int main(void)
         }
     }
     return (status);
+}
+
+void init_ssi_interface() {
+	// set clock divider
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, 25U);
+	// set encoder bit width
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x104, 17U);
+	// set edge delay for reading position bits
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, 3U);
+	// reciprocal bit width times two pi
+	uz_axi_write_float(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, (1.0f/(float)((2^17)-1)*2.0f*UZ_PIf));
+
 }

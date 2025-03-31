@@ -27,19 +27,24 @@ DS_Data Global_Data = {
         .halfBridge4DutyCycle = 0.0f,
         .halfBridge5DutyCycle = 0.0f,
         .halfBridge6DutyCycle = 0.0f,
-        .halfBridge7DutyCycle = 0.0f,
-        .halfBridge8DutyCycle = 0.0f,
-        .halfBridge9DutyCycle = 0.0f,
-        .halfBridge10DutyCycle = 0.0f,
-        .halfBridge11DutyCycle = 0.0f,
-        .halfBridge12DutyCycle = 0.0f},
+		.halfBridge7DutyCycle = 0.0f,
+		.halfBridge8DutyCycle = 0.0f,
+		.halfBridge9DutyCycle = 0.0f,
+		.halfBridge10DutyCycle = 0.0f,
+		.halfBridge11DutyCycle = 0.0f,
+		.halfBridge12DutyCycle = 0.0f
+    },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+    	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
+    }
+};
 
 enum init_chain
 {
-    init_assertions_and_wait_for_apu_handshake = 0,
+    init_assertions = 0,
     init_gpios,
     init_software,
     init_ip_cores,
@@ -47,12 +52,7 @@ enum init_chain
     init_interrupts,
     infinite_loop
 };
-enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshake;
-#include "APU_RPU_shared.h"
-#include "xil_cache.h"
-
-uint32_t apu_version_final = 0;
-uint32_t rpu_version_final = 0;
+enum init_chain initialization_chain = init_assertions;
 
 int main(void)
 {
@@ -61,26 +61,13 @@ int main(void)
     {
         switch (initialization_chain)
         {
-        case init_assertions_and_wait_for_apu_handshake:
-            uz_assert_configuration(); 
-            write_rpu_version(0U);
-            do
-            {
-                apu_version_final = read_apu_version();
-            } while (!(apu_version_final == 257U));
-            write_rpu_version(UZ_HARDWARE_VERSION);
-            do
-            {
-                apu_version_final = read_apu_version();
-            } while ((apu_version_final == 257U));
-            write_rpu_version(apu_version_final);
+        case init_assertions:
+            uz_assert_configuration(); // This has to be the first line of code in main.c
             initialization_chain = init_gpios;
             break;
         case init_gpios:
-            Initialize_AXI_GPIO();
-            uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
-            uz_frontplane_button_and_led_init(apu_version_final);
-            ultrazohm_state_machine_init(apu_version_final);
+            Initialize_AXI_GPIO();               // This has to be the second line of code in main.c since the assertion callback uses the AXI_GPIO to disable the system
+            uz_frontplane_button_and_led_init(); // This has to be the third line of code since the assertion callback uses the LEDs to indicate an error
             initialization_chain = init_software;
             break;
         case init_software:
@@ -109,11 +96,11 @@ int main(void)
             init_ssi_interface();
             initialization_chain = print_msg;
             break;
-        case print_msg:
+	    case print_msg:
             uz_printf("\r\n\r\n");
             uz_printf("Welcome to the UltraZohm\r\n");
             uz_printf("----------------------------------------\r\n");
-            uz_printf("RPU Build Date: %s at %s,\r\n", __DATE__, __TIME__);
+            uz_printf("RPU Build Date: %s at %s,\r\n",__DATE__, __TIME__);
 
             initialization_chain = init_interrupts;
             break;
@@ -132,14 +119,17 @@ int main(void)
     return (status);
 }
 
+
 void init_ssi_interface() {
+	float conversion_pos = 1.0f/524287.0f*2.0f*UZ_PIf;
+
 	// set clock divider
-	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, 25U);
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, 100U);
 	// set encoder bit width
-	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x104, 17U);
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x104, 19U);
 	// set edge delay for reading position bits
-	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, 3U);
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, 7U);
 	// reciprocal bit width times two pi
-	uz_axi_write_float(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, (1.0f/(float)((2^17)-1)*2.0f*UZ_PIf));
+	uz_axi_write_float(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, conversion_pos);
 
 }

@@ -38,6 +38,7 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+uint32_t edge_delay = 7U;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -52,7 +53,9 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    Global_Data.av.ssi_0_angle_2pi = uz_axi_read_float(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x10C);
+    Global_Data.av.ssi0_position_2pi = uz_axi_read_float(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x10C);
+
+    uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, edge_delay);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

@@ -1,11 +1,10 @@
 SLStudio.Utils.RemoveHighlighting(get_param('uz_ssi_interface_2023a', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_ssi_interface_2023a', 'handle'));
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data', 1, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/From3', 0, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/Goto2', 0, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/OR', 0, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/From9', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/Data Type Conversion', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/Data Type Conversion', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/Goto1', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/ssi_clock_generator', 0, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/clk_idle_and_delay_first_clock_function/S-R Flip-Flop', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Detect Rise Positive2', 0, 1, '');

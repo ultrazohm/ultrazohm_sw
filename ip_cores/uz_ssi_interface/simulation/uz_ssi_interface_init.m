@@ -18,7 +18,7 @@ t_plant = 1/f_plant;    % Plant sample time in s
 ssi_clk_divider = 25; 
 
 % bit width of the connected ssi encoder
-ssi_encoder_bit_width = 17; 
+ssi_encoder_bit_width = 19; 
 
 % acc. to datasheet of manufacturer RLS encoders for ssi clock rates higher
 % than 500 kHz, the first clk pulse after clock goes low in the beginning

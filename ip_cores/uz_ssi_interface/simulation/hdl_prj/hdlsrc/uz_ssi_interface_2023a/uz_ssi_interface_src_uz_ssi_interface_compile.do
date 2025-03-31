@@ -8,13 +8,13 @@ vcom  uz_ssi_interface_src_Model.vhd
 vcom  uz_ssi_interface_src_Sample_and_Hold1.vhd
 vcom  uz_ssi_interface_src_Serial_In_Parallel_Out.vhd
 vcom  uz_ssi_interface_src_sample_serial_ssi_data.vhd
-vcom  uz_ssi_interface_src_Detect_Rise_Positive1_block.vhd
-vcom  uz_ssi_interface_src_S_R_Flip_Flop.vhd
-vcom  uz_ssi_interface_src_ssi_clock_generator.vhd
 vcom  uz_ssi_interface_src_Detect_Rise_Positive.vhd
 vcom  uz_ssi_interface_src_Detect_Rise_Positive2_block.vhd
-vcom  uz_ssi_interface_src_S_R_Flip_Flop_block.vhd
+vcom  uz_ssi_interface_src_S_R_Flip_Flop.vhd
 vcom  uz_ssi_interface_src_ssi_clock_enable_for_n_bits.vhd
+vcom  uz_ssi_interface_src_Detect_Rise_Positive1_block.vhd
+vcom  uz_ssi_interface_src_S_R_Flip_Flop_block.vhd
+vcom  uz_ssi_interface_src_ssi_clock_generator.vhd
 vcom  uz_ssi_interface_src_Detect_Rise_Positive2_block1.vhd
 vcom  uz_ssi_interface_src_S_R_Flip_Flop_block1.vhd
 vcom  uz_ssi_interface_src_clk_idle_and_delay_first_clock_function.vhd

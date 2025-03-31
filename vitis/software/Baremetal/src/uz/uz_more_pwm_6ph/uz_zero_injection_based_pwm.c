@@ -18,50 +18,36 @@
 #include "../uz_HAL.h"
 #include <math.h>
 #include "../uz_signals/uz_signals.h"
+#include "uz_zero_injection_pwm_3ph.h"
 
 #define SQRT_3_HALF sqrt(3.0f)/2.0f
 
-float uz_getmax_3ph_abc(uz_3ph_abc_t input){
-	float temp = 0.0f;
 
-	if(input.a > input.b){
-		temp = input.a;
-	}else{
-		temp = input.b;
-	}
-	if(input.c > temp){
-		temp = input.c;
-	}
-	return temp;
+
+
+
+struct uz_DutyCycle_2x3ph_t uz_add_zerosequence_and_saturate(uz_6ph_abc_t u_abc1abc2_ref, float u_n1, float u_n2, float V_DC_Volts){
+	struct uz_DutyCycle_2x3ph_t output = {0};
+	// adding zero sequence
+	output.system1.DutyCycle_A = (u_abc1abc2_ref.a1 + u_n1) / V_DC_Volts + 0.5f;
+	output.system1.DutyCycle_B = (u_abc1abc2_ref.b1 + u_n1) / V_DC_Volts + 0.5f;
+	output.system1.DutyCycle_C = (u_abc1abc2_ref.c1 + u_n1) / V_DC_Volts + 0.5f;
+	output.system2.DutyCycle_A = (u_abc1abc2_ref.a2 + u_n2) / V_DC_Volts + 0.5f;
+	output.system2.DutyCycle_B = (u_abc1abc2_ref.b2 + u_n2) / V_DC_Volts + 0.5f;
+	output.system2.DutyCycle_C = (u_abc1abc2_ref.c2 + u_n2) / V_DC_Volts + 0.5f;
+
+	// saturation
+	output.system1.DutyCycle_A = uz_signals_saturation(output.system1.DutyCycle_A, 1.0f, 0.0f);
+	output.system1.DutyCycle_B = uz_signals_saturation(output.system1.DutyCycle_B, 1.0f, 0.0f);
+	output.system1.DutyCycle_C = uz_signals_saturation(output.system1.DutyCycle_C, 1.0f, 0.0f);
+	output.system2.DutyCycle_A = uz_signals_saturation(output.system2.DutyCycle_A, 1.0f, 0.0f);
+	output.system2.DutyCycle_B = uz_signals_saturation(output.system2.DutyCycle_B, 1.0f, 0.0f);
+	output.system2.DutyCycle_C = uz_signals_saturation(output.system2.DutyCycle_C, 1.0f, 0.0f);
+
+	return output;
 }
 
-float uz_getmin_3ph_abc(uz_3ph_abc_t input){
-	float temp = 0.0f;
 
-	if(input.a < input.b){
-		temp = input.a;
-	}else{
-		temp = input.b;
-	}
-	if(input.c < temp){
-		temp = input.c;
-	}
-	return temp;
-}
-
-float uz_getmid_3ph_abc(uz_3ph_abc_t input){
-
-	if((input.a < input.b && input.b < input.c)|| (input.a > input.b && input.b > input.c) ){
-		return input.b;
-	}
-	else if((input.b < input.a && input.a < input.c)|| (input.b > input.a && input.a > input.c) ){
-		return input.a;
-	}
-	else //if((input.a < input.c && input.c < input.b)|| (input.a > input.c && input.c > input.b) ){
-	{
-		return input.c;
-	}
-}
 
 struct uz_DutyCycle_2x3ph_t  uz_CSVPWM_24_2L_1ML_1M_v2_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
@@ -148,25 +134,11 @@ struct uz_DutyCycle_2x3ph_t  uz_CSVPWM_24_2L_1ML_1M_v2_INJ(uz_6ph_alphabeta_t u_
 	    u_n2 = u_max2 * (SQRT_3_HALF-1.0f);
 	}
 
-
-
-
 	// adding zero sequence
-	output.system1.DutyCycle_A = (u_abc1abc2_ref.a1 + u_n1) / V_DC_Volts + 0.5f;
-	output.system1.DutyCycle_B = (u_abc1abc2_ref.b1 + u_n1) / V_DC_Volts + 0.5f;
-	output.system1.DutyCycle_C = (u_abc1abc2_ref.c1 + u_n1) / V_DC_Volts + 0.5f;
-	output.system2.DutyCycle_A = (u_abc1abc2_ref.a2 + u_n2) / V_DC_Volts + 0.5f;
-	output.system2.DutyCycle_B = (u_abc1abc2_ref.b2 + u_n2) / V_DC_Volts + 0.5f;
-	output.system2.DutyCycle_C = (u_abc1abc2_ref.c2 + u_n2) / V_DC_Volts + 0.5f;
-
-	// saturation
-	output.system1.DutyCycle_A = uz_signals_saturation(output.system1.DutyCycle_A, 1.0f, 0.0f);
-	output.system1.DutyCycle_B = uz_signals_saturation(output.system1.DutyCycle_B, 1.0f, 0.0f);
-	output.system1.DutyCycle_C = uz_signals_saturation(output.system1.DutyCycle_C, 1.0f, 0.0f);
-	output.system2.DutyCycle_A = uz_signals_saturation(output.system2.DutyCycle_A, 1.0f, 0.0f);
-	output.system2.DutyCycle_B = uz_signals_saturation(output.system2.DutyCycle_B, 1.0f, 0.0f);
-	output.system2.DutyCycle_C = uz_signals_saturation(output.system2.DutyCycle_C, 1.0f, 0.0f);
-
+	output = uz_add_zerosequence_and_saturate(u_abc1abc2_ref, u_n1, u_n2, V_DC_Volts);
 
 	return output;
 }
+
+
+

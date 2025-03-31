@@ -114,10 +114,10 @@
       "uz_user": {
         "smartconnect_1": "",
         "uz_axi_testIP_0": "",
+        "ila_0": "",
         "uz_ssi_interface_0": "",
         "uz_ssi_interface_1": "",
-        "uz_ssi_interface_2": "",
-        "ila_0": ""
+        "uz_ssi_interface_2": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -5743,37 +5743,40 @@
             "xci_path": "ip\\zusys_uz_axi_testIP_0_0\\zusys_uz_axi_testIP_0_0.xci",
             "inst_hier_path": "uz_user/uz_axi_testIP_0"
           },
-          "uz_ssi_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0",
-            "xci_name": "zusys_uz_ssi_interface_0_0",
-            "xci_path": "ip\\zusys_uz_ssi_interface_0_0\\zusys_uz_ssi_interface_0_0.xci",
-            "inst_hier_path": "uz_user/uz_ssi_interface_0"
-          },
-          "uz_ssi_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0",
-            "xci_name": "zusys_uz_ssi_interface_1_0",
-            "xci_path": "ip\\zusys_uz_ssi_interface_1_0\\zusys_uz_ssi_interface_1_0.xci",
-            "inst_hier_path": "uz_user/uz_ssi_interface_1"
-          },
-          "uz_ssi_interface_2": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.0",
-            "xci_name": "zusys_uz_ssi_interface_2_0",
-            "xci_path": "ip\\zusys_uz_ssi_interface_2_0\\zusys_uz_ssi_interface_2_0.xci",
-            "inst_hier_path": "uz_user/uz_ssi_interface_2"
-          },
           "ila_0": {
             "vlnv": "xilinx.com:ip:ila:6.2",
             "xci_name": "zusys_ila_0_0",
             "xci_path": "ip\\zusys_ila_0_0\\zusys_ila_0_0.xci",
             "inst_hier_path": "uz_user/ila_0",
             "parameters": {
+              "C_DATA_DEPTH": {
+                "value": "16384"
+              },
               "C_MONITOR_TYPE": {
                 "value": "Native"
               },
               "C_NUM_OF_PROBES": {
-                "value": "7"
+                "value": "8"
               }
             }
+          },
+          "uz_ssi_interface_0": {
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.1",
+            "xci_name": "zusys_uz_ssi_interface_0_1",
+            "xci_path": "ip\\zusys_uz_ssi_interface_0_1\\zusys_uz_ssi_interface_0_1.xci",
+            "inst_hier_path": "uz_user/uz_ssi_interface_0"
+          },
+          "uz_ssi_interface_1": {
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.1",
+            "xci_name": "zusys_uz_ssi_interface_1_1",
+            "xci_path": "ip\\zusys_uz_ssi_interface_1_1\\zusys_uz_ssi_interface_1_1.xci",
+            "inst_hier_path": "uz_user/uz_ssi_interface_1"
+          },
+          "uz_ssi_interface_2": {
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.1",
+            "xci_name": "zusys_uz_ssi_interface_2_1",
+            "xci_path": "ip\\zusys_uz_ssi_interface_2_1\\zusys_uz_ssi_interface_2_1.xci",
+            "inst_hier_path": "uz_user/uz_ssi_interface_2"
           }
         },
         "interface_nets": {
@@ -5822,12 +5825,12 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "uz_ssi_interface_0/IPCORE_RESETN",
               "uz_ssi_interface_0/AXI4_Lite_ARESETN",
-              "uz_ssi_interface_1/IPCORE_RESETN",
+              "uz_ssi_interface_0/IPCORE_RESETN",
+              "uz_ssi_interface_2/AXI4_Lite_ARESETN",
               "uz_ssi_interface_1/AXI4_Lite_ARESETN",
               "uz_ssi_interface_2/IPCORE_RESETN",
-              "uz_ssi_interface_2/AXI4_Lite_ARESETN"
+              "uz_ssi_interface_1/IPCORE_RESETN"
             ]
           },
           "ssi_data_1_1": {
@@ -5845,10 +5848,10 @@
           "trigger_ssi_read_1": {
             "ports": [
               "trigger_ssi_read",
-              "uz_ssi_interface_1/trigger_ssi_read",
-              "uz_ssi_interface_2/trigger_ssi_read",
+              "ila_0/probe0",
               "uz_ssi_interface_0/trigger_ssi_read",
-              "ila_0/probe0"
+              "uz_ssi_interface_1/trigger_ssi_read",
+              "uz_ssi_interface_2/trigger_ssi_read"
             ]
           },
           "uz_ssi_interface_0_RW_clk": {
@@ -5874,6 +5877,12 @@
           "uz_ssi_interface_0_position_SI_float": {
             "ports": [
               "uz_ssi_interface_0/position_SI_float",
+              "ila_0/probe7"
+            ]
+          },
+          "uz_ssi_interface_0_position_raw": {
+            "ports": [
+              "uz_ssi_interface_0/position_raw",
               "ila_0/probe6"
             ]
           },
@@ -5926,13 +5935,13 @@
               "smartconnect_1/aclk",
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
+              "ila_0/clk",
               "uz_ssi_interface_0/IPCORE_CLK",
               "uz_ssi_interface_0/AXI4_Lite_ACLK",
-              "uz_ssi_interface_1/AXI4_Lite_ACLK",
               "uz_ssi_interface_1/IPCORE_CLK",
               "uz_ssi_interface_2/IPCORE_CLK",
               "uz_ssi_interface_2/AXI4_Lite_ACLK",
-              "ila_0/clk"
+              "uz_ssi_interface_1/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -9327,6 +9336,24 @@
           "Dig_23_Ch5"
         ]
       },
+      "uz_user_RW_data_0": {
+        "ports": [
+          "uz_user/RW_data_0",
+          "Dig_11_Ch5"
+        ]
+      },
+      "uz_user_RW_data_1": {
+        "ports": [
+          "uz_user/RW_data_1",
+          "Dig_10_Ch5"
+        ]
+      },
+      "uz_user_RW_data_2": {
+        "ports": [
+          "uz_user/RW_data_2",
+          "Dig_20_Ch5"
+        ]
+      },
       "uz_user_ssi_clk_0": {
         "ports": [
           "uz_user/ssi_clk_0",
@@ -9363,10 +9390,7 @@
           "xlconstant_0/dout",
           "uz_digital_adapter/Dig_11_Ch5",
           "uz_digital_adapter/Dig_13_Ch5",
-          "uz_digital_adapter/Dig_12_Ch5",
-          "Dig_20_Ch5",
-          "Dig_11_Ch5",
-          "Dig_10_Ch5"
+          "uz_digital_adapter/Dig_12_Ch5"
         ]
       },
       "xlslice_Enable_Gate_Dout": {

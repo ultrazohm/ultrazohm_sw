@@ -341,7 +341,7 @@ void ISR_Control(void *data)
 
            	//Global_Data.av.DutyCycle_output = uz_spwm_abc_6ph(Global_Data.av.REAL_v_abc_ref, V_DC_Volts);
 
-           	Global_Data.av.DutyCycle_output = uz_CSVPWM_24_2L_1ML_1M_v2_INJ(Global_Data.av.REAL_v_vsd_ref, V_DC_Volts);
+           	Global_Data.av.DutyCycle_output = uz_6ph_CSVPWM_24_4_active_SV_V1_alphabeta_INJ(Global_Data.av.REAL_v_vsd_ref, V_DC_Volts);
 
            	//struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float V_DC_Volts, float theta_el_rad);
 

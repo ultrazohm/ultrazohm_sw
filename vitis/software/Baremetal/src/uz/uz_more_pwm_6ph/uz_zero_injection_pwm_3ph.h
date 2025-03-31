@@ -4,6 +4,29 @@
 #include "../uz_Transformation/uz_Transformation.h"
 #include "../uz_Space_Vector_Modulation/uz_Space_Vector_Modulation.h"
 
+/*
+ * @brief adds zeros sequence to reference voltages, saturates dutycycles
+ *
+ * @param u_abc_ref abc values input
+ * @param u_n zero sequence in volts
+ * @param v_dc_volts dc link voltage
+ */
+struct uz_DutyCycle_t uz_add_zerosequence_and_saturate_3ph(uz_3ph_abc_t u_abc_ref, float u_n, float V_dc_volts);
+
+/*
+ * @brief brings an angle in rad between 0 and 2 pi
+ *
+ * @param theta_rad input angle in rad
+ */
+float uz_bring_angle_between_0_2_pi(float theta_rad);
+
+/*
+ * @brief retuns angle of alpha-beta reference
+ *
+ * @param alpha-beta values
+ */
+float uz_get_angle_3ph_alphabeta_reference(uz_3ph_alphabeta_t u_alphabeta_ref);
+
 
 /*
  * @brief function to get the max of the abc input reference

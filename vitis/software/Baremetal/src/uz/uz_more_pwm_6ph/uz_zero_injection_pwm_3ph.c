@@ -79,6 +79,15 @@ float uz_getmid_3ph_abc(uz_3ph_abc_t input){
 	}
 }
 
+float uz_bring_angle_between_0_2_pi(float theta_rad){
+	while(theta_rad < 0.0f){
+		theta_rad = theta_rad + 2.0f*M_PI;
+	}
+	theta_rad = fmod(theta_rad, 2.0f*M_PI);
+
+	return theta_rad;
+}
+
 float uz_get_angle_3ph_alphabeta_reference(uz_3ph_alphabeta_t u_alphabeta_ref){
 	return fmod(  atan2f(u_alphabeta_ref.beta, u_alphabeta_ref.alpha)+2.0f*M_PI, 2.0f*M_PI);
 }

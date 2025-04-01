@@ -305,6 +305,57 @@ struct uz_DutyCycle_2x3ph_t  uz_6ph_CSVPWM_24_5_active_abc_INJ(uz_6ph_abc_t u_6p
 
 
 
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D1_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D2_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D1_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D2_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_2M_D1_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_2M_D2_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_2M_D1_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_2M_D2_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v1_D1_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v1_D2_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v2_D1_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v2_D2_alphabeta_INJ(uz_6ph_alphabeta_t u_6ph_alphabeta_ref_Volts, float V_DC_Volts);
+
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_2M_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_2M_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_2M_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_2M_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v1_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v1_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v2_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v2_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts);
+
+
+
 
 
 

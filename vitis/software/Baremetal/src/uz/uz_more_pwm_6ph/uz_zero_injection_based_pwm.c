@@ -20,7 +20,8 @@
 #include "../uz_signals/uz_signals.h"
 #include "uz_zero_injection_pwm_3ph.h"
 
-#define SQRT_3_HALF sqrt(3.0f)/2.0f
+#define SQRT_3_HALF sqrtf(3.0f)/2.0f
+#define SQRT_3 sqrtf(3.0f)
 
 
 
@@ -396,11 +397,182 @@ struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v2_D2_alphabeta_INJ(uz_6ph_a
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	// alpha-beta in both systems
+	uz_3ph_alphabeta_t u_alphabeta_ref_sys1 = uz_transformation_3ph_abc_to_alphabeta(u_abc_sys1);
+	uz_3ph_alphabeta_t u_alphabeta_ref_sys2 = uz_transformation_3ph_abc_to_alphabeta(u_abc_sys2);
+
+	// angle in both systems
+	float theta_1 = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref_sys1);
+	float theta_2 = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref_sys2);
+
+	theta_1 = fmod(theta_1, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	theta_2 = fmod(theta_2, 2.0f*M_PI/3.0f);
+
+	// get sector
+	int sector_24_sys1 = getSector24(theta_1);
+	int sector_24_sys2 = getSector24(theta_2);
+
+	// calculation of zero sequence
+	float u_n1 = 0;
+	float u_n2 = 0;
+
+	float u_max_1 = uz_getmax_3ph_abc(u_abc_sys1);
+	float u_min_1 = uz_getmin_3ph_abc(u_abc_sys1);
+
+	float u_max_2 = uz_getmax_3ph_abc(u_abc_sys2);
+	float u_min_2 = uz_getmin_3ph_abc(u_abc_sys2);
+
+
+	if (sector_24_sys1 <= 1){
+	    u_n1 = -V_DC_Volts/2.0f - u_min_1;
+	}
+	else if (sector_24_sys1 == 2){
+	    u_n1 = -V_DC_Volts/2.0f - u_min_1;
+	}
+	else if (sector_24_sys1 == 3){
+	    u_n1 =V_DC_Volts/2.0f - u_max_1;
+	}
+	else if (sector_24_sys1 == 4){
+	    u_n1 = V_DC_Volts/2.0f - u_max_1;
+	}
+	else if (sector_24_sys1 == 5){
+	    u_n1 = V_DC_Volts/2.0f - u_max_1;
+	}
+	else if (sector_24_sys1 == 6){
+	    u_n1 = V_DC_Volts/2.0f - u_max_1;
+	}
+	else if (sector_24_sys1 == 7){
+	    u_n1 = -V_DC_Volts/2.0f - u_min_1;
+	}
+	else if (sector_24_sys1 >= 8){
+	    u_n1 = -V_DC_Volts/2.0f - u_min_1;
+	}
+
+
+	if (sector_24_sys2 <= 1){
+	    u_n2 = -V_DC_Volts/2.0f - u_min_2;
+	}
+	else if (sector_24_sys2 == 2){
+		u_n2 = -V_DC_Volts/2.0f - u_min_2;
+	}
+	else if (sector_24_sys2 == 3){
+		u_n2 =V_DC_Volts/2.0f - u_max_2;
+	}
+	else if (sector_24_sys2 == 4){
+		u_n2 = V_DC_Volts/2.0f - u_max_2;
+	}
+	else if (sector_24_sys2 == 5){
+		u_n2 = V_DC_Volts/2.0f - u_max_2;
+	}
+	else if (sector_24_sys2 == 6){
+		u_n2 = V_DC_Volts/2.0f - u_max_2;
+	}
+	else if (sector_24_sys2 == 7){
+		u_n2 = -V_DC_Volts/2.0f - u_min_2;
+	}
+	else if (sector_24_sys2 >= 8){
+		u_n2 = -V_DC_Volts/2.0f - u_min_2;
+	}
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
+
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	// alpha-beta in both systems
+	uz_3ph_alphabeta_t u_alphabeta_ref_sys1 = uz_transformation_3ph_abc_to_alphabeta(u_abc_sys1);
+	uz_3ph_alphabeta_t u_alphabeta_ref_sys2 = uz_transformation_3ph_abc_to_alphabeta(u_abc_sys2);
+
+	// angle in both systems
+	float theta_1 = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref_sys1);
+	float theta_2 = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref_sys2);
+
+	theta_1 = fmod(theta_1, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	theta_2 = fmod(theta_2, 2.0f*M_PI/3.0f);
+
+	// get sector
+	int sector_24_sys1 = getSector24(theta_1);
+	int sector_24_sys2 = getSector24(theta_2);
+
+	// calculation of zero sequence
+	float u_n1 = 0;
+	float u_n2 = 0;
+
+	float u_max_1 = uz_getmax_3ph_abc(u_abc_sys1);
+	float u_min_1 = uz_getmin_3ph_abc(u_abc_sys1);
+
+	float u_max_2 = uz_getmax_3ph_abc(u_abc_sys2);
+	float u_min_2 = uz_getmin_3ph_abc(u_abc_sys2);
+
+
+
+
+	if (sector_24_sys1 <= 1){
+	    u_n1 = -u_min_1 - SQRT_3*u_max_1 + V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys1 == 2){
+	    u_n1 = V_DC_Volts/2.0f - u_max_1;
+	}
+	else if (sector_24_sys1 == 3){
+	    u_n1 = - u_min_1 - V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys1 == 4){
+	    u_n1 = -u_max_1 - SQRT_3*u_min_1 - V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys1 == 5){
+	    u_n1 = -u_max_1 - SQRT_3*u_min_1 - V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys1 == 6){
+	    u_n1 = - u_min_1 - V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys1 == 7){
+	    u_n1 = V_DC_Volts/2.0f - u_max_1;
+	}
+	else if (sector_24_sys1 >= 8){
+	    u_n1 = -u_min_1 - SQRT_3*u_max_1 + V_DC_Volts/2.0f;
+	}
+
+
+	if (sector_24_sys2 <= 1){
+	    u_n2 = -u_min_2 - SQRT_3*u_max_2 + V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys2 == 2){
+		u_n2 = V_DC_Volts/2.0f - u_max_2;
+	}
+	else if (sector_24_sys2 == 3){
+		u_n2 = - u_min_2 - V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys2 == 4){
+		u_n2 = -u_max_2 - SQRT_3*u_min_2 - V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys2 == 5){
+		u_n2 = -u_max_2 - SQRT_3*u_min_2 - V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys2 == 6){
+		u_n2 = - u_min_2 - V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys2 == 7){
+		u_n2 = V_DC_Volts/2.0f - u_max_2;
+	}
+	else if (sector_24_sys2 >= 8){
+		u_n2 = -u_min_2 - SQRT_3*u_max_2 + V_DC_Volts/2.0f;
+	}
+
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
 
 	return output;
 }
@@ -408,59 +580,638 @@ struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D2_abc_INJ(uz_6ph_abc
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	// alpha-beta in both systems
+	uz_3ph_alphabeta_t u_alphabeta_ref_sys1 = uz_transformation_3ph_abc_to_alphabeta(u_abc_sys1);
+	uz_3ph_alphabeta_t u_alphabeta_ref_sys2 = uz_transformation_3ph_abc_to_alphabeta(u_abc_sys2);
+
+	// angle in both systems
+	float theta_1 = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref_sys1);
+	float theta_2 = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref_sys2);
+
+	theta_1 = fmod(theta_1, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	theta_2 = fmod(theta_2, 2.0f*M_PI/3.0f);
+
+	// get sector
+	int sector_24_sys1 = getSector24(theta_1);
+	int sector_24_sys2 = getSector24(theta_2);
+
+	// calculation of zero sequence
+	float u_n1 = 0;
+	float u_n2 = 0;
+
+	float u_max_1 = uz_getmax_3ph_abc(u_abc_sys1);
+	float u_min_1 = uz_getmin_3ph_abc(u_abc_sys1);
+
+	float u_max_2 = uz_getmax_3ph_abc(u_abc_sys2);
+	float u_min_2 = uz_getmin_3ph_abc(u_abc_sys2);
+
+
+
+	if (sector_24_sys1 <= 1){
+	    u_n1 = u_max_1 * (SQRT_3-1) -V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys1 == 2){
+	    u_n1 = - u_min_1 -V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys1 == 3){
+	    u_n1 = V_DC_Volts/2.0f - u_max_1;
+	}
+	else if (sector_24_sys1 == 4){
+	    u_n1 = V_DC_Volts/2.0f + u_min_1 * (SQRT_3-1);
+	}
+	else if (sector_24_sys1 == 5){
+	    u_n1 = V_DC_Volts/2.0f + u_min_1 * (SQRT_3 -1);
+	}
+	else if (sector_24_sys1 == 6){
+	    u_n1 = V_DC_Volts/2.0f - u_max_1;
+	}
+	else if (sector_24_sys1 == 7){
+	    u_n1 = -V_DC_Volts/2.0f - u_min_1;
+	}
+	else if (sector_24_sys1 >= 8){
+	    u_n1 = u_max_1 * (SQRT_3-1) -V_DC_Volts/2.0f;
+	}
+
+
+	if (sector_24_sys2 <= 1){
+		u_n2 = u_max_2 * (SQRT_3-1) -V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys2 == 2){
+		u_n2 = - u_min_2 -V_DC_Volts/2.0f;
+	}
+	else if (sector_24_sys2 == 3){
+		u_n2 = V_DC_Volts/2.0f - u_max_2;
+	}
+	else if (sector_24_sys2 == 4){
+		u_n2 = V_DC_Volts/2.0f + u_min_2 * (SQRT_3-1);
+	}
+	else if (sector_24_sys2 == 5){
+		u_n2 = V_DC_Volts/2.0f + u_min_2 * (SQRT_3 -1);
+	}
+	else if (sector_24_sys2 == 6){
+		u_n2 = V_DC_Volts/2.0f - u_max_2;
+	}
+	else if (sector_24_sys2 == 7){
+		u_n2 = -V_DC_Volts/2.0f - u_min_2;
+	}
+	else if (sector_24_sys2 >= 8){
+	    u_n2 = u_max_2 * (SQRT_3-1) -V_DC_Volts/2.0f;
+	}
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
 }
+
+
+
+
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_1M_v2_D2(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+	float u_zero = 0.0f;
+
+
+	if (sector_24 <= 1){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 2){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 3){
+		u_zero = - u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 4){
+		u_zero = - u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 5){
+		u_zero = - u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 6){
+		u_zero =- u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 7){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 >= 8){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+
+	return u_zero;
+}
+
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_1M_v2_D2(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_1M_v2_D2(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
+}
+
+
+
+
+
+
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_3L_2M_D1(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+	float u_zero = 0.0f;
+
+	if (sector_24 <= 1){
+		u_zero = V_DC_Volts/2.0f  - u_min/2.0f - u_max * (SQRT_3_HALF+1.0f/2.0f);
+	}
+	else if (sector_24 == 2){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 3){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 4){
+		u_zero = V_DC_Volts/2.0f - u_max/2.0f + u_min * (SQRT_3_HALF-1.0f/2.0f);
+	}
+	else if (sector_24 == 5){
+		u_zero = -V_DC_Volts/2.0f   -u_max/2.0f  - u_min * (SQRT_3_HALF+1.0f/2.0f) ;
+	}
+	else if (sector_24 == 6){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 7){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 >= 8){
+		u_zero = -V_DC_Volts/2.0f - u_min/2 + u_max * (SQRT_3_HALF-1.0f/2.0f);
+	}
+
+	return u_zero;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_2M_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_2M_D1(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_2M_D1(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
+}
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_3L_2M_D2(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+
+	float u_zero = 0.0f;
+
+	if (sector_24 <= 1){
+		u_zero =  -V_DC_Volts/2.0f - u_min   + u_min/2  + u_max * (sqrtf(3.0f)/2.0f-1.0f/2.0f);
+	}
+	else if (sector_24 == 2){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 3){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 4){
+		u_zero = -V_DC_Volts/2.0f   -u_max/2.0f   - u_min * (sqrtf(3.0f)/2.0f + 1.0f/2.0f);
+	}
+	else if (sector_24 == 5){
+		u_zero = V_DC_Volts/2.0f - u_max/2.0f   + u_min * (sqrtf(3.0f)/2.0f-1.0f/2.0f);
+	}
+	else if (sector_24 == 6){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 7){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 >= 8){
+		u_zero = V_DC_Volts/2.0f  - u_min/2.0f  - u_max * (sqrtf(3.0f)/2.0f + 1.0f/2.0f);
+	}
+
+	return u_zero;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_2M_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_2M_D2(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_2M_D2(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
+}
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_2M_D1(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+	float u_zero = 0.0f;
+
+	if (sector_24 <= 1){
+		u_zero = -(SQRT_3_HALF+0.5f)*u_max - 0.5f*u_min + V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 2){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 3){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 4){
+		u_zero = -(SQRT_3_HALF+0.5)*u_min - 0.5f*u_max - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 5){
+		u_zero = -(SQRT_3_HALF+0.5f)*u_min - 0.5f*u_max - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 6){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 7){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 >= 8){
+		u_zero = -(SQRT_3_HALF+0.5f)*u_max - 0.5*u_min + V_DC_Volts/2.0f;
+	}
+
+	return u_zero;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_2M_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_2M_D1(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_2M_D1(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
+}
+
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_2M_D2(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+	float u_zero = 0.0f;
+
+	if (sector_24 <= 1){
+		u_zero = -V_DC_Volts/2.0f - 0.5f*u_min + (SQRT_3_HALF-0.5f)*u_max;
+	}
+	else if (sector_24 == 2){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 3){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 4){
+		u_zero = V_DC_Volts/2.0f - 0.5f*u_max + (SQRT_3_HALF-0.5f)*u_min;
+	}
+	else if (sector_24 == 5){
+		u_zero = V_DC_Volts/2.0f - 0.5f*u_max + (SQRT_3_HALF-0.5f)*u_min;
+	}
+	else if (sector_24 == 6){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 7){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 >= 8){
+		u_zero = -V_DC_Volts/2.0f - 0.5f*u_min + (SQRT_3_HALF-0.5f)*u_max;
+	}
+
+	return u_zero;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_2L_1ML_2M_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_2M_D2(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_2L_1ML_2M_D2(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
+}
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v1_D1(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+	float u_zero = 0.0f;
+
+
+
+	if (sector_24 <= 1){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 2){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 3){
+		u_zero =V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 4){
+		u_zero = V_DC_Volts/2.0f + u_min * (SQRT_3-1);
+	}
+	else if (sector_24 == 5){
+		u_zero = - u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 6){
+		u_zero = - u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 7){
+		u_zero = - u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 >= 8){
+		u_zero = u_max * (SQRT_3-1) - V_DC_Volts/2.0f;
+	}
+
+	return u_zero;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v1_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v1_D1(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v1_D1(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
+}
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v1_D2(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+	float u_zero = 0.0f;
+
+
+	if (sector_24 <= 1){
+		u_zero = u_max * (SQRT_3-1) -V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 2){
+		u_zero = - u_min -V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 3){
+		u_zero = - u_min -V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 4){
+		u_zero = - u_min -V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 5){
+		u_zero = V_DC_Volts/2.0f + u_min * (SQRT_3-1);
+	}
+	else if (sector_24 == 6){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 7){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 >= 8){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+
+	return u_zero;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v1_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v1_D2(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v1_D2(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
+}
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v2_D1(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+	float u_zero = 0.0f;
+
+	if (sector_24 <= 1){
+		u_zero = -u_min - SQRT_3*u_max + V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 2){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 3){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 4){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 5){
+		u_zero = -u_max - SQRT_3*u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 6){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 7){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 >= 8){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+
+	return u_zero;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v2_D1_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
 
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v2_D1(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v2_D1(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
+
 	return output;
+}
+
+float uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v2_D2(uz_3ph_abc_t u_abc_ref, float V_DC_Volts){
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(u_abc_ref);
+
+	float theta = uz_get_angle_3ph_alphabeta_reference(u_alphabeta_ref);
+
+	theta = fmod(theta, 2.0f*M_PI/3.0f); // symmetric to 2pi/3
+	// get sector
+	int sector_24 = getSector24(theta);
+
+	float u_max = uz_getmax_3ph_abc(u_abc_ref);
+	float u_min = uz_getmin_3ph_abc(u_abc_ref);
+
+	float u_zero = 0.0f;
+
+	if (sector_24 <= 1){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 2){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 3){
+		u_zero = -V_DC_Volts/2.0f - u_min;
+	}
+	else if (sector_24 == 4){
+		u_zero = -u_max - SQRT_3*u_min - V_DC_Volts/2.0f;
+	}
+	else if (sector_24 == 5){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 6){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 == 7){
+		u_zero = V_DC_Volts/2.0f - u_max;
+	}
+	else if (sector_24 >= 8){
+		u_zero = -u_min - SQRT_3*u_max + V_DC_Volts/2.0f;
+	}
+
+	return u_zero;
 }
 
 struct uz_DutyCycle_2x3ph_t  uz_6ph_DSVPWM_24_3L_1M_v2_D2_abc_INJ(uz_6ph_abc_t u_6ph_abc1abc2_ref_Volts, float V_DC_Volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
+
+	// seperate both systems
+	uz_3ph_abc_t u_abc_sys1 = {u_6ph_abc1abc2_ref_Volts.a1, u_6ph_abc1abc2_ref_Volts.b1, u_6ph_abc1abc2_ref_Volts.c1};
+	uz_3ph_abc_t u_abc_sys2 = {u_6ph_abc1abc2_ref_Volts.a2, u_6ph_abc1abc2_ref_Volts.b2, u_6ph_abc1abc2_ref_Volts.c2};
+
+	float u_n1 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v2_D2(u_abc_sys1, V_DC_Volts);
+	float u_n2 = uz_get_zero_sequence_one_system_DSVPWM_24_3L_1M_v2_D2(u_abc_sys2, V_DC_Volts);
+
+	// adding zero sequence
+	output = uz_add_zerosequence_and_saturate(u_6ph_abc1abc2_ref_Volts, u_n1, u_n2, V_DC_Volts);
 
 	return output;
 }

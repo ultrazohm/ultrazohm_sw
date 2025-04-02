@@ -65,11 +65,11 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     //***************** Berechnung Strom und Spannung*****************************
-    // Zuweisung des entsprechenden ADCs und Berechnung von V und I mit k_regression und b_offset
+    // Zuweisung des entsprechenden ADCs und Berechnung von U und I mit k_regression und b_offset
     // Voltage Measurement
-    	Global_Data.av.U_DC 			=  (Global_Data.aa.A1.me.ADC_A3 * k_regression_voltage) + b_offset_voltage;
+    	Global_Data.av.U_DC 			= (1/k_regression_voltage) * (Global_Data.aa.A1.me.ADC_A2 - b_offset_voltage);
     //current Measurement
-    	Global_Data.av.I_DC 			=  (Global_Data.aa.A1.me.ADC_A4 * k_regression_current) + b_offset_current;
+    	Global_Data.av.I_DC 			= (1/k_regression_current) * (Global_Data.aa.A1.me.ADC_A4 - b_offset_current);
     //------------------------------------------------------------------------------------------------------------
     // Berechnung der Systemleistung aus Strom und Spannung
     	Global_Data.av.P_DC				= Global_Data.av.U_DC * Global_Data.av.I_DC;

@@ -21,6 +21,6 @@ annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/ssi_clock_generator/OR
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/ssi_clock_generator/S-R Flip-Flop1', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/ssi_clock_generator/Detect Rise Positive1/FixPt Relational Operator', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/ssi_clock_generator/Detect Rise Positive1/Positive', 0, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Serial_In_Parallel_Out/Serial_In_Parallel_Out', 1, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Serial_In_Parallel_Out/Serial_In_Parallel_Out', 1, 1, '');
-annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Serial_In_Parallel_Out', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data/sample_serial_data', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data/sample_serial_data', 1, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data', 1, 1, '');

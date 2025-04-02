@@ -6,7 +6,7 @@ vcom  uz_ssi_interface_src_Detect_Rise_Positive3.vhd
 vcom  uz_ssi_interface_src_Detect_Rise_Positive2.vhd
 vcom  uz_ssi_interface_src_Model.vhd
 vcom  uz_ssi_interface_src_Sample_and_Hold1.vhd
-vcom  uz_ssi_interface_src_Serial_In_Parallel_Out.vhd
+vcom  uz_ssi_interface_src_sample_serial_data.vhd
 vcom  uz_ssi_interface_src_sample_serial_ssi_data.vhd
 vcom  uz_ssi_interface_src_Detect_Rise_Positive.vhd
 vcom  uz_ssi_interface_src_Detect_Rise_Positive2_block.vhd

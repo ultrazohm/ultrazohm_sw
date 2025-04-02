@@ -10,6 +10,7 @@ annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/clk_idle_and_delay_first_
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Detect Rise Positive2', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Delay1', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/NOT', 0, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Switch', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Detect Rise Positive2/FixPt Relational Operator', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/Detect Rise Positive2/Positive', 0, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/ssi_clock_enable_for_n_bits/S-R Flip-Flop', 1, 1, '');

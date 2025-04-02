@@ -15,7 +15,7 @@ t_plant = 1/f_plant;    % Plant sample time in s
 
 % divider for the 100 MHz supply clock
 % e.g. 100 MHz / (2*25) = 2 MHz
-ssi_clk_divider = 25; 
+ssi_clk_divider = 50; 
 
 % bit width of the connected ssi encoder
 ssi_encoder_bit_width = 19; 

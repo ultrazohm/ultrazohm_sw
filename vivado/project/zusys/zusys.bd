@@ -5764,21 +5764,21 @@
             }
           },
           "uz_ssi_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.5",
-            "xci_name": "zusys_uz_ssi_interface_0_5",
-            "xci_path": "ip\\zusys_uz_ssi_interface_0_5\\zusys_uz_ssi_interface_0_5.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.6",
+            "xci_name": "zusys_uz_ssi_interface_0_6",
+            "xci_path": "ip\\zusys_uz_ssi_interface_0_6\\zusys_uz_ssi_interface_0_6.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_0"
           },
           "uz_ssi_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.5",
-            "xci_name": "zusys_uz_ssi_interface_1_5",
-            "xci_path": "ip\\zusys_uz_ssi_interface_1_5\\zusys_uz_ssi_interface_1_5.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.6",
+            "xci_name": "zusys_uz_ssi_interface_1_6",
+            "xci_path": "ip\\zusys_uz_ssi_interface_1_6\\zusys_uz_ssi_interface_1_6.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_1"
           },
           "uz_ssi_interface_2": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.5",
-            "xci_name": "zusys_uz_ssi_interface_2_5",
-            "xci_path": "ip\\zusys_uz_ssi_interface_2_5\\zusys_uz_ssi_interface_2_5.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.6",
+            "xci_name": "zusys_uz_ssi_interface_2_6",
+            "xci_path": "ip\\zusys_uz_ssi_interface_2_6\\zusys_uz_ssi_interface_2_6.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_2"
           }
         },
@@ -5829,11 +5829,11 @@
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
               "uz_ssi_interface_2/AXI4_Lite_ARESETN",
-              "uz_ssi_interface_2/IPCORE_RESETN",
-              "uz_ssi_interface_1/AXI4_Lite_ARESETN",
-              "uz_ssi_interface_1/IPCORE_RESETN",
+              "uz_ssi_interface_0/IPCORE_RESETN",
               "uz_ssi_interface_0/AXI4_Lite_ARESETN",
-              "uz_ssi_interface_0/IPCORE_RESETN"
+              "uz_ssi_interface_1/IPCORE_RESETN",
+              "uz_ssi_interface_1/AXI4_Lite_ARESETN",
+              "uz_ssi_interface_2/IPCORE_RESETN"
             ]
           },
           "ssi_data_1_1": {

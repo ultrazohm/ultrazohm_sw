@@ -16,6 +16,7 @@ void setUp(void)
      test_config.n_start_rpm = 500.0f;
      test_config.n_stop_rpm = 1000.0f;
      test_config.n_steps = 1U;
+     test_config.check_temp = true; 
 }
 
 void tearDown(void)
@@ -33,7 +34,7 @@ void test_uz_parameterID_rc_assert_config(void){
     uz_parameterID_rc_t* rc_instance2 = uz_parameterID_rc_init(test_config);
 }
 
-void test_uz_parameterID_rs_init_equal(void){
+void test_uz_parameterID_rc_init_equal(void){
     uz_parameterID_rc_t* rc_instance3 = uz_parameterID_rc_init(test_config);
     struct uz_parameterID_rc_config_t get_internal_config = uz_parameterID_rc_get_config(rc_instance3);
 
@@ -42,6 +43,23 @@ void test_uz_parameterID_rs_init_equal(void){
     TEST_ASSERT_EQUAL_FLOAT(test_config.abs_iq_max_Amps, get_internal_config.abs_iq_max_Amps);
 }
 
+void test_uz_parameterID_rc_test_temp_check(void){
+    uz_parameterID_rc_t* rc_instance4 = uz_parameterID_rc_init(test_config);
+    struct uz_parameterID_rc_ref_val_t test_output;
+    float temp_degrees = 50.0f; 
+    for (size_t i = 0; i < 1000; i++)
+    {
+        test_output = uz_parameterID_rc_generate_idq_ref(rc_instance4, temp_degrees);
+    }
+    temp_degrees = 40.0f;
+    for (size_t i = 0; i < 1000000; i++)
+    {
+        test_output = uz_parameterID_rc_generate_idq_ref(rc_instance4, temp_degrees);
+    }
+    
 
+
+
+}
 
 #endif // TEST

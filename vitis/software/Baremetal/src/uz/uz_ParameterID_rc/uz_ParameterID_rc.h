@@ -62,6 +62,7 @@ struct uz_parameterid_rc_temp_check_t{
     float initial_temp;
     float temp_min;
     float temp_max;
+    bool temp_check_done;
 };
 
 enum rc_state{

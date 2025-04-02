@@ -86,6 +86,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         self->temp_check_values.initial_temp = temp_degrees;
         self->temp_check_values.temp_min = self->temp_check_values.initial_temp * 0.95f;
         self->temp_check_values.temp_max = self->temp_check_values.initial_temp * 1.05f; 
+        self->temp_check_values.temp_check_done = false;
     } else {
         self->counter.isr++;
 
@@ -134,9 +135,14 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         
         // calls function that increments idq
         case rc_increment_idq:
-            if (self->internal_config.check_temp)
-            {
-               
+            if (self->internal_config.check_temp){
+                uz_parameterID_rc_check_temperature(self, temp_degrees);
+                if (self->temp_check_values.temp_check_done){
+                    uz_parameterID_rc_set_next_operating_point_idq(self);
+                    self->temp_check_values.temp_check_done = false;
+                } else {
+                    break;
+                }
             } else {
             uz_parameterID_rc_set_next_operating_point_idq(self);
             }
@@ -145,7 +151,17 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
 
         // calls function that increments idq
         case rc_increment_n:
+            if (self->internal_config.check_temp){
+                uz_parameterID_rc_check_temperature(self, temp_degrees);
+                if (self->temp_check_values.temp_check_done){
+                    uz_parameterID_rc_set_next_operating_point_n(self);
+                    self->temp_check_values.temp_check_done = false;
+                } else {
+                    break;
+                }
+            } else {
             uz_parameterID_rc_set_next_operating_point_n(self);
+            }
         break;
 
         // routine is finished. idq and n are set to zero
@@ -217,9 +233,8 @@ void uz_parameterID_rc_check_temperature(uz_parameterID_rc_t* self, float temp_d
     } else if (temp_degrees <= self->temp_check_values.temp_min){
         self->set_values.id_set_Amps = self->internal_config.abs_iq_max_Amps;
         self->set_values.iq_set_Amps = -1.0f * self->internal_config.abs_id_max_Amps;
+    } else {
+        self->temp_check_values.temp_check_done = true;
     }
-    
-    
-
 }
 #endif

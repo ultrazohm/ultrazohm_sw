@@ -44,6 +44,16 @@ struct uz_DutyCycle_2x3ph_t uz_Dual_SVM_abc_6ph(uz_6ph_abc_t input, float V_dc_v
 struct uz_DutyCycle_2x3ph_t uz_Dual_GDPWM_abc_6ph(uz_6ph_abc_t input, float phi_rad, float V_dc_volts);
 
 /**
+ * @brief GDPWM for 2x3ph system with abc inputs, General DPWM technique with angle phi defining the specific realization
+ *
+ * @param input abc values
+ * @param phi_rad angle for DPWM
+ * @param V_dc_volts DC voltage
+ * @return duty cycle for PWM module
+ */
+struct uz_DutyCycle_2x3ph_t uz_Dual_GDPWM_abc_6ph_V2(uz_6ph_abc_t input, float phi_rad, float V_dc_volts);
+
+/**
  * @brief DPWM0 for 2x3ph system with abc inputs, equivalent to GDPWM with phi = pi/6
  *
  * @param input abc values
@@ -157,6 +167,17 @@ struct uz_DutyCycle_2x3ph_t uz_Dual_SVM_alphabeta_6ph(uz_6ph_alphabeta_t input, 
  * @return duty cycle for PWM module
  */
 struct uz_DutyCycle_2x3ph_t uz_Dual_GDPWM_alphabeta_6ph(uz_6ph_alphabeta_t input, float phi_rad, float V_dc_volts);
+
+/**
+ * @brief GDPWM for asym 2x3ph system with alpha-beta-x-y inputs, General DPWM technique with angle phi defining the specific realization
+ *
+ * @param input alpha-beta-x-y values
+ * @param phi_rad angle for DPWM
+ * @param V_dc_volts DC voltage
+ * @return duty cycle for PWM module
+ */
+struct uz_DutyCycle_2x3ph_t uz_Dual_GDPWM_alphabeta_6ph_V2(uz_6ph_alphabeta_t input, float phi_rad, float V_dc_volts);
+
 
 /**
  * @brief DPWM0 for asym 2x3ph system with alpha-beta-x-y inputs, equivalent to GDPWM with phi = pi/6

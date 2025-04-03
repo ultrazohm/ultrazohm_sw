@@ -78,6 +78,18 @@ enum JS_OberservableData {
 	JSO_DutycycleA2,
 	JSO_DutycycleB2,
 	JSO_DutycycleC2,
+	JSO_DutycycleTestA1,
+	JSO_DutycycleTestB1,
+	JSO_DutycycleTestC1,
+	JSO_DutycycleTestA2,
+	JSO_DutycycleTestB2,
+	JSO_DutycycleTestC2,
+	JSO_u_Test_ref_A,
+	JSO_Theta_From_REF,
+	JSO_ref_alpha,
+	JSO_ref_beta,
+	JSO_ref_x,
+	JSO_ref_y,
 	JSO_ENDMARKER
 };
 
@@ -190,7 +202,7 @@ enum gui_button_mapping {
 	i_q_ref,
 	i_X_ref,
 	i_Y_ref,
-	send_field_6,
+	PWM_Version,
 	SND_FLD_ENDMARKER
 
 

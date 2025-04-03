@@ -90,6 +90,16 @@ struct uz_DutyCycle_t uz_SVM_abc_3ph(uz_3ph_abc_t input, float V_dc_volts);
 struct uz_DutyCycle_t uz_GDPWM_abc_3ph(uz_3ph_abc_t input, float phi_rad, float V_dc_volts);
 
 /**
+ * @brief GDPWM for 3ph system with abc inputs, General DPWM technique with angle phi defining the specific realization
+ *
+ * @param input abc values
+ * @param phi_rad angle for DPWM
+ * @param V_dc_volts DC voltage
+ * @return duty cycle for PWM module
+ */
+struct uz_DutyCycle_t uz_GDPWM_abc_3ph_V2(uz_3ph_abc_t input, float phi_rad, float V_dc_volts);
+
+/**
  * @brief DPWM0 for 3ph system with abc inputs, equivalent to GDPWM with phi = pi/6
  *
  * @param input abc values

@@ -5,10 +5,12 @@
 #include "../uz_Space_Vector_Modulation/uz_Space_Vector_Modulation.h"
 
 
+struct uz_DutyCycle_2x3ph_t uz_6ph_calculated_dutycycle_and_phaseshift(struct uz_DutyCycle_2x3ph_t input, int phaseshiftoption, float *shift_system_1, float *shift_system_2);
+
 
 
 /**
- * @brief Generates dutycycles for 2x3 phase machines, zero sequence injection based equivalent to Space-Vector Modulations: CSVPWM_24_2L_1ML_1M_v2_INJ and CSVPWM_24_3L_1M_v1_INJ depending on carrier phase shift
+ * @brief Generates dutycycles for 2x3 phase machines, zero sequence injection based equivalent to Space-Vector Modulations: CSVPWM_24_2L_1ML_1M_v2_INJ, CSVPWM_24_3L_1M_v1_INJ and the MIX-Variations of both depending on carrier phase shift
  *
  * @param u_6ph_alphabeta_ref_Volts reference voltage in Volts (e.g. from current controller)
  * @param V_dc_volts DC-Link voltage in volts
@@ -18,7 +20,7 @@ struct uz_DutyCycle_2x3ph_t  uz_6ph_CSVPWM_24_4_active_SV_V1_alphabeta_INJ(uz_6p
 
 
 /**
- * @brief Generates dutycycles for 2x3 phase machines, zero sequence injection based equivalent to Space-Vector Modulations: CSVPWM_24_2L_1ML_1M_v1_INJ and CSVPWM_24_3L_1M_v2_INJ depending on carrier phase shift
+ * @brief Generates dutycycles for 2x3 phase machines, zero sequence injection based equivalent to Space-Vector Modulations: CSVPWM_24_2L_1ML_1M_v1_INJ, CSVPWM_24_3L_1M_v2_INJ and the MIX-Variations of both depending on carrier phase shift
  *
  * @param u_6ph_alphabeta_ref_Volts reference voltage in Volts (e.g. from current controller)
  * @param V_dc_volts DC-Link voltage in volts

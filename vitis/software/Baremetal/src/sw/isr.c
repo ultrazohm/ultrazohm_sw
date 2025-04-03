@@ -32,6 +32,9 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_based_pwm.h"
 
+#include "../uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
+#include "../uz/uz_more_pwm_6ph/uz_zero_injection_pwm_3ph.h"
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -96,6 +99,8 @@ float u_a1c1 = 0.0f;
 float u_a2c2 = 0.0f;
 
 bool ext_clamping = false;
+
+bool filter_active = false;
 
 uint64_t old_uptime=0U;
 uint32_t setpoint_index=0U;
@@ -167,6 +172,17 @@ void ISR_Control(void *data)
         // check current limit
         if(fabs(Global_Data.av.i_a1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b1) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c1) > MAX_PHASE_CURRENT_AMP ||
         	fabs(Global_Data.av.i_a2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b2) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c2) > MAX_PHASE_CURRENT_AMP) {
+
+           	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+           	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+           	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+           	Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+           	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+           	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+            uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+            uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+
+
         		uz_assert(0);
         }
            // check DC Bus
@@ -178,13 +194,34 @@ void ISR_Control(void *data)
         	   uz_assert(0);
            }
 
-           //write to structs
-           Global_Data.av.REAL_i_abc_meas.a1 = Global_Data.av.i_a1;
-           Global_Data.av.REAL_i_abc_meas.b1 = Global_Data.av.i_b1;
-           Global_Data.av.REAL_i_abc_meas.c1 = Global_Data.av.i_c1;
-           Global_Data.av.REAL_i_abc_meas.a2 = Global_Data.av.i_a2;
-           Global_Data.av.REAL_i_abc_meas.b2 = Global_Data.av.i_b2;
-           Global_Data.av.REAL_i_abc_meas.c2 = Global_Data.av.i_c2;
+           if(!filter_active){
+        	   //write to structs
+			   Global_Data.av.REAL_i_abc_meas.a1 = Global_Data.av.i_a1;
+			   Global_Data.av.REAL_i_abc_meas.b1 = Global_Data.av.i_b1;
+			   Global_Data.av.REAL_i_abc_meas.c1 = Global_Data.av.i_c1;
+			   Global_Data.av.REAL_i_abc_meas.a2 = Global_Data.av.i_a2;
+			   Global_Data.av.REAL_i_abc_meas.b2 = Global_Data.av.i_b2;
+			   Global_Data.av.REAL_i_abc_meas.c2 = Global_Data.av.i_c2;
+           }
+           else{
+               Global_Data.av.REAL_i_abc_meas.a1 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_A1, Global_Data.av.i_a1);
+               Global_Data.av.REAL_i_abc_meas.b1 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_B1, Global_Data.av.i_b1);
+               Global_Data.av.REAL_i_abc_meas.c1 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_C1, Global_Data.av.i_c1);
+               Global_Data.av.REAL_i_abc_meas.a2 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_A2, Global_Data.av.i_a2);
+               Global_Data.av.REAL_i_abc_meas.b2 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_B2, Global_Data.av.i_b2);
+               Global_Data.av.REAL_i_abc_meas.c2 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_C2, Global_Data.av.i_c2);
+           }
+
+
+           Global_Data.av.REAL_i_abc_meas.a1 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_A1, Global_Data.av.i_a1);
+           Global_Data.av.REAL_i_abc_meas.b1 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_B1, Global_Data.av.i_b1);
+           Global_Data.av.REAL_i_abc_meas.c1 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_C1, Global_Data.av.i_c1);
+           Global_Data.av.REAL_i_abc_meas.a2 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_A2, Global_Data.av.i_a2);
+           Global_Data.av.REAL_i_abc_meas.b2 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_B2, Global_Data.av.i_b2);
+           Global_Data.av.REAL_i_abc_meas.c2 = uz_signals_IIR_Filter_sample(Global_Data.objects.IRR_filter_C2, Global_Data.av.i_c2);
+
+
+
 
            // calc u neutral voltage
            switch(NEUTRAL_CONFIG){
@@ -239,6 +276,178 @@ void ISR_Control(void *data)
        	Global_Data.av.i_xy_reference.q = Global_Data.av.i_Y_ref;
 
     theta_el_old = Global_Data.av.theta_elec;
+
+
+
+    //-----------------------------------------------------------------------------------------------------------------------------//
+    //-----------------------------------------------------------------------------------------------------------------------------//
+    //-------------------------------------------TEST PWM--------------------------------------------------------------------------//
+    //-----------------------------------------------------------------------------------------------------------------------------//
+    //-----------------------------------------------------------------------------------------------------------------------------//
+
+
+
+
+   	Global_Data.av.v_dqxy_ref.d = Global_Data.av.i_d_ref;
+   	Global_Data.av.v_dqxy_ref.q = Global_Data.av.i_q_ref;
+   	Global_Data.av.v_dqxy_ref.x = Global_Data.av.i_X_ref;
+   	Global_Data.av.v_dqxy_ref.y = Global_Data.av.i_Y_ref;
+
+	Global_Data.av.u_ref_6ph_alphabeta =  uz_transformation_asym30deg_6ph_dq_to_alphabeta(Global_Data.av.v_dqxy_ref, Global_Data.av.theta_elec);
+
+	Global_Data.av.u_ref_6ph_abc =  uz_transformation_asym30deg_6ph_dq_to_abc(Global_Data.av.v_dqxy_ref, Global_Data.av.theta_elec);
+
+	Global_Data.av.u_ref_abc.a = Global_Data.av.u_ref_6ph_abc.a1;
+	Global_Data.av.u_ref_abc.b = Global_Data.av.u_ref_6ph_abc.b1;
+	Global_Data.av.u_ref_abc.c = Global_Data.av.u_ref_6ph_abc.c1;
+
+	uz_3ph_alphabeta_t u_alphabeta_ref = uz_transformation_3ph_abc_to_alphabeta(Global_Data.av.u_ref_abc);
+
+
+   	float phi_rad = 0.0f;
+
+   	Global_Data.av.U_ZK = 36.0f;
+
+   	// Tested: 1,2,3, 4, 5, 6, 7, 8, 10, 11, 12
+
+   	// Fehler: 9, 21,
+
+   	switch(Global_Data.av.PWM_select){
+   	case 1:
+   		Global_Data.av.test_var += 1;
+   		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_PWM_THI_1_4_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+   		break;
+   	case 2:
+   		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_PWM_THI_1_6_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+   		break;
+   	case 3:
+   		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_SVM_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+   		break;
+   	case 4:
+   		//Global_Data.av.DutyCycle_6ph_test.system1 =  uz_GDPWM_abc_3ph(Global_Data.av.u_ref_abc, phi_rad, Global_Data.av.U_ZK);
+
+   		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_GDPWM_abc_3ph_V2(Global_Data.av.u_ref_abc, Global_Data.av.phi_rad, Global_Data.av.U_ZK);
+   		break;
+   	case 5:
+		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_DPWM0_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+		break;
+   	case 6:
+		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_DPWM1_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+		break;
+   	case 7:
+		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_DPWM1PHI_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+		break;
+   	case 8:
+		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_DPWM2_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+		break;
+   	case 9:
+		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_DPWM3_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+		break;
+   	case 10:
+		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_DPWM3PHI_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+		break;
+   	case 11:
+		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_DPWM_MAX_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+		break;
+   	case 12:
+		Global_Data.av.DutyCycle_6ph_test.system1 =  uz_DPWM_MIN_abc_3ph(Global_Data.av.u_ref_abc, Global_Data.av.U_ZK);
+		break;
+
+
+   	case 13:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_PWM_THI_1_4_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 14:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_PWM_THI_1_6_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 15:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_SVM_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 16:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_GDPWM_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, phi_rad, Global_Data.av.U_ZK);
+		break;
+   	case 17:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM0_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 18:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM1_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 19:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM1PHI_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 20:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM2_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 21:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM3_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 22:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM3PHI_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 23:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM_MAX_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 24:
+		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM_MIN_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+
+   	case 25:
+		Global_Data.av.DutyCycle_6ph_test = uz_6ph_CSVPWM_24_4_active_SV_V1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 26:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_CSVPWM_24_4_active_SV_V2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 27:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_CSVPWM_24_5_active_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 28:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 29:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 30:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 31:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 32:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_2M_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 33:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_2M_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 34:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_2M_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 35:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_2M_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 36:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_1M_v1_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 37:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_1M_v1_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 38:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_1M_v2_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 39:
+		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_1M_v2_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.U_ZK);
+		break;
+   	case 40:
+   		Global_Data.av.DutyCycle_6ph_test =   uz_Dual_GDPWM_alphabeta_6ph_V2(Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.phi_rad, Global_Data.av.U_ZK);
+
+   	default:
+
+   		break;
+
+   	}
+
+
+   	//Global_Data.av.DutyCycle_6ph_test = uz_6ph_calculated_dutycycle_and_phaseshift(Global_Data.av.DutyCycle_6ph_test, Global_Data.av.phaseshiftoption, &Global_Data.av.shift_system_1, &Global_Data.av.shift_system_2);
+
 
    //-----------------------------------------------------------------------------------------------------------------------------//
    //-----------------------------------------------------------------------------------------------------------------------------//
@@ -325,6 +534,9 @@ void ISR_Control(void *data)
            		Global_Data.av.v_dqxy_non_limited_volts.x = Global_Data.av.v_xy_limited_volts.d;
            		Global_Data.av.v_dqxy_non_limited_volts.y = Global_Data.av.v_xy_limited_volts.q;
 
+           		// Global_Data.av.v_dqxy_non_limited_volts.x = 0.0f;
+           		// Global_Data.av.v_dqxy_non_limited_volts.y = 0.0f;
+
            		uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
                 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
            	}
@@ -339,9 +551,211 @@ void ISR_Control(void *data)
            	Global_Data.av.REAL_v_vsd_ref = uz_transformation_asym30deg_6ph_dq_xy_to_alphabeta_XY(Global_Data.av.v_dqxy_limited_volts, Global_Data.av.theta_elec);
            	//REAL_v_abc_ref = uz_transformation_asym30deg_6ph_dq_xy_to_abc(v_dqxy_limited_volts, theta_el_advanced);
 
-           	//Global_Data.av.DutyCycle_output = uz_spwm_abc_6ph(Global_Data.av.REAL_v_abc_ref, V_DC_Volts);
+           	Global_Data.av.DutyCycle_output = uz_spwm_abc_6ph(Global_Data.av.REAL_v_abc_ref, Global_Data.av.v_dc1);
 
-           	Global_Data.av.DutyCycle_output = uz_6ph_CSVPWM_24_4_active_SV_V1_alphabeta_INJ(Global_Data.av.REAL_v_vsd_ref, V_DC_Volts);
+
+
+           	Global_Data.av.u_ref_6ph_alphabeta = Global_Data.av.REAL_v_vsd_ref;
+
+            Global_Data.av.V_DC_Volts = Global_Data.av.v_dc1;
+
+            /*
+           	switch(Global_Data.av.PWM_select){
+
+           	case 13:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_PWM_THI_1_4_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 14:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_PWM_THI_1_6_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 15:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_SVM_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 16:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_GDPWM_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, phi_rad, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 17:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM0_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 18:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM1_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 19:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM1PHI_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 20:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM2_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 21:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM3_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 22:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM3PHI_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 23:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM_MAX_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 24:
+        		Global_Data.av.DutyCycle_6ph_test = uz_Dual_DPWM_MIN_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+
+           	case 25:
+        		Global_Data.av.DutyCycle_6ph_test = uz_6ph_CSVPWM_24_4_active_SV_V1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 26:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_CSVPWM_24_4_active_SV_V2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 27:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_CSVPWM_24_5_active_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 28:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 29:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 30:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 31:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 32:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_2M_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 33:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_2M_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 34:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_2M_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 35:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_2L_1ML_2M_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 36:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_1M_v1_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 37:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_1M_v1_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 38:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_1M_v2_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 39:
+        		Global_Data.av.DutyCycle_6ph_test =  uz_6ph_DSVPWM_24_3L_1M_v2_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+
+
+           	default:
+
+           		Global_Data.av.DutyCycle_6ph_test = uz_spwm_abc_6ph(Global_Data.av.REAL_v_abc_ref, V_DC_Volts);
+
+           		break;
+
+           	}
+            */
+
+            // Brutal: 16, 17,    21 besser als 22!   18 besser als 19 -> jeweils das ohne Winkel berechnung mit atan2 ist besser!
+
+           	switch(Global_Data.av.PWM_select){
+
+           	case 13:
+        		Global_Data.av.DutyCycle_output = uz_Dual_PWM_THI_1_4_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 14:
+        		Global_Data.av.DutyCycle_output = uz_Dual_PWM_THI_1_6_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 15:
+        		Global_Data.av.DutyCycle_output = uz_Dual_SVM_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 16:
+        		Global_Data.av.DutyCycle_output = uz_Dual_GDPWM_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, phi_rad, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 17:
+        		Global_Data.av.DutyCycle_output = uz_Dual_DPWM0_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 18:
+        		Global_Data.av.DutyCycle_output = uz_Dual_DPWM1_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 19:
+        		Global_Data.av.DutyCycle_output = uz_Dual_DPWM1PHI_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 20:
+        		Global_Data.av.DutyCycle_output = uz_Dual_DPWM2_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 21:
+        		Global_Data.av.DutyCycle_output = uz_Dual_DPWM3_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 22:
+        		Global_Data.av.DutyCycle_output = uz_Dual_DPWM3PHI_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 23:
+        		Global_Data.av.DutyCycle_output = uz_Dual_DPWM_MAX_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 24:
+        		Global_Data.av.DutyCycle_output = uz_Dual_DPWM_MIN_alphabeta_6ph(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+
+           	case 25:
+        		Global_Data.av.DutyCycle_output = uz_6ph_CSVPWM_24_4_active_SV_V1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 26:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_CSVPWM_24_4_active_SV_V2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 27:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_CSVPWM_24_5_active_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 28:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 29:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 30:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 31:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 32:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_3L_2M_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 33:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_3L_2M_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 34:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_2L_1ML_2M_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 35:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_2L_1ML_2M_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 36:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_3L_1M_v1_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 37:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_3L_1M_v1_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 38:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_3L_1M_v2_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+           	case 39:
+        		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_3L_1M_v2_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+        		break;
+
+
+           	default:
+
+           		Global_Data.av.DutyCycle_output = uz_spwm_abc_6ph(Global_Data.av.REAL_v_abc_ref,  Global_Data.av.V_DC_Volts);
+
+           		break;
+
+           	}
+
+
+
+
+
+
 
            	//struct uz_DutyCycle_t  uz_Space_Vector_Modulation(uz_3ph_dq_t v_ref_Volts, float V_DC_Volts, float theta_el_rad);
 
@@ -369,6 +783,10 @@ void ISR_Control(void *data)
        	Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
        	Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
        }
+
+       uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.shift_system_1, Global_Data.av.shift_system_1, Global_Data.av.shift_system_1);
+       uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.shift_system_2, Global_Data.av.shift_system_2, Global_Data.av.shift_system_2);
+
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);

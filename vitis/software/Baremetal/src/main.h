@@ -65,6 +65,8 @@
 #include "sw/init_Inv/init_inverter.h"
 #include "uz/uz_spwm/uz_spwm.h"
 
+#include "uz/uz_signals/uz_signals.h"
+
 // Network definition
 #define NN_15_INPUT_1_64  0
 #define NN_17_INPUT_1_64  1

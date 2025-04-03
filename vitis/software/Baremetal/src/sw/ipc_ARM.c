@@ -207,7 +207,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_6):
-
+				data->av.PWM_select = (int)value;
 			break;
 
 		case (My_Button_1):

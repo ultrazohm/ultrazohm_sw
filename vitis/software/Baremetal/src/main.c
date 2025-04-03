@@ -71,11 +71,24 @@ DS_Data Global_Data = {
 	.av.REAL_i_xy_meas = {0},
 	.av.REAL_i_z1z2_meas = {0},
 	.av.DutyCycle_output = {0},
+   	.av.phaseshiftoption = {0},
+	.av.shift_system_1 = {0},
+	.av.shift_system_2 = {0},
+	.av.phi_rad = {0},
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
+
+
+struct uz_IIR_Filter_config IIR_config = {
+		.selection = LowPass_first_order,
+		.cutoff_frequency_Hz = 100.0f,
+		.sample_frequency_Hz = 10000.0f};
+
+uz_IIR_Filter_t* uz_signals_IIR_Filter_init(IIR_config);
+
 
 enum init_chain
 {
@@ -109,6 +122,14 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+
+            Global_Data.objects.IRR_filter_A1 = uz_signals_IIR_Filter_init(IIR_config);
+            Global_Data.objects.IRR_filter_B1 = uz_signals_IIR_Filter_init(IIR_config);
+            Global_Data.objects.IRR_filter_C1 = uz_signals_IIR_Filter_init(IIR_config);
+            Global_Data.objects.IRR_filter_A2 = uz_signals_IIR_Filter_init(IIR_config);
+            Global_Data.objects.IRR_filter_B2 = uz_signals_IIR_Filter_init(IIR_config);
+            Global_Data.objects.IRR_filter_C2 = uz_signals_IIR_Filter_init(IIR_config);
+
             initialization_chain = init_CurrentControl;
             break;
 

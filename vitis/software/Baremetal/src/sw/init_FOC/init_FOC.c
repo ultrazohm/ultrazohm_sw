@@ -74,3 +74,10 @@ uz_CurrentControl_t* init_dq_FOC(void) {
 uz_pmsm_model6ph_dq_t* init_CIL_6ph_PMSM(void) {
 	return(uz_pmsm_model6ph_dq_init(pmsm_CIL_config));
 }
+
+
+
+
+
+
+

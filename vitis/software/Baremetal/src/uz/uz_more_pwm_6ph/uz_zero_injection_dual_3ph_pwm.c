@@ -73,6 +73,18 @@ struct uz_DutyCycle_2x3ph_t uz_Dual_GDPWM_abc_6ph(uz_6ph_abc_t u_abc1abc2_ref, f
 	return output;
 }
 
+struct uz_DutyCycle_2x3ph_t uz_Dual_GDPWM_abc_6ph_V2(uz_6ph_abc_t u_abc1abc2_ref, float phi_rad, float V_dc_volts){
+	struct uz_DutyCycle_2x3ph_t output = {0};
+
+	struct uz_3ph_abc_t u_abc_sys1 = {u_abc1abc2_ref.a1, u_abc1abc2_ref.b1, u_abc1abc2_ref.c1};
+	struct uz_3ph_abc_t u_abc_sys2 = {u_abc1abc2_ref.a2, u_abc1abc2_ref.b2, u_abc1abc2_ref.c2};
+
+	output.system1 = uz_GDPWM_abc_3ph_V2(u_abc_sys1, phi_rad, V_dc_volts);
+	output.system2 = uz_GDPWM_abc_3ph_V2(u_abc_sys2, phi_rad, V_dc_volts);
+
+	return output;
+}
+
 
 struct uz_DutyCycle_2x3ph_t uz_Dual_DPWM0_abc_6ph(uz_6ph_abc_t u_abc1abc2_ref, float V_dc_volts){
 	struct uz_DutyCycle_2x3ph_t output = {0};
@@ -207,6 +219,11 @@ struct uz_DutyCycle_2x3ph_t uz_Dual_GDPWM_alphabeta_6ph(uz_6ph_alphabeta_t u_6ph
 
 }
 
+struct uz_DutyCycle_2x3ph_t uz_Dual_GDPWM_alphabeta_6ph_V2(uz_6ph_alphabeta_t u_6phalphabeta_ref, float phi_rad, float V_dc_volts){
+
+	return uz_Dual_GDPWM_abc_6ph_V2(uz_transformation_asym30deg_6ph_alphabeta_to_abc(u_6phalphabeta_ref), phi_rad, V_dc_volts);
+
+}
 
 struct uz_DutyCycle_2x3ph_t uz_Dual_DPWM0_alphabeta_6ph(uz_6ph_alphabeta_t u_6phalphabeta_ref, float V_dc_volts){
 

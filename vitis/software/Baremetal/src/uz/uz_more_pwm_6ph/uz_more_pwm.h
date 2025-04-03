@@ -1,0 +1,22 @@
+#ifndef UZ_ZERO_MORE_PWM_H
+#define UZ_ZERO_MORE_PWM_H
+
+
+enum uz_PWM_Variations {
+	SPWM,
+	PWM_THI_1_4,
+	PWM_THI_1_6,
+	SVM,
+	GDPWM,
+	DPWM0,
+	DPWM1,
+	DPWM1PHI,
+	DPWM1,
+	DPWM2,
+	DPWM3,
+	DPWM3PHI,
+	DPWM_MAX,
+	DPWM_MIN
+};
+
+#endif UZ_ZERO_MORE_PWM_H

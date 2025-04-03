@@ -107,6 +107,20 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DutycycleA2] = &data->av.DutyCycle_output.system2.DutyCycle_A;
 	js_ch_observable[JSO_DutycycleB2] = &data->av.DutyCycle_output.system2.DutyCycle_B;
 	js_ch_observable[JSO_DutycycleC2] = &data->av.DutyCycle_output.system2.DutyCycle_C;
+	js_ch_observable[JSO_DutycycleTestA1] = &data->av.DutyCycle_6ph_test.system1.DutyCycle_A;
+	js_ch_observable[JSO_DutycycleTestB1] = &data->av.DutyCycle_6ph_test.system1.DutyCycle_B;
+	js_ch_observable[JSO_DutycycleTestC1] = &data->av.DutyCycle_6ph_test.system1.DutyCycle_C;
+	js_ch_observable[JSO_DutycycleTestA2] = &data->av.DutyCycle_6ph_test.system2.DutyCycle_A;
+	js_ch_observable[JSO_DutycycleTestB2] = &data->av.DutyCycle_6ph_test.system2.DutyCycle_B;
+	js_ch_observable[JSO_DutycycleTestC2] = &data->av.DutyCycle_6ph_test.system2.DutyCycle_C;
+
+	js_ch_observable[JSO_u_Test_ref_A] = &data->av.u_ref_abc.a;
+	js_ch_observable[JSO_Theta_From_REF] = &data->av.theta_from_ref;
+
+	js_ch_observable[JSO_ref_alpha] = &data->av.u_ref_6ph_alphabeta.alpha;
+	js_ch_observable[JSO_ref_beta] = &data->av.u_ref_6ph_alphabeta.beta;
+	js_ch_observable[JSO_ref_x] = &data->av.u_ref_6ph_alphabeta.x;
+	js_ch_observable[JSO_ref_y] = &data->av.u_ref_6ph_alphabeta.y;
 
 
 	// Store slow / not-time-critical signals into the SlowData-Array.

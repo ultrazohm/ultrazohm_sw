@@ -14,6 +14,8 @@
 #include "uz/uz_matrix/uz_matrix.h"
 #include "uz/uz_space_vector_modulation/uz_space_vector_modulation.h"
 
+#include "uz/uz_signals/uz_signals.h"
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -119,6 +121,14 @@ typedef struct _actualValues_ {
 	float i_X_ref;
 	float i_Y_ref;
 
+	int PWM_select;
+
+	uz_6ph_alphabeta_t u_ref_6ph_alphabeta;
+	uz_6ph_abc_t u_ref_6ph_abc;
+	uz_3ph_abc_t u_ref_abc;
+
+
+	uz_6ph_dq_t v_dqxy_ref;
 
 	uz_6ph_dq_t v_dqxy_limited_volts;
 	uz_3ph_dq_t v_dq_limited_volts;
@@ -150,6 +160,19 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t REAL_i_xy_meas;
 	uz_3ph_dq_t REAL_i_z1z2_meas;
 	struct uz_DutyCycle_2x3ph_t DutyCycle_output;
+	struct uz_DutyCycle_2x3ph_t DutyCycle_6ph_test;
+
+   	int phaseshiftoption;
+	float shift_system_1;
+	float shift_system_2;
+
+	int test_var;
+	float theta_from_ref;
+	float Amp;
+
+	float V_DC_Volts;
+
+	float phi_rad;
 
 } actualValues;
 
@@ -183,6 +206,13 @@ typedef struct{
 	uz_CurrentControl_t* CC_xy_instance;
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
+
+	uz_IIR_Filter_t *IRR_filter_A1;
+	uz_IIR_Filter_t *IRR_filter_B1;
+	uz_IIR_Filter_t *IRR_filter_C1;
+	uz_IIR_Filter_t *IRR_filter_A2;
+	uz_IIR_Filter_t *IRR_filter_B2;
+	uz_IIR_Filter_t *IRR_filter_C2;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

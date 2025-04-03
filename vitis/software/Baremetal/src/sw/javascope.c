@@ -69,6 +69,8 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
+	js_ch_observable[JSO_U_voltage_in] 			= &data->av.U_voltage_in;
+	js_ch_observable[JSO_U_current_in] 			= &data->av.U_current_in;
 	js_ch_observable[JSO_U_DC] 					= &data->av.U_DC;
 	js_ch_observable[JSO_U_DC_max] 				= &data->av.U_DC_max;
 	js_ch_observable[JSO_U_DC_min] 				= &data->av.U_DC_min;
@@ -87,9 +89,16 @@ int JavaScope_initialize(DS_Data* data)
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
 	js_slowDataArray[JSSD_FLOAT_U_DC] 			        = &(data->av.U_DC);
+	js_slowDataArray[JSSD_FLOAT_U_DC_min] 			    = &(data->av.U_DC_min);
+	js_slowDataArray[JSSD_FLOAT_U_DC_max] 			    = &(data->av.U_DC_max);
 	js_slowDataArray[JSSD_FLOAT_I_DC] 			        = &(data->av.I_DC);
+	js_slowDataArray[JSSD_FLOAT_I_DC_min] 			    = &(data->av.I_DC_min);
+	js_slowDataArray[JSSD_FLOAT_I_DC_max] 			    = &(data->av.I_DC_max);
 	js_slowDataArray[JSSD_FLOAT_P_DC] 			        = &(data->av.P_DC);
-	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
+	js_slowDataArray[JSSD_FLOAT_P_DC_min] 			    = &(data->av.P_DC_min);
+	js_slowDataArray[JSSD_FLOAT_P_DC_max] 			    = &(data->av.P_DC_max);
+	js_slowDataArray[JSSD_FLOAT_U_voltage_in]			= &(data->av.U_voltage_in);
+	js_slowDataArray[JSSD_FLOAT_U_current_in]			= &(data->av.U_current_in);
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;

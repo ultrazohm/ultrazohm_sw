@@ -30,6 +30,8 @@ enum JS_OberservableData {
 	JSO_P_DC,
 	JSO_P_DC_max,
 	JSO_P_DC_min,
+	JSO_U_voltage_in,
+	JSO_U_current_in,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
@@ -41,12 +43,18 @@ enum JS_OberservableData {
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
 	JSSD_FLOAT_U_DC,
+	JSSD_FLOAT_U_DC_min,
+	JSSD_FLOAT_U_DC_max,
 	JSSD_FLOAT_I_DC,
+	JSSD_FLOAT_I_DC_min,
+	JSSD_FLOAT_I_DC_max,
 	JSSD_FLOAT_P_DC,
-	JSSD_FLOAT_SecondsSinceSystemStart,
+	JSSD_FLOAT_P_DC_min,
+	JSSD_FLOAT_P_DC_max,
+	JSSD_FLOAT_U_voltage_in,
+	JSSD_FLOAT_U_current_in,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_FreqReadback,
 	JSSD_FLOAT_Milliseconds,
 	JSSD_ENDMARKER
 };
@@ -203,7 +211,6 @@ enum gui_button_mapping {
 	-,
 	-,
 	-,
-
 	RCV_LABELS_ENDMARKER
 
 // Physical unit label (printed text) for the MyButtons top to bottom
@@ -227,11 +234,6 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
-	JSSD_FLOAT_SecondsSinceSystemStart,
-	JSSD_FLOAT_ISR_ExecTime_us,
-	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_i_q,
-	JSSD_FLOAT_Milliseconds,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
@@ -247,7 +249,11 @@ enum gui_button_mapping {
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
 	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_Error_Code,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

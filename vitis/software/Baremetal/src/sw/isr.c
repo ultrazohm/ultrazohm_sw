@@ -66,6 +66,8 @@ void ISR_Control(void *data)
 
     //***************** Berechnung Strom und Spannung*****************************
     // Zuweisung des entsprechenden ADCs und Berechnung von U und I mit k_regression und b_offset
+    Global_Data.av.U_voltage_in = Global_Data.aa.A1.me.ADC_A2;
+    Global_Data.av.U_current_in = Global_Data.aa.A1.me.ADC_A4;
     // Voltage Measurement
     	Global_Data.av.U_DC 			= (1/k_regression_voltage) * (Global_Data.aa.A1.me.ADC_A2 - b_offset_voltage);
     //current Measurement

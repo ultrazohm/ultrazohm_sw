@@ -50,6 +50,8 @@ typedef struct _AnalogAdapters_ {
 } AnalogAdapters;
 
 typedef struct _actualValues_ {
+	float U_voltage_in;
+	float U_current_in;
 	float U_DC;						//Variable for calculated DC Voltage
 	float U_DC_max;
 	float U_DC_min;

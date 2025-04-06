@@ -4,7 +4,7 @@
 Digital Inverter Rev04
 ==========================================
 
-.. image:: Digital_SI_Inverter_rev04/3D_View.pdf
+.. image:: Digital_SI_Inverter_rev04/3D_View.png
   :height: 500
   :align: center
 
@@ -79,13 +79,13 @@ into device performance and efficiency.
 The DC link voltage was set to :math:`V_dc = 48\ V`48V, with a load inductance of :math:`L = 1\ mH` and a load resistance of :math:`RL = 400\ mΩ`. The desired switching current was maintained at :math:`i_D = 30\ A` throughout the test.  the experimental waveforms of the DPT are shown below. 
 One must note that, due to design constraints, measurement of the drain current was not included, as it was challenging to obtain on hardware.
 
-.. image:: Digital_SI_Inverter_rev04/DPT_FULL_1.pdf
+.. image:: Digital_SI_Inverter_rev04/DPT_FULL_1.png
   :height: 250
   :align: center
-.. image:: Digital_SI_Inverter_rev04/DPT_LT_Turn_on.pdf
+.. image:: Digital_SI_Inverter_rev04/DPT_LT_Turn_on.png
   :height: 250
   :align: center
-.. image:: Digital_SI_Inverter_rev04/DPT_LT_Turn_off.pdf
+.. image:: Digital_SI_Inverter_rev04/DPT_LT_Turn_off.png
   :height: 250
   :align: center
 

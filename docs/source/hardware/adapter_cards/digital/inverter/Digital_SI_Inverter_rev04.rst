@@ -82,10 +82,10 @@ One must note that, due to design constraints, measurement of the drain current 
 .. image:: Digital_SI_Inverter_rev04/DPT_FULL_1.png
   :height: 250
   :align: center
-.. image:: Digital_SI_Inverter_rev04/DPT_LT_Turn_on.png
+.. image:: Digital_SI_Inverter_rev04/Turn-off Switching Transient.png
   :height: 250
   :align: center
-.. image:: Digital_SI_Inverter_rev04/DPT_LT_Turn_off.png
+.. image:: Digital_SI_Inverter_rev04/Turn-on Switching Transient.png
   :height: 250
   :align: center
 

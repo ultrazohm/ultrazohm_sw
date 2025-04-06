@@ -225,12 +225,12 @@ References
 Known issues
 ============
 
-As of this moment, no issue in Rev03 is known.
+As of this moment, no issue in Rev04 is known.
 
 Designed by 
 ===========
 
-Dennis Hufnagel (THN)/Andreas Geiger, 02/2024
+Krunal Patel/ Dennis Hufnagel (THN), 06/2025
 
 Acknowledgments
 ---------------

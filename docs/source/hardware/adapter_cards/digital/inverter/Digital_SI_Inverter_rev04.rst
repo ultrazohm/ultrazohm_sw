@@ -1,21 +1,25 @@
 .. _dig_si_inverter_rev03:
 
 ==========================================
-Digital Inverter Rev03
+Digital Inverter Rev04
 ==========================================
 
-.. image:: Digital_SI_Inverter_rev03/3D_View_Top_UZ_D_Inverter_Variant1_Rev03.png
+.. image:: Digital_SI_Inverter_rev04/3D_View.pdf
   :height: 500
   :align: center
 
 
-Changes from Rev02 to Rev03
+Changes from Rev03 to Rev04
 ----------------------------
 
-* changed gate resistors from 10Ohm to 47Ohm
-* unused pads from the 2.5V reference voltage source have been removed
-
-Changes from Rev03 to Rev03 production
+* Added separate gate resistors for turn-off (16ohm) and turn-on (47ohm) MOSFETs.
+* Introduced a new capacitor bank consisting of 8x AEC capacitors (110µF each) and 15x MLCCs (10µF each).
+* Eliminated low-side temperature measurement from all phases.
+* Added an individual 2.5V (REF4132B25DBVRQ1) supply as a bias reference for (ADA4940-1ARZ-R7).
+* Replaced Current sensor (MAX40056TAUA+) with (INA241A2IDGKR).
+* Optimized the entire layer stackup and re-engineered the PCB layout.
+* Attached a bottom-side heatsink for improved heat management.
+Changes from Rev03 to Rev04 production
 ---------------------------------------
 
 * programmable EEPROM for identifying Inverter Cards
@@ -39,7 +43,7 @@ Additional ratings
   - Voltage measurement up to :math:`V_{peak,meas}= 60\ V`
   - Temperature measurement up to :math:`T_{meas}=105°C`
   - Temperature measurement is not built into the MOSFET. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature will always be **significantly** lower than the max operating temperature of the semiconductors.
-  - DC-link capacitance :math:`C_{DC} = 570\mu F`
+  - DC-link capacitance :math:`C_{DC} = 1030\mu F`
   - OPC trigger point :math:`I_{OCP}=\pm29.85\ A`
   - Cutoff frequency for voltage measurement :math:`f_g = 2170\ Hz` 
   - Operation up to a PWM frequency of :math:`f_{PWM} = 100\ kHz` has been verified
@@ -53,7 +57,7 @@ Pinout
   :align: center
 
 .. csv-table:: Defined pin mapping uz_d_inverter
-   :file: Digital_SI_Inverter_rev02/uz_d_inverter_pin_mapping.csv
+   :file: Digital_SI_Inverter_rev04/uz_d_inverter_pin_mapping.csv
    :widths: 40 40 60 50 50 
    :header-rows: 1
 
@@ -68,14 +72,22 @@ The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`A
 Switching behavior
 -------------------
 
-The figure below shows the general switching behaviour of the inverter with a PMSM as a load is shown. 
-The plots were taken during routine operation with the PMSM running with at :math:`i_q = 5\ A`. The PWM frequency was :math:`20\ kHz` with a deadtime of :math:`150\ ns`.
-The gate resistance has been tuned to such a degree, that there is practically no overshoot and only a minimal degree of oscillation in the drain source voltages.
-Although there is room for further optimization, the resulting switching behaviour is sufficiently robust.
+Double Pulse Test
+The DPT is an important experimental technique in power electronics for characterizing the switching behavior of semiconductor devices under realistic operating
+conditions. Typically, it offers a comprehensive means of analyzing the dynamic response during the transition (turn-on and turn-off events), revealing useful insights
+into device performance and efficiency.
+The DC link voltage was set to :math:`V_dc = 48\ V`48V, with a load inductance of :math:`L = 1\ mH` and a load resistance of :math:`RL = 400\ mΩ`. The desired switching current was maintained at :math:`i_D = 30\ A` throughout the test.  the experimental waveforms of the DPT are shown below. 
+One must note that, due to design constraints, measurement of the drain current was not included, as it was challenging to obtain on hardware.
 
-.. tikz::
-   :include: Digital_SI_Inverter_rev02/switching_behaviour.tikz
-   :align: right
+.. image:: Digital_SI_Inverter_rev04/DPT_FULL_1.pdf
+  :height: 250
+  :align: center
+.. image:: Digital_SI_Inverter_rev04/DPT_LT_Turn_on.pdf
+  :height: 250
+  :align: center
+.. image:: Digital_SI_Inverter_rev04/DPT_LT_Turn_off.pdf
+  :height: 250
+  :align: center
 
 
 Setup before first use and implementation with Inverter Interface IP-Core

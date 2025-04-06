@@ -8,7 +8,7 @@ DIG_IO_05,PWM L3#,Gate L3,PWM/Direct,Input
 DIG_IO_06,,unused,,
 DIG_IO_07,H1 Temp,Temperature feedback H1,PWM,Output
 DIG_IO_08,,unused,,
-DIG_IO_09,L1 Temp,Temperature feedback L1,PWM,Output
+DIG_IO_09,,unused,,
 DIG_IO_10,,unused,,
 DIG_IO_11,OC P1,Over current indicator for phase A,"Level, low active",Output
 DIG_IO_12,,unused,,

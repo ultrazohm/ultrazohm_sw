@@ -83,11 +83,11 @@ One must note that, due to design constraints, measurement of the drain current 
   :height: 250
   :align: center
 
-.. image:: Digital_SI_Inverter_rev04/Turn-off Switching Transient.png
+.. image:: Digital_SI_Inverter_rev04/Turn_off_Switching_Transient.png
   :height: 250
   :align: center
-  
-.. image:: Digital_SI_Inverter_rev04/Turn-on Switching Transient.png
+
+.. image:: Digital_SI_Inverter_rev04/Turn_on_Switching_Transient.png
   :height: 250
   :align: center
 

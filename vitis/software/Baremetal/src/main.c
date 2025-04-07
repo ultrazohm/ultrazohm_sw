@@ -121,15 +121,21 @@ int main(void)
 
 
 void init_ssi_interface() {
-	float conversion_pos = 1.0f/524287.0f*2.0f*UZ_PIf;
+	float conversion_pos = 1.0f/524287.0f*2.0f*UZ_PIf; // for 19bit encoder
 
 	// set clock divider
-	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, 100U);
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, 20U);
 	// set encoder bit width
 	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x104, 19U);
-	// set edge delay for reading position bits
-	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, 7U);
-	// reciprocal bit width times two pi
-	uz_axi_write_float(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, conversion_pos);
+	// set the delay first clock feature needed for ssi clock frequencies higher than 500 kHz
+	uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, true);
+//	// reciprocal bit width times two pi
+//	uz_axi_write_float(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, conversion_pos);
+	// delay ticks first clock delay
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x10C, 100U);
+	// delay ticks clk
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, 2U);
+	// delay ticks data
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, 2U);
 
 }

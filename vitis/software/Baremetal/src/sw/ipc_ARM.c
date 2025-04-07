@@ -187,22 +187,32 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		uint32_t tmp_val = (uint32_t)value;
+		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, tmp_val); //clk_div
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
+		bool tmp_val_2 = (bool)value;
+		uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, tmp_val_2); //delay_first_off_on
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
+		uint32_t tmp_val_3 = (uint32_t)value;
+		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x10C, tmp_val_3); //delay_ticks_first_clock
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
+		uint32_t tmp_val_4 = (uint32_t)value;
+		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, tmp_val_4); // delay_ticks_clk
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		uint32_t tmp_val_5 = (uint32_t)value;
+		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, tmp_val_5); // delay_ticks_data
 			break;
 
 		case (Set_Send_Field_6):

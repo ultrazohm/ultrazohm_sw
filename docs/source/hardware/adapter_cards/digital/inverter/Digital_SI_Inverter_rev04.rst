@@ -52,6 +52,15 @@ Additional ratings
   
 Heatsink
 --------
+Rev04 needs a new heatsink design and it is not compatible with :ref:`Rev02 <dig_si_inverter_rev03>` and :ref:`Rev03 <dig_si_inverter_rev03>`. 
+The PCB is prepared for the installation of a heat sink. 
+Four holes have been drilled to allow the use of maximum M3 screws.
+It is intended that the heatsink will have the appropriate holes with threads into which the screws can be screwed.
+For further information on the dimensions of the heatsink and the location of the screw holes, refer to the diagram below. 
+The dimensions take into account the safety margin required for the mounting rails in the UltraZohm. 
+The heatsink is mounted on the BOT side of the PCB.
+Appropriate clearance for the heatsink is available.
+Thermal interface material needs to be placed between the heatsink and the pcb.
 
 .. tikz:: Heatsink dimensions
   :align: center

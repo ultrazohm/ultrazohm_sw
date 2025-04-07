@@ -33,14 +33,17 @@ For additional information or an in-depth look at the circuit design, please ref
 
    Digital_SI_Inverter_rev02
    Digital_SI_Inverter_rev03
+   Digital_SI_Inverter_rev04
+
 
 Components
 ----------
 
+.. _dig_si_inverter_all_components:
+
 - MOSFET (100 V, 97 A, 6.0 :math:`m\Omega`) `ISC060N10NM6ATMA1 <https://www.mouser.de/datasheet/2/196/Infineon_ISC060N10NM6_DataSheet_v02_02_EN-3166722.pdf>`_
 - Gate-Driver `EiceDRIVER 2EDF7275KXUMA1 <https://www.mouser.de/datasheet/2/196/Infineon_2EDF7275K_DataSheet_v02_07_EN-1731004.pdf>`_
 - Isolated DC/DC Converter for gate 12V supply `PDSE1-S24-S12-M-TR <https://www.mouser.de/datasheet/2/670/pdse1_m-1596038.pdf>`_ 
-- Bi-directional current measurement `MAX40056TAUA+ <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3128585.pdf>`_ 
 - Differential operational amplifier `ADA4940-1ARZ <https://www.mouser.de/datasheet/2/609/ada4940_1_4940_2-3120247.pdf>`_ 
 - Temperature measurement `LM57CISD-10/NOPB <https://www.ti.com/general/docs/suppproductinfo.tsp?distId=26&gotoUrl=https://www.ti.com/lit/gpn/lm57>`_
 - Voltage to PWM frequency converter `LTC6992HS6-4#WTRMPBF <https://www.mouser.de/datasheet/2/609/LTC6992-1-6992-2-6992-3-6992-4-1852873.pdf>`_
@@ -56,6 +59,7 @@ For further information on the dimensions of the heatsink and the location of th
 The dimensions take into account the safety margin required for the mounting rails in the UltraZohm. 
 A simple passive heatsink is sufficient for operation. 
 An advanced actively cooled heatsink, either air or water cooled, can also be fitted if required.
+This heatsink design ist only valid for :ref:`Rev02 <dig_si_inverter_rev03>` and :ref:`Rev03 <dig_si_inverter_rev03>`. 
 
 .. tikz:: Heatsink dimensions
   :align: center

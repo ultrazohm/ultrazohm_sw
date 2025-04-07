@@ -22,6 +22,14 @@ Changes from Rev03 to Rev03 production
 * all components have been reviewed regarding their compatibility with JLCPCB parts
 
 
+Components
+----------
+
+Additional to the :ref:`components all version share <dig_si_inverter_all_components>`, the following components are used:
+
+- Bi-directional current measurement `MAX40056TAUA+ <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3128585.pdf>`_ 
+
+
 Absolute maximum ratings
 ------------------------
 
@@ -41,7 +49,7 @@ Additional ratings
   - Temperature measurement is not built into the MOSFET. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature will always be **significantly** lower than the max operating temperature of the semiconductors.
   - DC-link capacitance :math:`C_{DC} = 570\mu F`
   - OPC trigger point :math:`I_{OCP}=\pm29.85\ A`
-  - Cutoff frequency for voltage measurement :math:`f_g = 2170\ Hz` 
+  - Cutoff frequency for voltage measurement :math:`f_g = 1745\ Hz` 
   - Operation up to a PWM frequency of :math:`f_{PWM} = 100\ kHz` has been verified
   
 Pinout

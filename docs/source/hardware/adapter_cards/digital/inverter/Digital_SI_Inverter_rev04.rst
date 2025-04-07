@@ -1,4 +1,4 @@
-.. _dig_si_inverter_rev03:
+.. _dig_si_inverter_rev04:
 
 ==========================================
 Digital Inverter Rev04
@@ -9,22 +9,25 @@ Digital Inverter Rev04
   :align: center
 
 
-Changes from Rev03 to Rev04
-----------------------------
+Changes from Rev03 production to Rev04
+--------------------------------------
 
-* Added separate gate resistors for turn-off (16ohm) and turn-on (47ohm) MOSFETs.
+* Added separate gate resistors for turn-off (12ohm) and turn-on (47ohm) MOSFETs.
 * Introduced a new capacitor bank consisting of 8x AEC capacitors (110µF each) and 15x MLCCs (10µF each).
-* Eliminated low-side temperature measurement from all phases.
-* Added an individual 2.5V (REF4132B25DBVRQ1) supply as a bias reference for (ADA4940-1ARZ-R7).
-* Replaced Current sensor (MAX40056TAUA+) with (INA241A2IDGKR).
+* Added an individual 2.5V (`REF4132B25DBVRQ1 <https://www.ti.com/lit/ds/symlink/ref4132-q1.pdf?ts=1743989231729&ref_url=https%253A%252F%252Fwww.ti.com%252Ftool%252FPMP22650>`_) supply as a bias reference for (ADA4940-1ARZ-R7 and INA241A2IDGKR).
+* Replaced current sensor (MAX40056TAUA+) with (`INA241A2IDGKR <https://www.ti.com/lit/ds/symlink/ina241a.pdf?ts=1744034830994>`_ ).
+* Because of the new current sensor, no hardware OCP exists anymore.
 * Optimized the entire layer stackup and re-engineered the PCB layout.
-* Attached a bottom-side heatsink for improved heat management.
-Changes from Rev03 to Rev04 production
----------------------------------------
+* Eliminated low-side temperature measurement from all phases.
+* Attached a bottom-side heatsink for improved heat management and therefore better thermal endurance.
 
-* programmable EEPROM for identifying Inverter Cards
-* all components have been reviewed regarding their compatibility with JLCPCB parts
+Components
+----------
 
+Additional to the :ref:`components all version share <dig_si_inverter_all_components>`, the following components are used:
+
+- Bi-directional current measurement `INA241A2IDGKR <https://www.ti.com/lit/ds/symlink/ina241a.pdf?ts=1744034830994>`_ 
+- 2.5V supply `REF4132B25DBVRQ1 <https://www.ti.com/lit/ds/symlink/ref4132-q1.pdf?ts=1743989231729&ref_url=https%253A%252F%252Fwww.ti.com%252Ftool%252FPMP22650>`_
 
 Absolute maximum ratings
 ------------------------
@@ -39,15 +42,59 @@ Additional ratings
 ------------------
 
 .. note ::
-  - Current measurement up to :math:`I_{peak,meas}=\pm35\ A`
+  - Current measurement up to :math:`I_{peak,meas}=\pm50\ A`
   - Voltage measurement up to :math:`V_{peak,meas}= 60\ V`
   - Temperature measurement up to :math:`T_{meas}=105°C`
   - Temperature measurement is not built into the MOSFET. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature will always be **significantly** lower than the max operating temperature of the semiconductors.
   - DC-link capacitance :math:`C_{DC} = 1030\mu F`
-  - OPC trigger point :math:`I_{OCP}=\pm29.85\ A`
-  - Cutoff frequency for voltage measurement :math:`f_g = 2170\ Hz` 
+  - Cutoff frequency for voltage measurement :math:`f_g = 1745\ Hz` 
   - Operation up to a PWM frequency of :math:`f_{PWM} = 100\ kHz` has been verified
   
+Heatsink
+--------
+
+.. tikz:: Heatsink dimensions
+  :align: center
+
+  \usetikzlibrary{shapes,arrows,patterns,calc};
+  \tikzset{%
+    body/.style={inner sep=0pt,outer sep=0pt,shape=rectangle,draw,thick},
+    dimen/.style={<->,>=latex,color=gray,every rectangle node/.style={fill=white,midway,font=\large}},
+    symmetry/.style={dashed,thin},
+  }
+  \node [body,minimum height=9.2cm,minimum width=3.5cm,anchor=south west] (body1) at (0,0) {};
+  \draw (body1.south west) -- ++(-1,0) coordinate (D1) -- +(-5pt,0);
+  \draw (body1.north west) -- ++(-1,0) coordinate (D2) -- +(-5pt,0);
+  \draw [dimen] (D1) -- (D2) node {94,00};
+  \draw[color=gray] (body1.north west) -- ++(0,1) coordinate (D1) -- +(0,5pt);
+  \draw [color=gray](body1.north east) -- ++(0,1) coordinate (D2) -- +(0,5pt);
+  \draw [dimen] (D1) -- (D2) node {35,00};
+  \filldraw[color=black, fill=white, thick](0.6,1.6) circle (0.3cm);
+  \draw (0.6,1.95) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (2.9,1.95) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (0.6,7.55) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (2.9,7.55) arc[start angle=90, end angle=-180, radius=0.35];
+  \filldraw[color=black, fill=white, thick](2.9,1.6) circle (0.3cm);
+  \filldraw[color=black, fill=white, thick](0.6,7.2) circle (0.3cm);
+  \filldraw[color=black, fill=white, thick](2.9,7.2) circle (0.3cm);
+  \draw [color=gray](2.9,1.6) -- ++(2.1,0) coordinate (D1) -- +(5pt,0);
+  \draw [color=gray](3.5,0) -- ++(1.5,0) coordinate (D2) -- +(5pt,0);
+  \draw [dimen] (D1) -- (D2) node {20,00};
+  \draw [color=gray](body1.south west) -- ++(0,-1) coordinate (D1) -- +(0,-5pt);
+  \draw [color=gray](0.6,1.6) -- ++(0,-2.6) coordinate (D2) -- +(0,-5pt);
+  \draw [dimen,-] (D1) -- (D2) node [right=15pt] {5,00};
+  \draw [dimen,<-] (D1) -- ++(-5pt,0);
+  \draw [dimen,<-] (D2) -- ++(+5pt,0);
+  \draw [color=gray](body1.south west) -- ++(0,-2) coordinate (D1) -- +(0,-5pt);
+  \draw [color=gray](2.9,1.6) -- ++(0,-3.6) coordinate (D2) -- +(0,-5pt);
+  \draw [dimen] (D1) -- (D2) node  {25,00};
+  \draw [color=gray](3.5,0) -- ++(2.5,0) coordinate (D1) -- +(5pt,0);
+  \draw [color=gray](2.9,7.2) -- ++(3.1,0) coordinate (D2) -- +(5pt,0);
+  \draw [dimen] (D1) -- (D2) node {74,00};
+  \draw[-latex,color=gray](5,9.0)--(3.15,7.35);
+  \node[rotate=45,color=gray]  at (4,8.5) {4x M3};
+
+
 Pinout
 ------
 
@@ -72,12 +119,12 @@ The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`A
 Switching behavior
 -------------------
 
-Double Pulse Test
-The DPT is an important experimental technique in power electronics for characterizing the switching behavior of semiconductor devices under realistic operating
-conditions. Typically, it offers a comprehensive means of analyzing the dynamic response during the transition (turn-on and turn-off events), revealing useful insights
-into device performance and efficiency.
-The DC link voltage was set to :math:`V_dc = 48\ V`48V, with a load inductance of :math:`L = 1\ mH` and a load resistance of :math:`RL = 400\ mΩ`. The desired switching current was maintained at :math:`i_D = 30\ A` throughout the test.  the experimental waveforms of the DPT are shown below. 
-One must note that, due to design constraints, measurement of the drain current was not included, as it was challenging to obtain on hardware.
+The Double Puls Test (DPT) was used for characterizing the switching behavior of the design. 
+The DC link voltage was set to :math:`V_dc = 48\ V`48V, with a load inductance of :math:`L = 1\ mH` and a load resistance of :math:`RL = 400\ mΩ`. 
+The desired switching current was maintained at :math:`i_D = 30\ A` throughout the test.  
+The experimental waveforms of the DPT are shown below. 
+One must note that, due to design constraints, measurement of the drain current was not included.
+The DC-Current at the negative terminal is therefore shown in the graph.
 
 .. image:: Digital_SI_Inverter_rev04/DPT_FULL_1.png
   :height: 250
@@ -169,49 +216,19 @@ In order to use the over current and over temperature protection, the following 
 These are optional features and can be left out if they aren't required.
 
 .. code-block:: c
- :caption: Additions for isr.c if OCP or OTP are used
+ :caption: Additions for isr.c if OTP are used
  
  //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
  //Overtemperature for H1
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
     ultrazohm_state_machine_set_error(true);
  }
- //Overtemperature for L1
- if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
-    ultrazohm_state_machine_set_error(true);
- }
  //Overtemperature for H2
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
     ultrazohm_state_machine_set_error(true);
  }
- //Overtemperature for L2
- if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
-    ultrazohm_state_machine_set_error(true);
- }
  //Overtemperature for H3
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Overtemperature for L3
- if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
- //Binding of the signals to the driver is slightly unintuitive 
- //Overcurrent for Phase A
- if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Overcurrent for Phase B
- if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Overcurrent for Phase C
- if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Overcurrent for DC-link
- if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
     ultrazohm_state_machine_set_error(true);
  }
  
@@ -221,7 +238,7 @@ References
 
 .. _dig_si_inverter_references:
 
-* :download:`Schematic Rev03 <Digital_SI_Inverter_rev03/UZ_D_Inverter_rev03.pdf>`
+* :download:`Schematic Rev04 <Digital_SI_Inverter_rev04/UZ_D_Inverter_rev04.pdf>`
 * `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
 
 Known issues

@@ -113,8 +113,7 @@
       "uz_user": {
         "smartconnect_1": "",
         "uz_axi_testIP_0": "",
-        "system_ila_0": "",
-        "MatrixMultiplication_0": ""
+        "mmult_hw_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5674,34 +5673,16 @@
             "xci_path": "ip\\zusys_uz_axi_testIP_0_0_5\\zusys_uz_axi_testIP_0_0.xci",
             "inst_hier_path": "uz_user/uz_axi_testIP_0"
           },
-          "system_ila_0": {
-            "vlnv": "xilinx.com:ip:system_ila:1.1",
-            "xci_name": "zusys_system_ila_0_5",
-            "xci_path": "ip\\zusys_system_ila_0_5\\zusys_system_ila_0_5.xci",
-            "inst_hier_path": "uz_user/system_ila_0",
-            "parameters": {
-              "C_DATA_DEPTH": {
-                "value": "65536"
-              }
-            },
+          "mmult_hw_0": {
+            "vlnv": "xilinx.com:hls:mmult_hw:1.0",
+            "xci_name": "zusys_mmult_hw_0_1",
+            "xci_path": "ip\\zusys_mmult_hw_0_1\\zusys_mmult_hw_0_1.xci",
+            "inst_hier_path": "uz_user/mmult_hw_0",
             "interface_ports": {
-              "SLOT_0_AXI": {
-                "mode": "Monitor",
-                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
-                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
-              }
-            }
-          },
-          "MatrixMultiplication_0": {
-            "vlnv": "xilinx.com:hls:MatrixMultiplication:1.0",
-            "xci_name": "zusys_MatrixMultiplication_0_4",
-            "xci_path": "ip\\zusys_MatrixMultiplication_0_4\\zusys_MatrixMultiplication_0_4.xci",
-            "inst_hier_path": "uz_user/MatrixMultiplication_0",
-            "interface_ports": {
-              "m_axi_arrays": {
+              "m_axi_gmem": {
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
                 "mode": "Master",
-                "address_space_ref": "Data_m_axi_arrays",
+                "address_space_ref": "Data_m_axi_gmem",
                 "base_address": {
                   "minimum": "0x00000000",
                   "maximum": "0xFFFFFFFFFFFFFFFF",
@@ -5711,7 +5692,7 @@
             },
             "addressing": {
               "address_spaces": {
-                "Data_m_axi_arrays": {
+                "Data_m_axi_gmem": {
                   "range": "16E",
                   "width": "64"
                 }
@@ -5720,11 +5701,10 @@
           }
         },
         "interface_nets": {
-          "Conn1": {
+          "mmult_hw_0_m_axi_gmem": {
             "interface_ports": [
               "m_axi_arrays",
-              "MatrixMultiplication_0/m_axi_arrays",
-              "system_ila_0/SLOT_0_AXI"
+              "mmult_hw_0/m_axi_gmem"
             ]
           },
           "smartconnect_0_M10_AXI": {
@@ -5741,7 +5721,7 @@
           },
           "smartconnect_1_M01_AXI": {
             "interface_ports": [
-              "MatrixMultiplication_0/s_axi_control",
+              "mmult_hw_0/s_axi_CTRL",
               "smartconnect_1/M01_AXI"
             ]
           }
@@ -5753,8 +5733,7 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "system_ila_0/resetn",
-              "MatrixMultiplication_0/ap_rst_n"
+              "mmult_hw_0/ap_rst_n"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5763,8 +5742,7 @@
               "smartconnect_1/aclk",
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
-              "system_ila_0/clk",
-              "MatrixMultiplication_0/ap_clk"
+              "mmult_hw_0/ap_clk"
             ]
           }
         }
@@ -6954,7 +6932,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__ACT_FREQMHZ": {
-            "value": "250.000000"
+            "value": "250"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__FREQMHZ": {
             "value": "250"
@@ -7881,16 +7859,16 @@
             "value": "100.000000"
           },
           "PSU__IOU_SLCR__TTC1__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC1__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC3__ACT_FREQMHZ": {
             "value": "100.000000"
@@ -8350,7 +8328,7 @@
             "value": "0"
           },
           "PSU__SAXIGP2__DATA_WIDTH": {
-            "value": "32"
+            "value": "128"
           },
           "PSU__SAXIGP6__DATA_WIDTH": {
             "value": "32"
@@ -9232,9 +9210,9 @@
           }
         }
       },
-      "/uz_user/MatrixMultiplication_0": {
+      "/uz_user/mmult_hw_0": {
         "address_spaces": {
-          "Data_m_axi_arrays": {
+          "Data_m_axi_gmem": {
             "segments": {
               "SEG_zynq_ultra_ps_e_0_HP0_DDR_HIGH": {
                 "address_block": "/zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_HIGH",
@@ -9291,13 +9269,6 @@
                 "offset": "0x0080070000",
                 "range": "64K"
               },
-              "SEG_MatrixMultiplication_0_Reg": {
-                "address_block": "/uz_user/MatrixMultiplication_0/s_axi_control/Reg",
-                "offset": "0x0080080000",
-                "range": "64K",
-                "offset_base_param": "C_S_AXI_CONTROL_BASEADDR",
-                "offset_high_param": "C_S_AXI_CONTROL_HIGHADDR"
-              },
               "SEG_PWM_SS_3L_ip_0_reg0": {
                 "address_block": "/uz_digital_adapter/D2_adapter/Gates_3L/PWM_SS_3L_ip_0/AXI4_Lite/reg0",
                 "offset": "0x0080060000",
@@ -9332,6 +9303,13 @@
                 "address_block": "/uz_system/axi_timebase_wdt_0/S_AXI/Reg",
                 "offset": "0x00800D0000",
                 "range": "64K"
+              },
+              "SEG_mmult_hw_0_Reg": {
+                "address_block": "/uz_user/mmult_hw_0/s_axi_CTRL/Reg",
+                "offset": "0x0080080000",
+                "range": "64K",
+                "offset_base_param": "C_S_AXI_CTRL_BASEADDR",
+                "offset_high_param": "C_S_AXI_CTRL_HIGHADDR"
               },
               "SEG_mux_axi_ip_1_reg0": {
                 "address_block": "/uz_system/Interrupt/mux_axi_ip_1/AXI4_Lite/reg0",

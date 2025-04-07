@@ -87,9 +87,11 @@ void ISR_Control(void *data)
     //is_idle = uz_Matrix_Multi_get_idle_flag(Global_Data.objects.matrix_instance);
     if (current_state==control_state)
     {
-    	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);
+    	//uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);
+    	xup_MatrixMulti_trigger_calculation(Global_Data.objects.xup_MM_instance, true);
     	while(1) {
-    		is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
+    		//is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
+    		is_done = xup_MatrixMulti_get_done_flag(Global_Data.objects.xup_MM_instance);
     		if (is_done == true) {
     			break;
 

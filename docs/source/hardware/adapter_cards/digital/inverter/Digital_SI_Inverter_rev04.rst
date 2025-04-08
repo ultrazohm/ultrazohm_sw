@@ -247,7 +247,7 @@ References
 
 .. _dig_si_inverter_references:
 
-* :download:`Schematic Rev04 <Digital_SI_Inverter_rev04/UZ_D_Inverter_rev04.pdf>`
+* :download:`Schematic Rev04 <Digital_SI_Inverter_rev04/UZ_D_Inverter_rev04.PDF>`
 * `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
 
 Known issues

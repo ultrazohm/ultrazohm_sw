@@ -129,7 +129,7 @@ Switching behavior
 -------------------
 
 The Double Puls Test (DPT) was used for characterizing the switching behavior of the design. 
-The DC link voltage was set to :math:`V_dc = 48\ V`48V, with a load inductance of :math:`L = 1\ mH` and a load resistance of :math:`RL = 400\ mΩ`. 
+The DC link voltage was set to :math:`V_{dc} = 48\ V`, with a load inductance of :math:`L = 1\ mH` and a load resistance of :math:`R_L = 400\ mΩ`. 
 The desired switching current was maintained at :math:`i_D = 30\ A` throughout the test.  
 The experimental waveforms of the DPT are shown below. 
 One must note that, due to design constraints, measurement of the drain current was not included.

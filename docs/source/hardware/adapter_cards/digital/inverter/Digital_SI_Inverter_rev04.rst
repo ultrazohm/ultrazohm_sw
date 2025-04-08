@@ -15,7 +15,7 @@ Changes from Rev03 production to Rev04
 * Added separate gate resistors for turn-off (12ohm) and turn-on (47ohm) MOSFETs.
 * Introduced a new capacitor bank consisting of 8x AEC capacitors (110µF each) and 15x MLCCs (10µF each).
 * Added an individual 2.5V (`REF4132B25DBVRQ1 <https://www.ti.com/lit/ds/symlink/ref4132-q1.pdf?ts=1743989231729&ref_url=https%253A%252F%252Fwww.ti.com%252Ftool%252FPMP22650>`_) supply as a bias reference for (ADA4940-1ARZ-R7 and INA241A2IDGKR).
-* Replaced current sensor (MAX40056TAUA+) with (`INA241A2IDGKR <https://www.ti.com/lit/ds/symlink/ina241a.pdf?ts=1744034830994>`_ ).
+* Replaced Current Sense Amplifier (MAX40056TAUA+) with (`INA241A2IDGKR <https://www.ti.com/lit/ds/symlink/ina241a.pdf?ts=1744034830994>`_ ).
 * Because of the new current sensor, no hardware OCP exists anymore.
 * Optimized the entire layer stackup and re-engineered the PCB layout.
 * Eliminated low-side temperature measurement from all phases.

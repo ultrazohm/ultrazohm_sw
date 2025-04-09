@@ -40,9 +40,9 @@
 #endif
 #define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
 	ENUMNAME(uz_platform_eeprom_group000model004)																/* Group 0: Adapter cards, Model 4: Digital Optical */ \
-	ENUMITEM( 1,	UZP_HWGROUP_ADCARD_DIGOPT_18TX,								"18 TX")						/*  */ \
-	ENUMITEM( 2,	UZP_HWGROUP_ADCARD_DIGOPT_18RX,								"18 RX")						/*  */ \
-	ENUMITEM( 3,	UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX,							"14 TX / 4 RX")					/* ... and *no* \ after the end of the last line! */
+	ENUMITEM( 0,	UZP_HWGROUP_ADCARD_DIGOPT_18TX,								"18 TX")						/*  */ \
+	ENUMITEM( 1,	UZP_HWGROUP_ADCARD_DIGOPT_18RX,								"18 RX")						/*  */ \
+	ENUMITEM( 2,	UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX,							"14 TX / 4 RX")					/* ... and *no* \ after the end of the last line! */
 #include "../uz_enum/uz_numberedenum.h"
 
 

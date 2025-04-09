@@ -233,6 +233,20 @@ Initial steps
       v_q,
       v_d,
       receive_field_6,
+      receive_field_7,
+      receive_field_8,
+      receive_field_9,
+      receive_field_10,
+      receive_field_11,
+      receive_field_12,
+      receive_field_13,
+      receive_field_14,
+      receive_field_15,
+      receive_field_16,
+      receive_field_17,
+      receive_field_18,
+      receive_field_19,
+      receive_field_20,
       RCV_FLD_ENDMARKER
 
 #. Change their label to:
@@ -247,6 +261,20 @@ Initial steps
       V,
       V,
       sec,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,
+      -,      
       RCV_LABELS_ENDMARKER
 
 #. Change the displayed values of the ``receive_field_X`` to the following. This is done to display the values 

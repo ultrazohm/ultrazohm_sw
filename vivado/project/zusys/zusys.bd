@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xBBB4922503A87696",
+      "boundary_crc": "0xCCE663DD10D1051C",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -58,6 +58,9 @@
             "xlconcat_3": ""
           }
         },
+        "D3_adapter": {
+          "vio_D3_test": ""
+        },
         "D2_adapter": {
           "Gates_3L": {
             "Gates_Vector": "",
@@ -69,9 +72,6 @@
             "vio_Gates_3L": "",
             "xlconcat_0": ""
           }
-        },
-        "D3_adapter": {
-          "vio_D3_test": ""
         }
       },
       "uz_system": {
@@ -176,54 +176,14 @@
         "left": "0",
         "right": "0"
       },
-      "D1_OUT": {
+      "D1_OUT_PWM": {
         "direction": "O",
         "left": "5",
         "right": "0"
       },
-      "D1_OUT_26": {
+      "D2_OUT_PWM": {
         "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_27": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_28": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_29": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D2_OUT": {
-        "direction": "O",
-        "left": "11",
-        "right": "0"
-      },
-      "D2_OUT_26": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D2_OUT_27": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D2_OUT_28": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D2_OUT_29": {
-        "direction": "O",
-        "left": "0",
+        "left": "5",
         "right": "0"
       },
       "D3_OUT": {
@@ -323,6 +283,110 @@
       },
       "Dig_8_Ch5": {
         "direction": "I"
+      },
+      "D1_06_OUT_RESET_UVW": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D1_IN_FLT": {
+        "type": "data",
+        "direction": "I",
+        "left": "5",
+        "right": "0"
+      },
+      "D1_IN_RDY": {
+        "type": "data",
+        "direction": "I",
+        "left": "5",
+        "right": "0"
+      },
+      "D1_IN_NTC": {
+        "type": "data",
+        "direction": "I",
+        "left": "2",
+        "right": "0"
+      },
+      "D1_22_OUT_KL15": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D1_23_IN_KL15_PG": {
+        "type": "data",
+        "direction": "I"
+      },
+      "D1_24_OUT_PYRO_TRIGGER": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D1_25_IN_IGNITION_SUCCESS": {
+        "type": "data",
+        "direction": "I"
+      },
+      "D1_26_OUT_RELAY2_CLOSE": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D1_27_IN_RELAY2_NOT_CLOSED": {
+        "type": "data",
+        "direction": "I"
+      },
+      "D1_28_OUT_RELAY3_CLOSE": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D1_29_IN_RELAY3_NOT_CLOSED": {
+        "type": "data",
+        "direction": "I"
+      },
+      "D2_06_OUT_RESET_UVW": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D2_IN_FLT": {
+        "type": "data",
+        "direction": "I",
+        "left": "5",
+        "right": "0"
+      },
+      "D2_IN_RDY": {
+        "type": "data",
+        "direction": "I",
+        "left": "5",
+        "right": "0"
+      },
+      "D2_IN_NTC": {
+        "type": "data",
+        "direction": "I",
+        "left": "2",
+        "right": "0"
+      },
+      "D2_22_OUT_PYRO_RESET": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D2_23_OUT_PYRO_ENABLE": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D2_24_IN_IGNITION_SUCCESS2": {
+        "type": "data",
+        "direction": "I"
+      },
+      "D2_25_IN_IGNITION_SUCCESS3": {
+        "type": "data",
+        "direction": "I"
+      },
+      "D2_26_OUT_CS_SQUIB1": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D2_27_OUT_CS_SQUIB2": {
+        "type": "data",
+        "direction": "O"
+      },
+      "D2_28_OUT_CS_SQUIB3": {
+        "type": "data",
+        "direction": "O"
       }
     },
     "components": {
@@ -1510,16 +1574,6 @@
             "left": "0",
             "right": "0"
           },
-          "D1_OUT": {
-            "direction": "O",
-            "left": "23",
-            "right": "0"
-          },
-          "D2_OUT": {
-            "direction": "O",
-            "left": "11",
-            "right": "0"
-          },
           "D3_OUT": {
             "direction": "O",
             "left": "25",
@@ -1556,6 +1610,16 @@
           "Carrier_triangular_max_min": {
             "direction": "O",
             "left": "0",
+            "right": "0"
+          },
+          "D1_OUT_PWM": {
+            "direction": "O",
+            "left": "5",
+            "right": "0"
+          },
+          "D2_OUT_PWM": {
+            "direction": "O",
+            "left": "5",
             "right": "0"
           }
         },
@@ -1618,11 +1682,6 @@
                 "left": "0",
                 "right": "0"
               },
-              "D1_OUT": {
-                "direction": "O",
-                "left": "23",
-                "right": "0"
-              },
               "RESETN": {
                 "type": "rst",
                 "direction": "I"
@@ -1630,6 +1689,16 @@
               "Carrier_triangular_max_min": {
                 "direction": "O",
                 "left": "0",
+                "right": "0"
+              },
+              "D1_OUT_PWM": {
+                "direction": "O",
+                "left": "5",
+                "right": "0"
+              },
+              "D2_OUT_PWM": {
+                "direction": "O",
+                "left": "5",
                 "right": "0"
               }
             },
@@ -1692,11 +1761,6 @@
                     "left": "0",
                     "right": "0"
                   },
-                  "Gate_Signals_2L": {
-                    "direction": "O",
-                    "left": "23",
-                    "right": "0"
-                  },
                   "RESETN": {
                     "type": "rst",
                     "direction": "I"
@@ -1704,6 +1768,16 @@
                   "Carrier_triangular_max_min": {
                     "direction": "O",
                     "left": "0",
+                    "right": "0"
+                  },
+                  "D1_OUT_PWM": {
+                    "direction": "O",
+                    "left": "5",
+                    "right": "0"
+                  },
+                  "D2_OUT_PWM": {
+                    "direction": "O",
+                    "left": "5",
                     "right": "0"
                   }
                 },
@@ -2300,7 +2374,13 @@
                   "xlconcat_0_dout": {
                     "ports": [
                       "xlconcat_0/dout",
-                      "Gate_Signals_2L"
+                      "D1_OUT_PWM"
+                    ]
+                  },
+                  "xlconcat_1_dout": {
+                    "ports": [
+                      "xlconcat_1/dout",
+                      "D2_OUT_PWM"
                     ]
                   },
                   "xlconstant_0_dout": {
@@ -2423,10 +2503,16 @@
                   "Carrier_triangular_min"
                 ]
               },
-              "Gates_dout_0": {
+              "Gates_D1_OUT_PWM": {
                 "ports": [
-                  "Gates/Gate_Signals_2L",
-                  "D1_OUT"
+                  "Gates/D1_OUT_PWM",
+                  "D1_OUT_PWM"
+                ]
+              },
+              "Gates_D2_OUT_PWM": {
+                "ports": [
+                  "Gates/D2_OUT_PWM",
+                  "D2_OUT_PWM"
                 ]
               },
               "proc_sys_reset_1_peripheral_aresetn": {
@@ -2439,6 +2525,52 @@
                 "ports": [
                   "CLK",
                   "Gates/CLK"
+                ]
+              }
+            }
+          },
+          "D3_adapter": {
+            "ports": {
+              "D3_OUT": {
+                "direction": "O",
+                "left": "25",
+                "right": "0"
+              },
+              "clk": {
+                "type": "clk",
+                "direction": "I"
+              }
+            },
+            "components": {
+              "vio_D3_test": {
+                "vlnv": "xilinx.com:ip:vio:3.0",
+                "xci_name": "zusys_vio_D3_test_0",
+                "xci_path": "ip\\zusys_vio_D3_test_0_1\\zusys_vio_D3_test_0.xci",
+                "inst_hier_path": "uz_digital_adapter/D3_adapter/vio_D3_test",
+                "parameters": {
+                  "C_NUM_PROBE_IN": {
+                    "value": "0"
+                  },
+                  "C_NUM_PROBE_OUT": {
+                    "value": "1"
+                  },
+                  "C_PROBE_OUT0_WIDTH": {
+                    "value": "26"
+                  }
+                }
+              }
+            },
+            "nets": {
+              "vio_D2_test_probe_out0": {
+                "ports": [
+                  "vio_D3_test/probe_out0",
+                  "D3_OUT"
+                ]
+              },
+              "zynq_ultra_ps_e_0_pl_clk1": {
+                "ports": [
+                  "clk",
+                  "vio_D3_test/clk"
                 ]
               }
             }
@@ -3040,52 +3172,6 @@
                 ]
               }
             }
-          },
-          "D3_adapter": {
-            "ports": {
-              "D3_OUT": {
-                "direction": "O",
-                "left": "25",
-                "right": "0"
-              },
-              "clk": {
-                "type": "clk",
-                "direction": "I"
-              }
-            },
-            "components": {
-              "vio_D3_test": {
-                "vlnv": "xilinx.com:ip:vio:3.0",
-                "xci_name": "zusys_vio_D3_test_0",
-                "xci_path": "ip\\zusys_vio_D3_test_0_1\\zusys_vio_D3_test_0.xci",
-                "inst_hier_path": "uz_digital_adapter/D3_adapter/vio_D3_test",
-                "parameters": {
-                  "C_NUM_PROBE_IN": {
-                    "value": "0"
-                  },
-                  "C_NUM_PROBE_OUT": {
-                    "value": "1"
-                  },
-                  "C_PROBE_OUT0_WIDTH": {
-                    "value": "26"
-                  }
-                }
-              }
-            },
-            "nets": {
-              "vio_D2_test_probe_out0": {
-                "ports": [
-                  "vio_D3_test/probe_out0",
-                  "D3_OUT"
-                ]
-              },
-              "zynq_ultra_ps_e_0_pl_clk1": {
-                "ports": [
-                  "clk",
-                  "vio_D3_test/clk"
-                ]
-              }
-            }
           }
         },
         "interface_nets": {
@@ -3145,12 +3231,6 @@
           }
         },
         "nets": {
-          "Gates_3L_Gate_Signals_3L": {
-            "ports": [
-              "D2_adapter/D2_OUT",
-              "D2_OUT"
-            ]
-          },
           "Gates_3L_Interrupt_Center": {
             "ports": [
               "D2_adapter/Interrupt_Center",
@@ -3187,10 +3267,16 @@
               "Carrier_triangular_min"
             ]
           },
-          "Gates_dout_0": {
+          "Inverter_Interface_D1_OUT_PWM": {
             "ports": [
-              "Inverter_Interface/D1_OUT",
-              "D1_OUT"
+              "Inverter_Interface/D1_OUT_PWM",
+              "D1_OUT_PWM"
+            ]
+          },
+          "Inverter_Interface_D2_OUT_PWM": {
+            "ports": [
+              "Inverter_Interface/D2_OUT_PWM",
+              "D2_OUT_PWM"
             ]
           },
           "proc_sys_reset_1_peripheral_aresetn": {
@@ -3216,8 +3302,8 @@
             "ports": [
               "clk",
               "Inverter_Interface/CLK",
-              "D2_adapter/AXI4_Lite_ACLK",
-              "D3_adapter/clk"
+              "D3_adapter/clk",
+              "D2_adapter/AXI4_Lite_ACLK"
             ]
           }
         }
@@ -7155,6 +7241,9 @@
           "PSU__DDRC__CL": {
             "value": "17"
           },
+          "PSU__DDRC__CLOCK_STOP_EN": {
+            "value": "0"
+          },
           "PSU__DDRC__COMPONENTS": {
             "value": "Components"
           },
@@ -8661,8 +8750,6 @@
       "Enable_Gates_CPLD_High_dout": {
         "ports": [
           "uz_system/D1_OUT_28",
-          "D1_OUT_28",
-          "D2_OUT_28",
           "D3_OUT_28",
           "D4_OUT_28"
         ]
@@ -8670,20 +8757,10 @@
       "Enable_Gates_CPLD_Low_dout": {
         "ports": [
           "uz_system/D1_OUT_26",
-          "D1_OUT_26",
-          "D1_OUT_27",
-          "D2_OUT_26",
-          "D2_OUT_27",
           "D3_OUT_26",
           "D3_OUT_27",
           "D4_OUT_26",
           "D4_OUT_27"
-        ]
-      },
-      "Gates_3L_Gate_Signals_3L": {
-        "ports": [
-          "uz_digital_adapter/D2_OUT",
-          "D2_OUT"
         ]
       },
       "Gates_3L_Interrupt_Center": {
@@ -8722,12 +8799,6 @@
           "uz_system/Interrupt1"
         ]
       },
-      "Gates_dout_0": {
-        "ports": [
-          "uz_digital_adapter/D1_OUT",
-          "D1_OUT"
-        ]
-      },
       "Interrupt_muxed": {
         "ports": [
           "uz_system/trigger_converesions",
@@ -8760,6 +8831,18 @@
           "uz_user/aresetn"
         ]
       },
+      "uz_digital_adapter_D1_OUT_PWM1": {
+        "ports": [
+          "uz_digital_adapter/D1_OUT_PWM",
+          "D1_OUT_PWM"
+        ]
+      },
+      "uz_digital_adapter_D2_OUT_PWM": {
+        "ports": [
+          "uz_digital_adapter/D2_OUT_PWM",
+          "D2_OUT_PWM"
+        ]
+      },
       "uz_system_wdt_interrupt": {
         "ports": [
           "uz_system/wdt_interrupt",
@@ -8782,8 +8865,6 @@
       "xlslice_Enable_Gate_Dout": {
         "ports": [
           "uz_system/D1_OUT_29",
-          "D1_OUT_29",
-          "D2_OUT_29",
           "D3_OUT_29",
           "D4_OUT_29"
         ]

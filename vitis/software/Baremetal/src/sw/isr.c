@@ -63,9 +63,9 @@ void ISR_Control(void *data)
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+//    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+//                        Global_Data.rasv.halfBridge2DutyCycle,
+//                        Global_Data.rasv.halfBridge3DutyCycle);
 
 	xcp_irq();
     JavaScope_update(&Global_Data);

@@ -28,7 +28,21 @@
 	ENUMITEM(11,	UZP_HWGROUP_ADCARD_DIGINV,		"Digital Inverter")											/*  */ \
 	ENUMITEM(12,	UZP_HWGROUP_ADCARD_DAC8831,	 	"DAC TI DAC8831")											/*  */ \
 	ENUMITEM(13,	UZP_HWGROUP_ADCARD_DIGVOLT33, 	"Digital Voltage 3V3")										/*  */ \
-	ENUMITEM(14,	UZP_HWGROUP_ADCARD_DIGVOLT5, 	"Digital Voltage 5V")										/* ... and *no* \ after the end of the last line! */
+	ENUMITEM(14,	UZP_HWGROUP_ADCARD_DIGVOLT5, 	"Digital Voltage 5V")										/*  */ \
+	ENUMITEM(15,	UZP_HWGROUP_ADCARD_DIGVOLT335, 	"Digital Voltage 3V3/5V")									/*  */ \
+	ENUMITEM(16,	UZP_HWGROUP_ADCARD_LEDEBUG, 	"Digital LED-Debug")										/* ... and *no* \ after the end of the last line! */
+#include "../uz_enum/uz_numberedenum.h"
+
+// Define Batchversionnumbers for Digital Optical TXRX
+
+#ifndef UZ_PLATFORM_C
+ #define UZ_NUMENUM_NOHELPER
+#endif
+#define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
+	ENUMNAME(uz_platform_eeprom_group000model004)																/* Group 0: Adapter cards, Model 4: Digital Optical */ \
+	ENUMITEM( 1,	UZP_HWGROUP_ADCARD_DIGOPT_18TX,								"18 TX")						/*  */ \
+	ENUMITEM( 2,	UZP_HWGROUP_ADCARD_DIGOPT_18RX,								"18 RX")						/*  */ \
+	ENUMITEM( 3,	UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX,							"14 TX / 4 RX")					/* ... and *no* \ after the end of the last line! */
 #include "../uz_enum/uz_numberedenum.h"
 
 

@@ -4,7 +4,7 @@
 #include "xparameters.h"
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
-        .base_address= XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
+        .base_address= XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_PWM_AND_SS_CONTROL_V_0_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
@@ -24,7 +24,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_0_to_5 = {
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
-        .base_address= XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR,
+        .base_address= XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_PWM_AND_SS_CONTROL_V_1_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
@@ -44,7 +44,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_6_to_11 = {
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
-        .base_address= XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_2_BASEADDR,
+        .base_address= XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_PWM_AND_SS_CONTROL_V_2_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,
@@ -64,7 +64,7 @@ static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_12_to_17 = {
 };
 
 static struct uz_PWM_SS_2L_config_t pwm_config_d1_pin_18_to_23 = {
-        .base_address= XPAR_UZ_DIGITAL_ADAPTER_D1_ADAPTER_GATES_PWM_AND_SS_CONTROL_V_3_BASEADDR,
+        .base_address= XPAR_UZ_DIGITAL_ADAPTER_INVERTER_INTERFACE_GATES_PWM_AND_SS_CONTROL_V_3_BASEADDR,
         .ip_clk_frequency_Hz=100000000,
         .Tristate_HB1 = false,
         .Tristate_HB2 = false,

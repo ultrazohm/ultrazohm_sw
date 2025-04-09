@@ -1,12 +1,13 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xCCE663DD10D1051C",
+      "boundary_crc": "0x42B36BBF2FB9C6AD",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2"
+      "tool_version": "2022.2",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -55,7 +56,8 @@
             "xlconcat_2": "",
             "xlconcat_0": "",
             "xlconcat_1": "",
-            "xlconcat_3": ""
+            "xlconcat_3": "",
+            "vio_Inverter_Test": ""
           }
         },
         "D3_adapter": {
@@ -179,12 +181,24 @@
       "D1_OUT_PWM": {
         "direction": "O",
         "left": "5",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "6",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D2_OUT_PWM": {
         "direction": "O",
         "left": "5",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "6",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D3_OUT": {
         "direction": "O",
@@ -214,7 +228,13 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          }
+        }
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -286,107 +306,267 @@
       },
       "D1_06_OUT_RESET_UVW": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_IN_FLT": {
         "type": "data",
         "direction": "I",
         "left": "5",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_IN_RDY": {
         "type": "data",
         "direction": "I",
         "left": "5",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_IN_NTC": {
         "type": "data",
         "direction": "I",
         "left": "2",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_22_OUT_KL15": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_23_IN_KL15_PG": {
         "type": "data",
-        "direction": "I"
+        "direction": "I",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_24_OUT_PYRO_TRIGGER": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_25_IN_IGNITION_SUCCESS": {
         "type": "data",
-        "direction": "I"
+        "direction": "I",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_26_OUT_RELAY2_CLOSE": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_27_IN_RELAY2_NOT_CLOSED": {
         "type": "data",
-        "direction": "I"
+        "direction": "I",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_28_OUT_RELAY3_CLOSE": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D1_29_IN_RELAY3_NOT_CLOSED": {
         "type": "data",
-        "direction": "I"
+        "direction": "I",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_06_OUT_RESET_UVW": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_IN_FLT": {
         "type": "data",
         "direction": "I",
         "left": "5",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_IN_RDY": {
         "type": "data",
         "direction": "I",
         "left": "5",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_IN_NTC": {
         "type": "data",
         "direction": "I",
         "left": "2",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_22_OUT_PYRO_RESET": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_23_OUT_PYRO_ENABLE": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_24_IN_IGNITION_SUCCESS2": {
         "type": "data",
-        "direction": "I"
+        "direction": "I",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_25_IN_IGNITION_SUCCESS3": {
         "type": "data",
-        "direction": "I"
+        "direction": "I",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_26_OUT_CS_SQUIB1": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_27_OUT_CS_SQUIB2": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       },
       "D2_28_OUT_CS_SQUIB3": {
         "type": "data",
-        "direction": "O"
+        "direction": "O",
+        "left": "0",
+        "right": "0",
+        "parameters": {
+          "LAYERED_METADATA": {
+            "value": "undef",
+            "value_src": "default"
+          }
+        }
       }
     },
     "components": {
@@ -1621,6 +1801,61 @@
             "direction": "O",
             "left": "5",
             "right": "0"
+          },
+          "D2_22_OUT_PYRO_RESET": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D1_28_OUT_RELAY3_CLOSE": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D1_26_OUT_RELAY2_CLOSE": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D2_06_OUT_RESET_UVW": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D2_26_OUT_CS_SQUIB1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D1_06_OUT_RESET_UVW": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D1_24_OUT_PYRO_TRIGGER": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D1_22_OUT_KL15": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D2_23_OUT_PYRO_ENABLE": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D2_28_OUT_CS_SQUIB3": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "D2_27_OUT_CS_SQUIB2": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -1700,6 +1935,61 @@
                 "direction": "O",
                 "left": "5",
                 "right": "0"
+              },
+              "D2_22_OUT_PYRO_RESET": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D1_28_OUT_RELAY3_CLOSE": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D1_26_OUT_RELAY2_CLOSE": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D2_06_OUT_RESET_UVW": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D2_26_OUT_CS_SQUIB1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D1_06_OUT_RESET_UVW": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D1_24_OUT_PYRO_TRIGGER": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D1_22_OUT_KL15": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D2_23_OUT_PYRO_ENABLE": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D2_28_OUT_CS_SQUIB3": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "D2_27_OUT_CS_SQUIB2": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
               }
             },
             "components": {
@@ -1778,6 +2068,61 @@
                   "D2_OUT_PWM": {
                     "direction": "O",
                     "left": "5",
+                    "right": "0"
+                  },
+                  "D2_22_OUT_PYRO_RESET": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D1_28_OUT_RELAY3_CLOSE": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D1_26_OUT_RELAY2_CLOSE": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D2_06_OUT_RESET_UVW": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D2_26_OUT_CS_SQUIB1": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D1_06_OUT_RESET_UVW": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D1_24_OUT_PYRO_TRIGGER": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D1_22_OUT_KL15": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D2_23_OUT_PYRO_ENABLE": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D2_28_OUT_CS_SQUIB3": {
+                    "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D2_27_OUT_CS_SQUIB2": {
+                    "direction": "O",
+                    "left": "0",
                     "right": "0"
                   }
                 },
@@ -1924,6 +2269,23 @@
                     "parameters": {
                       "NUM_PORTS": {
                         "value": "6"
+                      }
+                    }
+                  },
+                  "vio_Inverter_Test": {
+                    "vlnv": "xilinx.com:ip:vio:3.0",
+                    "xci_name": "zusys_vio_0_0",
+                    "xci_path": "ip\\zusys_vio_0_0\\zusys_vio_0_0.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Gates/vio_Inverter_Test",
+                    "parameters": {
+                      "C_NUM_PROBE_IN": {
+                        "value": "0"
+                      },
+                      "C_NUM_PROBE_OUT": {
+                        "value": "11"
+                      },
+                      "C_PROBE_OUT0_WIDTH": {
+                        "value": "1"
                       }
                     }
                   }
@@ -2371,6 +2733,72 @@
                       "PWM_and_SS_control_V_2/SS5_IN_External"
                     ]
                   },
+                  "vio_Inverter_Test_probe_out0": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out0",
+                      "D1_06_OUT_RESET_UVW"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out1": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out1",
+                      "D1_22_OUT_KL15"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out2": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out2",
+                      "D1_24_OUT_PYRO_TRIGGER"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out3": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out3",
+                      "D1_26_OUT_RELAY2_CLOSE"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out4": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out4",
+                      "D1_28_OUT_RELAY3_CLOSE"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out5": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out5",
+                      "D2_06_OUT_RESET_UVW"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out6": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out6",
+                      "D2_22_OUT_PYRO_RESET"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out7": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out7",
+                      "D2_23_OUT_PYRO_ENABLE"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out8": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out8",
+                      "D2_26_OUT_CS_SQUIB1"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out9": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out9",
+                      "D2_27_OUT_CS_SQUIB2"
+                    ]
+                  },
+                  "vio_Inverter_Test_probe_out10": {
+                    "ports": [
+                      "vio_Inverter_Test/probe_out10",
+                      "D2_28_OUT_CS_SQUIB3"
+                    ]
+                  },
                   "xlconcat_0_dout": {
                     "ports": [
                       "xlconcat_0/dout",
@@ -2428,7 +2856,8 @@
                       "PWM_and_SS_control_V_1/IPCORE_CLK",
                       "PWM_and_SS_control_V_1/AXI4_Lite_ACLK",
                       "PWM_and_SS_control_V_2/AXI4_Lite_ACLK",
-                      "PWM_and_SS_control_V_2/IPCORE_CLK"
+                      "PWM_and_SS_control_V_2/IPCORE_CLK",
+                      "vio_Inverter_Test/clk"
                     ]
                   }
                 }
@@ -2503,10 +2932,76 @@
                   "Carrier_triangular_min"
                 ]
               },
+              "Gates_D1_06_OUT_RESET_UVW": {
+                "ports": [
+                  "Gates/D1_06_OUT_RESET_UVW",
+                  "D1_06_OUT_RESET_UVW"
+                ]
+              },
+              "Gates_D1_22_OUT_KL15": {
+                "ports": [
+                  "Gates/D1_22_OUT_KL15",
+                  "D1_22_OUT_KL15"
+                ]
+              },
+              "Gates_D1_24_OUT_PYRO_TRIGGER": {
+                "ports": [
+                  "Gates/D1_24_OUT_PYRO_TRIGGER",
+                  "D1_24_OUT_PYRO_TRIGGER"
+                ]
+              },
+              "Gates_D1_26_OUT_RELAY2_CLOSE": {
+                "ports": [
+                  "Gates/D1_26_OUT_RELAY2_CLOSE",
+                  "D1_26_OUT_RELAY2_CLOSE"
+                ]
+              },
+              "Gates_D1_28_OUT_RELAY3_CLOSE": {
+                "ports": [
+                  "Gates/D1_28_OUT_RELAY3_CLOSE",
+                  "D1_28_OUT_RELAY3_CLOSE"
+                ]
+              },
               "Gates_D1_OUT_PWM": {
                 "ports": [
                   "Gates/D1_OUT_PWM",
                   "D1_OUT_PWM"
+                ]
+              },
+              "Gates_D2_06_OUT_RESET_UVW": {
+                "ports": [
+                  "Gates/D2_06_OUT_RESET_UVW",
+                  "D2_06_OUT_RESET_UVW"
+                ]
+              },
+              "Gates_D2_22_OUT_PYRO_RESET": {
+                "ports": [
+                  "Gates/D2_22_OUT_PYRO_RESET",
+                  "D2_22_OUT_PYRO_RESET"
+                ]
+              },
+              "Gates_D2_23_OUT_PYRO_ENABLE": {
+                "ports": [
+                  "Gates/D2_23_OUT_PYRO_ENABLE",
+                  "D2_23_OUT_PYRO_ENABLE"
+                ]
+              },
+              "Gates_D2_26_OUT_CS_SQUIB1": {
+                "ports": [
+                  "Gates/D2_26_OUT_CS_SQUIB1",
+                  "D2_26_OUT_CS_SQUIB1"
+                ]
+              },
+              "Gates_D2_27_OUT_CS_SQUIB2": {
+                "ports": [
+                  "Gates/D2_27_OUT_CS_SQUIB2",
+                  "D2_27_OUT_CS_SQUIB2"
+                ]
+              },
+              "Gates_D2_28_OUT_CS_SQUIB3": {
+                "ports": [
+                  "Gates/D2_28_OUT_CS_SQUIB3",
+                  "D2_28_OUT_CS_SQUIB3"
                 ]
               },
               "Gates_D2_OUT_PWM": {
@@ -3267,10 +3762,76 @@
               "Carrier_triangular_min"
             ]
           },
+          "Inverter_Interface_D1_06_OUT_RESET_UVW": {
+            "ports": [
+              "Inverter_Interface/D1_06_OUT_RESET_UVW",
+              "D1_06_OUT_RESET_UVW"
+            ]
+          },
+          "Inverter_Interface_D1_22_OUT_KL15": {
+            "ports": [
+              "Inverter_Interface/D1_22_OUT_KL15",
+              "D1_22_OUT_KL15"
+            ]
+          },
+          "Inverter_Interface_D1_24_OUT_PYRO_TRIGGER": {
+            "ports": [
+              "Inverter_Interface/D1_24_OUT_PYRO_TRIGGER",
+              "D1_24_OUT_PYRO_TRIGGER"
+            ]
+          },
+          "Inverter_Interface_D1_26_OUT_RELAY2_CLOSE": {
+            "ports": [
+              "Inverter_Interface/D1_26_OUT_RELAY2_CLOSE",
+              "D1_26_OUT_RELAY2_CLOSE"
+            ]
+          },
+          "Inverter_Interface_D1_28_OUT_RELAY3_CLOSE": {
+            "ports": [
+              "Inverter_Interface/D1_28_OUT_RELAY3_CLOSE",
+              "D1_28_OUT_RELAY3_CLOSE"
+            ]
+          },
           "Inverter_Interface_D1_OUT_PWM": {
             "ports": [
               "Inverter_Interface/D1_OUT_PWM",
               "D1_OUT_PWM"
+            ]
+          },
+          "Inverter_Interface_D2_06_OUT_RESET_UVW": {
+            "ports": [
+              "Inverter_Interface/D2_06_OUT_RESET_UVW",
+              "D2_06_OUT_RESET_UVW"
+            ]
+          },
+          "Inverter_Interface_D2_22_OUT_PYRO_RESET": {
+            "ports": [
+              "Inverter_Interface/D2_22_OUT_PYRO_RESET",
+              "D2_22_OUT_PYRO_RESET"
+            ]
+          },
+          "Inverter_Interface_D2_23_OUT_PYRO_ENABLE": {
+            "ports": [
+              "Inverter_Interface/D2_23_OUT_PYRO_ENABLE",
+              "D2_23_OUT_PYRO_ENABLE"
+            ]
+          },
+          "Inverter_Interface_D2_26_OUT_CS_SQUIB1": {
+            "ports": [
+              "Inverter_Interface/D2_26_OUT_CS_SQUIB1",
+              "D2_26_OUT_CS_SQUIB1"
+            ]
+          },
+          "Inverter_Interface_D2_27_OUT_CS_SQUIB2": {
+            "ports": [
+              "Inverter_Interface/D2_27_OUT_CS_SQUIB2",
+              "D2_27_OUT_CS_SQUIB2"
+            ]
+          },
+          "Inverter_Interface_D2_28_OUT_CS_SQUIB3": {
+            "ports": [
+              "Inverter_Interface/D2_28_OUT_CS_SQUIB3",
+              "D2_28_OUT_CS_SQUIB3"
             ]
           },
           "Inverter_Interface_D2_OUT_PWM": {
@@ -8831,10 +9392,76 @@
           "uz_user/aresetn"
         ]
       },
+      "uz_digital_adapter_D1_06_OUT_RESET_UVW": {
+        "ports": [
+          "uz_digital_adapter/D1_06_OUT_RESET_UVW",
+          "D1_06_OUT_RESET_UVW"
+        ]
+      },
+      "uz_digital_adapter_D1_22_OUT_KL15": {
+        "ports": [
+          "uz_digital_adapter/D1_22_OUT_KL15",
+          "D1_22_OUT_KL15"
+        ]
+      },
+      "uz_digital_adapter_D1_24_OUT_PYRO_TRIGGER": {
+        "ports": [
+          "uz_digital_adapter/D1_24_OUT_PYRO_TRIGGER",
+          "D1_24_OUT_PYRO_TRIGGER"
+        ]
+      },
+      "uz_digital_adapter_D1_26_OUT_RELAY2_CLOSE": {
+        "ports": [
+          "uz_digital_adapter/D1_26_OUT_RELAY2_CLOSE",
+          "D1_26_OUT_RELAY2_CLOSE"
+        ]
+      },
+      "uz_digital_adapter_D1_28_OUT_RELAY3_CLOSE": {
+        "ports": [
+          "uz_digital_adapter/D1_28_OUT_RELAY3_CLOSE",
+          "D1_28_OUT_RELAY3_CLOSE"
+        ]
+      },
       "uz_digital_adapter_D1_OUT_PWM1": {
         "ports": [
           "uz_digital_adapter/D1_OUT_PWM",
           "D1_OUT_PWM"
+        ]
+      },
+      "uz_digital_adapter_D2_06_OUT_RESET_UVW": {
+        "ports": [
+          "uz_digital_adapter/D2_06_OUT_RESET_UVW",
+          "D2_06_OUT_RESET_UVW"
+        ]
+      },
+      "uz_digital_adapter_D2_22_OUT_PYRO_RESET": {
+        "ports": [
+          "uz_digital_adapter/D2_22_OUT_PYRO_RESET",
+          "D2_22_OUT_PYRO_RESET"
+        ]
+      },
+      "uz_digital_adapter_D2_23_OUT_PYRO_ENABLE": {
+        "ports": [
+          "uz_digital_adapter/D2_23_OUT_PYRO_ENABLE",
+          "D2_23_OUT_PYRO_ENABLE"
+        ]
+      },
+      "uz_digital_adapter_D2_26_OUT_CS_SQUIB1": {
+        "ports": [
+          "uz_digital_adapter/D2_26_OUT_CS_SQUIB1",
+          "D2_26_OUT_CS_SQUIB1"
+        ]
+      },
+      "uz_digital_adapter_D2_27_OUT_CS_SQUIB2": {
+        "ports": [
+          "uz_digital_adapter/D2_27_OUT_CS_SQUIB2",
+          "D2_27_OUT_CS_SQUIB2"
+        ]
+      },
+      "uz_digital_adapter_D2_28_OUT_CS_SQUIB3": {
+        "ports": [
+          "uz_digital_adapter/D2_28_OUT_CS_SQUIB3",
+          "D2_28_OUT_CS_SQUIB3"
         ]
       },
       "uz_digital_adapter_D2_OUT_PWM": {

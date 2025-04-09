@@ -1,50 +1,69 @@
-###Analog Adapter Board D1
-# Author: Eyke Ligemann
-# Date: 19.08.2020
-set_property PACKAGE_PIN AC9 [get_ports {D1_OUT[0]}]
-set_property PACKAGE_PIN AB9 [get_ports {D1_OUT[1]}]
-set_property PACKAGE_PIN AB10 [get_ports {D1_OUT[2]}]
-set_property PACKAGE_PIN AB11 [get_ports {D1_OUT[3]}]
-set_property PACKAGE_PIN AJ11 [get_ports {D1_OUT[4]}]
-set_property PACKAGE_PIN AK11 [get_ports {D1_OUT[5]}]
-set_property PACKAGE_PIN AA7  	[get_ports D1_OUT[6]]
-set_property PACKAGE_PIN AA8  	[get_ports D1_OUT[7]]
-set_property PACKAGE_PIN AE9  	[get_ports D1_OUT[8]]
-set_property PACKAGE_PIN AD9  	[get_ports D1_OUT[9]]
-set_property PACKAGE_PIN AD11 	[get_ports D1_OUT[10]]
-set_property PACKAGE_PIN AC11 	[get_ports D1_OUT[11]]
-set_property PACKAGE_PIN AD6  	[get_ports D1_OUT[12]]
-set_property PACKAGE_PIN AC6  	[get_ports D1_OUT[13]]
-set_property PACKAGE_PIN AD10 	[get_ports D1_OUT[14]]
-set_property PACKAGE_PIN AE10 	[get_ports D1_OUT[15]]
-set_property PACKAGE_PIN AF13 	[get_ports D1_OUT[16]]
-set_property PACKAGE_PIN AE13 	[get_ports D1_OUT[17]]
-set_property PACKAGE_PIN AE12 	[get_ports D1_OUT[18]]
-set_property PACKAGE_PIN AD12  	[get_ports D1_OUT[19]]
-set_property PACKAGE_PIN AB13  	[get_ports D1_OUT[20]]
-set_property PACKAGE_PIN AC13  	[get_ports D1_OUT[21]]
-set_property PACKAGE_PIN AA12  	[get_ports D1_OUT[22]]
-set_property PACKAGE_PIN AA11  	[get_ports D1_OUT[23]]
-set_property PACKAGE_PIN AF1  	[get_ports D1_OUT[24]]
-set_property PACKAGE_PIN AF2  	[get_ports D1_OUT[25]]
+### Digital Adapter Board D1
+# Author: Andreas Geiger
+# Date: 09.04.2025
 
+# D1_00 - D1_05
+set_property PACKAGE_PIN AC9 [get_ports {D1_OUT_PWM[0]}]
+set_property PACKAGE_PIN AB9 [get_ports {D1_OUT_PWM[1]}]
+set_property PACKAGE_PIN AB10 [get_ports {D1_OUT_PWM[2]}]
+set_property PACKAGE_PIN AB11 [get_ports {D1_OUT_PWM[3]}]
+set_property PACKAGE_PIN AJ11 [get_ports {D1_OUT_PWM[4]}]
+set_property PACKAGE_PIN AK11 [get_ports {D1_OUT_PWM[5]}]
 
-# changed to zero-based numbering, starting from 00 to 29 on 24.03.2022
-#Digital_27_Ch1 = B65_L19_N
-set_property PACKAGE_PIN AC3 [get_ports {D1_OUT_26[0]}]
-#Digital_28_Ch1= B65_L19_P
-set_property PACKAGE_PIN AB3 [get_ports {D1_OUT_27[0]}]
-#Digital_29_Ch1 = B65_L15_N
-set_property PACKAGE_PIN AA5 [get_ports {D1_OUT_28[0]}]
-#Digital_30_Ch1 = B65_L15_P
-set_property PACKAGE_PIN AA6 [get_ports {D1_OUT_29[0]}]
+# D1_06
+set_property PACKAGE_PIN AA7  	[get_ports D1_06_OUT_RESET_UVW[0]]
+
+# D1_07 - D1_12
+set_property PACKAGE_PIN AA8  	[get_ports D1_IN_FLT[0]]
+set_property PACKAGE_PIN AE9  	[get_ports D1_IN_FLT[1]]
+set_property PACKAGE_PIN AD9  	[get_ports D1_IN_FLT[2]]
+set_property PACKAGE_PIN AD11 	[get_ports D1_IN_FLT[3]]
+set_property PACKAGE_PIN AC11 	[get_ports D1_IN_FLT[4]]
+set_property PACKAGE_PIN AD6  	[get_ports D1_IN_FLT[5]]
+
+# D1_13 - D1_18
+set_property PACKAGE_PIN AC6  	[get_ports D1_IN_RDY[0]]
+set_property PACKAGE_PIN AD10 	[get_ports D1_IN_RDY[1]]
+set_property PACKAGE_PIN AE10 	[get_ports D1_IN_RDY[2]]
+set_property PACKAGE_PIN AF13 	[get_ports D1_IN_RDY[3]]
+set_property PACKAGE_PIN AE13 	[get_ports D1_IN_RDY[4]]
+set_property PACKAGE_PIN AE12 	[get_ports D1_IN_RDY[5]]
+
+# D1_19 - D1_21
+set_property PACKAGE_PIN AD12  	[get_ports D1_IN_NTC[0]]
+set_property PACKAGE_PIN AB13  	[get_ports D1_IN_NTC[1]]
+set_property PACKAGE_PIN AC13  	[get_ports D1_IN_NTC[2]]
+
+# D1_22
+set_property PACKAGE_PIN AA12  	[get_ports D1_22_OUT_KL15[0]]
+
+# D1_23
+set_property PACKAGE_PIN AA11  	[get_ports D1_23_IN_KL15_PG[0]]
+
+# D1_24
+set_property PACKAGE_PIN AF1  	[get_ports D1_24_OUT_PYRO_TRIGGER[0]]
+
+# D1_25
+set_property PACKAGE_PIN AF2  	[get_ports D1_25_IN_IGNITION_SUCCESS[0]]
+
+# D1_26
+set_property PACKAGE_PIN AC3    [get_ports D1_26_OUT_RELAY2_CLOSE[0]]
+
+# D1_27
+set_property PACKAGE_PIN AB3    [get_ports D1_27_IN_RELAY2_NOT_CLOSED[0]]
+
+# D1_28
+set_property PACKAGE_PIN AA5    [get_ports D1_28_OUT_RELAY3_CLOSE[0]]
+
+# D1_29
+set_property PACKAGE_PIN AA6    [get_ports D1_29_IN_RELAY3_NOT_CLOSED[0]]
 
 
 set_property IOSTANDARD LVCMOS18 [get_ports D1_*]
-set_property PULLDOWN true [get_ports {D1_OUT[5]}]
-set_property PULLDOWN true [get_ports {D1_OUT[4]}]
-set_property PULLDOWN true [get_ports {D1_OUT[3]}]
-set_property PULLDOWN true [get_ports {D1_OUT[2]}]
-set_property PULLDOWN true [get_ports {D1_OUT[1]}]
-set_property PULLDOWN true [get_ports {D1_OUT[0]}]
+set_property PULLDOWN true [get_ports {D1_OUT_PWM[5]}]
+set_property PULLDOWN true [get_ports {D1_OUT_PWM[4]}]
+set_property PULLDOWN true [get_ports {D1_OUT_PWM[3]}]
+set_property PULLDOWN true [get_ports {D1_OUT_PWM[2]}]
+set_property PULLDOWN true [get_ports {D1_OUT_PWM[1]}]
+set_property PULLDOWN true [get_ports {D1_OUT_PWM[0]}]
 

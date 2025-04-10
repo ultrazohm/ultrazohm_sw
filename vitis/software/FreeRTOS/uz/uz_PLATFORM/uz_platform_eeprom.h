@@ -88,7 +88,7 @@ void uz_platform_printinfo(uz_platform_eeprom *eeprom) {
 	} else {
 		uz_printf("Hw batch:        %02i\r\n", eeprom->serialdata.hw_batchandserial.batch);
 		if ( (UZP_HWGROUP_ADCARD == eeprom->hw_group) && (UZP_HWGROUP_ADCARD_DIGOPT == eeprom->hw_model) )
-			uz_printf(" Card Setup: %s\r\n", uz_platform_eeprom_group000model004_enum2label(eeprom->serialdata.hw_batchandserial.batch));
+			uz_printf(" Card Setup: %s\r\n", uz_platform_eeprom_group000model004batches_enum2label(eeprom->serialdata.hw_batchandserial.batch));
 		uz_printf("Hw serial:     %04i\r\n", eeprom->serialdata.hw_batchandserial.serial);
 	}
 	uz_printf("\\=================/\r\n");

@@ -15,7 +15,7 @@
  #define UZ_NUMENUM_NOHELPER
 #endif
 #define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
-	ENUMNAME(uz_platform_eeprom_group000models)																	/* Group 0: Adapter cards (in both A and D slots) */ \
+	ENUMNAME(uz_platform_eeprom_group000models)																	/* Models in Group 0: Adapter cards (in both A and D slots) */ \
 	ENUMITEM( 2,	UZP_HWGROUP_ADCARD_LTC2311,		"ADC LTC2311-16")											/*  */ \
 	ENUMITEM( 3,	UZP_HWGROUP_ADCARD_DIGVOLT,		"Digital Voltage 3V3/5V/15V/RS422")							/*  */ \
 	ENUMITEM( 4,	UZP_HWGROUP_ADCARD_DIGOPT,	 	"Digital Optical xTX/xRX/xTXyRX")							/*  */ \
@@ -39,7 +39,7 @@
  #define UZ_NUMENUM_NOHELPER
 #endif
 #define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
-	ENUMNAME(uz_platform_eeprom_group000model004)																/* Group 0: Adapter cards, Model 4: Digital Optical */ \
+	ENUMNAME(uz_platform_eeprom_group000model004batches)															/* Batches in Group 0 (Adapter cards), Model 4 (Digital Optical) */ \
 	ENUMITEM( 0,	UZP_HWGROUP_ADCARD_DIGOPT_18TX,								"18 TX")						/*  */ \
 	ENUMITEM( 1,	UZP_HWGROUP_ADCARD_DIGOPT_18RX,								"18 RX")						/*  */ \
 	ENUMITEM( 2,	UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX,							"14 TX / 4 RX")					/* ... and *no* \ after the end of the last line! */
@@ -55,7 +55,7 @@
  #define UZ_NUMENUM_NOHELPER
 #endif
 #define UZ_NUMENUM(ENUMNAME, ENUMITEM) \
-	ENUMNAME(uz_platform_eeprom_group003models)																	/* Group 3: MZ */ \
+	ENUMNAME(uz_platform_eeprom_group003models)																	/* Models in Group 3: MZ */ \
 	ENUMITEM( 1,	UZP_HWGROUP_MZ_CARRIER,								"Carrier Board")						/*  */ \
 	ENUMITEM( 2,	UZP_HWGROUP_MZ_BREAKOUT,							"Breakout Board")						/* ... and *no* \ after the end of the last line! */
 #include "../uz_enum/uz_numberedenum.h"

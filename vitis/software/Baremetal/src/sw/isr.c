@@ -37,7 +37,9 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
-
+extern float A_matrix[20];
+extern float C_matrix[4];
+bool is_done = false;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -50,22 +52,41 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-    update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*10000.0f + 15.0f;
+    A_matrix[1] = Global_Data.aa.A1.me.ADC_A1*200.0f + 15.0f;
+    A_matrix[2] = Global_Data.aa.A1.me.ADC_A2*200.0f + 15.0f;
+    A_matrix[3] = Global_Data.aa.A1.me.ADC_A3*200.0f + 15.0f;
+    A_matrix[4] = Global_Data.aa.A1.me.ADC_A4*200.0f + 15.0f;
+    A_matrix[5] = Global_Data.aa.A1.me.ADC_B5*200.0f + 15.0f;
+    A_matrix[6] = Global_Data.aa.A1.me.ADC_B6*200.0f + 15.0f;
+    A_matrix[7] = Global_Data.aa.A1.me.ADC_B7*200.0f + 15.0f;
+    A_matrix[8] = Global_Data.aa.A1.me.ADC_B8*200.0f + 15.0f;
+    A_matrix[9] = Global_Data.aa.A1.me.ADC_A1*200.0f + 13.0f;
+    A_matrix[10] = Global_Data.aa.A1.me.ADC_A2*200.0f + 21.0f;
+    A_matrix[11] = Global_Data.aa.A1.me.ADC_A3*200.0f + 31.0f;
+    A_matrix[12] = Global_Data.aa.A1.me.ADC_A4*200.0f + 41.0f;
+    A_matrix[13] = Global_Data.aa.A1.me.ADC_B5*200.0f + 51.0f;
+    A_matrix[14] = Global_Data.aa.A1.me.ADC_B6*200.0f + 61.0f;
+    A_matrix[15] = Global_Data.aa.A1.me.ADC_B7*200.0f + 71.0f;
+    A_matrix[16] = Global_Data.aa.A1.me.ADC_B8*200.0f + 81.0f;
+    A_matrix[17] = Global_Data.aa.A1.me.ADC_B5*200.0f + 91.0f;
+    A_matrix[18] = Global_Data.aa.A1.me.ADC_B6*200.0f + 101.0f;
+    A_matrix[19] = Global_Data.aa.A1.me.ADC_B7*200.0f + 111.0f;
+    Xil_DCacheFlushRange(A_matrix,sizeof(A_matrix));//->Flush wenn der R5 schreibt
     if (current_state==control_state)
     {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);
+    	while(1) {
+    		is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
+    	    if (is_done == true) {
+    	    	break;
+    	    }
+    	}
+    	Xil_DCacheInvalidateRange(C_matrix,sizeof(C_matrix));//->Invalidate wenn R5 liesst
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
-
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

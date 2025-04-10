@@ -52,6 +52,37 @@ enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshak
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
+struct uz_matrix_t A_input = {0};
+struct uz_matrix_t B1_input = {0};
+struct uz_matrix_t B2_input = {0};
+struct uz_matrix_t C_output = {0};
+float A_matrix[20] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f, 19.0f, 20.0f};
+float B1_matrix[1280] = {
+#include "Matrix_B1_input.csv"
+};
+float B2_matrix[256] = {
+#include "Matrix_B2_input.csv"
+};
+float C_matrix[4] = {0};
+struct uz_Matrix_Multi_config config = {
+		.base_address = XPAR_UZ_USER_MATRIXMULTIPLICATION_0_S_AXI_CONTROL_BASEADDR,
+		.A_columns = 20U,
+		.A_rows = 1U,
+		.A_length_of_data = UZ_MATRIX_SIZE(A_matrix),
+		.A_data = A_matrix,
+		.B1_columns = 64U,
+		.B1_rows = 20U,
+		.B1_length_of_data = UZ_MATRIX_SIZE(B1_matrix),
+		.B1_data = B1_matrix,
+		.B2_columns = 4U,
+		.B2_rows = 64U,
+		.B2_length_of_data = UZ_MATRIX_SIZE(B2_matrix),
+		.B2_data = B2_matrix,
+		.C_columns = 4U,
+		.C_rows = 1U,
+		.C_length_of_data = UZ_MATRIX_SIZE(C_matrix),
+		.C_data = C_matrix
+};
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -96,6 +127,7 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
+            Global_Data.objects.matrix_instance = uz_Matrix_Multi_init(config, &A_input, &B1_input, &B2_input, &C_output);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();

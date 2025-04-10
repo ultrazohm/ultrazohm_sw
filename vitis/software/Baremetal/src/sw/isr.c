@@ -37,8 +37,19 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
+	//Voltage Measurement -------------------------------------
+	const float k_regression_voltage 	= 0.0050026f; 			//in V/V
+	const float b_offset_voltage 		= -0.0029121f;			//in V
+	// Toleranz der Spannungsmessung
+	const float A_abs_voltage 			= 1.6f;					// in V
+	// -------------------------------------------------------
+	//Current Measurement
+	const float k_regression_current 	= 0.03958f;				//in V/A
+	const float b_offset_current 		= 0.00073343f;			//in V
+	// Toleranz der Strommessung -----------------------------
+	const float A_abs_current 			= 0.17f;				//in A
+//*********************************************************************
 
-//==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
 // - triggered from PL
@@ -51,6 +62,29 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+//***************** Berechnung Strom und Spannung*****************************
+	// Zuweisung des entsprechenden ADCs und Berechnung von U und I mit k_regression und b_offset
+	Global_Data.av.U_voltage_in = Global_Data.aa.A1.me.ADC_A2;
+	Global_Data.av.U_current_in = Global_Data.aa.A1.me.ADC_A4;
+	// Voltage Measurement
+		Global_Data.av.U_DC 			= (1/k_regression_voltage) * (Global_Data.aa.A1.me.ADC_A2 - b_offset_voltage);
+	//current Measurement
+		Global_Data.av.I_DC 			= (1/k_regression_current) * (Global_Data.aa.A1.me.ADC_A4 - b_offset_current);
+	//------------------------------------------------------------------------------------------------------------
+	// Berechnung der Systemleistung aus Strom und Spannung
+		Global_Data.av.P_DC				= Global_Data.av.U_DC * Global_Data.av.I_DC;
+	//------------------------------------------------------------------------------------------------------------
+	// Berechnung der max und min Spannung durch Messungenauigkeit
+		Global_Data.av.U_DC_max	=	Global_Data.av.U_DC + A_abs_voltage;
+		Global_Data.av.U_DC_min	=	Global_Data.av.U_DC - A_abs_voltage;
+	// Berechnung des max und min Strom durch Messungenauigkeit
+		Global_Data.av.I_DC_max	=	Global_Data.av.I_DC + A_abs_current;
+		Global_Data.av.I_DC_min	=	Global_Data.av.I_DC - A_abs_current;
+	// Berechnung der max und min Leistung durch Messungenauigkeit
+		Global_Data.av.P_DC_max = 	Global_Data.av.U_DC_max  * Global_Data.av.I_DC_max;
+		Global_Data.av.P_DC_min =	Global_Data.av.U_DC_min  * Global_Data.av.I_DC_min;
+//*********************************************************************
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

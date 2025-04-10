@@ -62,17 +62,17 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, uz
 	uz_matrix_multiplication_hw_set_C_out_matrix(self->config.base_address, self->C_out_matrix->data);
 	self->copy_mats_flag = true;
 	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, self->copy_mats_flag);
-	uz_matrix_multiplication_hw_set_start(self->config.base_address, true);
-	while(1) {
-		bool copy_flag_out = uz_matrix_multiplication_hw_get_copy_flag_out(self->config.base_address);
-		bool matrices_updated_out = uz_matrix_multiplication_hw_get_matrices_updated_out(self->config.base_address);
-				if(matrices_updated_out && copy_flag_out) {
-					break;
-				}
-	}
-	self->copy_mats_flag = false;
-	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, false);
-	uz_matrix_multiplication_hw_set_start(self->config.base_address, true);
+//	uz_matrix_multiplication_hw_set_start(self->config.base_address, true);
+//	while(1) {
+//		bool copy_flag_out = uz_matrix_multiplication_hw_get_copy_flag_out(self->config.base_address);
+//		bool matrices_updated_out = uz_matrix_multiplication_hw_get_matrices_updated_out(self->config.base_address);
+//				if(matrices_updated_out && copy_flag_out) {
+//					break;
+//				}
+//	}
+//	self->copy_mats_flag = false;
+//	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, false);
+//	uz_matrix_multiplication_hw_set_start(self->config.base_address, true);
 	return(self);
 }
 

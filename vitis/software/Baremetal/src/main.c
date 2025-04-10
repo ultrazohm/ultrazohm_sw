@@ -52,34 +52,26 @@ float B2_matrix[256] = {
 };
 
 float C_matrix[4] = {0};
-int In1[16][128] = {0};
-int In2[128][16] = {0};
-int out[16][16] = {0};
-struct xup_MatrixMulti_config config ={
-		.base_address = XPAR_UZ_USER_MMULT_HW_0_S_AXI_CTRL_BASEADDR,
-		.In1_data = In1[0],
-		.In2_data = In2[0],
-		.out_data = out[0]
+
+struct uz_Matrix_Multi_config config = {
+		.base_address = XPAR_UZ_USER_MATRIXMULTIPLICATION_0_S_AXI_CONTROL_BASEADDR,
+		.A_columns = 20U,
+		.A_rows = 1U,
+		.A_length_of_data = UZ_MATRIX_SIZE(A_matrix),
+		.A_data = A_matrix,
+		.B1_columns = 64U,
+		.B1_rows = 20U,
+		.B1_length_of_data = UZ_MATRIX_SIZE(B1_matrix),
+		.B1_data = B1_matrix,
+		.B2_columns = 4U,
+		.B2_rows = 64U,
+		.B2_length_of_data = UZ_MATRIX_SIZE(B2_matrix),
+		.B2_data = B2_matrix,
+		.C_columns = 4U,
+		.C_rows = 1U,
+		.C_length_of_data = UZ_MATRIX_SIZE(C_matrix),
+		.C_data = C_matrix
 };
-//struct uz_Matrix_Multi_config config = {
-//		.base_address = XPAR_UZ_USER_MATRIXMULTIPLICATION_0_S_AXI_CONTROL_BASEADDR,
-//		.A_columns = 20U,
-//		.A_rows = 1U,
-//		.A_length_of_data = UZ_MATRIX_SIZE(A_matrix),
-//		.A_data = A_matrix,
-//		.B1_columns = 64U,
-//		.B1_rows = 20U,
-//		.B1_length_of_data = UZ_MATRIX_SIZE(B1_matrix),
-//		.B1_data = B1_matrix,
-//		.B2_columns = 4U,
-//		.B2_rows = 64U,
-//		.B2_length_of_data = UZ_MATRIX_SIZE(B2_matrix),
-//		.B2_data = B2_matrix,
-//		.C_columns = 4U,
-//		.C_rows = 1U,
-//		.C_length_of_data = UZ_MATRIX_SIZE(C_matrix),
-//		.C_data = C_matrix
-//};
 
 enum init_chain
 {
@@ -129,8 +121,8 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
-            //Global_Data.objects.matrix_instance = uz_Matrix_Multi_init(config, &A_input, &B1_input, &B2_input, &C_output);
-            Global_Data.objects.xup_MM_instance = xup_MatrixMulti_init(config);
+            Global_Data.objects.matrix_instance = uz_Matrix_Multi_init(config, &A_input, &B1_input, &B2_input, &C_output);
+            //Global_Data.objects.xup_MM_instance = xup_MatrixMulti_init(config);
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);

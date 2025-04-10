@@ -63,7 +63,7 @@ void ISR_Control(void *data)
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*10000.0f + 15.0f;
+    A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*200.0f + 15.0f;
     A_matrix[1] = Global_Data.aa.A1.me.ADC_A1*200.0f + 15.0f;
     A_matrix[2] = Global_Data.aa.A1.me.ADC_A2*200.0f + 15.0f;
     A_matrix[3] = Global_Data.aa.A1.me.ADC_A3*200.0f + 15.0f;
@@ -87,15 +87,20 @@ void ISR_Control(void *data)
     //is_idle = uz_Matrix_Multi_get_idle_flag(Global_Data.objects.matrix_instance);
     if (current_state==control_state)
     {
-    	//uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);
-    	xup_MatrixMulti_trigger_calculation(Global_Data.objects.xup_MM_instance, true);
+    	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);
+    	//xup_MatrixMulti_trigger_calculation(Global_Data.objects.xup_MM_instance, true);
     	while(1) {
-    		//is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
-    		is_done = xup_MatrixMulti_get_done_flag(Global_Data.objects.xup_MM_instance);
+    		is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
+    		//is_done = xup_MatrixMulti_get_done_flag(Global_Data.objects.xup_MM_instance);
     		if (is_done == true) {
     			break;
 
     		}
+    	}
+    	if(continue_calculation) {
+    		uz_Matrix_Multi_set_copy_mats_flag(Global_Data.objects.matrix_instance, false);
+    	} else {
+    		uz_Matrix_Multi_set_copy_mats_flag(Global_Data.objects.matrix_instance, true);
     	}
 
     	if (PS_calculation) {

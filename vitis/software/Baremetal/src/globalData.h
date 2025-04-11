@@ -117,6 +117,8 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_Matrix_Multi_t* matrix_instance;
+	uz_matrix_t* matrix_input_20n;
+	uz_nn_t* nn_layer_20n;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

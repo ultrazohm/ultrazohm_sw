@@ -114,6 +114,7 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
+            nn_20_input_1_64_init();
             JavaScope_initialize(&Global_Data);
             initialization_chain = init_ip_cores;
             break;

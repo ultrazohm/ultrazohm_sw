@@ -47,7 +47,7 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern float C_PS_matrix[4];
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -75,10 +75,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ib] 					= &C_matrix[1];
 	js_ch_observable[JSO_ic] 					= &C_matrix[2];
 	js_ch_observable[JSO_ua] 					= &C_matrix[3];
-	js_ch_observable[JSO_ub] 					= &data->av.U_V;
-	js_ch_observable[JSO_uc] 					= &data->av.U_W;
-	js_ch_observable[JSO_iq] 					= &data->av.I_q;
-	js_ch_observable[JSO_id] 					= &data->av.I_d;
+	js_ch_observable[JSO_ub] 					= &C_PS_matrix[0];
+	js_ch_observable[JSO_uc] 					= &C_PS_matrix[1];
+	js_ch_observable[JSO_iq] 					= &C_PS_matrix[2];
+	js_ch_observable[JSO_id] 					= &C_PS_matrix[3];
 	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
 	js_ch_observable[JSO_ud]					= &data->av.U_d;

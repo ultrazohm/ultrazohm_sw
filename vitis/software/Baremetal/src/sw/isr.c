@@ -43,6 +43,8 @@ bool is_done = false;
 uz_matrix_t* matrix_output_20n;
 bool PS_calculation = false;
 float C_PS_matrix[4] = {0};
+float C_test_matrix [4]={0};
+uint32_t test = 0;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -55,7 +57,7 @@ void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
-
+    //Xil_DCacheDisable();
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*10000.0f + 15.0f;
     A_matrix[1] = Global_Data.aa.A1.me.ADC_A1*200.0f + 15.0f;
@@ -77,30 +79,44 @@ void ISR_Control(void *data)
     A_matrix[17] = Global_Data.aa.A1.me.ADC_B5*200.0f + 91.0f;
     A_matrix[18] = Global_Data.aa.A1.me.ADC_B6*200.0f + 101.0f;
     A_matrix[19] = Global_Data.aa.A1.me.ADC_B7*200.0f + 111.0f;
-    Xil_DCacheFlushRange((uint32_t)((uint32_t*)A_matrix),sizeof(A_matrix));//->Flush wenn der R5 schreibt
+ 	//Xil_DCacheFlush();
+    //Xil_DCacheFlushRange(((uint32_t)((uint32_t*)A_matrix)),sizeof(A_matrix));//->Flush wenn der R5 schreibt
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+//    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
+ 	//test = sizeof(A_matrix);
     if (current_state==control_state)
     {
     	uz_Matrix_Multi_trigger_calculation(Global_Data.objects.matrix_instance, true);
     	while(1) {
     		is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
     	    if (is_done == true) {
-    	    	Xil_DCacheInvalidateRange((uint32_t)((uint32_t*)C_matrix),sizeof(C_matrix));//->Invalidate wenn R5 liesst
+    	    	//Xil_DCacheInvalidateRange((uint32_t)((uint32_t*)C_matrix),sizeof(C_matrix));//->Invalidate wenn R5 liesst
+    	    	//Xil_DCacheInvalidateRange((uint32_t)((uint32_t*)C_matrix),32);//->Invalidate wenn R5 liesst
+    	    	//Xil_DCacheInvalidateLine((uint32_t)((uint32_t*)C_matrix));
+    	    	C_test_matrix[0] = C_matrix[0];
+    	    	C_test_matrix[1] = C_matrix[1];
+    	    	C_test_matrix[2] = C_matrix[2];
+    	    	C_test_matrix[3] = C_matrix[3];
     	    	break;
     	    }
     	}
     	//if PS_Calculation is commented in, reading of the IP-Core C-matrix does not work. Cache issue?
-    	if (PS_calculation) {
-    	   	        for (uint32_t i = 0; i < 20U; i++) {
-    	   	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_20n,A_matrix[i],0U,i);
-    	   	        }
-    	   	        uz_nn_ff(Global_Data.objects.nn_layer_20n,Global_Data.objects.matrix_input_20n);
-    	   	        matrix_output_20n = uz_nn_get_output_data(Global_Data.objects.nn_layer_20n);
-    	   	     C_PS_matrix[0] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,0U);
-    	   	     C_PS_matrix[1] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,1U);
-    	   	     C_PS_matrix[2] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,2U);
-    	   	     C_PS_matrix[3] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,3U);
-    	    	}
-    }
+//    	if (PS_calculation) {
+//    	   	        for (uint32_t i = 0; i < 20U; i++) {
+//    	   	        	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_20n,A_matrix[i],0U,i);
+//    	   	        }
+//    	   	        uz_nn_ff(Global_Data.objects.nn_layer_20n,Global_Data.objects.matrix_input_20n);
+//    	   	        matrix_output_20n = uz_nn_get_output_data(Global_Data.objects.nn_layer_20n);
+//    	   	     C_PS_matrix[0] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,0U);
+//    	   	     C_PS_matrix[1] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,1U);
+//    	   	     C_PS_matrix[2] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,2U);
+//    	   	     C_PS_matrix[3] = uz_matrix_get_element_zero_based(matrix_output_20n,0U,3U);
+//    	    	}
+    	}
     // Set duty cycles for three-level modulator
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

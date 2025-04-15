@@ -63,7 +63,7 @@ float B1_matrix[1280] = {
 float B2_matrix[256] = {
 #include "Matrix_B2_input.csv"
 };
-float C_matrix[4] = {0};
+float C_matrix[4] EMAC_ALIGN = {0};
 struct uz_Matrix_Multi_config config = {
 		.base_address = XPAR_UZ_USER_MATRIXMULTIPLICATION_0_S_AXI_CONTROL_BASEADDR,
 		.A_columns = 20U,
@@ -107,6 +107,7 @@ int main(void)
             break;
         case init_gpios:
             Initialize_AXI_GPIO();
+            Xil_DCacheDisable();
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
             uz_frontplane_button_and_led_init(apu_version_final); 
             ultrazohm_state_machine_init(apu_version_final);

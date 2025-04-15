@@ -61,5 +61,5 @@
 
 #define NN_20_INPUT_1_64 1
 void InitializeDataStructure(DS_Data* data);
-#define EMAC_ALIGN __attribute__ ((__aligned__(C_CACHE_LINE_LENGTH)))
+#define EMAC_ALIGN __attribute__ ((__aligned__(32)))
 #endif /* main_H_ */

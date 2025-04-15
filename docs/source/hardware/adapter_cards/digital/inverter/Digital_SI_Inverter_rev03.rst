@@ -12,7 +12,7 @@ Digital Inverter Rev03
 Changes from Rev02 to Rev03
 ----------------------------
 
-* changed gate resistors from 10Ohm to 47Ohm
+* changed gate resistors from 10 Ohm to 47 Ohm
 * unused pads from the 2.5V reference voltage source have been removed
 
 Changes from Rev03 to Rev03 production

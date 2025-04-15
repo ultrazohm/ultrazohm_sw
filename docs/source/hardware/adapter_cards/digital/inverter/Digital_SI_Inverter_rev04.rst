@@ -12,11 +12,11 @@ Digital Inverter Rev04
 Changes from Rev03 production to Rev04
 --------------------------------------
 
-* Added separate gate resistors for turn-off (12ohm) and turn-on (47ohm) MOSFETs.
+* Added separate gate resistors for turn-off (12 Ohm) and turn-on (47 Ohm) MOSFETs.
 * Introduced a new capacitor bank consisting of 8x AEC capacitors (110µF each) and 15x MLCCs (10µF each).
-* Added an individual 2.5V (`REF4132B25DBVRQ1 <https://www.ti.com/lit/ds/symlink/ref4132-q1.pdf?ts=1743989231729&ref_url=https%253A%252F%252Fwww.ti.com%252Ftool%252FPMP22650>`_) supply as a bias reference for (ADA4940-1ARZ-R7 and INA241A2IDGKR).
-* Replaced Current Sense Amplifier (MAX40056TAUA+) with (`INA241A2IDGKR <https://www.ti.com/lit/ds/symlink/ina241a.pdf?ts=1744034830994>`_ ).
-* Because of the new current sensor, no hardware OCP exists anymore.
+* Added an individual 2.5V supply (`REF4132B25DBVRQ1 <https://www.ti.com/lit/ds/symlink/ref4132-q1.pdf?ts=1743989231729&ref_url=https%253A%252F%252Fwww.ti.com%252Ftool%252FPMP22650>`_) as a bias reference for (ADA4940-1ARZ-R7 and INA241A2IDGKR).
+* Replaced Current Sense Amplifier (`MAX40056TAUA+  <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3470177.pdf>`_ ).
+* New current sensor makes hardware Over Current Protection obsolete.
 * Optimized the entire layer stackup and re-engineered the PCB layout.
 * Eliminated low-side temperature measurement from all phases.
 * Attached a bottom-side heatsink for improved heat management and therefore better thermal endurance.
@@ -52,15 +52,15 @@ Additional ratings
   
 Heatsink
 --------
-Rev04 needs a new heatsink design and it is not compatible with :ref:`Rev02 <dig_si_inverter_rev03>` and :ref:`Rev03 <dig_si_inverter_rev03>`. 
+:ref:`Rev04 <dig_si_inverter_rev04>` requires a redesigned heatsink, which is not compatible with previous revisions :ref:`Rev02 <dig_si_inverter_rev03>` and :ref:`Rev03 <dig_si_inverter_rev03>`. 
 The PCB is prepared for the installation of a heat sink. 
-Four holes have been drilled to allow the use of maximum M3 screws.
+Four mounting holes have been incorporated, designed to support screws with a maximum diameter corresponding to M3.
 It is intended that the heatsink will have the appropriate holes with threads into which the screws can be screwed.
 For further information on the dimensions of the heatsink and the location of the screw holes, refer to the diagram below. 
 The dimensions take into account the safety margin required for the mounting rails in the UltraZohm. 
-The heatsink is mounted on the BOT side of the PCB.
-Appropriate clearance for the heatsink is available.
-Thermal interface material needs to be placed between the heatsink and the pcb.
+The heatsink is mounted on the bottom side of the PCB.
+Adequate mechanical clearance has been ensured to accommodate the heatsink within the designated space.
+A thermal interface material must be applied between the heatsink and the PCB to ensure optimal thermal conductivity.
 
 .. tikz:: Heatsink dimensions
   :align: center

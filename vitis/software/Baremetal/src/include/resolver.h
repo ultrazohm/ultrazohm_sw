@@ -9,3 +9,4 @@ uz_resolver_pl_interface_t* initialize_resolver_pl_interface_left(void);
 uz_resolver_pl_interface_t* initialize_resolver_pl_interface_right(void);
 
 uz_incrementalEncoder_t* initialize_encoder_right(void);
+uz_incrementalEncoder_t* initialize_encoder_left(void);

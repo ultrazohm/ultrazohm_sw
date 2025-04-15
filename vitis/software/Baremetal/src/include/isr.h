@@ -68,9 +68,12 @@ u32 Rpu_IpiInit(u16 DeviceId);	//Init Hardware for IPI-ISR
 
 enum running_mode{
 
-    rs_meas,
-    rc_meas,
-    normal,
+    rs_meas_left,
+    rc_meas_left,
+    rs_meas_right,
+    rc_meas_right,
+    speed_control_left,
+	speed_control_right,
 	reset
     };
 

@@ -108,6 +108,8 @@ typedef struct _actualValues_ {
 	float theta_el_right_advanced;
 	float theta_el_right;
 	float theta_el_offset_right;
+	float theta_el_left;
+	float theta_el_offset_left;
 	float theta_el_left_advanced;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left;
 	struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right;
@@ -136,16 +138,22 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge11DutyCycle;
 	float halfBridge12DutyCycle;
 	float M_ref_left;
+	float M_ref_right;
+	float n_ref_right;
 	float n_ref_left;
 	float js_set_n_ref_left;
+	float js_set_n_ref_right;
 	float n_ref_left_filt;
+	float n_ref_right_filt;
 	float operatingpoints_rc_meas;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t js_set_i_dq_ref_right;
+	uz_3ph_dq_t js_set_i_dq_ref_left;
 	uz_3ph_dq_t i_dq_ref_rc_meas_right;
 	uz_3ph_dq_t i_dq_ref_left;
 	struct uz_parameterID_rc_ref_val_t rc_meas_output;
-	struct uz_parameterid_output rs_meas_output;
+	struct uz_parameterid_output rs_meas_output_left;
+	struct uz_parameterid_output rs_meas_output_right;
 } referenceAndSetValues;
 
 typedef struct{
@@ -160,18 +168,23 @@ typedef struct{
 	uz_resolverIP_t* resolver_left;
 	uz_resolverIP_t* resolver_right;
 	uz_incrementalEncoder_t* encoder_right;
+	uz_incrementalEncoder_t* encoder_left;
 	uz_resolver_pl_interface_t* resolver_pl_interface_left;
 	uz_resolver_pl_interface_t* resolver_pl_interface_right;
 	uz_CurrentControl_t* current_ctrl_left;
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_SpeedControl_t* speed_ctrl_left;
+	uz_SpeedControl_t* speed_ctrl_right;
 	uz_SetPoint_t* setpoint_ctrl_left;
+	uz_SetPoint_t* setpoint_ctrl_right;
 	uz_inverter_adapter_t* uz_d_inverter_left;
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
+	uz_IIR_Filter_t* iir_filter_ref_speed_right;
 	uz_parameterID_rc_t* rc_meas_instance;
-	uz_parameterid_rs_t* rs_meas_instance;
+	uz_parameterid_rs_t* rs_meas_instance_right;
+	uz_parameterid_rs_t* rs_meas_instance_left;
 	uz_temperaturecard_t* temperature_card_d3;
 	uz_IIR_Filter_t *tracking_error_filter_prime_mover;
 	uz_IIR_Filter_t *phase_a_lowpass;

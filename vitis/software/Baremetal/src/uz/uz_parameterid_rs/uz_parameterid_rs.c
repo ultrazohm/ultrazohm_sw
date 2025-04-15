@@ -50,6 +50,8 @@ uz_parameterid_rs_t* uz_parameterid_rs_init(struct uz_parameterid_rs_config_t in
     self->is_first_call_to_generate_outputs = true;
     self->calc_increments.n_increment = (initial_config.n_end - initial_config.n_start)/initial_config.n_steps;
     self->state = start; 
+    self->act_vals.i_sample = 0.0f;
+    self->act_vals.n_sample = 0.0f;
 	uz_assert(initial_config.n_start >= 0.0f);
 	uz_assert(initial_config.n_end > 0.0f);
 	uz_assert(initial_config.n_end > initial_config.n_start);

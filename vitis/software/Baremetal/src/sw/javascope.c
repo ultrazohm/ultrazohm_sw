@@ -68,7 +68,8 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.resolver_pl_outputs_left.n_mech_rpm;
+	//js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.resolver_pl_outputs_left.n_mech_rpm;
+	js_ch_observable[JSO_mech_Speed_rpm_left]	= &data->av.speed_rpm_left;
 	js_ch_observable[JSO_mech_Speed_rpm_right]	= &data->av.speed_rpm_right;
 	js_ch_observable[JSO_ia_left] 			= &data->av.i_a_left;
 	js_ch_observable[JSO_ib_left] 			= &data->av.i_b_left;
@@ -86,14 +87,16 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_iq_left] 			= &data->av.i_q_left;
 	js_ch_observable[JSO_id_right] 			= &data->av.i_d_right;
 	js_ch_observable[JSO_iq_right] 			= &data->av.i_q_right;
-	js_ch_observable[JSO_theta_el_left] 	= &data->av.resolver_pl_outputs_left.position_el_2pi;
+	js_ch_observable[JSO_theta_el_left] 	= &data->av.theta_el_left;
+	//js_ch_observable[JSO_theta_el_left] 	= &data->av.resolver_pl_outputs_left.position_el_2pi;
 	//js_ch_observable[JSO_theta_el_right] 	= &data->av.resolver_pl_outputs_right.position_el_2pi;
 	js_ch_observable[JSO_theta_el_left_advanced] 	= &data->av.theta_el_left_advanced;
 	js_ch_observable[JSO_theta_el_right_advanced] 	= &data->av.theta_el_right_advanced;
 	js_ch_observable[JSO_theta_mech_left] 	= &data->av.resolver_pl_outputs_left.position_mech_2pi;
 	js_ch_observable[JSO_theta_el_right] 	= &data->av.theta_el_right;
 	js_ch_observable[JSO_ref_speed_left_filt] 	= &data->rasv.n_ref_left_filt;
-	js_ch_observable[JSO_ref_speed_left] 	= &(data->rasv.n_ref_left);
+	js_ch_observable[JSO_ref_speed_left] 	= &data->rasv.n_ref_left;
+	js_ch_observable[JSO_ref_speed_right] 	= &data->rasv.n_ref_right;
 	js_ch_observable[JSO_vd_left]			= &data->av.v_d_left;
 	js_ch_observable[JSO_vq_left]			= &data->av.v_q_left;
 	js_ch_observable[JSO_vd_right]			= &data->av.v_d_right;

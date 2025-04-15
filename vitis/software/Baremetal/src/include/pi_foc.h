@@ -10,3 +10,7 @@
  uz_SetPoint_t* setpoint_ctrl_left_init(void);
  uz_SpeedControl_t* speed_ctrl_left_init(void);
  uz_IIR_Filter_t* speed_filt_left_init(void);
+ uz_SetPoint_t* setpoint_ctrl_right_init(void);
+ uz_SpeedControl_t* speed_ctrl_right_init(void);
+ uz_IIR_Filter_t* speed_filt_right_init(void);
+

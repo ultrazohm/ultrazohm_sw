@@ -159,6 +159,8 @@ In the ``isr.c`` add the following conversion factors to the measured signals.
  i_abc_Amps.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
  i_DC_Amps = Global_Data.aa.A1.me.ADC_B5 * 12.5f; 
 
+.. note:: These are the theoretical conversion factors. They might differ slightly in reality do to component tolerances.
+
 In order to use the over current and over temperature protection, the following code has to be added to the isr.c as well. 
 These are optional features and can be left out if they aren't required.
 

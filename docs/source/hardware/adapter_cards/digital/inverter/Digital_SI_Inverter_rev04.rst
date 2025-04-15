@@ -19,7 +19,8 @@ Changes from Rev03 production to Rev04
 * New current sensor makes hardware Over Current Protection obsolete.
 * Optimized the entire layer stackup and re-engineered the PCB layout.
 * Eliminated low-side temperature measurement from all phases.
-* Attached a bottom-side heatsink for improved heat management and therefore better thermal endurance.
+
+.. note:: Moved the heatsink in Rev04 to the bottom of the PCB.
 
 Components
 ----------
@@ -221,6 +222,8 @@ In the ``isr.c`` add the following conversion factors to the measured signals.
  i_abc_Amps.c = Global_Data.aa.A1.me.ADC_A2 * 12.5f;
  i_DC_Amps = Global_Data.aa.A1.me.ADC_B5 * 12.5f; 
 
+.. note:: These are the theoretical conversion factors. They might differ slightly in reality do to component tolerances.
+
 In order to use the over current and over temperature protection, the following code has to be added to the isr.c as well. 
 These are optional features and can be left out if they aren't required.
 
@@ -247,7 +250,7 @@ References
 
 .. _dig_si_inverter_references:
 
-* :download:`Schematic Rev04 <Digital_SI_Inverter_rev04/UZ_D_Inverter_rev04.PDF>`
+* :download:`Schematic Rev04 <Digital_SI_Inverter_rev04/UZ_D_inverterRev04.pdf>`
 * `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
 
 Known issues

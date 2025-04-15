@@ -9,7 +9,7 @@ Source
 * `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
 
 Functionality
-=============
+-------------
 
 The UltraZohm digital inverter consists of three MOSFET half-bridges. 
 It is equipped with bi-directional current measurement for each phase and the DC-link current, measurements for the phase and DC-link voltages, and temperature measurement for each semiconductor.  
@@ -55,13 +55,16 @@ Heatsink
 The PCB is prepared for the installation of a heat sink. 
 Four holes have been drilled to allow the use of maximum M3 screws.
 It is intended that the heatsink will have the appropriate holes with threads into which the screws can be screwed.
-For further information on the dimensions of the heatsink and the location of the screw holes, refer to the diagram below. 
+For further information on the dimensions of the heatsink and the location of the screw holes, refer to the diagrams below. 
 The dimensions take into account the safety margin required for the mounting rails in the UltraZohm. 
 A simple passive heatsink is sufficient for operation. 
 An advanced actively cooled heatsink, either air or water cooled, can also be fitted if required.
-This heatsink design ist only valid for :ref:`Rev02 <dig_si_inverter_rev03>` and :ref:`Rev03 <dig_si_inverter_rev03>`. 
+This heatsink design is different for valid for :ref:`Rev02 <dig_si_inverter_rev03>`, :ref:`Rev03 <dig_si_inverter_rev03>` and :ref:`Rev04 <dig_si_inverter_rev04>`. 
 
-.. tikz:: Heatsink dimensions
+Rev02 & Rev03
+=============
+
+.. tikz:: Heatsink dimensions Rev02 & Rev03
   :align: center
 
   \usetikzlibrary{shapes,arrows,patterns,calc};
@@ -99,5 +102,51 @@ This heatsink design ist only valid for :ref:`Rev02 <dig_si_inverter_rev03>` and
   \draw [color=gray](3.5,0) -- ++(2.5,0) coordinate (D1) -- +(5pt,0);
   \draw [color=gray](2.9,7.2) -- ++(3.1,0) coordinate (D2) -- +(5pt,0);
   \draw [dimen] (D1) -- (D2) node {72,00};
+  \draw[-latex,color=gray](5,9.0)--(3.15,7.35);
+  \node[rotate=45,color=gray]  at (4,8.5) {4x M3};
+
+Rev04
+=====
+
+.. note:: The heatsink in Rev04 is mounted on the bottom of the PCB.
+
+.. tikz:: Heatsink dimensions Rev04
+  :align: center
+
+  \usetikzlibrary{shapes,arrows,patterns,calc};
+  \tikzset{%
+    body/.style={inner sep=0pt,outer sep=0pt,shape=rectangle,draw,thick},
+    dimen/.style={<->,>=latex,color=gray,every rectangle node/.style={fill=white,midway,font=\large}},
+    symmetry/.style={dashed,thin},
+  }
+  \node [body,minimum height=9.2cm,minimum width=3.5cm,anchor=south west] (body1) at (0,0) {};
+  \draw (body1.south west) -- ++(-1,0) coordinate (D1) -- +(-5pt,0);
+  \draw (body1.north west) -- ++(-1,0) coordinate (D2) -- +(-5pt,0);
+  \draw [dimen] (D1) -- (D2) node {94,00};
+  \draw[color=gray] (body1.north west) -- ++(0,1) coordinate (D1) -- +(0,5pt);
+  \draw [color=gray](body1.north east) -- ++(0,1) coordinate (D2) -- +(0,5pt);
+  \draw [dimen] (D1) -- (D2) node {35,00};
+  \filldraw[color=black, fill=white, thick](0.6,1.6) circle (0.3cm);
+  \draw (0.6,1.95) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (2.9,1.95) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (0.6,7.55) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (2.9,7.55) arc[start angle=90, end angle=-180, radius=0.35];
+  \filldraw[color=black, fill=white, thick](2.9,1.6) circle (0.3cm);
+  \filldraw[color=black, fill=white, thick](0.6,7.2) circle (0.3cm);
+  \filldraw[color=black, fill=white, thick](2.9,7.2) circle (0.3cm);
+  \draw [color=gray](2.9,1.6) -- ++(2.1,0) coordinate (D1) -- +(5pt,0);
+  \draw [color=gray](3.5,0) -- ++(1.5,0) coordinate (D2) -- +(5pt,0);
+  \draw [dimen] (D1) -- (D2) node {20,00};
+  \draw [color=gray](body1.south west) -- ++(0,-1) coordinate (D1) -- +(0,-5pt);
+  \draw [color=gray](0.6,1.6) -- ++(0,-2.6) coordinate (D2) -- +(0,-5pt);
+  \draw [dimen,-] (D1) -- (D2) node [right=15pt] {5,00};
+  \draw [dimen,<-] (D1) -- ++(-5pt,0);
+  \draw [dimen,<-] (D2) -- ++(+5pt,0);
+  \draw [color=gray](body1.south west) -- ++(0,-2) coordinate (D1) -- +(0,-5pt);
+  \draw [color=gray](2.9,1.6) -- ++(0,-3.6) coordinate (D2) -- +(0,-5pt);
+  \draw [dimen] (D1) -- (D2) node  {25,00};
+  \draw [color=gray](3.5,0) -- ++(2.5,0) coordinate (D1) -- +(5pt,0);
+  \draw [color=gray](2.9,7.2) -- ++(3.1,0) coordinate (D2) -- +(5pt,0);
+  \draw [dimen] (D1) -- (D2) node {74,00};
   \draw[-latex,color=gray](5,9.0)--(3.15,7.35);
   \node[rotate=45,color=gray]  at (4,8.5) {4x M3};

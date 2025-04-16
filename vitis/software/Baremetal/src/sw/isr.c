@@ -52,6 +52,7 @@ struct uz_3ph_abc_t i_abc_left = {0.0f};
 struct uz_3ph_abc_t i_abc_right = {0.0f};
 struct uz_3ph_abc_t v_abc_right = {0.0f};
 struct uz_3ph_abc_t v_abc_right_rev_filter = {0.0f};
+struct uz_3ph_abc_t v_abc_right_filter_comp = {0.0f};
 struct uz_3ph_abc_t v_abc_left = {0.0f};
 struct uz_3ph_dq_t i_dq_left = {0.0f};
 struct uz_3ph_dq_t i_dq_right = {0.0f};
@@ -60,6 +61,8 @@ struct uz_3ph_dq_t i_dq_ref_left = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_left = {0.0f};
 struct uz_3ph_dq_t v_dq_ref_right = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_right = {0.0f};
+struct uz_3ph_dq_t v_dq_meas_right_rev_filt = {0.0f};
+struct uz_3ph_dq_t v_dq_meas_right_filter_comp = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_left = {0.0f};
 struct uz_DutyCycle_t dutycyc_right = {0.0f};
@@ -71,7 +74,7 @@ float average_temp_left = 0.0f;
 struct uz_3ph_abc_t dc_motor_right = {0.0f};
 
 
-enum running_mode run_state = rs_meas_right;
+enum running_mode run_state = speed_control_left;
 
 
 //==============================================================================================================================================================
@@ -85,6 +88,7 @@ static void speed_control_left_motor();
 static void current_control_right_motor();
 static void current_control_left_motor();
 static void speed_control_right_motor();
+static void filter_compensation();
 
 void ISR_Control(void *data)
 {
@@ -217,7 +221,7 @@ void ISR_Control(void *data)
 	// park transformation of measured currents
 	i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.theta_el_left);
 	i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.theta_el_right);
-	//v_dq_meas_right = uz_transformation_3ph_abc_to_dq(v_abc_right_rev_filter,Global_Data.av.theta_el_right);
+	v_dq_meas_right_rev_filt = uz_transformation_3ph_abc_to_dq(v_abc_right_rev_filter,Global_Data.av.theta_el_right);
 	v_dq_meas_right = uz_transformation_3ph_abc_to_dq(v_abc_right,Global_Data.av.theta_el_right);
 	v_dq_meas_left = uz_transformation_3ph_abc_to_dq(v_abc_left,Global_Data.av.theta_el_left);
 	Global_Data.av.speed_rpm_left = (Global_Data.av.omega_mech_left*60.0f)/(2.0f*UZ_PIf);
@@ -282,6 +286,7 @@ void ISR_Control(void *data)
     		// control functions for DUT right
         	speed_control_left_motor();
         	current_control_right_motor();
+        	filter_compensation();
     		break;
 
     	case speed_control_right:
@@ -495,5 +500,20 @@ static void current_control_right_motor() {
     // calculate duty cycles from reference dq voltages
 	Global_Data.av.theta_el_right_advanced = Global_Data.av.theta_el_right + (1.5f * (Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
     dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, Global_Data.av.v_dc_right, Global_Data.av.theta_el_right_advanced);
+};
+
+static void filter_compensation(){
+	// calculate Frequency response of the magnitude
+	Global_Data.av.magnitude = 1.0f / sqrt(1.0f + powf(((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f)),2.0f));
+
+	Global_Data.av.v_abc_right_filter_comp.a = v_abc_right.a * Global_Data.av.magnitude;
+	Global_Data.av.v_abc_right_filter_comp.b = v_abc_right.b * Global_Data.av.magnitude;
+	Global_Data.av.v_abc_right_filter_comp.c = v_abc_right.c * Global_Data.av.magnitude;
+
+	Global_Data.av.phi = atanf((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f));
+
+	float theta_new =  Global_Data.av.theta_el_right - Global_Data.av.phi;
+	Global_Data.av.v_dq_meas_right_filter_comp =  uz_transformation_3ph_abc_to_dq(Global_Data.av.v_abc_right_filter_comp, theta_new);
+
 };
 

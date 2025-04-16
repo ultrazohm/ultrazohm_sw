@@ -36,6 +36,9 @@ static float ISR_execution_time_us;
 static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
+extern struct uz_3ph_abc_t v_abc_right_rev_filter;
+extern struct uz_3ph_dq_t v_dq_meas_right_rev_filt;
+
 
 uint32_t pollErrorCnt = 0U;
 
@@ -83,6 +86,12 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_va_right] 			= &data->av.v_a_right;
 	js_ch_observable[JSO_vb_right] 			= &data->av.v_b_right;
 	js_ch_observable[JSO_vc_right] 			= &data->av.v_c_right;
+	js_ch_observable[JSO_va_right_rev_filter] 			= &v_abc_right_rev_filter.a;
+	js_ch_observable[JSO_vb_right_rev_filter] 			= &v_abc_right_rev_filter.b;
+	js_ch_observable[JSO_vc_right_rev_filter] 			= &v_abc_right_rev_filter.c;
+	js_ch_observable[JSO_va_right_filter_comp] 			= &data->av.v_abc_right_filter_comp.a;
+	js_ch_observable[JSO_vb_right_filter_comp] 			= &data->av.v_abc_right_filter_comp.b;
+	js_ch_observable[JSO_vc_right_filter_comp] 			= &data->av.v_abc_right_filter_comp.c;
 	js_ch_observable[JSO_id_left] 			= &data->av.i_d_left;
 	js_ch_observable[JSO_iq_left] 			= &data->av.i_q_left;
 	js_ch_observable[JSO_id_right] 			= &data->av.i_d_right;
@@ -103,6 +112,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_vq_right]			= &data->av.v_q_right;
 	js_ch_observable[JSO_vd_right_meas]		= &data->av.v_d_right_meas;
 	js_ch_observable[JSO_vq_right_meas]		= &data->av.v_q_right_meas;
+	js_ch_observable[JSO_vd_right_meas_ref_filt]		= &v_dq_meas_right_rev_filt.d;
+	js_ch_observable[JSO_vq_right_meas_ref_filt]		= &v_dq_meas_right_rev_filt.q;
+	js_ch_observable[JSO_vd_right_meas_filter_comp]		= &data->av.v_dq_meas_right_filter_comp.d;
+	js_ch_observable[JSO_vq_right_meas_filter_comp]		= &data->av.v_dq_meas_right_filter_comp.q;
 	js_ch_observable[JSO_vd_left_meas]		= &data->av.v_d_left_meas;
 	js_ch_observable[JSO_vq_left_meas]		= &data->av.v_q_left_meas;
 	js_ch_observable[JSO_torque]			= &data->av.torque;

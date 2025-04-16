@@ -47,6 +47,10 @@ DS_Data Global_Data = {
 	.av.theta_el_offset_left = 0.1973f,
 	.av.average_temp_right = 1.0f,
 	.av.average_temp_left = 0.0f,
+	.av.v_abc_right_filter_comp = {0.0f},
+	.av.v_dq_meas_right_filter_comp = {0.0f},
+	.av.magnitude = 0.0f,
+	.av.phi = 0.0f,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
@@ -77,18 +81,18 @@ int main(void)
     const struct uz_parameterID_rc_config_t rc_meas_config = {
       	.abs_id_max_Amps = 4.0f,
       	.abs_iq_max_Amps = 4.0f,
-    	.n_start_rpm = 500.0f,
-    	.n_stop_rpm = 1500.0f,
+    	.n_start_rpm = 2500.0f,
+    	.n_stop_rpm = 2500.0f,
     	.id_steps = 4U,
     	.iq_steps = 4U,
-    	.n_steps = 2U,
+    	.n_steps = 0U,
 		.check_temp=1
       };
 
     struct uz_parameterid_rs_config_t config_rs_meas = {
-    	.n_start = 200.0f,
-        .n_end = 1600.0f,
-        .n_steps = 7.0f,
+    	.n_start = 100.0f,
+        .n_end = 2500.0f,
+        .n_steps = 8.0f,
         .i_start = -3.0f,
         .i_diff = 6.0f,
         .i_repeats = 10.0f,

@@ -76,6 +76,16 @@ enum JS_OberservableData {
 	JSO_avg_temp_right,
 	JSO_avg_temp_left,
 	JSO_ic_right_CD,
+	JSO_va_right_rev_filter,
+	JSO_vb_right_rev_filter,
+	JSO_vc_right_rev_filter,
+	JSO_vd_right_meas_ref_filt,
+	JSO_vq_right_meas_ref_filt,
+	JSO_va_right_filter_comp,
+	JSO_vb_right_filter_comp,
+	JSO_vc_right_filter_comp,
+	JSO_vd_right_meas_filter_comp,
+	JSO_vq_right_meas_filter_comp,
 	JSO_ENDMARKER
 };
 

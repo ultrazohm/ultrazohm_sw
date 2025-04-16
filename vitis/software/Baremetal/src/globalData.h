@@ -122,6 +122,10 @@ typedef struct _actualValues_ {
 	uz_temperaturecard_OneGroup channel_A_data;
 	float average_temp_right;
 	float average_temp_left;
+	struct uz_3ph_dq_t v_dq_meas_right_filter_comp;
+	struct uz_3ph_abc_t v_abc_right_filter_comp;
+	float magnitude;
+	float phi;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

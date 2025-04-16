@@ -114,7 +114,8 @@
       "uz_user": {
         "smartconnect_1": "",
         "MatrixMultiplication_0": "",
-        "system_ila_0": ""
+        "system_ila_0": "",
+        "system_ila_1": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5642,7 +5643,25 @@
             "inst_hier_path": "uz_user/system_ila_0",
             "parameters": {
               "C_DATA_DEPTH": {
-                "value": "32768"
+                "value": "16384"
+              }
+            },
+            "interface_ports": {
+              "SLOT_0_AXI": {
+                "mode": "Monitor",
+                "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+                "vlnv": "xilinx.com:interface:aximm_rtl:1.0"
+              }
+            }
+          },
+          "system_ila_1": {
+            "vlnv": "xilinx.com:ip:system_ila:1.1",
+            "xci_name": "zusys_system_ila_1_0",
+            "xci_path": "ip\\zusys_system_ila_1_0\\zusys_system_ila_1_0.xci",
+            "inst_hier_path": "uz_user/system_ila_1",
+            "parameters": {
+              "C_DATA_DEPTH": {
+                "value": "8192"
               }
             },
             "interface_ports": {
@@ -5665,7 +5684,8 @@
           "smartconnect_0_M10_AXI": {
             "interface_ports": [
               "S00_AXI",
-              "smartconnect_1/S00_AXI"
+              "smartconnect_1/S00_AXI",
+              "system_ila_1/SLOT_0_AXI"
             ]
           },
           "smartconnect_1_M00_AXI": {
@@ -5681,7 +5701,8 @@
               "aresetn",
               "smartconnect_1/aresetn",
               "MatrixMultiplication_0/ap_rst_n",
-              "system_ila_0/resetn"
+              "system_ila_0/resetn",
+              "system_ila_1/resetn"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
@@ -5689,7 +5710,8 @@
               "aclk",
               "smartconnect_1/aclk",
               "MatrixMultiplication_0/ap_clk",
-              "system_ila_0/clk"
+              "system_ila_0/clk",
+              "system_ila_1/clk"
             ]
           }
         }

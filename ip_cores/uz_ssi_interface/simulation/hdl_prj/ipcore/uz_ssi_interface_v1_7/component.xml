@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3bd68d3c</spirit:value>
+            <spirit:value>7ee2b092</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3bd68d3c</spirit:value>
+            <spirit:value>7ee2b092</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -911,7 +911,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_ssi_interface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_5105ae50</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_ffc450a6</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1111,14 +1111,14 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_ssi_interface</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114042487</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-04-16T09:28:00Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114042675</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-04-16T12:35:24Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="e5fa9c87"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="38492530"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="b3b556ef"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="ae296c8f"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="ad216198"/>
     </xilinx:packagingInfo>

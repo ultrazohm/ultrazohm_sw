@@ -5764,21 +5764,21 @@
             }
           },
           "uz_ssi_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.6",
-            "xci_name": "zusys_uz_ssi_interface_0_6",
-            "xci_path": "ip\\zusys_uz_ssi_interface_0_6\\zusys_uz_ssi_interface_0_6.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.7",
+            "xci_name": "zusys_uz_ssi_interface_0_8",
+            "xci_path": "ip\\zusys_uz_ssi_interface_0_8\\zusys_uz_ssi_interface_0_8.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_0"
           },
           "uz_ssi_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.6",
-            "xci_name": "zusys_uz_ssi_interface_1_6",
-            "xci_path": "ip\\zusys_uz_ssi_interface_1_6\\zusys_uz_ssi_interface_1_6.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.7",
+            "xci_name": "zusys_uz_ssi_interface_1_8",
+            "xci_path": "ip\\zusys_uz_ssi_interface_1_8\\zusys_uz_ssi_interface_1_8.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_1"
           },
           "uz_ssi_interface_2": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.6",
-            "xci_name": "zusys_uz_ssi_interface_2_6",
-            "xci_path": "ip\\zusys_uz_ssi_interface_2_6\\zusys_uz_ssi_interface_2_6.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.7",
+            "xci_name": "zusys_uz_ssi_interface_2_8",
+            "xci_path": "ip\\zusys_uz_ssi_interface_2_8\\zusys_uz_ssi_interface_2_8.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_2"
           }
         },

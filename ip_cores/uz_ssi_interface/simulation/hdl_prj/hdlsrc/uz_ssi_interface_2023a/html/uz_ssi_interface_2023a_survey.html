@@ -36,7 +36,7 @@ uz_ssi_interface_2023a
 Model version
 </td>
 <td align="right" valign="top" style="border-style: none">
-5.115
+5.192
 </td>
 
 </tr>
@@ -54,7 +54,7 @@ HDL Coder version
 HDL code generated on
 </td>
 <td align="right" valign="top" style="border-style: none">
-2025-04-02 17:31:06
+2025-04-16 11:27:32
 </td>
 
 </tr>
@@ -261,6 +261,15 @@ uz_ssi_interface
 <br /><br /><table width="100%" border="1">
 <tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
+BalanceDelays
+</td>
+<td align="right" valign="top" style="border-style: none">
+off
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
 IPCoreName
 </td>
 <td align="right" valign="top" style="border-style: none">
@@ -268,16 +277,16 @@ uz_ssi_interface
 </td>
 
 </tr>
-<tr style="background-color: #ffffff">
+<tr style="background-color: #eeeeff">
 <td align="left" valign="top" style="border-style: none">
 IPCoreVersion
 </td>
 <td align="right" valign="top" style="border-style: none">
-1.6
+1.7
 </td>
 
 </tr>
-<tr style="background-color: #eeeeff">
+<tr style="background-color: #ffffff">
 <td align="left" valign="top" style="border-style: none">
 ProcessorFPGASynchronization
 </td>
@@ -436,8 +445,8 @@ External Port
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:672')" name="code2model" class="code2model">
-delay_ticks_first_clk_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:696')" name="code2model" class="code2model">
+reciprocal_bit_width_AXI
 </a>
 
 </b>
@@ -469,8 +478,8 @@ x"10C"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:683')" name="code2model" class="code2model">
-delay_ticks_clk_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:865')" name="code2model" class="code2model">
+t_sample_AXI
 </a>
 
 </b>
@@ -502,8 +511,8 @@ x"110"
 
 </table>
 <br /><br /><b>
-Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:687')" name="code2model" class="code2model">
-delay_ticks_data_AXI
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:866')" name="code2model" class="code2model">
+kp_pll_AXI
 </a>
 
 </b>
@@ -529,6 +538,39 @@ IOInterfaceMapping
 </td>
 <td align="right" valign="top" style="border-style: none">
 x"114"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:867')" name="code2model" class="code2model">
+ki_pll_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"11C"
 </td>
 
 </tr>
@@ -706,6 +748,120 @@ IOInterface
 </td>
 <td align="right" valign="top" style="border-style: none">
 External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:697')" name="code2model" class="code2model">
+position_mech_SI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:698')" name="code2model" class="code2model">
+position_mech_SI_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"120"
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:845')" name="code2model" class="code2model">
+speed_mech_SI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+External Port
+</td>
+
+</tr>
+
+</table>
+<br /><br /><b>
+Block Parameters for:<a href="matlab:coder.internal.code2model('uz_ssi_interface_2023a:846')" name="code2model" class="code2model">
+speed_mech_SI_AXI
+</a>
+
+</b>
+<b>
+<i>
+( Current Architecture default )
+</i>
+
+</b>
+<br /><br /><table width="100%" border="1">
+<tr style="background-color: #eeeeff">
+<td align="left" valign="top" style="border-style: none">
+IOInterface
+</td>
+<td align="right" valign="top" style="border-style: none">
+AXI4-Lite
+</td>
+
+</tr>
+<tr style="background-color: #ffffff">
+<td align="left" valign="top" style="border-style: none">
+IOInterfaceMapping
+</td>
+<td align="right" valign="top" style="border-style: none">
+x"124"
 </td>
 
 </tr>

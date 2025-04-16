@@ -7,7 +7,7 @@ hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
 f_clock = 100e6;        % IP core clock freq in Hz
 t_clock = 1/f_clock;    % IP core sample time in s
 
-f_ADC =50e3;            % ADC interrupt freq in Hz
+f_ADC =10e3;            % ADC interrupt freq in Hz
 t_ADC = 1/f_ADC;        % ADC sample time in s
 
 f_plant = 1e6;          % Plant simulation freq in Hz
@@ -25,3 +25,14 @@ ssi_encoder_bit_width = 19;
 % has to be delayed for 1µs in order to provide the position data for clock
 % rates up to 2.5 MHz.
 delay_first_clk_on_off = true;
+
+
+%% PLL
+% PLL.f_S = 10000;        % Hz % sampling frequency
+% PLL.T_S = 1/PLL.f_S;    % s % sampling time
+% 
+% PLL.fn  =  50;           % Hz closed-loop nominal frequency of PLL
+% PLL.d   =  1;            %  closed-loop damping factor of PLL
+% PLL.Ki_Ta = (2*pi*PLL.fn)^2;    % 1/s^2 integral gain of PLL controller
+% PLL.Kp = 2*PLL.d*2*pi*PLL.fn;   % 1/s proportional gain of PLL controller
+

@@ -56,14 +56,14 @@ struct uz_matrix_t A_input = {0};
 struct uz_matrix_t B1_input = {0};
 struct uz_matrix_t B2_input = {0};
 struct uz_matrix_t C_output = {0};
-float A_matrix[20] = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f, 19.0f, 20.0f};
-float B1_matrix[1280] = {
+volatile float A_matrix[20] EMAC_ALIGN = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f, 17.0f, 18.0f, 19.0f, 20.0f};
+volatile float B1_matrix[1280] EMAC_ALIGN = {
 #include "Matrix_B1_input.csv"
 };
-float B2_matrix[256] = {
+volatile float B2_matrix[256] EMAC_ALIGN = {
 #include "Matrix_B2_input.csv"
 };
-float C_matrix[4] EMAC_ALIGN = {0};
+volatile float C_matrix[4] EMAC_ALIGN = {0};
 struct uz_Matrix_Multi_config config = {
 		.base_address = XPAR_UZ_USER_MATRIXMULTIPLICATION_0_S_AXI_CONTROL_BASEADDR,
 		.A_columns = 20U,

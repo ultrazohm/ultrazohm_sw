@@ -44,6 +44,41 @@
 	ENUMITEM( 2,	UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX,							"14 TX / 4 RX")					/* ... and *no* \ after the end of the last line! */
 #include "../uz_enum/uz_numberedenum.h"
 
+// Bit masks for I²C GPIO of Digital Voltage 3V3/5V
+#define UZP_CARDI2C_DIGVOLT335_GPIO_BASEADDR	(0x20U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_REGIN	(0U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_REGOUT	(1U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_REGCONF	(3U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_IN_VOUT	(0x01U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR1	(0x02U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR2	(0x04U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR3	(0x08U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR4	(0x10U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2R	(0x20U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2G	(0x40U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2B	(0x80U)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_INBITS	(UZP_CARDI2C_DIGVOLT335_GPIO_IN_VOUT|UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR1|UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR2|UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR3|UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR4)
+#define UZP_CARDI2C_DIGVOLT335_GPIO_OUTBITS	(UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2R|UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2G|UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2B)
+
+void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin) {
+	if ( (slot < 3) || (slot > 7) ) {
+		uz_printf("Invalid D slot (%i)\r\n", slot);
+		return;
+	}
+	const uint8_t dslot = slot - 2;
+
+	uz_printf("/=================\\\r\n");
+	uz_printf("Hardware configuration of 3V3/5V card in slot D%i:\r\n", dslot);
+	uz_printf(" Voltage level of outputs: %s\r\n", (data_regin & UZP_CARDI2C_DIGVOLT335_GPIO_IN_VOUT) ? "3.3V" : "5V");
+	uz_printf(" Group 1 (DIG_IO_00 - 07): %s\r\n", (data_regin & UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR1) ? "Output" : "Input");
+	uz_printf(" Group 2 (DIG_IO_08 - 15): %s\r\n", (data_regin & UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR2) ? "Output" : "Input");
+	uz_printf(" Group 3 (DIG_IO_16 - 23): %s\r\n", (data_regin & UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR3) ? "Output" : "Input");
+	uz_printf(" Group 4 (DIG_IO_24 - 29): %s\r\n", (data_regin & UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR4) ? "Output" : "Input");
+	uz_printf("/=================\\\r\n");
+
+	return;
+}
+
 
 //// EEPROM on MZ-hosting PCB (MZohm)
 #define UZ_PLATFORM_I2CADDR_MZHOSTEEPROM_BASE	(UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE)

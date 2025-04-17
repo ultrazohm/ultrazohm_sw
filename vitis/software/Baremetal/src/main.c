@@ -47,7 +47,7 @@ enum init_chain
 };
 enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshake;
 #include "APU_RPU_shared.h"
-#include "xil_cache.h"
+
 
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
@@ -107,7 +107,7 @@ int main(void)
             break;
         case init_gpios:
             Initialize_AXI_GPIO();
-            Xil_DCacheDisable();
+            //Xil_DCacheDisable();
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
             uz_frontplane_button_and_led_init(apu_version_final); 
             ultrazohm_state_machine_init(apu_version_final);
@@ -129,7 +129,7 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            Global_Data.objects.matrix_instance = uz_Matrix_Multi_init(config, &A_input, &B1_input, &B2_input, &C_output);
+            Global_Data.objects.matrix_instance = uz_Matrix_Multi_init(config, A_matrix, B1_matrix, B2_matrix, C_matrix);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();

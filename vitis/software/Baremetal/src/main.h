@@ -51,7 +51,7 @@
 #include "uz/uz_MioGpio_mediator/uz_MioGpioMapping.h"
 
 #include "uz/uz_SystemTime/uz_SystemTime.h"
-
+#include "xil_cache.h"
 #include "include/pwm_init.h"
 #include "IP_Cores/uz_matrix_multiplication/uz_matrix_multiplication.h"
 #include "sw/nn_20_input_1_64/nn_20_input_1_64.h"

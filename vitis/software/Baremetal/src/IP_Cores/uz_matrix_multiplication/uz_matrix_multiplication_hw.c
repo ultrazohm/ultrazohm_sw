@@ -25,35 +25,35 @@ void uz_matrix_multiplication_hw_set_B2_columns(uint32_t base_address, uint32_t 
 	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_COLUMNS_DATA, B2_column);
 }
 
-void uz_matrix_multiplication_hw_set_A_matrix(uint32_t base_address, float * A) {
+void uz_matrix_multiplication_hw_set_A_matrix(uint32_t base_address, volatile float * A) {
 	uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(A);
-	uint32_t* pointer = (uint32_t*)A;
-	uint32_t address = (uint32_t)pointer;
+	volatile uint32_t* pointer = (uint32_t*)A;
+	volatile uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_A_INPUT_DATA, address);
 }
 
-void uz_matrix_multiplication_hw_set_B1_matrix(uint32_t base_address, float * B1) {
+void uz_matrix_multiplication_hw_set_B1_matrix(uint32_t base_address, volatile float * B1) {
 	uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(B1);
-	uint32_t* pointer = (uint32_t*)B1;
-	uint32_t address = (uint32_t)pointer;
+	volatile uint32_t* pointer = (uint32_t*)B1;
+	volatile uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_INPUT_DATA, address);
 }
 
-void uz_matrix_multiplication_hw_set_B2_matrix(uint32_t base_address, float * B2) {
+void uz_matrix_multiplication_hw_set_B2_matrix(uint32_t base_address, volatile float * B2) {
 	uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(B2);
-	uint32_t* pointer = (uint32_t*)B2;
-	uint32_t address = (uint32_t)pointer;
+	volatile uint32_t* pointer = (uint32_t*)B2;
+	volatile uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_INPUT_DATA, address);
 }
 
-void uz_matrix_multiplication_hw_set_C_out_matrix(uint32_t base_address, float *C_out) {
+void uz_matrix_multiplication_hw_set_C_out_matrix(uint32_t base_address, volatile float *C_out) {
 	uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(C_out);
-	uint32_t* pointer = (uint32_t*)C_out;
-	uint32_t address = (uint32_t)pointer;
+	volatile uint32_t* pointer = (uint32_t*)C_out;
+	volatile uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_C_OUTPUT_DATA, address);
 }
 

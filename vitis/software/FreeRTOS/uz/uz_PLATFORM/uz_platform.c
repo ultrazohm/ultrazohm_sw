@@ -269,14 +269,14 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 		uzp.data.hw_group = UZP_HWGROUP_UZOHM3;
 		uzp.data.hw_model = 1U;
 		uzp.data.hw_revision = (uint8_t)default_revision;
-		uzp.data.serialdata.hw_externalserial.extserial = UZ_PLATFORM_EXTSERIAL_MAX;
+		uzp.data.serialdata.externalhw_serialonly.sn = UZ_PLATFORM_EXTSERIAL_MAX;
 	}
 
 	if (
 			( uzp.data.hw_group == UZ_PLATFORM_HWGROUP_MAX ) &&
 			( uzp.data.hw_model == UZ_PLATFORM_HWMODEL_MAX ) &&
 			( uzp.data.hw_revision == UZ_PLATFORM_HWREVISION_MAX ) &&
-			( uzp.data.serialdata.hw_externalserial.extserial == UZ_PLATFORM_EXTSERIAL_MAX )
+			( uzp.data.serialdata.externalhw_serialonly.sn == UZ_PLATFORM_EXTSERIAL_MAX )
 	   ) {
 		uz_printf("APU: Platform EEPROM is unconfigured!\r\n");
 		return(UZ_FAILURE);
@@ -571,7 +571,7 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 	if ( (UZ_SUCCESS == status) && (UZP_HWGROUP_ADCARD == cardeeprom_data.hw_group) ) {
 		*model_p = cardeeprom_data.hw_model;
 		*revision_p = cardeeprom_data.hw_revision;
-		*serial_p = cardeeprom_data.serialdata.hw_batchandserial.serial;
+		*serial_p = cardeeprom_data.serialdata.uzhw_variantandserial.sn;
 	}
 
 	return(status);

@@ -46,6 +46,9 @@ The pinout of the RJ45 ethernet plug is **NOT** intuitive, as shown in :numref:`
 
    Note that :numref:`rj45MAXpinout` shows an ethernet cable according to **T568B**!
 
+.. warning ::
+   It is essential to use Ethernet cables with shielding and metallic RJ45 plugs (e.g. CAT7 cables) so that the GND of the MAX11 card (connected from the PCB GND to the RJ45 connector housing) and the GND of the measuring signal source are connected. Without this GND connection, there will be floating signals, i.e. common mode interference on the measurement signal.
+
 
 We provide a breakout board for the RJ45 cable that matches the ADC card. **P** is the positive analog input, **N** the negative.
 

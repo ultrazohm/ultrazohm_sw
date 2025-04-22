@@ -124,6 +124,7 @@ typedef struct _actualValues_ {
 	float average_temp_left;
 	struct uz_3ph_dq_t v_dq_meas_right_filter_comp;
 	struct uz_3ph_abc_t v_abc_right_filter_comp;
+	struct uz_3ph_abc_t v_abc_right_filter_comp2;
 	float magnitude;
 	float phi;
 } actualValues;

@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-%file_name = 'rc_meas_LW3_500-2500rpm.csv';
+%file_name = 'Log_2025-04-16_17-00-55.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);

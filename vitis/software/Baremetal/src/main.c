@@ -81,11 +81,11 @@ int main(void)
     const struct uz_parameterID_rc_config_t rc_meas_config = {
       	.abs_id_max_Amps = 4.0f,
       	.abs_iq_max_Amps = 4.0f,
-    	.n_start_rpm = 2500.0f,
+    	.n_start_rpm = 500.0f,
     	.n_stop_rpm = 2500.0f,
     	.id_steps = 4U,
     	.iq_steps = 4U,
-    	.n_steps = 0U,
+    	.n_steps = 2U,
 		.check_temp=1
       };
 

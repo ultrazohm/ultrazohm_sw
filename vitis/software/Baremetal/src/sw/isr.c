@@ -237,6 +237,7 @@ void ISR_Control(void *data)
 
     switch(run_state) {
     	case rc_meas_right:
+    		filter_compensation();
         	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.mean_temp_inv_right);
         	Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
         	Global_Data.rasv.i_dq_ref_right.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
@@ -248,12 +249,14 @@ void ISR_Control(void *data)
         	break;
 
     	case rs_meas_right:
-    		Global_Data.rasv.rs_meas_output_right= uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance_right, Global_Data.av.v_d_right_meas, Global_Data.av.i_d_right);
+    		filter_compensation();
+    		Global_Data.rasv.rs_meas_output_right= uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance_right, Global_Data.av.v_dq_meas_right_filter_comp.d, Global_Data.av.i_d_right);
     		Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rs_meas_output_right.i_sample;
     		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
     		// control functions for DUT right
         	speed_control_left_motor();
         	current_control_right_motor();
+        	filter_compensation();
         	Global_Data.rasv.n_ref_left = -1.0f*Global_Data.rasv.rs_meas_output_right.n_sample;
         	break;
 
@@ -504,16 +507,17 @@ static void current_control_right_motor() {
 
 static void filter_compensation(){
 	// calculate Frequency response of the magnitude
-	Global_Data.av.magnitude = 1.0f / sqrt(1.0f + powf(((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f)),2.0f));
+	Global_Data.av.magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f)),2.0f));
 
 	Global_Data.av.v_abc_right_filter_comp.a = v_abc_right.a * Global_Data.av.magnitude;
 	Global_Data.av.v_abc_right_filter_comp.b = v_abc_right.b * Global_Data.av.magnitude;
 	Global_Data.av.v_abc_right_filter_comp.c = v_abc_right.c * Global_Data.av.magnitude;
 
-	Global_Data.av.phi = atanf((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f));
+	Global_Data.av.phi = - atanf((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f));
+	Global_Data.av.phi = - 1.0f * uz_signals_wrap(Global_Data.av.phi, 2.0f*UZ_PIf);
 
 	float theta_new =  Global_Data.av.theta_el_right - Global_Data.av.phi;
-	Global_Data.av.v_dq_meas_right_filter_comp =  uz_transformation_3ph_abc_to_dq(Global_Data.av.v_abc_right_filter_comp, theta_new);
-
+	Global_Data.av.v_dq_meas_right_filter_comp =  uz_transformation_3ph_abc_to_dq(Global_Data.av.v_abc_right_filter_comp, Global_Data.av.theta_el_right);
+	Global_Data.av.v_abc_right_filter_comp = uz_transformation_3ph_dq_to_abc(Global_Data.av.v_dq_meas_right_filter_comp, theta_new);
 };
 

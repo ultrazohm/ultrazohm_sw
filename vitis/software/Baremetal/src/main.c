@@ -51,6 +51,35 @@ struct uz_dq_setpoint_filter_config config = {
   .config_filter_d = config_filter,
   .config_filter_q = config_filter};
 
+struct uz_IIR_Filter_config reverse_filter_config = {
+    .selection = LowPass_first_order,
+    .cutoff_frequency_Hz = 4270.0f,
+    .sample_frequency_Hz = 40000.0f //ISR_SAMPLE_FREQ_HZ
+};
+
+
+struct uz_parameterid_rs_config_t config_rs_meas = {
+		.n_start = 200.0f,
+	    .n_end = 1400.0f,
+	    .n_steps = 6.0f,
+	    .i_start = -50.0f,
+	    .i_diff = 100.0f,
+	    .i_repeats = 5.0f, // W
+	    .i_steptime = 3.0f,
+	    .wait_time = 20.0f,
+	    .isr_steptime = (1.0f / ISR_SAMPLE_FREQ_HZ)
+};
+
+const struct uz_parameterID_rc_config_t rc_meas_config = {
+  	.abs_id_max_Amps = 150.0f,
+  	.abs_iq_max_Amps = 150.0f,
+	.n_start_rpm = 500.0f,
+	.n_stop_rpm = 500.0f,
+	.id_steps = 8U,
+	.iq_steps = 8U,
+	.n_steps = 0U
+  };
+
 //uz_dq_setpoint_filter* obj_1 = NULL;
 //uz_dq_setpoint_filter* obj_2 = NULL;
 
@@ -130,7 +159,9 @@ int main(void)
             struct uz_IIR_Filter_config config_torque_filter = {.selection = LowPass_first_order, .cutoff_frequency_Hz = 100.0f, .sample_frequency_Hz = ISR_SAMPLE_FREQ_HZ};
             Global_Data.objects.torque_meas_filter_LP = uz_signals_IIR_Filter_init(config_torque_filter);
             Global_Data.objects.dq_setpoint_filter = uz_uz_dq_setpoint_filter_init(config);
-            Global_Data.av.theta_offset = 0.22f; // alt: 0.245f
+            Global_Data.av.theta_offset = 0.2313f; // alt: 0.22f
+            Global_Data.objects.rs_meas_instance = uz_parameterid_rs_init(config_rs_meas);
+            Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -168,6 +199,9 @@ int main(void)
             Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
             uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
             uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);
+            Global_Data.objects.phase_a_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_b_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
+            Global_Data.objects.phase_c_lowpass = uz_signals_IIR_Filter_init(reverse_filter_config);
             initialization_chain = print_msg;
             break;
 	    case print_msg:

@@ -78,6 +78,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ua] 					= &data->av.U_U;
 	js_ch_observable[JSO_ub] 					= &data->av.U_V;
 	js_ch_observable[JSO_uc] 					= &data->av.U_W;
+	js_ch_observable[JSO_ua_raw] 					= &data->av.U_L1;
+	js_ch_observable[JSO_ub_raw] 					= &data->av.U_L2;
+	js_ch_observable[JSO_uc_raw] 					= &data->av.U_L3;
 	js_ch_observable[JSO_iq] 					= &data->av.I_q;
 	js_ch_observable[JSO_id] 					= &data->av.I_d;
 	js_ch_observable[JSO_theta_el] 				= &data->av.theta_elec;
@@ -109,6 +112,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_theta_elec_pred] 		= &data->av.theta_elec_pred;
 	js_ch_observable[JSO_theta_el_offset] 		= &data->av.theta_offset;
 	js_ch_observable[JSO_FLOAT_EnDat_responselength_bits] 		= &data->av.EnDat_value_response_length;
+	js_ch_observable[JSO_op_rc_meas]			= &data->rasv.operatingpoints_rc_meas;
+	js_ch_observable[JSO_data_valid_rc_meas]	= &data->rasv.rc_meas_output.data_valid;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
@@ -119,6 +124,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed_filtered);
+	js_slowDataArray[JSSD_FLOAT_speed_ref] 		        = &(data->rasv.n_ref);
 	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
 	js_slowDataArray[JSSD_FLOAT_temp_mosfet] 			= &(data->av.temperature_mosfet);
 	js_slowDataArray[JSSD_FLOAT_temp_motor] 		    = &(data->av.temperature_motor);

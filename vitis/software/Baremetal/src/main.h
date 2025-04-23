@@ -36,7 +36,8 @@
 #include "include/uz_temperature_card_init.h"
 #include "uz/uz_controller_setpoint_filter/uz_controller_setpoint_filter.h"
 #include "uz/uz_setpoint/uz_setpoint.h"
-
+#include "uz/uz_parameterid_rs/uz_parameterid_rs.h"
+#include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 
 // UltraZohm includes
 #include "globalData.h"

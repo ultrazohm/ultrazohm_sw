@@ -61,6 +61,11 @@ enum JS_OberservableData {
 	JSO_theta_elec_pred,
 	JSO_FLOAT_EnDat_responselength_bits,
 	JSO_theta_el_offset,
+	JSO_data_valid_rc_meas,
+	JSO_op_rc_meas,
+	JSO_ua_raw,
+	JSO_ub_raw,
+	JSO_uc_raw,
 	JSO_ENDMARKER
 };
 
@@ -80,6 +85,7 @@ enum JS_SlowData {
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_speed,
+	JSSD_FLOAT_speed_ref,
 	JSSD_FLOAT_torque,
 	JSSD_FLOAT_encoderOffset,
 	JSSD_FLOAT_u_d_ref,
@@ -199,7 +205,7 @@ enum gui_button_mapping {
 
 	RCV_FLD_ZEROVALUE=0,
 	Speed,
-	Torque,
+	Speed-Ref,
 	Iq,
 	Id,
 	Temp SKAI,
@@ -226,7 +232,7 @@ enum gui_button_mapping {
 
 	RCV_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
+	RPM,
 	A,
 	A,
 	degC,
@@ -269,7 +275,7 @@ enum gui_button_mapping {
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
 	JSSD_FLOAT_speed,
-	JSSD_FLOAT_torque,
+	JSSD_FLOAT_speed_ref,
 	JSSD_FLOAT_i_q,
 	JSSD_FLOAT_i_d,
 	JSSD_FLOAT_temp_mosfet,

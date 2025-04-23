@@ -32,6 +32,8 @@
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
+#include "../uz/uz_parameterid_rs/uz_parameterid_rs.h"
+#include "../uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -61,7 +63,7 @@ extern DS_Data Global_Data;
 #define MAX_CURRENT_ASSERTION 		350.0f
 #define MAX_SPEED_ASSERTION			2300.0f
 #define MAX_TEMP_ASSERTION			80.0f
-#define MAX_MOTOR_TEMP_ASSERTION	100.0f
+#define MAX_MOTOR_TEMP_ASSERTION	110.0f
 
 bool SKAI_nERROUT = 0U;			// Start in error-mode
 bool flg_reset_SKAI = 0U;
@@ -86,6 +88,7 @@ float temp_coef_c = 0;
 
 bool flg_compensate_age = 1U;
 bool flg_pred_theta_el = 1U;
+bool flg_volt_reverse_filter = 1U;
 
 float theta_elec_pred = 0.0f;
 float torque_meas_raw = 0.0f;
@@ -94,7 +97,9 @@ enum control_state_list
 {
     manual = 0,
     FOC_i_dq_setpoint,
-	manual_dq_voltage
+	manual_dq_voltage,
+	rs_measurement,
+	rc_fingerprint
 };
 enum control_state_list control_mode = FOC_i_dq_setpoint;
 
@@ -118,6 +123,10 @@ struct uz_DutyCycle_t output_dutycycle = {
 		.DutyCycle_B = 0.0f,
 		.DutyCycle_C = 0.0f,
 };
+
+struct uz_parameterid_output actual_output;
+struct uz_parameterID_rc_ref_val_t ref_rc_meas;
+
 
 
 //==============================================================================================================================================================
@@ -159,9 +168,29 @@ void ISR_Control(void *data)
     Global_Data.av.I_W = (Global_Data.aa.A1.me.ADC_A2 - 0.091379816f + 0.067266) * PHASE_CURRENT_CONV_W;
 
     Global_Data.av.U_ZK = (Global_Data.aa.A1.me.ADC_A1 * DC_LINK_VOLT_CONV) + DC_LINK_VOLT_OFFS;
-    Global_Data.av.U_U = (Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_U) + PHASE_VOLT_OFFS_U;
-    Global_Data.av.U_V = (Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_V) + PHASE_VOLT_OFFS_V;
-    Global_Data.av.U_W = (Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_W) + PHASE_VOLT_OFFS_W;
+    Global_Data.av.U_L1 = (Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_U) + PHASE_VOLT_OFFS_U;
+    Global_Data.av.U_L2 = (Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_V) + PHASE_VOLT_OFFS_V;
+    Global_Data.av.U_L3 = (Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_W) + PHASE_VOLT_OFFS_W;
+
+    float phi = 0.0f;
+    if (flg_volt_reverse_filter == 1U){
+    	//Global_Data.av.U_U = uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.phase_a_lowpass, Global_Data.av.U_L1);
+    	//Global_Data.av.U_V = uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.phase_b_lowpass, Global_Data.av.U_L2);
+    	//Global_Data.av.U_W = uz_signals_IIR_Filter_reverse_sample(Global_Data.objects.phase_c_lowpass, Global_Data.av.U_L3);
+
+    	float magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_el) / (2.0f * UZ_PIf * 4270.0f)),2.0f));
+
+    	Global_Data.av.U_U = Global_Data.av.U_L1 * magnitude;
+    	Global_Data.av.U_V = Global_Data.av.U_L2 * magnitude;
+    	Global_Data.av.U_W = Global_Data.av.U_L3 * magnitude;
+
+    	phi = - atanf((Global_Data.av.omega_el) / (2.0f * UZ_PIf * 4270.0f));
+		phi = - 1.0f * uz_signals_wrap(phi, 2.0f*UZ_PIf);
+    } else{
+    	Global_Data.av.U_U = Global_Data.av.U_L1;
+    	Global_Data.av.U_V = Global_Data.av.U_L2;
+    	Global_Data.av.U_W = Global_Data.av.U_L3;
+    }
 
     //torque_meas_raw = Global_Data.aa.A2.me.ADC_A1 * 20.0f;
     //Global_Data.av.torque_meas = uz_signals_IIR_Filter_sample(Global_Data.objects.torque_meas_filter_LP, torque_meas_raw);
@@ -178,8 +207,8 @@ void ISR_Control(void *data)
     Global_Data.av.temperature_motor = -0.000324f * faulty_motortemp*faulty_motortemp + 0.490982f * faulty_motortemp +24.728f;
 
     // Assertion check
-    // || (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION)
-    if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION)  ) {
+    //
+    if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION) || (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION)  ) {
     	// Assertion to Stop Machine if max. Current or max. Speed
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
@@ -203,7 +232,7 @@ void ISR_Control(void *data)
     measurement_voltage.c = Global_Data.av.U_W;
 
     dq_measurement_current = uz_transformation_3ph_abc_to_dq(measurement_current, Global_Data.av.theta_elec);
-    dq_measurement_voltage = uz_transformation_3ph_abc_to_dq(measurement_voltage, Global_Data.av.theta_elec);
+    dq_measurement_voltage = uz_transformation_3ph_abc_to_dq(measurement_voltage, Global_Data.av.theta_elec - phi);
 
     Global_Data.av.I_d = dq_measurement_current.d;
     Global_Data.av.I_q = dq_measurement_current.q;
@@ -299,6 +328,45 @@ void ISR_Control(void *data)
 					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
 					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
 
+					break;
+				case rs_measurement:
+					actual_output = uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance, dq_measurement_voltage.d, dq_measurement_current.d);
+					dq_reference_current.d = actual_output.i_sample;
+					dq_reference_current.q = 0.0f;
+					Global_Data.rasv.Id_ref = dq_reference_current.d;
+					Global_Data.rasv.Iq_ref = dq_reference_current.q;
+					Global_Data.rasv.n_ref = actual_output.n_sample;
+
+					// Basic FOC current control
+					uz_3ph_dq_t dq_current_filt = uz_signals_IIR_Filter_dq_setpoint(Global_Data.objects.dq_setpoint_filter, dq_reference_current);
+					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, dq_current_filt, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
+					Global_Data.rasv.Ud_ref = dq_reference_voltage.d;
+					Global_Data.rasv.Uq_ref = dq_reference_voltage.q;
+
+					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
+					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
+
+					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
+					break;
+				case rc_fingerprint:
+					Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance);
+					dq_reference_current.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
+					dq_reference_current.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
+					Global_Data.rasv.Id_ref = dq_reference_current.d;
+					Global_Data.rasv.Iq_ref = dq_reference_current.q;
+					Global_Data.rasv.n_ref = Global_Data.rasv.rc_meas_output.n_ref_rpm;
+					Global_Data.rasv.operatingpoints_rc_meas = Global_Data.rasv.rc_meas_output.operating_points_all;
+
+					// Basic FOC current control
+					uz_3ph_dq_t dq_current_filt_rc = uz_signals_IIR_Filter_dq_setpoint(Global_Data.objects.dq_setpoint_filter, dq_reference_current);
+					dq_reference_voltage = uz_CurrentControl_sample(Global_Data.objects.FOC_instance, dq_current_filt_rc, dq_measurement_current, Global_Data.av.U_ZK, Global_Data.av.omega_el);
+					Global_Data.rasv.Ud_ref = dq_reference_voltage.d;
+					Global_Data.rasv.Uq_ref = dq_reference_voltage.q;
+
+					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
+					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
+
+					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
 					break;
 				}
     		} else{

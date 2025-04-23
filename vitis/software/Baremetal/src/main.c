@@ -125,10 +125,10 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
-#ifdef NN_20_INPUT_1_64==1
+#if NN_20_INPUT_1_64==1
             nn_20_input_1_64_init();
 #endif
-#ifdef NN_20_INPUT_3_64==1
+#if NN_20_INPUT_3_64==1
             nn_20_input_3_64_init();
 #endif
             JavaScope_initialize(&Global_Data);

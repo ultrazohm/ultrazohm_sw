@@ -11,6 +11,8 @@ void uz_matrix_multiplication_hw_set_B2_columns(uint32_t base_address, uint32_t 
 void uz_matrix_multiplication_hw_set_A_matrix(uint32_t base_address, volatile float * A);
 void uz_matrix_multiplication_hw_set_B1_matrix(uint32_t base_address, volatile float * B1);
 void uz_matrix_multiplication_hw_set_B2_matrix(uint32_t base_address, volatile float * B2);
+void uz_matrix_multiplication_hw_set_B3_matrix(uint32_t base_address, volatile float * B3);
+void uz_matrix_multiplication_hw_set_B4_matrix(uint32_t base_address, volatile float * B4);
 void uz_matrix_multiplication_hw_set_C_out_matrix(uint32_t base_address, volatile float *C_out);
 void uz_matrix_multiplication_hw_set_start(uint32_t base_address, bool flag);
 bool uz_matrix_multiplication_hw_get_is_done_output(uint32_t base_address);

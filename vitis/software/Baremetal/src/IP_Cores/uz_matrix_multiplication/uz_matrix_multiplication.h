@@ -21,6 +21,14 @@ struct uz_Matrix_Multi_config{
 	 uint32_t B2_rows;
 	 uint32_t B2_columns;
 	 volatile float *B2_data;
+	 uint32_t B3_length_of_data;
+	 uint32_t B3_rows;
+	 uint32_t B3_columns;
+	 volatile float *B3_data;
+	 uint32_t B4_length_of_data;
+	 uint32_t B4_rows;
+	 uint32_t B4_columns;
+	 volatile float *B4_data;
 	 uint32_t C_length_of_data;
 	 uint32_t C_rows;
 	 uint32_t C_columns;
@@ -28,7 +36,7 @@ struct uz_Matrix_Multi_config{
 };
 
 
-uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, volatile float * A,volatile float * B1,volatile float * B2,volatile float * C);
+uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, volatile float * A,volatile float * B1,volatile float * B2,volatile float * B3,volatile float * B4,volatile float * C);
 void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self, bool flag);
 bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self);
 bool uz_Matrix_Multi_get_idle_flag(uz_Matrix_Multi_t* self);

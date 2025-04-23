@@ -48,6 +48,20 @@ void uz_matrix_multiplication_hw_set_B2_matrix(uint32_t base_address, volatile f
 	volatile uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_INPUT_DATA, address);
 }
+void uz_matrix_multiplication_hw_set_B3_matrix(uint32_t base_address, volatile float * B3) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(B3);
+	volatile uint32_t* pointer = (uint32_t*)B3;
+	volatile uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_B3_INPUT_DATA, address);
+}
+void uz_matrix_multiplication_hw_set_B4_matrix(uint32_t base_address, volatile float * B4) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_assert_not_NULL(B4);
+	volatile uint32_t* pointer = (uint32_t*)B4;
+	volatile uint32_t address = (uint32_t)pointer;
+	uz_axi_write_uint32(base_address + XMATRIXMULTIPLICATION_CONTROL_ADDR_B4_INPUT_DATA, address);
+}
 
 void uz_matrix_multiplication_hw_set_C_out_matrix(uint32_t base_address, volatile float *C_out) {
 	uz_assert_not_zero_uint32(base_address);

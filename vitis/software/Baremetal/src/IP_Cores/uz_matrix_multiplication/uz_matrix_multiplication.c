@@ -27,7 +27,7 @@ static uz_Matrix_Multi_t*uz_Matrix_Multi_allocation(void){
     return (self);
 }
 
-uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, volatile float * A,volatile float * B1,volatile float * B2,volatile float * C){
+uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, volatile float * A,volatile float * B1,volatile float * B2,volatile float * B3,volatile float * B4,volatile float * C){
 	uz_assert_not_zero_uint32(config.base_address);
 	uz_Matrix_Multi_t* self = uz_Matrix_Multi_allocation();
 	//Current max size allowed for IP-Core
@@ -35,8 +35,12 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, vo
 	uz_assert(config.A_rows == 1U);
 	uz_assert(config.B1_columns <= 64U);
 	uz_assert(config.B1_rows <= 20U);
-	uz_assert(config.B2_columns <= 4U);
+	uz_assert(config.B2_columns <= 64U);
 	uz_assert(config.B2_rows <= 64U);
+	uz_assert(config.B3_columns <= 64U);
+	uz_assert(config.B3_rows <= 64U);
+	uz_assert(config.B4_columns <= 4U);
+	uz_assert(config.B4_rows <= 64U);
 	uz_assert(config.C_columns == 4U);
 	uz_assert(config.C_rows <= 1U);
 	self->config = config;
@@ -47,6 +51,8 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, vo
 	uz_matrix_multiplication_hw_set_B1_columns(self->config.base_address, self->config.B1_columns);//self->B1_matrix->columns);
 	uz_matrix_multiplication_hw_set_B2_matrix(self->config.base_address, self->config.B2_data);
 	uz_matrix_multiplication_hw_set_B2_columns(self->config.base_address, self->config.B2_columns);//self->B2_matrix->columns);
+	uz_matrix_multiplication_hw_set_B3_matrix(self->config.base_address, self->config.B3_data);
+	uz_matrix_multiplication_hw_set_B4_matrix(self->config.base_address, self->config.B4_data);
 	uz_matrix_multiplication_hw_set_C_out_matrix(self->config.base_address, self->config.C_data);
 	//Read the B-matrices once during init
 	self->copy_mats_flag = true;

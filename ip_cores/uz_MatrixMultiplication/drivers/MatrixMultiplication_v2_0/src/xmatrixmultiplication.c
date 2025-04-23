@@ -131,6 +131,44 @@ u64 XMatrixmultiplication_Get_B2_input(XMatrixmultiplication *InstancePtr) {
     return Data;
 }
 
+void XMatrixmultiplication_Set_B3_input(XMatrixmultiplication *InstancePtr, u64 Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B3_INPUT_DATA, (u32)(Data));
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B3_INPUT_DATA + 4, (u32)(Data >> 32));
+}
+
+u64 XMatrixmultiplication_Get_B3_input(XMatrixmultiplication *InstancePtr) {
+    u64 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B3_INPUT_DATA);
+    Data += (u64)XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B3_INPUT_DATA + 4) << 32;
+    return Data;
+}
+
+void XMatrixmultiplication_Set_B4_input(XMatrixmultiplication *InstancePtr, u64 Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B4_INPUT_DATA, (u32)(Data));
+    XMatrixmultiplication_WriteReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B4_INPUT_DATA + 4, (u32)(Data >> 32));
+}
+
+u64 XMatrixmultiplication_Get_B4_input(XMatrixmultiplication *InstancePtr) {
+    u64 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B4_INPUT_DATA);
+    Data += (u64)XMatrixmultiplication_ReadReg(InstancePtr->Control_BaseAddress, XMATRIXMULTIPLICATION_CONTROL_ADDR_B4_INPUT_DATA + 4) << 32;
+    return Data;
+}
+
 void XMatrixmultiplication_Set_C_output(XMatrixmultiplication *InstancePtr, u64 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);

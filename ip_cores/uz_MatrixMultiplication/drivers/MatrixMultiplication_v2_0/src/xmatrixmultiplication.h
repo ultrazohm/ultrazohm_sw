@@ -94,6 +94,10 @@ void XMatrixmultiplication_Set_B1_input(XMatrixmultiplication *InstancePtr, u64 
 u64 XMatrixmultiplication_Get_B1_input(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_B2_input(XMatrixmultiplication *InstancePtr, u64 Data);
 u64 XMatrixmultiplication_Get_B2_input(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_B3_input(XMatrixmultiplication *InstancePtr, u64 Data);
+u64 XMatrixmultiplication_Get_B3_input(XMatrixmultiplication *InstancePtr);
+void XMatrixmultiplication_Set_B4_input(XMatrixmultiplication *InstancePtr, u64 Data);
+u64 XMatrixmultiplication_Get_B4_input(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_C_output(XMatrixmultiplication *InstancePtr, u64 Data);
 u64 XMatrixmultiplication_Get_C_output(XMatrixmultiplication *InstancePtr);
 void XMatrixmultiplication_Set_copy_mats_flag(XMatrixmultiplication *InstancePtr, u32 Data);

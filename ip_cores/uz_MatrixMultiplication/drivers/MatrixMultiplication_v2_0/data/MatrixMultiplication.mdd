@@ -7,11 +7,11 @@ OPTION psf_version = 2.1;
 
 BEGIN driver MatrixMultiplication
 
- OPTION supported_peripherals = (MatrixMultiplication_v1_0 );
+ OPTION supported_peripherals = (MatrixMultiplication_v2_0 );
  OPTION driver_state = ACTIVE;
  OPTION copyfiles = all;
  OPTION name = MatrixMultiplication;
- OPTION version = 1.0;
+ OPTION version = 2.0;
 
 END driver
 

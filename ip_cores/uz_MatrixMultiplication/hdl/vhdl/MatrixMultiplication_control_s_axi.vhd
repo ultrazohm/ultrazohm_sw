@@ -9,7 +9,7 @@ use IEEE.NUMERIC_STD.all;
 
 entity MatrixMultiplication_control_s_axi is
 generic (
-    C_S_AXI_ADDR_WIDTH    : INTEGER := 7;
+    C_S_AXI_ADDR_WIDTH    : INTEGER := 8;
     C_S_AXI_DATA_WIDTH    : INTEGER := 32);
 port (
     ACLK                  :in   STD_LOGIC;
@@ -36,6 +36,8 @@ port (
     A_input               :out  STD_LOGIC_VECTOR(63 downto 0);
     B1_input              :out  STD_LOGIC_VECTOR(63 downto 0);
     B2_input              :out  STD_LOGIC_VECTOR(63 downto 0);
+    B3_input              :out  STD_LOGIC_VECTOR(63 downto 0);
+    B4_input              :out  STD_LOGIC_VECTOR(63 downto 0);
     C_output              :out  STD_LOGIC_VECTOR(63 downto 0);
     copy_mats_flag        :out  STD_LOGIC_VECTOR(0 downto 0);
     A_rows                :out  STD_LOGIC_VECTOR(31 downto 0);
@@ -86,35 +88,45 @@ end entity MatrixMultiplication_control_s_axi;
 -- 0x2c : Data signal of B2_input
 --        bit 31~0 - B2_input[63:32] (Read/Write)
 -- 0x30 : reserved
--- 0x34 : Data signal of C_output
---        bit 31~0 - C_output[31:0] (Read/Write)
--- 0x38 : Data signal of C_output
---        bit 31~0 - C_output[63:32] (Read/Write)
+-- 0x34 : Data signal of B3_input
+--        bit 31~0 - B3_input[31:0] (Read/Write)
+-- 0x38 : Data signal of B3_input
+--        bit 31~0 - B3_input[63:32] (Read/Write)
 -- 0x3c : reserved
--- 0x40 : Data signal of copy_mats_flag
+-- 0x40 : Data signal of B4_input
+--        bit 31~0 - B4_input[31:0] (Read/Write)
+-- 0x44 : Data signal of B4_input
+--        bit 31~0 - B4_input[63:32] (Read/Write)
+-- 0x48 : reserved
+-- 0x4c : Data signal of C_output
+--        bit 31~0 - C_output[31:0] (Read/Write)
+-- 0x50 : Data signal of C_output
+--        bit 31~0 - C_output[63:32] (Read/Write)
+-- 0x54 : reserved
+-- 0x58 : Data signal of copy_mats_flag
 --        bit 0  - copy_mats_flag[0] (Read/Write)
 --        others - reserved
--- 0x44 : reserved
--- 0x48 : Data signal of A_rows
---        bit 31~0 - A_rows[31:0] (Read/Write)
--- 0x4c : reserved
--- 0x50 : Data signal of B1_rows
---        bit 31~0 - B1_rows[31:0] (Read/Write)
--- 0x54 : reserved
--- 0x58 : Data signal of B1_columns
---        bit 31~0 - B1_columns[31:0] (Read/Write)
 -- 0x5c : reserved
--- 0x60 : Data signal of B2_columns
---        bit 31~0 - B2_columns[31:0] (Read/Write)
+-- 0x60 : Data signal of A_rows
+--        bit 31~0 - A_rows[31:0] (Read/Write)
 -- 0x64 : reserved
--- 0x68 : Data signal of copy_flag_out
+-- 0x68 : Data signal of B1_rows
+--        bit 31~0 - B1_rows[31:0] (Read/Write)
+-- 0x6c : reserved
+-- 0x70 : Data signal of B1_columns
+--        bit 31~0 - B1_columns[31:0] (Read/Write)
+-- 0x74 : reserved
+-- 0x78 : Data signal of B2_columns
+--        bit 31~0 - B2_columns[31:0] (Read/Write)
+-- 0x7c : reserved
+-- 0x80 : Data signal of copy_flag_out
 --        bit 0  - copy_flag_out[0] (Read)
 --        others - reserved
--- 0x6c : reserved
--- 0x78 : Data signal of matrices_updated_out
+-- 0x84 : reserved
+-- 0x90 : Data signal of matrices_updated_out
 --        bit 0  - matrices_updated_out[0] (Read)
 --        others - reserved
--- 0x7c : reserved
+-- 0x94 : reserved
 -- (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 architecture behave of MatrixMultiplication_control_s_axi is
@@ -135,24 +147,30 @@ architecture behave of MatrixMultiplication_control_s_axi is
     constant ADDR_B2_INPUT_DATA_0             : INTEGER := 16#28#;
     constant ADDR_B2_INPUT_DATA_1             : INTEGER := 16#2c#;
     constant ADDR_B2_INPUT_CTRL               : INTEGER := 16#30#;
-    constant ADDR_C_OUTPUT_DATA_0             : INTEGER := 16#34#;
-    constant ADDR_C_OUTPUT_DATA_1             : INTEGER := 16#38#;
-    constant ADDR_C_OUTPUT_CTRL               : INTEGER := 16#3c#;
-    constant ADDR_COPY_MATS_FLAG_DATA_0       : INTEGER := 16#40#;
-    constant ADDR_COPY_MATS_FLAG_CTRL         : INTEGER := 16#44#;
-    constant ADDR_A_ROWS_DATA_0               : INTEGER := 16#48#;
-    constant ADDR_A_ROWS_CTRL                 : INTEGER := 16#4c#;
-    constant ADDR_B1_ROWS_DATA_0              : INTEGER := 16#50#;
-    constant ADDR_B1_ROWS_CTRL                : INTEGER := 16#54#;
-    constant ADDR_B1_COLUMNS_DATA_0           : INTEGER := 16#58#;
-    constant ADDR_B1_COLUMNS_CTRL             : INTEGER := 16#5c#;
-    constant ADDR_B2_COLUMNS_DATA_0           : INTEGER := 16#60#;
-    constant ADDR_B2_COLUMNS_CTRL             : INTEGER := 16#64#;
-    constant ADDR_COPY_FLAG_OUT_DATA_0        : INTEGER := 16#68#;
-    constant ADDR_COPY_FLAG_OUT_CTRL          : INTEGER := 16#6c#;
-    constant ADDR_MATRICES_UPDATED_OUT_DATA_0 : INTEGER := 16#78#;
-    constant ADDR_MATRICES_UPDATED_OUT_CTRL   : INTEGER := 16#7c#;
-    constant ADDR_BITS         : INTEGER := 7;
+    constant ADDR_B3_INPUT_DATA_0             : INTEGER := 16#34#;
+    constant ADDR_B3_INPUT_DATA_1             : INTEGER := 16#38#;
+    constant ADDR_B3_INPUT_CTRL               : INTEGER := 16#3c#;
+    constant ADDR_B4_INPUT_DATA_0             : INTEGER := 16#40#;
+    constant ADDR_B4_INPUT_DATA_1             : INTEGER := 16#44#;
+    constant ADDR_B4_INPUT_CTRL               : INTEGER := 16#48#;
+    constant ADDR_C_OUTPUT_DATA_0             : INTEGER := 16#4c#;
+    constant ADDR_C_OUTPUT_DATA_1             : INTEGER := 16#50#;
+    constant ADDR_C_OUTPUT_CTRL               : INTEGER := 16#54#;
+    constant ADDR_COPY_MATS_FLAG_DATA_0       : INTEGER := 16#58#;
+    constant ADDR_COPY_MATS_FLAG_CTRL         : INTEGER := 16#5c#;
+    constant ADDR_A_ROWS_DATA_0               : INTEGER := 16#60#;
+    constant ADDR_A_ROWS_CTRL                 : INTEGER := 16#64#;
+    constant ADDR_B1_ROWS_DATA_0              : INTEGER := 16#68#;
+    constant ADDR_B1_ROWS_CTRL                : INTEGER := 16#6c#;
+    constant ADDR_B1_COLUMNS_DATA_0           : INTEGER := 16#70#;
+    constant ADDR_B1_COLUMNS_CTRL             : INTEGER := 16#74#;
+    constant ADDR_B2_COLUMNS_DATA_0           : INTEGER := 16#78#;
+    constant ADDR_B2_COLUMNS_CTRL             : INTEGER := 16#7c#;
+    constant ADDR_COPY_FLAG_OUT_DATA_0        : INTEGER := 16#80#;
+    constant ADDR_COPY_FLAG_OUT_CTRL          : INTEGER := 16#84#;
+    constant ADDR_MATRICES_UPDATED_OUT_DATA_0 : INTEGER := 16#90#;
+    constant ADDR_MATRICES_UPDATED_OUT_CTRL   : INTEGER := 16#94#;
+    constant ADDR_BITS         : INTEGER := 8;
 
     signal waddr               : UNSIGNED(ADDR_BITS-1 downto 0);
     signal wmask               : UNSIGNED(C_S_AXI_DATA_WIDTH-1 downto 0);
@@ -183,6 +201,8 @@ architecture behave of MatrixMultiplication_control_s_axi is
     signal int_A_input         : UNSIGNED(63 downto 0) := (others => '0');
     signal int_B1_input        : UNSIGNED(63 downto 0) := (others => '0');
     signal int_B2_input        : UNSIGNED(63 downto 0) := (others => '0');
+    signal int_B3_input        : UNSIGNED(63 downto 0) := (others => '0');
+    signal int_B4_input        : UNSIGNED(63 downto 0) := (others => '0');
     signal int_C_output        : UNSIGNED(63 downto 0) := (others => '0');
     signal int_copy_mats_flag  : UNSIGNED(0 downto 0) := (others => '0');
     signal int_A_rows          : UNSIGNED(31 downto 0) := (others => '0');
@@ -331,6 +351,14 @@ begin
                         rdata_data <= RESIZE(int_B2_input(31 downto 0), 32);
                     when ADDR_B2_INPUT_DATA_1 =>
                         rdata_data <= RESIZE(int_B2_input(63 downto 32), 32);
+                    when ADDR_B3_INPUT_DATA_0 =>
+                        rdata_data <= RESIZE(int_B3_input(31 downto 0), 32);
+                    when ADDR_B3_INPUT_DATA_1 =>
+                        rdata_data <= RESIZE(int_B3_input(63 downto 32), 32);
+                    when ADDR_B4_INPUT_DATA_0 =>
+                        rdata_data <= RESIZE(int_B4_input(31 downto 0), 32);
+                    when ADDR_B4_INPUT_DATA_1 =>
+                        rdata_data <= RESIZE(int_B4_input(63 downto 32), 32);
                     when ADDR_C_OUTPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_C_output(31 downto 0), 32);
                     when ADDR_C_OUTPUT_DATA_1 =>
@@ -366,6 +394,8 @@ begin
     A_input              <= STD_LOGIC_VECTOR(int_A_input);
     B1_input             <= STD_LOGIC_VECTOR(int_B1_input);
     B2_input             <= STD_LOGIC_VECTOR(int_B2_input);
+    B3_input             <= STD_LOGIC_VECTOR(int_B3_input);
+    B4_input             <= STD_LOGIC_VECTOR(int_B4_input);
     C_output             <= STD_LOGIC_VECTOR(int_C_output);
     copy_mats_flag       <= STD_LOGIC_VECTOR(int_copy_mats_flag);
     A_rows               <= STD_LOGIC_VECTOR(int_A_rows);
@@ -604,6 +634,50 @@ begin
             if (ACLK_EN = '1') then
                 if (w_hs = '1' and waddr = ADDR_B2_INPUT_DATA_1) then
                     int_B2_input(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B2_input(63 downto 32));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_B3_INPUT_DATA_0) then
+                    int_B3_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B3_input(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_B3_INPUT_DATA_1) then
+                    int_B3_input(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B3_input(63 downto 32));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_B4_INPUT_DATA_0) then
+                    int_B4_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B4_input(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_B4_INPUT_DATA_1) then
+                    int_B4_input(63 downto 32) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_B4_input(63 downto 32));
                 end if;
             end if;
         end if;

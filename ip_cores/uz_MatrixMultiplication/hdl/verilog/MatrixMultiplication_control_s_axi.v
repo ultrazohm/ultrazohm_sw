@@ -6,7 +6,7 @@
 `timescale 1ns/1ps
 module MatrixMultiplication_control_s_axi
 #(parameter
-    C_S_AXI_ADDR_WIDTH = 7,
+    C_S_AXI_ADDR_WIDTH = 8,
     C_S_AXI_DATA_WIDTH = 32
 )(
     input  wire                          ACLK,
@@ -33,6 +33,8 @@ module MatrixMultiplication_control_s_axi
     output wire [63:0]                   A_input,
     output wire [63:0]                   B1_input,
     output wire [63:0]                   B2_input,
+    output wire [63:0]                   B3_input,
+    output wire [63:0]                   B4_input,
     output wire [63:0]                   C_output,
     output wire [0:0]                    copy_mats_flag,
     output wire [31:0]                   A_rows,
@@ -81,69 +83,85 @@ module MatrixMultiplication_control_s_axi
 // 0x2c : Data signal of B2_input
 //        bit 31~0 - B2_input[63:32] (Read/Write)
 // 0x30 : reserved
-// 0x34 : Data signal of C_output
-//        bit 31~0 - C_output[31:0] (Read/Write)
-// 0x38 : Data signal of C_output
-//        bit 31~0 - C_output[63:32] (Read/Write)
+// 0x34 : Data signal of B3_input
+//        bit 31~0 - B3_input[31:0] (Read/Write)
+// 0x38 : Data signal of B3_input
+//        bit 31~0 - B3_input[63:32] (Read/Write)
 // 0x3c : reserved
-// 0x40 : Data signal of copy_mats_flag
+// 0x40 : Data signal of B4_input
+//        bit 31~0 - B4_input[31:0] (Read/Write)
+// 0x44 : Data signal of B4_input
+//        bit 31~0 - B4_input[63:32] (Read/Write)
+// 0x48 : reserved
+// 0x4c : Data signal of C_output
+//        bit 31~0 - C_output[31:0] (Read/Write)
+// 0x50 : Data signal of C_output
+//        bit 31~0 - C_output[63:32] (Read/Write)
+// 0x54 : reserved
+// 0x58 : Data signal of copy_mats_flag
 //        bit 0  - copy_mats_flag[0] (Read/Write)
 //        others - reserved
-// 0x44 : reserved
-// 0x48 : Data signal of A_rows
-//        bit 31~0 - A_rows[31:0] (Read/Write)
-// 0x4c : reserved
-// 0x50 : Data signal of B1_rows
-//        bit 31~0 - B1_rows[31:0] (Read/Write)
-// 0x54 : reserved
-// 0x58 : Data signal of B1_columns
-//        bit 31~0 - B1_columns[31:0] (Read/Write)
 // 0x5c : reserved
-// 0x60 : Data signal of B2_columns
-//        bit 31~0 - B2_columns[31:0] (Read/Write)
+// 0x60 : Data signal of A_rows
+//        bit 31~0 - A_rows[31:0] (Read/Write)
 // 0x64 : reserved
-// 0x68 : Data signal of copy_flag_out
+// 0x68 : Data signal of B1_rows
+//        bit 31~0 - B1_rows[31:0] (Read/Write)
+// 0x6c : reserved
+// 0x70 : Data signal of B1_columns
+//        bit 31~0 - B1_columns[31:0] (Read/Write)
+// 0x74 : reserved
+// 0x78 : Data signal of B2_columns
+//        bit 31~0 - B2_columns[31:0] (Read/Write)
+// 0x7c : reserved
+// 0x80 : Data signal of copy_flag_out
 //        bit 0  - copy_flag_out[0] (Read)
 //        others - reserved
-// 0x6c : reserved
-// 0x78 : Data signal of matrices_updated_out
+// 0x84 : reserved
+// 0x90 : Data signal of matrices_updated_out
 //        bit 0  - matrices_updated_out[0] (Read)
 //        others - reserved
-// 0x7c : reserved
+// 0x94 : reserved
 // (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 //------------------------Parameter----------------------
 localparam
-    ADDR_AP_CTRL                     = 7'h00,
-    ADDR_GIE                         = 7'h04,
-    ADDR_IER                         = 7'h08,
-    ADDR_ISR                         = 7'h0c,
-    ADDR_A_INPUT_DATA_0              = 7'h10,
-    ADDR_A_INPUT_DATA_1              = 7'h14,
-    ADDR_A_INPUT_CTRL                = 7'h18,
-    ADDR_B1_INPUT_DATA_0             = 7'h1c,
-    ADDR_B1_INPUT_DATA_1             = 7'h20,
-    ADDR_B1_INPUT_CTRL               = 7'h24,
-    ADDR_B2_INPUT_DATA_0             = 7'h28,
-    ADDR_B2_INPUT_DATA_1             = 7'h2c,
-    ADDR_B2_INPUT_CTRL               = 7'h30,
-    ADDR_C_OUTPUT_DATA_0             = 7'h34,
-    ADDR_C_OUTPUT_DATA_1             = 7'h38,
-    ADDR_C_OUTPUT_CTRL               = 7'h3c,
-    ADDR_COPY_MATS_FLAG_DATA_0       = 7'h40,
-    ADDR_COPY_MATS_FLAG_CTRL         = 7'h44,
-    ADDR_A_ROWS_DATA_0               = 7'h48,
-    ADDR_A_ROWS_CTRL                 = 7'h4c,
-    ADDR_B1_ROWS_DATA_0              = 7'h50,
-    ADDR_B1_ROWS_CTRL                = 7'h54,
-    ADDR_B1_COLUMNS_DATA_0           = 7'h58,
-    ADDR_B1_COLUMNS_CTRL             = 7'h5c,
-    ADDR_B2_COLUMNS_DATA_0           = 7'h60,
-    ADDR_B2_COLUMNS_CTRL             = 7'h64,
-    ADDR_COPY_FLAG_OUT_DATA_0        = 7'h68,
-    ADDR_COPY_FLAG_OUT_CTRL          = 7'h6c,
-    ADDR_MATRICES_UPDATED_OUT_DATA_0 = 7'h78,
-    ADDR_MATRICES_UPDATED_OUT_CTRL   = 7'h7c,
+    ADDR_AP_CTRL                     = 8'h00,
+    ADDR_GIE                         = 8'h04,
+    ADDR_IER                         = 8'h08,
+    ADDR_ISR                         = 8'h0c,
+    ADDR_A_INPUT_DATA_0              = 8'h10,
+    ADDR_A_INPUT_DATA_1              = 8'h14,
+    ADDR_A_INPUT_CTRL                = 8'h18,
+    ADDR_B1_INPUT_DATA_0             = 8'h1c,
+    ADDR_B1_INPUT_DATA_1             = 8'h20,
+    ADDR_B1_INPUT_CTRL               = 8'h24,
+    ADDR_B2_INPUT_DATA_0             = 8'h28,
+    ADDR_B2_INPUT_DATA_1             = 8'h2c,
+    ADDR_B2_INPUT_CTRL               = 8'h30,
+    ADDR_B3_INPUT_DATA_0             = 8'h34,
+    ADDR_B3_INPUT_DATA_1             = 8'h38,
+    ADDR_B3_INPUT_CTRL               = 8'h3c,
+    ADDR_B4_INPUT_DATA_0             = 8'h40,
+    ADDR_B4_INPUT_DATA_1             = 8'h44,
+    ADDR_B4_INPUT_CTRL               = 8'h48,
+    ADDR_C_OUTPUT_DATA_0             = 8'h4c,
+    ADDR_C_OUTPUT_DATA_1             = 8'h50,
+    ADDR_C_OUTPUT_CTRL               = 8'h54,
+    ADDR_COPY_MATS_FLAG_DATA_0       = 8'h58,
+    ADDR_COPY_MATS_FLAG_CTRL         = 8'h5c,
+    ADDR_A_ROWS_DATA_0               = 8'h60,
+    ADDR_A_ROWS_CTRL                 = 8'h64,
+    ADDR_B1_ROWS_DATA_0              = 8'h68,
+    ADDR_B1_ROWS_CTRL                = 8'h6c,
+    ADDR_B1_COLUMNS_DATA_0           = 8'h70,
+    ADDR_B1_COLUMNS_CTRL             = 8'h74,
+    ADDR_B2_COLUMNS_DATA_0           = 8'h78,
+    ADDR_B2_COLUMNS_CTRL             = 8'h7c,
+    ADDR_COPY_FLAG_OUT_DATA_0        = 8'h80,
+    ADDR_COPY_FLAG_OUT_CTRL          = 8'h84,
+    ADDR_MATRICES_UPDATED_OUT_DATA_0 = 8'h90,
+    ADDR_MATRICES_UPDATED_OUT_CTRL   = 8'h94,
     WRIDLE                           = 2'd0,
     WRDATA                           = 2'd1,
     WRRESP                           = 2'd2,
@@ -151,7 +169,7 @@ localparam
     RDIDLE                           = 2'd0,
     RDDATA                           = 2'd1,
     RDRESET                          = 2'd2,
-    ADDR_BITS                = 7;
+    ADDR_BITS                = 8;
 
 //------------------------Local signal-------------------
     reg  [1:0]                    wstate = WRRESET;
@@ -183,6 +201,8 @@ localparam
     reg  [63:0]                   int_A_input = 'b0;
     reg  [63:0]                   int_B1_input = 'b0;
     reg  [63:0]                   int_B2_input = 'b0;
+    reg  [63:0]                   int_B3_input = 'b0;
+    reg  [63:0]                   int_B4_input = 'b0;
     reg  [63:0]                   int_C_output = 'b0;
     reg  [0:0]                    int_copy_mats_flag = 'b0;
     reg  [31:0]                   int_A_rows = 'b0;
@@ -318,6 +338,18 @@ always @(posedge ACLK) begin
                 ADDR_B2_INPUT_DATA_1: begin
                     rdata <= int_B2_input[63:32];
                 end
+                ADDR_B3_INPUT_DATA_0: begin
+                    rdata <= int_B3_input[31:0];
+                end
+                ADDR_B3_INPUT_DATA_1: begin
+                    rdata <= int_B3_input[63:32];
+                end
+                ADDR_B4_INPUT_DATA_0: begin
+                    rdata <= int_B4_input[31:0];
+                end
+                ADDR_B4_INPUT_DATA_1: begin
+                    rdata <= int_B4_input[63:32];
+                end
                 ADDR_C_OUTPUT_DATA_0: begin
                     rdata <= int_C_output[31:0];
                 end
@@ -360,6 +392,8 @@ assign auto_restart_done = auto_restart_status && (ap_idle && !int_ap_idle);
 assign A_input           = int_A_input;
 assign B1_input          = int_B1_input;
 assign B2_input          = int_B2_input;
+assign B3_input          = int_B3_input;
+assign B4_input          = int_B4_input;
 assign C_output          = int_C_output;
 assign copy_mats_flag    = int_copy_mats_flag;
 assign A_rows            = int_A_rows;
@@ -555,6 +589,46 @@ always @(posedge ACLK) begin
     else if (ACLK_EN) begin
         if (w_hs && waddr == ADDR_B2_INPUT_DATA_1)
             int_B2_input[63:32] <= (WDATA[31:0] & wmask) | (int_B2_input[63:32] & ~wmask);
+    end
+end
+
+// int_B3_input[31:0]
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_B3_input[31:0] <= 0;
+    else if (ACLK_EN) begin
+        if (w_hs && waddr == ADDR_B3_INPUT_DATA_0)
+            int_B3_input[31:0] <= (WDATA[31:0] & wmask) | (int_B3_input[31:0] & ~wmask);
+    end
+end
+
+// int_B3_input[63:32]
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_B3_input[63:32] <= 0;
+    else if (ACLK_EN) begin
+        if (w_hs && waddr == ADDR_B3_INPUT_DATA_1)
+            int_B3_input[63:32] <= (WDATA[31:0] & wmask) | (int_B3_input[63:32] & ~wmask);
+    end
+end
+
+// int_B4_input[31:0]
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_B4_input[31:0] <= 0;
+    else if (ACLK_EN) begin
+        if (w_hs && waddr == ADDR_B4_INPUT_DATA_0)
+            int_B4_input[31:0] <= (WDATA[31:0] & wmask) | (int_B4_input[31:0] & ~wmask);
+    end
+end
+
+// int_B4_input[63:32]
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_B4_input[63:32] <= 0;
+    else if (ACLK_EN) begin
+        if (w_hs && waddr == ADDR_B4_INPUT_DATA_1)
+            int_B4_input[63:32] <= (WDATA[31:0] & wmask) | (int_B4_input[63:32] & ~wmask);
     end
 end
 

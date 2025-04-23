@@ -38,35 +38,45 @@
 // 0x2c : Data signal of B2_input
 //        bit 31~0 - B2_input[63:32] (Read/Write)
 // 0x30 : reserved
-// 0x34 : Data signal of C_output
-//        bit 31~0 - C_output[31:0] (Read/Write)
-// 0x38 : Data signal of C_output
-//        bit 31~0 - C_output[63:32] (Read/Write)
+// 0x34 : Data signal of B3_input
+//        bit 31~0 - B3_input[31:0] (Read/Write)
+// 0x38 : Data signal of B3_input
+//        bit 31~0 - B3_input[63:32] (Read/Write)
 // 0x3c : reserved
-// 0x40 : Data signal of copy_mats_flag
+// 0x40 : Data signal of B4_input
+//        bit 31~0 - B4_input[31:0] (Read/Write)
+// 0x44 : Data signal of B4_input
+//        bit 31~0 - B4_input[63:32] (Read/Write)
+// 0x48 : reserved
+// 0x4c : Data signal of C_output
+//        bit 31~0 - C_output[31:0] (Read/Write)
+// 0x50 : Data signal of C_output
+//        bit 31~0 - C_output[63:32] (Read/Write)
+// 0x54 : reserved
+// 0x58 : Data signal of copy_mats_flag
 //        bit 0  - copy_mats_flag[0] (Read/Write)
 //        others - reserved
-// 0x44 : reserved
-// 0x48 : Data signal of A_rows
-//        bit 31~0 - A_rows[31:0] (Read/Write)
-// 0x4c : reserved
-// 0x50 : Data signal of B1_rows
-//        bit 31~0 - B1_rows[31:0] (Read/Write)
-// 0x54 : reserved
-// 0x58 : Data signal of B1_columns
-//        bit 31~0 - B1_columns[31:0] (Read/Write)
 // 0x5c : reserved
-// 0x60 : Data signal of B2_columns
-//        bit 31~0 - B2_columns[31:0] (Read/Write)
+// 0x60 : Data signal of A_rows
+//        bit 31~0 - A_rows[31:0] (Read/Write)
 // 0x64 : reserved
-// 0x68 : Data signal of copy_flag_out
+// 0x68 : Data signal of B1_rows
+//        bit 31~0 - B1_rows[31:0] (Read/Write)
+// 0x6c : reserved
+// 0x70 : Data signal of B1_columns
+//        bit 31~0 - B1_columns[31:0] (Read/Write)
+// 0x74 : reserved
+// 0x78 : Data signal of B2_columns
+//        bit 31~0 - B2_columns[31:0] (Read/Write)
+// 0x7c : reserved
+// 0x80 : Data signal of copy_flag_out
 //        bit 0  - copy_flag_out[0] (Read)
 //        others - reserved
-// 0x6c : reserved
-// 0x78 : Data signal of matrices_updated_out
+// 0x84 : reserved
+// 0x90 : Data signal of matrices_updated_out
 //        bit 0  - matrices_updated_out[0] (Read)
 //        others - reserved
-// 0x7c : reserved
+// 0x94 : reserved
 // (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 #define XMATRIXMULTIPLICATION_CONTROL_ADDR_AP_CTRL                   0x00
@@ -79,20 +89,24 @@
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_B1_INPUT_DATA             64
 #define XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_INPUT_DATA             0x28
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_B2_INPUT_DATA             64
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_C_OUTPUT_DATA             0x34
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B3_INPUT_DATA             0x34
+#define XMATRIXMULTIPLICATION_CONTROL_BITS_B3_INPUT_DATA             64
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B4_INPUT_DATA             0x40
+#define XMATRIXMULTIPLICATION_CONTROL_BITS_B4_INPUT_DATA             64
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_C_OUTPUT_DATA             0x4c
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_C_OUTPUT_DATA             64
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_MATS_FLAG_DATA       0x40
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_MATS_FLAG_DATA       0x58
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_COPY_MATS_FLAG_DATA       1
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_A_ROWS_DATA               0x48
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_A_ROWS_DATA               0x60
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_A_ROWS_DATA               32
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_ROWS_DATA              0x50
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_ROWS_DATA              0x68
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_B1_ROWS_DATA              32
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_COLUMNS_DATA           0x58
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B1_COLUMNS_DATA           0x70
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_B1_COLUMNS_DATA           32
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_COLUMNS_DATA           0x60
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_B2_COLUMNS_DATA           0x78
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_B2_COLUMNS_DATA           32
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_FLAG_OUT_DATA        0x68
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_COPY_FLAG_OUT_DATA        0x80
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_COPY_FLAG_OUT_DATA        1
-#define XMATRIXMULTIPLICATION_CONTROL_ADDR_MATRICES_UPDATED_OUT_DATA 0x78
+#define XMATRIXMULTIPLICATION_CONTROL_ADDR_MATRICES_UPDATED_OUT_DATA 0x90
 #define XMATRIXMULTIPLICATION_CONTROL_BITS_MATRICES_UPDATED_OUT_DATA 1
 

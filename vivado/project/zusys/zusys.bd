@@ -5764,21 +5764,21 @@
             }
           },
           "uz_ssi_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.7",
-            "xci_name": "zusys_uz_ssi_interface_0_8",
-            "xci_path": "ip\\zusys_uz_ssi_interface_0_8\\zusys_uz_ssi_interface_0_8.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.8",
+            "xci_name": "zusys_uz_ssi_interface_0_9",
+            "xci_path": "ip\\zusys_uz_ssi_interface_0_9\\zusys_uz_ssi_interface_0_9.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_0"
           },
           "uz_ssi_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.7",
-            "xci_name": "zusys_uz_ssi_interface_1_8",
-            "xci_path": "ip\\zusys_uz_ssi_interface_1_8\\zusys_uz_ssi_interface_1_8.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.8",
+            "xci_name": "zusys_uz_ssi_interface_1_9",
+            "xci_path": "ip\\zusys_uz_ssi_interface_1_9\\zusys_uz_ssi_interface_1_9.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_1"
           },
           "uz_ssi_interface_2": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.7",
-            "xci_name": "zusys_uz_ssi_interface_2_8",
-            "xci_path": "ip\\zusys_uz_ssi_interface_2_8\\zusys_uz_ssi_interface_2_8.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:1.8",
+            "xci_name": "zusys_uz_ssi_interface_2_9",
+            "xci_path": "ip\\zusys_uz_ssi_interface_2_9\\zusys_uz_ssi_interface_2_9.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_2"
           }
         },
@@ -5852,9 +5852,9 @@
             "ports": [
               "trigger_ssi_read",
               "ila_0/probe0",
+              "uz_ssi_interface_2/trigger_ssi_read",
               "uz_ssi_interface_0/trigger_ssi_read",
-              "uz_ssi_interface_1/trigger_ssi_read",
-              "uz_ssi_interface_2/trigger_ssi_read"
+              "uz_ssi_interface_1/trigger_ssi_read"
             ]
           },
           "uz_ssi_interface_0_RW_clk": {

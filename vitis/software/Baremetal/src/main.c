@@ -170,6 +170,8 @@ void init_ssi_interface() {
 	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, 1.0f/UZ_PWM_FREQUENCY, fp_type_t_sample);
 	// kp_pll
 	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, 628.3185f, fp_type_kp_pll);
+	// debug mode
+	uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x118, true);
 	// ki_pll
 	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x11C, 98696.0f, fp_type_ki_pll);
 

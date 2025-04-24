@@ -37,6 +37,8 @@ static float ISR_period_us;
 static float System_UpTime_seconds;
 static float System_UpTime_ms;
 
+extern float sawtooth;
+
 uint32_t pollErrorCnt = 0U;
 
 uint32_t i_fetchDataLifeCheck=0;
@@ -73,6 +75,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
 	js_ch_observable[JSO_ssi0_pos_raw]			= &data->av.ssi0_position_raw;
 	js_ch_observable[JSO_ssi0_pos_2pi]			= &data->av.ssi0_position_2pi;
+	js_ch_observable[JSO_ssi0_speed_mech_rad_s] = &data->av.ssi0_speed_mech_rad_s;
+	js_ch_observable[JSO_ssi0_speed_mech_rpm]   = &data->av.ssi0_speed_mech_rpm;
+	js_ch_observable[JSO_ssi0_speed_mech_rad_s_ip] = &data->av.ssi0_speed_mech_rad_s_ip;
+	js_ch_observable[JSO_sawtooth]				= &sawtooth;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;
 	js_ch_observable[JSO_ic] 					= &data->av.I_W;

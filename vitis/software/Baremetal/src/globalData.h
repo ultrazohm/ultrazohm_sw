@@ -88,6 +88,10 @@ typedef struct _actualValues_ {
 	uint32_t slowDataCounter;
 	float ssi0_position_raw;
 	float ssi0_position_2pi;
+	float ssi0_position_SI;
+	float ssi0_speed_mech_rad_s;
+	float ssi0_speed_mech_rad_s_ip;
+	float ssi0_speed_mech_rpm;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

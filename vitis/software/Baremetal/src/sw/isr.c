@@ -30,7 +30,9 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
-
+#include "../uz/uz_math_constants.h"
+#include "../uz/uz_fixedpoint/uz_fixedpoint.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -41,6 +43,18 @@ extern DS_Data Global_Data;
 uint32_t ssi_min_raw = 1000U;
 uint32_t ssi_max_raw = 0U;
 
+extern uz_codegen codegenInstance;
+float generate_sawtooth(float amplitude, float frequency, float sample_time);
+
+#define RECIPR_BITWIDTH 1.0f/524287.0f
+
+struct uz_fixedpoint_definition_t fp_type_speed_si = {
+				.is_signed=true,
+				.integer_bits=11,
+				.fractional_bits=16
+};
+
+float sawtooth=0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -56,7 +70,13 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     Global_Data.av.ssi0_position_raw = (float)(uz_axi_read_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x118));
-//    Global_Data.av.ssi0_position_2pi = uz_axi_read_float(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x10C);
+    Global_Data.av.ssi0_position_SI = Global_Data.av.ssi0_position_raw * RECIPR_BITWIDTH * 2*UZ_PIf;
+    Global_Data.av.ssi0_position_2pi = Global_Data.av.ssi0_position_SI;
+
+    Global_Data.av.ssi0_speed_mech_rad_s_ip = uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x124, fp_type_speed_si);
+
+//    sawtooth = uz_wavegen_sawtooth(2*UZ_PIf, 16.67f);
+    sawtooth = generate_sawtooth(2.0f*UZ_PIf, Global_Data.av.snd_fld[6], 100e-6f); // set frequency via send_field_6 in JavaScope
 
     if (Global_Data.av.ssi0_position_raw > ssi_max_raw) {
     	ssi_max_raw = Global_Data.av.ssi0_position_raw;
@@ -66,6 +86,11 @@ void ISR_Control(void *data)
         	ssi_min_raw = Global_Data.av.ssi0_position_raw;
         }
 
+//    codegenInstance.input.position_mech_SI = Global_Data.av.ssi0_position_SI;
+    codegenInstance.input.position_mech_SI = sawtooth;
+    uz_codegen_step(&codegenInstance); //~3.5 µs
+    Global_Data.av.ssi0_speed_mech_rad_s = codegenInstance.output.omega_mech;
+    Global_Data.av.ssi0_speed_mech_rpm = Global_Data.av.ssi0_speed_mech_rad_s * 30.0f/UZ_PIf;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
@@ -211,3 +236,26 @@ static void ReadAllADC()
 {
     ADC_readCardALL(&Global_Data);
 };
+
+// Function to generate a sawtooth waveform from 0 to amplitude
+// amplitude: peak value of the waveform (must be positive)
+// frequency: frequency of the waveform in Hz
+// sample_time: time between each sample in seconds (e.g., 0.001 for 1 kHz sampling)
+// Returns the next sample of the sawtooth waveform
+float generate_sawtooth(float amplitude, float frequency, float sample_time) {
+    static float phase = 0.0f;
+
+    float phase_increment = frequency * sample_time;
+
+    // Wrap the phase
+    if (phase >= 1.0f) {
+        phase -= 1.0f;
+    }
+
+    // Output ranges from 0 to amplitude
+    float output = amplitude * phase;
+
+    phase += phase_increment;
+
+    return output;
+}

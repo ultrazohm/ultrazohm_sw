@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="./js/coder_app.js"></script>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="./rtwreport_utils.js"></script>
+<script type="text/javascript" src="./rtwannotate.js"></script>
+<link rel="stylesheet" type="text/css" href="./css/coder_app.css"/>
+</head>
+<body onload="srcFileOnload();">
+<pre id="code">
+<table class="code" id="codeTbl">
+<tr name="1" id="1">
+<td><a id="l1" class='ln'>1</a></td><td><span class="ct">/*</span></td></tr>
+<tr name="2" id="2">
+<td><a id="l2" class='ln'>2</a></td><td><span class="ct"> * Academic License - for use in teaching, academic research, and meeting</span></td></tr>
+<tr name="3" id="3">
+<td><a id="l3" class='ln'>3</a></td><td><span class="ct"> * course requirements at degree granting institutions only.  Not for</span></td></tr>
+<tr name="4" id="4">
+<td><a id="l4" class='ln'>4</a></td><td><span class="ct"> * government, commercial, or other organizational use.</span></td></tr>
+<tr name="5" id="5">
+<td><a id="l5" class='ln'>5</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="6" id="6">
+<td><a id="l6" class='ln'>6</a></td><td><span class="ct"> * File: uz_codegen_pll.c</span></td></tr>
+<tr name="7" id="7">
+<td><a id="l7" class='ln'>7</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="8" id="8">
+<td><a id="l8" class='ln'>8</a></td><td><span class="ct"> * Code generated for Simulink model 'uz_codegen_pll'.</span></td></tr>
+<tr name="9" id="9">
+<td><a id="l9" class='ln'>9</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="10" id="10">
+<td><a id="l10" class='ln'>10</a></td><td><span class="ct"> * Model version                  : 1.29</span></td></tr>
+<tr name="11" id="11">
+<td><a id="l11" class='ln'>11</a></td><td><span class="ct"> * Simulink Coder version         : 9.5 (R2021a) 14-Nov-2020</span></td></tr>
+<tr name="12" id="12">
+<td><a id="l12" class='ln'>12</a></td><td><span class="ct"> * C/C++ source code generated on : Mon Apr 14 16:44:06 2025</span></td></tr>
+<tr name="13" id="13">
+<td><a id="l13" class='ln'>13</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="14" id="14">
+<td><a id="l14" class='ln'>14</a></td><td><span class="ct"> * Target selection: ert.tlc</span></td></tr>
+<tr name="15" id="15">
+<td><a id="l15" class='ln'>15</a></td><td><span class="ct"> * Embedded hardware selection: ARM Compatible-&gt;ARM Cortex-R</span></td></tr>
+<tr name="16" id="16">
+<td><a id="l16" class='ln'>16</a></td><td><span class="ct"> * Code generation objectives:</span></td></tr>
+<tr name="17" id="17">
+<td><a id="l17" class='ln'>17</a></td><td><span class="ct"> *    1. Execution efficiency</span></td></tr>
+<tr name="18" id="18">
+<td><a id="l18" class='ln'>18</a></td><td><span class="ct"> *    2. Traceability</span></td></tr>
+<tr name="19" id="19">
+<td><a id="l19" class='ln'>19</a></td><td><span class="ct"> * Validation result: Passed (11), Warning (1), Error (0)</span></td></tr>
+<tr name="20" id="20">
+<td><a id="l20" class='ln'>20</a></td><td><span class="ct"> */</span></td></tr>
+<tr name="21" id="21">
+<td><a id="l21" class='ln'>21</a></td><td></td></tr>
+<tr name="22" id="22">
+<td><a id="l22" class='ln'>22</a></td><td><span class="pp">#include "uz_codegen_pll.h"</span></td></tr>
+<tr name="23" id="23">
+<td><a id="l23" class='ln'>23</a></td><td></td></tr>
+<tr name="24" id="24">
+<td><a id="l24" class='ln'>24</a></td><td><span class="kw">extern</span> <a id="24c8" class="tk">real_T</a> <a id="24c15" class="tk">rt_modd</a>(<a id="24c23" class="tk">real_T</a> <a id="24c30" class="tk">u0</a>, <a id="24c34" class="tk">real_T</a> <a id="24c41" class="tk">u1</a>);</td></tr>
+<tr name="25" id="25">
+<td><a id="l25" class='ln'>25</a></td><td><a id="25c1" class="tk">real_T</a> <a id="25c8" class="tk">rt_modd</a>(<a id="25c16" class="tk">real_T</a> <a id="25c23" class="tk">u0</a>, <a id="25c27" class="tk">real_T</a> <a id="25c34" class="tk">u1</a>)</td></tr>
+<tr name="26" id="26">
+<td><a id="l26" class='ln'>26</a></td><td><span class="br">{</span></td></tr>
+<tr name="27" id="27">
+<td><a id="l27" class='ln'>27</a></td><td>  <a id="27c3" class="tk">real_T</a> <a id="27c10" class="tk">q</a>;</td></tr>
+<tr name="28" id="28">
+<td><a id="l28" class='ln'>28</a></td><td>  <a id="28c3" class="tk">real_T</a> <a id="28c10" class="tk">y</a>;</td></tr>
+<tr name="29" id="29">
+<td><a id="l29" class='ln'>29</a></td><td>  <a id="29c3" class="tk">boolean_T</a> <a id="29c13" class="tk">yEq</a>;</td></tr>
+<tr name="30" id="30">
+<td><a id="l30" class='ln'>30</a></td><td>  <a id="30c3" class="tk">y</a> = <a id="30c7" class="tk">u0</a>;</td></tr>
+<tr name="31" id="31">
+<td><a id="l31" class='ln'>31</a></td><td>  <span class="kw">if</span> (<a id="31c7" class="tk">u1</a> <a id="31c10" class="tk">==</a> 0.0) <span class="br">{</span></td></tr>
+<tr name="32" id="32">
+<td><a id="l32" class='ln'>32</a></td><td>    <span class="kw">if</span> (<a id="32c9" class="tk">u0</a> <a id="32c12" class="tk">==</a> 0.0) <span class="br">{</span></td></tr>
+<tr name="33" id="33">
+<td><a id="l33" class='ln'>33</a></td><td>      <a id="33c7" class="tk">y</a> = <a id="33c11" class="tk">u1</a>;</td></tr>
+<tr name="34" id="34">
+<td><a id="l34" class='ln'>34</a></td><td>    <span class="br">}</span></td></tr>
+<tr name="35" id="35">
+<td><a id="l35" class='ln'>35</a></td><td>  <span class="br">}</span> <span class="kw">else</span> <span class="kw">if</span> (<a id="35c14" class="tk">u0</a> <a id="35c17" class="tk">==</a> 0.0) <span class="br">{</span></td></tr>
+<tr name="36" id="36">
+<td><a id="l36" class='ln'>36</a></td><td>    <a id="36c5" class="tk">y</a> = 0.0 <a id="36c13" class="tk">/</a> <a id="36c15" class="tk">u1</a>;</td></tr>
+<tr name="37" id="37">
+<td><a id="l37" class='ln'>37</a></td><td>  <span class="br">}</span> <span class="kw">else</span> <span class="br">{</span></td></tr>
+<tr name="38" id="38">
+<td><a id="l38" class='ln'>38</a></td><td>    <a id="38c5" class="tk">y</a> = <a id="38c9" class="tk">fmod</a>(<a id="38c14" class="tk">u0</a>, <a id="38c18" class="tk">u1</a>);</td></tr>
+<tr name="39" id="39">
+<td><a id="l39" class='ln'>39</a></td><td>    <a id="39c5" class="tk">yEq</a> = (<a id="39c12" class="tk">y</a> <a id="39c14" class="tk">==</a> 0.0);</td></tr>
+<tr name="40" id="40">
+<td><a id="l40" class='ln'>40</a></td><td>    <span class="kw">if</span> ((<a id="40c10" class="tk">!</a><a id="40c11" class="tk">yEq</a>) <a id="40c16" class="tk">&amp;&amp;</a> (<a id="40c20" class="tk">u1</a> <a id="40c23" class="tk">&gt;</a> <a id="40c25" class="tk">floor</a>(<a id="40c31" class="tk">u1</a>))) <span class="br">{</span></td></tr>
+<tr name="41" id="41">
+<td><a id="l41" class='ln'>41</a></td><td>      <a id="41c7" class="tk">q</a> = <a id="41c11" class="tk">fabs</a>(<a id="41c16" class="tk">u0</a> <a id="41c19" class="tk">/</a> <a id="41c21" class="tk">u1</a>);</td></tr>
+<tr name="42" id="42">
+<td><a id="l42" class='ln'>42</a></td><td>      <a id="42c7" class="tk">yEq</a> = (<a id="42c14" class="tk">fabs</a>(<a id="42c19" class="tk">q</a> <a id="42c21" class="tk">-</a> <a id="42c23" class="tk">floor</a>(<a id="42c29" class="tk">q</a> <a id="42c31" class="tk">+</a> 0.5)) <a id="42c39" class="tk">&lt;=</a> <a id="42c42" class="tk">DBL_EPSILON</a> <a id="42c54" class="tk">*</a> <a id="42c56" class="tk">q</a>);</td></tr>
+<tr name="43" id="43">
+<td><a id="l43" class='ln'>43</a></td><td>    <span class="br">}</span></td></tr>
+<tr name="44" id="44">
+<td><a id="l44" class='ln'>44</a></td><td></td></tr>
+<tr name="45" id="45">
+<td><a id="l45" class='ln'>45</a></td><td>    <span class="kw">if</span> (<a id="45c9" class="tk">yEq</a>) <span class="br">{</span></td></tr>
+<tr name="46" id="46">
+<td><a id="l46" class='ln'>46</a></td><td>      <a id="46c7" class="tk">y</a> = 0.0;</td></tr>
+<tr name="47" id="47">
+<td><a id="l47" class='ln'>47</a></td><td>    <span class="br">}</span> <span class="kw">else</span> <span class="kw">if</span> ((<a id="47c17" class="tk">u0</a> <a id="47c20" class="tk">&lt;</a> 0.0) <a id="47c27" class="tk">!=</a> (<a id="47c31" class="tk">u1</a> <a id="47c34" class="tk">&lt;</a> 0.0)) <span class="br">{</span></td></tr>
+<tr name="48" id="48">
+<td><a id="l48" class='ln'>48</a></td><td>      <a id="48c7" class="tk">y</a> <a id="48c9" class="tk">+=</a> <a id="48c12" class="tk">u1</a>;</td></tr>
+<tr name="49" id="49">
+<td><a id="l49" class='ln'>49</a></td><td>    <span class="br">}</span></td></tr>
+<tr name="50" id="50">
+<td><a id="l50" class='ln'>50</a></td><td>  <span class="br">}</span></td></tr>
+<tr name="51" id="51">
+<td><a id="l51" class='ln'>51</a></td><td></td></tr>
+<tr name="52" id="52">
+<td><a id="l52" class='ln'>52</a></td><td>  <span class="kw">return</span> <a id="52c10" class="tk">y</a>;</td></tr>
+<tr name="53" id="53">
+<td><a id="l53" class='ln'>53</a></td><td><span class="br">}</span></td></tr>
+<tr name="54" id="54">
+<td><a id="l54" class='ln'>54</a></td><td></td></tr>
+<tr name="55" id="55">
+<td><a id="l55" class='ln'>55</a></td><td><span class="ct">/* Model step function */</span></td></tr>
+<tr name="56" id="56">
+<td><a id="l56" class='ln'>56</a></td><td><span class="kw">void</span> <a id="56c6" class="tk">uz_codegen_pll_step</a>(<a id="56c26" class="tk">RT_MODEL</a> <a id="56c35" class="tk">*</a><span class="kw">const</span> <a id="56c42" class="tk">rtM</a>)</td></tr>
+<tr name="57" id="57">
+<td><a id="l57" class='ln'>57</a></td><td><span class="br">{</span></td></tr>
+<tr name="58" id="58">
+<td><a id="l58" class='ln'>58</a></td><td>  <a id="58c3" class="tk">DW</a> <a id="58c6" class="tk">*</a><a id="58c7" class="tk">rtDW</a> = <a id="58c14" class="tk">rtM</a>-&gt;<a id="58c19" class="tk">dwork</a>;</td></tr>
+<tr name="59" id="59">
+<td><a id="l59" class='ln'>59</a></td><td>  <a id="59c3" class="tk">ExtU</a> <a id="59c8" class="tk">*</a><a id="59c9" class="tk">rtU</a> = (<a id="59c16" class="tk">ExtU</a> <a id="59c21" class="tk">*</a>) <a id="59c24" class="tk">rtM</a>-&gt;<a id="59c29" class="tk">inputs</a>;</td></tr>
+<tr name="60" id="60">
+<td><a id="l60" class='ln'>60</a></td><td>  <a id="60c3" class="tk">ExtY</a> <a id="60c8" class="tk">*</a><a id="60c9" class="tk">rtY</a> = (<a id="60c16" class="tk">ExtY</a> <a id="60c21" class="tk">*</a>) <a id="60c24" class="tk">rtM</a>-&gt;<a id="60c29" class="tk">outputs</a>;</td></tr>
+<tr name="61" id="61">
+<td><a id="l61" class='ln'>61</a></td><td>  <a id="61c3" class="tk">real_T</a> <a id="61c10" class="tk">rtb_dphi1</a>;</td></tr>
+<tr name="62" id="62">
+<td><a id="l62" class='ln'>62</a></td><td>  <a id="62c3" class="tk">real_T</a> <a id="62c10" class="tk">rtb_phi_me_p</a>;</td></tr>
+<tr name="63" id="63">
+<td><a id="l63" class='ln'>63</a></td><td></td></tr>
+<tr name="64" id="64">
+<td><a id="l64" class='ln'>64</a></td><td>  <span class="ct">/* Sum: '<a class="ct blk" blk_line="64">&lt;S6&gt;/dphi1</a>' incorporates:</span></td></tr>
+<tr name="65" id="65">
+<td><a id="l65" class='ln'>65</a></td><td><span class="ct">   *  Inport: '<a class="ct blk" blk_line="65">&lt;Root&gt;/position_mech_SI</a>'</span></td></tr>
+<tr name="66" id="66">
+<td><a id="l66" class='ln'>66</a></td><td><span class="ct">   *  Memory: '<a class="ct blk" blk_line="66">&lt;S3&gt;/Memory</a>'</span></td></tr>
+<tr name="67" id="67">
+<td><a id="l67" class='ln'>67</a></td><td><span class="ct">   *  Product: '<a class="ct blk" blk_line="67">&lt;S6&gt;/Product</a>'</span></td></tr>
+<tr name="68" id="68">
+<td><a id="l68" class='ln'>68</a></td><td><span class="ct">   *  Product: '<a class="ct blk" blk_line="68">&lt;S6&gt;/Product1</a>'</span></td></tr>
+<tr name="69" id="69">
+<td><a id="l69" class='ln'>69</a></td><td><span class="ct">   *  Trigonometry: '<a class="ct blk" blk_line="69">&lt;S2&gt;/cos</a>'</span></td></tr>
+<tr name="70" id="70">
+<td><a id="l70" class='ln'>70</a></td><td><span class="ct">   *  Trigonometry: '<a class="ct blk" blk_line="70">&lt;S2&gt;/sin</a>'</span></td></tr>
+<tr name="71" id="71">
+<td><a id="l71" class='ln'>71</a></td><td><span class="ct">   */</span></td></tr>
+<tr name="72" id="72">
+<td><a id="l72" class='ln'>72</a></td><td>  <a id="72c3" class="tk">rtb_dphi1</a> = <a id="72c15" class="tk">sin</a>(<a id="72c19" class="tk">rtU</a>-&gt;<a id="72c24" class="tk">position_mech_SI</a>) <a id="72c42" class="tk">*</a> <a id="72c44" class="tk">rtDW</a>-&gt;<a id="72c50" class="tk">Memory_PreviousInput</a>[0] <a id="72c74" class="tk">-</a> <a id="72c76" class="tk">cos</a></td></tr>
+<tr name="73" id="73">
+<td><a id="l73" class='ln'>73</a></td><td>    (<a id="73c6" class="tk">rtU</a>-&gt;<a id="73c11" class="tk">position_mech_SI</a>) <a id="73c29" class="tk">*</a> <a id="73c31" class="tk">rtDW</a>-&gt;<a id="73c37" class="tk">Memory_PreviousInput</a>[1];</td></tr>
+<tr name="74" id="74">
+<td><a id="l74" class='ln'>74</a></td><td></td></tr>
+<tr name="75" id="75">
+<td><a id="l75" class='ln'>75</a></td><td>  <span class="ct">/* Sum: '<a class="ct blk" blk_line="75">&lt;S4&gt;/phi_me</a>' incorporates:</span></td></tr>
+<tr name="76" id="76">
+<td><a id="l76" class='ln'>76</a></td><td><span class="ct">   *  Delay: '<a class="ct blk" blk_line="76">&lt;S4&gt;/Delay1</a>'</span></td></tr>
+<tr name="77" id="77">
+<td><a id="l77" class='ln'>77</a></td><td><span class="ct">   *  Inport: '<a class="ct blk" blk_line="77">&lt;Root&gt;/kp_pll</a>'</span></td></tr>
+<tr name="78" id="78">
+<td><a id="l78" class='ln'>78</a></td><td><span class="ct">   *  Inport: '<a class="ct blk" blk_line="78">&lt;Root&gt;/sampling_time_seconds</a>'</span></td></tr>
+<tr name="79" id="79">
+<td><a id="l79" class='ln'>79</a></td><td><span class="ct">   *  Memory: '<a class="ct blk" blk_line="79">&lt;S5&gt;/Memory</a>'</span></td></tr>
+<tr name="80" id="80">
+<td><a id="l80" class='ln'>80</a></td><td><span class="ct">   *  Product: '<a class="ct blk" blk_line="80">&lt;S4&gt;/Product5</a>'</span></td></tr>
+<tr name="81" id="81">
+<td><a id="l81" class='ln'>81</a></td><td><span class="ct">   *  Product: '<a class="ct blk" blk_line="81">&lt;S5&gt;/Product1</a>'</span></td></tr>
+<tr name="82" id="82">
+<td><a id="l82" class='ln'>82</a></td><td><span class="ct">   *  Sum: '<a class="ct blk" blk_line="82">&lt;S5&gt;/Sum_om</a>'</span></td></tr>
+<tr name="83" id="83">
+<td><a id="l83" class='ln'>83</a></td><td><span class="ct">   */</span></td></tr>
+<tr name="84" id="84">
+<td><a id="l84" class='ln'>84</a></td><td>  <a id="84c3" class="tk">rtb_phi_me_p</a> = (<a id="84c19" class="tk">rtb_dphi1</a> <a id="84c29" class="tk">*</a> <a id="84c31" class="tk">rtU</a>-&gt;<a id="84c36" class="tk">kp_pll</a> <a id="84c43" class="tk">+</a> <a id="84c45" class="tk">rtDW</a>-&gt;<a id="84c51" class="tk">Memory_PreviousInput_g</a>) <a id="84c75" class="tk">*</a></td></tr>
+<tr name="85" id="85">
+<td><a id="l85" class='ln'>85</a></td><td>    <a id="85c5" class="tk">rtU</a>-&gt;<a id="85c10" class="tk">sampling_time_seconds</a> <a id="85c32" class="tk">+</a> <a id="85c34" class="tk">rtDW</a>-&gt;<a id="85c40" class="tk">Delay1_DSTATE</a>;</td></tr>
+<tr name="86" id="86">
+<td><a id="l86" class='ln'>86</a></td><td></td></tr>
+<tr name="87" id="87">
+<td><a id="l87" class='ln'>87</a></td><td>  <span class="ct">/* Switch: '<a class="ct blk" blk_line="87">&lt;S4&gt;/Switch</a>' incorporates:</span></td></tr>
+<tr name="88" id="88">
+<td><a id="l88" class='ln'>88</a></td><td><span class="ct">   *  Constant: '<a class="ct blk" blk_line="88">&lt;S4&gt;/Constant</a>'</span></td></tr>
+<tr name="89" id="89">
+<td><a id="l89" class='ln'>89</a></td><td><span class="ct">   *  Constant: '<a class="ct blk" blk_line="89">&lt;S4&gt;/Constant1</a>'</span></td></tr>
+<tr name="90" id="90">
+<td><a id="l90" class='ln'>90</a></td><td><span class="ct">   *  Logic: '<a class="ct blk" blk_line="90">&lt;S4&gt;/AND</a>'</span></td></tr>
+<tr name="91" id="91">
+<td><a id="l91" class='ln'>91</a></td><td><span class="ct">   *  RelationalOperator: '<a class="ct blk" blk_line="91">&lt;S4&gt;/Relational Operator</a>'</span></td></tr>
+<tr name="92" id="92">
+<td><a id="l92" class='ln'>92</a></td><td><span class="ct">   *  RelationalOperator: '<a class="ct blk" blk_line="92">&lt;S4&gt;/Relational Operator1</a>'</span></td></tr>
+<tr name="93" id="93">
+<td><a id="l93" class='ln'>93</a></td><td><span class="ct">   */</span></td></tr>
+<tr name="94" id="94">
+<td><a id="l94" class='ln'>94</a></td><td>  <span class="kw">if</span> ((<a id="94c8" class="tk">rtb_phi_me_p</a> <a id="94c21" class="tk">&gt;=</a> 6.2831853071795862) <a id="94c44" class="tk">||</a> (<a id="94c48" class="tk">rtb_phi_me_p</a> <a id="94c61" class="tk">&lt;</a> 0.0)) <span class="br">{</span></td></tr>
+<tr name="95" id="95">
+<td><a id="l95" class='ln'>95</a></td><td>    <span class="ct">/* Sum: '<a class="ct blk" blk_line="95">&lt;S4&gt;/Sum1</a>' incorporates:</span></td></tr>
+<tr name="96" id="96">
+<td><a id="l96" class='ln'>96</a></td><td><span class="ct">     *  Product: '<a class="ct blk" blk_line="96">&lt;S4&gt;/Divide</a>'</span></td></tr>
+<tr name="97" id="97">
+<td><a id="l97" class='ln'>97</a></td><td><span class="ct">     *  Product: '<a class="ct blk" blk_line="97">&lt;S4&gt;/Product</a>'</span></td></tr>
+<tr name="98" id="98">
+<td><a id="l98" class='ln'>98</a></td><td><span class="ct">     *  Rounding: '<a class="ct blk" blk_line="98">&lt;S4&gt;/Floor</a>'</span></td></tr>
+<tr name="99" id="99">
+<td><a id="l99" class='ln'>99</a></td><td><span class="ct">     */</span></td></tr>
+<tr name="100" id="100">
+<td><a id="l100" class='ln'>100</a></td><td>    <a id="100c5" class="tk">rtb_phi_me_p</a> <a id="100c18" class="tk">-=</a> <a id="100c21" class="tk">floor</a>(<a id="100c27" class="tk">rtb_phi_me_p</a> <a id="100c40" class="tk">/</a> 6.2831853071795862) <a id="100c62" class="tk">*</a></td></tr>
+<tr name="101" id="101">
+<td><a id="l101" class='ln'>101</a></td><td>      6.2831853071795862;</td></tr>
+<tr name="102" id="102">
+<td><a id="l102" class='ln'>102</a></td><td></td></tr>
+<tr name="103" id="103">
+<td><a id="l103" class='ln'>103</a></td><td>    <span class="ct">/* Switch: '<a class="ct blk" blk_line="103">&lt;S4&gt;/Switch1</a>' incorporates:</span></td></tr>
+<tr name="104" id="104">
+<td><a id="l104" class='ln'>104</a></td><td><span class="ct">     *  Constant: '<a class="ct blk" blk_line="104">&lt;S4&gt;/Constant2</a>'</span></td></tr>
+<tr name="105" id="105">
+<td><a id="l105" class='ln'>105</a></td><td><span class="ct">     *  Logic: '<a class="ct blk" blk_line="105">&lt;S4&gt;/AND1</a>'</span></td></tr>
+<tr name="106" id="106">
+<td><a id="l106" class='ln'>106</a></td><td><span class="ct">     *  RelationalOperator: '<a class="ct blk" blk_line="106">&lt;S4&gt;/Relational Operator2</a>'</span></td></tr>
+<tr name="107" id="107">
+<td><a id="l107" class='ln'>107</a></td><td><span class="ct">     *  RelationalOperator: '<a class="ct blk" blk_line="107">&lt;S4&gt;/Relational Operator3</a>'</span></td></tr>
+<tr name="108" id="108">
+<td><a id="l108" class='ln'>108</a></td><td><span class="ct">     *  Sum: '<a class="ct blk" blk_line="108">&lt;S4&gt;/Sum</a>'</span></td></tr>
+<tr name="109" id="109">
+<td><a id="l109" class='ln'>109</a></td><td><span class="ct">     */</span></td></tr>
+<tr name="110" id="110">
+<td><a id="l110" class='ln'>110</a></td><td>    <span class="kw">if</span> ((<a id="110c10" class="tk">rtb_phi_me_p</a> <a id="110c23" class="tk">&gt;=</a> 6.2831853071795862) <a id="110c46" class="tk">||</a> (<a id="110c50" class="tk">rtb_phi_me_p</a> <a id="110c63" class="tk">&lt;</a> 0.0)) <span class="br">{</span></td></tr>
+<tr name="111" id="111">
+<td><a id="l111" class='ln'>111</a></td><td>      <a id="111c7" class="tk">rtb_phi_me_p</a> <a id="111c20" class="tk">+=</a> 6.2831853071795862;</td></tr>
+<tr name="112" id="112">
+<td><a id="l112" class='ln'>112</a></td><td>    <span class="br">}</span></td></tr>
+<tr name="113" id="113">
+<td><a id="l113" class='ln'>113</a></td><td></td></tr>
+<tr name="114" id="114">
+<td><a id="l114" class='ln'>114</a></td><td>    <span class="ct">/* End of Switch: '<a class="ct blk" blk_line="114">&lt;S4&gt;/Switch1</a>' */</span></td></tr>
+<tr name="115" id="115">
+<td><a id="l115" class='ln'>115</a></td><td>  <span class="br">}</span></td></tr>
+<tr name="116" id="116">
+<td><a id="l116" class='ln'>116</a></td><td></td></tr>
+<tr name="117" id="117">
+<td><a id="l117" class='ln'>117</a></td><td>  <span class="ct">/* End of Switch: '<a class="ct blk" blk_line="117">&lt;S4&gt;/Switch</a>' */</span></td></tr>
+<tr name="118" id="118">
+<td><a id="l118" class='ln'>118</a></td><td></td></tr>
+<tr name="119" id="119">
+<td><a id="l119" class='ln'>119</a></td><td>  <span class="ct">/* Outport: '<a class="ct blk" blk_line="119">&lt;Root&gt;/omega_mech</a>' incorporates:</span></td></tr>
+<tr name="120" id="120">
+<td><a id="l120" class='ln'>120</a></td><td><span class="ct">   *  Memory: '<a class="ct blk" blk_line="120">&lt;S5&gt;/Memory</a>'</span></td></tr>
+<tr name="121" id="121">
+<td><a id="l121" class='ln'>121</a></td><td><span class="ct">   */</span></td></tr>
+<tr name="122" id="122">
+<td><a id="l122" class='ln'>122</a></td><td>  <a id="122c3" class="tk">rtY</a>-&gt;<a id="122c8" class="tk">omega_mech</a> = <a id="122c21" class="tk">rtDW</a>-&gt;<a id="122c27" class="tk">Memory_PreviousInput_g</a>;</td></tr>
+<tr name="123" id="123">
+<td><a id="l123" class='ln'>123</a></td><td></td></tr>
+<tr name="124" id="124">
+<td><a id="l124" class='ln'>124</a></td><td>  <span class="ct">/* Outport: '<a class="ct blk" blk_line="124">&lt;Root&gt;/omega_el</a>' incorporates:</span></td></tr>
+<tr name="125" id="125">
+<td><a id="l125" class='ln'>125</a></td><td><span class="ct">   *  Constant: '<a class="ct blk" blk_line="125">&lt;S2&gt;/Constant</a>'</span></td></tr>
+<tr name="126" id="126">
+<td><a id="l126" class='ln'>126</a></td><td><span class="ct">   *  Inport: '<a class="ct blk" blk_line="126">&lt;Root&gt;/pole_pairs</a>'</span></td></tr>
+<tr name="127" id="127">
+<td><a id="l127" class='ln'>127</a></td><td><span class="ct">   *  Math: '<a class="ct blk" blk_line="127">&lt;S2&gt;/Mod</a>'</span></td></tr>
+<tr name="128" id="128">
+<td><a id="l128" class='ln'>128</a></td><td><span class="ct">   *  Memory: '<a class="ct blk" blk_line="128">&lt;S5&gt;/Memory</a>'</span></td></tr>
+<tr name="129" id="129">
+<td><a id="l129" class='ln'>129</a></td><td><span class="ct">   *  Product: '<a class="ct blk" blk_line="129">&lt;S2&gt;/Product</a>'</span></td></tr>
+<tr name="130" id="130">
+<td><a id="l130" class='ln'>130</a></td><td><span class="ct">   */</span></td></tr>
+<tr name="131" id="131">
+<td><a id="l131" class='ln'>131</a></td><td>  <a id="131c3" class="tk">rtY</a>-&gt;<a id="131c8" class="tk">omega_el</a> = <a id="131c19" class="tk">rt_modd</a>(<a id="131c27" class="tk">rtDW</a>-&gt;<a id="131c33" class="tk">Memory_PreviousInput_g</a> <a id="131c56" class="tk">*</a> <a id="131c58" class="tk">rtU</a>-&gt;<a id="131c63" class="tk">pole_pairs</a>,</td></tr>
+<tr name="132" id="132">
+<td><a id="l132" class='ln'>132</a></td><td>    6.2831853071795862);</td></tr>
+<tr name="133" id="133">
+<td><a id="l133" class='ln'>133</a></td><td></td></tr>
+<tr name="134" id="134">
+<td><a id="l134" class='ln'>134</a></td><td>  <span class="ct">/* Update for Memory: '<a class="ct blk" blk_line="134">&lt;S3&gt;/Memory</a>' incorporates:</span></td></tr>
+<tr name="135" id="135">
+<td><a id="l135" class='ln'>135</a></td><td><span class="ct">   *  Trigonometry: '<a class="ct blk" blk_line="135">&lt;S7&gt;/cos</a>'</span></td></tr>
+<tr name="136" id="136">
+<td><a id="l136" class='ln'>136</a></td><td><span class="ct">   *  Trigonometry: '<a class="ct blk" blk_line="136">&lt;S7&gt;/sin</a>'</span></td></tr>
+<tr name="137" id="137">
+<td><a id="l137" class='ln'>137</a></td><td><span class="ct">   */</span></td></tr>
+<tr name="138" id="138">
+<td><a id="l138" class='ln'>138</a></td><td>  <a id="138c3" class="tk">rtDW</a>-&gt;<a id="138c9" class="tk">Memory_PreviousInput</a>[0] = <a id="138c35" class="tk">cos</a>(<a id="138c39" class="tk">rtb_phi_me_p</a>);</td></tr>
+<tr name="139" id="139">
+<td><a id="l139" class='ln'>139</a></td><td>  <a id="139c3" class="tk">rtDW</a>-&gt;<a id="139c9" class="tk">Memory_PreviousInput</a>[1] = <a id="139c35" class="tk">sin</a>(<a id="139c39" class="tk">rtb_phi_me_p</a>);</td></tr>
+<tr name="140" id="140">
+<td><a id="l140" class='ln'>140</a></td><td></td></tr>
+<tr name="141" id="141">
+<td><a id="l141" class='ln'>141</a></td><td>  <span class="ct">/* Update for Memory: '<a class="ct blk" blk_line="141">&lt;S5&gt;/Memory</a>' incorporates:</span></td></tr>
+<tr name="142" id="142">
+<td><a id="l142" class='ln'>142</a></td><td><span class="ct">   *  Inport: '<a class="ct blk" blk_line="142">&lt;Root&gt;/ki_pll</a>'</span></td></tr>
+<tr name="143" id="143">
+<td><a id="l143" class='ln'>143</a></td><td><span class="ct">   *  Inport: '<a class="ct blk" blk_line="143">&lt;Root&gt;/sampling_time_seconds</a>'</span></td></tr>
+<tr name="144" id="144">
+<td><a id="l144" class='ln'>144</a></td><td><span class="ct">   *  Product: '<a class="ct blk" blk_line="144">&lt;S5&gt;/Product</a>'</span></td></tr>
+<tr name="145" id="145">
+<td><a id="l145" class='ln'>145</a></td><td><span class="ct">   *  Product: '<a class="ct blk" blk_line="145">&lt;S5&gt;/Product6</a>'</span></td></tr>
+<tr name="146" id="146">
+<td><a id="l146" class='ln'>146</a></td><td><span class="ct">   *  Sum: '<a class="ct blk" blk_line="146">&lt;S5&gt;/Sum2</a>'</span></td></tr>
+<tr name="147" id="147">
+<td><a id="l147" class='ln'>147</a></td><td><span class="ct">   */</span></td></tr>
+<tr name="148" id="148">
+<td><a id="l148" class='ln'>148</a></td><td>  <a id="148c3" class="tk">rtDW</a>-&gt;<a id="148c9" class="tk">Memory_PreviousInput_g</a> <a id="148c32" class="tk">+=</a> <a id="148c35" class="tk">rtU</a>-&gt;<a id="148c40" class="tk">ki_pll</a> <a id="148c47" class="tk">*</a> <a id="148c49" class="tk">rtb_dphi1</a> <a id="148c59" class="tk">*</a></td></tr>
+<tr name="149" id="149">
+<td><a id="l149" class='ln'>149</a></td><td>    <a id="149c5" class="tk">rtU</a>-&gt;<a id="149c10" class="tk">sampling_time_seconds</a>;</td></tr>
+<tr name="150" id="150">
+<td><a id="l150" class='ln'>150</a></td><td></td></tr>
+<tr name="151" id="151">
+<td><a id="l151" class='ln'>151</a></td><td>  <span class="ct">/* Update for Delay: '<a class="ct blk" blk_line="151">&lt;S4&gt;/Delay1</a>' */</span></td></tr>
+<tr name="152" id="152">
+<td><a id="l152" class='ln'>152</a></td><td>  <a id="152c3" class="tk">rtDW</a>-&gt;<a id="152c9" class="tk">Delay1_DSTATE</a> = <a id="152c25" class="tk">rtb_phi_me_p</a>;</td></tr>
+<tr name="153" id="153">
+<td><a id="l153" class='ln'>153</a></td><td><span class="br">}</span></td></tr>
+<tr name="154" id="154">
+<td><a id="l154" class='ln'>154</a></td><td></td></tr>
+<tr name="155" id="155">
+<td><a id="l155" class='ln'>155</a></td><td><span class="ct">/* Model initialize function */</span></td></tr>
+<tr name="156" id="156">
+<td><a id="l156" class='ln'>156</a></td><td><span class="kw">void</span> <a id="156c6" class="tk">uz_codegen_pll_initialize</a>(<a id="156c32" class="tk">RT_MODEL</a> <a id="156c41" class="tk">*</a><span class="kw">const</span> <a id="156c48" class="tk">rtM</a>)</td></tr>
+<tr name="157" id="157">
+<td><a id="l157" class='ln'>157</a></td><td><span class="br">{</span></td></tr>
+<tr name="158" id="158">
+<td><a id="l158" class='ln'>158</a></td><td>  <a id="158c3" class="tk">DW</a> <a id="158c6" class="tk">*</a><a id="158c7" class="tk">rtDW</a> = <a id="158c14" class="tk">rtM</a>-&gt;<a id="158c19" class="tk">dwork</a>;</td></tr>
+<tr name="159" id="159">
+<td><a id="l159" class='ln'>159</a></td><td>  <a id="159c3" class="tk">ExtU</a> <a id="159c8" class="tk">*</a><a id="159c9" class="tk">rtU</a> = (<a id="159c16" class="tk">ExtU</a> <a id="159c21" class="tk">*</a>) <a id="159c24" class="tk">rtM</a>-&gt;<a id="159c29" class="tk">inputs</a>;</td></tr>
+<tr name="160" id="160">
+<td><a id="l160" class='ln'>160</a></td><td>  <a id="160c3" class="tk">ExtY</a> <a id="160c8" class="tk">*</a><a id="160c9" class="tk">rtY</a> = (<a id="160c16" class="tk">ExtY</a> <a id="160c21" class="tk">*</a>) <a id="160c24" class="tk">rtM</a>-&gt;<a id="160c29" class="tk">outputs</a>;</td></tr>
+<tr name="161" id="161">
+<td><a id="l161" class='ln'>161</a></td><td></td></tr>
+<tr name="162" id="162">
+<td><a id="l162" class='ln'>162</a></td><td>  <span class="ct">/* Registration code */</span></td></tr>
+<tr name="163" id="163">
+<td><a id="l163" class='ln'>163</a></td><td></td></tr>
+<tr name="164" id="164">
+<td><a id="l164" class='ln'>164</a></td><td>  <span class="ct">/* states (dwork) */</span></td></tr>
+<tr name="165" id="165">
+<td><a id="l165" class='ln'>165</a></td><td>  (<span class="kw">void</span>) <a id="165c10" class="tk">memset</a>((<span class="kw">void</span> <a id="165c23" class="tk">*</a>)<a id="165c25" class="tk">rtDW</a>, 0,</td></tr>
+<tr name="166" id="166">
+<td><a id="l166" class='ln'>166</a></td><td>                <span class="kw">sizeof</span>(<a id="166c24" class="tk">DW</a>));</td></tr>
+<tr name="167" id="167">
+<td><a id="l167" class='ln'>167</a></td><td></td></tr>
+<tr name="168" id="168">
+<td><a id="l168" class='ln'>168</a></td><td>  <span class="ct">/* external inputs */</span></td></tr>
+<tr name="169" id="169">
+<td><a id="l169" class='ln'>169</a></td><td>  (<span class="kw">void</span>)<a id="169c9" class="tk">memset</a>(<a id="169c16" class="tk">rtU</a>, 0, <span class="kw">sizeof</span>(<a id="169c31" class="tk">ExtU</a>));</td></tr>
+<tr name="170" id="170">
+<td><a id="l170" class='ln'>170</a></td><td></td></tr>
+<tr name="171" id="171">
+<td><a id="l171" class='ln'>171</a></td><td>  <span class="ct">/* external outputs */</span></td></tr>
+<tr name="172" id="172">
+<td><a id="l172" class='ln'>172</a></td><td>  (<span class="kw">void</span>) <a id="172c10" class="tk">memset</a>((<span class="kw">void</span> <a id="172c23" class="tk">*</a>)<a id="172c25" class="tk">rtY</a>, 0,</td></tr>
+<tr name="173" id="173">
+<td><a id="l173" class='ln'>173</a></td><td>                <span class="kw">sizeof</span>(<a id="173c24" class="tk">ExtY</a>));</td></tr>
+<tr name="174" id="174">
+<td><a id="l174" class='ln'>174</a></td><td></td></tr>
+<tr name="175" id="175">
+<td><a id="l175" class='ln'>175</a></td><td>  <span class="ct">/* InitializeConditions for Memory: '<a class="ct blk" blk_line="175">&lt;S3&gt;/Memory</a>' */</span></td></tr>
+<tr name="176" id="176">
+<td><a id="l176" class='ln'>176</a></td><td>  <a id="176c3" class="tk">rtDW</a>-&gt;<a id="176c9" class="tk">Memory_PreviousInput</a>[0] = 1.0;</td></tr>
+<tr name="177" id="177">
+<td><a id="l177" class='ln'>177</a></td><td>  <a id="177c3" class="tk">rtDW</a>-&gt;<a id="177c9" class="tk">Memory_PreviousInput</a>[1] = 0.0;</td></tr>
+<tr name="178" id="178">
+<td><a id="l178" class='ln'>178</a></td><td><span class="br">}</span></td></tr>
+<tr name="179" id="179">
+<td><a id="l179" class='ln'>179</a></td><td></td></tr>
+<tr name="180" id="180">
+<td><a id="l180" class='ln'>180</a></td><td><span class="ct">/*</span></td></tr>
+<tr name="181" id="181">
+<td><a id="l181" class='ln'>181</a></td><td><span class="ct"> * File trailer for generated code.</span></td></tr>
+<tr name="182" id="182">
+<td><a id="l182" class='ln'>182</a></td><td><span class="ct"> *</span></td></tr>
+<tr name="183" id="183">
+<td><a id="l183" class='ln'>183</a></td><td><span class="ct"> * [EOF]</span></td></tr>
+<tr name="184" id="184">
+<td><a id="l184" class='ln'>184</a></td><td><span class="ct"> */</span></td></tr>
+<tr name="185" id="185">
+<td><a id="l185" class='ln'>185</a></td><td></td></tr>
+</table>
+</pre>
+</body>
+</html>

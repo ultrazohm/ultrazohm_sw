@@ -18,11 +18,24 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../uz/uz_fixedpoint/uz_fixedpoint.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
+
+struct uz_fixedpoint_definition_t fp_type_kp_pll = {
+				.is_signed=false,
+				.integer_bits=13,
+				.fractional_bits=5
+};
+
+struct uz_fixedpoint_definition_t fp_type_ki_pll = {
+				.is_signed=false,
+				.integer_bits=18,
+				.fractional_bits=0
+};
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -200,19 +213,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
 		uint32_t tmp_val_3 = (uint32_t)value;
-		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x10C, tmp_val_3); //delay_ticks_first_clock
+		uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, tmp_val_3, fp_type_kp_pll); //kp_pll
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
 		uint32_t tmp_val_4 = (uint32_t)value;
-		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, tmp_val_4); // delay_ticks_clk
+		uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x11C, tmp_val_4, fp_type_ki_pll); //ki_pll
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		uint32_t tmp_val_5 = (uint32_t)value;
-		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, tmp_val_5); // delay_ticks_data
 			break;
 
 		case (Set_Send_Field_6):

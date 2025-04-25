@@ -27,7 +27,7 @@ static uz_Matrix_Multi_t*uz_Matrix_Multi_allocation(void){
     return (self);
 }
 
-uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, volatile float * A,volatile float * B1,volatile float * B2,volatile float * B3,volatile float * B4,volatile float * C){
+uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config){
 	uz_assert_not_zero_uint32(config.base_address);
 	uz_Matrix_Multi_t* self = uz_Matrix_Multi_allocation();
 	//Current max size allowed for IP-Core
@@ -54,6 +54,10 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, vo
 	uz_matrix_multiplication_hw_set_B3_matrix(self->config.base_address, self->config.B3_data);
 	uz_matrix_multiplication_hw_set_B4_matrix(self->config.base_address, self->config.B4_data);
 	uz_matrix_multiplication_hw_set_C_out_matrix(self->config.base_address, self->config.C_data);
+	uz_matrix_multiplication_hw_set_Bias1_matrix(self->config.base_address, self->config.Bias1_data);
+	uz_matrix_multiplication_hw_set_Bias2_matrix(self->config.base_address, self->config.Bias2_data);
+	uz_matrix_multiplication_hw_set_Bias3_matrix(self->config.base_address, self->config.Bias3_data);
+	uz_matrix_multiplication_hw_set_Bias4_matrix(self->config.base_address, self->config.Bias4_data);
 	//Read the B-matrices once during init
 	self->copy_mats_flag = true;
 	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, self->copy_mats_flag);
@@ -65,8 +69,8 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, vo
 					break;
 				}
 	}
-	self->copy_mats_flag = false;
-	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, false);
+	//self->copy_mats_flag = false;
+	//uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, false);
 	uz_matrix_multiplication_hw_set_start(self->config.base_address, true);
 	return(self);
 }

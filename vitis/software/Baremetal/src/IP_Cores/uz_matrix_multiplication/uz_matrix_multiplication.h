@@ -33,10 +33,14 @@ struct uz_Matrix_Multi_config{
 	 uint32_t C_rows;
 	 uint32_t C_columns;
 	 volatile float *C_data;
+	 volatile float *Bias1_data;
+	 volatile float *Bias2_data;
+	 volatile float *Bias3_data;
+	 volatile float *Bias4_data;
 };
 
 
-uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config, volatile float * A,volatile float * B1,volatile float * B2,volatile float * B3,volatile float * B4,volatile float * C);
+uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config);
 void uz_Matrix_Multi_trigger_calculation(uz_Matrix_Multi_t* self, bool flag);
 bool uz_Matrix_Multi_get_done_flag(uz_Matrix_Multi_t* self);
 bool uz_Matrix_Multi_get_idle_flag(uz_Matrix_Multi_t* self);

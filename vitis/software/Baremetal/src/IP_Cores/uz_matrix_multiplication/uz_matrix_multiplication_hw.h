@@ -13,6 +13,10 @@ void uz_matrix_multiplication_hw_set_B1_matrix(uint32_t base_address, volatile f
 void uz_matrix_multiplication_hw_set_B2_matrix(uint32_t base_address, volatile float * B2);
 void uz_matrix_multiplication_hw_set_B3_matrix(uint32_t base_address, volatile float * B3);
 void uz_matrix_multiplication_hw_set_B4_matrix(uint32_t base_address, volatile float * B4);
+void uz_matrix_multiplication_hw_set_Bias1_matrix(uint32_t base_address, volatile float * Bias1);
+void uz_matrix_multiplication_hw_set_Bias2_matrix(uint32_t base_address, volatile float * Bias2);
+void uz_matrix_multiplication_hw_set_Bias3_matrix(uint32_t base_address, volatile float * Bias3);
+void uz_matrix_multiplication_hw_set_Bias4_matrix(uint32_t base_address, volatile float * Bias4);
 void uz_matrix_multiplication_hw_set_C_out_matrix(uint32_t base_address, volatile float *C_out);
 void uz_matrix_multiplication_hw_set_start(uint32_t base_address, bool flag);
 bool uz_matrix_multiplication_hw_get_is_done_output(uint32_t base_address);

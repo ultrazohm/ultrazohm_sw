@@ -16,14 +16,17 @@
 
 #include "uz_ssi_interface.h"
 
-#include "../../uz_global_configuration.h"
+#include "../../uz/uz_global_configuration.h"
 #if UZ_SSI_INTERFACE_MAX_INSTANCES > 0U
 #include <stdbool.h> 
-#include "../../uz_HAL.h"
+#include "../../uz/uz_HAL.h"
 #include "uz_ssi_interface.h" 
+#include "uz_ssi_interface_hw.h" 
 
 struct uz_ssi_interface_t {
     bool is_ready;
+    struct uz_ssi_interface_config_t config;
+    struct uz_ssi_interface_outputs_t outputs;
 };
 
 static uint32_t instance_counter = 0U;
@@ -40,14 +43,26 @@ static uz_ssi_interface_t* uz_ssi_interface_allocation(void){
     return (self);
 }
 
-uz_ssi_interface_t* uz_ssi_interface_init(struct uz_ssi_interface_config_t config) {
+uz_ssi_interface_t* uz_ssi_interface_init(struct uz_ssi_interface_config_t config, struct uz_ssi_interface_outputs_t outputs) {
+    uz_assert_not_zero_uint32(config.base_address);
+    uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
+    uz_assert_not_zero_uint32(config.ssi_clk_frequency_Hz);
+    uz_assert_not_zero_uint32(config.machine_polepairs);
     uz_ssi_interface_t* self = uz_ssi_interface_allocation();
-
-    //implement init with config
-
+    self->config=config;
+    self->outputs=outputs;
+    uz_ssi_interface_set_config(self);
     return (self);
 }
 
-// update outputs function
+void uz_ssi_interface_set_config(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    // calculate ssi clock divider from ip core clock frequency and ssi clock frequency
+    uint32_t ssi_clk_divider = self->config.ip_clk_frequency_Hz/(2U*self->config.ssi_clk_frequency_Hz);
+    // write configuration
+    uz_ssi_interface_hw_write_ssi_clock_divider(self->config.base_address, ssi_clk_divider);
+    uz_ssi_interface_hw_write_ssi_encoder_bit_width(self->config.base_address, self->config.ssi_encoder_bit_width);
+}
 
 #endif

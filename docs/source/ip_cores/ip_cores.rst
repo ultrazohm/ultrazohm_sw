@@ -11,7 +11,6 @@ IP-Cores
     uz_PWM_SS_2L/uz_pwm_ss_2l
     uz_mux_axi/uz_mux_axi
     adc_ltc2311_v3/adc_ltc2311_v3
-    uz_incrementalEncoder/uz_IncrementalEncoder
     axi_testIP/axi_testIP
     uz_interlockDeadtime2L/uz_interlockDeadtime2L
     uz_plantModel_pt1/uz_plantModel_pt1

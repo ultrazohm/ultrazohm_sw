@@ -29,6 +29,7 @@ One sentence about SSI encoders.
     :maxdepth: 1
     :glob:
     
-    uz_incrementalEncoder/uz_incrementalEncoder
+    uz_incrementalEncoder/uz_IncrementalEncoder
     uz_resolverIP/uz_resolverIP
+    uz_resolver_pl_interface/uz_resolver_pl_interface
     uz_ssi_interface/uz_ssi_interface

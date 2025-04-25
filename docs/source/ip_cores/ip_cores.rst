@@ -25,6 +25,5 @@ IP-Cores
     uz_inverter_adapter/uz_inverter_adapter
     uz_cil_pmsm/uz_cil_pmsm
     uz_temperatureCard/uz_temperatureCard
-    uz_resolverIP/uz_resolverIP
-    uz_resolver_pl_interface/uz_resolver_pl_interface
+    uz_encoder_interfaces/uz_encoder_interfaces
     uz_axi_gpio/uz_axi_gpio

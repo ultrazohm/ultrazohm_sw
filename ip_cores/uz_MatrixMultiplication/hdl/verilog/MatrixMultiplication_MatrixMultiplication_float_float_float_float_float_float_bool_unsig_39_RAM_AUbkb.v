@@ -4,32 +4,23 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
-module MatrixMultiplication_B1_RAM_AUTO_1R1W (
+module MatrixMultiplication_MatrixMultiplication_float_float_float_float_float_float_bool_unsig_39_RAM_AUbkb (
      
     address0, ce0,
     d0, we0, 
     q0, 
-      
-    address1, ce1,
-    
-    q1, 
      
     reset, clk);
 
 parameter DataWidth = 32;
-parameter AddressWidth = 11;
-parameter AddressRange = 1280;
+parameter AddressWidth = 6;
+parameter AddressRange = 64;
  
 input[AddressWidth-1:0] address0;
 input ce0;
 input[DataWidth-1:0] d0;
 input we0; 
 output reg[DataWidth-1:0] q0; 
- 
-input[AddressWidth-1:0] address1;
-input ce1;
-
-output reg[DataWidth-1:0] q1; 
 
 input reset;
 input clk;
@@ -37,7 +28,7 @@ input clk;
 (* ram_style = "auto"  *)reg [DataWidth-1:0] ram[0:AddressRange-1];
 
 initial begin
-    $readmemh("./MatrixMultiplication_B1_RAM_AUTO_1R1W.dat", ram);
+    $readmemh("./MatrixMultiplication_MatrixMultiplication_float_float_float_float_float_float_bool_unsig_39_RAM_AUbkb.dat", ram);
 end 
 
  
@@ -56,18 +47,6 @@ begin
 
     end
 end 
- 
-  
-
-
-
-always @(posedge clk) 
-begin 
-    if (ce1) begin
-        q1 <= ram[address1];
-    end
-end 
-
  
  
 

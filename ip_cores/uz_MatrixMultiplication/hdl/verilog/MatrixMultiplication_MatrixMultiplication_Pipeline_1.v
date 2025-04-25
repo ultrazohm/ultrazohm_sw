@@ -40,13 +40,13 @@ reg A_we0;
 (* fsm_encoding = "none" *) reg   [0:0] ap_CS_fsm;
 wire    ap_CS_fsm_state1;
 reg    ap_block_state1_pp0_stage0_iter0;
-wire   [0:0] exitcond89420_fu_52_p2;
+wire   [0:0] exitcond3420_fu_52_p2;
 reg    ap_condition_exit_pp0_iter0_stage0;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
 wire   [63:0] p_cast_fu_64_p1;
 reg   [4:0] empty_fu_26;
-wire   [4:0] empty_56_fu_58_p2;
+wire   [4:0] empty_114_fu_58_p2;
 wire    ap_loop_init;
 reg   [4:0] ap_sig_allocacmp_p_load;
 reg    ap_done_reg;
@@ -100,8 +100,8 @@ end
 
 always @ (posedge ap_clk) begin
     if (((ap_start_int == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
-        if ((exitcond89420_fu_52_p2 == 1'd0)) begin
-            empty_fu_26 <= empty_56_fu_58_p2;
+        if ((exitcond3420_fu_52_p2 == 1'd0)) begin
+            empty_fu_26 <= empty_114_fu_58_p2;
         end else if ((ap_loop_init == 1'b1)) begin
             empty_fu_26 <= 5'd0;
         end
@@ -117,7 +117,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((ap_start_int == 1'b1) & (exitcond89420_fu_52_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state1))) begin
+    if (((ap_start_int == 1'b1) & (exitcond3420_fu_52_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state1))) begin
         A_we0 = 1'b1;
     end else begin
         A_we0 = 1'b0;
@@ -133,7 +133,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((ap_start_int == 1'b1) & (exitcond89420_fu_52_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state1))) begin
+    if (((ap_start_int == 1'b1) & (exitcond3420_fu_52_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state1))) begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b1;
     end else begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b0;
@@ -195,9 +195,9 @@ end
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign empty_56_fu_58_p2 = (ap_sig_allocacmp_p_load + 5'd1);
+assign empty_114_fu_58_p2 = (ap_sig_allocacmp_p_load + 5'd1);
 
-assign exitcond89420_fu_52_p2 = ((ap_sig_allocacmp_p_load == 5'd20) ? 1'b1 : 1'b0);
+assign exitcond3420_fu_52_p2 = ((ap_sig_allocacmp_p_load == 5'd20) ? 1'b1 : 1'b0);
 
 assign p_cast_fu_64_p1 = ap_sig_allocacmp_p_load;
 

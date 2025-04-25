@@ -14,10 +14,9 @@ module MatrixMultiplication_MatrixMultiplication_Pipeline_burst_C4mat (
         ap_done,
         ap_idle,
         ap_ready,
-        C4_0,
-        C4_1,
-        C4_2,
-        C4_3,
+        C4_address0,
+        C4_ce0,
+        C4_q0,
         shiftreg_out,
         shiftreg_out_ap_vld
 );
@@ -30,14 +29,14 @@ input   ap_start;
 output   ap_done;
 output   ap_idle;
 output   ap_ready;
-input  [31:0] C4_0;
-input  [31:0] C4_1;
-input  [31:0] C4_2;
-input  [31:0] C4_3;
+output  [1:0] C4_address0;
+output   C4_ce0;
+input  [31:0] C4_q0;
 output  [127:0] shiftreg_out;
 output   shiftreg_out_ap_vld;
 
 reg ap_idle;
+reg C4_ce0;
 reg shiftreg_out_ap_vld;
 
 (* fsm_encoding = "none" *) reg   [0:0] ap_CS_fsm;
@@ -48,22 +47,22 @@ reg    ap_idle_pp0;
 wire    ap_block_state1_pp0_stage0_iter0;
 wire    ap_block_state2_pp0_stage0_iter1;
 wire    ap_block_pp0_stage0_subdone;
-wire   [0:0] icmp_ln80_fu_100_p2;
-reg    ap_condition_exit_pp0_iter1_stage0;
+wire   [0:0] icmp_ln84_fu_81_p2;
+reg    ap_condition_exit_pp0_iter0_stage0;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
 wire    ap_block_pp0_stage0_11001;
-reg   [127:0] shiftreg_fu_48;
-wire   [127:0] or_ln_fu_143_p3;
-wire    ap_loop_init;
+wire   [63:0] zext_ln84_fu_93_p1;
 wire    ap_block_pp0_stage0;
-reg   [2:0] i_fu_52;
-wire   [2:0] add_ln80_fu_106_p2;
+reg   [127:0] shiftreg_fu_40;
+wire   [127:0] or_ln_fu_120_p3;
+wire    ap_loop_init;
+reg   [2:0] i_fu_44;
+wire   [2:0] add_ln84_fu_87_p2;
+reg   [2:0] ap_sig_allocacmp_i_1;
 wire    ap_block_pp0_stage0_01001;
-wire   [1:0] tmp_fu_119_p5;
-wire   [31:0] tmp_fu_119_p6;
-wire   [31:0] bitcast_ln82_fu_129_p1;
-wire   [95:0] lshr_ln_fu_133_p4;
+wire   [31:0] bitcast_ln86_fu_106_p1;
+wire   [95:0] lshr_ln_fu_110_p4;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -79,24 +78,6 @@ initial begin
 #0 ap_done_reg = 1'b0;
 end
 
-MatrixMultiplication_mux_42_32_1_1 #(
-    .ID( 1 ),
-    .NUM_STAGE( 1 ),
-    .din0_WIDTH( 32 ),
-    .din1_WIDTH( 32 ),
-    .din2_WIDTH( 32 ),
-    .din3_WIDTH( 32 ),
-    .din4_WIDTH( 2 ),
-    .dout_WIDTH( 32 ))
-mux_42_32_1_1_U24(
-    .din0(C4_0),
-    .din1(C4_1),
-    .din2(C4_2),
-    .din3(C4_3),
-    .din4(tmp_fu_119_p5),
-    .dout(tmp_fu_119_p6)
-);
-
 MatrixMultiplication_flow_control_loop_pipe_sequential_init flow_control_loop_pipe_sequential_init_U(
     .ap_clk(ap_clk),
     .ap_rst(ap_rst),
@@ -106,7 +87,7 @@ MatrixMultiplication_flow_control_loop_pipe_sequential_init flow_control_loop_pi
     .ap_start_int(ap_start_int),
     .ap_loop_init(ap_loop_init),
     .ap_ready_int(ap_ready_int),
-    .ap_loop_exit_ready(ap_condition_exit_pp0_iter1_stage0),
+    .ap_loop_exit_ready(ap_condition_exit_pp0_iter0_stage0),
     .ap_loop_exit_done(ap_done_int),
     .ap_continue_int(ap_continue_int),
     .ap_done_int(ap_done_int)
@@ -136,7 +117,7 @@ always @ (posedge ap_clk) begin
     if (ap_rst == 1'b1) begin
         ap_enable_reg_pp0_iter1 <= 1'b0;
     end else begin
-        if ((1'b1 == ap_condition_exit_pp0_iter1_stage0)) begin
+        if ((1'b1 == ap_condition_exit_pp0_iter0_stage0)) begin
             ap_enable_reg_pp0_iter1 <= 1'b0;
         end else if (((1'b0 == ap_block_pp0_stage0_subdone) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
             ap_enable_reg_pp0_iter1 <= ap_start_int;
@@ -146,10 +127,10 @@ end
 
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        if ((ap_loop_init == 1'b1)) begin
-            i_fu_52 <= 3'd0;
-        end else if (((icmp_ln80_fu_100_p2 == 1'd0) & (ap_enable_reg_pp0_iter1 == 1'b1))) begin
-            i_fu_52 <= add_ln80_fu_106_p2;
+        if (((icmp_ln84_fu_81_p2 == 1'd0) & (ap_enable_reg_pp0_iter0 == 1'b1))) begin
+            i_fu_44 <= add_ln84_fu_87_p2;
+        end else if ((ap_loop_init == 1'b1)) begin
+            i_fu_44 <= 3'd0;
         end
     end
 end
@@ -157,18 +138,26 @@ end
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         if ((ap_loop_init == 1'b1)) begin
-            shiftreg_fu_48 <= 128'd0;
-        end else if (((icmp_ln80_fu_100_p2 == 1'd0) & (ap_enable_reg_pp0_iter1 == 1'b1))) begin
-            shiftreg_fu_48 <= or_ln_fu_143_p3;
+            shiftreg_fu_40 <= 128'd0;
+        end else if ((ap_enable_reg_pp0_iter1 == 1'b1)) begin
+            shiftreg_fu_40 <= or_ln_fu_120_p3;
         end
     end
 end
 
 always @ (*) begin
-    if (((icmp_ln80_fu_100_p2 == 1'd1) & (1'b0 == ap_block_pp0_stage0_subdone) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        ap_condition_exit_pp0_iter1_stage0 = 1'b1;
+    if (((1'b0 == ap_block_pp0_stage0_11001) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+        C4_ce0 = 1'b1;
     end else begin
-        ap_condition_exit_pp0_iter1_stage0 = 1'b0;
+        C4_ce0 = 1'b0;
+    end
+end
+
+always @ (*) begin
+    if (((icmp_ln84_fu_81_p2 == 1'd1) & (1'b0 == ap_block_pp0_stage0_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+        ap_condition_exit_pp0_iter0_stage0 = 1'b1;
+    end else begin
+        ap_condition_exit_pp0_iter0_stage0 = 1'b0;
     end
 end
 
@@ -205,7 +194,15 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((icmp_ln80_fu_100_p2 == 1'd1) & (1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+    if (((ap_loop_init == 1'b1) & (1'b0 == ap_block_pp0_stage0) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+        ap_sig_allocacmp_i_1 = 3'd0;
+    end else begin
+        ap_sig_allocacmp_i_1 = i_fu_44;
+    end
+end
+
+always @ (*) begin
+    if (((icmp_ln84_fu_81_p2 == 1'd1) & (1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         shiftreg_out_ap_vld = 1'b1;
     end else begin
         shiftreg_out_ap_vld = 1'b0;
@@ -223,7 +220,9 @@ always @ (*) begin
     endcase
 end
 
-assign add_ln80_fu_106_p2 = (i_fu_52 + 3'd1);
+assign C4_address0 = zext_ln84_fu_93_p1;
+
+assign add_ln84_fu_87_p2 = (ap_sig_allocacmp_i_1 + 3'd1);
 
 assign ap_CS_fsm_pp0_stage0 = ap_CS_fsm[32'd0];
 
@@ -243,18 +242,18 @@ assign ap_enable_pp0 = (ap_idle_pp0 ^ 1'b1);
 
 assign ap_enable_reg_pp0_iter0 = ap_start_int;
 
-assign ap_loop_exit_ready = ap_condition_exit_pp0_iter1_stage0;
+assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign bitcast_ln82_fu_129_p1 = tmp_fu_119_p6;
+assign bitcast_ln86_fu_106_p1 = C4_q0;
 
-assign icmp_ln80_fu_100_p2 = ((i_fu_52 == 3'd4) ? 1'b1 : 1'b0);
+assign icmp_ln84_fu_81_p2 = ((ap_sig_allocacmp_i_1 == 3'd4) ? 1'b1 : 1'b0);
 
-assign lshr_ln_fu_133_p4 = {{shiftreg_fu_48[127:32]}};
+assign lshr_ln_fu_110_p4 = {{shiftreg_fu_40[127:32]}};
 
-assign or_ln_fu_143_p3 = {{bitcast_ln82_fu_129_p1}, {lshr_ln_fu_133_p4}};
+assign or_ln_fu_120_p3 = {{bitcast_ln86_fu_106_p1}, {lshr_ln_fu_110_p4}};
 
-assign shiftreg_out = shiftreg_fu_48;
+assign shiftreg_out = shiftreg_fu_40;
 
-assign tmp_fu_119_p5 = i_fu_52[1:0];
+assign zext_ln84_fu_93_p1 = ap_sig_allocacmp_i_1;
 
 endmodule //MatrixMultiplication_MatrixMultiplication_Pipeline_burst_C4mat

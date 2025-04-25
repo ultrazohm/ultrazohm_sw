@@ -97,7 +97,7 @@ void ISR_Control(void *data)
 
 //    codegenInstance.input.position_mech_SI = Global_Data.av.ssi0_position_SI;
     codegenInstance.input.position_mech_SI = sawtooth;
-    uz_codegen_step(&codegenInstance); //~3.5 µs
+    uz_codegen_step(&codegenInstance); // 3.5 microseconds
     Global_Data.av.ssi0_speed_mech_rad_s = codegenInstance.output.omega_mech;
     Global_Data.av.ssi0_speed_mech_rpm = Global_Data.av.ssi0_speed_mech_rad_s * 30.0f/UZ_PIf;
 

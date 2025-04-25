@@ -84,8 +84,8 @@ void ISR_Control(void *data)
     	while(1) {
     		is_done = uz_Matrix_Multi_get_done_flag(Global_Data.objects.matrix_instance);
     	    if (is_done == true) {
-    	    	Xil_DCacheInvalidateRange((uint32_t)((uint32_t*)C_matrix),sizeof(C_matrix));//->Invalidate wenn R5 liesst
-    	    	//Xil_DCacheInvalidateLine((uint32_t)((uint32_t*)C_matrix));
+    	    	//Xil_DCacheInvalidateRange((uint32_t)((uint32_t*)C_matrix),sizeof(C_matrix));//->Invalidate wenn R5 liesst
+    	    	Xil_DCacheInvalidateLine((uint32_t)((uint32_t*)C_matrix));
     	    	break;
     	    }
     	}

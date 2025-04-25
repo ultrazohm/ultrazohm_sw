@@ -56,14 +56,26 @@ volatile float A_matrix[20] EMAC_ALIGN = {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.
 volatile float B1_matrix[1280] EMAC_ALIGN = {
 #include "Matrix_B1_input.csv"
 };
+volatile float Bias1_matrix[64] EMAC_ALIGN = {
+#include "Matrix_Bias1_output.csv"
+};
 volatile float B2_matrix[4096] EMAC_ALIGN = {
 #include "Matrix_B2_input.csv"
+};
+volatile float Bias2_matrix[64] EMAC_ALIGN = {
+#include "Matrix_Bias2_output.csv"
 };
 volatile float B3_matrix[4096] EMAC_ALIGN = {
 #include "Matrix_B3_input.csv"
 };
+volatile float Bias3_matrix[64] EMAC_ALIGN = {
+#include "Matrix_Bias3_output.csv"
+};
 volatile float B4_matrix[256] EMAC_ALIGN = {
 #include "Matrix_B4_input.csv"
+};
+volatile float Bias4_matrix[4] EMAC_ALIGN = {
+#include "Matrix_Bias4_output.csv"
 };
 volatile float C_matrix[4] EMAC_ALIGN = {0};
 struct uz_Matrix_Multi_config config = {
@@ -91,7 +103,11 @@ struct uz_Matrix_Multi_config config = {
 		.C_columns = 4U,
 		.C_rows = 1U,
 		.C_length_of_data = UZ_MATRIX_SIZE(C_matrix),
-		.C_data = C_matrix
+		.C_data = C_matrix,
+		.Bias1_data = Bias1_matrix,
+		.Bias2_data = Bias2_matrix,
+		.Bias3_data = Bias3_matrix,
+		.Bias4_data = Bias4_matrix
 };
 int main(void)
 {
@@ -144,7 +160,7 @@ int main(void)
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_6_to_11, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_12_to_17, true);
             uz_interlockDeadtime2L_set_enable_output(Global_Data.objects.deadtime_interlock_d1_pin_18_to_23, true);
-            Global_Data.objects.matrix_instance = uz_Matrix_Multi_init(config, A_matrix, B1_matrix, B2_matrix, B3_matrix, B4_matrix, C_matrix);
+            Global_Data.objects.matrix_instance = uz_Matrix_Multi_init(config);
             Global_Data.objects.pwm_d1_pin_0_to_5 = initialize_pwm_2l_on_D1_pin_0_to_5();
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();

@@ -19,35 +19,43 @@ float x_20[NUMBER_OF_INPUTS_20N] = {0};
 static float w_1_20[NUMBER_OF_INPUTS_20N * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 	#include "../../Matrix_B1_input.csv"
 };
-static float b_1_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float b_1_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+	#include "../../Matrix_Bias1_output.csv"
+};
 static float y_1_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 
 //2nd Layer
 static float w_2_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 	#include "../../Matrix_B3_input.csv"
 };
-static float b_2_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float b_2_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+	#include "../../Matrix_Bias2_output.csv"
+};
 static float y_2_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 
 //3rd Layer
 static float w_3_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 	#include "../../Matrix_B3_input.csv"
 };
-static float b_3_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+static float b_3_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+	#include "../../Matrix_Bias3_output.csv"
+};
 static float y_3_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 
 //4th Layer
 static float w_4_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
 	#include "../../Matrix_B4_input.csv"
 };
-static float b_4_20[NUMBER_OF_OUTPUTS] = {0};
+static float b_4_20[NUMBER_OF_OUTPUTS] = {
+	#include "../../Matrix_Bias4_output.csv"
+};
 
 static float y_4_20[NUMBER_OF_OUTPUTS] = {0};
 
 // initialize config struct and activation function
 struct uz_nn_layer_config config_20nn[4] = {
 [0] = {
-    .activation_function = activation_linear,
+    .activation_function = activation_ReLU,
     .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
     .number_of_inputs = NUMBER_OF_INPUTS_20N,
     .length_of_weights = UZ_MATRIX_SIZE(w_1_20),
@@ -57,7 +65,7 @@ struct uz_nn_layer_config config_20nn[4] = {
     .bias = b_1_20,
     .output = y_1_20},
 [1] = {
-	.activation_function = activation_linear,
+	.activation_function = activation_ReLU,
     .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
     .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
     .length_of_weights = UZ_MATRIX_SIZE(w_2_20),
@@ -67,7 +75,7 @@ struct uz_nn_layer_config config_20nn[4] = {
     .bias = b_2_20,
     .output = y_2_20},
 [2] = {
-	.activation_function = activation_linear,
+	.activation_function = activation_ReLU,
     .number_of_neurons = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
     .number_of_inputs = NUMBER_OF_NEURONS_IN_HIDDEN_LAYER,
     .length_of_weights = UZ_MATRIX_SIZE(w_3_20),

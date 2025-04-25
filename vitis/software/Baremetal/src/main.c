@@ -79,7 +79,7 @@ volatile float Bias4_matrix[4] EMAC_ALIGN = {
 };
 volatile float C_matrix[4] EMAC_ALIGN = {0};
 struct uz_Matrix_Multi_config config = {
-		.base_address = XPAR_UZ_USER_MATRIXMULTIPLICATION_0_S_AXI_CONTROL_BASEADDR,
+		.base_address = XPAR_UZ_USER_UZ_NN_0_S_AXI_CONTROL_BASEADDR,
 		.A_columns = 20U,
 		.A_rows = 1U,
 		.A_length_of_data = UZ_MATRIX_SIZE(A_matrix),

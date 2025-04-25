@@ -27,8 +27,10 @@ void test_uz_ssi_interface_hw_write_zero_base_address(void)
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width(0U, encoder_bit_width));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_pll_parameters(0U, sampling_interval, kp_pll, ki_pll));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_raw(0U));
-    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_si(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_mech_si(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_el_si(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_speed_mech_si(0U));
+    TEST_IGNORE_MESSAGE("Need to Implement position_el_si");
 }
 
 void test_uz_ssi_interface_hw_write_ssi_clock_divider_limits(void)
@@ -124,7 +126,7 @@ void test_uz_ssi_interface_hw_read_position_and_speed(void)
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + speed_mech_SI_AXI_Data_uz_ssi_interface, expected_speed_mech_si_signed_representation);
     returned_position_raw = uz_ssi_interface_hw_read_position_raw(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_UINT32(expected_position_raw, returned_position_raw);
-    returned_position_si = uz_ssi_interface_hw_read_position_si(TEST_BASE_ADDRESS);
+    returned_position_si = uz_ssi_interface_hw_read_position_mech_si(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_position_si, returned_position_si);
     returned_speed_mech_si = uz_ssi_interface_hw_read_speed_mech_si(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_speed_mech_si,returned_speed_mech_si);

@@ -22,7 +22,9 @@
 #include "../../uz/uz_HAL.h"
 #include "uz_ssi_interface.h" 
 #include "uz_ssi_interface_hw.h" 
+#include "../../uz/uz_signals/uz_signals.h"
 
+#define RAD_PER_SECOND_TO_RPM (30.0f/UZ_PIf)
 struct uz_ssi_interface_t {
     bool is_ready;
     struct uz_ssi_interface_config_t config;
@@ -47,6 +49,7 @@ uz_ssi_interface_t* uz_ssi_interface_init(struct uz_ssi_interface_config_t confi
     uz_assert_not_zero_uint32(config.base_address);
     uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
     uz_assert_not_zero_uint32(config.ssi_clk_frequency_Hz);
+    uz_assert_not_zero_uint32(config.ssi_encoder_bit_width);
     uz_assert_not_zero_uint32(config.machine_polepairs);
     uz_ssi_interface_t* self = uz_ssi_interface_allocation();
     self->config=config;
@@ -59,10 +62,57 @@ void uz_ssi_interface_set_config(uz_ssi_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     // calculate ssi clock divider from ip core clock frequency and ssi clock frequency
-    uint32_t ssi_clk_divider = self->config.ip_clk_frequency_Hz/(2U*self->config.ssi_clk_frequency_Hz);
+    uint32_t ssi_clk_divider = ceil_div(self->config.ip_clk_frequency_Hz, (2U*self->config.ssi_clk_frequency_Hz));
     // write configuration
     uz_ssi_interface_hw_write_ssi_clock_divider(self->config.base_address, ssi_clk_divider);
     uz_ssi_interface_hw_write_ssi_encoder_bit_width(self->config.base_address, self->config.ssi_encoder_bit_width);
+    uz_ssi_interface_hw_write_pll_parameters(self->config.base_address, self->config.sampling_interval_seconds, self->config.kp_pll, self->config.ki_pll);
+}
+
+void uz_ssi_interface_update_all_outputs(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);  
+    // get new values for outputs struct  
+    self->outputs.position_raw = uz_ssi_interface_get_position_raw(self);
+    self->outputs.position_mech_si = uz_ssi_interface_get_position_mech_si(self);
+    self->outputs.position_el_si = uz_ssi_interface_get_position_el_si(self);
+    self->outputs.speed_mech_si = uz_ssi_interface_get_speed_mech_si(self);
+    self->outputs.speed_mech_rpm = uz_ssi_interface_get_speed_mech_rpm(self);
+}
+
+uint32_t uz_ssi_interface_get_position_raw(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (uz_ssi_interface_hw_read_position_raw(self->config.base_address));
+}
+
+float uz_ssi_interface_get_position_mech_si(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (uz_ssi_interface_hw_read_position_mech_si(self->config.base_address));
+}
+
+float uz_ssi_interface_get_position_el_si(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (uz_ssi_interface_hw_read_position_el_si(self->config.base_address));
+}
+
+float uz_ssi_interface_get_speed_mech_si(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (uz_ssi_interface_hw_read_speed_mech_si(self->config.base_address));
+}
+
+float uz_ssi_interface_get_speed_mech_rpm(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (self->outputs.speed_mech_si*RAD_PER_SECOND_TO_RPM);
+}
+
+uint32_t ceil_div(uint32_t a, uint32_t b) {
+    uz_assert(b !=0U);
+    return (a + b - 1U) / b;
 }
 
 #endif

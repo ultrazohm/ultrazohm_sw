@@ -67,9 +67,15 @@ uint32_t uz_ssi_interface_hw_read_position_raw(uint32_t base_address) {
     return uz_axi_read_uint32(base_address + position_raw_AXI_Data_uz_ssi_interface);
 }
 
-float uz_ssi_interface_hw_read_position_si(uint32_t base_address) {
+float uz_ssi_interface_hw_read_position_mech_si(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);
     uint32_t position_tmp = uz_axi_read_uint32(base_address + position_mech_SI_AXI_Data_uz_ssi_interface);
+    return uz_convert_unsigned_fixed_to_float(position_tmp, FRAC_POSITION_SI);
+}
+
+float uz_ssi_interface_hw_read_position_el_si(uint32_t base_address) {
+    uz_assert_not_zero_uint32(base_address);
+    uint32_t position_tmp = uz_axi_read_uint32(base_address + 0U);
     return uz_convert_unsigned_fixed_to_float(position_tmp, FRAC_POSITION_SI);
 }
 

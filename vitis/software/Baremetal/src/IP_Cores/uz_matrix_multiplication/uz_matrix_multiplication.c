@@ -69,8 +69,8 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config){
 					break;
 				}
 	}
-	//self->copy_mats_flag = false;
-	//uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, false);
+	self->copy_mats_flag = false;
+	uz_matrix_multiplication_hw_set_copy_mats_flag(self->config.base_address, false);
 	uz_matrix_multiplication_hw_set_start(self->config.base_address, true);
 	return(self);
 }

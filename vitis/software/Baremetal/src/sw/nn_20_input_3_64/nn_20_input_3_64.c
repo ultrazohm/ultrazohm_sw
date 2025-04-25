@@ -26,7 +26,7 @@ static float y_1_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
 
 //2nd Layer
 static float w_2_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
-	#include "../../Matrix_B3_input.csv"
+	#include "../../Matrix_B2_input.csv"
 };
 static float b_2_20[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 	#include "../../Matrix_Bias2_output.csv"

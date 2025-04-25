@@ -57,26 +57,26 @@ void ISR_Control(void *data)
     ReadAllADC();
     //Xil_DCacheDisable();
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*10000.0f + 15.0f;
-    A_matrix[1] = Global_Data.aa.A1.me.ADC_A1*200.0f + 15.0f;
-    A_matrix[2] = Global_Data.aa.A1.me.ADC_A2*200.0f + 15.0f;
-    A_matrix[3] = Global_Data.aa.A1.me.ADC_A3*200.0f + 15.0f;
-    A_matrix[4] = Global_Data.aa.A1.me.ADC_A4*200.0f + 15.0f;
-    A_matrix[5] = Global_Data.aa.A1.me.ADC_B5*200.0f + 15.0f;
-    A_matrix[6] = Global_Data.aa.A1.me.ADC_B6*200.0f + 15.0f;
-    A_matrix[7] = Global_Data.aa.A1.me.ADC_B7*200.0f + 15.0f;
-    A_matrix[8] = Global_Data.aa.A1.me.ADC_B8*200.0f + 15.0f;
-    A_matrix[9] = Global_Data.aa.A1.me.ADC_A1*200.0f + 13.0f;
-    A_matrix[10] = Global_Data.aa.A1.me.ADC_A2*200.0f + 21.0f;
-    A_matrix[11] = Global_Data.aa.A1.me.ADC_A3*200.0f + 31.0f;
-    A_matrix[12] = Global_Data.aa.A1.me.ADC_A4*200.0f + 41.0f;
-    A_matrix[13] = Global_Data.aa.A1.me.ADC_B5*200.0f + 51.0f;
-    A_matrix[14] = Global_Data.aa.A1.me.ADC_B6*200.0f + 61.0f;
-    A_matrix[15] = Global_Data.aa.A1.me.ADC_B7*200.0f + 71.0f;
-    A_matrix[16] = Global_Data.aa.A1.me.ADC_B8*200.0f + 81.0f;
-    A_matrix[17] = Global_Data.aa.A1.me.ADC_B5*200.0f + 91.0f;
-    A_matrix[18] = Global_Data.aa.A1.me.ADC_B6*200.0f + 101.0f;
-    A_matrix[19] = Global_Data.aa.A1.me.ADC_B7*200.0f + 111.0f;
+    A_matrix[0] = Global_Data.aa.A1.me.ADC_A1*100000.0f + 15.0f;
+    A_matrix[1] = Global_Data.aa.A1.me.ADC_A1*100000.0f + 15.0f;
+    A_matrix[2] = Global_Data.aa.A1.me.ADC_A2*100000.0f + 15.0f;
+    A_matrix[3] = Global_Data.aa.A1.me.ADC_A3*100000.0f + 15.0f;
+    A_matrix[4] = Global_Data.aa.A1.me.ADC_A4*100000.0f + 15.0f;
+    A_matrix[5] = Global_Data.aa.A1.me.ADC_B5*100000.0f + 15.0f;
+    A_matrix[6] = Global_Data.aa.A1.me.ADC_B6*100000.0f + 15.0f;
+    A_matrix[7] = Global_Data.aa.A1.me.ADC_B7*100000.0f + 15.0f;
+    A_matrix[8] = Global_Data.aa.A1.me.ADC_B8*100000.0f + 15.0f;
+    A_matrix[9] = Global_Data.aa.A1.me.ADC_A1*100000.0f + 13.0f;
+    A_matrix[10] = Global_Data.aa.A1.me.ADC_A2*100000.0f + 21.0f;
+    A_matrix[11] = Global_Data.aa.A1.me.ADC_A3*100000.0f + 31.0f;
+    A_matrix[12] = Global_Data.aa.A1.me.ADC_A4*100000.0f + 41.0f;
+    A_matrix[13] = Global_Data.aa.A1.me.ADC_B5*100000.0f + 51.0f;
+    A_matrix[14] = Global_Data.aa.A1.me.ADC_B6*100000.0f + 61.0f;
+    A_matrix[15] = Global_Data.aa.A1.me.ADC_B7*100000.0f + 71.0f;
+    A_matrix[16] = Global_Data.aa.A1.me.ADC_B8*100000.0f + 81.0f;
+    A_matrix[17] = Global_Data.aa.A1.me.ADC_B5*100000.0f + 91.0f;
+    A_matrix[18] = Global_Data.aa.A1.me.ADC_B6*100000.0f + 101.0f;
+    A_matrix[19] = Global_Data.aa.A1.me.ADC_B7*100000.0f + 111.0f;
     Xil_DCacheFlushRange(((uint32_t)((uint32_t*)A_matrix)),sizeof(A_matrix));//->Flush wenn der R5 schreibt
     if (current_state==control_state)
     {

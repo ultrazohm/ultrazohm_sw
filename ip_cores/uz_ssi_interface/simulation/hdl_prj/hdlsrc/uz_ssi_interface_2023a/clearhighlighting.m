@@ -29,5 +29,11 @@ annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/fix
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data/sample_serial_data', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data/sample_serial_data', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor/fixed_point_floor', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor/fixed_point_floor', 1, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi_after_offset/fixed_point_floor/fixed_point_floor', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi_after_offset/fixed_point_floor/fixed_point_floor', 1, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi_after_offset/fixed_point_floor', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Delay1/Delay1', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Delay14/Delay14', 0, 1, '');

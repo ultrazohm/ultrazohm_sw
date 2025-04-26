@@ -57,7 +57,8 @@
             "xlconcat_0": "",
             "xlconcat_1": "",
             "xlconcat_3": "",
-            "vio_Inverter_Test": ""
+            "vio_Inverter_Test": "",
+            "vio_0": ""
           }
         },
         "D3_adapter": {
@@ -1856,6 +1857,21 @@
             "direction": "O",
             "left": "0",
             "right": "0"
+          },
+          "D1_IN_FLT": {
+            "direction": "I",
+            "left": "0",
+            "right": "0"
+          },
+          "D1_IN_FLT1": {
+            "direction": "I",
+            "left": "5",
+            "right": "0"
+          },
+          "D1_23_IN_KL15_PG": {
+            "direction": "I",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -1990,6 +2006,21 @@
                 "direction": "O",
                 "left": "0",
                 "right": "0"
+              },
+              "D1_IN_FLT": {
+                "direction": "I",
+                "left": "0",
+                "right": "0"
+              },
+              "D1_IN_FLT1": {
+                "direction": "I",
+                "left": "5",
+                "right": "0"
+              },
+              "D1_23_IN_KL15_PG": {
+                "direction": "I",
+                "left": "0",
+                "right": "0"
               }
             },
             "components": {
@@ -2122,6 +2153,21 @@
                   },
                   "D2_27_OUT_CS_SQUIB2": {
                     "direction": "O",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D1_IN_FLT": {
+                    "direction": "I",
+                    "left": "0",
+                    "right": "0"
+                  },
+                  "D1_IN_FLT1": {
+                    "direction": "I",
+                    "left": "5",
+                    "right": "0"
+                  },
+                  "D1_23_IN_KL15_PG": {
+                    "direction": "I",
                     "left": "0",
                     "right": "0"
                   }
@@ -2288,6 +2334,20 @@
                         "value": "1"
                       }
                     }
+                  },
+                  "vio_0": {
+                    "vlnv": "xilinx.com:ip:vio:3.0",
+                    "xci_name": "zusys_vio_0_1",
+                    "xci_path": "ip\\zusys_vio_0_1\\zusys_vio_0_1.xci",
+                    "inst_hier_path": "uz_digital_adapter/Inverter_Interface/Gates/vio_0",
+                    "parameters": {
+                      "C_NUM_PROBE_IN": {
+                        "value": "8"
+                      },
+                      "C_NUM_PROBE_OUT": {
+                        "value": "0"
+                      }
+                    }
                   }
                 },
                 "interface_nets": {
@@ -2360,6 +2420,18 @@
                       "PWM_and_SS_control_V_1/AXI4_Lite_ARESETN",
                       "PWM_and_SS_control_V_2/AXI4_Lite_ARESETN",
                       "PWM_and_SS_control_V_2/IPCORE_RESETN"
+                    ]
+                  },
+                  "D1_23_IN_KL15_PG_1": {
+                    "ports": [
+                      "D1_23_IN_KL15_PG",
+                      "vio_0/probe_in1"
+                    ]
+                  },
+                  "D1_IN_FLT1_1": {
+                    "ports": [
+                      "D1_IN_FLT1",
+                      "vio_0/probe_in0"
                     ]
                   },
                   "InterLock_Module_0_S0_OUT": {
@@ -2857,7 +2929,8 @@
                       "PWM_and_SS_control_V_1/AXI4_Lite_ACLK",
                       "PWM_and_SS_control_V_2/AXI4_Lite_ACLK",
                       "PWM_and_SS_control_V_2/IPCORE_CLK",
-                      "vio_Inverter_Test/clk"
+                      "vio_Inverter_Test/clk",
+                      "vio_0/clk"
                     ]
                   }
                 }
@@ -2914,6 +2987,18 @@
               }
             },
             "nets": {
+              "D1_23_IN_KL15_PG_1": {
+                "ports": [
+                  "D1_23_IN_KL15_PG",
+                  "Gates/D1_23_IN_KL15_PG"
+                ]
+              },
+              "D1_IN_FLT1_1": {
+                "ports": [
+                  "D1_IN_FLT1",
+                  "Gates/D1_IN_FLT1"
+                ]
+              },
               "Gates_Carrier_triangular_max1": {
                 "ports": [
                   "Gates/Carrier_triangular_max",
@@ -3726,6 +3811,18 @@
           }
         },
         "nets": {
+          "D1_23_IN_KL15_PG_1": {
+            "ports": [
+              "D1_23_IN_KL15_PG",
+              "Inverter_Interface/D1_23_IN_KL15_PG"
+            ]
+          },
+          "D1_IN_FLT1_1": {
+            "ports": [
+              "D1_IN_FLT1",
+              "Inverter_Interface/D1_IN_FLT1"
+            ]
+          },
           "Gates_3L_Interrupt_Center": {
             "ports": [
               "D2_adapter/Interrupt_Center",
@@ -9306,6 +9403,18 @@
           "uz_analog_adapter/A3_OUT_CNV_1",
           "A3_OUT_CNV_0",
           "A3_OUT_CNV_1"
+        ]
+      },
+      "D1_23_IN_KL15_PG_1": {
+        "ports": [
+          "D1_23_IN_KL15_PG",
+          "uz_digital_adapter/D1_23_IN_KL15_PG"
+        ]
+      },
+      "D1_IN_FLT_1": {
+        "ports": [
+          "D1_IN_FLT",
+          "uz_digital_adapter/D1_IN_FLT1"
         ]
       },
       "Enable_Gates_CPLD_High_dout": {

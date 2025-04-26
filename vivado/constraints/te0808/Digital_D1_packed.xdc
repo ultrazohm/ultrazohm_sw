@@ -35,28 +35,28 @@ set_property PACKAGE_PIN AB13  	[get_ports {D1_IN_NTC[1]}]
 set_property PACKAGE_PIN AC13  	[get_ports {D1_IN_NTC[2]}]
 
 # D1_22
-set_property PACKAGE_PIN AA12  	[get_ports D1_22_OUT_KL15[0]]
+set_property PACKAGE_PIN AA12  	[get_ports D1_22_OUT_KL15]
 
 # D1_23
-set_property PACKAGE_PIN AA11  	[get_ports D1_23_IN_KL15_PG[0]]
+set_property PACKAGE_PIN AA11  	[get_ports D1_23_IN_KL15_PG]
 
 # D1_24
-set_property PACKAGE_PIN AF1  	[get_ports D1_24_OUT_PYRO_TRIGGER[0]]
+set_property PACKAGE_PIN AF1  	[get_ports D1_24_OUT_PYRO_TRIGGER]
 
 # D1_25
-set_property PACKAGE_PIN AF2  	[get_ports D1_25_IN_IGNITION_SUCCESS[0]]
+set_property PACKAGE_PIN AF2  	[get_ports D1_25_IN_IGNITION_SUCCESS]
 
 # D1_26
-set_property PACKAGE_PIN AC3    [get_ports D1_26_OUT_RELAY2_CLOSE[0]]
+set_property PACKAGE_PIN AC3    [get_ports D1_26_OUT_RELAY2_CLOSE]
 
 # D1_27
-set_property PACKAGE_PIN AB3    [get_ports D1_27_IN_RELAY2_NOT_CLOSED[0]]
+set_property PACKAGE_PIN AB3    [get_ports D1_27_IN_RELAY2_NOT_CLOSED]
 
 # D1_28
-set_property PACKAGE_PIN AA5    [get_ports D1_28_OUT_RELAY3_CLOSE[0]]
+set_property PACKAGE_PIN AA5    [get_ports D1_28_OUT_RELAY3_CLOSE]
 
 # D1_29
-set_property PACKAGE_PIN AA6    [get_ports D1_29_IN_RELAY3_NOT_CLOSED[0]]
+set_property PACKAGE_PIN AA6    [get_ports D1_29_IN_RELAY3_NOT_CLOSED]
 
 
 set_property IOSTANDARD LVCMOS18 [get_ports D1_*]

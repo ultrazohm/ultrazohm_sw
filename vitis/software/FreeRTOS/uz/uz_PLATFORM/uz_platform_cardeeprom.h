@@ -30,7 +30,8 @@
 	ENUMITEM(13,	UZP_HWGROUP_ADCARD_DIGVOLT33, 	"Digital Voltage 3V3")										/*  */ \
 	ENUMITEM(14,	UZP_HWGROUP_ADCARD_DIGVOLT5, 	"Digital Voltage 5V")										/*  */ \
 	ENUMITEM(15,	UZP_HWGROUP_ADCARD_DIGVOLT335, 	"Digital Voltage 3V3/5V")									/*  */ \
-	ENUMITEM(16,	UZP_HWGROUP_ADCARD_LEDEBUG, 	"Digital LED-Debug")										/* ... and *no* \ after the end of the last line! */
+	ENUMITEM(16,	UZP_HWGROUP_ADCARD_LEDEBUG, 	"Digital LED-Debug")										/*  */ \
+	ENUMITEM(17,	UZP_HWGROUP_ADCARD_DIGABSENC,	"Digital Absolute Encoder")									/* ... and *no* \ after the end of the last line! */
 #include "../uz_enum/uz_numberedenum.h"
 
 // Variants for Digital Optical TXRX

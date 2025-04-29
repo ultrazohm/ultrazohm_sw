@@ -116,6 +116,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_vq_right_meas_ref_filt]		= &v_dq_meas_right_rev_filt.q;
 	js_ch_observable[JSO_vd_right_meas_filter_comp]		= &data->av.v_dq_meas_right_filter_comp.d;
 	js_ch_observable[JSO_vq_right_meas_filter_comp]		= &data->av.v_dq_meas_right_filter_comp.q;
+	js_ch_observable[JSO_vd_left_meas_filter_comp]		= &data->av.v_dq_meas_left_filter_comp.d;
+	js_ch_observable[JSO_vq_left_meas_filter_comp]		= &data->av.v_dq_meas_left_filter_comp.q;
 	js_ch_observable[JSO_vd_left_meas]		= &data->av.v_d_left_meas;
 	js_ch_observable[JSO_vq_left_meas]		= &data->av.v_q_left_meas;
 	js_ch_observable[JSO_torque]			= &data->av.torque;

@@ -86,6 +86,8 @@ enum JS_OberservableData {
 	JSO_vc_right_filter_comp,
 	JSO_vd_right_meas_filter_comp,
 	JSO_vq_right_meas_filter_comp,
+	JSO_vd_left_meas_filter_comp,
+	JSO_vq_left_meas_filter_comp,
 	JSO_ENDMARKER
 };
 

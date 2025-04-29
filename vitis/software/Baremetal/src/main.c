@@ -49,8 +49,11 @@ DS_Data Global_Data = {
 	.av.average_temp_left = 0.0f,
 	.av.v_abc_right_filter_comp = {0.0f},
 	.av.v_dq_meas_right_filter_comp = {0.0f},
+	.av.v_abc_left_filter_comp = {0.0f},
+	.av.v_dq_meas_left_filter_comp = {0.0f},
 	.av.magnitude = 0.0f,
-	.av.phi = 0.0f,
+	.av.phi_right = 0.0f,
+	.av.phi_left = 0.0f,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}

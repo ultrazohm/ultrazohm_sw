@@ -47,84 +47,117 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
-static void test_nn(){
 
-	//uz_printf("test_nn() called\r\n");
+
+// Define print function
+// #define PRINTF print
+#define PRINTF uz_printf
+
+#ifndef XPAR_OPENCL_CLOC_VADD_KERNEL_0_BASEADDR
+#define XPAR_OPENCL_CLOC_VADD_KERNEL_0_BASEADDR 0x90000000
+#endif
+
+#ifndef XPAR_XGPIO_0_BASEADDR
+#define XPAR_XGPIO_0_BASEADDR 0x80100000
+#endif
+
+static void test_nn(void) {
+
+	PRINTF("test_nn() called\r\n");
+    
 	Xil_DCacheDisable();
+	
+	unsigned int length = 1024;
 
-	char* accel_base_adr = 0x90000000;
-	char* gpio_base_adr = 0x80100000;
-	int32_t* input_a = malloc(1024 * 4);
-	int32_t* input_b = malloc(1024 * 4);
-	int32_t* output = malloc(1024 * 4);
-	for (int i = 0;i<1024;i++){
-		input_a[i] = i;
-		input_b[i] = i;
-		output[i] = 0;
+	char* accel_base_adr = (char*) XPAR_OPENCL_CLOC_VADD_KERNEL_0_BASEADDR;
+	char* gpio_base_adr  = (char*) XPAR_XGPIO_0_BASEADDR;
+	int32_t* input_a     = (int32_t*) malloc(length * 4);
+	int32_t* input_b     = (int32_t*) malloc(length * 4);
+	int32_t* output      = (int32_t*) malloc(length * 4);
+
+	if(input_a == NULL || input_b == NULL || output == NULL) {
+		// Ensure HEAP is of sufficient size
+		PRINTF("test_nn() malloc failed\r\n");
+		return;        
 	}
 
-	uint32_t pasid = 0;
-	uint16_t kp_wg_size_x = 1024;
-	uint16_t kp_wg_size_y = 1;
-	uint16_t kp_wg_size_z = 1;
-	uint32_t kp_grid_size_x = 1024;
+
+	// Initialization loop
+	for (unsigned int i = 0 ; i < length ; i++){
+		input_a[i] = i;
+		input_b[i] = i;
+		output[i]  = 0;
+	}
+
+	uint32_t pasid          = 0;
+	uint16_t kp_wg_size_x   = length;
+	uint16_t kp_wg_size_y   = 1;
+	uint16_t kp_wg_size_z   = 1;
+	uint32_t kp_grid_size_x = length;
 	uint32_t kp_grid_size_y = 1;
 	uint32_t kp_grid_size_z = 1;
+	uint32_t kernel_meta    = 0x31;
 
-	uint32_t kernel_meta = 0x31;
 	// write kernel configuration
 	// pack kernel arguemts to use less AXI transfers
 	uint64_t transfer1 = ((uint64_t)kp_wg_size_z   << 48) | ((uint64_t)kp_wg_size_y << 32) | ((uint64_t)kp_wg_size_x << 16) | kernel_meta;
 	uint64_t transfer2 = ((uint64_t)kp_grid_size_y << 32) | kp_grid_size_x;
 	uint64_t transfer3 = ((uint64_t)pasid          << 32) | kp_grid_size_z;
 
-	uint64_t arg_transfer1 = input_a;
-	uint64_t arg_transfer2 = input_b;
-	uint64_t arg_transfer3 = output;
-	*((volatile uint64_t*)(accel_base_adr+0x0))  = transfer1;
+	uint64_t arg_transfer1 = (uint64_t) input_a;
+	uint64_t arg_transfer2 = (uint64_t) input_b;
+	uint64_t arg_transfer3 = (uint64_t) output;
 
+	*((volatile uint64_t*)(accel_base_adr+0x0))  = transfer1;
 	*((volatile uint64_t*)(accel_base_adr+0x8))  = transfer2;
 	*((volatile uint64_t*)(accel_base_adr+0x10)) = transfer3;
 
 	*((volatile uint64_t*)(accel_base_adr+0x20)) = 0; // Kernel Function
 	*((volatile uint64_t*)(accel_base_adr+0x28)) = arg_transfer1;
-
 	*((volatile uint64_t*)(accel_base_adr+0x30)) = arg_transfer2;
-
 	*((volatile uint64_t*)(accel_base_adr+0x38)) = arg_transfer3;
 
 	//Xil_DCacheFlush();
+	
+	PRINTF("test_nn() Setting 'START' Flag\r\n");
+	
+	// Set START FLAG to HIGH
+	*((volatile uint32_t*)(gpio_base_adr+0x8)) = 0x1;
 
-
-	*((volatile uint64_t*)(gpio_base_adr+0x8)) = 0x1;
-
-	// Wait for start ACK
-	while ( (*((volatile uint64_t*)(gpio_base_adr+0x0)) & 0x1) != 0) {
+	// Wait for kernel START FLAG acknowledgement
+	while ( (*((volatile uint32_t*)(gpio_base_adr+0x0)) & 0x1) == 0) {
 		// You may want to wait here with sleep
 	}
-	ultrazohm_state_machine_set_userLED(true);
-	*((volatile uint64_t*)(gpio_base_adr+0x8)) = 0x0;
+	
+	PRINTF("test_nn() Clearing 'START' Flag\r\n");
 
-	// Wait until start ACK is gone
-	while (  (*((volatile uint64_t*)(gpio_base_adr+0x0)) & 0x1) == 0) {
+	// ultrazohm_state_machine_set_userLED(true);
+	// Clear START FLAG
+	*((volatile uint32_t*)(gpio_base_adr+0x8)) = 0x0;
+
+	// Wait until START FLAG is removed by kernel
+	while (  (*((volatile uint32_t*)(gpio_base_adr+0x0)) & 0x1) != 0) {
 		// You may want to wait here with sleep
 	}
-
-	//uz_printf("test_nn() wait for completion\r\n");
+	
+	// Now the kernel is running    
+	PRINTF("test_nn() wait for completion\r\n");
 
 
 	// WAIT FOR COMPLETION
 
-	// Wait for finished
-	while ( (*((volatile uint64_t*)(gpio_base_adr+0x0)) & 0x2) != 0) {
+	// Wait for FINISHED SIGNAL 
+	while ( (*((volatile uint64_t*)(gpio_base_adr+0x0)) & 0x2) == 0) {
 		// You may want to wait here with sleep
 	}
 
-	// Send finished ACK
+	// Send FINISHED ACK
 	*((volatile uint64_t*)(gpio_base_adr+0x8)) = 0x2;
+	
+	PRINTF("test_nn() wait for finished gone\r\n");
 
 	// Wait until finished is gone
-	while (  (*((volatile uint64_t*)(gpio_base_adr+0x0)) & 0x2) == 0) {
+	while (  (*((volatile uint64_t*)(gpio_base_adr+0x0)) & 0x2) != 0) {
 		// You may want to wait here with sleep
 	}
 
@@ -132,21 +165,19 @@ static void test_nn(){
 	*((volatile uint64_t*)(gpio_base_adr+0x8)) = 0x0;
 
 
-
 	// Check for results
-
-	int success = 1;
-	for(int i = 0 ; i < 1024 ; i++) {
+	PRINTF("test_nn() check results\r\n");
+	for(int32_t i = 0 ; i < length ; i++) {
 		if(output[i] != i*2) {
-			ultrazohm_state_machine_set_error(true);
-			success = 0;
+			// ultrazohm_state_machine_set_error(true);
+			PRINTF("result is incorrect\r\n");
 			break;
 		}
 	}
 
-	if (success == 1) {
-		ultrazohm_state_machine_set_userLED(true);
-	}
+	// if (success == 1) {
+	// 	ultrazohm_state_machine_set_userLED(true);
+	// }
 
 	free(input_a);
 	free(input_b);
@@ -154,6 +185,7 @@ static void test_nn(){
 
 	Xil_DCacheEnable();
 }
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr

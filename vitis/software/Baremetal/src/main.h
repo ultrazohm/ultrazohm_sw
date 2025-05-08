@@ -31,7 +31,6 @@
 #include "IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "include/uz_assertion_configuration.h"
 
-
 // UltraZohm includes
 #include "globalData.h"
 #include "defines.h"
@@ -54,6 +53,10 @@
 
 #include "include/pwm_init.h"
 
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "include/uz_inverter_adapter_init.h"
+#include "include/uz_resolver_pl_interface_init.h"
+#include "include/uz_resolverIP_init.h"
 
 //----------------------------------------------------
 // FUNCTIONS

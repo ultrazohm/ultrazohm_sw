@@ -38,6 +38,9 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+struct uz_resolver_pl_interface_outputs_t resolver_pl_0_output = {0};
+struct uz_resolver_pl_interface_outputs_t resolver_pl_1_output = {0};
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -51,6 +54,12 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
+    Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
+    Global_Data.av.inverter_outputs_d3 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d3);
+    resolver_pl_0_output = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_0);
+    resolver_pl_1_output = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_1);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

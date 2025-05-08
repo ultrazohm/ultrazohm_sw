@@ -47,15 +47,19 @@ void print_echo_app_header()
  *      This thread sends and receives the data, regarding the information
  *      in the shared RAM. This thread runs always!
  *---------------------------------------------------------------------------*/
+char recv_buf[2048] = {0};
+NetworkSendStruct nwsend = {0};
+int nread = 0;
+
 void process_request_thread(void *p)
 {
 	struct javascope_data_t javascope_data_sending = {0};
-	NetworkSendStruct nwsend = {0};
-	char recv_buf[2048] = {0};
+
+
 	struct APU_to_RPU_t* Received_Data = {0};
 
 	int clientfd = (int)p;
-	int nread = 0;
+
 	int nwrote = 0;
 
 	uz_printf("APU: Javascope connected 0x%x\n", clientfd);
@@ -69,6 +73,7 @@ void process_request_thread(void *p)
 
 			// Take one element from queue
 			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
+			xQueueReset(js_queue); // Ensures that there is not massive lag between send receive -- just use code to check until python variables matches feedback from UZ prevents this change.
 			xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
 
 			// copy data into nwsend struct

@@ -30,3 +30,4 @@ streamlit
 trace_updater
 sphinx-design
 sphinx-sitemap
+snowballstemmer==2.2.0 # https://github.com/sphinx-doc/sphinx/issues/13533

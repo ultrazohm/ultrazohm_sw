@@ -113,7 +113,7 @@
       },
       "uz_user": {
         "smartconnect_1": "",
-        "uz_NN_0": ""
+        "uz_NN_acc_0": ""
       },
       "zynq_ultra_ps_e_0": ""
     },
@@ -5608,11 +5608,11 @@
               }
             }
           },
-          "uz_NN_0": {
-            "vlnv": "xilinx.com:hls:uz_NN:2.0",
-            "xci_name": "zusys_uz_NN_0_0",
-            "xci_path": "ip\\zusys_uz_NN_0_0\\zusys_uz_NN_0_0.xci",
-            "inst_hier_path": "uz_user/uz_NN_0",
+          "uz_NN_acc_0": {
+            "vlnv": "xilinx.com:hls:uz_NN_acc:1.0",
+            "xci_name": "zusys_uz_NN_acc_0_1",
+            "xci_path": "ip\\zusys_uz_NN_acc_0_1\\zusys_uz_NN_acc_0_1.xci",
+            "inst_hier_path": "uz_user/uz_NN_acc_0",
             "interface_ports": {
               "m_axi_arrays": {
                 "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
@@ -5620,28 +5620,22 @@
                 "address_space_ref": "Data_m_axi_arrays",
                 "base_address": {
                   "minimum": "0x00000000",
-                  "maximum": "0xFFFFFFFFFFFFFFFF",
-                  "width": "64"
+                  "maximum": "0xFFFFFFFF",
+                  "width": "32"
                 }
               }
             },
             "addressing": {
               "address_spaces": {
                 "Data_m_axi_arrays": {
-                  "range": "16E",
-                  "width": "64"
+                  "range": "4G",
+                  "width": "32"
                 }
               }
             }
           }
         },
         "interface_nets": {
-          "Conn1": {
-            "interface_ports": [
-              "m_axi_arrays",
-              "uz_NN_0/m_axi_arrays"
-            ]
-          },
           "smartconnect_0_M10_AXI": {
             "interface_ports": [
               "S00_AXI",
@@ -5650,8 +5644,14 @@
           },
           "smartconnect_1_M00_AXI": {
             "interface_ports": [
-              "uz_NN_0/s_axi_control",
-              "smartconnect_1/M00_AXI"
+              "smartconnect_1/M00_AXI",
+              "uz_NN_acc_0/s_axi_control"
+            ]
+          },
+          "uz_NN_acc_0_m_axi_arrays": {
+            "interface_ports": [
+              "m_axi_arrays",
+              "uz_NN_acc_0/m_axi_arrays"
             ]
           }
         },
@@ -5660,14 +5660,14 @@
             "ports": [
               "aresetn",
               "smartconnect_1/aresetn",
-              "uz_NN_0/ap_rst_n"
+              "uz_NN_acc_0/ap_rst_n"
             ]
           },
           "zynq_ultra_ps_e_0_pl_clk1": {
             "ports": [
               "aclk",
               "smartconnect_1/aclk",
-              "uz_NN_0/ap_clk"
+              "uz_NN_acc_0/ap_clk"
             ]
           }
         }
@@ -6857,7 +6857,7 @@
             "value": "IOPLL"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__ACT_FREQMHZ": {
-            "value": "250.000000"
+            "value": "250"
           },
           "PSU__CRF_APB__DBG_TRACE_CTRL__FREQMHZ": {
             "value": "250"
@@ -7784,16 +7784,16 @@
             "value": "100.000000"
           },
           "PSU__IOU_SLCR__TTC1__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC1__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__ACT_FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC2__FREQMHZ": {
-            "value": "100.000000"
+            "value": "100"
           },
           "PSU__IOU_SLCR__TTC3__ACT_FREQMHZ": {
             "value": "100.000000"
@@ -8253,7 +8253,7 @@
             "value": "0"
           },
           "PSU__SAXIGP2__DATA_WIDTH": {
-            "value": "128"
+            "value": "32"
           },
           "PSU__SAXIGP6__DATA_WIDTH": {
             "value": "32"
@@ -9123,29 +9123,30 @@
           }
         }
       },
-      "/uz_user/uz_NN_0": {
+      "/uz_user/uz_NN_acc_0": {
         "address_spaces": {
           "Data_m_axi_arrays": {
             "segments": {
               "SEG_zynq_ultra_ps_e_0_HP0_DDR_HIGH": {
                 "address_block": "/zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_HIGH",
-                "offset": "0x0000000800000000",
-                "range": "4G"
+                "offset": "0x00000000",
+                "range": "1",
+                "is_excluded": "TRUE"
               },
               "SEG_zynq_ultra_ps_e_0_HP0_DDR_LOW": {
                 "address_block": "/zynq_ultra_ps_e_0/SAXIGP2/HP0_DDR_LOW",
-                "offset": "0x0000000000000000",
+                "offset": "0x00000000",
                 "range": "2G"
               },
               "SEG_zynq_ultra_ps_e_0_HP0_LPS_OCM": {
                 "address_block": "/zynq_ultra_ps_e_0/SAXIGP2/HP0_LPS_OCM",
-                "offset": "0x00000000FF000000",
+                "offset": "0xFF000000",
                 "range": "16M",
                 "is_excluded": "TRUE"
               },
               "SEG_zynq_ultra_ps_e_0_HP0_QSPI": {
                 "address_block": "/zynq_ultra_ps_e_0/SAXIGP2/HP0_QSPI",
-                "offset": "0x00000000C0000000",
+                "offset": "0xC0000000",
                 "range": "512M"
               }
             }
@@ -9227,8 +9228,8 @@
                 "offset": "0x00800E0000",
                 "range": "64K"
               },
-              "SEG_uz_NN_0_Reg": {
-                "address_block": "/uz_user/uz_NN_0/s_axi_control/Reg",
+              "SEG_uz_NN_acc_0_Reg": {
+                "address_block": "/uz_user/uz_NN_acc_0/s_axi_control/Reg",
                 "offset": "0x0080100000",
                 "range": "64K",
                 "offset_base_param": "C_S_AXI_CONTROL_BASEADDR",

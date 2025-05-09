@@ -4,10 +4,8 @@
 #include <stdbool.h>
 
 
-void uz_matrix_multiplication_hw_set_A_rows(uint32_t base_address, uint32_t A_rows);
-void uz_matrix_multiplication_hw_set_B1_rows(uint32_t base_address, uint32_t B1_rows);
-void uz_matrix_multiplication_hw_set_B1_columns(uint32_t base_address, uint32_t B1_columns);
-void uz_matrix_multiplication_hw_set_B2_columns(uint32_t base_address, uint32_t B2_columns);
+void uz_matrix_multiplication_hw_set_Observation_size(uint32_t base_address, uint32_t Observation_size);
+void uz_matrix_multiplication_hw_set_Action_size(uint32_t base_address, uint32_t Action_size);
 void uz_matrix_multiplication_hw_set_A_matrix(uint32_t base_address, volatile float * A);
 void uz_matrix_multiplication_hw_set_B1_matrix(uint32_t base_address, volatile float * B1);
 void uz_matrix_multiplication_hw_set_B2_matrix(uint32_t base_address, volatile float * B2);

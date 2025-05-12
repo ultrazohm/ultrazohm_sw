@@ -976,33 +976,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_Input_Weights_input</spirit:name>
-          <spirit:displayName>L_Input_Weights_input</spirit:displayName>
-          <spirit:description>Data signal of L_Input_Weights_input</spirit:description>
-          <spirit:addressOffset>24</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_Input_Weights_input</spirit:name>
-            <spirit:description>Bit 31 to 0 of L_Input_Weights_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
           <spirit:name>L_1_Weights_input</spirit:name>
           <spirit:displayName>L_1_Weights_input</spirit:displayName>
           <spirit:description>Data signal of L_1_Weights_input</spirit:description>
-          <spirit:addressOffset>32</spirit:addressOffset>
+          <spirit:addressOffset>24</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1025,7 +1002,7 @@
           <spirit:name>L_2_Weights_input</spirit:name>
           <spirit:displayName>L_2_Weights_input</spirit:displayName>
           <spirit:description>Data signal of L_2_Weights_input</spirit:description>
-          <spirit:addressOffset>40</spirit:addressOffset>
+          <spirit:addressOffset>32</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1048,7 +1025,7 @@
           <spirit:name>L_3_Weights_input</spirit:name>
           <spirit:displayName>L_3_Weights_input</spirit:displayName>
           <spirit:description>Data signal of L_3_Weights_input</spirit:description>
-          <spirit:addressOffset>48</spirit:addressOffset>
+          <spirit:addressOffset>40</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1057,6 +1034,29 @@
           <spirit:field>
             <spirit:name>L_3_Weights_input</spirit:name>
             <spirit:description>Bit 31 to 0 of L_3_Weights_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_Output_Weights_input</spirit:name>
+          <spirit:displayName>L_Output_Weights_input</spirit:displayName>
+          <spirit:description>Data signal of L_Output_Weights_input</spirit:description>
+          <spirit:addressOffset>48</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_Output_Weights_input</spirit:name>
+            <spirit:description>Bit 31 to 0 of L_Output_Weights_input</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -1091,33 +1091,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_Input_Bias_input</spirit:name>
-          <spirit:displayName>L_Input_Bias_input</spirit:displayName>
-          <spirit:description>Data signal of L_Input_Bias_input</spirit:description>
-          <spirit:addressOffset>64</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_Input_Bias_input</spirit:name>
-            <spirit:description>Bit 31 to 0 of L_Input_Bias_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
           <spirit:name>L_1_Bias_input</spirit:name>
           <spirit:displayName>L_1_Bias_input</spirit:displayName>
           <spirit:description>Data signal of L_1_Bias_input</spirit:description>
-          <spirit:addressOffset>72</spirit:addressOffset>
+          <spirit:addressOffset>64</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1140,7 +1117,7 @@
           <spirit:name>L_2_Bias_input</spirit:name>
           <spirit:displayName>L_2_Bias_input</spirit:displayName>
           <spirit:description>Data signal of L_2_Bias_input</spirit:description>
-          <spirit:addressOffset>80</spirit:addressOffset>
+          <spirit:addressOffset>72</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1163,7 +1140,7 @@
           <spirit:name>L_3_Bias_input</spirit:name>
           <spirit:displayName>L_3_Bias_input</spirit:displayName>
           <spirit:description>Data signal of L_3_Bias_input</spirit:description>
-          <spirit:addressOffset>88</spirit:addressOffset>
+          <spirit:addressOffset>80</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1172,6 +1149,29 @@
           <spirit:field>
             <spirit:name>L_3_Bias_input</spirit:name>
             <spirit:description>Bit 31 to 0 of L_3_Bias_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_Output_Bias_input</spirit:name>
+          <spirit:displayName>L_Output_Bias_input</spirit:displayName>
+          <spirit:description>Data signal of L_Output_Bias_input</spirit:description>
+          <spirit:addressOffset>88</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_Output_Bias_input</spirit:name>
+            <spirit:description>Bit 31 to 0 of L_Output_Bias_input</spirit:description>
             <spirit:bitOffset>0</spirit:bitOffset>
             <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
             <spirit:access>write-only</spirit:access>
@@ -1358,7 +1358,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>46ac037e</spirit:value>
+            <spirit:value>2776051d</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1377,7 +1377,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>cbe26b68</spirit:value>
+            <spirit:value>5e6da24f</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1396,7 +1396,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>170c4c9b</spirit:value>
+            <spirit:value>e15dc7df</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1415,7 +1415,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>ca5b6843</spirit:value>
+            <spirit:value>658c02d7</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1429,7 +1429,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>6b2c4a50</spirit:value>
+            <spirit:value>a2c3f5f9</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2763,19 +2763,19 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2783,11 +2783,11 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E15L_Input_Weights_23bkb.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E15L_Input_Weights_23bkb.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2839,11 +2839,11 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Input_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Input_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2983,20 +2983,20 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3006,11 +3006,11 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E15L_Input_Weights_23bkb.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E15L_Input_Weights_23bkb.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3075,12 +3075,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Input_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Input_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3238,11 +3238,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3250,7 +3250,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E15L_Input_Weights_23bkb.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3302,11 +3302,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Input_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Input_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3356,7 +3356,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_03c36df0</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_5f49b54f</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -3432,12 +3432,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3447,7 +3447,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E15L_Input_Weights_23bkb.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3512,12 +3512,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Input_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Input_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3820,8 +3820,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Uz_nn_acc</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2114075525</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-05-09T09:06:13Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114075776</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-05-09T13:16:14Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
@@ -3831,8 +3831,8 @@
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="321f5432"/>
       <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="1530bb24"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="44adce7a"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="d5334942"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="0fe0bafd"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="9f659d16"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="513e3655"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="b541dce1"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="457624b9"/>

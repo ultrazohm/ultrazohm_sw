@@ -8,12 +8,12 @@ library ieee;
 use ieee.std_logic_1164.all; 
 use ieee.std_logic_unsigned.all;
 
-entity uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W is 
+entity uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb is 
     generic(
         MEM_TYPE        : string    := "auto"; 
         DataWidth       : integer   := 32; 
-        AddressWidth    : integer   := 4;
-        AddressRange    : integer   := 12
+        AddressWidth    : integer   := 6;
+        AddressRange    : integer   := 64
     ); 
     port (
         address0    : in std_logic_vector(AddressWidth-1 downto 0); 
@@ -26,7 +26,7 @@ entity uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W is
     ); 
 end entity; 
 
-architecture rtl of uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W is 
+architecture rtl of uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb is 
 
 signal address0_tmp : std_logic_vector(AddressWidth-1 downto 0);
 

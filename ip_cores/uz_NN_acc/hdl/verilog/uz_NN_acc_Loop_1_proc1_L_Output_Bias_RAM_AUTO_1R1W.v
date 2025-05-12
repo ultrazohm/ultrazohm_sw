@@ -4,7 +4,7 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
-module uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W (
+module uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W (
      
     address0, ce0,
     d0, we0, 
@@ -28,7 +28,7 @@ input clk;
 (* ram_style = "auto"  *)reg [DataWidth-1:0] ram[0:AddressRange-1];
 
 initial begin
-    $readmemh("./uz_NN_acc_Loop_1_proc1_L_3_Bias_RAM_AUTO_1R1W.dat", ram);
+    $readmemh("./uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.dat", ram);
 end 
 
  

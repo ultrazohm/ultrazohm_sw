@@ -91,23 +91,6 @@ u32 XUz_nn_acc_Get_Observation_Input(XUz_nn_acc *InstancePtr) {
     return Data;
 }
 
-void XUz_nn_acc_Set_L_Input_Weights_input(XUz_nn_acc *InstancePtr, u32 Data) {
-    Xil_AssertVoid(InstancePtr != NULL);
-    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    XUz_nn_acc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_INPUT_WEIGHTS_INPUT_DATA, Data);
-}
-
-u32 XUz_nn_acc_Get_L_Input_Weights_input(XUz_nn_acc *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertNonvoid(InstancePtr != NULL);
-    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XUz_nn_acc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_INPUT_WEIGHTS_INPUT_DATA);
-    return Data;
-}
-
 void XUz_nn_acc_Set_L_1_Weights_input(XUz_nn_acc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -159,6 +142,23 @@ u32 XUz_nn_acc_Get_L_3_Weights_input(XUz_nn_acc *InstancePtr) {
     return Data;
 }
 
+void XUz_nn_acc_Set_L_Output_Weights_input(XUz_nn_acc *InstancePtr, u32 Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XUz_nn_acc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA, Data);
+}
+
+u32 XUz_nn_acc_Get_L_Output_Weights_input(XUz_nn_acc *InstancePtr) {
+    u32 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XUz_nn_acc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA);
+    return Data;
+}
+
 void XUz_nn_acc_Set_Action_output(XUz_nn_acc *InstancePtr, u32 Data) {
     Xil_AssertVoid(InstancePtr != NULL);
     Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -173,23 +173,6 @@ u32 XUz_nn_acc_Get_Action_output(XUz_nn_acc *InstancePtr) {
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
     Data = XUz_nn_acc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_ACTION_OUTPUT_DATA);
-    return Data;
-}
-
-void XUz_nn_acc_Set_L_Input_Bias_input(XUz_nn_acc *InstancePtr, u32 Data) {
-    Xil_AssertVoid(InstancePtr != NULL);
-    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    XUz_nn_acc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_INPUT_BIAS_INPUT_DATA, Data);
-}
-
-u32 XUz_nn_acc_Get_L_Input_Bias_input(XUz_nn_acc *InstancePtr) {
-    u32 Data;
-
-    Xil_AssertNonvoid(InstancePtr != NULL);
-    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
-
-    Data = XUz_nn_acc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_INPUT_BIAS_INPUT_DATA);
     return Data;
 }
 
@@ -241,6 +224,23 @@ u32 XUz_nn_acc_Get_L_3_Bias_input(XUz_nn_acc *InstancePtr) {
     Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
 
     Data = XUz_nn_acc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_3_BIAS_INPUT_DATA);
+    return Data;
+}
+
+void XUz_nn_acc_Set_L_Output_Bias_input(XUz_nn_acc *InstancePtr, u32 Data) {
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    XUz_nn_acc_WriteReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_BIAS_INPUT_DATA, Data);
+}
+
+u32 XUz_nn_acc_Get_L_Output_Bias_input(XUz_nn_acc *InstancePtr) {
+    u32 Data;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    Data = XUz_nn_acc_ReadReg(InstancePtr->Control_BaseAddress, XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_BIAS_INPUT_DATA);
     return Data;
 }
 

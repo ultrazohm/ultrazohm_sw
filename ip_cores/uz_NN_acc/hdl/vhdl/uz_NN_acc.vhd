@@ -117,15 +117,15 @@ attribute shreg_extract of ap_rst_n_inv : signal is "no";
     signal Actions_i_q0 : STD_LOGIC_VECTOR (31 downto 0);
     signal Actions_t_q0 : STD_LOGIC_VECTOR (31 downto 0);
     signal Observation_Input : STD_LOGIC_VECTOR (31 downto 0);
-    signal L_Input_Weights_input : STD_LOGIC_VECTOR (31 downto 0);
     signal L_1_Weights_input : STD_LOGIC_VECTOR (31 downto 0);
     signal L_2_Weights_input : STD_LOGIC_VECTOR (31 downto 0);
     signal L_3_Weights_input : STD_LOGIC_VECTOR (31 downto 0);
+    signal L_Output_Weights_input : STD_LOGIC_VECTOR (31 downto 0);
     signal Action_output : STD_LOGIC_VECTOR (31 downto 0);
-    signal L_Input_Bias_input : STD_LOGIC_VECTOR (31 downto 0);
     signal L_1_Bias_input : STD_LOGIC_VECTOR (31 downto 0);
     signal L_2_Bias_input : STD_LOGIC_VECTOR (31 downto 0);
     signal L_3_Bias_input : STD_LOGIC_VECTOR (31 downto 0);
+    signal L_Output_Bias_input : STD_LOGIC_VECTOR (31 downto 0);
     signal copy_mats_flag : STD_LOGIC;
     signal Observation_size_input : STD_LOGIC_VECTOR (31 downto 0);
     signal Action_size_input : STD_LOGIC_VECTOR (31 downto 0);
@@ -355,15 +355,15 @@ attribute shreg_extract of ap_rst_n_inv : signal is "no";
         copy_mats_flag : IN STD_LOGIC_VECTOR (0 downto 0);
         copy_flag_out : OUT STD_LOGIC_VECTOR (0 downto 0);
         copy_flag_out_ap_vld : OUT STD_LOGIC;
-        L_Input_Weights_input : IN STD_LOGIC_VECTOR (31 downto 0);
         L_1_Weights_input : IN STD_LOGIC_VECTOR (31 downto 0);
         L_2_Weights_input : IN STD_LOGIC_VECTOR (31 downto 0);
-        Action_size_input : IN STD_LOGIC_VECTOR (31 downto 0);
         L_3_Weights_input : IN STD_LOGIC_VECTOR (31 downto 0);
-        L_Input_Bias_input : IN STD_LOGIC_VECTOR (31 downto 0);
+        Action_size_input : IN STD_LOGIC_VECTOR (31 downto 0);
+        L_Output_Weights_input : IN STD_LOGIC_VECTOR (31 downto 0);
         L_1_Bias_input : IN STD_LOGIC_VECTOR (31 downto 0);
         L_2_Bias_input : IN STD_LOGIC_VECTOR (31 downto 0);
         L_3_Bias_input : IN STD_LOGIC_VECTOR (31 downto 0);
+        L_Output_Bias_input : IN STD_LOGIC_VECTOR (31 downto 0);
         ap_return : OUT STD_LOGIC_VECTOR (31 downto 0) );
     end component;
 
@@ -522,15 +522,15 @@ attribute shreg_extract of ap_rst_n_inv : signal is "no";
         ARESET : IN STD_LOGIC;
         ACLK_EN : IN STD_LOGIC;
         Observation_Input : OUT STD_LOGIC_VECTOR (31 downto 0);
-        L_Input_Weights_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         L_1_Weights_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         L_2_Weights_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         L_3_Weights_input : OUT STD_LOGIC_VECTOR (31 downto 0);
+        L_Output_Weights_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         Action_output : OUT STD_LOGIC_VECTOR (31 downto 0);
-        L_Input_Bias_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         L_1_Bias_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         L_2_Bias_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         L_3_Bias_input : OUT STD_LOGIC_VECTOR (31 downto 0);
+        L_Output_Bias_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         copy_mats_flag : OUT STD_LOGIC;
         Observation_size_input : OUT STD_LOGIC_VECTOR (31 downto 0);
         Action_size_input : OUT STD_LOGIC_VECTOR (31 downto 0);
@@ -689,15 +689,15 @@ begin
         ARESET => ap_rst_n_inv,
         ACLK_EN => ap_const_logic_1,
         Observation_Input => Observation_Input,
-        L_Input_Weights_input => L_Input_Weights_input,
         L_1_Weights_input => L_1_Weights_input,
         L_2_Weights_input => L_2_Weights_input,
         L_3_Weights_input => L_3_Weights_input,
+        L_Output_Weights_input => L_Output_Weights_input,
         Action_output => Action_output,
-        L_Input_Bias_input => L_Input_Bias_input,
         L_1_Bias_input => L_1_Bias_input,
         L_2_Bias_input => L_2_Bias_input,
         L_3_Bias_input => L_3_Bias_input,
+        L_Output_Bias_input => L_Output_Bias_input,
         copy_mats_flag => copy_mats_flag,
         Observation_size_input => Observation_size_input,
         Action_size_input => Action_size_input,
@@ -881,15 +881,15 @@ begin
         copy_mats_flag => Loop_1_proc1_U0_copy_mats_flag,
         copy_flag_out => Loop_1_proc1_U0_copy_flag_out,
         copy_flag_out_ap_vld => Loop_1_proc1_U0_copy_flag_out_ap_vld,
-        L_Input_Weights_input => L_Input_Weights_input,
         L_1_Weights_input => L_1_Weights_input,
         L_2_Weights_input => L_2_Weights_input,
-        Action_size_input => Action_size_input,
         L_3_Weights_input => L_3_Weights_input,
-        L_Input_Bias_input => L_Input_Bias_input,
+        Action_size_input => Action_size_input,
+        L_Output_Weights_input => L_Output_Weights_input,
         L_1_Bias_input => L_1_Bias_input,
         L_2_Bias_input => L_2_Bias_input,
         L_3_Bias_input => L_3_Bias_input,
+        L_Output_Bias_input => L_Output_Bias_input,
         ap_return => Loop_1_proc1_U0_ap_return);
 
     Loop_burst_Action_proc_U0 : component uz_NN_acc_Loop_burst_Action_proc

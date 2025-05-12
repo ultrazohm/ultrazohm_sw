@@ -8,7 +8,7 @@ library ieee;
 use ieee.std_logic_1164.all; 
 use ieee.std_logic_unsigned.all;
 
-entity uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W is 
+entity uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W is 
     generic(
         MEM_TYPE        : string    := "block"; 
         DataWidth       : integer   := 32; 
@@ -26,7 +26,7 @@ entity uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W is
     ); 
 end entity; 
 
-architecture rtl of uz_NN_acc_Loop_1_proc1_L_3_Weights_temp_RAM_1P_BRAM_1R1W is 
+architecture rtl of uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W is 
 
 signal address0_tmp : std_logic_vector(AddressWidth-1 downto 0);
 

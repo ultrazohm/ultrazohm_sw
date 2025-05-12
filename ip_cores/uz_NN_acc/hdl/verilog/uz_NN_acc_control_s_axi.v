@@ -31,15 +31,15 @@ module uz_NN_acc_control_s_axi
     input  wire                          RREADY,
     output wire                          interrupt,
     output wire [31:0]                   Observation_Input,
-    output wire [31:0]                   L_Input_Weights_input,
     output wire [31:0]                   L_1_Weights_input,
     output wire [31:0]                   L_2_Weights_input,
     output wire [31:0]                   L_3_Weights_input,
+    output wire [31:0]                   L_Output_Weights_input,
     output wire [31:0]                   Action_output,
-    output wire [31:0]                   L_Input_Bias_input,
     output wire [31:0]                   L_1_Bias_input,
     output wire [31:0]                   L_2_Bias_input,
     output wire [31:0]                   L_3_Bias_input,
+    output wire [31:0]                   L_Output_Bias_input,
     output wire [0:0]                    copy_mats_flag,
     output wire [31:0]                   Observation_size_input,
     output wire [31:0]                   Action_size_input,
@@ -73,32 +73,32 @@ module uz_NN_acc_control_s_axi
 // 0x10 : Data signal of Observation_Input
 //        bit 31~0 - Observation_Input[31:0] (Read/Write)
 // 0x14 : reserved
-// 0x18 : Data signal of L_Input_Weights_input
-//        bit 31~0 - L_Input_Weights_input[31:0] (Read/Write)
-// 0x1c : reserved
-// 0x20 : Data signal of L_1_Weights_input
+// 0x18 : Data signal of L_1_Weights_input
 //        bit 31~0 - L_1_Weights_input[31:0] (Read/Write)
-// 0x24 : reserved
-// 0x28 : Data signal of L_2_Weights_input
+// 0x1c : reserved
+// 0x20 : Data signal of L_2_Weights_input
 //        bit 31~0 - L_2_Weights_input[31:0] (Read/Write)
-// 0x2c : reserved
-// 0x30 : Data signal of L_3_Weights_input
+// 0x24 : reserved
+// 0x28 : Data signal of L_3_Weights_input
 //        bit 31~0 - L_3_Weights_input[31:0] (Read/Write)
+// 0x2c : reserved
+// 0x30 : Data signal of L_Output_Weights_input
+//        bit 31~0 - L_Output_Weights_input[31:0] (Read/Write)
 // 0x34 : reserved
 // 0x38 : Data signal of Action_output
 //        bit 31~0 - Action_output[31:0] (Read/Write)
 // 0x3c : reserved
-// 0x40 : Data signal of L_Input_Bias_input
-//        bit 31~0 - L_Input_Bias_input[31:0] (Read/Write)
-// 0x44 : reserved
-// 0x48 : Data signal of L_1_Bias_input
+// 0x40 : Data signal of L_1_Bias_input
 //        bit 31~0 - L_1_Bias_input[31:0] (Read/Write)
-// 0x4c : reserved
-// 0x50 : Data signal of L_2_Bias_input
+// 0x44 : reserved
+// 0x48 : Data signal of L_2_Bias_input
 //        bit 31~0 - L_2_Bias_input[31:0] (Read/Write)
-// 0x54 : reserved
-// 0x58 : Data signal of L_3_Bias_input
+// 0x4c : reserved
+// 0x50 : Data signal of L_3_Bias_input
 //        bit 31~0 - L_3_Bias_input[31:0] (Read/Write)
+// 0x54 : reserved
+// 0x58 : Data signal of L_Output_Bias_input
+//        bit 31~0 - L_Output_Bias_input[31:0] (Read/Write)
 // 0x5c : reserved
 // 0x60 : Data signal of copy_mats_flag
 //        bit 0  - copy_mats_flag[0] (Read/Write)
@@ -128,24 +128,24 @@ localparam
     ADDR_ISR                           = 8'h0c,
     ADDR_OBSERVATION_INPUT_DATA_0      = 8'h10,
     ADDR_OBSERVATION_INPUT_CTRL        = 8'h14,
-    ADDR_L_INPUT_WEIGHTS_INPUT_DATA_0  = 8'h18,
-    ADDR_L_INPUT_WEIGHTS_INPUT_CTRL    = 8'h1c,
-    ADDR_L_1_WEIGHTS_INPUT_DATA_0      = 8'h20,
-    ADDR_L_1_WEIGHTS_INPUT_CTRL        = 8'h24,
-    ADDR_L_2_WEIGHTS_INPUT_DATA_0      = 8'h28,
-    ADDR_L_2_WEIGHTS_INPUT_CTRL        = 8'h2c,
-    ADDR_L_3_WEIGHTS_INPUT_DATA_0      = 8'h30,
-    ADDR_L_3_WEIGHTS_INPUT_CTRL        = 8'h34,
+    ADDR_L_1_WEIGHTS_INPUT_DATA_0      = 8'h18,
+    ADDR_L_1_WEIGHTS_INPUT_CTRL        = 8'h1c,
+    ADDR_L_2_WEIGHTS_INPUT_DATA_0      = 8'h20,
+    ADDR_L_2_WEIGHTS_INPUT_CTRL        = 8'h24,
+    ADDR_L_3_WEIGHTS_INPUT_DATA_0      = 8'h28,
+    ADDR_L_3_WEIGHTS_INPUT_CTRL        = 8'h2c,
+    ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA_0 = 8'h30,
+    ADDR_L_OUTPUT_WEIGHTS_INPUT_CTRL   = 8'h34,
     ADDR_ACTION_OUTPUT_DATA_0          = 8'h38,
     ADDR_ACTION_OUTPUT_CTRL            = 8'h3c,
-    ADDR_L_INPUT_BIAS_INPUT_DATA_0     = 8'h40,
-    ADDR_L_INPUT_BIAS_INPUT_CTRL       = 8'h44,
-    ADDR_L_1_BIAS_INPUT_DATA_0         = 8'h48,
-    ADDR_L_1_BIAS_INPUT_CTRL           = 8'h4c,
-    ADDR_L_2_BIAS_INPUT_DATA_0         = 8'h50,
-    ADDR_L_2_BIAS_INPUT_CTRL           = 8'h54,
-    ADDR_L_3_BIAS_INPUT_DATA_0         = 8'h58,
-    ADDR_L_3_BIAS_INPUT_CTRL           = 8'h5c,
+    ADDR_L_1_BIAS_INPUT_DATA_0         = 8'h40,
+    ADDR_L_1_BIAS_INPUT_CTRL           = 8'h44,
+    ADDR_L_2_BIAS_INPUT_DATA_0         = 8'h48,
+    ADDR_L_2_BIAS_INPUT_CTRL           = 8'h4c,
+    ADDR_L_3_BIAS_INPUT_DATA_0         = 8'h50,
+    ADDR_L_3_BIAS_INPUT_CTRL           = 8'h54,
+    ADDR_L_OUTPUT_BIAS_INPUT_DATA_0    = 8'h58,
+    ADDR_L_OUTPUT_BIAS_INPUT_CTRL      = 8'h5c,
     ADDR_COPY_MATS_FLAG_DATA_0         = 8'h60,
     ADDR_COPY_MATS_FLAG_CTRL           = 8'h64,
     ADDR_OBSERVATION_SIZE_INPUT_DATA_0 = 8'h68,
@@ -193,15 +193,15 @@ localparam
     reg  [1:0]                    int_ier = 2'b0;
     reg  [1:0]                    int_isr = 2'b0;
     reg  [31:0]                   int_Observation_Input = 'b0;
-    reg  [31:0]                   int_L_Input_Weights_input = 'b0;
     reg  [31:0]                   int_L_1_Weights_input = 'b0;
     reg  [31:0]                   int_L_2_Weights_input = 'b0;
     reg  [31:0]                   int_L_3_Weights_input = 'b0;
+    reg  [31:0]                   int_L_Output_Weights_input = 'b0;
     reg  [31:0]                   int_Action_output = 'b0;
-    reg  [31:0]                   int_L_Input_Bias_input = 'b0;
     reg  [31:0]                   int_L_1_Bias_input = 'b0;
     reg  [31:0]                   int_L_2_Bias_input = 'b0;
     reg  [31:0]                   int_L_3_Bias_input = 'b0;
+    reg  [31:0]                   int_L_Output_Bias_input = 'b0;
     reg  [0:0]                    int_copy_mats_flag = 'b0;
     reg  [31:0]                   int_Observation_size_input = 'b0;
     reg  [31:0]                   int_Action_size_input = 'b0;
@@ -319,9 +319,6 @@ always @(posedge ACLK) begin
                 ADDR_OBSERVATION_INPUT_DATA_0: begin
                     rdata <= int_Observation_Input[31:0];
                 end
-                ADDR_L_INPUT_WEIGHTS_INPUT_DATA_0: begin
-                    rdata <= int_L_Input_Weights_input[31:0];
-                end
                 ADDR_L_1_WEIGHTS_INPUT_DATA_0: begin
                     rdata <= int_L_1_Weights_input[31:0];
                 end
@@ -331,11 +328,11 @@ always @(posedge ACLK) begin
                 ADDR_L_3_WEIGHTS_INPUT_DATA_0: begin
                     rdata <= int_L_3_Weights_input[31:0];
                 end
+                ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA_0: begin
+                    rdata <= int_L_Output_Weights_input[31:0];
+                end
                 ADDR_ACTION_OUTPUT_DATA_0: begin
                     rdata <= int_Action_output[31:0];
-                end
-                ADDR_L_INPUT_BIAS_INPUT_DATA_0: begin
-                    rdata <= int_L_Input_Bias_input[31:0];
                 end
                 ADDR_L_1_BIAS_INPUT_DATA_0: begin
                     rdata <= int_L_1_Bias_input[31:0];
@@ -345,6 +342,9 @@ always @(posedge ACLK) begin
                 end
                 ADDR_L_3_BIAS_INPUT_DATA_0: begin
                     rdata <= int_L_3_Bias_input[31:0];
+                end
+                ADDR_L_OUTPUT_BIAS_INPUT_DATA_0: begin
+                    rdata <= int_L_Output_Bias_input[31:0];
                 end
                 ADDR_COPY_MATS_FLAG_DATA_0: begin
                     rdata <= int_copy_mats_flag[0:0];
@@ -374,15 +374,15 @@ assign task_ap_done           = (ap_done && !auto_restart_status) || auto_restar
 assign task_ap_ready          = ap_ready && !int_auto_restart;
 assign auto_restart_done      = auto_restart_status && (ap_idle && !int_ap_idle);
 assign Observation_Input      = int_Observation_Input;
-assign L_Input_Weights_input  = int_L_Input_Weights_input;
 assign L_1_Weights_input      = int_L_1_Weights_input;
 assign L_2_Weights_input      = int_L_2_Weights_input;
 assign L_3_Weights_input      = int_L_3_Weights_input;
+assign L_Output_Weights_input = int_L_Output_Weights_input;
 assign Action_output          = int_Action_output;
-assign L_Input_Bias_input     = int_L_Input_Bias_input;
 assign L_1_Bias_input         = int_L_1_Bias_input;
 assign L_2_Bias_input         = int_L_2_Bias_input;
 assign L_3_Bias_input         = int_L_3_Bias_input;
+assign L_Output_Bias_input    = int_L_Output_Bias_input;
 assign copy_mats_flag         = int_copy_mats_flag;
 assign Observation_size_input = int_Observation_size_input;
 assign Action_size_input      = int_Action_size_input;
@@ -528,16 +528,6 @@ always @(posedge ACLK) begin
     end
 end
 
-// int_L_Input_Weights_input[31:0]
-always @(posedge ACLK) begin
-    if (ARESET)
-        int_L_Input_Weights_input[31:0] <= 0;
-    else if (ACLK_EN) begin
-        if (w_hs && waddr == ADDR_L_INPUT_WEIGHTS_INPUT_DATA_0)
-            int_L_Input_Weights_input[31:0] <= (WDATA[31:0] & wmask) | (int_L_Input_Weights_input[31:0] & ~wmask);
-    end
-end
-
 // int_L_1_Weights_input[31:0]
 always @(posedge ACLK) begin
     if (ARESET)
@@ -568,6 +558,16 @@ always @(posedge ACLK) begin
     end
 end
 
+// int_L_Output_Weights_input[31:0]
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_L_Output_Weights_input[31:0] <= 0;
+    else if (ACLK_EN) begin
+        if (w_hs && waddr == ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA_0)
+            int_L_Output_Weights_input[31:0] <= (WDATA[31:0] & wmask) | (int_L_Output_Weights_input[31:0] & ~wmask);
+    end
+end
+
 // int_Action_output[31:0]
 always @(posedge ACLK) begin
     if (ARESET)
@@ -575,16 +575,6 @@ always @(posedge ACLK) begin
     else if (ACLK_EN) begin
         if (w_hs && waddr == ADDR_ACTION_OUTPUT_DATA_0)
             int_Action_output[31:0] <= (WDATA[31:0] & wmask) | (int_Action_output[31:0] & ~wmask);
-    end
-end
-
-// int_L_Input_Bias_input[31:0]
-always @(posedge ACLK) begin
-    if (ARESET)
-        int_L_Input_Bias_input[31:0] <= 0;
-    else if (ACLK_EN) begin
-        if (w_hs && waddr == ADDR_L_INPUT_BIAS_INPUT_DATA_0)
-            int_L_Input_Bias_input[31:0] <= (WDATA[31:0] & wmask) | (int_L_Input_Bias_input[31:0] & ~wmask);
     end
 end
 
@@ -615,6 +605,16 @@ always @(posedge ACLK) begin
     else if (ACLK_EN) begin
         if (w_hs && waddr == ADDR_L_3_BIAS_INPUT_DATA_0)
             int_L_3_Bias_input[31:0] <= (WDATA[31:0] & wmask) | (int_L_3_Bias_input[31:0] & ~wmask);
+    end
+end
+
+// int_L_Output_Bias_input[31:0]
+always @(posedge ACLK) begin
+    if (ARESET)
+        int_L_Output_Bias_input[31:0] <= 0;
+    else if (ACLK_EN) begin
+        if (w_hs && waddr == ADDR_L_OUTPUT_BIAS_INPUT_DATA_0)
+            int_L_Output_Bias_input[31:0] <= (WDATA[31:0] & wmask) | (int_L_Output_Bias_input[31:0] & ~wmask);
     end
 end
 

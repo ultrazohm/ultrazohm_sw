@@ -170,15 +170,15 @@ input  [C_M_AXI_ARRAYS_BUSER_WIDTH - 1:0] m_axi_arrays_BUSER;
 wire   [31:0] Actions_i_q0;
 wire   [31:0] Actions_t_q0;
 wire   [31:0] Observation_Input;
-wire   [31:0] L_Input_Weights_input;
 wire   [31:0] L_1_Weights_input;
 wire   [31:0] L_2_Weights_input;
 wire   [31:0] L_3_Weights_input;
+wire   [31:0] L_Output_Weights_input;
 wire   [31:0] Action_output;
-wire   [31:0] L_Input_Bias_input;
 wire   [31:0] L_1_Bias_input;
 wire   [31:0] L_2_Bias_input;
 wire   [31:0] L_3_Bias_input;
+wire   [31:0] L_Output_Bias_input;
 wire    copy_mats_flag;
 wire   [31:0] Observation_size_input;
 wire   [31:0] Action_size_input;
@@ -385,15 +385,15 @@ control_s_axi_U(
     .ARESET(ap_rst_n_inv),
     .ACLK_EN(1'b1),
     .Observation_Input(Observation_Input),
-    .L_Input_Weights_input(L_Input_Weights_input),
     .L_1_Weights_input(L_1_Weights_input),
     .L_2_Weights_input(L_2_Weights_input),
     .L_3_Weights_input(L_3_Weights_input),
+    .L_Output_Weights_input(L_Output_Weights_input),
     .Action_output(Action_output),
-    .L_Input_Bias_input(L_Input_Bias_input),
     .L_1_Bias_input(L_1_Bias_input),
     .L_2_Bias_input(L_2_Bias_input),
     .L_3_Bias_input(L_3_Bias_input),
+    .L_Output_Bias_input(L_Output_Bias_input),
     .copy_mats_flag(copy_mats_flag),
     .Observation_size_input(Observation_size_input),
     .Action_size_input(Action_size_input),
@@ -577,15 +577,15 @@ uz_NN_acc_Loop_1_proc1 Loop_1_proc1_U0(
     .copy_mats_flag(Loop_1_proc1_U0_copy_mats_flag),
     .copy_flag_out(Loop_1_proc1_U0_copy_flag_out),
     .copy_flag_out_ap_vld(Loop_1_proc1_U0_copy_flag_out_ap_vld),
-    .L_Input_Weights_input(L_Input_Weights_input),
     .L_1_Weights_input(L_1_Weights_input),
     .L_2_Weights_input(L_2_Weights_input),
-    .Action_size_input(Action_size_input),
     .L_3_Weights_input(L_3_Weights_input),
-    .L_Input_Bias_input(L_Input_Bias_input),
+    .Action_size_input(Action_size_input),
+    .L_Output_Weights_input(L_Output_Weights_input),
     .L_1_Bias_input(L_1_Bias_input),
     .L_2_Bias_input(L_2_Bias_input),
     .L_3_Bias_input(L_3_Bias_input),
+    .L_Output_Bias_input(L_Output_Bias_input),
     .ap_return(Loop_1_proc1_U0_ap_return)
 );
 

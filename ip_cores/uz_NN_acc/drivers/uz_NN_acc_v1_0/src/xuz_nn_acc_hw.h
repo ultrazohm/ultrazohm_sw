@@ -26,32 +26,32 @@
 // 0x10 : Data signal of Observation_Input
 //        bit 31~0 - Observation_Input[31:0] (Read/Write)
 // 0x14 : reserved
-// 0x18 : Data signal of L_Input_Weights_input
-//        bit 31~0 - L_Input_Weights_input[31:0] (Read/Write)
-// 0x1c : reserved
-// 0x20 : Data signal of L_1_Weights_input
+// 0x18 : Data signal of L_1_Weights_input
 //        bit 31~0 - L_1_Weights_input[31:0] (Read/Write)
-// 0x24 : reserved
-// 0x28 : Data signal of L_2_Weights_input
+// 0x1c : reserved
+// 0x20 : Data signal of L_2_Weights_input
 //        bit 31~0 - L_2_Weights_input[31:0] (Read/Write)
-// 0x2c : reserved
-// 0x30 : Data signal of L_3_Weights_input
+// 0x24 : reserved
+// 0x28 : Data signal of L_3_Weights_input
 //        bit 31~0 - L_3_Weights_input[31:0] (Read/Write)
+// 0x2c : reserved
+// 0x30 : Data signal of L_Output_Weights_input
+//        bit 31~0 - L_Output_Weights_input[31:0] (Read/Write)
 // 0x34 : reserved
 // 0x38 : Data signal of Action_output
 //        bit 31~0 - Action_output[31:0] (Read/Write)
 // 0x3c : reserved
-// 0x40 : Data signal of L_Input_Bias_input
-//        bit 31~0 - L_Input_Bias_input[31:0] (Read/Write)
-// 0x44 : reserved
-// 0x48 : Data signal of L_1_Bias_input
+// 0x40 : Data signal of L_1_Bias_input
 //        bit 31~0 - L_1_Bias_input[31:0] (Read/Write)
-// 0x4c : reserved
-// 0x50 : Data signal of L_2_Bias_input
+// 0x44 : reserved
+// 0x48 : Data signal of L_2_Bias_input
 //        bit 31~0 - L_2_Bias_input[31:0] (Read/Write)
-// 0x54 : reserved
-// 0x58 : Data signal of L_3_Bias_input
+// 0x4c : reserved
+// 0x50 : Data signal of L_3_Bias_input
 //        bit 31~0 - L_3_Bias_input[31:0] (Read/Write)
+// 0x54 : reserved
+// 0x58 : Data signal of L_Output_Bias_input
+//        bit 31~0 - L_Output_Bias_input[31:0] (Read/Write)
 // 0x5c : reserved
 // 0x60 : Data signal of copy_mats_flag
 //        bit 0  - copy_mats_flag[0] (Read/Write)
@@ -79,24 +79,24 @@
 #define XUZ_NN_ACC_CONTROL_ADDR_ISR                         0x0c
 #define XUZ_NN_ACC_CONTROL_ADDR_OBSERVATION_INPUT_DATA      0x10
 #define XUZ_NN_ACC_CONTROL_BITS_OBSERVATION_INPUT_DATA      32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_INPUT_WEIGHTS_INPUT_DATA  0x18
-#define XUZ_NN_ACC_CONTROL_BITS_L_INPUT_WEIGHTS_INPUT_DATA  32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_1_WEIGHTS_INPUT_DATA      0x20
+#define XUZ_NN_ACC_CONTROL_ADDR_L_1_WEIGHTS_INPUT_DATA      0x18
 #define XUZ_NN_ACC_CONTROL_BITS_L_1_WEIGHTS_INPUT_DATA      32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_2_WEIGHTS_INPUT_DATA      0x28
+#define XUZ_NN_ACC_CONTROL_ADDR_L_2_WEIGHTS_INPUT_DATA      0x20
 #define XUZ_NN_ACC_CONTROL_BITS_L_2_WEIGHTS_INPUT_DATA      32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_3_WEIGHTS_INPUT_DATA      0x30
+#define XUZ_NN_ACC_CONTROL_ADDR_L_3_WEIGHTS_INPUT_DATA      0x28
 #define XUZ_NN_ACC_CONTROL_BITS_L_3_WEIGHTS_INPUT_DATA      32
+#define XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA 0x30
+#define XUZ_NN_ACC_CONTROL_BITS_L_OUTPUT_WEIGHTS_INPUT_DATA 32
 #define XUZ_NN_ACC_CONTROL_ADDR_ACTION_OUTPUT_DATA          0x38
 #define XUZ_NN_ACC_CONTROL_BITS_ACTION_OUTPUT_DATA          32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_INPUT_BIAS_INPUT_DATA     0x40
-#define XUZ_NN_ACC_CONTROL_BITS_L_INPUT_BIAS_INPUT_DATA     32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_1_BIAS_INPUT_DATA         0x48
+#define XUZ_NN_ACC_CONTROL_ADDR_L_1_BIAS_INPUT_DATA         0x40
 #define XUZ_NN_ACC_CONTROL_BITS_L_1_BIAS_INPUT_DATA         32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_2_BIAS_INPUT_DATA         0x50
+#define XUZ_NN_ACC_CONTROL_ADDR_L_2_BIAS_INPUT_DATA         0x48
 #define XUZ_NN_ACC_CONTROL_BITS_L_2_BIAS_INPUT_DATA         32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_3_BIAS_INPUT_DATA         0x58
+#define XUZ_NN_ACC_CONTROL_ADDR_L_3_BIAS_INPUT_DATA         0x50
 #define XUZ_NN_ACC_CONTROL_BITS_L_3_BIAS_INPUT_DATA         32
+#define XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_BIAS_INPUT_DATA    0x58
+#define XUZ_NN_ACC_CONTROL_BITS_L_OUTPUT_BIAS_INPUT_DATA    32
 #define XUZ_NN_ACC_CONTROL_ADDR_COPY_MATS_FLAG_DATA         0x60
 #define XUZ_NN_ACC_CONTROL_BITS_COPY_MATS_FLAG_DATA         1
 #define XUZ_NN_ACC_CONTROL_ADDR_OBSERVATION_SIZE_INPUT_DATA 0x68

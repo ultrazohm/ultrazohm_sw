@@ -34,15 +34,15 @@ port (
     RREADY                :in   STD_LOGIC;
     interrupt             :out  STD_LOGIC;
     Observation_Input     :out  STD_LOGIC_VECTOR(31 downto 0);
-    L_Input_Weights_input :out  STD_LOGIC_VECTOR(31 downto 0);
     L_1_Weights_input     :out  STD_LOGIC_VECTOR(31 downto 0);
     L_2_Weights_input     :out  STD_LOGIC_VECTOR(31 downto 0);
     L_3_Weights_input     :out  STD_LOGIC_VECTOR(31 downto 0);
+    L_Output_Weights_input :out  STD_LOGIC_VECTOR(31 downto 0);
     Action_output         :out  STD_LOGIC_VECTOR(31 downto 0);
-    L_Input_Bias_input    :out  STD_LOGIC_VECTOR(31 downto 0);
     L_1_Bias_input        :out  STD_LOGIC_VECTOR(31 downto 0);
     L_2_Bias_input        :out  STD_LOGIC_VECTOR(31 downto 0);
     L_3_Bias_input        :out  STD_LOGIC_VECTOR(31 downto 0);
+    L_Output_Bias_input   :out  STD_LOGIC_VECTOR(31 downto 0);
     copy_mats_flag        :out  STD_LOGIC_VECTOR(0 downto 0);
     Observation_size_input :out  STD_LOGIC_VECTOR(31 downto 0);
     Action_size_input     :out  STD_LOGIC_VECTOR(31 downto 0);
@@ -78,32 +78,32 @@ end entity uz_NN_acc_control_s_axi;
 -- 0x10 : Data signal of Observation_Input
 --        bit 31~0 - Observation_Input[31:0] (Read/Write)
 -- 0x14 : reserved
--- 0x18 : Data signal of L_Input_Weights_input
---        bit 31~0 - L_Input_Weights_input[31:0] (Read/Write)
--- 0x1c : reserved
--- 0x20 : Data signal of L_1_Weights_input
+-- 0x18 : Data signal of L_1_Weights_input
 --        bit 31~0 - L_1_Weights_input[31:0] (Read/Write)
--- 0x24 : reserved
--- 0x28 : Data signal of L_2_Weights_input
+-- 0x1c : reserved
+-- 0x20 : Data signal of L_2_Weights_input
 --        bit 31~0 - L_2_Weights_input[31:0] (Read/Write)
--- 0x2c : reserved
--- 0x30 : Data signal of L_3_Weights_input
+-- 0x24 : reserved
+-- 0x28 : Data signal of L_3_Weights_input
 --        bit 31~0 - L_3_Weights_input[31:0] (Read/Write)
+-- 0x2c : reserved
+-- 0x30 : Data signal of L_Output_Weights_input
+--        bit 31~0 - L_Output_Weights_input[31:0] (Read/Write)
 -- 0x34 : reserved
 -- 0x38 : Data signal of Action_output
 --        bit 31~0 - Action_output[31:0] (Read/Write)
 -- 0x3c : reserved
--- 0x40 : Data signal of L_Input_Bias_input
---        bit 31~0 - L_Input_Bias_input[31:0] (Read/Write)
--- 0x44 : reserved
--- 0x48 : Data signal of L_1_Bias_input
+-- 0x40 : Data signal of L_1_Bias_input
 --        bit 31~0 - L_1_Bias_input[31:0] (Read/Write)
--- 0x4c : reserved
--- 0x50 : Data signal of L_2_Bias_input
+-- 0x44 : reserved
+-- 0x48 : Data signal of L_2_Bias_input
 --        bit 31~0 - L_2_Bias_input[31:0] (Read/Write)
--- 0x54 : reserved
--- 0x58 : Data signal of L_3_Bias_input
+-- 0x4c : reserved
+-- 0x50 : Data signal of L_3_Bias_input
 --        bit 31~0 - L_3_Bias_input[31:0] (Read/Write)
+-- 0x54 : reserved
+-- 0x58 : Data signal of L_Output_Bias_input
+--        bit 31~0 - L_Output_Bias_input[31:0] (Read/Write)
 -- 0x5c : reserved
 -- 0x60 : Data signal of copy_mats_flag
 --        bit 0  - copy_mats_flag[0] (Read/Write)
@@ -136,24 +136,24 @@ architecture behave of uz_NN_acc_control_s_axi is
     constant ADDR_ISR                           : INTEGER := 16#0c#;
     constant ADDR_OBSERVATION_INPUT_DATA_0      : INTEGER := 16#10#;
     constant ADDR_OBSERVATION_INPUT_CTRL        : INTEGER := 16#14#;
-    constant ADDR_L_INPUT_WEIGHTS_INPUT_DATA_0  : INTEGER := 16#18#;
-    constant ADDR_L_INPUT_WEIGHTS_INPUT_CTRL    : INTEGER := 16#1c#;
-    constant ADDR_L_1_WEIGHTS_INPUT_DATA_0      : INTEGER := 16#20#;
-    constant ADDR_L_1_WEIGHTS_INPUT_CTRL        : INTEGER := 16#24#;
-    constant ADDR_L_2_WEIGHTS_INPUT_DATA_0      : INTEGER := 16#28#;
-    constant ADDR_L_2_WEIGHTS_INPUT_CTRL        : INTEGER := 16#2c#;
-    constant ADDR_L_3_WEIGHTS_INPUT_DATA_0      : INTEGER := 16#30#;
-    constant ADDR_L_3_WEIGHTS_INPUT_CTRL        : INTEGER := 16#34#;
+    constant ADDR_L_1_WEIGHTS_INPUT_DATA_0      : INTEGER := 16#18#;
+    constant ADDR_L_1_WEIGHTS_INPUT_CTRL        : INTEGER := 16#1c#;
+    constant ADDR_L_2_WEIGHTS_INPUT_DATA_0      : INTEGER := 16#20#;
+    constant ADDR_L_2_WEIGHTS_INPUT_CTRL        : INTEGER := 16#24#;
+    constant ADDR_L_3_WEIGHTS_INPUT_DATA_0      : INTEGER := 16#28#;
+    constant ADDR_L_3_WEIGHTS_INPUT_CTRL        : INTEGER := 16#2c#;
+    constant ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA_0 : INTEGER := 16#30#;
+    constant ADDR_L_OUTPUT_WEIGHTS_INPUT_CTRL   : INTEGER := 16#34#;
     constant ADDR_ACTION_OUTPUT_DATA_0          : INTEGER := 16#38#;
     constant ADDR_ACTION_OUTPUT_CTRL            : INTEGER := 16#3c#;
-    constant ADDR_L_INPUT_BIAS_INPUT_DATA_0     : INTEGER := 16#40#;
-    constant ADDR_L_INPUT_BIAS_INPUT_CTRL       : INTEGER := 16#44#;
-    constant ADDR_L_1_BIAS_INPUT_DATA_0         : INTEGER := 16#48#;
-    constant ADDR_L_1_BIAS_INPUT_CTRL           : INTEGER := 16#4c#;
-    constant ADDR_L_2_BIAS_INPUT_DATA_0         : INTEGER := 16#50#;
-    constant ADDR_L_2_BIAS_INPUT_CTRL           : INTEGER := 16#54#;
-    constant ADDR_L_3_BIAS_INPUT_DATA_0         : INTEGER := 16#58#;
-    constant ADDR_L_3_BIAS_INPUT_CTRL           : INTEGER := 16#5c#;
+    constant ADDR_L_1_BIAS_INPUT_DATA_0         : INTEGER := 16#40#;
+    constant ADDR_L_1_BIAS_INPUT_CTRL           : INTEGER := 16#44#;
+    constant ADDR_L_2_BIAS_INPUT_DATA_0         : INTEGER := 16#48#;
+    constant ADDR_L_2_BIAS_INPUT_CTRL           : INTEGER := 16#4c#;
+    constant ADDR_L_3_BIAS_INPUT_DATA_0         : INTEGER := 16#50#;
+    constant ADDR_L_3_BIAS_INPUT_CTRL           : INTEGER := 16#54#;
+    constant ADDR_L_OUTPUT_BIAS_INPUT_DATA_0    : INTEGER := 16#58#;
+    constant ADDR_L_OUTPUT_BIAS_INPUT_CTRL      : INTEGER := 16#5c#;
     constant ADDR_COPY_MATS_FLAG_DATA_0         : INTEGER := 16#60#;
     constant ADDR_COPY_MATS_FLAG_CTRL           : INTEGER := 16#64#;
     constant ADDR_OBSERVATION_SIZE_INPUT_DATA_0 : INTEGER := 16#68#;
@@ -193,15 +193,15 @@ architecture behave of uz_NN_acc_control_s_axi is
     signal int_ier             : UNSIGNED(1 downto 0) := (others => '0');
     signal int_isr             : UNSIGNED(1 downto 0) := (others => '0');
     signal int_Observation_Input : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_L_Input_Weights_input : UNSIGNED(31 downto 0) := (others => '0');
     signal int_L_1_Weights_input : UNSIGNED(31 downto 0) := (others => '0');
     signal int_L_2_Weights_input : UNSIGNED(31 downto 0) := (others => '0');
     signal int_L_3_Weights_input : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_L_Output_Weights_input : UNSIGNED(31 downto 0) := (others => '0');
     signal int_Action_output   : UNSIGNED(31 downto 0) := (others => '0');
-    signal int_L_Input_Bias_input : UNSIGNED(31 downto 0) := (others => '0');
     signal int_L_1_Bias_input  : UNSIGNED(31 downto 0) := (others => '0');
     signal int_L_2_Bias_input  : UNSIGNED(31 downto 0) := (others => '0');
     signal int_L_3_Bias_input  : UNSIGNED(31 downto 0) := (others => '0');
+    signal int_L_Output_Bias_input : UNSIGNED(31 downto 0) := (others => '0');
     signal int_copy_mats_flag  : UNSIGNED(0 downto 0) := (others => '0');
     signal int_Observation_size_input : UNSIGNED(31 downto 0) := (others => '0');
     signal int_Action_size_input : UNSIGNED(31 downto 0) := (others => '0');
@@ -337,24 +337,24 @@ begin
                         rdata_data(1 downto 0) <= int_isr;
                     when ADDR_OBSERVATION_INPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_Observation_Input(31 downto 0), 32);
-                    when ADDR_L_INPUT_WEIGHTS_INPUT_DATA_0 =>
-                        rdata_data <= RESIZE(int_L_Input_Weights_input(31 downto 0), 32);
                     when ADDR_L_1_WEIGHTS_INPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_L_1_Weights_input(31 downto 0), 32);
                     when ADDR_L_2_WEIGHTS_INPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_L_2_Weights_input(31 downto 0), 32);
                     when ADDR_L_3_WEIGHTS_INPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_L_3_Weights_input(31 downto 0), 32);
+                    when ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA_0 =>
+                        rdata_data <= RESIZE(int_L_Output_Weights_input(31 downto 0), 32);
                     when ADDR_ACTION_OUTPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_Action_output(31 downto 0), 32);
-                    when ADDR_L_INPUT_BIAS_INPUT_DATA_0 =>
-                        rdata_data <= RESIZE(int_L_Input_Bias_input(31 downto 0), 32);
                     when ADDR_L_1_BIAS_INPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_L_1_Bias_input(31 downto 0), 32);
                     when ADDR_L_2_BIAS_INPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_L_2_Bias_input(31 downto 0), 32);
                     when ADDR_L_3_BIAS_INPUT_DATA_0 =>
                         rdata_data <= RESIZE(int_L_3_Bias_input(31 downto 0), 32);
+                    when ADDR_L_OUTPUT_BIAS_INPUT_DATA_0 =>
+                        rdata_data <= RESIZE(int_L_Output_Bias_input(31 downto 0), 32);
                     when ADDR_COPY_MATS_FLAG_DATA_0 =>
                         rdata_data <= RESIZE(int_copy_mats_flag(0 downto 0), 32);
                     when ADDR_OBSERVATION_SIZE_INPUT_DATA_0 =>
@@ -380,15 +380,15 @@ begin
     task_ap_ready        <= ap_ready and not int_auto_restart;
     auto_restart_done    <= auto_restart_status and (ap_idle and not int_ap_idle);
     Observation_Input    <= STD_LOGIC_VECTOR(int_Observation_Input);
-    L_Input_Weights_input <= STD_LOGIC_VECTOR(int_L_Input_Weights_input);
     L_1_Weights_input    <= STD_LOGIC_VECTOR(int_L_1_Weights_input);
     L_2_Weights_input    <= STD_LOGIC_VECTOR(int_L_2_Weights_input);
     L_3_Weights_input    <= STD_LOGIC_VECTOR(int_L_3_Weights_input);
+    L_Output_Weights_input <= STD_LOGIC_VECTOR(int_L_Output_Weights_input);
     Action_output        <= STD_LOGIC_VECTOR(int_Action_output);
-    L_Input_Bias_input   <= STD_LOGIC_VECTOR(int_L_Input_Bias_input);
     L_1_Bias_input       <= STD_LOGIC_VECTOR(int_L_1_Bias_input);
     L_2_Bias_input       <= STD_LOGIC_VECTOR(int_L_2_Bias_input);
     L_3_Bias_input       <= STD_LOGIC_VECTOR(int_L_3_Bias_input);
+    L_Output_Bias_input  <= STD_LOGIC_VECTOR(int_L_Output_Bias_input);
     copy_mats_flag       <= STD_LOGIC_VECTOR(int_copy_mats_flag);
     Observation_size_input <= STD_LOGIC_VECTOR(int_Observation_size_input);
     Action_size_input    <= STD_LOGIC_VECTOR(int_Action_size_input);
@@ -578,17 +578,6 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_L_INPUT_WEIGHTS_INPUT_DATA_0) then
-                    int_L_Input_Weights_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_L_Input_Weights_input(31 downto 0));
-                end if;
-            end if;
-        end if;
-    end process;
-
-    process (ACLK)
-    begin
-        if (ACLK'event and ACLK = '1') then
-            if (ACLK_EN = '1') then
                 if (w_hs = '1' and waddr = ADDR_L_1_WEIGHTS_INPUT_DATA_0) then
                     int_L_1_Weights_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_L_1_Weights_input(31 downto 0));
                 end if;
@@ -622,8 +611,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_ACTION_OUTPUT_DATA_0) then
-                    int_Action_output(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_Action_output(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA_0) then
+                    int_L_Output_Weights_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_L_Output_Weights_input(31 downto 0));
                 end if;
             end if;
         end if;
@@ -633,8 +622,8 @@ begin
     begin
         if (ACLK'event and ACLK = '1') then
             if (ACLK_EN = '1') then
-                if (w_hs = '1' and waddr = ADDR_L_INPUT_BIAS_INPUT_DATA_0) then
-                    int_L_Input_Bias_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_L_Input_Bias_input(31 downto 0));
+                if (w_hs = '1' and waddr = ADDR_ACTION_OUTPUT_DATA_0) then
+                    int_Action_output(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_Action_output(31 downto 0));
                 end if;
             end if;
         end if;
@@ -668,6 +657,17 @@ begin
             if (ACLK_EN = '1') then
                 if (w_hs = '1' and waddr = ADDR_L_3_BIAS_INPUT_DATA_0) then
                     int_L_3_Bias_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_L_3_Bias_input(31 downto 0));
+                end if;
+            end if;
+        end if;
+    end process;
+
+    process (ACLK)
+    begin
+        if (ACLK'event and ACLK = '1') then
+            if (ACLK_EN = '1') then
+                if (w_hs = '1' and waddr = ADDR_L_OUTPUT_BIAS_INPUT_DATA_0) then
+                    int_L_Output_Bias_input(31 downto 0) <= (UNSIGNED(WDATA(31 downto 0)) and wmask(31 downto 0)) or ((not wmask(31 downto 0)) and int_L_Output_Bias_input(31 downto 0));
                 end if;
             end if;
         end if;

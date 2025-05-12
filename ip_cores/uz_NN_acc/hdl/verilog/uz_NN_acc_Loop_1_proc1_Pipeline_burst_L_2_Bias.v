@@ -60,7 +60,7 @@ module uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Bias (
         m_axi_arrays_BRESP,
         m_axi_arrays_BID,
         m_axi_arrays_BUSER,
-        sext_ln112,
+        sext_ln108,
         L_2_Bias_address0,
         L_2_Bias_ce0,
         L_2_Bias_we0,
@@ -121,7 +121,7 @@ output   m_axi_arrays_BREADY;
 input  [1:0] m_axi_arrays_BRESP;
 input  [0:0] m_axi_arrays_BID;
 input  [0:0] m_axi_arrays_BUSER;
-input  [29:0] sext_ln112;
+input  [29:0] sext_ln108;
 output  [5:0] L_2_Bias_address0;
 output   L_2_Bias_ce0;
 output   L_2_Bias_we0;
@@ -139,27 +139,27 @@ reg    ap_enable_reg_pp0_iter1;
 reg    ap_enable_reg_pp0_iter2;
 reg    ap_idle_pp0;
 wire    ap_block_state1_pp0_stage0_iter0;
-reg   [0:0] icmp_ln112_reg_135;
+reg   [0:0] icmp_ln108_reg_135;
 reg    ap_block_state2_pp0_stage0_iter1;
 wire    ap_block_state3_pp0_stage0_iter2;
 reg    ap_block_pp0_stage0_subdone;
-wire   [0:0] icmp_ln112_fu_88_p2;
+wire   [0:0] icmp_ln108_fu_88_p2;
 reg    ap_condition_exit_pp0_iter0_stage0;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
 reg    arrays_blk_n_R;
 wire    ap_block_pp0_stage0;
 reg    ap_block_pp0_stage0_11001;
-wire   [5:0] trunc_ln114_fu_100_p1;
-reg   [5:0] trunc_ln114_reg_139;
-reg   [5:0] trunc_ln114_reg_139_pp0_iter1_reg;
+wire   [5:0] trunc_ln110_fu_100_p1;
+reg   [5:0] trunc_ln110_reg_139;
+reg   [5:0] trunc_ln110_reg_139_pp0_iter1_reg;
 reg   [31:0] arrays_addr_read_reg_144;
 reg    ap_condition_exit_pp0_iter1_stage0;
-wire   [31:0] zext_ln114_fu_119_p1;
-reg   [6:0] i_fu_48;
-wire   [6:0] add_ln112_fu_94_p2;
+wire   [31:0] zext_ln110_fu_119_p1;
+reg   [6:0] i_6_fu_48;
+wire   [6:0] add_ln108_fu_94_p2;
 wire    ap_loop_init;
-reg   [6:0] ap_sig_allocacmp_i_7;
+reg   [6:0] ap_sig_allocacmp_i;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -236,10 +236,10 @@ end
 
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
-        if (((ap_enable_reg_pp0_iter0 == 1'b1) & (icmp_ln112_fu_88_p2 == 1'd0))) begin
-            i_fu_48 <= add_ln112_fu_94_p2;
+        if (((ap_enable_reg_pp0_iter0 == 1'b1) & (icmp_ln108_fu_88_p2 == 1'd0))) begin
+            i_6_fu_48 <= add_ln108_fu_94_p2;
         end else if ((ap_loop_init == 1'b1)) begin
-            i_fu_48 <= 7'd0;
+            i_6_fu_48 <= 7'd0;
         end
     end
 end
@@ -247,20 +247,20 @@ end
 always @ (posedge ap_clk) begin
     if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         ap_loop_exit_ready_pp0_iter1_reg <= ap_loop_exit_ready;
-        icmp_ln112_reg_135 <= icmp_ln112_fu_88_p2;
-        trunc_ln114_reg_139_pp0_iter1_reg <= trunc_ln114_reg_139;
+        icmp_ln108_reg_135 <= icmp_ln108_fu_88_p2;
+        trunc_ln110_reg_139_pp0_iter1_reg <= trunc_ln110_reg_139;
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b0 == ap_block_pp0_stage0_11001) & (icmp_ln112_reg_135 == 1'd0) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+    if (((1'b0 == ap_block_pp0_stage0_11001) & (icmp_ln108_reg_135 == 1'd0) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         arrays_addr_read_reg_144 <= m_axi_arrays_RDATA;
     end
 end
 
 always @ (posedge ap_clk) begin
-    if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (icmp_ln112_fu_88_p2 == 1'd0))) begin
-        trunc_ln114_reg_139 <= trunc_ln114_fu_100_p1;
+    if (((1'b0 == ap_block_pp0_stage0_11001) & (1'b1 == ap_CS_fsm_pp0_stage0) & (icmp_ln108_fu_88_p2 == 1'd0))) begin
+        trunc_ln110_reg_139 <= trunc_ln110_fu_100_p1;
     end
 end
 
@@ -281,7 +281,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b0 == ap_block_pp0_stage0_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0) & (icmp_ln112_fu_88_p2 == 1'd1))) begin
+    if (((1'b0 == ap_block_pp0_stage0_subdone) & (ap_enable_reg_pp0_iter0 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0) & (icmp_ln108_fu_88_p2 == 1'd1))) begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b1;
     end else begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b0;
@@ -289,7 +289,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b0 == ap_block_pp0_stage0_subdone) & (icmp_ln112_reg_135 == 1'd1) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+    if (((1'b0 == ap_block_pp0_stage0_subdone) & (icmp_ln108_reg_135 == 1'd1) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         ap_condition_exit_pp0_iter1_stage0 = 1'b1;
     end else begin
         ap_condition_exit_pp0_iter1_stage0 = 1'b0;
@@ -330,14 +330,14 @@ end
 
 always @ (*) begin
     if (((1'b0 == ap_block_pp0_stage0) & (1'b1 == ap_CS_fsm_pp0_stage0) & (ap_loop_init == 1'b1))) begin
-        ap_sig_allocacmp_i_7 = 7'd0;
+        ap_sig_allocacmp_i = 7'd0;
     end else begin
-        ap_sig_allocacmp_i_7 = i_fu_48;
+        ap_sig_allocacmp_i = i_6_fu_48;
     end
 end
 
 always @ (*) begin
-    if (((1'b0 == ap_block_pp0_stage0) & (icmp_ln112_reg_135 == 1'd0) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+    if (((1'b0 == ap_block_pp0_stage0) & (icmp_ln108_reg_135 == 1'd0) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         arrays_blk_n_R = m_axi_arrays_RVALID;
     end else begin
         arrays_blk_n_R = 1'b1;
@@ -345,7 +345,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((1'b0 == ap_block_pp0_stage0_11001) & (icmp_ln112_reg_135 == 1'd0) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
+    if (((1'b0 == ap_block_pp0_stage0_11001) & (icmp_ln108_reg_135 == 1'd0) & (ap_enable_reg_pp0_iter1 == 1'b1) & (1'b1 == ap_CS_fsm_pp0_stage0))) begin
         m_axi_arrays_RREADY = 1'b1;
     end else begin
         m_axi_arrays_RREADY = 1'b0;
@@ -363,28 +363,28 @@ always @ (*) begin
     endcase
 end
 
-assign L_2_Bias_address0 = zext_ln114_fu_119_p1;
+assign L_2_Bias_address0 = zext_ln110_fu_119_p1;
 
 assign L_2_Bias_d0 = arrays_addr_read_reg_144;
 
-assign add_ln112_fu_94_p2 = (ap_sig_allocacmp_i_7 + 7'd1);
+assign add_ln108_fu_94_p2 = (ap_sig_allocacmp_i + 7'd1);
 
 assign ap_CS_fsm_pp0_stage0 = ap_CS_fsm[32'd0];
 
 assign ap_block_pp0_stage0 = ~(1'b1 == 1'b1);
 
 always @ (*) begin
-    ap_block_pp0_stage0_11001 = ((icmp_ln112_reg_135 == 1'd0) & (m_axi_arrays_RVALID == 1'b0) & (ap_enable_reg_pp0_iter1 == 1'b1));
+    ap_block_pp0_stage0_11001 = ((icmp_ln108_reg_135 == 1'd0) & (m_axi_arrays_RVALID == 1'b0) & (ap_enable_reg_pp0_iter1 == 1'b1));
 end
 
 always @ (*) begin
-    ap_block_pp0_stage0_subdone = ((icmp_ln112_reg_135 == 1'd0) & (m_axi_arrays_RVALID == 1'b0) & (ap_enable_reg_pp0_iter1 == 1'b1));
+    ap_block_pp0_stage0_subdone = ((icmp_ln108_reg_135 == 1'd0) & (m_axi_arrays_RVALID == 1'b0) & (ap_enable_reg_pp0_iter1 == 1'b1));
 end
 
 assign ap_block_state1_pp0_stage0_iter0 = ~(1'b1 == 1'b1);
 
 always @ (*) begin
-    ap_block_state2_pp0_stage0_iter1 = ((icmp_ln112_reg_135 == 1'd0) & (m_axi_arrays_RVALID == 1'b0));
+    ap_block_state2_pp0_stage0_iter1 = ((icmp_ln108_reg_135 == 1'd0) & (m_axi_arrays_RVALID == 1'b0));
 end
 
 assign ap_block_state3_pp0_stage0_iter2 = ~(1'b1 == 1'b1);
@@ -395,7 +395,7 @@ assign ap_enable_reg_pp0_iter0 = ap_start_int;
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign icmp_ln112_fu_88_p2 = ((ap_sig_allocacmp_i_7 == 7'd64) ? 1'b1 : 1'b0);
+assign icmp_ln108_fu_88_p2 = ((ap_sig_allocacmp_i == 7'd64) ? 1'b1 : 1'b0);
 
 assign m_axi_arrays_ARADDR = 32'd0;
 
@@ -459,8 +459,8 @@ assign m_axi_arrays_WUSER = 1'd0;
 
 assign m_axi_arrays_WVALID = 1'b0;
 
-assign trunc_ln114_fu_100_p1 = ap_sig_allocacmp_i_7[5:0];
+assign trunc_ln110_fu_100_p1 = ap_sig_allocacmp_i[5:0];
 
-assign zext_ln114_fu_119_p1 = trunc_ln114_reg_139_pp0_iter1_reg;
+assign zext_ln110_fu_119_p1 = trunc_ln110_reg_139_pp0_iter1_reg;
 
 endmodule //uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Bias

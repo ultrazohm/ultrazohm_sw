@@ -344,13 +344,17 @@ void i2cio_thread()
 */
 	while(1) {
 		// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
-		uz_platform_gposet(I2CLED_FP1RDY, (javascope_data_status & (1<<0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_FP2RUN, (javascope_data_status & (1<<1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_FP3ERR, (javascope_data_status & (1<<2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_FP4USR, (javascope_data_status & (1<<3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		if (apu_version_final > 4U)
+		{
+			// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
+			uz_platform_gposet(I2CLED_FP1RDY, (javascope_data_status & (1 << 0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+			uz_platform_gposet(I2CLED_FP2RUN, (javascope_data_status & (1 << 1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+			uz_platform_gposet(I2CLED_FP3ERR, (javascope_data_status & (1 << 2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+			uz_platform_gposet(I2CLED_FP4USR, (javascope_data_status & (1 << 3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
 
-		// Push all (I²C-)GPO changes to hardware
-		uz_platform_gpoupdate();
+			// Push all (I²C-)GPO changes to hardware
+			uz_platform_gpoupdate();
+		}
 
 		vTaskDelay(I2CIO_THREAD_TIMER_MS / portTICK_RATE_MS);
 

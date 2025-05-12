@@ -41,7 +41,7 @@ uz_Matrix_Multi_t* uz_Matrix_Multi_init(struct uz_Matrix_Multi_config config){
 	uz_assert(config.B3_rows <= 64U);
 	uz_assert(config.B4_columns <= 12U);
 	uz_assert(config.B4_rows <= 64U);
-	uz_assert(config.C_columns == 12U);
+	uz_assert(config.C_columns <= 12U);
 	uz_assert(config.C_rows <= 1U);
 	uz_assert(config.A_length_of_data == (config.A_columns*config.A_rows));
 	uz_assert(config.C_length_of_data == (config.C_columns*config.C_rows));

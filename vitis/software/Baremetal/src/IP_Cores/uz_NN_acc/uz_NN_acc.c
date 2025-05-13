@@ -1,5 +1,5 @@
 #include "../../uz/uz_global_configuration.h"
-#if UZ_MLP_NN_ACC_IP_MAX_INSTANCES > 0U
+#if UZ_NN_ACC_IP_MAX_INSTANCES > 0U
 #include "uz_NN_acc.h"
 #include "uz_NN_acc_hw.h"
 

@@ -72,7 +72,7 @@
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
-#define UZ_MLP_NN_ACC_IP_MAX_INSTANCES                  1U
+#define UZ_NN_ACC_IP_MAX_INSTANCES                  	1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -122,5 +122,5 @@
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
-    #define UZ_MLP_NN_ACC_IP_MAX_INSTANCES                  100U
+    #define UZ_NN_ACC_IP_MAX_INSTANCES                  	100U
 #endif

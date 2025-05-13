@@ -37,6 +37,11 @@ struct uz_fixedpoint_definition_t fp_type_ki_pll = {
 				.fractional_bits=0
 };
 
+struct uz_fixedpoint_definition_t fp_type_offset = {
+				.is_signed=false,
+				.integer_bits=3,
+				.fractional_bits=24
+};
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -224,6 +229,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		float tmp_val5 = value;
+		uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x128, tmp_val5, fp_type_offset);
 			break;
 
 		case (Set_Send_Field_6):

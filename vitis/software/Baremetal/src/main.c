@@ -157,6 +157,12 @@ void init_ssi_interface() {
 					.fractional_bits=0
 	};
 
+	struct uz_fixedpoint_definition_t fp_type_offset = {
+					.is_signed=false,
+					.integer_bits=3,
+					.fractional_bits=24
+	};
+
 
 	// set clock divider
 	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, 20U);
@@ -171,9 +177,13 @@ void init_ssi_interface() {
 	// kp_pll
 	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, 628.3185f, fp_type_kp_pll);
 	// debug mode
-	uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x118, true);
+	uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x118, false);
 	// ki_pll
 	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x11C, 98696.0f, fp_type_ki_pll);
+	// machine polepairs
+	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x124, 2U);
+	// offset mech
+	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x128, 0.5f, fp_type_offset);
 
 
 }

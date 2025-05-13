@@ -1,6 +1,7 @@
 SLStudio.Utils.RemoveHighlighting(get_param('uz_ssi_interface_2023a', 'handle'));
 SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_ssi_interface_2023a', 'handle'));
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll', 0, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/S-R Flip-Flop1', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/clk_idle_and_delay_first_clock_function/S-R Flip-Flop', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Sine HDL Optimized1', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Delay1', 1, 1, '');
@@ -29,6 +30,9 @@ annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/fix
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data/sample_serial_data', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data/sample_serial_data', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/sample_serial_data', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/slice_position_and_status/slice_position_and_status', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/slice_position_and_status/slice_position_and_status', 1, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/sample_serial_ssi_data/slice_position_and_status', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor/fixed_point_floor', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor/fixed_point_floor', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor', 1, 1, '');

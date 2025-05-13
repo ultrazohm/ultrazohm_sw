@@ -87,10 +87,11 @@ typedef struct _actualValues_ {
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float ssi0_position_raw;
-	float ssi0_position_2pi;
-	float ssi0_position_SI;
+	float ssi0_position_el_si;
+	float ssi0_position_mech_si;
 	float ssi0_speed_mech_rad_s;
 	float ssi0_speed_mech_rad_s_ip;
+	float ssi0_speed_mech_rpm_ip;
 	float ssi0_speed_mech_rpm;
 } actualValues;
 

@@ -2,13 +2,25 @@
 #define UZ_SSI_INTERFACE_HW_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 void uz_ssi_interface_hw_write_ssi_clock_divider(uint32_t base_address, uint32_t ssi_clk_divider);
-void uz_ssi_interface_hw_write_ssi_encoder_bit_width(uint32_t base_address, uint32_t ssi_encoder_bit_width);
+void uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(uint32_t base_address, uint32_t ssi_encoder_bit_width_single_turn);
+void uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn(uint32_t base_address, uint32_t ssi_encoder_bit_width_multi_turn);
+void uz_ssi_interface_hw_write_ssi_encoder_number_of_status_bits(uint32_t base_address, uint32_t ssi_encoder_number_of_status_bits);
+void uz_ssi_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_address, bool position_encoding);
+void uz_ssi_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_core_off_on);
 void uz_ssi_interface_hw_write_pll_parameters(uint32_t base_address, float sampling_interval, float kp_pll, float ki_pll);
-uint32_t uz_ssi_interface_hw_read_position_raw(uint32_t base_address);
-float uz_ssi_interface_hw_read_position_mech_si(uint32_t base_address);
-float uz_ssi_interface_hw_read_position_el_si(uint32_t base_address);
+void uz_ssi_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs);
+void uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(uint32_t base_address, float mech_offset_si);
+
+uint32_t uz_ssi_interface_hw_read_position_raw_single_turn(uint32_t base_address);
+uint32_t uz_ssi_interface_hw_read_position_raw_multi_turn(uint32_t base_address);
+uint32_t uz_ssi_interface_hw_read_ssi_encoder_status(uint32_t base_address);
+float uz_ssi_interface_hw_read_position_mech_si_single_turn(uint32_t base_address);
+float uz_ssi_interface_hw_read_position_el_si_single_turn(uint32_t base_address);
 float uz_ssi_interface_hw_read_speed_mech_si(uint32_t base_address);
+float uz_ssi_interface_hw_read_speed_el_si(uint32_t base_address);
+float uz_ssi_interface_hw_read_speed_mech_rpm(uint32_t base_address);
 
 #endif // UZ_SSI_INTERFACE_HW_H

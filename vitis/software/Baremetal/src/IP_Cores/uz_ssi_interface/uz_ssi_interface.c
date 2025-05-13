@@ -49,7 +49,7 @@ uz_ssi_interface_t* uz_ssi_interface_init(struct uz_ssi_interface_config_t confi
     uz_assert_not_zero_uint32(config.base_address);
     uz_assert_not_zero_uint32(config.ip_clk_frequency_Hz);
     uz_assert_not_zero_uint32(config.ssi_clk_frequency_Hz);
-    uz_assert_not_zero_uint32(config.ssi_encoder_bit_width);
+    uz_assert_not_zero_uint32(config.ssi_encoder_bit_width_single_turn);
     uz_assert_not_zero_uint32(config.machine_polepairs);
     uz_ssi_interface_t* self = uz_ssi_interface_allocation();
     self->config=config;
@@ -61,41 +61,54 @@ uz_ssi_interface_t* uz_ssi_interface_init(struct uz_ssi_interface_config_t confi
 void uz_ssi_interface_set_config(uz_ssi_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_assert((self->config.ssi_encoder_bit_width_multi_turn + self->config.ssi_encoder_bit_width_single_turn + self->config.ssi_encoder_number_of_status_bits) <= 64U);
     // calculate ssi clock divider from ip core clock frequency and ssi clock frequency
     uint32_t ssi_clk_divider = ceil_div(self->config.ip_clk_frequency_Hz, (2U*self->config.ssi_clk_frequency_Hz));
     // write configuration
     uz_ssi_interface_hw_write_ssi_clock_divider(self->config.base_address, ssi_clk_divider);
-    uz_ssi_interface_hw_write_ssi_encoder_bit_width(self->config.base_address, self->config.ssi_encoder_bit_width);
+    uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(self->config.base_address, self->config.ssi_encoder_bit_width_single_turn);
+    uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn(self->config.base_address, self->config.ssi_encoder_bit_width_multi_turn);
+    uz_ssi_interface_hw_write_ssi_encoder_number_of_status_bits(self->config.base_address, self->config.ssi_encoder_number_of_status_bits);
     uz_ssi_interface_hw_write_pll_parameters(self->config.base_address, self->config.sampling_interval_seconds, self->config.kp_pll, self->config.ki_pll);
+    uz_ssi_interface_hw_write_machine_pole_pairs(self->config.base_address, self->config.machine_polepairs);
+    uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(self->config.base_address, self->config.position_mech_offset_si_single_turn);
 }
 
 void uz_ssi_interface_update_all_outputs(uz_ssi_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);  
     // get new values for outputs struct  
-    self->outputs.position_raw = uz_ssi_interface_get_position_raw(self);
-    self->outputs.position_mech_si = uz_ssi_interface_get_position_mech_si(self);
-    self->outputs.position_el_si = uz_ssi_interface_get_position_el_si(self);
+    self->outputs.position_raw_single_turn = uz_ssi_interface_get_position_raw_single_turn(self);
+    self->outputs.position_multi_turn = uz_ssi_interface_get_position_raw_multi_turn(self);
+    self->outputs.position_mech_si_single_turn = uz_ssi_interface_get_position_mech_si_single_turn(self);
+    self->outputs.position_el_si_single_turn = uz_ssi_interface_get_position_el_si_single_turn(self);
     self->outputs.speed_mech_si = uz_ssi_interface_get_speed_mech_si(self);
+    self->outputs.speed_el_si = uz_ssi_interface_get_speed_el_si(self);
     self->outputs.speed_mech_rpm = uz_ssi_interface_get_speed_mech_rpm(self);
 }
 
-uint32_t uz_ssi_interface_get_position_raw(uz_ssi_interface_t *self) {
+uint32_t uz_ssi_interface_get_position_raw_single_turn(uz_ssi_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return (uz_ssi_interface_hw_read_position_raw(self->config.base_address));
+    return (uz_ssi_interface_hw_read_position_raw_single_turn(self->config.base_address));
 }
 
-float uz_ssi_interface_get_position_mech_si(uz_ssi_interface_t *self) {
+uint32_t uz_ssi_interface_get_position_raw_multi_turn(uz_ssi_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return (uz_ssi_interface_hw_read_position_mech_si(self->config.base_address));
+    return (uz_ssi_interface_hw_read_position_raw_multi_turn(self->config.base_address));
 }
 
-float uz_ssi_interface_get_position_el_si(uz_ssi_interface_t *self) {
+float uz_ssi_interface_get_position_mech_si_single_turn(uz_ssi_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
-    return (uz_ssi_interface_hw_read_position_el_si(self->config.base_address));
+    return (uz_ssi_interface_hw_read_position_mech_si_single_turn(self->config.base_address));
+}
+
+float uz_ssi_interface_get_position_el_si_single_turn(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (uz_ssi_interface_hw_read_position_el_si_single_turn(self->config.base_address));
 }
 
 float uz_ssi_interface_get_speed_mech_si(uz_ssi_interface_t *self) {
@@ -104,10 +117,28 @@ float uz_ssi_interface_get_speed_mech_si(uz_ssi_interface_t *self) {
     return (uz_ssi_interface_hw_read_speed_mech_si(self->config.base_address));
 }
 
+float uz_ssi_interface_get_speed_el_si(uz_ssi_interface_t *self) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    return (uz_ssi_interface_hw_read_speed_el_si(self->config.base_address));
+}
+
 float uz_ssi_interface_get_speed_mech_rpm(uz_ssi_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return (self->outputs.speed_mech_si*RAD_PER_SECOND_TO_RPM);
+}
+
+void uz_ssi_interface_enable_ip(uz_ssi_interface_t *self, bool ip_core_off_on) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+    uz_ssi_interface_hw_write_ip_core_enable(self->config.base_address, ip_core_off_on);
+}
+
+void uz_ssi_interface_set_mechanical_offset_ssi_single_turn(uz_ssi_interface_t *self, float position_mech_offset_si_single_turn) {
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);   
+    uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(self->config.base_address, position_mech_offset_si_single_turn);
 }
 
 uint32_t ceil_div(uint32_t a, uint32_t b) {

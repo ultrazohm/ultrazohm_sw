@@ -72,6 +72,7 @@ platform_state_t last_state;
 platform_state_t current_state;
 int reset_counter=0;
 int delta_counter=0;
+uint16_t trigger = 0U;
 
 float polycoef_a = 1999.3f;
 float polycoef_b = -5468.4f;
@@ -251,6 +252,17 @@ void ISR_Control(void *data)
     	Global_Data.rasv.Iq_ref = dq_reference_current.q;
     }
 
+    if (Global_Data.av.I_d > 10.0f){
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 0, 1U);
+    } else{
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 0, 0U);
+    }
+
+    if (Global_Data.av.I_q > 10.0f){
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1, 1U);
+    } else{
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1, 0U);
+    }
 
     SKAI_nERROUT = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio, 0);
 
@@ -349,7 +361,7 @@ void ISR_Control(void *data)
 					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
 					break;
 				case rc_fingerprint:
-					Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance);
+					Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.temperature_motor);
 					dq_reference_current.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
 					dq_reference_current.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
 					Global_Data.rasv.Id_ref = dq_reference_current.d;
@@ -365,6 +377,15 @@ void ISR_Control(void *data)
 
 					Global_Data.av.theta_elec_pred = Global_Data.av.theta_elec + ((1.5f*1.0f/ISR_SAMPLE_FREQ)*Global_Data.av.omega_el);
 					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
+
+
+					if (Global_Data.rasv.rc_meas_output.data_valid == 1.0f){
+						trigger = 1U;
+					} else {
+						trigger = 0U;
+					}
+
+					uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1, trigger);
 
 					uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, output_dutycycle.DutyCycle_A, output_dutycycle.DutyCycle_B, output_dutycycle.DutyCycle_C);
 					break;

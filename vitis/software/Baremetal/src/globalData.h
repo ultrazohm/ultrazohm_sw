@@ -153,6 +153,7 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_axi_gpio_t* output_gpio;
+	uz_axi_gpio_t* output_gpio_LMG;
 	uz_axi_gpio_t* input_gpio;
 	uz_EnDat_t* EnDat_master_pointer;
 	uz_CurrentControl_t* FOC_instance;

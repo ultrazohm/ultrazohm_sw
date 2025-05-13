@@ -17,6 +17,7 @@ struct uz_parameterID_rc_t {
     struct uz_parameterID_rc_set_values_t set_values;
     struct uz_parameterid_rc_counter_t counter;
     struct uz_parameterid_rc_size_increments_t stepsize_increment;
+    struct uz_parameterid_rc_temp_check_t temp_check_values;
 };
 
 static uint32_t instance_counter = 0U;
@@ -71,7 +72,7 @@ uz_parameterID_rc_t* uz_parameterID_rc_get_all(uz_parameterID_rc_t* self){
     return self;
 }
 
-struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_parameterID_rc_t* self){
+struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_parameterID_rc_t* self, float temp_degrees){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     if(self->first_call){
@@ -82,6 +83,10 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         self->counter.isr ++;
         self->rc_state = rc_wait;
         self->rc_previous_state = rc_idle;
+        self->temp_check_values.initial_temp = temp_degrees;
+        self->temp_check_values.temp_min = self->temp_check_values.initial_temp * 0.95f;
+        self->temp_check_values.temp_max = self->temp_check_values.initial_temp * 1.05f;
+        self->temp_check_values.temp_check_done = false;
     } else {
         self->counter.isr++;
 
@@ -100,7 +105,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         // wait function: lets xx isr-cycles pass without changing anything. Switches to the following state after the wait time depending on the previous state
         case rc_wait: 
             self->counter.wait++;
-            if(self->counter.wait == 60000U){
+            if(self->counter.wait == 15000U){
                 if (self->rc_previous_state == rc_set_idq){
                     self->rc_state = rc_sample_on;
                 }
@@ -130,13 +135,33 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         
         // calls function that increments idq
         case rc_increment_idq:
+            if (self->internal_config.check_temp){
+                uz_parameterID_rc_check_temperature(self, temp_degrees);
+                if (self->temp_check_values.temp_check_done){
+                    uz_parameterID_rc_set_next_operating_point_idq(self);
+                    self->temp_check_values.temp_check_done = false;
+                } else {
+                    break;
+                }
+            } else {
             uz_parameterID_rc_set_next_operating_point_idq(self);
+            }
         break;
 
 
         // calls function that increments idq
         case rc_increment_n:
+            if (self->internal_config.check_temp){
+                uz_parameterID_rc_check_temperature(self, temp_degrees);
+                if (self->temp_check_values.temp_check_done){
+                    uz_parameterID_rc_set_next_operating_point_n(self);
+                    self->temp_check_values.temp_check_done = false;
+                } else {
+                    break;
+                }
+            } else {
             uz_parameterID_rc_set_next_operating_point_n(self);
+            }
         break;
 
         // routine is finished. idq and n are set to zero
@@ -195,6 +220,21 @@ void uz_parameterID_rc_set_next_operating_point_n(uz_parameterID_rc_t* self){
         self->set_values.id_set_Amps = 0.0f;
         self->set_values.iq_set_Amps = 0.0f;
         self->rc_state = rc_set_idq;
+    }
+}
+
+void uz_parameterID_rc_check_temperature(uz_parameterID_rc_t* self, float temp_degrees){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    if (temp_degrees >= self->temp_check_values.temp_max){
+        self->set_values.id_set_Amps = 0.0f;
+        self->set_values.iq_set_Amps = 0.0f;
+    } else if (temp_degrees <= self->temp_check_values.temp_min){
+        self->set_values.id_set_Amps = self->internal_config.abs_iq_max_Amps;
+        self->set_values.iq_set_Amps = -1.0f * self->internal_config.abs_id_max_Amps;
+    } else {
+        self->temp_check_values.temp_check_done = true;
     }
 }
 #endif

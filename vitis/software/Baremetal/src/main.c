@@ -71,13 +71,14 @@ struct uz_parameterid_rs_config_t config_rs_meas = {
 };
 
 const struct uz_parameterID_rc_config_t rc_meas_config = {
-  	.abs_id_max_Amps = 150.0f,
-  	.abs_iq_max_Amps = 150.0f,
+  	.abs_id_max_Amps = 100.0f,
+  	.abs_iq_max_Amps = 100.0f,
 	.n_start_rpm = 500.0f,
-	.n_stop_rpm = 500.0f,
-	.id_steps = 8U,
-	.iq_steps = 8U,
-	.n_steps = 0U
+	.n_stop_rpm = 1500.0f,
+	.id_steps = 5U,
+	.iq_steps = 5U,
+	.n_steps = 2U,
+	.check_temp=1
   };
 
 //uz_dq_setpoint_filter* obj_1 = NULL;
@@ -194,8 +195,15 @@ int main(void)
                         		.number_of_pins = 8,
                         		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
                         };
+            struct uz_axi_gpio_config_t config_output_LMG = {
+                        		.base_address = XPAR_GPIO_2_BASEADDR ,
+                        		.device_id = XPAR_GPIO_2_DEVICE_ID,
+                        		.number_of_pins = 6,
+                        		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+                        };
             Global_Data.objects.input_gpio = uz_axi_gpio_init(config_input);
             Global_Data.objects.output_gpio = uz_axi_gpio_init(config_output);
+            Global_Data.objects.output_gpio_LMG = uz_axi_gpio_init(config_output_LMG);
             Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
             uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);
             uz_TempCard_IF_Start(Global_Data.objects.temperature_card_d3);

@@ -40,6 +40,8 @@ void uz_nn_ff(uz_nn_t* self, uz_matrix_t const*const input);
  */
 uz_matrix_t *uz_nn_get_output_data(uz_nn_t const *const self);
 
+float (*uz_nn_get_activation_function(uz_nn_t const *const self, uint32_t layer))(float);
+
 uz_matrix_t* uz_nn_get_bias_matrix(uz_nn_t const*const self, uint32_t layer);
 uz_matrix_t* uz_nn_get_weight_matrix(uz_nn_t const*const self, uint32_t layer);
 uint32_t uz_nn_get_number_of_layer(uz_nn_t const*const self);

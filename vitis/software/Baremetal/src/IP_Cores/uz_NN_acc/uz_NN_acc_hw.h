@@ -6,16 +6,16 @@
 
 void uz_NN_acc_hw_set_Observation_size(uint32_t base_address, uint32_t Observation_size);
 void uz_NN_acc_hw_set_Action_size(uint32_t base_address, uint32_t Action_size);
-void uz_NN_acc_hw_set_Observation_Data(uint32_t base_address, volatile float *Observation_Data);
-void uz_NN_acc_hw_set_L_1_Weights_Data(uint32_t base_address, volatile float *L_1_Weights_Data);
-void uz_NN_acc_hw_set_L_2_Weights_Data(uint32_t base_address, volatile float *L_2_Weights_Data);
-void uz_NN_acc_hw_set_L_3_Weights_Data(uint32_t base_address, volatile float *L_3_Weights_Data);
-void uz_NN_acc_hw_set_L_Output_Weights_Data(uint32_t base_address, volatile float *L_Output_Weights_Data);
-void uz_NN_acc_hw_set_Actions_Data(uint32_t base_address, volatile float *Actions_Data);
-void uz_NN_acc_hw_set_L_1_Bias_Data(uint32_t base_address, volatile float *L_1_Bias_Data);
-void uz_NN_acc_hw_set_L_2_Bias_Data(uint32_t base_address, volatile float *L_2_Bias_Data);
-void uz_NN_acc_hw_set_L_3_Bias_Data(uint32_t base_address, volatile float *L_3_Bias_Data);
-void uz_NN_acc_hw_set_L_Output_Bias_Data(uint32_t base_address, volatile float *L_Output_Bias_Data);
+void uz_NN_acc_hw_set_Observation_Data(uint32_t base_address, float * const Observation_Data);
+void uz_NN_acc_hw_set_L_1_Weights_Data(uint32_t base_address, float * const L_1_Weights_Data);
+void uz_NN_acc_hw_set_L_2_Weights_Data(uint32_t base_address, float * const L_2_Weights_Data);
+void uz_NN_acc_hw_set_L_3_Weights_Data(uint32_t base_address, float * const L_3_Weights_Data);
+void uz_NN_acc_hw_set_L_Output_Weights_Data(uint32_t base_address, float * const L_Output_Weights_Data);
+void uz_NN_acc_hw_set_Actions_Data(uint32_t base_address, float * const Actions_Data);
+void uz_NN_acc_hw_set_L_1_Bias_Data(uint32_t base_address, float * const L_1_Bias_Data);
+void uz_NN_acc_hw_set_L_2_Bias_Data(uint32_t base_address, float * const L_2_Bias_Data);
+void uz_NN_acc_hw_set_L_3_Bias_Data(uint32_t base_address, float * const L_3_Bias_Data);
+void uz_NN_acc_hw_set_L_Output_Bias_Data(uint32_t base_address, float * const L_Output_Bias_Data);
 void uz_NN_acc_hw_set_copy_mats_flag(uint32_t base_address, bool copy_mats_flag);
 bool uz_NN_acc_hw_get_copy_mats_flag(uint32_t base_address);
 bool uz_NN_acc_hw_get_copy_flag_out(uint32_t base_address);

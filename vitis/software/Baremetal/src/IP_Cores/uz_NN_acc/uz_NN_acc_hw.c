@@ -28,82 +28,82 @@ void uz_NN_acc_hw_set_Action_size(uint32_t base_address, uint32_t Action_size) {
     uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_ACTION_SIZE_INPUT_DATA, Action_size);
 }
 
-void uz_NN_acc_hw_set_Observation_Data(uint32_t base_address, volatile float *Observation_Data) {
+void uz_NN_acc_hw_set_Observation_Data(uint32_t base_address, float * const Observation_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(Observation_Data);
-	volatile uint32_t* pointer = (uint32_t*)Observation_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)Observation_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_OBSERVATION_INPUT_DATA, address);
 }
 
-void uz_NN_acc_hw_set_L_1_Weights_Data(uint32_t base_address, volatile float *L_1_Weights_Data) {
+void uz_NN_acc_hw_set_L_1_Weights_Data(uint32_t base_address, float * const L_1_Weights_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_1_Weights_Data);
-	volatile uint32_t* pointer = (uint32_t*)L_1_Weights_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)L_1_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_1_WEIGHTS_INPUT_DATA, address);
 }
 
-void uz_NN_acc_hw_set_L_2_Weights_Data(uint32_t base_address, volatile float *L_2_Weights_Data) {
+void uz_NN_acc_hw_set_L_2_Weights_Data(uint32_t base_address, float * const L_2_Weights_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_2_Weights_Data);
-	volatile uint32_t* pointer = (uint32_t*)L_2_Weights_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)L_2_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_2_WEIGHTS_INPUT_DATA, address);
 }
 
-void uz_NN_acc_hw_set_L_3_Weights_Data(uint32_t base_address, volatile float *L_3_Weights_Data) {
+void uz_NN_acc_hw_set_L_3_Weights_Data(uint32_t base_address, float * const L_3_Weights_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_3_Weights_Data);
-	volatile uint32_t* pointer = (uint32_t*)L_3_Weights_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)L_3_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_3_WEIGHTS_INPUT_DATA, address);
 }
-void uz_NN_acc_hw_set_L_Output_Weights_Data(uint32_t base_address, volatile float *L_Output_Weights_Data) {
+void uz_NN_acc_hw_set_L_Output_Weights_Data(uint32_t base_address, float * const L_Output_Weights_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_Output_Weights_Data);
-	volatile uint32_t* pointer = (uint32_t*)L_Output_Weights_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)L_Output_Weights_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA, address);
 }
 
-void uz_NN_acc_hw_set_Actions_Data(uint32_t base_address, volatile float *Actions_Data) {
+void uz_NN_acc_hw_set_Actions_Data(uint32_t base_address, float * const Actions_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(Actions_Data);
-	volatile uint32_t* pointer = (uint32_t*)Actions_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)Actions_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_ACTION_OUTPUT_DATA, address);
 }
 
-void uz_NN_acc_hw_set_L_1_Bias_Data(uint32_t base_address, volatile float *L_1_Bias_Data) {
+void uz_NN_acc_hw_set_L_1_Bias_Data(uint32_t base_address, float * const L_1_Bias_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_1_Bias_Data);
-	volatile uint32_t* pointer = (uint32_t*)L_1_Bias_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)L_1_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_1_BIAS_INPUT_DATA, address);
 }
 
-void uz_NN_acc_hw_set_L_2_Bias_Data(uint32_t base_address, volatile float *L_2_Bias_Data) {
+void uz_NN_acc_hw_set_L_2_Bias_Data(uint32_t base_address, float * const L_2_Bias_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_2_Bias_Data);
-	volatile uint32_t* pointer = (uint32_t*)L_2_Bias_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)L_2_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_2_BIAS_INPUT_DATA, address);
 }
 
-void uz_NN_acc_hw_set_L_3_Bias_Data(uint32_t base_address, volatile float *L_3_Bias_Data) {
+void uz_NN_acc_hw_set_L_3_Bias_Data(uint32_t base_address, float * const L_3_Bias_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_3_Bias_Data);
-	volatile uint32_t* pointer = (uint32_t*)L_3_Bias_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)L_3_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_3_BIAS_INPUT_DATA, address);
 }
 
-void uz_NN_acc_hw_set_L_Output_Bias_Data(uint32_t base_address, volatile float *L_Output_Bias_Data) {
+void uz_NN_acc_hw_set_L_Output_Bias_Data(uint32_t base_address, float * const L_Output_Bias_Data) {
     uz_assert_not_zero_uint32(base_address);
 	uz_assert_not_NULL(L_Output_Bias_Data);
-	volatile uint32_t* pointer = (uint32_t*)L_Output_Bias_Data;
-	volatile uint32_t address = (uint32_t)pointer;
+	uint32_t* pointer = (uint32_t*)L_Output_Bias_Data;
+	uint32_t address = (uint32_t)pointer;
 	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_BIAS_INPUT_DATA, address);
 }
 

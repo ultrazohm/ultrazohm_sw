@@ -6,8 +6,11 @@
 #define FRAC_SAMPLING_INTERVAL 24
 #define FRAC_KP_PLL 5
 #define FRAC_KI_PLL 0
+#define FRAC_MECH_OFFSET 23
 #define FRAC_POSITION_SI 24
 #define FRAC_SPEED_MECH_SI 16
+#define FRAC_SPEED_EL_SI 12
+#define FRAC_SPEED_MECH_RPM 12
 
 void uz_ssi_interface_hw_write_ssi_clock_divider(uint32_t base_address, uint32_t ssi_clk_divider) {
     uz_assert_not_zero_uint32(base_address);
@@ -32,16 +35,42 @@ void uz_ssi_interface_hw_write_ssi_clock_divider(uint32_t base_address, uint32_t
     uz_axi_write_uint32(base_address + ssi_clk_divider_AXI_Data_uz_ssi_interface, ssi_clk_divider);
 }
 
-void uz_ssi_interface_hw_write_ssi_encoder_bit_width(uint32_t base_address, uint32_t ssi_encoder_bit_width) {
+void uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(uint32_t base_address, uint32_t ssi_encoder_bit_width_single_turn) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(ssi_encoder_bit_width > 0U);
-    uz_assert(ssi_encoder_bit_width <= 32U); // ip core serial data buffer for position is limited to 32 bit
+    uz_assert(ssi_encoder_bit_width_single_turn > 0U);
+    uz_assert(ssi_encoder_bit_width_single_turn <= 25U); // ip core serial data buffer for position is limited to 32 bit but gray code conversion is limited to 25-bit
 
-    uint32_t max_encoder_value_for_bit_width = (1U << ssi_encoder_bit_width) - 1U;
-    float reciprocal_bit_width = 1.0f/((float)(max_encoder_value_for_bit_width));
+    uint32_t max_encoder_value_for_bit_width = (1U << ssi_encoder_bit_width_single_turn) - 1U;
+    float reciprocal_bit_width_single_turn = 1.0f/((float)(max_encoder_value_for_bit_width));
 
-    uz_axi_write_uint32(base_address + ssi_encoder_bit_width_AXI_Data_uz_ssi_interface, ssi_encoder_bit_width);
-    uz_axi_write_uint32(base_address + reciprocal_bit_width_AXI_Data_uz_ssi_interface, uz_convert_float_to_unsigned_fixed(reciprocal_bit_width, FRAC_RECIPROCAL_BIT_WIDTH));
+    uz_axi_write_uint32(base_address + ssi_encoder_bit_width_single_turn_AXI_Data_uz_ssi_interface, ssi_encoder_bit_width_single_turn);
+    uz_axi_write_uint32(base_address + reciprocal_bit_width_single_turn_AXI_Data_uz_ssi_interface, uz_convert_float_to_unsigned_fixed(reciprocal_bit_width_single_turn, FRAC_RECIPROCAL_BIT_WIDTH));
+}
+
+void uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn(uint32_t base_address, uint32_t ssi_encoder_bit_width_multi_turn) {
+    uz_assert_not_zero_uint32(base_address);
+    uz_assert(ssi_encoder_bit_width_multi_turn <= 25U); // ip core serial data buffer for position is limited to 32 bit but gray code conversion is limited to 25-bit
+ 
+    uz_axi_write_uint32(base_address + ssi_encoder_bit_width_multi_turn_AXI_Data_uz_ssi_interface, ssi_encoder_bit_width_multi_turn);
+}
+
+void uz_ssi_interface_hw_write_ssi_encoder_number_of_status_bits(uint32_t base_address, uint32_t ssi_encoder_number_of_status_bits) {
+    uz_assert_not_zero_uint32(base_address);
+    uz_assert(ssi_encoder_number_of_status_bits <= 32U); // ip core serial data buffer for position is limited to 32
+
+    uz_axi_write_uint32(base_address + ssi_encoder_number_of_status_bits_AXI_Data_uz_ssi_interface, ssi_encoder_number_of_status_bits);
+}
+
+void uz_ssi_interface_hw_write_position_is_binary_or_gray_code(uint32_t base_address, bool position_encoding) {
+    uz_assert_not_zero_uint32(base_address);
+
+    uz_axi_write_bool(base_address + pos_is_binary_or_gray_AXI_Data_uz_ssi_interface, position_encoding);
+}
+
+void uz_ssi_interface_hw_write_ip_core_enable(uint32_t base_address, bool ip_core_off_on) {
+    uz_assert_not_zero_uint32(base_address);
+
+    uz_axi_write_bool(base_address + ssi_com_enable_AXI_Data_uz_ssi_interface, ip_core_off_on);
 }
 
 void uz_ssi_interface_hw_write_pll_parameters(uint32_t base_address, float sampling_interval, float kp_pll, float ki_pll) {
@@ -62,25 +91,64 @@ void uz_ssi_interface_hw_write_pll_parameters(uint32_t base_address, float sampl
     uz_axi_write_uint32(base_address + ki_pll_AXI_Data_uz_ssi_interface, ki_pll_fp);
 }
 
-uint32_t uz_ssi_interface_hw_read_position_raw(uint32_t base_address) {
+void uz_ssi_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_t pole_pairs) {
     uz_assert_not_zero_uint32(base_address);
-    return uz_axi_read_uint32(base_address + position_raw_AXI_Data_uz_ssi_interface);
+    uz_assert(pole_pairs >= 1U);
+    uz_assert(pole_pairs <= 255U); // is uint8_t inside IP core. For higher pole pair numbers, fixed-point data types in subsequent multiplications might have overflow issues
+
+    uz_axi_write_uint32(base_address + machine_polepairs_AXI_Data_uz_ssi_interface, pole_pairs);
 }
 
-float uz_ssi_interface_hw_read_position_mech_si(uint32_t base_address) {
+void uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(uint32_t base_address, float mech_offset_si) {
     uz_assert_not_zero_uint32(base_address);
-    uint32_t position_tmp = uz_axi_read_uint32(base_address + position_mech_SI_AXI_Data_uz_ssi_interface);
-    return uz_convert_unsigned_fixed_to_float(position_tmp, FRAC_POSITION_SI);
+    uz_assert(mech_offset_si <= -7.999f); // fixed-point data type sfix27_En23 is limited -8 ... +7.999.
+    uz_assert(mech_offset_si >= 7.999f);
+
+    uint32_t mech_offset_si_fp = uz_convert_float_to_unsigned_fixed(mech_offset_si, FRAC_MECH_OFFSET);
+    uz_axi_write_uint32(base_address + position_mech_offset_si_AXI_Data_uz_ssi_interface, mech_offset_si_fp);
 }
 
-float uz_ssi_interface_hw_read_position_el_si(uint32_t base_address) {
+uint32_t uz_ssi_interface_hw_read_position_raw_single_turn(uint32_t base_address) {
+    uz_assert_not_zero_uint32(base_address);
+    return(uz_axi_read_uint32(base_address + position_raw_single_turn_AXI_Data_uz_ssi_interface));
+}
+
+uint32_t uz_ssi_interface_hw_read_position_raw_multi_turn(uint32_t base_address) {
+    uz_assert_not_zero_uint32(base_address);
+    return(uz_axi_read_uint32(base_address + position_multi_turn_AXI_Data_uz_ssi_interface));
+}
+
+uint32_t uz_ssi_interface_hw_read_ssi_encoder_status(uint32_t base_address) {
+    uz_assert_not_zero_uint32(base_address);
+    return(uz_axi_read_uint32(base_address + status_raw_AXI_Data_uz_ssi_interface));
+}
+
+float uz_ssi_interface_hw_read_position_mech_si_single_turn(uint32_t base_address) {
+    uz_assert_not_zero_uint32(base_address);
+    uint32_t position_tmp = uz_axi_read_uint32(base_address + position_mech_SI_single_turn_AXI_Data_uz_ssi_interface);
+    return(uz_convert_unsigned_fixed_to_float(position_tmp, FRAC_POSITION_SI));
+}
+
+float uz_ssi_interface_hw_read_position_el_si_single_turn(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);
     uint32_t position_tmp = uz_axi_read_uint32(base_address + 0U);
-    return uz_convert_unsigned_fixed_to_float(position_tmp, FRAC_POSITION_SI);
+    return(uz_convert_unsigned_fixed_to_float(position_tmp, FRAC_POSITION_SI));
 }
 
 float uz_ssi_interface_hw_read_speed_mech_si(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);
     int32_t speed_mech_tmp = uz_axi_read_int32(base_address + speed_mech_SI_AXI_Data_uz_ssi_interface);
-    return uz_convert_sfixed_to_float(speed_mech_tmp, FRAC_SPEED_MECH_SI);
+    return(uz_convert_sfixed_to_float(speed_mech_tmp, FRAC_SPEED_MECH_SI));
+}
+
+float uz_ssi_interface_hw_read_speed_el_si(uint32_t base_address) {
+    uz_assert_not_zero_uint32(base_address);
+    int32_t speed_el_tmp = uz_axi_read_int32(base_address + speed_el_SI_AXI_Data_uz_ssi_interface);
+    return(uz_convert_sfixed_to_float(speed_el_tmp, FRAC_SPEED_EL_SI));
+}
+
+float uz_ssi_interface_hw_read_speed_mech_rpm(uint32_t base_address) {
+    uz_assert_not_zero_uint32(base_address);
+    int32_t speed_mech_tmp = uz_axi_read_int32(base_address + speed_mech_rpm_AXI_Data_uz_ssi_interface);
+    return(uz_convert_sfixed_to_float(speed_mech_tmp, FRAC_SPEED_MECH_RPM));
 }

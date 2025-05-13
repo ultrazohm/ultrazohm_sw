@@ -18,19 +18,31 @@ void tearDown(void)
 void test_uz_ssi_interface_hw_write_zero_base_address(void)
 {
     uint32_t clock_divider = 20U;
-    uint32_t encoder_bit_width = 19U;
+    uint32_t encoder_bit_width_single_turn = 19U;
+    uint32_t encoder_bit_width_multi_turn = 12U;
+    uint32_t encoder_number_of_status_bits = 2U;
+    bool position_encoding = false;
     float sampling_interval = 0.0001f;
     float kp_pll = 628.0f;
     float ki_pll = 98696.0f;
+    uint32_t machine_pole_pairs = 4U;
+    float mech_offset_si = -1.276f;
 
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_clock_divider(0U, clock_divider));
-    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width(0U, encoder_bit_width));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(0U, encoder_bit_width_single_turn));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn(0U, encoder_bit_width_multi_turn));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_number_of_status_bits(0U, encoder_number_of_status_bits));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_position_is_binary_or_gray_code(0U, position_encoding));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ip_core_enable(0U, true));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_pll_parameters(0U, sampling_interval, kp_pll, ki_pll));
-    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_raw(0U));
-    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_mech_si(0U));
-    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_el_si(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_machine_pole_pairs(0U, machine_pole_pairs));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(0U, mech_offset_si));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_raw_single_turn(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_raw_multi_turn(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_ssi_encoder_status(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_mech_si_single_turn(0U));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_position_el_si_single_turn(0U));
     TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_read_speed_mech_si(0U));
-    TEST_IGNORE_MESSAGE("Need to Implement position_el_si");
 }
 
 void test_uz_ssi_interface_hw_write_ssi_clock_divider_limits(void)
@@ -63,18 +75,24 @@ void test_uz_ssi_interface_hw_write_ssi_encoder_bit_width_limits(void)
     uint32_t encoder_bit_width_too_low = 0U;
     uint32_t encoder_bit_width_too_high = 33U;
 
-    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width(TEST_BASE_ADDRESS, encoder_bit_width_too_low));
-    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width(TEST_BASE_ADDRESS, encoder_bit_width_too_high));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(TEST_BASE_ADDRESS, encoder_bit_width_too_low));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(TEST_BASE_ADDRESS, encoder_bit_width_too_high));
+
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn(TEST_BASE_ADDRESS, encoder_bit_width_too_high));
 }
 
 void test_uz_ssi_interface_hw_write_ssi_encoder_bit_width(void)
 {
-    uint32_t encoder_bit_width = 19U;
-    uint32_t reciprocal_bit_width_unsigned_representation = 256U;
+    uint32_t encoder_bit_width_single_turn = 19U;
+    uint32_t reciprocal_bit_width_single_turn_unsigned_representation = 256U;
 
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ssi_encoder_bit_width_AXI_Data_uz_ssi_interface, encoder_bit_width);
-    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + reciprocal_bit_width_AXI_Data_uz_ssi_interface, reciprocal_bit_width_unsigned_representation);
-    uz_ssi_interface_hw_write_ssi_encoder_bit_width(TEST_BASE_ADDRESS, encoder_bit_width);
+    uint32_t encoder_bit_width_multi_turn = 19U;
+
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ssi_encoder_bit_width_single_turn_AXI_Data_uz_ssi_interface, encoder_bit_width_single_turn);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + reciprocal_bit_width_single_turn_AXI_Data_uz_ssi_interface, reciprocal_bit_width_single_turn_unsigned_representation);
+    uz_axi_write_uint32_Expect(TEST_BASE_ADDRESS + ssi_encoder_bit_width_multi_turn_AXI_Data_uz_ssi_interface, encoder_bit_width_multi_turn);
+    uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(TEST_BASE_ADDRESS, encoder_bit_width_single_turn);
+    uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn(TEST_BASE_ADDRESS, encoder_bit_width_multi_turn);
 }
 
 void test_uz_ssi_interface_hw_write_pll_parameters_limits(void)
@@ -110,26 +128,75 @@ void test_uz_ssi_interface_hw_write_pll_parameters(void)
     uz_ssi_interface_hw_write_pll_parameters(TEST_BASE_ADDRESS, sampling_interval, kp_pll, ki_pll);
 }
 
-void test_uz_ssi_interface_hw_read_position_and_speed(void)
+void test_uz_ssi_interface_hw_write_machine_pole_pair_limits(void)
 {
-    uint32_t expected_position_raw = 424242U; 
-    uint32_t expected_position_si_unsigned_representation = 13575769U;
-    uint32_t returned_position_raw = 0U;
-    float returned_position_si = 0.0f;
-    float expected_position_si = 0.8091789421f;
+    uint32_t machine_pole_pairs_too_low = 0U;
+    uint32_t machine_pole_pairs_too_high = 256U;
+
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_machine_pole_pairs(TEST_BASE_ADDRESS, machine_pole_pairs_too_low));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_machine_pole_pairs(TEST_BASE_ADDRESS, machine_pole_pairs_too_high));
+}
+
+void test_uz_ssi_interface_hw_write_mech_offset_si_single_turn_limits(void)
+{
+    float mech_offset_si_too_low = -42.123f;
+    float mech_offset_si_too_high = 42.123f;
+
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(TEST_BASE_ADDRESS, mech_offset_si_too_low));
+    TEST_ASSERT_FAIL_ASSERT(uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(TEST_BASE_ADDRESS, mech_offset_si_too_high));
+}
+
+void test_uz_ssi_interface_hw_read_position_speed_status(void)
+{
+    uint32_t expected_position_raw_single_turn = 424242U; 
+    uint32_t expected_position_si_single_turn_unsigned_representation = 13575769U;
+    uint32_t returned_position_raw_single_turn = 0U;
+    float returned_position_si_single_turn = 0.0f;
+    float expected_position_si_single_turn = 0.8091789421f;
     int32_t expected_speed_mech_si_signed_representation = 6862913;
     float expected_speed_mech_si = 104.7197551f;
     float returned_speed_mech_si = 0.0f;
+    int32_t expected_speed_el_si_signed_representation = 1715728;
+    float expected_speed_el_si = 418.8790204f;
+    float returned_speed_el_si = 0.0f;
+    int32_t expected_speed_mech_rpm_signed_representation = 4096000;
+    float expected_speed_mech_rpm = 1000.0f;
+    float returned_speed_mech_rpm = 0.0f;        
+    uint32_t expected_status = 3U;
+    uint32_t returned_status = 0U;
+    uint32_t expected_position_raw_multi_turn = 42U; 
+    uint32_t returned_position_multi_turn = 0U;
 
-    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_raw_AXI_Data_uz_ssi_interface, expected_position_raw);
-    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_mech_SI_AXI_Data_uz_ssi_interface, expected_position_si_unsigned_representation);
+    // test single-turn position
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_raw_single_turn_AXI_Data_uz_ssi_interface, expected_position_raw_single_turn);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_mech_SI_single_turn_AXI_Data_uz_ssi_interface, expected_position_si_single_turn_unsigned_representation);
+    returned_position_raw_single_turn = uz_ssi_interface_hw_read_position_raw_single_turn(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_UINT32(expected_position_raw_single_turn, returned_position_raw_single_turn);
+    returned_position_si_single_turn = uz_ssi_interface_hw_read_position_mech_si_single_turn(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_position_si_single_turn, returned_position_si_single_turn);
+
+    // test multi-turn position
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_multi_turn_AXI_Data_uz_ssi_interface, expected_position_raw_multi_turn);
+    returned_position_multi_turn = uz_ssi_interface_hw_read_position_raw_multi_turn(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_UINT32(expected_position_raw_multi_turn, returned_position_multi_turn);
+
+    // test status
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + status_raw_AXI_Data_uz_ssi_interface, expected_status);
+    returned_status = uz_ssi_interface_hw_read_ssi_encoder_status(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_UINT32(expected_status, returned_status);
+
+    // test speeds
     uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + speed_mech_SI_AXI_Data_uz_ssi_interface, expected_speed_mech_si_signed_representation);
-    returned_position_raw = uz_ssi_interface_hw_read_position_raw(TEST_BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_UINT32(expected_position_raw, returned_position_raw);
-    returned_position_si = uz_ssi_interface_hw_read_position_mech_si(TEST_BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(expected_position_si, returned_position_si);
     returned_speed_mech_si = uz_ssi_interface_hw_read_speed_mech_si(TEST_BASE_ADDRESS);
-    TEST_ASSERT_EQUAL_FLOAT(expected_speed_mech_si,returned_speed_mech_si);
+    TEST_ASSERT_EQUAL_FLOAT(expected_speed_mech_si, returned_speed_mech_si);
+
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + speed_el_SI_AXI_Data_uz_ssi_interface, expected_speed_el_si_signed_representation);
+    returned_speed_el_si = uz_ssi_interface_hw_read_speed_el_si(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_speed_el_si, returned_speed_el_si);
+
+    uz_axi_read_int32_ExpectAndReturn(TEST_BASE_ADDRESS + speed_mech_rpm_AXI_Data_uz_ssi_interface, expected_speed_mech_rpm_signed_representation);
+    returned_speed_mech_rpm = uz_ssi_interface_hw_read_speed_mech_rpm(TEST_BASE_ADDRESS);   
+    TEST_ASSERT_EQUAL_FLOAT(expected_speed_mech_rpm, returned_speed_mech_rpm);
 }
 
 #endif // TEST

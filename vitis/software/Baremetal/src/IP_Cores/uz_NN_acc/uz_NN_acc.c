@@ -23,13 +23,13 @@ struct uz_NN_acc_t {
 };
 
 static uint32_t instance_counter = 0U;
-static uz_NN_acc_t instances[UZ_MLP_NN_ACC_IP_MAX_INSTANCES] = {0};
+static uz_NN_acc_t instances[UZ_NN_ACC_IP_MAX_INSTANCES] = {0};
 
 static uz_NN_acc_t *UZ_NN_acc_allocation(void);
 
 static uz_NN_acc_t *UZ_NN_acc_allocation(void)
 {
-    uz_assert(instance_counter < UZ_MLP_NN_ACC_IP_MAX_INSTANCES);
+    uz_assert(instance_counter < UZ_NN_ACC_IP_MAX_INSTANCES);
     uz_NN_acc_t *self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;

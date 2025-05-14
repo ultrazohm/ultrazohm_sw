@@ -101,11 +101,11 @@ void uz_ssi_interface_hw_write_machine_pole_pairs(uint32_t base_address, uint32_
 
 void uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(uint32_t base_address, float mech_offset_si) {
     uz_assert_not_zero_uint32(base_address);
-    uz_assert(mech_offset_si <= -7.999f); // fixed-point data type sfix27_En23 is limited -8 ... +7.999.
-    uz_assert(mech_offset_si >= 7.999f);
+    uz_assert(mech_offset_si >= -7.999f); // fixed-point data type sfix27_En23 is limited -8 ... +7.999.
+    uz_assert(mech_offset_si <= 7.999f);
 
-    uint32_t mech_offset_si_fp = uz_convert_float_to_unsigned_fixed(mech_offset_si, FRAC_MECH_OFFSET);
-    uz_axi_write_uint32(base_address + position_mech_offset_si_AXI_Data_uz_ssi_interface, mech_offset_si_fp);
+    int32_t mech_offset_si_fp = uz_convert_float_to_sfixed(mech_offset_si, FRAC_MECH_OFFSET);
+    uz_axi_write_int32(base_address + position_mech_offset_si_AXI_Data_uz_ssi_interface, mech_offset_si_fp);
 }
 
 uint32_t uz_ssi_interface_hw_read_position_raw_single_turn(uint32_t base_address) {

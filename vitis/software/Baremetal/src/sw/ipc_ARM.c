@@ -25,23 +25,6 @@ extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
 
-struct uz_fixedpoint_definition_t fp_type_kp_pll = {
-				.is_signed=false,
-				.integer_bits=13,
-				.fractional_bits=5
-};
-
-struct uz_fixedpoint_definition_t fp_type_ki_pll = {
-				.is_signed=false,
-				.integer_bits=18,
-				.fractional_bits=0
-};
-
-struct uz_fixedpoint_definition_t fp_type_offset = {
-				.is_signed=false,
-				.integer_bits=3,
-				.fractional_bits=24
-};
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -205,32 +188,22 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
-		uint32_t tmp_val = (uint32_t)value;
-		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, tmp_val); //clk_div
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
-		bool tmp_val_2 = (bool)value;
-		uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, tmp_val_2); //delay_first_off_on
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
-		uint32_t tmp_val_3 = (uint32_t)value;
-		uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, tmp_val_3, fp_type_kp_pll); //kp_pll
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
-		uint32_t tmp_val_4 = (uint32_t)value;
-		uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x11C, tmp_val_4, fp_type_ki_pll); //ki_pll
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
-		float tmp_val5 = value;
-		uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x128, tmp_val5, fp_type_offset);
 			break;
 
 		case (Set_Send_Field_6):

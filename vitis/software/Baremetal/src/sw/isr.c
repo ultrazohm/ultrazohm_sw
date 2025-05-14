@@ -45,34 +45,8 @@ uint32_t ssi_max_raw = 0U;
 
 extern uz_codegen codegenInstance;
 float generate_sawtooth(float amplitude, float frequency, float sample_time);
-
-#define RECIPR_BITWIDTH 1.0f/524287.0f
-
-struct uz_fixedpoint_definition_t fp_type_position_si = {
-				.is_signed=false,
-				.integer_bits=3,
-				.fractional_bits=24
-};
-
-struct uz_fixedpoint_definition_t fp_type_speed_si = {
-				.is_signed=true,
-				.integer_bits=11,
-				.fractional_bits=16
-};
-
-struct uz_fixedpoint_definition_t fp_type_speed_rpm = {
-				.is_signed=true,
-				.integer_bits=15,
-				.fractional_bits=12
-};
-
-struct uz_fixedpoint_definition_t fp_type_sawtooth = {
-				.is_signed=false,
-				.integer_bits=3,
-				.fractional_bits=24
-};
-
 float sawtooth=0.0f;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -87,12 +61,13 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    Global_Data.av.ssi0_position_raw = (float)(uz_axi_read_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x12C));
-    Global_Data.av.ssi0_position_mech_si = (float)(uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x130, fp_type_position_si));
-    Global_Data.av.ssi0_position_el_si = (float)(uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x13C, fp_type_position_si));
+    Global_Data.av.ssi0_position_raw = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_0_encoder);
+    Global_Data.av.ssi0_position_mech_si = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_0_encoder);
+    Global_Data.av.ssi0_position_el_si = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_0_encoder);
 
-    Global_Data.av.ssi0_speed_mech_rad_s_ip = uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x134, fp_type_speed_si);
-    Global_Data.av.ssi0_speed_mech_rpm_ip = uz_fixedpoint_axi_read(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x138, fp_type_speed_rpm);
+    Global_Data.av.ssi0_speed_mech_rad_s_ip = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_0_encoder);
+    Global_Data.av.ssi0_speed_el_rad_s_ip = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_0_encoder);
+    Global_Data.av.ssi0_speed_mech_rpm_ip = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_0_encoder);
 
 //    sawtooth = uz_wavegen_sawtooth(2*UZ_PIf, 16.67f);
     sawtooth = generate_sawtooth(2.0f*UZ_PIf, Global_Data.av.snd_fld[6], 100e-6f); // set frequency via send_field_6 in JavaScope

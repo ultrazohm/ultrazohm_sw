@@ -16,7 +16,6 @@
 // Includes from own files
 #include "main.h"
 #include "uz/uz_math_constants.h"
-void init_ssi_interface();
 #include "Codegen/uz_codegen.h"
 #include "uz/uz_fixedpoint/uz_fixedpoint.h"
 
@@ -103,7 +102,8 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             // ssi init for testing
-            init_ssi_interface();
+            Global_Data.objects.ssi_0_encoder = ssi_encoder_init();
+            uz_ssi_interface_enable_ip(Global_Data.objects.ssi_0_encoder, true);
             initialization_chain = print_msg;
             break;
 	    case print_msg:
@@ -130,60 +130,60 @@ int main(void)
 }
 
 
-void init_ssi_interface() {
-	float conversion_pos = 1.0f/524287.0f; // for 19bit encoder
-
-	struct uz_fixedpoint_definition_t fp_type_reciprocal_bit_width = {
-			.is_signed=false,
-			.integer_bits=0,
-			.fractional_bits=27
-	};
-
-	struct uz_fixedpoint_definition_t fp_type_t_sample = {
-				.is_signed=false,
-				.integer_bits=-6,
-				.fractional_bits=24
-	};
-
-	struct uz_fixedpoint_definition_t fp_type_kp_pll = {
-					.is_signed=false,
-					.integer_bits=13,
-					.fractional_bits=5
-	};
-
-	struct uz_fixedpoint_definition_t fp_type_ki_pll = {
-					.is_signed=false,
-					.integer_bits=18,
-					.fractional_bits=0
-	};
-
-	struct uz_fixedpoint_definition_t fp_type_offset = {
-					.is_signed=false,
-					.integer_bits=3,
-					.fractional_bits=24
-	};
-
-
-	// set clock divider
-	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, 20U);
-	// set encoder bit width
-	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x104, 19U);
-	// set the delay first clock feature needed for ssi clock frequencies higher than 500 kHz
-	uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, true);
-	// reciprocal bit width
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x10C, conversion_pos, fp_type_reciprocal_bit_width);
-	// t_sample in seconds
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, 1.0f/UZ_PWM_FREQUENCY, fp_type_t_sample);
-	// kp_pll
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, 628.3185f, fp_type_kp_pll);
-	// debug mode
-	uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x118, false);
-	// ki_pll
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x11C, 98696.0f, fp_type_ki_pll);
-	// machine polepairs
-	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x124, 2U);
-	// offset mech
-	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x128, 0.5f, fp_type_offset);
-
-
-}
+//void init_ssi_interface() {
+//	float conversion_pos = 1.0f/524287.0f; // for 19bit encoder
+//
+//	struct uz_fixedpoint_definition_t fp_type_reciprocal_bit_width = {
+//			.is_signed=false,
+//			.integer_bits=0,
+//			.fractional_bits=27
+//	};
+//
+//	struct uz_fixedpoint_definition_t fp_type_t_sample = {
+//				.is_signed=false,
+//				.integer_bits=-6,
+//				.fractional_bits=24
+//	};
+//
+//	struct uz_fixedpoint_definition_t fp_type_kp_pll = {
+//					.is_signed=false,
+//					.integer_bits=13,
+//					.fractional_bits=5
+//	};
+//
+//	struct uz_fixedpoint_definition_t fp_type_ki_pll = {
+//					.is_signed=false,
+//					.integer_bits=18,
+//					.fractional_bits=0
+//	};
+//
+//	struct uz_fixedpoint_definition_t fp_type_offset = {
+//					.is_signed=false,
+//					.integer_bits=3,
+//					.fractional_bits=24
+//	};
+//
+//
+//	// set clock divider
+//	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x100, 20U);
+//	// set encoder bit width
+//	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x104, 19U);
+//	// set the delay first clock feature needed for ssi clock frequencies higher than 500 kHz
+//	uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x108, true);
+//	// reciprocal bit width
+//	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x10C, conversion_pos, fp_type_reciprocal_bit_width);
+//	// t_sample in seconds
+//	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x110, 1.0f/UZ_PWM_FREQUENCY, fp_type_t_sample);
+//	// kp_pll
+//	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x114, 628.3185f, fp_type_kp_pll);
+//	// debug mode
+//	uz_axi_write_bool(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x118, false);
+//	// ki_pll
+//	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x11C, 98696.0f, fp_type_ki_pll);
+//	// machine polepairs
+//	uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x124, 2U);
+//	// offset mech
+//	uz_fixedpoint_axi_write(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x128, 0.5f, fp_type_offset);
+//
+//
+//}

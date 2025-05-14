@@ -45,7 +45,7 @@ struct uz_ssi_interface_config_t{
  */
 struct uz_ssi_interface_outputs_t {
     uint32_t position_raw_single_turn; /**< raw position in bit ticks, ranging from 0..ssi_encoder_bit_width_single_turn-1 */
-    uint32_t position_multi_turn; /**< raw position in bit ticks, ranging from 0..ssi_encoder_bit_width_multi_turn-1 */
+    uint32_t position_raw_multi_turn; /**< raw position in bit ticks, ranging from 0..ssi_encoder_bit_width_multi_turn-1 */
     float position_mech_si_single_turn; /**< mechanical angle in rad, ranging from 0..2pi */
     float position_el_si_single_turn; /**< electrical angle in rad, ranging from 0..2pi */
     float speed_mech_si; /**< mechanical rotational speed in rad/s */

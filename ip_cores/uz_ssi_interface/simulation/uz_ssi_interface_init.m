@@ -7,7 +7,7 @@ hdlsetuptoolpath('ToolName','Xilinx Vivado','ToolPath',...
 f_clock = 100e6;        % IP core clock freq in Hz
 t_clock = 1/f_clock;    % IP core sample time in s
 
-f_ADC =20e3;            % ADC interrupt freq in Hz
+f_ADC =10e3;            % ADC interrupt freq in Hz
 t_ADC = 1/f_ADC;        % ADC sample time in s
 
 f_plant = 1e6;          % Plant simulation freq in Hz
@@ -30,7 +30,7 @@ ssi_encoder_number_of_status_bits = uint32(0);
 bit_sum = ssi_encoder_bit_width_multi_turn+ssi_encoder_bit_width_single_turn+ssi_encoder_number_of_status_bits;
 
 % encoding: false=binary, true=gray
-binary_or_gray = true; 
+binary_or_gray = false; 
 
 % acc. to datasheet of manufacturer RLS encoders for ssi clock rates higher
 % than 500 kHz, the first clk pulse after clock goes low in the beginning

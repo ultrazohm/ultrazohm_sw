@@ -77,9 +77,9 @@ void uz_ssi_interface_set_config(uz_ssi_interface_t *self) {
 void uz_ssi_interface_update_all_outputs(uz_ssi_interface_t *self) {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);  
-    // get new values for outputs struct  
+
     self->outputs.position_raw_single_turn = uz_ssi_interface_get_position_raw_single_turn(self);
-    self->outputs.position_multi_turn = uz_ssi_interface_get_position_raw_multi_turn(self);
+    self->outputs.position_raw_multi_turn = uz_ssi_interface_get_position_raw_multi_turn(self);
     self->outputs.position_mech_si_single_turn = uz_ssi_interface_get_position_mech_si_single_turn(self);
     self->outputs.position_el_si_single_turn = uz_ssi_interface_get_position_el_si_single_turn(self);
     self->outputs.speed_mech_si = uz_ssi_interface_get_speed_mech_si(self);

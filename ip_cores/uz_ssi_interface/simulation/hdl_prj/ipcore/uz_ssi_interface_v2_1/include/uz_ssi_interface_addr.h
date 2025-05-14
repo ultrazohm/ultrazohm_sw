@@ -1,7 +1,7 @@
 /*
  * File Name:         hdl_prj\ipcore\uz_ssi_interface_v2_1\include\uz_ssi_interface_addr.h
  * Description:       C Header File
- * Created:           2025-05-13 16:19:06
+ * Created:           2025-05-14 17:14:57
 */
 
 #ifndef UZ_SSI_INTERFACE_H_
@@ -9,7 +9,7 @@
 
 #define  IPCore_Reset_uz_ssi_interface                                 0x0  //write 0x1 to bit 0 to reset IP core
 #define  IPCore_Enable_uz_ssi_interface                                0x4  //enabled (by default) when bit 0 is 0x1
-#define  IPCore_Timestamp_uz_ssi_interface                             0x8  //contains unique IP timestamp (yymmddHHMM): 2505131556: 2505131601: 2505131619
+#define  IPCore_Timestamp_uz_ssi_interface                             0x8  //contains unique IP timestamp (yymmddHHMM): 2505141714
 #define  ssi_clk_divider_AXI_Data_uz_ssi_interface                     0x100  //data register for Inport ssi_clk_divider_AXI
 #define  ssi_encoder_bit_width_single_turn_AXI_Data_uz_ssi_interface   0x104  //data register for Inport ssi_encoder_bit_width_single_turn_AXI
 #define  ssi_encoder_bit_width_multi_turn_AXI_Data_uz_ssi_interface    0x108  //data register for Inport ssi_encoder_bit_width_multi_turn_AXI

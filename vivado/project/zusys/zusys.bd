@@ -5765,20 +5765,20 @@
           },
           "uz_ssi_interface_0": {
             "vlnv": "xilinx.com:ip:uz_ssi_interface:2.1",
-            "xci_name": "zusys_uz_ssi_interface_0_11",
-            "xci_path": "ip\\zusys_uz_ssi_interface_0_11\\zusys_uz_ssi_interface_0_11.xci",
+            "xci_name": "zusys_uz_ssi_interface_0_12",
+            "xci_path": "ip\\zusys_uz_ssi_interface_0_12\\zusys_uz_ssi_interface_0_12.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_0"
           },
           "uz_ssi_interface_1": {
             "vlnv": "xilinx.com:ip:uz_ssi_interface:2.1",
-            "xci_name": "zusys_uz_ssi_interface_1_11",
-            "xci_path": "ip\\zusys_uz_ssi_interface_1_11\\zusys_uz_ssi_interface_1_11.xci",
+            "xci_name": "zusys_uz_ssi_interface_1_12",
+            "xci_path": "ip\\zusys_uz_ssi_interface_1_12\\zusys_uz_ssi_interface_1_12.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_1"
           },
           "uz_ssi_interface_2": {
             "vlnv": "xilinx.com:ip:uz_ssi_interface:2.1",
-            "xci_name": "zusys_uz_ssi_interface_2_11",
-            "xci_path": "ip\\zusys_uz_ssi_interface_2_11\\zusys_uz_ssi_interface_2_11.xci",
+            "xci_name": "zusys_uz_ssi_interface_2_12",
+            "xci_path": "ip\\zusys_uz_ssi_interface_2_12\\zusys_uz_ssi_interface_2_12.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_2"
           }
         },
@@ -5803,14 +5803,14 @@
           },
           "smartconnect_1_M02_AXI": {
             "interface_ports": [
-              "uz_ssi_interface_1/AXI4_Lite",
-              "smartconnect_1/M02_AXI"
+              "smartconnect_1/M02_AXI",
+              "uz_ssi_interface_1/AXI4_Lite"
             ]
           },
           "smartconnect_1_M03_AXI": {
             "interface_ports": [
-              "uz_ssi_interface_2/AXI4_Lite",
-              "smartconnect_1/M03_AXI"
+              "smartconnect_1/M03_AXI",
+              "uz_ssi_interface_2/AXI4_Lite"
             ]
           }
         },
@@ -5828,9 +5828,9 @@
               "smartconnect_1/aresetn",
               "uz_axi_testIP_0/AXI4_ARESETN",
               "uz_axi_testIP_0/IPCORE_RESETN",
-              "uz_ssi_interface_0/AXI4_Lite_ARESETN",
-              "uz_ssi_interface_0/IPCORE_RESETN",
               "uz_ssi_interface_2/AXI4_Lite_ARESETN",
+              "uz_ssi_interface_0/IPCORE_RESETN",
+              "uz_ssi_interface_0/AXI4_Lite_ARESETN",
               "uz_ssi_interface_1/IPCORE_RESETN",
               "uz_ssi_interface_1/AXI4_Lite_ARESETN",
               "uz_ssi_interface_2/IPCORE_RESETN"
@@ -5853,8 +5853,8 @@
               "trigger_ssi_read",
               "ila_0/probe0",
               "uz_ssi_interface_0/trigger_ssi_read",
-              "uz_ssi_interface_2/trigger_ssi_read",
-              "uz_ssi_interface_1/trigger_ssi_read"
+              "uz_ssi_interface_1/trigger_ssi_read",
+              "uz_ssi_interface_2/trigger_ssi_read"
             ]
           },
           "uz_ssi_interface_0_RW_clk": {
@@ -5869,12 +5869,6 @@
               "uz_ssi_interface_0/RW_data",
               "ila_0/probe4",
               "RW_data_0"
-            ]
-          },
-          "uz_ssi_interface_0_position_raw_single_turn": {
-            "ports": [
-              "uz_ssi_interface_0/position_raw_single_turn",
-              "ila_0/probe6"
             ]
           },
           "uz_ssi_interface_0_ssi_clk": {
@@ -5893,7 +5887,8 @@
           "uz_ssi_interface_0_ssi_transaction_done": {
             "ports": [
               "uz_ssi_interface_0/ssi_transaction_done",
-              "ila_0/probe5"
+              "ila_0/probe5",
+              "ila_0/probe6"
             ]
           },
           "uz_ssi_interface_1_RW_clk": {
@@ -5939,9 +5934,9 @@
               "uz_axi_testIP_0/AXI4_ACLK",
               "uz_axi_testIP_0/IPCORE_CLK",
               "ila_0/clk",
-              "uz_ssi_interface_0/AXI4_Lite_ACLK",
-              "uz_ssi_interface_0/IPCORE_CLK",
               "uz_ssi_interface_2/AXI4_Lite_ACLK",
+              "uz_ssi_interface_0/IPCORE_CLK",
+              "uz_ssi_interface_0/AXI4_Lite_ACLK",
               "uz_ssi_interface_1/IPCORE_CLK",
               "uz_ssi_interface_1/AXI4_Lite_ACLK",
               "uz_ssi_interface_2/IPCORE_CLK"

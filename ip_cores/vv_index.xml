@@ -3033,7 +3033,7 @@
 		</Description>
 		<ProductGuide value="doc/doc_arch_axi4_lite.jpg">
 		</ProductGuide>
-		<CoreRevision value="2114081659">
+		<CoreRevision value="2114083154">
 		</CoreRevision>
 		<ComponentPath value="uz_ssi_interface/simulation/hdl_prj/ipcore/uz_ssi_interface_v2_1/component.xml">
 		</ComponentPath>

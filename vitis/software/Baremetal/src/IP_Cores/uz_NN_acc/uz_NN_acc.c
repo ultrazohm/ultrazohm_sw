@@ -13,6 +13,11 @@
 #define FIXED_AMOUNT_OF_LAYERS 4U //3 Hidden Layers + Output Layer
 #define FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER 64U
 
+//Flush and Invalidate Size must be multiple of 32bit/4byte
+//I.e. MAX_OBS and MAX_ACTION must be divisible by 4
+#define FLUSH_SIZE MAX_SIZE_OBSERVATION*4U //sizeof(float)==4
+#define INVALIDATE_SIZE MAX_SIZE_ACTIONS*4U //sizeof(float)==4
+
 struct uz_NN_acc_t {
     bool is_ready;
     bool copy_mats_flag;
@@ -77,6 +82,8 @@ uz_NN_acc_t *uz_NN_acc_init(struct uz_NN_acc_config_t config, uz_matrix_t const 
     uz_assert(action->rows == 1U);
 
     self->config = config;
+    self->observation = observation;
+    self->action = action;
     //Set Data
     //Observation
     uz_NN_acc_hw_set_Observation_size(config.base_address,observation->columns);
@@ -117,16 +124,17 @@ void uz_NN_acc_ff_blocking(uz_NN_acc_t *self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	//Flush Cache for input matrix
-	Xil_DCacheFlushRange(((INTPTR)((INTPTR*)self->observation->data)),sizeof(self->observation->data));
+	Xil_DCacheFlushRange(((INTPTR)((INTPTR*)self->observation->data)),FLUSH_SIZE);
 	uz_NN_acc_hw_set_start(self->config.base_address);
 	while(1) {
 		bool is_done = uz_NN_acc_hw_get_is_done_output(self->config.base_address);
 		if(is_done) {
 			//Invalidate CacheLine for output matrix
-			Xil_DCacheInvalidateLine((INTPTR)((INTPTR*)self->action->data));
+			Xil_DCacheInvalidateRange((INTPTR)((INTPTR*)self->action->data),INVALIDATE_SIZE);
 			break;
 		}
 	}
+	//IP-Core has fixed linear-output. Output activation function applied in software
     uz_matrix_apply_function_to_each_element(self->action,self->output_activation_function);
 }
 

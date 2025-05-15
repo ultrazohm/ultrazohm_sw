@@ -73,6 +73,8 @@ platform_state_t current_state;
 int reset_counter=0;
 int delta_counter=0;
 uint16_t trigger = 0U;
+float cnt_trigger = 1.0f;
+float data_valid_old = 0.0f;
 
 float polycoef_a = 1999.3f;
 float polycoef_b = -5468.4f;
@@ -240,6 +242,10 @@ void ISR_Control(void *data)
     Global_Data.av.U_d = dq_measurement_voltage.d;
     Global_Data.av.U_q = dq_measurement_voltage.q;
 
+    if (Global_Data.rasv.flg_start_meas == 1.0f && control_mode != rc_fingerprint){
+    	control_mode = rc_fingerprint;
+    }
+
     if (Global_Data.rasv.flg_use_setpoint_calculation == 0.0f) {
         dq_reference_current.d = Global_Data.rasv.Id_ref;
         dq_reference_current.q = Global_Data.rasv.Iq_ref;
@@ -251,7 +257,7 @@ void ISR_Control(void *data)
     	Global_Data.rasv.Id_ref = dq_reference_current.d;
     	Global_Data.rasv.Iq_ref = dq_reference_current.q;
     }
-
+/*
     if (Global_Data.av.I_d > 10.0f){
     	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 0, 1U);
     } else{
@@ -263,7 +269,7 @@ void ISR_Control(void *data)
     } else{
     	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1, 0U);
     }
-
+*/
     SKAI_nERROUT = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio, 0);
 
     last_state = current_state;
@@ -302,6 +308,7 @@ void ISR_Control(void *data)
     					flg_precharge_SKAI = 0U;
     					Global_Data.rasv.Ud_ref = 0.0f;
     					Global_Data.rasv.Uq_ref = 0.0f;
+    					uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1, 1U);
     				}
     			}
     		}
@@ -379,11 +386,16 @@ void ISR_Control(void *data)
 					output_dutycycle = uz_Space_Vector_Modulation(dq_reference_voltage, Global_Data.av.U_ZK, Global_Data.av.theta_elec_pred);
 
 
-					if (Global_Data.rasv.rc_meas_output.data_valid == 1.0f){
-						trigger = 1U;
-					} else {
+					if (Global_Data.rasv.rc_meas_output.data_valid == 1.0f && Global_Data.rasv.rc_meas_output.data_valid != data_valid_old){
 						trigger = 0U;
+					} else {
+						cnt_trigger++;
+						if (cnt_trigger > 1000U){
+							trigger = 1U;
+							cnt_trigger = 0U;
+						}
 					}
+					data_valid_old = Global_Data.rasv.rc_meas_output.data_valid;
 
 					uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1, trigger);
 

@@ -290,34 +290,35 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			//ultrazohm_state_machine_set_userLED(false);
+				data->rasv.flg_start_meas = 1.0f;
 			break;
 
 		case (My_Button_4):
 //			ultrazohm_state_machine_set_userLED(true);
-			data->rasv.halfBridge1DutyCycle = 0.0;
-			data->rasv.halfBridge2DutyCycle = 0.0;
-			data->rasv.halfBridge3DutyCycle = 0.0;
+			//data->rasv.halfBridge1DutyCycle = 0.0;
+			//data->rasv.halfBridge2DutyCycle = 0.0;
+			//data->rasv.halfBridge3DutyCycle = 0.0;
 			break;
 
 		case (My_Button_5):
 //			ultrazohm_state_machine_set_userLED(false);
 			//data->rasv.halfBridge1DutyCycle = 0.0;
-				data->rasv.halfBridge1DutyCycle = 0.53;
-				data->rasv.halfBridge2DutyCycle = 0.5;
-				data->rasv.halfBridge3DutyCycle = 0.5;
+				//data->rasv.halfBridge1DutyCycle = 0.53;
+				//data->rasv.halfBridge2DutyCycle = 0.5;
+				//data->rasv.halfBridge3DutyCycle = 0.5;
 			break;
 
 		case (My_Button_6):
-		data->rasv.halfBridge1DutyCycle = 0.5;
-					data->rasv.halfBridge2DutyCycle = 0.53;
-					data->rasv.halfBridge3DutyCycle = 0.5;
+		//data->rasv.halfBridge1DutyCycle = 0.5;
+					//data->rasv.halfBridge2DutyCycle = 0.53;
+					//data->rasv.halfBridge3DutyCycle = 0.5;
 			break;
 
 		case (My_Button_7):
-		data->rasv.halfBridge1DutyCycle = 0.5;
-					data->rasv.halfBridge2DutyCycle = 0.5;
-					data->rasv.halfBridge3DutyCycle = 0.53;
+		//data->rasv.halfBridge1DutyCycle = 0.5;
+					//data->rasv.halfBridge2DutyCycle = 0.5;
+					//data->rasv.halfBridge3DutyCycle = 0.53;
 			break;
 
 		case (My_Button_8):

@@ -84,8 +84,8 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         self->rc_state = rc_wait;
         self->rc_previous_state = rc_idle;
         self->temp_check_values.initial_temp = temp_degrees;
-        self->temp_check_values.temp_min = self->temp_check_values.initial_temp * 0.95f;
-        self->temp_check_values.temp_max = self->temp_check_values.initial_temp * 1.05f;
+        self->temp_check_values.temp_min = self->temp_check_values.initial_temp * 0.9f;
+        self->temp_check_values.temp_max = self->temp_check_values.initial_temp * 1.1f;
         self->temp_check_values.temp_check_done = false;
     } else {
         self->counter.isr++;
@@ -105,7 +105,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         // wait function: lets xx isr-cycles pass without changing anything. Switches to the following state after the wait time depending on the previous state
         case rc_wait: 
             self->counter.wait++;
-            if(self->counter.wait == 15000U){
+            if(self->counter.wait == 60000U){
                 if (self->rc_previous_state == rc_set_idq){
                     self->rc_state = rc_sample_on;
                 }
@@ -231,8 +231,8 @@ void uz_parameterID_rc_check_temperature(uz_parameterID_rc_t* self, float temp_d
         self->set_values.id_set_Amps = 0.0f;
         self->set_values.iq_set_Amps = 0.0f;
     } else if (temp_degrees <= self->temp_check_values.temp_min){
-        self->set_values.id_set_Amps = self->internal_config.abs_iq_max_Amps;
-        self->set_values.iq_set_Amps = -1.0f * self->internal_config.abs_id_max_Amps;
+        self->set_values.iq_set_Amps = 100.0f;
+        self->set_values.id_set_Amps = 0.0f;
     } else {
         self->temp_check_values.temp_check_done = true;
     }

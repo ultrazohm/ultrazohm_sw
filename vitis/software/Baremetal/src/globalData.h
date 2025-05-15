@@ -139,6 +139,7 @@ typedef struct _referenceAndSetValues_ {
 	float n_ref;
 	struct uz_parameterID_rc_ref_val_t rc_meas_output;
 	float operatingpoints_rc_meas;
+	float flg_start_meas;
 } referenceAndSetValues;
 
 typedef struct{

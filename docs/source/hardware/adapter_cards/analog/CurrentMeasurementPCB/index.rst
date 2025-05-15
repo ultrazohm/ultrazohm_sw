@@ -21,26 +21,22 @@ The figure above shows the top view of the current measurement PCB with highligh
 - 🟥 **Red:** Power supply section with DC/DC converter (24 V to 5.12 V) and 2.5 V reference
 - 🟩 **Green:** RJ45 Ethernet connector for differential output signals
 
-This box measures phase currents from an inverter or motor.
-It uses current transducers and fully differential amplifiers to output a differential voltage.
-The output is designed to be read by an external ADC.
-The card supports both AC and DC current measurement.
 
 Features
 --------
 
-- Supports both AC and DC current measurement
-- Uses LEM CASR 6-NP or compatible current transducers
-- 4 individual current sensing channels
-- Fully differential output per channel with gain of 2
+- 4 independent current sensing channels
+- DC and AC measurement from 0 up to 300 kHz 
+- Compatible with LEM CASR-NP and Sensitec CAS5000 sensors
+- Fully differential analog output per channel with gain of 2
 
 Interface
 ---------
 
 **Inputs:**
 
-- Supply voltage VIN: 9-48 V via 2-pin header or Samtec IPL1-102-02-L-D-K-0
-- Sensor inputs via screw terminals (KFA-1016-10.16-2P)
+- Supply voltage VIN: 9-48 V via 2-pin header or Samtec IPL1-102-02-L-D-K
+- Sensor inputs via screw terminals up to 10 mm² (≈8 AWG) (KFA-1016-10.16-2P)
 - Input current capability: up to 80 A peak / 57 Arms (terminal block rated)
 
 **Outputs:**
@@ -55,8 +51,9 @@ Interface
 Thermal Performance
 -------------------
 
-The thermal behavior of the PCB was evaluated by applying increasing input current on a single phase of the primary side and measuring the surface temperature using a thermal camera. The temperature values shown in the plot below represent the hottest point observed on the PCB during each test step. The heat distribution across the primary phase trace was found to be spread relatively uniformly.
-As shown in the graph, at an input current of 80 A, the PCB reaches a surface temperature of approximately 105 °C. Therefore 80 A should be considered as the upper limit.
+The thermal behavior of the PCB was evaluated by applying increasing DC input current on a single phase of the primary side and measuring the surface temperature using a thermal camera. 
+The temperature values shown in the plot below represent the hottest point observed on the PCB during each test step. The heat distribution across the primary phase trace was found to be spread relatively uniformly.
+As shown in the graph, at an input current of 80 A (DC), the PCB reaches a surface temperature of approximately 105 °C. Therefore 80 A should be considered as the upper limit of the current capabilities of PCB.
 
 .. figure:: temperature_measurement.png
    :alt: Temperature Measurement of PCB

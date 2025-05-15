@@ -6,6 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+//Necessary define to align all arrays and uz_matrix_t objects 
 #define MEMORY_ALIGN __attribute__ ((__aligned__(32)))
 
 /**

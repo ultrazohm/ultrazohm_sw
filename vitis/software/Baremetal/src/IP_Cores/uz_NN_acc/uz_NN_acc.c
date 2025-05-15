@@ -13,10 +13,10 @@
 #define FIXED_AMOUNT_OF_LAYERS 4U //3 Hidden Layers + Output Layer
 #define FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER 64U
 
-//Flush and Invalidate Size must be multiple of 32bit/4byte
+//Flush and Invalidate Size must be multiple of 32byte
 //I.e. MAX_OBS and MAX_ACTION must be divisible by 4
 #define FLUSH_SIZE MAX_SIZE_OBSERVATION*4U //sizeof(float)==4
-#define INVALIDATE_SIZE MAX_SIZE_ACTIONS*4U //sizeof(float)==4
+#define INVALIDATE_SIZE MAX_SIZE_ACTIONS*4U+16U //sizeof(float)==4
 
 struct uz_NN_acc_t {
     bool is_ready;

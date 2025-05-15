@@ -6,7 +6,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define ARRAY_ALIGN __attribute__ ((__aligned__(32)))
+#define MEMORY_ALIGN __attribute__ ((__aligned__(32)))
 
 /**
  * @brief Object definition of the IP-Core driver

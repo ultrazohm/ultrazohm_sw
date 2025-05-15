@@ -40,8 +40,8 @@ This asymmetry is likely due to slight sensor nonlinearity or residual offset in
    :width: 600px
 
 
-Conclusion
-----------
+Conclusion 1
+------------
 
 The PCB demonstrates good accuracy, with the total error falling below **1.3% across the full ±10 A range**. This makes the analog card well-suited for mid- and high-current precision applications when used with the CASR 6-NP sensor.
 
@@ -58,15 +58,15 @@ The setup includes signal injection, probe configuration, and detailed usage of 
 Equipment
 ---------
 
-- **Keysight E36313A Triple-Channel Power Supply:** Supplies 24 V DC for VIN input.
+- **Keysight E36313A Triple-Channel Power Supply:** Supplies 24 V DC for VIN input.
 
 - **Spitzenberger APS 1000 (Input Modulator Current Amplifier):** Operates in constant current (CC) mode to inject a sinusoidal current.  
   Accepts AC signals from the Bode 100 output and amplifies them into ripple current.  
   Also allows DC offset to be added for mixed-signal excitation.
 
 - **Micsig CP1003B Current Probe:** Measures the input current delivered by the APS 1000 into the sensor.  
-  Used in 5 A mode to achieve a sensitivity of 1 V/A.  
-  This means that for every 1 A of current flowing to the card, the probe outputs 1 V to the Bode 100.
+  Used in 5 A mode to achieve a sensitivity of 1 V/A.  
+  This means that for every 1 A of current flowing to the card, the probe outputs 1 V to the Bode 100.
 
 - **Micsig MOIP350P OP200-3 Optical Isolated Probe:** Captures the differential output of the op-amp with high signal integrity.
   Isolates from high-voltage transients and ground loops.
@@ -106,45 +106,155 @@ Probe Ratio Settings
 --------------------
 
 - **CH1 (Current Probe):**
-  - Micsig CP1003B set to 5 A mode with a sensitivity of 1 V/A. Bode 100 CH1 probe ratio is set to 1:1, which means that the current probe outputs 1 V for every 1 A. 1:1 ratio ensures direct interpretation without scaling.
+  - Micsig CP1003B set to 5 A mode with a sensitivity of 1 V/A. Bode 100 CH1 probe ratio is set to 1:1, which means that the current probe outputs 1 V for every 1 A. 1:1 ratio ensures direct interpretation without scaling.
 
 - **CH2 (Voltage Probe):**
-  - Micsig MOIP350P OP200-3 configured with 20 dB attenuation, equivalent to a 2:1 attenuation ratio (datasheet). Bode 100 CH2 probe ratio must be set to 2:1 for Bode 100 to account for the probe’s attenuation so it correctly scales the measured voltage.
+  - Micsig MOIP350P OP200-3 configured with 20 dB attenuation, equivalent to a 2:1 attenuation ratio (datasheet). Bode 100 CH2 probe ratio must be set to 2:1 for Bode 100 to account for the probe's attenuation so it correctly scales the measured voltage.
 
 .. note::
    The Bode 100 interprets probe signals based on the configured ratio:
      - **1:1** → No scaling
      - **X:1** → Signal is internally multiplied by X  
-   Therefore, if the voltage probe attenuates the signal by a factor of 2 (as with the 20 dB setting), the ratio must be set to 2:1 for compensation.
+   Therefore, if the voltage probe attenuates the signal by a factor of 2 (as with the 20 dB setting), the ratio must be set to 2:1 for compensation.
 
 Notes on Current Amplifier Behavior
 -----------------------------------
 
 The APS 1000 includes an I-limit (current limit) function that significantly impacts the effective gain of the current amplifier. Thereby it ensures you operate within the linear region of both the sensor and amplifier.
 
-- When set to a higher range (e.g., 26.4 A_peak), the amplifier outputs a larger current for a given input signal.  
-  → This results in a gain of approximately 5.3 A/V.
+- When set to a higher range (e.g. 26.4 A_peak), the amplifier outputs a larger current for a given input signal.  
+  → This results in a gain of approximately 5.3 A/V.
   - A high I-limit enables testing with larger AC currents. It would be useful when testing full-scale sensor performance.
 
-- When set to a lower range (e.g., 3 A_peak), the amplifier limits its output to smaller currents,  
-  → Producing a lower gain of approximately 0.60 A/V.
+- When set to a lower range (e.g. 3 A_peak), the amplifier limits its output to smaller currents,  
+  → Producing a lower gain of approximately 0.60 A/V.
   - A low I-limit** offers better resolution and accuracy for small signals, reducing distortion and overdriving.
 
 Notes on Bode 100 Configuration
 -------------------------------
 
-The source level of the Bode 100 output is defined in dBm, which expresses signal power relative to 1 mW into a 50 Ω load. To calculate the output voltage amplitude, use:
+The source level of the Bode 100 output is defined in dBm, which expresses signal power relative to 1 mW into a 50 Ω load. To calculate the output voltage amplitude, use:
 
 .. math::
 
    V_{\mathrm{RMS}} = \sqrt{\frac{10^{\frac{\text{dBm}}{10}} \cdot R}{1000}}
 
-For the standard load impedance of **50 Ω** in Bode 100, this simplifies to:
+For the standard load impedance of **50 Ω** in Bode 100, this simplifies to:
 
 .. math::
 
    V_{\mathrm{RMS}} = 0.2236 \cdot 10^{\frac{\text{dBm}}{20}}
 
-At a Bode 100 output level of 5 dBm, the voltage amplitude is approximately :math:`V_{\mathrm{RMS}} = 0.398\,\mathrm{V}` and :math:`V_{\mathrm{peak}} = 1.125\,\mathrm{V}`.
+At a Bode 100 output level of 5 dBm, the voltage amplitude is approximately :math:`V_{\mathrm{RMS}} = 0.398\,\mathrm{V}` and :math:`V_{\mathrm{peak}} = 1.125\,\mathrm{V}`.
 This value is fed to the APS 1000, which amplifies it according to the selected I-limit, resulting in the actual test input current.
+
+Time-Domain and Harmonics Analysis
+----------------------------------
+
+To evaluate the output ripple and stability, and harmonic distortion behavior of different sensor technologies, 
+a time-domain observation combined with FFT-based harmonics analysis was performed. This test involved all four measurement channels operating simultaneously, each populated with a different sensor. 
+A sinusoidal input current of 100 mA peak at 100 Hz was applied. This test was conducted without any common-mode filter populated on the analog card to allow for a direct comparison of raw sensor.
+
+Despite the input being only a small fraction of the sensors' nominal range, the LEM CASR 50-NP (fluxgate) exhibited the lowest ripple and most stable waveform. 
+This indicates that current measurement accuracy is not directly limited by the sensor's full-scale range, 
+but is instead strongly influenced by the internal signal conditioning architecture and magnetic core technology.
+
+In the FFT spectrum, clear peaks were observed at 430 kHz, as well as its odd harmonics (3rd, 5th, 7th, etc.). 
+This matches the internal excitation frequency of the CASR sensor, which is based on a modulated fluxgate principle.
+
+The fluxgate sensor periodically excites a ferromagnetic core (typically at 450 kHz) driving it into saturation. 
+The resulting harmonics are inherent to the magnetization demagnetization cycles and they are visible in the frequency domain 
+as regular odd harmonics. This matches the manufacturer's published data:
+
+.. figure:: lem_casr_noise_spectrum.png
+   :align: center
+   :width: 500px
+   :alt: CASR datasheet noise spectrum
+
+   Figure: Input-referred output noise current spectral density from CASR datasheet, 
+   showing dominant excitation peak and its harmonics around ~430 kHz.
+
+In comparison, the Sensitec CAS series (TMR-based) showed slightly higher ripple and more harmonic content in the FFT spectrum.
+Their broader frequency bandwidth (400 kHz) may allow more high-frequency noise to appear at the output 
+when operating at low signal amplitudes.
+
+.. figure:: time_domain_ripple_comparison.png
+   :align: center
+   :width: 700px
+   :alt: Oscilloscope screenshot comparing 4 sensor outputs
+
+   Time-domain waveform comparison of four current sensors under identical excitation (100 mA, 100 Hz). 
+   The LEM CASR 50-NP output shows minimal ripple compared to the TMR-based alternatives.
+
+Conclusion 2
+------------
+
+Fluxgate-based closed-loop sensors (LEM CASR series) offer better low-noise performance compared to TMR alternatives (Sensitec CAS5000-Series), even if the signal amplitude is far below the rated current range.
+
+AC Impedance Measurement 
+------------------------
+
+This section presents a comparative impedance measurements using various sensors under various conditions.
+
+
+The first test result shows the impedance magnitude and phase of Sensitec CAS5015SRA-LI under varying AC excitation and DC offset conditions. 
+The following configurations were tested:
+
+- Black trace: 0 A DC offset, 0 dBm AC amplitude → ≈ 1.68 A AC
+- Green trace: 2 A DC offset, 0 dBm AC amplitude → ≈ 1.68 A AC
+- Red trace: 0 A DC offset, 12 dBm AC amplitude → ≈ 6.67 A AC
+
+ .. figure:: impedance_cas5015sra_sweep_amplitude_offset.png
+   :align: center
+   :width: 800px
+   :alt: Impedance Bode plot for CAS5015SRA-LI under varying excitation
+
+- The impedance magnitude remains nearly constant across all test conditions in the low-frequency region. 
+  A noticeable drop occurs around 2 kHz for all traces, with the effect being more pronounced in the black trace. 
+  Above approximately 200 kHz, all curves exhibit a clear roll-off in magnitude and phase.
+
+- The second test result shows the impedance magnitude and phase of four different current sensors 
+  under identical excitation conditions: 0 A DC offset and 0 dBm AC source level (≈ 1.68 A peak current). 
+  The sensors evaluated in this test include:
+
+- STB-6CAS/F - Orange trace
+- CASR 6-NP - Blue trace
+- CAS5015SRA-LI - Black trace
+- CAS5025SRA-LI - Purple trace
+
+.. figure:: impedance_sensor_comparison.png
+   :align: center
+   :width: 800px
+   :alt: Impedance and phase plots comparing four current sensors under identical conditions
+
+   Impedance magnitude (left axis) and phase (right axis) response of four different sensors.
+
+- Similar to the previous test, a slight drop in impedance magnitude occurs around 2 kHz for all sensors 
+
+- Across the full sweep, all sensors show stable impedance values in the low-frequency region, 
+  closely matching their expected impedance levels, calculated as before:
+
+   .. math::
+
+     Z_{\text{expected}} = \text{OpAmp Gain} \times \text{Sensor Sensitivity} \quad [\text{in } \mathrm{m\Omega}]
+
+- A consistent roll-off in magnitude is observed beginning around 200 kHz for all sensors, 
+  attributed to the sensing chain low-pass behavior.
+
+- Also the phase responses of all four sensors follow a similar trend, 
+  with noticeable phase lag beginning around 50-100 kHz. 
+  The exact roll-off frequency and slope vary slightly between sensors.
+
+The third test compares the impedance magnitude and phase of two sensors under different AC source levels, while maintaining **0 A DC offset**. The sensors used are:
+
+- CAS5015SRA-LI - 12 dBm (~6.67 A peak) - Red trace
+- CAS5025SRA-LI - 12 dBm (~6.67 A peak) - Black trace
+- CAS5025SRA-LI - 0 dBm (~1.68 A peak) - Purple trace
+
+.. figure:: impedance_sensor_amplitude_comparison.png
+   :align: center
+   :width: 800px
+   :alt: Impedance and phase plots comparing Sensitec TMR sensors under two AC amplitude levels
+
+   Impedance magnitude and phase of CAS5015SRA and CAS5025SRA sensors under varying AC amplitudes
 

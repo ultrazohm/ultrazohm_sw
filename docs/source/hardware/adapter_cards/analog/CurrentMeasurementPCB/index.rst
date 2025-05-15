@@ -41,25 +41,22 @@ Interface
 
 - Supply voltage VIN: 9-48 V via 2-pin header or Samtec IPL1-102-02-L-D-K-0
 - Sensor inputs via screw terminals (KFA-1016-10.16-2P)
-- Input current capability (PCB): up to 80 A peak / 57 Arms (terminal block rated)
-- Safe operating range (thermal): 80 A input current results in ~105 °C PCB temperature
+- Input current capability: up to 80 A peak / 57 Arms (terminal block rated)
 
 **Outputs:**
 
 - 4 fully differential voltage outputs via RJ45 
-- Differential output voltage: ±4.168 V at ±20 A input
+- Differential output voltage: max ±4.250 V (depending on the sensor)
 
 .. note::
 
-   While the screw terminal block supports wires up to 10 mm² (≈8 AWG), operating at 80 A results in the current measurement board temperatures around 105 °C. 
-   This is near the thermal limit for safe operation.
-
+   While the screw terminal block supports wires up to 10 mm² (≈8 AWG), operating at 80 A results in the PCB surface temperatures around 105 °C. 
 
 Thermal Performance
 -------------------
 
 The thermal behavior of the PCB was evaluated by applying increasing input current on a single phase of the primary side and measuring the surface temperature using a thermal camera. The temperature values shown in the plot below represent the hottest point observed on the PCB during each test step. The heat distribution across the primary phase trace was found to be spread relatively uniformly.
-As shown in the graph, at an input current of 80 A, the PCB reaches a surface temperature of approximately 105 °C. Therefore 80 A should be considered the upper limit.
+As shown in the graph, at an input current of 80 A, the PCB reaches a surface temperature of approximately 105 °C. Therefore 80 A should be considered as the upper limit.
 
 .. figure:: temperature_measurement.png
    :alt: Temperature Measurement of PCB
@@ -82,13 +79,13 @@ Functionality & Specifications
  Parameter                        Description
 =============================     ============================================================
 VIN                               9 V to 48 V (typically 24 V)
-Regulated 5V rail                 5.12 V
-Reference voltage                 2.5 V (fixed from current sensor internally)
+VCC+ Supply                       5.12 V
+Sensor Reference voltage          2.5 V (fixed from current sensor internally)
 Number of channels                4 
 Amplifier                         THS4521 differential op-amp, gain = 2
 Common-mode voltage               2.5 V (set by voltage reference IC REF35250QDBVR)
 Sensor output                     2.5 V at 0 A input current
-Differential output               ±4.168 V (centered around 2.5 V)
+Differential output               Max ±4.250 V (centered around 2.5 V)
 Input connectors                  10.16 mm pitch screw terminal blocks
 Output connectors                 RJ45 (Ethernet-style) for differential pairs
 =============================     ============================================================
@@ -102,20 +99,21 @@ Output connectors                 RJ45 (Ethernet-style) for differential pairs
 Supported Sensors
 -----------------
 
-The analog card supports multiple current transducers with the same footprint.
+The analog card supports multiple current transducers with the same footprint. 
+The last two columns indicate the unamplified sensor output voltage range for full-scale input current.
 
-========================  ==============  ============  ======================  ============  ===================  ===================
-Sensor Model              Manufacturer    Technology    Nominal Current (Arms)   Range (A)     Sensitivity (mV/A)    Bandwidth (±3 dB)
-========================  ==============  ============  ======================  ============  ===================  ===================
-CASR 6-NP                 LEM              Fluxgate               6                 ±20               104.2               ~300 kHz
-CASR 15-NP                LEM              Fluxgate              15                 ±51                41.67              ~300 kHz
-CASR 25-NP                LEM              Fluxgate              25                 ±85                25.0               ~300 kHz
-CASR 50-NP                LEM              Fluxgate              50                ±150                12.5               ~300 kHz
-STB-6CAS/R/F              Sinomags          TMR                   6                 ±20               104.2               ~400 kHz
-CAS5015SRA-LI             Sensitec          TMR                  15                 ±51                41.67              ~400 kHz
-CAS5025SRA-LI             Sensitec          TMR                  25                 ±85                25.0               ~400 kHz
-CAS5050SRA-LI             Sensitec          TMR                  50                ±150                12.5               ~400 kHz
-========================  ==============  ============  ======================  ============  ===================  ===================
+========================  ==============  ============  ======================  ============  ===================  ===================  ==============================
+Sensor Model              Manufacturer    Technology    Nominal Current (Arms)   Range (A)     Sensitivity (mV/A)    Bandwidth (±3 dB)   Sensor Output [V] (Min-Max)
+========================  ==============  ============  ======================  ============  ===================  ===================  ==============================
+CASR 6-NP                 LEM              Fluxgate               6                 ±20               104.2               ~300 kHz           0.416 V - 4.584 V
+CASR 15-NP                LEM              Fluxgate              15                 ±51                41.67              ~300 kHz           0.375 V - 4.625 V
+CASR 25-NP                LEM              Fluxgate              25                 ±85                25.0               ~300 kHz           0.375 V - 4.625 V
+CASR 50-NP                LEM              Fluxgate              50                ±150                12.5               ~300 kHz           0.625 V - 4.375 V
+STB-6CAS/R/F              Sinomags          TMR                   6                 ±20               104.2               ~400 kHz           0.416 V - 4.584 V
+CAS5015SRA-LI             Sensitec          TMR                  15                 ±51                41.67              ~400 kHz           0.375 V - 4.625 V
+CAS5025SRA-LI             Sensitec          TMR                  25                 ±85                25.0               ~400 kHz           0.375 V - 4.625 V
+CAS5050SRA-LI             Sensitec          TMR                  50                ±150                12.5               ~400 kHz           0.625 V - 4.375 V
+========================  ==============  ============  ======================  ============  ===================  ===================  ==============================
 
 
 VCC+ Supply Adjustment
@@ -137,45 +135,14 @@ Where     :math:`V_{\text{FB}} = 1.185\,\mathrm{V}` (datasheet)
 Why 5.12 V?
 -----------
 
-The expected differential output from the current sensing chain is:
-
-- Swinging ±4.168 V at full scale (for ±20 A input)
-- Centered at :math:`V_{\text{OCM}} = 2.5\,\mathrm{V}`
-
-This means the output pins must reach ~0.916 V and ~4.084 V.
-
-The THS4521 op-amp has output swing limitations and cannot reach the exact power supply rails.
-At a 5.0 V supply, the output typically swings between ~0.1 V and ~4.7 V. So the linear output swing is around 0.1 V to 4.7 V (according to datasheet)
-
-When using high-range sensors (CAS5015SRA-LI, CAS5025SRA-LI etc.), the amplified signal pushes the op-amp very close to these swing limits. Using a slightly elevated VCC+ (5.12 V) improves the available headroom:
+The THS4521 op-amp has output swing limitations and cannot reach the exact power supply rails. According to its datasheet, at a 5.0 V supply, the output typically swings between ~0.1 V and ~4.7 V. So the linear output swing is around 0.1 V to 4.7 V.
+When using high-range sensors (CAS5015SRA-LI, CAS5025SRA-LI etc.), the amplified signal pushes the op-amp very close to these swing limits. Using a slightly elevated VCC+ (5.12 V) improves the available headroom. Therefore:
 
 - Output remains in the linear operating region
 - No clipping near the rails
 - Reliable full-scale operation with low distortion
 
-For example:
-
-The sensor produces a single-ended voltage centered at 2.5 V.
-For the CAS5025SRA-LI sensor with a full-scale input of ±85 A and a sensitivity of 25 mV/A, the sensor output range becomes:
-
-.. math::
-
-   V_{\text{sensor}} = 2.5\,\mathrm{V} \pm (85\,\mathrm{A} \times 25\,\mathrm{mV/A}) = 2.5\,\mathrm{V} \pm 2.125\,\mathrm{V}
-
-This results in a sensor output range of:
-
-.. math::
-
-   [0.375\,\mathrm{V},\ 4.625\,\mathrm{V}]
-
-After amplification with a gain of 2, the op-amp must generate a differential output of:
-
-.. math::
-
-   OUT_+ = 4.625\,\mathrm{V},\quad OUT_- = 0.375\,\mathrm{V} \quad \text{(or vice versa)}
-
-These values are very close to the typical output swing limits of the THS4521 at a 5.0 V supply, reinforcing the need for increased supply headroom.
-
+The expected differential output from the current sensing chain is very close to the typical output swing limits of the THS4521 at a 5.0 V supply, reinforcing the need for increased supply headroom.
 
 .. note :: 
      The sensor reference voltage remains at 2.5 V regardless of the 5.12 V supply, so output offset and scaling are unaffected. Only the amplifier headroom benefits from the increased supply.
@@ -194,14 +161,16 @@ The gain is configured using external feedback resistors R11 and R12 as follows:
 This sets the overall gain of the amplifier stage to 2, amplifying the differential voltage from the sensor to match the ADC’s ±5 V input range when full-scale current is applied.
 
 .. note::
-   **Use precision resistors** (0.1% or better) for R11 and R12 to ensure consistent gain and matching across all channels.
+   Use precision resistors (0.1% or better) for R11 and R12 to ensure consistent gain and matching across all channels.
 
 Filters
 -------
 
+The analog signal path includes two types of low-pass filters: an anti-aliasing filter and an active differential low-pass filter. 
+
 1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is formed by the capacitors 
 :math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first-order low-pass filter with the series resistors 
-:math:`{R_0}` according to:
+:math:`{R_0}` according to (example numbers):
 
 .. math:: 
    f_\mathrm{aliasing,-3dB}=  \frac{1}{2 \pi R_0 (2 C_\mathrm{Diff} + C_\mathrm{CM} ) } = 
@@ -213,6 +182,8 @@ Filters
    f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} = 
                             \frac{1}{2\pi\cdot2\,\mathrm{k\Omega}\cdot22\,\mathrm{pF}} \approx 3.62\, \mathrm{MHz}
 
+.. note::
+   For initial testing, the common-mode capacitors (:math:`C_\mathrm{CM}`) for anti-aliasing filter are not populated on the PCB.
 
 .. figure:: whole_system_block_diagram.png
    :align: center

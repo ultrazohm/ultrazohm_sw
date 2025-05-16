@@ -99,6 +99,7 @@ uz_NN_acc_t *successful_init(void) {
     uz_NN_acc_hw_set_L_Output_Bias_Data_Expect(BASE_ADDRESS,&b_4[0]);
     uz_NN_acc_hw_set_Action_size_Expect(BASE_ADDRESS,NUMBER_OF_OUTPUTS);
     uz_NN_acc_hw_set_Actions_Data_Expect(BASE_ADDRESS,&y_4[0]);
+    Xil_DCacheFlushRange_CMockExpect(109,((INTPTR)((INTPTR*)output)),24U*4U);
     uz_NN_acc_hw_set_copy_mats_flag_Expect(BASE_ADDRESS,true);
     uz_NN_acc_hw_set_start_Expect(BASE_ADDRESS);
     uz_NN_acc_hw_get_copy_flag_out_ExpectAndReturn(BASE_ADDRESS,true); 

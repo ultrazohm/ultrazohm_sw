@@ -155,10 +155,10 @@ The gain is configured using external feedback resistors R11 and R12 as follows:
 
    g = \frac{R_{11}}{R_{12}} = \frac{2\,\mathrm{k\Omega}}{1\,\mathrm{k\Omega}} = 2 \,\,
 
-This sets the overall gain of the amplifier stage to 2, amplifying the differential voltage from the sensor to match the ADC’s ±5 V input range when full-scale current is applied.
+Ensure that R12=R14 and R11=R16 holds. This sets the overall gain of the amplifier stage to 2, amplifying the differential voltage from the sensor to match the ADC’s ±5 V input range when full-scale current is applied.
 
 .. note::
-   Use precision resistors (0.1% or better) for R11 and R12 to ensure consistent gain and matching across all channels.
+   Use precision resistors (0.1% or better) for R11, R12, R14, R16 to ensure consistent gain and matching across all channels.
 
 Filters
 -------
@@ -166,7 +166,7 @@ Filters
 The analog signal path includes two types of low-pass filters: an anti-aliasing filter and an active differential low-pass filter. 
 
 1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is formed by the capacitors 
-:math:`C_\mathrm{Diff}` and :math:`C_\mathrm{CM}`. They create a first-order low-pass filter with the series resistors 
+:math:`C_\mathrm{Diff}` (C18) and :math:`C_\mathrm{CM}` (C16, C20). They create a first-order low-pass filter with the series resistors 
 :math:`{R_0}` according to (example numbers):
 
 .. math:: 
@@ -180,7 +180,7 @@ The analog signal path includes two types of low-pass filters: an anti-aliasing 
                             \frac{1}{2\pi\cdot2\,\mathrm{k\Omega}\cdot22\,\mathrm{pF}} \approx 3.62\, \mathrm{MHz}
 
 .. note::
-   For initial testing, the common-mode capacitors (:math:`C_\mathrm{CM}`) for anti-aliasing filter are not populated on the PCB.
+   For initial testing, the common-mode capacitors (:math:`C_\mathrm{CM}`) for anti-aliasing filter are not populated on the PCB. As a rule of thumb :math:`10 C_\mathrm{CM} < `C_\mathrm{Diff}` should hold.
 
 .. figure:: whole_system_block_diagram.png
    :align: center

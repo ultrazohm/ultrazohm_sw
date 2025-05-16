@@ -104,6 +104,10 @@ uz_NN_acc_t *uz_NN_acc_init(struct uz_NN_acc_config_t config, uz_matrix_t const 
     uz_NN_acc_hw_set_Action_size(config.base_address, action->columns);
     uz_NN_acc_hw_set_Actions_Data(config.base_address, action->data);
 
+    //Flush Action matrix so that it's definitely written to memory
+    //and won't get "deleted" by the CacheInvalidation
+    Xil_DCacheFlushRange(((INTPTR)((INTPTR*)self->action)),FLUSH_SIZE);
+
     //Trigger IP-Core once to write Weights&Bias to IP-Core
     self->copy_mats_flag = true;
     uz_NN_acc_hw_set_copy_mats_flag(self->config.base_address, self->copy_mats_flag);
@@ -125,9 +129,6 @@ void uz_NN_acc_ff_blocking(uz_NN_acc_t *self) {
 	uz_assert(self->is_ready);
 	//Flush Cache for input matrix
 	Xil_DCacheFlushRange(((INTPTR)((INTPTR*)self->observation->data)),FLUSH_SIZE);
-	//Flush Action uz_matrix_t object so that they are definitely written to memory
-	//and won't get "deleted" by the CacheInvalidation later
-	Xil_DCacheFlushRange(((INTPTR)((INTPTR*)self->action)),FLUSH_SIZE);
 	uz_NN_acc_hw_set_start(self->config.base_address);
 	while(1) {
 		bool is_done = uz_NN_acc_hw_get_is_done_output(self->config.base_address);

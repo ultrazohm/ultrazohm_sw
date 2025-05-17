@@ -117,6 +117,12 @@ Probe Ratio Settings
      - **X:1** → Signal is internally multiplied by X  
    Therefore, if the voltage probe attenuates the signal by a factor of 2 (as with the 20 dB setting), the ratio must be set to 2:1 for compensation.
 
+.. figure:: bode100_Setup.png
+   :align: center
+   :width: 500px
+   :alt: Test Setup of Bode100
+
+
 Notes on Current Amplifier Behavior
 -----------------------------------
 
@@ -129,6 +135,13 @@ The APS 1000 includes an I-limit (current limit) function that significantly imp
 - When set to a lower range (e.g. 3 A_peak), the amplifier limits its output to smaller currents,  
   → Producing a lower gain of approximately 0.60 A/V.
   - A low I-limit** offers better resolution and accuracy for small signals, reducing distortion and overdriving.
+  
+.. figure:: spitzenberger_Setup.png
+   :align: center
+   :width: 500px
+   :alt: Test Setup of Spitzenberger APS 1000
+
+   Figure: Test Setup of Spitzenberger APS 1000 for I-limit configuration and optional DC Offset
 
 Notes on Bode 100 Configuration
 -------------------------------
@@ -145,8 +158,18 @@ For the standard load impedance of **50 Ω** in Bode 100, this simplifies to:
 
    V_{\mathrm{RMS}} = 0.2236 \cdot 10^{\frac{\text{dBm}}{20}}
 
-At a Bode 100 output level of 5 dBm, the voltage amplitude is approximately :math:`V_{\mathrm{RMS}} = 0.398\,\mathrm{V}` and :math:`V_{\mathrm{peak}} = 1.125\,\mathrm{V}`.
-This value is fed to the APS 1000, which amplifies it according to the selected I-limit, resulting in the actual test input current.
+- At 0 dBm:
+  :math:`V_{\mathrm{RMS}} = 0.224\,\mathrm{V}` 
+  (:math:`V_{\mathrm{peak}} \approx 0.316\,\mathrm{V}`), resulting in 
+  :math:`I_{\mathrm{peak}} \approx 1.67\,\mathrm{A}` after amplification.
+
+- At 12 dBm:
+  :math:`V_{\mathrm{RMS}} = 0.708\,\mathrm{V}` 
+  (:math:`V_{\mathrm{peak}} \approx 1.000\,\mathrm{V}`), resulting in 
+  :math:`I_{\mathrm{peak}} \approx 5.30\,\mathrm{A}` after amplification.
+
+**This value is fed to the APS 1000, which amplifies it according to the selected I-limit, resulting in the actual test input current.**
+
 
 Time-Domain and Harmonics Analysis
 ----------------------------------
@@ -200,9 +223,9 @@ This section presents a comparative impedance measurements using various sensors
 The first test result shows the impedance magnitude and phase of Sensitec CAS5015SRA-LI under varying AC excitation and DC offset conditions. 
 The following configurations were tested:
 
-- Black trace: 0 A DC offset, 0 dBm AC amplitude → ≈ 1.68 A AC
-- Green trace: 2 A DC offset, 0 dBm AC amplitude → ≈ 1.68 A AC
-- Red trace: 0 A DC offset, 12 dBm AC amplitude → ≈ 6.67 A AC
+- Black trace: 0 A DC offset, 0 dBm AC amplitude → ≈ 1.67 A AC
+- Green trace: 2 A DC offset, 0 dBm AC amplitude → ≈ 1.67 A AC
+- Red trace: 0 A DC offset, 12 dBm AC amplitude → ≈ 5.30 A AC
 
  .. figure:: impedance_cas5015sra_sweep_amplitude_offset.png
    :align: center
@@ -213,9 +236,9 @@ The following configurations were tested:
   A noticeable drop occurs around 2 kHz for all traces, with the effect being more pronounced in the black trace. 
   Above approximately 200 kHz, all curves exhibit a clear roll-off in magnitude and phase.
 
-- The second test result shows the impedance magnitude and phase of four different current sensors 
-  under identical excitation conditions: 0 A DC offset and 0 dBm AC source level (≈ 1.68 A peak current). 
-  The sensors evaluated in this test include:
+The second test result shows the impedance magnitude and phase of four different current sensors 
+under identical excitation conditions: 0 A DC offset and 0 dBm AC source level (≈ 1.67 A peak current). 
+The sensors evaluated in this test include:
 
 - STB-6CAS/F - Orange trace
 - CASR 6-NP - Blue trace
@@ -247,9 +270,9 @@ The following configurations were tested:
 
 The third test compares the impedance magnitude and phase of two sensors under different AC source levels, while maintaining **0 A DC offset**. The sensors used are:
 
-- CAS5015SRA-LI - 12 dBm (~6.67 A peak) - Red trace
-- CAS5025SRA-LI - 12 dBm (~6.67 A peak) - Black trace
-- CAS5025SRA-LI - 0 dBm (~1.68 A peak) - Purple trace
+- CAS5015SRA-LI - 12 dBm (~5.30 A peak) - Red trace
+- CAS5025SRA-LI - 12 dBm (~5.30 A peak) - Black trace
+- CAS5025SRA-LI - 0 dBm (~1.67 A peak) - Purple trace
 
 .. figure:: impedance_sensor_amplitude_comparison.png
    :align: center

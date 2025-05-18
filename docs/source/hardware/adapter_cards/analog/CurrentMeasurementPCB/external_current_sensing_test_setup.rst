@@ -113,9 +113,12 @@ Probe Ratio Settings
 
 .. note::
    The Bode 100 interprets probe signals based on the configured ratio:
+
      - **1:1** → No scaling
      - **X:1** → Signal is internally multiplied by X  
-   Therefore, if the voltage probe attenuates the signal by a factor of 2 (as with the 20 dB setting), the ratio must be set to 2:1 for compensation.
+
+   Therefore, if the voltage probe attenuates the signal by a factor of 2 (as with the 20 dB setting), 
+   the ratio must be set to **2:1** for proper compensation.
 
 .. figure:: bode100_Setup.png
    :align: center
@@ -201,13 +204,13 @@ In comparison, the Sensitec CAS series (TMR-based) showed slightly higher ripple
 Their broader frequency bandwidth (400 kHz) may allow more high-frequency noise to appear at the output 
 when operating at low signal amplitudes.
 
-.. figure:: time_domain_ripple_comparison.png
-   :align: center
-   :width: 700px
-   :alt: Oscilloscope screenshot comparing 4 sensor outputs
-
-   Time-domain waveform comparison of four current sensors under identical excitation (100 mA, 100 Hz). 
-   The LEM CASR 50-NP output shows minimal ripple compared to the TMR-based alternatives.
+%.. figure:: time_domain_ripple_comparison.png
+%   :align: center
+% :width: 700px
+%   :alt: Oscilloscope screenshot comparing 4 sensor outputs
+%
+%   Time-domain waveform comparison of four current sensors under identical excitation (100 mA, 100 Hz). 
+%   The LEM CASR 50-NP output shows minimal ripple compared to the TMR-based alternatives.
 
 Conclusion 2
 ------------

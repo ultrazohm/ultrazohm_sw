@@ -132,11 +132,9 @@ Notes on Current Amplifier Behavior
 The APS 1000 settings -> Amplifier Control -> Limit includes a Range setting that defines the effective gain of the current amplifier. 
 The analog input range of AC IN of APS 1000 is +-5V. The Range setting divided by 5V results in the gain:
 
-- When set to a higher range (e.g. 26.4 A_peak), the amplifier outputs a larger current for a given input signal.  
-  → This results in a gain of 26.4 A_peak / 5V =  5.28 A/V.
+- When set to a higher range (e.g. 26.4 A_peak), the gain is 26.4 A_peak / 5V =  5.28 A/V.
   
-- When set to a lower range (e.g. 3 A_peak), the amplifier limits its output to smaller currents,  
-  → Producing a lower gain of 3 A_peak / 5V = 0.60 A/V.
+- When set to a lower range (e.g. 3 A_peak), the gain is 3 A_peak / 5V = 0.60 A/V.
   
   
 .. figure:: spitzenberger_Setup.png
@@ -144,7 +142,7 @@ The analog input range of AC IN of APS 1000 is +-5V. The Range setting divided b
    :width: 500px
    :alt: Test Setup of Spitzenberger APS 1000
 
-   Figure: Test Setup of Spitzenberger APS 1000 for I-limit configuration and optional DC Offset
+   Figure: Test Setup of Spitzenberger APS 1000 for Range configuration and optional DC Offset
 
 Notes on Bode 100 Configuration
 -------------------------------
@@ -155,11 +153,13 @@ The source level of the Bode 100 output is defined in dBm, which expresses signa
 
    V_{\mathrm{RMS}} = \sqrt{\frac{10^{\frac{\text{dBm}}{10}} \cdot R}{1000}}
 
-For the standard load impedance of **50 Ω** in Bode 100, this simplifies to:
+For input impedance of **50 Ω** in AC IN of Bode 100, this simplifies to:
 
 .. math::
 
    V_{\mathrm{RMS}} = 0.2236 \cdot 10^{\frac{\text{dBm}}{20}}
+
+For Range = 26.6 A_peak (setting in APS1000), this yields the following output current ampltiudes_
 
 - At 0 dBm:
   :math:`V_{\mathrm{RMS}} = 0.224\,\mathrm{V}` 
@@ -171,7 +171,7 @@ For the standard load impedance of **50 Ω** in Bode 100, this simplifies to:
   (:math:`V_{\mathrm{peak}} \approx 1.000\,\mathrm{V}`), resulting in 
   :math:`I_{\mathrm{peak}} \approx 5.30\,\mathrm{A}` after amplification.
 
-**This value is fed to the APS 1000, which amplifies it according to the selected I-limit, resulting in the actual test input current.**
+**This value is fed to the APS 1000, which amplifies it according to the selected Range, resulting in the actual test input current.**
 
 
 Time-Domain and Harmonics Analysis

@@ -129,14 +129,14 @@ Probe Ratio Settings
 Notes on Current Amplifier Behavior
 -----------------------------------
 
-The APS 1000 includes an I-limit (current limit) function that defines the effective gain of the current amplifier. Thereby it ensures you operate within the linear region of both the sensor and amplifier.
+The APS 1000 settings -> Amplifier Control -> Limit includes a Range setting that defines the effective gain of the current amplifier. 
+The analog input range of AC IN of APS 1000 is +-5V. The Range setting divided by 5V results in the gain:
 
 - When set to a higher range (e.g. 26.4 A_peak), the amplifier outputs a larger current for a given input signal.  
-  → This results in a gain of approximately 5.3 A/V.
+  → This results in a gain of 26.4 A_peak / 5V =  5.28 A/V.
   
-
 - When set to a lower range (e.g. 3 A_peak), the amplifier limits its output to smaller currents,  
-  → Producing a lower gain of approximately 0.60 A/V.
+  → Producing a lower gain of 3 A_peak / 5V = 0.60 A/V.
   
   
 .. figure:: spitzenberger_Setup.png

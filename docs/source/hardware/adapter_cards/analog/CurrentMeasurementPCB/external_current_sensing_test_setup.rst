@@ -7,7 +7,7 @@ Performance Tests
 Overview
 --------
 
-This section describes the complete test setup used to validate the analog current measurement card for both DC and AC analysis.
+This section describes the test setup used to validate the analog current measurement card for both DC and AC analysis.
 It includes equipment, configurations & calibration, the measurement methodology and findings.
 
 DC Analysis
@@ -29,7 +29,7 @@ Equipment
 
 The following figure shows the percentage error between the expected and measured differential output voltage over a DC input current range of −10 A to +10 A using the CASR 6-NP sensor.
 
-At positive currents the error remains below 0.3%, indicating excellent linearity and accuracy in the measurement system. At negative currents, the error increases slightly, peaking at -2 A, reaching approximately **1.3%**, and then **decreases exponentially** toward ~0.5% at -10 A.
+At positive currents the error remains below 0.3%, while at negative currents, the error increases slightly, peaking at -2 A, reaching approximately 1.3%, and then decreases toward ~0.5% at -10 A.
 
 This asymmetry is likely due to slight sensor nonlinearity or residual offset in the amplifier or measurement system.
 

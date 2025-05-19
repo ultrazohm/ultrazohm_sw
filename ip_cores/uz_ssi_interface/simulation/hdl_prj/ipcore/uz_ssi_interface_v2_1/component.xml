@@ -269,7 +269,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>09211e41</spirit:value>
+            <spirit:value>eed9b930</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -285,7 +285,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>09211e41</spirit:value>
+            <spirit:value>eed9b930</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -761,6 +761,40 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
+        <spirit:name>position_raw_single_pre_slice</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
+        <spirit:name>position_raw_single_post_slice</spirit:name>
+        <spirit:wire>
+          <spirit:direction>out</spirit:direction>
+          <spirit:vector>
+            <spirit:left spirit:format="long">31</spirit:left>
+            <spirit:right spirit:format="long">0</spirit:right>
+          </spirit:vector>
+          <spirit:wireTypeDefs>
+            <spirit:wireTypeDef>
+              <spirit:typeName>std_logic_vector</spirit:typeName>
+              <spirit:viewNameRef>xilinx_anylanguagesynthesis</spirit:viewNameRef>
+              <spirit:viewNameRef>xilinx_anylanguagebehavioralsimulation</spirit:viewNameRef>
+            </spirit:wireTypeDef>
+          </spirit:wireTypeDefs>
+        </spirit:wire>
+      </spirit:port>
+      <spirit:port>
         <spirit:name>AXI4_Lite_AWREADY</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
@@ -1032,7 +1066,7 @@
       <spirit:file>
         <spirit:name>hdl/uz_ssi_interface.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_0cf860a6</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_ead3401a</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1277,15 +1311,15 @@
       </xilinx:taxonomies>
       <xilinx:displayName>uz_ssi_interface</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:coreRevision>2114083154</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-05-14T15:15:20Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114090201</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-05-19T12:42:00Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2020.1.1</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="e5fa9c87"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="fa7bbd03"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0e852fd4"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="c01cd647"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="f9baa268"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="97ce0b1c"/>
       <xilinx:checksum xilinx:scope="parameters" xilinx:value="ad216198"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>

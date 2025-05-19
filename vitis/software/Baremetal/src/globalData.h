@@ -91,6 +91,8 @@ typedef struct _actualValues_ {
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d3;
+	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4_0;
+	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4_1;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

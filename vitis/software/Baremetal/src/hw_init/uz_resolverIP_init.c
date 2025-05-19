@@ -8,7 +8,7 @@
 #define IP_CLK_FREQ 100000000U
 
 struct uz_resolverIP_config_t resolverIP_config_0 = {
-        .base_address=XPAR_RESOLVER_INTERFACE_V1_0_BASEADDR,
+        .base_address=XPAR_UZ_USER_UZ_RESOLVER_RESOLVER_INTERFACE_V_0_BASEADDR,
         .ip_clk_frequency_Hz=IP_CLK_FREQ,
         .resolution = 16,
         .freq_clockin = CRYSTAL_FREQUENCY,

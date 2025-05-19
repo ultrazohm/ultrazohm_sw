@@ -38,8 +38,6 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
-struct uz_resolver_pl_interface_outputs_t resolver_pl_0_output = {0};
-struct uz_resolver_pl_interface_outputs_t resolver_pl_1_output = {0};
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -58,8 +56,8 @@ void ISR_Control(void *data)
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d1);
     Global_Data.av.inverter_outputs_d2 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d2);
     Global_Data.av.inverter_outputs_d3 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_d3);
-    resolver_pl_0_output = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_0);
-    resolver_pl_1_output = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_1);
+    Global_Data.av.resolver_outputs_d4_0 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_0);
+    Global_Data.av.resolver_outputs_d4_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_1);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

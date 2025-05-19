@@ -43,7 +43,7 @@ This asymmetry is likely due to slight sensor nonlinearity or residual offset in
 Conclusion 1
 ------------
 
-The PCB demonstrates good accuracy, with the total error falling below **1.3% across the full ±10 A range**. This makes the analog card well-suited for mid- and high-current precision applications when used with the CASR 6-NP sensor.
+The PCB demonstrates good accuracy, with the total error falling below **1.3% across the full ±10 A range**. 
 
 
 AC Analysis
@@ -52,29 +52,29 @@ AC Analysis
 Purpose
 -------
 
-AC test setup is used to evaluate the impedance and dynamic behavior of the Analog current measurement card.
-The setup includes signal injection, probe configuration, and detailed usage of all test equipment.
+AC test setup is used to evaluate the sensitivity and dynamic behavior of the current measurement box.
+The setup includes analog signal injection, probe configuration, and detailed usage of all test equipment.
 
 Equipment
 ---------
 
 - **Keysight E36313A Triple-Channel Power Supply:** Supplies 24 V DC for VIN input.
 
+- **Bode 100 Vector Network Analyzer:** 
+   - **Ouput:** AC sweep signal send to Amplifier (Spitzenberger&Spies)
+   - **CH1:** Measures input (primary side) current  (via CP1003B)
+   - **CH2:** Measures differential output voltage  (via MOIP350P)
+   - Computes impedance using :math:`Z = \frac{V}{I} = \frac{V_{\mathrm{CH2}}}{V_{\mathrm{CH1}}}`
+
 - **Spitzenberger APS 1000 (Input Modulator Current Amplifier):** Operates in constant current (CC) mode to inject a sinusoidal current.  
-  Accepts AC signals from the Bode 100 output and amplifies them into ripple current.  
+  Accepts AC voltage signals from the Bode 100 output and amplifies them into a scaled-up output current.  
   Also allows DC offset to be added for mixed-signal excitation.
 
 - **Micsig CP1003B Current Probe:** Measures the input current delivered by the APS 1000 into the sensor.  
-  Used in 5 A mode to achieve a sensitivity of 1 V/A.  
-  This means that for every 1 A of current flowing to the card, the probe outputs 1 V to the Bode 100.
-
+  
 - **Micsig MOIP350P OP200-3 Optical Isolated Probe:** Captures the differential output of the op-amp with high signal integrity.
   Isolates from high-voltage transients and ground loops.
 
-- **Bode 100 Vector Network Analyzer:** Generates the AC sweep signal.
-   - **CH1:** Measures current (via CP1003B)
-   - **CH2:** Measures differential output voltage (via MOIP350P)
-   - Computes impedance using :math:`Z = \frac{V}{I} = \frac{V_{\mathrm{CH2}}}{V_{\mathrm{CH1}}}`
 
 
 Setup Diagram
@@ -117,8 +117,8 @@ Probe Ratio Settings
      - **1:1** → No scaling
      - **X:1** → Signal is internally multiplied by X  
 
-   Therefore, if the voltage probe attenuates the signal by a factor of 2 (as with the 20 dB setting), 
-   the ratio must be set to **2:1** for proper compensation.
+   Therefore, if the voltage probe attenuates the signal by a factor of 2 (when 20 dB setting is chosen on the probe), 
+   the ratio must be set to **2:1** in Bode 100 for proper compensation.
 
 .. figure:: bode100_Setup.png
    :align: center
@@ -129,15 +129,15 @@ Probe Ratio Settings
 Notes on Current Amplifier Behavior
 -----------------------------------
 
-The APS 1000 includes an I-limit (current limit) function that significantly impacts the effective gain of the current amplifier. Thereby it ensures you operate within the linear region of both the sensor and amplifier.
+The APS 1000 includes an I-limit (current limit) function that defines the effective gain of the current amplifier. Thereby it ensures you operate within the linear region of both the sensor and amplifier.
 
 - When set to a higher range (e.g. 26.4 A_peak), the amplifier outputs a larger current for a given input signal.  
   → This results in a gain of approximately 5.3 A/V.
-  - A high I-limit enables testing with larger AC currents. It would be useful when testing full-scale sensor performance.
+  
 
 - When set to a lower range (e.g. 3 A_peak), the amplifier limits its output to smaller currents,  
   → Producing a lower gain of approximately 0.60 A/V.
-  - A low I-limit** offers better resolution and accuracy for small signals, reducing distortion and overdriving.
+  
   
 .. figure:: spitzenberger_Setup.png
    :align: center

@@ -114,6 +114,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_FLOAT_EnDat_responselength_bits] 		= &data->av.EnDat_value_response_length;
 	js_ch_observable[JSO_op_rc_meas]			= &data->rasv.operatingpoints_rc_meas;
 	js_ch_observable[JSO_data_valid_rc_meas]	= &data->rasv.rc_meas_output.data_valid;
+	js_ch_observable[JSO_iq_ref_rc_meas]			= &data->rasv.rc_meas_output.iq_ref_Amps;
+	js_ch_observable[JSO_id_ref_rc_meas]	= &data->rasv.rc_meas_output.id_ref_Amps;
+	js_ch_observable[JSO_n_ref_rc_meas]	= &data->rasv.rc_meas_output.n_ref_rpm;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

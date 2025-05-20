@@ -66,6 +66,9 @@ enum JS_OberservableData {
 	JSO_ua_raw,
 	JSO_ub_raw,
 	JSO_uc_raw,
+	JSO_id_ref_rc_meas,
+	JSO_iq_ref_rc_meas,
+	JSO_n_ref_rc_meas,
 	JSO_ENDMARKER
 };
 

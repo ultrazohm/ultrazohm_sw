@@ -64,6 +64,8 @@ extern DS_Data Global_Data;
 #define MAX_SPEED_ASSERTION			2300.0f
 #define MAX_TEMP_ASSERTION			80.0f
 #define MAX_MOTOR_TEMP_ASSERTION	110.0f
+#define U_DC_MAX					55.0f
+#define U_DC_MIN					40.0f
 
 bool SKAI_nERROUT = 0U;			// Start in error-mode
 bool flg_reset_SKAI = 0U;
@@ -211,7 +213,8 @@ void ISR_Control(void *data)
 
     // Assertion check
     //
-    if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION) || (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION)  ) {
+    if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION) || (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION) || (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN) ) {
+
     	// Assertion to Stop Machine if max. Current or max. Speed
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;

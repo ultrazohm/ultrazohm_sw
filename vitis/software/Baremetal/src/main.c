@@ -71,10 +71,10 @@ struct uz_parameterid_rs_config_t config_rs_meas = {
 };
 
 const struct uz_parameterID_rc_config_t rc_meas_config = {
-  	.abs_id_max_Amps = 100.0f,
-  	.abs_iq_max_Amps = 100.0f,
-	.n_start_rpm = 500.0f,
-	.n_stop_rpm = 500.0f,
+  	.abs_id_max_Amps = 150.0f,
+  	.abs_iq_max_Amps = 150.0f,
+	.n_start_rpm = 1750.0f,
+	.n_stop_rpm = 1750.0f,
 	.id_steps = 5U,
 	.iq_steps = 5U,
 	.n_steps = 0U,

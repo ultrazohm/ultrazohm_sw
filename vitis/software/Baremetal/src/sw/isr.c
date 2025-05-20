@@ -63,7 +63,7 @@ static void ReadAllADC();
 
 static void test_nn(void) {
 
-	PRINTF("test_nn() called\r\n");
+	//PRINTF("test_nn() called\r\n");
     
 	Xil_DCacheDisable();
 	
@@ -77,7 +77,7 @@ static void test_nn(void) {
 
 	if(input_a == NULL || input_b == NULL || output == NULL) {
 		// Ensure HEAP is of sufficient size
-		PRINTF("test_nn() malloc failed\r\n");
+		//PRINTF("test_nn() malloc failed\r\n");
 		return;        
 	}
 
@@ -119,7 +119,7 @@ static void test_nn(void) {
 
 	//Xil_DCacheFlush();
 	
-	PRINTF("test_nn() Setting 'START' Flag\r\n");
+	//PRINTF("test_nn() Setting 'START' Flag\r\n");
 	
 	// Set START FLAG to HIGH
 	*((volatile uint32_t*)(gpio_base_adr+0x8)) = 0x1;
@@ -129,7 +129,7 @@ static void test_nn(void) {
 		// You may want to wait here with sleep
 	}
 	
-	PRINTF("test_nn() Clearing 'START' Flag\r\n");
+	//PRINTF("test_nn() Clearing 'START' Flag\r\n");
 
 	// ultrazohm_state_machine_set_userLED(true);
 	// Clear START FLAG
@@ -141,7 +141,7 @@ static void test_nn(void) {
 	}
 	
 	// Now the kernel is running    
-	PRINTF("test_nn() wait for completion\r\n");
+	//PRINTF("test_nn() wait for completion\r\n");
 
 
 	// WAIT FOR COMPLETION
@@ -154,7 +154,7 @@ static void test_nn(void) {
 	// Send FINISHED ACK
 	*((volatile uint64_t*)(gpio_base_adr+0x8)) = 0x2;
 	
-	PRINTF("test_nn() wait for finished gone\r\n");
+	//PRINTF("test_nn() wait for finished gone\r\n");
 
 	// Wait until finished is gone
 	while (  (*((volatile uint64_t*)(gpio_base_adr+0x0)) & 0x2) != 0) {
@@ -166,16 +166,16 @@ static void test_nn(void) {
 
 
 	// Check for results
-	PRINTF("test_nn() check results\r\n");
+	//PRINTF("test_nn() check results\r\n");
 	for(int32_t i = 0 ; i < length ; i++) {
 		if(output[i] != i*2) {
 			// ultrazohm_state_machine_set_error(true);
-			PRINTF("result is incorrect\r\n");
+			//PRINTF("result is incorrect\r\n");
 			break;
 		}
 	}
 
-	// if (success == 1) {
+    // if (success == 1) {
 	// 	ultrazohm_state_machine_set_userLED(true);
 	// }
 

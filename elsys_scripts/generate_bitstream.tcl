@@ -1,9 +1,9 @@
 set accel_site zusys_i/uz_user/graybox_0
 set checkpoint_dir ./checkpoints
 set bitstream_dir ./bitstream
-mkdir $bitstream_dir
+exec mkdir -p $bitstream_dir
 # TODO parameter for accel and project  name
-set project_cp_name $checkpoint_dir/init_route_design.dcp
+set project_cp_name $checkpoint_dir/base_design_checkpoint.dcp
 set accel_cp_name $checkpoint_dir/vector_add_graybox.dcp
 
 open_checkpoint $project_cp_name

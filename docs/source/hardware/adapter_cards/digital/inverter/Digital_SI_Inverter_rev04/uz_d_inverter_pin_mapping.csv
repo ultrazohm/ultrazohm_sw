@@ -1,0 +1,31 @@
+﻿Adapter Card Pin,Net Name,Signal Description,Signal Type,Direction seen from Adapter Board
+DIG_IO_00,PWM H1#,Gate H1,PWM/Direct,Input
+DIG_IO_01,PWM L1#,Gate L1,PWM/Direct,Input
+DIG_IO_02,PWM H2#,Gate H2,PWM/Direct,Input
+DIG_IO_03,PWM L2#,Gate L2,PWM/Direct,Input
+DIG_IO_04,PWM H3#,Gate H3,PWM/Direct,Input
+DIG_IO_05,PWM L3#,Gate L3,PWM/Direct,Input
+DIG_IO_06,,unused,,
+DIG_IO_07,H1 Temp,Temperature feedback H1,PWM,Output
+DIG_IO_08,,unused,,
+DIG_IO_09,,unused,,
+DIG_IO_10,,unused,,
+DIG_IO_11,,unused,,
+DIG_IO_12,,unused,,
+DIG_IO_13,,unused,,
+DIG_IO_14,PWM EN,Enable Gate signals,"Level, high active",Input
+DIG_IO_15,,unused,,
+DIG_IO_16,,unused,,
+DIG_IO_17,OT H1,Fault indicator H1,"Level, low active",Output
+DIG_IO_18,H3 Temp,Temperature feedback H3,PWM,Output
+DIG_IO_19,H2 Temp,Temperature feedback H2,PWM,Output
+DIG_IO_20,,unused,,
+DIG_IO_21,,unused,,
+DIG_IO_22,,unused,,
+DIG_IO_23,,unused,,
+DIG_IO_24,,unused,,
+DIG_IO_25,,unused,,
+DIG_IO_26,,unused,,
+DIG_IO_27,,unused,,
+DIG_IO_28,OT H3,Over temperature indicator H3,"Level, low active",Output
+DIG_IO_29,OT H2,Over temperature indicator H2,"Level, low active",Output

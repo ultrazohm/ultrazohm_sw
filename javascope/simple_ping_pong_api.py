@@ -3,7 +3,6 @@ import struct
 import pandas as pd
 import numpy as np
 from datetime import datetime
-import pandas as pd
 from pathlib import Path
 
 
@@ -41,16 +40,11 @@ def parse_enum_to_dataframe(file_path, enum_name):
 
     return df_enum
 
-# name,channel
-# JSO_Ld_mH,1
-# JSO_Lq_mH,2
-# JSO_PsiPM_mVs,3
-# JSO_python_test_loopback,4
 
 def decode_floats(data):
     floats = []
     for i in range(0, len(data), 4):
-        floats.append(struct.unpack("f", data[i : i + 4])[0])
+        floats.append(struct.unpack("f", data[i: i + 4])[0])
     return floats
 
 
@@ -79,14 +73,13 @@ def write_and_read(client_socket, id_input, value_input):
     return df_tmp
 
 
-def setup_scope_channels(client_socket, channel,variable_to_observe):
+def setup_scope_channels(client_socket, channel, variable_to_observe):
     assert isinstance(variable_to_observe, (list, np.ndarray)), "variable_to_observe must be a list or numpy array"
-    assert isinstance(
-        channel, (list, np.ndarray)
-    ), "variable_to_observe must be a list or numpy array"
-    assert len(channel) == len(variable_to_observe), "value_input must contain exactly 10 elements"
+    assert isinstance(channel, (list, np.ndarray)), "channel must be a list or numpy array"
+    assert len(channel) == len(variable_to_observe), "channel and variable_to_observe must have the same length"
     for ch, var in zip(channel, variable_to_observe):
         process_data(client_socket, ch, var)
+
 
 def main():
     # Use pathlib to handle file paths
@@ -98,7 +91,7 @@ def main():
     df = pd.DataFrame()
 
     while True:
-        command = input("Enter a command (connect, write <id> <value>, show_observable,exit): ").strip().lower()
+        command = input("Enter a command (connect, write <id> <value>, show_observable, exit): ").strip().lower()
 
         if command == "connect":
             if client_socket:
@@ -122,20 +115,56 @@ def main():
         elif command.startswith("show_observable"):
             print("Observable variables")
             print(observable_data)
-        elif command.startswith("write"):
+
+        elif command.startswith("observe"):
             if not client_socket:
                 print("Not connected. Use 'connect' command first.")
                 continue
 
             try:
-                _, id_input, value_input = command.split()
-                id_input = int(id_input)
-                value_input = float(value_input)
-                readback_value = write_and_read(client_socket, id_input, value_input)
+                _, name, channel_number = command.split()
+                print(name)
+                channel_number = int(channel_number)
+                if channel_number < 1 or channel_number > 20:
+                    print("Channel number must be between 1 and 20.")
+                    continue
+
+                # Find the number corresponding to the name in the dataframe
+                def get_number_from_observable_data(name):
+                    result = observable_data.loc[observable_data['name'].str.lower() == name.lower(), 'number']
+                    if result.empty:
+                        raise ValueError(f"Name '{name}' not found in observable data.")
+                    return result.iloc[0]
+
+                number_of_name = get_number_from_observable_data(name)
+                setup_scope_channels(client_socket, [channel_number], [number_of_name])
+                print(f"Observation set for {name} on channel {channel_number}.")
+            except ValueError as e:
+                print(e)
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+        elif command.startswith("write"):
+            if not client_socket:
+                print("Not connected. Use 'connect' command first.")
+                continue
+            try:
+                readback_value = write_and_read(client_socket, 0, 0)
                 df = pd.concat([df, readback_value], ignore_index=True)
                 print(df)
             except ValueError:
                 print("Invalid input. Usage: write <id> <value>")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+        elif command.startswith("read"):
+            if not client_socket:
+                print("Not connected. Use 'connect' command first.")
+                continue
+            try:
+                readback_value = write_and_read(client_socket, 0, 0)
+                df = pd.concat([df, readback_value], ignore_index=True)
+                print(df)
             except Exception as e:
                 print(f"An error occurred: {e}")
 
@@ -146,7 +175,7 @@ def main():
             break
 
         else:
-            print("Unknown command. Available commands: connect, write <id> <value>, exit.")
+            print("Unknown command. Available commands: connect, write <id> <value>, show_observable, exit.")
 
 
 if __name__ == "__main__":

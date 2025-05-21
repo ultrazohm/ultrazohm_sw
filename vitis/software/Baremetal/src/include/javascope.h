@@ -34,6 +34,8 @@ enum JS_OberservableData {
 	JSO_ssi0_speed_mech_rad_s_ip,
 	JSO_ssi0_speed_el_rad_s_ip,
 	JSO_ssi0_speed_mech_rpm_ip,
+	JSO_ssi0_debug_pre_slice,
+	JSO_ssi0_debug_post_slice,
 	JSO_sawtooth,
 	JSO_ua,
 	JSO_ub,

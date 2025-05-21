@@ -69,6 +69,9 @@ void ISR_Control(void *data)
     Global_Data.av.ssi0_speed_el_rad_s_ip = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_0_encoder);
     Global_Data.av.ssi0_speed_mech_rpm_ip = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_0_encoder);
 
+    Global_Data.av.ssi0_debug_pre_slice = (float)(uz_axi_read_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x15C));
+	Global_Data.av.ssi0_debug_post_slice = (float)(uz_axi_read_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_0_BASEADDR + 0x160));
+
 //    sawtooth = uz_wavegen_sawtooth(2*UZ_PIf, 16.67f);
     sawtooth = generate_sawtooth(2.0f*UZ_PIf, Global_Data.av.snd_fld[6], 100e-6f); // set frequency via send_field_6 in JavaScope
 

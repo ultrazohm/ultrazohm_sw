@@ -20,12 +20,12 @@
 
 enum JS_CommandData
 {
-	COM_ZEROVALUE = 0,
-	COM_python_test_variable,
+	COM_python_test_variable=0,
 	COM_python_test_variable2,
 	COM_python_test_variable3,
 	COM_python_test_variable4,
 	COM_python_test_variable5,
+	COM_python_test_variable6,
 	COM_python_test_variable7,
 	COM_python_test_variable8,
 	COM_python_test_variable9,
@@ -66,6 +66,14 @@ enum JS_OberservableData
 	JSO_PsiPM_mVs,
 	JSO_python_test_loopback,
 	JSO_COM_python_test_variable,
+	JSO_COM_python_test_variable2,
+	JSO_COM_python_test_variable3,
+	JSO_COM_python_test_variable4,
+	JSO_COM_python_test_variable5,
+	JSO_COM_python_test_variable6,
+	JSO_COM_python_test_variable7,
+	JSO_COM_python_test_variable8,
+	JSO_COM_python_test_variable9,
 	JSO_ENDMARKER
 };
 

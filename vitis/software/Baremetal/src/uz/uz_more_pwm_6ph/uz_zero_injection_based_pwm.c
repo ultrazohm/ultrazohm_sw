@@ -1221,13 +1221,46 @@ struct uz_DutyCycle_2x3ph_t uz_6ph_calculated_dutycycle_and_phaseshift(struct uz
 	// Phaseshiftoptions: 1: 2: 3: 4:
 	struct uz_DutyCycle_2x3ph_t duty_output = {0};
 
+	duty_output = input;
+
+	//
+	switch(phaseshiftoption){
+	case 1:		// sys1 no phase shift, sys2 phase shift 180° - AAAEEE (7-56-56-7)
+		*shift_system_1 = 0.0f;
+		*shift_system_1 = 0.5f;
+		break;
+	case 2:		// sys1 phase shift 180°, sys2 phase shift 180° - EEEEEE (0-63-63-0)
+		*shift_system_1 = 0.5f;
+		*shift_system_2 = 0.5f;
+		break;
+	case 3: 	// sys1 phase shift 180°, sys2 no phase shift - EEEAAA (56-7-7-56)
+		*shift_system_1 = 0.5f;
+		*shift_system_2 = 0.0f;
+		break;
+	case 4:		// sys1 no phase shift, sys2 no phase shift - AAAAAA (63-0-0-63))
+		*shift_system_1 = 0.0f;
+		*shift_system_2 = 0.0f;
+		break;
+	default:
+		break;
+	}
+
+	return duty_output;
+}
+
+
+/*
+struct uz_DutyCycle_2x3ph_t uz_6ph_calculated_dutycycle_and_phaseshift(struct uz_DutyCycle_2x3ph_t input, int phaseshiftoption, float *shift_system_1, float *shift_system_2){
+	// Phaseshiftoptions: 1: 2: 3: 4:
+	struct uz_DutyCycle_2x3ph_t duty_output = {0};
+
 
 	// evtl. muss das alles umgedreht werden, jenachdem wie verglichen wird!
 
 	switch(phaseshiftoption){
 	case 1:		// sys1 no phase shift, sys2 phase shift 180° - AAAEEE (7-56-56-7)
 		duty_output.system1 = input.system1;
-		duty_output.system2.DutyCycle_A = 1.0f-input.system2.DutyCycle_A;
+		duty_output.system2.DutyCycle_A = 1.0f-input.system2.DutyCycle_A;		// TODO: check if system1 or system2 needs to 1-x -> think it is the wrong way around see simulink
 		duty_output.system2.DutyCycle_B = 1.0f-input.system2.DutyCycle_B;
 		duty_output.system2.DutyCycle_C = 1.0f-input.system2.DutyCycle_C;
 		*shift_system_1 = 0.0f;
@@ -1235,7 +1268,7 @@ struct uz_DutyCycle_2x3ph_t uz_6ph_calculated_dutycycle_and_phaseshift(struct uz
 		break;
 	case 2:		// sys1 phase shift 180°, sys2 phase shift 180° - EEEEEE (0-63-63-0)
 		duty_output = input;
-		duty_output.system1.DutyCycle_A = 1.0f-input.system1.DutyCycle_A;
+		duty_output.system1.DutyCycle_A = 1.0f-input.system1.DutyCycle_A;	// TODO: check if system1 or system2 needs to 1-x -> think it is the wrong way around see simulink
 		duty_output.system1.DutyCycle_B = 1.0f-input.system1.DutyCycle_B;
 		duty_output.system1.DutyCycle_C = 1.0f-input.system1.DutyCycle_C;
 		duty_output.system2.DutyCycle_A = 1.0f-input.system2.DutyCycle_A;
@@ -1246,14 +1279,14 @@ struct uz_DutyCycle_2x3ph_t uz_6ph_calculated_dutycycle_and_phaseshift(struct uz
 		break;
 	case 3: 	// sys1 phase shift 180°, sys2 no phase shift - EEEAAA (56-7-7-56)
 		duty_output.system1.DutyCycle_A = 1.0f-input.system1.DutyCycle_A;
-		duty_output.system1.DutyCycle_B = 1.0f-input.system1.DutyCycle_B;
+		duty_output.system1.DutyCycle_B = 1.0f-input.system1.DutyCycle_B;	// TODO: check if system1 or system2 needs to 1-x -> think it is the wrong way around see simulink
 		duty_output.system1.DutyCycle_C = 1.0f-input.system1.DutyCycle_C;
 		duty_output.system2 = input.system2;
 		*shift_system_1 = 0.5f;
 		*shift_system_2 = 0.0f;
 		break;
 	case 4:		// sys1 no phase shift, sys2 no phase shift - AAAAAA (63-0-0-63))
-		duty_output.system1 = input.system1;
+		duty_output.system1 = input.system1;	// TODO: check if system1 or system2 needs to 1-x -> think it is the wrong way around see simulink
 		duty_output.system2 = input.system2;
 		*shift_system_1 = 0.0f;
 		*shift_system_2 = 0.0f;
@@ -1266,7 +1299,7 @@ struct uz_DutyCycle_2x3ph_t uz_6ph_calculated_dutycycle_and_phaseshift(struct uz
 
 	return duty_output;
 }
-
+*/
 
 
 

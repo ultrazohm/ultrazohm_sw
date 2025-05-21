@@ -534,8 +534,8 @@ void ISR_Control(void *data)
            		Global_Data.av.v_dqxy_non_limited_volts.x = Global_Data.av.v_xy_limited_volts.d;
            		Global_Data.av.v_dqxy_non_limited_volts.y = Global_Data.av.v_xy_limited_volts.q;
 
-           		// Global_Data.av.v_dqxy_non_limited_volts.x = 0.0f;
-           		// Global_Data.av.v_dqxy_non_limited_volts.y = 0.0f;
+           		Global_Data.av.v_dqxy_non_limited_volts.x = 0.0f;
+           		Global_Data.av.v_dqxy_non_limited_volts.y = 0.0f;
 
            		uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
                 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);

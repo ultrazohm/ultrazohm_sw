@@ -21,10 +21,9 @@
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
+extern float *command_data[COM_ENDMARKER];
 
 extern uint32_t js_status_BareToRTOS;
-
-extern float python_test_variable;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -280,8 +279,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-		python_test_variable=value;
-			break;
+
+		break;
 
 		case (My_Button_5):
 
@@ -312,26 +311,38 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			uz_assert(0); // unknown command -> throw error
 		}
 	}
-
-	platform_state_t current_state = ultrazohm_state_machine_get_state();
-	// Feedback bits for controlling the status indicators in the GUI
-	/* Bit 0 - Ready LED */
-	if (ultrazohm_state_get_led_ready()) {
-	js_status_BareToRTOS |= 1 << 0;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 0);
+	if ( (1000 <= msgId) && (msgId <= (1000 + COM_ENDMARKER)) ) // Command data
+	{
+		uint32_t index = msgId - 1000U;
+		uz_assert(index <= COM_ENDMARKER);
+		*command_data[index] = value;
 	}
+		platform_state_t current_state = ultrazohm_state_machine_get_state();
+		// Feedback bits for controlling the status indicators in the GUI
+		/* Bit 0 - Ready LED */
+		if (ultrazohm_state_get_led_ready())
+		{
+			js_status_BareToRTOS |= 1 << 0;
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 0);
+		}
 
-	/* Bit 1 - Running LED */
-	if (ultrazohm_state_get_led_running()) {
-	js_status_BareToRTOS |= 1 << 1;
-	} else {
-		js_status_BareToRTOS &= ~(1 << 1);
-	}
+		/* Bit 1 - Running LED */
+		if (ultrazohm_state_get_led_running())
+		{
+			js_status_BareToRTOS |= 1 << 1;
+		}
+		else
+		{
+			js_status_BareToRTOS &= ~(1 << 1);
+		}
 
-	/* Bit 2 - Error LED */
-	if (ultrazohm_state_get_led_error()) {
-		js_status_BareToRTOS |= 1 << 2;
+		/* Bit 2 - Error LED */
+		if (ultrazohm_state_get_led_error())
+		{
+			js_status_BareToRTOS |= 1 << 2;
 		} else {
 			js_status_BareToRTOS &= ~(1 << 2);
 		}
@@ -377,5 +388,4 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	// } else {
 	//	js_status_BareToRTOS &= ~(1 << 12);
 	// }
-
-}
+	}

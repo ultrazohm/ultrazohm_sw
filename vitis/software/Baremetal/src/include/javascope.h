@@ -18,9 +18,24 @@
 
 #include "APU_RPU_shared.h"
 
+enum JS_CommandData
+{
+	COM_ZEROVALUE = 0,
+	COM_python_test_variable,
+	COM_python_test_variable2,
+	COM_python_test_variable3,
+	COM_python_test_variable4,
+	COM_python_test_variable5,
+	COM_python_test_variable7,
+	COM_python_test_variable8,
+	COM_python_test_variable9,
+	COM_ENDMARKER
+};
+
 // Do not change the first (zero) and last (end) entries.
-enum JS_OberservableData {
-	JSO_ZEROVALUE=0,
+enum JS_OberservableData
+{
+	JSO_ZEROVALUE = 0,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
@@ -50,6 +65,7 @@ enum JS_OberservableData {
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
 	JSO_python_test_loopback,
+	JSO_COM_python_test_variable,
 	JSO_ENDMARKER
 };
 

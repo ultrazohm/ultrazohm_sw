@@ -31,6 +31,28 @@ static float *js_slowDataArray[JSSD_ENDMARKER];
 float *js_ch_observable[JSO_ENDMARKER];
 float *js_ch_selected[JS_CHANNELS];
 
+extern float python_test_variable;
+float python_test_variable2;
+float python_test_variable3;
+float python_test_variable4;
+float python_test_variable5;
+float python_test_variable6;
+float python_test_variable7;
+float python_test_variable8;
+float python_test_variable9;
+
+float *command_data[COM_ENDMARKER] = {
+	&python_test_variable,
+	&python_test_variable2,
+	&python_test_variable3,
+	&python_test_variable4,
+	&python_test_variable5,
+	&python_test_variable6,
+	&python_test_variable7,
+	&python_test_variable8,
+	&python_test_variable9,
+};
+
 static float lifecheck;
 static float ISR_execution_time_us;
 static float ISR_period_us;

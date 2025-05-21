@@ -149,7 +149,26 @@ def main():
                 print("Not connected. Use 'connect' command first.")
                 continue
             try:
-                readback_value = write_and_read(client_socket, 0, 0)
+                _, id_input, value_input = command.split()
+                id_input = int(id_input)
+                value_input = float(value_input)
+                readback_value = write_and_read(client_socket, id_input, value_input)
+                df = pd.concat([df, readback_value], ignore_index=True)
+                print(df)
+            except ValueError:
+                print("Invalid input. Usage: write <id> <value>")
+            except Exception as e:
+                print(f"An error occurred: {e}")
+
+        elif command.startswith("command"):
+            if not client_socket:
+                print("Not connected. Use 'connect' command first.")
+                continue
+            try:
+                _, id_input, value_input = command.split()
+                id_input = int(id_input)
+                value_input = float(value_input)
+                readback_value = write_and_read(client_socket, id_input+999, value_input)
                 df = pd.concat([df, readback_value], ignore_index=True)
                 print(df)
             except ValueError:

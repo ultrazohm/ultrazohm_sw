@@ -13,6 +13,10 @@ annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Sin
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Sine HDL Optimized1/sincos hdl/sin_hdl/Look-Up Table', 0, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Sine HDL Optimized1/sincos hdl/sin_hdl/Look-Up Table', 0, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/clk_idle_and_delay_first_clock_function/S-R Flip-Flop', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/sample_serial_ssi_data/Bitwise Operator1', 1, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/sample_serial_ssi_data/Bitwise Operator1', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/sample_serial_ssi_data/shift arithmetic', 1, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/sample_serial_ssi_data/Shift Arithmetic', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/ssi_clock_enable_for_n_bits/S-R Flip-Flop', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/ssi_clock_generator/S-R Flip-Flop1', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/slice_position_and_status/dynamic_shift', 1, 1, '');
@@ -32,9 +36,6 @@ annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/slice_position_and_status
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/fixed_point_floor/fixed_point_floor', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/fixed_point_floor/fixed_point_floor', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/fixed_point_floor', 1, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/sample_serial_ssi_data/sample_serial_data_32bit/sample_serial_data_32bit', 1, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/sample_serial_ssi_data/sample_serial_data_32bit/sample_serial_data_32bit', 1, 1, '');
-annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/ssi_communication/sample_serial_ssi_data/sample_serial_data_32bit', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor/fixed_point_floor', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor/fixed_point_floor', 1, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/wrap_2pi/fixed_point_floor', 1, 1, '');

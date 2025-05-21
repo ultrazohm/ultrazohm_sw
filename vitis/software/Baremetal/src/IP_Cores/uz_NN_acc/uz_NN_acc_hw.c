@@ -141,3 +141,12 @@ bool uz_NN_acc_hw_get_is_done_output(uint32_t base_address) {
 	bool is_done = (uz_axi_read_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_AP_CTRL)>> 1U )& 0x1U;
 	return (is_done);
 }
+bool uz_NN_acc_hw_get_is_idle_output(uint32_t base_address) {
+	uz_assert_not_zero_uint32(base_address);
+	bool is_done = (uz_axi_read_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_AP_CTRL)>> 2U )& 0x1U;
+	return (is_done);
+}
+void uz_NN_acc_hw_set_compute_flag(uint32_t base_address, bool compute_flag) {
+	uz_assert_not_zero_uint32(base_address);
+	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_COMPUTE_FLAG_DATA, compute_flag);
+}

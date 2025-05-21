@@ -32,7 +32,7 @@ struct uz_NN_acc_config_t
 uz_NN_acc_t *uz_NN_acc_init(struct uz_NN_acc_config_t config, uz_matrix_t const *const observation, uz_matrix_t const *const action);
 
 /**
- * @brief Calculates one forward pass of the network.
+ * @brief Calculates one forward pass of the network and reads out the data.
  *        This function is blocking in the sense that data is written to the IP-Core, the is_done output flag is polled, and the output is read.
  *        I.e., this function waits for the IP-Core to finish the calculation.
  * 
@@ -40,4 +40,22 @@ uz_NN_acc_t *uz_NN_acc_init(struct uz_NN_acc_config_t config, uz_matrix_t const 
  */
 void uz_NN_acc_ff_blocking(uz_NN_acc_t *self);
 
+/**
+ * @brief Returns the calculation result of the last forward pass of the network.
+ *        User has to take care to trigger the calculation before getting the results.
+ *        The function is blocking, i.e., the is_done output flag of the IP-Core is polled.
+ *        Intended to use with uz_NN_acc_ff_non_blocking to allow concurrent calculations on PS and PL.
+ *
+ * @param self Pointer to IP-Core driver instance
+ */
+void uz_NN_acc_get_result_blocking(uz_NN_acc_t *self);
+
+/**
+ * @brief Triggers the calculation of one forward pass of the network.
+ *        This function is not blocking and returns after the calculation is started.
+ *        This enables the concurrent execution of code on the processor while the IP-Core calculates the result of the network.
+ *
+ * @param self Pointer to IP-Core driver instance
+ */
+void uz_NN_acc_ff_non_blocking(uz_NN_acc_t *self);
 #endif

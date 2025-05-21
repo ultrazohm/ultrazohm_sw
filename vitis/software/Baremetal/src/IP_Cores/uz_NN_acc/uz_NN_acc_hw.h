@@ -22,4 +22,6 @@ bool uz_NN_acc_hw_get_copy_flag_out(uint32_t base_address);
 bool uz_NN_acc_hw_get_matrices_updated_out(uint32_t base_address);
 void uz_NN_acc_hw_set_start(uint32_t base_address);
 bool uz_NN_acc_hw_get_is_done_output(uint32_t base_address);
+bool uz_NN_acc_hw_get_is_idle_output(uint32_t base_address);
+void uz_NN_acc_hw_set_compute_flag(uint32_t base_address, bool compute_flag);
 #endif

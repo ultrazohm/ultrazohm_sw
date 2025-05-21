@@ -3,7 +3,7 @@
   <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>hls</spirit:library>
   <spirit:name>uz_NN_acc</spirit:name>
-  <spirit:version>1.0</spirit:version>
+  <spirit:version>2.3</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
       <spirit:name>s_axi_control</spirit:name>
@@ -651,8 +651,8 @@
   <spirit:addressSpaces>
     <spirit:addressSpace>
       <spirit:name>Data_m_axi_arrays</spirit:name>
-      <spirit:range>4G</spirit:range>
-      <spirit:width spirit:format="long">32</spirit:width>
+      <spirit:range>16E</spirit:range>
+      <spirit:width spirit:format="long">64</spirit:width>
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>DEPENDENT_ON</spirit:name>
@@ -953,8 +953,8 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>Observation_Input</spirit:name>
-          <spirit:displayName>Observation_Input</spirit:displayName>
+          <spirit:name>Observation_Input_1</spirit:name>
+          <spirit:displayName>Observation_Input_1</spirit:displayName>
           <spirit:description>Data signal of Observation_Input</spirit:description>
           <spirit:addressOffset>16</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
@@ -976,10 +976,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_1_Weights_input</spirit:name>
-          <spirit:displayName>L_1_Weights_input</spirit:displayName>
+          <spirit:name>Observation_Input_2</spirit:name>
+          <spirit:displayName>Observation_Input_2</spirit:displayName>
+          <spirit:description>Data signal of Observation_Input</spirit:description>
+          <spirit:addressOffset>20</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>Observation_Input</spirit:name>
+            <spirit:description>Bit 63 to 32 of Observation_Input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_1_Weights_input_1</spirit:name>
+          <spirit:displayName>L_1_Weights_input_1</spirit:displayName>
           <spirit:description>Data signal of L_1_Weights_input</spirit:description>
-          <spirit:addressOffset>24</spirit:addressOffset>
+          <spirit:addressOffset>28</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -999,10 +1022,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_2_Weights_input</spirit:name>
-          <spirit:displayName>L_2_Weights_input</spirit:displayName>
-          <spirit:description>Data signal of L_2_Weights_input</spirit:description>
+          <spirit:name>L_1_Weights_input_2</spirit:name>
+          <spirit:displayName>L_1_Weights_input_2</spirit:displayName>
+          <spirit:description>Data signal of L_1_Weights_input</spirit:description>
           <spirit:addressOffset>32</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_1_Weights_input</spirit:name>
+            <spirit:description>Bit 63 to 32 of L_1_Weights_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_2_Weights_input_1</spirit:name>
+          <spirit:displayName>L_2_Weights_input_1</spirit:displayName>
+          <spirit:description>Data signal of L_2_Weights_input</spirit:description>
+          <spirit:addressOffset>40</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1022,10 +1068,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_3_Weights_input</spirit:name>
-          <spirit:displayName>L_3_Weights_input</spirit:displayName>
+          <spirit:name>L_2_Weights_input_2</spirit:name>
+          <spirit:displayName>L_2_Weights_input_2</spirit:displayName>
+          <spirit:description>Data signal of L_2_Weights_input</spirit:description>
+          <spirit:addressOffset>44</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_2_Weights_input</spirit:name>
+            <spirit:description>Bit 63 to 32 of L_2_Weights_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_3_Weights_input_1</spirit:name>
+          <spirit:displayName>L_3_Weights_input_1</spirit:displayName>
           <spirit:description>Data signal of L_3_Weights_input</spirit:description>
-          <spirit:addressOffset>40</spirit:addressOffset>
+          <spirit:addressOffset>52</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1045,10 +1114,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_Output_Weights_input</spirit:name>
-          <spirit:displayName>L_Output_Weights_input</spirit:displayName>
+          <spirit:name>L_3_Weights_input_2</spirit:name>
+          <spirit:displayName>L_3_Weights_input_2</spirit:displayName>
+          <spirit:description>Data signal of L_3_Weights_input</spirit:description>
+          <spirit:addressOffset>56</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_3_Weights_input</spirit:name>
+            <spirit:description>Bit 63 to 32 of L_3_Weights_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_Output_Weights_input_1</spirit:name>
+          <spirit:displayName>L_Output_Weights_input_1</spirit:displayName>
           <spirit:description>Data signal of L_Output_Weights_input</spirit:description>
-          <spirit:addressOffset>48</spirit:addressOffset>
+          <spirit:addressOffset>64</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1068,10 +1160,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>Action_output</spirit:name>
-          <spirit:displayName>Action_output</spirit:displayName>
+          <spirit:name>L_Output_Weights_input_2</spirit:name>
+          <spirit:displayName>L_Output_Weights_input_2</spirit:displayName>
+          <spirit:description>Data signal of L_Output_Weights_input</spirit:description>
+          <spirit:addressOffset>68</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_Output_Weights_input</spirit:name>
+            <spirit:description>Bit 63 to 32 of L_Output_Weights_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>Action_output_1</spirit:name>
+          <spirit:displayName>Action_output_1</spirit:displayName>
           <spirit:description>Data signal of Action_output</spirit:description>
-          <spirit:addressOffset>56</spirit:addressOffset>
+          <spirit:addressOffset>76</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1091,10 +1206,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_1_Bias_input</spirit:name>
-          <spirit:displayName>L_1_Bias_input</spirit:displayName>
+          <spirit:name>Action_output_2</spirit:name>
+          <spirit:displayName>Action_output_2</spirit:displayName>
+          <spirit:description>Data signal of Action_output</spirit:description>
+          <spirit:addressOffset>80</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>Action_output</spirit:name>
+            <spirit:description>Bit 63 to 32 of Action_output</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_1_Bias_input_1</spirit:name>
+          <spirit:displayName>L_1_Bias_input_1</spirit:displayName>
           <spirit:description>Data signal of L_1_Bias_input</spirit:description>
-          <spirit:addressOffset>64</spirit:addressOffset>
+          <spirit:addressOffset>88</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1114,10 +1252,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_2_Bias_input</spirit:name>
-          <spirit:displayName>L_2_Bias_input</spirit:displayName>
+          <spirit:name>L_1_Bias_input_2</spirit:name>
+          <spirit:displayName>L_1_Bias_input_2</spirit:displayName>
+          <spirit:description>Data signal of L_1_Bias_input</spirit:description>
+          <spirit:addressOffset>92</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_1_Bias_input</spirit:name>
+            <spirit:description>Bit 63 to 32 of L_1_Bias_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_2_Bias_input_1</spirit:name>
+          <spirit:displayName>L_2_Bias_input_1</spirit:displayName>
           <spirit:description>Data signal of L_2_Bias_input</spirit:description>
-          <spirit:addressOffset>72</spirit:addressOffset>
+          <spirit:addressOffset>100</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1137,10 +1298,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_3_Bias_input</spirit:name>
-          <spirit:displayName>L_3_Bias_input</spirit:displayName>
+          <spirit:name>L_2_Bias_input_2</spirit:name>
+          <spirit:displayName>L_2_Bias_input_2</spirit:displayName>
+          <spirit:description>Data signal of L_2_Bias_input</spirit:description>
+          <spirit:addressOffset>104</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_2_Bias_input</spirit:name>
+            <spirit:description>Bit 63 to 32 of L_2_Bias_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_3_Bias_input_1</spirit:name>
+          <spirit:displayName>L_3_Bias_input_1</spirit:displayName>
           <spirit:description>Data signal of L_3_Bias_input</spirit:description>
-          <spirit:addressOffset>80</spirit:addressOffset>
+          <spirit:addressOffset>112</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1160,10 +1344,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_Output_Bias_input</spirit:name>
-          <spirit:displayName>L_Output_Bias_input</spirit:displayName>
+          <spirit:name>L_3_Bias_input_2</spirit:name>
+          <spirit:displayName>L_3_Bias_input_2</spirit:displayName>
+          <spirit:description>Data signal of L_3_Bias_input</spirit:description>
+          <spirit:addressOffset>116</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_3_Bias_input</spirit:name>
+            <spirit:description>Bit 63 to 32 of L_3_Bias_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>L_Output_Bias_input_1</spirit:name>
+          <spirit:displayName>L_Output_Bias_input_1</spirit:displayName>
           <spirit:description>Data signal of L_Output_Bias_input</spirit:description>
-          <spirit:addressOffset>88</spirit:addressOffset>
+          <spirit:addressOffset>124</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1183,10 +1390,33 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
+          <spirit:name>L_Output_Bias_input_2</spirit:name>
+          <spirit:displayName>L_Output_Bias_input_2</spirit:displayName>
+          <spirit:description>Data signal of L_Output_Bias_input</spirit:description>
+          <spirit:addressOffset>128</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>L_Output_Bias_input</spirit:name>
+            <spirit:description>Bit 63 to 32 of L_Output_Bias_input</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
           <spirit:name>copy_mats_flag</spirit:name>
           <spirit:displayName>copy_mats_flag</spirit:displayName>
           <spirit:description>Data signal of copy_mats_flag</spirit:description>
-          <spirit:addressOffset>96</spirit:addressOffset>
+          <spirit:addressOffset>136</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1222,7 +1452,7 @@
           <spirit:name>Observation_size_input</spirit:name>
           <spirit:displayName>Observation_size_input</spirit:displayName>
           <spirit:description>Data signal of Observation_size_input</spirit:description>
-          <spirit:addressOffset>104</spirit:addressOffset>
+          <spirit:addressOffset>144</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1245,7 +1475,7 @@
           <spirit:name>Action_size_input</spirit:name>
           <spirit:displayName>Action_size_input</spirit:displayName>
           <spirit:description>Data signal of Action_size_input</spirit:description>
-          <spirit:addressOffset>112</spirit:addressOffset>
+          <spirit:addressOffset>152</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1268,7 +1498,7 @@
           <spirit:name>copy_flag_out</spirit:name>
           <spirit:displayName>copy_flag_out</spirit:displayName>
           <spirit:description>Data signal of copy_flag_out</spirit:description>
-          <spirit:addressOffset>120</spirit:addressOffset>
+          <spirit:addressOffset>160</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>read-only</spirit:access>
           <spirit:reset>
@@ -1305,7 +1535,7 @@
           <spirit:name>matrices_updated_out</spirit:name>
           <spirit:displayName>matrices_updated_out</spirit:displayName>
           <spirit:description>Data signal of matrices_updated_out</spirit:description>
-          <spirit:addressOffset>136</spirit:addressOffset>
+          <spirit:addressOffset>176</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>read-only</spirit:access>
           <spirit:reset>
@@ -1322,6 +1552,42 @@
               <spirit:maximum>0</spirit:maximum>
             </spirit:writeValueConstraint>
             <spirit:readAction>modify</spirit:readAction>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+          <spirit:field>
+            <spirit:name>RESERVED</spirit:name>
+            <spirit:description>Reserved.  0s on read.</spirit:description>
+            <spirit:bitOffset>1</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">31</spirit:bitWidth>
+            <spirit:access>read-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
+            <spirit:readAction>modify</spirit:readAction>
+            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
+          </spirit:field>
+        </spirit:register>
+        <spirit:register>
+          <spirit:name>compute_flag</spirit:name>
+          <spirit:displayName>compute_flag</spirit:displayName>
+          <spirit:description>Data signal of compute_flag</spirit:description>
+          <spirit:addressOffset>192</spirit:addressOffset>
+          <spirit:size spirit:format="long">32</spirit:size>
+          <spirit:access>write-only</spirit:access>
+          <spirit:reset>
+            <spirit:value spirit:format="long">0</spirit:value>
+          </spirit:reset>
+          <spirit:field>
+            <spirit:name>compute_flag</spirit:name>
+            <spirit:description>Bit 0 to 0 of compute_flag</spirit:description>
+            <spirit:bitOffset>0</spirit:bitOffset>
+            <spirit:bitWidth spirit:format="long">1</spirit:bitWidth>
+            <spirit:access>write-only</spirit:access>
+            <spirit:writeValueConstraint>
+              <spirit:minimum>0</spirit:minimum>
+              <spirit:maximum>0</spirit:maximum>
+            </spirit:writeValueConstraint>
             <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
           </spirit:field>
           <spirit:field>
@@ -1358,7 +1624,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2776051d</spirit:value>
+            <spirit:value>44bbf374</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1377,7 +1643,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>5e6da24f</spirit:value>
+            <spirit:value>ebe7ff78</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1396,7 +1662,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>e15dc7df</spirit:value>
+            <spirit:value>d2e2519e</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1415,7 +1681,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>658c02d7</spirit:value>
+            <spirit:value>8628c74b</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1429,7 +1695,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>a2c3f5f9</spirit:value>
+            <spirit:value>dc75b490</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1802,7 +2068,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH&apos;)) - 1)">63</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2244,7 +2510,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH&apos;)) - 1)">31</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH&apos;)) - 1)">63</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2589,7 +2855,7 @@
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_M_AXI_ARRAYS_ADDR_WIDTH</spirit:name>
-        <spirit:value spirit:format="long" spirit:id="MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH">32</spirit:value>
+        <spirit:value spirit:format="long" spirit:id="MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH">64</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_M_AXI_ARRAYS_DATA_WIDTH</spirit:name>
@@ -2703,11 +2969,11 @@
         <spirit:userFileType>USED_IN_out_of_context</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Actions_RAM_AUTO_1R1W.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:name>hdl/verilog/uz_NN_acc_Actions_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Actions_RAM_AUTO_1R1W_memcore.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Actions_RAM_AUTO_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2719,23 +2985,11 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_entry_proc.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/verilog/uz_NN_acc_fadd_32ns_32ns_32_5_full_dsp_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/verilog/uz_NN_acc_fcmp_32ns_32ns_1_2_no_dsp_1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_fifo_w32_d2_S.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_fifo_w32_d3_S.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2747,147 +3001,111 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_hls_deadlock_detection_unit.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_hls_deadlock_detector.vh</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_hls_deadlock_report_unit.vh</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_mul_6ns_10s_10_1_1.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/uz_NN_acc_Observation_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Observation_RAM_AUTO_1R1W.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_39_RAM_1P_BRAbkb.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_39_RAM_1P_BRAbkb.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_2.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_2.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_12.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_3.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_13.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_4.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_14.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_Action.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_15.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_1_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_1_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_1_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_1_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_2_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_2_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_3_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_3_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_3_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_3_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_Output_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_Output_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_Observation.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_Observation.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_dense_out.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_copy_observation.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_copy_result.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_burst_Action_proc.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out2.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_burst_Action_proc_Pipeline_burst_Action.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_mul_10s_6ns_10_1_1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_mux_124_32_1_1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_uz_dense.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_uz_dense_relu.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_uz_dense_relu_1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_uz_dense_relu_2.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_y1_RAM_AUTO_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -2908,12 +3126,11 @@
     <spirit:fileSet>
       <spirit:name>xilinx_verilogbehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Actions_RAM_AUTO_1R1W.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+        <spirit:name>hdl/verilog/uz_NN_acc_Actions_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Actions_RAM_AUTO_1R1W_memcore.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_Actions_RAM_AUTO_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2928,27 +3145,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_entry_proc.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/verilog/uz_NN_acc_fadd_32ns_32ns_32_5_full_dsp_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/verilog/uz_NN_acc_fcmp_32ns_32ns_1_2_no_dsp_1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_fifo_w32_d2_S.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_fifo_w32_d3_S.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -2963,179 +3165,134 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_hls_deadlock_detection_unit.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_hls_deadlock_detector.vh</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_hls_deadlock_report_unit.vh</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_mul_6ns_10s_10_1_1.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/uz_NN_acc_Observation_RAM_AUTO_1R1W.v</spirit:name>
+        <spirit:fileType>verilogSource</spirit:fileType>
+        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
+      </spirit:file>
+      <spirit:file>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Observation_RAM_AUTO_1R1W.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.dat</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_39_RAM_1P_BRAbkb.dat</spirit:name>
         <spirit:userFileType>mif</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_39_RAM_1P_BRAbkb.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_2.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_2.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_12.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_3.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_13.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_4.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_14.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_Action.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_15.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_1_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_1_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_1_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_1_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_2_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_2_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_3_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_3_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_3_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_3_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_Output_Bias.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Bias.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_Output_Weights.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Weights.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_burst_Observation.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_burst_Observation.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_dense_out.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_copy_observation.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_1_proc1_Pipeline_copy_result.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_burst_Action_proc.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out2.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_Loop_burst_Action_proc_Pipeline_burst_Action.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_mul_10s_6ns_10_1_1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_mux_124_32_1_1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_uz_dense.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_uz_dense_relu.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_uz_dense_relu_1.v</spirit:name>
-        <spirit:fileType>verilogSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_uz_dense_relu_2.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_y1_RAM_AUTO_1R1W.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3194,19 +3351,11 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Actions_RAM_AUTO_1R1W_memcore.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc_arrays_m_axi.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc_control_s_axi.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_entry_proc.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3218,14 +3367,6 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_fifo_w32_d2_S.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_fifo_w32_d3_S.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc_flow_control_loop_pipe_sequential_init.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
@@ -3234,129 +3375,105 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_mul_6ns_10s_10_1_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Observation_RAM_AUTO_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Observation_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_39_RAM_1P_BRAbkb.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_2.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_2.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_12.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_3.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_13.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_4.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_14.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_Action.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_15.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_1_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_1_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_1_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_1_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_2_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_2_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_3_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_3_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_3_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_3_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_Output_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_Output_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_Observation.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_Observation.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_dense_out.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_copy_observation.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_copy_result.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_burst_Action_proc.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out2.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_burst_Action_proc_Pipeline_burst_Action.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_mul_10s_6ns_10_1_1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_mux_124_32_1_1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_uz_dense.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_uz_dense_relu.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_uz_dense_relu_1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_uz_dense_relu_2.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_y1_RAM_AUTO_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_5f49b54f</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_7302fdf8</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -3377,22 +3494,12 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Actions_RAM_AUTO_1R1W_memcore.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc_arrays_m_axi.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc_control_s_axi.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_entry_proc.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3407,16 +3514,6 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_fifo_w32_d2_S.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_fifo_w32_d3_S.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc_flow_control_loop_pipe_sequential_init.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
@@ -3427,152 +3524,122 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_Output_Bias_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_mul_6ns_10s_10_1_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_L_Output_Weights_temp_RAM_1P_BRAM_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_Observation_RAM_AUTO_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Observation_RAM_AUTO_1R1W.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_p_ZZ9uz_NN_accPfS_S_S_S_S_S_S_S_S_bjjPVbS1_E11L_1_Weights_23_RAMbkb.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_39_RAM_1P_BRAbkb.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_2.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_2.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_12.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_3.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_13.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_4.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_14.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_Action.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_15.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_1_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_1_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_1_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_1_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_2_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_2_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_2_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_3_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_3_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_3_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_3_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_Output_Bias.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Bias.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_L_Output_Weights.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_L_Output_Weights.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_burst_Observation.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_burst_Observation.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_dense_out.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_copy_observation.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_1_proc1_Pipeline_copy_result.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_burst_Action_proc.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_uz_NN_acc_Pipeline_dense_relu_out2.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_Loop_burst_Action_proc_Pipeline_burst_Action.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_mul_10s_6ns_10_1_1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_mux_124_32_1_1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_uz_dense.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_uz_dense_relu.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_uz_dense_relu_1.vhd</spirit:name>
-        <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
-      </spirit:file>
-      <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_uz_dense_relu_2.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_y1_RAM_AUTO_1R1W.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3610,35 +3677,35 @@
     <spirit:fileSet>
       <spirit:name>xilinx_softwaredriver_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v1_0/data/uz_NN_acc.mdd</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_3/data/uz_NN_acc.mdd</spirit:name>
         <spirit:userFileType>driver_mdd</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v1_0/data/uz_NN_acc.tcl</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_3/data/uz_NN_acc.tcl</spirit:name>
         <spirit:userFileType>driver_tcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v1_0/src/Makefile</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_3/src/Makefile</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v1_0/src/xuz_nn_acc.c</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_3/src/xuz_nn_acc.c</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v1_0/src/xuz_nn_acc.h</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_3/src/xuz_nn_acc.h</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v1_0/src/xuz_nn_acc_hw.h</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_3/src/xuz_nn_acc_hw.h</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v1_0/src/xuz_nn_acc_linux.c</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_3/src/xuz_nn_acc_linux.c</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v1_0/src/xuz_nn_acc_sinit.c</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_3/src/xuz_nn_acc_sinit.c</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -3659,7 +3726,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/uz_NN_acc_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/uz_NN_acc_v2_3.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_74df36ab</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
@@ -3787,7 +3854,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">uz_NN_acc_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">uz_NN_acc_v2_3</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>clk_period</spirit:name>
@@ -3803,7 +3870,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>latency</spirit:name>
-      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="17">1579</spirit:value>
+      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="17">218</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>II</spirit:name>
@@ -3820,8 +3887,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Uz_nn_acc</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2114075776</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-05-09T13:16:14Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114090380</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-05-19T16:40:40Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
@@ -3830,12 +3897,12 @@
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="321f5432"/>
-      <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="1530bb24"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="0fe0bafd"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="9f659d16"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="513e3655"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="b541dce1"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="457624b9"/>
+      <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="c5f42284"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="c5a88a85"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0e2ec531"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="ce6e00df"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="ce3c2d9e"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="c12d514b"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

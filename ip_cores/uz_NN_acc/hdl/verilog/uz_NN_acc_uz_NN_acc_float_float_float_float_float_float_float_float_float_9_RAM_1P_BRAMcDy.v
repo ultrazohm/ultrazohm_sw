@@ -4,7 +4,7 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // ==============================================================
 `timescale 1 ns / 1 ps
-module uz_NN_acc_Actions_RAM_AUTO_1R1W (
+module uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy (
      
     address0, ce0,
     d0, we0, 
@@ -25,10 +25,10 @@ output reg[DataWidth-1:0] q0;
 input reset;
 input clk;
 
-(* ram_style = "auto"  *)reg [DataWidth-1:0] ram[0:AddressRange-1];
+(* ram_style = "block"  *)reg [DataWidth-1:0] ram[0:AddressRange-1];
 
 initial begin
-    $readmemh("./uz_NN_acc_Actions_RAM_AUTO_1R1W.dat", ram);
+    $readmemh("./uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy.dat", ram);
 end 
 
  

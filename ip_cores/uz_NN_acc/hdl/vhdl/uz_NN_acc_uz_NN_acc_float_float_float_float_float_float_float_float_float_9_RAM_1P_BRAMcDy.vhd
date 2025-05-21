@@ -8,9 +8,9 @@ library ieee;
 use ieee.std_logic_1164.all; 
 use ieee.std_logic_unsigned.all;
 
-entity uz_NN_acc_Actions_RAM_AUTO_1R1W is 
+entity uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy is 
     generic(
-        MEM_TYPE        : string    := "auto"; 
+        MEM_TYPE        : string    := "block"; 
         DataWidth       : integer   := 32; 
         AddressWidth    : integer   := 4;
         AddressRange    : integer   := 12
@@ -26,7 +26,7 @@ entity uz_NN_acc_Actions_RAM_AUTO_1R1W is
     ); 
 end entity; 
 
-architecture rtl of uz_NN_acc_Actions_RAM_AUTO_1R1W is 
+architecture rtl of uz_NN_acc_uz_NN_acc_float_float_float_float_float_float_float_float_float_9_RAM_1P_BRAMcDy is 
 
 signal address0_tmp : std_logic_vector(AddressWidth-1 downto 0);
 
@@ -36,7 +36,7 @@ type mem_array is array (0 to AddressRange-1) of std_logic_vector (DataWidth-1 d
 shared variable ram : mem_array := (
     others=>(others=>'0')); -- 
 attribute syn_ramstyle : string;
-attribute syn_ramstyle of ram : variable is "auto";
+attribute syn_ramstyle of ram : variable is "block_ram";
 attribute ram_style : string;
 attribute ram_style of ram : variable is MEM_TYPE;
 

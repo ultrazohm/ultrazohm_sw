@@ -43,6 +43,7 @@ uz_incrementalEncoder_t* initialize_incremental_encoder_ipcore_on_D5(float incre
 
 void update_speed_and_position_of_encoder_on_D5(DS_Data* const data){	// update speed and position in global data struct
 	data->av.theta_elec=uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5);
+	data->av.theta_mech = uz_incrementalEncoder_get_theta_el(data->objects.encoder_D5);
 	data->av.mechanicalRotorSpeed = uz_incrementalEncoder_get_omega_mech(data->objects.encoder_D5) * 60.0f / (2.0f*M_PI);
 
 	//low-pass filter of mechanical speed

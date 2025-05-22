@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Flussschaetzer'.
  *
- * Model version                  : 9.3
+ * Model version                  : 9.9
  * Simulink Coder version         : 24.2 (R2024b) 21-Jun-2024
- * C/C++ source code generated on : Tue Mar 18 09:51:14 2025
+ * C/C++ source code generated on : Mon Apr 14 16:27:27 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -75,6 +75,7 @@ typedef struct {
   real_T time_values[10];
   real_T accumulatedData;
   real_T x_tmp_m;
+  real32_T Probe[2];                   /* '<S7>/Probe' */
   real32_T omega_el_array[10];        /* '<S2>/Regressionsverfahren_omega_el' */
   real32_T theta_values[10];          /* '<S2>/Regressionsverfahren_omega_el' */
   real32_T x[10];
@@ -82,12 +83,19 @@ typedef struct {
   real32_T DiscreteTransferFcn1_states;/* '<S4>/Discrete Transfer Fcn1' */
   real32_T DiscreteTimeIntegrator1_DSTATE;/* '<S4>/Discrete-Time Integrator1' */
   real32_T DiscreteTransferFcn2_states;/* '<S4>/Discrete Transfer Fcn2' */
+  real32_T Integrator_DSTATE;          /* '<S13>/Integrator' */
+  real32_T b_accumulatedData;
+  int8_T DiscreteTimeIntegrator_PrevRese;/* '<S4>/Discrete-Time Integrator' */
+  int8_T DiscreteTimeIntegrator1_PrevRes;/* '<S4>/Discrete-Time Integrator1' */
+  int8_T Integrator_PrevResetState;    /* '<S13>/Integrator' */
+  uint8_T Integrator_IC_LOADING;       /* '<S13>/Integrator' */
 } DW_Flussschaetzer;
 
 /* External inputs (root inport signals with default storage) */
 typedef struct {
   real32_T u_alphabeta[3];             /* '<Root>/u_alphabeta' */
   real32_T i_alphabeta[3];             /* '<Root>/i_alphabeta' */
+  real32_T integrator_reset;           /* '<Root>/integrator_reset' */
 } ExtU_Flussschaetzer;
 
 /* External outputs (root outports fed by signals with default storage) */
@@ -99,6 +107,7 @@ typedef struct {
   real32_T theta_el_est;               /* '<Root>/theta_el_est' */
   real32_T psi_beta;                   /* '<Root>/psi_beta' */
   real32_T psi_alpha;                  /* '<Root>/psi_alpha' */
+  real32_T omega_el_raw;               /* '<Root>/omega_el_raw' */
 } ExtY_Flussschaetzer;
 
 /* Parameters (default storage) */
@@ -146,8 +155,8 @@ extern void Flussschaetzer_step(RT_MODEL_Flussschaetzer *const rtM);
  * Block '<S2>/Scope3' : Unused code path elimination
  * Block '<S4>/Scope' : Unused code path elimination
  * Block '<S4>/Scope1' : Unused code path elimination
- * Block '<S2>/Gain' : Eliminated nontunable gain of 1
- * Block '<S2>/Rate Transition' : Eliminated since input and output rates are identical
+ * Block '<S13>/Saturation' : Eliminated Saturate block
+ * Block '<S5>/K' : Eliminated nontunable gain of 1
  * Block '<S2>/Rate Transition1' : Eliminated since input and output rates are identical
  */
 
@@ -173,7 +182,15 @@ extern void Flussschaetzer_step(RT_MODEL_Flussschaetzer *const rtM);
  * '<S2>'   : 'uz_codegen/Flussschaetzer/Regressionsgerade'
  * '<S3>'   : 'uz_codegen/Flussschaetzer/theta_e_korrigieren_Drehzahlabhängig'
  * '<S4>'   : 'uz_codegen/Flussschaetzer/theta_el_schätzen'
- * '<S5>'   : 'uz_codegen/Flussschaetzer/Regressionsgerade/Regressionsverfahren_omega_el'
+ * '<S5>'   : 'uz_codegen/Flussschaetzer/Regressionsgerade/Low-Pass Filter (Discrete or Continuous)'
+ * '<S6>'   : 'uz_codegen/Flussschaetzer/Regressionsgerade/Regressionsverfahren_omega_el'
+ * '<S7>'   : 'uz_codegen/Flussschaetzer/Regressionsgerade/Low-Pass Filter (Discrete or Continuous)/Enable//disable time constant'
+ * '<S8>'   : 'uz_codegen/Flussschaetzer/Regressionsgerade/Low-Pass Filter (Discrete or Continuous)/Initialization'
+ * '<S9>'   : 'uz_codegen/Flussschaetzer/Regressionsgerade/Low-Pass Filter (Discrete or Continuous)/Integrator (Discrete or Continuous)'
+ * '<S10>'  : 'uz_codegen/Flussschaetzer/Regressionsgerade/Low-Pass Filter (Discrete or Continuous)/Enable//disable time constant/Compare To Constant'
+ * '<S11>'  : 'uz_codegen/Flussschaetzer/Regressionsgerade/Low-Pass Filter (Discrete or Continuous)/Enable//disable time constant/Compare To Zero'
+ * '<S12>'  : 'uz_codegen/Flussschaetzer/Regressionsgerade/Low-Pass Filter (Discrete or Continuous)/Initialization/Init_u'
+ * '<S13>'  : 'uz_codegen/Flussschaetzer/Regressionsgerade/Low-Pass Filter (Discrete or Continuous)/Integrator (Discrete or Continuous)/Discrete'
  */
 
 /*-

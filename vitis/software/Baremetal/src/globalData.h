@@ -15,6 +15,7 @@
 
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "Codegen/uz_flussschaetzer.h"
+#include "uz/uz_Trajectory/uz_Trajectory.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -82,6 +83,7 @@ typedef struct _actualValues_ {
 	float U_d;
 	float U_q;
 	float theta_elec;
+	float theta_elec_used;
 	float theta_elec2;
 	float theta_mech;
 	float theta_offset; //in rad/s
@@ -90,11 +92,15 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float omega_mech;
 	float omega_elec;
+	float omega_elec_used;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
 	float errorcode;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	float n_ref_rpm;
+	float fluxOntheta;
+	float fluxOnomega;
+	float Traj_1;
 	bool select_speed_control;
 
 	uz_3ph_abc_t i_abc_m;
@@ -125,6 +131,9 @@ typedef struct _actualValues_ {
 	float u_ph1;
 	float u_ph2;
 	float u_ph3;
+	float trajectoryON;
+	float omega_mech_used;
+	float n_FS;
 
 } actualValues;
 
@@ -161,6 +170,7 @@ typedef struct{
 
 	uz_pmsmModel_t *pmsmModel;
 	uz_Flussschaetzer_t *Flussschaetzer;
+	uz_Trajectory_t *TraceGen_1;
 
 }object_pointers_t;
 

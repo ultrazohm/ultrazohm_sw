@@ -35,9 +35,12 @@ enum JS_OberservableData {
 	JSO_iq,
 	JSO_id_ref,
 	JSO_iq_ref,
-	JSO_Speed_rpm,
 	JSO_Speed_rpm_filtered,
 	JSO_Theta_el,
+	JSO_n_FS,
+	JSO_theta_elec_FS_kor,
+	JSO_n_ref_rpm,
+	JSO_trajectoryON,
 	JSO_ISR_ExecTime_us,
 	JSO_ISR_Period_us,
 	JSO_lifecheck,
@@ -63,16 +66,16 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
-	JSO_n_ref_rpm,
-	JSO_theta_elec_FS_kor,
+	JSO_theta_elec_FS_east,
 	JSO_omega_mech_FS,
 	JSO_psi_alpha_filt,
 	JSO_psi_beta_filt,
 	JSO_psi_alpha,
 	JSO_psi_beta,
-	JSO_theta_elec_FS_east,
 	JSO_i_alpha_m,
 	JSO_i_beta_m,
+	JSO_omega_el_FSraw,
+	JSO_Speed_rpm,
 	JSO_ENDMARKER
 };
 
@@ -98,6 +101,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_u_q_ref,
 	JSSD_FLOAT_errorcode,
 	JSSD_FLOAT_select_speed_control,
+	JSSD_FLOAT_fluxOntheta,
+	JSSD_FLOAT_fluxOnomega,
 	JSSD_ENDMARKER
 };
 
@@ -262,8 +267,8 @@ enum gui_button_mapping {
 	MyButton1,
 	MyButton2,
 	MyButton3,
-	CIL_ON,
-	CIL_OFF,
+	TRAJ_ON,
+	TRAJ_OFF,
 	Speed_ON,
 	Speed_OFF,
 	MyButton8,

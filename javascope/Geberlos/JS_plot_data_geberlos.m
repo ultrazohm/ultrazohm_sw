@@ -1,4 +1,4 @@
- % clean Matlab Workspace
+%% clean Matlab Workspace
 close all
 clear all
 format compact
@@ -25,10 +25,10 @@ for logfile_list_index = size(Logfile_list,1):-1:1
         disp(['Deleted empty file: ', Logfile_list(logfile_list_index).name])
     end
 end
-file_name = Logfile_list(logfile_list_index).name
+% file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-% file_name = 'Log_2024-03-11_99-99-99.csv';
+file_name = 'Log_2025-2geber_step_n.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);
@@ -45,9 +45,11 @@ log(toDelete,:) = [];
 % remove empty coloumns (that consists only of NaN)
 number_of_coloumns = size(log,2);
 remove_coloumns=[];
-% 
-% toDelete_col = (log.CH13__13_trajectoryON == 0);
-% log(toDelete_col,:) = [];
+
+toDelete_col = (log.CH13__13_trajectoryON == 0);
+log(toDelete_col,:) = [];
+
+
 
 for i=1:number_of_coloumns
     col = log{:,i};
@@ -67,6 +69,24 @@ num_channels = size(log,2)-1;
 % let time start from 0
 n_samples_full = size(log.time,1);
 log.time(:) = log.time - log.time(1);
+
+%delete columns bevor test -- zeit manuel eintragen
+% mit geber M1: 75.617
+% ohne geber M1: 23.417
+% mit geber M2: 36.000
+% ohne geber M2: 33.600
+
+if file_name(length(file_name)-4) =='M'
+ toDelete_col = (log.time <= 75.617);
+ log(toDelete_col,:) = [];
+
+%let time start from zero again
+n_samples_full = size(log.time,1);
+log.time(:) = log.time - log.time(1);
+
+else
+end
+
 
 % get names of entries in log table
 for i=1:length(log.Properties.VariableNames)   

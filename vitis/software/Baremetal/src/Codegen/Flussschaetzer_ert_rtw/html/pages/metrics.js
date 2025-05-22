@@ -20,8 +20,8 @@ function CodeMetrics() {
 	stack: 8,
 	stackTotal: 8};
 	 this.metricsArray.fcn["Flussschaetzer_step"] = {file: "C:\\Users\\ELSYS\\ultrazohm\\ultrazohm_sw\\vitis\\software\\Baremetal\\src\\Codegen\\Flussschaetzer_ert_rtw\\Flussschaetzer.c",
-	stack: 68,
-	stackTotal: 97};
+	stack: 69,
+	stackTotal: 98};
 	 this.metricsArray.fcn["atan2f"] = {file: "C:\\Program Files\\MATLAB\\R2024b\\polyspace\\verifier\\cxx\\include\\include-libc\\bits\\mathcalls.h",
 	stack: 0,
 	stackTotal: 0};
@@ -32,6 +32,9 @@ function CodeMetrics() {
 	stack: 0,
 	stackTotal: 0};
 	 this.metricsArray.fcn["floorf"] = {file: "C:\\Program Files\\MATLAB\\R2024b\\polyspace\\verifier\\cxx\\include\\include-libc\\bits\\mathcalls.h",
+	stack: 0,
+	stackTotal: 0};
+	 this.metricsArray.fcn["fmax"] = {file: "C:\\Program Files\\MATLAB\\R2024b\\polyspace\\verifier\\cxx\\include\\include-libc\\bits\\mathcalls.h",
 	stack: 0,
 	stackTotal: 0};
 	 this.metricsArray.fcn["fmodf"] = {file: "C:\\Program Files\\MATLAB\\R2024b\\polyspace\\verifier\\cxx\\include\\include-libc\\bits\\mathcalls.h",
@@ -71,6 +74,6 @@ function CodeMetrics() {
 			 data.type = "var";
 		 }
 	 return data; }; 
-	 this.codeMetricsSummary = '<a href="javascript:void(0)" onclick="return postParentWindowMessage({message:\'gotoReportPage\', pageName:\'Flussschaetzer_metrics\'});">Global Memory: 52(bytes) Maximum Stack: 68(bytes)</a>';
+	 this.codeMetricsSummary = '<a href="javascript:void(0)" onclick="return postParentWindowMessage({message:\'gotoReportPage\', pageName:\'Flussschaetzer_metrics\'});">Global Memory: 52(bytes) Maximum Stack: 69(bytes)</a>';
 	}
 CodeMetrics.instance = new CodeMetrics();

@@ -33,6 +33,7 @@
 #include "../uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "../uz/uz_spwm/uz_spwm.h"
 #include "../IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "../uz/uz_Trajectory/uz_Trajectory.h"
 
 #define PHASE_CURRENT_CONV 12.5f
 #define PHASE_VOLT_CONV	12.0f
@@ -53,8 +54,8 @@
 #define PHASE_VOLT_OFFSET_b	0.0f
 #define PHASE_VOLT_OFFSET_c	0.0f
 
-#define MAX_MOTOR_SPEED_RPM 1000.0f
-#define MAX_PHASE_CURRENT_AMP 1.74f
+#define MAX_MOTOR_SPEED_RPM 2000.0f
+#define MAX_PHASE_CURRENT_AMP 4.2f
 #define MAX2_PHASE_CURRENT_AMP 6.0f
 #define MAX_DC_VOLT 50.0f
 #define MAX_SECONDS_MAX_PHASE_CURRENT_AMP_1 1.0f
@@ -69,7 +70,7 @@ float CIL_omega_elec = 0.0f;
 float CIL_U_ZK = 0.0f;
 
 bool theta_offset_bestimmung = false;
-float theta_offest = 0.0f;
+
 //float theta_offest = -3.3f;
 
 // Initialize the Interrupt structure
@@ -94,10 +95,10 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    Global_Data.av.omega_mech = -1*((Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * (2.0f * (float)M_PI));
-    Global_Data.av.omega_elec = Global_Data.av.omega_mech * UZ_D5_MOTOR_POLE_PAIR_NUMBER;
-    Global_Data.av.theta_elec = (Global_Data.av.theta_elec + Global_Data.av.theta_offset);
-    Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec,  (2* M_PI));
+    Global_Data.av.omega_mech = 1*((Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * (2.0f * (float)M_PI));
+    Global_Data.av.omega_elec = Global_Data.av.omega_mech * 3;
+    Global_Data.av.theta_elec = fmodf(((Global_Data.av.theta_mech*3) + Global_Data.av.theta_offset),(2* M_PI));
+    //Global_Data.av.theta_elec = fmodf(Global_Data.av.theta_elec,  (2* M_PI));
 
 
    // Global_Data.av.omega_mech = -1*((Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * (2.0f * (float)M_PI));
@@ -150,44 +151,54 @@ void ISR_Control(void *data)
     //Overtemperature for H1
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 5.0f;
     }
     //Overtemperature for L1
-    if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
-       ultrazohm_state_machine_set_error(true);
-    }
+   // if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
+    //   ultrazohm_state_machine_set_error(true);
+    //   Global_Data.av.errorcode = 6.0f;
+   // }
     //Overtemperature for H2
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 7.0f;
     }
     //Overtemperature for L2
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 8.0f;
     }
     //Overtemperature for H3
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 9.0f;
     }
     //Overtemperature for L3
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 10.0f;
     }
     //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
     //Binding of the signals to the driver is slightly unintuitive
     //Overcurrent for Phase A
     if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 11.0f;
     }
     //Overcurrent for Phase B
     if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 12.0f;
     }
     //Overcurrent for Phase C
     if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 13.0f;
     }
     //Overcurrent for DC-link
     if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 14.0f;
     }
 
 
@@ -241,15 +252,37 @@ void ISR_Control(void *data)
 	Global_Data.av.u_abc_m.b = Global_Data.av.u_b;
 	Global_Data.av.u_abc_m.c = Global_Data.av.u_c;
 
+
+	// FS_Data auslesen
+    Global_Data.av.FS_output = uz_Flussschaetzer_step(Global_Data.objects.Flussschaetzer,Global_Data.av.u_alphabeta_ref,Global_Data.av.i_alphabeta_m,0);
+    Global_Data.av.n_FS = Global_Data.av.FS_output.omega_m_est*(30/M_PI);
+
+if (Global_Data.av.fluxOntheta == 1)
+	{Global_Data.av.theta_elec_used =  Global_Data.av.FS_output.theta_el_kor;
+
+	}
+else {
+	Global_Data.av.theta_elec_used =  Global_Data.av.theta_elec;
+}
+
 	// abc-dq Transformation
-    Global_Data.av.i_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.i_abc_m, Global_Data.av.theta_elec);
-    Global_Data.av.u_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.u_abc_m, Global_Data.av.theta_elec);
+    Global_Data.av.i_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.i_abc_m, Global_Data.av.theta_elec_used);
+    Global_Data.av.u_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.u_abc_m, Global_Data.av.theta_elec_used);
 
     // abc-alphabeta Transformation
     Global_Data.av.i_alphabeta_m =  uz_transformation_3ph_abc_to_alphabeta(Global_Data.av.i_abc_m);
-    Global_Data.av.u_alphabeta_ref = uz_transformation_3ph_dq_to_alphabeta(Global_Data.av.u_dq_ref, Global_Data.av.theta_elec);
+    Global_Data.av.u_alphabeta_ref = uz_transformation_3ph_dq_to_alphabeta(Global_Data.av.u_dq_ref, Global_Data.av.theta_elec_used);
 
-    Global_Data.av.FS_output = uz_Flussschaetzer_step(Global_Data.objects.Flussschaetzer,Global_Data.av.u_alphabeta_ref,Global_Data.av.i_alphabeta_m);
+    // dq-alphabeta Transformation
+
+
+    if (Global_Data.av.fluxOnomega == 1)
+    	{Global_Data.av.omega_elec_used =  Global_Data.av.FS_output.omega_m_est* UZ_D5_MOTOR_POLE_PAIR_NUMBER;
+    	Global_Data.av.omega_mech_used = Global_Data.av.FS_output.omega_m_est;
+    	}
+    else {Global_Data.av.omega_elec_used =  Global_Data.av.omega_elec;
+    Global_Data.av.omega_mech_used = Global_Data.av.omega_mech;}
+
 
 
 
@@ -282,15 +315,20 @@ void ISR_Control(void *data)
     		Global_Data.av.output_Dutycycle.DutyCycle_B = 0.0f;
     		Global_Data.av.output_Dutycycle.DutyCycle_C = 0.0f;
     	}else{
-
+    		Global_Data.av.Traj_1 = uz_Trajectory_Step(Global_Data.objects.TraceGen_1);
     		if (Global_Data.av.select_speed_control == true){
-    		Global_Data.av.i_dq_ref.q = uz_SpeedControl_sample(Global_Data.objects.speed_control, Global_Data.av.omega_mech, Global_Data.av.n_ref_rpm);
+
+    			// Generate Trajectory
+    			 if (Global_Data.av.trajectoryON == 1){
+    			  Global_Data.av.n_ref_rpm =Global_Data.av.Traj_1;}
+
+    		Global_Data.av.i_dq_ref.q = uz_SpeedControl_sample(Global_Data.objects.speed_control, Global_Data.av.omega_mech_used, Global_Data.av.n_ref_rpm);
 				Global_Data.av.i_dq_ref.d = 0.0f;
     		}
-    			Global_Data.av.u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.current_control, Global_Data.av.i_dq_ref, Global_Data.av.i_dq_m, Global_Data.av.U_ZK, Global_Data.av. omega_elec);
+    			Global_Data.av.u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.current_control, Global_Data.av.i_dq_ref, Global_Data.av.i_dq_m, Global_Data.av.U_ZK, Global_Data.av.omega_elec_used);
     		   //output_Dutycycle = uz_Space_Vector_Modulation(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
 
-    		   Global_Data.av.output_Dutycycle = uz_spwm_dq(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+    		   Global_Data.av.output_Dutycycle = uz_spwm_dq(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec_used);
 
     	}
 
@@ -304,6 +342,7 @@ void ISR_Control(void *data)
 
     	uz_CurrentControl_reset(Global_Data.objects.current_control);
     	uz_SpeedControl_reset(Global_Data.objects.speed_control);
+    	uz_Flussschaetzer_reset(Global_Data.objects.Flussschaetzer);
 
     	if(theta_offset_bestimmung){
         	Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.d_a_ref;

@@ -96,14 +96,16 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
 	js_ch_observable[JSO_theta_elec_FS_kor]			= &data->av.FS_output.theta_el_kor;
 	js_ch_observable[JSO_omega_mech_FS]			= &data->av.FS_output.omega_m_est;
+	js_ch_observable[JSO_omega_el_FSraw]			= &data->av.FS_output.omega_el_raw;
 	js_ch_observable[JSO_psi_alpha_filt]		= &data->av.FS_output.psi_alpha_filt;
 	js_ch_observable[JSO_psi_beta_filt]		= &data->av.FS_output.psi_beta_filt;
 	js_ch_observable[JSO_psi_alpha]		= &data->av.FS_output.psi_alpha;
 	js_ch_observable[JSO_psi_beta]		= &data->av.FS_output.psi_beta;
 	js_ch_observable[JSO_theta_elec_FS_east]		= &data->av.FS_output.theta_el_est;
+	js_ch_observable[JSO_n_FS]		= &data->av.n_FS;
 	js_ch_observable[JSO_i_alpha_m] = &data->av.i_alphabeta_m.alpha;
 	js_ch_observable[JSO_i_beta_m] = &data->av.i_alphabeta_m.beta;
-
+	js_ch_observable[JSO_trajectoryON] = &data->av.trajectoryON;
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
@@ -120,6 +122,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_errorcode]			 = &data->av.errorcode;
 	js_slowDataArray[JSSD_FLOAT_select_speed_control]		= &data->av.select_speed_control;
+	js_slowDataArray[JSSD_FLOAT_fluxOntheta]		= &data->av.fluxOntheta;
+	js_slowDataArray[JSSD_FLOAT_fluxOnomega]		= &data->av.fluxOnomega;
 
 	return Status;
 }

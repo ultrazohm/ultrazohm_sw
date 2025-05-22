@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 
+
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -39,8 +40,9 @@ DS_Data Global_Data = {
 	.av.d_b_ref = 0.0f,
 	.av.d_c_ref = 0.0f,
 	.av.n_ref_rpm = 0.0f,
-	.av.theta_offset = 2.938f,
+	.av.theta_offset = 2.33f,
     .av.select_speed_control = false,
+	.av.trajectoryON = 0,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
@@ -48,25 +50,48 @@ DS_Data Global_Data = {
 };
 
 
-const struct uz_PMSM_t config_PMSM = {
-   .Ld_Henry = 0.001626f,
-   .Lq_Henry = 0.001626f,
-   .Psi_PM_Vs = 0.07f,
-   .R_ph_Ohm = 7.3f,
-   .polePairs = 1.0f,
+//const struct uz_PMSM_t config_PMSM = {
+ //  .Ld_Henry = 0.001626f,
+ //  .Lq_Henry = 0.001626f,
+  // .Psi_PM_Vs = 0.07f,
+ //  .R_ph_Ohm = 7.3f,
+  // .polePairs = 1.0f,
    //.J_kg_m_squared = ,
-   .I_max_Ampere = 1.72f
+//   .I_max_Ampere = 1.72f
+// };
+
+const struct uz_PMSM_t config_PMSM = {
+  .Ld_Henry =  0.00113f,
+   .Lq_Henry = 0.00142f,
+  .Psi_PM_Vs = 0.0169f,
+  .R_ph_Ohm = 0.543f,
+  .polePairs = 3.0f,
+   //.J_kg_m_squared = ,
+  .I_max_Ampere = 5.0f
  };
 
+//const struct uz_PI_Controller_config config_id = {
+   //.Kp = 1.0f,
+  // .Ki = 120.0f,
+  // .samplingTime_sec = 0.00005f
+//};
+
 const struct uz_PI_Controller_config config_id = {
-   .Kp = 0.3f,
-   .Ki = 130.0f,
+   .Kp = 1.1f,
+   .Ki = 120.0f,
    .samplingTime_sec = 0.00005f
 };
 
+//const struct uz_PI_Controller_config config_iq = {
+  // .Kp = 1.0f,
+//  .Ki = 120.0f,
+//  .samplingTime_sec = 0.00005f
+//};
+
+
 const struct uz_PI_Controller_config config_iq = {
-   .Kp = 0.3f,
-   .Ki = 130.0f,
+   .Kp =1.42f,
+   .Ki = 95.0f,
    .samplingTime_sec = 0.00005f
 };
 
@@ -79,15 +104,21 @@ const struct uz_CurrentControl_config config_current_control = {
    .max_modulation_index = 0.5f //1.0f / sqrtf(3.0f)
 };
 
+//struct uz_SpeedControl_config config_speed = {
+//   .config_controller.Kp = 0.006f,
+//   .config_controller.Ki = 0.1f,
+//   .config_controller.samplingTime_sec = 0.00005f,
+//   .config_controller.upper_limit = 3.0f,
+//   .config_controller.lower_limit = -3.0f
+//};
+
 struct uz_SpeedControl_config config_speed = {
    .config_controller.Kp = 0.01f,
    .config_controller.Ki = 0.1f,
    .config_controller.samplingTime_sec = 0.00005f,
-   .config_controller.upper_limit = 3.0f,
-   .config_controller.lower_limit = -3.0f
+   .config_controller.upper_limit = 5.0f,
+   .config_controller.lower_limit = -5.0f
 };
-
-
 
 struct uz_pmsmModel_config_t model_pmsm_config={
     .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
@@ -102,6 +133,20 @@ struct uz_pmsmModel_config_t model_pmsm_config={
     .coulomb_friction_constant = 0.01f,
     .friction_coefficient = 0.001f
 };
+
+struct uz_Trajectory_config Traj_config = {
+    .selection_interpolation = Zero_Order_Hold,
+    .selection_XAxis = MilliSeconds,
+    .StopStyle = HoldLast,
+    .RepeatStyle = Repeat_Times,
+    .Number_Sample_Points = MAX_TRAJECTORY_SAMPLES,
+    //.Sample_Amplitude_Y = {500.0f, 700.0f, 800.0f, 950.0f, 750.0f, 500.0f},
+    //.Sample_Duration_X = {5000.0f, 5000.0f, 5000.0f, 5000.0f, 5000.0f, 5000.0f},
+	   .Sample_Amplitude_Y = {1000.0f, 1500.0f},
+	    .Sample_Duration_X = {5000.0f, 5000.0f},
+    .Repeats = 1,
+    .Stepwidth_ISR = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor)
+  };
 struct uz_Flussschaetzer_config Flussschaetzer_config={};
 
 
@@ -141,6 +186,7 @@ int main(void)
             Global_Data.objects.speed_control = uz_SpeedControl_init(config_speed);
             Global_Data.objects.Flussschaetzer = uz_Flussschaetzer_init(Flussschaetzer_config) ;
             Global_Data.objects.pmsmModel = uz_pmsmModel_init(model_pmsm_config);;
+            Global_Data.objects.TraceGen_1 = uz_Trajectory_init(Traj_config);
 
             initialization_chain = init_ip_cores;
             break;

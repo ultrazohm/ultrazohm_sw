@@ -18,6 +18,7 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../uz/uz_Trajectory/uz_Trajectory.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -223,10 +224,12 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
+		data->av.fluxOntheta = value;
 			break;
 
 		case (Set_Send_Field_9):
 		data->av.snd_fld[9] = value;
+		data->av.fluxOnomega = value;
 			break;
 
 		case (Set_Send_Field_10):
@@ -286,11 +289,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-			data->av.select_CIL = true;
+		uz_Trajectory_Start(data->objects.TraceGen_1);
+		data->av.trajectoryON = 1;
 			break;
 
 		case (My_Button_5):
-			data->av.select_CIL = false;
+		uz_Trajectory_Stop(data->objects.TraceGen_1);
+		uz_Trajectory_Reset(data->objects.TraceGen_1);
+		data->av.trajectoryON = 0;
+
 			break;
 
 		case (My_Button_6):

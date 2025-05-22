@@ -61,18 +61,18 @@ uz_Flussschaetzer_t *uz_Flussschaetzer_init(struct uz_Flussschaetzer_config conf
     return (self);
 }
 
-Flussschaetzer_output_data uz_Flussschaetzer_step(uz_Flussschaetzer_t *self,uz_3ph_alphabeta_t u_alphabeta_ref,uz_3ph_alphabeta_t i_alphabeta_meas)
+Flussschaetzer_output_data uz_Flussschaetzer_step(uz_Flussschaetzer_t *self,uz_3ph_alphabeta_t u_alphabeta_ref,uz_3ph_alphabeta_t i_alphabeta_meas,float integrator_reset)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
 
-    self->input.u_alphabeta[1] = u_alphabeta_ref.alpha;
-    self->input.u_alphabeta[2] = u_alphabeta_ref.beta;
-    self->input.u_alphabeta[3] = u_alphabeta_ref.gamma;
-    self->input.i_alphabeta[1] = i_alphabeta_meas.alpha;
-    self->input.i_alphabeta[2] = i_alphabeta_meas.beta;
-    self->input.i_alphabeta[3] = i_alphabeta_meas.gamma;
-
+    self->input.u_alphabeta[0] = u_alphabeta_ref.alpha;
+    self->input.u_alphabeta[1] = u_alphabeta_ref.beta;
+    self->input.u_alphabeta[2] = u_alphabeta_ref.gamma;
+    self->input.i_alphabeta[0] = i_alphabeta_meas.alpha;
+    self->input.i_alphabeta[1] = i_alphabeta_meas.beta;
+    self->input.i_alphabeta[2] = i_alphabeta_meas.gamma;
+    self->input.integrator_reset = integrator_reset;
 
     Flussschaetzer_step(self->PtrToModelData);
     Flussschaetzer_output_data out;
@@ -83,6 +83,7 @@ Flussschaetzer_output_data uz_Flussschaetzer_step(uz_Flussschaetzer_t *self,uz_3
     	 out.theta_el_est = self->outputs.theta_el_est;
     	 out.psi_beta = self->outputs.psi_beta;
     	 out.psi_alpha = self->outputs.psi_alpha;
+    	 out.omega_el_raw = self->outputs.omega_el_raw;
         return out;
 
 }
@@ -91,6 +92,9 @@ void uz_Flussschaetzer_reset(uz_Flussschaetzer_t *self)
 {
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
+    uz_3ph_alphabeta_t u_alphabeta_ref = {0,0,0};
+    uz_3ph_alphabeta_t i_alphabeta_meas = {0,0,0};
+   uz_Flussschaetzer_step(self, u_alphabeta_ref, i_alphabeta_meas,1);
 
 }
 

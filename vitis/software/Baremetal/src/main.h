@@ -63,6 +63,7 @@
 #include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
 #include "xparameters.h"
 #include "Codegen/uz_flussschaetzer.h"
+#include "uz/uz_Trajectory/uz_Trajectory.h"
 
 //----------------------------------------------------
 // FUNCTIONS

@@ -7,9 +7,9 @@
  *
  * Code generated for Simulink model 'Flussschaetzer'.
  *
- * Model version                  : 9.3
+ * Model version                  : 9.9
  * Simulink Coder version         : 24.2 (R2024b) 21-Jun-2024
- * C/C++ source code generated on : Tue Mar 18 09:51:14 2025
+ * C/C++ source code generated on : Mon Apr 14 16:27:27 2025
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-R
@@ -28,19 +28,19 @@ P_Flussschaetzer rtP = {
    *   '<S4>/Gain2'
    *   '<S4>/Gain3'
    */
-  0.001626F,
+  0.00024F,
 
   /* Variable: Rs
    * Referenced by:
    *   '<S4>/Gain'
    *   '<S4>/Gain1'
    */
-  7.3F,
+  0.2715F,
 
   /* Variable: THP
    * Referenced by: '<S3>/Constant'
    */
-  0.0345989019F,
+  0.0318309888F,
 
   /* Variable: Ts
    * Referenced by: '<S2>/Constant3'

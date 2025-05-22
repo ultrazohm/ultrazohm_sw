@@ -35,12 +35,13 @@ typedef struct {
   float theta_el_est;
   float psi_beta;
   float psi_alpha;
+  float omega_el_raw;
 }Flussschaetzer_output_data ;
 
 uz_Flussschaetzer_t *uz_Flussschaetzer_init(struct uz_Flussschaetzer_config config);
 
 
-Flussschaetzer_output_data uz_Flussschaetzer_step(uz_Flussschaetzer_t *self,uz_3ph_alphabeta_t u_alphabeta_ref,uz_3ph_alphabeta_t i_alphabeta_meas);
+Flussschaetzer_output_data uz_Flussschaetzer_step(uz_Flussschaetzer_t *self,uz_3ph_alphabeta_t u_alphabeta_ref,uz_3ph_alphabeta_t i_alphabeta_meas,float integrator_reset);
 
 
 void uz_Flussschaetzer_reset(uz_Flussschaetzer_t *self);

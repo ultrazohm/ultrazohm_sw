@@ -22,7 +22,6 @@ enum JS_CommandData
 {
 	COM_python_test_variable=0,
 	COM_Ton,
-	COM_Ton_from_ip,
 	COM_Toff,
 	COM_Iload,
 	COM_trigger,
@@ -62,9 +61,9 @@ enum JS_OberservableData
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
 	JSO_python_test_loopback,
+	JSO_Ton_from_ip,
 	JSO_COM_python_test_variable,
 	JSO_COM_Ton,
-	JSO_COM_Ton_from_ip,
 	JSO_COM_Toff,
 	JSO_COM_Iload,
 	JSO_COM_trigger,

@@ -84,7 +84,7 @@ int JavaScope_initialize(DS_Data* data)
 		js_ch_observable[JSO_COM_Toff]=command_data[COM_Toff];
 		js_ch_observable[JSO_COM_Iload]=command_data[COM_Iload];
 		js_ch_observable[JSO_COM_trigger]=command_data[COM_trigger];
-
+		js_ch_observable[JSO_Ton_from_ip]=&data->double_pulse.Ton_from_ip;
 
 		js_ch_observable[JSO_Speed_rpm] = &data->av.mechanicalRotorSpeed;
 		js_ch_observable[JSO_el_Speed_rpm] = &data->av.electricalRotorSpeed;

@@ -147,8 +147,13 @@ readback = get_variable(client_socket, "JSO_COM_python_test_variable", command_d
 print("Value of JSO_COM_python_test_variable:", readback)
 
 uz_enable_system(client_socket)
-time.sleep(2.5)
+time.sleep(0.5)
 uz_enable_control(client_socket)
-time.sleep(2.5)
+time.sleep(0.5)
 uz_stop(client_socket)
-time.sleep(2.5)
+time.sleep(0.5)
+
+set_variable(client_socket, "COM_Ton", 1e-6, command_data)
+readback = get_variable(client_socket, "JSO_Ton_from_ip", command_data, observable_data)
+
+print("Value of JSO_Ton_from_ip:", readback)

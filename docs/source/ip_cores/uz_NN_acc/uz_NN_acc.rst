@@ -176,7 +176,7 @@ After including your header file (``init_network_ip_core.h``) in the ``main.h`` 
 To use the IP-Core in the ISR add the following code to the ``isr.c`` :
 
 .. code-block:: c
- :caption: Code example for ``isr.c`` 
+ :caption: Code example for blocking operation ``isr.c`` 
 
  float Action[4] = {0};
  float Observation[12] = {0};
@@ -209,6 +209,42 @@ To use the IP-Core in the ISR add the following code to the ``isr.c`` :
  }
  ...
 
+.. code-block:: c
+ :caption: Code example for non-blocking operation ``isr.c`` 
+
+ float Action[4] = {0};
+ float Observation[12] = {0};
+ ...
+ void ISR_Control(void *data)
+ {
+ ...
+ Observation[0] = ...;
+ Observation[1] = ...;
+ Observation[2] = ...;
+ Observation[3] = ...;
+ Observation[4] = ...;
+ Observation[5] = ...;
+ Observation[6] = ...;
+ Observation[7] = ...;
+ Observation[8] = ...;
+ Observation[9] = ...;
+ Observation[10] = ...;
+ Observation[11] = ...;
+ Observation[12] = ...;
+ if (current_state==control_state) {
+    for (uint32_t i = 0; i < 13U; i++) {
+    	uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
+    }
+    uz_NN_acc_ff_non_blocking(Global_Data.objects.NN_acc_Instance);
+    //do something else here
+    uz_NN_acc_get_result_blocking(Global_Data.objects.NN_acc_Instance);
+    Output[0] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
+    Output[1] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+    Output[2] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
+    Output[3] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
+ }
+ ...
+
 Execution
 =========
 
@@ -227,9 +263,39 @@ The processor can not do any other tasks.
    sequenceDiagram
        participant Processor
        participant Driver
-       Processor->>Driver: uz_mlp_three_layer_ff_blocking
+       Processor->>Driver: uz_NN_acc_ff_blocking
        Driver->>IP-Core: Write input
        Driver->>IP-Core: Trigger calculation
+       loop
+           Driver->>IP-Core: Read valid output
+           Driver->>Driver: Valid output true?
+       end
+       Driver->>IP-Core: Read output
+       Driver->>Processor: Return output values
+
+An alternative to the blocking calculation is a concurrent approach.
+In this, the IP-Core calculation is triggered, the processor is free to do other tasks, and the data is fetched after the calculation is finished.
+This way the calculation between trigger and get result does not add to the total required time if the task in between takes less time than the IP-Core calculation.
+Note that this means the actual calculation time of network without the communication overhead of the read/write operations. 
+
+.. code-block::
+
+    uz_NN_acc_ff_non_blocking(instance);                            // Takes 22us (example)
+    uz_sleep_useconds(10);                                          // Takes 10us 
+    uz_NN_acc_get_result_blocking(instance);                        // Takes 4us
+                                                                    // Takes 26us total
+
+.. mermaid::
+
+   sequenceDiagram
+       participant Processor
+       participant Driver
+       Processor->>Driver: uz_NN_acc_ff_non_blocking
+       Driver->>IP-Core: Write input
+       Driver->>IP-Core: Trigger calculation
+       Processor->>Software: Do something else
+       Software->>Processor: return
+       Processor->>Driver: uz_NN_acc_get_result_blocking
        loop
            Driver->>IP-Core: Read valid output
            Driver->>Driver: Valid output true?
@@ -242,9 +308,8 @@ Further improvements
 
 Further improvements are planed for the IP-core and in development:
 
-- non blocking operation
 - variable neuron & layer setup
-- swapping float with fixed point to improve throughput and resource utilization
+- improved resource utilization
 
 Driver reference
 ================
@@ -257,3 +322,7 @@ Driver reference
 .. doxygenfunction:: uz_NN_acc_init
 
 .. doxygenfunction:: uz_NN_acc_ff_blocking
+
+.. doxygenfunction:: uz_NN_acc_ff_non_blocking
+
+.. doxygenfunction:: uz_NN_acc_get_result_blocking

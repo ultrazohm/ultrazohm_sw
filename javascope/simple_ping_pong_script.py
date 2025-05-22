@@ -4,6 +4,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 from pathlib import Path
+import time
+
 
 def parse_enum_to_dataframe(file_path, enum_name):
     with open(file_path, "r") as file:
@@ -72,7 +74,7 @@ def setup_scope_channels(client_socket, channel, variable_to_observe):
     assert isinstance(channel, (list, np.ndarray)), "channel must be a list or numpy array"
     assert len(channel) == len(variable_to_observe), "channel and variable_to_observe must have the same length"
     for ch, var in zip(channel, variable_to_observe):
-        process_data(client_socket, ch, var)
+        process_data(client_socket, ch+200, var)
 
 def set_one_scope_channel_based_on_name(client_socket, channel_number, name, observable_data):
     number_of_name = get_number_from_observable_data(name, observable_data)
@@ -90,7 +92,19 @@ def read_all(client_socket):
 
 def set_variable(client_socket, name, value_input,command_data):
     number_of_name = get_number_from_observable_data(name, command_data)
-    write_and_read(client_socket, number_of_name + 999, value_input)  # magic 999 required due to Javascope hack
+    write_and_read(client_socket, number_of_name + 1000, value_input)  # magic 1000 required due to Javascope hack
+
+
+def uz_stop(client_socket):
+    write_and_read(client_socket, 3, 0)
+
+
+def uz_enable_system(client_socket):
+    write_and_read(client_socket, 1, 0)
+
+
+def uz_enable_control(client_socket):
+    write_and_read(client_socket, 2, 0)
 
 
 def get_variable(client_socket, name, command_data, observable_data):
@@ -114,24 +128,27 @@ client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client_socket.connect((IP, PORT))
 print(f"Connected to {IP} on port {PORT}")
 
+setup_scope_channels(client_socket, [1], [30])
 
 set_variable(client_socket, "COM_python_test_variable", 100, command_data)
-set_variable(client_socket, "COM_python_test_variable2", 101, command_data)
-set_variable(client_socket, "COM_python_test_variable3", 102, command_data)
-set_variable(client_socket, "COM_python_test_variable4", 103, command_data)
-set_variable(client_socket, "COM_python_test_variable5", 104, command_data)
 
 set_one_scope_channel_based_on_name(client_socket, 1, "JSO_COM_python_test_variable", observable_data)
-set_one_scope_channel_based_on_name(client_socket, 2, "JSO_COM_python_test_variable2", observable_data)
-set_one_scope_channel_based_on_name(client_socket, 3, "JSO_COM_python_test_variable3", observable_data)
-set_one_scope_channel_based_on_name(client_socket, 4, "JSO_COM_python_test_variable4", observable_data)
-set_one_scope_channel_based_on_name(client_socket, 5, "JSO_COM_python_test_variable5", observable_data)
 
+# Somehow, set channel does not work anymore, check
+# print("Current values of all variables:")
+# all=read_all(client_socket)
+# print(all)
 
-all=read_all(client_socket)
-print(all)
+readback = get_variable(client_socket, "JSO_COM_python_test_variable", command_data, observable_data)
+print("Value of JSO_COM_python_test_variable:", readback)
+set_variable(client_socket, "COM_python_test_variable", 200, command_data)
+readback = get_variable(client_socket, "JSO_COM_python_test_variable", command_data, observable_data)
 
-readback = get_variable(
-    client_socket, "JSO_COM_python_test_variable", command_data, observable_data
-)
-print(readback)
+print("Value of JSO_COM_python_test_variable:", readback)
+
+uz_enable_system(client_socket)
+time.sleep(2.5)
+uz_enable_control(client_socket)
+time.sleep(2.5)
+uz_stop(client_socket)
+time.sleep(2.5)

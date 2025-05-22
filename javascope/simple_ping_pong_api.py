@@ -78,7 +78,7 @@ def setup_scope_channels(client_socket, channel, variable_to_observe):
     assert isinstance(channel, (list, np.ndarray)), "channel must be a list or numpy array"
     assert len(channel) == len(variable_to_observe), "channel and variable_to_observe must have the same length"
     for ch, var in zip(channel, variable_to_observe):
-        process_data(client_socket, ch, var)
+        process_data(client_socket, ch + 200, var)
 
 
 def main():

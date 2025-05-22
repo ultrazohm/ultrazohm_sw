@@ -32,26 +32,8 @@ float *js_ch_observable[JSO_ENDMARKER];
 float *js_ch_selected[JS_CHANNELS];
 
 extern float python_test_variable;
-float python_test_variable2;
-float python_test_variable3;
-float python_test_variable4;
-float python_test_variable5;
-float python_test_variable6;
-float python_test_variable7;
-float python_test_variable8;
-float python_test_variable9;
 
-float *command_data[COM_ENDMARKER]={
-		&python_test_variable,
-		&python_test_variable2,
-		&python_test_variable3,
-		&python_test_variable4,
-		&python_test_variable5,
-		&python_test_variable6,
-		&python_test_variable7,
-		&python_test_variable8,
-		&python_test_variable9
-};
+float *command_data[COM_ENDMARKER];
 
 static float lifecheck;
 static float ISR_execution_time_us;
@@ -91,18 +73,20 @@ int JavaScope_initialize(DS_Data* data)
 		// With the JavaScope, signals can be displayed simultaneously
 		// Changing between the observable signals is possible at runtime in the JavaScope.
 		// the addresses in Global_Data do not change during runtime, this can be done in the init
-		js_ch_observable[JSO_python_test_loopback] = &python_test_variable;
-		js_ch_observable[JSO_COM_python_test_variable] = &python_test_variable;
-		js_ch_observable[JSO_COM_python_test_variable2]=&python_test_variable2;
-		js_ch_observable[JSO_COM_python_test_variable3]=&python_test_variable3;
-		js_ch_observable[JSO_COM_python_test_variable4]=&python_test_variable4;
-		js_ch_observable[JSO_COM_python_test_variable5]=&python_test_variable5;
-		js_ch_observable[JSO_COM_python_test_variable6]=&python_test_variable6;
-		js_ch_observable[JSO_COM_python_test_variable7]=&python_test_variable7;
-		js_ch_observable[JSO_COM_python_test_variable8]=&python_test_variable8;
-		js_ch_observable[JSO_COM_python_test_variable9]=&python_test_variable9;
+		command_data[COM_python_test_variable] = &python_test_variable;
+		command_data[COM_Ton]=&data->double_pulse.Ton;
+		command_data[COM_Toff]=&data->double_pulse.Toff;
+		command_data[COM_Iload]=&data->double_pulse.Iload;
+		command_data[COM_trigger]=&data->double_pulse.trigger;
 
-			js_ch_observable[JSO_Speed_rpm] = &data->av.mechanicalRotorSpeed;
+		js_ch_observable[JSO_COM_python_test_variable] = command_data[COM_python_test_variable];
+		js_ch_observable[JSO_COM_Ton] = command_data[COM_Ton];
+		js_ch_observable[JSO_COM_Toff]=command_data[COM_Toff];
+		js_ch_observable[JSO_COM_Iload]=command_data[COM_Iload];
+		js_ch_observable[JSO_COM_trigger]=command_data[COM_trigger];
+
+
+		js_ch_observable[JSO_Speed_rpm] = &data->av.mechanicalRotorSpeed;
 		js_ch_observable[JSO_el_Speed_rpm] = &data->av.electricalRotorSpeed;
 		js_ch_observable[JSO_ia] = &data->av.I_U;
 		js_ch_observable[JSO_ib] = &data->av.I_V;

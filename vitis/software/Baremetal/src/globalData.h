@@ -103,6 +103,14 @@ typedef struct _referenceAndSetValues_ {
 	float halfBridge12DutyCycle;
 } referenceAndSetValues;
 
+typedef struct _double_pulse_ {
+	float Ton;
+	float Ton_from_ip;
+	float Toff;
+	float Iload;
+	float trigger;
+} double_pulse;
+
 typedef struct{
 	uz_PWM_SS_2L_t* pwm_d1_pin_0_to_5;
 	uz_PWM_SS_2L_t* pwm_d1_pin_6_to_11;
@@ -121,6 +129,7 @@ typedef struct _DS_Data_ {
 	actualValues av;
 	AnalogAdapters aa;
 	object_pointers_t objects;
+	double_pulse double_pulse;
 } DS_Data;
 
 #endif

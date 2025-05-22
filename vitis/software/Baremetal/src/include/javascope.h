@@ -21,14 +21,11 @@
 enum JS_CommandData
 {
 	COM_python_test_variable=0,
-	COM_python_test_variable2,
-	COM_python_test_variable3,
-	COM_python_test_variable4,
-	COM_python_test_variable5,
-	COM_python_test_variable6,
-	COM_python_test_variable7,
-	COM_python_test_variable8,
-	COM_python_test_variable9,
+	COM_Ton,
+	COM_Ton_from_ip,
+	COM_Toff,
+	COM_Iload,
+	COM_trigger,
 	COM_ENDMARKER
 };
 
@@ -66,14 +63,11 @@ enum JS_OberservableData
 	JSO_PsiPM_mVs,
 	JSO_python_test_loopback,
 	JSO_COM_python_test_variable,
-	JSO_COM_python_test_variable2,
-	JSO_COM_python_test_variable3,
-	JSO_COM_python_test_variable4,
-	JSO_COM_python_test_variable5,
-	JSO_COM_python_test_variable6,
-	JSO_COM_python_test_variable7,
-	JSO_COM_python_test_variable8,
-	JSO_COM_python_test_variable9,
+	JSO_COM_Ton,
+	JSO_COM_Ton_from_ip,
+	JSO_COM_Toff,
+	JSO_COM_Iload,
+	JSO_COM_trigger,
 	JSO_ENDMARKER
 };
 

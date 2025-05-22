@@ -54,6 +54,8 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    Global_Data.double_pulse.Ton_from_ip=Global_Data.double_pulse.Ton;
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {

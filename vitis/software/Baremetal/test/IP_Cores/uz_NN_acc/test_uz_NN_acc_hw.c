@@ -205,7 +205,7 @@ void test_uz_NN_acc_hw_set_copy_mats_flag_assert(void) {
 }
 
 void test_uz_NN_acc_hw_set_copy_mats_flag(void) {
-    uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_COPY_MATS_FLAG_DATA, true);
+    uz_axi_write_bool_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_COPY_MATS_FLAG_DATA, true);
     uz_NN_acc_hw_set_copy_mats_flag(BASE_ADDRESS,true); 
 } 
 
@@ -251,4 +251,13 @@ void test_uz_NN_acc_hw_set_start(void) {
     uz_axi_write_uint32_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_AP_CTRL, 0x01U);
     uz_NN_acc_hw_set_start(BASE_ADDRESS); 
 } 
+
+void test_uz_NN_acc_hw_set_compute_flag(void) {
+    uz_axi_write_bool_Expect(BASE_ADDRESS + XUZ_NN_ACC_CONTROL_ADDR_COMPUTE_FLAG_DATA, true);
+    uz_NN_acc_hw_set_compute_flag(BASE_ADDRESS,true); 
+} 
+
+void test_uz_NN_acc_hw_set_compute_flag_assert(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_hw_set_compute_flag(ZERO_BASE_ADDRESS,true)); 
+}
 

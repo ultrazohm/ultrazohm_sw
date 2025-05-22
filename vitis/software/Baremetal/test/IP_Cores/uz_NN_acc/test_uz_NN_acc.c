@@ -105,6 +105,7 @@ uz_NN_acc_t *successful_init(void) {
     uz_NN_acc_hw_get_copy_flag_out_ExpectAndReturn(BASE_ADDRESS,true); 
     uz_NN_acc_hw_get_matrices_updated_out_ExpectAndReturn(BASE_ADDRESS,true);
     uz_NN_acc_hw_set_copy_mats_flag_Expect(BASE_ADDRESS,false);
+    uz_NN_acc_hw_set_compute_flag_Expect(BASE_ADDRESS,true);
     uz_NN_acc_t *instance = uz_NN_acc_init(config,input,output);
     return(instance);
 }

@@ -109,7 +109,7 @@ void uz_NN_acc_hw_set_L_Output_Bias_Data(uint32_t base_address, float * const L_
 
 void uz_NN_acc_hw_set_copy_mats_flag(uint32_t base_address, bool copy_mats_flag) {
     uz_assert_not_zero_uint32(base_address);
-	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_COPY_MATS_FLAG_DATA, copy_mats_flag);
+	uz_axi_write_bool(base_address + XUZ_NN_ACC_CONTROL_ADDR_COPY_MATS_FLAG_DATA, copy_mats_flag);
 }
 
 bool uz_NN_acc_hw_get_copy_mats_flag(uint32_t base_address) {
@@ -148,5 +148,5 @@ bool uz_NN_acc_hw_get_is_idle_output(uint32_t base_address) {
 }
 void uz_NN_acc_hw_set_compute_flag(uint32_t base_address, bool compute_flag) {
 	uz_assert_not_zero_uint32(base_address);
-	uz_axi_write_uint32(base_address + XUZ_NN_ACC_CONTROL_ADDR_COMPUTE_FLAG_DATA, compute_flag);
+	uz_axi_write_bool(base_address + XUZ_NN_ACC_CONTROL_ADDR_COMPUTE_FLAG_DATA, compute_flag);
 }

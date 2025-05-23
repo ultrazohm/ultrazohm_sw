@@ -18,6 +18,8 @@ Driver reference
 
 .. doxygentypedef:: uz_ssi_interface_t
 
+.. doxygenenum:: position_encoding_t
+
 .. doxygenstruct:: uz_ssi_interface_config_t
   :members:
 

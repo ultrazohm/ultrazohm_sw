@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 
+extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables
 DS_Data Global_Data = {
     .rasv = {
@@ -30,7 +31,8 @@ DS_Data Global_Data = {
 		.halfBridge9DutyCycle = 0.0f,
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
-		.halfBridge12DutyCycle = 0.0f
+		.halfBridge12DutyCycle = 0.0f,
+		.meas_state = meas_stop
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
@@ -39,6 +41,8 @@ DS_Data Global_Data = {
 		   .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
     }
 };
+
+
 
 enum init_chain
 {
@@ -55,6 +59,19 @@ enum init_chain initialization_chain = init_assertions;
 int main(void)
 {
     int status = UZ_SUCCESS;
+
+    const struct uz_parameterID_rc_config_t rc_meas_config =
+    {
+    	.abs_id_max_Amps = 8.0f,
+    	.abs_iq_max_Amps = 8.0f,
+    	.n_start_rpm = 200.0f,
+    	.n_stop_rpm = 1000.0f,
+    	.id_steps = 5U,
+    	.iq_steps = 5U,
+    	.n_steps = 2U,
+    	.check_temp=0
+    };
+
     while (1)
     {
         switch (initialization_chain)
@@ -71,6 +88,17 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.av.polepairs_left = Beckhoff_AM8141.polePairs;
+			Global_Data.av.polepairs_right = Beckhoff_AM8141.polePairs;
+			Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
+			Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
+			Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+			Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
+			//Global_Data.objects.iir_filter_ref_speed_right = speed_filt_right_init();
+//			Global_Data.rasv.current_ctrl_select = PI_FOC;
+			Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
+			//Lambda
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:
@@ -88,8 +116,17 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+            uz_axigpio_reset_pwm_counter(); //reset pwm counter of all instances in order to force synchronous start of all PWM modules
+            Global_Data.objects.mux_axi = initialize_uz_mux_axi();
+//            Global_Data.objects.mux_axi_a2 = initialize_uz_mux_axi_A2();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+           // Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.resolver_left = initialize_resolver_left();
+            Global_Data.objects.resolver_right = initialize_resolver_right();
+            Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();
+            Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
+            Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
+            Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
             initialization_chain = print_msg;
             break;
 	    case print_msg:

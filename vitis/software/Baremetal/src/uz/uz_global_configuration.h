@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 3U
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
@@ -34,7 +34,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  3U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  5U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 2U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
@@ -42,9 +42,9 @@
 #define UZ_NN_MAX_INSTANCES                             0U
 #define UZ_PMSMMODEL_MAX_INSTANCES                      0U
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
-#define UZ_MUX_AXI_MAX_INSTANCES                        1U
-#define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
-#define UZ_IIR_FILTER_MAX_INSTANCES                     1U
+#define UZ_MUX_AXI_MAX_INSTANCES                        3U
+#define UZ_SPEEDCONTROL_MAX_INSTANCES                   2U
+#define UZ_IIR_FILTER_MAX_INSTANCES                     2U
 #define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U
@@ -70,6 +70,7 @@
 #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     0U
 #define UZ_TRAJECTORY_MAX_INSTANCES                     0U
 #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               0U
+#define UZ_PARAMETERID_RC_MAX_INSTANCES 				1U
 #endif
 
 // Configuration defines for the number of used instances for testing with ceedling
@@ -119,4 +120,5 @@
     #define UZ_SUBSYSTEM_RESONANT_CONTROL_MAX_INSTANCES     10U
     #define UZ_TRAJECTORY_MAX_INSTANCES                     50U
     #define UZ_APPROXIMATE_FLUX_MAX_INSTANCES               5U
+	#define UZ_PARAMETERID_RC_MAX_INSTANCES 				1U
 #endif

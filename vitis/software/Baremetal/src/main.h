@@ -54,7 +54,15 @@
 
 #include "include/pwm_init.h"
 
+#include "include/resolver.h"
+#include "include/pi_foc.h"
+#include "include/inverter.h"
 
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
+#include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

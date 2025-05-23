@@ -23,6 +23,8 @@ extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
 extern uint32_t js_status_BareToRTOS;
+extern uz_3ph_dq_t i_dq_integrated_error_left;
+extern uz_3ph_dq_t i_dq_integrated_error_right;
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -186,7 +188,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		data->rasv.n_ref_left = value;
 			break;
 
 		case (Set_Send_Field_2):
@@ -194,11 +196,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		data->rasv.i_dq_ref_right.d = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		data->rasv.i_dq_ref_right.q = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -211,42 +213,52 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
+		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
+		uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_9):
 		data->av.snd_fld[9] = value;
+		uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_10):
 		data->av.snd_fld[10] = value;
+		uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_11):
 		data->av.snd_fld[11] = value;
+		uz_SpeedControl_set_Kp(data->objects.speed_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_12):
 		data->av.snd_fld[12] = value;
+		uz_SpeedControl_set_Ki(data->objects.speed_ctrl_left, value);
 			break;
 
 		case (Set_Send_Field_13):
 		data->av.snd_fld[13] = value;
+		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_14):
 		data->av.snd_fld[14] = value;
+		uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_15):
 		data->av.snd_fld[15] = value;
+		uz_CurrentControl_set_Kp_iq(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_16):
 		data->av.snd_fld[16] = value;
+		uz_CurrentControl_set_Ki_iq(data->objects.current_ctrl_right, value);
 			break;
 
 		case (Set_Send_Field_17):
@@ -270,31 +282,48 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+//			if (ultrazohm_state_machine_get_state() == idle_state)
+//			{
+//				data->rasv.ctrl_plant_select = REAL;
+//			}
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+//			if (ultrazohm_state_machine_get_state() == idle_state) {
+//				data->rasv.ctrl_plant_select = CIL;
+//			}
 			break;
 
 		case (My_Button_4):
-
+				data->rasv.meas_state = meas_stop;
 			break;
 
 		case (My_Button_5):
-
+			if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == meas_stop)
+			{
+				data->rasv.meas_state = rc_meas_right;
+			}
 			break;
 
 		case (My_Button_6):
-
+			if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == meas_stop)
+			{
+				data->rasv.meas_state = rc_meas_left;
+			}
 			break;
 
 		case (My_Button_7):
-
+			if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == meas_stop)
+			{
+				data->rasv.meas_state = rs_meas_right;
+			}
 			break;
 
 		case (My_Button_8):
-
+			if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == meas_stop)
+			{
+				data->rasv.meas_state = rs_meas_left;
+			}
 			break;
 
 		case (Error_Reset):
@@ -348,26 +377,56 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	//	js_status_BareToRTOS &= ~(1 << 4);
 	// }
 
-	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
 
+	/* Bit 5 - My_Button_2 */
+//	 if (data->rasv.ctrl_plant_select == REAL) {
+//		js_status_BareToRTOS |= (1 << 5);
+//	 } else {
+//		js_status_BareToRTOS &= ~(1 << 5);
+//	 }
 	/* Bit 6 - My_Button_3 */
-	// js_status_BareToRTOS &= ~(1 << 6);
+//	 if (data->rasv.ctrl_plant_select == CIL) {
+//		 js_status_BareToRTOS |= (1 << 6);
+//	 } else {
+//		 js_status_BareToRTOS &= ~(1 << 6);
+//	 }
 
 	/* Bit 7 - My_Button_4 */
-	// js_status_BareToRTOS &= ~(1 << 7);
+	 if (data->rasv.meas_state == meas_stop) {
+		 js_status_BareToRTOS |= (1 << 7);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 7);
+	 }
 
 	/* Bit 8 - My_Button_5 */
-	// js_status_BareToRTOS &= ~(1 << 8);
+	 if (data->rasv.meas_state == rc_meas_right) {
+		 js_status_BareToRTOS |= (1 << 8);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 8);
+	 }
 
 	/* Bit 9 - My_Button_6 */
+	 if (data->rasv.meas_state == rc_meas_left) {
+		 js_status_BareToRTOS |= (1 << 9);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 9);
+	 }
 	// js_status_BareToRTOS &= ~(1 << 9);
 
 	/* Bit 10 - My_Button_7 */
+	 if (data->rasv.meas_state == rs_meas_right) {
+		 js_status_BareToRTOS |= (1 << 10);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 10);
+	 }
 	// js_status_BareToRTOS &= ~(1 << 10);
 
 	/* Bit 11 - My_Button_8 */
-	// js_status_BareToRTOS &= ~(1 << 11);
+	 if (data->rasv.meas_state == rs_meas_left) {
+		 js_status_BareToRTOS |= (1 << 11);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 11);
+	 }
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

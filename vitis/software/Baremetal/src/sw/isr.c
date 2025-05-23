@@ -42,28 +42,31 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
-#define PHASE_CURRENT_CONV_U 		1000/11.211;
-#define PHASE_CURRENT_CONV_V 		1000/11.211;
-#define PHASE_CURRENT_CONV_W 		1000/11.211;
+#define PHASE_CURRENT_CONV_U 		90.0173			// ideal: 1000/11.211
+#define PHASE_CURRENT_CONV_V 		89.7817
+#define PHASE_CURRENT_CONV_W 		89.1090
 #define PHASE_CURRENT_OFFSET_VOLT 	2.5
+#define PHASE_CURRENT_OFFS_U		22.7855
+#define PHASE_CURRENT_OFFS_V		8.0661
+#define PHASE_CURRENT_OFFS_W		7.9499
 
 #define DC_LINK_VOLT_CONV 			18.27932f		// DC-Voltage 0...5 V -> 0...91.5 V
 #define DC_LINK_VOLT_OFFS			-0.01424f
 // Korrektur des Skaling-Faktoren noch einmal überprüfen/validieren: alt: 1/0.0546
-#define PHASE_VOLT_CONV_U 			17.2855f		// Voltage DC_GND to Phase U
-#define PHASE_VOLT_CONV_V 			17.2983f
-#define PHASE_VOLT_CONV_W 			17.2741f
-#define PHASE_VOLT_OFFS_U 			-0.0342f
-#define PHASE_VOLT_OFFS_V 			-0.0339f
-#define PHASE_VOLT_OFFS_W 			-0.0358f
+#define PHASE_VOLT_CONV_U 			17.1377		// Voltage DC_GND to Phase U
+#define PHASE_VOLT_CONV_V 			17.1280
+#define PHASE_VOLT_CONV_W 			17.1377
+#define PHASE_VOLT_OFFS_U 			0.0011f
+#define PHASE_VOLT_OFFS_V 			0.0006f
+#define PHASE_VOLT_OFFS_W 			0.0011f
 #define MOSFET_TEMP_CONV_U 			1
 
 #define ISR_SAMPLE_FREQ				40000
 
-#define MAX_CURRENT_ASSERTION 		350.0f
+#define MAX_CURRENT_ASSERTION 		300.0f
 #define MAX_SPEED_ASSERTION			2300.0f
 #define MAX_TEMP_ASSERTION			80.0f
-#define MAX_MOTOR_TEMP_ASSERTION	110.0f
+#define MAX_MOTOR_TEMP_ASSERTION	115.0f
 #define U_DC_MAX					55.0f
 #define U_DC_MIN					40.0f
 
@@ -147,7 +150,7 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     //update_speed_and_position_of_encoder_on_D5(&Global_Data);
-    Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 32, false, true) - 0.64f -1.052f + (Global_Data.av.theta_offset/21.0f);
+    Global_Data.av.theta_mech = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 32, false, true) - 2.9290f - (Global_Data.av.theta_offset/21.0f);
     Global_Data.av.EnDat_pos_age = uz_EnDat_read_pos_t0_as_radiant_and_age_wrapper(Global_Data.objects.EnDat_master_pointer, 32, true, false);
     Global_Data.av.mechanicalRotorSpeed = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.EnDat_master_pointer);
     Global_Data.av.mechanicalRotorSpeed_filtered = Global_Data.av.mechanicalRotorSpeed;
@@ -168,9 +171,9 @@ void ISR_Control(void *data)
     //Global_Data.av.EnDat_value_response_length = uz_EnDat_read_reponselength_and_convert_to_float(Global_Data.objects.EnDat_master_pointer);
     //Global_Data.av.EnDat_sync_quality = uz_EnDat_calculate_sync_quality_indicator(Global_Data.objects.EnDat_master_pointer, Global_Data.av.EnDat_value_calc_time);
 
-    Global_Data.av.I_U = (Global_Data.aa.A1.me.ADC_A4 - 0.253424806f + 0.179376f) * PHASE_CURRENT_CONV_U;
-    Global_Data.av.I_V = (Global_Data.aa.A1.me.ADC_A3 - 0.092072175f - 0.067266) * PHASE_CURRENT_CONV_V;
-    Global_Data.av.I_W = (Global_Data.aa.A1.me.ADC_A2 - 0.091379816f + 0.067266) * PHASE_CURRENT_CONV_W;
+    Global_Data.av.I_U = (Global_Data.aa.A1.me.ADC_A4 * PHASE_CURRENT_CONV_U) - PHASE_CURRENT_OFFS_U;
+    Global_Data.av.I_V = (Global_Data.aa.A1.me.ADC_A3) * PHASE_CURRENT_CONV_V - PHASE_CURRENT_OFFS_V;
+    Global_Data.av.I_W = (Global_Data.aa.A1.me.ADC_A2) * PHASE_CURRENT_CONV_W - PHASE_CURRENT_OFFS_W;
 
     Global_Data.av.U_ZK = (Global_Data.aa.A1.me.ADC_A1 * DC_LINK_VOLT_CONV) + DC_LINK_VOLT_OFFS;
     Global_Data.av.U_L1 = (Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_U) + PHASE_VOLT_OFFS_U;
@@ -212,8 +215,9 @@ void ISR_Control(void *data)
     Global_Data.av.temperature_motor = -0.000324f * faulty_motortemp*faulty_motortemp + 0.490982f * faulty_motortemp +24.728f;
 
     // Assertion check
+    // (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) ||
     //
-    if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION) || (fabs(Global_Data.av.temperature_motor) >= MAX_MOTOR_TEMP_ASSERTION) || (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN) ) {
+    if ((fabs(Global_Data.av.I_U) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_V) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.I_W) >= MAX_CURRENT_ASSERTION) || (fabs(Global_Data.av.temperature_mosfet) >= MAX_TEMP_ASSERTION) || (fabs(Global_Data.av.mechanicalRotorSpeed) >= MAX_SPEED_ASSERTION) || (Global_Data.av.U_ZK > U_DC_MAX) || (Global_Data.av.U_ZK < U_DC_MIN) ) {
 
     	// Assertion to Stop Machine if max. Current or max. Speed
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
@@ -427,6 +431,7 @@ void ISR_Control(void *data)
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+    	control_mode = FOC_i_dq_setpoint;
     	output_dutycycle.DutyCycle_A = 0.0f;
     	output_dutycycle.DutyCycle_B = 0.0f;
     	output_dutycycle.DutyCycle_C = 0.0f;

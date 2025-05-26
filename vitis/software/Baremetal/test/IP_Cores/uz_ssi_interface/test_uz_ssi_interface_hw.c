@@ -151,8 +151,11 @@ void test_uz_ssi_interface_hw_read_position_speed_status(void)
     uint32_t expected_position_raw_single_turn = 424242U; 
     uint32_t expected_position_si_single_turn_unsigned_representation = 13575769U;
     uint32_t returned_position_raw_single_turn = 0U;
+    uint32_t expected_position_el_si_single_turn_unsigend_representation = 13575769U;
     float returned_position_si_single_turn = 0.0f;
     float expected_position_si_single_turn = 0.8091789421f;
+    float returned_position_el_si_single_turn = 0.0f;
+    float expected_position_el_si_single_turn = 0.8091789421f;
     int32_t expected_speed_mech_si_signed_representation = 6862913;
     float expected_speed_mech_si = 104.7197551f;
     float returned_speed_mech_si = 0.0f;
@@ -170,10 +173,13 @@ void test_uz_ssi_interface_hw_read_position_speed_status(void)
     // test single-turn position
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_raw_single_turn_AXI_Data_uz_ssi_interface, expected_position_raw_single_turn);
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_mech_SI_single_turn_AXI_Data_uz_ssi_interface, expected_position_si_single_turn_unsigned_representation);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_el_SI_AXI_Data_uz_ssi_interface, expected_position_el_si_single_turn_unsigend_representation);
     returned_position_raw_single_turn = uz_ssi_interface_hw_read_position_raw_single_turn(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_UINT32(expected_position_raw_single_turn, returned_position_raw_single_turn);
     returned_position_si_single_turn = uz_ssi_interface_hw_read_position_mech_si_single_turn(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_FLOAT(expected_position_si_single_turn, returned_position_si_single_turn);
+    returned_position_el_si_single_turn = uz_ssi_interface_hw_read_position_el_si_single_turn(TEST_BASE_ADDRESS);
+    TEST_ASSERT_EQUAL_FLOAT(expected_position_el_si_single_turn, returned_position_el_si_single_turn);
 
     // test multi-turn position
     uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_multi_turn_AXI_Data_uz_ssi_interface, expected_position_raw_multi_turn);

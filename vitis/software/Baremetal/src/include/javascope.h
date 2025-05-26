@@ -174,11 +174,11 @@ enum gui_button_mapping {
 
 	SND_FLD_ZEROVALUE=0,
 	n_ref_rpm_left,
-	send_field_2,
+	n_ref_rpm_right,
 	id_ref_right,
 	iq_ref_right,
-	send_field_5,
-	send_field_6,
+	id_ref_left,
+	iq_ref_left,
 	Kp_id_left,
 	Ki_id_left,
 	Kp_iq_left,
@@ -243,10 +243,10 @@ enum gui_button_mapping {
 	receive_field_14,
 	receive_field_15,
 	receive_field_16,
-	lambda_d,
-	lambda_q,
-	lambda_u*1e5,
-	i_max_mpc,
+	,
+	,
+	,
+	,
 	RCV_FLD_ENDMARKER
 
 
@@ -280,14 +280,14 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	unused,
-	Real,
-	CIL,
 	Meas_Stop,
 	RC_Meas_Right,
 	RC_Meas_Left,
 	RS_Meas_Right,
 	RS_Meas_Left,
+	speed_control_left,
+	speed_control_right,
+	unused,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

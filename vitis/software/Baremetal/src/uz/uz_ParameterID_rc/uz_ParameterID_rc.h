@@ -35,7 +35,10 @@ typedef enum
 	rc_meas_left,
 	rs_meas_right,
 	rs_meas_left,
-	meas_stop
+	speed_control_left,
+	speed_control_right,
+	reset,
+	stop
 }meas_state_t;
 
 struct uz_parameterID_rc_set_values_t{

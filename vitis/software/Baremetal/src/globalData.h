@@ -15,8 +15,8 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
-#include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "uz/uz_ParameterID_rs/uz_ParameterID_rs.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -147,15 +147,16 @@ typedef struct _referenceAndSetValues_ {
 	float M_ref_left;
 	float n_ref_left;
 	float n_ref_left_filt;
+	float M_ref_right;
 	float n_ref_right;
+	float n_ref_right_filt;
 	uz_3ph_dq_t i_dq_ref_right;
 	uz_3ph_dq_t i_dq_ref_left;
-	//enum current_control_select current_ctrl_select;
-//	enum control_plant ctrl_plant_select;
-//	enum reference_select reference_select;
 	struct uz_parameterID_rc_ref_val_t rc_meas_output;
 	float operatingpoints_rc_meas;
 	meas_state_t meas_state;
+	struct uz_parameterid_output rs_meas_output_left;
+	struct uz_parameterid_output rs_meas_output_right;
 } referenceAndSetValues;
 
 typedef struct{
@@ -175,6 +176,8 @@ typedef struct{
 	uz_CurrentControl_t* current_ctrl_right;
 	uz_SpeedControl_t* speed_ctrl_left;
 	uz_SetPoint_t* setpoint_ctrl_left;
+	uz_SpeedControl_t* speed_ctrl_right;
+	uz_SetPoint_t* setpoint_ctrl_right;
 	uz_inverter_adapter_t* uz_d_inverter_left;
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
@@ -182,6 +185,8 @@ typedef struct{
 	uz_parameterID_rc_t* rc_meas_instance;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 	uz_IIR_Filter_t* iir_filter_ref_speed_right;
+	uz_parameterid_rs_t* rs_meas_instance_right;
+	uz_parameterid_rs_t* rs_meas_instance_left;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

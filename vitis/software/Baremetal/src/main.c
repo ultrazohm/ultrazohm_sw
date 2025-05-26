@@ -32,7 +32,9 @@ DS_Data Global_Data = {
 		.halfBridge10DutyCycle = 0.0f,
 		.halfBridge11DutyCycle = 0.0f,
 		.halfBridge12DutyCycle = 0.0f,
-		.meas_state = meas_stop
+		.meas_state = stop,
+		.n_ref_left = 0.0f
+
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
@@ -62,15 +64,29 @@ int main(void)
 
     const struct uz_parameterID_rc_config_t rc_meas_config =
     {
-    	.abs_id_max_Amps = 8.0f,
-    	.abs_iq_max_Amps = 8.0f,
+    	.abs_id_max_Amps = 4.0f,
+    	.abs_iq_max_Amps = 4.0f,
     	.n_start_rpm = 200.0f,
-    	.n_stop_rpm = 1000.0f,
-    	.id_steps = 5U,
-    	.iq_steps = 5U,
-    	.n_steps = 2U,
+    	.n_stop_rpm = 200.0f,
+    	.id_steps = 4U,
+    	.iq_steps = 4U,
+    	.n_steps = 1U,
     	.check_temp=0
     };
+
+    struct uz_parameterid_rs_config_t config_rs_meas =
+    {
+    	.n_start = 100.0f,
+        .n_end = 1000.0f,
+        .n_steps = 8.0f,
+        .i_start = -3.0f,
+        .i_diff = 6.0f,
+        .i_repeats = 10.0f,
+        .i_steptime = 1.2f,
+   	    .wait_time = 2.0f,
+        .isr_steptime = (1.0f / 10.0e3f) * 1.0f
+    };
+
 
     while (1)
     {
@@ -93,11 +109,14 @@ int main(void)
 			Global_Data.objects.current_ctrl_left = current_ctrl_left_init();
 			Global_Data.objects.current_ctrl_right = current_ctrl_right_init();
 			Global_Data.objects.setpoint_ctrl_left = setpoint_ctrl_left_init();
+			Global_Data.objects.setpoint_ctrl_right = setpoint_ctrl_right_init();
 			Global_Data.objects.speed_ctrl_left = speed_ctrl_left_init();
+			Global_Data.objects.speed_ctrl_right = speed_ctrl_right_init();
 			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
-			//Global_Data.objects.iir_filter_ref_speed_right = speed_filt_right_init();
-//			Global_Data.rasv.current_ctrl_select = PI_FOC;
+			Global_Data.objects.iir_filter_ref_speed_right = speed_filt_right_init();
 			Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
+			Global_Data.objects.rs_meas_instance_left = uz_parameterid_rs_init(config_rs_meas);
+			Global_Data.objects.rs_meas_instance_right = uz_parameterid_rs_init(config_rs_meas);
 			//Lambda
             initialization_chain = init_ip_cores;
             break;

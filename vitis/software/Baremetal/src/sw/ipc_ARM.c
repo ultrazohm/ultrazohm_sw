@@ -192,7 +192,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		data->rasv.n_ref_right = value;
 			break;
 
 		case (Set_Send_Field_3):
@@ -204,11 +204,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		data->rasv.i_dq_ref_left.d = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		data->rasv.i_dq_ref_left.q = value;
 			break;
 
 		case (Set_Send_Field_7):
@@ -278,52 +278,53 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+				data->rasv.meas_state = stop;
 			break;
 
 		case (My_Button_2):
-//			if (ultrazohm_state_machine_get_state() == idle_state)
-//			{
-//				data->rasv.ctrl_plant_select = REAL;
-//			}
+				if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == stop)
+				{
+					data->rasv.meas_state = rc_meas_right;
+				}
 			break;
 
 		case (My_Button_3):
-//			if (ultrazohm_state_machine_get_state() == idle_state) {
-//				data->rasv.ctrl_plant_select = CIL;
-//			}
+				if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == stop)
+				{
+					data->rasv.meas_state = rc_meas_left;
+				}
 			break;
 
 		case (My_Button_4):
-				data->rasv.meas_state = meas_stop;
+				if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == stop)
+				{
+					data->rasv.meas_state = rs_meas_right;
+				}
 			break;
 
 		case (My_Button_5):
-			if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == meas_stop)
-			{
-				data->rasv.meas_state = rc_meas_right;
-			}
+				if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == stop)
+				{
+					data->rasv.meas_state = rs_meas_left;
+				}
 			break;
 
 		case (My_Button_6):
-			if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == meas_stop)
-			{
-				data->rasv.meas_state = rc_meas_left;
-			}
+				if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == stop)
+				{
+					data->rasv.meas_state = speed_control_left;
+				}
 			break;
 
 		case (My_Button_7):
-			if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == meas_stop)
-			{
-				data->rasv.meas_state = rs_meas_right;
-			}
+				if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == stop)
+				{
+					data->rasv.meas_state = speed_control_right;
+				}
 			break;
 
 		case (My_Button_8):
-			if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == meas_stop)
-			{
-				data->rasv.meas_state = rs_meas_left;
-			}
+
 			break;
 
 		case (Error_Reset):
@@ -371,62 +372,62 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	 if (data->rasv.meas_state == stop) {
+		js_status_BareToRTOS |= (1 << 4);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 4);
+	 }
 
 
 	/* Bit 5 - My_Button_2 */
-//	 if (data->rasv.ctrl_plant_select == REAL) {
-//		js_status_BareToRTOS |= (1 << 5);
-//	 } else {
-//		js_status_BareToRTOS &= ~(1 << 5);
-//	 }
+	 if (data->rasv.meas_state == rc_meas_right) {
+		js_status_BareToRTOS |= (1 << 5);
+	 } else {
+		js_status_BareToRTOS &= ~(1 << 5);
+	 }
 	/* Bit 6 - My_Button_3 */
-//	 if (data->rasv.ctrl_plant_select == CIL) {
-//		 js_status_BareToRTOS |= (1 << 6);
-//	 } else {
-//		 js_status_BareToRTOS &= ~(1 << 6);
-//	 }
+	 if (data->rasv.meas_state == rc_meas_left) {
+		 js_status_BareToRTOS |= (1 << 6);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 6);
+	 }
 
 	/* Bit 7 - My_Button_4 */
-	 if (data->rasv.meas_state == meas_stop) {
+	 if (data->rasv.meas_state == rs_meas_right) {
 		 js_status_BareToRTOS |= (1 << 7);
 	 } else {
 		 js_status_BareToRTOS &= ~(1 << 7);
 	 }
 
 	/* Bit 8 - My_Button_5 */
-	 if (data->rasv.meas_state == rc_meas_right) {
+	 if (data->rasv.meas_state == rs_meas_left) {
 		 js_status_BareToRTOS |= (1 << 8);
 	 } else {
 		 js_status_BareToRTOS &= ~(1 << 8);
 	 }
 
-	/* Bit 9 - My_Button_6 */
-	 if (data->rasv.meas_state == rc_meas_left) {
+//	/* Bit 9 - My_Button_6 */
+	 if (data->rasv.meas_state == speed_control_left) {
 		 js_status_BareToRTOS |= (1 << 9);
 	 } else {
 		 js_status_BareToRTOS &= ~(1 << 9);
 	 }
 	// js_status_BareToRTOS &= ~(1 << 9);
-
-	/* Bit 10 - My_Button_7 */
-	 if (data->rasv.meas_state == rs_meas_right) {
+//
+//	/* Bit 10 - My_Button_7 */
+	 if (data->rasv.meas_state == speed_control_right) {
 		 js_status_BareToRTOS |= (1 << 10);
 	 } else {
 		 js_status_BareToRTOS &= ~(1 << 10);
 	 }
-	// js_status_BareToRTOS &= ~(1 << 10);
-
-	/* Bit 11 - My_Button_8 */
-	 if (data->rasv.meas_state == rs_meas_left) {
-		 js_status_BareToRTOS |= (1 << 11);
-	 } else {
-		 js_status_BareToRTOS &= ~(1 << 11);
-	 }
+	 js_status_BareToRTOS &= ~(1 << 10);
+//
+//	/* Bit 11 - My_Button_8 */
+//	 if (data->rasv.meas_state == rs_meas_left) {
+//		 js_status_BareToRTOS |= (1 << 11);
+//	 } else {
+//		 js_status_BareToRTOS &= ~(1 << 11);
+//	 }
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

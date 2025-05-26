@@ -100,7 +100,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
 
         // wait function: lets xx isr-cycles pass without changing anything. Switches to the following state after the wait time depending on the previous state
         case rc_wait: 
-        	if(Global_Data.rasv.meas_state == meas_stop)
+        	if(Global_Data.rasv.meas_state == stop)
         	{
         		self->rc_state = rc_finished;
         	}
@@ -172,7 +172,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         self->set_values.id_set_Amps = 0.0f;
         self->set_values.iq_set_Amps = 0.0f;
         self->set_values.n_set_rpm = 0.0f;
-        Global_Data.rasv.meas_state = meas_stop;
+        Global_Data.rasv.meas_state = stop;
             break; 
 
         default:

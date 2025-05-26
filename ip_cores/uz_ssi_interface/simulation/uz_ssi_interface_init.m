@@ -21,12 +21,12 @@ ssi_clk_divider = 25;
 % max. 25 bit per single-/multi-turn position information
 % sum of single-turn, multi-turn, and status <= 64 bit
 
-% ssi_encoder_bit_width_single_turn = uint32(14);
-% ssi_encoder_bit_width_multi_turn = uint32(5);
-% ssi_encoder_number_of_status_bits = uint32(2);
-ssi_encoder_bit_width_single_turn = uint32(19);
-ssi_encoder_bit_width_multi_turn = uint32(0);
-ssi_encoder_number_of_status_bits = uint32(0);
+ssi_encoder_bit_width_single_turn = uint32(14);
+ssi_encoder_bit_width_multi_turn = uint32(5);
+ssi_encoder_number_of_status_bits = uint32(2);
+% ssi_encoder_bit_width_single_turn = uint32(19);
+% ssi_encoder_bit_width_multi_turn = uint32(0);
+% ssi_encoder_number_of_status_bits = uint32(0);
 bit_sum = ssi_encoder_bit_width_multi_turn+ssi_encoder_bit_width_single_turn+ssi_encoder_number_of_status_bits;
 
 % encoding: false=binary, true=gray

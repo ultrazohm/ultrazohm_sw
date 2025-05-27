@@ -160,10 +160,10 @@ Limitations of APS 1000 Current Source
 The current output of the Spitzenberger APS 1000 current amplifier is frequency-dependent. It directly affects the accuracy of AC impedance measurements in this test system.
 According to the APS 1000 datasheet:
 
-- **Large signal bandwidth** (full-scale output current):  
-  **DC to 10 kHz** (-3 dB cutoff)
-- **Small signal bandwidth** (10% of full scale):  
-  **DC to 50 kHz** (-3 dB cutoff)
+- Large signal bandwidth (full-scale output current):  
+  DC to 10 kHz (-3 dB cutoff)
+- Small signal bandwidth (10% of full scale):  
+  DC to 50 kHz (-3 dB cutoff)
 
 This means that the output current starts to roll off above 10 kHz for high-amplitude signals and they start to roll of above 50 kHz for low-amplitude excitation.
 

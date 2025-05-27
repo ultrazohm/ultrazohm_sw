@@ -180,7 +180,15 @@ The analog signal path includes two types of low-pass filters: an anti-aliasing 
                             \frac{1}{2\pi\cdot2\,\mathrm{k\Omega}\cdot22\,\mathrm{pF}} \approx 3.62\, \mathrm{MHz}
 
 .. note::
-   For initial testing, the common-mode capacitors (:math:`C_\mathrm{CM}`) for anti-aliasing filter are not populated on the PCB. As a rule of thumb :math:`10 C_\mathrm{CM} < `C_\mathrm{Diff}` should hold.
+
+   For initial testing, the common-mode capacitors (:math:`C_\mathrm{CM}`) for the anti-aliasing filter 
+   are not populated on the PCB. 
+
+   As a rule of thumb, the following condition should hold:
+
+   .. math::
+
+      10 \cdot C_\mathrm{CM} < C_\mathrm{Diff}
 
 .. figure:: whole_system_block_diagram.png
    :align: center

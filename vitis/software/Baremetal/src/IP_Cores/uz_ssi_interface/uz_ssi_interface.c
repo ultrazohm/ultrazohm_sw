@@ -69,6 +69,7 @@ void uz_ssi_interface_set_config(uz_ssi_interface_t *self) {
     uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn(self->config.base_address, self->config.ssi_encoder_bit_width_single_turn);
     uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn(self->config.base_address, self->config.ssi_encoder_bit_width_multi_turn);
     uz_ssi_interface_hw_write_ssi_encoder_number_of_status_bits(self->config.base_address, self->config.ssi_encoder_number_of_status_bits);
+    uz_ssi_interface_hw_write_position_is_binary_or_gray_code(self->config.base_address, self->config.position_encoding);
     uz_ssi_interface_hw_write_pll_parameters(self->config.base_address, self->config.sampling_interval_seconds, self->config.kp_pll, self->config.ki_pll);
     uz_ssi_interface_hw_write_machine_pole_pairs(self->config.base_address, self->config.machine_polepairs);
     uz_ssi_interface_hw_write_position_mech_offset_si_single_turn(self->config.base_address, self->config.position_mech_offset_si_single_turn);

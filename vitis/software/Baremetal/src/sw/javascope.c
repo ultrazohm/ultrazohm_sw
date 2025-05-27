@@ -81,8 +81,10 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ssi0_speed_mech_rad_s_ip] = &data->av.ssi0_speed_mech_rad_s_ip;
 	js_ch_observable[JSO_ssi0_speed_el_rad_s_ip]= &data->av.ssi0_speed_el_rad_s_ip;
 	js_ch_observable[JSO_ssi0_speed_mech_rpm_ip] = &data->av.ssi0_speed_mech_rpm_ip;
-	js_ch_observable[JSO_ssi0_debug_pre_slice]	= &data->av.ssi0_debug_pre_slice;
-	js_ch_observable[JSO_ssi0_debug_post_slice]	= &data->av.ssi0_debug_post_slice;
+	js_ch_observable[JSO_ssi1_pos_raw]			= &data->av.ssi1_position_raw;
+	js_ch_observable[JSO_ssi1_pos_multiturn_raw]= &data->av.ssi1_position_multiturn_raw;
+	js_ch_observable[JSO_ssi1_pos_mech_si]		= &data->av.ssi1_position_mech_si;
+	js_ch_observable[JSO_ssi1_pos_el_si]		= &data->av.ssi1_position_el_si;
 	js_ch_observable[JSO_sawtooth]				= &sawtooth;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;

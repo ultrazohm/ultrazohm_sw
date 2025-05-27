@@ -115,7 +115,7 @@ uint32_t uz_ssi_interface_hw_read_position_raw_single_turn(uint32_t base_address
 
 uint32_t uz_ssi_interface_hw_read_position_raw_multi_turn(uint32_t base_address) {
     uz_assert_not_zero_uint32(base_address);
-    return(uz_axi_read_uint32(base_address + position_multi_turn_AXI_Data_uz_ssi_interface));
+    return(uz_axi_read_uint32(base_address + position_raw_multi_turn_AXI_Data_uz_ssi_interface));
 }
 
 uint32_t uz_ssi_interface_hw_read_ssi_encoder_status(uint32_t base_address) {

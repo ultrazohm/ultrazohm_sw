@@ -97,11 +97,13 @@ void test_uz_ssi_inteface_set_config(void)
     float expected_ki_pll = 98696.0f;
     uint32_t expected_pole_pairs = 4U;
     float expected_mech_offset_si = -1.276f;
+    enum position_encoding_t expected_encoding = gray_code;
 
     uz_ssi_interface_hw_write_ssi_clock_divider_Expect(TEST_BASE_ADDRESS, expected_clock_divider);
     uz_ssi_interface_hw_write_ssi_encoder_bit_width_single_turn_Expect(TEST_BASE_ADDRESS, expected_encoder_bit_width_single_turn);
     uz_ssi_interface_hw_write_ssi_encoder_bit_width_multi_turn_Expect(TEST_BASE_ADDRESS, expected_encoder_bit_width_multi_turn);
     uz_ssi_interface_hw_write_ssi_encoder_number_of_status_bits_Expect(TEST_BASE_ADDRESS, expected_number_of_status_bits);
+    uz_ssi_interface_hw_write_position_is_binary_or_gray_code_Expect(TEST_BASE_ADDRESS, expected_encoding);
     uz_ssi_interface_hw_write_pll_parameters_Expect(TEST_BASE_ADDRESS, expected_sampling_interval, expected_kp_pll, expected_ki_pll);
     uz_ssi_interface_hw_write_machine_pole_pairs_Expect(TEST_BASE_ADDRESS, expected_pole_pairs);
     uz_ssi_interface_hw_write_position_mech_offset_si_single_turn_Expect(TEST_BASE_ADDRESS, expected_mech_offset_si);

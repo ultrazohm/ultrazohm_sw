@@ -102,8 +102,10 @@ int main(void)
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
             // ssi init for testing
-            Global_Data.objects.ssi_0_encoder = ssi_encoder_init();
+            Global_Data.objects.ssi_0_encoder = ssi_encoder_init_ssi0();
+            Global_Data.objects.ssi_1_encoder = ssi_encoder_init_ssi1();
             uz_ssi_interface_enable_ip(Global_Data.objects.ssi_0_encoder, true);
+            uz_ssi_interface_enable_ip(Global_Data.objects.ssi_1_encoder, true);
             initialization_chain = print_msg;
             break;
 	    case print_msg:

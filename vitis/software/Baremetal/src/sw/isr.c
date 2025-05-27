@@ -65,6 +65,11 @@ void ISR_Control(void *data)
     Global_Data.av.ssi0_position_mech_si = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_0_encoder);
     Global_Data.av.ssi0_position_el_si = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_0_encoder);
 
+    Global_Data.av.ssi1_position_raw = uz_ssi_interface_get_position_raw_single_turn(Global_Data.objects.ssi_1_encoder);
+    Global_Data.av.ssi1_position_mech_si = uz_ssi_interface_get_position_mech_si_single_turn(Global_Data.objects.ssi_1_encoder);
+    Global_Data.av.ssi1_position_el_si = uz_ssi_interface_get_position_el_si_single_turn(Global_Data.objects.ssi_1_encoder);
+    Global_Data.av.ssi1_position_multiturn_raw = uz_ssi_interface_get_position_raw_multi_turn(Global_Data.objects.ssi_1_encoder);
+
     Global_Data.av.ssi0_speed_mech_rad_s_ip = uz_ssi_interface_get_speed_mech_si(Global_Data.objects.ssi_0_encoder);
     Global_Data.av.ssi0_speed_el_rad_s_ip = uz_ssi_interface_get_speed_el_si(Global_Data.objects.ssi_0_encoder);
     Global_Data.av.ssi0_speed_mech_rpm_ip = uz_ssi_interface_get_speed_mech_rpm(Global_Data.objects.ssi_0_encoder);

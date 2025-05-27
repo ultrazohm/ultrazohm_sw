@@ -182,7 +182,7 @@ void test_uz_ssi_interface_hw_read_position_speed_status(void)
     TEST_ASSERT_EQUAL_FLOAT(expected_position_el_si_single_turn, returned_position_el_si_single_turn);
 
     // test multi-turn position
-    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_multi_turn_AXI_Data_uz_ssi_interface, expected_position_raw_multi_turn);
+    uz_axi_read_uint32_ExpectAndReturn(TEST_BASE_ADDRESS + position_raw_multi_turn_AXI_Data_uz_ssi_interface, expected_position_raw_multi_turn);
     returned_position_multi_turn = uz_ssi_interface_hw_read_position_raw_multi_turn(TEST_BASE_ADDRESS);
     TEST_ASSERT_EQUAL_UINT32(expected_position_raw_multi_turn, returned_position_multi_turn);
 

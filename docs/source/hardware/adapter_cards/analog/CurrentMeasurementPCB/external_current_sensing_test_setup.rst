@@ -64,9 +64,9 @@ The block diagram below illustrates the complete AC measurement setup:
 .. figure:: ac_test_block_diagram.png
    :align: center
    :width: 600px
-   :alt: AC Test Setup Block Diagram
+   :alt: 
 
-Block diagram of AC impedance test setup using Bode 100, Spitzenberger APS 1000 (Input Modulator Current Amplifier), and optical probes.
+   Figure: Block diagram of AC impedance test setup using Bode 100, Spitzenberger APS 1000 (Input Modulator Current Amplifier), and optical probes.
 
 Configuration Details
 ---------------------
@@ -101,8 +101,10 @@ Probe Ratio Settings
 
 .. figure:: bode100_Setup.png
    :align: center
-   :width: 500px
-   :alt: Test Setup of Bode100
+   :width: 800px
+   :alt:
+
+   Figure: Test Setup of Bode100
 
 
 Notes on Current Amplifier Behavior
@@ -118,8 +120,8 @@ The analog input range of AC IN of APS 1000 is +-5V. The Range setting divided b
   
 .. figure:: spitzenberger_Setup.png
    :align: center
-   :width: 500px
-   :alt: Test Setup of Spitzenberger APS 1000
+   :width: 800px
+   :alt:
 
    Figure: Test Setup of Spitzenberger APS 1000 for Range configuration and optional DC Offset
 
@@ -151,5 +153,24 @@ For Range = 26.6 A_peak (setting in APS1000), this yields the following output c
   :math:`I_{\mathrm{peak}} \approx 5.30\,\mathrm{A}` after amplification.
 
 **This value is fed to the APS 1000, which amplifies it according to the selected Range, resulting in the actual test input current.**
+
+Limitations of APS 1000 Current Source
+--------------------------------------
+
+The current output of the Spitzenberger APS 1000 current amplifier is frequency-dependent. It directly affects the accuracy of AC impedance measurements in this test system.
+According to the APS 1000 datasheet:
+
+- **Large signal bandwidth** (full-scale output current):  
+  **DC to 10 kHz** (-3 dB cutoff)
+- **Small signal bandwidth** (10% of full scale):  
+  **DC to 50 kHz** (-3 dB cutoff)
+
+This means that the output current starts to roll off above 10 kHz for high-amplitude signals and they start to roll of above 50 kHz for low-amplitude excitation.
+
+.. warning::
+
+   Impedance measurements above 30-50 kHz become unreliable due to reduced current output 
+   from the APS 1000. In the impedance calculation, a reduced current value 
+   leads to an overestimated impedance, which make the impedance go high after this frequency range.
 
 

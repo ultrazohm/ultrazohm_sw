@@ -195,3 +195,4 @@ Block diagram showing the signal and power flow between the UltraZohm system car
    :caption: Sections
 
    external_current_sensing_test_setup
+   external_current_sensing_test_result

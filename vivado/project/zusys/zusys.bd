@@ -117,7 +117,8 @@
         "ila_0": "",
         "uz_ssi_interface_0": "",
         "uz_ssi_interface_1": "",
-        "uz_ssi_interface_2": ""
+        "uz_ssi_interface_2": "",
+        "ila_1": ""
       },
       "zynq_ultra_ps_e_0": "",
       "xlconstant_0": ""
@@ -5770,22 +5771,48 @@
             }
           },
           "uz_ssi_interface_0": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:2.3",
-            "xci_name": "zusys_uz_ssi_interface_0_16",
-            "xci_path": "ip\\zusys_uz_ssi_interface_0_16\\zusys_uz_ssi_interface_0_16.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:2.4",
+            "xci_name": "zusys_uz_ssi_interface_0_17",
+            "xci_path": "ip\\zusys_uz_ssi_interface_0_17\\zusys_uz_ssi_interface_0_17.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_0"
           },
           "uz_ssi_interface_1": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:2.3",
-            "xci_name": "zusys_uz_ssi_interface_1_16",
-            "xci_path": "ip\\zusys_uz_ssi_interface_1_16\\zusys_uz_ssi_interface_1_16.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:2.4",
+            "xci_name": "zusys_uz_ssi_interface_1_17",
+            "xci_path": "ip\\zusys_uz_ssi_interface_1_17\\zusys_uz_ssi_interface_1_17.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_1"
           },
           "uz_ssi_interface_2": {
-            "vlnv": "xilinx.com:ip:uz_ssi_interface:2.3",
-            "xci_name": "zusys_uz_ssi_interface_2_16",
-            "xci_path": "ip\\zusys_uz_ssi_interface_2_16\\zusys_uz_ssi_interface_2_16.xci",
+            "vlnv": "xilinx.com:ip:uz_ssi_interface:2.4",
+            "xci_name": "zusys_uz_ssi_interface_2_17",
+            "xci_path": "ip\\zusys_uz_ssi_interface_2_17\\zusys_uz_ssi_interface_2_17.xci",
             "inst_hier_path": "uz_user/uz_ssi_interface_2"
+          },
+          "ila_1": {
+            "vlnv": "xilinx.com:ip:ila:6.2",
+            "xci_name": "zusys_ila_1_0",
+            "xci_path": "ip\\zusys_ila_1_0\\zusys_ila_1_0.xci",
+            "inst_hier_path": "uz_user/ila_1",
+            "parameters": {
+              "C_DATA_DEPTH": {
+                "value": "16384"
+              },
+              "C_MONITOR_TYPE": {
+                "value": "Native"
+              },
+              "C_NUM_OF_PROBES": {
+                "value": "10"
+              },
+              "C_PROBE7_WIDTH": {
+                "value": "32"
+              },
+              "C_PROBE8_WIDTH": {
+                "value": "32"
+              },
+              "C_PROBE9_WIDTH": {
+                "value": "32"
+              }
+            }
           }
         },
         "interface_nets": {
@@ -5809,8 +5836,8 @@
           },
           "smartconnect_1_M02_AXI": {
             "interface_ports": [
-              "uz_ssi_interface_1/AXI4_Lite",
-              "smartconnect_1/M02_AXI"
+              "smartconnect_1/M02_AXI",
+              "uz_ssi_interface_1/AXI4_Lite"
             ]
           },
           "smartconnect_1_M03_AXI": {
@@ -5845,7 +5872,8 @@
           "ssi_data_1_1": {
             "ports": [
               "ssi_data_1",
-              "uz_ssi_interface_1/ssi_data_in"
+              "uz_ssi_interface_1/ssi_data_in",
+              "ila_1/probe2"
             ]
           },
           "ssi_data_2_1": {
@@ -5860,7 +5888,8 @@
               "ila_0/probe0",
               "uz_ssi_interface_0/trigger_ssi_read",
               "uz_ssi_interface_1/trigger_ssi_read",
-              "uz_ssi_interface_2/trigger_ssi_read"
+              "uz_ssi_interface_2/trigger_ssi_read",
+              "ila_1/probe0"
             ]
           },
           "uz_ssi_interface_0_RW_clk": {
@@ -5877,9 +5906,9 @@
               "RW_data_0"
             ]
           },
-          "uz_ssi_interface_0_position_multi_turn": {
+          "uz_ssi_interface_0_position_raw_multi_turn": {
             "ports": [
-              "uz_ssi_interface_0/position_multi_turn",
+              "uz_ssi_interface_0/position_raw_multi_turn",
               "ila_0/probe8"
             ]
           },
@@ -5917,19 +5946,52 @@
           "uz_ssi_interface_1_RW_clk": {
             "ports": [
               "uz_ssi_interface_1/RW_clk",
-              "RW_clk_1"
+              "RW_clk_1",
+              "ila_1/probe3"
             ]
           },
           "uz_ssi_interface_1_RW_data": {
             "ports": [
               "uz_ssi_interface_1/RW_data",
-              "RW_data_1"
+              "RW_data_1",
+              "ila_1/probe4"
+            ]
+          },
+          "uz_ssi_interface_1_position_raw_multi_turn": {
+            "ports": [
+              "uz_ssi_interface_1/position_raw_multi_turn",
+              "ila_1/probe8"
+            ]
+          },
+          "uz_ssi_interface_1_position_raw_single_turn": {
+            "ports": [
+              "uz_ssi_interface_1/position_raw_single_turn",
+              "ila_1/probe7"
             ]
           },
           "uz_ssi_interface_1_ssi_clk": {
             "ports": [
               "uz_ssi_interface_1/ssi_clk",
-              "ssi_clk_1"
+              "ssi_clk_1",
+              "ila_1/probe1"
+            ]
+          },
+          "uz_ssi_interface_1_ssi_data_out_SH": {
+            "ports": [
+              "uz_ssi_interface_1/ssi_data_out_SH",
+              "ila_1/probe6"
+            ]
+          },
+          "uz_ssi_interface_1_ssi_transaction_done": {
+            "ports": [
+              "uz_ssi_interface_1/ssi_transaction_done",
+              "ila_1/probe5"
+            ]
+          },
+          "uz_ssi_interface_1_status_raw": {
+            "ports": [
+              "uz_ssi_interface_1/status_raw",
+              "ila_1/probe9"
             ]
           },
           "uz_ssi_interface_2_RW_clk": {
@@ -5958,11 +6020,12 @@
               "uz_axi_testIP_0/IPCORE_CLK",
               "ila_0/clk",
               "uz_ssi_interface_0/IPCORE_CLK",
-              "uz_ssi_interface_1/IPCORE_CLK",
               "uz_ssi_interface_0/AXI4_Lite_ACLK",
+              "uz_ssi_interface_1/IPCORE_CLK",
               "uz_ssi_interface_1/AXI4_Lite_ACLK",
               "uz_ssi_interface_2/IPCORE_CLK",
-              "uz_ssi_interface_2/AXI4_Lite_ACLK"
+              "uz_ssi_interface_2/AXI4_Lite_ACLK",
+              "ila_1/clk"
             ]
           }
         }

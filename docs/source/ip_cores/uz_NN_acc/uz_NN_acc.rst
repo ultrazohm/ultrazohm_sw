@@ -4,7 +4,7 @@
 uz_NN_acc
 =========
 
-This IP-Core implements a three layer MLP network.
+This IP-Core implements a three layer MLP network which was generated in Vitis HLS 2022.2.
 The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
 
 .. Attention:: 
@@ -13,6 +13,7 @@ The implementation and nomenclature follows the principles outlined in :ref:`uz_
   - Number of neurons in the hidden layers is fixed to **64**.
   - Variable number of up to **24 Observations**
   - Variable number of up to **12 Actions**
+  - Execution time of **~13µs**
   
 .. figure:: uz_NN_acc_layers.svg
    :align: center
@@ -28,7 +29,8 @@ Features
 - Uses Matrix math as input and outputs
 - IP-Core is configured and triggerd by the PS exclusively 
 - Correct size of the observation, weights, bias and action arrays will be asserted
-- Execution time for 20 observations and 4 actions roughly takes **~22µs**
+- Execution time for 20 observations and 4 actions roughly takes **~13µs**
+- Unsafe math optimization in Vitis HLS is used
 
 
 
@@ -43,7 +45,6 @@ Following, the IP-Core reads all the data for the weights & bias data from syste
 The weights & bias data is only read once during initialization of the IP-Core.
 During runtime the weights & bias are stored in BRAM and are fixed.
 During execution, only the observation and action data are read respectively written when ``uz_NN_acc_ff_blocking`` is called. 
-Note that the :ref:`global_configuration` has to be adjusted to include at least one uz_NN_acc IP-Core driver instance, :ref:`one software network<uz_nn>` and :ref:`four layers<uz_nn_layer>`.
 
 Usage
 -----
@@ -108,14 +109,7 @@ First, ip cores have to be added to the block design in vivado:
 Software
 ========
 
-#. First, an instance of the software network has to be initialized, e.g., by loading parameters from a header.
-#. Additionally, an array for the output data of the IP-Core has to be declared (see :ref:`uz_matrix`).
-
-    .. warning::
-        Every array and uz_matrix_t object has to be declared with the **MEMORY_ALIGN** attribute.
-        It aligns the arrays (and therefore its pointers) to 32byte.
-        Otherwise undefined behavior regarding the read/write process of the IP-Core can occur.
-
+#. In the :ref:`global_configuration` include at least one ``uz_NN_acc`` IP-Core driver instance, :ref:`one software network<uz_nn>` and :ref:`four layers<uz_nn_layer>`.
 #. In the ``globalData.h`` file add the following code to the ``object_pointers_t`` struct:
 
     .. code-block:: c
@@ -135,6 +129,11 @@ Software
 
 
 #. Create a initialization c-file (e.g. ``init_network_ip_core.c``) and a corresponding header file (``init_network_ip_core.h``) for the ``init_network`` function:
+
+    .. warning::
+        Every array and uz_matrix_t object has to be declared with the **MEMORY_ALIGN** attribute.
+        It aligns the arrays (and therefore its pointers) to 32byte.
+        Otherwise undefined behavior regarding the read/write process of the IP-Core can occur.
 
     .. code-block:: c
      :caption: Code for ``init_network_ip_core.c`` for initialization of network and IP-core
@@ -169,7 +168,7 @@ Software
      float y_2[NUMBER_OF_NEURONS_IN_SECOND_LAYER] MEMORY_ALIGN = {0};
     
      float w_3[NUMBER_OF_NEURONS_IN_FIRST_LAYER * NUMBER_OF_NEURONS_IN_SECOND_LAYER] MEMORY_ALIGN = {
-     #include "layer2_weights.csv"
+     #include "layer3_weights.csv"
      };
      float b_3[NUMBER_OF_NEURONS_IN_THIRD_LAYER] MEMORY_ALIGN = {
      #include "layer3_bias.csv"
@@ -213,7 +212,6 @@ Software
     			.base_address = XPAR_UZ_USER_UZ_NN_ACC_0_S_AXI_CONTROL_BASEADDR //May needs adjusting
     	};
         Global_Data.objects.NN_acc_Instance = uz_NN_acc_init(IP_config, Global_Data.objects.matrix_input_acc, Global_Data.objects.matrix_output_acc);
-        uz_mlp_three_layer_ff_blocking(mlp_ip_instance, p_input_data, p_output_data);
       }
 
 #. After including your header file (``init_network_ip_core.h``) in the ``main.h`` add the init function to the main.c file:
@@ -238,7 +236,7 @@ Software
 
     .. code-block:: c
      :caption: Code example for blocking operation ``isr.c`` 
-    
+
      float Action[4] = {0};
      float Observation[12] = {0};
      ...
@@ -269,10 +267,10 @@ Software
         Output[3] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
      }
      ...
-    
+
     .. code-block:: c
      :caption: Code example for non-blocking operation ``isr.c`` 
-    
+
      float Action[4] = {0};
      float Observation[12] = {0};
      ...
@@ -315,9 +313,9 @@ The processor can not do any other tasks.
 
 .. code-block::
 
-    uz_NN_acc_ff_blocking(instance);                         // Takes 22us (example)
+    uz_NN_acc_ff_blocking(instance);                         // Takes 13us (example)
     uz_sleep_useconds(10);                                   // Takes 10us
-                                                             // Takes 32us total
+                                                             // Takes 23us total
 
 .. mermaid::
 
@@ -325,14 +323,13 @@ The processor can not do any other tasks.
        participant Processor
        participant Driver
        Processor->>Driver: uz_NN_acc_ff_blocking
-       Driver->>IP-Core: Write input
+       Driver->>IP-Core: Flush cache for input
        Driver->>IP-Core: Trigger calculation
        loop
            Driver->>IP-Core: Read valid output
            Driver->>Driver: Valid output true?
        end
-       Driver->>IP-Core: Read output
-       Driver->>Processor: Return output values
+       Driver->>Processor: Invalidate cache for output
 
 An alternative to the blocking calculation is a concurrent approach.
 In this, the IP-Core calculation is triggered, the processor is free to do other tasks, and the data is fetched after the calculation is finished.
@@ -341,10 +338,10 @@ Note that this means the actual calculation time of network without the communic
 
 .. code-block::
 
-    uz_NN_acc_ff_non_blocking(instance);                            // Takes 22us (example)
+    uz_NN_acc_ff_non_blocking(instance);                            // Takes 13us (example)
     uz_sleep_useconds(10);                                          // Takes 10us 
     uz_NN_acc_get_result_blocking(instance);                        // Takes 4us
-                                                                    // Takes 26us total
+                                                                    // Takes 17us total
 
 .. mermaid::
 
@@ -352,17 +349,17 @@ Note that this means the actual calculation time of network without the communic
        participant Processor
        participant Driver
        Processor->>Driver: uz_NN_acc_ff_non_blocking
-       Driver->>IP-Core: Write input
+       Driver->>IP-Core: Flush cache for input
        Driver->>IP-Core: Trigger calculation
        Processor->>Software: Do something else
        Software->>Processor: return
        Processor->>Driver: uz_NN_acc_get_result_blocking
+       Driver->>IP-Core: Trigger writing output
        loop
            Driver->>IP-Core: Read valid output
            Driver->>Driver: Valid output true?
        end
-       Driver->>IP-Core: Read output
-       Driver->>Processor: Return output values
+       Driver->>Processor: Invalidate cache for output
 
 Further improvements
 ====================

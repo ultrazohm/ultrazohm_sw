@@ -7,6 +7,8 @@
 # IP Integrator Tcl commands easier.
 ################################################################
 
+
+
 namespace eval _tcl {
 proc get_script_folder {} {
    set script_path [file normalize [info script]]
@@ -16,19 +18,18 @@ proc get_script_folder {} {
 }
 variable script_folder
 set script_folder [_tcl::get_script_folder]
-
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2022.2
-set current_vivado_version [version -short]
-
-if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
-   puts ""
-   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
-
-   return 1
-}
+#set scripts_vivado_version 2022.2
+#set current_vivado_version [version -short]
+#
+#if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
+#   puts ""
+#   catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "This script was generated using Vivado <$scripts_vivado_version> and is being run in <$current_vivado_version> of Vivado. Please run the script in Vivado <$scripts_vivado_version> then open the design in Vivado <$current_vivado_version>. Upgrade the design by running \"Tools => Report => Report IP Status...\", then run write_bd_tcl to create an updated script."}
+#
+#   return 1
+#}
 
 ################################################################
 # START
@@ -43,6 +44,8 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 # iobufds_inst, iobufds_inst, iobufds_inst, delay_trigger, top_npc_state_machine
 
 # Please add the sources of those modules before sourcing this Tcl script.
+
+
 
 # If there is no project opened, this script will create a
 # project, but make sure you do not have an existing project
@@ -120,6 +123,7 @@ if { $run_remote_bd_flow == 1 } {
   }
 }
 
+
 current_bd_design $design_name
 
 set bCheckIPsPassed 1
@@ -129,7 +133,7 @@ set bCheckIPsPassed 1
 set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
-xilinx.com:ip:zynq_ultra_ps_e:3.4\
+xilinx.com:ip:zynq_ultra_ps_e:3.5\
 xilinx.com:ip:axi_timebase_wdt:3.0\
 xilinx.com:ip:smartconnect:1.0\
 xilinx.com:ip:axi_timer:2.0\
@@ -175,8 +179,6 @@ mwn.de:ip:PWM_SS_3L_ip:1.4\
 set bCheckModules 1
 if { $bCheckModules == 1 } {
    set list_check_mods "\ 
-iobufds_inst\
-iobufds_inst\
 iobufds_inst\
 delay_trigger\
 top_npc_state_machine\
@@ -2223,9 +2225,9 @@ proc create_root_design { parentCell } {
 
   # Save current instance; Restore later
   set oldCurInst [current_bd_instance .]
-
   # Set parent object as current
   current_bd_instance $parentObj
+
 
 
   # Create interface ports
@@ -2293,7 +2295,7 @@ proc create_root_design { parentCell } {
   create_hier_cell_uz_user [current_bd_instance .] uz_user
 
   # Create instance: zynq_ultra_ps_e_0, and set properties
-  set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:3.4 zynq_ultra_ps_e_0 ]
+  set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:3.5 zynq_ultra_ps_e_0 ]
   apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1" }  [get_bd_cells zynq_ultra_ps_e_0]
   set_property -dict [list \
     CONFIG.CAN0_BOARD_INTERFACE {custom} \
@@ -3161,7 +3163,7 @@ Port;FD4A0000;FD4AFFFF;0|FPD;DPDMA;FD4C0000;FD4CFFFF;0|FPD;DDR_XMPU5_CFG;FD05000
     CONFIG.PSU__SPI0_LOOP_SPI1__ENABLE {0} \
     CONFIG.PSU__SPI0__GRP_SS0__IO {MIO 41} \
     CONFIG.PSU__SPI0__GRP_SS1__ENABLE {0} \
-    CONFIG.PSU__SPI0__GRP_SS2__ENABLE {0} \
+    CONFIG.PSU__SPI100__GRP_SS2__ENABLE {0} \
     CONFIG.PSU__SPI0__PERIPHERAL__ENABLE {1} \
     CONFIG.PSU__SPI0__PERIPHERAL__IO {MIO 38 .. 43} \
     CONFIG.PSU__SPI1__GRP_SS0__IO {MIO 35} \

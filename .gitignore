@@ -4,7 +4,13 @@
 
 ip_cores/*/simulation/slprj/*
 
-
+.*
+*.jou
+*.log
+*.str
+*.xpr
+*.xml
+*.bd
 
 vitis/software/Baremetal/src/slprj/
 vitis/software/Baremetal/src/Codegen/uz_codegen0_ert_rtw/buildInfo.mat

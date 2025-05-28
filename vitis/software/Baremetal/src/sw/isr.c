@@ -45,22 +45,49 @@ extern DS_Data Global_Data;
 // - start of the control period
 //----------------------------------------------------
 static void ReadAllADC();
+float Action[4] = {0};
+float Action2[4] = {0};
+float Observation[20] = {0};
+bool use_software = false;
+uz_matrix_t* matrix_output_20n;
 
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
-
+    //Random ADC Werte als Noise
+    Observation[0] = Global_Data.aa.A1.me.ADC_A1*100000.0f + 15.0f;
+        Observation[1] = Global_Data.aa.A1.me.ADC_A1*100000.0f + 15.0f;
+        Observation[2] = Global_Data.aa.A1.me.ADC_A2*100000.0f + 15.0f;
+        Observation[3] = Global_Data.aa.A1.me.ADC_A3*100000.0f + 15.0f;
+        Observation[4] = Global_Data.aa.A1.me.ADC_A4*100000.0f + 15.0f;
+        Observation[5] = Global_Data.aa.A1.me.ADC_B5*100000.0f + 15.0f;
+        Observation[6] = Global_Data.aa.A1.me.ADC_B6*100000.0f + 15.0f;
+        Observation[7] = Global_Data.aa.A1.me.ADC_B7*100000.0f + 15.0f;
+        Observation[8] = Global_Data.aa.A1.me.ADC_B8*100000.0f + 15.0f;
+        Observation[9] = Global_Data.aa.A1.me.ADC_A1*100000.0f + 13.0f;
+        Observation[10] = Global_Data.aa.A1.me.ADC_A2*100000.0f + 21.0f;
+        Observation[11] = Global_Data.aa.A1.me.ADC_A3*100000.0f + 31.0f;
+        Observation[12] = Global_Data.aa.A1.me.ADC_A4*100000.0f + 41.0f;
+        Observation[13] = Global_Data.aa.A1.me.ADC_B5*100000.0f + 51.0f;
+        Observation[14] = Global_Data.aa.A1.me.ADC_B6*100000.0f + 61.0f;
+        Observation[15] = Global_Data.aa.A1.me.ADC_B7*100000.0f + 71.0f;
+        Observation[16] = Global_Data.aa.A1.me.ADC_B8*100000.0f + 81.0f;
+        Observation[17] = Global_Data.aa.A1.me.ADC_B5*100000.0f + 91.0f;
+        Observation[18] = Global_Data.aa.A1.me.ADC_B6*100000.0f + 101.0f;
+        Observation[19] = Global_Data.aa.A1.me.ADC_B7*100000.0f + 111.0f;
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
-    {
-        // Start: Control algorithm - only if ultrazohm is in control state
+    if (current_state==control_state) {
+       for (uint32_t i = 0; i < 13U; i++) {
+               uz_matrix_set_element_zero_based(Global_Data.objects.matrix_input_acc,Observation[i],0U,i);
+       }
+       uz_NN_acc_ff_blocking(Global_Data.objects.NN_acc_Instance);
+       Action[0] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,0U);
+       Action[1] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,1U);
+       Action[2] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,2U);
+       Action[3] = uz_matrix_get_element_zero_based(Global_Data.objects.matrix_output_acc,0U,3U);
     }
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     // Set duty cycles for three-level modulator
     PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,

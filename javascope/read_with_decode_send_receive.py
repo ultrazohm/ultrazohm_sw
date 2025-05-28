@@ -1,153 +1,117 @@
+import asyncio
 import socket
 import struct
+import numpy as np
 import pandas as pd
-import pyarrow.parquet as pq
 from datetime import datetime
 import pyarrow as pa
-import numpy as np
+import pyarrow.parquet as pq
 
+# Helper functions
 def decode_floats(data):
-    floats = []
-    for i in range(0, len(data), 4):
-        floats.append(struct.unpack('f', data[i:i+4])[0])
-    return floats
+    return [struct.unpack('f', data[i:i+4])[0] for i in range(0, len(data), 4)]
 
-# Decode binary data to floats
+def encode_id_value(id_input, value_input):
+    return struct.pack('If', id_input, value_input)
 
-def encode_id_value(id, value):
-    # Pack the id (uint32) and value (float) into binary data
-    return struct.pack('If', id, value)
+async def user_input_task(cmd_queue, stop_event):
+    loop = asyncio.get_event_loop()
+    while not stop_event.is_set():
+        try:
+            id_input = await loop.run_in_executor(None, input, "Enter an ID (unsigned int32): ")
+            value_input = await loop.run_in_executor(None, input, "Enter a value (float): ")
+            id_input = int(id_input)
+            value_input = float(value_input)
+            await cmd_queue.put((id_input, value_input))
+        except ValueError:
+            print("Invalid input. Please enter a valid integer and float.")
+        except (KeyboardInterrupt, EOFError):
+            print("Exiting user input task.")
+            stop_event.set()
+            break
 
-def process_data(client_socket, id_input, value_input):
-    zeros = encode_id_value(id_input, value_input)
-    client_socket.send(zeros)
-    response = client_socket.recv(1324)
-    print(f"Number of bytes in response: {len(response)}")
-    print(f"Number of bytes sent to UZ: {len(zeros)}")
-    float_values = decode_floats(response)
-    print(float_values)
-    return float_values
-    
-def main():
-    # IP address and port
+async def comms_task(reader, writer, cmd_queue, stop_event,from_ethernet_queue):
+    while not stop_event.is_set():
+        try:
+            if not cmd_queue.empty():
+                id_input, value_input = await cmd_queue.get()
+                # print(f"Sending ID: {id_input}, Value: {value_input}")
+            else:
+                id_input, value_input = 0, 0.0
+
+            packet = encode_id_value(id_input, value_input)
+            writer.write(packet)
+            await writer.drain()
+            data = await reader.readexactly(1324)
+            float_values = decode_floats(data)
+            await from_ethernet_queue.put(float_values)
+        except Exception as e:
+            print(f"Communication error: {e}")
+            stop_event.set()
+            break
+
+
+async def raw_to_table_task(stop_event, from_ethernet_queue):
+            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+            filename_fast = f"fast_{current_time}.csv"
+            filename_slow = f"slow_{current_time}.csv"
+            try:
+                # Create an empty CSV file to start 
+                df = pd.DataFrame()  # Create empty DataFrame
+                df.to_csv(filename_fast, index=False, mode='w')
+                df.to_csv(filename_slow, index=False, mode='w')
+                print(f"Created log file: {filename_fast}")
+                print(f"Created log file: {filename_slow}")
+                print()
+            except Exception as e:
+                print(f"Error creating log file: {e}")
+
+            try:
+                while not stop_event.is_set():
+                    try:
+                        float_values = await from_ethernet_queue.get()
+                        data_np = np.array(float_values)[1:]
+                        reshaped_data = np.reshape(data_np, (-1, 15))
+                        df_tmp = pd.DataFrame(reshaped_data.T)
+                        fast_data = df_tmp.iloc[:, 1:-1]
+                        slow_data = df_tmp.iloc[:, [0, -1]]
+                        fast_data.to_csv(filename_fast, mode='a', header=False, index=False)
+                        slow_data.to_csv(filename_slow, mode='a', header=False, index=False)
+                    except Exception as e:
+                        print(f"Error processing data: {e}")
+            except Exception as e:
+                print(f"Error in raw_to_table_task: {e}")
+
+async def main():
     IP = '192.168.1.233'
     PORT = 1000
-
-    # Create a socket object
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    df = pd.DataFrame()
-    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    filename = f"data_{current_time}.parquet"
-        
+    cmd_queue = asyncio.Queue()
+    from_ethernet_queue = asyncio.Queue()
+    stop_event = asyncio.Event()
+    
     try:
-        # Connect to the server
-        client_socket.connect((IP, PORT))
+        reader, writer = await asyncio.open_connection(IP, PORT)
         print(f"Connected to {IP} on port {PORT}")
+        writer.write(b"Hello, server!")
+        await writer.drain()
 
-        # Send data to the server
-        message = "Hello, server!"
-        client_socket.send(message.encode())
+        user_task = asyncio.create_task(user_input_task(cmd_queue, stop_event))
+        comms = asyncio.create_task(comms_task(reader, writer, cmd_queue, stop_event,from_ethernet_queue))
+        raw_to_table = asyncio.create_task(raw_to_table_task(stop_event,from_ethernet_queue))
 
-        # Manual mode for user interaction
-        while True:
-
-            # example:
-            # send 201, 29 -> observe test variable
-            # send 27, 0.5 -> observe test variable
-            # variable changes to 0.5 on rpu and is read back from ethernet
-            # set 1,0 -> led starts blinking faster
-            # set 3,0 -> led blinks slower
-
-            # Commands as per ipc_Control_func.c in baremetal:
-            # id,value,command
-            # 3,x,stop
-            # 201,variable number, set variable number to channel 1
-            # 202,variable number, set variable number to channel 2
-            # 203,variable number, set variable number to channel 3
-            # 204,variable number, set variable number to channel 4
-            # 205,variable number, set variable number to channel 5
-            # 206,variable number, set variable number to channel 6
-            # 207,variable number, set variable number to channel 7
-            # 208,variable number, set variable number to channel 8
-            # 209,variable number, set variable number to channel 9
-            # 210,variable number, set variable number to channel 10
-            # 211,variable number, set variable number to channel 11
-            # 212,variable number, set variable number to channel 12
-            # 213,variable number, set variable number to channel 13
-            # 214,variable number, set variable number to channel 14
-            # 215,variable number, set variable number to channel 15
-            # 216,variable number, set variable number to channel 16
-            # 217,variable number, set variable number to channel 17
-            # 218,variable number, set variable number to channel 18
-            # 219,variable number, set variable number to channel 19
-            # 220,variable number, set variable number to channel 20
-            # 1,x,enable system
-            # 2,x,enable control
-            # 4,variable value, Set_Send_Field_1
-            # 5,variable value, Set_Send_Field_2
-            # 23,variable value, Set_Send_Field_20
-            # 24,x, My_Button_1 (set error)
-            # 27,variable value, My_Button_4 (test variable)
-
-            # Javascope data:
-            # enum JS_OberservableData {
-            # 0    JSO_ZEROVALUE=0,
-            # 1    JSO_ISR_ExecTime_us,
-            # 2    JSO_ISR_Period_us,
-            # 3    JSO_lifecheck,
-            # 4    JSO_theta_mech,
-            # 5    JSO_ua,
-            # 6    JSO_ub,
-            # 7    JSO_uc,
-            # 8    JSO_ia,
-            # 9    JSO_ib,
-            # 10    JSO_ic,
-            # 11    JSO_id,
-            # 12    JSO_iq,
-            # 13    JSO_ud,
-            # 14    JSO_uq,
-            # 15    JSO_Speed_rpm,
-            # 16    JSO_el_Speed_rpm,
-            # 17    JSO_LoadSpeed_rpm,
-            # 18    JSO_volt_temp,
-            # 19    JSO_SoC_init,
-            # 20    JSO_Theta_el,
-            # 21    JSO_Theta_mech,
-            # 22    JSO_LoadTheta_mech,
-            # 23    JSO_DeltaTheta_mech,
-            # 24    JSO_Wtemp,
-            # 25    JSO_Rs_mOhm,
-            # 26    JSO_Ld_mH,
-            # 27    JSO_Lq_mH,
-            # 28    JSO_PsiPM_mVs,
-            # 29    JSO_python_test_loopback,
-            #     JSO_ENDMARKER
-            # };
-
-            id_input = int(input("Enter an ID (unsigned int32): ")) # Send 27 for setting test variable and 29 beforehand to observe it . 201,202,203 are the channel numbers. I.e., id=201, value=29 -> test variable is written to channel 1. Lifecheck is variable=3.
-            value_input = float(input("Enter a value (float): "))
-            float_values = process_data(client_socket, id_input, value_input)
-            data = np.array(float_values)
-            data = data[1:]
-            # Reshape the data
-            reshaped_data = np.reshape(data, (-1, 15))
-            # Extract the first and last column into a dedicated dataframe
-            # Convert to DataFrame
-            df_tmp = pd.DataFrame(reshaped_data.T)
-            df_slow = pd.concat([df_tmp.iloc[:, 0], df_tmp.iloc[:, -1]], axis=1)
-            df_tmp = df_tmp.iloc[:, 1:-1]
-            df = pd.concat([df, df_tmp], ignore_index=True)
-            print(df)
-            print(df_slow)
-
-
+        await asyncio.wait([user_task, comms,raw_to_table], return_when=asyncio.FIRST_COMPLETED)
+        stop_event.set()
     except ConnectionRefusedError:
         print("Connection was refused.")
-    except ConnectionError as e:
+    except Exception as e:
         print(f"An error occurred: {e}")
     finally:
-        # Close the connection
-        client_socket.close()
+        try:
+            writer.close()
+            await writer.wait_closed()
+        except:
+            pass
+        print("Connection closed.")
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

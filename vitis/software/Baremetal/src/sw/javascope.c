@@ -31,10 +31,6 @@ static float *js_slowDataArray[JSSD_ENDMARKER];
 float *js_ch_observable[JSO_ENDMARKER];
 float *js_ch_selected[JS_CHANNELS];
 
-extern float python_test_variable;
-
-float *command_data[COM_ENDMARKER];
-
 static float lifecheck;
 static float ISR_execution_time_us;
 static float ISR_period_us;
@@ -51,7 +47,7 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-extern float python_test_variable;
+
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -69,57 +65,44 @@ int JavaScope_initialize(DS_Data* data)
 		js_slowDataArray[j] = &zerovalue;
 	}
 
-		// Store every observable signal into the Pointer-Array.
-		// With the JavaScope, signals can be displayed simultaneously
-		// Changing between the observable signals is possible at runtime in the JavaScope.
-		// the addresses in Global_Data do not change during runtime, this can be done in the init
-		command_data[COM_python_test_variable] = &python_test_variable;
-		command_data[COM_Ton]=&data->double_pulse.Ton;
-		command_data[COM_Toff]=&data->double_pulse.Toff;
-		command_data[COM_Iload]=&data->double_pulse.Iload;
-		command_data[COM_trigger]=&data->double_pulse.trigger;
+	// Store every observable signal into the Pointer-Array.
+	// With the JavaScope, signals can be displayed simultaneously
+	// Changing between the observable signals is possible at runtime in the JavaScope.
+	// the addresses in Global_Data do not change during runtime, this can be done in the init
+	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
+	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
+	js_ch_observable[JSO_ia] 					= &data->av.I_U;
+	js_ch_observable[JSO_ib] 					= &data->av.I_V;
+	js_ch_observable[JSO_ic] 					= &data->av.I_W;
+	js_ch_observable[JSO_ua] 					= &data->av.U_U;
+	js_ch_observable[JSO_ub] 					= &data->av.U_V;
+	js_ch_observable[JSO_uc] 					= &data->av.U_W;
+	js_ch_observable[JSO_iq] 					= &data->av.I_q;
+	js_ch_observable[JSO_id] 					= &data->av.I_d;
+	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
+	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
+	js_ch_observable[JSO_ud]					= &data->av.U_d;
+	js_ch_observable[JSO_uq]					= &data->av.U_q;
+	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
+	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
+	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
 
-		js_ch_observable[JSO_COM_python_test_variable] = command_data[COM_python_test_variable];
-		js_ch_observable[JSO_COM_Ton] = command_data[COM_Ton];
-		js_ch_observable[JSO_COM_Toff]=command_data[COM_Toff];
-		js_ch_observable[JSO_COM_Iload]=command_data[COM_Iload];
-		js_ch_observable[JSO_COM_trigger]=command_data[COM_trigger];
-		js_ch_observable[JSO_Ton_from_ip]=&data->double_pulse.Ton_from_ip;
+	// Store slow / not-time-critical signals into the SlowData-Array.
+	// Will be transferred one after another
+	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
+	// Only float is allowed!
+	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
+	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
+	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
+	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
+	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
+	js_slowDataArray[JSSD_FLOAT_torque] 		        = &(data->av.mechanicalTorqueObserved);
+	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
+	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
+	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
+	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 
-		js_ch_observable[JSO_Speed_rpm] = &data->av.mechanicalRotorSpeed;
-		js_ch_observable[JSO_el_Speed_rpm] = &data->av.electricalRotorSpeed;
-		js_ch_observable[JSO_ia] = &data->av.I_U;
-		js_ch_observable[JSO_ib] = &data->av.I_V;
-		js_ch_observable[JSO_ic] = &data->av.I_W;
-		js_ch_observable[JSO_ua] = &data->av.U_U;
-		js_ch_observable[JSO_ub] = &data->av.U_V;
-		js_ch_observable[JSO_uc] = &data->av.U_W;
-		js_ch_observable[JSO_iq] = &data->av.I_q;
-		js_ch_observable[JSO_id] = &data->av.I_d;
-		js_ch_observable[JSO_Theta_el] = &data->av.theta_elec;
-		js_ch_observable[JSO_theta_mech] = &data->av.theta_mech;
-		js_ch_observable[JSO_ud] = &data->av.U_d;
-		js_ch_observable[JSO_uq] = &data->av.U_q;
-		js_ch_observable[JSO_ISR_ExecTime_us] = &ISR_execution_time_us;
-		js_ch_observable[JSO_lifecheck] = &lifecheck;
-		js_ch_observable[JSO_ISR_Period_us] = &ISR_period_us;
-
-		// Store slow / not-time-critical signals into the SlowData-Array.
-		// Will be transferred one after another
-		// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
-		// Only float is allowed!
-		js_slowDataArray[JSSD_FLOAT_u_d] = &(data->av.U_d);
-		js_slowDataArray[JSSD_FLOAT_u_q] = &(data->av.U_q);
-		js_slowDataArray[JSSD_FLOAT_i_d] = &(data->av.I_d);
-		js_slowDataArray[JSSD_FLOAT_i_q] = &(data->av.I_q);
-		js_slowDataArray[JSSD_FLOAT_speed] = &(data->av.mechanicalRotorSpeed);
-		js_slowDataArray[JSSD_FLOAT_torque] = &(data->av.mechanicalTorqueObserved);
-		js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart] = &System_UpTime_seconds;
-		js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] = &ISR_execution_time_us;
-		js_slowDataArray[JSSD_FLOAT_ISR_Period_us] = &ISR_period_us;
-		js_slowDataArray[JSSD_FLOAT_Milliseconds] = &System_UpTime_ms;
-
-		return Status;
+	return Status;
 }
 
 
@@ -133,6 +116,7 @@ void JavaScope_update(DS_Data* data){
 	struct APU_to_RPU_user_data_t volatile * const apu_to_rpu_user_data = (struct APU_to_RPU_user_data_t*)MEM_SHARED_START_OCM_BANK_2_APU_TO_RPU;
 	static int js_cnt_slowData=0;
 	int status = XST_SUCCESS;
+	js_ch_selected[0] = js_ch_observable[JSO_lifecheck];
 
 #if (USE_A53_AS_ACCELERATOR_FOR_R5_ISR == TRUE)
 	// write data to a53 in shared memory and flush cache
@@ -143,7 +127,7 @@ void JavaScope_update(DS_Data* data){
 #endif
 
 	// Refresh variables since the init function sets the javascope to point to a address, but the variables are never refreshed
-	lifecheck 				= uz_SystemTime_GetInterruptCounter() % 1000;
+	lifecheck 				+=1.0f; // uz_SystemTime_GetInterruptCounter(); // % 1000;
 	ISR_execution_time_us	= uz_SystemTime_GetIsrExectionTimeInUs();
 	ISR_period_us			= uz_SystemTime_GetIsrPeriodInUs();
 	System_UpTime_seconds   = uz_SystemTime_GetUptimeInSec();

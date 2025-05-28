@@ -47,19 +47,19 @@ void print_echo_app_header()
  *      This thread sends and receives the data, regarding the information
  *      in the shared RAM. This thread runs always!
  *---------------------------------------------------------------------------*/
-char recv_buf[2048] = {0};
-NetworkSendStruct nwsend = {0};
-int nread = 0;
+extern float js_queue_full;
+float queue_elements_waiting=0.0f;
 
-void process_request_thread(void *p)
+	void
+	process_request_thread(void *p)
 {
 	struct javascope_data_t javascope_data_sending = {0};
-
-
+	NetworkSendStruct nwsend = {0};
+	char recv_buf[2048] = {0};
 	struct APU_to_RPU_t* Received_Data = {0};
 
 	int clientfd = (int)p;
-
+	int nread = 0;
 	int nwrote = 0;
 
 	uz_printf("APU: Javascope connected 0x%x\n", clientfd);
@@ -73,14 +73,15 @@ void process_request_thread(void *p)
 
 			// Take one element from queue
 			// The maximum amount of time the task should block waiting for an item to receive should the queue be empty at the time of the call.
-			xQueueReset(js_queue); // Ensures that there is not massive lag between send receive -- just use code to check until python variables matches feedback from UZ prevents this change.
 			xQueueReceive(js_queue, &javascope_data_sending, JS_QUEUE_RECEIVE_TICKS2WAIT);
-
+			// Get the number of elements waiting in the queue
+			UBaseType_t elements_waiting = uxQueueMessagesWaiting(js_queue);
+			queue_elements_waiting = (float)elements_waiting;
 			// copy data into nwsend struct
 			nwsend.val_01[i] 	= javascope_data_sending.scope_ch[0];
-			nwsend.val_02[i] 	= javascope_data_sending.scope_ch[1];
+			nwsend.val_02[i] = js_queue_full; //javascope_data_sending.scope_ch[1];
 			nwsend.val_03[i] 	= javascope_data_sending.scope_ch[2];
-			nwsend.val_04[i]  	= javascope_data_sending.scope_ch[3];
+			nwsend.val_04[i] = queue_elements_waiting;
 			nwsend.val_05[i]  	= javascope_data_sending.scope_ch[4];
 			nwsend.val_06[i]  	= javascope_data_sending.scope_ch[5];
 			nwsend.val_07[i] 	= javascope_data_sending.scope_ch[6];

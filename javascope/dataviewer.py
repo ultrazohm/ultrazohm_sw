@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, callback, Output, Input, callback_context
+from dash import Dash, html, dcc, Output, Input
 import plotly.graph_objects as go
 import pandas as pd
 from plotly_resampler import FigureResampler
@@ -48,7 +48,7 @@ def update_options(filename):
     Input('upload-data', 'filename'),
     prevent_initial_call=True
 )
-def update_graph(value, filename):
+def update_graph(value, _):
     global fig
     global df
     # df = pd.read_parquet(filename)
@@ -75,4 +75,4 @@ def get_file_extension(filename):
     return parts[-1]
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run(debug=True)

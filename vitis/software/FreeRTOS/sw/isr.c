@@ -37,7 +37,7 @@ extern uint32_t javascope_data_status;
 
 // Javascope Queue parameters
 QueueHandle_t js_queue;
-int js_queue_full = 0;
+float js_queue_full = 0;
 
 int i_LifeCheck_Transfer_ipc;
 
@@ -74,7 +74,7 @@ void Transfer_ipc_Intr_Handler(void *data)
 
 		if (queue_status == errQUEUE_FULL)
 		{
-			js_queue_full++;
+			js_queue_full+=1.0f;
 			// uz_printf("OsziData_queue is full\r\n");
 		}
 	}

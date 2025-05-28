@@ -52,35 +52,49 @@ async def comms_task(reader, writer, cmd_queue, stop_event,from_ethernet_queue):
 
 
 async def raw_to_table_task(stop_event, from_ethernet_queue):
-            current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-            filename_fast = f"fast_{current_time}.csv"
-            filename_slow = f"slow_{current_time}.csv"
-            try:
-                # Create an empty CSV file to start 
-                df = pd.DataFrame()  # Create empty DataFrame
-                df.to_csv(filename_fast, index=False, mode='w')
-                df.to_csv(filename_slow, index=False, mode='w')
-                print(f"Created log file: {filename_fast}")
-                print(f"Created log file: {filename_slow}")
-                print()
-            except Exception as e:
-                print(f"Error creating log file: {e}")
+    current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    filename_fast = f"fast_{current_time}.csv"
+    filename_slow = f"slow_{current_time}.csv"
+    
+    # Initialize scope buffer to hold 1000 rows
+    scope_buffer = []
+    max_buffer_size = 1000
+    
+    try:
+        # Create an empty CSV file to start 
+        df = pd.DataFrame()  # Create empty DataFrame
+        df.to_csv(filename_fast, index=False, mode='w')
+        df.to_csv(filename_slow, index=False, mode='w')
+        print(f"Created log file: {filename_fast}")
+        print(f"Created log file: {filename_slow}")
+        print()
+    except Exception as e:
+        print(f"Error creating log file: {e}")
 
+    try:
+        while not stop_event.is_set():
             try:
-                while not stop_event.is_set():
-                    try:
-                        float_values = await from_ethernet_queue.get()
-                        data_np = np.array(float_values)[1:]
-                        reshaped_data = np.reshape(data_np, (-1, 15))
-                        df_tmp = pd.DataFrame(reshaped_data.T)
-                        fast_data = df_tmp.iloc[:, 1:-1]
-                        slow_data = df_tmp.iloc[:, [0, -1]]
-                        fast_data.to_csv(filename_fast, mode='a', header=False, index=False)
-                        slow_data.to_csv(filename_slow, mode='a', header=False, index=False)
-                    except Exception as e:
-                        print(f"Error processing data: {e}")
+                float_values = await from_ethernet_queue.get()
+                data_np = np.array(float_values)[1:]
+                reshaped_data = np.reshape(data_np, (-1, 15))
+                df_tmp = pd.DataFrame(reshaped_data.T)
+                fast_data = df_tmp.iloc[:, 1:-1]
+                slow_data = df_tmp.iloc[:, [0, -1]]
+                
+                # Append to scope buffer
+                for _, row in fast_data.iterrows():
+                    scope_buffer.append(row.tolist())
+                
+                # Keep only the latest 1000 rows
+                if len(scope_buffer) > max_buffer_size:
+                    scope_buffer = scope_buffer[-max_buffer_size:]
+                
+                fast_data.to_csv(filename_fast, mode='a', header=False, index=False)
+                slow_data.to_csv(filename_slow, mode='a', header=False, index=False)
             except Exception as e:
-                print(f"Error in raw_to_table_task: {e}")
+                print(f"Error processing data: {e}")
+    except Exception as e:
+        print(f"Error in raw_to_table_task: {e}")
 
 async def main():
     IP = '192.168.1.233'

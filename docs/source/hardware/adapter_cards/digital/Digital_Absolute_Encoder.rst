@@ -17,7 +17,7 @@ Revisions
 ..  toctree::
    :maxdepth: 1
    
-   Digital_Absolute_Encoder_Rev01
-   Digital_Absolute_Encoder_Rev02
+   Digital_Absolute_Encoder/Digital_Absolute_Encoder_Rev01
+   Digital_Absolute_Encoder/Digital_Absolute_Encoder_Rev02
 
 The remainder of this page summarizes ...

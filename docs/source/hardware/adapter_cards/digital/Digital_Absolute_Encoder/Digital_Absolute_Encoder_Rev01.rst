@@ -4,7 +4,7 @@
 Digital Absolute Encoder Rev01
 ==============================
 
-.. image:: Digital_Absolute_Encoder/uz_d_abs_encoder_rev01.png
+.. image:: uz_d_abs_encoder_rev01.png
   :height: 500
 
 Source

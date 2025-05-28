@@ -26,12 +26,13 @@ Hardware
     :caption: Digital Cards
 
     adapter_cards/digital/optical/optical_general
-    adapter_cards/digital/inc_encoder/incr_encoder_general
     adapter_cards/digital/digital_voltage/digital_voltage_general
     adapter_cards/digital/Digital_BreakoutBoard_v1
     adapter_cards/digital/encoder_v1
     adapter_cards/digital/temperature_rev02/temperature_rev02
+    adapter_cards/digital/inc_encoder/incr_encoder_general
     adapter_cards/digital/Digital_Resolver_rev01
+    adapter_cards/digital/Digital_Absolute_Encoder
     adapter_cards/digital/inverter/inverter_general
 
 

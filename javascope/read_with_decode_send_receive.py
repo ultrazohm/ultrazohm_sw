@@ -6,6 +6,8 @@ import pandas as pd
 from datetime import datetime
 import pyarrow as pa
 import pyarrow.parquet as pq
+import threading
+import matplotlib.pyplot as plt
 
 # Helper functions
 def decode_floats(data):
@@ -50,16 +52,21 @@ async def comms_task(reader, writer, cmd_queue, stop_event,from_ethernet_queue):
             stop_event.set()
             break
 
+scope_buffer = []
+max_buffer_size = 1000
+scope_buffer_lock = threading.Lock()
+
+def get_scope_buffer_data():
+    # Returns a reference to the buffer (zero copy) with thread safety
+    with scope_buffer_lock:
+        return scope_buffer
 
 async def raw_to_table_task(stop_event, from_ethernet_queue):
     current_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     filename_fast = f"fast_{current_time}.csv"
     filename_slow = f"slow_{current_time}.csv"
-    
-    # Initialize scope buffer to hold 1000 rows
-    scope_buffer = []
-    max_buffer_size = 1000
-    
+    global scope_buffer  # Use the shared buffer
+
     try:
         # Create an empty CSV file to start 
         df = pd.DataFrame()  # Create empty DataFrame
@@ -80,15 +87,13 @@ async def raw_to_table_task(stop_event, from_ethernet_queue):
                 df_tmp = pd.DataFrame(reshaped_data.T)
                 fast_data = df_tmp.iloc[:, 1:-1]
                 slow_data = df_tmp.iloc[:, [0, -1]]
-                
-                # Append to scope buffer
-                for _, row in fast_data.iterrows():
-                    scope_buffer.append(row.tolist())
-                
-                # Keep only the latest 1000 rows
-                if len(scope_buffer) > max_buffer_size:
-                    scope_buffer = scope_buffer[-max_buffer_size:]
-                
+                # Append to scope buffer with lock
+                with scope_buffer_lock:
+                    for _, row in fast_data.iterrows():
+                        scope_buffer.append(row.tolist())
+                    # Keep only the latest 1000 rows
+                    if len(scope_buffer) > max_buffer_size:
+                        scope_buffer = scope_buffer[-max_buffer_size:]
                 fast_data.to_csv(filename_fast, mode='a', header=False, index=False)
                 slow_data.to_csv(filename_slow, mode='a', header=False, index=False)
             except Exception as e:
@@ -96,13 +101,16 @@ async def raw_to_table_task(stop_event, from_ethernet_queue):
     except Exception as e:
         print(f"Error in raw_to_table_task: {e}")
 
+
 async def main():
-    IP = '192.168.1.233'
+    # IP = '192.168.1.233'
+    IP = '127.0.0.1'
     PORT = 1000
     cmd_queue = asyncio.Queue()
     from_ethernet_queue = asyncio.Queue()
     stop_event = asyncio.Event()
-    
+    plot_stop_event = threading.Event()
+
     try:
         reader, writer = await asyncio.open_connection(IP, PORT)
         print(f"Connected to {IP} on port {PORT}")
@@ -113,8 +121,12 @@ async def main():
         comms = asyncio.create_task(comms_task(reader, writer, cmd_queue, stop_event,from_ethernet_queue))
         raw_to_table = asyncio.create_task(raw_to_table_task(stop_event,from_ethernet_queue))
 
+
+
         await asyncio.wait([user_task, comms,raw_to_table], return_when=asyncio.FIRST_COMPLETED)
         stop_event.set()
+        plot_stop_event.set()
+        plot_thread.join()
     except ConnectionRefusedError:
         print("Connection was refused.")
     except Exception as e:

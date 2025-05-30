@@ -46,26 +46,68 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+// safety thresholds
+float Vdc_max = 400.0f;
+float Iphase_max = 10.0f;
+
+float duty_amplitude 	=   0.05f;
+float duty_frequency 	=  10.0f;
+float duty_offset 		=   0.5f;
+uz_3ph_abc_t three_phase_sine;
+
+int isr_use_sinwave_gen = 0;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    Global_Data.av.U_DC = Global_Data.aa.A1.me.ADC_A4;
+    Global_Data.av.I_U  = Global_Data.aa.A1.me.ADC_A1;
+    Global_Data.av.I_V  = Global_Data.aa.A1.me.ADC_A2;
+    Global_Data.av.I_W  = Global_Data.aa.A1.me.ADC_A3;
+
+    /* --- limit checks ------------------------------------------------------- */
+    bool ov_dc  =  Global_Data.av.U_DC          > Vdc_max;     // over-voltage (DC link)
+    bool oc_IU  =  fabsf(Global_Data.av.I_U)    > Iphase_max;  // over-current phase U
+    bool oc_IV  =  fabsf(Global_Data.av.I_V)    > Iphase_max;  // over-current phase V
+    bool oc_IW  =  fabsf(Global_Data.av.I_W)    > Iphase_max;  // over-current phase W
+
+    /* --- act on any error --------------------------------------------------- */
+    if (ov_dc || oc_IU || oc_IV || oc_IW) {
+        ultrazohm_state_machine_set_error(true);
+    }
+
+    // SET VALUES
+    three_phase_sine = uz_wavegen_three_phase_sample(duty_amplitude, duty_frequency, duty_offset);
+    if (isr_use_sinwave_gen)
+    {
+		Global_Data.rasv.halfBridge1DutyCycle = three_phase_sine.a;
+		Global_Data.rasv.halfBridge2DutyCycle = three_phase_sine.b;
+		Global_Data.rasv.halfBridge3DutyCycle = three_phase_sine.c;
+    }
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
-    if (current_state==control_state)
+    if(current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state
+    	Global_Data.rasv.halfBridge7DutyCycle = 0.0f; // PWM 7 is connected to "inverter_enable" signal to Wolfspeed inverter
     }
+    else
+    {
+    	Global_Data.rasv.halfBridge7DutyCycle = 1.0f;
+    }
+
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
 
     // Set duty cycles for three-level modulator
-    PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-                        Global_Data.rasv.halfBridge2DutyCycle,
-                        Global_Data.rasv.halfBridge3DutyCycle);
+ //   PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
+ //                       Global_Data.rasv.halfBridge2DutyCycle,
+ //                       Global_Data.rasv.halfBridge3DutyCycle);
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error
     // This has to be the last function executed in the ISR!

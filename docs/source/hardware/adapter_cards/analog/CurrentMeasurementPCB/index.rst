@@ -90,7 +90,7 @@ Output connectors                 RJ45 (Ethernet-style) for differential pairs
 .. figure:: Schematics.png
    :alt: Current Measurement PCB Circuit Diagram
    :align: center
-   :width: 600px
+   :width: 800px
 
    
 Supported Sensors
@@ -155,7 +155,7 @@ The gain is configured using external feedback resistors R11 and R12 as follows:
 
    g = \frac{R_{11}}{R_{12}} = \frac{2\,\mathrm{k\Omega}}{1\,\mathrm{k\Omega}} = 2 \,\,
 
-Ensure that R12=R14 and R11=R16 holds. This sets the overall gain of the amplifier stage to 2, amplifying the differential voltage from the sensor to match the ADC’s ±5 V input range when full-scale current is applied.
+Ensure that R12=R14 and R11=R16 holds. This sets the overall gain of the amplifier stage to 2, amplifying the differential voltage from the sensor to match the ADC's ±5 V input range when full-scale current is applied.
 
 .. note::
    Use precision resistors (0.1% or better) for R11, R12, R14, R16 to ensure consistent gain and matching across all channels.
@@ -165,13 +165,17 @@ Filters
 
 The analog signal path includes two types of low-pass filters: an anti-aliasing filter and an active differential low-pass filter. 
 
-1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is formed by the capacitors 
-:math:`C_\mathrm{Diff}` (C18) and :math:`C_\mathrm{CM}` (C16, C20). They create a first-order low-pass filter with the series resistors 
-:math:`{R_0}` according to (example numbers):
+1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is defined by the capacitor 
+:math:`C_\mathrm{Diff}` (C18 = 5.6 nF) and the common-mode capacitors :math:`C_\mathrm{CM}` (C16, C20), which are not populated in initial testing.
+This results in a first-order low-pass filter formed by :math:`R_{13}` (:math:`R_{15}`) and the differential capacitor only:
 
-.. math:: 
-   f_\mathrm{aliasing,-3dB}=  \frac{1}{2 \pi R_0 (2 C_\mathrm{Diff} + C_\mathrm{CM} ) } = 
-                              \frac{1}{2\pi\cdot49.9\,\Omega \cdot (2\cdot22\,\mathrm{pF}  + 22\,\mathrm{pF}) } \approx 48.2\, \mathrm{MHz} \,\,.
+.. math::
+
+   f_\mathrm{aliasing,-3dB} = \frac{1}{2 \pi R_{13} (2 C_\mathrm{Diff} + C_\mathrm{CM})}
+   = \frac{1}{2 \pi \cdot 49.9\,\Omega \cdot (2 \cdot 5.6\,\mathrm{nF} + 0)} \approx 285\,\mathrm{kHz}
+
+This anti-aliasing filter primarily attenuates high-frequency differential-mode noise. 
+
 
 2. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with:
 
@@ -180,9 +184,6 @@ The analog signal path includes two types of low-pass filters: an anti-aliasing 
                             \frac{1}{2\pi\cdot2\,\mathrm{k\Omega}\cdot22\,\mathrm{pF}} \approx 3.62\, \mathrm{MHz}
 
 .. note::
-
-   For initial testing, the common-mode capacitors (:math:`C_\mathrm{CM}`) for the anti-aliasing filter 
-   are not populated on the PCB. 
 
    As a rule of thumb, the following condition should hold:
 

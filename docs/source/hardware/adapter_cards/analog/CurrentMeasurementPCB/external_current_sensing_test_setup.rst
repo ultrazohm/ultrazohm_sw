@@ -13,8 +13,8 @@ It includes equipment, configurations & calibration and the measurement methodol
 DC Analysis
 ===========
 
-Purpose
--------
+DC Test Purpose
+---------------
 
 The DC analysis verifies the correct offset behavior and gain of the current measurement signal chain under static current conditions.
 It is used to confirm linearity, baseline voltage levels, and that the differential output behaves as expected when exposed to known DC input currents.
@@ -29,8 +29,8 @@ Equipment
 AC Analysis
 ===========
 
-Purpose
--------
+AC Test Purpose
+---------------
 
 AC test setup is used to evaluate the sensitivity and dynamic behavior of the current measurement box.
 The setup includes analog signal injection, probe configuration, and detailed usage of all test equipment.
@@ -121,7 +121,7 @@ For input impedance of **50 Ω** in AC IN of Bode 100, this simplifies to:
 
    V_{\mathrm{RMS}} = 0.2236 \cdot 10^{\frac{\text{dBm}}{20}}
 
-For Range = 26.6 A_peak (setting in APS1000), this yields the following output current amplitudes:
+For Range = 26.4 A_peak (setting in APS1000), this yields the following output current amplitudes:
 
 - At 0 dBm:
   :math:`V_{\mathrm{RMS}} = 0.224\,\mathrm{V}` 

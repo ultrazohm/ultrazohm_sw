@@ -26,10 +26,13 @@ DC Performance Conclusion
 
 The PCB demonstrates good accuracy, with the total error falling below **1.3% across the full ±10 A range**. 
 
+AC Analysis
+===========
+
 Time-Domain and Harmonics Analysis
 ----------------------------------
 
-To evaluate the output ripple and stability, and harmonic distortion behavior of different sensor technologies, 
+To evaluate the output ripple, stability and harmonic distortion behavior of different sensor technologies, 
 a time-domain observation combined with FFT-based harmonics analysis was performed. This test involved all four measurement channels operating simultaneously, each populated with a different sensor. 
 A sinusoidal input current of 100 mA peak at 100 Hz was applied. This test was conducted without any common-mode filter populated on the analog card to allow for a direct comparison of raw sensor.
 

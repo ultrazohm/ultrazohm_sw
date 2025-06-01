@@ -66,7 +66,7 @@ The block diagram below illustrates the complete AC measurement setup:
    :width: 600px
    :alt: 
 
-   Figure: Block diagram of AC impedance test setup using Bode 100, Spitzenberger APS 1000 (Input Modulator Current Amplifier), and optical probes.
+   Figure: Block diagram of AC impedance test setup using Bode 100, Spitzenberger APS 1000 (Input Modulator Current Amplifier), load resistor and optical probes.
 
 Configuration Details
 ---------------------
@@ -106,25 +106,6 @@ Probe Ratio Settings
 
    Figure: Test Setup of Bode100
 
-
-Notes on Current Amplifier Behavior
------------------------------------
-
-The APS 1000 settings -> Amplifier Control -> Limit includes a Range setting that defines the effective gain of the current amplifier. 
-The analog input range of AC IN of APS 1000 is +-5V. The Range setting divided by 5V results in the gain:
-
-- When set to a higher range (e.g. 26.4 A_peak), the gain is 26.4 A_peak / 5V =  5.28 A/V.
-  
-- When set to a lower range (e.g. 3 A_peak), the gain is 3 A_peak / 5V = 0.60 A/V.
-  
-  
-.. figure:: spitzenberger_Setup.png
-   :align: center
-   :width: 800px
-   :alt:
-
-   Figure: Test Setup of Spitzenberger APS 1000 for Range configuration and optional DC Offset
-
 Notes on Bode 100 Configuration
 -------------------------------
 
@@ -154,10 +135,31 @@ For Range = 26.6 A_peak (setting in APS1000), this yields the following output c
 
 **This value is fed to the APS 1000, which amplifies it according to the selected Range, resulting in the actual test input current.**
 
+Notes on APS 1000 Current Source Behaviour
+------------------------------------------
+
+The Spitzenberger APS 1000 operates similarly to a linear regulator: it regulates 
+the voltage based on the input signal from the Bode 100 and generates a corresponding current 
+based on the selected I-Range limit.
+
+The APS 1000 settings -> Amplifier Control -> Limit includes a Range setting that defines the effective gain of the current amplifier. 
+The analog input range of AC IN of APS 1000 is +-5V. The Range setting divided by 5V results in the gain:
+
+- When set to a higher range (e.g. 26.4 A_peak), the gain is 26.4 A_peak / 5V =  5.28 A/V.
+  
+- When set to a lower range (e.g. 3 A_peak), the gain is 3 A_peak / 5V = 0.60 A/V.
+  
+.. figure:: spitzenberger_Setup.png
+   :align: center
+   :width: 800px
+   :alt:
+
+   Figure: Test Setup of Spitzenberger APS 1000 for Range configuration and optional DC Offset
+
 Limitations of APS 1000 Current Source
 --------------------------------------
 
-The current output of the Spitzenberger APS 1000 current amplifier is frequency-dependent. It directly affects the accuracy of AC impedance measurements in this test system.
+The current output of the Spitzenberger APS 1000 current amplifier is frequency-dependent, which directly affects the accuracy of AC impedance measurements in this test system.
 According to the APS 1000 datasheet:
 
 - Large signal bandwidth (full-scale output current):  
@@ -173,4 +175,30 @@ This means that the output current starts to roll off above 10 kHz for high-ampl
    from the APS 1000. In the impedance calculation, a reduced current value 
    leads to an overestimated impedance, which make the impedance go high after this frequency range.
 
+Additional Limitations of the Test Setup
+----------------------------------------
 
+- dv/dt immunity of the sensors is not tested directly within the test system.  
+  The Bode 100 setup applies sinusoidal current excitation, which lacks fast voltage transients. Therefore it does not replicate high dv/dt conditions that are present in inverter switching events.
+  As a result, any conclusions regarding dv/dt performance must be drawn only from the sensor datasheets or related application notes.
+
+Real-world AC test Setup
+------------------------
+
+.. figure:: real_setup.png
+   :align: center
+   :width: 800px
+   :alt: AC test setup
+
+   Real-world AC test setup in the lab, showing the configured equipment and wiring.
+
+Purpose of the Series Load Resistor
+-----------------------------------
+
+A series 68 Ω load resistor is connected between the output of the Spitzenberger APS 1000 current amplifier and the current input of the PCB.
+As mentioned earlier, the APS 1000 operates similarly to a linear voltage regulator, which results in internal power dissipation. To avoid excessive internal heat generation, the external load resistor shares this power dissipation, reducing thermal stress on the amplifier.
+
+Therefore, the load resistor serves two purposes:
+
+- It acts as a voltage drop element for power dissipation
+- It protects the current modulator stage of the APS 1000 from thermal overload

@@ -39,12 +39,12 @@ typedef uint64_t u64;
 #else
 typedef struct {
     u16 DeviceId;
-    u64 Control_BaseAddress;
+    u32 Control_BaseAddress;
 } XUz_nn_acc_Config;
 #endif
 
 typedef struct {
-    u64 Control_BaseAddress;
+    u32 Control_BaseAddress;
     u32 IsReady;
 } XUz_nn_acc;
 
@@ -88,26 +88,26 @@ u32 XUz_nn_acc_IsReady(XUz_nn_acc *InstancePtr);
 void XUz_nn_acc_EnableAutoRestart(XUz_nn_acc *InstancePtr);
 void XUz_nn_acc_DisableAutoRestart(XUz_nn_acc *InstancePtr);
 
-void XUz_nn_acc_Set_Observation_Input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_Observation_Input(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_L_1_Weights_input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_L_1_Weights_input(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_L_2_Weights_input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_L_2_Weights_input(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_L_3_Weights_input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_L_3_Weights_input(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_L_Output_Weights_input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_L_Output_Weights_input(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_Action_output(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_Action_output(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_L_1_Bias_input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_L_1_Bias_input(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_L_2_Bias_input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_L_2_Bias_input(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_L_3_Bias_input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_L_3_Bias_input(XUz_nn_acc *InstancePtr);
-void XUz_nn_acc_Set_L_Output_Bias_input(XUz_nn_acc *InstancePtr, u64 Data);
-u64 XUz_nn_acc_Get_L_Output_Bias_input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_Observation_Input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_Observation_Input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_L_1_Weights_input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_L_1_Weights_input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_L_2_Weights_input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_L_2_Weights_input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_L_3_Weights_input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_L_3_Weights_input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_L_Output_Weights_input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_L_Output_Weights_input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_Action_output(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_Action_output(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_L_1_Bias_input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_L_1_Bias_input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_L_2_Bias_input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_L_2_Bias_input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_L_3_Bias_input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_L_3_Bias_input(XUz_nn_acc *InstancePtr);
+void XUz_nn_acc_Set_L_Output_Bias_input(XUz_nn_acc *InstancePtr, u32 Data);
+u32 XUz_nn_acc_Get_L_Output_Bias_input(XUz_nn_acc *InstancePtr);
 void XUz_nn_acc_Set_copy_mats_flag(XUz_nn_acc *InstancePtr, u32 Data);
 u32 XUz_nn_acc_Get_copy_mats_flag(XUz_nn_acc *InstancePtr);
 void XUz_nn_acc_Set_Observation_size_input(XUz_nn_acc *InstancePtr, u32 Data);

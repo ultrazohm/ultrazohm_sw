@@ -1,6 +1,3 @@
-#ifndef UZ_NN_ACC_HWADDRESSES_H
-#define UZ_NN_ACC_HWADDRESSES_H
-
 // ==============================================================
 // Vitis HLS - High-Level Synthesis from C, C++ and OpenCL v2022.2 (64-bit)
 // Tool Version Limit: 2019.12
@@ -117,4 +114,3 @@
 #define XUZ_NN_ACC_CONTROL_ADDR_COMPUTE_FLAG_DATA           0x98
 #define XUZ_NN_ACC_CONTROL_BITS_COMPUTE_FLAG_DATA           1
 
-#endif

@@ -40,15 +40,16 @@ reg y1_we0;
 (* fsm_encoding = "none" *) reg   [0:0] ap_CS_fsm;
 wire    ap_CS_fsm_state1;
 reg    ap_block_state1_pp0_stage0_iter0;
-wire   [0:0] exitcond40137_fu_52_p2;
+wire   [0:0] exitcond40836_fu_50_p2;
 reg    ap_condition_exit_pp0_iter0_stage0;
 wire    ap_loop_exit_ready;
 reg    ap_ready_int;
-wire   [63:0] p_cast363_fu_64_p1;
-reg   [6:0] empty_fu_26;
-wire   [6:0] empty_163_fu_58_p2;
+wire   [31:0] p_cast_cast_fu_66_p1;
+reg   [6:0] empty_fu_24;
+wire   [6:0] empty_164_fu_56_p2;
 wire    ap_loop_init;
 reg   [6:0] ap_sig_allocacmp_p_load;
+wire   [5:0] empty_165_fu_62_p1;
 reg    ap_done_reg;
 wire    ap_continue_int;
 reg    ap_done_int;
@@ -100,10 +101,10 @@ end
 
 always @ (posedge ap_clk) begin
     if (((ap_start_int == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
-        if ((exitcond40137_fu_52_p2 == 1'd0)) begin
-            empty_fu_26 <= empty_163_fu_58_p2;
+        if ((exitcond40836_fu_50_p2 == 1'd0)) begin
+            empty_fu_24 <= empty_164_fu_56_p2;
         end else if ((ap_loop_init == 1'b1)) begin
-            empty_fu_26 <= 7'd0;
+            empty_fu_24 <= 7'd0;
         end
     end
 end
@@ -117,7 +118,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((ap_start_int == 1'b1) & (exitcond40137_fu_52_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state1))) begin
+    if (((ap_start_int == 1'b1) & (exitcond40836_fu_50_p2 == 1'd1) & (1'b1 == ap_CS_fsm_state1))) begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b1;
     end else begin
         ap_condition_exit_pp0_iter0_stage0 = 1'b0;
@@ -152,7 +153,7 @@ always @ (*) begin
     if (((ap_loop_init == 1'b1) & (1'b1 == ap_CS_fsm_state1))) begin
         ap_sig_allocacmp_p_load = 7'd0;
     end else begin
-        ap_sig_allocacmp_p_load = empty_fu_26;
+        ap_sig_allocacmp_p_load = empty_fu_24;
     end
 end
 
@@ -165,7 +166,7 @@ always @ (*) begin
 end
 
 always @ (*) begin
-    if (((ap_start_int == 1'b1) & (exitcond40137_fu_52_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state1))) begin
+    if (((ap_start_int == 1'b1) & (exitcond40836_fu_50_p2 == 1'd0) & (1'b1 == ap_CS_fsm_state1))) begin
         y1_we0 = 1'b1;
     end else begin
         y1_we0 = 1'b0;
@@ -191,13 +192,15 @@ end
 
 assign ap_loop_exit_ready = ap_condition_exit_pp0_iter0_stage0;
 
-assign empty_163_fu_58_p2 = (ap_sig_allocacmp_p_load + 7'd1);
+assign empty_164_fu_56_p2 = (ap_sig_allocacmp_p_load + 7'd1);
 
-assign exitcond40137_fu_52_p2 = ((ap_sig_allocacmp_p_load == 7'd64) ? 1'b1 : 1'b0);
+assign empty_165_fu_62_p1 = ap_sig_allocacmp_p_load[5:0];
 
-assign p_cast363_fu_64_p1 = ap_sig_allocacmp_p_load;
+assign exitcond40836_fu_50_p2 = ((ap_sig_allocacmp_p_load == 7'd64) ? 1'b1 : 1'b0);
 
-assign y1_address0 = p_cast363_fu_64_p1;
+assign p_cast_cast_fu_66_p1 = empty_165_fu_62_p1;
+
+assign y1_address0 = p_cast_cast_fu_66_p1;
 
 assign y1_d0 = 32'd0;
 

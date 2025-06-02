@@ -3,7 +3,7 @@
   <spirit:vendor>xilinx.com</spirit:vendor>
   <spirit:library>hls</spirit:library>
   <spirit:name>uz_NN_acc</spirit:name>
-  <spirit:version>2.4</spirit:version>
+  <spirit:version>2.5</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
       <spirit:name>s_axi_control</spirit:name>
@@ -651,8 +651,8 @@
   <spirit:addressSpaces>
     <spirit:addressSpace>
       <spirit:name>Data_m_axi_arrays</spirit:name>
-      <spirit:range>16E</spirit:range>
-      <spirit:width spirit:format="long">64</spirit:width>
+      <spirit:range>4G</spirit:range>
+      <spirit:width spirit:format="long">32</spirit:width>
       <spirit:parameters>
         <spirit:parameter>
           <spirit:name>DEPENDENT_ON</spirit:name>
@@ -953,8 +953,8 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>Observation_Input_1</spirit:name>
-          <spirit:displayName>Observation_Input_1</spirit:displayName>
+          <spirit:name>Observation_Input</spirit:name>
+          <spirit:displayName>Observation_Input</spirit:displayName>
           <spirit:description>Data signal of Observation_Input</spirit:description>
           <spirit:addressOffset>16</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
@@ -976,33 +976,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>Observation_Input_2</spirit:name>
-          <spirit:displayName>Observation_Input_2</spirit:displayName>
-          <spirit:description>Data signal of Observation_Input</spirit:description>
-          <spirit:addressOffset>20</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>Observation_Input</spirit:name>
-            <spirit:description>Bit 63 to 32 of Observation_Input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>L_1_Weights_input_1</spirit:name>
-          <spirit:displayName>L_1_Weights_input_1</spirit:displayName>
+          <spirit:name>L_1_Weights_input</spirit:name>
+          <spirit:displayName>L_1_Weights_input</spirit:displayName>
           <spirit:description>Data signal of L_1_Weights_input</spirit:description>
-          <spirit:addressOffset>28</spirit:addressOffset>
+          <spirit:addressOffset>24</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1022,33 +999,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_1_Weights_input_2</spirit:name>
-          <spirit:displayName>L_1_Weights_input_2</spirit:displayName>
-          <spirit:description>Data signal of L_1_Weights_input</spirit:description>
-          <spirit:addressOffset>32</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_1_Weights_input</spirit:name>
-            <spirit:description>Bit 63 to 32 of L_1_Weights_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>L_2_Weights_input_1</spirit:name>
-          <spirit:displayName>L_2_Weights_input_1</spirit:displayName>
+          <spirit:name>L_2_Weights_input</spirit:name>
+          <spirit:displayName>L_2_Weights_input</spirit:displayName>
           <spirit:description>Data signal of L_2_Weights_input</spirit:description>
-          <spirit:addressOffset>40</spirit:addressOffset>
+          <spirit:addressOffset>32</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1068,33 +1022,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_2_Weights_input_2</spirit:name>
-          <spirit:displayName>L_2_Weights_input_2</spirit:displayName>
-          <spirit:description>Data signal of L_2_Weights_input</spirit:description>
-          <spirit:addressOffset>44</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_2_Weights_input</spirit:name>
-            <spirit:description>Bit 63 to 32 of L_2_Weights_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>L_3_Weights_input_1</spirit:name>
-          <spirit:displayName>L_3_Weights_input_1</spirit:displayName>
+          <spirit:name>L_3_Weights_input</spirit:name>
+          <spirit:displayName>L_3_Weights_input</spirit:displayName>
           <spirit:description>Data signal of L_3_Weights_input</spirit:description>
-          <spirit:addressOffset>52</spirit:addressOffset>
+          <spirit:addressOffset>40</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1114,33 +1045,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_3_Weights_input_2</spirit:name>
-          <spirit:displayName>L_3_Weights_input_2</spirit:displayName>
-          <spirit:description>Data signal of L_3_Weights_input</spirit:description>
-          <spirit:addressOffset>56</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_3_Weights_input</spirit:name>
-            <spirit:description>Bit 63 to 32 of L_3_Weights_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>L_Output_Weights_input_1</spirit:name>
-          <spirit:displayName>L_Output_Weights_input_1</spirit:displayName>
+          <spirit:name>L_Output_Weights_input</spirit:name>
+          <spirit:displayName>L_Output_Weights_input</spirit:displayName>
           <spirit:description>Data signal of L_Output_Weights_input</spirit:description>
-          <spirit:addressOffset>64</spirit:addressOffset>
+          <spirit:addressOffset>48</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1160,33 +1068,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_Output_Weights_input_2</spirit:name>
-          <spirit:displayName>L_Output_Weights_input_2</spirit:displayName>
-          <spirit:description>Data signal of L_Output_Weights_input</spirit:description>
-          <spirit:addressOffset>68</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_Output_Weights_input</spirit:name>
-            <spirit:description>Bit 63 to 32 of L_Output_Weights_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>Action_output_1</spirit:name>
-          <spirit:displayName>Action_output_1</spirit:displayName>
+          <spirit:name>Action_output</spirit:name>
+          <spirit:displayName>Action_output</spirit:displayName>
           <spirit:description>Data signal of Action_output</spirit:description>
-          <spirit:addressOffset>76</spirit:addressOffset>
+          <spirit:addressOffset>56</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1206,33 +1091,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>Action_output_2</spirit:name>
-          <spirit:displayName>Action_output_2</spirit:displayName>
-          <spirit:description>Data signal of Action_output</spirit:description>
-          <spirit:addressOffset>80</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>Action_output</spirit:name>
-            <spirit:description>Bit 63 to 32 of Action_output</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>L_1_Bias_input_1</spirit:name>
-          <spirit:displayName>L_1_Bias_input_1</spirit:displayName>
+          <spirit:name>L_1_Bias_input</spirit:name>
+          <spirit:displayName>L_1_Bias_input</spirit:displayName>
           <spirit:description>Data signal of L_1_Bias_input</spirit:description>
-          <spirit:addressOffset>88</spirit:addressOffset>
+          <spirit:addressOffset>64</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1252,33 +1114,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_1_Bias_input_2</spirit:name>
-          <spirit:displayName>L_1_Bias_input_2</spirit:displayName>
-          <spirit:description>Data signal of L_1_Bias_input</spirit:description>
-          <spirit:addressOffset>92</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_1_Bias_input</spirit:name>
-            <spirit:description>Bit 63 to 32 of L_1_Bias_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>L_2_Bias_input_1</spirit:name>
-          <spirit:displayName>L_2_Bias_input_1</spirit:displayName>
+          <spirit:name>L_2_Bias_input</spirit:name>
+          <spirit:displayName>L_2_Bias_input</spirit:displayName>
           <spirit:description>Data signal of L_2_Bias_input</spirit:description>
-          <spirit:addressOffset>100</spirit:addressOffset>
+          <spirit:addressOffset>72</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1298,33 +1137,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_2_Bias_input_2</spirit:name>
-          <spirit:displayName>L_2_Bias_input_2</spirit:displayName>
-          <spirit:description>Data signal of L_2_Bias_input</spirit:description>
-          <spirit:addressOffset>104</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_2_Bias_input</spirit:name>
-            <spirit:description>Bit 63 to 32 of L_2_Bias_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>L_3_Bias_input_1</spirit:name>
-          <spirit:displayName>L_3_Bias_input_1</spirit:displayName>
+          <spirit:name>L_3_Bias_input</spirit:name>
+          <spirit:displayName>L_3_Bias_input</spirit:displayName>
           <spirit:description>Data signal of L_3_Bias_input</spirit:description>
-          <spirit:addressOffset>112</spirit:addressOffset>
+          <spirit:addressOffset>80</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1344,33 +1160,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_3_Bias_input_2</spirit:name>
-          <spirit:displayName>L_3_Bias_input_2</spirit:displayName>
-          <spirit:description>Data signal of L_3_Bias_input</spirit:description>
-          <spirit:addressOffset>116</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_3_Bias_input</spirit:name>
-            <spirit:description>Bit 63 to 32 of L_3_Bias_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
-          <spirit:name>L_Output_Bias_input_1</spirit:name>
-          <spirit:displayName>L_Output_Bias_input_1</spirit:displayName>
+          <spirit:name>L_Output_Bias_input</spirit:name>
+          <spirit:displayName>L_Output_Bias_input</spirit:displayName>
           <spirit:description>Data signal of L_Output_Bias_input</spirit:description>
-          <spirit:addressOffset>124</spirit:addressOffset>
+          <spirit:addressOffset>88</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1390,33 +1183,10 @@
           </spirit:field>
         </spirit:register>
         <spirit:register>
-          <spirit:name>L_Output_Bias_input_2</spirit:name>
-          <spirit:displayName>L_Output_Bias_input_2</spirit:displayName>
-          <spirit:description>Data signal of L_Output_Bias_input</spirit:description>
-          <spirit:addressOffset>128</spirit:addressOffset>
-          <spirit:size spirit:format="long">32</spirit:size>
-          <spirit:access>write-only</spirit:access>
-          <spirit:reset>
-            <spirit:value spirit:format="long">0</spirit:value>
-          </spirit:reset>
-          <spirit:field>
-            <spirit:name>L_Output_Bias_input</spirit:name>
-            <spirit:description>Bit 63 to 32 of L_Output_Bias_input</spirit:description>
-            <spirit:bitOffset>0</spirit:bitOffset>
-            <spirit:bitWidth spirit:format="long">32</spirit:bitWidth>
-            <spirit:access>write-only</spirit:access>
-            <spirit:writeValueConstraint>
-              <spirit:minimum>0</spirit:minimum>
-              <spirit:maximum>0</spirit:maximum>
-            </spirit:writeValueConstraint>
-            <spirit:testable spirit:testConstraint="unconstrained">false</spirit:testable>
-          </spirit:field>
-        </spirit:register>
-        <spirit:register>
           <spirit:name>copy_mats_flag</spirit:name>
           <spirit:displayName>copy_mats_flag</spirit:displayName>
           <spirit:description>Data signal of copy_mats_flag</spirit:description>
-          <spirit:addressOffset>136</spirit:addressOffset>
+          <spirit:addressOffset>96</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1452,7 +1222,7 @@
           <spirit:name>Observation_size_input</spirit:name>
           <spirit:displayName>Observation_size_input</spirit:displayName>
           <spirit:description>Data signal of Observation_size_input</spirit:description>
-          <spirit:addressOffset>144</spirit:addressOffset>
+          <spirit:addressOffset>104</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1475,7 +1245,7 @@
           <spirit:name>Action_size_input</spirit:name>
           <spirit:displayName>Action_size_input</spirit:displayName>
           <spirit:description>Data signal of Action_size_input</spirit:description>
-          <spirit:addressOffset>152</spirit:addressOffset>
+          <spirit:addressOffset>112</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1498,7 +1268,7 @@
           <spirit:name>copy_flag_out</spirit:name>
           <spirit:displayName>copy_flag_out</spirit:displayName>
           <spirit:description>Data signal of copy_flag_out</spirit:description>
-          <spirit:addressOffset>160</spirit:addressOffset>
+          <spirit:addressOffset>120</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>read-only</spirit:access>
           <spirit:reset>
@@ -1535,7 +1305,7 @@
           <spirit:name>matrices_updated_out</spirit:name>
           <spirit:displayName>matrices_updated_out</spirit:displayName>
           <spirit:description>Data signal of matrices_updated_out</spirit:description>
-          <spirit:addressOffset>176</spirit:addressOffset>
+          <spirit:addressOffset>136</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>read-only</spirit:access>
           <spirit:reset>
@@ -1572,7 +1342,7 @@
           <spirit:name>compute_flag</spirit:name>
           <spirit:displayName>compute_flag</spirit:displayName>
           <spirit:description>Data signal of compute_flag</spirit:description>
-          <spirit:addressOffset>192</spirit:addressOffset>
+          <spirit:addressOffset>152</spirit:addressOffset>
           <spirit:size spirit:format="long">32</spirit:size>
           <spirit:access>write-only</spirit:access>
           <spirit:reset>
@@ -1624,7 +1394,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>903f5c0f</spirit:value>
+            <spirit:value>5697d1d9</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1643,7 +1413,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>36dfba40</spirit:value>
+            <spirit:value>9bc4b451</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1662,7 +1432,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>0c3b87c7</spirit:value>
+            <spirit:value>8eae2838</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1681,7 +1451,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>c2e96324</spirit:value>
+            <spirit:value>56a4139b</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -1695,7 +1465,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>92a344d0</spirit:value>
+            <spirit:value>1e6384b0</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -2068,7 +1838,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH&apos;)) - 1)">63</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH&apos;)) - 1)">31</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2510,7 +2280,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH&apos;)) - 1)">63</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH&apos;)) - 1)">31</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -2855,7 +2625,7 @@
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_M_AXI_ARRAYS_ADDR_WIDTH</spirit:name>
-        <spirit:value spirit:format="long" spirit:id="MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH">64</spirit:value>
+        <spirit:value spirit:format="long" spirit:id="MODELPARAM_VALUE.C_M_AXI_ARRAYS_ADDR_WIDTH">32</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>C_M_AXI_ARRAYS_DATA_WIDTH</spirit:name>
@@ -3009,7 +2779,7 @@
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_mul_6ns_10s_10_1_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_mac_muladd_7ns_10s_10ns_10_4_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3174,7 +2944,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/verilog/uz_NN_acc_mul_6ns_10s_10_1_1.v</spirit:name>
+        <spirit:name>hdl/verilog/uz_NN_acc_mac_muladd_7ns_10s_10ns_10_4_1.v</spirit:name>
         <spirit:fileType>verilogSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3379,7 +3149,7 @@
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_mul_6ns_10s_10_1_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_mac_muladd_7ns_10s_10ns_10_4_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -3473,7 +3243,7 @@
       <spirit:file>
         <spirit:name>hdl/vhdl/uz_NN_acc.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_78e15929</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_709b3225</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -3529,7 +3299,7 @@
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>hdl/vhdl/uz_NN_acc_mul_6ns_10s_10_1_1.vhd</spirit:name>
+        <spirit:name>hdl/vhdl/uz_NN_acc_mac_muladd_7ns_10s_10ns_10_4_1.vhd</spirit:name>
         <spirit:fileType>vhdlSource</spirit:fileType>
         <spirit:userFileType>USED_IN_ipstatic</spirit:userFileType>
       </spirit:file>
@@ -3677,35 +3447,35 @@
     <spirit:fileSet>
       <spirit:name>xilinx_softwaredriver_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v2_4/data/uz_NN_acc.mdd</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_5/data/uz_NN_acc.mdd</spirit:name>
         <spirit:userFileType>driver_mdd</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v2_4/data/uz_NN_acc.tcl</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_5/data/uz_NN_acc.tcl</spirit:name>
         <spirit:userFileType>driver_tcl</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v2_4/src/Makefile</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_5/src/Makefile</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v2_4/src/xuz_nn_acc.c</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_5/src/xuz_nn_acc.c</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v2_4/src/xuz_nn_acc.h</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_5/src/xuz_nn_acc.h</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v2_4/src/xuz_nn_acc_hw.h</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_5/src/xuz_nn_acc_hw.h</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v2_4/src/xuz_nn_acc_linux.c</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_5/src/xuz_nn_acc_linux.c</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>drivers/uz_NN_acc_v2_4/src/xuz_nn_acc_sinit.c</spirit:name>
+        <spirit:name>drivers/uz_NN_acc_v2_5/src/xuz_nn_acc_sinit.c</spirit:name>
         <spirit:userFileType>driver_src</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
@@ -3726,7 +3496,7 @@
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/uz_NN_acc_v2_4.tcl</spirit:name>
+        <spirit:name>xgui/uz_NN_acc_v2_5.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_74df36ab</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
@@ -3854,7 +3624,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">uz_NN_acc_v2_4</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">uz_NN_acc_v2_5</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>clk_period</spirit:name>
@@ -3870,7 +3640,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>latency</spirit:name>
-      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="17">218</spirit:value>
+      <spirit:value spirit:id="PARAM_VALUE.latency" spirit:order="17">143</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>II</spirit:name>
@@ -3887,8 +3657,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Uz_nn_acc</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2114101338</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-05-27T07:18:57Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114109975</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-06-02T07:15:47Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>
@@ -3897,12 +3667,12 @@
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2022.2</xilinx:xilinxVersion>
       <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="321f5432"/>
-      <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="c5f42284"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="c5a88a85"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="343eb7a9"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="ce6e00df"/>
-      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="ce3c2d9e"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="d5cb4e16"/>
+      <xilinx:checksum xilinx:scope="addressSpaces" xilinx:value="1530bb24"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="6b387086"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="7afd19d8"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="513e3655"/>
+      <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="b541dce1"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="b39d7b69"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>

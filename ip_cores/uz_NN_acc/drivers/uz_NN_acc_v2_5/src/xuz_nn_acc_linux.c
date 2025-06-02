@@ -16,7 +16,7 @@
 
 /**************************** Type Definitions ******************************/
 typedef struct {
-    u64 addr;
+    u32 addr;
     u32 size;
 } XUz_nn_acc_uio_map;
 
@@ -124,7 +124,7 @@ int XUz_nn_acc_Initialize(XUz_nn_acc *InstancePtr, const char* InstanceName) {
     }
 
     // NOTE: slave interface 'Control' should be mapped to uioX/map0
-    InstancePtr->Control_BaseAddress = (u64)mmap(NULL, InfoPtr->maps[0].size, PROT_READ|PROT_WRITE, MAP_SHARED, InfoPtr->uio_fd, 0 * getpagesize());
+    InstancePtr->Control_BaseAddress = (u32)mmap(NULL, InfoPtr->maps[0].size, PROT_READ|PROT_WRITE, MAP_SHARED, InfoPtr->uio_fd, 0 * getpagesize());
     assert(InstancePtr->Control_BaseAddress);
 
     InstancePtr->IsReady = XIL_COMPONENT_IS_READY;

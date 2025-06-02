@@ -33,6 +33,8 @@ enum JS_OberservableData {
 	JSO_ic,
 	JSO_id,
 	JSO_iq,
+	JSO_UZK,
+	JSO_IZK,
 	JSO_ud,
 	JSO_uq,
 	JSO_Speed_rpm,

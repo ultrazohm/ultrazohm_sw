@@ -13,7 +13,7 @@ The implementation and nomenclature follows the principles outlined in :ref:`uz_
   - Number of neurons in the hidden layers is fixed to **64**.
   - Variable number of up to **24 Observations**
   - Variable number of up to **12 Actions**
-  - Execution time of **~13µs**
+  - Execution time of **~11-12µs**
   
 .. figure:: uz_NN_acc_layers.svg
    :align: center
@@ -29,7 +29,7 @@ Features
 - Uses Matrix math as input and outputs
 - IP-Core is configured and triggerd by the PS exclusively 
 - Correct size of the observation, weights, bias and action arrays will be asserted
-- Execution time for 20 observations and 4 actions roughly takes **~13µs**
+- Execution time for 20 observations and 4 actions roughly takes **~11µs**
 - Unsafe math optimization in Vitis HLS is used
 
 
@@ -313,9 +313,9 @@ The processor can not do any other tasks.
 
 .. code-block::
 
-    uz_NN_acc_ff_blocking(instance);                         // Takes 13us (example)
+    uz_NN_acc_ff_blocking(instance);                         // Takes 12us (example)
     uz_sleep_useconds(10);                                   // Takes 10us
-                                                             // Takes 23us total
+                                                             // Takes 22us total
 
 .. mermaid::
 
@@ -338,10 +338,10 @@ Note that this means the actual calculation time of network without the communic
 
 .. code-block::
 
-    uz_NN_acc_ff_non_blocking(instance);                            // Takes 13us (example)
+    uz_NN_acc_ff_non_blocking(instance);                            // Takes 12us (example)
     uz_sleep_useconds(10);                                          // Takes 10us 
-    uz_NN_acc_get_result_blocking(instance);                        // Takes 4us
-                                                                    // Takes 17us total
+    uz_NN_acc_get_result_blocking(instance);                        // Takes 3us
+                                                                    // Takes 15us total
 
 .. mermaid::
 

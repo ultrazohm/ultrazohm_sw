@@ -8,6 +8,9 @@
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 
 
 // union allows to access the values as array and individual variables
@@ -82,7 +85,9 @@ typedef struct _actualValues_ {
 	float U_q;
 	float theta_elec;
 	float theta_mech;
-	float theta_offset; //in rad/s
+	float theta_offset; //in rad
+	float omega_mech;
+	float omega_elec; //rad/s
 	float temperature;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	float u_a;
@@ -92,6 +97,22 @@ typedef struct _actualValues_ {
 	float i_b;
 	float i_c;
 	float I_ZK;
+	float errorcode;
+
+	float d_a_ref;
+	float d_b_ref;
+	float d_c_ref;
+	bool directDuty;
+
+	uz_3ph_abc_t i_abc_m;
+	uz_3ph_abc_t u_abc_m;
+	uz_3ph_dq_t i_dq_m;
+	uz_3ph_dq_t u_dq_m;
+	uz_3ph_dq_t i_dq_ref;
+	uz_3ph_dq_t u_dq_ref;
+
+	struct uz_DutyCycle_t output_Dutycycle;
+
 	uint32_t  heartbeatframe_content;
 	float electricalRotorSpeed;
 	float snd_fld[21];
@@ -125,6 +146,7 @@ typedef struct{
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
 	uz_inverter_adapter_t* inverter_D1;
+	uz_CurrentControl_t* current_control;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

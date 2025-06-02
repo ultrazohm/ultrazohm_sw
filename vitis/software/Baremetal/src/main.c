@@ -33,7 +33,72 @@ DS_Data Global_Data = {
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
+	.av.i_dq_ref = {.d = 0.0f, .q = 0.0f, .zero = 0.0f},
+	.av.d_a_ref = 0.0f,
+	.av.d_b_ref = 0.0f,
+	.av.d_c_ref = 0.0f,
+	.av.directDuty = false,
+	.av.theta_offset = 2.33f,
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+
+
+//const struct uz_PMSM_t config_PMSM = {
+ //  .Ld_Henry = 0.001626f,
+ //  .Lq_Henry = 0.001626f,
+  // .Psi_PM_Vs = 0.07f,
+ //  .R_ph_Ohm = 7.3f,
+  // .polePairs = 1.0f,
+   //.J_kg_m_squared = ,
+//   .I_max_Ampere = 1.72f
+// };
+
+const struct uz_PMSM_t config_PMSM = {
+  .Ld_Henry =  0.00113f,
+   .Lq_Henry = 0.00142f,
+  .Psi_PM_Vs = 0.0169f,
+  .R_ph_Ohm = 0.543f,
+  .polePairs = 3.0f,
+   //.J_kg_m_squared = ,
+  .I_max_Ampere = 5.0f
+ };
+
+//const struct uz_PI_Controller_config config_id = {
+   //.Kp = 1.0f,
+  // .Ki = 120.0f,
+  // .samplingTime_sec = 0.00005f
+//};
+
+const struct uz_PI_Controller_config config_id = {
+   .Kp = 1.1f,
+   .Ki = 120.0f,
+   .samplingTime_sec = 0.00005f
+};
+
+//const struct uz_PI_Controller_config config_iq = {
+  // .Kp = 1.0f,
+//  .Ki = 120.0f,
+//  .samplingTime_sec = 0.00005f
+//};
+
+
+const struct uz_PI_Controller_config config_iq = {
+   .Kp =1.42f,
+   .Ki = 95.0f,
+   .samplingTime_sec = 0.00005f
+};
+
+const struct uz_CurrentControl_config config_current_control = {
+   .decoupling_select = linear_decoupling,
+   .Kp_adjustment_flag = false,
+   .config_PMSM = config_PMSM,
+   .config_id = config_id,
+   .config_iq = config_iq,
+   .max_modulation_index = 0.5f //1.0f / sqrtf(3.0f)
+};
+
+
+
+
 
 enum init_chain
 {
@@ -84,6 +149,7 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
+            Global_Data.objects.current_control = uz_CurrentControl_init(config_current_control);
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

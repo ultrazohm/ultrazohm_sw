@@ -187,31 +187,39 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		data->av.i_dq_ref.d = value;
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
+		data->av.i_dq_ref.q = value;
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
+		//data->av.n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_4):
 		data->av.snd_fld[4] = value;
+		data->av.d_a_ref = value;
 			break;
 
 		case (Set_Send_Field_5):
 		data->av.snd_fld[5] = value;
+		data->av.d_b_ref = value;
 			break;
 
 		case (Set_Send_Field_6):
 		data->av.snd_fld[6] = value;
+		data->av.d_c_ref = value;
 			break;
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
+		data->av.theta_offset = value;
 			break;
+
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
@@ -227,14 +235,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_11):
 		data->av.snd_fld[11] = value;
+
 			break;
 
 		case (Set_Send_Field_12):
 		data->av.snd_fld[12] = value;
+
 			break;
 
 		case (Set_Send_Field_13):
 		data->av.snd_fld[13] = value;
+
 			break;
 
 		case (Set_Send_Field_14):
@@ -278,11 +289,11 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			data->av.directDuty = true;
 			break;
 
 		case (My_Button_5):
-
+		data->av.directDuty = false;
 			break;
 
 		case (My_Button_6):

@@ -126,7 +126,6 @@ async def main():
         await asyncio.wait([user_task, comms,raw_to_table], return_when=asyncio.FIRST_COMPLETED)
         stop_event.set()
         plot_stop_event.set()
-        plot_thread.join()
     except ConnectionRefusedError:
         print("Connection was refused.")
     except Exception as e:

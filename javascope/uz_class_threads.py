@@ -23,7 +23,8 @@ class ultrazohm:
         self.cmd_queue_size = cmd_queue_size
         self.from_ethernet_queue_size = from_ethernet_queue_size
         self.max_buffer_size = max_buffer_size
-        self.scope_buffer = []
+        self.manager = multiprocessing.Manager()
+        self.scope_buffer = self.manager.list()
         self.scope_buffer_lock = multiprocessing.Lock()
         self.sock = None
         self.stop_event = multiprocessing.Event()
@@ -228,6 +229,10 @@ def example_usage():
     uz.log_fast(True)   # Enable fast logging (filename auto-generated)
     uz.log_slow(True)   # Enable slow logging (filename auto-generated)
     uz.start_communication(True)  # Start communication and logging tasks
+    time.sleep(1.0)
+    uz.start_communication(False)  # Stop communication and logging
+    uz.connect()  # Connect using constructor IP/port
+    uz.start_communication(True)  # Start communication and logging tasks
     uz.set_command(0, 3.14)
     time.sleep(2)
     uz.set_command(1, 3.14)
@@ -235,9 +240,6 @@ def example_usage():
     uz.set_command(2, 3.14)
     time.sleep(2)
     uz.set_command(3, 3.14)
-
-    time.sleep(0.1)
-    uz.start_communication(False)  # Stop communication and logging
     uz.disconnect()  # Disconnect from device
 
 if __name__ == "__main__":

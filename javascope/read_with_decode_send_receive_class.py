@@ -123,6 +123,8 @@ class ultrazohm:
                 else:
                     id_input, value_input = 0, 0.0
                 packet = encode_id_value(id_input, value_input)
+                if hasattr(self, 'debug') and self.debug:
+                    print(f"[DEBUG] Sending packet: id={id_input}, value={value_input}, raw={packet.hex()}")
                 self.writer.write(packet)
                 await self.writer.drain()
                 data = await self.reader.readexactly(1324)
@@ -158,7 +160,8 @@ class ultrazohm:
         except Exception as e:
             print(f"Error in raw_to_table_task: {e}")
 
-    async def start_communication(self, enable):
+    async def start_communication(self, enable, debug=False):
+        self.debug = debug
         if enable:
             self.stop_event.clear()
             self.comms_task_handle = asyncio.create_task(self.comms_task())
@@ -171,6 +174,18 @@ class ultrazohm:
                 await self.raw_to_table_task_handle
 
     async def set_command(self, id_input, value_input):
+        await self.cmd_queue.put((id_input, value_input))
+
+    async def set_command_skip_queue(self, id_input, value_input):
+        """Clears the command queue and puts only the new command in."""
+        if self.cmd_queue is None:
+            raise RuntimeError("Command queue not initialized. Call connect() first.")
+        # Drain the queue
+        while not self.cmd_queue.empty():
+            try:
+                self.cmd_queue.get_nowait()
+            except asyncio.QueueEmpty:
+                break
         await self.cmd_queue.put((id_input, value_input))
 
     def get_scope_buffer_data(self):
@@ -206,9 +221,9 @@ class ultrazohm:
 
 # Example usage of the ultrazohm class
 async def example_usage():
-    uz = ultrazohm(ip='192.168.1.233', port=1000, cmd_queue_size=10, from_ethernet_queue_size=10, max_buffer_size=1000)
+    uz = ultrazohm(ip='127.0.0.1', port=1000, cmd_queue_size=10, from_ethernet_queue_size=10, max_buffer_size=1000)
     await uz.connect()  # Connect using constructor IP/port
-
+    # 192.168.1.233
     await uz.start_communication(True)  # Start communication and logging tasks
     # Example: send a command
     await uz.set_command(0, 3.14)

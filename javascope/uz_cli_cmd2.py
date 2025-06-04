@@ -109,6 +109,24 @@ class UltrazohmShell(cmd2.Cmd):
         else:
             self.poutput("Not connected.")
 
+    def do_set_command_skip_queue(self, arg):
+        """set_command_skip_queue <id> <value> -- Send command and clear queue (id: int, value: float)"""
+        if self.uz:
+            args = arg.split()
+            if len(args) < 2:
+                self.poutput("Usage: set_command_skip_queue <id> <value>")
+            else:
+                try:
+                    id_input = int(args[0])
+                    value_input = float(args[1])
+                    self.poutput(f"set_command_skip_queue called with id={id_input}, value={value_input}")
+                    fut = asyncio.run_coroutine_threadsafe(self.uz.set_command_skip_queue(id_input, value_input), self.loop)
+                    fut.result()
+                except Exception as e:
+                    self.poutput(f"Error: {e}")
+        else:
+            self.poutput("Not connected.")
+
     def do_get_scope_buffer_data(self, arg):
         """get_scope_buffer_data -- Print current scope buffer"""
         if self.uz:

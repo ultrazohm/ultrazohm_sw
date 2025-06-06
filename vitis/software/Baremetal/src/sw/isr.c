@@ -83,6 +83,7 @@ void ISR_Control(void *data)
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
     Global_Data.av.omega_mech = 1*((Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * (2.0f * (float)M_PI));
@@ -99,7 +100,7 @@ void ISR_Control(void *data)
     Global_Data.av.I_ZK = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
 
 
-/*
+    /*
     Global_Data.av.u_ab =    Global_Data.av.u_a -   Global_Data.av.u_b;
     Global_Data.av.u_bc =    Global_Data.av.u_b -   Global_Data.av.u_c;
     Global_Data.av.u_ca =    Global_Data.av.u_c -   Global_Data.av.u_a;

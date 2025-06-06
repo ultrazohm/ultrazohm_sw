@@ -79,8 +79,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uc] 					= &data->av.u_c;
 	js_ch_observable[JSO_UZK] 					= &data->av.U_ZK;
 	js_ch_observable[JSO_IZK] 					= &data->av.I_ZK;
-	js_ch_observable[JSO_iq] 					= &data->av.I_q;
-	js_ch_observable[JSO_id] 					= &data->av.I_d;
+	js_ch_observable[JSO_iq] 					= &data->av.i_dq_m.q;
+	js_ch_observable[JSO_id] 					= &data->av.i_dq_m.d;
 	js_ch_observable[JSO_Theta_el] 				= &data->av.theta_elec;
 	js_ch_observable[JSO_theta_mech] 			= &data->av.theta_mech;
 js_ch_observable[JSO_iq_ref] 					= &data->av.i_dq_ref.q;

@@ -108,66 +108,67 @@ This suggests the 2 MHz spike in CAS5025 originates from internal circuitry spec
 AC Analysis - Impedance Measurement
 ===================================
 
-This section presents comparative impedance measurements using various sensors under various conditions.
+This section presents comparative impedance measurements using various sensors under consistent conditions, 
+performed using the Bode 100 setup with the APS 1000 current amplifier.
+
+.. note::
+
+   As discussed previously, the*Spitzenberger APS 1000 has a large-signal bandwidth of approximately 30-50 kHz. 
+   Therefore, all impedance interpretations in this section are limited to frequencies up to 50 kHz, 
+   where the current injection remains reliable and linear. **Roll-off behavior above this range may reflect 
+   limitations in the current amplifier rather than sensor characteristics.**
 
 
-The first test result shows the impedance magnitude and phase of Sensitec CAS5015SRA-LI under varying AC excitation and DC offset conditions. 
-The following configurations were tested:
 
-- Black trace: 0 A DC offset, 0 dBm AC amplitude → ≈ 1.67 A AC
-- Green trace: 2 A DC offset, 0 dBm AC amplitude → ≈ 1.67 A AC
-- Red trace: 0 A DC offset, 12 dBm AC amplitude → ≈ 5.30 A AC
+Test 1: Sensitec CAS5015SRA-LI - Amplitude and Offset Variation
+---------------------------------------------------------------
 
- .. figure:: impedance_cas5015sra_sweep_amplitude_offset.png
+This test evaluates the impedance response of the CAS5015SRA-LI sensor under varying AC excitation and DC offset:
+
+- **Black trace**: 0 A DC offset, 0 dBm AC amplitude (≈ 1.67 A_peak)
+- **Green trace**: 2 A DC offset, 0 dBm AC amplitude (≈ 1.67 A_peak)
+- **Red trace**: 0 A DC offset, 12 dBm AC amplitude (≈ 5.30 A_peak)
+
+.. figure:: impedance_cas5015sra_sweep_amplitude_offset.png
    :align: center
    :width: 800px
    :alt: Impedance Bode plot for CAS5015SRA-LI under varying excitation
 
-- The impedance magnitude remains nearly constant across all test conditions in the low-frequency region. 
-  A noticeable drop occurs around 2 kHz for all traces, with the effect being more pronounced in the black trace. 
-  Above approximately 200 kHz, all curves exhibit a clear roll-off in magnitude and phase.
+**Observations:**
 
-The second test result shows the impedance magnitude and phase of four different current sensors 
-under identical excitation conditions: 0 A DC offset and 0 dBm AC source level (≈ 1.67 A peak current). 
-The sensors evaluated in this test include:
+- Impedance magnitude is stable across all conditions in the sub-10 kHz range.
+- A slight dip appears near 2 kHz, more pronounced in the 0 dBm / 0 A case (black).
+- All traces follow a similar phase trend; higher-frequency variations are disregarded due to test setup limits.
 
-- STB-6CAS/F - Orange trace
-- CASR 6-NP - Blue trace
-- CAS5015SRA-LI - Black trace
-- CAS5025SRA-LI - Purple trace
+
+Test 2: Cross-Sensor Comparison
+-------------------------------
+
+In this test, four different sensors are compared under identical conditions (0 A offset, 0 dBm input):
+
+- **STB-6CAS/F** - Orange trace  
+- **CASR 6-NP** - Blue trace  
+- **CAS5015SRA-LI** - Black trace  
+- **CAS5025SRA-LI** - Purple trace
 
 .. figure:: impedance_sensor_comparison.png
    :align: center
    :width: 800px
    :alt: Impedance and phase plots comparing four current sensors under identical conditions
 
-   Impedance magnitude (top) and phase (bottom) response of four different sensors.
+**Observations:**
 
-- Similar to the previous test, a slight drop in impedance magnitude occurs around 2 kHz for all sensors 
+- All sensors show consistent impedance behavior.
+- A dip in impedance magnitude is visible near 2 kHz, similar to the previous test.
+- Low-frequency impedance levels align closely with expected values:
 
-- Across the full sweep, all sensors show stable impedance values in the low-frequency region, 
-  closely matching their expected impedance levels, calculated as before:
-
-   .. math::
+  .. math::
 
      Z_{\text{expected}} = \text{OpAmp Gain} \times \text{Sensor Sensitivity} \quad [\text{in } \mathrm{m\Omega}]
 
-- A consistent roll-off in magnitude is observed beginning around 200 kHz for all sensors, 
-  attributed to the sensing chain low-pass behavior.
+- The phase response of all sensors remains flat below 20 kHz and gradually drops approaching 50 kHz.
 
-- Also the phase responses of all four sensors follow a similar trend, 
-  with noticeable phase lag beginning around 50-100 kHz. 
-  The exact roll-off frequency and slope vary slightly between sensors.
 
-The third test compares the impedance magnitude and phase of two sensors under different AC source levels, while maintaining **0 A DC offset**. The sensors used are:
 
-- CAS5015SRA-LI - 12 dBm (~5.30 A peak) - Red trace
-- CAS5025SRA-LI - 12 dBm (~5.30 A peak) - Black trace
-- CAS5025SRA-LI - 0 dBm (~1.67 A peak) - Purple trace
 
-.. figure:: impedance_sensor_amplitude_comparison.png
-   :align: center
-   :width: 800px
-   :alt: Impedance and phase plots comparing Sensitec TMR sensors under two AC amplitude levels
 
-   Impedance magnitude and phase of CAS5015SRA and CAS5025SRA sensors under varying AC amplitudes

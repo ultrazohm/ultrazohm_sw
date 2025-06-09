@@ -201,4 +201,4 @@ As mentioned earlier, the APS 1000 operates similarly to a linear voltage regula
 Therefore, the load resistor serves two purposes:
 
 - It acts as a voltage drop element for power dissipation
-- It protects the current modulator stage of the APS 1000 from thermal overload
+- It protects the internal current modulator stage of the APS 1000 from thermal overload

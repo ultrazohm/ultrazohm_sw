@@ -165,19 +165,19 @@ Filters
 
 The analog signal path includes two types of low-pass filters: an anti-aliasing filter and an active differential low-pass filter. 
 
-1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is defined by the capacitor 
-:math:`C_\mathrm{Diff}` (C18 = 5.6 nF) and the common-mode capacitors :math:`C_\mathrm{CM}` (C16, C20), which are not populated in initial testing.
-This results in a first-order low-pass filter formed by :math:`R_{13}` (:math:`R_{15}`) and the differential capacitor only:
+1. The crossover frequency :math:`f_\mathrm{aliasing,-3dB}` of the anti-aliasing filter is defined by the differential capacitor 
+:math:`C_\mathrm{Diff}` (C18 = 5.6 nF), which is **populated**, and the common-mode capacitors 
+:math:`C_\mathrm{CM}` (C16, C20), which are **not populated** during initial testing.
 
 .. math::
 
    f_\mathrm{aliasing,-3dB} = \frac{1}{2 \pi R_{13} (2 C_\mathrm{Diff} + C_\mathrm{CM})}
    = \frac{1}{2 \pi \cdot 49.9\,\Omega \cdot (2 \cdot 5.6\,\mathrm{nF} + 0)} \approx 285\,\mathrm{kHz}
 
-This anti-aliasing filter primarily attenuates high-frequency differential-mode noise. 
+This anti-aliasing filter attenuates high-frequency differential-mode noise. 
 
 
-2. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with:
+1. Additionally, :math:`C_\mathrm{f}` and :math:`R_\mathrm{f}` form an active first-order low-pass filter, with:
 
 .. math:: 
    f_\mathrm{DiffOp,-3dB} = \frac{1}{2\pi R_f C_f} = 

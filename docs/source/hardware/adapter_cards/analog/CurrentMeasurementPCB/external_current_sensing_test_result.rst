@@ -24,7 +24,7 @@ This asymmetry is likely due to slight sensor nonlinearity or residual offset in
 DC Performance Conclusion
 -------------------------
 
-The sensor demonstrates a good accuracy, with the total error falling below **1.3% across the full ±10 A range**. 
+The sensor demonstrates a good accuracy, with the total error falling below 1.3% across the full ±10 A range. 
 
 AC Analysis - Time and Frequency Domain
 =======================================
@@ -113,15 +113,14 @@ performed using the Bode 100 setup with the APS 1000 current amplifier.
 
 .. note::
 
-   As discussed previously, the*Spitzenberger APS 1000 has a large-signal bandwidth of approximately 30-50 kHz. 
+   As discussed previously, the Spitzenberger APS 1000 has a large-signal bandwidth of approximately 30-50 kHz. 
    Therefore, all impedance interpretations in this section are limited to frequencies up to 50 kHz, 
    where the current injection remains reliable and linear. **Roll-off behavior above this range may reflect 
    limitations in the current amplifier rather than sensor characteristics.**
 
 
-
-Test 1: Sensitec CAS5015SRA-LI - Amplitude and Offset Variation
----------------------------------------------------------------
+Test 1: Sensitec CAS5015SRA-LI Behavoiur
+----------------------------------------
 
 This test evaluates the impedance response of the CAS5015SRA-LI sensor under varying AC excitation and DC offset:
 
@@ -136,39 +135,49 @@ This test evaluates the impedance response of the CAS5015SRA-LI sensor under var
 
 **Observations:**
 
-- Impedance magnitude is stable across all conditions in the sub-10 kHz range.
-- A slight dip appears near 2 kHz, more pronounced in the 0 dBm / 0 A case (black).
 - All traces follow a similar phase trend; higher-frequency variations are disregarded due to test setup limits.
-
-
-Test 2: Cross-Sensor Comparison
--------------------------------
-
-In this test, four different sensors are compared under identical conditions (0 A offset, 0 dBm input):
-
-- **STB-6CAS/F** - Orange trace  
-- **CASR 6-NP** - Blue trace  
-- **CAS5015SRA-LI** - Black trace  
-- **CAS5025SRA-LI** - Purple trace
-
-.. figure:: impedance_sensor_comparison.png
-   :align: center
-   :width: 800px
-   :alt: Impedance and phase plots comparing four current sensors under identical conditions
-
-**Observations:**
-
-- All sensors show consistent impedance behavior.
-- A dip in impedance magnitude is visible near 2 kHz, similar to the previous test.
-- Low-frequency impedance levels align closely with expected values:
+- Impedance magnitude is stable across all conditions in the sub-2 kHz range. These align closely with expected values:
 
   .. math::
 
      Z_{\text{expected}} = \text{OpAmp Gain} \times \text{Sensor Sensitivity} \quad [\text{in } \mathrm{m\Omega}]
 
+- The slight dip observed near 2 kHz is most pronounced in the 0 dBm / 0 A case (black trace). This excitation current corresponds to the furthest below the sensor's nominal rating.
+- According to correspondence with Sensitec engineers, each sensor is optimized for its nominal current range (in this case, 15 Arms). 
+  When operating at the lower edge of the sensor's range, measurement accuracy decreases. 
+  In this region, the signal is more susceptible to internal nonlinearities, noise, and crossover effects near 0 A. 
+  This explains the greater deviations observed in low-amplitude tests compared to measurements taken closer to the nominal current.
+
+- Moreover, the observed dip in the frequency-domain response 
+  of Sensitec sensors is related to their internal operating mode. Specifically, the sensor transitions from a 
+  **closed-loop, field-sensor-controlled mode** to a more **transformer-like behavior** at higher frequencies. 
+  While the winding ratio remains unchanged, this transition region introduces a **measurable dip in gain**, 
+  which the engineer referred to as a kind of "**turbo lag**" effect.
+
+
+Test 2: Cross-Sensor Comparison
+-------------------------------
+
+In this test, two different low-current-rated sensors are compared under identical conditions: 
+0 dBm AC amplitude (≈ 1.67 A_peak) with 0 A DC offset.
+
+- **STB-6CAS/F** (TMR, Sensitec) - Orange trace  
+- **CASR 6-NP** (Fluxgate, LEM) - Blue trace  
+
+The goal of this test is to directly compare sensors with similar nominal current ratings from two different manufacturers 
+and distinct sensing technologies (TMR vs. Fluxgate). While the underlying sensing elements differ, both sensors operate in a 
+**closed-loop (compensated)** configuration. This means that both use a feedback mechanism to maintain magnetic balance in the core. 
+The primary current generates a magnetic field, which is canceled by a compensation current in the feedback loop.
+
+.. figure:: impedance_sensor_comparison_6A.png
+   :align: center
+   :width: 800px
+   :alt: Impedance and phase plots comparing two current sensors under identical conditions
+
+**Observations:**
+
+- Overall, both sensors show stable impedance behavior up to approximately 100 kHz, matching the expected impedance values (~210 mΩ).
+- A dip in impedance magnitude is visible near 2 kHz in both sensors, similar to the previous test. This is more pronounced for TMR sensor because of the internal operating mode transition as mentioned in previous test.
+- The impedance magnitude of the Fluxgate sensor (blue trace) remains slightly flatter compared to the TMR sensor (orange trace).
 - The phase response of all sensors remains flat below 20 kHz and gradually drops approaching 50 kHz.
-
-
-
-
 

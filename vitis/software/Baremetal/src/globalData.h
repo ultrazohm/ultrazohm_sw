@@ -10,6 +10,7 @@
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
+#include "uz/uz_space_vector_modulation/uz_space_vector_modulation.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -60,12 +61,30 @@ typedef struct _actualValues_ {
 	float U_L1; 		// Grid side voltage in V
 	float U_L2; 		// Grid side voltage in V
 	float U_L3; 		// Grid side voltage in V
-	float I_U; 		// Machine side current in A
-	float I_V; 		// Machine side current in A
-	float I_W; 		// Machine side current in A
-	float U_U; 		// Machine side voltage in V
-	float U_V; 		// Machine side voltage in V
-	float U_W; 		// Machine side voltage in V
+	float i_a1; 		// Machine side current in A
+	float i_b1; 		// Machine side current in A
+	float i_c1; 		// Machine side current in A
+	float i_a2; 		// Machine side current in A
+	float i_b2; 		// Machine side current in A
+	float i_c2; 		// Machine side current in A
+	float i_a_Last; 		// Machine side current in A
+	float i_b_Last; 		// Machine side current in A
+	float i_c_Last; 		// Machine side current in A
+	float i_dc1;
+	float i_dc2;
+	float i_dc_Last;
+	float v_a1; 		// Machine side voltage in V
+	float v_b1; 		// Machine side voltage in V
+	float v_c1; 		// Machine side voltage in V
+	float v_a2; 		// Machine side voltage in V
+	float v_b2; 		// Machine side voltage in V
+	float v_c2; 		// Machine side voltage in V
+	float v_a_Last; 		// Machine side voltage in V
+	float v_b_Last; 		// Machine side voltage in V
+	float v_c_Last; 		// Machine side voltage in V
+	float v_dc_Last;
+	float v_dc1;
+	float v_dc2;
 	float U_ZK; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
@@ -78,8 +97,12 @@ typedef struct _actualValues_ {
 	float mechanicalTorqueObserved; 	// in Nm for observing the load torque
 	float I_d;
 	float I_q;
+	float I_x;
+	float I_y;
 	float U_d;
 	float U_q;
+	float U_x;
+	float U_y;
 	float theta_elec;
 	float theta_mech;
 	float theta_offset; //in rad/s
@@ -88,11 +111,25 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	float temp_VSI_1;
+	float temp_VSI_2;
+	float temp_VSI_3;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d3;
 	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4_0;
 	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4_1;
+
+	bool select_Control;
+	bool select_fixed_values;
+
+	uz_6ph_dq_t v_dqxy_ref;
+	uz_6ph_abc_t i_abc_meas;
+	uz_6ph_abc_t v_abc_meas;
+	uz_6ph_dq_t i_dqxy_meas;
+	uz_6ph_dq_t v_dqxy_meas;
+
+	struct uz_DutyCycle_2x3ph_t DutyCycle_output;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

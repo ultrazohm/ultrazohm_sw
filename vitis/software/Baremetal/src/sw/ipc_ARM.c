@@ -186,19 +186,19 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.snd_fld[1] = value;
+		data->av.v_dqxy_ref.d = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.snd_fld[2] = value;
+		data->av.v_dqxy_ref.q = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.snd_fld[3] = value;
+		data->av.v_dqxy_ref.x = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		data->av.v_dqxy_ref.y = value;
 			break;
 
 		case (Set_Send_Field_5):
@@ -266,11 +266,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+		data->av.select_Control = false;
+		data->av.select_fixed_values = true;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+				data->av.select_fixed_values = false;
+				data->av.select_Control = true;
 			break;
 
 		case (My_Button_3):
@@ -342,14 +344,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		}
 
 	/* Bit 4 - My_Button_1 */
-	// if (your condition == true) {
-	//	js_status_BareToRTOS |= (1 << 4);
-	// } else {
-	//	js_status_BareToRTOS &= ~(1 << 4);
-	// }
+	 if (data->av.select_fixed_values == true) {
+	  	js_status_BareToRTOS |= (1 << 4);
+	   } else {
+	  	js_status_BareToRTOS &= ~(1 << 4);
+	   }
 
 	/* Bit 5 - My_Button_2 */
-	// js_status_BareToRTOS &= ~(1 << 5);
+	 if (data->av.select_Control == true) {
+	  	js_status_BareToRTOS |= (1 << 5);
+	   } else {
+	  	js_status_BareToRTOS &= ~(1 << 5);
+	   }
 
 	/* Bit 6 - My_Button_3 */
 	// js_status_BareToRTOS &= ~(1 << 6);

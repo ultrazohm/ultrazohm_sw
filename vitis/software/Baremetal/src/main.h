@@ -54,7 +54,10 @@
 
 #include "include/pwm_init.h"
 
-
+#include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
+//#include "include/uz_inverter_adapter_init.h"
+#include "include/uz_resolver_pl_interface_init.h"
+#include "include/uz_resolverIP_init.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

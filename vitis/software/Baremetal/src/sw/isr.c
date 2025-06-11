@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_spwm/uz_spwm.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -38,6 +39,50 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+
+//Offset from Valentin
+float theta_offset = 5.93f;
+#define PHASE_CURRENT_CONV 12.5f
+#define PHASE_VOLT_CONV	12.0f
+
+#define PHASE_CURRENT_CONV_A1	12.803f
+#define PHASE_CURRENT_CONV_B1	12.663f
+#define PHASE_CURRENT_CONV_C1	12.652f
+#define PHASE_CURRENT_CONV_A2	12.67f
+#define PHASE_CURRENT_CONV_B2	12.69f
+#define PHASE_CURRENT_CONV_C2	12.643f
+
+#define PHASE_CURRENT_OFFSET_A1	0.012f
+#define PHASE_CURRENT_OFFSET_B1	0.004f
+#define PHASE_CURRENT_OFFSET_C1	0.006f
+#define PHASE_CURRENT_OFFSET_A2	-0.012f
+#define PHASE_CURRENT_OFFSET_B2	-0.01f
+#define PHASE_CURRENT_OFFSET_C2	0.019f
+
+#define PHASE_VOLT_CONV_A1	11.963f
+#define PHASE_VOLT_CONV_B1	11.959f
+#define PHASE_VOLT_CONV_C1	11.954f
+#define PHASE_VOLT_CONV_A2	11.959f
+#define PHASE_VOLT_CONV_B2	11.959f
+#define PHASE_VOLT_CONV_C2	11.961f
+
+#define PHASE_VOLT_OFFSET_A1	-0.09f
+#define PHASE_VOLT_OFFSET_B1	0.002f
+#define PHASE_VOLT_OFFSET_C1	-0.065f
+#define PHASE_VOLT_OFFSET_A2	-0.038f
+#define PHASE_VOLT_OFFSET_B2	-0.049f
+#define PHASE_VOLT_OFFSET_C2	-0.02f
+
+
+// software limits
+#define MAX_PHASE_CURRENT_AMP  30.0f
+#define MAX_DC_VOLT 50.0f
+#define MAX_TEMP_DEG 90.0f
+
+#define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N
+float u_n1 = 0.0f;
+float u_n2 = 0.0f;
+//====================
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -52,7 +97,11 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    Global_Data.av.resolver_outputs_d4_0 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_0);
+      Global_Data.av.resolver_outputs_d4_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_1);
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state

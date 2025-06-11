@@ -49,6 +49,10 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_theta_el_0,
+	JSO_theta_el_1,
+	JSO_n_mech_0,
+	JSO_n_mech_1,
 	JSO_ENDMARKER
 };
 
@@ -180,10 +184,10 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	receive_field_1,
-	receive_field_2,
-	receive_field_3,
-	receive_field_4,
+	n_mech_0,
+	n_mech_1,
+	theta_el_0,
+	theta_el_1,
 	receive_field_5,
 	receive_field_6,
 	receive_field_7,
@@ -208,11 +212,11 @@ enum gui_button_mapping {
 
 	RCV_LABELS_ZEROVALUE=0,
 	RPM,
-	Nm,
-	A,
-	A,
-	V,
-	V,
+	RPM,
+	rad,
+	rad,
+	-,
+	-,
 	-,
 	-,
 	-,

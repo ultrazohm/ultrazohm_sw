@@ -50,9 +50,9 @@ Equipment
   Accepts AC voltage signals from the Bode 100 output and amplifies them into a scaled-up output current.  
   Also allows DC offset to be added for mixed-signal excitation.
 
-- **Micsig CP1003B Current Probe:** Measures the input current delivered by the APS 1000 into the sensor.  
+- **Micsig CP1003B Current Probe (1 MΩ) :** Measures the input current delivered by the APS 1000 into the sensor.  
   
-- **Micsig MOIP350P OP200-3 Optical Isolated Probe:** Captures the differential output of the op-amp with high signal integrity.
+- **Micsig MOIP350P OP200-3 Optical Isolated Probe (50 Ω):** Captures the differential output of the op-amp with high signal integrity.
   Isolates from high-voltage transients and ground loops.
 
 

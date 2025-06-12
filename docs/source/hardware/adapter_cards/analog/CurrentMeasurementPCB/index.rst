@@ -7,6 +7,12 @@ This section provides an overview of the analog current measurement box, includi
 Overview
 ========
 
+.. figure:: PCB_Box.jpg
+   :alt: PCB_and_Box
+   :align: center
+   :width: 800px
+   
+
 .. figure:: PCB_3D_TopView_Altium.png
    :alt: Top view of the current measurement PCB
    :align: center

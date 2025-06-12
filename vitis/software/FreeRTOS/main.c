@@ -67,52 +67,80 @@ void print_ip_settings(ip_addr_t *ip, ip_addr_t *mask, ip_addr_t *gw){
 	print_ip("Gateway : ", gw);
 }
 
-//==============================================================================================================================================================
-/*---------------------------------------------------------------------------*
- * Routine:  main
- *---------------------------------------------------------------------------*
- * Description:
- *      Starts only the main thread "main_thread()" with priority
- *      "DEFAULT_THREAD_PRIO". Afterwards nothing will happen here.
- *---------------------------------------------------------------------------*/
+
+#include "APU_RPU_shared.h"
+#include "xil_cache.h"
+
+enum init_chain
+{
+	initialization_handshake = 0,
+	initialization_rtos
+};
+enum init_chain initialization_chain = initialization_handshake;
+
+uint32_t apu_version_final = 0U;
+uint32_t rpu_version_final = 0U;
+uint32_t rpu_default_version = 0U;
+
 int main()
 {
-#if (UZ_PLATFORM_ENABLE==1)
-	uz_assert( UZ_SUCCESS == uz_platform_init() );
-#endif
+	switch (initialization_chain)
+	{
+		case initialization_handshake:
+			write_apu_version(257U);
+			do
+			{
+				rpu_version_final = read_rpu_version();
+			} while (!(rpu_version_final == 0U));
+			do
+			{
+				rpu_version_final = read_rpu_version();
+			} while ((rpu_version_final == 0U));
+			rpu_default_version = rpu_version_final;
+			uz_assert( UZ_SUCCESS == uz_platform_init(rpu_default_version) );
+			apu_version_final = uz_platform_get_hw_revision();
+			write_apu_version(apu_version_final);
+			do
+			{
+				rpu_version_final = read_rpu_version();
+			} while (!(apu_version_final == rpu_version_final));
 
 #if (UZ_PLATFORM_CARDID==1)
  {
-	const uint32_t card_slots = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + 1;
+			const uint32_t card_slots = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST - UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + 1;
 
-	uz_printf("\r\n--- Adapter Card ID:\r\n\r\n");
+			uz_printf("\r\n--- Adapter Card ID:\r\n\r\n");
 
-	for (uint32_t i=0; i<card_slots; i++) {
-		uz_platform_eeprom_group000models_t model = 1000;		// Groups are defined up to 999,
-		uint8_t revision = 0;									// whilst revisions and
-		uint16_t serial = 0;									// serials start at one
+			for (uint32_t i=0; i<card_slots; i++) {
+				uz_platform_eeprom_group000models_t model = 1000;		// Groups are defined up to 999,
+				uint8_t revision = 0;									// whilst revisions and
+				uint16_t serial = 0;									// serials start at one
 
-		if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) )
-			uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i\r\n", i, model, revision, serial);
-		else
-			uz_printf("Identification of adapter card in slot %i failed (no PCB or EEPROM)\r\n", i);
+				if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) )
+					uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i\r\n", i, model, revision, serial);
+				else
+					uz_printf("Identification of adapter card in slot %i failed (no PCB or EEPROM)\r\n", i);
 
-		uz_printf("\r\n");
-	}
+				uz_printf("\r\n");
+			}
 
-	uz_printf("---\r\n\r\n");
+			uz_printf("---\r\n\r\n");
  }
 #endif
+		initialization_chain = initialization_rtos;
 
-	//SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
-	Initialize_InterruptHandler();
 
-	//Start the main-threat
-	sys_thread_new("main_thrd", (void(*)(void*))main_thread, 0,
-	                THREAD_STACKSIZE,
-	                DEFAULT_THREAD_PRIO);
-	vTaskStartScheduler();
+		case initialization_rtos:
+			// SW: Initialize the Interrupts in the main, because by doing it in the network-threat, there were always problems that the thread was killed.
+			Initialize_InterruptHandler();
 
+			// Start the main-threat
+			sys_thread_new("main_thrd", (void (*)(void *))main_thread, 0,
+						   THREAD_STACKSIZE,
+						   DEFAULT_THREAD_PRIO);
+			vTaskStartScheduler();
+			break;
+	}
 	uz_printf("APU: Error in scheduler");
 
 	return 0;
@@ -316,13 +344,17 @@ void i2cio_thread()
 */
 	while(1) {
 		// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
-		uz_platform_gposet(I2CLED_FP1RDY, (javascope_data_status & (1<<0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_FP2RUN, (javascope_data_status & (1<<1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_FP3ERR, (javascope_data_status & (1<<2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
-		uz_platform_gposet(I2CLED_FP4USR, (javascope_data_status & (1<<3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+		if (apu_version_final > 4U)
+		{
+			// Mirror "UltraZohm LEDs" (cf. Baremetal/src/sw/javascope.c) to I²C-LEDs
+			uz_platform_gposet(I2CLED_FP1RDY, (javascope_data_status & (1 << 0)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+			uz_platform_gposet(I2CLED_FP2RUN, (javascope_data_status & (1 << 1)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+			uz_platform_gposet(I2CLED_FP3ERR, (javascope_data_status & (1 << 2)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
+			uz_platform_gposet(I2CLED_FP4USR, (javascope_data_status & (1 << 3)) ? UZP_GPO_ASSERT_QUEUED : UZP_GPO_DEASSERT_QUEUED);
 
-		// Push all (I²C-)GPO changes to hardware
-		uz_platform_gpoupdate();
+			// Push all (I²C-)GPO changes to hardware
+			uz_platform_gpoupdate();
+		}
 
 		vTaskDelay(I2CIO_THREAD_TIMER_MS / portTICK_RATE_MS);
 

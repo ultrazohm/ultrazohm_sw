@@ -1,8 +1,8 @@
 .. _carrier_board_rev5_s3c:
 
-===================
-System Supply & S3C
-===================
+================================
+System Supply & Safety Component
+================================
 
 
 General
@@ -175,7 +175,7 @@ Functions
 	- Current usage of power good (aka not-reset) signals
 		- ``Carrier_PG_1V8``: Connected to ``RESETn`` of the two Ethernet PHYs (carrier and frontpanel-main, 10k pullup on carrier)
 		- ``Carrier_PG_3V3``: Enables the DC/DC converter of the isoIO island's 3V3 rail (on frontpanel-main, no pullup/down R)
-- Planed features (not implemented, but prepared in hardware):
+- Planned features (not implemented, but prepared in hardware):
 	- "Request Safe State" signal from S3C to D slots: Potential triggers are supply rail monitors, ``FP_UsrSW3``, ``FrontpanelIO.ExternalSTOP``, ...
 
 
@@ -204,6 +204,8 @@ I/Os
 	- The six ``FlexLIOs[0-5]`` (flexible logic/PL IOs) are available between the S3C (and thus everything reachable from it) and the Zynq's PL
 	- The S3C's twelve ``DIG5_S3C`` signals (00-05, 24-29) complement the SoM's 18 signals that interface slot D5
 - Input-specific processing requirements
+	- Do not rely on unless UZ is switched on (i.e., ``Carrier_PwrOn`` is asserted) AND fully supplied (i.e., no power alert signals are asserted): ``FP_UsrSW[1-3]``, ``FrontpanelIO.ExternalSTOP``, ``FrontpanelIO.isoSigs.FlexIO0[1-5]``, ``FrontpanelIO.isoCtrl.I̅N̅T̅``, ``THERMAL_DATA.S̅H̅D̅N̅``, ``THERMAL_DATA.F̅F̅/F̅S̅``, ``THERMAL_DATA.A̅L̅E̅R̅T̅``, and - to a certain extent - ``PG_MODULE``
+	- In transitionary states (e.g., the system is losing its supply), additional care is required for all signals as their respective supply rails might ramp down in an instance-variant manner
 	- Debounce filtering: ``SysSW_Pwr_NC``, ``FP_UsrSW[1-3]``, ``FrontpanelIO.ExternalSTOP`` -- Note that all the above signals are low-active, i.e., high as long as the corresponding button is not pressed
 - Output-specific processing requirements
 	- Set to ``'Z'`` unless UZ is switched on (i.e., ``Carrier_PwrOn`` is asserted): ``FrontpanelIO.isoSigs.FlexIO0[1-5]``, ``FrontpanelIO.isoCtrl.R̅S̅T̅``, ``FrontpanelIO.FlexMIO52_PCIe-R̅S̅T̅`` -- Note that the above list will get considerably longer if R44 is populated (instead of R43). In that case, care has to be taken w.r.t. S3C bank 2 (i.e., U19C) driving current into powered-off components!

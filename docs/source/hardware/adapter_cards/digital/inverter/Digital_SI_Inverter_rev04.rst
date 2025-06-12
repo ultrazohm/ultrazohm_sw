@@ -1,34 +1,34 @@
-.. _dig_si_inverter_rev03:
+.. _dig_si_inverter_rev04:
 
 ==========================================
-Digital Inverter Rev03
+Digital Inverter Rev04
 ==========================================
 
-.. image:: Digital_SI_Inverter_rev03/3D_View_Top_UZ_D_Inverter_Variant1_Rev03.png
+.. image:: Digital_SI_Inverter_rev04/3D_View.png
   :height: 500
   :align: center
 
 
-Changes from Rev02 to Rev03
-----------------------------
+Changes from Rev03 production to Rev04
+--------------------------------------
 
-* changed gate resistors from 10 Ohm to 47 Ohm
-* unused pads from the 2.5V reference voltage source have been removed
+* Added separate gate resistors for turn-off (12 Ohm) and turn-on (47 Ohm) MOSFETs.
+* Introduced a new capacitor bank consisting of 8x AEC capacitors (110µF each) and 15x MLCCs (10µF each).
+* Added an individual 2.5V supply (`REF4132B25DBVRQ1 <https://www.ti.com/lit/ds/symlink/ref4132-q1.pdf?ts=1743989231729&ref_url=https%253A%252F%252Fwww.ti.com%252Ftool%252FPMP22650>`_) as a bias reference for (ADA4940-1ARZ-R7 and INA241A2IDGKR).
+* Replaced Current Sense Amplifier (`MAX40056TAUA+  <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3470177.pdf>`_ ).
+* New current sensor makes hardware Over Current Protection obsolete.
+* Optimized the entire layer stackup and re-engineered the PCB layout.
+* Eliminated low-side temperature measurement from all phases.
 
-Changes from Rev03 to Rev03 production
----------------------------------------
-
-* programmable EEPROM for identifying Inverter Cards
-* all components have been reviewed regarding their compatibility with JLCPCB parts
-
+.. note:: Moved the heatsink in Rev04 to the bottom of the PCB.
 
 Components
 ----------
 
 Additional to the :ref:`components all version share <dig_si_inverter_all_components>`, the following components are used:
 
-- Bi-directional current measurement `MAX40056TAUA+ <https://www.mouser.de/datasheet/2/609/MAX40056F_MAX40056U-3128585.pdf>`_ 
-
+- Bi-directional current measurement `INA241A2IDGKR <https://www.ti.com/lit/ds/symlink/ina241a.pdf?ts=1744034830994>`_ 
+- 2.5V supply `REF4132B25DBVRQ1 <https://www.ti.com/lit/ds/symlink/ref4132-q1.pdf?ts=1743989231729&ref_url=https%253A%252F%252Fwww.ti.com%252Ftool%252FPMP22650>`_
 
 Absolute maximum ratings
 ------------------------
@@ -43,15 +43,68 @@ Additional ratings
 ------------------
 
 .. note ::
-  - Current measurement up to :math:`I_{peak,meas}=\pm35\ A`
+  - Current measurement up to :math:`I_{peak,meas}=\pm50\ A`
   - Voltage measurement up to :math:`V_{peak,meas}= 60\ V`
   - Temperature measurement up to :math:`T_{meas}=105°C`
   - Temperature measurement is not built into the MOSFET. Therefore the heat of the PCB close to the semiconductors is measured. The measured temperature will always be **significantly** lower than the max operating temperature of the semiconductors.
-  - DC-link capacitance :math:`C_{DC} = 570\mu F`
-  - OPC trigger point :math:`I_{OCP}=\pm29.85\ A`
+  - DC-link capacitance :math:`C_{DC} = 1030\mu F`
   - Cutoff frequency for voltage measurement :math:`f_g = 1745\ Hz` 
   - Operation up to a PWM frequency of :math:`f_{PWM} = 100\ kHz` has been verified
   
+Heatsink
+--------
+:ref:`Rev04 <dig_si_inverter_rev04>` requires a redesigned heatsink, which is not compatible with previous revisions :ref:`Rev02 <dig_si_inverter_rev03>` and :ref:`Rev03 <dig_si_inverter_rev03>`. 
+The PCB is prepared for the installation of a heat sink. 
+Four mounting holes have been incorporated, designed to support screws with a maximum diameter corresponding to M3.
+It is intended that the heatsink will have the appropriate holes with threads into which the screws can be screwed.
+For further information on the dimensions of the heatsink and the location of the screw holes, refer to the diagram below. 
+The dimensions take into account the safety margin required for the mounting rails in the UltraZohm. 
+The heatsink is mounted on the bottom side of the PCB.
+Adequate mechanical clearance has been ensured to accommodate the heatsink within the designated space.
+A thermal interface material must be applied between the heatsink and the PCB to ensure optimal thermal conductivity.
+
+.. tikz:: Heatsink dimensions
+  :align: center
+
+  \usetikzlibrary{shapes,arrows,patterns,calc};
+  \tikzset{%
+    body/.style={inner sep=0pt,outer sep=0pt,shape=rectangle,draw,thick},
+    dimen/.style={<->,>=latex,color=gray,every rectangle node/.style={fill=white,midway,font=\large}},
+    symmetry/.style={dashed,thin},
+  }
+  \node [body,minimum height=9.2cm,minimum width=3.5cm,anchor=south west] (body1) at (0,0) {};
+  \draw (body1.south west) -- ++(-1,0) coordinate (D1) -- +(-5pt,0);
+  \draw (body1.north west) -- ++(-1,0) coordinate (D2) -- +(-5pt,0);
+  \draw [dimen] (D1) -- (D2) node {94,00};
+  \draw[color=gray] (body1.north west) -- ++(0,1) coordinate (D1) -- +(0,5pt);
+  \draw [color=gray](body1.north east) -- ++(0,1) coordinate (D2) -- +(0,5pt);
+  \draw [dimen] (D1) -- (D2) node {35,00};
+  \filldraw[color=black, fill=white, thick](0.6,1.6) circle (0.3cm);
+  \draw (0.6,1.95) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (2.9,1.95) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (0.6,7.55) arc[start angle=90, end angle=-180, radius=0.35];
+  \draw (2.9,7.55) arc[start angle=90, end angle=-180, radius=0.35];
+  \filldraw[color=black, fill=white, thick](2.9,1.6) circle (0.3cm);
+  \filldraw[color=black, fill=white, thick](0.6,7.2) circle (0.3cm);
+  \filldraw[color=black, fill=white, thick](2.9,7.2) circle (0.3cm);
+  \draw [color=gray](2.9,1.6) -- ++(2.1,0) coordinate (D1) -- +(5pt,0);
+  \draw [color=gray](3.5,0) -- ++(1.5,0) coordinate (D2) -- +(5pt,0);
+  \draw [dimen] (D1) -- (D2) node {20,00};
+  \draw [color=gray](body1.south west) -- ++(0,-1) coordinate (D1) -- +(0,-5pt);
+  \draw [color=gray](0.6,1.6) -- ++(0,-2.6) coordinate (D2) -- +(0,-5pt);
+  \draw [dimen,-] (D1) -- (D2) node [right=15pt] {5,00};
+  \draw [dimen,<-] (D1) -- ++(-5pt,0);
+  \draw [dimen,<-] (D2) -- ++(+5pt,0);
+  \draw [color=gray](body1.south west) -- ++(0,-2) coordinate (D1) -- +(0,-5pt);
+  \draw [color=gray](2.9,1.6) -- ++(0,-3.6) coordinate (D2) -- +(0,-5pt);
+  \draw [dimen] (D1) -- (D2) node  {25,00};
+  \draw [color=gray](3.5,0) -- ++(2.5,0) coordinate (D1) -- +(5pt,0);
+  \draw [color=gray](2.9,7.2) -- ++(3.1,0) coordinate (D2) -- +(5pt,0);
+  \draw [dimen] (D1) -- (D2) node {74,00};
+  \draw[-latex,color=gray](5,9.0)--(3.15,7.35);
+  \node[rotate=45,color=gray]  at (4,8.5) {4x M3};
+
+
 Pinout
 ------
 
@@ -61,7 +114,7 @@ Pinout
   :align: center
 
 .. csv-table:: Defined pin mapping uz_d_inverter
-   :file: Digital_SI_Inverter_rev02/uz_d_inverter_pin_mapping.csv
+   :file: Digital_SI_Inverter_rev04/uz_d_inverter_pin_mapping.csv
    :widths: 40 40 60 50 50 
    :header-rows: 1
 
@@ -76,14 +129,24 @@ The card is directly compatible with the :ref:`Analog_LTC2311_16_Rev05`, :ref:`A
 Switching behavior
 -------------------
 
-The figure below shows the general switching behaviour of the inverter with a PMSM as a load is shown. 
-The plots were taken during routine operation with the PMSM running with at :math:`i_q = 5\ A`. The PWM frequency was :math:`20\ kHz` with a deadtime of :math:`150\ ns`.
-The gate resistance has been tuned to such a degree, that there is practically no overshoot and only a minimal degree of oscillation in the drain source voltages.
-Although there is room for further optimization, the resulting switching behaviour is sufficiently robust.
+The Double Puls Test (DPT) was used for characterizing the switching behavior of the design. 
+The DC link voltage was set to :math:`V_{dc} = 48\ V`, with a load inductance of :math:`L = 1\ mH` and a load resistance of :math:`R_L = 400\ mΩ`. 
+The desired switching current was maintained at :math:`i_D = 30\ A` throughout the test.  
+The experimental waveforms of the DPT are shown below. 
+One must note that, due to design constraints, measurement of the drain current was not included.
+The DC-Current at the negative terminal is therefore shown in the graph.
 
-.. tikz::
-   :include: Digital_SI_Inverter_rev02/switching_behaviour.tikz
-   :align: right
+.. image:: Digital_SI_Inverter_rev04/DPT_FULL_1.png
+  :height: 250
+  :align: center
+
+.. image:: Digital_SI_Inverter_rev04/Turn_off_Switching_Transient.png
+  :height: 250
+  :align: center
+
+.. image:: Digital_SI_Inverter_rev04/Turn_on_Switching_Transient.png
+  :height: 250
+  :align: center
 
 
 Setup before first use and implementation with Inverter Interface IP-Core
@@ -165,49 +228,19 @@ In order to use the over current and over temperature protection, the following 
 These are optional features and can be left out if they aren't required.
 
 .. code-block:: c
- :caption: Additions for isr.c if OCP or OTP are used
+ :caption: Additions for isr.c if OTP are used
  
  //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
  //Overtemperature for H1
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
     ultrazohm_state_machine_set_error(true);
  }
- //Overtemperature for L1
- if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
-    ultrazohm_state_machine_set_error(true);
- }
  //Overtemperature for H2
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
     ultrazohm_state_machine_set_error(true);
  }
- //Overtemperature for L2
- if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
-    ultrazohm_state_machine_set_error(true);
- }
  //Overtemperature for H3
  if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Overtemperature for L3
- if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
- //Binding of the signals to the driver is slightly unintuitive 
- //Overcurrent for Phase A
- if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Overcurrent for Phase B
- if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Overcurrent for Phase C
- if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
-    ultrazohm_state_machine_set_error(true);
- }
- //Overcurrent for DC-link
- if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
     ultrazohm_state_machine_set_error(true);
  }
  
@@ -217,18 +250,18 @@ References
 
 .. _dig_si_inverter_references:
 
-* :download:`Schematic Rev03 <Digital_SI_Inverter_rev03/UZ_D_Inverter_rev03.pdf>`
+* :download:`Schematic Rev04 <Digital_SI_Inverter_rev04/UZ_D_inverterRev04.pdf>`
 * `uz_d_inverter Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_inverter>`_
 
 Known issues
 ============
 
-As of this moment, no issue in Rev03 is known.
+As of this moment, no issue in Rev04 is known.
 
 Designed by 
 ===========
 
-Dennis Hufnagel (THN)/Andreas Geiger, 02/2024
+Krunal Patel/ Dennis Hufnagel (THN), 06/2025
 
 Acknowledgments
 ---------------

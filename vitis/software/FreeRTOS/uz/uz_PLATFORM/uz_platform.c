@@ -61,103 +61,198 @@ typedef struct uz_platform_ {
 	XGpioPs gpiops;
 } uz_platform;
 
-#if (UZ_PLATFORM_ENABLE==1)
- static uz_platform_iomap uzp_iomap_UltraZohmRev04withExtensionBoardRev02 = {
+static uz_platform_iomap uzp_iomap_UltraZohmRev02 = {
 	{
 		// Cf. uz_platform_gpo_id in uz_platform.h:
-		{UZP_GPIOTYPE_I2C,  0},			// I2CLED_FP1RDY
-		{UZP_GPIOTYPE_I2C,  1},			// I2CLED_FP2RUN
-		{UZP_GPIOTYPE_I2C,  2},			// I2CLED_FP3ERR
-		{UZP_GPIOTYPE_I2C,  3},			// I2CLED_FP4USR
-		{UZP_GPIOTYPE_I2C,  4},			// I2CLED_FPRING
-		{UZP_GPIOTYPE_PS,  26},			// RST_PHY0
-		{UZP_GPIOTYPE_PS,  27},			// RST_PHY1
-		{UZP_GPIOTYPE_I2C,  5},			// I2CLED_UZEXT_LED10
-		{UZP_GPIOTYPE_I2C,  6},			// I2CLED_UZEXT_LED11
-		{UZP_GPIOTYPE_I2C,  7},			// I2CLED_UZEXT_LED12
-		{UZP_GPIOTYPE_I2C, 12},			// I2CLED_UZEXT_BEEP1
-		{UZP_GPIOTYPE_I2C, 13},			// I2CLED_UZEXT_BEEP2
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD10GREEN
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD11RED
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD12YELLOW
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD13BLUE		- NB: IO7 <-> M2
-	},{
-		// Cf. uz_platform_gpi_id in uz_platform.h:
-		{UZP_GPIOTYPE_I2C,  8},			// I2CKEY_FP5ENABLESYS
-		{UZP_GPIOTYPE_I2C,  9},			// I2CKEY_FP6ENABLECTL
-		{UZP_GPIOTYPE_I2C, 10},			// I2CKEY_FP7EMERGENCYSTOP
-		{UZP_GPIOTYPE_I2C, 11},			// I2CKEY_FP8
-		{UZP_GPIOTYPE_I2C, 14},			// I2CKEY_UZEXT_SW1
-		{UZP_GPIOTYPE_I2C, 15},			// I2CKEY_UZEXT_SW2
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_MZBB_USER
-	}
- };
- static uz_platform_iomap uzp_iomap_UltraZohmRev05prt = {
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP1RDY
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP2RUN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP3ERR
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP4USR
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FPRING
+		{UZP_GPIOTYPE_PS, 26},		  // RST_PHY0
+		{UZP_GPIOTYPE_PS, 27},		  // RST_PHY1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED10
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED11
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED12
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_BEEP1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_BEEP2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD10GREEN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD11RED
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD12YELLOW
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD13BLUE		- NB: IO7 <-> M2
+	},
 	{
-		// Cf. uz_platform_gpo_id in uz_platform.h:
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP1RDY
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP2RUN
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP3ERR
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP4USR
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FPRING
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// RST_PHY0		- NB: Via S³C
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// RST_PHY1		- NB: Via S³C
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED10
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED11
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED12
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_BEEP1
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_BEEP2
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD10GREEN
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD11RED
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD12YELLOW
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_MZD13BLUE
-	},{
 		// Cf. uz_platform_gpi_id in uz_platform.h:
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP5ENABLESYS
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP6ENABLECTL
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP7EMERGENCYSTOP
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP8
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_UZEXT_SW1
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_UZEXT_SW2
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_MZBB_USER
-	}
- };
- static uz_platform_iomap uzp_iomap_MicroZohmRev01onBreakoutBoardRev01 = {
-	{
-		// Cf. uz_platform_gpo_id in uz_platform.h:
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP1RDY
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP2RUN
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP3ERR
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP4USR
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FPRING
-		{UZP_GPIOTYPE_I2C, 14},			// RST_PHY0
-		{UZP_GPIOTYPE_I2C, 15},			// RST_PHY1
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED10
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED11
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_LED12
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_BEEP1
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_UZEXT_BEEP2
-		{UZP_GPIOTYPE_I2C, 10},			// I2CLED_MZD10GREEN
-		{UZP_GPIOTYPE_I2C, 11},			// I2CLED_MZD11RED
-		{UZP_GPIOTYPE_I2C, 12},			// I2CLED_MZD12YELLOW
-		{UZP_GPIOTYPE_I2C, 13},			// I2CLED_MZD13BLUE
-	},{
-		// Cf. uz_platform_gpi_id in uz_platform.h:
-		{UZP_GPIOTYPE_I2C,  6},			// I2CKEY_FP5ENABLESYS
-		{UZP_GPIOTYPE_I2C,  7},			// I2CKEY_FP6ENABLECTL
-		{UZP_GPIOTYPE_I2C,  8},			// I2CKEY_FP7EMERGENCYSTOP
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_FP8
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_UZEXT_SW1
-		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CKEY_UZEXT_SW2
-		{UZP_GPIOTYPE_I2C,  9},			// I2CKEY_MZBB_USER
-	}
- };
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP5ENABLESYS
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP6ENABLECTL
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP7EMERGENCYSTOP
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP8
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_UZEXT_SW1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_UZEXT_SW2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_MZBB_USER
+	}};
 
- static uz_platform uzp;
-#endif
+static uz_platform_iomap uzp_iomap_UltraZohmRev03 = {
+	{
+		// Cf. uz_platform_gpo_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP1RDY
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP2RUN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP3ERR
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP4USR
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FPRING
+		{UZP_GPIOTYPE_PS, 26},		  // RST_PHY0
+		{UZP_GPIOTYPE_PS, 27},		  // RST_PHY1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED10
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED11
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED12
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_BEEP1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_BEEP2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD10GREEN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD11RED
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD12YELLOW
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD13BLUE		- NB: IO7 <-> M2
+	},
+	{
+		// Cf. uz_platform_gpi_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP5ENABLESYS
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP6ENABLECTL
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP7EMERGENCYSTOP
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP8
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_UZEXT_SW1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_UZEXT_SW2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_MZBB_USER
+	}};
 
-uint32_t uz_platform_init() {
-#if (UZ_PLATFORM_ENABLE==1)
+static uz_platform_iomap uzp_iomap_UltraZohmRev04 = {
+	{
+		// Cf. uz_platform_gpo_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_FP1RDY
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_FP2RUN
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_FP3ERR
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_FP4USR
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_FPRING
+		{UZP_GPIOTYPE_PS, 26},		  // RST_PHY0
+		{UZP_GPIOTYPE_PS, 27},		  // RST_PHY1
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_UZEXT_LED10
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_UZEXT_LED11
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_UZEXT_LED12
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_UZEXT_BEEP1
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CLED_UZEXT_BEEP2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD10GREEN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD11RED
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD12YELLOW
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD13BLUE		- NB: IO7 <-> M2
+	},
+	{
+		// Cf. uz_platform_gpi_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CKEY_FP5ENABLESYS
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CKEY_FP6ENABLECTL
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CKEY_FP7EMERGENCYSTOP
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CKEY_FP8
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CKEY_UZEXT_SW1
+		UZ_PLATFORM_GPIO_UNAVAILABLE,		  // I2CKEY_UZEXT_SW2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_MZBB_USER
+	}};
+
+static uz_platform_iomap uzp_iomap_UltraZohmRev04withExtensionBoardRev02 = {
+	{
+		// Cf. uz_platform_gpo_id in uz_platform.h:
+		{UZP_GPIOTYPE_I2C, 0},		  // I2CLED_FP1RDY
+		{UZP_GPIOTYPE_I2C, 1},		  // I2CLED_FP2RUN
+		{UZP_GPIOTYPE_I2C, 2},		  // I2CLED_FP3ERR
+		{UZP_GPIOTYPE_I2C, 3},		  // I2CLED_FP4USR
+		{UZP_GPIOTYPE_I2C, 4},		  // I2CLED_FPRING
+		{UZP_GPIOTYPE_PS, 26},		  // RST_PHY0
+		{UZP_GPIOTYPE_PS, 27},		  // RST_PHY1
+		{UZP_GPIOTYPE_I2C, 5},		  // I2CLED_UZEXT_LED10
+		{UZP_GPIOTYPE_I2C, 6},		  // I2CLED_UZEXT_LED11
+		{UZP_GPIOTYPE_I2C, 7},		  // I2CLED_UZEXT_LED12
+		{UZP_GPIOTYPE_I2C, 12},		  // I2CLED_UZEXT_BEEP1
+		{UZP_GPIOTYPE_I2C, 13},		  // I2CLED_UZEXT_BEEP2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD10GREEN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD11RED
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD12YELLOW
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD13BLUE		- NB: IO7 <-> M2
+	},
+	{
+		// Cf. uz_platform_gpi_id in uz_platform.h:
+		{UZP_GPIOTYPE_I2C, 8},		  // I2CKEY_FP5ENABLESYS
+		{UZP_GPIOTYPE_I2C, 9},		  // I2CKEY_FP6ENABLECTL
+		{UZP_GPIOTYPE_I2C, 10},		  // I2CKEY_FP7EMERGENCYSTOP
+		{UZP_GPIOTYPE_I2C, 11},		  // I2CKEY_FP8
+		{UZP_GPIOTYPE_I2C, 14},		  // I2CKEY_UZEXT_SW1
+		{UZP_GPIOTYPE_I2C, 15},		  // I2CKEY_UZEXT_SW2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_MZBB_USER
+	}};
+static uz_platform_iomap uzp_iomap_UltraZohmRev05prt = {
+	{
+		// Cf. uz_platform_gpo_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP1RDY
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP2RUN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP3ERR
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP4USR
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FPRING
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // RST_PHY0		- NB: Via S³C
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // RST_PHY1		- NB: Via S³C
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED10
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED11
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED12
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_BEEP1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_BEEP2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD10GREEN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD11RED
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD12YELLOW
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_MZD13BLUE
+	},
+	{
+		// Cf. uz_platform_gpi_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP5ENABLESYS
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP6ENABLECTL
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP7EMERGENCYSTOP
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP8
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_UZEXT_SW1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_UZEXT_SW2
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_MZBB_USER
+	}};
+static uz_platform_iomap uzp_iomap_MicroZohmRev01onBreakoutBoardRev01 = {
+	{
+		// Cf. uz_platform_gpo_id in uz_platform.h:
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP1RDY
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP2RUN
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP3ERR
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FP4USR
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_FPRING
+		{UZP_GPIOTYPE_I2C, 14},		  // RST_PHY0
+		{UZP_GPIOTYPE_I2C, 15},		  // RST_PHY1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED10
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED11
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_LED12
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_BEEP1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CLED_UZEXT_BEEP2
+		{UZP_GPIOTYPE_I2C, 10},		  // I2CLED_MZD10GREEN
+		{UZP_GPIOTYPE_I2C, 11},		  // I2CLED_MZD11RED
+		{UZP_GPIOTYPE_I2C, 12},		  // I2CLED_MZD12YELLOW
+		{UZP_GPIOTYPE_I2C, 13},		  // I2CLED_MZD13BLUE
+	},
+	{
+		// Cf. uz_platform_gpi_id in uz_platform.h:
+		{UZP_GPIOTYPE_I2C, 6},		  // I2CKEY_FP5ENABLESYS
+		{UZP_GPIOTYPE_I2C, 7},		  // I2CKEY_FP6ENABLECTL
+		{UZP_GPIOTYPE_I2C, 8},		  // I2CKEY_FP7EMERGENCYSTOP
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_FP8
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_UZEXT_SW1
+		UZ_PLATFORM_GPIO_UNAVAILABLE, // I2CKEY_UZEXT_SW2
+		{UZP_GPIOTYPE_I2C, 9},		  // I2CKEY_MZBB_USER
+	}};
+
+static uz_platform uzp={0};
+
+uint32_t uz_platform_get_hw_revision(void){
+	uz_assert(uzp.is_ready);
+	return (uint32_t)uzp.data.hw_revision;
+}
+
+uint32_t uz_platform_init(uint32_t default_revision) {
 	uz_assert_false(uzp.is_ready);
 
 	//// Primary I²C bus used by UZP (we might need a secondary for mixed-old/new combinations of UZC Rev<=04 and SoM)
@@ -166,12 +261,15 @@ uint32_t uz_platform_init() {
 	//// Create I²C devices: EEPROM
 	uz_iic_initdev(&uzp.eeprom, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_EEPROM);
 
-	int status;
+	
 	// Fetch platform data
-	status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
+	int status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
 	if ( XST_SUCCESS != status ) {
-		uz_printf("APU: Error reading platform EEPROM!\r\n");
-		return(UZ_FAILURE);
+		uz_printf("APU: Error reading platform EEPROM, assuming default configuration as UltraZohm with default revision given by RPU define!\r\n");
+		uzp.data.hw_group = UZP_HWGROUP_UZOHM3;
+		uzp.data.hw_model = 1U;
+		uzp.data.hw_revision = (uint8_t)default_revision;
+		uzp.data.serialdata.hw_externalserial.extserial = UZ_PLATFORM_EXTSERIAL_MAX;
 	}
 
 	if (
@@ -191,8 +289,16 @@ uint32_t uz_platform_init() {
 		case UZP_HWGROUP_UZOHM3:
 		case UZP_HWGROUP_UZOHM6:
 			switch(uzp.data.hw_revision) {
+				case 2U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev02;
+					uzp.maceeprom_primary = 1;
+					break;
+				case 3U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev03;
+					uzp.maceeprom_primary = 1;
+					break;
 				case 4U:
-					uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
+					uzp.iomap = &uzp_iomap_UltraZohmRev04;
 					uzp.maceeprom_primary = 1;
 					break;
 				case 5U:
@@ -201,7 +307,7 @@ uint32_t uz_platform_init() {
 					break;
 				default:
 					uz_printf("APU: Carrier revision not supported!\r\n");
-					return(UZ_FAILURE);
+					return (UZ_FAILURE);
 					break;
 			}
 			break;
@@ -209,6 +315,9 @@ uint32_t uz_platform_init() {
 			uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;
 			uzp.maceeprom_primary = 0;
 			break;
+
+		// FIXME: Re-add uzp_iomap_UltraZohmRev04withExtensionBoardRev02 by looking for extension board - Details tbd.
+
 		default:
 			uz_printf("APU: Platform not supported!\r\n");
 			return(UZ_FAILURE);
@@ -307,9 +416,6 @@ uint32_t uz_platform_init() {
 #endif
 
 	return(UZ_SUCCESS);
-#else
-	return(UZ_FAILURE);
-#endif
 }
 
 /**
@@ -318,13 +424,9 @@ uint32_t uz_platform_init() {
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
 uint32_t uz_platform_gpoupdate() {
-#if (UZ_PLATFORM_ENABLE==1)
 	const uint8_t pca9535a9655e_regaddr_out0 = 2;
 
 	return( uz_iic_write_reg16(&uzp.gpioi2c, pca9535a9655e_regaddr_out0, uzp.gpioi2c_outmirror) );
-#else
-	return(UZ_FAILURE);
-#endif
 }
 
 /**
@@ -335,7 +437,6 @@ uint32_t uz_platform_gpoupdate() {
  * @return UZ_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
 uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_gpo_op uzpgpo_op) {
-#if (UZ_PLATFORM_ENABLE==1)
 	uz_assert(uzp.is_ready);
 
 	// Look up GPO and map to pin
@@ -410,9 +511,6 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
 			break;
 	}
 	return(UZ_SUCCESS);
-#else
-	return(UZ_FAILURE);
-#endif
 }
 
 /**
@@ -423,7 +521,6 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
 uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
-#if (UZ_PLATFORM_ENABLE==1)
 	uz_assert(uzp.is_ready);
 	uz_assert(eeprom < sizeof(uzp.maceeprom)/sizeof(uzp.maceeprom[0]));
 
@@ -431,9 +528,6 @@ uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
 	const uint8_t maceeprom_addrlength = 6;
 
 	return( uz_iic_a8read_data(&uzp.maceeprom[eeprom], maceeprom_addroffset, addrbuf_p, maceeprom_addrlength) );
-#else
-	return(UZ_FAILURE);
-#endif
 }
 
 /**
@@ -443,11 +537,7 @@ uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
 uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
-#if (UZ_PLATFORM_ENABLE==1)
 	return( uz_platform_macread(uzp.maceeprom_primary, addrbuf_p) );
-#else
-	return(UZ_FAILURE);
-#endif
 }
 
 #if (UZ_PLATFORM_CARDID==1)
@@ -461,7 +551,6 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
   * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
   */
  uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p) {
- #if (UZ_PLATFORM_ENABLE==1)
 	uz_assert(slot < 8);
 	uz_assert_not_NULL(model_p);
 	uz_assert_not_NULL(revision_p);
@@ -486,8 +575,5 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 	}
 
 	return(status);
- #else
-	return(UZ_FAILURE);
- #endif
  }
 #endif

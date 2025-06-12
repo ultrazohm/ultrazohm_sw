@@ -82,6 +82,5 @@ pipelines:
          image: alpine/git
          script:
           - apk add git-lfs
-          - git remote add mirrorOrigin git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
-          - git lfs fetch --all
-          - git push --all mirrorOrigin
+          - git remote add mirrorOriginTwo git@gitlab.com:zohm-control/ultrazohm_sw_public_mirror.git
+          - git push --all mirrorOriginTwo

@@ -83,6 +83,8 @@ The activation of the adapter card identification depends on the ``UZ_PLATFORM_C
  Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
  Otherwise, the IIC subsystem will ``assert()`` during initialization due to a lack of available bus instances.
 
+.. _uzpA53_cardid:
+
 Adapter Card Identification
 """""""""""""""""""""""""""
 

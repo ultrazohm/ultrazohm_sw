@@ -13,16 +13,17 @@ Digital Voltage 3V3/5V Rev02
 
 	Functional blocks of the Voltage Adapter Card
 
-The Voltage_3v3_5v adapter card enables general-purpose digital input/output (GPIO) functionalities across two voltage domains:
-3.3 V and 5 V. It is an extension of both the :ref:`digitalVoltage` and :ref:`digitalVoltage3v3rev01` cards. 
-The board supports voltage level shifting, voltage domain monitoring,  and i2c-based readability of the hardware configuration.
+The Voltage_3v3_5v adapter card enables general-purpose digital input/output (GPIO) functionalities at a selectable voltage level of 3.3 V or 5 V.
+It, therefore, crosses between two voltage domains and is an extension of both the :ref:`digitalVoltage` and :ref:`digitalVoltage3v3rev01` cards, which have fixed voltages.
+Like with the original Digital Voltage 5V card, signal directions can be set in blocks of eight I/O pins.
+The board supports voltage level shifting, supply rail monitoring, and I²C-based readout of the hardware configuration.
 
 Functionality
 -------------
 
 The functionality of the adapter card is segmented into several key areas, as depicted in the figure above:
 
-1. Four 8Bit Level Shifters
+1. Four 8-Bit Level Shifters
 
 - The adapter includes four 8-bit bidirectional level shifters, enabling voltage translation between the 3.3 V and 5 V domains. 
 - Each digital I/O pin features an integrated 10 kΩ pulldown resistor to ensure a defined logic low state when the pin is not actively driven.
@@ -30,9 +31,9 @@ The functionality of the adapter card is segmented into several key areas, as de
 2. Signal direction
 
 Each level shifter block can be individually configured for input or output operation via corresponding DIP switches. 
-The four DIP switch banks allow groupwise control of the signal direction for each 8-bit block.
+The four DIP switches allow groupwise control of the signal direction for each 8-bit block.
 
-.. csv-table:: Grouped signal and dedicated switches
+.. csv-table:: Grouped signals and dedicated switches
   :file: digital_voltage_3v3_5v/switches.csv
   :widths: 50 80
   :header-rows: 1
@@ -42,17 +43,17 @@ Conversely, a DIP switch in the ON position sets the direction to input (to the 
 
 .. note:: Direction control is only available on a per-group basis. For fully flexible pin assignment, refer to :ref:`digitalVoltage3v3rev01`.
 
-3. Power Domain Monitoring, Output Enable Logic, and Source Control
+3. Supply Rail Monitoring, Output Enable Logic, and Source Control
 
 The card monitors both the 3.3 V and 5 V supply rails provided by the carrier board. 
 By default, the level shifter output enable (nOE) is governed by these voltage monitors. 
-Alternatively, by setting switch S2, control can be transferred to the nOE_Carrierboard signal, which is supported in all hardware revisions :math:`\geq` ``Rev05`` :ref:`carrier_board_rev5`.
+Alternatively, by setting switch S2, control can be transferred to the nOE_Carrierboard signal, which is supported in all hardware revisions :math:`\geq` ``Rev05`` (cf. :ref:`carrier_board_rev5`).
 
-4. I2C-Port Expander
+4. I²C Port Expander
 
 An onboard I²C port expander provides additional flexibility and control:
 
-- LED indicators (on the rear side of the card) can be controlled via software to represent output voltage states.
+- LED indicators (on the rear side of the card) can be controlled via software to represent the selected output voltage and additional card/system states.
 - Signal direction configuration and output voltage selection statuses are accessible via I²C, enabling seamless integration with system control software.
 
 Configuration

@@ -19,6 +19,7 @@ UZ_D_Voltage_3V3 Rev01
 
 The adapter card provides a generic input and output functionality (GPIO) with a voltage level of 3.3V.
 The UZ_D_Voltage_3V3 Card is a simplified version of :ref:`digitalVoltage`, i.e., the voltage level is fixed.
+Furthermore, it hosts an EEPROM to enable :ref:`uzpA53_cardid` in uz_sw (which, on pre-Rev05 systems, might require application of the :ref:`carrier_retrofits_cardid`).
 
 References/Source
 =================

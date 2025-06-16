@@ -79,13 +79,13 @@ To utilize this functionality, a corresponding software extension must be added 
 This feature is not integrated and developed yet.
 Additionally, the light guide component `LPF-C011304S <https://www.mouser.de/ProductDetail/Lumex/LPF-C011304S?qs=3ZOqpMxxriqLNJacoNbLgw%3D%3D>`_ must be installed on the PCB to support visual indication.
 
-References
-==========
+References/Source
+=================
 
 .. _dig_3v3_5v_rev02_references:
 
 * :download:`Schematic Rev02 <digital_voltage_3v3_5v/SCH_UZ_D_Voltage_3V3_5V_Default_Rev02.pdf>`
-* `Repository with Altium project <https://bitbucket.org/ultrazohm/uz_d_voltage_3v3_5v>`_
+* `Digital Voltage 3V3/5V repository <https://bitbucket.org/ultrazohm/uz_d_voltage_3v3_5v>`_
 
 Compatibility 
 =============

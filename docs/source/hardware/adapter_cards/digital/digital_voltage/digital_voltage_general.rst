@@ -4,18 +4,19 @@
 Digital Voltage
 ===============
 
-Source
-""""""
-
-- `Digital voltage repository <https://bitbucket.org/ultrazohm/uz_d_voltage>`_
-
 ..	toctree::
 	:maxdepth: 1
-	:caption: Revisions
+	:caption: Revisions:
 
 	digital_voltage_3u
 	digital_voltage_3v3_rev01
 	digital_voltage_3v3_5v
+
+Source:
+
+- `Digital Voltage repository <https://bitbucket.org/ultrazohm/uz_d_voltage>`_
+- `Digital Voltage 3V3 repository <https://bitbucket.org/ultrazohm/uz_d_voltage_3v3>`_
+- `Digital Voltage 3V3/5V repository <https://bitbucket.org/ultrazohm/uz_d_voltage_3v3_5v>`_
     
 
 Pinout and Interface

@@ -89,9 +89,9 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
-
-	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4_0;
-	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4_1;
+	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4_Last;
+	struct uz_resolver_pl_interface_outputs_t resolver_outputs_d4_Pruef;
+	float tester;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -120,10 +120,10 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
-	uz_resolver_pl_interface_t* resolver_pl_d4_0;
-	uz_resolver_pl_interface_t* resolver_pl_d4_1;
-	uz_resolverIP_t* resolverIP_0;
-	uz_resolverIP_t* resolverIP_1;
+	uz_resolver_pl_interface_t* resolver_pl_d4_Last;
+	uz_resolver_pl_interface_t* resolver_pl_d4_Pruef;
+	uz_resolverIP_t* resolverIP_Last;
+	uz_resolverIP_t* resolverIP_Pruef;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

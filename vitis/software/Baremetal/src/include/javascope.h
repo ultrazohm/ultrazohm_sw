@@ -49,10 +49,8 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
-	JSO_theta_el_0,
-	JSO_theta_el_1,
-	JSO_n_mech_0,
-	JSO_n_mech_1,
+	JSO_n_mech_Last,
+	JSO_n_mech_Pruef,
 	JSO_ENDMARKER
 };
 
@@ -60,6 +58,8 @@ enum JS_OberservableData {
 // Do not change the first (zero) and last (end) entries.
 enum JS_SlowData {
 	JSSD_ZEROVALUE=0,
+	JSSD_FLOAT_theta_el_Last,
+	JSSD_FLOAT_theta_el_Pruef,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
@@ -74,8 +74,6 @@ enum JS_SlowData {
 	JSSD_FLOAT_speed,
 	JSSD_FLOAT_torque,
 	JSSD_FLOAT_encoderOffset,
-	JSSD_FLOAT_u_d_ref,
-	JSSD_FLOAT_u_q_ref,
 	JSSD_ENDMARKER
 };
 
@@ -184,10 +182,10 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_FLD_ZEROVALUE=0,
-	n_mech_0,
-	n_mech_1,
-	theta_el_0,
-	theta_el_1,
+	theta_el_Last,
+	theta_el_Pruef,
+	receive_field_3,
+	receive_field_4,
 	receive_field_5,
 	receive_field_6,
 	receive_field_7,
@@ -211,10 +209,10 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	RCV_LABELS_ZEROVALUE=0,
-	RPM,
-	RPM,
 	rad,
 	rad,
+	-,
+	-,
 	-,
 	-,
 	-,
@@ -254,27 +252,26 @@ enum gui_button_mapping {
 //Set the line to JSSD_FLOAT_ZEROVALUE if no value should be transmitted
 
 	SLOWDAT_DISPLAY_ZEROVALUE=0,
+	JSSD_FLOAT_theta_el_Last,
+	JSSD_FLOAT_theta_el_Pruef,
+	JSSD_FLOAT_u_d,
 	JSSD_FLOAT_SecondsSinceSystemStart,
 	JSSD_FLOAT_ISR_ExecTime_us,
 	JSSD_FLOAT_ISR_Period_us,
-	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_FreqReadback,
 	JSSD_FLOAT_Milliseconds,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
-	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ADCconvFactorReadback,
 	JSSD_FLOAT_Error_Code,
+	JSSD_FLOAT_u_q,
+	JSSD_FLOAT_i_d,
+	JSSD_FLOAT_i_q,
+	JSSD_FLOAT_speed,
+	JSSD_FLOAT_torque,
+	JSSD_FLOAT_encoderOffset,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE,
+	JSSD_FLOAT_ZEROVALUE
 	SLOWDAT_DISPLAY_ENDMARKER
 */
 

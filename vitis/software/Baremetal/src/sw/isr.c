@@ -82,6 +82,7 @@ float theta_offset = 5.93f;
 #define NEUTRAL_CONFIG 2U //1U: 1N, 2U: 2N
 float u_n1 = 0.0f;
 float u_n2 = 0.0f;
+
 //====================
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -97,8 +98,9 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
-    Global_Data.av.resolver_outputs_d4_0 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_0);
-      Global_Data.av.resolver_outputs_d4_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_1);
+    Global_Data.av.resolver_outputs_d4_Last = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_Last);
+    Global_Data.av.resolver_outputs_d4_Pruef = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_d4_Pruef);
+    Global_Data.av.tester = 5;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 

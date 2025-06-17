@@ -22,6 +22,15 @@
 #if (UZ_PLATFORM_CARDID==1)
  //// Bus instance ID (set to 1 for the "user I²C" and bound to PS I²C *0*)
  #define UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS	(1U)
+ // I²C mux on Rev05 carriers
+ #define UZ_PLATFORM_I2CADDR_USRMUX	(0x77)
+ #define UZ_PLATFORM_USRMUXC_FPIOs	(0)
+ #define UZ_PLATFORM_USRMUXC_ACARDS	(1)
+ #define UZ_PLATFORM_USRMUXC_DCPLDS	(2)
+ #define UZ_PLATFORM_USRMUXC_DCARDS	(3)
+ #define UZ_PLATFORM_USRMUXC_BPB	(4)
+ #define UZ_PLATFORM_USRMUXC_S3CSEC	(5)
+ #define UZ_PLATFORM_USRMUXC_BPT	(6)
 #endif
 
 typedef enum uz_platform_gpiodrv_ {
@@ -59,6 +68,10 @@ typedef struct uz_platform_ {
 	uint16_t gpioi2c_outmirror;
 
 	XGpioPs gpiops;
+
+#if (UZ_PLATFORM_CARDID==1)
+	uz_iic usrmux;
+#endif
 } uz_platform;
 
 static uz_platform_iomap uzp_iomap_UltraZohmRev02 = {
@@ -261,7 +274,6 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 	//// Create I²C devices: EEPROM
 	uz_iic_initdev(&uzp.eeprom, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_EEPROM);
 
-	
 	// Fetch platform data
 	int status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
 	if ( XST_SUCCESS != status ) {
@@ -283,6 +295,13 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 	} else {
 		uz_platform_printinfo(&uzp.data);
 	}
+
+#if (UZ_PLATFORM_CARDID==1)
+	//// Secondary I²C bus used by UZP
+	uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, XPAR_PSU_I2C_0_BASEADDR, XPAR_PSU_I2C_0_DEVICE_ID, XPAR_PSU_I2C_0_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
+	//// Create I²C devices: Multiplexer on User Bus (only on >Rev04 carriers)
+	uzp.usrmux.is_ready = false;
+#endif
 
 	// Populate IO map
 	switch(uzp.data.hw_group) {
@@ -308,6 +327,11 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 			}
 
 			uzp.maceeprom_primary = 1;
+
+#if (UZ_PLATFORM_CARDID==1)
+			if ( 4U < uzp.data.hw_revision )
+				uz_iic_initdev(&uzp.usrmux, UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, UZ_PLATFORM_I2CADDR_USRMUX);
+#endif
 
 			break;
 		case UZP_HWGROUP_MZOHM:
@@ -408,11 +432,6 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 	uz_printf("Platform IIC at %d kHz and with sum-status=%i\r\n", UZ_PLATFORM_SCLK_RATEKHZ, status);
 
 	uzp.is_ready = true;
-
-#if (UZ_PLATFORM_CARDID==1)
-	//// Secondary I²C bus used by UZP
-	uz_iic_initbus(UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, XPAR_PSU_I2C_0_BASEADDR, XPAR_PSU_I2C_0_DEVICE_ID, XPAR_PSU_I2C_0_I2C_CLK_FREQ_HZ, UZ_PLATFORM_SCLK_RATEKHZ);
-#endif
 
 	return(UZ_SUCCESS);
 }
@@ -541,6 +560,30 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 
 #if (UZ_PLATFORM_CARDID==1)
  /**
+  * @brief Initializes an adapter card's IIC device on the preinitialized User IIC Bus and set the IIC Multiplexer on Rev05-based systems **once** (to the A- or D-specific channel)
+  *
+  * @param self Ptr to IIC device to be initialized.
+  * @param devaddr IIC address of the device in 7-bit notation.
+  * @return XST_SUCCESS if successful or failure code in case of I²C comm error
+  */
+ static uint32_t uz_platform_initcarddev(uz_iic *self, uint8_t devaddr) {
+	uint32_t status = XST_SUCCESS;
+
+	if ( uzp.usrmux.is_ready ) {
+		uint8_t subaddr = devaddr & 0x07;		// NB: This relies on all _BASE(ADDR) having the three lowest bits at zero
+		uint8_t muxch = (subaddr < 3) ? UZ_PLATFORM_USRMUXC_ACARDS : UZ_PLATFORM_USRMUXC_DCARDS;
+		uint8_t muxreg = 1U << muxch;
+
+		status = uz_iic_write_raw(&uzp.usrmux, &muxreg, 1);
+	}
+
+	if ( XST_SUCCESS == status)
+		uz_iic_initdev(self, UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, devaddr);
+
+	return(status);
+ }
+
+ /**
   * @brief Read platform identification data for a given adapter card from its on-board EEPROM
   *
   * @param slot Slot ID of the card to be read (i.e., 0-2 for slots A1-3, 3-7 for slots D1-5).
@@ -560,10 +603,12 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 	uz_assert(cardaddr <= UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST);
 
 	uz_iic cardeeprom;
-	uz_iic_initdev(&cardeeprom, UZ_PLATFORM_I2CBUS_INSTID_ADAPTERCARDS, cardaddr);
+	uint32_t status = uz_platform_initcarddev(&cardeeprom, cardaddr);
+	if ( UZ_SUCCESS != status )
+		return(status);
 
 	uz_platform_eeprom cardeeprom_data;
-	uint32_t status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET, (uint8_t*) &cardeeprom_data, sizeof(cardeeprom_data));
+	status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET, (uint8_t*) &cardeeprom_data, sizeof(cardeeprom_data));
 	if ( UZ_SUCCESS != status )
 		return(status);
 

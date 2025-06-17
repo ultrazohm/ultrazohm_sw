@@ -38,46 +38,58 @@
 // 0x28 : Data signal of L_3_Weights_input
 //        bit 31~0 - L_3_Weights_input[31:0] (Read/Write)
 // 0x2c : reserved
-// 0x30 : Data signal of L_Output_Weights_input
-//        bit 31~0 - L_Output_Weights_input[31:0] (Read/Write)
+// 0x30 : Data signal of L_4_Weights_input
+//        bit 31~0 - L_4_Weights_input[31:0] (Read/Write)
 // 0x34 : reserved
-// 0x38 : Data signal of Action_output
-//        bit 31~0 - Action_output[31:0] (Read/Write)
+// 0x38 : Data signal of L_5_Weights_input
+//        bit 31~0 - L_5_Weights_input[31:0] (Read/Write)
 // 0x3c : reserved
-// 0x40 : Data signal of L_1_Bias_input
-//        bit 31~0 - L_1_Bias_input[31:0] (Read/Write)
+// 0x40 : Data signal of L_Output_Weights_input
+//        bit 31~0 - L_Output_Weights_input[31:0] (Read/Write)
 // 0x44 : reserved
-// 0x48 : Data signal of L_2_Bias_input
-//        bit 31~0 - L_2_Bias_input[31:0] (Read/Write)
+// 0x48 : Data signal of Action_output
+//        bit 31~0 - Action_output[31:0] (Read/Write)
 // 0x4c : reserved
-// 0x50 : Data signal of L_3_Bias_input
-//        bit 31~0 - L_3_Bias_input[31:0] (Read/Write)
+// 0x50 : Data signal of L_1_Bias_input
+//        bit 31~0 - L_1_Bias_input[31:0] (Read/Write)
 // 0x54 : reserved
-// 0x58 : Data signal of L_Output_Bias_input
-//        bit 31~0 - L_Output_Bias_input[31:0] (Read/Write)
+// 0x58 : Data signal of L_2_Bias_input
+//        bit 31~0 - L_2_Bias_input[31:0] (Read/Write)
 // 0x5c : reserved
-// 0x60 : Data signal of copy_mats_flag
+// 0x60 : Data signal of L_3_Bias_input
+//        bit 31~0 - L_3_Bias_input[31:0] (Read/Write)
+// 0x64 : reserved
+// 0x68 : Data signal of L_4_Bias_input
+//        bit 31~0 - L_4_Bias_input[31:0] (Read/Write)
+// 0x6c : reserved
+// 0x70 : Data signal of L_5_Bias_input
+//        bit 31~0 - L_5_Bias_input[31:0] (Read/Write)
+// 0x74 : reserved
+// 0x78 : Data signal of L_Output_Bias_input
+//        bit 31~0 - L_Output_Bias_input[31:0] (Read/Write)
+// 0x7c : reserved
+// 0x80 : Data signal of copy_mats_flag
 //        bit 0  - copy_mats_flag[0] (Read/Write)
 //        others - reserved
-// 0x64 : reserved
-// 0x68 : Data signal of Observation_size_input
+// 0x84 : reserved
+// 0x88 : Data signal of Observation_size_input
 //        bit 31~0 - Observation_size_input[31:0] (Read/Write)
-// 0x6c : reserved
-// 0x70 : Data signal of Action_size_input
+// 0x8c : reserved
+// 0x90 : Data signal of Action_size_input
 //        bit 31~0 - Action_size_input[31:0] (Read/Write)
-// 0x74 : reserved
-// 0x78 : Data signal of copy_flag_out
+// 0x94 : reserved
+// 0x98 : Data signal of copy_flag_out
 //        bit 0  - copy_flag_out[0] (Read)
 //        others - reserved
-// 0x7c : reserved
-// 0x88 : Data signal of matrices_updated_out
+// 0x9c : reserved
+// 0xa8 : Data signal of matrices_updated_out
 //        bit 0  - matrices_updated_out[0] (Read)
 //        others - reserved
-// 0x8c : reserved
-// 0x98 : Data signal of compute_flag
+// 0xac : reserved
+// 0xb8 : Data signal of compute_flag
 //        bit 0  - compute_flag[0] (Read/Write)
 //        others - reserved
-// 0x9c : reserved
+// 0xbc : reserved
 // (SC = Self Clear, COR = Clear on Read, TOW = Toggle on Write, COH = Clear on Handshake)
 
 #define XUZ_NN_ACC_CONTROL_ADDR_AP_CTRL                     0x00
@@ -92,29 +104,37 @@
 #define XUZ_NN_ACC_CONTROL_BITS_L_2_WEIGHTS_INPUT_DATA      32
 #define XUZ_NN_ACC_CONTROL_ADDR_L_3_WEIGHTS_INPUT_DATA      0x28
 #define XUZ_NN_ACC_CONTROL_BITS_L_3_WEIGHTS_INPUT_DATA      32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA 0x30
+#define XUZ_NN_ACC_CONTROL_ADDR_L_4_WEIGHTS_INPUT_DATA      0x30
+#define XUZ_NN_ACC_CONTROL_BITS_L_4_WEIGHTS_INPUT_DATA      32
+#define XUZ_NN_ACC_CONTROL_ADDR_L_5_WEIGHTS_INPUT_DATA      0x38
+#define XUZ_NN_ACC_CONTROL_BITS_L_5_WEIGHTS_INPUT_DATA      32
+#define XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_WEIGHTS_INPUT_DATA 0x40
 #define XUZ_NN_ACC_CONTROL_BITS_L_OUTPUT_WEIGHTS_INPUT_DATA 32
-#define XUZ_NN_ACC_CONTROL_ADDR_ACTION_OUTPUT_DATA          0x38
+#define XUZ_NN_ACC_CONTROL_ADDR_ACTION_OUTPUT_DATA          0x48
 #define XUZ_NN_ACC_CONTROL_BITS_ACTION_OUTPUT_DATA          32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_1_BIAS_INPUT_DATA         0x40
+#define XUZ_NN_ACC_CONTROL_ADDR_L_1_BIAS_INPUT_DATA         0x50
 #define XUZ_NN_ACC_CONTROL_BITS_L_1_BIAS_INPUT_DATA         32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_2_BIAS_INPUT_DATA         0x48
+#define XUZ_NN_ACC_CONTROL_ADDR_L_2_BIAS_INPUT_DATA         0x58
 #define XUZ_NN_ACC_CONTROL_BITS_L_2_BIAS_INPUT_DATA         32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_3_BIAS_INPUT_DATA         0x50
+#define XUZ_NN_ACC_CONTROL_ADDR_L_3_BIAS_INPUT_DATA         0x60
 #define XUZ_NN_ACC_CONTROL_BITS_L_3_BIAS_INPUT_DATA         32
-#define XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_BIAS_INPUT_DATA    0x58
+#define XUZ_NN_ACC_CONTROL_ADDR_L_4_BIAS_INPUT_DATA         0x68
+#define XUZ_NN_ACC_CONTROL_BITS_L_4_BIAS_INPUT_DATA         32
+#define XUZ_NN_ACC_CONTROL_ADDR_L_5_BIAS_INPUT_DATA         0x70
+#define XUZ_NN_ACC_CONTROL_BITS_L_5_BIAS_INPUT_DATA         32
+#define XUZ_NN_ACC_CONTROL_ADDR_L_OUTPUT_BIAS_INPUT_DATA    0x78
 #define XUZ_NN_ACC_CONTROL_BITS_L_OUTPUT_BIAS_INPUT_DATA    32
-#define XUZ_NN_ACC_CONTROL_ADDR_COPY_MATS_FLAG_DATA         0x60
+#define XUZ_NN_ACC_CONTROL_ADDR_COPY_MATS_FLAG_DATA         0x80
 #define XUZ_NN_ACC_CONTROL_BITS_COPY_MATS_FLAG_DATA         1
-#define XUZ_NN_ACC_CONTROL_ADDR_OBSERVATION_SIZE_INPUT_DATA 0x68
+#define XUZ_NN_ACC_CONTROL_ADDR_OBSERVATION_SIZE_INPUT_DATA 0x88
 #define XUZ_NN_ACC_CONTROL_BITS_OBSERVATION_SIZE_INPUT_DATA 32
-#define XUZ_NN_ACC_CONTROL_ADDR_ACTION_SIZE_INPUT_DATA      0x70
+#define XUZ_NN_ACC_CONTROL_ADDR_ACTION_SIZE_INPUT_DATA      0x90
 #define XUZ_NN_ACC_CONTROL_BITS_ACTION_SIZE_INPUT_DATA      32
-#define XUZ_NN_ACC_CONTROL_ADDR_COPY_FLAG_OUT_DATA          0x78
+#define XUZ_NN_ACC_CONTROL_ADDR_COPY_FLAG_OUT_DATA          0x98
 #define XUZ_NN_ACC_CONTROL_BITS_COPY_FLAG_OUT_DATA          1
-#define XUZ_NN_ACC_CONTROL_ADDR_MATRICES_UPDATED_OUT_DATA   0x88
+#define XUZ_NN_ACC_CONTROL_ADDR_MATRICES_UPDATED_OUT_DATA   0xa8
 #define XUZ_NN_ACC_CONTROL_BITS_MATRICES_UPDATED_OUT_DATA   1
-#define XUZ_NN_ACC_CONTROL_ADDR_COMPUTE_FLAG_DATA           0x98
+#define XUZ_NN_ACC_CONTROL_ADDR_COMPUTE_FLAG_DATA           0xb8
 #define XUZ_NN_ACC_CONTROL_BITS_COMPUTE_FLAG_DATA           1
 
 #endif

@@ -10,7 +10,7 @@
 
 #define MAX_SIZE_OBSERVATION 24U
 #define MAX_SIZE_ACTIONS 12U 
-#define FIXED_AMOUNT_OF_LAYERS 4U //3 Hidden Layers + Output Layer
+#define MAX_AMOUNT_OF_HIDDEN_LAYERS 5U //5 Hidden Layers 
 #define FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER 64U
 
 //Flush and Invalidate Size must be multiple of 32byte
@@ -23,6 +23,7 @@ struct uz_NN_acc_t {
     bool copy_mats_flag;
     uz_matrix_t* observation;
 	uz_matrix_t* action;
+    uint32_t number_of_hidden_layers;
     float (*output_activation_function)(float);
     struct uz_NN_acc_config_t config;
 };
@@ -49,57 +50,71 @@ uz_NN_acc_t *uz_NN_acc_init(struct uz_NN_acc_config_t config, uz_matrix_t const 
     uz_assert_not_NULL(observation);
     uz_assert_not_NULL(action);
 
-    //Get Data
-    uz_matrix_t *L1_Weights = uz_nn_get_weight_matrix(config.software_network, 1U);
-    uz_matrix_t *L1_Bias = uz_nn_get_bias_matrix(config.software_network, 1U);
-    uz_matrix_t *L2_Weights = uz_nn_get_weight_matrix(config.software_network, 2U);
-    uz_matrix_t *L2_Bias = uz_nn_get_bias_matrix(config.software_network, 2U);
-    uz_matrix_t *L3_Weights = uz_nn_get_weight_matrix(config.software_network, 3U);
-    uz_matrix_t *L3_Bias = uz_nn_get_bias_matrix(config.software_network, 3U);
-    uz_matrix_t *L_Output_Weights = uz_nn_get_weight_matrix(config.software_network, 4U);
-    uz_matrix_t *L_Output_Bias = uz_nn_get_bias_matrix(config.software_network, 4U);
-    self->output_activation_function = uz_nn_get_activation_function(config.software_network,4U);
-
     //Assertions
-    uz_assert((uz_nn_get_number_of_layer(config.software_network))==FIXED_AMOUNT_OF_LAYERS);
+    self->number_of_hidden_layers = (uz_nn_get_number_of_layer(config.software_network)) - 1U; //subtract 1 because of output layer
+    uz_assert((self->number_of_hidden_layers)<=MAX_AMOUNT_OF_HIDDEN_LAYERS);
+    uz_assert((self->number_of_hidden_layers)> 0U);
     uz_assert((uz_nn_get_number_of_inputs(config.software_network))<=MAX_SIZE_OBSERVATION);
     uz_assert((uz_nn_get_number_of_outputs(config.software_network))<=MAX_SIZE_ACTIONS);
     uz_assert(observation->columns <= MAX_SIZE_OBSERVATION);
     uz_assert(observation->rows == 1U);
-    //First Layer
-    uz_assert(L1_Weights->columns == FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER);
-    uz_assert(L1_Weights->rows <= MAX_SIZE_OBSERVATION);
-    //Second Layer
-    uz_assert(L2_Weights->columns == FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER);
-    uz_assert(L2_Weights->rows == FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER);
-    //Third Layer
-    uz_assert(L3_Weights->columns == FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER);
-    uz_assert(L3_Weights->rows == FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER);
-    //Output Layer
-    uz_assert(L_Output_Weights->columns <= MAX_SIZE_ACTIONS);
-    uz_assert(L_Output_Weights->rows == FIXED_AMOUNT_OF_NEURONS_HIDDEN_LAYER);
     uz_assert(action->columns <= MAX_SIZE_ACTIONS);
     uz_assert(action->rows == 1U);
+    
 
+    uz_matrix_t* weights[MAX_AMOUNT_OF_HIDDEN_LAYERS +1U]; //+1 because of output layer  
+    uz_matrix_t* biases[MAX_AMOUNT_OF_HIDDEN_LAYERS + 1U]; //+1 because of output layer  
+
+    // Load weight- and bias-matrizes and write their address to HW
+    for (uint32_t i = 0U; (i < self->number_of_hidden_layers +1U); ++i) {
+        weights[i] = uz_nn_get_weight_matrix(config.software_network, i + 1U);
+        biases[i] = uz_nn_get_bias_matrix(config.software_network, i + 1U);
+
+        if(i < (self->number_of_hidden_layers)) {
+            switch(i) {
+                case 0:
+                    //First Layer
+                    uz_NN_acc_hw_set_L_1_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_1_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 1:
+                    //Second Layer
+                    uz_NN_acc_hw_set_L_2_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_2_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 2:
+                    //Third Layer
+                    uz_NN_acc_hw_set_L_3_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_3_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 3:
+                    //Fourth Layer
+                    uz_NN_acc_hw_set_L_4_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_4_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                case 4:
+                    //Fifth Layer
+                    uz_NN_acc_hw_set_L_5_Weights_Data(config.base_address, weights[i]->data);
+                    uz_NN_acc_hw_set_L_5_Bias_Data(config.base_address, biases[i]->data);
+                    break;
+                default:
+                    uz_assert(false);
+                    break;
+            }
+    } else {
+        // Output Layer
+        uz_NN_acc_hw_set_L_Output_Weights_Data(config.base_address, weights[i]->data);
+        uz_NN_acc_hw_set_L_Output_Bias_Data(config.base_address, biases[i]->data);
+        uz_assert(weights[self->number_of_hidden_layers]->columns <= MAX_SIZE_ACTIONS);
+        self->output_activation_function = uz_nn_get_activation_function(config.software_network, i);
+    }
+}
     self->config = config;
     self->observation = observation;
     self->action = action;
-    //Set Data
     //Observation
     uz_NN_acc_hw_set_Observation_size(config.base_address,observation->columns);
     uz_NN_acc_hw_set_Observation_Data(config.base_address,observation->data);
-    //First Layer
-    uz_NN_acc_hw_set_L_1_Weights_Data(config.base_address,L1_Weights->data);
-    uz_NN_acc_hw_set_L_1_Bias_Data(config.base_address,L1_Bias->data);
-    //Second Layer
-    uz_NN_acc_hw_set_L_2_Weights_Data(config.base_address,L2_Weights->data);
-    uz_NN_acc_hw_set_L_2_Bias_Data(config.base_address,L2_Bias->data);
-    //Third Layer
-    uz_NN_acc_hw_set_L_3_Weights_Data(config.base_address,L3_Weights->data);
-    uz_NN_acc_hw_set_L_3_Bias_Data(config.base_address,L3_Bias->data);
-    //Output Layer
-    uz_NN_acc_hw_set_L_Output_Weights_Data(config.base_address,L_Output_Weights->data);
-    uz_NN_acc_hw_set_L_Output_Bias_Data(config.base_address,L_Output_Bias->data);
     //Action
     uz_NN_acc_hw_set_Action_size(config.base_address, action->columns);
     uz_NN_acc_hw_set_Actions_Data(config.base_address, action->data);

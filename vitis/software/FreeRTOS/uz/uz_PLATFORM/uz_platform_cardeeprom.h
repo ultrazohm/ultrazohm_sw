@@ -61,7 +61,10 @@
 #define UZP_CARDI2C_DIGVOLT335_GPIO_INBITS	(UZP_CARDI2C_DIGVOLT335_GPIO_IN_VOUT|UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR1|UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR2|UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR3|UZP_CARDI2C_DIGVOLT335_GPIO_IN_DIR4)
 #define UZP_CARDI2C_DIGVOLT335_GPIO_OUTBITS	(UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2R|UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2G|UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2B)
 
-void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin) {
+// Define card helpers only when included from uz_platform.c
+#ifdef UZ_PLATFORM_C
+
+ void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin) {
 	if ( (slot < 3) || (slot > 7) ) {
 		uz_printf("Invalid D slot (%i)\r\n", slot);
 		return;
@@ -78,7 +81,11 @@ void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin) {
 	uz_printf("/=================\\\r\n");
 
 	return;
-}
+ }
+
+#else
+ void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin);
+#endif
 
 
 //// EEPROM on MZ-hosting PCB (MZohm)

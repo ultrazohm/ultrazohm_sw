@@ -2,7 +2,7 @@
 
 #include "../uz_HAL.h"
 
-#include "uz_platform.h"
+#include "uz_platform.h"		// Also includes uz_platform_cardeeprom.h
 #include "uz_platform_eeprom.h"	// Also includes uz_platform_cardeeprom.h
 #include "../uz_IIC/uz_iic.h"
 #include "uz_platform_gpiops.h"
@@ -291,25 +291,24 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 			switch(uzp.data.hw_revision) {
 				case 2U:
 					uzp.iomap = &uzp_iomap_UltraZohmRev02;
-					uzp.maceeprom_primary = 1;
 					break;
 				case 3U:
 					uzp.iomap = &uzp_iomap_UltraZohmRev03;
-					uzp.maceeprom_primary = 1;
 					break;
 				case 4U:
 					uzp.iomap = &uzp_iomap_UltraZohmRev04;
-					uzp.maceeprom_primary = 1;
 					break;
 				case 5U:
 					uzp.iomap = &uzp_iomap_UltraZohmRev05prt;
-					uzp.maceeprom_primary = 1;
 					break;
 				default:
 					uz_printf("APU: Carrier revision not supported!\r\n");
-					return (UZ_FAILURE);
+					return(UZ_FAILURE);
 					break;
 			}
+
+			uzp.maceeprom_primary = 1;
+
 			break;
 		case UZP_HWGROUP_MZOHM:
 			uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;
@@ -565,13 +564,19 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 
 	uz_platform_eeprom cardeeprom_data;
 	uint32_t status = uz_iic_a8read_data(&cardeeprom, UZ_PLATFORM_NONCARRIEREEPROM_INFOOFFSET, (uint8_t*) &cardeeprom_data, sizeof(cardeeprom_data));
+	if ( UZ_SUCCESS != status )
+		return(status);
 
 	// Option: Check whether model is known?
 
-	if ( (UZ_SUCCESS == status) && (UZP_HWGROUP_ADCARD == cardeeprom_data.hw_group) ) {
+	if ( UZP_HWGROUP_ADCARD == cardeeprom_data.hw_group ) {
 		*model_p = cardeeprom_data.hw_model;
 		*revision_p = cardeeprom_data.hw_revision;
 		*serial_p = cardeeprom_data.serialdata.uzhw_variantandserial.sn;
+		status = UZ_SUCCESS;
+	} else {
+		uz_printf("NB: EEPROM found at 0x%02X (slot %i), but unable to parse its content\r\n", cardaddr, slot);
+		status = UZ_FAILURE;
 	}
 
 	return(status);

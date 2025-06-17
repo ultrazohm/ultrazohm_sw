@@ -116,9 +116,12 @@ int main()
 				uint8_t revision = 0;									// whilst revisions and
 				uint16_t serial = 0;									// serials start at one
 
-				if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) )
+				if ( UZ_SUCCESS == uz_platform_cardread(i, &model, &revision, &serial) ) {
 					uz_printf("Board model/revision/serial of adapter card in slot %i: %03i/%02i/%04i\r\n", i, model, revision, serial);
-				else
+
+					if ( (UZP_HWGROUP_ADCARD_DIGVOLT335 == model) && (1 < revision) )
+						uz_platform_configcard_model015_voltageled(i);
+				} else
 					uz_printf("Identification of adapter card in slot %i failed (no PCB or EEPROM)\r\n", i);
 
 				uz_printf("\r\n");

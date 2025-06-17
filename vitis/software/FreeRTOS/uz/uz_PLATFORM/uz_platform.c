@@ -626,4 +626,42 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 
 	return(status);
  }
+
+ void uz_platform_configcard_model015_voltageled(uint8_t slot) {
+	if ( (slot < 3) || (slot > 7) ) {
+		uz_printf("Invalid D slot (%i)\r\n", slot);
+		return;
+	}
+
+	uint8_t cardgpio_i2caddr = UZP_CARDI2C_DIGVOLT335_GPIO_BASEADDR + slot;
+	uz_iic cardgpio;
+	if ( XST_SUCCESS != uz_platform_initcarddev(&cardgpio, cardgpio_i2caddr) )
+		return;
+
+	// Construct write command (target address + data) ...
+	uint8_t confreg[] = { UZP_CARDI2C_DIGVOLT335_GPIO_REGCONF, UZP_CARDI2C_DIGVOLT335_GPIO_INBITS };
+	// ... and send it
+	if ( XST_SUCCESS != uz_iic_write_raw(&cardgpio, confreg, sizeof(confreg)/sizeof(confreg[0])) )
+		return;
+
+	// Read input register
+	uint8_t inreg;
+	if ( XST_SUCCESS != uz_iic_a8read_data(&cardgpio, UZP_CARDI2C_DIGVOLT335_GPIO_REGIN, &inreg, 1) )
+		return;
+
+	// Construct data for output register
+	uint8_t ledbits = UZP_CARDI2C_DIGVOLT335_GPIO_OUTBITS;
+	if (inreg & UZP_CARDI2C_DIGVOLT335_GPIO_IN_VOUT)
+		ledbits &= ~UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2G;		// 3V3
+	else
+		ledbits &= ~UZP_CARDI2C_DIGVOLT335_GPIO_OUT_D2B;		// 5V
+
+	// Construct write command (target address + data) ...
+	uint8_t outreg[] = { UZP_CARDI2C_DIGVOLT335_GPIO_REGOUT, ledbits };
+	// ... and send it
+	if ( XST_SUCCESS != uz_iic_write_raw(&cardgpio, outreg, sizeof(outreg)/sizeof(outreg[0])) )
+		return;
+
+	return;
+ }
 #endif

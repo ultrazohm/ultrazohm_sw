@@ -56,6 +56,7 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p);
 
 #if (UZ_PLATFORM_CARDID==1)
  uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p);
+ void uz_platform_configcard_model015_voltageled(uint8_t slot);
 #endif
 
 #endif

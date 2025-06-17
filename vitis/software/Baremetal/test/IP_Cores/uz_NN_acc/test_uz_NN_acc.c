@@ -389,161 +389,18 @@ void test_uz_NN_acc_init_assert_Action_size(void) {
     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,output));
 }
 
-// void test_uz_NN_acc_init_assert_Size_L1_Weights_Bias(void) {
-//     config.base_address = BASE_ADDRESS;
-//     float w_1_test1[NUMBER_OF_INPUTS * 128U] = {0};
-//     float y_1_test1[128U] = {0};
-//     float b_1_test1[128U] = {0};
-//     struct uz_nn_layer_config software_nn_config_test1[4] = {
-//     [0] = {
-//         .activation_function = activation_ReLU,
-//         .number_of_neurons = 128U,
-//         .number_of_inputs = NUMBER_OF_INPUTS,
-//         .length_of_weights = UZ_MATRIX_SIZE(w_1_test1),
-//         .length_of_bias = UZ_MATRIX_SIZE(b_1_test1),
-//         .length_of_output = UZ_MATRIX_SIZE(y_1_test1),
-//         .weights = w_1_test1,
-//         .bias = b_1_test1,
-//         .output = y_1_test1},
-//     [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
-//     [2] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3},
-//     [3] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_6), .length_of_bias = UZ_MATRIX_SIZE(b_6), .length_of_output = UZ_MATRIX_SIZE(y_6), .weights = w_6, .bias = b_6, .output = y_6}};
 
-//     config.software_network = uz_nn_init(software_nn_config_test1, 4);
-//     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
-//     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS);
-//     //Different amount of neurons than 64
-//     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,output));
+void test_uz_NN_acc_ff_blocking_assert_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_ff_blocking(NULL));
+}
 
-//     float w_1_test2[30U * NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
-//     float y_1_test2[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
-//     float b_1_test2[NUMBER_OF_NEURONS_IN_FIRST_LAYER] = {0};
-//     struct uz_nn_layer_config software_nn_config_test2[4] = {
-//     [0] = {
-//         .activation_function = activation_ReLU,
-//         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
-//         .number_of_inputs = 30U,
-//         .length_of_weights = UZ_MATRIX_SIZE(w_1_test2),
-//         .length_of_bias = UZ_MATRIX_SIZE(b_1_test2),
-//         .length_of_output = UZ_MATRIX_SIZE(y_1_test2),
-//         .weights = w_1_test2,
-//         .bias = b_1_test2,
-//         .output = y_1_test2},
-//     [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
-//     [2] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3},
-//     [3] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_6), .length_of_bias = UZ_MATRIX_SIZE(b_6), .length_of_output = UZ_MATRIX_SIZE(y_6), .weights = w_6, .bias = b_6, .output = y_6}};
+void test_uz_NN_acc_ff_non_blocking_assert_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_ff_non_blocking(NULL));
+}
 
-//     config.software_network = uz_nn_init(software_nn_config_test2, 4);
-//     //More than 24 observations
-//     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,output));
-// }
-
-// void test_uz_NN_acc_init_assert_Size_L2_Weights_Bias(void) {
-//     config.base_address = BASE_ADDRESS;
-//     float w_2_test1[128U * 128U] = {0};
-//     float y_2_test1[128U] = {0};
-//     float b_2_test1[128U] = {0};
-//     struct uz_nn_layer_config software_nn_config_test1[4] = {
-//     [0] = {
-//         .activation_function = activation_ReLU,
-//         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
-//         .number_of_inputs = NUMBER_OF_INPUTS,
-//         .length_of_weights = UZ_MATRIX_SIZE(w_1),
-//         .length_of_bias = UZ_MATRIX_SIZE(b_1),
-//         .length_of_output = UZ_MATRIX_SIZE(y_1),
-//         .weights = w_1,
-//         .bias = b_1,
-//         .output = y_1},
-//     [1] = {.activation_function = activation_ReLU, .number_of_neurons = 128U, .number_of_inputs = 128U, .length_of_weights = UZ_MATRIX_SIZE(w_2_test1), .length_of_bias = UZ_MATRIX_SIZE(b_2_test1), .length_of_output = UZ_MATRIX_SIZE(y_2_test1), .weights = w_2_test1, .bias = b_2_test1, .output = y_2_test1},
-//     [2] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3},
-//     [3] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_6), .length_of_bias = UZ_MATRIX_SIZE(b_6), .length_of_output = UZ_MATRIX_SIZE(y_6), .weights = w_6, .bias = b_6, .output = y_6}};
-
-//     config.software_network = uz_nn_init(software_nn_config_test1, 4);
-//     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
-//     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS);
-//     //Different amount of neurons than 64
-//     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,output));
-// }
-
-// void test_uz_NN_acc_init_assert_Size_L3_Weights_Bias(void) {
-//     config.base_address = BASE_ADDRESS;
-//     float w_3_test1[128U * 128U] = {0};
-//     float y_3_test1[128U] = {0};
-//     float b_3_test1[128U] = {0};
-//     struct uz_nn_layer_config software_nn_config_test1[4] = {
-//     [0] = {
-//         .activation_function = activation_ReLU,
-//         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
-//         .number_of_inputs = NUMBER_OF_INPUTS,
-//         .length_of_weights = UZ_MATRIX_SIZE(w_1),
-//         .length_of_bias = UZ_MATRIX_SIZE(b_1),
-//         .length_of_output = UZ_MATRIX_SIZE(y_1),
-//         .weights = w_1,
-//         .bias = b_1,
-//         .output = y_1},
-//     [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
-//     [2] = {.activation_function = activation_ReLU, .number_of_neurons = 128U, .number_of_inputs = 128U, .length_of_weights = UZ_MATRIX_SIZE(w_3_test1), .length_of_bias = UZ_MATRIX_SIZE(b_3_test1), .length_of_output = UZ_MATRIX_SIZE(y_3_test1), .weights = w_3_test1, .bias = b_3_test1, .output = y_3_test1},
-//     [3] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_6), .length_of_bias = UZ_MATRIX_SIZE(b_6), .length_of_output = UZ_MATRIX_SIZE(y_6), .weights = w_6, .bias = b_6, .output = y_6}};
-
-//     config.software_network = uz_nn_init(software_nn_config_test1, 4);
-//     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
-//     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6,UZ_MATRIX_SIZE(y_6),1U,NUMBER_OF_OUTPUTS);
-//     //Different amount of neurons than 64
-//     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,output));
-// }
-
-// void test_uz_NN_acc_init_assert_Size_Loutput_Weights_Bias(void) {
-//     config.base_address = BASE_ADDRESS;
-//     float w_6_test1[NUMBER_OF_OUTPUTS * 128] = {0};
-//     float y_6_test1[NUMBER_OF_OUTPUTS] = {0};
-//     float b_6_test1[NUMBER_OF_OUTPUTS] = {0};
-//     struct uz_nn_layer_config software_nn_config_test1[4] = {
-//     [0] = {
-//         .activation_function = activation_ReLU,
-//         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
-//         .number_of_inputs = NUMBER_OF_INPUTS,
-//         .length_of_weights = UZ_MATRIX_SIZE(w_1),
-//         .length_of_bias = UZ_MATRIX_SIZE(b_1),
-//         .length_of_output = UZ_MATRIX_SIZE(y_1),
-//         .weights = w_1,
-//         .bias = b_1,
-//         .output = y_1},
-//     [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
-//     [2] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3},
-//     [3] = {.activation_function = activation_tanh, .number_of_neurons = NUMBER_OF_OUTPUTS, .number_of_inputs = 128, .length_of_weights = UZ_MATRIX_SIZE(w_6_test1), .length_of_bias = UZ_MATRIX_SIZE(b_6_test1), .length_of_output = UZ_MATRIX_SIZE(y_6_test1), .weights = w_6_test1, .bias = b_6_test1, .output = y_6_test1}};
-
-//     config.software_network = uz_nn_init(software_nn_config_test1, 4);
-//     uz_matrix_t *input = uz_matrix_init(&input_matrix,x,UZ_MATRIX_SIZE(x),1U,NUMBER_OF_INPUTS);
-//     uz_matrix_t *output = uz_matrix_init(&output_matrix,y_6_test1,UZ_MATRIX_SIZE(y_6_test1),1U,NUMBER_OF_OUTPUTS);
-//     //Different amount of neurons than 64
-//     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,output));
-
-//     float w_6_test2[20U * NUMBER_OF_NEURONS_IN_THIRD_LAYER] = {0};
-//     float y_6_test2[20U] = {0};
-//     float b_6_test2[20U] = {0};
-//     struct uz_nn_layer_config software_nn_config_test2[4] = {
-//     [0] = {
-//         .activation_function = activation_ReLU,
-//         .number_of_neurons = NUMBER_OF_NEURONS_IN_FIRST_LAYER,
-//         .number_of_inputs = NUMBER_OF_INPUTS,
-//         .length_of_weights = UZ_MATRIX_SIZE(w_1),
-//         .length_of_bias = UZ_MATRIX_SIZE(b_1),
-//         .length_of_output = UZ_MATRIX_SIZE(y_1),
-//         .weights = w_1,
-//         .bias = b_1,
-//         .output = y_1},
-//     [1] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_SECOND_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_2), .length_of_bias = UZ_MATRIX_SIZE(b_2), .length_of_output = UZ_MATRIX_SIZE(y_2), .weights = w_2, .bias = b_2, .output = y_2},
-//     [2] = {.activation_function = activation_ReLU, .number_of_neurons = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_3), .length_of_bias = UZ_MATRIX_SIZE(b_3), .length_of_output = UZ_MATRIX_SIZE(y_3), .weights = w_3, .bias = b_3, .output = y_3},
-//     [3] = {.activation_function = activation_tanh, .number_of_neurons = 20U, .number_of_inputs = NUMBER_OF_NEURONS_IN_THIRD_LAYER, .length_of_weights = UZ_MATRIX_SIZE(w_6_test2), .length_of_bias = UZ_MATRIX_SIZE(b_6_test2), .length_of_output = UZ_MATRIX_SIZE(y_6_test2), .weights = w_6_test2, .bias = b_6_test2, .output = y_6_test2}};
-
-//     config.software_network = uz_nn_init(software_nn_config_test2, 4);
-//     //Different amount of neurons than 64
-//     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_init(config,input,output));
-// }
-
-// void test_uz_NN_acc_ff_blocking_assert_NULL(void) {
-//     TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_ff_blocking(NULL));
-// }
+void test_uz_NN_acc_get_result_blocking_assert_NULL(void) {
+    TEST_ASSERT_FAIL_ASSERT(uz_NN_acc_get_result_blocking(NULL));
+}
 
 
 #endif

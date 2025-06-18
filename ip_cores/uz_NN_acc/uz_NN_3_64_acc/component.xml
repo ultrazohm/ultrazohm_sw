@@ -3749,8 +3749,8 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Uz_nn_3_64_acc</xilinx:displayName>
       <xilinx:definitionSource>HLS</xilinx:definitionSource>
-      <xilinx:coreRevision>2114130582</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2025-06-16T14:42:26Z</xilinx:coreCreationDateTime>
+      <xilinx:coreRevision>2114133226</xilinx:coreRevision>
+      <xilinx:coreCreationDateTime>2025-06-18T10:46:27Z</xilinx:coreCreationDateTime>
       <xilinx:sdxKernelAttributes>
         <xilinx:sdx_kernel>true</xilinx:sdx_kernel>
         <xilinx:sdx_kernel_type>hls</xilinx:sdx_kernel_type>

@@ -54,7 +54,14 @@
 
 #include "include/pwm_init.h"
 
+#include "uz/uz_wavegen/uz_wavegen.h"
+#include "uz/uz_Transformation/uz_Transformation.h"
 
+#include "IP_Cores/uz_pmsmMmodel/uz_pmsmModel.h"
+#include "xparameters.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+//#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+//#include "uz/uz_setpoint/uz_setpoint.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

@@ -48,6 +48,13 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
 
+/*extern float chirp_output1;
+extern float chirp_output2;
+extern float chirp_output3;*/
+extern uz_3ph_abc_t three_phase_output;
+
+extern struct uz_pmsmModel_outputs_t pmsm_outputs;
+extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -69,7 +76,12 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
+	   js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
+	   js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
+	   js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
+	   js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
+	   js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
+	/*js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;
@@ -85,13 +97,29 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_uq]					= &data->av.U_q;
 	js_ch_observable[JSO_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_ch_observable[JSO_lifecheck]   			= &lifecheck;
-	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;
+	js_ch_observable[JSO_ISR_Period_us]			= &ISR_period_us;*/
+
+	/*js_ch_observable[JSO_Chirpwave1]   = &chirp_output1;
+	js_ch_observable[JSO_Chirpwave2]   = &chirp_output2;
+	js_ch_observable[JSO_Chirpwave3]   = &chirp_output3;*/
+
+	/* js_ch_observable[JSO_ua]                       = &three_phase_output.a;
+	 js_ch_observable[JSO_ub]                       = &three_phase_output.b;
+	 js_ch_observable[JSO_uc]                       = &three_phase_output.c;*/
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
+
+	   js_slowDataArray[JSSD_FLOAT_u_d]                                = &(pmsm_inputs.v_d_V);
+	   js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
+	   js_slowDataArray[JSSD_FLOAT_i_d]                                = &(pmsm_outputs.i_d_A);
+	   js_slowDataArray[JSSD_FLOAT_i_q]                                = &(pmsm_outputs.i_q_A);
+	   js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_outputs.omega_mech_1_s);
+	   js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &(System_UpTime_seconds);
+
+	/*js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
 	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
@@ -100,9 +128,9 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &System_UpTime_seconds;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
-	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
+	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;*/
 
-	return Status;
+	//return Status;
 }
 
 

@@ -45,12 +45,25 @@ enum init_chain
     init_assertions = 0,
     init_gpios,
     init_software,
+	init_CurrentControl_pmsm,
+	//init_SetpointControl,
+	//init_SpeedControl,
+	init_chirp,
     init_ip_cores,
     print_msg,
     init_interrupts,
     infinite_loop
 };
+uz_pmsmModel_t *pmsm=NULL;
+uz_CurrentControl_t* CurrentControl_instance = NULL;
+//uz_SpeedControl_t* SC_instance = NULL;
+//uz_SetPoint_t* SP_instance = NULL;
+
 enum init_chain initialization_chain = init_assertions;
+
+/*uz_wavegen_chirp* chirp_instance1 = NULL;
+uz_wavegen_chirp* chirp_instance2 = NULL;
+uz_wavegen_chirp* chirp_instance3 = NULL;*/
 
 int main(void)
 {
@@ -71,8 +84,110 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            initialization_chain = init_CurrentControl_pmsm;
+            //initialization_chain = init_ip_cores;
+            //initialization_chain = init_chirp;
             break;
+     /*   case init_chirp:;
+                    struct uz_wavegen_chirp_config config_chirp1 = {
+                       .amplitude = 2.0f,
+                       .start_frequency_Hz = 1.0f,
+                       .end_frequency_Hz = 10.0f,
+                       .duration_sec = 5.0f,
+                       .initial_delay_sec = 0.0f,
+                       .offset = 0.0f
+                    };
+                    struct uz_wavegen_chirp_config config_chirp2 = {
+                       .amplitude = 3.0f,
+                       .start_frequency_Hz = 1.0f,
+                       .end_frequency_Hz = 20.0f,
+                       .duration_sec = 20.0f,
+                       .initial_delay_sec = 5.0f,
+                       .offset = 1.0f
+                    };
+                    struct uz_wavegen_chirp_config config_chirp3 = {
+                       .amplitude = 4.0f,
+                       .start_frequency_Hz = 1.0f,
+                       .end_frequency_Hz = 50.0f,
+                       .duration_sec = 30.0f,
+                       .initial_delay_sec = 10.0f,
+                       .offset = 2.0f
+                    };
+                    chirp_instance1 = uz_wavegen_chirp_init(config_chirp1);
+                    chirp_instance2 = uz_wavegen_chirp_init(config_chirp2);
+                    chirp_instance3 = uz_wavegen_chirp_init(config_chirp3);
+                    initialization_chain = init_ip_cores;
+                    break; */
+        case init_CurrentControl_pmsm:;
+                      struct uz_PMSM_t config_PMSM = {
+                          .Ld_Henry = 3.00e-04f,
+                          .Lq_Henry = 3.00e-04f,
+                          .Psi_PM_Vs = 0.0075f};
+                      struct uz_PI_Controller_config config_id = {
+                          .Kp = 0.25f,
+                          .Ki = 158.8f,
+                          .samplingTime_sec = 0.00005f,
+                          .upper_limit = 10.0f,
+                          .lower_limit = -10.0f};
+                      struct uz_PI_Controller_config config_iq = {
+                          .Kp = 0.25f,
+                          .Ki = 158.8f,
+                          .samplingTime_sec = 0.00005f,
+                          .upper_limit = 10.0f,
+                          .lower_limit = -10.0f};
+                      struct uz_CurrentControl_config config_CurrentControl = {
+                          .decoupling_select = linear_decoupling,
+                          .config_PMSM = config_PMSM,
+                          .config_id = config_id,
+                          .config_iq = config_iq,
+                          .max_modulation_index = 1.0f / sqrtf(3.0f)};
+                      CurrentControl_instance = uz_CurrentControl_init(config_CurrentControl);
+                      struct uz_pmsmModel_config_t pmsm_config={
+                          .base_address=XPAR_UZ_USER_UZ_PMSM_MODEL_0_BASEADDR,
+                          .ip_core_frequency_Hz=100000000,
+                          .simulate_mechanical_system = false,		//war vorher true
+                          .r_1 = 0.085f,
+                          .L_d = 3.00e-04f,
+                          .L_q = 3.00e-04f,
+                          .psi_pm = 0.0075f,
+                          .polepairs = 4.0f,
+                          .inertia = 3.24e-05f,
+                          .coulomb_friction_constant = 0.01f,
+                          .friction_coefficient = 0.001f};
+                      pmsm=uz_pmsmModel_init(pmsm_config);
+                      initialization_chain = init_ip_cores;
+                      break;
+
+        /* case init_SpeedControl:;
+        			struct uz_SpeedControl_config SC_config = {
+        				.config_controller.Kp = 10.0f,
+						.config_controller.Ki = 10.0f,
+						.config_controller.samplingTime_sec = 0.00005f,
+						.config_controller.upper_limit = 10.0f,
+						.config_controller.lower_limit = -10.0f,
+           };
+        			uz_SpeedControl_t* SC_instance = uz_SpeedControl_init(SC_config);
+                    initialization_chain = init_ip_cores;
+                    break;
+
+        case init_SetpointControl:;
+        			struct uz_SetPoint_config SP_config = {
+        			.config_PMSM.I_max_Ampere = 15.0f,
+					.config_PMSM.Ld_Henry = 0.0003f,
+					.config_PMSM.Lq_Henry = 0.0003f,
+					.config_PMSM.R_ph_Ohm = 0.1f,
+					.config_PMSM.polePairs = 4.0f,
+					.config_PMSM.Psi_PM_Vs = 0.0075f,
+					.control_type = FOC,
+					.motor_type = SMPMSM,
+					.is_field_weakening_enabled = false,
+					.id_ref_Ampere = 0.0f,
+					.relative_torque_tolerance = 0.001f,
+        			 };
+                    uz_SetPoint_t* SP_instance = uz_SetPoint_init(SP_config);
+                    initialization_chain = init_ip_cores;
+                    break; */
+
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();

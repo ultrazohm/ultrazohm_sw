@@ -38,6 +38,19 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 // Global variable structure
 extern DS_Data Global_Data;
 
+/*extern uz_wavegen_chirp* chirp_instance1;
+extern uz_wavegen_chirp* chirp_instance2;
+extern uz_wavegen_chirp* chirp_instance3;
+float chirp_output1 = 0.0f;
+float chirp_output2 = 0.0f;
+float chirp_output3 = 0.0f;*/
+
+uz_3ph_abc_t three_phase_output = {0};
+ bool is_three_phase_active = false;
+ float amplitude = 0.5f;
+ float frequency = 1.0f;
+ float offset = 0.5f;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -46,6 +59,39 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+extern uz_pmsmModel_t *pmsm;
+extern uz_CurrentControl_t* CurrentControl_instance;
+uz_3ph_dq_t reference_currents_Amp = {0};
+uz_3ph_dq_t measured_currents_Amp = {0};
+uz_3ph_dq_t CurrentControl_output_Volts = {0};
+float omega_el_rad_per_sec = 0.0f;
+struct uz_pmsmModel_inputs_t pmsm_inputs={
+  .omega_mech_1_s=0.0f,
+  .v_d_V=0.0f,
+  .v_q_V=0.0f,
+  .load_torque=0.0f
+};
+struct uz_pmsmModel_outputs_t pmsm_outputs={
+  .i_d_A=0.0f,
+  .i_q_A=0.0f,
+  .torque_Nm=0.0f,
+  .omega_mech_1_s=0.0f
+};
+float n_ref=0.0f;
+
+/*//Set Point
+float omega_m_rad_per_sec = 1.5f;
+float M_ref_Nm = 0.0045f;
+float V_DC_Volts = 24.0f;
+uz_3ph_dq_t actual_currents_Ampere = {1.0f, 2.0f, 0.0f};
+uz_3ph_dq_t output = uz_SetPoint_sample(SP_instance, omega_m_rad_per_sec, M_ref_Nm, V_DC_Volts, actual_currents_Ampere);   float omega_m_rad_per_sec = 1.5f;
+
+//SpeedControl
+
+float omega_m_rad_per_sec = 1.5f;
+float n_ref_rpm = 500.0f;
+float torque_out = uz_SpeedControl_sample(SC_instance, omega_m_rad_per_sec, n_ref_rpm);
+*/
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
@@ -55,8 +101,35 @@ void ISR_Control(void *data)
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {
+    		   uz_pmsmModel_trigger_input_strobe(pmsm);
+    	       uz_pmsmModel_trigger_output_strobe(pmsm);
+    	       pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
+    	       measured_currents_Amp.d = pmsm_outputs.i_d_A;
+    	       measured_currents_Amp.q = pmsm_outputs.i_q_A;
+    	       omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 4.0f;
+    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+    	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
+    	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
+    	       pmsm_inputs.omega_mech_1_s = n_ref *2.0f* M_PI /60.0f;
+    	       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
+
+
+    	 /*if (is_three_phase_active) {
+    		 three_phase_output = uz_wavegen_three_phase_sample(amplitude, frequency, offset); }*/
         // Start: Control algorithm - only if ultrazohm is in control state
+       /* chirp_output1 = uz_wavegen_chirp_sample(chirp_instance1);
+        chirp_output2 = uz_wavegen_chirp_sample(chirp_instance2);
+        chirp_output3 = uz_wavegen_chirp_sample(chirp_instance3); */
+
+    	        /*Global_Data.rasv.halfBridge1DutyCycle = three_phase_output.a;
+    	        Global_Data.rasv.halfBridge2DutyCycle = three_phase_output.b;
+    	        Global_Data.rasv.halfBridge3DutyCycle = three_phase_output.c;*/
     }
+ else if (current_state!=control_state || !is_three_phase_active) {
+    Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+    Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+    Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+}
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.rasv.halfBridge4DutyCycle, Global_Data.rasv.halfBridge5DutyCycle, Global_Data.rasv.halfBridge6DutyCycle);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);

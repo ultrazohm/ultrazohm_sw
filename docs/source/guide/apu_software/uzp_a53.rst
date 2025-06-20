@@ -98,19 +98,24 @@ If enabled (cf. ``UZ_PLATFORM_CARDID`` above), the following API is available to
  * the integer behind ``revision_p`` with the revision number, and
  * the integer pointed to by ``serial_p`` with the serial  of the adapter card selected.
 
-* The model number is encoded as an enum of type ``uz_platform_eeprom_group000models_t`` and (as of early 2024) may have one of the following values
+* The model number is encoded as an enum of type ``uz_platform_eeprom_group000models_t`` and (as of mid 2025) may have one of the following values
 
  * ``UZP_HWGROUP_ADCARD_LTC2311``,
  * ``UZP_HWGROUP_ADCARD_DIGVOLT``,
- * ``UZP_HWGROUP_ADCARD_DIGOPT``,
+ * ``UZP_HWGROUP_ADCARD_DIGOPT`` (with three variants at the moment, cf. definitions in ``uz_platform_eeprom_group000model004variants_t``),
  * ``UZP_HWGROUP_ADCARD_DIGRES``,
  * ``UZP_HWGROUP_ADCARD_DIGENC``,
  * ``UZP_HWGROUP_ADCARD_MAX11331C``,
  * ``UZP_HWGROUP_ADCARD_MAX11331CD``,
  * ``UZP_HWGROUP_ADCARD_MAX11331``,
  * ``UZP_HWGROUP_ADCARD_LTC2983``,
- * ``UZP_HWGROUP_ADCARD_DIGINV``, or
- * ``UZP_HWGROUP_ADCARD_DAC8831``
+ * ``UZP_HWGROUP_ADCARD_DIGINV``,
+ * ``UZP_HWGROUP_ADCARD_DAC8831``,
+ * ``UZP_HWGROUP_ADCARD_DIGVOLT33``,
+ * ``UZP_HWGROUP_ADCARD_DIGVOLT5``,
+ * ``UZP_HWGROUP_ADCARD_DIGVOLT335``,
+ * ``UZP_HWGROUP_ADCARD_LEDEBUG``, or
+ * ``UZP_HWGROUP_ADCARD_DIGABSENC``
 
  that should be used in comparisons.
  Note that the underlying definitions can be found in ``/shared/uz_platform_cardeeprom.h``.
@@ -183,6 +188,15 @@ Ethernet MAC addresses
 """"""""""""""""""""""
 
 MAC addresses are accessible by means of ``uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p)`` and ``uz_platform_macread_primary(uint8_t *addrbuf_p)``, although for neither there is any necessity for the user to use these functions explicitly.
+
+Card-specific functionalities
+"""""""""""""""""""""""""""""
+
+* :ref:`dig_optical` card (which supports various Rx/Tx combinations): The UZP provides the enum ``uz_platform_eeprom_group000model004variants_t`` that holds the card's variants, which -- as of mid 2025 -- are
+
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX`` (18 TX),
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX`` (18 RX), and
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX`` (14 TX / 4 RX).
 
 
 See also

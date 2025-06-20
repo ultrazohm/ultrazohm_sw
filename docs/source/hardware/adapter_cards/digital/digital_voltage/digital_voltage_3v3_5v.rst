@@ -15,7 +15,7 @@ Digital Voltage 3V3/5V Rev02
 
 The Voltage_3v3_5v adapter card enables general-purpose digital input/output (GPIO) functionalities at a selectable voltage level of 3.3 V or 5 V.
 It, therefore, crosses between two voltage domains and is an extension of both the :ref:`digitalVoltage` and :ref:`digitalVoltage3v3rev01` cards, which have fixed voltages.
-Like with the original Digital Voltage 5V card, signal directions can be set in blocks of eight I/O pins.
+Like with the original Digital Voltage 5V card, signal directions can be set in groups of eight I/O pins.
 The board supports voltage level shifting, supply rail monitoring, and I²C-based readout of the hardware configuration.
 
 Functionality
@@ -25,13 +25,13 @@ The functionality of the adapter card is segmented into several key areas, as de
 
 1. Four 8-Bit Level Shifters
 
-  - The adapter includes four 8-bit bidirectional level shifters, enabling voltage translation between the 3.3 V and 5 V domains.
+  - The adapter card includes four 8-bit bidirectional level shifters, enabling voltage translation between the 3.3 V and 5 V domains.
   - Each digital I/O pin features an integrated 10 kΩ pulldown resistor to ensure a defined logic low state when the pin is not actively driven.
 
 2. Signal direction
 
-  Each level shifter block can be individually configured for input or output operation via corresponding DIP switches.
-  The four DIP switches allow groupwise control of the signal direction for each 8-bit block.
+  Each level shifter can be individually configured for input or output operation via corresponding DIP switches.
+  The four DIP switches allow groupwise control of the signal direction for each 8-bit group.
 
   .. csv-table:: Grouped signals and dedicated switches
     :file: digital_voltage_3v3_5v/switches.csv
@@ -59,8 +59,11 @@ The functionality of the adapter card is segmented into several key areas, as de
 Configuration
 --------------
 
-Prior to first use, ensure that the card is correctly configured according to the target system requirements.
-This includes setting DIP switches appropriately for the target voltage revision (e.g., Rev04 with a supervisor switch).
+Prior to first use, ensure that the card is correctly configured according to the target system's requirements.
+This includes setting DIP (i.e., I/O directions) and non-DIP (e.g., voltage selection) switches appropriately for the target voltage revision (e.g., Rev04 with a supervisor switch).
+
+.. TODOs: Clarify "Rev04 with a supervisor switch" above and add pictures as per belowe
+
 2 Pictures for Rev04 and Rev05
 
 Measurements and technical background
@@ -78,7 +81,7 @@ An optional front panel with integrated voltage indication LEDs is available for
 
 To utilize this functionality, a corresponding software extension must be added manually in the Vitis development environment.
 This feature is not integrated and developed yet.
-Additionally, the light guide component `LPF-C011304S <https://www.mouser.de/ProductDetail/Lumex/LPF-C011304S?qs=3ZOqpMxxriqLNJacoNbLgw%3D%3D>`_ must be installed on the PCB to support visual indication.
+Additionally, the light guide component `LPF-C011304S <https://www.mouser.de/ProductDetail/Lumex/LPF-C011304S?qs=3ZOqpMxxriqLNJacoNbLgw%3D%3D>`_ must be installed on the PCB to support visual indication via the front panel.
 
 References/Source
 =================

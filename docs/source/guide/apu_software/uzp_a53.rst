@@ -62,6 +62,8 @@ If the adapter card identification feature is enabled on a non-retrofitted Ultra
 API functions and data types
 ----------------------------
 
+.. _uzpA53_init:
+
 Initialization
 """"""""""""""
 
@@ -77,7 +79,7 @@ The activation of the adapter card identification depends on the ``UZ_PLATFORM_C
  * configure internal (e.g., the GPIO controllers of the PS) and external (e.g., the I²C port expander on the extension board) I/O controllers according to the I/O map.
  * Note that earlier software revisions relied on ``UZ_PLATFORM_ENABLE`` to enable the then disabled-by-default framework
 
-* ``UZ_PLATFORM_CARDID``: If set, ``uz_platform_cardread()`` is made available to the user, and a small demo in ``main()`` performs adapter card identification that shows card model, revision, and serial for each slot on the serial console.
+* ``UZ_PLATFORM_CARDID``: If set, ``uz_platform_cardread()`` is made available to the user, and a small demo in ``main()`` performs adapter card identification that shows card model, revision, and serial for each slot on the serial console. The demo also calls UZP functions that are specific to adapter cards with extended features, which -- as of mid 2025 -- includes the :ref:`digitalVoltage_3v3_5v` card with its RGB LED (see below for details).
 
 .. note::
  Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
@@ -197,6 +199,11 @@ Card-specific functionalities
   * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX`` (18 TX),
   * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX`` (18 RX), and
   * ``UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX`` (14 TX / 4 RX).
+
+* :ref:`digitalVoltage_3v3_5v` card: The UZP provides
+
+  * ``uz_platform_printcard_model015()`` to decode the card's configuration as set by its switches (i.e., output voltage level and signal directions for all I/O groups) into a user-readable description, and
+  * ``uz_platform_configcard_model015_voltageled()`` to read the selected output voltage level and set the RGB LED on the card's frontpanel accordingly (which is part of the demo if the feature is enabled).
 
 
 See also

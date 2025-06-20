@@ -47,7 +47,11 @@ The functionality of the adapter card is segmented into several key areas, as de
 
   The card monitors both the 3.3 V and 5 V supply rails provided by the carrier board.
   By default, the level shifter output enable (nOE) is governed by these voltage monitors.
-  Alternatively, by setting switch S2, control can be transferred to the nOE_Carrierboard signal, which is supported in all hardware revisions :math:`\geq` ``Rev05`` (cf. :ref:`carrier_board_rev5`).
+  Alternatively, by setting switch S2, control can be transferred to the nOE_Carrierboard signal, which is supported in carrier boards with a hardware revision :math:`\geq` ``Rev05`` (cf. :ref:`carrier_board_rev5`, ``SlotOE``).
+
+  As an additional feature, the output signal of the card's on-board supply rail monitoring (i.e., are its local 3V3 and 5V rails both okay) is also fed back to the carrier board by means of D connector (``X6[A-E]``) pin 100.
+  Formerly used as ``PILOT_IN`` (and available locally on the LC4xxx CPLDs as ``/PILOT_INx``), newer :math:`\geq` ``Rev05``-based UltraZohm systems (where per-slot ``SlotOK`` signals link each slot to the S³C) may utilize this signal to generate application-specific error conditions and responses.
+  This holds true by means of the five per-slot CPLD *locally*, and -- as a feature not available on older carrier boards -- also on a *system*-wide scale via the S³C (cf. :ref:`carrier_board_rev5_s3c` for an overview and the "safety block diagram" at the end of the carrier's schematic for details).
 
 4. I²C Port Expander
 
@@ -55,6 +59,8 @@ The functionality of the adapter card is segmented into several key areas, as de
 
   - LED indicators (on the rear side of the card) can be controlled via software to represent the selected output voltage and additional card/system states.
   - Signal direction configuration and output voltage selection statuses are accessible via I²C, enabling seamless integration with system control software.
+
+As with some of the previous Digital Voltage cards, all internal rails -- that also are available on the external connector (3V3, 5V and VIN) -- are protected by polyfuses (``F[3-1]``).
 
 Configuration
 --------------
@@ -79,8 +85,10 @@ An optional front panel with integrated voltage indication LEDs is available for
 .. figure:: digital_voltage_3v3_5v/uz_d_voltage_3v3_5v_blend.svg
 	:align: center
 
-To utilize this functionality, a corresponding software extension must be added manually in the Vitis development environment.
-This feature is not integrated and developed yet.
+To utilize this functionality, a corresponding software extension must be activated manually in the Vitis development environment.
+It is part of the demo integrated in the :ref:`uzpA53`'s :ref:`uzpA53_cardid` feature and is enabled by means of the ``UZ_PLATFORM_CARDID`` preprocessor ``#define`` as described :ref:`here <uzpA53_init>`.
+Once enabled, the demo reads the card's voltage configuration at boot-up and drives the LED accordingly.
+As of mid 2025, no error reporting has been defined, i.e., the red LED is still unused.
 Additionally, the light guide component `LPF-C011304S <https://www.mouser.de/ProductDetail/Lumex/LPF-C011304S?qs=3ZOqpMxxriqLNJacoNbLgw%3D%3D>`_ must be installed on the PCB to support visual indication via the front panel.
 
 References/Source

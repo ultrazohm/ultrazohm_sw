@@ -10,6 +10,7 @@
 #include "IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_setpoint/uz_setpoint.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_signals/uz_signals.h"
@@ -129,6 +130,7 @@ typedef struct _actualValues_ {
 	float magnitude;
 	float phi_right;
 	float phi_left;
+	float flag_enable_LMG;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -187,6 +189,7 @@ typedef struct{
 	uz_inverter_adapter_t* uz_d_inverter_left;
 	uz_inverter_adapter_t* uz_d_inverter_right;
 	uz_mux_axi_t* mux_axi;
+	uz_axi_gpio_t* output_gpio_LMG;
 	uz_IIR_Filter_t* iir_filter_ref_speed_left;
 	uz_IIR_Filter_t* iir_filter_ref_speed_right;
 	uz_parameterID_rc_t* rc_meas_instance;

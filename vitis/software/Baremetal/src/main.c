@@ -82,22 +82,22 @@ int main(void)
     int status = UZ_SUCCESS;
 
     const struct uz_parameterID_rc_config_t rc_meas_config = {
-      	.abs_id_max_Amps = 4.0f,
-      	.abs_iq_max_Amps = 4.0f,
-    	.n_start_rpm = 500.0f,
-    	.n_stop_rpm = 2500.0f,
-    	.id_steps = 4U,
-    	.iq_steps = 4U,
-    	.n_steps = 2U,
+      	.abs_id_max_Amps = 6.0f,
+      	.abs_iq_max_Amps = 7.0f,
+    	.n_start_rpm = 2000.0f,
+    	.n_stop_rpm = 2000.0f,
+    	.id_steps = 12U,
+    	.iq_steps = 14U,
+    	.n_steps = 0U,
 		.check_temp=1
       };
 
     struct uz_parameterid_rs_config_t config_rs_meas = {
-    	.n_start = 100.0f,
-        .n_end = 2500.0f,
-        .n_steps = 8.0f,
-        .i_start = -3.0f,
-        .i_diff = 6.0f,
+    	.n_start = 1000.0f,
+        .n_end = 3000.0f,
+        .n_steps = 1.0f,
+        .i_start = -4.0f,
+        .i_diff = 8.0f,
         .i_repeats = 10.0f,
         .i_steptime = 1.2f,
    	    .wait_time = 2.0f,
@@ -151,14 +151,18 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
-            Global_Data.objects.resolver_left = initialize_resolver_left();
-            Global_Data.objects.resolver_right = initialize_resolver_right();
-            Global_Data.objects.resolver_pl_interface_left = initialize_resolver_pl_interface_left();
-            Global_Data.objects.resolver_pl_interface_right = initialize_resolver_pl_interface_right();
             Global_Data.objects.encoder_right = initialize_encoder_right();
             Global_Data.objects.encoder_left = initialize_encoder_left();
             Global_Data.objects.uz_d_inverter_left = initialize_inverter_left();
             Global_Data.objects.uz_d_inverter_right = initialize_inverter_right();
+            struct uz_axi_gpio_config_t config_output_LMG = {
+                        		.base_address = XPAR_UZ_USER_AXI_GPIO_0_BASEADDR,
+                        		.device_id = XPAR_UZ_USER_AXI_GPIO_0_DEVICE_ID,
+                        		.number_of_pins = 30,
+                        		.direction_of_pins = UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+                        };
+            Global_Data.objects.output_gpio_LMG = uz_axi_gpio_init(config_output_LMG);
+            uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1U, 1U);
             initialization_chain = print_msg;
             Global_Data.objects.temperature_card_d3 = initialize_temperature_card_d3();
             uz_TempCard_IF_Reset(Global_Data.objects.temperature_card_d3);

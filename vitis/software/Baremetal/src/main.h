@@ -60,6 +60,7 @@
 #include "xparameters.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_signals/uz_signals.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 #include "uz/uz_movingAverageFilter/uz_movingAverageFilter.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "uz/uz_ParameterID_rs/uz_ParameterID_rs.h"

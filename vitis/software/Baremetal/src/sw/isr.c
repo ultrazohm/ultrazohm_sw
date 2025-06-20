@@ -72,6 +72,10 @@ float thetal_el_left_unwrapped = 0.0f;
 float average_temp_right = 0.0f;
 float average_temp_left = 0.0f;
 struct uz_3ph_abc_t dc_motor_right = {0.0f};
+uint16_t trigger = 0U;
+float cnt_trigger = 1.0f;
+float data_valid_old = 0.0f;
+
 
 
 enum running_mode run_state = speed_control_left;
@@ -235,15 +239,30 @@ void ISR_Control(void *data)
 	Global_Data.av.v_q_right_meas = v_dq_meas_right.q;
 	Global_Data.av.v_d_left_meas = v_dq_meas_left.d;
 	Global_Data.av.v_q_left_meas = v_dq_meas_left.q;
+	Global_Data.av.flag_enable_LMG = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1U);
 
     switch(run_state) {
     	case rc_meas_right:
     		filter_compensation_right();
-        	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.mean_temp_inv_right);
+        	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.average_temp_right);
         	Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
         	Global_Data.rasv.i_dq_ref_right.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
         	Global_Data.rasv.n_ref_left = Global_Data.rasv.rc_meas_output.n_ref_rpm * -1.0f;
         	Global_Data.rasv.operatingpoints_rc_meas = Global_Data.rasv.rc_meas_output.operating_points_all;
+        	// trigger for LMG
+			if (Global_Data.rasv.rc_meas_output.data_valid == 1.0f && Global_Data.rasv.rc_meas_output.data_valid != data_valid_old){
+				trigger = 0U;
+			} else {
+				cnt_trigger++;
+				if (cnt_trigger > 1000U){
+					trigger = 1U;
+					cnt_trigger = 0U;
+				}
+			}
+			data_valid_old = Global_Data.rasv.rc_meas_output.data_valid;
+
+			uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio_LMG, 1U, trigger);
+
         	// control functions for DUT right
         	speed_control_left_motor();
         	current_control_right_motor();
@@ -262,7 +281,7 @@ void ISR_Control(void *data)
 
     	case rc_meas_left:
     		filter_compensation_left();
-        	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.mean_temp_inv_right);
+        	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.average_temp_left);
         	Global_Data.rasv.i_dq_ref_left.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
         	Global_Data.rasv.i_dq_ref_left.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
         	Global_Data.rasv.n_ref_right = Global_Data.rasv.rc_meas_output.n_ref_rpm * -1.0f;
@@ -300,6 +319,7 @@ void ISR_Control(void *data)
     	    Global_Data.rasv.i_dq_ref_left.q = Global_Data.rasv.js_set_i_dq_ref_left.q;
     	    Global_Data.rasv.n_ref_right = Global_Data.rasv.js_set_n_ref_right;
     		// control functions for DUT left
+        	// trigger for LMG
         	speed_control_right_motor();
         	current_control_left_motor();
     	    break;
@@ -510,7 +530,7 @@ static void current_control_right_motor() {
 
 static void filter_compensation_right(){
 	// calculate Frequency response of the magnitude
-	//Global_Data.av.magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f)),2.0f));
+	Global_Data.av.magnitude = sqrt(1.0f + (((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f)) * ((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f))));
 
 	Global_Data.av.v_abc_right_filter_comp.a = v_abc_right.a * Global_Data.av.magnitude;
 	Global_Data.av.v_abc_right_filter_comp.b = v_abc_right.b * Global_Data.av.magnitude;

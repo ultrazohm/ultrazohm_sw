@@ -231,8 +231,8 @@ void uz_parameterID_rc_check_temperature(uz_parameterID_rc_t* self, float temp_d
         self->set_values.id_set_Amps = 0.0f;
         self->set_values.iq_set_Amps = 0.0f;
     } else if (temp_degrees <= self->temp_check_values.temp_min){
-        self->set_values.id_set_Amps = self->internal_config.abs_iq_max_Amps;
-        self->set_values.iq_set_Amps = -1.0f * self->internal_config.abs_id_max_Amps;
+        self->set_values.id_set_Amps = -1.0f * self->internal_config.abs_id_max_Amps;
+        self->set_values.iq_set_Amps = 8.5f;
     } else {
         self->temp_check_values.temp_check_done = true;
     }

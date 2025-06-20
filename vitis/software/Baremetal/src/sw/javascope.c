@@ -137,6 +137,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_avg_temp_right]	= &data->av.average_temp_right;
 	js_ch_observable[JSO_avg_temp_left]		= &data->av.average_temp_left;
 	js_ch_observable[JSO_ic_right_CD]		= &data->av.i_c_right_CD;
+	js_ch_observable[JSO_LMG_enable_flag]	= &data->av.flag_enable_LMG;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

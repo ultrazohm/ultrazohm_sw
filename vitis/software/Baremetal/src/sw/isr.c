@@ -510,7 +510,7 @@ static void current_control_right_motor() {
 
 static void filter_compensation_right(){
 	// calculate Frequency response of the magnitude
-	//Global_Data.av.magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f)),2.0f));
+	Global_Data.av.magnitude = sqrt(1.0f + (((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f)) * ((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f))));
 
 	Global_Data.av.v_abc_right_filter_comp.a = v_abc_right.a * Global_Data.av.magnitude;
 	Global_Data.av.v_abc_right_filter_comp.b = v_abc_right.b * Global_Data.av.magnitude;
@@ -525,7 +525,6 @@ static void filter_compensation_right(){
 
 static void filter_compensation_left(){
 	// calculate Frequency response of the magnitude
-	//Global_Data.av.magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * 1750.0f)),2.0f));
 	Global_Data.av.magnitude = sqrt(1.0f + (((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * 1750.0f)) * ((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * 1750.0f))));
 
 	Global_Data.av.v_abc_left_filter_comp.a = v_abc_left.a * Global_Data.av.magnitude;

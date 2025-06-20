@@ -107,6 +107,9 @@ int main(void)
             Global_Data.objects.resolver_pl_d4_Pruef = initialize_resolver_pl_d4_Pruef();
             Global_Data.objects.resolverIP_Last = initialize_resolverIP_Last();
             Global_Data.objects.resolverIP_Pruef = initialize_resolverIP_Pruef();
+            Global_Data.objects.inverter_d1 = initialize_uz_inverter_adapter_on_D1();
+            Global_Data.objects.inverter_d2 = initialize_uz_inverter_adapter_on_D2();
+            Global_Data.objects.inverter_d3 = initialize_uz_inverter_adapter_on_D3();
             initialization_chain = print_msg;
             break;
         case print_msg:

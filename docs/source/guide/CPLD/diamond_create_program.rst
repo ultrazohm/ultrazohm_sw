@@ -70,6 +70,53 @@ Step-by-step
 .. figure:: images_diamond/10.png
   :width: 1000
 
+.. note::
+
+  The schematic in :ref:`carrier_board_rev5_s3cfunc`.
+  shows dedicated wiring between the S3C and the D-Slot CPLDs.
+  In the accompanying VHDL snippet the default setting keeps forwarding permanently enabled:
+  
+.. code-block:: vhdl
+
+  user_enable_forwarding <= '1';
+	--user_enable_forwarding <= '1' when (fpga_26 = '0' AND fpga_27 = '0' AND  fpga_28 = '1' AND fpga_29 = '1') else '0';
+
+The commented lines underneath illustrate an alternative scheme in which the FPGA drives a specific pin pattern (0011) to turn forwarding on or off.
+The user can freely adapt or expand that logic to suit any custom forwarding rules.
+Note that this “user-enable” path is later OR-ed with the **reqsafestate** signal — forced low by the S3C—and the resulting value feeds the enable_forwarding net. 
+In other words, forwarding is active only when both user permission and the safety request allow it.
+
+.. _dcpld_vhdl_example:
+
+.. code-block:: vhdl
+
+	--Fixed definitions
+	reqoe <= NOT tristate_outputs; 
+	enable_forwarding <= user_enable_forwarding AND NOT reqsafestate;
+	
+	-- Specific safety definitions for card
+	slotok <= enable_forwarding;
+	--	tristate_outputs <= NOT pilot_in; -- set to pilot_in if card is driven by pilot_in, definition can be extended by user based on card specific logic AND internal states
+	tristate_outputs <= '0';
+	
+  -- Define the user specific enable_forwarding signal logic
+	user_enable_forwarding <= '1'; -- for tx30
+	--user_enable_forwarding <= '1' when (fpga_26 = '0' AND fpga_27 = '0' AND  fpga_28 = '1' AND fpga_29 = '1') else '0'; -- for tx26_w_enable
+    
+.. note::
+
+  Example for IO
+
+.. code-block:: vhdl
+  
+  -- Input Port Example
+   fpga_00 <=  d_00; -- This port is an input
+
+  -- Output Port Example
+    d_00 <= fpga_00 AND enable_forwarding; -- This port is an output
+
+There is no dedicated enable logic between S3C and the DSlot DPLD for input signals. From the system’s standpoint, signal validity should be handled by the SoM, so—rather than add complexity—the signal is simply forwarded unchanged through every instance.
+
 11. When saving Diamond automatically checks the code and gives feed back. If everything is fine it looks as below.
 
 .. figure:: images_diamond/11.png
@@ -110,4 +157,4 @@ It is located in the repository at ``MACHXO2/S3C_CPLD_LCMXO2-4000HC-4TG144C/``.
 
 .. note::
   Check the schematic from the Carrierboard to see, which signals are inputs/outputs or bidirectional.
-  The Pins have a dedicated direction and cannot be freely configured.
+  The pins have a dedicated direction and cannot be freely configured.

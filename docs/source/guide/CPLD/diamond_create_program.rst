@@ -73,17 +73,17 @@ Step-by-step
 .. note::
 
   The schematic in :ref:`carrier_board_rev5_s3cfunc` shows the dedicated wiring between the S3C and the D-Slot CPLDs.
-  In the accompanying VHDL snippet, the default setting keeps forwarding permanently enabled:
+  In the accompanying VHDL snippet, the default setting keeps the forwarding from SoM to card permanently enabled:
 
 .. code-block:: vhdl
 
   user_enable_forwarding <= '1';
   --user_enable_forwarding <= '1' when (fpga_26 = '0' AND fpga_27 = '0' AND  fpga_28 = '1' AND fpga_29 = '1') else '0';
 
-The commented line underneath illustrates an alternative scheme in which the FPGA drives a specific pin pattern (0011) to turn forwarding on or off.
+The commented line underneath illustrates an alternative scheme in which the FPGA drives a specific pin pattern (0011) to turn forwarding on or off (already known as ``..._w(ith)_enable`` from the old LC4xxx CPLDs).
 The user can freely adapt or expand that logic to suit any custom forwarding rules.
-Note that this “user-enable” path is later OR-ed with the **reqsafestate** signal -- forced low by the S3C -- and the resulting value feeds the enable_forwarding net.
-In other words, forwarding is active only when both user permission and the safety request allow it.
+Note that this “user-enable” path is later OR-ed with the **reqsafestate** signal -- forced low by the S3C during regular operation -- and the resulting value feeds the enable_forwarding net.
+In other words, forwarding is active only when both the (per-slot) user permission and the (system-wide) S3C safety request allow it.
 
 .. _dcpld_vhdl_example:
 

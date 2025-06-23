@@ -177,8 +177,8 @@ Functions
 	- Current usage of power good (aka not-reset) signals
 		- ``Carrier_PG_1V8``: Connected to ``RESETn`` of the two Ethernet PHYs (carrier and frontpanel-main, 10k pullup on carrier)
 		- ``Carrier_PG_3V3``: Enables the DC/DC converter of the isoIO island's 3V3 rail (on frontpanel-main, no pullup/down R)
-- Default safety interaction between the System Controller (S3C) and the D-Slot Controller
-	- The carrier board’s standard safety concept relies on a fixed set of hand-shake lines that flow between the Digital Slots, the System Controller (S3C), and the D-Slot CPLD.
+- Default safety interaction between the System Controller (S3C) and the five D-Slot Controllers
+	- The carrier board’s standard safety concept relies on a fixed set of hand-shake lines that flow between the Digital Slots, the System Controller (S3C), and the D-Slot CPLDs.
 	- The schematic of this interface can be found in the carrier-board design documentation `(see page 60 of the PDF) <https://docs.ultrazohm.com/_downloads/98d1425942e2cca4fa8a0edd40f28295/SCH_UZ_CarrierBoard_Rev05Batch00_05.pdf#page=60>`_
 	- See :ref:`signal_groups_s3cdslot` below for an extended explanation of the signals
 	
@@ -190,10 +190,11 @@ Functions
 
 The table above lists every signal, its direction, and its purpose.
 These links form the default interaction path implemented in both the S3C bitstream and the D-Slot Controller.
+The Request-``OE`` signals (green) -- which themselves might depend on the card-local ``PILOT_IN`` -- effectively are "looped through" the S3C and reach the actual D-Slot slots/cards as ``Output-Enable`` (black).
 
 **Default logic in the S3C bitstream**
 
-The S3C side contains a conditional pass-through that propagates the SlotOE request only when no global force-disable is active:
+The S3C side contains a conditional pass-through that propagates the SlotOE request only when no system-wide force-disable is active:
 
 .. code-block:: vhdl
 
@@ -201,7 +202,7 @@ The S3C side contains a conditional pass-through that propagates the SlotOE requ
 	DIGS3C_SlotD_SlotOE <= DIGS3C_SlotD_ReqOE and (DIGS3C_SlotD_SlotOE'Range => NOT forceoutputdisable);
 
 
-At present, only SlotOE is actively driven. Other potential outputs -- such as the S3C’s own OE or carrierready -- are left unconnected and therefore idle.
+At present, only SlotOE is actively driven. Other potential outputs -- such as the S3C’s own OE or CarrierRdy -- are left unconnected and therefore idle.
 
 **Default logic in the D-Slot bitstream**
 

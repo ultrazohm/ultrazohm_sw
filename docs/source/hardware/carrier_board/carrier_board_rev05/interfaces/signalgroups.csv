@@ -1,4 +1,4 @@
-Color,Conceptual name,Direction,Voltage level,Explanation
+Color,Conceptual name,Direction,Rail,Explanation
 Black,5x PILOT_OUT / Output-Enable,S³C → Slot connector,3V3,Final “enable the card’s outputs” to the slot signal. One line per slot
 Blue,FLT (Safe-state request),S³C → Slot Controller,1V8,Asserted whenever any fault or the external stop asks the whole system to go safe. All slot controllers must react to it
 Purple,CarrierRdy (x1),S³C → Slot Controller,1V8,Tells the slot controller that the main carrier (SoC + power rails etc.) is up and running

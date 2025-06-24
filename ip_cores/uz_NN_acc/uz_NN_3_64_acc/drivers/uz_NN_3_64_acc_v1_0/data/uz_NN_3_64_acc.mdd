@@ -7,11 +7,11 @@ OPTION psf_version = 2.1;
 
 BEGIN driver uz_NN_3_64_acc
 
- OPTION supported_peripherals = (uz_NN_3_64_acc_v3_0 );
+ OPTION supported_peripherals = (uz_NN_3_64_acc_v1_0 );
  OPTION driver_state = ACTIVE;
  OPTION copyfiles = all;
  OPTION name = uz_NN_3_64_acc;
- OPTION version = 3.0;
+ OPTION version = 1.0;
 
 END driver
 

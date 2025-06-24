@@ -10,7 +10,7 @@ The implementation and nomenclature follows the principles outlined in :ref:`uz_
 .. Attention:: 
   - Variable layer setup of up to **5 hidden layer** with :ref:`activation_function_relu` activation function for hidden layers.
   - Output in the IP-Core is hard coded to us :ref:`activation_function_linear` activation. A different activation function for the output layer is done via software.
-  - The number of **neurons** in the hidden layers is variable, but consistent across all hidden layers.
+  - The number of **neurons** in the hidden layers is variable.
   - Variable number of up to **24 Observations**.
   - Variable number of up to **12 Actions**.
   - Execution time of **~11-12µs** for 3x64 setup.
@@ -388,18 +388,25 @@ This guide will walk you through this process.
 
     .. note::
         - A maximum of **5** hidden layers can be configured.
+        - Neurons can be configured on a per hidden layer basis as desired.
+          The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 5)
+          Note however, that increasing the neuron count increases the resource usage significantly.
+          **Increasing the number of layers is more resource-efficient in terms of FPGA usage.**
         - The ``Performance_Target`` variable can be used, if the generated IP-Core resources are too much for your specific FPGA.
           Whilst 1==best performance, a higher number reduces the resource usage by decreasing performance. 
           A maximum of Performance_Target==Neurons_per_HiddenLayer can be set.
-        - Neurons can be configured as desired.
-          Note however, that increasing the neuron count increases the resource usage significantly.
-          **Increasing the number of layers is more resource-efficient in terms of FPGA usage.**
+        
 
     .. code-block:: c
      :caption: User definable variables in ``uz_MMult_MaxSize.h``
 
-     #define Neurons_per_HiddenLayer 64
+     //User define
      #define Hidden_Layers 3 //max 5
+     #define Neurons_1st_Hidden_Layer 64
+     #define Neurons_2nd_Hidden_Layer 32
+     #define Neurons_3rd_Hidden_Layer 96
+     #define Neurons_4th_Hidden_Layer 32
+     #define Neurons_5th_Hidden_Layer 64
      #define Performance_Target 1
 
 #. Save the file and navigate to  ``ip_cores\uz_NN_acc``
@@ -407,6 +414,7 @@ This guide will walk you through this process.
 #. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
 #. After you see ``[HLS 200-111] Finished Command export_design`` the synthesis and export is finished.
 #. A resource estimation can be found in ``uz_NN_acc\uz_NN\solution1\syn\report`` under ``csynth.rpt``.
+   In Vivado the resource usage is (except DSP Slices) a bit lower than stated in HLS.
 #. [Optional] You can now open the project in the Vitis HLS GUI or with ``vitis_hls -p uz_NN``.
 #. In vivado open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. After that, follow the :ref:`guide to add the ip-core to the block design<uz_NN_vivado>`.

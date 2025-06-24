@@ -6,6 +6,8 @@ These pages document the ongoing efforts towards the next revision of the UltraZ
 
 An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`label_carrier_board_overview`, whilst the additions of Rev04 are documented :ref:`here <carrier_board_rev04_features>`.
 
+.. _carrier_board_rev5_whatsdifferent:
+
 "What's different?" for Rev04 Users
 -----------------------------------
 
@@ -30,6 +32,8 @@ Hints for Operation and Troubleshooting
 * There now are three (physical) fuses, one in the 230V assembly on the backpanel and two (F1/F2) on the carrier itself (top right-hand corner)
 * The UltraZohm now incorporates a system-level management component, the "S3C", as introduced below - Please refer to :ref:`carrier_board_rev5_s3c` for more information and feature extensions
 
+.. _carrier_board_rev5_summary:
+
 Summary of new Features and Changes
 -----------------------------------
 
@@ -45,6 +49,7 @@ Summary of new Features and Changes
 	* drives and/or receives the twelve digital adapter card signals of slot D5 previously not connected, and
 	* routes various PS-MIOs and up to six PL pins to wherever they are needed (e.g., on slot D5 or FP).
 	* See :ref:`carrier_board_rev5_s3c` for details of the used part, its supply, and the already implemented and prospective functions
+
 * New, more flexible "CPLDs" (now de facto FPGAs) on the five D slots
 * Isolated JTAG+UART interface to avoid ground loops during debugging
 * Dual-JTAG to program both SoM and D-slot CPLDs using a single cable
@@ -65,10 +70,13 @@ Summary of new Features and Changes
 		* internal M.2 slot for a 6 Gbit/s SATA-2 SSD, and an
 		* internal M.2 slot for a single-lane PCIe (v2.0) EP.
 		* The fourth PS-GTR lane (pair) is currently not assigned but available on the FP connector for future extensions
+
+	Details, features and differences of :ref:`Rev01- <frontpanelmainboard_rev01>` and :ref:`Rev02-based <frontpanelmainboard_rev02>` FPs can be found on their respective pages
 * Breakout of three GTH quads (x1 to each A slot, x1 to FP, and x4 to BPs) and of one dedicated differential PLL clock per A slot and SoM clock per BP
 * Integrated thermal management for
 	* configuration-free temperature-driven control of up to two fans, and
 	* monitoring of fan status, SoM temperature and system temperature
+
 * All shared signals between SoM (both PS and PL) and the adapter card slots have been removed, with the only exception being a per-group I²C bus and an ANL_Pin54_Legacy signal to maintain compatibility as already targeted by Rev04 (cf. last bullet point in :ref:`carrier_board_rev04_features` of Rev04)
 * Separation of the User I²C (PS I²C0) using an 8-channel bus switch linking to FP (for the isoIOs), A slots, D slot CPLDs, D slots, secondary S3C I²C, and BPs
 * Support for identification of adapter cards (in line with the :ref:`corresponding retrofit for Rev04 <carrier_retrofits_cardid>`)

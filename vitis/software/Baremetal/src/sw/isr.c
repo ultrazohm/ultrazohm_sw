@@ -57,16 +57,45 @@ uz_3ph_abc_t three_phase_sine;
 
 int isr_use_sinwave_gen = 0;
 
+int calibrate_current_measurement_done = 0;
+int calibrate_current_measurement_counter = 0;
+int calibrate_current_measurement_counter_stop = 100;
+
+//zeroing for current value 0 (getting rid of the offset)
+double totalU = 0;
+double totalV = 0;
+double totalW = 0;
+
+float I_U_offset;
+float I_V_offset;
+float I_W_offset;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    if(!calibrate_current_measurement_done)
+    {
+        totalU += Global_Data.aa.A1.me.ADC_A1;
+		totalV += Global_Data.aa.A1.me.ADC_A2;
+		totalW += Global_Data.aa.A1.me.ADC_A3;
+
+        calibrate_current_measurement_counter++;
+		if(calibrate_current_measurement_counter==calibrate_current_measurement_counter_stop)
+		{
+			I_U_offset = totalU/calibrate_current_measurement_counter_stop;
+			I_V_offset = totalV/calibrate_current_measurement_counter_stop;
+			I_W_offset = totalW/calibrate_current_measurement_counter_stop;
+			calibrate_current_measurement_done = 1;
+		}
+	}
+
     Global_Data.av.U_DC = Global_Data.aa.A1.me.ADC_A4;
-    Global_Data.av.I_U  = Global_Data.aa.A1.me.ADC_A1;
-    Global_Data.av.I_V  = Global_Data.aa.A1.me.ADC_A2;
-    Global_Data.av.I_W  = Global_Data.aa.A1.me.ADC_A3;
+    Global_Data.av.I_U  = Global_Data.aa.A1.me.ADC_A1  - I_U_offset; //including adjustment upwards by the offset
+    Global_Data.av.I_V  = Global_Data.aa.A1.me.ADC_A2  - I_V_offset; //including adjustment upwards by the offset
+    Global_Data.av.I_W  = Global_Data.aa.A1.me.ADC_A3  - I_W_offset; //including adjustment upwards by the offset
 
     /* --- limit checks ------------------------------------------------------- */
     bool ov_dc  =  Global_Data.av.U_DC          > Vdc_max;     // over-voltage (DC link)

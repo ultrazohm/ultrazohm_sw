@@ -8,12 +8,16 @@ This IP-Core implements a three layer MLP network which was generated in Vitis H
 The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
 
 .. Attention:: 
-  - Hard coded to have **3 hidden layer** with :ref:`activation_function_relu` activation function for hidden layers.
+  - Variable layer setup of up to **5 hidden layer** with :ref:`activation_function_relu` activation function for hidden layers.
   - Output in the IP-Core is hard coded to us :ref:`activation_function_linear` activation. A different activation function for the output layer is done via software.
-  - Number of neurons in the hidden layers is fixed to **64**.
-  - Variable number of up to **24 Observations**
-  - Variable number of up to **12 Actions**
-  - Execution time of **~13µs**
+  - The number of **neurons** in the hidden layers is variable.
+  - Variable number of up to **24 Observations**.
+  - Variable number of up to **12 Actions**.
+  - Execution time of **~11-12µs** for 3x64 setup.
+  - Change of layer or neuron count :ref:`requires resynthesis of the IP-Core in Vitis HLS<uz_NN_customize_setup>`.
+  - Synthesis configuration to prioritize performance or resources.
+  - One default IP-Core with 3x64 setup is provided.
+
   
 .. figure:: uz_NN_acc_layers.svg
    :align: center
@@ -28,8 +32,9 @@ Features
 - Fully compatible with uz_nn to use IP-Core as an accelerator
 - Uses Matrix math as input and outputs
 - IP-Core is configured and triggerd by the PS exclusively 
+- Blocking and non-blocking operation
 - Correct size of the observation, weights, bias and action arrays will be asserted
-- Execution time for 20 observations and 4 actions roughly takes **~13µs**
+- Execution time for a 3x64 setup, with 20 observations and 4 actions takes roughly **~11µs**
 - Unsafe math optimization in Vitis HLS is used
 
 
@@ -54,10 +59,17 @@ The following step-by-step description guides the user in order to properly impl
 Vivado
 ======
 
+.. _uz_NN_vivado:
+
 First, ip cores have to be added to the block design in vivado:
 
 #. Open the already existing ``uz_user`` hierarchy in the block design.
 #. Inside this hierarchy click on the plus (``+``) button to add a new IP-Core and select the ``uz_NN_acc`` IP-Core.
+    
+    .. note::
+        - Use the ``uz_NN_3_64_acc`` IP-Core for a preconfigured IP-Core with 3 hidden layers and 64 neurons each.
+        - Use the ``uz_NN_acc`` IP-Core for different neuronal network setups. :ref:`See <uz_NN_customize_setup>`
+ 
 #. Connect the ``ap_clk`` and ``ap_rst_n`` ports as shown in the image below. The IP-Core is designed for 100 MHz.
 #. Add an additional AXI Port on the next reachable ``AXI SmartConnect`` IP-Core and connect it to the ``s_axi_control`` port of the IP-Core.
 
@@ -313,9 +325,9 @@ The processor can not do any other tasks.
 
 .. code-block::
 
-    uz_NN_acc_ff_blocking(instance);                         // Takes 13us (example)
+    uz_NN_acc_ff_blocking(instance);                         // Takes 12us (example)
     uz_sleep_useconds(10);                                   // Takes 10us
-                                                             // Takes 23us total
+                                                             // Takes 22us total
 
 .. mermaid::
 
@@ -338,10 +350,10 @@ Note that this means the actual calculation time of network without the communic
 
 .. code-block::
 
-    uz_NN_acc_ff_non_blocking(instance);                            // Takes 13us (example)
+    uz_NN_acc_ff_non_blocking(instance);                            // Takes 12us (example)
     uz_sleep_useconds(10);                                          // Takes 10us 
-    uz_NN_acc_get_result_blocking(instance);                        // Takes 4us
-                                                                    // Takes 17us total
+    uz_NN_acc_get_result_blocking(instance);                        // Takes 3us
+                                                                    // Takes 15us total
 
 .. mermaid::
 
@@ -361,13 +373,58 @@ Note that this means the actual calculation time of network without the communic
        end
        Driver->>Processor: Invalidate cache for output
 
+Customize IP-Core
+-----------------
+
+.. _uz_NN_customize_setup:
+
+The IP-Core can be configured according to your needs (neuron count & layer setup).
+For this however, the IP-Core has to be synthesized again with the new setup.
+This guide will walk you through this process.  
+
+#. On windows make sure, that Vitis HLS is added to your path variables.
+#. Navigate to ``ip_cores\uz_NN_acc\uz_NN`` and open the file ``uz_MMult_MaxSize.h``.
+#. Change the user definable variable to your needs.
+
+    .. note::
+        - A maximum of **5** hidden layers can be configured.
+        - Neurons can be configured on a per hidden layer basis as desired.
+          The output layer size is automatically appropriately sized to the last hidden layer (if hidden layers < 5)
+          Note however, that increasing the neuron count increases the resource usage significantly.
+          **Increasing the number of layers is more resource-efficient in terms of FPGA usage.**
+        - The ``Performance_Target`` variable can be used, if the generated IP-Core resources are too much for your specific FPGA.
+          Whilst 1==best performance, a higher number reduces the resource usage by decreasing performance. 
+          A maximum of Performance_Target==Neurons_per_HiddenLayer can be set.
+        
+
+    .. code-block:: c
+     :caption: User definable variables in ``uz_MMult_MaxSize.h``
+
+     //User define
+     #define Hidden_Layers 3 //max 5
+     #define Neurons_1st_Hidden_Layer 64
+     #define Neurons_2nd_Hidden_Layer 32
+     #define Neurons_3rd_Hidden_Layer 96
+     #define Neurons_4th_Hidden_Layer 32
+     #define Neurons_5th_Hidden_Layer 64
+     #define Performance_Target 1
+
+#. Save the file and navigate to  ``ip_cores\uz_NN_acc``
+#. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
+#. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
+#. After you see ``[HLS 200-111] Finished Command export_design`` the synthesis and export is finished.
+#. A resource estimation can be found in ``uz_NN_acc\uz_NN\solution1\syn\report`` under ``csynth.rpt``.
+   In Vivado the resource usage is (except DSP Slices) a bit lower than stated in HLS.
+#. [Optional] You can now open the project in the Vitis HLS GUI or with ``vitis_hls -p uz_NN``.
+#. In vivado open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
+#. After that, follow the :ref:`guide to add the ip-core to the block design<uz_NN_vivado>`.
+
 Further improvements
 ====================
 
 Further improvements are planed for the IP-core and in development:
 
-- variable neuron & layer setup
-- improved resource utilization
+- Updating weights & bias during runtime.
 
 Driver reference
 ----------------

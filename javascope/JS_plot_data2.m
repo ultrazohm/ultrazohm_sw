@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-file_name = 'Einheitssprung_id'
+file_name = 'Einheitssprung_iq'
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);
@@ -177,9 +177,10 @@ if(import_data_to_simulink_datainspector ~= 0)
 end
 
 
-plot(log, "time", "CH2", LineWidth=3);
-xlim([3.917 3.919]);
+plot(log, "time", "CH1", LineWidth=3);
+xlim([7.898 7.9]);
 xlabel('t [s]');
 ylabel('I [A]');
-title('PMSM IP-Core Sprungantwort I_d')
+title('PMSM IP-Core Sprungantwort I_q')
 grid on;
+

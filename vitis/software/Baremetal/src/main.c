@@ -40,6 +40,7 @@ enum init_chain
     init_assertions_and_wait_for_apu_handshake = 0,
     init_gpios,
     init_software,
+	init_CurrentControl,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -84,8 +85,13 @@ int main(void)
         case init_software:
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
-            initialization_chain = init_ip_cores;
+            initialization_chain = init_CurrentControl;
             break;
+        case init_CurrentControl:
+        	Global_Data.objects.CC_dq_instance = init_dq_FOC();
+        	Global_Data.objects.CC_xy_instance = init_xy_FOC();
+        	initialization_chain = init_ip_cores;
+        	break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();

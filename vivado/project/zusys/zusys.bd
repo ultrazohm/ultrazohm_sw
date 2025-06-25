@@ -6431,22 +6431,10 @@
               }
             },
             "interface_nets": {
-              "Conn1": {
-                "interface_ports": [
-                  "D1",
-                  "uz_inverter_adapter_2/uz_inverter_adapter"
-                ]
-              },
               "Conn2": {
                 "interface_ports": [
                   "D2",
                   "uz_inverter_adapter_1/uz_inverter_adapter"
-                ]
-              },
-              "Conn3": {
-                "interface_ports": [
-                  "D3",
-                  "uz_inverter_adapter_0/uz_inverter_adapter"
                 ]
               },
               "Conn4": {
@@ -6465,6 +6453,18 @@
                 "interface_ports": [
                   "AXI4_Lite2",
                   "uz_d_inverter_adapter_2/AXI4_Lite"
+                ]
+              },
+              "uz_inverter_adapter_0_uz_inverter_adapter": {
+                "interface_ports": [
+                  "D1",
+                  "uz_inverter_adapter_0/uz_inverter_adapter"
+                ]
+              },
+              "uz_inverter_adapter_2_uz_inverter_adapter": {
+                "interface_ports": [
+                  "D3",
+                  "uz_inverter_adapter_2/uz_inverter_adapter"
                 ]
               }
             },

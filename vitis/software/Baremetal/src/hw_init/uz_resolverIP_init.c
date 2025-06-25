@@ -27,9 +27,9 @@ struct uz_resolverIP_config_t resolverIP_config_Pruef = {
         .ip_clk_frequency_Hz=IP_CLK_FREQ,
         .resolution = 16,
         .freq_clockin = CRYSTAL_FREQUENCY,
-        .pole_pairs_machine = 1.0f,
+        .pole_pairs_machine = 5.0f,
         .pole_pairs_resolver = 1.0f,
-        .zero_position_mechanical = 0.3964f,
+        .zero_position_mechanical = 1.191,
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
 

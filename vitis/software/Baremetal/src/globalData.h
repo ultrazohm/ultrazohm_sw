@@ -12,6 +12,9 @@
 #include "IP_Cores/uz_resolverIP/uz_resolverIP.h"
 #include "uz/uz_space_vector_modulation/uz_space_vector_modulation.h"
 #include "include/uz_platform_state_machine.h"
+#include "uz/uz_Space_Vector_Modulation_6ph/uz_Space_Vector_Modulation_6ph.h"
+#include "uz/uz_CurrentControl/uz_CurrentControl.h"
+
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -117,17 +120,23 @@ typedef struct _actualValues_ {
 	float temp_VSI_1;
 	float temp_VSI_2;
 	float temp_VSI_3;
-		struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
-struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
+	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d3;
 	bool select_Control;
 	bool select_fixed_values;
 	uz_6ph_dq_t v_dqxy_ref;
+	uz_3ph_dq_t v_dq_ref;
 	uz_6ph_abc_t i_abc_meas;
 	uz_6ph_abc_t v_abc_meas;
 	uz_6ph_dq_t i_dqxy_meas;
 	uz_6ph_dq_t v_dqxy_meas;
+	uz_3ph_dq_t i_dq_meas;
+	uz_3ph_dq_t i_dq_ref;
 	struct uz_DutyCycle_2x3ph_t DutyCycle_output;
+	struct uz_svm_asym_6ph_CSVPWM24_out svm_out;
+	float button;
+	float error;
 
 } actualValues;
 
@@ -164,6 +173,8 @@ typedef struct{
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
 	uz_inverter_adapter_t* inverter_d3;
+	uz_CurrentControl_t* CC_dq_instance;
+	uz_CurrentControl_t* CC_xy_instance;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

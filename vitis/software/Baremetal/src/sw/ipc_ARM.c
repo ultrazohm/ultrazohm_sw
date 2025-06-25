@@ -190,31 +190,33 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.DutyCycle_output.system1.DutyCycle_B = value;
+		data->av.DutyCycle_output.system2.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.DutyCycle_output.system1.DutyCycle_C = value;
+		data->av.DutyCycle_output.system1.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.snd_fld[4] = value;
+		data->av.DutyCycle_output.system2.DutyCycle_B = value;
+
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		data->av.DutyCycle_output.system1.DutyCycle_C = value;
+
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.snd_fld[6] = value;
+		data->av.DutyCycle_output.system2.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.snd_fld[7] = value;
+		data->av.i_dq_ref.d = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.snd_fld[8] = value;
+		data->av.i_dq_ref.q = value;
 			break;
 
 		case (Set_Send_Field_9):
@@ -269,16 +271,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->av.select_Control = false;
 			data->av.select_fixed_values = true;
 			ultrazohm_state_machine_set_userLED(true);
+			data->av.button = 1.0f;
 			break;
 
 		case (My_Button_2):
 				data->av.select_fixed_values = false;
 				data->av.select_Control = true;
 				ultrazohm_state_machine_set_userLED(false);
+				data->av.button = 2.0f;
 			break;
 
 		case (My_Button_3):
-				ultrazohm_state_machine_set_enable_system(true);
+		data->av.v_dqxy_ref.d = 0;
+		data->av.v_dqxy_ref.q = 0;
+		data->av.v_dqxy_ref.x = 0;
+		data->av.v_dqxy_ref.y = 0;
+		data->av.v_dq_ref.d = 0;
+		data->av.v_dq_ref.q = 0;
 			break;
 
 		case (My_Button_4):

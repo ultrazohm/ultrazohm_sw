@@ -202,7 +202,7 @@ The S3C side contains a conditional pass-through that propagates the SlotOE requ
 	DIGS3C_SlotD_SlotOE <= DIGS3C_SlotD_ReqOE and (DIGS3C_SlotD_SlotOE'Range => NOT forceoutputdisable);
 
 
-At present, only SlotOE is actively driven. Other potential outputs -- such as the S3C’s own OE or CarrierRdy -- are left unconnected and therefore idle.
+At present, only SlotOE is actively driven. Other potential outputs -- such as the S3C’s CarrierRdy -- are left unconnected and therefore idle.
 
 **Default logic in the D-Slot bitstream**
 

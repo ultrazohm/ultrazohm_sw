@@ -72,7 +72,7 @@ Step-by-step
 
 .. note::
 
-  The schematic in :ref:`carrier_board_rev5_s3cfunc` shows the dedicated wiring between the S3C and the D-Slot CPLDs.
+  The table in :ref:`carrier_board_rev5_s3cfunc` shows the dedicated wiring between the S3C and the D-Slot CPLDs.
   In the accompanying VHDL snippet, the default setting keeps the forwarding from SoM to card permanently enabled:
 
 .. code-block:: vhdl

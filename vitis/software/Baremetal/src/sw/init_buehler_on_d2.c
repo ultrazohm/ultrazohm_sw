@@ -265,14 +265,35 @@ struct uz_PMSM_flux_fitting_parameter_config_t buehler_fitting = {0};
         static float output2[NUMBER_OF_OUTPUTS] = {0};
 #endif
 
-        
+        // 
+#if AGENT == 346
+#define NUMBER_OF_INPUTS 13
+#define NUMBER_OF_OUTPUTS 2
+#define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
+#define NUMBER_OF_LAYERS 2
+        static float x[NUMBER_OF_INPUTS] = {0};
+        static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a346_sigmoid_buehler_z1_pt1_moreObs/best_agent/ac_layer1_weights.csv"
+        };
+        static float bias1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
+#include "../experiments/a346_sigmoid_buehler_z1_pt1_moreObs/best_agent/ac_layer1_bias.csv"
+        };
+        static float output1[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {0};
+        static float weights2[NUMBER_OF_NEURONS_IN_HIDDEN_LAYER * NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a346_sigmoid_buehler_z1_pt1_moreObs/best_agent/ac_layer_out_weights.csv"
+        };
+        static float bias2[NUMBER_OF_OUTPUTS] = {
+#include "../experiments/a346_sigmoid_buehler_z1_pt1_moreObs/best_agent/ac_layer_out_bias.csv"
+        };
+        static float output2[NUMBER_OF_OUTPUTS] = {0};
+#endif
 
 #if AGENT == 325
 #define NUMBER_OF_INPUTS 13
 #define NUMBER_OF_OUTPUTS 2
 #define NUMBER_OF_NEURONS_IN_HIDDEN_LAYER 64
 #define NUMBER_OF_LAYERS 2
-            static float x[NUMBER_OF_INPUTS] = {0};
+        static float x[NUMBER_OF_INPUTS] = {0};
         static float weights1[NUMBER_OF_INPUTS * NUMBER_OF_NEURONS_IN_HIDDEN_LAYER] = {
 #include "../experiments/a325_sig_td3_int_more_obs_buehler_250k_1tau/best_agent/ac_layer1_weights.csv"
         };

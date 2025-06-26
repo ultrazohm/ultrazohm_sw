@@ -64,6 +64,7 @@
 // a338_sigmoid_scaled_0_2_td3_heidrive_250k_30seeds
 // a332_sigmoid_scaled_0_05_td3_heidrive_250k_30seeds_fxd
 // a324_sig_td3_int_more_obs_heidrive_250k_1tau
+// a348_sigmoid_heidrive_z1_pt1_moreObs
 
 // Brose wrong parameters
 // a214_l1_td3_gaussian_brose
@@ -81,6 +82,7 @@
 // a334_sigmoid_scaled_0_2_td3_brose_250k_30seeds
 // a328_sigmoid_scaled_0_05_td3_brose_250k_30seeds_fxd
 // a323_sig_td3_int_more_obs_brose_fixed_250k_1tau
+// a344_sigmoid_brose_z1_pt1_moreObs
 
 // Buehler
 // a221_l1_td3_gaussian_buehler
@@ -94,6 +96,7 @@
 // a336_sigmoid_scaled_0_2_td3_buehler_250k_30seeds
 // a325_sig_td3_int_more_obs_buehler_250k_1tau
 // a330_sigmoid_scaled_0_05_td3_ebm_250k_30seeds_fxd // Wrong name, this really is buehler!
+// a346_sigmoid_buehler_z1_pt1_moreObs
 
 // EBMPabst
 // a217_l1_td3_gaussian_ebmpabst
@@ -107,6 +110,7 @@
 // a335_sigmoid_scaled_0_2_td3_ebm_250k_30seeds
 // a329_sigmoid_scaled_0_05_td3_ebm_250k_30seeds_fxd
 // a326_sig_td3_int_more_obs_ebm_250k_1tau
+// a347_sigmoid_ebm_z1_pt1_moreObs
 
 // Beckhoff
 // a215_l1_td3_gaussian_beckhoff
@@ -137,10 +141,10 @@
 
 #define SETPOINT_PROFILE SETPOINT_PROFILE_ORIGINAL
 
-#define DUT_MACHINE BECKHOFF_DESKBENCH_D1 // HEIDRIVE_D2, BECKHOFF_DESKBENCH_D1
-#define AGENT 340
-#define D1_MACHINE BECKHOFF_DESKBENCH_D1 // EBM, Brose, Hoerner, HEIDRIVE_D1, BECKHOFF_DESKBENCH_D1
-#define D2_MACHINE BECKHOFF_DESKBENCH_D2 // HEIDRIVE_D2, BUEHLER, BECKHOFF, BECKHOFF_DESKBENCH_D2
+#define DUT_MACHINE BROSE // HEIDRIVE_D2, BECKHOFF_DESKBENCH_D1
+#define AGENT 297
+#define D1_MACHINE BROSE    // EBM, Brose, Hoerner, HEIDRIVE_D1, BECKHOFF_DESKBENCH_D1
+#define D2_MACHINE BECKHOFF // HEIDRIVE_D2, BUEHLER, BECKHOFF, BECKHOFF_DESKBENCH_D2
 // #define D1_IS_PRIME_MOVER 1U // Auto-calculate this define from DUT_MACHINE?
 
 #if !((DUT_MACHINE == D1_MACHINE) || (DUT_MACHINE == D2_MACHINE))

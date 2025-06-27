@@ -77,18 +77,18 @@ typedef struct _actualValues_ {
 	float i_dc1;
 	float i_dc2;
 	float i_dc_Last;
-	float v_a1; 		// Machine side voltage in V
-	float v_b1; 		// Machine side voltage in V
-	float v_c1; 		// Machine side voltage in V
-	float v_a2; 		// Machine side voltage in V
-	float v_b2; 		// Machine side voltage in V
-	float v_c2; 		// Machine side voltage in V
-	float v_a_Last; 		// Machine side voltage in V
-	float v_b_Last; 		// Machine side voltage in V
-	float v_c_Last; 		// Machine side voltage in V
-	float v_dc_Last;
-	float v_dc1;
-	float v_dc2;
+	float u_a1; 		// Machine side voltage in V
+	float u_b1; 		// Machine side voltage in V
+	float u_c1; 		// Machine side voltage in V
+	float u_a2; 		// Machine side voltage in V
+	float u_b2; 		// Machine side voltage in V
+	float u_c2; 		// Machine side voltage in V
+	float u_a_Last; 		// Machine side voltage in V
+	float u_b_Last; 		// Machine side voltage in V
+	float u_c_Last; 		// Machine side voltage in V
+	float u_dc_Last;
+	float u_dc1;
+	float u_dc2;
 	float U_ZK; 		// DC-Link voltage in V
 	float U_ZK2; 	// DC-Link voltage 2 in V
 	float Res1; 		// Reserveeingang 1 - X51 (normiert auf 0...1 --> 0...4095)
@@ -108,7 +108,10 @@ typedef struct _actualValues_ {
 	float U_x;
 	float U_y;
 	float theta_elec;
-	float theta_mech;
+	float theta_elec_Last;
+	float theta_mech_Last;
+	float theta_elec_Pruef;
+	float theta_mech_Pruef;
 	float theta_offset; //in rad/s
 	float temperature;
 	uint32_t  heartbeatframe_content;
@@ -126,15 +129,20 @@ typedef struct _actualValues_ {
 	bool select_Control;
 	bool select_fixed_values;
 	uz_6ph_dq_t v_dqxy_ref;
-	uz_3ph_dq_t v_dq_ref;
+	uz_3ph_dq_t v_dq_pruef_ref;
+	uz_3ph_dq_t i_dq_last_ref;
+	uz_3ph_dq_t v_dq_last_ref;
+	uz_3ph_abc_t i_abc_last_meas;
+	uz_3ph_dq_t i_dq_last_meas;
 	uz_6ph_abc_t i_abc_meas;
 	uz_6ph_abc_t v_abc_meas;
 	uz_6ph_dq_t i_dqxy_meas;
 	uz_6ph_dq_t v_dqxy_meas;
-	uz_3ph_dq_t i_dq_meas;
-	uz_3ph_dq_t i_dq_ref;
-	struct uz_DutyCycle_2x3ph_t DutyCycle_output;
+	uz_3ph_dq_t i_dq_pruef_meas;
+	uz_3ph_dq_t i_dq_pruef_ref;
+	struct uz_DutyCycle_2x3ph_t DutyCycle_output_Pruef;
 	struct uz_svm_asym_6ph_CSVPWM24_out svm_out;
+	struct uz_DutyCycle_t DutyCycle_output_Last;
 	float button;
 	float error;
 

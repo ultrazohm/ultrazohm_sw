@@ -186,57 +186,57 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.DutyCycle_output.system1.DutyCycle_A = value;
+		data->av.DutyCycle_output_Pruef.system1.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.DutyCycle_output.system2.DutyCycle_A = value;
+		data->av.DutyCycle_output_Pruef.system2.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.DutyCycle_output.system1.DutyCycle_B = value;
+		data->av.DutyCycle_output_Pruef.system1.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.DutyCycle_output.system2.DutyCycle_B = value;
+		data->av.DutyCycle_output_Pruef.system2.DutyCycle_B = value;
 
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.DutyCycle_output.system1.DutyCycle_C = value;
+		data->av.DutyCycle_output_Pruef.system1.DutyCycle_C = value;
 
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.DutyCycle_output.system2.DutyCycle_C = value;
+		data->av.DutyCycle_output_Pruef.system2.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.i_dq_ref.d = value;
+		data->av.i_dq_pruef_ref.d = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.i_dq_ref.q = value;
+		data->av.i_dq_pruef_ref.q = value;
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.snd_fld[9] = value;
+		data->av.DutyCycle_output_Last.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.snd_fld[10] = value;
+		data->av.DutyCycle_output_Last.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.snd_fld[11] = value;
+		data->av.DutyCycle_output_Last.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.snd_fld[12] = value;
+		data->av.i_dq_last_ref.d = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.snd_fld[13] = value;
+		data->av.i_dq_last_ref.q = value;
 			break;
 
 		case (Set_Send_Field_14):
@@ -286,8 +286,8 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		data->av.v_dqxy_ref.q = 0;
 		data->av.v_dqxy_ref.x = 0;
 		data->av.v_dqxy_ref.y = 0;
-		data->av.v_dq_ref.d = 0;
-		data->av.v_dq_ref.q = 0;
+		data->av.v_dq_last_ref.d = 0;
+		data->av.v_dq_last_ref.q = 0;
 			break;
 
 		case (My_Button_4):

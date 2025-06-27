@@ -89,7 +89,8 @@ float u_n2 = 0.0f;
 
 platform_state_t current_state;
 
-
+float rad_to_deg = 180/M_PI;
+struct uz_DutyCycle_t dutycyc_last = {0.0f};
 //====================
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -127,18 +128,18 @@ void ISR_Control(void *data)
     Global_Data.av.i_dc_Last = Global_Data.aa.A3.me.ADC_B5 * PHASE_CURRENT_CONV;
 
     // Read out and convert ADC readings to voltages
-    Global_Data.av.v_dc1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_VOLT_CONV;
-    Global_Data.av.v_a1 = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_A1 +PHASE_VOLT_OFFSET_A1;
-    Global_Data.av.v_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_B1 +PHASE_VOLT_OFFSET_B1;
-    Global_Data.av.v_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_C1 +PHASE_VOLT_OFFSET_C1;
-    Global_Data.av.v_dc2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_VOLT_CONV;
-    Global_Data.av.v_a2 = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV_A2 +PHASE_VOLT_OFFSET_A2;
-    Global_Data.av.v_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2 +PHASE_VOLT_OFFSET_B2;
-    Global_Data.av.v_c2 = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2 +PHASE_VOLT_OFFSET_C2;
-    Global_Data.av.v_dc_Last = Global_Data.aa.A3.me.ADC_A1 * PHASE_VOLT_CONV;
-    Global_Data.av.v_a_Last = Global_Data.aa.A3.me.ADC_B8 * PHASE_VOLT_CONV_A2 +PHASE_VOLT_OFFSET_A2;
-    Global_Data.av.v_b_Last = Global_Data.aa.A3.me.ADC_B7 * PHASE_VOLT_CONV_B2 +PHASE_VOLT_OFFSET_B2;
-    Global_Data.av.v_c_Last = Global_Data.aa.A3.me.ADC_B6 * PHASE_VOLT_CONV_C2 +PHASE_VOLT_OFFSET_C2;
+    Global_Data.av.u_dc1 = Global_Data.aa.A1.me.ADC_A1 * PHASE_VOLT_CONV;
+    Global_Data.av.u_a1 = Global_Data.aa.A1.me.ADC_B8 * PHASE_VOLT_CONV_A1 +PHASE_VOLT_OFFSET_A1;
+    Global_Data.av.u_b1 = Global_Data.aa.A1.me.ADC_B7 * PHASE_VOLT_CONV_B1 +PHASE_VOLT_OFFSET_B1;
+    Global_Data.av.u_c1 = Global_Data.aa.A1.me.ADC_B6 * PHASE_VOLT_CONV_C1 +PHASE_VOLT_OFFSET_C1;
+    Global_Data.av.u_dc2 = Global_Data.aa.A2.me.ADC_A1 * PHASE_VOLT_CONV;
+    Global_Data.av.u_a2 = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV_A2 +PHASE_VOLT_OFFSET_A2;
+    Global_Data.av.u_b2 = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_B2 +PHASE_VOLT_OFFSET_B2;
+    Global_Data.av.u_c2 = Global_Data.aa.A2.me.ADC_B6 * PHASE_VOLT_CONV_C2 +PHASE_VOLT_OFFSET_C2;
+    Global_Data.av.u_dc_Last = Global_Data.aa.A3.me.ADC_A1 * PHASE_VOLT_CONV;
+    Global_Data.av.u_a_Last = Global_Data.aa.A3.me.ADC_B8 * PHASE_VOLT_CONV_A2 +PHASE_VOLT_OFFSET_A2;
+    Global_Data.av.u_b_Last = Global_Data.aa.A3.me.ADC_B7 * PHASE_VOLT_CONV_B2 +PHASE_VOLT_OFFSET_B2;
+    Global_Data.av.u_c_Last = Global_Data.aa.A3.me.ADC_B6 * PHASE_VOLT_CONV_C2 +PHASE_VOLT_OFFSET_C2;
 
     //Read out inverter temp
         Global_Data.av.temp_VSI_1 = TEMP_VSI_largest(Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_H1, Global_Data.av.inverter_outputs_d1.ChipTempDegreesCelsius_L1,
@@ -171,7 +172,7 @@ void ISR_Control(void *data)
         	longtime_Current = 0;
         }
         // check DC Bus
-        if(fabs(Global_Data.av.v_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.v_dc2) > MAX_DC_VOLT) {
+        if(fabs(Global_Data.av.u_dc1) > MAX_DC_VOLT || fabs(Global_Data.av.u_dc2) > MAX_DC_VOLT) {
      	   ultrazohm_state_machine_set_stop(true);
      	  Global_Data.av.error = 2;
         }
@@ -185,31 +186,31 @@ void ISR_Control(void *data)
         // calc u neutral voltage
         switch(NEUTRAL_CONFIG){
         case 1U:{
-        	u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1 + Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2) / 6.0f;
+        	u_n1 = (Global_Data.av.u_a1 + Global_Data.av.u_b1 + Global_Data.av.u_c1 + Global_Data.av.u_a2 + Global_Data.av.u_b2 + Global_Data.av.u_c2) / 6.0f;
         	u_n2 = u_n1;
         	break;
         }
         case 2U:{
-        	u_n1 = (Global_Data.av.v_a1 + Global_Data.av.v_b1 + Global_Data.av.v_c1)/3.0f;
-        	u_n2 = (Global_Data.av.v_a2 + Global_Data.av.v_b2 + Global_Data.av.v_c2)/3.0f;
+        	u_n1 = (Global_Data.av.u_a1 + Global_Data.av.u_b1 + Global_Data.av.u_c1)/3.0f;
+        	u_n2 = (Global_Data.av.u_a2 + Global_Data.av.u_b2 + Global_Data.av.u_c2)/3.0f;
         	break;
         }
         default: break;
         }
 
         // calc phase voltages with neutral voltage
-        Global_Data.av.v_abc_meas.a1 = Global_Data.av.v_a1 - u_n1;
-        Global_Data.av.v_abc_meas.b1 = Global_Data.av.v_b1 - u_n1;
-        Global_Data.av.v_abc_meas.c1 = Global_Data.av.v_c1 - u_n1;
-        Global_Data.av.v_abc_meas.a2 = Global_Data.av.v_a2 - u_n2;
-        Global_Data.av.v_abc_meas.b2 = Global_Data.av.v_b2 - u_n2;
-        Global_Data.av.v_abc_meas.c2 = Global_Data.av.v_c2 - u_n2;
+        Global_Data.av.v_abc_meas.a1 = Global_Data.av.u_a1 - u_n1;
+        Global_Data.av.v_abc_meas.b1 = Global_Data.av.u_b1 - u_n1;
+        Global_Data.av.v_abc_meas.c1 = Global_Data.av.u_c1 - u_n1;
+        Global_Data.av.v_abc_meas.a2 = Global_Data.av.u_a2 - u_n2;
+        Global_Data.av.v_abc_meas.b2 = Global_Data.av.u_b2 - u_n2;
+        Global_Data.av.v_abc_meas.c2 = Global_Data.av.u_c2 - u_n2;
 
 
         //VSD-Transformation
         Global_Data.av.i_dqxy_meas = uz_transformation_asym30deg_6ph_abc_to_dq(Global_Data.av.i_abc_meas, Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi);
-        Global_Data.av.i_dq_meas.d = Global_Data.av.i_dqxy_meas.d;
-        Global_Data.av.i_dq_meas.q = Global_Data.av.i_dqxy_meas.q;
+        Global_Data.av.i_dq_pruef_meas.d = Global_Data.av.i_dqxy_meas.d;
+        Global_Data.av.i_dq_pruef_meas.q = Global_Data.av.i_dqxy_meas.q;
         Global_Data.av.I_d = Global_Data.av.i_dqxy_meas.d;
         Global_Data.av.I_q = Global_Data.av.i_dqxy_meas.q;
         Global_Data.av.I_x = Global_Data.av.i_dqxy_meas.x;
@@ -221,6 +222,17 @@ void ISR_Control(void *data)
  	    Global_Data.av.U_x = Global_Data.av.v_dqxy_meas.x;
  	    Global_Data.av.U_y = Global_Data.av.v_dqxy_meas.y;
 
+ 	    //Winkel umrechnen
+ 	    Global_Data.av.theta_elec_Last =  Global_Data.av.resolver_outputs_d4_Last.position_el_2pi * rad_to_deg;
+ 	    Global_Data.av.theta_elec_Pruef =  Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi * rad_to_deg;
+ 	    Global_Data.av.theta_mech_Last =  Global_Data.av.resolver_outputs_d4_Last.position_mech_2pi * rad_to_deg;
+ 	    Global_Data.av.theta_mech_Pruef =  Global_Data.av.resolver_outputs_d4_Pruef.position_mech_2pi * rad_to_deg;
+
+ 	    //dq-Transformation
+ 	    Global_Data.av.i_abc_last_meas.a = Global_Data.av.i_a_Last;
+ 	    Global_Data.av.i_abc_last_meas.b = Global_Data.av.i_b_Last;
+ 	    Global_Data.av.i_abc_last_meas.c = Global_Data.av.i_c_Last;
+ 	    Global_Data.av.i_dq_last_meas = uz_transformation_3ph_abc_to_dq(Global_Data.av.i_abc_last_meas, Global_Data.av.resolver_outputs_d4_Last.position_el_2pi);
     current_state = ultrazohm_state_machine_get_state();
     // if "STOP"
     if (current_state==idle_state)
@@ -254,6 +266,8 @@ void ISR_Control(void *data)
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, true);
     	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, true);
     	Global_Data.av.error = 0;
+    	memset(&Global_Data.av.DutyCycle_output_Pruef, 0, sizeof(Global_Data.av.DutyCycle_output_Pruef));
+
     }
 
     if (current_state==control_state)
@@ -262,12 +276,15 @@ void ISR_Control(void *data)
 
     	if(Global_Data.av.select_fixed_values == true){
 
-    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_A = Global_Data.av.DutyCycle_output.system1.DutyCycle_A;
-    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_B = Global_Data.av.DutyCycle_output.system1.DutyCycle_B;
-    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_C = Global_Data.av.DutyCycle_output.system1.DutyCycle_C;
-    		Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_A = Global_Data.av.DutyCycle_output.system2.DutyCycle_A;
-    	    Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_B = Global_Data.av.DutyCycle_output.system2.DutyCycle_B;
-    	    Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_C = Global_Data.av.DutyCycle_output.system2.DutyCycle_C;
+    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_A = Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_A;
+    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_B = Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_B;
+    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_C = Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_C;
+    		Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_A = Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_A;
+    	    Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_B = Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_B;
+    	    Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_C = Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_C;
+    		Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.DutyCycle_output_Last.DutyCycle_A;
+    		Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.DutyCycle_output_Last.DutyCycle_B;
+    		Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.DutyCycle_output_Last.DutyCycle_C;
 
 
     	}
@@ -275,28 +292,37 @@ void ISR_Control(void *data)
 
     	if(Global_Data.av.select_Control == true){
 
-    		Global_Data.av.v_dq_ref = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, Global_Data.av.i_dq_ref, Global_Data.av.i_dq_meas, Global_Data.av.v_dc1, Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi);
-    		Global_Data.av.v_dqxy_ref.d = Global_Data.av.v_dq_ref.d;
-    		Global_Data.av.v_dqxy_ref.q = Global_Data.av.v_dq_ref.q;
-    		Global_Data.av.svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(Global_Data.av.v_dqxy_ref, Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi, Global_Data.av.v_dc1);
+    		//Global_Data.av.v_dq_pruef_ref = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, Global_Data.av.i_dq_pruef_ref, Global_Data.av.i_dq_pruef_meas, Global_Data.av.v_dc1, Global_Data.av.resolver_outputs_d4_Pruef.omega_mech_rad_s*5);
+    		//Global_Data.av.v_dqxy_ref.d = Global_Data.av.v_dq_pruef_ref.d;
+    		//Global_Data.av.v_dqxy_ref.q = Global_Data.av.v_dq_pruef_ref.q;
+    		//Global_Data.av.svm_out = uz_Space_Vector_Modulation_asym_6ph_CSVPWM24_dq(Global_Data.av.v_dqxy_ref, Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi, Global_Data.av.v_dc1);
+    		//Global_Data.av.DutyCycle_output_Pruef = uz_spwm_dq_6ph(Global_Data.av.v_dqxy_ref, Global_Data.av.v_dc1,Global_Data.av.resolver_outputs_d4_Pruef.position_el_2pi);
+    		Global_Data.av.v_dq_last_ref = uz_CurrentControl_sample(Global_Data.objects.CC_dq_instance, Global_Data.av.i_dq_last_ref, Global_Data.av.i_dq_last_meas, Global_Data.av.u_dc_Last, Global_Data.av.resolver_outputs_d4_Last.omega_mech_rad_s*5);
+    		dutycyc_last = uz_Space_Vector_Modulation(Global_Data.av.v_dq_last_ref, Global_Data.av.u_dc_Last, Global_Data.av.resolver_outputs_d4_Last.position_el_2pi);
     	}
     }
+    else{
+    	uz_CurrentControl_reset(Global_Data.objects.CC_dq_instance);
+		Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge4DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge5DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge6DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge7DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge8DutyCycle = 0.0f;
+		Global_Data.rasv.halfBridge9DutyCycle = 0.0f;
+    }
     // DutyCycles Lastmaschine setzen
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);
-
-    // PWM phase shift Prüfling
-    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.svm_out.shift_system2, Global_Data.av.svm_out.shift_system2, Global_Data.av.svm_out.shift_system2);
-    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.svm_out.shift_system1, Global_Data.av.svm_out.shift_system1, Global_Data.av.svm_out.shift_system1);
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, dutycyc_last.DutyCycle_A, dutycyc_last.DutyCycle_B, dutycyc_last.DutyCycle_C);
 
     // assign Duty Cycles Prüfling
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_A, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_B, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_C);
-    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_A, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_B, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_C);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_A, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_B, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_C);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_A, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_B, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_C);
     //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_A, Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_B, Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_C);
+    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_A, Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_B, Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_C);
 
-    // Set duty cycles for three-level modulator
-    //PWM_3L_SetDutyCycle(Global_Data.rasv.halfBridge1DutyCycle,
-    //                    Global_Data.rasv.halfBridge2DutyCycle,
-    //                    Global_Data.rasv.halfBridge3DutyCycle);
 
     JavaScope_update(&Global_Data);
     // Read the timer value at the very end of the ISR to minimize measurement error

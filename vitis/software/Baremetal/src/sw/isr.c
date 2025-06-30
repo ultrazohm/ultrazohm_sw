@@ -33,6 +33,7 @@
 #include "../uz/uz_spwm/uz_spwm.h"
 
 
+
 #define PHASE_CURRENT_CONV 12.5f
 #define PHASE_VOLT_CONV	12.0f
 
@@ -66,9 +67,160 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
+volatile float sector_debug_float = 0.0f; // @@@@
 
 
 unsigned int currentlimit_counter = 0;
+
+// ------------------------------- changes made am 13.06.25 below vvvv-------------code can be placed in its own uz file---------------@@@@@@@@@@@
+int getSectorFromThetaEl(float theta_el_rad){
+
+	int sector = 0;
+	float UZ_PIf = 3.1415926535f;
+	// theta_el_rad = - theta_el_rad;
+
+	if (theta_el_rad < 0.0f){
+		theta_el_rad = theta_el_rad + 2.0f*UZ_PIf;
+	}
+
+	theta_el_rad = fmodf(theta_el_rad, 2.0f*UZ_PIf);
+
+	if (theta_el_rad >= 0 && theta_el_rad < UZ_PIf/3.0f){
+		sector = 1;
+	}
+	else if(theta_el_rad >= UZ_PIf/3.0f && theta_el_rad < 2.0f*UZ_PIf/3.0f){
+		sector = 2;
+	}
+	else if(theta_el_rad >= 2.0f*UZ_PIf/3.0f && theta_el_rad < UZ_PIf){
+		sector = 3;
+	}
+	else if(theta_el_rad >= UZ_PIf && theta_el_rad < 4.0f*UZ_PIf/3.0f){
+		sector = 4;
+	}
+	else if(theta_el_rad >= 4.0f*UZ_PIf/3.0f && theta_el_rad < 5.0f*UZ_PIf/3.0f){
+		sector = 5;
+	}
+	else if(theta_el_rad >= 5.0f*UZ_PIf/3.0f && theta_el_rad < 2.0f*UZ_PIf){
+		sector = 6;
+	}
+	else{
+		sector = 1;
+	}
+
+	return sector;
+}
+
+// This section tells you which phase is HIGH (+), LOW (-) or FLOATING (0)
+typedef struct uz_kommutierungs_wert_t{
+	int a;
+	int b;
+	int c;
+}uz_kommutierungs_wert_t;
+
+void kommutierungSector(int sector, uz_kommutierungs_wert_t out){
+	out.a = 0;
+	out.b = 0;
+	out.c = 0;
+	if(sector == 1){
+		out.a = 1;
+		out.b = 0;
+		out.c = -1;
+	}
+	else if(sector == 2){
+		out.a = 0;
+		out.b = 1;
+		out.c = -1;
+	}
+	else if(sector == 3){
+		out.a = -1;
+		out.b = 1;
+		out.c = 0;
+	}
+	else if(sector == 4){
+		out.a = -1;
+		out.b = 0;
+		out.c = 1;
+	}
+	else if(sector == 5){
+		out.a = 0;
+		out.b = -1;
+		out.c = 1;
+	}
+	else if(sector == 6){
+		out.a = 1;
+		out.b =-1;
+		out.c = 0;
+	}
+}
+
+// vvv New from 18.06.25
+// code below might be useful if I decide to use a phase current as a reference current instead of the I_ZK
+void activePhase(int sector, uz_kommutierungs_wert_t out){
+	out.a = 0;
+	out.b = 0;
+	out.c = 0;
+	if(sector == 1){
+		out.a = 1;
+		out.b = 0;
+		out.c = 0;
+	}
+	else if(sector == 2){
+		out.a = 0;
+		out.b = 1;
+		out.c = 0;
+	}
+	else if(sector == 3){
+		out.a = 0;
+		out.b = 1;
+		out.c = 0;
+	}
+	else if(sector == 4){
+		out.a = 0;
+		out.b = 0;
+		out.c = 1;
+	}
+	else if(sector == 5){
+		out.a = 0;
+		out.b = 0;
+		out.c = 1;
+	}
+	else if(sector == 6){
+		out.a = 1;
+		out.b = 0;
+		out.c = 0;
+	}
+}
+
+// the function below simply assigns the value i_out with the value of the phase current on the HIGH-side (going into the motor).
+/*
+float i_ph_current_selector(int sector, float i_a, float i_b, float i_c){
+	float i_out = 0.0f;
+
+	if(sector == 1){
+		i_out = i_a;
+	}
+	else if(sector == 2){
+		i_out = i_b;
+	}
+	else if(sector == 3){
+		i_out = i_b;
+	}
+	else if(sector == 4){
+		i_out = i_c;
+	}
+	else if(sector == 5){
+		i_out = i_c;
+	}
+	else if(sector == 6){
+		i_out = i_a;
+	}
+	return i_out;
+}
+*/
+// ------------------------------- changes made am 13.06.25 above ^^^^-----------------------------------@@@@@@@@@@@
+
+
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -99,6 +251,11 @@ void ISR_Control(void *data)
     Global_Data.av.i_c = Global_Data.aa.A2.me.ADC_A2 * PHASE_CURRENT_CONV_c +PHASE_CURRENT_OFFSET_c;
     Global_Data.av.I_ZK = Global_Data.aa.A2.me.ADC_B5 * PHASE_CURRENT_CONV;
 
+    // @@@@@@@@@@@@@@@@@@@ calling the function (can be simplified even further)
+    float theta_el = Global_Data.av.theta_elec;           // read the electrical angle
+    Global_Data.av.sector = getSectorFromThetaEl(theta_el);          // use existing function
+    sector_debug_float = (float)Global_Data.av.sector;                   // convert sector to float
+    // @@@@@@@@@@@@@@@@@@@
 
     /*
     Global_Data.av.u_ab =    Global_Data.av.u_a -   Global_Data.av.u_b;
@@ -193,8 +350,13 @@ void ISR_Control(void *data)
     Global_Data.av.i_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.i_abc_m, Global_Data.av.theta_elec);
     Global_Data.av.u_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.u_abc_m, Global_Data.av.theta_elec);
 
+    // --------------- BLDC ----------------- @@@@@
+    // DC-link current measured for the current PI controller
+    Global_Data.av.I_ph_m = Global_Data.av.I_ZK; // see line 252
 
-
+    // Here I define the actual speed in RPM
+    Global_Data.av.n_act_rpm = Global_Data.av.mechanicalRotorSpeed_filtered;
+    // -------------------------------------- @@@@@
 
 
     if (current_state==control_state)
@@ -203,9 +365,135 @@ void ISR_Control(void *data)
 
     	Global_Data.av.output_Dutycycle = uz_spwm_dq(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
 
-	   Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.output_Dutycycle.DutyCycle_A;
-	   Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.output_Dutycycle.DutyCycle_B;
-	   Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.output_Dutycycle.DutyCycle_C;
+    	// @@@@@
+
+    	if(Global_Data.av.SpeedControl){
+    		//***Speed Control (Speed -> Control Voltage)
+    		Global_Data.av.n_RPM_error = Global_Data.av.n_ref_rpm - Global_Data.av.n_act_rpm;
+    		Global_Data.av.u_BLDC_ref = uz_PI_Controller_sample(Global_Data.objects.PI_speed_only, Global_Data.av.n_ref_rpm, Global_Data.av.n_act_rpm, false);
+
+    	}
+
+    	else if(Global_Data.av.CurrentControl){
+    		// ***Current Control (Current -> Control Voltage)
+    		Global_Data.av.I_ph_error = Global_Data.av.I_ph_ref - Global_Data.av.I_ph_m;
+    		Global_Data.av.u_BLDC_ref = uz_PI_Controller_sample(Global_Data.objects.PI_current, Global_Data.av.I_ph_ref, Global_Data.av.I_ph_m, false);
+    	}
+
+    	else if(Global_Data.av.CascadeControl){
+    		//Cascade Speed-Current-Controllers (Speed -> Current -> Control Voltage)
+    		Global_Data.av.i_ref_kaskade = uz_PI_Controller_sample(Global_Data.objects.PI_speed, Global_Data.av.n_ref_rpm, Global_Data.av.n_act_rpm, false);
+    		Global_Data.av.u_BLDC_ref    = uz_PI_Controller_sample(Global_Data.objects.PI_current, Global_Data.av.i_ref_kaskade, Global_Data.av.I_ph_m, false);
+    	}
+
+    	else if(Global_Data.av.DutyCycleControl){
+    		Global_Data.av.u_BLDC_ref = Global_Data.av.U_ctrl_ref;
+    	}
+
+    	// Now we normalize the control voltage from the current PI controller by dividing it by U_ZK
+    	Global_Data.av.d_BLDC = fabs(Global_Data.av.u_BLDC_ref)/ Global_Data.av.U_ZK;
+
+    	//Global_Data.av.d_BLDC = 0.0f;
+
+    	// Duty Cycle value saturation (between 0 and 1)
+    	if (Global_Data.av.d_BLDC > 1.0f)
+    	    Global_Data.av.d_BLDC = 1.0f;
+    	else if(Global_Data.av.d_BLDC < 0.0f){
+    	    Global_Data.av.d_BLDC = 0.0f;
+    	}
+
+
+    	// Unipolar Switching Upper Switch PWM
+    	float d_a = 0.0f;
+    	float d_b = 0.0f;
+    	float d_c = 0.0f;
+
+    	// Unipolar means either the HIGH side is PWM controlled and the LOW side is either ON/OFF, or vice versa
+    	if(Global_Data.av.sector == 1){
+    		d_a = Global_Data.av.d_BLDC;
+    		// d_b = OFF
+    		d_c = 0; // this means the HIGH side is OFF and therefore the LOW side of C is ON
+    		if (Global_Data.av.u_BLDC_ref < 0.0f){
+    			d_a = 0;
+    			// d_b = OFF
+    			d_c = Global_Data.av.d_BLDC;
+    		}
+    		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, true, false);
+    	}
+
+    	else if(Global_Data.av.sector == 2){
+       		//d_a -> OFF
+       		d_b = Global_Data.av.d_BLDC;
+       		d_c = 0;
+       		if (Global_Data.av.u_BLDC_ref < 0.0f){
+           		//d_a -> OFF
+           		d_b = 0;
+           		d_c = Global_Data.av.d_BLDC;
+       		}
+       		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, false, false);
+       	}
+
+    	else if(Global_Data.av.sector == 3){
+       		d_a = 0;
+       		d_b = Global_Data.av.d_BLDC;
+       		//d_c -> Aus;
+       		if (Global_Data.av.u_BLDC_ref < 0.0f){
+           		d_a = Global_Data.av.d_BLDC;
+           		d_b = 0;
+           		//d_c -> Aus;
+       		}
+       		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, true);
+       	}
+
+    	else if(Global_Data.av.sector == 4){
+       		d_a = 0;
+       		//d_b -> Aus
+       		d_c = Global_Data.av.d_BLDC;
+       		if (Global_Data.av.u_BLDC_ref < 0.0f){
+           		d_a = Global_Data.av.d_BLDC;
+           		//d_b -> Aus
+           		d_c = 0;
+       		}
+
+       		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, true, false);
+       	}
+
+
+    	else if(Global_Data.av.sector == 5){
+       		//d_a -> Aus
+       		d_b = 0;
+       		d_c = Global_Data.av.d_BLDC;
+       		if (Global_Data.av.u_BLDC_ref < 0.0f){
+           		//d_a -> Aus
+           		d_b = Global_Data.av.d_BLDC;
+           		d_c = 0;
+       		}
+
+       		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, true, false, false);
+       	}
+
+
+    	else if(Global_Data.av.sector == 6){
+       		d_a = Global_Data.av.d_BLDC;
+       		d_b = 0;
+       		//d_c -> Aus
+       		if (Global_Data.av.u_BLDC_ref < 0.0f){
+           		d_a = 0;
+           		d_b = Global_Data.av.d_BLDC;
+           		//d_c -> Aus
+       		}
+
+       		uz_PWM_SS_2L_set_tristate(Global_Data.objects.pwm_d1_pin_0_to_5, false, false, true);
+       	}
+
+    	Global_Data.rasv.halfBridge1DutyCycle = d_a;
+    	Global_Data.rasv.halfBridge2DutyCycle = d_b;
+    	Global_Data.rasv.halfBridge3DutyCycle = d_c;
+    	// @@@@@
+
+	   //Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.output_Dutycycle.DutyCycle_A;
+	   //Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.output_Dutycycle.DutyCycle_B;
+	   //Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.output_Dutycycle.DutyCycle_C;
 
 
 

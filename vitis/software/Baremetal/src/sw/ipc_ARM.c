@@ -187,17 +187,17 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
-		data->av.i_dq_ref.d = value;
+		data->av.I_ph_ref = value; // @@@@@
 			break;
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
-		data->av.i_dq_ref.q = value;
+		data->av.U_ctrl_ref = value;
 			break;
 
 		case (Set_Send_Field_3):
 		data->av.snd_fld[3] = value;
-		//data->av.n_ref_rpm = value;
+		data->av.n_ref_rpm = value;
 			break;
 
 		case (Set_Send_Field_4):
@@ -277,15 +277,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			ultrazohm_state_machine_set_error(true);
+			//ultrazohm_state_machine_set_error(true); @@@@
+			data->av.SpeedControl = true;
 			break;
 
 		case (My_Button_2):
-			ultrazohm_state_machine_set_userLED(true);
+			//ultrazohm_state_machine_set_userLED(true); @@@@
+			data->av.CurrentControl = true;
 			break;
 
 		case (My_Button_3):
-			ultrazohm_state_machine_set_userLED(false);
+			//ultrazohm_state_machine_set_userLED(false); @@@@
+			data->av.CascadeControl = true;
 			break;
 
 		case (My_Button_4):
@@ -297,7 +300,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_6):
-
+			data->av.DutyCycleControl = true;
 			break;
 
 		case (My_Button_7):

@@ -111,6 +111,24 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t i_dq_ref;
 	uz_3ph_dq_t u_dq_ref;
 
+	// @@@@@@@
+	float d_BLDC;
+	float u_BLDC_ref;
+	int sector;
+	float n_act_rpm;
+	float n_ref_rpm;
+	float I_ph_m;
+	float i_ref_kaskade;
+	float I_ph_ref;
+	bool SpeedControl;
+	bool CurrentControl;
+	bool CascadeControl;
+	bool DutyCycleControl;
+	float U_ctrl_ref;
+	float I_ph_error;
+	float n_RPM_error;
+	// @@@@@@@
+
 	struct uz_DutyCycle_t output_Dutycycle;
 
 	uint32_t  heartbeatframe_content;
@@ -147,6 +165,9 @@ typedef struct{
 	uz_mux_axi_t* mux_axi;
 	uz_inverter_adapter_t* inverter_D1;
 	uz_CurrentControl_t* current_control;
+	uz_PI_Controller* PI_current; //@@@
+	uz_PI_Controller* PI_speed; //@@@@
+	uz_PI_Controller* PI_speed_only; //@@@@
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

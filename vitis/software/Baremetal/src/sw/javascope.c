@@ -47,7 +47,9 @@ uint32_t js_status_BareToRTOS=0;				// Contains (among other things?) the status
 
 //Initialize the Interrupt structure
 extern XIpiPsu INTCInst_IPI;  	//Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
-
+extern volatile float sector_debug_float; // @@@@@@ we can also include it in actual Values in globalData.h
+//extern volatile float i_ref_kaskade; // @@@@ 25.06
+//extern volatile float I_ph_ref; // @@@@ 25.06
 
 int JavaScope_initialize(DS_Data* data)
 {
@@ -93,7 +95,13 @@ js_ch_observable[JSO_id_ref] 					= &data->av.i_dq_ref.d;
 	js_ch_observable[JSO_d_a] 					= &data->rasv.halfBridge1DutyCycle;
 	js_ch_observable[JSO_d_b] 					= &data->rasv.halfBridge2DutyCycle;
 	js_ch_observable[JSO_d_c] 					= &data->rasv.halfBridge3DutyCycle;
-
+	js_ch_observable[JSO_SectorDebug]			= &sector_debug_float; // @@@@
+	js_ch_observable[JSO_I_ph_ref]				= &data->av.I_ph_ref;
+	js_ch_observable[JSO_n_ref_rpm]				= &data->av.n_ref_rpm;
+	js_ch_observable[JSO_u_BLDC_ref]			= &data->av.u_BLDC_ref;
+	js_ch_observable[JSO_i_ref_kaskade]			= &data->av.i_ref_kaskade; // @@@ 25.06
+	js_ch_observable[JSO_I_ph_error]			= &data->av.I_ph_error;
+	js_ch_observable[JSO_n_RPM_error]			= &data->av.n_RPM_error;
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
@@ -108,7 +116,7 @@ js_ch_observable[JSO_id_ref] 					= &data->av.i_dq_ref.d;
 	js_slowDataArray[JSSD_FLOAT_ISR_ExecTime_us] 		= &ISR_execution_time_us;
 	js_slowDataArray[JSSD_FLOAT_ISR_Period_us] 			= &ISR_period_us;
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
-
+	//js_slowDataArray[JSSD_I_ph_ref]						= &I_ph_ref; // @@@@ 25.06
 	return Status;
 }
 

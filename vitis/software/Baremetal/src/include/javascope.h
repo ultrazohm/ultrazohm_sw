@@ -56,6 +56,13 @@ enum JS_OberservableData {
 	JSO_Ld_mH,
 	JSO_Lq_mH,
 	JSO_PsiPM_mVs,
+	JSO_SectorDebug,
+	JSO_I_ph_ref,
+	JSO_n_ref_rpm,
+	JSO_u_BLDC_ref,
+	JSO_i_ref_kaskade,
+	JSO_I_ph_error,
+	JSO_n_RPM_error,
 	JSO_ENDMARKER
 };
 
@@ -133,9 +140,9 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_FLD_ZEROVALUE=0,
-	dref,
-	qref,
-	send_field_3,
+	I_ph_ref,
+	u_BLDC_ref,
+	n_ref_RPM,
 	da,
 	db,
 	dc,
@@ -160,12 +167,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	SND_LABELS_ZEROVALUE=0,
+	A,
+	V,
 	RPM,
-	Nm,
-	A,
-	A,
-	A,
-	A,
+	0-1,
+	0-1,
+	0-1,
 	-,
 	-,
 	-,
@@ -240,12 +247,12 @@ enum gui_button_mapping {
 // Do not change the first (zero) and last (end) entries.
 
 	MYBUTTONS_LABELS_ZEROVALUE=0,
-	MyButton1,
-	MyButton2,
-	MyButton3,
+	SpeedControl,
+	CurrentControl,
+	CascadeControl,
 	directDutyOn,
 	directDutyOff,
-	MyButton6,
+	DutyCycleControl,
 	MyButton7,
 	MyButton8,
 	MYBUTTONS_LABELS_ENDMARKER

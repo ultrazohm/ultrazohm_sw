@@ -71,7 +71,9 @@ const struct uz_PMSM_t config_PMSM = {
 const struct uz_PI_Controller_config config_id = {
    .Kp = 1.1f,
    .Ki = 120.0f,
-   .samplingTime_sec = 0.00005f
+   .samplingTime_sec = 0.00005f,
+   .upper_limit = 4.0f,
+   .lower_limit = -4.0f,
 };
 
 //const struct uz_PI_Controller_config config_iq = {
@@ -84,8 +86,46 @@ const struct uz_PI_Controller_config config_id = {
 const struct uz_PI_Controller_config config_iq = {
    .Kp =1.42f,
    .Ki = 95.0f,
-   .samplingTime_sec = 0.00005f
+   .samplingTime_sec = 0.00005f,
+   .upper_limit = 4.0f,
+   .lower_limit = -4.0f,
 };
+
+// @@@@@ ----------------------------------
+//PI_current for both cascade and current control (Current -> Voltage)
+const struct uz_PI_Controller_config config_PI_current = {
+   .Kp =1.42f,
+   .Ki = 95.0f,
+   .samplingTime_sec = 0.00005f,
+   .upper_limit = 12.0f, // + Vdc/2
+   .lower_limit = -12.0f, // -Vdc/2
+};
+
+
+// cascade speed PI-controller (Speed -> Current)
+const struct uz_PI_Controller_config config_PI_speed = {
+   .Kp =1.42f, // since speed is in RPM, multiply by 2pi/60
+   .Ki = 95.0f, // since speed is in RPM, multiply by 2pi/60
+   .samplingTime_sec = 0.00005f,
+   .upper_limit = 4.0f,
+   .lower_limit = -4.0f,
+};
+
+
+// only for Speed control (Speed -> Voltage)
+const struct uz_PI_Controller_config config_PI_speed_only = {
+   .Kp =1.42f, // since speed is in RPM, multiply by 2pi/60
+   .Ki = 95.0f, // since speed is in RPM, multiply by 2pi/60
+   .samplingTime_sec = 0.00005f,
+   .upper_limit = 12.0f,
+   .lower_limit = -12.0f,
+};
+
+//@@@@@ ------------------------------------
+
+
+
+
 
 const struct uz_CurrentControl_config config_current_control = {
    .decoupling_select = linear_decoupling,
@@ -150,6 +190,9 @@ int main(void)
             uz_SystemTime_init();
             JavaScope_initialize(&Global_Data);
             Global_Data.objects.current_control = uz_CurrentControl_init(config_current_control);
+            Global_Data.objects.PI_current = uz_PI_Controller_init(config_PI_current); //@@@
+            Global_Data.objects.PI_speed = uz_PI_Controller_init(config_PI_speed); //@@@
+            Global_Data.objects.PI_speed_only = uz_PI_Controller_init(config_PI_speed_only); //@@@
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

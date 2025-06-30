@@ -282,12 +282,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_3):
-		data->av.v_dqxy_ref.d = 0;
-		data->av.v_dqxy_ref.q = 0;
-		data->av.v_dqxy_ref.x = 0;
-		data->av.v_dqxy_ref.y = 0;
-		data->av.v_dq_last_ref.d = 0;
-		data->av.v_dq_last_ref.q = 0;
+		data->av.u_dqxy_ref.d = 0;
+		data->av.u_dqxy_ref.q = 0;
+		data->av.u_dqxy_ref.x = 0;
+		data->av.u_dqxy_ref.y = 0;
+		data->av.u_dq_pruef_ref.d=0;
+		data->av.u_dq_pruef_ref.q=0;
+		data->av.u_dq_last_ref.d = 0;
+		data->av.u_dq_last_ref.q = 0;
 			break;
 
 		case (My_Button_4):

@@ -69,12 +69,12 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	js_ch_observable[JSO_u_a1] 					= &data->av.v_abc_meas.a1;
-	js_ch_observable[JSO_u_a2] 					= &data->av.v_abc_meas.a2;
-	js_ch_observable[JSO_u_b1] 					= &data->av.v_abc_meas.b1;
-	js_ch_observable[JSO_u_b2] 					= &data->av.v_abc_meas.b2;
-	js_ch_observable[JSO_u_c1] 					= &data->av.v_abc_meas.c1;
-	js_ch_observable[JSO_u_c2] 					= &data->av.v_abc_meas.c2;
+	js_ch_observable[JSO_u_a1] 					= &data->av.u_abc_meas.a1;
+	js_ch_observable[JSO_u_a2] 					= &data->av.u_abc_meas.a2;
+	js_ch_observable[JSO_u_b1] 					= &data->av.u_abc_meas.b1;
+	js_ch_observable[JSO_u_b2] 					= &data->av.u_abc_meas.b2;
+	js_ch_observable[JSO_u_c1] 					= &data->av.u_abc_meas.c1;
+	js_ch_observable[JSO_u_c2] 					= &data->av.u_abc_meas.c2;
 	js_ch_observable[JSO_ia1] 					= &data->av.i_abc_meas.a1;
 	js_ch_observable[JSO_ia2] 					= &data->av.i_abc_meas.a2;
 	js_ch_observable[JSO_ib1] 					= &data->av.i_abc_meas.b2;

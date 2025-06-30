@@ -88,8 +88,9 @@ int main(void)
             initialization_chain = init_CurrentControl;
             break;
         case init_CurrentControl:
-        	Global_Data.objects.CC_dq_instance = init_dq_FOC();
-        	Global_Data.objects.CC_xy_instance = init_xy_FOC();
+        	Global_Data.objects.CC_dq_instance_Pruef = init_dq_FOC_Pruef();
+        	Global_Data.objects.CC_xy_instance_Pruef = init_xy_FOC_Pruef();
+        	Global_Data.objects.CC_dq_instance_Last = init_dq_FOC_Last();
         	initialization_chain = init_ip_cores;
         	break;
         case init_ip_cores:

@@ -128,16 +128,16 @@ typedef struct _actualValues_ {
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d3;
 	bool select_Control;
 	bool select_fixed_values;
-	uz_6ph_dq_t v_dqxy_ref;
-	uz_3ph_dq_t v_dq_pruef_ref;
+	uz_6ph_dq_t u_dqxy_ref;
+	uz_3ph_dq_t u_dq_pruef_ref;
 	uz_3ph_dq_t i_dq_last_ref;
-	uz_3ph_dq_t v_dq_last_ref;
+	uz_3ph_dq_t u_dq_last_ref;
 	uz_3ph_abc_t i_abc_last_meas;
 	uz_3ph_dq_t i_dq_last_meas;
 	uz_6ph_abc_t i_abc_meas;
-	uz_6ph_abc_t v_abc_meas;
+	uz_6ph_abc_t u_abc_meas;
 	uz_6ph_dq_t i_dqxy_meas;
-	uz_6ph_dq_t v_dqxy_meas;
+	uz_6ph_dq_t u_dqxy_meas;
 	uz_3ph_dq_t i_dq_pruef_meas;
 	uz_3ph_dq_t i_dq_pruef_ref;
 	struct uz_DutyCycle_2x3ph_t DutyCycle_output_Pruef;
@@ -181,8 +181,9 @@ typedef struct{
 	uz_inverter_adapter_t* inverter_d1;
 	uz_inverter_adapter_t* inverter_d2;
 	uz_inverter_adapter_t* inverter_d3;
-	uz_CurrentControl_t* CC_dq_instance;
-	uz_CurrentControl_t* CC_xy_instance;
+	uz_CurrentControl_t* CC_dq_instance_Pruef;
+	uz_CurrentControl_t* CC_xy_instance_Pruef;
+	uz_CurrentControl_t* CC_dq_instance_Last;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

@@ -110,6 +110,7 @@ int getSectorFromThetaEl(float theta_el_rad){
 	return sector;
 }
 
+/*
 // This section tells you which phase is HIGH (+), LOW (-) or FLOATING (0)
 typedef struct uz_kommutierungs_wert_t{
 	int a;
@@ -154,6 +155,7 @@ void kommutierungSector(int sector, uz_kommutierungs_wert_t out){
 }
 
 // vvv New from 18.06.25
+
 // code below might be useful if I decide to use a phase current as a reference current instead of the I_ZK
 void activePhase(int sector, uz_kommutierungs_wert_t out){
 	out.a = 0;
@@ -190,9 +192,10 @@ void activePhase(int sector, uz_kommutierungs_wert_t out){
 		out.c = 0;
 	}
 }
+*/
 
 // the function below simply assigns the value i_out with the value of the phase current on the HIGH-side (going into the motor).
-/*
+
 float i_ph_current_selector(int sector, float i_a, float i_b, float i_c){
 	float i_out = 0.0f;
 
@@ -216,7 +219,9 @@ float i_ph_current_selector(int sector, float i_a, float i_b, float i_c){
 	}
 	return i_out;
 }
-*/
+
+
+
 // ------------------------------- changes made am 13.06.25 above ^^^^-----------------------------------@@@@@@@@@@@
 
 
@@ -255,6 +260,8 @@ void ISR_Control(void *data)
     float theta_el = Global_Data.av.theta_elec;           // read the electrical angle
     Global_Data.av.sector = getSectorFromThetaEl(theta_el);          // use existing function
     sector_debug_float = (float)Global_Data.av.sector;                   // convert sector to float
+
+    Global_Data.av.i_high = i_ph_current_selector(Global_Data.av.sector, Global_Data.av.i_a, Global_Data.av.i_b, Global_Data.av.i_c);
     // @@@@@@@@@@@@@@@@@@@
 
     /*
@@ -352,7 +359,7 @@ void ISR_Control(void *data)
 
     // --------------- BLDC ----------------- @@@@@
     // DC-link current measured for the current PI controller
-    Global_Data.av.I_ph_m = Global_Data.av.I_ZK; // see line 252
+    Global_Data.av.I_ph_m = Global_Data.av.i_high; // see line 252
 
     // Here I define the actual speed in RPM
     Global_Data.av.n_act_rpm = Global_Data.av.mechanicalRotorSpeed_filtered;

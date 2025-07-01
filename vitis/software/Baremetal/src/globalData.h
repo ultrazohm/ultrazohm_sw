@@ -127,6 +127,7 @@ typedef struct _actualValues_ {
 	float U_ctrl_ref;
 	float I_ph_error;
 	float n_RPM_error;
+	float i_high;
 	// @@@@@@@
 
 	struct uz_DutyCycle_t output_Dutycycle;

@@ -106,7 +106,7 @@ uz_NN_acc_t *uz_NN_acc_init(struct uz_NN_acc_config_t config, uz_matrix_t const 
         uz_NN_acc_hw_set_L_Output_Weights_Data(config.base_address, weights[i]->data);
         uz_NN_acc_hw_set_L_Output_Bias_Data(config.base_address, biases[i]->data);
         uz_assert(weights[self->number_of_hidden_layers]->columns <= MAX_SIZE_ACTIONS);
-        self->output_activation_function = uz_nn_get_activation_function(config.software_network, i);
+        self->output_activation_function = uz_nn_get_activation_function(config.software_network, i+1U);
     }
 }
     self->config = config;

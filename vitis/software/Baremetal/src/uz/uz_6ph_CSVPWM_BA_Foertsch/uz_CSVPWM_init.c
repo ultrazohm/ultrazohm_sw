@@ -1,16 +1,215 @@
 #include "uz_CSVPWM_init.h"
 
-uz_cmp_signal CSVPWM_24_2L_1ML_1M_v1(u_ref_6ph_alphabeta_t input_parameter, float U_ZK){
+#define MAKRO_INVERT_DUTYCYCLE(val) (1.0f - (val))
+
+
+void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2);
+
+output CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK){
+
+	output out = {0};
+	int i = 0, j = 0;
+	int current_sector1_24 = 0;
+
+	float SV_angle = atan2(inputdata.alpha, inputdata.beta);
+	SV_angle = fmod(SV_angle, 2*M_PI);
+
+	current_sector1_24  = (int)floor(SV_angle / (M_PI / 12.0)) + 1;
+
+
+	uz_inv_Ttv_sec_Matrix inv_Ttv;
+
+	for (i = 0; i<5; i++){
+		for(j = 0; j<5; j++){
+			inv_Ttv[i][j] = (1/U_ZK) * paramspwm.inv_Ttv_sec_Matrix[current_sector1_24 - 1][i][j];
+		}
+	}
+
+	int Tsw = 1;
+
+
+	float T_V1 = inv_Ttv[0][0]*inputdata.alpha + inv_Ttv[0][1]*inputdata.beta + inv_Ttv[0][2]*inputdata.x + inv_Ttv[0][3]*inputdata.y;
+	float T_V2 = inv_Ttv[1][0]*inputdata.alpha + inv_Ttv[1][1]*inputdata.beta + inv_Ttv[1][2]*inputdata.x + inv_Ttv[1][3]*inputdata.y;
+	float T_V3 = inv_Ttv[2][0]*inputdata.alpha + inv_Ttv[2][1]*inputdata.beta + inv_Ttv[2][2]*inputdata.x + inv_Ttv[2][3]*inputdata.y;
+	float T_V4 = inv_Ttv[3][0]*inputdata.alpha + inv_Ttv[3][1]*inputdata.beta + inv_Ttv[3][2]*inputdata.x + inv_Ttv[3][3]*inputdata.y;
+	float T_V0 = Tsw - T_V1 - T_V2 - T_V3 - T_V4;
+
+	int S_V01 = paramspwm.sector_sv[current_sector1_24 - 1].first;
+	int S_V1 = paramspwm.sector_sv[current_sector1_24 - 1].second;
+	int S_V2 = paramspwm.sector_sv[current_sector1_24 - 1].third;
+	int S_V3 = paramspwm.sector_sv[current_sector1_24 - 1].fourth;
+	int S_V4 = paramspwm.sector_sv[current_sector1_24 - 1].fifth;
+	int S_V02 = paramspwm.sector_sv[current_sector1_24 - 1].sixth;
+
+
+	float Duty_Cycles[6] = {0};
+
+	for(i=0;i<6; i++){
+		Duty_Cycles[i] = T_V1 * paramspwm.SV_64[S_V1][i] + T_V2 * paramspwm.SV_64[S_V2][i] + T_V3 * paramspwm.SV_64[S_V3][i] + T_V4 * paramspwm.SV_64[S_V4][i] + (T_V0/2) * paramspwm.SV_64[64][i];
+	}
+
+
+
+	// Begrenzung
+		if (Duty_Cycles[0] > 1.0f) {
+			Duty_Cycles[0] = 1.0f;
+		} else if (Duty_Cycles[0] < 0.0f) {
+			Duty_Cycles[0] = 0.0f;
+		};
+
+		if (Duty_Cycles[1] > 1.0f) {
+			Duty_Cycles[1] = 1.0f;
+		} else if (Duty_Cycles[1] < 0.0f) {
+			Duty_Cycles[1] = 0.0f;
+		};
+
+		if (Duty_Cycles[2] > 1.0f) {
+			Duty_Cycles[2] = 1.0f;
+		} else if (Duty_Cycles[2] < 0.0f) {
+			Duty_Cycles[2] = 0.0f;
+		};
+
+		if (Duty_Cycles[3] > 1.0f) {
+			Duty_Cycles[3] = 1.0f;
+		} else if (Duty_Cycles[3] < 0.0f) {
+			Duty_Cycles[3] = 0.0f;
+		};
+
+		if (Duty_Cycles[4] > 1.0f) {
+			Duty_Cycles[4] = 1.0f;
+		} else if (Duty_Cycles[4] < 0.0f) {
+			Duty_Cycles[4] = 0.0f;
+		};
+
+		if (Duty_Cycles[5] > 1.0f) {
+			Duty_Cycles[5] = 1.0f;
+		} else if (Duty_Cycles[5] < 0.0f) {
+			Duty_Cycles[5] = 0.0f;
+		};
+
+
+
+	uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles[0], current_sector1_24, &out.shift_system1, &out.shift_system2);
+
+	out.Dutycycles.system1.DutyCycle_A = Duty_Cycles[0];
+	out.Dutycycles.system1.DutyCycle_B = Duty_Cycles[1];
+	out.Dutycycles.system1.DutyCycle_C = Duty_Cycles[2];
+	out.Dutycycles.system2.DutyCycle_A = Duty_Cycles[3];
+	out.Dutycycles.system2.DutyCycle_B = Duty_Cycles[4];
+	out.Dutycycles.system2.DutyCycle_C = Duty_Cycles[5];
+
+
+	return out;
+
+
+	void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2){
+	    switch (sector){
+	        // shift system 2 and invert its DutyCycles
+	        case  1:
+	        case  2:
+	        case  9:
+	        case 10:
+	        case 17:
+	        case 18:
+	            *shift_system_1 = 0.0f;
+	            *shift_system_2 = 0.5f;
+	            Duty_Cycles[3] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[3]);
+	            Duty_Cycles[4] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[4]);
+	            Duty_Cycles[5] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[5]);
+	            break;
+	        // shift system 1 and invert its DutyCycles
+	        case  5:
+	        case  6:
+	        case 13:
+	        case 14:
+	        case 21:
+	        case 22:
+	            *shift_system_1 = 0.5f;
+	            *shift_system_2 = 0.0f;
+	            Duty_Cycles[0] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[0]);
+	            Duty_Cycles[1] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[1]);
+	            Duty_Cycles[2] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[2]);
+	            break;
+	        // shift both systems and invert both DutyCycles
+	        case  7:
+	        case  8:
+	        case 15:
+	        case 16:
+	        case 23:
+	        case 24:
+	            *shift_system_1 = 0.5f;
+	            *shift_system_2 = 0.5f;
+	            Duty_Cycles[0] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[0]);
+	            Duty_Cycles[1] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[1]);
+	            Duty_Cycles[2] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[2]);
+	            Duty_Cycles[3] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[3]);
+	            Duty_Cycles[4] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[4]);
+	            Duty_Cycles[5] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[5]);
+	            break;
+	        // do nothing, no shift
+	        default:
+	        case  3:
+	        case  4:
+	        case 11:
+	        case 12:
+	        case 19:
+	        case 20:
+	            *shift_system_1 = 0.0f;
+	            *shift_system_2 = 0.0f;
+	            break;
+	    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*uz_cmp_signal CSVPWM_24_2L_1ML_1M_v1(u_ref_6ph_alphabeta_t inputdata, float U_ZK){
 
 	uz_cmp_signal cmp_signals = {0}; // Setzt alle Compare Signale auf Null
 
 	int current_sector1_24 = 0;
 	float a_A = 0, a_B = 0, a_C = 0, a_X = 0, a_Y = 0, a_Z = 0;
 
-	SV_angle = atan2(input_parameter.alpha, input_parameter.beta);
+	SV_angle = atan2(inputdata.alpha, inputdata.beta);
 	SV_angle = mod(SV_angle, 2*M_PI);
 
-	current_sector1_24  = (int)floor(SV_angle / (M_PI / 12.0)) + 1;
+	int current_sector1_24  = (int)floor(SV_angle / (M_PI / 12.0)) + 1;
 
 
 	uz_sector_sv sector_sv[24] = {
@@ -241,14 +440,14 @@ uz_cmp_signal CSVPWM_24_2L_1ML_1M_v1(u_ref_6ph_alphabeta_t input_parameter, floa
 	};
 
 
-	uz_inv_Ttv_sec_Matrix invTtv = (1/U_ZK) * inv_Ttv_sec_Matrix[current_sector1_24];
+	uz_inv_Ttv_sec_Matrix inv_Ttv = (1/U_ZK) * inv_Ttv_sec_Matrix[current_sector1_24];
 
 	float Tsw = 1; //normierung der gesamten Schaltzeit auf 1
 
-	float T_V1 = invTtv[0][0]*input_parameter.alpha + invTtv[0][1]*input_parameter.beta + invTtv[0][2]*input_parameter.x + invTtv[0][3]*input_parameter.y;
-	float T_V2 = invTtv[1][0]*input_parameter.alpha + invTtv[1][1]*input_parameter.beta + invTtv[1][2]*input_parameter.x + invTtv[1][3]*input_parameter.y;
-	float T_V3 = invTtv[2][0]*input_parameter.alpha + invTtv[2][1]*input_parameter.beta + invTtv[2][2]*input_parameter.x + invTtv[2][3]*input_parameter.y;
-	float T_V4 = invTtv[3][0]*input_parameter.alpha + invTtv[3][1]*input_parameter.beta + invTtv[3][2]*input_parameter.x + invTtv[3][3]*input_parameter.y;
+	float T_V1 = inv_Ttv[0][0]*inputdata.alpha + inv_Ttv[0][1]*inputdata.beta + inv_Ttv[0][2]*inputdata.x + inv_Ttv[0][3]*inputdata.y;
+	float T_V2 = inv_Ttv[1][0]*inputdata.alpha + inv_Ttv[1][1]*inputdata.beta + inv_Ttv[1][2]*inputdata.x + inv_Ttv[1][3]*inputdata.y;
+	float T_V3 = inv_Ttv[2][0]*inputdata.alpha + inv_Ttv[2][1]*inputdata.beta + inv_Ttv[2][2]*inputdata.x + inv_Ttv[2][3]*inputdata.y;
+	float T_V4 = inv_Ttv[3][0]*inputdata.alpha + inv_Ttv[3][1]*inputdata.beta + inv_Ttv[3][2]*inputdata.x + inv_Ttv[3][3]*inputdata.y;
 	float T_V0 = Tsw - T_V1 - T_V2 - T_V3 - T_V4;
 
 	//Berechnung Dutycycles
@@ -343,3 +542,4 @@ uz_cmp_signal CSVPWM_24_2L_1ML_1M_v1(u_ref_6ph_alphabeta_t input_parameter, floa
 	return cmp_signals;
 
 };
+*/

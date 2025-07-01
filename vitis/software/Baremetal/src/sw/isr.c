@@ -31,7 +31,7 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_based_pwm.h"
-
+#include "uz_CSVPWM_init.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_pwm_3ph.h"
 
@@ -438,7 +438,8 @@ void ISR_Control(void *data)
 		break;
    	case 40:
    		Global_Data.av.DutyCycle_6ph_test =   uz_Dual_GDPWM_alphabeta_6ph_V2(Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.phi_rad, Global_Data.av.U_ZK);
-
+   	case 41:
+   		Global_Data.av.DutyCycle_6ph_test = CSVPWM_24_2L_1ML_1M_v1(Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
    	default:
 
    		break;

@@ -141,7 +141,6 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t i_dq_pruef_meas;
 	uz_3ph_dq_t i_dq_pruef_ref;
 	struct uz_DutyCycle_2x3ph_t DutyCycle_output_Pruef;
-	struct uz_svm_asym_6ph_CSVPWM24_out svm_out;
 	struct uz_DutyCycle_t DutyCycle_output_Last;
 	float button;
 	float error;

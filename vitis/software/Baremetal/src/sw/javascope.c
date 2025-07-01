@@ -77,8 +77,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_u_c2] 					= &data->av.u_abc_meas.c2;
 	js_ch_observable[JSO_ia1] 					= &data->av.i_abc_meas.a1;
 	js_ch_observable[JSO_ia2] 					= &data->av.i_abc_meas.a2;
-	js_ch_observable[JSO_ib1] 					= &data->av.i_abc_meas.b2;
-	js_ch_observable[JSO_ib2] 					= &data->av.i_abc_meas.b1;
+	js_ch_observable[JSO_ib1] 					= &data->av.i_abc_meas.b1;
+	js_ch_observable[JSO_ib2] 					= &data->av.i_abc_meas.b2;
 	js_ch_observable[JSO_ic1] 					= &data->av.i_abc_meas.c1;
 	js_ch_observable[JSO_ic2] 					= &data->av.i_abc_meas.c2;
 	js_ch_observable[JSO_i_a] 					= &data->av.i_a_Last;
@@ -89,8 +89,8 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_u_c] 					= &data->av.u_c_Last;
 	js_ch_observable[JSO_i_dc1] 				= &data->av.i_dc1;
 	js_ch_observable[JSO_i_dc2] 				= &data->av.i_dc2;
-	js_ch_observable[JSO_v_dc1] 				= &data->av.u_dc1;
-	js_ch_observable[JSO_v_dc2] 				= &data->av.u_dc2;
+	js_ch_observable[JSO_u_dc1] 				= &data->av.u_dc1;
+	js_ch_observable[JSO_u_dc2] 				= &data->av.u_dc2;
 	js_ch_observable[JSO_Theta_el_Last] 		= &(data->av.theta_elec_Last);
 	js_ch_observable[JSO_Theta_el_Pruef] 		= &(data->av.theta_elec_Pruef);
 	js_ch_observable[JSO_Theta_mech_Last] 		= &(data->av.theta_mech_Last);

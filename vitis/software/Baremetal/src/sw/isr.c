@@ -275,12 +275,6 @@ void ISR_Control(void *data)
 
     	if(Global_Data.av.select_fixed_values == true){
 
-    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_A = Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_A;
-    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_B = Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_B;
-    		Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_C = Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_C;
-    		Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_A = Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_A;
-    	    Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_B = Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_B;
-    	    Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_C = Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_C;
     		Global_Data.rasv.halfBridge1DutyCycle = Global_Data.av.DutyCycle_output_Last.DutyCycle_A;
     		Global_Data.rasv.halfBridge2DutyCycle = Global_Data.av.DutyCycle_output_Last.DutyCycle_B;
     		Global_Data.rasv.halfBridge3DutyCycle = Global_Data.av.DutyCycle_output_Last.DutyCycle_C;
@@ -315,12 +309,10 @@ void ISR_Control(void *data)
 		Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_A = Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_B =Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_C =	Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_A = Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_B = Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_C =0;
 		Global_Data.av.u_dqxy_ref.d = Global_Data.av.u_dqxy_ref.q = Global_Data.av.u_dqxy_ref.x = Global_Data.av.u_dqxy_ref.y = 0;
     }
-    // DutyCycles Lastmaschine setzen
-    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, dutycyc_last.DutyCycle_A, dutycyc_last.DutyCycle_B, dutycyc_last.DutyCycle_C);
+    // assign DutyCycles Lastmaschine
+    uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, dutycyc_last.DutyCycle_A, dutycyc_last.DutyCycle_B, dutycyc_last.DutyCycle_C);
 
     // assign Duty Cycles Prüfling
-    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_A, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_B, Global_Data.av.svm_out.Duty_Cycle.system2.DutyCycle_C);
-    //uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_A, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_B, Global_Data.av.svm_out.Duty_Cycle.system1.DutyCycle_C);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_A, Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_B, Global_Data.av.DutyCycle_output_Pruef.system1.DutyCycle_C);
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_A, Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_B, Global_Data.av.DutyCycle_output_Pruef.system2.DutyCycle_C);
 

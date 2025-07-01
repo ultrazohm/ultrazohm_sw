@@ -220,15 +220,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_9):
-		data->av.DutyCycle_output_Last.DutyCycle_A = value;
+		//data->av.DutyCycle_output_Last.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_10):
-		data->av.DutyCycle_output_Last.DutyCycle_B = value;
+		//data->av.DutyCycle_output_Last.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_11):
-		data->av.DutyCycle_output_Last.DutyCycle_C = value;
+		//data->av.DutyCycle_output_Last.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_12):

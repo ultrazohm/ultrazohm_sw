@@ -29,7 +29,7 @@ struct uz_resolverIP_config_t resolverIP_config_Pruef = {
         .freq_clockin = CRYSTAL_FREQUENCY,
         .pole_pairs_machine = 5.0f,
         .pole_pairs_resolver = 1.0f,
-        .zero_position_mechanical = 6.118,
+        .zero_position_mechanical = 5.572,
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
 

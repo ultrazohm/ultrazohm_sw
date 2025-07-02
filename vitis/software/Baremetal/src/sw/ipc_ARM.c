@@ -188,6 +188,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		uz_axi_write_uint32(XPAR_UZ_USER_UZ_SSI_INTERFACE_1_BASEADDR + 0x13C, (uint32_t)(value));
 			break;
 
 		case (Set_Send_Field_2):

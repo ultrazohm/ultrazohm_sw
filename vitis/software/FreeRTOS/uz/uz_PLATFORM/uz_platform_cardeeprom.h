@@ -8,6 +8,7 @@
 
 //// EEPROMs of adapter cards (UZohm)
 #define UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE	(0x50U)
+#define UZ_PLATFORM_I2CADDR_UZCARDEEPROM_D1ST	(0x53U)		// Address of EEPROM on 1st D adapter card (D1)
 #define UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST	(0x57U)
 
 // Define _enum2label() only when included from uz_platform.c
@@ -64,6 +65,20 @@
 // Define card helpers only when included from uz_platform.c
 #ifdef UZ_PLATFORM_C
 
+ char uz_platform_getcardtype(uint8_t slot) {
+	 uint8_t cardeeprom_i2caddr = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + slot;
+
+	 if (cardeeprom_i2caddr > UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST) {
+		 uz_printf("Invalid slot (%i)\r\n", slot);
+		 return('?');
+	 }
+
+	 if ( UZ_PLATFORM_I2CADDR_UZCARDEEPROM_D1ST > cardeeprom_i2caddr )
+		 return('A');
+	 else
+		 return('D');
+ }
+
  void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin) {
 	if ( (slot < 3) || (slot > 7) ) {
 		uz_printf("Invalid D slot (%i)\r\n", slot);
@@ -84,6 +99,7 @@
  }
 
 #else
+ char uz_platform_getcardtype(uint8_t slot);
  void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin);
 #endif
 

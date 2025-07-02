@@ -4,7 +4,7 @@
 #include "init_network_ip_core.h"
 extern DS_Data Global_Data;
 
-#define NUMBER_OF_INPUTS 16U
+#define NUMBER_OF_INPUTS 20U
 #define NUMBER_OF_NEURONS_IN_FIRST_LAYER 64U
 #define NUMBER_OF_NEURONS_IN_SECOND_LAYER 64U
 #define NUMBER_OF_NEURONS_IN_THIRD_LAYER 64U

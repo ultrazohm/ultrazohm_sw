@@ -12,7 +12,6 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
-#include "uz_CSVPWM_init.h"
 #include "../include/isr.h"
 #include "../defines.h"
 #include "../main.h"
@@ -31,7 +30,8 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_based_pwm.h"
-#include "uz_CSVPWM_init.h"
+//#include "../uz/uz_6ph_SVPWM_BA_Foertsch/uz_SVPWM_6ph_init.h"
+#include "../uz/uz_6ph_SVPWM_BA_Foertsch/uz_SVPWM_6ph_params.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_pwm_3ph.h"
 
@@ -439,7 +439,7 @@ void ISR_Control(void *data)
    	case 40:
    		Global_Data.av.DutyCycle_6ph_test =   uz_Dual_GDPWM_alphabeta_6ph_V2(Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.phi_rad, Global_Data.av.U_ZK);
    	case 41:
-   		Global_Data.av.DutyCycle_6ph_test = CSVPWM(CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
+   		Global_Data.av.DutyCycle_6ph_test = uz_SVPWM_6ph(CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
    	default:
 
    		break;
@@ -786,7 +786,7 @@ void ISR_Control(void *data)
        }
 
        uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.shift_system_1, Global_Data.av.shift_system_1, Global_Data.av.shift_system_1);
-       uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.shift_system_2, Global_Data.av.shift_system_2, Global_Data.av.shift_system_2);
+       uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, Global_Data.av.shift_system_2, Global_Data.av.shift_system_2, Global_Data.av.shift_system_2); //offset PWM verfahren
 
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

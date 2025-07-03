@@ -1,13 +1,14 @@
-#include "uz_CSVPWM_init.h"
-
-#define MAKRO_INVERT_DUTYCYCLE(val) (1.0f - (val))
+/*#include "uz_CSVPWM_init.h"
 
 
-void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2, uz_sector_sv Zeiger[24]);
 
-output CSVPWM(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK){
 
-	output out = {0};
+struct uz_DutyCycle_2x3ph_t uz_SVPWM_6ph(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK){
+
+	float upper_limit = 1.0f;
+	float lower_limit = 0.0f;
+
+	struct uz_DutyCycle_2x3ph_t out = {0};
 	int i = 0, j = 0;
 	int current_sector1_24 = 0;
 
@@ -45,12 +46,14 @@ output CSVPWM(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U
 	float Duty_Cycles[6] = {0};
 
 	for(i=0;i<6; i++){
-		Duty_Cycles[i] = T_V1 * paramspwm.SV_64[S_V1][i] + T_V2 * paramspwm.SV_64[S_V2][i] + T_V3 * paramspwm.SV_64[S_V3][i] + T_V4 * paramspwm.SV_64[S_V4][i] + (T_V0/2) * paramspwm.SV_64[64][i];
-	}
-
-
-
+		Duty_Cycles[i] = TV0/2 * paramspwm.SV_64[SV_01] + T_V1 * paramspwm.SV_64[S_V1][i] + T_V2 * paramspwm.SV_64[S_V2][i] + T_V3 * paramspwm.SV_64[S_V3][i] + T_V4 * paramspwm.SV_64[S_V4][i] + (T_V0/2) * paramspwm.SV_64[SV_02][i];
+		};
 	// Begrenzung
+	for(i=0;i<6; i++){
+			Duty_Cycles[i] = uz_signals_saturation(Duty_Cycles[i], upper_limit, lower_limit);
+		};
+
+	// Begrenzung Besser Satuaration funktion verwenden float uz_signals_saturation(float input, float upper_limit, float lower_limit); aus uz_signals.c
 		if (Duty_Cycles[0] > 1.0f) {
 			Duty_Cycles[0] = 1.0f;
 		} else if (Duty_Cycles[0] < 0.0f) {
@@ -89,55 +92,50 @@ output CSVPWM(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U
 
 
 
-	uz_svm_6ph_calculate_and_shift_duty_cycles(&Duty_Cycles[0], current_sector1_24, &out.shift_system1, &out.shift_system2);
+	uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm.sector_sv);
 
-	out.Dutycycles.system1.DutyCycle_A = Duty_Cycles[0];
-	out.Dutycycles.system1.DutyCycle_B = Duty_Cycles[1];
-	out.Dutycycles.system1.DutyCycle_C = Duty_Cycles[2];
-	out.Dutycycles.system2.DutyCycle_A = Duty_Cycles[3];
-	out.Dutycycles.system2.DutyCycle_B = Duty_Cycles[4];
-	out.Dutycycles.system2.DutyCycle_C = Duty_Cycles[5];
+	out.system1.DutyCycle_A = Duty_Cycles[0];
+	out.system1.DutyCycle_B = Duty_Cycles[1];
+	out.system1.DutyCycle_C = Duty_Cycles[2];
+	out.system2.DutyCycle_A = Duty_Cycles[3];
+	out.system2.DutyCycle_B = Duty_Cycles[4];
+	out.system2.DutyCycle_C = Duty_Cycles[5];
 
 
-	return out.Dutycycles;
+	return out;
 };
 
-	void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2, uz_sector_sv Zeiger[24]){
+	void uz_svm_6ph_calculate_and_shift_duty_cycles(int sector, uz_sector_sv Zeiger[24]){
+		float shift_system_1 = 0.0f;
+		float shift_system_2 = 0.0f;
 	    switch (Zeiger[sector].first){
-	        // shift system 2 and invert its DutyCycles
+	        // shift system 2
 	        case  56:
-	            *shift_system_1 = 0.0f;
-	            *shift_system_2 = 0.5f;
-	            Duty_Cycles[3] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[3]);
-	            Duty_Cycles[4] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[4]);
-	            Duty_Cycles[5] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[5]);
+	            shift_system_1 = 0.0f;
+	            shift_system_2 = 0.5f;
+
 	            break;
-	        // shift system 1 and invert its DutyCycles
+	        // shift system 1
 	        case  7:
-	            *shift_system_1 = 0.5f;
-	            *shift_system_2 = 0.0f;
-	            Duty_Cycles[0] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[0]);
-	            Duty_Cycles[1] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[1]);
-	            Duty_Cycles[2] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[2]);
+	            shift_system_1 = 0.5f;
+	            shift_system_2 = 0.0f;
+
 	            break;
-	        // shift both systems and invert both DutyCycles
+	        // shift both systems
 	        case  63:
-	            *shift_system_1 = 0.5f;
-	            *shift_system_2 = 0.5f;
-	            Duty_Cycles[0] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[0]);
-	            Duty_Cycles[1] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[1]);
-	            Duty_Cycles[2] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[2]);
-	            Duty_Cycles[3] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[3]);
-	            Duty_Cycles[4] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[4]);
-	            Duty_Cycles[5] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[5]);
+	            shift_system_1 = 0.5f;
+	            shift_system_2 = 0.5f;
+
 	            break;
 	        // do nothing, no shift
 	        default:
 	        case  0:
-	            *shift_system_1 = 0.0f;
-	            *shift_system_2 = 0.0f;
+	            shift_system_1 = 0.0f;
+	            shift_system_2 = 0.0f;
 	            break;
 	    }
+	    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, shift_system_1, shift_system_1, shift_system_1);
+	    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, shift_system_2, shift_system_2, shift_system_2);
 	};
 
 

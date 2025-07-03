@@ -3,9 +3,9 @@
 #define MAKRO_INVERT_DUTYCYCLE(val) (1.0f - (val))
 
 
-void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2);
+void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2, uz_sector_sv Zeiger[24]);
 
-output CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK){
+output CSVPWM(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK){
 
 	output out = {0};
 	int i = 0, j = 0;
@@ -99,18 +99,13 @@ output CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63(SVMPWM_Parameters paramspwm, uz_
 	out.Dutycycles.system2.DutyCycle_C = Duty_Cycles[5];
 
 
-	return out;
+	return out.Dutycycles;
+};
 
-
-	void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2){
-	    switch (sector){
+	void uz_svm_6ph_calculate_and_shift_duty_cycles(float Duty_Cycles[6], int sector, float *shift_system_1, float *shift_system_2, uz_sector_sv Zeiger[24]){
+	    switch (Zeiger[sector].first){
 	        // shift system 2 and invert its DutyCycles
-	        case  1:
-	        case  2:
-	        case  9:
-	        case 10:
-	        case 17:
-	        case 18:
+	        case  56:
 	            *shift_system_1 = 0.0f;
 	            *shift_system_2 = 0.5f;
 	            Duty_Cycles[3] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[3]);
@@ -118,12 +113,7 @@ output CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63(SVMPWM_Parameters paramspwm, uz_
 	            Duty_Cycles[5] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[5]);
 	            break;
 	        // shift system 1 and invert its DutyCycles
-	        case  5:
-	        case  6:
-	        case 13:
-	        case 14:
-	        case 21:
-	        case 22:
+	        case  7:
 	            *shift_system_1 = 0.5f;
 	            *shift_system_2 = 0.0f;
 	            Duty_Cycles[0] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[0]);
@@ -131,12 +121,7 @@ output CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63(SVMPWM_Parameters paramspwm, uz_
 	            Duty_Cycles[2] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[2]);
 	            break;
 	        // shift both systems and invert both DutyCycles
-	        case  7:
-	        case  8:
-	        case 15:
-	        case 16:
-	        case 23:
-	        case 24:
+	        case  63:
 	            *shift_system_1 = 0.5f;
 	            *shift_system_2 = 0.5f;
 	            Duty_Cycles[0] = MAKRO_INVERT_DUTYCYCLE(Duty_Cycles[0]);
@@ -148,17 +133,12 @@ output CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63(SVMPWM_Parameters paramspwm, uz_
 	            break;
 	        // do nothing, no shift
 	        default:
-	        case  3:
-	        case  4:
-	        case 11:
-	        case 12:
-	        case 19:
-	        case 20:
+	        case  0:
 	            *shift_system_1 = 0.0f;
 	            *shift_system_2 = 0.0f;
 	            break;
 	    }
-
+	};
 
 
 

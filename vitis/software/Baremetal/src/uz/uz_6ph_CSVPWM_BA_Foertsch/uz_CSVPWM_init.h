@@ -38,8 +38,8 @@ typedef struct{
 
 typedef struct{
 	struct uz_DutyCycle_2x3ph_t Dutycycles;
-	float shift_system1;
-	float shift_system2;
+	//float shift_system1;
+	//float shift_system2;
 }output;
 
 typedef struct{
@@ -298,6 +298,6 @@ SVMPWM_Parameters CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters = {
 
 
 
-output CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK);
+output CSVPWM(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK);
 
 uz_cmp_signal CSVPWM_24_2L_1ML_1M_v1(uz_6ph_alphabeta_t input_parameter, float U_ZK);

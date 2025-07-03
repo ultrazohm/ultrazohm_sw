@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  ******************************************************************************/
-
+#include "uz_CSVPWM_init.h"
 #include "../include/isr.h"
 #include "../defines.h"
 #include "../main.h"
@@ -439,7 +439,7 @@ void ISR_Control(void *data)
    	case 40:
    		Global_Data.av.DutyCycle_6ph_test =   uz_Dual_GDPWM_alphabeta_6ph_V2(Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.phi_rad, Global_Data.av.U_ZK);
    	case 41:
-   		Global_Data.av.DutyCycle_6ph_test = CSVPWM_24_2L_1ML_1M_v1(Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
+   		Global_Data.av.DutyCycle_6ph_test = CSVPWM(CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
    	default:
 
    		break;

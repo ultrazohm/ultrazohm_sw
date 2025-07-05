@@ -219,13 +219,14 @@ static struct uz_rlcc_config_t config_rlc_beckhoff_deskbench_d2 = {
     .ts_in_second = 1.0f / 10000.0f,
     .number_of_observations = 9, // 9
     .max_modulation_index = 1.0f / 1.732050808f,
-#ifdef USE_TWO_MAX_OUTPUT_SCALE
-    .v_dc_rated_V = 2.0*48.0f,
-#else
     .v_dc_rated_V = 48.0f,
+#ifdef USE_TWO_MAX_OUTPUT_SCALE
+    .output_multiplier = 2.0f,
+#else
+    .output_multiplier = 1.0f,
 #endif
     .i_rated_A = 8.0f,
-    .speed_rated_rpm = 1000.0f*4.0f,
+    .speed_rated_rpm = 1000.0f * 4.0f,
     .use_ip_core = false};
 #endif
 

@@ -15,6 +15,7 @@ struct uz_rlcc_config_t
     float v_dc_rated_V;
     float i_rated_A;
     float speed_rated_rpm;
+    float output_multiplier;
     uint32_t number_of_observations; // 9
     bool use_ip_core;
     uint32_t base_address;

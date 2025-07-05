@@ -69,8 +69,8 @@ uz_rlcc_t *uz_rlcc_init(struct uz_rlcc_config_t config, struct uz_nn_layer_confi
 
     self->current_scaling_1_by_nominal = 1.0f / self->config.i_rated_A;
     self->speed_scaling_1_by_nominal_omega_el = 1.0f / (self->config.speed_rated_rpm / 60.0f * 2.0f * UZ_PIf);
-    self->voltage_scaling_ouput = self->config.v_dc_rated_V * self->config.max_modulation_index;
-    self->voltage_scaling_observation = 1.0f / self->voltage_scaling_ouput;
+    self->voltage_scaling_ouput = self->config.output_multiplier * self->config.v_dc_rated_V * self->config.max_modulation_index;
+    self->voltage_scaling_observation = 1.0f / (self->config.v_dc_rated_V * self->config.max_modulation_index);
 
     if (self->config.use_ip_core)
     {

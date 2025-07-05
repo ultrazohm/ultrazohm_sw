@@ -437,7 +437,7 @@ static struct uz_nn_layer_config config_nn[2] = {
 
 static struct uz_rlcc_config_t config_rlc_buehler = {
     .ts_in_second = 1.0f / 10000.0f,
-    .number_of_observations = 9, // 9
+    .number_of_observations = NUMBER_OF_INPUTS, // 9
     .max_modulation_index = 1.0f / 1.732050808f,
     .v_dc_rated_V = 48.0f,
 #ifdef USE_TWO_MAX_OUTPUT_SCALE

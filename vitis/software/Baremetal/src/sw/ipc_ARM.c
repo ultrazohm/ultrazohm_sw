@@ -186,57 +186,66 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_1):
-		data->av.DutyCycle_output_Pruef.system1.DutyCycle_A = value;
+		data->rasv.n_mech_Last_soll = value;
+		//data->av.snd_fld[1] = value;
 			break;
 
 		case (Set_Send_Field_2):
-		data->av.DutyCycle_output_Pruef.system2.DutyCycle_A = value;
+		data->rasv.i_dq_6ph_Pruef_soll.d = value;
+		//data->av.snd_fld[2] = value;
 			break;
 
 		case (Set_Send_Field_3):
-		data->av.DutyCycle_output_Pruef.system1.DutyCycle_B = value;
+		data->rasv.i_dq_6ph_Pruef_soll.q = value;
+		//data->av.snd_fld[3] = value;
 			break;
 
 		case (Set_Send_Field_4):
-		data->av.DutyCycle_output_Pruef.system2.DutyCycle_B = value;
-
+		data->rasv.i_dq_6ph_Pruef_soll.x = value;
+		//data->av.snd_fld[4] = value;
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.DutyCycle_output_Pruef.system1.DutyCycle_C = value;
-
+		data->rasv.i_dq_6ph_Pruef_soll.y = value;
+		//data->av.snd_fld[5] = value;
 			break;
 
 		case (Set_Send_Field_6):
-		data->av.DutyCycle_output_Pruef.system2.DutyCycle_C = value;
+		data->av.snd_fld[6] = value;
 			break;
 
 		case (Set_Send_Field_7):
-		data->av.i_dq_pruef_ref.d = value;
+		data->rasv.i_dq_3ph_Last_soll.d = value;
 			break;
 
 		case (Set_Send_Field_8):
-		data->av.i_dq_pruef_ref.q = value;
+		data->rasv.i_dq_3ph_Last_soll.q = value;
+		//data->av.snd_fld[8] = value;
 			break;
 
 		case (Set_Send_Field_9):
-		//data->av.DutyCycle_output_Last.DutyCycle_A = value;
+		data->rasv.i_dq_6ph_Pruef_soll.d = value;
+		//data->av.snd_fld[9] = value;
 			break;
 
 		case (Set_Send_Field_10):
-		//data->av.DutyCycle_output_Last.DutyCycle_B = value;
+		data->rasv.i_dq_6ph_Pruef_soll.q = value;
+		//data->av.snd_fld[10] = value;
 			break;
 
 		case (Set_Send_Field_11):
-		//data->av.DutyCycle_output_Last.DutyCycle_C = value;
+		data->rasv.i_dq_6ph_Pruef_soll.x = value;
+		//data->av.snd_fld[11] = value;
 			break;
 
 		case (Set_Send_Field_12):
-		data->av.i_dq_last_ref.d = value;
+		data->rasv.i_dq_6ph_Pruef_soll.y = value;
+		//data->av.snd_fld[12] = value;
 			break;
 
 		case (Set_Send_Field_13):
-		data->av.i_dq_last_ref.q = value;
+		data->rasv.n_mech_Pruef_soll = value;
+		//data->av.snd_fld[13] = value;
 			break;
 
 		case (Set_Send_Field_14):
@@ -268,36 +277,32 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			data->av.select_Control = false;
-			data->av.select_fixed_values = true;
-			ultrazohm_state_machine_set_userLED(true);
-			data->av.button = 1.0f;
+			data->rasv.speed_control_3ph_Last = true;
+			data->rasv.speed_control_6ph_Pruef = false;
 			break;
 
 		case (My_Button_2):
-				data->av.select_fixed_values = false;
-				data->av.select_Control = true;
-				ultrazohm_state_machine_set_userLED(false);
-				data->av.button = 2.0f;
+			data->rasv.speed_control_3ph_Last = false;
+			data->rasv.speed_control_6ph_Pruef = true;
 			break;
 
 		case (My_Button_3):
-		data->av.u_dqxy_ref.d = 0;
-		data->av.u_dqxy_ref.q = 0;
-		data->av.u_dqxy_ref.x = 0;
-		data->av.u_dqxy_ref.y = 0;
-		data->av.u_dq_pruef_ref.d=0;
-		data->av.u_dq_pruef_ref.q=0;
-		data->av.u_dq_last_ref.d = 0;
-		data->av.u_dq_last_ref.q = 0;
+			if(data->rasv.speed_control_3ph_Last)
+				data->rasv.current_control_6ph_Pruef = true;
+			else if(data->rasv.speed_control_6ph_Pruef)
+				data->rasv.current_control_3ph_Last = true;
 			break;
 
 		case (My_Button_4):
-
+			if(data->rasv.speed_control_6ph_Pruef && !(data->rasv.current_control_3ph_Last))
+				data->rasv.speed_control_6ph_Pruef = false;
+			if(data->rasv.speed_control_3ph_Last && !(data->rasv.current_control_6ph_Pruef))
+				data->rasv.speed_control_3ph_Last = false;
 			break;
 
 		case (My_Button_5):
-
+			data->rasv.current_control_3ph_Last = false;
+			data->rasv.current_control_6ph_Pruef = false;
 			break;
 
 		case (My_Button_6):

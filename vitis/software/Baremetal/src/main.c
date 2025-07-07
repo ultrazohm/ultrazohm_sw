@@ -33,14 +33,18 @@ DS_Data Global_Data = {
         .halfBridge12DutyCycle = 0.0f},
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
-    .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
+    .aa = {
+    	.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+		.A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
+		.A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}
+    }
+};
 
 enum init_chain
 {
     init_assertions_and_wait_for_apu_handshake = 0,
     init_gpios,
     init_software,
-	init_CurrentControl,
     init_ip_cores,
     print_msg,
     init_interrupts,
@@ -55,6 +59,7 @@ uint32_t rpu_version_final = 0;
 
 int main(void)
 {
+
     int status = UZ_SUCCESS;
     while (1)
     {
@@ -84,15 +89,23 @@ int main(void)
             break;
         case init_software:
             uz_SystemTime_init();
+            Global_Data.objects.current_control_dq_6ph_Pruef_object = uz_current_control_dq_Pruef_init();
+            uz_CurrentControl_reset(Global_Data.objects.current_control_dq_6ph_Pruef_object);
+            Global_Data.objects.current_control_xy_6ph_Pruef_object = uz_current_control_xy_Pruef_init();
+            uz_CurrentControl_reset(Global_Data.objects.current_control_xy_6ph_Pruef_object);
+            Global_Data.objects.current_control_3ph_Last_object = uz_current_control_Last_init();
+            uz_CurrentControl_reset(Global_Data.objects.current_control_3ph_Last_object);
+            Global_Data.objects.speed_prefilter_Last = uz_speed_prefilter_Last_init();
+            Global_Data.objects.speed_prefilter_Pruef = uz_speed_prefilter_Pruef_init();
+            Global_Data.objects.speed_control_3ph_Last_object = uz_speed_control_Last_init();
+            uz_SpeedControl_reset(Global_Data.objects.speed_control_3ph_Last_object);
+            Global_Data.objects.speed_control_6ph_Pruef_object = uz_speed_control_Pruef_init();
+            uz_SpeedControl_reset(Global_Data.objects.speed_control_6ph_Pruef_object);
+            Global_Data.objects.torque_to_current_dq_3ph_Last_object = uz_torque_to_current_converter_Last_init();
+            Global_Data.objects.torque_to_current_dq_6ph_Pruef_object = uz_torque_to_current_converter_Pruef_init();
             JavaScope_initialize(&Global_Data);
-            initialization_chain = init_CurrentControl;
+            initialization_chain = init_ip_cores;
             break;
-        case init_CurrentControl:
-        	Global_Data.objects.CC_dq_instance_Pruef = init_dq_FOC_Pruef();
-        	Global_Data.objects.CC_xy_instance_Pruef = init_xy_FOC_Pruef();
-        	Global_Data.objects.CC_dq_instance_Last = init_dq_FOC_Last();
-        	initialization_chain = init_ip_cores;
-        	break;
         case init_ip_cores:
             uz_adcLtc2311_ip_core_init();
             Global_Data.objects.deadtime_interlock_d1_pin_0_to_5 = uz_interlockDeadtime2L_staticAllocator_slotD1_pin_0_to_5();

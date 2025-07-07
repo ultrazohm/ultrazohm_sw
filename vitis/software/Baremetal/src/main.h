@@ -53,16 +53,17 @@
 #include "uz/uz_SystemTime/uz_SystemTime.h"
 
 #include "include/pwm_init.h"
-
+#include "include/uz_controller_and_converter_init.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "include/uz_inverter_adapter_init.h"
 #include "include/uz_resolver_pl_interface_init.h"
 #include "include/uz_resolverIP_init.h"
-#include "include/init_FOC.h"
+//#include "uz/uz_signals/uz_signals.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------
 
 void InitializeDataStructure(DS_Data* data);
+
 
 #endif /* main_H_ */

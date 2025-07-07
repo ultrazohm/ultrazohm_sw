@@ -4,11 +4,11 @@
 #pragma once
 
 /**
- * @brief Configuratin struct for a PMSM. Accessible by the user
+ * @brief Configuration struct for a PMSM. Accessible by the user
  * 
  */
 typedef struct uz_PMSM_t{
-    float R_ph_Ohm;/**< phase resitance inductance in Ohm. Must be greater than 0.0f */
+    float R_ph_Ohm;/**< phase resistance inductance in Ohm. Must be greater than 0.0f */
     float Ld_Henry; /**< d-axis inductance in Henry. Must be greater than 0.0f */
     float Lq_Henry;/**< q-axis inductance in Henry. Must be greater than 0.0f */
     float Psi_PM_Vs;/**< permanent magnet flux linkage in Volt-seconds. Must be greater or equal than 0.0f */

@@ -7,7 +7,10 @@
 #include <stdint.h>
 #include <math.h>
 
-
+/**
+ * @brief Object definition for the flux maps measurement
+ * 
+ */
 typedef struct uz_parameterID_rc_t uz_parameterID_rc_t;
 
 /**
@@ -20,7 +23,7 @@ struct uz_parameterID_rc_config_t {
     float n_start_rpm; /**< Initial speed of the measurement routine.  */
     float n_stop_rpm; /**< Final speed of the measurement routine.  */
     uint32_t id_steps; /**< Number of steps from -id to zero.  */
-    uint32_t iq_steps; /**< Number of steps from -iq to zero.  */
+    uint32_t iq_steps; /**< Number of steps from iq to zero.  */
     uint32_t n_steps; /**< Number of steps from initial to final speed.  */
     bool check_temp; /**< Set true, if temperature should be checked between operating points.  */
 };
@@ -93,10 +96,11 @@ enum rc_state{
  * @return uz_parameterID_rc_t* Pointer to the uz_parameterID_rc instance
  */
 uz_parameterID_rc_t* uz_parameterID_rc_init(struct uz_parameterID_rc_config_t initial_config);
+
 struct uz_parameterID_rc_config_t uz_parameterID_rc_get_config(uz_parameterID_rc_t* self);
 
 /**
- * @brief 
+ * @brief Controls the measurement protocol for the flux maps measurement.
  * 
  * @param self uz_parameterID_rc instance
  * @param temp_degrees External value from temperature measurement. Only needed, if check_temp is true

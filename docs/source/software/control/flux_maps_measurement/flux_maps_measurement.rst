@@ -4,6 +4,9 @@
 Flux maps measurement
 ======================
 
+This module implements a measurement routine for measuring flux maps in both motor and generator mode. 
+If temperature measurement of the motor is available, the procedure can include heating and cooling phases between operating points to maintain a constant temperature throughout the entire measurement process.
+
 .. tikz:: measurement procedure
    :libs: shapes, arrows, positioning, calc,fit, backgrounds, shadows
    :include: meas_process.tex
@@ -74,7 +77,10 @@ Example
 Init function
 -------------
 
-.. doxygenfunction:: _uz_parameterID_rc_init
+.. doxygenfunction:: uz_parameterID_rc_init
+.. doxygentypedef:: uz_parameterID_rc_t
+.. doxygenstruct:: uz_parameterID_rc_config_t
+   :members:
 
 Example
 ^^^^^^^

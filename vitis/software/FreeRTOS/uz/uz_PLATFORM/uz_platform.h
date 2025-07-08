@@ -15,7 +15,7 @@
 //  NB: To use this, increase UZ_IIC_MAX_BUSINSTANCES in uz_iic.c to 2!
 #define UZ_PLATFORM_CARDID	(0U)
 
-uint32_t uz_platform_init(uint32_t default_revision);
+int32_t uz_platform_init(uint32_t default_revision);
 uint32_t uz_platform_get_hw_revision(void);
 
 // GPOs supported by this framework
@@ -48,14 +48,14 @@ enum uz_platform_gpi_id {
 	//// NB: Do not add anything to/below the following line
 	UZP_GPI_CNT, UZ_NOGPI = UZ_NOGPO };
 
-uint32_t uz_platform_gpoupdate();
-uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_gpo_op uzpgpo_op);
+int32_t uz_platform_gpoupdate();
+int32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_gpo_op uzpgpo_op);
 
-uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addr);
-uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p);
+int32_t uz_platform_macread(uint8_t eeprom, uint8_t *addr);
+int32_t uz_platform_macread_primary(uint8_t *addrbuf_p);
 
 #if (UZ_PLATFORM_CARDID==1)
- uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p);
+ int32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p);
  void uz_platform_configcard_model015_voltageled(uint8_t slot);
 #endif
 

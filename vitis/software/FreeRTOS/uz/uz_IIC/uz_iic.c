@@ -22,7 +22,7 @@ void uz_iic_initbus(uint8_t businst, uintptr_t xlnx_baseaddress, uint16_t xlnx_d
 	uz_assert(businst < UZ_IIC_MAX_BUSINSTANCES);
 	XIicPs *iicbus_p = &instances[businst];
 
-	int status;
+	int32_t status;
 	{
 		// Create I²C bus
 		XIicPs_Config iic_config;
@@ -64,7 +64,7 @@ void uz_iic_initdev(uz_iic *self, uint8_t businst, uint8_t devaddr) {
 	self->is_ready = true;
 }
 
-int uz_iic_write_reg16(struct uz_iic_ *self, uint8_t regaddr, uint16_t data) {
+int32_t uz_iic_write_reg16(struct uz_iic_ *self, uint8_t regaddr, uint16_t data) {
 	uint8_t txbuf[3];
 	txbuf[0] = regaddr;
 	txbuf[1] = data & 0xFF;
@@ -72,7 +72,7 @@ int uz_iic_write_reg16(struct uz_iic_ *self, uint8_t regaddr, uint16_t data) {
 
 	return( uz_iic_write_raw(self, txbuf, sizeof(txbuf)/sizeof(txbuf[0])) );
 }
-int uz_iic_write_raw(struct uz_iic_ *self, uint8_t* data, int32_t cnt) {
+int32_t uz_iic_write_raw(struct uz_iic_ *self, uint8_t* data, int32_t cnt) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	XIicPs *iicbus_p = &instances[self->businst];
@@ -82,7 +82,7 @@ int uz_iic_write_raw(struct uz_iic_ *self, uint8_t* data, int32_t cnt) {
 	return( XIicPs_MasterSendPolled(iicbus_p, data, cnt, self->devaddr) );
 }
 
-int uz_iic_a8read_data(struct uz_iic_ *self, uint8_t regaddr, uint8_t* data, int32_t cnt) {
+int32_t uz_iic_a8read_data(struct uz_iic_ *self, uint8_t regaddr, uint8_t* data, int32_t cnt) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	XIicPs *iicbus_p = &instances[self->businst];
@@ -91,7 +91,7 @@ int uz_iic_a8read_data(struct uz_iic_ *self, uint8_t regaddr, uint8_t* data, int
 
 	XIicPs_SetOptions(iicbus_p, XIICPS_REP_START_OPTION);
 
-	int status;
+	int32_t status;
 	status = XIicPs_MasterSendPolled(iicbus_p, &regaddr, 1, self->devaddr);
 
 	XIicPs_ClearOptions(iicbus_p, XIICPS_REP_START_OPTION);
@@ -102,7 +102,7 @@ int uz_iic_a8read_data(struct uz_iic_ *self, uint8_t regaddr, uint8_t* data, int
 	return(status);
 }
 
-int uz_iic_a16read_data(struct uz_iic_ *self, uint16_t regaddr, uint8_t* data, int32_t cnt) {
+int32_t uz_iic_a16read_data(struct uz_iic_ *self, uint16_t regaddr, uint8_t* data, int32_t cnt) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
 	XIicPs *iicbus_p = &instances[self->businst];
@@ -115,7 +115,7 @@ int uz_iic_a16read_data(struct uz_iic_ *self, uint16_t regaddr, uint8_t* data, i
 	txbuf[0] = (regaddr>>8) & 0xFF;
 	txbuf[1] = regaddr & 0xFF;
 
-	int status;
+	int32_t status;
 	status = XIicPs_MasterSendPolled(iicbus_p, txbuf, sizeof(txbuf)/sizeof(txbuf[0]), self->devaddr);
 
 	XIicPs_ClearOptions(iicbus_p, XIICPS_REP_START_OPTION);

@@ -66,17 +66,17 @@
 #ifdef UZ_PLATFORM_C
 
  char uz_platform_getcardtype(uint8_t slot) {
-	 uint8_t cardeeprom_i2caddr = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + slot;
+	uint8_t cardeeprom_i2caddr = UZ_PLATFORM_I2CADDR_UZCARDEEPROM_BASE + slot;
 
-	 if (cardeeprom_i2caddr > UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST) {
-		 uz_printf("Invalid slot (%i)\r\n", slot);
-		 return('?');
-	 }
+	if (cardeeprom_i2caddr > UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST) {
+		uz_printf("Invalid slot (%i)\r\n", slot);
+		return('?');
+	}
 
-	 if ( UZ_PLATFORM_I2CADDR_UZCARDEEPROM_D1ST > cardeeprom_i2caddr )
-		 return('A');
-	 else
-		 return('D');
+	if ( UZ_PLATFORM_I2CADDR_UZCARDEEPROM_D1ST > cardeeprom_i2caddr )
+		return('A');
+	else
+		return('D');
  }
 
  void uz_platform_printcard_model015(uint8_t slot, uint8_t data_regin) {

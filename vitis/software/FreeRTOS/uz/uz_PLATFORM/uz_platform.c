@@ -265,7 +265,7 @@ uint32_t uz_platform_get_hw_revision(void){
 	return (uint32_t)uzp.data.hw_revision;
 }
 
-uint32_t uz_platform_init(uint32_t default_revision) {
+int32_t uz_platform_init(uint32_t default_revision) {
 	uz_assert_false(uzp.is_ready);
 
 	//// Primary I²C bus used by UZP (we might need a secondary for mixed-old/new combinations of UZC Rev<=04 and SoM)
@@ -275,7 +275,7 @@ uint32_t uz_platform_init(uint32_t default_revision) {
 	uz_iic_initdev(&uzp.eeprom, UZ_PLATFORM_I2CBUS_INSTID, UZ_PLATFORM_I2CADDR_EEPROM);
 
 	// Fetch platform data
-	int status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
+	int32_t status = uz_iic_a16read_data(&uzp.eeprom, UZ_PLATFORM_EEPROM_INFOOFFSET, (uint8_t*) &uzp.data, sizeof(uzp.data));
 	if ( XST_SUCCESS != status ) {
 		uz_printf("APU: Error reading platform EEPROM, assuming default configuration as UltraZohm with default revision given by RPU define!\r\n");
 		uzp.data.hw_group = UZP_HWGROUP_UZOHM3;
@@ -441,7 +441,7 @@ uint32_t uz_platform_init(uint32_t default_revision) {
  *
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
-uint32_t uz_platform_gpoupdate() {
+int32_t uz_platform_gpoupdate() {
 	const uint8_t pca9535a9655e_regaddr_out0 = 2;
 
 	return( uz_iic_write_reg16(&uzp.gpioi2c, pca9535a9655e_regaddr_out0, uzp.gpioi2c_outmirror) );
@@ -454,7 +454,7 @@ uint32_t uz_platform_gpoupdate() {
  * @param uzpgpo_op Operation to be performed on the GPO (cf. uz_platform_gpo_op in uz_platform.h for available options).
  * @return UZ_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
-uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_gpo_op uzpgpo_op) {
+int32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_gpo_op uzpgpo_op) {
 	uz_assert(uzp.is_ready);
 
 	// Look up GPO and map to pin
@@ -538,7 +538,7 @@ uint32_t uz_platform_gposet(enum uz_platform_gpo_id uzpgpo_id, enum uz_platform_
  * @param addrbuf_p Pointer to (at least six-byte) buffer to be filled.
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
-uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
+int32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
 	uz_assert(uzp.is_ready);
 	uz_assert(eeprom < sizeof(uzp.maceeprom)/sizeof(uzp.maceeprom[0]));
 
@@ -554,7 +554,7 @@ uint32_t uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p) {
  * @param addrbuf_p Pointer to (at least six-byte) buffer to be filled.
  * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
  */
-uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
+int32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 	return( uz_platform_macread(uzp.maceeprom_primary, addrbuf_p) );
 }
 
@@ -566,8 +566,8 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
   * @param devaddr IIC address of the device in 7-bit notation.
   * @return XST_SUCCESS if successful or failure code in case of I²C comm error
   */
- static uint32_t uz_platform_initcarddev(uz_iic *self, uint8_t devaddr) {
-	uint32_t status = XST_SUCCESS;
+ static int32_t uz_platform_initcarddev(uz_iic *self, uint8_t devaddr) {
+	int32_t status = XST_SUCCESS;
 
 	if ( uzp.usrmux.is_ready ) {
 		uint8_t subaddr = devaddr & 0x07;		// NB: This relies on all _BASE(ADDR) having the three lowest bits at zero
@@ -592,7 +592,7 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
   * @param serial_p Pointer to single-int buffer to be filled with the card's serial number.
   * @return XST_SUCCESS if successful or failure code in case of I²C comm error or subsystem disabled
   */
- uint32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p) {
+ int32_t uz_platform_cardread(uint8_t slot, uz_platform_eeprom_group000models_t* model_p, uint8_t* revision_p, uint16_t* serial_p) {
 	uz_assert(slot < 8);
 	uz_assert_not_NULL(model_p);
 	uz_assert_not_NULL(revision_p);
@@ -603,7 +603,7 @@ uint32_t uz_platform_macread_primary(uint8_t *addrbuf_p) {
 	uz_assert(cardaddr <= UZ_PLATFORM_I2CADDR_UZCARDEEPROM_LAST);
 
 	uz_iic cardeeprom;
-	uint32_t status = uz_platform_initcarddev(&cardeeprom, cardaddr);
+	int32_t status = uz_platform_initcarddev(&cardeeprom, cardaddr);
 	if ( UZ_SUCCESS != status )
 		return(status);
 

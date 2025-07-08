@@ -47,7 +47,7 @@ void test_uz_parameterID_rc_test_temp_check(void){
     uz_parameterID_rc_t* rc_instance4 = uz_parameterID_rc_init(test_config);
     struct uz_parameterID_rc_ref_val_t test_output;
     float temp_degrees = 50.0f; 
-    for (size_t i = 0; i < 1000; i++)
+    for (size_t i = 0; i < 1000000; i++)
     {
         test_output = uz_parameterID_rc_generate_idq_ref(rc_instance4, temp_degrees);
     }
@@ -56,10 +56,11 @@ void test_uz_parameterID_rc_test_temp_check(void){
     {
         test_output = uz_parameterID_rc_generate_idq_ref(rc_instance4, temp_degrees);
     }
-    
-
-
-
+    temp_degrees = 51.0f;
+    for (size_t i = 0; i < 10; i++)
+    {
+        test_output = uz_parameterID_rc_generate_idq_ref(rc_instance4, temp_degrees);
+    }
 }
 
 #endif // TEST

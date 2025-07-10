@@ -279,28 +279,58 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 		case (My_Button_1):
 			//ultrazohm_state_machine_set_error(true); @@@@
 			data->av.SpeedControl = true;
+			// set other ones to false
+			data->av.CurrentControl = false;
+			data->av.CascadeControl = false;
+			data->av.directDuty = false;
+			data->av.DutyCycleControl = false;
 			break;
 
 		case (My_Button_2):
 			//ultrazohm_state_machine_set_userLED(true); @@@@
 			data->av.CurrentControl = true;
+			// set other ones to false
+			data->av.SpeedControl = false;
+			data->av.CascadeControl = false;
+			data->av.directDuty = false;
+			data->av.DutyCycleControl = false;
 			break;
 
 		case (My_Button_3):
 			//ultrazohm_state_machine_set_userLED(false); @@@@
 			data->av.CascadeControl = true;
+			// set other ones to false
+			data->av.SpeedControl = false;
+			data->av.CurrentControl = false;
+			data->av.directDuty = false;
+			data->av.DutyCycleControl = false;
 			break;
 
 		case (My_Button_4):
 			data->av.directDuty = true;
+			// set other ones to false
+			data->av.SpeedControl = false;
+			data->av.CurrentControl = false;
+			data->av.CascadeControl = false;
+			data->av.DutyCycleControl = false;
 			break;
 
 		case (My_Button_5):
-		data->av.directDuty = false;
+			data->av.directDuty = false;
+			// set other ones to false
+			data->av.SpeedControl = false;
+			data->av.CurrentControl = false;
+			data->av.CascadeControl = false;
+			data->av.DutyCycleControl = false;
 			break;
 
 		case (My_Button_6):
 			data->av.DutyCycleControl = true;
+			// set other ones to false
+			data->av.SpeedControl = false;
+			data->av.CurrentControl = false;
+			data->av.CascadeControl = false;
+			data->av.directDuty = false;
 			break;
 
 		case (My_Button_7):

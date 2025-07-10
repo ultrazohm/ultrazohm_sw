@@ -11,7 +11,7 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
-
+#include "uz/uz_BLDC_control/uz_BLDC_control.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -169,6 +169,7 @@ typedef struct{
 	uz_PI_Controller* PI_current; //@@@
 	uz_PI_Controller* PI_speed; //@@@@
 	uz_PI_Controller* PI_speed_only; //@@@@
+	uz_BLDC_control* BLDC_systems; //@@@@
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

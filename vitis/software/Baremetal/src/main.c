@@ -96,6 +96,8 @@ const struct uz_PI_Controller_config config_iq = {
 const struct uz_PI_Controller_config config_PI_current = {
    .Kp =1.42f,
    .Ki = 95.0f,
+   .type = UZ_PI_PARALLEL,
+   //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
    .upper_limit = 12.0f, // + Vdc/2
    .lower_limit = -12.0f, // -Vdc/2
@@ -106,6 +108,8 @@ const struct uz_PI_Controller_config config_PI_current = {
 const struct uz_PI_Controller_config config_PI_speed = {
    .Kp =1.42f, // since speed is in RPM, multiply by 2pi/60
    .Ki = 95.0f, // since speed is in RPM, multiply by 2pi/60
+   .type = UZ_PI_PARALLEL,
+   //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
    .upper_limit = 4.0f,
    .lower_limit = -4.0f,
@@ -116,15 +120,22 @@ const struct uz_PI_Controller_config config_PI_speed = {
 const struct uz_PI_Controller_config config_PI_speed_only = {
    .Kp =1.42f, // since speed is in RPM, multiply by 2pi/60
    .Ki = 95.0f, // since speed is in RPM, multiply by 2pi/60
+   .type = UZ_PI_PARALLEL,
+   //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
    .upper_limit = 12.0f,
    .lower_limit = -12.0f,
 };
 
 //@@@@@ ------------------------------------
+// Here my PI controller which contains all 3 configs
+const struct uz_BLDC_control_config uz_BLDC_config = {
+	.config_PI_current = config_PI_current,
+	.config_PI_speed = config_PI_speed,
+	.config_PI_speed_only = config_PI_speed_only,
+};
 
-
-
+// @@@@
 
 
 const struct uz_CurrentControl_config config_current_control = {
@@ -193,6 +204,7 @@ int main(void)
             Global_Data.objects.PI_current = uz_PI_Controller_init(config_PI_current); //@@@
             Global_Data.objects.PI_speed = uz_PI_Controller_init(config_PI_speed); //@@@
             Global_Data.objects.PI_speed_only = uz_PI_Controller_init(config_PI_speed_only); //@@@
+            Global_Data.objects.BLDC_systems = uz_BLDC_control_init(uz_BLDC_config); //@@@
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

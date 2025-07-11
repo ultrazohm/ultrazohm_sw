@@ -40,6 +40,32 @@ DS_Data Global_Data = {
     }
 };
 
+
+struct uz_axi_gpio_config_t output_config={
+
+            .base_address=XPAR_UZ_USER_AXI_GPIO_0_BASEADDR,
+
+            .device_id=XPAR_UZ_USER_AXI_GPIO_0_DEVICE_ID,
+
+            .number_of_pins=1,
+
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+
+};
+
+
+struct uz_axi_gpio_config_t input_config={
+
+            .base_address=XPAR_UZ_USER_AXI_GPIO_1_BASEADDR,
+
+            .device_id=XPAR_UZ_USER_AXI_GPIO_1_DEVICE_ID,
+
+            .number_of_pins=2,
+
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_INPUT
+
+};
+
 enum init_chain
 {
     init_assertions = 0,
@@ -87,6 +113,8 @@ int main(void)
             Global_Data.objects.pwm_d1_pin_6_to_11 = initialize_pwm_2l_on_D1_pin_6_to_11();
             Global_Data.objects.pwm_d1_pin_12_to_17 = initialize_pwm_2l_on_D1_pin_12_to_17();
             Global_Data.objects.pwm_d1_pin_18_to_23 = initialize_pwm_2l_on_D1_pin_18_to_23();
+            Global_Data.objects.output_gpio=uz_axi_gpio_init(output_config);
+            Global_Data.objects.input_gpio=uz_axi_gpio_init(input_config);
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);

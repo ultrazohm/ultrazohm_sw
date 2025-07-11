@@ -41,6 +41,9 @@ extern DS_Data Global_Data;
 float dutycycle_hb1 = 0.0f;
 float dutycycle_hb2 = 0.0f;
 float dutycycle_hb3 = 0.0f;
+bool HB_ok = false;
+bool OC_ok = false;
+bool reset_button = false;
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -57,6 +60,14 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+    if (reset_button == true) {
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,1);
+    	reset_button = false;
+    } else {
+    	uz_axi_gpio_write_pin_zero_based(Global_Data.objects.output_gpio,0,0);
+    }
+    HB_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio,0);
+    OC_ok = uz_axi_gpio_read_pin_zero_based(Global_Data.objects.input_gpio,1);
     if (current_state==control_state)
     {
         // Start: Control algorithm - only if ultrazohm is in control state

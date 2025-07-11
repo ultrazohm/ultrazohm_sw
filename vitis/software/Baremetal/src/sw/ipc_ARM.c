@@ -28,6 +28,8 @@ extern float dutycycle_hb1;
 extern float dutycycle_hb2;
 extern float dutycycle_hb3;
 
+extern bool reset_button;
+
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
 	// HANDLE RECEIVED MESSAGE
@@ -282,7 +284,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-
+			reset_button = true;
 			break;
 
 		case (My_Button_5):

@@ -2,7 +2,7 @@
 #ifndef TEST
 
 // Hardware version of the UltraZohm
-#define UZ_HARDWARE_VERSION 4U
+#define UZ_HARDWARE_VERSION 5U
 
 // If Hardware version is v4 and the external STOP should be used, this define has to be set to 1. Otherwise, the external stop does nothing.
 // For Version 3, the external STOP always works, but the hardware loopback is required if no external stop is used.
@@ -62,7 +62,7 @@
 #define UZ_RESOLVERIP_MAX_INSTANCES                     3U
 #define UZ_SYSMON_PS_MAX_INSTANCES                      0U // Can only be 1 or 0!
 #define UZ_RESOLVER_PL_INTERFACE_MAX_INSTANCES          3U
-#define UZ_AXI_GPIO_MAX_INSTANCES                       0U
+#define UZ_AXI_GPIO_MAX_INSTANCES                       2U
 #define UZ_6PH_OPEN_PHASE_FAULT_DETECTION               2U
 #define UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES      0U
 #define UZ_FILTER_CUMULATIVEAVG_MAX_INSTANCES           0U

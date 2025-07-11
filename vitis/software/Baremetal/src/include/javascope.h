@@ -236,7 +236,7 @@ enum gui_button_mapping {
 	MyButton1,
 	MyButton2,
 	MyButton3,
-	MyButton4,
+	RESET,
 	MyButton5,
 	MyButton6,
 	MyButton7,

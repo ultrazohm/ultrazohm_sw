@@ -49,6 +49,7 @@ Summary of new Features and Changes
 * Isolated JTAG+UART interface to avoid ground loops during debugging
 * Dual-JTAG to program both SoM and D-slot CPLDs using a single cable
 * Dual-UART (from SoM to USB) for independent consoles of RPU and APU
+* SysMon-based monitoring of VIN for application-specific error logic
 * Per-slot current limit on VIN (with error signaling to S3C / CPLDs)
 * New, fully PCB-based front panel (FP) with
 	* added **Second Gigabit Ethernet** interface (via SGMII)

@@ -24,7 +24,8 @@ void setUp(void)
     test_config.wait_time = 4.0f;
     test_config.isr_steptime = (1.0f / 10.0e3f) * 1.0f;
     test_output.id_ref_Amps = 0.0f;
-    test_output.n_ref_rpm = 0.0f;
+    test_output.n_ref_rpm
+     = 0.0f;
 }
 
 void tearDown(void)

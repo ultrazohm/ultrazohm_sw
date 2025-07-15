@@ -14,7 +14,6 @@ struct uz_parameterid_rs_t {
     bool is_ready;
     bool starts_generating_outputs;
     bool is_first_call_to_generate_outputs;
-    bool is_first_call_to_sample;
     struct uz_parameterid_rs_config_t internal_config;
     struct uz_parameterid_rs_increments_t calc_increments;
     struct uz_parameterid_output set_values;
@@ -42,15 +41,14 @@ uz_parameterid_rs_t* uz_parameterid_rs_init(struct uz_parameterid_rs_config_t in
 {
     uz_parameterid_rs_t* self = uz_parameterid_rs_allocation();
     self->internal_config = initial_config;
-    self->is_first_call_to_sample = true;
     self->is_first_call_to_generate_outputs = true;
-    self->calc_increments.n_increment = (initial_config.n_end - initial_config.n_start_rpm)/initial_config.n_steps;
+    self->calc_increments.n_increment = (initial_config.n_end_rpm - initial_config.n_start_rpm)/initial_config.n_steps;
     self->state = start; 
     self->set_values.id_ref_Amps = 0.0f;
     self->set_values.n_ref_rpm = 0.0f;
 	uz_assert(initial_config.n_start_rpm >= 0.0f);
-	uz_assert(initial_config.n_end > 0.0f);
-	uz_assert(initial_config.n_end > initial_config.n_start_rpm);
+	uz_assert(initial_config.n_end_rpm > 0.0f);
+	uz_assert(initial_config.n_end_rpm > initial_config.n_start_rpm);
 	uz_assert(initial_config.n_steps > 0.0f);
 	uz_assert(initial_config.i_repeats > 0.0f);
     uz_assert(initial_config.i_neg_Amps < 0.0f);
@@ -70,24 +68,19 @@ struct uz_parameterid_rs_increments_t uz_parameterid_rs_get_current_increments(u
     return self->calc_increments;
 }
 
-
 enum state uz_parameterid_rs_get_current_state(uz_parameterid_rs_t* self){
     uz_assert_not_NULL(self);
     uz_assert(self->is_ready);
     return self->state;
 }
 
-
-
 void uz_parameterid_rs_reset(uz_parameterid_rs_t* self) {
 	uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
-	self->is_first_call_to_sample = true;
     self->is_first_call_to_generate_outputs = true;
     self->set_values.id_ref_Amps = 0.0f;
     self->set_values.n_ref_rpm = 0.0f;
 }
-
 
 float uz_parameterid_rs_get_isr_counter(uz_parameterid_rs_t* self){
     uz_assert_not_NULL(self);
@@ -95,7 +88,7 @@ float uz_parameterid_rs_get_isr_counter(uz_parameterid_rs_t* self){
     return self->isr_counter;
 }
 
-struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_rs_t* self, float ud, float id){
+struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_rs_t* self){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     struct uz_parameterid_output output;

@@ -30,7 +30,7 @@ void uz_svm_6ph_calculate_and_shift_duty_cycles(int sector, uz_sector_sv Zeiger[
 		            shift_system_2 = 0.0f;
 		            break;
 		    }
-		    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, shift_system_1, shift_system_1, shift_system_1);
+		    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, shift_system_1, shift_system_1, shift_system_1);// Global Data nur an Funktio übergeben und nict in Funktion darauf zugreifen
 		    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, shift_system_2, shift_system_2, shift_system_2);
 		};
 
@@ -43,10 +43,10 @@ struct uz_DutyCycle_2x3ph_t uz_SVPWM_6ph(SVMPWM_Parameters paramspwm, uz_6ph_alp
 	int i = 0, j = 0;
 	int current_sector1_24 = 0;
 
-	float SV_angle = atan2(inputdata.alpha, inputdata.beta);
-	SV_angle = fmod(SV_angle, 2*M_PI);
+	float SV_angle = atan2f(inputdata.alpha, inputdata.beta);
+	SV_angle = fmodf(SV_angle, 2.0f *M_PI_FLOAT);
 
-	current_sector1_24  = (int)floor(SV_angle / (M_PI / 12.0)) + 1;
+	current_sector1_24  = (int)floorf(SV_angle / (M_PI_FLOAT / 12.0f)) + 1;
 
 
 	uz_inv_Ttv_sec_Matrix inv_Ttv;
@@ -86,7 +86,7 @@ struct uz_DutyCycle_2x3ph_t uz_SVPWM_6ph(SVMPWM_Parameters paramspwm, uz_6ph_alp
 
 
 	//Apply Phase Shift to the Inverter
-	uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm.sector_sv);
+	//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm.sector_sv);
 
 		out.system1.DutyCycle_A = Duty_Cycles[0];
 		out.system1.DutyCycle_B = Duty_Cycles[1];

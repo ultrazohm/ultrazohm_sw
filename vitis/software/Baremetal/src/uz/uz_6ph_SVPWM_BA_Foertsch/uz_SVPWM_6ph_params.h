@@ -2,6 +2,9 @@
 #define UZ_SVPWM_6PH_PARAMS_H
 
 #include "uz_SVPWM_6ph_init.h"
+
+#define M_PI_FLOAT 3.14159265359f
+
 SVMPWM_Parameters CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters = {
 		.sector_sv ={
 			    {0, 8, 9, 41, 43, 63},     // 1

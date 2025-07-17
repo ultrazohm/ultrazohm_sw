@@ -34,7 +34,7 @@ typedef int s_64[6];
 
 
 typedef struct{
-	double inv_Ttv_matrix[4][4];
+	float inv_Ttv_matrix[4][4];
 }uz_inv_Ttv_sec_Matrix;
 
 

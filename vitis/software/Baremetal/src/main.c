@@ -17,6 +17,7 @@
 #include "main.h"
 
 // Initialize the global variables
+int Fehler = 0;
 DS_Data Global_Data = {
     .rasv = {
         .halfBridge1DutyCycle = 0.0f,

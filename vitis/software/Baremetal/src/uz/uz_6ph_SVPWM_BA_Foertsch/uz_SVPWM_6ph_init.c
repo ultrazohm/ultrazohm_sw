@@ -35,29 +35,32 @@ void uz_svm_6ph_calculate_and_shift_duty_cycles(int sector, uz_sector_sv Zeiger[
 		};
 
 struct uz_DutyCycle_2x3ph_t uz_SVPWM_6ph(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK){
-
 	float upper_limit = 1.0f;
 	float lower_limit = 0.0f;
 
 	struct uz_DutyCycle_2x3ph_t out = {0};
 	int i = 0, j = 0;
 	int current_sector1_24 = 0;
+	float SV_angle = 0.0f;
+	//float SV_angle = atan2f(inputdata.alpha, inputdata.beta);
+	SV_angle = atan2f(inputdata.alpha, inputdata.beta);
+	float AngleHelp = sqrtf(SV_angle * SV_angle);
+	SV_angle = fmodf(AngleHelp, 2.0f * M_PI_FLOAT);
 
-	float SV_angle = atan2f(inputdata.alpha, inputdata.beta);
-	SV_angle = fmodf(SV_angle, 2.0f *M_PI_FLOAT);
+
+
 
 	current_sector1_24  = (int)floorf(SV_angle / (M_PI_FLOAT / 12.0f)) + 1;
 
-
 	uz_inv_Ttv_sec_Matrix inv_Ttv;
 
-	for (i = 0; i<4; i++){
-		for(j = 0; j<4; j++){
+	for (i = 0; i <= 3; i++){
+		for(j = 0; j <=3; j++){
 			inv_Ttv.inv_Ttv_matrix[i][j] = (1/U_ZK) * paramspwm.inv_Ttv_sec_Matrix[current_sector1_24 - 1].inv_Ttv_matrix[i][j];
 		}
 	}
 
-	int Tsw = 1;
+	float Tsw = 1.0f;
 
 
 	float T_V1 = inv_Ttv.inv_Ttv_matrix[0][0]*inputdata.alpha + inv_Ttv.inv_Ttv_matrix[0][1]*inputdata.beta + inv_Ttv.inv_Ttv_matrix[0][2]*inputdata.x + inv_Ttv.inv_Ttv_matrix[0][3]*inputdata.y;
@@ -72,21 +75,19 @@ struct uz_DutyCycle_2x3ph_t uz_SVPWM_6ph(SVMPWM_Parameters paramspwm, uz_6ph_alp
 	int S_V3 = paramspwm.sector_sv[current_sector1_24 - 1].fourth;
 	int S_V4 = paramspwm.sector_sv[current_sector1_24 - 1].fifth;
 	int S_V02 = paramspwm.sector_sv[current_sector1_24 - 1].sixth;
-
-
 	float Duty_Cycles[6] = {0};
 
-	for(i=0;i<6; i++){
+	for(i=0;i<=5; i++){
 		Duty_Cycles[i] = (T_V0/2) * paramspwm.SV_64[S_V01][i] + T_V1 * paramspwm.SV_64[S_V1][i] + T_V2 * paramspwm.SV_64[S_V2][i] + T_V3 * paramspwm.SV_64[S_V3][i] + T_V4 * paramspwm.SV_64[S_V4][i] + (T_V0/2) * paramspwm.SV_64[S_V02][i];
-		};
+	};
 	// Begrenzung
-	for(i=0;i<6; i++){
+	for(i=0;i<=5; i++){
 			Duty_Cycles[i] = uz_signals_saturation(Duty_Cycles[i], upper_limit, lower_limit);
 		};
 
 
 	//Apply Phase Shift to the Inverter
-	//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm.sector_sv);
+	uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm.sector_sv);
 
 		out.system1.DutyCycle_A = Duty_Cycles[0];
 		out.system1.DutyCycle_B = Duty_Cycles[1];

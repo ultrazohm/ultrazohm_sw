@@ -34,6 +34,7 @@
 #include "../uz/uz_6ph_SVPWM_BA_Foertsch/uz_SVPWM_6ph_params.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_dual_3ph_pwm.h"
 #include "../uz/uz_more_pwm_6ph/uz_zero_injection_pwm_3ph.h"
+#include <string.h>
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -440,6 +441,7 @@ void ISR_Control(void *data)
    		Global_Data.av.DutyCycle_6ph_test =   uz_Dual_GDPWM_alphabeta_6ph_V2(Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.phi_rad, Global_Data.av.U_ZK);
    	case 41:
    		Global_Data.av.DutyCycle_6ph_test = uz_SVPWM_6ph(CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
+
    	default:
 
    		break;

@@ -13,7 +13,6 @@
 #define M_PI_FLOAT 3.14159265359f
 //Namen structs
 
-extern DS_Data Global_Data;
 
 typedef struct {
 	float cmpa;
@@ -55,7 +54,7 @@ typedef struct{
 
 
 
-struct uz_DutyCycle_2x3ph_t uz_SVPWM_6ph(SVMPWM_Parameters paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK);
+struct uz_DutyCycle_2x3ph_t uz_SVPWM_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK);
 void uz_svm_6ph_calculate_and_shift(int sector, uz_sector_sv Zeiger[24]);
 
 

@@ -128,6 +128,13 @@ typedef struct _actualValues_ {
 	float I_ph_error;
 	float n_RPM_error;
 	float i_high;
+	float u_ab;
+	float u_ca;
+	float u_bc;
+	float u_n;
+	float u_ph1;
+	float u_ph2;
+	float u_ph3;
 	// @@@@@@@
 
 	struct uz_DutyCycle_t output_Dutycycle;

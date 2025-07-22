@@ -63,6 +63,13 @@ enum JS_OberservableData {
 	JSO_i_ref_kaskade,
 	JSO_I_ph_error,
 	JSO_n_RPM_error,
+	JSO_u_ab,
+	JSO_u_ca,
+	JSO_u_bc,
+	JSO_u_n,
+	JSO_u_ph1,
+	JSO_u_ph2,
+	JSO_u_ph3,
 	JSO_ENDMARKER
 };
 

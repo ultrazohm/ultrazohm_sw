@@ -91,23 +91,26 @@ const struct uz_PI_Controller_config config_iq = {
    .lower_limit = -4.0f,
 };
 
-// @@@@@ ----------------------------------
+
+
+
+// @@@@@ ------------------------------------------------------------------------------------------------------------
 //PI_current for both cascade and current control (Current -> Voltage)
 const struct uz_PI_Controller_config config_PI_current = {
-   .Kp =1.42f,
-   .Ki = 95.0f,
+   .Kp =8.0f,
+   .Ki = 5430.0f,
    .type = UZ_PI_PARALLEL,
    //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
-   .upper_limit = 12.0f, // + Vdc/2
-   .lower_limit = -12.0f, // -Vdc/2
+   .upper_limit = 24.0f, // + Vdc/2
+   .lower_limit = -24.0f, // -Vdc/2
 };
 
 
 // cascade speed PI-controller (Speed -> Current)
 const struct uz_PI_Controller_config config_PI_speed = {
-   .Kp =1.42f, // since speed is in RPM, multiply by 2pi/60
-   .Ki = 95.0f, // since speed is in RPM, multiply by 2pi/60
+   .Kp = 0.0382113504874f, // since speed is in RPM, multiply by 2pi/60
+   .Ki = 14.9747184343f, // since speed is in RPM, multiply by 2pi/60
    .type = UZ_PI_PARALLEL,
    //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
@@ -118,13 +121,13 @@ const struct uz_PI_Controller_config config_PI_speed = {
 
 // only for Speed control (Speed -> Voltage)
 const struct uz_PI_Controller_config config_PI_speed_only = {
-   .Kp =1.42f, // since speed is in RPM, multiply by 2pi/60
-   .Ki = 95.0f, // since speed is in RPM, multiply by 2pi/60
+   .Kp = 0.0441432346514197f, // since speed is in RPM, multiply by 2pi/60
+   .Ki = 8.83233762382052f, // since speed is in RPM, multiply by 2pi/60
    .type = UZ_PI_PARALLEL,
    //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
-   .upper_limit = 12.0f,
-   .lower_limit = -12.0f,
+   .upper_limit = 24.0f,
+   .lower_limit = -24.0f,
 };
 
 //@@@@@ ------------------------------------
@@ -135,7 +138,7 @@ const struct uz_BLDC_control_config uz_BLDC_config = {
 	.config_PI_speed_only = config_PI_speed_only,
 };
 
-// @@@@
+// @@@@ --------------------------------------------------------------------------------------------------------------
 
 
 const struct uz_CurrentControl_config config_current_control = {

@@ -102,6 +102,14 @@ js_ch_observable[JSO_id_ref] 					= &data->av.i_dq_ref.d;
 	js_ch_observable[JSO_i_ref_kaskade]			= &data->av.i_ref_kaskade; // @@@ 25.06
 	js_ch_observable[JSO_I_ph_error]			= &data->av.I_ph_error;
 	js_ch_observable[JSO_n_RPM_error]			= &data->av.n_RPM_error;
+	js_ch_observable[JSO_u_ab]					= &data->av.u_ab; // @
+	js_ch_observable[JSO_u_ca]					= &data->av.u_ca; // @
+	js_ch_observable[JSO_u_bc]					= &data->av.u_bc; // @
+	js_ch_observable[JSO_u_n]					= &data->av.u_n; // @
+	js_ch_observable[JSO_u_ph1]					= &data->av.u_ph1; // @
+	js_ch_observable[JSO_u_ph2]					= &data->av.u_ph2; // @
+	js_ch_observable[JSO_u_ph3]					= &data->av.u_ph3; // @
+
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.

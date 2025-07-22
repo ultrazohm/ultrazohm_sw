@@ -109,7 +109,8 @@ void ISR_Control(void *data)
     Global_Data.av.i_high = i_ph_current_selector(Global_Data.av.sector, Global_Data.av.i_a, Global_Data.av.i_b, Global_Data.av.i_c);
     // @@@@@@@@@@@@@@@@@@@
 
-    /*
+    // These lines were commented out before for some reason
+
     Global_Data.av.u_ab =    Global_Data.av.u_a -   Global_Data.av.u_b;
     Global_Data.av.u_bc =    Global_Data.av.u_b -   Global_Data.av.u_c;
     Global_Data.av.u_ca =    Global_Data.av.u_c -   Global_Data.av.u_a;
@@ -117,7 +118,7 @@ void ISR_Control(void *data)
     Global_Data.av.u_ph1 =   Global_Data.av.u_a - Global_Data.av.u_n;
     Global_Data.av.u_ph2 =   Global_Data.av.u_b - Global_Data.av.u_n;
     Global_Data.av.u_ph3 =   Global_Data.av.u_c - Global_Data.av.u_n;
-   */
+
 
 
 
@@ -131,48 +132,62 @@ void ISR_Control(void *data)
 
     Global_Data.av.inverter_outputs_d1 = uz_inverter_adapter_get_outputs(Global_Data.objects.inverter_D1);
     //Read out overtemperature signal (low-active) and disable PWM and set UltraZohm in error state
+
+
     //Overtemperature for H1
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H1) {
-       ultrazohm_state_machine_set_error(true);
+       //ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 2.0f; // @@
     }
     //Overtemperature for L1
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L1) {
-       ultrazohm_state_machine_set_error(true);
+       //ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 3.0f; // @@
     }
     //Overtemperature for H2
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H2) {
-       ultrazohm_state_machine_set_error(true);
+       //ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 4.0f; // @@
     }
     //Overtemperature for L2
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L2) {
-       ultrazohm_state_machine_set_error(true);
+       //ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 5.0f; // @@
     }
     //Overtemperature for H3
     if (!Global_Data.av.inverter_outputs_d1.FAULT_H3) {
-       ultrazohm_state_machine_set_error(true);
+       //ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 6.0f; // @@
     }
     //Overtemperature for L3
     if (!Global_Data.av.inverter_outputs_d1.FAULT_L3) {
-       ultrazohm_state_machine_set_error(true);
+       //ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 7.0f; // @@
     }
     //Read out overcurrent signal (low-active) and disable PWM and set UltraZohm in error state
     //Binding of the signals to the driver is slightly unintuitive
     //Overcurrent for Phase A
     if (!Global_Data.av.inverter_outputs_d1.OC_L1) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 8.0f; // @@
     }
     //Overcurrent for Phase B
     if (!Global_Data.av.inverter_outputs_d1.OC_H1) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 9.0f; // @@
     }
     //Overcurrent for Phase C
     if (!Global_Data.av.inverter_outputs_d1.OC_L2) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 10.0f; // @@
     }
     //Overcurrent for DC-link
     if (!Global_Data.av.inverter_outputs_d1.OC_H2) {
        ultrazohm_state_machine_set_error(true);
+       Global_Data.av.errorcode = 11.0f; // @@
     }
+
+
 
     // Software current limit
     if(fabs(Global_Data.av.i_a) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_b) > MAX_PHASE_CURRENT_AMP || fabs(Global_Data.av.i_c) > MAX_PHASE_CURRENT_AMP ){
@@ -199,8 +214,8 @@ void ISR_Control(void *data)
 	Global_Data.av.u_abc_m.c = Global_Data.av.u_c;
 
 	// abc-dq Transformation
-    Global_Data.av.i_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.i_abc_m, Global_Data.av.theta_elec);
-    Global_Data.av.u_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.u_abc_m, Global_Data.av.theta_elec);
+    //Global_Data.av.i_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.i_abc_m, Global_Data.av.theta_elec);
+    //Global_Data.av.u_dq_m = uz_transformation_3ph_abc_to_dq(Global_Data.av.u_abc_m, Global_Data.av.theta_elec);
 
     // --------------- BLDC ----------------- @@@@@
     // #1) DC-link current measured is defined as the Ist-Strom (comment out #2 if #1 is used)
@@ -216,16 +231,22 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
-    	Global_Data.av.u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.current_control, Global_Data.av.i_dq_ref, Global_Data.av.i_dq_m, Global_Data.av.U_ZK, Global_Data.av.omega_elec);
+    	//Global_Data.av.u_dq_ref = uz_CurrentControl_sample(Global_Data.objects.current_control, Global_Data.av.i_dq_ref, Global_Data.av.i_dq_m, Global_Data.av.U_ZK, Global_Data.av.omega_elec);
 
-    	Global_Data.av.output_Dutycycle = uz_spwm_dq(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
+    	//Global_Data.av.output_Dutycycle = uz_spwm_dq(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
 
-    	// @@@@@
+    	// @@@@@ BLDCM Control Systems + Inverter Gate Pulses + PI controller inputs and outputs
     	uz_BLDC_control_sample(Global_Data.objects.BLDC_systems, Global_Data.av.sector, Global_Data.av.U_ctrl_ref, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.n_ref_rpm, Global_Data.av.n_act_rpm, Global_Data.av.I_ph_ref, Global_Data.av.I_ph_m, Global_Data.av.U_ZK, Global_Data.av.SpeedControl, Global_Data.av.CurrentControl, Global_Data.av.CascadeControl, Global_Data.av.DutyCycleControl);
 
     	Global_Data.rasv.halfBridge1DutyCycle = uz_BLDC_control_get_duty_a(Global_Data.objects.BLDC_systems);
     	Global_Data.rasv.halfBridge2DutyCycle = uz_BLDC_control_get_duty_b(Global_Data.objects.BLDC_systems);
     	Global_Data.rasv.halfBridge3DutyCycle = uz_BLDC_control_get_duty_c(Global_Data.objects.BLDC_systems);
+
+    	Global_Data.av.n_RPM_error = uz_BLDC_control_get_n_RPM_error(Global_Data.objects.BLDC_systems);
+    	Global_Data.av.I_ph_error = uz_BLDC_control_get_I_ph_error(Global_Data.objects.BLDC_systems);
+    	Global_Data.av.i_ref_kaskade = uz_BLDC_control_get_i_ref_kaskade(Global_Data.objects.BLDC_systems);
+    	Global_Data.av.u_BLDC_ref = uz_BLDC_control_get_u_BLDC_ref(Global_Data.objects.BLDC_systems);
+
     	// @@@@@
 
     }else{

@@ -9,7 +9,7 @@ If temperature measurement of the motor is available, the procedure can include 
 
 .. _meas_process:
 
-.. tikz:: schematic
+.. tikz:: Flow chart of the measurement procedure
   :align: center
   :xscale: 80
 
@@ -28,7 +28,7 @@ If temperature measurement of the motor is available, the procedure can include 
    \node (start) [startstop] {Start measurement};
    \node (initialize) [process, right = 1cm of start, align=center]
    {Set first operating point $k$};
-   \node (measure) [process, below = 0.5cm of initialize, align=center] {Wait for $t >> \tau_{max}$\\Measure data};
+   \node (measure) [process, below = 0.5cm of initialize, align=center] {Wait for $t >> \tau_{max}$\\Set data valid flag};
    \node (tempavail) [decision, below = 0.5cm of measure, align=center] {Check motor \\ temperature?};
    \node (tempcheck) [decision, below = 1cm of tempavail, align=center] {Temperature within \\ limits?\\ $\windingTemperatureMin < \windingTemperature < \windingTemperatureMax$};
    \node (heating) [process, left=1.5cm of tempcheck, align=center] {$\windingTemperature > \windingTemperatureMax$:\\ Cooling phase\\ $\windingTemperature < \windingTemperatureMin$:\\ Heating phase};
@@ -56,7 +56,7 @@ The measuruement process is depicted in :numref:`meas_process`.
    :align: center
    :width: 100%
 
-   test caption
+   Examplary measurement of stator voltages :math:`v_{dq}` and currents :math:`i_{dq}`
 
 :numref:`udq_2500rpm` shows result from measurement
 
@@ -72,7 +72,7 @@ The measuruement process is depicted in :numref:`meas_process`.
    :align: center
    :width: 100%
 
-   test caption two
+   Examplary flux maps
 
 :numref:`psidq_3000rpm` shows result from measurement
 

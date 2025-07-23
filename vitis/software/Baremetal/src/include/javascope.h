@@ -160,7 +160,7 @@ enum gui_button_mapping {
  RCV_FLD_ZEROVALUE=0,
  i_q,
  i_d,
- omega_m,
+ omega_el,
  v_q,
  v_d,
  receive_field_6,

@@ -53,6 +53,9 @@ extern float chirp_output2;
 extern float chirp_output3;*/
 extern uz_3ph_abc_t three_phase_output;
 
+extern float omega_el_rad_p_sec;
+extern uz_3ph_dq_t measured_currents_Amp;
+
 extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 extern struct uz_pmsmModel_inputs_t pmsm_inputs;
 
@@ -76,9 +79,9 @@ int JavaScope_initialize(DS_Data* data)
 	// With the JavaScope, signals can be displayed simultaneously
 	// Changing between the observable signals is possible at runtime in the JavaScope.
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
-	   js_ch_observable[JSO_i_q] = &pmsm_outputs.i_q_A;
-	   js_ch_observable[JSO_i_d] = &pmsm_outputs.i_d_A;
-	   js_ch_observable[JSO_omega] = &pmsm_outputs.omega_mech_1_s;
+	   js_ch_observable[JSO_i_q] = &measured_currents_Amp.q;
+	   js_ch_observable[JSO_i_d] = &measured_currents_Amp.d;
+	   js_ch_observable[JSO_omega] = &omega_el_rad_p_sec;
 	   js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
 	   js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
 	/*js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
@@ -114,9 +117,9 @@ int JavaScope_initialize(DS_Data* data)
 
 	   js_slowDataArray[JSSD_FLOAT_u_d]                                = &(pmsm_inputs.v_d_V);
 	   js_slowDataArray[JSSD_FLOAT_u_q]                                = &(pmsm_inputs.v_q_V);
-	   js_slowDataArray[JSSD_FLOAT_i_d]                                = &(pmsm_outputs.i_d_A);
-	   js_slowDataArray[JSSD_FLOAT_i_q]                                = &(pmsm_outputs.i_q_A);
-	   js_slowDataArray[JSSD_FLOAT_speed]                              = &(pmsm_outputs.omega_mech_1_s);
+	   js_slowDataArray[JSSD_FLOAT_i_d]                                = &(measured_currents_Amp.d);
+	   js_slowDataArray[JSSD_FLOAT_i_q]                                = &(measured_currents_Amp.q);
+	   js_slowDataArray[JSSD_FLOAT_speed]                              = &(omega_el_rad_p_sec);
 	   js_slowDataArray[JSSD_FLOAT_SecondsSinceSystemStart]= &(System_UpTime_seconds);
 
 	/*js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);

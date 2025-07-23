@@ -288,13 +288,13 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_4):
-				is_three_phase_active = true;
-				ultrazohm_state_machine_set_userLED(true);
+				// is_three_phase_active = true;
+				// ultrazohm_state_machine_set_userLED(true);
 			break;
 
 		case (My_Button_5):
-    	       is_three_phase_active = false;
-    	       ultrazohm_state_machine_set_userLED(false);
+    	      // is_three_phase_active = false;
+    	      // ultrazohm_state_machine_set_userLED(false);
 			break;
 
 		case (My_Button_6):

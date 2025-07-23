@@ -31,6 +31,8 @@
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
 
+#define MAX_PHASE_CURRENT 7.0f
+
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
 XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible for ALL interrupts of the IPI!
@@ -51,6 +53,9 @@ uz_3ph_abc_t three_phase_output = {0};
  float frequency = 1.0f;
  float offset = 0.5f;
 
+
+float theta_offset = 2.33f;
+float omega_el_rad_p_sec = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -64,6 +69,13 @@ extern uz_CurrentControl_t* CurrentControl_instance;
 uz_3ph_dq_t reference_currents_Amp = {0};
 uz_3ph_dq_t measured_currents_Amp = {0};
 uz_3ph_dq_t CurrentControl_output_Volts = {0};
+
+uz_3ph_abc_t CurrentControl_output_Volts_abc = {0};
+uz_3ph_abc_t measured_currents_abc_Amp = {0};
+float theta_el_rad = 0.0f;
+struct uz_DutyCycle_t dutycycle = {0};
+float V_DC_Volts = 48.0f;
+
 float omega_el_rad_per_sec = 0.0f;
 struct uz_pmsmModel_inputs_t pmsm_inputs={
   .omega_mech_1_s=0.0f,
@@ -99,20 +111,50 @@ void ISR_Control(void *data)
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
+
+
+    if (current_state == running_state || current_state == control_state) {
+      // enable inverter adapter hardware
+      uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
+    } else {
+      // disable inverter adapter hardware
+      uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
+    }
+
     if (current_state==control_state)
     {
-    		   uz_pmsmModel_trigger_input_strobe(pmsm);
+    		/*   uz_pmsmModel_trigger_input_strobe(pmsm);
     	       uz_pmsmModel_trigger_output_strobe(pmsm);
     	       pmsm_outputs=uz_pmsmModel_get_outputs(pmsm);
     	       measured_currents_Amp.d = pmsm_outputs.i_d_A;
     	       measured_currents_Amp.q = pmsm_outputs.i_q_A;
     	       omega_el_rad_per_sec = pmsm_outputs.omega_mech_1_s * 3.0f;
-    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, 24.0f, omega_el_rad_per_sec);
+    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, V_DC_Volts, omega_el_rad_per_sec);
     	       pmsm_inputs.v_q_V=CurrentControl_output_Volts.q;
     	       pmsm_inputs.v_d_V=CurrentControl_output_Volts.d;
     	       pmsm_inputs.omega_mech_1_s = n_ref *2.0f* M_PI /60.0f;
     	       uz_pmsmModel_set_inputs(pmsm, pmsm_inputs);
 
+    	       */
+
+    	       theta_el_rad = fmodf(Global_Data.av.theta_elec*3.0f,2*M_PI)-theta_offset;
+    	       omega_el_rad_p_sec = Global_Data.av.mechanicalRotorSpeed *3.0f*2.0f*M_PI/60;
+    	       //Global_Data.av.theta_elec_left = fmodf(Global_Data.av.theta_elec_left*poles,2*M_PI)-theta_offset;
+
+    	       measured_currents_abc_Amp.a = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
+    	       measured_currents_abc_Amp.b = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
+			   measured_currents_abc_Amp.c = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
+    	       if(fabs(measured_currents_abc_Amp.a) > MAX_PHASE_CURRENT || fabs(measured_currents_abc_Amp.b) > MAX_PHASE_CURRENT || fabs(measured_currents_abc_Amp.c) > MAX_PHASE_CURRENT)
+    	           	{
+    	           		uz_assert(0);
+    	           	}
+    	       measured_currents_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_abc_Amp, theta_el_rad);
+    	       CurrentControl_output_Volts_abc = uz_CurrentControl_sample_abc(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, V_DC_Volts, omega_el_rad_per_sec, theta_el_rad);
+    	       //dutycycle = uz_Space_Vector_Modulation(CurrentControl_output_Volts, V_DC_Volts, theta_el_rad);
+
+    	       Global_Data.rasv.halfBridge1DutyCycle = dutycycle.DutyCycle_A;
+    	       Global_Data.rasv.halfBridge2DutyCycle = dutycycle.DutyCycle_B;
+    	       Global_Data.rasv.halfBridge3DutyCycle = dutycycle.DutyCycle_C;
 
     	 /*if (is_three_phase_active) {
     		 three_phase_output = uz_wavegen_three_phase_sample(amplitude, frequency, offset); }*/

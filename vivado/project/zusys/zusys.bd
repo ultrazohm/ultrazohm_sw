@@ -6,7 +6,8 @@
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2022.2.2"
+      "tool_version": "2022.2.2",
+      "validated": "true"
     },
     "design_tree": {
       "uz_analog_adapter": {
@@ -327,7 +328,13 @@
       "D2_OUT": {
         "direction": "O",
         "left": "11",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "12",
+            "value_src": "ip_prop"
+          }
+        }
       },
       "D2_OUT_26": {
         "direction": "O",
@@ -377,7 +384,13 @@
       "D4_OUT": {
         "direction": "O",
         "left": "7",
-        "right": "0"
+        "right": "0",
+        "parameters": {
+          "PortWidth": {
+            "value": "1",
+            "value_src": "default_prop"
+          }
+        }
       },
       "D4_OUT_26": {
         "direction": "O",
@@ -3789,6 +3802,11 @@
                 "xci_name": "zusys_AXI2TCM_0_0",
                 "xci_path": "ip\\zusys_AXI2TCM_0_0\\zusys_AXI2TCM_0_0.xci",
                 "inst_hier_path": "uz_system/DataMover/AXI2TCM_0",
+                "parameters": {
+                  "C_M00_NUMBER_of_ADCs": {
+                    "value": "24"
+                  }
+                },
                 "interface_ports": {
                   "M00_AXI": {
                     "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
@@ -9395,6 +9413,35 @@
       }
     },
     "addressing": {
+      "/uz_system/DataMover/AXI2TCM_0": {
+        "address_spaces": {
+          "M00_AXI": {
+            "segments": {
+              "SEG_zynq_ultra_ps_e_0_LPD_DDR_HIGH": {
+                "address_block": "/zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_HIGH",
+                "offset": "0x00000000",
+                "range": "1",
+                "is_excluded": "TRUE"
+              },
+              "SEG_zynq_ultra_ps_e_0_LPD_DDR_LOW": {
+                "address_block": "/zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_LOW",
+                "offset": "0x00000000",
+                "range": "2G"
+              },
+              "SEG_zynq_ultra_ps_e_0_LPD_LPS_OCM": {
+                "address_block": "/zynq_ultra_ps_e_0/SAXIGP6/LPD_LPS_OCM",
+                "offset": "0xFF000000",
+                "range": "16M"
+              },
+              "SEG_zynq_ultra_ps_e_0_LPD_QSPI": {
+                "address_block": "/zynq_ultra_ps_e_0/SAXIGP6/LPD_QSPI",
+                "offset": "0xC0000000",
+                "range": "512M"
+              }
+            }
+          }
+        }
+      },
       "/zynq_ultra_ps_e_0": {
         "address_spaces": {
           "Data": {

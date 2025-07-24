@@ -54,7 +54,9 @@ extern float chirp_output3;*/
 extern uz_3ph_abc_t three_phase_output;
 
 extern float omega_el_rad_p_sec;
+extern float theta_el_rad;
 extern uz_3ph_dq_t measured_currents_Amp;
+extern struct uz_3ph_abc_t measured_currents_abc_Amp;
 
 extern struct uz_pmsmModel_outputs_t pmsm_outputs;
 extern struct uz_pmsmModel_inputs_t pmsm_inputs;
@@ -81,9 +83,11 @@ int JavaScope_initialize(DS_Data* data)
 	// the addresses in Global_Data do not change during runtime, this can be done in the init
 	   js_ch_observable[JSO_i_q] = &measured_currents_Amp.q;
 	   js_ch_observable[JSO_i_d] = &measured_currents_Amp.d;
-	   js_ch_observable[JSO_omega] = &omega_el_rad_p_sec;
-	   js_ch_observable[JSO_v_d] = &pmsm_inputs.v_d_V;
-	   js_ch_observable[JSO_v_q] = &pmsm_inputs.v_q_V;
+	   js_ch_observable[JSO_theta_el_rad] = &theta_el_rad;
+	   js_ch_observable[JSO_i_a] = &measured_currents_abc_Amp.a;
+	   js_ch_observable[JSO_i_b] = &measured_currents_abc_Amp.b;
+	   js_ch_observable[JSO_i_c] = &measured_currents_abc_Amp.c;
+	   js_ch_observable[JSO_omega_el_rad_p_sec] = &omega_el_rad_p_sec;
 	/*js_ch_observable[JSO_Speed_rpm]				= &data->av.mechanicalRotorSpeed;
 	js_ch_observable[JSO_el_Speed_rpm]			= &data->av.electricalRotorSpeed;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;

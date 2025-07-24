@@ -3274,22 +3274,22 @@
               "Dig_11_Ch5_1": {
                 "ports": [
                   "Dig_13_Ch5",
-                  "Incremental_Encoder_0/I",
-                  "system_ila_0/probe2"
+                  "system_ila_0/probe2",
+                  "Incremental_Encoder_0/A"
                 ]
               },
               "Dig_12_Ch5_1": {
                 "ports": [
                   "Dig_12_Ch5",
-                  "Incremental_Encoder_0/A",
-                  "system_ila_0/probe0"
+                  "system_ila_0/probe0",
+                  "Incremental_Encoder_0/B"
                 ]
               },
               "Dig_13_Ch5_1": {
                 "ports": [
                   "Dig_14_Ch5",
-                  "Incremental_Encoder_0/B",
-                  "system_ila_0/probe1"
+                  "system_ila_0/probe1",
+                  "Incremental_Encoder_0/I"
                 ]
               },
               "Incremental_Encoder_0_OverSamplFactor": {

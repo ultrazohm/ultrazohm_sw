@@ -76,7 +76,6 @@ float theta_el_rad = 0.0f;
 struct uz_DutyCycle_t dutycycle = {0};
 float V_DC_Volts = 48.0f;
 
-float omega_el_rad_per_sec = 0.0f;
 struct uz_pmsmModel_inputs_t pmsm_inputs={
   .omega_mech_1_s=0.0f,
   .v_d_V=0.0f,
@@ -112,7 +111,11 @@ void ISR_Control(void *data)
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
-
+    measured_currents_abc_Amp.a = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
+    measured_currents_abc_Amp.b = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
+	   measured_currents_abc_Amp.c = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
+       theta_el_rad = fmodf(Global_Data.av.theta_elec*3.0f,2*M_PI)-theta_offset;
+       omega_el_rad_p_sec = Global_Data.av.mechanicalRotorSpeed *3.0f*2.0f*M_PI/60;
     if (current_state == running_state || current_state == control_state) {
       // enable inverter adapter hardware
       uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
@@ -137,20 +140,17 @@ void ISR_Control(void *data)
 
     	       */
 
-    	       theta_el_rad = fmodf(Global_Data.av.theta_elec*3.0f,2*M_PI)-theta_offset;
-    	       omega_el_rad_p_sec = Global_Data.av.mechanicalRotorSpeed *3.0f*2.0f*M_PI/60;
+
     	       //Global_Data.av.theta_elec_left = fmodf(Global_Data.av.theta_elec_left*poles,2*M_PI)-theta_offset;
 
-    	       measured_currents_abc_Amp.a = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
-    	       measured_currents_abc_Amp.b = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
-			   measured_currents_abc_Amp.c = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
+
     	       if(fabs(measured_currents_abc_Amp.a) > MAX_PHASE_CURRENT || fabs(measured_currents_abc_Amp.b) > MAX_PHASE_CURRENT || fabs(measured_currents_abc_Amp.c) > MAX_PHASE_CURRENT)
     	           	{
     	           		uz_assert(0);
     	           	}
     	       measured_currents_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_abc_Amp, theta_el_rad);
-    	       CurrentControl_output_Volts_abc = uz_CurrentControl_sample_abc(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, V_DC_Volts, omega_el_rad_per_sec, theta_el_rad);
-    	       //dutycycle = uz_Space_Vector_Modulation(CurrentControl_output_Volts, V_DC_Volts, theta_el_rad);
+    	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, V_DC_Volts, omega_el_rad_p_sec);
+    	       dutycycle = uz_Space_Vector_Modulation(CurrentControl_output_Volts, V_DC_Volts, theta_el_rad);
 
     	       Global_Data.rasv.halfBridge1DutyCycle = dutycycle.DutyCycle_A;
     	       Global_Data.rasv.halfBridge2DutyCycle = dutycycle.DutyCycle_B;

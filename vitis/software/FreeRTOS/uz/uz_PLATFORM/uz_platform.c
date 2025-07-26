@@ -7,6 +7,7 @@
 #include "../uz_IIC/uz_iic.h"
 #include "uz_platform_gpiops.h"
 
+
 #define UZ_PLATFORM_SCLK_RATEKHZ	(400U)
 
 //// Bus instance ID (currently fixed to 0 and bound to PS I²C *1*)
@@ -68,6 +69,7 @@ typedef struct uz_platform_ {
 	uint16_t gpioi2c_outmirror;
 
 	XGpioPs gpiops;
+	uint32_t uz_hardware_version;
 
 #if (UZ_PLATFORM_CARDID==1)
 	uz_iic usrmux;
@@ -206,7 +208,7 @@ static uz_platform uzp={0};
 
 uint32_t uz_platform_get_hw_revision(void){
 	uz_assert(uzp.is_ready);
-	return (uint32_t)uzp.data.hw_revision;
+	return uzp.uz_hardware_version;
 }
 
 int32_t uz_platform_init(uint32_t default_revision) {
@@ -248,6 +250,7 @@ int32_t uz_platform_init(uint32_t default_revision) {
 #endif
 
 	// Populate IO map
+	uzp.uz_hardware_version=(uint32_t)uzp.data.hw_revision;
 	switch(uzp.data.hw_group) {
 
 		case UZP_HWGROUP_UZOHM3:
@@ -292,6 +295,13 @@ int32_t uz_platform_init(uint32_t default_revision) {
 
 				// NB: If extended to RPU, handle revision-specific (UI) PS GPIOs based on UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT (cf. uz_platform_eeprom.h)
 				uz_platform_printhost_group004model003(uzp.data.fflags_model);
+
+				if (uzp.data.fflags_model & UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT){
+					uzp.uz_hardware_version=3U;
+				}
+				else{
+					uzp.uz_hardware_version=4U;
+				}
 
 				switch(uzp.data.hw_revision) {
 					case 1U:

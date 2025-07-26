@@ -25,13 +25,13 @@ enum uz_platform_eeprom_group {
 #define UZ_PLATFORM_HWMODEL_EXTOFFSET	(500U)
 
 #pragma pack(push,1)
-	typedef struct uz_platform_batchandserial_ {
-		uint8_t  batch;
-		uint16_t serial;
-	} uz_platform_batchandserial;
-	typedef struct uz_platform_externalserial_ {
-		uint32_t extserial : 24;
-	} uz_platform_externalserial;
+	typedef struct uz_platform_uzpart_variantandserial_ {
+		uint8_t  vv;
+		uint16_t sn;
+	} uz_platform_uzpart_variantandserial;
+	typedef struct uz_platform_externalpart_serialonly_ {
+		uint32_t sn : 24;
+	} uz_platform_externalpart_serialonly;
 #pragma pack(pop)
 
 typedef struct uz_platform_eeprom_ {
@@ -41,8 +41,8 @@ typedef struct uz_platform_eeprom_ {
 	uint8_t fflags_revision : 6;
 	uint8_t hw_revision;
 	union {
-		struct uz_platform_batchandserial_ hw_batchandserial;
-		struct uz_platform_externalserial_ hw_externalserial;
+		struct uz_platform_uzpart_variantandserial_ uzhw_variantandserial;
+		struct uz_platform_externalpart_serialonly_ externalhw_serialonly;
 	} serialdata;
 } uz_platform_eeprom;
 
@@ -65,6 +65,23 @@ void uz_platform_fflags2str_helper(char *str, uint8_t fflags, size_t size) {
 		*(--str) = (fflags & (1<<i)) ? '1' : '0';
 }
 
+// Model FFlags of I²C/SSD/S²C extension board for Rev04-UZ(C)s
+#define UZ_PLATFORM_FFSMOD_GRP004MOD003_HOSTSERIAL_MASK	(0b011111)		// S# range: 0001 - 0031
+#define UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT (0b100000)		// Set: Older than Rev04
+
+void uz_platform_printhost_group004model003(uint8_t fflags_model) {
+	char* hostrev;
+
+	if (fflags_model & UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT)
+		hostrev = "Pre-Rev04";
+	else
+		hostrev = "Rev04";
+
+	uint8_t serial = fflags_model & UZ_PLATFORM_FFSMOD_GRP004MOD003_HOSTSERIAL_MASK;
+
+	uz_printf(" UZ Host ID: %9s, serial %04i\r\n", hostrev, serial);
+}
+
 void uz_platform_printinfo(uz_platform_eeprom *eeprom) {
 	uz_printf("/=================\\\r\n");
 	if (UZP_HWGROUP_EXTERNAL == eeprom->hw_group) {
@@ -75,6 +92,8 @@ void uz_platform_printinfo(uz_platform_eeprom *eeprom) {
 
 	UZ_PLATFORM_FFLAGS2STR(fflags_model, eeprom->fflags_model)
 	uz_printf("Hw model:       %03i (flags %s=0x%02X)\r\n", eeprom->hw_model, fflags_model, eeprom->fflags_model);
+	if ( (UZP_HWGROUP_PERIPH == eeprom->hw_group) && (3 == eeprom->hw_model) )
+		uz_platform_printhost_group004model003(eeprom->fflags_model);
 	if (UZP_HWGROUP_ADCARD == eeprom->hw_group)
 		uz_printf(" UZ Card ID: %s\r\n", uz_platform_eeprom_group000models_enum2label(eeprom->hw_model));
 	if ( (UZP_HWGROUP_MZOHM == eeprom->hw_group) && (UZP_HWGROUP_MZ_CARRIER != eeprom->hw_model) )
@@ -84,10 +103,12 @@ void uz_platform_printinfo(uz_platform_eeprom *eeprom) {
 	uz_printf("Hw revision:     %02i (flags %s=0x%02X)\r\n", eeprom->hw_revision, fflags_revision, eeprom->fflags_revision);
 
 	if (UZP_HWGROUP_EXTERNAL == eeprom->hw_group) {
-		uz_printf("Ext. serial: %06i\r\n", eeprom->serialdata.hw_externalserial.extserial);
+		uz_printf("Ext. serial: %06i\r\n", eeprom->serialdata.externalhw_serialonly.sn);
 	} else {
-		uz_printf("Hw batch:        %02i\r\n", eeprom->serialdata.hw_batchandserial.batch);
-		uz_printf("Hw serial:     %04i\r\n", eeprom->serialdata.hw_batchandserial.serial);
+		uz_printf("Hw variant:      %02i\r\n", eeprom->serialdata.uzhw_variantandserial.vv);
+		if ( (UZP_HWGROUP_ADCARD == eeprom->hw_group) && (UZP_HWGROUP_ADCARD_DIGOPT == eeprom->hw_model) )
+			uz_printf(" Card Setup: %s\r\n", uz_platform_eeprom_group000model004variants_enum2label(eeprom->serialdata.uzhw_variantandserial.vv));
+		uz_printf("Hw serial:     %04i\r\n", eeprom->serialdata.uzhw_variantandserial.sn);
 	}
 	uz_printf("\\=================/\r\n");
 }

@@ -16,6 +16,10 @@ The frontpanel (FP) PCB contains the following connectors and features (cf. :ref
 - ``X7`` is an internal, 2280-sized M.2 slot that can be used to connect many off-the-shelf PCIe x1 extension cards. Due to limitations in the current ``uz_sw``, this feature requires manual PS configuration via Vivado's PCW on the software side, whilst the PCIe reference clock on the FP has to be enabled by means of ``R2``. A 5V supply is available on ``X9`` (NB: observe connector/cable pin-out and maximum supply current) if required by the M.2 PCIe card.
 - ``X10`` is an internal, 2280-sized M.2 slot for a 6-Gbit/s-SATA3 SSD (which is supplied from the carrier's ``3V3_PER`` rail and, thus, subject to its limits)
 
+.. figure:: img/fp-main_annotated.jpg
+   :width: 75%
+   :align: center
+
 For pin-outs and more details (in particular w.r.t. the isoIOs), please refer to the schematic of :ref:`frontpanelmainboard_rev02` as the pin-compatible successor.
 
 Downloads

@@ -31,13 +31,13 @@ set_property PACKAGE_PIN H14 	[get_ports D4_OUT[25]]
 
 # changed to zero-based numbering, starting from 00 to 29 on 24.03.2022
 #Digital_27_Ch4 = B47_L4_N
-set_property PACKAGE_PIN C13 [get_ports {D4_OUT_26[0]}]
+set_property PACKAGE_PIN C13 [get_ports {D4_OUT[26]}]
 #Digital_28_Ch4 = B47_L12_N
-set_property PACKAGE_PIN H13 [get_ports {D4_OUT_27[0]}]
+set_property PACKAGE_PIN H13 [get_ports {D4_OUT[27]}]
 #Digital_29_Ch4 = B47_L1_P
-set_property PACKAGE_PIN B15 [get_ports {D4_OUT_28[0]}]
+set_property PACKAGE_PIN B15 [get_ports {D4_OUT[28]}]
 #Digital_30_Ch4 = B47_L11_P
-set_property PACKAGE_PIN K14 [get_ports {D4_OUT_29[0]}]
+set_property PACKAGE_PIN K14 [get_ports {D4_OUT[29]}]
 
 set_property IOSTANDARD LVCMOS18 [get_ports D4_*]
 set_property PULLDOWN true [get_ports {D4_OUT[7]}]

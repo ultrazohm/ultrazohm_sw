@@ -249,6 +249,7 @@ int32_t uz_platform_init(uint32_t default_revision) {
 
 	// Populate IO map
 	switch(uzp.data.hw_group) {
+
 		case UZP_HWGROUP_UZOHM3:
 		case UZP_HWGROUP_UZOHM6:
 			switch(uzp.data.hw_revision) {
@@ -278,12 +279,44 @@ int32_t uz_platform_init(uint32_t default_revision) {
 #endif
 
 			break;
+
 		case UZP_HWGROUP_MZOHM:
 			uzp.iomap = &uzp_iomap_MicroZohmRev01onBreakoutBoardRev01;
 			uzp.maceeprom_primary = 0;
 			break;
 
-		// FIXME: Re-add uzp_iomap_UltraZohmRev04withExtensionBoardRev02 by looking for extension board - Details tbd.
+		case UZP_HWGROUP_PERIPH:
+
+			if (3U == uzp.data.hw_model) {
+				// I²C(/SSD(/S²C)) Extension Board <-> On Pre-Rev05 UZ Carrier
+
+				// NB: If extended to RPU, handle revision-specific (UI) PS GPIOs based on UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT (cf. uz_platform_eeprom.h)
+				uz_platform_printhost_group004model003(uzp.data.fflags_model);
+
+				switch(uzp.data.hw_revision) {
+					case 1U:
+						uzp.iomap = &uzp_iomap_UltraZohmRev04downto02;
+						break;
+					case 2U:
+						uzp.iomap = &uzp_iomap_UltraZohmRev04withExtensionBoardRev02;
+						break;
+					case 3U:
+						uzp.iomap = &uzp_iomap_UltraZohmRev04downto02;					// TODO: Change to S³C-enabled map once in existence
+						break;
+					default:
+						uz_printf("APU: Extension board not supported!\r\n");
+						return(UZ_FAILURE);
+						break;
+				}
+
+				uzp.maceeprom_primary = 1;
+
+			} else {
+					uz_printf("APU: Unknown peripheral %03i!\r\n", uzp.data.hw_model);
+					return(UZ_FAILURE);
+					break;
+			}
+			break;
 
 		default:
 			uz_printf("APU: Platform not supported!\r\n");

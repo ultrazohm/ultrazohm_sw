@@ -50,8 +50,8 @@ static void error_during(void);
 
 void ultrazohm_state_machine_init(uint32_t ultrazohm_revision)
 {
-    uz_assert(ultrazohm_state.platform_revision > 0U);
-    uz_assert(ultrazohm_state.platform_revision <= UZ_HARDWARE_VERSION_MAX);
+    uz_assert(ultrazohm_revision > 0U);
+    uz_assert(ultrazohm_revision <= UZ_HARDWARE_VERSION_MAX);
     ultrazohm_state.platform_revision = ultrazohm_revision;
 }
 

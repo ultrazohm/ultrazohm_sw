@@ -21,5 +21,5 @@ The second revision of the PCB-based frontpanel for carrier boards :math:`\geq` 
 Downloads
 ---------
 
-- :download:`Schematic Rev02 <frontpanel/SCH_uz_frontpanel_main_Rev02Batch00_02.PDF>`
+- :download:`Schematic Rev02 <frontpanel/SCH_uz_frontpanel_main_Rev02Batch00_02.pdf>`
 - Please refer to the `uz_frontpanel_main <https://bitbucket.org/ultrazohm/uz_frontpanel_main/>`_ repository for design files, the MPNs of the components used etc.

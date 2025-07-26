@@ -1,8 +1,8 @@
 .. _carrier_board_rev5_s3c:
 
-================================
-System Supply & Safety Component
-================================
+======================================
+System Supply & Safety Component (S3C)
+======================================
 
 
 General

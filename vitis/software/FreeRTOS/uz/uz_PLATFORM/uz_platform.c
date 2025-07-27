@@ -251,8 +251,9 @@ int32_t uz_platform_init(uint32_t default_revision) {
 	uzp.usrmux.is_ready = false;
 #endif
 
-	// Populate IO map
 	uzp.uzc_revision=(uint32_t)uzp.data.hw_revision;
+
+	// Populate IO map
 	switch(uzp.data.hw_group) {
 
 		case UZP_HWGROUP_UZOHM3:
@@ -298,10 +299,9 @@ int32_t uz_platform_init(uint32_t default_revision) {
 				// NB: If extended to RPU, handle revision-specific (UI) PS GPIOs based on UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT (cf. uz_platform_eeprom.h)
 				uz_platform_printhost_group004model003(uzp.data.fflags_model);
 
-				if (uzp.data.fflags_model & UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT){
+				if (uzp.data.fflags_model & UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT) {
 					uzp.uzc_revision=3U;
-				}
-				else{
+				} else {
 					uzp.uzc_revision=4U;
 				}
 

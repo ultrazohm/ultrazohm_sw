@@ -69,6 +69,8 @@ typedef struct uz_platform_ {
 	uint16_t gpioi2c_outmirror;
 
 	XGpioPs gpiops;
+
+	// Revision of UltraZohm Carrier (either from regular EEPROM data or Rev04/!Rev04-based if an Rev04UZC extension board is connected to a <Rev05)
 	uint32_t uzc_revision;
 
 #if (UZ_PLATFORM_CARDID==1)

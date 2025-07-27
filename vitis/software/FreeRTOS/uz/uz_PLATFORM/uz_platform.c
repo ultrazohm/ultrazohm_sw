@@ -296,9 +296,6 @@ int32_t uz_platform_init(uint32_t default_revision) {
 			if (3U == uzp.data.hw_model) {
 				// I²C(/SSD(/S²C)) Extension Board <-> On Pre-Rev05 UZ Carrier
 
-				// NB: If extended to RPU, handle revision-specific (UI) PS GPIOs based on UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT (cf. uz_platform_eeprom.h)
-				uz_platform_printhost_group004model003(uzp.data.fflags_model);
-
 				if (uzp.data.fflags_model & UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT) {
 					uzp.uzc_revision=3U;
 				} else {

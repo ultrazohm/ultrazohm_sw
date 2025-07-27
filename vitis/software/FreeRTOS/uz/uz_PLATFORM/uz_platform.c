@@ -69,7 +69,7 @@ typedef struct uz_platform_ {
 	uint16_t gpioi2c_outmirror;
 
 	XGpioPs gpiops;
-	uint32_t uz_hardware_version;
+	uint32_t uzc_revision;
 
 #if (UZ_PLATFORM_CARDID==1)
 	uz_iic usrmux;
@@ -208,7 +208,7 @@ static uz_platform uzp={0};
 
 uint32_t uz_platform_get_hw_revision(void){
 	uz_assert(uzp.is_ready);
-	return uzp.uz_hardware_version;
+	return uzp.uzc_revision;
 }
 
 int32_t uz_platform_init(uint32_t default_revision) {
@@ -250,7 +250,7 @@ int32_t uz_platform_init(uint32_t default_revision) {
 #endif
 
 	// Populate IO map
-	uzp.uz_hardware_version=(uint32_t)uzp.data.hw_revision;
+	uzp.uzc_revision=(uint32_t)uzp.data.hw_revision;
 	switch(uzp.data.hw_group) {
 
 		case UZP_HWGROUP_UZOHM3:
@@ -297,10 +297,10 @@ int32_t uz_platform_init(uint32_t default_revision) {
 				uz_platform_printhost_group004model003(uzp.data.fflags_model);
 
 				if (uzp.data.fflags_model & UZ_PLATFORM_FFSMOD_GRP004MOD003_PREREV04UZC_BIT){
-					uzp.uz_hardware_version=3U;
+					uzp.uzc_revision=3U;
 				}
 				else{
-					uzp.uz_hardware_version=4U;
+					uzp.uzc_revision=4U;
 				}
 
 				switch(uzp.data.hw_revision) {

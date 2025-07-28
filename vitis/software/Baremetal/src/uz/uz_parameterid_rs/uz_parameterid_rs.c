@@ -20,6 +20,7 @@ struct uz_parameterid_rs_t {
     struct uz_parameterid_rs_counter_t counter;
     float isr_counter;
     enum state state;
+    struct uz_parameterid_rs_temp_check_t temp_check_values;
 };
 
 
@@ -88,7 +89,7 @@ float uz_parameterid_rs_get_isr_counter(uz_parameterid_rs_t* self){
     return self->isr_counter;
 }
 
-struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_rs_t* self){
+struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_rs_t* self, float temp_degrees){
     uz_assert_not_NULL(self);
 	uz_assert(self->is_ready);
     struct uz_parameterid_output output;
@@ -106,6 +107,10 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
         self->counter.wait_max = (uint32_t)(self->internal_config.wait_time/self->internal_config.isr_steptime); 
         self->counter.i_max =(uint32_t)(self->internal_config.i_steptime/self->internal_config.isr_steptime);
         self->is_first_call_to_generate_outputs = false;
+        self->temp_check_values.initial_temp = temp_degrees;
+        self->temp_check_values.temp_min = self->temp_check_values.initial_temp * 0.95f;
+        self->temp_check_values.temp_max = self->temp_check_values.initial_temp * 1.05f;
+        self->temp_check_values.temp_check_done = false;
     } else {
         self->isr_counter++; 
         self->set_values.isr_stepcounter = self->isr_counter; 
@@ -122,25 +127,38 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
             case wait:
             self->counter.wait++;
                 if(self->counter.wait == self->counter.wait_max){
-                    self->state=i_pos_Amps;
+                    self->state=temp_check;
                     self->counter.wait = 0U;
                 }
                 break;
             
+
+            case temp_check:    
+                if (self->internal_config.check_temp){
+                    uz_parameterID_rs_check_temperature(self, temp_degrees);
+                    if (self->temp_check_values.temp_check_done) {
+                        self->state = i_pos_Amps;
+                    } else {
+                        break;
+                    }    
+                }else{
+                    self->state = i_pos_Amps;
+                    break;
+                }
+
+            
             case i_pos_Amps:
                 self->counter.i++; 
                 self->set_values.id_ref_Amps = self->internal_config.i_pos_Amps;
-                if (self->counter.i >= (uint32_t)(0.5f/self->internal_config.isr_steptime))
-                {
-                    self->set_values.data_valid = 1.0f;
-                }
-                
+                if (self->counter.i >= (uint32_t)(0.5f/self->internal_config.isr_steptime)){
+                        self->set_values.data_valid = 1.0f;
+                    }
                 if(self->counter.i == self->counter.i_max){
                     self->state=i_neg_Amps;
                     self->counter.i = 0U;
                     self->set_values.data_valid = 0.0f;
-                }
-                break;
+                    }
+                    break;
 
             case i_neg_Amps:
                 self->counter.i++; 
@@ -158,7 +176,7 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
                         self->set_values.data_valid = 0.0f;
                         break;
                     }
-                    self->state = i_pos_Amps;
+                    self->state = temp_check;
                     self->counter.i = 0U;
                     self->set_values.data_valid = 0.0f;
                 }
@@ -189,6 +207,24 @@ struct uz_parameterid_output uz_parameterid_rs_generate_outputs(uz_parameterid_r
     output = self->set_values;
     }
     return output;
+}
+
+
+void uz_parameterID_rs_check_temperature(uz_parameterid_rs_t* self, float temp_degrees){
+    uz_assert_not_NULL(self);
+    uz_assert(self->is_ready);
+
+    if (temp_degrees >= self->temp_check_values.temp_max){
+        self->set_values.id_ref_Amps = 0.0f;
+        self->set_values.iq_ref_Amps = 0.0f;
+    } else if (temp_degrees <= self->temp_check_values.temp_min){
+        self->set_values.id_ref_Amps = 0.0f;
+        self->set_values.iq_ref_Amps = self->internal_config.abs_iq_max_Amps;
+    } else {
+        self->temp_check_values.temp_check_done = true;
+        self->set_values.id_ref_Amps = 0.0f;
+        self->set_values.iq_ref_Amps = 0.0f;
+    }
 }
 
 #endif

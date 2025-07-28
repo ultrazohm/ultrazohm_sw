@@ -5,11 +5,13 @@
 #include "uz_parameterid_rs.h"
 #include "mock_uz_SystemTime.h"
 #include "../uz_global_configuration.h"
+#include "stdbool.h"
 
 
 struct uz_parameterid_rs_config_t test_config = {0};
 struct uz_parameterid_rs_increments_t test_increments = {0};
 struct uz_parameterid_output test_output = {0};
+float test_temp_degrees = 25.0f;
 
 void setUp(void)
 {
@@ -21,10 +23,13 @@ void setUp(void)
     test_config.i_neg_Amps = -10.0f; 
     test_config.i_repeats = 1.0f;
     test_config.i_steptime = 1.0f;
+    test_config.abs_iq_max_Amps = 10.0f;
+    test_config.check_temp = false;
     test_config.wait_time = 1.0f;
     test_config.isr_steptime = (1.0f / 10.0e3f) * 1.0f;
     test_output.id_ref_Amps = 0.0f;
     test_output.n_ref_rpm= 0.0f;
+
 }
 
 void tearDown(void)
@@ -84,7 +89,7 @@ void test_uz_parameterid_rs_generate_outputs_test_isr_counter(void){
     struct uz_parameterid_output actual_output;
     float c = 20000.0f; 
     for (int i = 0; i<=c; i++){
-        actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2, test_temp_degrees);
     }
     float output_isr_counter = uz_parameterid_rs_get_isr_counter(test_instance2);
     TEST_ASSERT_EQUAL_FLOAT(c, output_isr_counter);
@@ -95,24 +100,53 @@ void test_uz_parameterid_rs_generate_outputs_test_isr_counter(void){
 void test_uz_parameterid_rs_generate_outputs_i_pos_Amps_state(void){
     uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
     struct uz_parameterid_output actual_output;
-    float c = 10002.0f; 
+    float c = 10003.0f; 
     for (int i = 0; i<=c; i++){
-        actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2, test_temp_degrees);
     }
     TEST_ASSERT_EQUAL_FLOAT(10.0f, actual_output.id_ref_Amps);
     TEST_ASSERT_EQUAL_FLOAT(test_config.n_start_rpm, actual_output.n_ref_rpm);
 
     for (int i = 0; i<=10000; i++){
-    actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
+    actual_output = uz_parameterid_rs_generate_outputs(test_instance2, test_temp_degrees);
     }
     TEST_ASSERT_EQUAL_FLOAT(-10.0f, actual_output.id_ref_Amps);
     TEST_ASSERT_EQUAL_FLOAT(test_config.n_start_rpm, actual_output.n_ref_rpm);
 
     for (int i = 0; i<=10000; i++){
-    actual_output = uz_parameterid_rs_generate_outputs(test_instance2);
+    actual_output = uz_parameterid_rs_generate_outputs(test_instance2, test_temp_degrees);
     }
     TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.id_ref_Amps);
     TEST_ASSERT_EQUAL_FLOAT(200.0f, actual_output.n_ref_rpm);
 
 }
+
+void test_uz_parameterid_rs_generate_outputs_test_tempcheck(void){
+    test_config.check_temp = true;
+    uz_parameterid_rs_t* test_instance2 = uz_parameterid_rs_init(test_config);
+    struct uz_parameterid_output actual_output;
+    float c = 3.0f; 
+    for (int i = 0; i<=c; i++){
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2, test_temp_degrees);
+    }
+    test_temp_degrees = 50.0f; // Set temperature above threshold
+    for(int i = 0; i<=10000; i++){
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2, test_temp_degrees);
+    }
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.id_ref_Amps);    
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.iq_ref_Amps);    
+    test_temp_degrees = 20.0f; // Set temperature below threshold
+    for(int i = 0; i<=2; i++){
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2, test_temp_degrees);
+    }
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.id_ref_Amps);    
+    TEST_ASSERT_EQUAL_FLOAT(test_config.abs_iq_max_Amps, actual_output.iq_ref_Amps);   
+    test_temp_degrees = 25.0f; // Set temperature below threshold
+    for (int i = 0; i<=5000; i++){
+        actual_output = uz_parameterid_rs_generate_outputs(test_instance2, test_temp_degrees);
+    }
+    TEST_ASSERT_EQUAL_FLOAT(10.0f, actual_output.id_ref_Amps);
+    TEST_ASSERT_EQUAL_FLOAT(0.0f, actual_output.iq_ref_Amps);  
+}
+
 #endif // TEST

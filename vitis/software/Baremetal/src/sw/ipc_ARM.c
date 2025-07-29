@@ -187,6 +187,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_1):
 		data->av.snd_fld[1] = value;
+		data->av.set_output_pin_number = value;
 			break;
 
 		case (Set_Send_Field_2):

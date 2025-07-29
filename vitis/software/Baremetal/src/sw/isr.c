@@ -30,6 +30,7 @@
 #include "../Codegen/uz_codegen.h"
 #include "../include/mux_axi.h"
 #include "../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz/uz_wavegen/uz_wavegen.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -46,11 +47,38 @@ extern DS_Data Global_Data;
 //----------------------------------------------------
 static void ReadAllADC();
 
+float sawtooth = 0.0f;
+float sawtooth_old = 0.0f;
+uint32_t pin_counter = 0U;
+
 void ISR_Control(void *data)
 {
     uz_SystemTime_ISR_Tic(); // Reads out the global timer, has to be the first function in the isr
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
+
+    // set 30tx
+    sawtooth = uz_wavegen_sawtooth(1.0f, 3.0f);
+    if(fabs(sawtooth-sawtooth_old) > 0.5f)
+    	{
+      	if (pin_counter == 0U)
+      	{
+        		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, pin_counter, true);
+        		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, 29U, false);
+        } else {
+        		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, pin_counter, true);
+        		uz_axi_gpio_write_pin_zero_based(Global_Data.objects.axi_gpio_out, pin_counter-1U, false);
+        }
+    	pin_counter++;
+    	if(pin_counter == 30)
+    	{
+    		pin_counter = 0U;
+    	}
+
+
+    }
+
+    sawtooth_old = sawtooth;
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)

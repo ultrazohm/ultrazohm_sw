@@ -54,6 +54,8 @@
 
 #include "include/pwm_init.h"
 
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
+
 
 //----------------------------------------------------
 // FUNCTIONS

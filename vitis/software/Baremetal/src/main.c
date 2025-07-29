@@ -52,6 +52,22 @@ enum init_chain initialization_chain = init_assertions_and_wait_for_apu_handshak
 uint32_t apu_version_final = 0;
 uint32_t rpu_version_final = 0;
 
+
+struct uz_axi_gpio_config_t output_config={
+            .base_address=XPAR_UZ_USER_AXI_GPIO_TX_BASEADDR,
+            .device_id=XPAR_UZ_USER_AXI_GPIO_TX_DEVICE_ID,
+            .number_of_pins=30,
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_OUTPUT
+};
+
+struct uz_axi_gpio_config_t input_config={
+            .base_address=XPAR_UZ_USER_AXI_GPIO_RX_BASEADDR,
+            .device_id=XPAR_UZ_USER_AXI_GPIO_RX_DEVICE_ID,
+            .number_of_pins=30,
+            .direction_of_pins=UZ_AXI_GPIO_DIRECTION_ALL_INPUT
+};
+
+
 int main(void)
 {
     int status = UZ_SUCCESS;
@@ -104,6 +120,8 @@ int main(void)
             Global_Data.objects.mux_axi = initialize_uz_mux_axi();
             PWM_3L_Initialize(&Global_Data); // three-level modulator
             Global_Data.objects.encoder_D5 = initialize_incremental_encoder_ipcore_on_D5(UZ_D5_INCREMENTAL_ENCODER_RESOLUTION, UZ_D5_MOTOR_POLE_PAIR_NUMBER);
+            Global_Data.objects.axi_gpio_out = uz_axi_gpio_init(output_config);
+            Global_Data.objects.axi_gpio_in = uz_axi_gpio_init(input_config);
             initialization_chain = print_msg;
             break;
         case print_msg:

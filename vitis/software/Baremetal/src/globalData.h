@@ -7,6 +7,7 @@
 #include "IP_Cores/uz_interlockDeadtime2L/uz_interlockDeadtime2L.h"
 #include "IP_Cores/uz_mux_axi/uz_mux_axi.h"
 #include "IP_Cores/uz_incrementalEncoder/uz_incrementalEncoder.h"
+#include "IP_Cores/uz_axi_gpio/uz_axi_gpio.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -86,6 +87,7 @@ typedef struct _actualValues_ {
 	float electricalRotorSpeed;
 	float snd_fld[21];
 	uint32_t slowDataCounter;
+	float set_output_pin_number;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {
@@ -114,6 +116,8 @@ typedef struct{
 	uz_interlockDeadtime2L_handle deadtime_interlock_d1_pin_18_to_23;
 	uz_incrementalEncoder_t* encoder_D5;
 	uz_mux_axi_t* mux_axi;
+	uz_axi_gpio_t* axi_gpio_out;
+	uz_axi_gpio_t* axi_gpio_in;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

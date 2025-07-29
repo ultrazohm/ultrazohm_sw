@@ -90,7 +90,7 @@ struct uz_pmsm_reference_values
 uz_pmsm_control_t *uz_pmsm_control_init(struct uz_pmsm_control_configuration_t config, uz_PMSM_t machine_data);
 struct uz_pmsm_actual_data *uz_pmsm_control_get_actual_data(uz_pmsm_control_t *self);
 struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_control_t *self);
-struct uz_pmsm_measurement_values *uz_pmsm_control_get_uz_pmsm_measurement_values(uz_pmsm_control_t *self);
+struct uz_pmsm_measurement_values *uz_pmsm_control_get_pmsm_measurement_values(uz_pmsm_control_t *self);
 
 void uz_pmsm_controller_enable(uz_pmsm_control_t *self, bool enable);
 struct uz_DutyCycle_t uz_pmsm_controller_sample(uz_pmsm_control_t *self, struct uz_pmsm_measurement_values measurements, float reference_speed_in_rpm, uz_3ph_dq_t reference_currents, float disturbance_input_in_Nm);

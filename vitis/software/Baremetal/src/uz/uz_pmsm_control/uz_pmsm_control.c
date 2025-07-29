@@ -132,7 +132,7 @@ struct uz_pmsm_reference_values *uz_pmsm_control_get_reference_values(uz_pmsm_co
     return &self->reference_values;
 }
 
-struct uz_pmsm_measurement_values *uz_pmsm_control_get_uz_pmsm_measurement_values(uz_pmsm_control_t *self)
+struct uz_pmsm_measurement_values *uz_pmsm_control_get_pmsm_measurement_values(uz_pmsm_control_t *self)
 {
     return &self->measurement;
 }

@@ -1,7 +1,7 @@
 #ifdef TEST
 
 #include "unity.h"
-
+#include <stdbool.h>
 #include "uz_pmsm_control.h"
 #include "uz_HAL.h"
 #include "uz_pmsm_control.h"
@@ -105,12 +105,70 @@ struct uz_PMSM_t machine_config = {
     .I_max_Ampere = 12.0f};
 
 
-void test_uz_pmsm_control_test_call(void)
+void test_uz_pmsm_control_call_init(void)
 {
     uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
     struct uz_pmsm_actual_data *actual_data = uz_pmsm_control_get_actual_data(controller);
     struct uz_pmsm_reference_values *reference_values = uz_pmsm_control_get_reference_values(controller);
     struct uz_pmsm_measurement_values *measurement_values = uz_pmsm_control_get_pmsm_measurement_values(controller);
+    // Put to javascope like so:
+    // js_ch_observable[JSO_dut_iq] = &actual_data->i_dq_in_A.q;
+}
+
+void test_uz_pmsm_control_get_safe_area(void)
+{
+    uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
+    bool safe_operating_violation = uz_pmsm_controller_get_safe_operating_area_violation(controller);
+    // use a if construct to check if violation is present
+}
+
+void test_uz_pmsm_control_sample(void){
+    uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
+
+    struct uz_pmsm_measurement_values measurements = {
+        .phase_currents_from_adc_ampere_per_volt = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .phase_voltage_from_adc_voltage_per_volt = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .omega_mech_rad_per_sec = 1.0f,
+        .theta_mech = 1.56f,
+        .v_dc_from_adc_volt_per_volt = 12.0f,
+        .i_dc_from_adc_ampere_per_volt = 1.0f
+    };
+
+    float reference_speed_in_rpm=1.0f;
+    uz_3ph_dq_t reference_currents={
+        .d=0.0f,
+        .q=0.0f,
+        .zero=0.0f
+    };
+    float disturbance_input_in_Nm=0.0f;
+    struct uz_DutyCycle_t duty_d2 = uz_pmsm_controller_sample(controller, measurements, reference_speed_in_rpm, reference_currents, disturbance_input_in_Nm);
+}
+
+void test_uz_pmsm_set_enable(void)
+{
+    uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
+    uz_pmsm_controller_enable(controller, true);
+}
+
+void test_uz_pmsm_reset_error(void)
+{
+    uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
+
+    struct uz_pmsm_measurement_values measurements = {
+        .phase_currents_from_adc_ampere_per_volt = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .phase_voltage_from_adc_voltage_per_volt = {.a = 0.0f, .b = 0.0f, .c = 0.0f},
+        .omega_mech_rad_per_sec = 1.0f,
+        .theta_mech = 1.56f,
+        .v_dc_from_adc_volt_per_volt = 12.0f,
+        .i_dc_from_adc_ampere_per_volt = 1.0f};
+
+    uz_pmsm_controller_acknowledge_and_reset_error(controller, measurements);
+}
+
+void test_uz_pmsm_enable_speed_control(void)
+{
+    uz_pmsm_control_t *controller = uz_pmsm_control_init(pmsm_controller_config, machine_config);
+    uz_pmsm_controller_enable_speed_control(controller, true);
 }
 
 

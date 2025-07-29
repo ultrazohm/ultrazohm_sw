@@ -10,6 +10,7 @@
 #include "../../main.h"
 
 
+
 #define M_PI_FLOAT 3.14159265359f
 //Namen structs
 
@@ -46,6 +47,17 @@ typedef struct{
 	uz_inv_Ttv_sec_Matrix inv_Ttv_sec_Matrix[24];
 }SVMPWM_Parameters;
 
+typedef struct{
+	struct uz_DutyCycle_2x3ph_t DutyCycles;
+	int current_sector;
+	float SV_angle;
+	float alpha_trafo;
+	float beta_trafo;
+	float x_trafo;
+	float y_trafo;
+	float nullminus_trafo;
+	float nullplus_trafo;
+}output_with_test;
 
 
 
@@ -54,7 +66,8 @@ typedef struct{
 
 
 
-struct uz_DutyCycle_2x3ph_t uz_SVPWM_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK);
+
+output_with_test uz_SVPWM_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK);
 void uz_svm_6ph_calculate_and_shift(int sector, uz_sector_sv Zeiger[24]);
 
 

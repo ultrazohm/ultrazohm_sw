@@ -122,6 +122,8 @@ typedef struct _actualValues_ {
 	float i_Y_ref;
 
 	int PWM_select;
+	//For testing purposes only
+	int current_sector;
 
 	uz_6ph_alphabeta_t u_ref_6ph_alphabeta;
 	uz_6ph_abc_t u_ref_6ph_abc;

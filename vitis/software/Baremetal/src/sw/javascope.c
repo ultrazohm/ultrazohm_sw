@@ -113,6 +113,15 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_DutycycleTestA2] = &data->av.DutyCycle_6ph_test.system2.DutyCycle_A;
 	js_ch_observable[JSO_DutycycleTestB2] = &data->av.DutyCycle_6ph_test.system2.DutyCycle_B;
 	js_ch_observable[JSO_DutycycleTestC2] = &data->av.DutyCycle_6ph_test.system2.DutyCycle_C;
+	// Added for code Debugging
+	js_ch_observable[JSO_CurrentSector];
+	js_ch_observable[JSO_SV_Angle];
+	js_ch_observable[JSO_AlphaTrafo];
+	js_ch_observable[JSO_BetaTrafo];
+	js_ch_observable[JSO_XTrafo];
+	js_ch_observable[JSO_YTrafo];
+	js_ch_observable[JSO_NullplusTrafo];
+	js_ch_observable[JSO_NullminusTrafo];
 
 	js_ch_observable[JSO_u_Test_ref_A] = &data->av.u_ref_abc.a;
 	js_ch_observable[JSO_Theta_From_REF] = &data->av.theta_from_ref;

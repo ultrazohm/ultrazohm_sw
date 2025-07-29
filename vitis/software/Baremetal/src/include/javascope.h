@@ -90,6 +90,14 @@ enum JS_OberservableData {
 	JSO_ref_beta,
 	JSO_ref_x,
 	JSO_ref_y,
+	JSO_CurrentSector, // Added to observe code problems
+	JSO_SV_Angle,
+	JSO_AlphaTrafo,
+	JSO_BetaTrafo,
+	JSO_XTrafo,
+	JSO_YTrafo,
+	JSO_NullplusTrafo,
+	JSO_NullminusTrafo,// Hopefully enough
 	JSO_ENDMARKER
 };
 

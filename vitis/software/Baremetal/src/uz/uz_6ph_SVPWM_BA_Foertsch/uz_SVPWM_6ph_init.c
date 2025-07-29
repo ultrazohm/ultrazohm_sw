@@ -43,7 +43,7 @@ output_with_test uz_SVPWM_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabe
 	int current_sector1_24 = 0;
 	//float SV_angle = atan2f(inputdata.alpha, inputdata.beta);
 
-	float SV_angle = atan2f(inputdata.alpha, inputdata.beta);
+	float SV_angle = atan2f(inputdata.beta, inputdata.alpha);
 
 	//if (SV_angle < 0.0f){
 		SV_angle += M_PI_FLOAT; //* 2.0f;

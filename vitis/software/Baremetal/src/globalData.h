@@ -123,7 +123,15 @@ typedef struct _actualValues_ {
 
 	int PWM_select;
 	//For testing purposes only
-	int current_sector;
+	float current_sector;
+	float SV_angle;
+	float alpha_trafo;
+	float beta_trafo;
+	float x_trafo;
+	float y_trafo;
+	float nullminus_trafo;
+	float nullplus_trafo;
+
 
 	uz_6ph_alphabeta_t u_ref_6ph_alphabeta;
 	uz_6ph_abc_t u_ref_6ph_abc;

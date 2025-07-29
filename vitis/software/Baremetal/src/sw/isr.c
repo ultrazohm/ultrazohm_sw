@@ -442,7 +442,14 @@ void ISR_Control(void *data)
    	case 41:
    		output_with_test Test = uz_SVPWM_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
    		Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
-
+   		Global_Data.av.current_sector = Test.current_sector;
+   		Global_Data.av.SV_angle = Test.SV_angle;
+   		Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   		Global_Data.av.beta_trafo = Test.beta_trafo;
+   		Global_Data.av.x_trafo = Test.x_trafo;
+   		Global_Data.av.y_trafo = Test.y_trafo;
+   		Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   		Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
    	default:
 
    		break;

@@ -5,21 +5,30 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+/**
+ * @brief Object definition for the stator resistance measurement
+ * 
+ */
 typedef struct uz_parameterid_rs_t uz_parameterid_rs_t;
 
+
+/**
+ * @brief Configuration struct for stator resistance measurement. Pass to init function. Accessible by the user
+ * 
+ */
 struct uz_parameterid_rs_config_t
 {
-    float n_start_rpm;
-    float n_end_rpm;
-    float n_steps;
-    float i_pos_Amps;
-    float i_neg_Amps;
-    float i_repeats;
-    float i_steptime;
-    float wait_time;
-    float isr_steptime;
-    float abs_iq_max_Amps;
-    bool check_temp;
+    float n_start_rpm; /**< Initial speed of the measurement routine.   */
+    float n_end_rpm; /**< Final speed of the measurement routine.   */
+    float n_steps; /**< Number of steps from initial to final speed.   */
+    float i_pos_Amps; /**< Positive d-current for measurement. */
+    float i_neg_Amps; /**< Negative d-current for measurement. */
+    float i_repeats; /**< Number of repeats for the step from negative d-current to positive d-current . */
+    float i_steptime; /**< Duration of one step . */
+    float wait_time; /**< Wait time before data valid flag is set. */
+    float isr_steptime; /**< Definition of isr steptime in order to configure internal counters. */
+    float abs_iq_max_Amps; /**< Maximum q-current for heating phases. */
+    bool check_temp; /**< Set true, if temperature should be checked between operating points.  */
  };
 
 struct uz_parameterid_rs_increments_t
@@ -41,14 +50,17 @@ struct uz_parameterid_rs_counter_t
     uint32_t rs;
 };
 
+
+/**
+ * @brief Output struct of the measurement routine. id_ref_Amps, iq_ref_Amps and n_ref_rpm define operating point.
+ * 
+ */
 struct uz_parameterid_output
 {
-    float n_ref_rpm;
-    float id_ref_Amps;
-    float iq_ref_Amps;
-    float isr_stepcounter;
-    float isr_steptime;
-    float data_valid;
+    float n_ref_rpm; /**< Reference value for speed.  */
+    float id_ref_Amps; /**< Reference value for id.  */
+    float iq_ref_Amps; /**< Reference value for iq.  */
+    float data_valid; /**< Data valid flag. Is 1.0f, when data is valid. Can be used in post-processing to filter for valid data  */
 };
 
 enum state{

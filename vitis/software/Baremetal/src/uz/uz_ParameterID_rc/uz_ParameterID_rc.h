@@ -36,7 +36,7 @@ struct uz_parameterID_rc_ref_val_t {
     float id_ref_Amps; /**< Reference value for id.  */
     float iq_ref_Amps; /**< Reference value for iq.  */
     float n_ref_rpm; /**< Reference value for speed.  */
-    float data_valid; /**< Data valid flag. Is 1.0f, when data is valid. Used to average each operating point in post processing  */
+    float data_valid; /**< Data valid flag. Is 1.0f, when data is valid. Can be used in post-processing to filter for valid data  */
     float operating_points_all /**< Operating point counter */;
 };
 

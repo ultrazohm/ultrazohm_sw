@@ -5,11 +5,15 @@ Flux maps measurement
 ======================
 
 This module implements a measurement routine for measuring flux maps in both motor and generator mode. 
+The software module sequentially applies an adjustable set of operating points in the dq reference frame. 
+After a settling time of 0.5 seconds, a data valid flag is set to indicate stable system conditions.
+This flag can be used in post-processing to filter out invalid data.
 If temperature measurement of the motor is available, the procedure can include heating and cooling phases between operating points to maintain a constant temperature throughout the entire measurement process.
+The measuruement process is summarized in :numref:`meas_process`.
 
 .. _meas_process:
 
-.. tikz:: Flow chart of the measurement procedure
+.. tikz:: Flow chart of the measurement process
   :align: center
   :xscale: 80
 
@@ -34,7 +38,7 @@ If temperature measurement of the motor is available, the procedure can include 
    \node (heating) [process, left=1.5cm of tempcheck, align=center] {$\windingTemperature > \windingTemperatureMax$:\\ Cooling phase\\ $\windingTemperature < \windingTemperatureMin$:\\ Heating phase};
    \node (lastop) [decision, below=1cm of tempcheck, align=center]{$k=K$?};
    \node (nextop) [process, right=3.5cm of lastop] {$k+1$};
-   \node (finish) [startstop, left=1.5cm of lastop, align=center] {Stop measurement\\Store data};
+   \node (finish) [startstop, left=1.5cm of lastop, align=center] {Stop measurement};
    % Connections
    \draw [arrow] (start) -- (initialize);
    \draw [arrow] (initialize) -- (measure);
@@ -48,7 +52,7 @@ If temperature measurement of the motor is available, the procedure can include 
    \draw [arrow] (nextop) |- (measure);
    \draw [arrow] (lastop) -- node[above]{Yes} (finish);
 
-The measuruement process is depicted in :numref:`meas_process`.
+An example of the measurement results after post-processing in Matlab is shown in :numref:`udq_2500rpm`
 
 .. _udq_2500rpm:
 
@@ -58,13 +62,16 @@ The measuruement process is depicted in :numref:`meas_process`.
 
    Examplary measurement of stator voltages :math:`v_{dq}` and currents :math:`i_{dq}`
 
-:numref:`udq_2500rpm` shows result from measurement
+Using
 
 .. math::
 
    \Psi_d = \frac{v_q - R_s i_q}{\omega_{el}} \\
    \Psi_q = \frac{v_d - R_s i_d}{-\omega_{el}}
 
+the flux maps can be calculated from :numref:`udq_2500rpm` using the stator resistance. 
+As the stator resistance is dependent on temperature and speed, it is advised to use the rs module to identify the stator resistance at equal temperature and speed.
+:numref:`psidq_3000rpm` exemplarily depicts the aquired flux maps.
 
 .. _psidq_3000rpm:
 
@@ -73,8 +80,6 @@ The measuruement process is depicted in :numref:`meas_process`.
    :width: 100%
 
    Examplary flux maps
-
-:numref:`psidq_3000rpm` shows result from measurement
 
 Setup
 =====

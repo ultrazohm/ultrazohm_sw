@@ -81,8 +81,11 @@ struct uz_parameterid_rs_temp_check_t{
 };
 
 
-
-
+/** @brief Initialize the stator resistance measurement object
+ * 
+ * @param initial_config Configuration struct for the stator resistance measurement
+ * @return uz_parameterid_rs_t* Pointer to the initialized object
+ */
 uz_parameterid_rs_t *uz_parameterid_rs_init(struct uz_parameterid_rs_config_t initial_config);
 struct uz_parameterid_rs_config_t uz_parameterid_rs_get_current_config(uz_parameterid_rs_t* self);
 struct uz_parameterid_rs_increments_t uz_parameterid_rs_get_current_increments(uz_parameterid_rs_t* self);

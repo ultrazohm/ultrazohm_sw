@@ -191,16 +191,18 @@ void ISR_Control(void *data)
     // if "STOP"
     if (current_state==idle_state)
     {
-      	// disable inverters
+      	// Disable inverters
        	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, false);
        	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d2, false);
        	uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, false);
 
+       	// Reset control variables
        	Global_Data.rasv.speed_control_3ph_Last = false;
        	Global_Data.rasv.speed_control_6ph_Pruef = false;
        	Global_Data.rasv.current_control_3ph_Last = false;
        	Global_Data.rasv.current_control_6ph_Pruef = false;
 
+       	// Reset reference values
        	Global_Data.rasv.n_mech_Last_soll = 0;
        	Global_Data.rasv.n_mech_Pruef_soll = 0;
        	Global_Data.rasv.i_dq_3ph_Last_soll = (uz_3ph_dq_t) { .d = 0, .q = 0, .zero = 0 };
@@ -213,7 +215,7 @@ void ISR_Control(void *data)
        	uz_SpeedControl_reset(Global_Data.objects.speed_control_3ph_Last_object);
        	uz_SpeedControl_reset(Global_Data.objects.speed_control_6ph_Pruef_object);
 
-    	// write zero dutycycle
+    	// Write zero dutycycle
     	Global_Data.rasv.halfBridge1DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge2DutyCycle = 0.0f;
     	Global_Data.rasv.halfBridge3DutyCycle = 0.0f;
@@ -236,8 +238,9 @@ void ISR_Control(void *data)
 
     if (current_state==control_state)
     {
-		// Start: Control algorithm - only if ultrazohm is in control state
+    	// Start: Control algorithm - only if Ultrazohm is in control state
 
+    	/*=============== Last Start ===============*/
     	if(Global_Data.rasv.speed_control_3ph_Last) {
 
     		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d3, true);
@@ -285,8 +288,7 @@ void ISR_Control(void *data)
     		Global_Data.rasv.n_mech_Last_soll = 0.0f;
     	}
 
-
-
+    	/*=============== Last End --- Pruef Start ===============*/
     	if(Global_Data.rasv.speed_control_6ph_Pruef) {
 
     		uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
@@ -299,10 +301,10 @@ void ISR_Control(void *data)
     		struct uz_3ph_dq_t i_dq_3ph_Pruef_meas = (uz_3ph_dq_t) { .d = Global_Data.av.i_dq_6ph_Pruef_meas.d, .q = Global_Data.av.i_dq_6ph_Pruef_meas.q };
     		struct uz_3ph_dq_t i_dq_3ph_Pruef_soll = uz_SetPoint_sample(Global_Data.objects.torque_to_current_dq_6ph_Pruef_object, Global_Data.av.resolver_outputs_d4_Pruef.omega_mech_rad_s, Global_Data.rasv.M_Pruef_soll, u_dc_6ph, i_dq_3ph_Pruef_meas);
 
-    		if((i_dq_3ph_Pruef_soll.q * i_dq_3ph_Pruef_soll.q + i_dq_3ph_Pruef_soll.d * i_dq_3ph_Pruef_soll.d) > (MAX_PHASE_CURRENT_AMP_LAST * MAX_PHASE_CURRENT_AMP_LAST)) {
+    		if((i_dq_3ph_Pruef_soll.q * i_dq_3ph_Pruef_soll.q + i_dq_3ph_Pruef_soll.d * i_dq_3ph_Pruef_soll.d) > (MAX_PHASE_CURRENT_AMP_PRUEF * MAX_PHASE_CURRENT_AMP_PRUEF)) {
     			float alpha = atan2f(i_dq_3ph_Pruef_soll.q, i_dq_3ph_Pruef_soll.d);
-    		    i_dq_3ph_Pruef_soll.d = MAX_PHASE_CURRENT_AMP_LAST * cosf(alpha);
-    		    i_dq_3ph_Pruef_soll.q = MAX_PHASE_CURRENT_AMP_LAST * sinf(alpha);
+    		    i_dq_3ph_Pruef_soll.d = MAX_PHASE_CURRENT_AMP_PRUEF * cosf(alpha);
+    		    i_dq_3ph_Pruef_soll.q = MAX_PHASE_CURRENT_AMP_PRUEF * sinf(alpha);
     		}
     		Global_Data.rasv.i_dq_6ph_Pruef_soll = (uz_6ph_dq_t) {.d = i_dq_3ph_Pruef_soll.d, .q = i_dq_3ph_Pruef_soll.q, .x = 0, .y = 0, .z1 = 0, .z2 = 0};
 
@@ -369,7 +371,7 @@ void ISR_Control(void *data)
     		Global_Data.rasv.n_mech_Pruef_soll = 0.0f;
 
     	}
-
+    	/*=============== Pruef End ===============*/
     }
 
     uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.rasv.halfBridge1DutyCycle, Global_Data.rasv.halfBridge2DutyCycle, Global_Data.rasv.halfBridge3DutyCycle);

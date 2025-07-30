@@ -25,9 +25,9 @@ float read_highest_inverter_temperature(struct uz_inverter_adapter_outputs_t* in
 #define PHASE_CURRENT_CONV_A2	12.67f
 #define PHASE_CURRENT_CONV_B2	12.69f
 #define PHASE_CURRENT_CONV_C2	12.643f
-#define PHASE_CURRENT_CONV_A3	PHASE_CURRENT_CONV
-#define PHASE_CURRENT_CONV_B3	PHASE_CURRENT_CONV
-#define PHASE_CURRENT_CONV_C3	PHASE_CURRENT_CONV
+#define PHASE_CURRENT_CONV_A3	12.513f
+#define PHASE_CURRENT_CONV_B3	12.583f
+#define PHASE_CURRENT_CONV_C3	12.461f
 
 #define PHASE_CURRENT_OFFSET_A1	0.012f
 #define PHASE_CURRENT_OFFSET_B1	0.004f
@@ -35,9 +35,9 @@ float read_highest_inverter_temperature(struct uz_inverter_adapter_outputs_t* in
 #define PHASE_CURRENT_OFFSET_A2	-0.012f
 #define PHASE_CURRENT_OFFSET_B2	-0.01f
 #define PHASE_CURRENT_OFFSET_C2	0.019f
-#define PHASE_CURRENT_OFFSET_A3	0
-#define PHASE_CURRENT_OFFSET_B3	0
-#define PHASE_CURRENT_OFFSET_C3	0
+#define PHASE_CURRENT_OFFSET_A3	-0.008f
+#define PHASE_CURRENT_OFFSET_B3	-0.015f
+#define PHASE_CURRENT_OFFSET_C3	0.008f
 
 #define PHASE_VOLT_CONV_A1	11.963f
 #define PHASE_VOLT_CONV_B1	11.959f
@@ -45,9 +45,9 @@ float read_highest_inverter_temperature(struct uz_inverter_adapter_outputs_t* in
 #define PHASE_VOLT_CONV_A2	11.959f
 #define PHASE_VOLT_CONV_B2	11.959f
 #define PHASE_VOLT_CONV_C2	11.961f
-#define PHASE_VOLT_CONV_A3	PHASE_VOLT_CONV
-#define PHASE_VOLT_CONV_B3	PHASE_VOLT_CONV
-#define PHASE_VOLT_CONV_C3	PHASE_VOLT_CONV
+#define PHASE_VOLT_CONV_A3	12.000f // Javascope = ripple between 40.021V and 40.038V & Voltage Source = 40V
+#define PHASE_VOLT_CONV_B3	12.000f // Javascope = ripple between 40.020V and 40.036V & Voltage Source = 40V
+#define PHASE_VOLT_CONV_C3	12.000f // Javascope = ripple between 40.046V and 40.062V & Voltage Source = 40V
 
 #define PHASE_VOLT_OFFSET_A1	-0.09f
 #define PHASE_VOLT_OFFSET_B1	0.002f
@@ -55,6 +55,8 @@ float read_highest_inverter_temperature(struct uz_inverter_adapter_outputs_t* in
 #define PHASE_VOLT_OFFSET_A2	-0.038f
 #define PHASE_VOLT_OFFSET_B2	-0.049f
 #define PHASE_VOLT_OFFSET_C2	-0.02f
-#define PHASE_VOLT_OFFSET_A3	0
-#define PHASE_VOLT_OFFSET_B3	0
-#define PHASE_VOLT_OFFSET_C3	0
+#define PHASE_VOLT_OFFSET_A3	0.053f
+#define PHASE_VOLT_OFFSET_B3	0.066f
+#define PHASE_VOLT_OFFSET_C3	0.092f
+
+

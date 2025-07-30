@@ -54,7 +54,7 @@ uz_3ph_abc_t three_phase_output = {0};
  float offset = 0.5f;
 
 
-float theta_offset = 2.33f;
+float theta_offset = 3.68f;
 float omega_el_rad_p_sec = 0.0f;
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -111,11 +111,15 @@ void ISR_Control(void *data)
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
-    measured_currents_abc_Amp.a = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
-    measured_currents_abc_Amp.b = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
-	   measured_currents_abc_Amp.c = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
-       theta_el_rad = fmodf(Global_Data.av.theta_elec*3.0f,2*M_PI)-theta_offset;
-       omega_el_rad_p_sec = Global_Data.av.mechanicalRotorSpeed *3.0f*2.0f*M_PI/60;
+    				measured_currents_abc_Amp.a = Global_Data.aa.A2.me.ADC_A4 * 12.5f;
+            		measured_currents_abc_Amp.b = Global_Data.aa.A2.me.ADC_A3 * 12.5f;
+            		measured_currents_abc_Amp.c = Global_Data.aa.A2.me.ADC_A2 * 12.5f;
+
+         	       theta_el_rad = fmodf(Global_Data.av.theta_elec*3.0f,2.0f*M_PI)-theta_offset;
+
+         	       omega_el_rad_p_sec = Global_Data.av.mechanicalRotorSpeed *3.0f*2.0f*M_PI/60;
+
+
     if (current_state == running_state || current_state == control_state) {
       // enable inverter adapter hardware
       uz_inverter_adapter_set_PWM_EN(Global_Data.objects.inverter_d1, true);
@@ -148,6 +152,8 @@ void ISR_Control(void *data)
     	           	{
     	           		uz_assert(0);
     	           	}
+
+
     	       measured_currents_Amp = uz_transformation_3ph_abc_to_dq(measured_currents_abc_Amp, theta_el_rad);
     	       CurrentControl_output_Volts = uz_CurrentControl_sample(CurrentControl_instance, reference_currents_Amp, measured_currents_Amp, V_DC_Volts, omega_el_rad_p_sec);
     	       dutycycle = uz_Space_Vector_Modulation(CurrentControl_output_Volts, V_DC_Volts, theta_el_rad);

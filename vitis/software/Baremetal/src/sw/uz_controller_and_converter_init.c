@@ -74,13 +74,13 @@ static const struct uz_PMSM_t config_PMSM_Pruef = {
 
 static const struct uz_PI_Controller_config config_id_Last = {
 	.Kp = config_PMSM_Last.Ld_Henry / (2*TAU_SIGMA), // = 1,96201 //0.4172f,
-	.Ki = config_PMSM_Last.R_ph_Ohm / (2*TAU_SIGMA) * 2, // = 666,67 //214.33f,
+	.Ki = config_PMSM_Last.R_ph_Ohm / (2*TAU_SIGMA), // = 333,33 //214.33f,
 	.samplingTime_sec = SAMPLE_TIME_SEC_CURRENT_CONTROL,
 };
 
 static const struct uz_PI_Controller_config config_iq_Last = {
 	.Kp = config_PMSM_Last.Lq_Henry / (2*TAU_SIGMA), // = 2,67148 //0.4198f,
-	.Ki = config_PMSM_Last.R_ph_Ohm / (2*TAU_SIGMA) / 2, // = 666,67 //214.33f,
+	.Ki = config_PMSM_Last.R_ph_Ohm / (2*TAU_SIGMA), // = 333,33 //214.33f,
 	.samplingTime_sec = SAMPLE_TIME_SEC_CURRENT_CONTROL,
 };
 

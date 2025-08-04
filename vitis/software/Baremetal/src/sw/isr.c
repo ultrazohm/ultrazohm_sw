@@ -440,7 +440,7 @@ void ISR_Control(void *data)
    	case 40:
    		Global_Data.av.DutyCycle_6ph_test =   uz_Dual_GDPWM_alphabeta_6ph_V2(Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.phi_rad, Global_Data.av.U_ZK);
    	case 41:
-   		output_with_test Test = uz_SVPWM_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
+   		output_with_test Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK);
    		Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
    		Global_Data.av.current_sector = Test.current_sector;
    		Global_Data.av.SV_angle = Test.SV_angle;

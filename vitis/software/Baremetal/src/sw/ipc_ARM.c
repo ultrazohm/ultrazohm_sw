@@ -220,15 +220,15 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_9):
-		//data->av.DutyCycle_output_Last.DutyCycle_A = value;
+		data->av.DutyCycle_output_Last.DutyCycle_A = value;
 			break;
 
 		case (Set_Send_Field_10):
-		//data->av.DutyCycle_output_Last.DutyCycle_B = value;
+		data->av.DutyCycle_output_Last.DutyCycle_B = value;
 			break;
 
 		case (Set_Send_Field_11):
-		//data->av.DutyCycle_output_Last.DutyCycle_C = value;
+		data->av.DutyCycle_output_Last.DutyCycle_C = value;
 			break;
 
 		case (Set_Send_Field_12):
@@ -240,23 +240,23 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_14):
-		data->av.snd_fld[14] = value;
+		data->av.n_ref_Last = value;
 			break;
 
 		case (Set_Send_Field_15):
-		data->av.snd_fld[15] = value;
+		data->av.u_dqxy_ref.d = value;
 			break;
 
 		case (Set_Send_Field_16):
-		data->av.snd_fld[16] = value;
+		data->av.u_dqxy_ref.q = value;
 			break;
 
 		case (Set_Send_Field_17):
-		data->av.snd_fld[17] = value;
+		data->av.u_dqxy_ref.x = value;
 			break;
 
 		case (Set_Send_Field_18):
-		data->av.snd_fld[18] = value;
+		data->av.u_dqxy_ref.y = value;
 			break;
 
 		case (Set_Send_Field_19):
@@ -268,44 +268,56 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_1):
-			data->av.select_Control = false;
+			data->av.select_Current_Control_Last = false;
+			data->av.select_Control_Pruef = false;
+			data->av.select_Speed_Control_Last = false;
 			data->av.select_fixed_values = true;
 			ultrazohm_state_machine_set_userLED(true);
-			data->av.button = 1.0f;
 			break;
 
 		case (My_Button_2):
-				data->av.select_fixed_values = false;
-				data->av.select_Control = true;
+			data->av.select_fixed_values = false;
+			data->av.select_Control_Pruef = false;
+			data->av.select_Speed_Control_Last = false;
+			data->av.select_Current_Control_Last = true;
 				ultrazohm_state_machine_set_userLED(false);
-				data->av.button = 2.0f;
 			break;
 
 		case (My_Button_3):
-		data->av.u_dqxy_ref.d = 0;
-		data->av.u_dqxy_ref.q = 0;
-		data->av.u_dqxy_ref.x = 0;
-		data->av.u_dqxy_ref.y = 0;
-		data->av.u_dq_pruef_ref.d=0;
-		data->av.u_dq_pruef_ref.q=0;
-		data->av.u_dq_last_ref.d = 0;
-		data->av.u_dq_last_ref.q = 0;
+			data->av.select_fixed_values = false;
+			data->av.select_Current_Control_Last = false;
+			data->av.select_Control_Pruef = false;
+			data->av.select_Speed_Control_Last = true;
+			ultrazohm_state_machine_set_userLED(false);
 			break;
 
 		case (My_Button_4):
-
+			data->av.select_fixed_values = false;
+			data->av.select_Current_Control_Last = false;
+			data->av.select_Speed_Control_Last = false;
+			data->av.select_Control_Pruef = true;
+		ultrazohm_state_machine_set_userLED(false);
 			break;
 
 		case (My_Button_5):
-
+			data->av.u_dqxy_ref.d = 0;
+			data->av.u_dqxy_ref.q = 0;
+			data->av.u_dqxy_ref.x = 0;
+			data->av.u_dqxy_ref.y = 0;
+			data->av.u_dq_pruef_ref.d=0;
+			data->av.u_dq_pruef_ref.q=0;
+			data->av.u_dq_last_ref.d = 0;
+			data->av.u_dq_last_ref.q = 0;
+			data->av.M_ref_Last = 0;
+			data->av.n_ref_Last = 0;
 			break;
 
 		case (My_Button_6):
-
+			data->av.enable_inv_pruef = true;
 			break;
 
 		case (My_Button_7):
-
+			data->av.enable_inv_pruef = false;
 			break;
 
 		case (My_Button_8):

@@ -36,7 +36,7 @@
 #define UZ_WAVEGEN_CHIRP_MAX_INSTANCES                  2U
 #define UZ_MYIP2_MAX_INSTANCES                          0U
 #define UZ_ADCLTC2311_MAX_INSTANCES                     3U
-#define UZ_PI_CONTROLLER_MAX_INSTANCES                  6U
+#define UZ_PI_CONTROLLER_MAX_INSTANCES                  7U
 #define UZ_CURRENTCONTROL_MAX_INSTANCES                 3U
 #define UZ_INCREMENTALENCODER_MAX_INSTANCES             1U
 #define UZ_PWM_SS_2L_MAX_INSTANCES                      4U
@@ -46,7 +46,7 @@
 #define UZ_DQ_TRANSFORMATION_IP_CORE_MAX_INSTANCES      1U
 #define UZ_MUX_AXI_MAX_INSTANCES                        1U
 #define UZ_SPEEDCONTROL_MAX_INSTANCES                   1U
-#define UZ_IIR_FILTER_MAX_INSTANCES                     1U
+#define UZ_IIR_FILTER_MAX_INSTANCES                     2U
 #define UZ_PARAMETERID_MAX_INSTANCES					1U
 #define UZ_DAC_INTERFACE_MAX_INSTANCES                  0U
 #define UZ_INVERTER_3PH_MAX_INSTANCES                   3U

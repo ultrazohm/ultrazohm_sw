@@ -14,6 +14,9 @@
 #include "include/uz_platform_state_machine.h"
 #include "uz/uz_Space_Vector_Modulation_6ph/uz_Space_Vector_Modulation_6ph.h"
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
+#include "uz/uz_setpoint/uz_setpoint.h"
+#include "uz/uz_SpeedControl/uz_speedcontrol.h"
+#include "uz/uz_signals/uz_signals.h"
 
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
@@ -103,10 +106,10 @@ typedef struct _actualValues_ {
 	float I_q;
 	float I_x;
 	float I_y;
-	float U_d;
-	float U_q;
-	float U_x;
-	float U_y;
+	float U_d_Pruef;
+	float U_q_Pruef;
+	float U_x_Pruef;
+	float U_y_Pruef;
 	float theta_elec;
 	float theta_elec_Last;
 	float theta_mech_Last;
@@ -126,8 +129,11 @@ typedef struct _actualValues_ {
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d1;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d2;
 	struct uz_inverter_adapter_outputs_t inverter_outputs_d3;
-	bool select_Control;
+	bool select_Current_Control_Last;
+	bool select_Speed_Control_Last;
+	bool select_Control_Pruef;
 	bool select_fixed_values;
+	bool enable_inv_pruef;
 	uz_6ph_dq_t u_dqxy_ref;
 	uz_3ph_dq_t u_dq_pruef_ref;
 	uz_3ph_dq_t i_dq_last_ref;
@@ -136,14 +142,19 @@ typedef struct _actualValues_ {
 	uz_3ph_dq_t i_dq_last_meas;
 	uz_6ph_abc_t i_abc_meas;
 	uz_6ph_abc_t u_abc_meas;
+	uz_6ph_abc_t u_abc_meas_filter_comp;
 	uz_6ph_dq_t i_dqxy_meas;
 	uz_6ph_dq_t u_dqxy_meas;
 	uz_3ph_dq_t i_dq_pruef_meas;
 	uz_3ph_dq_t i_dq_pruef_ref;
+	uz_6ph_alphabeta_t i_alphabeta_Pruef_meas;
 	struct uz_DutyCycle_2x3ph_t DutyCycle_output_Pruef;
 	struct uz_DutyCycle_t DutyCycle_output_Last;
-	float button;
 	float error;
+	float n_ref_Last;
+	float M_ref_Last;
+	float magnitude;
+	float phi_filter_comp;
 
 } actualValues;
 
@@ -183,6 +194,10 @@ typedef struct{
 	uz_CurrentControl_t* CC_dq_instance_Pruef;
 	uz_CurrentControl_t* CC_xy_instance_Pruef;
 	uz_CurrentControl_t* CC_dq_instance_Last;
+	uz_SpeedControl_t* speed_ctrl_Last;
+	uz_SetPoint_t* setpoint_ctrl_Last;
+	uz_IIR_Filter_t* speed_prefilter_Last;
+	uz_IIR_Filter_t* speed_prefilter_Pruef;
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

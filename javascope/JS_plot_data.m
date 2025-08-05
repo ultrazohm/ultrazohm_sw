@@ -1,7 +1,7 @@
 %% clean Matlab Workspace
-close all
-clear all
-format compact
+% close all
+% clear all
+% format compact
 
 %% settings
 delete_empty_log_files = 0;

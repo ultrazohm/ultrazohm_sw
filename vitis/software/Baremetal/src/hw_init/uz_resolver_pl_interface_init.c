@@ -10,7 +10,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_d4_Last = {
                .machine_polepairs = 5,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -0.8714f
+               .theta_m_offset_rad = -0.90094f
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d4_Last = {
@@ -32,7 +32,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_d4_Pruef = {
                .machine_polepairs = 5,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -5.572
+               .theta_m_offset_rad = -5.97581
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_d4_Pruef = {

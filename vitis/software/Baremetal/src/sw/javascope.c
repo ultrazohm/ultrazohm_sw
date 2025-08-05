@@ -101,17 +101,23 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_Theta_mech_Pruef_rad] 	= &(data->av.resolver_outputs_d4_Pruef.position_mech_2pi);
 	js_ch_observable[JSO_n_mech_Last]			= &(data->av.resolver_outputs_d4_Last.n_mech_rpm);
 	js_ch_observable[JSO_n_mech_Pruef]			= &(data->av.resolver_outputs_d4_Pruef.n_mech_rpm);
-	js_ch_observable[JSO_i_d] 					= &data->av.I_d;
-	js_ch_observable[JSO_i_q] 					= &data->av.I_q;
-	js_ch_observable[JSO_i_x] 					= &data->av.I_x;
-	js_ch_observable[JSO_i_y] 					= &data->av.I_y;
+	js_ch_observable[JSO_i_d_Last] 				= &data->av.i_dq_last_meas.d;
+	js_ch_observable[JSO_i_q_Last] 				= &data->av.i_dq_last_meas.q;
+	js_ch_observable[JSO_i_alpha_Pruef] 		= &data->av.i_alphabeta_Pruef_meas.alpha;
+	js_ch_observable[JSO_i_beta_Pruef] 			= &data->av.i_alphabeta_Pruef_meas.beta;
+	js_ch_observable[JSO_i_X_Pruef] 			= &data->av.i_alphabeta_Pruef_meas.x;
+	js_ch_observable[JSO_i_Y_Pruef] 			= &data->av.i_alphabeta_Pruef_meas.y;
+	js_ch_observable[JSO_u_d_Pruef] 			= &data->av.U_d_Pruef;
+	js_ch_observable[JSO_u_q_Pruef] 			= &data->av.U_q_Pruef;
+	js_ch_observable[JSO_u_x_Pruef] 			= &data->av.U_x_Pruef;
+	js_ch_observable[JSO_u_y_Pruef] 			= &data->av.U_y_Pruef;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another
 	// The array may grow arbitrarily long, the refresh rate of the individual values decreases.
 	// Only float is allowed!
-	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d);
-	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q);
+	js_slowDataArray[JSSD_FLOAT_u_d] 			        = &(data->av.U_d_Pruef);
+	js_slowDataArray[JSSD_FLOAT_u_q] 			        = &(data->av.U_q_Pruef);
 	js_slowDataArray[JSSD_FLOAT_i_d] 			        = &(data->av.I_d);
 	js_slowDataArray[JSSD_FLOAT_i_q] 			        = &(data->av.I_q);
 	js_slowDataArray[JSSD_FLOAT_speed] 		         	= &(data->av.mechanicalRotorSpeed);
@@ -122,7 +128,6 @@ int JavaScope_initialize(DS_Data* data)
 	js_slowDataArray[JSSD_FLOAT_Milliseconds]			= &System_UpTime_ms;
 	js_slowDataArray[JSSD_FLOAT_theta_el_Last]			= &(data->av.resolver_outputs_d4_Last.position_el_2pi);
 	js_slowDataArray[JSSD_FLOAT_theta_el_Pruef]			= &(data->av.resolver_outputs_d4_Pruef.position_el_2pi);
-	js_slowDataArray[JSSD_FLOAT_button] 			    = &(data->av.button);
 	js_slowDataArray[JSSD_FLOAT_error] 			    	= &(data->av.error);
 	return Status;
 }

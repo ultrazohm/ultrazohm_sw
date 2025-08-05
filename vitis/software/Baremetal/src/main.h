@@ -59,6 +59,7 @@
 #include "include/uz_resolver_pl_interface_init.h"
 #include "include/uz_resolverIP_init.h"
 #include "include/init_FOC.h"
+#include "include/uz_IIR_Filter_init.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

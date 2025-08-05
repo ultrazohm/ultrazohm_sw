@@ -91,6 +91,10 @@ int main(void)
         	Global_Data.objects.CC_dq_instance_Pruef = init_dq_FOC_Pruef();
         	Global_Data.objects.CC_xy_instance_Pruef = init_xy_FOC_Pruef();
         	Global_Data.objects.CC_dq_instance_Last = init_dq_FOC_Last();
+            Global_Data.objects.setpoint_ctrl_Last = setpoint_ctrl_Last_init();
+            Global_Data.objects.speed_ctrl_Last= speed_ctrl_Last_init();
+            Global_Data.objects.speed_prefilter_Last = uz_speed_prefilter_Last_init();
+            Global_Data.objects.speed_prefilter_Pruef = uz_speed_prefilter_Pruef_init();
         	initialization_chain = init_ip_cores;
         	break;
         case init_ip_cores:

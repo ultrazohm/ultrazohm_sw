@@ -1,7 +1,6 @@
 #include "uz_SVPWM_6ph_init.h"
 
-
-/*void uz_svm_6ph_calculate_and_shift_duty_cycles(int sector, uz_sector_sv Zeiger[24], ){
+void uz_svm_6ph_calculate_and_shift_duty_cycles(int sector, uz_sector_sv Zeiger[24], uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2){
 			float shift_system_1 = 0.0f;
 			float shift_system_2 = 0.0f;
 		    switch (Zeiger[sector].first){
@@ -20,6 +19,7 @@
 		        // shift both systems
 		        case  63:
 		            shift_system_1 = 0.5f;
+
 		            shift_system_2 = 0.5f;
 
 		            break;
@@ -30,11 +30,11 @@
 		            shift_system_2 = 0.0f;
 		            break;
 		    }
-		    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_0_to_5, shift_system_1, shift_system_1, shift_system_1);// Global Data nur an Funktio übergeben und nict in Funktion darauf zugreifen
-		    uz_PWM_SS_2L_set_triangle_shift(Global_Data.objects.pwm_d1_pin_6_to_11, shift_system_2, shift_system_2, shift_system_2);
+		    uz_PWM_SS_2L_set_triangle_shift(system_1, shift_system_1, shift_system_1, shift_system_1);// Global Data nur an Funktion übergeben und nict in Funktion darauf zugreifen
+		    uz_PWM_SS_2L_set_triangle_shift(system_2, shift_system_2, shift_system_2, shift_system_2);
 		};
-*/
-output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK){
+
+output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2){
 
 	float upper_limit = 1.0f;
 	float lower_limit = 0.0f;
@@ -93,7 +93,7 @@ output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 
 
 	//Apply Phase Shift to the Inverter
-	//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm.sector_sv);
+	uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
 
 
 
@@ -137,7 +137,7 @@ output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 
 	};
 
-output_with_test uz_SVPWM_5arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK){
+output_with_test uz_SVPWM_5arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2){
 
 	float upper_limit = 1.0f;
 	float lower_limit = 0.0f;
@@ -196,6 +196,8 @@ output_with_test uz_SVPWM_5arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 		Duty_Cycles[i] = uz_signals_saturation(Duty_Cycles[i], upper_limit, lower_limit);
 	};
 
+	//Apply phase shift to the system
+	uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
 
 	out.DutyCycles.system1.DutyCycle_A = Duty_Cycles[0];
 	out.DutyCycles.system1.DutyCycle_B = Duty_Cycles[1];

@@ -72,6 +72,7 @@ static void InitializeMioPinsForLEDs(uint32_t ultrazohm_revision)
 			uz_gpio_init(&MIO_LedUser, &Gpio_inst, UZ_REV_4_LED_user, OUTPUT_PIN);
 			break;
 		case 5:
+		case 6:
 			uz_gpio_init(&MIO_LedReady, &Gpio_inst, UZ_REV_5_LED_ready, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedRunning, &Gpio_inst, UZ_REV_5_LED_running, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedError, &Gpio_inst, UZ_REV_5_LED_error, OUTPUT_PIN);
@@ -105,6 +106,7 @@ static void InitializeMioPinsForButtons(uint32_t ultrazohm_revision)
 			uz_gpio_init(&MIO_SWExternalStop, &Gpio_inst, UZ_REV_4_SW_external_stop, INPUT_PIN);
 			break;
 		case 5:
+		case 6:
 			uz_gpio_init(&MIO_SWError, &Gpio_inst, UZ_REV_5_SW_stop, INPUT_PIN);
 			uz_gpio_init(&MIO_SWSystem, &Gpio_inst, UZ_REV_5_SW_system, INPUT_PIN);
 			uz_gpio_init(&MIO_SWControl, &Gpio_inst, UZ_REV_5_SW_control, INPUT_PIN);

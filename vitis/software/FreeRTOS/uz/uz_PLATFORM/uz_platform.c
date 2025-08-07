@@ -142,7 +142,7 @@ static uz_platform_iomap uzp_iomap_UltraZohmRev04withExtensionBoardRev02 = {
 	}
 };
 
-static uz_platform_iomap uzp_iomap_UltraZohmRev05 = {
+static uz_platform_iomap uzp_iomap_UltraZohmRev06downto05 = {
 	{
 		// Cf. uz_platform_gpo_id in uz_platform.h:
 		UZ_PLATFORM_GPIO_UNAVAILABLE,	// I2CLED_FP1RDY
@@ -269,7 +269,8 @@ int32_t uz_platform_init(uint32_t default_revision) {
 					uzp.iomap = &uzp_iomap_UltraZohmRev04downto02;
 					break;
 				case 5U:
-					uzp.iomap = &uzp_iomap_UltraZohmRev05;
+				case 6U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev06downto05;
 					break;
 				default:
 					uz_printf("APU: Carrier revision not supported!\r\n");

@@ -69,10 +69,12 @@ typedef struct{
 
 
 output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2);
-output_with_test uz_SVPWM_4arrows_discontinous_V1_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2)
-output_with_test uz_SVPWM_4arrows_discontinous_V2_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2)
+output_with_test uz_SVPWM_4arrows_discontinous_V1_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2);
+output_with_test uz_SVPWM_4arrows_discontinous_V2_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2);
 output_with_test uz_SVPWM_5arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2);
-void uz_svm_6ph_calculate_and_shift(int sector, uz_sector_sv Zeiger[24]);
+output_with_test uz_SVPWM_5arrows_discontinous_V1_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2);
+output_with_test uz_SVPWM_5arrows_discontinous_V2_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph_alphabeta_t inputdata, float U_ZK, uz_PWM_SS_2L_t* system_1, uz_PWM_SS_2L_t* system_2);
+void uz_svm_6ph_calculate_and_shift(int sector, const uz_sector_sv Zeiger[24]);
 
 
 

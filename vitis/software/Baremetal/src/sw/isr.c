@@ -646,7 +646,7 @@ void ISR_Control(void *data)
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
    	   	break;
    	case 58:
-   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
    	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
    	   	Global_Data.av.current_sector = Test.current_sector;
    	   	Global_Data.av.SV_angle = Test.SV_angle;
@@ -658,7 +658,7 @@ void ISR_Control(void *data)
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
    	   	break;
    	case 59:
-   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
    	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
    	   	Global_Data.av.current_sector = Test.current_sector;
    	   	Global_Data.av.SV_angle = Test.SV_angle;
@@ -670,7 +670,7 @@ void ISR_Control(void *data)
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
    	   	break;
    	case 60:
-   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
    	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
    	   	Global_Data.av.current_sector = Test.current_sector;
    	   	Global_Data.av.SV_angle = Test.SV_angle;
@@ -681,6 +681,151 @@ void ISR_Control(void *data)
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
    	   	break;
+   	case 61:
+   	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	   	Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 62:
+   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	    Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	   	Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 63:
+   	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 64:
+   	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 65:
+   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 66:
+   	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 67:
+   	   	Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 68:
+   	   	Test = uz_SVPWM_5arrows_discontinous_V1_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 69:
+   	   	Test = uz_SVPWM_5arrows_discontinous_V2_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 70:
+   	   	Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 71:
+   	   	Test = uz_SVPWM_5arrows_discontinous_V1_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+   	case 72:
+   	   	Test = uz_SVPWM_5arrows_discontinous_V2_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	    Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	   	break;
+
    	default:
    		uz_SVPWM_4arrows_6ph
    		break;
@@ -1067,6 +1212,7 @@ void ISR_Control(void *data)
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
            	 break;
+
 
            	default:
 

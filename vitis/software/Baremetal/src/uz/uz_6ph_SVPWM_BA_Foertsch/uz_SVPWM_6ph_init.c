@@ -48,7 +48,8 @@ output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 	float SV_angle = atan2f(inputdata.beta, inputdata.alpha);
 
 	// nominates angle between 0 and 2 times pi
-	SV_angle += M_PI_FLOAT;
+	SV_angle += (2.0f * M_PI_FLOAT);
+	SV_angle = fmodf(SV_angle, (2.0f * M_PI_FLOAT));
 
 	//calculate current sector between 1 and 24
 	current_sector1_24  = (int)(SV_angle * (12.0f / M_PI_FLOAT)) + 1;
@@ -64,7 +65,7 @@ output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 		}
 	}
 
-
+// skalierung alpha beta
 	//calculates switching times
 	float T_V1 = inv_Ttv.inv_Ttv_matrix[0][0]*inputdata.alpha + inv_Ttv.inv_Ttv_matrix[0][1]*inputdata.beta + inv_Ttv.inv_Ttv_matrix[0][2]*inputdata.x + inv_Ttv.inv_Ttv_matrix[0][3]*inputdata.y;
 	float T_V2 = inv_Ttv.inv_Ttv_matrix[1][0]*inputdata.alpha + inv_Ttv.inv_Ttv_matrix[1][1]*inputdata.beta + inv_Ttv.inv_Ttv_matrix[1][2]*inputdata.x + inv_Ttv.inv_Ttv_matrix[1][3]*inputdata.y;
@@ -93,7 +94,7 @@ output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 
 
 	//Apply Phase Shift to the Inverter
-	uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
+	//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
 
 
 
@@ -132,7 +133,11 @@ output_with_test uz_SVPWM_4arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 		out.y_trafo = VSD_output.y;
 		out.nullplus_trafo = VSD_output.z1;
 		out.nullminus_trafo = VSD_output.z2;
-
+		out.gesamte_schaltzeit = 1.0f - T_V1 - T_V2 - T_V3 - T_V4;
+		out.t1 = T_V1;
+		out.t2 = T_V2;
+		out.t3 = T_V3;
+		out.t4 = T_V4;
 		return out;
 
 	}
@@ -151,7 +156,8 @@ output_with_test uz_SVPWM_5arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 	float SV_angle = atan2f(inputdata.beta, inputdata.alpha);
 
 	// nominates angle between 0 and 2 times pi
-	SV_angle += M_PI_FLOAT;
+	SV_angle += (2.0f * M_PI_FLOAT);
+	SV_angle = fmodf(SV_angle, (2.0f * M_PI_FLOAT));
 
 	//calculate current sector between 1 and 24
 	current_sector1_24  = (int)(SV_angle * (12.0f / M_PI_FLOAT)) + 1;
@@ -197,7 +203,7 @@ output_with_test uz_SVPWM_5arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 	};
 
 	//Apply phase shift to the system
-	uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
+	//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
 
 	out.DutyCycles.system1.DutyCycle_A = Duty_Cycles[0];
 	out.DutyCycles.system1.DutyCycle_B = Duty_Cycles[1];
@@ -229,7 +235,11 @@ output_with_test uz_SVPWM_5arrows_6ph(const SVMPWM_Parameters* paramspwm, uz_6ph
 	out.y_trafo = VSD_output.y;
 	out.nullplus_trafo = VSD_output.z1;
 	out.nullminus_trafo = VSD_output.z2;
-
+	out.gesamte_schaltzeit = 1.0f - T_V1 - T_V2 - T_V3 - T_V4;
+	out.t1 = T_V1;
+	out.t2 = T_V2;
+	out.t3 = T_V3;
+	out.t4 = T_V4;
 	return out;
 }
 
@@ -246,7 +256,8 @@ output_with_test uz_SVPWM_4arrows_discontinous_V1_6ph(const SVMPWM_Parameters* p
 		float SV_angle = atan2f(inputdata.beta, inputdata.alpha);
 
 		// nominates angle between 0 and 2 times pi
-		SV_angle += M_PI_FLOAT;
+		SV_angle += (2.0f * M_PI_FLOAT);
+		SV_angle = fmodf(SV_angle, (2.0f * M_PI_FLOAT));
 
 		//calculate current sector between 1 and 24
 		current_sector1_24  = (int)(SV_angle * (12.0f / M_PI_FLOAT)) + 1;
@@ -276,7 +287,6 @@ output_with_test uz_SVPWM_4arrows_discontinous_V1_6ph(const SVMPWM_Parameters* p
 		int S_V2 = paramspwm->sector_sv[current_sector1_24 - 1].third;
 		int S_V3 = paramspwm->sector_sv[current_sector1_24 - 1].fourth;
 		int S_V4 = paramspwm->sector_sv[current_sector1_24 - 1].fifth;
-		int S_V02 = paramspwm->sector_sv[current_sector1_24 - 1].sixth;
 		float Duty_Cycles[6] = {0};
 
 
@@ -291,7 +301,7 @@ output_with_test uz_SVPWM_4arrows_discontinous_V1_6ph(const SVMPWM_Parameters* p
 
 
 		//Apply Phase Shift to the Inverter
-		uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
+		//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
 
 
 
@@ -330,7 +340,11 @@ output_with_test uz_SVPWM_4arrows_discontinous_V1_6ph(const SVMPWM_Parameters* p
 			out.y_trafo = VSD_output.y;
 			out.nullplus_trafo = VSD_output.z1;
 			out.nullminus_trafo = VSD_output.z2;
-
+			out.gesamte_schaltzeit = 1.0f - T_V1 - T_V2 - T_V3 - T_V4;
+			out.t1 = T_V1;
+			out.t2 = T_V2;
+			out.t3 = T_V3;
+			out.t4 = T_V4;
 			return out;
 
 }
@@ -348,7 +362,8 @@ output_with_test uz_SVPWM_4arrows_discontinous_V2_6ph(const SVMPWM_Parameters* p
 		float SV_angle = atan2f(inputdata.beta, inputdata.alpha);
 
 		// nominates angle between 0 and 2 times pi
-		SV_angle += M_PI_FLOAT;
+		SV_angle += (2.0f * M_PI_FLOAT);
+		SV_angle = fmodf(SV_angle, (2.0f * M_PI_FLOAT));
 
 		//calculate current sector between 1 and 24
 		current_sector1_24  = (int)(SV_angle * (12.0f / M_PI_FLOAT)) + 1;
@@ -372,8 +387,7 @@ output_with_test uz_SVPWM_4arrows_discontinous_V2_6ph(const SVMPWM_Parameters* p
 		float T_V4 = inv_Ttv.inv_Ttv_matrix[3][0]*inputdata.alpha + inv_Ttv.inv_Ttv_matrix[3][1]*inputdata.beta + inv_Ttv.inv_Ttv_matrix[3][2]*inputdata.x + inv_Ttv.inv_Ttv_matrix[3][3]*inputdata.y;
 		float T_V0 = 1.0f - T_V1 - T_V2 - T_V3 - T_V4;
 
-		//
-		int S_V01 = paramspwm->sector_sv[current_sector1_24 - 1].first;
+		//Calculate Dwell Times
 		int S_V1 = paramspwm->sector_sv[current_sector1_24 - 1].second;
 		int S_V2 = paramspwm->sector_sv[current_sector1_24 - 1].third;
 		int S_V3 = paramspwm->sector_sv[current_sector1_24 - 1].fourth;
@@ -392,7 +406,7 @@ output_with_test uz_SVPWM_4arrows_discontinous_V2_6ph(const SVMPWM_Parameters* p
 
 
 		//Apply Phase Shift to the Inverter
-		uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
+		//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
 
 
 
@@ -431,7 +445,11 @@ output_with_test uz_SVPWM_4arrows_discontinous_V2_6ph(const SVMPWM_Parameters* p
 			out.y_trafo = VSD_output.y;
 			out.nullplus_trafo = VSD_output.z1;
 			out.nullminus_trafo = VSD_output.z2;
-
+			out.gesamte_schaltzeit = 1.0f - T_V1 - T_V2 - T_V3 - T_V4;
+			out.t1 = T_V1;
+			out.t2 = T_V2;
+			out.t3 = T_V3;
+			out.t4 = T_V4;
 			return out;
 }
 
@@ -448,7 +466,8 @@ output_with_test uz_SVPWM_5arrows_discontinous_V1_6ph(const SVMPWM_Parameters* p
 		float SV_angle = atan2f(inputdata.beta, inputdata.alpha);
 
 		// nominates angle between 0 and 2 times pi
-		SV_angle += M_PI_FLOAT;
+		SV_angle += (2.0f * M_PI_FLOAT);
+		SV_angle = fmodf(SV_angle, (2.0f * M_PI_FLOAT));
 
 		//calculate current sector between 1 and 24
 		current_sector1_24  = (int)(SV_angle * (12.0f / M_PI_FLOAT)) + 1;
@@ -479,7 +498,6 @@ output_with_test uz_SVPWM_5arrows_discontinous_V1_6ph(const SVMPWM_Parameters* p
 		int S_V3 = paramspwm->sector_sv[current_sector1_24 - 1].fourth;
 		int S_V4 = paramspwm->sector_sv[current_sector1_24 - 1].fifth;
 		int S_V5 = paramspwm->sector_sv[current_sector1_24 -1].sixth;
-		int S_V02 = paramspwm->sector_sv[current_sector1_24 - 1].seventh;
 		float Duty_Cycles[6] = {0};
 
 
@@ -494,7 +512,7 @@ output_with_test uz_SVPWM_5arrows_discontinous_V1_6ph(const SVMPWM_Parameters* p
 		};
 
 		//Apply phase shift to the system
-		uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
+		//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
 
 		out.DutyCycles.system1.DutyCycle_A = Duty_Cycles[0];
 		out.DutyCycles.system1.DutyCycle_B = Duty_Cycles[1];
@@ -526,7 +544,11 @@ output_with_test uz_SVPWM_5arrows_discontinous_V1_6ph(const SVMPWM_Parameters* p
 		out.y_trafo = VSD_output.y;
 		out.nullplus_trafo = VSD_output.z1;
 		out.nullminus_trafo = VSD_output.z2;
-
+		out.gesamte_schaltzeit = 1.0f - T_V1 - T_V2 - T_V3 - T_V4;
+		out.t1 = T_V1;
+		out.t2 = T_V2;
+		out.t3 = T_V3;
+		out.t4 = T_V4;
 		return out;
 }
 
@@ -543,7 +565,8 @@ output_with_test uz_SVPWM_5arrows_discontinous_V2_6ph(const SVMPWM_Parameters* p
 		float SV_angle = atan2f(inputdata.beta, inputdata.alpha);
 
 		// nominates angle between 0 and 2 times pi
-		SV_angle += M_PI_FLOAT;
+		SV_angle += (2.0f * M_PI_FLOAT);
+		SV_angle = fmodf(SV_angle, (2.0f * M_PI_FLOAT));
 
 		//calculate current sector between 1 and 24
 		current_sector1_24  = (int)(SV_angle * (12.0f / M_PI_FLOAT)) + 1;
@@ -568,7 +591,6 @@ output_with_test uz_SVPWM_5arrows_discontinous_V2_6ph(const SVMPWM_Parameters* p
 
 
 
-		int S_V01 = paramspwm->sector_sv[current_sector1_24 - 1].first;
 		int S_V1 = paramspwm->sector_sv[current_sector1_24 - 1].second;
 		int S_V2 = paramspwm->sector_sv[current_sector1_24 - 1].third;
 		int S_V3 = paramspwm->sector_sv[current_sector1_24 - 1].fourth;
@@ -588,7 +610,7 @@ output_with_test uz_SVPWM_5arrows_discontinous_V2_6ph(const SVMPWM_Parameters* p
 		};
 
 		//Apply phase shift to the system
-		uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
+		//uz_svm_6ph_calculate_and_shift_duty_cycles(current_sector1_24, paramspwm->sector_sv, system_1, system_2);
 
 		out.DutyCycles.system1.DutyCycle_A = Duty_Cycles[0];
 		out.DutyCycles.system1.DutyCycle_B = Duty_Cycles[1];
@@ -620,6 +642,7 @@ output_with_test uz_SVPWM_5arrows_discontinous_V2_6ph(const SVMPWM_Parameters* p
 		out.y_trafo = VSD_output.y;
 		out.nullplus_trafo = VSD_output.z1;
 		out.nullminus_trafo = VSD_output.z2;
+		out.gesamte_schaltzeit = 1.0f - T_V1 - T_V2 - T_V3 - T_V4;
 
 		return out;
 };

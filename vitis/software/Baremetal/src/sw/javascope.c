@@ -122,7 +122,14 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_YTrafo] = &data->av.y_trafo;
 	js_ch_observable[JSO_NullplusTrafo] = &data->av.nullminus_trafo;
 	js_ch_observable[JSO_NullminusTrafo] = &data->av.nullplus_trafo;
-
+	js_ch_observable[JSO_gesamteSchaltzeit] = &data->av.gesamte_schaltzeit;
+	js_ch_observable[JSO_t0] = &data->av.t0;
+	js_ch_observable[JSO_t1] = &data->av.t1;
+	js_ch_observable[JSO_t2] = &data->av.t2;
+	js_ch_observable[JSO_t3] = &data->av.t3;
+	js_ch_observable[JSO_t4] = &data->av.t4;
+	js_ch_observable[JSO_Xref] = &data->av.u_ref_6ph_alphabeta.x;
+	js_ch_observable[JSO_Yref] = &data->av.u_ref_6ph_alphabeta.y;
 	js_ch_observable[JSO_u_Test_ref_A] = &data->av.u_ref_abc.a;
 	js_ch_observable[JSO_Theta_From_REF] = &data->av.theta_from_ref;
 

@@ -58,6 +58,12 @@ typedef struct{
 	float y_trafo;
 	float nullminus_trafo;
 	float nullplus_trafo;
+	float gesamte_schaltzeit;
+	float t0;
+	float t1;
+	float t2;
+	float t3;
+	float t4;
 }output_with_test;
 
 

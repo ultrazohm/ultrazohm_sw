@@ -98,6 +98,14 @@ enum JS_OberservableData {
 	JSO_YTrafo,
 	JSO_NullplusTrafo,
 	JSO_NullminusTrafo,
+	JSO_gesamteSchaltzeit,
+	JSO_t0,
+	JSO_t1,
+	JSO_t2,
+	JSO_t3,
+	JSO_t4,
+	JSO_Xref,
+	JSO_Yref,
 	JSO_ENDMARKER
 };
 

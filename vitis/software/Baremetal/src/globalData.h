@@ -131,7 +131,12 @@ typedef struct _actualValues_ {
 	float y_trafo;
 	float nullminus_trafo;
 	float nullplus_trafo;
-
+	float gesamte_schaltzeit;
+	float t0;
+	float t1;
+	float t2;
+	float t3;
+	float t4;
 
 	uz_6ph_alphabeta_t u_ref_6ph_alphabeta;
 	uz_6ph_abc_t u_ref_6ph_abc;

@@ -452,6 +452,11 @@ void ISR_Control(void *data)
    		Global_Data.av.y_trafo = Test.y_trafo;
    		Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    		Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   		           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    		break;
    	case 42:
    		Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -464,6 +469,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
  		Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+ 		           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
  		break;
    	case 43:
    		Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -476,6 +486,11 @@ void ISR_Control(void *data)
    		Global_Data.av.y_trafo = Test.y_trafo;
    		Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    		Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   		           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    		break;
    	case 44:
    		Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -488,6 +503,11 @@ void ISR_Control(void *data)
    		Global_Data.av.y_trafo = Test.y_trafo;
    		Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    		Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   		           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    		break;
    	case 45:
    		Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_3L_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -500,6 +520,11 @@ void ISR_Control(void *data)
    		Global_Data.av.y_trafo = Test.y_trafo;
    		Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    		Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   		           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    		break;
    	case 46:
    		Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_2L_1ML_2M, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -512,6 +537,11 @@ void ISR_Control(void *data)
    		Global_Data.av.y_trafo = Test.y_trafo;
    		Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    		Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   		           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    		break;
    	case 47:
    		Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_3L_2M, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -524,6 +554,11 @@ void ISR_Control(void *data)
    		Global_Data.av.y_trafo = Test.y_trafo;
    		Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    		Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   		           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    		break;
    	case 48:
    	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -536,6 +571,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 49:
    	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -548,6 +588,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 50:
    	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -560,6 +605,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 51:
    	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -572,6 +622,11 @@ void ISR_Control(void *data)
    	  	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 52:
    	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -584,6 +639,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	  	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 53:
    	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -596,6 +656,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 54:
    	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_3L_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -608,6 +673,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 55:
    	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_3L_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -620,6 +690,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 56:
    	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -632,6 +707,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 57:
    	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -644,9 +724,14 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 58:
-   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
    	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
    	   	Global_Data.av.current_sector = Test.current_sector;
    	   	Global_Data.av.SV_angle = Test.SV_angle;
@@ -656,6 +741,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 59:
    	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -668,9 +758,14 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 60:
-   	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
    	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
    	   	Global_Data.av.current_sector = Test.current_sector;
    	   	Global_Data.av.SV_angle = Test.SV_angle;
@@ -680,6 +775,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 61:
    	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -692,6 +792,11 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 62:
    	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -704,6 +809,12 @@ void ISR_Control(void *data)
    	   	Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 63:
    	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -716,6 +827,12 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 64:
    	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -728,7 +845,14 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
+
    	case 65:
    	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
    	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
@@ -740,6 +864,12 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 66:
    	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -752,6 +882,12 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 67:
    	   	Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -764,6 +900,12 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 68:
    	   	Test = uz_SVPWM_5arrows_discontinous_V1_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -776,6 +918,12 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 69:
    	   	Test = uz_SVPWM_5arrows_discontinous_V2_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -788,6 +936,12 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 70:
    	   	Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -800,6 +954,12 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 71:
    	   	Test = uz_SVPWM_5arrows_discontinous_V1_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -812,6 +972,12 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
    	case 72:
    	   	Test = uz_SVPWM_5arrows_discontinous_V2_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -824,7 +990,14 @@ void ISR_Control(void *data)
    	    Global_Data.av.y_trafo = Test.y_trafo;
    	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
    	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	            	   	Global_Data.av.t1 = Test.t1;
+   	            	   	Global_Data.av.t2 = Test.t2;
+   	            	   	Global_Data.av.t3 = Test.t3;
+   	            		Global_Data.av.t4 = Test.t4;
    	   	break;
+
 
    	default:
    		break;
@@ -887,12 +1060,12 @@ void ISR_Control(void *data)
 
 
            	Global_Data.av.v_dqxy_limited_volts = uz_6ph_Space_Vector_Limitation(Global_Data.av.v_dqxy_non_limited_volts, V_DC_Volts, 0.5f, Global_Data.av.omega_elec, Global_Data.av.CIL_i_dqxy_meas, &ext_clamping);
-//           	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
-//           	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
-//           	v_dqxy_limited_volts.x = v_xy_limited_volts.d;
-//           	v_dqxy_limited_volts.y = v_xy_limited_volts.q;
-//           	v_dqxy_limited_volts.z1 = 0.0f;
-//           	v_dqxy_limited_volts.z2 = 0.0f;
+/*         	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
+          	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
+           	v_dqxy_limited_volts.x = v_xy_limited_volts.d;
+          	v_dqxy_limited_volts.y = v_xy_limited_volts.q;
+         	v_dqxy_limited_volts.z1 = 0.0f;
+           	v_dqxy_limited_volts.z2 = 0.0f;*/
            	uz_pmsm_model6ph_dq_set_inputs_general(Global_Data.objects.CIL_pmsm,CIL_omega_mech,0.0f);   // set fixed speed, because load simulation is disabled by pmsm_config.simulate_mechanical_system
            	uz_pmsm_model6ph_dq_set_voltage(Global_Data.objects.CIL_pmsm,Global_Data.av.v_dqxy_limited_volts);
 
@@ -920,19 +1093,19 @@ void ISR_Control(void *data)
            		Global_Data.av.v_dqxy_non_limited_volts.x = Global_Data.av.v_xy_limited_volts.d;
            		Global_Data.av.v_dqxy_non_limited_volts.y = Global_Data.av.v_xy_limited_volts.q;
 
-           		//Global_Data.av.v_dqxy_non_limited_volts.x = 0.0f; Anpassung regelung
+           		//Global_Data.av.v_dqxy_non_limited_volts.x = 0.0f;// Anpassung regelung
            		//Global_Data.av.v_dqxy_non_limited_volts.y = 0.0f;
 
            		uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
                 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
            	}
            	Global_Data.av.v_dqxy_limited_volts = uz_6ph_Space_Vector_Limitation(Global_Data.av.v_dqxy_non_limited_volts, V_DC_Volts, 0.5f, Global_Data.av.omega_elec, Global_Data.av.REAL_i_dqxy_meas, &ext_clamping);
-//           	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
-//           	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
-//           	v_dqxy_limited_volts.x = v_xy_limited_volts.d;
-//           	v_dqxy_limited_volts.y = v_xy_limited_volts.q;
-//           	v_dqxy_limited_volts.z1 = 0.0f;
-//           	v_dqxy_limited_volts.z2 = 0.0f;
+           //	v_dqxy_limited_volts.d = v_dq_limited_volts.d;
+          //	v_dqxy_limited_volts.q = v_dq_limited_volts.q;
+           //	v_dqxy_limited_volts.x = v_xy_limited_volts.d;
+           //	v_dqxy_limited_volts.y = v_xy_limited_volts.q;
+           //	v_dqxy_limited_volts.z1 = 0.0f;
+           //	v_dqxy_limited_volts.z2 = 0.0f;
            	Global_Data.av.REAL_v_abc_ref = uz_transformation_asym30deg_6ph_dq_xy_to_abc(Global_Data.av.v_dqxy_limited_volts, Global_Data.av.theta_elec);
            	Global_Data.av.REAL_v_vsd_ref = uz_transformation_asym30deg_6ph_dq_xy_to_alphabeta_XY(Global_Data.av.v_dqxy_limited_volts, Global_Data.av.theta_elec);
            	//REAL_v_abc_ref = uz_transformation_asym30deg_6ph_dq_xy_to_abc(v_dqxy_limited_volts, theta_el_advanced);
@@ -1138,6 +1311,12 @@ void ISR_Control(void *data)
            	  	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	 break;
            	case 42:
            	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1150,6 +1329,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	 	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	 break;
            	case 43:
            	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1162,6 +1347,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	 break;
            	case 44:
            	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1174,6 +1365,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	 break;
            	case 45:
            	   Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_3L_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1186,6 +1383,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	 break;
            	case 46:
            	   	Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_2L_1ML_2M, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1198,6 +1401,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	 break;
            	case 47:
            	   	Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_3L_2M, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1210,6 +1419,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	 break;
            	case 48:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1222,6 +1437,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 49:
            	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1234,6 +1455,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 50:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1246,6 +1473,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 51:
            	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1258,6 +1491,12 @@ void ISR_Control(void *data)
            	  	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 52:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1270,6 +1509,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	  	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 53:
            	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_3L_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1282,6 +1527,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 54:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_3L_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1294,6 +1545,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 55:
            	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_3L_1M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1306,6 +1563,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 56:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1318,6 +1581,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 57:
            	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_0_63_Parameters, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1330,6 +1599,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 58:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1342,6 +1617,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 59:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1354,6 +1635,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 60:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1_MIX_3L_1M_v1_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1366,6 +1653,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	    Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 61:
            	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1378,6 +1671,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 62:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1390,6 +1689,12 @@ void ISR_Control(void *data)
            	   	Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 63:
            	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_0_63, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1402,6 +1707,12 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 64:
            	   	Test = uz_SVPWM_4arrows_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1414,6 +1725,12 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 65:
            	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1426,6 +1743,12 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 66:
            	   	Test = uz_SVPWM_4arrows_discontinous_V2_6ph(&CSVPWM_24_2L_1ML_1M_v2_MIX_3L_1M_v2_7_56, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1438,6 +1761,12 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 67:
            	   	Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1450,6 +1779,12 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 68:
            	   	Test = uz_SVPWM_5arrows_discontinous_V1_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1462,6 +1797,12 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 69:
            	   	Test = uz_SVPWM_5arrows_discontinous_V2_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1474,6 +1815,11 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	   	           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+        	   	Global_Data.av.t1 = Test.t1;
+        	   	Global_Data.av.t2 = Test.t2;
+        	   	Global_Data.av.t3 = Test.t3;
+        		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 70:
            	   	Test = uz_SVPWM_5arrows_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1486,6 +1832,11 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	   	Global_Data.av.t1 = Test.t1;
+           	   	Global_Data.av.t2 = Test.t2;
+           	   	Global_Data.av.t3 = Test.t3;
+           		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 71:
            	   	Test = uz_SVPWM_5arrows_discontinous_V1_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1498,6 +1849,11 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	   	Global_Data.av.t1 = Test.t1;
+           	   	Global_Data.av.t2 = Test.t2;
+           	   	Global_Data.av.t3 = Test.t3;
+           		Global_Data.av.t4 = Test.t4;
            	   	break;
            	case 72:
            	   	Test = uz_SVPWM_5arrows_discontinous_V2_6ph(&CSVPWM_24_3L_2M_MIX_2L_1ML_2M_v2, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
@@ -1510,6 +1866,11 @@ void ISR_Control(void *data)
            	    Global_Data.av.y_trafo = Test.y_trafo;
            	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
            	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	   	Global_Data.av.t1 = Test.t1;
+           	   	Global_Data.av.t2 = Test.t2;
+           	   	Global_Data.av.t3 = Test.t3;
+           		Global_Data.av.t4 = Test.t4;
            	   	break;
 
            	default:

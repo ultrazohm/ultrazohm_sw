@@ -110,42 +110,55 @@ uint32_t counter_Torque_points = 0U;
 //static float angle[34] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 //		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,
 //		0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f };
+//
+//static float i_peak_T[1] = { 0.0f };
+//static float angle_T[1] = { 0.0f };
+//static uint32_t n_Torque_points_max = 1U;
+
 
 // ------------------------------------ Currents and Angles for torque current characteristic ----------------------------------------------
-static uint32_t n_currents_max = 1U;
-static uint32_t n_angles_max = 20U;
-static float i_peak[1] = { 30.0f };
-static float angle[20] = {	0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f,
-							52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f
-						 };
+//static uint32_t n_currents_max = 1U;
+//static uint32_t n_angles_max = 20U;
+//static float i_peak[1] = { 5.0f };
+//static float angle[20] = {	0.0f, 10.0f, 20.0f, 30.0f, 35.0f, 40.0f, 42.5f, 45.0f, 47.5f, 50.0f,
+//							52.5f, 55.0f, 57.5f, 60.0f, 62.5f, 65.0f, 70.0f, 75.0f, 80.0f, 90.0f
+//						 };
+//static float i_peak_T[1] = { 0.0f };
+//static float angle_T[1] = { 0.0f };
+//static uint32_t n_Torque_points_max = 1U;
 
 // ------------------------------------ Currents and Angles for measurement the Efficiency Map ---------------------------------------------
 static uint32_t n_Torque_points_max = 11U;
-static float i_peak_T[11] = {	11.983f,
-								16.518f,
-								23.700f,
-								29.825f,
-								35.496f,
-								40.945f,
-								46.283f,
-								51.504f,
-								56.715f,
-								61.966f,
-								67.182f
+static float i_peak_T[11] = {	12.0386f,
+								16.8153f,
+								24.1998f,
+								30.2819f,
+								35.8774f,
+								41.1920f,
+								46.3799f,
+								51.6056f,
+								56.7541f,
+								61.8474f,
+								66.9216f
 							};
 
-static float angle_T[11] = {	45.560f,
-								47.668f,
-								48.071f,
-								50.206f,
-								51.657f,
-								53.586f,
-								54.800f,
-								56.102f,
-								57.358f,
-								58.678f,
-								59.676f
+static float angle_T[11] = {	43.4562f,
+								45.5270f,
+								46.2817f,
+								47.2379f,
+								49.4532f,
+								51.3980f,
+								53.0188f,
+								54.6093f,
+								55.9346f,
+								56.7313f,
+								57.9355f
 							};
+
+static uint32_t n_currents_max = 1U;
+static uint32_t n_angles_max = 1U;
+static float i_peak[1] = { 0.0f };
+static float angle[1] = { 0.0f };
 
 //==============================================================================================================================================================
 

@@ -139,9 +139,14 @@ Default adjustments for the UltraZohm
 .. image:: pictures/switches1.jpg
 
 
+Default adjustments for the UltraZohm :math:`\geq` ``Rev05``
+-------------------------------------------------------------
+
+
+.. image:: pictures/switchesrev06.jpg
+
+See also:
 See also:
 
 * `Xilinx UG1085 TRM for Zynq UltraScale + - Section on boot mode <https://www.xilinx.com/support/documentation/user_guides/ug1085-zynq-ultrascale-trm.pdf#G13.371926>`_
 * `Trenz Wiki Boot Mode Selection in Table 9 <https://wiki.trenz-electronic.de/display/PD/TE0808+TRM#TE0808TRM-BootProcess>`_
-
-

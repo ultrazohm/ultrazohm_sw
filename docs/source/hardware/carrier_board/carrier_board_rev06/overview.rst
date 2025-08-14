@@ -1,23 +1,23 @@
-.. _carrier_board_rev6_overview:
+.. _carrier_board_rev06_overview:
 
 ========
 Overview
 ========
 
 These pages document Rev06 of the UltraZohm carrier.
-This revision only features minor changes compared to Rev05 as described :ref:`below <carrier_board_rev6_summary>`.
+This revision only features minor changes compared to Rev05 as described :ref:`below <carrier_board_rev06_summary>`.
 
-An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`label_carrier_board_overview`, whilst the additions of Rev04 and Rev05 are documented :ref:`here <carrier_board_rev04_features>` and :ref:`here <carrier_board_rev5_summary>`.
+An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`label_carrier_board_overview`, whilst the additions of Rev04 and Rev05 are documented :ref:`here <carrier_board_rev04_features>` and :ref:`here <carrier_board_rev05_summary>`.
 
 Please note that the
 
-- :ref:`carrier_board_rev5_whatsdifferent` and
-- :ref:`carrier_board_rev5_hints`
+- :ref:`carrier_board_rev05_04usr` and
+- :ref:`carrier_board_rev05_hints`
 
-sections from :ref:`Rev05 <carrier_board_rev5_overview>` remain valid for Rev06.
+sections from :ref:`Rev05 <carrier_board_rev05_overview>` remain valid for Rev06.
 
 
-.. _carrier_board_rev6_summary:
+.. _carrier_board_rev06_summary:
 
 Summary of new Features and Changes
 -----------------------------------
@@ -30,7 +30,7 @@ Summary of new Features and Changes
 * :ref:`Rev02 of the updated front panel (FP) <frontpanelmainboard_rev02>` with improved **Isolated IOs** ("isoIOs") for
 	* a higher output current on ``X6`` for external devices, and
 	* individually current-limited in- and external supply rails.
-* The ANL_S3C.P54_Legacy signal (cf. ANL_Pin55_Legacy in :ref:`Rev05 <carrier_board_rev5_summary>`) now is buffered for improved clock distribution via a LMK1C1104 (U14)
+* The ANL_S3C.P54_Legacy signal (cf. ANL_Pin55_Legacy in :ref:`Rev05 <carrier_board_rev05_summary>`) now is buffered for improved clock distribution via a LMK1C1104 (U14)
 * Fixes :ref:`carrier_known_issues_rev05a` by means of the per-slot disable feature of the three A slots (cf. above) and :ref:`carrier_known_issues_rev05b`
 * Various production-related optimizations (functions unchanged)
 

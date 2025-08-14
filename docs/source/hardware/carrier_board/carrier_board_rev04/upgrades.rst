@@ -8,7 +8,7 @@ Upgrades
 Standalone isoJTAG Module
 -------------------------
 
-In order to increase usability and user-friendliness, an upgrade for the JTAG module is available since early 2024 and is already fitted as standard in some :ref:`carrier_board_rev4` versions.
+In order to increase usability and user-friendliness, an upgrade for the JTAG module is available since early 2024 and is already fitted as standard in some :ref:`carrier_board_rev04` versions.
 On this page, a step-by-step upgrade from the original `Trenz TE0790 <https://wiki.trenz-electronic.de/download/attachments/43680347/TE0790-02%20top-numbered.png?version=1&modificationDate=1507707618000&api=v2>`_ to the :ref:`uz_per_jtag` is provided.
 
 Components

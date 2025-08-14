@@ -6,7 +6,7 @@ In the following table you will find an overview of the pin mapping of the SoC M
 All connector-accessible MIO pins -- i.e., those having an X... assignment in column **CB-Pin** -- are labeled with the associated net label/name (of the carrier board) in the fifth column and the connector pin in the **CB-Pin** column (CB --> Carrier Board).
 The connectivity between MIO pins and the frontpanel I/Os -- four user LEDs and three buttons -- is shown by column **FP_**.
 
-.. _carrier_board_rev4_mio:
+.. _carrier_board_rev04_mio:
 .. csv-table:: Overview of the MIO Pins (Rev04)
   :file: interfaces/MIO_Pinout.csv
   :widths: 5 8 8 5 10 5 5

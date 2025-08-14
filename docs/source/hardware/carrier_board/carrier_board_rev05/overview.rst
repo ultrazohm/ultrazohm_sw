@@ -1,4 +1,4 @@
-.. _carrier_board_rev5_overview:
+.. _carrier_board_rev05_overview:
 
 ========
 Overview
@@ -9,7 +9,8 @@ Among various on-board changes, this revision of the carrier board replaces the 
 
 An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`label_carrier_board_overview`, whilst the additions of Rev04 are documented :ref:`here <carrier_board_rev04_features>`.
 
-.. _carrier_board_rev5_whatsdifferent:
+
+.. _carrier_board_rev05_04usr:
 
 "What's different?" for Rev04 Users
 -----------------------------------
@@ -18,12 +19,12 @@ An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`
 	* switched on by briefly pushing the "Power" button on the frontpanel, and
 	* switched off by holding the "Power" button for (at least) 2 seconds.
 * Ethernet: Connect your PC running the Javascope to "LAN 0" on the frontpanel
-* The STOP and Enable buttons on the frontpanel now have an effect beyond the UZ software as they cause state transitions in the :ref:`carrier_board_rev5_s3cfsm` - Please refer to :ref:`carrier_board_rev5_s3cpwr` for caveats if both the frontpanel buttons and the Javascope GUI are used at the same time
+* The STOP and Enable buttons on the frontpanel now have an effect beyond the UZ software as they cause state transitions in the :ref:`carrier_board_rev05_s3cfsm` - Please refer to :ref:`carrier_board_rev05_s3cpwr` for caveats if both the frontpanel buttons and the Javascope GUI are used at the same time
 * Note that the 24V rails sent to the adapter cards are now e-fused; if an overcurrent occurs, the rail of the affected card is disabled and remains so until a powercycle
 * The D-slot CPLDs no longer are programmed via a dedicated debug module and, thus, USB cable; instead, SoM and CPLD JTAGs are integrated, which enables CPLD programming via their :ref:`dedicated channel <label_cpld_programming_ftdi4ch>` (see :ref:`uz_per_jtag` regarding a retrofit option for Rev04 and older systems)
 
 
-.. _carrier_board_rev5_hints:
+.. _carrier_board_rev05_hints:
 
 Hints for Operation and Troubleshooting
 ---------------------------------------
@@ -36,9 +37,10 @@ Hints for Operation and Troubleshooting
 	* White: Soft (i.e., recoverable) error - Press "Enable System" on the frontpanel to return to regular operation
 	* Cyan, magenta, white and yellow (also) serve as indicators during state transitions
 * There now are three (physical) fuses, one in the 230V assembly on the backpanel and two (F1/F2) on the carrier itself (top right-hand corner)
-* The UltraZohm now incorporates a system-level management component, the "S3C", as introduced below - Please refer to :ref:`carrier_board_rev5_s3c` for more information and feature extensions
+* The UltraZohm now incorporates a system-level management component, the "S3C", as introduced below - Please refer to :ref:`carrier_board_rev05_s3c` for more information and feature extensions
 
-.. _carrier_board_rev5_summary:
+
+.. _carrier_board_rev05_summary:
 
 Summary of new Features and Changes
 -----------------------------------
@@ -54,7 +56,7 @@ Summary of new Features and Changes
 	* conditionally forwards per-D-slot output-enable signals from the slot-local CPLD to its associated adapter card whilst A slots are connected directly (cf. the pin formerly used for ``PILOT_OUT``),
 	* drives and/or receives the twelve digital adapter card signals of slot D5 previously not connected, and
 	* routes various PS-MIOs and up to six PL pins to wherever they are needed (e.g., on slot D5 or FP).
-	* See :ref:`carrier_board_rev5_s3c` for details of the used part, its supply, and the already implemented and prospective functions
+	* See :ref:`carrier_board_rev05_s3c` for details of the used part, its supply, and the already implemented and prospective functions
 
 * New, more flexible "CPLDs" (now de facto FPGAs) on the five D slots
 * Isolated JTAG+UART interface to avoid ground loops during debugging

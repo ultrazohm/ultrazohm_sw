@@ -5,6 +5,8 @@ Known issues and remedies
 =========================
 
 
+.. _carrier_known_issues_rev05a:
+
 Over-current monitoring vs. unused A slots (Rev05)
 --------------------------------------------------
 **Problem description**
@@ -16,6 +18,8 @@ The five D slots rely on dedicated signals from switch via slot-local controller
 
 For all slots and the two backpanels, the signal names imply a non-negated signal whilst they -- in fact -- are negated.
 
+
+.. _carrier_known_issues_rev05b:
 
 Missing pull-up resistors on spare I²C bus (Rev05)
 --------------------------------------------------

@@ -1,8 +1,11 @@
+.. _carrier_board_rev5_overview:
+
 ========
 Overview
 ========
 
-These pages document the ongoing efforts towards the next revision of the UltraZohm carrier and its associated components (front panel, housing, etc.).
+These pages document the next-generation (i.e., "post-Rev04") revision of the UltraZohm carrier and its associated components (front panel, housing, etc.).
+Among various on-board changes, this revision of the carrier board replaces the previously wire-connected front panel with a PCB-based solution (cf. :ref:`hardware` and :ref:`frontpanel-photos` for an overview, and :ref:`frontpanelmainboard_rev01` for details).
 
 An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`label_carrier_board_overview`, whilst the additions of Rev04 are documented :ref:`here <carrier_board_rev04_features>`.
 
@@ -16,6 +19,9 @@ An overview about the interfaces of pre-Rev04 systems is shown in chapter :ref:`
 * The STOP and Enable buttons on the frontpanel now have an effect beyond the UZ software as they cause state transitions in the :ref:`carrier_board_rev5_s3cfsm` - Please refer to :ref:`carrier_board_rev5_s3cpwr` for caveats if both the frontpanel buttons and the Javascope GUI are used at the same time
 * Note that the 24V rails sent to the adapter cards are now e-fused; if an overcurrent occurs, the rail of the affected card is disabled and remains so until a powercycle
 * The D-slot CPLDs no longer are programmed via a dedicated debug module and, thus, USB cable; instead, SoM and CPLD JTAGs are integrated, which enables CPLD programming via their :ref:`dedicated channel <label_cpld_programming_ftdi4ch>` (see :ref:`uz_per_jtag` regarding a retrofit option for Rev04 and older systems)
+
+
+.. _carrier_board_rev5_hints:
 
 Hints for Operation and Troubleshooting
 ---------------------------------------
@@ -75,7 +81,7 @@ Summary of new Features and Changes
 * Support for identification of adapter cards (in line with the :ref:`corresponding retrofit for Rev04 <carrier_retrofits_cardid>`)
 * Integrated identification EEPROM used by the :ref:`UZ platform framework <uzpA53>` with associated circuitry (in line with the `I²C and SSD extension board <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/>`_ for Rev04)
 * Additional periphery (e.g., GTR clocks, EEPROMs, RTC supply) to use Linux on the APU (with an either volatile, RAMDisk-only or persistent, SSD-based rootfs; further storage via SD card and/or QSPI flash, and, optionally, PCIe)
-* The SD card slot now is at the northwestern edge of the carrier board
+* The SD card slot now is at the northwestern edge of the carrier board (and has a working `card detect <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/128/#comment-66486138>`_, which still requires a PS configuration change)
 * Various bug fixes (e.g., :ref:`Ethernet resets <carrier_known_issues_ethrst>`)
 
 

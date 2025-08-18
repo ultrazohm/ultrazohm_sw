@@ -1,3 +1,5 @@
+.. _carrier_board_rev04_mios:
+
 ========================
 Overview of the ARM Pins
 ========================

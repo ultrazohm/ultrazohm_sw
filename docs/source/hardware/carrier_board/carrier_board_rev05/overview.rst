@@ -50,6 +50,7 @@ Summary of new Features and Changes
    :align: center
 
 * Integration of a **System Supply and Safety CPLD/Controller** ("S3C") that
+
 	* monitors the various system parameters (e.g., supply voltage, power good signals and thermal status),
 	* drives a "carrier ready" signal to the adapter cards (based thereon),
 	* monitors status signals from the adapter cards (and, in case of D[1-5], also their slot-local CPLD),
@@ -58,13 +59,21 @@ Summary of new Features and Changes
 	* routes various PS-MIOs and up to six PL pins to wherever they are needed (e.g., on slot D5 or FP).
 	* See :ref:`carrier_board_rev05_s3c` for details of the used part, its supply, and the already implemented and prospective functions
 
+* Reassignment of various PS-MIOs to enable new functions & bug fixes (see :ref:`itemized list of MIO-related changes <carrier_board_rev05_mios>` for details and software compatibility)
 * New, more flexible "CPLDs" (now de facto FPGAs) on the five D slots
+
+	* Larger fabric size of 2112 LUTs (compared to the 128/256 macrocells of the Lx4128/LC4256V on :ref:`pre-Rev05 carriers <label_cpld_programming>`)
+	* Integrated I²C and SPI controllers for communication and (in addition to traditional JTAG) programming of fabric, feature row and internal Flash
+	* Integrated PLL, 16-bit timer (with PWM and CC support) and user-accessible Flash memory for configuration data etc.
+	* No external/shared clock supplied by the carrier, the local oscillator has to be used on a per-slot basis
+
 * Isolated JTAG+UART interface to avoid ground loops during debugging
 * Dual-JTAG to program both SoM and D-slot CPLDs using a single cable
 * Dual-UART (from SoM to USB) for independent consoles of RPU and APU
 * SysMon-based monitoring of VIN for application-specific error logic
 * Per-slot current limit on VIN (with error signaling to S3C / CPLDs)
 * New, fully PCB-based front panel (FP) with
+
 	* added **Second Gigabit Ethernet** interface (via SGMII)
 	* added 15-pin D-sub connector with 8+5 **Isolated IOs** ("isoIOs") for
 		* up to 12 software-controlled general-purpose IOs (GPIOs),
@@ -81,12 +90,15 @@ Summary of new Features and Changes
 		* The fourth PS-GTR lane (pair) is currently not assigned but available on the FP connector for future extensions
 
 	Details, features and differences of :ref:`Rev01- <frontpanelmainboard_rev01>` and :ref:`Rev02-based <frontpanelmainboard_rev02>` FPs can be found on their respective pages
+
 * Breakout of three GTH quads (x1 to each A slot, x1 to FP, and x4 to BPs) and of one dedicated differential PLL clock per A slot and SoM clock per BP
 * Integrated thermal management for
+
 	* configuration-free temperature-driven control of up to two fans, and
 	* monitoring of fan status, SoM temperature and system temperature
 
 * All shared signals between SoM (both PS and PL) and the adapter card slots have been removed, with the only exception being a per-group I²C bus and an ANL_Pin54_Legacy signal to maintain compatibility as already targeted by Rev04 (cf. last bullet point in :ref:`carrier_board_rev04_features` of Rev04)
+* Migration of the SoM I²C (with its PLL and, in newer revisions, an EEPROM) from PS I²C0 to I²C1
 * Separation of the User I²C (PS I²C0) using an 8-channel bus switch linking to FP (for the isoIOs), A slots, D slot CPLDs, D slots, secondary S3C I²C, and BPs
 * Support for identification of adapter cards (in line with the :ref:`corresponding retrofit for Rev04 <carrier_retrofits_cardid>`)
 * Integrated identification EEPROM used by the :ref:`UZ platform framework <uzpA53>` with associated circuitry (in line with the `I²C and SSD extension board <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/>`_ for Rev04)

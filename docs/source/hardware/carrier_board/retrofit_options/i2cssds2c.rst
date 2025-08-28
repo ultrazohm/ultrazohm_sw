@@ -3,6 +3,9 @@
 I²C/SSD/S²C Extension Board retrofit (≤ Rev04)
 ==============================================
 
+.. image:: i2cssds2c/Rev03PCB.jpg
+   :width: 100%
+
 
 Revisions
 ---------

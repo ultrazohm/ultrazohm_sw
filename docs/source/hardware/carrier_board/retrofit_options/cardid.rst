@@ -5,7 +5,7 @@ Adapter card identification retrofit (≤ Rev04)
 
 The retrofit adds address pins to the A and D connectors between the UltraZohm carrier board and its various A and D adapter cards.
 By doing so, the EEPROMs on current and future adapter cards become reachable, which enables the :ref:`uzpA53` (running on the PS CPUs) to fetch the card identification (model, revision and serial) and hand it over to the user.
-The user may rely on this too, e.g., select/apply any card-specific calibration datasets as required during system initialization, for instance, on ADC or DAC cards, to compensate for part-based offsets or other analog differences.
+The user may rely on this to, e.g., select/apply any card-specific calibration datasets as required during system initialization, for instance, on ADC or DAC cards, to compensate for part-based offsets or other analog differences.
 The retrofit requires soldering multiple wires on the carrier board.
 
 .. note::

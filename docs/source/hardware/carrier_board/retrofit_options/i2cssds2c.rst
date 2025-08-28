@@ -12,7 +12,7 @@ Revisions
 
 There are three major, feature-distinct revisions of this board:
 
-- Rev01 (from 2022) only includes I²C components for basic Linux support, i.e,. a general-purpose EEPROM, GPIO, an RTC and MAC EEPROMs
+- Rev01 (from 2022) only includes I²C components for basic Linux support, i.e., a general-purpose EEPROM, GPIO, an RTC and MAC EEPROMs
 - Rev02 (from 2023) adds two M.2 slots for SATA SSDs and hooks into the carrier/frontpanel link for access to LEDs, buttons and supply
 - Rev03 (from 2025) adds a variety of features to (partially...) align existing Rev04-based systems to the features of ≥Rev05 carriers
 

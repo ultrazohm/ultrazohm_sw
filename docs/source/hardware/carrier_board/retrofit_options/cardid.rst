@@ -1,7 +1,7 @@
 .. _carrier_retrofits_cardid:
 
-Adapter card identification retrofit
-====================================
+Adapter card identification retrofit (≤ Rev04)
+==============================================
 
 The retrofit adds address pins to the A and D connectors between the UltraZohm carrier board and its various A and D adapter cards.
 By doing so, the EEPROMs on current and future adapter cards become reachable, which enables the :ref:`uzpA53` (running on the PS CPUs) to fetch the card identification (model, revision and serial) and hand it over to the user.

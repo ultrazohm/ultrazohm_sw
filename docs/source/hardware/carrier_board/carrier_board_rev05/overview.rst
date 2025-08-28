@@ -80,7 +80,7 @@ Summary of new Features and Changes
 * All shared signals between SoM (both PS and PL) and the adapter card slots have been removed, with the only exception being a per-group I²C bus and an ANL_Pin54_Legacy signal to maintain compatibility as already targeted by Rev04 (cf. last bullet point in :ref:`carrier_board_rev04_features` of Rev04)
 * Separation of the User I²C (PS I²C0) using an 8-channel bus switch linking to FP (for the isoIOs), A slots, D slot CPLDs, D slots, secondary S3C I²C, and BPs
 * Support for identification of adapter cards (in line with the :ref:`corresponding retrofit for Rev04 <carrier_retrofits_cardid>`)
-* Integrated identification EEPROM used by the :ref:`UZ platform framework <uzpA53>` with associated circuitry (in line with the `I²C and SSD extension board <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/>`_ for Rev04)
+* Integrated identification EEPROM used by the :ref:`UZ platform framework <uzpA53>` with associated circuitry (in line with the :ref:`carrier_retrofits_i2cssds2c`)
 * Additional periphery (e.g., GTR clocks, EEPROMs, RTC supply) to use Linux on the APU (with an either volatile, RAMDisk-only or persistent, SSD-based rootfs; further storage via SD card and/or QSPI flash, and, optionally, PCIe)
 * The SD card slot now is at the northwestern edge of the carrier board
 * Various bug fixes (e.g., :ref:`Ethernet resets <carrier_known_issues_ethrst>`)

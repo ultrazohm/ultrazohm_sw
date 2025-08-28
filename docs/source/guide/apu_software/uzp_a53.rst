@@ -4,7 +4,7 @@
 Platform Framework
 ==================
 
-.. warning:: The UltraZohm Platform Framework requires UltraZohm revision 5 or revision 4 including the IIC/SSD extension board for the automatic identification of the platform versions. For other systems, the hardware revision is passed by using the ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`). Additionally, identification of adapter cards in A- and D-Slot is only possible for adapter cards that feature an EEPROM. For older adapter cards, the identification is not possible.
+.. warning:: The UltraZohm Platform Framework requires UltraZohm revision 5 or revision 4 with :ref:`carrier_retrofits_i2cssds2c` for the automatic identification of the platform versions. For other systems, the hardware revision is passed by using the ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`). Additionally, identification of adapter cards in A- and D-Slot is only possible for adapter cards that feature an EEPROM. For older adapter cards, the identification is not possible.
 
 Overview
 --------
@@ -46,12 +46,8 @@ The UZP behaves differently depending on the UltraZohm version:
 
 Given these dependencies, the adapter card identification UZP is disabled by default and has to be activated manually (cf. below).
 The other UZP features are enabled by default but depend on ``UZ_HARDWARE_VERSION`` define in ``uz_global_configuration.h`` (see :ref:`global_configuration`) for systems that have no full UZP features available (see list above).
-On Rev04 UltraZohm systems and older, the UZP relies on the external "I²C/SSD Extension Board" (either in Rev02 with `EEPROM retrofit <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/issues/10/>`_ or in Rev03 ff.).
+On Rev04 UltraZohm systems and older, the UZP relies on the external ":ref:`I²C/SSD/S²C Extension Board <carrier_retrofits_i2cssds2c>`" (either in Rev02 with `EEPROM retrofit <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/issues/10/>`_ or in Rev03 ff.).
 If such older systems are used without the external board (i.e., as shipped), the software defaults to the revision hard-coded in the RPU software, i.e., the known integer value ``UZ_HARDWARE_VERSION`` in ``/Baremetal/src/uz/uz_global_configuration.h``.
-
-.. note::
- As of early 2025, the extension board is not publicly available.
- Please get in touch on the :ref:`uzslack` for the current state of this matter and the (already existing) short-term options for early access.
 
 Furthermore, only for Rev04 UltraZohm systems and older versions, the adapter card identification feature depends on the PCB tweak described in :ref:`carrier_retrofits_cardid`, which users can apply themselves.
 Please note that Rev04 UltraZohm *systems built in 2024 already have been retrofitted* before shipping -- Please get in touch to determine whether the retrofit is needed on your system(s).
@@ -68,7 +64,7 @@ Initialization
 """"""""""""""
 
 The framework is automatically initialized on the APU by a call to ``uz_platform_init()`` before FreeRTOS threading starts in ``main()``.
-The activation of the adapter card identification depends on the ``UZ_PLATFORM_CARDID`` ``#define`` in ``/FreeRTOS/src/uz/uz_PLATFORM/uz_platform.h``:
+The activation of the adapter card identification feature depends on the ``UZ_PLATFORM_CARDID`` C preprocessor ``#define`` in ``/FreeRTOS/src/uz/uz_PLATFORM/uz_platform.h``:
 
 * In all cases, ``uz_platform_init()`` is called at bootup to
 
@@ -84,6 +80,7 @@ The activation of the adapter card identification depends on the ``UZ_PLATFORM_C
 .. note::
  Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
  Otherwise, the IIC subsystem will ``assert()`` during initialization due to a lack of available bus instances.
+ With `commit b373877 <https://bitbucket.org/ultrazohm/ultrazohm_sw/commits/b373877a641d1a1b1cb76fa67a14573c4d6e57dc>`_ in mid-2025, this now is the default.
 
 .. _uzpA53_cardid:
 
@@ -181,6 +178,9 @@ Predefined inputs on an UltraZohm Rev04 with IIC/SSD extension (enum ``uz_platfo
 * ``I2CKEY_FP7EMERGENCYSTOP``
 * ``I2CKEY_FP8``
 
+.. note::
+ As of mid-2025, the I²C GPIOs on Rev03 of the extension board are not operational as no reference bitstream for the S²C is publicly available.
+
 NB:
 
 * Currently, the GPIO functionality lacks support for inverted I/Os, i.e., an output state "assert" always implies "pin driven to high" (even if the signal is inverted on the electrical level)
@@ -209,5 +209,6 @@ Card-specific functionalities
 See also
 --------
 
+* the :ref:`carrier_retrofits_i2cssds2c` docs,
 * the `uz_per_rtc_mac <https://bitbucket.org/ultrazohm/uz_per_rtc_mac/src/master/>`_ repository for the I²C/SSD extension board, and
 * the :ref:`carrier_retrofits_cardid` for modifying pre-Rev05 carrier boards to support the adapter card identification feature.

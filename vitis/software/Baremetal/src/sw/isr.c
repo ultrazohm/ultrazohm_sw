@@ -999,6 +999,43 @@ void ISR_Control(void *data)
    	   	break;
 
 
+   	case 73:
+   	   	Test = uz_SVPWM_5arrows_discontinous_V1_6ph(&CSVPWM_24_3L_2M, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	   	Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	    Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	    Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	    Global_Data.av.t1 = Test.t1;
+   	    Global_Data.av.t2 = Test.t2;
+   	    Global_Data.av.t3 = Test.t3;
+   	    Global_Data.av.t4 = Test.t4;
+   	    break;
+
+   	case 74:
+   	   	Test = uz_SVPWM_5arrows_discontinous_V2_6ph(&CSVPWM_24_3L_2M, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+   	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+   	   	Global_Data.av.current_sector = Test.current_sector;
+   	   	Global_Data.av.SV_angle = Test.SV_angle;
+   	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+   	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+   	   	Global_Data.av.x_trafo = Test.x_trafo;
+   	   	Global_Data.av.y_trafo = Test.y_trafo;
+   	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+   	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+   	    Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	    Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+   	    Global_Data.av.t1 = Test.t1;
+   	    Global_Data.av.t2 = Test.t2;
+   	    Global_Data.av.t3 = Test.t3;
+   	    Global_Data.av.t4 = Test.t4;
+   	    break;
    	default:
    		break;
 
@@ -1887,6 +1924,46 @@ void ISR_Control(void *data)
            	   	Global_Data.av.t3 = Test.t3;
            		Global_Data.av.t4 = Test.t4;
            	   	break;
+
+           	case 73:
+           	   	Test = uz_SVPWM_5arrows_discontinous_V1_6ph(&CSVPWM_24_3L_2M, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+           	   	Global_Data.av.DutyCycle_output = Test.DutyCycles;
+           	   	Global_Data.av.current_sector = Test.current_sector;
+           	   	Global_Data.av.SV_angle = Test.SV_angle;
+           	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+           	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+           	   	Global_Data.av.x_trafo = Test.x_trafo;
+           	   	Global_Data.av.y_trafo = Test.y_trafo;
+           	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+           	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	    Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	    Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	    Global_Data.av.t1 = Test.t1;
+           	    Global_Data.av.t2 = Test.t2;
+           	    Global_Data.av.t3 = Test.t3;
+           	    Global_Data.av.t4 = Test.t4;
+           	    break;
+
+           	case 74:
+           	   	Test = uz_SVPWM_5arrows_discontinous_V2_6ph(&CSVPWM_24_3L_2M, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+           	   	Global_Data.av.DutyCycle_output = Test.DutyCycles;
+           	   	Global_Data.av.current_sector = Test.current_sector;
+           	   	Global_Data.av.SV_angle = Test.SV_angle;
+           	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+           	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+           	   	Global_Data.av.x_trafo = Test.x_trafo;
+           	   	Global_Data.av.y_trafo = Test.y_trafo;
+           	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+           	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	    Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	    Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	    Global_Data.av.t1 = Test.t1;
+           	    Global_Data.av.t2 = Test.t2;
+           	    Global_Data.av.t3 = Test.t3;
+           	    Global_Data.av.t4 = Test.t4;
+           	    break;
+
+
 
            	default:
 

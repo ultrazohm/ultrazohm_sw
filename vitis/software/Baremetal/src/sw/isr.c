@@ -1093,8 +1093,8 @@ void ISR_Control(void *data)
            		Global_Data.av.v_dqxy_non_limited_volts.x = Global_Data.av.v_xy_limited_volts.d;
            		Global_Data.av.v_dqxy_non_limited_volts.y = Global_Data.av.v_xy_limited_volts.q;
 
-           		//Global_Data.av.v_dqxy_non_limited_volts.x = 0.0f;// Anpassung regelung
-           		//Global_Data.av.v_dqxy_non_limited_volts.y = 0.0f;
+           		Global_Data.av.v_dqxy_non_limited_volts.x = 0.0f;// Anpassung regelung
+           		Global_Data.av.v_dqxy_non_limited_volts.y = 0.0f;
 
            		uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_12_to_17, Global_Data.rasv.halfBridge7DutyCycle, Global_Data.rasv.halfBridge8DutyCycle, Global_Data.rasv.halfBridge9DutyCycle);
                 uz_PWM_SS_2L_set_duty_cycle(Global_Data.objects.pwm_d1_pin_18_to_23, Global_Data.rasv.halfBridge10DutyCycle, Global_Data.rasv.halfBridge11DutyCycle, Global_Data.rasv.halfBridge12DutyCycle);
@@ -1269,6 +1269,21 @@ void ISR_Control(void *data)
         		break;
            	case 29:
         		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_2L_1ML_1M_v1_D2_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);
+           	   	Test = uz_SVPWM_4arrows_discontinous_V1_6ph(&CSVPWM_24_2L_1ML_1M_v1, Global_Data.av.u_ref_6ph_alphabeta,Global_Data.av.U_ZK, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.objects.pwm_d1_pin_6_to_11);
+           	   	Global_Data.av.DutyCycle_6ph_test = Test.DutyCycles;
+           	   	Global_Data.av.current_sector = Test.current_sector;
+           	   	Global_Data.av.SV_angle = Test.SV_angle;
+           	   	Global_Data.av.alpha_trafo = Test.alpha_trafo;
+           	   	Global_Data.av.beta_trafo = Test.beta_trafo;
+           	   	Global_Data.av.x_trafo = Test.x_trafo;
+           	   	Global_Data.av.y_trafo = Test.y_trafo;
+           	   	Global_Data.av.nullplus_trafo = Test.nullplus_trafo;
+           	   	Global_Data.av.nullminus_trafo = Test.nullminus_trafo;
+           	            	   	Global_Data.av.gesamte_schaltzeit = Test.gesamte_schaltzeit;
+           	            	   	Global_Data.av.t1 = Test.t1;
+           	            	   	Global_Data.av.t2 = Test.t2;
+           	            	   	Global_Data.av.t3 = Test.t3;
+           	            		Global_Data.av.t4 = Test.t4;
         		break;
            	case 30:
         		Global_Data.av.DutyCycle_output =  uz_6ph_DSVPWM_24_2L_1ML_1M_v2_D1_alphabeta_INJ(Global_Data.av.u_ref_6ph_alphabeta, Global_Data.av.V_DC_Volts);

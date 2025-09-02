@@ -30,7 +30,7 @@ As of 2025, there are two "major versions" of UltraZohm systems in existence:
 
 2. Systems based on carrier boards :math:`\geq` Rev05, where
 
-  * system power is controlled by a power *button* on the front panel (and a 230V switch on the back panel, cf. :ref:`carrier_board_rev5_whatsdifferent` and :ref:`carrier_board_rev5_s3c`),
+  * system power is controlled by a power *button* on the front panel (and a 230V switch on the back panel, cf. :ref:`carrier_board_rev05_04usr` and :ref:`carrier_board_rev05_s3c`),
   * power supply and 230V inlet are located on the adapter card (i.e., when looking from the front, right-hand) side of the chassis, and
   * the front panel consists of three interconnected PCBs, most notably the :ref:`Front Panel Mainboard <frontpanelmainboard_rev01>` (which links the entire assembly to the carrier).
 

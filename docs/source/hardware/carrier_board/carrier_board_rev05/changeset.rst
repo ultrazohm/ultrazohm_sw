@@ -74,7 +74,7 @@ Overview of Change Issues vs. Repositories
    * - Move PSU to far-right corner of chassis
      - `136 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/136/>`_
      - `branch H repo <https://bitbucket.org/ultrazohm/housing/branch/feature/redesign_rev05>`_
-   * - Protect the VIn, 5V and 3V3 rails at the slots (cf. :ref:`spec <carrier_board_rev3_slotpower>`)
+   * - Protect the VIn, 5V and 3V3 rails at the slots (cf. :ref:`spec <carrier_board_rev03_slotpower>`)
      - `146 <https://bitbucket.org/ultrazohm/uz_carrierboard/issues/146/>`_
      -
    * - Make PL MGT transceivers usable

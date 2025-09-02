@@ -1,4 +1,4 @@
-.. _carrier_board_rev5_s3c:
+.. _carrier_board_rev05_s3c:
 
 ======================================
 System Supply & Safety Component (S3C)
@@ -29,7 +29,7 @@ All other rails are ramped up as soon as the user presses the frontpanel-side po
 Then, the well-known ramp-up sequence of previous carrier boards is started by enabling the now-default-off 3V3_MOD (U10).
 
 
-.. _carrier_board_rev5_s3cfsm:
+.. _carrier_board_rev05_s3cfsm:
 
 Statemachine for S3C
 --------------------
@@ -66,7 +66,7 @@ Statemachine for S3C
 	Acknowledge_Error --> Waiting_for_Powerbutton_released2
 
 
-.. _carrier_board_rev5_s3cpwr:
+.. _carrier_board_rev05_s3cpwr:
 
 Powerbutton Functionality
 -------------------------
@@ -153,7 +153,7 @@ The Power button interacts with the S3C statemachine, and its LED coloring indic
        It has to be pushed at least 2 seconds to power off.
 
 
-.. _carrier_board_rev5_s3cfunc:
+.. _carrier_board_rev05_s3cfunc:
 
 Functions
 ---------

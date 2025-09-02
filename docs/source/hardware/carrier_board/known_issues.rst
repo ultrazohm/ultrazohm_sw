@@ -5,6 +5,30 @@ Known issues and remedies
 =========================
 
 
+.. _carrier_known_issues_rev05a:
+
+Over-current monitoring vs. unused A slots (Rev05)
+--------------------------------------------------
+**Problem description**
+
+The high-side switches used to protect and monitor the VIN rails of the adapter cards also consider "no current" as a fault condition.
+As all three A slots share a single fault signal (that is connected to the S³C), it is impossible to distinguish an overcurrent condition on (at least) one card from, e.g., only one A slot being used.
+
+The five D slots rely on dedicated signals from switch via slot-local controllers to the S³C, and thus are not affected.
+
+For all slots and the two backpanels, the signal names imply a non-negated signal whilst they -- in fact -- are negated.
+
+
+.. _carrier_known_issues_rev05b:
+
+Missing pull-up resistors on spare I²C bus (Rev05)
+--------------------------------------------------
+**Problem description**
+
+The I²C bus between the multiplexer on the user bus (I²C0) and the S³C's secondary controller lacks (dedicated) pull-up resistors (to 1V8).
+Depending on the chosen bus frequency, this hinders communication between SoM and the -- as of mid-2025 unused -- secondary I²C of the S³C.
+
+
 .. _carrier_known_issues_ethrst:
 
 Ethernet PHY Reset pins (≤ Rev04)

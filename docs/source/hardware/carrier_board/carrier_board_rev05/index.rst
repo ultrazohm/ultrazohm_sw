@@ -1,4 +1,4 @@
-.. _carrier_board_rev5:
+.. _carrier_board_rev05:
 
 
 ===================
@@ -13,5 +13,7 @@ Carrier Board Rev05
 	changeset
 	power_distribution
 	s3c
+	frontpanel_rev01
+	frontpanel_rev02
 	dcplds
 	arm_pins

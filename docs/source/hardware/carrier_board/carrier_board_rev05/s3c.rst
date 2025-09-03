@@ -1,8 +1,8 @@
-.. _carrier_board_rev5_s3c:
+.. _carrier_board_rev05_s3c:
 
-================================
-System Supply & Safety Component
-================================
+======================================
+System Supply & Safety Component (S3C)
+======================================
 
 
 General
@@ -29,7 +29,7 @@ All other rails are ramped up as soon as the user presses the frontpanel-side po
 Then, the well-known ramp-up sequence of previous carrier boards is started by enabling the now-default-off 3V3_MOD (U10).
 
 
-.. _carrier_board_rev5_s3cfsm:
+.. _carrier_board_rev05_s3cfsm:
 
 Statemachine for S3C
 --------------------
@@ -66,7 +66,7 @@ Statemachine for S3C
 	Acknowledge_Error --> Waiting_for_Powerbutton_released2
 
 
-.. _carrier_board_rev5_s3cpwr:
+.. _carrier_board_rev05_s3cpwr:
 
 Powerbutton Functionality
 -------------------------
@@ -153,6 +153,8 @@ The Power button interacts with the S3C statemachine, and its LED coloring indic
        It has to be pushed at least 2 seconds to power off.
 
 
+.. _carrier_board_rev05_s3cfunc:
+
 Functions
 ---------
 
@@ -175,8 +177,52 @@ Functions
 	- Current usage of power good (aka not-reset) signals
 		- ``Carrier_PG_1V8``: Connected to ``RESETn`` of the two Ethernet PHYs (carrier and frontpanel-main, 10k pullup on carrier)
 		- ``Carrier_PG_3V3``: Enables the DC/DC converter of the isoIO island's 3V3 rail (on frontpanel-main, no pullup/down R)
-- Planned features (not implemented, but prepared in hardware):
-	- "Request Safe State" signal from S3C to D slots: Potential triggers are supply rail monitors, ``FP_UsrSW3``, ``FrontpanelIO.ExternalSTOP``, ...
+- Default safety interaction between the System Controller (S3C) and the five D-Slot Controllers
+	- The carrier board’s standard safety concept relies on a fixed set of hand-shake lines that flow between the Digital Slots, the System Controller (S3C), and the D-Slot CPLDs.
+	- The schematic of this interface can be found in the carrier-board design documentation `(see page 60 of the PDF) <https://docs.ultrazohm.com/_downloads/98d1425942e2cca4fa8a0edd40f28295/SCH_UZ_CarrierBoard_Rev05Batch00_05.pdf#page=60>`_
+	- See :ref:`signal_groups_s3cdslot` below for an extended explanation of the signals
+	
+.. _signal_groups_s3cdslot:
+.. csv-table:: Overview of the signal groups between S3C and D-CPLDs
+  :file: interfaces/signalgroups.csv
+  :widths: 4 9 7 3 11
+  :header-rows: 1
+
+The table above lists every signal, its direction, and its purpose.
+These links form the default interaction path implemented in both the S3C bitstream and the D-Slot Controller.
+The Request-``OE`` signals (green) -- which themselves might depend on the card-local ``PILOT_IN`` -- effectively are "looped through" the S3C and reach the actual D-Slot slots/cards as ``Output-Enable`` (black).
+
+**Default logic in the S3C bitstream**
+
+The S3C side contains a conditional pass-through that propagates the SlotOE request only when no system-wide force-disable is active:
+
+.. code-block:: vhdl
+
+	-- Conditional passthrough for OE
+	DIGS3C_SlotD_SlotOE <= DIGS3C_SlotD_ReqOE and (DIGS3C_SlotD_SlotOE'Range => NOT forceoutputdisable);
+
+
+At present, only SlotOE is actively driven. Other potential outputs -- such as the S3C’s CarrierRdy -- are left unconnected and therefore idle.
+
+**Default logic in the D-Slot bitstream**
+
+The D-Slot CPLD feeds two status signals back to the S3C:
+
+- ReqOE: mirrors the S3C’s output-enable request so the controller can perform integrity checks.
+- SlotOK: asserted when the S3C has not requested a safe state; it drops low whenever a fault is forced.
+
+Detailed VHDL assignments for the D-Slot Controller are included in :ref:`label_diamond_create_program`.
+
+**Extending the default behaviour**
+
+The current assignments merely establish the mandatory signal directions and the minimal “safe-default” logic.
+If your application needs tighter supervision or additional routing, you can:
+
+- hook extra internal state machines into these nets
+- expose further pins on the D-Slot connector, or
+- redefine the pass-through conditions entirely.
+
+In short, while the template guarantees a fail-safe baseline, it is designed to be adapted to any project-specific safety or forwarding requirement.
 
 
 I/Os

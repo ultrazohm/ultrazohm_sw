@@ -17,12 +17,14 @@ static uz_parameterID_rc_t instances[UZ_PARAMETERID_RC_MAX_INSTANCES] = { 0 };
 
 static uz_parameterID_rc_t* uz_parameterID_rc_allocation(void);
 
+
+/*Zulässigkeit des Moduls prüfen*/
 static uz_parameterID_rc_t* uz_parameterID_rc_allocation(void){
-    uz_assert(instance_counter < UZ_PARAMETERID_RC_MAX_INSTANCES);
+    uz_assert(instance_counter < UZ_PARAMETERID_RC_MAX_INSTANCES); //Überprüfen, ob genug Instanzen zulässig sind
     uz_parameterID_rc_t* self = &instances[instance_counter];
     uz_assert_false(self->is_ready);
     instance_counter++;
-    self->is_ready = true;
+    self->is_ready = true;											// Modul einsatzbereit
     return (self);
 }
 
@@ -67,8 +69,8 @@ uz_parameterID_rc_t* uz_parameterID_rc_get_all(uz_parameterID_rc_t* self){
 struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_parameterID_rc_t* self, float temp_degrees)
 {
 
-    uz_assert_not_NULL(self);
-    uz_assert(self->is_ready);
+    uz_assert_not_NULL(self);    //assertion, falls eingabe leer ist
+    uz_assert(self->is_ready);	 // Modul einsatzbereit
     if(self->first_call)
     {
         self->set_values.id_set_Amps = 0.0f;
@@ -104,8 +106,9 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
         	{
         		self->rc_state = rc_finished;
         	}
+
             self->counter.wait++;
-            if(self->counter.wait == 15000U){
+            if(self->counter.wait == 5000U){
                 if (self->rc_previous_state == rc_set_idq){
                     self->rc_state = rc_sample_on;
                 }
@@ -119,6 +122,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
             break;
 
         // sets a flag that indicates that data is valid, then switches to wait state
+        // Data logged with javascope
         case rc_sample_on:
             self->output_ref_values.data_valid = 1.0f;
             self->output_ref_values.operating_points_all++;
@@ -145,6 +149,7 @@ struct uz_parameterID_rc_ref_val_t uz_parameterID_rc_generate_idq_ref(uz_paramet
                     break;
                 }
             } else
+
             {
             uz_parameterID_rc_set_next_operating_point_idq(self);
             }

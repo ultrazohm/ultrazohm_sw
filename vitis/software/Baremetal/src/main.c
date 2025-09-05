@@ -16,6 +16,7 @@
 // Includes from own files
 #include "main.h"
 
+
 extern const struct uz_PMSM_t Beckhoff_AM8141;
 // Initialize the global variables
 DS_Data Global_Data = {
@@ -37,6 +38,8 @@ DS_Data Global_Data = {
 
     },
     .av.pwm_frequency_hz = UZ_PWM_FREQUENCY,
+    .av.theta_el_offset_left = 0.39709687f,
+    .av.theta_el_offset_right = 0.406825863f,
     .av.isr_samplerate_s = (1.0f / UZ_PWM_FREQUENCY) * (Interrupt_ISR_freq_factor),
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
     	   .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f},
@@ -62,31 +65,41 @@ int main(void)
 {
     int status = UZ_SUCCESS;
 
+    struct uz_encoder_offset_estimation_config encoder_offset_cfg = {               // config struct
+        .ptr_measured_rotor_angle = &Global_Data.av.theta_el_left,                     // pointer to the measured electric rotor angle (raw, not offset corrected)
+        .ptr_offset_angle = &Global_Data.av.theta_offset,                           // pointer to global variable holding the offset angle
+        .ptr_actual_omega_el = &Global_Data.av.omega_el,                            // pointer to actual electric rotor angular speed
+        .ptr_actual_u_q_V = &Global_Data.av.v_q_left,                                    // pointer to q-setpoint voltage
+        .min_omega_el = 200.0f,                                                     // target electric rotor angular speed (USE OWN)
+        .setpoint_current = 11.0f};                                                  // current setpoint to reach speed (USE OWN)
+    //uz_encoder_offset_estimation_t* encoder_offset_obj = NULL;
+
+    const struct uz_parameterid_rs_config_t rs_meas_config =
+    {
+    	    .n_start_rpm = 0.0f,
+    	    .n_end_rpm = 1000.0f,
+    	    .n_steps = 20U,
+    	    .i_pos_Amps = 4.0f,
+    	    .i_neg_Amps = -4.0f,
+    	    .i_repeats = 10.0f,
+    	    .i_steptime = 1.2f,
+    	    .wait_time = 10.0f,
+    	    .isr_steptime = (1.0f / 10.0e3f) * 1.0f,
+    	    .abs_iq_max_Amps = 0.001f,
+    	    .check_temp = 0
+    };
+
     const struct uz_parameterID_rc_config_t rc_meas_config =
     {
-    	.abs_id_max_Amps = 4.0f,
-    	.abs_iq_max_Amps = 4.0f,
-    	.n_start_rpm = 200.0f,
-    	.n_stop_rpm = 200.0f,
-    	.id_steps = 4U,
-    	.iq_steps = 4U,
-    	.n_steps = 1U,
+    	.abs_id_max_Amps = 5.0f,
+    	.abs_iq_max_Amps = 5.0f,
+    	.n_start_rpm = 0.0f,
+    	.n_stop_rpm = 1000.0f,
+    	.id_steps = 5U,
+    	.iq_steps = 5U,
+    	.n_steps = 4U,
     	.check_temp=0
     };
-
-    struct uz_parameterid_rs_config_t config_rs_meas =
-    {
-    	.n_start = 100.0f,
-        .n_end = 1000.0f,
-        .n_steps = 8.0f,
-        .i_start = -3.0f,
-        .i_diff = 6.0f,
-        .i_repeats = 10.0f,
-        .i_steptime = 1.2f,
-   	    .wait_time = 2.0f,
-        .isr_steptime = (1.0f / 10.0e3f) * 1.0f
-    };
-
 
     while (1)
     {
@@ -115,8 +128,8 @@ int main(void)
 			Global_Data.objects.iir_filter_ref_speed_left = speed_filt_left_init();
 			Global_Data.objects.iir_filter_ref_speed_right = speed_filt_right_init();
 			Global_Data.objects.rc_meas_instance = uz_parameterID_rc_init(rc_meas_config);
-			Global_Data.objects.rs_meas_instance_left = uz_parameterid_rs_init(config_rs_meas);
-			Global_Data.objects.rs_meas_instance_right = uz_parameterid_rs_init(config_rs_meas);
+			Global_Data.objects.rs_meas_instance = uz_parameterid_rs_init(rs_meas_config);
+			Global_Data.objects.encoder_offset_obj = uz_encoder_offset_estimation_init(encoder_offset_cfg);
 			//Lambda
             initialization_chain = init_ip_cores;
             break;

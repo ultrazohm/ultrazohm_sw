@@ -18,13 +18,20 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../IP_Cores/uz_resolver_pl_interface/uz_resolver_pl_interface.h"
+extern DS_Data Global_Data;
+
+
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
 
+float theta_m_offset_rad = 0.0f;
+
 extern uint32_t js_status_BareToRTOS;
 extern uz_3ph_dq_t i_dq_integrated_error_left;
 extern uz_3ph_dq_t i_dq_integrated_error_right;
+
 
 void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 {
@@ -213,12 +220,18 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_7):
 		data->av.snd_fld[7] = value;
-		uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left, value);
+		theta_m_offset_rad = value;
+		uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_right, theta_m_offset_rad);
+	//uz_CurrentControl_set_Kp_id(data->objects.current_ctrl_left, value);
+		//set offset right
 			break;
 
 		case (Set_Send_Field_8):
 		data->av.snd_fld[8] = value;
-		uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_left, value);
+		theta_m_offset_rad = value;
+		uz_resolver_pl_interface_set_theta_m_offset_rad(Global_Data.objects.resolver_pl_interface_left, theta_m_offset_rad);
+		//uz_CurrentControl_set_Ki_id(data->objects.current_ctrl_left, value);
+		//set offset left
 			break;
 
 		case (Set_Send_Field_9):
@@ -324,7 +337,10 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (My_Button_8):
-
+				if(ultrazohm_state_machine_get_state() == control_state && data->rasv.meas_state == stop)
+				{
+					data->rasv.meas_state = warm_up;
+				}
 			break;
 
 		case (Error_Reset):
@@ -420,14 +436,14 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 	 } else {
 		 js_status_BareToRTOS &= ~(1 << 10);
 	 }
-	 js_status_BareToRTOS &= ~(1 << 10);
+//	 js_status_BareToRTOS &= ~(1 << 10);
 //
 //	/* Bit 11 - My_Button_8 */
-//	 if (data->rasv.meas_state == rs_meas_left) {
-//		 js_status_BareToRTOS |= (1 << 11);
-//	 } else {
-//		 js_status_BareToRTOS &= ~(1 << 11);
-//	 }
+	 if (data->rasv.meas_state == warm_up) {
+		 js_status_BareToRTOS |= (1 << 11);
+	 } else {
+		 js_status_BareToRTOS &= ~(1 << 11);
+	 }
 
 	/* Bit 12 - trigger ext. logging */
 	// if (your condition == true) {

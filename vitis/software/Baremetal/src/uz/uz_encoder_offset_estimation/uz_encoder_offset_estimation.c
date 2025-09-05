@@ -16,6 +16,8 @@
 
 #include "uz_encoder_offset_estimation.h"
 #include "../uz_global_configuration.h"
+#include "../uz_math_constants.h"
+#include "../../globalData.h"
 #if UZ_ENCODER_OFFSET_ESTIMATION_MAX_INSTANCES > 0
 
 // arraysize is determined by the given range and stepsize for theta. sense making inputs from user are required
@@ -23,6 +25,7 @@
 #define OFFSET_DELAY_BETWEEN_SETPOINTS_SEC 1.0f     // a delay between the rotations (positive, negative and next theta's positive)
 #define OFFSET_ACCELERATE_TIME_SEC 3.0f             // the time to let the motor accelerate with the given q-current
 
+extern DS_Data Global_Data;
 // enum for states of higher level state machine
 enum encoderoffset_states_high_level
 {
@@ -83,6 +86,9 @@ typedef struct uz_encoder_offset_estimation_t {
     float sub_u_q_filtered;                                                 // filtered uq
     float sub_omega_el_filtered;                                            // filtered omega electric
 }uz_encoder_offset_estimation_t;
+
+
+int meas_count = 0;
 
 // instance stuff
 static uint32_t instances_counter_EncOffEst = 0;
@@ -172,6 +178,7 @@ uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* se
             break;
         }
         case encoderoffset_hl_positive_setpoint:{
+        	Global_Data.rasv.n_ref_right = -(self->min_omega_el*60/(4*2*UZ_PIf));
         	uz_encoder_offset_estimation_single_direction(self, &self->meas_array[self->meas_array_counter].psi_d_positive, self->setpoint_current);  // get psi with positive direction rotation
             if(self->encoderoffset_current_state_ll == encoderoffset_ll_finished){          // if substatemachine is finished
                 self->encoderoffset_current_state_ll = encoderoffset_ll_init;               // set substatemachine back to init
@@ -180,6 +187,7 @@ uz_3ph_dq_t uz_encoder_offset_estimation_step(uz_encoder_offset_estimation_t* se
             break;
         }
         case encoderoffset_hl_negative_setpoint:{
+        	Global_Data.rasv.n_ref_right = (self->min_omega_el*60/(4*2*UZ_PIf));
         	uz_encoder_offset_estimation_single_direction(self, &self->meas_array[self->meas_array_counter].psi_d_negative, -self->setpoint_current); // get psi with negative direction rotation
             if(self->encoderoffset_current_state_ll == encoderoffset_ll_finished){          // if substatemachine is finished
                 self->encoderoffset_current_state_ll = encoderoffset_ll_init;               // set substatemachine back to init
@@ -242,7 +250,9 @@ static void uz_encoder_offset_estimation_reset_substatemachine(uz_encoder_offset
     self->sub_omega_el_filtered = 0.0f;
 }
 
-static void uz_encoder_offset_estimation_single_direction(uz_encoder_offset_estimation_t* self, float* psi_d, const float setp_current){
+static void uz_encoder_offset_estimation_single_direction(uz_encoder_offset_estimation_t* self, float* psi_d, const float setp_current)
+{
+
     switch (self->encoderoffset_current_state_ll){
         case encoderoffset_ll_init:{
             uz_filter_cumulativeavg_reset(self->filter_u_q);                        // reset filter
@@ -250,10 +260,12 @@ static void uz_encoder_offset_estimation_single_direction(uz_encoder_offset_esti
             self->i_reference_Ampere = zero_dq_struct;                              // set controller to zero
             self->sub_temp_time = uz_SystemTime_GetGlobalTimeInSec();               // get init time
             self->encoderoffset_current_state_ll = encoderoffset_ll_accelerate;     // set next state
+            Global_Data.rasv.n_ref_right= 0;
             break;
         }
         case encoderoffset_ll_accelerate:{
-            self->i_reference_Ampere.q = setp_current;                                 // set reference current
+            //self->i_reference_Ampere.q = setp_current;                                 // set reference current
+
             if(fabsf(*self->ptr_actual_omega_el) >= self->min_omega_el){ // if speed is high enough
                 self->sub_max_speed = fabsf(*self->ptr_actual_omega_el);        // measure speed
                 self->encoderoffset_current_state_ll = encoderoffset_ll_measurement;   // set next state
@@ -264,25 +276,35 @@ static void uz_encoder_offset_estimation_single_direction(uz_encoder_offset_esti
             }
             break;
         }
-        case encoderoffset_ll_measurement:{
-            if ((fabsf(*self->ptr_actual_omega_el) > 0.3f*self->sub_max_speed) && (fabsf(*self->ptr_actual_omega_el) < 0.8f*self->sub_max_speed)  ) {              // measure as long as omega_el is not zero
-                self->sub_u_q_filtered = uz_filter_cumulativeavg_step(self->filter_u_q, *self->ptr_actual_u_q_V);                // measure
-                self->sub_omega_el_filtered = uz_filter_cumulativeavg_step(self->filter_omega_el, *self->ptr_actual_omega_el);   // measure
-            }else if(fabsf(*self->ptr_actual_omega_el) < 0.15f*self->sub_max_speed){
-                *psi_d = self->sub_u_q_filtered/self->sub_omega_el_filtered;         // calculate psi_d
-                self->sub_temp_time = uz_SystemTime_GetGlobalTimeInSec();            // get finish time
-                self->encoderoffset_current_state_ll = encoderoffset_ll_wait;        // set next state
+        case encoderoffset_ll_measurement:
+        {
+            if ((fabsf(*self->ptr_actual_omega_el) > 0.95f*self->sub_max_speed) && (fabsf(*self->ptr_actual_omega_el) < 1.05f*self->sub_max_speed)) // measure as long as omega_el is not zero
+            {
+            	meas_count++;
+
+               self->sub_u_q_filtered = uz_filter_cumulativeavg_step(self->filter_u_q, *self->ptr_actual_u_q_V);                // measure
+               self->sub_omega_el_filtered = uz_filter_cumulativeavg_step(self->filter_omega_el, *self->ptr_actual_omega_el);   // measure
+               if(meas_count = 10000)
+               {
+                   *psi_d = self->sub_u_q_filtered/self->sub_omega_el_filtered;         // calculate psi_d
+                   self->sub_temp_time = uz_SystemTime_GetGlobalTimeInSec();            // get finish time
+                   self->encoderoffset_current_state_ll = encoderoffset_ll_wait;        // set next state
+               }
             }
+
             break;
         }
-        case encoderoffset_ll_wait:{
+        case encoderoffset_ll_wait:
+        {
+        	Global_Data.rasv.n_ref_right = 0;
         	if((uz_SystemTime_GetGlobalTimeInSec()-self->sub_temp_time) > OFFSET_DELAY_BETWEEN_SETPOINTS_SEC){
 				uz_encoder_offset_estimation_reset_substatemachine(self);            // set all substate variables to zero
 				self->encoderoffset_current_state_ll = encoderoffset_ll_finished;    // set finished state
 			}
 			break;
         }
-        default: break;
+        default:
+        	break;
     }
 }
 

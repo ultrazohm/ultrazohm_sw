@@ -71,6 +71,10 @@ enum JS_OberservableData {
 	JSO_id_ref_rc_meas,
 	JSO_n_ref_rc_meas,
 	JSO_data_valid_rc_meas,
+	JSO_iq_ref_rs_meas,
+	JSO_id_ref_rs_meas,
+	JSO_n_ref_rs_meas,
+	JSO_data_valid_rs_meas,
 	JSO_M_ref_left,
 	JSO_op_rc_meas,
 	JSO_avg_temp_right,
@@ -88,6 +92,9 @@ enum JS_OberservableData {
 	JSO_vq_right_meas_filter_comp,
 	JSO_vd_left_meas_filter_comp,
 	JSO_vq_left_meas_filter_comp,
+	JSO_rs_meas_isr_stepcounter,
+	JSO_rs_meas_isr_steptime,
+	JSO_rs_meas_i_repeat,
 	JSO_ENDMARKER
 };
 
@@ -119,6 +126,8 @@ enum JS_SlowData {
 	JSSD_FLOAT_lambda_q,
 	JSSD_FLOAT_lambda_u,
 	JSSD_FLOAT_i_max_mpc,
+	JSSD_FLOAT_theta_offset_right,
+	JSSD_FLOAT_theta_offset_left,
 	JSSD_ENDMARKER
 };
 
@@ -179,8 +188,8 @@ enum gui_button_mapping {
 	iq_ref_right,
 	id_ref_left,
 	iq_ref_left,
-	Kp_id_left,
-	Ki_id_left,
+	theta_offset_right,
+	theta_offset_left,
 	Kp_iq_left,
 	Ki_iq_left,
 	Kp_speed_left,
@@ -233,8 +242,8 @@ enum gui_button_mapping {
 	vd_left,
 	vq_left,
 	v_dc_left,
-	receive_field_7,
-	receive_field_8,
+	theta_offset_right,
+	theta_offset_left,
 	receive_field_9,
 	receive_field_10,
 	receive_field_11,
@@ -287,7 +296,7 @@ enum gui_button_mapping {
 	RS_Meas_Left,
 	speed_control_left,
 	speed_control_right,
-	unused,
+	warm_up,
 	MYBUTTONS_LABELS_ENDMARKER
 
 

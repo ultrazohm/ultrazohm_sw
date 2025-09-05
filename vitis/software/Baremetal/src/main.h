@@ -62,7 +62,8 @@
 #include "uz/uz_CurrentControl/uz_CurrentControl.h"
 #include "uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "uz/uz_signals/uz_signals.h"
-#include "uz/uz_ParameterID_rs/uz_ParameterID_rs.h"
+#include "uz/uz_ParameterID_rs/uz_parameterid_rs.h"
+#include "uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

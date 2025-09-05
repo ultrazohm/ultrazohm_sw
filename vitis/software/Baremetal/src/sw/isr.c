@@ -35,6 +35,8 @@
 #include "../uz/uz_CurrentControl/uz_space_vector_limitation.h"
 #include "../uz/uz_ParameterID_rc/uz_ParameterID_rc.h"
 #include "../uz/uz_parameterID_rs/uz_parameterID_rs.h"
+#include "../uz/uz_encoder_offset_estimation/uz_encoder_offset_estimation.h"
+#include "../include/resolver.h"
 
 // Initialize the Interrupt structure
 XScuGic INTCInst;     // Interrupt handler -> only instance one -> responsible for ALL interrupts of the GIC!
@@ -42,8 +44,11 @@ XIpiPsu INTCInst_IPI; // Interrupt handler -> only instance one -> responsible f
 
 // Global variable structure
 extern DS_Data Global_Data;
+extern uz_encoder_offset_estimation_t* encoder_offset_obj;
 extern const struct uz_parameterID_rc_config_t rc_meas_config;
-
+extern const struct uz_parameterid_rs_config_t rs_meas_config;
+extern struct uz_resolverIP_config_t resolver_config_right;
+extern struct uz_resolverIP_config_t resolver_config_left;
 #define 	CURRENT_2_SI_AMPERE	12.5f
 #define		VOLTAGE_2_SI_VOLTS	12.0f
 #define		MAX_CURRENT			15.0f
@@ -76,11 +81,13 @@ struct uz_3ph_abc_t v_abc_right_rev_filter = {0.0f};
 struct uz_3ph_abc_t v_abc_right_filter_comp = {0.0f};
 struct uz_3ph_dq_t v_dq_meas_right_rev_filt;
 
-//struct uz_fixedpoint_definition_t fixedpoint_definition_debug = {
-//		.is_signed = true,
-//		.integer_bits = 12,
-//		.fractional_bits = 15
-//};
+float thetal_el_right_unwrapped = 0.0f;
+float thetal_el_left_unwrapped = 0.0f;
+float fc = 1745.0f;
+
+meas_state_t last_state;
+struct uz_encoder_offset_estimation_status status;
+
 
 //==============================================================================================================================================================
 //----------------------------------------------------
@@ -95,7 +102,8 @@ static void speed_control_left_motor();
 static void speed_control_right_motor();
 static void current_control_right_motor();
 static void current_control_left_motor();
-meas_state_t last_state;
+
+
 
 void ISR_Control(void *data)
 {
@@ -105,6 +113,15 @@ void ISR_Control(void *data)
 	// update speed and position of resolvers
 	Global_Data.av.resolver_pl_outputs_left = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_left);
 	Global_Data.av.resolver_pl_outputs_right = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_right);
+
+	thetal_el_left_unwrapped = Global_Data.av.resolver_pl_outputs_left.position_el_2pi - Global_Data.av.theta_el_offset_left;
+	Global_Data.av.theta_el_left = uz_signals_wrap(thetal_el_left_unwrapped, 2.0f*UZ_PIf);
+
+	thetal_el_right_unwrapped = Global_Data.av.resolver_pl_outputs_right.position_el_2pi - Global_Data.av.theta_el_offset_right;
+	Global_Data.av.theta_el_right = uz_signals_wrap(thetal_el_right_unwrapped, 2.0f*UZ_PIf);
+
+	Global_Data.av.omega_el = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s*Global_Data.av.polepairs_right;
+
 	// update status of both inverters
 	uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_left);
 	uz_inverter_adapter_update_states(Global_Data.objects.uz_d_inverter_right);
@@ -138,6 +155,8 @@ void ISR_Control(void *data)
 	i_abc_right.a = Global_Data.av.i_a_right;
 	i_abc_right.b = Global_Data.av.i_b_right;
 	i_abc_right.c = Global_Data.av.i_c_right;
+
+
 
 	// check for current limit
 	if (fabs(Global_Data.av.i_a_left) > MAX_CURRENT || fabs(Global_Data.av.i_b_left) > MAX_CURRENT || fabs(Global_Data.av.i_c_left) > MAX_CURRENT ||
@@ -194,8 +213,8 @@ void ISR_Control(void *data)
 		i_dq_ref_left = Global_Data.rasv.i_dq_ref_left;
 		// calculations necessary for all control algorithms
 		// park transformation of measured currents
-		i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
-		i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+		i_dq_left = uz_transformation_3ph_abc_to_dq(i_abc_left, Global_Data.av.theta_el_left);
+		i_dq_right = uz_transformation_3ph_abc_to_dq(i_abc_right, Global_Data.av.theta_el_right);
 		Global_Data.av.omega_mech_right = Global_Data.av.resolver_pl_outputs_right.omega_mech_rad_s;
 		Global_Data.av.omega_mech_left = Global_Data.av.resolver_pl_outputs_left.omega_mech_rad_s;
 		Global_Data.av.i_d_left = i_dq_left.d;
@@ -203,16 +222,16 @@ void ISR_Control(void *data)
 		Global_Data.av.i_d_right = i_dq_right.d;
 		Global_Data.av.i_q_right = i_dq_right.q;
 
-		/*if (Global_Data.rasv.ctrl_plant_select == REAL)
-		{*/
 		switch(Global_Data.rasv.meas_state)
 		{
 			case stop:
-				/*if(Global_Data.rasv.n_ref_left == 0)
+
+				/*if(Global_Data.objects.rs_meas_instance->is_first_call_to_generate_outputs == false)
 				{
-					Global_Data.rasv.i_dq_ref_right.d = 0.0f;
-					Global_Data.rasv.i_dq_ref_right.q = 0.0f;
+					Global_Data.objects.rs_meas_instance->is_first_call_to_generate_outputs = true;
+					Global_Data.objects.rs_meas_instance->state = finished;
 				}*/
+
 				if(Global_Data.objects.rc_meas_instance->first_call == false)
 				{
 					Global_Data.objects.rc_meas_instance->first_call = true;
@@ -235,6 +254,7 @@ void ISR_Control(void *data)
 					dutycyc_right.DutyCycle_A = 0;
 					dutycyc_right.DutyCycle_B = 0;
 					dutycyc_right.DutyCycle_C = 0;
+					uz_encoder_offset_estimation_reset_states(Global_Data.objects.encoder_offset_obj);
 				}
 				break;
 			case rc_meas_right:
@@ -243,7 +263,7 @@ void ISR_Control(void *data)
 				Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.mean_temp_inv_right);
 				Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
 				Global_Data.rasv.i_dq_ref_right.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
-				Global_Data.rasv.n_ref_left = Global_Data.rasv.rc_meas_output.n_ref_rpm * -1.0f;
+				Global_Data.rasv.n_ref_left = -1.0f*Global_Data.rasv.rc_meas_output.n_ref_rpm;
 				Global_Data.rasv.operatingpoints_rc_meas = Global_Data.rasv.rc_meas_output.operating_points_all;
 	        	speed_control_left_motor();
 	        	current_control_right_motor();
@@ -251,32 +271,31 @@ void ISR_Control(void *data)
 			case rc_meas_left:
 				last_state = rc_meas_left;
 	    		filter_compensation_left();
-	        	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.mean_temp_inv_right);
+	        	Global_Data.rasv.rc_meas_output = uz_parameterID_rc_generate_idq_ref(Global_Data.objects.rc_meas_instance, Global_Data.av.mean_temp_inv_left);
 	        	Global_Data.rasv.i_dq_ref_left.d = Global_Data.rasv.rc_meas_output.id_ref_Amps;
-	        	Global_Data.rasv.i_dq_ref_left.q = Global_Data.rasv.rc_meas_output.iq_ref_Amps;
-	        	Global_Data.rasv.n_ref_right = Global_Data.rasv.rc_meas_output.n_ref_rpm * -1.0f;
+	        	Global_Data.rasv.i_dq_ref_left.q = 0.0f;//Global_Data.rasv.rc_meas_output.iq_ref_Amps;
+	        	Global_Data.rasv.n_ref_right = -1.0f*Global_Data.rasv.rc_meas_output.n_ref_rpm;
 	        	Global_Data.rasv.operatingpoints_rc_meas = Global_Data.rasv.rc_meas_output.operating_points_all;
 	        	speed_control_right_motor();
 	        	current_control_left_motor();
 				break;
 			case rs_meas_right:
 				last_state = rs_meas_right;
-	    		filter_compensation_right();
-	    		Global_Data.rasv.rs_meas_output_right= uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance_right, Global_Data.av.v_dq_meas_right_filter_comp.d, Global_Data.av.i_d_right);
-	    		Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rs_meas_output_right.i_sample;
-	    		Global_Data.rasv.i_dq_ref_right.q = 0.0f;
-	    		// control functions for DUT right
-	    		Global_Data.rasv.n_ref_left = -1.0f*Global_Data.rasv.rs_meas_output_right.n_sample;
+				filter_compensation_right();
+				Global_Data.rasv.rs_meas_output = uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance, Global_Data.av.mean_temp_inv_right);
+				Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.rs_meas_output.id_ref_Amps;
+				Global_Data.rasv.i_dq_ref_right.q = 0.0f;
+				Global_Data.rasv.n_ref_left = -1.0f*Global_Data.rasv.rs_meas_output.n_ref_rpm;
 	        	speed_control_left_motor();
 	        	current_control_right_motor();
 				break;
 			case rs_meas_left:
 				last_state = rs_meas_left;
-	    		filter_compensation_left();
-	    		Global_Data.rasv.rs_meas_output_left = uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance_left, Global_Data.av.v_dq_meas_left_filter_comp.d, Global_Data.av.i_d_left);
-	    		Global_Data.rasv.i_dq_ref_left.d = Global_Data.rasv.rs_meas_output_left.i_sample;
-	    		Global_Data.rasv.i_dq_ref_left.q = 0.0f;
-	    		Global_Data.rasv.n_ref_right = -1.0f*Global_Data.rasv.rs_meas_output_left.n_sample;
+				filter_compensation_left();
+				Global_Data.rasv.rs_meas_output = uz_parameterid_rs_generate_outputs(Global_Data.objects.rs_meas_instance, Global_Data.av.mean_temp_inv_left);
+				Global_Data.rasv.i_dq_ref_left.d = Global_Data.rasv.rs_meas_output.id_ref_Amps;
+				Global_Data.rasv.i_dq_ref_left.q = 0.0f;
+				Global_Data.rasv.n_ref_right = -1.0f*Global_Data.rasv.rs_meas_output.n_ref_rpm;
 	    		// control functions for DUT right
 	    		speed_control_right_motor();
 	        	current_control_left_motor();
@@ -284,20 +303,37 @@ void ISR_Control(void *data)
 			case speed_control_left:
 				last_state = speed_control_left;
 				filter_compensation_right();
-//				Global_Data.rasv.i_dq_ref_right.d = Global_Data.rasv.js_set_i_dq_ref_right.d;
-//				Global_Data.rasv.i_dq_ref_right.q = Global_Data.rasv.js_set_i_dq_ref_right.q;
-//				Global_Data.rasv.n_ref_left = Global_Data.rasv.js_set_n_ref_left;
+				filter_compensation_left();
 				// control functions for DUT right
 				speed_control_left_motor();
 				current_control_right_motor();
 				break;
 			case speed_control_right:
 				last_state = speed_control_right;
-		  		filter_compensation_left();
-//				Global_Data.rasv.i_dq_ref_left.d = Global_Data.rasv.js_set_i_dq_ref_left.d;
-//				Global_Data.rasv.i_dq_ref_left.q = Global_Data.rasv.js_set_i_dq_ref_left.q;
-//				Global_Data.rasv.n_ref_right = Global_Data.rasv.js_set_n_ref_right;
-				// control functions for DUT left
+				filter_compensation_left();
+				filter_compensation_right();
+				speed_control_right_motor();
+				current_control_left_motor();
+				break;
+			case warm_up:
+				if(last_state != warm_up)
+				{
+					Global_Data.av.theta_offset = resolver_config_left.zero_position_mechanical;
+				}
+				last_state = warm_up;
+
+				if(!uz_encoder_offset_estimation_get_finished(Global_Data.objects.encoder_offset_obj)){         // if not finished
+					Global_Data.rasv.i_dq_ref_left = uz_encoder_offset_estimation_step(Global_Data.objects.encoder_offset_obj);//receive current controller setpoint current from stepping function
+					Global_Data.rasv.i_dq_ref_left.d = 0.0f;                                              // else: it is finished, setpoints are 0
+					Global_Data.rasv.i_dq_ref_left.q = 0.0f;
+				}
+				else
+				{
+					Global_Data.rasv.i_dq_ref_left.d = 0.0f;                                              // else: it is finished, setpoints are 0
+					Global_Data.rasv.i_dq_ref_left.q = 0.0f;
+					Global_Data.rasv.meas_state = stop;
+				}
+				status = uz_encoder_offset_estimation_get_status(Global_Data.objects.encoder_offset_obj);
 				speed_control_right_motor();
 				current_control_left_motor();
 				break;
@@ -458,7 +494,8 @@ static void speed_control_left_motor()
 	v_dq_ref_left = uz_CurrentControl_sample(Global_Data.objects.current_ctrl_left, Global_Data.rasv.i_dq_ref_left, i_dq_left, DC_VOLTAGE, Global_Data.av.omega_mech_left*Global_Data.av.polepairs_left);
 	Global_Data.av.v_d_left = v_dq_ref_left.d;
 	Global_Data.av.v_q_left = v_dq_ref_left.q;
-	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, DC_VOLTAGE, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+	Global_Data.av.theta_el_left_advanced =  Global_Data.av.theta_el_left + (1.5f * (Global_Data.av.omega_mech_left*Global_Data.av.polepairs_left) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
+	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, DC_VOLTAGE, Global_Data.av.theta_el_left_advanced);
 
 };
 static void speed_control_right_motor()
@@ -475,7 +512,8 @@ static void speed_control_right_motor()
     Global_Data.av.v_d_right = v_dq_ref_right.d;
     Global_Data.av.v_q_right = v_dq_ref_right.q;
     // calculate duty cycles from reference dq voltages
-    dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, DC_VOLTAGE, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+	Global_Data.av.theta_el_right_advanced = Global_Data.av.theta_el_right + (1.5f * (Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
+    dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, DC_VOLTAGE, Global_Data.av.theta_el_right_advanced);
 };
 
 static void current_control_left_motor()
@@ -485,7 +523,7 @@ static void current_control_left_motor()
 	Global_Data.av.v_d_left = v_dq_ref_left.d;
 	Global_Data.av.v_q_left = v_dq_ref_left.q;
 	Global_Data.av.theta_el_left_advanced =  Global_Data.av.theta_el_left + (1.5f * (Global_Data.av.omega_mech_left*Global_Data.av.polepairs_left) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
-	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, DC_VOLTAGE, Global_Data.av.resolver_pl_outputs_left.position_el_2pi);
+	dutycyc_left = uz_Space_Vector_Modulation(v_dq_ref_left, DC_VOLTAGE,Global_Data.av.theta_el_left_advanced);
 };
 static void current_control_right_motor() {
 
@@ -494,17 +532,19 @@ static void current_control_right_motor() {
 	Global_Data.av.v_d_right = v_dq_ref_right.d;
 	Global_Data.av.v_q_right = v_dq_ref_right.q;
 	// calculate duty cycles from reference dq voltages
-	dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, DC_VOLTAGE, Global_Data.av.resolver_pl_outputs_right.position_el_2pi);
+	Global_Data.av.theta_el_right_advanced = Global_Data.av.theta_el_right + (1.5f * (Global_Data.av.omega_mech_right*Global_Data.av.polepairs_right) * (1.0f / (UZ_PWM_FREQUENCY / INTERRUPT_ADC_TO_ISR_RATIO_USER_CHOICE)));
+	dutycyc_right = uz_Space_Vector_Modulation(v_dq_ref_right, DC_VOLTAGE, Global_Data.av.theta_el_right_advanced);
 };
 
 static void filter_compensation_right()
 {
 	// calculate Frequency response of the magnitude
-	Global_Data.av.magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f)),2.0f));
-	Global_Data.av.v_abc_right_filter_comp.a = v_abc_right.a * Global_Data.av.magnitude;
-	Global_Data.av.v_abc_right_filter_comp.b = v_abc_right.b * Global_Data.av.magnitude;
-	Global_Data.av.v_abc_right_filter_comp.c = v_abc_right.c * Global_Data.av.magnitude;
-	Global_Data.av.phi_right = - atanf((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1750.0f));
+//	Global_Data.av.magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * 1745.0f)),2.0f));
+	Global_Data.av.magnitude = sqrt(1.0f + (((Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right) / (2.0f * UZ_PIf * fc)) * ((Global_Data.av.omega_mech_right * 4.0f) / (2.0f * UZ_PIf * fc))));
+	Global_Data.av.v_abc_right_filter_comp.a = Global_Data.av.v_a_right * Global_Data.av.magnitude;
+	Global_Data.av.v_abc_right_filter_comp.b = Global_Data.av.v_b_right * Global_Data.av.magnitude;
+	Global_Data.av.v_abc_right_filter_comp.c = Global_Data.av.v_c_right * Global_Data.av.magnitude;
+	Global_Data.av.phi_right = - atanf((Global_Data.av.omega_mech_right * Global_Data.av.polepairs_right) / (2.0f * UZ_PIf * fc));
 	Global_Data.av.phi_right = - 1.0f * uz_signals_wrap(Global_Data.av.phi_right, 2.0f*UZ_PIf);
 	float theta_new =  Global_Data.av.theta_el_right - Global_Data.av.phi_right;
 	Global_Data.av.v_dq_meas_right_filter_comp =  uz_transformation_3ph_abc_to_dq(Global_Data.av.v_abc_right_filter_comp, theta_new);
@@ -512,12 +552,12 @@ static void filter_compensation_right()
 
 static void filter_compensation_left(){
 	// calculate Frequency response of the magnitude
-	//Global_Data.av.magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * 1750.0f)),2.0f));
-	Global_Data.av.magnitude = sqrt(1.0f + (((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * 1750.0f)) * ((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * 1750.0f))));
-	Global_Data.av.v_abc_left_filter_comp.a = v_abc_left.a * Global_Data.av.magnitude;
-	Global_Data.av.v_abc_left_filter_comp.b = v_abc_left.b * Global_Data.av.magnitude;
-	Global_Data.av.v_abc_left_filter_comp.c = v_abc_left.c * Global_Data.av.magnitude;
-	Global_Data.av.phi_left = - atanf((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * 1750.0f));
+	//Global_Data.av.magnitude = sqrt(1.0f + powf(((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * 1745.0f)),2.0f));
+	Global_Data.av.magnitude = sqrt(1.0f + (((Global_Data.av.omega_mech_left * 4.0f) / (2.0f * UZ_PIf * fc)) * ((Global_Data.av.omega_mech_left * Global_Data.av.polepairs_left) / (2.0f * UZ_PIf * fc))));
+	Global_Data.av.v_abc_left_filter_comp.a = Global_Data.av.v_a_left * Global_Data.av.magnitude;
+	Global_Data.av.v_abc_left_filter_comp.b = Global_Data.av.v_b_left * Global_Data.av.magnitude;
+	Global_Data.av.v_abc_left_filter_comp.c = Global_Data.av.v_c_left * Global_Data.av.magnitude;
+	Global_Data.av.phi_left = - atanf((Global_Data.av.omega_mech_left * Global_Data.av.polepairs_left) / (2.0f * UZ_PIf * fc));
 	Global_Data.av.phi_left = - 1.0f * uz_signals_wrap(Global_Data.av.phi_left, 2.0f*UZ_PIf);
 	float theta_new =  Global_Data.av.theta_el_left - Global_Data.av.phi_left;
 	Global_Data.av.v_dq_meas_left_filter_comp =  uz_transformation_3ph_abc_to_dq(Global_Data.av.v_abc_left_filter_comp, theta_new);

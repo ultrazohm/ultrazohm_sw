@@ -12,7 +12,7 @@ struct uz_resolverIP_config_t resolver_config_left={
         .freq_clockin = 8192000,
         .pole_pairs_machine = 4.0f,
         .pole_pairs_resolver = 1.0f,
-        .zero_position_mechanical = 0.3959959f, //0.3923f <- was the rough estimate
+        .zero_position_mechanical = 0.39709687f, //0.3923f <- was the rough estimate
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
 
@@ -23,10 +23,11 @@ struct uz_resolverIP_config_t resolver_config_right={
         .freq_clockin = 8192000,
         .pole_pairs_machine = 4.0f,
         .pole_pairs_resolver = 1.0f,
-        .zero_position_mechanical =  0.4008981f, //0.3964f <- was the rough estimate
+        .zero_position_mechanical =  0.406825863f, //0.3964f <- was the rough estimate 0.4108980
         .mode_after_init = POSITION_VELOCITY_MODE,
      };
-
+// Rechts: Theta Offset: 0.4008981, 0.2/0.01  0.4108980, 0.01/0.001 0.4053974; 0.4063974; 0.4045974; 0.4051974; Step: 0.0001, Range: 0.01 0.4091956 (160rad/s),
+//länger messzeit Step: 0.0001, Range: 0.01 ; (300rad/s)
 
 struct uz_resolver_pl_interface_config_t resolver_pl_config_left = {
                .base_address = XPAR_UZ_USER_RESOLVER_D5_UZ_RESOLVER_PL_INTER_0_BASEADDR,
@@ -35,7 +36,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_left = {
                .machine_polepairs = 4,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -0.3959959f
+               .theta_m_offset_rad = -0.39709687f //-0.3959959
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_left = {
@@ -53,7 +54,7 @@ struct uz_resolver_pl_interface_config_t resolver_pl_config_right = {
                .machine_polepairs = 4,
                .position_intmax = 65535,
                .resolver_polepairs = 1,
-               .theta_m_offset_rad = -0.4008981f
+               .theta_m_offset_rad = -0.406825863f
 };
 
 struct uz_resolver_pl_interface_outputs_t resolver_pl_outputs_right = {

@@ -38,6 +38,7 @@ typedef enum
 	speed_control_left,
 	speed_control_right,
 	reset,
+	warm_up,
 	stop
 }meas_state_t;
 

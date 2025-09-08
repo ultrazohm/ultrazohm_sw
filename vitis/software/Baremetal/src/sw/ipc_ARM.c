@@ -18,6 +18,7 @@
 #include "../include/ipc_ARM.h"
 #include "../include/uz_platform_state_machine.h"
 #include <stdbool.h>
+#include "../uz/uz_Trajectory/uz_Trajectory.h"
 
 extern float *js_ch_observable[JSO_ENDMARKER];
 extern float *js_ch_selected[JS_CHANNELS];
@@ -284,6 +285,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->av.CascadeControl = false;
 			data->av.directDuty = false;
 			data->av.DutyCycleControl = false;
+			//data->av.TrajectoryON = false;
 			break;
 
 		case (My_Button_2):
@@ -294,6 +296,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->av.CascadeControl = false;
 			data->av.directDuty = false;
 			data->av.DutyCycleControl = false;
+			//data->av.TrajectoryON = false;
 			break;
 
 		case (My_Button_3):
@@ -304,6 +307,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->av.CurrentControl = false;
 			data->av.directDuty = false;
 			data->av.DutyCycleControl = false;
+			//data->av.TrajectoryON = false;
 			break;
 
 		case (My_Button_4):
@@ -313,6 +317,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->av.CurrentControl = false;
 			data->av.CascadeControl = false;
 			data->av.DutyCycleControl = false;
+			//data->av.TrajectoryON = false;
 			break;
 
 		case (My_Button_5):
@@ -322,6 +327,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->av.CurrentControl = false;
 			data->av.CascadeControl = false;
 			data->av.DutyCycleControl = false;
+			//data->av.TrajectoryON = false;
 			break;
 
 		case (My_Button_6):
@@ -331,14 +337,24 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			data->av.CurrentControl = false;
 			data->av.CascadeControl = false;
 			data->av.directDuty = false;
+			//data->av.TrajectoryON = false;
 			break;
 
 		case (My_Button_7):
-
+			//uz_Trajectory_Start(data->objects.Ref_Speed_Traj_1);
+			//data->av.TrajectoryON = true;
 			break;
 
 		case (My_Button_8):
+			//uz_Trajectory_Stop(data->objects.Ref_Speed_Traj_1);
+			//uz_Trajectory_Reset(data->objects.Ref_Speed_Traj_1);
+			//data->av.TrajectoryON = false;
 
+			//data->av.DutyCycleControl = false;
+			//data->av.SpeedControl = false;
+			//data->av.CurrentControl = false;
+			//data->av.CascadeControl = false;
+			//data->av.directDuty = false;
 			break;
 
 		case (Error_Reset):

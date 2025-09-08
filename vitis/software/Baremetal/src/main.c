@@ -38,7 +38,7 @@ DS_Data Global_Data = {
 	.av.d_b_ref = 0.0f,
 	.av.d_c_ref = 0.0f,
 	.av.directDuty = false,
-	.av.theta_offset = 2.33f,
+	.av.theta_offset = 5.4f, //(old: 2.33f)
     .aa = {.A1 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A2 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}, .A3 = {.cf.ADC_A1 = 10.0f, .cf.ADC_A2 = 10.0f, .cf.ADC_A3 = 10.0f, .cf.ADC_A4 = 10.0f, .cf.ADC_B5 = 10.0f, .cf.ADC_B6 = 10.0f, .cf.ADC_B7 = 10.0f, .cf.ADC_B8 = 10.0f}}};
 
 
@@ -95,10 +95,18 @@ const struct uz_PI_Controller_config config_iq = {
 
 
 // @@@@@ ------------------------------------------------------------------------------------------------------------
+
+struct uz_IIR_Filter_config ref_speed_filter = {
+	.selection = LowPass_first_order, /**< Filter selection \n */
+    .cutoff_frequency_Hz = 100, /**< cutoff frequency in Hz of the filter */
+	.sample_frequency_Hz = 20000 /**< sample frequency in Hz of the signal */
+};
+
+
 //PI_current for both cascade and current control (Current -> Voltage)
 const struct uz_PI_Controller_config config_PI_current = {
-   .Kp =8.0f,
-   .Ki = 5430.0f,
+   .Kp =7.38f, //(#1: 8.0f) (#2: 14.76f)
+   .Ki = 3620.0f, //(#1: 5430.0f) (#2: 6880.0f)
    .type = UZ_PI_PARALLEL,
    //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
@@ -109,8 +117,8 @@ const struct uz_PI_Controller_config config_PI_current = {
 
 // cascade speed PI-controller (Speed -> Current)
 const struct uz_PI_Controller_config config_PI_speed = {
-   .Kp = 0.0382113504874f, // since speed is in RPM, multiply by 2pi/60
-   .Ki = 14.9747184343f, // since speed is in RPM, multiply by 2pi/60
+   .Kp = 0.0536367636f, // (#1 MOC: 0.0382113504874f) (#2 SOC: 0.0382113504874f)
+   .Ki = 10.1136565797f, // (#1 MOC: 14.9747184343f) (#2 SOC: 47.7641881093f)
    .type = UZ_PI_PARALLEL,
    //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
@@ -121,8 +129,8 @@ const struct uz_PI_Controller_config config_PI_speed = {
 
 // only for Speed control (Speed -> Voltage)
 const struct uz_PI_Controller_config config_PI_speed_only = {
-   .Kp = 0.0441432346514197f, // since speed is in RPM, multiply by 2pi/60
-   .Ki = 8.83233762382052f, // since speed is in RPM, multiply by 2pi/60
+   .Kp = 0.0066104225f, //(0.0441432346514197f) since speed is in RPM, multiply by 2pi/60 if tuned using SI units
+   .Ki = 0.7443f, //(8.83233762382052f) since speed is in RPM, multiply by 2pi/60 if tuned using SI units
    .type = UZ_PI_PARALLEL,
    //.type = UZ_PI_IDEAL,
    .samplingTime_sec = 0.00005f,
@@ -131,6 +139,7 @@ const struct uz_PI_Controller_config config_PI_speed_only = {
 };
 
 //@@@@@ ------------------------------------
+
 // Here my PI controller which contains all 3 configs
 const struct uz_BLDC_control_config uz_BLDC_config = {
 	.config_PI_current = config_PI_current,
@@ -149,10 +158,6 @@ const struct uz_CurrentControl_config config_current_control = {
    .config_iq = config_iq,
    .max_modulation_index = 0.5f //1.0f / sqrtf(3.0f)
 };
-
-
-
-
 
 enum init_chain
 {
@@ -208,6 +213,9 @@ int main(void)
             Global_Data.objects.PI_speed = uz_PI_Controller_init(config_PI_speed); //@@@
             Global_Data.objects.PI_speed_only = uz_PI_Controller_init(config_PI_speed_only); //@@@
             Global_Data.objects.BLDC_systems = uz_BLDC_control_init(uz_BLDC_config); //@@@
+            Global_Data.objects.RefSpeedFilter = uz_signals_IIR_Filter_init(ref_speed_filter);
+
+
             initialization_chain = init_ip_cores;
             break;
         case init_ip_cores:

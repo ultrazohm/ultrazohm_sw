@@ -70,6 +70,7 @@ enum JS_OberservableData {
 	JSO_u_ph1,
 	JSO_u_ph2,
 	JSO_u_ph3,
+	JSO_ref_n_filtered,
 	JSO_ENDMARKER
 };
 

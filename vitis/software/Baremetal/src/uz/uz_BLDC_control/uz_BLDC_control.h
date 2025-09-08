@@ -2,10 +2,12 @@
 #define UZ_BLDC_CONTROL_H
 #include <stdbool.h>
 
+
 #include "../uz_piController/uz_piController.h"
 #include "../../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz_Trajectory/uz_Trajectory.h"
 
-// Forward declaration (so that pointers point to this before declaration, prob not necessaey since I defined the full struct in .c)
+// Forward declaration
 typedef struct uz_BLDC_control uz_BLDC_control;
 // Config struct (currently empty)
 
@@ -17,6 +19,7 @@ struct uz_BLDC_control_config{
 	struct uz_PI_Controller_config config_PI_current;
 	struct uz_PI_Controller_config config_PI_speed;
 	struct uz_PI_Controller_config config_PI_speed_only;
+
 
 };
 

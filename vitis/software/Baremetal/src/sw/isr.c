@@ -89,9 +89,12 @@ void ISR_Control(void *data)
 
     platform_state_t current_state=ultrazohm_state_machine_get_state();
 
+    Global_Data.av.mechanicalRotorSpeed_filtered = -Global_Data.av.mechanicalRotorSpeed_filtered;
+    Global_Data.av.mechanicalRotorSpeed = -Global_Data.av.mechanicalRotorSpeed;
     Global_Data.av.omega_mech = 1*((Global_Data.av.mechanicalRotorSpeed_filtered / 60.0f) * (2.0f * (float)M_PI));
     Global_Data.av.omega_elec = Global_Data.av.omega_mech * 3;
-    Global_Data.av.theta_elec = fmodf(((Global_Data.av.theta_mech*3) + Global_Data.av.theta_offset - M_PI/2.0f),(2* M_PI)); // @@@@ Offset of 90 deg applied
+    Global_Data.av.theta_elec = fmodf((((2* M_PI-Global_Data.av.theta_mech)*3) + Global_Data.av.theta_offset),(2* M_PI)); // @@@@ Offset of 90 deg applied
+    Global_Data.av.theta_mech = fmodf((2* M_PI-Global_Data.av.theta_mech),(2* M_PI));
 
     Global_Data.av.u_a = Global_Data.aa.A2.me.ADC_B8 * PHASE_VOLT_CONV_a +PHASE_VOLT_OFFSET_a;
     Global_Data.av.u_b = Global_Data.aa.A2.me.ADC_B7 * PHASE_VOLT_CONV_b +PHASE_VOLT_OFFSET_b;
@@ -226,6 +229,13 @@ void ISR_Control(void *data)
 
     // Here I define the actual speed in RPM (which is filtered)
     Global_Data.av.n_act_rpm = Global_Data.av.mechanicalRotorSpeed_filtered;
+
+    // Here the reference speed in RPM gets filtered (optional, if filtering not desired comment line out and replace n_ref_filtered with n_ref_rpm in uz_BLDC_control_sample command below)
+    Global_Data.av.n_ref_filtered = uz_signals_IIR_Filter_sample(Global_Data.objects.RefSpeedFilter, Global_Data.av.n_ref_rpm);
+
+    // If filtering of input ref speed not desired, then comment previous line out and use the following line:
+    //Global_Data.av.n_ref_filtered = Global_Data.av.n_ref_rpm;
+
     // -------------------------------------- @@@@@
 
 
@@ -236,11 +246,12 @@ void ISR_Control(void *data)
     	//Global_Data.av.output_Dutycycle = uz_spwm_dq(Global_Data.av.u_dq_ref, Global_Data.av.U_ZK, Global_Data.av.theta_elec);
 
     	// @@@@@ BLDCM Control Systems + Inverter Gate Pulses + PI controller inputs and outputs
-    	uz_BLDC_control_sample(Global_Data.objects.BLDC_systems, Global_Data.av.sector, Global_Data.av.U_ctrl_ref, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.n_ref_rpm, Global_Data.av.n_act_rpm, Global_Data.av.I_ph_ref, Global_Data.av.I_ph_m, Global_Data.av.U_ZK, Global_Data.av.SpeedControl, Global_Data.av.CurrentControl, Global_Data.av.CascadeControl, Global_Data.av.DutyCycleControl);
+    	uz_BLDC_control_sample(Global_Data.objects.BLDC_systems, Global_Data.av.sector, Global_Data.av.U_ctrl_ref, Global_Data.objects.pwm_d1_pin_0_to_5, Global_Data.av.n_ref_filtered, Global_Data.av.n_act_rpm, Global_Data.av.I_ph_ref, Global_Data.av.I_ph_m, Global_Data.av.U_ZK, Global_Data.av.SpeedControl, Global_Data.av.CurrentControl, Global_Data.av.CascadeControl, Global_Data.av.DutyCycleControl);
 
     	Global_Data.rasv.halfBridge1DutyCycle = uz_BLDC_control_get_duty_a(Global_Data.objects.BLDC_systems);
     	Global_Data.rasv.halfBridge2DutyCycle = uz_BLDC_control_get_duty_b(Global_Data.objects.BLDC_systems);
     	Global_Data.rasv.halfBridge3DutyCycle = uz_BLDC_control_get_duty_c(Global_Data.objects.BLDC_systems);
+
 
     	Global_Data.av.n_RPM_error = uz_BLDC_control_get_n_RPM_error(Global_Data.objects.BLDC_systems);
     	Global_Data.av.I_ph_error = uz_BLDC_control_get_I_ph_error(Global_Data.objects.BLDC_systems);

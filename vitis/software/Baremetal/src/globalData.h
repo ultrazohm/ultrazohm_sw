@@ -12,7 +12,7 @@
 #include "uz/uz_SpeedControl/uz_speedcontrol.h"
 #include "uz/uz_Space_Vector_Modulation/uz_space_vector_modulation.h"
 #include "uz/uz_BLDC_control/uz_BLDC_control.h"
-
+#include "uz/uz_signals/uz_signals.h"
 // union allows to access the values as array and individual variables
 // see also this link for more information: https://hackaday.com/2018/03/02/unionize-your-variables-an-introduction-to-advanced-data-types-in-c/
 typedef union _ConversionFactors_ {
@@ -135,6 +135,7 @@ typedef struct _actualValues_ {
 	float u_ph1;
 	float u_ph2;
 	float u_ph3;
+	float n_ref_filtered;
 	// @@@@@@@
 
 	struct uz_DutyCycle_t output_Dutycycle;
@@ -177,6 +178,7 @@ typedef struct{
 	uz_PI_Controller* PI_speed; //@@@@
 	uz_PI_Controller* PI_speed_only; //@@@@
 	uz_BLDC_control* BLDC_systems; //@@@@
+	uz_IIR_Filter_t* RefSpeedFilter; //@@@@
 }object_pointers_t;
 
 typedef struct _DS_Data_ {

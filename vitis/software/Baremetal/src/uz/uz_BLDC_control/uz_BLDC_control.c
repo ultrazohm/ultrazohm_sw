@@ -5,6 +5,8 @@
 #include <math.h> // for fmodf, M_PI
 #include "../uz_piController/uz_piController.h"
 #include "../../IP_Cores/uz_PWM_SS_2L/uz_PWM_SS_2L.h"
+#include "../uz_Trajectory/uz_Trajectory.h"
+
 
 // External tristate driver
 extern void uz_PWM_SS_2L_set_tristate(uz_PWM_SS_2L_t* pwm_handle, bool a, bool b, bool c);
@@ -54,19 +56,13 @@ void uz_BLDC_control_sample(uz_BLDC_control* self, int sector, float U_ctrl_ref,
    assert(self != NULL);
    assert(self->is_ready);
 
-   /*
-   float n_RPM_error;
-   float I_ph_error;
-   float i_ref_kaskade;
-   float d_BLDC;
-   float u_BLDC_ref;  // Assuming I want to calculate this here
-   */
-
    float speed_RPM_error; //
    float current_error; //
    float i_ref_Cascade; //
    float d_BLDC; //
    float u_ref; //
+
+
 
 	if(SpeedControl){
 		//***Speed Control (Speed -> Control Voltage)
@@ -88,7 +84,6 @@ void uz_BLDC_control_sample(uz_BLDC_control* self, int sector, float U_ctrl_ref,
 
 	else if(CascadeControl){
 		//Cascade Speed-Current-Controllers (Speed -> Current -> Control Voltage)
-		//float i_ref_kaskasde = 0.0f;
 		speed_RPM_error = n_ref_rpm - n_act_rpm;
 		i_ref_Cascade = uz_PI_Controller_sample(self->PI_speed_mode, n_ref_rpm, n_act_rpm, false);
 		current_error = i_ref_Cascade - I_ph_m;
@@ -121,7 +116,7 @@ void uz_BLDC_control_sample(uz_BLDC_control* self, int sector, float U_ctrl_ref,
    float d_c = 0.0f;
 // ----------------------------------------------------- Commutation Sequence -----------------------------------------
 
-   // ---------------------------------- Start Commutation Scheme -------------------------------------------
+   // ---------------------------------- Start Commutation Scheme OLD -------------------------------------------
    if (sector == 1) {
        d_a = 0; // AL
        d_c = d_BLDC; //CH
@@ -178,6 +173,8 @@ void uz_BLDC_control_sample(uz_BLDC_control* self, int sector, float U_ctrl_ref,
    }
 
    // ---------------------------------- End Commutation Scheme -------------------------------------------
+
+
 // ----------------------------------------------------- Commutation Sequence -----------------------------------------
 
    self->duty_a = d_a;
@@ -199,7 +196,6 @@ float uz_BLDC_control_get_duty_c(uz_BLDC_control* self) {
    return self->duty_c;
 }
 
-// Here we assign PI-controller inputs and outputs to getter functions
 float uz_BLDC_control_get_n_RPM_error(uz_BLDC_control* self) {
     assert(self != NULL);
     return self->n_RPM_error;

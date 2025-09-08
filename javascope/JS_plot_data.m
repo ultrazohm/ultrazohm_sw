@@ -28,7 +28,7 @@ end
 file_name = Logfile_list(logfile_list_index).name
 
 % paste file name here if you want to open a specific file
-% file_name = 'Log_2024-03-11_99-99-99.csv';
+file_name = 'Log_2025-09-08_16-26-47.csv';
 
 % specify import options and read csv 
 opts = detectImportOptions(file_name);
@@ -166,7 +166,7 @@ if(import_data_to_simulink_datainspector ~= 0)
     if run_already_imported == 0
         runID = Simulink.sdi.createRun(file_name_log);
         for ch = 1:num_channels
-            createTimeSeries_ChN = ['Series = timeseries(log.',channel_names{ch+1},', log.time);'];
+            createTimeSeries_ChN = ['Series = timeseries(log.',channel_names{ch+1},', log.time*1);'];
             eval(createTimeSeries_ChN);
             Series.Name = variable_names{ch+1};
             Simulink.sdi.addToRun(runID,'vars',Series);
@@ -175,5 +175,3 @@ if(import_data_to_simulink_datainspector ~= 0)
     Simulink.sdi.view
     
 end
-
-

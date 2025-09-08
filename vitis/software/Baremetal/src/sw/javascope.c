@@ -109,6 +109,7 @@ js_ch_observable[JSO_id_ref] 					= &data->av.i_dq_ref.d;
 	js_ch_observable[JSO_u_ph1]					= &data->av.u_ph1; // @
 	js_ch_observable[JSO_u_ph2]					= &data->av.u_ph2; // @
 	js_ch_observable[JSO_u_ph3]					= &data->av.u_ph3; // @
+	js_ch_observable[JSO_ref_n_filtered]		= &data->av.n_ref_filtered;
 
 	// Store slow / not-time-critical signals into the SlowData-Array.
 	// Will be transferred one after another

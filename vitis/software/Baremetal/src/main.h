@@ -55,6 +55,9 @@
 #include "include/pwm_init.h"
 #include "IP_Cores/uz_inverter_adapter/uz_inverter_adapter.h"
 #include "uz/uz_BLDC_control/uz_BLDC_control.h"
+
+#include "uz/uz_Trajectory/uz_Trajectory.h"
+#include "uz/uz_signals/uz_signals.h"
 //----------------------------------------------------
 // FUNCTIONS
 //----------------------------------------------------

@@ -85,6 +85,7 @@ int JavaScope_initialize(DS_Data* data)
 	js_ch_observable[JSO_ssi1_pos_multiturn_raw]= &data->av.ssi1_position_multiturn_raw;
 	js_ch_observable[JSO_ssi1_pos_mech_si]		= &data->av.ssi1_position_mech_si;
 	js_ch_observable[JSO_ssi1_pos_el_si]		= &data->av.ssi1_position_el_si;
+	js_ch_observable[JSO_ssi1_pos_raw_dec]		= &data->av.ssi1_position_decoded;
 	js_ch_observable[JSO_sawtooth]				= &sawtooth;
 	js_ch_observable[JSO_ia] 					= &data->av.I_U;
 	js_ch_observable[JSO_ib] 					= &data->av.I_V;

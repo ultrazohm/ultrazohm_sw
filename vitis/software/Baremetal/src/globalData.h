@@ -104,6 +104,7 @@ typedef struct _actualValues_ {
 	float ssi1_speed_el_rad_s_ip;
 	float ssi1_speed_mech_rpm_ip;
 	float ssi1_speed_mech_rpm;
+	float ssi1_position_decoded;
 } actualValues;
 
 typedef struct _referenceAndSetValues_ {

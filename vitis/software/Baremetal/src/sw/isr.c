@@ -47,6 +47,9 @@ extern uz_codegen codegenInstance;
 float generate_sawtooth(float amplitude, float frequency, float sample_time);
 float sawtooth=0.0f;
 
+uint16_t gray_pos = 0U;
+uint32_t dir = 0U;
+
 //==============================================================================================================================================================
 //----------------------------------------------------
 // INTERRUPT HANDLER FUNCTIONS
@@ -90,6 +93,44 @@ void ISR_Control(void *data)
     if (Global_Data.av.ssi0_position_raw < ssi_min_raw) {
         	ssi_min_raw = Global_Data.av.ssi0_position_raw;
         }
+
+/* TEST CODE FOR GETTING SAWTOOTH BEHAVIOR OF SINGLE-TURN POSITION */
+    // Convert Gray code to binary
+    uint16_t gray_to_binary(uint16_t gray) {
+        uint16_t bin = gray;
+        while (gray >>= 1) {
+            bin ^= gray;
+        }
+        return bin;
+    }
+
+    // Convert binary to Gray code (if needed)
+    uint16_t binary_to_gray(uint16_t bin) {
+        return bin ^ (bin >> 1);
+    }
+
+    // Map Gray code + direction -> corrected binary position
+    uint16_t decode_gray(uint16_t gray, int direction) {
+        const uint16_t N = 1 << 13;  // 8192 states for 13-bit
+        uint16_t pos = gray_to_binary(gray);
+
+        if (direction) {
+            // If reversed traversal: mirror position
+            pos = (N - 1) - pos;
+        }
+
+        return pos;  // corrected binary position (0…8191)
+    }
+
+    gray_pos = binary_to_gray(Global_Data.av.ssi1_position_raw);
+    if ((uint32_t)(Global_Data.av.ssi1_position_multiturn_raw) % 2U == 0U) {
+    	dir = 0U;
+    }else{
+    	dir = 1U;
+    }
+
+    Global_Data.av.ssi1_position_decoded = decode_gray(gray_pos, dir);
+    /* END TEST CODE */
 
     codegenInstance.input.position_mech_SI = Global_Data.av.ssi0_position_mech_si;
 //    codegenInstance.input.position_mech_SI = sawtooth;

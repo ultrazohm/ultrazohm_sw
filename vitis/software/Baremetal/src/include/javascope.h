@@ -40,6 +40,7 @@ enum JS_OberservableData {
 	JSO_ssi1_pos_multiturn_raw,
 	JSO_ssi1_pos_mech_si,
 	JSO_ssi1_pos_el_si,
+	JSO_ssi1_pos_raw_dec,
 	JSO_sawtooth,
 	JSO_ua,
 	JSO_ub,

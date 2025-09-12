@@ -2,10 +2,10 @@
 \usepackage{tikz}
 \usepackage{bm}
 \usetikzlibrary{positioning}
-
+\usetikzlibrary{decorations.pathreplacing}
 \begin{document}
 
-\begin{tikzpicture}[node distance=0.6cm and 0.6cm]
+\begin{tikzpicture}[node distance=0.8cm and 0.8cm]
     \tikzset{every path/.style={shorten >=0.1mm}}
     
     % Farben
@@ -16,42 +16,42 @@
     \foreach \i in {1,...,12} {
         \node[circle, draw=black!75,fill=Masch_light, minimum size=0.6cm] (input\i) at (0,-\i*0.8-1) {};
     }
-    \node[circle, draw=black!75,fill=Masch_light, minimum size=0.6cm] (input13) at (0,-14*0.8-1) {};
-    \node[align=center] ()[below=-0cm of input12] {$\bm{\vdots}$};
+    \node[circle, draw=black!75,fill=Masch_light, minimum size=0.6cm] (input13) at (0,-14*0.8-0.8) {};
+    \node[align=center] ()[below=-0.1cm of input12] {$\bm{\vdots}$};
 
     % Optionaler Hidden Layer A (blass, gestrichelt)
     \foreach \i in {1,...,12} {
-        \node[circle, draw=black!40,dashed,fill=Masch_faded, minimum size=0.6cm] (hiddenA\i) at (2,-\i*1) {\i};
+        \node[circle, draw=black!75,fill=Masch_light, minimum size=0.8cm] (hiddenA\i) at (2,-\i*1) {\i};
     }
-    \node[circle, draw=black!40,dashed,fill=Masch_faded, minimum size=0.6cm] (hiddenA13) at (2,-14*1) {\textbf{x}};
+    \node[circle, draw=black!75,fill=Masch_light, minimum size=0.8cm] (hiddenA13) at (2,-14*1) {\textbf{x}};
     \node[align=center] ()[below=-0cm of hiddenA12] {$\bm{\vdots}$};
 
     % Fokus: Hidden Layer B (voll dargestellt)
     \foreach \i in {1,...,12} {
-        \node[circle, draw=black!75,fill=Masch_light, minimum size=0.6cm] (hiddenB\i) at (4,-\i*1) {\i};
+        \node[circle, draw=black!40,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenB\i) at (4,-\i*1) {\i};
     }
-    \node[circle, draw=black!75,fill=Masch_light, minimum size=0.6cm] (hiddenB13) at (4,-14*1) {\textbf{x}};
+    \node[circle, draw=black!40,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenB13) at (4,-14*1) {\textbf{x}};
     \node[align=center] ()[below=-0cm of hiddenB12] {$\bm{\vdots}$};
 
     % Optionaler Hidden Layer C (blass, gestrichelt)
     \foreach \i in {1,...,12} {
-        \node[circle, draw=black!40,dashed,fill=Masch_faded, minimum size=0.6cm] (hiddenC\i) at (6,-\i*1) {\i};
+        \node[circle, draw=black!40,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenC\i) at (6,-\i*1) {\i};
     }
-    \node[circle, draw=black!40,dashed,fill=Masch_faded, minimum size=0.6cm] (hiddenC13) at (6,-14*1) {\textbf{x}};
+    \node[circle, draw=black!40,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenC13) at (6,-14*1) {\textbf{x}};
     \node[align=center] ()[below=-0cm of hiddenC12] {$\bm{\vdots}$};
 
     % Optionaler Hidden Layer D (blass, gestrichelt)
     \foreach \i in {1,...,12} {
-        \node[circle, draw=black!30,dashed,fill=Masch_faded, minimum size=0.6cm] (hiddenD\i) at (8,-\i*1) {\i};
+        \node[circle, draw=black!30,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenD\i) at (8,-\i*1) {\i};
     }
-    \node[circle, draw=black!30,dashed,fill=Masch_faded, minimum size=0.6cm] (hiddenD13) at (8,-14*1) {\textbf{x}};
+    \node[circle, draw=black!30,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenD13) at (8,-14*1) {\textbf{x}};
     \node[align=center] ()[below=-0cm of hiddenD12] {$\bm{\vdots}$};
 
     % Optionaler Hidden Layer E (blass, gestrichelt)
     \foreach \i in {1,...,12} {
-        \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.6cm] (hiddenE\i) at (10,-\i*1) {\i};
+        \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenE\i) at (10,-\i*1) {\i};
     }
-    \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.6cm] (hiddenE13) at (10,-14*1) {\textbf{x}};
+    \node[circle, draw=black!20,dashed,fill=Masch_faded, minimum size=0.8cm] (hiddenE13) at (10,-14*1) {\textbf{x}};
     \node[align=center] ()[below=-0cm of hiddenE12] {$\bm{\vdots}$};
 
     % Ausgabeschicht (12 Neuronen)
@@ -113,7 +113,8 @@
     }
 
     % Hinweistext für optionale Schichten
-    \node[align=center] at (9,-0.5) {\small optional  hidden layers};
+    \draw [decorate,decoration={brace,amplitude=5pt}]
+  (3.5,-0.4) -- (10.5,-0.4) node[midway,yshift=1em]{optional hidden layers};
 
 \end{tikzpicture}
 

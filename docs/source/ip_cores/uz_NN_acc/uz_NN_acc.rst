@@ -8,8 +8,8 @@ This IP-Core implements a three layer MLP network which was generated in Vitis H
 The implementation and nomenclature follows the principles outlined in :ref:`uz_nn`.
 
 .. Attention:: 
-  - Variable layer setup of up to **5 hidden layer** with :ref:`activation_function_relu` activation function for hidden layers.
-  - Output in the IP-Core is hard coded to us :ref:`activation_function_linear` activation. A different activation function for the output layer is done via software.
+  - Variable layer setup of up to **5 hidden layers** with :ref:`activation_function_relu` activation function for hidden layers.
+  - Output in the IP-Core is hard coded to use :ref:`activation_function_linear` activation. A different activation function for the output layer is done via software.
   - The number of **neurons** in the hidden layers is variable.
   - Variable number of up to **24 Observations**.
   - Variable number of up to **12 Actions**.
@@ -29,9 +29,9 @@ Features
 --------
 - Feedforward calculation in **floating point**
 - Bias and weights are written to the IP-Core during initialization
-- Fully compatible with uz_nn to use IP-Core as an accelerator
-- Uses Matrix math as input and outputs
-- IP-Core is configured and triggerd by the PS exclusively 
+- Fully compatible with :ref:`uz_nn` to use IP-Core as an accelerator
+- Uses :ref:`uz_matrix` as input and outputs
+- IP-Core is configured and triggered by the PS exclusively 
 - Blocking and non-blocking operation
 - Correct size of the observation, weights, bias and action arrays will be asserted
 - Execution time for a 3x64 setup, with 20 observations and 4 actions takes roughly **~11µs**
@@ -61,7 +61,7 @@ Vivado
 
 .. _uz_NN_vivado:
 
-First, ip cores have to be added to the block design in vivado:
+First, the IP-core has to be added to the block design in Vivado:
 
 #. Open the already existing ``uz_user`` hierarchy in the block design.
 #. Inside this hierarchy click on the plus (``+``) button to add a new IP-Core and select the ``uz_NN_acc`` IP-Core.
@@ -139,12 +139,24 @@ Software
      uz_NN_acc_t* NN_acc_Instance;
      }object_pointers_t;
 
+#. Create a header file (e.g. ``init_network_ip_core.h``) for the ``init_network`` function:
 
-#. Create a initialization c-file (e.g. ``init_network_ip_core.c``) and a corresponding header file (``init_network_ip_core.h``) for the ``init_network`` function:
+    .. code-block:: c
+     :caption: Code for ``init_network_ip_core.h``
+
+     #ifndef INIT_NETWORK_IP_CORE_H
+     #define INIT_NETWORK_IP_CORE_H
+
+     void init_network(void);
+
+     #endif /* INIT_NETWORK_IP_CORE_H */
+
+
+#. Create an initialization c-file (e.g. ``init_network_ip_core.c``) for the ``init_network`` function:
 
     .. warning::
         Every array and uz_matrix_t object has to be declared with the **MEMORY_ALIGN** attribute.
-        It aligns the arrays (and therefore its pointers) to 32byte.
+        It aligns the arrays (and therefore its pointers) to 32 byte.
         Otherwise undefined behavior regarding the read/write process of the IP-Core can occur.
 
     .. code-block:: c
@@ -153,6 +165,7 @@ Software
      #include "../uz/uz_nn/uz_nn.h"
      #include "../IP_Cores/uz_NN_acc/uz_NN_acc.h"
      #include "../../main.h"
+     #include "init_network_ip_core.h"
      extern DS_Data Global_Data;
 
      #define NUMBER_OF_INPUTS 13U
@@ -249,8 +262,8 @@ Software
     .. code-block:: c
      :caption: Code example for blocking operation ``isr.c`` 
 
-     float Action[4] = {0};
-     float Observation[12] = {0};
+     float Output[4] = {0};
+     float Observation[13] = {0};
      ...
      void ISR_Control(void *data)
      {
@@ -283,8 +296,8 @@ Software
     .. code-block:: c
      :caption: Code example for non-blocking operation ``isr.c`` 
 
-     float Action[4] = {0};
-     float Observation[12] = {0};
+     float Output[4] = {0};
+     float Observation[13] = {0};
      ...
      void ISR_Control(void *data)
      {

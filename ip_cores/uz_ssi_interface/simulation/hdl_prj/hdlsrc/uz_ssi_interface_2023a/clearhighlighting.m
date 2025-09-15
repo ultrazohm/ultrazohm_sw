@@ -2,12 +2,9 @@ SLStudio.Utils.RemoveHighlighting(get_param('uz_ssi_interface_2023a', 'handle'))
 SLStudio.Utils.RemoveHighlighting(get_param('gm_uz_ssi_interface_2023a', 'handle'));
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll', 0, 1, '');
 annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/S-R Flip-Flop1', 1, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin_mt/shift arithmetic', 1, 1, '');
-annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin_mt/Shift Arithmetic', 1, 1, '');
-annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin_mt/S-R Flip-Flop', 1, 1, '');
-annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin_st/shift arithmetic', 1, 1, '');
-annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin_st/Shift Arithmetic', 1, 1, '');
-annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin_st/S-R Flip-Flop', 1, 1, '');
+annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin/shift arithmetic', 1, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin/Shift Arithmetic', 1, 1, '');
+annotate_port('uz_ssi_interface_2023a/uz_ssi_interface/Gray_code_to_binary/gray_to_bin/S-R Flip-Flop', 1, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Relational Operator4', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/AND1', 0, 1, '');
 annotate_port('gm_uz_ssi_interface_2023a/uz_ssi_interface/position_to_speed_pll/Delay20', 1, 1, '');

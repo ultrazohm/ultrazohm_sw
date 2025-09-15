@@ -18,19 +18,18 @@ t_plant = 1/f_plant;    % Plant sample time in s
 ssi_clk_divider = 25; 
 
 % bit width of the connected ssi encoder
-% max. 25 bit per single-/multi-turn position information
 % sum of single-turn, multi-turn, and status <= 64 bit
 
-ssi_encoder_bit_width_single_turn = uint32(14);
-ssi_encoder_bit_width_multi_turn = uint32(5);
-ssi_encoder_number_of_status_bits = uint32(2);
-% ssi_encoder_bit_width_single_turn = uint32(19);
-% ssi_encoder_bit_width_multi_turn = uint32(0);
-% ssi_encoder_number_of_status_bits = uint32(0);
+ssi_encoder_bit_width_single_turn = uint32(13);
+ssi_encoder_bit_width_multi_turn = uint32(12);
+ssi_encoder_number_of_status_bits = uint32(0);
+% ssi_encoder_bit_width_single_turn = uint32(14);
+% ssi_encoder_bit_width_multi_turn = uint32(5);
+% ssi_encoder_number_of_status_bits = uint32(2);
 bit_sum = ssi_encoder_bit_width_multi_turn+ssi_encoder_bit_width_single_turn+ssi_encoder_number_of_status_bits;
 
 % encoding: false=binary, true=gray
-binary_or_gray = false; 
+binary_or_gray = true; 
 
 % acc. to datasheet of manufacturer RLS encoders for ssi clock rates higher
 % than 500 kHz, the first clk pulse after clock goes low in the beginning

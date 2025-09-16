@@ -44,6 +44,7 @@ Hardware
     adapter_cards/external/uz_per_torque_box/uz_per_torque_box
     adapter_cards/external/deskbench_terminal/deskbench_terminal
     adapter_cards/external/rj_45_breakout/rj45_breakout
+    adapter_cards/external/uz_per_wolfspeed_25kw_FM3/uz_per_wolfspeed_25kw_FM3
 
 
 .. toctree::

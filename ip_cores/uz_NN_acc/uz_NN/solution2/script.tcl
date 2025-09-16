@@ -24,7 +24,7 @@ config_interface -m_axi_addr64=0 -m_axi_alignment_byte_size 32 -m_axi_latency 64
 config_rtl -register_reset_num 3
 config_array_partition -complete_threshold 2
 config_compile -no_signed_zeros -unsafe_math_optimizations
-config_export -format ip_catalog -rtl verilog -version 1.2 -description XxYYY_setup -display_name uz_NN_X_YYY
+config_export -format ip_catalog -rtl verilog -version 1.0 -description XxYYY_setup -display_name uz_NN_X_YYY_acc -ipname uz_NN_X_YYY
 source "./uz_NN/solution2/directives.tcl"
 csynth_design
 export_design -format ip_catalog

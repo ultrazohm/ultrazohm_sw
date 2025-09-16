@@ -429,10 +429,19 @@ This guide will walk you through this process.
         - To facilitate this, 5 different synthesis solutions are provided.
         - The name of the IP-Core can be configured in this solution.
         - Example for description: ``5x128_setup``
-        - Example for IP-Core name: ``uz_NN_5_128_acc``
+        - Example for IP-Core display name: ``uz_NN_5_128_acc``
+        - Example for IP-Core name: ``uz_NN_5_128``
   
 #. Configure solution1 by opening the file ``uz_NN/solution1/script.tcl``.
-#. Edit the entry ``-description XxYYY_setup -display_name uz_NN_X_YYY`` in line 27 and give the IP-Core an appropriate name and description. E.g. ``-description 5x128_setup -display_name uz_NN_5_128``.
+#. Edit the entry in line 27
+
+    .. code-block:: c
+     :caption: Changes to ``script.tcl``
+
+     -description XxYYY_setup -display_name uz_NN_X_YYY_acc -ipname uz_NN_X_YYY
+     ...
+     
+#. Give the IP-Core an appropriate name and description. E.g. ``-description 5x128_setup -display_name uz_NN_5_128_acc -ipname uz_NN_5_128``.
 #. Save the file.
 #. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
 #. Vitis HLS will now create the project, synthesis your design, and export the RTL code.

@@ -193,6 +193,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 
 		case (Set_Send_Field_2):
 		data->av.snd_fld[2] = value;
+		uz_ssi_interface_set_mechanical_offset_ssi_single_turn(data->objects.ssi_1_encoder, value);
 			break;
 
 		case (Set_Send_Field_3):
@@ -204,7 +205,7 @@ void ipc_Control_func(uint32_t msgId, float value, DS_Data *data)
 			break;
 
 		case (Set_Send_Field_5):
-		data->av.snd_fld[5] = value;
+		data->av.snd_fld[5] = value;m
 			break;
 
 		case (Set_Send_Field_6):

@@ -1,0 +1,12 @@
+#-----------------------------------------------------------
+# Vivado v2020.1.1 (64-bit)
+# SW Build 2960000 on Wed Aug  5 22:57:20 MDT 2020
+# IP Build 2956692 on Thu Aug  6 01:41:30 MDT 2020
+# Start of session at: Tue Sep 16 18:31:48 2025
+# Process ID: 8428
+# Current directory: C:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore/uz_ssi_interface_v2_7/prj_ip
+# Command line: vivado.exe -mode batch -notrace -source vivado_ip_package.tcl
+# Log file: C:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore/uz_ssi_interface_v2_7/prj_ip/vivado.log
+# Journal file: C:/GIT/UltraZohm/software/ultrazohm_sw_develop/ip_cores/uz_ssi_interface/simulation/hdl_prj/ipcore/uz_ssi_interface_v2_7/prj_ip\vivado.jou
+#-----------------------------------------------------------
+source vivado_ip_package.tcl -notrace

@@ -7,6 +7,7 @@ vcom  uz_ssi_interface_src_S_R_Flip_Flop.vhd
 vcom  uz_ssi_interface_src_Detect_Rise_Positive_block.vhd
 vcom  uz_ssi_interface_src_gray_to_bin.vhd
 vcom  uz_ssi_interface_src_Gray_code_to_binary.vhd
+vcom  uz_ssi_interface_src_int_div_floor_pow2.vhd
 vcom  uz_ssi_interface_src_Sine_HDL_Optimized1.vhd
 vcom  uz_ssi_interface_src_fixed_point_floor.vhd
 vcom  uz_ssi_interface_src_Sine_HDL_Optimized.vhd
@@ -31,7 +32,5 @@ vcom  uz_ssi_interface_src_clk_idle_and_delay_first_clock_function.vhd
 vcom  uz_ssi_interface_src_ssi_communication.vhd
 vcom  uz_ssi_interface_src_fixed_point_floor_block.vhd
 vcom  uz_ssi_interface_src_wrap_2pi.vhd
-vcom  uz_ssi_interface_src_fixed_point_floor_block1.vhd
-vcom  uz_ssi_interface_src_wrap_2pi_after_offset.vhd
 vcom  uz_ssi_interface_src_S_R_Flip_Flop_block3.vhd
 vcom  uz_ssi_interface_src_uz_ssi_interface.vhd

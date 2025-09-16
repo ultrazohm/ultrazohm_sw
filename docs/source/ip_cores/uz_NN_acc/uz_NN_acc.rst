@@ -64,11 +64,11 @@ Vivado
 First, the IP-core has to be added to the block design in Vivado:
 
 #. Open the already existing ``uz_user`` hierarchy in the block design.
-#. Inside this hierarchy click on the plus (``+``) button to add a new IP-Core and select the ``uz_NN_acc`` IP-Core.
+#. Inside this hierarchy click on the plus (``+``) button to add a new IP-Core and select the one of the following IP-Cores:
     
     .. note::
         - Use the ``uz_NN_3_64_acc`` IP-Core for a preconfigured IP-Core with 3 hidden layers and 64 neurons each.
-        - Use the ``uz_NN_acc`` IP-Core for different neuronal network setups. :ref:`See <uz_NN_customize_setup>`
+        - Use customized ``uz_NN_X_YYY`` IP-Cores for different neuronal network setups. These can be generated using :ref:`this guide <uz_NN_customize_setup>`.
  
 #. Connect the ``ap_clk`` and ``ap_rst_n`` ports as shown in the image below. The IP-Core is designed for 100 MHz.
 #. Add an additional AXI Port on the next reachable ``AXI SmartConnect`` IP-Core and connect it to the ``s_axi_control`` port of the IP-Core.
@@ -423,6 +423,17 @@ This guide will walk you through this process.
      #define Performance_Target 1
 
 #. Save the file and navigate to  ``ip_cores\uz_NN_acc``
+
+    .. note::
+        - Up to 5 custom IP-Cores can be generated and stored.
+        - To facilitate this, 5 different synthesis solutions are provided.
+        - The name of the IP-Core can be configured in this solution.
+        - Example for description: ``5x128_setup``
+        - Example for IP-Core name: ``uz_NN_5_128_acc``
+  
+#. Configure solution1 by opening the file ``uz_NN/solution1/script.tcl``.
+#. Edit the entry ``-description XxYYY_setup -display_name uz_NN_X_YYY`` in line 27 and give the IP-Core an appropriate name and description. E.g. ``-description 5x128_setup -display_name uz_NN_5_128``.
+#. Save the file.
 #. Open the terminal and enter ``vitis_hls -f uz_NN/solution1/script.tcl``.
 #. Vitis HLS will now create the project, synthesis your design, and export the RTL code.
 #. After you see ``[HLS 200-111] Finished Command export_design`` the synthesis and export is finished.
@@ -431,6 +442,7 @@ This guide will walk you through this process.
 #. [Optional] You can now open the project in the Vitis HLS GUI or with ``vitis_hls -p uz_NN``.
 #. In vivado open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. After that, follow the :ref:`guide to add the ip-core to the block design<uz_NN_vivado>`.
+#. [Optional] You can now generate another IP-Core with a different configuration, by following :ref:`this guide again<uz_NN_customize_setup>`. Use solution2-5 for this.
 
 Further improvements
 ====================

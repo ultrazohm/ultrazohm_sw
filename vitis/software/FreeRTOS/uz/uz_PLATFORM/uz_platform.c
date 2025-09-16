@@ -269,7 +269,9 @@ int32_t uz_platform_init(uint32_t default_revision) {
 					uzp.iomap = &uzp_iomap_UltraZohmRev04downto02;
 					break;
 				case 5U:
-				case 6U:
+					uzp.iomap = &uzp_iomap_UltraZohmRev06downto05;
+					break;
+				case 6U: // 5 and 6 is identical
 					uzp.iomap = &uzp_iomap_UltraZohmRev06downto05;
 					break;
 				default:

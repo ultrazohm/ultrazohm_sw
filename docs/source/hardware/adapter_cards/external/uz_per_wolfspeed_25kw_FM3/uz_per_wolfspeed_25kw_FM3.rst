@@ -32,7 +32,7 @@ The PCB is structured by functional areas as shown in :ref:`Interface_board_func
 2. RJ45 port for analog signal transmission 
 3. Driver stages for the optical links
 4. TI THS4561 fully differential amplifier stages for differential signaling
-5. Power section: TPS7A20 (3.3 V LDO), REF35 (2.5 V and 1.7 V references)
+5. Power section: TPS7A20 (3.3V LDO), REF35 (2.5V and 1.7V references)
 6. Samtec HSEC8 120‑pin edge‑card connector mating with the Wolfspeed inverter
 
 
@@ -97,7 +97,7 @@ Digital Signals
 Testing
 *******
 
-Tests were performed up to 10kW using an RL-load with a 14 Ohm braking resistor and 1mH inductor
+Tests were performed up to 10kW using an RL-load with a 14Ohm braking resistor and 1mH inductor
 
 .. _FinalSetup:
 
@@ -143,8 +143,8 @@ A few considerations should be kept in mind for future iterations of the interfa
 Documents and Links
 *******************
 
-- You can :download:`download the Bachelor thesis here <BachelorThesis_SP.pdf>`
-- For quick reference, view :download:`the final presentation <FinalPresentation.pdf>`
-- `uz_per_wolfspeed_25kw_FM3 PCB repository <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
-- Wolfspeed `CRD25DA12N-FMC 25 kW Three-Phase Inverter <https://www.wolfspeed.com/products/power/reference-designs/crd25da12n-fmc/>`_. 
-- `TI E2E Thread on HSEC8 pinout <https://e2e.ti.com/support/microcontrollers/arm-based-microcontrollers-group/arm-based-microcontrollers/f/arm-based-microcontrollers-forum/1486750/tmdshsecdock-edge-connector-hsec8-160-wrong-orientation-and-position-of-pin-1/>`_
+- Bachelor thesis :download:`download here <BachelorThesis_SP.pdf>`
+- Final presentation :download:`download here <FinalPresentation.pdf>`
+- PCB repository `uz_per_wolfspeed_25kw_FM3 <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
+- Wolfspeed 25 kW Three-Phase Inverter `CRD25DA12N-FMC <https://www.wolfspeed.com/products/power/reference-designs/crd25da12n-fmc/>`_. 
+- TI E2E `Thread on HSEC8 pinout <https://e2e.ti.com/support/microcontrollers/arm-based-microcontrollers-group/arm-based-microcontrollers/f/arm-based-microcontrollers-forum/1486750/tmdshsecdock-edge-connector-hsec8-160-wrong-orientation-and-position-of-pin-1/>`_

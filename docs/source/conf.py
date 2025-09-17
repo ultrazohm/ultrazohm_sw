@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'UltraZohm'
-copyright = '2024, UltraZohm Community'
+copyright = '2025, UltraZohm Community'
 author = 'UltraZohm Community'
 
 # -- General configuration ---------------------------------------------------

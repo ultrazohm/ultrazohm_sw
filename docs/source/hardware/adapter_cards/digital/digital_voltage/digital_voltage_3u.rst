@@ -11,7 +11,7 @@ Digital Voltage 3U 2v01
 Source
 """"""
 
-- `Digital voltage repository <https://bitbucket.org/ultrazohm/uz_d_voltage>`_
+- `Digital Voltage repository <https://bitbucket.org/ultrazohm/uz_d_voltage>`_
 
 General description
 """""""""""""""""""

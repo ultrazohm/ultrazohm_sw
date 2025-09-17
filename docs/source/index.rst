@@ -115,7 +115,7 @@ Literature about the UltraZohm
 ------------------------------
 
 #. `UltraZohm - a Powerful Real-Time Computation Platform for MPC and Multi-Level Inverters <https://ieeexplore.ieee.org/document/8753306>`_
-#. `UltraZohm�An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
+#. `UltraZohm - An Open-Source Rapid Control Prototyping Platform for Power Electronic Systems <https://ieeexplore.ieee.org/document/9590016>`_
 
 
 Literature using the UltraZohm
@@ -129,8 +129,14 @@ Literature using the UltraZohm
 #. `Implementation of a Long-Horizon Model Predictive Control Algorithm on an Embedded System <https://ieeexplore.ieee.org/document/9570583>`_
 #. `Design Guidelines of Rapid Control Prototyping Systems for Power Electronics and Electrical Drives <https://ieeexplore.ieee.org/document/9680975>`_
 #. `Design, Construction and Measurement of a Laminated Transverse Flux Machine <https://ieeexplore.ieee.org/document/9910771>`_
-
-
+#. `An Indirect Model Predictive Control Method for Grid-Connected Three-Level Neutral Point Clamped Converters With LCL Filters <https://ieeexplore.ieee.org/document/9716876>`_
+#. `On-Chip Simulation of a Nine-Phase Electrical Drive and Power Electronics for Rapid Control Prototyping Applications <https://ieeexplore.ieee.org/document/10025947>`_
+#. `Deep Reinforcement Learning Current Control of Permanent Magnet Synchronous Machines <https://ieeexplore.ieee.org/document/10238988>`_
+#. `Parameter Identification Methods for Multi-Phase Permanent Magnet Synchronous Machines <https://ieeexplore.ieee.org/document/10238936>`_
+#. `Reinforcement Learning Control of Six-Phase Permanent Magnet Synchronous Machines <https://ieeexplore.ieee.org/document/10372153>`_
+#. `High-Frequency Switching of State-of-the-Art Wide Band Gap Inverters and its Impact on Encoderless Control Schemes <https://ieeexplore.ieee.org/document/10407581>`_
+#. `Steady-State Error Reduction of Reinforcement Learning based Indirect Current Control of Permanent Magnet Synchronous Machines <https://ieeexplore.ieee.org/document/10653808>`_
+#. `Cluster-Fault Control Strategies for Modular Multilevel Converters <https://ieeexplore.ieee.org/document/10964518>`_
 
 .. _license_target:
 

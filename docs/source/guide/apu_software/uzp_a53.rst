@@ -62,6 +62,8 @@ If the adapter card identification feature is enabled on a non-retrofitted Ultra
 API functions and data types
 ----------------------------
 
+.. _uzpA53_init:
+
 Initialization
 """"""""""""""
 
@@ -77,11 +79,13 @@ The activation of the adapter card identification depends on the ``UZ_PLATFORM_C
  * configure internal (e.g., the GPIO controllers of the PS) and external (e.g., the I²C port expander on the extension board) I/O controllers according to the I/O map.
  * Note that earlier software revisions relied on ``UZ_PLATFORM_ENABLE`` to enable the then disabled-by-default framework
 
-* ``UZ_PLATFORM_CARDID``: If set, ``uz_platform_cardread()`` is made available to the user, and a small demo in ``main()`` performs adapter card identification that shows card model, revision, and serial for each slot on the serial console.
+* ``UZ_PLATFORM_CARDID``: If set, ``uz_platform_cardread()`` is made available to the user, and a small demo in ``main()`` performs adapter card identification that shows card model, revision, and serial for each slot on the serial console. The demo also calls UZP functions that are specific to adapter cards with extended features, which -- as of mid 2025 -- includes the :ref:`digitalVoltage_3v3_5v` card with its RGB LED (see below for details).
 
 .. note::
  Please take care to increase ``UZ_IIC_MAX_BUSINSTANCES`` in ``/FreeRTOS/src/uz/uz_IIC/uz_iic.c`` to at least ``2`` when enabling the adapter card identification functionality using ``UZ_PLATFORM_CARDID``.
  Otherwise, the IIC subsystem will ``assert()`` during initialization due to a lack of available bus instances.
+
+.. _uzpA53_cardid:
 
 Adapter Card Identification
 """""""""""""""""""""""""""
@@ -96,19 +100,24 @@ If enabled (cf. ``UZ_PLATFORM_CARDID`` above), the following API is available to
  * the integer behind ``revision_p`` with the revision number, and
  * the integer pointed to by ``serial_p`` with the serial  of the adapter card selected.
 
-* The model number is encoded as an enum of type ``uz_platform_eeprom_group000models_t`` and (as of early 2024) may have one of the following values
+* The model number is encoded as an enum of type ``uz_platform_eeprom_group000models_t`` and (as of mid 2025) may have one of the following values
 
  * ``UZP_HWGROUP_ADCARD_LTC2311``,
  * ``UZP_HWGROUP_ADCARD_DIGVOLT``,
- * ``UZP_HWGROUP_ADCARD_DIGOPT``,
+ * ``UZP_HWGROUP_ADCARD_DIGOPT`` (with three variants at the moment, cf. definitions in ``uz_platform_eeprom_group000model004variants_t``),
  * ``UZP_HWGROUP_ADCARD_DIGRES``,
  * ``UZP_HWGROUP_ADCARD_DIGENC``,
  * ``UZP_HWGROUP_ADCARD_MAX11331C``,
  * ``UZP_HWGROUP_ADCARD_MAX11331CD``,
  * ``UZP_HWGROUP_ADCARD_MAX11331``,
  * ``UZP_HWGROUP_ADCARD_LTC2983``,
- * ``UZP_HWGROUP_ADCARD_DIGINV``, or
- * ``UZP_HWGROUP_ADCARD_DAC8831``
+ * ``UZP_HWGROUP_ADCARD_DIGINV``,
+ * ``UZP_HWGROUP_ADCARD_DAC8831``,
+ * ``UZP_HWGROUP_ADCARD_DIGVOLT33``,
+ * ``UZP_HWGROUP_ADCARD_DIGVOLT5``,
+ * ``UZP_HWGROUP_ADCARD_DIGVOLT335``,
+ * ``UZP_HWGROUP_ADCARD_LEDEBUG``, or
+ * ``UZP_HWGROUP_ADCARD_DIGABSENC``
 
  that should be used in comparisons.
  Note that the underlying definitions can be found in ``/shared/uz_platform_cardeeprom.h``.
@@ -181,6 +190,20 @@ Ethernet MAC addresses
 """"""""""""""""""""""
 
 MAC addresses are accessible by means of ``uz_platform_macread(uint8_t eeprom, uint8_t *addrbuf_p)`` and ``uz_platform_macread_primary(uint8_t *addrbuf_p)``, although for neither there is any necessity for the user to use these functions explicitly.
+
+Card-specific functionalities
+"""""""""""""""""""""""""""""
+
+* :ref:`dig_optical` card (which supports various Rx/Tx combinations): The UZP provides the enum ``uz_platform_eeprom_group000model004variants_t`` that holds the card's variants, which -- as of mid 2025 -- are
+
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_18TX`` (18 TX),
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_18RX`` (18 RX), and
+  * ``UZP_HWGROUP_ADCARD_DIGOPT_14TX4RX`` (14 TX / 4 RX).
+
+* :ref:`digitalVoltage_3v3_5v` card: The UZP provides
+
+  * ``uz_platform_printcard_model015()`` to decode the card's configuration as set by its switches (i.e., output voltage level and signal directions for all I/O groups) into a user-readable description, and
+  * ``uz_platform_configcard_model015_voltageled()`` to read the selected output voltage level and set the RGB LED on the card's frontpanel accordingly (which is part of the demo if the feature is enabled).
 
 
 See also

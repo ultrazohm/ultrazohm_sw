@@ -75,6 +75,7 @@ int main(void)
             initialization_chain = init_gpios;
             break;
         case init_gpios:
+        	uz_sleep_seconds(5);
             Initialize_AXI_GPIO();
             uz_assert((apu_version_final > 0U) && (apu_version_final <= UZ_HARDWARE_VERSION_MAX));
             uz_frontplane_button_and_led_init(apu_version_final); 

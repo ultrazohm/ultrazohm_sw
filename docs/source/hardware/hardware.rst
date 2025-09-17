@@ -5,6 +5,11 @@ Hardware
 ========
 
 
+Overview
+--------
+
+The following pages introduce key components, concepts and aspects of any UltraZohm system:
+
 .. toctree::
     :maxdepth: 1
 
@@ -12,6 +17,40 @@ Hardware
     adapter_cards/adapter_cards
     altium/altium
     interface_powerelectronics/interface_powerelectronics
+
+As of 2025, there are two "major versions" of UltraZohm systems in existence:
+
+1. Systems based on carrier boards :math:`\leq` Rev04, where
+
+  * system power is controlled by a "0/1" power *switch* on the front panel,
+  * power supply and 230V inlet are located on the SoM (i.e., when looking from the front, left-hand) side of the chassis, and
+  * the front panel consists of several individual components (e.g., a dedicated cable harness per Ethernet, USB, and CAN connector).
+
+  Please refer to the left-hand side of :ref:`frontpanel-photos` if you are unsure about the revision :)
+
+2. Systems based on carrier boards :math:`\geq` Rev05, where
+
+  * system power is controlled by a power *button* on the front panel (and a 230V switch on the back panel, cf. :ref:`carrier_board_rev05_04usr` and :ref:`carrier_board_rev05_s3c`),
+  * power supply and 230V inlet are located on the adapter card (i.e., when looking from the front, right-hand) side of the chassis, and
+  * the front panel consists of three interconnected PCBs, most notably the :ref:`Front Panel Mainboard <frontpanelmainboard_rev01>` (which links the entire assembly to the carrier).
+
+  Please refer to the right-hand side of :ref:`frontpanel-photos` if you are unsure about the revision :)
+
+.. _frontpanel-photos:
+.. list-table:: Comparison of front panels across carrier board revisions (photos)
+   :header-rows: 1
+   :align: center
+
+   * - Front panel for :math:`\leq` Rev04 carriers
+     - Front panel for :math:`\geq` Rev05 carriers
+   * - .. image :: hardware/frontpanel_Rev01-4UZs.jpg
+          :width: 100%
+     - .. image :: hardware/frontpanel_Rev05ffUZs.jpg
+          :width: 100%
+
+
+Adapter Cards
+-------------
 
 .. toctree::
     :maxdepth: 1
@@ -34,6 +73,9 @@ Hardware
     adapter_cards/digital/Digital_Resolver_rev01
     adapter_cards/digital/inverter/inverter_general
 
+
+Additional Components
+---------------------
 
 .. toctree::
     :maxdepth: 1

@@ -11,7 +11,11 @@ Source
 General Description
 *******************
 
-This PCB is designed to interface the UltraZohm with the Wolfspeed `CRD25DA12N-FMC 25 kW Three-Phase Inverter <https://www.wolfspeed.com/products/power/reference-designs/crd25da12n-fmc/>`_. The PCB can be directly plugged into the Wolfspeed inverter in place of the Texas Instruments TMDSCNCD280039C control card and a RJ45 Ethernet connector is used to transfer analog, and digital optical transmitters/receivers used to transfer digital signals to and from UltraZohm.
+This PCB is designed to interface the UltraZohm with the Wolfspeed `CRD25DA12N-FMC 25 kW Three-Phase Inverter <https://www.wolfspeed.com/products/power/reference-designs/crd25da12n-fmc/>`_. 
+It plugs directly into the Wolfspeed inverter in place of the Texas Instruments TMDSCNCD280039C control card.
+
+Analog measurement signals are routed via an RJ45 connector to the UltraZohm ADC board using fully differential signaling. 
+Digital control and status signals are transmitted over optical links using HFBR transmitters/receivers.
 
 .. _Interface_board_function:
 
@@ -25,17 +29,19 @@ Layout
 The PCB is structured by functional areas as shown in :ref:`Interface_board_function`.
 
 1. HFBR-1521Z/2521Z Digital optical transmitters and receivers
-2. RJ45 ethernet port for analog signal transmission 
-3. Digital signal circuitry 
-4. TI THS4561 fully differential op-amp circuitry for differential signalling  
-5. Power section - 3.3V output TI TPS7A20 LDO, 2.5V and 1.7V output TI REF35 voltage references 
-6. Samtec HSEC8 120-pin edge card connector that plugs into the Wolfspeed inverter
+2. RJ45 port for analog signal transmission 
+3. Driver stages for the optical links
+4. TI THS4561 fully differential amplifier stages for differential signaling
+5. Power section: TPS7A20 (3.3 V LDO), REF35 (2.5 V and 1.7 V references)
+6. Samtec HSEC8 120‑pin edge‑card connector mating with the Wolfspeed inverter
+
 
 
 Signal Description
 ******************
 
-The interface board adapts all required signals between the Wolfspeed inverter and UltraZohm. These signals can be divided into two groups:
+The interface board adapts all required signals between the Wolfspeed inverter and UltraZohm. 
+Signals are grouped as analog and digital.
 
 
 Analog Signals
@@ -49,22 +55,14 @@ Analog Signals
      - Source
      - Conditioning
      - Destination
-   * - Phase Current U
+   * - Phase Current U, V, W
      - Inverter Hall sensor → single-ended
-     - THS4561 differential amplifier, gain 1.5
-     - UltraZohm ADC (RJ45)
-   * - Phase Current V
-     - Inverter Hall sensor → single-ended
-     - THS4561 differential amplifier, gain 1.5
-     - UltraZohm ADC (RJ45)
-   * - Phase Current W
-     - Inverter Hall sensor → single-ended
-     - THS4561 differential amplifier, gain 1.5
-     - UltraZohm ADC (RJ45)
+     - fully diff. OpAmp, gain 1.5, total sensing gain in ?? V/A, bandwidth?
+     - UltraZohm ADC Channels 1,2,3 ??
    * - DC-Link Voltage
      - Inverter voltage divider + buffer
-     - THS4561 differential amplifier, gain 1.5
-     - UltraZohm ADC (RJ45)
+     - fully diff. OpAmp, gain 1.5, total sensing gain in ?? Vsec/Vprim, bandwidth?
+     - UltraZohm ADC Channel ??
 
 
 Digital Signals
@@ -78,10 +76,10 @@ Digital Signals
      - Direction
      - Conditioning
      - Notes
-   * - 6× PWM Gate Signals (HS/LS per phase)
+   * - 6× PWM Gate Signals 
      - UltraZohm → Inverter
      - Optical Tx/Rx (HFBR-1521Z/2521Z)
-     - Complementary, dead-time handled by UltraZohm
+     - High- and Low-Side for 3 phases, dead-time generated in UZ
    * - Gate Driver Disable
      - UltraZohm → Inverter
      - Optical Tx/Rx
@@ -89,7 +87,7 @@ Digital Signals
    * - 6× Overcurrent Detection
      - Inverter → UltraZohm
      - AND-gates (SN74HCS08DR) → Optical Tx
-     - Consolidated into single fault signal
+     - Consolidated into single fault signal (active Level ??) light on -> fault or no fault?
    * - NTC Temperature
      - Inverter → UltraZohm
      - Optical Tx
@@ -107,7 +105,7 @@ Tests were performed up to 10kW using an RL-load with a 14 Ohm braking resistor 
 
    Integrated testing setup with RL-load
 
-Stable three-phase sinusoidal currents measured using a Rohde &Schwarz MXO5series 100MHz 8-channel oscilloscope
+Stable three-phase sinusoidal currents measured using a Rohde & Schwarz MXO 5 series oscilloscope (2GHz, 8 channels)
 
 .. _Testgraph:
 
@@ -122,8 +120,10 @@ Notes for Future Revisions
 A few considerations should be kept in mind for future iterations of the interface board:
 
 - **Edge connector pinning**:  
-  The HSEC8/HSEC9 120-pin edge card connector from Samtec uses a different numbering scheme
-  than the TI control card. Care must be taken when mapping pins to avoid interface mismatches.
+  The HSEC8 120-pin edge card connector from Samtec uses a different numbering scheme
+  than the TI control card. Care must be taken when mapping pins to avoid interface mismatches. 
+  Details in `TI E2E Forum <https://e2e.ti.com/support/microcontrollers/arm-based-microcontrollers-group/arm-based-microcontrollers/f/arm-based-microcontrollers-forum/1486750/tmdshsecdock-edge-connector-hsec8-160-wrong-orientation-and-position-of-pin-1/>`_
+  
 
 - **Mechanical stability**:  
   A 3D-printed support stand was added in the current design to keep the board mechanically sturdy
@@ -137,12 +137,14 @@ A few considerations should be kept in mind for future iterations of the interfa
 
    Interface board with 3D-printed stand for mechanical stability
 
+- **Software Branch**
+  We used the ``feature/wolfspeed_inverter_adapterboard`` branch of the `ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/>`_ repository to test the inverter. View the branch directly `here <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/feature/wolfspeed_inverter_adapterboard/>`_.
 
+Documents and Links
+*******************
 
-Documents
-*********
-
-You can :download:`download the Bachelor thesis here <BachelorThesis_SP.pdf>`
-
-For quick reference, view :download:`the final presentation <FinalPresentation.pdf>`
-
+- You can :download:`download the Bachelor thesis here <BachelorThesis_SP.pdf>`
+- For quick reference, view :download:`the final presentation <FinalPresentation.pdf>`
+- `uz_per_wolfspeed_25kw_FM3 PCB repository <https://bitbucket.org/ultrazohm/uz_per_wolfspeed_25kw_fm3/src/main/>`_
+- Wolfspeed `CRD25DA12N-FMC 25 kW Three-Phase Inverter <https://www.wolfspeed.com/products/power/reference-designs/crd25da12n-fmc/>`_. 
+- `TI E2E Thread on HSEC8 pinout <https://e2e.ti.com/support/microcontrollers/arm-based-microcontrollers-group/arm-based-microcontrollers/f/arm-based-microcontrollers-forum/1486750/tmdshsecdock-edge-connector-hsec8-160-wrong-orientation-and-position-of-pin-1/>`_

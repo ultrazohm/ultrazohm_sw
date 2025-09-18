@@ -458,6 +458,7 @@ Resource utilization
 
 The resource utilization depends heavily on the configuration of the IP-Core.
 The following table shows the resource usage in Vivado for different configurations.
+Generally, more hidden layers is more resource efficient than more neurons per layer.
 Yours my vary slightly.
 
 ====== ====== ====== ====== ====== ======
@@ -467,21 +468,21 @@ Setup  BRAM    DSP   FF      LUT   LUTRAM
 5x32   96.5   161    22k    23k    1081
 1x64   47     321    27k    24k    729
 3x64   112    321    34k    32k    542
-5x64   0      321    112    321    112
+5x64   177    321    39k    39k    1097
 1x128  80     641    50k    45k    783
 5x128  338    641    72k    74k    1469
 1x256  147    1281   95k    93k    658
-5x256  0      1284   448    1284   448
+5x256  665    1281   170k   153k   848
 ====== ====== ====== ====== ====== ======
 
-By adjusting the ``#define Performance_Target 1`` to e.g. 4, the resources are reduced at the cost of higher latency. 
+By adjusting the ``#define Performance_Target 1`` to e.g. ``4``, the resources for BRAM, LUTs and DSP slices are reduced at the cost of higher latency.
 
 ====== ====== ====== ====== ====== ======
 Setup  BRAM    DSP   FF      LUT   LUTRAM
 ====== ====== ====== ====== ====== ======
-5x32   96.5   161    22k    23k    1081
-5x64   0      321    112    321    112
-5x256  0      1284   448    1284   448
+5x64   48     81     45k    32k    1557
+5x128  89     161    83k    59k    2371
+5x256  302    321    169k   122k   13005
 ====== ====== ====== ====== ====== ======
 
 Further improvements

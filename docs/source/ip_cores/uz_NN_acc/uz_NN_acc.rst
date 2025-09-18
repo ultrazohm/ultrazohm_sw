@@ -15,7 +15,7 @@ The implementation and nomenclature follows the principles outlined in :ref:`uz_
   - Variable number of up to **12 Actions**.
   - Execution time of **~11-12µs** for 3x64 setup.
   - Change of layer or neuron count :ref:`requires resynthesis of the IP-Core in Vitis HLS<uz_NN_customize_setup>`.
-  - Synthesis configuration to prioritize performance or resources.
+  - Synthesis configuration to prioritize performance or reduce resources.
   - One default IP-Core with 3x64 setup is provided.
 
   
@@ -452,6 +452,37 @@ This guide will walk you through this process.
 #. In vivado open the project and navigate to ``Window->IP-Catalog`` and ``right-click->Refresh All Repository``.
 #. After that, follow the :ref:`guide to add the ip-core to the block design<uz_NN_vivado>`.
 #. [Optional] You can now generate another IP-Core with a different configuration, by following :ref:`this guide again<uz_NN_customize_setup>`. Use solution2-5 for this.
+
+Resource utilization
+====================
+
+The resource utilization depends heavily on the configuration of the IP-Core.
+The following table shows the resource usage in Vivado for different configurations.
+Yours my vary slightly.
+
+====== ====== ====== ====== ====== ======
+Setup  BRAM    DSP   FF      LUT   LUTRAM
+====== ====== ====== ====== ====== ======
+1x32   30.5   161    16k    15k    707
+5x32   96.5   161    22k    23k    1081
+1x64   47     321    27k    24k    729
+3x64   112    321    34k    32k    542
+5x64   0      321    112    321    112
+1x128  80     641    50k    45k    783
+5x128  338    641    72k    74k    1469
+1x256  147    1281   95k    93k    658
+5x256  0      1284   448    1284   448
+====== ====== ====== ====== ====== ======
+
+By adjusting the ``#define Performance_Target 1`` to e.g. 4, the resources are reduced at the cost of higher latency. 
+
+====== ====== ====== ====== ====== ======
+Setup  BRAM    DSP   FF      LUT   LUTRAM
+====== ====== ====== ====== ====== ======
+5x32   96.5   161    22k    23k    1081
+5x64   0      321    112    321    112
+5x256  0      1284   448    1284   448
+====== ====== ====== ====== ====== ======
 
 Further improvements
 ====================

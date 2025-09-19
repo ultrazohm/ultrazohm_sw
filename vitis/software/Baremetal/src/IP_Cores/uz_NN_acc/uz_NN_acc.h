@@ -24,9 +24,9 @@ struct uz_NN_acc_config_t
 /**
  * @brief Initializes one driver instance of the IP-Core
  * 
- * @param config
- * @param input_data Pointer to input data
- * @param output_data Pointer to which the output data is written
+ * @param config configuration struct
+ * @param observation Pointer from which the input data is read
+ * @param action Pointer to which the output data is written
  * @return uz_NN_acc_t* 
  */
 uz_NN_acc_t *uz_NN_acc_init(struct uz_NN_acc_config_t config, uz_matrix_t const *const observation, uz_matrix_t const *const action);

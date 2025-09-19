@@ -166,7 +166,7 @@ Software
 #. Create an initialization c-file (e.g. ``init_network_ip_core.c``) for the ``init_network`` function:
 
     .. warning::
-       **Every array and uz_matrix_t object** has to be declared with the **MEMORY_ALIGN** attribute.
+        **Every array and uz_matrix_t object** has to be declared with the **MEMORY_ALIGN** attribute.
         It aligns the arrays (and therefore its pointers) to 32 byte.
         Otherwise undefined behavior regarding the read/write process of the IP-Core can occur.
 

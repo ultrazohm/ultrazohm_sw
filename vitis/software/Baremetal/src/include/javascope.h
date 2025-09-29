@@ -31,6 +31,7 @@ enum JS_OberservableData {
 	JSO_ia,
 	JSO_ib,
 	JSO_ic,
+	JSO_U_DC,
 	JSO_id,
 	JSO_iq,
 	JSO_ud,

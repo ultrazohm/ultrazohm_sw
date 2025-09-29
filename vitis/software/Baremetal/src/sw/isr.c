@@ -47,19 +47,19 @@ extern DS_Data Global_Data;
 static void ReadAllADC();
 
 // safety thresholds
-float Vdc_max = 400.0f;
-float Iphase_max = 10.0f;
+float Vdc_max = 1100.0f;
+float Iphase_max = 30.0f;
 
-float duty_amplitude 	=   0.05f;
-float duty_frequency 	=  10.0f;
-float duty_offset 		=   0.5f;
+float duty_amplitude 	=   0.3f;
+float duty_frequency 	=  100.0f;
+float const duty_offset 		=   0.5f;
 uz_3ph_abc_t three_phase_sine;
 
-int isr_use_sinwave_gen = 0;
+int isr_use_sinwave_gen = 1;
 
 int calibrate_current_measurement_done = 0;
 int calibrate_current_measurement_counter = 0;
-int calibrate_current_measurement_counter_stop = 100;
+int calibrate_current_measurement_counter_stop = 1000;
 
 //zeroing for current value 0 (getting rid of the offset)
 double totalU = 0;
@@ -69,6 +69,7 @@ double totalW = 0;
 float I_U_offset;
 float I_V_offset;
 float I_W_offset;
+float U_DC_offset = 2.5f;
 
 void ISR_Control(void *data)
 {
@@ -92,7 +93,7 @@ void ISR_Control(void *data)
 		}
 	}
 
-    Global_Data.av.U_DC = Global_Data.aa.A1.me.ADC_A4;
+    Global_Data.av.U_DC = Global_Data.aa.A1.me.ADC_A4  - U_DC_offset;
     Global_Data.av.I_U  = Global_Data.aa.A1.me.ADC_A1  - I_U_offset; //including adjustment upwards by the offset
     Global_Data.av.I_V  = Global_Data.aa.A1.me.ADC_A2  - I_V_offset; //including adjustment upwards by the offset
     Global_Data.av.I_W  = Global_Data.aa.A1.me.ADC_A3  - I_W_offset; //including adjustment upwards by the offset

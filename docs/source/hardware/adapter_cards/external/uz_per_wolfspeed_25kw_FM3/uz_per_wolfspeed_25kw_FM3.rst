@@ -21,7 +21,7 @@ Digital control and status signals are transmitted over optical links using HFBR
 
 .. figure:: InterfaceBoardLayout.png
 
-   Functional areas of the uz per wolfspeed inverter interface pcb
+   Functional areas of the uz_per_wolfspeed inverter interface pcb
 
 Layout
 ******
@@ -45,59 +45,72 @@ Signals are grouped as analog and digital.
 
 
 Analog Signals
-**************
+--------------
+
+The signals on the inverter side are single-ended and converted to fully differential signals for noise-robust transmission to the UltraZohm ADC board.
+The adapter cards scales the single-ended signals by factor 1.5038 (10/6.65) to match the analog range of the Wolfspeed inverter (3.3V) to the 5V analog input range of the UltraZohm ADC board.
+The reported total sensing gain is measured experimentally, see attached thesis for details. 
+It includes the gain of the measurement device (e.g. current sensor) and the gain of the interface board.
+The bandwidth is determined theoretically based on an LTSpice simulation and the resulting -3dB point.
 
 .. list-table::
    :header-rows: 1
-   :widths: 25 20 35 20
+   :widths: 20 20 30 30
 
    * - Signal
      - Source
-     - Conditioning
-     - Destination
-   * - Phase Current U, V, W
-     - Inverter Hall sensor → single-ended
-     - fully diff. OpAmp, gain 1.5, total sensing gain in ?? V/A, bandwidth?
-     - UltraZohm ADC Channels 1,2,3 ??
+     - Total Measurement Gain
+     - UltraZohm ADC Channel
+   * - Phase Currents U, V, W
+     - LEM LAH 50-P
+     - total sensing gain 0.02417 in V/A, bandwidth ~50kHz
+     - I_U (Ch1), I_V (Ch2), I_W (Ch3)
    * - DC-Link Voltage
-     - Inverter voltage divider + buffer
-     - fully diff. OpAmp, gain 1.5, total sensing gain in ?? Vsec/Vprim, bandwidth?
-     - UltraZohm ADC Channel ??
+     - voltage divider, non-isolated
+     - total sensing gain in 0.003744 Vsec/Vprim, bandwidth ~7kHz
+     - V_DC on Ch4 (RJ45 Pair 1-2)
 
 
 Digital Signals
-***************
+---------------
+
+
+The overcurrent detection signal is active LOW, meaning that when an overcurrent condition is detected, the signal goes LOW and, therefore, the LED of the transmitter is OFF.
+The overcurrent limits are by default set to +-79A and can be adjusted by varying the reference resistors, as detailed in the Wolfspeed documentation.
+
+The NTC output is converted to a 50 kHz PWM signal with varying duty cycle. 
+
 
 .. list-table::
    :header-rows: 1
-   :widths: 30 15 25 30
+   :widths: 25 20 20 35
 
    * - Signal
      - Direction
      - Conditioning
      - Notes
    * - 6x PWM Gate Signals 
-     - UltraZohm → Inverter
-     - Optical Tx/Rx (HFBR-1521Z/2521Z)
+     - UZ → Inverter
+     - Optical Rx
      - High- and Low-Side for 3 phases, dead-time generated in UZ
    * - Gate Driver Disable
-     - UltraZohm → Inverter
-     - Optical Tx/Rx
+     - UZ → Inverter
+     - Optical Rx
      - Global gate driver shutdown
    * - 6x Overcurrent Detection
-     - Inverter → UltraZohm
-     - AND-gates (SN74HCS08DR) → Optical Tx
-     - Consolidated into single fault signal (active Level ??) light on -> fault or no fault?
+     - Inverter → UZ
+     - AND-gates (SN74HCS08DR) + Optical Tx
+     - Consolidated into single fault signal (active-LOW)
    * - NTC Temperature
-     - Inverter → UltraZohm
+     - Inverter → UZ
      - Optical Tx
-     - Thermal feedback
+     - PWM modulated signal at 50kHz
 
 
 Testing
 *******
 
-Tests were performed up to 10kW using an RL-load with a 14Ohm braking resistor and 1mH inductor
+Tests were performed up to 10kW using an RL-load with a 14Ohm resistor and 1mH inductor
 
 
 .. figure:: FinalSetup.png
@@ -134,7 +147,8 @@ A few considerations should be kept in mind for future iterations of the interfa
    Interface board with 3D-printed stand for mechanical stability
 
 - **Software Branch**
-  We used the ``feature/wolfspeed_inverter_adapterboard`` branch of the `ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/>`_ repository to test the inverter. View the branch directly `here <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/feature/wolfspeed_inverter_adapterboard/>`_.
+  We used the ``feature/wolfspeed_inverter_adapterboard`` branch of the `ultrazohm_sw <https://bitbucket.org/ultrazohm/ultrazohm_sw/src/>`_ repository to test the inverter. 
+  View the branch diff directly `here <https://bitbucket.org/ultrazohm/ultrazohm_sw/branches/compare/feature%2Fwolfspeed_inverter_adapterboard%0Ddevelop#diff>`_.
 
 Documents and Links
 *******************

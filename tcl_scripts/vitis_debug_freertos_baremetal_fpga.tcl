@@ -25,13 +25,9 @@ proc _find_one {dir pattern} {
 proc bitstream {dir} { _find_one $dir "*.bit" }
 proc xsa       {dir} { _find_one $dir "*.xsa" }
 
-set iswindows 0
-if {$::tcl_platform(platform) == "windows"} {	   
-    set iswindows 1
-} else {	   
-    set iswindows 0
-}
 
+puts "INFO: DEBUG ULTRAZOHM"
+#####################################################
 cd [getws]
 connect -url tcp:127.0.0.1:3121
 puts "INFO: Connected to target on host '127.0.0.1' and port '3121'."
@@ -61,7 +57,8 @@ targets -set -nocase -filter {name =~"APU*"}
 puts "INFO: Context for 'APU' is selected."
 #####################################################
 set XSA_FILE [lindex [xsa $XSA_DIR] 0]
-catch {loadhw -hw $XSA_FILE -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs}
+# catch {loadhw -hw $XSA_FILE -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs}
+catch {loadhw -hw $XSA_FILE}
 puts "INFO: Hardware design and registers information is loaded from $XSA_FILE."
 #####################################################
 configparams force-mem-access 1
@@ -115,7 +112,7 @@ configparams force-mem-access 0
 puts "INFO: 'configparams force-mem-access 0' command is executed."
 #####################################################
 bpadd -addr &main
-puts "INFO: 'Enabled debug mode."
+puts "INFO: 'Enabled debug mode with breakpoint at main entry."
 #####################################################
 targets -set -nocase -filter {name =~ "*A53*#0"}
 con

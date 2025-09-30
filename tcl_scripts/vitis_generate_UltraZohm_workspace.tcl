@@ -290,12 +290,12 @@ set RunAll_TCL [file join $EXPORT_FOLDER Run_UltraZohm.launch]
 #file copy -force -- $DebugBaremetal $filename_launches
 file copy -force -- $DebugAll_TCL $filename_launches
 file copy -force -- $RunAll_TCL $filename_launches
-puts "========================================"
+puts "================================================================================"
 puts "Info (UltraZohm): debug files copied"
 puts "Info (UltraZohm): debug configurations are visible after restarting Vitis"
-puts "========================================"
+puts "================================================================================"
 puts "Info (UltraZohm): generate_UltraZohm_workspace.tcl script finished successfully"
-puts "========================================"
+puts "================================================================================"
 }
 
 

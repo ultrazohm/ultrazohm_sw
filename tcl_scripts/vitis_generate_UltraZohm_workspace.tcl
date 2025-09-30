@@ -32,7 +32,7 @@ global uzcfg
 # Hardware platform: [UltraZohm]
 set uzcfg(PLATFORM_NAME) 	UltraZohm
 
-## APU/FreeRTS Settings
+## APU/FreeRTOS Settings
 # Enable DHCP for automatic assignment of IPv4 address: true, [false]
 set uzcfg(ENABLE_DHCP)		false
 

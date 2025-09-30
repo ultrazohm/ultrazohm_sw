@@ -1,10 +1,29 @@
-# TCL Debug scrip for FreeRTOS and BareMetal
-#
+# TCL Debug script for FreeRTOS and BareMetal
 #Created by Eyke Aufderheide, Dennis Hufnagel 
+#
+# --- config ---
+set BIT_DIR "UltraZohm/hw"          ;# adjust as needed
+set XSA_DIR "UltraZohm/hw"          ;# adjust as needed
+
 set VITIS_PATH $::env(XILINX_VITIS)
 set VITIS_UTIL_PATH [file join $VITIS_PATH scripts/vitis/util]
 set PATH_zynqmp_utils [file join $VITIS_UTIL_PATH zynqmp_utils.tcl]
 set PATH_fsbl [file join $VITIS_UTIL_PATH fsbl.tcl]
+
+
+# Core helper: return the single file matching 'pattern' in 'dir'; error if 0 or >1.
+proc _find_one {dir pattern} {
+    set dir [file normalize $dir]
+    if {![file isdirectory $dir]} { error "Directory not found: $dir" }
+    set matches [glob -nocomplain -directory $dir -- $pattern]
+    set n [llength $matches]
+    if {$n != 1} { error "Expected exactly one $pattern in $dir, found $n: $matches" }
+    return [list [file normalize [lindex $matches 0]]]  ;# safe even if path has spaces
+}
+
+# Thin wrappers for readability
+proc bitstream {dir} { _find_one $dir "*.bit" }
+proc xsa       {dir} { _find_one $dir "*.xsa" }
 
 set iswindows 0
 if {$::tcl_platform(platform) == "windows"} {	   
@@ -27,18 +46,22 @@ puts "INFO: Context for 'RPU' is selected."
 enable_split_mode
 puts "INFO: Split mode is enabled for R5#1."
 target 1 
-fpga -file FreeRTOS/_ide/bitstream/zusys_wrapper.bit
-puts "INFO: Device configured successfully with 'workspace/FreeRTOS/_ide/bitstream/zusys_wrapper.bit'."
+set BIT_FILE [lindex [bitstream $BIT_DIR] 0]
+fpga -file $BIT_FILE
+puts "INFO: Device configured successfully with $BIT_FILE."
 targets -set -nocase -filter {name =~"APU*"}
 puts "INFO: Context for 'APU' is selected."
-catch {loadhw -hw UltraZohm/export/UltraZohm/hw/zusys_wrapper.xsa -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs}
-puts "INFO: Hardware design and registers information is loaded from 'workspace/UltraZohm/export/UltraZohm/zusys_wrapper.xsa'."
+
+set XSA_FILE [lindex [xsa $XSA_DIR] 0]
+catch {loadhw -hw $XSA_FILE -mem-ranges [list {0x80000000 0xbfffffff} {0x400000000 0x5ffffffff} {0x1000000000 0x7fffffffff}] -regs}
+puts "INFO: Hardware design and registers information is loaded from $XSA_FILE."
+
 configparams force-mem-access 1
 puts "INFO: 'configparams force-mem-access 1' command is executed."
 targets -set -nocase -filter {name =~"APU*"}
 puts "INFO: Context for 'APU' is selected."
-source FreeRTOS/_ide/psinit/psu_init.tcl
-puts "INFO: sourcing of 'workspace/FreeRTOS/_ide/psinit/psu_init.tcl' is done."
+source UltraZohm/hw/psu_init.tcl
+puts "INFO: sourcing of 'workspace/UltraZohm/hw/psu_init.tcl' is done."
 psu_init
 puts "INFO:'psu_init' command is executed."
 source $PATH_fsbl 

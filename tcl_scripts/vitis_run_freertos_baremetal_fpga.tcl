@@ -7,11 +7,12 @@
 if {[info exists ::UZ_PROGRAMMING_MODE]} {
 
    if {$UZ_PROGRAMMING_MODE eq "DEBUG"} {
-    # catch {bpremove -all}
-    # catch {bpdisable -all}
-    puts "\n\n======================================================================================================="
-    puts "INFO: UZ was run in DEBUG mode prior, try restarting Vitis or terminate hw_server via e.g. Task Manager."
-    puts "=======================================================================================================\n\n"
+    catch {bpremove -all}
+    catch {bpdisable -all}
+    puts "\n\n====================================================================================="
+    puts "INFO: UZ was run in DEBUG mode prior."
+    puts "Try to 'Disconnect' the current Debug Session and then 'Terminate/Disconnect All'."
+    puts "=====================================================================================\n\n"
     }
 }
 

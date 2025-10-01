@@ -114,18 +114,19 @@ configparams force-mem-access 0
 puts "INFO: 'configparams force-mem-access 0' command is executed."
 #####################################################
 # differentiate between DEBUG and RUN mode
+# however: real RUN mode, where breakpoints set in Eclipse GUI are ignored, is not possible with this script
 catch {bpremove -all}
 
 if {$UZ_PROGRAMMING_MODE eq "DEBUG"} {
+    puts "\n\n==========================================================="
     bpadd -addr &main -enable 0
-    puts "\n\n====================================================="
-    puts "INFO: DEBUG mode: added disabled breakpoint at main entry."
-    puts "=====================================================\n\n"
+    puts "INFO: DEBUG mode: added disabled breakpoint at main entry." ; 
+    puts "===========================================================\n\n"
 } elseif {$UZ_PROGRAMMING_MODE eq "RUN"} {
     catch {bpdisable -all}
-    puts "\n\n==============================================================="
-    puts "INFO: RUN mode: disable all breakpoints by pressing CTRL+ALT+B"
-    puts "===============================================================\n\n"
+    puts "\n\n====================================================================================="
+    puts "INFO: RUN mode: new breakpoints are NOT ignored, disable all BPs by pressing CTRL+ALT+B"
+    puts "=====================================================================================\n\n"
 } else {
     error "Unknown UZ_PROGRAMMING_MODE '$UZ_PROGRAMMING_MODE' (use RUN or DEBUG)."
 }

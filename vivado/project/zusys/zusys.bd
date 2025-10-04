@@ -1,7 +1,7 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0xBF3A1C4FD1DA1DF0",
+      "boundary_crc": "0xE59E47CFC93B5DF1",
       "device": "xczu9eg-ffvc900-1-e",
       "name": "zusys",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
@@ -124,6 +124,20 @@
           "smartconnect_0": "",
           "uz_EnDat_0": "",
           "ila_0": ""
+        },
+        "adapter_d1": {
+          "xlslice_0": "",
+          "xlslice_1": "",
+          "xlslice_2": "",
+          "xlslice_3": "",
+          "xlslice_4": "",
+          "xlslice_5": "",
+          "xlslice_6": "",
+          "xlslice_7": "",
+          "xlslice_8": "",
+          "xlslice_9": "",
+          "xlslice_10": "",
+          "xlslice_11": ""
         }
       }
     },
@@ -184,37 +198,6 @@
         "right": "0"
       },
       "A3_OUT_CNV_1": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT": {
-        "direction": "O",
-        "left": "23",
-        "right": "0",
-        "parameters": {
-          "PortWidth": {
-            "value": "24",
-            "value_src": "ip_prop"
-          }
-        }
-      },
-      "D1_OUT_26": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_27": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_28": {
-        "direction": "O",
-        "left": "0",
-        "right": "0"
-      },
-      "D1_OUT_29": {
         "direction": "O",
         "left": "0",
         "right": "0"
@@ -345,6 +328,96 @@
       },
       "Dig_07_Ch4": {
         "direction": "I"
+      },
+      "Dig_29_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_28_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_27_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_26_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_00_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_01_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_02_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_03_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_04_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_05_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_06_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_07_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_08_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_09_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_10_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_11_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_12_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
+      },
+      "Dig_13_Ch1": {
+        "direction": "O",
+        "left": "0",
+        "right": "0"
       }
     },
     "components": {
@@ -8655,6 +8728,71 @@
           },
           "Dig_07_Ch4": {
             "direction": "I"
+          },
+          "Din": {
+            "direction": "I",
+            "left": "23",
+            "right": "0"
+          },
+          "Dig_00_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_01_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_02_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_03_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_04_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_05_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_06_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_07_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_08_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_09_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_10_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
+          },
+          "Dig_11_Ch1": {
+            "direction": "O",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -9270,6 +9408,366 @@
                 ]
               }
             }
+          },
+          "adapter_d1": {
+            "ports": {
+              "Din": {
+                "direction": "I",
+                "left": "23",
+                "right": "0"
+              },
+              "Dig_00_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_01_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_02_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_03_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_04_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_05_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_06_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_07_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_08_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_09_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_10_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              },
+              "Dig_11_Ch1": {
+                "direction": "O",
+                "left": "0",
+                "right": "0"
+              }
+            },
+            "components": {
+              "xlslice_0": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_0",
+                "xci_path": "ip\\zusys_xlslice_0_0\\zusys_xlslice_0_0.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_0",
+                "parameters": {
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_1": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_1",
+                "xci_path": "ip\\zusys_xlslice_0_1\\zusys_xlslice_0_1.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_1",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "1"
+                  },
+                  "DIN_TO": {
+                    "value": "1"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_2": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_2",
+                "xci_path": "ip\\zusys_xlslice_0_2\\zusys_xlslice_0_2.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_2",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "2"
+                  },
+                  "DIN_TO": {
+                    "value": "2"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_3": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_3",
+                "xci_path": "ip\\zusys_xlslice_0_3\\zusys_xlslice_0_3.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_3",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "3"
+                  },
+                  "DIN_TO": {
+                    "value": "3"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_4": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_4",
+                "xci_path": "ip\\zusys_xlslice_0_4\\zusys_xlslice_0_4.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_4",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "4"
+                  },
+                  "DIN_TO": {
+                    "value": "4"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_5": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_5",
+                "xci_path": "ip\\zusys_xlslice_0_5\\zusys_xlslice_0_5.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_5",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "5"
+                  },
+                  "DIN_TO": {
+                    "value": "5"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_6": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_6",
+                "xci_path": "ip\\zusys_xlslice_0_6\\zusys_xlslice_0_6.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_6",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "6"
+                  },
+                  "DIN_TO": {
+                    "value": "6"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_7": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_7",
+                "xci_path": "ip\\zusys_xlslice_0_7\\zusys_xlslice_0_7.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_7",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "7"
+                  },
+                  "DIN_TO": {
+                    "value": "7"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_8": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_8",
+                "xci_path": "ip\\zusys_xlslice_0_8\\zusys_xlslice_0_8.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_8",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "8"
+                  },
+                  "DIN_TO": {
+                    "value": "8"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_9": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_9",
+                "xci_path": "ip\\zusys_xlslice_0_9\\zusys_xlslice_0_9.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_9",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "9"
+                  },
+                  "DIN_TO": {
+                    "value": "9"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_10": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_10",
+                "xci_path": "ip\\zusys_xlslice_0_10\\zusys_xlslice_0_10.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_10",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "10"
+                  },
+                  "DIN_TO": {
+                    "value": "10"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              },
+              "xlslice_11": {
+                "vlnv": "xilinx.com:ip:xlslice:1.0",
+                "xci_name": "zusys_xlslice_0_11",
+                "xci_path": "ip\\zusys_xlslice_0_11\\zusys_xlslice_0_11.xci",
+                "inst_hier_path": "uz_user/adapter_d1/xlslice_11",
+                "parameters": {
+                  "DIN_FROM": {
+                    "value": "11"
+                  },
+                  "DIN_TO": {
+                    "value": "11"
+                  },
+                  "DIN_WIDTH": {
+                    "value": "24"
+                  }
+                }
+              }
+            },
+            "nets": {
+              "Din_1": {
+                "ports": [
+                  "Din",
+                  "xlslice_0/Din",
+                  "xlslice_1/Din",
+                  "xlslice_2/Din",
+                  "xlslice_3/Din",
+                  "xlslice_4/Din",
+                  "xlslice_5/Din",
+                  "xlslice_6/Din",
+                  "xlslice_7/Din",
+                  "xlslice_8/Din",
+                  "xlslice_9/Din",
+                  "xlslice_10/Din",
+                  "xlslice_11/Din"
+                ]
+              },
+              "xlslice_0_Dout": {
+                "ports": [
+                  "xlslice_0/Dout",
+                  "Dig_00_Ch1"
+                ]
+              },
+              "xlslice_10_Dout": {
+                "ports": [
+                  "xlslice_10/Dout",
+                  "Dig_10_Ch1"
+                ]
+              },
+              "xlslice_11_Dout": {
+                "ports": [
+                  "xlslice_11/Dout",
+                  "Dig_11_Ch1"
+                ]
+              },
+              "xlslice_1_Dout": {
+                "ports": [
+                  "xlslice_1/Dout",
+                  "Dig_01_Ch1"
+                ]
+              },
+              "xlslice_2_Dout": {
+                "ports": [
+                  "xlslice_2/Dout",
+                  "Dig_02_Ch1"
+                ]
+              },
+              "xlslice_3_Dout": {
+                "ports": [
+                  "xlslice_3/Dout",
+                  "Dig_03_Ch1"
+                ]
+              },
+              "xlslice_4_Dout": {
+                "ports": [
+                  "xlslice_4/Dout",
+                  "Dig_04_Ch1"
+                ]
+              },
+              "xlslice_5_Dout": {
+                "ports": [
+                  "xlslice_5/Dout",
+                  "Dig_05_Ch1"
+                ]
+              },
+              "xlslice_6_Dout": {
+                "ports": [
+                  "xlslice_6/Dout",
+                  "Dig_06_Ch1"
+                ]
+              },
+              "xlslice_7_Dout": {
+                "ports": [
+                  "xlslice_7/Dout",
+                  "Dig_07_Ch1"
+                ]
+              },
+              "xlslice_8_Dout": {
+                "ports": [
+                  "xlslice_8/Dout",
+                  "Dig_08_Ch1"
+                ]
+              },
+              "xlslice_9_Dout": {
+                "ports": [
+                  "xlslice_9/Dout",
+                  "Dig_09_Ch1"
+                ]
+              }
+            }
           }
         },
         "interface_nets": {
@@ -9309,6 +9807,84 @@
             "ports": [
               "Dig_08_Ch3",
               "adapter_d3/Dig_08_Ch3"
+            ]
+          },
+          "Din_1": {
+            "ports": [
+              "Din",
+              "adapter_d1/Din"
+            ]
+          },
+          "adapter_d1_Dig_00_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_00_Ch1",
+              "Dig_00_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_01_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_01_Ch1",
+              "Dig_01_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_02_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_02_Ch1",
+              "Dig_02_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_03_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_03_Ch1",
+              "Dig_03_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_04_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_04_Ch1",
+              "Dig_04_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_05_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_05_Ch1",
+              "Dig_05_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_06_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_06_Ch1",
+              "Dig_06_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_07_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_07_Ch1",
+              "Dig_07_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_08_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_08_Ch1",
+              "Dig_08_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_09_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_09_Ch1",
+              "Dig_09_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_10_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_10_Ch1",
+              "Dig_10_Ch1"
+            ]
+          },
+          "adapter_d1_Dig_11_Ch1": {
+            "ports": [
+              "adapter_d1/Dig_11_Ch1",
+              "Dig_11_Ch1"
             ]
           },
           "adapter_d3_Dig_00_Ch3": {
@@ -9608,17 +10184,17 @@
       "Enable_Gates_CPLD_High_dout": {
         "ports": [
           "uz_system/D1_OUT_28",
-          "D1_OUT_28",
-          "D2_OUT_28"
+          "D2_OUT_28",
+          "Dig_28_Ch1"
         ]
       },
       "Enable_Gates_CPLD_Low_dout": {
         "ports": [
           "uz_system/D1_OUT_26",
-          "D1_OUT_26",
-          "D1_OUT_27",
           "D2_OUT_26",
-          "D2_OUT_27"
+          "D2_OUT_27",
+          "Dig_27_Ch1",
+          "Dig_26_Ch1"
         ]
       },
       "Gates_3L_Gate_Signals_3L": {
@@ -9663,12 +10239,6 @@
           "uz_system/Interrupt1"
         ]
       },
-      "Gates_dout_0": {
-        "ports": [
-          "uz_digital_adapter/D1_OUT",
-          "D1_OUT"
-        ]
-      },
       "Interrupt_muxed": {
         "ports": [
           "uz_system/trigger_converesions",
@@ -9703,10 +10273,22 @@
           "uz_user/aresetn"
         ]
       },
+      "uz_digital_adapter_D1_OUT": {
+        "ports": [
+          "uz_digital_adapter/D1_OUT",
+          "uz_user/Din"
+        ]
+      },
       "uz_system_wdt_interrupt": {
         "ports": [
           "uz_system/wdt_interrupt",
           "zynq_ultra_ps_e_0/pl_ps_irq1"
+        ]
+      },
+      "uz_user_Dig_00_Ch1": {
+        "ports": [
+          "uz_user/Dig_00_Ch1",
+          "Dig_00_Ch1"
         ]
       },
       "uz_user_Dig_00_Ch3": {
@@ -9715,10 +10297,22 @@
           "Dig_00_Ch3"
         ]
       },
+      "uz_user_Dig_01_Ch1": {
+        "ports": [
+          "uz_user/Dig_01_Ch1",
+          "Dig_01_Ch1"
+        ]
+      },
       "uz_user_Dig_01_Ch3": {
         "ports": [
           "uz_user/Dig_01_Ch3",
           "Dig_01_Ch3"
+        ]
+      },
+      "uz_user_Dig_02_Ch1": {
+        "ports": [
+          "uz_user/Dig_02_Ch1",
+          "Dig_02_Ch1"
         ]
       },
       "uz_user_Dig_02_Ch3": {
@@ -9727,10 +10321,22 @@
           "Dig_02_Ch3"
         ]
       },
+      "uz_user_Dig_03_Ch1": {
+        "ports": [
+          "uz_user/Dig_03_Ch1",
+          "Dig_03_Ch1"
+        ]
+      },
       "uz_user_Dig_03_Ch3": {
         "ports": [
           "uz_user/Dig_03_Ch3",
           "Dig_03_Ch3"
+        ]
+      },
+      "uz_user_Dig_04_Ch1": {
+        "ports": [
+          "uz_user/Dig_04_Ch1",
+          "Dig_04_Ch1"
         ]
       },
       "uz_user_Dig_04_Ch3": {
@@ -9739,10 +10345,22 @@
           "Dig_04_Ch3"
         ]
       },
+      "uz_user_Dig_05_Ch1": {
+        "ports": [
+          "uz_user/Dig_05_Ch1",
+          "Dig_05_Ch1"
+        ]
+      },
       "uz_user_Dig_05_Ch3": {
         "ports": [
           "uz_user/Dig_05_Ch3",
           "Dig_05_Ch3"
+        ]
+      },
+      "uz_user_Dig_06_Ch1": {
+        "ports": [
+          "uz_user/Dig_06_Ch1",
+          "Dig_06_Ch1"
         ]
       },
       "uz_user_Dig_06_Ch3": {
@@ -9751,16 +10369,46 @@
           "Dig_06_Ch3"
         ]
       },
+      "uz_user_Dig_07_Ch1": {
+        "ports": [
+          "uz_user/Dig_07_Ch1",
+          "Dig_07_Ch1"
+        ]
+      },
       "uz_user_Dig_07_Ch3": {
         "ports": [
           "uz_user/Dig_07_Ch3",
           "Dig_07_Ch3"
         ]
       },
+      "uz_user_Dig_08_Ch1": {
+        "ports": [
+          "uz_user/Dig_08_Ch1",
+          "Dig_08_Ch1"
+        ]
+      },
       "uz_user_Dig_08_Ch4": {
         "ports": [
           "uz_user/Dig_08_Ch4",
           "Dig_08_Ch4"
+        ]
+      },
+      "uz_user_Dig_09_Ch1": {
+        "ports": [
+          "uz_user/Dig_09_Ch1",
+          "Dig_09_Ch1"
+        ]
+      },
+      "uz_user_Dig_10_Ch1": {
+        "ports": [
+          "uz_user/Dig_10_Ch1",
+          "Dig_10_Ch1"
+        ]
+      },
+      "uz_user_Dig_11_Ch1": {
+        "ports": [
+          "uz_user/Dig_11_Ch1",
+          "Dig_11_Ch1"
         ]
       },
       "uz_user_Dig_11_Ch4": {
@@ -9790,14 +10438,16 @@
       "xlslice_Enable_Gate_Dout": {
         "ports": [
           "uz_system/D1_OUT_29",
-          "D1_OUT_29",
-          "D2_OUT_29"
+          "D2_OUT_29",
+          "Dig_29_Ch1"
         ]
       },
       "xlslice_Enable_Inverter_Dout": {
         "ports": [
           "uz_system/Dout",
-          "uz_digital_adapter/Enable_Gate"
+          "uz_digital_adapter/Enable_Gate",
+          "Dig_12_Ch1",
+          "Dig_13_Ch1"
         ]
       },
       "zynq_ultra_ps_e_0_pl_clk1": {

@@ -12,7 +12,7 @@
 #error The UZ_USE_EXTERNAL_STOP flag must not be used on hardware version 3 or earlier. For hardware version 3, external stop can be used without the flag, prior versions to 3 do not have this feature.
 #endif
 
-#define UZ_HARDWARE_VERSION_MAX 5U // highest supported revision
+#define UZ_HARDWARE_VERSION_MAX 6U // highest supported revision
 
 /** ISR trigger source
  *

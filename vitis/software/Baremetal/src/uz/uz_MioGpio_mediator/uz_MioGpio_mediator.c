@@ -72,7 +72,11 @@ static void InitializeMioPinsForLEDs(uint32_t ultrazohm_revision)
 			uz_gpio_init(&MIO_LedUser, &Gpio_inst, UZ_REV_4_LED_user, OUTPUT_PIN);
 			break;
 		case 5U:
-		case 6U:
+			uz_gpio_init(&MIO_LedReady, &Gpio_inst, UZ_REV_5_LED_ready, OUTPUT_PIN);
+			uz_gpio_init(&MIO_LedRunning, &Gpio_inst, UZ_REV_5_LED_running, OUTPUT_PIN);
+			uz_gpio_init(&MIO_LedError, &Gpio_inst, UZ_REV_5_LED_error, OUTPUT_PIN);
+			uz_gpio_init(&MIO_LedUser, &Gpio_inst, UZ_REV_5_LED_user, OUTPUT_PIN);
+		case 6U: // No changes between 5 and 6
 			uz_gpio_init(&MIO_LedReady, &Gpio_inst, UZ_REV_5_LED_ready, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedRunning, &Gpio_inst, UZ_REV_5_LED_running, OUTPUT_PIN);
 			uz_gpio_init(&MIO_LedError, &Gpio_inst, UZ_REV_5_LED_error, OUTPUT_PIN);

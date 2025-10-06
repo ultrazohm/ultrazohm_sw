@@ -17,7 +17,7 @@ static void InitializeAllStatusLEDs(void);
 static void TurnAllLEDOff(void);
 static void InitializeMioPinsForButtons(uint32_t ultrazohm_revision);
 static void InitializeAllPushButtons(void);
-static void enableAllMioWithButonsAttached(void);
+static void enableAllMioWithButtonsAttached(void);
 
 static XGpioPs Gpio_inst;
 static uz_gpio MIO_LedReady;
@@ -39,7 +39,7 @@ void uz_frontplane_button_and_led_init(uint32_t ultrazohm_revision)
 
 	InitializeMioPinsForButtons(ultrazohm_revision);
 	InitializeAllPushButtons();
-	enableAllMioWithButonsAttached();
+	enableAllMioWithButtonsAttached();
 }
 
 static void InitializeXilinxMioGpioInstance(void)
@@ -146,7 +146,7 @@ static void enableAllMioWithLEDsAttached(void)
 	uz_gpio_set_enable_output(&MIO_LedUser, true);
 }
 
-static void enableAllMioWithButonsAttached(void)
+static void enableAllMioWithButtonsAttached(void)
 {
 	uz_gpio_set_enable_output(&MIO_SWError, 1);
 	uz_gpio_set_enable_output(&MIO_SWSystem, 1);

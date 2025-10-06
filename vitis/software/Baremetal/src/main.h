@@ -41,6 +41,8 @@
 #include "include/javascope.h"
 #include "include/mux_axi.h"
 #include "include/pwm_3L_driver.h"
+#include "include/resolver.h"
+#include "include/endat.h"
 
 #include "uz/uz_HAL.h"
 

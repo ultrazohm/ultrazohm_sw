@@ -52,6 +52,18 @@ void ISR_Control(void *data)
     ReadAllADC();
     update_speed_and_position_of_encoder_on_D5(&Global_Data);
 
+    // update position and speed from resolver
+    Global_Data.av.resolver_pl_outputs_d3_1 = uz_resolver_pl_interface_get_outputs(Global_Data.objects.resolver_pl_interface_d3_1);
+    // read position and speed from EnDat and assign to Global_Data
+    Global_Data.av.position_mech_2pi_d4_1 = uz_EnDat_read_pos_and_return_radiant(Global_Data.objects.endat_d4_1, uz_EnDat_pos_t0);
+    Global_Data.av.n_mech_rpm_d4_1 = uz_EnDat_easy_speedreadout_revolutions_per_minute(Global_Data.objects.endat_d4_1);
+
+    // assign measurements to Global_Data
+    Global_Data.av.omega_mech_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.omega_mech_rad_s;
+    Global_Data.av.position_el_2pi_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.position_el_2pi;
+    Global_Data.av.n_mech_rpm_d3_1 = Global_Data.av.resolver_pl_outputs_d3_1.n_mech_rpm;
+
+
     platform_state_t current_state=ultrazohm_state_machine_get_state();
     if (current_state==control_state)
     {

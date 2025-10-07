@@ -118,8 +118,8 @@ Please refer to the following references for more details.
 
 * `Issue #6 ("Add I²C EEPROM") <https://bitbucket.org/ultrazohm/uz_d_template/issues/6/add-i-c-eeprom>`_ in the ``UZ_D_Template`` repository for more information on the design ideas (and history) of the adapter card identification feature and on how to add an EEPROM to an existing adapter card
 
-   * The established Altium template repositories now include an EEPROM for both `analog <https://bitbucket.org/ultrazohm/uz_a_template/src/master/>`_ and `digital <https://bitbucket.org/ultrazohm/uz_d_template/src/master/>`_ adapter cards
-   * `This table <https://bitbucket.org/ultrazohm/uz_d_template/issues/6/add-i-c-eeprom#comment-66183759>`_ lists all the signal connections required (between the adapter card's edge connector and its EEPROM)
+  * The established Altium template repositories now include an EEPROM for both `analog <https://bitbucket.org/ultrazohm/uz_a_template/src/master/>`_ and `digital <https://bitbucket.org/ultrazohm/uz_d_template/src/master/>`_ adapter cards
+  * `This table <https://bitbucket.org/ultrazohm/uz_d_template/issues/6/add-i-c-eeprom#comment-66183759>`_ lists all the signal connections required (between the adapter card's edge connector and its EEPROM)
 
 * `Pull Request #444 ("[APU/FreeRTOS+Linux] Extend UZP framework to support reading the identity of adapter cards [...]") <https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/444>`_ in the ``ultrazohm_sw`` repository for the software changes behind this feature
 * `Pull Request #400 ("Add PlatformDetectHAL (aka "UZ Platform", UZP)") <https://bitbucket.org/ultrazohm/ultrazohm_sw/pull-requests/400>`_ in the ``ultrazohm_sw`` repository for requirements of the UltraZohm Platform framework (that the adapter ID feature is based on)

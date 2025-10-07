@@ -23,28 +23,28 @@ Features of Rev03
 - General-purpose and MAC EEPROMs, RTC, M.2 slots for SATA SSDs and frontpanel link-up as the two previous revisions of the board (cf. above)
 - Integration of an S³C-like management component ("S²C") that
 
-	- interfaces with
+  - interfaces with
 
-		- the previously-unused twelve "DIG_IO" signals of adapter card slot D5,
-		- the "system I²C" (PS-I2C1) bus to integrate, e.g., the frontpanel GPIO functionalities,
-		- SPI0 (which, alternatively, can be forwarded to outside devices, e.g., by means of the twelve signals on D5),
-		- the 11+1 "isoIOs" (i.e., PS-MIOs) out of which six are carrier outputs, five are carrier inputs and one is the External STOP, and
-		- two on-board (and thus not-easily-reached) push buttons;
+    - the previously-unused twelve "DIG_IO" signals of adapter card slot D5,
+    - the "system I²C" (PS-I2C1) bus to integrate, e.g., the frontpanel GPIO functionalities,
+    - SPI0 (which, alternatively, can be forwarded to outside devices, e.g., by means of the twelve signals on D5),
+    - the 11+1 "isoIOs" (i.e., PS-MIOs) out of which six are carrier outputs, five are carrier inputs and one is the External STOP, and
+    - two on-board (and thus not-easily-reached) push buttons;
 
-	- monitors the VIN supply (and, e.g., MIO-based SoM watchdogs) to inform the outside world of the system's status; and
-	- provides additional I/Os (connectors ``X1`` and ``Xc1`` plus TPs) for user extensions (voltage rails 1V8 and/or 3V3)
+  - monitors the VIN supply (and, e.g., MIO-based SoM watchdogs) to inform the outside world of the system's status; and
+  - provides additional I/Os (connectors ``X1`` and ``Xc1`` plus TPs) for user extensions (voltage rails 1V8 and/or 3V3)
 
 - Integrated thermal management for
 
-	- configuration-free temperature-driven control of up to two fans, and
-	- monitoring of fan status, internal temperature and an optional diode
+  - configuration-free temperature-driven control of up to two fans, and
+  - monitoring of fan status, internal temperature and an optional diode
 
 - Integration of the USB-to-JTAG/UART boards (i.e., 2x TE0790 or the custom, optional :ref:`single-board solution <uz_per_jtag>` of some UZs) with the following advantages
 
-	- Isolated JTAG+UART interface to avoid ground loops during debugging
-	- Dual-JTAG to program both SoM and D-slot CPLDs using a single cable
-	- Dual-UART (from SoM to USB) for independent consoles of RPU and APU
-	- Note that the second JTAG channel (connected to S²C and slot CPLDs) follows a different "switching strategy" than ≥Rev05 carriers -- see :ref:`below <carrier_retrofits_i2cssds2c_jtag>` for details
+  - Isolated JTAG+UART interface to avoid ground loops during debugging
+  - Dual-JTAG to program both SoM and D-slot CPLDs using a single cable
+  - Dual-UART (from SoM to USB) for independent consoles of RPU and APU
+  - Note that the second JTAG channel (connected to S²C and slot CPLDs) follows a different "switching strategy" than ≥Rev05 carriers -- see :ref:`below <carrier_retrofits_i2cssds2c_jtag>` for details
 
 - Isolation of all but one of the links between carrier and extension board (per isolation domain on the extension board) to avoid ground loops
 
@@ -92,15 +92,15 @@ Prerequisites
 - Optional: Up to two SATA cables (X17[AB]), up to two M.2 SSDs (1x 2242, 1x 2280) and up to two screws (M3)
 - Cables: 4x Samtec (some wrapped in polyester-braided sleeving for easy installation) plus 2x ribbon cables
 
-	- X3: Long 20-pin Samtec cable (carrier ↔ extension)
-	- X10: Short 12-pin Samtec cable (carrier ↔ extension)
-	- X13: Short 20-pin Samtec cable (carrier ↔ extension)
-	- The cable for X18 (frontpanel link) depends on the type of frontpanel installed
+  - X3: Long 20-pin Samtec cable (carrier ↔ extension)
+  - X10: Short 12-pin Samtec cable (carrier ↔ extension)
+  - X13: Short 20-pin Samtec cable (carrier ↔ extension)
+  - The cable for X18 (frontpanel link) depends on the type of frontpanel installed
 
-		- Option A (LEDs connected with individual wires): Long 26-pin Samtec cable (carrier ↔ extension)
-		- Option B (LEDs connected by means of "Z board"): Short 26-pin Samtec cable (extension ↔ LEDs)
+    - Option A (LEDs connected with individual wires): Long 26-pin Samtec cable (carrier ↔ extension)
+    - Option B (LEDs connected by means of "Z board"): Short 26-pin Samtec cable (extension ↔ LEDs)
 
-	- X8 (SoM JTAG) and X1 (CPLD JTAG): Short and long 12-pin ribbon cables with IDC-crimped connectors
+  - X8 (SoM JTAG) and X1 (CPLD JTAG): Short and long 12-pin ribbon cables with IDC-crimped connectors
 
 For older systems with purely wire-based frontpanels, ensure that ``R36`` is populated (0R 0603).
 For newer systems where the LEDs are on PCB-based, "Z-shaped" frontpanels, ``R36`` has to be DNP.

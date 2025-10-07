@@ -79,9 +79,9 @@ Summary of new Features and Changes
 * New, fully PCB-based front panel (FP) with
 
   * added **Second Gigabit Ethernet** interface (via SGMII)
-  * added 15-pin D-sub connector with 8+5 **Isolated IOs** ("isoIOs") for
+  * added 15-pin D-sub connector with 8+5 **Isolated I/Os** ("isoIOs") for
 
-    * up to 12 software-controlled general-purpose IOs (GPIOs),
+    * up to 12 software-controlled general-purpose I/Os (GPIOs),
     * up to 4 hardware-controllable GPIOs from/to S3C (and PL),
     * one dedicated hardware-controlled GPO for a heartbeat, and
     * an external output of the integrated isolated 3V3 supply.

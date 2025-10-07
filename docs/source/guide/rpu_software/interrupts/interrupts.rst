@@ -82,5 +82,5 @@ Trigger of ADC Conversion
 In some applications, the ADC conversion needs to be delayed relative to the trigger from the PWM module. 
 This can be the case if you are using an IGBT, where the delay introduced by the driver and the IGBT itself are not negligible. 
 To ensure that the ADC sampling does not occur while switching, the delay can be added in PL. 
-At the moment this is done with a VIO (Virtual IO) in the Hardware Manager in Vivado.
+At the moment this is done with a VIO (Virtual I/O) in the Hardware Manager in Vivado.
 

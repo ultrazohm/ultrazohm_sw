@@ -104,7 +104,7 @@ Step-by-step
     
     .. note::
     
-     Example for IO
+     Example for I/O
     
     .. code-block:: vhdl
     

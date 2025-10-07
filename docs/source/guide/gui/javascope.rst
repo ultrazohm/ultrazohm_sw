@@ -88,7 +88,7 @@ The control page is used to step through the state-machine of the system and for
 
 #. The ``Enable System`` button has the same functionality as the hardware button on the main front panel.
 
-   a. It sets the system state to enable, which mainly enables IO and PWM pins.
+   a. It sets the system state to enable, which mainly enables I/O and PWM pins.
 
    b. When the enable is confirmed by the R5 of the UltraZohm, the ``Ready`` LED on the front panel as well as its mirrored twin in the GUI will blink faster.
 
@@ -100,7 +100,7 @@ The control page is used to step through the state-machine of the system and for
 
 #. The ``STOP`` button has the same functionality as the hardware button on the main front panel.
 
-   a. It disables the control and system enable states. IOs and PWM are deactivated and the real-time application code in the ISR is no longer executed.
+   a. It disables the control and system enable states. I/Os and PWM are deactivated and the real-time application code in the ISR is no longer executed.
 
    b. From returning to the slow blinking of the ``Ready`` LED and turning off the ``Running`` LED it can be seen that the stop command was confirmed by the R5.
 

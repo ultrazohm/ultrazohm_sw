@@ -138,10 +138,10 @@ Guideline
    * This if statement prevents the code from being executed, unless the UltraZohm is in the ``Control`` state.
    * The UZ has four different states (see :ref:`r5_statemachine`):
 
-     #. Idle state: *Ready LED* will blink slowly, all IO and PWM pins are disabled.
+     #. Idle state: *Ready LED* will blink slowly, all I/O and PWM pins are disabled.
      #. Running state: *Ready LED* will blink fast and the IP and PWM pins are enabled.
      #. Control state: *Ready LED* will blink fast, *Running LED* will turn on and the specific code inside the if statement in the ISR will be executed.
-     #. Error state: *Error LED* turns on, Running and Control state are disabled and the IO and PWM pins get disabled.
+     #. Error state: *Error LED* turns on, Running and Control state are disabled and the I/O and PWM pins get disabled.
 
 #. Your ``isr.c`` should now look similar to this.
 

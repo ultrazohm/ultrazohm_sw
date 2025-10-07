@@ -119,7 +119,7 @@ has to be connected to the pin number that provides the ``SDI`` signal of the ad
 2 Channels in Slot D5 (Ch A/1 and Ch B/2)
 =========================================
 
-The constraint file for slot D5 gives by default access to every single pin using the naming convention ``Dig_xx_Ch5``, where ``xx`` is the IO number [00...29]. 
+The constraint file for slot D5 gives by default access to every single pin using the naming convention ``Dig_xx_Ch5``, where ``xx`` is the I/O number [00...29].
 Simply create input and output ports as shown below and connect them.
 
 .. image:: Digital_Resolver_rev01/resolverIP_pinout_D5.png

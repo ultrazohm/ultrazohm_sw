@@ -29,7 +29,7 @@ Summary of new Features and Changes
   * This simplifies error handling (on S3C / CPLDs) and
   * can be controlled via I²C from either S3C or uz_sw.
 
-* :ref:`Rev02 of the updated front panel (FP) <frontpanelmainboard_rev02>` with improved **Isolated IOs** ("isoIOs") for
+* :ref:`Rev02 of the updated front panel (FP) <frontpanelmainboard_rev02>` with improved **Isolated I/Os** ("isoIOs") for
 
   * a higher output current on ``X6`` for external devices, and
   * individually current-limited in- and external supply rails.
